@@ -35,6 +35,8 @@ from vivepdf.rpc.progress import silent_progress
 
 FIXTURE = Path(__file__).parent / "fixtures" / "trust" / "tl-is.xml"
 FIXTURE_SIGNER = "D79B88419E005F509DBC12BFC54DDEC6FE7E8944D2FD0344AFCC0249DE26A6DF"
+LOTL_FIXTURE = Path(__file__).parent / "fixtures" / "trust" / "eu-lotl-395.xml"
+LOTL_SIGNER = "E0A620FBB6747362BB933AC44169D676A553444716CF5F31605F12A22B8396B1"
 FROZEN = datetime.datetime(2026, 9, 27, 12, 0, tzinfo=datetime.UTC)
 DS_NS = "http://www.w3.org/2000/09/xmldsig#"
 XADES_NS = "http://uri.etsi.org/01903/v1.3.2#"
@@ -451,6 +453,36 @@ def test_a_version_2_pin_file_still_loads_without_a_sequence(
 
 def test_built_in_anchors_are_upper_case_sha256_fingerprints() -> None:
     assert all(sign_trust.FINGERPRINT.match(anchor) for anchor in sign_trust.LOTL_ANCHORS)
+
+
+def test_the_real_list_of_lists_is_verified_by_the_official_journal_anchors(store: Path) -> None:
+    signature = _preview(LOTL_FIXTURE).signature
+
+    assert signature is not None and signature.status == "verified"
+    assert signature.signer is not None and signature.signer.fingerprint == LOTL_SIGNER
+    assert len(sign_trust.LOTL_ANCHORS) == 6
+
+
+def test_a_changed_byte_in_the_real_list_of_lists_is_rejected(store: Path, tmp_path: Path) -> None:
+    data = LOTL_FIXTURE.read_bytes()
+    marker = b"<SchemeOperatorName>"
+    at = data.index(marker) + len(marker) + 10
+    tampered = data[:at] + bytes([data[at] ^ 0x01]) + data[at + 1 :]
+
+    with pytest.raises(OpError) as caught:
+        _preview(_write(tmp_path, "tampered-lotl.xml", tampered))
+
+    assert caught.value.data == {"reason": "trustListSignatureInvalid"}
+
+
+def test_the_real_icelandic_list_is_verified_once_the_real_list_of_lists_is_added(
+    store: Path,
+) -> None:
+    _add(LOTL_FIXTURE)
+
+    signature = _preview(FIXTURE).signature
+
+    assert signature is not None and signature.status == "verified"
 
 
 def test_an_unsigned_or_unverifiable_list_of_lists_cannot_pin_even_with_the_override(

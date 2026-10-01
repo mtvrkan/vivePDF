@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Security
+- Signatures: the EU list of trusted lists is now checked against the six signing certificates the European Commission published in the Official Journal (C/2026/1944, 15 April 2026); an imported EU list that carries one of their signatures counts as verified, and the national lists it names are verified through it [2026-10-02]
 
 ## [0.1.0] - 2026-10-01
 ### Added
