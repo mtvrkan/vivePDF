@@ -1,0 +1,38 @@
+name: Robustness
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: robustness
+  cancel-in-progress: true
+
+jobs:
+  full-matrix:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    defaults:
+      run:
+        working-directory: sidecar
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e
+        with:
+          enable-cache: true
+          cache-dependency-glob: sidecar/uv.lock
+      - run: uv sync --group dev --frozen
+      - name: Full robustness matrix and soak
+        run: uv run pytest -m robustness_full tests/robustness -q
+        env:
+          VIVEPDF_ROBUSTNESS_REPORT: ${{ runner.temp }}/robustness
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: failure()
+        with:
+          name: robustness-report
+          path: ${{ runner.temp }}/robustness
+          retention-days: 14

@@ -1,0 +1,55 @@
+name: Package
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 4 * * 1"
+  pull_request:
+    paths:
+      - sidecar/vivepdf-sidecar.spec
+      - sidecar/uv.lock
+      - scripts/build-sidecar.ps1
+      - scripts/build-sidecar.sh
+      - scripts/smoke-engine.sh
+      - scripts/sign-engine-macos.sh
+      - apps/desktop/src-tauri/tauri*.json
+      - apps/desktop/src-tauri/src/sidecar.rs
+      - apps/desktop/src-tauri/installer-hooks.nsh
+      - .github/workflows/bundle.yml
+      - .github/workflows/package.yml
+      - .github/workflows/release.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: package-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bundle:
+    uses: ./.github/workflows/bundle.yml
+    with:
+      publish: false
+    secrets: inherit
+
+  libreoffice:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, macos-latest]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Fetch LibreOffice
+        run: bash scripts/fetch-libreoffice.sh
+      - name: Run soffice
+        run: |
+          soffice="$(find apps/desktop/src-tauri/resources/libreoffice \( -path "*/program/soffice" -o -path "*/Contents/MacOS/soffice" \) -type f | head -n 1)"
+          if [ -z "$soffice" ]; then
+            echo "::error::soffice not found after fetch-libreoffice.sh"
+            exit 1
+          fi
+          "$soffice" --version

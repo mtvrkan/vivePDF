@@ -1,0 +1,8 @@
+{
+  "name": "extract-zip",
+  "version": "2.0.1-vivepdf.1",
+  "private": true,
+  "description": "Stand-in for extract-zip: the e2e run drives tauri-driver and never downloads a browser, so nothing may unpack archives through it",
+  "license": "AGPL-3.0-only",
+  "main": "index.js"
+}

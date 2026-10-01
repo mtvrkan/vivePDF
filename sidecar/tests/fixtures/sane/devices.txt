@@ -1,0 +1,4 @@
+test:0	Noname	frontend-tester	virtual device
+test:1	Noname	frontend-tester	virtual device
+pnm:0	Noname	PNM file reader	virtual device
+pnm:1	Noname	PNM file reader	virtual device

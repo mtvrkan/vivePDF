@@ -1,0 +1,10 @@
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.png binary
+*.ico binary
+*.icns binary
+*.ttf binary
+*.traineddata binary
+*.pdf binary
+*.wasm binary
+*.bin binary

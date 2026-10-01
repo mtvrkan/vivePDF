@@ -1,0 +1,98 @@
+{
+  "maxChars": 60,
+  "cases": [
+    {
+      "text": "Merhaba dünya. Nasılsın?",
+      "sentences": [
+        "Merhaba dünya.",
+        "Nasılsın?"
+      ]
+    },
+    {
+      "text": "Dr. Yılmaz eve gitti. Prof. Kaya da geldi!",
+      "sentences": [
+        "Dr. Yılmaz eve gitti.",
+        "Prof. Kaya da geldi!"
+      ]
+    },
+    {
+      "text": "Sayı 3.14 ve v2.0 bölünmez. Sonra devam.",
+      "sentences": [
+        "Sayı 3.14 ve v2.0 bölünmez.",
+        "Sonra devam."
+      ]
+    },
+    {
+      "text": "Tırnak içinde \"Evet.\" dedi. Sonra sustu…",
+      "sentences": [
+        "Tırnak içinde \"Evet.",
+        "\" dedi.",
+        "Sonra sustu…"
+      ]
+    },
+    {
+      "text": "Parantez (ör. bu) kalır. vs. son",
+      "sentences": [
+        "Parantez (ör.",
+        "bu) kalır.",
+        "vs. son"
+      ]
+    },
+    {
+      "text": "Soru mu?! Evet!!! Tamam...",
+      "sentences": [
+        "Soru mu?!",
+        "Evet!!!",
+        "Tamam..."
+      ]
+    },
+    {
+      "text": "  Boşluklar   ve\nsatır\tsonları .  Sonraki  ",
+      "sentences": [
+        "Boşluklar ve satır sonları .",
+        "Sonraki"
+      ]
+    },
+    {
+      "text": "Bitmeyen cümle",
+      "sentences": [
+        "Bitmeyen cümle"
+      ]
+    },
+    {
+      "text": "İstanbul’da ŞÇĞÜÖİ büyük harf. ığüşöç küçük harf.",
+      "sentences": [
+        "İstanbul’da ŞÇĞÜÖİ büyük harf.",
+        "ığüşöç küçük harf."
+      ]
+    },
+    {
+      "text": "kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime kelime.",
+      "sentences": [
+        "kelime kelime kelime kelime kelime kelime kelime kelime",
+        "kelime kelime kelime kelime kelime."
+      ]
+    },
+    {
+      "text": "Madde 1.Madde 2. Bitti",
+      "sentences": [
+        "Madde 1.Madde 2.",
+        "Bitti"
+      ]
+    },
+    {
+      "text": "etc. etc. etc.",
+      "sentences": [
+        "etc. etc. etc."
+      ]
+    },
+    {
+      "text": "",
+      "sentences": []
+    },
+    {
+      "text": "   ",
+      "sentences": []
+    }
+  ]
+}

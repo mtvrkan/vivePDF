@@ -1,0 +1,19 @@
+{
+  "name": "vivepdf",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "pnpm --dir apps/desktop tauri dev",
+    "build": "pnpm --dir apps/desktop tauri build",
+    "lint": "pnpm --dir apps/desktop lint",
+    "typecheck": "pnpm --dir apps/desktop typecheck",
+    "test": "pnpm --dir apps/desktop test",
+    "check:rpc": "pnpm --dir apps/desktop check:rpc"
+  },
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mtvrkan/vivePDF.git"
+  },
+  "homepage": "https://vivepdf.com"
+}

@@ -1,0 +1,14 @@
+diff --git a/dist/index.js b/dist/index.js
+index 953834c8b0314e0e7471a6cc2a4e8778e57dc2b6..73482b220b6cb33a04f3393f24ad5d34e35bfd76 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -485,7 +485,8 @@ const _DocumentManagerPlugin = class _DocumentManagerPlugin extends BasePlugin {
+     return this.engine.openDocumentUrl(file, {
+       password: options.password,
+       mode: options.mode,
+-      requestOptions: options.requestOptions
++      requestOptions: options.requestOptions,
++      normalizeRotation: true
+     });
+   }
+   retryBufferDocument(documentId, options) {

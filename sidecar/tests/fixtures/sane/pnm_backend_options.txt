@@ -1,0 +1,63 @@
+
+All options specific to device `pnm:0':
+  Source Selection:
+    --filename <string> [/tmp/input.ppm]
+        The filename of the image to be loaded.
+    --resolution auto||75|90|100|120|135|150|165|180|195|200|210|225|240|255|270|285|300dpi [75]
+        Sets the resolution of the scanned image.
+  Image Enhancement:
+    --brightness -100..100% [0]
+        Controls the brightness of the acquired image.
+    --contrast -100..100% [0]
+        Controls the contrast of the acquired image.
+    --grayify[=(yes|no)] [no]
+        Load the image as grayscale.
+    --three-pass[=(yes|no)] [no]
+        Simulate a three-pass scanner by returning 3 separate frames.  For
+        kicks, it returns green, then blue, then red.
+    --hand-scanner[=(yes|no)] [no]
+        Simulate a hand-scanner.  Hand-scanners often do not know the image
+        height a priori.  Instead, they return a height of -1.  Setting this
+        option allows one to test whether a frontend can handle this correctly.
+    --default-enhancements
+        Set default values for enhancement controls (brightness & contrast).
+    --read-only <int> [0] [read-only]
+        Let's see whether frontends can treat this right
+  Gamma Tables:
+    --custom-gamma[=(yes|no)] [no]
+        Determines whether a builtin or a custom gamma-table should be used.
+    --gamma-table 0..255,... [inactive]
+        Gamma-correction table.  In color mode this option equally affects the
+        red, green, and blue channels simultaneously (i.e., it is an intensity
+        gamma table).
+    --red-gamma-table 0..255,... [inactive]
+        Gamma-correction table for the red band.
+    --green-gamma-table 0..255,... [inactive]
+        Gamma-correction table for the green band.
+    --blue-gamma-table 0..255,... [inactive]
+        Gamma-correction table for the blue band.
+  Status Code Simulation:
+    --status[=(yes|no)] [yes]
+        Do not force the backend to return a status code.
+    --status-eof[=(yes|no)] [no]
+        Force the backend to return the status code SANE_STATUS_EOF after
+        sane_read() has been called.
+    --status-jammed[=(yes|no)] [no]
+        Force the backend to return the status code SANE_STATUS_JAMMED after
+        sane_read() has been called.
+    --status-nodocs[=(yes|no)] [no]
+        Force the backend to return the status code SANE_STATUS_NO_DOCS after
+        sane_read() has been called.
+    --status-coveropen[=(yes|no)] [no]
+        Force the backend to return the status code SANE_STATUS_COVER_OPEN
+        after sane_read() has been called.
+    --status-ioerror[=(yes|no)] [no]
+        Force the backend to return the status code SANE_STATUS_IO_ERROR after
+        sane_read() has been called.
+    --status-nomem[=(yes|no)] [no]
+        Force the backend to return the status code SANE_STATUS_NO_MEM after
+        sane_read() has been called.
+    --status-accessdenied[=(yes|no)] [no]
+        Force the backend to return the status code SANE_STATUS_ACCESS_DENIED
+        after sane_read() has been called.
+

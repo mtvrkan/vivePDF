@@ -1,0 +1,3896 @@
+{
+  "description": "vivePDF UI terminology. Each term maps the English product word to the preferred term per locale, grounded in Adobe Acrobat / Microsoft terminology and the existing catalogue. Terms with check=true are enforced by src/locales/glossary.test.ts: when the English string matches enPattern, the locale string must contain one of the match stems (or the translation).",
+  "locales": [
+    "ar",
+    "de",
+    "es",
+    "fr",
+    "it",
+    "ja",
+    "ko",
+    "pt-BR",
+    "ru",
+    "zh-CN"
+  ],
+  "normalization": "Case-insensitive, NFC, Arabic diacritics and tatweel stripped, Russian ё treated as е, {{placeholders}} and {tokens} removed from English before matching.",
+  "register": {
+    "ar": "Modern Standard Arabic, imperative singular for actions, Arabic punctuation (، ؛ ؟), Western digits.",
+    "de": "Sie-Form; buttons as infinitives (Seiten löschen).",
+    "es": "usted; buttons as infinitives (Eliminar páginas); descriptions in third person or usted imperative, never tú.",
+    "fr": "vous; buttons as infinitives; typographic apostrophe and narrow space before ; : ? ! accepted as in catalogue.",
+    "it": "tu (Microsoft Italian style); buttons as imperatives (Elimina pagine).",
+    "ja": "です・ます調; full-width punctuation 。、（）：; no space between Japanese and Latin words except around placeholders as already used.",
+    "ko": "합니다 for statements, 하세요 for instructions (Microsoft Korean style), no 해요 endings; buttons as noun phrases (페이지 삭제).",
+    "pt-BR": "você; buttons as infinitives (Excluir páginas).",
+    "ru": "вы, capitalised only at sentence start; prefer impersonal phrasing; buttons as infinitives (Удалить страницы); ё optional.",
+    "zh-CN": "你 (Microsoft Simplified Chinese style), never 您; full-width punctuation ，。；：（）！？; half-width space between Chinese and Latin/digits only where the catalogue already does so."
+  },
+  "ignoreKeyPattern": "(^|\\.)([A-Za-z]*[sS]uffix|chainsFileName|mergedName)$",
+  "terms": [
+    {
+      "id": "merge",
+      "en": "merge",
+      "enPattern": "\\bmerg(e|ed|es|ing)\\b",
+      "check": true,
+      "translations": {
+        "ar": "دمج",
+        "de": "zusammenführen",
+        "es": "combinar",
+        "fr": "fusionner",
+        "it": "unire",
+        "ja": "結合",
+        "ko": "병합",
+        "pt-BR": "mesclar",
+        "ru": "объединить",
+        "zh-CN": "合并"
+      },
+      "match": {
+        "ar": [
+          "دمج",
+          "مدمج",
+          "ادمج"
+        ],
+        "de": [
+          "zusammenf",
+          "zusammengef",
+          "zusammenzuf"
+        ],
+        "es": [
+          "combin"
+        ],
+        "fr": [
+          "fusion"
+        ],
+        "it": [
+          "unisc",
+          "unir",
+          "unit",
+          "unio"
+        ],
+        "ja": [
+          "結合"
+        ],
+        "ko": [
+          "병합"
+        ],
+        "pt-BR": [
+          "mescl"
+        ],
+        "ru": [
+          "объедин"
+        ],
+        "zh-CN": [
+          "合并"
+        ]
+      }
+    },
+    {
+      "id": "split",
+      "en": "split",
+      "enPattern": "\\bsplit(s|ting)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تقسيم",
+        "de": "teilen",
+        "es": "dividir",
+        "fr": "diviser",
+        "it": "dividere",
+        "ja": "分割",
+        "ko": "분할",
+        "pt-BR": "dividir",
+        "ru": "разделить",
+        "zh-CN": "拆分"
+      },
+      "match": {
+        "ar": [
+          "تقسيم",
+          "قسّم",
+          "قسم",
+          "مقسّم",
+          "مقسم"
+        ],
+        "de": [
+          "teil",
+          "trenn"
+        ],
+        "es": [
+          "divid",
+          "divis"
+        ],
+        "fr": [
+          "divis"
+        ],
+        "it": [
+          "divid",
+          "divis"
+        ],
+        "ja": [
+          "分割"
+        ],
+        "ko": [
+          "분할"
+        ],
+        "pt-BR": [
+          "divid",
+          "divis"
+        ],
+        "ru": [
+          "раздел"
+        ],
+        "zh-CN": [
+          "拆分"
+        ]
+      }
+    },
+    {
+      "id": "compress",
+      "en": "compress",
+      "enPattern": "\\bcompress(es|ed|ing|ion)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "ضغط",
+        "de": "komprimieren",
+        "es": "comprimir",
+        "fr": "compresser",
+        "it": "comprimere",
+        "ja": "圧縮",
+        "ko": "압축",
+        "pt-BR": "comprimir",
+        "ru": "сжать",
+        "zh-CN": "压缩"
+      },
+      "match": {
+        "ar": [
+          "ضغط",
+          "مضغوط"
+        ],
+        "de": [
+          "kompri"
+        ],
+        "es": [
+          "compri",
+          "compres"
+        ],
+        "fr": [
+          "compress"
+        ],
+        "it": [
+          "compri",
+          "compress"
+        ],
+        "ja": [
+          "圧縮"
+        ],
+        "ko": [
+          "압축"
+        ],
+        "pt-BR": [
+          "compri",
+          "compress"
+        ],
+        "ru": [
+          "сжат",
+          "сжим",
+          "сжа"
+        ],
+        "zh-CN": [
+          "压缩"
+        ]
+      }
+    },
+    {
+      "id": "redact",
+      "en": "redact / redaction",
+      "enPattern": "\\bredact(s|ed|ing|ion|ions)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تنقيح",
+        "de": "schwärzen",
+        "es": "censurar",
+        "fr": "caviarder",
+        "it": "oscurare",
+        "ja": "墨消し",
+        "ko": "마스킹",
+        "pt-BR": "censurar",
+        "ru": "вымарать",
+        "zh-CN": "涂黑"
+      },
+      "match": {
+        "ar": [
+          "نقح",
+          "تنقيح",
+          "منقح",
+          "منقّح",
+          "نقّح"
+        ],
+        "de": [
+          "schwärz"
+        ],
+        "es": [
+          "censur"
+        ],
+        "fr": [
+          "caviard"
+        ],
+        "it": [
+          "oscur"
+        ],
+        "ja": [
+          "墨消"
+        ],
+        "ko": [
+          "마스킹"
+        ],
+        "pt-BR": [
+          "censur"
+        ],
+        "ru": [
+          "вымар"
+        ],
+        "zh-CN": [
+          "涂黑"
+        ]
+      },
+      "note": "Permanent removal of content; not the same as hiding or editing."
+    },
+    {
+      "id": "watermark",
+      "en": "watermark",
+      "enPattern": "\\bwatermarks?\\b",
+      "check": true,
+      "translations": {
+        "ar": "علامة مائية",
+        "de": "Wasserzeichen",
+        "es": "marca de agua",
+        "fr": "filigrane",
+        "it": "filigrana",
+        "ja": "透かし",
+        "ko": "워터마크",
+        "pt-BR": "marca-d'água",
+        "ru": "водяной знак",
+        "zh-CN": "水印"
+      },
+      "match": {
+        "ar": [
+          "مائي"
+        ],
+        "de": [
+          "wasserzeichen"
+        ],
+        "es": [
+          "de agua"
+        ],
+        "fr": [
+          "filigrane"
+        ],
+        "it": [
+          "filigran"
+        ],
+        "ja": [
+          "透かし"
+        ],
+        "ko": [
+          "워터마크"
+        ],
+        "pt-BR": [
+          "d'água",
+          "d’água"
+        ],
+        "ru": [
+          "водян"
+        ],
+        "zh-CN": [
+          "水印"
+        ]
+      }
+    },
+    {
+      "id": "stamp",
+      "en": "stamp",
+      "enPattern": "\\bstamp(s|ed|ing)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "ختم",
+        "de": "Stempel",
+        "es": "sello",
+        "fr": "tampon",
+        "it": "timbro",
+        "ja": "スタンプ",
+        "ko": "스탬프",
+        "pt-BR": "carimbo",
+        "ru": "штамп",
+        "zh-CN": "图章"
+      },
+      "match": {
+        "ar": [
+          "ختم",
+          "أختام",
+          "مختوم"
+        ],
+        "de": [
+          "stempel"
+        ],
+        "es": [
+          "sell",
+          "estamp"
+        ],
+        "fr": [
+          "tampon",
+          "estampill"
+        ],
+        "it": [
+          "timbr"
+        ],
+        "ja": [
+          "スタンプ",
+          "押印"
+        ],
+        "ko": [
+          "스탬프"
+        ],
+        "pt-BR": [
+          "carimb"
+        ],
+        "ru": [
+          "штамп"
+        ],
+        "zh-CN": [
+          "图章",
+          "盖章",
+          "加盖"
+        ]
+      },
+      "note": "Annotation-style rubber stamp. In ar and es the stamp and seal words share a root; context disambiguates."
+    },
+    {
+      "id": "bookmark",
+      "en": "bookmark",
+      "enPattern": "\\bbookmarks?\\b",
+      "check": true,
+      "translations": {
+        "ar": "إشارة مرجعية",
+        "de": "Lesezeichen",
+        "es": "marcador",
+        "fr": "signet",
+        "it": "segnalibro",
+        "ja": "しおり",
+        "ko": "책갈피",
+        "pt-BR": "marcador",
+        "ru": "закладка",
+        "zh-CN": "书签"
+      },
+      "match": {
+        "ar": [
+          "إشار",
+          "اشار"
+        ],
+        "de": [
+          "lesezeichen"
+        ],
+        "es": [
+          "marcador"
+        ],
+        "fr": [
+          "signet"
+        ],
+        "it": [
+          "segnalibr"
+        ],
+        "ja": [
+          "しおり"
+        ],
+        "ko": [
+          "책갈피"
+        ],
+        "pt-BR": [
+          "marcador"
+        ],
+        "ru": [
+          "заклад"
+        ],
+        "zh-CN": [
+          "书签"
+        ]
+      }
+    },
+    {
+      "id": "annotation",
+      "en": "annotation",
+      "enPattern": "\\bannotations?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تعليق توضيحي",
+        "de": "Anmerkung",
+        "es": "anotación",
+        "fr": "annotation",
+        "it": "annotazione",
+        "ja": "注釈",
+        "ko": "주석",
+        "pt-BR": "anotação",
+        "ru": "аннотация",
+        "zh-CN": "批注"
+      },
+      "match": {
+        "ar": [
+          "تعليق",
+          "تعليقات",
+          "توضيح"
+        ],
+        "de": [
+          "anmerkung",
+          "komment",
+          "annotation"
+        ],
+        "es": [
+          "anotaci",
+          "comentario"
+        ],
+        "fr": [
+          "annotation",
+          "commentaire"
+        ],
+        "it": [
+          "annotazion",
+          "comment"
+        ],
+        "ja": [
+          "注釈",
+          "コメント"
+        ],
+        "ko": [
+          "주석",
+          "메모"
+        ],
+        "pt-BR": [
+          "anotaç",
+          "comentário"
+        ],
+        "ru": [
+          "аннотац",
+          "комментар",
+          "пометк"
+        ],
+        "zh-CN": [
+          "注释",
+          "批注"
+        ]
+      },
+      "note": "PDF annotation objects. Acrobat uses the comment word for most of them, so both are accepted."
+    },
+    {
+      "id": "comment",
+      "en": "comment",
+      "enPattern": "\\bcomments?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تعليق",
+        "de": "Kommentar",
+        "es": "comentario",
+        "fr": "commentaire",
+        "it": "commento",
+        "ja": "コメント",
+        "ko": "메모",
+        "pt-BR": "comentário",
+        "ru": "комментарий",
+        "zh-CN": "批注"
+      },
+      "match": {
+        "ar": [
+          "تعليق"
+        ],
+        "de": [
+          "komment"
+        ],
+        "es": [
+          "comentario"
+        ],
+        "fr": [
+          "commentaire"
+        ],
+        "it": [
+          "comment"
+        ],
+        "ja": [
+          "コメント",
+          "注釈"
+        ],
+        "ko": [
+          "메모",
+          "주석",
+          "댓글"
+        ],
+        "pt-BR": [
+          "comentário",
+          "comentari"
+        ],
+        "ru": [
+          "комментар"
+        ],
+        "zh-CN": [
+          "批注",
+          "注释",
+          "评论"
+        ]
+      }
+    },
+    {
+      "id": "form",
+      "en": "form",
+      "enPattern": "\\bforms?\\b(?!\\s+(fields?|feeds?))",
+      "check": true,
+      "translations": {
+        "ar": "نموذج",
+        "de": "Formular",
+        "es": "formulario",
+        "fr": "formulaire",
+        "it": "modulo",
+        "ja": "フォーム",
+        "ko": "양식",
+        "pt-BR": "formulário",
+        "ru": "форма",
+        "zh-CN": "表单"
+      },
+      "match": {
+        "ar": [
+          "نموذج",
+          "نماذج"
+        ],
+        "de": [
+          "formular"
+        ],
+        "es": [
+          "formulario"
+        ],
+        "fr": [
+          "formulaire"
+        ],
+        "it": [
+          "modul"
+        ],
+        "ja": [
+          "フォーム"
+        ],
+        "ko": [
+          "양식"
+        ],
+        "pt-BR": [
+          "formulário",
+          "formulari"
+        ],
+        "ru": [
+          "форм"
+        ],
+        "zh-CN": [
+          "表单"
+        ]
+      },
+      "note": "Fillable PDF form (AcroForm). Not a layout shape."
+    },
+    {
+      "id": "formField",
+      "en": "form field",
+      "enPattern": "\\bform fields?\\b",
+      "check": true,
+      "translations": {
+        "ar": "حقل نموذج",
+        "de": "Formularfeld",
+        "es": "campo de formulario",
+        "fr": "champ de formulaire",
+        "it": "campo modulo",
+        "ja": "フォームフィールド",
+        "ko": "양식 필드",
+        "pt-BR": "campo de formulário",
+        "ru": "поле формы",
+        "zh-CN": "表单字段"
+      },
+      "match": {
+        "ar": [
+          "حقل",
+          "حقول"
+        ],
+        "de": [
+          "feld",
+          "felder"
+        ],
+        "es": [
+          "campo"
+        ],
+        "fr": [
+          "champ"
+        ],
+        "it": [
+          "camp"
+        ],
+        "ja": [
+          "フィールド"
+        ],
+        "ko": [
+          "필드"
+        ],
+        "pt-BR": [
+          "campo"
+        ],
+        "ru": [
+          "поле",
+          "поля",
+          "полей",
+          "полям",
+          "полях",
+          "полем"
+        ],
+        "zh-CN": [
+          "字段"
+        ]
+      }
+    },
+    {
+      "id": "signature",
+      "en": "signature / sign",
+      "enPattern": "\\bsignatures?\\b",
+      "check": true,
+      "translations": {
+        "ar": "توقيع",
+        "de": "Signatur",
+        "es": "firma",
+        "fr": "signature",
+        "it": "firma",
+        "ja": "署名",
+        "ko": "서명",
+        "pt-BR": "assinatura",
+        "ru": "подпись",
+        "zh-CN": "签名"
+      },
+      "match": {
+        "ar": [
+          "توقي",
+          "تواقيع",
+          "موق",
+          "وقّع",
+          "وقع"
+        ],
+        "de": [
+          "signatur",
+          "signier",
+          "unterschrift",
+          "unterzeichn"
+        ],
+        "es": [
+          "firm"
+        ],
+        "fr": [
+          "sign"
+        ],
+        "it": [
+          "firm"
+        ],
+        "ja": [
+          "署名"
+        ],
+        "ko": [
+          "서명"
+        ],
+        "pt-BR": [
+          "assin"
+        ],
+        "ru": [
+          "подпис"
+        ],
+        "zh-CN": [
+          "签名",
+          "签署"
+        ]
+      },
+      "note": "Digital signature and drawn signature; de accepts Unterschrift for the drawn one."
+    },
+    {
+      "id": "certificate",
+      "en": "certificate",
+      "enPattern": "\\bcertificates?\\b",
+      "check": true,
+      "translations": {
+        "ar": "شهادة",
+        "de": "Zertifikat",
+        "es": "certificado",
+        "fr": "certificat",
+        "it": "certificato",
+        "ja": "証明書",
+        "ko": "인증서",
+        "pt-BR": "certificado",
+        "ru": "сертификат",
+        "zh-CN": "证书"
+      },
+      "match": {
+        "ar": [
+          "شهاد"
+        ],
+        "de": [
+          "zertifikat"
+        ],
+        "es": [
+          "certificad"
+        ],
+        "fr": [
+          "certificat"
+        ],
+        "it": [
+          "certificat"
+        ],
+        "ja": [
+          "証明書"
+        ],
+        "ko": [
+          "인증서"
+        ],
+        "pt-BR": [
+          "certificad"
+        ],
+        "ru": [
+          "сертификат"
+        ],
+        "zh-CN": [
+          "证书"
+        ]
+      }
+    },
+    {
+      "id": "seal",
+      "en": "seal",
+      "enPattern": "\\bseal(s|ed|ing)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "ختم",
+        "de": "versiegeln",
+        "es": "sellar",
+        "fr": "sceller",
+        "it": "sigillare",
+        "ja": "封印",
+        "ko": "봉인",
+        "pt-BR": "selar",
+        "ru": "запечатать",
+        "zh-CN": "封存"
+      },
+      "match": {
+        "ar": [
+          "ختم",
+          "مختوم"
+        ],
+        "de": [
+          "siegel"
+        ],
+        "es": [
+          "sell"
+        ],
+        "fr": [
+          "scell"
+        ],
+        "it": [
+          "sigill"
+        ],
+        "ja": [
+          "封印"
+        ],
+        "ko": [
+          "봉인"
+        ],
+        "pt-BR": [
+          "selar",
+          "selad",
+          "selo",
+          "selag",
+          "sela"
+        ],
+        "ru": [
+          "запечат",
+          "печат"
+        ],
+        "zh-CN": [
+          "封存"
+        ]
+      },
+      "note": "vivePDF seal = certificate encryption for named recipients, not an electronic seal signature."
+    },
+    {
+      "id": "flatten",
+      "en": "flatten",
+      "enPattern": "\\bflatten(s|ed|ing)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تسطيح",
+        "de": "reduzieren",
+        "es": "aplanar",
+        "fr": "aplatir",
+        "it": "appiattire",
+        "ja": "フラット化",
+        "ko": "평면화",
+        "pt-BR": "achatar",
+        "ru": "сведение",
+        "zh-CN": "拼合"
+      },
+      "match": {
+        "ar": [
+          "تسطيح",
+          "مسطح",
+          "سطّح",
+          "سطح"
+        ],
+        "de": [
+          "reduz"
+        ],
+        "es": [
+          "aplan",
+          "aplán"
+        ],
+        "fr": [
+          "aplat"
+        ],
+        "it": [
+          "appiatt"
+        ],
+        "ja": [
+          "フラット化"
+        ],
+        "ko": [
+          "평면화"
+        ],
+        "pt-BR": [
+          "achat"
+        ],
+        "ru": [
+          "свед",
+          "свест"
+        ],
+        "zh-CN": [
+          "拼合"
+        ]
+      },
+      "note": "Burn annotations/form fields into page content. Acrobat terms: de reduzieren, ja フラット化, zh-CN 拼合, ru сведение."
+    },
+    {
+      "id": "ocr",
+      "en": "OCR",
+      "enPattern": "\\bOCR\\b",
+      "check": true,
+      "translations": {
+        "ar": "OCR",
+        "de": "OCR",
+        "es": "OCR",
+        "fr": "OCR",
+        "it": "OCR",
+        "ja": "OCR",
+        "ko": "OCR",
+        "pt-BR": "OCR",
+        "ru": "OCR",
+        "zh-CN": "OCR"
+      },
+      "match": {
+        "ar": [
+          "ocr"
+        ],
+        "de": [
+          "ocr"
+        ],
+        "es": [
+          "ocr"
+        ],
+        "fr": [
+          "ocr"
+        ],
+        "it": [
+          "ocr"
+        ],
+        "ja": [
+          "ocr"
+        ],
+        "ko": [
+          "ocr"
+        ],
+        "pt-BR": [
+          "ocr"
+        ],
+        "ru": [
+          "ocr"
+        ],
+        "zh-CN": [
+          "ocr"
+        ]
+      }
+    },
+    {
+      "id": "searchable",
+      "en": "searchable (PDF)",
+      "enPattern": "\\bsearchable\\b",
+      "check": false,
+      "translations": {
+        "ar": "قابل للبحث",
+        "de": "durchsuchbar",
+        "es": "con búsqueda",
+        "fr": "avec texte interrogeable",
+        "it": "ricercabile",
+        "ja": "検索可能",
+        "ko": "검색 가능",
+        "pt-BR": "pesquisável",
+        "ru": "с поиском по тексту",
+        "zh-CN": "可搜索"
+      }
+    },
+    {
+      "id": "pageOrganizer",
+      "en": "page organizer",
+      "enPattern": "\\bpage organi[sz]er\\b",
+      "check": false,
+      "translations": {
+        "ar": "منظّم الصفحات",
+        "de": "Seitenorganisator",
+        "es": "organizador de páginas",
+        "fr": "organisateur de pages",
+        "it": "organizzatore pagine",
+        "ja": "ページ整理",
+        "ko": "페이지 구성기",
+        "pt-BR": "organizador de páginas",
+        "ru": "организатор страниц",
+        "zh-CN": "页面管理器"
+      }
+    },
+    {
+      "id": "batch",
+      "en": "batch",
+      "enPattern": "\\bbatch(es)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "دفعة",
+        "de": "Stapel",
+        "es": "lote",
+        "fr": "lot",
+        "it": "batch",
+        "ja": "一括処理",
+        "ko": "일괄 처리",
+        "pt-BR": "lote",
+        "ru": "пакет",
+        "zh-CN": "批处理"
+      },
+      "match": {
+        "ar": [
+          "دفع",
+          "مجمّع"
+        ],
+        "de": [
+          "stapel"
+        ],
+        "es": [
+          "lote"
+        ],
+        "fr": [
+          "lot"
+        ],
+        "it": [
+          "batch",
+          "blocco"
+        ],
+        "ja": [
+          "一括",
+          "束"
+        ],
+        "ko": [
+          "일괄",
+          "대량"
+        ],
+        "pt-BR": [
+          "lote"
+        ],
+        "ru": [
+          "пакет"
+        ],
+        "zh-CN": [
+          "批"
+        ]
+      },
+      "note": "Running a tool over many files at once; in the scan tool it also means a stack of scanned sheets."
+    },
+    {
+      "id": "chain",
+      "en": "chain (batch chain)",
+      "enPattern": "\\bchains?\\b",
+      "check": true,
+      "translations": {
+        "ar": "سلسلة",
+        "de": "Kette",
+        "es": "cadena",
+        "fr": "chaîne",
+        "it": "catena",
+        "ja": "チェーン",
+        "ko": "체인",
+        "pt-BR": "sequência",
+        "ru": "цепочка",
+        "zh-CN": "链"
+      },
+      "match": {
+        "ar": [
+          "سلسل",
+          "سلاسل"
+        ],
+        "de": [
+          "kette"
+        ],
+        "es": [
+          "cadena"
+        ],
+        "fr": [
+          "chaîne",
+          "chaine"
+        ],
+        "it": [
+          "caten"
+        ],
+        "ja": [
+          "チェーン"
+        ],
+        "ko": [
+          "체인"
+        ],
+        "pt-BR": [
+          "sequênci"
+        ],
+        "ru": [
+          "цепоч"
+        ],
+        "zh-CN": [
+          "链"
+        ]
+      },
+      "note": "A saved sequence of tools run one after another (like an Acrobat Action)."
+    },
+    {
+      "id": "watchedFolder",
+      "en": "watched folder",
+      "enPattern": "\\bwatched folders?\\b",
+      "check": true,
+      "translations": {
+        "ar": "مجلد مراقب",
+        "de": "überwachter Ordner",
+        "es": "carpeta vigilada",
+        "fr": "dossier surveillé",
+        "it": "cartella monitorata",
+        "ja": "監視フォルダー",
+        "ko": "감시 폴더",
+        "pt-BR": "pasta monitorada",
+        "ru": "отслеживаемая папка",
+        "zh-CN": "监控文件夹"
+      },
+      "match": {
+        "ar": [
+          "مراقب"
+        ],
+        "de": [
+          "überwacht"
+        ],
+        "es": [
+          "vigilad"
+        ],
+        "fr": [
+          "surveill"
+        ],
+        "it": [
+          "monitor"
+        ],
+        "ja": [
+          "監視"
+        ],
+        "ko": [
+          "감시"
+        ],
+        "pt-BR": [
+          "monitor"
+        ],
+        "ru": [
+          "отслежива"
+        ],
+        "zh-CN": [
+          "监控"
+        ]
+      }
+    },
+    {
+      "id": "folder",
+      "en": "folder",
+      "enPattern": "\\bfolders?\\b",
+      "check": false,
+      "translations": {
+        "ar": "مجلد",
+        "de": "Ordner",
+        "es": "carpeta",
+        "fr": "dossier",
+        "it": "cartella",
+        "ja": "フォルダー",
+        "ko": "폴더",
+        "pt-BR": "pasta",
+        "ru": "папка",
+        "zh-CN": "文件夹"
+      }
+    },
+    {
+      "id": "preflight",
+      "en": "print check (preflight)",
+      "enPattern": "\\bprint check\\b",
+      "check": true,
+      "translations": {
+        "ar": "فحص ما قبل الطباعة",
+        "de": "Druckprüfung",
+        "es": "control de impresión",
+        "fr": "contrôle d’impression",
+        "it": "controllo di stampa",
+        "ja": "印刷前チェック",
+        "ko": "인쇄 전 검사",
+        "pt-BR": "verificação de impressão",
+        "ru": "проверка перед печатью",
+        "zh-CN": "印前检查"
+      },
+      "match": {
+        "ar": [
+          "الطباعة"
+        ],
+        "de": [
+          "druck"
+        ],
+        "es": [
+          "impresi"
+        ],
+        "fr": [
+          "impression"
+        ],
+        "it": [
+          "stampa"
+        ],
+        "ja": [
+          "印刷前"
+        ],
+        "ko": [
+          "인쇄 전"
+        ],
+        "pt-BR": [
+          "impress"
+        ],
+        "ru": [
+          "печат"
+        ],
+        "zh-CN": [
+          "印前"
+        ]
+      }
+    },
+    {
+      "id": "accessibility",
+      "en": "accessibility",
+      "enPattern": "\\baccessib(le|ility)\\b",
+      "check": true,
+      "translations": {
+        "ar": "إمكانية الوصول",
+        "de": "Barrierefreiheit",
+        "es": "accesibilidad",
+        "fr": "accessibilité",
+        "it": "accessibilità",
+        "ja": "アクセシビリティ",
+        "ko": "접근성",
+        "pt-BR": "acessibilidade",
+        "ru": "доступность",
+        "zh-CN": "无障碍"
+      },
+      "match": {
+        "ar": [
+          "الوصول",
+          "وصول"
+        ],
+        "de": [
+          "barrierefrei"
+        ],
+        "es": [
+          "accesib"
+        ],
+        "fr": [
+          "accessib"
+        ],
+        "it": [
+          "accessib"
+        ],
+        "ja": [
+          "アクセシビリティ",
+          "アクセシブル"
+        ],
+        "ko": [
+          "접근성",
+          "접근"
+        ],
+        "pt-BR": [
+          "acessib",
+          "acessív"
+        ],
+        "ru": [
+          "доступн",
+          "специальн"
+        ],
+        "zh-CN": [
+          "无障碍",
+          "辅助"
+        ]
+      }
+    },
+    {
+      "id": "outputFile",
+      "en": "output file",
+      "enPattern": "\\boutput\\b",
+      "check": true,
+      "translations": {
+        "ar": "ملف الإخراج",
+        "de": "Ausgabedatei",
+        "es": "archivo de salida",
+        "fr": "fichier de sortie",
+        "it": "file di output",
+        "ja": "出力ファイル",
+        "ko": "출력 파일",
+        "pt-BR": "arquivo de saída",
+        "ru": "выходной файл",
+        "zh-CN": "输出文件"
+      },
+      "match": {
+        "ar": [
+          "إخراج",
+          "الإخراج",
+          "ناتج",
+          "الناتج",
+          "مخرج",
+          "المخرج"
+        ],
+        "de": [
+          "ausgabe"
+        ],
+        "es": [
+          "salida"
+        ],
+        "fr": [
+          "sortie"
+        ],
+        "it": [
+          "output",
+          "destinazione",
+          "uscita",
+          "generat"
+        ],
+        "ja": [
+          "出力"
+        ],
+        "ko": [
+          "출력",
+          "결과"
+        ],
+        "pt-BR": [
+          "saída"
+        ],
+        "ru": [
+          "выходн",
+          "результ",
+          "вывод"
+        ],
+        "zh-CN": [
+          "输出"
+        ]
+      }
+    },
+    {
+      "id": "overwrite",
+      "en": "overwrite",
+      "enPattern": "\\boverwrit(e|es|ing|ten)\\b",
+      "check": true,
+      "translations": {
+        "ar": "الكتابة فوق",
+        "de": "überschreiben",
+        "es": "sobrescribir",
+        "fr": "écraser",
+        "it": "sovrascrivere",
+        "ja": "上書き",
+        "ko": "덮어쓰기",
+        "pt-BR": "substituir",
+        "ru": "перезаписать",
+        "zh-CN": "覆盖"
+      },
+      "match": {
+        "ar": [
+          "فوق",
+          "استبدال",
+          "يستبدل"
+        ],
+        "de": [
+          "überschreib"
+        ],
+        "es": [
+          "sobrescrib",
+          "sobreescrib"
+        ],
+        "fr": [
+          "écras",
+          "remplac"
+        ],
+        "it": [
+          "sovrascriv",
+          "sovrascritt"
+        ],
+        "ja": [
+          "上書き"
+        ],
+        "ko": [
+          "덮어"
+        ],
+        "pt-BR": [
+          "substitu",
+          "sobrescrev"
+        ],
+        "ru": [
+          "перезапис"
+        ],
+        "zh-CN": [
+          "覆盖"
+        ]
+      }
+    },
+    {
+      "id": "password",
+      "en": "password",
+      "enPattern": "\\bpasswords?\\b",
+      "check": true,
+      "translations": {
+        "ar": "كلمة المرور",
+        "de": "Passwort",
+        "es": "contraseña",
+        "fr": "mot de passe",
+        "it": "password",
+        "ja": "パスワード",
+        "ko": "비밀번호",
+        "pt-BR": "senha",
+        "ru": "пароль",
+        "zh-CN": "密码"
+      },
+      "match": {
+        "ar": [
+          "مرور"
+        ],
+        "de": [
+          "passw",
+          "kennw"
+        ],
+        "es": [
+          "contraseñ"
+        ],
+        "fr": [
+          "mot de passe",
+          "mots de passe"
+        ],
+        "it": [
+          "password"
+        ],
+        "ja": [
+          "パスワード"
+        ],
+        "ko": [
+          "비밀번호",
+          "암호"
+        ],
+        "pt-BR": [
+          "senha"
+        ],
+        "ru": [
+          "парол"
+        ],
+        "zh-CN": [
+          "密码"
+        ]
+      }
+    },
+    {
+      "id": "encrypt",
+      "en": "encrypt / encryption",
+      "enPattern": "\\bencrypt(s|ed|ing|ion)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تشفير",
+        "de": "verschlüsseln",
+        "es": "cifrar",
+        "fr": "chiffrer",
+        "it": "crittografare",
+        "ja": "暗号化",
+        "ko": "암호화",
+        "pt-BR": "criptografar",
+        "ru": "зашифровать",
+        "zh-CN": "加密"
+      },
+      "match": {
+        "ar": [
+          "شفير",
+          "شفر",
+          "مشفر"
+        ],
+        "de": [
+          "verschlüssel"
+        ],
+        "es": [
+          "cifr"
+        ],
+        "fr": [
+          "chiffr"
+        ],
+        "it": [
+          "crittograf",
+          "cifr"
+        ],
+        "ja": [
+          "暗号化"
+        ],
+        "ko": [
+          "암호화"
+        ],
+        "pt-BR": [
+          "criptograf"
+        ],
+        "ru": [
+          "шифр"
+        ],
+        "zh-CN": [
+          "加密"
+        ]
+      }
+    },
+    {
+      "id": "permission",
+      "en": "permission",
+      "enPattern": "\\bpermissions?\\b",
+      "check": true,
+      "translations": {
+        "ar": "أذونات",
+        "de": "Berechtigung",
+        "es": "permiso",
+        "fr": "autorisation",
+        "it": "autorizzazione",
+        "ja": "権限",
+        "ko": "권한",
+        "pt-BR": "permissão",
+        "ru": "разрешение",
+        "zh-CN": "权限"
+      },
+      "match": {
+        "ar": [
+          "أذون",
+          "إذن",
+          "صلاحي",
+          "اذون"
+        ],
+        "de": [
+          "berechtig",
+          "recht"
+        ],
+        "es": [
+          "permis"
+        ],
+        "fr": [
+          "autoris",
+          "droit"
+        ],
+        "it": [
+          "autorizz",
+          "permess"
+        ],
+        "ja": [
+          "権限"
+        ],
+        "ko": [
+          "권한"
+        ],
+        "pt-BR": [
+          "permiss"
+        ],
+        "ru": [
+          "разреш",
+          "прав"
+        ],
+        "zh-CN": [
+          "权限"
+        ]
+      }
+    },
+    {
+      "id": "metadata",
+      "en": "metadata",
+      "enPattern": "\\bmetadata\\b",
+      "check": true,
+      "translations": {
+        "ar": "بيانات التعريف",
+        "de": "Metadaten",
+        "es": "metadatos",
+        "fr": "métadonnées",
+        "it": "metadati",
+        "ja": "メタデータ",
+        "ko": "메타데이터",
+        "pt-BR": "metadados",
+        "ru": "метаданные",
+        "zh-CN": "元数据"
+      },
+      "match": {
+        "ar": [
+          "التعريف",
+          "الوصفية",
+          "وصفية",
+          "تعريف"
+        ],
+        "de": [
+          "metadat"
+        ],
+        "es": [
+          "metadat"
+        ],
+        "fr": [
+          "métadonn"
+        ],
+        "it": [
+          "metadat"
+        ],
+        "ja": [
+          "メタデータ"
+        ],
+        "ko": [
+          "메타데이터"
+        ],
+        "pt-BR": [
+          "metadad"
+        ],
+        "ru": [
+          "метадан"
+        ],
+        "zh-CN": [
+          "元数据"
+        ]
+      }
+    },
+    {
+      "id": "attachment",
+      "en": "attachment",
+      "enPattern": "\\battachments?\\b",
+      "check": true,
+      "translations": {
+        "ar": "مرفق",
+        "de": "Anhang",
+        "es": "archivo adjunto",
+        "fr": "pièce jointe",
+        "it": "allegato",
+        "ja": "添付ファイル",
+        "ko": "첨부 파일",
+        "pt-BR": "anexo",
+        "ru": "вложение",
+        "zh-CN": "附件"
+      },
+      "match": {
+        "ar": [
+          "مرف"
+        ],
+        "de": [
+          "anhang",
+          "anhäng",
+          "angehängt",
+          "anhängen"
+        ],
+        "es": [
+          "adjunt"
+        ],
+        "fr": [
+          "joint"
+        ],
+        "it": [
+          "allega"
+        ],
+        "ja": [
+          "添付"
+        ],
+        "ko": [
+          "첨부"
+        ],
+        "pt-BR": [
+          "anex"
+        ],
+        "ru": [
+          "вложен",
+          "влож"
+        ],
+        "zh-CN": [
+          "附件",
+          "附加"
+        ]
+      }
+    },
+    {
+      "id": "thumbnail",
+      "en": "thumbnail",
+      "enPattern": "\\bthumbnails?\\b",
+      "check": true,
+      "translations": {
+        "ar": "صورة مصغّرة",
+        "de": "Miniatur",
+        "es": "miniatura",
+        "fr": "miniature",
+        "it": "miniatura",
+        "ja": "サムネイル",
+        "ko": "썸네일",
+        "pt-BR": "miniatura",
+        "ru": "миниатюра",
+        "zh-CN": "缩略图"
+      },
+      "match": {
+        "ar": [
+          "مصغر",
+          "مصغّر"
+        ],
+        "de": [
+          "miniatur"
+        ],
+        "es": [
+          "miniatur"
+        ],
+        "fr": [
+          "miniature"
+        ],
+        "it": [
+          "miniatur"
+        ],
+        "ja": [
+          "サムネ"
+        ],
+        "ko": [
+          "썸네일",
+          "축소판"
+        ],
+        "pt-BR": [
+          "miniatur"
+        ],
+        "ru": [
+          "миниатюр"
+        ],
+        "zh-CN": [
+          "缩略图"
+        ]
+      }
+    },
+    {
+      "id": "rotate",
+      "en": "rotate",
+      "enPattern": "\\brotat(e|ed|es|ing|ion)\\b",
+      "check": true,
+      "translations": {
+        "ar": "تدوير",
+        "de": "drehen",
+        "es": "girar",
+        "fr": "faire pivoter",
+        "it": "ruotare",
+        "ja": "回転",
+        "ko": "회전",
+        "pt-BR": "girar",
+        "ru": "повернуть",
+        "zh-CN": "旋转"
+      },
+      "match": {
+        "ar": [
+          "تدوير",
+          "دوّر",
+          "دور",
+          "استدار"
+        ],
+        "de": [
+          "dreh"
+        ],
+        "es": [
+          "gir",
+          "rotaci"
+        ],
+        "fr": [
+          "pivot",
+          "rotation"
+        ],
+        "it": [
+          "ruot",
+          "rotaz"
+        ],
+        "ja": [
+          "回転"
+        ],
+        "ko": [
+          "회전"
+        ],
+        "pt-BR": [
+          "gir",
+          "rotaç"
+        ],
+        "ru": [
+          "поворот",
+          "поверн",
+          "повора",
+          "вращ"
+        ],
+        "zh-CN": [
+          "旋转"
+        ]
+      }
+    },
+    {
+      "id": "crop",
+      "en": "crop",
+      "enPattern": "\\bcrop(s|ped|ping)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "قص",
+        "de": "zuschneiden",
+        "es": "recortar",
+        "fr": "rogner",
+        "it": "ritagliare",
+        "ja": "切り抜き",
+        "ko": "자르기",
+        "pt-BR": "cortar",
+        "ru": "обрезать",
+        "zh-CN": "裁剪"
+      },
+      "match": {
+        "ar": [
+          "قص",
+          "قتص",
+          "اقتصاص"
+        ],
+        "de": [
+          "schn"
+        ],
+        "es": [
+          "recort"
+        ],
+        "fr": [
+          "rogn"
+        ],
+        "it": [
+          "ritagli"
+        ],
+        "ja": [
+          "切り抜",
+          "切り取"
+        ],
+        "ko": [
+          "자르",
+          "잘라",
+          "자름",
+          "자릅",
+          "잘리",
+          "잘립",
+          "잘림"
+        ],
+        "pt-BR": [
+          "cort"
+        ],
+        "ru": [
+          "обре"
+        ],
+        "zh-CN": [
+          "裁剪"
+        ]
+      }
+    },
+    {
+      "id": "header",
+      "en": "header",
+      "enPattern": "(?<!table )\\bheaders?\\b(?! cells?)",
+      "check": true,
+      "translations": {
+        "ar": "ترويسة",
+        "de": "Kopfzeile",
+        "es": "encabezado",
+        "fr": "en-tête",
+        "it": "intestazione",
+        "ja": "ヘッダー",
+        "ko": "머리글",
+        "pt-BR": "cabeçalho",
+        "ru": "верхний колонтитул",
+        "zh-CN": "页眉"
+      },
+      "match": {
+        "ar": [
+          "ترويس",
+          "رأس"
+        ],
+        "de": [
+          "kopf"
+        ],
+        "es": [
+          "encabezado"
+        ],
+        "fr": [
+          "en-tête",
+          "en-têtes"
+        ],
+        "it": [
+          "intestazion"
+        ],
+        "ja": [
+          "ヘッダー"
+        ],
+        "ko": [
+          "머리글"
+        ],
+        "pt-BR": [
+          "cabeçalho"
+        ],
+        "ru": [
+          "колонтитул",
+          "верхн"
+        ],
+        "zh-CN": [
+          "页眉"
+        ]
+      }
+    },
+    {
+      "id": "footer",
+      "en": "footer",
+      "enPattern": "\\bfooters?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تذييل",
+        "de": "Fußzeile",
+        "es": "pie de página",
+        "fr": "pied de page",
+        "it": "piè di pagina",
+        "ja": "フッター",
+        "ko": "바닥글",
+        "pt-BR": "rodapé",
+        "ru": "нижний колонтитул",
+        "zh-CN": "页脚"
+      },
+      "match": {
+        "ar": [
+          "تذييل"
+        ],
+        "de": [
+          "fußzeile",
+          "fuß"
+        ],
+        "es": [
+          "pie de página",
+          "pie"
+        ],
+        "fr": [
+          "pied de page",
+          "pieds de page"
+        ],
+        "it": [
+          "piè di pagina"
+        ],
+        "ja": [
+          "フッター"
+        ],
+        "ko": [
+          "바닥글"
+        ],
+        "pt-BR": [
+          "rodapé"
+        ],
+        "ru": [
+          "колонтитул",
+          "нижн"
+        ],
+        "zh-CN": [
+          "页脚"
+        ]
+      }
+    },
+    {
+      "id": "letterhead",
+      "en": "letterhead",
+      "enPattern": "\\bletterheads?\\b",
+      "check": true,
+      "translations": {
+        "ar": "ورق مروّس",
+        "de": "Briefpapier",
+        "es": "membrete",
+        "fr": "papier à en-tête",
+        "it": "carta intestata",
+        "ja": "レターヘッド",
+        "ko": "레터헤드",
+        "pt-BR": "papel timbrado",
+        "ru": "фирменный бланк",
+        "zh-CN": "信头纸"
+      },
+      "match": {
+        "ar": [
+          "مروّس",
+          "مروس"
+        ],
+        "de": [
+          "briefpapier"
+        ],
+        "es": [
+          "membrete"
+        ],
+        "fr": [
+          "en-tête"
+        ],
+        "it": [
+          "intestat"
+        ],
+        "ja": [
+          "レターヘッド"
+        ],
+        "ko": [
+          "레터헤드"
+        ],
+        "pt-BR": [
+          "timbrado"
+        ],
+        "ru": [
+          "бланк"
+        ],
+        "zh-CN": [
+          "信头"
+        ]
+      }
+    },
+    {
+      "id": "booklet",
+      "en": "booklet",
+      "enPattern": "\\bbooklets?\\b",
+      "check": true,
+      "translations": {
+        "ar": "كتيّب",
+        "de": "Broschüre",
+        "es": "folleto",
+        "fr": "livret",
+        "it": "opuscolo",
+        "ja": "冊子",
+        "ko": "소책자",
+        "pt-BR": "livreto",
+        "ru": "буклет",
+        "zh-CN": "小册子"
+      },
+      "match": {
+        "ar": [
+          "كتي",
+          "كتيّب"
+        ],
+        "de": [
+          "broschür"
+        ],
+        "es": [
+          "folleto"
+        ],
+        "fr": [
+          "livret"
+        ],
+        "it": [
+          "opuscol"
+        ],
+        "ja": [
+          "冊子"
+        ],
+        "ko": [
+          "소책자"
+        ],
+        "pt-BR": [
+          "livreto"
+        ],
+        "ru": [
+          "буклет"
+        ],
+        "zh-CN": [
+          "小册子"
+        ]
+      }
+    },
+    {
+      "id": "nUp",
+      "en": "N-up",
+      "enPattern": "\\bN-up\\b",
+      "check": false,
+      "translations": {
+        "ar": "N-up",
+        "de": "N-fach",
+        "es": "N por hoja",
+        "fr": "N-up",
+        "it": "N-up",
+        "ja": "面付け",
+        "ko": "N-up",
+        "pt-BR": "N por folha",
+        "ru": "N на странице",
+        "zh-CN": "拼版"
+      }
+    },
+    {
+      "id": "compare",
+      "en": "compare",
+      "enPattern": "\\bcompar(e|ed|es|ing|ison)\\b",
+      "check": true,
+      "translations": {
+        "ar": "مقارنة",
+        "de": "vergleichen",
+        "es": "comparar",
+        "fr": "comparer",
+        "it": "confrontare",
+        "ja": "比較",
+        "ko": "비교",
+        "pt-BR": "comparar",
+        "ru": "сравнить",
+        "zh-CN": "比较"
+      },
+      "match": {
+        "ar": [
+          "قارن",
+          "مقارن"
+        ],
+        "de": [
+          "vergleich",
+          "verglich"
+        ],
+        "es": [
+          "compar"
+        ],
+        "fr": [
+          "compar"
+        ],
+        "it": [
+          "confront"
+        ],
+        "ja": [
+          "比較"
+        ],
+        "ko": [
+          "비교"
+        ],
+        "pt-BR": [
+          "compar"
+        ],
+        "ru": [
+          "сравн"
+        ],
+        "zh-CN": [
+          "比较",
+          "对比"
+        ]
+      }
+    },
+    {
+      "id": "repair",
+      "en": "repair",
+      "enPattern": "\\brepair(s|ed|ing)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "إصلاح",
+        "de": "reparieren",
+        "es": "reparar",
+        "fr": "réparer",
+        "it": "riparare",
+        "ja": "修復",
+        "ko": "복구",
+        "pt-BR": "reparar",
+        "ru": "восстановить",
+        "zh-CN": "修复"
+      },
+      "match": {
+        "ar": [
+          "إصلاح",
+          "أصلح",
+          "صلح"
+        ],
+        "de": [
+          "repar"
+        ],
+        "es": [
+          "repar"
+        ],
+        "fr": [
+          "répar"
+        ],
+        "it": [
+          "ripar"
+        ],
+        "ja": [
+          "修復"
+        ],
+        "ko": [
+          "복구"
+        ],
+        "pt-BR": [
+          "repar"
+        ],
+        "ru": [
+          "восстан"
+        ],
+        "zh-CN": [
+          "修复"
+        ]
+      }
+    },
+    {
+      "id": "layer",
+      "en": "layer",
+      "enPattern": "\\blayers?\\b",
+      "check": true,
+      "translations": {
+        "ar": "طبقة",
+        "de": "Ebene",
+        "es": "capa",
+        "fr": "calque",
+        "it": "livello",
+        "ja": "レイヤー",
+        "ko": "레이어",
+        "pt-BR": "camada",
+        "ru": "слой",
+        "zh-CN": "图层"
+      },
+      "match": {
+        "ar": [
+          "طبق"
+        ],
+        "de": [
+          "ebene"
+        ],
+        "es": [
+          "capa"
+        ],
+        "fr": [
+          "calque",
+          "couche"
+        ],
+        "it": [
+          "livell",
+          "strato",
+          "strati"
+        ],
+        "ja": [
+          "レイヤー"
+        ],
+        "ko": [
+          "레이어"
+        ],
+        "pt-BR": [
+          "camada"
+        ],
+        "ru": [
+          "сло"
+        ],
+        "zh-CN": [
+          "图层",
+          "层"
+        ]
+      }
+    },
+    {
+      "id": "highlight",
+      "en": "highlight",
+      "enPattern": "\\bhighlight(s|ed|ing)?\\b",
+      "check": false,
+      "translations": {
+        "ar": "تمييز",
+        "de": "hervorheben",
+        "es": "resaltar",
+        "fr": "surligner",
+        "it": "evidenziare",
+        "ja": "ハイライト",
+        "ko": "강조 표시",
+        "pt-BR": "realçar",
+        "ru": "выделить",
+        "zh-CN": "高亮"
+      }
+    },
+    {
+      "id": "underline",
+      "en": "underline",
+      "enPattern": "\\bunderlin(e|ed|es|ing)\\b",
+      "check": true,
+      "translations": {
+        "ar": "تسطير",
+        "de": "unterstreichen",
+        "es": "subrayar",
+        "fr": "souligner",
+        "it": "sottolineare",
+        "ja": "下線",
+        "ko": "밑줄",
+        "pt-BR": "sublinhar",
+        "ru": "подчеркнуть",
+        "zh-CN": "下划线"
+      },
+      "match": {
+        "ar": [
+          "تسطير",
+          "سطّر",
+          "خط"
+        ],
+        "de": [
+          "unterstr"
+        ],
+        "es": [
+          "subray"
+        ],
+        "fr": [
+          "soulign"
+        ],
+        "it": [
+          "sottolin"
+        ],
+        "ja": [
+          "下線"
+        ],
+        "ko": [
+          "밑줄"
+        ],
+        "pt-BR": [
+          "sublinh"
+        ],
+        "ru": [
+          "подчерк"
+        ],
+        "zh-CN": [
+          "下划线"
+        ]
+      }
+    },
+    {
+      "id": "strikethrough",
+      "en": "strikethrough",
+      "enPattern": "\\bstrike(through|out)\\b",
+      "check": true,
+      "translations": {
+        "ar": "يتوسطه خط",
+        "de": "durchstreichen",
+        "es": "tachado",
+        "fr": "barré",
+        "it": "barrato",
+        "ja": "取り消し線",
+        "ko": "취소선",
+        "pt-BR": "tachado",
+        "ru": "зачёркивание",
+        "zh-CN": "删除线"
+      },
+      "match": {
+        "ar": [
+          "خط",
+          "شطب"
+        ],
+        "de": [
+          "durchgestrichen",
+          "durchstreich"
+        ],
+        "es": [
+          "tach"
+        ],
+        "fr": [
+          "barr"
+        ],
+        "it": [
+          "barrat"
+        ],
+        "ja": [
+          "取り消し線"
+        ],
+        "ko": [
+          "취소선"
+        ],
+        "pt-BR": [
+          "tach"
+        ],
+        "ru": [
+          "зачерк",
+          "зачёрк"
+        ],
+        "zh-CN": [
+          "删除线"
+        ]
+      }
+    },
+    {
+      "id": "template",
+      "en": "template",
+      "enPattern": "\\btemplates?\\b",
+      "check": true,
+      "translations": {
+        "ar": "قالب",
+        "de": "Vorlage",
+        "es": "plantilla",
+        "fr": "modèle",
+        "it": "modello",
+        "ja": "テンプレート",
+        "ko": "템플릿",
+        "pt-BR": "modelo",
+        "ru": "шаблон",
+        "zh-CN": "模板"
+      },
+      "match": {
+        "ar": [
+          "قالب",
+          "قوالب"
+        ],
+        "de": [
+          "vorlage"
+        ],
+        "es": [
+          "plantilla"
+        ],
+        "fr": [
+          "modèle"
+        ],
+        "it": [
+          "modell"
+        ],
+        "ja": [
+          "テンプレート",
+          "台紙",
+          "ひな形"
+        ],
+        "ko": [
+          "템플릿",
+          "서식"
+        ],
+        "pt-BR": [
+          "modelo"
+        ],
+        "ru": [
+          "шаблон",
+          "бланк"
+        ],
+        "zh-CN": [
+          "模板"
+        ]
+      }
+    },
+    {
+      "id": "timestamp",
+      "en": "timestamp",
+      "enPattern": "\\btimestamps?\\b",
+      "check": true,
+      "translations": {
+        "ar": "طابع زمني",
+        "de": "Zeitstempel",
+        "es": "sello de tiempo",
+        "fr": "horodatage",
+        "it": "marca temporale",
+        "ja": "タイムスタンプ",
+        "ko": "타임스탬프",
+        "pt-BR": "carimbo de tempo",
+        "ru": "метка времени",
+        "zh-CN": "时间戳"
+      },
+      "match": {
+        "ar": [
+          "طابع زمني",
+          "الطابع الزمني",
+          "زمني"
+        ],
+        "de": [
+          "zeitstempel"
+        ],
+        "es": [
+          "de tiempo"
+        ],
+        "fr": [
+          "horodat"
+        ],
+        "it": [
+          "temporal"
+        ],
+        "ja": [
+          "タイムスタンプ"
+        ],
+        "ko": [
+          "타임스탬프"
+        ],
+        "pt-BR": [
+          "carimbo de tempo",
+          "carimbos de tempo",
+          "carimbo do tempo",
+          "carimbo de data"
+        ],
+        "ru": [
+          "метк",
+          "меток",
+          "штамп времени"
+        ],
+        "zh-CN": [
+          "时间戳"
+        ]
+      }
+    },
+    {
+      "id": "qrCode",
+      "en": "QR code",
+      "enPattern": "\\bQR\\b",
+      "check": true,
+      "translations": {
+        "ar": "رمز QR",
+        "de": "QR-Code",
+        "es": "código QR",
+        "fr": "code QR",
+        "it": "codice QR",
+        "ja": "QR コード",
+        "ko": "QR 코드",
+        "pt-BR": "código QR",
+        "ru": "QR-код",
+        "zh-CN": "二维码"
+      },
+      "match": {
+        "ar": [
+          "qr"
+        ],
+        "de": [
+          "qr"
+        ],
+        "es": [
+          "qr"
+        ],
+        "fr": [
+          "qr"
+        ],
+        "it": [
+          "qr"
+        ],
+        "ja": [
+          "qr"
+        ],
+        "ko": [
+          "qr"
+        ],
+        "pt-BR": [
+          "qr"
+        ],
+        "ru": [
+          "qr"
+        ],
+        "zh-CN": [
+          "二维码",
+          "qr"
+        ]
+      }
+    },
+    {
+      "id": "barcode",
+      "en": "barcode",
+      "enPattern": "\\bbarcodes?\\b",
+      "check": true,
+      "translations": {
+        "ar": "باركود",
+        "de": "Barcode",
+        "es": "código de barras",
+        "fr": "code-barres",
+        "it": "codice a barre",
+        "ja": "バーコード",
+        "ko": "바코드",
+        "pt-BR": "código de barras",
+        "ru": "штрихкод",
+        "zh-CN": "条形码"
+      },
+      "match": {
+        "ar": [
+          "باركود",
+          "شريطي",
+          "الشريطية"
+        ],
+        "de": [
+          "barcode",
+          "strichcode"
+        ],
+        "es": [
+          "barras"
+        ],
+        "fr": [
+          "barres"
+        ],
+        "it": [
+          "a barre"
+        ],
+        "ja": [
+          "バーコード"
+        ],
+        "ko": [
+          "바코드"
+        ],
+        "pt-BR": [
+          "barras"
+        ],
+        "ru": [
+          "штрих"
+        ],
+        "zh-CN": [
+          "条形码",
+          "条码"
+        ]
+      }
+    },
+    {
+      "id": "font",
+      "en": "font",
+      "enPattern": "\\bfonts?\\b(?! size)",
+      "check": true,
+      "translations": {
+        "ar": "خط",
+        "de": "Schriftart",
+        "es": "fuente",
+        "fr": "police",
+        "it": "carattere",
+        "ja": "フォント",
+        "ko": "글꼴",
+        "pt-BR": "fonte",
+        "ru": "шрифт",
+        "zh-CN": "字体"
+      },
+      "match": {
+        "ar": [
+          "خط"
+        ],
+        "de": [
+          "schrift"
+        ],
+        "es": [
+          "fuente"
+        ],
+        "fr": [
+          "police"
+        ],
+        "it": [
+          "caratter",
+          "font"
+        ],
+        "ja": [
+          "フォント"
+        ],
+        "ko": [
+          "글꼴"
+        ],
+        "pt-BR": [
+          "fonte"
+        ],
+        "ru": [
+          "шрифт"
+        ],
+        "zh-CN": [
+          "字体"
+        ]
+      }
+    },
+    {
+      "id": "embed",
+      "en": "embed",
+      "enPattern": "\\bembed(s|ded|ding)?\\b",
+      "check": false,
+      "translations": {
+        "ar": "تضمين",
+        "de": "einbetten",
+        "es": "incrustar",
+        "fr": "incorporer",
+        "it": "incorporare",
+        "ja": "埋め込み",
+        "ko": "포함",
+        "pt-BR": "incorporar",
+        "ru": "внедрить",
+        "zh-CN": "嵌入"
+      }
+    },
+    {
+      "id": "scan",
+      "en": "scan",
+      "enPattern": "\\bscan(s|ned|ning)?\\b",
+      "check": false,
+      "translations": {
+        "ar": "مسح ضوئي",
+        "de": "scannen",
+        "es": "escanear",
+        "fr": "numériser",
+        "it": "scansionare",
+        "ja": "スキャン",
+        "ko": "스캔",
+        "pt-BR": "digitalizar",
+        "ru": "сканировать",
+        "zh-CN": "扫描"
+      }
+    },
+    {
+      "id": "pageRange",
+      "en": "page range",
+      "enPattern": "\\branges?\\b",
+      "check": true,
+      "translations": {
+        "ar": "نطاق الصفحات",
+        "de": "Seitenbereich",
+        "es": "intervalo de páginas",
+        "fr": "plage de pages",
+        "it": "intervallo di pagine",
+        "ja": "ページ範囲",
+        "ko": "페이지 범위",
+        "pt-BR": "intervalo de páginas",
+        "ru": "диапазон страниц",
+        "zh-CN": "页面范围"
+      },
+      "match": {
+        "ar": [
+          "نطاق",
+          "نطاقات"
+        ],
+        "de": [
+          "bereich"
+        ],
+        "es": [
+          "interval",
+          "rango"
+        ],
+        "fr": [
+          "plage"
+        ],
+        "it": [
+          "intervall"
+        ],
+        "ja": [
+          "範囲"
+        ],
+        "ko": [
+          "범위"
+        ],
+        "pt-BR": [
+          "interval"
+        ],
+        "ru": [
+          "диапазон"
+        ],
+        "zh-CN": [
+          "范围"
+        ]
+      }
+    },
+    {
+      "id": "insert",
+      "en": "insert",
+      "enPattern": "\\binsert(s|ed|ing)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "إدراج",
+        "de": "einfügen",
+        "es": "insertar",
+        "fr": "insérer",
+        "it": "inserire",
+        "ja": "挿入",
+        "ko": "삽입",
+        "pt-BR": "inserir",
+        "ru": "вставить",
+        "zh-CN": "插入"
+      },
+      "match": {
+        "ar": [
+          "إدراج",
+          "أدرج",
+          "ادراج"
+        ],
+        "de": [
+          "einfüg",
+          "eingefüg",
+          "zufüg"
+        ],
+        "es": [
+          "insert"
+        ],
+        "fr": [
+          "insér",
+          "insè",
+          "insert"
+        ],
+        "it": [
+          "inser"
+        ],
+        "ja": [
+          "挿入"
+        ],
+        "ko": [
+          "삽입"
+        ],
+        "pt-BR": [
+          "inser"
+        ],
+        "ru": [
+          "встав"
+        ],
+        "zh-CN": [
+          "插入"
+        ]
+      }
+    },
+    {
+      "id": "delete",
+      "en": "delete",
+      "enPattern": "\\bdelet(e|ed|es|ing)\\b",
+      "check": false,
+      "translations": {
+        "ar": "حذف",
+        "de": "löschen",
+        "es": "eliminar",
+        "fr": "supprimer",
+        "it": "eliminare",
+        "ja": "削除",
+        "ko": "삭제",
+        "pt-BR": "excluir",
+        "ru": "удалить",
+        "zh-CN": "删除"
+      }
+    },
+    {
+      "id": "extract",
+      "en": "extract",
+      "enPattern": "\\bextract(s|ed|ing|ion)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "استخراج",
+        "de": "extrahieren",
+        "es": "extraer",
+        "fr": "extraire",
+        "it": "estrarre",
+        "ja": "抽出",
+        "ko": "추출",
+        "pt-BR": "extrair",
+        "ru": "извлечь",
+        "zh-CN": "提取"
+      },
+      "match": {
+        "ar": [
+          "استخراج",
+          "استخرج",
+          "مستخرج"
+        ],
+        "de": [
+          "extrah",
+          "extrakt"
+        ],
+        "es": [
+          "extra"
+        ],
+        "fr": [
+          "extra"
+        ],
+        "it": [
+          "estra",
+          "estratt"
+        ],
+        "ja": [
+          "抽出"
+        ],
+        "ko": [
+          "추출"
+        ],
+        "pt-BR": [
+          "extra"
+        ],
+        "ru": [
+          "извле",
+          "извлеч"
+        ],
+        "zh-CN": [
+          "提取"
+        ]
+      }
+    },
+    {
+      "id": "export",
+      "en": "export",
+      "enPattern": "\\bexport(s|ed|ing)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "تصدير",
+        "de": "exportieren",
+        "es": "exportar",
+        "fr": "exporter",
+        "it": "esportare",
+        "ja": "書き出し",
+        "ko": "내보내기",
+        "pt-BR": "exportar",
+        "ru": "экспортировать",
+        "zh-CN": "导出"
+      },
+      "match": {
+        "ar": [
+          "تصدير",
+          "صدّر",
+          "صدر",
+          "مصدّر"
+        ],
+        "de": [
+          "export"
+        ],
+        "es": [
+          "export",
+          "expórt"
+        ],
+        "fr": [
+          "export"
+        ],
+        "it": [
+          "esport"
+        ],
+        "ja": [
+          "書き出",
+          "エクスポート"
+        ],
+        "ko": [
+          "내보"
+        ],
+        "pt-BR": [
+          "export"
+        ],
+        "ru": [
+          "экспорт"
+        ],
+        "zh-CN": [
+          "导出"
+        ]
+      }
+    },
+    {
+      "id": "import",
+      "en": "import",
+      "enPattern": "\\bimport(s|ed|ing)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "استيراد",
+        "de": "importieren",
+        "es": "importar",
+        "fr": "importer",
+        "it": "importare",
+        "ja": "読み込み",
+        "ko": "가져오기",
+        "pt-BR": "importar",
+        "ru": "импортировать",
+        "zh-CN": "导入"
+      },
+      "match": {
+        "ar": [
+          "استيراد",
+          "استورد",
+          "مستورد"
+        ],
+        "de": [
+          "import"
+        ],
+        "es": [
+          "import"
+        ],
+        "fr": [
+          "import"
+        ],
+        "it": [
+          "import"
+        ],
+        "ja": [
+          "読み込",
+          "インポート",
+          "取り込"
+        ],
+        "ko": [
+          "가져"
+        ],
+        "pt-BR": [
+          "import"
+        ],
+        "ru": [
+          "импорт"
+        ],
+        "zh-CN": [
+          "导入"
+        ]
+      }
+    },
+    {
+      "id": "print",
+      "en": "print",
+      "enPattern": "\\bprint(s|ed|ing|er|ers)?\\b",
+      "check": false,
+      "translations": {
+        "ar": "طباعة",
+        "de": "drucken",
+        "es": "imprimir",
+        "fr": "imprimer",
+        "it": "stampare",
+        "ja": "印刷",
+        "ko": "인쇄",
+        "pt-BR": "imprimir",
+        "ru": "печать",
+        "zh-CN": "打印"
+      }
+    },
+    {
+      "id": "convert",
+      "en": "convert",
+      "enPattern": "\\bconver(t|ts|ted|ting|sion)\\b",
+      "check": true,
+      "translations": {
+        "ar": "تحويل",
+        "de": "konvertieren",
+        "es": "convertir",
+        "fr": "convertir",
+        "it": "convertire",
+        "ja": "変換",
+        "ko": "변환",
+        "pt-BR": "converter",
+        "ru": "преобразовать",
+        "zh-CN": "转换"
+      },
+      "match": {
+        "ar": [
+          "تحويل",
+          "حوّل",
+          "حول",
+          "محول"
+        ],
+        "de": [
+          "konvert",
+          "umwand",
+          "umgewand"
+        ],
+        "es": [
+          "convert",
+          "conversi",
+          "convi"
+        ],
+        "fr": [
+          "convert",
+          "conversion"
+        ],
+        "it": [
+          "convert",
+          "conversion"
+        ],
+        "ja": [
+          "変換"
+        ],
+        "ko": [
+          "변환"
+        ],
+        "pt-BR": [
+          "convert",
+          "convers"
+        ],
+        "ru": [
+          "преобраз",
+          "конверт"
+        ],
+        "zh-CN": [
+          "转换",
+          "转为",
+          "转成",
+          "转"
+        ]
+      }
+    },
+    {
+      "id": "image",
+      "en": "image",
+      "enPattern": "\\bimages?\\b",
+      "check": false,
+      "translations": {
+        "ar": "صورة",
+        "de": "Bild",
+        "es": "imagen",
+        "fr": "image",
+        "it": "immagine",
+        "ja": "画像",
+        "ko": "이미지",
+        "pt-BR": "imagem",
+        "ru": "изображение",
+        "zh-CN": "图像"
+      }
+    },
+    {
+      "id": "link",
+      "en": "link",
+      "enPattern": "\\b(hyper)?links?\\b",
+      "check": true,
+      "translations": {
+        "ar": "رابط",
+        "de": "Link",
+        "es": "vínculo",
+        "fr": "lien",
+        "it": "collegamento",
+        "ja": "リンク",
+        "ko": "링크",
+        "pt-BR": "link",
+        "ru": "ссылка",
+        "zh-CN": "链接"
+      },
+      "match": {
+        "ar": [
+          "رابط",
+          "روابط"
+        ],
+        "de": [
+          "link",
+          "verknüpf"
+        ],
+        "es": [
+          "vínculo",
+          "enlace",
+          "vincul"
+        ],
+        "fr": [
+          "lien"
+        ],
+        "it": [
+          "collegament",
+          "link"
+        ],
+        "ja": [
+          "リンク"
+        ],
+        "ko": [
+          "링크"
+        ],
+        "pt-BR": [
+          "link"
+        ],
+        "ru": [
+          "ссыл"
+        ],
+        "zh-CN": [
+          "链接"
+        ]
+      }
+    },
+    {
+      "id": "digitalId",
+      "en": "digital ID",
+      "enPattern": "\\bdigital IDs?\\b",
+      "check": false,
+      "translations": {
+        "ar": "المعرّف الرقمي",
+        "de": "digitale ID",
+        "es": "ID digital",
+        "fr": "identifiant numérique",
+        "it": "ID digitale",
+        "ja": "デジタル ID",
+        "ko": "디지털 ID",
+        "pt-BR": "ID digital",
+        "ru": "цифровое удостоверение",
+        "zh-CN": "数字身份证"
+      }
+    },
+    {
+      "id": "verify",
+      "en": "verify",
+      "enPattern": "\\bverif(y|ied|ies|ying|ication)\\b",
+      "check": true,
+      "translations": {
+        "ar": "تحقق",
+        "de": "prüfen",
+        "es": "verificar",
+        "fr": "vérifier",
+        "it": "verificare",
+        "ja": "検証",
+        "ko": "검증",
+        "pt-BR": "verificar",
+        "ru": "проверить",
+        "zh-CN": "验证"
+      },
+      "match": {
+        "ar": [
+          "تحقق",
+          "التحقق"
+        ],
+        "de": [
+          "prüf",
+          "überprüf",
+          "verifizier"
+        ],
+        "es": [
+          "verifi"
+        ],
+        "fr": [
+          "vérifi"
+        ],
+        "it": [
+          "verific"
+        ],
+        "ja": [
+          "検証"
+        ],
+        "ko": [
+          "검증",
+          "확인"
+        ],
+        "pt-BR": [
+          "verifi"
+        ],
+        "ru": [
+          "провер"
+        ],
+        "zh-CN": [
+          "验证"
+        ]
+      }
+    },
+    {
+      "id": "hiddenData",
+      "en": "hidden data",
+      "enPattern": "\\bhidden\\b",
+      "check": false,
+      "translations": {
+        "ar": "بيانات مخفية",
+        "de": "verborgene Daten",
+        "es": "datos ocultos",
+        "fr": "données masquées",
+        "it": "dati nascosti",
+        "ja": "非表示データ",
+        "ko": "숨겨진 데이터",
+        "pt-BR": "dados ocultos",
+        "ru": "скрытые данные",
+        "zh-CN": "隐藏数据"
+      }
+    },
+    {
+      "id": "optimize",
+      "en": "optimise",
+      "enPattern": "\\boptimi[sz](e|ed|es|ing|ation)\\b",
+      "check": true,
+      "translations": {
+        "ar": "تحسين",
+        "de": "optimieren",
+        "es": "optimizar",
+        "fr": "optimiser",
+        "it": "ottimizzare",
+        "ja": "最適化",
+        "ko": "최적화",
+        "pt-BR": "otimizar",
+        "ru": "оптимизировать",
+        "zh-CN": "优化"
+      },
+      "match": {
+        "ar": [
+          "تحسين",
+          "حسّن"
+        ],
+        "de": [
+          "optimi"
+        ],
+        "es": [
+          "optimiz"
+        ],
+        "fr": [
+          "optimis"
+        ],
+        "it": [
+          "ottimizz"
+        ],
+        "ja": [
+          "最適化"
+        ],
+        "ko": [
+          "최적화"
+        ],
+        "pt-BR": [
+          "otimiz"
+        ],
+        "ru": [
+          "оптимиз"
+        ],
+        "zh-CN": [
+          "优化"
+        ]
+      }
+    },
+    {
+      "id": "background",
+      "en": "background",
+      "enPattern": "\\bbackgrounds?\\b",
+      "check": false,
+      "translations": {
+        "ar": "خلفية",
+        "de": "Hintergrund",
+        "es": "fondo",
+        "fr": "arrière-plan",
+        "it": "sfondo",
+        "ja": "背景",
+        "ko": "배경",
+        "pt-BR": "plano de fundo",
+        "ru": "фон",
+        "zh-CN": "背景"
+      }
+    },
+    {
+      "id": "grayscale",
+      "en": "grayscale",
+      "enPattern": "\\bgr[ae]yscale\\b",
+      "check": true,
+      "translations": {
+        "ar": "تدرج رمادي",
+        "de": "Graustufen",
+        "es": "escala de grises",
+        "fr": "niveaux de gris",
+        "it": "scala di grigi",
+        "ja": "グレースケール",
+        "ko": "회색조",
+        "pt-BR": "escala de cinza",
+        "ru": "оттенки серого",
+        "zh-CN": "灰度"
+      },
+      "match": {
+        "ar": [
+          "رمادي"
+        ],
+        "de": [
+          "graustuf"
+        ],
+        "es": [
+          "grises"
+        ],
+        "fr": [
+          "gris"
+        ],
+        "it": [
+          "grigi"
+        ],
+        "ja": [
+          "グレースケール"
+        ],
+        "ko": [
+          "회색조",
+          "흑백"
+        ],
+        "pt-BR": [
+          "cinza"
+        ],
+        "ru": [
+          "серого",
+          "серый",
+          "серых"
+        ],
+        "zh-CN": [
+          "灰度"
+        ]
+      }
+    },
+    {
+      "id": "tag",
+      "en": "tag (accessibility)",
+      "enPattern": "\\btag(s|ged)?\\b",
+      "check": true,
+      "translations": {
+        "ar": "وسم",
+        "de": "Tag",
+        "es": "etiqueta",
+        "fr": "balise",
+        "it": "tag",
+        "ja": "タグ",
+        "ko": "태그",
+        "pt-BR": "tag",
+        "ru": "тег",
+        "zh-CN": "标签"
+      },
+      "match": {
+        "ar": [
+          "وسم",
+          "وسوم",
+          "علام"
+        ],
+        "de": [
+          "tag"
+        ],
+        "es": [
+          "etiquet"
+        ],
+        "fr": [
+          "balis"
+        ],
+        "it": [
+          "tag"
+        ],
+        "ja": [
+          "タグ"
+        ],
+        "ko": [
+          "태그"
+        ],
+        "pt-BR": [
+          "tag",
+          "marcaç",
+          "marcad"
+        ],
+        "ru": [
+          "тег",
+          "размет",
+          "размеч"
+        ],
+        "zh-CN": [
+          "标签",
+          "标记"
+        ]
+      }
+    },
+    {
+      "id": "altText",
+      "en": "alt text",
+      "enPattern": "\\balt(ernate|ernative)? text\\b",
+      "check": true,
+      "translations": {
+        "ar": "نص بديل",
+        "de": "Alternativtext",
+        "es": "texto alternativo",
+        "fr": "texte de remplacement",
+        "it": "testo alternativo",
+        "ja": "代替テキスト",
+        "ko": "대체 텍스트",
+        "pt-BR": "texto alternativo",
+        "ru": "замещающий текст",
+        "zh-CN": "替代文本"
+      },
+      "match": {
+        "ar": [
+          "بديل"
+        ],
+        "de": [
+          "alternativtext",
+          "alt-text",
+          "alternativ"
+        ],
+        "es": [
+          "alternativo"
+        ],
+        "fr": [
+          "remplacement",
+          "alternatif"
+        ],
+        "it": [
+          "alternativ"
+        ],
+        "ja": [
+          "代替テキスト"
+        ],
+        "ko": [
+          "대체 텍스트"
+        ],
+        "pt-BR": [
+          "alternativo"
+        ],
+        "ru": [
+          "замещающ",
+          "альтернатив"
+        ],
+        "zh-CN": [
+          "替代文本"
+        ]
+      }
+    },
+    {
+      "id": "readingOrder",
+      "en": "reading order",
+      "enPattern": "\\breading order\\b",
+      "check": true,
+      "translations": {
+        "ar": "ترتيب القراءة",
+        "de": "Lesereihenfolge",
+        "es": "orden de lectura",
+        "fr": "ordre de lecture",
+        "it": "ordine di lettura",
+        "ja": "読み上げ順序",
+        "ko": "읽기 순서",
+        "pt-BR": "ordem de leitura",
+        "ru": "порядок чтения",
+        "zh-CN": "阅读顺序"
+      },
+      "match": {
+        "ar": [
+          "القراءة"
+        ],
+        "de": [
+          "lese"
+        ],
+        "es": [
+          "lectura"
+        ],
+        "fr": [
+          "lecture"
+        ],
+        "it": [
+          "lettura"
+        ],
+        "ja": [
+          "順序",
+          "順"
+        ],
+        "ko": [
+          "읽기 순서"
+        ],
+        "pt-BR": [
+          "leitura"
+        ],
+        "ru": [
+          "чтения"
+        ],
+        "zh-CN": [
+          "阅读顺序"
+        ]
+      }
+    },
+    {
+      "id": "zoom",
+      "en": "zoom",
+      "enPattern": "\\bzoom\\b",
+      "check": false,
+      "translations": {
+        "ar": "تكبير/تصغير",
+        "de": "Zoom",
+        "es": "zoom",
+        "fr": "zoom",
+        "it": "zoom",
+        "ja": "ズーム",
+        "ko": "확대/축소",
+        "pt-BR": "zoom",
+        "ru": "масштаб",
+        "zh-CN": "缩放"
+      }
+    },
+    {
+      "id": "note",
+      "en": "note (sticky note)",
+      "enPattern": "\\bsticky notes?\\b",
+      "check": false,
+      "translations": {
+        "ar": "ملاحظة",
+        "de": "Notiz",
+        "es": "nota",
+        "fr": "note",
+        "it": "nota",
+        "ja": "ノート",
+        "ko": "메모",
+        "pt-BR": "nota",
+        "ru": "заметка",
+        "zh-CN": "便笺"
+      }
+    },
+    {
+      "id": "preset",
+      "en": "preset",
+      "enPattern": "\\bpresets?\\b",
+      "check": true,
+      "translations": {
+        "ar": "إعداد مسبق",
+        "de": "Voreinstellung",
+        "es": "ajuste preestablecido",
+        "fr": "préréglage",
+        "it": "preimpostazione",
+        "ja": "プリセット",
+        "ko": "사전 설정",
+        "pt-BR": "predefinição",
+        "ru": "предустановка",
+        "zh-CN": "预设"
+      },
+      "match": {
+        "ar": [
+          "مسبق",
+          "محفوظ"
+        ],
+        "de": [
+          "voreinstell"
+        ],
+        "es": [
+          "preestablecid",
+          "predefinid",
+          "guardad"
+        ],
+        "fr": [
+          "préréglage"
+        ],
+        "it": [
+          "preimpostazion"
+        ],
+        "ja": [
+          "プリセット"
+        ],
+        "ko": [
+          "사전 설정",
+          "프리셋"
+        ],
+        "pt-BR": [
+          "predefini"
+        ],
+        "ru": [
+          "предустанов",
+          "шаблон"
+        ],
+        "zh-CN": [
+          "预设"
+        ]
+      }
+    },
+    {
+      "id": "tool",
+      "en": "tool",
+      "enPattern": "\\btools?\\b",
+      "check": false,
+      "translations": {
+        "ar": "أداة",
+        "de": "Werkzeug",
+        "es": "herramienta",
+        "fr": "outil",
+        "it": "strumento",
+        "ja": "ツール",
+        "ko": "도구",
+        "pt-BR": "ferramenta",
+        "ru": "инструмент",
+        "zh-CN": "工具"
+      }
+    },
+    {
+      "id": "pageNumber",
+      "en": "page number",
+      "enPattern": "\\bpage numbers?\\b",
+      "check": false,
+      "translations": {
+        "ar": "رقم الصفحة",
+        "de": "Seitenzahl",
+        "es": "número de página",
+        "fr": "numéro de page",
+        "it": "numero di pagina",
+        "ja": "ページ番号",
+        "ko": "페이지 번호",
+        "pt-BR": "número de página",
+        "ru": "номер страницы",
+        "zh-CN": "页码"
+      }
+    },
+    {
+      "id": "bates",
+      "en": "Bates numbering",
+      "enPattern": "\\bBates\\b",
+      "check": true,
+      "translations": {
+        "ar": "ترقيم Bates",
+        "de": "Bates-Nummerierung",
+        "es": "numeración Bates",
+        "fr": "numérotation Bates",
+        "it": "numerazione Bates",
+        "ja": "Bates 番号",
+        "ko": "Bates 번호",
+        "pt-BR": "numeração Bates",
+        "ru": "нумерация Бейтса",
+        "zh-CN": "Bates 编号"
+      },
+      "match": {
+        "ar": [
+          "bates"
+        ],
+        "de": [
+          "bates"
+        ],
+        "es": [
+          "bates"
+        ],
+        "fr": [
+          "bates"
+        ],
+        "it": [
+          "bates"
+        ],
+        "ja": [
+          "bates"
+        ],
+        "ko": [
+          "bates"
+        ],
+        "pt-BR": [
+          "bates"
+        ],
+        "ru": [
+          "бейтс",
+          "bates"
+        ],
+        "zh-CN": [
+          "bates"
+        ]
+      }
+    },
+    {
+      "id": "sanitize",
+      "en": "privacy check / sanitise",
+      "enPattern": "\\bsaniti[sz]e\\b",
+      "check": false,
+      "translations": {
+        "ar": "تنظيف",
+        "de": "bereinigen",
+        "es": "limpiar",
+        "fr": "nettoyer",
+        "it": "ripulire",
+        "ja": "サニタイズ",
+        "ko": "정리",
+        "pt-BR": "limpar",
+        "ru": "очистить",
+        "zh-CN": "清理"
+      }
+    },
+    {
+      "id": "undo",
+      "en": "undo",
+      "enPattern": "\\bundo\\b",
+      "check": false,
+      "translations": {
+        "ar": "تراجع",
+        "de": "Rückgängig",
+        "es": "deshacer",
+        "fr": "annuler",
+        "it": "annulla",
+        "ja": "元に戻す",
+        "ko": "실행 취소",
+        "pt-BR": "desfazer",
+        "ru": "отменить",
+        "zh-CN": "撤销"
+      }
+    },
+    {
+      "id": "redo",
+      "en": "redo",
+      "enPattern": "\\bredo\\b",
+      "check": false,
+      "translations": {
+        "ar": "إعادة",
+        "de": "Wiederholen",
+        "es": "rehacer",
+        "fr": "rétablir",
+        "it": "ripeti",
+        "ja": "やり直し",
+        "ko": "다시 실행",
+        "pt-BR": "refazer",
+        "ru": "повторить",
+        "zh-CN": "重做"
+      }
+    },
+    {
+      "id": "findReplace",
+      "en": "find and replace",
+      "enPattern": "\\bfind and replace\\b",
+      "check": false,
+      "translations": {
+        "ar": "بحث واستبدال",
+        "de": "Suchen und ersetzen",
+        "es": "buscar y reemplazar",
+        "fr": "rechercher et remplacer",
+        "it": "trova e sostituisci",
+        "ja": "検索と置換",
+        "ko": "찾기 및 바꾸기",
+        "pt-BR": "localizar e substituir",
+        "ru": "найти и заменить",
+        "zh-CN": "查找和替换"
+      }
+    },
+    {
+      "id": "scanner",
+      "en": "scanner",
+      "enPattern": "\\bscanners?\\b",
+      "check": false,
+      "translations": {
+        "ar": "ماسح ضوئي",
+        "de": "Scanner",
+        "es": "escáner",
+        "fr": "scanner",
+        "it": "scanner",
+        "ja": "スキャナー",
+        "ko": "스캐너",
+        "pt-BR": "scanner",
+        "ru": "сканер",
+        "zh-CN": "扫描仪"
+      }
+    },
+    {
+      "id": "unlock",
+      "en": "remove password (unlock)",
+      "enPattern": "\\bunlock(s|ed|ing)?\\b",
+      "check": false,
+      "translations": {
+        "ar": "إلغاء القفل",
+        "de": "entsperren",
+        "es": "desbloquear",
+        "fr": "déverrouiller",
+        "it": "sbloccare",
+        "ja": "ロック解除",
+        "ko": "잠금 해제",
+        "pt-BR": "desbloquear",
+        "ru": "разблокировать",
+        "zh-CN": "解锁"
+      }
+    },
+    {
+      "id": "recipient",
+      "en": "recipient",
+      "enPattern": "\\brecipients?\\b",
+      "check": true,
+      "translations": {
+        "ar": "مستلم",
+        "de": "Empfänger",
+        "es": "destinatario",
+        "fr": "destinataire",
+        "it": "destinatario",
+        "ja": "受信者",
+        "ko": "수신자",
+        "pt-BR": "destinatário",
+        "ru": "получатель",
+        "zh-CN": "接收者"
+      },
+      "match": {
+        "ar": [
+          "مستلم",
+          "المستلم"
+        ],
+        "de": [
+          "empfäng"
+        ],
+        "es": [
+          "destinatari"
+        ],
+        "fr": [
+          "destinataire"
+        ],
+        "it": [
+          "destinatari"
+        ],
+        "ja": [
+          "受信者",
+          "受取人"
+        ],
+        "ko": [
+          "수신자",
+          "받는 사람"
+        ],
+        "pt-BR": [
+          "destinatári"
+        ],
+        "ru": [
+          "получат",
+          "адресат"
+        ],
+        "zh-CN": [
+          "接收者",
+          "收件人",
+          "接收人"
+        ]
+      }
+    },
+    {
+      "id": "resolution",
+      "en": "resolution (DPI)",
+      "enPattern": "\\bresolution\\b",
+      "check": false,
+      "translations": {
+        "ar": "الدقة",
+        "de": "Auflösung",
+        "es": "resolución",
+        "fr": "résolution",
+        "it": "risoluzione",
+        "ja": "解像度",
+        "ko": "해상도",
+        "pt-BR": "resolução",
+        "ru": "разрешение",
+        "zh-CN": "分辨率"
+      }
+    }
+  ],
+  "exceptions": {
+    "*": {
+      "tools.forms.tabs.merge": [
+        "merge"
+      ],
+      "settings.feedback.openLogFolderHint": [
+        "redact"
+      ],
+      "tools.grid.descriptions.qr-add": [
+        "stamp"
+      ],
+      "tools.codes.add.stamped": [
+        "stamp"
+      ],
+      "errors.reasons.invalidCorners": [
+        "form"
+      ],
+      "tools.scan.scanner.skipBlankHint": [
+        "batch"
+      ],
+      "settings.chains": [
+        "batch"
+      ],
+      "settings.chainsCleared": [
+        "batch"
+      ],
+      "errors.reasons.noCandidates": [
+        "underline"
+      ],
+      "tools.edit.findReplace.groupHint": [
+        "insert"
+      ],
+      "tools.security.removeWatermark.hint": [
+        "verify"
+      ],
+      "tools.access.languageHint": [
+        "tag"
+      ],
+      "tools.security.presets.placeholder": [
+        "preset"
+      ],
+      "tools.preflight.checks.encryption.pass": [
+        "password"
+      ],
+      "settings.outputPatternHint": [
+        "compress"
+      ],
+      "tools.omr.sheet.booklets": [
+        "booklet"
+      ],
+      "tools.omr.sheet.singleBooklet": [
+        "booklet"
+      ],
+      "tools.omr.sheet.bookletLabel": [
+        "booklet"
+      ],
+      "tools.omr.key.bookletTab": [
+        "booklet"
+      ],
+      "tools.omr.key.booklet": [
+        "booklet"
+      ],
+      "tools.omr.results.columns.booklet": [
+        "booklet"
+      ],
+      "tools.omr.review.booklet": [
+        "booklet"
+      ],
+      "tools.omr.review.pickBooklet": [
+        "booklet"
+      ]
+    },
+    "ar": {
+      "tools.edit.impose.autoRotateHint": [
+        "rotate"
+      ]
+    },
+    "ja": {
+      "tools.scan.enhance.modes.gray.description": [
+        "form"
+      ]
+    },
+    "ko": {
+      "tools.split.bookmarkLevelHint": [
+        "split"
+      ]
+    },
+    "pt-BR": {
+      "tools.sign.verify.hint": [
+        "chain"
+      ],
+      "tools.sign.verify.trusted": [
+        "chain"
+      ],
+      "tools.sign.verify.untrusted": [
+        "chain"
+      ],
+      "tools.sign.verify.roots.hint": [
+        "chain"
+      ],
+      "tools.grid.descriptions.seal": [
+        "seal"
+      ],
+      "tools.sign.certificate.usageHint": [
+        "seal"
+      ]
+    }
+  }
+}

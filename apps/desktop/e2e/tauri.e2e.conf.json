@@ -1,0 +1,7 @@
+{
+  "identifier": "com.vivepdf.desktop.e2e",
+  "build": {
+    "beforeBuildCommand": "node scripts/copy-wasm.mjs && vite build --outDir src-tauri/target/e2e-dist --emptyOutDir",
+    "frontendDist": "../src-tauri/target/e2e-dist"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window and the document windows it opens",
+  "windows": [
+    "main",
+    "doc-*"
+  ],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-title",
+    "core:window:allow-set-fullscreen",
+    "core:window:allow-is-fullscreen",
+    "opener:default",
+    "opener:allow-reveal-item-in-dir",
+    "dialog:default",
+    "updater:default",
+    "process:default",
+    "core:window:allow-minimize",
+    "core:window:allow-maximize",
+    "core:window:allow-unmaximize",
+    "core:window:allow-toggle-maximize",
+    "core:window:allow-is-maximized",
+    "core:window:allow-close",
+    "core:window:allow-destroy",
+    "core:window:allow-start-dragging",
+    "core:window:allow-set-progress-bar",
+    "core:window:allow-set-position",
+    "core:window:allow-set-size",
+    "core:window:allow-set-always-on-top",
+    "core:webview:allow-set-webview-zoom"
+  ]
+}

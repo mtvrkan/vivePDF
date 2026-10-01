@@ -1,0 +1,1028 @@
+{
+  "documents": [
+    {
+      "source": "py-pdf",
+      "name": "001-trivial__minimal-document.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/001-trivial/minimal-document.pdf",
+      "kind": "producer sample",
+      "sha256": "f723638db6e763cf4ccadad38a3d38a02d9ecab95dab1f0bbf00e801991b5f92",
+      "bytes": 16978
+    },
+    {
+      "source": "py-pdf",
+      "name": "002-trivial-libre-office-writer__002-trivial-libre-office-writer.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/002-trivial-libre-office-writer/002-trivial-libre-office-writer.pdf",
+      "kind": "producer sample",
+      "sha256": "fc67ce4f76ffb44e818ebe4f673dbeb6002ad93a59f3856ff14fb1d3625f10a5",
+      "bytes": 12609
+    },
+    {
+      "source": "py-pdf",
+      "name": "003-pdflatex-image__pdflatex-image.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/003-pdflatex-image/pdflatex-image.pdf",
+      "kind": "producer sample",
+      "sha256": "64c5bc35008015936ef3ff60f6ad268a713b5271727b72ef308f87b9b495646f",
+      "bytes": 74061
+    },
+    {
+      "source": "py-pdf",
+      "name": "004-pdflatex-4-pages__pdflatex-4-pages.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/004-pdflatex-4-pages/pdflatex-4-pages.pdf",
+      "kind": "producer sample",
+      "sha256": "f17a09190ad8a04964d78115d8ba7fc7a298557274fa14932ba58612342b7dec",
+      "bytes": 24607
+    },
+    {
+      "source": "py-pdf",
+      "name": "005-libreoffice-writer-password__libreoffice-writer-password.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/005-libreoffice-writer-password/libreoffice-writer-password.pdf",
+      "kind": "producer sample",
+      "sha256": "3e333bff0196d0c5320f40cdd1b7a3abd21b316de79de3c0f9083accdaef9358",
+      "bytes": 12783
+    },
+    {
+      "source": "py-pdf",
+      "name": "006-pdflatex-outline__pdflatex-outline.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/006-pdflatex-outline/pdflatex-outline.pdf",
+      "kind": "producer sample",
+      "sha256": "17b5a4dac75613b82749c7538fc93991a385a5d419cc9832fdba24c1726a031a",
+      "bytes": 48722
+    },
+    {
+      "source": "py-pdf",
+      "name": "007-imagemagick-images__imagemagick-ASCII85Decode.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/007-imagemagick-images/imagemagick-ASCII85Decode.pdf",
+      "kind": "producer sample",
+      "sha256": "99c687865a8c81b11fe2b6be84b4aaf47bf785556d07274debf9bc1e0807ed2f",
+      "bytes": 2848
+    },
+    {
+      "source": "py-pdf",
+      "name": "007-imagemagick-images__imagemagick-CCITTFaxDecode.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/007-imagemagick-images/imagemagick-CCITTFaxDecode.pdf",
+      "kind": "producer sample",
+      "sha256": "cf6f94b533dc28974961fd62a67ebfc722224a0be8a4f0c4c91b26a522d5f70d",
+      "bytes": 1880
+    },
+    {
+      "source": "py-pdf",
+      "name": "007-imagemagick-images__imagemagick-images.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/007-imagemagick-images/imagemagick-images.pdf",
+      "kind": "producer sample",
+      "sha256": "0f2076573bfed1107300a2383b88bbbbc2b85a57f06b3ff478a0faa7ded57b4e",
+      "bytes": 16012
+    },
+    {
+      "source": "py-pdf",
+      "name": "007-imagemagick-images__imagemagick-lzw.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/007-imagemagick-images/imagemagick-lzw.pdf",
+      "kind": "producer sample",
+      "sha256": "ee7ce5f301920761371b0a2537634c39b9a8cd2ab578dee4c17056da297628d8",
+      "bytes": 2678
+    },
+    {
+      "source": "py-pdf",
+      "name": "008-reportlab-inline-image__inline-image.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/008-reportlab-inline-image/inline-image.pdf",
+      "kind": "producer sample",
+      "sha256": "db5c34fea270f38b152d8476e6f3bba855460958e957f69a0542002538cac1c2",
+      "bytes": 1537
+    },
+    {
+      "source": "py-pdf",
+      "name": "009-pdflatex-geotopo__GeoTopo-komprimiert.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/009-pdflatex-geotopo/GeoTopo-komprimiert.pdf",
+      "kind": "producer sample",
+      "sha256": "20430e92d42bc06c606f5889d9832c8e5c4dde17f8333f99fbcba96b3a0cba14",
+      "bytes": 1793479
+    },
+    {
+      "source": "py-pdf",
+      "name": "009-pdflatex-geotopo__GeoTopo.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/009-pdflatex-geotopo/GeoTopo.pdf",
+      "kind": "producer sample",
+      "sha256": "a0b9242aef9b5a2c4850160cc9aaf64f5c7b8be705d6872ae28aebf5ab512540",
+      "bytes": 5321132
+    },
+    {
+      "source": "py-pdf",
+      "name": "010-pdflatex-forms__pdflatex-forms.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/010-pdflatex-forms/pdflatex-forms.pdf",
+      "kind": "producer sample",
+      "sha256": "fc6265298caafffeee9dd2d7f3ae2e53ab9f61ec0561369429d442f731d339da",
+      "bytes": 27712
+    },
+    {
+      "source": "py-pdf",
+      "name": "011-google-doc-document__google-doc-document.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/011-google-doc-document/google-doc-document.pdf",
+      "kind": "producer sample",
+      "sha256": "69f6b7f493b1bc55d518942976cbeadc4ec0a36f6d8a6dc24feffc516d35b2c9",
+      "bytes": 80100
+    },
+    {
+      "source": "py-pdf",
+      "name": "012-libreoffice-form__libreoffice-form.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/012-libreoffice-form/libreoffice-form.pdf",
+      "kind": "producer sample",
+      "sha256": "9105eeef8c8cafdb141b7edd768a5e08adffe320d1d4f89e1a7112a2b37d1c57",
+      "bytes": 34186
+    },
+    {
+      "source": "py-pdf",
+      "name": "013-reportlab-overlay__reportlab-overlay.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/013-reportlab-overlay/reportlab-overlay.pdf",
+      "kind": "producer sample",
+      "sha256": "fdbdd49a118053577240850826a7eff6ac4ce7288527bf4c483714f0113860ed",
+      "bytes": 13790
+    },
+    {
+      "source": "py-pdf",
+      "name": "014-outlines__mistitled_outlines_example.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/014-outlines/mistitled_outlines_example.pdf",
+      "kind": "producer sample",
+      "sha256": "362dc3cc03538e864841a08d2b7365daf926651a2fe2c343669e03c8ac33b1af",
+      "bytes": 82281
+    },
+    {
+      "source": "py-pdf",
+      "name": "015-arabic__habibi-oneline-cmap.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/015-arabic/habibi-oneline-cmap.pdf",
+      "kind": "producer sample",
+      "sha256": "31b50622a8623723188bbb69385881c70ca8bedaa5099a19392c0d0afcccd8ee",
+      "bytes": 14957
+    },
+    {
+      "source": "py-pdf",
+      "name": "015-arabic__habibi-rotated.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/015-arabic/habibi-rotated.pdf",
+      "kind": "producer sample",
+      "sha256": "56329f1e3cff5358f1f2aadcfac03467cce51b36b2e2daab9c14cef26f7ea536",
+      "bytes": 15860
+    },
+    {
+      "source": "py-pdf",
+      "name": "015-arabic__habibi.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/015-arabic/habibi.pdf",
+      "kind": "producer sample",
+      "sha256": "1017c4559eb7d0ccf7d151a3f051c8c1da27a7c1dc8050b2b687e3d3228e1b6f",
+      "bytes": 14957
+    },
+    {
+      "source": "py-pdf",
+      "name": "016-libre-office-link__libre-office-link.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/016-libre-office-link/libre-office-link.pdf",
+      "kind": "producer sample",
+      "sha256": "bc38b458acd125c09fb7603cf0cca5d8737eea9fe353c2aef2c42b3db9cf9076",
+      "bytes": 9473
+    },
+    {
+      "source": "py-pdf",
+      "name": "017-unreadable-meta-data__unreadablemetadata.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/017-unreadable-meta-data/unreadablemetadata.pdf",
+      "kind": "producer sample",
+      "sha256": "9900c4c7edaa0b950314f33d8946b1247e3eafeea893958be76e62a32e1cd38a",
+      "bytes": 2818798
+    },
+    {
+      "source": "py-pdf",
+      "name": "018-base64-image__base64image.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/018-base64-image/base64image.pdf",
+      "kind": "producer sample",
+      "sha256": "aaad90df16fce40ec768629d2135479b98f65b39bb27c7f80fb106393187d619",
+      "bytes": 2267027
+    },
+    {
+      "source": "py-pdf",
+      "name": "019-grayscale-image__grayscale-image.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/019-grayscale-image/grayscale-image.pdf",
+      "kind": "producer sample",
+      "sha256": "3adfd74b88cebcdd46c83f9b1d86b6995700233126b53e2f1fcacb40eab2dc84",
+      "bytes": 40115
+    },
+    {
+      "source": "py-pdf",
+      "name": "020-xmp__output_with_metadata_pymupdf.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/020-xmp/output_with_metadata_pymupdf.pdf",
+      "kind": "producer sample",
+      "sha256": "8e52052b0d7242a6d3df844e0f24ed3c09ca36440761d1b00f85bbabc15f7369",
+      "bytes": 2097
+    },
+    {
+      "source": "py-pdf",
+      "name": "021-pdfa__crazyones-pdfa.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/021-pdfa/crazyones-pdfa.pdf",
+      "kind": "producer sample",
+      "sha256": "f05f2738a1fa8c1d2e1147881fe1a62516a7f8caaf784067790731f56df626c4",
+      "bytes": 16368
+    },
+    {
+      "source": "py-pdf",
+      "name": "022-pdfkit__pdfkit.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/022-pdfkit/pdfkit.pdf",
+      "kind": "producer sample",
+      "sha256": "8820ba44cd62264fd561e921aacc214cee7ba76723f525d591cdb2104a87f0dd",
+      "bytes": 14404
+    },
+    {
+      "source": "py-pdf",
+      "name": "023-cmyk-image__cmyk-image.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/023-cmyk-image/cmyk-image.pdf",
+      "kind": "producer sample",
+      "sha256": "5a5f76a951e403a5b357992789afc5164fd6c2914583741de7a1dd08ec029ab2",
+      "bytes": 443953
+    },
+    {
+      "source": "py-pdf",
+      "name": "024-annotations__annotated_pdf.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/024-annotations/annotated_pdf.pdf",
+      "kind": "producer sample",
+      "sha256": "c327f921abfba23a5c42d5c429ba99ded1cf5511521003aba6d2aff9c940d9cc",
+      "bytes": 1833
+    },
+    {
+      "source": "py-pdf",
+      "name": "025-attachment__with-attachment.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/025-attachment/with-attachment.pdf",
+      "kind": "producer sample",
+      "sha256": "1c7e5f3bb3bbf9a2424cac84f46b17e5b62af0719d63b445c280c76634b316ba",
+      "bytes": 24296
+    },
+    {
+      "source": "py-pdf",
+      "name": "026-latex-multicolumn__multicolumn.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/026-latex-multicolumn/multicolumn.pdf",
+      "kind": "producer sample",
+      "sha256": "bdb495e95b3e1afae95013099dc59b0cea047f1fa70f677ee9cb33f10faa1c6c",
+      "bytes": 78657
+    },
+    {
+      "source": "py-pdf",
+      "name": "027-cropped-rotated-scaled__cropped-rotated-scaled.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/027-cropped-rotated-scaled/cropped-rotated-scaled.pdf",
+      "kind": "producer sample",
+      "sha256": "cc195eac510b81123de4f55ac9f8185f2120975a7b75a106460b98615737aacd",
+      "bytes": 272039
+    },
+    {
+      "source": "py-pdf",
+      "name": "028-image-references-deduplication__wrong-references.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/028-image-references-deduplication/wrong-references.pdf",
+      "kind": "producer sample",
+      "sha256": "16cb8e10bd59e30b4d350f11d0ed9c7d0bd7e7bb962a46022c89836e2aa44f63",
+      "bytes": 78772
+    },
+    {
+      "source": "py-pdf",
+      "name": "029-optional-content-groups__ocg_map_test.pdf",
+      "url": "https://raw.githubusercontent.com/py-pdf/sample-files/02b8203bf416db3dbdb03438bc8278dfcb0555f3/029-optional-content-groups/ocg_map_test.pdf",
+      "kind": "producer sample",
+      "sha256": "0d2b6fbcc9e58bda84d4f910d63499451b1825841572ef35616e24ab27f20182",
+      "bytes": 313834
+    },
+    {
+      "source": "pdf.js",
+      "name": "160F-2019.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/160F-2019.pdf",
+      "kind": "real-world bug report",
+      "sha256": "f41f0818365ffd14ca4e55c0556355193bd76632b970d60cc2dec554cac6f379",
+      "bytes": 328400
+    },
+    {
+      "source": "pdf.js",
+      "name": "PDFJS-7562-reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/PDFJS-7562-reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "86fc03927aa3e1b216910de7b98c51aa42bab9baa359219ff4f422133188ed98",
+      "bytes": 13653
+    },
+    {
+      "source": "pdf.js",
+      "name": "XiaoBiaoSong.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/XiaoBiaoSong.pdf",
+      "kind": "real-world bug report",
+      "sha256": "1ea20b84d94b90fa1ccb08bdd2e79e710071e0593fde6d547ab1cd4a3ebc0f88",
+      "bytes": 5652
+    },
+    {
+      "source": "pdf.js",
+      "name": "annotation-ink-without-appearance.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/annotation-ink-without-appearance.pdf",
+      "kind": "real-world bug report",
+      "sha256": "663c7419206b1995c6ae651a1cbf8dbf9d89f0f6b3e61014cf545e21335e75b8",
+      "bytes": 6288
+    },
+    {
+      "source": "pdf.js",
+      "name": "annotation-strikeout-without-appearance.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/annotation-strikeout-without-appearance.pdf",
+      "kind": "real-world bug report",
+      "sha256": "9a99e1469ad4e285381016df440fada4d94b9384d051760b145fd63b794943a8",
+      "bytes": 15753
+    },
+    {
+      "source": "pdf.js",
+      "name": "arial_unicode_en_cidfont.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/arial_unicode_en_cidfont.pdf",
+      "kind": "real-world bug report",
+      "sha256": "1c4a08108d8074f543c04e9b2ea2b93a842e2b29eb05ee9d99766f430fd365ab",
+      "bytes": 15779
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-composite-or-xor-replace-halftone.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-composite-or-xor-replace-halftone.pdf",
+      "kind": "real-world bug report",
+      "sha256": "3ffb92c8a77140d06ea628514a1d44c116a5067d40e3cd3887455b8d40918202",
+      "bytes": 1849
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-halftone-skip-grid-template1.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-halftone-skip-grid-template1.pdf",
+      "kind": "real-world bug report",
+      "sha256": "bafb6edc883b156dbc337b74b0230fbcc5c45f48e08123f3040872edb1c1ec69",
+      "bytes": 1606
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-refine-customat-tpgron.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-refine-customat-tpgron.pdf",
+      "kind": "real-world bug report",
+      "sha256": "7a17d8f6d26061f3110efd54f297a7e0e8d4652e3086cc99e3c171d31fd0810f",
+      "bytes": 1146
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-stripe-single-no-end-of-stripe.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-stripe-single-no-end-of-stripe.pdf",
+      "kind": "real-world bug report",
+      "sha256": "8bf3bbb2a48b0bc689b920fece52080582b15415eef3615e811ffb2cc8932966",
+      "bytes": 1026
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-symbol-symbolrefineseveral.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-symbol-symbolrefineseveral.pdf",
+      "kind": "real-world bug report",
+      "sha256": "705133ec80d7e755ca206be508ad92840f11555520a5c117a3fe2886c30e2435",
+      "bytes": 1129
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-symbol-textbottomrighttranspose.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-symbol-textbottomrighttranspose.pdf",
+      "kind": "real-world bug report",
+      "sha256": "27b036ccba3f9e068677ef8bf203cf66bc6fef1eb091188119a1b7f474344d26",
+      "bytes": 1097
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-symbol-texttopright.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-symbol-texttopright.pdf",
+      "kind": "real-world bug report",
+      "sha256": "e5b6eb678be01e99db7a6316fa99070bebf29489ae61054bdde04c9c26c6b9dd",
+      "bytes": 1109
+    },
+    {
+      "source": "pdf.js",
+      "name": "bitmap-template3-customat-tpgdon.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bitmap-template3-customat-tpgdon.pdf",
+      "kind": "real-world bug report",
+      "sha256": "a536e4f1dbe09f27f5e355bfad252e96d223cce761a9f58cf47fcfb507133f4d",
+      "bytes": 1079
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1011159.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1011159.pdf",
+      "kind": "real-world bug report",
+      "sha256": "4fef58de1f25259bd113e2d07656bfa67440a7d7e214a6a395d6745faceae4a3",
+      "bytes": 18316
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1108301.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1108301.pdf",
+      "kind": "real-world bug report",
+      "sha256": "37881e37a8586bd167838ca72ec497335eaaafbf1df512469b3bce8d9c3c9d11",
+      "bytes": 48421
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1337429.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1337429.pdf",
+      "kind": "real-world bug report",
+      "sha256": "abfe1e2bdc37ebeb09a1d5fc1be5f04255310b5f9b74518ecf7f4bed29e408bd",
+      "bytes": 58689
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1650302_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1650302_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "126f650fc22544ecf451adc4a321072261ab7edeba3926aeab8dc92c441f06ee",
+      "bytes": 38857
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1743245.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1743245.pdf",
+      "kind": "real-world bug report",
+      "sha256": "345515157d5328ca96a2a943700c82c54676d7e9e41be82f986fbfb64d250622",
+      "bytes": 271984
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1811668_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1811668_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "5044d00dd3e315a38bd601a54b59930470869fc78a1bd3214630f9b70c284593",
+      "bytes": 11894
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1871353.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1871353.pdf",
+      "kind": "real-world bug report",
+      "sha256": "f772d1423fe36cc6200240f9b1298d1481891b3f6fd4a4902f207b69d84c2f0b",
+      "bytes": 5605
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1937438_af_from_latex.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1937438_af_from_latex.pdf",
+      "kind": "real-world bug report",
+      "sha256": "d0ed52c5298140bbe5bf9fb25a510667bf66befdcbc547c22c8a2652a26dfb36",
+      "bytes": 39945
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug1992868.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug1992868.pdf",
+      "kind": "real-world bug report",
+      "sha256": "af41aa0cd6cef10543dd51c40f94b9876bdb1118316953bb2626d5b37005a134",
+      "bytes": 1017948
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug793632.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug793632.pdf",
+      "kind": "real-world bug report",
+      "sha256": "d17a52f8b60b7bdfc97c7089071eb79dc7027bd01734d6d74f30c179c99d2b9f",
+      "bytes": 23529
+    },
+    {
+      "source": "pdf.js",
+      "name": "bug886717.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/bug886717.pdf",
+      "kind": "real-world bug report",
+      "sha256": "ecb11c144044be8a8bb6cc45a6b85c12640650cb8cf3f57108a0a15da6f37b4c",
+      "bytes": 133458
+    },
+    {
+      "source": "pdf.js",
+      "name": "calrgb.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/calrgb.pdf",
+      "kind": "real-world bug report",
+      "sha256": "c59544af2bdce1e53e28359a8320f26c90f7f5fcf7b294c3d2d8a35abccd9428",
+      "bytes": 322053
+    },
+    {
+      "source": "pdf.js",
+      "name": "colorkeymask.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/colorkeymask.pdf",
+      "kind": "real-world bug report",
+      "sha256": "655a470881a3bc4fac682abe88522c86c11ff41d08ecf94fae2f53ecd0c2d27c",
+      "bytes": 161533
+    },
+    {
+      "source": "pdf.js",
+      "name": "devicen-none-zero-domain.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/devicen-none-zero-domain.pdf",
+      "kind": "real-world bug report",
+      "sha256": "aff262dc5d70f832cadf2c705b5cf7a0651825e4b0627f25cd4129aa1d10d09e",
+      "bytes": 780
+    },
+    {
+      "source": "pdf.js",
+      "name": "extgstate.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/extgstate.pdf",
+      "kind": "real-world bug report",
+      "sha256": "d347d818730f1f5b04e033b4b1c2ac815351934ad904be89c8923a3e834889a4",
+      "bytes": 1253
+    },
+    {
+      "source": "pdf.js",
+      "name": "form_two_pages.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/form_two_pages.pdf",
+      "kind": "real-world bug report",
+      "sha256": "6d7c608d0102fa1e1b3cbc2c3b0a989783e90f84ff1a7fe7cbdb6dc2a1b60fbd",
+      "bytes": 23136
+    },
+    {
+      "source": "pdf.js",
+      "name": "gradientfill.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/gradientfill.pdf",
+      "kind": "real-world bug report",
+      "sha256": "47df49b25adf1cc4048c3ec2051f1b304535b5d99090bbfb6eaf2f7a45e0bb14",
+      "bytes": 1444
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue10084_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue10084_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "7920065ec84e4b2fa3224736ce9f1dd35623be1d147a0204512a65a1ac78fb5e",
+      "bytes": 15165
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue10640.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue10640.pdf",
+      "kind": "real-world bug report",
+      "sha256": "2f07579b9f8044cb887e6da59a92df65047e0ed42d79b67085d0f89045b1d53b",
+      "bytes": 50264
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue11403_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue11403_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "59b9b55ac24227646c77b395566faeed643e43ec9a2e5e766a5ba883b2ccf89b",
+      "bytes": 1970
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue11713.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue11713.pdf",
+      "kind": "real-world bug report",
+      "sha256": "75c11858c0cba8ef5f16f00e01e7a737e28736ccbc04a50e9a461a1a4716710a",
+      "bytes": 6652
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue12213.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue12213.pdf",
+      "kind": "real-world bug report",
+      "sha256": "73abd2a46c22afc6f67a035cc143c7e3fc0e111ed41c5cb627429d50bcefbd32",
+      "bytes": 14610
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue12823.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue12823.pdf",
+      "kind": "real-world bug report",
+      "sha256": "56e73c75d84623f0326db93a6a891c16feb32184bc4ddb350afc58e6db3e1428",
+      "bytes": 70681
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue13271.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue13271.pdf",
+      "kind": "real-world bug report",
+      "sha256": "4a2d633eea1d282ebf42f76c6e081382efcda2ba6b5646eca0aa3617760d25ec",
+      "bytes": 6370
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue14046.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue14046.pdf",
+      "kind": "real-world bug report",
+      "sha256": "58d2143afb14647ea58b5ba3881c4368b6027b0fa6fc6221744568a55f121265",
+      "bytes": 77849
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue14462_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue14462_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "8524a00cc4fe9f2bece570525f24b3bdac45af51a521dfc886e226f94484dc61",
+      "bytes": 15793
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue14847.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue14847.pdf",
+      "kind": "real-world bug report",
+      "sha256": "b9ab36bd304c557e20b6d7b80d8b39757cd3fb354bed361a64ebc117d2d1891f",
+      "bytes": 87012
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue15340.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue15340.pdf",
+      "kind": "real-world bug report",
+      "sha256": "d4b6d8406decd678de5a004deac79f42ad7f8f2e342e8bd025612311a04ac430",
+      "bytes": 13798
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue15716.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue15716.pdf",
+      "kind": "real-world bug report",
+      "sha256": "81d7216e1c1bafc3b728a056edcf21c9f3de76e043e218dfc81618486a8035a8",
+      "bytes": 2125
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue16067.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue16067.pdf",
+      "kind": "real-world bug report",
+      "sha256": "74946aa1f1f72c20c6b346e59c39fdf298d7144e9584a2140d1a03f04a698a31",
+      "bytes": 3761
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue16553.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue16553.pdf",
+      "kind": "real-world bug report",
+      "sha256": "f07b09f8f71688cbcc36cefdbb9ddd618a6243fc7875d7a13b76823a5ad58bb7",
+      "bytes": 718356
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue17540.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue17540.pdf",
+      "kind": "real-world bug report",
+      "sha256": "7c980aab81ae8f1001242a4cc914d92fae2c292d42118f92f5e97c9f6dcad3f9",
+      "bytes": 39800
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue17929.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue17929.pdf",
+      "kind": "real-world bug report",
+      "sha256": "d2330689179cbb661c97d29e02b5e2d0ceae1a0d9f96eca8b17c0de6602bf1e0",
+      "bytes": 7352
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue18408_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue18408_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "887cc910d2eec2613241eb4fe71ad769a46b51b4eb79095e1adaa4e0019dee1c",
+      "bytes": 9787
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue18956.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue18956.pdf",
+      "kind": "real-world bug report",
+      "sha256": "033e0a837d32d43a624f9820ceab80afdce51fe616cd24e95dabcad453bf4c0b",
+      "bytes": 9204
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue19424.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue19424.pdf",
+      "kind": "real-world bug report",
+      "sha256": "7e24653bf838e76863d76d7ffa3cee457af087fb687a815e5a277acd3d993e9f",
+      "bytes": 9092
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue19848.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue19848.pdf",
+      "kind": "real-world bug report",
+      "sha256": "ba6dfa6ecc665b1f2a40018f499ddb3714b6aaeefca35b9aab21021671a7841f",
+      "bytes": 6803
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue20324.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue20324.pdf",
+      "kind": "real-world bug report",
+      "sha256": "033cbfb8667324b4d23be0e2debcd74747caf80ab22672a945b76124bad8b733",
+      "bytes": 11151
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue21126.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue21126.pdf",
+      "kind": "real-world bug report",
+      "sha256": "94c7c9bb8dc75f51bda39f4672c610020d686f8fbf229956b32b1c0f5d1ddcc0",
+      "bytes": 15332
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue2462.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue2462.pdf",
+      "kind": "real-world bug report",
+      "sha256": "4f7b9e5eb213bae3b6df7534e2108bd2f2d6e356bc2b70a129220ff7ac90d026",
+      "bytes": 139946
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue3061.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue3061.pdf",
+      "kind": "real-world bug report",
+      "sha256": "db6993f15214cb761a3e74df53a344bb59be2ee8418c128e75772170402f68c4",
+      "bytes": 17022
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue3584.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue3584.pdf",
+      "kind": "real-world bug report",
+      "sha256": "b3fdd74779209c148220be77a21b4873d5c356e15f3f2895856177e05742e1b0",
+      "bytes": 21424
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue4436r.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue4436r.pdf",
+      "kind": "real-world bug report",
+      "sha256": "45932053f115b1ebec02cbe266b9028d8fba305a317d931d45872b29a2653857",
+      "bytes": 777
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue4800.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue4800.pdf",
+      "kind": "real-world bug report",
+      "sha256": "334231b2c8969c2ee1cbb208d9451825034e7b8f8f902f2401242e23564c6957",
+      "bytes": 23060
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue5202.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue5202.pdf",
+      "kind": "real-world bug report",
+      "sha256": "cbf504dced6920b7d01abfc0be2fadb782e8025fae8ce0a196d544b9353c079b",
+      "bytes": 5241
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue5540.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue5540.pdf",
+      "kind": "real-world bug report",
+      "sha256": "6103400d6361905d55c62948b75c091542362c7cb575548accb1d5aef873241c",
+      "bytes": 17459
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue5801.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue5801.pdf",
+      "kind": "real-world bug report",
+      "sha256": "34db8378a02d89415e6e995e5d3af54405be69a5989f24675071e8838e45b59c",
+      "bytes": 12045
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue6019.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue6019.pdf",
+      "kind": "real-world bug report",
+      "sha256": "c0576800e8eb53287ccd4e7fad2ab50a9f99e2f959ad6b3c0c08c445156d0f28",
+      "bytes": 791
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue6204.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue6204.pdf",
+      "kind": "real-world bug report",
+      "sha256": "f95b16dcfcf8d6b8a7f5e1c3ca52b642fdc058195c1d00e4765d4120653c7281",
+      "bytes": 2696
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue6612.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue6612.pdf",
+      "kind": "real-world bug report",
+      "sha256": "2940293c5f32c23c1ccf5df34c44d226cff4e46c7ff633772b9f677d6c4e5738",
+      "bytes": 7067
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue6962.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue6962.pdf",
+      "kind": "real-world bug report",
+      "sha256": "6ee42810c18980a24bacc53bd4c743cd9b7b2634f2d8b0d7ed90c5d404599f39",
+      "bytes": 79762
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue7426.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue7426.pdf",
+      "kind": "real-world bug report",
+      "sha256": "d352269684b0aa59bcbfd272b1f3b8dfc32610e54c617afb79c985bbc38bddc4",
+      "bytes": 117531
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue7821.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue7821.pdf",
+      "kind": "real-world bug report",
+      "sha256": "6d0de0587ee1d98a116e0f5a2c9c96e38a6f179637057c187876b640ec5ef67f",
+      "bytes": 8500
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue8097_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue8097_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "c92d29d64715aefc05521cf41c52f6688d7bcc5a7471cbc6e7ef0b1ac38d7e54",
+      "bytes": 51582
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue8565.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue8565.pdf",
+      "kind": "real-world bug report",
+      "sha256": "bc1121943f81c9c1d445c80cbb332e2800d56a9b7e97532be1d0b6656f634599",
+      "bytes": 2238
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue9084.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue9084.pdf",
+      "kind": "real-world bug report",
+      "sha256": "386a9969ea8387b99ee328e9a646d36f0037057318870b181f6b2120b2e6d4e8",
+      "bytes": 25823
+    },
+    {
+      "source": "pdf.js",
+      "name": "issue9655_reduced.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/issue9655_reduced.pdf",
+      "kind": "real-world bug report",
+      "sha256": "96c15c74d31a21e8690c6333b9b4eba8b99fa35d3b5e8c7331138f5c109c2c52",
+      "bytes": 31518
+    },
+    {
+      "source": "pdf.js",
+      "name": "jp2k-resetprob.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/jp2k-resetprob.pdf",
+      "kind": "real-world bug report",
+      "sha256": "582da92f1cad4fa47639e5df5c29ebba6e4ae432ba5e9283297ee6e5e88d7efa",
+      "bytes": 3251
+    },
+    {
+      "source": "pdf.js",
+      "name": "knockout_smask.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/knockout_smask.pdf",
+      "kind": "real-world bug report",
+      "sha256": "8c33ad7d984a62355e1c5643b50855ea82538756bc8303256a791177d186f540",
+      "bytes": 1153
+    },
+    {
+      "source": "pdf.js",
+      "name": "noembed-eucjp.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/noembed-eucjp.pdf",
+      "kind": "real-world bug report",
+      "sha256": "cadd5b9a27e2de9a11a0cf29b20724cb0f63643387be5e690de35ca35922e45c",
+      "bytes": 1472
+    },
+    {
+      "source": "pdf.js",
+      "name": "outline_goto_action.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/outline_goto_action.pdf",
+      "kind": "real-world bug report",
+      "sha256": "7b653d3e95ca550509abcfd3887754d2ec0c68da330ec03a95c77bdb47479ecc",
+      "bytes": 1061
+    },
+    {
+      "source": "pdf.js",
+      "name": "poppler-395-0-fuzzed.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/poppler-395-0-fuzzed.pdf",
+      "kind": "real-world bug report",
+      "sha256": "e2ec919e787c0069948598f9c9d7a39787acde602aacd2bb263298a85e2e0c64",
+      "bytes": 23068
+    },
+    {
+      "source": "pdf.js",
+      "name": "pr20043.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/pr20043.pdf",
+      "kind": "real-world bug report",
+      "sha256": "710402da97df04a6aa1bf3f5fd4ae7a07ccbb225754e9097a923ba5d34a696f3",
+      "bytes": 92617
+    },
+    {
+      "source": "pdf.js",
+      "name": "resetform.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/resetform.pdf",
+      "kind": "real-world bug report",
+      "sha256": "bb8443ede056964948657153c44ce5e82a9fe231ad3aa2abf6849c956e82da27",
+      "bytes": 20907
+    },
+    {
+      "source": "pdf.js",
+      "name": "signed_verified.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/signed_verified.pdf",
+      "kind": "real-world bug report",
+      "sha256": "1fe9051d9ac1f39828988040db471916251dc2953c1a32efd6596e4975da848c",
+      "bytes": 10252
+    },
+    {
+      "source": "pdf.js",
+      "name": "tensor-allflags-withfunction.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/tensor-allflags-withfunction.pdf",
+      "kind": "real-world bug report",
+      "sha256": "d0167f51046dc315aeb6be6c48ae874c776f532cbc1b8f4d64efd6ad1215f480",
+      "bytes": 3381
+    },
+    {
+      "source": "pdf.js",
+      "name": "tracemonkey_freetext.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/tracemonkey_freetext.pdf",
+      "kind": "real-world bug report",
+      "sha256": "8df3a27a60afb51cd16b75146af5b5408d792c6d98d4c4b90e838684a4fe2def",
+      "bytes": 1017319
+    },
+    {
+      "source": "pdf.js",
+      "name": "xfa_filled_imm1344e.pdf",
+      "url": "https://raw.githubusercontent.com/mozilla/pdf.js/18e8a26a3813a319b38c806076f0b0ef9baf1bf4/test/pdfs/xfa_filled_imm1344e.pdf",
+      "kind": "real-world bug report",
+      "sha256": "8313c52ea97b49908137fd744e85fc37584b502210fcc0a73d6c272cca9d7889",
+      "bytes": 3023968
+    },
+    {
+      "source": "arxiv",
+      "name": "1706.03762v7.pdf",
+      "url": "https://arxiv.org/pdf/1706.03762v7",
+      "kind": "paper, figures and tables",
+      "sha256": "bdfaa68d8984f0dc02beaca527b76f207d99b666d31d1da728ee0728182df697",
+      "bytes": 2215244
+    },
+    {
+      "source": "arxiv",
+      "name": "1512.03385v1.pdf",
+      "url": "https://arxiv.org/pdf/1512.03385v1",
+      "kind": "two-column conference paper",
+      "sha256": "1e0651b6810ecba34a3dbc5b5b0209226f889004607c1f203540a48d64e5a93a",
+      "bytes": 819383
+    },
+    {
+      "source": "arxiv",
+      "name": "hep-th_9711200v3.pdf",
+      "url": "https://arxiv.org/pdf/hep-th/9711200v3",
+      "kind": "old TeX physics paper",
+      "sha256": "b711c300aac9a8c93d84451675554da8829d4b7d3c1ae23cdd16e94523975f06",
+      "bytes": 246327
+    },
+    {
+      "source": "arxiv",
+      "name": "math_0211159v1.pdf",
+      "url": "https://arxiv.org/pdf/math/0211159v1",
+      "kind": "maths-heavy paper",
+      "sha256": "945e278613c45ea1ab617b28c3095783d0e68958dc0546dfcfa9b42b9674fbe1",
+      "bytes": 325949
+    },
+    {
+      "source": "arxiv",
+      "name": "2303.08774v6.pdf",
+      "url": "https://arxiv.org/pdf/2303.08774v6",
+      "kind": "100-page report",
+      "sha256": "c33a66dadca2388d7b172d6293b00dc32b71110c6f38fafe0d41112e61be7774",
+      "bytes": 5245564
+    },
+    {
+      "source": "arxiv",
+      "name": "1409.0473v7.pdf",
+      "url": "https://arxiv.org/pdf/1409.0473v7",
+      "kind": "paper with appendix",
+      "sha256": "84801c8410da51b449d379d2fa4939a416123f2c93991077a680f863026022a7",
+      "bytes": 444482
+    },
+    {
+      "source": "arxiv",
+      "name": "astro-ph_9805201v1.pdf",
+      "url": "https://arxiv.org/pdf/astro-ph/9805201v1",
+      "kind": "old two-column journal paper",
+      "sha256": "5edf2da6f5ff6438649e818e82ea86c7a168fbe1294fa165a252f9640b24e039",
+      "bytes": 883303
+    },
+    {
+      "source": "arxiv",
+      "name": "1810.04805v2.pdf",
+      "url": "https://arxiv.org/pdf/1810.04805v2",
+      "kind": "paper, dense tables",
+      "sha256": "5692a5514787a8c6727b4ff3b726a3385798bc68e12138d1d4af83947e2acf6e",
+      "bytes": 775166
+    },
+    {
+      "source": "archive.org",
+      "name": "rbsc_ms_isl_0195.pdf",
+      "url": "https://archive.org/download/McGillLibrary-rbsc_ms_isl_0195-18074/rbsc_ms_isl_0195.pdf",
+      "kind": "scanned manuscript, public domain",
+      "sha256": "f37037e96e0adf5535a66fab7e95b9a89a821e4290dbfdf027529ff8de7c16d7",
+      "bytes": 5185875
+    },
+    {
+      "source": "archive.org",
+      "name": "faaliyet_raporu2015.pdf",
+      "url": "https://archive.org/download/faaliyet_raporu2015/faaliyet_raporu2015.pdf",
+      "kind": "Turkish institutional report",
+      "sha256": "435d26acc21e9b8dee77847806824577399d86b0fcfa3aebcc698ac8ccda813f",
+      "bytes": 281627
+    },
+    {
+      "source": "archive.org",
+      "name": "smailEmrekaynakDergisi.pdf",
+      "url": "https://archive.org/download/IsmailEmreIcKaynakDergisi/smailEmrekaynakDergisi.pdf",
+      "kind": "Turkish magazine layout",
+      "sha256": "7ede20970dc66d0d0f6a09c2a543435700f616354cac5a4245482620129c01c3",
+      "bytes": 1773611
+    }
+  ]
+}
