@@ -387,10 +387,10 @@
       "missing": "That attachment is no longer in the file."
     },
     "overlay": {
-      "crop": "Crop by selection",
+      "crop": "Crop to selection",
       "measure": "Measure",
       "signature": "Place signature",
-      "cropHint": "Drag a rectangle on the page.",
+      "cropHint": "Draw the area to keep; everything outside it is cut away. To remove an area instead, use Black out area.",
       "cropPage": "Crop this page",
       "cropAll": "Crop all pages",
       "cropped": "Cropped: {{name}}",
@@ -400,7 +400,7 @@
       "reset": "Reset",
       "signatureHint": "Click where the signature goes; drag to move it.",
       "signatureMove": "Drag to adjust, then apply.",
-      "pickSignature": "Pick a signature or create one.",
+      "pickSignature": "Draw one with New or pick a saved one; it goes on the page as a picture. For a certificate signature use Tools › Sign.",
       "newSignature": "New",
       "width": "Width",
       "applySignature": "Apply signature",

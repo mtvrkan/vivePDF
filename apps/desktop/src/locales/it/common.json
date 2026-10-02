@@ -387,10 +387,10 @@
       "missing": "Questo allegato non è più nel file."
     },
     "overlay": {
-      "crop": "Ritaglia selezione",
+      "crop": "Ritaglia alla selezione",
       "measure": "Misura",
       "signature": "Posiziona firma",
-      "cropHint": "Disegna un rettangolo sulla pagina.",
+      "cropHint": "Disegna l'area da tenere; tutto ciò che resta fuori viene tagliato. Per rimuovere un'area, usa Oscura area.",
       "cropPage": "Ritaglia questa pagina",
       "cropAll": "Ritaglia tutte le pagine",
       "cropped": "Ritagliato: {{name}}",
@@ -400,7 +400,7 @@
       "reset": "Azzera",
       "signatureHint": "Fai clic dove va la firma; trascina per spostarla.",
       "signatureMove": "Trascina per regolare, poi applica.",
-      "pickSignature": "Scegli una firma o creane una.",
+      "pickSignature": "Disegnane una con Nuova o scegline una salvata; va sulla pagina come immagine. Per una firma con certificato usa Strumenti › Firma.",
       "newSignature": "Nuova",
       "width": "Larghezza",
       "applySignature": "Applica firma",

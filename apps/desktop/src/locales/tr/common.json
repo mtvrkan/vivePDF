@@ -387,10 +387,10 @@
       "missing": "Bu ek artık dosyada yok."
     },
     "overlay": {
-      "crop": "Seçerek kırp",
+      "crop": "Seçili alana kırp",
       "measure": "Ölç",
       "signature": "İmza yerleştir",
-      "cropHint": "Sayfada bir dikdörtgen çizin.",
+      "cropHint": "Tutmak istediğiniz alanı çizin; dışında kalan her şey kesilir. Bir alanı silmek için Alanı karart'ı kullanın.",
       "cropPage": "Bu sayfayı kırp",
       "cropAll": "Tüm sayfaları kırp",
       "cropped": "Kırpıldı: {{name}}",
@@ -400,7 +400,7 @@
       "reset": "Sıfırla",
       "signatureHint": "İmzanın geleceği yere tıklayın; sürükleyerek taşıyın.",
       "signatureMove": "Sürükleyerek ayarlayın, sonra uygulayın.",
-      "pickSignature": "Bir imza seçin ya da yeni oluşturun.",
+      "pickSignature": "Yeni ile çizin ya da kayıtlı birini seçin; sayfaya resim olarak eklenir. Sertifikalı imza için Araçlar › İmzala.",
       "newSignature": "Yeni",
       "width": "Genişlik",
       "applySignature": "İmzayı uygula",

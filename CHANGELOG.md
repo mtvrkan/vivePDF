@@ -6,6 +6,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ### Added
 - Presentation: the black and white screens (B / W) are now boards: the pen, highlighter and eraser draw on them (very dark ink turns white on black), each board keeps its own drawing for the session, and a hint at the bottom says that Esc returns to the slides and which keys pick the pen, highlighter and eraser [2026-10-02]
 
+### Changed
+- Editor: Crop by selection is now called Crop to selection and its hint says that the drawn area is kept and everything outside it is cut away, pointing to Black out area for removing an area instead; the Place signature bar says the signature goes on the page as a picture and that Tools › Sign makes a certificate signature [2026-10-02]
+
 ### Fixed
 - Presentation: pen and highlighter strokes are no longer cut off at the page edge; a stroke can run past the page or start in the margin beside it (it belongs to the nearest page and moves with it), and the eraser reaches those parts too [2026-10-02]
 - Editor: a paragraph opened for editing keeps the line spacing it has on the page; small text used to take the app's own line height, so the lines spread out, ran past the paragraph box and over the content below it [2026-10-02]

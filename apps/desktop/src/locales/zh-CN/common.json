@@ -387,10 +387,10 @@
       "missing": "该附件已不在文件中。"
     },
     "overlay": {
-      "crop": "框选裁剪",
+      "crop": "裁剪到选区",
       "measure": "测量",
       "signature": "放置签名",
-      "cropHint": "在页面上拖出一个矩形。",
+      "cropHint": "拖出要保留的区域，区域外的内容都会被裁掉。若要去掉某个区域，请使用“涂黑区域”。",
       "cropPage": "裁剪此页",
       "cropAll": "裁剪所有页",
       "cropped": "已裁剪：{{name}}",
@@ -400,7 +400,7 @@
       "reset": "重置",
       "signatureHint": "点击签名位置，拖动可移动。",
       "signatureMove": "拖动调整后应用。",
-      "pickSignature": "选择或新建签名。",
+      "pickSignature": "点“新建”手写签名或选择已保存的签名；签名以图片形式放到页面上。如需证书签名，请用 工具 › 签名。",
       "newSignature": "新建",
       "width": "宽度",
       "applySignature": "应用签名",

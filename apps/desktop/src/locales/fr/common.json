@@ -387,10 +387,10 @@
       "missing": "Cette pièce jointe n’est plus dans le fichier."
     },
     "overlay": {
-      "crop": "Rogner la sélection",
+      "crop": "Rogner à la sélection",
       "measure": "Mesurer",
       "signature": "Placer une signature",
-      "cropHint": "Tracez un rectangle sur la page.",
+      "cropHint": "Tracez la zone à conserver ; tout ce qui est en dehors est rogné. Pour retirer une zone, utilisez Caviarder la zone.",
       "cropPage": "Rogner cette page",
       "cropAll": "Rogner toutes les pages",
       "cropped": "Rogné : {{name}}",
@@ -400,7 +400,7 @@
       "reset": "Réinitialiser",
       "signatureHint": "Cliquez où placer la signature ; glissez pour déplacer.",
       "signatureMove": "Glissez pour ajuster, puis appliquez.",
-      "pickSignature": "Choisissez une signature ou créez-en une.",
+      "pickSignature": "Dessinez-en une avec Nouvelle ou choisissez-en une enregistrée ; elle est posée sur la page comme une image. Pour une signature avec certificat : Outils › Signer.",
       "newSignature": "Nouvelle",
       "width": "Largeur",
       "applySignature": "Appliquer la signature",

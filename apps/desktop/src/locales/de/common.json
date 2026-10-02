@@ -387,10 +387,10 @@
       "missing": "Dieser Anhang ist nicht mehr in der Datei."
     },
     "overlay": {
-      "crop": "Auswahl zuschneiden",
+      "crop": "Auf Auswahl zuschneiden",
       "measure": "Messen",
       "signature": "Unterschrift platzieren",
-      "cropHint": "Ein Rechteck auf der Seite aufziehen.",
+      "cropHint": "Den Bereich aufziehen, der bleiben soll; alles außerhalb wird abgeschnitten. Um einen Bereich zu entfernen, Bereich schwärzen verwenden.",
       "cropPage": "Diese Seite zuschneiden",
       "cropAll": "Alle Seiten zuschneiden",
       "cropped": "Zugeschnitten: {{name}}",
@@ -400,7 +400,7 @@
       "reset": "Zurücksetzen",
       "signatureHint": "Klicken, wo die Unterschrift hin soll; ziehen zum Verschieben.",
       "signatureMove": "Ziehen zum Anpassen, dann anwenden.",
-      "pickSignature": "Unterschrift wählen oder neu anlegen.",
+      "pickSignature": "Mit Neu zeichnen oder eine gespeicherte wählen; sie kommt als Bild auf die Seite. Für eine Zertifikatsignatur Werkzeuge › Signieren.",
       "newSignature": "Neu",
       "width": "Breite",
       "applySignature": "Unterschrift anwenden",
