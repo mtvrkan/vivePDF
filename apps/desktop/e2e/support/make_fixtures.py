@@ -330,6 +330,15 @@ def memo(target: Path) -> None:
     save(document, target)
 
 
+def banner(target: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    page.draw_rect(pymupdf.Rect(60, 80, 535, 220), color=None, fill=(0.1, 0.25, 0.6))
+    for row, line in enumerate(["White heading on a blue banner", "with a second white line"]):
+        page.insert_text((80, 130 + row * 26), line, fontsize=20, color=(1, 1, 1))
+    save(document, target)
+
+
 def main() -> None:
     directory = Path(sys.argv[1])
     directory.mkdir(parents=True, exist_ok=True)
@@ -337,6 +346,7 @@ def main() -> None:
         "sample": directory / "sample.pdf",
         "japanese": directory / "japanese.pdf",
         "memo": directory / "memo.pdf",
+        "banner": directory / "banner.pdf",
         "second": directory / "ikinci belge şğü.pdf",
         "six": directory / "six-pages.pdf",
         "chapters": directory / "chapters.pdf",
@@ -364,6 +374,7 @@ def main() -> None:
     second(files["second"])
     japanese(files["japanese"])
     memo(files["memo"])
+    banner(files["banner"])
     six_pages(files["six"])
     chapters(files["chapters"])
     scanned(files["scanned"])

@@ -182,6 +182,31 @@ describe("page editor", () => {
     const widthBefore = await widthField.getValue();
     await widenBlock(40);
     await browser.waitUntil(async () => (await widthField.getValue()) !== widthBefore, { timeout: 5000, timeoutMsg: "the width field kept the size from before the resize" });
+
+    const spacingSelect = $(`[aria-label="${t("viewer.editPanel.lineHeight")}"]`);
+    await expect(spacingSelect).toHaveText(expect.stringContaining("1.33×"));
+    await chooseOption(t("viewer.editPanel.lineHeight"), "2×");
+    const pitch = await browser.execute(() => {
+      const box = document.querySelector<HTMLElement>("[data-block-object] > div");
+      const style = box ? getComputedStyle(box) : null;
+      return style ? parseFloat(style.lineHeight) / parseFloat(style.fontSize) : 0;
+    });
+    expect(pitch).toBeCloseTo(2, 2);
+  });
+
+  it("edits light text on a coloured background over that colour, not a dark box", async () => {
+    await openInViewer(copyFixture(fixtures().banner, "editor-banner.pdf"));
+    await enterEditor("viewer.overlay.text");
+
+    await clickPage(0, 150, 125);
+    await $("[data-editor-input]").waitForDisplayed({ timeout: 10000 });
+    const background = await browser.execute(() => getComputedStyle(document.querySelector("[data-editor-input]") as HTMLElement).backgroundColor);
+    const [red, green, blue] = (background.match(/\d+/g) ?? []).map(Number);
+
+    expect(blue).toBeGreaterThan(120);
+    expect(blue - red).toBeGreaterThan(60);
+    expect(green).toBeLessThan(blue);
+    await browser.keys(ESCAPE_KEY);
   });
 
   it("adds new text with the size and weight chosen in the panel and saves it into the open file", async () => {

@@ -26,6 +26,10 @@ type GeometryField = (typeof GEOMETRY_FIELDS)[number];
 
 const FONT_SIZES = [8, 9, 10, 11, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64];
 const LINE_HEIGHTS = [1, 1.15, 1.2, 1.35, 1.5, 2];
+
+function effectiveLineHeight(block: { leading: number; style: { fontSize: number; lineHeight: number } }): number {
+  return block.leading > 0 && block.style.fontSize > 0 ? Math.round((block.leading / block.style.fontSize) * 100) / 100 : block.style.lineHeight;
+}
 const FONT_PLAN_DEBOUNCE_MS = 300;
 
 function warningKey(code: EditorWarningCode): string {
@@ -61,7 +65,8 @@ export function EditPanel({ documentId }: { documentId: string }) {
   const imageChange = selected?.kind === "imageChange" ? selected : null;
   const style = textLike ? textLike.style : textStyle;
   const align: BlockAlign = style.align;
-  const lineHeight = block ? block.style.lineHeight : 1.2;
+  const lineHeight = block ? effectiveLineHeight(block) : 1.2;
+  const lineHeights = [...new Set([...LINE_HEIGHTS, lineHeight])].sort((a, b) => a - b);
   const originalFontLabel = block?.fontFamily ? t("viewer.editPanel.fontOriginalNamed", { name: camelSplit(block.fontFamily) }) : t("viewer.editPanel.fontAuto");
   const fontPlanTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -93,6 +98,11 @@ export function EditPanel({ documentId }: { documentId: string }) {
 
   const sizeOptions = [...new Set([...FONT_SIZES, style.fontSize])].sort((a, b) => a - b).map((size) => ({ value: String(size), label: `${Number.isInteger(size) ? size : size.toFixed(1)} pt` }));
 
+  const setLineHeight = (value: number) => {
+    if (!block) return;
+    store.snapshot();
+    store.updateObject(block.id, { style: { ...block.style, lineHeight: value }, leading: 0 });
+  };
   const patchStyle = (patch: Record<string, unknown>) => {
     if (block) {
       store.snapshot();
@@ -296,7 +306,7 @@ export function EditPanel({ documentId }: { documentId: string }) {
               <IconButton key={value} icon={Icon} label={t(`viewer.overlay.align.${value}`)} active={align === value} disabled={value === "justify" && !block} onClick={() => patchStyle({ align: value })} />
             ))}
             <span className="flex-1" />
-            <Select size="sm" mono value={String(lineHeight)} options={LINE_HEIGHTS.map((value) => ({ value: String(value), label: `${value.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")}×` }))} onChange={(value) => patchStyle({ lineHeight: Number(value) })} disabled={!block} ariaLabel={t("viewer.editPanel.lineHeight")} className="w-20" />
+            <Select size="sm" mono value={String(lineHeight)} options={lineHeights.map((value) => ({ value: String(value), label: `${value.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")}×` }))} onChange={(value) => setLineHeight(Number(value))} disabled={!block} ariaLabel={t("viewer.editPanel.lineHeight")} className="w-20" />
           </div>
           {block && fontResolution ? (
             <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">

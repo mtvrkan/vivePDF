@@ -611,7 +611,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
         ? "move"
         : "copy"
       : "crosshair";
-  const backgroundFor = (item: BlockPending): string => backgrounds[item.id] ?? contrastingBackground(item.style.color);
+  const backgroundFor = (item: BlockPending): string => backgrounds[backgroundKey(item)] ?? contrastingBackground(item.style.color);
   const blockContainerStyle = (item: BlockPending): CSSProperties => ({
     fontSize: px(item.style.fontSize),
     lineHeight: item.leading > 0 && item.style.fontSize > 0 ? item.leading / item.style.fontSize : item.style.lineHeight,
