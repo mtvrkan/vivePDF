@@ -106,6 +106,9 @@ def describe(path: Path, password: str | None) -> dict:
                 "images": len(page.get_images(full=True)),
                 "drawings": len(page.get_drawings()),
                 "links": [link.get("uri", "") for link in page.get_links()],
+                "linkBoxes": [
+                    [round(value, 1) for value in link["from"]] for link in page.get_links()
+                ],
                 "spans": spans(page),
                 "imageBoxes": [
                     visible(page, info["bbox"])

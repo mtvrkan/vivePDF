@@ -53,6 +53,7 @@ export async function waitForClipboardPicture(what: string) {
 export async function pagePoints(pageIndex: number, points: Array<[number, number]>, pageWidth = PAGE_WIDTH) {
   const page = $(`[data-page-index="${pageIndex}"]`);
   await page.waitForExist();
+  await browser.waitUntil(async () => (await page.$$("img, canvas").length) > 0, { timeoutMsg: `page ${pageIndex + 1} never rendered` });
   const box = await browser.execute(
     (index: number, ys: number[], width: number) => {
       const element = document.querySelector(`[data-page-index="${index}"]`) as HTMLElement;
@@ -74,7 +75,6 @@ export async function pagePoints(pageIndex: number, points: Array<[number, numbe
     points.map(([, y]) => y),
     pageWidth,
   );
-  await browser.waitUntil(async () => (await page.$$("img, canvas").length) > 0, { timeoutMsg: `page ${pageIndex + 1} never rendered` });
   const scale = box.width / pageWidth;
   return points.map(([x, y]) => ({ origin: "viewport" as const, x: Math.round(box.left + x * scale), y: Math.round(box.top + y * scale) }));
 }

@@ -8,11 +8,12 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ### Added
 - Viewer: Page display › Split window shows the open file a second time, side by side or stacked (Ctrl+Shift+E toggles it), so two places can be read at once; the second pane is read-only (select, copy and the search bar's matches work there), reopens at the same page after every save and says when unsaved changes are not in it yet, and the divider can be dragged or moved with the arrow keys [2026-10-02]
 - Fonts: when a document uses Japanese, Korean or Chinese text without embedding its font, a bar above the page offers that language's font (4.3–8 MB) and redraws the document once it is downloaded; Settings › Tools › Fallback fonts lists the four sets to download or remove ahead of time. Downloads come from the project's own `fonts-1` release and are checked against a pinned SHA-256 [2026-10-02]
+- Editor: Crop to selection has an Erase selected area button that does the opposite of cropping: the drawn area is removed (text, pictures and drawings inside it) and filled with white, and the result is saved as a new file next to the original and opened [2026-10-03]
 - Presentation: the black and white screens (B / W) are now boards: the pen, highlighter and eraser draw on them (very dark ink turns white on black), each board keeps its own drawing for the session, and a hint at the bottom says that Esc returns to the slides and which keys pick the pen, highlighter and eraser [2026-10-02]
 
 ### Changed
 - Installer: the Japanese, Korean and Chinese fallback fonts are no longer bundled, which makes the installer about 23 MB smaller; the Latin, Greek, Cyrillic and Vietnamese fallback font stays included [2026-10-02]
-- Editor: Crop by selection is now called Crop to selection and its hint says that the drawn area is kept and everything outside it is cut away, pointing to Black out area for removing an area instead; the Place signature bar says the signature goes on the page as a picture and that Tools › Sign makes a certificate signature [2026-10-02]
+- Editor: Crop by selection is now called Crop to selection and its hint says that the drawn area is kept and everything outside it is cut away, pointing to Erase selected area for removing the drawn area instead; the Place signature bar says the signature goes on the page as a picture and that Tools › Sign makes a certificate signature [2026-10-02]
 
 ### Fixed
 - Presentation: pen and highlighter strokes are no longer cut off at the page edge; a stroke can run past the page or start in the margin beside it (it belongs to the nearest page and moves with it), and the eraser reaches those parts too [2026-10-02]
@@ -24,6 +25,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Editor: the line spacing list shows the spacing an existing paragraph really has (for example 1.33×) instead of an empty box, and choosing a value now changes the paragraph on the page and in the saved file; before, the spacing measured from the page always won [2026-10-02]
 - Editor: a paragraph opened for editing keeps the line spacing it has on the page; small text used to take the app's own line height, so the lines spread out, ran past the paragraph box and over the content below it [2026-10-02]
 - Editor: the X, Y, width and height fields in the panel follow an object while it is moved or resized with the mouse instead of showing the size it had when it was selected [2026-10-02]
+- Editor: Black out area, Add link and the snapshot tool hit the area that was drawn on pages turned with the page rotation setting; on those pages the box was applied to a different part of the page, so a black-out could miss the text it was drawn over, a link landed elsewhere and the snapshot copied an empty strip [2026-10-03]
 - Viewer: the close button on a document tab closes the document again; pressing it started a tab drag that swallowed the click, so the tab was only activated (middle-click, Delete and Ctrl+W were unaffected) [2026-10-02]
 
 ### Security

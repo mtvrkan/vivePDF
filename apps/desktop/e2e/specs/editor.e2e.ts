@@ -1,4 +1,4 @@
-import { basename, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
 import { answerDialogs, bootApp, chooseOption, clickButton, closeAllDocuments, copyFixture, ENTER_KEY, fixtures, openInViewer, probe, t, typeInto, waitForDialogsAnswered, workDir, type PageProbe } from "../support/app.ts";
 import { pagePoint, pagePoints } from "../support/desktop.ts";
@@ -6,6 +6,7 @@ import { pagePoint, pagePoints } from "../support/desktop.ts";
 const END_KEY = String.fromCharCode(0xe010);
 const ESCAPE_KEY = String.fromCharCode(0xe00c);
 const TURNED_WIDTH = 760;
+const DRAG_ATTEMPTS = 3;
 const NEW_TEXT_LINE_HEIGHT = 1.25;
 
 type Span = PageProbe["spans"][number];
@@ -51,15 +52,22 @@ async function clickPage(pageIndex: number, x: number, y: number, pageWidth?: nu
   await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(point).down().up().perform();
 }
 
-async function dragPage(pageIndex: number, from: [number, number], to: [number, number]) {
-  const [start, end] = await pagePoints(pageIndex, [from, to]);
-  await browser
-    .action("pointer", { parameters: { pointerType: "mouse" } })
-    .move(start)
-    .down()
-    .move({ ...end, duration: 300 })
-    .up()
-    .perform();
+async function dragPage(pageIndex: number, from: [number, number], to: [number, number], pageWidth?: number) {
+  const pageBox = () => $(`[data-page-index="${pageIndex}"]`).getSize();
+  for (let attempt = 0; attempt < DRAG_ATTEMPTS; attempt += 1) {
+    const [start, end] = await pagePoints(pageIndex, [from, to], pageWidth);
+    const before = await pageBox();
+    await browser
+      .action("pointer", { parameters: { pointerType: "mouse" } })
+      .move(start)
+      .down()
+      .move({ ...end, duration: 300 })
+      .up()
+      .perform();
+    const after = await pageBox();
+    if (before.width === after.width && before.height === after.height) return;
+  }
+  throw new Error(`page ${pageIndex + 1} kept resizing while it was dragged on`);
 }
 
 async function widenBlock(by: number) {
@@ -207,6 +215,77 @@ describe("page editor", () => {
     expect(blue - red).toBeGreaterThan(60);
     expect(green).toBeLessThan(blue);
     await browser.keys(ESCAPE_KEY);
+  });
+
+  it("erases the area drawn in crop mode instead of keeping it when asked", async () => {
+    const source = copyFixture(fixtures().sample, "editor-erase-area.pdf");
+    await openInViewer(source);
+    await clickButton(t("viewer.overlay.editMenu"));
+    await clickButton(t("viewer.overlay.crop"));
+
+    await dragPage(0, [60, 108], [320, 136]);
+    await clickButton(t("viewer.overlay.eraseArea"));
+
+    const output = join(dirname(source), `editor-erase-area-${t("viewer.overlay.erasedSuffix")}.pdf`);
+    await $(`//*[@role="tab"][@aria-selected="true"][.//span[@title="${basename(output)}"]]`).waitForDisplayed({ timeout: 60000, timeoutMsg: `the erased copy ${basename(output)} was never opened` });
+    const text = probe(output).pages?.[0].text ?? "";
+    expect(text).not.toContain("alpha marker 1");
+    expect(text).toContain("Sample page 1");
+    expect(text).toContain("The quick brown fox");
+    expect(probe(source).pages?.[0].text).toContain("alpha marker 1");
+  });
+
+  it("erases the area drawn on a turned page with an offset crop box", async () => {
+    const source = copyFixture(fixtures().turned, "editor-erase-turned.pdf");
+    const box = spanWith(probe(source).pages?.[0].spans, "Turned page marker").box;
+    await openInViewer(source);
+    await clickButton(t("viewer.overlay.editMenu"));
+    await clickButton(t("viewer.overlay.crop"));
+
+    await dragPage(0, [box[0] - 4, box[1] - 4], [box[2] + 4, box[3] + 4], TURNED_WIDTH);
+    await clickButton(t("viewer.overlay.eraseArea"));
+
+    const output = join(dirname(source), `editor-erase-turned-${t("viewer.overlay.erasedSuffix")}.pdf`);
+    await $(`//*[@role="tab"][@aria-selected="true"][.//span[@title="${basename(output)}"]]`).waitForDisplayed({ timeout: 60000, timeoutMsg: `the erased copy ${basename(output)} was never opened` });
+    const page = probe(output).pages?.[0];
+    expect(page?.rotation).toBe(90);
+    expect(page?.text).not.toContain("Turned page marker");
+    expect(page?.text).toContain("second line on the turned page");
+  });
+
+  it("blacks out the area drawn on a turned page with an offset crop box", async () => {
+    const source = copyFixture(fixtures().turned, "editor-redact-turned.pdf");
+    const box = spanWith(probe(source).pages?.[0].spans, "Turned page marker").box;
+    await openInViewer(source);
+    await clickButton(t("viewer.overlay.editMenu"));
+    await clickButton(t("viewer.overlay.redact"));
+
+    await dragPage(0, [box[0] - 4, box[1] - 4], [box[2] + 4, box[3] + 4], TURNED_WIDTH);
+    await clickButton(t("viewer.overlay.redactApply"));
+    await clickButton(t("viewer.save.save"));
+
+    await browser.waitUntil(() => !(probe(source).pages?.[0].text ?? "").includes("Turned page marker"), { timeout: 60000, timeoutMsg: "the blacked-out line is still in the file" });
+    expect(probe(source).pages?.[0].text).toContain("second line on the turned page");
+  });
+
+  it("adds a link over the area drawn on a turned page with an offset crop box", async () => {
+    const source = copyFixture(fixtures().turned, "editor-link-turned.pdf");
+    const box = spanWith(probe(source).pages?.[0].spans, "Turned page marker").box;
+    await openInViewer(source);
+    await clickButton(t("viewer.overlay.editMenu"));
+    await clickButton(t("viewer.overlay.link"));
+
+    await dragPage(0, [box[0] - 4, box[1] - 4], [box[2] + 4, box[3] + 4], TURNED_WIDTH);
+    await typeInto($(`input[aria-label="${t("viewer.overlay.linkUrl")}"]`), "https://example.org/turned");
+    await clickButton(t("viewer.overlay.linkAdd"));
+    await clickButton(t("viewer.save.save"));
+
+    await browser.waitUntil(() => (probe(source).pages?.[0].links ?? []).includes("https://example.org/turned"), { timeout: 60000, timeoutMsg: "the link never reached the file" });
+    const [link] = probe(source).pages?.[0].linkBoxes ?? [];
+    expect(Math.abs(link[0] - (box[0] - 4))).toBeLessThan(3);
+    expect(Math.abs(link[1] - (box[1] - 4))).toBeLessThan(3);
+    expect(Math.abs(link[2] - (box[2] + 4))).toBeLessThan(3);
+    expect(Math.abs(link[3] - (box[3] + 4))).toBeLessThan(3);
   });
 
   it("adds new text with the size and weight chosen in the panel and saves it into the open file", async () => {

@@ -17,6 +17,7 @@ export type PageProbe = {
   images: number;
   drawings: number;
   links: string[];
+  linkBoxes: Array<[number, number, number, number]>;
   spans: Array<{ text: string; size: number; bold: boolean; color: string; box: [number, number, number, number] }>;
   imageBoxes: Array<[number, number, number, number]>;
 };

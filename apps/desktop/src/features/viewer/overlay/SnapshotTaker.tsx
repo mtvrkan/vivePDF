@@ -4,6 +4,7 @@ import { useRegistry } from "@embedpdf/core/react";
 import { useZoom } from "@embedpdf/plugin-zoom/react";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { pageTurns, unrotatedRect, visiblePageSize } from "./pageSize";
 import { snapshotRect, snapshotScale } from "./snapshot";
 
 export function SnapshotTaker({ documentId }: { documentId: string }) {
@@ -25,10 +26,11 @@ export function SnapshotTaker({ documentId }: { documentId: string }) {
       toast("error", t("viewer.snapshot.failed"));
       return;
     }
-    const rect = snapshotRect(request);
+    const turns = pageTurns(documentId, request.pageIndex);
+    const rect = snapshotRect(unrotatedRect(request, turns * 90, visiblePageSize(documentId, request.pageIndex, 0, 0)));
     plugins
       .getEngine()
-      .renderPageRect(pdfDocument, page, rect, { scaleFactor: snapshotScale(zoom, rect), dpr: 1, withAnnotations: true, imageType: "image/png" })
+      .renderPageRect(pdfDocument, page, rect, { scaleFactor: snapshotScale(zoom, rect), rotation: turns, dpr: 1, withAnnotations: true, imageType: "image/png" })
       .wait(
         (blob) => {
           navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]).then(

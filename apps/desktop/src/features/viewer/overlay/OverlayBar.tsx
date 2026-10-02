@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, Crop, ImagePlus, Link2, PenTool, Plus, RotateCcw, Ruler, Save, SaveAll, ScanText, SquareDashed, Trash2, Type, X } from "lucide-react";
+import { Camera, Crop, Eraser, ImagePlus, Link2, PenTool, Plus, RotateCcw, Ruler, Save, SaveAll, ScanText, SquareDashed, Trash2, Type, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
@@ -14,7 +14,7 @@ import { basenameOf, suggestOutputPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { normalizeLinkUri } from "../linkUri";
-import { applyEditor, cropPages, imagePreview, placeSignature } from "@/shared/rpc/operations";
+import { applyEditor, cropPages, imagePreview, placeSignature, redactPdf } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useSignatureStore } from "@/shared/store/signatureStore";
 import { useToastStore } from "@/shared/store/toastStore";
@@ -25,7 +25,7 @@ import { Dialog } from "@/components/shared/Dialog";
 import { useOpenPdf } from "../useOpenPdf";
 import { clearEmbeddedFontCache } from "./embeddedFonts";
 import { formatArea, formatLength, measureDistance, rectAreaMm2 } from "./measure";
-import { visiblePageSize } from "./pageSize";
+import { unrotatedRect, visiblePageSize } from "./pageSize";
 import { SignatureDialog } from "./SignatureDialog";
 import { DrawingEditorHost } from "./drawing/DrawingEditorHost";
 import { tidyAlt } from "./drawing/drawingAltText";
@@ -35,6 +35,7 @@ import { isPendingChange } from "./pending";
 import { hasMixedStyles, toEditorRun } from "./runs";
 
 const MM_TO_PT = 72 / 25.4;
+const ERASE_FILL = "#ffffff";
 const UNITS: MeasureUnit[] = ["mm", "cm", "m"];
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "bmp", "gif", "heic", "heif"];
 
@@ -218,14 +219,43 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       await openPath(output);
     });
 
+  const unturnedSelection = (area: NonNullable<typeof selection>) =>
+    unrotatedRect(area, document.info?.pageSizes[area.pageIndex]?.rotation ?? 0, visiblePageSize(documentId, area.pageIndex, 0, 0));
+
+  const applyErase = () =>
+    runGuarded(async () => {
+      if (!selection) return;
+      const page = selection.pageIndex + 1;
+      const area = unturnedSelection(selection);
+      const output = suggestOutputPath(document.path, t("viewer.overlay.erasedSuffix"));
+      await redactPdf({
+        path: document.path,
+        password: document.password ?? undefined,
+        output,
+        pages: String(page),
+        areas: [{ page, ...area }],
+        searchText: [],
+        patterns: [],
+        presets: [],
+        caseSensitive: false,
+        fill: ERASE_FILL,
+        images: "overlapping",
+        graphics: "contained",
+      });
+      toast("success", t("viewer.overlay.erased", { name: basenameOf(output) }));
+      close();
+      await openPath(output);
+    });
+
   const applyRedact = () =>
     runGuarded(async () => {
       if (!selection || !redaction) return;
+      const area = unturnedSelection(selection);
       redaction.addPending([
         {
           id: crypto.randomUUID(),
           page: selection.pageIndex,
-          rect: { origin: { x: selection.x0, y: selection.y0 }, size: { width: selection.x1 - selection.x0, height: selection.y1 - selection.y0 } },
+          rect: { origin: { x: area.x0, y: area.y0 }, size: { width: area.x1 - area.x0, height: area.y1 - area.y0 } },
           source: "annotation",
           markColor: "#ffb3b3",
           redactionColor: "#000000",
@@ -248,11 +278,12 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       }
       if (!uri && !Number.isFinite(targetPage)) return;
       const pageIndex = selection.pageIndex;
+      const area = unturnedSelection(selection);
       annotation.createAnnotation(pageIndex, {
         type: PdfAnnotationSubtype.LINK,
         id: crypto.randomUUID(),
         pageIndex,
-        rect: { origin: { x: selection.x0, y: selection.y0 }, size: { width: selection.x1 - selection.x0, height: selection.y1 - selection.y0 } },
+        rect: { origin: { x: area.x0, y: area.y0 }, size: { width: area.x1 - area.x0, height: area.y1 - area.y0 } },
         target: uri
           ? { type: "action", action: { type: PdfActionType.URI, uri } }
           : { type: "destination", destination: { pageIndex: targetPage - 1, zoom: { mode: PdfZoomMode.FitPage }, view: [] } },
@@ -397,6 +428,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
             <span className="flex-1" />
             <Button size="sm" variant="primary" onClick={() => void applyCrop(false)} disabled={!hasSelection || busy} loading={busy}>{t("viewer.overlay.cropPage")}</Button>
             <Button size="sm" onClick={() => void applyCrop(true)} disabled={!hasSelection || busy}>{t("viewer.overlay.cropAll")}</Button>
+            <Button size="sm" variant="destructive" icon={<Eraser className="size-4" aria-hidden />} onClick={() => void applyErase()} disabled={!hasSelection || busy}>{t("viewer.overlay.eraseArea")}</Button>
           </>
         ) : null}
         {mode === "redact" ? (
