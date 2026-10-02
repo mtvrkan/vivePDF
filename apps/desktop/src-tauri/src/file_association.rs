@@ -2,9 +2,35 @@ use crate::rpc::RpcError;
 
 pub const PROG_ID: &str = "vivePDF.Document";
 pub const CAPABILITIES_PATH: &str = "Software\\vivePDF\\Capabilities";
+pub const DOCUMENT_ICON_NAME: &str = "pdf-document.ico";
+#[cfg(windows)]
+const DOCUMENT_ICON: &[u8] = include_bytes!("../icons/pdf-document.ico");
 
 pub fn open_command_line(executable: &str) -> String {
     format!("\"{executable}\" \"%1\"")
+}
+
+pub fn icon_value(path: &str) -> String {
+    format!("\"{path}\",0")
+}
+
+pub fn document_icon_path(data_dir: Option<std::path::PathBuf>) -> Option<std::path::PathBuf> {
+    data_dir.map(|dir| dir.join(DOCUMENT_ICON_NAME))
+}
+
+#[cfg(windows)]
+pub fn install_document_icon(path: &std::path::Path) -> Option<String> {
+    if std::fs::read(path).ok().as_deref() != Some(DOCUMENT_ICON) {
+        std::fs::create_dir_all(path.parent()?).ok()?;
+        std::fs::write(path, DOCUMENT_ICON).ok()?;
+    }
+    Some(icon_value(&path.to_string_lossy()))
+}
+
+#[cfg(windows)]
+pub fn current_document_icon(path: &std::path::Path) -> Option<String> {
+    (std::fs::read(path).ok()?.as_slice() == DOCUMENT_ICON)
+        .then(|| icon_value(&path.to_string_lossy()))
 }
 
 pub fn application_key(executable: &str) -> String {
@@ -18,10 +44,14 @@ pub fn application_key(executable: &str) -> String {
 
 #[cfg(windows)]
 mod registry {
+    use windows::Win32::UI::Shell::{SHChangeNotify, SHCNE_ASSOCCHANGED, SHCNF_IDLIST};
     use winreg::enums::HKEY_CURRENT_USER;
     use winreg::RegKey;
 
-    use super::{application_key, open_command_line, CAPABILITIES_PATH, PROG_ID};
+    use super::{
+        application_key, current_document_icon, document_icon_path, icon_value,
+        install_document_icon, open_command_line, CAPABILITIES_PATH, PROG_ID,
+    };
 
     fn root() -> RegKey {
         RegKey::predef(HKEY_CURRENT_USER)
@@ -38,6 +68,17 @@ mod registry {
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(()),
             other => other,
         }
+    }
+
+    fn announce_change() {
+        // SAFETY: SHCNE_ASSOCCHANGED with SHCNF_IDLIST takes no item pointers, so both are None.
+        unsafe {
+            SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None);
+        }
+    }
+
+    fn document_icon_location() -> Option<std::path::PathBuf> {
+        document_icon_path(crate::font_source::data_dir(|key| std::env::var(key).ok()))
     }
 
     pub fn enabled() -> bool {
@@ -60,18 +101,31 @@ mod registry {
         else {
             return false;
         };
-        command.to_lowercase() != open_command_line(&executable.to_string_lossy()).to_lowercase()
+        if command.to_lowercase() != open_command_line(&executable.to_string_lossy()).to_lowercase()
+        {
+            return true;
+        }
+        let icon = root()
+            .open_subkey(format!("Software\\Classes\\{PROG_ID}\\DefaultIcon"))
+            .and_then(|key| key.get_value::<String, _>(""))
+            .unwrap_or_default();
+        document_icon_location()
+            .and_then(|path| current_document_icon(&path))
+            .is_none_or(|expected| icon.to_lowercase() != expected.to_lowercase())
     }
 
     pub fn apply(name: &str, description: &str) -> std::io::Result<()> {
         let executable = std::env::current_exe()?.to_string_lossy().to_string();
-        let icon = format!("\"{executable}\",0");
+        let icon = icon_value(&executable);
+        let document_icon = document_icon_location()
+            .and_then(|path| install_document_icon(&path))
+            .unwrap_or_else(|| icon.clone());
         let classes = classes()?;
         let (prog, _) = classes.create_subkey(PROG_ID)?;
         prog.set_value("", &description)?;
         prog.set_value("FriendlyTypeName", &description)?;
         let (default_icon, _) = prog.create_subkey("DefaultIcon")?;
-        default_icon.set_value("", &icon)?;
+        default_icon.set_value("", &document_icon)?;
         let (command, _) = prog.create_subkey("shell\\open\\command")?;
         command.set_value("", &open_command_line(&executable))?;
         let (open_with, _) = classes.create_subkey(".pdf\\OpenWithProgids")?;
@@ -92,6 +146,7 @@ mod registry {
         associations.set_value(".pdf", &PROG_ID)?;
         let (registered, _) = root().create_subkey("Software\\RegisteredApplications")?;
         registered.set_value(name, &CAPABILITIES_PATH)?;
+        announce_change();
         Ok(())
     }
 
@@ -115,6 +170,7 @@ mod registry {
         ) {
             ignore_missing(registered.delete_value(name))?;
         }
+        announce_change();
         Ok(())
     }
 }
@@ -208,6 +264,44 @@ mod tests {
             open_command_line("C:\\Apps\\vivepdf.exe"),
             "\"C:\\Apps\\vivepdf.exe\" \"%1\""
         );
+    }
+
+    #[test]
+    fn icon_value_quotes_the_path_and_picks_the_first_icon() {
+        assert_eq!(
+            icon_value("C:\\Users\\a b\\vivePDF\\pdf-document.ico"),
+            "\"C:\\Users\\a b\\vivePDF\\pdf-document.ico\",0"
+        );
+    }
+
+    #[test]
+    fn document_icon_lives_in_the_data_directory() {
+        let dir = std::path::PathBuf::from("data");
+        assert_eq!(
+            document_icon_path(Some(dir.clone())),
+            Some(dir.join("pdf-document.ico"))
+        );
+        assert_eq!(document_icon_path(None), None);
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn document_icon_is_written_once_and_repaired_when_changed() {
+        let dir = std::env::temp_dir().join(format!("vivepdf-doc-icon-{}", std::process::id()));
+        let path = dir.join(DOCUMENT_ICON_NAME);
+        let _ = std::fs::remove_dir_all(&dir);
+        assert_eq!(current_document_icon(&path), None);
+
+        let value = install_document_icon(&path).expect("icon written");
+        assert_eq!(value, icon_value(&path.to_string_lossy()));
+        assert_eq!(std::fs::read(&path).unwrap(), DOCUMENT_ICON);
+        assert_eq!(current_document_icon(&path), Some(value.clone()));
+
+        std::fs::write(&path, b"broken").unwrap();
+        assert_eq!(current_document_icon(&path), None);
+        assert_eq!(install_document_icon(&path), Some(value));
+        assert_eq!(std::fs::read(&path).unwrap(), DOCUMENT_ICON);
+        let _ = std::fs::remove_dir_all(&dir);
     }
 
     #[test]

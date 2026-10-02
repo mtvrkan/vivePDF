@@ -12,6 +12,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Presentation: the black and white screens (B / W) are now boards: the pen, highlighter and eraser draw on them (very dark ink turns white on black), each board keeps its own drawing for the session, and a hint at the bottom says that Esc returns to the slides and which keys pick the pen, highlighter and eraser [2026-10-02]
 
 ### Changed
+- Branding: a refreshed Midnight Blue app icon and in-app logo (same V and folded page, now on a deep navy tile with a glowing blue page, soft light and paper shadows), and on Windows .pdf files get their own vivePDF document icon (a page with the logo and a PDF tab) when vivePDF is the default PDF app; installs that are already the default switch to it on the next start [2026-10-03]
 - Installer: the Japanese, Korean and Chinese fallback fonts are no longer bundled, which makes the installer about 23 MB smaller; the Latin, Greek, Cyrillic and Vietnamese fallback font stays included [2026-10-02]
 - Editor: Crop by selection is now called Crop to selection and its hint says that the drawn area is kept and everything outside it is cut away, pointing to Erase selected area for removing the drawn area instead; the Place signature bar says the signature goes on the page as a picture and that Tools › Sign makes a certificate signature [2026-10-02]
 
