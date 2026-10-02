@@ -6,6 +6,7 @@ import { pagePoint, pagePoints } from "../support/desktop.ts";
 const END_KEY = String.fromCharCode(0xe010);
 const ESCAPE_KEY = String.fromCharCode(0xe00c);
 const TURNED_WIDTH = 760;
+const NEW_TEXT_LINE_HEIGHT = 1.25;
 
 type Span = PageProbe["spans"][number];
 type Frame = { key: string; left: number; top: number; width: number; height: number };
@@ -193,6 +194,12 @@ describe("page editor", () => {
     await clickPage(0, 300, 520);
     await typeText("Yeni satır İğdır");
     await waitForPending(1);
+    const spacing = await browser.execute(() => {
+      const text = Array.from(document.querySelectorAll<HTMLElement>('[data-page-index="0"] [data-layer-key]:not([data-block-kind]) div')).find((element) => element.textContent === "Yeni satır İğdır");
+      const style = text ? getComputedStyle(text) : null;
+      return style ? parseFloat(style.lineHeight) / parseFloat(style.fontSize) : 0;
+    });
+    expect(spacing).toBeCloseTo(NEW_TEXT_LINE_HEIGHT, 2);
 
     await clickButton(t("viewer.overlay.save"));
     await browser.waitUntil(() => (probe(source).pages?.[0].text ?? "").includes("Yeni satır İğdır"), { timeout: 60000, timeoutMsg: "the new text never reached the open file" });
