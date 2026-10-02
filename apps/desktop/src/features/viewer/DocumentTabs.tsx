@@ -86,7 +86,10 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
             aria-selected={active}
             tabIndex={active ? 0 : -1}
             aria-keyshortcuts="Delete"
-            onPointerDown={(event) => tearOff.onPointerDown(doc.id, event)}
+            onPointerDown={(event) => {
+              if (event.target instanceof Element && event.target.closest("[data-tab-close]")) return;
+              tearOff.onPointerDown(doc.id, event);
+            }}
             onClick={() => {
               if (!tearOff.consumeDrag()) guardedActivate(doc.id);
             }}
@@ -140,6 +143,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
             </span>
             <span
               aria-hidden
+              data-tab-close=""
               title={`${t("common.close")}: ${doc.name}`}
               onClick={(event) => {
                 event.stopPropagation();

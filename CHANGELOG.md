@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- Viewer: the close button on a document tab closes the document again; pressing it started a tab drag that swallowed the click, so the tab was only activated (middle-click, Delete and Ctrl+W were unaffected) [2026-10-02]
 
 ## [0.1.1] - 2026-10-02
 ### Added

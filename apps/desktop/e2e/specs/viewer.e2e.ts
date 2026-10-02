@@ -339,6 +339,23 @@ describe("viewer", () => {
     expect(probe(path).pages?.[0].annotations).toEqual([]);
   });
 
+  it("closes a tab from its close button", async () => {
+    const first = copyFixture(fixtures().sample, "tab-close-a.pdf");
+    const second = copyFixture(fixtures().second, "tab-close-b.pdf");
+    await openInViewer(first);
+    await openInViewer(second);
+    const tab = (name: string) => $(`//*[@role="tab"][.//span[normalize-space(.)="${name}"]]`);
+    const closeButton = (name: string) => $(`//*[@role="tab"][.//span[normalize-space(.)="${name}"]]//*[@data-tab-close]`);
+
+    await closeButton("tab-close-b.pdf").click();
+    await tab("tab-close-b.pdf").waitForExist({ reverse: true, timeoutMsg: "the active tab stayed open after its close button" });
+
+    await tab("tab-close-a.pdf").waitForDisplayed();
+    await tab("tab-close-a.pdf").moveTo();
+    await closeButton("tab-close-a.pdf").click();
+    await tab("tab-close-a.pdf").waitForExist({ reverse: true, timeoutMsg: "the last tab stayed open after its close button" });
+  });
+
   it("reopens a document at the page where reading stopped", async () => {
     await browser.execute(() => {
       const preferences = JSON.parse(localStorage.getItem("vivepdf.preferences") ?? "{}") as Record<string, unknown>;
