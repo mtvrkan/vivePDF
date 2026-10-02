@@ -17,6 +17,7 @@ from vivepdf.ops._inplace import finish
 from vivepdf.ops._output import OutputResult
 from vivepdf.ops._placement import insertion_matrix, unrotated_insertion_matrix
 from vivepdf.ops._redaction import clip_to_own_text, inset, text_boxes
+from vivepdf.ops._scanned_text import erase_scanned_words, only_hidden_text, paper_colour
 from vivepdf.ops._scratch import place_scratch_page
 from vivepdf.ops._svg import drawing_pdf
 from vivepdf.ops._watermark_style import WATERMARK_FONT, WATERMARK_FONT_BOLD
@@ -946,24 +947,38 @@ def _apply_image_change(
     )
 
 
-def _redact_rect(page: pymupdf.Page, item: EditorReplace | EditorBlock) -> pymupdf.Rect:
+def _redact_rect(
+    page: pymupdf.Page, item: EditorReplace | EditorBlock, tight: bool = True
+) -> pymupdf.Rect:
     if item.kind == "block" and item.original is not None:
         x0, y0, x1, y1 = item.original
         base = _visible_rect(page, EditorBox(page=item.page, x0=x0, y0=y0, x1=x1, y1=y1))
     else:
         base = _visible_rect(page, item)
-    base = inset(base)
+    if tight:
+        base = inset(base)
     return clip_to_own_text(base, text_boxes(page, base))
 
 
 def _redact_edits(document: pymupdf.Document, edits: list[EditorReplace | EditorBlock]) -> None:
-    touched: set[int] = set()
+    scanned: dict[int, list[tuple[pymupdf.Rect, tuple[float, float, float]]]] = {}
+    drawn: dict[int, list[pymupdf.Rect]] = {}
     for item in edits:
-        page = document[item.page - 1]
-        page.add_redact_annot(_redact_rect(page, item))
-        touched.add(item.page - 1)
-    for index in touched:
-        document[index].apply_redactions(
+        index = item.page - 1
+        page = document[index]
+        rect = _redact_rect(page, item)
+        if only_hidden_text(page, rect):
+            area = _redact_rect(page, item, tight=False)
+            scanned.setdefault(index, []).append((area, paper_colour(page, area)))
+        else:
+            drawn.setdefault(index, []).append(rect)
+    for index, areas in scanned.items():
+        erase_scanned_words(document[index], areas)
+    for index, rects in drawn.items():
+        page = document[index]
+        for rect in rects:
+            page.add_redact_annot(rect)
+        page.apply_redactions(
             images=pymupdf.PDF_REDACT_IMAGE_NONE,
             graphics=pymupdf.PDF_REDACT_LINE_ART_REMOVE_IF_COVERED,
         )
