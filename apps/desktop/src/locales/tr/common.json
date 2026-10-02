@@ -1296,6 +1296,7 @@
     "dim": "Karartma",
     "blackoutBlack": "Karart (siyah)",
     "blackoutWhite": "Karart (beyaz)",
+    "boardHint": "Esc ile slaytlara dön · P kalem · H fosforlu kalem · E silgi",
     "overview": "Slayt genel görünümü",
     "toggleTimer": "Kronometreyi göster",
     "toggleClock": "Saati göster",

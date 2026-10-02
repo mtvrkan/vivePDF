@@ -1,26 +1,23 @@
-import { useRef } from "react";
 import { usePresentationStore, type Stroke } from "@/shared/store/presentationStore";
 import type { PageRect } from "./usePageRects";
-import { drawStroke } from "./strokes";
+import { drawStroke, strokeCanvasBox } from "./strokes";
 
 const NO_STROKES: Stroke[] = [];
 
-export function PageDrawingCanvas({ rect }: { rect: PageRect }) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const strokes = usePresentationStore((state) => state.strokesByPage[rect.pageIndex] ?? NO_STROKES);
+function StrokeCanvas({ rect, strokes, redrawKey }: { rect: PageRect; strokes: Stroke[]; redrawKey: string | number }) {
   const dpr = window.devicePixelRatio || 1;
   const width = Math.max(1, Math.round(rect.width));
   const height = Math.max(1, Math.round(rect.height));
+  const box = strokeCanvasBox(strokes, width, height);
 
   const setCanvasRef = (node: HTMLCanvasElement | null) => {
-    canvasRef.current = node;
     if (!node) return;
-    node.width = width * dpr;
-    node.height = height * dpr;
+    node.width = box.width * dpr;
+    node.height = box.height * dpr;
     const ctx = node.getContext("2d");
     if (!ctx) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, width, height);
+    ctx.setTransform(dpr, 0, 0, dpr, -box.left * dpr, -box.top * dpr);
+    ctx.clearRect(box.left, box.top, box.width, box.height);
     strokes.forEach((stroke) => drawStroke(ctx, stroke, width, height));
   };
 
@@ -29,34 +26,18 @@ export function PageDrawingCanvas({ rect }: { rect: PageRect }) {
       ref={setCanvasRef}
       aria-hidden
       className="pointer-events-none absolute"
-      style={{ left: rect.left, top: rect.top, width, height }}
-      key={`${strokes.length}-${width}-${height}`}
+      style={{ left: rect.left + box.left, top: rect.top + box.top, width: box.width, height: box.height }}
+      key={`${redrawKey}-${width}-${height}-${box.left}-${box.top}-${box.width}-${box.height}`}
     />
   );
 }
 
+export function PageDrawingCanvas({ rect }: { rect: PageRect }) {
+  const strokes = usePresentationStore((state) => state.strokesByPage[rect.pageIndex] ?? NO_STROKES);
+  if (strokes.length === 0) return null;
+  return <StrokeCanvas rect={rect} strokes={strokes} redrawKey={strokes.length} />;
+}
+
 export function LiveStrokeCanvas({ rect, stroke }: { rect: PageRect; stroke: Stroke }) {
-  const dpr = window.devicePixelRatio || 1;
-  const width = Math.max(1, Math.round(rect.width));
-  const height = Math.max(1, Math.round(rect.height));
-
-  const setCanvasRef = (node: HTMLCanvasElement | null) => {
-    if (!node) return;
-    node.width = width * dpr;
-    node.height = height * dpr;
-    const ctx = node.getContext("2d");
-    if (!ctx) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    drawStroke(ctx, stroke, width, height);
-  };
-
-  return (
-    <canvas
-      ref={setCanvasRef}
-      aria-hidden
-      className="pointer-events-none absolute"
-      style={{ left: rect.left, top: rect.top, width, height }}
-      key={stroke.points.length}
-    />
-  );
+  return <StrokeCanvas rect={rect} strokes={[stroke]} redrawKey={stroke.points.length} />;
 }

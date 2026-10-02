@@ -70,3 +70,18 @@ export function usePageRects(containerRef: RefObject<HTMLElement | null>): PageR
 export function pageRectAt(rects: PageRect[], x: number, y: number): PageRect | null {
   return rects.find((rect) => x >= rect.left && x <= rect.left + rect.width && y >= rect.top && y <= rect.top + rect.height) ?? null;
 }
+
+export function nearestPageRect(rects: PageRect[], x: number, y: number): PageRect | null {
+  let best: PageRect | null = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (const rect of rects) {
+    const dx = Math.max(rect.left - x, 0, x - (rect.left + rect.width));
+    const dy = Math.max(rect.top - y, 0, y - (rect.top + rect.height));
+    const distance = Math.hypot(dx, dy);
+    if (distance < bestDistance) {
+      best = rect;
+      bestDistance = distance;
+    }
+  }
+  return best;
+}

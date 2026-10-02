@@ -1296,6 +1296,7 @@
     "dim": "어둡기",
     "blackoutBlack": "화면 가리기(검은색)",
     "blackoutWhite": "화면 가리기(흰색)",
+    "boardHint": "Esc 슬라이드로 돌아가기 · P 펜 · H 형광펜 · E 지우개",
     "overview": "슬라이드 개요",
     "toggleTimer": "타이머 표시",
     "toggleClock": "시계 표시",

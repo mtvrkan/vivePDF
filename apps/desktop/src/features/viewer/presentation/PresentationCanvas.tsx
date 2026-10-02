@@ -5,7 +5,8 @@ import { LiveStrokeCanvas, PageDrawingCanvas } from "./DrawingLayer";
 import { LaserTrail, type LaserPoint } from "./LaserTrail";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 import { MagnifierLens } from "./MagnifierLens";
-import { pageRectAt, usePageRects } from "./usePageRects";
+import { clampStrokePoint } from "./strokes";
+import { nearestPageRect, pageRectAt, usePageRects, type PageRect } from "./usePageRects";
 
 const SPOTLIGHT_WHEEL_SENSITIVITY = 0.4;
 const MAGNIFIER_WHEEL_SENSITIVITY = 0.004;
@@ -16,7 +17,12 @@ const LASER_STROKE_MAX_POINTS = 600;
 const LASER_STROKE_MIN_STEP_PX = 2;
 const LASER_FADE_MS = 700;
 
+const ERASER_RADIUS = 0.02;
 const DRAWING_TOOLS = new Set(["pen", "highlighter", "eraser"]);
+
+function pagePoint(rect: PageRect, x: number, y: number) {
+  return clampStrokePoint({ x: (x - rect.left) / rect.width, y: (y - rect.top) / rect.height });
+}
 
 function makeStrokeId(): string {
   return `stroke-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -73,6 +79,10 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
     });
   };
 
+  const eraseEverywhere = (x: number, y: number) => {
+    for (const rect of pageRects) eraseAt(rect.pageIndex, pagePoint(rect, x, y), ERASER_RADIUS);
+  };
+
   const scrollerElement = () => containerRef.current?.querySelector<HTMLElement>("[data-pan-scroller]") ?? null;
 
   const onPointerDown = (event: React.PointerEvent) => {
@@ -93,12 +103,13 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
     }
     if (!DRAWING_TOOLS.has(tool)) return;
     const point = toContainerPoint(event);
-    const pageRect = pageRectAt(pageRects, point.x, point.y);
+    const pageRect = nearestPageRect(pageRects, point.x, point.y);
     if (!pageRect) return;
-    const normalized = { x: (point.x - pageRect.left) / pageRect.width, y: (point.y - pageRect.top) / pageRect.height };
+    const normalized = pagePoint(pageRect, point.x, point.y);
     if (tool === "eraser") {
       erasingRef.current = true;
-      eraseAt(pageRect.pageIndex, normalized, 0.02);
+      event.currentTarget.setPointerCapture(event.pointerId);
+      eraseEverywhere(point.x, point.y);
       return;
     }
     const stroke: Stroke = {
@@ -145,17 +156,14 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
     const point = toContainerPoint(event);
     if (tool === "eraser") {
       if (!erasingRef.current) return;
-      const pageRect = pageRectAt(pageRects, point.x, point.y);
-      if (!pageRect) return;
-      const normalized = { x: (point.x - pageRect.left) / pageRect.width, y: (point.y - pageRect.top) / pageRect.height };
-      eraseAt(pageRect.pageIndex, normalized, 0.02);
+      eraseEverywhere(point.x, point.y);
       return;
     }
     const current = drawingRef.current;
     if (!current) return;
     const pageRect = pageRects.find((rect) => rect.pageIndex === current.pageIndex);
     if (!pageRect) return;
-    const normalized = { x: (point.x - pageRect.left) / pageRect.width, y: (point.y - pageRect.top) / pageRect.height };
+    const normalized = pagePoint(pageRect, point.x, point.y);
     const nextStroke: Stroke = { ...current.stroke, points: [...current.stroke.points, normalized] };
     drawingRef.current = { pageIndex: current.pageIndex, stroke: nextStroke };
     setActiveStroke({ pageIndex: current.pageIndex, stroke: nextStroke });

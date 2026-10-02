@@ -1296,6 +1296,7 @@
     "dim": "Oscurecimiento",
     "blackoutBlack": "Pantalla en negro",
     "blackoutWhite": "Pantalla en blanco",
+    "boardHint": "Esc vuelve a las diapositivas · P lápiz · H resaltador · E borrador",
     "overview": "Vista general de diapositivas",
     "toggleTimer": "Mostrar cronómetro",
     "toggleClock": "Mostrar reloj",

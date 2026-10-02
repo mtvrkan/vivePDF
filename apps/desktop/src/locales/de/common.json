@@ -1296,6 +1296,7 @@
     "dim": "Abdunkeln",
     "blackoutBlack": "Bildschirm schwarz",
     "blackoutWhite": "Bildschirm weiß",
+    "boardHint": "Esc kehrt zu den Folien zurück · P Stift · H Textmarker · E Radierer",
     "overview": "Folienübersicht",
     "toggleTimer": "Timer anzeigen",
     "toggleClock": "Uhr anzeigen",

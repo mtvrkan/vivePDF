@@ -1,5 +1,6 @@
 import { $, browser, expect } from "@wdio/globals";
-import { bootApp, clickButton, copyFixture, fixtures, openInViewer, t } from "../support/app.ts";
+import { join } from "node:path";
+import { bootApp, clickButton, copyFixture, fixtures, openInViewer, t, workDir } from "../support/app.ts";
 
 type Point = { x: number; y: number };
 type Colour = "red" | "blue";
@@ -11,6 +12,58 @@ async function pagePoint(pdfX: number, pdfY: number): Promise<Point> {
   });
   const scale = box.width / 595;
   return { x: Math.round(box.left + pdfX * scale), y: Math.round(box.top + pdfY * scale) };
+}
+
+const ESCAPE_KEY = String.fromCharCode(0xe00c);
+
+async function drawLine(from: Point, to: Point) {
+  await browser
+    .action("pointer", { parameters: { pointerType: "mouse" } })
+    .move({ origin: "viewport", ...from })
+    .down()
+    .move({ origin: "viewport", x: Math.round((from.x + to.x) / 2), y: Math.round((from.y + to.y) / 2), duration: 150 })
+    .move({ origin: "viewport", ...to, duration: 150 })
+    .up()
+    .perform();
+}
+
+function strokeCanvasReach() {
+  return browser.execute(() => {
+    const canvases = Array.from(document.querySelectorAll<HTMLCanvasElement>(".immersive-view canvas.pointer-events-none.absolute")).filter((canvas) => !canvas.closest("[data-page-index]"));
+    const rects = canvases.map((canvas) => canvas.getBoundingClientRect());
+    return { left: Math.min(...rects.map((rect) => rect.left)), right: Math.max(...rects.map((rect) => rect.right)) };
+  });
+}
+
+type PageBox = { left: number; right: number; top: number; bottom: number };
+
+async function redPixels(outside: PageBox | null): Promise<number> {
+  const png = await browser.takeScreenshot();
+  return browser.execute(
+    async (data: string, page: PageBox | null) => {
+      const image = new Image();
+      image.src = `data:image/png;base64,${data}`;
+      await image.decode();
+      const canvas = document.createElement("canvas");
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+      context.drawImage(image, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      const scale = image.naturalWidth / window.innerWidth;
+      let count = 0;
+      for (let index = 0; index < pixels.length; index += 4) {
+        if (!(pixels[index] > 170 && pixels[index + 1] < 120 && pixels[index + 2] < 120)) continue;
+        const pixel = index / 4;
+        const x = (pixel % canvas.width) / scale;
+        if (page && x >= page.left - 4 && x <= page.right + 4) continue;
+        count += 1;
+      }
+      return count;
+    },
+    png,
+    outside,
+  );
 }
 
 async function hover(point: Point) {
@@ -102,5 +155,45 @@ describe("presentation", () => {
     });
     await waitForLensColour("blue", target);
     expect(await lensPixels("red")).toBeLessThan(50);
+  });
+
+  it("keeps pen strokes that run off the page or start beside it", async () => {
+    await browser.keys(ESCAPE_KEY);
+    await browser.keys("p");
+    await waitForStableLayout();
+    const page = await browser.execute(() => {
+      const rect = (document.querySelector('[data-page-index="0"]') as HTMLElement).getBoundingClientRect();
+      return { left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+    });
+    const middle = Math.round((page.top + page.bottom) / 2);
+    await drawLine({ x: Math.round(page.right - 80), y: middle }, { x: Math.round(page.right + 60), y: middle + 40 });
+    await drawLine({ x: Math.round(page.left - 60), y: middle - 80 }, { x: Math.round(page.left - 20), y: middle - 20 });
+
+    await browser.waitUntil(
+      async () => {
+        const reach = await strokeCanvasReach();
+        return reach.right >= page.right + 55 && reach.left <= page.left - 55;
+      },
+      { timeout: 10000, timeoutMsg: "the pen strokes beside the page were not kept" },
+    );
+    expect(await redPixels(page)).toBeGreaterThan(40);
+    await browser.saveScreenshot(join(workDir(), "pen-off-page.png"));
+  });
+
+  it("draws on a black screen and says how to leave it", async () => {
+    await browser.keys("b");
+    const board = $('[data-presentation-board="black"]');
+    await board.waitForDisplayed();
+    await expect(board.$('[role="status"]')).toHaveText(t("presentation.boardHint"));
+
+    await drawLine({ x: 300, y: 300 }, { x: 700, y: 360 });
+    await browser.waitUntil(async () => (await redPixels(null)) > 300, { timeout: 10000, timeoutMsg: "the pen left no ink on the black screen" });
+    await browser.saveScreenshot(join(workDir(), "black-board.png"));
+
+    await browser.keys(ESCAPE_KEY);
+    await expect(board).toBeDisplayed();
+    await browser.keys(ESCAPE_KEY);
+    await board.waitForExist({ reverse: true, timeoutMsg: "Esc did not leave the black screen" });
+    await browser.keys(ESCAPE_KEY);
   });
 });

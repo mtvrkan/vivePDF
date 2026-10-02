@@ -1296,6 +1296,7 @@
     "dim": "变暗程度",
     "blackoutBlack": "黑屏（黑色）",
     "blackoutWhite": "黑屏（白色）",
+    "boardHint": "Esc 返回幻灯片 · P 笔 · H 荧光笔 · E 橡皮擦",
     "overview": "幻灯片概览",
     "toggleTimer": "显示计时器",
     "toggleClock": "显示时钟",

@@ -1296,6 +1296,7 @@
     "dim": "暗さ",
     "blackoutBlack": "ブラックアウト（黒）",
     "blackoutWhite": "ブラックアウト（白）",
+    "boardHint": "Esc でスライドに戻る · P ペン · H 蛍光ペン · E 消しゴム",
     "overview": "スライド一覧",
     "toggleTimer": "タイマーを表示",
     "toggleClock": "時計を表示",

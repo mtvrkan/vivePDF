@@ -1296,6 +1296,7 @@
     "dim": "Escurecimento",
     "blackoutBlack": "Tela preta",
     "blackoutWhite": "Tela branca",
+    "boardHint": "Esc volta aos slides · P caneta · H marca-texto · E borracha",
     "overview": "Visão geral dos slides",
     "toggleTimer": "Mostrar cronômetro",
     "toggleClock": "Mostrar relógio",

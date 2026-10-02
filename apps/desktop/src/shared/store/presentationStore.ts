@@ -3,6 +3,7 @@ import type { CodeBlock } from "@/types";
 
 export type PresentationTool = "pointer" | "laser" | "pen" | "highlighter" | "eraser" | "spotlight" | "magnifier";
 export type BlackoutMode = "none" | "black" | "white";
+export type BoardMode = Exclude<BlackoutMode, "none">;
 export type DrawingsMode = "temporary" | "annotations";
 export type LensShape = "circle" | "rect";
 export type StrokePoint = { x: number; y: number };
@@ -89,6 +90,7 @@ type PresentationState = {
   drawingsMode: DrawingsMode;
   strokesByPage: Record<number, Stroke[]>;
   redoByPage: Record<number, Stroke[]>;
+  boardStrokes: Record<BoardMode, Stroke[]>;
   codeBlocksByPage: Record<number, CodeBlockCache | undefined>;
   codeBlockOpen: { pageIndex: number; blockId: string } | null;
   overviewOpen: boolean;
@@ -124,6 +126,8 @@ type PresentationState = {
   eraseAt: (pageIndex: number, point: StrokePoint, radius: number) => void;
   clearPage: (pageIndex: number) => void;
   clearAllDrawings: () => void;
+  addBoardStroke: (board: BoardMode, stroke: Stroke) => void;
+  eraseBoardAt: (board: BoardMode, point: StrokePoint, radius: number) => void;
   totalStrokeCount: () => number;
   setCodeBlocksForPage: (pageIndex: number, entry: CodeBlockCache) => void;
   openCodeBlock: (pageIndex: number, blockId: string) => void;
@@ -174,6 +178,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   drawingsMode: initialPrefs.drawingsMode,
   strokesByPage: {},
   redoByPage: {},
+  boardStrokes: { black: [], white: [] },
   codeBlocksByPage: {},
   codeBlockOpen: null,
   overviewOpen: false,
@@ -302,7 +307,14 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       strokesByPage: { ...state.strokesByPage, [pageIndex]: [] },
       redoByPage: { ...state.redoByPage, [pageIndex]: [] },
     })),
-  clearAllDrawings: () => set({ strokesByPage: {}, redoByPage: {} }),
+  clearAllDrawings: () => set({ strokesByPage: {}, redoByPage: {}, boardStrokes: { black: [], white: [] } }),
+  addBoardStroke: (board, stroke) => set((state) => ({ boardStrokes: { ...state.boardStrokes, [board]: [...state.boardStrokes[board], stroke] } })),
+  eraseBoardAt: (board, point, radius) =>
+    set((state) => {
+      const strokes = state.boardStrokes[board];
+      const remaining = strokes.filter((stroke) => !strokeHit(stroke, point, radius));
+      return remaining.length === strokes.length ? state : { boardStrokes: { ...state.boardStrokes, [board]: remaining } };
+    }),
   totalStrokeCount: () => Object.values(get().strokesByPage).reduce((sum, strokes) => sum + strokes.length, 0),
 
   setCodeBlocksForPage: (pageIndex, entry) =>
@@ -319,6 +331,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       timerElapsedMs: 0,
       strokesByPage: {},
       redoByPage: {},
+      boardStrokes: { black: [], white: [] },
       codeBlocksByPage: {},
       codeBlockOpen: null,
       overviewOpen: false,

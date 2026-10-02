@@ -3,7 +3,11 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Presentation: the black and white screens (B / W) are now boards: the pen, highlighter and eraser draw on them (very dark ink turns white on black), each board keeps its own drawing for the session, and a hint at the bottom says that Esc returns to the slides and which keys pick the pen, highlighter and eraser [2026-10-02]
+
 ### Fixed
+- Presentation: pen and highlighter strokes are no longer cut off at the page edge; a stroke can run past the page or start in the margin beside it (it belongs to the nearest page and moves with it), and the eraser reaches those parts too [2026-10-02]
 - Viewer: the close button on a document tab closes the document again; pressing it started a tab drag that swallowed the click, so the tab was only activated (middle-click, Delete and Ctrl+W were unaffected) [2026-10-02]
 
 ## [0.1.1] - 2026-10-02

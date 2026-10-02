@@ -1296,6 +1296,7 @@
     "dim": "Assombrissement",
     "blackoutBlack": "Écran noir",
     "blackoutWhite": "Écran blanc",
+    "boardHint": "Échap revient aux diapositives · P stylo · H surligneur · E gomme",
     "overview": "Vue d’ensemble des diapositives",
     "toggleTimer": "Afficher le minuteur",
     "toggleClock": "Afficher l’horloge",

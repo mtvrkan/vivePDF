@@ -1344,6 +1344,7 @@
     "dim": "التعتيم",
     "blackoutBlack": "تعتيم (أسود)",
     "blackoutWhite": "تعتيم (أبيض)",
+    "boardHint": "Esc للعودة إلى الشرائح · P قلم · H قلم تمييز · E ممحاة",
     "overview": "نظرة عامة على الشرائح",
     "toggleTimer": "إظهار المؤقّت",
     "toggleClock": "إظهار الساعة",

@@ -1296,6 +1296,7 @@
     "dim": "Dimming",
     "blackoutBlack": "Blackout (black)",
     "blackoutWhite": "Blackout (white)",
+    "boardHint": "Esc returns to the slides · P pen · H highlighter · E eraser",
     "overview": "Slide overview",
     "toggleTimer": "Show timer",
     "toggleClock": "Show clock",
