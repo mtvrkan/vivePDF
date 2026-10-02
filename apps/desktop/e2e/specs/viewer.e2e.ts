@@ -339,6 +339,21 @@ describe("viewer", () => {
     expect(probe(path).pages?.[0].annotations).toEqual([]);
   });
 
+  it("keeps the frosted glass of bars and menus in the built styles", async () => {
+    const filters = await browser.execute(() =>
+      ["glass", "glass-flat", "glass-menu", "glass-chip"].map((name) => {
+        const probe = document.createElement("div");
+        probe.className = name;
+        document.body.append(probe);
+        const value = getComputedStyle(probe).backdropFilter;
+        probe.remove();
+        return `${name}: ${value}`;
+      }),
+    );
+
+    for (const filter of filters) expect(filter).toContain("blur(");
+  });
+
   it("closes a tab from its close button", async () => {
     const first = copyFixture(fixtures().sample, "tab-close-a.pdf");
     const second = copyFixture(fixtures().second, "tab-close-b.pdf");
