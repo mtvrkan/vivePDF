@@ -205,6 +205,18 @@
         "greenOnBlack": "Siyah üstüne yeşil"
       }
     },
+    "split": {
+      "title": "Pencereyi böl",
+      "off": "Kapalı",
+      "columns": "Yan yana",
+      "rows": "Alt alta",
+      "readOnly": "Salt okunur",
+      "pane": "{{name}} dosyasının salt okunur kopyası",
+      "unsaved": "Kaydedilmemiş değişiklikler kaydedince burada görünür.",
+      "close": "Bölmeyi kapat",
+      "divider": "Bölmeyi yeniden boyutlandır",
+      "openFailed": "İkinci bölme dosyayı açamadı"
+    },
     "pan": "Kaydırma eli",
     "copy": "Seçimi kopyala",
     "print": "Yazdır",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "Seçili işareti sil",
         "undoRedoViewer": "İşaretlemede geri al / yinele",
         "autoScroll": "Otomatik kaydırmayı başlat veya durdur",
+        "splitView": "Pencereyi böl / bölmeyi kapat",
         "autoScrollControl": "Otomatik kaydırırken: hız, yön, durdur",
         "editDelete": "Seçili kutuyu ya da mevcut metni sil",
         "editEnter": "Seçili metni düzenlemeye aç",

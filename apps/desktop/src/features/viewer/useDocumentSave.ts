@@ -12,6 +12,7 @@ import { addAttachments, addBookmark, deleteComments, removeAttachments, replyTo
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { pendingChangesFor, usePendingChangesStore, type PendingChange } from "@/shared/store/pendingChangesStore";
+import { useSplitViewStore } from "@/shared/store/splitViewStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { planRedactionScrub, scrubRedactedFile } from "./redactionScrub";
 import { annotationAuthorName } from "./annotationAuthor";
@@ -85,6 +86,7 @@ export function useDocumentSave(documentId: string) {
       }
       toast("success", t("viewer.save.saved", { name: basenameOf(path) }));
       if (scrubbed > 0) toast("info", t("viewer.save.hiddenScrubbed", { count: scrubbed }));
+      if (samePath) useSplitViewStore.getState().refresh(path);
       if (samePath && (scrubbed > 0 || queued.length > 0)) await reload();
       else if (samePath) void useDocumentStore.getState().loadInfo(documentId);
       return true;

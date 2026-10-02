@@ -33,7 +33,6 @@ import { ImmersiveView } from "./ImmersiveView";
 import { exitImmersive, setImmersiveFullscreen } from "./immersive";
 import { Inspector } from "./Inspector";
 import { OutlinePanel } from "./OutlinePanel";
-import { PageView } from "./PageView";
 import { PendingJump } from "./PendingJump";
 import { ReadingPositionTracker } from "./ReadingPositionTracker";
 import { PresentationBar } from "./presentation/PresentationBar";
@@ -51,6 +50,7 @@ import { PageColorFilters } from "./PageColorFilters";
 import { MakeSearchableDialog } from "./MakeSearchableDialog";
 import { requestSearchable } from "./searchableStore";
 import { SpeechStatusBar } from "./SpeechStatusBar";
+import { SplitStage } from "./split/SplitStage";
 import { ThumbnailSidebar } from "./ThumbnailSidebar";
 import { ViewerDefaults } from "./ViewerDefaults";
 import { ViewerShortcuts } from "./ViewerShortcuts";
@@ -229,7 +229,7 @@ export function ViewerPage() {
                     <div ref={stageRef} className="relative min-w-0 flex-1">
                       <PageColorFilters />
                       <div className="h-full" data-page-colors={pageColors}>
-                        <PageView documentId={activeDocumentId} pageColors={pageColors} />
+                        <SplitStage documentId={activeDocumentId} pageColors={pageColors} />
                       </div>
                       <AutoScroller documentId={activeDocumentId} hostRef={stageRef} />
                       <SnapshotTaker documentId={activeDocumentId} />

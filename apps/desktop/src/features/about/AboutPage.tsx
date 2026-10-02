@@ -48,6 +48,7 @@ const SHORTCUTS: ShortcutGroup[] = [
       { keys: "Delete", labelKey: "about.shortcuts.items.deleteAnnotation" },
       { keys: "Ctrl Z  /  Ctrl Y", labelKey: "about.shortcuts.items.undoRedoViewer" },
       { keys: "Ctrl Shift H", labelKey: "about.shortcuts.items.autoScroll" },
+      { keys: "Ctrl Shift E", labelKey: "about.shortcuts.items.splitView" },
       { keys: "↑ ↓  ·  −  ·  Esc", labelKey: "about.shortcuts.items.autoScrollControl" },
     ],
   },

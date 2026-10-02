@@ -205,6 +205,18 @@
         "greenOnBlack": "黒地に緑"
       }
     },
+    "split": {
+      "title": "ウィンドウを分割",
+      "off": "オフ",
+      "columns": "左右に並べる",
+      "rows": "上下に並べる",
+      "readOnly": "読み取り専用",
+      "pane": "{{name}} の読み取り専用コピー",
+      "unsaved": "未保存の変更は保存後にここに表示されます。",
+      "close": "分割を閉じる",
+      "divider": "分割のサイズを変更",
+      "openFailed": "2 つ目のペインでファイルを開けませんでした"
+    },
     "pan": "手のひらツール",
     "copy": "選択範囲をコピー",
     "print": "印刷",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "選択したマークを削除",
         "undoRedoViewer": "マークアップの元に戻す／やり直す",
         "autoScroll": "自動スクロールを開始または停止",
+        "splitView": "ウィンドウを分割 / 分割を閉じる",
         "autoScrollControl": "自動スクロール中: 速度、方向、停止",
         "editDelete": "選択したボックスまたは既存のテキストを削除",
         "editEnter": "選択したテキストを編集",

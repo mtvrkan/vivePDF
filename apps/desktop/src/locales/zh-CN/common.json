@@ -205,6 +205,18 @@
         "greenOnBlack": "黑底绿字"
       }
     },
+    "split": {
+      "title": "拆分窗口",
+      "off": "关闭",
+      "columns": "左右并排",
+      "rows": "上下排列",
+      "readOnly": "只读",
+      "pane": "{{name}} 的只读副本",
+      "unsaved": "未保存的更改将在保存后显示在这里。",
+      "close": "关闭拆分",
+      "divider": "调整拆分大小",
+      "openFailed": "第二个窗格无法打开该文件"
+    },
     "pan": "平移工具",
     "copy": "复制所选内容",
     "print": "打印",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "删除所选标记",
         "undoRedoViewer": "撤销 / 重做标记",
         "autoScroll": "开始或停止自动滚动",
+        "splitView": "拆分窗口 / 关闭拆分",
         "autoScrollControl": "自动滚动时：速度、方向、停止",
         "editDelete": "删除所选文本框或现有文字",
         "editEnter": "打开所选文字进行编辑",

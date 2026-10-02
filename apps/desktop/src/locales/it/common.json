@@ -205,6 +205,18 @@
         "greenOnBlack": "Verde su nero"
       }
     },
+    "split": {
+      "title": "Dividi finestra",
+      "off": "Disattivata",
+      "columns": "Affiancate",
+      "rows": "Impilate",
+      "readOnly": "Sola lettura",
+      "pane": "Copia in sola lettura di {{name}}",
+      "unsaved": "Le modifiche non salvate appariranno qui dopo il salvataggio.",
+      "close": "Chiudi divisione",
+      "divider": "Ridimensiona la divisione",
+      "openFailed": "Il secondo riquadro non è riuscito ad aprire il file"
+    },
     "pan": "Strumento mano",
     "copy": "Copia selezione",
     "print": "Stampa",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "Elimina segno selezionato",
         "undoRedoViewer": "Annulla / ripristina annotazioni",
         "autoScroll": "Avvia o ferma lo scorrimento automatico",
+        "splitView": "Dividi la finestra / chiudi la divisione",
         "autoScrollControl": "Durante lo scorrimento automatico: velocità, direzione, stop",
         "editDelete": "Rimuovi la casella selezionata o il testo esistente",
         "editEnter": "Apri il testo selezionato per modificarlo",

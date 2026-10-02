@@ -205,6 +205,18 @@
         "greenOnBlack": "검은 바탕에 초록색"
       }
     },
+    "split": {
+      "title": "창 분할",
+      "off": "끄기",
+      "columns": "좌우로",
+      "rows": "위아래로",
+      "readOnly": "읽기 전용",
+      "pane": "{{name}}의 읽기 전용 사본",
+      "unsaved": "저장하지 않은 변경 사항은 저장한 뒤 여기에 표시됩니다.",
+      "close": "분할 닫기",
+      "divider": "분할 크기 조정",
+      "openFailed": "두 번째 창에서 파일을 열지 못했습니다"
+    },
     "pan": "이동 도구",
     "copy": "선택 영역 복사",
     "print": "인쇄",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "선택한 마크 삭제",
         "undoRedoViewer": "마크업 실행 취소 / 다시 실행",
         "autoScroll": "자동 스크롤 시작 또는 중지",
+        "splitView": "창 분할 / 분할 닫기",
         "autoScrollControl": "자동 스크롤 중: 속도, 방향, 중지",
         "editDelete": "선택한 상자 또는 기존 텍스트 삭제",
         "editEnter": "선택한 텍스트 편집 열기",

@@ -6,13 +6,16 @@ import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
 import { ZoomMode, useZoom } from "@embedpdf/plugin-zoom/react";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { useSplitViewStore } from "@/shared/store/splitViewStore";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { copySelection } from "./copySelection";
 import { hasOpenModal, hasTextSelectionOutsidePages, isActivatableTarget, isInsideCompositeWidget } from "./viewerKeyTarget";
+import { isSplitViewToggle } from "./split/splitShortcut";
 import { usePageNavigation } from "./usePageNavigation";
 import { zoomShortcutFor } from "./zoomShortcuts";
 
@@ -49,6 +52,12 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         return;
       }
       if (typing) return;
+      if (isSplitViewToggle(event) && !immersive) {
+        event.preventDefault();
+        const path = useDocumentStore.getState().documents[documentId]?.path;
+        if (path) useSplitViewStore.getState().toggle(path);
+        return;
+      }
       if (event.altKey && !modifier && !event.shiftKey && (key === "ArrowLeft" || key === "ArrowRight")) {
         event.preventDefault();
         if (key === "ArrowLeft") goBack();

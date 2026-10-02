@@ -205,6 +205,18 @@
         "greenOnBlack": "Verde sobre negro"
       }
     },
+    "split": {
+      "title": "Dividir ventana",
+      "off": "Desactivado",
+      "columns": "En paralelo",
+      "rows": "Apilado",
+      "readOnly": "Solo lectura",
+      "pane": "Copia de solo lectura de {{name}}",
+      "unsaved": "Los cambios sin guardar aparecerán aquí cuando guarde.",
+      "close": "Cerrar división",
+      "divider": "Cambiar el tamaño de la división",
+      "openFailed": "El segundo panel no pudo abrir el archivo"
+    },
     "pan": "Herramienta de desplazamiento",
     "copy": "Copiar selección",
     "print": "Imprimir",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "Eliminar marca seleccionada",
         "undoRedoViewer": "Deshacer / rehacer marcas",
         "autoScroll": "Iniciar o detener el desplazamiento automático",
+        "splitView": "Dividir la ventana / cerrar la división",
         "autoScrollControl": "Durante el desplazamiento automático: velocidad, dirección, detener",
         "editDelete": "Eliminar el cuadro seleccionado o el texto existente",
         "editEnter": "Abrir el texto seleccionado para editarlo",

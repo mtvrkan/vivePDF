@@ -30,10 +30,14 @@ import { ZoomBadge } from "./ZoomBadge";
 
 const CLICK_MOVE_LIMIT_PX = 4;
 const INK_CURSOR_COLOR = "#1f2937";
+const EDITABLE_LAYER = { display: "contents" } as const;
+const READ_ONLY_LAYER = { display: "contents", pointerEvents: "none" } as const;
 
 export type PageDecoration = (pageIndex: number, width: number, height: number) => ReactNode;
 
-export function PageView({ documentId, decoratePage, pageColors = "normal" }: { documentId: string; decoratePage?: PageDecoration; pageColors?: PageColorScheme }) {
+type PageViewProps = { documentId: string; decoratePage?: PageDecoration; pageColors?: PageColorScheme; readOnly?: boolean };
+
+export function PageView({ documentId, decoratePage, pageColors = "normal", readOnly = false }: PageViewProps) {
   const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
   const selectionColor = usePreferencesStore((state) => state.selectionColor);
@@ -89,7 +93,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal" }: { 
   const drawCursor = activeAnnotationTool === "ink" ? penCursor(INK_CURSOR_COLOR) : activeAnnotationTool === "highlight" ? highlighterCursor(INK_CURSOR_COLOR) : null;
 
   return (
-    <div ref={hostRef} className="relative h-full" data-draw-cursor={drawCursor ? "" : undefined} style={drawCursor ? { cursor: drawCursor } : undefined}>
+    <div ref={hostRef} className="relative h-full" data-read-only={readOnly ? "" : undefined} data-draw-cursor={drawCursor ? "" : undefined} style={drawCursor ? { cursor: drawCursor } : undefined}>
       <GlobalPointerProvider documentId={documentId}>
         <Viewport documentId={documentId} data-pan-scroller="" tabIndex={0} role="region" aria-label={t("viewer.documentPages")} className="outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring" style={{ height: "100%", backgroundColor: "var(--muted)" }}>
           <PanMode />
@@ -113,19 +117,23 @@ export function PageView({ documentId, decoratePage, pageColors = "normal" }: { 
                       activeHighlightColor="color-mix(in oklab, var(--primary) 55%, transparent)"
                     />
                     <SelectionLayer documentId={documentId} pageIndex={pageIndex} background={selectionColor} />
-                    <div data-annotation-layer style={{ display: "contents" }}>
+                    <div data-annotation-layer style={readOnly ? READ_ONLY_LAYER : EDITABLE_LAYER}>
                     <AnnotationLayer
                       documentId={documentId}
                       pageIndex={pageIndex}
                       selectionOutline={{ color: "var(--primary)", style: "dashed", width: 1, offset: 2 }}
                       resizeUI={{ size: 8, color: "var(--primary)" }}
-                      selectionMenu={(menuProps) => <AnnotationSelectionMenu {...menuProps} documentId={documentId} />}
+                      selectionMenu={readOnly ? undefined : (menuProps) => <AnnotationSelectionMenu {...menuProps} documentId={documentId} />}
                     />
                     </div>
-                    <RedactionLayer documentId={documentId} pageIndex={pageIndex} />
-                    <FieldHighlights documentId={documentId} pageIndex={pageIndex} />
-                    <MarqueeZoom documentId={documentId} pageIndex={pageIndex} stroke="var(--primary)" fill="color-mix(in oklab, var(--primary) 18%, transparent)" />
-                    <PageOverlayLayer documentId={documentId} pageIndex={pageIndex} width={width} height={height} />
+                    {readOnly ? null : (
+                      <>
+                        <RedactionLayer documentId={documentId} pageIndex={pageIndex} />
+                        <FieldHighlights documentId={documentId} pageIndex={pageIndex} />
+                        <MarqueeZoom documentId={documentId} pageIndex={pageIndex} stroke="var(--primary)" fill="color-mix(in oklab, var(--primary) 18%, transparent)" />
+                        <PageOverlayLayer documentId={documentId} pageIndex={pageIndex} width={width} height={height} />
+                      </>
+                    )}
                   </PagePointerProvider>
                 </Rotate>
               )}
@@ -134,7 +142,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal" }: { 
         </Viewport>
       </GlobalPointerProvider>
       <ZoomBadge documentId={documentId} />
-      <ViewerContextMenu documentId={documentId} hostRef={hostRef} />
+      {readOnly ? null : <ViewerContextMenu documentId={documentId} hostRef={hostRef} />}
       <LinkPreview documentId={documentId} hostRef={hostRef} />
     </div>
   );

@@ -205,6 +205,18 @@
         "greenOnBlack": "Grün auf Schwarz"
       }
     },
+    "split": {
+      "title": "Fenster teilen",
+      "off": "Aus",
+      "columns": "Nebeneinander",
+      "rows": "Übereinander",
+      "readOnly": "Schreibgeschützt",
+      "pane": "Schreibgeschützte Kopie von {{name}}",
+      "unsaved": "Ungespeicherte Änderungen erscheinen hier nach dem Speichern.",
+      "close": "Teilung schließen",
+      "divider": "Teilung anpassen",
+      "openFailed": "Der zweite Bereich konnte die Datei nicht öffnen"
+    },
     "pan": "Verschieben",
     "copy": "Auswahl kopieren",
     "print": "Drucken",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "Ausgewählte Markierung löschen",
         "undoRedoViewer": "Markup rückgängig machen / wiederholen",
         "autoScroll": "Automatischen Bildlauf starten oder beenden",
+        "splitView": "Fenster teilen / Teilung schließen",
         "autoScrollControl": "Beim automatischen Bildlauf: Tempo, Richtung, Stopp",
         "editDelete": "Markiertes Feld oder vorhandenen Text entfernen",
         "editEnter": "Markierten Text zum Bearbeiten öffnen",

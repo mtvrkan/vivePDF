@@ -205,6 +205,18 @@
         "greenOnBlack": "Verde sobre preto"
       }
     },
+    "split": {
+      "title": "Dividir janela",
+      "off": "Desativado",
+      "columns": "Lado a lado",
+      "rows": "Empilhado",
+      "readOnly": "Somente leitura",
+      "pane": "Cópia somente leitura de {{name}}",
+      "unsaved": "As alterações não salvas aparecem aqui depois que você salvar.",
+      "close": "Fechar divisão",
+      "divider": "Redimensionar a divisão",
+      "openFailed": "O segundo painel não conseguiu abrir o arquivo"
+    },
     "pan": "Ferramenta de panorâmica",
     "copy": "Copiar seleção",
     "print": "Imprimir",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "Excluir marca selecionada",
         "undoRedoViewer": "Desfazer / refazer marcação",
         "autoScroll": "Iniciar ou parar a rolagem automática",
+        "splitView": "Dividir a janela / fechar a divisão",
         "autoScrollControl": "Durante a rolagem automática: velocidade, direção, parar",
         "editDelete": "Remover a caixa selecionada ou o texto existente",
         "editEnter": "Abrir o texto selecionado para edição",

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpen, Columns2, File, MoveHorizontal, MoveVertical, Palette, PlayCircle } from "lucide-react";
+import { BookOpen, Columns2, File, MoveHorizontal, MoveVertical, Palette, PlayCircle, SquareSplitHorizontal, SquareSplitVertical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ScrollStrategy } from "@embedpdf/plugin-scroll";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
@@ -8,8 +8,10 @@ import { ContextMenu, MENU_LAYER, type ContextMenuAnchor, type ContextMenuItem }
 import { IconButton } from "@/components/shared/IconButton";
 import { PAGE_COLOR_SCHEMES } from "@/shared/lib/pageColors";
 import { useAutoScrollStore } from "@/shared/store/autoScrollStore";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { scrollDirectionOf, usePageDisplayStore, type ScrollDirection } from "@/shared/store/pageDisplayStore";
 import { choosePageColors, useReadingStore } from "@/shared/store/readingStore";
+import { splitViewOf, useSplitViewStore, type SplitLayout } from "@/shared/store/splitViewStore";
 
 export const AUTO_SCROLL_SHORTCUT = "Ctrl+Shift+H";
 
@@ -22,6 +24,8 @@ export function PageDisplayMenu({ documentId }: { documentId: string }) {
   const direction = usePageDisplayStore((state) => scrollDirectionOf(state, documentId));
   const autoScrolling = useAutoScrollStore((state) => state.running);
   const pageColors = useReadingStore((state) => state.pageColors);
+  const path = useDocumentStore((state) => state.documents[documentId]?.path ?? null);
+  const splitLayout = useSplitViewStore((state) => splitViewOf(state, path)?.layout ?? null);
   const [anchor, setAnchor] = useState<ContextMenuAnchor | null>(null);
 
   const setDirection = (next: ScrollDirection) => {
@@ -36,6 +40,17 @@ export function PageDisplayMenu({ documentId }: { documentId: string }) {
     label,
     checked: spreadMode === mode,
     onSelect: () => spread?.setSpreadMode(mode),
+  });
+
+  const splitItem = (id: string, layout: SplitLayout, label: string, icon: typeof SquareSplitHorizontal): ContextMenuItem => ({
+    type: "item",
+    id,
+    icon,
+    label,
+    checked: splitLayout === layout,
+    onSelect: () => {
+      if (path) useSplitViewStore.getState().open(path, layout);
+    },
   });
 
   const items: ContextMenuItem[] = [
@@ -54,6 +69,26 @@ export function PageDisplayMenu({ documentId }: { documentId: string }) {
       shortcut: AUTO_SCROLL_SHORTCUT,
       checked: autoScrolling,
       onSelect: () => useAutoScrollStore.getState().toggle(),
+    },
+    {
+      type: "submenu",
+      id: "split-view",
+      icon: SquareSplitHorizontal,
+      label: t("viewer.split.title"),
+      disabled: !path,
+      items: [
+        {
+          type: "item",
+          id: "split-off",
+          label: t("viewer.split.off"),
+          checked: splitLayout === null,
+          onSelect: () => {
+            if (path) useSplitViewStore.getState().close(path);
+          },
+        },
+        splitItem("split-columns", "columns", t("viewer.split.columns"), SquareSplitHorizontal),
+        splitItem("split-rows", "rows", t("viewer.split.rows"), SquareSplitVertical),
+      ],
     },
     {
       type: "submenu",

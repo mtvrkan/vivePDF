@@ -205,6 +205,18 @@
         "greenOnBlack": "Vert sur noir"
       }
     },
+    "split": {
+      "title": "Diviser la fenêtre",
+      "off": "Désactivé",
+      "columns": "Côte à côte",
+      "rows": "Superposé",
+      "readOnly": "Lecture seule",
+      "pane": "Copie en lecture seule de {{name}}",
+      "unsaved": "Les modifications non enregistrées apparaîtront ici après l’enregistrement.",
+      "close": "Fermer la division",
+      "divider": "Redimensionner la division",
+      "openFailed": "Le second volet n’a pas pu ouvrir le fichier"
+    },
     "pan": "Outil de déplacement",
     "copy": "Copier la sélection",
     "print": "Imprimer",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "Supprimer l’annotation sélectionnée",
         "undoRedoViewer": "Annuler / rétablir le marquage",
         "autoScroll": "Démarrer ou arrêter le défilement automatique",
+        "splitView": "Diviser la fenêtre / fermer la division",
         "autoScrollControl": "Pendant le défilement automatique : vitesse, sens, arrêt",
         "editDelete": "Supprimer la boîte sélectionnée ou le texte existant",
         "editEnter": "Ouvrir le texte sélectionné pour le modifier",

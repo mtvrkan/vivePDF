@@ -205,6 +205,18 @@
         "greenOnBlack": "Green text on black"
       }
     },
+    "split": {
+      "title": "Split window",
+      "off": "Off",
+      "columns": "Side by side",
+      "rows": "Stacked",
+      "readOnly": "Read-only",
+      "pane": "Read-only copy of {{name}}",
+      "unsaved": "Unsaved changes appear here after you save.",
+      "close": "Close split",
+      "divider": "Resize the split",
+      "openFailed": "The second pane could not open the file"
+    },
     "pan": "Pan tool",
     "copy": "Copy selection",
     "print": "Print",
@@ -5723,6 +5735,7 @@
         "deleteAnnotation": "Delete selected mark",
         "undoRedoViewer": "Undo / redo mark-up",
         "autoScroll": "Start or stop automatic scrolling",
+        "splitView": "Split the window / close the split",
         "autoScrollControl": "While scrolling automatically: speed, direction, stop",
         "editDelete": "Remove the selected box or existing text",
         "editEnter": "Open the selected text for editing",
