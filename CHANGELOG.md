@@ -3,10 +3,15 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.1.1] - 2026-10-02
 ### Added
+- Viewer: Page display › Split window shows the open file a second time, side by side or stacked (Ctrl+Shift+E toggles it), so two places can be read at once; the second pane is read-only (select, copy and the search bar's matches work there), reopens at the same page after every save and says when unsaved changes are not in it yet, and the divider can be dragged or moved with the arrow keys [2026-10-02]
+- Fonts: when a document uses Japanese, Korean or Chinese text without embedding its font, a bar above the page offers that language's font (4.3–8 MB) and redraws the document once it is downloaded; Settings › Tools › Fallback fonts lists the four sets to download or remove ahead of time. Downloads come from the project's own `fonts-1` release and are checked against a pinned SHA-256 [2026-10-02]
 - Presentation: the black and white screens (B / W) are now boards: the pen, highlighter and eraser draw on them (very dark ink turns white on black), each board keeps its own drawing for the session, and a hint at the bottom says that Esc returns to the slides and which keys pick the pen, highlighter and eraser [2026-10-02]
 
 ### Changed
+- Installer: the Japanese, Korean and Chinese fallback fonts are no longer bundled, which makes the installer about 23 MB smaller; the Latin, Greek, Cyrillic and Vietnamese fallback font stays included [2026-10-02]
 - Editor: Crop by selection is now called Crop to selection and its hint says that the drawn area is kept and everything outside it is cut away, pointing to Black out area for removing an area instead; the Place signature bar says the signature goes on the page as a picture and that Tools › Sign makes a certificate signature [2026-10-02]
 
 ### Fixed
@@ -21,18 +26,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Viewer: the close button on a document tab closes the document again; pressing it started a tab drag that swallowed the click, so the tab was only activated (middle-click, Delete and Ctrl+W were unaffected) [2026-10-02]
 
 ### Security
-- Office to PDF: the Windows installer is accepted only with a valid Authenticode signature whose signer is exactly The Document Foundation (name, organisation and signature type are all checked), instead of a checksum file fetched from the same slow server; macOS keeps its codesign check and Linux keeps the mandatory published checksum. Downloads only follow redirects that stay on https [2026-10-02]
-
-## [0.1.1] - 2026-10-02
-### Added
-- Viewer: Page display › Split window shows the open file a second time, side by side or stacked (Ctrl+Shift+E toggles it), so two places can be read at once; the second pane is read-only (select, copy and the search bar's matches work there), reopens at the same page after every save and says when unsaved changes are not in it yet, and the divider can be dragged or moved with the arrow keys [2026-10-02]
-- Fonts: when a document uses Japanese, Korean or Chinese text without embedding its font, a bar above the page offers that language's font (4.3–8 MB) and redraws the document once it is downloaded; Settings › Tools › Fallback fonts lists the four sets to download or remove ahead of time. Downloads come from the project's own `fonts-1` release and are checked against a pinned SHA-256 [2026-10-02]
-
-### Changed
-- Installer: the Japanese, Korean and Chinese fallback fonts are no longer bundled, which makes the installer about 23 MB smaller; the Latin, Greek, Cyrillic and Vietnamese fallback font stays included [2026-10-02]
-
-### Security
 - Signatures: the EU list of trusted lists is now checked against the six signing certificates the European Commission published in the Official Journal (C/2026/1944, 15 April 2026); an imported EU list that carries one of their signatures counts as verified, and the national lists it names are verified through it [2026-10-02]
+- Office to PDF: the Windows installer is accepted only with a valid Authenticode signature whose signer is exactly The Document Foundation (name, organisation and signature type are all checked), instead of a checksum file fetched from the same slow server; macOS keeps its codesign check and Linux keeps the mandatory published checksum. Downloads only follow redirects that stay on https [2026-10-02]
 
 ## [0.1.0] - 2026-10-01
 ### Added
