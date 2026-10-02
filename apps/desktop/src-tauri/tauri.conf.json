@@ -23,8 +23,8 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://avatars.githubusercontent.com; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost http://vivepdf-view.localhost vivepdf-view://localhost https://api.github.com; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none';",
-      "devCsp": "default-src 'self' http://localhost:1420; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' http://localhost:1420; style-src 'self' 'unsafe-inline' http://localhost:1420; img-src 'self' blob: data: http://localhost:1420; font-src 'self' data: http://localhost:1420; worker-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost http://vivepdf-view.localhost vivepdf-view://localhost http://localhost:1420 ws://localhost:1420 ws://localhost:1421",
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' blob: data: https://avatars.githubusercontent.com; font-src 'self' data:; worker-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost http://vivepdf-view.localhost vivepdf-view://localhost http://vivepdf-font.localhost vivepdf-font://localhost https://api.github.com; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none';",
+      "devCsp": "default-src 'self' http://localhost:1420; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' http://localhost:1420; style-src 'self' 'unsafe-inline' http://localhost:1420; img-src 'self' blob: data: http://localhost:1420; font-src 'self' data: http://localhost:1420; worker-src 'self' blob:; connect-src 'self' ipc: http://ipc.localhost http://vivepdf-view.localhost vivepdf-view://localhost http://vivepdf-font.localhost vivepdf-font://localhost http://localhost:1420 ws://localhost:1420 ws://localhost:1421",
       "headers": {
         "Cross-Origin-Opener-Policy": "same-origin",
         "Cross-Origin-Embedder-Policy": "require-corp"

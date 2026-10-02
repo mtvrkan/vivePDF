@@ -1028,6 +1028,15 @@
         "highlight": "Destacar campos",
         "failed": "Não foi possível ler os campos"
       },
+      "fonts": {
+        "missing": "Este documento precisa de uma fonte adicional: {{language}} ({{size}}).",
+        "download": "Baixar",
+        "downloading": "Baixando… {{percent}}%",
+        "retry": "Tentar novamente",
+        "ready": "Fonte pronta: {{language}}. Recarregue o documento para mostrar o texto.",
+        "readyUnsaved": "Fonte pronta: {{language}}. Salve o documento e abra-o novamente para mostrar o texto.",
+        "reload": "Recarregar"
+      },
       "dismiss": "Fechar mensagem"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "O LibreOffice está pronto.",
       "removed": "O LibreOffice foi removido.",
       "unsupported": "Não há download do LibreOffice para este sistema ou processador; instale-o manualmente."
+    },
+    "fallbackFonts": {
+      "title": "Fontes de reserva",
+      "description": "Textos em japonês, coreano e chinês que o documento não incorpora são desenhados com estas fontes; cada conjunto só é baixado quando você pede.",
+      "download": "Baixar",
+      "remove": "Remover",
+      "cancel": "Cancelar download",
+      "downloaded": "Fonte baixada: {{language}}.",
+      "removed": "Fonte removida: {{language}}.",
+      "cancelled": "Download da fonte cancelado: {{language}}.",
+      "progressLabel": "Download da fonte: {{language}}",
+      "sets": {
+        "ja": "Japonês",
+        "ko": "Coreano",
+        "zh-Hans": "Chinês (simplificado)",
+        "zh-Hant": "Chinês (tradicional)"
+      }
     },
     "backToViewer": "Voltar",
     "resetAllUserData": "Excluir também assinaturas salvas, sequências, regras de pastas e predefinições",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "O veraPDF está instalado em uma pasta cujo nome tem caracteres como parênteses, & ou %, e não pode ser iniciado com segurança. Instale-o em uma pasta como C:\\veraPDF.",
       "noReport": "O veraPDF não retornou um relatório para este arquivo.",
       "languageChecksum": "Os dados de idioma baixados não corresponderam à soma de verificação publicada e foram descartados. Tente baixar novamente.",
+      "fontChecksum": "A fonte baixada não correspondeu à soma de verificação publicada e foi descartada. Tente baixar novamente.",
       "imageUnreadable": "Não foi possível ler a imagem; ela pode estar danificada ou em um formato não suportado.",
       "pictureTooLarge": "A imagem é grande demais para ser processada com segurança. Reduza o tamanho e tente novamente.",
       "noImages": "Nenhuma imagem foi encontrada para adicionar.",

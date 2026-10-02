@@ -2,9 +2,11 @@ import { spawn, execFileSync, type ChildProcess } from "node:child_process";
 import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, rmSync, writeFileSync } from "node:fs";
 import { connect } from "node:net";
 import { homedir } from "node:os";
+import type { Server } from "node:http";
 import { join } from "node:path";
 import { browser } from "@wdio/globals";
 import { ensureEdgeDriver } from "./support/edgeDriver.ts";
+import { startFontMirror } from "./support/fontMirror.ts";
 import { APP_BINARY, APP_IDENTIFIER, E2E_DIR, RUN_ROOT, SIDECAR_DIR } from "./support/paths.ts";
 
 const DRIVER_PORT = Number(process.env.VIVEPDF_E2E_DRIVER_PORT ?? 4444);
@@ -12,6 +14,7 @@ const NATIVE_PORT = DRIVER_PORT + 1;
 
 let tauriDriver: ChildProcess | null = null;
 let driverLog: number | null = null;
+let fontMirror: Server | null = null;
 
 function tauriDriverPath(): string {
   const name = process.platform === "win32" ? "tauri-driver.exe" : "tauri-driver";
@@ -77,6 +80,9 @@ export const config: WebdriverIO.Config = {
     process.env.VIVEPDF_E2E_RUN_DIR = runDir;
     process.env.VIVEPDF_DATA_DIR = join(runDir, "engine-data");
     process.env.VIVEPDF_E2E_EDGEDRIVER = await ensureEdgeDriver();
+    const mirror = await startFontMirror();
+    fontMirror = mirror.server;
+    process.env.VIVEPDF_FONTS_URL = mirror.url;
     resetAppData();
   },
 
@@ -125,6 +131,11 @@ export const config: WebdriverIO.Config = {
     writeFileSync(join(process.env.VIVEPDF_E2E_WORK_DIR as string, `${name}.error.txt`), failure);
     const appLog = process.env.LOCALAPPDATA ? join(process.env.LOCALAPPDATA, APP_IDENTIFIER, "logs", "vivepdf.log") : null;
     if (appLog && existsSync(appLog)) copyFileSync(appLog, join(process.env.VIVEPDF_E2E_WORK_DIR as string, `${name}.vivepdf.log`));
+  },
+
+  onComplete: () => {
+    fontMirror?.close();
+    fontMirror = null;
   },
 
   afterSession: async () => {

@@ -3,6 +3,12 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Fonts: when a document uses Japanese, Korean or Chinese text without embedding its font, a bar above the page offers that language's font (4.3–8 MB) and redraws the document once it is downloaded; Settings › Tools › Fallback fonts lists the four sets to download or remove ahead of time. Downloads come from the project's own `fonts-1` release and are checked against a pinned SHA-256 [2026-10-02]
+
+### Changed
+- Installer: the Japanese, Korean and Chinese fallback fonts are no longer bundled, which makes the installer about 23 MB smaller; the Latin, Greek, Cyrillic and Vietnamese fallback font stays included [2026-10-02]
+
 ### Security
 - Signatures: the EU list of trusted lists is now checked against the six signing certificates the European Commission published in the Official Journal (C/2026/1944, 15 April 2026); an imported EU list that carries one of their signatures counts as verified, and the national lists it names are verified through it [2026-10-02]
 

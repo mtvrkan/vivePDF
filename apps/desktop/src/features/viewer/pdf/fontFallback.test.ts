@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FontCharset } from "@embedpdf/models";
-import { buildFontFallbackConfig, fallbackFontBaseUrl } from "./fontFallback";
+import { buildFontFallbackConfig, downloadableFontSets, fallbackFontBaseUrl, fontSetBytes } from "./fontFallback";
 import fallbackFonts from "./fallbackFonts.json";
 
 describe("buildFontFallbackConfig", () => {
@@ -31,9 +31,18 @@ describe("buildFontFallbackConfig", () => {
     expect(config.defaultFont).toBeUndefined();
   });
 
-  it("builds an absolute base url from the page origin", () => {
-    expect(fallbackFontBaseUrl("http://tauri.localhost")).toBe(`http://tauri.localhost/${fallbackFonts.directory}`);
-    expect(fallbackFontBaseUrl("http://localhost:1420")).toBe("http://localhost:1420/fonts/fallback");
+  it("serves every fallback font from the font scheme root without a trailing slash", () => {
+    expect(fallbackFontBaseUrl("http://vivepdf-font.localhost/")).toBe("http://vivepdf-font.localhost");
+    expect(fallbackFontBaseUrl("vivepdf-font://localhost/")).toBe("vivepdf-font://localhost");
+  });
+
+  it("downloads the CJK sets on demand and keeps only the Latin set bundled", () => {
+    expect(downloadableFontSets().map((set) => set.id)).toEqual(["ja", "ko", "zh-Hans", "zh-Hant"]);
+    expect(fallbackFonts.sets.filter((set) => set.bundled).map((set) => set.id)).toEqual(["latin"]);
+    expect(fontSetBytes(downloadableFontSets()[0])).toBe(4538888);
+    for (const set of fallbackFonts.sets) {
+      for (const entry of set.files) expect(entry.sha256).toMatch(/^[0-9a-f]{64}$/);
+    }
   });
 
   it("only names charsets that exist", () => {

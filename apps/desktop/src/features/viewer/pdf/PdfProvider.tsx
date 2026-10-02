@@ -1,15 +1,16 @@
 import { useEffect, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { convertFileSrc } from "@tauri-apps/api/core";
 import { EmbedPDF } from "@embedpdf/core/react";
 import { usePdfiumEngine } from "@embedpdf/engines/react";
 import { PrintFrame } from "@embedpdf/plugin-print/react";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { AnnotationAuthorSync } from "../AnnotationAuthorSync";
 import { viewerPlugins } from "./plugins";
-import { buildFontFallbackConfig, fallbackFontBaseUrl } from "./fontFallback";
+import { FALLBACK_FONT_SCHEME, buildFontFallbackConfig, fallbackFontBaseUrl } from "./fontFallback";
 
 const PDFIUM_WASM_URL = new URL("/pdfium.wasm", window.location.origin).href;
-const FONT_FALLBACK = buildFontFallbackConfig(fallbackFontBaseUrl(window.location.origin));
+const FONT_FALLBACK = buildFontFallbackConfig(fallbackFontBaseUrl(convertFileSrc("", FALLBACK_FONT_SCHEME)));
 
 export const READY_MARK = "vivepdf:ready";
 

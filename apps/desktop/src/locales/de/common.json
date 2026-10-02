@@ -1028,6 +1028,15 @@
         "highlight": "Felder hervorheben",
         "failed": "Felder konnten nicht gelesen werden"
       },
+      "fonts": {
+        "missing": "Für Text auf {{language}} in diesem Dokument wird eine Schriftart benötigt ({{size}}).",
+        "download": "Herunterladen",
+        "downloading": "Wird heruntergeladen… {{percent}} %",
+        "retry": "Erneut versuchen",
+        "ready": "Die Schriftart für {{language}} ist bereit. Laden Sie das Dokument neu, um den Text anzuzeigen.",
+        "readyUnsaved": "Die Schriftart für {{language}} ist bereit. Speichern Sie das Dokument und öffnen Sie es erneut, um den Text anzuzeigen.",
+        "reload": "Neu laden"
+      },
       "dismiss": "Meldung schließen"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "LibreOffice ist bereit.",
       "removed": "LibreOffice wurde entfernt.",
       "unsupported": "Für dieses System oder diesen Prozessor gibt es keinen LibreOffice-Download; installieren Sie LibreOffice selbst."
+    },
+    "fallbackFonts": {
+      "title": "Ersatzschriftarten",
+      "description": "Japanischer, koreanischer und chinesischer Text, den ein Dokument nicht einbettet, wird mit diesen Schriftarten dargestellt; jedes Paket wird nur auf Wunsch heruntergeladen.",
+      "download": "Herunterladen",
+      "remove": "Entfernen",
+      "cancel": "Download abbrechen",
+      "downloaded": "Die Schriftart für {{language}} wurde heruntergeladen.",
+      "removed": "Die Schriftart für {{language}} wurde entfernt.",
+      "cancelled": "Der Download der Schriftart für {{language}} wurde abgebrochen.",
+      "progressLabel": "Download der Schriftart für {{language}}",
+      "sets": {
+        "ja": "Japanisch",
+        "ko": "Koreanisch",
+        "zh-Hans": "Chinesisch (vereinfacht)",
+        "zh-Hant": "Chinesisch (traditionell)"
+      }
     },
     "backToViewer": "Zurück",
     "resetAllUserData": "Auch gespeicherte Signaturen, Ketten, Ordnerregeln und Voreinstellungen löschen",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "veraPDF liegt in einem Ordner, dessen Name Zeichen wie Klammern, & oder % enthält, und lässt sich dort nicht sicher starten. Installieren Sie es in einen Ordner wie C:\\veraPDF.",
       "noReport": "veraPDF hat für diese Datei keinen Bericht geliefert.",
       "languageChecksum": "Die heruntergeladenen Sprachdaten stimmten nicht mit ihrer veröffentlichten Prüfsumme überein und wurden verworfen. Laden Sie sie erneut herunter.",
+      "fontChecksum": "Die heruntergeladene Schriftart stimmte nicht mit ihrer veröffentlichten Prüfsumme überein und wurde verworfen. Laden Sie sie erneut herunter.",
       "imageUnreadable": "Das Bild konnte nicht gelesen werden; es ist möglicherweise beschädigt oder in einem nicht unterstützten Format.",
       "pictureTooLarge": "Das Bild ist zu groß, um es sicher zu verarbeiten. Verkleinern Sie es und versuchen Sie es erneut.",
       "noImages": "Es wurden keine Bilder zum Hinzufügen gefunden.",

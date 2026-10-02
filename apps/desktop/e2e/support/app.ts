@@ -5,7 +5,7 @@ import { browser, $, $$ } from "@wdio/globals";
 import en from "../../src/locales/en/common.json" with { type: "json" };
 import { E2E_DIR } from "./paths.ts";
 
-export type Fixtures = Record<"sample" | "second" | "six" | "chapters" | "scanned" | "form" | "contacts" | "locked" | "long" | "annotated" | "academic" | "illustrated" | "covers" | "turned" | "signed" | "commented" | "layered" | "tagged" | "logo" | "badge" | "red" | "blue" | "answers", string>;
+export type Fixtures = Record<"sample" | "second" | "six" | "chapters" | "scanned" | "form" | "contacts" | "locked" | "long" | "annotated" | "academic" | "illustrated" | "covers" | "turned" | "signed" | "commented" | "layered" | "tagged" | "logo" | "badge" | "red" | "blue" | "answers" | "japanese", string>;
 
 export type PageProbe = {
   text: string;

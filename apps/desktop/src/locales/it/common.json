@@ -1028,6 +1028,15 @@
         "highlight": "Evidenzia campi",
         "failed": "Impossibile leggere i campi"
       },
+      "fonts": {
+        "missing": "Questo documento richiede un carattere aggiuntivo: {{language}} ({{size}}).",
+        "download": "Scarica",
+        "downloading": "Download… {{percent}}%",
+        "retry": "Riprova",
+        "ready": "Carattere pronto: {{language}}. Ricarica il documento per mostrare il testo.",
+        "readyUnsaved": "Carattere pronto: {{language}}. Salva il documento e riaprilo per mostrare il testo.",
+        "reload": "Ricarica"
+      },
       "dismiss": "Chiudi messaggio"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "LibreOffice è pronto.",
       "removed": "LibreOffice è stato rimosso.",
       "unsupported": "Non esiste un download di LibreOffice per questo sistema o processore; installalo manualmente."
+    },
+    "fallbackFonts": {
+      "title": "Caratteri di riserva",
+      "description": "Il testo giapponese, coreano e cinese che un documento non incorpora viene disegnato con questi caratteri; ogni set viene scaricato solo su tua richiesta.",
+      "download": "Scarica",
+      "remove": "Rimuovi",
+      "cancel": "Annulla download",
+      "downloaded": "Carattere scaricato: {{language}}.",
+      "removed": "Carattere rimosso: {{language}}.",
+      "cancelled": "Download del carattere annullato: {{language}}.",
+      "progressLabel": "Download del carattere: {{language}}",
+      "sets": {
+        "ja": "Giapponese",
+        "ko": "Coreano",
+        "zh-Hans": "Cinese (semplificato)",
+        "zh-Hant": "Cinese (tradizionale)"
+      }
     },
     "backToViewer": "Indietro",
     "resetAllUserData": "Elimina anche firme salvate, catene, regole delle cartelle e preimpostazioni",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "veraPDF è installato in una cartella il cui nome contiene caratteri come parentesi, & o %, quindi non può essere avviato in sicurezza. Installalo in una cartella come C:\\veraPDF.",
       "noReport": "veraPDF non ha restituito alcun rapporto per questo file.",
       "languageChecksum": "I dati della lingua scaricati non corrispondevano al checksum pubblicato e sono stati scartati. Riprova il download.",
+      "fontChecksum": "Il carattere scaricato non corrispondeva al checksum pubblicato ed è stato scartato. Riprova il download.",
       "imageUnreadable": "Impossibile leggere l’immagine; potrebbe essere danneggiata o in un formato non supportato.",
       "pictureTooLarge": "L’immagine è troppo grande per essere elaborata in sicurezza. Riducine le dimensioni e riprova.",
       "noImages": "Non sono state trovate immagini da aggiungere.",

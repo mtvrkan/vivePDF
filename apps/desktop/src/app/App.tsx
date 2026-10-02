@@ -21,6 +21,7 @@ import { followOtherWindows } from "@/shared/session/crossWindowSync";
 import { shareOpenDocuments } from "@/shared/session/documentClaims";
 import { releaseClosedDocuments } from "@/shared/session/engineRelease";
 import { releaseClosedViewSources } from "@/shared/session/viewSources";
+import { listenForMissingFonts } from "@/shared/session/fallbackFonts";
 import { isMainWindow } from "@/shared/lib/windowRole";
 import { TaskbarProgress } from "@/shared/session/TaskbarProgress";
 import * as logger from "@/shared/lib/logger";
@@ -80,6 +81,8 @@ export default function App() {
   useEffect(() => releaseClosedDocuments(), []);
 
   useEffect(() => releaseClosedViewSources(), []);
+
+  useEffect(() => listenForMissingFonts(), []);
 
   useEffect(() => {
     if (!isMainWindow()) return;

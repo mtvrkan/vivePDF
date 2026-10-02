@@ -85,6 +85,11 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     "editor_question": ("editor.question_preview",),
     "editor_table": ("editor.table_preview",),
     "epub": ("convert.to_epub",),
+    "fallback_fonts": (
+        "system.fallback_fonts",
+        "system.fallback_fonts_download",
+        "system.fallback_fonts_remove",
+    ),
     "flatten": ("security.flatten",),
     "folders": (
         "files.list_pdfs",

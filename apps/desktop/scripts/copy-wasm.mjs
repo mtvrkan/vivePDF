@@ -39,7 +39,7 @@ const fontsTarget = join(publicDir, ...fallbackManifest.directory.split("/"));
 mkdirSync(fontsTarget, { recursive: true });
 let copiedFonts = 0;
 const wantedFonts = new Set();
-for (const set of fallbackManifest.sets) {
+for (const set of fallbackManifest.sets.filter((entry) => entry.bundled)) {
   const root = packageRoot(fontsResolver, set.package);
   const licenseName = `LICENSE-${set.package.split("/").pop()}.txt`;
   if (existsSync(join(root, "LICENSE"))) {

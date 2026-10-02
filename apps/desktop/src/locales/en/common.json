@@ -1028,6 +1028,15 @@
         "highlight": "Highlight fields",
         "failed": "Fields could not be read"
       },
+      "fonts": {
+        "missing": "{{language}} text in this document needs a font ({{size}}).",
+        "download": "Download",
+        "downloading": "Downloading… {{percent}}%",
+        "retry": "Try again",
+        "ready": "The {{language}} font is ready. Reload the document to show the text.",
+        "readyUnsaved": "The {{language}} font is ready. Save the document and open it again to show the text.",
+        "reload": "Reload"
+      },
       "dismiss": "Close message"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "LibreOffice is ready.",
       "removed": "LibreOffice was removed.",
       "unsupported": "LibreOffice has no download for this system or processor; install it yourself."
+    },
+    "fallbackFonts": {
+      "title": "Fallback fonts",
+      "description": "Japanese, Korean and Chinese text that a document does not embed is drawn with these fonts; each set is downloaded only when you ask for it.",
+      "download": "Download",
+      "remove": "Remove",
+      "cancel": "Cancel download",
+      "downloaded": "The {{language}} font was downloaded.",
+      "removed": "The {{language}} font was removed.",
+      "cancelled": "The {{language}} font download was cancelled.",
+      "progressLabel": "{{language}} font download",
+      "sets": {
+        "ja": "Japanese",
+        "ko": "Korean",
+        "zh-Hans": "Chinese (Simplified)",
+        "zh-Hant": "Chinese (Traditional)"
+      }
     },
     "backToViewer": "Back",
     "resetAllUserData": "Also delete saved signatures, chains, watch rules and presets",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "veraPDF is installed in a folder whose name has characters such as brackets, & or %, so it can't be started safely. Install it in a folder such as C:\\veraPDF.",
       "noReport": "veraPDF did not return a report for this file.",
       "languageChecksum": "The downloaded language data did not match its published checksum and was discarded. Try the download again.",
+      "fontChecksum": "The downloaded font did not match its published checksum and was discarded. Try the download again.",
       "imageUnreadable": "The picture could not be read; it may be damaged or in a format that is not supported.",
       "pictureTooLarge": "The picture is too large to process safely. Reduce its size and try again.",
       "noImages": "No pictures were found to add.",

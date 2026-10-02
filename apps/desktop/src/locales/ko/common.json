@@ -1028,6 +1028,15 @@
         "highlight": "필드 강조 표시",
         "failed": "필드를 읽을 수 없습니다"
       },
+      "fonts": {
+        "missing": "이 문서의 {{language}} 텍스트에는 글꼴이 필요합니다({{size}}).",
+        "download": "다운로드",
+        "downloading": "다운로드 중… {{percent}}%",
+        "retry": "다시 시도",
+        "ready": "{{language}} 글꼴이 준비되었습니다. 텍스트를 표시하려면 문서를 다시 불러오세요.",
+        "readyUnsaved": "{{language}} 글꼴이 준비되었습니다. 텍스트를 표시하려면 문서를 저장한 뒤 다시 여세요.",
+        "reload": "다시 불러오기"
+      },
       "dismiss": "메시지 닫기"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "LibreOffice가 준비되었습니다.",
       "removed": "LibreOffice를 제거했습니다.",
       "unsupported": "이 시스템이나 프로세서용 LibreOffice 다운로드가 없습니다. 직접 설치하세요."
+    },
+    "fallbackFonts": {
+      "title": "대체 글꼴",
+      "description": "문서에 포함되지 않은 일본어, 한국어, 중국어 텍스트는 이 글꼴로 그립니다. 각 세트는 필요할 때만 내려받습니다.",
+      "download": "다운로드",
+      "remove": "제거",
+      "cancel": "다운로드 취소",
+      "downloaded": "{{language}} 글꼴을 다운로드했습니다.",
+      "removed": "{{language}} 글꼴을 제거했습니다.",
+      "cancelled": "{{language}} 글꼴 다운로드를 취소했습니다.",
+      "progressLabel": "{{language}} 글꼴 다운로드",
+      "sets": {
+        "ja": "일본어",
+        "ko": "한국어",
+        "zh-Hans": "중국어(간체)",
+        "zh-Hant": "중국어(번체)"
+      }
     },
     "backToViewer": "뒤로",
     "resetAllUserData": "저장된 서명, 체인, 폴더 규칙, 사전 설정도 삭제",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "veraPDF가 괄호, &, % 같은 문자가 이름에 들어간 폴더에 설치되어 있어 안전하게 시작할 수 없습니다. C:\\veraPDF 같은 폴더에 설치하세요.",
       "noReport": "veraPDF가 이 파일에 대한 보고서를 반환하지 않았습니다.",
       "languageChecksum": "다운로드한 언어 데이터가 게시된 체크섬과 일치하지 않아 삭제했습니다. 다시 다운로드하세요.",
+      "fontChecksum": "다운로드한 글꼴이 게시된 체크섬과 일치하지 않아 삭제했습니다. 다시 다운로드하세요.",
       "imageUnreadable": "그림을 읽을 수 없습니다. 손상되었거나 지원되지 않는 형식일 수 있습니다.",
       "pictureTooLarge": "그림이 너무 커서 안전하게 처리할 수 없습니다. 크기를 줄인 뒤 다시 시도하세요.",
       "noImages": "추가할 그림을 찾지 못했습니다.",

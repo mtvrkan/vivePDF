@@ -1,16 +1,43 @@
 {
   "directory": "fonts/fallback",
+  "downloadBase": "https://github.com/mtvrkan/vivePDF/releases/download/fonts-1",
   "sets": [
-    { "package": "@embedpdf/fonts-jp", "charsets": ["SHIFTJIS"], "files": [{ "file": "NotoSansJP-Regular.otf", "weight": 400 }] },
-    { "package": "@embedpdf/fonts-kr", "charsets": ["HANGEUL"], "files": [{ "file": "NotoSansKR-Regular.otf", "weight": 400 }] },
-    { "package": "@embedpdf/fonts-sc", "charsets": ["GB2312"], "files": [{ "file": "NotoSansHans-Regular.otf", "weight": 400 }] },
-    { "package": "@embedpdf/fonts-tc", "charsets": ["CHINESEBIG5"], "files": [{ "file": "NotoSansHant-Regular.otf", "weight": 400 }] },
     {
+      "id": "ja",
+      "package": "@embedpdf/fonts-jp",
+      "charsets": ["SHIFTJIS"],
+      "bundled": false,
+      "files": [{ "file": "NotoSansJP-Regular.otf", "weight": 400, "bytes": 4538888, "sha256": "dcc75e20d91d09c793fa5a97c9c7678e8b580d0fc255314cbc45c08b075f46f1" }]
+    },
+    {
+      "id": "ko",
+      "package": "@embedpdf/fonts-kr",
+      "charsets": ["HANGEUL"],
+      "bundled": false,
+      "files": [{ "file": "NotoSansKR-Regular.otf", "weight": 400, "bytes": 4579008, "sha256": "ff59f91fe8d6e6246f548bb67bf371810af3d5cc53b65e8680461fabd043b506" }]
+    },
+    {
+      "id": "zh-Hans",
+      "package": "@embedpdf/fonts-sc",
+      "charsets": ["GB2312"],
+      "bundled": false,
+      "files": [{ "file": "NotoSansHans-Regular.otf", "weight": 400, "bytes": 8364644, "sha256": "7db3c634bbd0301b3082a80ffcac2f422e8ef9ce0730f8b279c3e8f756598f68" }]
+    },
+    {
+      "id": "zh-Hant",
+      "package": "@embedpdf/fonts-tc",
+      "charsets": ["CHINESEBIG5"],
+      "bundled": false,
+      "files": [{ "file": "NotoSansHant-Regular.otf", "weight": 400, "bytes": 5663120, "sha256": "81f39cffba8b45367a21249720782603b852bee71aad710f8f66fec3d3776af3" }]
+    },
+    {
+      "id": "latin",
       "package": "@embedpdf/fonts-latin",
       "charsets": ["CYRILLIC", "GREEK", "VIETNAMESE"],
+      "bundled": true,
       "files": [
-        { "file": "NotoSans-Regular.ttf", "weight": 400 },
-        { "file": "NotoSans-Bold.ttf", "weight": 700 }
+        { "file": "NotoSans-Regular.ttf", "weight": 400, "bytes": 629024, "sha256": "fe8c022f48d8dd29f17b744d16f9346f4357e16f7d4f7be58b000ae7c291b614" },
+        { "file": "NotoSans-Bold.ttf", "weight": 700, "bytes": 630964, "sha256": "379bda1de5ceb6c81a6e0b7f8346d36e12b3202757fcba90a42dc5a7f8d5df38" }
       ]
     }
   ]

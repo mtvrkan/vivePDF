@@ -286,7 +286,7 @@ pub fn view_source_release<R: Runtime>(
     sources.release(&token, window.label());
 }
 
-fn allowed_origin(request: &Request<Vec<u8>>, dev: bool) -> Option<HeaderValue> {
+pub(crate) fn allowed_origin(request: &Request<Vec<u8>>, dev: bool) -> Option<HeaderValue> {
     let origin = request.headers().get(header::ORIGIN)?;
     let url = Url::parse(origin.to_str().ok()?).ok()?;
     let bare = matches!(url.path(), "" | "/") && url.query().is_none() && url.fragment().is_none();
@@ -317,7 +317,10 @@ fn read_range(path: &Path, start: u64, end: u64) -> std::io::Result<Vec<u8>> {
     Ok(bytes)
 }
 
-fn reply(status: StatusCode, origin: Option<&HeaderValue>) -> tauri::http::response::Builder {
+pub(crate) fn reply(
+    status: StatusCode,
+    origin: Option<&HeaderValue>,
+) -> tauri::http::response::Builder {
     let mut builder = Response::builder()
         .status(status)
         .header(header::CACHE_CONTROL, "no-store")
@@ -335,7 +338,7 @@ fn reply(status: StatusCode, origin: Option<&HeaderValue>) -> tauri::http::respo
     builder
 }
 
-fn empty(builder: tauri::http::response::Builder) -> Response<Vec<u8>> {
+pub(crate) fn empty(builder: tauri::http::response::Builder) -> Response<Vec<u8>> {
     builder.body(Vec::new()).unwrap_or_default()
 }
 

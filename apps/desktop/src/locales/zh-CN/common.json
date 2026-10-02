@@ -1028,6 +1028,15 @@
         "highlight": "突出显示字段",
         "failed": "无法读取字段"
       },
+      "fonts": {
+        "missing": "本文档中的{{language}}文本需要字体（{{size}}）。",
+        "download": "下载",
+        "downloading": "正在下载… {{percent}}%",
+        "retry": "重试",
+        "ready": "{{language}}字体已就绪。重新加载文档即可显示文本。",
+        "readyUnsaved": "{{language}}字体已就绪。保存文档后重新打开即可显示文本。",
+        "reload": "重新加载"
+      },
       "dismiss": "关闭消息"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "LibreOffice 已就绪。",
       "removed": "已移除 LibreOffice。",
       "unsupported": "没有适用于此系统或处理器的 LibreOffice 下载；请自行安装。"
+    },
+    "fallbackFonts": {
+      "title": "备用字体",
+      "description": "文档未嵌入的日文、韩文和中文文本将使用这些字体绘制；每组字体仅在你需要时才下载。",
+      "download": "下载",
+      "remove": "移除",
+      "cancel": "取消下载",
+      "downloaded": "已下载{{language}}字体。",
+      "removed": "已移除{{language}}字体。",
+      "cancelled": "已取消{{language}}字体下载。",
+      "progressLabel": "{{language}}字体下载",
+      "sets": {
+        "ja": "日文",
+        "ko": "韩文",
+        "zh-Hans": "简体中文",
+        "zh-Hant": "繁体中文"
+      }
     },
     "backToViewer": "返回",
     "resetAllUserData": "同时删除已保存的签名、链、文件夹规则和预设",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "veraPDF 安装在名称含有括号、& 或 % 等字符的文件夹中，无法安全启动。请将其安装到 C:\\veraPDF 之类的文件夹。",
       "noReport": "veraPDF 没有为此文件返回报告。",
       "languageChecksum": "下载的语言数据与公布的校验和不一致，已被丢弃。请重新下载。",
+      "fontChecksum": "下载的字体与公布的校验和不一致，已被丢弃。请重新下载。",
       "imageUnreadable": "无法读取图片；它可能已损坏或格式不受支持。",
       "pictureTooLarge": "图片太大，无法安全处理。请缩小尺寸后重试。",
       "noImages": "未找到可添加的图片。",

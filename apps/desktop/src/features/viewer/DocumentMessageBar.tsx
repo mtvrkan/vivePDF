@@ -8,19 +8,12 @@ import { signaturesStatus, type SignaturesStatus } from "@/shared/lib/signatureV
 import { useDocumentMessagesStore } from "@/shared/store/documentMessagesStore";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { checkSignatures, toggleFieldHighlight } from "./documentChecks";
+import { MessageRow } from "./MessageRow";
 
 const checkedInfos = new WeakSet<object>();
 
 const STATUS_ICONS = { valid: ShieldCheck, attention: ShieldAlert, invalid: ShieldX } satisfies Record<SignaturesStatus, unknown>;
 const STATUS_TONES: Record<SignaturesStatus, string> = { valid: "text-success", attention: "text-warning", invalid: "text-destructive" };
-
-function MessageRow({ tone, children }: { tone?: SignaturesStatus; children: React.ReactNode }) {
-  return (
-    <div role="status" data-message-tone={tone} className="glass-flat flex h-9 shrink-0 items-center gap-2 border-b px-3 text-xs">
-      {children}
-    </div>
-  );
-}
 
 export function DocumentMessageBar({ documentId, onOpenSignatures }: { documentId: string; onOpenSignatures: () => void }) {
   const { t } = useTranslation();

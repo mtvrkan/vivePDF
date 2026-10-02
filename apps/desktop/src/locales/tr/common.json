@@ -1028,6 +1028,15 @@
         "highlight": "Alanları vurgula",
         "failed": "Alanlar okunamadı"
       },
+      "fonts": {
+        "missing": "Bu belgedeki {{language}} metin için font gerekiyor ({{size}}).",
+        "download": "İndir",
+        "downloading": "İndiriliyor… %{{percent}}",
+        "retry": "Yeniden dene",
+        "ready": "{{language}} font hazır. Metni göstermek için belgeyi yeniden yükleyin.",
+        "readyUnsaved": "{{language}} font hazır. Metni göstermek için belgeyi kaydedip yeniden açın.",
+        "reload": "Yeniden yükle"
+      },
       "dismiss": "Mesajı kapat"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "LibreOffice hazır.",
       "removed": "LibreOffice kaldırıldı.",
       "unsupported": "Bu sistem veya işlemci için LibreOffice indirmesi yok; LibreOffice’i kendiniz kurun."
+    },
+    "fallbackFonts": {
+      "title": "Yedek fontlar",
+      "description": "Belgeye gömülü olmayan Japonca, Korece ve Çince metinler bu fontlarla çizilir; her set yalnızca siz istediğinizde indirilir.",
+      "download": "İndir",
+      "remove": "Kaldır",
+      "cancel": "İndirmeyi iptal et",
+      "downloaded": "{{language}} font indirildi.",
+      "removed": "{{language}} font kaldırıldı.",
+      "cancelled": "{{language}} font indirmesi iptal edildi.",
+      "progressLabel": "{{language}} font indirmesi",
+      "sets": {
+        "ja": "Japonca",
+        "ko": "Korece",
+        "zh-Hans": "Çince (Basitleştirilmiş)",
+        "zh-Hant": "Çince (Geleneksel)"
+      }
     },
     "backToViewer": "Geri",
     "resetAllUserData": "Kayıtlı imzaları, zincirleri, klasör kurallarını ve hazır ayarları da sil",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "veraPDF, adında parantez, & veya % gibi karakterler bulunan bir klasöre kurulmuş; oradan güvenle başlatılamaz. C:\\veraPDF gibi bir klasöre kurun.",
       "noReport": "veraPDF bu dosya için rapor döndürmedi.",
       "languageChecksum": "İndirilen dil verisi yayımlanan sağlama değeriyle eşleşmedi ve silindi. İndirmeyi yeniden deneyin.",
+      "fontChecksum": "İndirilen font yayımlanan sağlama değeriyle eşleşmedi ve silindi. İndirmeyi yeniden deneyin.",
       "imageUnreadable": "Resim okunamadı; hasarlı veya desteklenmeyen bir biçimde olabilir.",
       "pictureTooLarge": "Resim güvenle işlenemeyecek kadar büyük. Boyutunu küçültüp yeniden deneyin.",
       "noImages": "Eklenecek resim bulunamadı.",

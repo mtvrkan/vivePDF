@@ -1028,6 +1028,15 @@
         "highlight": "Mettre les champs en évidence",
         "failed": "Impossible de lire les champs"
       },
+      "fonts": {
+        "missing": "Ce document a besoin d’une police supplémentaire : {{language}} ({{size}}).",
+        "download": "Télécharger",
+        "downloading": "Téléchargement… {{percent}} %",
+        "retry": "Réessayer",
+        "ready": "Police prête : {{language}}. Rechargez le document pour afficher le texte.",
+        "readyUnsaved": "Police prête : {{language}}. Enregistrez le document puis rouvrez-le pour afficher le texte.",
+        "reload": "Recharger"
+      },
       "dismiss": "Fermer le message"
     },
     "signatures": {
@@ -1695,6 +1704,23 @@
       "installed": "LibreOffice est prêt.",
       "removed": "LibreOffice a été supprimé.",
       "unsupported": "Aucun téléchargement de LibreOffice n’existe pour ce système ou ce processeur ; installez-le vous-même."
+    },
+    "fallbackFonts": {
+      "title": "Polices de secours",
+      "description": "Le texte japonais, coréen et chinois qu’un document n’incorpore pas est affiché avec ces polices ; chaque jeu n’est téléchargé que si vous le demandez.",
+      "download": "Télécharger",
+      "remove": "Supprimer",
+      "cancel": "Annuler le téléchargement",
+      "downloaded": "Police téléchargée : {{language}}.",
+      "removed": "Police supprimée : {{language}}.",
+      "cancelled": "Téléchargement de la police annulé : {{language}}.",
+      "progressLabel": "Téléchargement de la police : {{language}}",
+      "sets": {
+        "ja": "Japonais",
+        "ko": "Coréen",
+        "zh-Hans": "Chinois (simplifié)",
+        "zh-Hant": "Chinois (traditionnel)"
+      }
     },
     "backToViewer": "Retour",
     "resetAllUserData": "Supprimer aussi les signatures enregistrées, les chaînes, les règles de dossiers et les préréglages",
@@ -5367,6 +5393,7 @@
       "veraPdfPath": "veraPDF est installé dans un dossier dont le nom contient des caractères comme des parenthèses, & ou %, et ne peut pas être lancé en toute sécurité. Installez-le dans un dossier comme C:\\veraPDF.",
       "noReport": "veraPDF n’a renvoyé aucun rapport pour ce fichier.",
       "languageChecksum": "Les données de langue téléchargées ne correspondaient pas à leur somme de contrôle publiée et ont été supprimées. Relancez le téléchargement.",
+      "fontChecksum": "La police téléchargée ne correspondait pas à sa somme de contrôle publiée et a été supprimée. Relancez le téléchargement.",
       "imageUnreadable": "L’image n’a pas pu être lue ; elle est peut-être endommagée ou dans un format non pris en charge.",
       "pictureTooLarge": "L’image est trop grande pour être traitée en toute sécurité. Réduisez sa taille et réessayez.",
       "noImages": "Aucune image à ajouter n’a été trouvée.",

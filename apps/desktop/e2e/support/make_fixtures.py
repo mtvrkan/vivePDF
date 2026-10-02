@@ -307,11 +307,20 @@ def answer_sheet(target: Path) -> None:
     pixmap.save(target)
 
 
+def japanese(target: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    for row, line in enumerate(["日本語の文書です", "東京都千代田区", "縦横の文字列"]):
+        page.insert_text((72, 140 + row * 90), line, fontsize=56, fontname="japan")
+    document.save(target, garbage=3, deflate=True)
+
+
 def main() -> None:
     directory = Path(sys.argv[1])
     directory.mkdir(parents=True, exist_ok=True)
     files = {
         "sample": directory / "sample.pdf",
+        "japanese": directory / "japanese.pdf",
         "second": directory / "ikinci belge şğü.pdf",
         "six": directory / "six-pages.pdf",
         "chapters": directory / "chapters.pdf",
@@ -337,6 +346,7 @@ def main() -> None:
     }
     sample(files["sample"])
     second(files["second"])
+    japanese(files["japanese"])
     six_pages(files["six"])
     chapters(files["chapters"])
     scanned(files["scanned"])
