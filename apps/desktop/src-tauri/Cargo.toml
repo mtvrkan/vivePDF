@@ -1,6 +1,6 @@
 [package]
 name = "vivepdf"
-version = "0.1.0"
+version = "0.1.1"
 description = "vivePDF — open-source cross-platform PDF editor"
 authors = ["vivePDF contributors"]
 license = "AGPL-3.0-only"
