@@ -4,7 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 
-## [0.1.1] - 2026-10-02
+## [0.1.1] - 2026-10-03
 ### Added
 - Viewer: Page display › Split window shows the open file a second time, side by side or stacked (Ctrl+Shift+E toggles it), so two places can be read at once; the second pane is read-only (select, copy and the search bar's matches work there), reopens at the same page after every save and says when unsaved changes are not in it yet, and the divider can be dragged or moved with the arrow keys [2026-10-02]
 - Fonts: when a document uses Japanese, Korean or Chinese text without embedding its font, a bar above the page offers that language's font (4.3–8 MB) and redraws the document once it is downloaded; Settings › Tools › Fallback fonts lists the four sets to download or remove ahead of time. Downloads come from the project's own `fonts-1` release and are checked against a pinned SHA-256 [2026-10-02]
