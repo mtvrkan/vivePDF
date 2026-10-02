@@ -109,6 +109,9 @@ def test_installer_urls_follow_the_foundation_layout():
     )
 
 
+CHECKSUM_ERROR = {"reason": "officeChecksum", "phase": "verify", "tool": "sha256"}
+
+
 class FakeResponse(io.BytesIO):
     def __enter__(self):
         return self
@@ -122,7 +125,7 @@ def serve(monkeypatch, body: bytes, requested: list[str]) -> None:
         requested.append(request.full_url)
         return FakeResponse(body)
 
-    monkeypatch.setattr(office_download.urllib.request, "urlopen", urlopen)
+    monkeypatch.setattr(office_download, "_open", urlopen)
 
 
 def test_expected_checksum_reads_the_foundation_sha256_file(monkeypatch):
@@ -144,14 +147,14 @@ def test_malformed_or_mismatched_checksum_files_are_rejected(monkeypatch, body):
     serve(monkeypatch, body, [])
     with pytest.raises(OpError) as caught:
         office_download.expected_checksum("https://example.org/a/LibreOffice_x.dmg")
-    assert caught.value.data == {"tool": "sha256"}
+    assert caught.value.data == CHECKSUM_ERROR
 
 
 def test_unreachable_checksum_is_a_network_error(monkeypatch):
     def urlopen(*_args, **_kwargs):
         raise OSError("offline")
 
-    monkeypatch.setattr(office_download.urllib.request, "urlopen", urlopen)
+    monkeypatch.setattr(office_download, "_open", urlopen)
     with pytest.raises(OpError) as caught:
         office_download.expected_checksum("https://example.org/a/LibreOffice_x.dmg")
     assert caught.value.code == ErrorCode.NETWORK
@@ -163,7 +166,7 @@ def test_verify_checksum_rejects_a_tampered_download(monkeypatch, tmp_path):
     monkeypatch.setattr(office_download, "expected_checksum", lambda _url: "0" * 64)
     with pytest.raises(OpError) as caught:
         office_download.verify_checksum("https://example.org/x.tar.gz", installer)
-    assert caught.value.data == {"tool": "sha256"}
+    assert caught.value.data == CHECKSUM_ERROR
     good = hashlib.sha256(b"tampered").hexdigest()
     monkeypatch.setattr(office_download, "expected_checksum", lambda _url: good)
     office_download.verify_checksum("https://example.org/x.tar.gz", installer)
@@ -223,24 +226,35 @@ def linux_install(monkeypatch, tmp_path, checksum: str | None):
     monkeypatch.setattr(office_download.sys, "platform", "linux")
     monkeypatch.setattr(office_download.platform, "machine", lambda: "x86_64")
     monkeypatch.setattr(office_download, "candidate_versions", lambda: ["26.2.6"])
-    monkeypatch.setattr(office, "MIN_INSTALLER_BYTES", 1)
+    monkeypatch.setattr(office_download, "probe", lambda _url: office_download.Probe(True, 1))
     urls: list[str] = []
 
-    def download(url, target, _progress):
+    def download(url, target, _progress, _expected=None):
         urls.append(url)
         target.write_bytes(bundle.read_bytes())
         return target.stat().st_size
 
     real = hashlib.sha256(bundle.read_bytes()).hexdigest()
     monkeypatch.setattr(office_download, "download", download)
-    monkeypatch.setattr(office_download, "expected_checksum", lambda _url: checksum or real)
-    return urls
+    checked: list[str] = []
+
+    def expected_checksum(url):
+        checked.append(url)
+        return checksum or real
+
+    monkeypatch.setattr(office_download, "expected_checksum", expected_checksum)
+    return urls, checked
 
 
 def test_linux_install_unpacks_the_verified_packages(monkeypatch, tmp_path):
-    urls = linux_install(monkeypatch, tmp_path, None)
+    urls, checked = linux_install(monkeypatch, tmp_path, None)
     status = office.office_install(office.OfficeInstallParams(), silent_progress())
-    assert urls[0].endswith("/deb/x86_64/LibreOffice_26.2.6_Linux_x86-64_deb.tar.gz")
+    assert urls == [
+        f"{office_download.MIRRORS[0]}26.2.6/deb/x86_64/LibreOffice_26.2.6_Linux_x86-64_deb.tar.gz"
+    ]
+    assert checked == [
+        office_download.installer_url("26.2.6", office_download.PACKAGES[("linux", "x86_64")])
+    ]
     assert status.installed is True
     assert status.source == "managed"
     assert status.supported is True
@@ -251,14 +265,14 @@ def test_linux_install_with_a_wrong_checksum_leaves_nothing(monkeypatch, tmp_pat
     linux_install(monkeypatch, tmp_path, "0" * 64)
     with pytest.raises(OpError) as caught:
         office.office_install(office.OfficeInstallParams(), silent_progress())
-    assert caught.value.data == {"tool": "sha256"}
+    assert caught.value.data == CHECKSUM_ERROR
     assert not (tmp_path / "office").exists()
 
 
 def test_linux_install_stages_beside_the_office_folder_and_clears_old_staging(
     monkeypatch, tmp_path
 ):
-    urls = linux_install(monkeypatch, tmp_path, None)
+    urls, _checked = linux_install(monkeypatch, tmp_path, None)
     stale = tmp_path / f"{office.STAGING_PREFIX}crashed"
     stale.mkdir()
     (stale / "libreoffice.deb").write_bytes(b"left over")

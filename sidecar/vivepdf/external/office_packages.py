@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import tarfile
 from collections.abc import Callable
+from dataclasses import dataclass
 from pathlib import Path
 
 from vivepdf.external._process import run_tool, system_environment
@@ -35,13 +36,19 @@ COPY_TIMEOUT = 900.0
 CODESIGN_TIMEOUT = 600.0
 APP_NAME = "LibreOffice.app"
 EXTRACT_TIMEOUT = 900.0
-TRUSTED_PUBLISHER = "CN=The Document Foundation"
+TRUSTED_PUBLISHER = "The Document Foundation"
+TRUSTED_ORGANIZATION = f"O={TRUSTED_PUBLISHER}"
 SIGNATURE_TIMEOUT = 120.0
 SIGNED_FILE_VARIABLE = "VIVEPDF_SIGNED_FILE"
 SIGNATURE_SCRIPT = (
     f"$signature = Get-AuthenticodeSignature -LiteralPath $env:{SIGNED_FILE_VARIABLE}; "
+    "$certificate = $signature.SignerCertificate; "
+    "$name = if ($certificate) { $certificate.GetNameInfo("
+    "[System.Security.Cryptography.X509Certificates.X509NameType]::SimpleName, $false) } "
+    "else { '' }; "
     "ConvertTo-Json -Compress @{status = [string]$signature.Status; "
-    "subject = [string]$signature.SignerCertificate.Subject}"
+    "kind = [string]$signature.SignatureType; name = [string]$name; "
+    "subject = [string]$certificate.Subject}"
 )
 SIGNING_REQUIREMENT = (
     "=anchor apple generic"
@@ -174,7 +181,24 @@ def install_app_bundle(image: Path, directory: Path, mount: Path) -> None:
         _detach(mount)
 
 
-def msi_signature(installer: Path) -> tuple[str, str]:
+@dataclass(frozen=True)
+class MsiSignature:
+    status: str
+    kind: str
+    name: str
+    subject: str
+
+    def trusted(self) -> bool:
+        organizations = [part.strip() for part in self.subject.split(",")]
+        return (
+            self.status == "Valid"
+            and self.kind == "Authenticode"
+            and self.name == TRUSTED_PUBLISHER
+            and TRUSTED_ORGANIZATION in organizations
+        )
+
+
+def msi_signature(installer: Path) -> MsiSignature:
     command = ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", SIGNATURE_SCRIPT]
     environment = {**os.environ, SIGNED_FILE_VARIABLE: str(installer)}
     try:
@@ -191,23 +215,35 @@ def msi_signature(installer: Path) -> tuple[str, str]:
         raise OpError(
             ErrorCode.EXTERNAL_TOOL_FAILED,
             f"signature check failed: {error}",
-            {"tool": "authenticode"},
+            {"tool": "authenticode", "reason": "officeUnsigned", "phase": "verify"},
         ) from error
     try:
         payload = json.loads(completed.stdout or "{}")
     except ValueError:
         payload = {}
-    return str(payload.get("status") or ""), str(payload.get("subject") or "")
+    if not isinstance(payload, dict):
+        payload = {}
+    return MsiSignature(
+        status=str(payload.get("status") or ""),
+        kind=str(payload.get("kind") or ""),
+        name=str(payload.get("name") or ""),
+        subject=str(payload.get("subject") or ""),
+    )
 
 
 def verify_msi_publisher(installer: Path) -> None:
-    status, subject = msi_signature(installer)
-    subject_parts = [part.strip() for part in subject.split(",")]
-    if status != "Valid" or TRUSTED_PUBLISHER not in subject_parts:
+    signature = msi_signature(installer)
+    if not signature.trusted():
         raise OpError(
             ErrorCode.EXTERNAL_TOOL_FAILED,
             "installer is not signed by The Document Foundation",
-            {"tool": "authenticode", "status": status, "subject": subject},
+            {
+                "tool": "authenticode",
+                "reason": "officeUnsigned",
+                "phase": "verify",
+                "status": signature.status,
+                "subject": signature.subject,
+            },
         )
 
 

@@ -32,7 +32,7 @@ def test_newest_versions_sorts_numerically(monkeypatch):
     )
 
     class FakeResponse:
-        def read(self):
+        def read(self, _size=-1):
             return listing.encode()
 
         def __enter__(self):
@@ -41,7 +41,7 @@ def test_newest_versions_sorts_numerically(monkeypatch):
         def __exit__(self, *_args):
             return False
 
-    monkeypatch.setattr(office_download.urllib.request, "urlopen", lambda *_a, **_k: FakeResponse())
+    monkeypatch.setattr(office_download, "_open", lambda *_a, **_k: FakeResponse())
     assert office_download._newest_versions() == ["26.10.1", "26.2.6", "25.8.7"]
 
 
@@ -189,37 +189,68 @@ TDF_SUBJECT = (
 )
 
 
+def signed(
+    status="Valid", kind="Authenticode", name="The Document Foundation", subject=TDF_SUBJECT
+):
+    return office_packages.MsiSignature(status=status, kind=kind, name=name, subject=subject)
+
+
 def test_verify_publisher_accepts_a_valid_foundation_signature(monkeypatch, tmp_path):
-    monkeypatch.setattr(office_packages, "msi_signature", lambda _path: ("Valid", TDF_SUBJECT))
+    monkeypatch.setattr(office_packages, "msi_signature", lambda _path: signed())
     office_packages.verify_msi_publisher(tmp_path / "libreoffice.msi")
 
 
 @pytest.mark.parametrize(
-    ("status", "subject"),
+    "signature",
     [
-        ("HashMismatch", TDF_SUBJECT),
-        ("NotSigned", ""),
-        ("Valid", "CN=The Document Foundation Mirror, O=Someone Else"),
+        signed(status="HashMismatch"),
+        signed(status="NotSigned", name="", subject=""),
+        signed(
+            name="The Document Foundation Mirror",
+            subject="CN=The Document Foundation Mirror, O=Someone Else",
+        ),
+        signed(kind="Catalog"),
+        signed(subject="CN=The Document Foundation, O=Someone Else"),
+        signed(name="Evil", subject="CN=Evil, O=The Document Foundation"),
     ],
 )
-def test_verify_publisher_rejects_untrusted_installers(monkeypatch, tmp_path, status, subject):
-    monkeypatch.setattr(office_packages, "msi_signature", lambda _path: (status, subject))
+def test_verify_publisher_rejects_untrusted_installers(monkeypatch, tmp_path, signature):
+    monkeypatch.setattr(office_packages, "msi_signature", lambda _path: signature)
     with pytest.raises(OpError) as caught:
         office_packages.verify_msi_publisher(tmp_path / "libreoffice.msi")
     assert caught.value.code == ErrorCode.EXTERNAL_TOOL_FAILED
-    assert caught.value.data == {"tool": "authenticode", "status": status, "subject": subject}
+    assert caught.value.data == {
+        "tool": "authenticode",
+        "reason": "officeUnsigned",
+        "phase": "verify",
+        "status": signature.status,
+        "subject": signature.subject,
+    }
+
+
+def windows_install(monkeypatch, tmp_path, signature, downloads: list[str]):
+    monkeypatch.setenv("VIVEPDF_OFFICE_DIR", str(tmp_path / "office"))
+    monkeypatch.setattr(office_download.sys, "platform", "win32")
+    monkeypatch.setattr(office_download.platform, "machine", lambda: "AMD64")
+    monkeypatch.setattr(office_download, "candidate_versions", lambda: ["26.2.6"])
+    monkeypatch.setattr(
+        office_download,
+        "probe",
+        lambda _url: office_download.Probe(True, office_download.MIN_INSTALLER_BYTES),
+    )
+
+    def download(url, target, _progress, _expected=None):
+        downloads.append(url)
+        target.write_bytes(b"msi")
+        return 3
+
+    monkeypatch.setattr(office_download, "download", download)
+    monkeypatch.setattr(office_packages, "msi_signature", lambda _path: signature)
 
 
 def test_install_verifies_the_signature_before_extracting(monkeypatch, tmp_path):
-    monkeypatch.setenv("VIVEPDF_OFFICE_DIR", str(tmp_path / "office"))
-    monkeypatch.setattr(office_download.sys, "platform", "win32")
-    monkeypatch.setattr(office_download, "candidate_versions", lambda: ["26.2.6"])
-    monkeypatch.setattr(office_download.platform, "machine", lambda: "AMD64")
-    monkeypatch.setattr(office_download, "download", lambda *_args: office.MIN_INSTALLER_BYTES)
-    monkeypatch.setattr(office_download, "verify_checksum", lambda *_args: None)
-    monkeypatch.setattr(
-        office_packages, "msi_signature", lambda _path: ("HashMismatch", TDF_SUBJECT)
-    )
+    downloads: list[str] = []
+    windows_install(monkeypatch, tmp_path, signed(status="HashMismatch"), downloads)
     extracted: list[Path] = []
     monkeypatch.setattr(
         office_packages, "extract_msi", lambda installer, *_args: extracted.append(installer)
@@ -228,13 +259,79 @@ def test_install_verifies_the_signature_before_extracting(monkeypatch, tmp_path)
         office.office_install(office.OfficeInstallParams(), silent_progress())
     assert caught.value.data["tool"] == "authenticode"
     assert extracted == []
+    assert len(downloads) == office.MAX_INSTALLER_DOWNLOADS
+    assert len(set(downloads)) == office.MAX_INSTALLER_DOWNLOADS
+
+
+def test_a_signed_windows_installer_needs_no_checksum_file(monkeypatch, tmp_path):
+    downloads: list[str] = []
+    windows_install(monkeypatch, tmp_path, signed(), downloads)
+
+    def no_checksum(*_args):
+        raise AssertionError("the Windows installer is checked by its signature")
+
+    def extract(_installer, directory):
+        (directory / "program").mkdir()
+        (directory / "program" / "soffice.exe").write_bytes(b"stub")
+
+    monkeypatch.setattr(office_download, "expected_checksum", no_checksum)
+    monkeypatch.setattr(office_packages, "extract_msi", extract)
+    status = office.office_install(office.OfficeInstallParams(), silent_progress())
+    assert status.installed is True
+    assert downloads == [
+        f"{office_download.MIRRORS[0]}26.2.6/win/x86_64/LibreOffice_26.2.6_Win_x86-64.msi"
+    ]
+
+
+def test_install_moves_on_to_the_next_mirror_when_a_download_breaks(monkeypatch, tmp_path):
+    downloads: list[str] = []
+    windows_install(monkeypatch, tmp_path, signed(), downloads)
+
+    def flaky(url, target, _progress, _expected=None):
+        downloads.append(url)
+        if len(downloads) == 1:
+            raise OpError(
+                ErrorCode.NETWORK, "reset", {"reason": "officeDownload", "phase": "download"}
+            )
+        target.write_bytes(b"msi")
+        return 3
+
+    def extract(_installer, directory):
+        (directory / "program").mkdir()
+        (directory / "program" / "soffice.exe").write_bytes(b"stub")
+
+    monkeypatch.setattr(office_download, "download", flaky)
+    monkeypatch.setattr(office_packages, "extract_msi", extract)
+    office.office_install(office.OfficeInstallParams(), silent_progress())
+    assert [url.split("/26.2.6/")[0] + "/" for url in downloads] == list(
+        office_download.MIRRORS[:2]
+    )
+
+
+def test_install_says_no_server_offered_the_installer(monkeypatch, tmp_path):
+    windows_install(monkeypatch, tmp_path, signed(), [])
+    monkeypatch.setattr(office_download, "probe", lambda _url: office_download.Probe(False, None))
+    with pytest.raises(OpError) as caught:
+        office.office_install(office.OfficeInstallParams(), silent_progress())
+    assert caught.value.code == ErrorCode.NETWORK
+    assert caught.value.data == {"reason": "officeDownload", "phase": "download"}
+    assert not (tmp_path / "office").exists()
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="Authenticode is Windows-only")
 def test_signature_of_an_unsigned_file_is_not_valid(tmp_path):
     unsigned = tmp_path / "unsigned.msi"
     unsigned.write_bytes(b"not an installer")
-    status, _subject = office_packages.msi_signature(unsigned)
-    assert status != "Valid"
+    signature = office_packages.msi_signature(unsigned)
+    assert signature.status != "Valid"
+    assert not signature.trusted()
     with pytest.raises(OpError):
         office_packages.verify_msi_publisher(unsigned)
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Authenticode is Windows-only")
+def test_a_windows_catalog_signature_is_not_a_foundation_signature():
+    signature = office_packages.msi_signature(Path(r"C:\Windows\explorer.exe"))
+    assert signature.status == "Valid"
+    assert signature.kind == "Catalog"
+    assert not signature.trusted()

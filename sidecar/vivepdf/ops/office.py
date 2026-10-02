@@ -9,7 +9,8 @@ from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
-MIN_INSTALLER_BYTES = 100 * 1024 * 1024
+MAX_INSTALLER_DOWNLOADS = 3
+RETRIED_PHASES = ("download", "verify")
 PRUNED_DIRECTORIES = ("help", "readmes")
 PRUNED_PROGRAM_FILES = ("python.exe", "python313.dll")
 DEB_PHASE = 0.1
@@ -88,19 +89,49 @@ def _unpack_debs(tarball: Path, directory: Path, staging: Path, progress: Progre
     office_packages.flatten_office_tree(unpacked, directory)
 
 
+def _verify(package: OfficePackage, source: office_download.Source, installer: Path) -> None:
+    if package.kind == "msi":
+        office_packages.verify_msi_publisher(installer)
+    elif package.kind == "deb":
+        office_download.verify_checksum(
+            office_download.installer_url(source.version, package), installer
+        )
+
+
 def _unpack(
     package: OfficePackage, installer: Path, directory: Path, staging: Path, progress: Progress
 ) -> None:
+    progress.report(DOWNLOAD_PHASE, "progress.installing", {})
     if package.kind == "msi":
-        office_packages.verify_msi_publisher(installer)
-        progress.report(DOWNLOAD_PHASE, "progress.installing", {})
         office_packages.extract_msi(installer, directory)
     elif package.kind == "deb":
-        progress.report(DOWNLOAD_PHASE, "progress.installing", {})
         _unpack_debs(installer, directory, staging, progress)
     else:
-        progress.report(DOWNLOAD_PHASE, "progress.installing", {})
         office_packages.install_app_bundle(installer, directory, staging / "mount")
+
+
+def _fetch_verified(package: OfficePackage, installer: Path, progress: Progress) -> None:
+    last_error: OpError | None = None
+    attempts = 0
+    for source in office_download.sources(package, office_download.candidate_versions()):
+        progress.check_cancelled()
+        attempts += 1
+        try:
+            office_download.download(source.url, installer, progress, source.size)
+            _verify(package, source, installer)
+        except OpError as error:
+            if (error.data or {}).get("phase") not in RETRIED_PHASES:
+                raise
+            last_error = error
+            if attempts >= MAX_INSTALLER_DOWNLOADS:
+                raise
+            continue
+        return
+    raise last_error or OpError(
+        ErrorCode.NETWORK,
+        "no download server offered the installer",
+        {"reason": "officeDownload", "phase": "download"},
+    )
 
 
 def _office_in_use(error: OSError) -> OpError:
@@ -146,22 +177,7 @@ def office_install(_params: OfficeInstallParams, progress: Progress) -> OfficeSt
     staging = Path(tempfile.mkdtemp(prefix=STAGING_PREFIX, dir=directory.parent))
     installer = staging / f"libreoffice.{package.kind}"
     try:
-        received = 0
-        url = ""
-        last_error: OpError | None = None
-        for version in office_download.candidate_versions():
-            url = office_download.installer_url(version, package)
-            try:
-                received = office_download.download(url, installer, progress)
-            except OpError as error:
-                last_error = error
-                continue
-            if received >= MIN_INSTALLER_BYTES:
-                break
-            last_error = OpError(ErrorCode.NETWORK, "installer download was incomplete")
-        if received < MIN_INSTALLER_BYTES:
-            raise last_error or OpError(ErrorCode.NETWORK, "installer download failed")
-        office_download.verify_checksum(url, installer)
+        _fetch_verified(package, installer, progress)
         _unpack(package, installer, fresh, staging, progress)
         _prune(fresh)
         if not libreoffice.office_candidates(fresh):

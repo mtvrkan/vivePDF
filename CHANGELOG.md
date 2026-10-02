@@ -11,10 +11,14 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ### Fixed
 - Presentation: pen and highlighter strokes are no longer cut off at the page edge; a stroke can run past the page or start in the margin beside it (it belongs to the nearest page and moves with it), and the eraser reaches those parts too [2026-10-02]
+- Office to PDF: downloading LibreOffice works again when the Document Foundation's own download server is slow or down. The installer now comes from the first of seven https mirrors (or the foundation server itself) that has it (folders still being filled for a fresh release are skipped), a dropped connection resumes where it stopped, and the error says whether no server answered or the package failed its check [2026-10-02]
 - Interface: the frosted glass behind bars, side panels and menus works again in the installed app; the CSS minifier dropped the blur, so floating toolbars let the page show through them (for example the formula toolbar over the text it was placed on). Menus and toolbars that float over a page are now also fully opaque [2026-10-02]
 - Editor: a paragraph opened for editing keeps the line spacing it has on the page; small text used to take the app's own line height, so the lines spread out, ran past the paragraph box and over the content below it [2026-10-02]
 - Editor: the X, Y, width and height fields in the panel follow an object while it is moved or resized with the mouse instead of showing the size it had when it was selected [2026-10-02]
 - Viewer: the close button on a document tab closes the document again; pressing it started a tab drag that swallowed the click, so the tab was only activated (middle-click, Delete and Ctrl+W were unaffected) [2026-10-02]
+
+### Security
+- Office to PDF: the Windows installer is accepted only with a valid Authenticode signature whose signer is exactly The Document Foundation (name, organisation and signature type are all checked), instead of a checksum file fetched from the same slow server; macOS keeps its codesign check and Linux keeps the mandatory published checksum. Downloads only follow redirects that stay on https [2026-10-02]
 
 ## [0.1.1] - 2026-10-02
 ### Added
