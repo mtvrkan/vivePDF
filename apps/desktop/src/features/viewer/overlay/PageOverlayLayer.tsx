@@ -613,6 +613,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
       : "crosshair";
   const backgroundFor = (item: BlockPending): string => backgrounds[item.id] ?? contrastingBackground(item.style.color);
   const blockContainerStyle = (item: BlockPending): CSSProperties => ({
+    fontSize: px(item.style.fontSize),
     lineHeight: item.leading > 0 && item.style.fontSize > 0 ? item.leading / item.style.fontSize : item.style.lineHeight,
     textAlign: item.style.align,
     opacity: item.opacity,
@@ -829,13 +830,13 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
                 runStyle={plainRunStyle}
                 height={item.height}
                 scale={scale}
-                containerStyle={{ textAlign: item.style.align, lineHeight: 1.25, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+                containerStyle={{ fontSize: px(item.style.fontSize), textAlign: item.style.align, lineHeight: 1.25, whiteSpace: "pre-wrap", wordBreak: "break-word" }}
                 background="rgba(255,255,255,0.7)"
                 caret={caretRef.current}
                 onFinish={finishEditing}
               />
             ) : textRuns && hasMixedStyles(textRuns) ? (
-              <div className="h-full w-full overflow-hidden whitespace-pre-wrap break-words" style={{ textAlign: item.style.align, lineHeight: 1.25, opacity: item.opacity }}>
+              <div className="h-full w-full overflow-hidden whitespace-pre-wrap break-words" style={{ fontSize: px(item.style.fontSize), textAlign: item.style.align, lineHeight: 1.25, opacity: item.opacity }}>
                 {renderRuns(textRuns, plainRunStyle)}
               </div>
             ) : (

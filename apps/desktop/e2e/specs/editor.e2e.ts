@@ -61,6 +61,20 @@ async function dragPage(pageIndex: number, from: [number, number], to: [number, 
     .perform();
 }
 
+async function widenBlock(by: number) {
+  const handle = await browser.execute(() => {
+    const rect = (document.querySelector("[data-resize-handle]") as HTMLElement).getBoundingClientRect();
+    return { x: Math.round(rect.left + rect.width / 2), y: Math.round(rect.top + rect.height / 2) };
+  });
+  await browser
+    .action("pointer", { parameters: { pointerType: "mouse" } })
+    .move({ origin: "viewport", ...handle })
+    .down()
+    .move({ origin: "viewport", x: handle.x + by, y: handle.y, duration: 300 })
+    .up()
+    .perform();
+}
+
 async function typeText(text: string) {
   await $("[data-editor-input]").waitForDisplayed({ timeout: 10000, timeoutMsg: "the text editor never opened" });
   await browser.keys(text);
@@ -136,6 +150,37 @@ describe("page editor", () => {
     expect(text).toContain("Sample page 1");
     expect(saved.pages?.[1].text).toBe(before.pages?.[1].text);
     expect(probe(source).pages?.[0].text).toBe(before.pages?.[0].text);
+  });
+
+  it("keeps the page's line spacing while a small paragraph is being edited", async () => {
+    await openInViewer(copyFixture(fixtures().memo, "editor-memo.pdf"));
+    await enterEditor("viewer.overlay.text");
+
+    await clickPage(0, 150, 130);
+    await $("[data-editor-input]").waitForDisplayed({ timeout: 10000 });
+    const layout = await browser.execute(() => {
+      const editor = document.querySelector("[data-editor-input]") as HTMLElement;
+      const page = document.querySelector('[data-page-index="0"]') as HTMLElement;
+      const range = document.createRange();
+      range.selectNodeContents(editor);
+      const tops = [...new Set(Array.from(range.getClientRects()).map((rect) => Math.round(rect.top)))].sort((a, b) => a - b);
+      const steps = tops.slice(1).map((top, index) => top - tops[index]);
+      return { lines: tops.length, step: steps.length ? steps.reduce((sum, value) => sum + value, 0) / steps.length : 0, scale: page.getBoundingClientRect().width / 595, overflow: editor.scrollHeight - editor.clientHeight };
+    });
+
+    expect(layout.lines).toBe(8);
+    expect(Math.abs(layout.step - 12 * layout.scale)).toBeLessThan(1);
+    expect(layout.overflow).toBeLessThan(layout.step / 2);
+    await browser.keys(END_KEY);
+    await typeText(" today");
+    await waitForPending(1);
+
+    const widthField = $(`input[aria-label="${t("viewer.editPanel.geometryWidthFull")}"]`);
+    await widenBlock(40);
+    await widthField.waitForExist({ timeout: 5000, timeoutMsg: "the panel never showed the size of the resized paragraph" });
+    const widthBefore = await widthField.getValue();
+    await widenBlock(40);
+    await browser.waitUntil(async () => (await widthField.getValue()) !== widthBefore, { timeout: 5000, timeoutMsg: "the width field kept the size from before the resize" });
   });
 
   it("adds new text with the size and weight chosen in the panel and saves it into the open file", async () => {

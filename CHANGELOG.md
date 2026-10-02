@@ -8,6 +8,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ### Fixed
 - Presentation: pen and highlighter strokes are no longer cut off at the page edge; a stroke can run past the page or start in the margin beside it (it belongs to the nearest page and moves with it), and the eraser reaches those parts too [2026-10-02]
+- Editor: a paragraph opened for editing keeps the line spacing it has on the page; small text used to take the app's own line height, so the lines spread out, ran past the paragraph box and over the content below it [2026-10-02]
+- Editor: the X, Y, width and height fields in the panel follow an object while it is moved or resized with the mouse instead of showing the size it had when it was selected [2026-10-02]
 - Viewer: the close button on a document tab closes the document again; pressing it started a tab drag that swallowed the click, so the tab was only activated (middle-click, Delete and Ctrl+W were unaffected) [2026-10-02]
 
 ## [0.1.1] - 2026-10-02

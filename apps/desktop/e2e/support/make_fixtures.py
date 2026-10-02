@@ -315,12 +315,28 @@ def japanese(target: Path) -> None:
     document.save(target, garbage=3, deflate=True)
 
 
+def memo(target: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    lines = [f"Memo line {number} keeps a small body size" for number in range(1, 9)]
+    for row, line in enumerate(lines):
+        if FONT_FILE.is_file():
+            page.insert_text(
+                (72, 100 + row * 12), line, fontsize=9, fontname="arial", fontfile=str(FONT_FILE)
+            )
+        else:
+            page.insert_text((72, 100 + row * 12), line, fontsize=9)
+    page.insert_text((72, 230), "Below the memo", fontsize=9)
+    save(document, target)
+
+
 def main() -> None:
     directory = Path(sys.argv[1])
     directory.mkdir(parents=True, exist_ok=True)
     files = {
         "sample": directory / "sample.pdf",
         "japanese": directory / "japanese.pdf",
+        "memo": directory / "memo.pdf",
         "second": directory / "ikinci belge şğü.pdf",
         "six": directory / "six-pages.pdf",
         "chapters": directory / "chapters.pdf",
@@ -347,6 +363,7 @@ def main() -> None:
     sample(files["sample"])
     second(files["second"])
     japanese(files["japanese"])
+    memo(files["memo"])
     six_pages(files["six"])
     chapters(files["chapters"])
     scanned(files["scanned"])

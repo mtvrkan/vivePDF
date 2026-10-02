@@ -44,7 +44,7 @@ export function FitText({
   const runStyler: RunStyler = (run) => runStyle(run, run.size * ratio * pxPerPt);
 
   return (
-    <div ref={ref} className={className} style={{ ...style, overflow: "hidden" }}>
+    <div ref={ref} className={className} style={{ ...style, fontSize: sizePt * pxPerPt, overflow: "hidden" }}>
       {renderRuns(runs, runStyler)}
     </div>
   );

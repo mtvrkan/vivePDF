@@ -219,7 +219,7 @@ export function EditPanel({ documentId }: { documentId: string }) {
                 <label key={field} title={fullLabel} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   {t(`viewer.editPanel.geometry${fieldName}`)}
                   <input
-                    key={`${selected.id}-${field}`}
+                    key={`${selected.id}-${field}-${formatGeometryValue(selected[field])}`}
                     type="text"
                     inputMode="decimal"
                     defaultValue={formatGeometryValue(selected[field])}
