@@ -1,5 +1,6 @@
 import sys
 import threading
+import time
 import zipfile
 from pathlib import Path
 
@@ -266,3 +267,32 @@ def test_single_tiff_failing_mid_page_reports_the_real_error_and_leaves_nothing(
     gc.collect()
 
     assert [path.name for path in tmp_path.iterdir()] == ["renkli sayfalar.pdf"]
+
+
+def test_parallel_rendering_stops_on_cancel_even_when_every_page_is_ready(
+    colour_pdf: Path, tmp_path: Path
+) -> None:
+    settings = _page_images.RenderSettings("png", 72, 88, False, False)
+    jobs = [(index, tmp_path / f"{index}.png") for index in range(3)]
+    cancel = threading.Event()
+
+    def check_cancelled() -> None:
+        if cancel.is_set():
+            raise OpError(ErrorCode.CANCELLED, "operation cancelled")
+
+    with pymupdf.open(colour_pdf) as opened:
+        results = _page_images.rendered_in_order(
+            _page_images.RenderSource(opened, str(colour_pdf), None),
+            jobs,
+            settings,
+            check_cancelled,
+            2,
+        )
+        seen = [next(results)]
+        while not all(target.exists() for _index, target in jobs):
+            time.sleep(0.05)
+        cancel.set()
+        with pytest.raises(OpError) as caught:
+            seen.extend(results)
+    assert caught.value.code == ErrorCode.CANCELLED
+    assert len(seen) == 1

@@ -1,4 +1,6 @@
 import sys
+import threading
+import time
 from pathlib import Path
 
 import pymupdf
@@ -7,7 +9,8 @@ from docx import Document as WordDocument
 
 from vivepdf.ops import _ocr_parallel
 from vivepdf.ops.ocr import OcrParams, run_ocr
-from vivepdf.rpc.errors import OpError
+from vivepdf.ops.tessdata import writable_tessdata_dir
+from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
 FONT = str(
@@ -70,6 +73,30 @@ def test_recognition_carries_on_in_process_when_workers_die(
     assert result.ocr_pages == len(words)
     for word, text in zip(words, _page_texts(result.output), strict=True):
         assert word in text
+
+
+def test_parallel_recognition_stops_on_cancel_even_when_pages_are_done() -> None:
+    sheets = [
+        _ocr_parallel.rendered_sheet(pymupdf.Pixmap(pymupdf.csRGB, _picture_of(word)), False)
+        for word in WORDS[:3]
+    ]
+    cancel = threading.Event()
+
+    def check_cancelled() -> None:
+        if cancel.is_set():
+            raise OpError(ErrorCode.CANCELLED, "operation cancelled")
+
+    results = _ocr_parallel.recognised_in_order(
+        [0, 1, 2], sheets.__getitem__, "eng", str(writable_tessdata_dir()), check_cancelled, 2
+    )
+    seen = [next(results)]
+    time.sleep(3.0)
+    cancel.set()
+    with pytest.raises(OpError) as caught:
+        seen.extend(results)
+    results.close()
+    assert caught.value.code == ErrorCode.CANCELLED
+    assert len(seen) == 1
 
 
 def test_worker_count_stays_serial_for_short_documents() -> None:

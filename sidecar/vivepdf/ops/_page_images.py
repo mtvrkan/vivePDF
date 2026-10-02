@@ -138,6 +138,7 @@ def rendered_in_order(
         for _ in range(workers + QUEUE_EXTRA):
             submit()
         while pending:
+            check_cancelled()
             index, _target, job = pending[0]
             while not job.ready():
                 check_cancelled()
