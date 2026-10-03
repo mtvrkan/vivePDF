@@ -3860,6 +3860,9 @@
     "ar": {
       "tools.edit.impose.autoRotateHint": [
         "rotate"
+      ],
+      "studio.doc.table.headerRow": [
+        "header"
       ]
     },
     "ja": {
@@ -3879,6 +3882,18 @@
         "certificate"
       ],
       "studio.tpl.recipientName": [
+        "recipient"
+      ],
+      "studio.doc.table.headerRow": [
+        "header"
+      ],
+      "studio.doc.starters.letter.recipient": [
+        "recipient"
+      ],
+      "studio.doc.starters.letter.recipientAddress": [
+        "recipient"
+      ],
+      "studio.doc.starters.letter.greeting": [
         "recipient"
       ]
     },
@@ -3936,6 +3951,28 @@
     "zh-CN": {
       "studio.tpl.recipientName": [
         "recipient"
+      ],
+      "studio.doc.table.headerRow": [
+        "header"
+      ]
+    },
+    "de": {
+      "studio.doc.starters.descriptions.petition": [
+        "attachment"
+      ],
+      "studio.doc.starters.petition.attachments": [
+        "attachment"
+      ]
+    },
+    "ru": {
+      "studio.doc.starters.descriptions.petition": [
+        "attachment"
+      ],
+      "studio.doc.starters.petition.attachments": [
+        "attachment"
+      ],
+      "studio.doc.table.headerRow": [
+        "header"
       ]
     }
   }

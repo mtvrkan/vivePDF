@@ -261,3 +261,48 @@ export type StudioProjectSaveResult = { output: string; bytes: number; thumbnail
 export type StudioProjectOpenResult = { design: unknown; thumbnail: string; source: "project" | "pdf" };
 
 export const STUDIO_PROJECT_EXTENSION = "vivedesign";
+
+export const STUDIO_DOCUMENT_EXTENSION = "vivedoc";
+export const STUDIO_DOCUMENT_VERSION = 1;
+
+export type DocumentPaper = "a4" | "a5" | "b5" | "letter" | "legal";
+export type DocumentPageNumbers = "none" | "center" | "right" | "outside";
+export type DocumentAlign = "left" | "center" | "right";
+export type DocumentCoverStyle = "classic" | "band" | "frame" | "minimal";
+
+export type DocumentLayout = {
+  paper: DocumentPaper;
+  landscape: boolean;
+  marginMm: number;
+  fontSize: number;
+  lineHeight: number;
+  accent: string;
+  header: string;
+  headerAlign: DocumentAlign;
+  footer: string;
+  footerAlign: DocumentAlign;
+  pageNumbers: DocumentPageNumbers;
+  pageNumberFormat: string;
+  furnitureOnFirst: boolean;
+  toc: boolean;
+  tocTitle: string;
+  tocDepth: 1 | 2 | 3;
+  cover: boolean;
+  coverStyle: DocumentCoverStyle;
+  title: string;
+  subtitle: string;
+  author: string;
+  date: string;
+};
+
+export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null };
+
+export type DocumentNode = { type: string; attrs?: Record<string, unknown>; content?: DocumentNode[]; marks?: Array<{ type: string; attrs?: Record<string, unknown> }>; text?: string };
+
+export type StudioDocument = { version: number; kind: "document"; name: string; settings: DocumentSettings; content: DocumentNode | string };
+
+export type StudioDocumentContent = { html: string; images: string[]; fonts: string[]; settings: DocumentLayout; title: string; language: string };
+
+export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number };
+
+export type StudioDocumentPage = { image: string; width: number; height: number };

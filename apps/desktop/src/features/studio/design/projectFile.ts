@@ -4,7 +4,7 @@ import { sanitizeFileName } from "@/shared/lib/naming";
 import type { RpcError } from "@/types";
 import { studioOpenProject, studioSaveProject } from "@/shared/rpc/operations";
 import { useUiStore } from "@/shared/store/uiStore";
-import { STUDIO_PROJECT_EXTENSION, type StudioDesign } from "@/types/studio";
+import { STUDIO_DOCUMENT_EXTENSION, STUDIO_PROJECT_EXTENSION, type StudioDesign } from "@/types/studio";
 import { normalizeDesign } from "../model/design";
 import { imagePaths, pageToRender } from "../model/render";
 import { measureTexts } from "./measure";
@@ -42,7 +42,7 @@ export async function loadDesign(path: string, password: string | null = null): 
 }
 
 export async function pickDesignFile(filterName: string): Promise<string | null> {
-  const selected = await openDialog({ multiple: false, directory: false, filters: [{ name: filterName, extensions: [STUDIO_PROJECT_EXTENSION, "pdf"] }] });
+  const selected = await openDialog({ multiple: false, directory: false, filters: [{ name: filterName, extensions: [STUDIO_PROJECT_EXTENSION, STUDIO_DOCUMENT_EXTENSION, "pdf"] }] });
   return typeof selected === "string" ? selected : null;
 }
 

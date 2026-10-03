@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { FolderOpen, Palette, Play, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
@@ -24,9 +24,13 @@ import { PropertiesPanel } from "./design/PropertiesPanel";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { readDraft, useStudioStore } from "./design/studioStore";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
+import { DocumentStart } from "./document/DocumentStart";
+import { useDocumentStore } from "./document/documentStore";
 import { useMergeStore } from "./merge/mergeStore";
 import { buildTemplate } from "./templates/catalog";
 import { TemplateGallery } from "./templates/TemplateGallery";
+
+const DocumentEditor = lazy(() => import("./document/DocumentEditor"));
 
 const START_SIZES: StudioPageSize[] = ["a4", "a4Landscape", "a5", "letter", "square", "story", "presentation", "businessCard", "poster"];
 const PREVIEW_BOX = 96;
@@ -149,6 +153,7 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
           </div>
           <Button onClick={() => create(fromMm(custom.width), fromMm(custom.height))}>{t("studio.start.create")}</Button>
         </section>
+        <DocumentStart language={locale} />
         <section className="space-y-3" aria-labelledby="studio-templates">
           <h2 id="studio-templates" className="text-base font-semibold">
             {t("studio.templates.title")}
@@ -187,6 +192,7 @@ function StudioEditor({ language }: { language: string }) {
 
 export function StudioPage() {
   const design = useStudioStore((state) => state.design);
+  const document = useDocumentStore((state) => state.document);
   const open = useStudioStore((state) => state.open);
   const locale = useUiStore((state) => state.locale);
   const editing = design !== null;
@@ -195,7 +201,15 @@ export function StudioPage() {
   }, [editing]);
   return (
     <>
-      {design ? <StudioEditor language={locale} /> : <StudioStart onOpen={open} />}
+      {design ? (
+        <StudioEditor language={locale} />
+      ) : document ? (
+        <Suspense fallback={<div className="h-full animate-pulse bg-muted/40" aria-busy />}>
+          <DocumentEditor language={locale} />
+        </Suspense>
+      ) : (
+        <StudioStart onOpen={open} />
+      )}
       <DesignLauncher />
     </>
   );

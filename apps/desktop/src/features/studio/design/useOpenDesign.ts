@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
+import { useDocumentStore } from "../document/documentStore";
+import { isDocumentPath, loadStudioDocument } from "../document/documentFile";
 import { loadDesign } from "./projectFile";
 import { useRecentDesignsStore } from "./recentDesigns";
 import { useStudioStore } from "./studioStore";
@@ -14,7 +16,14 @@ export function useOpenDesign() {
     async (path: string, password: string | null = null): Promise<boolean> => {
       setOpening(path);
       try {
+        if (isDocumentPath(path)) {
+          const document = await loadStudioDocument(path);
+          useStudioStore.getState().close();
+          useDocumentStore.getState().open(document, path);
+          return true;
+        }
         const loaded = await loadDesign(path, password);
+        useDocumentStore.getState().close();
         useStudioStore.getState().open(loaded.design, loaded.filePath);
         return true;
       } catch (error) {

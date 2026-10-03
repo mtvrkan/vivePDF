@@ -9,7 +9,7 @@ type StudioLaunchState = {
 };
 
 export function isDesignPath(path: string): boolean {
-  return /\.vivedesign$/i.test(path);
+  return /\.(vivedesign|vivedoc)$/i.test(path);
 }
 
 export const useStudioLaunchStore = create<StudioLaunchState>((set, get) => ({

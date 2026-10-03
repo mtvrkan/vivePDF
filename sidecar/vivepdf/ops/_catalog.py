@@ -290,6 +290,15 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.qr",
         "studio.render",
     ),
+    "studio_document": (
+        "studio.document_image",
+        "studio.import_document",
+        "studio.open_document",
+        "studio.preview_document",
+        "studio.preview_document_page",
+        "studio.render_document",
+        "studio.save_document",
+    ),
     "studio_project": (
         "studio.design_of",
         "studio.open_project",

@@ -668,3 +668,158 @@
   cursor: grabbing !important;
   user-select: none;
 }
+
+@layer components {
+  .vp-doc .ProseMirror {
+    min-height: var(--doc-body-height);
+    outline: none;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  .vp-doc p {
+    margin: 0 0 0.6em;
+  }
+  .vp-doc h1,
+  .vp-doc h2,
+  .vp-doc h3,
+  .vp-doc h4 {
+    color: var(--doc-accent);
+    font-family: var(--doc-heading-font);
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .vp-doc h1 {
+    font-size: 2em;
+    margin: 0.5em 0 0.3em;
+  }
+  .vp-doc h2 {
+    font-size: 1.55em;
+    margin: 0.65em 0 0.32em;
+  }
+  .vp-doc h3 {
+    font-size: 1.25em;
+    margin: 0.64em 0 0.32em;
+  }
+  .vp-doc h4 {
+    font-size: 1.08em;
+    margin: 0.65em 0 0.25em;
+  }
+  .vp-doc ul,
+  .vp-doc ol {
+    margin: 0 0 0.5em;
+    padding-left: 18pt;
+  }
+  .vp-doc ul {
+    list-style: disc;
+  }
+  .vp-doc ol {
+    list-style: decimal;
+  }
+  .vp-doc li p {
+    margin: 0;
+  }
+  .vp-doc ul[data-type="taskList"] {
+    list-style: none;
+    padding-left: 2pt;
+  }
+  .vp-doc ul[data-type="taskList"] li {
+    display: flex;
+    gap: 0.4em;
+    align-items: flex-start;
+  }
+  .vp-doc ul[data-type="taskList"] li > label {
+    flex: none;
+    user-select: none;
+  }
+  .vp-doc ul[data-type="taskList"] li > div {
+    flex: 1;
+  }
+  .vp-doc blockquote {
+    border-left: 2pt solid var(--border);
+    color: var(--muted-foreground);
+    margin: 0 0 0.6em;
+    padding-left: 10pt;
+  }
+  .vp-doc pre {
+    border-left: 2pt solid var(--border);
+    font-family: ui-monospace, monospace;
+    font-size: 0.88em;
+    margin: 0 0 0.6em;
+    padding: 2pt 0 2pt 8pt;
+    white-space: pre-wrap;
+  }
+  .vp-doc code {
+    font-family: ui-monospace, monospace;
+  }
+  .vp-doc a {
+    color: var(--doc-accent);
+    text-decoration: underline;
+  }
+  .vp-doc hr {
+    border: none;
+    border-top: 0.75pt solid var(--border);
+    margin: 8pt 0;
+  }
+  .vp-doc img {
+    display: block;
+    height: auto;
+    margin: 0 auto;
+    max-width: 100%;
+  }
+  .vp-doc table {
+    border-collapse: collapse;
+    margin: 0 0 0.6em;
+    table-layout: fixed;
+    width: 100%;
+  }
+  .vp-doc td,
+  .vp-doc th {
+    border: 0.5pt solid var(--muted-foreground);
+    padding: 3pt 5pt;
+    position: relative;
+    vertical-align: top;
+  }
+  .vp-doc th {
+    border-bottom-width: 1pt;
+    font-weight: 700;
+    text-align: left;
+  }
+  .vp-doc .selectedCell::after {
+    background: color-mix(in oklab, var(--primary) 15%, transparent);
+    content: "";
+    inset: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+  .vp-doc .column-resize-handle {
+    background: var(--primary);
+    bottom: -2px;
+    pointer-events: none;
+    position: absolute;
+    right: -2px;
+    top: 0;
+    width: 3px;
+  }
+  .vp-doc .tableWrapper {
+    overflow-x: auto;
+  }
+  .vp-doc .resize-cursor {
+    cursor: col-resize;
+  }
+  .vp-doc .page-break {
+    border-top: 1px dashed var(--muted-foreground);
+    height: 0;
+    margin: 12pt 0;
+  }
+  .vp-doc .ProseMirror-selectednode {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+  .vp-doc p.is-editor-empty:first-child::before {
+    color: var(--muted-foreground);
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+}

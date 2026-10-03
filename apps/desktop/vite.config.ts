@@ -20,7 +20,7 @@ export default defineConfig({
           if (id.includes("@embedpdf")) return "vendor-embedpdf";
           if (id.includes("tailwind-merge")) return "vendor-tailwind-merge";
           if (id.includes("@tauri-apps")) return "vendor-tauri";
-          if (id.includes("react-router") || id.includes("/react/") || id.includes("/react-dom/")) return "vendor-react";
+          if (id.includes("react-router") || id.includes("/node_modules/react/") || id.includes("/node_modules/react-dom/")) return "vendor-react";
           if (id.includes("i18next")) return "vendor-i18n";
           if (id.includes("lucide-react")) return "vendor-icons";
           return undefined;

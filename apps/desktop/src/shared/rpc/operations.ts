@@ -287,6 +287,10 @@ import type {
   XlsxParams,
 } from "@/types";
 import type {
+  StudioDocument,
+  StudioDocumentContent,
+  StudioDocumentPage,
+  StudioDocumentPreview,
   StudioImageInfo,
   StudioImportedSvg,
   StudioProjectOpenResult,
@@ -659,6 +663,27 @@ export const studioSaveProject = (params: StudioProjectSaveParams, options?: Rpc
 
 export const studioOpenProject = (params: { path: string; password?: string | null }, options?: RpcCallOptions) =>
   rpc<StudioProjectOpenResult>("studio.open_project", params, options);
+
+export const studioRenderDocument = (params: StudioDocumentContent & { output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
+  rpc<OutputResult>("studio.render_document", params, options);
+
+export const studioPreviewDocument = (params: StudioDocumentContent, options?: RpcCallOptions) =>
+  rpc<StudioDocumentPreview>("studio.preview_document", params, options);
+
+export const studioPreviewDocumentPage = (params: { token: string; page: number; width: number }, options?: RpcCallOptions) =>
+  rpc<StudioDocumentPage>("studio.preview_document_page", params, options);
+
+export const studioSaveDocument = (params: { document: StudioDocument; output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
+  rpc<{ output: string; bytes: number }>("studio.save_document", params, options);
+
+export const studioOpenDocument = (params: { path: string }, options?: RpcCallOptions) =>
+  rpc<{ document: unknown }>("studio.open_document", params, options);
+
+export const studioImportDocument = (params: { path: string }, options?: RpcCallOptions) =>
+  rpc<{ html: string; title: string }>("studio.import_document", params, options);
+
+export const studioDocumentImage = (params: { path: string }, options?: RpcCallOptions) =>
+  rpc<{ src: string; width: number; height: number }>("studio.document_image", params, options);
 
 export const studioDesignOf = (params: { path: string; password?: string | null }, options?: RpcCallOptions) =>
   rpc<{ found: boolean }>("studio.design_of", params, options);
