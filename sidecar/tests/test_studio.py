@@ -418,7 +418,7 @@ def test_too_many_output_pages_are_refused(tmp_path: Path):
     pages = [{"width": 100, "height": 100, "items": []} for _ in range(5)]
     with pytest.raises(OpError) as caught:
         _render(tmp_path, [], pages=pages, rows=[{"a": str(index)} for index in range(4001)])
-    assert caught.value.data["reason"] == "tooManyPages"
+    assert caught.value.data["reason"] == "tooManyOutputPages"
 
 
 def test_existing_output_needs_overwrite(tmp_path: Path):

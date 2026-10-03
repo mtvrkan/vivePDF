@@ -1136,7 +1136,11 @@
         "readyUnsaved": "Fuente lista: {{language}}. Guarde el documento y vuelva a abrirlo para mostrar el texto.",
         "reload": "Volver a cargar"
       },
-      "dismiss": "Cerrar mensaje"
+      "dismiss": "Cerrar mensaje",
+      "studio": {
+        "present": "Este PDF se creó en Studio y se puede editar allí.",
+        "open": "Editar en Studio"
+      }
     },
     "signatures": {
       "title": "Firmas",
@@ -6060,7 +6064,13 @@
       "noTitle": "La portada necesita un título.",
       "noCoverImage": "La portada con foto necesita una imagen. Elija una o cambie de estilo.",
       "clipboardEmpty": "El portapapeles no tiene imagen, texto ni archivo para convertir en PDF. Copie algo primero.",
-      "noName": "Escriba primero un nombre."
+      "noName": "Escriba primero un nombre.",
+      "notProject": "Este archivo no es un diseño de vivePDF.",
+      "newerProject": "Este diseño se creó con una versión más reciente de vivePDF. Actualice la aplicación para abrirlo.",
+      "projectTooLarge": "El diseño supera los {{limitMb}} MB.",
+      "noDesign": "Este PDF no contiene un diseño de Studio.",
+      "missingImage": "No se encontró una imagen usada en el diseño: {{path}}",
+      "tooManyOutputPages": "El resultado tendría más de {{limit}} páginas. Use menos filas o páginas."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",
@@ -6715,7 +6725,24 @@
       "done": "Páginas exportadas: {{count}}",
       "idleTitle": "Listo para exportar",
       "idleDescription": "El texto se puede seleccionar y las fuentes se incrustan en el PDF.",
-      "missingGlyphs": "Algunos caracteres no están en la fuente elegida y podrían no mostrarse: {{glyphs}}"
+      "missingGlyphs": "Algunos caracteres no están en la fuente elegida y podrían no mostrarse: {{glyphs}}",
+      "embed": "Mantener editable en Studio",
+      "embedHint": "El diseño se guarda dentro del PDF, así que al abrir el PDF se ofrece Editar en Studio. Las imágenes aumentan el tamaño del archivo."
+    },
+    "project": {
+      "open": "Abrir diseño…",
+      "save": "Guardar",
+      "saveAs": "Guardar como…",
+      "filter": "Diseño de vivePDF",
+      "saved": "{{name}} guardado",
+      "edited": "{{name}} — modificado",
+      "notSaved": "Aún no se ha guardado en un archivo",
+      "recent": "Diseños recientes",
+      "forget": "Quitar {{name}} de la lista",
+      "missing": "No se encontró el archivo del diseño, así que se quitó de la lista.",
+      "unsavedTitle": "¿Guardar los cambios de este diseño?",
+      "unsavedBody": "«{{name}}» tiene cambios que no están guardados en un archivo. ¿Guardarlos antes de abrir otro diseño?",
+      "discard": "No guardar"
     }
   }
 }

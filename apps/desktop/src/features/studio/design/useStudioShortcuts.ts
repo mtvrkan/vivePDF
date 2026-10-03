@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
+import { isBrowserShortcut } from "@/shared/lib/browserKeys";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { group, nudge, patchSelected, reorder, selectAll, ungroup } from "./commands";
 import { withElementStyle } from "./richText";
 import { selectedElements, useStudioStore } from "./studioStore";
+import { textEditorBridge } from "./textEditorBridge";
 
 const NUDGE = 1;
 const NUDGE_FAR = 10;
@@ -10,17 +12,26 @@ const ZOOM_STEP = 1.25;
 const STYLE_KEYS: Record<string, "bold" | "italic" | "underline"> = { b: "bold", i: "italic", u: "underline" };
 const ARROWS: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
 
-export function useStudioShortcuts(onExport: () => void) {
+export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolean) => void) {
   const exportRef = useRef(onExport);
   exportRef.current = onExport;
+  const saveRef = useRef(onSave);
+  saveRef.current = onSave;
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || isTypingTarget(event.target) || document.querySelector('[role="dialog"]')) return;
+      if ((event.defaultPrevented && !isBrowserShortcut(event)) || document.querySelector('[role="dialog"]')) return;
       const state = useStudioStore.getState();
       if (!state.design) return;
       const mod = event.ctrlKey || event.metaKey;
       const key = event.key.toLowerCase();
+      if (mod && key === "s") {
+        event.preventDefault();
+        textEditorBridge.current?.commit();
+        saveRef.current(event.shiftKey);
+        return;
+      }
+      if (isTypingTarget(event.target)) return;
       const run = (action: () => void) => {
         event.preventDefault();
         action();

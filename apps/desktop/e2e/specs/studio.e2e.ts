@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
-import { answerDialogs, bootApp, fixtures, openTool, pressShortcut, probe, t, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
+import { answerDialogs, bootApp, fixtures, openInViewer, openTool, pressShortcut, probe, t, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
 
 const elements = () => $$('[data-testid="studio-viewport"] [data-element-id]');
 const button = (label: string) => $(`//button[normalize-space(.)="${label}"]`);
@@ -120,5 +120,40 @@ describe("studio", () => {
     await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("studio.export.run")}"]`).click();
     await waitForFile(picture);
     expect(existsSync(picture)).toBe(true);
+  });
+
+  it("saves the design, reopens it from recent designs and from the PDF it was exported to", async () => {
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("common.close")}"]`).click();
+    await $('[role="dialog"]').waitForDisplayed({ reverse: true });
+    const name = $(`input[aria-label="${t("studio.toolbar.name")}"]`);
+    await name.setValue("Poster");
+    await browser.waitUntil(async () => (await name.getValue()) === "Poster", { timeoutMsg: "the design name was not typed" });
+
+    const project = join(workDir(), "Poster.vivedesign");
+    answerDialogs(project);
+    await pressShortcut("s");
+    await waitForDialogsAnswered();
+    await waitForFile(project);
+    await expect($('[data-testid="studio-save-state"]')).toHaveText("Poster.vivedesign");
+
+    await $(`button[aria-label="${t("studio.toolbar.leave")}"]`).click();
+    const recent = $('[data-recent-design="Poster"]');
+    await recent.waitForDisplayed();
+    await expect(recent.$("img")).toBeDisplayed();
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-start.png"));
+    await recent.click();
+    await $('[data-testid="studio-editor"]').waitForDisplayed({ timeout: 30000 });
+    await browser.waitUntil(async () => (await elements().length) === 4, { timeoutMsg: "the saved design did not come back with its four elements" });
+    await expect($(`input[aria-label="${t("studio.toolbar.name")}"]`)).toHaveValue("Poster");
+
+    await openInViewer(join(workDir(), "Studio design.pdf"));
+    const edit = $('[data-testid="edit-in-studio"]');
+    await edit.waitForDisplayed({ timeout: 30000 });
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-viewer-bar.png"));
+    await edit.click();
+    await $('[data-testid="studio-editor"]').waitForDisplayed({ timeout: 30000 });
+    await browser.waitUntil(async () => (await elements().length) === 4, { timeoutMsg: "the design in the PDF did not open with its four elements" });
+    await expect($('[data-testid="studio-save-state"]')).toHaveText(t("studio.project.notSaved"));
+    await $('[data-testid="studio-viewport"] [data-element-id] img').waitForDisplayed({ timeout: 30000 });
   });
 });

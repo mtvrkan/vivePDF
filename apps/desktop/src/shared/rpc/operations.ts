@@ -285,7 +285,17 @@ import type {
   WebPageResult,
   XlsxParams,
 } from "@/types";
-import type { StudioImageInfo, StudioImportedSvg, StudioQrLevel, StudioQrModules, StudioRenderParams, StudioRenderResult } from "@/types/studio";
+import type {
+  StudioImageInfo,
+  StudioImportedSvg,
+  StudioProjectOpenResult,
+  StudioProjectSaveParams,
+  StudioProjectSaveResult,
+  StudioQrLevel,
+  StudioQrModules,
+  StudioRenderParams,
+  StudioRenderResult,
+} from "@/types/studio";
 
 export const assemblePages = (params: AssembleParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("pages.assemble", params, options);
@@ -633,6 +643,15 @@ export const studioImportSvg = (params: { path: string }, options?: RpcCallOptio
 
 export const studioQr = (params: { value: string; errorLevel: StudioQrLevel }, options?: RpcCallOptions) =>
   rpc<StudioQrModules>("studio.qr", params, options);
+
+export const studioSaveProject = (params: StudioProjectSaveParams, options?: RpcCallOptions) =>
+  rpc<StudioProjectSaveResult>("studio.save_project", params, options);
+
+export const studioOpenProject = (params: { path: string; password?: string | null }, options?: RpcCallOptions) =>
+  rpc<StudioProjectOpenResult>("studio.open_project", params, options);
+
+export const studioDesignOf = (params: { path: string; password?: string | null }, options?: RpcCallOptions) =>
+  rpc<{ found: boolean }>("studio.design_of", params, options);
 
 export const createPaper = (params: CreatePaperParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.paper", params, options);

@@ -29,8 +29,10 @@ import { clipboardToPdf, fileToPdf } from "@/shared/rpc/operations";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { defaultOutputDirectory, joinPath, pathKey, stemOf } from "@/shared/lib/paths";
 import { useLaunchStore } from "@/shared/store/launchStore";
+import { isDesignPath, useStudioLaunchStore } from "@/shared/store/studioLaunchStore";
 import { convertedCopyOf, isConvertibleOnOpen, isOpenablePath, isUnsavedCopy, OPEN_CONVERTIBLE_EXTENSIONS, originalOf, useConvertedStore } from "./convertedDocuments";
 import { closeViewable, openViewable, type ViewableSource } from "@/shared/session/viewSources";
+import { STUDIO_PROJECT_EXTENSION } from "@/types/studio";
 
 function forgetDocumentState(documentId: string) {
   usePendingChangesStore.getState().clear(documentId);
@@ -84,6 +86,11 @@ export function useOpenPdf(documentRoute = "/viewer") {
 
   const openPath = useCallback(
     async (path: string): Promise<boolean> => {
+      if (isDesignPath(path)) {
+        useStudioLaunchStore.getState().request({ path, password: null });
+        void navigate("/studio");
+        return true;
+      }
       if (!docManager) {
         toast("info", t("engine.starting"));
         return false;
@@ -287,7 +294,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
       multiple: true,
       directory: false,
       filters: [
-        { name: t("viewer.converted.allSupported"), extensions: ["pdf", ...OPEN_CONVERTIBLE_EXTENSIONS] },
+        { name: t("viewer.converted.allSupported"), extensions: ["pdf", ...OPEN_CONVERTIBLE_EXTENSIONS, STUDIO_PROJECT_EXTENSION] },
         { name: "PDF", extensions: ["pdf"] },
       ],
     });

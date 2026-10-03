@@ -1136,7 +1136,11 @@
         "readyUnsaved": "{{language}}字体已就绪。保存文档后重新打开即可显示文本。",
         "reload": "重新加载"
       },
-      "dismiss": "关闭消息"
+      "dismiss": "关闭消息",
+      "studio": {
+        "present": "此 PDF 是在工作室中制作的，可以在那里编辑。",
+        "open": "在工作室中编辑"
+      }
     },
     "signatures": {
       "title": "签名",
@@ -6060,7 +6064,13 @@
       "noTitle": "封面需要标题。",
       "noCoverImage": "照片封面需要一张图片。请选择图片或换一种样式。",
       "clipboardEmpty": "剪贴板中没有可转为 PDF 的图片、文本或文件。请先复制内容。",
-      "noName": "请先输入姓名。"
+      "noName": "请先输入姓名。",
+      "notProject": "此文件不是 vivePDF 设计。",
+      "newerProject": "此设计由更新版本的 vivePDF 制作。请更新应用后再打开。",
+      "projectTooLarge": "设计大于 {{limitMb}} MB。",
+      "noDesign": "此 PDF 不包含工作室设计。",
+      "missingImage": "找不到设计中使用的图片：{{path}}",
+      "tooManyOutputPages": "结果将超过 {{limit}} 页。请减少行数或页数。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",
@@ -6715,7 +6725,24 @@
       "done": "已导出页数：{{count}}",
       "idleTitle": "可以导出",
       "idleDescription": "文本仍可选择，字体会嵌入 PDF。",
-      "missingGlyphs": "所选字体中缺少某些字符，可能无法显示：{{glyphs}}"
+      "missingGlyphs": "所选字体中缺少某些字符，可能无法显示：{{glyphs}}",
+      "embed": "保留在工作室中编辑的能力",
+      "embedHint": "设计会存储在 PDF 内，打开该 PDF 时会提供“在工作室中编辑”。图片会使文件变大。"
+    },
+    "project": {
+      "open": "打开设计…",
+      "save": "保存",
+      "saveAs": "另存为…",
+      "filter": "vivePDF 设计",
+      "saved": "已保存 {{name}}",
+      "edited": "{{name}} — 已修改",
+      "notSaved": "尚未保存到文件",
+      "recent": "最近的设计",
+      "forget": "从列表中移除 {{name}}",
+      "missing": "找不到设计文件，已从列表中移除。",
+      "unsavedTitle": "保存对此设计的更改?",
+      "unsavedBody": "“{{name}}”有尚未保存到文件的更改。打开其他设计前要保存吗?",
+      "discard": "不保存"
     }
   }
 }

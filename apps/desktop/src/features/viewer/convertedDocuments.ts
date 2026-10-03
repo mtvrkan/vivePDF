@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, MAIL_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "@/features/tools/convert/conversions";
 import { extensionOf, pathKey } from "@/shared/lib/paths";
 import { isPdfPath } from "@/shared/rpc/files";
+import { isDesignPath } from "@/shared/store/studioLaunchStore";
 
 export const OPEN_CONVERTIBLE_EXTENSIONS = [...new Set([...OFFICE_LIKE_EXTENSIONS, ...TEXT_LIKE_EXTENSIONS, ...EBOOK_EXTENSIONS, ...MAIL_EXTENSIONS, ...IMAGE_EXTENSIONS])];
 
@@ -10,7 +11,7 @@ export function isConvertibleOnOpen(path: string): boolean {
 }
 
 export function isOpenablePath(path: string): boolean {
-  return isPdfPath(path) || isConvertibleOnOpen(path);
+  return isPdfPath(path) || isConvertibleOnOpen(path) || isDesignPath(path);
 }
 
 type ConvertedState = {

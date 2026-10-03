@@ -1136,7 +1136,11 @@
         "readyUnsaved": "Fonte pronta: {{language}}. Salve o documento e abra-o novamente para mostrar o texto.",
         "reload": "Recarregar"
       },
-      "dismiss": "Fechar mensagem"
+      "dismiss": "Fechar mensagem",
+      "studio": {
+        "present": "Este PDF foi feito no Studio e pode ser editado lá.",
+        "open": "Editar no Studio"
+      }
     },
     "signatures": {
       "title": "Assinaturas",
@@ -6060,7 +6064,13 @@
       "noTitle": "A capa precisa de um título.",
       "noCoverImage": "A capa com foto precisa de uma imagem. Escolha uma ou outro estilo.",
       "clipboardEmpty": "A área de transferência não tem imagem, texto nem arquivo para virar PDF. Copie algo primeiro.",
-      "noName": "Digite um nome primeiro."
+      "noName": "Digite um nome primeiro.",
+      "notProject": "Este arquivo não é um design do vivePDF.",
+      "newerProject": "Este design foi feito com uma versão mais nova do vivePDF. Atualize o aplicativo para abri-lo.",
+      "projectTooLarge": "O design é maior que {{limitMb}} MB.",
+      "noDesign": "Este PDF não contém um design do Studio.",
+      "missingImage": "Uma imagem usada no design não foi encontrada: {{path}}",
+      "tooManyOutputPages": "O resultado teria mais de {{limit}} páginas. Use menos linhas ou páginas."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",
@@ -6715,7 +6725,24 @@
       "done": "Páginas exportadas: {{count}}",
       "idleTitle": "Pronto para exportar",
       "idleDescription": "O texto continua selecionável e as fontes são incorporadas ao PDF.",
-      "missingGlyphs": "Alguns caracteres não estão na fonte escolhida e podem não aparecer: {{glyphs}}"
+      "missingGlyphs": "Alguns caracteres não estão na fonte escolhida e podem não aparecer: {{glyphs}}",
+      "embed": "Manter editável no Studio",
+      "embedHint": "O design fica guardado dentro do PDF; ao abrir o PDF, aparece Editar no Studio. Imagens aumentam o arquivo."
+    },
+    "project": {
+      "open": "Abrir design…",
+      "save": "Salvar",
+      "saveAs": "Salvar como…",
+      "filter": "Design do vivePDF",
+      "saved": "{{name}} salvo",
+      "edited": "{{name}} — alterado",
+      "notSaved": "Ainda não salvo em um arquivo",
+      "recent": "Designs recentes",
+      "forget": "Remover {{name}} da lista",
+      "missing": "O arquivo do design não foi encontrado e foi removido da lista.",
+      "unsavedTitle": "Salvar as alterações deste design?",
+      "unsavedBody": "“{{name}}” tem alterações que não foram salvas em um arquivo. Salvá-las antes de abrir outro design?",
+      "discard": "Não salvar"
     }
   }
 }

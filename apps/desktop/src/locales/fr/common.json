@@ -1136,7 +1136,11 @@
         "readyUnsaved": "Police prête : {{language}}. Enregistrez le document puis rouvrez-le pour afficher le texte.",
         "reload": "Recharger"
       },
-      "dismiss": "Fermer le message"
+      "dismiss": "Fermer le message",
+      "studio": {
+        "present": "Ce PDF a été conçu dans Studio et peut y être modifié.",
+        "open": "Modifier dans Studio"
+      }
     },
     "signatures": {
       "title": "Signatures",
@@ -6060,7 +6064,13 @@
       "noTitle": "La couverture a besoin d'un titre.",
       "noCoverImage": "La couverture photo a besoin d'une image. Choisissez-en une ou un autre style.",
       "clipboardEmpty": "Le presse-papiers ne contient ni image, ni texte, ni fichier à transformer en PDF. Copiez d'abord quelque chose.",
-      "noName": "Saisissez d'abord un nom."
+      "noName": "Saisissez d'abord un nom.",
+      "notProject": "Ce fichier n'est pas une création vivePDF.",
+      "newerProject": "Cette création a été faite avec une version plus récente de vivePDF. Mettez l'application à jour pour l'ouvrir.",
+      "projectTooLarge": "La création dépasse {{limitMb}} Mo.",
+      "noDesign": "Ce PDF ne contient pas de création Studio.",
+      "missingImage": "Une image utilisée dans la création est introuvable : {{path}}",
+      "tooManyOutputPages": "Le résultat dépasserait {{limit}} pages. Utilisez moins de lignes ou de pages."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -6715,7 +6725,24 @@
       "done": "Pages exportées : {{count}}",
       "idleTitle": "Prêt à exporter",
       "idleDescription": "Le texte reste sélectionnable et les polices sont incorporées au PDF.",
-      "missingGlyphs": "Certains caractères ne figurent pas dans la police choisie et risquent de ne pas s’afficher : {{glyphs}}"
+      "missingGlyphs": "Certains caractères ne figurent pas dans la police choisie et risquent de ne pas s’afficher : {{glyphs}}",
+      "embed": "Garder modifiable dans Studio",
+      "embedHint": "La création est stockée dans le PDF : à l'ouverture du PDF, Modifier dans Studio est proposé. Les images alourdissent le fichier."
+    },
+    "project": {
+      "open": "Ouvrir une création…",
+      "save": "Enregistrer",
+      "saveAs": "Enregistrer sous…",
+      "filter": "Création vivePDF",
+      "saved": "{{name}} enregistré",
+      "edited": "{{name}} — modifié",
+      "notSaved": "Pas encore enregistré dans un fichier",
+      "recent": "Créations récentes",
+      "forget": "Retirer {{name}} de la liste",
+      "missing": "Le fichier de la création est introuvable ; il a été retiré de la liste.",
+      "unsavedTitle": "Enregistrer les modifications de cette création ?",
+      "unsavedBody": "« {{name}} » contient des modifications non enregistrées dans un fichier. Les enregistrer avant d'ouvrir une autre création ?",
+      "discard": "Ne pas enregistrer"
     }
   }
 }

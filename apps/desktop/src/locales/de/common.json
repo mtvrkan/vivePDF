@@ -1136,7 +1136,11 @@
         "readyUnsaved": "Die Schriftart für {{language}} ist bereit. Speichern Sie das Dokument und öffnen Sie es erneut, um den Text anzuzeigen.",
         "reload": "Neu laden"
       },
-      "dismiss": "Meldung schließen"
+      "dismiss": "Meldung schließen",
+      "studio": {
+        "present": "Dieses PDF wurde im Studio erstellt und kann dort bearbeitet werden.",
+        "open": "Im Studio bearbeiten"
+      }
     },
     "signatures": {
       "title": "Signaturen",
@@ -6060,7 +6064,13 @@
       "noTitle": "Das Deckblatt braucht einen Titel.",
       "noCoverImage": "Das Foto-Deckblatt braucht ein Bild. Wählen Sie eines oder einen anderen Stil.",
       "clipboardEmpty": "Die Zwischenablage enthält kein Bild, keinen Text und keine Datei für ein PDF. Kopieren Sie zuerst etwas.",
-      "noName": "Geben Sie zuerst einen Namen ein."
+      "noName": "Geben Sie zuerst einen Namen ein.",
+      "notProject": "Diese Datei ist kein vivePDF-Design.",
+      "newerProject": "Dieses Design wurde mit einer neueren vivePDF-Version erstellt. Aktualisieren Sie die App, um es zu öffnen.",
+      "projectTooLarge": "Das Design ist größer als {{limitMb}} MB.",
+      "noDesign": "Dieses PDF enthält kein Studio-Design.",
+      "missingImage": "Ein im Design verwendetes Bild wurde nicht gefunden: {{path}}",
+      "tooManyOutputPages": "Das Ergebnis hätte mehr als {{limit}} Seiten. Verwenden Sie weniger Zeilen oder Seiten."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -6715,7 +6725,24 @@
       "done": "Exportierte Seiten: {{count}}",
       "idleTitle": "Bereit zum Exportieren",
       "idleDescription": "Text bleibt markierbar, und die Schriften werden in das PDF eingebettet.",
-      "missingGlyphs": "Einige Zeichen fehlen in der gewählten Schrift und werden eventuell nicht angezeigt: {{glyphs}}"
+      "missingGlyphs": "Einige Zeichen fehlen in der gewählten Schrift und werden eventuell nicht angezeigt: {{glyphs}}",
+      "embed": "Im Studio bearbeitbar halten",
+      "embedHint": "Das Design wird im PDF gespeichert; beim Öffnen des PDFs wird „Im Studio bearbeiten“ angeboten. Bilder vergrößern die Datei."
+    },
+    "project": {
+      "open": "Design öffnen…",
+      "save": "Speichern",
+      "saveAs": "Speichern unter…",
+      "filter": "vivePDF-Design",
+      "saved": "{{name}} gespeichert",
+      "edited": "{{name}} — geändert",
+      "notSaved": "Noch nicht in einer Datei gespeichert",
+      "recent": "Zuletzt verwendete Designs",
+      "forget": "{{name}} aus der Liste entfernen",
+      "missing": "Die Design-Datei wurde nicht gefunden und aus der Liste entfernt.",
+      "unsavedTitle": "Änderungen an diesem Design speichern?",
+      "unsavedBody": "„{{name}}“ enthält Änderungen, die nicht in einer Datei gespeichert sind. Vor dem Öffnen eines anderen Designs speichern?",
+      "discard": "Nicht speichern"
     }
   }
 }

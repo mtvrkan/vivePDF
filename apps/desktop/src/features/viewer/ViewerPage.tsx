@@ -20,6 +20,7 @@ import { AnnotateBar } from "./AnnotateBar";
 import { AttachmentsPanel } from "./AttachmentsPanel";
 import { ConvertedMessage } from "./ConvertedMessage";
 import { DocumentMessageBar } from "./DocumentMessageBar";
+import { StudioDesignMessage } from "./StudioDesignMessage";
 import { FallbackFontMessages } from "./FallbackFontMessages";
 import { SignaturesPanel } from "./SignaturesPanel";
 import { LayersPanel } from "./LayersPanel";
@@ -206,6 +207,7 @@ export function ViewerPage() {
                 <ViewerToolbar documentId={activeDocumentId} panels={panels} onTogglePanel={togglePanel} />
                 <DocumentMessageBar documentId={activeDocumentId} onOpenSignatures={() => setPanels((state) => ({ ...state, signatures: true }))} />
                 <ConvertedMessage documentId={activeDocumentId} />
+                <StudioDesignMessage documentId={activeDocumentId} />
                 <FallbackFontMessages documentId={activeDocumentId} />
                 {panels.search ? (
                   <SearchBar documentId={activeDocumentId} onClose={() => setPanels((state) => ({ ...state, search: false }))} />

@@ -29,6 +29,7 @@ from vivepdf.ops._studio_models import (
     StudioTextItem,
     StudioVectorItem,
 )
+from vivepdf.ops._studio_project import build_archive, embed_archive, missing_asset
 from vivepdf.ops._studio_text import TextFaces, draw_text, from_segments, has_placeholders, layout
 from vivepdf.ops._studio_vector import place, vector_document
 from vivepdf.ops._svg import clean_svg_markup, drawing_pdf
@@ -45,14 +46,6 @@ PNG_SIGNATURE = bytes([0x89, 0x50, 0x4E, 0x47])
 QR_LEVELS = {"L": "L", "M": "M", "Q": "Q", "H": "H"}
 
 Cache = dict[tuple[int, int], tuple[pymupdf.Document, float]]
-
-
-def _missing_image(path: str) -> OpError:
-    return OpError(
-        ErrorCode.FILE_NOT_FOUND,
-        f"image not found: {Path(path).name}",
-        {"reason": "missingImage", "path": path},
-    )
 
 
 def _crop(image: Image.Image, item: StudioImageItem) -> Image.Image:
@@ -128,7 +121,7 @@ def _encoded(image: Image.Image) -> bytes:
 def _picture(path: str) -> Image.Image:
     source = Path(path)
     if not source.is_file():
-        raise _missing_image(path)
+        raise missing_asset(path)
     try:
         with open_picture(source) as opened:
             return eight_bit(ImageOps.exif_transpose(opened)).convert("RGBA")
@@ -293,7 +286,7 @@ def _check_images(params: StudioRenderParams) -> list[str]:
     ]
     for path in paths:
         if not Path(path).is_file():
-            raise _missing_image(path)
+            raise missing_asset(path)
     return paths
 
 
@@ -341,7 +334,7 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             f"too many pages: {total}",
-            {"reason": "tooManyPages", "limit": MAX_OUTPUT_PAGES},
+            {"reason": "tooManyOutputPages", "limit": MAX_OUTPUT_PAGES},
         )
     images = _check_images(params)
     if params.format == "pdf":
@@ -370,6 +363,8 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
             metadata = dict(document.metadata or {})
             metadata.update({"title": params.title.strip(), "creator": "vivePDF"})
             document.set_metadata(metadata)
+            if (embed := params.embed) is not None:
+                embed_archive(document, build_archive(embed.design, embed.assets, b""))
             with contextlib.suppress(Exception):
                 document.subset_fonts(fallback=False)
             size = save_document(document, targets[0]).bytes
@@ -414,6 +409,6 @@ def qr(params: StudioQrParams, _progress: Progress) -> StudioQrResult:
 def import_svg(params: StudioSvgParams, _progress: Progress) -> StudioSvgResult:
     source = Path(params.path)
     if not source.is_file():
-        raise _missing_image(params.path)
+        raise missing_asset(params.path)
     markup, width, height = clean_svg_markup(source, MAX_SVG_MARKUP)
     return StudioSvgResult(svg=markup, width=width, height=height)

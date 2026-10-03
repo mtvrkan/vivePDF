@@ -1,9 +1,11 @@
-import { ArrowLeft, Download, Group, Maximize, Redo2, Undo2, Ungroup, ZoomIn, ZoomOut } from "lucide-react";
+import { ArrowLeft, Download, FilePlus2, Group, Maximize, Redo2, Save, Undo2, Ungroup, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
 import { canGroup, canUngroup, group, ungroup } from "./commands";
+import { basenameOf } from "@/shared/lib/paths";
 import { useStudioStore } from "./studioStore";
+import { useDesignSave } from "./useDesignSave";
 
 const ZOOM_STEP = 1.25;
 
@@ -14,6 +16,9 @@ export function StudioToolbar({ onExport, onLeave }: { onExport: () => void; onL
   const canRedo = useStudioStore((state) => state.future.length > 0);
   const zoom = useStudioStore((state) => state.zoom);
   const fit = useStudioStore((state) => state.fit);
+  const filePath = useStudioStore((state) => state.filePath);
+  const dirty = useStudioStore((state) => state.dirty);
+  const { saving, save } = useDesignSave();
   useStudioStore((state) => state.selection);
   const store = useStudioStore.getState();
 
@@ -28,6 +33,11 @@ export function StudioToolbar({ onExport, onLeave }: { onExport: () => void; onL
         onChange={(event) => store.apply((design) => ({ ...design, name: event.target.value }), { merge: "name" })}
         className="field h-8 w-56 min-w-0 rounded-lg px-2 text-sm font-medium"
       />
+      <span className="hidden max-w-48 truncate text-xs text-muted-foreground lg:inline" title={filePath ?? undefined} data-testid="studio-save-state">
+        {filePath ? (dirty ? t("studio.project.edited", { name: basenameOf(filePath) }) : basenameOf(filePath)) : t("studio.project.notSaved")}
+      </span>
+      <IconButton icon={Save} label={t("studio.project.save")} shortcut="Ctrl+S" disabled={saving} onClick={() => void save(false)} />
+      <IconButton icon={FilePlus2} label={t("studio.project.saveAs")} shortcut="Ctrl+Shift+S" disabled={saving} onClick={() => void save(true)} />
       <span className="mx-1 h-6 w-px bg-border" aria-hidden />
       <IconButton icon={Undo2} label={t("studio.toolbar.undo")} shortcut="Ctrl+Z" disabled={!canUndo} onClick={store.undo} />
       <IconButton icon={Redo2} label={t("studio.toolbar.redo")} shortcut="Ctrl+Y" disabled={!canRedo} onClick={store.redo} />

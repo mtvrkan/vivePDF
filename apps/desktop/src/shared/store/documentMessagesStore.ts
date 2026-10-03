@@ -3,7 +3,7 @@ import type { FieldBox, SignatureInfo } from "@/types";
 
 export type SignatureCheck = { state: "loading" } | { state: "none" } | { state: "failed" } | { state: "checked"; signatures: SignatureInfo[] };
 export type FieldHighlight = { state: "loading" } | { state: "failed" } | { state: "shown"; boxes: FieldBox[] };
-export type DocumentMessage = "signatures" | "forms" | "converted";
+export type DocumentMessage = "signatures" | "forms" | "converted" | "studio";
 
 type DocumentMessagesState = {
   signatures: Record<string, SignatureCheck>;

@@ -1,4 +1,4 @@
-from typing import Annotated, Literal
+from typing import Annotated, Any, Literal
 
 from pydantic import Field
 
@@ -10,6 +10,7 @@ MAX_ROWS = 5000
 MAX_OUTPUT_PAGES = 20000
 MAX_PATHS = 5000
 MAX_PATH_DATA = 400_000
+MAX_ASSETS = 2000
 
 Colour = Annotated[str, Field(pattern=r"^#[0-9a-fA-F]{6}$")]
 Coordinate = Annotated[float, Field(ge=-100_000, le=100_000)]
@@ -18,6 +19,7 @@ Unit = Annotated[float, Field(ge=0, le=1)]
 TextAlign = Literal["left", "center", "right", "justify"]
 VerticalAlign = Literal["top", "middle", "bottom"]
 ErrorLevel = Literal["L", "M", "Q", "H"]
+FilePath = Annotated[str, Field(min_length=1, max_length=4096)]
 
 
 class StudioStop(RpcModel):
@@ -157,6 +159,11 @@ class StudioPage(RpcModel):
     items: list[StudioItem] = Field(default_factory=list, max_length=MAX_ITEMS)
 
 
+class StudioEmbed(RpcModel):
+    design: dict[str, Any]
+    assets: list[FilePath] = Field(default_factory=list, max_length=MAX_ASSETS)
+
+
 class StudioRenderParams(RpcModel):
     pages: list[StudioPage] = Field(min_length=1, max_length=MAX_PAGES)
     rows: list[dict[str, Annotated[str, Field(max_length=5000)]]] = Field(
@@ -167,6 +174,7 @@ class StudioRenderParams(RpcModel):
     title: str = Field(default="", max_length=500)
     format: Literal["pdf", "png", "jpg"] = "pdf"
     dpi: int = Field(default=150, ge=36, le=600)
+    embed: StudioEmbed | None = None
     output: str
     overwrite: bool = False
 
@@ -209,3 +217,33 @@ class StudioSvgResult(RpcModel):
     svg: str
     width: float
     height: float
+
+
+class StudioProjectSaveParams(RpcModel):
+    design: dict[str, Any]
+    assets: list[FilePath] = Field(default_factory=list, max_length=MAX_ASSETS)
+    preview: StudioPage | None = None
+    language: str = Field(default="en", max_length=20)
+    output: str
+    overwrite: bool = False
+
+
+class StudioProjectSaveResult(RpcModel):
+    output: str
+    bytes: int
+    thumbnail: str = ""
+
+
+class StudioProjectOpenParams(RpcModel):
+    path: FilePath
+    password: str | None = None
+
+
+class StudioProjectOpenResult(RpcModel):
+    design: dict[str, Any]
+    thumbnail: str = ""
+    source: Literal["project", "pdf"]
+
+
+class StudioDesignOfResult(RpcModel):
+    found: bool

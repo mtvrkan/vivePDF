@@ -1136,7 +1136,11 @@
         "readyUnsaved": "Carattere pronto: {{language}}. Salva il documento e riaprilo per mostrare il testo.",
         "reload": "Ricarica"
       },
-      "dismiss": "Chiudi messaggio"
+      "dismiss": "Chiudi messaggio",
+      "studio": {
+        "present": "Questo PDF è stato creato in Studio e può essere modificato lì.",
+        "open": "Modifica in Studio"
+      }
     },
     "signatures": {
       "title": "Firme",
@@ -6060,7 +6064,13 @@
       "noTitle": "La copertina ha bisogno di un titolo.",
       "noCoverImage": "La copertina con foto ha bisogno di un'immagine. Scegline una o cambia stile.",
       "clipboardEmpty": "Negli appunti non c'è un'immagine, un testo o un file da trasformare in PDF. Copia prima qualcosa.",
-      "noName": "Inserisci prima un nome."
+      "noName": "Inserisci prima un nome.",
+      "notProject": "Questo file non è un progetto vivePDF.",
+      "newerProject": "Questo progetto è stato creato con una versione più recente di vivePDF. Aggiorna l'app per aprirlo.",
+      "projectTooLarge": "Il progetto supera {{limitMb}} MB.",
+      "noDesign": "Questo PDF non contiene un progetto Studio.",
+      "missingImage": "Un'immagine usata nel progetto non è stata trovata: {{path}}",
+      "tooManyOutputPages": "Il risultato avrebbe più di {{limit}} pagine. Usa meno righe o pagine."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -6715,7 +6725,24 @@
       "done": "Pagine esportate: {{count}}",
       "idleTitle": "Pronto per l’esportazione",
       "idleDescription": "Il testo resta selezionabile e i font vengono incorporati nel PDF.",
-      "missingGlyphs": "Alcuni caratteri non sono presenti nel font scelto e potrebbero non comparire: {{glyphs}}"
+      "missingGlyphs": "Alcuni caratteri non sono presenti nel font scelto e potrebbero non comparire: {{glyphs}}",
+      "embed": "Mantieni modificabile in Studio",
+      "embedHint": "Il progetto viene conservato nel PDF: aprendo il PDF viene proposto Modifica in Studio. Le immagini rendono il file più grande."
+    },
+    "project": {
+      "open": "Apri progetto…",
+      "save": "Salva",
+      "saveAs": "Salva con nome…",
+      "filter": "Progetto vivePDF",
+      "saved": "{{name}} salvato",
+      "edited": "{{name}} — modificato",
+      "notSaved": "Non ancora salvato in un file",
+      "recent": "Progetti recenti",
+      "forget": "Rimuovi {{name}} dall'elenco",
+      "missing": "Il file del progetto non è stato trovato ed è stato rimosso dall'elenco.",
+      "unsavedTitle": "Salvare le modifiche a questo progetto?",
+      "unsavedBody": "«{{name}}» contiene modifiche non salvate in un file. Salvarle prima di aprire un altro progetto?",
+      "discard": "Non salvare"
     }
   }
 }

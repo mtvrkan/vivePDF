@@ -1136,7 +1136,11 @@
         "readyUnsaved": "{{language}} font hazır. Metni göstermek için belgeyi kaydedip yeniden açın.",
         "reload": "Yeniden yükle"
       },
-      "dismiss": "Mesajı kapat"
+      "dismiss": "Mesajı kapat",
+      "studio": {
+        "present": "Bu PDF Studio'da hazırlandı ve orada düzenlenebilir.",
+        "open": "Studio'da düzenle"
+      }
     },
     "signatures": {
       "title": "İmzalar",
@@ -6060,7 +6064,13 @@
       "noTitle": "Kapak için bir başlık gerekiyor.",
       "noCoverImage": "Fotoğraflı kapak için bir resim gerekiyor. Resim seçin ya da başka bir stil seçin.",
       "clipboardEmpty": "Panoda PDF'ye dönüştürülecek resim, metin ya da dosya yok. Önce bir şey kopyalayın.",
-      "noName": "Önce bir ad girin."
+      "noName": "Önce bir ad girin.",
+      "notProject": "Bu dosya bir vivePDF tasarımı değil.",
+      "newerProject": "Bu tasarım vivePDF'in daha yeni bir sürümüyle hazırlanmış. Açmak için uygulamayı güncelleyin.",
+      "projectTooLarge": "Tasarım {{limitMb}} MB'tan büyük.",
+      "noDesign": "Bu PDF bir Studio tasarımı içermiyor.",
+      "missingImage": "Tasarımda kullanılan bir resim bulunamadı: {{path}}",
+      "tooManyOutputPages": "Sonuç {{limit}} sayfadan fazla olurdu. Daha az satır veya sayfa kullanın."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -6716,7 +6726,24 @@
       "done": "Dışa aktarılan sayfa: {{count}}",
       "idleTitle": "Dışa aktarmaya hazır",
       "idleDescription": "PDF'te metin seçilebilir kalır ve fontlar gömülür.",
-      "missingGlyphs": "Bazı karakterler seçilen fontta yok ve görünmeyebilir: {{glyphs}}"
+      "missingGlyphs": "Bazı karakterler seçilen fontta yok ve görünmeyebilir: {{glyphs}}",
+      "embed": "Studio'da düzenlenebilir kalsın",
+      "embedHint": "Tasarım PDF'in içinde saklanır; PDF açıldığında Studio'da düzenle seçeneği çıkar. Resimler dosyayı büyütür."
+    },
+    "project": {
+      "open": "Tasarım aç…",
+      "save": "Kaydet",
+      "saveAs": "Farklı kaydet…",
+      "filter": "vivePDF tasarımı",
+      "saved": "{{name}} kaydedildi",
+      "edited": "{{name}} — değiştirildi",
+      "notSaved": "Henüz bir dosyaya kaydedilmedi",
+      "recent": "Son tasarımlar",
+      "forget": "{{name}} listeden kaldır",
+      "missing": "Tasarım dosyası bulunamadı, listeden kaldırıldı.",
+      "unsavedTitle": "Bu tasarımdaki değişiklikler kaydedilsin mi?",
+      "unsavedBody": "“{{name}}” içinde dosyaya kaydedilmemiş değişiklikler var. Başka bir tasarım açmadan önce kaydedilsin mi?",
+      "discard": "Kaydetme"
     }
   }
 }

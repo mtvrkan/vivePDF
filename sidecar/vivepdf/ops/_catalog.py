@@ -285,6 +285,11 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.qr",
         "studio.render",
     ),
+    "studio_project": (
+        "studio.design_of",
+        "studio.open_project",
+        "studio.save_project",
+    ),
     "system": (
         "system.ping",
         "system.release",

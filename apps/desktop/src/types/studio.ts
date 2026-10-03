@@ -229,9 +229,12 @@ export type StudioRenderParams = {
   title?: string;
   format?: StudioExportFormat;
   dpi?: number;
+  embed?: StudioEmbed | null;
   output: string;
   overwrite?: boolean;
 };
+
+export type StudioEmbed = { design: StudioDesign; assets: string[] };
 
 export type StudioExportFormat = "pdf" | "png" | "jpg";
 
@@ -242,3 +245,11 @@ export type StudioImageInfo = { width: number; height: number; mime: string; bas
 export type StudioQrModules = { size: number; modules: string };
 
 export type StudioImportedSvg = { svg: string; width: number; height: number };
+
+export type StudioProjectSaveParams = { design: StudioDesign; assets: string[]; preview?: StudioRenderPage | null; language?: string; output: string; overwrite?: boolean };
+
+export type StudioProjectSaveResult = { output: string; bytes: number; thumbnail: string };
+
+export type StudioProjectOpenResult = { design: unknown; thumbnail: string; source: "project" | "pdf" };
+
+export const STUDIO_PROJECT_EXTENSION = "vivedesign";
