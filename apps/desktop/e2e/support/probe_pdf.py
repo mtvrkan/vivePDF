@@ -82,6 +82,7 @@ def spans(page: pymupdf.Page) -> list[dict]:
                             "size": round(span["size"], 1),
                             "bold": bool(span["flags"] & 16) or "bold" in span["font"].lower(),
                             "color": f"#{span['color']:06x}",
+                            "font": span["font"],
                             "box": visible(page, span["bbox"]),
                         }
                     )

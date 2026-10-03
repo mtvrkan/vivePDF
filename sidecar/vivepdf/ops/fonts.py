@@ -11,6 +11,8 @@ import pymupdf
 from pydantic import Field
 
 from vivepdf.ops._appdata import user_data_dir
+from vivepdf.ops.font_library import family_info, library_dir, library_face
+from vivepdf.ops.font_library_catalog import FAMILIES
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
@@ -558,7 +560,7 @@ BUNDLED_FONTS: dict[str, tuple[str, str, str]] = {
 IMPORT_EXTENSIONS = {".ttf", ".otf"}
 IMPORT_MAX_BYTES = 30 * 1024 * 1024
 SAFE_STEM = re.compile(r"[^A-Za-z0-9._-]+")
-FontSourceKind = Literal["bundled", "system", "imported"]
+FontSourceKind = Literal["bundled", "system", "imported", "library"]
 
 
 def imported_font_dir() -> Path:
@@ -629,6 +631,9 @@ class FontChoice(RpcModel):
     name: str
     source: FontSourceKind
     styles: list[str]
+    installed: bool = True
+    bytes: int = 0
+    category: str = ""
 
 
 def system_families() -> list[tuple[str, str, set[str]]]:
@@ -678,6 +683,20 @@ def font_catalogue() -> list[FontChoice]:
                 styles=sorted({_style_label(face.bold, face.italic) for face in faces}),
             )
         )
+    directory = library_dir()
+    for family in FAMILIES:
+        info = family_info(family, directory)
+        choices.append(
+            FontChoice(
+                id=info.id,
+                name=info.name,
+                source="library",
+                styles=info.styles,
+                installed=info.installed,
+                bytes=info.bytes,
+                category=info.category,
+            )
+        )
     choices.extend(
         FontChoice(id=f"system:{family}", name=label, source="system", styles=sorted(styles))
         for family, label, styles in system_families()
@@ -701,6 +720,9 @@ def resolve_choice(font_id: str | None, bold: bool) -> Path:
         wanted = [face for face in faces if face.bold == bold and not face.italic]
         chosen = wanted or [face for face in faces if face.stem == value] or faces
         return chosen[0].path
+    if kind == "library":
+        face = library_face(value, bold, False)
+        return face[0] if face is not None else fallback
     if kind == "system":
         found = find_system_font(value, bold, False) or find_system_font(value, False, False)
         if found is None:
@@ -716,6 +738,10 @@ def resolve_face(font_id: str | None, bold: bool, italic: bool) -> tuple[Path, b
         found = find_system_font(value, bold, True)
         if found is not None:
             return found, True
+    if italic and kind == "library":
+        face = library_face(value, bold, True)
+        if face is not None:
+            return face
     if italic and kind == "imported":
         faces = [face for face in _family_of(value) if face.bold == bold and face.italic]
         if faces:

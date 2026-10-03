@@ -4,6 +4,7 @@ import tempfile
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Protocol
 from urllib.error import URLError
 
 from vivepdf.ops._appdata import user_data_dir
@@ -112,11 +113,26 @@ def _network_error(set_id: str, error: BaseException) -> OpError:
     return OpError(ErrorCode.NETWORK, f"font download failed: {error}", {"set": set_id})
 
 
-def _fetch(
-    set_id: str, entry: FontFile, directory: Path, progress: Progress, done: int, total: int
+class DownloadEntry(Protocol):
+    @property
+    def name(self) -> str: ...
+    @property
+    def size(self) -> int: ...
+    @property
+    def sha256(self) -> str: ...
+
+
+def fetch_font_file(
+    set_id: str,
+    entry: DownloadEntry,
+    directory: Path,
+    progress: Progress,
+    done: int,
+    total: int,
+    base: str | None = None,
 ) -> None:
     request = urllib.request.Request(
-        f"{_download_base()}/{entry.name}", headers={"User-Agent": USER_AGENT}
+        f"{base or _download_base()}/{entry.name}", headers={"User-Agent": USER_AGENT}
     )
     temp_fd, temp_name = tempfile.mkstemp(dir=directory, prefix=f".{entry.name}-", suffix=".part")
     temp_path = Path(temp_name)
@@ -211,7 +227,7 @@ def fallback_fonts_download(
     for entry in font_set.files:
         target = directory / entry.name
         if not (target.is_file() and target.stat().st_size == entry.size):
-            _fetch(font_set.id, entry, directory, progress, done, font_set.size)
+            fetch_font_file(font_set.id, entry, directory, progress, done, font_set.size)
         done += entry.size
     progress.report(1.0, "progress.downloading", {"received": done, "total": done})
     return FallbackFontsDownloadResult(set=font_set.id, bytes=font_set.size)

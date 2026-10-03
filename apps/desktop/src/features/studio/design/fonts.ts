@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { fontFile } from "@/shared/rpc/operations";
+import { useFontLibraryStore } from "@/shared/store/fontLibraryStore";
 import type { StudioElement, StudioTextElement } from "@/types/studio";
 
 export const DEFAULT_FONT_ID = "bundled:dejavu-sans";
@@ -13,6 +14,7 @@ type FontsState = { faces: Record<string, LoadedFace | null> };
 export const useStudioFontsStore = create<FontsState>(() => ({ faces: {} }));
 
 const pending = new Map<string, Promise<LoadedFace | null>>();
+let generation = 0;
 
 export function faceKey(fontId: string | null, bold: boolean, italic: boolean): string {
   return `${fontId ?? DEFAULT_FONT_ID}|${bold ? 1 : 0}|${italic ? 1 : 0}`;
@@ -28,7 +30,7 @@ function decode(value: string): Uint8Array {
 function familyName(key: string): string {
   let hash = 0;
   for (let index = 0; index < key.length; index += 1) hash = (Math.imul(hash, 31) + key.charCodeAt(index)) | 0;
-  return `vp-studio-${(hash >>> 0).toString(36)}`;
+  return `vp-studio-${(hash >>> 0).toString(36)}-${generation}`;
 }
 
 async function loadFace(fontId: string, bold: boolean, italic: boolean): Promise<LoadedFace | null> {
@@ -49,19 +51,31 @@ export function ensureFace(fontId: string | null, bold: boolean, italic: boolean
   const key = faceKey(id, bold, italic);
   const known = useStudioFontsStore.getState().faces;
   if (key in known) return Promise.resolve(known[key]);
-  let task = pending.get(key);
-  if (!task) {
-    task = loadFace(id, bold, italic)
-      .catch(() => null)
-      .then((face) => {
-        useStudioFontsStore.setState((state) => ({ faces: { ...state.faces, [key]: face } }));
-        pending.delete(key);
-        return face;
-      });
-    pending.set(key, task);
-  }
+  const running = pending.get(key);
+  if (running) return running;
+  const task: Promise<LoadedFace | null> = loadFace(id, bold, italic)
+    .catch(() => null)
+    .then((face) => {
+      if (pending.get(key) !== task) return face;
+      pending.delete(key);
+      useStudioFontsStore.setState((state) => ({ faces: { ...state.faces, [key]: face } }));
+      return face;
+    });
+  pending.set(key, task);
   return task;
 }
+
+function fontIdOf(key: string): string {
+  return key.slice(0, key.indexOf("|"));
+}
+
+export function forgetFonts(matches: (fontId: string) => boolean) {
+  generation += 1;
+  for (const key of [...pending.keys()]) if (matches(fontIdOf(key))) pending.delete(key);
+  useStudioFontsStore.setState((state) => ({ faces: Object.fromEntries(Object.entries(state.faces).filter(([key]) => !matches(fontIdOf(key)))) }));
+}
+
+useFontLibraryStore.subscribe(() => forgetFonts((fontId) => fontId.startsWith("library:")));
 
 export function textFaces(element: StudioTextElement): Array<{ bold: boolean; italic: boolean }> {
   const combos = new Map<string, { bold: boolean; italic: boolean }>();

@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "Application",
       "imported": "Ajoutées",
-      "system": "Système"
-    }
+      "system": "Système",
+      "library": "Bibliothèque de polices"
+    },
+    "toDownload": "{{name}} — télécharger, {{size}}",
+    "downloaded": "{{name}} téléchargée",
+    "removeDownload": "Supprimer la police téléchargée"
   },
   "tools": {
     "done": "Opération terminée.",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "La création dépasse {{limitMb}} Mo.",
       "noDesign": "Ce PDF ne contient pas de création Studio.",
       "missingImage": "Une image utilisée dans la création est introuvable : {{path}}",
-      "tooManyOutputPages": "Le résultat dépasserait {{limit}} pages. Utilisez moins de lignes ou de pages."
+      "tooManyOutputPages": "Le résultat dépasserait {{limit}} pages. Utilisez moins de lignes ou de pages.",
+      "badPath": "Un dessin de la création contient des données de contour illisibles."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -6743,6 +6748,10 @@
       "unsavedTitle": "Enregistrer les modifications de cette création ?",
       "unsavedBody": "« {{name}} » contient des modifications non enregistrées dans un fichier. Les enregistrer avant d'ouvrir une autre création ?",
       "discard": "Ne pas enregistrer"
+    },
+    "fonts": {
+      "missing": "Cette création utilise des polices qui ne sont pas encore sur cet ordinateur : {{names}}",
+      "download": "Télécharger ({{size}})"
     }
   }
 }

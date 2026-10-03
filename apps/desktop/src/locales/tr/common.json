@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "Uygulama",
       "imported": "Eklenenler",
-      "system": "Sistem"
-    }
+      "system": "Sistem",
+      "library": "Yazı tipi kitaplığı"
+    },
+    "toDownload": "{{name}} — indir, {{size}}",
+    "downloaded": "{{name}} indirildi",
+    "removeDownload": "İndirilen yazı tipini kaldır"
   },
   "tools": {
     "done": "İşlem tamamlandı.",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "Tasarım {{limitMb}} MB'tan büyük.",
       "noDesign": "Bu PDF bir Studio tasarımı içermiyor.",
       "missingImage": "Tasarımda kullanılan bir resim bulunamadı: {{path}}",
-      "tooManyOutputPages": "Sonuç {{limit}} sayfadan fazla olurdu. Daha az satır veya sayfa kullanın."
+      "tooManyOutputPages": "Sonuç {{limit}} sayfadan fazla olurdu. Daha az satır veya sayfa kullanın.",
+      "badPath": "Tasarımdaki bir çizimin anahat verisi okunamıyor."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -6744,6 +6749,10 @@
       "unsavedTitle": "Bu tasarımdaki değişiklikler kaydedilsin mi?",
       "unsavedBody": "“{{name}}” içinde dosyaya kaydedilmemiş değişiklikler var. Başka bir tasarım açmadan önce kaydedilsin mi?",
       "discard": "Kaydetme"
+    },
+    "fonts": {
+      "missing": "Bu tasarım bu bilgisayarda henüz olmayan yazı tiplerini kullanıyor: {{names}}",
+      "download": "İndir ({{size}})"
     }
   }
 }

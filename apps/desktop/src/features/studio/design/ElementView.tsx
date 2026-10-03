@@ -56,7 +56,7 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
 
   useEffect(() => {
     void ensureElementFonts([element]);
-  }, [element]);
+  }, [element, faces]);
 
   useLayoutEffect(() => {
     if (!ref.current) return;

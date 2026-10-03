@@ -5,9 +5,12 @@ import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select, type SelectOption } from "@/components/shared/Select";
 import { toRpcError } from "@/shared/rpc/client";
-import { addFont, fontCatalogue, removeFont } from "@/shared/rpc/operations";
+import { addFont, downloadLibraryFont, fontCatalogue, removeFont, removeLibraryFont } from "@/shared/rpc/operations";
 import { describeError } from "@/shared/lib/errorMessage";
+import { formatBytes } from "@/shared/lib/format";
+import { useFontLibraryStore } from "@/shared/store/fontLibraryStore";
 import { useToastStore } from "@/shared/store/toastStore";
+import { useUiStore } from "@/shared/store/uiStore";
 import type { FontChoice } from "@/types";
 
 const DEFAULT_FONT = "bundled:dejavu-sans";
@@ -18,6 +21,8 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
   const toast = useToastStore((state) => state.push);
   const [fonts, setFonts] = useState<FontChoice[]>([]);
   const [busy, setBusy] = useState(false);
+  const revision = useFontLibraryStore((state) => state.revision);
+  const locale = useUiStore((state) => state.locale);
 
   const load = useCallback(async () => {
     try {
@@ -30,10 +35,11 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
 
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, revision]);
 
-  const groups: Array<{ key: "bundled" | "imported" | "system"; items: FontChoice[] }> = [
+  const groups: Array<{ key: "bundled" | "library" | "imported" | "system"; items: FontChoice[] }> = [
     { key: "bundled", items: fonts.filter((font) => font.source === "bundled") },
+    { key: "library", items: fonts.filter((font) => font.source === "library") },
     { key: "imported", items: fonts.filter((font) => font.source === "imported") },
     { key: "system", items: fonts.filter((font) => font.source === "system") },
   ];
@@ -42,7 +48,10 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
       ? []
       : [
           { value: `${SEPARATOR}${key}`, label: t(`fontPicker.groups.${key}`), disabled: true },
-          ...items.map((font) => ({ value: font.id, label: font.name })),
+          ...items.map((font) => ({
+            value: font.id,
+            label: font.installed === false ? t("fontPicker.toDownload", { name: font.name, size: formatBytes(font.bytes ?? 0, locale) }) : font.name,
+          })),
         ],
   );
   const selected = fonts.find((font) => font.id === value);
@@ -63,11 +72,32 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
     }
   };
 
-  const drop = async () => {
-    if (!selected || selected.source !== "imported") return;
+  const choose = async (next: string) => {
+    const font = fonts.find((item) => item.id === next);
+    if (font?.source !== "library" || font.installed !== false) {
+      onChange(next);
+      return;
+    }
     setBusy(true);
     try {
-      await removeFont({ id: selected.id });
+      await downloadLibraryFont({ id: font.id });
+      useFontLibraryStore.getState().changed();
+      onChange(font.id);
+      toast("success", t("fontPicker.downloaded", { name: font.name }));
+    } catch (error) {
+      toast("error", describeError(t, toRpcError(error)));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const drop = async () => {
+    if (!selected || (selected.source !== "imported" && !(selected.source === "library" && selected.installed))) return;
+    setBusy(true);
+    try {
+      if (selected.source === "library") await removeLibraryFont({ id: selected.id });
+      else await removeFont({ id: selected.id });
+      if (selected.source === "library") useFontLibraryStore.getState().changed();
       onChange(DEFAULT_FONT);
       await load();
     } catch (error) {
@@ -83,7 +113,7 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
         value={value}
         options={options}
         onChange={(next) => {
-          if (!next.startsWith(SEPARATOR)) onChange(next);
+          if (!next.startsWith(SEPARATOR)) void choose(next);
         }}
         disabled={disabled || busy}
         ariaLabel={t("fontPicker.label")}
@@ -93,8 +123,8 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
         className="min-w-0 flex-1"
       />
       <IconButton icon={Plus} label={t("fontPicker.add")} onClick={() => void pick()} disabled={disabled || busy} />
-      {selected?.source === "imported" ? (
-        <IconButton icon={Trash2} label={t("fontPicker.remove")} onClick={() => void drop()} disabled={disabled || busy} />
+      {selected?.source === "imported" || (selected?.source === "library" && selected.installed) ? (
+        <IconButton icon={Trash2} label={t(selected.source === "library" ? "fontPicker.removeDownload" : "fontPicker.remove")} onClick={() => void drop()} disabled={disabled || busy} />
       ) : null}
     </div>
   );

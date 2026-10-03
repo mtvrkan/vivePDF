@@ -16,6 +16,7 @@ import {
   type StudioSvgElement,
   type StudioTextElement,
   type StudioTextRun,
+  type StudioVectorElement,
   type StudioVectorPath,
 } from "@/types/studio";
 
@@ -114,6 +115,10 @@ export function createImage(src: string, x: number, y: number, width: number, he
 
 export function createSvg(svg: string, x: number, y: number, width: number, height: number): StudioSvgElement {
   return { ...base(x, y, width, height, ""), kind: "svg", svg, source: "import", data: null };
+}
+
+export function createVector(art: { viewWidth: number; viewHeight: number; paths: StudioVectorPath[] }, x: number, y: number, width: number, height: number, name = ""): StudioVectorElement {
+  return { ...base(x, y, width, height, name), kind: "vector", viewWidth: art.viewWidth, viewHeight: art.viewHeight, paths: art.paths };
 }
 
 export function createQr(value: string, x: number, y: number, side: number): StudioQrElement {
@@ -350,4 +355,11 @@ export function normalizeDesign(value: unknown): StudioDesign | null {
   if (!pages.length) return null;
   const palette = (Array.isArray(raw.palette) ? raw.palette : []).filter((item): item is string => typeof item === "string" && COLOUR.test(item)).slice(0, 24);
   return { version: STUDIO_DESIGN_VERSION, kind: "design", name: text(raw.name, "", 200), palette, pages };
+}
+
+export function libraryFontIds(design: StudioDesign | null): string[] {
+  if (!design) return [];
+  const ids = new Set<string>();
+  for (const page of design.pages) for (const element of page.elements) if (element.kind === "text" && element.fontId?.startsWith("library:")) ids.add(element.fontId);
+  return [...ids].sort();
 }

@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "App",
       "imported": "Hinzugefügt",
-      "system": "System"
-    }
+      "system": "System",
+      "library": "Schriftarten-Bibliothek"
+    },
+    "toDownload": "{{name}} — herunterladen, {{size}}",
+    "downloaded": "{{name}} heruntergeladen",
+    "removeDownload": "Heruntergeladene Schriftart entfernen"
   },
   "tools": {
     "done": "Vorgang abgeschlossen.",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "Das Design ist größer als {{limitMb}} MB.",
       "noDesign": "Dieses PDF enthält kein Studio-Design.",
       "missingImage": "Ein im Design verwendetes Bild wurde nicht gefunden: {{path}}",
-      "tooManyOutputPages": "Das Ergebnis hätte mehr als {{limit}} Seiten. Verwenden Sie weniger Zeilen oder Seiten."
+      "tooManyOutputPages": "Das Ergebnis hätte mehr als {{limit}} Seiten. Verwenden Sie weniger Zeilen oder Seiten.",
+      "badPath": "Eine Zeichnung im Design enthält Umrissdaten, die nicht gelesen werden können."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -6743,6 +6748,10 @@
       "unsavedTitle": "Änderungen an diesem Design speichern?",
       "unsavedBody": "„{{name}}“ enthält Änderungen, die nicht in einer Datei gespeichert sind. Vor dem Öffnen eines anderen Designs speichern?",
       "discard": "Nicht speichern"
+    },
+    "fonts": {
+      "missing": "Dieses Design verwendet Schriftarten, die noch nicht auf diesem Computer sind: {{names}}",
+      "download": "Herunterladen ({{size}})"
     }
   }
 }

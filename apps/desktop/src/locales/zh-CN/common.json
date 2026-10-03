@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "应用",
       "imported": "已添加",
-      "system": "系统"
-    }
+      "system": "系统",
+      "library": "字体库"
+    },
+    "toDownload": "{{name}} — 下载，{{size}}",
+    "downloaded": "已下载 {{name}}",
+    "removeDownload": "删除已下载的字体"
   },
   "tools": {
     "done": "操作已完成。",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "设计大于 {{limitMb}} MB。",
       "noDesign": "此 PDF 不包含工作室设计。",
       "missingImage": "找不到设计中使用的图片：{{path}}",
-      "tooManyOutputPages": "结果将超过 {{limit}} 页。请减少行数或页数。"
+      "tooManyOutputPages": "结果将超过 {{limit}} 页。请减少行数或页数。",
+      "badPath": "设计中的某个图形包含无法读取的轮廓数据。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",
@@ -6743,6 +6748,10 @@
       "unsavedTitle": "保存对此设计的更改?",
       "unsavedBody": "“{{name}}”有尚未保存到文件的更改。打开其他设计前要保存吗?",
       "discard": "不保存"
+    },
+    "fonts": {
+      "missing": "此设计使用了此电脑上尚未安装的字体：{{names}}",
+      "download": "下载（{{size}}）"
     }
   }
 }

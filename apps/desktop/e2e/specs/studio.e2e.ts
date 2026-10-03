@@ -156,4 +156,39 @@ describe("studio", () => {
     await expect($('[data-testid="studio-save-state"]')).toHaveText(t("studio.project.notSaved"));
     await $('[data-testid="studio-viewport"] [data-element-id] img').waitForDisplayed({ timeout: 30000 });
   });
+
+  it("downloads a library font, shows it on the canvas and embeds it where the canvas put the text", async function () {
+    if (!process.env.VIVEPDF_FONT_LIBRARY_URL) this.skip();
+    await button(t("studio.elements.heading")).click();
+    const picker = $(`[role="combobox"][aria-label="${t("fontPicker.label")}"]`);
+    await picker.click();
+    await $(`input[placeholder="${t("fontPicker.search")}"]`).setValue("Lora");
+    await $(`//*[@role="option"][starts-with(normalize-space(.), "Lora")]`).click();
+    await browser.waitUntil(async () => (await picker.getText()).trim() === "Lora", { timeout: 60000, timeoutMsg: "Lora was not downloaded and chosen" });
+    const heading = t("studio.elements.headingText");
+    await browser.waitUntil(
+      () =>
+        browser.execute((wanted: string) => {
+          const span = Array.from(document.querySelectorAll<HTMLElement>('[data-testid="studio-viewport"] span[data-b]')).find((item) => item.textContent === wanted);
+          return Boolean(span && getComputedStyle(span).fontFamily.includes("vp-studio") && document.fonts.status === "loaded");
+        }, heading),
+      { timeout: 30000, timeoutMsg: "the canvas never drew the heading with the downloaded font" },
+    );
+    const line = await canvasLine(heading);
+
+    const output = join(workDir(), "Lora design.pdf");
+    await button(t("studio.toolbar.export")).click();
+    await $('[role="dialog"]').waitForDisplayed();
+    await $(`//*[@role="dialog"]//*[@role="radio"][normalize-space(.)="${t("studio.export.formats.pdf")}"]`).click();
+    answerDialogs(output);
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("tools.browse")}"]`).click();
+    await waitForDialogsAnswered();
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("studio.export.run")}"]`).click();
+    await waitForFile(output);
+
+    const span = (probe(output).pages?.[0].spans ?? []).find((item) => item.text.trim() === heading);
+    expect(span?.font).toContain("Lora");
+    expect(Math.abs((span?.box[0] ?? 0) - line.left)).toBeLessThan(0.5);
+    expect(Math.abs((span?.box[2] ?? 0) - line.right)).toBeLessThan(0.75);
+  });
 });

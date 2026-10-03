@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "App",
       "imported": "Added",
-      "system": "System"
-    }
+      "system": "System",
+      "library": "Font library"
+    },
+    "toDownload": "{{name}} — download {{size}}",
+    "downloaded": "{{name}} downloaded",
+    "removeDownload": "Remove the downloaded font"
   },
   "tools": {
     "done": "Operation completed.",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "The design is larger than {{limitMb}} MB.",
       "noDesign": "This PDF does not contain a Studio design.",
       "missingImage": "A picture used in the design was not found: {{path}}",
-      "tooManyOutputPages": "The result would have more than {{limit}} pages. Use fewer rows or pages."
+      "tooManyOutputPages": "The result would have more than {{limit}} pages. Use fewer rows or pages.",
+      "badPath": "A drawing in the design has outline data that cannot be read."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -6744,6 +6749,10 @@
       "unsavedTitle": "Save changes to this design?",
       "unsavedBody": "“{{name}}” has changes that are not saved to a file. Save them before opening another design?",
       "discard": "Don't save"
+    },
+    "fonts": {
+      "missing": "This design uses fonts that are not on this computer yet: {{names}}",
+      "download": "Download ({{size}})"
     }
   }
 }

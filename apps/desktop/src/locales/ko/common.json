@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "앱",
       "imported": "추가됨",
-      "system": "시스템"
-    }
+      "system": "시스템",
+      "library": "글꼴 라이브러리"
+    },
+    "toDownload": "{{name}} — 다운로드, {{size}}",
+    "downloaded": "{{name}} 다운로드됨",
+    "removeDownload": "다운로드한 글꼴 제거"
   },
   "tools": {
     "done": "작업이 완료되었습니다.",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "디자인이 {{limitMb}}MB보다 큽니다.",
       "noDesign": "이 PDF에는 스튜디오 디자인이 없습니다.",
       "missingImage": "디자인에 사용된 이미지를 찾을 수 없습니다: {{path}}",
-      "tooManyOutputPages": "결과가 {{limit}}페이지를 넘게 됩니다. 행이나 페이지를 줄이세요."
+      "tooManyOutputPages": "결과가 {{limit}}페이지를 넘게 됩니다. 행이나 페이지를 줄이세요.",
+      "badPath": "디자인의 그림 중 하나에 읽을 수 없는 윤곽선 데이터가 있습니다."
     },
     "revealEmptyPath": "경로가 비어 있습니다.",
     "revealFailed": "이 위치를 열 수 없습니다.",
@@ -6743,6 +6748,10 @@
       "unsavedTitle": "이 디자인의 변경 내용을 저장할까요?",
       "unsavedBody": "“{{name}}”에 파일에 저장되지 않은 변경 내용이 있습니다. 다른 디자인을 열기 전에 저장할까요?",
       "discard": "저장 안 함"
+    },
+    "fonts": {
+      "missing": "이 디자인은 이 컴퓨터에 아직 없는 글꼴을 사용합니다: {{names}}",
+      "download": "다운로드 ({{size}})"
     }
   }
 }

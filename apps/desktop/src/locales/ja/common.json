@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "アプリ",
       "imported": "追加済み",
-      "system": "システム"
-    }
+      "system": "システム",
+      "library": "フォントライブラリ"
+    },
+    "toDownload": "{{name}} — ダウンロード、{{size}}",
+    "downloaded": "{{name}} をダウンロードしました",
+    "removeDownload": "ダウンロードしたフォントを削除"
   },
   "tools": {
     "done": "操作が完了しました。",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "デザインが {{limitMb}} MB を超えています。",
       "noDesign": "この PDF にはスタジオのデザインが含まれていません。",
       "missingImage": "デザインで使われている画像が見つかりません: {{path}}",
-      "tooManyOutputPages": "結果が {{limit}} ページを超えます。行またはページを減らしてください。"
+      "tooManyOutputPages": "結果が {{limit}} ページを超えます。行またはページを減らしてください。",
+      "badPath": "デザイン内の図形に読み取れない輪郭データがあります。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",
@@ -6743,6 +6748,10 @@
       "unsavedTitle": "このデザインの変更を保存しますか?",
       "unsavedBody": "「{{name}}」にはファイルに保存されていない変更があります。別のデザインを開く前に保存しますか?",
       "discard": "保存しない"
+    },
+    "fonts": {
+      "missing": "このデザインには、このコンピューターにまだないフォントが使われています: {{names}}",
+      "download": "ダウンロード ({{size}})"
     }
   }
 }

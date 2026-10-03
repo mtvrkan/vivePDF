@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { STUDIO_DESIGN_VERSION } from "@/types/studio";
-import { createDesign, createQr, createShape, createText, hasPlaceholders, normalizeDesign, normalizeElement, placeholdersIn, STUDIO_PAGE_SIZES } from "./design";
+import { createDesign, createQr, createShape, createText, hasPlaceholders, libraryFontIds, normalizeDesign, normalizeElement, placeholdersIn, STUDIO_PAGE_SIZES } from "./design";
 
 describe("studio design model", () => {
   it("creates a one-page design with a white background", () => {
@@ -77,5 +77,22 @@ describe("studio design model", () => {
     expect(normalizeDesign({ kind: "design", version: STUDIO_DESIGN_VERSION + 1, pages: [{}] })).toBeNull();
     expect(normalizeDesign({ kind: "design", version: 1, pages: [] })).toBeNull();
     expect(normalizeElement({ kind: "vector", paths: [{ d: "" }] })).toBeNull();
+  });
+
+  it("lists the downloadable library fonts a design uses, once and in order", () => {
+    const design = createDesign("Fonts", 200, 100);
+    const page = {
+      ...design.pages[0],
+      elements: [
+        createText(0, 0, 10, 10, "a", { fontId: "library:lora" }),
+        createText(0, 0, 10, 10, "b", { fontId: "system:Arial" }),
+        createText(0, 0, 10, 10, "c", { fontId: "library:inter" }),
+        createText(0, 0, 10, 10, "d", { fontId: "library:lora" }),
+        createShape("rect", 0, 0, 10, 10),
+      ],
+    };
+
+    expect(libraryFontIds({ ...design, pages: [page] })).toEqual(["library:inter", "library:lora"]);
+    expect(libraryFontIds(null)).toEqual([]);
   });
 });

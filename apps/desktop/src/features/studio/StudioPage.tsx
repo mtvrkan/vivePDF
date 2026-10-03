@@ -10,6 +10,7 @@ import { STUDIO_PAGE_SIZES, createDesign, type StudioPageSize } from "./model/de
 import { Canvas } from "./design/Canvas";
 import { NumberField } from "./design/controls";
 import { DesignLauncher } from "./design/DesignLauncher";
+import { MissingFontsBar } from "./design/MissingFontsBar";
 import { pickDesignFile } from "./design/projectFile";
 import { useRecentDesignsStore, type RecentDesign } from "./design/recentDesigns";
 import { useDesignSave } from "./design/useDesignSave";
@@ -164,6 +165,7 @@ function StudioEditor({ language }: { language: string }) {
       <div className="flex min-h-0 flex-1">
         <ElementsPanel />
         <div className="flex min-w-0 flex-1 flex-col">
+          <MissingFontsBar />
           <Canvas language={language} />
           <PagesStrip language={language} />
         </div>

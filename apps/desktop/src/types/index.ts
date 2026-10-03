@@ -859,8 +859,9 @@ export type StampParams = {
 };
 
 export type MarkPreviewResult = { image: string; width: number; height: number; page: number; pageCount: number; missingGlyphs: string; pagesProblem: "" | "badRange" | "noPagesSelected" };
-export type FontSourceKind = "bundled" | "system" | "imported";
-export type FontChoice = { id: string; name: string; source: FontSourceKind; styles: string[] };
+export type FontSourceKind = "bundled" | "system" | "imported" | "library";
+export type FontChoice = { id: string; name: string; source: FontSourceKind; styles: string[]; installed?: boolean; bytes?: number; category?: string };
+export type FontLibraryFamily = { id: string; name: string; category: string; bytes: number; installed: boolean; styles: string[] };
 export type FontCatalogueResult = { fonts: FontChoice[] };
 export type FontRemoveResult = { removed: boolean };
 

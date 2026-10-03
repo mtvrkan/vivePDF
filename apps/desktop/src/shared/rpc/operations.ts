@@ -129,6 +129,7 @@ import type {
   FlattenResult,
   FontCatalogueResult,
   FontChoice,
+  FontLibraryFamily,
   FontRemoveResult,
   FormDetectParams,
   FormDataExportParams,
@@ -391,6 +392,15 @@ export const addFont = (params: { path: string }, options?: RpcCallOptions) =>
 
 export const removeFont = (params: { id: string }, options?: RpcCallOptions) =>
   rpc<FontRemoveResult>("fonts.remove", params, options);
+
+export const fontLibrary = (options?: RpcCallOptions) =>
+  rpc<{ families: FontLibraryFamily[] }>("fonts.library", {}, options);
+
+export const downloadLibraryFont = (params: { id: string }, options?: RpcCallOptions) =>
+  rpc<FontLibraryFamily>("fonts.library_download", params, options);
+
+export const removeLibraryFont = (params: { id: string }, options?: RpcCallOptions) =>
+  rpc<FontLibraryFamily>("fonts.library_remove", params, options);
 
 export const inspectPrivacy = (params: { path: string; password?: string }, options?: RpcCallOptions) =>
   rpc<PrivacyReport>("security.inspect", params, options);

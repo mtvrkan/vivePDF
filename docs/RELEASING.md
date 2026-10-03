@@ -82,6 +82,18 @@ packages and their licence:
 gh release create fonts-1 NotoSansJP-Regular.otf NotoSansKR-Regular.otf NotoSansHans-Regular.otf NotoSansHant-Regular.otf OFL.txt --title "Fallback fonts 1" --notes "Noto Sans CJK fallback fonts for vivePDF (SIL Open Font License 1.1)" --latest=false
 ```
 
+The Studio font library (24 OFL families from Google Fonts, static Regular/Bold/Italic/Bold Italic
+cuts, each checked for Turkish letters) is downloaded on request by `fonts.library_download` from the
+`fonts-2` release into `<user data dir>/font-library`, and must match
+`sidecar/vivepdf/ops/font_library_catalog.py`. Both the files and that table come from
+`scripts/gen_font_library.py`, which reads a pinned google/fonts commit; run it from `sidecar/` with
+`uv run python ../scripts/gen_font_library.py` and publish everything it writes to
+`sidecar/build/fonts-2/` (the `.ttf` files and one `<Family>-OFL.txt` per family):
+
+```
+gh release create fonts-2 sidecar/build/fonts-2/* --title "Studio font library 2" --notes "Open-licensed fonts for vivePDF Studio (SIL Open Font License 1.1), built from google/fonts" --latest=false
+```
+
 A new font version goes into a new `fonts-N` release with the manifest, the sidecar table and
 `downloadBase` updated together; never replace files inside an existing one, installed apps check
 them against the old digests.

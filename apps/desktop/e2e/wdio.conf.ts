@@ -4,6 +4,7 @@ import { connect } from "node:net";
 import { homedir } from "node:os";
 import type { Server } from "node:http";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 import { browser } from "@wdio/globals";
 import { ensureEdgeDriver } from "./support/edgeDriver.ts";
 import { startFontMirror } from "./support/fontMirror.ts";
@@ -83,6 +84,8 @@ export const config: WebdriverIO.Config = {
     const mirror = await startFontMirror();
     fontMirror = mirror.server;
     process.env.VIVEPDF_FONTS_URL = mirror.url;
+    const library = join(SIDECAR_DIR, "build", "fonts-2");
+    if (existsSync(library)) process.env.VIVEPDF_FONT_LIBRARY_URL = pathToFileURL(library).href;
     resetAppData();
   },
 

@@ -89,6 +89,7 @@ export const THIRD_PARTY: ThirdPartyEntry[] = [
   { name: "Geist", licence: "OFL-1.1", url: "https://vercel.com/font" },
   { name: "IBM Plex", licence: "OFL-1.1", url: "https://www.ibm.com/plex" },
   { name: "DejaVu Fonts", licence: "Bitstream Vera", url: "https://dejavu-fonts.github.io" },
+  { name: "Google Fonts (Studio font library, downloaded on request)", licence: "OFL-1.1", url: "https://github.com/google/fonts" },
   { name: "SecLists common passwords", licence: "MIT", url: "https://github.com/danielmiessler/SecLists" },
   { name: "Have I Been Pwned: Pwned Passwords", licence: "CC BY 4.0", url: "https://haveibeenpwned.com/Passwords" },
 ];

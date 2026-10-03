@@ -1899,8 +1899,12 @@
     "groups": {
       "bundled": "App",
       "imported": "Adicionadas",
-      "system": "Sistema"
-    }
+      "system": "Sistema",
+      "library": "Biblioteca de fontes"
+    },
+    "toDownload": "{{name}} — baixar, {{size}}",
+    "downloaded": "{{name}} baixada",
+    "removeDownload": "Remover a fonte baixada"
   },
   "tools": {
     "done": "Operação concluída.",
@@ -6070,7 +6074,8 @@
       "projectTooLarge": "O design é maior que {{limitMb}} MB.",
       "noDesign": "Este PDF não contém um design do Studio.",
       "missingImage": "Uma imagem usada no design não foi encontrada: {{path}}",
-      "tooManyOutputPages": "O resultado teria mais de {{limit}} páginas. Use menos linhas ou páginas."
+      "tooManyOutputPages": "O resultado teria mais de {{limit}} páginas. Use menos linhas ou páginas.",
+      "badPath": "Um desenho do design tem dados de contorno que não podem ser lidos."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",
@@ -6743,6 +6748,10 @@
       "unsavedTitle": "Salvar as alterações deste design?",
       "unsavedBody": "“{{name}}” tem alterações que não foram salvas em um arquivo. Salvá-las antes de abrir outro design?",
       "discard": "Não salvar"
+    },
+    "fonts": {
+      "missing": "Este design usa fontes que ainda não estão neste computador: {{names}}",
+      "download": "Baixar ({{size}})"
     }
   }
 }

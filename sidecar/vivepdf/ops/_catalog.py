@@ -102,6 +102,11 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "files.list_pdfs",
         "files.move_to_folder",
     ),
+    "font_library": (
+        "fonts.library",
+        "fonts.library_download",
+        "fonts.library_remove",
+    ),
     "fonts": (
         "editor.system_fonts",
         "fonts.add",
