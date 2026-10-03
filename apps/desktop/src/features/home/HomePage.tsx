@@ -1,3 +1,4 @@
+import { CollectionsSection } from "./CollectionsSection";
 import { ContinueStrip } from "./ContinueStrip";
 import { HeroSection } from "./HeroSection";
 import { HistoryRail } from "./HistoryRail";
@@ -14,6 +15,7 @@ export function HomePage() {
           <HeroSection />
           <QuickActions />
           <RecentDocuments />
+          <CollectionsSection />
           <ToolCatalogue />
         </div>
 

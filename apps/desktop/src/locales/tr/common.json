@@ -135,7 +135,34 @@
       "languages_other": "{{count}} dil",
       "activeOf": "{{active}} / {{total}} etkin"
     },
-    "recentCleared": "Son belgeler listesi temizlendi."
+    "recentCleared": "Son belgeler listesi temizlendi.",
+    "collections": {
+      "title": "Koleksiyonlar",
+      "new": "Yeni koleksiyon",
+      "create": "Koleksiyon oluştur",
+      "createTitle": "Yeni koleksiyon",
+      "editTitle": "Koleksiyonu düzenle",
+      "save": "Kaydet",
+      "name": "Ad",
+      "namePlaceholder": "Örneğin: Sözleşmeler 2026",
+      "files_one": "{{count}} dosya",
+      "files_other": "{{count}} dosya",
+      "noFiles": "Henüz dosya yok. Dosya ya da açık belgeleri ekleyin.",
+      "removeFile": "Koleksiyondan çıkar",
+      "addFiles": "Dosya ekle…",
+      "addOpen_one": "Açık belgeyi ekle",
+      "addOpen_other": "{{count}} açık belgeyi ekle",
+      "edit": "Düzenle…",
+      "remove": "Koleksiyonu sil",
+      "removed": "{{name}} koleksiyonu silindi",
+      "actions": "{{name}} için işlemler",
+      "more_one": "ve {{count}} dosya daha",
+      "more_other": "ve {{count}} dosya daha",
+      "open": "Hepsini aç",
+      "emptyTitle": "Henüz koleksiyon yok",
+      "emptyDescription": "Birlikte çalıştığınız dosyaları adlandırılmış bir koleksiyonda tutun ve hepsini tek bir sekme grubu olarak açın.",
+      "saved": "{{name}} koleksiyonu olarak kaydedildi"
+    }
   },
   "viewer": {
     "engineLoading": "PDF görüntüleyici yükleniyor…",
@@ -1300,7 +1327,8 @@
       "close": "Gruptaki belgeleri kapat",
       "unnamed": "Grup",
       "name": "Grup adı",
-      "toggle": "Daraltmak ya da genişletmek için tıklayın, adlandırmak için çift tıklayın"
+      "toggle": "Daraltmak ya da genişletmek için tıklayın, adlandırmak için çift tıklayın",
+      "saveAsCollection": "Koleksiyon olarak kaydet"
     },
     "converted": {
       "converting": "{{name}} PDF'e dönüştürülüyor…",

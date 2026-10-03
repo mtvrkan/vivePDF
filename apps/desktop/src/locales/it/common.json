@@ -135,7 +135,34 @@
       "languages_other": "{{count}} lingue",
       "activeOf": "{{active}} / {{total}} attive"
     },
-    "recentCleared": "Elenco dei documenti recenti cancellato."
+    "recentCleared": "Elenco dei documenti recenti cancellato.",
+    "collections": {
+      "title": "Raccolte",
+      "new": "Nuova raccolta",
+      "create": "Crea una raccolta",
+      "createTitle": "Nuova raccolta",
+      "editTitle": "Modifica raccolta",
+      "save": "Salva",
+      "name": "Nome",
+      "namePlaceholder": "Per esempio: Contratti 2026",
+      "files_one": "{{count}} file",
+      "files_other": "{{count}} file",
+      "noFiles": "Ancora nessun file. Aggiungi file o i documenti aperti.",
+      "removeFile": "Rimuovi dalla raccolta",
+      "addFiles": "Aggiungi file…",
+      "addOpen_one": "Aggiungi il documento aperto",
+      "addOpen_other": "Aggiungi i {{count}} documenti aperti",
+      "edit": "Modifica…",
+      "remove": "Elimina raccolta",
+      "removed": "Raccolta {{name}} eliminata",
+      "actions": "Azioni per {{name}}",
+      "more_one": "e altri {{count}}",
+      "more_other": "e altri {{count}}",
+      "open": "Apri tutto",
+      "emptyTitle": "Ancora nessuna raccolta",
+      "emptyDescription": "Tieni insieme i file su cui lavori in una raccolta con nome e aprili tutti come un gruppo di schede.",
+      "saved": "Salvato come raccolta {{name}}"
+    }
   },
   "viewer": {
     "engineLoading": "Caricamento del visualizzatore PDF…",
@@ -1300,7 +1327,8 @@
       "close": "Chiudi i documenti del gruppo",
       "unnamed": "Gruppo",
       "name": "Nome del gruppo",
-      "toggle": "Fai clic per comprimere o espandere, doppio clic per rinominare"
+      "toggle": "Fai clic per comprimere o espandere, doppio clic per rinominare",
+      "saveAsCollection": "Salva come raccolta"
     },
     "converted": {
       "converting": "Conversione di {{name}} in PDF…",

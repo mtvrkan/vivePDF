@@ -135,7 +135,34 @@
       "languages_other": "{{count}}개 언어",
       "activeOf": "{{active}} / {{total}} 활성"
     },
-    "recentCleared": "최근 문서 목록을 지웠습니다."
+    "recentCleared": "최근 문서 목록을 지웠습니다.",
+    "collections": {
+      "title": "컬렉션",
+      "new": "새 컬렉션",
+      "create": "컬렉션 만들기",
+      "createTitle": "새 컬렉션",
+      "editTitle": "컬렉션 편집",
+      "save": "저장",
+      "name": "이름",
+      "namePlaceholder": "예: 계약서 2026",
+      "files_one": "파일 {{count}}개",
+      "files_other": "파일 {{count}}개",
+      "noFiles": "아직 파일이 없습니다. 파일이나 열린 문서를 추가하세요.",
+      "removeFile": "컬렉션에서 제거",
+      "addFiles": "파일 추가…",
+      "addOpen_one": "열린 문서 추가",
+      "addOpen_other": "열린 문서 {{count}}개 추가",
+      "edit": "편집…",
+      "remove": "컬렉션 삭제",
+      "removed": "{{name}} 컬렉션을 삭제했습니다",
+      "actions": "{{name}} 작업",
+      "more_one": "외 {{count}}개",
+      "more_other": "외 {{count}}개",
+      "open": "모두 열기",
+      "emptyTitle": "아직 컬렉션이 없습니다",
+      "emptyDescription": "함께 작업하는 파일을 이름 있는 컬렉션에 모아 두고 하나의 탭 그룹으로 한 번에 여세요.",
+      "saved": "{{name}} 컬렉션으로 저장했습니다"
+    }
   },
   "viewer": {
     "engineLoading": "PDF 뷰어를 로드하는 중…",
@@ -1300,7 +1327,8 @@
       "close": "그룹의 문서 닫기",
       "unnamed": "그룹",
       "name": "그룹 이름",
-      "toggle": "클릭하면 접거나 펼치고, 두 번 클릭하면 이름을 바꿉니다"
+      "toggle": "클릭하면 접거나 펼치고, 두 번 클릭하면 이름을 바꿉니다",
+      "saveAsCollection": "컬렉션으로 저장"
     },
     "converted": {
       "converting": "{{name}}을(를) PDF로 변환하는 중…",

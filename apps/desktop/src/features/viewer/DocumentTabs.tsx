@@ -19,6 +19,8 @@ import { useDocumentWindow } from "./useDocumentWindow";
 import { useTabTearOff } from "./tabTearOff";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { isPendingChange } from "./overlay/pending";
+import { useCollectionsStore } from "@/features/home/collectionsStore";
+import { sessionPathOf } from "./convertedDocuments";
 import { GROUP_COLORS, GROUP_TONES, groupAfterMove, groupedOrder, useTabGroupStore } from "./tabGroups";
 
 export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void) => void } = {}) {
@@ -334,6 +336,16 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               },
               { type: "item", id: "collapse", label: t(group.collapsed ? "viewer.tabGroups.expand" : "viewer.tabGroups.collapse"), onSelect: () => store.setCollapsed(group.id, !group.collapsed) },
               { type: "separator", id: "sep-group-end" },
+              {
+                type: "item",
+                id: "save-collection",
+                label: t("viewer.tabGroups.saveAsCollection"),
+                onSelect: () => {
+                  const name = group.name || t("viewer.tabGroups.unnamed");
+                  useCollectionsStore.getState().create(name, members.map((id) => sessionPathOf(registered[id]?.path ?? "")).filter(Boolean));
+                  toast("success", t("home.collections.saved", { name }));
+                },
+              },
               { type: "item", id: "ungroup", label: t("viewer.tabGroups.ungroup"), onSelect: () => store.ungroup(group.id) },
               { type: "item", id: "close-group", label: t("viewer.tabGroups.close"), onSelect: () => guardedClose(members) },
             ];

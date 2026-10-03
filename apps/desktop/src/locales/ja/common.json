@@ -135,7 +135,34 @@
       "languages_other": "{{count}} 言語",
       "activeOf": "{{active}} / {{total}} 有効"
     },
-    "recentCleared": "最近のドキュメントのリストを消去しました。"
+    "recentCleared": "最近のドキュメントのリストを消去しました。",
+    "collections": {
+      "title": "コレクション",
+      "new": "新しいコレクション",
+      "create": "コレクションを作成",
+      "createTitle": "新しいコレクション",
+      "editTitle": "コレクションを編集",
+      "save": "保存",
+      "name": "名前",
+      "namePlaceholder": "例: 契約書 2026",
+      "files_one": "{{count}} 個のファイル",
+      "files_other": "{{count}} 個のファイル",
+      "noFiles": "まだファイルがありません。ファイルまたは開いている文書を追加してください。",
+      "removeFile": "コレクションから外す",
+      "addFiles": "ファイルを追加…",
+      "addOpen_one": "開いている文書を追加",
+      "addOpen_other": "開いている {{count}} 個の文書を追加",
+      "edit": "編集…",
+      "remove": "コレクションを削除",
+      "removed": "コレクション {{name}} を削除しました",
+      "actions": "{{name}} の操作",
+      "more_one": "ほか {{count}} 個",
+      "more_other": "ほか {{count}} 個",
+      "open": "すべて開く",
+      "emptyTitle": "コレクションはまだありません",
+      "emptyDescription": "一緒に使うファイルを名前付きのコレクションにまとめ、1 つのタブグループとしてまとめて開けます。",
+      "saved": "コレクション {{name}} として保存しました"
+    }
   },
   "viewer": {
     "engineLoading": "PDFビューアを読み込んでいます…",
@@ -1300,7 +1327,8 @@
       "close": "グループの文書を閉じる",
       "unnamed": "グループ",
       "name": "グループ名",
-      "toggle": "クリックで折りたたみ・展開、ダブルクリックで名前を変更"
+      "toggle": "クリックで折りたたみ・展開、ダブルクリックで名前を変更",
+      "saveAsCollection": "コレクションとして保存"
     },
     "converted": {
       "converting": "{{name}} を PDF に変換しています…",

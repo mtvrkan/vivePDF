@@ -135,7 +135,34 @@
       "languages_other": "{{count}} idiomas",
       "activeOf": "{{active}} / {{total}} ativas"
     },
-    "recentCleared": "Lista de documentos recentes apagada."
+    "recentCleared": "Lista de documentos recentes apagada.",
+    "collections": {
+      "title": "Coleções",
+      "new": "Nova coleção",
+      "create": "Criar uma coleção",
+      "createTitle": "Nova coleção",
+      "editTitle": "Editar coleção",
+      "save": "Salvar",
+      "name": "Nome",
+      "namePlaceholder": "Por exemplo: Contratos 2026",
+      "files_one": "{{count}} arquivo",
+      "files_other": "{{count}} arquivos",
+      "noFiles": "Ainda não há arquivos. Adicione arquivos ou os documentos abertos.",
+      "removeFile": "Remover da coleção",
+      "addFiles": "Adicionar arquivos…",
+      "addOpen_one": "Adicionar o documento aberto",
+      "addOpen_other": "Adicionar os {{count}} documentos abertos",
+      "edit": "Editar…",
+      "remove": "Excluir coleção",
+      "removed": "Coleção {{name}} excluída",
+      "actions": "Ações de {{name}}",
+      "more_one": "e mais {{count}}",
+      "more_other": "e mais {{count}}",
+      "open": "Abrir tudo",
+      "emptyTitle": "Ainda não há coleções",
+      "emptyDescription": "Mantenha juntos os arquivos com que você trabalha em uma coleção com nome e abra todos como um grupo de abas.",
+      "saved": "Salvo como coleção {{name}}"
+    }
   },
   "viewer": {
     "engineLoading": "Carregando o visualizador de PDF…",
@@ -1300,7 +1327,8 @@
       "close": "Fechar os documentos do grupo",
       "unnamed": "Grupo",
       "name": "Nome do grupo",
-      "toggle": "Clique para recolher ou expandir, clique duas vezes para renomear"
+      "toggle": "Clique para recolher ou expandir, clique duas vezes para renomear",
+      "saveAsCollection": "Salvar como coleção"
     },
     "converted": {
       "converting": "Convertendo {{name}} para PDF…",

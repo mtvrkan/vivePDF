@@ -135,7 +135,34 @@
       "languages_other": "{{count}} Sprachen",
       "activeOf": "{{active}} / {{total}} aktiv"
     },
-    "recentCleared": "Liste der zuletzt verwendeten Dokumente gelöscht."
+    "recentCleared": "Liste der zuletzt verwendeten Dokumente gelöscht.",
+    "collections": {
+      "title": "Sammlungen",
+      "new": "Neue Sammlung",
+      "create": "Sammlung erstellen",
+      "createTitle": "Neue Sammlung",
+      "editTitle": "Sammlung bearbeiten",
+      "save": "Speichern",
+      "name": "Name",
+      "namePlaceholder": "Zum Beispiel: Verträge 2026",
+      "files_one": "{{count}} Datei",
+      "files_other": "{{count}} Dateien",
+      "noFiles": "Noch keine Dateien. Fügen Sie Dateien oder die geöffneten Dokumente hinzu.",
+      "removeFile": "Aus der Sammlung entfernen",
+      "addFiles": "Dateien hinzufügen…",
+      "addOpen_one": "Geöffnetes Dokument hinzufügen",
+      "addOpen_other": "Die {{count}} geöffneten Dokumente hinzufügen",
+      "edit": "Bearbeiten…",
+      "remove": "Sammlung löschen",
+      "removed": "Sammlung {{name}} gelöscht",
+      "actions": "Aktionen für {{name}}",
+      "more_one": "und {{count}} weitere",
+      "more_other": "und {{count}} weitere",
+      "open": "Alle öffnen",
+      "emptyTitle": "Noch keine Sammlungen",
+      "emptyDescription": "Bewahren Sie zusammengehörige Dateien in einer benannten Sammlung auf und öffnen Sie sie alle als eine Tabgruppe.",
+      "saved": "Als Sammlung {{name}} gespeichert"
+    }
   },
   "viewer": {
     "engineLoading": "PDF-Betrachter wird geladen…",
@@ -1300,7 +1327,8 @@
       "close": "Dokumente der Gruppe schließen",
       "unnamed": "Gruppe",
       "name": "Gruppenname",
-      "toggle": "Klicken zum Ein- oder Ausklappen, Doppelklick zum Umbenennen"
+      "toggle": "Klicken zum Ein- oder Ausklappen, Doppelklick zum Umbenennen",
+      "saveAsCollection": "Als Sammlung speichern"
     },
     "converted": {
       "converting": "{{name}} wird in PDF umgewandelt…",

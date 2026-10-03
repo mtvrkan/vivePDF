@@ -135,7 +135,34 @@
       "languages_other": "{{count}} 种语言",
       "activeOf": "{{active}} / {{total}} 已启用"
     },
-    "recentCleared": "最近的文档列表已清除。"
+    "recentCleared": "最近的文档列表已清除。",
+    "collections": {
+      "title": "合集",
+      "new": "新建合集",
+      "create": "创建合集",
+      "createTitle": "新建合集",
+      "editTitle": "编辑合集",
+      "save": "保存",
+      "name": "名称",
+      "namePlaceholder": "例如：2026 合同",
+      "files_one": "{{count}} 个文件",
+      "files_other": "{{count}} 个文件",
+      "noFiles": "还没有文件。请添加文件或打开的文档。",
+      "removeFile": "从合集中移除",
+      "addFiles": "添加文件…",
+      "addOpen_one": "添加打开的文档",
+      "addOpen_other": "添加 {{count}} 个打开的文档",
+      "edit": "编辑…",
+      "remove": "删除合集",
+      "removed": "已删除合集 {{name}}",
+      "actions": "{{name}} 的操作",
+      "more_one": "以及另外 {{count}} 个",
+      "more_other": "以及另外 {{count}} 个",
+      "open": "全部打开",
+      "emptyTitle": "还没有合集",
+      "emptyDescription": "把一起使用的文件放进一个命名的合集，并作为一个标签组一次打开。",
+      "saved": "已保存为合集 {{name}}"
+    }
   },
   "viewer": {
     "engineLoading": "正在加载 PDF 阅读器…",
@@ -1300,7 +1327,8 @@
       "close": "关闭组中的文档",
       "unnamed": "组",
       "name": "组名称",
-      "toggle": "单击可折叠或展开，双击可重命名"
+      "toggle": "单击可折叠或展开，双击可重命名",
+      "saveAsCollection": "保存为合集"
     },
     "converted": {
       "converting": "正在将 {{name}} 转换为 PDF…",

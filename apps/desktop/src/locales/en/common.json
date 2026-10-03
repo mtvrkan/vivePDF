@@ -135,7 +135,34 @@
       "languages_other": "{{count}} languages",
       "activeOf": "{{active}} / {{total}} active"
     },
-    "recentCleared": "Recent documents list cleared."
+    "recentCleared": "Recent documents list cleared.",
+    "collections": {
+      "title": "Collections",
+      "new": "New collection",
+      "create": "Create a collection",
+      "createTitle": "New collection",
+      "editTitle": "Edit collection",
+      "save": "Save",
+      "name": "Name",
+      "namePlaceholder": "For example: Contracts 2026",
+      "files_one": "{{count}} file",
+      "files_other": "{{count}} files",
+      "noFiles": "No files yet. Add files or the open documents.",
+      "removeFile": "Remove from the collection",
+      "addFiles": "Add files…",
+      "addOpen_one": "Add the open document",
+      "addOpen_other": "Add the {{count}} open documents",
+      "edit": "Edit…",
+      "remove": "Delete collection",
+      "removed": "Collection {{name}} deleted",
+      "actions": "Actions for {{name}}",
+      "more_one": "and {{count}} more",
+      "more_other": "and {{count}} more",
+      "open": "Open all",
+      "emptyTitle": "No collections yet",
+      "emptyDescription": "Keep files you work on together in a named collection and open them all as one tab group.",
+      "saved": "Saved as collection {{name}}"
+    }
   },
   "viewer": {
     "engineLoading": "Loading PDF viewer…",
@@ -1300,7 +1327,8 @@
       "close": "Close the group's documents",
       "unnamed": "Group",
       "name": "Group name",
-      "toggle": "Click to collapse or expand, double-click to rename"
+      "toggle": "Click to collapse or expand, double-click to rename",
+      "saveAsCollection": "Save as collection"
     },
     "converted": {
       "converting": "Converting {{name}} to PDF…",

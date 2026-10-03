@@ -135,7 +135,34 @@
       "languages_other": "{{count}} langues",
       "activeOf": "{{active}} / {{total}} actifs"
     },
-    "recentCleared": "Liste des documents récents effacée."
+    "recentCleared": "Liste des documents récents effacée.",
+    "collections": {
+      "title": "Collections",
+      "new": "Nouvelle collection",
+      "create": "Créer une collection",
+      "createTitle": "Nouvelle collection",
+      "editTitle": "Modifier la collection",
+      "save": "Enregistrer",
+      "name": "Nom",
+      "namePlaceholder": "Par exemple : Contrats 2026",
+      "files_one": "{{count}} fichier",
+      "files_other": "{{count}} fichiers",
+      "noFiles": "Aucun fichier pour l’instant. Ajoutez des fichiers ou les documents ouverts.",
+      "removeFile": "Retirer de la collection",
+      "addFiles": "Ajouter des fichiers…",
+      "addOpen_one": "Ajouter le document ouvert",
+      "addOpen_other": "Ajouter les {{count}} documents ouverts",
+      "edit": "Modifier…",
+      "remove": "Supprimer la collection",
+      "removed": "Collection {{name}} supprimée",
+      "actions": "Actions pour {{name}}",
+      "more_one": "et {{count}} de plus",
+      "more_other": "et {{count}} de plus",
+      "open": "Tout ouvrir",
+      "emptyTitle": "Aucune collection pour l’instant",
+      "emptyDescription": "Regroupez les fichiers sur lesquels vous travaillez dans une collection nommée et ouvrez-les tous comme un groupe d’onglets.",
+      "saved": "Enregistré comme collection {{name}}"
+    }
   },
   "viewer": {
     "engineLoading": "Chargement de la visionneuse PDF…",
@@ -1300,7 +1327,8 @@
       "close": "Fermer les documents du groupe",
       "unnamed": "Groupe",
       "name": "Nom du groupe",
-      "toggle": "Cliquez pour réduire ou développer, double-cliquez pour renommer"
+      "toggle": "Cliquez pour réduire ou développer, double-cliquez pour renommer",
+      "saveAsCollection": "Enregistrer comme collection"
     },
     "converted": {
       "converting": "Conversion de {{name}} en PDF…",

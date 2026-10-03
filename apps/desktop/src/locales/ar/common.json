@@ -147,7 +147,46 @@
       "languages_other": "{{count}} لغة",
       "activeOf": "{{active}} / {{total}} نشط"
     },
-    "recentCleared": "تم مسح قائمة المستندات الأخيرة."
+    "recentCleared": "تم مسح قائمة المستندات الأخيرة.",
+    "collections": {
+      "title": "المجموعات",
+      "new": "مجموعة جديدة",
+      "create": "إنشاء مجموعة",
+      "createTitle": "مجموعة جديدة",
+      "editTitle": "تعديل المجموعة",
+      "save": "حفظ",
+      "name": "الاسم",
+      "namePlaceholder": "مثلًا: عقود 2026",
+      "files_zero": "لا ملفات",
+      "files_one": "ملف واحد",
+      "files_two": "ملفان",
+      "files_few": "{{count}} ملفات",
+      "files_many": "{{count}} ملفًا",
+      "files_other": "{{count}} ملف",
+      "noFiles": "لا ملفات بعد. أضف ملفات أو المستندات المفتوحة.",
+      "removeFile": "إزالة من المجموعة",
+      "addFiles": "إضافة ملفات…",
+      "addOpen_zero": "إضافة المستندات المفتوحة",
+      "addOpen_one": "إضافة المستند المفتوح",
+      "addOpen_two": "إضافة المستندين المفتوحين",
+      "addOpen_few": "إضافة {{count}} مستندات مفتوحة",
+      "addOpen_many": "إضافة {{count}} مستندًا مفتوحًا",
+      "addOpen_other": "إضافة {{count}} مستند مفتوح",
+      "edit": "تعديل…",
+      "remove": "حذف المجموعة",
+      "removed": "حُذفت المجموعة {{name}}",
+      "actions": "إجراءات {{name}}",
+      "more_zero": "ولا مزيد",
+      "more_one": "وملف آخر",
+      "more_two": "وملفان آخران",
+      "more_few": "و{{count}} ملفات أخرى",
+      "more_many": "و{{count}} ملفًا آخر",
+      "more_other": "و{{count}} ملف آخر",
+      "open": "فتح الكل",
+      "emptyTitle": "لا مجموعات بعد",
+      "emptyDescription": "احتفظ بالملفات التي تعمل عليها معًا في مجموعة مسماة وافتحها كلها كمجموعة علامات تبويب واحدة.",
+      "saved": "حُفظت كمجموعة {{name}}"
+    }
   },
   "viewer": {
     "engineLoading": "جارٍ تحميل عارض PDF…",
@@ -1348,7 +1387,8 @@
       "close": "إغلاق مستندات المجموعة",
       "unnamed": "مجموعة",
       "name": "اسم المجموعة",
-      "toggle": "انقر للطي أو التوسيع، وانقر مرتين لإعادة التسمية"
+      "toggle": "انقر للطي أو التوسيع، وانقر مرتين لإعادة التسمية",
+      "saveAsCollection": "حفظ كمجموعة"
     },
     "converted": {
       "converting": "جارٍ تحويل {{name}} إلى PDF…",
