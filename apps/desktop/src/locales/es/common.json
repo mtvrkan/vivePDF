@@ -1336,7 +1336,8 @@
       "message": "{{name}} se abrió como una copia PDF. Los cambios quedan en esta copia temporal hasta que la guarde como PDF.",
       "saveAsPdf": "Guardar como PDF…",
       "openTool": "Abrir en Convertir",
-      "allSupported": "Todos los archivos compatibles"
+      "allSupported": "Todos los archivos compatibles",
+      "fromClipboard": "Creado desde el portapapeles; aún no se ha guardado."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "Elija una carpeta para los archivos.",
       "noOutput": "Elija dónde guardar el PDF.",
       "noTitle": "La portada necesita un título.",
-      "noCoverImage": "La portada con foto necesita una imagen. Elija una o cambie de estilo."
+      "noCoverImage": "La portada con foto necesita una imagen. Elija una o cambie de estilo.",
+      "clipboardEmpty": "El portapapeles no tiene imagen, texto ni archivo para convertir en PDF. Copie algo primero."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",
@@ -5919,7 +5921,8 @@
       "print": "Imprimir",
       "switchTo": "Cambiar a «{{fileName}}»",
       "closeDocument": "Cerrar documento",
-      "revealInFolder": "Mostrar en la carpeta"
+      "revealInFolder": "Mostrar en la carpeta",
+      "clipboard": "PDF desde el portapapeles"
     },
     "group": {
       "tools": "Herramientas",
@@ -6093,7 +6096,8 @@
         "editSave": "Guardar / guardar como",
         "editStyle": "Negrita / cursiva",
         "editDuplicate": "Duplicar el cuadro seleccionado",
-        "editNudge": "Mover el cuadro seleccionado (Mayús: 10 pt)"
+        "editNudge": "Mover el cuadro seleccionado (Mayús: 10 pt)",
+        "clipboard": "PDF con lo que copió"
       },
       "search": "Buscar atajos",
       "noMatch": "Ningún atajo coincide con su búsqueda."
@@ -6277,5 +6281,11 @@
     "cc": "CC",
     "date": "Fecha",
     "attachments": "Adjuntos"
+  },
+  "clipboard": {
+    "action": "Del portapapeles",
+    "hint": "Cree un PDF con lo que copió: captura, imagen, texto o tabla",
+    "fileName": "Portapapeles",
+    "noOpenableFiles": "Ninguno de los archivos copiados se puede abrir."
   }
 }

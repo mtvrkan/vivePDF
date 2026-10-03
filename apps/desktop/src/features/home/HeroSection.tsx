@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import { FolderOpen, Search as SearchIcon, UploadCloud } from "lucide-react";
+import { ClipboardPaste, FolderOpen, Search as SearchIcon, UploadCloud } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { cn } from "@/shared/lib/cn";
@@ -20,7 +20,7 @@ function Kbd({ children }: { children: string }) {
 export function HeroSection() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { pickAndOpen } = useOpenPdf();
+  const { pickAndOpen, openClipboard } = useOpenPdf();
   const busy = useOpenStore((state) => state.busy);
   const [dragDepth, setDragDepth] = useState(0);
   const greeting = useMemo(() => t(`home.greeting.${greetingKey(new Date().getHours())}`), [t]);
@@ -42,6 +42,9 @@ export function HeroSection() {
             className="h-11 rounded-full px-5 text-base"
           >
             {t("common.openPdf")}
+          </Button>
+          <Button icon={<ClipboardPaste className="size-4" aria-hidden />} onClick={() => void openClipboard()} disabled={busy} title={`${t("clipboard.hint")} (Ctrl+Shift+V)`} className="h-11 rounded-full px-5 text-base">
+            {t("clipboard.action")}
           </Button>
           <Button icon={<SearchIcon className="size-4" aria-hidden />} onClick={() => void navigate("/search")} className="h-11 rounded-full px-5 text-base">
             {t("nav.folderSearch")}

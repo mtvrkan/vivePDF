@@ -1336,7 +1336,8 @@
       "message": "已将 {{name}} 作为 PDF 副本打开。在另存为 PDF 之前，更改仅保存在此临时副本中。",
       "saveAsPdf": "另存为 PDF…",
       "openTool": "在转换工具中打开",
-      "allSupported": "所有支持的文件"
+      "allSupported": "所有支持的文件",
+      "fromClipboard": "从剪贴板创建，尚未保存。"
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "请选择保存文件的文件夹。",
       "noOutput": "请选择 PDF 的保存位置。",
       "noTitle": "封面需要标题。",
-      "noCoverImage": "照片封面需要一张图片。请选择图片或换一种样式。"
+      "noCoverImage": "照片封面需要一张图片。请选择图片或换一种样式。",
+      "clipboardEmpty": "剪贴板中没有可转为 PDF 的图片、文本或文件。请先复制内容。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",
@@ -5919,7 +5921,8 @@
       "print": "打印",
       "switchTo": "切换到“{{fileName}}”",
       "closeDocument": "关闭文档",
-      "revealInFolder": "在文件夹中显示"
+      "revealInFolder": "在文件夹中显示",
+      "clipboard": "从剪贴板创建 PDF"
     },
     "group": {
       "tools": "工具",
@@ -6093,7 +6096,8 @@
         "editSave": "保存 / 另存为",
         "editStyle": "粗体 / 斜体",
         "editDuplicate": "复制所选文本框",
-        "editNudge": "移动所选文本框（Shift：10 pt）"
+        "editNudge": "移动所选文本框（Shift：10 pt）",
+        "clipboard": "用复制的内容创建 PDF"
       },
       "search": "搜索快捷键",
       "noMatch": "没有符合搜索条件的快捷键。"
@@ -6277,5 +6281,11 @@
     "cc": "抄送",
     "date": "日期",
     "attachments": "附件"
+  },
+  "clipboard": {
+    "action": "从剪贴板",
+    "hint": "用复制的内容创建 PDF：截图、图片、文本或表格",
+    "fileName": "剪贴板",
+    "noOpenableFiles": "复制的文件都无法打开。"
   }
 }

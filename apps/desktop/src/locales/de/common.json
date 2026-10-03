@@ -1336,7 +1336,8 @@
       "message": "{{name}} wurde als PDF-Kopie geöffnet. Änderungen bleiben in dieser temporären Kopie, bis Sie sie als PDF speichern.",
       "saveAsPdf": "Als PDF speichern…",
       "openTool": "In Umwandeln öffnen",
-      "allSupported": "Alle unterstützten Dateien"
+      "allSupported": "Alle unterstützten Dateien",
+      "fromClipboard": "Aus der Zwischenablage erstellt, noch nicht gespeichert."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "Wählen Sie einen Ordner für die Dateien.",
       "noOutput": "Wählen Sie, wo das PDF gespeichert wird.",
       "noTitle": "Das Deckblatt braucht einen Titel.",
-      "noCoverImage": "Das Foto-Deckblatt braucht ein Bild. Wählen Sie eines oder einen anderen Stil."
+      "noCoverImage": "Das Foto-Deckblatt braucht ein Bild. Wählen Sie eines oder einen anderen Stil.",
+      "clipboardEmpty": "Die Zwischenablage enthält kein Bild, keinen Text und keine Datei für ein PDF. Kopieren Sie zuerst etwas."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -5919,7 +5921,8 @@
       "print": "Drucken",
       "switchTo": "Zu \"{{fileName}}\" wechseln",
       "closeDocument": "Dokument schließen",
-      "revealInFolder": "Im Ordner anzeigen"
+      "revealInFolder": "Im Ordner anzeigen",
+      "clipboard": "PDF aus der Zwischenablage"
     },
     "group": {
       "tools": "Werkzeuge",
@@ -6093,7 +6096,8 @@
         "editSave": "Speichern / speichern unter",
         "editStyle": "Fett / kursiv",
         "editDuplicate": "Markiertes Feld duplizieren",
-        "editNudge": "Markiertes Feld verschieben (Umschalt: 10 pt)"
+        "editNudge": "Markiertes Feld verschieben (Umschalt: 10 pt)",
+        "clipboard": "PDF aus dem Kopierten"
       },
       "search": "Tastenkombinationen durchsuchen",
       "noMatch": "Keine Tastenkombination entspricht Ihrer Suche."
@@ -6277,5 +6281,11 @@
     "cc": "Cc",
     "date": "Datum",
     "attachments": "Anhänge"
+  },
+  "clipboard": {
+    "action": "Aus Zwischenablage",
+    "hint": "Ein PDF aus dem Kopierten: Screenshot, Bild, Text oder Tabelle",
+    "fileName": "Zwischenablage",
+    "noOpenableFiles": "Keine der kopierten Dateien kann geöffnet werden."
   }
 }

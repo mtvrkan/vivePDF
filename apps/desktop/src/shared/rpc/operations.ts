@@ -113,6 +113,8 @@ import type {
   CreateBulkResult,
   CreatePaperParams,
   CoverParams,
+  ClipboardParams,
+  ClipboardResult,
   MailLabels,
   SvgToPdfParams,
   FillParams,
@@ -613,6 +615,9 @@ export const createBulk = (params: CreateBulkParams, options?: RpcCallOptions) =
 
 export const createPaper = (params: CreatePaperParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.paper", params, options);
+
+export const clipboardToPdf = (params: ClipboardParams, options?: RpcCallOptions) =>
+  rpc<ClipboardResult>("create.clipboard", params, options);
 
 export const addCover = (params: CoverParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("pages.cover", params, options);

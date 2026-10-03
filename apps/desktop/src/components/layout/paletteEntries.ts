@@ -1,4 +1,4 @@
-import { AppWindow, Bug, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sun, Wrench, X } from "lucide-react";
+import { AppWindow, Bug, ClipboardPaste, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sun, Wrench, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { TFunction } from "i18next";
 import { primaryNavigation, secondaryNavigation, toolShortcuts } from "@/app/navigation";
@@ -97,6 +97,7 @@ export function buildSettingsEntries(t: TFunction, go: (route: string) => void):
 
 export type ActionContext = {
   pickAndOpen: () => void;
+  openClipboard: () => void;
   openWindow: () => void;
   goToSearch: () => void;
   hasSession: boolean;
@@ -121,6 +122,15 @@ export function buildActionEntries(t: TFunction, ctx: ActionContext): PaletteEnt
       keywords: "open pdf ac",
       icon: FileInput,
       run: ctx.pickAndOpen,
+    },
+    {
+      id: "action:clipboard",
+      kind: "action",
+      title: t("palette.action.clipboard"),
+      subtitle: t("palette.actionLabel"),
+      keywords: "clipboard paste screenshot ctrl shift v pano yapistir ekran goruntusu",
+      icon: ClipboardPaste,
+      run: ctx.openClipboard,
     },
     {
       id: "action:newWindow",

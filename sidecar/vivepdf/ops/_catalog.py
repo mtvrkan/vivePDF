@@ -25,6 +25,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "bookmarks.import",
         "bookmarks.parse",
     ),
+    "clipboard": ("create.clipboard",),
     "codeblocks": ("textedit.code_blocks",),
     "codes": (
         "codes.add_qr",

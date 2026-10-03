@@ -1336,7 +1336,8 @@
       "message": "{{name}} è stato aperto come copia PDF. Le modifiche restano in questa copia temporanea finché non la salvi come PDF.",
       "saveAsPdf": "Salva come PDF…",
       "openTool": "Apri in Converti",
-      "allSupported": "Tutti i file supportati"
+      "allSupported": "Tutti i file supportati",
+      "fromClipboard": "Creato dagli appunti, non ancora salvato."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "Scegli una cartella per i file.",
       "noOutput": "Scegli dove salvare il PDF.",
       "noTitle": "La copertina ha bisogno di un titolo.",
-      "noCoverImage": "La copertina con foto ha bisogno di un'immagine. Scegline una o cambia stile."
+      "noCoverImage": "La copertina con foto ha bisogno di un'immagine. Scegline una o cambia stile.",
+      "clipboardEmpty": "Negli appunti non c'è un'immagine, un testo o un file da trasformare in PDF. Copia prima qualcosa."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -5919,7 +5921,8 @@
       "print": "Stampa",
       "switchTo": "Passa a «{{fileName}}»",
       "closeDocument": "Chiudi documento",
-      "revealInFolder": "Mostra nella cartella"
+      "revealInFolder": "Mostra nella cartella",
+      "clipboard": "PDF dagli appunti"
     },
     "group": {
       "tools": "Strumenti",
@@ -6093,7 +6096,8 @@
         "editSave": "Salva / salva con nome",
         "editStyle": "Grassetto / corsivo",
         "editDuplicate": "Duplica la casella selezionata",
-        "editNudge": "Sposta la casella selezionata (Maiusc: 10 pt)"
+        "editNudge": "Sposta la casella selezionata (Maiusc: 10 pt)",
+        "clipboard": "PDF da ciò che hai copiato"
       },
       "search": "Cerca scorciatoie",
       "noMatch": "Nessuna scorciatoia corrisponde alla ricerca."
@@ -6277,5 +6281,11 @@
     "cc": "Cc",
     "date": "Data",
     "attachments": "Allegati"
+  },
+  "clipboard": {
+    "action": "Dagli appunti",
+    "hint": "Crea un PDF da ciò che hai copiato: screenshot, immagine, testo o tabella",
+    "fileName": "Appunti",
+    "noOpenableFiles": "Nessuno dei file copiati può essere aperto."
   }
 }

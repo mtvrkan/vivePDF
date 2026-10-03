@@ -1336,7 +1336,8 @@
       "message": "{{name}} を PDF のコピーとして開きました。PDF として保存するまで、変更はこの一時コピーに残ります。",
       "saveAsPdf": "PDF として保存…",
       "openTool": "変換ツールで開く",
-      "allSupported": "サポートされているすべてのファイル"
+      "allSupported": "サポートされているすべてのファイル",
+      "fromClipboard": "クリップボードから作成しました。まだ保存されていません。"
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "ファイルの保存先フォルダーを選んでください。",
       "noOutput": "PDF の保存先を選んでください。",
       "noTitle": "表紙にはタイトルが必要です。",
-      "noCoverImage": "写真の表紙には画像が必要です。画像を選ぶか、別のスタイルにしてください。"
+      "noCoverImage": "写真の表紙には画像が必要です。画像を選ぶか、別のスタイルにしてください。",
+      "clipboardEmpty": "クリップボードに PDF にできる画像、テキスト、ファイルがありません。先に何かをコピーしてください。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",
@@ -5919,7 +5921,8 @@
       "print": "印刷",
       "switchTo": "\"{{fileName}}\" に切り替え",
       "closeDocument": "ドキュメントを閉じる",
-      "revealInFolder": "フォルダーで表示"
+      "revealInFolder": "フォルダーで表示",
+      "clipboard": "クリップボードから PDF"
     },
     "group": {
       "tools": "ツール",
@@ -6093,7 +6096,8 @@
         "editSave": "保存 / 名前を付けて保存",
         "editStyle": "太字 / 斜体",
         "editDuplicate": "選択したボックスを複製",
-        "editNudge": "選択したボックスを移動（Shift: 10 pt）"
+        "editNudge": "選択したボックスを移動（Shift: 10 pt）",
+        "clipboard": "コピーした内容から PDF"
       },
       "search": "ショートカットを検索",
       "noMatch": "検索に一致するショートカットがありません。"
@@ -6277,5 +6281,11 @@
     "cc": "CC",
     "date": "日付",
     "attachments": "添付ファイル"
+  },
+  "clipboard": {
+    "action": "クリップボードから",
+    "hint": "コピーした内容から PDF を作成: スクリーンショット、画像、テキスト、表",
+    "fileName": "クリップボード",
+    "noOpenableFiles": "コピーしたファイルはどれも開けません。"
   }
 }

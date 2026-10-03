@@ -1336,7 +1336,8 @@
       "message": "{{name}} foi aberto como uma cópia em PDF. As alterações ficam nesta cópia temporária até você salvá-la como PDF.",
       "saveAsPdf": "Salvar como PDF…",
       "openTool": "Abrir em Converter",
-      "allSupported": "Todos os arquivos compatíveis"
+      "allSupported": "Todos os arquivos compatíveis",
+      "fromClipboard": "Criado da área de transferência, ainda não salvo."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "Escolha uma pasta para os arquivos.",
       "noOutput": "Escolha onde salvar o PDF.",
       "noTitle": "A capa precisa de um título.",
-      "noCoverImage": "A capa com foto precisa de uma imagem. Escolha uma ou outro estilo."
+      "noCoverImage": "A capa com foto precisa de uma imagem. Escolha uma ou outro estilo.",
+      "clipboardEmpty": "A área de transferência não tem imagem, texto nem arquivo para virar PDF. Copie algo primeiro."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",
@@ -5919,7 +5921,8 @@
       "print": "Imprimir",
       "switchTo": "Mudar para \"{{fileName}}\"",
       "closeDocument": "Fechar documento",
-      "revealInFolder": "Mostrar na pasta"
+      "revealInFolder": "Mostrar na pasta",
+      "clipboard": "PDF da área de transferência"
     },
     "group": {
       "tools": "Ferramentas",
@@ -6093,7 +6096,8 @@
         "editSave": "Salvar / salvar como",
         "editStyle": "Negrito / itálico",
         "editDuplicate": "Duplicar a caixa selecionada",
-        "editNudge": "Mover a caixa selecionada (Shift: 10 pt)"
+        "editNudge": "Mover a caixa selecionada (Shift: 10 pt)",
+        "clipboard": "PDF com o que você copiou"
       },
       "search": "Buscar atalhos",
       "noMatch": "Nenhum atalho corresponde à sua busca."
@@ -6277,5 +6281,11 @@
     "cc": "Cc",
     "date": "Data",
     "attachments": "Anexos"
+  },
+  "clipboard": {
+    "action": "Da área de transferência",
+    "hint": "Crie um PDF com o que você copiou: captura de tela, imagem, texto ou tabela",
+    "fileName": "Área de transferência",
+    "noOpenableFiles": "Nenhum dos arquivos copiados pode ser aberto."
   }
 }

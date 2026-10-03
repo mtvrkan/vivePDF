@@ -1336,7 +1336,8 @@
       "message": "{{name}}을(를) PDF 사본으로 열었습니다. PDF로 저장할 때까지 변경 내용은 이 임시 사본에 남습니다.",
       "saveAsPdf": "PDF로 저장…",
       "openTool": "변환 도구에서 열기",
-      "allSupported": "지원되는 모든 파일"
+      "allSupported": "지원되는 모든 파일",
+      "fromClipboard": "클립보드에서 만들었으며 아직 저장하지 않았습니다."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "파일을 저장할 폴더를 선택하세요.",
       "noOutput": "PDF를 저장할 위치를 선택하세요.",
       "noTitle": "표지에는 제목이 필요합니다.",
-      "noCoverImage": "사진 표지에는 이미지가 필요합니다. 이미지를 고르거나 다른 스타일을 선택하세요."
+      "noCoverImage": "사진 표지에는 이미지가 필요합니다. 이미지를 고르거나 다른 스타일을 선택하세요.",
+      "clipboardEmpty": "클립보드에 PDF로 만들 그림, 텍스트, 파일이 없습니다. 먼저 무언가를 복사하세요."
     },
     "revealEmptyPath": "경로가 비어 있습니다.",
     "revealFailed": "이 위치를 열 수 없습니다.",
@@ -5919,7 +5921,8 @@
       "print": "인쇄",
       "switchTo": "\"{{fileName}}\"(으)로 전환",
       "closeDocument": "문서 닫기",
-      "revealInFolder": "폴더에서 보기"
+      "revealInFolder": "폴더에서 보기",
+      "clipboard": "클립보드에서 PDF"
     },
     "group": {
       "tools": "도구",
@@ -6093,7 +6096,8 @@
         "editSave": "저장 / 다른 이름으로 저장",
         "editStyle": "굵게 / 기울임",
         "editDuplicate": "선택한 상자 복제",
-        "editNudge": "선택한 상자 이동 (Shift: 10pt)"
+        "editNudge": "선택한 상자 이동 (Shift: 10pt)",
+        "clipboard": "복사한 내용으로 PDF"
       },
       "search": "단축키 검색",
       "noMatch": "검색과 일치하는 단축키가 없습니다."
@@ -6277,5 +6281,11 @@
     "cc": "참조",
     "date": "날짜",
     "attachments": "첨부 파일"
+  },
+  "clipboard": {
+    "action": "클립보드에서",
+    "hint": "복사한 내용으로 PDF 만들기: 스크린샷, 그림, 텍스트, 표",
+    "fileName": "클립보드",
+    "noOpenableFiles": "복사한 파일 중 열 수 있는 파일이 없습니다."
   }
 }

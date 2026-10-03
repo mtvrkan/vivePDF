@@ -1120,6 +1120,9 @@ export type CreateBulkParams = {
 };
 export type CreateBulkResult = { outputs: string[]; count: number; pageCount: number; bytes: number };
 export type CreatePaperSize = "a4" | "a5" | "a3" | "letter";
+export type ClipboardKind = "files" | "image" | "html" | "text";
+export type ClipboardParams = { output: string; overwrite?: boolean; paper?: "a4" | "letter" };
+export type ClipboardResult = { kind: ClipboardKind; output: string | null; pageCount: number; bytes: number; files: string[] };
 export type CoverStyle = "classic" | "band" | "frame" | "minimal" | "photo";
 export type CoverParams = {
   path: string;

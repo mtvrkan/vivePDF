@@ -25,10 +25,11 @@ import { isPdfPasswordError } from "@/shared/lib/pdfPassword";
 import { canOfferRepair, openInRepair } from "@/shared/lib/repairRoute";
 import { sealedOpenRoute } from "@/shared/lib/sealedRoute";
 import { getDocumentInfo } from "@/shared/rpc/documents";
-import { fileToPdf } from "@/shared/rpc/operations";
-import { pathKey, stemOf } from "@/shared/lib/paths";
+import { clipboardToPdf, fileToPdf } from "@/shared/rpc/operations";
+import { sanitizeFileName } from "@/shared/lib/naming";
+import { defaultOutputDirectory, joinPath, pathKey, stemOf } from "@/shared/lib/paths";
 import { useLaunchStore } from "@/shared/store/launchStore";
-import { convertedCopyOf, isConvertibleOnOpen, OPEN_CONVERTIBLE_EXTENSIONS, originalOf, useConvertedStore } from "./convertedDocuments";
+import { convertedCopyOf, isConvertibleOnOpen, isOpenablePath, isUnsavedCopy, OPEN_CONVERTIBLE_EXTENSIONS, originalOf, useConvertedStore } from "./convertedDocuments";
 import { closeViewable, openViewable, type ViewableSource } from "@/shared/session/viewSources";
 
 function forgetDocumentState(documentId: string) {
@@ -39,6 +40,11 @@ function forgetDocumentState(documentId: string) {
   useDocumentMessagesStore.getState().forget(documentId);
   useFallbackFontsStore.getState().forget(documentId);
   useLayerViewStore.getState().forgetList(documentId);
+}
+
+export function clipboardStamp(date: Date): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}.${pad(date.getMinutes())}`;
 }
 
 export function useOpenPdf(documentRoute = "/viewer") {
@@ -63,9 +69,11 @@ export function useOpenPdf(documentRoute = "/viewer") {
 
   const finishOpen = useCallback(
     (documentId: string, path: string) => {
-      const recentPath = originalOf(path) ?? path;
-      addRecent(recentPath);
-      if (usePreferencesStore.getState().rememberRecent) void rememberRecentDocument(recentPath).catch(() => undefined);
+      if (!isUnsavedCopy(path)) {
+        const recentPath = originalOf(path) ?? path;
+        addRecent(recentPath);
+        if (usePreferencesStore.getState().rememberRecent) void rememberRecentDocument(recentPath).catch(() => undefined);
+      }
       setActive(documentId);
       requestPassword(null);
       void loadInfo(documentId);
@@ -237,6 +245,43 @@ export function useOpenPdf(documentRoute = "/viewer") {
     [openPath],
   );
 
+  const openClipboard = useCallback(async (): Promise<boolean> => {
+    if (!docManager) {
+      toast("info", t("engine.starting"));
+      return false;
+    }
+    const noRoom = documentRoomError(docManager.getDocumentCount());
+    if (noRoom) {
+      toast("error", describeError(t, noRoom));
+      return false;
+    }
+    const name = sanitizeFileName(`${t("clipboard.fileName")} ${clipboardStamp(new Date())}`) || "clipboard";
+    setBusy(true);
+    let result: Awaited<ReturnType<typeof clipboardToPdf>>;
+    try {
+      const output = await join(await tempDir(), "vivepdf-converted", crypto.randomUUID(), `${name}.pdf`);
+      result = await clipboardToPdf({ output, overwrite: true });
+    } catch (error) {
+      const rpcError = toRpcError(error);
+      toast(rpcError.data?.reason === "clipboardEmpty" ? "info" : "error", describeError(t, rpcError));
+      return false;
+    } finally {
+      setBusy(false);
+    }
+    if (result.kind === "files") {
+      const openable = result.files.filter(isOpenablePath);
+      if (openable.length === 0) {
+        toast("info", t("clipboard.noOpenableFiles"));
+        return false;
+      }
+      await openPaths(openable);
+      return true;
+    }
+    if (!result.output) return false;
+    useConvertedStore.getState().rememberUnsaved(result.output, joinPath(await defaultOutputDirectory(), `${name}.pdf`));
+    return openPathRef.current(result.output);
+  }, [docManager, openPaths, setBusy, t, toast]);
+
   const pickAndOpen = useCallback(async () => {
     const selected = await openDialog({
       multiple: true,
@@ -305,5 +350,5 @@ export function useOpenPdf(documentRoute = "/viewer") {
     if (waiting.length > 0) void openPaths(waiting);
   }, [openPaths]);
 
-  return { openPath, openPaths, resumeWaiting, pickAndOpen, submitPassword, cancelPassword, closeDocument, replaceDocument, activate };
+  return { openPath, openPaths, openClipboard, resumeWaiting, pickAndOpen, submitPassword, cancelPassword, closeDocument, replaceDocument, activate };
 }

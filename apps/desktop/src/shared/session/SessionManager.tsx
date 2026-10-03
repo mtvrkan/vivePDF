@@ -7,7 +7,7 @@ import { launchRequest } from "@/shared/rpc/files";
 import { hidesOnClose, shouldConfirmClose } from "./closeGuardState";
 import { inTabOrder, useDocumentStore } from "@/shared/store/documentStore";
 import { savedGroups, useTabGroupStore } from "@/features/viewer/tabGroups";
-import { sessionPathOf } from "@/features/viewer/convertedDocuments";
+import { isUnsavedCopy, sessionPathOf } from "@/features/viewer/convertedDocuments";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { useReportStore } from "@/shared/store/reportStore";
 import { useToastStore } from "@/shared/store/toastStore";
@@ -28,10 +28,12 @@ function serializableTiles(tiles: OrganizerTile[]): OrganizerTile[] {
 function buildSnapshot(route: string): SessionSnapshot | null {
   const documents = useDocumentStore.getState();
   const organizer = useOrganizerStore.getState();
-  const paths = inTabOrder(Object.values(documents.documents), documents.order).map((doc) => sessionPathOf(doc.path));
+  const paths = inTabOrder(Object.values(documents.documents), documents.order)
+    .filter((doc) => !isUnsavedCopy(doc.path))
+    .map((doc) => sessionPathOf(doc.path));
   if (paths.length === 0) return null;
   const activeDocument = documents.activeId ? documents.documents[documents.activeId] : undefined;
-  const activePath = activeDocument ? sessionPathOf(activeDocument.path) : null;
+  const activePath = activeDocument && !isUnsavedCopy(activeDocument.path) ? sessionPathOf(activeDocument.path) : null;
   const main = organizer.sources.main;
   return {
     savedAt: Date.now(),
@@ -40,7 +42,7 @@ function buildSnapshot(route: string): SessionSnapshot | null {
     activePath,
     tabGroups: savedGroups(documents.order, (id) => {
       const path = documents.documents[id]?.path;
-      return path ? sessionPathOf(path) : undefined;
+      return path && !isUnsavedCopy(path) ? sessionPathOf(path) : undefined;
     }),
     organizer:
       main && organizer.tiles.length > 0

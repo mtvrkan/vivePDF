@@ -1336,7 +1336,8 @@
       "message": "Opened {{name}} as a PDF copy. Changes stay in this temporary copy until you save it as a PDF.",
       "saveAsPdf": "Save as PDF…",
       "openTool": "Open in Convert",
-      "allSupported": "All supported files"
+      "allSupported": "All supported files",
+      "fromClipboard": "Made from the clipboard and not saved yet."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "Choose a folder for the files.",
       "noOutput": "Choose where to save the PDF.",
       "noTitle": "The cover needs a title.",
-      "noCoverImage": "The photo cover needs a picture. Choose one or pick another style."
+      "noCoverImage": "The photo cover needs a picture. Choose one or pick another style.",
+      "clipboardEmpty": "The clipboard holds no picture, text or file to turn into a PDF. Copy something first."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -5919,7 +5921,8 @@
       "print": "Print",
       "switchTo": "Switch to \"{{fileName}}\"",
       "closeDocument": "Close document",
-      "revealInFolder": "Show in folder"
+      "revealInFolder": "Show in folder",
+      "clipboard": "PDF from clipboard"
     },
     "group": {
       "tools": "Tools",
@@ -6093,7 +6096,8 @@
         "editSave": "Save in place / save as",
         "editStyle": "Bold / italic",
         "editDuplicate": "Duplicate the selected box",
-        "editNudge": "Move the selected box (Shift: 10 pt)"
+        "editNudge": "Move the selected box (Shift: 10 pt)",
+        "clipboard": "PDF from what you copied"
       },
       "search": "Search shortcuts",
       "noMatch": "No shortcuts match your search."
@@ -6278,5 +6282,11 @@
     "cc": "Cc",
     "date": "Date",
     "attachments": "Attachments"
+  },
+  "clipboard": {
+    "action": "From clipboard",
+    "hint": "Make a PDF from what you copied: a screenshot, a picture, text or a table",
+    "fileName": "Clipboard",
+    "noOpenableFiles": "None of the copied files can be opened."
   }
 }

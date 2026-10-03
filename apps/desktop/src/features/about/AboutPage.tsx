@@ -28,6 +28,7 @@ const SHORTCUTS: ShortcutGroup[] = [
     items: [
       { keys: "Ctrl O", labelKey: "about.shortcuts.items.open" },
       { keys: "Ctrl Shift N", labelKey: "about.shortcuts.items.newWindow" },
+      { keys: "Ctrl Shift V", labelKey: "about.shortcuts.items.clipboard" },
       { keys: "Ctrl K", labelKey: "about.shortcuts.items.palette" },
       { keys: "Ctrl W", labelKey: "about.shortcuts.items.closeDocument" },
       { keys: "Esc", labelKey: "about.shortcuts.items.closeDialog" },

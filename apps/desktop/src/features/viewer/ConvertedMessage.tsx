@@ -13,20 +13,21 @@ import { useDocumentSave } from "./useDocumentSave";
 export function ConvertedMessage({ documentId }: { documentId: string }) {
   const path = useDocumentStore((state) => state.documents[documentId]?.path ?? null);
   const original = useConvertedStore((state) => (path ? (state.originals[pathKey(path)] ?? null) : null));
+  const unsaved = useConvertedStore((state) => (path ? state.unsaved[pathKey(path)] === true : false));
   const dismissed = useDocumentMessagesStore((state) => state.dismissed[documentId]?.includes("converted") ?? false);
   if (!original || dismissed) return null;
-  return <ConvertedRow documentId={documentId} original={original} />;
+  return <ConvertedRow documentId={documentId} original={original} unsaved={unsaved} />;
 }
 
-function ConvertedRow({ documentId, original }: { documentId: string; original: string }) {
+function ConvertedRow({ documentId, original, unsaved }: { documentId: string; original: string; unsaved: boolean }) {
   const { t } = useTranslation();
   const { save } = useDocumentSave(documentId);
   const dismiss = useDocumentMessagesStore((state) => state.dismiss);
   return (
     <MessageRow>
       <FileOutput className="size-4 shrink-0 text-primary" aria-hidden />
-      <span className="min-w-0 flex-1 truncate" title={original}>
-        {t("viewer.converted.message", { name: fileNameOf(original) })}
+      <span className="min-w-0 flex-1 truncate" title={unsaved ? undefined : original}>
+        {unsaved ? t("viewer.converted.fromClipboard") : t("viewer.converted.message", { name: fileNameOf(original) })}
       </span>
       <Button size="sm" variant="ghost" onClick={() => void save()}>
         {t("viewer.converted.saveAsPdf")}

@@ -1336,7 +1336,8 @@
       "message": "{{name}} a été ouvert comme copie PDF. Les modifications restent dans cette copie temporaire jusqu’à ce que vous l’enregistriez en PDF.",
       "saveAsPdf": "Enregistrer en PDF…",
       "openTool": "Ouvrir dans Convertir",
-      "allSupported": "Tous les fichiers pris en charge"
+      "allSupported": "Tous les fichiers pris en charge",
+      "fromClipboard": "Créé depuis le presse-papiers, pas encore enregistré."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "Choisissez un dossier pour les fichiers.",
       "noOutput": "Choisissez où enregistrer le PDF.",
       "noTitle": "La couverture a besoin d'un titre.",
-      "noCoverImage": "La couverture photo a besoin d'une image. Choisissez-en une ou un autre style."
+      "noCoverImage": "La couverture photo a besoin d'une image. Choisissez-en une ou un autre style.",
+      "clipboardEmpty": "Le presse-papiers ne contient ni image, ni texte, ni fichier à transformer en PDF. Copiez d'abord quelque chose."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -5919,7 +5921,8 @@
       "print": "Imprimer",
       "switchTo": "Passer à « {{fileName}} »",
       "closeDocument": "Fermer le document",
-      "revealInFolder": "Afficher dans le dossier"
+      "revealInFolder": "Afficher dans le dossier",
+      "clipboard": "PDF depuis le presse-papiers"
     },
     "group": {
       "tools": "Outils",
@@ -6093,7 +6096,8 @@
         "editSave": "Enregistrer / enregistrer sous",
         "editStyle": "Gras / italique",
         "editDuplicate": "Dupliquer la boîte sélectionnée",
-        "editNudge": "Déplacer la boîte sélectionnée (Maj : 10 pt)"
+        "editNudge": "Déplacer la boîte sélectionnée (Maj : 10 pt)",
+        "clipboard": "PDF à partir de ce que vous avez copié"
       },
       "search": "Rechercher des raccourcis",
       "noMatch": "Aucun raccourci ne correspond à votre recherche."
@@ -6277,5 +6281,11 @@
     "cc": "Cc",
     "date": "Date",
     "attachments": "Pièces jointes"
+  },
+  "clipboard": {
+    "action": "Presse-papiers",
+    "hint": "Créez un PDF à partir de ce que vous avez copié : capture, image, texte ou tableau",
+    "fileName": "Presse-papiers",
+    "noOpenableFiles": "Aucun des fichiers copiés ne peut être ouvert."
   }
 }

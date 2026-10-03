@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { convertedCopyOf, isConvertibleOnOpen, isOpenablePath, originalOf, sessionPathOf, useConvertedStore } from "./convertedDocuments";
+import { convertedCopyOf, isConvertibleOnOpen, isOpenablePath, isUnsavedCopy, originalOf, sessionPathOf, useConvertedStore } from "./convertedDocuments";
 
 beforeEach(() => {
-  useConvertedStore.setState({ originals: {} });
+  useConvertedStore.setState({ originals: {}, unsaved: {} });
 });
 
 describe("openable files", () => {
@@ -36,5 +36,23 @@ describe("useConvertedStore", () => {
 
     expect(sessionPathOf("C:/Temp/x/report.pdf")).toBe("C:/Temp/x/report.pdf");
     expect(convertedCopyOf("C:/Docs/report.docx")).toBeNull();
+  });
+
+  it("offers a save name for a copy made from the clipboard without treating it as a file of its own", () => {
+    useConvertedStore.getState().rememberUnsaved("C:/Temp/y/Clipboard.pdf", "C:/Users/me/Documents/Clipboard.pdf");
+
+    expect(isUnsavedCopy("c:/temp/y/clipboard.pdf")).toBe(true);
+    expect(originalOf("C:/Temp/y/Clipboard.pdf")).toBe("C:/Users/me/Documents/Clipboard.pdf");
+    expect(sessionPathOf("C:/Temp/y/Clipboard.pdf")).toBe("C:/Temp/y/Clipboard.pdf");
+    expect(convertedCopyOf("C:/Users/me/Documents/Clipboard.pdf")).toBeNull();
+  });
+
+  it("drops the unsaved mark together with the copy", () => {
+    useConvertedStore.getState().rememberUnsaved("C:/Temp/y/Clipboard.pdf", "C:/Docs/Clipboard.pdf");
+
+    useConvertedStore.getState().forget("C:/Temp/y/Clipboard.pdf");
+
+    expect(isUnsavedCopy("C:/Temp/y/Clipboard.pdf")).toBe(false);
+    expect(originalOf("C:/Temp/y/Clipboard.pdf")).toBeNull();
   });
 });

@@ -1336,7 +1336,8 @@
       "message": "{{name}} bir PDF kopyası olarak açıldı. PDF olarak kaydedene kadar değişiklikler bu geçici kopyada kalır.",
       "saveAsPdf": "PDF olarak kaydet…",
       "openTool": "Dönüştür aracında aç",
-      "allSupported": "Desteklenen tüm dosyalar"
+      "allSupported": "Desteklenen tüm dosyalar",
+      "fromClipboard": "Panodan oluşturuldu, henüz kaydedilmedi."
     }
   },
   "presentation": {
@@ -5869,7 +5870,8 @@
       "noOutputDir": "Dosyalar için bir klasör seçin.",
       "noOutput": "PDF'nin nereye kaydedileceğini seçin.",
       "noTitle": "Kapak için bir başlık gerekiyor.",
-      "noCoverImage": "Fotoğraflı kapak için bir resim gerekiyor. Resim seçin ya da başka bir stil seçin."
+      "noCoverImage": "Fotoğraflı kapak için bir resim gerekiyor. Resim seçin ya da başka bir stil seçin.",
+      "clipboardEmpty": "Panoda PDF'ye dönüştürülecek resim, metin ya da dosya yok. Önce bir şey kopyalayın."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -5919,7 +5921,8 @@
       "print": "Yazdır",
       "switchTo": "\"{{fileName}}\" belgesine geç",
       "closeDocument": "Belgeyi kapat",
-      "revealInFolder": "Klasörde göster"
+      "revealInFolder": "Klasörde göster",
+      "clipboard": "Panodan PDF"
     },
     "group": {
       "tools": "Araçlar",
@@ -6093,7 +6096,8 @@
         "editSave": "Kaydet / farklı kaydet",
         "editStyle": "Kalın / yatık",
         "editDuplicate": "Seçili kutuyu çoğalt",
-        "editNudge": "Seçili kutuyu taşı (Shift: 10 pt)"
+        "editNudge": "Seçili kutuyu taşı (Shift: 10 pt)",
+        "clipboard": "Kopyaladığınızdan PDF"
       },
       "search": "Kısayollarda ara",
       "noMatch": "Aramanızla eşleşen kısayol yok."
@@ -6278,5 +6282,11 @@
     "cc": "Bilgi",
     "date": "Tarih",
     "attachments": "Ekler"
+  },
+  "clipboard": {
+    "action": "Panodan",
+    "hint": "Kopyaladığınızdan PDF oluşturun: ekran görüntüsü, resim, metin ya da tablo",
+    "fileName": "Pano",
+    "noOpenableFiles": "Kopyalanan dosyaların hiçbiri açılamıyor."
   }
 }

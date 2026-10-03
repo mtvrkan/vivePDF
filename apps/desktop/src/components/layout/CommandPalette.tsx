@@ -104,7 +104,7 @@ function scoredSort(entries: PaletteEntry[], needle: string, locale: string, rec
 export function CommandPalette() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { pickAndOpen, openPath, activate } = useOpenPdf();
+  const { pickAndOpen, openClipboard, openPath, activate } = useOpenPdf();
   const openWindow = useDocumentWindow();
   const { closeDocuments } = useCloseDocuments();
   const restoreSessionFn = useRestoreSession();
@@ -183,6 +183,7 @@ export function CommandPalette() {
     () =>
       buildActionEntries(t, {
         pickAndOpen: () => void pickAndOpen(),
+        openClipboard: () => void openClipboard(),
         openWindow: () => void openWindow(),
         goToSearch: () => void navigate("/search"),
         hasSession: sessionSnapshot !== null,
@@ -201,7 +202,7 @@ export function CommandPalette() {
           usePrintDialogStore.getState().setOpen(true);
         },
       }),
-    [t, pickAndOpen, openWindow, navigate, sessionSnapshot, restoreSessionFn, theme, setTheme, activeDocument],
+    [t, pickAndOpen, openClipboard, openWindow, navigate, sessionSnapshot, restoreSessionFn, theme, setTheme, activeDocument],
   );
 
   const { mode, rest } = useMemo(() => detectPaletteMode(query), [query]);

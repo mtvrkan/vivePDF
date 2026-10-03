@@ -13,13 +13,14 @@ import type { LaunchRequest } from "@/types";
 import { isOpenablePath } from "./convertedDocuments";
 import { routeForLaunch } from "./launchRoute";
 import { useDocumentWindow } from "./useDocumentWindow";
+import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { useOpenPdf } from "./useOpenPdf";
 
 const MULTI_FILE_TOOLS = new Set(["merge", "batch", "rename"]);
 const LAUNCH_BATCH_MS = 900;
 
 export function FileOpenListener() {
-  const { openPaths, pickAndOpen } = useOpenPdf();
+  const { openPaths, pickAndOpen, openClipboard } = useOpenPdf();
   const navigate = useNavigate();
   const openWindow = useDocumentWindow();
   const openWindowRef = useRef(openWindow);
@@ -29,6 +30,8 @@ export function FileOpenListener() {
   const navigateRef = useRef(navigate);
   openPathsRef.current = openPaths;
   pickRef.current = pickAndOpen;
+  const clipboardRef = useRef(openClipboard);
+  clipboardRef.current = openClipboard;
   navigateRef.current = navigate;
   const startedRef = useRef(false);
 
@@ -127,6 +130,9 @@ export function FileOpenListener() {
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "o") {
         event.preventDefault();
         void pickRef.current();
+      } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "v" && !isTypingTarget(event.target)) {
+        event.preventDefault();
+        void clipboardRef.current();
       } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "n") {
         event.preventDefault();
         void openWindowRef.current();

@@ -9,6 +9,7 @@ from datetime import UTC, datetime, timedelta
 from email.message import EmailMessage
 from pathlib import Path
 
+from vivepdf.ops._html_clean import body_fragment, without_remote_pictures
 from vivepdf.ops._story import declared_charset, decode_text
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.protocol import RpcModel
@@ -45,15 +46,7 @@ ATTACH_MIME = 0x370E
 TOP_HEADER_BYTES = 32
 CHILD_HEADER_BYTES = 8
 PROPERTY_ENTRY_BYTES = 16
-UNSAFE_TAGS = re.compile(
-    r"<(script|style|iframe|object|embed|noscript|head)\b.*?</\1\s*>", re.IGNORECASE | re.DOTALL
-)
-LONELY_TAGS = re.compile(r"<(meta|link|base)\b[^>]*>", re.IGNORECASE)
-BODY_CONTENT = re.compile(r"<body\b[^>]*>(.*)</body\s*>", re.IGNORECASE | re.DOTALL)
 CID_SOURCE = re.compile(r"""(src\s*=\s*["'])cid:([^"']+)(["'])""", re.IGNORECASE)
-REMOTE_SOURCE = re.compile(
-    r"""(<img\b[^>]*?)\ssrc\s*=\s*["'](?:https?:)?//[^"']*["']""", re.IGNORECASE
-)
 SAFE_NAME = re.compile(r"[^A-Za-z0-9._-]+")
 
 
@@ -307,11 +300,7 @@ def _body_html(message: MailMessage, workdir: Path) -> tuple[str, set[str]]:
     if not message.html_body.strip():
         text = message.text_body.strip()
         return (f'<pre class="plain">{html.escape(text)}</pre>' if text else ""), used
-    body = message.html_body
-    match = BODY_CONTENT.search(body)
-    if match:
-        body = match.group(1)
-    body = LONELY_TAGS.sub("", UNSAFE_TAGS.sub("", body))
+    body = body_fragment(message.html_body)
     inline = {item.content_id.lower(): item for item in message.attachments if item.content_id}
     names: dict[str, str] = {}
 
@@ -327,8 +316,7 @@ def _body_html(message: MailMessage, workdir: Path) -> tuple[str, set[str]]:
         return f"{found.group(1)}{names[key]}{found.group(3)}"
 
     body = CID_SOURCE.sub(replace, body)
-    body = REMOTE_SOURCE.sub(r"\1", body)
-    return body, used
+    return without_remote_pictures(body), used
 
 
 def _header_row(label: str, value: str) -> str:
