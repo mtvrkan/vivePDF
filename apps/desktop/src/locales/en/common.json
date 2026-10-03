@@ -326,7 +326,9 @@
       "previewFailed": "Preview failed",
       "volume": "Volume",
       "installVoice": "Download a voice",
-      "selection": "Selected text"
+      "selection": "Selected text",
+      "otherVoice": "No system voice for this language — reading with {{voice}}.",
+      "noVoiceHelp": "This computer has no speech voice that can read this. Download a vivePDF voice under Settings › Reading › Voices, or add one in Windows Settings › Time & language › Speech."
     },
     "reading": {
       "title": "Reading mode",

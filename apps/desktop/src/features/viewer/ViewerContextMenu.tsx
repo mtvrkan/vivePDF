@@ -56,7 +56,7 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePendingChangesStore } from "@/shared/store/pendingChangesStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { useSearchRequestStore } from "@/shared/store/searchRequestStore";
-import { useSpeechStore } from "@/shared/store/speechStore";
+import { speechFailureKey, useSpeechStore } from "@/shared/store/speechStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { requestSearchable } from "./searchableStore";
@@ -432,7 +432,16 @@ export function ViewerContextMenu({ documentId, hostRef }: { documentId: string;
   };
 
   const readAloud = () => {
-    if (!useSpeechStore.getState().speak(reflowParagraphs(menu.selectionText), { lang: locale, owner: "selection" })) {
+    const started = useSpeechStore.getState().speak(reflowParagraphs(menu.selectionText), {
+      lang: locale,
+      owner: "selection",
+      onVoiceFallback: (voice) => toast("info", t("viewer.readAloud.otherVoice", { voice: voice.name })),
+      onError: (event) => {
+        const failure = speechFailureKey(event.error);
+        if (failure) toast("error", t(failure));
+      },
+    });
+    if (!started) {
       toast("error", t("viewer.selection.readAloudUnavailable"));
     }
   };

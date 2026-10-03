@@ -326,7 +326,9 @@
       "previewFailed": "Falha na amostra",
       "volume": "Volume",
       "installVoice": "Baixar uma voz",
-      "selection": "Texto selecionado"
+      "selection": "Texto selecionado",
+      "otherVoice": "Não há voz do sistema para este idioma — lendo com {{voice}}.",
+      "noVoiceHelp": "Este computador não tem uma voz capaz de ler isto. Baixe uma voz do vivePDF em Configurações › Leitura › Vozes ou adicione uma em Configurações do Windows › Hora e idioma › Fala."
     },
     "reading": {
       "title": "Modo de leitura",

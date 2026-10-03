@@ -326,7 +326,9 @@
       "previewFailed": "Önizleme başarısız",
       "volume": "Ses düzeyi",
       "installVoice": "Ses indir",
-      "selection": "Seçili metin"
+      "selection": "Seçili metin",
+      "otherVoice": "Bu dil için sistem sesi yok — {{voice}} sesiyle okunuyor.",
+      "noVoiceHelp": "Bu bilgisayarda bunu okuyabilecek bir ses yok. Ayarlar › Okuma › Sesler'den bir vivePDF sesi indirin ya da Windows Ayarları › Saat ve dil › Konuşma'dan ses ekleyin."
     },
     "reading": {
       "title": "Okuma modu",

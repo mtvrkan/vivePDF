@@ -326,7 +326,9 @@
       "previewFailed": "미리 듣기에 실패했습니다",
       "volume": "볼륨",
       "installVoice": "음성 다운로드",
-      "selection": "선택한 텍스트"
+      "selection": "선택한 텍스트",
+      "otherVoice": "이 언어에 맞는 시스템 음성이 없어 {{voice}} 음성으로 읽습니다.",
+      "noVoiceHelp": "이 컴퓨터에는 이 내용을 읽을 수 있는 음성이 없습니다. 설정 › 읽기 › 음성에서 vivePDF 음성을 다운로드하거나 Windows 설정 › 시간 및 언어 › 음성에서 음성을 추가하세요."
     },
     "reading": {
       "title": "읽기 모드",

@@ -1,10 +1,12 @@
 import { create } from "zustand";
+import { splitSentences } from "@/shared/lib/sentences";
 import { useReadingStore } from "@/shared/store/readingStore";
 
 const STORAGE_KEY = "vivepdf.speech";
 export const NEURAL_PREFIX = "neural:";
 export const VOLUME_MIN = 0;
 export const VOLUME_MAX = 1;
+export const SPEECH_CHUNK_CHARS = 240;
 
 export type SpeechStatus = "idle" | "speaking" | "paused";
 export type SpeechOwner = "selection" | "page";
@@ -18,7 +20,33 @@ export type SpeakOptions = {
   onEnd?: () => void;
   onError?: (event: SpeechSynthesisErrorEvent) => void;
   onInterrupt?: () => void;
+  onVoiceFallback?: (voice: SpeechSynthesisVoice) => void;
 };
+
+export type VoiceChoice = { voice: SpeechSynthesisVoice | null; matched: boolean };
+
+export const MISSING_VOICE_ERRORS = new Set(["language-unavailable", "voice-unavailable", "synthesis-unavailable"]);
+
+export function chooseVoice(available: SpeechSynthesisVoice[], voiceUri: string | null | undefined, locale: string): VoiceChoice {
+  const wanted = voiceUri && !voiceUri.startsWith(NEURAL_PREFIX) ? voiceUri : null;
+  const chosen = wanted ? available.find((voice) => voice.voiceURI === wanted) : undefined;
+  if (chosen) return { voice: chosen, matched: true };
+  const sameLanguage = locale ? available.find((voice) => languageOf(voice.lang) === languageOf(locale)) : undefined;
+  if (sameLanguage) return { voice: sameLanguage, matched: true };
+  const fallback = available.find((voice) => voice.default) ?? available[0] ?? null;
+  return { voice: fallback, matched: !locale || fallback === null };
+}
+
+export function speechFailureKey(error: string): string | null {
+  if (error === "interrupted" || error === "canceled") return null;
+  return MISSING_VOICE_ERRORS.has(error) ? "viewer.readAloud.noVoiceHelp" : "viewer.readAloud.failed";
+}
+
+let announcedFallback = "";
+
+export function speechChunks(text: string): string[] {
+  return splitSentences(text, SPEECH_CHUNK_CHARS);
+}
 
 export function languageOf(locale: string): string {
   return locale.split("-")[0].toLowerCase();
@@ -38,9 +66,7 @@ export function clampVolume(value: number): number {
 export function resolveSystemVoice(voiceUri: string | null | undefined, locale: string): SpeechSynthesisVoice | null {
   const synth = speechSynthesisApi();
   if (!synth) return null;
-  const available = synth.getVoices();
-  const wanted = voiceUri && !voiceUri.startsWith(NEURAL_PREFIX) ? voiceUri : null;
-  return available.find((voice) => voice.voiceURI === wanted) ?? available.find((voice) => languageOf(voice.lang) === languageOf(locale)) ?? null;
+  return chooseVoice(synth.getVoices(), voiceUri, locale).voice;
 }
 
 export function readStoredVolume(): number {
@@ -98,43 +124,58 @@ export const useSpeechStore = create<SpeechState>((set, get) => ({
   },
   speak: (text, options) => {
     const synth = speechSynthesisApi();
-    const spoken = text.replace(/\s+/g, " ").trim();
-    if (!synth || !spoken) return false;
+    const parts = speechChunks(text);
+    if (!synth || parts.length === 0) return false;
     const interrupted = detachActive();
     set({ status: "idle", text: "", owner: null });
     interrupted?.();
     const reading = useReadingStore.getState();
-    const utterance = new SpeechSynthesisUtterance(spoken);
     const lang = options?.lang ?? "";
-    const voice = resolveSystemVoice(options?.voiceUri === undefined ? reading.voiceUri : options.voiceUri, lang);
-    if (voice) utterance.voice = voice;
-    if (voice?.lang || lang) utterance.lang = voice?.lang ?? lang;
-    utterance.rate = options?.rate ?? reading.rate;
-    utterance.volume = clampVolume(options?.volume ?? get().volume);
-    utterance.onend = () => {
-      if (activeUtterance !== utterance) return;
+    const choice = chooseVoice(synth.getVoices(), options?.voiceUri === undefined ? reading.voiceUri : options.voiceUri, lang);
+    const fallbackKey = choice.voice && !choice.matched ? `${languageOf(lang)}|${choice.voice.voiceURI}` : "";
+    if (choice.voice && fallbackKey && fallbackKey !== announcedFallback) {
+      announcedFallback = fallbackKey;
+      options?.onVoiceFallback?.(choice.voice);
+    }
+    const rate = options?.rate ?? reading.rate;
+    const volume = clampVolume(options?.volume ?? get().volume);
+    const finish = () => {
       activeUtterance = null;
       activeInterrupt = null;
       set({ status: "idle", text: "", owner: null });
-      options?.onEnd?.();
     };
-    utterance.onerror = (event) => {
-      if (activeUtterance !== utterance) return;
-      activeUtterance = null;
-      activeInterrupt = null;
-      set({ status: "idle", text: "", owner: null });
-      options?.onError?.(event);
+    const speakPart = (index: number) => {
+      const utterance = new SpeechSynthesisUtterance(parts[index]);
+      if (choice.voice) utterance.voice = choice.voice;
+      if (choice.voice?.lang || lang) utterance.lang = choice.voice?.lang ?? lang;
+      utterance.rate = rate;
+      utterance.volume = volume;
+      utterance.onend = () => {
+        if (activeUtterance !== utterance) return;
+        if (index + 1 < parts.length) {
+          speakPart(index + 1);
+          return;
+        }
+        finish();
+        options?.onEnd?.();
+      };
+      utterance.onerror = (event) => {
+        if (activeUtterance !== utterance) return;
+        finish();
+        options?.onError?.(event);
+      };
+      utterance.onpause = () => {
+        if (activeUtterance === utterance) set({ status: "paused" });
+      };
+      utterance.onresume = () => {
+        if (activeUtterance === utterance) set({ status: "speaking" });
+      };
+      activeUtterance = utterance;
+      synth.speak(utterance);
     };
-    utterance.onpause = () => {
-      if (activeUtterance === utterance) set({ status: "paused" });
-    };
-    utterance.onresume = () => {
-      if (activeUtterance === utterance) set({ status: "speaking" });
-    };
-    activeUtterance = utterance;
     activeInterrupt = options?.onInterrupt ?? null;
-    set({ status: "speaking", text: spoken, owner: options?.owner ?? "selection" });
-    synth.speak(utterance);
+    set({ status: "speaking", text, owner: options?.owner ?? "selection" });
+    speakPart(0);
     return true;
   },
   pause: () => {

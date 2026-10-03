@@ -326,7 +326,9 @@
       "previewFailed": "Échec de l’aperçu",
       "volume": "Volume",
       "installVoice": "Télécharger une voix",
-      "selection": "Texte sélectionné"
+      "selection": "Texte sélectionné",
+      "otherVoice": "Aucune voix système pour cette langue — lecture avec {{voice}}.",
+      "noVoiceHelp": "Cet ordinateur n’a aucune voix capable de lire ceci. Téléchargez une voix vivePDF dans Paramètres › Lecture › Voix ou ajoutez-en une dans Paramètres Windows › Heure et langue › Voix."
     },
     "reading": {
       "title": "Mode lecture",

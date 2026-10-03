@@ -11,7 +11,7 @@ import { toRpcError } from "@/shared/rpc/client";
 import { getPageText, ttsSynthesize } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useReadingStore } from "@/shared/store/readingStore";
-import { NEURAL_PREFIX, useSpeechStore } from "@/shared/store/speechStore";
+import { NEURAL_PREFIX, speechFailureKey, useSpeechStore } from "@/shared/store/speechStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useTtsVoicesStore } from "@/shared/store/ttsVoicesStore";
 import { useUiStore } from "@/shared/store/uiStore";
@@ -134,8 +134,10 @@ export function ReadAloudBar({ documentId, onClose }: { documentId: string; onCl
         voiceUri,
         owner: "page",
         onEnd: advance,
+        onVoiceFallback: (voice) => toast("info", t("viewer.readAloud.otherVoice", { voice: voice.name })),
         onError: (event) => {
-          if (event.error !== "interrupted" && event.error !== "canceled") toast("error", t("viewer.readAloud.failed"));
+          const failure = speechFailureKey(event.error);
+          if (failure) toast("error", t(failure));
           if (requestRef.current === request) setStatus("idle");
         },
         onInterrupt: () => {

@@ -326,7 +326,9 @@
       "previewFailed": "試聴に失敗しました",
       "volume": "音量",
       "installVoice": "音声をダウンロード",
-      "selection": "選択したテキスト"
+      "selection": "選択したテキスト",
+      "otherVoice": "この言語のシステム音声がありません — {{voice}} で読み上げます。",
+      "noVoiceHelp": "このコンピューターにはこれを読み上げられる音声がありません。設定 › 読み上げ › 音声 で vivePDF の音声をダウンロードするか、Windows の設定 › 時刻と言語 › 音声認識 で音声を追加してください。"
     },
     "reading": {
       "title": "リーディングモード",

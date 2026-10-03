@@ -326,7 +326,9 @@
       "previewFailed": "试听失败",
       "volume": "音量",
       "installVoice": "下载语音",
-      "selection": "选中的文本"
+      "selection": "选中的文本",
+      "otherVoice": "没有适用于此语言的系统语音，将使用 {{voice}} 朗读。",
+      "noVoiceHelp": "这台电脑没有可以朗读此内容的语音。请在 设置 › 阅读 › 语音 中下载 vivePDF 语音，或在 Windows 设置 › 时间和语言 › 语音 中添加语音。"
     },
     "reading": {
       "title": "阅读模式",

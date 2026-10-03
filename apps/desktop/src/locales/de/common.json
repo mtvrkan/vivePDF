@@ -326,7 +326,9 @@
       "previewFailed": "Vorschau fehlgeschlagen",
       "volume": "Lautstärke",
       "installVoice": "Stimme herunterladen",
-      "selection": "Ausgewählter Text"
+      "selection": "Ausgewählter Text",
+      "otherVoice": "Keine Systemstimme für diese Sprache — es wird mit {{voice}} vorgelesen.",
+      "noVoiceHelp": "Auf diesem Computer gibt es keine Stimme, die dies vorlesen kann. Laden Sie unter Einstellungen › Lesen › Stimmen eine vivePDF-Stimme herunter oder fügen Sie in den Windows-Einstellungen › Zeit und Sprache › Spracherkennung eine hinzu."
     },
     "reading": {
       "title": "Lesemodus",
