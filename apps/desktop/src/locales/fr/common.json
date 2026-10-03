@@ -163,6 +163,59 @@
       "emptyTitle": "Aucune collection pour l’instant",
       "emptyDescription": "Regroupez les fichiers sur lesquels vous travaillez dans une collection nommée et ouvrez-les tous comme un groupe d’onglets.",
       "saved": "Enregistré comme collection {{name}}"
+    },
+    "layout": {
+      "edit": "Personnaliser l'accueil",
+      "editing": "Personnalisation de l'accueil",
+      "editingHint": "Faites glisser les sections par leur poignée ou utilisez les boutons ; les modifications sont enregistrées aussitôt.",
+      "reset": "Rétablir par défaut",
+      "resetDone": "L'accueil a été rétabli.",
+      "done": "Terminé",
+      "sidebarSide": "Colonne latérale",
+      "sides": {
+        "start": "Gauche",
+        "end": "Droite"
+      },
+      "sidebarWidth": "Largeur",
+      "widths": {
+        "narrow": "Étroite",
+        "normal": "Normale",
+        "wide": "Large"
+      },
+      "hiddenTray": "Masquées :",
+      "sections": {
+        "hero": "Accueil"
+      },
+      "dragHandle": "Déplacer {{name}}",
+      "dragHint": "Faites glisser pour déplacer",
+      "sizes": {
+        "small": "Petit",
+        "medium": "Moyen",
+        "large": "Grand"
+      },
+      "sizeOf": "Taille de {{name}}",
+      "regionOf": "Emplacement de {{name}}",
+      "regions": {
+        "top": "En haut (pleine largeur)",
+        "main": "Colonne principale",
+        "side": "Colonne latérale",
+        "bottom": "En bas (pleine largeur)"
+      },
+      "moveUp": "Monter {{name}}",
+      "moveDown": "Descendre {{name}}",
+      "hide": "Masquer {{name}}",
+      "emptySection": "Rien à afficher ici pour le moment",
+      "dropHere": "Déposez une section ici",
+      "quick": {
+        "earlier": "Avancer {{name}}",
+        "later": "Reculer {{name}}",
+        "remove": "Retirer {{name}} de l'accès rapide",
+        "full": "L'accès rapide contient jusqu'à {{count}} outils",
+        "add": "Ajouter un outil",
+        "empty": "Aucun outil dans l'accès rapide. Personnalisez l'accueil pour en ajouter.",
+        "pickTitle": "Ajouter des outils à l'accès rapide",
+        "pickHint": "{{count}} sur {{max}} outils. Cliquez sur un outil pour l'ajouter."
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "Passer à « {{fileName}} »",
       "closeDocument": "Fermer le document",
       "revealInFolder": "Afficher dans le dossier",
-      "clipboard": "PDF depuis le presse-papiers"
+      "clipboard": "PDF depuis le presse-papiers",
+      "editHome": "Personnaliser la page d'accueil"
     },
     "group": {
       "tools": "Outils",

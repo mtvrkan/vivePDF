@@ -6,8 +6,9 @@ import { basenameOf } from "@/shared/lib/paths";
 import { readSession, readStartupSession, writeSession } from "@/shared/session/sessionStore";
 import { useRestoreSession } from "@/shared/session/useRestoreSession";
 import { useOpenStore } from "@/shared/store/openStore";
+import { bySize, type HomeSize } from "./homeLayout";
 
-export function ContinueStrip() {
+export function ContinueStrip({ size = "medium" }: { size?: HomeSize }) {
   const { t } = useTranslation();
   const [session] = useState(() => (readSession() ? readStartupSession() : null));
   const [restored, setRestored] = useState(false);
@@ -22,7 +23,7 @@ export function ContinueStrip() {
     setDiscarded(true);
   };
 
-  const shown = session.documents.slice(0, 3);
+  const shown = session.documents.slice(0, bySize(size, 2, 3, 6));
 
   return (
     <section className="glass glass-tinted rounded-2xl p-5" data-tone="improve">

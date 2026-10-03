@@ -163,6 +163,59 @@
       "emptyTitle": "Aún no hay colecciones",
       "emptyDescription": "Guarde juntos los archivos con los que trabaja en una colección con nombre y ábralos todos como un grupo de pestañas.",
       "saved": "Guardado como colección {{name}}"
+    },
+    "layout": {
+      "edit": "Personalizar inicio",
+      "editing": "Personalizando la página de inicio",
+      "editingHint": "Arrastre las secciones por su asa o use los botones; los cambios se guardan al instante.",
+      "reset": "Restablecer",
+      "resetDone": "Se restableció la página de inicio.",
+      "done": "Listo",
+      "sidebarSide": "Columna lateral",
+      "sides": {
+        "start": "Izquierda",
+        "end": "Derecha"
+      },
+      "sidebarWidth": "Ancho",
+      "widths": {
+        "narrow": "Estrecha",
+        "normal": "Normal",
+        "wide": "Ancha"
+      },
+      "hiddenTray": "Ocultas:",
+      "sections": {
+        "hero": "Bienvenida"
+      },
+      "dragHandle": "Mover {{name}}",
+      "dragHint": "Arrastre para mover",
+      "sizes": {
+        "small": "Pequeño",
+        "medium": "Mediano",
+        "large": "Grande"
+      },
+      "sizeOf": "Tamaño de {{name}}",
+      "regionOf": "Ubicación de {{name}}",
+      "regions": {
+        "top": "Arriba (ancho completo)",
+        "main": "Columna principal",
+        "side": "Columna lateral",
+        "bottom": "Abajo (ancho completo)"
+      },
+      "moveUp": "Subir {{name}}",
+      "moveDown": "Bajar {{name}}",
+      "hide": "Ocultar {{name}}",
+      "emptySection": "Ahora no hay nada que mostrar aquí",
+      "dropHere": "Suelte una sección aquí",
+      "quick": {
+        "earlier": "Mover {{name}} antes",
+        "later": "Mover {{name}} después",
+        "remove": "Quitar {{name}} del acceso rápido",
+        "full": "El acceso rápido admite hasta {{count}} herramientas",
+        "add": "Añadir herramienta",
+        "empty": "No hay herramientas en el acceso rápido. Personalice el inicio para añadirlas.",
+        "pickTitle": "Añadir herramientas al acceso rápido",
+        "pickHint": "{{count}} de {{max}} herramientas. Haga clic en una para añadirla."
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "Cambiar a «{{fileName}}»",
       "closeDocument": "Cerrar documento",
       "revealInFolder": "Mostrar en la carpeta",
-      "clipboard": "PDF desde el portapapeles"
+      "clipboard": "PDF desde el portapapeles",
+      "editHome": "Personalizar la página de inicio"
     },
     "group": {
       "tools": "Herramientas",

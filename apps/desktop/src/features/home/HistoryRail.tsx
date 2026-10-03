@@ -17,10 +17,10 @@ import { useHistoryStore, type HistoryEntry } from "@/shared/store/historyStore"
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { describeError } from "@/shared/lib/errorMessage";
+import { bySize, type HomeSize } from "./homeLayout";
 
-const MAX_SHOWN = 6;
 
-export function HistoryRail() {
+export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const items = useHistoryStore((state) => state.items);
@@ -85,7 +85,7 @@ export function HistoryRail() {
   };
 
   const available = items.filter((entry) => missing[entry.outputs[0] ?? ""] !== true);
-  const shown = available.slice(0, MAX_SHOWN);
+  const shown = available.slice(0, bySize(size, 3, 6, 12));
 
   if (items.length === 0) return null;
 

@@ -163,6 +163,59 @@
       "emptyTitle": "No collections yet",
       "emptyDescription": "Keep files you work on together in a named collection and open them all as one tab group.",
       "saved": "Saved as collection {{name}}"
+    },
+    "layout": {
+      "edit": "Customize home",
+      "editing": "Customizing the home page",
+      "editingHint": "Drag sections by their handle or use the buttons; changes are saved right away.",
+      "reset": "Reset to default",
+      "resetDone": "The home page was reset.",
+      "done": "Done",
+      "sidebarSide": "Side column",
+      "sides": {
+        "start": "Left",
+        "end": "Right"
+      },
+      "sidebarWidth": "Width",
+      "widths": {
+        "narrow": "Narrow",
+        "normal": "Normal",
+        "wide": "Wide"
+      },
+      "hiddenTray": "Hidden:",
+      "sections": {
+        "hero": "Welcome"
+      },
+      "dragHandle": "Move {{name}}",
+      "dragHint": "Drag to move",
+      "sizes": {
+        "small": "Small",
+        "medium": "Medium",
+        "large": "Large"
+      },
+      "sizeOf": "Size of {{name}}",
+      "regionOf": "Place of {{name}}",
+      "regions": {
+        "top": "Top (full width)",
+        "main": "Main column",
+        "side": "Side column",
+        "bottom": "Bottom (full width)"
+      },
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "hide": "Hide {{name}}",
+      "emptySection": "Nothing to show here right now",
+      "dropHere": "Drop a section here",
+      "quick": {
+        "earlier": "Move {{name}} earlier",
+        "later": "Move {{name}} later",
+        "remove": "Remove {{name}} from quick access",
+        "full": "Quick access holds up to {{count}} tools",
+        "add": "Add tool",
+        "empty": "No tools in quick access. Customize home to add some.",
+        "pickTitle": "Add tools to quick access",
+        "pickHint": "{{count}} of {{max}} tools. Click a tool to add it."
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "Switch to \"{{fileName}}\"",
       "closeDocument": "Close document",
       "revealInFolder": "Show in folder",
-      "clipboard": "PDF from clipboard"
+      "clipboard": "PDF from clipboard",
+      "editHome": "Customize home page"
     },
     "group": {
       "tools": "Tools",

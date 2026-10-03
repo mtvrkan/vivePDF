@@ -1,4 +1,4 @@
-import { AppWindow, Bug, ClipboardPaste, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sun, Wrench, X } from "lucide-react";
+import { AppWindow, Bug, ClipboardPaste, LayoutDashboard, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sun, Wrench, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { TFunction } from "i18next";
 import { primaryNavigation, secondaryNavigation, toolShortcuts } from "@/app/navigation";
@@ -110,6 +110,7 @@ export type ActionContext = {
   openLogDir: () => void;
   hasActiveDocument: boolean;
   openPrint: () => void;
+  editHome: () => void;
 };
 
 export function buildActionEntries(t: TFunction, ctx: ActionContext): PaletteEntry[] {
@@ -131,6 +132,15 @@ export function buildActionEntries(t: TFunction, ctx: ActionContext): PaletteEnt
       keywords: "clipboard paste screenshot ctrl shift v pano yapistir ekran goruntusu",
       icon: ClipboardPaste,
       run: ctx.openClipboard,
+    },
+    {
+      id: "action:editHome",
+      kind: "action",
+      title: t("palette.action.editHome"),
+      subtitle: t("palette.actionLabel"),
+      keywords: "home page customize layout quick access arrange widgets ana sayfa duzenle ozellestir hizli erisim yerlesim",
+      icon: LayoutDashboard,
+      run: ctx.editHome,
     },
     {
       id: "action:newWindow",

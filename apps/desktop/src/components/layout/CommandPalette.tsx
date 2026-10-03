@@ -23,6 +23,7 @@ import { cn } from "@/shared/lib/cn";
 import { RevealError, revealPath } from "@/shared/lib/reveal";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePaletteStore } from "@/shared/store/paletteStore";
+import { useHomeLayoutStore } from "@/features/home/homeLayoutStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { useRecentStore } from "@/shared/store/recentStore";
 import { useReportStore } from "@/shared/store/reportStore";
@@ -200,6 +201,10 @@ export function CommandPalette() {
         openPrint: () => {
           void navigate("/viewer");
           usePrintDialogStore.getState().setOpen(true);
+        },
+        editHome: () => {
+          useHomeLayoutStore.getState().setEditing(true);
+          void navigate("/");
         },
       }),
     [t, pickAndOpen, openClipboard, openWindow, navigate, sessionSnapshot, restoreSessionFn, theme, setTheme, activeDocument],

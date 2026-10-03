@@ -163,6 +163,59 @@
       "emptyTitle": "Henüz koleksiyon yok",
       "emptyDescription": "Birlikte çalıştığınız dosyaları adlandırılmış bir koleksiyonda tutun ve hepsini tek bir sekme grubu olarak açın.",
       "saved": "{{name}} koleksiyonu olarak kaydedildi"
+    },
+    "layout": {
+      "edit": "Ana sayfayı düzenle",
+      "editing": "Ana sayfa düzenleniyor",
+      "editingHint": "Bölümleri tutamağından sürükleyin ya da düğmeleri kullanın; değişiklikler anında kaydedilir.",
+      "reset": "Varsayılana dön",
+      "resetDone": "Ana sayfa varsayılana döndü.",
+      "done": "Bitti",
+      "sidebarSide": "Kenar sütunu",
+      "sides": {
+        "start": "Sol",
+        "end": "Sağ"
+      },
+      "sidebarWidth": "Genişlik",
+      "widths": {
+        "narrow": "Dar",
+        "normal": "Normal",
+        "wide": "Geniş"
+      },
+      "hiddenTray": "Gizli:",
+      "sections": {
+        "hero": "Karşılama"
+      },
+      "dragHandle": "{{name}} bölümünü taşı",
+      "dragHint": "Taşımak için sürükleyin",
+      "sizes": {
+        "small": "Küçük",
+        "medium": "Orta",
+        "large": "Büyük"
+      },
+      "sizeOf": "{{name}} boyutu",
+      "regionOf": "{{name}} konumu",
+      "regions": {
+        "top": "Üst (tam genişlik)",
+        "main": "Ana sütun",
+        "side": "Kenar sütunu",
+        "bottom": "Alt (tam genişlik)"
+      },
+      "moveUp": "{{name}} bölümünü yukarı taşı",
+      "moveDown": "{{name}} bölümünü aşağı taşı",
+      "hide": "{{name}} bölümünü gizle",
+      "emptySection": "Şu an burada gösterilecek bir şey yok",
+      "dropHere": "Bir bölümü buraya bırakın",
+      "quick": {
+        "earlier": "{{name}} aracını öne al",
+        "later": "{{name}} aracını sona doğru taşı",
+        "remove": "{{name}} aracını hızlı erişimden kaldır",
+        "full": "Hızlı erişimde en fazla {{count}} araç olabilir",
+        "add": "Araç ekle",
+        "empty": "Hızlı erişimde araç yok. Eklemek için ana sayfayı düzenleyin.",
+        "pickTitle": "Hızlı erişime araç ekle",
+        "pickHint": "{{count}} / {{max}} araç. Eklemek için bir araca tıklayın."
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "\"{{fileName}}\" belgesine geç",
       "closeDocument": "Belgeyi kapat",
       "revealInFolder": "Klasörde göster",
-      "clipboard": "Panodan PDF"
+      "clipboard": "Panodan PDF",
+      "editHome": "Ana sayfayı düzenle"
     },
     "group": {
       "tools": "Araçlar",

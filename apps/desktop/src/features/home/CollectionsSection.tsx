@@ -13,9 +13,9 @@ import { basenameOf, pathKey } from "@/shared/lib/paths";
 import { inTabOrder, useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { COLLECTION_FILES_MAX, COLLECTION_NAME_MAX, useCollectionsStore, type Collection } from "./collectionsStore";
+import { bySize, type HomeSize } from "./homeLayout";
 import { useOpenCollection } from "./useOpenCollection";
 
-const PREVIEW_FILES = 3;
 
 type Draft = { id: string | null; name: string; paths: string[] };
 
@@ -137,7 +137,7 @@ function CollectionDialog({ draft, onChange, onClose }: { draft: Draft; onChange
   );
 }
 
-function CollectionCard({ collection, onEdit }: { collection: Collection; onEdit: () => void }) {
+function CollectionCard({ collection, onEdit, preview }: { collection: Collection; onEdit: () => void; preview: number }) {
   const { t } = useTranslation();
   const openCollection = useOpenCollection();
   const recolor = useCollectionsStore((state) => state.recolor);
@@ -190,12 +190,12 @@ function CollectionCard({ collection, onEdit }: { collection: Collection; onEdit
         <IconButton icon={MoreHorizontal} label={t("home.collections.actions", { name: collection.name })} aria-haspopup="menu" onClick={(event) => menu.open(event)} />
       </div>
       <ul className="flex flex-1 flex-col gap-0.5 px-3 pb-2 text-xs text-muted-foreground">
-        {collection.paths.slice(0, PREVIEW_FILES).map((path) => (
+        {collection.paths.slice(0, preview).map((path) => (
           <li key={path} className="truncate" title={path}>
             {basenameOf(path)}
           </li>
         ))}
-        {collection.paths.length > PREVIEW_FILES ? <li>{t("home.collections.more", { count: collection.paths.length - PREVIEW_FILES })}</li> : null}
+        {preview > 0 && collection.paths.length > preview ? <li>{t("home.collections.more", { count: collection.paths.length - preview })}</li> : null}
       </ul>
       <div className="px-3 pb-3">
         <Button size="sm" className="w-full" loading={opening} disabled={collection.paths.length === 0} onClick={() => void open()}>
@@ -207,14 +207,14 @@ function CollectionCard({ collection, onEdit }: { collection: Collection; onEdit
   );
 }
 
-export function CollectionsSection() {
+export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
   const { t } = useTranslation();
   const collections = useCollectionsStore((state) => state.collections);
   const [draft, setDraft] = useState<Draft | null>(null);
   const startCreating = () => setDraft({ id: null, name: "", paths: openDocumentPaths() });
 
   return (
-    <section className="glass rounded-2xl p-5" aria-labelledby="home-collections-title">
+    <section className="glass @container rounded-2xl p-5" aria-labelledby="home-collections-title">
       <div className="flex items-center justify-between gap-3">
         <p id="home-collections-title" className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           {t("home.collections.title")}
@@ -241,9 +241,9 @@ export function CollectionsSection() {
           </Button>
         </div>
       ) : (
-        <ul className="mt-4 grid grid-cols-2 gap-3 xl:grid-cols-3 2xl:grid-cols-4">
+        <ul className="mt-4 grid grid-cols-1 gap-3 @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">
           {collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} onEdit={() => setDraft({ id: collection.id, name: collection.name, paths: collection.paths })} />
+            <CollectionCard key={collection.id} collection={collection} preview={bySize(size, 0, 3, 6)} onEdit={() => setDraft({ id: collection.id, name: collection.name, paths: collection.paths })} />
           ))}
         </ul>
       )}

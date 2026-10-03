@@ -163,6 +163,59 @@
       "emptyTitle": "コレクションはまだありません",
       "emptyDescription": "一緒に使うファイルを名前付きのコレクションにまとめ、1 つのタブグループとしてまとめて開けます。",
       "saved": "コレクション {{name}} として保存しました"
+    },
+    "layout": {
+      "edit": "ホームをカスタマイズ",
+      "editing": "ホーム画面をカスタマイズ中",
+      "editingHint": "セクションはハンドルでドラッグするかボタンで移動します。変更はすぐに保存されます。",
+      "reset": "既定に戻す",
+      "resetDone": "ホーム画面を既定に戻しました。",
+      "done": "完了",
+      "sidebarSide": "サイド列",
+      "sides": {
+        "start": "左",
+        "end": "右"
+      },
+      "sidebarWidth": "幅",
+      "widths": {
+        "narrow": "狭い",
+        "normal": "標準",
+        "wide": "広い"
+      },
+      "hiddenTray": "非表示:",
+      "sections": {
+        "hero": "ようこそ"
+      },
+      "dragHandle": "{{name}} を移動",
+      "dragHint": "ドラッグして移動",
+      "sizes": {
+        "small": "小",
+        "medium": "中",
+        "large": "大"
+      },
+      "sizeOf": "{{name}} のサイズ",
+      "regionOf": "{{name}} の位置",
+      "regions": {
+        "top": "上 (全幅)",
+        "main": "メイン列",
+        "side": "サイド列",
+        "bottom": "下 (全幅)"
+      },
+      "moveUp": "{{name}} を上へ",
+      "moveDown": "{{name}} を下へ",
+      "hide": "{{name}} を非表示",
+      "emptySection": "現在ここに表示するものはありません",
+      "dropHere": "ここにセクションをドロップ",
+      "quick": {
+        "earlier": "{{name}} を前へ",
+        "later": "{{name}} を後ろへ",
+        "remove": "{{name}} をクイックアクセスから削除",
+        "full": "クイックアクセスには最大 {{count}} 個のツールを置けます",
+        "add": "ツールを追加",
+        "empty": "クイックアクセスにツールがありません。ホームをカスタマイズして追加してください。",
+        "pickTitle": "クイックアクセスにツールを追加",
+        "pickHint": "{{count}} / {{max}} 個。クリックして追加します。"
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "\"{{fileName}}\" に切り替え",
       "closeDocument": "ドキュメントを閉じる",
       "revealInFolder": "フォルダーで表示",
-      "clipboard": "クリップボードから PDF"
+      "clipboard": "クリップボードから PDF",
+      "editHome": "ホーム画面をカスタマイズ"
     },
     "group": {
       "tools": "ツール",

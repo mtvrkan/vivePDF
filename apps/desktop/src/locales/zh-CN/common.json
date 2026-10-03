@@ -163,6 +163,59 @@
       "emptyTitle": "还没有合集",
       "emptyDescription": "把一起使用的文件放进一个命名的合集，并作为一个标签组一次打开。",
       "saved": "已保存为合集 {{name}}"
+    },
+    "layout": {
+      "edit": "自定义主页",
+      "editing": "正在自定义主页",
+      "editingHint": "拖动各部分的手柄或使用按钮；更改会立即保存。",
+      "reset": "恢复默认",
+      "resetDone": "主页已恢复默认。",
+      "done": "完成",
+      "sidebarSide": "侧栏",
+      "sides": {
+        "start": "左侧",
+        "end": "右侧"
+      },
+      "sidebarWidth": "宽度",
+      "widths": {
+        "narrow": "窄",
+        "normal": "标准",
+        "wide": "宽"
+      },
+      "hiddenTray": "已隐藏：",
+      "sections": {
+        "hero": "欢迎"
+      },
+      "dragHandle": "移动{{name}}",
+      "dragHint": "拖动以移动",
+      "sizes": {
+        "small": "小",
+        "medium": "中",
+        "large": "大"
+      },
+      "sizeOf": "{{name}}的大小",
+      "regionOf": "{{name}}的位置",
+      "regions": {
+        "top": "顶部（全宽）",
+        "main": "主栏",
+        "side": "侧栏",
+        "bottom": "底部（全宽）"
+      },
+      "moveUp": "上移{{name}}",
+      "moveDown": "下移{{name}}",
+      "hide": "隐藏{{name}}",
+      "emptySection": "此处暂时没有可显示的内容",
+      "dropHere": "将部分拖放到这里",
+      "quick": {
+        "earlier": "将{{name}}前移",
+        "later": "将{{name}}后移",
+        "remove": "从快速访问中移除{{name}}",
+        "full": "快速访问最多容纳 {{count}} 个工具",
+        "add": "添加工具",
+        "empty": "快速访问中没有工具。自定义主页即可添加。",
+        "pickTitle": "向快速访问添加工具",
+        "pickHint": "已选 {{count}} / {{max}} 个工具。点击工具即可添加。"
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "切换到“{{fileName}}”",
       "closeDocument": "关闭文档",
       "revealInFolder": "在文件夹中显示",
-      "clipboard": "从剪贴板创建 PDF"
+      "clipboard": "从剪贴板创建 PDF",
+      "editHome": "自定义主页"
     },
     "group": {
       "tools": "工具",

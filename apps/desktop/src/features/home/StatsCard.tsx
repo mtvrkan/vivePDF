@@ -9,6 +9,7 @@ import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { useWatchStore } from "@/shared/store/watchStore";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { cn } from "@/shared/lib/cn";
+import type { HomeSize } from "./homeLayout";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -45,7 +46,7 @@ function ShortcutRow({ label, keys, onClick }: { label: string; keys: string; on
   );
 }
 
-export function StatsCard() {
+export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,6 +117,7 @@ export function StatsCard() {
         />
         <OverviewRow label={t("home.stats.engine")} value={engineInfo?.version ?? "—"} health={engineHealth} onClick={() => void navigate("/about")} />
       </div>
+      {size === "small" ? null : (
       <div className="mt-3 border-t pt-3">
         <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("emptyDoc.shortcuts")}</p>
         <div className="space-y-px">
@@ -125,6 +127,7 @@ export function StatsCard() {
           <ShortcutRow label={t("about.shortcuts.items.print")} keys="Ctrl P" onClick={() => void navigate("/viewer")} />
         </div>
       </div>
+      )}
     </section>
   );
 }

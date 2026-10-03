@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router";
-import { Search, X } from "lucide-react";
+import { Check, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toolGroupIcons, toolGroups, toolShortcuts, type ToolGroup, type ToolShortcut } from "@/app/navigation";
 import { toolMatches } from "./homeSearch";
@@ -14,30 +14,43 @@ type ToolBrowserProps = {
   collapsible?: boolean;
   grouped?: boolean;
   onSelect?: () => void;
+  limit?: number;
+  onPick?: (tool: ToolShortcut) => void;
+  isPicked?: (tool: ToolShortcut) => boolean;
 };
 
-function ToolCard({ tool, onSelect }: { tool: ToolShortcut; onSelect?: () => void }) {
+const TOOL_CARD_CLASS =
+  "flex items-center gap-3 rounded-xl border border-(--glass-border) bg-card/40 p-2.5 text-start outline-none transition-colors duration-(--transition-fast) hover:border-(--tone)/50 hover:bg-(--tone-soft) focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-60";
+
+function ToolCard({ tool, onSelect, onPick, picked }: { tool: ToolShortcut; onSelect?: () => void; onPick?: (tool: ToolShortcut) => void; picked?: boolean }) {
   const { t } = useTranslation();
   const Icon = tool.icon;
-  return (
-    <Link
-      to={tool.route}
-      onClick={onSelect}
-      data-tone={tool.group}
-      className="flex items-center gap-3 rounded-xl border border-(--glass-border) bg-card/40 p-2.5 outline-none transition-colors duration-(--transition-fast) hover:border-(--tone)/50 hover:bg-(--tone-soft) focus-visible:ring-2 focus-visible:ring-ring"
-    >
+  const content = (
+    <>
       <span className="tone-tile flex size-9 shrink-0 items-center justify-center rounded-xl">
         <Icon className="size-4" aria-hidden />
       </span>
-      <span className="min-w-0">
+      <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-medium">{t(tool.labelKey)}</span>
         <span title={t(tool.descriptionKey)} className="block truncate text-xs text-muted-foreground">{t(tool.descriptionKey)}</span>
       </span>
+      {picked ? <Check className="size-4 shrink-0 text-primary" aria-hidden /> : null}
+    </>
+  );
+  if (onPick)
+    return (
+      <button type="button" onClick={() => onPick(tool)} disabled={picked} aria-pressed={picked} data-tone={tool.group} className={TOOL_CARD_CLASS}>
+        {content}
+      </button>
+    );
+  return (
+    <Link to={tool.route} onClick={onSelect} data-tone={tool.group} className={TOOL_CARD_CLASS}>
+      {content}
     </Link>
   );
 }
 
-export function ToolBrowser({ title, collapsible = false, grouped = false, onSelect }: ToolBrowserProps) {
+export function ToolBrowser({ title, collapsible = false, grouped = false, onSelect, limit = SHOWN_LIMIT, onPick, isPicked }: ToolBrowserProps) {
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const [query, setQuery] = useState("");
@@ -52,11 +65,11 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
     () => toolGroups.map((item) => ({ group: item, items: results.filter((tool) => tool.group === item) })).filter((section) => section.items.length > 0),
     [results],
   );
-  const collapse = collapsible && query.trim() === "" && group === "all" && results.length > SHOWN_LIMIT;
-  const shown = collapse && !showAll ? results.slice(0, SHOWN_LIMIT) : results;
+  const collapse = collapsible && query.trim() === "" && group === "all" && results.length > limit;
+  const shown = collapse && !showAll ? results.slice(0, limit) : results;
 
   return (
-    <>
+    <div className="@container">
       <div className={cn("flex flex-wrap items-center gap-3", title ? "justify-between" : "justify-end")}>
         {title ? <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{title}</p> : null}
         <label className="field flex h-9 w-72 max-w-full items-center gap-2.5 rounded-full px-3.5 text-sm">
@@ -124,9 +137,9 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
                   <span className="truncate">{t(`tools.grid.groups.${section.group}`)}</span>
                   <span className="font-mono tabular-nums">{section.items.length}</span>
                 </p>
-                <div className="grid grid-cols-2 gap-2.5 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-2.5 @md:grid-cols-2 @3xl:grid-cols-3">
                   {section.items.map((tool) => (
-                    <ToolCard key={tool.id} tool={tool} onSelect={onSelect} />
+                    <ToolCard key={tool.id} tool={tool} onSelect={onSelect} onPick={onPick} picked={isPicked?.(tool)} />
                   ))}
                 </div>
               </section>
@@ -136,9 +149,9 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
       ) : null}
 
       {results.length > 0 && !grouped ? (
-        <div className="mt-4 grid grid-cols-2 gap-2.5 xl:grid-cols-3">
+        <div className="mt-4 grid grid-cols-1 gap-2.5 @md:grid-cols-2 @3xl:grid-cols-3">
           {shown.map((tool) => (
-            <ToolCard key={tool.id} tool={tool} onSelect={onSelect} />
+            <ToolCard key={tool.id} tool={tool} onSelect={onSelect} onPick={onPick} picked={isPicked?.(tool)} />
           ))}
         </div>
       ) : null}
@@ -154,6 +167,6 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
           </button>
         </div>
       ) : null}
-    </>
+    </div>
   );
 }

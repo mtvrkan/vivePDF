@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Clock, FileText, FolderSearch, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
+import { bySize, type HomeSize } from "./homeLayout";
 import { formatRelativeMoment } from "./homeSearch";
 import { cn } from "@/shared/lib/cn";
 import { RevealError, revealPath } from "@/shared/lib/reveal";
@@ -11,7 +12,6 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import type { RecentFile } from "@/types";
 
-const SHOWN_LIMIT = 6;
 const thumbnailCache = new Map<string, string>();
 
 function RecentDocumentCard({ item, className }: { item: RecentFile; className?: string }) {
@@ -85,7 +85,8 @@ function RecentDocumentCard({ item, className }: { item: RecentFile; className?:
   );
 }
 
-export function RecentDocuments() {
+export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
+  const limit = bySize(size, 4, 6, 12);
   const { t } = useTranslation();
   const recent = useRecentStore((state) => state.items);
   const clearStore = useRecentStore((state) => state.clear);
@@ -97,14 +98,14 @@ export function RecentDocuments() {
     clearStore();
     toast("info", t("home.recentCleared"), { label: t("common.undo"), onClick: () => restoreRecent(snapshot) });
   };
-  const shown = showAll ? recent : recent.slice(0, SHOWN_LIMIT);
+  const shown = showAll ? recent : recent.slice(0, limit);
 
   return (
-    <section className="glass rounded-2xl p-5">
+    <section className="glass @container rounded-2xl p-5">
       <div className="flex items-center justify-between gap-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.recent")}</p>
         <div className="flex items-center gap-2">
-          {recent.length > SHOWN_LIMIT ? (
+          {recent.length > limit ? (
             <button type="button" onClick={() => setShowAll((value) => !value)} className="flex min-h-6 items-center rounded-full px-2 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground">
               {showAll ? t("home.showLess") : `${t("home.showAll")} · ${recent.length}`}
             </button>
@@ -128,9 +129,9 @@ export function RecentDocuments() {
           </div>
         </div>
       ) : (
-        <div className="mt-4 grid grid-cols-3 gap-3 xl:grid-cols-4 2xl:grid-cols-6">
-          {shown.map((item, index) => (
-            <RecentDocumentCard key={item.path} item={item} className={!showAll && index >= 4 ? "hidden 2xl:flex" : undefined} />
+        <div className={cn("mt-4 grid gap-3", size === "small" ? "grid-cols-2 @lg:grid-cols-4 @5xl:grid-cols-6" : "grid-cols-2 @md:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-6")}>
+          {shown.map((item) => (
+            <RecentDocumentCard key={item.path} item={item} />
           ))}
         </div>
       )}

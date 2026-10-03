@@ -163,6 +163,59 @@
       "emptyTitle": "Noch keine Sammlungen",
       "emptyDescription": "Bewahren Sie zusammengehörige Dateien in einer benannten Sammlung auf und öffnen Sie sie alle als eine Tabgruppe.",
       "saved": "Als Sammlung {{name}} gespeichert"
+    },
+    "layout": {
+      "edit": "Startseite anpassen",
+      "editing": "Startseite wird angepasst",
+      "editingHint": "Ziehen Sie Bereiche am Griff oder nutzen Sie die Schaltflächen; Änderungen werden sofort gespeichert.",
+      "reset": "Auf Standard zurücksetzen",
+      "resetDone": "Die Startseite wurde zurückgesetzt.",
+      "done": "Fertig",
+      "sidebarSide": "Seitenspalte",
+      "sides": {
+        "start": "Links",
+        "end": "Rechts"
+      },
+      "sidebarWidth": "Breite",
+      "widths": {
+        "narrow": "Schmal",
+        "normal": "Normal",
+        "wide": "Breit"
+      },
+      "hiddenTray": "Ausgeblendet:",
+      "sections": {
+        "hero": "Begrüßung"
+      },
+      "dragHandle": "{{name}} verschieben",
+      "dragHint": "Zum Verschieben ziehen",
+      "sizes": {
+        "small": "Klein",
+        "medium": "Mittel",
+        "large": "Groß"
+      },
+      "sizeOf": "Größe von {{name}}",
+      "regionOf": "Position von {{name}}",
+      "regions": {
+        "top": "Oben (volle Breite)",
+        "main": "Hauptspalte",
+        "side": "Seitenspalte",
+        "bottom": "Unten (volle Breite)"
+      },
+      "moveUp": "{{name}} nach oben",
+      "moveDown": "{{name}} nach unten",
+      "hide": "{{name}} ausblenden",
+      "emptySection": "Hier gibt es gerade nichts anzuzeigen",
+      "dropHere": "Bereich hier ablegen",
+      "quick": {
+        "earlier": "{{name}} nach vorn",
+        "later": "{{name}} nach hinten",
+        "remove": "{{name}} aus dem Schnellzugriff entfernen",
+        "full": "Der Schnellzugriff fasst bis zu {{count}} Werkzeuge",
+        "add": "Werkzeug hinzufügen",
+        "empty": "Keine Werkzeuge im Schnellzugriff. Passen Sie die Startseite an, um welche hinzuzufügen.",
+        "pickTitle": "Werkzeuge zum Schnellzugriff hinzufügen",
+        "pickHint": "{{count}} von {{max}} Werkzeugen. Klicken Sie auf ein Werkzeug, um es hinzuzufügen."
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "Zu \"{{fileName}}\" wechseln",
       "closeDocument": "Dokument schließen",
       "revealInFolder": "Im Ordner anzeigen",
-      "clipboard": "PDF aus der Zwischenablage"
+      "clipboard": "PDF aus der Zwischenablage",
+      "editHome": "Startseite anpassen"
     },
     "group": {
       "tools": "Werkzeuge",

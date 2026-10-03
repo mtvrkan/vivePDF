@@ -163,6 +163,59 @@
       "emptyTitle": "Ancora nessuna raccolta",
       "emptyDescription": "Tieni insieme i file su cui lavori in una raccolta con nome e aprili tutti come un gruppo di schede.",
       "saved": "Salvato come raccolta {{name}}"
+    },
+    "layout": {
+      "edit": "Personalizza home",
+      "editing": "Personalizzazione della home",
+      "editingHint": "Trascina le sezioni dalla maniglia o usa i pulsanti; le modifiche vengono salvate subito.",
+      "reset": "Ripristina predefinito",
+      "resetDone": "La home è stata ripristinata.",
+      "done": "Fine",
+      "sidebarSide": "Colonna laterale",
+      "sides": {
+        "start": "Sinistra",
+        "end": "Destra"
+      },
+      "sidebarWidth": "Larghezza",
+      "widths": {
+        "narrow": "Stretta",
+        "normal": "Normale",
+        "wide": "Larga"
+      },
+      "hiddenTray": "Nascoste:",
+      "sections": {
+        "hero": "Benvenuto"
+      },
+      "dragHandle": "Sposta {{name}}",
+      "dragHint": "Trascina per spostare",
+      "sizes": {
+        "small": "Piccola",
+        "medium": "Media",
+        "large": "Grande"
+      },
+      "sizeOf": "Dimensione di {{name}}",
+      "regionOf": "Posizione di {{name}}",
+      "regions": {
+        "top": "In alto (larghezza piena)",
+        "main": "Colonna principale",
+        "side": "Colonna laterale",
+        "bottom": "In basso (larghezza piena)"
+      },
+      "moveUp": "Sposta su {{name}}",
+      "moveDown": "Sposta giù {{name}}",
+      "hide": "Nascondi {{name}}",
+      "emptySection": "Al momento non c'è nulla da mostrare qui",
+      "dropHere": "Rilascia qui una sezione",
+      "quick": {
+        "earlier": "Sposta {{name}} prima",
+        "later": "Sposta {{name}} dopo",
+        "remove": "Rimuovi {{name}} dall'accesso rapido",
+        "full": "L'accesso rapido contiene fino a {{count}} strumenti",
+        "add": "Aggiungi strumento",
+        "empty": "Nessuno strumento nell'accesso rapido. Personalizza la home per aggiungerne.",
+        "pickTitle": "Aggiungi strumenti all'accesso rapido",
+        "pickHint": "{{count}} di {{max}} strumenti. Fai clic su uno strumento per aggiungerlo."
+      }
     }
   },
   "viewer": {
@@ -6057,7 +6110,8 @@
       "switchTo": "Passa a «{{fileName}}»",
       "closeDocument": "Chiudi documento",
       "revealInFolder": "Mostra nella cartella",
-      "clipboard": "PDF dagli appunti"
+      "clipboard": "PDF dagli appunti",
+      "editHome": "Personalizza la pagina iniziale"
     },
     "group": {
       "tools": "Strumenti",
