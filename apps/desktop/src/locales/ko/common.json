@@ -2479,7 +2479,8 @@
         "create-document": "일반 텍스트나 Markdown을 보고서, 편지, 신청서, 회의록, 소책자로 만듭니다",
         "create-bulk": "CSV 또는 Excel 표의 행마다 인증서, 초대장, 이름표 만들기",
         "create-paper": "무지, 줄, 모눈, 점, 오선 용지를 인쇄용 PDF로",
-        "cover": "PDF 앞에 디자인된 표지 추가: 제목, 저자, 소속, 로고 또는 사진"
+        "cover": "PDF 앞에 디자인된 표지 추가: 제목, 저자, 소속, 로고 또는 사진",
+        "create-book": "Markdown 또는 텍스트 장을 표지, 링크 목차, 페이지 번호가 있는 책으로"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "만들 항목",
         "document": "단일 문서",
         "bulk": "표에서 만들기",
-        "paper": "용지"
+        "paper": "용지",
+        "book": "책"
       },
       "bulk": {
         "title": "표에서 문서 만들기",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "여기에 문서가 표시됩니다",
           "description": "표와 문서 종류를 고른 뒤 만들기를 클릭하세요."
+        }
+      },
+      "book": {
+        "title": "책",
+        "description": "Markdown 또는 텍스트 파일로 책 만들기: 표지, 클릭 가능한 목차, 새 페이지에서 시작하는 장, 책갈피, 페이지 번호.",
+        "run": "책 만들기",
+        "chapters": "장",
+        "chaptersHint": "각 파일이 이 순서대로 한 장이 됩니다. 첫 # 제목이 장 제목이 되고(없으면 파일 이름), ## 제목은 절이 되며 파일 옆의 그림도 포함됩니다.",
+        "pickTitle": "장 파일 선택",
+        "pickDescription": "Markdown(.md) 또는 텍스트(.txt) 파일 — 여기에 놓거나 클릭해 선택",
+        "addChapters": "장 추가",
+        "removeChapter": "{{name}} 제거",
+        "subtitle": "부제",
+        "coverSection": "표지",
+        "cover": "표지 페이지로 시작",
+        "coverImage": "표지 그림",
+        "coverImageHint": "PNG, JPG 또는 WebP. 표지의 위쪽 절반을 채웁니다",
+        "pickCoverImage": "그림 선택…",
+        "removeCoverImage": "그림 제거",
+        "structure": "목차와 장",
+        "toc": "목차",
+        "tocTitle": "목차 제목",
+        "tocTitleDefault": "목차",
+        "tocDepth": "목차에 표시",
+        "depths": {
+          "chapters": "장",
+          "sections": "장과 절"
+        },
+        "chapterLabel": "장 레이블",
+        "chapterLabelDefault": "제{n}장",
+        "chapterLabelHint": "각 장 제목 위에 표시됩니다. {n}은 장 번호입니다. 레이블이 필요 없으면 비워 두세요.",
+        "runningHeader": "페이지 위쪽에 장 제목",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Letter"
+        },
+        "defaultName": "책",
+        "idle": {
+          "title": "책이 여기에 표시됩니다",
+          "description": "장 파일을 추가하고 책 제목을 입력한 뒤 책 만들기를 클릭하세요."
         }
       }
     }

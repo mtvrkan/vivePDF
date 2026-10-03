@@ -1,4 +1,4 @@
-import { readdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { $, browser, expect } from "@wdio/globals";
 import { answerDialogs, bootApp, chooseCard, clickDropArea, fill, openTool, probe, runPrimary, t, typeInto, waitForDialogsAnswered, waitForOutputs, workDir } from "../support/app.ts";
@@ -84,6 +84,40 @@ describe("create", () => {
     expect(elif.pageCount).toBe(1);
     expect(elif.pages?.[0]?.text).toContain("Elif Su");
     expect(elif.pages?.[0]?.text).toContain("Table 7");
+  });
+
+  it("binds Markdown chapters into a book with a cover, contents and bookmarks", async () => {
+    const folder = join(workDir(), "field-guide");
+    mkdirSync(folder, { recursive: true });
+    const paragraph = "Birds are best watched early in the morning. ".repeat(12);
+    const first = join(folder, "01-start.md");
+    const second = join(folder, "02-birds.md");
+    writeFileSync(first, ["# Getting started", "", ...Array(10).fill(paragraph + "\n"), "## Kit list", "", paragraph, ""].join("\n"));
+    writeFileSync(second, ["# Birds", "", paragraph, ""].join("\n"));
+    await openTool("nav.create");
+    await $(`//*[@role="radio"][normalize-space(.)="${t("tools.create.tabs.book")}"]`).click();
+    answerDialogs([first, second]);
+    await clickDropArea(t("tools.create.book.pickTitle"));
+    await waitForDialogsAnswered();
+    await $(`//li[contains(normalize-space(.), "02-birds.md")]`).waitForDisplayed({ timeout: 60000 });
+    await fill(t("tools.create.fields.author"), "Deniz Kaya");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "create-book.png"));
+
+    await runPrimary(t("tools.create.book.run"));
+    const [output] = await waitForOutputs();
+
+    const result = probe(output);
+    expect(basename(output)).toBe("field guide.pdf");
+    const cover = (result.pages?.[0]?.text ?? "").normalize("NFKC");
+    expect(cover).toContain("field guide");
+    expect(cover).toContain("Deniz Kaya");
+    expect(result.pages?.[1]?.text).toContain(t("tools.create.book.tocTitleDefault"));
+    expect(result.pages?.[1]?.linkBoxes.length).toBeGreaterThanOrEqual(3);
+    const outline = result.outline ?? [];
+    expect(outline.map(([level, title]) => `${level} ${title}`)).toEqual(["1 Contents", "1 Getting started", "2 Kit list", "1 Birds"]);
+    const birds = outline[3][2];
+    expect(result.pages?.[birds - 1]?.text).toContain("Chapter 2");
+    expect(result.pages?.[1]?.text).toContain(String(birds));
   });
 
   it("makes a dotted notebook with twenty pages", async () => {

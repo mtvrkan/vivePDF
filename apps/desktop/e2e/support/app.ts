@@ -37,6 +37,7 @@ export type PdfProbe = {
   figureAlts?: string[];
   attachments?: string[];
   layers?: number;
+  outline?: Array<[number, string, number]>;
 };
 
 type Element = ReturnType<typeof $>;

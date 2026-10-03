@@ -69,6 +69,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     ),
     "cover": ("pages.cover",),
     "create": ("create.document",),
+    "create_book": ("create.book",),
     "create_bulk": ("create.bulk",),
     "create_paper": ("create.paper",),
     "edit": (

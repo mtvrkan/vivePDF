@@ -2479,7 +2479,8 @@
         "create-document": "将纯文本或 Markdown 制作成报告、信函、申请书、会议纪要或小册子",
         "create-bulk": "为 CSV 或 Excel 表格的每一行生成证书、邀请函和胸牌",
         "create-paper": "空白纸、横线纸、方格纸、点阵纸或五线谱，生成可打印的 PDF",
-        "cover": "在 PDF 前面加上设计好的封面：标题、作者、单位、徽标或照片"
+        "cover": "在 PDF 前面加上设计好的封面：标题、作者、单位、徽标或照片",
+        "create-book": "将 Markdown 或文本章节制作成带封面、可跳转目录和页码的书籍"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "要创建的内容",
         "document": "单个文档",
         "bulk": "从表格生成",
-        "paper": "纸张"
+        "paper": "纸张",
+        "book": "书籍"
       },
       "bulk": {
         "title": "从表格生成文档",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "文档将显示在这里",
           "description": "选择表格和文档类型，然后点击“创建”。"
+        }
+      },
+      "book": {
+        "title": "书籍",
+        "description": "将 Markdown 或文本文件制作成书：封面、可点击的目录、从新页开始的章节、书签和页码。",
+        "run": "创建书籍",
+        "chapters": "章节",
+        "chaptersHint": "每个文件按此顺序成为一章。第一个 # 标题作为章标题（否则用文件名），## 标题成为小节，文件旁的图片也会包含在内。",
+        "pickTitle": "选择章节文件",
+        "pickDescription": "Markdown (.md) 或文本 (.txt) 文件 — 拖放到这里或点击选择",
+        "addChapters": "添加章节",
+        "removeChapter": "移除 {{name}}",
+        "subtitle": "副标题",
+        "coverSection": "封面",
+        "cover": "以封面页开始",
+        "coverImage": "封面图片",
+        "coverImageHint": "PNG、JPG 或 WebP；占据封面的上半部分",
+        "pickCoverImage": "选择图片…",
+        "removeCoverImage": "移除图片",
+        "structure": "目录和章节",
+        "toc": "目录",
+        "tocTitle": "目录标题",
+        "tocTitleDefault": "目录",
+        "tocDepth": "目录显示",
+        "depths": {
+          "chapters": "章",
+          "sections": "章和节"
+        },
+        "chapterLabel": "章节标签",
+        "chapterLabelDefault": "第 {n} 章",
+        "chapterLabelHint": "显示在每章标题上方；{n} 为章号。留空则不显示标签。",
+        "runningHeader": "页面顶部显示章标题",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Letter"
+        },
+        "defaultName": "书籍",
+        "idle": {
+          "title": "书籍将显示在这里",
+          "description": "添加章节文件，为书籍命名，然后点击“创建书籍”。"
         }
       }
     }

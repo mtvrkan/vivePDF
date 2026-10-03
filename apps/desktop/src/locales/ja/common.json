@@ -2479,7 +2479,8 @@
         "create-document": "テキストや Markdown を報告書、手紙、申請書、議事録、冊子にします",
         "create-bulk": "CSV や Excel の表の行ごとに証明書・招待状・名札を作成",
         "create-paper": "無地・罫線・方眼・ドット・五線紙を印刷用 PDF で作成",
-        "cover": "PDF の先頭にデザインされた表紙を追加: タイトル、著者、所属、ロゴ、写真"
+        "cover": "PDF の先頭にデザインされた表紙を追加: タイトル、著者、所属、ロゴ、写真",
+        "create-book": "Markdown やテキストの章から、表紙・リンク付き目次・ページ番号のある本を作成"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "作成するもの",
         "document": "単一の文書",
         "bulk": "表から作成",
-        "paper": "用紙"
+        "paper": "用紙",
+        "book": "本"
       },
       "bulk": {
         "title": "表から文書を作成",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "ここに文書が表示されます",
           "description": "表と文書の種類を選んで「作成」をクリックしてください。"
+        }
+      },
+      "book": {
+        "title": "本",
+        "description": "Markdown やテキストファイルから本を作成: 表紙、クリックできる目次、新しいページから始まる章、しおり、ページ番号。",
+        "run": "本を作成",
+        "chapters": "章",
+        "chaptersHint": "各ファイルがこの順で 1 章になります。最初の # 見出しが章のタイトル (なければファイル名)、## 見出しが節になり、ファイルの隣にある画像も入ります。",
+        "pickTitle": "章のファイルを選択",
+        "pickDescription": "Markdown (.md) またはテキスト (.txt) ファイル — ここにドロップするか、クリックして選択",
+        "addChapters": "章を追加",
+        "removeChapter": "{{name}} を削除",
+        "subtitle": "サブタイトル",
+        "coverSection": "表紙",
+        "cover": "表紙ページから始める",
+        "coverImage": "表紙の画像",
+        "coverImageHint": "PNG、JPG、WebP。表紙の上半分を占めます",
+        "pickCoverImage": "画像を選択…",
+        "removeCoverImage": "画像を削除",
+        "structure": "目次と章",
+        "toc": "目次",
+        "tocTitle": "目次の見出し",
+        "tocTitleDefault": "目次",
+        "tocDepth": "目次に表示",
+        "depths": {
+          "chapters": "章",
+          "sections": "章と節"
+        },
+        "chapterLabel": "章のラベル",
+        "chapterLabelDefault": "第 {n} 章",
+        "chapterLabelHint": "各章のタイトルの上に表示されます。{n} は章番号です。ラベルが不要なら空欄にします。",
+        "runningHeader": "ページ上部に章のタイトル",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Letter"
+        },
+        "defaultName": "本",
+        "idle": {
+          "title": "ここに本が表示されます",
+          "description": "章のファイルを追加し、本のタイトルを入力して「本を作成」をクリックします。"
         }
       }
     }

@@ -175,6 +175,7 @@ export const toolShortcuts: ToolShortcut[] = [
   shortcut("create-document", "nav.create", "/tools/create", "toPdf", FilePlus2, "create new document text txt markdown template report letter petition minutes notes booklet olustur yeni belge metin sablon rapor mektup dilekce tutanak ders notu kitapcik odev"),
   shortcut("create-bulk", "tools.create.bulk.title", "/tools/create?tab=bulk", "toPdf", Award, "bulk mail merge csv excel table certificate invitation badge name tag toplu sertifika davetiye yaka karti tablo"),
   shortcut("create-paper", "tools.create.paper.title", "/tools/create?tab=paper", "toPdf", NotebookPen, "paper lined ruled graph grid dot notebook music staff handwriting printable kagit cizgili kareli noktali defter nota"),
+  shortcut("create-book", "tools.create.book.title", "/tools/create?tab=book", "toPdf", BookOpen, "book markdown chapters ebook table of contents novel thesis manual kitap bolum icindekiler roman tez kilavuz"),
   shortcut("images-to-pdf", "tools.convert.modes.images-to-pdf", "/tools/convert?mode=images-to-pdf", "toPdf", Images, "jpg png folder"),
   shortcut("file-to-pdf", "tools.convert.modes.file-to-pdf", "/tools/convert?mode=file-to-pdf", "toPdf", FileInput, "word excel powerpoint office html markdown"),
   shortcut("svg-to-pdf", "tools.convert.modes.svg-to-pdf", "/tools/convert?mode=svg-to-pdf", "toPdf", Shapes, "svg vector drawing inkscape illustrator figma logo icon vektor cizim"),

@@ -61,31 +61,33 @@ class CreateDocumentParams(RpcModel):
     overwrite: bool = False
 
 
+def read_text_file(path: str, source_format: SourceFormat = "auto") -> tuple[str, bool]:
+    source = Path(path)
+    if not source.is_file():
+        raise OpError(ErrorCode.FILE_NOT_FOUND, f"file not found: {source.name}", {"path": path})
+    extension = source.suffix.lower().lstrip(".")
+    if extension not in TEXT_EXTENSIONS:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            f"unsupported file type: .{extension}",
+            {"reason": "unsupportedType", "extension": extension},
+        )
+    if source.stat().st_size > MAX_SOURCE_BYTES:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "the text file is too large",
+            {"reason": "sourceTooLarge", "limit": MAX_SOURCE_BYTES},
+        )
+    text = decode_text(source.read_bytes())
+    markdown = source_format == "markdown" or (
+        source_format == "auto" and extension in MARKDOWN_EXTENSIONS
+    )
+    return text, markdown
+
+
 def _read_source(params: CreateDocumentParams) -> tuple[str, bool]:
     if params.path:
-        source = Path(params.path)
-        if not source.is_file():
-            raise OpError(
-                ErrorCode.FILE_NOT_FOUND, f"file not found: {source.name}", {"path": params.path}
-            )
-        extension = source.suffix.lower().lstrip(".")
-        if extension not in TEXT_EXTENSIONS:
-            raise OpError(
-                ErrorCode.INVALID_PARAMS,
-                f"unsupported file type: .{extension}",
-                {"reason": "unsupportedType", "extension": extension},
-            )
-        if source.stat().st_size > MAX_SOURCE_BYTES:
-            raise OpError(
-                ErrorCode.INVALID_PARAMS,
-                "the text file is too large",
-                {"reason": "sourceTooLarge", "limit": MAX_SOURCE_BYTES},
-            )
-        text = decode_text(source.read_bytes())
-        markdown = params.format == "markdown" or (
-            params.format == "auto" and extension in MARKDOWN_EXTENSIONS
-        )
-        return text, markdown
+        return read_text_file(params.path, params.format)
     if params.text is None or not params.text.strip():
         raise OpError(
             ErrorCode.INVALID_PARAMS, "there is no text to lay out", {"reason": "noContent"}
@@ -235,7 +237,7 @@ def _template_css(params: CreateDocumentParams) -> str:
     return "".join(rules + _template_rules(params.template, params.font_size, accent))
 
 
-def _furniture_html(text: str, align: str, family: str) -> str:
+def furniture_html(text: str, align: str, family: str) -> str:
     style = f"font-family:{family};font-size:{FURNITURE_FONT_PT}pt;color:#666666;text-align:{align}"
     return f'<div style="{style}">{html.escape(text)}</div>'
 
@@ -253,11 +255,11 @@ def _add_furniture(document: pymupdf.Document, params: CreateDocumentParams, mar
         if params.header.strip():
             page.insert_htmlbox(
                 pymupdf.Rect(margin, top, width - margin, top + FURNITURE_HEIGHT),
-                _furniture_html(params.header, "right", family),
+                furniture_html(params.header, "right", family),
             )
         footer_rect = pymupdf.Rect(margin, bottom - FURNITURE_HEIGHT, width - margin, bottom)
         if params.footer.strip():
-            page.insert_htmlbox(footer_rect, _furniture_html(params.footer, "left", family))
+            page.insert_htmlbox(footer_rect, furniture_html(params.footer, "left", family))
         if params.page_numbers:
             number = index if skip_first else index + 1
             count = total - 1 if skip_first else total
@@ -265,7 +267,7 @@ def _add_furniture(document: pymupdf.Document, params: CreateDocumentParams, mar
                 "{total}", str(count)
             )
             align = "right" if params.footer.strip() else "center"
-            page.insert_htmlbox(footer_rect, _furniture_html(label, align, family))
+            page.insert_htmlbox(footer_rect, furniture_html(label, align, family))
 
 
 def _logo_html(params: CreateDocumentParams, workdir: Path) -> str:

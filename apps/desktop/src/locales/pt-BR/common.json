@@ -2479,7 +2479,8 @@
         "create-document": "Transforme texto ou Markdown em relatório, carta, requerimento, ata ou livreto",
         "create-bulk": "Certificados, convites e crachás para cada linha de uma tabela CSV ou Excel",
         "create-paper": "Papel em branco, pautado, quadriculado, pontilhado ou de partitura em PDF pronto para imprimir",
-        "cover": "Coloque uma capa com design no início de um PDF: título, autor, instituição, logotipo ou foto"
+        "cover": "Coloque uma capa com design no início de um PDF: título, autor, instituição, logotipo ou foto",
+        "create-book": "Capítulos em Markdown ou texto como livro com capa, sumário com links e números de página"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "O que criar",
         "document": "Documento único",
         "bulk": "De uma tabela",
-        "paper": "Papel"
+        "paper": "Papel",
+        "book": "Livro"
       },
       "bulk": {
         "title": "Documentos de uma tabela",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "Os documentos aparecerão aqui",
           "description": "Escolha uma tabela e um tipo de documento e clique em Criar."
+        }
+      },
+      "book": {
+        "title": "Livro",
+        "description": "Transforme arquivos Markdown ou de texto em um livro: capa, sumário clicável, capítulos que começam em nova página, marcadores e números de página.",
+        "run": "Criar livro",
+        "chapters": "Capítulos",
+        "chaptersHint": "Cada arquivo é um capítulo, nesta ordem. O primeiro título # vira o título do capítulo (senão, o nome do arquivo), os títulos ## viram seções e as imagens ao lado do arquivo são incluídas.",
+        "pickTitle": "Escolha os arquivos dos capítulos",
+        "pickDescription": "Arquivos Markdown (.md) ou de texto (.txt) — solte-os aqui ou clique para escolher",
+        "addChapters": "Adicionar capítulos",
+        "removeChapter": "Remover {{name}}",
+        "subtitle": "Subtítulo",
+        "coverSection": "Capa",
+        "cover": "Começar com uma capa",
+        "coverImage": "Imagem da capa",
+        "coverImageHint": "PNG, JPG ou WebP; ocupa a metade superior da capa",
+        "pickCoverImage": "Escolher imagem…",
+        "removeCoverImage": "Remover imagem",
+        "structure": "Sumário e capítulos",
+        "toc": "Sumário",
+        "tocTitle": "Título do sumário",
+        "tocTitleDefault": "Sumário",
+        "tocDepth": "O sumário mostra",
+        "depths": {
+          "chapters": "Capítulos",
+          "sections": "Capítulos e seções"
+        },
+        "chapterLabel": "Rótulo do capítulo",
+        "chapterLabelDefault": "Capítulo {n}",
+        "chapterLabelHint": "Aparece acima de cada título de capítulo; {n} é o número do capítulo. Deixe vazio para não mostrar rótulo.",
+        "runningHeader": "Título do capítulo no topo das páginas",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Carta"
+        },
+        "defaultName": "livro",
+        "idle": {
+          "title": "O livro aparecerá aqui",
+          "description": "Adicione os arquivos dos capítulos, dê um título ao livro e clique em Criar livro."
         }
       }
     }

@@ -2479,7 +2479,8 @@
         "create-document": "Convierta texto o Markdown en un informe, carta, solicitud, acta o folleto",
         "create-bulk": "Certificados, invitaciones y credenciales para cada fila de una tabla CSV o Excel",
         "create-paper": "Papel en blanco, rayado, cuadriculado, punteado o pautado como PDF listo para imprimir",
-        "cover": "Añada una portada diseñada al principio de un PDF: título, autor, institución, logotipo o foto"
+        "cover": "Añada una portada diseñada al principio de un PDF: título, autor, institución, logotipo o foto",
+        "create-book": "Capítulos Markdown o de texto como libro con portada, índice enlazado y números de página"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "Qué crear",
         "document": "Documento único",
         "bulk": "Desde una tabla",
-        "paper": "Papel"
+        "paper": "Papel",
+        "book": "Libro"
       },
       "bulk": {
         "title": "Documentos desde una tabla",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "Los documentos aparecerán aquí",
           "description": "Elija una tabla y un tipo de documento y haga clic en Crear."
+        }
+      },
+      "book": {
+        "title": "Libro",
+        "description": "Convierta archivos Markdown o de texto en un libro: portada, índice con enlaces, capítulos que empiezan en página nueva, marcadores y números de página.",
+        "run": "Crear libro",
+        "chapters": "Capítulos",
+        "chaptersHint": "Cada archivo es un capítulo, en este orden. Su primer encabezado # es el título del capítulo (si no, el nombre del archivo), los ## son secciones y se incluyen las imágenes junto al archivo.",
+        "pickTitle": "Elija los archivos de capítulos",
+        "pickDescription": "Archivos Markdown (.md) o de texto (.txt): suéltelos aquí o haga clic para elegir",
+        "addChapters": "Añadir capítulos",
+        "removeChapter": "Quitar {{name}}",
+        "subtitle": "Subtítulo",
+        "coverSection": "Portada",
+        "cover": "Empezar con una portada",
+        "coverImage": "Imagen de portada",
+        "coverImageHint": "PNG, JPG o WebP; ocupa la mitad superior de la portada",
+        "pickCoverImage": "Elegir imagen…",
+        "removeCoverImage": "Quitar imagen",
+        "structure": "Índice y capítulos",
+        "toc": "Índice",
+        "tocTitle": "Título del índice",
+        "tocTitleDefault": "Índice",
+        "tocDepth": "El índice muestra",
+        "depths": {
+          "chapters": "Capítulos",
+          "sections": "Capítulos y secciones"
+        },
+        "chapterLabel": "Etiqueta de capítulo",
+        "chapterLabelDefault": "Capítulo {n}",
+        "chapterLabelHint": "Aparece sobre cada título de capítulo; {n} es el número del capítulo. Déjelo vacío para no mostrar etiqueta.",
+        "runningHeader": "Título del capítulo en la parte superior de las páginas",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Carta"
+        },
+        "defaultName": "libro",
+        "idle": {
+          "title": "El libro aparecerá aquí",
+          "description": "Añada los archivos de capítulos, ponga un título al libro y haga clic en Crear libro."
         }
       }
     }

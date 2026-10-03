@@ -1142,6 +1142,30 @@ export type CoverParams = {
   font?: CreateFont;
   replaceFirst?: boolean;
 };
+export type BookPaper = "a4" | "a5" | "b5" | "letter";
+export type CreateBookParams = {
+  chapters: string[];
+  title: string;
+  subtitle?: string;
+  author?: string;
+  date?: string;
+  cover: boolean;
+  coverStyle?: CoverStyle;
+  coverImage?: string;
+  toc: boolean;
+  tocTitle?: string;
+  tocDepth?: 1 | 2;
+  chapterLabel?: string;
+  runningHeader?: boolean;
+  pageNumbers?: boolean;
+  font?: CreateFont;
+  fontSize?: number;
+  marginMm?: number;
+  accent?: string;
+  paper?: BookPaper;
+  output: string;
+  overwrite?: boolean;
+};
 export type CreatePaperParams = { size: CreatePaperSize; landscape: boolean; pages: number; pattern?: PaperPattern; output: string; overwrite?: boolean };
 export type CreateDocumentParams = {
   path?: string;

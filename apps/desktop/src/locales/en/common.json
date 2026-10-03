@@ -2479,7 +2479,8 @@
         "create-document": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet",
         "create-bulk": "Certificates, invitations and name badges for every row of a CSV or Excel table",
         "create-paper": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF",
-        "cover": "Put a designed cover page in front of a PDF: title, author, institution, logo or photo"
+        "cover": "Put a designed cover page in front of a PDF: title, author, institution, logo or photo",
+        "create-book": "Markdown or text chapters as a book with a cover, linked contents and page numbers"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "What to create",
         "document": "Single document",
         "bulk": "From a table",
-        "paper": "Paper"
+        "paper": "Paper",
+        "book": "Book"
       },
       "bulk": {
         "title": "Documents from a table",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "The documents will appear here",
           "description": "Choose a table, pick a document type and click Create."
+        }
+      },
+      "book": {
+        "title": "Book",
+        "description": "Turn Markdown or text files into a book: a cover, a clickable table of contents, chapters that start on a new page, bookmarks and page numbers.",
+        "run": "Create book",
+        "chapters": "Chapters",
+        "chaptersHint": "Each file is one chapter, in this order. Its first # heading becomes the chapter title (otherwise the file name), ## headings become sections, and pictures next to the file are included.",
+        "pickTitle": "Pick the chapter files",
+        "pickDescription": "Markdown (.md) or text (.txt) files — drop them here or click to choose",
+        "addChapters": "Add chapters",
+        "removeChapter": "Remove {{name}}",
+        "subtitle": "Subtitle",
+        "coverSection": "Cover",
+        "cover": "Start with a cover page",
+        "coverImage": "Cover picture",
+        "coverImageHint": "PNG, JPG or WebP; fills the top half of the cover",
+        "pickCoverImage": "Choose picture…",
+        "removeCoverImage": "Remove picture",
+        "structure": "Contents and chapters",
+        "toc": "Table of contents",
+        "tocTitle": "Contents heading",
+        "tocTitleDefault": "Contents",
+        "tocDepth": "Contents shows",
+        "depths": {
+          "chapters": "Chapters",
+          "sections": "Chapters and sections"
+        },
+        "chapterLabel": "Chapter label",
+        "chapterLabelDefault": "Chapter {n}",
+        "chapterLabelHint": "Shown above each chapter title; {n} is the chapter number. Leave it empty for no label.",
+        "runningHeader": "Chapter title at the top of the pages",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Letter"
+        },
+        "defaultName": "book",
+        "idle": {
+          "title": "The book will appear here",
+          "description": "Add the chapter files, give the book a title, then click Create book."
         }
       }
     }

@@ -2479,7 +2479,8 @@
         "create-document": "Transformez du texte ou du Markdown en rapport, lettre, requête, procès-verbal ou livret",
         "create-bulk": "Certificats, invitations et badges pour chaque ligne d'un tableau CSV ou Excel",
         "create-paper": "Papier blanc, ligné, quadrillé, pointillé ou à musique en PDF prêt à imprimer",
-        "cover": "Placer une page de couverture soignée devant un PDF : titre, auteur, établissement, logo ou photo"
+        "cover": "Placer une page de couverture soignée devant un PDF : titre, auteur, établissement, logo ou photo",
+        "create-book": "Des chapitres Markdown ou texte en livre avec couverture, table des matières cliquable et numéros de page"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "Que créer",
         "document": "Document unique",
         "bulk": "Depuis un tableau",
-        "paper": "Papier"
+        "paper": "Papier",
+        "book": "Livre"
       },
       "bulk": {
         "title": "Documents depuis un tableau",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "Les documents apparaîtront ici",
           "description": "Choisissez un tableau et un type de document, puis cliquez sur Créer."
+        }
+      },
+      "book": {
+        "title": "Livre",
+        "description": "Transformez des fichiers Markdown ou texte en livre : couverture, table des matières cliquable, chapitres sur une nouvelle page, signets et numéros de page.",
+        "run": "Créer le livre",
+        "chapters": "Chapitres",
+        "chaptersHint": "Chaque fichier est un chapitre, dans cet ordre. Son premier titre # devient le titre du chapitre (sinon le nom du fichier), les titres ## deviennent des sections et les images à côté du fichier sont incluses.",
+        "pickTitle": "Choisissez les fichiers des chapitres",
+        "pickDescription": "Fichiers Markdown (.md) ou texte (.txt) — déposez-les ici ou cliquez pour choisir",
+        "addChapters": "Ajouter des chapitres",
+        "removeChapter": "Retirer {{name}}",
+        "subtitle": "Sous-titre",
+        "coverSection": "Couverture",
+        "cover": "Commencer par une couverture",
+        "coverImage": "Image de couverture",
+        "coverImageHint": "PNG, JPG ou WebP ; remplit la moitié supérieure de la couverture",
+        "pickCoverImage": "Choisir une image…",
+        "removeCoverImage": "Retirer l'image",
+        "structure": "Table des matières et chapitres",
+        "toc": "Table des matières",
+        "tocTitle": "Titre de la table des matières",
+        "tocTitleDefault": "Table des matières",
+        "tocDepth": "La table des matières montre",
+        "depths": {
+          "chapters": "Chapitres",
+          "sections": "Chapitres et sections"
+        },
+        "chapterLabel": "Étiquette de chapitre",
+        "chapterLabelDefault": "Chapitre {n}",
+        "chapterLabelHint": "Affichée au-dessus de chaque titre de chapitre ; {n} est le numéro du chapitre. Laissez vide pour ne rien afficher.",
+        "runningHeader": "Titre du chapitre en haut des pages",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Letter"
+        },
+        "defaultName": "livre",
+        "idle": {
+          "title": "Le livre apparaîtra ici",
+          "description": "Ajoutez les fichiers des chapitres, donnez un titre au livre, puis cliquez sur Créer le livre."
         }
       }
     }

@@ -2479,7 +2479,8 @@
         "create-document": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün",
         "create-bulk": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı",
         "create-paper": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF",
-        "cover": "PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf"
+        "cover": "PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf",
+        "create-book": "Markdown veya metin bölümlerinden kapaklı, bağlantılı içindekiler ve sayfa numaralı kitap"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "Ne oluşturulacak",
         "document": "Tek belge",
         "bulk": "Tablodan",
-        "paper": "Kâğıt"
+        "paper": "Kâğıt",
+        "book": "Kitap"
       },
       "bulk": {
         "title": "Tablodan belgeler",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "Belgeler burada görünecek",
           "description": "Bir tablo ve belge türü seçip Oluştur'a tıklayın."
+        }
+      },
+      "book": {
+        "title": "Kitap",
+        "description": "Markdown veya metin dosyalarından kitap oluşturun: kapak, tıklanabilir içindekiler, yeni sayfada başlayan bölümler, yer imleri ve sayfa numaraları.",
+        "run": "Kitabı oluştur",
+        "chapters": "Bölümler",
+        "chaptersHint": "Her dosya bu sıradaki bir bölümdür. İlk # başlığı bölüm adı olur (yoksa dosya adı), ## başlıkları alt başlık olur ve dosyanın yanındaki resimler eklenir.",
+        "pickTitle": "Bölüm dosyalarını seçin",
+        "pickDescription": "Markdown (.md) veya metin (.txt) dosyaları — buraya bırakın ya da tıklayıp seçin",
+        "addChapters": "Bölüm ekle",
+        "removeChapter": "{{name}} dosyasını kaldır",
+        "subtitle": "Alt başlık",
+        "coverSection": "Kapak",
+        "cover": "Kapak sayfasıyla başlasın",
+        "coverImage": "Kapak resmi",
+        "coverImageHint": "PNG, JPG veya WebP; kapağın üst yarısını kaplar",
+        "pickCoverImage": "Resim seç…",
+        "removeCoverImage": "Resmi kaldır",
+        "structure": "İçindekiler ve bölümler",
+        "toc": "İçindekiler sayfası",
+        "tocTitle": "İçindekiler başlığı",
+        "tocTitleDefault": "İçindekiler",
+        "tocDepth": "İçindekilerde",
+        "depths": {
+          "chapters": "Bölümler",
+          "sections": "Bölümler ve alt başlıklar"
+        },
+        "chapterLabel": "Bölüm etiketi",
+        "chapterLabelDefault": "Bölüm {n}",
+        "chapterLabelHint": "Her bölüm adının üstünde görünür; {n} bölüm numarasıdır. Etiket istemiyorsanız boş bırakın.",
+        "runningHeader": "Sayfaların üstünde bölüm adı",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Letter"
+        },
+        "defaultName": "kitap",
+        "idle": {
+          "title": "Kitap burada görünecek",
+          "description": "Bölüm dosyalarını ekleyin, kitaba bir ad verin ve Kitabı oluştur'a tıklayın."
         }
       }
     }

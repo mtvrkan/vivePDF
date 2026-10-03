@@ -141,6 +141,7 @@ def describe(path: Path, password: str | None) -> dict:
         "figureAlts": figure_alts(document),
         "attachments": document.embfile_names(),
         "layers": len(document.get_ocgs()),
+        "outline": [[level, title, page] for level, title, page in document.get_toc()],
     }
 
 

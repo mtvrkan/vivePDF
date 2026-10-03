@@ -2479,7 +2479,8 @@
         "create-document": "Aus reinem Text oder Markdown einen Bericht, Brief, Antrag, ein Protokoll oder eine Broschüre machen",
         "create-bulk": "Zertifikate, Einladungen und Namensschilder für jede Zeile einer CSV- oder Excel-Tabelle",
         "create-paper": "Blanko-, Linien-, Karo-, Punkt- oder Notenpapier als druckfertiges PDF",
-        "cover": "Ein gestaltetes Deckblatt vor ein PDF setzen: Titel, Autor, Institution, Logo oder Foto"
+        "cover": "Ein gestaltetes Deckblatt vor ein PDF setzen: Titel, Autor, Institution, Logo oder Foto",
+        "create-book": "Markdown- oder Textkapitel als Buch mit Titelseite, verlinktem Inhaltsverzeichnis und Seitenzahlen"
       }
     },
     "convert": {
@@ -5415,7 +5416,8 @@
         "label": "Was erstellt wird",
         "document": "Einzelnes Dokument",
         "bulk": "Aus einer Tabelle",
-        "paper": "Papier"
+        "paper": "Papier",
+        "book": "Buch"
       },
       "bulk": {
         "title": "Dokumente aus einer Tabelle",
@@ -5494,6 +5496,48 @@
         "idle": {
           "title": "Die Dokumente erscheinen hier",
           "description": "Wählen Sie eine Tabelle und eine Dokumentart und klicken Sie auf Erstellen."
+        }
+      },
+      "book": {
+        "title": "Buch",
+        "description": "Machen Sie aus Markdown- oder Textdateien ein Buch: Titelseite, anklickbares Inhaltsverzeichnis, Kapitel auf neuer Seite, Lesezeichen und Seitenzahlen.",
+        "run": "Buch erstellen",
+        "chapters": "Kapitel",
+        "chaptersHint": "Jede Datei ist ein Kapitel, in dieser Reihenfolge. Die erste #-Überschrift wird zum Kapiteltitel (sonst der Dateiname), ##-Überschriften werden Abschnitte, und Bilder neben der Datei werden übernommen.",
+        "pickTitle": "Kapiteldateien wählen",
+        "pickDescription": "Markdown- (.md) oder Textdateien (.txt) — hier ablegen oder zum Auswählen klicken",
+        "addChapters": "Kapitel hinzufügen",
+        "removeChapter": "{{name}} entfernen",
+        "subtitle": "Untertitel",
+        "coverSection": "Titelseite",
+        "cover": "Mit einer Titelseite beginnen",
+        "coverImage": "Titelbild",
+        "coverImageHint": "PNG, JPG oder WebP; füllt die obere Hälfte der Titelseite",
+        "pickCoverImage": "Bild wählen…",
+        "removeCoverImage": "Bild entfernen",
+        "structure": "Inhalt und Kapitel",
+        "toc": "Inhaltsverzeichnis",
+        "tocTitle": "Überschrift des Inhaltsverzeichnisses",
+        "tocTitleDefault": "Inhalt",
+        "tocDepth": "Das Inhaltsverzeichnis zeigt",
+        "depths": {
+          "chapters": "Kapitel",
+          "sections": "Kapitel und Abschnitte"
+        },
+        "chapterLabel": "Kapitelbezeichnung",
+        "chapterLabelDefault": "Kapitel {n}",
+        "chapterLabelHint": "Steht über jedem Kapiteltitel; {n} ist die Kapitelnummer. Leer lassen für keine Bezeichnung.",
+        "runningHeader": "Kapiteltitel oben auf den Seiten",
+        "papers": {
+          "a5": "A5",
+          "b5": "B5",
+          "a4": "A4",
+          "letter": "Letter"
+        },
+        "defaultName": "buch",
+        "idle": {
+          "title": "Das Buch erscheint hier",
+          "description": "Fügen Sie die Kapiteldateien hinzu, geben Sie dem Buch einen Titel und klicken Sie auf Buch erstellen."
         }
       }
     }
