@@ -6075,7 +6075,8 @@
       "noDesign": "この PDF にはスタジオのデザインが含まれていません。",
       "missingImage": "デザインで使われている画像が見つかりません: {{path}}",
       "tooManyOutputPages": "結果が {{limit}} ページを超えます。行またはページを減らしてください。",
-      "badPath": "デザイン内の図形に読み取れない輪郭データがあります。"
+      "badPath": "デザイン内の図形に読み取れない輪郭データがあります。",
+      "splitNeedsPdf": "行ごとに 1 ファイルの出力は PDF でのみ使えます。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",
@@ -6549,7 +6550,8 @@
       "label": "追加と配置",
       "elements": "要素",
       "layers": "レイヤー",
-      "templates": "テンプレート"
+      "templates": "テンプレート",
+      "data": "データ"
     },
     "elements": {
       "text": "テキスト",
@@ -6734,7 +6736,26 @@
       "idleDescription": "テキストは選択可能なまま、フォントは PDF に埋め込まれます。",
       "missingGlyphs": "選択したフォントに含まれない文字があり、表示されない可能性があります：{{glyphs}}",
       "embed": "スタジオで編集できるようにする",
-      "embedHint": "デザインを PDF 内に保存するため、PDF を開くと「スタジオで編集」が表示されます。画像があるとファイルが大きくなります。"
+      "embedHint": "デザインを PDF 内に保存するため、PDF を開くと「スタジオで編集」が表示されます。画像があるとファイルが大きくなります。",
+      "runRows_one": "{{count}} 部を書き出し",
+      "runRows_other": "{{count}} 部を書き出し",
+      "useData_one": "表から差し込む ({{count}} 行)",
+      "useData_other": "表から差し込む ({{count}} 行)",
+      "useDataHint": "行ごとにデザインのコピーが作られ、プレースホルダーはその行の値に置き換わります。",
+      "mode": "出力",
+      "modes": {
+        "combined": "1 つの PDF",
+        "split": "行ごとに 1 ファイル"
+      },
+      "pattern": "ファイル名",
+      "patternHint": "プレースホルダー: {{columns}} {n}。同じ名前には -2、-3 が付きます。",
+      "sign": "PDF に署名",
+      "signEach": "各 PDF に署名",
+      "signHint": ".p12 または .pfx 証明書で、目に見えないデジタル署名を追加します。",
+      "doneFiles_one": "{{count}} ファイルを書き出しました",
+      "doneFiles_other": "{{count}} ファイルを書き出しました",
+      "idleRows_one": "表から {{count}} 部が作成されます。",
+      "idleRows_other": "表から {{count}} 部が作成されます。"
     },
     "project": {
       "open": "デザインを開く…",
@@ -7192,6 +7213,36 @@
       "fragile": "取扱注意",
       "stickerTitle": "こんにちは！",
       "stickerLine": "良い一日を"
+    },
+    "data": {
+      "pick": "表を接続",
+      "pickDescription": "CSV または Excel ファイルを選択します。1 行ごとにデザインのコピーが 1 つ作られます。",
+      "files": "表 (CSV、Excel)",
+      "builtins": "常に使用可能",
+      "builtin": {
+        "n": "行番号",
+        "date": "今日の日付"
+      },
+      "builtinsHint": "{n} は各コピーで 1、2、3… に、{date} は今日の日付になります。",
+      "insert": "{{token}} を挿入",
+      "reload": "表を再読み込み",
+      "remove": "表の接続を解除",
+      "change": "別の表を選択",
+      "reading": "表を読み込み中…",
+      "rows_one": "{{count}} 行",
+      "rows_other": "{{count}} 行",
+      "sheet": "シート",
+      "noRows": "表にはまだ行がありません。",
+      "columns": "列",
+      "noColumns": "1 行目に列名が見つかりませんでした。",
+      "columnsHint": "列をクリックすると、入力中のテキスト、または選択したテキストや QR コードに追加されます。何も選択していない場合は新しいテキストとして追加されます。",
+      "unknown": "次のプレースホルダーに一致する列がないため、入力したまま残ります: {{names}}",
+      "showValues": "行の値をページに表示",
+      "previous": "前の行",
+      "next": "次の行",
+      "row": "{{total}} 行中 {{row}} 行目",
+      "previewLimit_one": "プレビューできるのは最初の {{count}} 行だけです。書き出しではすべての行が使われます。",
+      "previewLimit_other": "プレビューできるのは最初の {{count}} 行だけです。書き出しではすべての行が使われます。"
     }
   }
 }

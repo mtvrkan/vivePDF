@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw, ImageOps
 
 from vivepdf.ops._image_files import eight_bit, open_picture
 from vivepdf.ops._output import prepare_output, save_document, write_atomically
+from vivepdf.ops._studio_merge import merge_rows, row_values, save_output, split_targets
 from vivepdf.ops._studio_models import (
     MAX_OUTPUT_PAGES,
     StudioImageInfoParams,
@@ -274,14 +275,6 @@ def draw_page(
     return "".join(missing)
 
 
-def _row_values(row: dict[str, str], index: int, date: str) -> dict[str, str]:
-    values = {"n": str(index + 1)}
-    if date:
-        values["date"] = date
-    values.update(row)
-    return values
-
-
 def _check_images(params: StudioRenderParams) -> list[str]:
     paths = [
         item.path
@@ -331,9 +324,66 @@ def _save_images(
     return written
 
 
+def _render_split(
+    params: StudioRenderParams, rows: list[dict[str, str]], images: list[str], progress: Progress
+) -> StudioRenderResult:
+    targets = split_targets(params, rows)
+    inputs = [*images, *([params.data_path] if params.data_path else [])]
+    cache: Cache = {}
+    faces: dict[str | None, TextFaces] = {}
+    missing: list[str] = []
+    size = 0
+    pages = 0
+    try:
+        for row_index, (row, target) in enumerate(zip(rows, targets, strict=True)):
+            values = row_values(row, row_index, params.date)
+            document = pymupdf.open()
+            try:
+                for page_index, spec in enumerate(params.pages):
+                    progress.check_cancelled()
+                    missing.append(
+                        draw_page(document, spec, page_index, values, params.language, cache, faces)
+                    )
+                _describe(document, params)
+                pages += document.page_count
+                size += save_output(document, target, inputs, params.sign, _save_pdf)
+            finally:
+                document.close()
+            progress.report(
+                (row_index + 1) / len(rows),
+                "progress.rendering",
+                {"current": row_index + 1, "total": len(rows)},
+            )
+    finally:
+        for source, _ in cache.values():
+            source.close()
+    return StudioRenderResult(
+        output=str(targets[0]),
+        outputs=[str(target) for target in targets],
+        page_count=pages,
+        bytes=size,
+        missing_glyphs="".join(dict.fromkeys("".join(missing))),
+    )
+
+
+def _describe(document: pymupdf.Document, params: StudioRenderParams) -> None:
+    metadata = dict(document.metadata or {})
+    metadata.update({"title": params.title.strip(), "creator": "vivePDF"})
+    document.set_metadata(metadata)
+
+
+def _save_pdf(document: pymupdf.Document, target: Path) -> None:
+    with contextlib.suppress(Exception):
+        document.subset_fonts(fallback=False)
+    save_document(document, target)
+
+
 @op("studio.render", StudioRenderParams)
 def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult:
-    rows = params.rows or [{}]
+    rows = merge_rows(params)
+    images = _check_images(params)
+    if params.split:
+        return _render_split(params, rows, images, progress)
     total = len(rows) * len(params.pages)
     if total > MAX_OUTPUT_PAGES:
         raise OpError(
@@ -341,9 +391,13 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
             f"too many pages: {total}",
             {"reason": "tooManyOutputPages", "limit": MAX_OUTPUT_PAGES},
         )
-    images = _check_images(params)
+    if not params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS, "an output file is required", {"reason": "noOutput"}
+        )
+    inputs = [*images, *([params.data_path] if params.data_path else [])]
     if params.format == "pdf":
-        targets = [prepare_output(params.output, images, params.overwrite)]
+        targets = [prepare_output(params.output, inputs, params.overwrite)]
     else:
         targets = _image_targets(params.output, params.format, total, params.overwrite)
     cache: Cache = {}
@@ -353,7 +407,7 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
     try:
         done = 0
         for row_index, row in enumerate(rows):
-            values = _row_values(row, row_index, params.date)
+            values = row_values(row, row_index, params.date)
             for page_index, spec in enumerate(params.pages):
                 progress.check_cancelled()
                 missing.append(
@@ -365,14 +419,10 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
                 )
         progress.report(0.92, "progress.saving")
         if params.format == "pdf":
-            metadata = dict(document.metadata or {})
-            metadata.update({"title": params.title.strip(), "creator": "vivePDF"})
-            document.set_metadata(metadata)
+            _describe(document, params)
             if (embed := params.embed) is not None:
                 embed_archive(document, build_archive(embed.design, embed.assets, b""))
-            with contextlib.suppress(Exception):
-                document.subset_fonts(fallback=False)
-            size = save_document(document, targets[0]).bytes
+            size = save_output(document, targets[0], inputs, params.sign, _save_pdf)
         else:
             size = _save_images(document, targets, params.format, params.dpi, progress)
         page_count = document.page_count

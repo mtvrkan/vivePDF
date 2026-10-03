@@ -6075,7 +6075,8 @@
       "noDesign": "이 PDF에는 스튜디오 디자인이 없습니다.",
       "missingImage": "디자인에 사용된 이미지를 찾을 수 없습니다: {{path}}",
       "tooManyOutputPages": "결과가 {{limit}}페이지를 넘게 됩니다. 행이나 페이지를 줄이세요.",
-      "badPath": "디자인의 그림 중 하나에 읽을 수 없는 윤곽선 데이터가 있습니다."
+      "badPath": "디자인의 그림 중 하나에 읽을 수 없는 윤곽선 데이터가 있습니다.",
+      "splitNeedsPdf": "행마다 파일 하나로 내보내기는 PDF에서만 됩니다."
     },
     "revealEmptyPath": "경로가 비어 있습니다.",
     "revealFailed": "이 위치를 열 수 없습니다.",
@@ -6549,7 +6550,8 @@
       "label": "추가 및 정렬",
       "elements": "요소",
       "layers": "레이어",
-      "templates": "템플릿"
+      "templates": "템플릿",
+      "data": "데이터"
     },
     "elements": {
       "text": "텍스트",
@@ -6734,7 +6736,26 @@
       "idleDescription": "텍스트는 선택할 수 있으며 글꼴은 PDF에 포함됩니다.",
       "missingGlyphs": "선택한 글꼴에 없는 문자가 있어 표시되지 않을 수 있습니다: {{glyphs}}",
       "embed": "스튜디오에서 편집 가능하게 유지",
-      "embedHint": "디자인이 PDF 안에 저장되어 PDF를 열면 스튜디오에서 편집을 선택할 수 있습니다. 이미지가 있으면 파일이 커집니다."
+      "embedHint": "디자인이 PDF 안에 저장되어 PDF를 열면 스튜디오에서 편집을 선택할 수 있습니다. 이미지가 있으면 파일이 커집니다.",
+      "runRows_one": "사본 {{count}}개 내보내기",
+      "runRows_other": "사본 {{count}}개 내보내기",
+      "useData_one": "표에서 채우기 ({{count}}행)",
+      "useData_other": "표에서 채우기 ({{count}}행)",
+      "useDataHint": "행마다 디자인 사본이 만들어지고 자리표시자는 그 행의 값으로 바뀝니다.",
+      "mode": "출력",
+      "modes": {
+        "combined": "PDF 하나",
+        "split": "행마다 파일 하나"
+      },
+      "pattern": "파일 이름",
+      "patternHint": "자리표시자: {{columns}} {n}. 같은 이름에는 -2, -3이 붙습니다.",
+      "sign": "PDF 서명",
+      "signEach": "각 PDF 서명",
+      "signHint": ".p12 또는 .pfx 인증서로 보이지 않는 디지털 서명을 추가합니다.",
+      "doneFiles_one": "파일 {{count}}개를 내보냈습니다",
+      "doneFiles_other": "파일 {{count}}개를 내보냈습니다",
+      "idleRows_one": "표에서 사본 {{count}}개가 만들어집니다.",
+      "idleRows_other": "표에서 사본 {{count}}개가 만들어집니다."
     },
     "project": {
       "open": "디자인 열기…",
@@ -7192,6 +7213,36 @@
       "fragile": "파손 주의",
       "stickerTitle": "안녕!",
       "stickerLine": "좋은 하루 보내세요"
+    },
+    "data": {
+      "pick": "표 연결",
+      "pickDescription": "CSV 또는 Excel 파일을 선택하세요. 행마다 디자인 사본이 하나씩 만들어집니다.",
+      "files": "표 (CSV, Excel)",
+      "builtins": "항상 사용 가능",
+      "builtin": {
+        "n": "행 번호",
+        "date": "오늘 날짜"
+      },
+      "builtinsHint": "{n}은 사본마다 1, 2, 3…이 되고 {date}는 오늘 날짜가 됩니다.",
+      "insert": "{{token}} 삽입",
+      "reload": "표 다시 읽기",
+      "remove": "표 연결 해제",
+      "change": "다른 표 선택",
+      "reading": "표를 읽는 중…",
+      "rows_one": "{{count}}행",
+      "rows_other": "{{count}}행",
+      "sheet": "시트",
+      "noRows": "표에 아직 행이 없습니다.",
+      "columns": "열",
+      "noColumns": "첫 행에서 열 이름을 찾지 못했습니다.",
+      "columnsHint": "열을 클릭하면 입력 중인 텍스트나 선택한 텍스트 또는 QR 코드에 추가됩니다. 선택한 것이 없으면 새 텍스트로 추가됩니다.",
+      "unknown": "다음 자리표시자와 일치하는 열이 없어 입력한 그대로 남습니다: {{names}}",
+      "showValues": "페이지에 행 값 표시",
+      "previous": "이전 행",
+      "next": "다음 행",
+      "row": "{{total}}행 중 {{row}}행",
+      "previewLimit_one": "처음 {{count}}행만 미리 볼 수 있습니다. 내보내기에는 모든 행이 사용됩니다.",
+      "previewLimit_other": "처음 {{count}}행만 미리 볼 수 있습니다. 내보내기에는 모든 행이 사용됩니다."
     }
   }
 }

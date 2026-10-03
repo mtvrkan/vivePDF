@@ -6075,7 +6075,8 @@
       "noDesign": "This PDF does not contain a Studio design.",
       "missingImage": "A picture used in the design was not found: {{path}}",
       "tooManyOutputPages": "The result would have more than {{limit}} pages. Use fewer rows or pages.",
-      "badPath": "A drawing in the design has outline data that cannot be read."
+      "badPath": "A drawing in the design has outline data that cannot be read.",
+      "splitNeedsPdf": "One file per row works only with PDF."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -6550,7 +6551,8 @@
       "label": "Add and arrange",
       "elements": "Elements",
       "layers": "Layers",
-      "templates": "Templates"
+      "templates": "Templates",
+      "data": "Data"
     },
     "elements": {
       "text": "Text",
@@ -6735,7 +6737,26 @@
       "idleDescription": "Text stays selectable and fonts are embedded in the PDF.",
       "missingGlyphs": "Some characters are not in the chosen font and may not show: {{glyphs}}",
       "embed": "Keep it editable in Studio",
-      "embedHint": "The design is stored inside the PDF, so opening the PDF offers Edit in Studio. Pictures make the file larger."
+      "embedHint": "The design is stored inside the PDF, so opening the PDF offers Edit in Studio. Pictures make the file larger.",
+      "runRows_one": "Export {{count}} copy",
+      "runRows_other": "Export {{count}} copies",
+      "useData_one": "Fill from the table ({{count}} row)",
+      "useData_other": "Fill from the table ({{count}} rows)",
+      "useDataHint": "Every row gets its own copy of the design, with the placeholders replaced by that row's values.",
+      "mode": "Output",
+      "modes": {
+        "combined": "One PDF",
+        "split": "One file per row"
+      },
+      "pattern": "File name",
+      "patternHint": "Placeholders: {{columns}} {n}. Repeated names get -2, -3 added.",
+      "sign": "Sign the PDF",
+      "signEach": "Sign each PDF",
+      "signHint": "Adds an invisible digital signature with your .p12 or .pfx certificate.",
+      "doneFiles_one": "{{count}} file exported",
+      "doneFiles_other": "{{count}} files exported",
+      "idleRows_one": "{{count}} copy will be made from the table.",
+      "idleRows_other": "{{count}} copies will be made from the table."
     },
     "project": {
       "open": "Open design…",
@@ -7193,6 +7214,36 @@
       "fragile": "Fragile",
       "stickerTitle": "Hello!",
       "stickerLine": "Have a great day"
+    },
+    "data": {
+      "pick": "Connect a table",
+      "pickDescription": "Choose a CSV or Excel file. Each row becomes its own copy of the design.",
+      "files": "Tables (CSV, Excel)",
+      "builtins": "Always available",
+      "builtin": {
+        "n": "Row number",
+        "date": "Today's date"
+      },
+      "builtinsHint": "{n} becomes 1, 2, 3… in each copy and {date} becomes today's date.",
+      "insert": "Insert {{token}}",
+      "reload": "Read the table again",
+      "remove": "Disconnect the table",
+      "change": "Choose another table",
+      "reading": "Reading the table…",
+      "rows_one": "{{count}} row",
+      "rows_other": "{{count}} rows",
+      "sheet": "Sheet",
+      "noRows": "The table has no rows yet.",
+      "columns": "Columns",
+      "noColumns": "No column names were found in the first row.",
+      "columnsHint": "Click a column to add it to the text you are typing or to the selected text or QR code. With nothing selected it is added as new text.",
+      "unknown": "No column matches these placeholders, so they stay as typed: {{names}}",
+      "showValues": "Show a row's values on the page",
+      "previous": "Previous row",
+      "next": "Next row",
+      "row": "Row {{row}} of {{total}}",
+      "previewLimit_one": "Only the first {{count}} row can be previewed; exporting uses every row.",
+      "previewLimit_other": "Only the first {{count}} rows can be previewed; exporting uses every row."
     }
   }
 }

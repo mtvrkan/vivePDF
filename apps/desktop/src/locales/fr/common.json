@@ -6075,7 +6075,8 @@
       "noDesign": "Ce PDF ne contient pas de création Studio.",
       "missingImage": "Une image utilisée dans la création est introuvable : {{path}}",
       "tooManyOutputPages": "Le résultat dépasserait {{limit}} pages. Utilisez moins de lignes ou de pages.",
-      "badPath": "Un dessin de la création contient des données de contour illisibles."
+      "badPath": "Un dessin de la création contient des données de contour illisibles.",
+      "splitNeedsPdf": "Un fichier par ligne ne fonctionne qu'avec le PDF."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -6549,7 +6550,8 @@
       "label": "Ajouter et organiser",
       "elements": "Éléments",
       "layers": "Calques",
-      "templates": "Modèles"
+      "templates": "Modèles",
+      "data": "Données"
     },
     "elements": {
       "text": "Texte",
@@ -6734,7 +6736,26 @@
       "idleDescription": "Le texte reste sélectionnable et les polices sont incorporées au PDF.",
       "missingGlyphs": "Certains caractères ne figurent pas dans la police choisie et risquent de ne pas s’afficher : {{glyphs}}",
       "embed": "Garder modifiable dans Studio",
-      "embedHint": "La création est stockée dans le PDF : à l'ouverture du PDF, Modifier dans Studio est proposé. Les images alourdissent le fichier."
+      "embedHint": "La création est stockée dans le PDF : à l'ouverture du PDF, Modifier dans Studio est proposé. Les images alourdissent le fichier.",
+      "runRows_one": "Exporter {{count}} copie",
+      "runRows_other": "Exporter {{count}} copies",
+      "useData_one": "Remplir depuis le tableau ({{count}} ligne)",
+      "useData_other": "Remplir depuis le tableau ({{count}} lignes)",
+      "useDataHint": "Chaque ligne reçoit sa propre copie du design, les espaces réservés étant remplacés par les valeurs de cette ligne.",
+      "mode": "Sortie",
+      "modes": {
+        "combined": "Un seul PDF",
+        "split": "Un fichier par ligne"
+      },
+      "pattern": "Nom de fichier",
+      "patternHint": "Espaces réservés : {{columns}} {n}. Les noms répétés reçoivent -2, -3.",
+      "sign": "Signer le PDF",
+      "signEach": "Signer chaque PDF",
+      "signHint": "Ajoute une signature numérique invisible avec votre certificat .p12 ou .pfx.",
+      "doneFiles_one": "{{count}} fichier exporté",
+      "doneFiles_other": "{{count}} fichiers exportés",
+      "idleRows_one": "{{count}} copie sera créée à partir du tableau.",
+      "idleRows_other": "{{count}} copies seront créées à partir du tableau."
     },
     "project": {
       "open": "Ouvrir une création…",
@@ -7192,6 +7213,36 @@
       "fragile": "Fragile",
       "stickerTitle": "Salut !",
       "stickerLine": "Passe une super journée"
+    },
+    "data": {
+      "pick": "Connecter un tableau",
+      "pickDescription": "Choisissez un fichier CSV ou Excel. Chaque ligne devient sa propre copie du design.",
+      "files": "Tableaux (CSV, Excel)",
+      "builtins": "Toujours disponibles",
+      "builtin": {
+        "n": "Numéro de ligne",
+        "date": "Date du jour"
+      },
+      "builtinsHint": "{n} devient 1, 2, 3… dans chaque copie et {date} la date du jour.",
+      "insert": "Insérer {{token}}",
+      "reload": "Relire le tableau",
+      "remove": "Déconnecter le tableau",
+      "change": "Choisir un autre tableau",
+      "reading": "Lecture du tableau…",
+      "rows_one": "{{count}} ligne",
+      "rows_other": "{{count}} lignes",
+      "sheet": "Feuille",
+      "noRows": "Le tableau n'a encore aucune ligne.",
+      "columns": "Colonnes",
+      "noColumns": "Aucun nom de colonne n'a été trouvé dans la première ligne.",
+      "columnsHint": "Cliquez sur une colonne pour l'ajouter au texte en cours de saisie, ou au texte ou au code QR sélectionné. Si rien n'est sélectionné, elle est ajoutée comme nouveau texte.",
+      "unknown": "Aucune colonne ne correspond à ces espaces réservés, ils restent tels quels : {{names}}",
+      "showValues": "Afficher les valeurs d'une ligne sur la page",
+      "previous": "Ligne précédente",
+      "next": "Ligne suivante",
+      "row": "Ligne {{row}} sur {{total}}",
+      "previewLimit_one": "Seule la première ligne ({{count}}) peut être prévisualisée ; l'export utilise toutes les lignes.",
+      "previewLimit_other": "Seules les {{count}} premières lignes peuvent être prévisualisées ; l'export utilise toutes les lignes."
     }
   }
 }

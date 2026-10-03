@@ -6075,7 +6075,8 @@
       "noDesign": "Bu PDF bir Studio tasarımı içermiyor.",
       "missingImage": "Tasarımda kullanılan bir resim bulunamadı: {{path}}",
       "tooManyOutputPages": "Sonuç {{limit}} sayfadan fazla olurdu. Daha az satır veya sayfa kullanın.",
-      "badPath": "Tasarımdaki bir çizimin anahat verisi okunamıyor."
+      "badPath": "Tasarımdaki bir çizimin anahat verisi okunamıyor.",
+      "splitNeedsPdf": "Her satıra ayrı dosya yalnızca PDF ile çalışır."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -6550,7 +6551,8 @@
       "label": "Ekle ve düzenle",
       "elements": "Öğeler",
       "layers": "Katmanlar",
-      "templates": "Şablonlar"
+      "templates": "Şablonlar",
+      "data": "Veri"
     },
     "elements": {
       "text": "Metin",
@@ -6735,7 +6737,26 @@
       "idleDescription": "PDF'te metin seçilebilir kalır ve fontlar gömülür.",
       "missingGlyphs": "Bazı karakterler seçilen fontta yok ve görünmeyebilir: {{glyphs}}",
       "embed": "Studio'da düzenlenebilir kalsın",
-      "embedHint": "Tasarım PDF'in içinde saklanır; PDF açıldığında Studio'da düzenle seçeneği çıkar. Resimler dosyayı büyütür."
+      "embedHint": "Tasarım PDF'in içinde saklanır; PDF açıldığında Studio'da düzenle seçeneği çıkar. Resimler dosyayı büyütür.",
+      "runRows_one": "{{count}} kopya dışa aktar",
+      "runRows_other": "{{count}} kopya dışa aktar",
+      "useData_one": "Tablodan doldur ({{count}} satır)",
+      "useData_other": "Tablodan doldur ({{count}} satır)",
+      "useDataHint": "Her satır için tasarımın ayrı bir kopyası oluşturulur; yer tutucular o satırın değerleriyle değiştirilir.",
+      "mode": "Çıktı",
+      "modes": {
+        "combined": "Tek PDF",
+        "split": "Her satıra ayrı dosya"
+      },
+      "pattern": "Dosya adı",
+      "patternHint": "Yer tutucular: {{columns}} {n}. Tekrarlanan adlara -2, -3 eklenir.",
+      "sign": "PDF'i imzala",
+      "signEach": "Her PDF'i imzala",
+      "signHint": ".p12 veya .pfx sertifikanızla görünmez bir dijital imza ekler.",
+      "doneFiles_one": "{{count}} dosya dışa aktarıldı",
+      "doneFiles_other": "{{count}} dosya dışa aktarıldı",
+      "idleRows_one": "Tablodan {{count}} kopya oluşturulacak.",
+      "idleRows_other": "Tablodan {{count}} kopya oluşturulacak."
     },
     "project": {
       "open": "Tasarım aç…",
@@ -7193,6 +7214,36 @@
       "fragile": "Kırılabilir",
       "stickerTitle": "Merhaba!",
       "stickerLine": "Harika bir gün geçir"
+    },
+    "data": {
+      "pick": "Tablo bağla",
+      "pickDescription": "Bir CSV veya Excel dosyası seçin. Her satır tasarımın ayrı bir kopyası olur.",
+      "files": "Tablolar (CSV, Excel)",
+      "builtins": "Her zaman kullanılabilir",
+      "builtin": {
+        "n": "Satır numarası",
+        "date": "Bugünün tarihi"
+      },
+      "builtinsHint": "{n} her kopyada 1, 2, 3… olur, {date} ise bugünün tarihi olur.",
+      "insert": "{{token}} ekle",
+      "reload": "Tabloyu yeniden oku",
+      "remove": "Tablo bağlantısını kaldır",
+      "change": "Başka bir tablo seç",
+      "reading": "Tablo okunuyor…",
+      "rows_one": "{{count}} satır",
+      "rows_other": "{{count}} satır",
+      "sheet": "Sayfa",
+      "noRows": "Tabloda henüz satır yok.",
+      "columns": "Sütunlar",
+      "noColumns": "İlk satırda sütun adı bulunamadı.",
+      "columnsHint": "Bir sütuna tıklayınca yazmakta olduğunuz metne ya da seçili metne veya QR koduna eklenir. Hiçbir şey seçili değilse yeni metin olarak eklenir.",
+      "unknown": "Bu yer tutuculara uyan sütun yok, yazıldığı gibi kalırlar: {{names}}",
+      "showValues": "Bir satırın değerlerini sayfada göster",
+      "previous": "Önceki satır",
+      "next": "Sonraki satır",
+      "row": "Satır {{row}} / {{total}}",
+      "previewLimit_one": "Yalnızca ilk {{count}} satır önizlenebilir; dışa aktarma tüm satırları kullanır.",
+      "previewLimit_other": "Yalnızca ilk {{count}} satır önizlenebilir; dışa aktarma tüm satırları kullanır."
     }
   }
 }

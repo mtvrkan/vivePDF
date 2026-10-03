@@ -1,7 +1,7 @@
-import { existsSync } from "node:fs";
+import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
-import { answerDialogs, bootApp, fixtures, openInViewer, openTool, pressShortcut, probe, t, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
+import { answerDialogs, bootApp, fixtures, openInViewer, openTool, pressShortcut, probe, t, typeInto, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
 
 const elements = () => $$('[data-testid="studio-viewport"] [data-element-id]');
 const button = (label: string) => $(`//button[normalize-space(.)="${label}"]`);
@@ -205,5 +205,52 @@ describe("studio", () => {
     await browser.waitUntil(async () => (await pages().length) === before + 1, { timeoutMsg: "the template was not added as a new page" });
     await expect($(`//*[@data-testid="studio-viewport"]//span[normalize-space(.)="${t("studio.tpl.clientName")}"]`)).toExist();
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-template.png"));
+  });
+
+  it("fills a name from a CSV, previews each row and exports one signed PDF per row", async () => {
+    const people = ["Ayşe Yılmaz", "Can Demir", "Elif Kaya"];
+    const table = join(workDir(), "people.csv");
+    writeFileSync(table, ["Name,Course", ...people.map((name) => `${name},Design`), ""].join("\r\n"), "utf8");
+    const canvasHas = (text: string) => $(`//*[@data-testid="studio-viewport"]//*[@data-element-id][normalize-space(.)="${text}"]`);
+
+    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.panel.data")}"]`).click();
+    await browser.keys(ESCAPE);
+    const before = await elements().length;
+    answerDialogs(table);
+    await $(`//button[.//span[normalize-space(.)="${t("studio.data.pick")}"]]`).click();
+    await waitForDialogsAnswered();
+    await expect($('[data-testid="studio-data-rows"]')).toHaveText(t("studio.data.rows", { count: 3 }));
+
+    await $('[data-placeholder="Name"]').click();
+    await browser.waitUntil(async () => (await elements().length) === before + 1, { timeoutMsg: "the column was not added as new text" });
+    await canvasHas(people[0]).waitForExist({ timeout: 15000 });
+    await $(`button[aria-label="${t("studio.data.next")}"]`).click();
+    await canvasHas(people[1]).waitForExist();
+    await expect($('[data-testid="studio-data-row"]')).toHaveText(t("studio.data.row", { row: 2, total: 3 }));
+
+    const folder = join(workDir(), "certificates");
+    await button(t("studio.toolbar.export")).click();
+    await $('[role="dialog"]').waitForDisplayed();
+    await $(`//*[@role="dialog"]//*[@role="radio"][normalize-space(.)="${t("studio.export.modes.split")}"]`).click();
+    answerDialogs(folder);
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("tools.browse")}"]`).click();
+    await waitForDialogsAnswered();
+    await typeInto($('[data-testid="studio-export-pattern"]'), "{Name}");
+    await $(`//*[@role="dialog"]//label[.//*[normalize-space(.)="${t("studio.export.signEach")}"]]`).click();
+    answerDialogs(fixtures().signer);
+    await $(`(//*[@role="dialog"]//button[normalize-space(.)="${t("tools.browse")}"])[2]`).click();
+    await waitForDialogsAnswered();
+    await typeInto($('//*[@role="dialog"]//input[@type="password"]'), "fixture-signer");
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("studio.export.runRows", { count: 3 })}"]`).click();
+
+    for (const name of people) {
+      const output = join(folder, `${name}.pdf`);
+      await waitForFile(output);
+      const result = probe(output);
+      expect(result.pages?.some((page) => page.text.replace(/\s+/g, " ").includes(name))).toBe(true);
+      expect(result.signatures).toHaveLength(1);
+      expect(result.signatures?.[0].intact).toBe(true);
+    }
+    await expect($(`//*[@role="dialog"]//*[normalize-space(.)="${t("studio.export.doneFiles", { count: 3 })}"]`)).toExist();
   });
 });

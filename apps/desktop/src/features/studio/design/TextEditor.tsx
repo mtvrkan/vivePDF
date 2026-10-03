@@ -67,6 +67,10 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
     document.addEventListener("selectionchange", onSelection);
     textEditorBridge.current = {
       commit: () => commitRef.current(),
+      insert: (text) => {
+        bodyRef.current?.focus();
+        document.execCommand("insertText", false, text);
+      },
       summary: () => {
         const body = bodyRef.current;
         const range = selection.current;

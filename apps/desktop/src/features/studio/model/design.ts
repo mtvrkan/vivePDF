@@ -156,6 +156,10 @@ export function placeholdersIn(design: StudioDesign): string[] {
   return [...found];
 }
 
+export function fillPlaceholders(value: string, values: Readonly<Record<string, string>>): string {
+  return value.replace(new RegExp(PLACEHOLDER.source, "g"), (whole, name: string) => values[name] ?? whole);
+}
+
 export function hasPlaceholders(value: string): boolean {
   return new RegExp(PLACEHOLDER.source).test(value);
 }

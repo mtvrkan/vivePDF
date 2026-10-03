@@ -6075,7 +6075,8 @@
       "noDesign": "Questo PDF non contiene un progetto Studio.",
       "missingImage": "Un'immagine usata nel progetto non è stata trovata: {{path}}",
       "tooManyOutputPages": "Il risultato avrebbe più di {{limit}} pagine. Usa meno righe o pagine.",
-      "badPath": "Un disegno del progetto contiene dati di contorno illeggibili."
+      "badPath": "Un disegno del progetto contiene dati di contorno illeggibili.",
+      "splitNeedsPdf": "Un file per riga funziona solo con il PDF."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -6549,7 +6550,8 @@
       "label": "Aggiungi e disponi",
       "elements": "Elementi",
       "layers": "Livelli",
-      "templates": "Modelli"
+      "templates": "Modelli",
+      "data": "Dati"
     },
     "elements": {
       "text": "Testo",
@@ -6734,7 +6736,26 @@
       "idleDescription": "Il testo resta selezionabile e i font vengono incorporati nel PDF.",
       "missingGlyphs": "Alcuni caratteri non sono presenti nel font scelto e potrebbero non comparire: {{glyphs}}",
       "embed": "Mantieni modificabile in Studio",
-      "embedHint": "Il progetto viene conservato nel PDF: aprendo il PDF viene proposto Modifica in Studio. Le immagini rendono il file più grande."
+      "embedHint": "Il progetto viene conservato nel PDF: aprendo il PDF viene proposto Modifica in Studio. Le immagini rendono il file più grande.",
+      "runRows_one": "Esporta {{count}} copia",
+      "runRows_other": "Esporta {{count}} copie",
+      "useData_one": "Compila dalla tabella ({{count}} riga)",
+      "useData_other": "Compila dalla tabella ({{count}} righe)",
+      "useDataHint": "Ogni riga riceve la propria copia del design, con i segnaposto sostituiti dai valori di quella riga.",
+      "mode": "Output",
+      "modes": {
+        "combined": "Un solo PDF",
+        "split": "Un file per riga"
+      },
+      "pattern": "Nome file",
+      "patternHint": "Segnaposto: {{columns}} {n}. Ai nomi ripetuti si aggiunge -2, -3.",
+      "sign": "Firma il PDF",
+      "signEach": "Firma ogni PDF",
+      "signHint": "Aggiunge una firma digitale invisibile con il tuo certificato .p12 o .pfx.",
+      "doneFiles_one": "{{count}} file esportato",
+      "doneFiles_other": "{{count}} file esportati",
+      "idleRows_one": "Dalla tabella verrà creata {{count}} copia.",
+      "idleRows_other": "Dalla tabella verranno create {{count}} copie."
     },
     "project": {
       "open": "Apri progetto…",
@@ -7192,6 +7213,36 @@
       "fragile": "Fragile",
       "stickerTitle": "Ciao!",
       "stickerLine": "Buona giornata"
+    },
+    "data": {
+      "pick": "Collega una tabella",
+      "pickDescription": "Scegli un file CSV o Excel. Ogni riga diventa una copia a sé del design.",
+      "files": "Tabelle (CSV, Excel)",
+      "builtins": "Sempre disponibili",
+      "builtin": {
+        "n": "Numero di riga",
+        "date": "Data di oggi"
+      },
+      "builtinsHint": "{n} diventa 1, 2, 3… in ogni copia e {date} la data di oggi.",
+      "insert": "Inserisci {{token}}",
+      "reload": "Rileggi la tabella",
+      "remove": "Scollega la tabella",
+      "change": "Scegli un'altra tabella",
+      "reading": "Lettura della tabella…",
+      "rows_one": "{{count}} riga",
+      "rows_other": "{{count}} righe",
+      "sheet": "Foglio",
+      "noRows": "La tabella non ha ancora righe.",
+      "columns": "Colonne",
+      "noColumns": "Nella prima riga non sono stati trovati nomi di colonna.",
+      "columnsHint": "Fai clic su una colonna per aggiungerla al testo che stai scrivendo o al testo o codice QR selezionato. Se non è selezionato nulla, viene aggiunta come nuovo testo.",
+      "unknown": "Nessuna colonna corrisponde a questi segnaposto, quindi restano come scritti: {{names}}",
+      "showValues": "Mostra i valori di una riga sulla pagina",
+      "previous": "Riga precedente",
+      "next": "Riga successiva",
+      "row": "Riga {{row}} di {{total}}",
+      "previewLimit_one": "Si può visualizzare in anteprima solo la prima riga ({{count}}); l'esportazione usa tutte le righe.",
+      "previewLimit_other": "Si possono visualizzare in anteprima solo le prime {{count}} righe; l'esportazione usa tutte le righe."
     }
   }
 }

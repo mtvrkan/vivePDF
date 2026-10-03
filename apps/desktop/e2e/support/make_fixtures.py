@@ -227,6 +227,21 @@ def signed(target: Path) -> None:
         )
 
 
+def certificate(target: Path) -> None:
+    from vivepdf.ops.sign_certificate import CreateCertificateParams, create_certificate
+    from vivepdf.rpc.progress import silent_progress
+
+    create_certificate(
+        CreateCertificateParams(
+            output=str(target),
+            password="fixture-signer",
+            common_name="Fixture Signer",
+            key_type="ec",
+        ),
+        silent_progress(),
+    )
+
+
 def commented(target: Path) -> None:
     document = pymupdf.open()
     page = text_page(document, ["Review copy", "Figure 3 shows the yearly totals"])
@@ -361,6 +376,7 @@ def main() -> None:
         "covers": directory / "covers.pdf",
         "turned": directory / "turned.pdf",
         "signed": directory / "signed.pdf",
+        "signer": directory / "signer.p12",
         "commented": directory / "commented.pdf",
         "layered": directory / "layered.pdf",
         "tagged": directory / "tagged.pdf",
@@ -388,6 +404,7 @@ def main() -> None:
     covers(files["covers"])
     turned(files["turned"])
     signed(files["signed"])
+    certificate(files["signer"])
     commented(files["commented"])
     layered(files["layered"])
     tagged(files["tagged"])

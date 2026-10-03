@@ -1,7 +1,8 @@
 import { ImageOff, ImagePlus } from "lucide-react";
 import { memo, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioRenderPath, StudioSvgElement, StudioTextElement } from "@/types/studio";
-import { textDirection, textOf } from "../model/design";
+import { usePreviewValues } from "../merge/mergeStore";
+import { fillPlaceholders, textDirection, textOf } from "../model/design";
 import { elementItems } from "../model/render";
 import { renderFill, roundedRect } from "../model/shapes";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
@@ -54,6 +55,8 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
   const ownRef = useRef<HTMLDivElement>(null);
   const ref = bodyRef ?? ownRef;
   const [size, setSize] = useState(element.fontSize);
+  const values = usePreviewValues(language);
+  const runs = values ? element.runs.map((run) => ({ ...run, text: fillPlaceholders(run.text, values) })) : element.runs;
 
   useEffect(() => {
     void ensureElementFonts([element]);
@@ -62,13 +65,13 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
   useLayoutEffect(() => {
     if (!ref.current) return;
     setSize(element.shrinkToFit ? fitTextSize(ref.current, element) : element.fontSize);
-  }, [element, faces, ref]);
+  }, [element, faces, ref, values]);
 
   return (
-    <div lang={language} dir={textDirection(textOf(element.runs))} style={textFrameStyle(element)}>
+    <div lang={language} dir={textDirection(textOf(runs))} style={textFrameStyle(element)}>
       {editable ?? (
         <div ref={ref} style={textBodyStyle(element, size)}>
-          {element.runs.map((run, index) => (
+          {runs.map((run, index) => (
             <span key={index} {...runData(element, run)} style={runCss(element, run, faces)}>
               {run.text}
             </span>
@@ -120,8 +123,10 @@ function px(box: { left: number; top: number; width: number; height: number }) {
   return { left: `${box.left}px`, top: `${box.top}px`, width: `${box.width}px`, height: `${box.height}px` };
 }
 
-function QrContent({ element }: { element: StudioQrElement }) {
-  const modules = useQrModules(element.value || " ", element.errorLevel);
+function QrContent({ element, language }: { element: StudioQrElement; language: string }) {
+  const values = usePreviewValues(language);
+  const value = values ? fillPlaceholders(element.value, values) : element.value;
+  const modules = useQrModules(value || " ", element.errorLevel);
   return (
     <svg width="100%" height="100%" viewBox={`0 0 ${element.width} ${element.height}`} preserveAspectRatio="none" style={{ display: "block" }} aria-hidden>
       {element.background ? <rect width={element.width} height={element.height} fill={element.background} /> : null}
@@ -141,7 +146,7 @@ function ElementContent({ element, language }: { element: StudioElement; languag
     case "image":
       return <ImageContent element={element} />;
     case "qr":
-      return <QrContent element={element} />;
+      return <QrContent element={element} language={language} />;
     case "svg":
       return <SvgContent element={element} />;
     default: {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FolderOpen, Palette, Play, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
@@ -24,6 +24,7 @@ import { PropertiesPanel } from "./design/PropertiesPanel";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { readDraft, useStudioStore } from "./design/studioStore";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
+import { useMergeStore } from "./merge/mergeStore";
 import { buildTemplate } from "./templates/catalog";
 import { TemplateGallery } from "./templates/TemplateGallery";
 
@@ -188,6 +189,10 @@ export function StudioPage() {
   const design = useStudioStore((state) => state.design);
   const open = useStudioStore((state) => state.open);
   const locale = useUiStore((state) => state.locale);
+  const editing = design !== null;
+  useEffect(() => {
+    if (!editing) useMergeStore.getState().clear();
+  }, [editing]);
   return (
     <>
       {design ? <StudioEditor language={locale} /> : <StudioStart onOpen={open} />}

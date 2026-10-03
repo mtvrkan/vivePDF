@@ -6075,7 +6075,8 @@
       "noDesign": "Este PDF não contém um design do Studio.",
       "missingImage": "Uma imagem usada no design não foi encontrada: {{path}}",
       "tooManyOutputPages": "O resultado teria mais de {{limit}} páginas. Use menos linhas ou páginas.",
-      "badPath": "Um desenho do design tem dados de contorno que não podem ser lidos."
+      "badPath": "Um desenho do design tem dados de contorno que não podem ser lidos.",
+      "splitNeedsPdf": "Um arquivo por linha só funciona com PDF."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",
@@ -6549,7 +6550,8 @@
       "label": "Adicionar e organizar",
       "elements": "Elementos",
       "layers": "Camadas",
-      "templates": "Modelos"
+      "templates": "Modelos",
+      "data": "Dados"
     },
     "elements": {
       "text": "Texto",
@@ -6734,7 +6736,26 @@
       "idleDescription": "O texto continua selecionável e as fontes são incorporadas ao PDF.",
       "missingGlyphs": "Alguns caracteres não estão na fonte escolhida e podem não aparecer: {{glyphs}}",
       "embed": "Manter editável no Studio",
-      "embedHint": "O design fica guardado dentro do PDF; ao abrir o PDF, aparece Editar no Studio. Imagens aumentam o arquivo."
+      "embedHint": "O design fica guardado dentro do PDF; ao abrir o PDF, aparece Editar no Studio. Imagens aumentam o arquivo.",
+      "runRows_one": "Exportar {{count}} cópia",
+      "runRows_other": "Exportar {{count}} cópias",
+      "useData_one": "Preencher pela tabela ({{count}} linha)",
+      "useData_other": "Preencher pela tabela ({{count}} linhas)",
+      "useDataHint": "Cada linha recebe sua própria cópia do design, com os marcadores trocados pelos valores dessa linha.",
+      "mode": "Saída",
+      "modes": {
+        "combined": "Um único PDF",
+        "split": "Um arquivo por linha"
+      },
+      "pattern": "Nome do arquivo",
+      "patternHint": "Marcadores: {{columns}} {n}. Nomes repetidos recebem -2, -3.",
+      "sign": "Assinar o PDF",
+      "signEach": "Assinar cada PDF",
+      "signHint": "Adiciona uma assinatura digital invisível com seu certificado .p12 ou .pfx.",
+      "doneFiles_one": "{{count}} arquivo exportado",
+      "doneFiles_other": "{{count}} arquivos exportados",
+      "idleRows_one": "{{count}} cópia será criada a partir da tabela.",
+      "idleRows_other": "{{count}} cópias serão criadas a partir da tabela."
     },
     "project": {
       "open": "Abrir design…",
@@ -7192,6 +7213,36 @@
       "fragile": "Frágil",
       "stickerTitle": "Olá!",
       "stickerLine": "Tenha um ótimo dia"
+    },
+    "data": {
+      "pick": "Conectar uma tabela",
+      "pickDescription": "Escolha um arquivo CSV ou Excel. Cada linha vira uma cópia própria do design.",
+      "files": "Tabelas (CSV, Excel)",
+      "builtins": "Sempre disponíveis",
+      "builtin": {
+        "n": "Número da linha",
+        "date": "Data de hoje"
+      },
+      "builtinsHint": "{n} vira 1, 2, 3… em cada cópia e {date} vira a data de hoje.",
+      "insert": "Inserir {{token}}",
+      "reload": "Ler a tabela de novo",
+      "remove": "Desconectar a tabela",
+      "change": "Escolher outra tabela",
+      "reading": "Lendo a tabela…",
+      "rows_one": "{{count}} linha",
+      "rows_other": "{{count}} linhas",
+      "sheet": "Planilha",
+      "noRows": "A tabela ainda não tem linhas.",
+      "columns": "Colunas",
+      "noColumns": "Nenhum nome de coluna foi encontrado na primeira linha.",
+      "columnsHint": "Clique em uma coluna para adicioná-la ao texto que você está digitando ou ao texto ou código QR selecionado. Sem nada selecionado, ela é adicionada como texto novo.",
+      "unknown": "Nenhuma coluna corresponde a estes marcadores, então eles ficam como foram digitados: {{names}}",
+      "showValues": "Mostrar os valores de uma linha na página",
+      "previous": "Linha anterior",
+      "next": "Próxima linha",
+      "row": "Linha {{row}} de {{total}}",
+      "previewLimit_one": "Só a primeira linha ({{count}}) pode ser visualizada; a exportação usa todas as linhas.",
+      "previewLimit_other": "Só as primeiras {{count}} linhas podem ser visualizadas; a exportação usa todas as linhas."
     }
   }
 }

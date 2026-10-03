@@ -6075,7 +6075,8 @@
       "noDesign": "此 PDF 不包含工作室设计。",
       "missingImage": "找不到设计中使用的图片：{{path}}",
       "tooManyOutputPages": "结果将超过 {{limit}} 页。请减少行数或页数。",
-      "badPath": "设计中的某个图形包含无法读取的轮廓数据。"
+      "badPath": "设计中的某个图形包含无法读取的轮廓数据。",
+      "splitNeedsPdf": "每行一个文件仅适用于 PDF。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",
@@ -6549,7 +6550,8 @@
       "label": "添加和排列",
       "elements": "元素",
       "layers": "图层",
-      "templates": "模板"
+      "templates": "模板",
+      "data": "数据"
     },
     "elements": {
       "text": "文本",
@@ -6734,7 +6736,26 @@
       "idleDescription": "文本仍可选择，字体会嵌入 PDF。",
       "missingGlyphs": "所选字体中缺少某些字符，可能无法显示：{{glyphs}}",
       "embed": "保留在工作室中编辑的能力",
-      "embedHint": "设计会存储在 PDF 内，打开该 PDF 时会提供“在工作室中编辑”。图片会使文件变大。"
+      "embedHint": "设计会存储在 PDF 内，打开该 PDF 时会提供“在工作室中编辑”。图片会使文件变大。",
+      "runRows_one": "导出 {{count}} 份",
+      "runRows_other": "导出 {{count}} 份",
+      "useData_one": "从表格填充（{{count}} 行）",
+      "useData_other": "从表格填充（{{count}} 行）",
+      "useDataHint": "每一行都会生成一份设计副本，占位符将替换为该行的值。",
+      "mode": "输出",
+      "modes": {
+        "combined": "一个 PDF",
+        "split": "每行一个文件"
+      },
+      "pattern": "文件名",
+      "patternHint": "占位符：{{columns}} {n}。重复的名称会加上 -2、-3。",
+      "sign": "签署 PDF",
+      "signEach": "签署每个 PDF",
+      "signHint": "使用您的 .p12 或 .pfx 证书添加不可见的数字签名。",
+      "doneFiles_one": "已导出 {{count}} 个文件",
+      "doneFiles_other": "已导出 {{count}} 个文件",
+      "idleRows_one": "将从表格生成 {{count}} 份副本。",
+      "idleRows_other": "将从表格生成 {{count}} 份副本。"
     },
     "project": {
       "open": "打开设计…",
@@ -7192,6 +7213,36 @@
       "fragile": "易碎品",
       "stickerTitle": "你好！",
       "stickerLine": "祝你有美好的一天"
+    },
+    "data": {
+      "pick": "连接表格",
+      "pickDescription": "选择 CSV 或 Excel 文件。每一行都会生成一份设计副本。",
+      "files": "表格（CSV、Excel）",
+      "builtins": "始终可用",
+      "builtin": {
+        "n": "行号",
+        "date": "今天的日期"
+      },
+      "builtinsHint": "{n} 在每份副本中依次变为 1、2、3…，{date} 变为今天的日期。",
+      "insert": "插入 {{token}}",
+      "reload": "重新读取表格",
+      "remove": "断开表格",
+      "change": "选择其他表格",
+      "reading": "正在读取表格…",
+      "rows_one": "{{count}} 行",
+      "rows_other": "{{count}} 行",
+      "sheet": "工作表",
+      "noRows": "表格中还没有行。",
+      "columns": "列",
+      "noColumns": "第一行中没有找到列名。",
+      "columnsHint": "点击某一列，可将其添加到正在输入的文本，或所选的文本或二维码中。未选择任何内容时，会作为新文本添加。",
+      "unknown": "没有与这些占位符匹配的列，它们将保持原样：{{names}}",
+      "showValues": "在页面上显示某一行的值",
+      "previous": "上一行",
+      "next": "下一行",
+      "row": "第 {{row}} 行，共 {{total}} 行",
+      "previewLimit_one": "只能预览前 {{count}} 行；导出时会使用所有行。",
+      "previewLimit_other": "只能预览前 {{count}} 行；导出时会使用所有行。"
     }
   }
 }

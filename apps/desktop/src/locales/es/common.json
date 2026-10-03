@@ -6075,7 +6075,8 @@
       "noDesign": "Este PDF no contiene un diseño de Studio.",
       "missingImage": "No se encontró una imagen usada en el diseño: {{path}}",
       "tooManyOutputPages": "El resultado tendría más de {{limit}} páginas. Use menos filas o páginas.",
-      "badPath": "Un dibujo del diseño tiene datos de contorno que no se pueden leer."
+      "badPath": "Un dibujo del diseño tiene datos de contorno que no se pueden leer.",
+      "splitNeedsPdf": "Un archivo por fila solo funciona con PDF."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",
@@ -6549,7 +6550,8 @@
       "label": "Agregar y organizar",
       "elements": "Elementos",
       "layers": "Capas",
-      "templates": "Plantillas"
+      "templates": "Plantillas",
+      "data": "Datos"
     },
     "elements": {
       "text": "Texto",
@@ -6734,7 +6736,26 @@
       "idleDescription": "El texto se puede seleccionar y las fuentes se incrustan en el PDF.",
       "missingGlyphs": "Algunos caracteres no están en la fuente elegida y podrían no mostrarse: {{glyphs}}",
       "embed": "Mantener editable en Studio",
-      "embedHint": "El diseño se guarda dentro del PDF, así que al abrir el PDF se ofrece Editar en Studio. Las imágenes aumentan el tamaño del archivo."
+      "embedHint": "El diseño se guarda dentro del PDF, así que al abrir el PDF se ofrece Editar en Studio. Las imágenes aumentan el tamaño del archivo.",
+      "runRows_one": "Exportar {{count}} copia",
+      "runRows_other": "Exportar {{count}} copias",
+      "useData_one": "Rellenar desde la tabla ({{count}} fila)",
+      "useData_other": "Rellenar desde la tabla ({{count}} filas)",
+      "useDataHint": "Cada fila recibe su propia copia del diseño, con los marcadores sustituidos por los valores de esa fila.",
+      "mode": "Salida",
+      "modes": {
+        "combined": "Un solo PDF",
+        "split": "Un archivo por fila"
+      },
+      "pattern": "Nombre de archivo",
+      "patternHint": "Marcadores: {{columns}} {n}. A los nombres repetidos se les añade -2, -3.",
+      "sign": "Firmar el PDF",
+      "signEach": "Firmar cada PDF",
+      "signHint": "Añade una firma digital invisible con su certificado .p12 o .pfx.",
+      "doneFiles_one": "{{count}} archivo exportado",
+      "doneFiles_other": "{{count}} archivos exportados",
+      "idleRows_one": "Se creará {{count}} copia a partir de la tabla.",
+      "idleRows_other": "Se crearán {{count}} copias a partir de la tabla."
     },
     "project": {
       "open": "Abrir diseño…",
@@ -7192,6 +7213,36 @@
       "fragile": "Frágil",
       "stickerTitle": "¡Hola!",
       "stickerLine": "Que tenga un gran día"
+    },
+    "data": {
+      "pick": "Conectar una tabla",
+      "pickDescription": "Elija un archivo CSV o Excel. Cada fila se convierte en su propia copia del diseño.",
+      "files": "Tablas (CSV, Excel)",
+      "builtins": "Siempre disponibles",
+      "builtin": {
+        "n": "Número de fila",
+        "date": "Fecha de hoy"
+      },
+      "builtinsHint": "{n} se convierte en 1, 2, 3… en cada copia y {date} en la fecha de hoy.",
+      "insert": "Insertar {{token}}",
+      "reload": "Volver a leer la tabla",
+      "remove": "Desconectar la tabla",
+      "change": "Elegir otra tabla",
+      "reading": "Leyendo la tabla…",
+      "rows_one": "{{count}} fila",
+      "rows_other": "{{count}} filas",
+      "sheet": "Hoja",
+      "noRows": "La tabla aún no tiene filas.",
+      "columns": "Columnas",
+      "noColumns": "No se encontraron nombres de columna en la primera fila.",
+      "columnsHint": "Haga clic en una columna para añadirla al texto que está escribiendo o al texto o código QR seleccionado. Si no hay nada seleccionado, se añade como texto nuevo.",
+      "unknown": "Ninguna columna coincide con estos marcadores, así que se quedan como están: {{names}}",
+      "showValues": "Mostrar los valores de una fila en la página",
+      "previous": "Fila anterior",
+      "next": "Fila siguiente",
+      "row": "Fila {{row}} de {{total}}",
+      "previewLimit_one": "Solo se puede previsualizar la primera fila ({{count}}); la exportación usa todas las filas.",
+      "previewLimit_other": "Solo se pueden previsualizar las primeras {{count}} filas; la exportación usa todas las filas."
     }
   }
 }

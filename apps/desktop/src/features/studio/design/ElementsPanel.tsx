@@ -24,8 +24,10 @@ import { insertTemplate } from "../templates/apply";
 import { buildTemplate } from "../templates/catalog";
 import type { StudioTemplate } from "../templates/kit";
 import { TemplateGallery } from "../templates/TemplateGallery";
+import { DataTab } from "../merge/DataTab";
 
-type Tab = "templates" | "elements" | "layers";
+type Tab = "templates" | "elements" | "layers" | "data";
+const TABS: Tab[] = ["templates", "elements", "data", "layers"];
 const TEXT_PRESETS = [
   { key: "heading", fontSize: 44, bold: true },
   { key: "subheading", fontSize: 26, bold: true },
@@ -293,11 +295,11 @@ function LayersTab() {
 export function ElementsPanel() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("elements");
-  const body = tab === "templates" ? <TemplatesTab /> : tab === "elements" ? <ElementsTab /> : <LayersTab />;
+  const body = tab === "templates" ? <TemplatesTab /> : tab === "elements" ? <ElementsTab /> : tab === "data" ? <DataTab /> : <LayersTab />;
   return (
     <aside aria-label={t("studio.panel.label")} className="glass flex w-72 shrink-0 flex-col border-r border-border/60">
       <div className="border-b border-border/60 p-3">
-        <Segmented size="sm" value={tab} options={["templates", "elements", "layers"] as const} labelOf={(value) => t(`studio.panel.${value}`)} onChange={setTab} ariaLabel={t("studio.panel.label")} className="w-full" />
+        <Segmented size="sm" value={tab} options={TABS} labelOf={(value) => t(`studio.panel.${value}`)} onChange={setTab} ariaLabel={t("studio.panel.label")} className="w-full" />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
     </aside>

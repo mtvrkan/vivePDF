@@ -230,9 +230,17 @@ export type StudioRenderParams = {
   format?: StudioExportFormat;
   dpi?: number;
   embed?: StudioEmbed | null;
-  output: string;
+  output?: string;
   overwrite?: boolean;
+  dataPath?: string | null;
+  sheet?: string | null;
+  split?: boolean;
+  outputDir?: string | null;
+  pattern?: string;
+  sign?: StudioSignOptions | null;
 };
+
+export type StudioSignOptions = { certificatePath: string; certificatePassword: string; reason?: string; location?: string };
 
 export type StudioEmbed = { design: StudioDesign; assets: string[] };
 

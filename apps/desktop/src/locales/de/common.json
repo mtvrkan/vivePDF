@@ -6075,7 +6075,8 @@
       "noDesign": "Dieses PDF enthält kein Studio-Design.",
       "missingImage": "Ein im Design verwendetes Bild wurde nicht gefunden: {{path}}",
       "tooManyOutputPages": "Das Ergebnis hätte mehr als {{limit}} Seiten. Verwenden Sie weniger Zeilen oder Seiten.",
-      "badPath": "Eine Zeichnung im Design enthält Umrissdaten, die nicht gelesen werden können."
+      "badPath": "Eine Zeichnung im Design enthält Umrissdaten, die nicht gelesen werden können.",
+      "splitNeedsPdf": "Eine Datei pro Zeile funktioniert nur mit PDF."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -6549,7 +6550,8 @@
       "label": "Hinzufügen und anordnen",
       "elements": "Elemente",
       "layers": "Ebenen",
-      "templates": "Vorlagen"
+      "templates": "Vorlagen",
+      "data": "Daten"
     },
     "elements": {
       "text": "Text",
@@ -6734,7 +6736,26 @@
       "idleDescription": "Text bleibt markierbar, und die Schriften werden in das PDF eingebettet.",
       "missingGlyphs": "Einige Zeichen fehlen in der gewählten Schrift und werden eventuell nicht angezeigt: {{glyphs}}",
       "embed": "Im Studio bearbeitbar halten",
-      "embedHint": "Das Design wird im PDF gespeichert; beim Öffnen des PDFs wird „Im Studio bearbeiten“ angeboten. Bilder vergrößern die Datei."
+      "embedHint": "Das Design wird im PDF gespeichert; beim Öffnen des PDFs wird „Im Studio bearbeiten“ angeboten. Bilder vergrößern die Datei.",
+      "runRows_one": "{{count}} Kopie exportieren",
+      "runRows_other": "{{count}} Kopien exportieren",
+      "useData_one": "Aus der Tabelle füllen ({{count}} Zeile)",
+      "useData_other": "Aus der Tabelle füllen ({{count}} Zeilen)",
+      "useDataHint": "Jede Zeile erhält eine eigene Kopie des Designs, die Platzhalter werden durch die Werte dieser Zeile ersetzt.",
+      "mode": "Ausgabe",
+      "modes": {
+        "combined": "Ein PDF",
+        "split": "Eine Datei pro Zeile"
+      },
+      "pattern": "Dateiname",
+      "patternHint": "Platzhalter: {{columns}} {n}. Doppelte Namen erhalten -2, -3.",
+      "sign": "PDF signieren",
+      "signEach": "Jedes PDF signieren",
+      "signHint": "Fügt mit Ihrem .p12- oder .pfx-Zertifikat eine unsichtbare digitale Signatur hinzu.",
+      "doneFiles_one": "{{count}} Datei exportiert",
+      "doneFiles_other": "{{count}} Dateien exportiert",
+      "idleRows_one": "Aus der Tabelle wird {{count}} Kopie erstellt.",
+      "idleRows_other": "Aus der Tabelle werden {{count}} Kopien erstellt."
     },
     "project": {
       "open": "Design öffnen…",
@@ -7192,6 +7213,36 @@
       "fragile": "Zerbrechlich",
       "stickerTitle": "Hallo!",
       "stickerLine": "Hab einen schönen Tag"
+    },
+    "data": {
+      "pick": "Tabelle verbinden",
+      "pickDescription": "Wählen Sie eine CSV- oder Excel-Datei. Jede Zeile wird zu einer eigenen Kopie des Designs.",
+      "files": "Tabellen (CSV, Excel)",
+      "builtins": "Immer verfügbar",
+      "builtin": {
+        "n": "Zeilennummer",
+        "date": "Heutiges Datum"
+      },
+      "builtinsHint": "{n} wird in jeder Kopie zu 1, 2, 3 … und {date} zum heutigen Datum.",
+      "insert": "{{token}} einfügen",
+      "reload": "Tabelle neu einlesen",
+      "remove": "Tabelle trennen",
+      "change": "Andere Tabelle wählen",
+      "reading": "Tabelle wird gelesen…",
+      "rows_one": "{{count}} Zeile",
+      "rows_other": "{{count}} Zeilen",
+      "sheet": "Blatt",
+      "noRows": "Die Tabelle hat noch keine Zeilen.",
+      "columns": "Spalten",
+      "noColumns": "In der ersten Zeile wurden keine Spaltennamen gefunden.",
+      "columnsHint": "Klicken Sie auf eine Spalte, um sie in den Text einzufügen, den Sie gerade schreiben, oder an den ausgewählten Text bzw. QR-Code anzuhängen. Ist nichts ausgewählt, wird sie als neuer Text eingefügt.",
+      "unknown": "Zu diesen Platzhaltern passt keine Spalte, sie bleiben wie eingegeben: {{names}}",
+      "showValues": "Werte einer Zeile auf der Seite zeigen",
+      "previous": "Vorherige Zeile",
+      "next": "Nächste Zeile",
+      "row": "Zeile {{row}} von {{total}}",
+      "previewLimit_one": "Nur die erste {{count}} Zeile kann in der Vorschau gezeigt werden; der Export verwendet alle Zeilen.",
+      "previewLimit_other": "Nur die ersten {{count}} Zeilen können in der Vorschau gezeigt werden; der Export verwendet alle Zeilen."
     }
   }
 }

@@ -164,6 +164,13 @@ class StudioEmbed(RpcModel):
     assets: list[FilePath] = Field(default_factory=list, max_length=MAX_ASSETS)
 
 
+class StudioSignOptions(RpcModel):
+    certificate_path: str = Field(min_length=1, max_length=4096)
+    certificate_password: str = Field(default="", max_length=1024, repr=False)
+    reason: str = Field(default="", max_length=500)
+    location: str = Field(default="", max_length=500)
+
+
 class StudioRenderParams(RpcModel):
     pages: list[StudioPage] = Field(min_length=1, max_length=MAX_PAGES)
     rows: list[dict[str, Annotated[str, Field(max_length=5000)]]] = Field(
@@ -175,8 +182,14 @@ class StudioRenderParams(RpcModel):
     format: Literal["pdf", "png", "jpg"] = "pdf"
     dpi: int = Field(default=150, ge=36, le=600)
     embed: StudioEmbed | None = None
-    output: str
+    output: str = Field(default="", max_length=4096)
     overwrite: bool = False
+    data_path: str | None = Field(default=None, max_length=4096)
+    sheet: str | None = Field(default=None, max_length=200)
+    split: bool = False
+    output_dir: str | None = Field(default=None, max_length=4096)
+    pattern: str = Field(default="{n}", min_length=1, max_length=120)
+    sign: StudioSignOptions | None = None
 
 
 class StudioRenderResult(RpcModel):
