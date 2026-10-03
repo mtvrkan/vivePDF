@@ -1,6 +1,7 @@
 import { ImageOff, ImagePlus } from "lucide-react";
 import { memo, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioRenderPath, StudioSvgElement, StudioTextElement } from "@/types/studio";
+import { textDirection, textOf } from "../model/design";
 import { elementItems } from "../model/render";
 import { renderFill, roundedRect } from "../model/shapes";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
@@ -64,7 +65,7 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
   }, [element, faces, ref]);
 
   return (
-    <div lang={language} style={textFrameStyle(element)}>
+    <div lang={language} dir={textDirection(textOf(element.runs))} style={textFrameStyle(element)}>
       {editable ?? (
         <div ref={ref} style={textBodyStyle(element, size)}>
           {element.runs.map((run, index) => (

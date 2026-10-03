@@ -30,6 +30,7 @@ from vivepdf.ops._studio_models import (
     StudioVectorItem,
 )
 from vivepdf.ops._studio_project import build_archive, embed_archive, missing_asset
+from vivepdf.ops._studio_shaped import draw_shaped, needs_shaping, run_texts
 from vivepdf.ops._studio_text import TextFaces, draw_text, from_segments, has_placeholders, layout
 from vivepdf.ops._studio_vector import place, vector_document
 from vivepdf.ops._svg import clean_svg_markup, drawing_pdf
@@ -253,6 +254,10 @@ def draw_page(
             continue
         if isinstance(item, StudioTextItem):
             text_faces = _faces(item.font_id, faces)
+            texts = run_texts(item, values, language)
+            if needs_shaping(item, text_faces, texts):
+                draw_shaped(page, item, texts)
+                continue
             placed = (
                 from_segments(item.segments)
                 if item.segments is not None and not has_placeholders(item)

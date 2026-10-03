@@ -125,6 +125,16 @@ export function createQr(value: string, x: number, y: number, side: number): Stu
   return { ...base(x, y, side, side, ""), kind: "qr", value, color: "#000000", background: "#ffffff", errorLevel: "M" };
 }
 
+const STRONG_LETTER = /\p{L}/u;
+const RIGHT_TO_LEFT = /[\p{Script=Hebrew}\p{Script=Arabic}\p{Script=Syriac}\p{Script=Thaana}\p{Script=Nko}]/u;
+
+export function textDirection(text: string): "ltr" | "rtl" {
+  for (const char of text) {
+    if (STRONG_LETTER.test(char)) return RIGHT_TO_LEFT.test(char) ? "rtl" : "ltr";
+  }
+  return "ltr";
+}
+
 export function textOf(runs: StudioTextRun[]): string {
   return runs.map((run) => run.text).join("");
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { STUDIO_DESIGN_VERSION } from "@/types/studio";
-import { createDesign, createQr, createShape, createText, hasPlaceholders, libraryFontIds, normalizeDesign, normalizeElement, placeholdersIn, STUDIO_PAGE_SIZES } from "./design";
+import { createDesign, createQr, createShape, createText, hasPlaceholders, libraryFontIds, normalizeDesign, normalizeElement, placeholdersIn, STUDIO_PAGE_SIZES, textDirection } from "./design";
 
 describe("studio design model", () => {
   it("creates a one-page design with a white background", () => {
@@ -94,5 +94,21 @@ describe("studio design model", () => {
 
     expect(libraryFontIds({ ...design, pages: [page] })).toEqual(["library:inter", "library:lora"]);
     expect(libraryFontIds(null)).toEqual([]);
+  });
+});
+
+describe("studio text direction", () => {
+  const arabic = String.fromCodePoint(0x633, 0x627, 0x631, 0x629);
+
+  it("reads right to left when the first letter is Arabic, even after digits", () => {
+    expect(textDirection(`2027 ${arabic} Studio`)).toBe("rtl");
+  });
+
+  it("reads left to right when a Latin letter comes first", () => {
+    expect(textDirection(`Studio ${arabic}`)).toBe("ltr");
+  });
+
+  it("falls back to left to right without any letter", () => {
+    expect(textDirection("2027 · 12")).toBe("ltr");
   });
 });
