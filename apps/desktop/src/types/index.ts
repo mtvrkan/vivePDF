@@ -1095,6 +1095,28 @@ export type ImagesToPdfResult = OutputResult & { skipped: string[] };
 export type FileToPdfParams = { path: string; output: string; overwrite?: boolean; paper?: "a4" | "letter" };
 export type CreateTemplate = "report" | "letter" | "petition" | "assignment" | "minutes" | "lectureNotes" | "booklet";
 export type CreateFont = "sans" | "serif" | "mono";
+export type BulkKind = "certificate" | "invitation" | "badge";
+export type BulkSigner = { name: string; role: string };
+export type CreateBulkParams = {
+  dataPath: string;
+  sheet?: string;
+  delimiter?: CsvDelimiter;
+  kind: BulkKind;
+  heading?: string;
+  recipient?: string;
+  body?: string;
+  details?: string;
+  signers?: BulkSigner[];
+  font?: CreateFont;
+  accent?: string;
+  logo?: string;
+  split?: boolean;
+  output?: string;
+  outputDir?: string;
+  pattern?: string;
+  overwrite?: boolean;
+};
+export type CreateBulkResult = { outputs: string[]; count: number; pageCount: number; bytes: number };
 export type CreateDocumentParams = {
   path?: string;
   text?: string;

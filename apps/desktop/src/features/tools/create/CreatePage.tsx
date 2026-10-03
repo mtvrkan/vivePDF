@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { FilePlus2, FileText, ImagePlus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
@@ -11,15 +11,18 @@ import { OutputPathField } from "@/components/tool/OutputPathField";
 import { ResultPanel } from "@/components/tool/ResultPanel";
 import { ToolLayout } from "@/components/tool/ToolLayout";
 import { useOperation } from "@/shared/hooks/useOperation";
+import { useTabParam } from "@/shared/hooks/useTabParam";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { basenameOf, defaultOutputDirectory, joinPath, siblingPath } from "@/shared/lib/paths";
 import { createDocument } from "@/shared/rpc/operations";
 import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import type { CreateFont, CreateTemplate } from "@/types";
+import { BulkCreator } from "./BulkCreator";
 import {
   CREATE_FONTS,
   CREATE_PAPERS,
+  CREATE_TABS,
   CREATE_TEMPLATES,
   DEFAULT_ACCENT,
   LOGO_EXTENSIONS,
@@ -30,24 +33,20 @@ import {
   titleLabelKey,
   type CreatePaper,
 } from "./createDocument";
+import { Group } from "./Group";
 
 type SourceMode = "file" | "text";
 
-function Group({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  const labelId = useId();
-  return (
-    <div role="group" aria-labelledby={labelId}>
-      <span id={labelId} className="mb-1.5 block text-sm font-medium text-foreground/80">
-        {label}
-      </span>
-      {children}
-      {hint ? <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p> : null}
-    </div>
-  );
-}
 const SOURCE_MODES: SourceMode[] = ["file", "text"];
 
 export function CreatePage() {
+  const { t } = useTranslation();
+  const [tab, setTab] = useTabParam(CREATE_TABS, "document");
+  const modeSwitch = <Segmented value={tab} options={CREATE_TABS} labelOf={(value) => t(`tools.create.tabs.${value}`)} onChange={setTab} ariaLabel={t("tools.create.tabs.label")} />;
+  return tab === "bulk" ? <BulkCreator key="bulk" modeSwitch={modeSwitch} /> : <DocumentCreator key="document" modeSwitch={modeSwitch} />;
+}
+
+function DocumentCreator({ modeSwitch }: { modeSwitch: ReactNode }) {
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const operation = useOperation(createDocument);
@@ -153,6 +152,7 @@ export function CreatePage() {
       }
       form={
         <fieldset disabled={operation.running} className="contents">
+          <Section>{modeSwitch}</Section>
           <Section title={t("tools.create.source")}>
             <Segmented value={sourceMode} options={SOURCE_MODES} labelOf={(mode) => t(`tools.create.sourceModes.${mode}`)} onChange={setSourceMode} ariaLabel={t("tools.create.source")} />
             {sourceMode === "file" ? (

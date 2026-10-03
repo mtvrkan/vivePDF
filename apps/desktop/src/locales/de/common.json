@@ -2475,7 +2475,8 @@
         "pdfa": "Ein PDF auf Langzeitarchivierung prüfen und eine PDF/A-2b-Kopie speichern.",
         "omr-sheet": "Ankreuzbögen drucken, die sich aus einem Scan zurücklesen lassen.",
         "omr-grade": "Ausgefüllte Antwortbögen lesen, mit einem Schlüssel bewerten und die Ergebnisse exportieren.",
-        "create-document": "Aus reinem Text oder Markdown einen Bericht, Brief, Antrag, ein Protokoll oder eine Broschüre machen"
+        "create-document": "Aus reinem Text oder Markdown einen Bericht, Brief, Antrag, ein Protokoll oder eine Broschüre machen",
+        "create-bulk": "Zertifikate, Einladungen und Namensschilder für jede Zeile einer CSV- oder Excel-Tabelle"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "Hier erscheint Ihr PDF",
         "description": "Wählen Sie eine Textdatei oder schreiben Sie etwas, wählen Sie eine Vorlage und drücken Sie PDF erstellen."
+      },
+      "tabs": {
+        "label": "Was erstellt wird",
+        "document": "Einzelnes Dokument",
+        "bulk": "Aus einer Tabelle"
+      },
+      "bulk": {
+        "title": "Dokumente aus einer Tabelle",
+        "description": "Erstellen Sie für jede Zeile einer CSV- oder Excel-Tabelle ein Zertifikat, eine Einladung oder ein Namensschild.",
+        "data": "Tabelle",
+        "dataFiles": "Tabellen (CSV, Excel)",
+        "pickTitle": "CSV- oder Excel-Tabelle wählen",
+        "pickDescription": ".csv, .tsv oder .xlsx – die erste Zeile enthält die Spaltennamen",
+        "reading": "Tabelle wird gelesen…",
+        "sheet": "Blatt",
+        "noRows": "Die Tabelle hat unter den Spaltennamen keine Zeilen.",
+        "columnsHint": "Klicken Sie auf eine Spalte, um sie in den bearbeiteten Text einzusetzen. Jedes Dokument erhält den Wert seiner Zeile.",
+        "kind": "Dokumentart",
+        "kinds": {
+          "certificate": {
+            "title": "Zertifikat",
+            "description": "A4 quer mit Rahmen und Unterschriften",
+            "suffix": "Zertifikate",
+            "heading": "Zertifikat",
+            "body": "hat das Programm erfolgreich abgeschlossen und erhält dieses Zertifikat.",
+            "examples": {
+              "heading": "Teilnahmezertifikat",
+              "body": "für die Teilnahme am Frühjahrsworkshop",
+              "details": "Berlin, 14. November 2026"
+            }
+          },
+          "invitation": {
+            "title": "Einladung",
+            "description": "A5-Karte mit farbigen Bändern",
+            "suffix": "Einladungen",
+            "heading": "Sie sind eingeladen",
+            "body": "Wir würden uns freuen, Sie bei unserer Veranstaltung begrüßen zu dürfen.",
+            "examples": {
+              "heading": "Jahresgala",
+              "body": "Freuen Sie sich auf einen Abend voller Musik",
+              "details": "Samstag, 14. November · 19:00 · Großer Saal"
+            }
+          },
+          "badge": {
+            "title": "Namensschild",
+            "description": "85 × 54 mm, zehn pro A4-Bogen mit Schnittlinien",
+            "suffix": "Namensschilder",
+            "examples": {
+              "heading": "Konferenz 2026",
+              "body": "Firma oder Funktion",
+              "details": "Saal A · Tagesticket"
+            }
+          }
+        },
+        "recipientExample": "{Name}",
+        "texts": "Texte",
+        "fields": {
+          "heading": "Überschrift",
+          "recipient": "Name",
+          "body": "Text",
+          "details": "Details"
+        },
+        "signers": "Unterschriften",
+        "signerName": "Name",
+        "signerRole": "Funktion",
+        "removeSigner": "Diese Unterschrift entfernen",
+        "addSigner": "Unterschrift hinzufügen",
+        "outputMode": "Speichern als",
+        "outputModes": {
+          "combined": "Ein PDF",
+          "separate": "Eine Datei pro Zeile"
+        },
+        "pattern": "Dateiname",
+        "patternHint": "Spaltennamen in geschweiften Klammern, etwa {Name}; {n} ist die Zeilennummer.",
+        "run_one": "{{count}} Dokument erstellen",
+        "run_other": "{{count}} Dokumente erstellen",
+        "rows_one": "{{count}} Zeile",
+        "rows_other": "{{count}} Zeilen",
+        "resultCaption_one": "{{count}} Dokument",
+        "resultCaption_other": "{{count}} Dokumente",
+        "idle": {
+          "title": "Die Dokumente erscheinen hier",
+          "description": "Wählen Sie eine Tabelle und eine Dokumentart und klicken Sie auf Erstellen."
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "Änderungen werden angewendet…",
     "reading": "Wird gelesen…",
     "searching": "Wird gesucht…",
-    "replacing": "Wird ersetzt…"
+    "replacing": "Wird ersetzt…",
+    "creating": "Dokument {{current}}/{{total}} wird erstellt…"
   },
   "annotate": {
     "select": "Auswählen / verschieben",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "Der Layoutcode dieses Bogens ist unbekannt; lesen Sie die Bögen erneut ein.",
       "tooManyDocuments": "Es können höchstens {{max}} Dokumente gleichzeitig geöffnet sein. Schließen Sie eines, um ein weiteres zu öffnen.",
       "noContent": "Es gibt keinen Text zum Setzen. Wählen Sie eine Datei oder geben Sie Text ein.",
-      "sourceTooLarge": "Die Textdatei ist größer als 20 MB."
+      "sourceTooLarge": "Die Textdatei ist größer als 20 MB.",
+      "unknownFields": "Diese Felder sind keine Spalten der Tabelle: {{names}}.",
+      "tooManyRows": "Die Tabelle hat mehr als 5.000 Zeilen. Teilen Sie sie in kleinere Tabellen auf.",
+      "noOutputDir": "Wählen Sie einen Ordner für die Dateien.",
+      "noOutput": "Wählen Sie, wo das PDF gespeichert wird."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

@@ -2475,7 +2475,8 @@
         "pdfa": "PDF'yi uzun süreli arşive uygunluk için denetleyin ve PDF/A-2b kopyasını kaydedin.",
         "omr-sheet": "Taramadan geri okunabilen optik cevap kâğıtları yazdırın.",
         "omr-grade": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın.",
-        "create-document": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün"
+        "create-document": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün",
+        "create-bulk": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "PDF'iniz burada görünür",
         "description": "Bir metin dosyası seçin ya da yazın, şablonu seçin ve PDF oluştur'a basın."
+      },
+      "tabs": {
+        "label": "Ne oluşturulacak",
+        "document": "Tek belge",
+        "bulk": "Tablodan"
+      },
+      "bulk": {
+        "title": "Tablodan belgeler",
+        "description": "CSV veya Excel tablosunun her satırı için bir sertifika, davetiye ya da yaka kartı hazırlayın.",
+        "data": "Tablo",
+        "dataFiles": "Tablolar (CSV, Excel)",
+        "pickTitle": "CSV veya Excel tablosu seçin",
+        "pickDescription": ".csv, .tsv veya .xlsx — ilk satırda sütun adları olmalı",
+        "reading": "Tablo okunuyor…",
+        "sheet": "Sayfa",
+        "noRows": "Tabloda sütun adlarının altında satır yok.",
+        "columnsHint": "Bir sütuna tıklayınca düzenlediğiniz metne eklenir. Her belge kendi satırındaki değeri alır.",
+        "kind": "Belge türü",
+        "kinds": {
+          "certificate": {
+            "title": "Sertifika",
+            "description": "Çerçeveli, imzalı A4 yatay",
+            "suffix": "sertifikalar",
+            "heading": "Başarı Sertifikası",
+            "body": "programı başarıyla tamamlamış ve bu sertifikayı almaya hak kazanmıştır.",
+            "examples": {
+              "heading": "Katılım Sertifikası",
+              "body": "bahar atölyesine katılımından dolayı",
+              "details": "İstanbul, 14 Kasım 2026"
+            }
+          },
+          "invitation": {
+            "title": "Davetiye",
+            "description": "Renkli şeritli A5 kart",
+            "suffix": "davetiyeler",
+            "heading": "Davetlisiniz",
+            "body": "Etkinliğimizde sizi aramızda görmekten mutluluk duyarız.",
+            "examples": {
+              "heading": "Yıl Sonu Galası",
+              "body": "Müzik dolu bir akşam için sizi bekliyoruz",
+              "details": "14 Kasım Cumartesi · 19.00 · Büyük Salon"
+            }
+          },
+          "badge": {
+            "title": "Yaka kartı",
+            "description": "85 × 54 mm, A4 sayfaya on tane, kesim çizgili",
+            "suffix": "yaka-kartlari",
+            "examples": {
+              "heading": "Konferans 2026",
+              "body": "Kurum veya görev",
+              "details": "A Salonu · Günlük giriş"
+            }
+          }
+        },
+        "recipientExample": "{Ad}",
+        "texts": "Metinler",
+        "fields": {
+          "heading": "Başlık",
+          "recipient": "Ad",
+          "body": "Metin",
+          "details": "Ayrıntılar"
+        },
+        "signers": "İmzalar",
+        "signerName": "Ad soyad",
+        "signerRole": "Unvan",
+        "removeSigner": "Bu imzayı kaldır",
+        "addSigner": "İmza ekle",
+        "outputMode": "Kaydetme biçimi",
+        "outputModes": {
+          "combined": "Tek PDF",
+          "separate": "Her satıra bir dosya"
+        },
+        "pattern": "Dosya adı",
+        "patternHint": "Sütun adlarını süslü parantezle yazın, örneğin {Ad}; {n} satır numarasıdır.",
+        "run_one": "{{count}} belge oluştur",
+        "run_other": "{{count}} belge oluştur",
+        "rows_one": "{{count}} satır",
+        "rows_other": "{{count}} satır",
+        "resultCaption_one": "{{count}} belge",
+        "resultCaption_other": "{{count}} belge",
+        "idle": {
+          "title": "Belgeler burada görünecek",
+          "description": "Bir tablo ve belge türü seçip Oluştur'a tıklayın."
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "Değişiklikler uygulanıyor…",
     "reading": "Okunuyor…",
     "searching": "Aranıyor…",
-    "replacing": "Değiştiriliyor…"
+    "replacing": "Değiştiriliyor…",
+    "creating": "Belge oluşturuluyor {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Seç / taşı",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "Bu formun düzen kodu tanınmadı; formları yeniden okuyun.",
       "tooManyDocuments": "Aynı anda en fazla {{max}} belge açık olabilir. Başka bir belge açmak için birini kapatın.",
       "noContent": "Yerleştirilecek metin yok. Bir dosya seçin ya da metin yazın.",
-      "sourceTooLarge": "Metin dosyası 20 MB'tan büyük."
+      "sourceTooLarge": "Metin dosyası 20 MB'tan büyük.",
+      "unknownFields": "Bu alanlar tabloda sütun olarak yok: {{names}}.",
+      "tooManyRows": "Tabloda 5.000'den fazla satır var. Daha küçük tablolara bölün.",
+      "noOutputDir": "Dosyalar için bir klasör seçin.",
+      "noOutput": "PDF'nin nereye kaydedileceğini seçin."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

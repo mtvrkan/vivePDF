@@ -2475,7 +2475,8 @@
         "pdfa": "Verifica se um PDF está pronto para arquivamento de longo prazo e salva uma cópia em PDF/A-2b.",
         "omr-sheet": "Imprima folhas de respostas com bolhas que podem ser lidas de uma digitalização.",
         "omr-grade": "Leia folhas de respostas preenchidas, corrija com um gabarito e exporte as notas.",
-        "create-document": "Transforme texto ou Markdown em relatório, carta, requerimento, ata ou livreto"
+        "create-document": "Transforme texto ou Markdown em relatório, carta, requerimento, ata ou livreto",
+        "create-bulk": "Certificados, convites e crachás para cada linha de uma tabela CSV ou Excel"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "Seu PDF aparece aqui",
         "description": "Escolha um arquivo de texto ou digite algo, escolha um modelo e clique em Criar PDF."
+      },
+      "tabs": {
+        "label": "O que criar",
+        "document": "Documento único",
+        "bulk": "De uma tabela"
+      },
+      "bulk": {
+        "title": "Documentos de uma tabela",
+        "description": "Crie um certificado, convite ou crachá para cada linha de uma tabela CSV ou Excel.",
+        "data": "Tabela",
+        "dataFiles": "Tabelas (CSV, Excel)",
+        "pickTitle": "Escolha uma tabela CSV ou Excel",
+        "pickDescription": ".csv, .tsv ou .xlsx — a primeira linha traz os nomes das colunas",
+        "reading": "Lendo a tabela…",
+        "sheet": "Planilha",
+        "noRows": "A tabela não tem linhas abaixo dos nomes das colunas.",
+        "columnsHint": "Clique em uma coluna para inseri-la no texto que você está editando. Cada documento recebe o valor da própria linha.",
+        "kind": "Tipo de documento",
+        "kinds": {
+          "certificate": {
+            "title": "Certificado",
+            "description": "A4 paisagem com moldura e assinaturas",
+            "suffix": "certificados",
+            "heading": "Certificado de conclusão",
+            "body": "concluiu o programa com êxito e recebe este certificado.",
+            "examples": {
+              "heading": "Certificado de participação",
+              "body": "pela participação no workshop de primavera",
+              "details": "São Paulo, 14 de novembro de 2026"
+            }
+          },
+          "invitation": {
+            "title": "Convite",
+            "description": "Cartão A5 com faixas coloridas",
+            "suffix": "convites",
+            "heading": "Você está convidado",
+            "body": "Será um prazer receber você em nosso evento.",
+            "examples": {
+              "heading": "Gala anual",
+              "body": "Esperamos você para uma noite de música",
+              "details": "Sábado, 14 de novembro · 19h · Salão principal"
+            }
+          },
+          "badge": {
+            "title": "Crachá",
+            "description": "85 × 54 mm, dez por folha A4 com linhas de corte",
+            "suffix": "crachas",
+            "examples": {
+              "heading": "Congresso 2026",
+              "body": "Empresa ou cargo",
+              "details": "Sala A · Passe diário"
+            }
+          }
+        },
+        "recipientExample": "{Nome}",
+        "texts": "Textos",
+        "fields": {
+          "heading": "Título",
+          "recipient": "Nome",
+          "body": "Texto",
+          "details": "Detalhes"
+        },
+        "signers": "Assinaturas",
+        "signerName": "Nome",
+        "signerRole": "Cargo",
+        "removeSigner": "Remover esta assinatura",
+        "addSigner": "Adicionar assinatura",
+        "outputMode": "Salvar como",
+        "outputModes": {
+          "combined": "Um único PDF",
+          "separate": "Um arquivo por linha"
+        },
+        "pattern": "Nome do arquivo",
+        "patternHint": "Escreva nomes de coluna entre chaves, como {Nome}; {n} é o número da linha.",
+        "run_one": "Criar {{count}} documento",
+        "run_other": "Criar {{count}} documentos",
+        "rows_one": "{{count}} linha",
+        "rows_other": "{{count}} linhas",
+        "resultCaption_one": "{{count}} documento",
+        "resultCaption_other": "{{count}} documentos",
+        "idle": {
+          "title": "Os documentos aparecerão aqui",
+          "description": "Escolha uma tabela e um tipo de documento e clique em Criar."
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "Aplicando alterações…",
     "reading": "Lendo…",
     "searching": "Pesquisando…",
-    "replacing": "Substituindo…"
+    "replacing": "Substituindo…",
+    "creating": "Criando documento {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Selecionar / mover",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "O código de layout desta folha não foi reconhecido; leia as folhas de novo.",
       "tooManyDocuments": "No máximo {{max}} documentos podem ficar abertos ao mesmo tempo. Feche um para abrir outro.",
       "noContent": "Não há texto para diagramar. Escolha um arquivo ou digite um texto.",
-      "sourceTooLarge": "O arquivo de texto tem mais de 20 MB."
+      "sourceTooLarge": "O arquivo de texto tem mais de 20 MB.",
+      "unknownFields": "Estes campos não são colunas da tabela: {{names}}.",
+      "tooManyRows": "A tabela tem mais de 5.000 linhas. Divida-a em tabelas menores.",
+      "noOutputDir": "Escolha uma pasta para os arquivos.",
+      "noOutput": "Escolha onde salvar o PDF."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",

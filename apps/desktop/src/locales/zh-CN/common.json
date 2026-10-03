@@ -2475,7 +2475,8 @@
         "pdfa": "检查 PDF 是否适合长期存档，并保存一份 PDF/A-2b 副本。",
         "omr-sheet": "打印可从扫描件读回的涂卡答题卡。",
         "omr-grade": "读取已填写的答题卡，按答案评分并导出成绩。",
-        "create-document": "将纯文本或 Markdown 制作成报告、信函、申请书、会议纪要或小册子"
+        "create-document": "将纯文本或 Markdown 制作成报告、信函、申请书、会议纪要或小册子",
+        "create-bulk": "为 CSV 或 Excel 表格的每一行生成证书、邀请函和胸牌"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "PDF 将显示在这里",
         "description": "选择文本文件或输入内容，选择模板后点击“创建 PDF”。"
+      },
+      "tabs": {
+        "label": "要创建的内容",
+        "document": "单个文档",
+        "bulk": "从表格生成"
+      },
+      "bulk": {
+        "title": "从表格生成文档",
+        "description": "为 CSV 或 Excel 表格的每一行生成一份证书、邀请函或胸牌。",
+        "data": "表格",
+        "dataFiles": "表格（CSV、Excel）",
+        "pickTitle": "选择 CSV 或 Excel 表格",
+        "pickDescription": ".csv、.tsv 或 .xlsx — 第一行为列名",
+        "reading": "正在读取表格…",
+        "sheet": "工作表",
+        "noRows": "表格的列名下方没有数据行。",
+        "columnsHint": "点击某一列即可将其插入正在编辑的文本。每份文档使用其所在行的值。",
+        "kind": "文档类型",
+        "kinds": {
+          "certificate": {
+            "title": "证书",
+            "description": "A4 横向，带边框和签名",
+            "suffix": "certificates",
+            "heading": "荣誉证书",
+            "body": "已顺利完成全部课程，特发此证书。",
+            "examples": {
+              "heading": "参与证书",
+              "body": "感谢参加春季工作坊",
+              "details": "上海，2026年11月14日"
+            }
+          },
+          "invitation": {
+            "title": "邀请函",
+            "description": "带彩色条带的 A5 卡片",
+            "suffix": "invitations",
+            "heading": "诚挚邀请",
+            "body": "诚邀您莅临我们的活动。",
+            "examples": {
+              "heading": "年度晚会",
+              "body": "诚邀您共度音乐之夜",
+              "details": "11月14日 星期六 · 19:00 · 大礼堂"
+            }
+          },
+          "badge": {
+            "title": "胸牌",
+            "description": "85 × 54 毫米，每张 A4 十个，带裁切线",
+            "suffix": "badges",
+            "examples": {
+              "heading": "2026 大会",
+              "body": "单位或职务",
+              "details": "A 厅 · 单日通行"
+            }
+          }
+        },
+        "recipientExample": "{姓名}",
+        "texts": "文本",
+        "fields": {
+          "heading": "标题",
+          "recipient": "姓名",
+          "body": "正文",
+          "details": "详情"
+        },
+        "signers": "签名",
+        "signerName": "姓名",
+        "signerRole": "职务",
+        "removeSigner": "删除此签名",
+        "addSigner": "添加签名",
+        "outputMode": "保存方式",
+        "outputModes": {
+          "combined": "一个 PDF",
+          "separate": "每行一个文件"
+        },
+        "pattern": "文件名",
+        "patternHint": "用花括号写列名，例如 {姓名}；{n} 为行号。",
+        "run_one": "创建 {{count}} 份文档",
+        "run_other": "创建 {{count}} 份文档",
+        "rows_one": "{{count}} 行",
+        "rows_other": "{{count}} 行",
+        "resultCaption_one": "{{count}} 份文档",
+        "resultCaption_other": "{{count}} 份文档",
+        "idle": {
+          "title": "文档将显示在这里",
+          "description": "选择表格和文档类型，然后点击“创建”。"
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "正在应用更改…",
     "reading": "正在读取…",
     "searching": "正在搜索…",
-    "replacing": "正在替换…"
+    "replacing": "正在替换…",
+    "creating": "正在创建文档 {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "选择 / 移动",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "无法识别这张答题卡的版式代码，请重新读取。",
       "tooManyDocuments": "最多可同时打开 {{max}} 个文档。请先关闭一个再打开其他文档。",
       "noContent": "没有可排版的文本。请选择文件或输入文本。",
-      "sourceTooLarge": "文本文件大于 20 MB。"
+      "sourceTooLarge": "文本文件大于 20 MB。",
+      "unknownFields": "这些字段不是表格中的列：{{names}}。",
+      "tooManyRows": "表格超过 5000 行。请拆分为较小的表格。",
+      "noOutputDir": "请选择保存文件的文件夹。",
+      "noOutput": "请选择 PDF 的保存位置。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",

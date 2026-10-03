@@ -2475,7 +2475,8 @@
         "pdfa": "PDF가 장기 보관에 적합한지 확인하고 PDF/A-2b 사본을 저장합니다.",
         "omr-sheet": "스캔으로 다시 읽을 수 있는 OMR 답안지를 인쇄합니다.",
         "omr-grade": "작성된 답안지를 읽고 정답으로 채점한 뒤 점수를 내보냅니다.",
-        "create-document": "일반 텍스트나 Markdown을 보고서, 편지, 신청서, 회의록, 소책자로 만듭니다"
+        "create-document": "일반 텍스트나 Markdown을 보고서, 편지, 신청서, 회의록, 소책자로 만듭니다",
+        "create-bulk": "CSV 또는 Excel 표의 행마다 인증서, 초대장, 이름표 만들기"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "PDF가 여기에 나타납니다",
         "description": "텍스트 파일을 고르거나 입력하고, 템플릿을 고른 뒤 PDF 만들기를 누르세요."
+      },
+      "tabs": {
+        "label": "만들 항목",
+        "document": "단일 문서",
+        "bulk": "표에서 만들기"
+      },
+      "bulk": {
+        "title": "표에서 문서 만들기",
+        "description": "CSV 또는 Excel 표의 행마다 수료 인증서, 초대장 또는 이름표를 만듭니다.",
+        "data": "표",
+        "dataFiles": "표 (CSV, Excel)",
+        "pickTitle": "CSV 또는 Excel 표 선택",
+        "pickDescription": ".csv, .tsv 또는 .xlsx — 첫 행에 열 이름이 있어야 합니다",
+        "reading": "표를 읽는 중…",
+        "sheet": "시트",
+        "noRows": "열 이름 아래에 행이 없습니다.",
+        "columnsHint": "열을 클릭하면 편집 중인 텍스트에 들어갑니다. 각 문서에는 해당 행의 값이 들어갑니다.",
+        "kind": "문서 종류",
+        "kinds": {
+          "certificate": {
+            "title": "인증서",
+            "description": "테두리와 서명란이 있는 A4 가로",
+            "suffix": "certificates",
+            "heading": "수료 인증서",
+            "body": "위 사람은 본 과정을 성공적으로 수료하였기에 이 인증서를 수여합니다.",
+            "examples": {
+              "heading": "참가 인증서",
+              "body": "봄 워크숍 참가를 인정하여",
+              "details": "서울, 2026년 11월 14일"
+            }
+          },
+          "invitation": {
+            "title": "초대장",
+            "description": "색 띠가 있는 A5 카드",
+            "suffix": "invitations",
+            "heading": "초대합니다",
+            "body": "저희 행사에 귀하를 모시게 되어 기쁩니다.",
+            "examples": {
+              "heading": "연례 갈라",
+              "body": "음악이 있는 저녁에 초대합니다",
+              "details": "11월 14일 토요일 · 19:00 · 대강당"
+            }
+          },
+          "badge": {
+            "title": "이름표",
+            "description": "85 × 54mm, A4 한 장에 10개, 자르는 선 포함",
+            "suffix": "badges",
+            "examples": {
+              "heading": "컨퍼런스 2026",
+              "body": "소속 또는 직함",
+              "details": "A홀 · 1일 출입증"
+            }
+          }
+        },
+        "recipientExample": "{이름}",
+        "texts": "텍스트",
+        "fields": {
+          "heading": "제목",
+          "recipient": "이름",
+          "body": "본문",
+          "details": "세부 정보"
+        },
+        "signers": "서명",
+        "signerName": "이름",
+        "signerRole": "직함",
+        "removeSigner": "이 서명 제거",
+        "addSigner": "서명 추가",
+        "outputMode": "저장 방식",
+        "outputModes": {
+          "combined": "PDF 하나",
+          "separate": "행마다 파일 하나"
+        },
+        "pattern": "파일 이름",
+        "patternHint": "열 이름을 중괄호로 감싸 쓰세요(예: {이름}). {n}은 행 번호입니다.",
+        "run_one": "문서 {{count}}개 만들기",
+        "run_other": "문서 {{count}}개 만들기",
+        "rows_one": "{{count}}행",
+        "rows_other": "{{count}}행",
+        "resultCaption_one": "문서 {{count}}개",
+        "resultCaption_other": "문서 {{count}}개",
+        "idle": {
+          "title": "여기에 문서가 표시됩니다",
+          "description": "표와 문서 종류를 고른 뒤 만들기를 클릭하세요."
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "변경 사항을 적용하는 중…",
     "reading": "읽는 중…",
     "searching": "검색하는 중…",
-    "replacing": "바꾸는 중…"
+    "replacing": "바꾸는 중…",
+    "creating": "문서 만드는 중 {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "선택 / 이동",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "이 답안지의 레이아웃 코드를 인식할 수 없습니다. 다시 읽어 주세요.",
       "tooManyDocuments": "한 번에 최대 {{max}}개의 문서를 열 수 있습니다. 다른 문서를 열려면 하나를 닫으세요.",
       "noContent": "배치할 텍스트가 없습니다. 파일을 고르거나 텍스트를 입력하세요.",
-      "sourceTooLarge": "텍스트 파일이 20MB보다 큽니다."
+      "sourceTooLarge": "텍스트 파일이 20MB보다 큽니다.",
+      "unknownFields": "다음 필드는 표의 열이 아닙니다: {{names}}.",
+      "tooManyRows": "표에 행이 5,000개를 넘습니다. 더 작은 표로 분할하세요.",
+      "noOutputDir": "파일을 저장할 폴더를 선택하세요.",
+      "noOutput": "PDF를 저장할 위치를 선택하세요."
     },
     "revealEmptyPath": "경로가 비어 있습니다.",
     "revealFailed": "이 위치를 열 수 없습니다.",

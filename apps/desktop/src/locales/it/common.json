@@ -2475,7 +2475,8 @@
         "pdfa": "Controlla se un PDF è adatto all'archiviazione a lungo termine e salva una copia PDF/A-2b.",
         "omr-sheet": "Stampa fogli risposte a bolle leggibili da una scansione.",
         "omr-grade": "Leggi i fogli risposte compilati, valutali con una chiave ed esporta i punteggi.",
-        "create-document": "Trasforma testo o Markdown in un rapporto, una lettera, un'istanza, un verbale o un opuscolo"
+        "create-document": "Trasforma testo o Markdown in un rapporto, una lettera, un'istanza, un verbale o un opuscolo",
+        "create-bulk": "Certificati, inviti e badge per ogni riga di una tabella CSV o Excel"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "Qui comparirà il tuo PDF",
         "description": "Scegli un file di testo o scrivi qualcosa, scegli un modello e premi Crea PDF."
+      },
+      "tabs": {
+        "label": "Cosa creare",
+        "document": "Documento singolo",
+        "bulk": "Da una tabella"
+      },
+      "bulk": {
+        "title": "Documenti da una tabella",
+        "description": "Crea un certificato, un invito o un badge per ogni riga di una tabella CSV o Excel.",
+        "data": "Tabella",
+        "dataFiles": "Tabelle (CSV, Excel)",
+        "pickTitle": "Scegli una tabella CSV o Excel",
+        "pickDescription": ".csv, .tsv o .xlsx — la prima riga contiene i nomi delle colonne",
+        "reading": "Lettura della tabella…",
+        "sheet": "Foglio",
+        "noRows": "La tabella non ha righe sotto i nomi delle colonne.",
+        "columnsHint": "Fai clic su una colonna per inserirla nel testo che stai modificando. Ogni documento riceve il valore della propria riga.",
+        "kind": "Tipo di documento",
+        "kinds": {
+          "certificate": {
+            "title": "Certificato",
+            "description": "A4 orizzontale con cornice e firme",
+            "suffix": "certificati",
+            "heading": "Certificato di merito",
+            "body": "ha completato con successo il programma e riceve questo certificato.",
+            "examples": {
+              "heading": "Certificato di partecipazione",
+              "body": "per aver partecipato al workshop di primavera",
+              "details": "Roma, 14 novembre 2026"
+            }
+          },
+          "invitation": {
+            "title": "Invito",
+            "description": "Biglietto A5 con fasce colorate",
+            "suffix": "inviti",
+            "heading": "Sei invitato",
+            "body": "Saremo lieti di accoglierti al nostro evento.",
+            "examples": {
+              "heading": "Gala annuale",
+              "body": "Ti aspettiamo per una serata di musica",
+              "details": "Sabato 14 novembre · 19:00 · Sala grande"
+            }
+          },
+          "badge": {
+            "title": "Badge",
+            "description": "85 × 54 mm, dieci per foglio A4 con linee di taglio",
+            "suffix": "badge",
+            "examples": {
+              "heading": "Conferenza 2026",
+              "body": "Azienda o ruolo",
+              "details": "Sala A · Pass giornaliero"
+            }
+          }
+        },
+        "recipientExample": "{Nome}",
+        "texts": "Testi",
+        "fields": {
+          "heading": "Titolo",
+          "recipient": "Nome",
+          "body": "Testo",
+          "details": "Dettagli"
+        },
+        "signers": "Firme",
+        "signerName": "Nome",
+        "signerRole": "Ruolo",
+        "removeSigner": "Rimuovi questa firma",
+        "addSigner": "Aggiungi una firma",
+        "outputMode": "Salva come",
+        "outputModes": {
+          "combined": "Un solo PDF",
+          "separate": "Un file per riga"
+        },
+        "pattern": "Nome file",
+        "patternHint": "Scrivi i nomi delle colonne tra graffe, come {Nome}; {n} è il numero di riga.",
+        "run_one": "Crea {{count}} documento",
+        "run_other": "Crea {{count}} documenti",
+        "rows_one": "{{count}} riga",
+        "rows_other": "{{count}} righe",
+        "resultCaption_one": "{{count}} documento",
+        "resultCaption_other": "{{count}} documenti",
+        "idle": {
+          "title": "I documenti appariranno qui",
+          "description": "Scegli una tabella e un tipo di documento, poi fai clic su Crea."
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "Applicazione delle modifiche…",
     "reading": "Lettura…",
     "searching": "Ricerca…",
-    "replacing": "Sostituzione…"
+    "replacing": "Sostituzione…",
+    "creating": "Creazione del documento {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Seleziona / sposta",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "Il codice di impaginazione di questo foglio non è riconosciuto; rileggi i fogli.",
       "tooManyDocuments": "Possono essere aperti al massimo {{max}} documenti contemporaneamente. Chiudine uno per aprirne un altro.",
       "noContent": "Non c'è testo da impaginare. Scegli un file o scrivi del testo.",
-      "sourceTooLarge": "Il file di testo supera i 20 MB."
+      "sourceTooLarge": "Il file di testo supera i 20 MB.",
+      "unknownFields": "Questi campi non sono colonne della tabella: {{names}}.",
+      "tooManyRows": "La tabella ha più di 5.000 righe. Dividila in tabelle più piccole.",
+      "noOutputDir": "Scegli una cartella per i file.",
+      "noOutput": "Scegli dove salvare il PDF."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",

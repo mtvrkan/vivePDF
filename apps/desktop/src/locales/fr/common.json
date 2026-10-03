@@ -2475,7 +2475,8 @@
         "pdfa": "Vérifiez un PDF pour l’archivage à long terme et enregistrez une copie au format PDF/A-2b.",
         "omr-sheet": "Imprimez des grilles de réponses à cocher, relisibles depuis un scan.",
         "omr-grade": "Lisez les grilles remplies, notez-les avec un corrigé et exportez les résultats.",
-        "create-document": "Transformez du texte ou du Markdown en rapport, lettre, requête, procès-verbal ou livret"
+        "create-document": "Transformez du texte ou du Markdown en rapport, lettre, requête, procès-verbal ou livret",
+        "create-bulk": "Certificats, invitations et badges pour chaque ligne d'un tableau CSV ou Excel"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "Votre PDF apparaît ici",
         "description": "Choisissez un fichier texte ou saisissez du texte, choisissez un modèle et appuyez sur Créer le PDF."
+      },
+      "tabs": {
+        "label": "Que créer",
+        "document": "Document unique",
+        "bulk": "Depuis un tableau"
+      },
+      "bulk": {
+        "title": "Documents depuis un tableau",
+        "description": "Créez un certificat, une invitation ou un badge pour chaque ligne d'un tableau CSV ou Excel.",
+        "data": "Tableau",
+        "dataFiles": "Tableaux (CSV, Excel)",
+        "pickTitle": "Choisissez un tableau CSV ou Excel",
+        "pickDescription": ".csv, .tsv ou .xlsx — la première ligne contient les noms de colonne",
+        "reading": "Lecture du tableau…",
+        "sheet": "Feuille",
+        "noRows": "Le tableau n'a aucune ligne sous les noms de colonne.",
+        "columnsHint": "Cliquez sur une colonne pour l'insérer dans le texte en cours. Chaque document reçoit la valeur de sa propre ligne.",
+        "kind": "Type de document",
+        "kinds": {
+          "certificate": {
+            "title": "Certificat",
+            "description": "A4 paysage avec cadre et signatures",
+            "suffix": "certificats",
+            "heading": "Certificat de réussite",
+            "body": "a suivi le programme avec succès et reçoit ce certificat.",
+            "examples": {
+              "heading": "Certificat de participation",
+              "body": "pour sa participation à l'atelier de printemps",
+              "details": "Paris, le 14 novembre 2026"
+            }
+          },
+          "invitation": {
+            "title": "Invitation",
+            "description": "Carte A5 avec bandes de couleur",
+            "suffix": "invitations",
+            "heading": "Vous êtes invité",
+            "body": "Nous serions ravis de vous accueillir à notre événement.",
+            "examples": {
+              "heading": "Gala annuel",
+              "body": "Rejoignez-nous pour une soirée musicale",
+              "details": "Samedi 14 novembre · 19 h · Grande salle"
+            }
+          },
+          "badge": {
+            "title": "Badge",
+            "description": "85 × 54 mm, dix par feuille A4 avec traits de coupe",
+            "suffix": "badges",
+            "examples": {
+              "heading": "Conférence 2026",
+              "body": "Société ou fonction",
+              "details": "Salle A · Pass journée"
+            }
+          }
+        },
+        "recipientExample": "{Nom}",
+        "texts": "Textes",
+        "fields": {
+          "heading": "Titre",
+          "recipient": "Nom",
+          "body": "Texte",
+          "details": "Détails"
+        },
+        "signers": "Signatures",
+        "signerName": "Nom",
+        "signerRole": "Fonction",
+        "removeSigner": "Retirer cette signature",
+        "addSigner": "Ajouter une signature",
+        "outputMode": "Enregistrer en",
+        "outputModes": {
+          "combined": "Un seul PDF",
+          "separate": "Un fichier par ligne"
+        },
+        "pattern": "Nom de fichier",
+        "patternHint": "Écrivez les noms de colonne entre accolades, comme {Nom} ; {n} est le numéro de ligne.",
+        "run_one": "Créer {{count}} document",
+        "run_other": "Créer {{count}} documents",
+        "rows_one": "{{count}} ligne",
+        "rows_other": "{{count}} lignes",
+        "resultCaption_one": "{{count}} document",
+        "resultCaption_other": "{{count}} documents",
+        "idle": {
+          "title": "Les documents apparaîtront ici",
+          "description": "Choisissez un tableau et un type de document, puis cliquez sur Créer."
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "Application des modifications…",
     "reading": "Lecture…",
     "searching": "Recherche…",
-    "replacing": "Remplacement…"
+    "replacing": "Remplacement…",
+    "creating": "Création du document {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Sélectionner / déplacer",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "Le code de mise en page de cette grille est inconnu ; relisez les grilles.",
       "tooManyDocuments": "Au plus {{max}} documents peuvent être ouverts en même temps. Fermez-en un pour en ouvrir un autre.",
       "noContent": "Il n’y a pas de texte à mettre en page. Choisissez un fichier ou saisissez du texte.",
-      "sourceTooLarge": "Le fichier texte dépasse 20 Mo."
+      "sourceTooLarge": "Le fichier texte dépasse 20 Mo.",
+      "unknownFields": "Ces champs ne sont pas des colonnes du tableau : {{names}}.",
+      "tooManyRows": "Le tableau compte plus de 5 000 lignes. Divisez-le en tableaux plus petits.",
+      "noOutputDir": "Choisissez un dossier pour les fichiers.",
+      "noOutput": "Choisissez où enregistrer le PDF."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

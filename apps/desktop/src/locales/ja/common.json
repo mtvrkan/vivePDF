@@ -2475,7 +2475,8 @@
         "pdfa": "PDFが長期保存に適しているか確認し、PDF/A-2b形式のコピーを保存します。",
         "omr-sheet": "スキャンから読み取れるマークシートを印刷します。",
         "omr-grade": "記入済みマークシートを読み取り、正答と照合して採点し、結果を書き出します。",
-        "create-document": "テキストや Markdown を報告書、手紙、申請書、議事録、冊子にします"
+        "create-document": "テキストや Markdown を報告書、手紙、申請書、議事録、冊子にします",
+        "create-bulk": "CSV や Excel の表の行ごとに証明書・招待状・名札を作成"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "ここに PDF が表示されます",
         "description": "テキストファイルを選ぶか入力し、テンプレートを選んで「PDF を作成」を押してください。"
+      },
+      "tabs": {
+        "label": "作成するもの",
+        "document": "単一の文書",
+        "bulk": "表から作成"
+      },
+      "bulk": {
+        "title": "表から文書を作成",
+        "description": "CSV や Excel の表の行ごとに、修了証明書・招待状・名札を作成します。",
+        "data": "表",
+        "dataFiles": "表 (CSV、Excel)",
+        "pickTitle": "CSV または Excel の表を選択",
+        "pickDescription": ".csv、.tsv、.xlsx — 1 行目に列名が必要です",
+        "reading": "表を読み込み中…",
+        "sheet": "シート",
+        "noRows": "列名の下に行がありません。",
+        "columnsHint": "列をクリックすると、編集中のテキストに挿入されます。各文書には自分の行の値が入ります。",
+        "kind": "文書の種類",
+        "kinds": {
+          "certificate": {
+            "title": "証明書",
+            "description": "枠と署名欄のある A4 横",
+            "suffix": "certificates",
+            "heading": "修了証明書",
+            "body": "上記の者は本課程を優秀な成績で修了したことを証明し、本証明書を授与します。",
+            "examples": {
+              "heading": "参加証明書",
+              "body": "春季ワークショップへの参加を証明します",
+              "details": "東京、2026年11月14日"
+            }
+          },
+          "invitation": {
+            "title": "招待状",
+            "description": "色帯のある A5 カード",
+            "suffix": "invitations",
+            "heading": "ご招待",
+            "body": "ぜひ私どものイベントにお越しください。",
+            "examples": {
+              "heading": "年次ガラ",
+              "body": "音楽の夕べにご招待します",
+              "details": "11月14日(土) · 19:00 · 大ホール"
+            }
+          },
+          "badge": {
+            "title": "名札",
+            "description": "85 × 54 mm、A4 1 枚に 10 枚、切り取り線付き",
+            "suffix": "badges",
+            "examples": {
+              "heading": "カンファレンス 2026",
+              "body": "会社名または役職",
+              "details": "A ホール · 1 日パス"
+            }
+          }
+        },
+        "recipientExample": "{氏名}",
+        "texts": "テキスト",
+        "fields": {
+          "heading": "見出し",
+          "recipient": "氏名",
+          "body": "本文",
+          "details": "詳細"
+        },
+        "signers": "署名",
+        "signerName": "氏名",
+        "signerRole": "役職",
+        "removeSigner": "この署名を削除",
+        "addSigner": "署名を追加",
+        "outputMode": "保存形式",
+        "outputModes": {
+          "combined": "1 つの PDF",
+          "separate": "行ごとに 1 ファイル"
+        },
+        "pattern": "ファイル名",
+        "patternHint": "列名を波かっこで囲んで書きます (例: {氏名})。{n} は行番号です。",
+        "run_one": "{{count}} 件の文書を作成",
+        "run_other": "{{count}} 件の文書を作成",
+        "rows_one": "{{count}} 行",
+        "rows_other": "{{count}} 行",
+        "resultCaption_one": "{{count}} 件の文書",
+        "resultCaption_other": "{{count}} 件の文書",
+        "idle": {
+          "title": "ここに文書が表示されます",
+          "description": "表と文書の種類を選んで「作成」をクリックしてください。"
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "変更を適用しています…",
     "reading": "読み込んでいます…",
     "searching": "検索しています…",
-    "replacing": "置換しています…"
+    "replacing": "置換しています…",
+    "creating": "文書を作成中 {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "選択／移動",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "このシートのレイアウトコードを認識できません。もう一度読み取ってください。",
       "tooManyDocuments": "同時に開けるドキュメントは最大 {{max}} 件です。別のドキュメントを開くには、いずれかを閉じてください。",
       "noContent": "組版するテキストがありません。ファイルを選ぶかテキストを入力してください。",
-      "sourceTooLarge": "テキストファイルが 20 MB を超えています。"
+      "sourceTooLarge": "テキストファイルが 20 MB を超えています。",
+      "unknownFields": "次のフィールドは表の列にありません: {{names}}。",
+      "tooManyRows": "表の行が 5,000 を超えています。小さな表に分割してください。",
+      "noOutputDir": "ファイルの保存先フォルダーを選んでください。",
+      "noOutput": "PDF の保存先を選んでください。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",

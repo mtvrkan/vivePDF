@@ -2631,7 +2631,8 @@
         "pdfa": "افحص ملف PDF من حيث الأرشفة طويلة الأمد واحفظ نسخة PDF/A-2b.",
         "omr-sheet": "اطبع أوراق إجابة بدوائر يمكن قراءتها من المسح الضوئي.",
         "omr-grade": "اقرأ أوراق الإجابة المعبأة وصحّحها وفق مفتاح وصدّر الدرجات.",
-        "create-document": "حوّل النص العادي أو Markdown إلى تقرير أو رسالة أو طلب رسمي أو محضر أو كتيّب"
+        "create-document": "حوّل النص العادي أو Markdown إلى تقرير أو رسالة أو طلب رسمي أو محضر أو كتيّب",
+        "create-bulk": "شهادات ودعوات وبطاقات تعريف لكل صف من جدول CSV أو Excel"
       }
     },
     "convert": {
@@ -6046,6 +6047,102 @@
       "idle": {
         "title": "يظهر ملف PDF هنا",
         "description": "اختر ملفًا نصيًا أو اكتب شيئًا، ثم اختر قالبًا واضغط إنشاء PDF."
+      },
+      "tabs": {
+        "label": "ما الذي تريد إنشاءه",
+        "document": "مستند واحد",
+        "bulk": "من جدول"
+      },
+      "bulk": {
+        "title": "مستندات من جدول",
+        "description": "أنشئ شهادة أو دعوة أو بطاقة تعريف لكل صف من جدول CSV أو Excel.",
+        "data": "الجدول",
+        "dataFiles": "جداول (CSV وExcel)",
+        "pickTitle": "اختر جدول CSV أو Excel",
+        "pickDescription": ".csv أو .tsv أو .xlsx — يحتوي الصف الأول على أسماء الأعمدة",
+        "reading": "جارٍ قراءة الجدول…",
+        "sheet": "الورقة",
+        "noRows": "لا توجد صفوف في الجدول تحت أسماء الأعمدة.",
+        "columnsHint": "انقر على عمود لإدراجه في النص الذي تحرّره. يأخذ كل مستند القيمة من صفه.",
+        "kind": "نوع المستند",
+        "kinds": {
+          "certificate": {
+            "title": "شهادة",
+            "description": "A4 أفقي بإطار وتواقيع",
+            "suffix": "certificates",
+            "heading": "شهادة تقدير",
+            "body": "أتمّ البرنامج بنجاح ويُمنح هذه الشهادة.",
+            "examples": {
+              "heading": "شهادة مشاركة",
+              "body": "تقديرًا لمشاركته في ورشة الربيع",
+              "details": "دبي، 14 نوفمبر 2026"
+            }
+          },
+          "invitation": {
+            "title": "دعوة",
+            "description": "بطاقة A5 بأشرطة ملونة",
+            "suffix": "invitations",
+            "heading": "أنت مدعو",
+            "body": "يسعدنا أن نستقبلك في فعاليتنا.",
+            "examples": {
+              "heading": "الحفل السنوي",
+              "body": "ننتظرك في أمسية موسيقية",
+              "details": "السبت 14 نوفمبر · 19:00 · القاعة الكبرى"
+            }
+          },
+          "badge": {
+            "title": "بطاقة تعريف",
+            "description": "85 × 54 مم، عشر بطاقات في ورقة A4 مع خطوط القص",
+            "suffix": "badges",
+            "examples": {
+              "heading": "مؤتمر 2026",
+              "body": "الجهة أو الصفة",
+              "details": "القاعة A · تصريح يومي"
+            }
+          }
+        },
+        "recipientExample": "{الاسم}",
+        "texts": "النصوص",
+        "fields": {
+          "heading": "العنوان",
+          "recipient": "الاسم",
+          "body": "النص",
+          "details": "التفاصيل"
+        },
+        "signers": "التواقيع",
+        "signerName": "الاسم",
+        "signerRole": "الصفة",
+        "removeSigner": "إزالة هذا التوقيع",
+        "addSigner": "إضافة توقيع",
+        "outputMode": "الحفظ بصيغة",
+        "outputModes": {
+          "combined": "ملف PDF واحد",
+          "separate": "ملف لكل صف"
+        },
+        "pattern": "اسم الملف",
+        "patternHint": "اكتب أسماء الأعمدة بين أقواس معقوصة مثل {الاسم}؛ و{n} هو رقم الصف.",
+        "run_zero": "لا مستندات لإنشائها",
+        "run_one": "إنشاء مستند واحد",
+        "run_two": "إنشاء مستندين",
+        "run_few": "إنشاء {{count}} مستندات",
+        "run_many": "إنشاء {{count}} مستندًا",
+        "run_other": "إنشاء {{count}} مستند",
+        "rows_zero": "لا صفوف",
+        "rows_one": "صف واحد",
+        "rows_two": "صفان",
+        "rows_few": "{{count}} صفوف",
+        "rows_many": "{{count}} صفًا",
+        "rows_other": "{{count}} صف",
+        "resultCaption_zero": "لا مستندات",
+        "resultCaption_one": "مستند واحد",
+        "resultCaption_two": "مستندان",
+        "resultCaption_few": "{{count}} مستندات",
+        "resultCaption_many": "{{count}} مستندًا",
+        "resultCaption_other": "{{count}} مستند",
+        "idle": {
+          "title": "ستظهر المستندات هنا",
+          "description": "اختر جدولًا ونوع المستند ثم انقر على إنشاء."
+        }
       }
     }
   },
@@ -6099,7 +6196,8 @@
     "applying": "جارٍ تطبيق التغييرات…",
     "reading": "جارٍ القراءة…",
     "searching": "جارٍ البحث…",
-    "replacing": "جارٍ الاستبدال…"
+    "replacing": "جارٍ الاستبدال…",
+    "creating": "جارٍ إنشاء المستند {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "تحديد / نقل",
@@ -6429,7 +6527,11 @@
       "omrLayoutUnknown": "رمز تخطيط هذه الورقة غير معروف؛ اقرأ الأوراق من جديد.",
       "tooManyDocuments": "يمكن فتح {{max}} مستندًا كحد أقصى في الوقت نفسه. أغلق أحدها لفتح مستند آخر.",
       "noContent": "لا يوجد نص لتنسيقه. اختر ملفًا أو اكتب نصًا.",
-      "sourceTooLarge": "حجم الملف النصي أكبر من 20 ميغابايت."
+      "sourceTooLarge": "حجم الملف النصي أكبر من 20 ميغابايت.",
+      "unknownFields": "هذه الحقول ليست أعمدة في الجدول: {{names}}.",
+      "tooManyRows": "يحتوي الجدول على أكثر من 5000 صف. قسّمه إلى جداول أصغر.",
+      "noOutputDir": "اختر مجلدًا للملفات.",
+      "noOutput": "اختر مكان حفظ ملف PDF."
     },
     "revealEmptyPath": "المسار فارغ.",
     "revealFailed": "تعذّر فتح هذا الموقع.",

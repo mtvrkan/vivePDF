@@ -2475,7 +2475,8 @@
         "pdfa": "Check a PDF for long-term archiving and save a PDF/A-2b copy.",
         "omr-sheet": "Print bubble answer sheets that can be read back from a scan.",
         "omr-grade": "Read filled answer sheets, grade them against a key and export the scores.",
-        "create-document": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet"
+        "create-document": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet",
+        "create-bulk": "Certificates, invitations and name badges for every row of a CSV or Excel table"
       }
     },
     "convert": {
@@ -5327,6 +5328,90 @@
       "idle": {
         "title": "Your PDF appears here",
         "description": "Choose a text file or type something, pick a template and press Create PDF."
+      },
+      "tabs": {
+        "label": "What to create",
+        "document": "Single document",
+        "bulk": "From a table"
+      },
+      "bulk": {
+        "title": "Documents from a table",
+        "description": "Make a certificate, invitation or name badge for every row of a CSV or Excel table.",
+        "data": "Table",
+        "dataFiles": "Tables (CSV, Excel)",
+        "pickTitle": "Choose a CSV or Excel table",
+        "pickDescription": ".csv, .tsv or .xlsx — the first row holds the column names",
+        "reading": "Reading the table…",
+        "sheet": "Sheet",
+        "noRows": "The table has no rows below the column names.",
+        "columnsHint": "Click a column to put it into the text you are editing. Each document gets the value from its own row.",
+        "kind": "Document type",
+        "kinds": {
+          "certificate": {
+            "title": "Certificate",
+            "description": "A4 landscape with a frame and signatures",
+            "suffix": "certificates",
+            "heading": "Certificate of Achievement",
+            "body": "has successfully completed the programme and is awarded this certificate.",
+            "examples": {
+              "heading": "Certificate of Participation",
+              "body": "for taking part in the spring workshop",
+              "details": "Istanbul, 14 November 2026"
+            }
+          },
+          "invitation": {
+            "title": "Invitation",
+            "description": "A5 card with coloured bands",
+            "suffix": "invitations",
+            "heading": "You are invited",
+            "body": "We would be delighted to welcome you to our event.",
+            "examples": {
+              "heading": "Annual Gala",
+              "body": "Join us for an evening of music",
+              "details": "Saturday 14 November · 19:00 · Grand Hall"
+            }
+          },
+          "badge": {
+            "title": "Name badge",
+            "description": "85 × 54 mm, ten to an A4 sheet with cut lines",
+            "suffix": "badges",
+            "examples": {
+              "heading": "Conference 2026",
+              "body": "Company or role",
+              "details": "Hall A · Day pass"
+            }
+          }
+        },
+        "recipientExample": "{Name}",
+        "texts": "Texts",
+        "fields": {
+          "heading": "Heading",
+          "recipient": "Name",
+          "body": "Text",
+          "details": "Details"
+        },
+        "signers": "Signatures",
+        "signerName": "Name",
+        "signerRole": "Title",
+        "removeSigner": "Remove this signature",
+        "addSigner": "Add a signature",
+        "outputMode": "Save as",
+        "outputModes": {
+          "combined": "One PDF",
+          "separate": "A file per row"
+        },
+        "pattern": "File name",
+        "patternHint": "Use column names in braces, such as {Name}; {n} is the row number.",
+        "run_one": "Create {{count}} document",
+        "run_other": "Create {{count}} documents",
+        "rows_one": "{{count}} row",
+        "rows_other": "{{count}} rows",
+        "resultCaption_one": "{{count}} document",
+        "resultCaption_other": "{{count}} documents",
+        "idle": {
+          "title": "The documents will appear here",
+          "description": "Choose a table, pick a document type and click Create."
+        }
       }
     }
   },
@@ -5380,7 +5465,8 @@
     "applying": "Applying changes…",
     "reading": "Reading…",
     "searching": "Searching…",
-    "replacing": "Replacing…"
+    "replacing": "Replacing…",
+    "creating": "Creating document {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Select / move",
@@ -5694,7 +5780,11 @@
       "omrLayoutUnknown": "This sheet's layout code is not recognised; read the sheets again.",
       "tooManyDocuments": "Up to {{max}} documents can be open at once. Close one to open another.",
       "noContent": "There is no text to lay out. Choose a file or type some text.",
-      "sourceTooLarge": "The text file is larger than 20 MB."
+      "sourceTooLarge": "The text file is larger than 20 MB.",
+      "unknownFields": "These fields are not columns of the table: {{names}}.",
+      "tooManyRows": "The table has more than 5,000 rows. Split it into smaller tables.",
+      "noOutputDir": "Choose a folder for the files.",
+      "noOutput": "Choose where to save the PDF."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
