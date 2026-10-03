@@ -1093,6 +1093,29 @@ export type ImagesToPdfParams = {
 };
 export type ImagesToPdfResult = OutputResult & { skipped: string[] };
 export type FileToPdfParams = { path: string; output: string; overwrite?: boolean; paper?: "a4" | "letter" };
+export type CreateTemplate = "report" | "letter" | "petition" | "assignment" | "minutes" | "lectureNotes" | "booklet";
+export type CreateFont = "sans" | "serif" | "mono";
+export type CreateDocumentParams = {
+  path?: string;
+  text?: string;
+  format?: "auto" | "plain" | "markdown";
+  template: CreateTemplate;
+  title?: string;
+  author?: string;
+  date?: string;
+  font?: CreateFont;
+  fontSize?: number;
+  marginMm?: number;
+  accent?: string;
+  logo?: string;
+  header?: string;
+  footer?: string;
+  pageNumbers?: boolean;
+  pageNumberFormat?: string;
+  paper?: "a4" | "letter" | "a5";
+  output: string;
+  overwrite?: boolean;
+};
 export type SvgToPdfParams = { paths: string[]; output: string; overwrite?: boolean };
 export type EpubParams = {
   path: string;

@@ -74,19 +74,19 @@ def markdown_to_html(text: str) -> str:
     return MarkdownIt("commonmark", {"breaks": False}).enable("table").render(text)
 
 
-def render_html_to_pdf(
+def story_pdf_bytes(
     html: str,
-    target: Path,
-    paper: str = "a4",
-    base_dir: Path | None = None,
+    mediabox: pymupdf.Rect,
+    where: pymupdf.Rect,
+    css: str = BASE_CSS,
+    archive_dirs: tuple[Path, ...] = (),
     check_cancelled: Callable[[], None] | None = None,
-) -> int:
+) -> bytes:
     archive = pymupdf.Archive(str(FONT_DIR))
-    if base_dir is not None and base_dir.is_dir():
-        archive.add(str(base_dir))
-    story = pymupdf.Story(html=html, user_css=BASE_CSS, archive=archive)
-    mediabox = pymupdf.paper_rect(paper)
-    where = mediabox + (MARGIN, MARGIN, -MARGIN, -MARGIN)
+    for directory in archive_dirs:
+        if directory.is_dir():
+            archive.add(str(directory))
+    story = pymupdf.Story(html=html, user_css=css, archive=archive)
     buffer = io.BytesIO()
     writer = pymupdf.DocumentWriter(buffer)
     pages = 0
@@ -106,7 +106,27 @@ def render_html_to_pdf(
         writer.end_page()
         pages += 1
     writer.close()
-    with pymupdf.open("pdf", buffer.getvalue()) as document:
+    return buffer.getvalue()
+
+
+def render_html_to_pdf(
+    html: str,
+    target: Path,
+    paper: str = "a4",
+    base_dir: Path | None = None,
+    check_cancelled: Callable[[], None] | None = None,
+) -> int:
+    mediabox = pymupdf.paper_rect(paper)
+    where = mediabox + (MARGIN, MARGIN, -MARGIN, -MARGIN)
+    payload = story_pdf_bytes(
+        html,
+        mediabox,
+        where,
+        archive_dirs=(base_dir,) if base_dir is not None else (),
+        check_cancelled=check_cancelled,
+    )
+    with pymupdf.open("pdf", payload) as document:
+        pages = document.page_count
         with contextlib.suppress(Exception):
             document.subset_fonts(fallback=False)
         save_document(document, target)

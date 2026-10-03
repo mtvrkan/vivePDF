@@ -35,7 +35,8 @@
     "watch": "监控文件夹",
     "preflight": "印前检查",
     "pdfa": "PDF/A 存档",
-    "omr": "答题卡"
+    "omr": "答题卡",
+    "create": "创建 PDF"
   },
   "common": {
     "retry": "重试",
@@ -2473,7 +2474,8 @@
         "autolink": "将文本中的网址和电子邮件地址转换为可点击的链接。",
         "pdfa": "检查 PDF 是否适合长期存档，并保存一份 PDF/A-2b 副本。",
         "omr-sheet": "打印可从扫描件读回的涂卡答题卡。",
-        "omr-grade": "读取已填写的答题卡，按答案评分并导出成绩。"
+        "omr-grade": "读取已填写的答题卡，按答案评分并导出成绩。",
+        "create-document": "将纯文本或 Markdown 制作成报告、信函、申请书、会议纪要或小册子"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "四角定位标记未全部拍到",
         "unreadable": "无法打开文件"
       }
+    },
+    "create": {
+      "description": "用模板、字体、徽标、页眉页脚和页码，把文本或 Markdown 文件排版成完成的 PDF。",
+      "run": "创建 PDF",
+      "source": "内容",
+      "sourceModes": {
+        "file": "来自文件",
+        "text": "输入或粘贴"
+      },
+      "change": "更换…",
+      "pickTitle": "选择文本或 Markdown 文件",
+      "pickDescription": ".txt 或 .md — 也可拖放到窗口",
+      "text": "文本",
+      "textHint": "也可以使用 Markdown：# 标题、- 列表、**粗体**。",
+      "structureHint": "纯文本会自动整理：空行开始新段落，全大写的行成为标题，以 1. 或 - 开头的行成为列表。",
+      "textFiles": "文本和 Markdown",
+      "template": "模板",
+      "templates": {
+        "report": {
+          "title": "报告",
+          "description": "带彩色线条的标题、作者和日期"
+        },
+        "letter": {
+          "title": "信函",
+          "description": "右侧为发件人和日期，主题行和签名"
+        },
+        "petition": {
+          "title": "公文 / 申请书",
+          "description": "收件机关居中，两端对齐正文和签名区"
+        },
+        "assignment": {
+          "title": "作业 / 文章",
+          "description": "居中标题，两端对齐正文"
+        },
+        "minutes": {
+          "title": "会议纪要",
+          "description": "标题、日期和每位与会者的签名行"
+        },
+        "lectureNotes": {
+          "title": "课堂笔记",
+          "description": "紧凑正文，标题醒目，附注释框"
+        },
+        "booklet": {
+          "title": "小册子",
+          "description": "带封面的 A5 页面；每章从新页开始"
+        }
+      },
+      "details": "信息",
+      "fields": {
+        "title": "标题",
+        "subject": "主题",
+        "addressee": "收件机关（例如：XX 区人民政府）",
+        "author": "作者",
+        "sender": "发件人",
+        "signer": "签名人姓名",
+        "attendees": "与会者（用逗号分隔）",
+        "date": "日期"
+      },
+      "look": "外观",
+      "font": "字体",
+      "fonts": {
+        "sans": "无衬线",
+        "serif": "衬线",
+        "mono": "等宽"
+      },
+      "paper": "纸张",
+      "papers": {
+        "a4": "A4",
+        "letter": "Letter",
+        "a5": "A5"
+      },
+      "fontSize": "文字大小",
+      "margins": "页边距",
+      "accent": "强调色",
+      "customColor": "自定义颜色",
+      "logo": "徽标",
+      "logoHint": "PNG 或 JPG，放在第一页顶部。",
+      "pickLogo": "选择徽标…",
+      "removeLogo": "移除徽标",
+      "logoFiles": "图片",
+      "furniture": "页眉和页脚",
+      "header": "页眉文本",
+      "footer": "页脚文本",
+      "pageNumbers": "页码",
+      "pageNumberFormat": "页码格式",
+      "pageNumberFormatHint": "{page} 替换为页码，{total} 替换为总页数。",
+      "pageNumberDefault": "第 {page} 页，共 {total} 页",
+      "defaultName": "文档",
+      "resultCaption_one": "{{count}} 页",
+      "resultCaption_other": "{{count}} 页",
+      "idle": {
+        "title": "PDF 将显示在这里",
+        "description": "选择文本文件或输入内容，选择模板后点击“创建 PDF”。"
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "流程图太大，无法放入一页。",
       "omrTooManyQuestions": "按当前设置，一张答题卡最多只能容纳 {{capacity}} 道题。",
       "omrLayoutUnknown": "无法识别这张答题卡的版式代码，请重新读取。",
-      "tooManyDocuments": "最多可同时打开 {{max}} 个文档。请先关闭一个再打开其他文档。"
+      "tooManyDocuments": "最多可同时打开 {{max}} 个文档。请先关闭一个再打开其他文档。",
+      "noContent": "没有可排版的文本。请选择文件或输入文本。",
+      "sourceTooLarge": "文本文件大于 20 MB。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",

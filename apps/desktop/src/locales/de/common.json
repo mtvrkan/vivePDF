@@ -35,7 +35,8 @@
     "watch": "Überwachte Ordner",
     "preflight": "Druckprüfung",
     "pdfa": "PDF/A-Archiv",
-    "omr": "Antwortbögen"
+    "omr": "Antwortbögen",
+    "create": "PDF erstellen"
   },
   "common": {
     "retry": "Wiederholen",
@@ -2473,7 +2474,8 @@
         "autolink": "Web- und E-Mail-Adressen im Text klickbar machen.",
         "pdfa": "Ein PDF auf Langzeitarchivierung prüfen und eine PDF/A-2b-Kopie speichern.",
         "omr-sheet": "Ankreuzbögen drucken, die sich aus einem Scan zurücklesen lassen.",
-        "omr-grade": "Ausgefüllte Antwortbögen lesen, mit einem Schlüssel bewerten und die Ergebnisse exportieren."
+        "omr-grade": "Ausgefüllte Antwortbögen lesen, mit einem Schlüssel bewerten und die Ergebnisse exportieren.",
+        "create-document": "Aus reinem Text oder Markdown einen Bericht, Brief, Antrag, ein Protokoll oder eine Broschüre machen"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "nicht alle Eckmarken sind sichtbar",
         "unreadable": "die Datei ließ sich nicht öffnen"
       }
+    },
+    "create": {
+      "description": "Setzen Sie eine Text- oder Markdown-Datei mit Vorlage, Schrift, Logo, Kopf- und Fußzeile und Seitenzahlen als fertiges PDF.",
+      "run": "PDF erstellen",
+      "source": "Inhalt",
+      "sourceModes": {
+        "file": "Aus einer Datei",
+        "text": "Eingeben oder einfügen"
+      },
+      "change": "Ändern…",
+      "pickTitle": "Text- oder Markdown-Datei wählen",
+      "pickDescription": ".txt oder .md — oder auf das Fenster ziehen",
+      "text": "Text",
+      "textHint": "Markdown geht auch: # Überschrift, - Liste, **fett**.",
+      "structureHint": "Reiner Text wird automatisch gegliedert: Eine Leerzeile beginnt einen neuen Absatz, eine Zeile in GROSSBUCHSTABEN wird zur Überschrift, Zeilen mit 1. oder - am Anfang werden zu Listen.",
+      "textFiles": "Text und Markdown",
+      "template": "Vorlage",
+      "templates": {
+        "report": {
+          "title": "Bericht",
+          "description": "Titel mit farbiger Linie, Autor und Datum"
+        },
+        "letter": {
+          "title": "Brief",
+          "description": "Absender und Datum rechts, Betreffzeile und Unterschrift"
+        },
+        "petition": {
+          "title": "Amtliches Schreiben / Antrag",
+          "description": "Empfänger zentriert, Blocksatz und Unterschriftsblock"
+        },
+        "assignment": {
+          "title": "Hausarbeit / Artikel",
+          "description": "Zentrierter Titel, Blocksatz"
+        },
+        "minutes": {
+          "title": "Protokoll",
+          "description": "Titel, Datum und eine Unterschriftszeile für jeden Teilnehmer"
+        },
+        "lectureNotes": {
+          "title": "Vorlesungsnotizen",
+          "description": "Kompakter Text mit markierten Überschriften und Notizkästen"
+        },
+        "booklet": {
+          "title": "Broschüre",
+          "description": "A5-Seiten mit Umschlag; jedes Kapitel beginnt auf einer neuen Seite"
+        }
+      },
+      "details": "Angaben",
+      "fields": {
+        "title": "Titel",
+        "subject": "Betreff",
+        "addressee": "Empfänger (zum Beispiel: An das Bezirksamt)",
+        "author": "Autor",
+        "sender": "Absender",
+        "signer": "Name der unterzeichnenden Person",
+        "attendees": "Teilnehmer (mit Kommas trennen)",
+        "date": "Datum"
+      },
+      "look": "Aussehen",
+      "font": "Schrift",
+      "fonts": {
+        "sans": "Serifenlos",
+        "serif": "Serif",
+        "mono": "Festbreite"
+      },
+      "paper": "Papier",
+      "papers": {
+        "a4": "A4",
+        "letter": "Letter",
+        "a5": "A5"
+      },
+      "fontSize": "Textgröße",
+      "margins": "Ränder",
+      "accent": "Akzentfarbe",
+      "customColor": "Eigene Farbe",
+      "logo": "Logo",
+      "logoHint": "PNG oder JPG, oben auf der ersten Seite.",
+      "pickLogo": "Logo wählen…",
+      "removeLogo": "Logo entfernen",
+      "logoFiles": "Bilder",
+      "furniture": "Kopf- und Fußzeile",
+      "header": "Kopfzeilentext",
+      "footer": "Fußzeilentext",
+      "pageNumbers": "Seitenzahlen",
+      "pageNumberFormat": "Format der Seitenzahl",
+      "pageNumberFormatHint": "{page} wird durch die Seite, {total} durch die Seitenzahl ersetzt.",
+      "pageNumberDefault": "Seite {page} von {total}",
+      "defaultName": "dokument",
+      "resultCaption_one": "{{count}} Seite",
+      "resultCaption_other": "{{count}} Seiten",
+      "idle": {
+        "title": "Hier erscheint Ihr PDF",
+        "description": "Wählen Sie eine Textdatei oder schreiben Sie etwas, wählen Sie eine Vorlage und drücken Sie PDF erstellen."
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "Das Flussdiagramm ist zu groß für eine Seite.",
       "omrTooManyQuestions": "Mit diesen Einstellungen passen nur {{capacity}} Fragen auf einen Bogen.",
       "omrLayoutUnknown": "Der Layoutcode dieses Bogens ist unbekannt; lesen Sie die Bögen erneut ein.",
-      "tooManyDocuments": "Es können höchstens {{max}} Dokumente gleichzeitig geöffnet sein. Schließen Sie eines, um ein weiteres zu öffnen."
+      "tooManyDocuments": "Es können höchstens {{max}} Dokumente gleichzeitig geöffnet sein. Schließen Sie eines, um ein weiteres zu öffnen.",
+      "noContent": "Es gibt keinen Text zum Setzen. Wählen Sie eine Datei oder geben Sie Text ein.",
+      "sourceTooLarge": "Die Textdatei ist größer als 20 MB."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

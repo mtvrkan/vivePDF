@@ -35,7 +35,8 @@
     "watch": "Dossiers surveillés",
     "preflight": "Contrôle d’impression",
     "pdfa": "Archive PDF/A",
-    "omr": "Grilles de réponses"
+    "omr": "Grilles de réponses",
+    "create": "Créer un PDF"
   },
   "common": {
     "retry": "Réessayer",
@@ -2473,7 +2474,8 @@
         "autolink": "Transformez les adresses web et e-mail du texte en liens cliquables.",
         "pdfa": "Vérifiez un PDF pour l’archivage à long terme et enregistrez une copie au format PDF/A-2b.",
         "omr-sheet": "Imprimez des grilles de réponses à cocher, relisibles depuis un scan.",
-        "omr-grade": "Lisez les grilles remplies, notez-les avec un corrigé et exportez les résultats."
+        "omr-grade": "Lisez les grilles remplies, notez-les avec un corrigé et exportez les résultats.",
+        "create-document": "Transformez du texte ou du Markdown en rapport, lettre, requête, procès-verbal ou livret"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "les repères des coins ne sont pas tous visibles",
         "unreadable": "le fichier n'a pas pu être ouvert"
       }
+    },
+    "create": {
+      "description": "Mettez en page un fichier texte ou Markdown en PDF fini avec un modèle, des polices, un logo, un en-tête, un pied de page et des numéros de page.",
+      "run": "Créer le PDF",
+      "source": "Contenu",
+      "sourceModes": {
+        "file": "Depuis un fichier",
+        "text": "Saisir ou coller"
+      },
+      "change": "Changer…",
+      "pickTitle": "Choisissez un fichier texte ou Markdown",
+      "pickDescription": ".txt ou .md — ou déposez-le sur la fenêtre",
+      "text": "Texte",
+      "textHint": "Le Markdown fonctionne aussi : # titre, - liste, **gras**.",
+      "structureHint": "Le texte brut est structuré automatiquement : une ligne vide commence un paragraphe, une ligne en MAJUSCULES devient un titre et les lignes commençant par 1. ou - deviennent des listes.",
+      "textFiles": "Texte et Markdown",
+      "template": "Modèle",
+      "templates": {
+        "report": {
+          "title": "Rapport",
+          "description": "Titre souligné en couleur, auteur et date"
+        },
+        "letter": {
+          "title": "Lettre",
+          "description": "Expéditeur et date à droite, objet et signature"
+        },
+        "petition": {
+          "title": "Courrier officiel / requête",
+          "description": "Destinataire centré, texte justifié et bloc de signature"
+        },
+        "assignment": {
+          "title": "Devoir / article",
+          "description": "Titre centré, texte justifié"
+        },
+        "minutes": {
+          "title": "Procès-verbal",
+          "description": "Titre, date et une ligne de signature par participant"
+        },
+        "lectureNotes": {
+          "title": "Notes de cours",
+          "description": "Texte compact, titres marqués et encadrés de note"
+        },
+        "booklet": {
+          "title": "Livret",
+          "description": "Pages A5 avec couverture ; chaque chapitre commence sur une nouvelle page"
+        }
+      },
+      "details": "Informations",
+      "fields": {
+        "title": "Titre",
+        "subject": "Objet",
+        "addressee": "Destinataire (par exemple : À la Préfecture)",
+        "author": "Auteur",
+        "sender": "Expéditeur",
+        "signer": "Nom du signataire",
+        "attendees": "Participants (séparés par des virgules)",
+        "date": "Date"
+      },
+      "look": "Apparence",
+      "font": "Police",
+      "fonts": {
+        "sans": "Sans",
+        "serif": "Serif",
+        "mono": "Chasse fixe"
+      },
+      "paper": "Papier",
+      "papers": {
+        "a4": "A4",
+        "letter": "Letter",
+        "a5": "A5"
+      },
+      "fontSize": "Taille du texte",
+      "margins": "Marges",
+      "accent": "Couleur d’accent",
+      "customColor": "Couleur personnalisée",
+      "logo": "Logo",
+      "logoHint": "PNG ou JPG, en haut de la première page.",
+      "pickLogo": "Choisir un logo…",
+      "removeLogo": "Retirer le logo",
+      "logoFiles": "Images",
+      "furniture": "En-tête et pied de page",
+      "header": "Texte d’en-tête",
+      "footer": "Texte de pied de page",
+      "pageNumbers": "Numéros de page",
+      "pageNumberFormat": "Format du numéro de page",
+      "pageNumberFormatHint": "{page} est remplacé par la page, {total} par le nombre de pages.",
+      "pageNumberDefault": "Page {page} sur {total}",
+      "defaultName": "document",
+      "resultCaption_one": "{{count}} page",
+      "resultCaption_other": "{{count}} pages",
+      "idle": {
+        "title": "Votre PDF apparaît ici",
+        "description": "Choisissez un fichier texte ou saisissez du texte, choisissez un modèle et appuyez sur Créer le PDF."
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "L'organigramme est trop grand pour une page.",
       "omrTooManyQuestions": "Avec ces réglages, seules {{capacity}} questions tiennent sur une grille.",
       "omrLayoutUnknown": "Le code de mise en page de cette grille est inconnu ; relisez les grilles.",
-      "tooManyDocuments": "Au plus {{max}} documents peuvent être ouverts en même temps. Fermez-en un pour en ouvrir un autre."
+      "tooManyDocuments": "Au plus {{max}} documents peuvent être ouverts en même temps. Fermez-en un pour en ouvrir un autre.",
+      "noContent": "Il n’y a pas de texte à mettre en page. Choisissez un fichier ou saisissez du texte.",
+      "sourceTooLarge": "Le fichier texte dépasse 20 Mo."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

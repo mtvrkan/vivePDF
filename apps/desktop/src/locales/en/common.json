@@ -35,7 +35,8 @@
     "watch": "Watched folders",
     "preflight": "Print check",
     "pdfa": "PDF/A archive",
-    "omr": "Answer sheets"
+    "omr": "Answer sheets",
+    "create": "Create PDF"
   },
   "common": {
     "retry": "Retry",
@@ -2473,7 +2474,8 @@
         "autolink": "Make web addresses and e-mail addresses in the text clickable.",
         "pdfa": "Check a PDF for long-term archiving and save a PDF/A-2b copy.",
         "omr-sheet": "Print bubble answer sheets that can be read back from a scan.",
-        "omr-grade": "Read filled answer sheets, grade them against a key and export the scores."
+        "omr-grade": "Read filled answer sheets, grade them against a key and export the scores.",
+        "create-document": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "the corner marks are not all visible",
         "unreadable": "the file could not be opened"
       }
+    },
+    "create": {
+      "description": "Lay out a text or Markdown file as a finished PDF with a template, fonts, a logo, a header and footer and page numbers.",
+      "run": "Create PDF",
+      "source": "Content",
+      "sourceModes": {
+        "file": "From a file",
+        "text": "Type or paste"
+      },
+      "change": "Change…",
+      "pickTitle": "Choose a text or Markdown file",
+      "pickDescription": ".txt or .md — or drop it on the window",
+      "text": "Text",
+      "textHint": "Markdown works too: # heading, - list, **bold**.",
+      "structureHint": "Plain text is structured for you: a blank line starts a new paragraph, a line in CAPITALS becomes a heading, and lines starting with 1. or - become lists.",
+      "textFiles": "Text and Markdown",
+      "template": "Template",
+      "templates": {
+        "report": {
+          "title": "Report",
+          "description": "Title with a coloured rule, author and date"
+        },
+        "letter": {
+          "title": "Letter",
+          "description": "Sender and date on the right, subject line and signature"
+        },
+        "petition": {
+          "title": "Official letter / petition",
+          "description": "Addressee centred, justified text and a signature block"
+        },
+        "assignment": {
+          "title": "Assignment / article",
+          "description": "Centred title page heading, justified text"
+        },
+        "minutes": {
+          "title": "Minutes",
+          "description": "Title, date and a signature line for every attendee"
+        },
+        "lectureNotes": {
+          "title": "Lecture notes",
+          "description": "Compact text with marked headings and note boxes"
+        },
+        "booklet": {
+          "title": "Booklet",
+          "description": "A5 pages with a cover; each chapter starts on a new page"
+        }
+      },
+      "details": "Details",
+      "fields": {
+        "title": "Title",
+        "subject": "Subject",
+        "addressee": "Addressee (for example: To the District Office)",
+        "author": "Author",
+        "sender": "Sender",
+        "signer": "Name of the signer",
+        "attendees": "Attendees (separate with commas)",
+        "date": "Date"
+      },
+      "look": "Look",
+      "font": "Font",
+      "fonts": {
+        "sans": "Sans",
+        "serif": "Serif",
+        "mono": "Monospace"
+      },
+      "paper": "Paper",
+      "papers": {
+        "a4": "A4",
+        "letter": "Letter",
+        "a5": "A5"
+      },
+      "fontSize": "Text size",
+      "margins": "Margins",
+      "accent": "Accent colour",
+      "customColor": "Custom colour",
+      "logo": "Logo",
+      "logoHint": "PNG or JPG, placed at the top of the first page.",
+      "pickLogo": "Choose a logo…",
+      "removeLogo": "Remove the logo",
+      "logoFiles": "Pictures",
+      "furniture": "Header and footer",
+      "header": "Header text",
+      "footer": "Footer text",
+      "pageNumbers": "Page numbers",
+      "pageNumberFormat": "Page number format",
+      "pageNumberFormatHint": "{page} is replaced by the page, {total} by the page count.",
+      "pageNumberDefault": "Page {page} of {total}",
+      "defaultName": "document",
+      "resultCaption_one": "{{count}} page",
+      "resultCaption_other": "{{count}} pages",
+      "idle": {
+        "title": "Your PDF appears here",
+        "description": "Choose a text file or type something, pick a template and press Create PDF."
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "The flowchart is too large to fit on a page.",
       "omrTooManyQuestions": "Only {{capacity}} questions fit on one sheet with these settings.",
       "omrLayoutUnknown": "This sheet's layout code is not recognised; read the sheets again.",
-      "tooManyDocuments": "Up to {{max}} documents can be open at once. Close one to open another."
+      "tooManyDocuments": "Up to {{max}} documents can be open at once. Close one to open another.",
+      "noContent": "There is no text to lay out. Choose a file or type some text.",
+      "sourceTooLarge": "The text file is larger than 20 MB."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

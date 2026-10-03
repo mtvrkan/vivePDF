@@ -66,6 +66,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "convert.file_to_pdf",
         "convert.svg_to_pdf",
     ),
+    "create": ("create.document",),
     "edit": (
         "security.redact",
         "security.redact_preview",

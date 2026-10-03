@@ -35,7 +35,8 @@
     "watch": "監視フォルダー",
     "preflight": "印刷前チェック",
     "pdfa": "PDF/A アーカイブ",
-    "omr": "マークシート"
+    "omr": "マークシート",
+    "create": "PDF を作成"
   },
   "common": {
     "retry": "再試行",
@@ -2473,7 +2474,8 @@
         "autolink": "文中のWebアドレスとメールアドレスをクリックできるようにします。",
         "pdfa": "PDFが長期保存に適しているか確認し、PDF/A-2b形式のコピーを保存します。",
         "omr-sheet": "スキャンから読み取れるマークシートを印刷します。",
-        "omr-grade": "記入済みマークシートを読み取り、正答と照合して採点し、結果を書き出します。"
+        "omr-grade": "記入済みマークシートを読み取り、正答と照合して採点し、結果を書き出します。",
+        "create-document": "テキストや Markdown を報告書、手紙、申請書、議事録、冊子にします"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "四隅のマークがすべて写っていません",
         "unreadable": "ファイルを開けませんでした"
       }
+    },
+    "create": {
+      "description": "テキストまたは Markdown ファイルを、テンプレート、フォント、ロゴ、ヘッダー、フッター、ページ番号付きの完成した PDF にします。",
+      "run": "PDF を作成",
+      "source": "内容",
+      "sourceModes": {
+        "file": "ファイルから",
+        "text": "入力または貼り付け"
+      },
+      "change": "変更…",
+      "pickTitle": "テキストまたは Markdown ファイルを選択",
+      "pickDescription": ".txt または .md — ウィンドウにドロップしても可",
+      "text": "テキスト",
+      "textHint": "Markdown も使えます: # 見出し、- リスト、**太字**。",
+      "structureHint": "プレーンテキストは自動で構成されます。空行で段落が始まり、すべて大文字の行は見出しに、1. や - で始まる行はリストになります。",
+      "textFiles": "テキストと Markdown",
+      "template": "テンプレート",
+      "templates": {
+        "report": {
+          "title": "報告書",
+          "description": "色付きの罫線付きタイトル、著者と日付"
+        },
+        "letter": {
+          "title": "手紙",
+          "description": "右側に差出人と日付、件名と署名"
+        },
+        "petition": {
+          "title": "公文書 / 申請書",
+          "description": "中央に宛先、両端揃えの本文と署名欄"
+        },
+        "assignment": {
+          "title": "課題 / 論文",
+          "description": "中央揃えのタイトル、両端揃えの本文"
+        },
+        "minutes": {
+          "title": "議事録",
+          "description": "タイトル、日付、出席者ごとの署名欄"
+        },
+        "lectureNotes": {
+          "title": "講義ノート",
+          "description": "見出しを強調したコンパクトな本文とメモ枠"
+        },
+        "booklet": {
+          "title": "冊子",
+          "description": "表紙付きの A5 ページ。各章は新しいページから始まります"
+        }
+      },
+      "details": "詳細",
+      "fields": {
+        "title": "タイトル",
+        "subject": "件名",
+        "addressee": "宛先 (例: 市役所 御中)",
+        "author": "著者",
+        "sender": "差出人",
+        "signer": "署名者の氏名",
+        "attendees": "出席者 (カンマで区切る)",
+        "date": "日付"
+      },
+      "look": "外観",
+      "font": "フォント",
+      "fonts": {
+        "sans": "ゴシック",
+        "serif": "明朝",
+        "mono": "等幅"
+      },
+      "paper": "用紙",
+      "papers": {
+        "a4": "A4",
+        "letter": "レター",
+        "a5": "A5"
+      },
+      "fontSize": "文字サイズ",
+      "margins": "余白",
+      "accent": "アクセントカラー",
+      "customColor": "カスタムカラー",
+      "logo": "ロゴ",
+      "logoHint": "PNG または JPG。最初のページの上部に配置されます。",
+      "pickLogo": "ロゴを選択…",
+      "removeLogo": "ロゴを削除",
+      "logoFiles": "画像",
+      "furniture": "ヘッダーとフッター",
+      "header": "ヘッダーのテキスト",
+      "footer": "フッターのテキスト",
+      "pageNumbers": "ページ番号",
+      "pageNumberFormat": "ページ番号の書式",
+      "pageNumberFormatHint": "{page} はページ番号、{total} は総ページ数に置き換わります。",
+      "pageNumberDefault": "{page} / {total} ページ",
+      "defaultName": "文書",
+      "resultCaption_one": "{{count}} ページ",
+      "resultCaption_other": "{{count}} ページ",
+      "idle": {
+        "title": "ここに PDF が表示されます",
+        "description": "テキストファイルを選ぶか入力し、テンプレートを選んで「PDF を作成」を押してください。"
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "フローチャートが大きすぎて 1 ページに収まりません。",
       "omrTooManyQuestions": "この設定では1枚に{{capacity}}問までしか入りません。",
       "omrLayoutUnknown": "このシートのレイアウトコードを認識できません。もう一度読み取ってください。",
-      "tooManyDocuments": "同時に開けるドキュメントは最大 {{max}} 件です。別のドキュメントを開くには、いずれかを閉じてください。"
+      "tooManyDocuments": "同時に開けるドキュメントは最大 {{max}} 件です。別のドキュメントを開くには、いずれかを閉じてください。",
+      "noContent": "組版するテキストがありません。ファイルを選ぶかテキストを入力してください。",
+      "sourceTooLarge": "テキストファイルが 20 MB を超えています。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",

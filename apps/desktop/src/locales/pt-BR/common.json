@@ -35,7 +35,8 @@
     "watch": "Pastas monitoradas",
     "preflight": "Verificação de impressão",
     "pdfa": "Arquivo PDF/A",
-    "omr": "Folhas de respostas"
+    "omr": "Folhas de respostas",
+    "create": "Criar PDF"
   },
   "common": {
     "retry": "Repetir",
@@ -2473,7 +2474,8 @@
         "autolink": "Transforma endereços da web e de e-mail no texto em links clicáveis.",
         "pdfa": "Verifica se um PDF está pronto para arquivamento de longo prazo e salva uma cópia em PDF/A-2b.",
         "omr-sheet": "Imprima folhas de respostas com bolhas que podem ser lidas de uma digitalização.",
-        "omr-grade": "Leia folhas de respostas preenchidas, corrija com um gabarito e exporte as notas."
+        "omr-grade": "Leia folhas de respostas preenchidas, corrija com um gabarito e exporte as notas.",
+        "create-document": "Transforme texto ou Markdown em relatório, carta, requerimento, ata ou livreto"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "nem todas as marcas de canto estão visíveis",
         "unreadable": "não foi possível abrir o arquivo"
       }
+    },
+    "create": {
+      "description": "Diagrame um arquivo de texto ou Markdown como um PDF pronto com modelo, fontes, logotipo, cabeçalho, rodapé e números de página.",
+      "run": "Criar PDF",
+      "source": "Conteúdo",
+      "sourceModes": {
+        "file": "De um arquivo",
+        "text": "Digitar ou colar"
+      },
+      "change": "Trocar…",
+      "pickTitle": "Escolha um arquivo de texto ou Markdown",
+      "pickDescription": ".txt ou .md — ou solte na janela",
+      "text": "Texto",
+      "textHint": "Markdown também funciona: # título, - lista, **negrito**.",
+      "structureHint": "O texto simples é estruturado automaticamente: uma linha em branco começa um parágrafo, uma linha em MAIÚSCULAS vira título e linhas que começam com 1. ou - viram listas.",
+      "textFiles": "Texto e Markdown",
+      "template": "Modelo",
+      "templates": {
+        "report": {
+          "title": "Relatório",
+          "description": "Título com linha colorida, autor e data"
+        },
+        "letter": {
+          "title": "Carta",
+          "description": "Remetente e data à direita, assunto e assinatura"
+        },
+        "petition": {
+          "title": "Ofício / requerimento",
+          "description": "Destinatário centralizado, texto justificado e bloco de assinatura"
+        },
+        "assignment": {
+          "title": "Trabalho / artigo",
+          "description": "Título centralizado, texto justificado"
+        },
+        "minutes": {
+          "title": "Ata",
+          "description": "Título, data e uma linha de assinatura para cada participante"
+        },
+        "lectureNotes": {
+          "title": "Anotações de aula",
+          "description": "Texto compacto com títulos marcados e caixas de nota"
+        },
+        "booklet": {
+          "title": "Livreto",
+          "description": "Páginas A5 com capa; cada capítulo começa em uma nova página"
+        }
+      },
+      "details": "Dados",
+      "fields": {
+        "title": "Título",
+        "subject": "Assunto",
+        "addressee": "Destinatário (por exemplo: Ao Senhor Diretor)",
+        "author": "Autor",
+        "sender": "Remetente",
+        "signer": "Nome de quem assina",
+        "attendees": "Participantes (separe com vírgulas)",
+        "date": "Data"
+      },
+      "look": "Aparência",
+      "font": "Fonte",
+      "fonts": {
+        "sans": "Sans",
+        "serif": "Serif",
+        "mono": "Monoespaçada"
+      },
+      "paper": "Papel",
+      "papers": {
+        "a4": "A4",
+        "letter": "Carta",
+        "a5": "A5"
+      },
+      "fontSize": "Tamanho do texto",
+      "margins": "Margens",
+      "accent": "Cor de destaque",
+      "customColor": "Cor personalizada",
+      "logo": "Logotipo",
+      "logoHint": "PNG ou JPG, no topo da primeira página.",
+      "pickLogo": "Escolher logotipo…",
+      "removeLogo": "Remover o logotipo",
+      "logoFiles": "Imagens",
+      "furniture": "Cabeçalho e rodapé",
+      "header": "Texto do cabeçalho",
+      "footer": "Texto do rodapé",
+      "pageNumbers": "Números de página",
+      "pageNumberFormat": "Formato do número de página",
+      "pageNumberFormatHint": "{page} é trocado pela página e {total} pelo total de páginas.",
+      "pageNumberDefault": "Página {page} de {total}",
+      "defaultName": "documento",
+      "resultCaption_one": "{{count}} página",
+      "resultCaption_other": "{{count}} páginas",
+      "idle": {
+        "title": "Seu PDF aparece aqui",
+        "description": "Escolha um arquivo de texto ou digite algo, escolha um modelo e clique em Criar PDF."
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "O fluxograma é grande demais para uma página.",
       "omrTooManyQuestions": "Com estas configurações cabem só {{capacity}} questões em uma folha.",
       "omrLayoutUnknown": "O código de layout desta folha não foi reconhecido; leia as folhas de novo.",
-      "tooManyDocuments": "No máximo {{max}} documentos podem ficar abertos ao mesmo tempo. Feche um para abrir outro."
+      "tooManyDocuments": "No máximo {{max}} documentos podem ficar abertos ao mesmo tempo. Feche um para abrir outro.",
+      "noContent": "Não há texto para diagramar. Escolha um arquivo ou digite um texto.",
+      "sourceTooLarge": "O arquivo de texto tem mais de 20 MB."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",

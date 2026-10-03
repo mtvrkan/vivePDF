@@ -108,6 +108,7 @@ import type {
   ExtractImagesResult,
   FieldsResult,
   FileToPdfParams,
+  CreateDocumentParams,
   SvgToPdfParams,
   FillParams,
   FillResult,
@@ -590,6 +591,9 @@ export const imagesToPdf = (params: ImagesToPdfParams, options?: RpcCallOptions)
 
 export const fileToPdf = (params: FileToPdfParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("convert.file_to_pdf", params, options);
+
+export const createDocument = (params: CreateDocumentParams, options?: RpcCallOptions) =>
+  rpc<OutputResult>("create.document", params, options);
 
 export const svgToPdf = (params: SvgToPdfParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("convert.svg_to_pdf", params, options);

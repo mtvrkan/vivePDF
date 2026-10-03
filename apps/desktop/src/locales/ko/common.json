@@ -35,7 +35,8 @@
     "watch": "감시 폴더",
     "preflight": "인쇄 전 검사",
     "pdfa": "PDF/A 아카이브",
-    "omr": "OMR 답안지"
+    "omr": "OMR 답안지",
+    "create": "PDF 만들기"
   },
   "common": {
     "retry": "다시 시도",
@@ -2473,7 +2474,8 @@
         "autolink": "본문의 웹 주소와 이메일 주소를 클릭할 수 있게 만듭니다.",
         "pdfa": "PDF가 장기 보관에 적합한지 확인하고 PDF/A-2b 사본을 저장합니다.",
         "omr-sheet": "스캔으로 다시 읽을 수 있는 OMR 답안지를 인쇄합니다.",
-        "omr-grade": "작성된 답안지를 읽고 정답으로 채점한 뒤 점수를 내보냅니다."
+        "omr-grade": "작성된 답안지를 읽고 정답으로 채점한 뒤 점수를 내보냅니다.",
+        "create-document": "일반 텍스트나 Markdown을 보고서, 편지, 신청서, 회의록, 소책자로 만듭니다"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "모서리 표시가 모두 보이지 않습니다",
         "unreadable": "파일을 열 수 없습니다"
       }
+    },
+    "create": {
+      "description": "텍스트나 Markdown 파일을 템플릿, 글꼴, 로고, 머리글, 바닥글, 페이지 번호가 있는 완성된 PDF로 만듭니다.",
+      "run": "PDF 만들기",
+      "source": "내용",
+      "sourceModes": {
+        "file": "파일에서",
+        "text": "입력 또는 붙여넣기"
+      },
+      "change": "변경…",
+      "pickTitle": "텍스트 또는 Markdown 파일 선택",
+      "pickDescription": ".txt 또는 .md — 창에 끌어다 놓아도 됩니다",
+      "text": "텍스트",
+      "textHint": "Markdown도 됩니다: # 제목, - 목록, **굵게**.",
+      "structureHint": "일반 텍스트는 자동으로 구성됩니다. 빈 줄은 새 문단을 시작하고, 모두 대문자인 줄은 제목이 되며, 1. 또는 -로 시작하는 줄은 목록이 됩니다.",
+      "textFiles": "텍스트와 Markdown",
+      "template": "템플릿",
+      "templates": {
+        "report": {
+          "title": "보고서",
+          "description": "색 선이 있는 제목, 작성자와 날짜"
+        },
+        "letter": {
+          "title": "편지",
+          "description": "오른쪽에 보내는 사람과 날짜, 제목 줄과 서명"
+        },
+        "petition": {
+          "title": "공문 / 신청서",
+          "description": "가운데 수신처, 양쪽 맞춤 본문과 서명란"
+        },
+        "assignment": {
+          "title": "과제 / 논문",
+          "description": "가운데 제목, 양쪽 맞춤 본문"
+        },
+        "minutes": {
+          "title": "회의록",
+          "description": "제목, 날짜와 참석자별 서명란"
+        },
+        "lectureNotes": {
+          "title": "강의 노트",
+          "description": "강조된 제목과 메모 상자가 있는 촘촘한 본문"
+        },
+        "booklet": {
+          "title": "소책자",
+          "description": "표지가 있는 A5 페이지. 각 장은 새 페이지에서 시작합니다"
+        }
+      },
+      "details": "정보",
+      "fields": {
+        "title": "제목",
+        "subject": "제목(용건)",
+        "addressee": "수신처 (예: OO구청장 귀하)",
+        "author": "작성자",
+        "sender": "보내는 사람",
+        "signer": "서명자 이름",
+        "attendees": "참석자 (쉼표로 구분)",
+        "date": "날짜"
+      },
+      "look": "모양",
+      "font": "글꼴",
+      "fonts": {
+        "sans": "고딕",
+        "serif": "명조",
+        "mono": "고정폭"
+      },
+      "paper": "용지",
+      "papers": {
+        "a4": "A4",
+        "letter": "레터",
+        "a5": "A5"
+      },
+      "fontSize": "글자 크기",
+      "margins": "여백",
+      "accent": "강조 색",
+      "customColor": "사용자 지정 색",
+      "logo": "로고",
+      "logoHint": "PNG 또는 JPG, 첫 페이지 위쪽에 놓입니다.",
+      "pickLogo": "로고 선택…",
+      "removeLogo": "로고 제거",
+      "logoFiles": "그림",
+      "furniture": "머리글과 바닥글",
+      "header": "머리글 텍스트",
+      "footer": "바닥글 텍스트",
+      "pageNumbers": "페이지 번호",
+      "pageNumberFormat": "페이지 번호 형식",
+      "pageNumberFormatHint": "{page}는 페이지 번호로, {total}은 전체 페이지 수로 바뀝니다.",
+      "pageNumberDefault": "{page} / {total} 페이지",
+      "defaultName": "문서",
+      "resultCaption_one": "{{count}}페이지",
+      "resultCaption_other": "{{count}}페이지",
+      "idle": {
+        "title": "PDF가 여기에 나타납니다",
+        "description": "텍스트 파일을 고르거나 입력하고, 템플릿을 고른 뒤 PDF 만들기를 누르세요."
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "순서도가 너무 커서 한 페이지에 들어가지 않습니다.",
       "omrTooManyQuestions": "이 설정으로는 한 장에 {{capacity}}문항까지만 들어갑니다.",
       "omrLayoutUnknown": "이 답안지의 레이아웃 코드를 인식할 수 없습니다. 다시 읽어 주세요.",
-      "tooManyDocuments": "한 번에 최대 {{max}}개의 문서를 열 수 있습니다. 다른 문서를 열려면 하나를 닫으세요."
+      "tooManyDocuments": "한 번에 최대 {{max}}개의 문서를 열 수 있습니다. 다른 문서를 열려면 하나를 닫으세요.",
+      "noContent": "배치할 텍스트가 없습니다. 파일을 고르거나 텍스트를 입력하세요.",
+      "sourceTooLarge": "텍스트 파일이 20MB보다 큽니다."
     },
     "revealEmptyPath": "경로가 비어 있습니다.",
     "revealFailed": "이 위치를 열 수 없습니다.",

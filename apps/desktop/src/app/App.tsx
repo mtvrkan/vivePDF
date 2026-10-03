@@ -57,6 +57,7 @@ const SecurityPage = lazy(() => import("@/features/tools/security/SecurityPage")
 const SplitPage = lazy(() => import("@/features/tools/split/SplitPage").then((m) => ({ default: m.SplitPage })));
 const PageToolsPage = lazy(() => import("@/features/tools/pageTools/PageToolsPage").then((m) => ({ default: m.PageToolsPage })));
 const WatchPage = lazy(() => import("@/features/tools/watch/WatchPage").then((m) => ({ default: m.WatchPage })));
+const CreatePage = lazy(() => import("@/features/tools/create/CreatePage").then((m) => ({ default: m.CreatePage })));
 
 function RouteFallback() {
   return (
@@ -191,6 +192,7 @@ export default function App() {
             <Route path="/tools/compare" element={<ComparePage />} />
             <Route path="/tools/batch" element={<BatchPage />} />
             <Route path="/tools/watch" element={<WatchPage />} />
+            <Route path="/tools/create" element={<CreatePage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/about" element={<AboutPage />} />
           </Routes>

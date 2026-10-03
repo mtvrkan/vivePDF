@@ -35,7 +35,8 @@
     "watch": "Cartelle monitorate",
     "preflight": "Controllo di stampa",
     "pdfa": "Archivio PDF/A",
-    "omr": "Fogli risposte"
+    "omr": "Fogli risposte",
+    "create": "Crea PDF"
   },
   "common": {
     "retry": "Riprova",
@@ -2473,7 +2474,8 @@
         "autolink": "Trasforma indirizzi web ed e-mail nel testo in link cliccabili.",
         "pdfa": "Controlla se un PDF è adatto all'archiviazione a lungo termine e salva una copia PDF/A-2b.",
         "omr-sheet": "Stampa fogli risposte a bolle leggibili da una scansione.",
-        "omr-grade": "Leggi i fogli risposte compilati, valutali con una chiave ed esporta i punteggi."
+        "omr-grade": "Leggi i fogli risposte compilati, valutali con una chiave ed esporta i punteggi.",
+        "create-document": "Trasforma testo o Markdown in un rapporto, una lettera, un'istanza, un verbale o un opuscolo"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "non tutti i segni d'angolo sono visibili",
         "unreadable": "impossibile aprire il file"
       }
+    },
+    "create": {
+      "description": "Impagina un file di testo o Markdown come PDF finito con modello, caratteri, logo, intestazione, piè di pagina e numeri di pagina.",
+      "run": "Crea PDF",
+      "source": "Contenuto",
+      "sourceModes": {
+        "file": "Da un file",
+        "text": "Scrivi o incolla"
+      },
+      "change": "Cambia…",
+      "pickTitle": "Scegli un file di testo o Markdown",
+      "pickDescription": ".txt o .md — oppure trascinalo sulla finestra",
+      "text": "Testo",
+      "textHint": "Funziona anche il Markdown: # titolo, - elenco, **grassetto**.",
+      "structureHint": "Il testo semplice viene strutturato da solo: una riga vuota inizia un paragrafo, una riga in MAIUSCOLO diventa un titolo e le righe che iniziano con 1. o - diventano elenchi.",
+      "textFiles": "Testo e Markdown",
+      "template": "Modello",
+      "templates": {
+        "report": {
+          "title": "Rapporto",
+          "description": "Titolo con linea colorata, autore e data"
+        },
+        "letter": {
+          "title": "Lettera",
+          "description": "Mittente e data a destra, oggetto e firma"
+        },
+        "petition": {
+          "title": "Lettera ufficiale / istanza",
+          "description": "Destinatario centrato, testo giustificato e blocco firma"
+        },
+        "assignment": {
+          "title": "Compito / articolo",
+          "description": "Titolo centrato, testo giustificato"
+        },
+        "minutes": {
+          "title": "Verbale",
+          "description": "Titolo, data e una riga di firma per ogni partecipante"
+        },
+        "lectureNotes": {
+          "title": "Appunti",
+          "description": "Testo compatto con titoli evidenziati e riquadri di nota"
+        },
+        "booklet": {
+          "title": "Opuscolo",
+          "description": "Pagine A5 con copertina; ogni capitolo inizia su una nuova pagina"
+        }
+      },
+      "details": "Dati",
+      "fields": {
+        "title": "Titolo",
+        "subject": "Oggetto",
+        "addressee": "Destinatario (per esempio: Al Comune)",
+        "author": "Autore",
+        "sender": "Mittente",
+        "signer": "Nome di chi firma",
+        "attendees": "Partecipanti (separati da virgole)",
+        "date": "Data"
+      },
+      "look": "Aspetto",
+      "font": "Carattere",
+      "fonts": {
+        "sans": "Sans",
+        "serif": "Serif",
+        "mono": "Monospaziato"
+      },
+      "paper": "Carta",
+      "papers": {
+        "a4": "A4",
+        "letter": "Letter",
+        "a5": "A5"
+      },
+      "fontSize": "Dimensione del testo",
+      "margins": "Margini",
+      "accent": "Colore di accento",
+      "customColor": "Colore personalizzato",
+      "logo": "Logo",
+      "logoHint": "PNG o JPG, in alto nella prima pagina.",
+      "pickLogo": "Scegli un logo…",
+      "removeLogo": "Rimuovi il logo",
+      "logoFiles": "Immagini",
+      "furniture": "Intestazione e piè di pagina",
+      "header": "Testo dell'intestazione",
+      "footer": "Testo del piè di pagina",
+      "pageNumbers": "Numeri di pagina",
+      "pageNumberFormat": "Formato del numero di pagina",
+      "pageNumberFormatHint": "{page} viene sostituito dalla pagina, {total} dal numero di pagine.",
+      "pageNumberDefault": "Pagina {page} di {total}",
+      "defaultName": "documento",
+      "resultCaption_one": "{{count}} pagina",
+      "resultCaption_other": "{{count}} pagine",
+      "idle": {
+        "title": "Qui comparirà il tuo PDF",
+        "description": "Scegli un file di testo o scrivi qualcosa, scegli un modello e premi Crea PDF."
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "Il diagramma di flusso è troppo grande per una pagina.",
       "omrTooManyQuestions": "Con queste impostazioni in un foglio entrano solo {{capacity}} domande.",
       "omrLayoutUnknown": "Il codice di impaginazione di questo foglio non è riconosciuto; rileggi i fogli.",
-      "tooManyDocuments": "Possono essere aperti al massimo {{max}} documenti contemporaneamente. Chiudine uno per aprirne un altro."
+      "tooManyDocuments": "Possono essere aperti al massimo {{max}} documenti contemporaneamente. Chiudine uno per aprirne un altro.",
+      "noContent": "Non c'è testo da impaginare. Scegli un file o scrivi del testo.",
+      "sourceTooLarge": "Il file di testo supera i 20 MB."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",

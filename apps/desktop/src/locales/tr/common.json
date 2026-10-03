@@ -35,7 +35,8 @@
     "watch": "İzlenen klasörler",
     "preflight": "Baskı kontrolü",
     "pdfa": "PDF/A arşiv",
-    "omr": "Optik formlar"
+    "omr": "Optik formlar",
+    "create": "PDF Oluştur"
   },
   "common": {
     "retry": "Tekrar dene",
@@ -2473,7 +2474,8 @@
         "autolink": "Metindeki web ve e-posta adreslerini tıklanabilir yapın.",
         "pdfa": "PDF'yi uzun süreli arşive uygunluk için denetleyin ve PDF/A-2b kopyasını kaydedin.",
         "omr-sheet": "Taramadan geri okunabilen optik cevap kâğıtları yazdırın.",
-        "omr-grade": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın."
+        "omr-grade": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın.",
+        "create-document": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün"
       }
     },
     "convert": {
@@ -5232,6 +5234,100 @@
         "cornersNotFound": "köşe işaretlerinin hepsi görünmüyor",
         "unreadable": "dosya açılamadı"
       }
+    },
+    "create": {
+      "description": "Bir metin ya da Markdown dosyasını şablon, yazı tipi, logo, üst ve alt bilgi ve sayfa numaralarıyla hazır bir PDF'e dönüştürün.",
+      "run": "PDF oluştur",
+      "source": "İçerik",
+      "sourceModes": {
+        "file": "Dosyadan",
+        "text": "Yaz veya yapıştır"
+      },
+      "change": "Değiştir…",
+      "pickTitle": "Bir metin ya da Markdown dosyası seçin",
+      "pickDescription": ".txt veya .md — ya da pencereye bırakın",
+      "text": "Metin",
+      "textHint": "Markdown da kullanılabilir: # başlık, - liste, **kalın**.",
+      "structureHint": "Düz metin otomatik düzenlenir: boş satır yeni paragraf başlatır, BÜYÜK HARFLİ satır başlık olur, 1. ya da - ile başlayan satırlar listeye dönüşür.",
+      "textFiles": "Metin ve Markdown",
+      "template": "Şablon",
+      "templates": {
+        "report": {
+          "title": "Rapor",
+          "description": "Renkli çizgili başlık, yazar ve tarih"
+        },
+        "letter": {
+          "title": "Mektup",
+          "description": "Sağda gönderen ve tarih, konu satırı ve imza"
+        },
+        "petition": {
+          "title": "Resmi yazı / dilekçe",
+          "description": "Ortalanmış makam, iki yana yaslı metin ve imza bloğu"
+        },
+        "assignment": {
+          "title": "Ödev / makale",
+          "description": "Ortalanmış başlık, iki yana yaslı metin"
+        },
+        "minutes": {
+          "title": "Tutanak",
+          "description": "Başlık, tarih ve her katılımcı için imza satırı"
+        },
+        "lectureNotes": {
+          "title": "Ders notu",
+          "description": "Sıkı metin, işaretli başlıklar ve not kutuları"
+        },
+        "booklet": {
+          "title": "Kitapçık",
+          "description": "Kapaklı A5 sayfalar; her bölüm yeni sayfada başlar"
+        }
+      },
+      "details": "Bilgiler",
+      "fields": {
+        "title": "Başlık",
+        "subject": "Konu",
+        "addressee": "Makam (örneğin: KAYMAKAMLIK MAKAMINA)",
+        "author": "Yazar",
+        "sender": "Gönderen",
+        "signer": "İmzalayanın adı soyadı",
+        "attendees": "Katılımcılar (virgülle ayırın)",
+        "date": "Tarih"
+      },
+      "look": "Görünüm",
+      "font": "Yazı tipi",
+      "fonts": {
+        "sans": "Sans",
+        "serif": "Serif",
+        "mono": "Eş aralıklı"
+      },
+      "paper": "Kâğıt",
+      "papers": {
+        "a4": "A4",
+        "letter": "Letter",
+        "a5": "A5"
+      },
+      "fontSize": "Yazı boyutu",
+      "margins": "Kenar boşlukları",
+      "accent": "Vurgu rengi",
+      "customColor": "Özel renk",
+      "logo": "Logo",
+      "logoHint": "PNG ya da JPG; ilk sayfanın üstüne yerleştirilir.",
+      "pickLogo": "Logo seç…",
+      "removeLogo": "Logoyu kaldır",
+      "logoFiles": "Görseller",
+      "furniture": "Üst ve alt bilgi",
+      "header": "Üst bilgi metni",
+      "footer": "Alt bilgi metni",
+      "pageNumbers": "Sayfa numaraları",
+      "pageNumberFormat": "Sayfa numarası biçimi",
+      "pageNumberFormatHint": "{page} sayfa numarasıyla, {total} toplam sayfa sayısıyla değiştirilir.",
+      "pageNumberDefault": "Sayfa {page} / {total}",
+      "defaultName": "belge",
+      "resultCaption_one": "{{count}} sayfa",
+      "resultCaption_other": "{{count}} sayfa",
+      "idle": {
+        "title": "PDF'iniz burada görünür",
+        "description": "Bir metin dosyası seçin ya da yazın, şablonu seçin ve PDF oluştur'a basın."
+      }
     }
   },
   "progress": {
@@ -5596,7 +5692,9 @@
       "flowchartTooLarge": "Akış şeması bir sayfaya sığmayacak kadar büyük.",
       "omrTooManyQuestions": "Bu ayarlarla bir sayfaya en fazla {{capacity}} soru sığıyor.",
       "omrLayoutUnknown": "Bu formun düzen kodu tanınmadı; formları yeniden okuyun.",
-      "tooManyDocuments": "Aynı anda en fazla {{max}} belge açık olabilir. Başka bir belge açmak için birini kapatın."
+      "tooManyDocuments": "Aynı anda en fazla {{max}} belge açık olabilir. Başka bir belge açmak için birini kapatın.",
+      "noContent": "Yerleştirilecek metin yok. Bir dosya seçin ya da metin yazın.",
+      "sourceTooLarge": "Metin dosyası 20 MB'tan büyük."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
