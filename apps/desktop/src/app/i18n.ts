@@ -1,4 +1,4 @@
-import i18n from "i18next";
+import i18n, { type TFunction } from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "@/locales/en/common.json";
 import { DEFAULT_LOCALE, LOCALE_CODES, detectLocale, isLocale, localeDirection } from "@/app/locales";
@@ -66,6 +66,11 @@ async function loadCatalog(locale: Locale): Promise<void> {
   const catalog = await catalogLoaders[locale]();
   i18n.addResourceBundle(locale, "common", catalog.default);
   loadedLocales.add(locale);
+}
+
+export async function translatorFor(locale: Locale): Promise<TFunction> {
+  await loadCatalog(locale);
+  return i18n.getFixedT(locale);
 }
 
 export function ready(): Promise<void> {

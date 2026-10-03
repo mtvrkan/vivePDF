@@ -2480,7 +2480,8 @@
         "create-bulk": "CSV や Excel の表の行ごとに証明書・招待状・名札を作成",
         "create-paper": "無地・罫線・方眼・ドット・五線紙を印刷用 PDF で作成",
         "cover": "PDF の先頭にデザインされた表紙を追加: タイトル、著者、所属、ロゴ、写真",
-        "create-book": "Markdown やテキストの章から、表紙・リンク付き目次・ページ番号のある本を作成"
+        "create-book": "Markdown やテキストの章から、表紙・リンク付き目次・ページ番号のある本を作成",
+        "create-cv": "クラシック・モダン・コンパクトのテンプレートで写真とリンク付き連絡先のある履歴書"
       }
     },
     "convert": {
@@ -5417,7 +5418,8 @@
         "document": "単一の文書",
         "bulk": "表から作成",
         "paper": "用紙",
-        "book": "本"
+        "book": "本",
+        "cv": "履歴書"
       },
       "bulk": {
         "title": "表から文書を作成",
@@ -5538,6 +5540,94 @@
         "idle": {
           "title": "ここに本が表示されます",
           "description": "章のファイルを追加し、本のタイトルを入力して「本を作成」をクリックします。"
+        }
+      },
+      "cv": {
+        "title": "履歴書 (CV)",
+        "description": "フォームに入力して整った履歴書を作成: クラシック、色付きサイドバーのモダン、1 ページに多く収まるコンパクト。",
+        "run": "履歴書を作成",
+        "startOver": "最初からやり直す",
+        "cleared": "フォームをクリアしました。",
+        "draftHint": "入力内容はこのコンピューターに保存されるため、後で戻って履歴書を更新できます。",
+        "personal": "あなたについて",
+        "photo": "写真",
+        "photoHint": "任意。PNG、JPG、WebP。正方形に切り抜きます",
+        "pickPhoto": "写真を選択…",
+        "removePhoto": "写真を削除",
+        "removeEntry": "削除",
+        "language": "履歴書の言語",
+        "languageHint": "PDF の見出しの言語",
+        "extraHint": "資格、プロジェクト、ボランティア、推薦者、趣味など。",
+        "fileName": "{{name}} - 履歴書",
+        "defaultName": "履歴書",
+        "templates": {
+          "classic": {
+            "title": "クラシック",
+            "description": "罫線付き見出しの 1 段組み、写真は右上"
+          },
+          "modern": {
+            "title": "モダン",
+            "description": "丸い写真、連絡先、スキル、言語を載せた色付きサイドバー"
+          },
+          "compact": {
+            "title": "コンパクト",
+            "description": "見出しを左の細い列に配置。1 ページに最も多く収まります"
+          }
+        },
+        "entryLegend": {
+          "experience": "職歴 {{number}}",
+          "education": "学歴 {{number}}",
+          "extra": "セクション {{number}}"
+        },
+        "fields": {
+          "name": "氏名",
+          "headline": "職種",
+          "headlinePlaceholder": "例: データアナリスト",
+          "contacts": "連絡先",
+          "contactsHint": "1 行に 1 つ: メール、電話、都市、Web サイト、LinkedIn… メールと Web アドレスはリンクになります。",
+          "summary": "プロフィール",
+          "period": "期間",
+          "periodPlaceholder": "例: 2021 – 現在",
+          "location": "場所",
+          "details": "詳細",
+          "detailsHint": "1 行に 1 項目。- で始まる行は箇条書きになります。",
+          "skills": "スキル",
+          "skillsHint": "カンマまたは改行で区切ります",
+          "languages": "言語",
+          "languagesHint": "1 行に 1 つ。例: 英語 (C1)",
+          "sectionHeading": "見出し",
+          "sectionHeadingPlaceholder": "例: 資格",
+          "experience": {
+            "title": "役職",
+            "organisation": "会社・組織"
+          },
+          "education": {
+            "title": "学位・課程",
+            "organisation": "学校"
+          }
+        },
+        "sections": {
+          "experience": "職歴",
+          "education": "学歴",
+          "skills": "スキルと言語",
+          "extra": "追加セクション"
+        },
+        "add": {
+          "experience": "職歴を追加",
+          "education": "学歴を追加",
+          "extra": "セクションを追加"
+        },
+        "labels": {
+          "summary": "プロフィール",
+          "experience": "職歴",
+          "education": "学歴",
+          "skills": "スキル",
+          "languages": "言語",
+          "contact": "連絡先"
+        },
+        "idle": {
+          "title": "ここに履歴書が表示されます",
+          "description": "少なくとも氏名を入力し、テンプレートを選んで「履歴書を作成」をクリックします。"
         }
       }
     }
@@ -5915,7 +6005,8 @@
       "noOutput": "PDF の保存先を選んでください。",
       "noTitle": "表紙にはタイトルが必要です。",
       "noCoverImage": "写真の表紙には画像が必要です。画像を選ぶか、別のスタイルにしてください。",
-      "clipboardEmpty": "クリップボードに PDF にできる画像、テキスト、ファイルがありません。先に何かをコピーしてください。"
+      "clipboardEmpty": "クリップボードに PDF にできる画像、テキスト、ファイルがありません。先に何かをコピーしてください。",
+      "noName": "先に氏名を入力してください。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",

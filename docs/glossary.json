@@ -3865,11 +3865,23 @@
     "ja": {
       "tools.scan.enhance.modes.gray.description": [
         "form"
+      ],
+      "tools.create.cv.extraHint": [
+        "certificate"
+      ],
+      "tools.create.cv.fields.sectionHeadingPlaceholder": [
+        "certificate"
       ]
     },
     "ko": {
       "tools.split.bookmarkLevelHint": [
         "split"
+      ],
+      "tools.create.cv.extraHint": [
+        "certificate"
+      ],
+      "tools.create.cv.fields.sectionHeadingPlaceholder": [
+        "certificate"
       ]
     },
     "pt-BR": {
@@ -3890,6 +3902,14 @@
       ],
       "tools.sign.certificate.usageHint": [
         "seal"
+      ]
+    },
+    "it": {
+      "tools.create.cv.extraHint": [
+        "certificate"
+      ],
+      "tools.create.cv.fields.sectionHeadingPlaceholder": [
+        "certificate"
       ]
     }
   }

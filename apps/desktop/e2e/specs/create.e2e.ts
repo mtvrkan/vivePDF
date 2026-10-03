@@ -1,7 +1,7 @@
 import { mkdirSync, readdirSync, writeFileSync } from "node:fs";
 import { basename, join } from "node:path";
 import { $, browser, expect } from "@wdio/globals";
-import { answerDialogs, bootApp, chooseCard, clickDropArea, fill, openTool, probe, runPrimary, t, typeInto, waitForDialogsAnswered, waitForOutputs, workDir } from "../support/app.ts";
+import { answerDialogs, bootApp, chooseCard, clickDropArea, fill, openTool, outputPath, probe, runPrimary, t, typeInto, waitForDialogsAnswered, waitForOutputs, workDir } from "../support/app.ts";
 
 async function chooseTable(path: string) {
   await openTool("nav.create");
@@ -12,6 +12,15 @@ async function chooseTable(path: string) {
   else await clickDropArea(t("tools.create.bulk.pickTitle"));
   await waitForDialogsAnswered();
   await $(`//span[@title="${path}"]`).waitForDisplayed({ timeout: 60000 });
+}
+
+async function chooseOutputIn(folder: string): Promise<string> {
+  const suggested = await outputPath();
+  const target = join(folder, basename(suggested));
+  answerDialogs(target);
+  await $(`//button[normalize-space(.)="${t("tools.browse")}"]`).click();
+  await waitForDialogsAnswered();
+  return suggested;
 }
 
 describe("create", () => {
@@ -120,17 +129,44 @@ describe("create", () => {
     expect(result.pages?.[1]?.text).toContain(String(birds));
   });
 
+  it("fills in a CV with the modern template and links the e-mail address", async () => {
+    await openTool("nav.create");
+    await $(`//*[@role="radio"][normalize-space(.)="${t("tools.create.tabs.cv")}"]`).click();
+    await chooseCard(t("tools.create.cv.templates.modern.title"));
+    await fill(t("tools.create.cv.fields.name"), "Deniz Kaya");
+    await fill(t("tools.create.cv.fields.headline"), "Data Engineer");
+    await fill(t("tools.create.cv.fields.contacts"), "deniz@example.com");
+    await fill(t("tools.create.cv.fields.experience.title"), "Analyst");
+    await fill(t("tools.create.cv.fields.experience.organisation"), "Acme");
+    await fill(t("tools.create.cv.fields.skills"), "Python, SQL");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "create-cv.png"));
+    const suggested = await chooseOutputIn(workDir());
+
+    await runPrimary(t("tools.create.cv.run"));
+    const [output] = await waitForOutputs();
+
+    const result = probe(output);
+    expect(basename(suggested)).toBe("Deniz Kaya - CV.pdf");
+    expect(output).toBe(join(workDir(), "Deniz Kaya - CV.pdf"));
+    expect(result.pageCount).toBe(1);
+    const text = (result.pages?.[0]?.text ?? "").normalize("NFKC");
+    for (const expected of ["Deniz Kaya", "Data Engineer", "Analyst", "Acme", "Python", t("tools.create.cv.labels.experience"), t("tools.create.cv.labels.skills")]) expect(text).toContain(expected);
+    expect(result.pages?.[0]?.links).toContain("mailto:deniz@example.com");
+  });
+
   it("makes a dotted notebook with twenty pages", async () => {
     await openTool("nav.create");
     await $(`//*[@role="radio"][normalize-space(.)="${t("tools.create.tabs.paper")}"]`).click();
     await chooseCard(t("tools.pages.paper.dots"));
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "create-paper.png"));
+    const suggested = await chooseOutputIn(workDir());
 
     await runPrimary(t("tools.create.paper.run"));
     const [output] = await waitForOutputs();
 
     const result = probe(output);
-    expect(basename(output)).toBe("Dot grid.pdf");
+    expect(basename(suggested)).toBe("Dot grid.pdf");
+    expect(output).toBe(join(workDir(), "Dot grid.pdf"));
     expect(result.pageCount).toBe(20);
     expect(result.pages?.[0]?.width).toBeLessThan(result.pages?.[0]?.height ?? 0);
   });

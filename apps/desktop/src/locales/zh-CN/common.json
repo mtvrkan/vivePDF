@@ -2480,7 +2480,8 @@
         "create-bulk": "为 CSV 或 Excel 表格的每一行生成证书、邀请函和胸牌",
         "create-paper": "空白纸、横线纸、方格纸、点阵纸或五线谱，生成可打印的 PDF",
         "cover": "在 PDF 前面加上设计好的封面：标题、作者、单位、徽标或照片",
-        "create-book": "将 Markdown 或文本章节制作成带封面、可跳转目录和页码的书籍"
+        "create-book": "将 Markdown 或文本章节制作成带封面、可跳转目录和页码的书籍",
+        "create-cv": "经典、现代或紧凑模板的简历，带照片和可点击的联系方式"
       }
     },
     "convert": {
@@ -5417,7 +5418,8 @@
         "document": "单个文档",
         "bulk": "从表格生成",
         "paper": "纸张",
-        "book": "书籍"
+        "book": "书籍",
+        "cv": "简历"
       },
       "bulk": {
         "title": "从表格生成文档",
@@ -5538,6 +5540,94 @@
         "idle": {
           "title": "书籍将显示在这里",
           "description": "添加章节文件，为书籍命名，然后点击“创建书籍”。"
+        }
+      },
+      "cv": {
+        "title": "简历",
+        "description": "填写表单即可得到精美简历：经典、带彩色侧栏的现代，或在一页中放下更多内容的紧凑。",
+        "run": "创建简历",
+        "startOver": "重新开始",
+        "cleared": "表单已清空。",
+        "draftHint": "您输入的内容保存在这台电脑上，以后可以回来更新简历。",
+        "personal": "个人信息",
+        "photo": "照片",
+        "photoHint": "可选；PNG、JPG 或 WebP，裁剪为正方形",
+        "pickPhoto": "选择照片…",
+        "removePhoto": "移除照片",
+        "removeEntry": "移除",
+        "language": "简历语言",
+        "languageHint": "PDF 中各部分标题的语言",
+        "extraHint": "例如证书、项目、志愿经历、推荐人或爱好。",
+        "fileName": "{{name}} - 简历",
+        "defaultName": "简历",
+        "templates": {
+          "classic": {
+            "title": "经典",
+            "description": "单栏，标题带分隔线，照片在右上角"
+          },
+          "modern": {
+            "title": "现代",
+            "description": "彩色侧栏，含圆形照片、联系方式、技能和语言"
+          },
+          "compact": {
+            "title": "紧凑",
+            "description": "标题放在窄的左栏；一页能放下最多内容"
+          }
+        },
+        "entryLegend": {
+          "experience": "工作经历 {{number}}",
+          "education": "教育经历 {{number}}",
+          "extra": "部分 {{number}}"
+        },
+        "fields": {
+          "name": "姓名",
+          "headline": "职位",
+          "headlinePlaceholder": "例如：数据分析师",
+          "contacts": "联系方式",
+          "contactsHint": "每行一项：邮箱、电话、城市、网站、LinkedIn… 邮箱和网址会变成链接。",
+          "summary": "个人简介",
+          "period": "时间",
+          "periodPlaceholder": "例如：2021 – 至今",
+          "location": "地点",
+          "details": "详情",
+          "detailsHint": "每行一点；以 - 开头的行会变成项目符号。",
+          "skills": "技能",
+          "skillsHint": "用逗号或换行分隔",
+          "languages": "语言",
+          "languagesHint": "每行一种，例如：英语 (C1)",
+          "sectionHeading": "标题",
+          "sectionHeadingPlaceholder": "例如：证书",
+          "experience": {
+            "title": "职位",
+            "organisation": "公司或机构"
+          },
+          "education": {
+            "title": "学位或专业",
+            "organisation": "学校"
+          }
+        },
+        "sections": {
+          "experience": "工作经历",
+          "education": "教育经历",
+          "skills": "技能和语言",
+          "extra": "其他部分"
+        },
+        "add": {
+          "experience": "添加工作经历",
+          "education": "添加教育经历",
+          "extra": "添加部分"
+        },
+        "labels": {
+          "summary": "个人简介",
+          "experience": "工作经历",
+          "education": "教育经历",
+          "skills": "技能",
+          "languages": "语言",
+          "contact": "联系方式"
+        },
+        "idle": {
+          "title": "简历将显示在这里",
+          "description": "至少填写姓名，选择模板，然后点击“创建简历”。"
         }
       }
     }
@@ -5915,7 +6005,8 @@
       "noOutput": "请选择 PDF 的保存位置。",
       "noTitle": "封面需要标题。",
       "noCoverImage": "照片封面需要一张图片。请选择图片或换一种样式。",
-      "clipboardEmpty": "剪贴板中没有可转为 PDF 的图片、文本或文件。请先复制内容。"
+      "clipboardEmpty": "剪贴板中没有可转为 PDF 的图片、文本或文件。请先复制内容。",
+      "noName": "请先输入姓名。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",

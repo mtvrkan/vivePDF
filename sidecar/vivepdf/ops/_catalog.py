@@ -71,6 +71,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     "create": ("create.document",),
     "create_book": ("create.book",),
     "create_bulk": ("create.bulk",),
+    "create_cv": ("create.cv",),
     "create_paper": ("create.paper",),
     "edit": (
         "security.redact",

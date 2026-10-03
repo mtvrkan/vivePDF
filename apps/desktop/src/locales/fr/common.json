@@ -2480,7 +2480,8 @@
         "create-bulk": "Certificats, invitations et badges pour chaque ligne d'un tableau CSV ou Excel",
         "create-paper": "Papier blanc, ligné, quadrillé, pointillé ou à musique en PDF prêt à imprimer",
         "cover": "Placer une page de couverture soignée devant un PDF : titre, auteur, établissement, logo ou photo",
-        "create-book": "Des chapitres Markdown ou texte en livre avec couverture, table des matières cliquable et numéros de page"
+        "create-book": "Des chapitres Markdown ou texte en livre avec couverture, table des matières cliquable et numéros de page",
+        "create-cv": "CV avec modèle classique, moderne ou compact, photo et coordonnées cliquables"
       }
     },
     "convert": {
@@ -5417,7 +5418,8 @@
         "document": "Document unique",
         "bulk": "Depuis un tableau",
         "paper": "Papier",
-        "book": "Livre"
+        "book": "Livre",
+        "cv": "CV"
       },
       "bulk": {
         "title": "Documents depuis un tableau",
@@ -5538,6 +5540,94 @@
         "idle": {
           "title": "Le livre apparaîtra ici",
           "description": "Ajoutez les fichiers des chapitres, donnez un titre au livre, puis cliquez sur Créer le livre."
+        }
+      },
+      "cv": {
+        "title": "CV",
+        "description": "Remplissez un formulaire et obtenez un CV soigné : classique, moderne avec barre latérale colorée ou compact pour en mettre plus sur une page.",
+        "run": "Créer le CV",
+        "startOver": "Recommencer",
+        "cleared": "Le formulaire a été vidé.",
+        "draftHint": "Ce que vous saisissez reste sur cet ordinateur pour que vous puissiez revenir mettre votre CV à jour.",
+        "personal": "À propos de vous",
+        "photo": "Photo",
+        "photoHint": "Facultative ; PNG, JPG ou WebP, rognée en carré",
+        "pickPhoto": "Choisir une photo…",
+        "removePhoto": "Retirer la photo",
+        "removeEntry": "Retirer",
+        "language": "Langue du CV",
+        "languageHint": "La langue des titres de section dans le PDF",
+        "extraHint": "Par exemple certifications, projets, bénévolat, références ou loisirs.",
+        "fileName": "{{name}} - CV",
+        "defaultName": "CV",
+        "templates": {
+          "classic": {
+            "title": "Classique",
+            "description": "Une colonne avec titres soulignés et photo en haut à droite"
+          },
+          "modern": {
+            "title": "Moderne",
+            "description": "Barre latérale colorée avec photo ronde, coordonnées, compétences et langues"
+          },
+          "compact": {
+            "title": "Compact",
+            "description": "Titres dans une colonne gauche étroite ; tient le plus sur une page"
+          }
+        },
+        "entryLegend": {
+          "experience": "Expérience {{number}}",
+          "education": "Formation {{number}}",
+          "extra": "Section {{number}}"
+        },
+        "fields": {
+          "name": "Nom complet",
+          "headline": "Intitulé du poste",
+          "headlinePlaceholder": "ex. Analyste de données",
+          "contacts": "Coordonnées",
+          "contactsHint": "Une par ligne : e-mail, téléphone, ville, site web, LinkedIn… Les e-mails et adresses web deviennent des liens.",
+          "summary": "Profil",
+          "period": "Dates",
+          "periodPlaceholder": "ex. 2021 – aujourd'hui",
+          "location": "Lieu",
+          "details": "Détails",
+          "detailsHint": "Un point par ligne ; les lignes commençant par - deviennent des puces.",
+          "skills": "Compétences",
+          "skillsHint": "Séparez par des virgules ou des retours à la ligne",
+          "languages": "Langues",
+          "languagesHint": "Une par ligne, ex. Anglais (C1)",
+          "sectionHeading": "Titre",
+          "sectionHeadingPlaceholder": "ex. Certifications",
+          "experience": {
+            "title": "Poste",
+            "organisation": "Entreprise ou organisation"
+          },
+          "education": {
+            "title": "Diplôme ou programme",
+            "organisation": "Établissement"
+          }
+        },
+        "sections": {
+          "experience": "Expérience",
+          "education": "Formation",
+          "skills": "Compétences et langues",
+          "extra": "Sections supplémentaires"
+        },
+        "add": {
+          "experience": "Ajouter une expérience",
+          "education": "Ajouter une formation",
+          "extra": "Ajouter une section"
+        },
+        "labels": {
+          "summary": "Profil",
+          "experience": "Expérience",
+          "education": "Formation",
+          "skills": "Compétences",
+          "languages": "Langues",
+          "contact": "Contact"
+        },
+        "idle": {
+          "title": "Votre CV apparaîtra ici",
+          "description": "Saisissez au moins votre nom, choisissez un modèle et cliquez sur Créer le CV."
         }
       }
     }
@@ -5915,7 +6005,8 @@
       "noOutput": "Choisissez où enregistrer le PDF.",
       "noTitle": "La couverture a besoin d'un titre.",
       "noCoverImage": "La couverture photo a besoin d'une image. Choisissez-en une ou un autre style.",
-      "clipboardEmpty": "Le presse-papiers ne contient ni image, ni texte, ni fichier à transformer en PDF. Copiez d'abord quelque chose."
+      "clipboardEmpty": "Le presse-papiers ne contient ni image, ni texte, ni fichier à transformer en PDF. Copiez d'abord quelque chose.",
+      "noName": "Saisissez d'abord un nom."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

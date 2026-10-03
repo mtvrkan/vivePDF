@@ -2480,7 +2480,8 @@
         "create-bulk": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı",
         "create-paper": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF",
         "cover": "PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf",
-        "create-book": "Markdown veya metin bölümlerinden kapaklı, bağlantılı içindekiler ve sayfa numaralı kitap"
+        "create-book": "Markdown veya metin bölümlerinden kapaklı, bağlantılı içindekiler ve sayfa numaralı kitap",
+        "create-cv": "Klasik, modern veya kompakt şablonlu, fotoğraflı ve tıklanabilir iletişimli özgeçmiş"
       }
     },
     "convert": {
@@ -5417,7 +5418,8 @@
         "document": "Tek belge",
         "bulk": "Tablodan",
         "paper": "Kâğıt",
-        "book": "Kitap"
+        "book": "Kitap",
+        "cv": "Özgeçmiş"
       },
       "bulk": {
         "title": "Tablodan belgeler",
@@ -5538,6 +5540,94 @@
         "idle": {
           "title": "Kitap burada görünecek",
           "description": "Bölüm dosyalarını ekleyin, kitaba bir ad verin ve Kitabı oluştur'a tıklayın."
+        }
+      },
+      "cv": {
+        "title": "Özgeçmiş",
+        "description": "Formu doldurun, şık bir özgeçmiş alın: klasik, renkli kenar çubuklu modern ya da tek sayfaya daha çok sığdıran kompakt.",
+        "run": "Özgeçmişi oluştur",
+        "startOver": "Baştan başla",
+        "cleared": "Form temizlendi.",
+        "draftHint": "Yazdıklarınız bu bilgisayarda saklanır; daha sonra dönüp özgeçmişinizi güncelleyebilirsiniz.",
+        "personal": "Hakkınızda",
+        "photo": "Fotoğraf",
+        "photoHint": "İsteğe bağlı; PNG, JPG veya WebP, kare olarak kırpılır",
+        "pickPhoto": "Fotoğraf seç…",
+        "removePhoto": "Fotoğrafı kaldır",
+        "removeEntry": "Kaldır",
+        "language": "Özgeçmiş dili",
+        "languageHint": "PDF'deki bölüm başlıklarının dili",
+        "extraHint": "Örneğin sertifikalar, projeler, gönüllülük, referanslar veya hobiler.",
+        "fileName": "{{name}} - Özgeçmiş",
+        "defaultName": "Özgeçmiş",
+        "templates": {
+          "classic": {
+            "title": "Klasik",
+            "description": "Çizgili başlıklarla tek sütun, fotoğraf sağ üstte"
+          },
+          "modern": {
+            "title": "Modern",
+            "description": "Yuvarlak fotoğraf, iletişim, beceriler ve dillerle renkli kenar çubuğu"
+          },
+          "compact": {
+            "title": "Kompakt",
+            "description": "Başlıklar dar sol sütunda; tek sayfaya en çok bilgiyi sığdırır"
+          }
+        },
+        "entryLegend": {
+          "experience": "Deneyim {{number}}",
+          "education": "Eğitim {{number}}",
+          "extra": "Bölüm {{number}}"
+        },
+        "fields": {
+          "name": "Ad soyad",
+          "headline": "Unvan",
+          "headlinePlaceholder": "ör. Veri Analisti",
+          "contacts": "İletişim bilgileri",
+          "contactsHint": "Her satıra bir tane: e-posta, telefon, şehir, web sitesi, LinkedIn… E-posta ve web adresleri bağlantıya dönüşür.",
+          "summary": "Profil",
+          "period": "Tarihler",
+          "periodPlaceholder": "ör. 2021 – halen",
+          "location": "Konum",
+          "details": "Ayrıntılar",
+          "detailsHint": "Her satıra bir madde; - ile başlayan satırlar madde işaretli olur.",
+          "skills": "Beceriler",
+          "skillsHint": "Virgül ya da yeni satırla ayırın",
+          "languages": "Diller",
+          "languagesHint": "Her satıra bir dil, ör. İngilizce (C1)",
+          "sectionHeading": "Başlık",
+          "sectionHeadingPlaceholder": "ör. Sertifikalar",
+          "experience": {
+            "title": "Pozisyon",
+            "organisation": "Şirket veya kurum"
+          },
+          "education": {
+            "title": "Bölüm veya program",
+            "organisation": "Okul"
+          }
+        },
+        "sections": {
+          "experience": "Deneyim",
+          "education": "Eğitim",
+          "skills": "Beceriler ve diller",
+          "extra": "Ek bölümler"
+        },
+        "add": {
+          "experience": "Deneyim ekle",
+          "education": "Eğitim ekle",
+          "extra": "Bölüm ekle"
+        },
+        "labels": {
+          "summary": "Profil",
+          "experience": "Deneyim",
+          "education": "Eğitim",
+          "skills": "Beceriler",
+          "languages": "Diller",
+          "contact": "İletişim"
+        },
+        "idle": {
+          "title": "Özgeçmişiniz burada görünecek",
+          "description": "En azından adınızı yazın, bir şablon seçin ve Özgeçmişi oluştur'a tıklayın."
         }
       }
     }
@@ -5915,7 +6005,8 @@
       "noOutput": "PDF'nin nereye kaydedileceğini seçin.",
       "noTitle": "Kapak için bir başlık gerekiyor.",
       "noCoverImage": "Fotoğraflı kapak için bir resim gerekiyor. Resim seçin ya da başka bir stil seçin.",
-      "clipboardEmpty": "Panoda PDF'ye dönüştürülecek resim, metin ya da dosya yok. Önce bir şey kopyalayın."
+      "clipboardEmpty": "Panoda PDF'ye dönüştürülecek resim, metin ya da dosya yok. Önce bir şey kopyalayın.",
+      "noName": "Önce bir ad girin."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

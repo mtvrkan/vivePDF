@@ -2480,7 +2480,8 @@
         "create-bulk": "Certificados, convites e crachás para cada linha de uma tabela CSV ou Excel",
         "create-paper": "Papel em branco, pautado, quadriculado, pontilhado ou de partitura em PDF pronto para imprimir",
         "cover": "Coloque uma capa com design no início de um PDF: título, autor, instituição, logotipo ou foto",
-        "create-book": "Capítulos em Markdown ou texto como livro com capa, sumário com links e números de página"
+        "create-book": "Capítulos em Markdown ou texto como livro com capa, sumário com links e números de página",
+        "create-cv": "Currículo com modelo clássico, moderno ou compacto, foto e contatos clicáveis"
       }
     },
     "convert": {
@@ -5417,7 +5418,8 @@
         "document": "Documento único",
         "bulk": "De uma tabela",
         "paper": "Papel",
-        "book": "Livro"
+        "book": "Livro",
+        "cv": "Currículo"
       },
       "bulk": {
         "title": "Documentos de uma tabela",
@@ -5538,6 +5540,94 @@
         "idle": {
           "title": "O livro aparecerá aqui",
           "description": "Adicione os arquivos dos capítulos, dê um título ao livro e clique em Criar livro."
+        }
+      },
+      "cv": {
+        "title": "Currículo",
+        "description": "Preencha um formulário e receba um currículo caprichado: clássico, moderno com barra lateral colorida ou compacto para caber mais em uma página.",
+        "run": "Criar currículo",
+        "startOver": "Recomeçar",
+        "cleared": "O formulário foi limpo.",
+        "draftHint": "O que você digita fica salvo neste computador para você voltar e atualizar o currículo depois.",
+        "personal": "Sobre você",
+        "photo": "Foto",
+        "photoHint": "Opcional; PNG, JPG ou WebP, recortada em quadrado",
+        "pickPhoto": "Escolher foto…",
+        "removePhoto": "Remover foto",
+        "removeEntry": "Remover",
+        "language": "Idioma do currículo",
+        "languageHint": "O idioma dos títulos das seções no PDF",
+        "extraHint": "Por exemplo certificados, projetos, voluntariado, referências ou hobbies.",
+        "fileName": "{{name}} - Currículo",
+        "defaultName": "Currículo",
+        "templates": {
+          "classic": {
+            "title": "Clássico",
+            "description": "Uma coluna com títulos sublinhados e foto no canto superior direito"
+          },
+          "modern": {
+            "title": "Moderno",
+            "description": "Barra lateral colorida com foto redonda, contato, habilidades e idiomas"
+          },
+          "compact": {
+            "title": "Compacto",
+            "description": "Títulos em uma coluna estreita à esquerda; cabe mais em uma página"
+          }
+        },
+        "entryLegend": {
+          "experience": "Experiência {{number}}",
+          "education": "Formação {{number}}",
+          "extra": "Seção {{number}}"
+        },
+        "fields": {
+          "name": "Nome completo",
+          "headline": "Cargo",
+          "headlinePlaceholder": "ex. Analista de dados",
+          "contacts": "Contato",
+          "contactsHint": "Um por linha: e-mail, telefone, cidade, site, LinkedIn… E-mails e endereços web viram links.",
+          "summary": "Perfil",
+          "period": "Período",
+          "periodPlaceholder": "ex. 2021 – atual",
+          "location": "Local",
+          "details": "Detalhes",
+          "detailsHint": "Um ponto por linha; linhas que começam com - viram marcadores.",
+          "skills": "Habilidades",
+          "skillsHint": "Separe com vírgulas ou quebras de linha",
+          "languages": "Idiomas",
+          "languagesHint": "Um por linha, ex. Inglês (C1)",
+          "sectionHeading": "Título",
+          "sectionHeadingPlaceholder": "ex. Certificados",
+          "experience": {
+            "title": "Cargo",
+            "organisation": "Empresa ou organização"
+          },
+          "education": {
+            "title": "Curso ou programa",
+            "organisation": "Instituição"
+          }
+        },
+        "sections": {
+          "experience": "Experiência",
+          "education": "Formação",
+          "skills": "Habilidades e idiomas",
+          "extra": "Seções extras"
+        },
+        "add": {
+          "experience": "Adicionar experiência",
+          "education": "Adicionar formação",
+          "extra": "Adicionar seção"
+        },
+        "labels": {
+          "summary": "Perfil",
+          "experience": "Experiência",
+          "education": "Formação",
+          "skills": "Habilidades",
+          "languages": "Idiomas",
+          "contact": "Contato"
+        },
+        "idle": {
+          "title": "Seu currículo aparecerá aqui",
+          "description": "Preencha pelo menos seu nome, escolha um modelo e clique em Criar currículo."
         }
       }
     }
@@ -5915,7 +6005,8 @@
       "noOutput": "Escolha onde salvar o PDF.",
       "noTitle": "A capa precisa de um título.",
       "noCoverImage": "A capa com foto precisa de uma imagem. Escolha uma ou outro estilo.",
-      "clipboardEmpty": "A área de transferência não tem imagem, texto nem arquivo para virar PDF. Copie algo primeiro."
+      "clipboardEmpty": "A área de transferência não tem imagem, texto nem arquivo para virar PDF. Copie algo primeiro.",
+      "noName": "Digite um nome primeiro."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",

@@ -2480,7 +2480,8 @@
         "create-bulk": "Zertifikate, Einladungen und Namensschilder für jede Zeile einer CSV- oder Excel-Tabelle",
         "create-paper": "Blanko-, Linien-, Karo-, Punkt- oder Notenpapier als druckfertiges PDF",
         "cover": "Ein gestaltetes Deckblatt vor ein PDF setzen: Titel, Autor, Institution, Logo oder Foto",
-        "create-book": "Markdown- oder Textkapitel als Buch mit Titelseite, verlinktem Inhaltsverzeichnis und Seitenzahlen"
+        "create-book": "Markdown- oder Textkapitel als Buch mit Titelseite, verlinktem Inhaltsverzeichnis und Seitenzahlen",
+        "create-cv": "Lebenslauf mit klassischer, moderner oder kompakter Vorlage, Foto und klickbaren Kontakten"
       }
     },
     "convert": {
@@ -5417,7 +5418,8 @@
         "document": "Einzelnes Dokument",
         "bulk": "Aus einer Tabelle",
         "paper": "Papier",
-        "book": "Buch"
+        "book": "Buch",
+        "cv": "Lebenslauf"
       },
       "bulk": {
         "title": "Dokumente aus einer Tabelle",
@@ -5538,6 +5540,94 @@
         "idle": {
           "title": "Das Buch erscheint hier",
           "description": "Fügen Sie die Kapiteldateien hinzu, geben Sie dem Buch einen Titel und klicken Sie auf Buch erstellen."
+        }
+      },
+      "cv": {
+        "title": "Lebenslauf",
+        "description": "Formular ausfüllen und einen gepflegten Lebenslauf erhalten: klassisch, modern mit farbiger Seitenleiste oder kompakt für mehr auf einer Seite.",
+        "run": "Lebenslauf erstellen",
+        "startOver": "Neu beginnen",
+        "cleared": "Das Formular wurde geleert.",
+        "draftHint": "Ihre Eingaben bleiben auf diesem Computer gespeichert, damit Sie den Lebenslauf später aktualisieren können.",
+        "personal": "Über Sie",
+        "photo": "Foto",
+        "photoHint": "Optional; PNG, JPG oder WebP, quadratisch zugeschnitten",
+        "pickPhoto": "Foto wählen…",
+        "removePhoto": "Foto entfernen",
+        "removeEntry": "Entfernen",
+        "language": "Sprache des Lebenslaufs",
+        "languageHint": "Die Sprache der Abschnittsüberschriften im PDF",
+        "extraHint": "Zum Beispiel Zertifikate, Projekte, Ehrenamt, Referenzen oder Hobbys.",
+        "fileName": "{{name}} - Lebenslauf",
+        "defaultName": "Lebenslauf",
+        "templates": {
+          "classic": {
+            "title": "Klassisch",
+            "description": "Eine Spalte mit Linien unter den Überschriften, Foto oben rechts"
+          },
+          "modern": {
+            "title": "Modern",
+            "description": "Farbige Seitenleiste mit rundem Foto, Kontakt, Fähigkeiten und Sprachen"
+          },
+          "compact": {
+            "title": "Kompakt",
+            "description": "Überschriften in einer schmalen linken Spalte; passt am meisten auf eine Seite"
+          }
+        },
+        "entryLegend": {
+          "experience": "Berufserfahrung {{number}}",
+          "education": "Ausbildung {{number}}",
+          "extra": "Abschnitt {{number}}"
+        },
+        "fields": {
+          "name": "Vollständiger Name",
+          "headline": "Berufsbezeichnung",
+          "headlinePlaceholder": "z. B. Datenanalystin",
+          "contacts": "Kontaktdaten",
+          "contactsHint": "Eine Angabe pro Zeile: E-Mail, Telefon, Ort, Website, LinkedIn… E-Mail- und Webadressen werden zu Links.",
+          "summary": "Profil",
+          "period": "Zeitraum",
+          "periodPlaceholder": "z. B. 2021 – heute",
+          "location": "Ort",
+          "details": "Details",
+          "detailsHint": "Ein Punkt pro Zeile; Zeilen mit - am Anfang werden Aufzählungspunkte.",
+          "skills": "Fähigkeiten",
+          "skillsHint": "Mit Kommas oder Zeilenumbrüchen trennen",
+          "languages": "Sprachen",
+          "languagesHint": "Eine pro Zeile, z. B. Englisch (C1)",
+          "sectionHeading": "Überschrift",
+          "sectionHeadingPlaceholder": "z. B. Zertifikate",
+          "experience": {
+            "title": "Position",
+            "organisation": "Unternehmen oder Organisation"
+          },
+          "education": {
+            "title": "Abschluss oder Studiengang",
+            "organisation": "Schule oder Hochschule"
+          }
+        },
+        "sections": {
+          "experience": "Berufserfahrung",
+          "education": "Ausbildung",
+          "skills": "Fähigkeiten und Sprachen",
+          "extra": "Weitere Abschnitte"
+        },
+        "add": {
+          "experience": "Berufserfahrung hinzufügen",
+          "education": "Ausbildung hinzufügen",
+          "extra": "Abschnitt hinzufügen"
+        },
+        "labels": {
+          "summary": "Profil",
+          "experience": "Berufserfahrung",
+          "education": "Ausbildung",
+          "skills": "Fähigkeiten",
+          "languages": "Sprachen",
+          "contact": "Kontakt"
+        },
+        "idle": {
+          "title": "Ihr Lebenslauf erscheint hier",
+          "description": "Geben Sie mindestens Ihren Namen ein, wählen Sie eine Vorlage und klicken Sie auf Lebenslauf erstellen."
         }
       }
     }
@@ -5915,7 +6005,8 @@
       "noOutput": "Wählen Sie, wo das PDF gespeichert wird.",
       "noTitle": "Das Deckblatt braucht einen Titel.",
       "noCoverImage": "Das Foto-Deckblatt braucht ein Bild. Wählen Sie eines oder einen anderen Stil.",
-      "clipboardEmpty": "Die Zwischenablage enthält kein Bild, keinen Text und keine Datei für ein PDF. Kopieren Sie zuerst etwas."
+      "clipboardEmpty": "Die Zwischenablage enthält kein Bild, keinen Text und keine Datei für ein PDF. Kopieren Sie zuerst etwas.",
+      "noName": "Geben Sie zuerst einen Namen ein."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

@@ -112,6 +112,7 @@ import type {
   CreateBulkParams,
   CreateBulkResult,
   CreateBookParams,
+  CreateCvParams,
   CreatePaperParams,
   CoverParams,
   ClipboardParams,
@@ -616,6 +617,9 @@ export const createBulk = (params: CreateBulkParams, options?: RpcCallOptions) =
 
 export const createBook = (params: CreateBookParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.book", params, options);
+
+export const createCv = (params: CreateCvParams, options?: RpcCallOptions) =>
+  rpc<OutputResult>("create.cv", params, options);
 
 export const createPaper = (params: CreatePaperParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.paper", params, options);

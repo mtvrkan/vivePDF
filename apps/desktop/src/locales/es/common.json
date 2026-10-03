@@ -2480,7 +2480,8 @@
         "create-bulk": "Certificados, invitaciones y credenciales para cada fila de una tabla CSV o Excel",
         "create-paper": "Papel en blanco, rayado, cuadriculado, punteado o pautado como PDF listo para imprimir",
         "cover": "Añada una portada diseñada al principio de un PDF: título, autor, institución, logotipo o foto",
-        "create-book": "Capítulos Markdown o de texto como libro con portada, índice enlazado y números de página"
+        "create-book": "Capítulos Markdown o de texto como libro con portada, índice enlazado y números de página",
+        "create-cv": "Currículum con plantilla clásica, moderna o compacta, foto y contactos con enlace"
       }
     },
     "convert": {
@@ -5417,7 +5418,8 @@
         "document": "Documento único",
         "bulk": "Desde una tabla",
         "paper": "Papel",
-        "book": "Libro"
+        "book": "Libro",
+        "cv": "CV"
       },
       "bulk": {
         "title": "Documentos desde una tabla",
@@ -5538,6 +5540,94 @@
         "idle": {
           "title": "El libro aparecerá aquí",
           "description": "Añada los archivos de capítulos, ponga un título al libro y haga clic en Crear libro."
+        }
+      },
+      "cv": {
+        "title": "Currículum",
+        "description": "Rellene un formulario y obtenga un currículum cuidado: clásico, moderno con barra lateral de color o compacto para que quepa más en una página.",
+        "run": "Crear currículum",
+        "startOver": "Empezar de nuevo",
+        "cleared": "Se vació el formulario.",
+        "draftHint": "Lo que escribe se guarda en este equipo para que pueda volver y actualizar el currículum más tarde.",
+        "personal": "Sobre usted",
+        "photo": "Foto",
+        "photoHint": "Opcional; PNG, JPG o WebP, recortada en cuadrado",
+        "pickPhoto": "Elegir foto…",
+        "removePhoto": "Quitar foto",
+        "removeEntry": "Quitar",
+        "language": "Idioma del currículum",
+        "languageHint": "El idioma de los títulos de sección en el PDF",
+        "extraHint": "Por ejemplo certificados, proyectos, voluntariado, referencias o aficiones.",
+        "fileName": "{{name}} - CV",
+        "defaultName": "CV",
+        "templates": {
+          "classic": {
+            "title": "Clásico",
+            "description": "Una columna con títulos subrayados y la foto arriba a la derecha"
+          },
+          "modern": {
+            "title": "Moderno",
+            "description": "Barra lateral de color con foto redonda, contacto, habilidades e idiomas"
+          },
+          "compact": {
+            "title": "Compacto",
+            "description": "Títulos en una columna izquierda estrecha; cabe más en una página"
+          }
+        },
+        "entryLegend": {
+          "experience": "Experiencia {{number}}",
+          "education": "Formación {{number}}",
+          "extra": "Sección {{number}}"
+        },
+        "fields": {
+          "name": "Nombre completo",
+          "headline": "Puesto",
+          "headlinePlaceholder": "p. ej. Analista de datos",
+          "contacts": "Datos de contacto",
+          "contactsHint": "Uno por línea: correo, teléfono, ciudad, sitio web, LinkedIn… Los correos y las direcciones web se convierten en enlaces.",
+          "summary": "Perfil",
+          "period": "Fechas",
+          "periodPlaceholder": "p. ej. 2021 – actualidad",
+          "location": "Lugar",
+          "details": "Detalles",
+          "detailsHint": "Un punto por línea; las líneas que empiezan por - se convierten en viñetas.",
+          "skills": "Habilidades",
+          "skillsHint": "Separe con comas o saltos de línea",
+          "languages": "Idiomas",
+          "languagesHint": "Uno por línea, p. ej. Inglés (C1)",
+          "sectionHeading": "Título",
+          "sectionHeadingPlaceholder": "p. ej. Certificados",
+          "experience": {
+            "title": "Puesto",
+            "organisation": "Empresa u organización"
+          },
+          "education": {
+            "title": "Título o programa",
+            "organisation": "Centro de estudios"
+          }
+        },
+        "sections": {
+          "experience": "Experiencia",
+          "education": "Formación",
+          "skills": "Habilidades e idiomas",
+          "extra": "Secciones adicionales"
+        },
+        "add": {
+          "experience": "Añadir experiencia",
+          "education": "Añadir formación",
+          "extra": "Añadir sección"
+        },
+        "labels": {
+          "summary": "Perfil",
+          "experience": "Experiencia",
+          "education": "Formación",
+          "skills": "Habilidades",
+          "languages": "Idiomas",
+          "contact": "Contacto"
+        },
+        "idle": {
+          "title": "Su currículum aparecerá aquí",
+          "description": "Escriba al menos su nombre, elija una plantilla y haga clic en Crear currículum."
         }
       }
     }
@@ -5915,7 +6005,8 @@
       "noOutput": "Elija dónde guardar el PDF.",
       "noTitle": "La portada necesita un título.",
       "noCoverImage": "La portada con foto necesita una imagen. Elija una o cambie de estilo.",
-      "clipboardEmpty": "El portapapeles no tiene imagen, texto ni archivo para convertir en PDF. Copie algo primero."
+      "clipboardEmpty": "El portapapeles no tiene imagen, texto ni archivo para convertir en PDF. Copie algo primero.",
+      "noName": "Escriba primero un nombre."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",

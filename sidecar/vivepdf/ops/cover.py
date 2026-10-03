@@ -208,7 +208,7 @@ def _minimal(cover: Cover) -> None:
     cover.put_bottom(cover.area(0.1, 0.74, 0.9, 0.92), people, cover.css("left"))
 
 
-def _photo_bytes(path: Path, width: float, height: float) -> bytes:
+def cropped_photo_bytes(path: Path, width: float, height: float) -> bytes:
     with Image.open(path) as opened:
         image = ImageOps.exif_transpose(opened).convert("RGB")
     ratio = width / height
@@ -230,7 +230,9 @@ def _photo(cover: Cover, photo: Path) -> None:
     params = cover.params
     picture = cover.area(0, 0, 1, PHOTO_SHARE)
     cover.page.insert_image(
-        picture, stream=_photo_bytes(photo, picture.width, picture.height), keep_proportion=False
+        picture,
+        stream=cropped_photo_bytes(photo, picture.width, picture.height),
+        keep_proportion=False,
     )
     strip = pymupdf.Rect(picture.x0, picture.y1, picture.x1, picture.y1 + cover.size(6))
     cover.page.draw_rect(strip, color=None, fill=cover.accent)
