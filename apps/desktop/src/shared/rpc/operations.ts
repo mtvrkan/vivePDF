@@ -111,6 +111,7 @@ import type {
   CreateDocumentParams,
   CreateBulkParams,
   CreateBulkResult,
+  CreatePaperParams,
   SvgToPdfParams,
   FillParams,
   FillResult,
@@ -599,6 +600,9 @@ export const createDocument = (params: CreateDocumentParams, options?: RpcCallOp
 
 export const createBulk = (params: CreateBulkParams, options?: RpcCallOptions) =>
   rpc<CreateBulkResult>("create.bulk", params, options);
+
+export const createPaper = (params: CreatePaperParams, options?: RpcCallOptions) =>
+  rpc<OutputResult>("create.paper", params, options);
 
 export const svgToPdf = (params: SvgToPdfParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("convert.svg_to_pdf", params, options);

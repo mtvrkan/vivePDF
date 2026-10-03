@@ -2476,7 +2476,8 @@
         "omr-sheet": "打印可从扫描件读回的涂卡答题卡。",
         "omr-grade": "读取已填写的答题卡，按答案评分并导出成绩。",
         "create-document": "将纯文本或 Markdown 制作成报告、信函、申请书、会议纪要或小册子",
-        "create-bulk": "为 CSV 或 Excel 表格的每一行生成证书、邀请函和胸牌"
+        "create-bulk": "为 CSV 或 Excel 表格的每一行生成证书、邀请函和胸牌",
+        "create-paper": "空白纸、横线纸、方格纸、点阵纸或五线谱，生成可打印的 PDF"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "衬线",
         "mono": "等宽"
       },
-      "paper": "纸张",
+      "paper": {
+        "title": "纸张",
+        "description": "制作可打印的本子：任意尺寸的空白纸、横线纸、方格纸、点阵纸、习字纸或五线谱。",
+        "run": "创建纸张",
+        "layout": "页面",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "页数",
+        "pageCount_one": "{{count}} 页",
+        "pageCount_other": "{{count}} 页",
+        "styles": {
+          "plain": "空白页",
+          "lined": "横线，可加页边线",
+          "grid": "适合数学和绘图的方格",
+          "dots": "适合手账和草图的点阵",
+          "isometric": "适合 3D 绘图的三角点阵",
+          "handwriting": "练字用的四线格",
+          "staff": "五线谱"
+        },
+        "defaultName": "paper",
+        "idle": {
+          "title": "纸张将显示在这里",
+          "description": "选择纸张类型、尺寸和页数，然后点击“创建纸张”。"
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "Letter",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "要创建的内容",
         "document": "单个文档",
-        "bulk": "从表格生成"
+        "bulk": "从表格生成",
+        "paper": "纸张"
       },
       "bulk": {
         "title": "从表格生成文档",
@@ -5466,7 +5496,8 @@
     "reading": "正在读取…",
     "searching": "正在搜索…",
     "replacing": "正在替换…",
-    "creating": "正在创建文档 {{current}}/{{total}}…"
+    "creating": "正在创建文档 {{current}}/{{total}}…",
+    "creatingPages": "正在创建第 {{current}}/{{total}} 页…"
   },
   "annotate": {
     "select": "选择 / 移动",

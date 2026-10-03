@@ -2476,7 +2476,8 @@
         "omr-sheet": "Taramadan geri okunabilen optik cevap kâğıtları yazdırın.",
         "omr-grade": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın.",
         "create-document": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün",
-        "create-bulk": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı"
+        "create-bulk": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı",
+        "create-paper": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "Serif",
         "mono": "Eş aralıklı"
       },
-      "paper": "Kâğıt",
+      "paper": {
+        "title": "Kâğıt",
+        "description": "Yazdırılabilir defter hazırlayın: istediğiniz boyutta boş, çizgili, kareli, noktalı, yazı ya da nota kâğıdı.",
+        "run": "Kâğıt oluştur",
+        "layout": "Sayfalar",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "Sayfa sayısı",
+        "pageCount_one": "{{count}} sayfa",
+        "pageCount_other": "{{count}} sayfa",
+        "styles": {
+          "plain": "Boş sayfalar",
+          "lined": "Yatay çizgiler, isteğe bağlı kenar boşluğu çizgisiyle",
+          "grid": "Matematik ve çizim için kareler",
+          "dots": "Ajanda ve eskiz için noktalar",
+          "isometric": "3B çizim için üçgen noktalar",
+          "handwriting": "Yazı öğrenmek için dört çizgili bantlar",
+          "staff": "Nota için beş çizgili porteler"
+        },
+        "defaultName": "kagit",
+        "idle": {
+          "title": "Kâğıt burada görünecek",
+          "description": "Kâğıt türünü, boyutu ve sayfa sayısını seçip Kâğıt oluştur'a tıklayın."
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "Letter",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "Ne oluşturulacak",
         "document": "Tek belge",
-        "bulk": "Tablodan"
+        "bulk": "Tablodan",
+        "paper": "Kâğıt"
       },
       "bulk": {
         "title": "Tablodan belgeler",
@@ -5466,7 +5496,8 @@
     "reading": "Okunuyor…",
     "searching": "Aranıyor…",
     "replacing": "Değiştiriliyor…",
-    "creating": "Belge oluşturuluyor {{current}}/{{total}}…"
+    "creating": "Belge oluşturuluyor {{current}}/{{total}}…",
+    "creatingPages": "Sayfa oluşturuluyor {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Seç / taşı",

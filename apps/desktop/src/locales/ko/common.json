@@ -2476,7 +2476,8 @@
         "omr-sheet": "스캔으로 다시 읽을 수 있는 OMR 답안지를 인쇄합니다.",
         "omr-grade": "작성된 답안지를 읽고 정답으로 채점한 뒤 점수를 내보냅니다.",
         "create-document": "일반 텍스트나 Markdown을 보고서, 편지, 신청서, 회의록, 소책자로 만듭니다",
-        "create-bulk": "CSV 또는 Excel 표의 행마다 인증서, 초대장, 이름표 만들기"
+        "create-bulk": "CSV 또는 Excel 표의 행마다 인증서, 초대장, 이름표 만들기",
+        "create-paper": "무지, 줄, 모눈, 점, 오선 용지를 인쇄용 PDF로"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "명조",
         "mono": "고정폭"
       },
-      "paper": "용지",
+      "paper": {
+        "title": "용지",
+        "description": "인쇄할 수 있는 노트를 만듭니다. 원하는 크기의 무지, 줄, 모눈, 점, 글씨 연습, 오선 용지.",
+        "run": "용지 만들기",
+        "layout": "페이지",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "페이지 수",
+        "pageCount_one": "{{count}}페이지",
+        "pageCount_other": "{{count}}페이지",
+        "styles": {
+          "plain": "빈 페이지",
+          "lined": "가로줄, 여백선 선택 가능",
+          "grid": "수학과 그림용 모눈",
+          "dots": "다이어리와 스케치용 점",
+          "isometric": "3D 그림용 삼각 점",
+          "handwriting": "글씨 연습용 4줄",
+          "staff": "악보용 5선"
+        },
+        "defaultName": "paper",
+        "idle": {
+          "title": "여기에 용지가 표시됩니다",
+          "description": "용지 종류, 크기, 페이지 수를 고른 뒤 용지 만들기를 클릭하세요."
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "레터",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "만들 항목",
         "document": "단일 문서",
-        "bulk": "표에서 만들기"
+        "bulk": "표에서 만들기",
+        "paper": "용지"
       },
       "bulk": {
         "title": "표에서 문서 만들기",
@@ -5466,7 +5496,8 @@
     "reading": "읽는 중…",
     "searching": "검색하는 중…",
     "replacing": "바꾸는 중…",
-    "creating": "문서 만드는 중 {{current}}/{{total}}…"
+    "creating": "문서 만드는 중 {{current}}/{{total}}…",
+    "creatingPages": "페이지 만드는 중 {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "선택 / 이동",

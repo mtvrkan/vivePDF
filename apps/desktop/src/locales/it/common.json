@@ -2476,7 +2476,8 @@
         "omr-sheet": "Stampa fogli risposte a bolle leggibili da una scansione.",
         "omr-grade": "Leggi i fogli risposte compilati, valutali con una chiave ed esporta i punteggi.",
         "create-document": "Trasforma testo o Markdown in un rapporto, una lettera, un'istanza, un verbale o un opuscolo",
-        "create-bulk": "Certificati, inviti e badge per ogni riga di una tabella CSV o Excel"
+        "create-bulk": "Certificati, inviti e badge per ogni riga di una tabella CSV o Excel",
+        "create-paper": "Carta bianca, a righe, a quadretti, a puntini o da musica in PDF pronto da stampare"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "Serif",
         "mono": "Monospaziato"
       },
-      "paper": "Carta",
+      "paper": {
+        "title": "Carta",
+        "description": "Crea un quaderno stampabile: carta bianca, a righe, a quadretti, a puntini, per scrittura o da musica in ogni formato.",
+        "run": "Crea carta",
+        "layout": "Pagine",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "Numero di pagine",
+        "pageCount_one": "{{count}} pagina",
+        "pageCount_other": "{{count}} pagine",
+        "styles": {
+          "plain": "Pagine vuote",
+          "lined": "Righe, con linea di margine facoltativa",
+          "grid": "Quadretti per matematica e disegno",
+          "dots": "Puntini per bullet journal e schizzi",
+          "isometric": "Puntini triangolari per disegni 3D",
+          "handwriting": "Fasce a quattro righe per imparare a scrivere",
+          "staff": "Pentagrammi a cinque righe"
+        },
+        "defaultName": "carta",
+        "idle": {
+          "title": "La carta apparirà qui",
+          "description": "Scegli il tipo di carta, il formato e il numero di pagine, poi fai clic su Crea carta."
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "Letter",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "Cosa creare",
         "document": "Documento singolo",
-        "bulk": "Da una tabella"
+        "bulk": "Da una tabella",
+        "paper": "Carta"
       },
       "bulk": {
         "title": "Documenti da una tabella",
@@ -5466,7 +5496,8 @@
     "reading": "Lettura…",
     "searching": "Ricerca…",
     "replacing": "Sostituzione…",
-    "creating": "Creazione del documento {{current}}/{{total}}…"
+    "creating": "Creazione del documento {{current}}/{{total}}…",
+    "creatingPages": "Creazione della pagina {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Seleziona / sposta",

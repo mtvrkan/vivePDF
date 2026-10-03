@@ -2476,7 +2476,8 @@
         "omr-sheet": "Ankreuzbögen drucken, die sich aus einem Scan zurücklesen lassen.",
         "omr-grade": "Ausgefüllte Antwortbögen lesen, mit einem Schlüssel bewerten und die Ergebnisse exportieren.",
         "create-document": "Aus reinem Text oder Markdown einen Bericht, Brief, Antrag, ein Protokoll oder eine Broschüre machen",
-        "create-bulk": "Zertifikate, Einladungen und Namensschilder für jede Zeile einer CSV- oder Excel-Tabelle"
+        "create-bulk": "Zertifikate, Einladungen und Namensschilder für jede Zeile einer CSV- oder Excel-Tabelle",
+        "create-paper": "Blanko-, Linien-, Karo-, Punkt- oder Notenpapier als druckfertiges PDF"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "Serif",
         "mono": "Festbreite"
       },
-      "paper": "Papier",
+      "paper": {
+        "title": "Papier",
+        "description": "Erstellen Sie ein druckbares Heft: Blanko-, Linien-, Karo-, Punkt-, Schreiblern- oder Notenpapier in jeder Größe.",
+        "run": "Papier erstellen",
+        "layout": "Seiten",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "Seitenzahl",
+        "pageCount_one": "{{count}} Seite",
+        "pageCount_other": "{{count}} Seiten",
+        "styles": {
+          "plain": "Leere Seiten",
+          "lined": "Linien, auf Wunsch mit Randlinie",
+          "grid": "Kästchen für Mathe und Zeichnungen",
+          "dots": "Punkte für Bullet Journals und Skizzen",
+          "isometric": "Dreieckspunkte für 3D-Zeichnungen",
+          "handwriting": "Vierlinienbänder zum Schreibenlernen",
+          "staff": "Fünf Notenlinien"
+        },
+        "defaultName": "papier",
+        "idle": {
+          "title": "Das Papier erscheint hier",
+          "description": "Wählen Sie Papierart, Größe und Seitenzahl und klicken Sie auf Papier erstellen."
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "Letter",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "Was erstellt wird",
         "document": "Einzelnes Dokument",
-        "bulk": "Aus einer Tabelle"
+        "bulk": "Aus einer Tabelle",
+        "paper": "Papier"
       },
       "bulk": {
         "title": "Dokumente aus einer Tabelle",
@@ -5466,7 +5496,8 @@
     "reading": "Wird gelesen…",
     "searching": "Wird gesucht…",
     "replacing": "Wird ersetzt…",
-    "creating": "Dokument {{current}}/{{total}} wird erstellt…"
+    "creating": "Dokument {{current}}/{{total}} wird erstellt…",
+    "creatingPages": "Seite {{current}}/{{total}} wird erstellt…"
   },
   "annotate": {
     "select": "Auswählen / verschieben",

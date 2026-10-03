@@ -2476,7 +2476,8 @@
         "omr-sheet": "Print bubble answer sheets that can be read back from a scan.",
         "omr-grade": "Read filled answer sheets, grade them against a key and export the scores.",
         "create-document": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet",
-        "create-bulk": "Certificates, invitations and name badges for every row of a CSV or Excel table"
+        "create-bulk": "Certificates, invitations and name badges for every row of a CSV or Excel table",
+        "create-paper": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "Serif",
         "mono": "Monospace"
       },
-      "paper": "Paper",
+      "paper": {
+        "title": "Paper",
+        "description": "Make a printable notebook: blank, lined, graph, dotted, handwriting or music paper in any size.",
+        "run": "Create paper",
+        "layout": "Pages",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "Number of pages",
+        "pageCount_one": "{{count}} page",
+        "pageCount_other": "{{count}} pages",
+        "styles": {
+          "plain": "Empty pages",
+          "lined": "Ruled lines, with an optional margin",
+          "grid": "Squares for maths and drawings",
+          "dots": "Dots for bullet journals and sketches",
+          "isometric": "Triangular dots for 3D drawings",
+          "handwriting": "Four-line bands for learning to write",
+          "staff": "Five-line staves for notes"
+        },
+        "defaultName": "paper",
+        "idle": {
+          "title": "The paper will appear here",
+          "description": "Pick a paper type, the size and the number of pages, then click Create paper."
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "Letter",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "What to create",
         "document": "Single document",
-        "bulk": "From a table"
+        "bulk": "From a table",
+        "paper": "Paper"
       },
       "bulk": {
         "title": "Documents from a table",
@@ -5466,7 +5496,8 @@
     "reading": "Reading…",
     "searching": "Searching…",
     "replacing": "Replacing…",
-    "creating": "Creating document {{current}}/{{total}}…"
+    "creating": "Creating document {{current}}/{{total}}…",
+    "creatingPages": "Creating page {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Select / move",

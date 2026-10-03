@@ -85,4 +85,19 @@ describe("create", () => {
     expect(elif.pages?.[0]?.text).toContain("Elif Su");
     expect(elif.pages?.[0]?.text).toContain("Table 7");
   });
+
+  it("makes a dotted notebook with twenty pages", async () => {
+    await openTool("nav.create");
+    await $(`//*[@role="radio"][normalize-space(.)="${t("tools.create.tabs.paper")}"]`).click();
+    await chooseCard(t("tools.pages.paper.dots"));
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "create-paper.png"));
+
+    await runPrimary(t("tools.create.paper.run"));
+    const [output] = await waitForOutputs();
+
+    const result = probe(output);
+    expect(basename(output)).toBe("Dot grid.pdf");
+    expect(result.pageCount).toBe(20);
+    expect(result.pages?.[0]?.width).toBeLessThan(result.pages?.[0]?.height ?? 0);
+  });
 });

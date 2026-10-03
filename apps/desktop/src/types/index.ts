@@ -1117,6 +1117,8 @@ export type CreateBulkParams = {
   overwrite?: boolean;
 };
 export type CreateBulkResult = { outputs: string[]; count: number; pageCount: number; bytes: number };
+export type CreatePaperSize = "a4" | "a5" | "a3" | "letter";
+export type CreatePaperParams = { size: CreatePaperSize; landscape: boolean; pages: number; pattern?: PaperPattern; output: string; overwrite?: boolean };
 export type CreateDocumentParams = {
   path?: string;
   text?: string;

@@ -2476,7 +2476,8 @@
         "omr-sheet": "スキャンから読み取れるマークシートを印刷します。",
         "omr-grade": "記入済みマークシートを読み取り、正答と照合して採点し、結果を書き出します。",
         "create-document": "テキストや Markdown を報告書、手紙、申請書、議事録、冊子にします",
-        "create-bulk": "CSV や Excel の表の行ごとに証明書・招待状・名札を作成"
+        "create-bulk": "CSV や Excel の表の行ごとに証明書・招待状・名札を作成",
+        "create-paper": "無地・罫線・方眼・ドット・五線紙を印刷用 PDF で作成"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "明朝",
         "mono": "等幅"
       },
-      "paper": "用紙",
+      "paper": {
+        "title": "用紙",
+        "description": "印刷できるノートを作成します。無地、罫線、方眼、ドット、書き方練習、五線紙を好きなサイズで。",
+        "run": "用紙を作成",
+        "layout": "ページ",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "ページ数",
+        "pageCount_one": "{{count}} ページ",
+        "pageCount_other": "{{count}} ページ",
+        "styles": {
+          "plain": "白紙のページ",
+          "lined": "横罫線、余白線も選べます",
+          "grid": "数学や作図用のマス目",
+          "dots": "手帳やスケッチ用のドット",
+          "isometric": "3D 作図用の三角ドット",
+          "handwriting": "書き方練習用の 4 本線",
+          "staff": "楽譜用の 5 本線"
+        },
+        "defaultName": "paper",
+        "idle": {
+          "title": "ここに用紙が表示されます",
+          "description": "用紙の種類、サイズ、ページ数を選んで「用紙を作成」をクリックしてください。"
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "レター",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "作成するもの",
         "document": "単一の文書",
-        "bulk": "表から作成"
+        "bulk": "表から作成",
+        "paper": "用紙"
       },
       "bulk": {
         "title": "表から文書を作成",
@@ -5466,7 +5496,8 @@
     "reading": "読み込んでいます…",
     "searching": "検索しています…",
     "replacing": "置換しています…",
-    "creating": "文書を作成中 {{current}}/{{total}}…"
+    "creating": "文書を作成中 {{current}}/{{total}}…",
+    "creatingPages": "ページを作成中 {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "選択／移動",

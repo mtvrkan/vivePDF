@@ -2476,7 +2476,8 @@
         "omr-sheet": "Imprima folhas de respostas com bolhas que podem ser lidas de uma digitalização.",
         "omr-grade": "Leia folhas de respostas preenchidas, corrija com um gabarito e exporte as notas.",
         "create-document": "Transforme texto ou Markdown em relatório, carta, requerimento, ata ou livreto",
-        "create-bulk": "Certificados, convites e crachás para cada linha de uma tabela CSV ou Excel"
+        "create-bulk": "Certificados, convites e crachás para cada linha de uma tabela CSV ou Excel",
+        "create-paper": "Papel em branco, pautado, quadriculado, pontilhado ou de partitura em PDF pronto para imprimir"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "Serif",
         "mono": "Monoespaçada"
       },
-      "paper": "Papel",
+      "paper": {
+        "title": "Papel",
+        "description": "Crie um caderno para imprimir: papel em branco, pautado, quadriculado, pontilhado, de caligrafia ou de partitura em qualquer tamanho.",
+        "run": "Criar papel",
+        "layout": "Páginas",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Carta"
+        },
+        "pages": "Número de páginas",
+        "pageCount_one": "{{count}} página",
+        "pageCount_other": "{{count}} páginas",
+        "styles": {
+          "plain": "Páginas vazias",
+          "lined": "Linhas, com linha de margem opcional",
+          "grid": "Quadrados para matemática e desenho",
+          "dots": "Pontos para bullet journal e esboços",
+          "isometric": "Pontos triangulares para desenho 3D",
+          "handwriting": "Faixas de quatro linhas para aprender a escrever",
+          "staff": "Pautas de cinco linhas"
+        },
+        "defaultName": "papel",
+        "idle": {
+          "title": "O papel aparecerá aqui",
+          "description": "Escolha o tipo de papel, o tamanho e o número de páginas e clique em Criar papel."
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "Carta",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "O que criar",
         "document": "Documento único",
-        "bulk": "De uma tabela"
+        "bulk": "De uma tabela",
+        "paper": "Papel"
       },
       "bulk": {
         "title": "Documentos de uma tabela",
@@ -5466,7 +5496,8 @@
     "reading": "Lendo…",
     "searching": "Pesquisando…",
     "replacing": "Substituindo…",
-    "creating": "Criando documento {{current}}/{{total}}…"
+    "creating": "Criando documento {{current}}/{{total}}…",
+    "creatingPages": "Criando página {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Selecionar / mover",

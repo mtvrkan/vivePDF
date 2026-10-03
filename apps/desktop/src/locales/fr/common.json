@@ -2476,7 +2476,8 @@
         "omr-sheet": "Imprimez des grilles de réponses à cocher, relisibles depuis un scan.",
         "omr-grade": "Lisez les grilles remplies, notez-les avec un corrigé et exportez les résultats.",
         "create-document": "Transformez du texte ou du Markdown en rapport, lettre, requête, procès-verbal ou livret",
-        "create-bulk": "Certificats, invitations et badges pour chaque ligne d'un tableau CSV ou Excel"
+        "create-bulk": "Certificats, invitations et badges pour chaque ligne d'un tableau CSV ou Excel",
+        "create-paper": "Papier blanc, ligné, quadrillé, pointillé ou à musique en PDF prêt à imprimer"
       }
     },
     "convert": {
@@ -5300,7 +5301,35 @@
         "serif": "Serif",
         "mono": "Chasse fixe"
       },
-      "paper": "Papier",
+      "paper": {
+        "title": "Papier",
+        "description": "Créez un cahier imprimable : papier blanc, ligné, quadrillé, pointillé, d'écriture ou à musique, dans tous les formats.",
+        "run": "Créer le papier",
+        "layout": "Pages",
+        "sizes": {
+          "a4": "A4",
+          "a5": "A5",
+          "a3": "A3",
+          "letter": "Letter"
+        },
+        "pages": "Nombre de pages",
+        "pageCount_one": "{{count}} page",
+        "pageCount_other": "{{count}} pages",
+        "styles": {
+          "plain": "Pages vides",
+          "lined": "Lignes, avec marge en option",
+          "grid": "Carreaux pour les maths et le dessin",
+          "dots": "Points pour bullet journal et croquis",
+          "isometric": "Points en triangle pour le dessin 3D",
+          "handwriting": "Bandes de quatre lignes pour apprendre à écrire",
+          "staff": "Portées de cinq lignes"
+        },
+        "defaultName": "papier",
+        "idle": {
+          "title": "Le papier apparaîtra ici",
+          "description": "Choisissez le type de papier, le format et le nombre de pages, puis cliquez sur Créer le papier."
+        }
+      },
       "papers": {
         "a4": "A4",
         "letter": "Letter",
@@ -5332,7 +5361,8 @@
       "tabs": {
         "label": "Que créer",
         "document": "Document unique",
-        "bulk": "Depuis un tableau"
+        "bulk": "Depuis un tableau",
+        "paper": "Papier"
       },
       "bulk": {
         "title": "Documents depuis un tableau",
@@ -5466,7 +5496,8 @@
     "reading": "Lecture…",
     "searching": "Recherche…",
     "replacing": "Remplacement…",
-    "creating": "Création du document {{current}}/{{total}}…"
+    "creating": "Création du document {{current}}/{{total}}…",
+    "creatingPages": "Création de la page {{current}}/{{total}}…"
   },
   "annotate": {
     "select": "Sélectionner / déplacer",
