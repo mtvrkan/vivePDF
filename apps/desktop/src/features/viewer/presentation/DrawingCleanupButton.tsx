@@ -4,8 +4,7 @@ import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMe
 import { IconButton } from "@/components/shared/IconButton";
 import { useContextMenu } from "@/components/shared/useContextMenu";
 import { usePresentationStore } from "@/shared/store/presentationStore";
-
-export const CLEAR_PAGE_SHORTCUT = "Shift+E";
+import { CLEAR_PAGE_SHORTCUT, clearWithUndo } from "./drawingCleanup";
 
 export function TemporaryDrawingCleanup({ pageIndex }: { pageIndex: number }) {
   const pageCount = usePresentationStore((state) => state.visibleStrokeCount(pageIndex));
@@ -14,8 +13,8 @@ export function TemporaryDrawingCleanup({ pageIndex }: { pageIndex: number }) {
     <DrawingCleanupButton
       pageCount={pageCount}
       totalCount={totalCount}
-      onClearPage={() => usePresentationStore.getState().clearVisible(pageIndex)}
-      onClearAll={() => usePresentationStore.getState().clearAllDrawings()}
+      onClearPage={() => clearWithUndo(() => usePresentationStore.getState().clearVisible(pageIndex))}
+      onClearAll={() => clearWithUndo(() => usePresentationStore.getState().clearAllDrawings())}
     />
   );
 }

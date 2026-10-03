@@ -1348,7 +1348,8 @@
     "cleanup": {
       "title": "Limpar desenhos",
       "page": "Limpar esta página ({{count}})",
-      "all": "Limpar todos os desenhos ({{count}})"
+      "all": "Limpar todos os desenhos ({{count}})",
+      "cleared": "Desenhos limpos"
     }
   },
   "password": {

@@ -1348,7 +1348,8 @@
     "cleanup": {
       "title": "清除绘图",
       "page": "清除此页 ({{count}})",
-      "all": "清除所有绘图 ({{count}})"
+      "all": "清除所有绘图 ({{count}})",
+      "cleared": "已清除绘图"
     }
   },
   "password": {

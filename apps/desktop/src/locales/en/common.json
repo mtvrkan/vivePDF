@@ -1348,7 +1348,8 @@
     "cleanup": {
       "title": "Clear drawings",
       "page": "Clear this page ({{count}})",
-      "all": "Clear all drawings ({{count}})"
+      "all": "Clear all drawings ({{count}})",
+      "cleared": "Drawings cleared"
     }
   },
   "password": {

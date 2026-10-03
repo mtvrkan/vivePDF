@@ -1348,7 +1348,8 @@
     "cleanup": {
       "title": "그림 지우기",
       "page": "이 페이지 지우기 ({{count}})",
-      "all": "모든 그림 지우기 ({{count}})"
+      "all": "모든 그림 지우기 ({{count}})",
+      "cleared": "그림을 지웠습니다"
     }
   },
   "password": {

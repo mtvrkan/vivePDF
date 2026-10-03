@@ -9,6 +9,7 @@ import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { clearWithUndo } from "./presentation/drawingCleanup";
 import { useUiStore } from "@/shared/store/uiStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { useSplitViewStore } from "@/shared/store/splitViewStore";
@@ -95,7 +96,7 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         } else if (lower === "e" && event.shiftKey) {
           if (presentation.drawingsMode === "temporary") {
             event.preventDefault();
-            presentation.clearVisible(scrollState.currentPage - 1);
+            if (presentation.visibleStrokeCount(scrollState.currentPage - 1) > 0) clearWithUndo(() => presentation.clearVisible(scrollState.currentPage - 1));
           }
         } else if (lower === "e") {
           event.preventDefault();

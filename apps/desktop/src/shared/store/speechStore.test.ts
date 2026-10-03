@@ -22,13 +22,23 @@ class FakeUtterance {
 
 let voices: SpeechSynthesisVoice[] = [];
 let spoken: FakeUtterance[] = [];
+let voicesChanged: (() => void) | null = null;
 
 beforeEach(() => {
-  voices = [];
+  voices = [voice("Tolga", "tr-TR", true)];
   spoken = [];
+  voicesChanged = null;
   vi.stubGlobal("SpeechSynthesisUtterance", FakeUtterance);
   vi.stubGlobal("window", {
+    setTimeout: (callback: () => void, ms: number) => setTimeout(callback, ms),
+    clearTimeout: (id: ReturnType<typeof setTimeout>) => clearTimeout(id),
     speechSynthesis: {
+      addEventListener: (_type: string, listener: () => void) => {
+        voicesChanged = listener;
+      },
+      removeEventListener: () => {
+        voicesChanged = null;
+      },
       getVoices: () => voices,
       speak: (utterance: FakeUtterance) => spoken.push(utterance),
       cancel: () => undefined,
@@ -40,6 +50,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
@@ -113,6 +124,32 @@ describe("useSpeechStore.speak", () => {
     expect(onEnd).not.toHaveBeenCalled();
     expect(spoken).toHaveLength(1);
     expect(useSpeechStore.getState().status).toBe("idle");
+  });
+
+  it("waits for the system voices to load before choosing one", () => {
+    voices = [];
+
+    useSpeechStore.getState().speak("Merhaba.", { lang: "tr" });
+    expect(spoken).toHaveLength(0);
+    voices = [voice("Tolga", "tr-TR")];
+    voicesChanged?.();
+
+    expect(spoken).toHaveLength(1);
+    expect(spoken[0].voice?.name).toBe("Tolga");
+  });
+
+  it("speaks with the language alone when no voice shows up in time, and drops a start that was stopped", () => {
+    vi.useFakeTimers();
+    voices = [];
+
+    useSpeechStore.getState().speak("Birinci.", { lang: "tr" });
+    useSpeechStore.getState().stop();
+    useSpeechStore.getState().speak("İkinci.", { lang: "tr" });
+    vi.advanceTimersByTime(1500);
+
+    expect(spoken.map((utterance) => utterance.text)).toEqual(["İkinci."]);
+    expect(spoken[0].voice).toBeNull();
+    expect(spoken[0].lang).toBe("tr");
   });
 
   it("refuses empty text", () => {

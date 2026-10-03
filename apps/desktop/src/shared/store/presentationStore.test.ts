@@ -84,4 +84,19 @@ describe("presentation drawing cleanup", () => {
 
     expect(usePresentationStore.getState().totalStrokeCount()).toBe(0);
   });
+
+  it("brings cleared drawings back without dropping ones drawn since", () => {
+    const store = usePresentationStore.getState();
+    store.addStroke(0, line("a", [[0.1, 0.1], [0.2, 0.2]]));
+    store.addBoardStroke("white", line("b", [[0.1, 0.1], [0.2, 0.2]]));
+    const { strokesByPage, boardStrokes } = usePresentationStore.getState();
+    usePresentationStore.getState().clearAllDrawings();
+    usePresentationStore.getState().addStroke(0, line("new", [[0.3, 0.3], [0.4, 0.4]]));
+
+    usePresentationStore.getState().restoreDrawings({ strokesByPage, boardStrokes });
+
+    const state = usePresentationStore.getState();
+    expect(state.strokesByPage[0].map((stroke) => stroke.id)).toEqual(["a", "new"]);
+    expect(state.boardStrokes.white.map((stroke) => stroke.id)).toEqual(["b"]);
+  });
 });

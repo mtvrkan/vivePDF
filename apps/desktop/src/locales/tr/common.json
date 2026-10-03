@@ -1348,7 +1348,8 @@
     "cleanup": {
       "title": "Çizimleri temizle",
       "page": "Bu sayfayı temizle ({{count}})",
-      "all": "Tüm çizimleri temizle ({{count}})"
+      "all": "Tüm çizimleri temizle ({{count}})",
+      "cleared": "Çizimler temizlendi"
     }
   },
   "password": {

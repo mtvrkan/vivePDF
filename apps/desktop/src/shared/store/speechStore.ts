@@ -7,6 +7,7 @@ export const NEURAL_PREFIX = "neural:";
 export const VOLUME_MIN = 0;
 export const VOLUME_MAX = 1;
 export const SPEECH_CHUNK_CHARS = 240;
+export const VOICES_WAIT_MS = 1500;
 
 export type SpeechStatus = "idle" | "speaking" | "paused";
 export type SpeechOwner = "selection" | "page";
@@ -103,9 +104,30 @@ type SpeechState = {
 
 let activeUtterance: SpeechSynthesisUtterance | null = null;
 let activeInterrupt: (() => void) | null = null;
+let speechGeneration = 0;
+let startPending = false;
+
+export function whenVoicesReady(synth: SpeechSynthesis, start: () => void): void {
+  if (synth.getVoices().length > 0) {
+    start();
+    return;
+  }
+  let started = false;
+  const begin = () => {
+    if (started) return;
+    started = true;
+    window.clearTimeout(timer);
+    synth.removeEventListener?.("voiceschanged", begin);
+    start();
+  };
+  const timer = window.setTimeout(begin, VOICES_WAIT_MS);
+  synth.addEventListener?.("voiceschanged", begin);
+}
 
 function detachActive(): (() => void) | null {
-  const interrupted = activeUtterance ? activeInterrupt : null;
+  const interrupted = activeUtterance || startPending ? activeInterrupt : null;
+  speechGeneration += 1;
+  startPending = false;
   activeUtterance = null;
   activeInterrupt = null;
   speechSynthesisApi()?.cancel();
@@ -131,12 +153,8 @@ export const useSpeechStore = create<SpeechState>((set, get) => ({
     interrupted?.();
     const reading = useReadingStore.getState();
     const lang = options?.lang ?? "";
-    const choice = chooseVoice(synth.getVoices(), options?.voiceUri === undefined ? reading.voiceUri : options.voiceUri, lang);
-    const fallbackKey = choice.voice && !choice.matched ? `${languageOf(lang)}|${choice.voice.voiceURI}` : "";
-    if (choice.voice && fallbackKey && fallbackKey !== announcedFallback) {
-      announcedFallback = fallbackKey;
-      options?.onVoiceFallback?.(choice.voice);
-    }
+    const voiceUri = options?.voiceUri === undefined ? reading.voiceUri : options.voiceUri;
+    let choice: VoiceChoice = { voice: null, matched: true };
     const rate = options?.rate ?? reading.rate;
     const volume = clampVolume(options?.volume ?? get().volume);
     const finish = () => {
@@ -175,7 +193,19 @@ export const useSpeechStore = create<SpeechState>((set, get) => ({
     };
     activeInterrupt = options?.onInterrupt ?? null;
     set({ status: "speaking", text, owner: options?.owner ?? "selection" });
-    speakPart(0);
+    const generation = speechGeneration;
+    startPending = true;
+    whenVoicesReady(synth, () => {
+      if (generation !== speechGeneration) return;
+      startPending = false;
+      choice = chooseVoice(synth.getVoices(), voiceUri, lang);
+      const fallbackKey = choice.voice && !choice.matched ? `${languageOf(lang)}|${choice.voice.voiceURI}` : "";
+      if (choice.voice && fallbackKey && fallbackKey !== announcedFallback) {
+        announcedFallback = fallbackKey;
+        options?.onVoiceFallback?.(choice.voice);
+      }
+      speakPart(0);
+    });
     return true;
   },
   pause: () => {

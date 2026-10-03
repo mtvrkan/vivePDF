@@ -8,6 +8,7 @@ export type DrawingsMode = "temporary" | "annotations";
 export type LensShape = "circle" | "rect";
 export type StrokePoint = { x: number; y: number };
 export type Stroke = { id: string; tool: "pen" | "highlighter"; color: string; width: number; points: StrokePoint[] };
+export type DrawingSnapshot = { strokesByPage: Record<number, Stroke[]>; boardStrokes: Record<BoardMode, Stroke[]> };
 export type CodeBlockCache = { width: number; height: number; blocks: CodeBlock[] };
 
 const STORAGE_KEY = "vivepdf.presentation";
@@ -131,6 +132,7 @@ type PresentationState = {
   eraseBoardAt: (board: BoardMode, point: StrokePoint, radius: number) => void;
   clearBoard: (board: BoardMode) => void;
   clearVisible: (pageIndex: number) => void;
+  restoreDrawings: (snapshot: DrawingSnapshot) => void;
   visibleStrokeCount: (pageIndex: number) => number;
   totalStrokeCount: () => number;
   setCodeBlocksForPage: (pageIndex: number, entry: CodeBlockCache) => void;
@@ -394,6 +396,21 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
     if (blackout === "none") clearPage(pageIndex);
     else clearBoard(blackout);
   },
+  restoreDrawings: (snapshot) =>
+    set((state) => {
+      const strokesByPage = { ...state.strokesByPage };
+      for (const [page, strokes] of Object.entries(snapshot.strokesByPage)) {
+        const pageIndex = Number(page);
+        const current = strokesByPage[pageIndex] ?? [];
+        const ids = new Set(current.map((stroke) => stroke.id));
+        strokesByPage[pageIndex] = [...strokes.filter((stroke) => !ids.has(stroke.id)), ...current];
+      }
+      const board = (mode: BoardMode) => {
+        const ids = new Set(state.boardStrokes[mode].map((stroke) => stroke.id));
+        return [...snapshot.boardStrokes[mode].filter((stroke) => !ids.has(stroke.id)), ...state.boardStrokes[mode]];
+      };
+      return { strokesByPage, boardStrokes: { black: board("black"), white: board("white") } };
+    }),
   visibleStrokeCount: (pageIndex) => {
     const { blackout, boardStrokes, strokesByPage } = get();
     return blackout === "none" ? (strokesByPage[pageIndex]?.length ?? 0) : boardStrokes[blackout].length;

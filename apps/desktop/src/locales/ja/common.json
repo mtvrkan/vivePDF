@@ -1348,7 +1348,8 @@
     "cleanup": {
       "title": "描画を消去",
       "page": "このページを消去 ({{count}})",
-      "all": "すべての描画を消去 ({{count}})"
+      "all": "すべての描画を消去 ({{count}})",
+      "cleared": "描画を消去しました"
     }
   },
   "password": {
