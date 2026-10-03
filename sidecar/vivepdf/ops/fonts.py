@@ -710,6 +710,19 @@ def resolve_choice(font_id: str | None, bold: bool) -> Path:
     return fallback
 
 
+def resolve_face(font_id: str | None, bold: bool, italic: bool) -> tuple[Path, bool]:
+    kind, _, value = (font_id or "").partition(":")
+    if italic and kind == "system":
+        found = find_system_font(value, bold, True)
+        if found is not None:
+            return found, True
+    if italic and kind == "imported":
+        faces = [face for face in _family_of(value) if face.bold == bold and face.italic]
+        if faces:
+            return faces[0].path, True
+    return resolve_choice(font_id, bold), False
+
+
 def font_name_for(path: Path) -> str:
     return f"vivepdf-{_safe_stem(path.stem).lower()[:24]}"
 

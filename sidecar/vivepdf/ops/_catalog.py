@@ -279,6 +279,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "security.stamp",
         "security.stamp_preview",
     ),
+    "studio": ("studio.render",),
     "system": (
         "system.ping",
         "system.release",

@@ -285,6 +285,7 @@ import type {
   WebPageResult,
   XlsxParams,
 } from "@/types";
+import type { StudioRenderParams, StudioRenderResult } from "@/types/studio";
 
 export const assemblePages = (params: AssembleParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("pages.assemble", params, options);
@@ -620,6 +621,9 @@ export const createBook = (params: CreateBookParams, options?: RpcCallOptions) =
 
 export const createCv = (params: CreateCvParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.cv", params, options);
+
+export const studioRender = (params: StudioRenderParams, options?: RpcCallOptions) =>
+  rpc<StudioRenderResult>("studio.render", params, options);
 
 export const createPaper = (params: CreatePaperParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.paper", params, options);
