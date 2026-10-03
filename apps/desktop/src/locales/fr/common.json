@@ -2477,7 +2477,8 @@
         "omr-grade": "Lisez les grilles remplies, notez-les avec un corrigé et exportez les résultats.",
         "create-document": "Transformez du texte ou du Markdown en rapport, lettre, requête, procès-verbal ou livret",
         "create-bulk": "Certificats, invitations et badges pour chaque ligne d'un tableau CSV ou Excel",
-        "create-paper": "Papier blanc, ligné, quadrillé, pointillé ou à musique en PDF prêt à imprimer"
+        "create-paper": "Papier blanc, ligné, quadrillé, pointillé ou à musique en PDF prêt à imprimer",
+        "cover": "Placer une page de couverture soignée devant un PDF : titre, auteur, établissement, logo ou photo"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "Choisissez au moins un type d’adresse.",
         "addedCount": "liens ajoutés"
       },
-      "missingGlyphs": "La police choisie n’a pas de forme pour {{characters}} ; ces caractères apparaissent vides."
+      "missingGlyphs": "La police choisie n’a pas de forme pour {{characters}} ; ces caractères apparaissent vides.",
+      "cover": {
+        "suffix": "couverture",
+        "title": "Page de couverture",
+        "run": "Ajouter la couverture",
+        "style": "Style",
+        "styles": {
+          "classic": {
+            "title": "Classique",
+            "description": "Titre centré avec un filet"
+          },
+          "band": {
+            "title": "Bandeau",
+            "description": "Titre sur un large bandeau de couleur"
+          },
+          "frame": {
+            "title": "Encadré",
+            "description": "Double cadre, aspect officiel pour mémoires et rapports"
+          },
+          "minimal": {
+            "title": "Épuré",
+            "description": "Grand titre aligné à gauche et un trait fin"
+          },
+          "photo": {
+            "title": "Photo",
+            "description": "Une image sur la moitié supérieure"
+          }
+        },
+        "texts": "Textes",
+        "fields": {
+          "title": "Titre",
+          "subtitle": "Sous-titre",
+          "organisation": "Établissement",
+          "author": "Auteur",
+          "details": "Autres lignes",
+          "date": "Date"
+        },
+        "examples": {
+          "title": "Rapport annuel 2026",
+          "subtitle": "Projet pour le conseil",
+          "organisation": "Université de Lyon\nFaculté des sciences de l'éducation",
+          "author": "Claire Martin",
+          "details": "N° étudiant : 2026001\nDirecteur : Pr Paul Durand",
+          "date": "Octobre 2026"
+        },
+        "image": "Image",
+        "imageHint": "PNG, JPG ou WebP ; l'image est rognée pour remplir le haut de la page.",
+        "pickImage": "Choisir une image…",
+        "removeImage": "Retirer l'image",
+        "replaceFirst": "Remplacer la première page",
+        "replaceFirstHint": "À utiliser si le PDF commence déjà par une ancienne couverture."
+      }
     },
     "sign": {
       "suffix": "signe",
@@ -5815,7 +5867,9 @@
       "unknownFields": "Ces champs ne sont pas des colonnes du tableau : {{names}}.",
       "tooManyRows": "Le tableau compte plus de 5 000 lignes. Divisez-le en tableaux plus petits.",
       "noOutputDir": "Choisissez un dossier pour les fichiers.",
-      "noOutput": "Choisissez où enregistrer le PDF."
+      "noOutput": "Choisissez où enregistrer le PDF.",
+      "noTitle": "La couverture a besoin d'un titre.",
+      "noCoverImage": "La couverture photo a besoin d'une image. Choisissez-en une ou un autre style."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

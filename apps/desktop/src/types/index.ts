@@ -1118,6 +1118,25 @@ export type CreateBulkParams = {
 };
 export type CreateBulkResult = { outputs: string[]; count: number; pageCount: number; bytes: number };
 export type CreatePaperSize = "a4" | "a5" | "a3" | "letter";
+export type CoverStyle = "classic" | "band" | "frame" | "minimal" | "photo";
+export type CoverParams = {
+  path: string;
+  password?: string;
+  output: string;
+  overwrite?: boolean;
+  style: CoverStyle;
+  title: string;
+  subtitle?: string;
+  author?: string;
+  organisation?: string;
+  date?: string;
+  details?: string;
+  logo?: string;
+  image?: string;
+  accent?: string;
+  font?: CreateFont;
+  replaceFirst?: boolean;
+};
 export type CreatePaperParams = { size: CreatePaperSize; landscape: boolean; pages: number; pattern?: PaperPattern; output: string; overwrite?: boolean };
 export type CreateDocumentParams = {
   path?: string;

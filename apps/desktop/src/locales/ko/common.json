@@ -2477,7 +2477,8 @@
         "omr-grade": "작성된 답안지를 읽고 정답으로 채점한 뒤 점수를 내보냅니다.",
         "create-document": "일반 텍스트나 Markdown을 보고서, 편지, 신청서, 회의록, 소책자로 만듭니다",
         "create-bulk": "CSV 또는 Excel 표의 행마다 인증서, 초대장, 이름표 만들기",
-        "create-paper": "무지, 줄, 모눈, 점, 오선 용지를 인쇄용 PDF로"
+        "create-paper": "무지, 줄, 모눈, 점, 오선 용지를 인쇄용 PDF로",
+        "cover": "PDF 앞에 디자인된 표지 추가: 제목, 저자, 소속, 로고 또는 사진"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "주소 종류를 하나 이상 선택하세요.",
         "addedCount": "개 링크 추가"
       },
-      "missingGlyphs": "선택한 글꼴에 {{characters}}의 글리프가 없어 빈칸으로 인쇄됩니다."
+      "missingGlyphs": "선택한 글꼴에 {{characters}}의 글리프가 없어 빈칸으로 인쇄됩니다.",
+      "cover": {
+        "suffix": "cover",
+        "title": "표지",
+        "run": "표지 추가",
+        "style": "스타일",
+        "styles": {
+          "classic": {
+            "title": "클래식",
+            "description": "가운데 제목과 선"
+          },
+          "band": {
+            "title": "색 띠",
+            "description": "넓은 색 띠 위의 제목"
+          },
+          "frame": {
+            "title": "테두리",
+            "description": "이중 테두리, 논문과 보고서용 격식 있는 모양"
+          },
+          "minimal": {
+            "title": "미니멀",
+            "description": "왼쪽 정렬된 큰 제목과 가는 선"
+          },
+          "photo": {
+            "title": "사진",
+            "description": "위쪽 절반에 이미지"
+          }
+        },
+        "texts": "텍스트",
+        "fields": {
+          "title": "제목",
+          "subtitle": "부제목",
+          "organisation": "소속",
+          "author": "저자",
+          "details": "추가 줄",
+          "date": "날짜"
+        },
+        "examples": {
+          "title": "2026 연간 보고서",
+          "subtitle": "이사회 검토용 초안",
+          "organisation": "서울대학교\n사범대학",
+          "author": "김민지",
+          "details": "학번: 2026001\n지도교수: 이준호 교수",
+          "date": "2026년 10월"
+        },
+        "image": "이미지",
+        "imageHint": "PNG, JPG 또는 WebP. 페이지 위쪽을 채우도록 잘립니다.",
+        "pickImage": "이미지 선택…",
+        "removeImage": "이미지 제거",
+        "replaceFirst": "첫 페이지 바꾸기",
+        "replaceFirstHint": "PDF가 이미 오래된 표지로 시작할 때 사용하세요."
+      }
     },
     "sign": {
       "suffix": "signed",
@@ -5815,7 +5867,9 @@
       "unknownFields": "다음 필드는 표의 열이 아닙니다: {{names}}.",
       "tooManyRows": "표에 행이 5,000개를 넘습니다. 더 작은 표로 분할하세요.",
       "noOutputDir": "파일을 저장할 폴더를 선택하세요.",
-      "noOutput": "PDF를 저장할 위치를 선택하세요."
+      "noOutput": "PDF를 저장할 위치를 선택하세요.",
+      "noTitle": "표지에는 제목이 필요합니다.",
+      "noCoverImage": "사진 표지에는 이미지가 필요합니다. 이미지를 고르거나 다른 스타일을 선택하세요."
     },
     "revealEmptyPath": "경로가 비어 있습니다.",
     "revealFailed": "이 위치를 열 수 없습니다.",

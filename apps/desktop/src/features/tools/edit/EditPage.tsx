@@ -21,6 +21,8 @@ import { POSTER_GRID, POSTER_MARGIN_MM, POSTER_OVERLAP_MM, posterGridOf, visible
 import { NumberTab } from "./NumberTab";
 import { HeaderFooterTab } from "./HeaderFooterTab";
 import { LetterheadTab } from "./LetterheadTab";
+import { CoverTab } from "./CoverTab";
+import { useCoverState } from "./useCoverState";
 import { FindReplaceTab } from "./FindReplaceTab";
 import { CropTab } from "./CropTab";
 import { ResizeTab } from "./ResizeTab";
@@ -134,6 +136,7 @@ export function EditPage() {
   const [autoLink, setAutoLink] = useState<AutoLinkSettings>({ urls: true, emails: true, pages: "" });
 
   const source = sourceState.source;
+  const coverState = useCoverState(source);
 
   useEffect(() => {
     if (source) setOutput(suggestOutputPath(source.path, t(`tools.edit.${tab}.suffix`)));
@@ -208,7 +211,8 @@ export function EditPage() {
     (tab !== "findReplace" || findText.trim().length > 0) &&
     (tab !== "bookmarks" || (!bookmarksLoading && (bookmarkItems.length > 0 || bookmarksLoaded) && bookmarkIssue(bookmarkItems, bookmarkPageCount) === null)) &&
     (tab !== "textedit" || (teditEdits.size > 0 && teditSizesValid)) &&
-    (tab !== "autolink" || autoLink.urls || autoLink.emails);
+    (tab !== "autolink" || autoLink.urls || autoLink.emails) &&
+    (tab !== "cover" || coverState.coverValid);
 
   const baseParams = () => ({ path: source?.path ?? "", password: source?.password ?? undefined, output, pages: pages.trim() || undefined });
 
@@ -216,7 +220,20 @@ export function EditPage() {
     if (!source || !ready) return;
     const margin = marginMm * MM_TO_PT;
     const params: Record<string, unknown> =
-      tab === "number"
+      tab === "cover"
+        ? {
+          path: source.path,
+          password: source.password ?? undefined,
+          output,
+          style: coverState.style,
+          ...coverState.texts,
+          logo: coverState.logo ?? undefined,
+          image: coverState.style === "photo" ? coverState.image ?? undefined : undefined,
+          accent: coverState.accent,
+          font: coverState.font,
+          replaceFirst: coverState.replaceFirst,
+        }
+        : tab === "number"
         ? { ...baseParams(), position, template, start, fontSize: numberFontSize, margin, color, bold, prefix: numberPrefix, suffix: numberSuffix, padding: numberPadding, fontId, style: numberStyle, side: numberSide, mirrorMargins: numberMirror, pageLabels: numberLabels, replaceExisting: numberReplace }
         : tab === "headerFooter"
           ? headerMode === "remove"
@@ -346,6 +363,8 @@ export function EditPage() {
           {tab === "number" ? (
             <NumberTab state={numberState} stamp={stamp} pages={pages} onPagesChange={setPages} running={operation.running} />
           ) : null}
+
+          {tab === "cover" ? <CoverTab state={coverState} /> : null}
 
           {tab === "letterhead" ? (
             <LetterheadTab state={letterheadState} lockedTemplate={lockedTemplate} pages={pages} onPagesChange={setPages} />

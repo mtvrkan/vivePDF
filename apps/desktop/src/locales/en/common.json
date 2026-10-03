@@ -2477,7 +2477,8 @@
         "omr-grade": "Read filled answer sheets, grade them against a key and export the scores.",
         "create-document": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet",
         "create-bulk": "Certificates, invitations and name badges for every row of a CSV or Excel table",
-        "create-paper": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF"
+        "create-paper": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF",
+        "cover": "Put a designed cover page in front of a PDF: title, author, institution, logo or photo"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "Choose at least one kind of address.",
         "addedCount": "links added"
       },
-      "missingGlyphs": "The chosen font has no shape for {{characters}}; those characters print as blanks."
+      "missingGlyphs": "The chosen font has no shape for {{characters}}; those characters print as blanks.",
+      "cover": {
+        "suffix": "cover",
+        "title": "Cover page",
+        "run": "Add cover",
+        "style": "Style",
+        "styles": {
+          "classic": {
+            "title": "Classic",
+            "description": "Centred title with a rule"
+          },
+          "band": {
+            "title": "Colour band",
+            "description": "Title on a wide band of colour"
+          },
+          "frame": {
+            "title": "Framed",
+            "description": "Double frame, formal look for theses and reports"
+          },
+          "minimal": {
+            "title": "Minimal",
+            "description": "Large left-aligned title and a thin line"
+          },
+          "photo": {
+            "title": "Photo",
+            "description": "A picture across the top half"
+          }
+        },
+        "texts": "Texts",
+        "fields": {
+          "title": "Title",
+          "subtitle": "Subtitle",
+          "organisation": "Institution",
+          "author": "Author",
+          "details": "More lines",
+          "date": "Date"
+        },
+        "examples": {
+          "title": "Annual Report 2026",
+          "subtitle": "Draft for the board",
+          "organisation": "Ankara University\nFaculty of Education",
+          "author": "Ayşe Demir",
+          "details": "Student no: 2026001\nSupervisor: Prof. Ali Kaya",
+          "date": "October 2026"
+        },
+        "image": "Picture",
+        "imageHint": "PNG, JPG or WebP; it is cropped to fill the top of the page.",
+        "pickImage": "Choose a picture…",
+        "removeImage": "Remove the picture",
+        "replaceFirst": "Replace the first page",
+        "replaceFirstHint": "Use this when the PDF already starts with an old cover."
+      }
     },
     "sign": {
       "suffix": "signed",
@@ -5815,7 +5867,9 @@
       "unknownFields": "These fields are not columns of the table: {{names}}.",
       "tooManyRows": "The table has more than 5,000 rows. Split it into smaller tables.",
       "noOutputDir": "Choose a folder for the files.",
-      "noOutput": "Choose where to save the PDF."
+      "noOutput": "Choose where to save the PDF.",
+      "noTitle": "The cover needs a title.",
+      "noCoverImage": "The photo cover needs a picture. Choose one or pick another style."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

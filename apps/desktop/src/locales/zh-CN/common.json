@@ -2477,7 +2477,8 @@
         "omr-grade": "读取已填写的答题卡，按答案评分并导出成绩。",
         "create-document": "将纯文本或 Markdown 制作成报告、信函、申请书、会议纪要或小册子",
         "create-bulk": "为 CSV 或 Excel 表格的每一行生成证书、邀请函和胸牌",
-        "create-paper": "空白纸、横线纸、方格纸、点阵纸或五线谱，生成可打印的 PDF"
+        "create-paper": "空白纸、横线纸、方格纸、点阵纸或五线谱，生成可打印的 PDF",
+        "cover": "在 PDF 前面加上设计好的封面：标题、作者、单位、徽标或照片"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "请至少选择一种地址类型。",
         "addedCount": "个链接已添加"
       },
-      "missingGlyphs": "所选字体中没有 {{characters}} 的字形，这些字符会显示为空白。"
+      "missingGlyphs": "所选字体中没有 {{characters}} 的字形，这些字符会显示为空白。",
+      "cover": {
+        "suffix": "cover",
+        "title": "封面",
+        "run": "添加封面",
+        "style": "样式",
+        "styles": {
+          "classic": {
+            "title": "经典",
+            "description": "居中标题加一条线"
+          },
+          "band": {
+            "title": "色带",
+            "description": "宽色带上的标题"
+          },
+          "frame": {
+            "title": "边框",
+            "description": "双线边框，适合论文和报告的正式样式"
+          },
+          "minimal": {
+            "title": "简约",
+            "description": "左对齐大标题和细线"
+          },
+          "photo": {
+            "title": "照片",
+            "description": "上半部分为图片"
+          }
+        },
+        "texts": "文本",
+        "fields": {
+          "title": "标题",
+          "subtitle": "副标题",
+          "organisation": "单位",
+          "author": "作者",
+          "details": "更多行",
+          "date": "日期"
+        },
+        "examples": {
+          "title": "2026 年度报告",
+          "subtitle": "提交董事会的草稿",
+          "organisation": "北京大学\n教育学院",
+          "author": "王芳",
+          "details": "学号：2026001\n导师：李明 教授",
+          "date": "2026 年 10 月"
+        },
+        "image": "图片",
+        "imageHint": "PNG、JPG 或 WebP，会裁剪以填满页面上部。",
+        "pickImage": "选择图片…",
+        "removeImage": "移除图片",
+        "replaceFirst": "替换第一页",
+        "replaceFirstHint": "PDF 已经以旧封面开头时使用。"
+      }
     },
     "sign": {
       "suffix": "signed",
@@ -5815,7 +5867,9 @@
       "unknownFields": "这些字段不是表格中的列：{{names}}。",
       "tooManyRows": "表格超过 5000 行。请拆分为较小的表格。",
       "noOutputDir": "请选择保存文件的文件夹。",
-      "noOutput": "请选择 PDF 的保存位置。"
+      "noOutput": "请选择 PDF 的保存位置。",
+      "noTitle": "封面需要标题。",
+      "noCoverImage": "照片封面需要一张图片。请选择图片或换一种样式。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",

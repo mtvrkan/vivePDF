@@ -1,5 +1,5 @@
 import { expect } from "@wdio/globals";
-import { bootApp, chooseSource, copyFixture, fixtures, openTool, outputPath, probe, runPrimary, t, waitForOutputs } from "../support/app.ts";
+import { bootApp, chooseCard, chooseSource, copyFixture, fill, fixtures, openTool, outputPath, probe, runPrimary, t, waitForOutputs } from "../support/app.ts";
 
 describe("features", () => {
   before(bootApp);
@@ -19,6 +19,25 @@ describe("features", () => {
       expect(Math.max(page.width, page.height)).toBeCloseTo(842, 0);
     });
     expect(result.pages?.[0].text).toContain("Sample page 1");
+  });
+
+  it("puts a framed cover page titled from the document properties in front of the document", async () => {
+    const source = copyFixture(fixtures().sample, "Field Study.pdf");
+    await openTool("tools.edit.cover.title");
+    await chooseSource(source);
+    await chooseCard(t("tools.edit.cover.styles.frame.title"));
+    await fill(t("tools.edit.cover.fields.subtitle"), "Final report");
+    await fill(t("tools.edit.cover.fields.author"), "Ayşe Demir");
+    const expected = await outputPath();
+    await runPrimary(t("tools.edit.cover.run"));
+    const [output] = await waitForOutputs();
+    expect(output).toBe(expected);
+    const result = probe(output);
+    expect(result.pageCount).toBe((probe(source).pageCount ?? 0) + 1);
+    expect(result.pages?.[0].text).toContain("E2E sample");
+    expect(result.pages?.[0].text).toContain("Final report");
+    expect(result.pages?.[0].text).toContain("Ayşe Demir");
+    expect(result.pages?.[1].text).toContain("Sample page 1");
   });
 
   it("turns web and e-mail addresses into links", async () => {

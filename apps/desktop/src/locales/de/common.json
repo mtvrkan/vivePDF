@@ -2477,7 +2477,8 @@
         "omr-grade": "Ausgefüllte Antwortbögen lesen, mit einem Schlüssel bewerten und die Ergebnisse exportieren.",
         "create-document": "Aus reinem Text oder Markdown einen Bericht, Brief, Antrag, ein Protokoll oder eine Broschüre machen",
         "create-bulk": "Zertifikate, Einladungen und Namensschilder für jede Zeile einer CSV- oder Excel-Tabelle",
-        "create-paper": "Blanko-, Linien-, Karo-, Punkt- oder Notenpapier als druckfertiges PDF"
+        "create-paper": "Blanko-, Linien-, Karo-, Punkt- oder Notenpapier als druckfertiges PDF",
+        "cover": "Ein gestaltetes Deckblatt vor ein PDF setzen: Titel, Autor, Institution, Logo oder Foto"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "Wählen Sie mindestens eine Art von Adresse aus.",
         "addedCount": "Links hinzugefügt"
       },
-      "missingGlyphs": "Die gewählte Schrift enthält kein Zeichen für {{characters}}; diese Zeichen erscheinen als Lücke."
+      "missingGlyphs": "Die gewählte Schrift enthält kein Zeichen für {{characters}}; diese Zeichen erscheinen als Lücke.",
+      "cover": {
+        "suffix": "deckblatt",
+        "title": "Deckblatt",
+        "run": "Deckblatt hinzufügen",
+        "style": "Stil",
+        "styles": {
+          "classic": {
+            "title": "Klassisch",
+            "description": "Zentrierter Titel mit Linie"
+          },
+          "band": {
+            "title": "Farbband",
+            "description": "Titel auf einem breiten Farbband"
+          },
+          "frame": {
+            "title": "Gerahmt",
+            "description": "Doppelrahmen, förmlich für Abschlussarbeiten und Berichte"
+          },
+          "minimal": {
+            "title": "Schlicht",
+            "description": "Großer linksbündiger Titel und eine feine Linie"
+          },
+          "photo": {
+            "title": "Foto",
+            "description": "Ein Bild über die obere Hälfte"
+          }
+        },
+        "texts": "Texte",
+        "fields": {
+          "title": "Titel",
+          "subtitle": "Untertitel",
+          "organisation": "Institution",
+          "author": "Autor",
+          "details": "Weitere Zeilen",
+          "date": "Datum"
+        },
+        "examples": {
+          "title": "Jahresbericht 2026",
+          "subtitle": "Entwurf für den Vorstand",
+          "organisation": "Universität Hamburg\nFakultät für Erziehungswissenschaft",
+          "author": "Anna Schmidt",
+          "details": "Matrikelnr.: 2026001\nBetreuer: Prof. Dr. Klaus Weber",
+          "date": "Oktober 2026"
+        },
+        "image": "Bild",
+        "imageHint": "PNG, JPG oder WebP; wird so zugeschnitten, dass es den oberen Teil füllt.",
+        "pickImage": "Bild wählen…",
+        "removeImage": "Bild entfernen",
+        "replaceFirst": "Erste Seite ersetzen",
+        "replaceFirstHint": "Wenn das PDF schon mit einem alten Deckblatt beginnt."
+      }
     },
     "sign": {
       "suffix": "signiert",
@@ -5815,7 +5867,9 @@
       "unknownFields": "Diese Felder sind keine Spalten der Tabelle: {{names}}.",
       "tooManyRows": "Die Tabelle hat mehr als 5.000 Zeilen. Teilen Sie sie in kleinere Tabellen auf.",
       "noOutputDir": "Wählen Sie einen Ordner für die Dateien.",
-      "noOutput": "Wählen Sie, wo das PDF gespeichert wird."
+      "noOutput": "Wählen Sie, wo das PDF gespeichert wird.",
+      "noTitle": "Das Deckblatt braucht einen Titel.",
+      "noCoverImage": "Das Foto-Deckblatt braucht ein Bild. Wählen Sie eines oder einen anderen Stil."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

@@ -112,6 +112,7 @@ import type {
   CreateBulkParams,
   CreateBulkResult,
   CreatePaperParams,
+  CoverParams,
   SvgToPdfParams,
   FillParams,
   FillResult,
@@ -603,6 +604,9 @@ export const createBulk = (params: CreateBulkParams, options?: RpcCallOptions) =
 
 export const createPaper = (params: CreatePaperParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.paper", params, options);
+
+export const addCover = (params: CoverParams, options?: RpcCallOptions) =>
+  rpc<OutputResult>("pages.cover", params, options);
 
 export const svgToPdf = (params: SvgToPdfParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("convert.svg_to_pdf", params, options);

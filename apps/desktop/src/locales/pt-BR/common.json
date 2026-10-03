@@ -2477,7 +2477,8 @@
         "omr-grade": "Leia folhas de respostas preenchidas, corrija com um gabarito e exporte as notas.",
         "create-document": "Transforme texto ou Markdown em relatório, carta, requerimento, ata ou livreto",
         "create-bulk": "Certificados, convites e crachás para cada linha de uma tabela CSV ou Excel",
-        "create-paper": "Papel em branco, pautado, quadriculado, pontilhado ou de partitura em PDF pronto para imprimir"
+        "create-paper": "Papel em branco, pautado, quadriculado, pontilhado ou de partitura em PDF pronto para imprimir",
+        "cover": "Coloque uma capa com design no início de um PDF: título, autor, instituição, logotipo ou foto"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "Escolha pelo menos um tipo de endereço.",
         "addedCount": "links adicionados"
       },
-      "missingGlyphs": "A fonte escolhida não tem forma para {{characters}}; esses caracteres saem em branco."
+      "missingGlyphs": "A fonte escolhida não tem forma para {{characters}}; esses caracteres saem em branco.",
+      "cover": {
+        "suffix": "capa",
+        "title": "Capa",
+        "run": "Adicionar capa",
+        "style": "Estilo",
+        "styles": {
+          "classic": {
+            "title": "Clássica",
+            "description": "Título centralizado com uma linha"
+          },
+          "band": {
+            "title": "Faixa colorida",
+            "description": "Título sobre uma faixa larga de cor"
+          },
+          "frame": {
+            "title": "Com moldura",
+            "description": "Moldura dupla, visual formal para TCCs e relatórios"
+          },
+          "minimal": {
+            "title": "Minimalista",
+            "description": "Título grande alinhado à esquerda e uma linha fina"
+          },
+          "photo": {
+            "title": "Foto",
+            "description": "Uma imagem na metade superior"
+          }
+        },
+        "texts": "Textos",
+        "fields": {
+          "title": "Título",
+          "subtitle": "Subtítulo",
+          "organisation": "Instituição",
+          "author": "Autor",
+          "details": "Mais linhas",
+          "date": "Data"
+        },
+        "examples": {
+          "title": "Relatório anual 2026",
+          "subtitle": "Rascunho para a diretoria",
+          "organisation": "Universidade de São Paulo\nFaculdade de Educação",
+          "author": "Ana Souza",
+          "details": "Matrícula: 2026001\nOrientador: Prof. Dr. Carlos Lima",
+          "date": "Outubro de 2026"
+        },
+        "image": "Imagem",
+        "imageHint": "PNG, JPG ou WebP; é recortada para preencher o topo da página.",
+        "pickImage": "Escolher imagem…",
+        "removeImage": "Remover a imagem",
+        "replaceFirst": "Substituir a primeira página",
+        "replaceFirstHint": "Use quando o PDF já começa com uma capa antiga."
+      }
     },
     "sign": {
       "suffix": "assinado",
@@ -5815,7 +5867,9 @@
       "unknownFields": "Estes campos não são colunas da tabela: {{names}}.",
       "tooManyRows": "A tabela tem mais de 5.000 linhas. Divida-a em tabelas menores.",
       "noOutputDir": "Escolha uma pasta para os arquivos.",
-      "noOutput": "Escolha onde salvar o PDF."
+      "noOutput": "Escolha onde salvar o PDF.",
+      "noTitle": "A capa precisa de um título.",
+      "noCoverImage": "A capa com foto precisa de uma imagem. Escolha uma ou outro estilo."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",

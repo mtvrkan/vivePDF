@@ -15,6 +15,7 @@ import {
   findReplaceText,
   autoLinkPdf,
   posterPages,
+  addCover,
 } from "@/shared/rpc/operations";
 import { repairOutcome } from "@/features/tools/edit/repairReport";
 import type { RepairResult } from "@/types";
@@ -71,6 +72,8 @@ export async function runEdit(run: EditRun, options: RpcCallOptions): Promise<Ed
     }
     case "bookmarks":
       return setBookmarks(params, options);
+    case "cover":
+      return addCover(params, options);
     case "textedit": {
       const result = await replaceTextSpans(params, options);
       return { ...result, extra: result.replaced };

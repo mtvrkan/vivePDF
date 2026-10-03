@@ -1,6 +1,5 @@
 import html
 import re
-import shutil
 import tempfile
 from pathlib import Path
 from typing import Literal
@@ -11,6 +10,14 @@ from pydantic import Field
 from vivepdf.ops._form_rows import Delimiter, load_rows, unknown_placeholders
 from vivepdf.ops._naming import render_name, unique_name
 from vivepdf.ops._output import prepare_output, save_document
+from vivepdf.ops._page_html import (
+    colour_rgb,
+    copy_picture,
+    gap,
+    html_lines,
+    insert_centered,
+    text_block,
+)
 from vivepdf.ops.create import COLOUR, DEFAULT_ACCENT, FAMILIES, LOGO_EXTENSIONS, FontChoice
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
@@ -74,34 +81,8 @@ def _texts(params: BulkParams) -> list[str]:
     return [params.heading, params.recipient, params.body, params.details, *signers]
 
 
-def _lines(text: str) -> str:
-    return "<br/>".join(html.escape(line) for line in text.strip().splitlines())
-
-
 def _paragraph(css_class: str, text: str) -> str:
-    return f'<p class="{css_class}">{_lines(text)}</p>' if text.strip() else ""
-
-
-def _logo_name(params: BulkParams, workdir: Path) -> str | None:
-    if not params.logo:
-        return None
-    source = Path(params.logo)
-    if not source.is_file():
-        raise OpError(
-            ErrorCode.FILE_NOT_FOUND,
-            f"file not found: {source.name}",
-            {"path": params.logo, "which": "logo"},
-        )
-    extension = source.suffix.lower().lstrip(".")
-    if extension not in LOGO_EXTENSIONS:
-        raise OpError(
-            ErrorCode.INVALID_PARAMS,
-            f"unsupported logo type: .{extension}",
-            {"reason": "unsupportedType", "extension": extension, "which": "logo"},
-        )
-    name = f"logo.{extension}"
-    shutil.copyfile(source, workdir / name)
-    return name
+    return f'<p class="{css_class}">{html_lines(text)}</p>' if text.strip() else ""
 
 
 def _css(params: BulkParams) -> str:
@@ -124,17 +105,6 @@ def _css(params: BulkParams) -> str:
 
 def _logo_html(logo: str | None) -> str:
     return f'<p><img class="logo" src="{logo}"/></p>' if logo else ""
-
-
-def _text(text: str, size: float, css_class: str = "", extra: str = "") -> str:
-    if not text.strip():
-        return ""
-    style = f"font-size:{size}pt;{extra}"
-    return f'<p class="{css_class}" style="{style}">{_lines(text)}</p>'
-
-
-def _gap(size: float) -> str:
-    return f'<p style="font-size:{size}pt">&#160;</p>'
 
 
 def _signers_html(params: BulkParams, values: dict[str, str]) -> str:
@@ -166,17 +136,17 @@ def _draw_certificate(
     inner = outer + (40, 34, -40, -34)
     body = (
         _logo_html(logo)
-        + _text(fill_placeholders(params.heading, values), 30, "heading")
-        + _gap(10)
-        + _text(fill_placeholders(params.recipient, values), 28, "recipient")
-        + _gap(10)
-        + _text(fill_placeholders(params.body, values), 13)
-        + _gap(10)
+        + text_block(fill_placeholders(params.heading, values), 30, "heading")
+        + gap(10)
+        + text_block(fill_placeholders(params.recipient, values), 28, "recipient")
+        + gap(10)
+        + text_block(fill_placeholders(params.body, values), 13)
+        + gap(10)
         + _paragraph("details", fill_placeholders(params.details, values))
     )
     signers = _signers_html(params, values)
     signer_height = 60 if signers else 0
-    _insert_centered(page, inner + (0, 0, 0, -signer_height), body, _css(params), archive)
+    insert_centered(page, inner + (0, 0, 0, -signer_height), body, _css(params), archive)
     if signers:
         page.insert_htmlbox(
             pymupdf.Rect(inner.x0, inner.y1 - signer_height + 14, inner.x1, inner.y1),
@@ -203,16 +173,16 @@ def _draw_invitation(
     inner = page.rect + (36, 52, -36, -40)
     content = (
         _logo_html(logo)
-        + _text(fill_placeholders(params.heading, values), 22, "heading")
-        + _gap(12)
-        + _text(fill_placeholders(params.recipient, values), 15, "recipient")
-        + _gap(8)
-        + _text(fill_placeholders(params.body, values), 11.5, extra="line-height:1.5")
-        + _gap(12)
-        + _text(fill_placeholders(params.details, values), 11, "details", "font-weight:bold")
+        + text_block(fill_placeholders(params.heading, values), 22, "heading")
+        + gap(12)
+        + text_block(fill_placeholders(params.recipient, values), 15, "recipient")
+        + gap(8)
+        + text_block(fill_placeholders(params.body, values), 11.5, extra="line-height:1.5")
+        + gap(12)
+        + text_block(fill_placeholders(params.details, values), 11, "details", "font-weight:bold")
     )
     signers = _signers_html(params, values)
-    _insert_centered(page, inner + (0, 0, 0, -50 if signers else 0), content, _css(params), archive)
+    insert_centered(page, inner + (0, 0, 0, -50 if signers else 0), content, _css(params), archive)
     if signers:
         page.insert_htmlbox(
             pymupdf.Rect(inner.x0, inner.y1 - 46, inner.x1, inner.y1),
@@ -256,35 +226,16 @@ def _draw_badge(
     band_html = f'<p style="{band_style}">{logo_html}{html.escape(heading)}</p>'
     page.insert_htmlbox(band + (8, 5, -8, -4), band_html, css=_css(params), archive=archive)
     content = (
-        _text(fill_placeholders(params.recipient, values), 17, "recipient")
-        + _text(fill_placeholders(params.body, values), 10)
+        text_block(fill_placeholders(params.recipient, values), 17, "recipient")
+        + text_block(fill_placeholders(params.body, values), 10)
         + _paragraph("details", fill_placeholders(params.details, values))
     )
     area = pymupdf.Rect(slot.x0 + 8, band.y1 + 4, slot.x1 - 8, slot.y1 - 6)
-    _insert_centered(page, area, content, _css(params) + ".details{font-size:9pt;}", archive)
-
-
-def _insert_centered(
-    page: pymupdf.Page, rect: pymupdf.Rect, content: str, css: str, archive: pymupdf.Archive
-) -> None:
-    story = pymupdf.Story(html=content, user_css=css, archive=archive)
-    more, filled = story.place(rect)
-    if more:
-        page.insert_htmlbox(rect, content, css=css, archive=archive)
-        return
-    offset = max(0.0, (rect.height - (pymupdf.Rect(filled).y1 - rect.y0)) / 2)
-    page.insert_htmlbox(
-        pymupdf.Rect(rect.x0, rect.y0 + offset, rect.x1, rect.y1), content, css=css, archive=archive
-    )
+    insert_centered(page, area, content, _css(params) + ".details{font-size:9pt;}", archive)
 
 
 def _row_values(row: dict[str, str], index: int, total: int) -> dict[str, str]:
     return {**row, "n": str(index + 1), "total": str(total)}
-
-
-def _accent_rgb(params: BulkParams) -> tuple[float, float, float]:
-    colour = params.accent if COLOUR.match(params.accent) else DEFAULT_ACCENT
-    return tuple(int(colour[position : position + 2], 16) / 255 for position in (1, 3, 5))
 
 
 def _render(
@@ -297,7 +248,7 @@ def _render(
     archive: pymupdf.Archive,
     progress: Progress,
 ) -> None:
-    accent = _accent_rgb(params)
+    accent = colour_rgb(params.accent, DEFAULT_ACCENT)
     if params.kind == "badge":
         slots = _badge_slots()
         page: pymupdf.Page | None = None
@@ -371,7 +322,7 @@ def create_bulk(params: BulkParams, progress: Progress) -> BulkResult:
         prefix="vivepdf-bulk-", ignore_cleanup_errors=True
     ) as temp_dir:
         workdir = Path(temp_dir)
-        logo = _logo_name(params, workdir)
+        logo = copy_picture(params.logo, LOGO_EXTENSIONS, "logo", workdir, "logo")
         archive = pymupdf.Archive(str(workdir))
         if not separate:
             target = prepare_output(params.output or "", [params.data_path], params.overwrite)

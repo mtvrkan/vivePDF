@@ -2477,7 +2477,8 @@
         "omr-grade": "Leggi i fogli risposte compilati, valutali con una chiave ed esporta i punteggi.",
         "create-document": "Trasforma testo o Markdown in un rapporto, una lettera, un'istanza, un verbale o un opuscolo",
         "create-bulk": "Certificati, inviti e badge per ogni riga di una tabella CSV o Excel",
-        "create-paper": "Carta bianca, a righe, a quadretti, a puntini o da musica in PDF pronto da stampare"
+        "create-paper": "Carta bianca, a righe, a quadretti, a puntini o da musica in PDF pronto da stampare",
+        "cover": "Aggiungi una copertina curata all'inizio di un PDF: titolo, autore, istituto, logo o foto"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "Scegli almeno un tipo di indirizzo.",
         "addedCount": "link aggiunti"
       },
-      "missingGlyphs": "Il carattere scelto non ha la forma di {{characters}}; questi caratteri appaiono vuoti."
+      "missingGlyphs": "Il carattere scelto non ha la forma di {{characters}}; questi caratteri appaiono vuoti.",
+      "cover": {
+        "suffix": "copertina",
+        "title": "Copertina",
+        "run": "Aggiungi copertina",
+        "style": "Stile",
+        "styles": {
+          "classic": {
+            "title": "Classica",
+            "description": "Titolo centrato con una linea"
+          },
+          "band": {
+            "title": "Fascia colorata",
+            "description": "Titolo su un'ampia fascia di colore"
+          },
+          "frame": {
+            "title": "Con cornice",
+            "description": "Doppia cornice, aspetto formale per tesi e relazioni"
+          },
+          "minimal": {
+            "title": "Essenziale",
+            "description": "Titolo grande allineato a sinistra e una linea sottile"
+          },
+          "photo": {
+            "title": "Foto",
+            "description": "Un'immagine nella metà superiore"
+          }
+        },
+        "texts": "Testi",
+        "fields": {
+          "title": "Titolo",
+          "subtitle": "Sottotitolo",
+          "organisation": "Istituto",
+          "author": "Autore",
+          "details": "Altre righe",
+          "date": "Data"
+        },
+        "examples": {
+          "title": "Relazione annuale 2026",
+          "subtitle": "Bozza per il consiglio",
+          "organisation": "Università di Bologna\nDipartimento di Scienze dell'Educazione",
+          "author": "Giulia Rossi",
+          "details": "Matricola: 2026001\nRelatore: Prof. Marco Bianchi",
+          "date": "Ottobre 2026"
+        },
+        "image": "Immagine",
+        "imageHint": "PNG, JPG o WebP; viene ritagliata per riempire la parte superiore.",
+        "pickImage": "Scegli un'immagine…",
+        "removeImage": "Rimuovi l'immagine",
+        "replaceFirst": "Sostituisci la prima pagina",
+        "replaceFirstHint": "Usalo se il PDF inizia già con una vecchia copertina."
+      }
     },
     "sign": {
       "suffix": "firmato",
@@ -5815,7 +5867,9 @@
       "unknownFields": "Questi campi non sono colonne della tabella: {{names}}.",
       "tooManyRows": "La tabella ha più di 5.000 righe. Dividila in tabelle più piccole.",
       "noOutputDir": "Scegli una cartella per i file.",
-      "noOutput": "Scegli dove salvare il PDF."
+      "noOutput": "Scegli dove salvare il PDF.",
+      "noTitle": "La copertina ha bisogno di un titolo.",
+      "noCoverImage": "La copertina con foto ha bisogno di un'immagine. Scegline una o cambia stile."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",

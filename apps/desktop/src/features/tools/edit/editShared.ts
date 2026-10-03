@@ -1,7 +1,7 @@
 import { REDACT_PRESETS, type OutputResult, type RedactPreset, type RepairResult } from "@/types";
 
-export type Tab = "number" | "headerFooter" | "letterhead" | "findReplace" | "crop" | "resize" | "flatten" | "redact" | "repair" | "impose" | "poster" | "bookmarks" | "autolink" | "textedit";
-export const TABS: Tab[] = ["number", "headerFooter", "letterhead", "findReplace", "crop", "resize", "flatten", "redact", "repair", "impose", "poster", "bookmarks", "autolink", "textedit"];
+export type Tab = "number" | "headerFooter" | "letterhead" | "findReplace" | "crop" | "resize" | "flatten" | "redact" | "repair" | "impose" | "poster" | "bookmarks" | "autolink" | "textedit" | "cover";
+export const TABS: Tab[] = ["number", "headerFooter", "letterhead", "findReplace", "crop", "resize", "flatten", "redact", "repair", "impose", "poster", "bookmarks", "autolink", "textedit", "cover"];
 export const PRESETS: readonly RedactPreset[] = REDACT_PRESETS;
 
 export function presetsFromQuery(value: string | null): RedactPreset[] {

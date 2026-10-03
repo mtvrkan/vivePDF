@@ -2477,7 +2477,8 @@
         "omr-grade": "Lee hojas de respuestas rellenadas, califícalas con una clave y exporta las notas.",
         "create-document": "Convierta texto o Markdown en un informe, carta, solicitud, acta o folleto",
         "create-bulk": "Certificados, invitaciones y credenciales para cada fila de una tabla CSV o Excel",
-        "create-paper": "Papel en blanco, rayado, cuadriculado, punteado o pautado como PDF listo para imprimir"
+        "create-paper": "Papel en blanco, rayado, cuadriculado, punteado o pautado como PDF listo para imprimir",
+        "cover": "Añada una portada diseñada al principio de un PDF: título, autor, institución, logotipo o foto"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "Elija al menos un tipo de dirección.",
         "addedCount": "enlaces añadidos"
       },
-      "missingGlyphs": "La fuente elegida no tiene forma para {{characters}}; esos caracteres salen en blanco."
+      "missingGlyphs": "La fuente elegida no tiene forma para {{characters}}; esos caracteres salen en blanco.",
+      "cover": {
+        "suffix": "portada",
+        "title": "Portada",
+        "run": "Añadir portada",
+        "style": "Estilo",
+        "styles": {
+          "classic": {
+            "title": "Clásica",
+            "description": "Título centrado con una línea"
+          },
+          "band": {
+            "title": "Banda de color",
+            "description": "Título sobre una banda ancha de color"
+          },
+          "frame": {
+            "title": "Enmarcada",
+            "description": "Doble marco, aspecto formal para tesis e informes"
+          },
+          "minimal": {
+            "title": "Mínima",
+            "description": "Título grande alineado a la izquierda y una línea fina"
+          },
+          "photo": {
+            "title": "Foto",
+            "description": "Una imagen en la mitad superior"
+          }
+        },
+        "texts": "Textos",
+        "fields": {
+          "title": "Título",
+          "subtitle": "Subtítulo",
+          "organisation": "Institución",
+          "author": "Autor",
+          "details": "Más líneas",
+          "date": "Fecha"
+        },
+        "examples": {
+          "title": "Informe anual 2026",
+          "subtitle": "Borrador para la junta",
+          "organisation": "Universidad de Sevilla\nFacultad de Educación",
+          "author": "Lucía García",
+          "details": "N.º de estudiante: 2026001\nDirector: Dr. Javier Ruiz",
+          "date": "Octubre de 2026"
+        },
+        "image": "Imagen",
+        "imageHint": "PNG, JPG o WebP; se recorta para llenar la parte superior de la página.",
+        "pickImage": "Elegir imagen…",
+        "removeImage": "Quitar la imagen",
+        "replaceFirst": "Sustituir la primera página",
+        "replaceFirstHint": "Úselo cuando el PDF ya empieza con una portada antigua."
+      }
     },
     "sign": {
       "suffix": "firmado",
@@ -5815,7 +5867,9 @@
       "unknownFields": "Estos campos no son columnas de la tabla: {{names}}.",
       "tooManyRows": "La tabla tiene más de 5000 filas. Puede dividirla en tablas más pequeñas.",
       "noOutputDir": "Elija una carpeta para los archivos.",
-      "noOutput": "Elija dónde guardar el PDF."
+      "noOutput": "Elija dónde guardar el PDF.",
+      "noTitle": "La portada necesita un título.",
+      "noCoverImage": "La portada con foto necesita una imagen. Elija una o cambie de estilo."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",

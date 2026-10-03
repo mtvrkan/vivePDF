@@ -2477,7 +2477,8 @@
         "omr-grade": "記入済みマークシートを読み取り、正答と照合して採点し、結果を書き出します。",
         "create-document": "テキストや Markdown を報告書、手紙、申請書、議事録、冊子にします",
         "create-bulk": "CSV や Excel の表の行ごとに証明書・招待状・名札を作成",
-        "create-paper": "無地・罫線・方眼・ドット・五線紙を印刷用 PDF で作成"
+        "create-paper": "無地・罫線・方眼・ドット・五線紙を印刷用 PDF で作成",
+        "cover": "PDF の先頭にデザインされた表紙を追加: タイトル、著者、所属、ロゴ、写真"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "少なくとも1種類のアドレスを選んでください。",
         "addedCount": "件のリンクを追加"
       },
-      "missingGlyphs": "選んだフォントに {{characters}} の字形がないため、空白になります。"
+      "missingGlyphs": "選んだフォントに {{characters}} の字形がないため、空白になります。",
+      "cover": {
+        "suffix": "cover",
+        "title": "表紙",
+        "run": "表紙を追加",
+        "style": "スタイル",
+        "styles": {
+          "classic": {
+            "title": "クラシック",
+            "description": "中央揃えのタイトルと罫線"
+          },
+          "band": {
+            "title": "カラー帯",
+            "description": "幅広い色帯の上にタイトル"
+          },
+          "frame": {
+            "title": "枠付き",
+            "description": "二重枠。論文や報告書向けの正式な見た目"
+          },
+          "minimal": {
+            "title": "ミニマル",
+            "description": "左揃えの大きなタイトルと細い線"
+          },
+          "photo": {
+            "title": "写真",
+            "description": "上半分に画像"
+          }
+        },
+        "texts": "テキスト",
+        "fields": {
+          "title": "タイトル",
+          "subtitle": "サブタイトル",
+          "organisation": "所属",
+          "author": "著者",
+          "details": "追加の行",
+          "date": "日付"
+        },
+        "examples": {
+          "title": "2026 年度 年次報告書",
+          "subtitle": "取締役会向け草案",
+          "organisation": "東京大学\n教育学部",
+          "author": "山田 花子",
+          "details": "学籍番号: 2026001\n指導教員: 佐藤 一郎 教授",
+          "date": "2026 年 10 月"
+        },
+        "image": "画像",
+        "imageHint": "PNG、JPG、WebP。ページ上部を埋めるように切り抜かれます。",
+        "pickImage": "画像を選択…",
+        "removeImage": "画像を削除",
+        "replaceFirst": "最初のページを置き換える",
+        "replaceFirstHint": "PDF がすでに古い表紙で始まっている場合に使います。"
+      }
     },
     "sign": {
       "suffix": "signed",
@@ -5815,7 +5867,9 @@
       "unknownFields": "次のフィールドは表の列にありません: {{names}}。",
       "tooManyRows": "表の行が 5,000 を超えています。小さな表に分割してください。",
       "noOutputDir": "ファイルの保存先フォルダーを選んでください。",
-      "noOutput": "PDF の保存先を選んでください。"
+      "noOutput": "PDF の保存先を選んでください。",
+      "noTitle": "表紙にはタイトルが必要です。",
+      "noCoverImage": "写真の表紙には画像が必要です。画像を選ぶか、別のスタイルにしてください。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",

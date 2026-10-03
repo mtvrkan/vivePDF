@@ -2477,7 +2477,8 @@
         "omr-grade": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın.",
         "create-document": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün",
         "create-bulk": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı",
-        "create-paper": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF"
+        "create-paper": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF",
+        "cover": "PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf"
       }
     },
     "convert": {
@@ -3162,7 +3163,58 @@
         "chooseOne": "En az bir adres türü seçin.",
         "addedCount": "bağlantı eklendi"
       },
-      "missingGlyphs": "Seçilen yazı tipinde {{characters}} için şekil yok; bu karakterler boş basılır."
+      "missingGlyphs": "Seçilen yazı tipinde {{characters}} için şekil yok; bu karakterler boş basılır.",
+      "cover": {
+        "suffix": "kapakli",
+        "title": "Kapak sayfası",
+        "run": "Kapak ekle",
+        "style": "Stil",
+        "styles": {
+          "classic": {
+            "title": "Klasik",
+            "description": "Ortalanmış başlık ve çizgi"
+          },
+          "band": {
+            "title": "Renkli şerit",
+            "description": "Geniş renkli şerit üzerinde başlık"
+          },
+          "frame": {
+            "title": "Çerçeveli",
+            "description": "Çift çerçeve; tez ve raporlar için resmî görünüm"
+          },
+          "minimal": {
+            "title": "Sade",
+            "description": "Sola yaslı büyük başlık ve ince çizgi"
+          },
+          "photo": {
+            "title": "Fotoğraflı",
+            "description": "Sayfanın üst yarısında bir resim"
+          }
+        },
+        "texts": "Metinler",
+        "fields": {
+          "title": "Başlık",
+          "subtitle": "Alt başlık",
+          "organisation": "Kurum",
+          "author": "Yazar",
+          "details": "Ek satırlar",
+          "date": "Tarih"
+        },
+        "examples": {
+          "title": "2026 Faaliyet Raporu",
+          "subtitle": "Yönetim kurulu için taslak",
+          "organisation": "Ankara Üniversitesi\nEğitim Bilimleri Fakültesi",
+          "author": "Ayşe Demir",
+          "details": "Öğrenci No: 2026001\nDanışman: Prof. Dr. Ali Kaya",
+          "date": "Ekim 2026"
+        },
+        "image": "Resim",
+        "imageHint": "PNG, JPG veya WebP; sayfanın üst kısmını dolduracak şekilde kırpılır.",
+        "pickImage": "Resim seç…",
+        "removeImage": "Resmi kaldır",
+        "replaceFirst": "İlk sayfanın yerine koy",
+        "replaceFirstHint": "PDF zaten eski bir kapakla başlıyorsa bunu kullanın."
+      }
     },
     "sign": {
       "suffix": "imzali",
@@ -5815,7 +5867,9 @@
       "unknownFields": "Bu alanlar tabloda sütun olarak yok: {{names}}.",
       "tooManyRows": "Tabloda 5.000'den fazla satır var. Daha küçük tablolara bölün.",
       "noOutputDir": "Dosyalar için bir klasör seçin.",
-      "noOutput": "PDF'nin nereye kaydedileceğini seçin."
+      "noOutput": "PDF'nin nereye kaydedileceğini seçin.",
+      "noTitle": "Kapak için bir başlık gerekiyor.",
+      "noCoverImage": "Fotoğraflı kapak için bir resim gerekiyor. Resim seçin ya da başka bir stil seçin."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
