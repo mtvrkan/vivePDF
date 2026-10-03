@@ -36,7 +36,8 @@
     "preflight": "印刷前チェック",
     "pdfa": "PDF/A アーカイブ",
     "omr": "マークシート",
-    "create": "PDF を作成"
+    "create": "PDF を作成",
+    "studio": "スタジオ"
   },
   "common": {
     "retry": "再試行",
@@ -6476,5 +6477,245 @@
     "hint": "コピーした内容から PDF を作成: スクリーンショット、画像、テキスト、表",
     "fileName": "クリップボード",
     "noOpenableFiles": "コピーしたファイルはどれも開けません。"
+  },
+  "studio": {
+    "title": "スタジオ",
+    "description": "証明書、ポスター、カードなどを一から作成し、PDF または画像として保存します",
+    "untitled": "無題のデザイン",
+    "canvas": {
+      "label": "デザインのページ"
+    },
+    "start": {
+      "continue": "前回の続きから",
+      "pages": "ページ数：{{count}}",
+      "resume": "続ける",
+      "blank": "白紙のページから始める",
+      "custom": "カスタムサイズ",
+      "create": "作成"
+    },
+    "sizes": {
+      "a4": "A4 縦",
+      "a4Landscape": "A4 横",
+      "a5": "A5",
+      "letter": "US レター",
+      "letterLandscape": "US レター 横",
+      "businessCard": "名刺",
+      "square": "正方形の投稿",
+      "story": "ストーリー",
+      "presentation": "プレゼンテーション (16:9)",
+      "poster": "A3 ポスター",
+      "custom": "カスタム"
+    },
+    "toolbar": {
+      "label": "デザインツール",
+      "leave": "最初の画面に戻る",
+      "name": "デザイン名",
+      "undo": "元に戻す",
+      "redo": "やり直し",
+      "zoomIn": "拡大",
+      "zoomOut": "縮小",
+      "fit": "ウィンドウに合わせる",
+      "export": "書き出し"
+    },
+    "menu": {
+      "label": "要素メニュー",
+      "cut": "切り取り",
+      "copy": "コピー",
+      "paste": "貼り付け",
+      "duplicate": "複製",
+      "front": "最前面へ移動",
+      "back": "最背面へ移動",
+      "group": "グループ化",
+      "ungroup": "グループ解除",
+      "lock": "ロック",
+      "delete": "削除"
+    },
+    "panel": {
+      "label": "追加と配置",
+      "elements": "要素",
+      "layers": "レイヤー"
+    },
+    "elements": {
+      "text": "テキスト",
+      "heading": "見出しを追加",
+      "subheading": "小見出しを追加",
+      "body": "本文を追加",
+      "headingText": "見出し",
+      "subheadingText": "小見出し",
+      "bodyText": "ここに文章を入力",
+      "shapes": "図形",
+      "image": "画像",
+      "qr": "QR コード"
+    },
+    "kinds": {
+      "text": "テキスト",
+      "shape": "図形",
+      "image": "画像",
+      "qr": "QR コード",
+      "vector": "描画",
+      "svg": "グラフィック"
+    },
+    "shapes": {
+      "rect": "四角形",
+      "ellipse": "楕円",
+      "triangle": "三角形",
+      "rightTriangle": "直角三角形",
+      "diamond": "ひし形",
+      "pentagon": "五角形",
+      "hexagon": "六角形",
+      "octagon": "八角形",
+      "star": "星",
+      "burst": "爆発",
+      "heart": "ハート",
+      "arrow": "矢印",
+      "chevron": "山形",
+      "parallelogram": "平行四辺形",
+      "trapezoid": "台形",
+      "cross": "十字",
+      "speech": "吹き出し",
+      "line": "線",
+      "arrowLine": "矢印線"
+    },
+    "layers": {
+      "label": "このページのレイヤー",
+      "empty": "このページにはまだ何もありません。［要素］からテキスト、図形、画像を追加してください。",
+      "rename": "レイヤー名",
+      "forward": "{{name}} を上へ移動",
+      "backward": "{{name}} を下へ移動",
+      "show": "{{name}} を表示",
+      "hide": "{{name}} を非表示",
+      "lock": "{{name}} をロック",
+      "unlock": "{{name}} のロックを解除"
+    },
+    "pages": {
+      "label": "ページ",
+      "page": "{{number}} ページ",
+      "add": "ページを追加",
+      "duplicate": "ページを複製",
+      "delete": "ページを削除",
+      "moveLeft": "ページを左へ移動",
+      "moveRight": "ページを右へ移動"
+    },
+    "page": {
+      "size": "ページサイズ",
+      "width": "幅",
+      "height": "高さ",
+      "background": "背景",
+      "backgroundImage": "背景画像",
+      "replaceImage": "画像を置き換え",
+      "removeImage": "画像を削除"
+    },
+    "props": {
+      "label": "プロパティ",
+      "arrange": "位置",
+      "width": "幅",
+      "height": "高さ",
+      "rotation": "回転",
+      "opacity": "不透明度",
+      "lock": "ロック",
+      "unlock": "ロック解除",
+      "text": "テキスト",
+      "fontSize": "サイズ",
+      "bold": "太字",
+      "italic": "斜体",
+      "underline": "下線",
+      "color": "色",
+      "align": "文字の配置",
+      "verticalAlign": "縦方向の配置",
+      "lineHeight": "行間",
+      "letterSpacing": "文字間隔",
+      "uppercase": "大文字",
+      "shrinkToFit": "縮小して合わせる",
+      "shrinkHint": "長い文章は枠からはみ出さずに小さくなります",
+      "fill": "塗りつぶし",
+      "stroke": "枠線",
+      "cornerRadius": "角の丸み",
+      "points": "頂点の数",
+      "innerRatio": "内側の深さ",
+      "image": "画像",
+      "replaceImage": "画像を置き換え",
+      "qr": "QR コード",
+      "qrValue": "テキストまたはリンク",
+      "qrBackground": "背景",
+      "background": "背景色",
+      "qrLevel": "誤り訂正"
+    },
+    "align": {
+      "left": "左揃え",
+      "centerX": "左右中央揃え",
+      "right": "右揃え",
+      "top": "上揃え",
+      "middleY": "上下中央揃え",
+      "bottom": "下揃え",
+      "distributeHorizontal": "左右に均等配置",
+      "distributeVertical": "上下に均等配置"
+    },
+    "textAlign": {
+      "left": "左",
+      "center": "中央",
+      "right": "右",
+      "justify": "両端揃え"
+    },
+    "verticalAlign": {
+      "top": "上",
+      "middle": "中央",
+      "bottom": "下"
+    },
+    "fill": {
+      "label": "塗りつぶしの種類",
+      "none": "なし",
+      "solid": "単色",
+      "linear": "線形",
+      "radial": "放射",
+      "color": "色",
+      "start": "開始色",
+      "end": "終了色",
+      "angle": "角度"
+    },
+    "stroke": {
+      "label": "枠線",
+      "off": "なし",
+      "on": "枠線あり",
+      "color": "枠線の色",
+      "width": "太さ",
+      "style": "線の種類",
+      "solid": "実線",
+      "dashed": "破線",
+      "dotted": "点線"
+    },
+    "fit": {
+      "label": "画像の合わせ方",
+      "cover": "全体を覆う",
+      "contain": "全体を表示",
+      "stretch": "引き伸ばす"
+    },
+    "mask": {
+      "label": "形",
+      "none": "角",
+      "rounded": "角丸",
+      "circle": "円"
+    },
+    "crop": {
+      "left": "左を切り抜く",
+      "right": "右を切り抜く",
+      "top": "上を切り抜く",
+      "bottom": "下を切り抜く"
+    },
+    "export": {
+      "title": "デザインを書き出し",
+      "run": "書き出し",
+      "format": "ファイルの種類",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "解像度",
+      "dpi": "{{dpi}} dpi",
+      "done": "書き出したページ：{{count}}",
+      "idleTitle": "書き出しの準備ができました",
+      "idleDescription": "テキストは選択可能なまま、フォントは PDF に埋め込まれます。",
+      "missingGlyphs": "選択したフォントに含まれない文字があり、表示されない可能性があります：{{glyphs}}"
+    }
   }
 }

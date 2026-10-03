@@ -165,12 +165,47 @@ class StudioRenderParams(RpcModel):
     date: str = Field(default="", max_length=100)
     language: str = Field(default="en", max_length=20)
     title: str = Field(default="", max_length=500)
+    format: Literal["pdf", "png", "jpg"] = "pdf"
+    dpi: int = Field(default=150, ge=36, le=600)
     output: str
     overwrite: bool = False
 
 
 class StudioRenderResult(RpcModel):
     output: str
+    outputs: list[str] = Field(default_factory=list)
     page_count: int
     bytes: int
     missing_glyphs: str = ""
+
+
+class StudioImageInfoParams(RpcModel):
+    path: str = Field(min_length=1, max_length=4096)
+    max_side: int = Field(default=1600, ge=16, le=4096)
+
+
+class StudioImageInfoResult(RpcModel):
+    width: int
+    height: int
+    mime: str
+    base64: str
+
+
+class StudioQrParams(RpcModel):
+    value: str = Field(min_length=1, max_length=2000)
+    error_level: ErrorLevel = "M"
+
+
+class StudioQrResult(RpcModel):
+    size: int
+    modules: str
+
+
+class StudioSvgParams(RpcModel):
+    path: str = Field(min_length=1, max_length=4096)
+
+
+class StudioSvgResult(RpcModel):
+    svg: str
+    width: float
+    height: float

@@ -36,7 +36,8 @@
     "preflight": "Contrôle d’impression",
     "pdfa": "Archive PDF/A",
     "omr": "Grilles de réponses",
-    "create": "Créer un PDF"
+    "create": "Créer un PDF",
+    "studio": "Studio"
   },
   "common": {
     "retry": "Réessayer",
@@ -6476,5 +6477,245 @@
     "hint": "Créez un PDF à partir de ce que vous avez copié : capture, image, texte ou tableau",
     "fileName": "Presse-papiers",
     "noOpenableFiles": "Aucun des fichiers copiés ne peut être ouvert."
+  },
+  "studio": {
+    "title": "Studio",
+    "description": "Concevez des certificats, affiches, cartes et plus encore à partir de zéro, puis enregistrez-les en PDF ou en images",
+    "untitled": "Création sans titre",
+    "canvas": {
+      "label": "Page de la création"
+    },
+    "start": {
+      "continue": "Reprendre là où vous en étiez",
+      "pages": "Pages : {{count}}",
+      "resume": "Continuer",
+      "blank": "Commencer avec une page vierge",
+      "custom": "Taille personnalisée",
+      "create": "Créer"
+    },
+    "sizes": {
+      "a4": "A4 portrait",
+      "a4Landscape": "A4 paysage",
+      "a5": "A5",
+      "letter": "Lettre US",
+      "letterLandscape": "Lettre US paysage",
+      "businessCard": "Carte de visite",
+      "square": "Publication carrée",
+      "story": "Story",
+      "presentation": "Présentation (16:9)",
+      "poster": "Affiche A3",
+      "custom": "Personnalisée"
+    },
+    "toolbar": {
+      "label": "Outils de création",
+      "leave": "Retour à l’accueil",
+      "name": "Nom de la création",
+      "undo": "Annuler",
+      "redo": "Rétablir",
+      "zoomIn": "Zoom avant",
+      "zoomOut": "Zoom arrière",
+      "fit": "Ajuster à la fenêtre",
+      "export": "Exporter"
+    },
+    "menu": {
+      "label": "Menu de l’élément",
+      "cut": "Couper",
+      "copy": "Copier",
+      "paste": "Coller",
+      "duplicate": "Dupliquer",
+      "front": "Mettre au premier plan",
+      "back": "Mettre à l’arrière-plan",
+      "group": "Grouper",
+      "ungroup": "Dissocier",
+      "lock": "Verrouiller",
+      "delete": "Supprimer"
+    },
+    "panel": {
+      "label": "Ajouter et organiser",
+      "elements": "Éléments",
+      "layers": "Calques"
+    },
+    "elements": {
+      "text": "Texte",
+      "heading": "Ajouter un titre",
+      "subheading": "Ajouter un sous-titre",
+      "body": "Ajouter du texte",
+      "headingText": "Titre",
+      "subheadingText": "Sous-titre",
+      "bodyText": "Saisissez votre texte ici",
+      "shapes": "Formes",
+      "image": "Image",
+      "qr": "Code QR"
+    },
+    "kinds": {
+      "text": "Texte",
+      "shape": "Forme",
+      "image": "Image",
+      "qr": "Code QR",
+      "vector": "Dessin",
+      "svg": "Graphique"
+    },
+    "shapes": {
+      "rect": "Rectangle",
+      "ellipse": "Ellipse",
+      "triangle": "Triangle",
+      "rightTriangle": "Triangle rectangle",
+      "diamond": "Losange",
+      "pentagon": "Pentagone",
+      "hexagon": "Hexagone",
+      "octagon": "Octogone",
+      "star": "Étoile",
+      "burst": "Explosion",
+      "heart": "Cœur",
+      "arrow": "Flèche",
+      "chevron": "Chevron",
+      "parallelogram": "Parallélogramme",
+      "trapezoid": "Trapèze",
+      "cross": "Croix",
+      "speech": "Bulle",
+      "line": "Ligne",
+      "arrowLine": "Ligne fléchée"
+    },
+    "layers": {
+      "label": "Calques de cette page",
+      "empty": "Cette page est encore vide. Ajoutez du texte, des formes ou des images depuis Éléments.",
+      "rename": "Nom du calque",
+      "forward": "Monter {{name}}",
+      "backward": "Descendre {{name}}",
+      "show": "Afficher {{name}}",
+      "hide": "Masquer {{name}}",
+      "lock": "Verrouiller {{name}}",
+      "unlock": "Déverrouiller {{name}}"
+    },
+    "pages": {
+      "label": "Pages",
+      "page": "Page {{number}}",
+      "add": "Ajouter une page",
+      "duplicate": "Dupliquer la page",
+      "delete": "Supprimer la page",
+      "moveLeft": "Déplacer la page vers la gauche",
+      "moveRight": "Déplacer la page vers la droite"
+    },
+    "page": {
+      "size": "Format de page",
+      "width": "Largeur",
+      "height": "Hauteur",
+      "background": "Arrière-plan",
+      "backgroundImage": "Image d’arrière-plan",
+      "replaceImage": "Remplacer l’image",
+      "removeImage": "Retirer l’image"
+    },
+    "props": {
+      "label": "Propriétés",
+      "arrange": "Position",
+      "width": "Largeur",
+      "height": "Hauteur",
+      "rotation": "Rotation",
+      "opacity": "Opacité",
+      "lock": "Verrouiller",
+      "unlock": "Déverrouiller",
+      "text": "Texte",
+      "fontSize": "Taille",
+      "bold": "Gras",
+      "italic": "Italique",
+      "underline": "Souligné",
+      "color": "Couleur",
+      "align": "Alignement du texte",
+      "verticalAlign": "Alignement vertical",
+      "lineHeight": "Interligne",
+      "letterSpacing": "Espacement des lettres",
+      "uppercase": "Majuscules",
+      "shrinkToFit": "Réduire pour ajuster",
+      "shrinkHint": "Un texte long rétrécit au lieu de déborder du cadre",
+      "fill": "Remplissage",
+      "stroke": "Contour",
+      "cornerRadius": "Arrondi des angles",
+      "points": "Branches",
+      "innerRatio": "Profondeur intérieure",
+      "image": "Image",
+      "replaceImage": "Remplacer l’image",
+      "qr": "Code QR",
+      "qrValue": "Texte ou lien",
+      "qrBackground": "Arrière-plan",
+      "background": "Couleur d’arrière-plan",
+      "qrLevel": "Correction d’erreurs"
+    },
+    "align": {
+      "left": "Aligner à gauche",
+      "centerX": "Centrer horizontalement",
+      "right": "Aligner à droite",
+      "top": "Aligner en haut",
+      "middleY": "Centrer verticalement",
+      "bottom": "Aligner en bas",
+      "distributeHorizontal": "Répartir horizontalement",
+      "distributeVertical": "Répartir verticalement"
+    },
+    "textAlign": {
+      "left": "Gauche",
+      "center": "Centré",
+      "right": "Droite",
+      "justify": "Justifier"
+    },
+    "verticalAlign": {
+      "top": "Haut",
+      "middle": "Milieu",
+      "bottom": "Bas"
+    },
+    "fill": {
+      "label": "Type de remplissage",
+      "none": "Aucun",
+      "solid": "Couleur",
+      "linear": "Linéaire",
+      "radial": "Radial",
+      "color": "Couleur",
+      "start": "Couleur de départ",
+      "end": "Couleur de fin",
+      "angle": "Angle"
+    },
+    "stroke": {
+      "label": "Contour",
+      "off": "Aucun",
+      "on": "Contour",
+      "color": "Couleur du contour",
+      "width": "Épaisseur",
+      "style": "Style de ligne",
+      "solid": "Plein",
+      "dashed": "Tirets",
+      "dotted": "Pointillé"
+    },
+    "fit": {
+      "label": "Ajustement de l’image",
+      "cover": "Remplir",
+      "contain": "Ajuster",
+      "stretch": "Étirer"
+    },
+    "mask": {
+      "label": "Forme",
+      "none": "Carrée",
+      "rounded": "Arrondie",
+      "circle": "Cercle"
+    },
+    "crop": {
+      "left": "Rogner à gauche",
+      "right": "Rogner à droite",
+      "top": "Rogner en haut",
+      "bottom": "Rogner en bas"
+    },
+    "export": {
+      "title": "Exporter la création",
+      "run": "Exporter",
+      "format": "Type de fichier",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "Résolution",
+      "dpi": "{{dpi}} ppp",
+      "done": "Pages exportées : {{count}}",
+      "idleTitle": "Prêt à exporter",
+      "idleDescription": "Le texte reste sélectionnable et les polices sont incorporées au PDF.",
+      "missingGlyphs": "Certains caractères ne figurent pas dans la police choisie et risquent de ne pas s’afficher : {{glyphs}}"
+    }
   }
 }

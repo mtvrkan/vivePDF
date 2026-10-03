@@ -36,7 +36,8 @@
     "preflight": "Baskı kontrolü",
     "pdfa": "PDF/A arşiv",
     "omr": "Optik formlar",
-    "create": "PDF Oluştur"
+    "create": "PDF Oluştur",
+    "studio": "Studio"
   },
   "common": {
     "retry": "Tekrar dene",
@@ -6477,5 +6478,245 @@
     "hint": "Kopyaladığınızdan PDF oluşturun: ekran görüntüsü, resim, metin ya da tablo",
     "fileName": "Pano",
     "noOpenableFiles": "Kopyalanan dosyaların hiçbiri açılamıyor."
+  },
+  "studio": {
+    "title": "Studio",
+    "description": "Sertifika, afiş, kart ve daha fazlasını sıfırdan tasarlayın; PDF ya da resim olarak kaydedin",
+    "untitled": "Adsız tasarım",
+    "canvas": {
+      "label": "Tasarım sayfası"
+    },
+    "start": {
+      "continue": "Kaldığınız yerden devam edin",
+      "pages": "Sayfa: {{count}}",
+      "resume": "Devam et",
+      "blank": "Boş sayfayla başlayın",
+      "custom": "Özel boyut",
+      "create": "Oluştur"
+    },
+    "sizes": {
+      "a4": "A4 dikey",
+      "a4Landscape": "A4 yatay",
+      "a5": "A5",
+      "letter": "US Letter",
+      "letterLandscape": "US Letter yatay",
+      "businessCard": "Kartvizit",
+      "square": "Kare gönderi",
+      "story": "Hikâye",
+      "presentation": "Sunum (16:9)",
+      "poster": "A3 afiş",
+      "custom": "Özel"
+    },
+    "toolbar": {
+      "label": "Tasarım araçları",
+      "leave": "Başlangıca dön",
+      "name": "Tasarım adı",
+      "undo": "Geri al",
+      "redo": "Yinele",
+      "zoomIn": "Yakınlaştır",
+      "zoomOut": "Uzaklaştır",
+      "fit": "Pencereye sığdır",
+      "export": "Dışa aktar"
+    },
+    "menu": {
+      "label": "Öğe menüsü",
+      "cut": "Kes",
+      "copy": "Kopyala",
+      "paste": "Yapıştır",
+      "duplicate": "Çoğalt",
+      "front": "En öne getir",
+      "back": "En arkaya gönder",
+      "group": "Grupla",
+      "ungroup": "Grubu çöz",
+      "lock": "Kilitle",
+      "delete": "Sil"
+    },
+    "panel": {
+      "label": "Ekle ve düzenle",
+      "elements": "Öğeler",
+      "layers": "Katmanlar"
+    },
+    "elements": {
+      "text": "Metin",
+      "heading": "Başlık ekle",
+      "subheading": "Alt başlık ekle",
+      "body": "Gövde metni ekle",
+      "headingText": "Başlık",
+      "subheadingText": "Alt başlık",
+      "bodyText": "Metninizi buraya yazın",
+      "shapes": "Şekiller",
+      "image": "Resim",
+      "qr": "QR kod"
+    },
+    "kinds": {
+      "text": "Metin",
+      "shape": "Şekil",
+      "image": "Resim",
+      "qr": "QR kod",
+      "vector": "Çizim",
+      "svg": "Grafik"
+    },
+    "shapes": {
+      "rect": "Dikdörtgen",
+      "ellipse": "Elips",
+      "triangle": "Üçgen",
+      "rightTriangle": "Dik üçgen",
+      "diamond": "Elmas",
+      "pentagon": "Beşgen",
+      "hexagon": "Altıgen",
+      "octagon": "Sekizgen",
+      "star": "Yıldız",
+      "burst": "Patlama",
+      "heart": "Kalp",
+      "arrow": "Ok",
+      "chevron": "Köşeli ok",
+      "parallelogram": "Paralelkenar",
+      "trapezoid": "Yamuk",
+      "cross": "Artı",
+      "speech": "Konuşma balonu",
+      "line": "Çizgi",
+      "arrowLine": "Oklu çizgi"
+    },
+    "layers": {
+      "label": "Bu sayfadaki katmanlar",
+      "empty": "Bu sayfada henüz bir şey yok. Öğeler'den metin, şekil ya da resim ekleyin.",
+      "rename": "Katman adı",
+      "forward": "{{name}} öğesini yukarı taşı",
+      "backward": "{{name}} öğesini aşağı taşı",
+      "show": "{{name}} öğesini göster",
+      "hide": "{{name}} öğesini gizle",
+      "lock": "{{name}} öğesini kilitle",
+      "unlock": "{{name}} kilidini aç"
+    },
+    "pages": {
+      "label": "Sayfalar",
+      "page": "Sayfa {{number}}",
+      "add": "Sayfa ekle",
+      "duplicate": "Sayfayı çoğalt",
+      "delete": "Sayfayı sil",
+      "moveLeft": "Sayfayı sola taşı",
+      "moveRight": "Sayfayı sağa taşı"
+    },
+    "page": {
+      "size": "Sayfa boyutu",
+      "width": "Genişlik",
+      "height": "Yükseklik",
+      "background": "Arka plan",
+      "backgroundImage": "Arka plan resmi",
+      "replaceImage": "Resmi değiştir",
+      "removeImage": "Resmi kaldır"
+    },
+    "props": {
+      "label": "Özellikler",
+      "arrange": "Konum",
+      "width": "Genişlik",
+      "height": "Yükseklik",
+      "rotation": "Döndürme",
+      "opacity": "Opaklık",
+      "lock": "Kilitle",
+      "unlock": "Kilidi aç",
+      "text": "Metin",
+      "fontSize": "Boyut",
+      "bold": "Kalın",
+      "italic": "İtalik",
+      "underline": "Altı çizili",
+      "color": "Renk",
+      "align": "Metin hizalama",
+      "verticalAlign": "Dikey hizalama",
+      "lineHeight": "Satır aralığı",
+      "letterSpacing": "Harf aralığı",
+      "uppercase": "Büyük harf",
+      "shrinkToFit": "Sığdırmak için küçült",
+      "shrinkHint": "Uzun metin kutudan taşmak yerine küçülür",
+      "fill": "Dolgu",
+      "stroke": "Kontur",
+      "cornerRadius": "Köşe yuvarlaklığı",
+      "points": "Uç sayısı",
+      "innerRatio": "İç derinlik",
+      "image": "Resim",
+      "replaceImage": "Resmi değiştir",
+      "qr": "QR kod",
+      "qrValue": "Metin ya da bağlantı",
+      "qrBackground": "Arka plan",
+      "background": "Arka plan rengi",
+      "qrLevel": "Hata düzeltme"
+    },
+    "align": {
+      "left": "Sola hizala",
+      "centerX": "Yatayda ortala",
+      "right": "Sağa hizala",
+      "top": "Üste hizala",
+      "middleY": "Dikeyde ortala",
+      "bottom": "Alta hizala",
+      "distributeHorizontal": "Yatayda eşit aralıkla dağıt",
+      "distributeVertical": "Dikeyde eşit aralıkla dağıt"
+    },
+    "textAlign": {
+      "left": "Sol",
+      "center": "Orta",
+      "right": "Sağ",
+      "justify": "İki yana yasla"
+    },
+    "verticalAlign": {
+      "top": "Üst",
+      "middle": "Orta",
+      "bottom": "Alt"
+    },
+    "fill": {
+      "label": "Dolgu türü",
+      "none": "Yok",
+      "solid": "Renk",
+      "linear": "Doğrusal",
+      "radial": "Dairesel",
+      "color": "Renk",
+      "start": "Başlangıç rengi",
+      "end": "Bitiş rengi",
+      "angle": "Açı"
+    },
+    "stroke": {
+      "label": "Kontur",
+      "off": "Yok",
+      "on": "Kontur",
+      "color": "Kontur rengi",
+      "width": "Kalınlık",
+      "style": "Çizgi stili",
+      "solid": "Düz",
+      "dashed": "Kesikli",
+      "dotted": "Noktalı"
+    },
+    "fit": {
+      "label": "Resim yerleşimi",
+      "cover": "Doldur",
+      "contain": "Sığdır",
+      "stretch": "Uzat"
+    },
+    "mask": {
+      "label": "Biçim",
+      "none": "Köşeli",
+      "rounded": "Yuvarlak köşeli",
+      "circle": "Daire"
+    },
+    "crop": {
+      "left": "Soldan kırp",
+      "right": "Sağdan kırp",
+      "top": "Üstten kırp",
+      "bottom": "Alttan kırp"
+    },
+    "export": {
+      "title": "Tasarımı dışa aktar",
+      "run": "Dışa aktar",
+      "format": "Dosya türü",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "Çözünürlük",
+      "dpi": "{{dpi}} dpi",
+      "done": "Dışa aktarılan sayfa: {{count}}",
+      "idleTitle": "Dışa aktarmaya hazır",
+      "idleDescription": "PDF'te metin seçilebilir kalır ve fontlar gömülür.",
+      "missingGlyphs": "Bazı karakterler seçilen fontta yok ve görünmeyebilir: {{glyphs}}"
+    }
   }
 }

@@ -822,12 +822,14 @@ FONT_FILE_MAX_BYTES = 30 * 1024 * 1024
 class FontFileParams(RpcModel):
     id: str = Field(min_length=1, max_length=4096)
     bold: bool = False
+    italic: bool = False
 
 
 class FontFileResult(RpcModel):
     name: str
     ext: str
     base64: str
+    italic: bool = False
 
 
 def _same_file(left: Path, right: Path) -> bool:
@@ -859,7 +861,11 @@ def font_file_path(font_id: str, bold: bool) -> Path:
 
 @op("fonts.file", FontFileParams)
 def font_file(params: FontFileParams, _progress: Progress) -> FontFileResult:
-    path = font_file_path(params.id, params.bold)
+    italic = False
+    if params.italic and not params.id.startswith("file:"):
+        path, italic = resolve_face(params.id, params.bold, True)
+    else:
+        path = font_file_path(params.id, params.bold)
     if path.stat().st_size > FONT_FILE_MAX_BYTES:
         raise OpError(ErrorCode.INVALID_PARAMS, "font file too large", {"reason": "fontSize"})
     data = path.read_bytes()
@@ -867,4 +873,5 @@ def font_file(params: FontFileParams, _progress: Progress) -> FontFileResult:
         name=font_label(path),
         ext=path.suffix.lower().lstrip("."),
         base64=base64.b64encode(data).decode("ascii"),
+        italic=italic,
     )

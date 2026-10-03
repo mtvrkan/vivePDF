@@ -36,7 +36,8 @@
     "preflight": "Druckprüfung",
     "pdfa": "PDF/A-Archiv",
     "omr": "Antwortbögen",
-    "create": "PDF erstellen"
+    "create": "PDF erstellen",
+    "studio": "Studio"
   },
   "common": {
     "retry": "Wiederholen",
@@ -6476,5 +6477,245 @@
     "hint": "Ein PDF aus dem Kopierten: Screenshot, Bild, Text oder Tabelle",
     "fileName": "Zwischenablage",
     "noOpenableFiles": "Keine der kopierten Dateien kann geöffnet werden."
+  },
+  "studio": {
+    "title": "Studio",
+    "description": "Gestalten Sie Zertifikate, Poster, Karten und mehr von Grund auf und speichern Sie sie als PDF oder Bilder",
+    "untitled": "Unbenanntes Design",
+    "canvas": {
+      "label": "Designseite"
+    },
+    "start": {
+      "continue": "Dort weitermachen, wo Sie aufgehört haben",
+      "pages": "Seiten: {{count}}",
+      "resume": "Weiter",
+      "blank": "Mit einer leeren Seite beginnen",
+      "custom": "Eigene Größe",
+      "create": "Erstellen"
+    },
+    "sizes": {
+      "a4": "A4 Hochformat",
+      "a4Landscape": "A4 Querformat",
+      "a5": "A5",
+      "letter": "US Letter",
+      "letterLandscape": "US Letter Querformat",
+      "businessCard": "Visitenkarte",
+      "square": "Quadratischer Beitrag",
+      "story": "Story",
+      "presentation": "Präsentation (16:9)",
+      "poster": "A3-Poster",
+      "custom": "Eigene"
+    },
+    "toolbar": {
+      "label": "Designwerkzeuge",
+      "leave": "Zurück zum Start",
+      "name": "Designname",
+      "undo": "Rückgängig",
+      "redo": "Wiederholen",
+      "zoomIn": "Vergrößern",
+      "zoomOut": "Verkleinern",
+      "fit": "An Fenster anpassen",
+      "export": "Exportieren"
+    },
+    "menu": {
+      "label": "Elementmenü",
+      "cut": "Ausschneiden",
+      "copy": "Kopieren",
+      "paste": "Einfügen",
+      "duplicate": "Duplizieren",
+      "front": "In den Vordergrund",
+      "back": "In den Hintergrund",
+      "group": "Gruppieren",
+      "ungroup": "Gruppierung aufheben",
+      "lock": "Sperren",
+      "delete": "Löschen"
+    },
+    "panel": {
+      "label": "Hinzufügen und anordnen",
+      "elements": "Elemente",
+      "layers": "Ebenen"
+    },
+    "elements": {
+      "text": "Text",
+      "heading": "Überschrift hinzufügen",
+      "subheading": "Unterüberschrift hinzufügen",
+      "body": "Fließtext hinzufügen",
+      "headingText": "Überschrift",
+      "subheadingText": "Unterüberschrift",
+      "bodyText": "Schreiben Sie hier Ihren Text",
+      "shapes": "Formen",
+      "image": "Bild",
+      "qr": "QR-Code"
+    },
+    "kinds": {
+      "text": "Text",
+      "shape": "Form",
+      "image": "Bild",
+      "qr": "QR-Code",
+      "vector": "Zeichnung",
+      "svg": "Grafik"
+    },
+    "shapes": {
+      "rect": "Rechteck",
+      "ellipse": "Ellipse",
+      "triangle": "Dreieck",
+      "rightTriangle": "Rechtwinkliges Dreieck",
+      "diamond": "Raute",
+      "pentagon": "Fünfeck",
+      "hexagon": "Sechseck",
+      "octagon": "Achteck",
+      "star": "Stern",
+      "burst": "Explosion",
+      "heart": "Herz",
+      "arrow": "Pfeil",
+      "chevron": "Chevron",
+      "parallelogram": "Parallelogramm",
+      "trapezoid": "Trapez",
+      "cross": "Kreuz",
+      "speech": "Sprechblase",
+      "line": "Linie",
+      "arrowLine": "Pfeillinie"
+    },
+    "layers": {
+      "label": "Ebenen auf dieser Seite",
+      "empty": "Auf dieser Seite ist noch nichts. Fügen Sie unter „Elemente“ Text, Formen oder Bilder hinzu.",
+      "rename": "Ebenenname",
+      "forward": "{{name}} nach oben verschieben",
+      "backward": "{{name}} nach unten verschieben",
+      "show": "{{name}} einblenden",
+      "hide": "{{name}} ausblenden",
+      "lock": "{{name}} sperren",
+      "unlock": "{{name}} entsperren"
+    },
+    "pages": {
+      "label": "Seiten",
+      "page": "Seite {{number}}",
+      "add": "Seite hinzufügen",
+      "duplicate": "Seite duplizieren",
+      "delete": "Seite löschen",
+      "moveLeft": "Seite nach links verschieben",
+      "moveRight": "Seite nach rechts verschieben"
+    },
+    "page": {
+      "size": "Seitengröße",
+      "width": "Breite",
+      "height": "Höhe",
+      "background": "Hintergrund",
+      "backgroundImage": "Hintergrundbild",
+      "replaceImage": "Bild ersetzen",
+      "removeImage": "Bild entfernen"
+    },
+    "props": {
+      "label": "Eigenschaften",
+      "arrange": "Position",
+      "width": "Breite",
+      "height": "Höhe",
+      "rotation": "Drehung",
+      "opacity": "Deckkraft",
+      "lock": "Sperren",
+      "unlock": "Entsperren",
+      "text": "Text",
+      "fontSize": "Größe",
+      "bold": "Fett",
+      "italic": "Kursiv",
+      "underline": "Unterstrichen",
+      "color": "Farbe",
+      "align": "Textausrichtung",
+      "verticalAlign": "Vertikale Ausrichtung",
+      "lineHeight": "Zeilenabstand",
+      "letterSpacing": "Zeichenabstand",
+      "uppercase": "Großbuchstaben",
+      "shrinkToFit": "Verkleinern, bis es passt",
+      "shrinkHint": "Langer Text wird kleiner, statt über den Rahmen hinauszulaufen",
+      "fill": "Füllung",
+      "stroke": "Kontur",
+      "cornerRadius": "Eckenrundung",
+      "points": "Zacken",
+      "innerRatio": "Innere Tiefe",
+      "image": "Bild",
+      "replaceImage": "Bild ersetzen",
+      "qr": "QR-Code",
+      "qrValue": "Text oder Link",
+      "qrBackground": "Hintergrund",
+      "background": "Hintergrundfarbe",
+      "qrLevel": "Fehlerkorrektur"
+    },
+    "align": {
+      "left": "Links ausrichten",
+      "centerX": "Horizontal zentrieren",
+      "right": "Rechts ausrichten",
+      "top": "Oben ausrichten",
+      "middleY": "Vertikal zentrieren",
+      "bottom": "Unten ausrichten",
+      "distributeHorizontal": "Horizontal gleichmäßig verteilen",
+      "distributeVertical": "Vertikal gleichmäßig verteilen"
+    },
+    "textAlign": {
+      "left": "Links",
+      "center": "Zentriert",
+      "right": "Rechts",
+      "justify": "Blocksatz"
+    },
+    "verticalAlign": {
+      "top": "Oben",
+      "middle": "Mitte",
+      "bottom": "Unten"
+    },
+    "fill": {
+      "label": "Füllungsart",
+      "none": "Keine",
+      "solid": "Farbe",
+      "linear": "Linear",
+      "radial": "Radial",
+      "color": "Farbe",
+      "start": "Anfangsfarbe",
+      "end": "Endfarbe",
+      "angle": "Winkel"
+    },
+    "stroke": {
+      "label": "Kontur",
+      "off": "Keine",
+      "on": "Kontur",
+      "color": "Konturfarbe",
+      "width": "Stärke",
+      "style": "Linienart",
+      "solid": "Durchgehend",
+      "dashed": "Gestrichelt",
+      "dotted": "Gepunktet"
+    },
+    "fit": {
+      "label": "Bildanpassung",
+      "cover": "Füllen",
+      "contain": "Einpassen",
+      "stretch": "Strecken"
+    },
+    "mask": {
+      "label": "Form",
+      "none": "Eckig",
+      "rounded": "Abgerundet",
+      "circle": "Kreis"
+    },
+    "crop": {
+      "left": "Links zuschneiden",
+      "right": "Rechts zuschneiden",
+      "top": "Oben zuschneiden",
+      "bottom": "Unten zuschneiden"
+    },
+    "export": {
+      "title": "Design exportieren",
+      "run": "Exportieren",
+      "format": "Dateityp",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "Auflösung",
+      "dpi": "{{dpi}} dpi",
+      "done": "Exportierte Seiten: {{count}}",
+      "idleTitle": "Bereit zum Exportieren",
+      "idleDescription": "Text bleibt markierbar, und die Schriften werden in das PDF eingebettet.",
+      "missingGlyphs": "Einige Zeichen fehlen in der gewählten Schrift und werden eventuell nicht angezeigt: {{glyphs}}"
+    }
   }
 }

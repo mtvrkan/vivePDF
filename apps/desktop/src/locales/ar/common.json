@@ -36,7 +36,8 @@
     "preflight": "فحص ما قبل الطباعة",
     "pdfa": "أرشيف PDF/A",
     "omr": "أوراق الإجابة",
-    "create": "إنشاء PDF"
+    "create": "إنشاء PDF",
+    "studio": "الاستوديو"
   },
   "common": {
     "retry": "إعادة المحاولة",
@@ -7239,5 +7240,245 @@
     "hint": "أنشئ PDF مما نسخته: لقطة شاشة أو صورة أو نص أو جدول",
     "fileName": "الحافظة",
     "noOpenableFiles": "لا يمكن فتح أي من الملفات المنسوخة."
+  },
+  "studio": {
+    "title": "الاستوديو",
+    "description": "صمّم الشهادات والملصقات والبطاقات وغيرها من البداية، ثم احفظها بتنسيق PDF أو صور",
+    "untitled": "تصميم بلا عنوان",
+    "canvas": {
+      "label": "صفحة التصميم"
+    },
+    "start": {
+      "continue": "تابع من حيث توقفت",
+      "pages": "الصفحات: {{count}}",
+      "resume": "متابعة",
+      "blank": "ابدأ بصفحة فارغة",
+      "custom": "حجم مخصص",
+      "create": "إنشاء"
+    },
+    "sizes": {
+      "a4": "A4 عمودي",
+      "a4Landscape": "A4 أفقي",
+      "a5": "A5",
+      "letter": "Letter أمريكي",
+      "letterLandscape": "Letter أمريكي أفقي",
+      "businessCard": "بطاقة عمل",
+      "square": "منشور مربع",
+      "story": "قصة",
+      "presentation": "عرض تقديمي (16:9)",
+      "poster": "ملصق A3",
+      "custom": "مخصص"
+    },
+    "toolbar": {
+      "label": "أدوات التصميم",
+      "leave": "العودة إلى البداية",
+      "name": "اسم التصميم",
+      "undo": "تراجع",
+      "redo": "إعادة",
+      "zoomIn": "تكبير",
+      "zoomOut": "تصغير",
+      "fit": "ملاءمة للنافذة",
+      "export": "تصدير"
+    },
+    "menu": {
+      "label": "قائمة العنصر",
+      "cut": "قص",
+      "copy": "نسخ",
+      "paste": "لصق",
+      "duplicate": "تكرار",
+      "front": "إحضار إلى الأمام",
+      "back": "إرسال إلى الخلف",
+      "group": "تجميع",
+      "ungroup": "فك التجميع",
+      "lock": "قفل",
+      "delete": "حذف"
+    },
+    "panel": {
+      "label": "إضافة وترتيب",
+      "elements": "العناصر",
+      "layers": "الطبقات"
+    },
+    "elements": {
+      "text": "النص",
+      "heading": "إضافة عنوان",
+      "subheading": "إضافة عنوان فرعي",
+      "body": "إضافة نص أساسي",
+      "headingText": "عنوان",
+      "subheadingText": "عنوان فرعي",
+      "bodyText": "اكتب النص هنا",
+      "shapes": "الأشكال",
+      "image": "صورة",
+      "qr": "رمز QR"
+    },
+    "kinds": {
+      "text": "نص",
+      "shape": "شكل",
+      "image": "صورة",
+      "qr": "رمز QR",
+      "vector": "رسم",
+      "svg": "رسم بياني"
+    },
+    "shapes": {
+      "rect": "مستطيل",
+      "ellipse": "قطع ناقص",
+      "triangle": "مثلث",
+      "rightTriangle": "مثلث قائم",
+      "diamond": "معين",
+      "pentagon": "خماسي",
+      "hexagon": "سداسي",
+      "octagon": "ثماني",
+      "star": "نجمة",
+      "burst": "انفجار نجمي",
+      "heart": "قلب",
+      "arrow": "سهم",
+      "chevron": "شارة",
+      "parallelogram": "متوازي أضلاع",
+      "trapezoid": "شبه منحرف",
+      "cross": "صليب",
+      "speech": "فقاعة كلام",
+      "line": "خط",
+      "arrowLine": "خط بسهم"
+    },
+    "layers": {
+      "label": "الطبقات في هذه الصفحة",
+      "empty": "لا يوجد شيء في هذه الصفحة بعد. أضف نصًا أو أشكالًا أو صورًا من العناصر.",
+      "rename": "اسم الطبقة",
+      "forward": "نقل {{name}} لأعلى",
+      "backward": "نقل {{name}} لأسفل",
+      "show": "إظهار {{name}}",
+      "hide": "إخفاء {{name}}",
+      "lock": "قفل {{name}}",
+      "unlock": "إلغاء قفل {{name}}"
+    },
+    "pages": {
+      "label": "الصفحات",
+      "page": "الصفحة {{number}}",
+      "add": "إضافة صفحة",
+      "duplicate": "تكرار الصفحة",
+      "delete": "حذف الصفحة",
+      "moveLeft": "نقل الصفحة لليسار",
+      "moveRight": "نقل الصفحة لليمين"
+    },
+    "page": {
+      "size": "حجم الصفحة",
+      "width": "العرض",
+      "height": "الارتفاع",
+      "background": "الخلفية",
+      "backgroundImage": "صورة الخلفية",
+      "replaceImage": "استبدال الصورة",
+      "removeImage": "إزالة الصورة"
+    },
+    "props": {
+      "label": "الخصائص",
+      "arrange": "الموضع",
+      "width": "العرض",
+      "height": "الارتفاع",
+      "rotation": "التدوير",
+      "opacity": "العتامة",
+      "lock": "قفل",
+      "unlock": "إلغاء القفل",
+      "text": "النص",
+      "fontSize": "الحجم",
+      "bold": "غامق",
+      "italic": "مائل",
+      "underline": "تسطير",
+      "color": "اللون",
+      "align": "محاذاة النص",
+      "verticalAlign": "المحاذاة العمودية",
+      "lineHeight": "تباعد الأسطر",
+      "letterSpacing": "تباعد الأحرف",
+      "uppercase": "أحرف كبيرة",
+      "shrinkToFit": "تصغير للملاءمة",
+      "shrinkHint": "يصغر النص الطويل بدلًا من أن يتجاوز المربع",
+      "fill": "التعبئة",
+      "stroke": "الحد",
+      "cornerRadius": "استدارة الزوايا",
+      "points": "عدد الرؤوس",
+      "innerRatio": "العمق الداخلي",
+      "image": "صورة",
+      "replaceImage": "استبدال الصورة",
+      "qr": "رمز QR",
+      "qrValue": "نص أو رابط",
+      "qrBackground": "الخلفية",
+      "background": "لون الخلفية",
+      "qrLevel": "تصحيح الأخطاء"
+    },
+    "align": {
+      "left": "محاذاة لليسار",
+      "centerX": "توسيط أفقي",
+      "right": "محاذاة لليمين",
+      "top": "محاذاة للأعلى",
+      "middleY": "توسيط عمودي",
+      "bottom": "محاذاة للأسفل",
+      "distributeHorizontal": "توزيع أفقي متساوٍ",
+      "distributeVertical": "توزيع عمودي متساوٍ"
+    },
+    "textAlign": {
+      "left": "يسار",
+      "center": "وسط",
+      "right": "يمين",
+      "justify": "ضبط"
+    },
+    "verticalAlign": {
+      "top": "أعلى",
+      "middle": "وسط",
+      "bottom": "أسفل"
+    },
+    "fill": {
+      "label": "نوع التعبئة",
+      "none": "بلا",
+      "solid": "لون",
+      "linear": "خطي",
+      "radial": "دائري",
+      "color": "اللون",
+      "start": "لون البداية",
+      "end": "لون النهاية",
+      "angle": "الزاوية"
+    },
+    "stroke": {
+      "label": "الحد",
+      "off": "بلا",
+      "on": "حد",
+      "color": "لون الحد",
+      "width": "السُمك",
+      "style": "نمط الخط",
+      "solid": "متصل",
+      "dashed": "متقطع",
+      "dotted": "منقط"
+    },
+    "fit": {
+      "label": "ملاءمة الصورة",
+      "cover": "ملء",
+      "contain": "ملاءمة",
+      "stretch": "تمديد"
+    },
+    "mask": {
+      "label": "الشكل",
+      "none": "مربع",
+      "rounded": "مستدير الزوايا",
+      "circle": "دائرة"
+    },
+    "crop": {
+      "left": "قص من اليسار",
+      "right": "قص من اليمين",
+      "top": "قص من الأعلى",
+      "bottom": "قص من الأسفل"
+    },
+    "export": {
+      "title": "تصدير التصميم",
+      "run": "تصدير",
+      "format": "نوع الملف",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "الدقة",
+      "dpi": "{{dpi}} نقطة/بوصة",
+      "done": "الصفحات المصدّرة: {{count}}",
+      "idleTitle": "جاهز للتصدير",
+      "idleDescription": "يبقى النص قابلًا للتحديد وتُضمَّن الخطوط في ملف PDF.",
+      "missingGlyphs": "بعض الأحرف غير موجودة في الخط المختار وقد لا تظهر: {{glyphs}}"
+    }
   }
 }

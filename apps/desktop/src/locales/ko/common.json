@@ -36,7 +36,8 @@
     "preflight": "인쇄 전 검사",
     "pdfa": "PDF/A 아카이브",
     "omr": "OMR 답안지",
-    "create": "PDF 만들기"
+    "create": "PDF 만들기",
+    "studio": "스튜디오"
   },
   "common": {
     "retry": "다시 시도",
@@ -6476,5 +6477,245 @@
     "hint": "복사한 내용으로 PDF 만들기: 스크린샷, 그림, 텍스트, 표",
     "fileName": "클립보드",
     "noOpenableFiles": "복사한 파일 중 열 수 있는 파일이 없습니다."
+  },
+  "studio": {
+    "title": "스튜디오",
+    "description": "인증서, 포스터, 카드 등을 처음부터 디자인하고 PDF 또는 그림으로 저장합니다",
+    "untitled": "제목 없는 디자인",
+    "canvas": {
+      "label": "디자인 페이지"
+    },
+    "start": {
+      "continue": "중단한 위치에서 계속",
+      "pages": "페이지: {{count}}",
+      "resume": "계속",
+      "blank": "빈 페이지로 시작",
+      "custom": "사용자 지정 크기",
+      "create": "만들기"
+    },
+    "sizes": {
+      "a4": "A4 세로",
+      "a4Landscape": "A4 가로",
+      "a5": "A5",
+      "letter": "US 레터",
+      "letterLandscape": "US 레터 가로",
+      "businessCard": "명함",
+      "square": "정사각형 게시물",
+      "story": "스토리",
+      "presentation": "프레젠테이션(16:9)",
+      "poster": "A3 포스터",
+      "custom": "사용자 지정"
+    },
+    "toolbar": {
+      "label": "디자인 도구",
+      "leave": "시작 화면으로",
+      "name": "디자인 이름",
+      "undo": "실행 취소",
+      "redo": "다시 실행",
+      "zoomIn": "확대",
+      "zoomOut": "축소",
+      "fit": "창에 맞추기",
+      "export": "내보내기"
+    },
+    "menu": {
+      "label": "요소 메뉴",
+      "cut": "잘라내기",
+      "copy": "복사",
+      "paste": "붙여넣기",
+      "duplicate": "복제",
+      "front": "맨 앞으로 가져오기",
+      "back": "맨 뒤로 보내기",
+      "group": "그룹화",
+      "ungroup": "그룹 해제",
+      "lock": "잠금",
+      "delete": "삭제"
+    },
+    "panel": {
+      "label": "추가 및 정렬",
+      "elements": "요소",
+      "layers": "레이어"
+    },
+    "elements": {
+      "text": "텍스트",
+      "heading": "제목 추가",
+      "subheading": "부제목 추가",
+      "body": "본문 추가",
+      "headingText": "제목",
+      "subheadingText": "부제목",
+      "bodyText": "여기에 텍스트를 입력하세요",
+      "shapes": "도형",
+      "image": "그림",
+      "qr": "QR 코드"
+    },
+    "kinds": {
+      "text": "텍스트",
+      "shape": "도형",
+      "image": "그림",
+      "qr": "QR 코드",
+      "vector": "그리기",
+      "svg": "그래픽"
+    },
+    "shapes": {
+      "rect": "사각형",
+      "ellipse": "타원",
+      "triangle": "삼각형",
+      "rightTriangle": "직각삼각형",
+      "diamond": "마름모",
+      "pentagon": "오각형",
+      "hexagon": "육각형",
+      "octagon": "팔각형",
+      "star": "별",
+      "burst": "폭발",
+      "heart": "하트",
+      "arrow": "화살표",
+      "chevron": "갈매기형",
+      "parallelogram": "평행사변형",
+      "trapezoid": "사다리꼴",
+      "cross": "십자형",
+      "speech": "말풍선",
+      "line": "선",
+      "arrowLine": "화살표 선"
+    },
+    "layers": {
+      "label": "이 페이지의 레이어",
+      "empty": "이 페이지에는 아직 아무것도 없습니다. 요소에서 텍스트, 도형 또는 그림을 추가하세요.",
+      "rename": "레이어 이름",
+      "forward": "{{name}} 위로 이동",
+      "backward": "{{name}} 아래로 이동",
+      "show": "{{name}} 표시",
+      "hide": "{{name}} 숨기기",
+      "lock": "{{name}} 잠금",
+      "unlock": "{{name}} 잠금 해제"
+    },
+    "pages": {
+      "label": "페이지",
+      "page": "{{number}}페이지",
+      "add": "페이지 추가",
+      "duplicate": "페이지 복제",
+      "delete": "페이지 삭제",
+      "moveLeft": "페이지를 왼쪽으로 이동",
+      "moveRight": "페이지를 오른쪽으로 이동"
+    },
+    "page": {
+      "size": "페이지 크기",
+      "width": "너비",
+      "height": "높이",
+      "background": "배경",
+      "backgroundImage": "배경 그림",
+      "replaceImage": "그림 바꾸기",
+      "removeImage": "그림 제거"
+    },
+    "props": {
+      "label": "속성",
+      "arrange": "위치",
+      "width": "너비",
+      "height": "높이",
+      "rotation": "회전",
+      "opacity": "불투명도",
+      "lock": "잠금",
+      "unlock": "잠금 해제",
+      "text": "텍스트",
+      "fontSize": "크기",
+      "bold": "굵게",
+      "italic": "기울임꼴",
+      "underline": "밑줄",
+      "color": "색",
+      "align": "텍스트 맞춤",
+      "verticalAlign": "세로 맞춤",
+      "lineHeight": "줄 간격",
+      "letterSpacing": "자간",
+      "uppercase": "대문자",
+      "shrinkToFit": "크기에 맞게 축소",
+      "shrinkHint": "긴 텍스트가 상자를 넘치지 않고 작아집니다",
+      "fill": "채우기",
+      "stroke": "윤곽선",
+      "cornerRadius": "모서리 둥글기",
+      "points": "꼭짓점 수",
+      "innerRatio": "안쪽 깊이",
+      "image": "그림",
+      "replaceImage": "그림 바꾸기",
+      "qr": "QR 코드",
+      "qrValue": "텍스트 또는 링크",
+      "qrBackground": "배경",
+      "background": "배경색",
+      "qrLevel": "오류 정정"
+    },
+    "align": {
+      "left": "왼쪽 맞춤",
+      "centerX": "가로 가운데 맞춤",
+      "right": "오른쪽 맞춤",
+      "top": "위쪽 맞춤",
+      "middleY": "세로 가운데 맞춤",
+      "bottom": "아래쪽 맞춤",
+      "distributeHorizontal": "가로 간격 동일하게",
+      "distributeVertical": "세로 간격 동일하게"
+    },
+    "textAlign": {
+      "left": "왼쪽",
+      "center": "가운데",
+      "right": "오른쪽",
+      "justify": "양쪽 맞춤"
+    },
+    "verticalAlign": {
+      "top": "위쪽",
+      "middle": "가운데",
+      "bottom": "아래쪽"
+    },
+    "fill": {
+      "label": "채우기 유형",
+      "none": "없음",
+      "solid": "단색",
+      "linear": "선형",
+      "radial": "방사형",
+      "color": "색",
+      "start": "시작 색",
+      "end": "끝 색",
+      "angle": "각도"
+    },
+    "stroke": {
+      "label": "윤곽선",
+      "off": "없음",
+      "on": "윤곽선",
+      "color": "윤곽선 색",
+      "width": "두께",
+      "style": "선 스타일",
+      "solid": "실선",
+      "dashed": "파선",
+      "dotted": "점선"
+    },
+    "fit": {
+      "label": "그림 맞춤",
+      "cover": "채우기",
+      "contain": "맞추기",
+      "stretch": "늘이기"
+    },
+    "mask": {
+      "label": "모양",
+      "none": "사각",
+      "rounded": "둥근 모서리",
+      "circle": "원"
+    },
+    "crop": {
+      "left": "왼쪽 자르기",
+      "right": "오른쪽 자르기",
+      "top": "위쪽 자르기",
+      "bottom": "아래쪽 자르기"
+    },
+    "export": {
+      "title": "디자인 내보내기",
+      "run": "내보내기",
+      "format": "파일 형식",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "해상도",
+      "dpi": "{{dpi}}dpi",
+      "done": "내보낸 페이지: {{count}}",
+      "idleTitle": "내보낼 준비가 되었습니다",
+      "idleDescription": "텍스트는 선택할 수 있으며 글꼴은 PDF에 포함됩니다.",
+      "missingGlyphs": "선택한 글꼴에 없는 문자가 있어 표시되지 않을 수 있습니다: {{glyphs}}"
+    }
   }
 }

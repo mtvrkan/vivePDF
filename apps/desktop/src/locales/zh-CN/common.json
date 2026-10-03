@@ -36,7 +36,8 @@
     "preflight": "印前检查",
     "pdfa": "PDF/A 存档",
     "omr": "答题卡",
-    "create": "创建 PDF"
+    "create": "创建 PDF",
+    "studio": "工作室"
   },
   "common": {
     "retry": "重试",
@@ -6476,5 +6477,245 @@
     "hint": "用复制的内容创建 PDF：截图、图片、文本或表格",
     "fileName": "剪贴板",
     "noOpenableFiles": "复制的文件都无法打开。"
+  },
+  "studio": {
+    "title": "工作室",
+    "description": "从零开始设计证书、海报、卡片等，然后保存为 PDF 或图片",
+    "untitled": "未命名设计",
+    "canvas": {
+      "label": "设计页面"
+    },
+    "start": {
+      "continue": "从上次中断处继续",
+      "pages": "页数：{{count}}",
+      "resume": "继续",
+      "blank": "从空白页开始",
+      "custom": "自定义尺寸",
+      "create": "创建"
+    },
+    "sizes": {
+      "a4": "A4 纵向",
+      "a4Landscape": "A4 横向",
+      "a5": "A5",
+      "letter": "美国信纸",
+      "letterLandscape": "美国信纸 横向",
+      "businessCard": "名片",
+      "square": "方形帖子",
+      "story": "快拍",
+      "presentation": "演示文稿 (16:9)",
+      "poster": "A3 海报",
+      "custom": "自定义"
+    },
+    "toolbar": {
+      "label": "设计工具",
+      "leave": "返回开始页",
+      "name": "设计名称",
+      "undo": "撤销",
+      "redo": "重做",
+      "zoomIn": "放大",
+      "zoomOut": "缩小",
+      "fit": "适应窗口",
+      "export": "导出"
+    },
+    "menu": {
+      "label": "元素菜单",
+      "cut": "剪切",
+      "copy": "复制",
+      "paste": "粘贴",
+      "duplicate": "创建副本",
+      "front": "置于顶层",
+      "back": "置于底层",
+      "group": "组合",
+      "ungroup": "取消组合",
+      "lock": "锁定",
+      "delete": "删除"
+    },
+    "panel": {
+      "label": "添加和排列",
+      "elements": "元素",
+      "layers": "图层"
+    },
+    "elements": {
+      "text": "文本",
+      "heading": "添加标题",
+      "subheading": "添加副标题",
+      "body": "添加正文",
+      "headingText": "标题",
+      "subheadingText": "副标题",
+      "bodyText": "在此输入文本",
+      "shapes": "形状",
+      "image": "图片",
+      "qr": "二维码"
+    },
+    "kinds": {
+      "text": "文本",
+      "shape": "形状",
+      "image": "图片",
+      "qr": "二维码",
+      "vector": "绘图",
+      "svg": "图形"
+    },
+    "shapes": {
+      "rect": "矩形",
+      "ellipse": "椭圆",
+      "triangle": "三角形",
+      "rightTriangle": "直角三角形",
+      "diamond": "菱形",
+      "pentagon": "五边形",
+      "hexagon": "六边形",
+      "octagon": "八边形",
+      "star": "星形",
+      "burst": "爆炸形",
+      "heart": "心形",
+      "arrow": "箭头",
+      "chevron": "V 形",
+      "parallelogram": "平行四边形",
+      "trapezoid": "梯形",
+      "cross": "十字形",
+      "speech": "对话气泡",
+      "line": "直线",
+      "arrowLine": "箭头线"
+    },
+    "layers": {
+      "label": "此页上的图层",
+      "empty": "此页上还没有内容。请从“元素”添加文本、形状或图片。",
+      "rename": "图层名称",
+      "forward": "上移{{name}}",
+      "backward": "下移{{name}}",
+      "show": "显示{{name}}",
+      "hide": "隐藏{{name}}",
+      "lock": "锁定{{name}}",
+      "unlock": "解锁{{name}}"
+    },
+    "pages": {
+      "label": "页面",
+      "page": "第 {{number}} 页",
+      "add": "添加页面",
+      "duplicate": "复制页面",
+      "delete": "删除页面",
+      "moveLeft": "左移页面",
+      "moveRight": "右移页面"
+    },
+    "page": {
+      "size": "页面尺寸",
+      "width": "宽度",
+      "height": "高度",
+      "background": "背景",
+      "backgroundImage": "背景图片",
+      "replaceImage": "替换图片",
+      "removeImage": "移除图片"
+    },
+    "props": {
+      "label": "属性",
+      "arrange": "位置",
+      "width": "宽度",
+      "height": "高度",
+      "rotation": "旋转",
+      "opacity": "不透明度",
+      "lock": "锁定",
+      "unlock": "解锁",
+      "text": "文本",
+      "fontSize": "大小",
+      "bold": "加粗",
+      "italic": "倾斜",
+      "underline": "下划线",
+      "color": "颜色",
+      "align": "文本对齐",
+      "verticalAlign": "垂直对齐",
+      "lineHeight": "行距",
+      "letterSpacing": "字间距",
+      "uppercase": "大写",
+      "shrinkToFit": "缩小以适应",
+      "shrinkHint": "长文本会缩小，而不会超出文本框",
+      "fill": "填充",
+      "stroke": "轮廓",
+      "cornerRadius": "圆角",
+      "points": "角数",
+      "innerRatio": "内凹深度",
+      "image": "图片",
+      "replaceImage": "替换图片",
+      "qr": "二维码",
+      "qrValue": "文本或链接",
+      "qrBackground": "背景",
+      "background": "背景颜色",
+      "qrLevel": "纠错级别"
+    },
+    "align": {
+      "left": "左对齐",
+      "centerX": "水平居中",
+      "right": "右对齐",
+      "top": "顶端对齐",
+      "middleY": "垂直居中",
+      "bottom": "底端对齐",
+      "distributeHorizontal": "横向均匀分布",
+      "distributeVertical": "纵向均匀分布"
+    },
+    "textAlign": {
+      "left": "左",
+      "center": "居中",
+      "right": "右",
+      "justify": "两端对齐"
+    },
+    "verticalAlign": {
+      "top": "顶部",
+      "middle": "中部",
+      "bottom": "底部"
+    },
+    "fill": {
+      "label": "填充类型",
+      "none": "无",
+      "solid": "纯色",
+      "linear": "线性",
+      "radial": "径向",
+      "color": "颜色",
+      "start": "起始颜色",
+      "end": "结束颜色",
+      "angle": "角度"
+    },
+    "stroke": {
+      "label": "轮廓",
+      "off": "无",
+      "on": "轮廓",
+      "color": "轮廓颜色",
+      "width": "粗细",
+      "style": "线型",
+      "solid": "实线",
+      "dashed": "虚线",
+      "dotted": "点线"
+    },
+    "fit": {
+      "label": "图片适应方式",
+      "cover": "填满",
+      "contain": "适应",
+      "stretch": "拉伸"
+    },
+    "mask": {
+      "label": "形状",
+      "none": "直角",
+      "rounded": "圆角",
+      "circle": "圆形"
+    },
+    "crop": {
+      "left": "左侧裁剪",
+      "right": "右侧裁剪",
+      "top": "顶部裁剪",
+      "bottom": "底部裁剪"
+    },
+    "export": {
+      "title": "导出设计",
+      "run": "导出",
+      "format": "文件类型",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "分辨率",
+      "dpi": "{{dpi}} dpi",
+      "done": "已导出页数：{{count}}",
+      "idleTitle": "可以导出",
+      "idleDescription": "文本仍可选择，字体会嵌入 PDF。",
+      "missingGlyphs": "所选字体中缺少某些字符，可能无法显示：{{glyphs}}"
+    }
   }
 }

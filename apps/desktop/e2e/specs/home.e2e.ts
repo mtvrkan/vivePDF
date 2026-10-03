@@ -68,7 +68,7 @@ describe("home layout", () => {
     await expect(target).toHaveText(expect.stringContaining(history), { ignoreCase: true });
 
     await $(`//button[normalize-space(.)="${t("home.layout.reset")}"]`).click();
-    await expect(region("top")).not.toHaveText(expect.stringContaining(t("home.recent"), { ignoreCase: true }));
+    await expect(region("top")).not.toHaveText(expect.stringContaining(t("home.recent")), { ignoreCase: true });
     await expect(target).not.toHaveText(expect.stringContaining(history), { ignoreCase: true });
     await expect(region("side")).toHaveText(expect.stringContaining(history), { ignoreCase: true });
     await finishEditing();

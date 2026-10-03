@@ -1,3 +1,5 @@
+import base64
+import io
 from pathlib import Path
 
 import numpy as np
@@ -7,8 +9,14 @@ import zxingcpp
 from PIL import Image
 from pydantic import ValidationError
 
-from vivepdf.ops._studio_models import StudioRenderParams
-from vivepdf.ops.studio import render
+from vivepdf.ops._studio_models import (
+    StudioImageInfoParams,
+    StudioQrParams,
+    StudioRenderParams,
+    StudioSvgParams,
+)
+from vivepdf.ops.fonts import FontFileParams, font_file
+from vivepdf.ops.studio import image_info, import_svg, qr, render
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
@@ -437,3 +445,106 @@ def test_vector_view_box_scales_paths_and_strokes(tmp_path: Path):
     assert _at(pixels, 100, 100) == (255, 0, 0)
     assert _at(pixels, 200, 100) == WHITE
     assert _at(pixels, 46, 100) == (0, 0, 255)
+
+
+def test_image_info_returns_a_small_upright_preview(tmp_path: Path):
+    picture = tmp_path / "tall.jpg"
+    exif = Image.Exif()
+    exif[0x0112] = 6
+    Image.new("RGB", (3000, 1000), (10, 200, 30)).save(picture, exif=exif)
+
+    info = image_info(StudioImageInfoParams(path=str(picture), max_side=400), silent_progress())
+
+    assert (info.width, info.height) == (1000, 3000)
+    assert info.mime == "image/jpeg"
+    preview = Image.open(io.BytesIO(base64.b64decode(info.base64)))
+    assert preview.size == (133, 400)
+
+
+def test_image_info_keeps_transparency_and_reports_missing_files(tmp_path: Path):
+    picture = tmp_path / "logo.png"
+    Image.new("RGBA", (20, 10), (0, 0, 0, 0)).save(picture)
+
+    assert (
+        image_info(StudioImageInfoParams(path=str(picture)), silent_progress()).mime == "image/png"
+    )
+    with pytest.raises(OpError) as caught:
+        image_info(StudioImageInfoParams(path=str(tmp_path / "gone.png")), silent_progress())
+    assert caught.value.data["reason"] == "missingImage"
+
+
+def test_qr_modules_match_the_rendered_code():
+    result = qr(StudioQrParams(value="vivePDF", error_level="H"), silent_progress())
+
+    assert len(result.modules) == result.size * result.size
+    assert set(result.modules) == {"0", "1"}
+    assert result.modules[:7] == "1111111"
+
+
+def test_font_file_says_when_a_real_italic_face_is_missing():
+    regular = font_file(FontFileParams(id="bundled:dejavu-sans"), silent_progress())
+    slanted = font_file(FontFileParams(id="bundled:dejavu-sans", italic=True), silent_progress())
+
+    assert slanted.italic is False
+    assert slanted.base64 == regular.base64
+
+
+def test_designs_export_as_numbered_pictures(tmp_path: Path):
+    output = tmp_path / "card.png"
+    pages = [{"width": 72, "height": 36, "items": [_rect(0, 0, 72, 36)]}] * 2
+    params = StudioRenderParams.model_validate(
+        {"pages": pages, "output": str(output), "format": "png", "dpi": 144}
+    )
+
+    result = render(params, silent_progress())
+
+    assert [Path(path).name for path in result.outputs] == ["card-1.png", "card-2.png"]
+    with Image.open(result.outputs[0]) as picture:
+        assert picture.size == (144, 72)
+        assert picture.getpixel((70, 30))[:3] == (255, 0, 0)
+    with pytest.raises(OpError) as caught:
+        render(params, silent_progress())
+    assert caught.value.data["exists"] is True
+
+
+def test_a_single_page_exports_as_one_jpeg(tmp_path: Path):
+    params = StudioRenderParams.model_validate(
+        {
+            "pages": [{"width": 100, "height": 100, "items": []}],
+            "output": str(tmp_path / "one.pdf"),
+            "format": "jpg",
+        }
+    )
+
+    result = render(params, silent_progress())
+
+    assert Path(result.output).name == "one.jpg"
+    assert result.outputs == [result.output]
+
+
+def test_imported_svg_is_cleaned_and_sized(tmp_path: Path):
+    drawing = tmp_path / "logo.svg"
+    drawing.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40">'
+        '<script>alert(1)</script><rect width="120" height="40" fill="#00f"/></svg>',
+        encoding="utf-8",
+    )
+
+    result = import_svg(StudioSvgParams(path=str(drawing)), silent_progress())
+
+    assert (result.width, result.height) == (120, 40)
+    assert "script" not in result.svg
+    assert "<rect" in result.svg
+
+
+def test_svg_with_a_doctype_is_refused(tmp_path: Path):
+    drawing = tmp_path / "bad.svg"
+    drawing.write_text(
+        '<!DOCTYPE svg [<!ENTITY x "y">]><svg xmlns="http://www.w3.org/2000/svg"/>',
+        encoding="utf-8",
+    )
+
+    with pytest.raises(OpError) as caught:
+        import_svg(StudioSvgParams(path=str(drawing)), silent_progress())
+
+    assert caught.value.data["reason"] == "svgDoctype"

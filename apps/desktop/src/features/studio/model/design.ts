@@ -13,6 +13,7 @@ import {
   type StudioShapeElement,
   type StudioShapeKind,
   type StudioStroke,
+  type StudioSvgElement,
   type StudioTextElement,
   type StudioTextRun,
   type StudioVectorPath,
@@ -109,6 +110,10 @@ export function createImage(src: string, x: number, y: number, width: number, he
     cornerRadius: 0,
     stroke: null,
   };
+}
+
+export function createSvg(svg: string, x: number, y: number, width: number, height: number): StudioSvgElement {
+  return { ...base(x, y, width, height, ""), kind: "svg", svg, source: "import", data: null };
 }
 
 export function createQr(value: string, x: number, y: number, side: number): StudioQrElement {

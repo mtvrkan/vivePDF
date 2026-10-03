@@ -36,7 +36,8 @@
     "preflight": "Controllo di stampa",
     "pdfa": "Archivio PDF/A",
     "omr": "Fogli risposte",
-    "create": "Crea PDF"
+    "create": "Crea PDF",
+    "studio": "Studio"
   },
   "common": {
     "retry": "Riprova",
@@ -6476,5 +6477,245 @@
     "hint": "Crea un PDF da ciò che hai copiato: screenshot, immagine, testo o tabella",
     "fileName": "Appunti",
     "noOpenableFiles": "Nessuno dei file copiati può essere aperto."
+  },
+  "studio": {
+    "title": "Studio",
+    "description": "Progetta da zero certificati, poster, biglietti e altro, poi salvali come PDF o immagini",
+    "untitled": "Progetto senza titolo",
+    "canvas": {
+      "label": "Pagina del progetto"
+    },
+    "start": {
+      "continue": "Riprendi da dove avevi lasciato",
+      "pages": "Pagine: {{count}}",
+      "resume": "Continua",
+      "blank": "Inizia con una pagina vuota",
+      "custom": "Dimensioni personalizzate",
+      "create": "Crea"
+    },
+    "sizes": {
+      "a4": "A4 verticale",
+      "a4Landscape": "A4 orizzontale",
+      "a5": "A5",
+      "letter": "Lettera USA",
+      "letterLandscape": "Lettera USA orizzontale",
+      "businessCard": "Biglietto da visita",
+      "square": "Post quadrato",
+      "story": "Storia",
+      "presentation": "Presentazione (16:9)",
+      "poster": "Poster A3",
+      "custom": "Personalizzato"
+    },
+    "toolbar": {
+      "label": "Strumenti di progettazione",
+      "leave": "Torna all’inizio",
+      "name": "Nome del progetto",
+      "undo": "Annulla",
+      "redo": "Ripeti",
+      "zoomIn": "Aumenta zoom",
+      "zoomOut": "Riduci zoom",
+      "fit": "Adatta alla finestra",
+      "export": "Esporta"
+    },
+    "menu": {
+      "label": "Menu elemento",
+      "cut": "Taglia",
+      "copy": "Copia",
+      "paste": "Incolla",
+      "duplicate": "Duplica",
+      "front": "Porta in primo piano",
+      "back": "Porta in secondo piano",
+      "group": "Raggruppa",
+      "ungroup": "Separa",
+      "lock": "Blocca",
+      "delete": "Elimina"
+    },
+    "panel": {
+      "label": "Aggiungi e disponi",
+      "elements": "Elementi",
+      "layers": "Livelli"
+    },
+    "elements": {
+      "text": "Testo",
+      "heading": "Aggiungi un titolo",
+      "subheading": "Aggiungi un sottotitolo",
+      "body": "Aggiungi testo",
+      "headingText": "Titolo",
+      "subheadingText": "Sottotitolo",
+      "bodyText": "Scrivi qui il tuo testo",
+      "shapes": "Forme",
+      "image": "Immagine",
+      "qr": "Codice QR"
+    },
+    "kinds": {
+      "text": "Testo",
+      "shape": "Forma",
+      "image": "Immagine",
+      "qr": "Codice QR",
+      "vector": "Disegno",
+      "svg": "Grafica"
+    },
+    "shapes": {
+      "rect": "Rettangolo",
+      "ellipse": "Ellisse",
+      "triangle": "Triangolo",
+      "rightTriangle": "Triangolo rettangolo",
+      "diamond": "Rombo",
+      "pentagon": "Pentagono",
+      "hexagon": "Esagono",
+      "octagon": "Ottagono",
+      "star": "Stella",
+      "burst": "Esplosione",
+      "heart": "Cuore",
+      "arrow": "Freccia",
+      "chevron": "Gallone",
+      "parallelogram": "Parallelogramma",
+      "trapezoid": "Trapezio",
+      "cross": "Croce",
+      "speech": "Fumetto",
+      "line": "Linea",
+      "arrowLine": "Linea con freccia"
+    },
+    "layers": {
+      "label": "Livelli di questa pagina",
+      "empty": "Questa pagina è ancora vuota. Aggiungi testo, forme o immagini da Elementi.",
+      "rename": "Nome del livello",
+      "forward": "Sposta su {{name}}",
+      "backward": "Sposta giù {{name}}",
+      "show": "Mostra {{name}}",
+      "hide": "Nascondi {{name}}",
+      "lock": "Blocca {{name}}",
+      "unlock": "Sblocca {{name}}"
+    },
+    "pages": {
+      "label": "Pagine",
+      "page": "Pagina {{number}}",
+      "add": "Aggiungi pagina",
+      "duplicate": "Duplica pagina",
+      "delete": "Elimina pagina",
+      "moveLeft": "Sposta pagina a sinistra",
+      "moveRight": "Sposta pagina a destra"
+    },
+    "page": {
+      "size": "Dimensioni pagina",
+      "width": "Larghezza",
+      "height": "Altezza",
+      "background": "Sfondo",
+      "backgroundImage": "Immagine di sfondo",
+      "replaceImage": "Sostituisci immagine",
+      "removeImage": "Rimuovi immagine"
+    },
+    "props": {
+      "label": "Proprietà",
+      "arrange": "Posizione",
+      "width": "Larghezza",
+      "height": "Altezza",
+      "rotation": "Rotazione",
+      "opacity": "Opacità",
+      "lock": "Blocca",
+      "unlock": "Sblocca",
+      "text": "Testo",
+      "fontSize": "Dimensione",
+      "bold": "Grassetto",
+      "italic": "Corsivo",
+      "underline": "Sottolineato",
+      "color": "Colore",
+      "align": "Allineamento testo",
+      "verticalAlign": "Allineamento verticale",
+      "lineHeight": "Interlinea",
+      "letterSpacing": "Spaziatura lettere",
+      "uppercase": "Maiuscole",
+      "shrinkToFit": "Riduci per adattare",
+      "shrinkHint": "Il testo lungo si riduce invece di uscire dal riquadro",
+      "fill": "Riempimento",
+      "stroke": "Contorno",
+      "cornerRadius": "Arrotondamento angoli",
+      "points": "Punte",
+      "innerRatio": "Profondità interna",
+      "image": "Immagine",
+      "replaceImage": "Sostituisci immagine",
+      "qr": "Codice QR",
+      "qrValue": "Testo o link",
+      "qrBackground": "Sfondo",
+      "background": "Colore di sfondo",
+      "qrLevel": "Correzione errori"
+    },
+    "align": {
+      "left": "Allinea a sinistra",
+      "centerX": "Centra orizzontalmente",
+      "right": "Allinea a destra",
+      "top": "Allinea in alto",
+      "middleY": "Centra verticalmente",
+      "bottom": "Allinea in basso",
+      "distributeHorizontal": "Distribuisci orizzontalmente",
+      "distributeVertical": "Distribuisci verticalmente"
+    },
+    "textAlign": {
+      "left": "Sinistra",
+      "center": "Centro",
+      "right": "Destra",
+      "justify": "Giustifica"
+    },
+    "verticalAlign": {
+      "top": "Alto",
+      "middle": "Centro",
+      "bottom": "Basso"
+    },
+    "fill": {
+      "label": "Tipo di riempimento",
+      "none": "Nessuno",
+      "solid": "Colore",
+      "linear": "Lineare",
+      "radial": "Radiale",
+      "color": "Colore",
+      "start": "Colore iniziale",
+      "end": "Colore finale",
+      "angle": "Angolo"
+    },
+    "stroke": {
+      "label": "Contorno",
+      "off": "Nessuno",
+      "on": "Contorno",
+      "color": "Colore contorno",
+      "width": "Spessore",
+      "style": "Stile linea",
+      "solid": "Continuo",
+      "dashed": "Tratteggiato",
+      "dotted": "Punteggiato"
+    },
+    "fit": {
+      "label": "Adattamento immagine",
+      "cover": "Riempi",
+      "contain": "Adatta",
+      "stretch": "Allunga"
+    },
+    "mask": {
+      "label": "Forma",
+      "none": "Squadrata",
+      "rounded": "Arrotondata",
+      "circle": "Cerchio"
+    },
+    "crop": {
+      "left": "Ritaglia a sinistra",
+      "right": "Ritaglia a destra",
+      "top": "Ritaglia in alto",
+      "bottom": "Ritaglia in basso"
+    },
+    "export": {
+      "title": "Esporta progetto",
+      "run": "Esporta",
+      "format": "Tipo di file",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "Risoluzione",
+      "dpi": "{{dpi}} dpi",
+      "done": "Pagine esportate: {{count}}",
+      "idleTitle": "Pronto per l’esportazione",
+      "idleDescription": "Il testo resta selezionabile e i font vengono incorporati nel PDF.",
+      "missingGlyphs": "Alcuni caratteri non sono presenti nel font scelto e potrebbero non comparire: {{glyphs}}"
+    }
   }
 }

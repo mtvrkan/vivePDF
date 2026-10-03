@@ -5,7 +5,7 @@ import pytest
 from lxml import etree
 
 from vivepdf.external import libreoffice
-from vivepdf.ops._svg import MAX_SVG_BYTES, sanitized_svg
+from vivepdf.ops._svg import MAX_SVG_BYTES, drawing_pdf, sanitized_svg
 from vivepdf.ops.convert_to_pdf import FileToPdfParams, SvgToPdfParams, file_to_pdf, svg_to_pdf
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
@@ -162,3 +162,36 @@ def test_the_bundled_libreoffice_keeps_styles_and_real_size(
         pixmap = page.get_pixmap(dpi=96)
         red = pixmap.pixel(int(100 * 0.75 * scale), int(70 * 0.75 * scale))
         assert red[0] > 200 and red[1] < 100 and red[2] < 100
+
+
+def _centre(markup: str) -> tuple[int, ...]:
+    with drawing_pdf(markup.encode("utf-8"), "drawing") as document:
+        return document[0].get_pixmap().pixel(50, 50)
+
+
+def test_stylesheet_rules_are_applied_when_drawing():
+    markup = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">'
+        "<style>/* theme */ @media print { rect { fill: #000 } } rect { fill: #00f }"
+        " .box { fill: #e63946 }</style>"
+        '<rect class="box" width="100" height="100"/></svg>'
+    )
+    assert _centre(markup) == (230, 57, 70)
+
+
+def test_inline_style_wins_over_the_stylesheet():
+    markup = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">'
+        "<style>#tile { fill: #e63946 }</style>"
+        '<rect id="tile" style="fill: #00ff00" width="100" height="100"/></svg>'
+    )
+    assert _centre(markup) == (0, 255, 0)
+
+
+def test_unsupported_selectors_and_broken_sheets_are_ignored():
+    markup = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100">'
+        "<style>g > rect { fill: #000 } rect:hover { fill: #000 } /* open"
+        '</style><rect fill="#00ff00" width="100" height="100"/></svg>'
+    )
+    assert _centre(markup) == (0, 255, 0)

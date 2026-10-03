@@ -15,6 +15,9 @@ IMPORT_RULE = re.compile(r"@import[^;]*;?", re.IGNORECASE)
 EMBEDDED_PICTURE = re.compile(r"^data:image/(png|jpe?g|gif|bmp|webp);", re.IGNORECASE)
 LINK_TARGET = re.compile(r"^(https?:|mailto:)", re.IGNORECASE)
 DROPPED_ELEMENTS = frozenset({"script", "foreignObject", "iframe", "audio", "video"})
+ABSOLUTE_NUMBER = re.compile(r"\d+(?:\.\d+)?")
+MAX_STYLE_RULES = 2000
+SIMPLE_SELECTOR = re.compile(r"^([A-Za-z][\w-]*|\*)?(?:#([\w-]+))?((?:\.[\w-]+)*)$")
 ABSOLUTE_LENGTH = re.compile(r"^\s*\d+(\.\d+)?\s*(px|pt|pc|mm|cm|in)?\s*$")
 
 
@@ -160,11 +163,112 @@ def _drop_zero_width_strokes(
             _drop_zero_width_strokes(child, stroke, width)
 
 
+def clean_svg_markup(source: Path, limit: int) -> tuple[str, float, float]:
+    if source.stat().st_size > limit:
+        raise _too_large(source.name)
+    root = read_svg(source)
+    _clean_tree(root)
+    _absolute_size(root)
+    markup = etree.tostring(root, encoding="unicode")
+    if len(markup) > limit:
+        raise _too_large(source.name)
+    width, height = (
+        float(ABSOLUTE_NUMBER.match(root.get(key) or "")[0]) for key in ("width", "height")
+    )
+    return markup, width, height
+
+
+def _without_comments(text: str) -> str:
+    parts, position = [], 0
+    while (start := text.find("/*", position)) >= 0:
+        parts.append(text[position:start])
+        end = text.find("*/", start + 2)
+        if end < 0:
+            return "".join(parts)
+        position = end + 2
+    parts.append(text[position:])
+    return "".join(parts)
+
+
+def _stylesheet_blocks(text: str) -> list[tuple[str, str]]:
+    blocks, depth, selector_start, body_start = [], 0, 0, 0
+    for index, character in enumerate(text):
+        if character == "{":
+            if depth == 0:
+                body_start = index + 1
+            depth += 1
+        elif character == "}" and depth > 0:
+            depth -= 1
+            if depth == 0:
+                selector = text[selector_start : body_start - 1].strip()
+                if not selector.startswith("@"):
+                    blocks.append((selector, text[body_start:index]))
+                selector_start = index + 1
+        elif character == ";" and depth == 0:
+            selector_start = index + 1
+    return blocks
+
+
+def _stylesheet_rules(text: str) -> list[tuple[tuple[int, int, int], int, str, str]]:
+    rules = []
+    for selectors, body in _stylesheet_blocks(_without_comments(text)):
+        for selector in selectors.split(","):
+            match = SIMPLE_SELECTOR.match(selector.strip())
+            if not match or not selector.strip() or len(rules) >= MAX_STYLE_RULES:
+                continue
+            tag, identifier, classes = match.group(1), match.group(2), match.group(3) or ""
+            specificity = (
+                1 if identifier else 0,
+                classes.count("."),
+                1 if tag and tag != "*" else 0,
+            )
+            rules.append((specificity, len(rules), selector.strip(), body.strip().strip(";")))
+    return sorted(rules)
+
+
+def _selector_matches(selector: str, element: etree._Element) -> bool:
+    match = SIMPLE_SELECTOR.match(selector)
+    if match is None:
+        return False
+    tag, identifier, classes = match.group(1), match.group(2), match.group(3) or ""
+    if tag and tag != "*" and tag != _local(element.tag):
+        return False
+    if identifier and element.get("id") != identifier:
+        return False
+    owned = set((element.get("class") or "").split())
+    return all(name in owned for name in classes.split(".") if name)
+
+
+def _inline_stylesheets(root: etree._Element) -> None:
+    sheets = [
+        element.text or ""
+        for element in root.iter()
+        if isinstance(element.tag, str) and _local(element.tag) == "style"
+    ]
+    rules = _stylesheet_rules("\n".join(sheets))
+    if not rules:
+        return
+    for element in root.iter():
+        if not isinstance(element.tag, str) or _local(element.tag) == "style":
+            continue
+        matched = [body for _, _, selector, body in rules if _selector_matches(selector, element)]
+        if not matched:
+            continue
+        declarations: dict[str, str] = {}
+        for body in [*matched, element.get("style") or ""]:
+            for declaration in body.split(";"):
+                name, colon, value = declaration.partition(":")
+                if colon and name.strip() and value.strip():
+                    declarations[name.strip().lower()] = value.strip()
+        element.set("style", ";".join(f"{name}:{value}" for name, value in declarations.items()))
+
+
 def drawing_pdf(raw: bytes, name: str, opacity: float = 1.0) -> pymupdf.Document:
     if len(raw) > MAX_SVG_BYTES:
         raise _too_large(name)
     root = _parse_svg(raw, name)
     _clean_tree(root)
+    _inline_stylesheets(root)
     _absolute_size(root)
     _drop_zero_width_strokes(root)
     if opacity < 1.0:

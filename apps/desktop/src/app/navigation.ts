@@ -14,6 +14,7 @@ import {
   Code2,
   Layers,
   NotebookPen,
+  Palette,
   Combine,
   Crop,
   Droplet,
@@ -78,6 +79,7 @@ export const primaryNavigation: NavItem[] = [
   { id: "home", labelKey: "nav.home", route: "/", icon: House },
   { id: "viewer", labelKey: "nav.viewer", route: "/viewer", icon: BookOpen },
   { id: "pages", labelKey: "nav.pages", route: "/pages", icon: LayoutGrid },
+  { id: "studio", labelKey: "nav.studio", route: "/studio", icon: Palette },
   { id: "search", labelKey: "nav.search", route: "/search", icon: Search },
 ];
 

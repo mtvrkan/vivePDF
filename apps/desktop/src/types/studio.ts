@@ -227,8 +227,18 @@ export type StudioRenderParams = {
   date?: string;
   language?: string;
   title?: string;
+  format?: StudioExportFormat;
+  dpi?: number;
   output: string;
   overwrite?: boolean;
 };
 
-export type StudioRenderResult = { output: string; pageCount: number; bytes: number; missingGlyphs: string };
+export type StudioExportFormat = "pdf" | "png" | "jpg";
+
+export type StudioRenderResult = { output: string; outputs: string[]; pageCount: number; bytes: number; missingGlyphs: string };
+
+export type StudioImageInfo = { width: number; height: number; mime: string; base64: string };
+
+export type StudioQrModules = { size: number; modules: string };
+
+export type StudioImportedSvg = { svg: string; width: number; height: number };

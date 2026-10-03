@@ -1,5 +1,7 @@
+import base64
 import contextlib
 import io
+import math
 from pathlib import Path
 
 import numpy as np
@@ -8,22 +10,28 @@ import zxingcpp
 from PIL import Image, ImageDraw, ImageOps
 
 from vivepdf.ops._image_files import eight_bit, open_picture
-from vivepdf.ops._output import prepare_output, save_document
+from vivepdf.ops._output import prepare_output, save_document, write_atomically
 from vivepdf.ops._studio_models import (
     MAX_OUTPUT_PAGES,
+    StudioImageInfoParams,
+    StudioImageInfoResult,
     StudioImageItem,
     StudioItem,
     StudioPage,
     StudioQrItem,
+    StudioQrParams,
+    StudioQrResult,
     StudioRenderParams,
     StudioRenderResult,
     StudioSvgItem,
+    StudioSvgParams,
+    StudioSvgResult,
     StudioTextItem,
     StudioVectorItem,
 )
 from vivepdf.ops._studio_text import TextFaces, draw_text, from_segments, has_placeholders, layout
 from vivepdf.ops._studio_vector import place, vector_document
-from vivepdf.ops._svg import drawing_pdf
+from vivepdf.ops._svg import clean_svg_markup, drawing_pdf
 from vivepdf.ops.create_bulk import PLACEHOLDER, fill_placeholders
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
@@ -31,6 +39,9 @@ from vivepdf.rpc.registry import op
 
 IMAGE_DPI = 300
 JPEG_QUALITY = 90
+MAX_IMAGE_PIXELS = 80_000_000
+MAX_SVG_MARKUP = 4_000_000
+PNG_SIGNATURE = bytes([0x89, 0x50, 0x4E, 0x47])
 QR_LEVELS = {"L": "L", "M": "M", "Q": "Q", "H": "H"}
 
 Cache = dict[tuple[int, int], tuple[pymupdf.Document, float]]
@@ -114,22 +125,25 @@ def _encoded(image: Image.Image) -> bytes:
     return buffer.getvalue()
 
 
-def image_document(item: StudioImageItem) -> pymupdf.Document:
-    source = Path(item.path)
+def _picture(path: str) -> Image.Image:
+    source = Path(path)
     if not source.is_file():
-        raise _missing_image(item.path)
+        raise _missing_image(path)
     try:
         with open_picture(source) as opened:
-            image = eight_bit(ImageOps.exif_transpose(opened)).convert("RGBA")
+            return eight_bit(ImageOps.exif_transpose(opened)).convert("RGBA")
     except OpError:
         raise
     except Exception as error:  # noqa: BLE001
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             f"cannot read image: {source.name}",
-            {"reason": "imageUnreadable", "path": item.path},
+            {"reason": "imageUnreadable", "path": path},
         ) from error
-    image = _crop(image, item)
+
+
+def image_document(item: StudioImageItem) -> pymupdf.Document:
+    image = _crop(_picture(item.path), item)
     if item.fit == "cover":
         image = _cover(image, item.width / item.height)
     rect = _placed_rect(image, item)
@@ -140,10 +154,10 @@ def image_document(item: StudioImageItem) -> pymupdf.Document:
     return document
 
 
-def qr_document(item: StudioQrItem, value: str) -> pymupdf.Document:
+def qr_modules(value: str, error_level: str) -> np.ndarray:
     try:
         barcode = zxingcpp.create_barcode(
-            value, zxingcpp.BarcodeFormat.QRCode, ec_level=QR_LEVELS[item.error_level]
+            value, zxingcpp.BarcodeFormat.QRCode, ec_level=QR_LEVELS[error_level]
         )
     except Exception as error:  # noqa: BLE001
         raise OpError(
@@ -155,7 +169,11 @@ def qr_document(item: StudioQrItem, value: str) -> pymupdf.Document:
     modules = np.array(np.array(raw, copy=False), dtype=np.uint8)
     if modules.ndim == 3:
         modules = modules[:, :, 0]
-    dark = modules < 128
+    return modules < 128
+
+
+def qr_document(item: StudioQrItem, value: str) -> pymupdf.Document:
+    dark = qr_modules(value, item.error_level)
     count = dark.shape[0]
     side = min(item.width, item.height)
     unit = side / count
@@ -279,6 +297,42 @@ def _check_images(params: StudioRenderParams) -> list[str]:
     return paths
 
 
+def _image_targets(output: str, extension: str, count: int, overwrite: bool) -> list[Path]:
+    base = Path(output).with_suffix(f".{extension}").resolve()
+    targets = (
+        [base]
+        if count == 1
+        else [base.with_name(f"{base.stem}-{index}{base.suffix}") for index in range(1, count + 1)]
+    )
+    taken = next((target for target in targets if target.exists()), None)
+    if taken is not None and not overwrite:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            f"output already exists: {taken.name}",
+            {"exists": True, "path": str(taken)},
+        )
+    base.parent.mkdir(parents=True, exist_ok=True)
+    return targets
+
+
+def _save_images(
+    document: pymupdf.Document, targets: list[Path], extension: str, dpi: int, progress: Progress
+) -> int:
+    written = 0
+    for index, (page, target) in enumerate(zip(document, targets, strict=True)):
+        progress.check_cancelled()
+        area = page.rect.width * page.rect.height
+        scale = min(dpi / 72, math.sqrt(MAX_IMAGE_PIXELS / max(area, 1.0)))
+        pixmap = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
+        write_atomically(
+            target,
+            lambda path, image=pixmap: image.save(str(path), output=extension, jpg_quality=92),
+        )
+        written += target.stat().st_size
+        progress.report(0.92 + 0.08 * (index + 1) / len(targets), "progress.saving")
+    return written
+
+
 @op("studio.render", StudioRenderParams)
 def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult:
     rows = params.rows or [{}]
@@ -289,7 +343,11 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
             f"too many pages: {total}",
             {"reason": "tooManyPages", "limit": MAX_OUTPUT_PAGES},
         )
-    target = prepare_output(params.output, _check_images(params), params.overwrite)
+    images = _check_images(params)
+    if params.format == "pdf":
+        targets = [prepare_output(params.output, images, params.overwrite)]
+    else:
+        targets = _image_targets(params.output, params.format, total, params.overwrite)
     cache: Cache = {}
     faces: dict[str | None, TextFaces] = {}
     missing: list[str] = []
@@ -308,19 +366,54 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
                     0.9 * done / total, "progress.rendering", {"current": done, "total": total}
                 )
         progress.report(0.92, "progress.saving")
-        metadata = dict(document.metadata or {})
-        metadata.update({"title": params.title.strip(), "creator": "vivePDF"})
-        document.set_metadata(metadata)
-        with contextlib.suppress(Exception):
-            document.subset_fonts(fallback=False)
-        saved = save_document(document, target)
+        if params.format == "pdf":
+            metadata = dict(document.metadata or {})
+            metadata.update({"title": params.title.strip(), "creator": "vivePDF"})
+            document.set_metadata(metadata)
+            with contextlib.suppress(Exception):
+                document.subset_fonts(fallback=False)
+            size = save_document(document, targets[0]).bytes
+        else:
+            size = _save_images(document, targets, params.format, params.dpi, progress)
+        page_count = document.page_count
     finally:
         document.close()
         for source, _ in cache.values():
             source.close()
     return StudioRenderResult(
-        output=saved.output,
-        page_count=saved.page_count,
-        bytes=saved.bytes,
+        output=str(targets[0]),
+        outputs=[str(target) for target in targets],
+        page_count=page_count,
+        bytes=size,
         missing_glyphs="".join(dict.fromkeys("".join(missing))),
     )
+
+
+@op("studio.image_info", StudioImageInfoParams)
+def image_info(params: StudioImageInfoParams, _progress: Progress) -> StudioImageInfoResult:
+    image = _picture(params.path)
+    width, height = image.size
+    image.thumbnail((params.max_side, params.max_side), Image.Resampling.LANCZOS)
+    encoded = _encoded(image)
+    mime = "image/png" if encoded.startswith(PNG_SIGNATURE) else "image/jpeg"
+    return StudioImageInfoResult(
+        width=width, height=height, mime=mime, base64=base64.b64encode(encoded).decode("ascii")
+    )
+
+
+@op("studio.qr", StudioQrParams)
+def qr(params: StudioQrParams, _progress: Progress) -> StudioQrResult:
+    dark = qr_modules(params.value, params.error_level)
+    return StudioQrResult(
+        size=int(dark.shape[0]),
+        modules="".join("1" if cell else "0" for cell in dark.reshape(-1).tolist()),
+    )
+
+
+@op("studio.import_svg", StudioSvgParams)
+def import_svg(params: StudioSvgParams, _progress: Progress) -> StudioSvgResult:
+    source = Path(params.path)
+    if not source.is_file():
+        raise _missing_image(params.path)
+    markup, width, height = clean_svg_markup(source, MAX_SVG_MARKUP)
+    return StudioSvgResult(svg=markup, width=width, height=height)

@@ -36,7 +36,8 @@
     "preflight": "Print check",
     "pdfa": "PDF/A archive",
     "omr": "Answer sheets",
-    "create": "Create PDF"
+    "create": "Create PDF",
+    "studio": "Studio"
   },
   "common": {
     "retry": "Retry",
@@ -6477,5 +6478,245 @@
     "hint": "Make a PDF from what you copied: a screenshot, a picture, text or a table",
     "fileName": "Clipboard",
     "noOpenableFiles": "None of the copied files can be opened."
+  },
+  "studio": {
+    "title": "Studio",
+    "description": "Design certificates, posters, cards and more from scratch, then save them as PDF or pictures",
+    "untitled": "Untitled design",
+    "canvas": {
+      "label": "Design page"
+    },
+    "start": {
+      "continue": "Continue where you left off",
+      "pages": "Pages: {{count}}",
+      "resume": "Continue",
+      "blank": "Start with a blank page",
+      "custom": "Custom size",
+      "create": "Create"
+    },
+    "sizes": {
+      "a4": "A4 portrait",
+      "a4Landscape": "A4 landscape",
+      "a5": "A5",
+      "letter": "US Letter",
+      "letterLandscape": "US Letter landscape",
+      "businessCard": "Business card",
+      "square": "Square post",
+      "story": "Story",
+      "presentation": "Presentation (16:9)",
+      "poster": "A3 poster",
+      "custom": "Custom"
+    },
+    "toolbar": {
+      "label": "Design tools",
+      "leave": "Back to start",
+      "name": "Design name",
+      "undo": "Undo",
+      "redo": "Redo",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "fit": "Fit to window",
+      "export": "Export"
+    },
+    "menu": {
+      "label": "Element menu",
+      "cut": "Cut",
+      "copy": "Copy",
+      "paste": "Paste",
+      "duplicate": "Duplicate",
+      "front": "Bring to front",
+      "back": "Send to back",
+      "group": "Group",
+      "ungroup": "Ungroup",
+      "lock": "Lock",
+      "delete": "Delete"
+    },
+    "panel": {
+      "label": "Add and arrange",
+      "elements": "Elements",
+      "layers": "Layers"
+    },
+    "elements": {
+      "text": "Text",
+      "heading": "Add a heading",
+      "subheading": "Add a subheading",
+      "body": "Add body text",
+      "headingText": "Heading",
+      "subheadingText": "Subheading",
+      "bodyText": "Write your text here",
+      "shapes": "Shapes",
+      "image": "Picture",
+      "qr": "QR code"
+    },
+    "kinds": {
+      "text": "Text",
+      "shape": "Shape",
+      "image": "Picture",
+      "qr": "QR code",
+      "vector": "Drawing",
+      "svg": "Graphic"
+    },
+    "shapes": {
+      "rect": "Rectangle",
+      "ellipse": "Ellipse",
+      "triangle": "Triangle",
+      "rightTriangle": "Right triangle",
+      "diamond": "Diamond",
+      "pentagon": "Pentagon",
+      "hexagon": "Hexagon",
+      "octagon": "Octagon",
+      "star": "Star",
+      "burst": "Starburst",
+      "heart": "Heart",
+      "arrow": "Arrow",
+      "chevron": "Chevron",
+      "parallelogram": "Parallelogram",
+      "trapezoid": "Trapezoid",
+      "cross": "Cross",
+      "speech": "Speech bubble",
+      "line": "Line",
+      "arrowLine": "Arrow line"
+    },
+    "layers": {
+      "label": "Layers on this page",
+      "empty": "Nothing on this page yet. Add text, shapes or pictures from Elements.",
+      "rename": "Layer name",
+      "forward": "Move {{name}} up",
+      "backward": "Move {{name}} down",
+      "show": "Show {{name}}",
+      "hide": "Hide {{name}}",
+      "lock": "Lock {{name}}",
+      "unlock": "Unlock {{name}}"
+    },
+    "pages": {
+      "label": "Pages",
+      "page": "Page {{number}}",
+      "add": "Add page",
+      "duplicate": "Duplicate page",
+      "delete": "Delete page",
+      "moveLeft": "Move page left",
+      "moveRight": "Move page right"
+    },
+    "page": {
+      "size": "Page size",
+      "width": "Width",
+      "height": "Height",
+      "background": "Background",
+      "backgroundImage": "Background picture",
+      "replaceImage": "Replace picture",
+      "removeImage": "Remove picture"
+    },
+    "props": {
+      "label": "Properties",
+      "arrange": "Position",
+      "width": "Width",
+      "height": "Height",
+      "rotation": "Rotation",
+      "opacity": "Opacity",
+      "lock": "Lock",
+      "unlock": "Unlock",
+      "text": "Text",
+      "fontSize": "Size",
+      "bold": "Bold",
+      "italic": "Italic",
+      "underline": "Underline",
+      "color": "Colour",
+      "align": "Text alignment",
+      "verticalAlign": "Vertical alignment",
+      "lineHeight": "Line spacing",
+      "letterSpacing": "Letter spacing",
+      "uppercase": "Capitals",
+      "shrinkToFit": "Shrink to fit",
+      "shrinkHint": "Long text gets smaller instead of overflowing the box",
+      "fill": "Fill",
+      "stroke": "Outline",
+      "cornerRadius": "Corner roundness",
+      "points": "Points",
+      "innerRatio": "Inner depth",
+      "image": "Picture",
+      "replaceImage": "Replace picture",
+      "qr": "QR code",
+      "qrValue": "Text or link",
+      "qrBackground": "Background",
+      "background": "Background colour",
+      "qrLevel": "Error correction"
+    },
+    "align": {
+      "left": "Align left",
+      "centerX": "Centre horizontally",
+      "right": "Align right",
+      "top": "Align top",
+      "middleY": "Centre vertically",
+      "bottom": "Align bottom",
+      "distributeHorizontal": "Space evenly across",
+      "distributeVertical": "Space evenly down"
+    },
+    "textAlign": {
+      "left": "Left",
+      "center": "Centre",
+      "right": "Right",
+      "justify": "Justify"
+    },
+    "verticalAlign": {
+      "top": "Top",
+      "middle": "Middle",
+      "bottom": "Bottom"
+    },
+    "fill": {
+      "label": "Fill type",
+      "none": "None",
+      "solid": "Colour",
+      "linear": "Linear",
+      "radial": "Radial",
+      "color": "Colour",
+      "start": "Start colour",
+      "end": "End colour",
+      "angle": "Angle"
+    },
+    "stroke": {
+      "label": "Outline",
+      "off": "None",
+      "on": "Outline",
+      "color": "Outline colour",
+      "width": "Thickness",
+      "style": "Line style",
+      "solid": "Solid",
+      "dashed": "Dashed",
+      "dotted": "Dotted"
+    },
+    "fit": {
+      "label": "Picture fit",
+      "cover": "Fill",
+      "contain": "Fit",
+      "stretch": "Stretch"
+    },
+    "mask": {
+      "label": "Shape",
+      "none": "Square",
+      "rounded": "Rounded",
+      "circle": "Circle"
+    },
+    "crop": {
+      "left": "Crop left",
+      "right": "Crop right",
+      "top": "Crop top",
+      "bottom": "Crop bottom"
+    },
+    "export": {
+      "title": "Export design",
+      "run": "Export",
+      "format": "File type",
+      "formats": {
+        "pdf": "PDF",
+        "png": "PNG",
+        "jpg": "JPG"
+      },
+      "resolution": "Resolution",
+      "dpi": "{{dpi}} dpi",
+      "done": "Pages exported: {{count}}",
+      "idleTitle": "Ready to export",
+      "idleDescription": "Text stays selectable and fonts are embedded in the PDF.",
+      "missingGlyphs": "Some characters are not in the chosen font and may not show: {{glyphs}}"
+    }
   }
 }

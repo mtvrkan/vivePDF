@@ -285,7 +285,7 @@ import type {
   WebPageResult,
   XlsxParams,
 } from "@/types";
-import type { StudioRenderParams, StudioRenderResult } from "@/types/studio";
+import type { StudioImageInfo, StudioImportedSvg, StudioQrLevel, StudioQrModules, StudioRenderParams, StudioRenderResult } from "@/types/studio";
 
 export const assemblePages = (params: AssembleParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("pages.assemble", params, options);
@@ -466,7 +466,7 @@ export const imagePreview = (params: { path: string }, options?: RpcCallOptions)
 export const applyEditor = (params: EditorApplyParams, options?: RpcCallOptions) => rpc<EditorApplyResult>("editor.apply", params, options);
 export const editorBlocks = (params: { path: string; password?: string; page: number }, options?: RpcCallOptions) => rpc<EditorBlocksResult>("editor.blocks", params, options);
 export const editorFont = (params: { path: string; password?: string; xref: number }, options?: RpcCallOptions) => rpc<EditorFontResult>("editor.font", params, options);
-export const fontFile = (params: { id: string; bold?: boolean }, options?: RpcCallOptions) => rpc<FontFileResult>("fonts.file", params, options);
+export const fontFile = (params: { id: string; bold?: boolean; italic?: boolean }, options?: RpcCallOptions) => rpc<FontFileResult>("fonts.file", params, options);
 export const editorFontPlan = (params: EditorFontPlanParams, options?: RpcCallOptions) => rpc<EditorFontResolution>("editor.font_plan", params, options);
 export const editorSystemFonts = (options?: RpcCallOptions) => rpc<EditorSystemFontsResult>("editor.system_fonts", {}, options);
 export const imageAt = (params: { path: string; password?: string; page: number; x: number; y: number; previewMaxSide?: number }, options?: RpcCallOptions) => rpc<ImageAtResult>("images.at", params, options);
@@ -624,6 +624,15 @@ export const createCv = (params: CreateCvParams, options?: RpcCallOptions) =>
 
 export const studioRender = (params: StudioRenderParams, options?: RpcCallOptions) =>
   rpc<StudioRenderResult>("studio.render", params, options);
+
+export const studioImageInfo = (params: { path: string; maxSide?: number }, options?: RpcCallOptions) =>
+  rpc<StudioImageInfo>("studio.image_info", params, options);
+
+export const studioImportSvg = (params: { path: string }, options?: RpcCallOptions) =>
+  rpc<StudioImportedSvg>("studio.import_svg", params, options);
+
+export const studioQr = (params: { value: string; errorLevel: StudioQrLevel }, options?: RpcCallOptions) =>
+  rpc<StudioQrModules>("studio.qr", params, options);
 
 export const createPaper = (params: CreatePaperParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.paper", params, options);
