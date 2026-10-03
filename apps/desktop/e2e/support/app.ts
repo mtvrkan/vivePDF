@@ -35,6 +35,7 @@ export type PdfProbe = {
   signatures?: Array<{ field: string; intact: boolean; coverage: string }>;
   comments?: Array<{ content: string; author: string; state: string | null; replyTo: string | null }>;
   figureAlts?: string[];
+  attachments?: string[];
   layers?: number;
 };
 

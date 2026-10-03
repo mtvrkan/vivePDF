@@ -69,7 +69,7 @@
   "home": {
     "title": "Başlangıç",
     "subtitle": "Bir PDF açın; tüm araçlar üstteki Araçlar menüsünde.",
-    "dropHint": "PDF, Office belgesi, e-kitap ya da görselleri açmak için buraya bırakın",
+    "dropHint": "PDF, Office belgesi, e-kitap, e-posta ya da görselleri açmak için buraya bırakın",
     "recent": "Son belgeler",
     "clearRecent": "Listeyi temizle",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "Belge bekleniyor",
-    "dropHint": "PDF, Office belgesi, e-kitap ya da görseli pencereye de bırakabilirsiniz",
+    "dropHint": "PDF, Office belgesi, e-kitap, e-posta ya da görseli pencereye de bırakabilirsiniz",
     "shortcuts": "Kısayollar",
     "palette": "Komut paleti"
   },
@@ -6271,5 +6271,12 @@
     "pause": "İzlemeyi duraklat",
     "resume": "İzlemeyi sürdür",
     "quit": "vivePDF'ten çık"
+  },
+  "mail": {
+    "sender": "Kimden",
+    "to": "Kime",
+    "cc": "Bilgi",
+    "date": "Tarih",
+    "attachments": "Ekler"
   }
 }

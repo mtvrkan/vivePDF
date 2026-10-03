@@ -69,7 +69,7 @@
   "home": {
     "title": "Accueil",
     "subtitle": "Ouvrez un PDF ; tous les outils sont dans le menu Outils.",
-    "dropHint": "Déposez ici des PDF, documents Office, livres numériques ou images pour les ouvrir",
+    "dropHint": "Déposez ici des PDF, documents Office, livres numériques, e-mails ou images pour les ouvrir",
     "recent": "Documents récents",
     "clearRecent": "Effacer la liste",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "En attente d’un document",
-    "dropHint": "Vous pouvez aussi déposer un PDF, un document Office, un livre numérique ou une image sur la fenêtre",
+    "dropHint": "Vous pouvez aussi déposer un PDF, un document Office, un livre numérique, un e-mail ou une image sur la fenêtre",
     "shortcuts": "Raccourcis",
     "palette": "Palette de commandes"
   },
@@ -6270,5 +6270,12 @@
     "pause": "Mettre la surveillance en pause",
     "resume": "Reprendre la surveillance",
     "quit": "Quitter vivePDF"
+  },
+  "mail": {
+    "sender": "De",
+    "to": "À",
+    "cc": "Cc",
+    "date": "Date",
+    "attachments": "Pièces jointes"
   }
 }

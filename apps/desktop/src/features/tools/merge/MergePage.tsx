@@ -27,13 +27,13 @@ import { mergedPageTotal, moveToSlot, sortedByName, sortedByPageCount } from "./
 import { DropZone } from "@/components/tool/DropZone";
 import { FileDropArea } from "@/components/tool/FileDropArea";
 import { useDropHandler } from "@/shared/hooks/useDropHandler";
-import { EBOOK_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "@/features/tools/convert/conversions";
+import { EBOOK_EXTENSIONS, MAIL_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "@/features/tools/convert/conversions";
 import type { MergeBookmarkStyle } from "@/types";
 
 type MergeItem = { id: string; path: string; ranges: string; password?: string; locked?: boolean; wrongPassword?: boolean; pageCount?: number; reverse?: boolean; protected?: boolean; unreadable?: boolean };
 type MergeMode = "append" | "interleave";
 
-const MERGEABLE_EXTENSIONS = ["pdf", ...OFFICE_LIKE_EXTENSIONS, ...TEXT_LIKE_EXTENSIONS, ...EBOOK_EXTENSIONS, "png", "jpg", "jpeg", "webp", "bmp", "gif", "tif", "tiff", "heic", "heif"];
+const MERGEABLE_EXTENSIONS = ["pdf", ...OFFICE_LIKE_EXTENSIONS, ...TEXT_LIKE_EXTENSIONS, ...EBOOK_EXTENSIONS, ...MAIL_EXTENSIONS, "png", "jpg", "jpeg", "webp", "bmp", "gif", "tif", "tiff", "heic", "heif"];
 const MERGE_MODES: MergeMode[] = ["append", "interleave"];
 const BOOKMARK_STYLES: MergeBookmarkStyle[] = ["nested", "files", "originals", "none"];
 const PROBE_CONCURRENCY = 3;

@@ -69,7 +69,7 @@
   "home": {
     "title": "Home",
     "subtitle": "Open a PDF; every tool lives in the Tools menu.",
-    "dropHint": "Drop PDFs, Office documents, e-books or pictures here to open them",
+    "dropHint": "Drop PDFs, Office documents, e-books, e-mails or pictures here to open them",
     "recent": "Recent documents",
     "clearRecent": "Clear list",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "Awaiting a document",
-    "dropHint": "You can also drop a PDF, Office document, e-book or picture onto the window",
+    "dropHint": "You can also drop a PDF, Office document, e-book, e-mail or picture onto the window",
     "shortcuts": "Shortcuts",
     "palette": "Command palette"
   },
@@ -6271,5 +6271,12 @@
     "pause": "Pause watching",
     "resume": "Resume watching",
     "quit": "Quit vivePDF"
+  },
+  "mail": {
+    "sender": "From",
+    "to": "To",
+    "cc": "Cc",
+    "date": "Date",
+    "attachments": "Attachments"
   }
 }

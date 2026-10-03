@@ -69,7 +69,7 @@
   "home": {
     "title": "Home",
     "subtitle": "Apri un PDF; tutti gli strumenti sono nel menu Strumenti.",
-    "dropHint": "Trascina qui PDF, documenti Office, e-book o immagini per aprirli",
+    "dropHint": "Trascina qui PDF, documenti Office, e-book, e-mail o immagini per aprirli",
     "recent": "Documenti recenti",
     "clearRecent": "Cancella elenco",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "In attesa di un documento",
-    "dropHint": "Puoi anche trascinare un PDF, un documento Office, un e-book o un'immagine sulla finestra",
+    "dropHint": "Puoi anche trascinare un PDF, un documento Office, un e-book, un'e-mail o un'immagine sulla finestra",
     "shortcuts": "Scorciatoie",
     "palette": "Barra comandi"
   },
@@ -6270,5 +6270,12 @@
     "pause": "Metti in pausa il monitoraggio",
     "resume": "Riprendi il monitoraggio",
     "quit": "Esci da vivePDF"
+  },
+  "mail": {
+    "sender": "Da",
+    "to": "A",
+    "cc": "Cc",
+    "date": "Data",
+    "attachments": "Allegati"
   }
 }

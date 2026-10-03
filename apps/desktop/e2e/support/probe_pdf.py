@@ -139,6 +139,7 @@ def describe(path: Path, password: str | None) -> dict:
         "signatures": signatures(path) if signatures_present else [],
         "comments": comments(path, password),
         "figureAlts": figure_alts(document),
+        "attachments": document.embfile_names(),
         "layers": len(document.get_ocgs()),
     }
 

@@ -1,9 +1,9 @@
 import { create } from "zustand";
-import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "@/features/tools/convert/conversions";
+import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, MAIL_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "@/features/tools/convert/conversions";
 import { extensionOf, pathKey } from "@/shared/lib/paths";
 import { isPdfPath } from "@/shared/rpc/files";
 
-export const OPEN_CONVERTIBLE_EXTENSIONS = [...new Set([...OFFICE_LIKE_EXTENSIONS, ...TEXT_LIKE_EXTENSIONS, ...EBOOK_EXTENSIONS, ...IMAGE_EXTENSIONS])];
+export const OPEN_CONVERTIBLE_EXTENSIONS = [...new Set([...OFFICE_LIKE_EXTENSIONS, ...TEXT_LIKE_EXTENSIONS, ...EBOOK_EXTENSIONS, ...MAIL_EXTENSIONS, ...IMAGE_EXTENSIONS])];
 
 export function isConvertibleOnOpen(path: string): boolean {
   return OPEN_CONVERTIBLE_EXTENSIONS.includes(extensionOf(path));

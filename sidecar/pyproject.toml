@@ -26,6 +26,7 @@ dependencies = [
     "pi-heif==1.4.0",
     "ctranslate2==4.8.2",
     "sentencepiece==0.2.2",
+    "olefile>=0.47",
 ]
 
 [project.urls]

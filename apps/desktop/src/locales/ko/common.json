@@ -69,7 +69,7 @@
   "home": {
     "title": "홈",
     "subtitle": "PDF를 여세요. 모든 도구는 도구 메뉴에 있습니다.",
-    "dropHint": "PDF, Office 문서, 전자책 또는 그림을 여기에 놓아 여세요",
+    "dropHint": "PDF, Office 문서, 전자책, 이메일 또는 그림을 여기에 놓아 여세요",
     "recent": "최근 문서",
     "clearRecent": "목록 지우기",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "문서를 기다리는 중",
-    "dropHint": "PDF, Office 문서, 전자책 또는 그림을 창에 끌어다 놓을 수도 있습니다",
+    "dropHint": "PDF, Office 문서, 전자책, 이메일 또는 그림을 창에 끌어다 놓을 수도 있습니다",
     "shortcuts": "단축키",
     "palette": "명령 팔레트"
   },
@@ -6270,5 +6270,12 @@
     "pause": "감시 일시 중지",
     "resume": "감시 다시 시작",
     "quit": "vivePDF 종료"
+  },
+  "mail": {
+    "sender": "보낸 사람",
+    "to": "받는 사람",
+    "cc": "참조",
+    "date": "날짜",
+    "attachments": "첨부 파일"
   }
 }

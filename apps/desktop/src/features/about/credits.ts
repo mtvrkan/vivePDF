@@ -69,6 +69,7 @@ export const THIRD_PARTY: ThirdPartyEntry[] = [
   { name: "SentencePiece", licence: "Apache-2.0", url: "https://github.com/google/sentencepiece" },
   { name: "pyHanko", licence: "MIT", url: "https://github.com/MatthiasValvekens/pyHanko" },
   { name: "zxing-cpp", licence: "Apache-2.0", url: "https://github.com/zxing-cpp/zxing-cpp" },
+  { name: "olefile", licence: "BSD-2-Clause", url: "https://github.com/decalage2/olefile" },
   { name: "Pillow", licence: "MIT-CMU", url: "https://python-pillow.org" },
   { name: "NumPy", licence: "BSD-3-Clause", url: "https://numpy.org" },
   { name: "MathJax", licence: "Apache-2.0", url: "https://www.mathjax.org" },

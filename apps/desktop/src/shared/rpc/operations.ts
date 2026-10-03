@@ -1,4 +1,4 @@
-import { currentLocale } from "@/app/i18n";
+import i18n, { currentLocale } from "@/app/i18n";
 import { rpc, type RpcCallOptions } from "./client";
 import type {
   OmrExportParams,
@@ -113,6 +113,7 @@ import type {
   CreateBulkResult,
   CreatePaperParams,
   CoverParams,
+  MailLabels,
   SvgToPdfParams,
   FillParams,
   FillResult,
@@ -287,8 +288,16 @@ export const assemblePages = (params: AssembleParams, options?: RpcCallOptions) 
 export const assemblePageParts = (params: AssemblePartsParams, options?: RpcCallOptions) =>
   rpc<AssemblePartsResult>("pages.assemble_parts", params, options);
 
+const mailLabels = (): MailLabels => ({
+  sender: i18n.t("mail.sender"),
+  to: i18n.t("mail.to"),
+  cc: i18n.t("mail.cc"),
+  date: i18n.t("mail.date"),
+  attachments: i18n.t("mail.attachments"),
+});
+
 export const mergePdfs = (params: MergeParams, options?: RpcCallOptions) =>
-  rpc<MergeResult>("pages.merge", params, options);
+  rpc<MergeResult>("pages.merge", { mailLabels: mailLabels(), ...params }, options);
 
 export const rotatePages = (params: RotatePagesParams, options?: RpcCallOptions) => rpc<OutputResult>("pages.rotate", params, options);
 
@@ -594,7 +603,7 @@ export const imagesToPdf = (params: ImagesToPdfParams, options?: RpcCallOptions)
   rpc<ImagesToPdfResult>("convert.images_to_pdf", params, options);
 
 export const fileToPdf = (params: FileToPdfParams, options?: RpcCallOptions) =>
-  rpc<OutputResult>("convert.file_to_pdf", params, options);
+  rpc<OutputResult>("convert.file_to_pdf", { mailLabels: mailLabels(), ...params }, options);
 
 export const createDocument = (params: CreateDocumentParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.document", params, options);

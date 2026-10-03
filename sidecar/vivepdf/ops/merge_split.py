@@ -9,6 +9,7 @@ from pydantic import Field
 
 from vivepdf.ops._contents_page import ContentsEntry, contents_page_count, draw_contents
 from vivepdf.ops._document import open_document
+from vivepdf.ops._mail import MailLabels
 from vivepdf.ops._merge_fields import separate_field_names, top_field_names
 from vivepdf.ops._naming import render_name, sanitize_file_name, unique_name
 from vivepdf.ops._output import (
@@ -64,6 +65,7 @@ class MergeParams(RpcModel):
     interleave: bool = False
     pad_odd: bool = False
     keep_protection: bool = True
+    mail_labels: MailLabels = MailLabels()
 
     def bookmark_style(self) -> BookmarkStyle:
         if self.bookmarks is not None:
@@ -198,11 +200,16 @@ def _merged_toc(
     return toc
 
 
-def _converted_input(item: MergeInput, temp_dir: str, position: int, progress: Progress) -> str:
+def _converted_input(
+    item: MergeInput, temp_dir: str, position: int, progress: Progress, labels: MailLabels
+) -> str:
     from vivepdf.ops.convert_to_pdf import FileToPdfParams, file_to_pdf
 
     converted = str(Path(temp_dir) / f"input-{position:03d}.pdf")
-    file_to_pdf(FileToPdfParams(path=item.path, output=converted, overwrite=True), progress)
+    file_to_pdf(
+        FileToPdfParams(path=item.path, output=converted, overwrite=True, mail_labels=labels),
+        progress,
+    )
     return converted
 
 
@@ -289,7 +296,7 @@ def merge(params: MergeParams, progress: Progress) -> MergeResult:
                 share = progress.within(
                     0.5 * position / len(params.inputs), 0.5 * (position + 1) / len(params.inputs)
                 )
-                source_path = _converted_input(item, temp_dir, position, share)
+                source_path = _converted_input(item, temp_dir, position, share, params.mail_labels)
             key = (str(Path(source_path).resolve()), item.password)
             source = opened.get(key)
             if source is None or source.is_form_pdf:

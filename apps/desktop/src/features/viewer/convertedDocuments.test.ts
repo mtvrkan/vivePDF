@@ -9,7 +9,7 @@ describe("openable files", () => {
   it("opens PDFs directly and Office, text, e-book and picture files through a conversion", () => {
     expect(isOpenablePath("C:/Docs/a.PDF")).toBe(true);
     expect(isConvertibleOnOpen("C:/Docs/a.PDF")).toBe(false);
-    for (const name of ["report.docx", "slides.pptx", "book.epub", "notes.md", "scan.HEIC", "table.csv"]) {
+    for (const name of ["report.docx", "slides.pptx", "book.epub", "notes.md", "scan.HEIC", "table.csv", "invite.eml", "Weekly.MSG"]) {
       expect(isConvertibleOnOpen(`C:/Docs/${name}`)).toBe(true);
     }
   });

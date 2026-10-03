@@ -69,7 +69,7 @@
   "home": {
     "title": "首页",
     "subtitle": "打开一个 PDF；所有工具都在“工具”菜单中。",
-    "dropHint": "将 PDF、Office 文档、电子书或图片拖放到此处即可打开",
+    "dropHint": "将 PDF、Office 文档、电子书、电子邮件或图片拖放到此处即可打开",
     "recent": "最近的文档",
     "clearRecent": "清空列表",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "等待文档",
-    "dropHint": "也可以将 PDF、Office 文档、电子书或图片拖放到窗口中",
+    "dropHint": "也可以将 PDF、Office 文档、电子书、电子邮件或图片拖放到窗口中",
     "shortcuts": "快捷键",
     "palette": "命令面板"
   },
@@ -6270,5 +6270,12 @@
     "pause": "暂停监控",
     "resume": "继续监控",
     "quit": "退出 vivePDF"
+  },
+  "mail": {
+    "sender": "发件人",
+    "to": "收件人",
+    "cc": "抄送",
+    "date": "日期",
+    "attachments": "附件"
   }
 }

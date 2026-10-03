@@ -1,3 +1,4 @@
+import contextlib
 import csv
 import tempfile
 from pathlib import Path
@@ -7,12 +8,17 @@ import pymupdf
 from pydantic import Field
 
 from vivepdf.external import libreoffice
+from vivepdf.ops._mail import MAIL_CSS, MAIL_EXTENSIONS, MailLabels, mail_document_html, read_mail
+from vivepdf.ops._naming import unique_name
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops._story import (
+    BASE_CSS,
+    MARGIN,
     declared_charset,
     decode_text,
     markdown_to_html,
     render_html_to_pdf,
+    story_pdf_bytes,
     text_to_html,
 )
 from vivepdf.ops._svg import svg_pdf_bytes
@@ -29,6 +35,43 @@ class FileToPdfParams(RpcModel):
     output: str
     overwrite: bool = False
     paper: Literal["a4", "letter"] = "a4"
+    mail_labels: MailLabels = MailLabels()
+
+
+def _mail_to_pdf(source: Path, target: Path, params: FileToPdfParams, progress: Progress) -> None:
+    message = read_mail(source)
+    mediabox = pymupdf.paper_rect(params.paper)
+    where = mediabox + (MARGIN, MARGIN, -MARGIN, -MARGIN)
+    with tempfile.TemporaryDirectory(
+        prefix="vivepdf-mail-", ignore_cleanup_errors=True
+    ) as temp_dir:
+        workdir = Path(temp_dir)
+        content, attachments = mail_document_html(message, params.mail_labels, workdir)
+        payload = story_pdf_bytes(
+            content,
+            mediabox,
+            where,
+            css=BASE_CSS + MAIL_CSS,
+            archive_dirs=(workdir,),
+            check_cancelled=progress.check_cancelled,
+        )
+    with pymupdf.open("pdf", payload) as document:
+        taken: set[str] = set()
+        for attachment in attachments:
+            name = unique_name(Path(attachment.name).name or "attachment", taken)
+            document.embfile_add(name, attachment.data, filename=name, desc=attachment.mime)
+        metadata = dict(document.metadata or {})
+        metadata.update(
+            {
+                "title": message.subject.strip(),
+                "author": message.sender.strip(),
+                "creator": "vivePDF",
+            }
+        )
+        document.set_metadata(metadata)
+        with contextlib.suppress(Exception):
+            document.subset_fonts(fallback=False)
+        save_document(document, target)
 
 
 def _story_source(path: Path) -> str:
@@ -86,6 +129,8 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
             base_dir=source.parent,
             check_cancelled=progress.check_cancelled,
         )
+    elif extension in MAIL_EXTENSIONS:
+        _mail_to_pdf(source, target, params, progress)
     elif extension == "svg":
         with tempfile.TemporaryDirectory(
             prefix="vivepdf-svg-", ignore_cleanup_errors=True

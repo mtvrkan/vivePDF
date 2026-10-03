@@ -25,3 +25,4 @@
 | NumPy | BSD-3-Clause | Numeric arrays for speech and translation |
 | pi-heif with libheif and libde265 | BSD-3-Clause / LGPL-3.0 | HEIF and AVIF pictures to PDF |
 | zxing-cpp | Apache-2.0 | Barcode and QR code reading |
+| olefile (Philippe Lagadec) | BSD-2-Clause | Reading Outlook .msg e-mails |

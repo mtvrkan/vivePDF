@@ -55,6 +55,7 @@ export const OFFICE_LIKE_EXTENSIONS = ["doc", "docx", "odt", "rtf", "xls", "xlsx
 export const TEXT_LIKE_EXTENSIONS = ["txt", "md", "markdown", "html", "htm"];
 export const EBOOK_EXTENSIONS = ["epub", "xps", "oxps", "mobi", "fb2", "cbz", "svg"];
 export const SVG_EXTENSIONS = ["svg"];
+export const MAIL_EXTENSIONS = ["eml", "msg"];
 export const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif", "bmp", "gif", "tif", "tiff", "pnm", "pgm", "ppm", "jp2", "jxr", "heic", "heif", "hif"];
 
 export function svgWritesOneFile(count: number, combine: boolean): boolean {

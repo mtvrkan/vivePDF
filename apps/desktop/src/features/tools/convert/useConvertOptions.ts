@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import type { ImageFit, ImageFormat, MarkdownPictures, PptxMode, XlsxFormat, XlsxSheets } from "@/types";
-import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, SVG_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "./conversions";
+import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, MAIL_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, SVG_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "./conversions";
 
 export function useConvertOptions() {
   const { t } = useTranslation();
@@ -57,7 +57,7 @@ export function useConvertOptions() {
     const selected = await openDialog({
       multiple: true,
       directory: false,
-      filters: [{ name: t("tools.convert.anyDocument"), extensions: [...OFFICE_LIKE_EXTENSIONS, ...TEXT_LIKE_EXTENSIONS, ...EBOOK_EXTENSIONS, ...IMAGE_EXTENSIONS] }],
+      filters: [{ name: t("tools.convert.anyDocument"), extensions: [...OFFICE_LIKE_EXTENSIONS, ...TEXT_LIKE_EXTENSIONS, ...EBOOK_EXTENSIONS, ...MAIL_EXTENSIONS, ...IMAGE_EXTENSIONS] }],
     });
     if (!selected) return;
     setFiles((state) => [...state, ...(Array.isArray(selected) ? selected : [selected]).filter((item) => !state.includes(item))]);

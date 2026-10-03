@@ -237,6 +237,7 @@ export type MergeParams = {
   interleave?: boolean;
   padOdd?: boolean;
   keepProtection?: boolean;
+  mailLabels?: MailLabels;
 };
 
 export type MergeResult = OutputResult & { protectedFrom: string | null; renamedFields: number };
@@ -1092,7 +1093,8 @@ export type ImagesToPdfParams = {
   overwrite?: boolean;
 };
 export type ImagesToPdfResult = OutputResult & { skipped: string[] };
-export type FileToPdfParams = { path: string; output: string; overwrite?: boolean; paper?: "a4" | "letter" };
+export type MailLabels = { sender: string; to: string; cc: string; date: string; attachments: string };
+export type FileToPdfParams = { path: string; output: string; overwrite?: boolean; paper?: "a4" | "letter"; mailLabels?: MailLabels };
 export type CreateTemplate = "report" | "letter" | "petition" | "assignment" | "minutes" | "lectureNotes" | "booklet";
 export type CreateFont = "sans" | "serif" | "mono";
 export type BulkKind = "certificate" | "invitation" | "badge";

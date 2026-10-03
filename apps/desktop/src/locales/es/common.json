@@ -69,7 +69,7 @@
   "home": {
     "title": "Inicio",
     "subtitle": "Abra un PDF; todas las herramientas están en el menú Herramientas.",
-    "dropHint": "Suelte aquí PDF, documentos de Office, libros electrónicos o imágenes para abrirlos",
+    "dropHint": "Suelte aquí PDF, documentos de Office, libros electrónicos, correos o imágenes para abrirlos",
     "recent": "Documentos recientes",
     "clearRecent": "Borrar lista",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "Esperando un documento",
-    "dropHint": "También puede soltar un PDF, documento de Office, libro electrónico o imagen en la ventana",
+    "dropHint": "También puede soltar un PDF, documento de Office, libro electrónico, correo o imagen en la ventana",
     "shortcuts": "Atajos",
     "palette": "Paleta de comandos"
   },
@@ -6270,5 +6270,12 @@
     "pause": "Pausar la vigilancia",
     "resume": "Reanudar la vigilancia",
     "quit": "Salir de vivePDF"
+  },
+  "mail": {
+    "sender": "De",
+    "to": "Para",
+    "cc": "CC",
+    "date": "Fecha",
+    "attachments": "Adjuntos"
   }
 }

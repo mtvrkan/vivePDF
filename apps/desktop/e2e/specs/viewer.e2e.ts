@@ -1,4 +1,5 @@
-import { writeFileSync } from "node:fs";
+import { readdirSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
 import { ENTER_KEY, answerDialogs, bootApp, button, clickButton, closeAllDocuments, copyFixture, fixtures, openInViewer, pressShortcut, probe, t, typeInto, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
@@ -374,6 +375,47 @@ describe("viewer", () => {
     await tab("open-notes-saved.pdf").waitForDisplayed({ timeoutMsg: "the tab did not move to the saved PDF" });
     await banner.waitForExist({ reverse: true, timeoutMsg: "the converted-copy bar stayed after saving" });
     expect((await probe(target)).pageCount).toBeGreaterThan(0);
+    await closeAllDocuments();
+  });
+
+  it("opens an e-mail with its headers in the interface language and the attachment kept", async () => {
+    const source = join(workDir(), "open-invite.eml");
+    writeFileSync(
+      source,
+      [
+        "From: Ayse Demir <ayse@example.com>",
+        "To: Team <team@example.com>",
+        "Subject: Kick-off meeting",
+        "Date: Fri, 02 Oct 2026 10:30:00 +0300",
+        "MIME-Version: 1.0",
+        'Content-Type: multipart/mixed; boundary="b1"',
+        "",
+        "--b1",
+        "Content-Type: text/plain; charset=utf-8",
+        "",
+        "See you on Monday.",
+        "--b1",
+        'Content-Type: text/plain; name="agenda.txt"',
+        'Content-Disposition: attachment; filename="agenda.txt"',
+        "",
+        "1. Welcome",
+        "--b1--",
+        "",
+      ].join("\r\n"),
+    );
+    const tab = $(`//*[@role="tab"][@aria-selected="true"][.//span[normalize-space(.)="open-invite.pdf"]]`);
+    answerDialogs(source);
+    await pressShortcut("o");
+    await waitForDialogsAnswered();
+    await tab.waitForDisplayed({ timeout: 120000, timeoutMsg: "the converted e-mail never opened" });
+    const converted = join(tmpdir(), "vivepdf-converted");
+    const copies = readdirSync(converted, { recursive: true, encoding: "utf8" }).filter((name) => name.endsWith("open-invite.pdf"));
+    const copy = probe(join(converted, copies[copies.length - 1]));
+    const text = (copy.pages?.[0].text ?? "").normalize("NFKC");
+    expect(text).toContain("Kick-off meeting");
+    expect(text).toMatch(new RegExp(`${t("mail.sender")}\\s+Ayse Demir`));
+    expect(text).toContain("agenda.txt");
+    expect(copy.attachments).toContain("agenda.txt");
     await closeAllDocuments();
   });
 

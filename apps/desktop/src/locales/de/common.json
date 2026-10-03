@@ -69,7 +69,7 @@
   "home": {
     "title": "Start",
     "subtitle": "Öffnen Sie eine PDF; alle Werkzeuge finden Sie im Menü Werkzeuge.",
-    "dropHint": "PDFs, Office-Dokumente, E-Books oder Bilder zum Öffnen hier ablegen",
+    "dropHint": "PDFs, Office-Dokumente, E-Books, E-Mails oder Bilder zum Öffnen hier ablegen",
     "recent": "Zuletzt verwendete Dokumente",
     "clearRecent": "Liste leeren",
     "recentEmpty": {
@@ -6168,7 +6168,7 @@
   },
   "emptyDoc": {
     "eyebrow": "Warten auf ein Dokument",
-    "dropHint": "Sie können auch ein PDF, Office-Dokument, E-Book oder Bild auf das Fenster ziehen",
+    "dropHint": "Sie können auch ein PDF, Office-Dokument, E-Book, eine E-Mail oder ein Bild auf das Fenster ziehen",
     "shortcuts": "Tastenkombinationen",
     "palette": "Befehlspalette"
   },
@@ -6270,5 +6270,12 @@
     "pause": "Überwachung pausieren",
     "resume": "Überwachung fortsetzen",
     "quit": "vivePDF beenden"
+  },
+  "mail": {
+    "sender": "Von",
+    "to": "An",
+    "cc": "Cc",
+    "date": "Datum",
+    "attachments": "Anhänge"
   }
 }
