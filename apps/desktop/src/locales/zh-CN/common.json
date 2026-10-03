@@ -1330,7 +1330,6 @@
     "settings": "演示设置",
     "cursorAutoHide": "自动隐藏光标",
     "saveAsAnnotations": "将绘图保存为永久批注",
-    "clearDrawings": "清除绘图（{{count}}）",
     "confirmAnnotationsTitle": "将绘图保存为永久批注？",
     "confirmAnnotationsBody": "新的笔迹将作为真实批注写入 PDF，并可随文档一起保存。此前的临时绘图仅保留在本次会话中。",
     "confirmAnnotationsAction": "切换为永久批注",
@@ -1345,7 +1344,12 @@
     "wrapCode": "自动换行",
     "copyCode": "复制代码",
     "crashNotice": "演示视图出现问题。",
-    "exitOnCrash": "退出演示"
+    "exitOnCrash": "退出演示",
+    "cleanup": {
+      "title": "清除绘图",
+      "page": "清除此页 ({{count}})",
+      "all": "清除所有绘图 ({{count}})"
+    }
   },
   "password": {
     "title": "需要密码",

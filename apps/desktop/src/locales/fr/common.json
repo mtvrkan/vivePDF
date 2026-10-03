@@ -1330,7 +1330,6 @@
     "settings": "Paramètres de présentation",
     "cursorAutoHide": "Masquer automatiquement le curseur",
     "saveAsAnnotations": "Enregistrer les dessins comme annotations permanentes",
-    "clearDrawings": "Effacer les dessins ({{count}})",
     "confirmAnnotationsTitle": "Enregistrer les dessins comme annotations permanentes ?",
     "confirmAnnotationsBody": "Les nouveaux traits seront écrits dans le PDF comme de vraies annotations et pourront être enregistrés avec le document. Les dessins temporaires réalisés jusqu’ici restent limités à cette session.",
     "confirmAnnotationsAction": "Passer aux annotations permanentes",
@@ -1345,7 +1344,12 @@
     "wrapCode": "Retour à la ligne",
     "copyCode": "Copier le code",
     "crashNotice": "Une erreur s’est produite dans la vue de présentation.",
-    "exitOnCrash": "Quitter la présentation"
+    "exitOnCrash": "Quitter la présentation",
+    "cleanup": {
+      "title": "Effacer les dessins",
+      "page": "Effacer cette page ({{count}})",
+      "all": "Effacer tous les dessins ({{count}})"
+    }
   },
   "password": {
     "title": "Mot de passe requis",

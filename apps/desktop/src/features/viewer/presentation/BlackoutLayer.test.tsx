@@ -93,6 +93,10 @@ describe("BlackoutLayer", () => {
       [250, 100],
       [260, 100],
     ]);
-    expect(usePresentationStore.getState().boardStrokes.black).toEqual([]);
+    const pieces = usePresentationStore.getState().boardStrokes.black;
+    expect(pieces).toHaveLength(2);
+    expect(pieces[0].points[0]).toEqual({ x: 0.1, y: 0.2 });
+    expect(pieces[1].points.at(-1)).toEqual({ x: 0.4, y: 0.2 });
+    expect(pieces.every((piece) => piece.points.every((point) => Math.abs(point.x - 0.255) > 0.015))).toBe(true);
   });
 });

@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
-import { Eraser, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { IconButton } from "@/components/shared/IconButton";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { TemporaryDrawingCleanup } from "./DrawingCleanupButton";
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "./PresentationTools";
 import { hasStyleOptions } from "./toolPresets";
 
-export function PresentationBar({ onClose }: { onClose: () => void }) {
+export function PresentationBar({ documentId, onClose }: { documentId: string; onClose: () => void }) {
   const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
   const setTool = usePresentationStore((state) => state.setTool);
-  const totalStrokeCount = usePresentationStore((state) => state.totalStrokeCount());
-  const clearAllDrawings = usePresentationStore((state) => state.clearAllDrawings);
+  const { state: scrollState } = useScroll(documentId);
   const [styleOpen, setStyleOpen] = useState(false);
 
   useEffect(() => {
@@ -42,11 +43,7 @@ export function PresentationBar({ onClose }: { onClose: () => void }) {
           }}
         />
         <PresentationStyleTrigger open={styleOpen} onToggle={() => setStyleOpen((current) => !current)} />
-        {totalStrokeCount > 0 ? (
-          <IconButton icon={Eraser} label={t("presentation.clearDrawings", { count: totalStrokeCount })} onClick={clearAllDrawings} />
-        ) : (
-          <span className="inline-block size-8" aria-hidden />
-        )}
+        <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />
         <span className="mx-1 h-5 w-px bg-border" aria-hidden />
         <IconButton icon={X} label={t("common.close")} onClick={onClose} />
       </div>

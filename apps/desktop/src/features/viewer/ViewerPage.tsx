@@ -236,6 +236,7 @@ export function ViewerPage() {
                       {panels.present ? <PresentationCanvas containerRef={stageRef} /> : null}
                       {panels.present ? (
                         <PresentationBar
+                          documentId={activeDocumentId}
                           onClose={() => {
                             usePresentationStore.getState().setTool("pointer");
                             setPanels((state) => ({ ...state, present: false }));

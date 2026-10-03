@@ -1330,7 +1330,6 @@
     "settings": "프레젠테이션 설정",
     "cursorAutoHide": "커서 자동 숨기기",
     "saveAsAnnotations": "그림을 영구 주석으로 저장",
-    "clearDrawings": "그림 지우기 ({{count}})",
     "confirmAnnotationsTitle": "그림을 영구 주석으로 저장하시겠습니까?",
     "confirmAnnotationsBody": "이후의 그림은 실제 주석으로 PDF에 기록되며 문서와 함께 저장할 수 있습니다. 지금까지의 임시 그림은 이 세션에서만 유지됩니다.",
     "confirmAnnotationsAction": "영구 주석으로 전환",
@@ -1345,7 +1344,12 @@
     "wrapCode": "줄 바꿈",
     "copyCode": "코드 복사",
     "crashNotice": "프레젠테이션 보기에서 문제가 발생했습니다.",
-    "exitOnCrash": "프레젠테이션 종료"
+    "exitOnCrash": "프레젠테이션 종료",
+    "cleanup": {
+      "title": "그림 지우기",
+      "page": "이 페이지 지우기 ({{count}})",
+      "all": "모든 그림 지우기 ({{count}})"
+    }
   },
   "password": {
     "title": "암호 필요",

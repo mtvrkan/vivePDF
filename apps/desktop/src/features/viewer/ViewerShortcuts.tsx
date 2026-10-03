@@ -92,6 +92,11 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         } else if (lower === "h") {
           event.preventDefault();
           presentation.setTool(presentation.tool === "highlighter" ? "pointer" : "highlighter");
+        } else if (lower === "e" && event.shiftKey) {
+          if (presentation.drawingsMode === "temporary") {
+            event.preventDefault();
+            presentation.clearVisible(scrollState.currentPage - 1);
+          }
         } else if (lower === "e") {
           event.preventDefault();
           presentation.setTool(presentation.tool === "eraser" ? "pointer" : "eraser");

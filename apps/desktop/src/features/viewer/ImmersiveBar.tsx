@@ -11,6 +11,8 @@ import { usePresentationStore } from "@/shared/store/presentationStore";
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "./presentation/PresentationTools";
 import { hasStyleOptions } from "./presentation/toolPresets";
 import { TimerClockChip } from "./presentation/TimerClockChip";
+import { DrawingCleanupButton, TemporaryDrawingCleanup } from "./presentation/DrawingCleanupButton";
+import type { SessionAnnotation } from "./sessionAnnotations";
 import { useCodeBlocksForPage } from "./presentation/useCodeBlocks";
 
 const HIDE_DELAY_MS = 2500;
@@ -19,14 +21,14 @@ export function PresenterBar({
   documentId,
   onExit,
   onManualZoom,
-  sessionAnnotationCount,
+  sessionAnnotations,
   onClearSessionAnnotations,
 }: {
   documentId: string;
   onExit: () => void;
   onManualZoom: () => void;
-  sessionAnnotationCount: number;
-  onClearSessionAnnotations: () => void;
+  sessionAnnotations: SessionAnnotation[];
+  onClearSessionAnnotations: (pageIndex?: number) => void;
 }) {
   const { t } = useTranslation();
   const { state: scrollState, provides: scroll } = useScroll(documentId);
@@ -50,8 +52,6 @@ export function PresenterBar({
   const toggleCursorAutoHide = usePresentationStore((state) => state.toggleCursorAutoHide);
   const drawingsMode = usePresentationStore((state) => state.drawingsMode);
   const setDrawingsMode = usePresentationStore((state) => state.setDrawingsMode);
-  const totalStrokeCount = usePresentationStore((state) => state.totalStrokeCount());
-  const clearAllDrawings = usePresentationStore((state) => state.clearAllDrawings);
   const codeBlocks = useCodeBlocksForPage(documentId, scrollState.currentPage - 1);
 
   useEffect(() => {
@@ -138,6 +138,16 @@ export function PresenterBar({
             }}
           />
           <PresentationStyleTrigger open={stylePopoverOpen} onToggle={() => setStylePopoverOpen((current) => !current)} />
+          {drawingsMode === "annotations" ? (
+            <DrawingCleanupButton
+              pageCount={sessionAnnotations.filter((item) => item.pageIndex === scrollState.currentPage - 1).length}
+              totalCount={sessionAnnotations.length}
+              onClearPage={() => onClearSessionAnnotations(scrollState.currentPage - 1)}
+              onClearAll={() => onClearSessionAnnotations()}
+            />
+          ) : (
+            <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />
+          )}
           <span className="mx-1 h-5 w-px bg-border" aria-hidden />
           <IconButton icon={ZoomOut} label={t("viewer.zoomOut")} onClick={() => manualZoom(() => zoom?.zoomOut())} />
           <span className="w-11 text-center font-mono text-xs tabular-nums text-muted-foreground">{Math.round(zoomState.currentZoomLevel * 100)}%</span>
@@ -184,16 +194,6 @@ export function PresenterBar({
               onChange={(event) => (event.target.checked ? setConfirmAnnotations(true) : setDrawingsMode("temporary"))}
             />
           </label>
-          {totalStrokeCount > 0 || sessionAnnotationCount > 0 ? (
-            <Button
-              size="sm"
-              variant="ghost"
-              className="mt-1 w-full"
-              onClick={drawingsMode === "annotations" ? onClearSessionAnnotations : clearAllDrawings}
-            >
-              {t("presentation.clearDrawings", { count: drawingsMode === "annotations" ? sessionAnnotationCount : totalStrokeCount })}
-            </Button>
-          ) : null}
         </div>
       ) : null}
 

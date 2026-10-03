@@ -15,6 +15,7 @@ const SPOTLIGHT_MIN = 80;
 const SPOTLIGHT_MAX = 400;
 const MAGNIFIER_ZOOM_MIN = 1.5;
 const MAGNIFIER_ZOOM_MAX = 6;
+const MIN_PIECE_LENGTH = 0.002;
 
 type PersistedPrefs = {
   penColor: string;
@@ -128,6 +129,9 @@ type PresentationState = {
   clearAllDrawings: () => void;
   addBoardStroke: (board: BoardMode, stroke: Stroke) => void;
   eraseBoardAt: (board: BoardMode, point: StrokePoint, radius: number) => void;
+  clearBoard: (board: BoardMode) => void;
+  clearVisible: (pageIndex: number) => void;
+  visibleStrokeCount: (pageIndex: number) => number;
   totalStrokeCount: () => number;
   setCodeBlocksForPage: (pageIndex: number, entry: CodeBlockCache) => void;
   openCodeBlock: (pageIndex: number, blockId: string) => void;
@@ -152,6 +156,75 @@ function strokeHit(stroke: Stroke, point: StrokePoint, radius: number): boolean 
     if (distanceToSegment(point, stroke.points[i], stroke.points[i + 1]) <= threshold) return true;
   }
   return stroke.points.length === 1 && Math.hypot(stroke.points[0].x - point.x, stroke.points[0].y - point.y) <= threshold;
+}
+
+function outsideSpans(a: StrokePoint, b: StrokePoint, center: StrokePoint, radius: number): Array<[number, number]> {
+  const dx = b.x - a.x;
+  const dy = b.y - a.y;
+  const fx = a.x - center.x;
+  const fy = a.y - center.y;
+  const qa = dx * dx + dy * dy;
+  const qc = fx * fx + fy * fy - radius * radius;
+  if (qa === 0) return qc > 0 ? [[0, 1]] : [];
+  const qb = 2 * (fx * dx + fy * dy);
+  const disc = qb * qb - 4 * qa * qc;
+  if (disc <= 0) return [[0, 1]];
+  const root = Math.sqrt(disc);
+  const enter = (-qb - root) / (2 * qa);
+  const leave = (-qb + root) / (2 * qa);
+  if (leave <= 0 || enter >= 1) return [[0, 1]];
+  const spans: Array<[number, number]> = [];
+  if (enter > 0) spans.push([0, enter]);
+  if (leave < 1) spans.push([leave, 1]);
+  return spans;
+}
+
+function pointOnSegment(a: StrokePoint, b: StrokePoint, t: number): StrokePoint {
+  if (t === 0) return a;
+  if (t === 1) return b;
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+}
+
+function polylineLength(points: StrokePoint[]): number {
+  let length = 0;
+  for (let i = 1; i < points.length; i += 1) length += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+  return length;
+}
+
+export function eraseFromStroke(stroke: Stroke, point: StrokePoint, radius: number): Stroke[] | null {
+  if (!strokeHit(stroke, point, radius)) return null;
+  if (stroke.points.length < 2) return [];
+  const threshold = radius + stroke.width / 2;
+  const pieces: StrokePoint[][] = [];
+  let current: StrokePoint[] | null = null;
+  for (let i = 0; i < stroke.points.length - 1; i += 1) {
+    const a = stroke.points[i];
+    const b = stroke.points[i + 1];
+    const spans = outsideSpans(a, b, point, threshold);
+    if (spans.length === 0) current = null;
+    for (const [start, end] of spans) {
+      if (start > 0 || !current) {
+        current = [pointOnSegment(a, b, start)];
+        pieces.push(current);
+      }
+      current.push(pointOnSegment(a, b, end));
+      if (end < 1) current = null;
+    }
+  }
+  return pieces
+    .filter((points) => points.length > 1 && polylineLength(points) >= MIN_PIECE_LENGTH)
+    .map((points, index) => ({ ...stroke, id: `${stroke.id}~${index}`, points }));
+}
+
+export function eraseFromStrokes(strokes: Stroke[], point: StrokePoint, radius: number): Stroke[] {
+  let changed = false;
+  const next = strokes.flatMap((stroke) => {
+    const pieces = eraseFromStroke(stroke, point, radius);
+    if (!pieces) return [stroke];
+    changed = true;
+    return pieces;
+  });
+  return changed ? next : strokes;
 }
 
 const initialPrefs = readPrefs();
@@ -298,8 +371,8 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   eraseAt: (pageIndex, point, radius) =>
     set((state) => {
       const strokes = state.strokesByPage[pageIndex] ?? [];
-      const remaining = strokes.filter((stroke) => !strokeHit(stroke, point, radius));
-      if (remaining.length === strokes.length) return state;
+      const remaining = eraseFromStrokes(strokes, point, radius);
+      if (remaining === strokes) return state;
       return { strokesByPage: { ...state.strokesByPage, [pageIndex]: remaining } };
     }),
   clearPage: (pageIndex) =>
@@ -312,10 +385,23 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   eraseBoardAt: (board, point, radius) =>
     set((state) => {
       const strokes = state.boardStrokes[board];
-      const remaining = strokes.filter((stroke) => !strokeHit(stroke, point, radius));
-      return remaining.length === strokes.length ? state : { boardStrokes: { ...state.boardStrokes, [board]: remaining } };
+      const remaining = eraseFromStrokes(strokes, point, radius);
+      return remaining === strokes ? state : { boardStrokes: { ...state.boardStrokes, [board]: remaining } };
     }),
-  totalStrokeCount: () => Object.values(get().strokesByPage).reduce((sum, strokes) => sum + strokes.length, 0),
+  clearBoard: (board) => set((state) => ({ boardStrokes: { ...state.boardStrokes, [board]: [] } })),
+  clearVisible: (pageIndex) => {
+    const { blackout, clearBoard, clearPage } = get();
+    if (blackout === "none") clearPage(pageIndex);
+    else clearBoard(blackout);
+  },
+  visibleStrokeCount: (pageIndex) => {
+    const { blackout, boardStrokes, strokesByPage } = get();
+    return blackout === "none" ? (strokesByPage[pageIndex]?.length ?? 0) : boardStrokes[blackout].length;
+  },
+  totalStrokeCount: () => {
+    const { strokesByPage, boardStrokes } = get();
+    return Object.values(strokesByPage).reduce((sum, strokes) => sum + strokes.length, 0) + boardStrokes.black.length + boardStrokes.white.length;
+  },
 
   setCodeBlocksForPage: (pageIndex, entry) =>
     set((state) => ({ codeBlocksByPage: { ...state.codeBlocksByPage, [pageIndex]: entry } })),

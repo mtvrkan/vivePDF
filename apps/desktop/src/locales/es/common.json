@@ -1330,7 +1330,6 @@
     "settings": "Ajustes de presentación",
     "cursorAutoHide": "Ocultar el cursor automáticamente",
     "saveAsAnnotations": "Guardar dibujos como anotaciones permanentes",
-    "clearDrawings": "Borrar dibujos ({{count}})",
     "confirmAnnotationsTitle": "¿Guardar los dibujos como anotaciones permanentes?",
     "confirmAnnotationsBody": "Los nuevos trazos se escribirán en el PDF como anotaciones reales y podrán guardarse con el documento. Los dibujos temporales realizados hasta ahora solo se conservan en esta sesión.",
     "confirmAnnotationsAction": "Cambiar a anotaciones permanentes",
@@ -1345,7 +1344,12 @@
     "wrapCode": "Ajustar líneas",
     "copyCode": "Copiar código",
     "crashNotice": "Se produjo un error en la vista de presentación.",
-    "exitOnCrash": "Salir de la presentación"
+    "exitOnCrash": "Salir de la presentación",
+    "cleanup": {
+      "title": "Borrar dibujos",
+      "page": "Borrar esta página ({{count}})",
+      "all": "Borrar todos los dibujos ({{count}})"
+    }
   },
   "password": {
     "title": "Se requiere contraseña",

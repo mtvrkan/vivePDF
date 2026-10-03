@@ -1330,7 +1330,6 @@
     "settings": "Sunum ayarları",
     "cursorAutoHide": "İmleci otomatik gizle",
     "saveAsAnnotations": "Çizimleri kalıcı not olarak kaydet",
-    "clearDrawings": "Çizimleri temizle ({{count}})",
     "confirmAnnotationsTitle": "Çizimler kalıcı not olarak kaydedilsin mi?",
     "confirmAnnotationsBody": "Bundan sonraki çizimler PDF’e gerçek işaretleme olarak yazılır ve belgeyle birlikte kaydedilebilir. Şimdiye kadarki geçici çizimler yalnızca bu oturumda kalır.",
     "confirmAnnotationsAction": "Kalıcı nota geç",
@@ -1345,7 +1344,12 @@
     "wrapCode": "Satırları sar",
     "copyCode": "Kodu kopyala",
     "crashNotice": "Sunum görünümünde bir sorun oluştu.",
-    "exitOnCrash": "Sunumdan çık"
+    "exitOnCrash": "Sunumdan çık",
+    "cleanup": {
+      "title": "Çizimleri temizle",
+      "page": "Bu sayfayı temizle ({{count}})",
+      "all": "Tüm çizimleri temizle ({{count}})"
+    }
   },
   "password": {
     "title": "Parola gerekli",

@@ -6,6 +6,7 @@ import { ZoomMode, useZoom, type ZoomLevel } from "@embedpdf/plugin-zoom/react";
 import { Button } from "@/components/shared/Button";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { cn } from "@/shared/lib/cn";
+import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { AnnotateBar } from "./AnnotateBar";
@@ -57,7 +58,7 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
   const annotationRef = useRef(annotation);
   annotationRef.current = annotation;
   const sessionAnnotations = useRef<SessionAnnotation[]>([]);
-  const [sessionCount, setSessionCount] = useState(0);
+  const [sessionItems, setSessionItems] = useState<SessionAnnotation[]>([]);
   const { provides: zoom, state: zoomState } = useZoom(documentId);
   const { state: scrollState, provides: scroll } = useScroll(documentId);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -187,7 +188,7 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
       const next = trackSessionAnnotation(sessionAnnotations.current, { type: event.type, pageIndex: event.pageIndex, annotation: { id: event.annotation.id } });
       if (next === sessionAnnotations.current) return;
       sessionAnnotations.current = next;
-      outsideRender(() => setSessionCount(next.length));
+      outsideRender(() => setSessionItems(next));
     });
     return () => unsubscribe();
   }, [annotation, drawingsMode]);
@@ -214,13 +215,28 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
 
   usePinchSignal(containerRef, onManualZoom);
 
-  const clearSessionAnnotations = () => {
+  const clearSessionAnnotations = (pageIndex?: number) => {
     const scope = annotationRef.current;
-    if (!scope || sessionAnnotations.current.length === 0) return;
-    scope.deleteAnnotations(sessionAnnotations.current);
-    sessionAnnotations.current = [];
-    setSessionCount(0);
+    const doomed = sessionAnnotations.current.filter((item) => pageIndex === undefined || item.pageIndex === pageIndex);
+    if (!scope || doomed.length === 0) return;
+    scope.deleteAnnotations(doomed);
+    const kept = sessionAnnotations.current.filter((item) => !doomed.includes(item));
+    sessionAnnotations.current = kept;
+    setSessionItems(kept);
   };
+  const clearSessionRef = useRef(clearSessionAnnotations);
+  clearSessionRef.current = clearSessionAnnotations;
+
+  useEffect(() => {
+    if (drawingsMode !== "annotations") return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!event.shiftKey || event.ctrlKey || event.metaKey || event.altKey || event.key.toLowerCase() !== "e" || isTypingTarget(event.target)) return;
+      event.preventDefault();
+      clearSessionRef.current(scrollRef.current.scrollState.currentPage - 1);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [drawingsMode]);
 
   return (
     <div
@@ -249,7 +265,7 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
           documentId={documentId}
           onExit={onExit}
           onManualZoom={onManualZoom}
-          sessionAnnotationCount={sessionCount}
+          sessionAnnotations={sessionItems}
           onClearSessionAnnotations={clearSessionAnnotations}
         />
         {overviewOpen ? <OverviewGrid documentId={documentId} onClose={() => setOverviewOpen(false)} /> : null}

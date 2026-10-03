@@ -1330,7 +1330,6 @@
     "settings": "Präsentationseinstellungen",
     "cursorAutoHide": "Cursor automatisch ausblenden",
     "saveAsAnnotations": "Zeichnungen als dauerhafte Anmerkungen speichern",
-    "clearDrawings": "Zeichnungen löschen ({{count}})",
     "confirmAnnotationsTitle": "Zeichnungen als dauerhafte Anmerkungen speichern?",
     "confirmAnnotationsBody": "Neue Striche werden als echte Anmerkungen in das PDF geschrieben und können mit dem Dokument gespeichert werden. Bisherige temporäre Zeichnungen bleiben auf diese Sitzung beschränkt.",
     "confirmAnnotationsAction": "Zu dauerhaften Anmerkungen wechseln",
@@ -1345,7 +1344,12 @@
     "wrapCode": "Zeilen umbrechen",
     "copyCode": "Code kopieren",
     "crashNotice": "In der Präsentationsansicht ist ein Fehler aufgetreten.",
-    "exitOnCrash": "Präsentation beenden"
+    "exitOnCrash": "Präsentation beenden",
+    "cleanup": {
+      "title": "Zeichnungen löschen",
+      "page": "Diese Seite leeren ({{count}})",
+      "all": "Alle Zeichnungen löschen ({{count}})"
+    }
   },
   "password": {
     "title": "Passwort erforderlich",

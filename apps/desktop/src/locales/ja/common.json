@@ -1330,7 +1330,6 @@
     "settings": "プレゼンテーション設定",
     "cursorAutoHide": "カーソルを自動的に隠す",
     "saveAsAnnotations": "描画を永続的な注釈として保存",
-    "clearDrawings": "描画を消去（{{count}}）",
     "confirmAnnotationsTitle": "描画を永続的な注釈として保存しますか？",
     "confirmAnnotationsBody": "これ以降の描画は実際の注釈として PDF に書き込まれ、ドキュメントと一緒に保存できます。これまでの一時的な描画はこのセッション内にのみ残ります。",
     "confirmAnnotationsAction": "永続的な注釈に切り替える",
@@ -1345,7 +1344,12 @@
     "wrapCode": "行を折り返す",
     "copyCode": "コードをコピー",
     "crashNotice": "プレゼンテーション表示で問題が発生しました。",
-    "exitOnCrash": "プレゼンテーションを終了"
+    "exitOnCrash": "プレゼンテーションを終了",
+    "cleanup": {
+      "title": "描画を消去",
+      "page": "このページを消去 ({{count}})",
+      "all": "すべての描画を消去 ({{count}})"
+    }
   },
   "password": {
     "title": "パスワードが必要です",

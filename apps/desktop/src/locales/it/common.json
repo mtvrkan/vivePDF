@@ -1330,7 +1330,6 @@
     "settings": "Impostazioni presentazione",
     "cursorAutoHide": "Nascondi automaticamente il cursore",
     "saveAsAnnotations": "Salva i disegni come annotazioni permanenti",
-    "clearDrawings": "Cancella disegni ({{count}})",
     "confirmAnnotationsTitle": "Salvare i disegni come annotazioni permanenti?",
     "confirmAnnotationsBody": "I nuovi tratti verranno scritti nel PDF come annotazioni reali e potranno essere salvati con il documento. I disegni temporanei fatti finora restano validi solo per questa sessione.",
     "confirmAnnotationsAction": "Passa alle annotazioni permanenti",
@@ -1345,7 +1344,12 @@
     "wrapCode": "Manda a capo le righe",
     "copyCode": "Copia codice",
     "crashNotice": "Si è verificato un errore nella vista presentazione.",
-    "exitOnCrash": "Esci dalla presentazione"
+    "exitOnCrash": "Esci dalla presentazione",
+    "cleanup": {
+      "title": "Cancella disegni",
+      "page": "Cancella questa pagina ({{count}})",
+      "all": "Cancella tutti i disegni ({{count}})"
+    }
   },
   "password": {
     "title": "Password richiesta",

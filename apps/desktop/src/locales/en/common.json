@@ -1330,7 +1330,6 @@
     "settings": "Presentation settings",
     "cursorAutoHide": "Auto-hide cursor",
     "saveAsAnnotations": "Save drawings as permanent notes",
-    "clearDrawings": "Clear drawings ({{count}})",
     "confirmAnnotationsTitle": "Save drawings as permanent notes?",
     "confirmAnnotationsBody": "New strokes will be written into the PDF as real annotations and can be saved with the document. Temporary drawings made so far stay session-only.",
     "confirmAnnotationsAction": "Switch to permanent notes",
@@ -1345,7 +1344,12 @@
     "wrapCode": "Wrap lines",
     "copyCode": "Copy code",
     "crashNotice": "Something went wrong in the presentation view.",
-    "exitOnCrash": "Exit presentation"
+    "exitOnCrash": "Exit presentation",
+    "cleanup": {
+      "title": "Clear drawings",
+      "page": "Clear this page ({{count}})",
+      "all": "Clear all drawings ({{count}})"
+    }
   },
   "password": {
     "title": "Password required",
