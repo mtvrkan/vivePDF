@@ -1,4 +1,4 @@
-import { ImageOff } from "lucide-react";
+import { ImageOff, ImagePlus } from "lucide-react";
 import { memo, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioRenderPath, StudioSvgElement, StudioTextElement } from "@/types/studio";
 import { elementItems } from "../model/render";
@@ -79,10 +79,17 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
 }
 
 function ImageContent({ element }: { element: StudioImageElement }) {
-  const preview = useImagePreview(element.src);
+  const preview = useImagePreview(element.src || null);
   const ready = preview?.status === "ready" ? preview.value : null;
   const radius = element.mask === "circle" ? "50%" : element.mask === "rounded" ? `${element.cornerRadius}px` : undefined;
   const stroke = elementItems({ ...element, hidden: false, opacity: 1 })[1];
+  if (!element.src) {
+    return (
+      <div data-image-state="empty" className="flex h-full w-full items-center justify-center bg-muted/70 text-muted-foreground" style={{ borderRadius: radius }}>
+        <ImagePlus className="size-1/3 max-h-12 max-w-12" aria-hidden />
+      </div>
+    );
+  }
   if (preview?.status === "error") {
     return (
       <div data-image-state="error" className="flex h-full w-full items-center justify-center bg-muted text-muted-foreground" style={{ borderRadius: radius }}>

@@ -24,6 +24,8 @@ import { PropertiesPanel } from "./design/PropertiesPanel";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { readDraft, useStudioStore } from "./design/studioStore";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
+import { buildTemplate } from "./templates/catalog";
+import { TemplateGallery } from "./templates/TemplateGallery";
 
 const START_SIZES: StudioPageSize[] = ["a4", "a4Landscape", "a5", "letter", "square", "story", "presentation", "businessCard", "poster"];
 const PREVIEW_BOX = 96;
@@ -145,6 +147,12 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
             <NumberField label={t("studio.page.height")} suffix="mm" value={custom.height} min={6.4} max={5080} onChange={(height) => setCustom((current) => ({ ...current, height }))} />
           </div>
           <Button onClick={() => create(fromMm(custom.width), fromMm(custom.height))}>{t("studio.start.create")}</Button>
+        </section>
+        <section className="space-y-3" aria-labelledby="studio-templates">
+          <h2 id="studio-templates" className="text-base font-semibold">
+            {t("studio.templates.title")}
+          </h2>
+          <TemplateGallery language={locale} box={140} onPick={(template) => onOpen(buildTemplate(template, t, locale))} />
         </section>
       </div>
     </div>

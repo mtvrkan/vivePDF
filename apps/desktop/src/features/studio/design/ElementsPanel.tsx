@@ -8,18 +8,24 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { studioImportSvg } from "@/shared/rpc/operations";
 import { useToastStore } from "@/shared/store/toastStore";
+import { useUiStore } from "@/shared/store/uiStore";
 import { STUDIO_SHAPES, type StudioElement, type StudioPage, type StudioShapeKind } from "@/types/studio";
-import { createImage, createQr, createShape, createSvg, createText } from "../model/design";
+import { createImage, createQr, createShape, createSvg, createText, createVector } from "../model/design";
+import { DEFAULT_COLOURS, ORNAMENTS, paletteColours, type Ornament, type OrnamentCategory } from "../ornaments/ornaments";
 import { addElements, reorderElements, updateElement } from "../model/edit";
 import { loadImagePreview } from "./assets";
 import { toggleHidden } from "./commands";
 import { elementLabel } from "./labels";
 import { PathsSvg } from "./ElementView";
 import { pickImage } from "./pickImage";
-import { shapePaths } from "../model/shapes";
+import { renderFill, renderStroke, shapePaths } from "../model/shapes";
 import { currentPage, useStudioStore } from "./studioStore";
+import { insertTemplate } from "../templates/apply";
+import { buildTemplate } from "../templates/catalog";
+import type { StudioTemplate } from "../templates/kit";
+import { TemplateGallery } from "../templates/TemplateGallery";
 
-type Tab = "elements" | "layers";
+type Tab = "templates" | "elements" | "layers";
 const TEXT_PRESETS = [
   { key: "heading", fontSize: 44, bold: true },
   { key: "subheading", fontSize: 26, bold: true },
@@ -29,11 +35,33 @@ const TEXT_PRESETS = [
 const CASCADE = 16;
 const MAX_CASCADE = 20;
 
-function insert(element: StudioElement) {
+const ORNAMENT_CATEGORIES: OrnamentCategory[] = ["frames", "seals", "dividers", "accents"];
+const previews = new Map<string, ReturnType<Ornament["build"]>>();
+
+function ornamentPreview(item: Ornament) {
+  let art = previews.get(item.id);
+  if (!art) {
+    art = item.build(DEFAULT_COLOURS, item.size);
+    previews.set(item.id, art);
+  }
+  return art;
+}
+
+function OrnamentPreview({ item }: { item: Ornament }) {
+  const art = ornamentPreview(item);
+  const wide = art.viewWidth >= art.viewHeight;
+  return (
+    <span className="block" style={{ width: wide ? "100%" : `${(art.viewWidth / art.viewHeight) * 100}%`, aspectRatio: `${art.viewWidth} / ${art.viewHeight}` }}>
+      <PathsSvg paths={art.paths.map((path) => ({ d: path.d, fill: renderFill(path.fill, art.viewWidth, art.viewHeight), stroke: renderStroke(path.stroke), evenOdd: path.evenOdd, opacity: path.opacity }))} width={art.viewWidth} height={art.viewHeight} />
+    </span>
+  );
+}
+
+function insert(element: StudioElement, cascade = true) {
   const store = useStudioStore.getState();
   store.applyToPage((page) => {
     let placed = element;
-    for (let step = 0; step < MAX_CASCADE && page.elements.some((other) => Math.abs(other.x - placed.x) < 1 && Math.abs(other.y - placed.y) < 1); step += 1) {
+    for (let step = 0; cascade && step < MAX_CASCADE && page.elements.some((other) => Math.abs(other.x - placed.x) < 1 && Math.abs(other.y - placed.y) < 1); step += 1) {
       placed = { ...placed, x: placed.x + CASCADE, y: placed.y + CASCADE };
     }
     return addElements(page, [placed]);
@@ -98,6 +126,20 @@ function ElementsTab() {
     insert(createImage(src, at.x, at.y, width, height));
   };
 
+  const addOrnament = (item: Ornament) => {
+    const colours = paletteColours(useStudioStore.getState().design?.palette);
+    const name = t(`studio.ornaments.items.${item.id}`);
+    if (item.fitsPage) {
+      insert(createVector(item.build(colours, { width: page.width, height: page.height }), 0, 0, page.width, page.height, name), false);
+      return;
+    }
+    const scale = (Math.min(page.width, page.height) * 0.4) / Math.max(item.size.width, item.size.height);
+    const width = item.size.width * scale;
+    const height = item.size.height * scale;
+    const at = centred(page, width, height);
+    insert(createVector(item.build(colours, item.size), at.x, at.y, width, height, name));
+  };
+
   const addQr = () => {
     const side = Math.min(page.width, page.height) * 0.2;
     const at = centred(page, side, side);
@@ -132,6 +174,29 @@ function ElementsTab() {
           ))}
         </div>
       </section>
+      <section className="space-y-3">
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("studio.elements.ornaments")}</h3>
+        {ORNAMENT_CATEGORIES.map((category) => (
+          <div key={category} className="space-y-1.5">
+            <p className="text-xs text-muted-foreground">{t(`studio.ornaments.categories.${category}`)}</p>
+            <div className="grid grid-cols-3 gap-2">
+              {ORNAMENTS.filter((item) => item.category === category).map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  data-ornament={item.id}
+                  onClick={() => addOrnament(item)}
+                  aria-label={t(`studio.ornaments.items.${item.id}`)}
+                  title={t(`studio.ornaments.items.${item.id}`)}
+                  className="card glass-tinted paper-surface flex aspect-square items-center justify-center rounded-lg bg-white p-1.5 hover:ring-2 hover:ring-primary/40"
+                >
+                  <OrnamentPreview item={item} />
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </section>
       <section className="grid grid-cols-2 gap-2">
         <button type="button" onClick={() => void addImage()} className="card glass-tinted flex flex-col items-center gap-1.5 rounded-lg p-3 text-sm hover:ring-2 hover:ring-primary/40">
           <ImageIcon className="size-5 text-primary" aria-hidden />
@@ -144,6 +209,24 @@ function ElementsTab() {
       </section>
     </div>
   );
+}
+
+function TemplatesTab() {
+  const { t } = useTranslation();
+  const language = useUiStore((state) => state.locale);
+  const pick = (template: StudioTemplate) => {
+    const store = useStudioStore.getState();
+    if (!store.design) return;
+    const result = insertTemplate(store.design, store.pageId, buildTemplate(template, t, language));
+    if (!result) {
+      useToastStore.getState().push("error", t("studio.templates.tooManyPages"));
+      return;
+    }
+    store.apply(() => result.design);
+    store.select([]);
+    store.setPage(result.pageId);
+  };
+  return <TemplateGallery language={language} box={104} onPick={pick} className="p-3" />;
 }
 
 function LayersTab() {
@@ -210,12 +293,13 @@ function LayersTab() {
 export function ElementsPanel() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("elements");
+  const body = tab === "templates" ? <TemplatesTab /> : tab === "elements" ? <ElementsTab /> : <LayersTab />;
   return (
     <aside aria-label={t("studio.panel.label")} className="glass flex w-72 shrink-0 flex-col border-r border-border/60">
       <div className="border-b border-border/60 p-3">
-        <Segmented size="sm" value={tab} options={["elements", "layers"] as const} labelOf={(value) => t(`studio.panel.${value}`)} onChange={setTab} ariaLabel={t("studio.panel.label")} className="w-full" />
+        <Segmented size="sm" value={tab} options={["templates", "elements", "layers"] as const} labelOf={(value) => t(`studio.panel.${value}`)} onChange={setTab} ariaLabel={t("studio.panel.label")} className="w-full" />
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">{tab === "elements" ? <ElementsTab /> : <LayersTab />}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
     </aside>
   );
 }

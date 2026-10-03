@@ -8,6 +8,7 @@ import { Segmented, SliderField, SwitchField, TextArea } from "@/components/tool
 import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioShapeElement, StudioTextAlign, StudioTextElement, StudioVerticalAlign } from "@/types/studio";
 import { STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
 import { align, distribute, patchSelected, toggleLock } from "./commands";
+import { DesignColours, ElementColours } from "./ColorSections";
 import { ColorField, FillEditor, NumberField, PanelSection, StrokeEditor } from "./controls";
 import { pickImage } from "./pickImage";
 import { fromMm, toMm } from "./units";
@@ -267,6 +268,8 @@ export function PropertiesPanel() {
   return (
     <aside aria-label={t("studio.props.label")} className="glass flex w-72 shrink-0 flex-col overflow-y-auto border-l border-border/60" data-testid="studio-properties">
       {elements.length === 0 ? <PageProperties page={page} /> : <ArrangeSection elements={elements} />}
+      {elements.length === 0 ? <DesignColours /> : null}
+      {single?.kind === "vector" ? <ElementColours element={single} /> : null}
       {texts.length && kinds.size === 1 ? <TextSection elements={texts} /> : null}
       {single?.kind === "shape" ? <ShapeSection element={single} /> : null}
       {single?.kind === "image" ? <ImageSection element={single} /> : null}

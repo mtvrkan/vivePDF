@@ -8,6 +8,7 @@ import type { StudioDesign, StudioElement, StudioTextElement } from "@/types/stu
 import { elementBounds, selectionBounds, updateElement, moveElements, type Bounds } from "../model/edit";
 import { canGroup, canUngroup, group, reorder, toggleLock, ungroup } from "./commands";
 import { ElementView, PageView } from "./ElementView";
+import { pickImage } from "./pickImage";
 import { TextEditor } from "./TextEditor";
 import { HANDLES, boundsOf, resizeBox, rotationFromPointer, scaleBoundsByHandle, scaleElements, snapBounds, snapTargets, type Guide, type Handle } from "./transform";
 import { currentPage, useStudioStore } from "./studioStore";
@@ -235,6 +236,11 @@ export function Canvas({ language }: { language: string }) {
     if (element?.kind === "text" && !element.locked) {
       store().select([element.id]);
       store().setEditing(element.id);
+    }
+    if (element?.kind === "image" && !element.locked) {
+      void pickImage(t("studio.props.replaceImage")).then((src) => {
+        if (src) store().applyToPage((current) => updateElement<StudioElement>(current, element.id, { src }));
+      });
     }
   };
 

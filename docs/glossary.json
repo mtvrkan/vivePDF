@@ -3871,6 +3871,15 @@
       ],
       "tools.create.cv.fields.sectionHeadingPlaceholder": [
         "certificate"
+      ],
+      "studio.tpl.certificate": [
+        "certificate"
+      ],
+      "studio.tpl.presentedTo": [
+        "certificate"
+      ],
+      "studio.tpl.recipientName": [
+        "recipient"
       ]
     },
     "ko": {
@@ -3882,6 +3891,18 @@
       ],
       "tools.create.cv.fields.sectionHeadingPlaceholder": [
         "certificate"
+      ],
+      "studio.templates.categories.certificates": [
+        "certificate"
+      ],
+      "studio.tpl.certificate": [
+        "certificate"
+      ],
+      "studio.tpl.presentedTo": [
+        "certificate"
+      ],
+      "studio.tpl.recipientName": [
+        "recipient"
       ]
     },
     "pt-BR": {
@@ -3910,6 +3931,11 @@
       ],
       "tools.create.cv.fields.sectionHeadingPlaceholder": [
         "certificate"
+      ]
+    },
+    "zh-CN": {
+      "studio.tpl.recipientName": [
+        "recipient"
       ]
     }
   }

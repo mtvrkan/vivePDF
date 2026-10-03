@@ -281,7 +281,7 @@ export function normalizeElement(value: unknown): StudioElement | null {
         innerRatio: finite(raw.innerRatio, 0.45, 0.05, 0.95),
       };
     case "image":
-      if (typeof raw.src !== "string" || !raw.src) return null;
+      if (typeof raw.src !== "string") return null;
       return {
         ...shared,
         kind: "image",

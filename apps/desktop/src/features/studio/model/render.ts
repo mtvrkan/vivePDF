@@ -45,9 +45,9 @@ function textItem(element: StudioTextElement, measured: MeasuredText): StudioRen
 function imageItems(element: StudioImageElement): StudioRenderItem[] {
   const crop = element.crop;
   const whole = crop.x === 0 && crop.y === 0 && crop.width === 1 && crop.height === 1;
-  const items: StudioRenderItem[] = [
-    { ...box(element), kind: "image", path: element.src, fit: element.fit, crop: whole ? null : crop, mask: element.mask, radius: element.cornerRadius },
-  ];
+  const items: StudioRenderItem[] = element.src
+    ? [{ ...box(element), kind: "image", path: element.src, fit: element.fit, crop: whole ? null : crop, mask: element.mask, radius: element.cornerRadius }]
+    : [];
   const stroke = renderStroke(element.stroke);
   if (stroke) {
     const d =

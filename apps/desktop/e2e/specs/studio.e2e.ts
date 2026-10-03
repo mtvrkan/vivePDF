@@ -191,4 +191,19 @@ describe("studio", () => {
     expect(Math.abs((span?.box[0] ?? 0) - line.left)).toBeLessThan(0.5);
     expect(Math.abs((span?.box[2] ?? 0) - line.right)).toBeLessThan(0.75);
   });
+
+  it("finds a template in the Templates tab and adds it after the current page", async () => {
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("common.close")}"]`).click();
+    await $('[role="dialog"]').waitForDisplayed({ reverse: true });
+    const pages = () => $$(`[data-testid="studio-pages"] ol[aria-label="${t("studio.pages.label")}"] > li`);
+    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.panel.templates")}"]`).click();
+    await $(`input[aria-label="${t("studio.templates.search")}"]`).setValue(t("studio.templates.items.invoice"));
+    await browser.waitUntil(async () => (await $$("[data-template]").length) === 1, { timeoutMsg: "the search did not narrow the gallery to the invoice" });
+    const before = await pages().length;
+    await $('[data-template="invoice"]').click();
+    await browser.waitUntil(async () => (await elements().length) > 20, { timeout: 30000, timeoutMsg: "the invoice template did not fill the canvas" });
+    await browser.waitUntil(async () => (await pages().length) === before + 1, { timeoutMsg: "the template was not added as a new page" });
+    await expect($(`//*[@data-testid="studio-viewport"]//span[normalize-space(.)="${t("studio.tpl.clientName")}"]`)).toExist();
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-template.png"));
+  });
 });
