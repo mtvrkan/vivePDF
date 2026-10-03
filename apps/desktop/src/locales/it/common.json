@@ -68,7 +68,7 @@
   "home": {
     "title": "Home",
     "subtitle": "Apri un PDF; tutti gli strumenti sono nel menu Strumenti.",
-    "dropHint": "Trascina qui i file PDF per aprirli",
+    "dropHint": "Trascina qui PDF, documenti Office, e-book o immagini per aprirli",
     "recent": "Documenti recenti",
     "clearRecent": "Cancella elenco",
     "recentEmpty": {
@@ -1301,6 +1301,13 @@
       "unnamed": "Gruppo",
       "name": "Nome del gruppo",
       "toggle": "Fai clic per comprimere o espandere, doppio clic per rinominare"
+    },
+    "converted": {
+      "converting": "Conversione di {{name}} in PDF…",
+      "message": "{{name}} è stato aperto come copia PDF. Le modifiche restano in questa copia temporanea finché non la salvi come PDF.",
+      "saveAsPdf": "Salva come PDF…",
+      "openTool": "Apri in Converti",
+      "allSupported": "Tutti i file supportati"
     }
   },
   "presentation": {
@@ -5860,7 +5867,7 @@
   },
   "emptyDoc": {
     "eyebrow": "In attesa di un documento",
-    "dropHint": "Puoi anche trascinare un PDF nella finestra",
+    "dropHint": "Puoi anche trascinare un PDF, un documento Office, un e-book o un'immagine sulla finestra",
     "shortcuts": "Scorciatoie",
     "palette": "Barra comandi"
   },

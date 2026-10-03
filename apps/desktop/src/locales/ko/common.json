@@ -68,7 +68,7 @@
   "home": {
     "title": "홈",
     "subtitle": "PDF를 여세요. 모든 도구는 도구 메뉴에 있습니다.",
-    "dropHint": "PDF 파일을 여기에 놓아 열기",
+    "dropHint": "PDF, Office 문서, 전자책 또는 그림을 여기에 놓아 여세요",
     "recent": "최근 문서",
     "clearRecent": "목록 지우기",
     "recentEmpty": {
@@ -1301,6 +1301,13 @@
       "unnamed": "그룹",
       "name": "그룹 이름",
       "toggle": "클릭하면 접거나 펼치고, 두 번 클릭하면 이름을 바꿉니다"
+    },
+    "converted": {
+      "converting": "{{name}}을(를) PDF로 변환하는 중…",
+      "message": "{{name}}을(를) PDF 사본으로 열었습니다. PDF로 저장할 때까지 변경 내용은 이 임시 사본에 남습니다.",
+      "saveAsPdf": "PDF로 저장…",
+      "openTool": "변환 도구에서 열기",
+      "allSupported": "지원되는 모든 파일"
     }
   },
   "presentation": {
@@ -5860,7 +5867,7 @@
   },
   "emptyDoc": {
     "eyebrow": "문서를 기다리는 중",
-    "dropHint": "창에 PDF를 놓아도 됩니다",
+    "dropHint": "PDF, Office 문서, 전자책 또는 그림을 창에 끌어다 놓을 수도 있습니다",
     "shortcuts": "단축키",
     "palette": "명령 팔레트"
   },

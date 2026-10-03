@@ -68,7 +68,7 @@
   "home": {
     "title": "Inicio",
     "subtitle": "Abra un PDF; todas las herramientas están en el menú Herramientas.",
-    "dropHint": "Suelte archivos PDF aquí para abrirlos",
+    "dropHint": "Suelte aquí PDF, documentos de Office, libros electrónicos o imágenes para abrirlos",
     "recent": "Documentos recientes",
     "clearRecent": "Borrar lista",
     "recentEmpty": {
@@ -1301,6 +1301,13 @@
       "unnamed": "Grupo",
       "name": "Nombre del grupo",
       "toggle": "Haga clic para contraer o expandir y doble clic para renombrar"
+    },
+    "converted": {
+      "converting": "Convirtiendo {{name}} a PDF…",
+      "message": "{{name}} se abrió como una copia PDF. Los cambios quedan en esta copia temporal hasta que la guarde como PDF.",
+      "saveAsPdf": "Guardar como PDF…",
+      "openTool": "Abrir en Convertir",
+      "allSupported": "Todos los archivos compatibles"
     }
   },
   "presentation": {
@@ -5860,7 +5867,7 @@
   },
   "emptyDoc": {
     "eyebrow": "Esperando un documento",
-    "dropHint": "También puede soltar un PDF en la ventana",
+    "dropHint": "También puede soltar un PDF, documento de Office, libro electrónico o imagen en la ventana",
     "shortcuts": "Atajos",
     "palette": "Paleta de comandos"
   },

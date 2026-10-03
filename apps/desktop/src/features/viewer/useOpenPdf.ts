@@ -1,7 +1,8 @@
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
+import { join, tempDir } from "@tauri-apps/api/path";
 import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/react";
 import { toRpcError } from "@/shared/rpc/client";
 import { claimDocument, fileNameOf, isPdfPath, releaseViewSource, rememberRecentDocument } from "@/shared/rpc/files";
@@ -24,6 +25,10 @@ import { isPdfPasswordError } from "@/shared/lib/pdfPassword";
 import { canOfferRepair, openInRepair } from "@/shared/lib/repairRoute";
 import { sealedOpenRoute } from "@/shared/lib/sealedRoute";
 import { getDocumentInfo } from "@/shared/rpc/documents";
+import { fileToPdf } from "@/shared/rpc/operations";
+import { pathKey, stemOf } from "@/shared/lib/paths";
+import { useLaunchStore } from "@/shared/store/launchStore";
+import { convertedCopyOf, isConvertibleOnOpen, OPEN_CONVERTIBLE_EXTENSIONS, originalOf, useConvertedStore } from "./convertedDocuments";
 import { closeViewable, openViewable, type ViewableSource } from "@/shared/session/viewSources";
 
 function forgetDocumentState(documentId: string) {
@@ -58,8 +63,9 @@ export function useOpenPdf(documentRoute = "/viewer") {
 
   const finishOpen = useCallback(
     (documentId: string, path: string) => {
-      addRecent(path);
-      if (usePreferencesStore.getState().rememberRecent) void rememberRecentDocument(path).catch(() => undefined);
+      const recentPath = originalOf(path) ?? path;
+      addRecent(recentPath);
+      if (usePreferencesStore.getState().rememberRecent) void rememberRecentDocument(recentPath).catch(() => undefined);
       setActive(documentId);
       requestPassword(null);
       void loadInfo(documentId);
@@ -75,8 +81,43 @@ export function useOpenPdf(documentRoute = "/viewer") {
         return false;
       }
       if (!isPdfPath(path)) {
-        toast("error", t("errors.INVALID_PDF"));
-        return false;
+        if (!isConvertibleOnOpen(path)) {
+          toast("error", t("errors.INVALID_PDF"));
+          return false;
+        }
+        const copy = convertedCopyOf(path);
+        const converted = copy ? Object.values(useDocumentStore.getState().documents).find((doc) => pathKey(doc.path) === copy) : undefined;
+        if (converted && activateDocument(converted.id, docManager)) {
+          goToDocument();
+          return true;
+        }
+        const noRoomForCopy = documentRoomError(docManager.getDocumentCount());
+        if (noRoomForCopy) {
+          toast("error", describeError(t, noRoomForCopy));
+          return false;
+        }
+        setBusy(true);
+        toast("info", t("viewer.converted.converting", { name: fileNameOf(path) }));
+        let output: string;
+        try {
+          output = await join(await tempDir(), "vivepdf-converted", crypto.randomUUID(), `${stemOf(path)}.pdf`);
+          await fileToPdf({ path, output, overwrite: true });
+        } catch (error) {
+          const rpcError = toRpcError(error);
+          const toolRoute = "/tools/convert?mode=file-to-pdf";
+          toast("error", describeError(t, rpcError), {
+            label: t("viewer.converted.openTool"),
+            onClick: () => {
+              useLaunchStore.getState().setPending(path, toolRoute);
+              void navigate(toolRoute);
+            },
+          });
+          return false;
+        } finally {
+          setBusy(false);
+        }
+        useConvertedStore.getState().remember(output, path);
+        return openPathRef.current(output);
       }
       const alreadyOpen = Object.values(useDocumentStore.getState().documents).find((doc) => doc.path === path);
       if (alreadyOpen && activateDocument(alreadyOpen.id, docManager)) {
@@ -121,6 +162,8 @@ export function useOpenPdf(documentRoute = "/viewer") {
     },
     [docManager, t, toast, navigate, activateDocument, goToDocument, setBusy, registerDocument, finishOpen, requestPassword, removeDocument],
   );
+  const openPathRef = useRef(openPath);
+  openPathRef.current = openPath;
 
   const submitPassword = useCallback(
     async (documentId: string, password: string) => {
@@ -198,11 +241,14 @@ export function useOpenPdf(documentRoute = "/viewer") {
     const selected = await openDialog({
       multiple: true,
       directory: false,
-      filters: [{ name: "PDF", extensions: ["pdf"] }],
+      filters: [
+        { name: t("viewer.converted.allSupported"), extensions: ["pdf", ...OPEN_CONVERTIBLE_EXTENSIONS] },
+        { name: "PDF", extensions: ["pdf"] },
+      ],
     });
     if (!selected) return;
     await openPaths(Array.isArray(selected) ? selected : [selected]);
-  }, [openPaths]);
+  }, [openPaths, t]);
 
   const closeDocument = useCallback(
     (documentId: string) => {

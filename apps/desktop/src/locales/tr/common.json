@@ -68,7 +68,7 @@
   "home": {
     "title": "Başlangıç",
     "subtitle": "Bir PDF açın; tüm araçlar üstteki Araçlar menüsünde.",
-    "dropHint": "PDF dosyalarını açmak için buraya bırakın",
+    "dropHint": "PDF, Office belgesi, e-kitap ya da görselleri açmak için buraya bırakın",
     "recent": "Son belgeler",
     "clearRecent": "Listeyi temizle",
     "recentEmpty": {
@@ -1301,6 +1301,13 @@
       "unnamed": "Grup",
       "name": "Grup adı",
       "toggle": "Daraltmak ya da genişletmek için tıklayın, adlandırmak için çift tıklayın"
+    },
+    "converted": {
+      "converting": "{{name}} PDF'e dönüştürülüyor…",
+      "message": "{{name}} bir PDF kopyası olarak açıldı. PDF olarak kaydedene kadar değişiklikler bu geçici kopyada kalır.",
+      "saveAsPdf": "PDF olarak kaydet…",
+      "openTool": "Dönüştür aracında aç",
+      "allSupported": "Desteklenen tüm dosyalar"
     }
   },
   "presentation": {
@@ -5860,7 +5867,7 @@
   },
   "emptyDoc": {
     "eyebrow": "Belge bekleniyor",
-    "dropHint": "PDF’i pencereye de bırakabilirsiniz",
+    "dropHint": "PDF, Office belgesi, e-kitap ya da görseli pencereye de bırakabilirsiniz",
     "shortcuts": "Kısayollar",
     "palette": "Komut paleti"
   },

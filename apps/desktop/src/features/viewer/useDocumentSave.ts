@@ -1,10 +1,11 @@
 import { useRef } from "react";
+import { save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { useTranslation } from "react-i18next";
 import { useAnnotation } from "@embedpdf/plugin-annotation/react";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
 import { useExport } from "@embedpdf/plugin-export/react";
 import { useHistoryCapability } from "@embedpdf/plugin-history/react";
-import { basenameOf } from "@/shared/lib/paths";
+import { basenameOf, siblingPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { writeDocumentBytes } from "@/shared/rpc/files";
@@ -18,6 +19,7 @@ import { planRedactionScrub, scrubRedactedFile } from "./redactionScrub";
 import { annotationAuthorName } from "./annotationAuthor";
 import { useReloadDocument } from "./useReloadDocument";
 import { restoreSavedView } from "./viewableBytes";
+import { originalOf, useConvertedStore } from "./convertedDocuments";
 
 const UNDO_LIMIT = 500;
 
@@ -59,8 +61,15 @@ export function useDocumentSave(documentId: string) {
   const save = async (targetPath?: string): Promise<boolean> => {
     const document = useDocumentStore.getState().documents[documentId];
     if (!document) return false;
-    const path = targetPath ?? document.path;
+    const original = targetPath ? null : originalOf(document.path);
+    let path = targetPath ?? document.path;
+    if (original) {
+      const picked = await saveDialog({ defaultPath: siblingPath(original, "pdf"), filters: [{ name: "PDF", extensions: ["pdf"] }] });
+      if (!picked) return false;
+      path = picked.toLowerCase().endsWith(".pdf") ? picked : `${picked}.pdf`;
+    }
     const samePath = path === document.path;
+    const settles = samePath || original !== null;
     const password = document.password ?? undefined;
     const queued = queuedChanges();
     const hasMarks = markCount() > 0;
@@ -80,9 +89,14 @@ export function useDocumentSave(documentId: string) {
         scrubbed = await scrubRedactedFile(path, password, scrubPlan);
       }
       for (const change of queued) await applyChange(change, path, password);
-      if (samePath) {
+      if (settles) {
         usePendingChangesStore.getState().clear(documentId);
         refs.current.historyCapability?.forDocument(documentId).purgeByMetadata(() => true);
+      }
+      if (original) {
+        useConvertedStore.getState().forget(document.path);
+        useDocumentStore.getState().register(documentId, path, document.password);
+        void useDocumentStore.getState().loadInfo(documentId);
       }
       toast("success", t("viewer.save.saved", { name: basenameOf(path) }));
       if (scrubbed > 0) toast("info", t("viewer.save.hiddenScrubbed", { count: scrubbed }));

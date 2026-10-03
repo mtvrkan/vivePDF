@@ -68,7 +68,7 @@
   "home": {
     "title": "首页",
     "subtitle": "打开一个 PDF；所有工具都在“工具”菜单中。",
-    "dropHint": "将 PDF 文件拖到此处打开",
+    "dropHint": "将 PDF、Office 文档、电子书或图片拖放到此处即可打开",
     "recent": "最近的文档",
     "clearRecent": "清空列表",
     "recentEmpty": {
@@ -1301,6 +1301,13 @@
       "unnamed": "组",
       "name": "组名称",
       "toggle": "单击可折叠或展开，双击可重命名"
+    },
+    "converted": {
+      "converting": "正在将 {{name}} 转换为 PDF…",
+      "message": "已将 {{name}} 作为 PDF 副本打开。在另存为 PDF 之前，更改仅保存在此临时副本中。",
+      "saveAsPdf": "另存为 PDF…",
+      "openTool": "在转换工具中打开",
+      "allSupported": "所有支持的文件"
     }
   },
   "presentation": {
@@ -5860,7 +5867,7 @@
   },
   "emptyDoc": {
     "eyebrow": "等待文档",
-    "dropHint": "也可以将 PDF 拖入窗口",
+    "dropHint": "也可以将 PDF、Office 文档、电子书或图片拖放到窗口中",
     "shortcuts": "快捷键",
     "palette": "命令面板"
   },

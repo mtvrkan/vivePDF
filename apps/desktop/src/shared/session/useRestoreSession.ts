@@ -5,6 +5,7 @@ import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/
 import { useOrganizerStore } from "@/features/pages/organizerStore";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { groupedOrder, isGroupColor, nextColor, useTabGroupStore } from "@/features/viewer/tabGroups";
+import { sessionPathOf } from "@/features/viewer/convertedDocuments";
 import { basenameOf, pathKey } from "@/shared/lib/paths";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
@@ -67,15 +68,18 @@ export function useRestoreSession() {
     if (failed.length > 0) {
       toast("error", t("recovery.restorePartial", { count: failed.length, name: basenameOf(failed[0]) }));
     }
-    restoreGroups(snapshot, restored);
+    restoreGroups(
+      snapshot,
+      restored.map((doc) => ({ id: doc.id, path: sessionPathOf(doc.path) })),
+    );
     const restoredKeys = new Set(snapshot.documents.map(pathKey));
-    const openedMeanwhile = restored.filter((doc) => !restoredKeys.has(pathKey(doc.path)));
+    const openedMeanwhile = restored.filter((doc) => !restoredKeys.has(pathKey(sessionPathOf(doc.path))));
     const latestOpened = openedMeanwhile[openedMeanwhile.length - 1];
     if (latestOpened) {
       documents.activate(latestOpened.id, managerRef.current);
       return true;
     }
-    const active = restored.find((doc) => doc.path === snapshot.activePath) ?? restored[0];
+    const active = restored.find((doc) => sessionPathOf(doc.path) === snapshot.activePath) ?? restored[0];
     documents.activate(active.id, managerRef.current);
     if (snapshot.organizer && active.path === snapshot.organizer.mainPath) {
       useOrganizerStore.getState().restore(snapshot.organizer, active.id, active.password);

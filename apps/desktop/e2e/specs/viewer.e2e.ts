@@ -1,3 +1,4 @@
+import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
 import { ENTER_KEY, answerDialogs, bootApp, button, clickButton, closeAllDocuments, copyFixture, fixtures, openInViewer, pressShortcut, probe, t, typeInto, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
@@ -352,6 +353,28 @@ describe("viewer", () => {
     );
 
     for (const filter of filters) expect(filter).toContain("blur(");
+  });
+
+  it("opens a Markdown file as a PDF copy and saves it as a PDF", async () => {
+    const source = join(workDir(), "open-notes.md");
+    writeFileSync(source, ["# Meeting notes", "", "First paragraph of the notes.", "", "- one", "- two", ""].join("\n"));
+    const target = join(workDir(), "open-notes-saved.pdf");
+    const tab = (name: string) => $(`//*[@role="tab"][@aria-selected="true"][.//span[normalize-space(.)="${name}"]]`);
+    answerDialogs(source);
+    await pressShortcut("o");
+    await waitForDialogsAnswered();
+    await tab("open-notes.pdf").waitForDisplayed({ timeout: 120000, timeoutMsg: "the converted Markdown file never opened" });
+    const banner = $(`//*[@role="status"][contains(normalize-space(.), "${t("viewer.converted.message", { name: "open-notes.md" })}")]`);
+    await banner.waitForDisplayed({ timeoutMsg: "the converted-copy bar is missing" });
+
+    answerDialogs(target);
+    await clickButton(t("viewer.converted.saveAsPdf"));
+    await waitForDialogsAnswered();
+    await waitForFile(target);
+    await tab("open-notes-saved.pdf").waitForDisplayed({ timeoutMsg: "the tab did not move to the saved PDF" });
+    await banner.waitForExist({ reverse: true, timeoutMsg: "the converted-copy bar stayed after saving" });
+    expect((await probe(target)).pageCount).toBeGreaterThan(0);
+    await closeAllDocuments();
   });
 
   it("closes a tab from its close button", async () => {

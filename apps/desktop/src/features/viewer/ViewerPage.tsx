@@ -18,6 +18,7 @@ import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { EDITOR_MODES, useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { AnnotateBar } from "./AnnotateBar";
 import { AttachmentsPanel } from "./AttachmentsPanel";
+import { ConvertedMessage } from "./ConvertedMessage";
 import { DocumentMessageBar } from "./DocumentMessageBar";
 import { FallbackFontMessages } from "./FallbackFontMessages";
 import { SignaturesPanel } from "./SignaturesPanel";
@@ -204,6 +205,7 @@ export function ViewerPage() {
               <>
                 <ViewerToolbar documentId={activeDocumentId} panels={panels} onTogglePanel={togglePanel} />
                 <DocumentMessageBar documentId={activeDocumentId} onOpenSignatures={() => setPanels((state) => ({ ...state, signatures: true }))} />
+                <ConvertedMessage documentId={activeDocumentId} />
                 <FallbackFontMessages documentId={activeDocumentId} />
                 {panels.search ? (
                   <SearchBar documentId={activeDocumentId} onClose={() => setPanels((state) => ({ ...state, search: false }))} />

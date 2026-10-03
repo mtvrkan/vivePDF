@@ -68,7 +68,7 @@
   "home": {
     "title": "ホーム",
     "subtitle": "PDF を開きましょう。すべてのツールは「ツール」メニューにあります。",
-    "dropHint": "PDF ファイルをここにドロップして開く",
+    "dropHint": "PDF、Office 文書、電子書籍、画像をここにドロップして開きます",
     "recent": "最近のドキュメント",
     "clearRecent": "リストをクリア",
     "recentEmpty": {
@@ -1301,6 +1301,13 @@
       "unnamed": "グループ",
       "name": "グループ名",
       "toggle": "クリックで折りたたみ・展開、ダブルクリックで名前を変更"
+    },
+    "converted": {
+      "converting": "{{name}} を PDF に変換しています…",
+      "message": "{{name}} を PDF のコピーとして開きました。PDF として保存するまで、変更はこの一時コピーに残ります。",
+      "saveAsPdf": "PDF として保存…",
+      "openTool": "変換ツールで開く",
+      "allSupported": "サポートされているすべてのファイル"
     }
   },
   "presentation": {
@@ -5860,7 +5867,7 @@
   },
   "emptyDoc": {
     "eyebrow": "ドキュメントを待っています",
-    "dropHint": "ウィンドウに PDF をドロップすることもできます",
+    "dropHint": "PDF、Office 文書、電子書籍、画像をウィンドウにドロップすることもできます",
     "shortcuts": "ショートカット",
     "palette": "コマンドパレット"
   },

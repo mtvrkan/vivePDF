@@ -10,6 +10,7 @@ import { isPdfPath, launchRequest } from "@/shared/rpc/files";
 import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useLaunchStore } from "@/shared/store/launchStore";
 import type { LaunchRequest } from "@/types";
+import { isOpenablePath } from "./convertedDocuments";
 import { routeForLaunch } from "./launchRoute";
 import { useDocumentWindow } from "./useDocumentWindow";
 import { useOpenPdf } from "./useOpenPdf";
@@ -50,8 +51,8 @@ export function FileOpenListener() {
     const applyLaunch = (request: LaunchRequest) => {
       const route = request.tool ? routeForLaunch(request.tool, request.paths[0]) : null;
       if (!route) {
-        const pdfs = request.paths.filter(isPdfPath);
-        if (pdfs.length > 0) void openPathsRef.current(pdfs);
+        const openable = request.paths.filter(isOpenablePath);
+        if (openable.length > 0) void openPathsRef.current(openable);
         return;
       }
       if (request.tool && MULTI_FILE_TOOLS.has(request.tool)) {
@@ -105,9 +106,9 @@ export function FileOpenListener() {
         handler(event.payload.paths);
         return;
       }
-      const pdfs = event.payload.paths.filter(isPdfPath);
-      if (pdfs.length > 0) {
-        void openPathsRef.current(pdfs);
+      const openable = event.payload.paths.filter(isOpenablePath);
+      if (openable.length > 0) {
+        void openPathsRef.current(openable);
         return;
       }
       const convertible = event.payload.paths.find((path) => !isPdfPath(path) && extensionOf(path) !== "");

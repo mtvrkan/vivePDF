@@ -124,6 +124,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
       ) : null}
       {documents.map((doc) => {
         const active = doc.id === activeDocumentId;
+        const label = registered[doc.id]?.fileName ?? doc.name;
         const group = groups.find((entry) => entry.id === memberOf[doc.id]);
         const tone = group ? GROUP_TONES[group.color] : undefined;
         const firstOfGroup = !!group && !chipped.has(group.id);
@@ -239,13 +240,13 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
             )}
           >
             {tone ? <span aria-hidden className="pointer-events-none absolute inset-x-1 top-0 h-0.5 rounded-b-full" style={{ backgroundColor: tone }} /> : null}
-            <span className="min-w-0 flex-1 truncate" title={doc.name}>
-              {doc.name}
+            <span className="min-w-0 flex-1 truncate" title={label}>
+              {label}
             </span>
             <span
               aria-hidden
               data-tab-close=""
-              title={`${t("common.close")}: ${doc.name}`}
+              title={`${t("common.close")}: ${label}`}
               onClick={(event) => {
                 event.stopPropagation();
                 guardedClose([doc.id]);

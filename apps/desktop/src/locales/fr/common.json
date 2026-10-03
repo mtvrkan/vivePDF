@@ -68,7 +68,7 @@
   "home": {
     "title": "Accueil",
     "subtitle": "Ouvrez un PDF ; tous les outils sont dans le menu Outils.",
-    "dropHint": "Déposez des fichiers PDF ici pour les ouvrir",
+    "dropHint": "Déposez ici des PDF, documents Office, livres numériques ou images pour les ouvrir",
     "recent": "Documents récents",
     "clearRecent": "Effacer la liste",
     "recentEmpty": {
@@ -1301,6 +1301,13 @@
       "unnamed": "Groupe",
       "name": "Nom du groupe",
       "toggle": "Cliquez pour réduire ou développer, double-cliquez pour renommer"
+    },
+    "converted": {
+      "converting": "Conversion de {{name}} en PDF…",
+      "message": "{{name}} a été ouvert comme copie PDF. Les modifications restent dans cette copie temporaire jusqu’à ce que vous l’enregistriez en PDF.",
+      "saveAsPdf": "Enregistrer en PDF…",
+      "openTool": "Ouvrir dans Convertir",
+      "allSupported": "Tous les fichiers pris en charge"
     }
   },
   "presentation": {
@@ -5860,7 +5867,7 @@
   },
   "emptyDoc": {
     "eyebrow": "En attente d’un document",
-    "dropHint": "Vous pouvez aussi déposer un PDF dans la fenêtre",
+    "dropHint": "Vous pouvez aussi déposer un PDF, un document Office, un livre numérique ou une image sur la fenêtre",
     "shortcuts": "Raccourcis",
     "palette": "Palette de commandes"
   },
