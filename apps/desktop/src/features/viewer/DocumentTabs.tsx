@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useActiveDocument, useOpenDocuments } from "@embedpdf/plugin-document-manager/react";
 import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMenu";
 import { useContextMenu } from "@/components/shared/useContextMenu";
 import { cn } from "@/shared/lib/cn";
-import { useDocumentStore } from "@/shared/store/documentStore";
+import { inTabOrder, useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { describeError } from "@/shared/lib/errorMessage";
 import { basenameOf } from "@/shared/lib/paths";
@@ -19,11 +19,19 @@ import { useDocumentWindow } from "./useDocumentWindow";
 import { useTabTearOff } from "./tabTearOff";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { isPendingChange } from "./overlay/pending";
+import { GROUP_COLORS, GROUP_TONES, groupAfterMove, groupedOrder, useTabGroupStore } from "./tabGroups";
 
 export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void) => void } = {}) {
   const { t } = useTranslation();
   const registered = useDocumentStore((state) => state.documents);
-  const documents = useOpenDocuments().filter((doc) => registered[doc.id]);
+  const order = useDocumentStore((state) => state.order);
+  const documents = inTabOrder(useOpenDocuments().filter((doc) => registered[doc.id]), order);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const groups = useTabGroupStore((state) => state.groups);
+  const memberOf = useTabGroupStore((state) => state.memberOf);
+  const groupMenu = useContextMenu();
+  const [menuGroupId, setMenuGroupId] = useState<string | null>(null);
+  const [renamingGroupId, setRenamingGroupId] = useState<string | null>(null);
   const { activeDocumentId } = useActiveDocument();
   const { activate, closeDocument, pickAndOpen, openPath } = useOpenPdf();
   const { closeDocuments, hasUnsavedWork } = useCloseDocuments();
@@ -47,7 +55,41 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
     }
     if (await openWindow([doc.path])) closeDocument(id);
   };
-  const tearOff = useTabTearOff((id) => void moveToWindow(id));
+  const regroup = () => {
+    const store = useDocumentStore.getState();
+    useDocumentStore.setState({ order: groupedOrder(store.order, useTabGroupStore.getState().memberOf) });
+  };
+  const reorderTo = (id: string, visibleIndex: number) => {
+    const rest = documents.map((doc) => doc.id).filter((entry) => entry !== id);
+    const full = useDocumentStore.getState().order.filter((entry) => entry !== id);
+    const anchor = rest[visibleIndex];
+    const last = rest[rest.length - 1];
+    const toIndex = anchor ? full.indexOf(anchor) : last ? full.indexOf(last) + 1 : 0;
+    useDocumentStore.getState().move(id, toIndex);
+    const tabGroups = useTabGroupStore.getState();
+    const target = groupAfterMove(useDocumentStore.getState().order, id, tabGroups.memberOf);
+    if (target) tabGroups.join(id, target);
+    else tabGroups.leave(id);
+    regroup();
+  };
+  const groupWith = (id: string, target: string | null) => {
+    const tabGroups = useTabGroupStore.getState();
+    if (target) tabGroups.join(id, target);
+    else tabGroups.create([id]);
+    regroup();
+  };
+
+  useEffect(() => {
+    for (const id of Object.keys(memberOf)) if (!registered[id]) useTabGroupStore.getState().forget(id);
+  }, [memberOf, registered]);
+
+  const activeGroup = activeDocumentId ? groups.find((group) => group.id === memberOf[activeDocumentId]) : undefined;
+  useEffect(() => {
+    if (activeGroup?.collapsed) useTabGroupStore.getState().setCollapsed(activeGroup.id, false);
+  }, [activeGroup]);
+
+  const chipped = new Set<string>();
+  const tearOff = useTabTearOff((id) => void moveToWindow(id), { strip: () => stripRef.current, onReorder: reorderTo });
 
   const dropPage = async (targetId: string, payload: string) => {
     let parsed: { documentId: string; page: number } | null = null;
@@ -76,16 +118,67 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
 
   return (
     <div className="flex h-9 items-stretch overflow-x-auto glass-flat border-b">
-      <div role="tablist" aria-label={t("viewer.tabs")} className="flex items-stretch">
+      <div ref={stripRef} role="tablist" aria-label={t("viewer.tabs")} className="relative flex items-stretch">
+      {tearOff.dropMark ? (
+        <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: tearOff.dropMark.x }} />
+      ) : null}
       {documents.map((doc) => {
         const active = doc.id === activeDocumentId;
+        const group = groups.find((entry) => entry.id === memberOf[doc.id]);
+        const tone = group ? GROUP_TONES[group.color] : undefined;
+        const firstOfGroup = !!group && !chipped.has(group.id);
+        if (group) chipped.add(group.id);
+        const members = group ? documents.filter((entry) => memberOf[entry.id] === group.id).length : 0;
+        const chip =
+          group && firstOfGroup ? (
+            renamingGroupId === group.id ? (
+              <input
+                key={`chip-${group.id}`}
+                autoFocus
+                defaultValue={group.name}
+                maxLength={40}
+                aria-label={t("viewer.tabGroups.name")}
+                placeholder={t("viewer.tabGroups.name")}
+                onBlur={(event) => {
+                  useTabGroupStore.getState().rename(group.id, event.currentTarget.value);
+                  setRenamingGroupId(null);
+                }}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter") event.currentTarget.blur();
+                  if (event.key === "Escape") setRenamingGroupId(null);
+                }}
+                className="my-1.5 ms-1 w-28 rounded-md border bg-background px-2 text-xs outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                style={{ borderColor: tone }}
+              />
+            ) : (
+              <button
+                key={`chip-${group.id}`}
+                type="button"
+                aria-expanded={!group.collapsed}
+                title={t("viewer.tabGroups.toggle")}
+                onClick={() => useTabGroupStore.getState().setCollapsed(group.id, !group.collapsed)}
+                onDoubleClick={() => setRenamingGroupId(group.id)}
+                onContextMenu={(event) => {
+                  setMenuGroupId(group.id);
+                  groupMenu.open(event);
+                }}
+                className="my-1.5 ms-1 flex max-w-36 items-center gap-1.5 rounded-md px-2 text-xs font-semibold text-background outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                style={{ backgroundColor: tone }}
+              >
+                <span className="truncate">{group.name || t("viewer.tabGroups.unnamed")}</span>
+                {group.collapsed ? <span className="tabular-nums opacity-80">{members}</span> : null}
+              </button>
+            )
+          ) : null;
+        if (group?.collapsed && !active) return chip;
         return (
+          <Fragment key={doc.id}>
+          {chip}
           <div
-            key={doc.id}
             role="tab"
             aria-selected={active}
             tabIndex={active ? 0 : -1}
-            aria-keyshortcuts="Delete"
+            aria-keyshortcuts="Delete Control+Shift+ArrowLeft Control+Shift+ArrowRight"
             onPointerDown={(event) => {
               if (event.target instanceof Element && event.target.closest("[data-tab-close]")) return;
               tearOff.onPointerDown(doc.id, event);
@@ -94,7 +187,14 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               if (!tearOff.consumeDrag()) guardedActivate(doc.id);
             }}
             onKeyDown={(event) => {
-              if (event.key === "Enter" || event.key === " ") {
+              if (event.ctrlKey && event.shiftKey && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
+                event.preventDefault();
+                const index = documents.findIndex((entry) => entry.id === doc.id);
+                const step = event.key === "ArrowRight" ? 1 : -1;
+                reorderTo(doc.id, Math.min(documents.length - 1, Math.max(0, index + step)));
+                const tab = event.currentTarget;
+                requestAnimationFrame(() => tab.focus());
+              } else if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 guardedActivate(doc.id);
               } else if (event.key === "Delete") {
@@ -138,6 +238,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               tearOff.draggingId === doc.id && "cursor-grabbing opacity-60",
             )}
           >
+            {tone ? <span aria-hidden className="pointer-events-none absolute inset-x-1 top-0 h-0.5 rounded-b-full" style={{ backgroundColor: tone }} /> : null}
             <span className="min-w-0 flex-1 truncate" title={doc.name}>
               {doc.name}
             </span>
@@ -157,6 +258,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               <X className="size-3.5" aria-hidden />
             </span>
           </div>
+          </Fragment>
         );
       })}
       </div>
@@ -182,6 +284,23 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                 onSelect: () => guardedClose(documents.filter((entry) => entry.id !== menuDocId).map((entry) => entry.id)),
               },
               { type: "item", id: "close-all", label: t("viewer.context.closeAll"), onSelect: () => guardedClose(documents.map((entry) => entry.id)) },
+              { type: "separator", id: "sep-group" },
+              { type: "item", id: "group-new", label: t("viewer.tabGroups.addToNew"), onSelect: () => groupWith(menuDocId, null) },
+              ...(groups.some((group) => group.id !== memberOf[menuDocId])
+                ? [
+                    {
+                      type: "submenu" as const,
+                      id: "group-join",
+                      label: t("viewer.tabGroups.addTo"),
+                      items: groups
+                        .filter((group) => group.id !== memberOf[menuDocId])
+                        .map((group) => ({ type: "item" as const, id: `group-${group.id}`, label: group.name || t("viewer.tabGroups.unnamed"), onSelect: () => groupWith(menuDocId, group.id) })),
+                    },
+                  ]
+                : []),
+              ...(memberOf[menuDocId]
+                ? [{ type: "item" as const, id: "group-leave", label: t("viewer.tabGroups.remove"), onSelect: () => useTabGroupStore.getState().leave(menuDocId) }]
+                : []),
               { type: "separator", id: "sep-window" },
               { type: "item", id: "move-to-window", label: t("viewer.window.moveToNew"), onSelect: () => void moveToWindow(menuDocId) },
               { type: "separator", id: "sep-file" },
@@ -196,6 +315,28 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               { type: "item", id: "copy-name", label: t("viewer.context.copyFileName"), onSelect: () => void navigator.clipboard.writeText(basenameOf(path)) },
             ];
             return <ContextMenu anchor={menu.anchor} items={items} label={t("viewer.tabs")} onClose={menu.close} />;
+          })()
+        : null}
+      {groupMenu.anchor && menuGroupId
+        ? (() => {
+            const group = groups.find((entry) => entry.id === menuGroupId);
+            if (!group) return null;
+            const members = documents.filter((entry) => memberOf[entry.id] === group.id).map((entry) => entry.id);
+            const store = useTabGroupStore.getState();
+            const items: ContextMenuItem[] = [
+              { type: "item", id: "rename", label: t("viewer.tabGroups.rename"), onSelect: () => setRenamingGroupId(group.id) },
+              {
+                type: "submenu",
+                id: "color",
+                label: t("viewer.tabGroups.color"),
+                items: GROUP_COLORS.map((color) => ({ type: "item" as const, id: `color-${color}`, label: t(`viewer.tabGroups.colors.${color}`), checked: group.color === color, onSelect: () => store.recolor(group.id, color) })),
+              },
+              { type: "item", id: "collapse", label: t(group.collapsed ? "viewer.tabGroups.expand" : "viewer.tabGroups.collapse"), onSelect: () => store.setCollapsed(group.id, !group.collapsed) },
+              { type: "separator", id: "sep-group-end" },
+              { type: "item", id: "ungroup", label: t("viewer.tabGroups.ungroup"), onSelect: () => store.ungroup(group.id) },
+              { type: "item", id: "close-group", label: t("viewer.tabGroups.close"), onSelect: () => guardedClose(members) },
+            ];
+            return <ContextMenu anchor={groupMenu.anchor} items={items} label={group.name || t("viewer.tabGroups.unnamed")} onClose={groupMenu.close} />;
           })()
         : null}
     </div>

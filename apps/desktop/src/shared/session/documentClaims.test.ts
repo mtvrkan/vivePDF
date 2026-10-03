@@ -16,7 +16,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  useDocumentStore.setState({ documents: {}, activeId: null });
+  useDocumentStore.setState({ documents: {}, order: [], activeId: null });
 });
 
 describe("shareOpenDocuments", () => {

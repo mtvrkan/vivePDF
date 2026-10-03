@@ -1277,6 +1277,28 @@
       "answerKey": "解答: {{content}}",
       "flowchart": "フローチャート。手順: {{steps}}。矢印: {{arrows}}",
       "flowchartSteps": "フローチャート。手順: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "新しいグループに追加",
+      "addTo": "グループに追加",
+      "remove": "グループから外す",
+      "rename": "グループに名前を付ける",
+      "color": "色",
+      "colors": {
+        "blue": "青",
+        "green": "緑",
+        "orange": "オレンジ",
+        "purple": "紫",
+        "amber": "黄",
+        "red": "赤"
+      },
+      "collapse": "グループを折りたたむ",
+      "expand": "グループを展開",
+      "ungroup": "グループを解除",
+      "close": "グループの文書を閉じる",
+      "unnamed": "グループ",
+      "name": "グループ名",
+      "toggle": "クリックで折りたたみ・展開、ダブルクリックで名前を変更"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "JPG、PNG、WebPファイルやフォルダー全体をPDFに変換します。",
         "file-to-pdf": "Word、Excel、PowerPoint、HTML、Markdown → PDF（LibreOffice は必要に応じてダウンロードされます）。",
         "url-to-pdf": "ウェブページを画像ありまたはなしで PDF として保存します。",
+        "svg-to-pdf": "SVG の図、ロゴ、アイコンを鮮明なベクター PDF に変換します。",
         "docx": "レイアウトを保ったままWord文書に変換します。",
         "xlsx": "表を検出してExcelに書き出します。",
         "pptx": "各ページをPowerPointのスライドとして書き出します。",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "画像を再サンプリングしています（ページ {{current}}/{{total}}）…",
     "linearizing": "高速Web表示用に最適化しています…",
     "convertingPages": "ページ {{current}}/{{total}} を変換しています…",
-    "validating": "veraPDFで検証しています…"
+    "validating": "veraPDFで検証しています…",
+    "applying": "変更を適用しています…",
+    "reading": "読み込んでいます…",
+    "searching": "検索しています…",
+    "replacing": "置換しています…"
   },
   "annotate": {
     "select": "選択／移動",
@@ -5559,7 +5586,8 @@
       "updates": "アップデート",
       "system": "システム",
       "data": "データ",
-      "feedback": "フィードバック"
+      "feedback": "フィードバック",
+      "general": "起動とプライバシー"
     },
     "action": {
       "open": "PDFを開く…",

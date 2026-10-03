@@ -1277,6 +1277,28 @@
       "answerKey": "Lösungsschlüssel: {{content}}",
       "flowchart": "Flussdiagramm. Schritte: {{steps}}. Pfeile: {{arrows}}",
       "flowchartSteps": "Flussdiagramm. Schritte: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "Zu neuer Gruppe hinzufügen",
+      "addTo": "Zu Gruppe hinzufügen",
+      "remove": "Aus Gruppe entfernen",
+      "rename": "Gruppe benennen",
+      "color": "Farbe",
+      "colors": {
+        "blue": "Blau",
+        "green": "Grün",
+        "orange": "Orange",
+        "purple": "Lila",
+        "amber": "Gelb",
+        "red": "Rot"
+      },
+      "collapse": "Gruppe einklappen",
+      "expand": "Gruppe ausklappen",
+      "ungroup": "Gruppierung aufheben",
+      "close": "Dokumente der Gruppe schließen",
+      "unnamed": "Gruppe",
+      "name": "Gruppenname",
+      "toggle": "Klicken zum Ein- oder Ausklappen, Doppelklick zum Umbenennen"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "JPG-, PNG-, WebP-Dateien oder einen ganzen Ordner in ein PDF umwandeln.",
         "file-to-pdf": "Word, Excel, PowerPoint, HTML, Markdown → PDF (LibreOffice wird bei Bedarf heruntergeladen).",
         "url-to-pdf": "Eine Webseite mit oder ohne Bilder als PDF speichern.",
+        "svg-to-pdf": "SVG-Zeichnungen, Logos und Symbole in ein scharfes Vektor-PDF umwandeln.",
         "docx": "In ein Word-Dokument umwandeln, Layout bleibt erhalten.",
         "xlsx": "Tabellen erkennen und nach Excel exportieren.",
         "pptx": "Jede Seite als PowerPoint-Folie exportieren.",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "Bilder werden neu abgetastet (Seite {{current}}/{{total}})…",
     "linearizing": "Für schnelle Web-Anzeige wird optimiert…",
     "convertingPages": "Seite {{current}}/{{total}} wird konvertiert…",
-    "validating": "Validierung mit veraPDF…"
+    "validating": "Validierung mit veraPDF…",
+    "applying": "Änderungen werden angewendet…",
+    "reading": "Wird gelesen…",
+    "searching": "Wird gesucht…",
+    "replacing": "Wird ersetzt…"
   },
   "annotate": {
     "select": "Auswählen / verschieben",
@@ -5559,7 +5586,8 @@
       "updates": "Updates",
       "system": "System",
       "data": "Daten",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "general": "Start und Datenschutz"
     },
     "action": {
       "open": "PDF öffnen…",

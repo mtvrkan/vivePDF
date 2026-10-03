@@ -1277,6 +1277,28 @@
       "answerKey": "答案：{{content}}",
       "flowchart": "流程图。步骤：{{steps}}。箭头：{{arrows}}",
       "flowchartSteps": "流程图。步骤：{{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "添加到新组",
+      "addTo": "添加到组",
+      "remove": "从组中移除",
+      "rename": "命名组",
+      "color": "颜色",
+      "colors": {
+        "blue": "蓝色",
+        "green": "绿色",
+        "orange": "橙色",
+        "purple": "紫色",
+        "amber": "黄色",
+        "red": "红色"
+      },
+      "collapse": "折叠组",
+      "expand": "展开组",
+      "ungroup": "取消分组",
+      "close": "关闭组中的文档",
+      "unnamed": "组",
+      "name": "组名称",
+      "toggle": "单击可折叠或展开，双击可重命名"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "将 JPG、PNG、WebP 文件或整个文件夹转换为 PDF。",
         "file-to-pdf": "Word、Excel、PowerPoint、HTML、Markdown → PDF（LibreOffice 按需下载）。",
         "url-to-pdf": "将网页保存为 PDF，可选择是否包含图片。",
+        "svg-to-pdf": "将 SVG 图形、标志和图标转换为清晰的矢量 PDF。",
         "docx": "转换为 Word 文档，保留原始版式。",
         "xlsx": "检测表格并导出到 Excel。",
         "pptx": "将每一页导出为 PowerPoint 幻灯片。",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "正在重新采样图像（第 {{current}}/{{total}} 页）…",
     "linearizing": "正在为快速 Web 查看进行优化…",
     "convertingPages": "正在转换第 {{current}}/{{total}} 页…",
-    "validating": "正在用 veraPDF 校验…"
+    "validating": "正在用 veraPDF 校验…",
+    "applying": "正在应用更改…",
+    "reading": "正在读取…",
+    "searching": "正在搜索…",
+    "replacing": "正在替换…"
   },
   "annotate": {
     "select": "选择 / 移动",
@@ -5559,7 +5586,8 @@
       "updates": "更新",
       "system": "系统",
       "data": "数据",
-      "feedback": "反馈"
+      "feedback": "反馈",
+      "general": "启动与隐私"
     },
     "action": {
       "open": "打开 PDF…",

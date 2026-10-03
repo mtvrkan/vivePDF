@@ -30,7 +30,7 @@ beforeAll(async () => {
 beforeEach(() => {
   localStorage.clear();
   preferences.usePreferencesStore.getState().reset();
-  documents.useDocumentStore.setState({ documents: {}, activeId: null });
+  documents.useDocumentStore.setState({ documents: {}, order: [], activeId: null });
   operations.useOperationStore.setState({ running: 0 });
 });
 

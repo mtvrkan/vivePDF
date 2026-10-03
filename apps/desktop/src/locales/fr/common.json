@@ -1277,6 +1277,28 @@
       "answerKey": "Corrigé : {{content}}",
       "flowchart": "Organigramme. Étapes : {{steps}}. Flèches : {{arrows}}",
       "flowchartSteps": "Organigramme. Étapes : {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "Ajouter à un nouveau groupe",
+      "addTo": "Ajouter au groupe",
+      "remove": "Retirer du groupe",
+      "rename": "Nommer le groupe",
+      "color": "Couleur",
+      "colors": {
+        "blue": "Bleu",
+        "green": "Vert",
+        "orange": "Orange",
+        "purple": "Violet",
+        "amber": "Jaune",
+        "red": "Rouge"
+      },
+      "collapse": "Réduire le groupe",
+      "expand": "Développer le groupe",
+      "ungroup": "Dissocier",
+      "close": "Fermer les documents du groupe",
+      "unnamed": "Groupe",
+      "name": "Nom du groupe",
+      "toggle": "Cliquez pour réduire ou développer, double-cliquez pour renommer"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "Transformez des fichiers JPG, PNG, WebP ou un dossier entier en PDF.",
         "file-to-pdf": "Word, Excel, PowerPoint, HTML, Markdown → PDF (LibreOffice est téléchargé sur demande).",
         "url-to-pdf": "Enregistrez une page web en PDF, avec ou sans ses images.",
+        "svg-to-pdf": "Transforme dessins, logos et icônes SVG en un PDF vectoriel net.",
         "docx": "Convertissez en document Word, mise en page préservée.",
         "xlsx": "Détectez les tableaux et exportez-les vers Excel.",
         "pptx": "Exportez chaque page comme diapositive PowerPoint.",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "Rééchantillonnage des images (page {{current}}/{{total}})…",
     "linearizing": "Optimisation pour l’affichage web rapide…",
     "convertingPages": "Conversion de la page {{current}}/{{total}}…",
-    "validating": "Validation avec veraPDF…"
+    "validating": "Validation avec veraPDF…",
+    "applying": "Application des modifications…",
+    "reading": "Lecture…",
+    "searching": "Recherche…",
+    "replacing": "Remplacement…"
   },
   "annotate": {
     "select": "Sélectionner / déplacer",
@@ -5559,7 +5586,8 @@
       "updates": "Mises à jour",
       "system": "Système",
       "data": "Données",
-      "feedback": "Retour"
+      "feedback": "Retour",
+      "general": "Démarrage et confidentialité"
     },
     "action": {
       "open": "Ouvrir un PDF…",

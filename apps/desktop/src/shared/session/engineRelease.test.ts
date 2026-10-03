@@ -12,7 +12,7 @@ const { releaseClosedDocuments } = await import("./engineRelease");
 let stop: () => void;
 
 beforeEach(() => {
-  useDocumentStore.setState({ documents: {}, activeId: null });
+  useDocumentStore.setState({ documents: {}, order: [], activeId: null });
   stop = releaseClosedDocuments();
 });
 

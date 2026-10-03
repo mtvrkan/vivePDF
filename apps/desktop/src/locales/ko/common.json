@@ -1277,6 +1277,28 @@
       "answerKey": "정답표: {{content}}",
       "flowchart": "순서도. 단계: {{steps}}. 화살표: {{arrows}}",
       "flowchartSteps": "순서도. 단계: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "새 그룹에 추가",
+      "addTo": "그룹에 추가",
+      "remove": "그룹에서 제거",
+      "rename": "그룹 이름 지정",
+      "color": "색",
+      "colors": {
+        "blue": "파랑",
+        "green": "초록",
+        "orange": "주황",
+        "purple": "보라",
+        "amber": "노랑",
+        "red": "빨강"
+      },
+      "collapse": "그룹 접기",
+      "expand": "그룹 펼치기",
+      "ungroup": "그룹 해제",
+      "close": "그룹의 문서 닫기",
+      "unnamed": "그룹",
+      "name": "그룹 이름",
+      "toggle": "클릭하면 접거나 펼치고, 두 번 클릭하면 이름을 바꿉니다"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "JPG, PNG, WebP 파일이나 폴더 전체를 PDF로 변환합니다.",
         "file-to-pdf": "Word, Excel, PowerPoint, HTML, Markdown → PDF (필요 시 LibreOffice를 다운로드합니다).",
         "url-to-pdf": "웹 페이지를 이미지와 함께 또는 이미지 없이 PDF로 저장합니다.",
+        "svg-to-pdf": "SVG 그림, 로고, 아이콘을 선명한 벡터 PDF로 변환합니다.",
         "docx": "레이아웃을 유지한 채 Word 문서로 변환합니다.",
         "xlsx": "표를 감지하여 Excel로 내보냅니다.",
         "pptx": "각 페이지를 PowerPoint 슬라이드로 내보냅니다.",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "이미지 다시 샘플링 중(페이지 {{current}}/{{total}})…",
     "linearizing": "빠른 웹 보기용으로 최적화하는 중…",
     "convertingPages": "페이지 {{current}}/{{total}} 변환 중…",
-    "validating": "veraPDF로 검사하는 중…"
+    "validating": "veraPDF로 검사하는 중…",
+    "applying": "변경 사항을 적용하는 중…",
+    "reading": "읽는 중…",
+    "searching": "검색하는 중…",
+    "replacing": "바꾸는 중…"
   },
   "annotate": {
     "select": "선택 / 이동",
@@ -5559,7 +5586,8 @@
       "updates": "업데이트",
       "system": "시스템",
       "data": "데이터",
-      "feedback": "피드백"
+      "feedback": "피드백",
+      "general": "시작 및 개인정보"
     },
     "action": {
       "open": "PDF 열기…",

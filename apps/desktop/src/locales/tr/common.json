@@ -1277,6 +1277,28 @@
       "answerKey": "Cevap anahtarı: {{content}}",
       "flowchart": "Akış şeması. Adımlar: {{steps}}. Oklar: {{arrows}}",
       "flowchartSteps": "Akış şeması. Adımlar: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "Yeni gruba ekle",
+      "addTo": "Gruba ekle",
+      "remove": "Gruptan çıkar",
+      "rename": "Grubu adlandır",
+      "color": "Renk",
+      "colors": {
+        "blue": "Mavi",
+        "green": "Yeşil",
+        "orange": "Turuncu",
+        "purple": "Mor",
+        "amber": "Sarı",
+        "red": "Kırmızı"
+      },
+      "collapse": "Grubu daralt",
+      "expand": "Grubu genişlet",
+      "ungroup": "Grubu dağıt",
+      "close": "Gruptaki belgeleri kapat",
+      "unnamed": "Grup",
+      "name": "Grup adı",
+      "toggle": "Daraltmak ya da genişletmek için tıklayın, adlandırmak için çift tıklayın"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "JPG, PNG ve WebP görsellerini veya bir klasörü PDF’e dönüştürür.",
         "file-to-pdf": "Word, Excel, PowerPoint, HTML ve Markdown belgelerini PDF’e dönüştürür.",
         "url-to-pdf": "Bir web sayfasını görselleriyle veya görselsiz PDF olarak kaydedin.",
+        "svg-to-pdf": "SVG çizimlerini, logoları ve simgeleri keskin, vektör bir PDF’e dönüştürür.",
         "docx": "Sayfa düzenini koruyarak Word belgesi oluşturur.",
         "xlsx": "Tabloları algılayarak Excel çalışma kitabına aktarır.",
         "pptx": "Her sayfayı bir PowerPoint slaydına aktarır.",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "Görseller yeniden örnekleniyor (sayfa {{current}}/{{total}})…",
     "linearizing": "Hızlı web görünümü için hazırlanıyor…",
     "convertingPages": "Sayfa {{current}}/{{total}} dönüştürülüyor…",
-    "validating": "veraPDF ile doğrulanıyor…"
+    "validating": "veraPDF ile doğrulanıyor…",
+    "applying": "Değişiklikler uygulanıyor…",
+    "reading": "Okunuyor…",
+    "searching": "Aranıyor…",
+    "replacing": "Değiştiriliyor…"
   },
   "annotate": {
     "select": "Seç / taşı",
@@ -5559,7 +5586,8 @@
       "updates": "Güncellemeler",
       "system": "Sistem",
       "data": "Veri",
-      "feedback": "Geri bildirim"
+      "feedback": "Geri bildirim",
+      "general": "Başlangıç ve gizlilik"
     },
     "action": {
       "open": "PDF Aç…",

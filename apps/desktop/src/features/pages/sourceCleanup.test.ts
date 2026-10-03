@@ -46,7 +46,7 @@ describe("watchDocumentLifecycles", () => {
     closed.length = 0;
     releaseViewSource.mockClear();
     useOrganizerStore.getState().clear();
-    useDocumentStore.setState({ documents: {}, activeId: null });
+    useDocumentStore.setState({ documents: {}, order: [], activeId: null });
     stop = watchDocumentLifecycles(() => ({ isDocumentOpen: (id) => open.has(id), closeDocument: (id) => closed.push(id) }));
   });
 

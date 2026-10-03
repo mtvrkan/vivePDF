@@ -8,19 +8,23 @@ export type DocumentRegistry = { isDocumentOpen: (id: string) => boolean; setAct
 
 type DocumentState = {
   documents: Record<string, OpenDocument>;
+  order: string[];
   activeId: string | null;
   register: (id: string, path: string, password: string | null) => void;
   setActive: (id: string | null) => void;
   activate: (id: string, registry: DocumentRegistry | null) => boolean;
   remove: (id: string) => void;
+  move: (id: string, toIndex: number) => void;
   loadInfo: (id: string) => Promise<void>;
 };
 
 export const useDocumentStore = create<DocumentState>((set, get) => ({
   documents: {},
+  order: [],
   activeId: null,
   register: (id, path, password) =>
     set((state) => ({
+      order: state.order.includes(id) ? state.order : [...state.order, id],
       documents: {
         ...state.documents,
         [id]: {
@@ -49,8 +53,10 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
     set((state) => {
       const documents = { ...state.documents };
       delete documents[id];
-      return { documents, activeId: state.activeId === id ? null : state.activeId };
+      return { documents, order: state.order.filter((entry) => entry !== id), activeId: state.activeId === id ? null : state.activeId };
     }),
+  move: (id, toIndex) =>
+    set((state) => ({ order: movedTo(state.order, id, toIndex) })),
   loadInfo: async (id) => {
     const document = get().documents[id];
     if (!document) return;
@@ -72,6 +78,18 @@ export const useDocumentStore = create<DocumentState>((set, get) => ({
     }
   },
 }));
+
+export function movedTo(order: string[], id: string, toIndex: number): string[] {
+  if (!order.includes(id)) return order;
+  const rest = order.filter((entry) => entry !== id);
+  const index = Math.min(rest.length, Math.max(0, Math.round(toIndex)));
+  return [...rest.slice(0, index), id, ...rest.slice(index)];
+}
+
+export function inTabOrder<T extends { id: string }>(items: T[], order: string[]): T[] {
+  const rank = new Map(order.map((id, index) => [id, index]));
+  return [...items].sort((a, b) => (rank.get(a.id) ?? Number.MAX_SAFE_INTEGER) - (rank.get(b.id) ?? Number.MAX_SAFE_INTEGER));
+}
 
 export function useActiveOpenDocument(): OpenDocument | null {
   return useDocumentStore((state) => (state.activeId ? (state.documents[state.activeId] ?? null) : null));

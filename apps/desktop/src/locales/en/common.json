@@ -1277,6 +1277,28 @@
       "answerKey": "Answer key: {{content}}",
       "flowchart": "Flowchart. Steps: {{steps}}. Arrows: {{arrows}}",
       "flowchartSteps": "Flowchart. Steps: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "Add to new group",
+      "addTo": "Add to group",
+      "remove": "Remove from group",
+      "rename": "Name group",
+      "color": "Colour",
+      "colors": {
+        "blue": "Blue",
+        "green": "Green",
+        "orange": "Orange",
+        "purple": "Purple",
+        "amber": "Yellow",
+        "red": "Red"
+      },
+      "collapse": "Collapse group",
+      "expand": "Expand group",
+      "ungroup": "Ungroup",
+      "close": "Close the group's documents",
+      "unnamed": "Group",
+      "name": "Group name",
+      "toggle": "Click to collapse or expand, double-click to rename"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "Turn JPG, PNG, WebP files or a whole folder into a PDF.",
         "file-to-pdf": "Word, Excel, PowerPoint, HTML, Markdown → PDF (LibreOffice is downloaded on request).",
         "url-to-pdf": "Save a web page as a PDF, with or without its pictures.",
+        "svg-to-pdf": "Turn SVG drawings, logos and icons into a sharp, vector PDF.",
         "docx": "Convert to a Word document, layout preserved.",
         "xlsx": "Detect tables and export them to Excel.",
         "pptx": "Export each page as a PowerPoint slide.",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "Resampling images (page {{current}}/{{total}})…",
     "linearizing": "Optimising for fast web view…",
     "convertingPages": "Converting page {{current}}/{{total}}…",
-    "validating": "Validating with veraPDF…"
+    "validating": "Validating with veraPDF…",
+    "applying": "Applying changes…",
+    "reading": "Reading…",
+    "searching": "Searching…",
+    "replacing": "Replacing…"
   },
   "annotate": {
     "select": "Select / move",
@@ -5559,7 +5586,8 @@
       "updates": "Updates",
       "system": "System",
       "data": "Data",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "general": "Startup and privacy"
     },
     "action": {
       "open": "Open PDF…",

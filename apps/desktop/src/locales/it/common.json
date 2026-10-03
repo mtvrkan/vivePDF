@@ -1277,6 +1277,28 @@
       "answerKey": "Chiave delle risposte: {{content}}",
       "flowchart": "Diagramma di flusso. Passaggi: {{steps}}. Frecce: {{arrows}}",
       "flowchartSteps": "Diagramma di flusso. Passaggi: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "Aggiungi a un nuovo gruppo",
+      "addTo": "Aggiungi al gruppo",
+      "remove": "Rimuovi dal gruppo",
+      "rename": "Dai un nome al gruppo",
+      "color": "Colore",
+      "colors": {
+        "blue": "Blu",
+        "green": "Verde",
+        "orange": "Arancione",
+        "purple": "Viola",
+        "amber": "Giallo",
+        "red": "Rosso"
+      },
+      "collapse": "Comprimi gruppo",
+      "expand": "Espandi gruppo",
+      "ungroup": "Separa",
+      "close": "Chiudi i documenti del gruppo",
+      "unnamed": "Gruppo",
+      "name": "Nome del gruppo",
+      "toggle": "Fai clic per comprimere o espandere, doppio clic per rinominare"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "Trasforma file JPG, PNG, WebP o un’intera cartella in un PDF.",
         "file-to-pdf": "Word, Excel, PowerPoint, HTML, Markdown → PDF (LibreOffice viene scaricato su richiesta).",
         "url-to-pdf": "Salva una pagina web come PDF, con o senza immagini.",
+        "svg-to-pdf": "Trasforma disegni, loghi e icone SVG in un PDF vettoriale nitido.",
         "docx": "Converte in un documento Word, layout preservato.",
         "xlsx": "Rileva le tabelle e le esporta in Excel.",
         "pptx": "Esporta ogni pagina come diapositiva PowerPoint.",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "Ricampionamento immagini (pagina {{current}}/{{total}})…",
     "linearizing": "Ottimizzazione per la visualizzazione web veloce…",
     "convertingPages": "Conversione pagina {{current}}/{{total}}…",
-    "validating": "Convalida con veraPDF…"
+    "validating": "Convalida con veraPDF…",
+    "applying": "Applicazione delle modifiche…",
+    "reading": "Lettura…",
+    "searching": "Ricerca…",
+    "replacing": "Sostituzione…"
   },
   "annotate": {
     "select": "Seleziona / sposta",
@@ -5559,7 +5586,8 @@
       "updates": "Aggiornamenti",
       "system": "Sistema",
       "data": "Dati",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "general": "Avvio e privacy"
     },
     "action": {
       "open": "Apri PDF…",

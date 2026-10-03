@@ -13,7 +13,7 @@ const { attachViewSource, releaseClosedViewSources, releaseViewSourceOf } = awai
 let stop: () => void;
 
 beforeEach(() => {
-  useDocumentStore.setState({ documents: {}, activeId: null });
+  useDocumentStore.setState({ documents: {}, order: [], activeId: null });
   stop = releaseClosedViewSources();
 });
 

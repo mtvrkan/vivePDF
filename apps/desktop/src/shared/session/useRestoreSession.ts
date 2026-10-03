@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/react";
 import { useOrganizerStore } from "@/features/pages/organizerStore";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
+import { groupedOrder, isGroupColor, nextColor, useTabGroupStore } from "@/features/viewer/tabGroups";
 import { basenameOf, pathKey } from "@/shared/lib/paths";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
@@ -11,6 +12,22 @@ import type { SessionSnapshot } from "@/types";
 
 const ENGINE_POLL_MS = 100;
 const ENGINE_TIMEOUT_MS = 15000;
+
+function restoreGroups(snapshot: SessionSnapshot, restored: Array<{ id: string; path: string }>) {
+  if (!snapshot.tabGroups?.length) return;
+  const byPath = new Map(restored.map((doc) => [pathKey(doc.path), doc.id]));
+  const groups = useTabGroupStore.getState();
+  groups.restore(
+    snapshot.tabGroups.map((group) => ({
+      name: typeof group.name === "string" ? group.name.slice(0, 40) : "",
+      color: isGroupColor(group.color) ? group.color : nextColor([]),
+      collapsed: group.collapsed === true,
+      documentIds: (Array.isArray(group.paths) ? group.paths : []).map((path) => byPath.get(pathKey(path))).filter((id): id is string => !!id),
+    })),
+  );
+  const documents = useDocumentStore.getState();
+  useDocumentStore.setState({ order: groupedOrder(documents.order, useTabGroupStore.getState().memberOf) });
+}
 
 export function useRestoreSession() {
   const { openPath } = useOpenPdf();
@@ -50,6 +67,7 @@ export function useRestoreSession() {
     if (failed.length > 0) {
       toast("error", t("recovery.restorePartial", { count: failed.length, name: basenameOf(failed[0]) }));
     }
+    restoreGroups(snapshot, restored);
     const restoredKeys = new Set(snapshot.documents.map(pathKey));
     const openedMeanwhile = restored.filter((doc) => !restoredKeys.has(pathKey(doc.path)));
     const latestOpened = openedMeanwhile[openedMeanwhile.length - 1];

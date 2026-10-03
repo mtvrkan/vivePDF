@@ -1277,6 +1277,28 @@
       "answerKey": "Gabarito: {{content}}",
       "flowchart": "Fluxograma. Etapas: {{steps}}. Setas: {{arrows}}",
       "flowchartSteps": "Fluxograma. Etapas: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "Adicionar a um novo grupo",
+      "addTo": "Adicionar ao grupo",
+      "remove": "Remover do grupo",
+      "rename": "Nomear grupo",
+      "color": "Cor",
+      "colors": {
+        "blue": "Azul",
+        "green": "Verde",
+        "orange": "Laranja",
+        "purple": "Roxo",
+        "amber": "Amarelo",
+        "red": "Vermelho"
+      },
+      "collapse": "Recolher grupo",
+      "expand": "Expandir grupo",
+      "ungroup": "Desagrupar",
+      "close": "Fechar os documentos do grupo",
+      "unnamed": "Grupo",
+      "name": "Nome do grupo",
+      "toggle": "Clique para recolher ou expandir, clique duas vezes para renomear"
     }
   },
   "presentation": {
@@ -2357,6 +2379,7 @@
         "images-to-pdf": "Transforme arquivos JPG, PNG, WebP ou uma pasta inteira em um PDF.",
         "file-to-pdf": "Word, Excel, PowerPoint, HTML, Markdown → PDF (o LibreOffice é baixado quando necessário).",
         "url-to-pdf": "Salve uma página da web como PDF, com ou sem as imagens.",
+        "svg-to-pdf": "Converte desenhos, logotipos e ícones SVG em um PDF vetorial nítido.",
         "docx": "Converta para um documento Word, com o layout preservado.",
         "xlsx": "Detecte tabelas e exporte-as para o Excel.",
         "pptx": "Exporte cada página como um slide do PowerPoint.",
@@ -5215,7 +5238,11 @@
     "rewritingImagesPages": "Reamostrando imagens (página {{current}}/{{total}})…",
     "linearizing": "Otimizando para exibição rápida na Web…",
     "convertingPages": "Convertendo página {{current}}/{{total}}…",
-    "validating": "Validando com o veraPDF…"
+    "validating": "Validando com o veraPDF…",
+    "applying": "Aplicando alterações…",
+    "reading": "Lendo…",
+    "searching": "Pesquisando…",
+    "replacing": "Substituindo…"
   },
   "annotate": {
     "select": "Selecionar / mover",
@@ -5559,7 +5586,8 @@
       "updates": "Atualizações",
       "system": "Sistema",
       "data": "Dados",
-      "feedback": "Feedback"
+      "feedback": "Feedback",
+      "general": "Inicialização e privacidade"
     },
     "action": {
       "open": "Abrir PDF…",

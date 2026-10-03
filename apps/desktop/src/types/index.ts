@@ -1583,6 +1583,7 @@ export type SessionSnapshot = {
   route: string;
   documents: string[];
   activePath: string | null;
+  tabGroups?: Array<{ name: string; color: string; collapsed: boolean; paths: string[] }>;
   organizer: {
     mainPath: string;
     tiles: Array<OrganizerTile>;

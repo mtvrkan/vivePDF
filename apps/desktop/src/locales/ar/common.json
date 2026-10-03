@@ -1325,6 +1325,28 @@
       "answerKey": "مفتاح الإجابات: {{content}}",
       "flowchart": "مخطط انسيابي. الخطوات: {{steps}}. الأسهم: {{arrows}}",
       "flowchartSteps": "مخطط انسيابي. الخطوات: {{steps}}"
+    },
+    "tabGroups": {
+      "addToNew": "إضافة إلى مجموعة جديدة",
+      "addTo": "إضافة إلى مجموعة",
+      "remove": "إزالة من المجموعة",
+      "rename": "تسمية المجموعة",
+      "color": "اللون",
+      "colors": {
+        "blue": "أزرق",
+        "green": "أخضر",
+        "orange": "برتقالي",
+        "purple": "بنفسجي",
+        "amber": "أصفر",
+        "red": "أحمر"
+      },
+      "collapse": "طي المجموعة",
+      "expand": "توسيع المجموعة",
+      "ungroup": "فك التجميع",
+      "close": "إغلاق مستندات المجموعة",
+      "unnamed": "مجموعة",
+      "name": "اسم المجموعة",
+      "toggle": "انقر للطي أو التوسيع، وانقر مرتين لإعادة التسمية"
     }
   },
   "presentation": {
@@ -2501,6 +2523,7 @@
         "images-to-pdf": "تحويل ملفات JPG وPNG وWebP أو مجلد كامل إلى PDF.",
         "file-to-pdf": "Word وExcel وPowerPoint وHTML وMarkdown ← PDF (يُنزَّل LibreOffice عند الطلب).",
         "url-to-pdf": "احفظ صفحة ويب بصيغة PDF، مع صورها أو بدونها.",
+        "svg-to-pdf": "يحوّل رسومات SVG والشعارات والأيقونات إلى PDF متجهي واضح.",
         "docx": "التحويل إلى مستند Word مع الحفاظ على التخطيط.",
         "xlsx": "اكتشاف الجداول وتصديرها إلى Excel.",
         "pptx": "تصدير كل صفحة كشريحة PowerPoint.",
@@ -5918,7 +5941,11 @@
     "rewritingImagesPages": "إعادة أخذ عينات الصور (صفحة {{current}}/{{total}})…",
     "linearizing": "جارٍ التحسين لعرض الويب السريع…",
     "convertingPages": "تحويل الصفحة {{current}}/{{total}}…",
-    "validating": "جارٍ التحقق عبر veraPDF…"
+    "validating": "جارٍ التحقق عبر veraPDF…",
+    "applying": "جارٍ تطبيق التغييرات…",
+    "reading": "جارٍ القراءة…",
+    "searching": "جارٍ البحث…",
+    "replacing": "جارٍ الاستبدال…"
   },
   "annotate": {
     "select": "تحديد / نقل",
@@ -6278,7 +6305,8 @@
       "updates": "التحديثات",
       "system": "النظام",
       "data": "البيانات",
-      "feedback": "التعليقات"
+      "feedback": "التعليقات",
+      "general": "بدء التشغيل والخصوصية"
     },
     "action": {
       "open": "فتح PDF…",
