@@ -41,10 +41,12 @@ GROUP_SHARE = 0.72
 DOUGHNUT_HOLE = 0.55
 ARC_STEP_DEGREES = 2.0
 TICK_TARGET = 5
+SIDE_LEGEND_SHARE = 0.35
 
 ChartType = Literal[
     "column", "bar", "line", "area", "pie", "doughnut", "scatter", "histogram", "box", "dotplot"
 ]
+LegendPosition = Literal["bottom", "top", "right", "left"]
 SAMPLE_TYPES = ("histogram", "box", "dotplot")
 MAX_BINS = 50
 Label = Annotated[str, Field(max_length=MAX_LABEL_CHARS)]
@@ -64,6 +66,7 @@ class ChartSpec(RpcModel):
     category_title: Label = ""
     value_title: Label = ""
     legend: bool = True
+    legend_position: LegendPosition = "bottom"
     grid: bool = True
     value_labels: bool = False
     stacked: bool = False
@@ -367,9 +370,35 @@ def _draw_title(canvas: _Canvas, box: _Box) -> None:
     box.top += canvas.size * 0.4
 
 
+def _draw_side_legend(
+    canvas: _Canvas, box: _Box, entries: list[tuple[str, tuple[float, float, float]]]
+) -> None:
+    swatch = canvas.size * 0.75
+    gap = canvas.size * 0.4
+    limit = box.width * SIDE_LEGEND_SHARE
+    labels = [canvas.fitted(name, max(1.0, limit - swatch - gap))[0] for name, _ in entries]
+    width = min(limit, swatch + gap + max(canvas.width_of(label) for label in labels))
+    shown = list(zip(labels, (colour for _, colour in entries), strict=True))
+    shown = shown[: max(1, int(box.height // canvas.line))]
+    top = box.top + (box.height - len(shown) * canvas.line) / 2
+    left = box.right - width if canvas.spec.legend_position == "right" else box.left
+    for label, colour in shown:
+        square_top = top + (canvas.line - swatch) / 2
+        canvas.fill_rect(pymupdf.Rect(left, square_top, left + swatch, square_top + swatch), colour)
+        canvas.text(left + swatch + gap, top, label)
+        top += canvas.line
+    if canvas.spec.legend_position == "right":
+        box.right = left - canvas.size * 0.8
+    else:
+        box.left = left + width + canvas.size * 0.8
+
+
 def _draw_legend(canvas: _Canvas, box: _Box) -> None:
     entries = _legend_entries(canvas.spec)
     if not entries:
+        return
+    if canvas.spec.legend_position in ("left", "right"):
+        _draw_side_legend(canvas, box, entries)
         return
     swatch = canvas.size * 0.75
     gap = canvas.size * 0.4
@@ -388,8 +417,12 @@ def _draw_legend(canvas: _Canvas, box: _Box) -> None:
             needed = item[2]
         rows[-1].append(item)
         used += needed
-    top = box.bottom - len(rows) * canvas.line
-    box.bottom = top - canvas.size * 0.5
+    if canvas.spec.legend_position == "top":
+        top = box.top
+        box.top = top + len(rows) * canvas.line + canvas.size * 0.5
+    else:
+        top = box.bottom - len(rows) * canvas.line
+        box.bottom = top - canvas.size * 0.5
     for row in rows:
         total = sum(item[2] for item in row) + spacing * (len(row) - 1)
         x = box.left + (box.width - total) / 2
@@ -529,7 +562,8 @@ def _draw_category_chart(canvas: _Canvas, box: _Box) -> None:
     if spec.type in ("line", "area"):
         _draw_lines(canvas, slot, slot_start, value_at, stacked)
     else:
-        _draw_bars(canvas, slot, slot_start, value_at, stacked, horizontal)
+        floor = plot.left if horizontal else plot.bottom
+        _draw_bars(canvas, slot, slot_start, value_at, stacked, horizontal, floor)
     if horizontal:
         canvas.line_between((zero, plot.top), (zero, plot.bottom), AXIS_COLOUR, 0.75)
     else:
@@ -542,7 +576,9 @@ def _bar_rect(horizontal: bool, along: float, across: float, start: float, end: 
     return pymupdf.Rect(along, end, along + across, start)
 
 
-def _draw_bars(canvas, slot, slot_start, value_at, stacked: bool, horizontal: bool) -> None:
+def _draw_bars(
+    canvas, slot, slot_start, value_at, stacked: bool, horizontal: bool, floor: float
+) -> None:
     spec = canvas.spec
     group = slot * GROUP_SHARE
     series_count = len(spec.series)
@@ -587,6 +623,8 @@ def _draw_bars(canvas, slot, slot_start, value_at, stacked: bool, horizontal: bo
                 continue
             if horizontal:
                 outward = value >= 0
+                if not outward and end - canvas.size * 0.25 - canvas.width_of(text, small) < floor:
+                    outward = True
                 x = end + (canvas.size * 0.25 if outward else -canvas.size * 0.25)
                 canvas.text(
                     x,
@@ -597,6 +635,8 @@ def _draw_bars(canvas, slot, slot_start, value_at, stacked: bool, horizontal: bo
                 )
             else:
                 y = end - small * LINE_HEIGHT if value >= 0 else end
+                if value < 0 and y + small * LINE_HEIGHT > floor:
+                    y = end - small * LINE_HEIGHT
                 canvas.text(centre, y, text, size=small, align="center")
 
 

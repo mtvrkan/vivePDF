@@ -11,6 +11,7 @@ from PIL import Image, ImageDraw, ImageOps
 
 from vivepdf.ops._image_files import eight_bit, open_picture
 from vivepdf.ops._output import prepare_output, save_document, write_atomically
+from vivepdf.ops._studio_graphics import graphic_document, graphic_has_placeholders
 from vivepdf.ops._studio_merge import merge_rows, row_values, save_output, split_targets
 from vivepdf.ops._studio_models import (
     MAX_OUTPUT_PAGES,
@@ -224,6 +225,8 @@ def _static(item: StudioItem) -> bool:
         return not PLACEHOLDER.search(item.value)
     if isinstance(item, StudioShadowItem):
         return all(_static(nested) for nested in item.items)
+    if isinstance(item, StudioSvgItem) and item.graphic is not None:
+        return not graphic_has_placeholders(item.graphic)
     return not isinstance(item, StudioTextItem)
 
 
@@ -241,6 +244,9 @@ def _shadow(item: StudioShadowItem, values: dict[str, str]) -> tuple[pymupdf.Doc
 def _drawn(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, float]:
     if isinstance(item, StudioVectorItem):
         return vector_document(item)
+    if isinstance(item, StudioSvgItem) and item.graphic is not None:
+        drawn = graphic_document(item.graphic, values, item.width, item.height)
+        return group_opacity(drawn, item.opacity), 0.0
     if isinstance(item, StudioSvgItem):
         return group_opacity(drawing_pdf(item.svg.encode("utf-8"), "drawing"), item.opacity), 0.0
     if isinstance(item, StudioImageItem):

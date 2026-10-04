@@ -82,6 +82,22 @@ def test_a_loop_back_is_routed_outside_the_steps():
         document.close()
 
 
+def test_an_arrow_that_skips_a_step_goes_around_it():
+    nodes = [("a", "terminal", "Başla"), ("b", "decision", "Onay?"), ("c", "process", "Gönder")]
+    nodes = [*nodes, ("d", "terminal", "Bitir")]
+    edges = [("a", "b", ""), ("b", "c", "Evet"), ("c", "d", ""), ("b", "d", "Hayır")]
+    document, _ = flowchart_pdf(_spec(nodes=nodes, edges=edges))
+    try:
+        page = document[0]
+        words = {word[4]: pymupdf.Rect(word[:4]) for word in page.get_text("words")}
+        leftmost_step = min(rect.x0 for text, rect in words.items() if text not in ("Hayır",))
+        lines = [item["rect"] for item in page.get_drawings() if not item.get("fill")]
+        assert min(rect.x0 for rect in lines) < leftmost_step
+        assert not words["Hayır"].intersects(words["Evet"])
+    finally:
+        document.close()
+
+
 def test_every_shape_draws_and_the_arrows_have_heads():
     nodes = [
         ("a", "terminal", "A"),
