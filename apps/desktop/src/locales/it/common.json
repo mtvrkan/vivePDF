@@ -2145,7 +2145,9 @@
         "pageTitle": "Indice"
       },
       "renamedFields_one": "{{count}} campo modulo aveva un nome usato anche da un altro file ed è stato rinominato perché i valori restino separati.",
-      "renamedFields_other": "{{count}} campi modulo avevano nomi usati anche da un altro file e sono stati rinominati perché i valori restino separati."
+      "renamedFields_other": "{{count}} campi modulo avevano nomi usati anche da un altro file e sono stati rinominati perché i valori restino separati.",
+      "alreadyListed_one": "{{count}} file era già nell'elenco e non è stato aggiunto di nuovo.",
+      "alreadyListed_other": "{{count}} file erano già nell'elenco e non sono stati aggiunti di nuovo."
     },
     "split": {
       "suffix": "parti",

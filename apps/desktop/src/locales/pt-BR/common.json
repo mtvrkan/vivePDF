@@ -2145,7 +2145,9 @@
         "pageTitle": "Sumário"
       },
       "renamedFields_one": "{{count}} campo de formulário tinha um nome também usado por outro arquivo e foi renomeado para que os valores fiquem separados.",
-      "renamedFields_other": "{{count}} campos de formulário tinham nomes também usados por outro arquivo e foram renomeados para que os valores fiquem separados."
+      "renamedFields_other": "{{count}} campos de formulário tinham nomes também usados por outro arquivo e foram renomeados para que os valores fiquem separados.",
+      "alreadyListed_one": "{{count}} arquivo já estava na lista e não foi adicionado novamente.",
+      "alreadyListed_other": "{{count}} arquivos já estavam na lista e não foram adicionados novamente."
     },
     "split": {
       "suffix": "partes",

@@ -2145,7 +2145,9 @@
         "pageTitle": "목차"
       },
       "renamedFields_one": "양식 필드 {{count}}개의 이름이 다른 파일과 같아서 값이 섞이지 않도록 이름을 바꿨습니다.",
-      "renamedFields_other": "양식 필드 {{count}}개의 이름이 다른 파일과 같아서 값이 섞이지 않도록 이름을 바꿨습니다."
+      "renamedFields_other": "양식 필드 {{count}}개의 이름이 다른 파일과 같아서 값이 섞이지 않도록 이름을 바꿨습니다.",
+      "alreadyListed_one": "{{count}}개 파일은 이미 목록에 있어 다시 추가하지 않았습니다.",
+      "alreadyListed_other": "{{count}}개 파일은 이미 목록에 있어 다시 추가하지 않았습니다."
     },
     "split": {
       "suffix": "parts",

@@ -2145,7 +2145,9 @@
         "pageTitle": "İçindekiler"
       },
       "renamedFields_one": "{{count}} form alanının adı başka bir dosyada da vardı; değerleri karışmasın diye yeniden adlandırıldı.",
-      "renamedFields_other": "{{count}} form alanının adı başka bir dosyada da vardı; değerleri karışmasın diye yeniden adlandırıldı."
+      "renamedFields_other": "{{count}} form alanının adı başka bir dosyada da vardı; değerleri karışmasın diye yeniden adlandırıldı.",
+      "alreadyListed_one": "{{count}} dosya zaten listede olduğu için yeniden eklenmedi.",
+      "alreadyListed_other": "{{count}} dosya zaten listede olduğu için yeniden eklenmedi."
     },
     "split": {
       "suffix": "parcalar",

@@ -2145,7 +2145,9 @@
         "pageTitle": "Inhalt"
       },
       "renamedFields_one": "{{count}} Formularfeld trug einen Namen, den auch eine andere Datei verwendet, und wurde umbenannt, damit die Werte getrennt bleiben.",
-      "renamedFields_other": "{{count}} Formularfelder trugen Namen, die auch eine andere Datei verwendet, und wurden umbenannt, damit die Werte getrennt bleiben."
+      "renamedFields_other": "{{count}} Formularfelder trugen Namen, die auch eine andere Datei verwendet, und wurden umbenannt, damit die Werte getrennt bleiben.",
+      "alreadyListed_one": "{{count}} Datei war bereits in der Liste und wurde nicht erneut hinzugefügt.",
+      "alreadyListed_other": "{{count}} Dateien waren bereits in der Liste und wurden nicht erneut hinzugefügt."
     },
     "split": {
       "suffix": "teile",

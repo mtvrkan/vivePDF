@@ -2145,7 +2145,9 @@
         "pageTitle": "Contents"
       },
       "renamedFields_one": "{{count}} form field had a name another file also used and was renamed, so their values stay separate.",
-      "renamedFields_other": "{{count}} form fields had names another file also used and were renamed, so their values stay separate."
+      "renamedFields_other": "{{count}} form fields had names another file also used and were renamed, so their values stay separate.",
+      "alreadyListed_one": "{{count}} file was already in the list and was not added again.",
+      "alreadyListed_other": "{{count}} files were already in the list and were not added again."
     },
     "split": {
       "suffix": "parts",

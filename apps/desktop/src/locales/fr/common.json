@@ -2145,7 +2145,9 @@
         "pageTitle": "Sommaire"
       },
       "renamedFields_one": "{{count}} champ de formulaire portait un nom déjà utilisé par un autre fichier et a été renommé pour que les valeurs restent séparées.",
-      "renamedFields_other": "{{count}} champs de formulaire portaient des noms déjà utilisés par un autre fichier et ont été renommés pour que les valeurs restent séparées."
+      "renamedFields_other": "{{count}} champs de formulaire portaient des noms déjà utilisés par un autre fichier et ont été renommés pour que les valeurs restent séparées.",
+      "alreadyListed_one": "{{count}} fichier figurait déjà dans la liste et n’a pas été ajouté à nouveau.",
+      "alreadyListed_other": "{{count}} fichiers figuraient déjà dans la liste et n’ont pas été ajoutés à nouveau."
     },
     "split": {
       "suffix": "parties",

@@ -2145,7 +2145,9 @@
         "pageTitle": "目录"
       },
       "renamedFields_one": "{{count}} 个表单字段与其他文件重名，已重命名，以免它们的值混在一起。",
-      "renamedFields_other": "{{count}} 个表单字段与其他文件重名，已重命名，以免它们的值混在一起。"
+      "renamedFields_other": "{{count}} 个表单字段与其他文件重名，已重命名，以免它们的值混在一起。",
+      "alreadyListed_one": "{{count}} 个文件已在列表中，未重复添加。",
+      "alreadyListed_other": "{{count}} 个文件已在列表中，未重复添加。"
     },
     "split": {
       "suffix": "parts",

@@ -2145,7 +2145,9 @@
         "pageTitle": "Índice"
       },
       "renamedFields_one": "{{count}} campo de formulario tenía un nombre que también usa otro archivo y se renombró para que sus valores no se mezclen.",
-      "renamedFields_other": "{{count}} campos de formulario tenían nombres que también usa otro archivo y se renombraron para que sus valores no se mezclen."
+      "renamedFields_other": "{{count}} campos de formulario tenían nombres que también usa otro archivo y se renombraron para que sus valores no se mezclen.",
+      "alreadyListed_one": "{{count}} archivo ya estaba en la lista y no se añadió de nuevo.",
+      "alreadyListed_other": "{{count}} archivos ya estaban en la lista y no se añadieron de nuevo."
     },
     "split": {
       "suffix": "partes",

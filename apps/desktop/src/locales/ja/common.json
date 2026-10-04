@@ -2145,7 +2145,9 @@
         "pageTitle": "目次"
       },
       "renamedFields_one": "{{count}} 個のフォームフィールドは別のファイルと同じ名前だったため、値が混ざらないよう名前を変更しました。",
-      "renamedFields_other": "{{count}} 個のフォームフィールドは別のファイルと同じ名前だったため、値が混ざらないよう名前を変更しました。"
+      "renamedFields_other": "{{count}} 個のフォームフィールドは別のファイルと同じ名前だったため、値が混ざらないよう名前を変更しました。",
+      "alreadyListed_one": "{{count}} 件のファイルは既に一覧にあるため、追加しませんでした。",
+      "alreadyListed_other": "{{count}} 件のファイルは既に一覧にあるため、追加しませんでした。"
     },
     "split": {
       "suffix": "parts",
