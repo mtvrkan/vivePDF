@@ -3,7 +3,7 @@ import { layerRuns, placeElements } from "../model/edit";
 import type { DropProbe, DropSide } from "./dragSort";
 
 export type GroupRow = { kind: "group"; key: string; groupId: string; elements: StudioElement[]; start: number; end: number; open: boolean };
-export type ElementRow = { kind: "element"; key: string; element: StudioElement; index: number; groupId: string | null; member: boolean };
+export type ElementRow = { kind: "element"; key: string; element: StudioElement; index: number; groupId: string | null; member: boolean; runStart: number; runEnd: number };
 export type LayerRow = GroupRow | ElementRow;
 export type LayerSource = { ids: string[]; groupId: string | null };
 export type LayerDrop = { key: string; side: DropSide; index: number };
@@ -19,7 +19,7 @@ export function layerRows(page: StudioPage, isOpen: (groupId: string) => boolean
   const rows: LayerRow[] = [];
   for (const run of placed.reverse()) {
     if (run.groupId === null) {
-      rows.push({ kind: "element", key: run.elements[0].id, element: run.elements[0], index: run.start, groupId: null, member: false });
+      rows.push({ kind: "element", key: run.elements[0].id, element: run.elements[0], index: run.start, groupId: null, member: false, runStart: run.start, runEnd: run.start });
       continue;
     }
     const count = (seen.get(run.groupId) ?? 0) + 1;
@@ -29,7 +29,7 @@ export function layerRows(page: StudioPage, isOpen: (groupId: string) => boolean
     rows.push({ kind: "group", key: count > 1 ? `group:${run.groupId}:${count}` : `group:${run.groupId}`, groupId: run.groupId, elements: run.elements, start: run.start, end, open });
     if (!open) continue;
     for (let index = run.elements.length - 1; index >= 0; index -= 1) {
-      rows.push({ kind: "element", key: run.elements[index].id, element: run.elements[index], index: run.start + index, groupId: run.groupId, member: true });
+      rows.push({ kind: "element", key: run.elements[index].id, element: run.elements[index], index: run.start + index, groupId: run.groupId, member: true, runStart: run.start, runEnd: end });
     }
   }
   return rows;
@@ -76,4 +76,10 @@ export function resolveLayerDrop(page: StudioPage, rows: LayerRow[], source: Lay
   const target = source.groupId !== null ? memberTarget(rows, source, row, probe.side) : unitTarget(rows, row, probe.side);
   if (!target) return null;
   return placeElements(page, source.ids, target.index) === page ? null : target;
+}
+
+export function canShift(row: LayerRow, count: number, direction: "forward" | "backward"): boolean {
+  if (row.kind === "group") return direction === "forward" ? row.end < count - 1 : row.start > 0;
+  if (row.member) return direction === "forward" ? row.index < row.runEnd : row.index > row.runStart;
+  return direction === "forward" ? row.index < count - 1 : row.index > 0;
 }

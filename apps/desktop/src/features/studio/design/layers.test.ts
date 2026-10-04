@@ -3,7 +3,7 @@ import type { StudioPage } from "@/types/studio";
 import { createDesign, createPage, createShape } from "../model/design";
 import { groupElements } from "../model/edit";
 import { dropSide, moveIndex } from "./dragSort";
-import { layerRows, layerSource, resolveLayerDrop, type LayerRow } from "./layerRows";
+import { canShift, layerRows, layerSource, resolveLayerDrop, type LayerRow } from "./layerRows";
 import { useStudioStore } from "./studioStore";
 
 function grouped(): StudioPage {
@@ -34,6 +34,18 @@ describe("layer rows", () => {
     expect(resolveLayerDrop(page, rows, source, { key: "e0", side: "after" })).toMatchObject({ index: 0 });
     expect(resolveLayerDrop(page, rows, source, { key: "e3", side: "before" })).toBeNull();
     expect(resolveLayerDrop(page, rows, source, { key: "missing", side: "before" })).toBeNull();
+  });
+
+  it("offers up and down only where the layer can still move", () => {
+    const rows = layerRows(grouped(), () => true);
+    const row = (key: string) => rows.find((item) => item.key === key) as LayerRow;
+    const group = rows.find((item) => item.kind === "group") as LayerRow;
+
+    expect([canShift(row("e4"), 5, "forward"), canShift(row("e4"), 5, "backward")]).toEqual([false, true]);
+    expect([canShift(row("e0"), 5, "forward"), canShift(row("e0"), 5, "backward")]).toEqual([true, false]);
+    expect([canShift(row("e2"), 5, "forward"), canShift(row("e2"), 5, "backward")]).toEqual([false, true]);
+    expect([canShift(row("e1"), 5, "forward"), canShift(row("e1"), 5, "backward")]).toEqual([true, false]);
+    expect([canShift(group, 5, "forward"), canShift(group, 5, "backward")]).toEqual([true, true]);
   });
 
   it("keeps a dragged member inside its group", () => {

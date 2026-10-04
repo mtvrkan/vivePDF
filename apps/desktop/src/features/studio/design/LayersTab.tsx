@@ -7,7 +7,7 @@ import type { StudioElement, StudioPage } from "@/types/studio";
 import { placeElements, reorderElements, updateElement, withoutGroupOf, type ReorderDirection } from "../model/edit";
 import { useDragSort } from "./dragSort";
 import { elementLabel, kindIcon } from "./labels";
-import { layerRows, layerSource, resolveLayerDrop, type ElementRow, type GroupRow, type LayerDrop, type LayerRow, type LayerSource } from "./layerRows";
+import { canShift, layerRows, layerSource, resolveLayerDrop, type ElementRow, type GroupRow, type LayerDrop, type LayerRow, type LayerSource } from "./layerRows";
 import { currentPage, useStudioStore } from "./studioStore";
 
 const ROW_ATTRIBUTE = "data-layer-row";
@@ -61,7 +61,7 @@ export function LayersTab() {
   const chosen = new Set(selection);
   const dragged = new Set(drag?.source.ids ?? []);
   const reorder = (row: LayerRow, direction: ReorderDirection) => applyToPage((current) => reorderElements(current, layerSource(row).ids, direction));
-  const canMove = (row: LayerRow, direction: "forward" | "backward") => reorderElements(page, layerSource(row).ids, direction) !== page;
+  const canMove = (row: LayerRow, direction: "forward" | "backward") => canShift(row, page.elements.length, direction);
 
   const onRowKey = (row: LayerRow) => (event: ReactKeyboardEvent<HTMLButtonElement>) => {
     if (!event.altKey || event.ctrlKey || event.metaKey || (event.key !== "ArrowUp" && event.key !== "ArrowDown")) return;
@@ -92,8 +92,8 @@ export function LayersTab() {
     store.select(active ? withoutGroupOf(page, selection, id) : [...selection, id]);
   };
 
-  const actions = (row: LayerRow, label: string, ids: string[], active: boolean) => {
-    const members = ids.map((id) => page.elements.find((element) => element.id === id)).filter((element): element is StudioElement => Boolean(element));
+  const actions = (row: LayerRow, label: string, members: StudioElement[], active: boolean) => {
+    const ids = members.map((element) => element.id);
     const hidden = members.every((element) => element.hidden);
     const locked = members.every((element) => element.locked);
     return (
@@ -163,7 +163,7 @@ export function LayersTab() {
                 >
                   {label}
                 </button>
-                {actions(row, label, ids, whole)}
+                {actions(row, label, row.elements, whole)}
               </li>
             );
           }
@@ -216,7 +216,7 @@ export function LayersTab() {
                   {label}
                 </button>
               )}
-              {actions(row, label, [element.id], active)}
+              {actions(row, label, [element], active)}
             </li>
           );
         })}
