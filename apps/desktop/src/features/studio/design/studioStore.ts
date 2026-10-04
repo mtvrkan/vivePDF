@@ -2,6 +2,7 @@ import { create } from "zustand";
 import type { StudioDesign, StudioElement, StudioPage } from "@/types/studio";
 import { addElements, duplicateElements, expandToGroups, removeElements, updatePage } from "../model/edit";
 import { flushDraft, scheduleDraft } from "./draftStorage";
+import { replaceSystemClipboard } from "./systemPaste";
 
 export const HISTORY_LIMIT = 100;
 export const MERGE_WINDOW_MS = 800;
@@ -195,7 +196,9 @@ export const useStudioStore = create<StudioState>((set, get) => {
     },
     copy: () => {
       const elements = selectedElements(get());
-      if (elements.length) set({ clipboard: structuredClone(elements) });
+      if (!elements.length) return;
+      set({ clipboard: structuredClone(elements) });
+      replaceSystemClipboard(elements);
     },
     cut: () => {
       get().copy();

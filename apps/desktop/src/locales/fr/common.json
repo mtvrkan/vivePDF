@@ -6682,7 +6682,14 @@
       "left": "Rogner à gauche",
       "right": "Rogner à droite",
       "top": "Rogner en haut",
-      "bottom": "Rogner en bas"
+      "bottom": "Rogner en bas",
+      "button": "Rogner",
+      "mode": "Rogner l'image",
+      "zoom": "Zoom",
+      "hint": "Faites glisser l'image pour la déplacer et les poignées pour rogner. Entrée applique, Échap annule.",
+      "reset": "Réinitialiser",
+      "cancel": "Annuler",
+      "done": "Terminé"
     },
     "export": {
       "title": "Exporter la création",
@@ -8339,7 +8346,9 @@
         "strike": "Barré",
         "listLevel": "Changer le niveau de liste",
         "alignText": "Aligner le texte à gauche, au centre ou à droite (en modification)",
-        "arrow": "Ajouter une flèche"
+        "arrow": "Ajouter une flèche",
+        "flip": "Retourner horizontalement / verticalement",
+        "cropImage": "Rogner l'image"
       }
     },
     "view": {
@@ -8572,6 +8581,29 @@
         "idea": "idée, ampoule, lampe, lumière",
         "face": "visage, sourire, émoji, heureux"
       }
+    },
+    "flip": {
+      "horizontal": "Retourner horizontalement",
+      "vertical": "Retourner verticalement"
+    },
+    "filters": {
+      "title": "Réglages",
+      "presetsLabel": "Préréglages de filtre",
+      "presets": {
+        "none": "Aucun",
+        "bw": "N&B",
+        "warm": "Chaud",
+        "cool": "Froid",
+        "vivid": "Éclatant",
+        "fade": "Délavé"
+      },
+      "brightness": "Luminosité",
+      "contrast": "Contraste",
+      "saturation": "Saturation",
+      "warmth": "Chaleur",
+      "sepia": "Sépia",
+      "grayscale": "Niveaux de gris",
+      "reset": "Réinitialiser les réglages"
     }
   }
 }

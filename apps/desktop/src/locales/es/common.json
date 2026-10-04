@@ -6682,7 +6682,14 @@
       "left": "Recortar a la izquierda",
       "right": "Recortar a la derecha",
       "top": "Recortar arriba",
-      "bottom": "Recortar abajo"
+      "bottom": "Recortar abajo",
+      "button": "Recortar",
+      "mode": "Recortar imagen",
+      "zoom": "Zoom",
+      "hint": "Arrastra la imagen para moverla y los tiradores para recortar. Intro aplica, Esc cancela.",
+      "reset": "Restablecer",
+      "cancel": "Cancelar",
+      "done": "Listo"
     },
     "export": {
       "title": "Exportar diseño",
@@ -8339,7 +8346,9 @@
         "strike": "Tachado",
         "listLevel": "Cambiar nivel de lista",
         "alignText": "Alinear texto a la izquierda, al centro o a la derecha (al editar)",
-        "arrow": "Agregar una flecha"
+        "arrow": "Agregar una flecha",
+        "flip": "Voltear horizontal / verticalmente",
+        "cropImage": "Recortar imagen"
       }
     },
     "view": {
@@ -8572,6 +8581,29 @@
         "idea": "idea, bombilla, lámpara, luz",
         "face": "cara, sonrisa, emoji, feliz"
       }
+    },
+    "flip": {
+      "horizontal": "Voltear horizontalmente",
+      "vertical": "Voltear verticalmente"
+    },
+    "filters": {
+      "title": "Ajustes",
+      "presetsLabel": "Ajustes preestablecidos de filtro",
+      "presets": {
+        "none": "Ninguno",
+        "bw": "B/N",
+        "warm": "Cálido",
+        "cool": "Frío",
+        "vivid": "Intenso",
+        "fade": "Desvaído"
+      },
+      "brightness": "Brillo",
+      "contrast": "Contraste",
+      "saturation": "Saturación",
+      "warmth": "Calidez",
+      "sepia": "Sepia",
+      "grayscale": "Escala de grises",
+      "reset": "Restablecer ajustes"
     }
   }
 }

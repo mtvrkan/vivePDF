@@ -4,7 +4,9 @@ import { withElementStyle, type StylePatch } from "./richText";
 
 export type ElementStyle = { kind: StudioElementKind; values: Record<string, unknown> };
 
-const LAYOUT_KEYS = ["id", "name", "kind", "x", "y", "width", "height", "rotation", "locked", "hidden", "groupId"] as const;
+const LAYOUT_KEYS = ["id", "name", "kind", "x", "y", "width", "height", "rotation", "locked", "hidden", "groupId", "flipX", "flipY"] as const;
+
+const OPTIONAL_KEYS: Partial<Record<StudioElementKind, readonly string[]>> = { image: ["filters"] };
 
 const CONTENT_KEYS: Record<StudioElementKind, readonly string[]> = {
   text: ["runs", "paragraphs"],
@@ -19,7 +21,8 @@ const RUN_KEYS = ["bold", "italic", "underline", "strike", "color", "fontId", "w
 
 export function extractStyle(element: StudioElement): ElementStyle {
   const skipped = new Set<string>([...LAYOUT_KEYS, ...CONTENT_KEYS[element.kind]]);
-  const values = Object.fromEntries(Object.entries(element).filter(([key]) => !skipped.has(key)));
+  const values: Record<string, unknown> = Object.fromEntries(Object.entries(element).filter(([key]) => !skipped.has(key) && (element as Record<string, unknown>)[key] !== undefined));
+  for (const key of OPTIONAL_KEYS[element.kind] ?? []) if (!(key in values)) values[key] = null;
   return { kind: element.kind, values: structuredClone(values) };
 }
 
@@ -32,9 +35,15 @@ function compatible(current: unknown, incoming: unknown): boolean {
 export function applyStyle(element: StudioElement, style: ElementStyle): StudioElement {
   const skipped = new Set<string>([...LAYOUT_KEYS, ...CONTENT_KEYS[element.kind]]);
   const target = element as Record<string, unknown>;
+  const optional = new Set(OPTIONAL_KEYS[element.kind] ?? []);
   const patch: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(style.values)) {
-    if (skipped.has(key) || !(key in target) || !compatible(target[key], value) || deepEqual(target[key], value)) continue;
+    if (optional.has(key) && value === null) {
+      if (target[key] !== undefined) patch[key] = undefined;
+      continue;
+    }
+    const fresh = optional.has(key) && target[key] === undefined;
+    if (skipped.has(key) || (!(key in target) && !fresh) || (!fresh && !compatible(target[key], value)) || deepEqual(target[key], value)) continue;
     patch[key] = structuredClone(value);
   }
   const next = Object.keys(patch).length ? ({ ...element, ...patch } as StudioElement) : element;

@@ -172,6 +172,24 @@ describe("studio shortcuts", () => {
     expect(useViewPrefs.getState()).toMatchObject({ guides: false, margins: false, rulers: true });
   });
 
+  it("flips the selection with Shift+H and Shift+V on any keyboard layout, never while typing", () => {
+    const { unmount } = renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    onTestFinished(unmount);
+    const [first] = useStudioStore.getState().design?.pages[0].elements ?? [];
+    useStudioStore.getState().select([first.id]);
+    const input = document.body.appendChild(document.createElement("input"));
+    const current = () => useStudioStore.getState().design?.pages[0].elements[0];
+
+    press("H", { ctrlKey: false, shiftKey: true, code: "KeyH" });
+    press("V", { ctrlKey: false, shiftKey: true, code: "KeyV" });
+    expect(current()).toMatchObject({ flipX: true, flipY: true, x: first.x });
+    press("H", { ctrlKey: false, shiftKey: true, code: "KeyH" }, input);
+    press("H", { ctrlKey: false, shiftKey: true, code: "KeyH" });
+
+    expect(current()?.flipX).toBeUndefined();
+    expect(useStudioStore.getState().past).toHaveLength(3);
+  });
+
   it("leaves the view alone while a field is being typed in", () => {
     useViewPrefs.setState(DEFAULT_VIEW_PREFS);
     renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));

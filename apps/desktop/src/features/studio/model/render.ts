@@ -10,6 +10,7 @@ import type {
   StudioTextElement,
 } from "@/types/studio";
 import { hasPlaceholders, textOf } from "./design";
+import { filterMatrix } from "./imageFilters";
 import { fitParagraphs, paragraphCount, weightOf } from "./typography";
 import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./shapes";
 import { recolorSvg } from "./svgColors";
@@ -20,7 +21,16 @@ const MAX_RUN_SIZE = 1000;
 export type RenderOptions = { keepWhite?: boolean };
 
 function box(element: StudioElement): StudioRenderBox {
-  return { x: element.x, y: element.y, width: element.width, height: element.height, rotation: element.rotation, opacity: element.opacity };
+  return {
+    x: element.x,
+    y: element.y,
+    width: element.width,
+    height: element.height,
+    rotation: element.rotation,
+    opacity: element.opacity,
+    ...(element.flipX ? { flipX: true } : {}),
+    ...(element.flipY ? { flipY: true } : {}),
+  };
 }
 
 function textItem(element: StudioTextElement, measured: MeasuredText): StudioRenderItem {
@@ -65,8 +75,9 @@ function textItem(element: StudioTextElement, measured: MeasuredText): StudioRen
 function imageItems(element: StudioImageElement): StudioRenderItem[] {
   const crop = element.crop;
   const whole = crop.x === 0 && crop.y === 0 && crop.width === 1 && crop.height === 1;
+  const filter = filterMatrix(element.filters);
   const items: StudioRenderItem[] = element.src
-    ? [{ ...box(element), kind: "image", path: element.src, fit: element.fit, crop: whole ? null : crop, mask: element.mask, radius: element.cornerRadius }]
+    ? [{ ...box(element), kind: "image", path: element.src, fit: element.fit, crop: whole ? null : crop, mask: element.mask, radius: element.cornerRadius, ...(filter ? { filter } : {}) }]
     : [];
   const stroke = renderStroke(element.stroke);
   if (stroke) {

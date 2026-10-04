@@ -6683,7 +6683,14 @@
       "left": "Crop left",
       "right": "Crop right",
       "top": "Crop top",
-      "bottom": "Crop bottom"
+      "bottom": "Crop bottom",
+      "button": "Crop",
+      "mode": "Crop picture",
+      "zoom": "Zoom",
+      "hint": "Drag the picture to move it and the handles to crop. Enter applies, Esc cancels.",
+      "reset": "Reset",
+      "cancel": "Cancel",
+      "done": "Done"
     },
     "export": {
       "title": "Export design",
@@ -8340,7 +8347,9 @@
         "strike": "Strikethrough",
         "listLevel": "Change list level",
         "alignText": "Align text left, centre or right (while editing)",
-        "arrow": "Add an arrow"
+        "arrow": "Add an arrow",
+        "flip": "Flip horizontally / vertically",
+        "cropImage": "Crop picture"
       }
     },
     "view": {
@@ -8572,6 +8581,29 @@
         "idea": "idea, bulb, lamp, light",
         "face": "face, smile, emoji, happy"
       }
+    },
+    "flip": {
+      "horizontal": "Flip horizontally",
+      "vertical": "Flip vertically"
+    },
+    "filters": {
+      "title": "Adjustments",
+      "presetsLabel": "Filter presets",
+      "presets": {
+        "none": "None",
+        "bw": "B&W",
+        "warm": "Warm",
+        "cool": "Cool",
+        "vivid": "Vivid",
+        "fade": "Fade"
+      },
+      "brightness": "Brightness",
+      "contrast": "Contrast",
+      "saturation": "Saturation",
+      "warmth": "Warmth",
+      "sepia": "Sepia",
+      "grayscale": "Grayscale",
+      "reset": "Reset adjustments"
     }
   }
 }

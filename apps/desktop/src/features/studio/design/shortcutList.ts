@@ -25,6 +25,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Delete  /  Backspace", "delete"),
       item("Ctrl A", "selectAll"),
       item("Ctrl F  /  Ctrl H", "findReplace"),
+      item("Enter  /  Double-click", "cropImage"),
       item("Esc", "escape"),
     ],
   },
@@ -38,6 +39,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Alt ↑  /  Alt ↓", "layerOrder"),
       item("Ctrl Shift L", "lock"),
       item("Ctrl Shift H", "hide"),
+      item("Shift H  /  Shift V", "flip"),
     ],
   },
   {

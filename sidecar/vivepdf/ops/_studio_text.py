@@ -594,11 +594,12 @@ def _transform(item: StudioTextItem, baseline: float, oblique: bool) -> pymupdf.
     matrix = pymupdf.Matrix(1, 0, 0, 1, 0, 0)
     if oblique:
         matrix = pymupdf.Matrix(1, 0, -OBLIQUE_SLANT, 1, OBLIQUE_SLANT * baseline, 0)
-    if item.rotation % 360:
+    if item.rotation % 360 or item.flip_x or item.flip_y:
         cx, cy = item.x + item.width / 2, item.y + item.height / 2
         matrix = (
             matrix
             * pymupdf.Matrix(1, 0, 0, 1, -cx, -cy)
+            * pymupdf.Matrix(-1 if item.flip_x else 1, 0, 0, -1 if item.flip_y else 1, 0, 0)
             * pymupdf.Matrix(item.rotation)
             * pymupdf.Matrix(1, 0, 0, 1, cx, cy)
         )

@@ -292,6 +292,29 @@ def group_opacity(document: pymupdf.Document, opacity: float) -> pymupdf.Documen
     return document
 
 
+def _media_box(document: pymupdf.Document, page: pymupdf.Page) -> tuple[float, float, float, float]:
+    kind, box = document.xref_get_key(page.xref, "MediaBox")
+    values = [float(value) for value in box.strip("[]").split()] if kind == "array" else []
+    if len(values) == 4:
+        return values[0], values[1], values[2], values[3]
+    return 0.0, 0.0, page.rect.width, page.rect.height
+
+
+def mirror(document: pymupdf.Document, flip_x: bool, flip_y: bool) -> pymupdf.Document:
+    if not (flip_x or flip_y):
+        return document
+    page = document[0]
+    left, bottom, right, top = _media_box(document, page)
+    matrix = (
+        f"{-1 if flip_x else 1} 0 0 {-1 if flip_y else 1} "
+        f"{_number(left + right) if flip_x else 0} {_number(bottom + top) if flip_y else 0} cm"
+    )
+    content = b"q\n" + matrix.encode("latin-1") + b"\n" + page.read_contents() + b"\nQ\n"
+    stream = _new_stream(document, "<<>>", content)
+    document.xref_set_key(page.xref, "Contents", f"{stream} 0 R")
+    return document
+
+
 def rotated_bounds(box: StudioBox, margin: float = 0.0) -> pymupdf.Rect:
     width, height = box.width + 2 * margin, box.height + 2 * margin
     angle = math.radians(box.rotation)

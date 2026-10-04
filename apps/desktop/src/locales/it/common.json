@@ -6682,7 +6682,14 @@
       "left": "Ritaglia a sinistra",
       "right": "Ritaglia a destra",
       "top": "Ritaglia in alto",
-      "bottom": "Ritaglia in basso"
+      "bottom": "Ritaglia in basso",
+      "button": "Ritaglia",
+      "mode": "Ritaglia immagine",
+      "zoom": "Zoom",
+      "hint": "Trascina l'immagine per spostarla e le maniglie per ritagliare. Invio applica, Esc annulla.",
+      "reset": "Reimposta",
+      "cancel": "Annulla",
+      "done": "Fatto"
     },
     "export": {
       "title": "Esporta progetto",
@@ -8339,7 +8346,9 @@
         "strike": "Barrato",
         "listLevel": "Cambia livello elenco",
         "alignText": "Allinea il testo a sinistra, al centro o a destra (durante la modifica)",
-        "arrow": "Aggiungi una freccia"
+        "arrow": "Aggiungi una freccia",
+        "flip": "Capovolgi orizzontalmente / verticalmente",
+        "cropImage": "Ritaglia immagine"
       }
     },
     "view": {
@@ -8572,6 +8581,29 @@
         "idea": "idea, lampadina, lampada, luce",
         "face": "viso, sorriso, emoji, felice"
       }
+    },
+    "flip": {
+      "horizontal": "Capovolgi orizzontalmente",
+      "vertical": "Capovolgi verticalmente"
+    },
+    "filters": {
+      "title": "Regolazioni",
+      "presetsLabel": "Preimpostazioni filtro",
+      "presets": {
+        "none": "Nessuno",
+        "bw": "B/N",
+        "warm": "Caldo",
+        "cool": "Freddo",
+        "vivid": "Vivace",
+        "fade": "Sbiadito"
+      },
+      "brightness": "Luminosità",
+      "contrast": "Contrasto",
+      "saturation": "Saturazione",
+      "warmth": "Calore",
+      "sepia": "Seppia",
+      "grayscale": "Scala di grigi",
+      "reset": "Reimposta regolazioni"
     }
   }
 }

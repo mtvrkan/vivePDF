@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { createDesign, createImage, createQr, createShape, createText } from "../model/design";
+import { FILTER_PRESETS } from "../model/imageFilters";
 import { applyStyle, extractStyle } from "./elementStyle";
 import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { useStudioStore } from "./studioStore";
@@ -29,6 +30,20 @@ describe("copy and paste style", () => {
     expect(photo).toMatchObject({ src: "a.png", stroke: dashed, cornerRadius: 4, opacity: 0.7 });
     expect(applyStyle(text, extractStyle(shape))).toMatchObject({ opacity: 0.7, color: text.color });
     expect(applyStyle(createQr("x", 0, 0, 10), extractStyle(createText(0, 0, 1, 1, "", { color: "#00aa00" })))).toMatchObject({ value: "x", color: "#00aa00" });
+  });
+
+  it("carries image adjustments between pictures but never flips", () => {
+    const filtered = { ...createImage("a.png", 0, 0, 10, 10), filters: FILTER_PRESETS.bw, flipX: true };
+    const plain = createImage("b.png", 0, 0, 10, 10);
+
+    const adjusted = applyStyle(plain, extractStyle(filtered));
+    const cleared = applyStyle(filtered, extractStyle(plain));
+
+    expect(adjusted).toMatchObject({ src: "b.png", filters: FILTER_PRESETS.bw });
+    expect(adjusted.flipX).toBeUndefined();
+    expect(cleared.kind === "image" && cleared.filters).toBeUndefined();
+    expect(cleared.flipX).toBe(true);
+    expect(applyStyle(createShape("rect", 0, 0, 5, 5), extractStyle(filtered))).not.toHaveProperty("filters");
   });
 
   it("gives text the whole text style and clears styled words", () => {

@@ -6682,7 +6682,14 @@
       "left": "Links zuschneiden",
       "right": "Rechts zuschneiden",
       "top": "Oben zuschneiden",
-      "bottom": "Unten zuschneiden"
+      "bottom": "Unten zuschneiden",
+      "button": "Zuschneiden",
+      "mode": "Bild zuschneiden",
+      "zoom": "Zoom",
+      "hint": "Bild ziehen zum Verschieben, Griffe ziehen zum Zuschneiden. Eingabe übernimmt, Esc bricht ab.",
+      "reset": "Zurücksetzen",
+      "cancel": "Abbrechen",
+      "done": "Fertig"
     },
     "export": {
       "title": "Design exportieren",
@@ -8339,7 +8346,9 @@
         "strike": "Durchgestrichen",
         "listLevel": "Listenebene ändern",
         "alignText": "Text links, zentriert oder rechts ausrichten (beim Bearbeiten)",
-        "arrow": "Pfeil hinzufügen"
+        "arrow": "Pfeil hinzufügen",
+        "flip": "Horizontal / vertikal spiegeln",
+        "cropImage": "Bild zuschneiden"
       }
     },
     "view": {
@@ -8571,6 +8580,29 @@
         "idea": "Idee, Glühbirne, Lampe, Licht",
         "face": "Gesicht, Lächeln, Emoji, fröhlich"
       }
+    },
+    "flip": {
+      "horizontal": "Horizontal spiegeln",
+      "vertical": "Vertikal spiegeln"
+    },
+    "filters": {
+      "title": "Anpassungen",
+      "presetsLabel": "Filter-Voreinstellungen",
+      "presets": {
+        "none": "Ohne",
+        "bw": "S/W",
+        "warm": "Warm",
+        "cool": "Kühl",
+        "vivid": "Lebendig",
+        "fade": "Verblasst"
+      },
+      "brightness": "Helligkeit",
+      "contrast": "Kontrast",
+      "saturation": "Sättigung",
+      "warmth": "Wärme",
+      "sepia": "Sepia",
+      "grayscale": "Graustufen",
+      "reset": "Anpassungen zurücksetzen"
     }
   }
 }

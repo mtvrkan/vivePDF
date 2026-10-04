@@ -1,4 +1,4 @@
-import { AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignStartHorizontal, AlignStartVertical, Lock, LockOpen, PaintBucket, Paintbrush, StretchHorizontal, StretchVertical } from "lucide-react";
+import { AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignStartHorizontal, AlignStartVertical, Crop, FlipHorizontal2, FlipVertical2, Lock, LockOpen, PaintBucket, Paintbrush, StretchHorizontal, StretchVertical } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
@@ -7,7 +7,7 @@ import { Select } from "@/components/shared/Select";
 import { Segmented, SliderField, SwitchField, TextArea, TextInput } from "@/components/tool/form";
 import type { StudioElement, StudioFill, StudioImageElement, StudioPage, StudioQrElement, StudioShapeElement, StudioStroke, StudioTextElement } from "@/types/studio";
 import { MAX_PAGE_NAME, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
-import { align, distribute, patchSelected, toggleLock } from "./commands";
+import { align, distribute, flipSelection, patchSelected, toggleLock } from "./commands";
 import { DesignColours, ElementColours } from "./ColorSections";
 import { ColorField, FillEditor, NumberField, OpacityField, PanelSection, StrokeEditor } from "./controls";
 import { deepEqual, isCornerable, isFillable, isLineElement, isRoundable, isShadowable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue, strokeDifferences } from "./multiEdit";
@@ -18,6 +18,8 @@ import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { TextSection } from "./TextSection";
 import { CornerControls, LineSection, ShadowSection } from "./ShapeSections";
+import { ImageFiltersSection } from "./ImageFiltersSection";
+import { beginCrop, croppable } from "./cropMode";
 import { VectorStrokeSection } from "./VectorStrokeSection";
 
 
@@ -156,6 +158,8 @@ function ArrangeSection({ elements }: { elements: StudioElement[] }) {
           </>
         ) : null}
         <IconButton icon={locked ? Lock : LockOpen} active={locked} label={locked ? t("studio.props.unlock") : t("studio.props.lock")} onClick={toggleLock} />
+        <IconButton icon={FlipHorizontal2} active={elements.every((element) => element.flipX)} disabled={locked} label={t("studio.flip.horizontal")} shortcut="Shift+H" onClick={() => flipSelection("horizontal")} />
+        <IconButton icon={FlipVertical2} active={elements.every((element) => element.flipY)} disabled={locked} label={t("studio.flip.vertical")} shortcut="Shift+V" onClick={() => flipSelection("vertical")} />
       </div>
       {single ? (
         <div className="grid grid-cols-2 gap-2">
@@ -287,16 +291,22 @@ function ImageSection({ element }: { element: StudioImageElement }) {
   };
   return (
     <PanelSection title={t("studio.props.image")}>
-      <button
-        type="button"
-        className="glass-chip h-8 rounded-lg px-3 text-sm font-medium"
-        onClick={async () => {
-          const src = await pickImage(t("studio.props.replaceImage"));
-          if (src) set({ src });
-        }}
-      >
-        {t("studio.props.replaceImage")}
-      </button>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="glass-chip h-8 rounded-lg px-3 text-sm font-medium"
+          onClick={async () => {
+            const src = await pickImage(t("studio.props.replaceImage"));
+            if (src) set({ src });
+          }}
+        >
+          {t("studio.props.replaceImage")}
+        </button>
+        <button type="button" data-testid="studio-crop-button" className="glass-chip inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-40" disabled={!croppable(element)} aria-keyshortcuts="Enter" title={`${t("studio.crop.button")} (Enter)`} onClick={() => void beginCrop(element)}>
+          <Crop className="size-4" aria-hidden />
+          {t("studio.crop.button")}
+        </button>
+      </div>
       <Segmented size="sm" value={element.fit} options={["cover", "contain", "stretch"] as const} labelOf={(fit) => t(`studio.fit.${fit}`)} onChange={(fit) => set({ fit })} ariaLabel={t("studio.fit.label")} />
       <Segmented size="sm" value={element.mask} options={["none", "rounded", "circle"] as const} labelOf={(mask) => t(`studio.mask.${mask}`)} onChange={(mask) => set({ mask })} ariaLabel={t("studio.mask.label")} />
       <div className="grid grid-cols-2 gap-x-3">
@@ -342,6 +352,7 @@ export function PropertiesPanel() {
       {single?.kind === "vector" ? <VectorStrokeSection element={single} /> : null}
       {texts.length && kinds.size === 1 ? <TextSection elements={texts} /> : null}
       {single?.kind === "image" ? <ImageSection element={single} /> : null}
+      {single?.kind === "image" && single.src ? <ImageFiltersSection element={single} /> : null}
       {single?.kind === "qr" ? <QrSection element={single} /> : null}
       {elements.length ? <StyleSections elements={elements} /> : null}
     </aside>

@@ -6682,7 +6682,14 @@
       "left": "左を切り抜く",
       "right": "右を切り抜く",
       "top": "上を切り抜く",
-      "bottom": "下を切り抜く"
+      "bottom": "下を切り抜く",
+      "button": "切り抜き",
+      "mode": "画像の切り抜き",
+      "zoom": "ズーム",
+      "hint": "画像をドラッグして移動、ハンドルをドラッグして切り抜きます。Enter で適用、Esc で取り消し。",
+      "reset": "リセット",
+      "cancel": "キャンセル",
+      "done": "完了"
     },
     "export": {
       "title": "デザインを書き出し",
@@ -8339,7 +8346,9 @@
         "strike": "取り消し線",
         "listLevel": "リストのレベルを変更",
         "alignText": "文字を左揃え・中央揃え・右揃え（編集中）",
-        "arrow": "矢印を追加"
+        "arrow": "矢印を追加",
+        "flip": "左右反転 / 上下反転",
+        "cropImage": "画像の切り抜き"
       }
     },
     "view": {
@@ -8571,6 +8580,29 @@
         "idea": "アイデア, 電球, ランプ, 光",
         "face": "顔, 笑顔, 絵文字, 幸せ"
       }
+    },
+    "flip": {
+      "horizontal": "左右反転",
+      "vertical": "上下反転"
+    },
+    "filters": {
+      "title": "補正",
+      "presetsLabel": "フィルターのプリセット",
+      "presets": {
+        "none": "なし",
+        "bw": "モノクロ",
+        "warm": "暖色",
+        "cool": "寒色",
+        "vivid": "鮮やか",
+        "fade": "フェード"
+      },
+      "brightness": "明るさ",
+      "contrast": "コントラスト",
+      "saturation": "彩度",
+      "warmth": "色温度",
+      "sepia": "セピア",
+      "grayscale": "グレースケール",
+      "reset": "補正をリセット"
     }
   }
 }

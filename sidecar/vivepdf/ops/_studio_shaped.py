@@ -23,6 +23,7 @@ from vivepdf.ops._studio_text import (
     run_style,
     text_paragraphs,
 )
+from vivepdf.ops._studio_vector import mirror
 from vivepdf.ops.create_bulk import fill_placeholders
 from vivepdf.ops.fonts import resolve_face
 
@@ -265,10 +266,13 @@ def _target(item: StudioTextItem, page_height: float, dx: float, dy: float) -> p
     cos, sin = abs(math.cos(angle)), abs(math.sin(angle))
     width = item.width * cos + page_height * sin
     height = item.width * sin + page_height * cos
+    sign_x = -1 if item.flip_x else 1
+    sign_y = -1 if item.flip_y else 1
+    dx, dy = dx * sign_x, dy * sign_y
     shift_x = dx * math.cos(angle) - dy * math.sin(angle)
     shift_y = dx * math.sin(angle) + dy * math.cos(angle)
     cx = item.x + item.width / 2 + shift_x
-    cy = item.y + page_height / 2 + shift_y
+    cy = item.y + item.height / 2 + sign_y * (page_height - item.height) / 2 + shift_y
     return pymupdf.Rect(cx - width / 2, cy - height / 2, cx + width / 2, cy + height / 2)
 
 
@@ -286,6 +290,7 @@ def _place(
     try:
         if stroke is not None:
             _stroked(source[0], *stroke)
+        mirror(source, item.flip_x, item.flip_y)
         page.show_pdf_page(_target(item, page_height, *offset), source, 0, rotate=-item.rotation)
     finally:
         source.close()

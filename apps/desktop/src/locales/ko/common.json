@@ -6682,7 +6682,14 @@
       "left": "왼쪽 자르기",
       "right": "오른쪽 자르기",
       "top": "위쪽 자르기",
-      "bottom": "아래쪽 자르기"
+      "bottom": "아래쪽 자르기",
+      "button": "자르기",
+      "mode": "그림 자르기",
+      "zoom": "확대/축소",
+      "hint": "그림을 끌어 옮기고 핸들을 끌어 자릅니다. Enter로 적용, Esc로 취소합니다.",
+      "reset": "초기화",
+      "cancel": "취소",
+      "done": "완료"
     },
     "export": {
       "title": "디자인 내보내기",
@@ -8339,7 +8346,9 @@
         "strike": "취소선",
         "listLevel": "목록 수준 변경",
         "alignText": "텍스트 왼쪽, 가운데, 오른쪽 맞춤(편집 중)",
-        "arrow": "화살표 추가"
+        "arrow": "화살표 추가",
+        "flip": "좌우 / 상하 뒤집기",
+        "cropImage": "그림 자르기"
       }
     },
     "view": {
@@ -8571,6 +8580,29 @@
         "idea": "아이디어, 전구, 램프, 빛",
         "face": "얼굴, 미소, 이모지, 행복"
       }
+    },
+    "flip": {
+      "horizontal": "좌우 뒤집기",
+      "vertical": "상하 뒤집기"
+    },
+    "filters": {
+      "title": "보정",
+      "presetsLabel": "필터 사전 설정",
+      "presets": {
+        "none": "없음",
+        "bw": "흑백",
+        "warm": "따뜻하게",
+        "cool": "차갑게",
+        "vivid": "선명하게",
+        "fade": "바랜 느낌"
+      },
+      "brightness": "밝기",
+      "contrast": "대비",
+      "saturation": "채도",
+      "warmth": "색온도",
+      "sepia": "세피아",
+      "grayscale": "회색조",
+      "reset": "보정 초기화"
     }
   }
 }
