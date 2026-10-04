@@ -69,7 +69,7 @@ export function PagesStrip({ language }: { language: string }) {
 
   return (
     <div className="glass flex items-center gap-3 border-t border-border/60 px-3 py-2" data-testid="studio-pages">
-      <ol ref={listRef} className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto px-1 py-1" aria-label={t("studio.pages.label")} {...delegate((key) => key)}>
+      <ol ref={listRef} className="flex min-w-0 flex-1 select-none items-center gap-2 overflow-x-auto px-1 py-1" aria-label={t("studio.pages.label")} {...delegate((key) => key)}>
         {design.pages.map((page, position) => (
           <StripPage
             key={page.id}

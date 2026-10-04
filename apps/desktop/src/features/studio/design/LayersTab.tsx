@@ -123,7 +123,7 @@ export function LayersTab() {
 
   return (
     <div className="space-y-2 p-2">
-      <ul ref={listRef} className="space-y-0.5" aria-label={t("studio.layers.label")} aria-describedby="studio-layers-hint">
+      <ul ref={listRef} className="space-y-0.5 select-none" aria-label={t("studio.layers.label")} aria-describedby="studio-layers-hint">
         {rows.map((row) => {
           const line = target?.key === row.key ? <DropLine side={target.side} /> : null;
           if (row.kind === "group") {

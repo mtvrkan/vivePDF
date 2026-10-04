@@ -73,7 +73,7 @@ export function PageOverview({ open, onClose, language }: { open: boolean; onClo
   return (
     <Dialog open={open && pages !== null} title={t("studio.pages.overview")} onClose={onClose} size="xl">
       <p className="mb-3 text-sm text-muted-foreground">{t("studio.pages.overviewHint")}</p>
-      <ol ref={listRef} aria-label={t("studio.pages.label")} className="grid grid-cols-2 gap-x-4 gap-y-3 pb-1 sm:grid-cols-3 md:grid-cols-5" {...delegate((key) => key)}>
+      <ol ref={listRef} aria-label={t("studio.pages.label")} className="grid select-none grid-cols-2 gap-x-4 gap-y-3 pb-1 sm:grid-cols-3 md:grid-cols-5" {...delegate((key) => key)}>
         {(pages ?? []).map((page, position) => (
           <OverviewTile
             key={page.id}
