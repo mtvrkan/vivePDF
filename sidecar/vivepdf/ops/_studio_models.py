@@ -181,6 +181,11 @@ class StudioRenderParams(RpcModel):
     title: str = Field(default="", max_length=500)
     format: Literal["pdf", "png", "jpg"] = "pdf"
     dpi: int = Field(default=150, ge=36, le=600)
+    quality: int = Field(default=92, ge=10, le=100)
+    transparent: bool = False
+    page_numbers: list[Annotated[int, Field(ge=1, le=MAX_PAGES)]] | None = Field(
+        default=None, max_length=MAX_PAGES
+    )
     embed: StudioEmbed | None = None
     output: str = Field(default="", max_length=4096)
     overwrite: bool = False
