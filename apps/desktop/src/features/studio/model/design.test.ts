@@ -202,3 +202,36 @@ describe("studio text typography fields", () => {
     expect(element?.kind === "text" && element.runs[0].strike).toBeUndefined();
   });
 });
+
+describe("shape effects in saved designs", () => {
+  it("loads old shapes without shadows, arrowheads or separate corners", () => {
+    const shape = normalizeElement({ kind: "shape", shape: "rect", cornerRadius: 8 });
+    const arrow = normalizeElement({ kind: "shape", shape: "arrowLine" });
+
+    expect(shape).toMatchObject({ dropShadow: null, corners: null, cornerRadius: 8, startArrow: "none", endArrow: "none", arrowSize: 1 });
+    expect(arrow).toMatchObject({ startArrow: "none", endArrow: "triangle" });
+    expect(normalizeElement({ kind: "qr", value: "x" })).toMatchObject({ dropShadow: null });
+  });
+
+  it("keeps valid shadows, heads and corners and clamps the rest", () => {
+    const shape = normalizeElement({
+      kind: "shape",
+      shape: "line",
+      startArrow: "circle",
+      endArrow: "openArrow",
+      arrowSize: 99,
+      corners: [4, -2, 20000, 1],
+      dropShadow: { color: "#FF0000", opacity: 3, x: -900, y: 4, blur: -1 },
+    });
+
+    expect(shape).toMatchObject({ startArrow: "circle", endArrow: "openArrow", arrowSize: 4, corners: [4, 0, 10000, 1], dropShadow: { color: "#ff0000", opacity: 1, x: -500, y: 4, blur: 0 } });
+  });
+
+  it("drops unknown heads, malformed corners and non-object shadows", () => {
+    const shape = normalizeElement({ kind: "shape", shape: "line", startArrow: "rocket", corners: [1, 2], dropShadow: "big" });
+    const image = normalizeElement({ kind: "image", src: "a.png", dropShadow: { color: "nope" } });
+
+    expect(shape).toMatchObject({ startArrow: "none", corners: null, dropShadow: null });
+    expect(image).toMatchObject({ dropShadow: { color: "#000000", opacity: 0.35, x: 4, y: 6, blur: 12 } });
+  });
+});

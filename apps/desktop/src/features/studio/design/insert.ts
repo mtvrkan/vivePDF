@@ -1,5 +1,6 @@
-import type { StudioElement, StudioPage, StudioShapeKind } from "@/types/studio";
+import { STUDIO_SHAPES, type StudioElement, type StudioPage, type StudioShapeElement, type StudioShapeKind } from "@/types/studio";
 import { createShape, createText } from "../model/design";
+import { isLineShape } from "../model/shapes";
 import { addElements } from "../model/edit";
 import { useStudioStore } from "./studioStore";
 
@@ -37,9 +38,24 @@ export function insertText(page: StudioPage, preset: TextPreset, text: string) {
   insert(createText(at.x, at.y, width, height, text, { fontSize: preset.fontSize, bold: preset.bold, align: "center" }));
 }
 
-export function insertShape(page: StudioPage, shape: StudioShapeKind) {
+export type ShapePreset = { key: string; shape: StudioShapeKind; overrides?: (side: number) => Partial<StudioShapeElement> };
+
+export const ARROW_PRESET: ShapePreset = { key: "arrowLine", shape: "line", overrides: () => ({ endArrow: "arrow" }) };
+
+export const SHAPE_PRESETS: ShapePreset[] = STUDIO_SHAPES.flatMap((shape): ShapePreset[] => {
+  if (shape === "rect") return [{ key: "rect", shape }, { key: "roundedRect", shape, overrides: (side) => ({ cornerRadius: Math.round(side * 0.15) }) }];
+  if (shape === "arrowLine") return [ARROW_PRESET, { key: "doubleArrow", shape: "line", overrides: () => ({ startArrow: "arrow", endArrow: "arrow" }) }];
+  return [{ key: shape, shape }];
+});
+
+export function presetShape(preset: ShapePreset, x: number, y: number, side: number, height: number, overrides: Partial<StudioShapeElement> = {}): StudioShapeElement {
+  return createShape(preset.shape, x, y, side, height, { ...preset.overrides?.(side), ...overrides });
+}
+
+export function insertShape(page: StudioPage, shape: StudioShapeKind | ShapePreset) {
+  const preset = typeof shape === "string" ? { key: shape, shape } : shape;
   const side = Math.min(page.width, page.height) * 0.25;
-  const height = shape === "line" || shape === "arrowLine" ? 16 : side;
+  const height = isLineShape(preset.shape) ? 16 : side;
   const at = centred(page, side, height);
-  insert(createShape(shape, at.x, at.y, side, height));
+  insert(presetShape(preset, at.x, at.y, side, height));
 }

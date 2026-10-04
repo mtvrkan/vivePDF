@@ -1,4 +1,6 @@
 import type {
+  StudioArrowhead,
+  StudioCornerRadii,
   StudioDash,
   StudioFill,
   StudioGradientStop,
@@ -51,24 +53,39 @@ function starPoints(points: number, innerRatio: number): Point[] {
   });
 }
 
-export function roundedRect(x: number, y: number, width: number, height: number, radius: number): string {
-  const r = Math.max(0, Math.min(radius, width / 2, height / 2));
-  if (r <= 0) return polygon([[x, y], [x + width, y], [x + width, y + height], [x, y + height]]);
-  const k = r * KAPPA;
+export function clampedCorners(width: number, height: number, radii: readonly number[]): StudioCornerRadii {
+  const limit = Math.max(0, Math.min(width, height) / 2);
+  return [0, 1, 2, 3].map((index) => Math.max(0, Math.min(Number.isFinite(radii[index]) ? radii[index] : 0, limit))) as StudioCornerRadii;
+}
+
+function corner(radius: number, from: Point, control: Point, to: Point): string[] {
+  if (radius <= 0) return [];
+  const first: Point = [from[0] + (control[0] - from[0]) * KAPPA, from[1] + (control[1] - from[1]) * KAPPA];
+  const second: Point = [to[0] + (control[0] - to[0]) * KAPPA, to[1] + (control[1] - to[1]) * KAPPA];
+  return [`C${num(first[0])} ${num(first[1])} ${num(second[0])} ${num(second[1])} ${num(to[0])} ${num(to[1])}`];
+}
+
+export function cornerRect(x: number, y: number, width: number, height: number, radii: readonly number[]): string {
+  const [tl, tr, br, bl] = clampedCorners(width, height, radii);
   const right = x + width;
   const bottom = y + height;
+  if (tl <= 0 && tr <= 0 && br <= 0 && bl <= 0) return polygon([[x, y], [right, y], [right, bottom], [x, bottom]]);
   return [
-    `M${num(x + r)} ${num(y)}`,
-    `L${num(right - r)} ${num(y)}`,
-    `C${num(right - r + k)} ${num(y)} ${num(right)} ${num(y + r - k)} ${num(right)} ${num(y + r)}`,
-    `L${num(right)} ${num(bottom - r)}`,
-    `C${num(right)} ${num(bottom - r + k)} ${num(right - r + k)} ${num(bottom)} ${num(right - r)} ${num(bottom)}`,
-    `L${num(x + r)} ${num(bottom)}`,
-    `C${num(x + r - k)} ${num(bottom)} ${num(x)} ${num(bottom - r + k)} ${num(x)} ${num(bottom - r)}`,
-    `L${num(x)} ${num(y + r)}`,
-    `C${num(x)} ${num(y + r - k)} ${num(x + r - k)} ${num(y)} ${num(x + r)} ${num(y)}`,
+    `M${num(x + tl)} ${num(y)}`,
+    `L${num(right - tr)} ${num(y)}`,
+    ...corner(tr, [right - tr, y], [right, y], [right, y + tr]),
+    `L${num(right)} ${num(bottom - br)}`,
+    ...corner(br, [right, bottom - br], [right, bottom], [right - br, bottom]),
+    `L${num(x + bl)} ${num(bottom)}`,
+    ...corner(bl, [x + bl, bottom], [x, bottom], [x, bottom - bl]),
+    `L${num(x)} ${num(y + tl)}`,
+    ...corner(tl, [x, y + tl], [x, y], [x + tl, y]),
     "Z",
   ].join(" ");
+}
+
+export function roundedRect(x: number, y: number, width: number, height: number, radius: number): string {
+  return cornerRect(x, y, width, height, [radius, radius, radius, radius]);
 }
 
 export function ellipse(cx: number, cy: number, rx: number, ry: number): string {
@@ -120,12 +137,61 @@ function speech(width: number, height: number, radius: number): string {
   ].join(" ");
 }
 
-export function shapeD(shape: StudioShapeKind, width: number, height: number, options: { cornerRadius?: number; points?: number; innerRatio?: number } = {}): string {
+type Circle = [number, number, number];
+type Cubic = [Point, Point, Point, Point];
+
+const CLOUD_CIRCLES: Circle[] = [[20, 40, 15], [36, 24, 17], [60, 18, 18], [80, 32, 15], [82, 47, 11], [60, 50, 12], [38, 50, 12]];
+const QUARTER = Math.PI / 2;
+
+function outerJoint(first: Circle, second: Circle, centre: Point): Point {
+  const [x1, y1, r1] = first;
+  const [x2, y2, r2] = second;
+  const distance = Math.hypot(x2 - x1, y2 - y1);
+  const along = (distance * distance + r1 * r1 - r2 * r2) / (2 * distance);
+  const reach = Math.sqrt(Math.max(0, r1 * r1 - along * along));
+  const mid: Point = [x1 + (along * (x2 - x1)) / distance, y1 + (along * (y2 - y1)) / distance];
+  const offset: Point = [(-(y2 - y1) / distance) * reach, ((x2 - x1) / distance) * reach];
+  const candidates: Point[] = [[mid[0] + offset[0], mid[1] + offset[1]], [mid[0] - offset[0], mid[1] - offset[1]]];
+  return candidates.reduce((best, point) => (Math.hypot(point[0] - centre[0], point[1] - centre[1]) > Math.hypot(best[0] - centre[0], best[1] - centre[1]) ? point : best));
+}
+
+function arcCubics([x, y, r]: Circle, from: Point, to: Point): Cubic[] {
+  const start = Math.atan2(from[1] - y, from[0] - x);
+  let end = Math.atan2(to[1] - y, to[0] - x);
+  while (end <= start) end += Math.PI * 2;
+  const cuts = [start];
+  for (let step = Math.ceil(start / QUARTER + 1e-9); step * QUARTER < end - 1e-9; step += 1) cuts.push(step * QUARTER);
+  cuts.push(end);
+  return cuts.slice(1).map((next, index) => {
+    const previous = cuts[index];
+    const handle = (4 / 3) * Math.tan((next - previous) / 4) * r;
+    const first: Point = [x + r * Math.cos(previous), y + r * Math.sin(previous)];
+    const last: Point = [x + r * Math.cos(next), y + r * Math.sin(next)];
+    return [first, [first[0] - handle * Math.sin(previous), first[1] + handle * Math.cos(previous)], [last[0] + handle * Math.sin(next), last[1] - handle * Math.cos(next)], last];
+  });
+}
+
+function cloud(width: number, height: number): string {
+  const centre: Point = [CLOUD_CIRCLES.reduce((sum, [x]) => sum + x, 0) / CLOUD_CIRCLES.length, CLOUD_CIRCLES.reduce((sum, [, y]) => sum + y, 0) / CLOUD_CIRCLES.length];
+  const joints = CLOUD_CIRCLES.map((circle, index) => outerJoint(circle, CLOUD_CIRCLES[(index + 1) % CLOUD_CIRCLES.length], centre));
+  const cubics = CLOUD_CIRCLES.flatMap((circle, index) => arcCubics(circle, joints[(index + joints.length - 1) % joints.length], joints[index]));
+  const ends = cubics.flatMap(([first, , , last]) => [first, last]);
+  const left = Math.min(...ends.map(([x]) => x));
+  const top = Math.min(...ends.map(([, y]) => y));
+  const scaleX = width / (Math.max(...ends.map(([x]) => x)) - left);
+  const scaleY = height / (Math.max(...ends.map(([, y]) => y)) - top);
+  const at = ([x, y]: Point) => `${num(Math.min(width, Math.max(0, (x - left) * scaleX)))} ${num(Math.min(height, Math.max(0, (y - top) * scaleY)))}`;
+  return [`M${at(cubics[0][0])}`, ...cubics.map(([, first, second, last]) => `C${at(first)} ${at(second)} ${at(last)}`), "Z"].join(" ");
+}
+
+export function shapeD(shape: StudioShapeKind, width: number, height: number, options: { cornerRadius?: number; corners?: StudioCornerRadii | null; points?: number; innerRatio?: number } = {}): string {
   const w = width;
   const h = height;
   switch (shape) {
     case "rect":
-      return roundedRect(0, 0, w, h, options.cornerRadius ?? 0);
+      return options.corners ? cornerRect(0, 0, w, h, options.corners) : roundedRect(0, 0, w, h, options.cornerRadius ?? 0);
+    case "cloud":
+      return cloud(w, h);
     case "ellipse":
       return ellipse(w / 2, h / 2, w / 2, h / 2);
     case "triangle":
@@ -242,23 +308,69 @@ export function renderStroke(stroke: StudioStroke | null): StudioRenderStroke | 
   return { color: stroke.color, width: stroke.width, dash: dashArray(stroke, cap), cap, join: strokeJoin(stroke) };
 }
 
-function arrowLinePaths(element: StudioShapeElement): StudioRenderPath[] {
+const HEAD_RATIO = 3.5;
+const MIN_HEAD = 6;
+const OPEN_ARROW_MITER = 1 / Math.sin(Math.atan(0.5));
+
+export function isLineShape(shape: StudioShapeKind): boolean {
+  return shape === "line" || shape === "arrowLine";
+}
+
+export function arrowheadLength(strokeWidth: number, size: number, available: number): number {
+  return Math.max(0, Math.min(available, Math.max(strokeWidth * HEAD_RATIO, MIN_HEAD) * size));
+}
+
+export type Arrowhead = { paths: StudioRenderPath[]; inset: number };
+
+export function arrowhead(kind: StudioArrowhead, tipX: number, mid: number, direction: 1 | -1, length: number, stroke: StudioRenderStroke): Arrowhead {
+  const back = (distance: number, across = 0): Point => [tipX - direction * distance, mid + across];
+  const at = (point: Point) => `${num(point[0])} ${num(point[1])}`;
+  const solid = (d: string): StudioRenderPath => ({ d, fill: { type: "solid", color: stroke.color }, stroke: null, evenOdd: false, opacity: 1 });
+  const half = length / 2;
+  switch (kind) {
+    case "none":
+      return { paths: [], inset: 0 };
+    case "arrow":
+      return { paths: [solid(polygon([back(0), back(length, -half), back(length * 0.75), back(length, half)]))], inset: length * 0.6 };
+    case "openArrow": {
+      const offset = (stroke.width / 2) * OPEN_ARROW_MITER;
+      const d = `M${at(back(length + offset, -half))} L${at(back(offset))} L${at(back(length + offset, half))}`;
+      return { paths: [{ d, fill: null, stroke: { ...stroke, dash: [], join: "miter" }, evenOdd: false, opacity: 1 }], inset: offset };
+    }
+    case "triangle":
+      return { paths: [solid(polygon([back(0), back(length, -half), back(length, half)]))], inset: length * 0.8 };
+    case "circle":
+      return { paths: [solid(ellipse(tipX, mid, length * 0.4, length * 0.4))], inset: 0 };
+    case "square": {
+      const side = length * 0.4;
+      return { paths: [solid(polygon([[tipX - side, mid - side], [tipX + side, mid - side], [tipX + side, mid + side], [tipX - side, mid + side]]))], inset: 0 };
+    }
+    case "bar": {
+      const thickness = Math.max(stroke.width, 1) / 2;
+      return { paths: [solid(polygon([[tipX - thickness, mid - half], [tipX + thickness, mid - half], [tipX + thickness, mid + half], [tipX - thickness, mid + half]]))], inset: 0 };
+    }
+  }
+}
+
+function linePaths(element: StudioShapeElement): StudioRenderPath[] {
   const stroke = renderStroke(element.stroke);
   if (!stroke) return [];
-  const head = Math.min(element.width, Math.max(stroke.width * 3.5, 6));
+  const width = element.width;
   const mid = element.height / 2;
-  const shaftEnd = Math.max(0, element.width - head * 0.8);
-  return [
-    { d: `M0 ${num(mid)} L${num(shaftEnd)} ${num(mid)}`, fill: null, stroke, evenOdd: false, opacity: 1 },
-    { d: polygon([[element.width, mid], [element.width - head, mid - head / 2], [element.width - head, mid + head / 2]]), fill: { type: "solid", color: stroke.color }, stroke: null, evenOdd: false, opacity: 1 },
-  ];
+  const both = element.startArrow !== "none" && element.endArrow !== "none";
+  const length = arrowheadLength(stroke.width, element.arrowSize, both ? width / 2 : width);
+  const start = arrowhead(element.startArrow, 0, mid, -1, length, stroke);
+  const end = arrowhead(element.endArrow, width, mid, 1, length, stroke);
+  const from = start.inset;
+  const to = Math.max(from, width - end.inset);
+  const shaft: StudioRenderPath = { d: `M${num(from)} ${num(mid)} L${num(to)} ${num(mid)}`, fill: null, stroke, evenOdd: false, opacity: 1 };
+  return [shaft, ...start.paths, ...end.paths];
 }
 
 export function shapePaths(element: StudioShapeElement): StudioRenderPath[] {
-  if (element.shape === "arrowLine") return arrowLinePaths(element);
+  if (isLineShape(element.shape)) return linePaths(element);
   const d = shapeD(element.shape, element.width, element.height, element);
-  const lineLike = element.shape === "line";
-  const fill = lineLike ? null : renderFill(element.fill, element.width, element.height);
+  const fill = renderFill(element.fill, element.width, element.height);
   const stroke = renderStroke(element.stroke);
   if (!fill && !stroke) return [];
   return [{ d, fill, stroke, evenOdd: false, opacity: 1 }];

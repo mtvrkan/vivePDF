@@ -6517,7 +6517,10 @@
       "cross": "Croce",
       "speech": "Fumetto",
       "line": "Linea",
-      "arrowLine": "Linea con freccia"
+      "arrowLine": "Linea con freccia",
+      "roundedRect": "Rettangolo arrotondato",
+      "doubleArrow": "Freccia doppia",
+      "cloud": "Nuvola"
     },
     "layers": {
       "label": "Livelli di questa pagina",
@@ -8334,7 +8337,8 @@
         "findReplace": "Trova e sostituisci",
         "strike": "Barrato",
         "listLevel": "Cambia livello elenco",
-        "alignText": "Allinea il testo a sinistra, al centro o a destra (durante la modifica)"
+        "alignText": "Allinea il testo a sinistra, al centro o a destra (durante la modifica)",
+        "arrow": "Aggiungi una freccia"
       }
     },
     "view": {
@@ -8460,6 +8464,41 @@
       "total_one": "{{count}} corrispondenza",
       "total_many": "{{count}} corrispondenze",
       "total_other": "{{count}} corrispondenze"
+    },
+    "shadow": {
+      "title": "Ombra",
+      "on": "Ombra esterna",
+      "hint": "Un’ombra morbida dietro l’elemento, anche nel file esportato",
+      "color": "Colore ombra",
+      "opacity": "Opacità ombra",
+      "x": "Spostamento orizzontale",
+      "y": "Spostamento verticale",
+      "blur": "Sfocatura"
+    },
+    "arrows": {
+      "title": "Estremità della linea",
+      "start": "Inizio",
+      "end": "Fine",
+      "swap": "Scambia estremità",
+      "size": "Dimensione della punta",
+      "kinds": {
+        "none": "Nessuna",
+        "arrow": "Freccia",
+        "openArrow": "Freccia aperta",
+        "triangle": "Triangolo",
+        "circle": "Cerchio",
+        "square": "Quadrato",
+        "bar": "Barra"
+      }
+    },
+    "corners": {
+      "separate": "Imposta ogni angolo separatamente",
+      "link": "Usa lo stesso arrotondamento per tutti gli angoli",
+      "unlink": "Imposta ogni angolo separatamente",
+      "topLeft": "In alto a sinistra",
+      "topRight": "In alto a destra",
+      "bottomRight": "In basso a destra",
+      "bottomLeft": "In basso a sinistra"
     }
   }
 }

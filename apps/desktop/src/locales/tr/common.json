@@ -6518,7 +6518,10 @@
       "cross": "Artı",
       "speech": "Konuşma balonu",
       "line": "Çizgi",
-      "arrowLine": "Oklu çizgi"
+      "arrowLine": "Oklu çizgi",
+      "roundedRect": "Yuvarlak köşeli dikdörtgen",
+      "doubleArrow": "Çift yönlü ok",
+      "cloud": "Bulut"
     },
     "layers": {
       "label": "Bu sayfadaki katmanlar",
@@ -8335,7 +8338,8 @@
         "findReplace": "Bul ve değiştir",
         "strike": "Üstü çizili",
         "listLevel": "Liste düzeyini değiştir",
-        "alignText": "Metni sola, ortaya veya sağa hizala (düzenlerken)"
+        "alignText": "Metni sola, ortaya veya sağa hizala (düzenlerken)",
+        "arrow": "Ok ekle"
       }
     },
     "view": {
@@ -8460,6 +8464,41 @@
       "count": "{{current}} / {{total}}",
       "total_one": "{{count}} eşleşme",
       "total_other": "{{count}} eşleşme"
+    },
+    "shadow": {
+      "title": "Gölge",
+      "on": "Gölge düşür",
+      "hint": "Öğenin arkasında yumuşak bir gölge; dışa aktarılan dosyada da görünür",
+      "color": "Gölge rengi",
+      "opacity": "Gölge opaklığı",
+      "x": "Yatay kaydırma",
+      "y": "Dikey kaydırma",
+      "blur": "Bulanıklık"
+    },
+    "arrows": {
+      "title": "Çizgi uçları",
+      "start": "Başlangıç",
+      "end": "Bitiş",
+      "swap": "Uçları değiştir",
+      "size": "Ok ucu boyutu",
+      "kinds": {
+        "none": "Yok",
+        "arrow": "Ok",
+        "openArrow": "Açık ok",
+        "triangle": "Üçgen",
+        "circle": "Daire",
+        "square": "Kare",
+        "bar": "Çubuk"
+      }
+    },
+    "corners": {
+      "separate": "Her köşeyi ayrı ayarla",
+      "link": "Tüm köşeler için tek yuvarlaklık kullan",
+      "unlink": "Her köşeyi ayrı ayarla",
+      "topLeft": "Sol üst",
+      "topRight": "Sağ üst",
+      "bottomRight": "Sağ alt",
+      "bottomLeft": "Sol alt"
     }
   }
 }

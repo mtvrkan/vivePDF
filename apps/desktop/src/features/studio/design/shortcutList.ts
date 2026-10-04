@@ -47,6 +47,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("R", "rectangle"),
       item("O", "ellipse"),
       item("L", "line"),
+      item("A", "arrow"),
     ],
   },
   {

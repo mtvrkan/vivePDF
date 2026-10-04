@@ -201,8 +201,33 @@ class StudioTextItem(StudioBox):
         return "upper" if self.uppercase and self.text_case == "none" else self.text_case
 
 
+class StudioDropShadow(RpcModel):
+    color: Colour
+    opacity: Unit = 0.35
+    x: float = Field(default=0.0, ge=-500, le=500)
+    y: float = Field(default=0.0, ge=-500, le=500)
+    blur: float = Field(default=0.0, ge=0, le=200)
+
+
+StudioShadowSource = Annotated[
+    StudioVectorItem | StudioSvgItem | StudioImageItem | StudioQrItem,
+    Field(discriminator="kind"),
+]
+
+
+class StudioShadowItem(StudioBox):
+    kind: Literal["shadow"]
+    shadow: StudioDropShadow
+    items: list[StudioShadowSource] = Field(min_length=1, max_length=8)
+
+
 StudioItem = Annotated[
-    StudioVectorItem | StudioSvgItem | StudioImageItem | StudioQrItem | StudioTextItem,
+    StudioVectorItem
+    | StudioSvgItem
+    | StudioImageItem
+    | StudioQrItem
+    | StudioTextItem
+    | StudioShadowItem,
     Field(discriminator="kind"),
 ]
 

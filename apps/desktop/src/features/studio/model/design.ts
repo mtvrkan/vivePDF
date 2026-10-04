@@ -1,4 +1,5 @@
 import {
+  STUDIO_ARROWHEADS,
   STUDIO_DASHES,
   STUDIO_DESIGN_VERSION,
   STUDIO_LINE_CAPS,
@@ -8,8 +9,10 @@ import {
   STUDIO_TEXT_AUTO_SIZES,
   STUDIO_TEXT_CASES,
   type StudioBackground,
+  type StudioCornerRadii,
   type StudioCrop,
   type StudioDesign,
+  type StudioDropShadow,
   type StudioElement,
   type StudioElementBase,
   type StudioFill,
@@ -62,6 +65,12 @@ export const MIN_DASH_GAP = 0.25;
 export const MAX_DASH_GAP = 4;
 export const MIN_RADIAL_RADIUS = 0.05;
 export const MAX_RADIAL_RADIUS = 3;
+export const MAX_SHADOW_OFFSET = 500;
+export const MAX_SHADOW_BLUR = 200;
+export const MIN_ARROW_SIZE = 0.5;
+export const MAX_ARROW_SIZE = 4;
+export const MAX_CORNER_RADIUS = 10000;
+export const DEFAULT_DROP_SHADOW: StudioDropShadow = { color: "#000000", opacity: 0.35, x: 4, y: 6, blur: 12 };
 
 const PLACEHOLDER = /(?<!\{)\{([^{}]+)\}/g;
 const COLOUR = /^#[0-9a-f]{6}$/i;
@@ -129,8 +138,13 @@ export function createShape(shape: StudioShapeKind, x: number, y: number, width:
     fill: lineLike ? { type: "none" } : { type: "solid", color: "#3b82f6" },
     stroke: lineLike ? { color: "#1f2937", width: 2, dash: "solid" } : null,
     cornerRadius: 0,
+    corners: null,
     points: shape === "star" ? 5 : shape === "burst" ? 16 : 6,
     innerRatio: shape === "burst" ? 0.8 : 0.45,
+    startArrow: "none",
+    endArrow: shape === "arrowLine" ? "triangle" : "none",
+    arrowSize: 1,
+    dropShadow: null,
     ...overrides,
   };
 }
@@ -145,19 +159,20 @@ export function createImage(src: string, x: number, y: number, width: number, he
     mask: "none",
     cornerRadius: 0,
     stroke: null,
+    dropShadow: null,
   };
 }
 
 export function createSvg(svg: string, x: number, y: number, width: number, height: number): StudioSvgElement {
-  return { ...base(x, y, width, height, ""), kind: "svg", svg, source: "import", data: null };
+  return { ...base(x, y, width, height, ""), kind: "svg", svg, source: "import", data: null, dropShadow: null };
 }
 
 export function createVector(art: { viewWidth: number; viewHeight: number; paths: StudioVectorPath[] }, x: number, y: number, width: number, height: number, name = ""): StudioVectorElement {
-  return { ...base(x, y, width, height, name), kind: "vector", viewWidth: art.viewWidth, viewHeight: art.viewHeight, paths: art.paths };
+  return { ...base(x, y, width, height, name), kind: "vector", viewWidth: art.viewWidth, viewHeight: art.viewHeight, paths: art.paths, dropShadow: null };
 }
 
 export function createQr(value: string, x: number, y: number, side: number): StudioQrElement {
-  return { ...base(x, y, side, side, ""), kind: "qr", value, color: "#000000", background: "#ffffff", errorLevel: "M" };
+  return { ...base(x, y, side, side, ""), kind: "qr", value, color: "#000000", background: "#ffffff", errorLevel: "M", dropShadow: null };
 }
 
 const STRONG_LETTER = /\p{L}/u;
@@ -306,6 +321,23 @@ function normalizeShadow(value: unknown): StudioTextShadow | null {
   return shadow ? { color: colour(shadow.color, "#000000"), x: finite(shadow.x, 2, -500, 500), y: finite(shadow.y, 2, -500, 500), opacity: finite(shadow.opacity, 0.5, 0, 1) } : null;
 }
 
+export function normalizeDropShadow(value: unknown): StudioDropShadow | null {
+  const shadow = record(value);
+  if (!shadow) return null;
+  return {
+    color: colour(shadow.color, DEFAULT_DROP_SHADOW.color),
+    opacity: finite(shadow.opacity, DEFAULT_DROP_SHADOW.opacity, 0, 1),
+    x: finite(shadow.x, DEFAULT_DROP_SHADOW.x, -MAX_SHADOW_OFFSET, MAX_SHADOW_OFFSET),
+    y: finite(shadow.y, DEFAULT_DROP_SHADOW.y, -MAX_SHADOW_OFFSET, MAX_SHADOW_OFFSET),
+    blur: finite(shadow.blur, DEFAULT_DROP_SHADOW.blur, 0, MAX_SHADOW_BLUR),
+  };
+}
+
+function normalizeCorners(value: unknown): StudioCornerRadii | null {
+  if (!Array.isArray(value) || value.length !== 4) return null;
+  return value.map((radius) => finite(radius, 0, 0, MAX_CORNER_RADIUS)) as StudioCornerRadii;
+}
+
 function normalizeHighlight(value: unknown): StudioTextHighlight | null {
   const highlight = record(value);
   return highlight ? { color: colour(highlight.color, "#fde047"), padding: finite(highlight.padding, 2, 0, 200) } : null;
@@ -373,17 +405,24 @@ export function normalizeElement(value: unknown): StudioElement | null {
         language: normalizeLanguage(raw.language),
       };
     }
-    case "shape":
+    case "shape": {
+      const shape = oneOf(raw.shape, STUDIO_SHAPES, "rect");
       return {
         ...shared,
         kind: "shape",
-        shape: oneOf(raw.shape, STUDIO_SHAPES, "rect"),
+        shape,
         fill: normalizeFill(raw.fill),
         stroke: normalizeStroke(raw.stroke),
-        cornerRadius: finite(raw.cornerRadius, 0, 0, 10000),
+        cornerRadius: finite(raw.cornerRadius, 0, 0, MAX_CORNER_RADIUS),
+        corners: normalizeCorners(raw.corners),
         points: Math.round(finite(raw.points, 5, 3, 64)),
         innerRatio: finite(raw.innerRatio, 0.45, 0.05, 0.95),
+        startArrow: oneOf(raw.startArrow, STUDIO_ARROWHEADS, "none"),
+        endArrow: oneOf(raw.endArrow, STUDIO_ARROWHEADS, shape === "arrowLine" ? "triangle" : "none"),
+        arrowSize: finite(raw.arrowSize, 1, MIN_ARROW_SIZE, MAX_ARROW_SIZE),
+        dropShadow: normalizeDropShadow(raw.dropShadow),
       };
+    }
     case "image":
       if (typeof raw.src !== "string") return null;
       return {
@@ -393,8 +432,9 @@ export function normalizeElement(value: unknown): StudioElement | null {
         fit: oneOf(raw.fit, ["cover", "contain", "stretch"], "cover"),
         crop: normalizeCrop(raw.crop),
         mask: oneOf(raw.mask, ["none", "rounded", "circle"], "none"),
-        cornerRadius: finite(raw.cornerRadius, 0, 0, 10000),
+        cornerRadius: finite(raw.cornerRadius, 0, 0, MAX_CORNER_RADIUS),
         stroke: normalizeStroke(raw.stroke),
+        dropShadow: normalizeDropShadow(raw.dropShadow),
       };
     case "qr":
       return {
@@ -404,15 +444,16 @@ export function normalizeElement(value: unknown): StudioElement | null {
         color: colour(raw.color, "#000000"),
         background: raw.background === null ? null : colour(raw.background, "#ffffff"),
         errorLevel: oneOf(raw.errorLevel, ["L", "M", "Q", "H"], "M"),
+        dropShadow: normalizeDropShadow(raw.dropShadow),
       };
     case "vector": {
       const paths = normalizePaths(raw.paths);
       if (!paths.length) return null;
-      return { ...shared, kind: "vector", viewWidth: finite(raw.viewWidth, shared.width, 0.01, 100000), viewHeight: finite(raw.viewHeight, shared.height, 0.01, 100000), paths };
+      return { ...shared, kind: "vector", viewWidth: finite(raw.viewWidth, shared.width, 0.01, 100000), viewHeight: finite(raw.viewHeight, shared.height, 0.01, 100000), paths, dropShadow: normalizeDropShadow(raw.dropShadow) };
     }
     case "svg":
       if (typeof raw.svg !== "string" || !raw.svg) return null;
-      return { ...shared, kind: "svg", svg: raw.svg.slice(0, 4000000), source: oneOf(raw.source, ["table", "chart", "formula", "flowchart", "import"], "import"), data: raw.data ?? null };
+      return { ...shared, kind: "svg", svg: raw.svg.slice(0, 4000000), source: oneOf(raw.source, ["table", "chart", "formula", "flowchart", "import"], "import"), data: raw.data ?? null, dropShadow: normalizeDropShadow(raw.dropShadow) };
     default:
       return null;
   }

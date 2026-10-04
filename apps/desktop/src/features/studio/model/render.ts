@@ -108,6 +108,17 @@ export function elementItems(element: StudioElement, measured: MeasuredText = ne
   }
 }
 
+export function shadowedItems(element: StudioElement, items: StudioRenderItem[]): StudioRenderItem[] {
+  const shadow = element.kind === "text" ? null : element.dropShadow;
+  if (!shadow || shadow.opacity <= 0 || !items.length) return items;
+  const shapes = items.flatMap((item) => (item.kind === "text" || item.kind === "shadow" ? [] : [{ ...item, opacity: 1 }]));
+  return shapes.length ? [{ ...box(element), kind: "shadow", shadow, items: shapes }, ...items] : items;
+}
+
+export function renderItems(element: StudioElement, measured: MeasuredText = new Map()): StudioRenderItem[] {
+  return shadowedItems(element, elementItems(element, measured));
+}
+
 function backgroundItems(page: StudioPage, keepWhite: boolean): StudioRenderItem[] {
   const frame: StudioRenderBox = { x: 0, y: 0, width: page.width, height: page.height, rotation: 0, opacity: 1 };
   const items: StudioRenderItem[] = [];
@@ -120,7 +131,7 @@ function backgroundItems(page: StudioPage, keepWhite: boolean): StudioRenderItem
 }
 
 export function pageToRender(page: StudioPage, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage {
-  return { width: page.width, height: page.height, items: [...backgroundItems(page, Boolean(options.keepWhite)), ...page.elements.flatMap((element) => elementItems(element, measured))] };
+  return { width: page.width, height: page.height, items: [...backgroundItems(page, Boolean(options.keepWhite)), ...page.elements.flatMap((element) => renderItems(element, measured))] };
 }
 
 export function designToRender(design: StudioDesign, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage[] {

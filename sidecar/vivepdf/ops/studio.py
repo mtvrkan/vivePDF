@@ -24,6 +24,7 @@ from vivepdf.ops._studio_models import (
     StudioQrResult,
     StudioRenderParams,
     StudioRenderResult,
+    StudioShadowItem,
     StudioSvgItem,
     StudioSvgParams,
     StudioSvgResult,
@@ -31,6 +32,7 @@ from vivepdf.ops._studio_models import (
     StudioVectorItem,
 )
 from vivepdf.ops._studio_project import build_archive, embed_archive, missing_asset
+from vivepdf.ops._studio_shadow import shadow_document
 from vivepdf.ops._studio_shaped import draw_shaped, needs_shaping, run_texts
 from vivepdf.ops._studio_text import TextFaces, draw_text, from_segments, has_placeholders, layout
 from vivepdf.ops._studio_vector import group_opacity, place, vector_document
@@ -209,7 +211,34 @@ def _rgb(colour: str) -> tuple[float, float, float]:
 def _static(item: StudioItem) -> bool:
     if isinstance(item, StudioQrItem):
         return not PLACEHOLDER.search(item.value)
+    if isinstance(item, StudioShadowItem):
+        return all(_static(nested) for nested in item.items)
     return not isinstance(item, StudioTextItem)
+
+
+def _shadow(item: StudioShadowItem, values: dict[str, str]) -> tuple[pymupdf.Document, float]:
+    sources: list[tuple[pymupdf.Document, float]] = []
+    try:
+        for nested in item.items:
+            sources.append(_build(nested, values))
+        return shadow_document(item, sources)
+    finally:
+        for source, _ in sources:
+            source.close()
+
+
+def _build(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, float]:
+    if isinstance(item, StudioVectorItem):
+        return vector_document(item)
+    if isinstance(item, StudioSvgItem):
+        return group_opacity(drawing_pdf(item.svg.encode("utf-8"), "drawing"), item.opacity), 0.0
+    if isinstance(item, StudioImageItem):
+        return image_document(item), 0.0
+    if isinstance(item, StudioQrItem):
+        return qr_document(item, fill_placeholders(item.value, values)), 0.0
+    if isinstance(item, StudioShadowItem):
+        return _shadow(item, values)
+    raise TypeError(item.kind)
 
 
 def _source(
@@ -217,17 +246,7 @@ def _source(
 ) -> tuple[pymupdf.Document, float]:
     if key in cache:
         return cache[key]
-    margin = 0.0
-    if isinstance(item, StudioVectorItem):
-        document, margin = vector_document(item)
-    elif isinstance(item, StudioSvgItem):
-        document = group_opacity(drawing_pdf(item.svg.encode("utf-8"), "drawing"), item.opacity)
-    elif isinstance(item, StudioImageItem):
-        document = image_document(item)
-    elif isinstance(item, StudioQrItem):
-        document = qr_document(item, fill_placeholders(item.value, values))
-    else:
-        raise TypeError(item.kind)
+    document, margin = _build(item, values)
     if _static(item):
         cache[key] = (document, margin)
     return document, margin

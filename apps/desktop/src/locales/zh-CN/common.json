@@ -6517,7 +6517,10 @@
       "cross": "十字形",
       "speech": "对话气泡",
       "line": "直线",
-      "arrowLine": "箭头线"
+      "arrowLine": "箭头线",
+      "roundedRect": "圆角矩形",
+      "doubleArrow": "双向箭头",
+      "cloud": "云朵"
     },
     "layers": {
       "label": "此页上的图层",
@@ -8334,7 +8337,8 @@
         "findReplace": "查找和替换",
         "strike": "删除线",
         "listLevel": "更改列表级别",
-        "alignText": "文字左对齐、居中或右对齐（编辑时）"
+        "alignText": "文字左对齐、居中或右对齐（编辑时）",
+        "arrow": "添加箭头"
       }
     },
     "view": {
@@ -8459,6 +8463,41 @@
       "count": "第 {{current}} 个，共 {{total}} 个",
       "total_one": "{{count}} 个匹配项",
       "total_other": "{{count}} 个匹配项"
+    },
+    "shadow": {
+      "title": "阴影",
+      "on": "投影",
+      "hint": "在元素后方添加柔和阴影，导出的文件中同样保留",
+      "color": "阴影颜色",
+      "opacity": "阴影不透明度",
+      "x": "水平偏移",
+      "y": "垂直偏移",
+      "blur": "模糊"
+    },
+    "arrows": {
+      "title": "线条端点",
+      "start": "起点",
+      "end": "终点",
+      "swap": "交换端点",
+      "size": "箭头大小",
+      "kinds": {
+        "none": "无",
+        "arrow": "箭头",
+        "openArrow": "开放箭头",
+        "triangle": "三角形",
+        "circle": "圆形",
+        "square": "方形",
+        "bar": "竖线"
+      }
+    },
+    "corners": {
+      "separate": "分别设置每个角",
+      "link": "所有角使用同一圆角",
+      "unlink": "分别设置每个角",
+      "topLeft": "左上",
+      "topRight": "右上",
+      "bottomRight": "右下",
+      "bottomLeft": "左下"
     }
   }
 }

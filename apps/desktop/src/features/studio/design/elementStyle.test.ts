@@ -72,3 +72,15 @@ describe("copy and paste style", () => {
     expect(useStudioStore.getState().past).toHaveLength(0);
   });
 });
+
+describe("copy and paste of shape effects", () => {
+  it("carries a drop shadow from a shape to a picture and QR code but not to text", () => {
+    const shadow = { color: "#123456", opacity: 0.5, x: 1, y: 2, blur: 3 };
+    const style = extractStyle({ ...createShape("rect", 0, 0, 10, 10), dropShadow: shadow, corners: [1, 2, 3, 4], endArrow: "arrow" });
+
+    expect(applyStyle(createImage("a.png", 0, 0, 5, 5), style)).toMatchObject({ dropShadow: shadow });
+    expect(applyStyle(createQr("x", 0, 0, 5), style)).toMatchObject({ dropShadow: shadow });
+    expect(applyStyle(createText(0, 0, 5, 5, "a"), style)).not.toHaveProperty("dropShadow");
+    expect(applyStyle(createShape("line", 0, 0, 5, 5), style)).toMatchObject({ endArrow: "arrow", dropShadow: shadow });
+  });
+});
