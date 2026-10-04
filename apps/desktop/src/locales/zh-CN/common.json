@@ -6682,7 +6682,14 @@
       "left": "左侧裁剪",
       "right": "右侧裁剪",
       "top": "顶部裁剪",
-      "bottom": "底部裁剪"
+      "bottom": "底部裁剪",
+      "button": "裁剪",
+      "mode": "裁剪图片",
+      "zoom": "缩放",
+      "hint": "拖动图片可移动，拖动控点可裁剪。Enter 应用，Esc 取消。",
+      "reset": "重置",
+      "cancel": "取消",
+      "done": "完成"
     },
     "export": {
       "title": "导出设计",
@@ -8338,7 +8345,9 @@
         "strike": "删除线",
         "listLevel": "更改列表级别",
         "alignText": "文字左对齐、居中或右对齐（编辑时）",
-        "arrow": "添加箭头"
+        "arrow": "添加箭头",
+        "flip": "水平 / 垂直翻转",
+        "cropImage": "裁剪图片"
       }
     },
     "view": {
@@ -8498,6 +8507,29 @@
       "topRight": "右上",
       "bottomRight": "右下",
       "bottomLeft": "左下"
+    },
+    "flip": {
+      "horizontal": "水平翻转",
+      "vertical": "垂直翻转"
+    },
+    "filters": {
+      "title": "调整",
+      "presetsLabel": "滤镜预设",
+      "presets": {
+        "none": "无",
+        "bw": "黑白",
+        "warm": "暖色",
+        "cool": "冷色",
+        "vivid": "鲜艳",
+        "fade": "褪色"
+      },
+      "brightness": "亮度",
+      "contrast": "对比度",
+      "saturation": "饱和度",
+      "warmth": "色温",
+      "sepia": "怀旧",
+      "grayscale": "灰度",
+      "reset": "重置调整"
     }
   }
 }

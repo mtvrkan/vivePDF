@@ -302,6 +302,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.load_draft",
         "studio.save_draft",
     ),
+    "studio_images": ("studio.save_image",),
     "studio_project": (
         "studio.design_of",
         "studio.open_project",

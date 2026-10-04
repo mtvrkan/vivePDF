@@ -1,5 +1,6 @@
 import type { StudioElement } from "@/types/studio";
 import { alignElements, distributeElements, groupElements, moveElements, reorderElements, ungroupElements, updateElement, type AlignMode, type ReorderDirection } from "../model/edit";
+import { flipElements, type FlipAxis } from "../model/flip";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 
 const store = () => useStudioStore.getState();
@@ -53,6 +54,11 @@ export function toggleLock() {
   if (!elements.length) return;
   const locked = !elements.every((element) => element.locked);
   store().applyToPage((page) => elements.reduce((current, element) => updateElement<StudioElement>(current, element.id, { locked }), page));
+}
+
+export function flipSelection(axis: FlipAxis) {
+  const { selection } = store();
+  if (selection.length) store().applyToPage((page) => flipElements(page, selection, axis));
 }
 
 export function toggleHiddenSelection() {

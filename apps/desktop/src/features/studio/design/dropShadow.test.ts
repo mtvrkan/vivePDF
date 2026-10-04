@@ -18,6 +18,14 @@ describe("canvas drop shadow", () => {
     expect(dropShadowFilter(shape)).toMatch(/^drop-shadow\(0px -10px /);
   });
 
+  it("mirrors the offset back on a flipped item so the shadow keeps its page direction", () => {
+    const shape = { ...createShape("rect", 0, 0, 50, 50), flipX: true, dropShadow: { ...DEFAULT_DROP_SHADOW, x: 10, y: 4 } };
+    const upside = { ...shape, flipX: undefined, flipY: true };
+
+    expect(dropShadowFilter(shape)).toMatch(/^drop-shadow\(-10px 4px /);
+    expect(dropShadowFilter(upside)).toMatch(/^drop-shadow\(10px -4px /);
+  });
+
   it("adds no filter without a visible shadow or on text", () => {
     expect(dropShadowFilter(createShape("rect", 0, 0, 5, 5))).toBeUndefined();
     expect(dropShadowFilter({ ...createShape("rect", 0, 0, 5, 5), dropShadow: { ...DEFAULT_DROP_SHADOW, opacity: 0 } })).toBeUndefined();

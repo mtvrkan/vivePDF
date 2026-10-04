@@ -11,6 +11,7 @@ MAX_OUTPUT_PAGES = 20000
 MAX_PATHS = 5000
 MAX_PATH_DATA = 400_000
 MAX_ASSETS = 2000
+MAX_IMAGE_DATA = 8_000_000
 
 Colour = Annotated[str, Field(pattern=r"^#[0-9a-fA-F]{6}$")]
 Coordinate = Annotated[float, Field(ge=-100_000, le=100_000)]
@@ -79,6 +80,8 @@ class StudioBox(RpcModel):
     height: Extent
     rotation: float = Field(default=0.0, ge=-3600, le=3600)
     opacity: Unit = 1.0
+    flip_x: bool = False
+    flip_y: bool = False
 
 
 class StudioVectorItem(StudioBox):
@@ -107,6 +110,9 @@ class StudioImageItem(StudioBox):
     crop: StudioCrop | None = None
     mask: Literal["none", "rounded", "circle"] = "none"
     radius: float = Field(default=0.0, ge=0, le=10_000)
+    filter: list[Annotated[float, Field(ge=-10, le=10)]] | None = Field(
+        default=None, min_length=12, max_length=12
+    )
 
 
 class StudioQrItem(StudioBox):
@@ -294,6 +300,16 @@ class StudioImageInfoResult(RpcModel):
     height: int
     mime: str
     base64: str
+
+
+class StudioSaveImageParams(RpcModel):
+    data: str = Field(min_length=4, max_length=MAX_IMAGE_DATA)
+
+
+class StudioSaveImageResult(RpcModel):
+    path: str
+    width: int
+    height: int
 
 
 class StudioQrParams(RpcModel):

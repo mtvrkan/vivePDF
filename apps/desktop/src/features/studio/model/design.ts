@@ -35,6 +35,7 @@ import {
   type StudioVectorElement,
   type StudioVectorPath,
 } from "@/types/studio";
+import { normalizeFilters } from "./imageFilters";
 import { fitParagraphs, MAX_LIST_LEVEL, paragraphCount } from "./typography";
 
 export const STUDIO_PAGE_SIZES = {
@@ -376,6 +377,8 @@ export function normalizeElement(value: unknown): StudioElement | null {
     locked: raw.locked === true,
     hidden: raw.hidden === true,
     groupId: typeof raw.groupId === "string" && raw.groupId ? raw.groupId.slice(0, 100) : null,
+    ...(raw.flipX === true ? { flipX: true } : {}),
+    ...(raw.flipY === true ? { flipY: true } : {}),
   };
   switch (raw.kind) {
     case "text": {
@@ -423,8 +426,9 @@ export function normalizeElement(value: unknown): StudioElement | null {
         dropShadow: normalizeDropShadow(raw.dropShadow),
       };
     }
-    case "image":
+    case "image": {
       if (typeof raw.src !== "string") return null;
+      const filters = normalizeFilters(raw.filters);
       return {
         ...shared,
         kind: "image",
@@ -435,7 +439,9 @@ export function normalizeElement(value: unknown): StudioElement | null {
         cornerRadius: finite(raw.cornerRadius, 0, 0, MAX_CORNER_RADIUS),
         stroke: normalizeStroke(raw.stroke),
         dropShadow: normalizeDropShadow(raw.dropShadow),
+        ...(filters ? { filters } : {}),
       };
+    }
     case "qr":
       return {
         ...shared,

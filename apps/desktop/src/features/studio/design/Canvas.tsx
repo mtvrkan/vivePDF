@@ -1,9 +1,13 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from "react";
-import { ArrowDownToLine, ArrowUpToLine, ClipboardPaste, Copy, CopyPlus, Group, Lock, PaintBucket, Paintbrush, Scissors, Trash2, Ungroup } from "lucide-react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from "react";
+import { ArrowDownToLine, ArrowUpToLine, ClipboardPaste, Copy, CopyPlus, Crop, FlipHorizontal2, FlipVertical2, Group, Lock, PaintBucket, Paintbrush, Scissors, Trash2, Ungroup } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMenu";
 import { useContextMenu } from "@/components/shared/useContextMenu";
+import { useDropPositionHandler } from "@/shared/hooks/useDropHandler";
 import { cn } from "@/shared/lib/cn";
+import { describeError } from "@/shared/lib/errorMessage";
+import { toRpcError } from "@/shared/rpc/client";
+import { useToastStore } from "@/shared/store/toastStore";
 import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
 import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
 import { addGuide, guidesOf, marginsOf, moveGuide, removeGuide } from "../model/guides";
@@ -11,9 +15,11 @@ import { isLineShape } from "../model/shapes";
 import { duplicateElements, elementBounds, selectionBounds, unionBounds, updateElement, updatePage, moveElements, withoutGroupOf, type Bounds } from "../model/edit";
 import { canvasBridge } from "./canvasBridge";
 import { HoverOutline, PageFrames, ReadoutTag, SnapLines, SpanMarks, type Readout } from "./CanvasMarks";
-import { canGroup, canUngroup, group, reorder, toggleLock, ungroup } from "./commands";
+import { canGroup, canUngroup, flipSelection, group, reorder, toggleLock, ungroup } from "./commands";
+import { CropBar, CropFrame } from "./CropOverlay";
+import { applyCrop, beginCrop, croppable, useCropStore } from "./cropMode";
 import { ElementView, PageView } from "./ElementView";
-import { pickImage } from "./pickImage";
+import { insertImagePaths, isImagePath } from "./imageImport";
 import { CanvasRulers, type RulerExtent, type RulerHandlers } from "./Rulers";
 import { lineEndpoints, moveLineEnd, type LineEnd } from "./lineGeometry";
 import { buildSnapIndex, measureAround, snapMove, snapPoint, snapPosition, snapResize, type Axis, type SnapExtras, type SnapIndex, type SnapLine, type Span } from "./snapping";
@@ -118,6 +124,21 @@ export function Canvas({ language }: { language: string }) {
   const [panning, setPanning] = useState(false);
   const spaceHeld = useRef(false);
   const menu = useContextMenu();
+  const cropSession = useCropStore((state) => state.session);
+  const dropImages = useRef<(paths: string[], position: Point) => boolean>(() => false);
+  dropImages.current = (paths, position) => {
+    if (!paths.length || !paths.every(isImagePath) || !useStudioStore.getState().design) return false;
+    const rect = pageRef.current?.getBoundingClientRect();
+    const current = currentPage(useStudioStore.getState());
+    const ratio = window.devicePixelRatio || 1;
+    const scale = useStudioStore.getState().zoom;
+    const point = rect && current ? { x: (position.x / ratio - rect.left) / scale, y: (position.y / ratio - rect.top) / scale } : null;
+    const inside = point && current && point.x >= 0 && point.y >= 0 && point.x <= current.width && point.y <= current.height;
+    void insertImagePaths(paths, inside ? point : null, (error) => useToastStore.getState().push("error", describeError(t, toRpcError(error))));
+    return true;
+  };
+  const onImageDrop = useCallback((paths: string[], position: Point) => dropImages.current(paths, position), []);
+  useDropPositionHandler(onImageDrop);
 
   const selected = useMemo(() => (page ? page.elements.filter((element) => selection.includes(element.id)) : []), [page, selection]);
   const number = useMemo(() => (points: number) => formatMm(points, language), [language]);
@@ -335,6 +356,10 @@ export function Canvas({ language }: { language: string }) {
       const box = viewport.getBoundingClientRect();
       if (event.clientX - box.left >= viewport.clientWidth || event.clientY - box.top >= viewport.clientHeight) return;
     }
+    if (useCropStore.getState().session) {
+      applyCrop();
+      return;
+    }
     const target = event.target as HTMLElement;
     const state = store();
     const guide = target.closest<HTMLElement>("[data-guide]");
@@ -547,11 +572,7 @@ export function Canvas({ language }: { language: string }) {
       textEditorEntry.point = { x: event.clientX, y: event.clientY };
       store().setEditing(element.id);
     }
-    if (element?.kind === "image" && !element.locked) {
-      void pickImage(t("studio.props.replaceImage")).then((src) => {
-        if (src) store().applyToPage((current) => updateElement<StudioElement>(current, element.id, { src }));
-      });
-    }
+    if (croppable(element)) void beginCrop(element);
   };
 
   const onContextMenu = (event: React.MouseEvent) => {
@@ -574,13 +595,16 @@ export function Canvas({ language }: { language: string }) {
     { type: "item", id: "group", label: t("studio.menu.group"), icon: Group, shortcut: "Ctrl+G", disabled: !canGroup(), onSelect: group },
     { type: "item", id: "ungroup", label: t("studio.menu.ungroup"), icon: Ungroup, shortcut: "Ctrl+Shift+G", disabled: !canUngroup(), onSelect: ungroup },
     { type: "item", id: "lock", label: t("studio.menu.lock"), icon: Lock, checked: selected.length > 0 && selected.every((element) => element.locked), disabled: !selection.length, onSelect: toggleLock },
+    { type: "item", id: "flipHorizontal", label: t("studio.flip.horizontal"), icon: FlipHorizontal2, shortcut: "Shift+H", disabled: !selected.some((element) => !element.locked), onSelect: () => flipSelection("horizontal") },
+    { type: "item", id: "flipVertical", label: t("studio.flip.vertical"), icon: FlipVertical2, shortcut: "Shift+V", disabled: !selected.some((element) => !element.locked), onSelect: () => flipSelection("vertical") },
+    ...(selected.length === 1 && croppable(selected[0]) ? [{ type: "item" as const, id: "crop", label: t("studio.crop.button"), icon: Crop, shortcut: "Enter", onSelect: () => void beginCrop(selected[0]) }] : []),
     { type: "separator", id: "s2" },
     { type: "item", id: "delete", label: t("studio.menu.delete"), icon: Trash2, shortcut: "Delete", disabled: !selection.length, onSelect: state.remove },
   ];
 
   const frame = selected.length === 1 ? selected[0] : null;
   const groupBox = turn?.box ?? (selected.length > 1 ? boundsOf(selected) : null);
-  const showHandles = !editingId && selected.length > 0 && selected.some((element) => !element.locked);
+  const showHandles = !editingId && !cropSession && selected.length > 0 && selected.some((element) => !element.locked);
   const pageLeft = `max(${PAD}px, calc(50% - ${(page.width * zoom) / 2}px))`;
   const guides = showGuides ? guidesOf(page) : [];
   const selectionBox = selected.length ? unionBounds(selected.map(elementBounds)) : null;
@@ -623,11 +647,11 @@ export function Canvas({ language }: { language: string }) {
                 language={language}
                 renderElement={(element) =>
                   element.id === editingId && element.kind === "text" ? (
-                    <ElementView key={element.id} element={element} language={language}>
+                    <ElementView key={element.id} element={{ ...element, flipX: false, flipY: false }} language={language}>
                       <TextEditor element={element} language={language} />
                     </ElementView>
                   ) : (
-                    <ElementView key={element.id} element={element} language={language} />
+                    <ElementView key={element.id} element={cropSession?.elementId === element.id ? { ...element, opacity: 0 } : element} language={language} />
                   )
                 }
               />
@@ -639,7 +663,7 @@ export function Canvas({ language }: { language: string }) {
                 const box = elementBounds(element);
                 return selected.length > 1 ? <div key={element.id} className="absolute border border-primary/60" style={{ left: box.x * zoom, top: box.y * zoom, width: box.width * zoom, height: box.height * zoom }} /> : null;
               })}
-              {frame ? (
+              {frame && !cropSession ? (
                 <div
                   data-testid="studio-selection"
                   className={cn("absolute border-2", frame.locked ? "border-muted-foreground" : "border-primary")}
@@ -698,6 +722,7 @@ export function Canvas({ language }: { language: string }) {
               <SpanMarks spans={feedback.gaps} zoom={zoom} format={number} emphasis />
               {marquee ? <div className="absolute border border-primary bg-primary/10" style={{ left: marquee.x * zoom, top: marquee.y * zoom, width: marquee.width * zoom, height: marquee.height * zoom }} /> : null}
               {feedback.readout ? <ReadoutTag readout={feedback.readout} zoom={zoom} /> : null}
+              <CropFrame zoom={zoom} />
             </div>
           </div>
           {guides.length ? (
@@ -723,6 +748,7 @@ export function Canvas({ language }: { language: string }) {
           ) : null}
         </div>
       </div>
+      <CropBar />
       {menu.anchor ? <ContextMenu anchor={menu.anchor} items={menuItems} label={t("studio.menu.label")} onClose={menu.close} /> : null}
     </div>
   );

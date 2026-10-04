@@ -4,10 +4,12 @@ import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, St
 import { usePreviewValues } from "../merge/mergeStore";
 import { fillPlaceholders, textDirection } from "../model/design";
 import { elementItems } from "../model/render";
+import { flipTransform } from "../model/flip";
 import { renderFill, roundedRect } from "../model/shapes";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
 import { dropShadowFilter } from "./dropShadow";
 import { elementFaceSignature, ensureElementFonts, useStudioFontsStore } from "./fonts";
+import { useImageFilter } from "./imageFilter";
 import { placeImage } from "./imageLayout";
 import { fitTextSize } from "./measure";
 import { useAutoFit, useTextBands } from "./textLayout";
@@ -110,6 +112,7 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
 
 function ImageContent({ element }: { element: StudioImageElement }) {
   const preview = useImagePreview(element.src || null);
+  const filter = useImageFilter(element.filters);
   const ready = preview?.status === "ready" ? preview.value : null;
   const radius = element.mask === "circle" ? "50%" : element.mask === "rounded" ? `${element.cornerRadius}px` : undefined;
   const stroke = elementItems({ ...element, hidden: false, opacity: 1 })[1];
@@ -134,8 +137,9 @@ function ImageContent({ element }: { element: StudioImageElement }) {
   return (
     <>
       <div style={{ position: "absolute", ...px(placed.frame), overflow: "hidden", borderRadius: radius }}>
-        <img src={ready.url} alt="" draggable={false} style={{ position: "absolute", maxWidth: "none", ...px(placed.image) }} />
+        <img src={ready.url} alt="" draggable={false} style={{ position: "absolute", maxWidth: "none", ...px(placed.image), filter: filter.css }} />
       </div>
+      {filter.defs}
       {stroke?.kind === "vector" ? (
         <div style={{ position: "absolute", inset: 0 }}>
           <PathsSvg paths={stroke.paths} width={element.width} height={element.height} />
@@ -190,7 +194,7 @@ function elementFrameStyle(element: StudioElement): React.CSSProperties {
     top: `${element.y}px`,
     width: `${element.width}px`,
     height: `${element.height}px`,
-    transform: element.rotation ? `rotate(${element.rotation}deg)` : undefined,
+    transform: flipTransform(element),
     opacity: element.opacity < 1 ? element.opacity : undefined,
     filter: dropShadowFilter(element),
   };

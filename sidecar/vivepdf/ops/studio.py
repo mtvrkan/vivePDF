@@ -35,7 +35,7 @@ from vivepdf.ops._studio_project import build_archive, embed_archive, missing_as
 from vivepdf.ops._studio_shadow import shadow_document
 from vivepdf.ops._studio_shaped import draw_shaped, needs_shaping, run_texts
 from vivepdf.ops._studio_text import TextFaces, draw_text, from_segments, has_placeholders, layout
-from vivepdf.ops._studio_vector import group_opacity, place, vector_document
+from vivepdf.ops._studio_vector import group_opacity, mirror, place, vector_document
 from vivepdf.ops._svg import clean_svg_markup, drawing_pdf
 from vivepdf.ops.create_bulk import PLACEHOLDER, fill_placeholders
 from vivepdf.rpc.errors import ErrorCode, OpError
@@ -112,6 +112,17 @@ def _masked(image: Image.Image, item: StudioImageItem, rect: pymupdf.Rect) -> Im
     return image
 
 
+def _filtered(image: Image.Image, matrix: list[float] | None) -> Image.Image:
+    if matrix is None:
+        return image
+    pixels = np.asarray(image, dtype=np.float32)
+    transform = np.asarray(matrix, dtype=np.float32).reshape(3, 4)
+    colours = pixels[..., :3] @ transform[:, :3].T + transform[:, 3] * 255
+    pixels = pixels.copy()
+    pixels[..., :3] = np.clip(np.rint(colours), 0, 255)
+    return Image.fromarray(pixels.astype(np.uint8), mode="RGBA")
+
+
 def _encoded(image: Image.Image) -> bytes:
     buffer = io.BytesIO()
     lowest, _ = image.getchannel("A").getextrema()
@@ -144,7 +155,7 @@ def image_document(item: StudioImageItem) -> pymupdf.Document:
     if item.fit == "cover":
         image = _cover(image, item.width / item.height)
     rect = _placed_rect(image, item)
-    image = _masked(_resampled(image, rect), item, rect)
+    image = _masked(_filtered(_resampled(image, rect), item.filter), item, rect)
     document = pymupdf.open()
     page = document.new_page(width=item.width, height=item.height)
     page.insert_image(rect, stream=_encoded(image), keep_proportion=False)
@@ -227,7 +238,7 @@ def _shadow(item: StudioShadowItem, values: dict[str, str]) -> tuple[pymupdf.Doc
             source.close()
 
 
-def _build(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, float]:
+def _drawn(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, float]:
     if isinstance(item, StudioVectorItem):
         return vector_document(item)
     if isinstance(item, StudioSvgItem):
@@ -236,9 +247,14 @@ def _build(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, 
         return image_document(item), 0.0
     if isinstance(item, StudioQrItem):
         return qr_document(item, fill_placeholders(item.value, values)), 0.0
+    raise TypeError(item.kind)
+
+
+def _build(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, float]:
     if isinstance(item, StudioShadowItem):
         return _shadow(item, values)
-    raise TypeError(item.kind)
+    document, margin = _drawn(item, values)
+    return mirror(document, item.flip_x, item.flip_y), margin
 
 
 def _source(

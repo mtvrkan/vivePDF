@@ -6683,7 +6683,14 @@
       "left": "Soldan kırp",
       "right": "Sağdan kırp",
       "top": "Üstten kırp",
-      "bottom": "Alttan kırp"
+      "bottom": "Alttan kırp",
+      "button": "Kırp",
+      "mode": "Resmi kırp",
+      "zoom": "Yakınlaştırma",
+      "hint": "Taşımak için resmi, kırpmak için tutamaçları sürükleyin. Enter uygular, Esc vazgeçer.",
+      "reset": "Sıfırla",
+      "cancel": "İptal",
+      "done": "Bitti"
     },
     "export": {
       "title": "Tasarımı dışa aktar",
@@ -8339,7 +8346,9 @@
         "strike": "Üstü çizili",
         "listLevel": "Liste düzeyini değiştir",
         "alignText": "Metni sola, ortaya veya sağa hizala (düzenlerken)",
-        "arrow": "Ok ekle"
+        "arrow": "Ok ekle",
+        "flip": "Yatay / dikey çevir",
+        "cropImage": "Resmi kırp"
       }
     },
     "view": {
@@ -8499,6 +8508,29 @@
       "topRight": "Sağ üst",
       "bottomRight": "Sağ alt",
       "bottomLeft": "Sol alt"
+    },
+    "flip": {
+      "horizontal": "Yatay çevir",
+      "vertical": "Dikey çevir"
+    },
+    "filters": {
+      "title": "Ayarlamalar",
+      "presetsLabel": "Filtre hazır ayarları",
+      "presets": {
+        "none": "Yok",
+        "bw": "S/B",
+        "warm": "Sıcak",
+        "cool": "Soğuk",
+        "vivid": "Canlı",
+        "fade": "Soluk"
+      },
+      "brightness": "Parlaklık",
+      "contrast": "Kontrast",
+      "saturation": "Doygunluk",
+      "warmth": "Sıcaklık",
+      "sepia": "Sepya",
+      "grayscale": "Gri tonlamalı",
+      "reset": "Ayarlamaları sıfırla"
     }
   }
 }

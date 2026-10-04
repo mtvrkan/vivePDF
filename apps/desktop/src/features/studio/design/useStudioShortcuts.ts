@@ -2,11 +2,18 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { isBrowserShortcut } from "@/shared/lib/browserKeys";
 import { bracketKey, digitKey, shortcutLetter, zoomKey } from "@/shared/lib/shortcutKeys";
+import { describeError } from "@/shared/lib/errorMessage";
 import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
+import { toRpcError } from "@/shared/rpc/client";
+import { useToastStore } from "@/shared/store/toastStore";
 import type { StudioListKind, StudioShapeKind } from "@/types/studio";
+import type { FlipAxis } from "../model/flip";
 import { canvasBridge } from "./canvasBridge";
-import { group, nudge, patchSelected, reorder, selectAll, toggleHiddenSelection, toggleLock, ungroup } from "./commands";
+import { flipSelection, group, nudge, patchSelected, reorder, selectAll, toggleHiddenSelection, toggleLock, ungroup } from "./commands";
+import { beginCrop, croppable, isCropping } from "./cropMode";
+import { pasteImageFiles } from "./imageImport";
 import { ARROW_PRESET, insertShape, insertText, TEXT_PRESETS, type ShapePreset } from "./insert";
+import { claimSystemPaste, clipboardImages, expectSystemPaste } from "./systemPaste";
 import { copyStyle, pasteStyle } from "./styleClipboard";
 import { boldPatch, toggleList, updateParagraphs, withElementStyle } from "./richText";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
@@ -24,6 +31,7 @@ const TOOL_SHAPES: Record<string, StudioShapeKind | ShapePreset> = { r: "rect", 
 const CONTROL_KEYS = new Set(["Enter", " ", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"]);
 const BODY_PRESET = TEXT_PRESETS[TEXT_PRESETS.length - 1];
 const VIEW_KEYS: Record<string, StudioViewOption> = { r: "rulers", g: "guides", m: "margins" };
+const FLIP_KEYS: Record<string, FlipAxis> = { h: "horizontal", v: "vertical" };
 const LIST_DIGITS: Record<number, StudioListKind> = { 7: "decimal", 8: "bullet" };
 
 function styleKey(event: KeyboardEvent): "copy" | "paste" | null {
@@ -85,7 +93,7 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
       });
       const find = handlers.actions.onFind;
       if (mod && !event.shiftKey && (letter === "f" || letter === "h") && find) return run(() => find(letter === "h"));
-      if (isTextEntryTarget(event.target)) return;
+      if (isTextEntryTarget(event.target) || isCropping()) return;
       const style = styleKey(event);
       if (style && state.selection.length) return run(style === "copy" ? copyStyle : pasteStyle);
       if (!mod && !event.ctrlKey && !event.metaKey && !event.altKey && (event.key === "?" || event.key === "F1") && handlers.actions.onHelp) return run(handlers.actions.onHelp);
@@ -94,7 +102,12 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         if (letter === "y" || (letter === "z" && event.shiftKey)) return run(state.redo);
         if (letter === "c" && !event.shiftKey) return run(state.copy);
         if (letter === "x" && !event.shiftKey) return run(state.cut);
-        if (letter === "v") return run(event.shiftKey ? state.pasteInPlace : state.paste);
+        if (letter === "v" && event.shiftKey) return run(state.pasteInPlace);
+        if (letter === "v") {
+          event.stopPropagation();
+          expectSystemPaste(useStudioStore.getState().paste);
+          return;
+        }
         if (letter === "d" && !event.shiftKey) return run(state.duplicate);
         if (letter === "a" && !event.shiftKey) return run(selectAll);
         if (letter === "g") return run(event.shiftKey ? ungroup : group);
@@ -137,6 +150,7 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
       if (event.key === "Enter" || event.key === "F2") {
         const [only] = selectedElements(state);
         if (only?.kind === "text" && state.selection.length === 1 && !only.locked) return run(() => state.setEditing(only.id));
+        if (state.selection.length === 1 && croppable(only) && event.key === "Enter") return run(() => void beginCrop(only));
         return;
       }
       if (event.key === "PageUp") return run(() => stepPage(-1));
@@ -153,6 +167,8 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         if (digit === 2) return run(() => canvasBridge.current?.zoomToSelection());
         const view = letter ? VIEW_KEYS[letter] : undefined;
         if (view) return run(() => useViewPrefs.getState().toggle(view));
+        const flip = letter ? FLIP_KEYS[letter] : undefined;
+        if (flip && state.selection.length) return run(() => flipSelection(flip));
         return;
       }
       const page = currentPage(state);
@@ -163,5 +179,26 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
     };
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, []);
+
+  useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      const state = useStudioStore.getState();
+      if (!state.design || isTextEntryTarget(event.target) || isCropping() || document.querySelector('[role="dialog"]')) return;
+      const images = clipboardImages(event.clipboardData);
+      if (!images.length) {
+        if (claimSystemPaste()) {
+          event.preventDefault();
+          state.paste();
+        }
+        return;
+      }
+      event.preventDefault();
+      claimSystemPaste();
+      const { t } = latest.current;
+      void pasteImageFiles(images, (error) => useToastStore.getState().push("error", describeError(t, toRpcError(error))));
+    };
+    window.addEventListener("paste", onPaste, true);
+    return () => window.removeEventListener("paste", onPaste, true);
   }, []);
 }

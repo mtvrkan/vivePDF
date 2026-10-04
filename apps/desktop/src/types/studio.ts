@@ -34,6 +34,8 @@ export type StudioElementBase = {
   locked: boolean;
   hidden: boolean;
   groupId: string | null;
+  flipX?: boolean;
+  flipY?: boolean;
 };
 
 export type StudioTextRun = {
@@ -148,6 +150,8 @@ export type StudioCrop = { x: number; y: number; width: number; height: number }
 
 export type StudioImageMask = "none" | "rounded" | "circle";
 
+export type StudioImageFilters = { brightness: number; contrast: number; saturation: number; warmth: number; sepia: number; grayscale: number };
+
 export type StudioImageElement = StudioElementBase & StudioShadowable & {
   kind: "image";
   src: string;
@@ -156,6 +160,7 @@ export type StudioImageElement = StudioElementBase & StudioShadowable & {
   mask: StudioImageMask;
   cornerRadius: number;
   stroke: StudioStroke | null;
+  filters?: StudioImageFilters;
 };
 
 export type StudioQrLevel = "L" | "M" | "Q" | "H";
@@ -250,7 +255,7 @@ export type StudioRenderPath = {
   opacity: number;
 };
 
-export type StudioRenderBox = { x: number; y: number; width: number; height: number; rotation: number; opacity: number };
+export type StudioRenderBox = { x: number; y: number; width: number; height: number; rotation: number; opacity: number; flipX?: boolean; flipY?: boolean };
 
 export type StudioRenderSegment = {
   text: string;
@@ -286,7 +291,7 @@ export type StudioMeasuredText = { segments: StudioRenderSegment[]; bands: Studi
 export type StudioRenderShape =
   | (StudioRenderBox & { kind: "vector"; paths: StudioRenderPath[]; viewWidth?: number; viewHeight?: number })
   | (StudioRenderBox & { kind: "svg"; svg: string })
-  | (StudioRenderBox & { kind: "image"; path: string; fit: StudioImageFit; crop: StudioCrop | null; mask: StudioImageMask; radius: number })
+  | (StudioRenderBox & { kind: "image"; path: string; fit: StudioImageFit; crop: StudioCrop | null; mask: StudioImageMask; radius: number; filter?: number[] })
   | (StudioRenderBox & { kind: "qr"; value: string; color: string; background: string | null; errorLevel: StudioQrLevel });
 
 export type StudioRenderItem =
@@ -348,6 +353,8 @@ export type StudioExportFormat = "pdf" | "png" | "jpg";
 export type StudioRenderResult = { output: string; outputs: string[]; pageCount: number; bytes: number; missingGlyphs: string };
 
 export type StudioImageInfo = { width: number; height: number; mime: string; base64: string };
+
+export type StudioSavedImage = { path: string; width: number; height: number };
 
 export type StudioQrModules = { size: number; modules: string };
 

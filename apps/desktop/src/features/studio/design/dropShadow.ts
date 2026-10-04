@@ -20,6 +20,7 @@ function rgba(color: string, alpha: number): string {
 export function dropShadowFilter(element: StudioElement): string | undefined {
   const shadow = shadowOf(element);
   if (!shadow || shadow.opacity <= 0) return undefined;
-  const offset = localShadowOffset(shadow, element.rotation);
+  const turned = localShadowOffset(shadow, element.rotation);
+  const offset = { x: element.flipX ? -turned.x : turned.x, y: element.flipY ? -turned.y : turned.y };
   return `drop-shadow(${num(offset.x)}px ${num(offset.y)}px ${num(shadow.blur)}px ${rgba(shadow.color, shadow.opacity)})`;
 }
