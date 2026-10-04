@@ -215,7 +215,11 @@ export function normalizeFill(value: unknown): StudioFill {
   if (fill?.type === "solid") return { type: "solid", color: colour(fill.color, "#000000") };
   if (fill?.type === "linear") return { type: "linear", angle: finite(fill.angle, 0, -3600, 3600), stops: normalizeStops(fill.stops) };
   if (fill?.type === "radial") {
-    return { type: "radial", stops: normalizeStops(fill.stops), cx: finite(fill.cx, 0.5, 0, 1), cy: finite(fill.cy, 0.5, 0, 1), radius: finite(fill.radius, 1, MIN_RADIAL_RADIUS, MAX_RADIAL_RADIUS) };
+    const radial: StudioFill = { type: "radial", stops: normalizeStops(fill.stops) };
+    if (typeof fill.cx === "number") radial.cx = finite(fill.cx, 0.5, 0, 1);
+    if (typeof fill.cy === "number") radial.cy = finite(fill.cy, 0.5, 0, 1);
+    if (typeof fill.radius === "number") radial.radius = finite(fill.radius, 1, MIN_RADIAL_RADIUS, MAX_RADIAL_RADIUS);
+    return radial;
   }
   return { type: "none" };
 }

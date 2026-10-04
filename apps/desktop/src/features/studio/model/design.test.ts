@@ -77,10 +77,11 @@ describe("studio design model", () => {
     expect(normalizeStroke({ color: "#112233", width: 3, dash: "wavy", cap: "pointy", join: 7, gap: 99 })).toEqual({ color: "#112233", width: 3, dash: "solid", gap: 4 });
   });
 
-  it("gives radial gradients a centre and reach, filling in the old centred look", () => {
+  it("keeps a radial gradient's centre and reach and leaves older centred gradients as they were", () => {
     const stops = [{ offset: 0, color: "#ffffff" }, { offset: 1, color: "#000000" }];
 
-    expect(normalizeFill({ type: "radial", stops })).toEqual({ type: "radial", stops, cx: 0.5, cy: 0.5, radius: 1 });
+    expect(normalizeFill({ type: "radial", stops })).toEqual({ type: "radial", stops });
+    expect(normalizeFill({ type: "radial", stops, cx: Number.NaN })).toEqual({ type: "radial", stops, cx: 0.5 });
     expect(normalizeFill({ type: "radial", stops, cx: 0.2, cy: 1.4, radius: 0 })).toEqual({ type: "radial", stops, cx: 0.2, cy: 1, radius: 0.05 });
     expect(normalizeFill({ type: "linear", angle: 45, stops: Array.from({ length: 40 }, () => stops[0]) })).toMatchObject({ stops: { length: 32 } });
   });
