@@ -7,7 +7,7 @@ export type ElementStyle = { kind: StudioElementKind; values: Record<string, unk
 const LAYOUT_KEYS = ["id", "name", "kind", "x", "y", "width", "height", "rotation", "locked", "hidden", "groupId"] as const;
 
 const CONTENT_KEYS: Record<StudioElementKind, readonly string[]> = {
-  text: ["runs"],
+  text: ["runs", "paragraphs"],
   shape: ["shape", "points", "innerRatio"],
   image: ["src", "crop"],
   qr: ["value", "errorLevel"],
@@ -15,7 +15,7 @@ const CONTENT_KEYS: Record<StudioElementKind, readonly string[]> = {
   svg: ["svg", "source", "data"],
 };
 
-const RUN_KEYS = ["bold", "italic", "underline", "color"] as const;
+const RUN_KEYS = ["bold", "italic", "underline", "strike", "color", "fontId", "weight"] as const;
 
 export function extractStyle(element: StudioElement): ElementStyle {
   const skipped = new Set<string>([...LAYOUT_KEYS, ...CONTENT_KEYS[element.kind]]);

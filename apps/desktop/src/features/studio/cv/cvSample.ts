@@ -39,7 +39,7 @@ function wrappedLines(paragraph: string, perLine: number): number {
 
 export const estimateMeasure: CvMeasure = (element: StudioTextElement) => {
   const size = element.fontSize;
-  const glyph = size * ESTIMATE_WIDTH * (element.bold ? ESTIMATE_BOLD : 1) * (element.uppercase ? ESTIMATE_UPPER : 1) + element.letterSpacing * size;
+  const glyph = size * ESTIMATE_WIDTH * (element.bold ? ESTIMATE_BOLD : 1) * (element.textCase === "upper" ? ESTIMATE_UPPER : 1) + element.letterSpacing * size;
   const perLine = Math.max(1, Math.floor(element.width / glyph));
   const lines = textOf(element.runs)
     .split("\n")

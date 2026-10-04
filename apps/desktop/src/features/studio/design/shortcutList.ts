@@ -24,6 +24,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Ctrl D", "duplicate"),
       item("Delete  /  Backspace", "delete"),
       item("Ctrl A", "selectAll"),
+      item("Ctrl F  /  Ctrl H", "findReplace"),
       item("Esc", "escape"),
     ],
   },
@@ -54,6 +55,10 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Enter  /  F2", "editText"),
       item("Ctrl B  /  Ctrl I  /  Ctrl U", "textStyle"),
       item("Ctrl Shift >  /  Ctrl Shift <", "fontSize"),
+      item("Ctrl Shift X", "strike"),
+      item("Ctrl Shift 8  /  Ctrl Shift 7", "lists"),
+      item("Tab  /  Shift Tab", "listLevel"),
+      item("Ctrl Shift L  /  E  /  R", "alignText"),
     ],
   },
   {

@@ -8330,7 +8330,11 @@
         "layerOrder": "Monter / descendre le calque actif (panneau Calques)",
         "enterGroup": "Sélectionner un seul élément dans un groupe",
         "copyPasteStyle": "Copier le style / coller le style",
-        "print": "Imprimer…"
+        "print": "Imprimer…",
+        "findReplace": "Rechercher et remplacer",
+        "strike": "Barré",
+        "listLevel": "Changer le niveau de liste",
+        "alignText": "Aligner le texte à gauche, au centre ou à droite (en modification)"
       }
     },
     "view": {
@@ -8371,6 +8375,91 @@
       "tooLarge": "Cette création est trop volumineuse pour le brouillon automatique. Enregistrez-la comme fichier de projet pour ne rien perdre.",
       "failed": "Impossible d’enregistrer le brouillon automatique : {{error}}",
       "loadFailed": "Impossible de charger le dernier brouillon"
+    },
+    "text": {
+      "weight": "Graisse",
+      "strike": "Barré",
+      "lists": "Listes",
+      "bulleted": "Liste à puces",
+      "numbered": "Liste numérotée",
+      "indent": "Augmenter le niveau de liste",
+      "outdent": "Diminuer le niveau de liste",
+      "listStyle": "Style de liste",
+      "case": "Casse",
+      "autoSize": "Taille du cadre",
+      "language": "Langue du texte",
+      "languageAuto": "Langue de l’application",
+      "spellCheck": "Vérifier l’orthographe",
+      "effects": "Effets de texte",
+      "outline": "Contour",
+      "outlineColor": "Couleur du contour",
+      "outlineWidth": "Épaisseur du contour",
+      "shadow": "Ombre",
+      "shadowHint": "Une ombre nette derrière les lettres",
+      "shadowColor": "Couleur de l’ombre",
+      "shadowX": "Décalage horizontal",
+      "shadowY": "Décalage vertical",
+      "shadowOpacity": "Opacité de l’ombre",
+      "highlight": "Surlignage",
+      "highlightColor": "Couleur du surlignage",
+      "highlightPadding": "Marge du surlignage",
+      "weights": {
+        "100": "Thin",
+        "200": "Extra-light",
+        "300": "Light",
+        "350": "Semilight",
+        "400": "Normal",
+        "500": "Medium",
+        "600": "Semi-gras",
+        "700": "Gras",
+        "800": "Extra-gras",
+        "900": "Black"
+      },
+      "listKinds": {
+        "none": "Aucune liste",
+        "bullet": "Puce •",
+        "dash": "Tiret –",
+        "check": "Coche ✓",
+        "decimal": "Chiffres 1.",
+        "alpha": "Lettres a)",
+        "roman": "Chiffres romains i."
+      },
+      "cases": {
+        "none": "Telle que saisie",
+        "upper": "MAJUSCULES",
+        "lower": "minuscules",
+        "title": "Majuscule À Chaque Mot"
+      },
+      "autoSizes": {
+        "fixed": "Fixe",
+        "height": "Hauteur automatique",
+        "width": "Largeur automatique",
+        "shrink": "Réduire le texte pour ajuster"
+      },
+      "autoSizeHints": {
+        "fixed": "Le cadre garde sa taille et ne s’agrandit en hauteur que si le texte saisi ne tient plus.",
+        "height": "La hauteur du cadre suit le texte, en s’agrandissant ou en se réduisant.",
+        "width": "Le cadre s’élargit pour chaque ligne ; les lignes ne passent à la ligne que là où vous appuyez sur Entrée.",
+        "shrink": "Le cadre garde sa taille ; un texte long est réduit pour tenir."
+      }
+    },
+    "find": {
+      "title": "Rechercher et remplacer",
+      "find": "Rechercher",
+      "replaceWith": "Remplacer par",
+      "toggleReplace": "Afficher le remplacement",
+      "close": "Fermer",
+      "matchCase": "Respecter la casse",
+      "wholeWord": "Mots entiers uniquement",
+      "previous": "Résultat précédent",
+      "next": "Résultat suivant",
+      "replace": "Remplacer",
+      "replaceAll": "Tout remplacer",
+      "none": "Aucun résultat",
+      "count": "{{current}} sur {{total}}",
+      "total_one": "{{count}} résultat",
+      "total_many": "{{count}} résultats",
+      "total_other": "{{count}} résultats"
     }
   }
 }

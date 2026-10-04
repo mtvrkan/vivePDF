@@ -3,7 +3,10 @@ import {
   STUDIO_DESIGN_VERSION,
   STUDIO_LINE_CAPS,
   STUDIO_LINE_JOINS,
+  STUDIO_LIST_KINDS,
   STUDIO_SHAPES,
+  STUDIO_TEXT_AUTO_SIZES,
+  STUDIO_TEXT_CASES,
   type StudioBackground,
   type StudioCrop,
   type StudioDesign,
@@ -15,16 +18,21 @@ import {
   type StudioLineCap,
   type StudioLineJoin,
   type StudioPage,
+  type StudioParagraph,
   type StudioQrElement,
   type StudioShapeElement,
   type StudioShapeKind,
   type StudioStroke,
   type StudioSvgElement,
   type StudioTextElement,
+  type StudioTextHighlight,
+  type StudioTextOutline,
   type StudioTextRun,
+  type StudioTextShadow,
   type StudioVectorElement,
   type StudioVectorPath,
 } from "@/types/studio";
+import { fitParagraphs, MAX_LIST_LEVEL, paragraphCount } from "./typography";
 
 export const STUDIO_PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
@@ -57,6 +65,11 @@ export const MAX_RADIAL_RADIUS = 3;
 
 const PLACEHOLDER = /(?<!\{)\{([^{}]+)\}/g;
 const COLOUR = /^#[0-9a-f]{6}$/i;
+const LANGUAGE = /^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i;
+export const MIN_RUN_SCALE = 0.05;
+export const MAX_RUN_SCALE = 40;
+export const MIN_WEIGHT = 100;
+export const MAX_WEIGHT = 900;
 
 export function newId(): string {
   return crypto.randomUUID();
@@ -79,7 +92,7 @@ function base(x: number, y: number, width: number, height: number, name: string)
 }
 
 export function createText(x: number, y: number, width: number, height: number, text: string, overrides: Partial<StudioTextElement> = {}): StudioTextElement {
-  return {
+  const element: StudioTextElement = {
     ...base(x, y, width, height, ""),
     kind: "text",
     runs: [{ text }],
@@ -89,14 +102,22 @@ export function createText(x: number, y: number, width: number, height: number, 
     bold: false,
     italic: false,
     underline: false,
+    strike: false,
+    weight: null,
     align: "left",
     verticalAlign: "top",
     lineHeight: 1.25,
     letterSpacing: 0,
-    uppercase: false,
-    shrinkToFit: false,
+    textCase: "none",
+    autoSize: "fixed",
+    paragraphs: [{ list: "none", level: 0 }],
+    outline: null,
+    shadow: null,
+    highlight: null,
+    language: null,
     ...overrides,
   };
+  return { ...element, paragraphs: fitParagraphs(element.paragraphs, paragraphCount(element.runs)) };
 }
 
 export function createShape(shape: StudioShapeKind, x: number, y: number, width: number, height: number, overrides: Partial<StudioShapeElement> = {}): StudioShapeElement {
@@ -252,10 +273,46 @@ function normalizeRuns(value: unknown): StudioTextRun[] {
       if (run.bold === true || run.bold === false) result.bold = run.bold;
       if (run.italic === true || run.italic === false) result.italic = run.italic;
       if (run.underline === true || run.underline === false) result.underline = run.underline;
+      if (run.strike === true || run.strike === false) result.strike = run.strike;
       if (typeof run.color === "string" && COLOUR.test(run.color)) result.color = run.color.toLowerCase();
+      if (typeof run.fontId === "string" && run.fontId) result.fontId = run.fontId.slice(0, 1024);
+      if (typeof run.scale === "number" && Number.isFinite(run.scale) && run.scale !== 1) result.scale = finite(run.scale, 1, MIN_RUN_SCALE, MAX_RUN_SCALE);
+      if (run.weight === null) result.weight = null;
+      else if (typeof run.weight === "number") result.weight = normalizeWeight(run.weight);
       return result;
     });
   return runs.length ? runs : [{ text: "" }];
+}
+
+export function normalizeWeight(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? Math.round(finite(value, 400, MIN_WEIGHT, MAX_WEIGHT)) : null;
+}
+
+function normalizeParagraphs(value: unknown, runs: StudioTextRun[]): StudioParagraph[] {
+  const paragraphs = (Array.isArray(value) ? value : []).slice(0, 20000).map((item) => {
+    const paragraph = record(item);
+    return { list: oneOf(paragraph?.list, STUDIO_LIST_KINDS, "none"), level: Math.round(finite(paragraph?.level, 0, 0, MAX_LIST_LEVEL)) };
+  });
+  return fitParagraphs(paragraphs, paragraphCount(runs));
+}
+
+function normalizeOutline(value: unknown): StudioTextOutline | null {
+  const outline = record(value);
+  return outline ? { color: colour(outline.color, "#000000"), width: finite(outline.width, 1, 0.1, 50) } : null;
+}
+
+function normalizeShadow(value: unknown): StudioTextShadow | null {
+  const shadow = record(value);
+  return shadow ? { color: colour(shadow.color, "#000000"), x: finite(shadow.x, 2, -500, 500), y: finite(shadow.y, 2, -500, 500), opacity: finite(shadow.opacity, 0.5, 0, 1) } : null;
+}
+
+function normalizeHighlight(value: unknown): StudioTextHighlight | null {
+  const highlight = record(value);
+  return highlight ? { color: colour(highlight.color, "#fde047"), padding: finite(highlight.padding, 2, 0, 200) } : null;
+}
+
+function normalizeLanguage(value: unknown): string | null {
+  return typeof value === "string" && value.length <= 20 && LANGUAGE.test(value) ? value : null;
 }
 
 function normalizePaths(value: unknown): StudioVectorPath[] {
@@ -289,24 +346,33 @@ export function normalizeElement(value: unknown): StudioElement | null {
     groupId: typeof raw.groupId === "string" && raw.groupId ? raw.groupId.slice(0, 100) : null,
   };
   switch (raw.kind) {
-    case "text":
+    case "text": {
+      const runs = normalizeRuns(raw.runs);
       return {
         ...shared,
         kind: "text",
-        runs: normalizeRuns(raw.runs),
+        runs,
         fontId: typeof raw.fontId === "string" && raw.fontId ? raw.fontId.slice(0, 1024) : null,
         fontSize: finite(raw.fontSize, 24, 1, 1000),
         color: colour(raw.color, "#000000"),
         bold: raw.bold === true,
         italic: raw.italic === true,
         underline: raw.underline === true,
+        strike: raw.strike === true,
+        weight: normalizeWeight(raw.weight),
         align: oneOf(raw.align, ["left", "center", "right", "justify"], "left"),
         verticalAlign: oneOf(raw.verticalAlign, ["top", "middle", "bottom"], "top"),
         lineHeight: finite(raw.lineHeight, 1.25, 0.5, 5),
         letterSpacing: finite(raw.letterSpacing, 0, -0.5, 2),
-        uppercase: raw.uppercase === true,
-        shrinkToFit: raw.shrinkToFit === true,
+        textCase: oneOf(raw.textCase, STUDIO_TEXT_CASES, raw.uppercase === true ? "upper" : "none"),
+        autoSize: oneOf(raw.autoSize, STUDIO_TEXT_AUTO_SIZES, raw.shrinkToFit === true ? "shrink" : "fixed"),
+        paragraphs: normalizeParagraphs(raw.paragraphs, runs),
+        outline: normalizeOutline(raw.outline),
+        shadow: normalizeShadow(raw.shadow),
+        highlight: normalizeHighlight(raw.highlight),
+        language: normalizeLanguage(raw.language),
       };
+    }
     case "shape":
       return {
         ...shared,
@@ -408,6 +474,11 @@ export function normalizeDesign(value: unknown): StudioDesign | null {
 export function libraryFontIds(design: StudioDesign | null): string[] {
   if (!design) return [];
   const ids = new Set<string>();
-  for (const page of design.pages) for (const element of page.elements) if (element.kind === "text" && element.fontId?.startsWith("library:")) ids.add(element.fontId);
+  for (const page of design.pages) {
+    for (const element of page.elements) {
+      if (element.kind !== "text") continue;
+      for (const fontId of [element.fontId, ...element.runs.map((run) => run.fontId)]) if (fontId?.startsWith("library:")) ids.add(fontId);
+    }
+  }
   return [...ids].sort();
 }

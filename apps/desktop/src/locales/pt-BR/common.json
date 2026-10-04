@@ -8330,7 +8330,11 @@
         "layerOrder": "Mover a camada em foco para cima / para baixo (painel Camadas)",
         "enterGroup": "Selecionar um único item dentro de um grupo",
         "copyPasteStyle": "Copiar estilo / colar estilo",
-        "print": "Imprimir…"
+        "print": "Imprimir…",
+        "findReplace": "Localizar e substituir",
+        "strike": "Tachado",
+        "listLevel": "Alterar nível da lista",
+        "alignText": "Alinhar o texto à esquerda, ao centro ou à direita (ao editar)"
       }
     },
     "view": {
@@ -8371,6 +8375,91 @@
       "tooLarge": "Este design é grande demais para o rascunho automático. Salve-o como arquivo de projeto para não perder nada.",
       "failed": "Não foi possível salvar o rascunho automático: {{error}}",
       "loadFailed": "Não foi possível carregar o último rascunho"
+    },
+    "text": {
+      "weight": "Espessura",
+      "strike": "Tachado",
+      "lists": "Listas",
+      "bulleted": "Lista com marcadores",
+      "numbered": "Lista numerada",
+      "indent": "Aumentar nível da lista",
+      "outdent": "Diminuir nível da lista",
+      "listStyle": "Estilo da lista",
+      "case": "Maiúsculas e minúsculas",
+      "autoSize": "Tamanho da caixa",
+      "language": "Idioma do texto",
+      "languageAuto": "Idioma do aplicativo",
+      "spellCheck": "Verificar ortografia",
+      "effects": "Efeitos de texto",
+      "outline": "Contorno",
+      "outlineColor": "Cor do contorno",
+      "outlineWidth": "Espessura do contorno",
+      "shadow": "Sombra",
+      "shadowHint": "Uma sombra nítida atrás das letras",
+      "shadowColor": "Cor da sombra",
+      "shadowX": "Deslocamento horizontal",
+      "shadowY": "Deslocamento vertical",
+      "shadowOpacity": "Opacidade da sombra",
+      "highlight": "Realce",
+      "highlightColor": "Cor do realce",
+      "highlightPadding": "Margem do realce",
+      "weights": {
+        "100": "Fina",
+        "200": "Extraleve",
+        "300": "Leve",
+        "350": "Semileve",
+        "400": "Normal",
+        "500": "Média",
+        "600": "Seminegrito",
+        "700": "Negrito",
+        "800": "Extranegrito",
+        "900": "Black"
+      },
+      "listKinds": {
+        "none": "Sem lista",
+        "bullet": "Marcador •",
+        "dash": "Travessão –",
+        "check": "Marca de seleção ✓",
+        "decimal": "Números 1.",
+        "alpha": "Letras a)",
+        "roman": "Algarismos romanos i."
+      },
+      "cases": {
+        "none": "Como digitado",
+        "upper": "MAIÚSCULAS",
+        "lower": "minúsculas",
+        "title": "Primeira Letra Maiúscula"
+      },
+      "autoSizes": {
+        "fixed": "Fixo",
+        "height": "Altura automática",
+        "width": "Largura automática",
+        "shrink": "Reduzir o texto para caber"
+      },
+      "autoSizeHints": {
+        "fixed": "A caixa mantém o tamanho e só cresce na altura quando o texto digitado não cabe mais.",
+        "height": "A altura da caixa acompanha o texto, crescendo e diminuindo.",
+        "width": "A caixa se alarga para cada linha; as linhas só quebram onde você pressiona Enter.",
+        "shrink": "A caixa mantém o tamanho; o texto longo diminui para caber."
+      }
+    },
+    "find": {
+      "title": "Localizar e substituir",
+      "find": "Localizar",
+      "replaceWith": "Substituir por",
+      "toggleReplace": "Mostrar substituição",
+      "close": "Fechar",
+      "matchCase": "Diferenciar maiúsculas e minúsculas",
+      "wholeWord": "Somente palavras inteiras",
+      "previous": "Ocorrência anterior",
+      "next": "Próxima ocorrência",
+      "replace": "Substituir",
+      "replaceAll": "Substituir tudo",
+      "none": "Nenhuma ocorrência",
+      "count": "{{current}} de {{total}}",
+      "total_one": "{{count}} ocorrência",
+      "total_many": "{{count}} ocorrências",
+      "total_other": "{{count}} ocorrências"
     }
   }
 }

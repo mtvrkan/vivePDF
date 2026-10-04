@@ -1,15 +1,16 @@
 import { ImageOff, ImagePlus } from "lucide-react";
-import { memo, useEffect, useId, useLayoutEffect, useRef, useState, type ReactNode } from "react";
+import { memo, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioRenderPath, StudioSvgElement, StudioTextElement } from "@/types/studio";
 import { usePreviewValues } from "../merge/mergeStore";
-import { fillPlaceholders, textDirection, textOf } from "../model/design";
+import { fillPlaceholders, textDirection } from "../model/design";
 import { elementItems } from "../model/render";
 import { renderFill, roundedRect } from "../model/shapes";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
 import { elementFaceSignature, ensureElementFonts, useStudioFontsStore } from "./fonts";
 import { placeImage } from "./imageLayout";
 import { fitTextSize } from "./measure";
-import { runCss, runData, textBodyStyle, textFrameStyle } from "./textStyle";
+import { useAutoFit, useTextBands } from "./textLayout";
+import { markerCss, paragraphCss, paragraphData, runCss, runData, textBlocks, textBodyStyle, textFrameStyle } from "./textStyle";
 
 export function PathsSvg({ paths, width, height }: { paths: StudioRenderPath[]; width: number; height: number }) {
   const prefix = useId().replace(/[^a-zA-Z0-9]/g, "");
@@ -54,10 +55,15 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
   const faceSignature = useStudioFontsStore((state) => elementFaceSignature(element, state.faces));
   const faces = useStudioFontsStore.getState().faces;
   const ownRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
   const ref = bodyRef ?? ownRef;
   const [size, setSize] = useState(element.fontSize);
   const values = usePreviewValues(language);
-  const runs = values ? element.runs.map((run) => ({ ...run, text: fillPlaceholders(run.text, values) })) : element.runs;
+  const textLanguage = element.language ?? language;
+  const editing = editable !== undefined;
+  const blocks = useMemo(() => textBlocks(element, { language: textLanguage, fill: values ? (text) => fillPlaceholders(text, values) : undefined }), [element, textLanguage, values]);
+  const bands = useTextBands(frameRef, element, language, editing, faceSignature);
+  useAutoFit(element, language, editing, faceSignature);
 
   useEffect(() => {
     void ensureElementFonts([element]);
@@ -65,17 +71,35 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
 
   useLayoutEffect(() => {
     if (!ref.current) return;
-    setSize(element.shrinkToFit ? fitTextSize(ref.current, element) : element.fontSize);
+    setSize(element.autoSize === "shrink" ? fitTextSize(ref.current, element) : element.fontSize);
   }, [element, faceSignature, ref, values]);
 
+  const padding = element.highlight?.padding ?? 0;
   return (
-    <div lang={language} dir={textDirection(textOf(runs))} style={textFrameStyle(element)}>
+    <div ref={frameRef} lang={textLanguage} dir={textDirection(blocks.map((block) => block.spans.map((span) => span.text).join("")).join(" "))} style={textFrameStyle(element)}>
+      {element.highlight && bands.length ? (
+        <div aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none" }}>
+          {bands.map((band, index) => (
+            <div key={index} style={{ position: "absolute", left: `${band.x - padding}px`, top: `${band.y - padding}px`, width: `${band.width + padding * 2}px`, height: `${band.height + padding * 2}px`, background: element.highlight?.color }} />
+          ))}
+        </div>
+      ) : null}
       {editable ?? (
-        <div ref={ref} style={textBodyStyle(element, size)}>
-          {runs.map((run, index) => (
-            <span key={index} {...runData(element, run)} style={runCss(element, run, faces)}>
-              {run.text}
-            </span>
+        <div ref={ref} data-text-body="" style={textBodyStyle(element, size)}>
+          {blocks.map((block, index) => (
+            <div key={index} {...paragraphData(block.paragraph)} style={paragraphCss(block.paragraph)}>
+              {block.marker ? (
+                <span {...runData(block.marker.style)} data-marker="" style={markerCss(block.marker.style, faces)}>
+                  {block.marker.text}
+                </span>
+              ) : null}
+              {block.spans.map((span, spanIndex) => (
+                <span key={spanIndex} {...runData(span.style)} data-run="" style={runCss(span.style, faces)}>
+                  {span.text}
+                </span>
+              ))}
+              {block.spans.length ? null : <br />}
+            </div>
           ))}
         </div>
       )}

@@ -181,4 +181,47 @@ describe("studio shortcuts", () => {
 
     expect(useViewPrefs.getState().rulers).toBe(true);
   });
+
+  it("strikes selected texts with Ctrl+Shift+X and toggles lists with Ctrl+Shift+8 and 7", () => {
+    const { unmount } = renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    onTestFinished(unmount);
+    const state = useStudioStore.getState();
+    const text = createText(0, 40, 100, 20, "a\nb");
+    state.applyToPage((page) => addElements(page, [text]));
+    state.select([text.id]);
+    const current = () => useStudioStore.getState().design?.pages[0].elements.find((element) => element.id === text.id);
+
+    press("X", { shiftKey: true, code: "KeyX" });
+    press("*", { shiftKey: true, code: "Digit8" });
+    expect(current()).toMatchObject({ strike: true, paragraphs: [{ list: "bullet", level: 0 }, { list: "bullet", level: 0 }] });
+
+    press("/", { shiftKey: true, code: "Digit7" });
+    press("/", { shiftKey: true, code: "Digit7" });
+    expect(current()).toMatchObject({ paragraphs: [{ list: "none", level: 0 }, { list: "none", level: 0 }] });
+  });
+
+  it("opens find with Ctrl+F and replace with Ctrl+H, even from a text field", () => {
+    const onFind = vi.fn();
+    const { unmount } = renderHook(() => useStudioShortcuts(vi.fn(), vi.fn(), { onFind }));
+    onTestFinished(unmount);
+    const input = document.body.appendChild(document.createElement("input"));
+
+    press("f");
+    press("h", {}, input);
+    press("F", { shiftKey: true });
+
+    expect(onFind.mock.calls).toEqual([[false], [true]]);
+  });
+
+  it("does not claim Ctrl+F when no find handler is given", () => {
+    removeGuard();
+    removeGuard = () => undefined;
+    const { unmount } = renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    onTestFinished(unmount);
+    const event = new KeyboardEvent("keydown", { key: "f", ctrlKey: true, bubbles: true, cancelable: true });
+
+    window.dispatchEvent(event);
+
+    expect(event.defaultPrevented).toBe(false);
+  });
 });

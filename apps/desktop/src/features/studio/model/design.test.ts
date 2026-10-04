@@ -139,3 +139,66 @@ describe("studio text direction", () => {
     expect(textDirection("2027 · 12")).toBe("ltr");
   });
 });
+
+describe("studio text typography fields", () => {
+  const stored = (overrides: Record<string, unknown>) => ({ ...JSON.parse(JSON.stringify(createText(0, 0, 100, 40, "One\nTwo"))), ...overrides });
+
+  it("migrates old capitals and shrink-to-fit flags, keeping other texts fixed", () => {
+    const legacy = stored({ uppercase: true, shrinkToFit: true });
+    delete legacy.textCase;
+    delete legacy.autoSize;
+    const plain = stored({});
+    delete plain.autoSize;
+
+    expect(normalizeElement(legacy)).toMatchObject({ textCase: "upper", autoSize: "shrink" });
+    expect(normalizeElement(plain)).toMatchObject({ textCase: "none", autoSize: "fixed" });
+  });
+
+  it("keeps runs, paragraphs and effects that are valid", () => {
+    const element = normalizeElement(
+      stored({
+        runs: [{ text: "One\n", strike: true, fontId: "system:georgia", scale: 1.5, weight: 300 }, { text: "Two", weight: null }],
+        paragraphs: [{ list: "decimal", level: 2 }],
+        outline: { color: "#FF0000", width: 2 },
+        shadow: { color: "#000000", x: 3, y: -1, opacity: 0.4 },
+        highlight: { color: "#fde047", padding: 4 },
+        language: "tr-TR",
+        weight: 600,
+      }),
+    );
+
+    expect(element).toMatchObject({
+      runs: [{ text: "One\n", strike: true, fontId: "system:georgia", scale: 1.5, weight: 300 }, { text: "Two", weight: null }],
+      paragraphs: [{ list: "decimal", level: 2 }, { list: "none", level: 0 }],
+      outline: { color: "#ff0000", width: 2 },
+      shadow: { x: 3, y: -1, opacity: 0.4 },
+      highlight: { padding: 4 },
+      language: "tr-TR",
+      weight: 600,
+    });
+  });
+
+  it("lists library fonts used only by a run", () => {
+    const design = createDesign("x", 10, 10);
+    design.pages[0].elements.push(createText(0, 0, 10, 10, "", { runs: [{ text: "a", fontId: "library:abc" }] }));
+
+    expect(libraryFontIds(design)).toEqual(["library:abc"]);
+  });
+
+  it("clamps or drops broken text fields", () => {
+    const element = normalizeElement(
+      stored({
+        runs: [{ text: "x", scale: 999, weight: 1234, strike: "yes" }],
+        paragraphs: [{ list: "stars", level: 40 }],
+        textCase: "shout",
+        autoSize: "grow",
+        outline: "thick",
+        language: "<script>",
+      }),
+    );
+
+    expect(element).toMatchObject({ textCase: "none", autoSize: "fixed", outline: null, language: null, paragraphs: [{ list: "none", level: 8 }] });
+    expect(element?.kind === "text" && element.runs[0]).toMatchObject({ scale: 40, weight: 900 });
+    expect(element?.kind === "text" && element.runs[0].strike).toBeUndefined();
+  });
+});
