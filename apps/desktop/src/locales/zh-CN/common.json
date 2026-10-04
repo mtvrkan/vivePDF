@@ -5992,7 +5992,10 @@
       "noDocument": "此文件不是 vivePDF 文档。",
       "newerDocument": "此文档是由更新版本的 vivePDF 创建的。请更新应用后再打开。",
       "previewGone": "预览已过期，将重新生成。",
-      "documentFileTooLarge": "文档大小超过 {{limitMb}} MB。"
+      "documentFileTooLarge": "文档大小超过 {{limitMb}} MB。",
+      "draftTooLarge": "此设计过大，无法保存为自动草稿（上限 {{limit}} 字节）。请将其另存为项目文件。",
+      "notDesign": "此文件不是工作室设计。",
+      "badPageNumbers": "所选页码与要导出的页面不一致。"
     },
     "revealEmptyPath": "路径为空。",
     "revealFailed": "无法打开此位置。",
@@ -6449,7 +6452,8 @@
       "zoomIn": "放大",
       "zoomOut": "缩小",
       "fit": "适应窗口",
-      "export": "导出"
+      "export": "导出",
+      "print": "打印"
     },
     "menu": {
       "label": "元素菜单",
@@ -6560,7 +6564,8 @@
         "keep": "保持不变",
         "scale": "按比例缩放"
       },
-      "applyToAll": "将此尺寸应用到所有页面"
+      "applyToAll": "将此尺寸应用到所有页面",
+      "noBackgroundHint": "无背景：PNG 图片中页面保持透明，而 PDF 和打印中显示为白纸。"
     },
     "props": {
       "label": "属性",
@@ -6711,7 +6716,30 @@
       "doneFiles_one": "已导出 {{count}} 个文件",
       "doneFiles_other": "已导出 {{count}} 个文件",
       "idleRows_one": "将从表格生成 {{count}} 份副本。",
-      "idleRows_other": "将从表格生成 {{count}} 份副本。"
+      "idleRows_other": "将从表格生成 {{count}} 份副本。",
+      "pages": "页面",
+      "pagesAll": "全部（{{count}}）",
+      "pagesCurrent": "当前页（{{page}}）",
+      "pagesCustom": "自定义",
+      "rangePlaceholder": "例如 1-3, 5",
+      "rangeHint": "输入页码和页面范围，用逗号分隔（1 到 {{last}}）。",
+      "dpiCustom": "自定义",
+      "dpiHint": "分辨率越高，图片越清晰，但文件也越大。",
+      "dpiError": "请输入 {{min}} 到 {{max}} dpi 之间的分辨率。",
+      "quality": "JPG 质量",
+      "qualityHint": "数值越低文件越小；92 可保留细节。",
+      "transparent": "透明背景",
+      "transparentHint": "背景设为“无”的页面会保存为透明。在 PDF 和打印中仍为白色。",
+      "transparentNone": "所选页面的背景都不是“无”，因此图片将不透明。",
+      "oneFile": "保存为一张图片：{{name}}",
+      "idlePictures": "每页按所选分辨率保存为单独的图片。",
+      "rangeErrors": {
+        "empty": "请输入要导出的页面，例如 1-3, 5。",
+        "invalid": "请使用页码和范围，例如 1-3, 5。",
+        "outOfRange": "此设计只有第 1 到 {{last}} 页。"
+      },
+      "eachPage_one": "每页保存为单独的图片：{{first}}",
+      "eachPage_other": "每页保存为单独的图片：{{first}} … {{last}}（{{count}} 个文件）"
     },
     "project": {
       "open": "打开设计…",
@@ -8301,7 +8329,8 @@
         "duplicateDrag": "拖动时创建副本",
         "layerOrder": "上移 / 下移当前图层（图层面板）",
         "enterGroup": "选择组内的单个元素",
-        "copyPasteStyle": "复制样式 / 粘贴样式"
+        "copyPasteStyle": "复制样式 / 粘贴样式",
+        "print": "打印…"
       }
     },
     "view": {
@@ -8333,6 +8362,15 @@
       "radius": "大小",
       "presets": "现成渐变",
       "preset": "渐变 {{number}}"
+    },
+    "print": {
+      "dataHint": "为表格的每一行打印一份设计。",
+      "hint": "设计会先转换为 PDF，再发送到打印机；您可以随时取消。"
+    },
+    "draft": {
+      "tooLarge": "此设计过大，无法保存为自动草稿。请将其另存为项目文件，以免丢失。",
+      "failed": "无法保存自动草稿：{{error}}",
+      "loadFailed": "无法加载上次的草稿"
     }
   }
 }

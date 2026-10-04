@@ -14,6 +14,8 @@ import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./sh
 
 export type MeasuredText = ReadonlyMap<string, StudioRenderSegment[]>;
 
+export type RenderOptions = { keepWhite?: boolean };
+
 function box(element: StudioElement): StudioRenderBox {
   return { x: element.x, y: element.y, width: element.width, height: element.height, rotation: element.rotation, opacity: element.opacity };
 }
@@ -89,23 +91,27 @@ export function elementItems(element: StudioElement, measured: MeasuredText = ne
   }
 }
 
-function backgroundItems(page: StudioPage): StudioRenderItem[] {
+function backgroundItems(page: StudioPage, keepWhite: boolean): StudioRenderItem[] {
   const frame: StudioRenderBox = { x: 0, y: 0, width: page.width, height: page.height, rotation: 0, opacity: 1 };
   const items: StudioRenderItem[] = [];
   const fill = renderFill(page.background.fill, page.width, page.height);
   const plainWhite = fill?.type === "solid" && fill.color.toLowerCase() === "#ffffff";
-  if (fill && !plainWhite) items.push({ ...frame, kind: "vector", paths: [{ d: roundedRect(0, 0, page.width, page.height, 0), fill, stroke: null, evenOdd: false, opacity: 1 }] });
+  if (fill && (keepWhite || !plainWhite)) items.push({ ...frame, kind: "vector", paths: [{ d: roundedRect(0, 0, page.width, page.height, 0), fill, stroke: null, evenOdd: false, opacity: 1 }] });
   const image = page.background.image;
   if (image && image.opacity > 0) items.push({ ...frame, opacity: image.opacity, kind: "image", path: image.src, fit: image.fit, crop: null, mask: "none", radius: 0 });
   return items;
 }
 
-export function pageToRender(page: StudioPage, measured: MeasuredText = new Map()): StudioRenderPage {
-  return { width: page.width, height: page.height, items: [...backgroundItems(page), ...page.elements.flatMap((element) => elementItems(element, measured))] };
+export function pageToRender(page: StudioPage, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage {
+  return { width: page.width, height: page.height, items: [...backgroundItems(page, Boolean(options.keepWhite)), ...page.elements.flatMap((element) => elementItems(element, measured))] };
 }
 
-export function designToRender(design: StudioDesign, measured: MeasuredText = new Map()): StudioRenderPage[] {
-  return design.pages.map((page) => pageToRender(page, measured));
+export function designToRender(design: StudioDesign, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage[] {
+  return design.pages.map((page) => pageToRender(page, measured, options));
+}
+
+export function hasSeeThroughBackground(page: StudioPage): boolean {
+  return page.background.fill.type === "none" && !page.background.image;
 }
 
 export function imagePaths(design: StudioDesign): string[] {

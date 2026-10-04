@@ -5992,7 +5992,10 @@
       "noDocument": "이 파일은 vivePDF 문서가 아닙니다.",
       "newerDocument": "이 문서는 더 최신 버전의 vivePDF로 만들어졌습니다. 열려면 앱을 업데이트하세요.",
       "previewGone": "미리보기가 만료되어 다시 생성됩니다.",
-      "documentFileTooLarge": "문서가 {{limitMb}}MB보다 큽니다."
+      "documentFileTooLarge": "문서가 {{limitMb}}MB보다 큽니다.",
+      "draftTooLarge": "이 디자인은 너무 커서 자동 임시 저장을 할 수 없습니다(한도 {{limit}}바이트). 프로젝트 파일로 저장하세요.",
+      "notDesign": "이 파일은 스튜디오 디자인이 아닙니다.",
+      "badPageNumbers": "선택한 페이지 번호가 내보내는 페이지와 일치하지 않습니다."
     },
     "revealEmptyPath": "경로가 비어 있습니다.",
     "revealFailed": "이 위치를 열 수 없습니다.",
@@ -6449,7 +6452,8 @@
       "zoomIn": "확대",
       "zoomOut": "축소",
       "fit": "창에 맞추기",
-      "export": "내보내기"
+      "export": "내보내기",
+      "print": "인쇄"
     },
     "menu": {
       "label": "요소 메뉴",
@@ -6560,7 +6564,8 @@
         "keep": "그대로 유지",
         "scale": "맞게 크기 조정"
       },
-      "applyToAll": "이 크기를 모든 페이지에 적용"
+      "applyToAll": "이 크기를 모든 페이지에 적용",
+      "noBackgroundHint": "배경 없음: PNG 이미지에서는 페이지가 투명하게 유지되고, PDF와 인쇄에서는 흰 용지로 표시됩니다."
     },
     "props": {
       "label": "속성",
@@ -6711,7 +6716,30 @@
       "doneFiles_one": "파일 {{count}}개를 내보냈습니다",
       "doneFiles_other": "파일 {{count}}개를 내보냈습니다",
       "idleRows_one": "표에서 사본 {{count}}개가 만들어집니다.",
-      "idleRows_other": "표에서 사본 {{count}}개가 만들어집니다."
+      "idleRows_other": "표에서 사본 {{count}}개가 만들어집니다.",
+      "pages": "페이지",
+      "pagesAll": "전체({{count}})",
+      "pagesCurrent": "현재 페이지({{page}})",
+      "pagesCustom": "직접 지정",
+      "rangePlaceholder": "예: 1-3, 5",
+      "rangeHint": "페이지와 페이지 범위를 쉼표로 구분해 입력하세요(1~{{last}}).",
+      "dpiCustom": "직접 지정",
+      "dpiHint": "해상도가 높을수록 이미지가 선명해지지만 파일이 커집니다.",
+      "dpiError": "{{min}}~{{max}} dpi 사이의 해상도를 입력하세요.",
+      "quality": "JPG 품질",
+      "qualityHint": "값이 낮을수록 파일이 작아집니다. 92이면 세밀한 부분까지 유지됩니다.",
+      "transparent": "투명 배경",
+      "transparentHint": "배경이 '없음'인 페이지는 투명하게 저장됩니다. PDF와 인쇄에서는 흰색으로 유지됩니다.",
+      "transparentNone": "선택한 페이지 중 배경이 '없음'인 페이지가 없어 이미지가 불투명하게 저장됩니다.",
+      "oneFile": "이미지 한 장으로 저장됩니다: {{name}}",
+      "idlePictures": "각 페이지가 선택한 해상도의 별도 이미지로 저장됩니다.",
+      "rangeErrors": {
+        "empty": "내보낼 페이지를 입력하세요(예: 1-3, 5).",
+        "invalid": "1-3, 5처럼 페이지 번호와 범위를 사용하세요.",
+        "outOfRange": "이 디자인에는 1~{{last}} 페이지만 있습니다."
+      },
+      "eachPage_one": "각 페이지가 별도 이미지로 저장됩니다: {{first}}",
+      "eachPage_other": "각 페이지가 별도 이미지로 저장됩니다: {{first}} … {{last}}(파일 {{count}}개)"
     },
     "project": {
       "open": "디자인 열기…",
@@ -8301,7 +8329,8 @@
         "duplicateDrag": "끌면서 복제",
         "layerOrder": "포커스된 레이어를 위 / 아래로 이동(레이어 패널)",
         "enterGroup": "그룹 안의 요소 하나 선택",
-        "copyPasteStyle": "스타일 복사 / 붙여넣기"
+        "copyPasteStyle": "스타일 복사 / 붙여넣기",
+        "print": "인쇄…"
       }
     },
     "view": {
@@ -8333,6 +8362,15 @@
       "radius": "크기",
       "presets": "기본 그라데이션",
       "preset": "그라데이션 {{number}}"
+    },
+    "print": {
+      "dataHint": "표의 각 행마다 디자인을 한 부씩 인쇄합니다.",
+      "hint": "디자인을 먼저 PDF로 변환한 뒤 프린터로 보냅니다. 언제든지 취소할 수 있습니다."
+    },
+    "draft": {
+      "tooLarge": "이 디자인은 너무 커서 자동 임시 저장을 할 수 없습니다. 작업을 잃지 않도록 프로젝트 파일로 저장하세요.",
+      "failed": "자동 임시 저장을 하지 못했습니다: {{error}}",
+      "loadFailed": "마지막 임시 저장본을 불러오지 못했습니다"
     }
   }
 }

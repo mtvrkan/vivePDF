@@ -5992,7 +5992,10 @@
       "noDocument": "This file is not a vivePDF document.",
       "newerDocument": "This document was made by a newer vivePDF. Update the app to open it.",
       "previewGone": "The preview expired; it will be made again.",
-      "documentFileTooLarge": "The document is larger than {{limitMb}} MB."
+      "documentFileTooLarge": "The document is larger than {{limitMb}} MB.",
+      "draftTooLarge": "This design is too large for the automatic draft (limit {{limit}} bytes). Save it as a project file.",
+      "notDesign": "This file is not a Studio design.",
+      "badPageNumbers": "The chosen page numbers do not match the pages being exported."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -6450,7 +6453,8 @@
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "fit": "Fit to window",
-      "export": "Export"
+      "export": "Export",
+      "print": "Print"
     },
     "menu": {
       "label": "Element menu",
@@ -6561,7 +6565,8 @@
         "keep": "Keep as is",
         "scale": "Scale to fit"
       },
-      "applyToAll": "Apply this size to all pages"
+      "applyToAll": "Apply this size to all pages",
+      "noBackgroundHint": "No background: PNG pictures keep the page see-through, while PDF and printing show white paper."
     },
     "props": {
       "label": "Properties",
@@ -6712,7 +6717,30 @@
       "doneFiles_one": "{{count}} file exported",
       "doneFiles_other": "{{count}} files exported",
       "idleRows_one": "{{count}} copy will be made from the table.",
-      "idleRows_other": "{{count}} copies will be made from the table."
+      "idleRows_other": "{{count}} copies will be made from the table.",
+      "pages": "Pages",
+      "pagesAll": "All ({{count}})",
+      "pagesCurrent": "Current page ({{page}})",
+      "pagesCustom": "Custom",
+      "rangePlaceholder": "e.g. 1-3, 5",
+      "rangeHint": "Type pages and page ranges separated by commas, from 1 to {{last}}.",
+      "dpiCustom": "Custom",
+      "dpiHint": "A higher resolution gives sharper but larger pictures.",
+      "dpiError": "Enter a resolution from {{min}} to {{max}} dpi.",
+      "quality": "JPG quality",
+      "qualityHint": "Lower values make smaller files; 92 keeps fine detail.",
+      "transparent": "See-through background",
+      "transparentHint": "Pages whose background is set to None are saved see-through. PDF and printing stay white.",
+      "transparentNone": "None of the chosen pages has its background set to None, so the pictures stay opaque.",
+      "oneFile": "Saved as one picture: {{name}}",
+      "idlePictures": "Every page is saved as a separate picture at the chosen resolution.",
+      "rangeErrors": {
+        "empty": "Type the pages to export, for example 1-3, 5.",
+        "invalid": "Use page numbers and ranges such as 1-3, 5.",
+        "outOfRange": "This design only has pages 1 to {{last}}."
+      },
+      "eachPage_one": "Each page is saved as its own picture: {{first}}",
+      "eachPage_other": "Each page is saved as its own picture: {{first}} … {{last}} ({{count}} files)"
     },
     "project": {
       "open": "Open design…",
@@ -8302,7 +8330,8 @@
         "duplicateDrag": "Duplicate while dragging",
         "layerOrder": "Move the focused layer up / down (Layers panel)",
         "enterGroup": "Select one item inside a group",
-        "copyPasteStyle": "Copy style / paste style"
+        "copyPasteStyle": "Copy style / paste style",
+        "print": "Print…"
       }
     },
     "view": {
@@ -8334,6 +8363,15 @@
       "radius": "Size",
       "presets": "Ready-made gradients",
       "preset": "Gradient {{number}}"
+    },
+    "print": {
+      "dataHint": "Prints one copy of the design for every row of the table.",
+      "hint": "The design is first turned into a PDF and then sent to the printer; you can cancel at any time."
+    },
+    "draft": {
+      "tooLarge": "This design is too large for the automatic draft. Save it as a project file so nothing is lost.",
+      "failed": "The automatic draft could not be saved: {{error}}",
+      "loadFailed": "The last draft could not be loaded"
     }
   }
 }

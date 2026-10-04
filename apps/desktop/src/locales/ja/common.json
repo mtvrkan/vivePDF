@@ -5992,7 +5992,10 @@
       "noDocument": "このファイルは vivePDF の文書ではありません。",
       "newerDocument": "この文書は新しいバージョンの vivePDF で作成されています。開くにはアプリを更新してください。",
       "previewGone": "プレビューの有効期限が切れました。再作成します。",
-      "documentFileTooLarge": "文書が {{limitMb}} MB を超えています。"
+      "documentFileTooLarge": "文書が {{limitMb}} MB を超えています。",
+      "draftTooLarge": "このデザインは大きすぎるため、自動下書きに保存できません（上限 {{limit}} バイト）。プロジェクト ファイルとして保存してください。",
+      "notDesign": "このファイルはスタジオのデザインではありません。",
+      "badPageNumbers": "選んだページ番号が書き出すページと一致しません。"
     },
     "revealEmptyPath": "パスが空です。",
     "revealFailed": "この場所を開けませんでした。",
@@ -6449,7 +6452,8 @@
       "zoomIn": "拡大",
       "zoomOut": "縮小",
       "fit": "ウィンドウに合わせる",
-      "export": "書き出し"
+      "export": "書き出し",
+      "print": "印刷"
     },
     "menu": {
       "label": "要素メニュー",
@@ -6560,7 +6564,8 @@
         "keep": "そのまま",
         "scale": "合わせて拡大縮小"
       },
-      "applyToAll": "このサイズをすべてのページに適用"
+      "applyToAll": "このサイズをすべてのページに適用",
+      "noBackgroundHint": "背景なし：PNG 画像ではページが透明になり、PDF と印刷では白い用紙になります。"
     },
     "props": {
       "label": "プロパティ",
@@ -6711,7 +6716,30 @@
       "doneFiles_one": "{{count}} ファイルを書き出しました",
       "doneFiles_other": "{{count}} ファイルを書き出しました",
       "idleRows_one": "表から {{count}} 部が作成されます。",
-      "idleRows_other": "表から {{count}} 部が作成されます。"
+      "idleRows_other": "表から {{count}} 部が作成されます。",
+      "pages": "ページ",
+      "pagesAll": "すべて（{{count}}）",
+      "pagesCurrent": "現在のページ（{{page}}）",
+      "pagesCustom": "指定",
+      "rangePlaceholder": "例：1-3, 5",
+      "rangeHint": "ページやページ範囲をカンマで区切って入力します（1～{{last}}）。",
+      "dpiCustom": "指定",
+      "dpiHint": "解像度を上げると画像は鮮明になりますが、ファイルが大きくなります。",
+      "dpiError": "{{min}}～{{max}} dpi の解像度を入力してください。",
+      "quality": "JPG の品質",
+      "qualityHint": "値を下げるとファイルが小さくなります。92 なら細部まで保たれます。",
+      "transparent": "背景を透明にする",
+      "transparentHint": "背景が「なし」のページは透明で保存されます。PDF と印刷では白のままです。",
+      "transparentNone": "選んだページに背景が「なし」のものがないため、画像は不透明になります。",
+      "oneFile": "1 枚の画像として保存されます：{{name}}",
+      "idlePictures": "各ページが選んだ解像度で個別の画像として保存されます。",
+      "rangeErrors": {
+        "empty": "書き出すページを入力してください（例：1-3, 5）。",
+        "invalid": "1-3, 5 のようにページ番号と範囲を使ってください。",
+        "outOfRange": "このデザインのページは 1～{{last}} だけです。"
+      },
+      "eachPage_one": "各ページが個別の画像として保存されます：{{first}}",
+      "eachPage_other": "各ページが個別の画像として保存されます：{{first}} … {{last}}（{{count}} ファイル）"
     },
     "project": {
       "open": "デザインを開く…",
@@ -8301,7 +8329,8 @@
         "duplicateDrag": "ドラッグして複製",
         "layerOrder": "フォーカス中のレイヤーを上へ / 下へ移動（レイヤーパネル）",
         "enterGroup": "グループ内の 1 つの要素を選択",
-        "copyPasteStyle": "スタイルのコピー / 貼り付け"
+        "copyPasteStyle": "スタイルのコピー / 貼り付け",
+        "print": "印刷…"
       }
     },
     "view": {
@@ -8333,6 +8362,15 @@
       "radius": "サイズ",
       "presets": "既成のグラデーション",
       "preset": "グラデーション {{number}}"
+    },
+    "print": {
+      "dataHint": "表の行ごとにデザインを 1 部ずつ印刷します。",
+      "hint": "デザインをいったん PDF に変換してからプリンターに送ります。いつでもキャンセルできます。"
+    },
+    "draft": {
+      "tooLarge": "このデザインは大きすぎるため、自動下書きに保存できません。失われないようにプロジェクト ファイルとして保存してください。",
+      "failed": "自動下書きを保存できませんでした：{{error}}",
+      "loadFailed": "前回の下書きを読み込めませんでした"
     }
   }
 }

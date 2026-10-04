@@ -5992,7 +5992,10 @@
       "noDocument": "Este arquivo não é um documento vivePDF.",
       "newerDocument": "Este documento foi criado por uma versão mais recente do vivePDF. Atualize o aplicativo para abri-lo.",
       "previewGone": "A pré-visualização expirou; ela será criada novamente.",
-      "documentFileTooLarge": "O documento tem mais de {{limitMb}} MB."
+      "documentFileTooLarge": "O documento tem mais de {{limitMb}} MB.",
+      "draftTooLarge": "Este design é grande demais para o rascunho automático (limite de {{limit}} bytes). Salve-o como arquivo de projeto.",
+      "notDesign": "Este arquivo não é um design do Studio.",
+      "badPageNumbers": "Os números de página escolhidos não correspondem às páginas exportadas."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",
@@ -6449,7 +6452,8 @@
       "zoomIn": "Ampliar",
       "zoomOut": "Reduzir",
       "fit": "Ajustar à janela",
-      "export": "Exportar"
+      "export": "Exportar",
+      "print": "Imprimir"
     },
     "menu": {
       "label": "Menu do elemento",
@@ -6560,7 +6564,8 @@
         "keep": "Manter como está",
         "scale": "Ajustar à escala"
       },
-      "applyToAll": "Aplicar este tamanho a todas as páginas"
+      "applyToAll": "Aplicar este tamanho a todas as páginas",
+      "noBackgroundHint": "Sem plano de fundo: as imagens PNG mantêm a página transparente, enquanto o PDF e a impressão mostram papel branco."
     },
     "props": {
       "label": "Propriedades",
@@ -6711,7 +6716,30 @@
       "doneFiles_one": "{{count}} arquivo exportado",
       "doneFiles_other": "{{count}} arquivos exportados",
       "idleRows_one": "{{count}} cópia será criada a partir da tabela.",
-      "idleRows_other": "{{count}} cópias serão criadas a partir da tabela."
+      "idleRows_other": "{{count}} cópias serão criadas a partir da tabela.",
+      "pages": "Páginas",
+      "pagesAll": "Todas ({{count}})",
+      "pagesCurrent": "Página atual ({{page}})",
+      "pagesCustom": "Personalizado",
+      "rangePlaceholder": "ex.: 1-3, 5",
+      "rangeHint": "Digite páginas e intervalos de páginas separados por vírgulas (de 1 a {{last}}).",
+      "dpiCustom": "Personalizada",
+      "dpiHint": "Uma resolução maior gera imagens mais nítidas, porém maiores.",
+      "dpiError": "Digite uma resolução entre {{min}} e {{max}} dpi.",
+      "quality": "Qualidade do JPG",
+      "qualityHint": "Valores menores geram arquivos menores; 92 preserva os detalhes finos.",
+      "transparent": "Fundo transparente",
+      "transparentHint": "Páginas com o plano de fundo definido como Nenhum são salvas transparentes. No PDF e na impressão continuam brancas.",
+      "transparentNone": "Nenhuma das páginas escolhidas tem o plano de fundo definido como Nenhum, então as imagens ficarão opacas.",
+      "oneFile": "Salvo como uma única imagem: {{name}}",
+      "idlePictures": "Cada página é salva como uma imagem separada na resolução escolhida.",
+      "rangeErrors": {
+        "empty": "Digite as páginas a exportar, por exemplo 1-3, 5.",
+        "invalid": "Use números de página e intervalos como 1-3, 5.",
+        "outOfRange": "Este design só tem as páginas 1 a {{last}}."
+      },
+      "eachPage_one": "Cada página é salva como uma imagem separada: {{first}}",
+      "eachPage_other": "Cada página é salva como uma imagem separada: {{first}} … {{last}} ({{count}} arquivos)"
     },
     "project": {
       "open": "Abrir design…",
@@ -8301,7 +8329,8 @@
         "duplicateDrag": "Duplicar ao arrastar",
         "layerOrder": "Mover a camada em foco para cima / para baixo (painel Camadas)",
         "enterGroup": "Selecionar um único item dentro de um grupo",
-        "copyPasteStyle": "Copiar estilo / colar estilo"
+        "copyPasteStyle": "Copiar estilo / colar estilo",
+        "print": "Imprimir…"
       }
     },
     "view": {
@@ -8333,6 +8362,15 @@
       "radius": "Tamanho",
       "presets": "Degradês prontos",
       "preset": "Degradê {{number}}"
+    },
+    "print": {
+      "dataHint": "Imprime uma cópia do design para cada linha da tabela.",
+      "hint": "O design é convertido primeiro em PDF e depois enviado à impressora; você pode cancelar a qualquer momento."
+    },
+    "draft": {
+      "tooLarge": "Este design é grande demais para o rascunho automático. Salve-o como arquivo de projeto para não perder nada.",
+      "failed": "Não foi possível salvar o rascunho automático: {{error}}",
+      "loadFailed": "Não foi possível carregar o último rascunho"
     }
   }
 }
