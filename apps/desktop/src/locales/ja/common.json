@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "各グループの観測値を名前の下の列に入力します。最初の列は使いません。",
       "bins": "階級数",
-      "binsAuto": "自動"
+      "binsAuto": "自動",
+      "legendPosition": "凡例の位置",
+      "legendPositions": {
+        "bottom": "下",
+        "top": "上",
+        "right": "右",
+        "left": "左"
+      }
     },
     "metadata": {
       "title": "文書のプロパティ",
@@ -8603,6 +8610,83 @@
       "sepia": "セピア",
       "grayscale": "グレースケール",
       "reset": "補正をリセット"
+    },
+    "graphics": {
+      "title": "表とグラフ",
+      "addTable": "表を追加",
+      "tablePicker": "表のサイズ",
+      "tableSize": "{{rows}} 行 {{columns}} 列の表を追加",
+      "tableSizeShort": "{{rows}} 行 × {{columns}} 列",
+      "kinds": {
+        "table": "表",
+        "chart": "グラフ",
+        "flowchart": "フローチャート",
+        "formula": "数式"
+      },
+      "designPalette": "デザインパレット",
+      "updating": "グラフィックを更新しています…",
+      "editCells": "セルを編集",
+      "editingHint": "強調表示されたセルに入力します。Tab で次のセルへ移動し、Shift+クリックまたは Shift+矢印キーで複数のセルを選択し、Esc で編集を終了します。",
+      "tableEditor": "表のセル",
+      "tableKeys": "Tab と Shift+Tab でセル間を移動します。矢印キーはテキストの端で隣のセルへ移動し、Esc で編集を終了します。",
+      "cell": "{{row}} 行目、{{column}} 列目",
+      "style": "表のスタイル",
+      "styles": {
+        "classic": "クラシック",
+        "blue": "ブルー",
+        "green": "グリーン",
+        "warm": "ウォーム",
+        "minimal": "ミニマル",
+        "plain": "プレーン"
+      },
+      "rows": "行",
+      "columns": "列",
+      "addRow": "行を追加",
+      "removeRow": "行を削除",
+      "addColumn": "列を追加",
+      "removeColumn": "列を削除",
+      "headerRow": "1 行目を表の見出しにする",
+      "headerFill": "表の見出しに背景を付ける",
+      "headerFillColor": "表の見出しの色",
+      "stripes": "縞模様の行",
+      "stripeColor": "縞の色",
+      "cells": "選択したセル",
+      "selection": "{{rows}} × {{columns}} 個のセルを選択中",
+      "align": "文字の配置",
+      "aligns": {
+        "left": "左揃え",
+        "center": "中央揃え",
+        "right": "右揃え"
+      },
+      "bold": "太字",
+      "cellText": "セルの文字色",
+      "cellFill": "セルを塗りつぶす",
+      "cellFillColor": "セルの塗りつぶしの色",
+      "columnWidth": "{{column}} 列目の幅",
+      "rowAbove": "上に行を挿入",
+      "rowBelow": "下に行を挿入",
+      "columnLeft": "左に列を挿入",
+      "columnRight": "右に列を挿入",
+      "deleteRow": "行を削除",
+      "deleteColumn": "列を削除",
+      "tableText": "表の文字",
+      "font": "フォント",
+      "fontSize": "文字サイズ",
+      "textColor": "文字色",
+      "borders": "罫線",
+      "borderStyle": "引く罫線",
+      "borderStyles": {
+        "all": "すべての罫線",
+        "horizontal": "行の間",
+        "outer": "外枠のみ",
+        "none": "罫線なし"
+      },
+      "borderColor": "罫線の色",
+      "borderWidth": "罫線の太さ",
+      "distribute": "すべての列を同じ幅にする",
+      "editChart": "グラフのデータを編集",
+      "editFlowchart": "フローチャートを編集",
+      "editFormula": "数式を編集"
     }
   }
 }

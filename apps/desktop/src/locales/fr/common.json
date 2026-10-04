@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "Placez les observations de chaque groupe dans sa propre colonne, sous son nom ; la première colonne n'est pas utilisée.",
       "bins": "Classes",
-      "binsAuto": "Automatique"
+      "binsAuto": "Automatique",
+      "legendPosition": "Position de la légende",
+      "legendPositions": {
+        "bottom": "En bas",
+        "top": "En haut",
+        "right": "À droite",
+        "left": "À gauche"
+      }
     },
     "metadata": {
       "title": "Propriétés du document",
@@ -8604,6 +8611,83 @@
       "sepia": "Sépia",
       "grayscale": "Niveaux de gris",
       "reset": "Réinitialiser les réglages"
+    },
+    "graphics": {
+      "title": "Tableaux et graphiques",
+      "addTable": "Ajouter un tableau",
+      "tablePicker": "Taille du tableau",
+      "tableSize": "Ajouter un tableau de {{rows}} lignes et {{columns}} colonnes",
+      "tableSizeShort": "{{rows}} lignes × {{columns}} colonnes",
+      "kinds": {
+        "table": "Tableau",
+        "chart": "Graphique",
+        "flowchart": "Organigramme",
+        "formula": "Formule"
+      },
+      "designPalette": "Palette du design",
+      "updating": "Mise à jour du graphique…",
+      "editCells": "Modifier les cellules",
+      "editingHint": "Saisissez le texte dans la cellule en surbrillance. Tab passe à la cellule suivante, Maj+clic ou Maj+flèche sélectionne plusieurs cellules et Échap termine la modification.",
+      "tableEditor": "Cellules du tableau",
+      "tableKeys": "Tab et Maj+Tab parcourent les cellules, les flèches passent à la cellule voisine au bord du texte et Échap termine la modification.",
+      "cell": "Ligne {{row}}, colonne {{column}}",
+      "style": "Style du tableau",
+      "styles": {
+        "classic": "Classique",
+        "blue": "Bleu",
+        "green": "Vert",
+        "warm": "Chaud",
+        "minimal": "Épuré",
+        "plain": "Sans style"
+      },
+      "rows": "Lignes",
+      "columns": "Colonnes",
+      "addRow": "Ajouter une ligne",
+      "removeRow": "Retirer une ligne",
+      "addColumn": "Ajouter une colonne",
+      "removeColumn": "Retirer une colonne",
+      "headerRow": "La première ligne est l'en-tête du tableau",
+      "headerFill": "Colorer l'en-tête du tableau",
+      "headerFillColor": "Couleur de l'en-tête du tableau",
+      "stripes": "Lignes alternées",
+      "stripeColor": "Couleur des bandes",
+      "cells": "Cellules sélectionnées",
+      "selection": "{{rows}} × {{columns}} cellules sélectionnées",
+      "align": "Alignement du texte",
+      "aligns": {
+        "left": "Aligner à gauche",
+        "center": "Centrer",
+        "right": "Aligner à droite"
+      },
+      "bold": "Gras",
+      "cellText": "Couleur du texte de la cellule",
+      "cellFill": "Remplir les cellules",
+      "cellFillColor": "Couleur de remplissage",
+      "columnWidth": "Largeur de la colonne {{column}}",
+      "rowAbove": "Ligne au-dessus",
+      "rowBelow": "Ligne en dessous",
+      "columnLeft": "Colonne à gauche",
+      "columnRight": "Colonne à droite",
+      "deleteRow": "Supprimer la ligne",
+      "deleteColumn": "Supprimer la colonne",
+      "tableText": "Texte du tableau",
+      "font": "Police",
+      "fontSize": "Taille du texte",
+      "textColor": "Couleur du texte",
+      "borders": "Traits",
+      "borderStyle": "Traits à tracer",
+      "borderStyles": {
+        "all": "Tous les traits",
+        "horizontal": "Entre les lignes",
+        "outer": "Contour seul",
+        "none": "Aucun trait"
+      },
+      "borderColor": "Couleur des traits",
+      "borderWidth": "Épaisseur des traits",
+      "distribute": "Donner la même largeur à toutes les colonnes",
+      "editChart": "Modifier les données du graphique",
+      "editFlowchart": "Modifier l'organigramme",
+      "editFormula": "Modifier la formule"
     }
   }
 }

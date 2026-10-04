@@ -909,7 +909,14 @@
       },
       "dataHintSamples": "ضع مشاهدات كل مجموعة في عمودها تحت اسمها؛ لا يُستخدم العمود الأول.",
       "bins": "الفئات",
-      "binsAuto": "تلقائي"
+      "binsAuto": "تلقائي",
+      "legendPosition": "موضع وسيلة الإيضاح",
+      "legendPositions": {
+        "bottom": "أسفل",
+        "top": "أعلى",
+        "right": "يمين",
+        "left": "يسار"
+      }
     },
     "metadata": {
       "title": "خصائص المستند",
@@ -9410,6 +9417,83 @@
       "sepia": "بني داكن",
       "grayscale": "تدرج رمادي",
       "reset": "إعادة تعيين التعديلات"
+    },
+    "graphics": {
+      "title": "الجداول والمخططات",
+      "addTable": "إضافة جدول",
+      "tablePicker": "حجم الجدول",
+      "tableSize": "إضافة جدول من {{rows}} صفوف و{{columns}} أعمدة",
+      "tableSizeShort": "{{rows}} صفوف × {{columns}} أعمدة",
+      "kinds": {
+        "table": "جدول",
+        "chart": "مخطط",
+        "flowchart": "مخطط انسيابي",
+        "formula": "معادلة"
+      },
+      "designPalette": "لوحة ألوان التصميم",
+      "updating": "جارٍ تحديث الرسم…",
+      "editCells": "تحرير الخلايا",
+      "editingHint": "اكتب في الخلية المميزة. ينتقل Tab إلى الخلية التالية، ويحدد Shift+نقر أو Shift+سهم عدة خلايا، وينهي Esc التحرير.",
+      "tableEditor": "خلايا الجدول",
+      "tableKeys": "ينتقل Tab وShift+Tab بين الخلايا، وتنتقل مفاتيح الأسهم إلى الخلية المجاورة عند طرف النص، وينهي Esc التحرير.",
+      "cell": "الصف {{row}}، العمود {{column}}",
+      "style": "نمط الجدول",
+      "styles": {
+        "classic": "كلاسيكي",
+        "blue": "أزرق",
+        "green": "أخضر",
+        "warm": "دافئ",
+        "minimal": "بسيط",
+        "plain": "بلا نمط"
+      },
+      "rows": "الصفوف",
+      "columns": "الأعمدة",
+      "addRow": "إضافة صف",
+      "removeRow": "إزالة صف",
+      "addColumn": "إضافة عمود",
+      "removeColumn": "إزالة عمود",
+      "headerRow": "الصف الأول ترويسة الجدول",
+      "headerFill": "تظليل ترويسة الجدول",
+      "headerFillColor": "لون ترويسة الجدول",
+      "stripes": "صفوف متناوبة",
+      "stripeColor": "لون التناوب",
+      "cells": "الخلايا المحددة",
+      "selection": "تم تحديد {{rows}} × {{columns}} خلايا",
+      "align": "محاذاة النص",
+      "aligns": {
+        "left": "محاذاة لليسار",
+        "center": "توسيط",
+        "right": "محاذاة لليمين"
+      },
+      "bold": "غامق",
+      "cellText": "لون نص الخلية",
+      "cellFill": "تعبئة الخلايا",
+      "cellFillColor": "لون تعبئة الخلية",
+      "columnWidth": "عرض العمود {{column}}",
+      "rowAbove": "صف فوق",
+      "rowBelow": "صف تحت",
+      "columnLeft": "عمود إلى اليسار",
+      "columnRight": "عمود إلى اليمين",
+      "deleteRow": "حذف الصف",
+      "deleteColumn": "حذف العمود",
+      "tableText": "نص الجدول",
+      "font": "الخط",
+      "fontSize": "حجم النص",
+      "textColor": "لون النص",
+      "borders": "الخطوط",
+      "borderStyle": "الخطوط المرسومة",
+      "borderStyles": {
+        "all": "كل الخطوط",
+        "horizontal": "بين الصفوف",
+        "outer": "الإطار الخارجي فقط",
+        "none": "بلا خطوط"
+      },
+      "borderColor": "لون الخطوط",
+      "borderWidth": "سماكة الخطوط",
+      "distribute": "توحيد عرض كل الأعمدة",
+      "editChart": "تحرير بيانات المخطط",
+      "editFlowchart": "تحرير المخطط الانسيابي",
+      "editFormula": "تحرير المعادلة"
     }
   }
 }

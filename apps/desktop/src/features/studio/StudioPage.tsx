@@ -34,6 +34,8 @@ import { useCvStore } from "./cv/cvStore";
 import { DocumentStart } from "./document/DocumentStart";
 import { useDocumentStore } from "./document/documentStore";
 import { useMergeStore } from "./merge/mergeStore";
+import { GraphicEditorHost } from "./graphics/GraphicEditorHost";
+import { startGraphicSync } from "./graphics/graphicSync";
 import { buildTemplate } from "./templates/catalog";
 import { TemplateGallery } from "./templates/TemplateGallery";
 
@@ -226,6 +228,7 @@ function StudioEditor({ language }: { language: string }) {
   const [helping, setHelping] = useState(false);
   const [finding, setFinding] = useState<FindMode | null>(null);
   const close = useStudioStore((state) => state.close);
+  useEffect(() => startGraphicSync(), []);
   const { save } = useDesignSave();
   const { openDesign } = useOpenDesign();
   const browse = async () => {
@@ -258,6 +261,7 @@ function StudioEditor({ language }: { language: string }) {
       <ExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />
       <StudioPrintDialog open={printing} onClose={() => setPrinting(false)} language={language} />
       <StudioShortcutsDialog open={helping} onClose={() => setHelping(false)} />
+      <GraphicEditorHost />
     </div>
   );
 }

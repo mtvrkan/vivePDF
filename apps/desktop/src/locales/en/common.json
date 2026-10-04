@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "Put each group's observations in its own column under its name; the first column is not used.",
       "bins": "Bins",
-      "binsAuto": "Automatic"
+      "binsAuto": "Automatic",
+      "legendPosition": "Legend position",
+      "legendPositions": {
+        "bottom": "Bottom",
+        "top": "Top",
+        "right": "Right",
+        "left": "Left"
+      }
     },
     "metadata": {
       "title": "Document properties",
@@ -8604,6 +8611,83 @@
       "sepia": "Sepia",
       "grayscale": "Grayscale",
       "reset": "Reset adjustments"
+    },
+    "graphics": {
+      "title": "Tables and charts",
+      "addTable": "Add a table",
+      "tablePicker": "Table size",
+      "tableSize": "Add a table with {{rows}} rows and {{columns}} columns",
+      "tableSizeShort": "{{rows}} rows × {{columns}} columns",
+      "kinds": {
+        "table": "Table",
+        "chart": "Chart",
+        "flowchart": "Flowchart",
+        "formula": "Formula"
+      },
+      "designPalette": "Design palette",
+      "updating": "Updating the graphic…",
+      "editCells": "Edit cells",
+      "editingHint": "Type in the highlighted cell. Tab moves to the next cell, Shift+click or Shift+arrow selects several cells, and Escape finishes.",
+      "tableEditor": "Table cells",
+      "tableKeys": "Tab and Shift+Tab move between cells, the arrow keys move on at the edge of the text, and Escape finishes editing.",
+      "cell": "Row {{row}}, column {{column}}",
+      "style": "Table style",
+      "styles": {
+        "classic": "Classic",
+        "blue": "Blue",
+        "green": "Green",
+        "warm": "Warm",
+        "minimal": "Minimal",
+        "plain": "Plain"
+      },
+      "rows": "Rows",
+      "columns": "Columns",
+      "addRow": "Add a row",
+      "removeRow": "Remove a row",
+      "addColumn": "Add a column",
+      "removeColumn": "Remove a column",
+      "headerRow": "First row is the table header",
+      "headerFill": "Shade the table header",
+      "headerFillColor": "Table header colour",
+      "stripes": "Striped rows",
+      "stripeColor": "Stripe colour",
+      "cells": "Selected cells",
+      "selection": "{{rows}} × {{columns}} cells selected",
+      "align": "Text alignment",
+      "aligns": {
+        "left": "Align left",
+        "center": "Centre",
+        "right": "Align right"
+      },
+      "bold": "Bold",
+      "cellText": "Cell text colour",
+      "cellFill": "Fill the cells",
+      "cellFillColor": "Cell fill colour",
+      "columnWidth": "Width of column {{column}}",
+      "rowAbove": "Row above",
+      "rowBelow": "Row below",
+      "columnLeft": "Column to the left",
+      "columnRight": "Column to the right",
+      "deleteRow": "Delete row",
+      "deleteColumn": "Delete column",
+      "tableText": "Table text",
+      "font": "Font",
+      "fontSize": "Text size",
+      "textColor": "Text colour",
+      "borders": "Lines",
+      "borderStyle": "Lines to draw",
+      "borderStyles": {
+        "all": "All lines",
+        "horizontal": "Between rows",
+        "outer": "Outline only",
+        "none": "No lines"
+      },
+      "borderColor": "Line colour",
+      "borderWidth": "Line width",
+      "distribute": "Make all columns the same width",
+      "editChart": "Edit chart data",
+      "editFlowchart": "Edit flowchart",
+      "editFormula": "Edit formula"
     }
   }
 }

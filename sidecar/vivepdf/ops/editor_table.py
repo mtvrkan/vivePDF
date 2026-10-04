@@ -30,6 +30,13 @@ TableAlign = Literal["left", "center", "right"]
 CellText = Annotated[str, Field(max_length=MAX_CELL_CHARS)]
 
 
+class TableCellStyle(RpcModel):
+    fill: str | None = Field(default=None, pattern=HEX_COLOR)
+    color: str | None = Field(default=None, pattern=HEX_COLOR)
+    align: TableAlign | None = None
+    bold: bool | None = None
+
+
 class TableSpec(RpcModel):
     cells: list[list[CellText]] = Field(min_length=1, max_length=MAX_TABLE_ROWS)
     column_widths: list[Annotated[float, Field(gt=0, le=1000)]] = Field(
@@ -45,6 +52,9 @@ class TableSpec(RpcModel):
     border_color: str = Field(default="#111111", pattern=HEX_COLOR)
     header_fill: str | None = Field(default=None, pattern=HEX_COLOR)
     stripes: bool = False
+    stripe_fill: str | None = Field(default=None, pattern=HEX_COLOR)
+    border_width: float | None = Field(default=None, gt=0, le=20)
+    cell_styles: list[list[TableCellStyle]] | None = Field(default=None, max_length=MAX_TABLE_ROWS)
 
     @model_validator(mode="after")
     def _same_shape(self) -> "TableSpec":
@@ -53,7 +63,25 @@ class TableSpec(RpcModel):
             raise ValueError("align needs one entry per column")
         if any(len(row) != columns for row in self.cells):
             raise ValueError("every row needs one cell per column")
+        if self.cell_styles is not None and (
+            len(self.cell_styles) != len(self.cells)
+            or any(len(row) != columns for row in self.cell_styles)
+        ):
+            raise ValueError("cell styles need one entry per cell")
         return self
+
+    def style_of(self, row: int, column: int) -> TableCellStyle | None:
+        return self.cell_styles[row][column] if self.cell_styles is not None else None
+
+    def is_bold(self, row: int, column: int) -> bool:
+        style = self.style_of(row, column)
+        if style is not None and style.bold is not None:
+            return style.bold
+        return self.header and row == 0
+
+    def align_of(self, row: int, column: int) -> TableAlign:
+        style = self.style_of(row, column)
+        return style.align if style is not None and style.align else self.align[column]
 
 
 class TablePreviewResult(RpcModel):
@@ -61,6 +89,8 @@ class TablePreviewResult(RpcModel):
     width: float
     height: float
     missing_glyphs: str = ""
+    row_heights: list[float] = Field(default_factory=list)
+    column_widths: list[float] = Field(default_factory=list)
 
 
 @dataclass
@@ -71,10 +101,12 @@ class _Layout:
     padding: float
 
 
-def _stripe_colour(header_fill: str | None) -> tuple[float, float, float]:
-    if not header_fill:
+def _stripe_colour(spec: TableSpec) -> tuple[float, float, float]:
+    if spec.stripe_fill:
+        return rgb(spec.stripe_fill)
+    if not spec.header_fill:
         return DEFAULT_STRIPE
-    red, green, blue = rgb(header_fill)
+    red, green, blue = rgb(spec.header_fill)
     return tuple(1 - (1 - channel) * STRIPE_STRENGTH for channel in (red, green, blue))
 
 
@@ -124,10 +156,14 @@ def _layout(spec: TableSpec, regular: pymupdf.Font, bold: pymupdf.Font) -> _Layo
     lines: list[list[list[str]]] = []
     heights: list[float] = []
     for row_index, row in enumerate(spec.cells):
-        font = bold if spec.header and row_index == 0 else regular
         wrapped = [
-            wrap_cell(text, font, spec.font_size, max(1.0, width - 2 * padding))
-            for text, width in zip(row, widths, strict=True)
+            wrap_cell(
+                text,
+                bold if spec.is_bold(row_index, column) else regular,
+                spec.font_size,
+                max(1.0, width - 2 * padding),
+            )
+            for column, (text, width) in enumerate(zip(row, widths, strict=True))
         ]
         lines.append(wrapped)
         heights.append(max(len(cell) for cell in wrapped) * line_step + 2 * padding)
@@ -147,7 +183,7 @@ def _draw_fills(page: pymupdf.Page, spec: TableSpec, layout: _Layout, opacity: f
         if spec.header and row_index == 0 and spec.header_fill:
             fill = rgb(spec.header_fill)
         elif spec.stripes and (row_index - (1 if spec.header else 0)) % 2 == 1:
-            fill = _stripe_colour(spec.header_fill)
+            fill = _stripe_colour(spec)
         if fill is not None:
             page.draw_rect(
                 pymupdf.Rect(0, top, spec.width, top + height),
@@ -156,6 +192,18 @@ def _draw_fills(page: pymupdf.Page, spec: TableSpec, layout: _Layout, opacity: f
                 width=0,
                 fill_opacity=opacity,
             )
+        left = 0.0
+        for column, width in enumerate(layout.widths):
+            style = spec.style_of(row_index, column)
+            if style is not None and style.fill:
+                page.draw_rect(
+                    pymupdf.Rect(left, top, left + width, top + height),
+                    color=None,
+                    fill=rgb(style.fill),
+                    width=0,
+                    fill_opacity=opacity,
+                )
+            left += width
         top += height
 
 
@@ -163,7 +211,7 @@ def _draw_borders(page: pymupdf.Page, spec: TableSpec, layout: _Layout, opacity:
     if spec.border == "none":
         return
     colour = rgb(spec.border_color)
-    line_width = max(0.5, spec.font_size / 16)
+    line_width = spec.border_width or max(0.5, spec.font_size / 16)
     height = sum(layout.heights)
     edges_y = [0.0]
     for row_height in layout.heights:
@@ -198,17 +246,18 @@ def _draw_text(
     opacity: float,
 ) -> None:
     fonts.install(page)
-    colour = rgb(spec.color)
     size = spec.font_size
     line_step = size * LINE_HEIGHT
     top = 0.0
     for row_index, row in enumerate(layout.lines):
-        heading = spec.header and row_index == 0
-        font = fonts.of(heading)
-        fontname = fonts.name_of(heading)
-        offset = baseline_offset(font, size)
         left = 0.0
         for column_index, cell in enumerate(row):
+            heading = spec.is_bold(row_index, column_index)
+            font = fonts.of(heading)
+            fontname = fonts.name_of(heading)
+            offset = baseline_offset(font, size)
+            style = spec.style_of(row_index, column_index)
+            colour = rgb(style.color if style is not None and style.color else spec.color)
             width = layout.widths[column_index]
             spare = layout.heights[row_index] - 2 * layout.padding - len(cell) * line_step
             middle = max(0.0, spare / 2)
@@ -216,7 +265,7 @@ def _draw_text(
                 if not text:
                     continue
                 advance = font.text_length(text, fontsize=size)
-                align = spec.align[column_index]
+                align = spec.align_of(row_index, column_index)
                 if align == "center":
                     x = left + (width - advance) / 2
                 elif align == "right":
@@ -236,7 +285,7 @@ def _draw_text(
         top += layout.heights[row_index]
 
 
-def table_pdf(spec: TableSpec, opacity: float = 1.0) -> tuple[pymupdf.Document, str]:
+def _table_document(spec: TableSpec, opacity: float = 1.0) -> tuple[pymupdf.Document, str, _Layout]:
     fonts = load_fonts(spec.font_id)
     layout = _layout(spec, fonts.regular, fonts.bold)
     document = pymupdf.open()
@@ -244,14 +293,24 @@ def table_pdf(spec: TableSpec, opacity: float = 1.0) -> tuple[pymupdf.Document, 
     _draw_fills(page, spec, layout, opacity)
     _draw_borders(page, spec, layout, opacity)
     _draw_text(page, spec, layout, fonts, opacity)
-    body = "".join(text for row in spec.cells[1 if spec.header else 0 :] for text in row)
-    heading = "".join(spec.cells[0]) if spec.header else ""
-    return document, fonts.missing(body, heading)
+    texts = [
+        (text, spec.is_bold(row, column))
+        for row, cells in enumerate(spec.cells)
+        for column, text in enumerate(cells)
+    ]
+    body = "".join(text for text, bold in texts if not bold)
+    heading = "".join(text for text, bold in texts if bold)
+    return document, fonts.missing(body, heading), layout
+
+
+def table_pdf(spec: TableSpec, opacity: float = 1.0) -> tuple[pymupdf.Document, str]:
+    document, missing, _ = _table_document(spec, opacity)
+    return document, missing
 
 
 @op("editor.table_preview", TableSpec)
 def table_preview(params: TableSpec, _progress: Progress) -> TablePreviewResult:
-    document, missing = table_pdf(params)
+    document, missing, layout = _table_document(params)
     try:
         page = document[0]
         return TablePreviewResult(
@@ -259,6 +318,8 @@ def table_preview(params: TableSpec, _progress: Progress) -> TablePreviewResult:
             width=page.rect.width,
             height=page.rect.height,
             missing_glyphs=missing,
+            row_heights=layout.heights,
+            column_widths=layout.widths,
         )
     finally:
         document.close()

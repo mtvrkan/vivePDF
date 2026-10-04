@@ -281,6 +281,31 @@ def _back_route(spec: FlowchartSpec, nodes, source: _Node, target: _Node, lane: 
     return [start, (start[0], edge), (end[0], edge), end]
 
 
+def _crosses(points: list[Point], nodes: dict[str, _Node], ends: tuple[_Node, _Node]) -> bool:
+    segments = list(zip(points, points[1:], strict=False))
+    for node in nodes.values():
+        if node is ends[0] or node is ends[1]:
+            continue
+        box = node.box
+        for (x0, y0), (x1, y1) in segments:
+            left, right = sorted((x0, x1))
+            top, bottom = sorted((y0, y1))
+            if left < box.x1 and right > box.x0 and top < box.y1 and bottom > box.y0:
+                return True
+    return False
+
+
+def _skip_route(spec: FlowchartSpec, nodes, source: _Node, target: _Node, lane: int):
+    reach = spec.font_size * LANE_GAP * (lane + 1)
+    if spec.direction == "down":
+        edge = min(node.box.x0 for node in nodes.values()) - reach
+        start, end = _anchor(source, "left"), _anchor(target, "left")
+        return [start, (edge, start[1]), (edge, end[1]), end]
+    edge = min(node.box.y0 for node in nodes.values()) - reach
+    start, end = _anchor(source, "top"), _anchor(target, "top")
+    return [start, (start[0], edge), (end[0], edge), end]
+
+
 def _layer_gap(spec: FlowchartSpec, fonts: ScratchFonts) -> float:
     size = spec.font_size
     gap = size * LAYER_GAP
@@ -304,6 +329,7 @@ def _layout(spec: FlowchartSpec, fonts: ScratchFonts) -> _Layout:
     _place(spec, _order_layers(spec, nodes), gap)
     layout = _Layout(nodes)
     lane = 0
+    skip = 0
     for index, edge in enumerate(spec.edges):
         source, target = nodes[edge.source], nodes[edge.target]
         if index in back or target.layer <= source.layer:
@@ -311,8 +337,12 @@ def _layout(spec: FlowchartSpec, fonts: ScratchFonts) -> _Layout:
                 _Route(_back_route(spec, nodes, source, target, lane), edge.label, True)
             )
             lane += 1
-        else:
-            layout.routes.append(_Route(_forward_route(spec, source, target, gap), edge.label))
+            continue
+        points = _forward_route(spec, source, target, gap)
+        if _crosses(points, nodes, (source, target)):
+            points = _skip_route(spec, nodes, source, target, skip)
+            skip += 1
+        layout.routes.append(_Route(points, edge.label))
     return layout
 
 

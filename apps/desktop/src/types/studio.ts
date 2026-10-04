@@ -1,3 +1,5 @@
+import type { ChartSpec, FlowchartSpec, TableSpec } from "./index";
+
 export const STUDIO_DESIGN_VERSION = 1;
 
 export type StudioGradientStop = { offset: number; color: string };
@@ -256,6 +258,8 @@ export type StudioRenderPath = {
   opacity: number;
 };
 
+export type StudioGraphicSpec = { kind: "table"; spec: TableSpec } | { kind: "chart"; spec: ChartSpec } | { kind: "flowchart"; spec: FlowchartSpec };
+
 export type StudioRenderBox = { x: number; y: number; width: number; height: number; rotation: number; opacity: number; flipX?: boolean; flipY?: boolean };
 
 export type StudioRenderSegment = {
@@ -291,7 +295,7 @@ export type StudioMeasuredText = { segments: StudioRenderSegment[]; bands: Studi
 
 export type StudioRenderShape =
   | (StudioRenderBox & { kind: "vector"; paths: StudioRenderPath[]; viewWidth?: number; viewHeight?: number })
-  | (StudioRenderBox & { kind: "svg"; svg: string })
+  | (StudioRenderBox & { kind: "svg"; svg: string; graphic?: StudioGraphicSpec })
   | (StudioRenderBox & { kind: "image"; path: string; fit: StudioImageFit; crop: StudioCrop | null; mask: StudioImageMask; radius: number; filter?: number[] })
   | (StudioRenderBox & { kind: "qr"; value: string; color: string; background: string | null; errorLevel: StudioQrLevel });
 

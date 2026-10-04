@@ -37,6 +37,7 @@ import {
 } from "@/types/studio";
 import { normalizeFilters } from "./imageFilters";
 import { fitParagraphs, MAX_LIST_LEVEL, paragraphCount } from "./typography";
+import { graphicTexts } from "../graphics/graphicData";
 
 export const STUDIO_PAGE_SIZES = {
   a4: { width: 595.28, height: 841.89 },
@@ -202,6 +203,7 @@ export function placeholdersIn(design: StudioDesign): string[] {
     for (const element of page.elements) {
       if (element.kind === "text") collect(textOf(element.runs));
       if (element.kind === "qr") collect(element.value);
+      if (element.kind === "svg") graphicTexts(element).forEach(collect);
     }
   }
   return [...found];

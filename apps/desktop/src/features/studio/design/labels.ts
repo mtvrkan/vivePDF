@@ -7,6 +7,7 @@ export function elementLabel(element: StudioElement, t: (key: string) => string)
   if (element.kind === "text") return textOf(element.runs).trim().slice(0, 40) || t("studio.kinds.text");
   if (element.kind === "shape" && element.shape === "line" && (element.startArrow !== "none" || element.endArrow !== "none")) return t("studio.shapes.arrowLine");
   if (element.kind === "shape") return t(`studio.shapes.${element.shape}`);
+  if (element.kind === "svg" && element.source !== "import") return t(`studio.graphics.kinds.${element.source}`);
   return t(`studio.kinds.${element.kind}`);
 }
 

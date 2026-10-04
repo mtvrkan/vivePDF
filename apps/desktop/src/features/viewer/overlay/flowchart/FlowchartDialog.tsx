@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { ArrowRight, Plus, Trash2, Workflow } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
-import { ColorSwatch } from "@/components/shared/ColorSwatch";
+import { ColorSwatch, type ColorSwatchRow } from "@/components/shared/ColorSwatch";
 import { Dialog } from "@/components/shared/Dialog";
 import { FontPicker } from "@/components/shared/FontPicker";
 import { IconButton } from "@/components/shared/IconButton";
@@ -20,7 +20,9 @@ import { FLOW_DIRECTIONS, FLOW_LIMITS, FLOW_SHAPES, addArrow, addStep, isBlankFl
 const FILL_FALLBACK = "#eef2ff";
 const STEP_LABEL_CHARS = 24;
 
-export function FlowchartDialog({ initial, updating, onClose, onSubmit }: { initial: FlowchartSettings; updating: boolean; onClose: () => void; onSubmit: (source: FlowchartSource) => void }) {
+type FlowchartDialogProps = { initial: FlowchartSettings; updating: boolean; onClose: () => void; onSubmit: (source: FlowchartSource) => void; swatchRows?: () => ColorSwatchRow[] };
+
+export function FlowchartDialog({ initial, updating, onClose, onSubmit, swatchRows }: FlowchartDialogProps) {
   const { t } = useTranslation();
   const [settings, setSettings] = useState<FlowchartSettings>(initial);
   const [attempt, setAttempt] = useState(0);
@@ -144,18 +146,18 @@ export function FlowchartDialog({ initial, updating, onClose, onSubmit }: { init
             </Field>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
               <span className="flex items-center gap-2 text-sm">
-                <ColorSwatch value={settings.color} onChange={(color) => update({ color })} label={t("viewer.flowchart.textColor")} customLabel={t("viewer.overlay.customColor")} />
+                <ColorSwatch value={settings.color} onChange={(color) => update({ color })} label={t("viewer.flowchart.textColor")} customLabel={t("viewer.overlay.customColor")} rows={swatchRows} />
                 {t("viewer.flowchart.textColor")}
               </span>
               <span className="flex items-center gap-2 text-sm">
-                <ColorSwatch value={settings.stroke} onChange={(stroke) => update({ stroke })} label={t("viewer.flowchart.lineColor")} customLabel={t("viewer.overlay.customColor")} />
+                <ColorSwatch value={settings.stroke} onChange={(stroke) => update({ stroke })} label={t("viewer.flowchart.lineColor")} customLabel={t("viewer.overlay.customColor")} rows={swatchRows} />
                 {t("viewer.flowchart.lineColor")}
               </span>
             </div>
             <SwitchField label={t("viewer.flowchart.fillShapes")} checked={settings.fill !== null} onChange={(on) => update({ fill: on ? FILL_FALLBACK : null })} />
             {settings.fill !== null ? (
               <span className="flex items-center gap-2 text-sm">
-                <ColorSwatch value={settings.fill} onChange={(fill) => update({ fill })} label={t("viewer.flowchart.fillColor")} customLabel={t("viewer.overlay.customColor")} />
+                <ColorSwatch value={settings.fill} onChange={(fill) => update({ fill })} label={t("viewer.flowchart.fillColor")} customLabel={t("viewer.overlay.customColor")} rows={swatchRows} />
                 {t("viewer.flowchart.fillColor")}
               </span>
             ) : null}

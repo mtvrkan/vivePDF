@@ -9,6 +9,7 @@ import type {
   StudioRenderPage,
   StudioTextElement,
 } from "@/types/studio";
+import { graphicRenderSpec } from "../graphics/graphicData";
 import { hasPlaceholders, textOf } from "./design";
 import { filterMatrix } from "./imageFilters";
 import { fitParagraphs, paragraphCount, weightOf } from "./typography";
@@ -115,8 +116,10 @@ export function elementItems(element: StudioElement, measured: MeasuredText = ne
         .filter((path) => path.fill || path.stroke);
       return paths.length ? [{ ...box(element), kind: "vector", viewWidth: element.viewWidth, viewHeight: element.viewHeight, paths }] : [];
     }
-    case "svg":
-      return [{ ...box(element), kind: "svg", svg: recolorSvg(element.svg, element.colorMap) }];
+    case "svg": {
+      const graphic = graphicRenderSpec(element);
+      return [{ ...box(element), kind: "svg", svg: recolorSvg(element.svg, element.colorMap), ...(graphic ? { graphic } : {}) }];
+    }
   }
 }
 

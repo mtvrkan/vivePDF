@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "Coloque as observações de cada grupo na própria coluna, abaixo do nome; a primeira coluna não é usada.",
       "bins": "Classes",
-      "binsAuto": "Automático"
+      "binsAuto": "Automático",
+      "legendPosition": "Posição da legenda",
+      "legendPositions": {
+        "bottom": "Embaixo",
+        "top": "Em cima",
+        "right": "À direita",
+        "left": "À esquerda"
+      }
     },
     "metadata": {
       "title": "Propriedades do documento",
@@ -8604,6 +8611,83 @@
       "sepia": "Sépia",
       "grayscale": "Escala de cinza",
       "reset": "Redefinir ajustes"
+    },
+    "graphics": {
+      "title": "Tabelas e gráficos",
+      "addTable": "Adicionar tabela",
+      "tablePicker": "Tamanho da tabela",
+      "tableSize": "Adicionar uma tabela com {{rows}} linhas e {{columns}} colunas",
+      "tableSizeShort": "{{rows}} linhas × {{columns}} colunas",
+      "kinds": {
+        "table": "Tabela",
+        "chart": "Gráfico",
+        "flowchart": "Fluxograma",
+        "formula": "Fórmula"
+      },
+      "designPalette": "Paleta do design",
+      "updating": "Atualizando o gráfico…",
+      "editCells": "Editar células",
+      "editingHint": "Digite na célula destacada. Tab vai para a próxima célula, Shift+clique ou Shift+seta seleciona várias células e Esc encerra a edição.",
+      "tableEditor": "Células da tabela",
+      "tableKeys": "Tab e Shift+Tab percorrem as células, as setas passam para a célula vizinha na borda do texto e Esc encerra a edição.",
+      "cell": "Linha {{row}}, coluna {{column}}",
+      "style": "Estilo da tabela",
+      "styles": {
+        "classic": "Clássico",
+        "blue": "Azul",
+        "green": "Verde",
+        "warm": "Quente",
+        "minimal": "Minimalista",
+        "plain": "Simples"
+      },
+      "rows": "Linhas",
+      "columns": "Colunas",
+      "addRow": "Adicionar uma linha",
+      "removeRow": "Remover uma linha",
+      "addColumn": "Adicionar uma coluna",
+      "removeColumn": "Remover uma coluna",
+      "headerRow": "A primeira linha é o cabeçalho da tabela",
+      "headerFill": "Sombrear o cabeçalho da tabela",
+      "headerFillColor": "Cor do cabeçalho da tabela",
+      "stripes": "Linhas alternadas",
+      "stripeColor": "Cor das faixas",
+      "cells": "Células selecionadas",
+      "selection": "{{rows}} × {{columns}} células selecionadas",
+      "align": "Alinhamento do texto",
+      "aligns": {
+        "left": "Alinhar à esquerda",
+        "center": "Centralizar",
+        "right": "Alinhar à direita"
+      },
+      "bold": "Negrito",
+      "cellText": "Cor do texto da célula",
+      "cellFill": "Preencher as células",
+      "cellFillColor": "Cor de preenchimento",
+      "columnWidth": "Largura da coluna {{column}}",
+      "rowAbove": "Linha acima",
+      "rowBelow": "Linha abaixo",
+      "columnLeft": "Coluna à esquerda",
+      "columnRight": "Coluna à direita",
+      "deleteRow": "Excluir linha",
+      "deleteColumn": "Excluir coluna",
+      "tableText": "Texto da tabela",
+      "font": "Fonte",
+      "fontSize": "Tamanho do texto",
+      "textColor": "Cor do texto",
+      "borders": "Traços",
+      "borderStyle": "Traços desenhados",
+      "borderStyles": {
+        "all": "Todos os traços",
+        "horizontal": "Entre linhas",
+        "outer": "Só o contorno",
+        "none": "Sem traços"
+      },
+      "borderColor": "Cor dos traços",
+      "borderWidth": "Espessura dos traços",
+      "distribute": "Deixar todas as colunas com a mesma largura",
+      "editChart": "Editar dados do gráfico",
+      "editFlowchart": "Editar fluxograma",
+      "editFormula": "Editar fórmula"
     }
   }
 }

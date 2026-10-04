@@ -2,6 +2,7 @@ from typing import Annotated, Any, Literal
 
 from pydantic import Field
 
+from vivepdf.ops._studio_graphics import StudioGraphic
 from vivepdf.rpc.protocol import RpcModel
 
 MAX_PAGES = 500
@@ -94,6 +95,7 @@ class StudioVectorItem(StudioBox):
 class StudioSvgItem(StudioBox):
     kind: Literal["svg"]
     svg: str = Field(min_length=1, max_length=4_000_000)
+    graphic: StudioGraphic | None = None
 
 
 class StudioCrop(RpcModel):
