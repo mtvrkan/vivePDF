@@ -1,0 +1,48 @@
+export const ICON_CATEGORIES = ["arrows", "shapes", "communication", "people", "media", "nature", "business", "travel", "files", "devices", "food"] as const;
+export type IconCategory = (typeof ICON_CATEGORIES)[number];
+
+export const ICON_CONCEPTS = [
+  "heart",
+  "star",
+  "arrow",
+  "home",
+  "user",
+  "mail",
+  "phone",
+  "calendar",
+  "clock",
+  "check",
+  "close",
+  "plus",
+  "search",
+  "settings",
+  "camera",
+  "music",
+  "location",
+  "lock",
+  "cart",
+  "money",
+  "gift",
+  "sun",
+  "moon",
+  "weather",
+  "plant",
+  "book",
+  "pen",
+  "award",
+  "flag",
+  "bell",
+  "globe",
+  "car",
+  "plane",
+  "chart",
+  "document",
+  "food",
+  "warning",
+  "info",
+  "idea",
+  "face",
+] as const;
+export type IconConcept = (typeof ICON_CONCEPTS)[number];
+
+export type LocalTerms = Partial<Record<IconConcept | IconCategory, string[]>>;

@@ -9,7 +9,8 @@ import { cn } from "@/shared/lib/cn";
 import { useInView } from "../design/useInView";
 import { IconGrid } from "./IconGrid";
 import { insertIcon } from "./insertIcon";
-import { ICON_CATEGORIES, ICON_CONCEPTS, searchIcons, type IconCategory, type IconEntry, type LocalTerms } from "./iconSearch";
+import type { IconEntry } from "./iconSearch";
+import { ICON_CATEGORIES, ICON_CONCEPTS, type IconCategory, type LocalTerms } from "./iconTerms";
 import { useIconLibrary, type IconLibrary } from "./useIconLibrary";
 
 const PANEL_ICONS = 12;
@@ -28,7 +29,7 @@ function localTerms(t: TFunction): LocalTerms {
 function useIconSearch(library: IconLibrary | null, query: string, category: IconCategory | null) {
   const { t } = useTranslation();
   const local = useMemo(() => localTerms(t), [t]);
-  return useMemo(() => (library ? searchIcons(library.ICON_ENTRIES, query, { category, local }) : []), [library, query, category, local]);
+  return useMemo(() => (library ? library.findIcons(query, { category, local }) : []), [library, query, category, local]);
 }
 
 function SearchField({ value, onChange, autoFocus }: { value: string; onChange: (value: string) => void; autoFocus?: boolean }) {
@@ -77,9 +78,7 @@ function IconBrowser({ library, initialQuery, onClose }: { library: IconLibrary;
   const [category, setCategory] = useState<IconCategory | null>(null);
   const results = useIconSearch(library, query, category);
   const pick = (entry: IconEntry) => {
-    const node = library.iconNodeOf(entry.name);
-    if (!node) return;
-    insertIcon(entry, node);
+    insertIcon(entry, (color) => library.iconArtOf(entry.name, color));
     onClose();
   };
   const chip = (value: IconCategory | null) => (
@@ -143,8 +142,7 @@ export function IconsSection() {
   const results = useIconSearch(library, query, null);
   const shown = useMemo(() => results.slice(0, PANEL_ICONS), [results]);
   const pick = (entry: IconEntry) => {
-    const node = library?.iconNodeOf(entry.name);
-    if (node) insertIcon(entry, node);
+    if (library) insertIcon(entry, (color) => library.iconArtOf(entry.name, color));
   };
   let body;
   if (state.status === "error") body = <ErrorState title={t("studio.icons.errorTitle")} message={t("studio.icons.errorHint")} onRetry={retry} />;
