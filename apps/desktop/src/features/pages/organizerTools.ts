@@ -16,22 +16,29 @@ export function topLevelStarts(items: Array<{ level: number; page: number }>): S
   return new Set(items.filter((item) => item.level === top && item.page > 1).map((item) => item.page));
 }
 
-export type FingerprintsBySource = Record<string, ReadonlyArray<string | null>>;
+export type DuplicateGroups = Record<string, ReadonlyArray<number | null>>;
 
-function tileSignature(tile: OrganizerTile, fingerprints: FingerprintsBySource): string | null {
+export function imageGroupKey(path: string): string {
+  return `image:${path}`;
+}
+
+function tileSignature(tile: OrganizerTile, groups: DuplicateGroups): string | null {
   if (tile.kind === "page") {
-    const fingerprint = fingerprints[tile.sourceId]?.[tile.index - 1];
-    return fingerprint ? `page:${fingerprint}` : null;
+    const group = groups[tile.sourceId]?.[tile.index - 1];
+    return group === null || group === undefined ? null : `group:${group}`;
   }
-  if (tile.kind === "image") return `image:${tile.path}`;
+  if (tile.kind === "image") {
+    const group = groups[imageGroupKey(tile.path)]?.[0];
+    return group === null || group === undefined ? imageGroupKey(tile.path) : `group:${group}`;
+  }
   return null;
 }
 
-export function duplicateTiles(tiles: OrganizerTile[], fingerprints: FingerprintsBySource): string[] {
+export function duplicateTiles(tiles: OrganizerTile[], groups: DuplicateGroups): string[] {
   const seen = new Set<string>();
   const duplicates: string[] = [];
   for (const tile of tiles) {
-    const signature = tileSignature(tile, fingerprints);
+    const signature = tileSignature(tile, groups);
     if (!signature) continue;
     if (seen.has(signature)) duplicates.push(tile.key);
     else seen.add(signature);

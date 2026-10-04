@@ -6,13 +6,10 @@ from pydantic import ValidationError
 
 from vivepdf.ops.analyze import (
     AnalyzeParams,
-    FingerprintParams,
     ImposeParams,
     analyze,
-    fingerprint,
     impose,
 )
-from vivepdf.rpc.errors import OpError
 from vivepdf.rpc.progress import silent_progress
 
 
@@ -109,36 +106,3 @@ def test_analyze_rejects_a_missing_file(tmp_path: Path) -> None:
 
     with pytest.raises(OpError):
         analyze(AnalyzeParams(path=str(tmp_path / "missing.pdf")), silent_progress())
-
-
-def test_fingerprint_matches_a_copied_page_and_skips_blank_ones(tmp_path: Path) -> None:
-    document = pymupdf.open()
-    for text in ("Chapter one", "Chapter two"):
-        document.new_page(width=595, height=842).insert_text((72, 72), text)
-    document.new_page(width=595, height=842)
-    document.fullcopy_page(0)
-    path = tmp_path / "copies.pdf"
-    document.save(path)
-    document.close()
-    result = fingerprint(FingerprintParams(path=str(path)), silent_progress())
-    first, second, blank, copy = result.fingerprints
-    assert result.page_count == 4
-    assert first is not None and first == copy
-    assert second is not None and second != first
-    assert blank is None
-
-
-def test_fingerprint_tells_apart_pages_that_differ_only_in_text(tmp_path: Path) -> None:
-    document = pymupdf.open()
-    for text in ("Invoice 1001", "Invoice 1002"):
-        document.new_page(width=595, height=842).insert_text((72, 72), text)
-    path = tmp_path / "invoices.pdf"
-    document.save(path)
-    document.close()
-    first, second = fingerprint(FingerprintParams(path=str(path)), silent_progress()).fingerprints
-    assert first != second
-
-
-def test_fingerprint_of_a_missing_file_is_an_op_error(tmp_path: Path) -> None:
-    with pytest.raises(OpError):
-        fingerprint(FingerprintParams(path=str(tmp_path / "nope.pdf")), silent_progress())

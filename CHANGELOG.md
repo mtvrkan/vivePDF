@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Fixed
+- Pages › Find duplicate pages now finds the same page wherever it comes from — another file, a re-saved or redacted copy, a picture or a scan of it — instead of only byte-identical renders, and never groups pages that merely look alike: pages with text need the same words and a near-identical look (so "Week 1" and "Week 7" covers, or the same caption over a different picture, stay apart), pages without text are compared after lining up their position and size. Blank pages are still never selected [2026-10-04]
 - Top bar: in a narrower window the Open PDF button and the window buttons no longer slide off the right edge; the bar now measures what fits and folds the search box, then the menu labels, into icons only when they actually do not fit [2026-10-04]
 - Home: quick access tiles and the drop area wrap long names onto a second line instead of cutting them off, and the Customize home button sits below the last section instead of floating over recent files [2026-10-04]
 - Studio: the template gallery scrolls and opens smoothly — a font finishing loading now redraws only the texts that use it, fitting text into its box takes a handful of measurements instead of dozens, and cards off screen are skipped and no longer blur what is behind them [2026-10-04]

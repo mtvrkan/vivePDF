@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { analyzePages, fingerprintPages } from "@/shared/rpc/analyze";
+import { analyzePages, findDuplicatePages } from "@/shared/rpc/analyze";
 import { toRpcError } from "@/shared/rpc/client";
 import { detectRotation, getBookmarks } from "@/shared/rpc/operations";
 import { describeError } from "@/shared/lib/errorMessage";
@@ -9,7 +9,7 @@ import { defaultOcrLanguages } from "@/app/locales";
 import { currentLocale } from "@/app/i18n";
 import type { OrganizerSource, RpcError } from "@/types";
 import { analyzedTiles, sourcesInUse, withDetectedRotation, type PagesBySource, type RotationsBySource } from "./analyzedSelection";
-import { bookmarkCuts, duplicateTiles, topLevelStarts, type FingerprintsBySource, type PageKeysBySource } from "./organizerTools";
+import { bookmarkCuts, duplicateTiles, imageGroupKey, topLevelStarts, type DuplicateGroups, type PageKeysBySource } from "./organizerTools";
 import { useOrganizerStore } from "./organizerStore";
 import type { OrganizerEdits } from "./useOrganizerEdits";
 
@@ -31,34 +31,19 @@ export function usePageInspections(activeDocumentId: string | null, edits: Pick<
 
   useEffect(() => cancelInspection, [activeDocumentId, cancelInspection]);
 
-  const inspectSources = useCallback(
-    async <T>(kind: Inspection, call: (source: OrganizerSource, signal: AbortSignal) => Promise<T>): Promise<Map<string, T> | null> => {
-      const state = useOrganizerStore.getState();
-      const sourcesToInspect = sourcesInUse(state.tiles)
-        .map((id) => state.sources[id])
-        .filter((source): source is OrganizerSource => source !== undefined);
+  const runInspection = useCallback(
+    async <T>(kind: Inspection, task: (signal: AbortSignal) => Promise<T | null>): Promise<T | null> => {
       inspectionRef.current?.abort();
       const controller = new AbortController();
       inspectionRef.current = controller;
       setInspecting(kind);
-      const results = new Map<string, T>();
-      let failure: RpcError | null = null;
       try {
-        for (const source of sourcesToInspect) {
-          try {
-            results.set(source.id, await call(source, controller.signal));
-          } catch (caught) {
-            const error = toRpcError(caught);
-            if (controller.signal.aborted || error.code === "CANCELLED") return null;
-            failure ??= error;
-          }
-        }
-        if (controller.signal.aborted) return null;
-        if (failure && results.size === 0) {
-          pushToast("error", describeError(t, failure));
-          return null;
-        }
-        return results;
+        const result = await task(controller.signal);
+        return controller.signal.aborted ? null : result;
+      } catch (caught) {
+        const error = toRpcError(caught);
+        if (!controller.signal.aborted && error.code !== "CANCELLED") pushToast("error", describeError(t, error));
+        return null;
       } finally {
         if (inspectionRef.current === controller) {
           inspectionRef.current = null;
@@ -67,6 +52,31 @@ export function usePageInspections(activeDocumentId: string | null, edits: Pick<
       }
     },
     [pushToast, t],
+  );
+
+  const inspectSources = useCallback(
+    <T>(kind: Inspection, call: (source: OrganizerSource, signal: AbortSignal) => Promise<T>): Promise<Map<string, T> | null> => {
+      const state = useOrganizerStore.getState();
+      const sourcesToInspect = sourcesInUse(state.tiles)
+        .map((id) => state.sources[id])
+        .filter((source): source is OrganizerSource => source !== undefined);
+      return runInspection(kind, async (signal) => {
+        const results = new Map<string, T>();
+        let failure: RpcError | null = null;
+        for (const source of sourcesToInspect) {
+          try {
+            results.set(source.id, await call(source, signal));
+          } catch (caught) {
+            const error = toRpcError(caught);
+            if (signal.aborted || error.code === "CANCELLED") return null;
+            failure ??= error;
+          }
+        }
+        if (failure && results.size === 0) throw failure;
+        return results;
+      });
+    },
+    [runInspection],
   );
 
   const autoRotateTiles = useCallback(async () => {
@@ -124,18 +134,33 @@ export function usePageInspections(activeDocumentId: string | null, edits: Pick<
   }, [inspectSources, setCuts, pushToast, t]);
 
   const selectDuplicates = useCallback(async () => {
-    const results = await inspectSources("duplicates", (source, signal) => fingerprintPages({ path: source.path, password: source.password ?? undefined }, { signal }));
-    if (!results) return;
-    const fingerprints: FingerprintsBySource = {};
-    for (const [sourceId, result] of results) fingerprints[sourceId] = result.fingerprints;
-    const keys = duplicateTiles(useOrganizerStore.getState().tiles, fingerprints);
-    if (keys.length === 0) {
+    const state = useOrganizerStore.getState();
+    const pageSources = sourcesInUse(state.tiles)
+      .map((id) => state.sources[id])
+      .filter((source): source is OrganizerSource => source !== undefined);
+    const imagePaths = [...new Set(state.tiles.flatMap((tile) => (tile.kind === "image" ? [tile.path] : [])))];
+    const keys = [...pageSources.map((source) => source.id), ...imagePaths.map(imageGroupKey)];
+    const sources = [...pageSources.map((source) => ({ path: source.path, password: source.password ?? undefined })), ...imagePaths.map((path) => ({ path }))];
+    const groups: DuplicateGroups | null =
+      sources.length === 0
+        ? {}
+        : await runInspection("duplicates", async (signal) => {
+            const result = await findDuplicatePages({ sources }, { signal });
+            const bySource: DuplicateGroups = {};
+            result.groups.forEach((pageGroups, position) => {
+              bySource[keys[position]] = pageGroups;
+            });
+            return bySource;
+          });
+    if (!groups) return;
+    const duplicates = duplicateTiles(useOrganizerStore.getState().tiles, groups);
+    if (duplicates.length === 0) {
       pushToast("info", t("tools.pages.duplicates.none"));
       return;
     }
-    selectAndReveal(keys);
-    pushToast("success", t("tools.pages.duplicates.found", { count: keys.length }));
-  }, [inspectSources, selectAndReveal, pushToast, t]);
+    selectAndReveal(duplicates);
+    pushToast("success", t("tools.pages.duplicates.found", { count: duplicates.length }));
+  }, [runInspection, selectAndReveal, pushToast, t]);
 
   const inspectionButton = (kind: Inspection, run: () => void) => ({
     busy: inspecting === kind,

@@ -4,7 +4,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     "a11y_preview": ("a11y.figurePreview",),
     "analyze": (
         "pages.analyze",
-        "pages.fingerprint",
+        "pages.duplicates",
         "pages.impose",
     ),
     "attachments": (

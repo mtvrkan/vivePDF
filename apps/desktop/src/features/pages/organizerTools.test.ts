@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { OrganizerTile } from "@/types";
-import { bookmarkCuts, duplexOrder, duplicateTiles, formatLabel, labelRules, positionsToKeys, restoredCuts, restoredLabels, tileLabelTexts, topLevelStarts } from "./organizerTools";
+import { bookmarkCuts, duplexOrder, duplicateTiles, formatLabel, imageGroupKey, labelRules, positionsToKeys, restoredCuts, restoredLabels, tileLabelTexts, topLevelStarts } from "./organizerTools";
 
 function page(index: number, sourceId = "main", key = `${sourceId}-${index}`): OrganizerTile {
   return { key, kind: "page", sourceId, index, rotate: 0 };
@@ -43,8 +43,8 @@ describe("bookmarkCuts", () => {
 describe("duplicateTiles", () => {
   it("marks every later copy of the same content and keeps the first", () => {
     const tiles = [page(1), page(2), page(1, "main", "copy"), page(1, "other")];
-    const fingerprints = { main: ["a", "b"], other: ["b"] };
-    expect(duplicateTiles(tiles, fingerprints)).toEqual(["copy", "other-1"]);
+    const groups = { main: [0, 1], other: [1] };
+    expect(duplicateTiles(tiles, groups)).toEqual(["copy", "other-1"]);
   });
 
   it("never marks blank pages as copies of each other", () => {
@@ -55,6 +55,15 @@ describe("duplicateTiles", () => {
   it("marks the same picture inserted twice", () => {
     const image = (key: string): OrganizerTile => ({ key, kind: "image", path: "C:/a.png", fileName: "a.png", previewUrl: "", rotate: 0 });
     expect(duplicateTiles([image("one"), image("two")], {})).toEqual(["two"]);
+  });
+
+  it("marks a picture that shows the same content as a page", () => {
+    const picture: OrganizerTile = { key: "picture", kind: "image", path: "C:/scan.png", fileName: "scan.png", previewUrl: "", rotate: 0 };
+    expect(duplicateTiles([page(1), page(2), picture], { main: [3, null], [imageGroupKey("C:/scan.png")]: [3] })).toEqual(["picture"]);
+  });
+
+  it("keeps pages the engine left ungrouped", () => {
+    expect(duplicateTiles([page(1), page(2), page(3)], { main: [null, null, null] })).toEqual([]);
   });
 });
 

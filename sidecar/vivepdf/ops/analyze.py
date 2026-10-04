@@ -1,6 +1,6 @@
-import hashlib
 import re
 from collections import Counter
+from contextlib import ExitStack
 from typing import Literal
 
 import numpy as np
@@ -10,6 +10,12 @@ from pydantic import Field
 from vivepdf.ops._blank import blank_page
 from vivepdf.ops._document import open_document
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
+from vivepdf.ops._page_similarity import (
+    PageSignature,
+    duplicate_groups,
+    page_ink,
+    page_signature,
+)
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._visibility import drop_unseen
 from vivepdf.ops.page_geometry import PAPER_SIZES, visible_box
@@ -24,7 +30,9 @@ BLANK_INK_RATIO_LIMIT = 0.003
 BLANK_IMAGE_COVERAGE_LIMIT = 0.02
 SCANNED_TEXT_CHARS_LIMIT = 20
 SCANNED_IMAGE_COVERAGE_LIMIT = 0.6
-FINGERPRINT_SIDE = 256
+MAX_DUPLICATE_SOURCES = 200
+INVISIBLE_TEXT = 3
+OCR_LAYER_SHARE = 0.8
 PAGE_NUMBER_ONLY = re.compile(r"[\s\d\-–—.,:/()\[\]|]{1,12}|[ivxlcdm]{1,7}\.?", re.IGNORECASE)
 LEFT_BLANK_PHRASES = (
     "intentionally left blank",
@@ -133,52 +141,65 @@ def _analyze_page(document: pymupdf.Document, index: int) -> PageAnalysis:
     )
 
 
-class FingerprintParams(RpcModel):
+class DuplicateSource(RpcModel):
     path: str
     password: str | None = None
 
 
-class FingerprintResult(RpcModel):
-    page_count: int
-    fingerprints: list[str | None]
+class DuplicatesParams(RpcModel):
+    sources: list[DuplicateSource] = Field(min_length=1, max_length=MAX_DUPLICATE_SOURCES)
 
 
-def _page_fingerprint(page: pymupdf.Page) -> str | None:
-    rect = page.rect
-    longest = max(rect.width, rect.height)
-    if longest <= 0:
-        return None
-    zoom = FINGERPRINT_SIDE / longest
-    pixmap = page.get_pixmap(
-        matrix=pymupdf.Matrix(zoom, zoom), colorspace=pymupdf.csGRAY, alpha=False
-    )
-    pixels = np.frombuffer(pixmap.samples, dtype=np.uint8)
-    text = " ".join(page.get_text("text").split())
-    ink = float((pixels < INK_DARK_THRESHOLD).mean()) if pixels.size else 0.0
-    if not text and ink < BLANK_INK_RATIO_LIMIT:
-        return None
-    digest = hashlib.blake2b(digest_size=16)
-    digest.update(f"{pixmap.width}x{pixmap.height}:".encode())
-    digest.update(pixels.tobytes())
-    digest.update(text.encode("utf-8", "replace"))
-    return digest.hexdigest()
+class DuplicatesResult(RpcModel):
+    page_counts: list[int]
+    groups: list[list[int | None]]
+    group_count: int
 
 
-@op("pages.fingerprint", FingerprintParams)
-def fingerprint(params: FingerprintParams, progress: Progress) -> FingerprintResult:
-    with open_document(params.path, params.password) as document:
-        fingerprints: list[str | None] = []
-        total = document.page_count
-        for index in range(total):
-            progress.check_cancelled()
-            fingerprints.append(_page_fingerprint(document[index]))
-            if (index + 1) % 10 == 0:
-                progress.report(
-                    (index + 1) / total,
+def _ocr_only(page: pymupdf.Page) -> bool:
+    counts = Counter()
+    for span in page.get_texttrace():
+        counts[span.get("type") == INVISIBLE_TEXT] += len(span.get("chars", ()))
+    total = counts[True] + counts[False]
+    return total > 0 and counts[True] / total >= OCR_LAYER_SHARE
+
+
+@op("pages.duplicates", DuplicatesParams)
+def duplicates(params: DuplicatesParams, progress: Progress) -> DuplicatesResult:
+    with ExitStack() as stack:
+        documents = [
+            stack.enter_context(open_document(source.path, source.password, require_pdf=False))
+            for source in params.sources
+        ]
+        pages = [
+            (document, index) for document in documents for index in range(document.page_count)
+        ]
+        total = len(pages)
+        reading = progress.within(0.0, 0.6)
+        signatures: list[PageSignature | None] = []
+        for position, (document, index) in enumerate(pages):
+            reading.check_cancelled()
+            page = document[index]
+            signatures.append(page_signature(page, _ocr_only(page)))
+            if (position + 1) % 10 == 0:
+                reading.report(
+                    (position + 1) / total,
                     "progress.analyzing",
-                    {"current": index + 1, "total": total},
+                    {"current": position + 1, "total": total},
                 )
-        return FingerprintResult(page_count=total, fingerprints=fingerprints)
+        groups = duplicate_groups(
+            signatures,
+            lambda position: page_ink(pages[position][0][pages[position][1]]),
+            progress.within(0.6, 1.0),
+        )
+        page_counts = [document.page_count for document in documents]
+    split: list[list[int | None]] = []
+    offset = 0
+    for count in page_counts:
+        split.append(groups[offset : offset + count])
+        offset += count
+    labels = {group for group in groups if group is not None}
+    return DuplicatesResult(page_counts=page_counts, groups=split, group_count=len(labels))
 
 
 @op("pages.analyze", AnalyzeParams)

@@ -21,11 +21,13 @@ export type AnalyzeParams = { path: string; password?: string; pages?: string };
 
 export const analyzePages = (params: AnalyzeParams, options?: RpcCallOptions) => rpc<AnalyzeResult>("pages.analyze", params, options);
 
-export type FingerprintParams = { path: string; password?: string };
+export type DuplicateSource = { path: string; password?: string };
 
-export type FingerprintResult = { pageCount: number; fingerprints: Array<string | null> };
+export type DuplicatesParams = { sources: DuplicateSource[] };
 
-export const fingerprintPages = (params: FingerprintParams, options?: RpcCallOptions) => rpc<FingerprintResult>("pages.fingerprint", params, options);
+export type DuplicatesResult = { pageCounts: number[]; groups: Array<Array<number | null>>; groupCount: number };
+
+export const findDuplicatePages = (params: DuplicatesParams, options?: RpcCallOptions) => rpc<DuplicatesResult>("pages.duplicates", params, options);
 
 export function rangesOf(indices: number[]): string {
   const sorted = [...indices].sort((a, b) => a - b);
