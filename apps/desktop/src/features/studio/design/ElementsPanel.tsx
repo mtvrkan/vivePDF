@@ -1,8 +1,7 @@
 import { useState } from "react";
-import { ArrowDown, ArrowUp, Eye, EyeOff, Image as ImageIcon, Lock, LockOpen, QrCode, Type } from "lucide-react";
+import { ArrowDown, ArrowUp, Eye, EyeOff, Image as ImageIcon, Layers, LayoutTemplate, Lock, LockOpen, QrCode, Shapes, Table2, Type, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
-import { Segmented } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
@@ -28,6 +27,7 @@ import { DataTab } from "../merge/DataTab";
 
 type Tab = "templates" | "elements" | "layers" | "data";
 const TABS: Tab[] = ["templates", "elements", "data", "layers"];
+const TAB_ICONS: Record<Tab, LucideIcon> = { templates: LayoutTemplate, elements: Shapes, data: Table2, layers: Layers };
 const TEXT_PRESETS = [
   { key: "heading", fontSize: 44, bold: true },
   { key: "subheading", fontSize: 26, bold: true },
@@ -298,10 +298,35 @@ export function ElementsPanel() {
   const body = tab === "templates" ? <TemplatesTab /> : tab === "elements" ? <ElementsTab /> : tab === "data" ? <DataTab /> : <LayersTab />;
   return (
     <aside aria-label={t("studio.panel.label")} className="glass flex w-72 shrink-0 flex-col border-r border-border/60">
-      <div className="border-b border-border/60 p-3">
-        <Segmented size="sm" value={tab} options={TABS} labelOf={(value) => t(`studio.panel.${value}`)} onChange={setTab} ariaLabel={t("studio.panel.label")} className="w-full" />
+      <div role="tablist" aria-label={t("studio.panel.label")} className="grid grid-cols-4 gap-1 border-b border-border/60 p-2">
+        {TABS.map((item) => {
+          const Icon = TAB_ICONS[item];
+          const label = t(`studio.panel.${item}`);
+          return (
+            <button
+              key={item}
+              type="button"
+              role="tab"
+              id={`studio-panel-tab-${item}`}
+              aria-selected={tab === item}
+              aria-controls="studio-panel-body"
+              title={label}
+              data-studio-tab={item}
+              onClick={() => setTab(item)}
+              className={cn(
+                "flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-[11px] leading-tight outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
+                tab === item ? "menubar-active font-medium text-foreground" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground",
+              )}
+            >
+              <Icon className={cn("size-4 shrink-0", tab === item && "text-primary")} aria-hidden />
+              <span className="w-full truncate text-center">{label}</span>
+            </button>
+          );
+        })}
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto">{body}</div>
+      <div id="studio-panel-body" role="tabpanel" aria-labelledby={`studio-panel-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto">
+        {body}
+      </div>
     </aside>
   );
 }

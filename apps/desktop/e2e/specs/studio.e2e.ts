@@ -196,7 +196,7 @@ describe("studio", () => {
     await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("common.close")}"]`).click();
     await $('[role="dialog"]').waitForDisplayed({ reverse: true });
     const pages = () => $$(`[data-testid="studio-pages"] ol[aria-label="${t("studio.pages.label")}"] > li`);
-    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.panel.templates")}"]`).click();
+    await $(`[data-studio-tab="templates"]`).click();
     await $(`input[aria-label="${t("studio.templates.search")}"]`).setValue(t("studio.templates.items.invoice"));
     await browser.waitUntil(async () => (await $$("[data-template]").length) === 1, { timeoutMsg: "the search did not narrow the gallery to the invoice" });
     const before = await pages().length;
@@ -213,7 +213,7 @@ describe("studio", () => {
     writeFileSync(table, ["Name,Course", ...people.map((name) => `${name},Design`), ""].join("\r\n"), "utf8");
     const canvasHas = (text: string) => $(`//*[@data-testid="studio-viewport"]//*[@data-element-id][normalize-space(.)="${text}"]`);
 
-    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.panel.data")}"]`).click();
+    await $(`[data-studio-tab="data"]`).click();
     await browser.keys(ESCAPE);
     const before = await elements().length;
     answerDialogs(table);
