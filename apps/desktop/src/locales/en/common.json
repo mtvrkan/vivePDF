@@ -5480,8 +5480,7 @@
         "document": "Single document",
         "bulk": "From a table",
         "paper": "Paper",
-        "book": "Book",
-        "cv": "CV"
+        "book": "Book"
       },
       "bulk": {
         "title": "Documents from a table",
@@ -5602,94 +5601,6 @@
         "idle": {
           "title": "The book will appear here",
           "description": "Add the chapter files, give the book a title, then click Create book."
-        }
-      },
-      "cv": {
-        "title": "CV",
-        "description": "Fill in a form and get a polished CV: classic, modern with a coloured sidebar, or compact to fit more on one page.",
-        "run": "Create CV",
-        "startOver": "Start over",
-        "cleared": "The form was cleared.",
-        "draftHint": "What you type is kept on this computer, so you can come back and update your CV later.",
-        "personal": "About you",
-        "photo": "Photo",
-        "photoHint": "Optional; PNG, JPG or WebP, cropped to a square",
-        "pickPhoto": "Choose photo…",
-        "removePhoto": "Remove photo",
-        "removeEntry": "Remove",
-        "language": "CV language",
-        "languageHint": "The language of the section headings in the PDF",
-        "extraHint": "For example certificates, projects, volunteering, references or hobbies.",
-        "fileName": "{{name}} - CV",
-        "defaultName": "CV",
-        "templates": {
-          "classic": {
-            "title": "Classic",
-            "description": "One column with ruled headings and the photo at the top right"
-          },
-          "modern": {
-            "title": "Modern",
-            "description": "A coloured sidebar with a round photo, contact details, skills and languages"
-          },
-          "compact": {
-            "title": "Compact",
-            "description": "Headings in a narrow left column; fits the most on one page"
-          }
-        },
-        "entryLegend": {
-          "experience": "Experience {{number}}",
-          "education": "Education {{number}}",
-          "extra": "Section {{number}}"
-        },
-        "fields": {
-          "name": "Full name",
-          "headline": "Job title",
-          "headlinePlaceholder": "e.g. Data Analyst",
-          "contacts": "Contact details",
-          "contactsHint": "One per line: e-mail, phone, city, website, LinkedIn… E-mail addresses and web addresses become links.",
-          "summary": "Profile",
-          "period": "Dates",
-          "periodPlaceholder": "e.g. 2021 – present",
-          "location": "Location",
-          "details": "Details",
-          "detailsHint": "One point per line; lines starting with - become bullet points.",
-          "skills": "Skills",
-          "skillsHint": "Separate with commas or new lines",
-          "languages": "Languages",
-          "languagesHint": "One per line, e.g. English (C1)",
-          "sectionHeading": "Heading",
-          "sectionHeadingPlaceholder": "e.g. Certificates",
-          "experience": {
-            "title": "Position",
-            "organisation": "Company or organisation"
-          },
-          "education": {
-            "title": "Degree or programme",
-            "organisation": "School"
-          }
-        },
-        "sections": {
-          "experience": "Experience",
-          "education": "Education",
-          "skills": "Skills and languages",
-          "extra": "Extra sections"
-        },
-        "add": {
-          "experience": "Add experience",
-          "education": "Add education",
-          "extra": "Add section"
-        },
-        "labels": {
-          "summary": "Profile",
-          "experience": "Experience",
-          "education": "Education",
-          "skills": "Skills",
-          "languages": "Languages",
-          "contact": "Contact"
-        },
-        "idle": {
-          "title": "Your CV will appear here",
-          "description": "Fill in at least your name, pick a template and click Create CV."
         }
       }
     }
@@ -6894,7 +6805,6 @@
         "timetable": "Class timetable",
         "attendance": "Attendance sheet",
         "rewardChart": "Reward chart",
-        "cvDesign": "Designed CV",
         "weeklyPlanner": "Weekly planner",
         "monthlyCalendar": "Monthly calendar",
         "recipeCard": "Recipe card",
@@ -7235,12 +7145,7 @@
       "skill3": "Project management",
       "skill4": "Photography",
       "languages": "Languages",
-      "languageList": "English – native\nSpanish – fluent\nGerman – basic",
-      "profileSummary": "Creative designer with ten years of experience building brands and products. I enjoy turning complex ideas into simple, beautiful designs.",
       "experience": "Experience",
-      "roleTitle": "Senior Designer",
-      "yearRange": "2021 – now",
-      "roleDescription": "Led the visual identity of more than 30 brands and managed a team of five designers.",
       "education": "Education",
       "degree": "Bachelor of Fine Arts",
       "weeklyPlanner": "Weekly Planner",

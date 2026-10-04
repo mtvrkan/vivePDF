@@ -14,56 +14,6 @@ function heading(x: number, y: number, width: number, label: string, color: stri
   ];
 }
 
-function cv({ t }: TemplateContext) {
-  const side = 200;
-  const navy = "#1e293b";
-  const accent = "#38bdf8";
-  const skills = ["studio.tpl.skill1", "studio.tpl.skill2", "studio.tpl.skill3", "studio.tpl.skill4"];
-  const levels = [0.9, 0.75, 0.8, 0.6];
-  const body = W - side - 72;
-  return design(t("studio.templates.items.cvDesign"), [navy, accent], [
-    pageOf(A4, solid("#ffffff"), [
-      box("rect", 0, 0, side, H, solid(navy)),
-      ...photoSlot(side / 2 - 60, 46, 120, 120, "#334155", "circle"),
-      ...heading(24, 196, side - 48, t("studio.tpl.contact"), accent, FONTS.montserrat),
-      ...["studio.tpl.phone", "studio.tpl.email", "studio.tpl.website", "studio.tpl.address"].map((key, index) =>
-        text(24, 232 + index * 34, side - 48, 30, t(key), { font: FONTS.inter, size: 9, color: "#e2e8f0", lineHeight: 1.3, shrink: true }),
-      ),
-      ...heading(24, 386, side - 48, t("studio.tpl.skills"), accent, FONTS.montserrat),
-      ...skills.flatMap((key, index) => [
-        text(24, 422 + index * 38, side - 48, 16, t(key), { font: FONTS.inter, size: 9.5, color: "#f1f5f9", shrink: true }),
-        box("rect", 24, 442 + index * 38, side - 48, 5, solid("#334155"), { radius: 2.5 }),
-        box("rect", 24, 442 + index * 38, (side - 48) * (levels[index] ?? 0.5), 5, solid(accent), { radius: 2.5 }),
-      ]),
-      ...heading(24, 596, side - 48, t("studio.tpl.languages"), accent, FONTS.montserrat),
-      text(24, 630, side - 48, 60, t("studio.tpl.languageList"), { font: FONTS.inter, size: 9.5, color: "#e2e8f0", lineHeight: 1.5, shrink: true }),
-      text(side + 36, 50, body, 48, t("studio.tpl.personName"), { font: FONTS.montserrat, size: 32, bold: true, color: navy, shrink: true }),
-      text(side + 36, 98, body, 20, t("studio.tpl.jobTitle"), { font: FONTS.montserrat, size: 13, color: "#0284c7", spacing: 2, upper: true, shrink: true }),
-      text(side + 36, 132, body, 66, t("studio.tpl.profileSummary"), { font: FONTS.inter, size: 10, color: "#475569", lineHeight: 1.5, shrink: true }),
-      ...heading(side + 36, 214, body, t("studio.tpl.experience"), navy, FONTS.montserrat),
-      ...[0, 1, 2].flatMap((index) => {
-        const y = 252 + index * 104;
-        return [
-          box("ellipse", side + 36, y + 4, 9, 9, solid(accent)),
-          text(side + 54, y, body - 110, 18, t("studio.tpl.roleTitle"), { font: FONTS.montserrat, size: 11.5, bold: true, color: navy, shrink: true }),
-          text(side + 36 + body - 100, y, 100, 18, t("studio.tpl.yearRange"), { font: FONTS.inter, size: 9, color: "#64748b", align: "right", shrink: true }),
-          text(side + 54, y + 18, body - 18, 16, t("studio.tpl.companyName"), { font: FONTS.inter, size: 9.5, italic: true, color: "#0284c7", shrink: true }),
-          text(side + 54, y + 38, body - 18, 56, t("studio.tpl.roleDescription"), { font: FONTS.inter, size: 9.5, color: "#475569", lineHeight: 1.45, shrink: true }),
-        ];
-      }),
-      ...heading(side + 36, 574, body, t("studio.tpl.education"), navy, FONTS.montserrat),
-      ...[0, 1].flatMap((index) => {
-        const y = 612 + index * 62;
-        return [
-          text(side + 36, y, body - 110, 18, t("studio.tpl.degree"), { font: FONTS.montserrat, size: 11, bold: true, color: navy, shrink: true }),
-          text(side + 36 + body - 100, y, 100, 18, t("studio.tpl.yearRange"), { font: FONTS.inter, size: 9, color: "#64748b", align: "right", shrink: true }),
-          text(side + 36, y + 18, body, 16, t("studio.tpl.schoolName"), { font: FONTS.inter, size: 9.5, color: "#475569", shrink: true }),
-        ];
-      }),
-    ]),
-  ]);
-}
-
 function weeklyPlanner({ t }: TemplateContext) {
   const land = sizeOf(LANDSCAPE);
   const accent = "#9d4edd";
@@ -296,7 +246,6 @@ function budgetPlanner({ t }: TemplateContext) {
 }
 
 export const PERSONAL_TEMPLATES: StudioTemplate[] = [
-  { id: "cvDesign", category: "resumes", size: A4, build: cv },
   { id: "weeklyPlanner", category: "personal", size: LANDSCAPE, build: weeklyPlanner },
   { id: "monthlyCalendar", category: "personal", size: LANDSCAPE, build: monthlyCalendar },
   { id: "recipeCard", category: "personal", size: { width: 432, height: 648 }, build: recipeCard },

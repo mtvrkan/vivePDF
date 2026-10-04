@@ -5480,8 +5480,7 @@
         "document": "单个文档",
         "bulk": "从表格生成",
         "paper": "纸张",
-        "book": "书籍",
-        "cv": "简历"
+        "book": "书籍"
       },
       "bulk": {
         "title": "从表格生成文档",
@@ -5602,94 +5601,6 @@
         "idle": {
           "title": "书籍将显示在这里",
           "description": "添加章节文件，为书籍命名，然后点击“创建书籍”。"
-        }
-      },
-      "cv": {
-        "title": "简历",
-        "description": "填写表单即可得到精美简历：经典、带彩色侧栏的现代，或在一页中放下更多内容的紧凑。",
-        "run": "创建简历",
-        "startOver": "重新开始",
-        "cleared": "表单已清空。",
-        "draftHint": "您输入的内容保存在这台电脑上，以后可以回来更新简历。",
-        "personal": "个人信息",
-        "photo": "照片",
-        "photoHint": "可选；PNG、JPG 或 WebP，裁剪为正方形",
-        "pickPhoto": "选择照片…",
-        "removePhoto": "移除照片",
-        "removeEntry": "移除",
-        "language": "简历语言",
-        "languageHint": "PDF 中各部分标题的语言",
-        "extraHint": "例如证书、项目、志愿经历、推荐人或爱好。",
-        "fileName": "{{name}} - 简历",
-        "defaultName": "简历",
-        "templates": {
-          "classic": {
-            "title": "经典",
-            "description": "单栏，标题带分隔线，照片在右上角"
-          },
-          "modern": {
-            "title": "现代",
-            "description": "彩色侧栏，含圆形照片、联系方式、技能和语言"
-          },
-          "compact": {
-            "title": "紧凑",
-            "description": "标题放在窄的左栏；一页能放下最多内容"
-          }
-        },
-        "entryLegend": {
-          "experience": "工作经历 {{number}}",
-          "education": "教育经历 {{number}}",
-          "extra": "部分 {{number}}"
-        },
-        "fields": {
-          "name": "姓名",
-          "headline": "职位",
-          "headlinePlaceholder": "例如：数据分析师",
-          "contacts": "联系方式",
-          "contactsHint": "每行一项：邮箱、电话、城市、网站、LinkedIn… 邮箱和网址会变成链接。",
-          "summary": "个人简介",
-          "period": "时间",
-          "periodPlaceholder": "例如：2021 – 至今",
-          "location": "地点",
-          "details": "详情",
-          "detailsHint": "每行一点；以 - 开头的行会变成项目符号。",
-          "skills": "技能",
-          "skillsHint": "用逗号或换行分隔",
-          "languages": "语言",
-          "languagesHint": "每行一种，例如：英语 (C1)",
-          "sectionHeading": "标题",
-          "sectionHeadingPlaceholder": "例如：证书",
-          "experience": {
-            "title": "职位",
-            "organisation": "公司或机构"
-          },
-          "education": {
-            "title": "学位或专业",
-            "organisation": "学校"
-          }
-        },
-        "sections": {
-          "experience": "工作经历",
-          "education": "教育经历",
-          "skills": "技能和语言",
-          "extra": "其他部分"
-        },
-        "add": {
-          "experience": "添加工作经历",
-          "education": "添加教育经历",
-          "extra": "添加部分"
-        },
-        "labels": {
-          "summary": "个人简介",
-          "experience": "工作经历",
-          "education": "教育经历",
-          "skills": "技能",
-          "languages": "语言",
-          "contact": "联系方式"
-        },
-        "idle": {
-          "title": "简历将显示在这里",
-          "description": "至少填写姓名，选择模板，然后点击“创建简历”。"
         }
       }
     }
@@ -6893,7 +6804,6 @@
         "timetable": "课程表",
         "attendance": "签到表",
         "rewardChart": "奖励表",
-        "cvDesign": "设计简历",
         "weeklyPlanner": "周计划表",
         "monthlyCalendar": "月历",
         "recipeCard": "食谱卡",
@@ -7234,12 +7144,7 @@
       "skill3": "项目管理",
       "skill4": "摄影",
       "languages": "语言能力",
-      "languageList": "中文 – 母语\n英语 – 流利\n日语 – 基础",
-      "profileSummary": "拥有十年品牌与产品设计经验的创意设计师，擅长将复杂的想法转化为简洁美观的设计。",
       "experience": "工作经历",
-      "roleTitle": "资深设计师",
-      "yearRange": "2021年至今",
-      "roleDescription": "主导超过30个品牌的视觉形象设计，并带领5人设计团队。",
       "education": "教育背景",
       "degree": "美术学学士",
       "weeklyPlanner": "周计划表",

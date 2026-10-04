@@ -1167,29 +1167,6 @@ export type CreateBookParams = {
   output: string;
   overwrite?: boolean;
 };
-export type CvTemplate = "classic" | "modern" | "compact";
-export type CvEntry = { title: string; organisation: string; location: string; period: string; details: string };
-export type CvSection = { heading: string; body: string };
-export type CvLabels = { summary: string; experience: string; education: string; skills: string; languages: string; contact: string };
-export type CreateCvParams = {
-  template: CvTemplate;
-  name: string;
-  headline?: string;
-  contacts?: string[];
-  photo?: string;
-  summary?: string;
-  experience?: CvEntry[];
-  education?: CvEntry[];
-  skills?: string[];
-  languages?: string[];
-  sections?: CvSection[];
-  labels?: CvLabels;
-  accent?: string;
-  font?: CreateFont;
-  paper?: "a4" | "letter";
-  output: string;
-  overwrite?: boolean;
-};
 export type CreatePaperParams = { size: CreatePaperSize; landscape: boolean; pages: number; pattern?: PaperPattern; output: string; overwrite?: boolean };
 export type CreateDocumentParams = {
   path?: string;

@@ -5480,8 +5480,7 @@
         "document": "単一の文書",
         "bulk": "表から作成",
         "paper": "用紙",
-        "book": "本",
-        "cv": "履歴書"
+        "book": "本"
       },
       "bulk": {
         "title": "表から文書を作成",
@@ -5602,94 +5601,6 @@
         "idle": {
           "title": "ここに本が表示されます",
           "description": "章のファイルを追加し、本のタイトルを入力して「本を作成」をクリックします。"
-        }
-      },
-      "cv": {
-        "title": "履歴書 (CV)",
-        "description": "フォームに入力して整った履歴書を作成: クラシック、色付きサイドバーのモダン、1 ページに多く収まるコンパクト。",
-        "run": "履歴書を作成",
-        "startOver": "最初からやり直す",
-        "cleared": "フォームをクリアしました。",
-        "draftHint": "入力内容はこのコンピューターに保存されるため、後で戻って履歴書を更新できます。",
-        "personal": "あなたについて",
-        "photo": "写真",
-        "photoHint": "任意。PNG、JPG、WebP。正方形に切り抜きます",
-        "pickPhoto": "写真を選択…",
-        "removePhoto": "写真を削除",
-        "removeEntry": "削除",
-        "language": "履歴書の言語",
-        "languageHint": "PDF の見出しの言語",
-        "extraHint": "資格、プロジェクト、ボランティア、推薦者、趣味など。",
-        "fileName": "{{name}} - 履歴書",
-        "defaultName": "履歴書",
-        "templates": {
-          "classic": {
-            "title": "クラシック",
-            "description": "罫線付き見出しの 1 段組み、写真は右上"
-          },
-          "modern": {
-            "title": "モダン",
-            "description": "丸い写真、連絡先、スキル、言語を載せた色付きサイドバー"
-          },
-          "compact": {
-            "title": "コンパクト",
-            "description": "見出しを左の細い列に配置。1 ページに最も多く収まります"
-          }
-        },
-        "entryLegend": {
-          "experience": "職歴 {{number}}",
-          "education": "学歴 {{number}}",
-          "extra": "セクション {{number}}"
-        },
-        "fields": {
-          "name": "氏名",
-          "headline": "職種",
-          "headlinePlaceholder": "例: データアナリスト",
-          "contacts": "連絡先",
-          "contactsHint": "1 行に 1 つ: メール、電話、都市、Web サイト、LinkedIn… メールと Web アドレスはリンクになります。",
-          "summary": "プロフィール",
-          "period": "期間",
-          "periodPlaceholder": "例: 2021 – 現在",
-          "location": "場所",
-          "details": "詳細",
-          "detailsHint": "1 行に 1 項目。- で始まる行は箇条書きになります。",
-          "skills": "スキル",
-          "skillsHint": "カンマまたは改行で区切ります",
-          "languages": "言語",
-          "languagesHint": "1 行に 1 つ。例: 英語 (C1)",
-          "sectionHeading": "見出し",
-          "sectionHeadingPlaceholder": "例: 資格",
-          "experience": {
-            "title": "役職",
-            "organisation": "会社・組織"
-          },
-          "education": {
-            "title": "学位・課程",
-            "organisation": "学校"
-          }
-        },
-        "sections": {
-          "experience": "職歴",
-          "education": "学歴",
-          "skills": "スキルと言語",
-          "extra": "追加セクション"
-        },
-        "add": {
-          "experience": "職歴を追加",
-          "education": "学歴を追加",
-          "extra": "セクションを追加"
-        },
-        "labels": {
-          "summary": "プロフィール",
-          "experience": "職歴",
-          "education": "学歴",
-          "skills": "スキル",
-          "languages": "言語",
-          "contact": "連絡先"
-        },
-        "idle": {
-          "title": "ここに履歴書が表示されます",
-          "description": "少なくとも氏名を入力し、テンプレートを選んで「履歴書を作成」をクリックします。"
         }
       }
     }
@@ -6893,7 +6804,6 @@
         "timetable": "授業時間表",
         "attendance": "出席表",
         "rewardChart": "ごほうびチャート",
-        "cvDesign": "デザイン履歴書",
         "weeklyPlanner": "週間プランナー",
         "monthlyCalendar": "月間カレンダー",
         "recipeCard": "レシピカード",
@@ -7234,12 +7144,7 @@
       "skill3": "プロジェクト管理",
       "skill4": "写真撮影",
       "languages": "言語",
-      "languageList": "日本語 – ネイティブ\n英語 – ビジネスレベル\n中国語 – 基礎",
-      "profileSummary": "ブランドやプロダクトづくりに10年携わってきたクリエイティブデザイナーです。複雑なアイデアをシンプルで美しいデザインへと落とし込むことを得意としています。",
       "experience": "経歴",
-      "roleTitle": "シニアデザイナー",
-      "yearRange": "2021年～現在",
-      "roleDescription": "30以上のブランドのビジュアルアイデンティティを統括し、5名のデザイナーチームを管理。",
       "education": "学歴",
       "degree": "美術学士",
       "weeklyPlanner": "週間プランナー",

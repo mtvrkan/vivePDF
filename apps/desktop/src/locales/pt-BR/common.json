@@ -5480,8 +5480,7 @@
         "document": "Documento único",
         "bulk": "De uma tabela",
         "paper": "Papel",
-        "book": "Livro",
-        "cv": "Currículo"
+        "book": "Livro"
       },
       "bulk": {
         "title": "Documentos de uma tabela",
@@ -5602,94 +5601,6 @@
         "idle": {
           "title": "O livro aparecerá aqui",
           "description": "Adicione os arquivos dos capítulos, dê um título ao livro e clique em Criar livro."
-        }
-      },
-      "cv": {
-        "title": "Currículo",
-        "description": "Preencha um formulário e receba um currículo caprichado: clássico, moderno com barra lateral colorida ou compacto para caber mais em uma página.",
-        "run": "Criar currículo",
-        "startOver": "Recomeçar",
-        "cleared": "O formulário foi limpo.",
-        "draftHint": "O que você digita fica salvo neste computador para você voltar e atualizar o currículo depois.",
-        "personal": "Sobre você",
-        "photo": "Foto",
-        "photoHint": "Opcional; PNG, JPG ou WebP, recortada em quadrado",
-        "pickPhoto": "Escolher foto…",
-        "removePhoto": "Remover foto",
-        "removeEntry": "Remover",
-        "language": "Idioma do currículo",
-        "languageHint": "O idioma dos títulos das seções no PDF",
-        "extraHint": "Por exemplo certificados, projetos, voluntariado, referências ou hobbies.",
-        "fileName": "{{name}} - Currículo",
-        "defaultName": "Currículo",
-        "templates": {
-          "classic": {
-            "title": "Clássico",
-            "description": "Uma coluna com títulos sublinhados e foto no canto superior direito"
-          },
-          "modern": {
-            "title": "Moderno",
-            "description": "Barra lateral colorida com foto redonda, contato, habilidades e idiomas"
-          },
-          "compact": {
-            "title": "Compacto",
-            "description": "Títulos em uma coluna estreita à esquerda; cabe mais em uma página"
-          }
-        },
-        "entryLegend": {
-          "experience": "Experiência {{number}}",
-          "education": "Formação {{number}}",
-          "extra": "Seção {{number}}"
-        },
-        "fields": {
-          "name": "Nome completo",
-          "headline": "Cargo",
-          "headlinePlaceholder": "ex. Analista de dados",
-          "contacts": "Contato",
-          "contactsHint": "Um por linha: e-mail, telefone, cidade, site, LinkedIn… E-mails e endereços web viram links.",
-          "summary": "Perfil",
-          "period": "Período",
-          "periodPlaceholder": "ex. 2021 – atual",
-          "location": "Local",
-          "details": "Detalhes",
-          "detailsHint": "Um ponto por linha; linhas que começam com - viram marcadores.",
-          "skills": "Habilidades",
-          "skillsHint": "Separe com vírgulas ou quebras de linha",
-          "languages": "Idiomas",
-          "languagesHint": "Um por linha, ex. Inglês (C1)",
-          "sectionHeading": "Título",
-          "sectionHeadingPlaceholder": "ex. Certificados",
-          "experience": {
-            "title": "Cargo",
-            "organisation": "Empresa ou organização"
-          },
-          "education": {
-            "title": "Curso ou programa",
-            "organisation": "Instituição"
-          }
-        },
-        "sections": {
-          "experience": "Experiência",
-          "education": "Formação",
-          "skills": "Habilidades e idiomas",
-          "extra": "Seções extras"
-        },
-        "add": {
-          "experience": "Adicionar experiência",
-          "education": "Adicionar formação",
-          "extra": "Adicionar seção"
-        },
-        "labels": {
-          "summary": "Perfil",
-          "experience": "Experiência",
-          "education": "Formação",
-          "skills": "Habilidades",
-          "languages": "Idiomas",
-          "contact": "Contato"
-        },
-        "idle": {
-          "title": "Seu currículo aparecerá aqui",
-          "description": "Preencha pelo menos seu nome, escolha um modelo e clique em Criar currículo."
         }
       }
     }
@@ -6893,7 +6804,6 @@
         "timetable": "Horário de aulas",
         "attendance": "Lista de presença",
         "rewardChart": "Quadro de recompensas",
-        "cvDesign": "Currículo com design",
         "weeklyPlanner": "Planejador semanal",
         "monthlyCalendar": "Calendário mensal",
         "recipeCard": "Cartão de receita",
@@ -7234,12 +7144,7 @@
       "skill3": "Gestão de projetos",
       "skill4": "Fotografia",
       "languages": "Idiomas",
-      "languageList": "Português – nativo\nInglês – avançado\nAlemão – básico",
-      "profileSummary": "Designer criativo com dez anos de experiência construindo marcas e produtos. Gosto de transformar ideias complexas em designs simples e bonitos.",
       "experience": "Experiência",
-      "roleTitle": "Designer Sênior",
-      "yearRange": "2021 – atual",
-      "roleDescription": "Liderou a identidade visual de mais de 30 marcas e gerenciou uma equipe de cinco designers.",
       "education": "Formação",
       "degree": "Bacharelado em Belas Artes",
       "weeklyPlanner": "Planejador Semanal",

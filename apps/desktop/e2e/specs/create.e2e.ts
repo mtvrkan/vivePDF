@@ -129,31 +129,6 @@ describe("create", () => {
     expect(result.pages?.[1]?.text).toContain(String(birds));
   });
 
-  it("fills in a CV with the modern template and links the e-mail address", async () => {
-    await openTool("nav.create");
-    await $(`//*[@role="radio"][normalize-space(.)="${t("tools.create.tabs.cv")}"]`).click();
-    await chooseCard(t("tools.create.cv.templates.modern.title"));
-    await fill(t("tools.create.cv.fields.name"), "Deniz Kaya");
-    await fill(t("tools.create.cv.fields.headline"), "Data Engineer");
-    await fill(t("tools.create.cv.fields.contacts"), "deniz@example.com");
-    await fill(t("tools.create.cv.fields.experience.title"), "Analyst");
-    await fill(t("tools.create.cv.fields.experience.organisation"), "Acme");
-    await fill(t("tools.create.cv.fields.skills"), "Python, SQL");
-    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "create-cv.png"));
-    const suggested = await chooseOutputIn(workDir());
-
-    await runPrimary(t("tools.create.cv.run"));
-    const [output] = await waitForOutputs();
-
-    const result = probe(output);
-    expect(basename(suggested)).toBe("Deniz Kaya - CV.pdf");
-    expect(output).toBe(join(workDir(), "Deniz Kaya - CV.pdf"));
-    expect(result.pageCount).toBe(1);
-    const text = (result.pages?.[0]?.text ?? "").normalize("NFKC");
-    for (const expected of ["Deniz Kaya", "Data Engineer", "Analyst", "Acme", "Python", t("tools.create.cv.labels.experience"), t("tools.create.cv.labels.skills")]) expect(text).toContain(expected);
-    expect(result.pages?.[0]?.links).toContain("mailto:deniz@example.com");
-  });
-
   it("makes a dotted notebook with twenty pages", async () => {
     await openTool("nav.create");
     await $(`//*[@role="radio"][normalize-space(.)="${t("tools.create.tabs.paper")}"]`).click();

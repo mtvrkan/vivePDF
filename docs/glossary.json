@@ -3905,12 +3905,6 @@
       "tools.scan.enhance.modes.gray.description": [
         "form"
       ],
-      "tools.create.cv.extraHint": [
-        "certificate"
-      ],
-      "tools.create.cv.fields.sectionHeadingPlaceholder": [
-        "certificate"
-      ],
       "studio.tpl.certificate": [
         "certificate"
       ],
@@ -3936,12 +3930,6 @@
     "ko": {
       "tools.split.bookmarkLevelHint": [
         "split"
-      ],
-      "tools.create.cv.extraHint": [
-        "certificate"
-      ],
-      "tools.create.cv.fields.sectionHeadingPlaceholder": [
-        "certificate"
       ],
       "studio.templates.categories.certificates": [
         "certificate"
@@ -3976,14 +3964,7 @@
         "seal"
       ]
     },
-    "it": {
-      "tools.create.cv.extraHint": [
-        "certificate"
-      ],
-      "tools.create.cv.fields.sectionHeadingPlaceholder": [
-        "certificate"
-      ]
-    },
+    "it": {},
     "zh-CN": {
       "studio.tpl.recipientName": [
         "recipient"
