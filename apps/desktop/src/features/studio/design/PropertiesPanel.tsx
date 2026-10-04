@@ -21,6 +21,7 @@ import { CornerControls, LineSection, ShadowSection } from "./ShapeSections";
 import { ImageFiltersSection } from "./ImageFiltersSection";
 import { beginCrop, croppable } from "./cropMode";
 import { VectorStrokeSection } from "./VectorStrokeSection";
+import { GraphicSection } from "../graphics/GraphicSection";
 
 
 function sizeKeyOf(page: StudioPage): StudioPageSize | "custom" {
@@ -354,6 +355,7 @@ export function PropertiesPanel() {
       {single?.kind === "image" ? <ImageSection element={single} /> : null}
       {single?.kind === "image" && single.src ? <ImageFiltersSection element={single} /> : null}
       {single?.kind === "qr" ? <QrSection element={single} /> : null}
+      {single?.kind === "svg" ? <GraphicSection element={single} /> : null}
       {elements.length ? <StyleSections elements={elements} /> : null}
     </aside>
   );

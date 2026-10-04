@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "Her grubun gözlemlerini kendi adının altındaki sütuna yazın; ilk sütun kullanılmaz.",
       "bins": "Aralık sayısı",
-      "binsAuto": "Otomatik"
+      "binsAuto": "Otomatik",
+      "legendPosition": "Açıklamanın konumu",
+      "legendPositions": {
+        "bottom": "Altta",
+        "top": "Üstte",
+        "right": "Sağda",
+        "left": "Solda"
+      }
     },
     "metadata": {
       "title": "Belge özellikleri",
@@ -8604,6 +8611,83 @@
       "sepia": "Sepya",
       "grayscale": "Gri tonlamalı",
       "reset": "Ayarlamaları sıfırla"
+    },
+    "graphics": {
+      "title": "Tablolar ve grafikler",
+      "addTable": "Tablo ekle",
+      "tablePicker": "Tablo boyutu",
+      "tableSize": "{{rows}} satır ve {{columns}} sütunluk tablo ekle",
+      "tableSizeShort": "{{rows}} satır × {{columns}} sütun",
+      "kinds": {
+        "table": "Tablo",
+        "chart": "Grafik",
+        "flowchart": "Akış şeması",
+        "formula": "Formül"
+      },
+      "designPalette": "Tasarım paleti",
+      "updating": "Grafik güncelleniyor…",
+      "editCells": "Hücreleri düzenle",
+      "editingHint": "Vurgulanan hücreye yazın. Tab bir sonraki hücreye geçer, Shift+tıklama ya da Shift+ok tuşu birden çok hücre seçer, Esc düzenlemeyi bitirir.",
+      "tableEditor": "Tablo hücreleri",
+      "tableKeys": "Tab ve Shift+Tab hücreler arasında gezinir, ok tuşları metnin kenarına gelince komşu hücreye geçer, Esc düzenlemeyi bitirir.",
+      "cell": "{{row}}. satır, {{column}}. sütun",
+      "style": "Tablo stili",
+      "styles": {
+        "classic": "Klasik",
+        "blue": "Mavi",
+        "green": "Yeşil",
+        "warm": "Sıcak",
+        "minimal": "Sade",
+        "plain": "Düz"
+      },
+      "rows": "Satırlar",
+      "columns": "Sütunlar",
+      "addRow": "Satır ekle",
+      "removeRow": "Satır kaldır",
+      "addColumn": "Sütun ekle",
+      "removeColumn": "Sütun kaldır",
+      "headerRow": "İlk satır tablo başlığı",
+      "headerFill": "Tablo başlığını renklendir",
+      "headerFillColor": "Tablo başlığı rengi",
+      "stripes": "Çizgili satırlar",
+      "stripeColor": "Şerit rengi",
+      "cells": "Seçili hücreler",
+      "selection": "{{rows}} × {{columns}} hücre seçili",
+      "align": "Metin hizası",
+      "aligns": {
+        "left": "Sola hizala",
+        "center": "Ortala",
+        "right": "Sağa hizala"
+      },
+      "bold": "Kalın",
+      "cellText": "Hücre metni rengi",
+      "cellFill": "Hücreleri boya",
+      "cellFillColor": "Hücre dolgu rengi",
+      "columnWidth": "{{column}}. sütunun genişliği",
+      "rowAbove": "Üstüne satır",
+      "rowBelow": "Altına satır",
+      "columnLeft": "Soluna sütun",
+      "columnRight": "Sağına sütun",
+      "deleteRow": "Satırı sil",
+      "deleteColumn": "Sütunu sil",
+      "tableText": "Tablo metni",
+      "font": "Yazı tipi",
+      "fontSize": "Metin boyutu",
+      "textColor": "Metin rengi",
+      "borders": "Çizgiler",
+      "borderStyle": "Çizilecek çizgiler",
+      "borderStyles": {
+        "all": "Tüm çizgiler",
+        "horizontal": "Satır araları",
+        "outer": "Yalnızca dış çerçeve",
+        "none": "Çizgi yok"
+      },
+      "borderColor": "Çizgi rengi",
+      "borderWidth": "Çizgi kalınlığı",
+      "distribute": "Tüm sütunları eşit genişlikte yap",
+      "editChart": "Grafik verilerini düzenle",
+      "editFlowchart": "Akış şemasını düzenle",
+      "editFormula": "Formülü düzenle"
     }
   }
 }

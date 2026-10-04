@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "Ponga las observaciones de cada grupo en su propia columna, bajo su nombre; la primera columna no se usa.",
       "bins": "Intervalos",
-      "binsAuto": "Automático"
+      "binsAuto": "Automático",
+      "legendPosition": "Posición de la leyenda",
+      "legendPositions": {
+        "bottom": "Abajo",
+        "top": "Arriba",
+        "right": "Derecha",
+        "left": "Izquierda"
+      }
     },
     "metadata": {
       "title": "Propiedades del documento",
@@ -8604,6 +8611,83 @@
       "sepia": "Sepia",
       "grayscale": "Escala de grises",
       "reset": "Restablecer ajustes"
+    },
+    "graphics": {
+      "title": "Tablas y gráficos",
+      "addTable": "Añadir tabla",
+      "tablePicker": "Tamaño de la tabla",
+      "tableSize": "Añadir una tabla de {{rows}} filas y {{columns}} columnas",
+      "tableSizeShort": "{{rows}} filas × {{columns}} columnas",
+      "kinds": {
+        "table": "Tabla",
+        "chart": "Gráfico",
+        "flowchart": "Diagrama de flujo",
+        "formula": "Fórmula"
+      },
+      "designPalette": "Paleta del diseño",
+      "updating": "Actualizando el gráfico…",
+      "editCells": "Editar celdas",
+      "editingHint": "Escriba en la celda resaltada. Tab pasa a la celda siguiente, Mayús+clic o Mayús+flecha selecciona varias celdas y Esc termina la edición.",
+      "tableEditor": "Celdas de la tabla",
+      "tableKeys": "Tab y Mayús+Tab recorren las celdas, las flechas pasan a la celda vecina al llegar al borde del texto y Esc termina la edición.",
+      "cell": "Fila {{row}}, columna {{column}}",
+      "style": "Estilo de tabla",
+      "styles": {
+        "classic": "Clásico",
+        "blue": "Azul",
+        "green": "Verde",
+        "warm": "Cálido",
+        "minimal": "Minimalista",
+        "plain": "Sencillo"
+      },
+      "rows": "Filas",
+      "columns": "Columnas",
+      "addRow": "Añadir una fila",
+      "removeRow": "Quitar una fila",
+      "addColumn": "Añadir una columna",
+      "removeColumn": "Quitar una columna",
+      "headerRow": "La primera fila es el encabezado de la tabla",
+      "headerFill": "Sombrear el encabezado de la tabla",
+      "headerFillColor": "Color del encabezado de la tabla",
+      "stripes": "Filas alternas",
+      "stripeColor": "Color de las bandas",
+      "cells": "Celdas seleccionadas",
+      "selection": "{{rows}} × {{columns}} celdas seleccionadas",
+      "align": "Alineación del texto",
+      "aligns": {
+        "left": "Alinear a la izquierda",
+        "center": "Centrar",
+        "right": "Alinear a la derecha"
+      },
+      "bold": "Negrita",
+      "cellText": "Color del texto de la celda",
+      "cellFill": "Rellenar las celdas",
+      "cellFillColor": "Color de relleno de la celda",
+      "columnWidth": "Ancho de la columna {{column}}",
+      "rowAbove": "Fila encima",
+      "rowBelow": "Fila debajo",
+      "columnLeft": "Columna a la izquierda",
+      "columnRight": "Columna a la derecha",
+      "deleteRow": "Eliminar fila",
+      "deleteColumn": "Eliminar columna",
+      "tableText": "Texto de la tabla",
+      "font": "Fuente",
+      "fontSize": "Tamaño del texto",
+      "textColor": "Color del texto",
+      "borders": "Líneas",
+      "borderStyle": "Líneas que se dibujan",
+      "borderStyles": {
+        "all": "Todas las líneas",
+        "horizontal": "Entre filas",
+        "outer": "Solo contorno",
+        "none": "Sin líneas"
+      },
+      "borderColor": "Color de las líneas",
+      "borderWidth": "Grosor de las líneas",
+      "distribute": "Igualar el ancho de todas las columnas",
+      "editChart": "Editar datos del gráfico",
+      "editFlowchart": "Editar diagrama de flujo",
+      "editFormula": "Editar fórmula"
     }
   }
 }

@@ -2,7 +2,7 @@ import { useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboard
 import { Sigma } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
-import { ColorSwatch } from "@/components/shared/ColorSwatch";
+import { ColorSwatch, type ColorSwatchRow } from "@/components/shared/ColorSwatch";
 import { Dialog } from "@/components/shared/Dialog";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { Segmented, TextArea, TextInput } from "@/components/tool/form";
@@ -66,7 +66,7 @@ function TemplateButton({ latex, engine, onPick }: { latex: string; engine: Engi
   );
 }
 
-export function FormulaDialog({ initial, updating, onClose, onSubmit }: { initial: FormulaDraft; updating: boolean; onClose: () => void; onSubmit: (value: FormulaSubmit) => void }) {
+export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows }: { initial: FormulaDraft; updating: boolean; onClose: () => void; onSubmit: (value: FormulaSubmit) => void; swatchRows?: () => ColorSwatchRow[] }) {
   const { t } = useTranslation();
   const latexId = useId();
   const statusId = useId();
@@ -227,7 +227,7 @@ export function FormulaDialog({ initial, updating, onClose, onSubmit }: { initia
         <div className="flex flex-wrap items-end gap-4">
           <div className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-foreground/80">{t("viewer.formula.color")}</span>
-            <ColorSwatch value={color} onChange={setColor} label={t("viewer.formula.color")} customLabel={t("viewer.overlay.customColor")} />
+            <ColorSwatch value={color} onChange={setColor} label={t("viewer.formula.color")} customLabel={t("viewer.overlay.customColor")} rows={swatchRows} />
           </div>
           <label className="flex flex-col gap-1.5">
             <span className="text-sm font-medium text-foreground/80">{t("viewer.formula.size")}</span>

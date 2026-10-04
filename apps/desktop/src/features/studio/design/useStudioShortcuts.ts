@@ -19,6 +19,8 @@ import { boldPatch, toggleList, updateParagraphs, withElementStyle } from "./ric
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { textEditorBridge } from "./textEditorBridge";
 import { useViewPrefs, type StudioViewOption } from "./viewPrefs";
+import { isGraphic } from "../graphics/graphicData";
+import { openGraphic } from "../graphics/graphicEditor";
 
 const NUDGE = 1;
 const NUDGE_FAR = 10;
@@ -151,6 +153,7 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         const [only] = selectedElements(state);
         if (only?.kind === "text" && state.selection.length === 1 && !only.locked) return run(() => state.setEditing(only.id));
         if (state.selection.length === 1 && croppable(only) && event.key === "Enter") return run(() => void beginCrop(only));
+        if (only && state.selection.length === 1 && isGraphic(only) && !only.locked) return run(() => openGraphic(only));
         return;
       }
       if (event.key === "PageUp") return run(() => stepPage(-1));

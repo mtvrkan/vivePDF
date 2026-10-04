@@ -1,4 +1,4 @@
-import type { ChartSpec, ChartType } from "@/types";
+import type { ChartLegendPosition, ChartSpec, ChartType } from "@/types";
 import { applyGridEdit, resizeColumnList, type GridEdit, type GridLimits } from "../grid/gridModel";
 
 export const CHART_TYPES: readonly ChartType[] = ["column", "bar", "line", "area", "pie", "doughnut", "scatter", "histogram", "box", "dotplot"];
@@ -8,6 +8,7 @@ export const STACKABLE_TYPES: readonly ChartType[] = ["column", "bar", "area"];
 export const ROUND_TYPES: readonly ChartType[] = ["pie", "doughnut"];
 export const CHART_LIMITS: GridLimits = { rows: 101, columns: 9, cellChars: 200, minColumns: 2 };
 export const DEFAULT_CHART_FONT = "bundled:dejavu-sans";
+export const LEGEND_POSITIONS: readonly ChartLegendPosition[] = ["bottom", "top", "right", "left"];
 
 export const CHART_PALETTES = {
   vivid: ["#2563eb", "#f97316", "#16a34a", "#dc2626", "#9333ea", "#0891b2", "#ca8a04", "#db2777"],
@@ -30,6 +31,7 @@ export type ChartSettings = {
   categoryTitle: string;
   valueTitle: string;
   legend: boolean;
+  legendPosition: ChartLegendPosition;
   grid: boolean;
   valueLabels: boolean;
   stacked: boolean;
@@ -50,6 +52,7 @@ export const DEFAULT_CHART_LOOK: ChartLook = {
   type: "column",
   palette: "vivid",
   legend: true,
+  legendPosition: "bottom",
   grid: true,
   valueLabels: false,
   stacked: false,
@@ -82,8 +85,8 @@ export function newChart(look: ChartLook, cells: string[][]): ChartSettings {
 }
 
 export function chartLook(settings: ChartSettings): ChartLook {
-  const { type, palette, legend, grid, valueLabels, stacked, width, height, fontSize, fontId, color, decimal, bins } = settings;
-  return { type, palette, legend, grid, valueLabels, stacked, width, height, fontSize, fontId, color, decimal, bins };
+  const { type, palette, legend, legendPosition, grid, valueLabels, stacked, width, height, fontSize, fontId, color, decimal, bins } = settings;
+  return { type, palette, legend, legendPosition: legendPosition ?? "bottom", grid, valueLabels, stacked, width, height, fontSize, fontId, color, decimal, bins };
 }
 
 export function decimalOf(locale: string): "." | "," {
@@ -156,6 +159,7 @@ export function chartData(settings: ChartSettings): ChartData {
     categoryTitle: settings.categoryTitle.trim(),
     valueTitle: settings.valueTitle.trim(),
     legend: settings.legend,
+    legendPosition: LEGEND_POSITIONS.includes(settings.legendPosition) ? settings.legendPosition : "bottom",
     grid: settings.grid,
     valueLabels: settings.valueLabels,
     stacked: settings.stacked && STACKABLE_TYPES.includes(settings.type),

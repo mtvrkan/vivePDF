@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "각 그룹의 관측값을 이름 아래 자기 열에 입력하세요. 첫 번째 열은 사용하지 않습니다.",
       "bins": "구간 수",
-      "binsAuto": "자동"
+      "binsAuto": "자동",
+      "legendPosition": "범례 위치",
+      "legendPositions": {
+        "bottom": "아래쪽",
+        "top": "위쪽",
+        "right": "오른쪽",
+        "left": "왼쪽"
+      }
     },
     "metadata": {
       "title": "문서 속성",
@@ -8603,6 +8610,83 @@
       "sepia": "세피아",
       "grayscale": "회색조",
       "reset": "보정 초기화"
+    },
+    "graphics": {
+      "title": "표와 차트",
+      "addTable": "표 추가",
+      "tablePicker": "표 크기",
+      "tableSize": "{{rows}}행 {{columns}}열 표 추가",
+      "tableSizeShort": "{{rows}}행 × {{columns}}열",
+      "kinds": {
+        "table": "표",
+        "chart": "차트",
+        "flowchart": "순서도",
+        "formula": "수식"
+      },
+      "designPalette": "디자인 팔레트",
+      "updating": "그래픽을 업데이트하는 중…",
+      "editCells": "셀 편집",
+      "editingHint": "강조 표시된 셀에 입력하세요. Tab은 다음 셀로 이동하고, Shift+클릭이나 Shift+화살표는 여러 셀을 선택하며, Esc는 편집을 마칩니다.",
+      "tableEditor": "표 셀",
+      "tableKeys": "Tab과 Shift+Tab은 셀 사이를 이동하고, 화살표 키는 텍스트 가장자리에서 옆 셀로 이동하며, Esc는 편집을 마칩니다.",
+      "cell": "{{row}}행, {{column}}열",
+      "style": "표 스타일",
+      "styles": {
+        "classic": "클래식",
+        "blue": "파랑",
+        "green": "초록",
+        "warm": "따뜻한",
+        "minimal": "미니멀",
+        "plain": "기본"
+      },
+      "rows": "행",
+      "columns": "열",
+      "addRow": "행 추가",
+      "removeRow": "행 제거",
+      "addColumn": "열 추가",
+      "removeColumn": "열 제거",
+      "headerRow": "첫 행을 표 제목 행으로",
+      "headerFill": "표 제목 행 배경",
+      "headerFillColor": "표 제목 행 색",
+      "stripes": "줄무늬 행",
+      "stripeColor": "줄무늬 색",
+      "cells": "선택한 셀",
+      "selection": "{{rows}} × {{columns}}개 셀 선택됨",
+      "align": "텍스트 맞춤",
+      "aligns": {
+        "left": "왼쪽 맞춤",
+        "center": "가운데 맞춤",
+        "right": "오른쪽 맞춤"
+      },
+      "bold": "굵게",
+      "cellText": "셀 텍스트 색",
+      "cellFill": "셀 채우기",
+      "cellFillColor": "셀 채우기 색",
+      "columnWidth": "{{column}}열 너비",
+      "rowAbove": "위에 행",
+      "rowBelow": "아래에 행",
+      "columnLeft": "왼쪽에 열",
+      "columnRight": "오른쪽에 열",
+      "deleteRow": "행 삭제",
+      "deleteColumn": "열 삭제",
+      "tableText": "표 텍스트",
+      "font": "글꼴",
+      "fontSize": "텍스트 크기",
+      "textColor": "텍스트 색",
+      "borders": "선",
+      "borderStyle": "그릴 선",
+      "borderStyles": {
+        "all": "모든 선",
+        "horizontal": "행 사이",
+        "outer": "바깥 테두리만",
+        "none": "선 없음"
+      },
+      "borderColor": "선 색",
+      "borderWidth": "선 두께",
+      "distribute": "모든 열을 같은 너비로",
+      "editChart": "차트 데이터 편집",
+      "editFlowchart": "순서도 편집",
+      "editFormula": "수식 편집"
     }
   }
 }

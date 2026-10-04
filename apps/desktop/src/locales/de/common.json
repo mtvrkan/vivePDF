@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "Tragen Sie die Beobachtungen jeder Gruppe in eine eigene Spalte unter ihrem Namen ein; die erste Spalte wird nicht verwendet.",
       "bins": "Klassen",
-      "binsAuto": "Automatisch"
+      "binsAuto": "Automatisch",
+      "legendPosition": "Position der Legende",
+      "legendPositions": {
+        "bottom": "Unten",
+        "top": "Oben",
+        "right": "Rechts",
+        "left": "Links"
+      }
     },
     "metadata": {
       "title": "Dokumenteigenschaften",
@@ -8603,6 +8610,83 @@
       "sepia": "Sepia",
       "grayscale": "Graustufen",
       "reset": "Anpassungen zurücksetzen"
+    },
+    "graphics": {
+      "title": "Tabellen und Diagramme",
+      "addTable": "Tabelle hinzufügen",
+      "tablePicker": "Tabellengröße",
+      "tableSize": "Tabelle mit {{rows}} Zeilen und {{columns}} Spalten hinzufügen",
+      "tableSizeShort": "{{rows}} Zeilen × {{columns}} Spalten",
+      "kinds": {
+        "table": "Tabelle",
+        "chart": "Diagramm",
+        "flowchart": "Flussdiagramm",
+        "formula": "Formel"
+      },
+      "designPalette": "Design-Palette",
+      "updating": "Grafik wird aktualisiert …",
+      "editCells": "Zellen bearbeiten",
+      "editingHint": "Tippen Sie in die markierte Zelle. Mit Tab gelangen Sie zur nächsten Zelle, mit Umschalt+Klick oder Umschalt+Pfeiltaste wählen Sie mehrere Zellen aus, mit Esc beenden Sie die Bearbeitung.",
+      "tableEditor": "Tabellenzellen",
+      "tableKeys": "Tab und Umschalt+Tab wechseln zwischen den Zellen, die Pfeiltasten springen am Rand des Textes weiter, Esc beendet die Bearbeitung.",
+      "cell": "Zeile {{row}}, Spalte {{column}}",
+      "style": "Tabellenstil",
+      "styles": {
+        "classic": "Klassisch",
+        "blue": "Blau",
+        "green": "Grün",
+        "warm": "Warm",
+        "minimal": "Schlicht",
+        "plain": "Ohne"
+      },
+      "rows": "Zeilen",
+      "columns": "Spalten",
+      "addRow": "Zeile hinzufügen",
+      "removeRow": "Zeile entfernen",
+      "addColumn": "Spalte hinzufügen",
+      "removeColumn": "Spalte entfernen",
+      "headerRow": "Erste Zeile ist der Tabellenkopf",
+      "headerFill": "Tabellenkopf hinterlegen",
+      "headerFillColor": "Farbe des Tabellenkopfs",
+      "stripes": "Gestreifte Zeilen",
+      "stripeColor": "Streifenfarbe",
+      "cells": "Ausgewählte Zellen",
+      "selection": "{{rows}} × {{columns}} Zellen ausgewählt",
+      "align": "Textausrichtung",
+      "aligns": {
+        "left": "Linksbündig",
+        "center": "Zentriert",
+        "right": "Rechtsbündig"
+      },
+      "bold": "Fett",
+      "cellText": "Textfarbe der Zelle",
+      "cellFill": "Zellen füllen",
+      "cellFillColor": "Füllfarbe der Zelle",
+      "columnWidth": "Breite von Spalte {{column}}",
+      "rowAbove": "Zeile darüber",
+      "rowBelow": "Zeile darunter",
+      "columnLeft": "Spalte links",
+      "columnRight": "Spalte rechts",
+      "deleteRow": "Zeile löschen",
+      "deleteColumn": "Spalte löschen",
+      "tableText": "Tabellentext",
+      "font": "Schriftart",
+      "fontSize": "Textgröße",
+      "textColor": "Textfarbe",
+      "borders": "Linien",
+      "borderStyle": "Gezeichnete Linien",
+      "borderStyles": {
+        "all": "Alle Linien",
+        "horizontal": "Zwischen Zeilen",
+        "outer": "Nur Rahmen",
+        "none": "Keine Linien"
+      },
+      "borderColor": "Linienfarbe",
+      "borderWidth": "Linienstärke",
+      "distribute": "Alle Spalten gleich breit machen",
+      "editChart": "Diagrammdaten bearbeiten",
+      "editFlowchart": "Flussdiagramm bearbeiten",
+      "editFormula": "Formel bearbeiten"
     }
   }
 }

@@ -22,6 +22,7 @@ import type { StudioTemplate } from "../templates/kit";
 import { TemplateGallery } from "../templates/TemplateGallery";
 import { DataTab } from "../merge/DataTab";
 import { IconsSection } from "../icons/IconsSection";
+import { GraphicsElements } from "../graphics/GraphicsElements";
 
 type Tab = "templates" | "elements" | "layers" | "data";
 const TABS: Tab[] = ["templates", "elements", "data", "layers"];
@@ -143,6 +144,7 @@ function ElementsTab() {
         </div>
       </section>
       <IconsSection />
+      <GraphicsElements page={page} />
       <section className="space-y-3">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("studio.elements.ornaments")}</h3>
         {ORNAMENT_CATEGORIES.map((category) => (

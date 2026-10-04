@@ -857,7 +857,14 @@
       },
       "dataHintSamples": "将每组的观测值填入其名称下方的列中；第一列不使用。",
       "bins": "分组数",
-      "binsAuto": "自动"
+      "binsAuto": "自动",
+      "legendPosition": "图例位置",
+      "legendPositions": {
+        "bottom": "底部",
+        "top": "顶部",
+        "right": "右侧",
+        "left": "左侧"
+      }
     },
     "metadata": {
       "title": "文档属性",
@@ -8603,6 +8610,83 @@
       "sepia": "怀旧",
       "grayscale": "灰度",
       "reset": "重置调整"
+    },
+    "graphics": {
+      "title": "表格和图表",
+      "addTable": "添加表格",
+      "tablePicker": "表格大小",
+      "tableSize": "添加 {{rows}} 行 {{columns}} 列的表格",
+      "tableSizeShort": "{{rows}} 行 × {{columns}} 列",
+      "kinds": {
+        "table": "表格",
+        "chart": "图表",
+        "flowchart": "流程图",
+        "formula": "公式"
+      },
+      "designPalette": "设计调色板",
+      "updating": "正在更新图形…",
+      "editCells": "编辑单元格",
+      "editingHint": "在突出显示的单元格中输入。按 Tab 移到下一个单元格，按住 Shift 单击或按 Shift+方向键可选择多个单元格，按 Esc 结束编辑。",
+      "tableEditor": "表格单元格",
+      "tableKeys": "Tab 和 Shift+Tab 在单元格之间移动，方向键在文字边缘时移到相邻单元格，Esc 结束编辑。",
+      "cell": "第 {{row}} 行，第 {{column}} 列",
+      "style": "表格样式",
+      "styles": {
+        "classic": "经典",
+        "blue": "蓝色",
+        "green": "绿色",
+        "warm": "暖色",
+        "minimal": "简约",
+        "plain": "无样式"
+      },
+      "rows": "行",
+      "columns": "列",
+      "addRow": "添加一行",
+      "removeRow": "移除一行",
+      "addColumn": "添加一列",
+      "removeColumn": "移除一列",
+      "headerRow": "首行为表头",
+      "headerFill": "表头底色",
+      "headerFillColor": "表头颜色",
+      "stripes": "隔行底纹",
+      "stripeColor": "底纹颜色",
+      "cells": "所选单元格",
+      "selection": "已选择 {{rows}} × {{columns}} 个单元格",
+      "align": "文字对齐",
+      "aligns": {
+        "left": "左对齐",
+        "center": "居中",
+        "right": "右对齐"
+      },
+      "bold": "加粗",
+      "cellText": "单元格文字颜色",
+      "cellFill": "填充单元格",
+      "cellFillColor": "单元格填充颜色",
+      "columnWidth": "第 {{column}} 列的宽度",
+      "rowAbove": "上方行",
+      "rowBelow": "下方行",
+      "columnLeft": "左侧列",
+      "columnRight": "右侧列",
+      "deleteRow": "删除行",
+      "deleteColumn": "删除列",
+      "tableText": "表格文字",
+      "font": "字体",
+      "fontSize": "文字大小",
+      "textColor": "文字颜色",
+      "borders": "线条",
+      "borderStyle": "绘制的线条",
+      "borderStyles": {
+        "all": "全部线条",
+        "horizontal": "行间线",
+        "outer": "仅外框",
+        "none": "无线条"
+      },
+      "borderColor": "线条颜色",
+      "borderWidth": "线条粗细",
+      "distribute": "使所有列等宽",
+      "editChart": "编辑图表数据",
+      "editFlowchart": "编辑流程图",
+      "editFormula": "编辑公式"
     }
   }
 }

@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { ChartArea, ChartBar, ChartCandlestick, ChartColumn, ChartColumnBig, ChartLine, ChartPie, ChartScatter, Donut, Grip, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
-import { ColorSwatch } from "@/components/shared/ColorSwatch";
+import { ColorSwatch, type ColorSwatchRow } from "@/components/shared/ColorSwatch";
 import { Dialog } from "@/components/shared/Dialog";
 import { FontPicker } from "@/components/shared/FontPicker";
 import { Select } from "@/components/shared/Select";
@@ -17,7 +17,7 @@ import { CellGrid } from "../grid/CellGrid";
 import { EnginePreview } from "../grid/EnginePreview";
 import { currentPreview, useEnginePreview } from "../grid/useEnginePreview";
 import type { ChartSource } from "./chartObject";
-import { CHART_BINS, CHART_LIMITS, CHART_PALETTES, CHART_PALETTE_IDS, CHART_TYPES, ROUND_TYPES, SAMPLE_TYPES, STACKABLE_TYPES, applyChartEdit, applyPalette, cellKey, chartData, setSeriesColor, type ChartPaletteId, type ChartSettings } from "./chartModel";
+import { CHART_BINS, CHART_LIMITS, CHART_PALETTES, CHART_PALETTE_IDS, CHART_TYPES, LEGEND_POSITIONS, ROUND_TYPES, SAMPLE_TYPES, STACKABLE_TYPES, applyChartEdit, applyPalette, cellKey, chartData, setSeriesColor, type ChartPaletteId, type ChartSettings } from "./chartModel";
 
 const TYPE_ICONS: Record<ChartType, LucideIcon> = { column: ChartColumn, bar: ChartBar, line: ChartLine, area: ChartArea, pie: ChartPie, doughnut: Donut, scatter: ChartScatter, histogram: ChartColumnBig, box: ChartCandlestick, dotplot: Grip };
 
@@ -53,7 +53,9 @@ function TypePicker({ value, onChange }: { value: ChartType; onChange: (type: Ch
   );
 }
 
-export function ChartDialog({ initial, updating, onClose, onSubmit }: { initial: ChartSettings; updating: boolean; onClose: () => void; onSubmit: (source: ChartSource) => void }) {
+type ChartDialogProps = { initial: ChartSettings; updating: boolean; onClose: () => void; onSubmit: (source: ChartSource) => void; swatchRows?: () => ColorSwatchRow[]; fixedSize?: boolean };
+
+export function ChartDialog({ initial, updating, onClose, onSubmit, swatchRows, fixedSize = false }: ChartDialogProps) {
   const { t } = useTranslation();
   const [settings, setSettings] = useState<ChartSettings>(initial);
   const [attempt, setAttempt] = useState(0);
@@ -118,6 +120,7 @@ export function ChartDialog({ initial, updating, onClose, onSubmit }: { initial:
                 onChange={(color) => setSettings((current) => setSeriesColor(current, column - 1, color))}
                 label={t("viewer.chart.seriesColor", { number: column })}
                 customLabel={t("viewer.overlay.customColor")}
+                rows={swatchRows}
               />
             )
           }
@@ -143,6 +146,11 @@ export function ChartDialog({ initial, updating, onClose, onSubmit }: { initial:
               </div>
             )}
             <SwitchField label={t("viewer.chart.legend")} checked={settings.legend} onChange={(legend) => update({ legend })} />
+            {settings.legend ? (
+              <Field label={t("viewer.chart.legendPosition")}>
+                <Select value={settings.legendPosition ?? "bottom"} options={LEGEND_POSITIONS.map((position) => ({ value: position, label: t(`viewer.chart.legendPositions.${position}`) }))} onChange={(legendPosition) => update({ legendPosition: legendPosition as ChartSettings["legendPosition"] })} ariaLabel={t("viewer.chart.legendPosition")} />
+              </Field>
+            ) : null}
             <SwitchField label={t("viewer.chart.valueLabels")} checked={settings.valueLabels} onChange={(valueLabels) => update({ valueLabels })} />
             {round ? null : <SwitchField label={t("viewer.chart.grid")} checked={settings.grid} onChange={(grid) => update({ grid })} />}
             {STACKABLE_TYPES.includes(settings.type) ? <SwitchField label={t("viewer.chart.stacked")} checked={settings.stacked} onChange={(stacked) => update({ stacked })} /> : null}
@@ -152,14 +160,18 @@ export function ChartDialog({ initial, updating, onClose, onSubmit }: { initial:
             <Field label={t("viewer.chart.palette")}>
               <Select value={settings.palette} options={CHART_PALETTE_IDS.map((id) => ({ value: id, label: t(`viewer.chart.palettes.${id}`) }))} onChange={(palette) => setSettings((current) => applyPalette(current, palette as ChartPaletteId))} ariaLabel={t("viewer.chart.palette")} />
             </Field>
-            <SliderField label={t("viewer.chart.width")} value={settings.width} min={160} max={800} step={10} onChange={(width) => update({ width })} format={(value) => `${value} pt`} />
-            <SliderField label={t("viewer.chart.height")} value={settings.height} min={120} max={600} step={10} onChange={(height) => update({ height })} format={(value) => `${value} pt`} />
+            {fixedSize ? null : (
+              <>
+                <SliderField label={t("viewer.chart.width")} value={settings.width} min={160} max={800} step={10} onChange={(width) => update({ width })} format={(value) => `${value} pt`} />
+                <SliderField label={t("viewer.chart.height")} value={settings.height} min={120} max={600} step={10} onChange={(height) => update({ height })} format={(value) => `${value} pt`} />
+              </>
+            )}
             <SliderField label={t("viewer.chart.fontSize")} value={settings.fontSize} min={6} max={24} onChange={(fontSize) => update({ fontSize })} format={(value) => `${value} pt`} />
             <Field label={t("viewer.chart.font")}>
               <FontPicker value={settings.fontId} onChange={(fontId) => update({ fontId })} />
             </Field>
             <span className="flex items-center gap-2 text-sm">
-              <ColorSwatch value={settings.color} onChange={(color) => update({ color })} label={t("viewer.chart.textColor")} customLabel={t("viewer.overlay.customColor")} />
+              <ColorSwatch value={settings.color} onChange={(color) => update({ color })} label={t("viewer.chart.textColor")} customLabel={t("viewer.overlay.customColor")} rows={swatchRows} />
               {t("viewer.chart.textColor")}
             </span>
           </div>

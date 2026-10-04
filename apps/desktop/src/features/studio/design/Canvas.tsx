@@ -9,7 +9,10 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
-import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
+import type { StudioDesign, StudioElement, StudioPage, StudioSvgElement, StudioTextElement } from "@/types/studio";
+import { graphicOf, keepsRatio } from "../graphics/graphicData";
+import { openGraphic } from "../graphics/graphicEditor";
+import { TableCanvasEditor } from "../graphics/TableCanvasEditor";
 import { addGuide, guidesOf, marginsOf, moveGuide, removeGuide } from "../model/guides";
 import { isLineShape } from "../model/shapes";
 import { duplicateElements, elementBounds, selectionBounds, unionBounds, updateElement, updatePage, moveElements, withoutGroupOf, type Bounds } from "../model/edit";
@@ -66,6 +69,7 @@ function handlesFor(elements: StudioElement[]): Handle[] {
   const [element] = elements;
   if (isLine(element)) return [];
   if (element.kind === "text") return ["nw", "ne", "se", "sw", "e", "w"];
+  if (graphicOf(element)?.kind === "table") return ["e", "w"];
   return HANDLES;
 }
 
@@ -503,7 +507,7 @@ export function Canvas({ language }: { language: string }) {
     const snap = snapping(event);
     if (current.elements.length === 1) {
       const element = current.elements[0];
-      const keepRatio = corner && (element.kind === "text" || element.kind === "image" || element.kind === "qr" ? !event.shiftKey : event.shiftKey);
+      const keepRatio = corner && (element.kind === "text" || element.kind === "image" || element.kind === "qr" || keepsRatio(element) ? !event.shiftKey : event.shiftKey);
       const options = { keepRatio, fromCenter: event.altKey };
       const result = snap ? snapResize(element, current.handle, dx, dy, options, current.index, tolerance) : { box: resizeBox(element, current.handle, dx, dy, options), lines: [] };
       const box = result.box;
@@ -567,6 +571,7 @@ export function Canvas({ language }: { language: string }) {
       state.enterGroup(element.id);
       return;
     }
+    if (element && openGraphic(element, { x: event.clientX, y: event.clientY })) return;
     if (element?.kind === "text" && !element.locked) {
       store().select([element.id]);
       textEditorEntry.point = { x: event.clientX, y: event.clientY };
@@ -649,6 +654,10 @@ export function Canvas({ language }: { language: string }) {
                   element.id === editingId && element.kind === "text" ? (
                     <ElementView key={element.id} element={{ ...element, flipX: false, flipY: false }} language={language}>
                       <TextEditor element={element} language={language} />
+                    </ElementView>
+                  ) : element.id === editingId && graphicOf(element)?.kind === "table" ? (
+                    <ElementView key={element.id} element={element} language={language}>
+                      <TableCanvasEditor element={element as StudioSvgElement} />
                     </ElementView>
                   ) : (
                     <ElementView key={element.id} element={cropSession?.elementId === element.id ? { ...element, opacity: 0 } : element} language={language} />
