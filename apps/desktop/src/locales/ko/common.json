@@ -2145,7 +2145,9 @@
         "pageTitle": "목차"
       },
       "renamedFields_one": "양식 필드 {{count}}개의 이름이 다른 파일과 같아서 값이 섞이지 않도록 이름을 바꿨습니다.",
-      "renamedFields_other": "양식 필드 {{count}}개의 이름이 다른 파일과 같아서 값이 섞이지 않도록 이름을 바꿨습니다."
+      "renamedFields_other": "양식 필드 {{count}}개의 이름이 다른 파일과 같아서 값이 섞이지 않도록 이름을 바꿨습니다.",
+      "alreadyListed_one": "{{count}}개 파일은 이미 목록에 있어 다시 추가하지 않았습니다.",
+      "alreadyListed_other": "{{count}}개 파일은 이미 목록에 있어 다시 추가하지 않았습니다."
     },
     "split": {
       "suffix": "parts",
@@ -3711,7 +3713,8 @@
         "insertBlank": "빈 페이지 삽입",
         "marquee": "빈 영역에서 드래그하여 선택(Ctrl로 반전, Shift로 추가)",
         "preview": "페이지 미리 보기",
-        "range": "페이지 번호로 선택"
+        "range": "페이지 번호로 선택",
+        "previewSelect": "미리 보기에서: 페이지 선택/선택 확장"
       },
       "blank": "빈 페이지",
       "paperSize": "용지 크기",
@@ -3852,11 +3855,12 @@
         "title": "{{page}}페이지부터 페이지 라벨"
       },
       "preview": {
-        "hint": "← → 페이지 이동 · R 회전 · Space 또는 Esc로 닫기",
+        "hint": "← → 페이지 이동 · Enter로 페이지 선택/선택 해제 · Shift+← →로 선택 확장 · R 회전 · Space 또는 Esc로 닫기",
         "next": "다음 페이지",
         "originalPage": "원본 페이지 {{page}}",
         "previous": "이전 페이지",
-        "title": "{{total}}페이지 중 {{page}}페이지"
+        "title": "{{total}}페이지 중 {{page}}페이지",
+        "select": "이 페이지 선택"
       },
       "range": {
         "hint": "쉼표와 범위, 예: 1-5, 9, 12-(끝까지)",

@@ -2145,7 +2145,9 @@
         "pageTitle": "目次"
       },
       "renamedFields_one": "{{count}} 個のフォームフィールドは別のファイルと同じ名前だったため、値が混ざらないよう名前を変更しました。",
-      "renamedFields_other": "{{count}} 個のフォームフィールドは別のファイルと同じ名前だったため、値が混ざらないよう名前を変更しました。"
+      "renamedFields_other": "{{count}} 個のフォームフィールドは別のファイルと同じ名前だったため、値が混ざらないよう名前を変更しました。",
+      "alreadyListed_one": "{{count}} 件のファイルは既に一覧にあるため、追加しませんでした。",
+      "alreadyListed_other": "{{count}} 件のファイルは既に一覧にあるため、追加しませんでした。"
     },
     "split": {
       "suffix": "parts",
@@ -3711,7 +3713,8 @@
         "insertBlank": "白紙ページを挿入",
         "marquee": "空の領域からドラッグして選択（Ctrlで反転、Shiftで追加）",
         "preview": "ページをプレビュー",
-        "range": "ページ番号で選択"
+        "range": "ページ番号で選択",
+        "previewSelect": "プレビュー内：ページを選択／選択を拡張"
       },
       "blank": "白紙",
       "paperSize": "用紙サイズ",
@@ -3852,11 +3855,12 @@
         "title": "{{page}} ページからのページラベル"
       },
       "preview": {
-        "hint": "← → でページ移動 · R で回転 · Space か Esc で閉じる",
+        "hint": "← → でページ移動 · Enter でページを選択／選択解除 · Shift+← → で選択を拡張 · R で回転 · Space か Esc で閉じる",
         "next": "次のページ",
         "originalPage": "元のページ {{page}}",
         "previous": "前のページ",
-        "title": "{{page}} / {{total}} ページ"
+        "title": "{{page}} / {{total}} ページ",
+        "select": "このページを選択"
       },
       "range": {
         "hint": "カンマと範囲、例：1-5, 9, 12-（末尾まで）",

@@ -201,7 +201,8 @@ const SHORTCUTS = [
   ["Ctrl+E", "extract"],
   ["Ctrl+A / Esc", "selectAllNone"],
   ["Ctrl+G", "range"],
-  ["Space", "preview"],
+  ["{click} / Space / Enter", "preview"],
+  ["Enter / Shift+← →", "previewSelect"],
   ["Shift+F10", "contextMenu"],
   ["Shift+{click} / Ctrl+{click}", "multiSelect"],
   ["{drag}", "marquee"],
@@ -211,7 +212,6 @@ const SHORTCUTS = [
   ["Home / End", "firstLast"],
   ["Ctrl+{wheel} / Ctrl +/−", "zoom"],
   ["Ctrl+Enter", "apply"],
-  ["{doubleClick}", "openInViewer"],
   ["?", "help"],
 ] as const;
 

@@ -208,12 +208,12 @@ describe("organize", () => {
     const tiles = $$("li[data-tile-index]");
     await expect(tiles).toBeElementsArrayOfSize(3);
 
-    await $('li[data-tile-index="0"]').click();
+    await selectOnly(0);
     await expect($('li[data-tile-index="0"]')).toHaveAttribute("aria-selected", "true");
     await clickButton(t("tools.pages.rotateRight"));
     await expect($('li[data-tile-index="0"]')).toHaveText(expect.stringContaining("90°"));
 
-    await $('li[data-tile-index="2"]').click();
+    await selectOnly(2);
     await expect($('li[data-tile-index="2"]')).toHaveAttribute("aria-selected", "true");
     await expect($('li[data-tile-index="0"]')).toHaveAttribute("aria-selected", "false");
     await clickButton(t("tools.pages.delete"));
@@ -241,7 +241,7 @@ describe("organize", () => {
     const tiles = $$("li[data-tile-index]");
     await expect(tiles).toBeElementsArrayOfSize(3);
 
-    await $('li[data-tile-index="0"]').click();
+    await selectOnly(0);
     await browser.keys(["b"]);
     await chooseOption(t("tools.pages.paper.label"), t("tools.pages.paper.lined"));
     await expect($(`//*[@role="dialog"]//*[local-name()="svg"]`)).toBeDisplayed();
@@ -268,7 +268,7 @@ describe("organize", () => {
     await expect(tiles).toBeElementsArrayOfSize(3);
     await expect(button(t("tools.pages.rotateRight"))).toHaveAttribute("aria-keyshortcuts", "R");
 
-    await $('li[data-tile-index="0"]').click();
+    await selectOnly(0);
     await browser.keys(["b"]);
     const insert = button(t("tools.pages.insert"));
     await insert.waitForClickable();
@@ -279,7 +279,7 @@ describe("organize", () => {
     await browser.waitUntil(async () => (await $$("li[aria-selected='true']").length) === 1, { timeout: 60000 });
     await expect($('li[data-tile-index="1"]')).toHaveAttribute("aria-selected", "true");
 
-    await $('li[data-tile-index="0"]').click();
+    await selectOnly(0);
     await browser.keys(["r"]);
     await expect($('li[data-tile-index="0"]')).toHaveText(expect.stringContaining("90°"));
     await clickButton(t("tools.pages.autoRotate"));
@@ -351,17 +351,28 @@ describe("organize", () => {
     await expect(tile(5)).toHaveAttribute("aria-selected", "true");
 
     await tile(0).click();
-    await browser.keys(SPACE_KEY);
     await expect($('[data-testid="page-preview"]')).toBeDisplayed();
+    await expect(tile(0)).toHaveAttribute("aria-selected", "false");
     await browser.keys(ARROW_RIGHT_KEY);
     await expect(tile(1)).toHaveAttribute("aria-selected", "true");
+    await browser.keys(ENTER_KEY);
+    await expect(tile(1)).toHaveAttribute("aria-selected", "false");
+    await expect($(`[data-testid="page-preview"] [role="checkbox"][aria-checked="false"]`)).toBeDisplayed();
+    await browser.keys(ENTER_KEY);
+    await expect(tile(1)).toHaveAttribute("aria-selected", "true");
+    await expect(tile(3)).toHaveAttribute("aria-selected", "false");
+    await browser.keys([SHIFT_KEY, ARROW_RIGHT_KEY, ARROW_RIGHT_KEY]);
+    await browser.keys([SHIFT_KEY]);
+    await expect(tile(3)).toHaveAttribute("aria-selected", "true");
+    await expect(tile(0)).toHaveAttribute("aria-selected", "false");
     await browser.keys(SPACE_KEY);
     await expect($('[data-testid="page-preview"]')).not.toBeDisplayed();
+    await expect(tile(5)).toHaveAttribute("aria-selected", "true");
 
     await tile(0).click({ button: "right" });
     await menuItem("duplicate").click();
     await expect($$("li[data-tile-index]")).toBeElementsArrayOfSize(7);
-    await tile(3).click();
+    await selectOnly(3);
     await clickButton(t("tools.pages.duplicates.select"));
     await browser.waitUntil(async () => (await selectedCount()) === 1 && (await tile(1).getAttribute("aria-selected")) === "true", { timeout: 60000 });
     await browser.keys(DELETE_KEY);
@@ -400,14 +411,14 @@ describe("organize", () => {
     await openTool("tools.grid.organizer");
     const tiles = $$("li[data-tile-index]");
     await expect(tiles).toBeElementsArrayOfSize(3);
-    await $('li[data-tile-index="2"]').click();
+    await selectOnly(2);
     await pressShortcut("c");
 
     await openTool("nav.viewer");
     await openInViewer(second);
     await openTool("tools.grid.organizer");
     await expect(tiles).toBeElementsArrayOfSize(3);
-    await $('li[data-tile-index="0"]').click();
+    await selectOnly(0);
     await pressShortcut("v");
     await expect(tiles).toBeElementsArrayOfSize(4);
     await pressShortcut("z");
@@ -432,7 +443,7 @@ describe("organize", () => {
     await openTool("tools.grid.organizer");
     await expect($$("li[data-tile-index]")).toBeElementsArrayOfSize(3);
 
-    await $('li[data-tile-index="0"]').click();
+    await selectOnly(0);
     await browser.keys([SHIFT_KEY, ARROW_RIGHT_KEY]);
     await browser.keys([SHIFT_KEY]);
     await expect($('li[data-tile-index="1"]')).toHaveAttribute("aria-selected", "true");
@@ -446,7 +457,7 @@ describe("organize", () => {
     await expect($('li[data-tile-index="1"]')).toHaveText(expect.stringContaining("← 1"));
     await expect($('li[data-tile-index="1"]')).toHaveAttribute("aria-selected", "true");
 
-    await $('li[data-tile-index="2"]').click();
+    await selectOnly(2);
     await browser.keys(["m"]);
     await expect($(`//*[@role="dialog"]//*[normalize-space(.)="${t("tools.pages.move.title")}"]`)).toBeDisplayed();
     await browser.keys(["1"]);
@@ -555,6 +566,11 @@ describe("organize", () => {
   });
 });
 
+async function selectOnly(index: number) {
+  await browser.keys(ESCAPE_KEY);
+  await $(`li[data-tile-index="${index}"] button[role="checkbox"]`).click();
+}
+
 async function startMerge(paths: string[]) {
   await openTool("nav.merge");
   const clear = button(t("tools.batch.clear"));
@@ -565,6 +581,7 @@ async function startMerge(paths: string[]) {
 }
 
 const SPACE_KEY = String.fromCharCode(0xe00d);
+const ESCAPE_KEY = String.fromCharCode(0xe00c);
 const ARROW_RIGHT_KEY = String.fromCharCode(0xe014);
 const DELETE_KEY = String.fromCharCode(0xe017);
 const SHIFT_KEY = String.fromCharCode(0xe008);

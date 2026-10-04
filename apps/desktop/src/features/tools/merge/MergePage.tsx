@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type PointerEvent } from "react";
 import { useLocation } from "react-router";
-import { ArrowDown, ArrowDown01, ArrowDownAZ, ArrowUp, ArrowUpDown, Combine, FileText, FlipVertical2, GripVertical, LayoutGrid, Lock, Plus, TextCursorInput, X, FileInput } from "lucide-react";
+import { ArrowDown, ArrowDown01, ArrowDownAZ, ArrowUp, ArrowUpDown, Combine, FileText, FlipVertical2, FolderPlus, GripVertical, LayoutGrid, Lock, Plus, TextCursorInput, X, FileInput } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/shared/Button";
@@ -17,13 +17,16 @@ import { basenameOf, suggestOutputPath, extensionOf } from "@/shared/lib/paths";
 import { isPdfPath } from "@/shared/rpc/files";
 import { getDocumentInfo } from "@/shared/rpc/documents";
 import { toRpcError } from "@/shared/rpc/client";
-import { mergePdfs } from "@/shared/rpc/operations";
+import { listPdfs, mergePdfs } from "@/shared/rpc/operations";
+import { describeError } from "@/shared/lib/errorMessage";
+import { useToastStore } from "@/shared/store/toastStore";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useLaunchStore } from "@/shared/store/launchStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { pagesInRanges } from "@/shared/lib/pageRanges";
 import { pagesToRanges } from "@/shared/lib/pageScope";
 import { mergedPageTotal, moveToSlot, sortedByName, sortedByPageCount } from "./pageRanges";
+import { withoutListed } from "./mergeFiles";
 import { DropZone } from "@/components/tool/DropZone";
 import { FileDropArea } from "@/components/tool/FileDropArea";
 import { useDropHandler } from "@/shared/hooks/useDropHandler";
@@ -79,7 +82,18 @@ export function MergePage() {
   const locale = useUiStore((state) => state.locale);
   const documents = useDocumentStore((state) => state.documents);
   const operation = useOperation(mergePdfs);
-  const [items, setItems] = useState<MergeItem[]>(() => Object.values(documents).map((doc) => freshItem(doc.path, doc.password ?? undefined)));
+  const pushToast = useToastStore((state) => state.push);
+  const [items, setItems] = useState<MergeItem[]>(() => {
+    const open = Object.values(documents);
+    const { fresh } = withoutListed([], open.map((doc) => doc.path));
+    return fresh.map((path) => freshItem(path, open.find((doc) => doc.path === path)?.password ?? undefined));
+  });
+  const [includeSubfolders, setIncludeSubfolders] = useState(false);
+  const [scanningFolder, setScanningFolder] = useState(false);
+  const itemsRef = useRef(items);
+  useLayoutEffect(() => {
+    itemsRef.current = items;
+  });
   const [bookmarks, setBookmarks] = useState<MergeBookmarkStyle>("nested");
   const [contentsPage, setContentsPage] = useState(false);
   const [mode, setMode] = useState<MergeMode>("append");
@@ -108,16 +122,47 @@ export function MergePage() {
   }, []);
 
   const addPaths = useCallback(
-    (paths: string[], allowRepeat = false) => {
+    (paths: string[]) => {
       const accepted = paths.filter(isMergeable);
       if (accepted.length === 0) return;
-      setItems((state) => {
-        const fresh = allowRepeat ? accepted : accepted.filter((path) => !state.some((item) => item.path === path));
-        return [...state, ...fresh.map((path) => freshItem(path))];
-      });
-      void probe(accepted.map((path) => ({ path })));
+      const { fresh, repeated } = withoutListed(itemsRef.current.map((item) => item.path), accepted);
+      if (repeated > 0) pushToast("info", t("tools.merge.alreadyListed", { count: repeated }));
+      if (fresh.length === 0) return;
+      itemsRef.current = [...itemsRef.current, ...fresh.map((path) => freshItem(path))];
+      setItems((state) => [...state, ...withoutListed(state.map((item) => item.path), fresh).fresh.map((path) => freshItem(path))]);
+      void probe(fresh.map((path) => ({ path })));
     },
-    [probe],
+    [probe, pushToast, t],
+  );
+
+  const folderContents = useCallback(
+    async (folder: string): Promise<string[]> => {
+      try {
+        const listed = await listPdfs({ folder, recursive: includeSubfolders });
+        if (listed.files.length === 0) pushToast("info", t("tools.batch.folderEmpty", { name: basenameOf(folder) || folder }));
+        if (listed.truncated) pushToast("info", t("tools.batch.folderTruncated", { count: listed.files.length }));
+        return listed.files;
+      } catch (error) {
+        const rpcError = toRpcError(error);
+        if (rpcError.code !== "FILE_NOT_FOUND") pushToast("error", describeError(t, rpcError));
+        return [];
+      }
+    },
+    [includeSubfolders, pushToast, t],
+  );
+
+  const addDropped = useCallback(
+    (paths: string[]) => {
+      if (paths.every(isMergeable)) {
+        addPaths(paths);
+        return;
+      }
+      setScanningFolder(true);
+      void Promise.all(paths.map((path) => (isMergeable(path) ? Promise.resolve([path]) : folderContents(path))))
+        .then((groups) => addPaths(groups.flat()))
+        .finally(() => setScanningFolder(false));
+    },
+    [addPaths, folderContents],
   );
 
   const unlock = useCallback(async (id: string, password: string) => {
@@ -130,7 +175,7 @@ export function MergePage() {
       setItems((state) => state.map((item) => (item.id === id ? { ...item, wrongPassword: true } : item)));
     }
   }, [items]);
-  useDropHandler(addPaths);
+  useDropHandler(addDropped);
 
   useEffect(() => {
     void probe(initialItems.current);
@@ -157,7 +202,18 @@ export function MergePage() {
   const addFiles = async () => {
     const selected = await openDialog({ multiple: true, directory: false, filters: [{ name: t("tools.convert.anyDocument"), extensions: MERGEABLE_EXTENSIONS }, { name: "PDF", extensions: ["pdf"] }] });
     if (!selected) return;
-    addPaths(Array.isArray(selected) ? selected : [selected], true);
+    addPaths(Array.isArray(selected) ? selected : [selected]);
+  };
+
+  const addFolder = async () => {
+    const selected = await openDialog({ multiple: false, directory: true });
+    if (typeof selected !== "string") return;
+    setScanningFolder(true);
+    try {
+      addPaths(await folderContents(selected));
+    } finally {
+      setScanningFolder(false);
+    }
   };
 
   const listRef = useRef<HTMLOListElement>(null);
@@ -244,7 +300,7 @@ export function MergePage() {
           <Section title={t("tools.merge.files")}>
             <DropZone label={t("tools.dropZone.pdfs")}>
             {items.length === 0 ? (
-              <FileDropArea title={t("tools.batch.dropTitle")} description={t("tools.merge.empty.description")} onPick={() => void addFiles()} disabled={operation.running} />
+              <FileDropArea title={t("tools.batch.dropTitle")} description={t("tools.merge.empty.description")} onPick={() => void addFiles()} disabled={operation.running || scanningFolder} />
             ) : (
               <ol ref={listRef} className="space-y-2">
                 {items.map((item, index) => (
@@ -316,22 +372,30 @@ export function MergePage() {
               </ol>
             )}
             </DropZone>
-            {items.length > 0 ? (
-              <div className="flex flex-wrap items-center gap-3">
-                <Button icon={<Plus className="size-4" aria-hidden />} onClick={() => void addFiles()} disabled={operation.running}>
+            <div className="flex flex-wrap items-center gap-3">
+              {items.length > 0 ? (
+                <Button icon={<Plus className="size-4" aria-hidden />} onClick={() => void addFiles()} disabled={operation.running || scanningFolder}>
                   {t("tools.merge.addFiles")}
                 </Button>
-                <IconButton icon={ArrowDownAZ} label={t("tools.merge.sortByName")} disabled={items.length < 2 || operation.running} onClick={() => setItems((state) => sortedByName(state, locale, basenameOf))} />
-                <IconButton icon={ArrowDown01} label={t("tools.merge.sortByPages")} disabled={items.length < 2 || operation.running} onClick={() => setItems((state) => sortedByPageCount(state))} />
-                <IconButton icon={ArrowUpDown} label={t("tools.merge.reverseOrder")} disabled={items.length < 2 || operation.running} onClick={() => setItems((state) => [...state].reverse())} />
-                <Button variant="ghost" onClick={() => setItems([])} disabled={operation.running}>
-                  {t("tools.batch.clear")}
-                </Button>
-                <span className="text-sm text-muted-foreground">
-                  {anyUnknown ? t("tools.merge.totalUnknown") : total === null ? "" : t("tools.merge.total", { count: total })}
-                </span>
-              </div>
-            ) : null}
+              ) : null}
+              <Button icon={<FolderPlus className="size-4" aria-hidden />} onClick={() => void addFolder()} loading={scanningFolder} disabled={operation.running || scanningFolder}>
+                {t("tools.batch.addFolder")}
+              </Button>
+              <Checkbox label={t("tools.batch.includeSubfolders")} checked={includeSubfolders} onChange={setIncludeSubfolders} disabled={operation.running || scanningFolder} />
+              {items.length > 0 ? (
+                <>
+                  <IconButton icon={ArrowDownAZ} label={t("tools.merge.sortByName")} disabled={items.length < 2 || operation.running} onClick={() => setItems((state) => sortedByName(state, locale, basenameOf))} />
+                  <IconButton icon={ArrowDown01} label={t("tools.merge.sortByPages")} disabled={items.length < 2 || operation.running} onClick={() => setItems((state) => sortedByPageCount(state))} />
+                  <IconButton icon={ArrowUpDown} label={t("tools.merge.reverseOrder")} disabled={items.length < 2 || operation.running} onClick={() => setItems((state) => [...state].reverse())} />
+                  <Button variant="ghost" onClick={() => setItems([])} disabled={operation.running}>
+                    {t("tools.batch.clear")}
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    {anyUnknown ? t("tools.merge.totalUnknown") : total === null ? "" : t("tools.merge.total", { count: total })}
+                  </span>
+                </>
+              ) : null}
+            </div>
           </Section>
           <Section title={t("tools.merge.mode")}>
             <OptionCards

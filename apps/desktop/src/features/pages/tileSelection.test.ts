@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { OrganizerTile } from "@/types";
-import { clickSelection, spanSelection, tileClickMode } from "./tileSelection";
+import { clickSelection, spanSelection, tileClickAction, tileClickMode, toggledSelection } from "./tileSelection";
 
 function page(index: number): OrganizerTile {
   return { key: `p${index}`, kind: "page", sourceId: "main", index, rotate: 0 };
@@ -61,5 +61,45 @@ describe("spanSelection", () => {
 
   it("keeps the earlier selection when the origin is gone", () => {
     expect(spanSelection(tiles, new Set(["p1"]), "gone", 2)).toEqual(["p1"]);
+  });
+});
+
+describe("tileClickAction", () => {
+  it("opens the preview on a plain click", () => {
+    expect(tileClickAction(plain, false, false)).toEqual({ kind: "preview" });
+  });
+
+  it("keeps Ctrl, Cmd and Shift clicks for selecting", () => {
+    expect(tileClickAction({ ...plain, ctrlKey: true }, false, false)).toEqual({ kind: "select", mode: "toggle" });
+    expect(tileClickAction({ ...plain, metaKey: true }, false, false)).toEqual({ kind: "select", mode: "toggle" });
+    expect(tileClickAction({ ...plain, shiftKey: true }, false, false)).toEqual({ kind: "select", mode: "range" });
+  });
+
+  it("toggles instead of previewing in multi-select mode", () => {
+    expect(tileClickAction(plain, true, false)).toEqual({ kind: "select", mode: "toggle" });
+    expect(tileClickAction({ ...plain, shiftKey: true }, true, false)).toEqual({ kind: "select", mode: "rangeAdd" });
+  });
+
+  it("does nothing when the pointer travelled far enough to drag the tile", () => {
+    expect(tileClickAction(plain, false, true)).toEqual({ kind: "none" });
+    expect(tileClickAction({ ...plain, ctrlKey: true }, true, true)).toEqual({ kind: "none" });
+  });
+});
+
+describe("toggledSelection", () => {
+  it("adds a page that was not selected and keeps the others", () => {
+    expect([...toggledSelection(new Set(["p1"]), "p3")]).toEqual(["p1", "p3"]);
+  });
+
+  it("removes a page that was selected", () => {
+    expect([...toggledSelection(new Set(["p1", "p3"]), "p1")]).toEqual(["p3"]);
+  });
+
+  it("leaves the original set untouched", () => {
+    const selected = new Set(["p2"]);
+
+    toggledSelection(selected, "p2");
+
+    expect([...selected]).toEqual(["p2"]);
   });
 });

@@ -2145,7 +2145,9 @@
         "pageTitle": "目录"
       },
       "renamedFields_one": "{{count}} 个表单字段与其他文件重名，已重命名，以免它们的值混在一起。",
-      "renamedFields_other": "{{count}} 个表单字段与其他文件重名，已重命名，以免它们的值混在一起。"
+      "renamedFields_other": "{{count}} 个表单字段与其他文件重名，已重命名，以免它们的值混在一起。",
+      "alreadyListed_one": "{{count}} 个文件已在列表中，未重复添加。",
+      "alreadyListed_other": "{{count}} 个文件已在列表中，未重复添加。"
     },
     "split": {
       "suffix": "parts",
@@ -3711,7 +3713,8 @@
         "insertBlank": "插入一张空白页",
         "marquee": "从空白区域拖动进行选择（Ctrl 反选，Shift 添加）",
         "preview": "预览页面",
-        "range": "按页码选择"
+        "range": "按页码选择",
+        "previewSelect": "预览中：选择页面 / 扩展选择范围"
       },
       "blank": "空白",
       "paperSize": "纸张大小",
@@ -3852,11 +3855,12 @@
         "title": "从第 {{page}} 页开始的页面标签"
       },
       "preview": {
-        "hint": "← → 切换页面 · R 旋转 · 空格键或 Esc 关闭",
+        "hint": "← → 切换页面 · Enter 选择或取消选择该页 · Shift+← → 扩展选择范围 · R 旋转 · 空格键或 Esc 关闭",
         "next": "下一页",
         "originalPage": "原始页面 {{page}}",
         "previous": "上一页",
-        "title": "第 {{page}} 页，共 {{total}} 页"
+        "title": "第 {{page}} 页，共 {{total}} 页",
+        "select": "选择此页"
       },
       "range": {
         "hint": "逗号和范围，例如 1-5, 9, 12-（到末尾）",

@@ -16,7 +16,8 @@ import { assemblePageParts, assemblePages } from "@/shared/rpc/operations";
 import { isPdfPath } from "@/shared/rpc/files";
 import { useMarqueeSelection, type MarqueeBox, type TileRect } from "./useMarqueeSelection";
 import { useVirtualGrid } from "./useVirtualGrid";
-import { clickSelection, tileClickMode, type ClickMode } from "./tileSelection";
+import { clickSelection, tileClickAction, type ClickMode } from "./tileSelection";
+import { usePagePreview } from "./usePagePreview";
 import { duplexOrder, labelRules, positionsToKeys, tileLabelTexts } from "./organizerTools";
 import { DuplexDialog, MovePagesDialog, PageLabelDialog, PagePreviewDialog, RangeSelectDialog, type DuplexChoice } from "./OrganizerDialogs";
 import { ContextMenu } from "@/components/shared/ContextMenu";
@@ -82,7 +83,6 @@ export function PagesPage() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [pendingLeave, setPendingLeave] = useState<(() => void) | null>(null);
   const [resultKind, setResultKind] = useState<"single" | "parts">("single");
-  const [previewKey, setPreviewKey] = useState<string | null>(null);
   const [rangeOpen, setRangeOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
   const [duplexOpen, setDuplexOpen] = useState(false);
@@ -96,9 +96,11 @@ export function PagesPage() {
   const grid = useVirtualGrid({ mounted: hasDocument, scrollRef, gridRef, count: tiles.length, minColumnWidth: zoom, rowHeight: tileHeight + TILE_CHROME_HEIGHT });
 
   const edits = useOrganizerEdits(grid.revealIndex);
-  const { setLabels, insertAtSelection, replaceSelection, selectAndReveal, scrollToTile } = edits;
+  const { setLabels, insertAtSelection, replaceSelection, selectAndReveal } = edits;
   const inspections = usePageInspections(activeDocumentId, edits);
   const clipboard = usePageClipboardActions(edits);
+  const preview = usePagePreview(edits);
+  const { previewKey, close: closePreview } = preview;
   const canPaste = usePageClipboard((state) => state.tiles.length > 0);
 
   const pageCount = document?.info?.pageCount ?? 0;
@@ -123,10 +125,10 @@ export function PagesPage() {
   useEffect(() => {
     resetOperation();
     resetPartsOperation();
-    setPreviewKey(null);
+    closePreview();
     setMenu(null);
     setResultKind("single");
-  }, [activeDocumentId, resetOperation, resetPartsOperation]);
+  }, [activeDocumentId, resetOperation, resetPartsOperation, closePreview]);
 
   const labelTexts = useMemo(() => tileLabelTexts(tiles, labels), [tiles, labels]);
   const dirty = useMemo(() => isDirty(tiles, initialTiles) || labelTexts !== null, [tiles, initialTiles, labelTexts]);
@@ -142,9 +144,10 @@ export function PagesPage() {
     select(next.keys, next.anchor);
   };
 
-  const selectTile = (event: MouseEvent, key: string) => {
-    if (wasDragged()) return;
-    applyClick(key, tileClickMode(event, multiSelect));
+  const clickTile = (event: MouseEvent, key: string) => {
+    const action = tileClickAction(event, multiSelect, wasDragged());
+    if (action.kind === "preview") preview.open(key);
+    else if (action.kind === "select") applyClick(key, action.mode);
   };
 
   const checkTile = (event: MouseEvent, key: string) => {
@@ -262,9 +265,8 @@ export function PagesPage() {
   useLayoutEffect(() => {
     tileActionsRef.current = {
       pointerDown: onTilePointerDown,
-      click: selectTile,
+      click: clickTile,
       check: checkTile,
-      open: openInViewer,
       menu: openMenu,
       toggleCut: edits.toggleCutAt,
     };
@@ -274,7 +276,6 @@ export function PagesPage() {
       pointerDown: (event, key) => tileActionsRef.current?.pointerDown(event, key),
       click: (event, key) => tileActionsRef.current?.click(event, key),
       check: (event, key) => tileActionsRef.current?.check(event, key),
-      open: (tile) => tileActionsRef.current?.open(tile),
       menu: (key, x, y) => tileActionsRef.current?.menu(key, x, y),
       toggleCut: (key) => tileActionsRef.current?.toggleCut(key),
     }),
@@ -289,7 +290,7 @@ export function PagesPage() {
     commands: {
       openRange: () => setRangeOpen(true),
       openMove: () => setMoveOpen(true),
-      openPreview: setPreviewKey,
+      openPreview: preview.open,
       openMenu,
       openBlank: () => setBlankOpen(true),
       openShortcuts: () => setShortcutsOpen(true),
@@ -316,19 +317,6 @@ export function PagesPage() {
     setRangeOpen(false);
   };
 
-  const stepPreview = useCallback(
-    (delta: number) => {
-      const state = useOrganizerStore.getState();
-      const position = state.tiles.findIndex((tile) => tile.key === previewKey);
-      const next = state.tiles[Math.max(0, Math.min(state.tiles.length - 1, position + delta))];
-      if (!next || position < 0) return;
-      setPreviewKey(next.key);
-      select([next.key], next.key);
-      scrollToTile(next.key);
-    },
-    [previewKey, select, scrollToTile],
-  );
-
   const rotatePreview = useCallback(
     (delta: 90 | -90) => {
       const state = useOrganizerStore.getState();
@@ -337,7 +325,6 @@ export function PagesPage() {
     [commit, previewKey],
   );
 
-  const closePreview = useCallback(() => setPreviewKey(null), []);
   const closeMenu = useCallback(() => setMenu(null), []);
 
   useEffect(() => {
@@ -469,7 +456,7 @@ export function PagesPage() {
                   dropBefore={dropIndex === position}
                   dropAfter={dropIndex === tiles.length && isLast}
                   dimmed={Boolean(drag && (drag.key === tile.key || (isSelected && selected.has(drag.key))))}
-                  checkboxShown={multiSelect || selectedCount > 0}
+                  clickPreviews={!multiSelect}
                   labelText={labelTexts ? labelTexts[position] : null}
                   labelStart={Boolean(labels[tile.key])}
                   sources={sources}
@@ -540,9 +527,20 @@ export function PagesPage() {
         total={tiles.length}
         label={labelTexts && previewPosition >= 0 ? labelTexts[previewPosition] : null}
         sources={sources}
+        selected={previewTile !== null && selected.has(previewTile.key)}
+        selectedCount={selectedCount}
         onClose={closePreview}
-        onStep={stepPreview}
+        onStep={preview.step}
         onRotate={rotatePreview}
+        onToggleSelect={preview.toggle}
+        onOpenInViewer={
+          previewTile?.kind === "page" && previewTile.sourceId === MAIN_SOURCE_ID
+            ? () => {
+                closePreview();
+                openInViewer(previewTile);
+              }
+            : null
+        }
       />
       <RangeSelectDialog open={rangeOpen} total={tiles.length} onClose={() => setRangeOpen(false)} onSelect={selectPositions} />
       <MovePagesDialog
@@ -585,7 +583,7 @@ export function PagesPage() {
             cuts,
             busy,
             canPaste: canPaste && !clipboard.pasting,
-            onPreview: setPreviewKey,
+            onPreview: preview.open,
             onOpenInViewer: openInViewer,
             onRotate: edits.rotateSelected,
             onDuplicate: edits.duplicateSelected,

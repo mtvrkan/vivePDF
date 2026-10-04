@@ -2145,7 +2145,9 @@
         "pageTitle": "İçindekiler"
       },
       "renamedFields_one": "{{count}} form alanının adı başka bir dosyada da vardı; değerleri karışmasın diye yeniden adlandırıldı.",
-      "renamedFields_other": "{{count}} form alanının adı başka bir dosyada da vardı; değerleri karışmasın diye yeniden adlandırıldı."
+      "renamedFields_other": "{{count}} form alanının adı başka bir dosyada da vardı; değerleri karışmasın diye yeniden adlandırıldı.",
+      "alreadyListed_one": "{{count}} dosya zaten listede olduğu için yeniden eklenmedi.",
+      "alreadyListed_other": "{{count}} dosya zaten listede olduğu için yeniden eklenmedi."
     },
     "split": {
       "suffix": "parcalar",
@@ -3711,7 +3713,8 @@
         "contextMenu": "Sayfa menüsü",
         "clipboard": "Sayfaları kopyala / kes / yapıştır",
         "nudge": "Seçili sayfaları bir adım, bir satır ya da başa / sona taşı",
-        "move": "Seçili sayfaları bir sayfa numarasına taşı"
+        "move": "Seçili sayfaları bir sayfa numarasına taşı",
+        "previewSelect": "Önizlemede: sayfayı seç / seçimi genişlet"
       },
       "blank": "boş",
       "paperSize": "Kâğıt boyutu",
@@ -3844,7 +3847,8 @@
         "originalPage": "Asıl sayfa {{page}}",
         "previous": "Önceki sayfa",
         "next": "Sonraki sayfa",
-        "hint": "← → sayfalar arasında gezer · R döndürür · Boşluk ya da Esc kapatır"
+        "hint": "← → sayfalar arasında gezer · Enter sayfayı seçer ya da seçimi kaldırır · Shift+← → seçimi genişletir · R döndürür · Boşluk ya da Esc kapatır",
+        "select": "Bu sayfayı seç"
       },
       "clipboard": {
         "copy": "Sayfaları kopyala",

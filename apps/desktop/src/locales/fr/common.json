@@ -2145,7 +2145,9 @@
         "pageTitle": "Sommaire"
       },
       "renamedFields_one": "{{count}} champ de formulaire portait un nom déjà utilisé par un autre fichier et a été renommé pour que les valeurs restent séparées.",
-      "renamedFields_other": "{{count}} champs de formulaire portaient des noms déjà utilisés par un autre fichier et ont été renommés pour que les valeurs restent séparées."
+      "renamedFields_other": "{{count}} champs de formulaire portaient des noms déjà utilisés par un autre fichier et ont été renommés pour que les valeurs restent séparées.",
+      "alreadyListed_one": "{{count}} fichier figurait déjà dans la liste et n’a pas été ajouté à nouveau.",
+      "alreadyListed_other": "{{count}} fichiers figuraient déjà dans la liste et n’ont pas été ajoutés à nouveau."
     },
     "split": {
       "suffix": "parties",
@@ -3711,7 +3713,8 @@
         "insertBlank": "Insérer une page vierge",
         "marquee": "Glissez depuis une zone vide pour sélectionner (Ctrl inverse, Maj ajoute)",
         "preview": "Afficher l’aperçu de la page",
-        "range": "Sélectionner par numéros de page"
+        "range": "Sélectionner par numéros de page",
+        "previewSelect": "Dans l’aperçu : sélectionner la page / étendre la sélection"
       },
       "blank": "blanc",
       "paperSize": "Format de papier",
@@ -3852,11 +3855,12 @@
         "title": "Étiquette de page à partir de la page {{page}}"
       },
       "preview": {
-        "hint": "← → se déplacer entre les pages · R pivote · Espace ou Échap ferme",
+        "hint": "← → se déplacer entre les pages · Entrée sélectionne ou désélectionne la page · Maj+← → étend la sélection · R pivote · Espace ou Échap ferme",
         "next": "Page suivante",
         "originalPage": "Page d’origine {{page}}",
         "previous": "Page précédente",
-        "title": "Page {{page}} sur {{total}}"
+        "title": "Page {{page}} sur {{total}}",
+        "select": "Sélectionner cette page"
       },
       "range": {
         "hint": "Virgules et plages, ex. 1-5, 9, 12- (jusqu’à la fin)",

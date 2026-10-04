@@ -1,0 +1,73 @@
+import { cleanup, renderHook } from "@testing-library/react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { useOrganizerStore } from "./organizerStore";
+import type { OrganizerEdits } from "./useOrganizerEdits";
+import { useOrganizerShortcuts, type ShortcutCommands } from "./useOrganizerShortcuts";
+
+const openPreview = vi.fn();
+const applyAll = vi.fn();
+
+function renderShortcuts() {
+  const edits = { focusTileKey: () => "p2" } as unknown as OrganizerEdits;
+  const commands = { openPreview, applyAll } as unknown as ShortcutCommands;
+  renderHook(() => useOrganizerShortcuts({ enabled: true, layout: { columns: () => 4, clientBoxOf: () => null }, edits, commands }));
+}
+
+function press(key: string, target: EventTarget, options: KeyboardEventInit = {}) {
+  const event = new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true, ...options });
+  target.dispatchEvent(event);
+  return event;
+}
+
+function mount(html: string): HTMLElement {
+  document.body.innerHTML = html;
+  return document.body;
+}
+
+beforeEach(() => {
+  openPreview.mockReset();
+  applyAll.mockReset();
+  useOrganizerStore.setState({ tiles: [], selected: new Set(), anchor: null });
+});
+
+afterEach(() => {
+  cleanup();
+  document.body.innerHTML = "";
+});
+
+describe("organizer preview keys", () => {
+  it("opens the focused page with Space or Enter on the page grid", () => {
+    mount('<ol role="listbox" tabindex="0" id="grid"></ol>');
+    renderShortcuts();
+    const grid = document.getElementById("grid") as HTMLElement;
+
+    const space = press(" ", grid);
+    press("Enter", grid);
+
+    expect(openPreview.mock.calls).toEqual([["p2"], ["p2"]]);
+    expect(space.defaultPrevented).toBe(true);
+  });
+
+  it("lets Enter activate a focused toolbar button and keeps Ctrl+Enter for applying", () => {
+    mount('<button type="button" id="rotate">Rotate</button>');
+    renderShortcuts();
+    const button = document.getElementById("rotate") as HTMLElement;
+
+    const enter = press("Enter", button);
+    press("Enter", button, { ctrlKey: true });
+
+    expect(openPreview).not.toHaveBeenCalled();
+    expect(enter.defaultPrevented).toBe(false);
+    expect(applyAll).toHaveBeenCalledTimes(1);
+  });
+
+  it("lets Space tick the selection box of a page instead of opening the preview", () => {
+    mount('<li data-tile-key="p3"><button type="button" role="checkbox" id="check"></button></li>');
+    renderShortcuts();
+
+    const space = press(" ", document.getElementById("check") as HTMLElement);
+
+    expect(openPreview).not.toHaveBeenCalled();
+    expect(space.defaultPrevented).toBe(false);
+  });
+});

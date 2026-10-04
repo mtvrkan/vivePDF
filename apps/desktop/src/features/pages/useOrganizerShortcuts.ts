@@ -35,6 +35,14 @@ export function isEditableTarget(target: EventTarget | null): boolean {
   return target.closest("input, textarea, select, [contenteditable='true'], [role='dialog']") !== null;
 }
 
+export function isTileControl(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest("[data-tile-key] button") !== null;
+}
+
+export function isActivatableTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest("button, a[href], summary, [role='button'], [role='menuitem'], [role='tab'], [role='checkbox'], [role='switch']") !== null;
+}
+
 export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseOrganizerShortcutsOptions) {
   const latest = useRef({ edits, commands, layout });
   useLayoutEffect(() => {
@@ -74,7 +82,7 @@ export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseO
       } else if (mod && key === "g") {
         event.preventDefault();
         run.openRange();
-      } else if (event.key === " " && !mod) {
+      } else if (!mod && (event.key === " " ? !isTileControl(event.target) : key === "enter" && !event.altKey && !event.shiftKey && !isActivatableTarget(event.target))) {
         event.preventDefault();
         const focused = current.focusTileKey();
         if (focused) run.openPreview(focused);

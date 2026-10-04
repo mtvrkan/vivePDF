@@ -2145,7 +2145,9 @@
         "pageTitle": "Contents"
       },
       "renamedFields_one": "{{count}} form field had a name another file also used and was renamed, so their values stay separate.",
-      "renamedFields_other": "{{count}} form fields had names another file also used and were renamed, so their values stay separate."
+      "renamedFields_other": "{{count}} form fields had names another file also used and were renamed, so their values stay separate.",
+      "alreadyListed_one": "{{count}} file was already in the list and was not added again.",
+      "alreadyListed_other": "{{count}} files were already in the list and were not added again."
     },
     "split": {
       "suffix": "parts",
@@ -3711,7 +3713,8 @@
         "contextMenu": "Page menu",
         "clipboard": "Copy / cut / paste pages",
         "nudge": "Move the selected pages one step, a row, or to the start / end",
-        "move": "Move the selected pages to a page number"
+        "move": "Move the selected pages to a page number",
+        "previewSelect": "In the preview: select the page / extend the selection"
       },
       "blank": "blank",
       "paperSize": "Paper size",
@@ -3844,7 +3847,8 @@
         "originalPage": "Original page {{page}}",
         "previous": "Previous page",
         "next": "Next page",
-        "hint": "← → move between pages · R rotates · Space or Esc closes"
+        "hint": "← → move between pages · Enter selects or deselects the page · Shift+← → extends the selection · R rotates · Space or Esc closes",
+        "select": "Select this page"
       },
       "clipboard": {
         "copy": "Copy pages",
