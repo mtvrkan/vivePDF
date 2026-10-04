@@ -33,6 +33,29 @@ describe("studio shapes", () => {
     expect(renderStroke({ color: "#000000", width: 0, dash: "solid" })).toBeNull();
   });
 
+  it("draws every dash pattern with the chosen caps, joins and spacing", () => {
+    expect(renderStroke({ color: "#000000", width: 2, dash: "longDash" })).toMatchObject({ dash: [14, 6], cap: "butt", join: "miter" });
+    expect(renderStroke({ color: "#000000", width: 2, dash: "dashDot" })?.dash).toEqual([8, 4, 2, 4]);
+    expect(renderStroke({ color: "#000000", width: 2, dash: "dashDot", cap: "round", join: "bevel" })).toMatchObject({ dash: [6, 6, 0, 6], cap: "round", join: "bevel" });
+    expect(renderStroke({ color: "#000000", width: 2, dash: "dashed", gap: 2 })?.dash).toEqual([6, 8]);
+    expect(renderStroke({ color: "#000000", width: 2, dash: "dotted", cap: "butt" })).toMatchObject({ dash: [2, 2], cap: "butt", join: "round" });
+    expect(renderStroke({ color: "#000000", width: 2, dash: "solid", cap: "square", join: "round" })).toMatchObject({ dash: [], cap: "square", join: "round" });
+  });
+
+  it("keeps dash lengths and gradient radii inside what the exporter accepts", () => {
+    expect(Math.max(...(renderStroke({ color: "#000000", width: 500, dash: "longDash", gap: 4 })?.dash ?? []))).toBe(2000);
+    expect(renderFill({ type: "radial", stops: [], radius: 3 }, 20000, 20000)).toMatchObject({ r: 20000 });
+  });
+
+  it("moves the radial centre, scales its reach and sorts stops for both renderers", () => {
+    const stops = [{ offset: 1, color: "#000000" }, { offset: 0, color: "#ffffff" }];
+    const fill = renderFill({ type: "radial", stops, cx: 0, cy: 1, radius: 0.5 }, 30, 40);
+
+    expect(fill).toMatchObject({ cx: 0, cy: 40, r: 12.5 });
+    expect(fill && fill.type !== "solid" ? fill.stops.map((stop) => stop.offset) : []).toEqual([0, 1]);
+    expect(stops[0].offset).toBe(1);
+  });
+
   it("gives arrow lines a filled head and skips invisible shapes", () => {
     const arrow = createShape("arrowLine", 0, 0, 100, 20);
     const ghost = createShape("rect", 0, 0, 10, 10, { fill: { type: "none" }, stroke: null });
