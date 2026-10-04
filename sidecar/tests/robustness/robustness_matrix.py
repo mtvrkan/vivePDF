@@ -362,6 +362,8 @@ def _primary_fields(op_name: str, target: str, fixtures: Fixtures) -> dict[str, 
         return {"pathA": target, "pathB": good}
     if "inputs" in fields:
         return {"inputs": [{"path": target}, {"path": good}]}
+    if "sources" in fields and "pages" not in fields:
+        return {"sources": [{"path": target}]}
     if "sources" in fields:
         return {
             "sources": [{"id": "a", "path": target}],
