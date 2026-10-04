@@ -300,6 +300,8 @@ import type {
   StudioQrModules,
   StudioRenderParams,
   StudioRenderResult,
+  StudioThumbnailParams,
+  StudioThumbnailResult,
 } from "@/types/studio";
 
 export const assemblePages = (params: AssembleParams, options?: RpcCallOptions) =>
@@ -660,6 +662,9 @@ export const studioQr = (params: { value: string; errorLevel: StudioQrLevel }, o
 
 export const studioSaveProject = (params: StudioProjectSaveParams, options?: RpcCallOptions) =>
   rpc<StudioProjectSaveResult>("studio.save_project", params, options);
+
+export const studioThumbnail = (params: StudioThumbnailParams, options?: RpcCallOptions) =>
+  rpc<StudioThumbnailResult>("studio.thumbnail", params, options);
 
 export const studioOpenProject = (params: { path: string; password?: string | null }, options?: RpcCallOptions) =>
   rpc<StudioProjectOpenResult>("studio.open_project", params, options);

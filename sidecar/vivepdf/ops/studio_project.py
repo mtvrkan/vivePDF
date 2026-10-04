@@ -11,6 +11,8 @@ from vivepdf.ops._studio_models import (
     StudioProjectOpenResult,
     StudioProjectSaveParams,
     StudioProjectSaveResult,
+    StudioThumbnailParams,
+    StudioThumbnailResult,
 )
 from vivepdf.ops._studio_project import (
     CATALOG_KEY,
@@ -23,6 +25,7 @@ from vivepdf.ops._studio_project import (
     too_large,
 )
 from vivepdf.ops._studio_text import TextFaces
+from vivepdf.ops._studio_thumbnails import cached_thumbnail
 from vivepdf.ops.studio import Cache, draw_page
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
@@ -33,15 +36,19 @@ PDF_SIGNATURE = b"%PDF"
 
 
 def _thumbnail(page_spec: StudioPage, language: str) -> bytes:
+    return _rendered_thumbnail(page_spec, language, THUMBNAIL_SIDE)[0]
+
+
+def _rendered_thumbnail(page_spec: StudioPage, language: str, side: int) -> tuple[bytes, int, int]:
     cache: Cache = {}
     faces: dict[str | None, TextFaces] = {}
     document = pymupdf.open()
     try:
         draw_page(document, page_spec, 0, {}, language, cache, faces)
         page = document[0]
-        scale = THUMBNAIL_SIDE / max(page.rect.width, page.rect.height)
+        scale = side / max(page.rect.width, page.rect.height)
         pixmap = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
-        return pixmap.tobytes(output="jpg", jpg_quality=80)
+        return pixmap.tobytes(output="jpg", jpg_quality=80), pixmap.width, pixmap.height
     finally:
         document.close()
         for source, _ in cache.values():
@@ -81,6 +88,19 @@ def save_project(params: StudioProjectSaveParams, progress: Progress) -> StudioP
         output=str(target),
         bytes=len(archive),
         thumbnail=base64.b64encode(thumbnail).decode("ascii"),
+    )
+
+
+@op("studio.thumbnail", StudioThumbnailParams)
+def render_thumbnail(params: StudioThumbnailParams, _progress: Progress) -> StudioThumbnailResult:
+    image, width, height = cached_thumbnail(
+        params.page,
+        params.language,
+        params.side,
+        lambda: _rendered_thumbnail(params.page, params.language, params.side),
+    )
+    return StudioThumbnailResult(
+        image=base64.b64encode(image).decode("ascii"), width=width, height=height
     )
 
 

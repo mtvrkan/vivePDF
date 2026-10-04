@@ -8,15 +8,17 @@ import numpy as np
 import pymupdf
 import pytest
 from PIL import Image
+from pydantic import ValidationError
 
-from vivepdf.ops import _studio_project
+from vivepdf.ops import _studio_project, _studio_thumbnails, studio_project
 from vivepdf.ops._studio_models import (
     StudioProjectOpenParams,
     StudioProjectSaveParams,
     StudioRenderParams,
+    StudioThumbnailParams,
 )
 from vivepdf.ops.studio import render
-from vivepdf.ops.studio_project import design_of, open_project, save_project
+from vivepdf.ops.studio_project import design_of, open_project, render_thumbnail, save_project
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
@@ -229,3 +231,61 @@ def test_missing_files_are_reported(tmp_path: Path):
     with pytest.raises(OpError) as caught:
         _open(tmp_path / "absent.vivedesign")
     assert caught.value.code == ErrorCode.FILE_NOT_FOUND
+
+
+def test_a_thumbnail_is_a_jpeg_of_the_page_at_the_requested_size():
+    result = render_thumbnail(
+        StudioThumbnailParams.model_validate({"page": PREVIEW, "side": 160}), silent_progress()
+    )
+    image = Image.open(io.BytesIO(base64.b64decode(result.image)))
+    assert image.format == "JPEG"
+    assert (result.width, result.height) == image.size == (160, 80)
+    red, green, blue = image.convert("RGB").getpixel((80, 40))
+    assert blue > 200 and red < 40 and green < 40
+
+
+def test_an_empty_page_still_gives_a_white_thumbnail():
+    page = {"width": 100, "height": 300, "items": []}
+    result = render_thumbnail(
+        StudioThumbnailParams.model_validate({"page": page, "side": 60}), silent_progress()
+    )
+    image = Image.open(io.BytesIO(base64.b64decode(result.image))).convert("RGB")
+    assert image.size == (20, 60)
+    assert min(image.getpixel((10, 30))) > 240
+
+
+@pytest.mark.parametrize("side", [8, 5000])
+def test_a_thumbnail_size_out_of_range_is_refused(side: int):
+    with pytest.raises(ValidationError):
+        StudioThumbnailParams.model_validate({"page": PREVIEW, "side": side})
+
+
+def test_a_thumbnail_is_kept_and_served_again_until_the_page_changes(
+    _data_dir: Path, monkeypatch: pytest.MonkeyPatch
+):
+    params = StudioThumbnailParams.model_validate({"page": PREVIEW, "side": 100})
+    first = render_thumbnail(params, silent_progress())
+    monkeypatch.setattr(
+        studio_project, "_rendered_thumbnail", lambda *_: pytest.fail("rendered again")
+    )
+
+    second = render_thumbnail(params, silent_progress())
+
+    assert second == first
+    assert len(list((_data_dir / "cache" / "thumbnails").glob("*.jpg"))) == 1
+    changed = StudioThumbnailParams.model_validate({"page": PREVIEW, "side": 101})
+    with pytest.raises(pytest.fail.Exception):
+        render_thumbnail(changed, silent_progress())
+
+
+def test_the_thumbnail_cache_keeps_only_the_newest_files(
+    _data_dir: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(_studio_thumbnails, "CACHE_LIMIT", 2)
+
+    for side in (40, 41, 42):
+        render_thumbnail(
+            StudioThumbnailParams.model_validate({"page": PREVIEW, "side": side}), silent_progress()
+        )
+
+    assert len(list((_data_dir / "cache" / "thumbnails").glob("*.jpg"))) == 2

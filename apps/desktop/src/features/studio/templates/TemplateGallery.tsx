@@ -1,4 +1,4 @@
-import { memo, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { Award, BookOpen, Briefcase, CalendarHeart, ChevronRight, Contact, GraduationCap, IdCard, LayoutGrid, LayoutTemplate, MailOpen, Megaphone, Newspaper, Search, Share2, Tag, UtensilsCrossed, X, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -7,11 +7,14 @@ import type { StudioDesign } from "@/types/studio";
 import { PageView } from "../design/ElementView";
 import { buildTemplate, STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog";
 import { sizeOf, type StudioTemplate, type TemplateCategory, type Translate } from "./kit";
+import { useTemplateThumbnail } from "./thumbnails";
 
 const previews = new Map<string, StudioDesign>();
 const CARD_CHROME = 48;
-const SECTION_LIMIT_WIDE = 6;
-const SECTION_LIMIT_NARROW = 4;
+const CARD_PADDING = 26;
+const GRID_GAP = 12;
+const NARROW_SECTION_ROWS = 2;
+const MIN_SECTION_LIMIT = 2;
 const WIDE_BOX = 140;
 
 const CATEGORY_ICONS: Record<TemplateCategory, LucideIcon> = {
@@ -67,8 +70,9 @@ const TemplateCard = memo(function TemplateCard({ template, box, language, onPic
     return () => observer.disconnect();
   }, [visible]);
 
-  const design = visible ? previewOf(template, t, language) : null;
-  const page = design?.pages[0];
+  const pageOf = useCallback(() => previewOf(template, t, language).pages[0], [template, t, language]);
+  const thumbnail = useTemplateThumbnail(template.id, visible ? pageOf : null, language, box);
+  const page = thumbnail.status === "error" ? pageOf() : null;
 
   return (
     <button
@@ -82,7 +86,9 @@ const TemplateCard = memo(function TemplateCard({ template, box, language, onPic
     >
       <span className="flex items-center justify-center" style={{ width: `${box}px`, height: `${box}px` }} aria-hidden>
         <span className="paper-surface relative block overflow-hidden rounded-sm border border-border bg-white shadow-sm" style={{ width: `${width * scale}px`, height: `${height * scale}px` }}>
-          {page ? (
+          {thumbnail.status === "ready" ? (
+            <img src={thumbnail.url} alt="" draggable={false} decoding="async" className="block size-full" />
+          ) : page ? (
             <span className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
               <PageView page={page} language={language} />
             </span>
@@ -97,6 +103,19 @@ const TemplateCard = memo(function TemplateCard({ template, box, language, onPic
 });
 
 type Filter = TemplateCategory | "all";
+
+function useColumns(box: number) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [width, setWidth] = useState(0);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver((entries) => setWidth(entries[0]?.contentRect.width ?? 0));
+    observer.observe(node);
+    return () => observer.disconnect();
+  });
+  return { ref, count: Math.max(1, Math.floor((width + GRID_GAP) / (box + CARD_PADDING + GRID_GAP))) };
+}
 
 function CategoryButton({ filter, count, active, onSelect }: { filter: Filter; count: number; active: boolean; onSelect: (filter: Filter) => void }) {
   const { t } = useTranslation();
@@ -136,7 +155,7 @@ function CategoryChip({ filter, active, onSelect }: { filter: Filter; active: bo
 
 function CardGrid({ templates, box, language, onPick }: { templates: StudioTemplate[]; box: number; language: string; onPick: (template: StudioTemplate) => void }) {
   return (
-    <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${box + 26}px, 1fr))` }}>
+    <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(auto-fill, minmax(${box + CARD_PADDING}px, 1fr))` }}>
       {templates.map((template) => (
         <TemplateCard key={template.id} template={template} box={box} language={language} onPick={onPick} />
       ))}
@@ -150,7 +169,8 @@ export function TemplateGallery({ language, box, onPick, className }: { language
   const [filter, setFilter] = useState<Filter>("all");
   const needle = query.trim().toLocaleLowerCase(language);
   const wide = box >= WIDE_BOX;
-  const sectionLimit = wide ? SECTION_LIMIT_WIDE : SECTION_LIMIT_NARROW;
+  const columns = useColumns(box);
+  const sectionLimit = Math.max(MIN_SECTION_LIMIT, columns.count * (wide ? 1 : NARROW_SECTION_ROWS));
 
   const matching = useMemo(
     () =>
@@ -206,7 +226,7 @@ export function TemplateGallery({ language, box, onPick, className }: { language
   );
 
   const results = sections ? (
-    <div className="space-y-6">
+    <div ref={columns.ref} className="space-y-6">
       {sections.map((category) => {
         const Icon = CATEGORY_ICONS[category];
         const items = byCategory.get(category) ?? [];

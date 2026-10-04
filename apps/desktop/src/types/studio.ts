@@ -258,6 +258,10 @@ export type StudioProjectSaveParams = { design: StudioDesign; assets: string[]; 
 
 export type StudioProjectSaveResult = { output: string; bytes: number; thumbnail: string };
 
+export type StudioThumbnailParams = { page: StudioRenderPage; language?: string; side?: number };
+
+export type StudioThumbnailResult = { image: string; width: number; height: number };
+
 export type StudioProjectOpenResult = { design: unknown; thumbnail: string; source: "project" | "pdf" };
 
 export const STUDIO_PROJECT_EXTENSION = "vivedesign";

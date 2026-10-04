@@ -303,6 +303,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.design_of",
         "studio.open_project",
         "studio.save_project",
+        "studio.thumbnail",
     ),
     "system": (
         "system.ping",

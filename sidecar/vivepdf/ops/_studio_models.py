@@ -247,6 +247,18 @@ class StudioProjectSaveResult(RpcModel):
     thumbnail: str = ""
 
 
+class StudioThumbnailParams(RpcModel):
+    page: StudioPage
+    language: str = Field(default="en", max_length=20)
+    side: int = Field(default=320, ge=32, le=800)
+
+
+class StudioThumbnailResult(RpcModel):
+    image: str
+    width: int
+    height: int
+
+
 class StudioProjectOpenParams(RpcModel):
     path: FilePath
     password: str | None = None
