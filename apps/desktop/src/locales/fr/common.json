@@ -6522,7 +6522,11 @@
       "show": "Afficher {{name}}",
       "hide": "Masquer {{name}}",
       "lock": "Verrouiller {{name}}",
-      "unlock": "Déverrouiller {{name}}"
+      "unlock": "Déverrouiller {{name}}",
+      "group": "Groupe ({{count}})",
+      "expand": "Développer {{name}}",
+      "collapse": "Réduire {{name}}",
+      "hint": "Faites glisser un calque pour changer l’ordre, ou appuyez sur Alt+↑ ou Alt+↓ dessus. Double-cliquez sur un groupe pour choisir un seul élément à l’intérieur."
     },
     "pages": {
       "label": "Pages",
@@ -8253,7 +8257,9 @@
         "rotateStep": "Pivoter par pas de 15°",
         "headings": "Titre 1 / 2 / 3",
         "lists": "Liste à puces / numérotée",
-        "lineBreak": "Saut de ligne sans nouveau paragraphe"
+        "lineBreak": "Saut de ligne sans nouveau paragraphe",
+        "layerOrder": "Monter / descendre le calque actif (panneau Calques)",
+        "enterGroup": "Sélectionner un seul élément dans un groupe"
       }
     }
   }

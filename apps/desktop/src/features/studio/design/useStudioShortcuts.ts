@@ -103,7 +103,7 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
       if (event.ctrlKey || event.metaKey || event.altKey) return;
       if (isControlTarget(event.target) && CONTROL_KEYS.has(event.key)) return;
       if (event.key === "Delete" || event.key === "Backspace") return run(state.remove);
-      if (event.key === "Escape" && state.selection.length) return run(() => state.select([]));
+      if (event.key === "Escape" && state.selection.length) return run(() => (state.groupScope ? state.exitGroup() : state.select([])));
       if (event.key === "Enter" || event.key === "F2") {
         const [only] = selectedElements(state);
         if (only?.kind === "text" && state.selection.length === 1 && !only.locked) return run(() => state.setEditing(only.id));

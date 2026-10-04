@@ -6522,7 +6522,11 @@
       "show": "显示{{name}}",
       "hide": "隐藏{{name}}",
       "lock": "锁定{{name}}",
-      "unlock": "解锁{{name}}"
+      "unlock": "解锁{{name}}",
+      "group": "组（{{count}}）",
+      "expand": "展开{{name}}",
+      "collapse": "折叠{{name}}",
+      "hint": "拖动图层可更改顺序，也可以在图层上按 Alt+↑ 或 Alt+↓。双击组可选择组内的单个元素。"
     },
     "pages": {
       "label": "页面",
@@ -8253,7 +8257,9 @@
         "rotateStep": "按 15° 的步幅旋转",
         "headings": "标题 1 / 2 / 3",
         "lists": "项目符号列表 / 编号列表",
-        "lineBreak": "换行但不新建段落"
+        "lineBreak": "换行但不新建段落",
+        "layerOrder": "上移 / 下移当前图层（图层面板）",
+        "enterGroup": "选择组内的单个元素"
       }
     }
   }

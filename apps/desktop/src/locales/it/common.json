@@ -6522,7 +6522,11 @@
       "show": "Mostra {{name}}",
       "hide": "Nascondi {{name}}",
       "lock": "Blocca {{name}}",
-      "unlock": "Sblocca {{name}}"
+      "unlock": "Sblocca {{name}}",
+      "group": "Gruppo ({{count}})",
+      "expand": "Espandi {{name}}",
+      "collapse": "Comprimi {{name}}",
+      "hint": "Trascina un livello per cambiare l’ordine oppure premi Alt+↑ o Alt+↓ su di esso. Fai doppio clic su un gruppo per scegliere un solo elemento al suo interno."
     },
     "pages": {
       "label": "Pagine",
@@ -8253,7 +8257,9 @@
         "rotateStep": "Ruota a scatti di 15°",
         "headings": "Titolo 1 / 2 / 3",
         "lists": "Elenco puntato / numerato",
-        "lineBreak": "Interruzione di riga senza nuovo paragrafo"
+        "lineBreak": "Interruzione di riga senza nuovo paragrafo",
+        "layerOrder": "Sposta su / giù il livello attivo (pannello Livelli)",
+        "enterGroup": "Seleziona un solo elemento all’interno di un gruppo"
       }
     }
   }

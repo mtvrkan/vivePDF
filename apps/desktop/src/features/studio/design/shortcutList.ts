@@ -32,6 +32,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Ctrl G  /  Ctrl Shift G", "group"),
       item("Ctrl ↑  /  Ctrl ↓", "forwardBackward"),
       item("Ctrl Shift ↑  /  Ctrl Shift ↓", "frontBack"),
+      item("Alt ↑  /  Alt ↓", "layerOrder"),
       item("Ctrl Shift L", "lock"),
       item("Ctrl Shift H", "hide"),
     ],
@@ -68,6 +69,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
     id: "mouse",
     items: [
       item("Shift Click", "addToSelection"),
+      item("Double-click", "enterGroup"),
       item("Shift Drag", "axisLock"),
       item("Ctrl Drag", "noSnap"),
       item("Shift Resize", "keepRatio"),

@@ -353,6 +353,11 @@ export function Canvas({ language }: { language: string }) {
   const onDoubleClick = (event: React.MouseEvent) => {
     const hit = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-element-id]")?.dataset.elementId;
     const element = page.elements.find((item) => item.id === hit);
+    const state = store();
+    if (element && element.groupId !== null && !(state.groupScope === element.groupId && state.selection.includes(element.id))) {
+      state.enterGroup(element.id);
+      return;
+    }
     if (element?.kind === "text" && !element.locked) {
       store().select([element.id]);
       textEditorEntry.point = { x: event.clientX, y: event.clientY };

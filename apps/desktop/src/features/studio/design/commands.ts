@@ -62,13 +62,6 @@ export function toggleHiddenSelection() {
   store().applyToPage((page) => elements.reduce((current, element) => updateElement<StudioElement>(current, element.id, { hidden }), page));
 }
 
-export function toggleHidden(id: string) {
-  store().applyToPage((page) => {
-    const element = page.elements.find((item) => item.id === id);
-    return element ? updateElement<StudioElement>(page, id, { hidden: !element.hidden }) : page;
-  });
-}
-
 export function patchSelected(patch: Partial<StudioElement> | ((element: StudioElement) => Partial<StudioElement>), merge?: string) {
   const elements = selectedElements(store());
   if (!elements.length) return;

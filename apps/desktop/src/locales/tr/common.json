@@ -6523,7 +6523,11 @@
       "show": "{{name}} öğesini göster",
       "hide": "{{name}} öğesini gizle",
       "lock": "{{name}} öğesini kilitle",
-      "unlock": "{{name}} öğesinin kilidini aç"
+      "unlock": "{{name}} öğesinin kilidini aç",
+      "group": "Grup ({{count}})",
+      "expand": "{{name}} içeriğini göster",
+      "collapse": "{{name}} içeriğini gizle",
+      "hint": "Sırasını değiştirmek için katmanı sürükleyin ya da katman seçiliyken Alt+↑ veya Alt+↓ tuşlarına basın. Grubun içindeki tek bir öğeyi seçmek için gruba çift tıklayın."
     },
     "pages": {
       "label": "Sayfalar",
@@ -8254,7 +8258,9 @@
         "rotateStep": "15°'lik adımlarla döndür",
         "headings": "Başlık 1 / 2 / 3",
         "lists": "Madde işaretli / numaralı liste",
-        "lineBreak": "Yeni paragraf açmadan alt satıra geç"
+        "lineBreak": "Yeni paragraf açmadan alt satıra geç",
+        "layerOrder": "Odaktaki katmanı yukarı / aşağı taşı (Katmanlar paneli)",
+        "enterGroup": "Grubun içindeki tek bir öğeyi seç"
       }
     }
   }

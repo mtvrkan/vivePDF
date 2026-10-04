@@ -6522,7 +6522,11 @@
       "show": "Mostrar {{name}}",
       "hide": "Ocultar {{name}}",
       "lock": "Bloquear {{name}}",
-      "unlock": "Desbloquear {{name}}"
+      "unlock": "Desbloquear {{name}}",
+      "group": "Grupo ({{count}})",
+      "expand": "Expandir {{name}}",
+      "collapse": "Contraer {{name}}",
+      "hint": "Arrastre una capa para cambiar el orden o pulse Alt+↑ o Alt+↓ sobre ella. Haga doble clic en un grupo para elegir un solo elemento dentro de él."
     },
     "pages": {
       "label": "Páginas",
@@ -8253,7 +8257,9 @@
         "rotateStep": "Girar en pasos de 15°",
         "headings": "Título 1 / 2 / 3",
         "lists": "Lista con viñetas / numerada",
-        "lineBreak": "Salto de línea sin crear un párrafo nuevo"
+        "lineBreak": "Salto de línea sin crear un párrafo nuevo",
+        "layerOrder": "Subir / bajar la capa enfocada (panel Capas)",
+        "enterGroup": "Seleccionar un solo elemento dentro de un grupo"
       }
     }
   }

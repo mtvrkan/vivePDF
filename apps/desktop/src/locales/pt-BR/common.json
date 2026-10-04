@@ -6522,7 +6522,11 @@
       "show": "Mostrar {{name}}",
       "hide": "Ocultar {{name}}",
       "lock": "Bloquear {{name}}",
-      "unlock": "Desbloquear {{name}}"
+      "unlock": "Desbloquear {{name}}",
+      "group": "Grupo ({{count}})",
+      "expand": "Expandir {{name}}",
+      "collapse": "Recolher {{name}}",
+      "hint": "Arraste uma camada para mudar a ordem ou pressione Alt+↑ ou Alt+↓ sobre ela. Clique duas vezes em um grupo para escolher um único item dentro dele."
     },
     "pages": {
       "label": "Páginas",
@@ -8253,7 +8257,9 @@
         "rotateStep": "Girar em passos de 15°",
         "headings": "Título 1 / 2 / 3",
         "lists": "Lista com marcadores / numerada",
-        "lineBreak": "Quebra de linha sem criar um novo parágrafo"
+        "lineBreak": "Quebra de linha sem criar um novo parágrafo",
+        "layerOrder": "Mover a camada em foco para cima / para baixo (painel Camadas)",
+        "enterGroup": "Selecionar um único item dentro de um grupo"
       }
     }
   }

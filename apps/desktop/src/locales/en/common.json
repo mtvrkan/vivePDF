@@ -6523,7 +6523,11 @@
       "show": "Show {{name}}",
       "hide": "Hide {{name}}",
       "lock": "Lock {{name}}",
-      "unlock": "Unlock {{name}}"
+      "unlock": "Unlock {{name}}",
+      "group": "Group ({{count}})",
+      "expand": "Expand {{name}}",
+      "collapse": "Collapse {{name}}",
+      "hint": "Drag a layer to change the order, or press Alt+↑ or Alt+↓ on it. Double-click a group to pick one item inside it."
     },
     "pages": {
       "label": "Pages",
@@ -8254,7 +8258,9 @@
         "rotateStep": "Rotate in 15° steps",
         "headings": "Heading 1 / 2 / 3",
         "lists": "Bulleted / numbered list",
-        "lineBreak": "Line break without a new paragraph"
+        "lineBreak": "Line break without a new paragraph",
+        "layerOrder": "Move the focused layer up / down (Layers panel)",
+        "enterGroup": "Select one item inside a group"
       }
     }
   }

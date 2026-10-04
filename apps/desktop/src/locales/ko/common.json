@@ -6522,7 +6522,11 @@
       "show": "{{name}} 표시",
       "hide": "{{name}} 숨기기",
       "lock": "{{name}} 잠금",
-      "unlock": "{{name}} 잠금 해제"
+      "unlock": "{{name}} 잠금 해제",
+      "group": "그룹({{count}})",
+      "expand": "{{name}} 펼치기",
+      "collapse": "{{name}} 접기",
+      "hint": "레이어를 드래그하여 순서를 바꾸거나 레이어에서 Alt+↑ 또는 Alt+↓를 누르세요. 그룹 안의 요소 하나를 선택하려면 그룹을 두 번 클릭하세요."
     },
     "pages": {
       "label": "페이지",
@@ -8253,7 +8257,9 @@
         "rotateStep": "15° 단위로 회전",
         "headings": "제목 1 / 2 / 3",
         "lists": "글머리 기호 / 번호 매기기 목록",
-        "lineBreak": "새 문단 없이 줄 바꾸기"
+        "lineBreak": "새 문단 없이 줄 바꾸기",
+        "layerOrder": "포커스된 레이어를 위 / 아래로 이동(레이어 패널)",
+        "enterGroup": "그룹 안의 요소 하나 선택"
       }
     }
   }

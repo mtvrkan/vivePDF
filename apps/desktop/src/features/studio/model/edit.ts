@@ -1,10 +1,12 @@
 import type { StudioDesign, StudioElement, StudioPage } from "@/types/studio";
-import { MAX_ELEMENTS_PER_PAGE, MAX_PAGES, createPage, newId } from "./design";
+import { MAX_ELEMENTS_PER_PAGE, MAX_PAGE_SIDE, MAX_PAGES, MIN_ELEMENT_SIDE, MIN_PAGE_SIDE, createPage, newId } from "./design";
 
 export type Bounds = { x: number; y: number; width: number; height: number };
 export type AlignMode = "left" | "centerX" | "right" | "top" | "middleY" | "bottom";
 export type AlignTarget = "selection" | "page";
 export type ReorderDirection = "forward" | "backward" | "front" | "back";
+export type LayerRun = { groupId: string | null; elements: StudioElement[] };
+export type PageResizeMode = "keep" | "scale";
 
 export function elementBounds(element: Pick<StudioElement, "x" | "y" | "width" | "height" | "rotation">): Bounds {
   const angle = (element.rotation * Math.PI) / 180;
@@ -98,12 +100,24 @@ export function moveElements(page: StudioPage, ids: readonly string[], dx: numbe
   return shifted(page, offsets);
 }
 
+function completeGroups(page: StudioPage, chosen: ReadonlySet<string>): Set<string> {
+  const total = new Map<string, number>();
+  const picked = new Map<string, number>();
+  for (const element of page.elements) {
+    if (element.groupId === null) continue;
+    total.set(element.groupId, (total.get(element.groupId) ?? 0) + 1);
+    if (chosen.has(element.id)) picked.set(element.groupId, (picked.get(element.groupId) ?? 0) + 1);
+  }
+  return new Set([...picked].filter(([groupId, count]) => count > 1 && count === total.get(groupId)).map(([groupId]) => groupId));
+}
+
 export function duplicateElements(page: StudioPage, ids: readonly string[], offset: number): { page: StudioPage; ids: string[] } {
   const chosen = new Set(ids);
   const regroup = groupMapper();
+  const whole = completeGroups(page, chosen);
   const copies = page.elements
     .filter((element) => chosen.has(element.id))
-    .map((element) => ({ ...structuredClone(element), id: newId(), x: element.x + offset, y: element.y + offset, locked: false, groupId: regroup(element.groupId) }));
+    .map((element) => ({ ...structuredClone(element), id: newId(), x: element.x + offset, y: element.y + offset, locked: false, groupId: element.groupId !== null && whole.has(element.groupId) ? regroup(element.groupId) : null }));
   const next = addElements(page, copies);
   const added = new Set(next.elements.map((element) => element.id));
   return { page: next, ids: copies.map((element) => element.id).filter((id) => added.has(id)) };
@@ -149,31 +163,89 @@ export function distributeElements(page: StudioPage, ids: readonly string[], axi
   return shifted(page, offsets);
 }
 
-export function reorderElements(page: StudioPage, ids: readonly string[], direction: ReorderDirection): StudioPage {
-  const chosen = new Set(ids);
-  const picked = page.elements.filter((element) => chosen.has(element.id));
-  const others = page.elements.filter((element) => !chosen.has(element.id));
-  if (!picked.length || !others.length) return page;
-  if (direction === "front") return { ...page, elements: [...others, ...picked] };
-  if (direction === "back") return { ...page, elements: [...picked, ...others] };
-  const order = [...page.elements];
+export function layerRuns(elements: readonly StudioElement[]): LayerRun[] {
+  const runs: LayerRun[] = [];
+  for (const element of elements) {
+    const last = runs[runs.length - 1];
+    if (last && element.groupId !== null && last.groupId === element.groupId) last.elements.push(element);
+    else runs.push({ groupId: element.groupId, elements: [element] });
+  }
+  return runs;
+}
+
+function shiftChosen<T>(items: readonly T[], chosen: (item: T) => boolean, direction: ReorderDirection): T[] {
+  const picked = items.filter(chosen);
+  const others = items.filter((item) => !chosen(item));
+  if (!picked.length || !others.length) return [...items];
+  if (direction === "front") return [...others, ...picked];
+  if (direction === "back") return [...picked, ...others];
+  const order = [...items];
   if (direction === "forward") {
     for (let index = order.length - 2; index >= 0; index -= 1) {
-      if (chosen.has(order[index].id) && !chosen.has(order[index + 1].id)) [order[index], order[index + 1]] = [order[index + 1], order[index]];
+      if (chosen(order[index]) && !chosen(order[index + 1])) [order[index], order[index + 1]] = [order[index + 1], order[index]];
     }
   } else {
     for (let index = 1; index < order.length; index += 1) {
-      if (chosen.has(order[index].id) && !chosen.has(order[index - 1].id)) [order[index], order[index - 1]] = [order[index - 1], order[index]];
+      if (chosen(order[index]) && !chosen(order[index - 1])) [order[index], order[index - 1]] = [order[index - 1], order[index]];
     }
   }
-  return { ...page, elements: order };
+  return order;
+}
+
+function withElements(page: StudioPage, elements: StudioElement[]): StudioPage {
+  return elements.length === page.elements.length && elements.every((element, index) => element === page.elements[index]) ? page : { ...page, elements };
+}
+
+export function reorderElements(page: StudioPage, ids: readonly string[], direction: ReorderDirection): StudioPage {
+  const chosen = new Set(ids);
+  const isChosen = (element: StudioElement) => chosen.has(element.id);
+  const whole = (run: LayerRun) => run.elements.every(isChosen);
+  const runs = layerRuns(page.elements).map((run) => (!whole(run) && run.elements.some(isChosen) ? { ...run, elements: shiftChosen(run.elements, isChosen, direction) } : run));
+  return withElements(page, shiftChosen(runs, whole, direction).flatMap((run) => run.elements));
+}
+
+function lastIndexOf<T>(items: readonly T[], test: (item: T) => boolean): number {
+  for (let index = items.length - 1; index >= 0; index -= 1) if (test(items[index])) return index;
+  return -1;
+}
+
+function nearestRunEdge(elements: readonly StudioElement[], at: number): number {
+  const groupId = at > 0 && at < elements.length ? elements[at].groupId : null;
+  if (groupId === null || elements[at - 1].groupId !== groupId) return at;
+  let start = at;
+  while (start > 0 && elements[start - 1].groupId === groupId) start -= 1;
+  let end = at;
+  while (end < elements.length && elements[end].groupId === groupId) end += 1;
+  return at - start <= end - at ? start : end;
+}
+
+export function placeElements(page: StudioPage, ids: readonly string[], index: number): StudioPage {
+  const chosen = new Set(ids);
+  const moving = page.elements.filter((element) => chosen.has(element.id));
+  if (!moving.length) return page;
+  const rest = page.elements.filter((element) => !chosen.has(element.id));
+  const passed = page.elements.slice(0, Math.max(0, index)).filter((element) => chosen.has(element.id)).length;
+  let at = Math.max(0, Math.min(rest.length, index - passed));
+  const groupId = moving[0].groupId;
+  const inside = groupId !== null && moving.every((element) => element.groupId === groupId) && rest.some((element) => element.groupId === groupId);
+  if (inside) {
+    const first = rest.findIndex((element) => element.groupId === groupId);
+    const last = lastIndexOf(rest, (element) => element.groupId === groupId);
+    at = Math.max(first, Math.min(last + 1, at));
+  } else {
+    at = nearestRunEdge(rest, at);
+  }
+  return withElements(page, [...rest.slice(0, at), ...moving, ...rest.slice(at)]);
 }
 
 export function groupElements(page: StudioPage, ids: readonly string[]): { page: StudioPage; groupId: string | null } {
   const chosen = new Set(expandToGroups(page, ids));
   if (chosen.size < 2) return { page, groupId: null };
   const groupId = newId();
-  return { page: { ...page, elements: page.elements.map((element) => (chosen.has(element.id) ? { ...element, groupId } : element)) }, groupId };
+  const top = lastIndexOf(page.elements, (element) => chosen.has(element.id));
+  const members = page.elements.filter((element) => chosen.has(element.id)).map((element) => ({ ...element, groupId }));
+  const below = page.elements.slice(0, top + 1).filter((element) => !chosen.has(element.id));
+  return { page: { ...page, elements: [...below, ...members, ...page.elements.slice(top + 1)] }, groupId };
 }
 
 export function ungroupElements(page: StudioPage, ids: readonly string[]): StudioPage {
@@ -224,4 +296,41 @@ export function movePage(design: StudioDesign, pageId: string, index: number): S
   const [page] = pages.splice(from, 1);
   pages.splice(Math.max(0, Math.min(pages.length, index)), 0, page);
   return { ...design, pages };
+}
+
+function pageSide(value: number): number {
+  return Math.min(MAX_PAGE_SIDE, Math.max(MIN_PAGE_SIDE, Number.isFinite(value) ? value : MIN_PAGE_SIDE));
+}
+
+function scaledStroke<T extends { width: number }>(stroke: T | null, factor: number): T | null {
+  return stroke ? { ...stroke, width: Math.min(500, Math.max(0.1, stroke.width * factor)) } : null;
+}
+
+function scaleElement(element: StudioElement, factor: number, dx: number, dy: number): StudioElement {
+  const box = {
+    ...element,
+    x: element.x * factor + dx,
+    y: element.y * factor + dy,
+    width: Math.max(MIN_ELEMENT_SIDE, element.width * factor),
+    height: Math.max(MIN_ELEMENT_SIDE, element.height * factor),
+  };
+  if (box.kind === "text") return { ...box, fontSize: Math.min(1000, Math.max(1, box.fontSize * factor)) };
+  if (box.kind === "shape" || box.kind === "image") return { ...box, cornerRadius: box.cornerRadius * factor, stroke: scaledStroke(box.stroke, factor) };
+  return box;
+}
+
+export function resizePage(page: StudioPage, width: number, height: number, mode: PageResizeMode): StudioPage {
+  const nextWidth = pageSide(width);
+  const nextHeight = pageSide(height);
+  if (nextWidth === page.width && nextHeight === page.height) return page;
+  if (mode === "keep" || !page.elements.length) return { ...page, width: nextWidth, height: nextHeight };
+  const factor = Math.min(nextWidth / page.width, nextHeight / page.height);
+  const dx = (nextWidth - page.width * factor) / 2;
+  const dy = (nextHeight - page.height * factor) / 2;
+  return { ...page, width: nextWidth, height: nextHeight, elements: page.elements.map((element) => scaleElement(element, factor, dx, dy)) };
+}
+
+export function resizeAllPages(design: StudioDesign, width: number, height: number, mode: PageResizeMode): StudioDesign {
+  const pages = design.pages.map((page) => resizePage(page, width, height, mode));
+  return pages.every((page, index) => page === design.pages[index]) ? design : { ...design, pages };
 }

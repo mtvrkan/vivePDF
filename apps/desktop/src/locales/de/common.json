@@ -6522,7 +6522,11 @@
       "show": "{{name}} einblenden",
       "hide": "{{name}} ausblenden",
       "lock": "{{name}} sperren",
-      "unlock": "{{name}} entsperren"
+      "unlock": "{{name}} entsperren",
+      "group": "Gruppe ({{count}})",
+      "expand": "Inhalt von {{name}} einblenden",
+      "collapse": "Inhalt von {{name}} ausblenden",
+      "hint": "Ziehen Sie eine Ebene, um die Reihenfolge zu ändern, oder drücken Sie auf ihr Alt+↑ bzw. Alt+↓. Doppelklicken Sie auf eine Gruppe, um ein einzelnes Element darin auszuwählen."
     },
     "pages": {
       "label": "Seiten",
@@ -8253,7 +8257,9 @@
         "rotateStep": "In 15°-Schritten drehen",
         "headings": "Überschrift 1 / 2 / 3",
         "lists": "Aufzählung / Nummerierung",
-        "lineBreak": "Zeilenumbruch ohne neuen Absatz"
+        "lineBreak": "Zeilenumbruch ohne neuen Absatz",
+        "layerOrder": "Fokussierte Ebene nach oben / unten verschieben (Ebenen)",
+        "enterGroup": "Ein einzelnes Element in einer Gruppe auswählen"
       }
     }
   }
