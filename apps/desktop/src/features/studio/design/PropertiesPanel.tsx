@@ -1,12 +1,13 @@
 import { AlignCenter, AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignJustify, AlignLeft, AlignRight, AlignStartHorizontal, AlignStartVertical, Bold, Italic, Lock, LockOpen, StretchHorizontal, StretchVertical, Underline } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { FontPicker } from "@/components/shared/FontPicker";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
-import { Segmented, SliderField, SwitchField, TextArea } from "@/components/tool/form";
+import { Segmented, SliderField, SwitchField, TextArea, TextInput } from "@/components/tool/form";
 import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioShapeElement, StudioTextAlign, StudioTextElement, StudioVerticalAlign } from "@/types/studio";
-import { STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
+import { MAX_PAGE_NAME, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
 import { align, distribute, patchSelected, toggleLock } from "./commands";
 import { DesignColours, ElementColours } from "./ColorSections";
 import { ColorField, FillEditor, NumberField, PanelSection, StrokeEditor } from "./controls";
@@ -15,7 +16,7 @@ import { fromMm, toMm } from "./units";
 import { DEFAULT_FONT_ID } from "./fonts";
 import { withElementStyle, type StylePatch } from "./richText";
 import { textEditorBridge } from "./textEditorBridge";
-import { distributableCount } from "../model/edit";
+import { distributableCount, resizeAllPages, resizePage, type PageResizeMode } from "../model/edit";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 
 const TEXT_ALIGNS: StudioTextAlign[] = ["left", "center", "right", "justify"];
@@ -27,14 +28,37 @@ function sizeKeyOf(page: StudioPage): StudioPageSize | "custom" {
   return match ?? "custom";
 }
 
+const RESIZE_MODES: PageResizeMode[] = ["keep", "scale"];
+const resizeChoice: { mode: PageResizeMode } = { mode: "keep" };
+
 function PageProperties({ page }: { page: StudioPage }) {
   const { t } = useTranslation();
   const applyToPage = useStudioStore((state) => state.applyToPage);
+  const apply = useStudioStore((state) => state.apply);
+  const sameSize = useStudioStore((state) => state.design?.pages.every((other) => other.width === page.width && other.height === page.height) ?? true);
+  const [mode, setMode] = useState<PageResizeMode>(resizeChoice.mode);
   const setPage = (patch: Partial<StudioPage>, merge?: string) => applyToPage((current) => ({ ...current, ...patch }), merge ? { merge } : undefined);
+  const resize = (width: number, height: number) => applyToPage((current) => resizePage(current, width, height, mode));
   const sizeKey = sizeKeyOf(page);
   const image = page.background.image;
   return (
     <>
+      <PanelSection title={t("studio.page.title")}>
+        <label className="block">
+          <span className="mb-1 block text-xs font-medium text-muted-foreground">{t("studio.page.name")}</span>
+          <TextInput
+            value={page.name}
+            maxLength={MAX_PAGE_NAME}
+            placeholder={t("studio.page.namePlaceholder")}
+            onChange={(event) => setPage({ name: event.target.value.slice(0, MAX_PAGE_NAME) }, "page-name")}
+            onBlur={(event) => {
+              const name = event.target.value.trim();
+              if (name !== page.name) setPage({ name }, "page-name");
+            }}
+            className="h-8 text-sm"
+          />
+        </label>
+      </PanelSection>
       <PanelSection title={t("studio.page.size")}>
         <Select
           value={sizeKey}
@@ -42,13 +66,35 @@ function PageProperties({ page }: { page: StudioPage }) {
           options={[...Object.keys(STUDIO_PAGE_SIZES).map((key) => ({ value: key, label: t(`studio.sizes.${key}`) })), { value: "custom", label: t("studio.sizes.custom"), disabled: true }]}
           onChange={(key) => {
             const size = STUDIO_PAGE_SIZES[key as StudioPageSize];
-            if (size) setPage({ width: size.width, height: size.height });
+            if (size) resize(size.width, size.height);
           }}
         />
         <div className="grid grid-cols-2 gap-2">
-          <NumberField label={t("studio.page.width")} suffix="mm" value={toMm(page.width)} min={6.4} max={5080} step={1} onChange={(value) => setPage({ width: fromMm(value) })} />
-          <NumberField label={t("studio.page.height")} suffix="mm" value={toMm(page.height)} min={6.4} max={5080} step={1} onChange={(value) => setPage({ height: fromMm(value) })} />
+          <NumberField label={t("studio.page.width")} suffix="mm" value={toMm(page.width)} min={6.4} max={5080} step={1} onChange={(value) => resize(fromMm(value), page.height)} />
+          <NumberField label={t("studio.page.height")} suffix="mm" value={toMm(page.height)} min={6.4} max={5080} step={1} onChange={(value) => resize(page.width, fromMm(value))} />
         </div>
+        <div className="space-y-1">
+          <span className="block text-xs font-medium text-muted-foreground">{t("studio.page.resizeContent")}</span>
+          <Segmented
+            size="sm"
+            value={mode}
+            options={RESIZE_MODES}
+            labelOf={(value) => t(`studio.page.resize.${value}`)}
+            onChange={(value) => {
+              resizeChoice.mode = value;
+              setMode(value);
+            }}
+            ariaLabel={t("studio.page.resizeContent")}
+          />
+        </div>
+        <button
+          type="button"
+          className="glass-chip h-8 w-full rounded-lg px-3 text-sm font-medium disabled:opacity-50"
+          disabled={sameSize}
+          onClick={() => apply((design) => resizeAllPages(design, page.width, page.height, mode))}
+        >
+          {t("studio.page.applyToAll")}
+        </button>
       </PanelSection>
       <PanelSection title={t("studio.page.background")}>
         <FillEditor value={page.background.fill} onChange={(fill, merge) => setPage({ background: { ...page.background, fill } }, merge)} />

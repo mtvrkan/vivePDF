@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { StudioPage } from "@/types/studio";
-import { createDesign, createPage, createShape } from "./design";
+import { createDesign, createPage, createShape, createText } from "./design";
 import {
   addPage,
   alignElements,
@@ -11,11 +11,15 @@ import {
   elementBounds,
   expandToGroups,
   groupElements,
+  layerRuns,
   moveElements,
   movePage,
+  placeElements,
   removeElements,
   removePage,
   reorderElements,
+  resizeAllPages,
+  resizePage,
   selectionBounds,
   ungroupElements,
   withoutGroupOf,
@@ -149,5 +153,121 @@ describe("selection helpers", () => {
 
     expect(distributableCount(page, ["e0", "e1", "e2", "e3"])).toBe(2);
     expect(distributableCount(page, [])).toBe(0);
+  });
+});
+
+describe("layer order with groups", () => {
+  function grouped(): StudioPage {
+    let page = pageWith([0, 0, 10, 10], [20, 0, 10, 10], [40, 0, 10, 10], [60, 0, 10, 10], [80, 0, 10, 10]);
+    page = groupElements(page, ["e1", "e2"]).page;
+    return page;
+  }
+
+  it("gathers a new group next to its top member", () => {
+    let page = pageWith([0, 0, 10, 10], [20, 0, 10, 10], [40, 0, 10, 10], [60, 0, 10, 10]);
+    page = groupElements(page, ["e0", "e2"]).page;
+
+    expect(ids(page)).toEqual(["e1", "e0", "e2", "e3"]);
+    expect(layerRuns(page.elements).map((run) => run.elements.map((element) => element.id))).toEqual([["e1"], ["e0", "e2"], ["e3"]]);
+  });
+
+  it("merges selected groups into one flat group instead of nesting them", () => {
+    let page = pageWith([0, 0, 10, 10], [20, 0, 10, 10], [40, 0, 10, 10], [60, 0, 10, 10]);
+    const first = groupElements(page, ["e0", "e1"]);
+    page = groupElements(first.page, ["e2", "e3"]).page;
+
+    const merged = groupElements(page, ["e0", "e3"]);
+
+    expect(new Set(merged.page.elements.map((element) => element.groupId))).toEqual(new Set([merged.groupId]));
+    expect(ungroupElements(merged.page, ["e0"]).elements.every((element) => element.groupId === null)).toBe(true);
+  });
+
+  it("moves a whole group past its neighbours without splitting it", () => {
+    const page = grouped();
+
+    expect(ids(reorderElements(page, ["e1", "e2"], "forward"))).toEqual(["e0", "e3", "e1", "e2", "e4"]);
+    expect(ids(reorderElements(page, ["e3"], "backward"))).toEqual(["e0", "e3", "e1", "e2", "e4"]);
+    expect(ids(reorderElements(page, ["e0"], "forward"))).toEqual(["e1", "e2", "e0", "e3", "e4"]);
+    expect(ids(reorderElements(page, ["e1", "e2"], "front"))).toEqual(["e0", "e3", "e4", "e1", "e2"]);
+  });
+
+  it("moves a single member only inside its group", () => {
+    const page = grouped();
+
+    expect(ids(reorderElements(page, ["e1"], "forward"))).toEqual(["e0", "e2", "e1", "e3", "e4"]);
+    expect(reorderElements(page, ["e2"], "forward")).toBe(page);
+    expect(reorderElements(page, ["e1"], "backward")).toBe(page);
+    expect(ids(reorderElements(page, ["e1"], "front"))).toEqual(["e0", "e2", "e1", "e3", "e4"]);
+  });
+
+  it("places dragged layers but never inside a group they do not belong to", () => {
+    const page = grouped();
+
+    expect(ids(placeElements(page, ["e4"], 0))).toEqual(["e4", "e0", "e1", "e2", "e3"]);
+    expect(ids(placeElements(page, ["e0"], 3))).toEqual(["e1", "e2", "e0", "e3", "e4"]);
+    expect(ids(placeElements(page, ["e4"], 2))).toEqual(["e0", "e4", "e1", "e2", "e3"]);
+    expect(ids(placeElements(page, ["e1", "e2"], 5))).toEqual(["e0", "e3", "e4", "e1", "e2"]);
+    expect(placeElements(page, ["e0"], 0)).toBe(page);
+    expect(placeElements(page, ["missing"], 3)).toBe(page);
+  });
+
+  it("keeps a dragged member inside its own group", () => {
+    const page = grouped();
+
+    expect(ids(placeElements(page, ["e1"], 3))).toEqual(["e0", "e2", "e1", "e3", "e4"]);
+    expect(ids(placeElements(page, ["e1"], 5))).toEqual(["e0", "e2", "e1", "e3", "e4"]);
+    expect(ids(placeElements(page, ["e2"], 0))).toEqual(["e0", "e2", "e1", "e3", "e4"]);
+  });
+
+  it("duplicates part of a group as loose elements", () => {
+    const page = grouped();
+
+    const copy = duplicateElements(page, ["e1"], 5);
+
+    expect(copy.page.elements.at(-1)?.groupId).toBeNull();
+    expect(duplicateElements({ ...page, elements: [at(page, "e1") as StudioPage["elements"][number]] }, ["e1"], 0).page.elements.at(-1)?.groupId).toBeNull();
+  });
+});
+
+describe("page size changes", () => {
+  it("keeps the content where it is by default", () => {
+    const page = pageWith([10, 20, 30, 40]);
+
+    const wider = resizePage(page, 800, 400, "keep");
+
+    expect(wider).toMatchObject({ width: 800, height: 400 });
+    expect(wider.elements[0]).toMatchObject({ x: 10, y: 20, width: 30, height: 40 });
+  });
+
+  it("scales the content proportionally and centres it on the new page", () => {
+    const page = createPage(200, 100);
+    page.elements = [
+      { ...createShape("rect", 0, 0, 200, 100, { stroke: { color: "#000000", width: 2, dash: "solid" }, cornerRadius: 4 }), id: "box" },
+      { ...createText(50, 25, 100, 50, "Hi", { fontSize: 20 }), id: "text" },
+    ];
+
+    const scaled = resizePage(page, 400, 400, "scale");
+
+    expect(at(scaled, "box")).toMatchObject({ x: 0, y: 100, width: 400, height: 200, cornerRadius: 8, stroke: { width: 4 } });
+    expect(at(scaled, "text")).toMatchObject({ x: 100, y: 150, width: 200, height: 100, fontSize: 40 });
+  });
+
+  it("clamps the size and leaves an unchanged page alone", () => {
+    const page = pageWith([0, 0, 10, 10]);
+
+    expect(resizePage(page, 500, 400, "scale")).toBe(page);
+    expect(resizePage(page, 1, Number.NaN, "keep")).toMatchObject({ width: 18, height: 18 });
+  });
+
+  it("applies one size to every page in a single change", () => {
+    let design = createDesign("Deck", 100, 100);
+    design = addPage(design, null).design;
+    design = { ...design, pages: [design.pages[0], { ...design.pages[1], width: 300, height: 300 }] };
+
+    const resized = resizeAllPages(design, 300, 300, "keep");
+
+    expect(resized.pages.map((page) => [page.width, page.height])).toEqual([[300, 300], [300, 300]]);
+    expect(resized.pages[1]).toBe(design.pages[1]);
+    expect(resizeAllPages(resized, 300, 300, "scale")).toBe(resized);
   });
 });

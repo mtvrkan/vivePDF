@@ -19,6 +19,7 @@ type StudioState = {
   dirty: boolean;
   pageId: string | null;
   selection: string[];
+  groupScope: string | null;
   editingId: string | null;
   past: StudioDesign[];
   future: StudioDesign[];
@@ -36,6 +37,8 @@ type StudioState = {
   undo: () => void;
   redo: () => void;
   select: (ids: string[]) => void;
+  enterGroup: (id: string) => void;
+  exitGroup: () => void;
   setPage: (pageId: string) => void;
   setEditing: (id: string | null) => void;
   setZoom: (zoom: number) => void;
@@ -93,6 +96,14 @@ export function selectedElements(state: Pick<StudioState, "design" | "pageId" | 
   return page.elements.filter((element) => chosen.has(element.id));
 }
 
+function scopedSelection(page: StudioPage, scope: string | null, current: string[], ids: string[]): string[] | null {
+  if (scope === null || !ids.length) return null;
+  const members = page.elements.filter((element) => element.groupId === scope).map((element) => element.id);
+  const chosen = new Set(ids);
+  if (!current.some((id) => members.includes(id)) || !ids.every((id) => members.includes(id)) || members.every((id) => chosen.has(id))) return null;
+  return members.filter((id) => chosen.has(id));
+}
+
 function validSelection(design: StudioDesign, pageId: string | null, selection: string[]): string[] {
   const page = design.pages.find((item) => item.id === pageId) ?? design.pages[0];
   const present = new Set(page.elements.map((element) => element.id));
@@ -136,6 +147,7 @@ export const useStudioStore = create<StudioState>((set, get) => {
     dirty: false,
     pageId: null,
     selection: [],
+    groupScope: null,
     editingId: null,
     past: [],
     future: [],
@@ -145,7 +157,7 @@ export const useStudioStore = create<StudioState>((set, get) => {
     fit: true,
     clipboard: null,
     open: (design, filePath = null) => {
-      set({ design, filePath, dirty: false, pageId: design.pages[0].id, selection: [], editingId: null, past: [], future: [], mergeKey: null, fit: true });
+      set({ design, filePath, dirty: false, pageId: design.pages[0].id, selection: [], groupScope: null, editingId: null, past: [], future: [], mergeKey: null, fit: true });
       writeDraft(design, filePath);
     },
     close: () => {
@@ -153,7 +165,7 @@ export const useStudioStore = create<StudioState>((set, get) => {
       if (draftTimer) clearTimeout(draftTimer);
       draftTimer = null;
       if (state.design) storeDraft(state.design, state.filePath);
-      set({ design: null, filePath: null, dirty: false, pageId: null, selection: [], editingId: null, past: [], future: [] });
+      set({ design: null, filePath: null, dirty: false, pageId: null, selection: [], groupScope: null, editingId: null, past: [], future: [] });
     },
     apply: (change, options) => {
       const design = get().design;
@@ -189,9 +201,22 @@ export const useStudioStore = create<StudioState>((set, get) => {
     select: (ids) => {
       const state = get();
       const page = currentPage(state);
-      set({ selection: page ? expandToGroups(page, ids) : [], editingId: state.editingId && ids.includes(state.editingId) ? state.editingId : null });
+      const scoped = page ? scopedSelection(page, state.groupScope, state.selection, ids) : null;
+      set({ selection: scoped ?? (page ? expandToGroups(page, ids) : []), groupScope: scoped ? state.groupScope : null, editingId: state.editingId && ids.includes(state.editingId) ? state.editingId : null });
     },
-    setPage: (pageId) => set({ pageId, selection: [], editingId: null }),
+    enterGroup: (id) => {
+      const state = get();
+      const element = currentPage(state)?.elements.find((item) => item.id === id);
+      if (!element) return;
+      if (element.groupId === null) return state.select([id]);
+      set({ groupScope: element.groupId, selection: [id], editingId: state.editingId === id ? id : null });
+    },
+    exitGroup: () => {
+      const state = get();
+      set({ groupScope: null });
+      state.select(state.selection);
+    },
+    setPage: (pageId) => set({ pageId, selection: [], groupScope: null, editingId: null }),
     setEditing: (editingId) => set({ editingId }),
     setZoom: (zoom) => set({ zoom: Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom)), fit: false }),
     setFit: () => set({ fit: true }),

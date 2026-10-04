@@ -151,6 +151,7 @@ export type StudioGuide = { axis: "x" | "y"; position: number };
 
 export type StudioPage = {
   id: string;
+  name: string;
   width: number;
   height: number;
   background: StudioBackground;

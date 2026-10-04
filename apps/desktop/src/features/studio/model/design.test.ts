@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { STUDIO_DESIGN_VERSION } from "@/types/studio";
-import { createDesign, createQr, createShape, createText, hasPlaceholders, libraryFontIds, normalizeDesign, normalizeElement, placeholdersIn, STUDIO_PAGE_SIZES, textDirection } from "./design";
+import { MAX_PAGE_NAME, createDesign, createQr, createShape, createText, hasPlaceholders, libraryFontIds, normalizeDesign, normalizeElement, placeholdersIn, STUDIO_PAGE_SIZES, textDirection } from "./design";
 
 describe("studio design model", () => {
   it("creates a one-page design with a white background", () => {
@@ -32,6 +32,18 @@ describe("studio design model", () => {
     design.pages[0].elements.push(createText(10, 10, 100, 30, "Hello", { bold: true }), createShape("star", 5, 5, 40, 40));
 
     expect(normalizeDesign(JSON.parse(JSON.stringify(design)))).toEqual(design);
+  });
+
+  it("gives old pages an empty name and trims or clips stored names", () => {
+    const design = createDesign("Deck", 100, 100);
+    const oldPage: Record<string, unknown> = { ...design.pages[0] };
+    delete oldPage.name;
+    const raw = { ...design, pages: [oldPage, { ...design.pages[0], id: "b", name: "  Cover  " }, { ...design.pages[0], id: "c", name: "x".repeat(500) }, { ...design.pages[0], id: "d", name: 7 }] };
+
+    const pages = normalizeDesign(raw)?.pages ?? [];
+
+    expect(pages.map((page) => page.name.length)).toEqual([0, 5, MAX_PAGE_NAME, 0]);
+    expect(pages[1].name).toBe("Cover");
   });
 
   it("repairs bad values and drops unknown or unusable elements", () => {

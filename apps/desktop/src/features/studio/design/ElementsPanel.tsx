@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { ArrowDown, ArrowUp, Eye, EyeOff, Image as ImageIcon, Layers, LayoutTemplate, Lock, LockOpen, QrCode, Shapes, Table2, Type, type LucideIcon } from "lucide-react";
+import { Image as ImageIcon, Layers, LayoutTemplate, QrCode, Shapes, Table2, Type, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
@@ -11,15 +10,13 @@ import { useUiStore } from "@/shared/store/uiStore";
 import { STUDIO_SHAPES, type StudioShapeKind } from "@/types/studio";
 import { createImage, createQr, createShape, createSvg, createVector } from "../model/design";
 import { DEFAULT_COLOURS, ORNAMENTS, paletteColours, type Ornament, type OrnamentCategory } from "../ornaments/ornaments";
-import { reorderElements, updateElement, withoutGroupOf } from "../model/edit";
 import { loadImagePreview } from "./assets";
-import { toggleHidden } from "./commands";
-import { elementLabel } from "./labels";
 import { PathsSvg } from "./ElementView";
 import { centred, insert, insertShape, insertText, TEXT_PRESETS, type TextPreset } from "./insert";
 import { pickImage } from "./pickImage";
 import { renderFill, renderStroke, shapePaths } from "../model/shapes";
 import { currentPage, useStudioStore } from "./studioStore";
+import { LayersTab } from "./LayersTab";
 import { insertTemplate } from "../templates/apply";
 import { buildTemplate } from "../templates/catalog";
 import type { StudioTemplate } from "../templates/kit";
@@ -197,67 +194,6 @@ function TemplatesTab() {
     store.setPage(result.pageId);
   };
   return <TemplateGallery language={language} box={104} onPick={pick} className="p-3" />;
-}
-
-function LayersTab() {
-  const { t } = useTranslation();
-  const page = useStudioStore((state) => currentPage(state));
-  const selection = useStudioStore((state) => state.selection);
-  const select = useStudioStore((state) => state.select);
-  const applyToPage = useStudioStore((state) => state.applyToPage);
-  const [renaming, setRenaming] = useState<string | null>(null);
-  if (!page) return null;
-  if (!page.elements.length) return <p className="p-4 text-sm text-muted-foreground">{t("studio.layers.empty")}</p>;
-  const ordered = [...page.elements].reverse();
-  return (
-    <ul className="space-y-1 p-2" aria-label={t("studio.layers.label")}>
-      {ordered.map((element, index) => {
-        const active = selection.includes(element.id);
-        const label = elementLabel(element, t);
-        return (
-          <li key={element.id} className={cn("flex items-center gap-1 rounded-lg pl-2", active ? "glass-chip" : "hover:bg-muted/50")}>
-            {renaming === element.id ? (
-              <input
-                autoFocus
-                defaultValue={element.name}
-                aria-label={t("studio.layers.rename")}
-                className="field h-7 min-w-0 flex-1 rounded px-2 text-sm"
-                onBlur={(event) => {
-                  const name = event.target.value.trim().slice(0, 200);
-                  applyToPage((current) => updateElement(current, element.id, { name }));
-                  setRenaming(null);
-                }}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") event.currentTarget.blur();
-                  if (event.key === "Escape") setRenaming(null);
-                  event.stopPropagation();
-                }}
-              />
-            ) : (
-              <button
-                type="button"
-                aria-pressed={active}
-                onClick={(event) => select(event.shiftKey ? (active ? withoutGroupOf(page, selection, element.id) : [...selection, element.id]) : [element.id])}
-                onDoubleClick={() => setRenaming(element.id)}
-                className={cn("min-w-0 flex-1 truncate py-1.5 text-left text-sm", element.hidden && "text-muted-foreground line-through")}
-              >
-                {label}
-              </button>
-            )}
-            <IconButton icon={ArrowUp} label={t("studio.layers.forward", { name: label })} disabled={index === 0} onClick={() => applyToPage((current) => reorderElements(current, [element.id], "forward"))} />
-            <IconButton icon={ArrowDown} label={t("studio.layers.backward", { name: label })} disabled={index === ordered.length - 1} onClick={() => applyToPage((current) => reorderElements(current, [element.id], "backward"))} />
-            <IconButton icon={element.hidden ? EyeOff : Eye} label={element.hidden ? t("studio.layers.show", { name: label }) : t("studio.layers.hide", { name: label })} onClick={() => toggleHidden(element.id)} />
-            <IconButton
-              icon={element.locked ? Lock : LockOpen}
-              active={element.locked}
-              label={element.locked ? t("studio.layers.unlock", { name: label }) : t("studio.layers.lock", { name: label })}
-              onClick={() => applyToPage((current) => updateElement(current, element.id, { locked: !element.locked }))}
-            />
-          </li>
-        );
-      })}
-    </ul>
-  );
 }
 
 export function ElementsPanel() {

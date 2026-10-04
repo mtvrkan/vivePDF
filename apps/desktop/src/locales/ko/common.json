@@ -6522,7 +6522,11 @@
       "show": "{{name}} 표시",
       "hide": "{{name}} 숨기기",
       "lock": "{{name}} 잠금",
-      "unlock": "{{name}} 잠금 해제"
+      "unlock": "{{name}} 잠금 해제",
+      "group": "그룹({{count}})",
+      "expand": "{{name}} 펼치기",
+      "collapse": "{{name}} 접기",
+      "hint": "레이어를 드래그하여 순서를 바꾸거나 레이어에서 Alt+↑ 또는 Alt+↓를 누르세요. 그룹 안의 요소 하나를 선택하려면 그룹을 두 번 클릭하세요."
     },
     "pages": {
       "label": "페이지",
@@ -6531,7 +6535,12 @@
       "duplicate": "페이지 복제",
       "delete": "페이지 삭제",
       "moveLeft": "페이지를 왼쪽으로 이동",
-      "moveRight": "페이지를 오른쪽으로 이동"
+      "moveRight": "페이지를 오른쪽으로 이동",
+      "pageNamed": "{{number}}페이지: {{name}}",
+      "overview": "모든 페이지",
+      "overviewHint": "페이지를 클릭하면 열립니다. 페이지를 드래그하거나 화살표 단추를 사용하여 순서를 바꾸세요.",
+      "moveEarlier": "{{number}}페이지를 앞으로 이동",
+      "moveLater": "{{number}}페이지를 뒤로 이동"
     },
     "page": {
       "size": "페이지 크기",
@@ -6540,7 +6549,16 @@
       "background": "배경",
       "backgroundImage": "배경 그림",
       "replaceImage": "그림 바꾸기",
-      "removeImage": "그림 제거"
+      "removeImage": "그림 제거",
+      "title": "페이지",
+      "name": "페이지 이름",
+      "namePlaceholder": "선택 사항(예: 표지)",
+      "resizeContent": "크기 변경 시 콘텐츠",
+      "resize": {
+        "keep": "그대로 유지",
+        "scale": "맞게 크기 조정"
+      },
+      "applyToAll": "이 크기를 모든 페이지에 적용"
     },
     "props": {
       "label": "속성",
@@ -8257,7 +8275,9 @@
         "rulers": "눈금자 표시 또는 숨기기",
         "guides": "안내선 표시 또는 숨기기",
         "margins": "여백 표시 또는 숨기기",
-        "duplicateDrag": "끌면서 복제"
+        "duplicateDrag": "끌면서 복제",
+        "layerOrder": "포커스된 레이어를 위 / 아래로 이동(레이어 패널)",
+        "enterGroup": "그룹 안의 요소 하나 선택"
       }
     },
     "view": {

@@ -6522,7 +6522,11 @@
       "show": "Afficher {{name}}",
       "hide": "Masquer {{name}}",
       "lock": "Verrouiller {{name}}",
-      "unlock": "Déverrouiller {{name}}"
+      "unlock": "Déverrouiller {{name}}",
+      "group": "Groupe ({{count}})",
+      "expand": "Développer {{name}}",
+      "collapse": "Réduire {{name}}",
+      "hint": "Faites glisser un calque pour changer l’ordre, ou appuyez sur Alt+↑ ou Alt+↓ dessus. Double-cliquez sur un groupe pour choisir un seul élément à l’intérieur."
     },
     "pages": {
       "label": "Pages",
@@ -6531,7 +6535,12 @@
       "duplicate": "Dupliquer la page",
       "delete": "Supprimer la page",
       "moveLeft": "Déplacer la page vers la gauche",
-      "moveRight": "Déplacer la page vers la droite"
+      "moveRight": "Déplacer la page vers la droite",
+      "pageNamed": "Page {{number}} : {{name}}",
+      "overview": "Toutes les pages",
+      "overviewHint": "Cliquez sur une page pour l’ouvrir. Faites glisser les pages, ou utilisez les boutons fléchés, pour changer leur ordre.",
+      "moveEarlier": "Avancer la page {{number}}",
+      "moveLater": "Reculer la page {{number}}"
     },
     "page": {
       "size": "Format de page",
@@ -6540,7 +6549,16 @@
       "background": "Arrière-plan",
       "backgroundImage": "Image d’arrière-plan",
       "replaceImage": "Remplacer l’image",
-      "removeImage": "Retirer l’image"
+      "removeImage": "Retirer l’image",
+      "title": "Page",
+      "name": "Nom de la page",
+      "namePlaceholder": "Facultatif, p. ex. Couverture",
+      "resizeContent": "Contenu lors du redimensionnement",
+      "resize": {
+        "keep": "Laisser tel quel",
+        "scale": "Mettre à l’échelle"
+      },
+      "applyToAll": "Appliquer ce format à toutes les pages"
     },
     "props": {
       "label": "Propriétés",
@@ -8257,7 +8275,9 @@
         "rulers": "Afficher ou masquer les règles",
         "guides": "Afficher ou masquer les repères",
         "margins": "Afficher ou masquer les marges",
-        "duplicateDrag": "Dupliquer en faisant glisser"
+        "duplicateDrag": "Dupliquer en faisant glisser",
+        "layerOrder": "Monter / descendre le calque actif (panneau Calques)",
+        "enterGroup": "Sélectionner un seul élément dans un groupe"
       }
     },
     "view": {

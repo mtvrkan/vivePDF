@@ -6522,7 +6522,11 @@
       "show": "{{name}} を表示",
       "hide": "{{name}} を非表示",
       "lock": "{{name}} をロック",
-      "unlock": "{{name}} のロックを解除"
+      "unlock": "{{name}} のロックを解除",
+      "group": "グループ（{{count}}）",
+      "expand": "{{name}} を展開",
+      "collapse": "{{name}} を折りたたむ",
+      "hint": "レイヤーをドラッグして順序を変更するか、レイヤー上で Alt+↑ / Alt+↓ を押します。グループをダブルクリックすると、その中の 1 つの要素を選択できます。"
     },
     "pages": {
       "label": "ページ",
@@ -6531,7 +6535,12 @@
       "duplicate": "ページを複製",
       "delete": "ページを削除",
       "moveLeft": "ページを左へ移動",
-      "moveRight": "ページを右へ移動"
+      "moveRight": "ページを右へ移動",
+      "pageNamed": "{{number}} ページ：{{name}}",
+      "overview": "すべてのページ",
+      "overviewHint": "ページをクリックすると開きます。ページをドラッグするか矢印ボタンを使うと、順序を変更できます。",
+      "moveEarlier": "{{number}} ページを前へ移動",
+      "moveLater": "{{number}} ページを後ろへ移動"
     },
     "page": {
       "size": "ページサイズ",
@@ -6540,7 +6549,16 @@
       "background": "背景",
       "backgroundImage": "背景画像",
       "replaceImage": "画像を置き換え",
-      "removeImage": "画像を削除"
+      "removeImage": "画像を削除",
+      "title": "ページ",
+      "name": "ページ名",
+      "namePlaceholder": "任意（例：表紙）",
+      "resizeContent": "サイズ変更時のコンテンツ",
+      "resize": {
+        "keep": "そのまま",
+        "scale": "合わせて拡大縮小"
+      },
+      "applyToAll": "このサイズをすべてのページに適用"
     },
     "props": {
       "label": "プロパティ",
@@ -8257,7 +8275,9 @@
         "rulers": "ルーラーを表示または非表示",
         "guides": "ガイドを表示または非表示",
         "margins": "余白を表示または非表示",
-        "duplicateDrag": "ドラッグして複製"
+        "duplicateDrag": "ドラッグして複製",
+        "layerOrder": "フォーカス中のレイヤーを上へ / 下へ移動（レイヤーパネル）",
+        "enterGroup": "グループ内の 1 つの要素を選択"
       }
     },
     "view": {

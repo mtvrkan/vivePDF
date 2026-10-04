@@ -6522,7 +6522,11 @@
       "show": "{{name}} einblenden",
       "hide": "{{name}} ausblenden",
       "lock": "{{name}} sperren",
-      "unlock": "{{name}} entsperren"
+      "unlock": "{{name}} entsperren",
+      "group": "Gruppe ({{count}})",
+      "expand": "Inhalt von {{name}} einblenden",
+      "collapse": "Inhalt von {{name}} ausblenden",
+      "hint": "Ziehen Sie eine Ebene, um die Reihenfolge zu ändern, oder drücken Sie auf ihr Alt+↑ bzw. Alt+↓. Doppelklicken Sie auf eine Gruppe, um ein einzelnes Element darin auszuwählen."
     },
     "pages": {
       "label": "Seiten",
@@ -6531,7 +6535,12 @@
       "duplicate": "Seite duplizieren",
       "delete": "Seite löschen",
       "moveLeft": "Seite nach links verschieben",
-      "moveRight": "Seite nach rechts verschieben"
+      "moveRight": "Seite nach rechts verschieben",
+      "pageNamed": "Seite {{number}}: {{name}}",
+      "overview": "Alle Seiten",
+      "overviewHint": "Klicken Sie auf eine Seite, um sie zu öffnen. Ziehen Sie Seiten oder verwenden Sie die Pfeiltasten darunter, um die Reihenfolge zu ändern.",
+      "moveEarlier": "Seite {{number}} nach vorne verschieben",
+      "moveLater": "Seite {{number}} nach hinten verschieben"
     },
     "page": {
       "size": "Seitengröße",
@@ -6540,7 +6549,16 @@
       "background": "Hintergrund",
       "backgroundImage": "Hintergrundbild",
       "replaceImage": "Bild ersetzen",
-      "removeImage": "Bild entfernen"
+      "removeImage": "Bild entfernen",
+      "title": "Seite",
+      "name": "Seitenname",
+      "namePlaceholder": "Optional, z. B. Titelseite",
+      "resizeContent": "Inhalt beim Ändern der Größe",
+      "resize": {
+        "keep": "Unverändert lassen",
+        "scale": "Mitskalieren"
+      },
+      "applyToAll": "Diese Größe auf alle Seiten anwenden"
     },
     "props": {
       "label": "Eigenschaften",
@@ -8257,7 +8275,9 @@
         "rulers": "Lineale ein- oder ausblenden",
         "guides": "Hilfslinien ein- oder ausblenden",
         "margins": "Ränder ein- oder ausblenden",
-        "duplicateDrag": "Beim Ziehen duplizieren"
+        "duplicateDrag": "Beim Ziehen duplizieren",
+        "layerOrder": "Fokussierte Ebene nach oben / unten verschieben (Ebenen)",
+        "enterGroup": "Ein einzelnes Element in einer Gruppe auswählen"
       }
     },
     "view": {

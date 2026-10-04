@@ -6522,7 +6522,11 @@
       "show": "Mostrar {{name}}",
       "hide": "Ocultar {{name}}",
       "lock": "Bloquear {{name}}",
-      "unlock": "Desbloquear {{name}}"
+      "unlock": "Desbloquear {{name}}",
+      "group": "Grupo ({{count}})",
+      "expand": "Expandir {{name}}",
+      "collapse": "Contraer {{name}}",
+      "hint": "Arrastre una capa para cambiar el orden o pulse Alt+↑ o Alt+↓ sobre ella. Haga doble clic en un grupo para elegir un solo elemento dentro de él."
     },
     "pages": {
       "label": "Páginas",
@@ -6531,7 +6535,12 @@
       "duplicate": "Duplicar página",
       "delete": "Eliminar página",
       "moveLeft": "Mover página a la izquierda",
-      "moveRight": "Mover página a la derecha"
+      "moveRight": "Mover página a la derecha",
+      "pageNamed": "Página {{number}}: {{name}}",
+      "overview": "Todas las páginas",
+      "overviewHint": "Haga clic en una página para abrirla. Arrastre las páginas o use los botones de flecha para cambiar su orden.",
+      "moveEarlier": "Mover la página {{number}} antes",
+      "moveLater": "Mover la página {{number}} después"
     },
     "page": {
       "size": "Tamaño de página",
@@ -6540,7 +6549,16 @@
       "background": "Fondo",
       "backgroundImage": "Imagen de fondo",
       "replaceImage": "Reemplazar imagen",
-      "removeImage": "Quitar imagen"
+      "removeImage": "Quitar imagen",
+      "title": "Página",
+      "name": "Nombre de la página",
+      "namePlaceholder": "Opcional, p. ej., Portada",
+      "resizeContent": "Contenido al cambiar el tamaño",
+      "resize": {
+        "keep": "Dejar igual",
+        "scale": "Escalar para ajustar"
+      },
+      "applyToAll": "Aplicar este tamaño a todas las páginas"
     },
     "props": {
       "label": "Propiedades",
@@ -8257,7 +8275,9 @@
         "rulers": "Mostrar u ocultar las reglas",
         "guides": "Mostrar u ocultar las guías",
         "margins": "Mostrar u ocultar los márgenes",
-        "duplicateDrag": "Duplicar al arrastrar"
+        "duplicateDrag": "Duplicar al arrastrar",
+        "layerOrder": "Subir / bajar la capa enfocada (panel Capas)",
+        "enterGroup": "Seleccionar un solo elemento dentro de un grupo"
       }
     },
     "view": {

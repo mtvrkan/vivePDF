@@ -6523,7 +6523,11 @@
       "show": "Show {{name}}",
       "hide": "Hide {{name}}",
       "lock": "Lock {{name}}",
-      "unlock": "Unlock {{name}}"
+      "unlock": "Unlock {{name}}",
+      "group": "Group ({{count}})",
+      "expand": "Expand {{name}}",
+      "collapse": "Collapse {{name}}",
+      "hint": "Drag a layer to change the order, or press Alt+↑ or Alt+↓ on it. Double-click a group to pick one item inside it."
     },
     "pages": {
       "label": "Pages",
@@ -6532,7 +6536,12 @@
       "duplicate": "Duplicate page",
       "delete": "Delete page",
       "moveLeft": "Move page left",
-      "moveRight": "Move page right"
+      "moveRight": "Move page right",
+      "pageNamed": "Page {{number}}: {{name}}",
+      "overview": "All pages",
+      "overviewHint": "Click a page to open it. Drag pages, or use the arrow buttons, to change their order.",
+      "moveEarlier": "Move page {{number}} earlier",
+      "moveLater": "Move page {{number}} later"
     },
     "page": {
       "size": "Page size",
@@ -6541,7 +6550,16 @@
       "background": "Background",
       "backgroundImage": "Background picture",
       "replaceImage": "Replace picture",
-      "removeImage": "Remove picture"
+      "removeImage": "Remove picture",
+      "title": "Page",
+      "name": "Page name",
+      "namePlaceholder": "Optional, e.g. Cover",
+      "resizeContent": "Content when resizing",
+      "resize": {
+        "keep": "Keep as is",
+        "scale": "Scale to fit"
+      },
+      "applyToAll": "Apply this size to all pages"
     },
     "props": {
       "label": "Properties",
@@ -8258,7 +8276,9 @@
         "rulers": "Show or hide rulers",
         "guides": "Show or hide guides",
         "margins": "Show or hide margins",
-        "duplicateDrag": "Duplicate while dragging"
+        "duplicateDrag": "Duplicate while dragging",
+        "layerOrder": "Move the focused layer up / down (Layers panel)",
+        "enterGroup": "Select one item inside a group"
       }
     },
     "view": {

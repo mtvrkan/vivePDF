@@ -6522,7 +6522,11 @@
       "show": "Mostra {{name}}",
       "hide": "Nascondi {{name}}",
       "lock": "Blocca {{name}}",
-      "unlock": "Sblocca {{name}}"
+      "unlock": "Sblocca {{name}}",
+      "group": "Gruppo ({{count}})",
+      "expand": "Espandi {{name}}",
+      "collapse": "Comprimi {{name}}",
+      "hint": "Trascina un livello per cambiare l’ordine oppure premi Alt+↑ o Alt+↓ su di esso. Fai doppio clic su un gruppo per scegliere un solo elemento al suo interno."
     },
     "pages": {
       "label": "Pagine",
@@ -6531,7 +6535,12 @@
       "duplicate": "Duplica pagina",
       "delete": "Elimina pagina",
       "moveLeft": "Sposta pagina a sinistra",
-      "moveRight": "Sposta pagina a destra"
+      "moveRight": "Sposta pagina a destra",
+      "pageNamed": "Pagina {{number}}: {{name}}",
+      "overview": "Tutte le pagine",
+      "overviewHint": "Fai clic su una pagina per aprirla. Trascina le pagine oppure usa i pulsanti freccia per cambiarne l’ordine.",
+      "moveEarlier": "Sposta la pagina {{number}} prima",
+      "moveLater": "Sposta la pagina {{number}} dopo"
     },
     "page": {
       "size": "Dimensioni pagina",
@@ -6540,7 +6549,16 @@
       "background": "Sfondo",
       "backgroundImage": "Immagine di sfondo",
       "replaceImage": "Sostituisci immagine",
-      "removeImage": "Rimuovi immagine"
+      "removeImage": "Rimuovi immagine",
+      "title": "Pagina",
+      "name": "Nome della pagina",
+      "namePlaceholder": "Facoltativo, ad es. Copertina",
+      "resizeContent": "Contenuto quando si ridimensiona",
+      "resize": {
+        "keep": "Lascia com’è",
+        "scale": "Ridimensiona per adattare"
+      },
+      "applyToAll": "Applica queste dimensioni a tutte le pagine"
     },
     "props": {
       "label": "Proprietà",
@@ -8257,7 +8275,9 @@
         "rulers": "Mostra o nascondi i righelli",
         "guides": "Mostra o nascondi le guide",
         "margins": "Mostra o nascondi i margini",
-        "duplicateDrag": "Duplica durante il trascinamento"
+        "duplicateDrag": "Duplica durante il trascinamento",
+        "layerOrder": "Sposta su / giù il livello attivo (pannello Livelli)",
+        "enterGroup": "Seleziona un solo elemento all’interno di un gruppo"
       }
     },
     "view": {

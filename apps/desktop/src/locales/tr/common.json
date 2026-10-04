@@ -6523,7 +6523,11 @@
       "show": "{{name}} öğesini göster",
       "hide": "{{name}} öğesini gizle",
       "lock": "{{name}} öğesini kilitle",
-      "unlock": "{{name}} öğesinin kilidini aç"
+      "unlock": "{{name}} öğesinin kilidini aç",
+      "group": "Grup ({{count}})",
+      "expand": "{{name}} içeriğini göster",
+      "collapse": "{{name}} içeriğini gizle",
+      "hint": "Sırasını değiştirmek için katmanı sürükleyin ya da katman seçiliyken Alt+↑ veya Alt+↓ tuşlarına basın. Grubun içindeki tek bir öğeyi seçmek için gruba çift tıklayın."
     },
     "pages": {
       "label": "Sayfalar",
@@ -6532,7 +6536,12 @@
       "duplicate": "Sayfayı çoğalt",
       "delete": "Sayfayı sil",
       "moveLeft": "Sayfayı sola taşı",
-      "moveRight": "Sayfayı sağa taşı"
+      "moveRight": "Sayfayı sağa taşı",
+      "pageNamed": "Sayfa {{number}}: {{name}}",
+      "overview": "Tüm sayfalar",
+      "overviewHint": "Açmak için bir sayfaya tıklayın. Sırayı değiştirmek için sayfaları sürükleyin ya da ok düğmelerini kullanın.",
+      "moveEarlier": "{{number}}. sayfayı öne al",
+      "moveLater": "{{number}}. sayfayı geriye al"
     },
     "page": {
       "size": "Sayfa boyutu",
@@ -6541,7 +6550,16 @@
       "background": "Arka plan",
       "backgroundImage": "Arka plan resmi",
       "replaceImage": "Resmi değiştir",
-      "removeImage": "Resmi kaldır"
+      "removeImage": "Resmi kaldır",
+      "title": "Sayfa",
+      "name": "Sayfa adı",
+      "namePlaceholder": "İsteğe bağlı, örneğin Kapak",
+      "resizeContent": "Boyut değişince içerik",
+      "resize": {
+        "keep": "Olduğu gibi kalsın",
+        "scale": "Sayfaya göre ölçekle"
+      },
+      "applyToAll": "Bu boyutu tüm sayfalara uygula"
     },
     "props": {
       "label": "Özellikler",
@@ -8258,7 +8276,9 @@
         "rulers": "Cetvelleri göster ya da gizle",
         "guides": "Kılavuz çizgilerini göster ya da gizle",
         "margins": "Kenar boşluklarını göster ya da gizle",
-        "duplicateDrag": "Sürüklerken çoğalt"
+        "duplicateDrag": "Sürüklerken çoğalt",
+        "layerOrder": "Odaktaki katmanı yukarı / aşağı taşı (Katmanlar paneli)",
+        "enterGroup": "Grubun içindeki tek bir öğeyi seç"
       }
     },
     "view": {
