@@ -2,10 +2,10 @@ import { useEffect, useId, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { ColorSwatch, type ColorSwatchRow } from "@/components/shared/ColorSwatch";
-import { Select } from "@/components/shared/Select";
+import { Select, type SelectOption } from "@/components/shared/Select";
 import { Segmented, SliderField } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
-import { STUDIO_DASHES, STUDIO_LINE_CAPS, STUDIO_LINE_JOINS, type StudioFill, type StudioGradientStop, type StudioStroke } from "@/types/studio";
+import { STUDIO_DASHES, STUDIO_LINE_CAPS, STUDIO_LINE_JOINS, type StudioFill, type StudioGradientStop, type StudioLineCap, type StudioLineJoin, type StudioStroke } from "@/types/studio";
 import { designColors } from "../model/colors";
 import { MAX_DASH_GAP, MIN_DASH_GAP } from "../model/design";
 import { strokeCap, strokeJoin } from "../model/shapes";
@@ -158,6 +158,15 @@ export function MixedHint() {
   return <p className="text-xs text-muted-foreground">{t("studio.props.mixedHint")}</p>;
 }
 
+function SelectField({ label, value, options, onChange, placeholder }: { label: string; value: string; options: SelectOption[]; onChange: (value: string) => void; placeholder?: string }) {
+  return (
+    <div className="min-w-0">
+      <span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span>
+      <Select size="sm" value={value} placeholder={placeholder} ariaLabel={label} options={options} onChange={onChange} />
+    </div>
+  );
+}
+
 const FILL_TYPES = ["none", "solid", "linear", "radial"] as const;
 
 function stopsOf(fill: StudioFill): StudioGradientStop[] {
@@ -216,17 +225,13 @@ export function StrokeEditor({ value, onChange, mixed, openPath = false }: { val
             format={(width) => (differs("width") ? mixedText : `${width} pt`)}
             onChange={(width) => onChange({ ...value, width }, "stroke-width")}
           />
-          <label className="block">
-            <span className="mb-1 block text-xs font-medium text-muted-foreground">{t("studio.stroke.style")}</span>
-            <Select
-              size="sm"
-              value={differs("dash") ? "" : value.dash}
-              placeholder={mixedText}
-              ariaLabel={t("studio.stroke.style")}
-              options={STUDIO_DASHES.map((dash) => ({ value: dash, label: t(`studio.stroke.${dash}`) }))}
-              onChange={(dash) => onChange({ ...value, dash: dash as StudioStroke["dash"] })}
-            />
-          </label>
+          <SelectField
+            label={t("studio.stroke.style")}
+            value={differs("dash") ? "" : value.dash}
+            placeholder={mixedText}
+            options={STUDIO_DASHES.map((dash) => ({ value: dash, label: t(`studio.stroke.${dash}`) }))}
+            onChange={(dash) => onChange({ ...value, dash: dash as StudioStroke["dash"] })}
+          />
           {value.dash !== "solid" ? (
             <SliderField
               label={t("studio.stroke.gap")}
@@ -238,18 +243,26 @@ export function StrokeEditor({ value, onChange, mixed, openPath = false }: { val
               onChange={(gap) => onChange({ ...value, gap: gap / 100 }, "stroke-gap")}
             />
           ) : null}
-          {openPath || value.dash !== "solid" ? (
-            <div className="space-y-1">
-              <span className="block text-xs font-medium text-muted-foreground">{t("studio.stroke.cap")}</span>
-              <Segmented size="sm" value={strokeCap(value)} options={STUDIO_LINE_CAPS} labelOf={(cap) => t(`studio.stroke.caps.${cap}`)} onChange={(cap) => onChange({ ...value, cap })} ariaLabel={t("studio.stroke.cap")} />
-            </div>
-          ) : null}
-          {openPath ? null : (
-            <div className="space-y-1">
-              <span className="block text-xs font-medium text-muted-foreground">{t("studio.stroke.join")}</span>
-              <Segmented size="sm" value={strokeJoin(value)} options={STUDIO_LINE_JOINS} labelOf={(join) => t(`studio.stroke.joins.${join}`)} onChange={(join) => onChange({ ...value, join })} ariaLabel={t("studio.stroke.join")} />
-            </div>
-          )}
+          <div className="grid grid-cols-2 gap-2">
+            {openPath || value.dash !== "solid" ? (
+              <SelectField
+                label={t("studio.stroke.cap")}
+                value={differs("cap") ? "" : strokeCap(value)}
+                placeholder={mixedText}
+                options={STUDIO_LINE_CAPS.map((cap) => ({ value: cap, label: t(`studio.stroke.caps.${cap}`) }))}
+                onChange={(cap) => onChange({ ...value, cap: cap as StudioLineCap })}
+              />
+            ) : null}
+            {openPath ? null : (
+              <SelectField
+                label={t("studio.stroke.join")}
+                value={differs("join") ? "" : strokeJoin(value)}
+                placeholder={mixedText}
+                options={STUDIO_LINE_JOINS.map((join) => ({ value: join, label: t(`studio.stroke.joins.${join}`) }))}
+                onChange={(join) => onChange({ ...value, join: join as StudioLineJoin })}
+              />
+            )}
+          </div>
         </>
       ) : null}
     </div>
