@@ -5992,7 +5992,10 @@
       "noDocument": "Questo file non è un documento vivePDF.",
       "newerDocument": "Questo documento è stato creato con una versione più recente di vivePDF. Aggiorna l'app per aprirlo.",
       "previewGone": "L'anteprima è scaduta; verrà creata di nuovo.",
-      "documentFileTooLarge": "Il documento supera {{limitMb}} MB."
+      "documentFileTooLarge": "Il documento supera {{limitMb}} MB.",
+      "draftTooLarge": "Questo progetto è troppo grande per la bozza automatica (limite {{limit}} byte). Salvalo come file di progetto.",
+      "notDesign": "Questo file non è un progetto di Studio.",
+      "badPageNumbers": "I numeri di pagina scelti non corrispondono alle pagine esportate."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -6449,7 +6452,8 @@
       "zoomIn": "Aumenta zoom",
       "zoomOut": "Riduci zoom",
       "fit": "Adatta alla finestra",
-      "export": "Esporta"
+      "export": "Esporta",
+      "print": "Stampa"
     },
     "menu": {
       "label": "Menu elemento",
@@ -6560,7 +6564,8 @@
         "keep": "Lascia com’è",
         "scale": "Ridimensiona per adattare"
       },
-      "applyToAll": "Applica queste dimensioni a tutte le pagine"
+      "applyToAll": "Applica queste dimensioni a tutte le pagine",
+      "noBackgroundHint": "Nessuno sfondo: le immagini PNG lasciano la pagina trasparente, mentre il PDF e la stampa mostrano carta bianca."
     },
     "props": {
       "label": "Proprietà",
@@ -6711,7 +6716,30 @@
       "doneFiles_one": "{{count}} file esportato",
       "doneFiles_other": "{{count}} file esportati",
       "idleRows_one": "Dalla tabella verrà creata {{count}} copia.",
-      "idleRows_other": "Dalla tabella verranno create {{count}} copie."
+      "idleRows_other": "Dalla tabella verranno create {{count}} copie.",
+      "pages": "Pagine",
+      "pagesAll": "Tutte ({{count}})",
+      "pagesCurrent": "Pagina corrente ({{page}})",
+      "pagesCustom": "Personalizzato",
+      "rangePlaceholder": "es. 1-3, 5",
+      "rangeHint": "Scrivi pagine e intervalli di pagine separati da virgole (da 1 a {{last}}).",
+      "dpiCustom": "Personalizzata",
+      "dpiHint": "Una risoluzione più alta dà immagini più nitide ma più pesanti.",
+      "dpiError": "Inserisci una risoluzione tra {{min}} e {{max}} dpi.",
+      "quality": "Qualità JPG",
+      "qualityHint": "Valori più bassi riducono le dimensioni dei file; 92 conserva i dettagli fini.",
+      "transparent": "Sfondo trasparente",
+      "transparentHint": "Le pagine con lo sfondo impostato su Nessuno vengono salvate trasparenti. Nel PDF e in stampa restano bianche.",
+      "transparentNone": "Nessuna delle pagine scelte ha lo sfondo impostato su Nessuno, quindi le immagini restano opache.",
+      "oneFile": "Salvato come un'unica immagine: {{name}}",
+      "idlePictures": "Ogni pagina viene salvata come immagine separata alla risoluzione scelta.",
+      "rangeErrors": {
+        "empty": "Scrivi le pagine da esportare, ad esempio 1-3, 5.",
+        "invalid": "Usa numeri di pagina e intervalli come 1-3, 5.",
+        "outOfRange": "Questo progetto ha solo le pagine da 1 a {{last}}."
+      },
+      "eachPage_one": "Ogni pagina viene salvata come immagine separata: {{first}}",
+      "eachPage_other": "Ogni pagina viene salvata come immagine separata: {{first}} … {{last}} ({{count}} file)"
     },
     "project": {
       "open": "Apri progetto…",
@@ -8301,7 +8329,8 @@
         "duplicateDrag": "Duplica durante il trascinamento",
         "layerOrder": "Sposta su / giù il livello attivo (pannello Livelli)",
         "enterGroup": "Seleziona un solo elemento all’interno di un gruppo",
-        "copyPasteStyle": "Copia stile / incolla stile"
+        "copyPasteStyle": "Copia stile / incolla stile",
+        "print": "Stampa…"
       }
     },
     "view": {
@@ -8333,6 +8362,15 @@
       "radius": "Dimensione",
       "presets": "Sfumature pronte",
       "preset": "Sfumatura {{number}}"
+    },
+    "print": {
+      "dataHint": "Stampa una copia del progetto per ogni riga della tabella.",
+      "hint": "Il progetto viene prima convertito in PDF e poi inviato alla stampante; puoi annullare in qualsiasi momento."
+    },
+    "draft": {
+      "tooLarge": "Questo progetto è troppo grande per la bozza automatica. Salvalo come file di progetto per non perdere nulla.",
+      "failed": "Impossibile salvare la bozza automatica: {{error}}",
+      "loadFailed": "Impossibile caricare l'ultima bozza"
     }
   }
 }

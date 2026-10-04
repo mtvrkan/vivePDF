@@ -244,6 +244,9 @@ export type StudioRenderParams = {
   title?: string;
   format?: StudioExportFormat;
   dpi?: number;
+  quality?: number;
+  transparent?: boolean;
+  pageNumbers?: number[] | null;
   embed?: StudioEmbed | null;
   output?: string;
   overwrite?: boolean;
@@ -278,6 +281,12 @@ export type StudioThumbnailParams = { page: StudioRenderPage; language?: string;
 export type StudioThumbnailResult = { image: string; width: number; height: number };
 
 export type StudioProjectOpenResult = { design: unknown; thumbnail: string; source: "project" | "pdf" };
+
+export type StudioDraftSaveParams = { design: StudioDesign; filePath: string | null };
+
+export type StudioDraftSaveResult = { bytes: number; savedAt: number };
+
+export type StudioDraftLoadResult = { found: boolean; design: unknown; filePath: string | null; savedAt: number };
 
 export const STUDIO_PROJECT_EXTENSION = "vivedesign";
 

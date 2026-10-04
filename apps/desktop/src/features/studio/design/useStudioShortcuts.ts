@@ -32,7 +32,7 @@ function styleKey(event: KeyboardEvent): "copy" | "paste" | null {
   return null;
 }
 
-export type StudioShortcutActions = { onOpen?: () => void; onHelp?: () => void };
+export type StudioShortcutActions = { onOpen?: () => void; onHelp?: () => void; onPrint?: () => void };
 
 function fontSizeStep(event: KeyboardEvent): 1 | -1 | null {
   if (!event.shiftKey) return null;
@@ -77,6 +77,11 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         handlers.onExport();
       });
       if (mod && letter === "o" && !event.shiftKey && handlers.actions.onOpen) return run(handlers.actions.onOpen);
+      const onPrint = handlers.actions.onPrint;
+      if (mod && letter === "p" && !event.shiftKey && onPrint) return run(() => {
+        commitText();
+        onPrint();
+      });
       if (isTextEntryTarget(event.target)) return;
       const style = styleKey(event);
       if (style && state.selection.length) return run(style === "copy" ? copyStyle : pasteStyle);

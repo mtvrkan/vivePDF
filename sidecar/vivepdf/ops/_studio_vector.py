@@ -21,6 +21,8 @@ CAPS = {"butt": 0, "round": 1, "square": 2}
 JOINS = {"miter": 0, "round": 1, "bevel": 2}
 MITER_LIMIT = 4
 MAX_COMMANDS = 200_000
+GROUP_BOX = "[-100000 -100000 100000 100000]"
+TRANSPARENCY_GROUP = "/Group<</Type/Group/S/Transparency>>"
 
 
 def _number(value: float) -> str:
@@ -170,6 +172,7 @@ class _Resources:
     def __init__(self) -> None:
         self.states: dict[float, str] = {}
         self.shadings: list[str] = []
+        self.forms: list[list[str]] = []
 
     def state(self, opacity: float) -> str:
         key = round(opacity, 4)
@@ -181,13 +184,18 @@ class _Resources:
         self.shadings.append(body)
         return f"Sh{len(self.shadings) - 1}"
 
-    def dictionary(self) -> str:
+    def form(self, lines: list[str]) -> str:
+        self.forms.append(lines)
+        return f"Fm{len(self.forms) - 1}"
+
+    def dictionary(self, forms: list[int] | None = None) -> str:
         states = "".join(
             f"/{name}<</Type/ExtGState/ca {_number(value)}/CA {_number(value)}>>"
             for value, name in self.states.items()
         )
         shadings = "".join(f"/Sh{index}{body}" for index, body in enumerate(self.shadings))
-        return f"<</ExtGState<<{states}>>/Shading<<{shadings}>>>>"
+        objects = "".join(f"/Fm{index} {xref} 0 R" for index, xref in enumerate(forms or []))
+        return f"<</ExtGState<<{states}>>/Shading<<{shadings}>>/XObject<<{objects}>>>>"
 
 
 def _path_content(path: StudioPath, resources: _Resources) -> list[str]:
@@ -196,7 +204,8 @@ def _path_content(path: StudioPath, resources: _Resources) -> list[str]:
         return []
     star = "*" if path.even_odd else ""
     lines = ["q"]
-    if path.opacity < 1:
+    grouped = path.opacity < 1 and path.fill is not None and path.stroke is not None
+    if path.opacity < 1 and not grouped:
         lines.append(f"/{resources.state(path.opacity)} gs")
     if isinstance(path.fill, StudioSolid):
         lines += [f"{_rgb(path.fill.color)} rg", geometry, f"f{star}"]
@@ -206,6 +215,9 @@ def _path_content(path: StudioPath, resources: _Resources) -> list[str]:
     if path.stroke is not None:
         lines += [_stroke_operators(path.stroke), geometry, "S"]
     lines.append("Q")
+    if grouped:
+        name = resources.form(lines)
+        return ["q", f"/{resources.state(path.opacity)} gs", f"/{name} Do", "Q"]
     return lines
 
 
@@ -220,18 +232,64 @@ def vector_document(item: StudioVectorItem) -> tuple[pymupdf.Document, float]:
         f"1 0 0 1 {_number(margin)} {_number(margin)} cm",
         f"{_number(scale_x)} 0 0 {_number(scale_y)} 0 0 cm",
     ]
-    if item.opacity < 1:
-        body.append(f"/{resources.state(item.opacity)} gs")
     for path in item.paths:
         body += _path_content(path, resources)
     document = pymupdf.open()
     page = document.new_page(width=width, height=height)
-    stream = document.get_new_xref()
-    document.update_object(stream, "<<>>")
-    document.update_stream(stream, ("q\n" + "\n".join(body) + "\nQ\n").encode("latin-1"))
+    forms: list[int] = []
+    if resources.forms:
+        shared = _new_object(document, resources.dictionary())
+        forms = [
+            _new_stream(
+                document,
+                f"<</Type/XObject/Subtype/Form/BBox{GROUP_BOX}/Resources {shared} 0 R"
+                f"{TRANSPARENCY_GROUP}>>",
+                "\n".join(lines),
+            )
+            for lines in resources.forms
+        ]
+    stream = _new_stream(document, "<<>>", "q\n" + "\n".join(body) + "\nQ\n")
     document.xref_set_key(page.xref, "Contents", f"{stream} 0 R")
-    document.xref_set_key(page.xref, "Resources", resources.dictionary())
-    return document, margin
+    document.xref_set_key(page.xref, "Resources", resources.dictionary(forms))
+    return group_opacity(document, item.opacity), margin
+
+
+def _new_object(document: pymupdf.Document, body: str) -> int:
+    xref = document.get_new_xref()
+    document.update_object(xref, body)
+    return xref
+
+
+def _new_stream(document: pymupdf.Document, body: str, content: str | bytes) -> int:
+    xref = _new_object(document, body)
+    document.update_stream(xref, content.encode("latin-1") if isinstance(content, str) else content)
+    return xref
+
+
+def group_opacity(document: pymupdf.Document, opacity: float) -> pymupdf.Document:
+    if opacity >= 1:
+        return document
+    page = document[0]
+    kind, box = document.xref_get_key(page.xref, "MediaBox")
+    if kind != "array":
+        box = f"[0 0 {_number(page.rect.width)} {_number(page.rect.height)}]"
+    kind, resources = document.xref_get_key(page.xref, "Resources")
+    if kind not in {"dict", "xref"}:
+        resources = "<<>>"
+    form = _new_stream(
+        document,
+        f"<</Type/XObject/Subtype/Form/BBox{box}/Resources {resources}{TRANSPARENCY_GROUP}>>",
+        page.read_contents(),
+    )
+    value = _number(opacity)
+    stream = _new_stream(document, "<<>>", "q\n/GA gs\n/GF Do\nQ\n")
+    document.xref_set_key(page.xref, "Contents", f"{stream} 0 R")
+    document.xref_set_key(
+        page.xref,
+        "Resources",
+        f"<</ExtGState<</GA<</Type/ExtGState/ca {value}/CA {value}>>>>/XObject<</GF {form} 0 R>>>>",
+    )
+    return document
 
 
 def rotated_bounds(box: StudioBox, margin: float = 0.0) -> pymupdf.Rect:

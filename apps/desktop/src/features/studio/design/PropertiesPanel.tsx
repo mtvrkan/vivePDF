@@ -100,6 +100,11 @@ function PageProperties({ page }: { page: StudioPage }) {
       </PanelSection>
       <PanelSection title={t("studio.page.background")}>
         <FillEditor value={page.background.fill} onChange={(fill, merge) => setPage({ background: { ...page.background, fill } }, merge)} />
+        {page.background.fill.type === "none" ? (
+          <p className="text-xs text-muted-foreground" data-testid="studio-page-see-through">
+            {t("studio.page.noBackgroundHint")}
+          </p>
+        ) : null}
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"

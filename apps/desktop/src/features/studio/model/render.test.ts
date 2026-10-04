@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { STUDIO_SHAPES } from "@/types/studio";
 import { createDesign, createImage, createQr, createShape, createText } from "./design";
-import { designToRender, elementItems, imagePaths } from "./render";
+import { designToRender, elementItems, hasSeeThroughBackground, imagePaths } from "./render";
 import { linearGradientLine, renderFill, renderStroke, shapeD, shapePaths } from "./shapes";
 
 const PATH_GRAMMAR = /^(?:[MLCZ](?: ?-?\d+(?:\.\d+)?)*\s*)+$/;
@@ -82,6 +82,26 @@ describe("studio render payload", () => {
     const [page] = designToRender(createDesign("Blank", 100, 100));
 
     expect(page.items).toEqual([]);
+  });
+
+  it("paints a plain white background when see-through pictures need it", () => {
+    const [page] = designToRender(createDesign("Blank", 100, 100), new Map(), { keepWhite: true });
+
+    expect(page.items).toHaveLength(1);
+    expect(page.items[0]).toMatchObject({ kind: "vector", paths: [{ fill: { type: "solid", color: "#ffffff" } }] });
+  });
+
+  it("treats only a page without fill or picture as see-through", () => {
+    const design = createDesign("Blank", 100, 100);
+    const page = design.pages[0];
+    const none = { ...page, background: { fill: { type: "none" as const }, image: null } };
+
+    const [rendered] = designToRender({ ...design, pages: [none] }, new Map(), { keepWhite: true });
+
+    expect(rendered.items).toEqual([]);
+    expect(hasSeeThroughBackground(none)).toBe(true);
+    expect(hasSeeThroughBackground(page)).toBe(false);
+    expect(hasSeeThroughBackground({ ...none, background: { ...none.background, image: { src: "a.png", fit: "cover", opacity: 1 } } })).toBe(false);
   });
 
   it("fills text styling from the element and uses measured segments only without placeholders", () => {

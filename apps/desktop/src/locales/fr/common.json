@@ -5992,7 +5992,10 @@
       "noDocument": "Ce fichier n'est pas un document vivePDF.",
       "newerDocument": "Ce document a été créé par une version plus récente de vivePDF. Mettez à jour l'application pour l'ouvrir.",
       "previewGone": "L'aperçu a expiré ; il sera recréé.",
-      "documentFileTooLarge": "Le document dépasse {{limitMb}} Mo."
+      "documentFileTooLarge": "Le document dépasse {{limitMb}} Mo.",
+      "draftTooLarge": "Cette création est trop volumineuse pour le brouillon automatique (limite {{limit}} octets). Enregistrez-la comme fichier de projet.",
+      "notDesign": "Ce fichier n’est pas une création Studio.",
+      "badPageNumbers": "Les numéros de page choisis ne correspondent pas aux pages exportées."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -6449,7 +6452,8 @@
       "zoomIn": "Zoom avant",
       "zoomOut": "Zoom arrière",
       "fit": "Ajuster à la fenêtre",
-      "export": "Exporter"
+      "export": "Exporter",
+      "print": "Imprimer"
     },
     "menu": {
       "label": "Menu de l’élément",
@@ -6560,7 +6564,8 @@
         "keep": "Laisser tel quel",
         "scale": "Mettre à l’échelle"
       },
-      "applyToAll": "Appliquer ce format à toutes les pages"
+      "applyToAll": "Appliquer ce format à toutes les pages",
+      "noBackgroundHint": "Sans arrière-plan : les images PNG gardent la page transparente, tandis que le PDF et l’impression affichent du papier blanc."
     },
     "props": {
       "label": "Propriétés",
@@ -6711,7 +6716,30 @@
       "doneFiles_one": "{{count}} fichier exporté",
       "doneFiles_other": "{{count}} fichiers exportés",
       "idleRows_one": "{{count}} copie sera créée à partir du tableau.",
-      "idleRows_other": "{{count}} copies seront créées à partir du tableau."
+      "idleRows_other": "{{count}} copies seront créées à partir du tableau.",
+      "pages": "Pages",
+      "pagesAll": "Toutes ({{count}})",
+      "pagesCurrent": "Page actuelle ({{page}})",
+      "pagesCustom": "Personnalisé",
+      "rangePlaceholder": "ex. 1-3, 5",
+      "rangeHint": "Saisissez des pages et des plages de pages séparées par des virgules (de 1 à {{last}}).",
+      "dpiCustom": "Personnalisée",
+      "dpiHint": "Une résolution plus élevée donne des images plus nettes mais plus lourdes.",
+      "dpiError": "Saisissez une résolution comprise entre {{min}} et {{max}} dpi.",
+      "quality": "Qualité JPG",
+      "qualityHint": "Des valeurs plus basses réduisent la taille des fichiers ; 92 conserve les détails fins.",
+      "transparent": "Arrière-plan transparent",
+      "transparentHint": "Les pages dont l’arrière-plan est réglé sur Aucun sont enregistrées transparentes. Le PDF et l’impression restent blancs.",
+      "transparentNone": "Aucune des pages choisies n’a son arrière-plan réglé sur Aucun : les images resteront opaques.",
+      "oneFile": "Enregistré en une seule image : {{name}}",
+      "idlePictures": "Chaque page est enregistrée comme image distincte à la résolution choisie.",
+      "rangeErrors": {
+        "empty": "Saisissez les pages à exporter, par exemple 1-3, 5.",
+        "invalid": "Utilisez des numéros de page et des plages comme 1-3, 5.",
+        "outOfRange": "Cette création ne comporte que les pages 1 à {{last}}."
+      },
+      "eachPage_one": "Chaque page est enregistrée comme image distincte : {{first}}",
+      "eachPage_other": "Chaque page est enregistrée comme image distincte : {{first}} … {{last}} ({{count}} fichiers)"
     },
     "project": {
       "open": "Ouvrir une création…",
@@ -8301,7 +8329,8 @@
         "duplicateDrag": "Dupliquer en faisant glisser",
         "layerOrder": "Monter / descendre le calque actif (panneau Calques)",
         "enterGroup": "Sélectionner un seul élément dans un groupe",
-        "copyPasteStyle": "Copier le style / coller le style"
+        "copyPasteStyle": "Copier le style / coller le style",
+        "print": "Imprimer…"
       }
     },
     "view": {
@@ -8333,6 +8362,15 @@
       "radius": "Taille",
       "presets": "Dégradés prêts à l’emploi",
       "preset": "Dégradé {{number}}"
+    },
+    "print": {
+      "dataHint": "Imprime un exemplaire de la création pour chaque ligne du tableau.",
+      "hint": "La création est d’abord convertie en PDF puis envoyée à l’imprimante ; vous pouvez annuler à tout moment."
+    },
+    "draft": {
+      "tooLarge": "Cette création est trop volumineuse pour le brouillon automatique. Enregistrez-la comme fichier de projet pour ne rien perdre.",
+      "failed": "Impossible d’enregistrer le brouillon automatique : {{error}}",
+      "loadFailed": "Impossible de charger le dernier brouillon"
     }
   }
 }

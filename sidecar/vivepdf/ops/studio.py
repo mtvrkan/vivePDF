@@ -33,7 +33,7 @@ from vivepdf.ops._studio_models import (
 from vivepdf.ops._studio_project import build_archive, embed_archive, missing_asset
 from vivepdf.ops._studio_shaped import draw_shaped, needs_shaping, run_texts
 from vivepdf.ops._studio_text import TextFaces, draw_text, from_segments, has_placeholders, layout
-from vivepdf.ops._studio_vector import place, vector_document
+from vivepdf.ops._studio_vector import group_opacity, place, vector_document
 from vivepdf.ops._svg import clean_svg_markup, drawing_pdf
 from vivepdf.ops.create_bulk import PLACEHOLDER, fill_placeholders
 from vivepdf.rpc.errors import ErrorCode, OpError
@@ -179,7 +179,7 @@ def qr_document(item: StudioQrItem, value: str) -> pymupdf.Document:
     shape = page.new_shape()
     if item.background:
         shape.draw_rect(page.rect)
-        shape.finish(color=None, fill=_rgb(item.background), fill_opacity=item.opacity)
+        shape.finish(color=None, fill=_rgb(item.background))
     for row in range(count):
         column = 0
         while column < count:
@@ -197,9 +197,9 @@ def qr_document(item: StudioQrItem, value: str) -> pymupdf.Document:
                     top + (row + 1) * unit,
                 )
             )
-    shape.finish(color=None, fill=_rgb(item.color), fill_opacity=item.opacity)
+    shape.finish(color=None, fill=_rgb(item.color))
     shape.commit()
-    return document
+    return group_opacity(document, item.opacity)
 
 
 def _rgb(colour: str) -> tuple[float, float, float]:
@@ -221,7 +221,7 @@ def _source(
     if isinstance(item, StudioVectorItem):
         document, margin = vector_document(item)
     elif isinstance(item, StudioSvgItem):
-        document = drawing_pdf(item.svg.encode("utf-8"), "drawing", item.opacity)
+        document = group_opacity(drawing_pdf(item.svg.encode("utf-8"), "drawing"), item.opacity)
     elif isinstance(item, StudioImageItem):
         document = image_document(item)
     elif isinstance(item, StudioQrItem):
@@ -288,12 +288,15 @@ def _check_images(params: StudioRenderParams) -> list[str]:
     return paths
 
 
-def _image_targets(output: str, extension: str, count: int, overwrite: bool) -> list[Path]:
+def _image_targets(
+    output: str, extension: str, count: int, overwrite: bool, numbers: list[int] | None = None
+) -> list[Path]:
     base = Path(output).with_suffix(f".{extension}").resolve()
+    labels = numbers if numbers is not None and len(numbers) == count else range(1, count + 1)
     targets = (
         [base]
         if count == 1
-        else [base.with_name(f"{base.stem}-{index}{base.suffix}") for index in range(1, count + 1)]
+        else [base.with_name(f"{base.stem}-{label}{base.suffix}") for label in labels]
     )
     taken = next((target for target in targets if target.exists()), None)
     if taken is not None and not overwrite:
@@ -307,17 +310,24 @@ def _image_targets(output: str, extension: str, count: int, overwrite: bool) -> 
 
 
 def _save_images(
-    document: pymupdf.Document, targets: list[Path], extension: str, dpi: int, progress: Progress
+    document: pymupdf.Document,
+    targets: list[Path],
+    params: StudioRenderParams,
+    progress: Progress,
 ) -> int:
     written = 0
+    extension = params.format
+    alpha = params.transparent and extension == "png"
     for index, (page, target) in enumerate(zip(document, targets, strict=True)):
         progress.check_cancelled()
         area = page.rect.width * page.rect.height
-        scale = min(dpi / 72, math.sqrt(MAX_IMAGE_PIXELS / max(area, 1.0)))
-        pixmap = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
+        scale = min(params.dpi / 72, math.sqrt(MAX_IMAGE_PIXELS / max(area, 1.0)))
+        pixmap = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=alpha)
         write_atomically(
             target,
-            lambda path, image=pixmap: image.save(str(path), output=extension, jpg_quality=92),
+            lambda path, image=pixmap: image.save(
+                str(path), output=extension, jpg_quality=params.quality
+            ),
         )
         written += target.stat().st_size
         progress.report(0.92 + 0.08 * (index + 1) / len(targets), "progress.saving")
@@ -380,6 +390,12 @@ def _save_pdf(document: pymupdf.Document, target: Path) -> None:
 
 @op("studio.render", StudioRenderParams)
 def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult:
+    if params.page_numbers is not None and len(params.page_numbers) != len(params.pages):
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "page numbers must match the pages",
+            {"reason": "badPageNumbers"},
+        )
     rows = merge_rows(params)
     images = _check_images(params)
     if params.split:
@@ -399,7 +415,9 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
     if params.format == "pdf":
         targets = [prepare_output(params.output, inputs, params.overwrite)]
     else:
-        targets = _image_targets(params.output, params.format, total, params.overwrite)
+        targets = _image_targets(
+            params.output, params.format, total, params.overwrite, params.page_numbers
+        )
     cache: Cache = {}
     faces: dict[str | None, TextFaces] = {}
     missing: list[str] = []
@@ -424,7 +442,7 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
                 embed_archive(document, build_archive(embed.design, embed.assets, b""))
             size = save_output(document, targets[0], inputs, params.sign, _save_pdf)
         else:
-            size = _save_images(document, targets, params.format, params.dpi, progress)
+            size = _save_images(document, targets, params, progress)
         page_count = document.page_count
     finally:
         document.close()

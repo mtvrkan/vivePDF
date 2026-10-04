@@ -5992,7 +5992,10 @@
       "noDocument": "Diese Datei ist kein vivePDF-Dokument.",
       "newerDocument": "Dieses Dokument wurde mit einer neueren Version von vivePDF erstellt. Aktualisieren Sie die App, um es zu öffnen.",
       "previewGone": "Die Vorschau ist abgelaufen; sie wird erneut erstellt.",
-      "documentFileTooLarge": "Das Dokument ist größer als {{limitMb}} MB."
+      "documentFileTooLarge": "Das Dokument ist größer als {{limitMb}} MB.",
+      "draftTooLarge": "Dieses Design ist zu groß für den automatischen Entwurf (Grenze {{limit}} Byte). Speichern Sie es als Projektdatei.",
+      "notDesign": "Diese Datei ist kein Studio-Design.",
+      "badPageNumbers": "Die gewählten Seitenzahlen passen nicht zu den exportierten Seiten."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -6449,7 +6452,8 @@
       "zoomIn": "Vergrößern",
       "zoomOut": "Verkleinern",
       "fit": "An Fenster anpassen",
-      "export": "Exportieren"
+      "export": "Exportieren",
+      "print": "Drucken"
     },
     "menu": {
       "label": "Elementmenü",
@@ -6560,7 +6564,8 @@
         "keep": "Unverändert lassen",
         "scale": "Mitskalieren"
       },
-      "applyToAll": "Diese Größe auf alle Seiten anwenden"
+      "applyToAll": "Diese Größe auf alle Seiten anwenden",
+      "noBackgroundHint": "Kein Hintergrund: In PNG-Bildern bleibt die Seite transparent, im PDF und beim Drucken erscheint weißes Papier."
     },
     "props": {
       "label": "Eigenschaften",
@@ -6711,7 +6716,30 @@
       "doneFiles_one": "{{count}} Datei exportiert",
       "doneFiles_other": "{{count}} Dateien exportiert",
       "idleRows_one": "Aus der Tabelle wird {{count}} Kopie erstellt.",
-      "idleRows_other": "Aus der Tabelle werden {{count}} Kopien erstellt."
+      "idleRows_other": "Aus der Tabelle werden {{count}} Kopien erstellt.",
+      "pages": "Seiten",
+      "pagesAll": "Alle ({{count}})",
+      "pagesCurrent": "Aktuelle Seite ({{page}})",
+      "pagesCustom": "Benutzerdefiniert",
+      "rangePlaceholder": "z. B. 1-3, 5",
+      "rangeHint": "Geben Sie Seiten und Seitenbereiche durch Kommas getrennt ein (1 bis {{last}}).",
+      "dpiCustom": "Benutzerdefiniert",
+      "dpiHint": "Eine höhere Auflösung ergibt schärfere, aber größere Bilder.",
+      "dpiError": "Geben Sie eine Auflösung von {{min}} bis {{max}} dpi ein.",
+      "quality": "JPG-Qualität",
+      "qualityHint": "Niedrigere Werte ergeben kleinere Dateien; 92 erhält feine Details.",
+      "transparent": "Transparenter Hintergrund",
+      "transparentHint": "Seiten, deren Hintergrund auf „Keine“ steht, werden transparent gespeichert. Im PDF und beim Drucken bleiben sie weiß.",
+      "transparentNone": "Keine der gewählten Seiten hat den Hintergrund „Keine“, daher bleiben die Bilder deckend.",
+      "oneFile": "Wird als ein Bild gespeichert: {{name}}",
+      "idlePictures": "Jede Seite wird in der gewählten Auflösung als eigenes Bild gespeichert.",
+      "rangeErrors": {
+        "empty": "Geben Sie die zu exportierenden Seiten ein, z. B. 1-3, 5.",
+        "invalid": "Verwenden Sie Seitenzahlen und Bereiche wie 1-3, 5.",
+        "outOfRange": "Dieses Design hat nur die Seiten 1 bis {{last}}."
+      },
+      "eachPage_one": "Jede Seite wird als eigenes Bild gespeichert: {{first}}",
+      "eachPage_other": "Jede Seite wird als eigenes Bild gespeichert: {{first}} … {{last}} ({{count}} Dateien)"
     },
     "project": {
       "open": "Design öffnen…",
@@ -8301,7 +8329,8 @@
         "duplicateDrag": "Beim Ziehen duplizieren",
         "layerOrder": "Fokussierte Ebene nach oben / unten verschieben (Ebenen)",
         "enterGroup": "Ein einzelnes Element in einer Gruppe auswählen",
-        "copyPasteStyle": "Stil kopieren / Stil einfügen"
+        "copyPasteStyle": "Stil kopieren / Stil einfügen",
+        "print": "Drucken…"
       }
     },
     "view": {
@@ -8333,6 +8362,15 @@
       "radius": "Größe",
       "presets": "Fertige Verläufe",
       "preset": "Verlauf {{number}}"
+    },
+    "print": {
+      "dataHint": "Druckt für jede Zeile der Tabelle ein Exemplar des Designs.",
+      "hint": "Das Design wird zuerst in ein PDF umgewandelt und dann an den Drucker gesendet; Sie können jederzeit abbrechen."
+    },
+    "draft": {
+      "tooLarge": "Dieses Design ist zu groß für den automatischen Entwurf. Speichern Sie es als Projektdatei, damit nichts verloren geht.",
+      "failed": "Der automatische Entwurf konnte nicht gespeichert werden: {{error}}",
+      "loadFailed": "Der letzte Entwurf konnte nicht geladen werden"
     }
   }
 }

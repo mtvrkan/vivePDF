@@ -1,11 +1,12 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { FolderOpen, IdCard, Palette, Play, X } from "lucide-react";
+import { FolderOpen, IdCard, Palette, Play, RotateCw, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useUiStore } from "@/shared/store/uiStore";
+import { describeError } from "@/shared/lib/errorMessage";
 import type { StudioDesign } from "@/types/studio";
 import { STUDIO_PAGE_SIZES, createDesign, type StudioPageSize } from "./model/design";
 import { Canvas } from "./design/Canvas";
@@ -22,9 +23,11 @@ import { PageView } from "./design/ElementView";
 import { ExportDialog } from "./design/ExportDialog";
 import { PagesStrip } from "./design/PagesStrip";
 import { PropertiesPanel } from "./design/PropertiesPanel";
+import { StudioPrintDialog } from "./design/StudioPrintDialog";
 import { StudioShortcutsDialog } from "./design/StudioShortcutsDialog";
 import { StudioToolbar } from "./design/StudioToolbar";
-import { readDraft, useStudioStore } from "./design/studioStore";
+import { useStudioStore } from "./design/studioStore";
+import { useStudioDraft } from "./design/useStudioDraft";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
 import { useCvStore } from "./cv/cvStore";
 import { DocumentStart } from "./document/DocumentStart";
@@ -80,6 +83,58 @@ function RecentCard({ item, locale, busy, onOpen }: { item: RecentDesign; locale
   );
 }
 
+function DraftCard({ onOpen }: { onOpen: (design: StudioDesign, filePath?: string | null) => void }) {
+  const { t } = useTranslation();
+  const locale = useUiStore((state) => state.locale);
+  const { state, retry } = useStudioDraft();
+  if (state.status === "loading") {
+    return (
+      <div className="card glass-tinted flex items-center gap-4 rounded-xl p-4" aria-busy data-testid="studio-draft-loading">
+        <span className="size-16 shrink-0 animate-pulse rounded-md bg-muted" aria-hidden />
+        <span className="min-w-0 flex-1 space-y-2" aria-hidden>
+          <span className="block h-4 w-1/2 animate-pulse rounded bg-muted" />
+          <span className="block h-4 w-1/3 animate-pulse rounded bg-muted" />
+        </span>
+      </div>
+    );
+  }
+  if (state.status === "error") {
+    return (
+      <section className="card glass-tinted flex flex-wrap items-center gap-4 rounded-xl p-4" aria-label={t("studio.start.continue")} role="alert">
+        <div className="min-w-0 flex-1">
+          <p className="text-sm font-semibold">{t("studio.draft.loadFailed")}</p>
+          <p className="text-sm text-muted-foreground">{describeError(t, state.error)}</p>
+        </div>
+        <Button icon={<RotateCw className="size-4" aria-hidden />} onClick={retry}>
+          {t("common.retry")}
+        </Button>
+      </section>
+    );
+  }
+  const draft = state.draft;
+  const firstPage = draft?.design.pages[0];
+  if (!draft || !firstPage) return null;
+  const previewScale = PREVIEW_BOX / Math.max(firstPage.width, firstPage.height);
+  return (
+    <section className="card glass-tinted flex flex-wrap items-center gap-4 rounded-xl p-4" aria-label={t("studio.start.continue")}>
+      <span className="relative block shrink-0 overflow-hidden rounded-md border border-border" style={{ width: `${firstPage.width * previewScale}px`, height: `${firstPage.height * previewScale}px` }} aria-hidden>
+        <span className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${previewScale})` }}>
+          <PageView page={firstPage} language={locale} />
+        </span>
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold">{t("studio.start.continue")}</p>
+        <p className="truncate text-sm text-muted-foreground">
+          {draft.design.name || t("studio.untitled")} · {t("studio.start.pages", { count: draft.design.pages.length })}
+        </p>
+      </div>
+      <Button variant="primary" icon={<Play className="size-4" aria-hidden />} onClick={() => onOpen(draft.design, draft.filePath)}>
+        {t("studio.start.resume")}
+      </Button>
+    </section>
+  );
+}
+
 function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: string | null) => void }) {
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
@@ -89,11 +144,8 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
     const path = await pickDesignFile(t("studio.project.filter"));
     if (path) await openDesign(path);
   };
-  const [draft] = useState(readDraft);
   const [custom, setCustom] = useState({ width: 210, height: 297 });
   const create = (width: number, height: number) => onOpen(createDesign("", width, height));
-  const firstPage = draft?.design.pages[0];
-  const previewScale = firstPage ? PREVIEW_BOX / Math.max(firstPage.width, firstPage.height) : 1;
 
   return (
     <div className="min-h-full">
@@ -109,24 +161,7 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
         }
       />
       <div className="mx-auto max-w-5xl space-y-8 px-4 py-6 md:px-6">
-        {draft && firstPage ? (
-          <section className="card glass-tinted flex flex-wrap items-center gap-4 rounded-xl p-4" aria-label={t("studio.start.continue")}>
-            <span className="relative block shrink-0 overflow-hidden rounded-md border border-border" style={{ width: `${firstPage.width * previewScale}px`, height: `${firstPage.height * previewScale}px` }} aria-hidden>
-              <span className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${previewScale})` }}>
-                <PageView page={firstPage} language={locale} />
-              </span>
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">{t("studio.start.continue")}</p>
-              <p className="truncate text-sm text-muted-foreground">
-                {draft.design.name || t("studio.untitled")} · {t("studio.start.pages", { count: draft.design.pages.length })}
-              </p>
-            </div>
-            <Button variant="primary" icon={<Play className="size-4" aria-hidden />} onClick={() => onOpen(draft.design, draft.filePath)}>
-              {t("studio.start.resume")}
-            </Button>
-          </section>
-        ) : null}
+        <DraftCard onOpen={onOpen} />
         <section className="card glass-tinted flex flex-wrap items-center gap-4 rounded-xl p-4" aria-labelledby="studio-cv">
           <span className="tone-tile flex size-12 shrink-0 items-center justify-center rounded-xl" data-tone="toPdf" aria-hidden>
             <IdCard className="size-6" />
@@ -186,6 +221,7 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
 function StudioEditor({ language }: { language: string }) {
   const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
+  const [printing, setPrinting] = useState(false);
   const [helping, setHelping] = useState(false);
   const close = useStudioStore((state) => state.close);
   const { save } = useDesignSave();
@@ -197,11 +233,11 @@ function StudioEditor({ language }: { language: string }) {
   useStudioShortcuts(
     () => setExporting(true),
     (saveAs) => void save(saveAs),
-    { onOpen: () => void browse(), onHelp: () => setHelping(true) },
+    { onOpen: () => void browse(), onHelp: () => setHelping(true), onPrint: () => setPrinting(true) },
   );
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="studio-editor">
-      <StudioToolbar onExport={() => setExporting(true)} onLeave={close} onHelp={() => setHelping(true)} />
+      <StudioToolbar onExport={() => setExporting(true)} onPrint={() => setPrinting(true)} onLeave={close} onHelp={() => setHelping(true)} />
       <div className="flex min-h-0 flex-1">
         <ElementsPanel />
         <div className="flex min-w-0 flex-1 flex-col">
@@ -212,6 +248,7 @@ function StudioEditor({ language }: { language: string }) {
         <PropertiesPanel />
       </div>
       <ExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />
+      <StudioPrintDialog open={printing} onClose={() => setPrinting(false)} language={language} />
       <StudioShortcutsDialog open={helping} onClose={() => setHelping(false)} />
     </div>
   );
