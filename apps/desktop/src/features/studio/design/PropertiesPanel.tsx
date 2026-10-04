@@ -18,6 +18,7 @@ import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { TextSection } from "./TextSection";
 import { CornerControls, LineSection, ShadowSection } from "./ShapeSections";
+import { VectorStrokeSection } from "./VectorStrokeSection";
 
 
 function sizeKeyOf(page: StudioPage): StudioPageSize | "custom" {
@@ -337,7 +338,8 @@ export function PropertiesPanel() {
     <aside aria-label={t("studio.props.label")} className="glass flex w-72 shrink-0 flex-col overflow-y-auto border-l border-border/60" data-testid="studio-properties">
       {elements.length === 0 ? <PageProperties page={page} /> : <ArrangeSection elements={elements} />}
       {elements.length === 0 ? <DesignColours /> : null}
-      {single?.kind === "vector" ? <ElementColours element={single} /> : null}
+      {single?.kind === "vector" || single?.kind === "svg" ? <ElementColours element={single} /> : null}
+      {single?.kind === "vector" ? <VectorStrokeSection element={single} /> : null}
       {texts.length && kinds.size === 1 ? <TextSection elements={texts} /> : null}
       {single?.kind === "image" ? <ImageSection element={single} /> : null}
       {single?.kind === "qr" ? <QrSection element={single} /> : null}

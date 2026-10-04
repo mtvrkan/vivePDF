@@ -611,3 +611,53 @@ def test_svg_with_a_doctype_is_refused(tmp_path: Path):
         import_svg(StudioSvgParams(path=str(drawing)), silent_progress())
 
     assert caught.value.data["reason"] == "svgDoctype"
+
+
+def _near(pixel: tuple[int, int, int], colour: tuple[int, int, int], tolerance: int = 3) -> bool:
+    return all(abs(left - right) <= tolerance for left, right in zip(pixel, colour, strict=True))
+
+
+def test_inserted_icon_exports_as_scaled_round_vector_strokes(tmp_path: Path):
+    icon = {
+        "kind": "vector",
+        "x": 30,
+        "y": 30,
+        "width": 240,
+        "height": 240,
+        "viewWidth": 24,
+        "viewHeight": 24,
+        "paths": [
+            {
+                "d": "M12 2 C17.523 2 22 6.477 22 12 C22 17.523 17.523 22 12 22 "
+                "C6.477 22 2 17.523 2 12 C2 6.477 6.477 2 12 2 Z M9 12 L11 14 L15 10",
+                "fill": None,
+                "stroke": {"color": "#1f4e8c", "width": 2, "cap": "round", "join": "round"},
+            }
+        ],
+    }
+
+    pixels = _pixels(_render(tmp_path, [icon]))
+
+    navy = (0x1F, 0x4E, 0x8C)
+    assert _near(_at(pixels, 150, 50), navy)
+    assert _near(_at(pixels, 140, 170), navy)
+    assert _near(_at(pixels, 185, 125), navy)
+    assert _at(pixels, 110, 110) == WHITE
+    assert _at(pixels, 35, 35) == WHITE
+
+
+def test_recoloured_svg_exports_with_the_swapped_colours(tmp_path: Path):
+    svg = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="60" '
+        'viewBox="0 0 100 60"><style>.a{fill:#00ff00}</style>'
+        '<rect class="a" width="50" height="50"/>'
+        '<rect x="50" width="50" height="50" style="fill:#0000ff"/>'
+        '<path d="M0 55h100" stroke="#ff6600" stroke-width="10"/></svg>'
+    )
+    item = {"kind": "svg", "x": 0, "y": 0, "width": 100, "height": 60, "svg": svg}
+
+    pixels = _pixels(_render(tmp_path, [item]))
+
+    assert _near(_at(pixels, 25, 25), (0, 255, 0))
+    assert _near(_at(pixels, 75, 25), (0, 0, 255))
+    assert _near(_at(pixels, 50, 55), (255, 102, 0))

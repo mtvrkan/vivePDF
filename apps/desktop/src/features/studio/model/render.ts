@@ -12,6 +12,7 @@ import type {
 import { hasPlaceholders, textOf } from "./design";
 import { fitParagraphs, paragraphCount, weightOf } from "./typography";
 import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./shapes";
+import { recolorSvg } from "./svgColors";
 
 export type MeasuredText = ReadonlyMap<string, StudioMeasuredText>;
 const MAX_RUN_SIZE = 1000;
@@ -104,7 +105,7 @@ export function elementItems(element: StudioElement, measured: MeasuredText = ne
       return paths.length ? [{ ...box(element), kind: "vector", viewWidth: element.viewWidth, viewHeight: element.viewHeight, paths }] : [];
     }
     case "svg":
-      return [{ ...box(element), kind: "svg", svg: element.svg }];
+      return [{ ...box(element), kind: "svg", svg: recolorSvg(element.svg, element.colorMap) }];
   }
 }
 

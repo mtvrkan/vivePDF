@@ -85,7 +85,7 @@ export const THIRD_PARTY: ThirdPartyEntry[] = [
   { name: "Tailwind CSS", licence: "MIT", url: "https://tailwindcss.com" },
   { name: "i18next", licence: "MIT", url: "https://www.i18next.com" },
   { name: "zustand", licence: "MIT", url: "https://github.com/pmndrs/zustand" },
-  { name: "lucide", licence: "ISC", url: "https://lucide.dev" },
+  { name: "Lucide icons (interface and Studio icon library)", licence: "ISC", url: "https://lucide.dev" },
   { name: "Geist", licence: "OFL-1.1", url: "https://vercel.com/font" },
   { name: "IBM Plex", licence: "OFL-1.1", url: "https://www.ibm.com/plex" },
   { name: "DejaVu Fonts", licence: "Bitstream Vera", url: "https://dejavu-fonts.github.io" },
