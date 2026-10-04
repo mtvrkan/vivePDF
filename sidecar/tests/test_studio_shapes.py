@@ -79,16 +79,17 @@ def test_a_sharp_shadow_sits_under_the_shape_at_its_offset(tmp_path: Path):
     assert _close(_at(pixels, 45, 155), WHITE)
 
 
-def test_a_blurred_shadow_fades_across_its_edge(tmp_path: Path):
-    pixels = _pixels(_render(tmp_path, _shadowed(_vector(50, 50, 100, 100), x=0, y=30, blur=20)))
+def test_a_blurred_shadow_fades_across_its_edge_like_a_css_drop_shadow(tmp_path: Path):
+    pixels = _pixels(_render(tmp_path, _shadowed(_vector(50, 50, 100, 100), x=0, y=30, blur=10)))
 
     inside = _at(pixels, 100, 175)[0]
     edge = _at(pixels, 100, 180)[0]
-    outside = _at(pixels, 100, 200)[0]
+    one_blur_out = _at(pixels, 100, 190)[0]
     far = _at(pixels, 100, 215)[0]
-    assert inside < edge < outside < far
+    assert inside < edge < one_blur_out < far
     assert 100 <= edge <= 155
-    assert far >= 245
+    assert abs(one_blur_out - 214) <= 14
+    assert far >= 250
 
 
 def test_the_shadow_offset_stays_in_page_space_when_the_shape_turns(tmp_path: Path):

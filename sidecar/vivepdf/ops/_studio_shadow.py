@@ -24,7 +24,7 @@ def local_offset(item: StudioShadowItem) -> tuple[float, float]:
 
 
 def shadow_margin(item: StudioShadowItem, inner: float) -> float:
-    sigma = item.shadow.blur / 2
+    sigma = item.shadow.blur
     lx, ly = local_offset(item)
     return inner + BLUR_REACH * sigma + max(abs(lx), abs(ly)) + 1
 
@@ -63,7 +63,7 @@ def _blurred(coverage: np.ndarray, sigma: float) -> np.ndarray:
 
 
 def shadow_document(item: StudioShadowItem, sources: list[Source]) -> Source:
-    sigma = item.shadow.blur / 2
+    sigma = item.shadow.blur
     inner = max((margin for _, margin in sources), default=0.0)
     margin = shadow_margin(item, inner)
     width, height = item.width + 2 * margin, item.height + 2 * margin
