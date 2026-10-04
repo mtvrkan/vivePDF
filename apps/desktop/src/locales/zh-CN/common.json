@@ -6462,7 +6462,9 @@
       "group": "组合",
       "ungroup": "取消组合",
       "lock": "锁定",
-      "delete": "删除"
+      "delete": "删除",
+      "copyStyle": "复制样式",
+      "pasteStyle": "粘贴样式"
     },
     "panel": {
       "label": "添加和排列",
@@ -6593,7 +6595,10 @@
       "qrValue": "文本或链接",
       "qrBackground": "背景",
       "background": "背景颜色",
-      "qrLevel": "纠错级别"
+      "qrLevel": "纠错级别",
+      "mixed": "混合",
+      "mixedHint": "所选项目的此项值不同，更改将应用于全部项目。",
+      "shape": "形状"
     },
     "align": {
       "left": "左对齐",
@@ -6636,7 +6641,22 @@
       "style": "线型",
       "solid": "实线",
       "dashed": "虚线",
-      "dotted": "点线"
+      "dotted": "点线",
+      "longDash": "长虚线",
+      "dashDot": "点划线",
+      "gap": "间距",
+      "cap": "线端",
+      "join": "转角",
+      "caps": {
+        "butt": "平头",
+        "round": "圆头",
+        "square": "方头"
+      },
+      "joins": {
+        "miter": "尖角",
+        "round": "圆角",
+        "bevel": "斜角"
+      }
     },
     "fit": {
       "label": "图片适应方式",
@@ -6716,7 +6736,10 @@
       "design": "设计颜色",
       "designHint": "在此处更改颜色，即可更新整个设计中的该颜色。",
       "element": "颜色",
-      "swatch": "颜色 {{color}}"
+      "swatch": "颜色 {{color}}",
+      "document": "文档颜色",
+      "recent": "最近使用的颜色",
+      "presets": "基本颜色"
     },
     "ornaments": {
       "categories": {
@@ -8277,7 +8300,8 @@
         "margins": "显示或隐藏边距",
         "duplicateDrag": "拖动时创建副本",
         "layerOrder": "上移 / 下移当前图层（图层面板）",
-        "enterGroup": "选择组内的单个元素"
+        "enterGroup": "选择组内的单个元素",
+        "copyPasteStyle": "复制样式 / 粘贴样式"
       }
     },
     "view": {
@@ -8291,6 +8315,24 @@
       "clearGuides": "删除此页上的参考线",
       "rulerHint": "拖到页面上可添加参考线，双击可在此处添加",
       "guideHint": "拖动可移动；拖到标尺上或双击可删除"
+    },
+    "style": {
+      "copy": "复制样式",
+      "paste": "粘贴样式"
+    },
+    "gradient": {
+      "stop": "色标 {{number}}",
+      "hint": "单击渐变条可添加色标，拖动色标可移动它。",
+      "stopColor": "色标颜色",
+      "position": "色标位置",
+      "add": "添加色标",
+      "remove": "移除色标",
+      "reverse": "反转颜色",
+      "centreX": "中心 X",
+      "centreY": "中心 Y",
+      "radius": "大小",
+      "presets": "现成渐变",
+      "preset": "渐变 {{number}}"
     }
   }
 }

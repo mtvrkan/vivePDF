@@ -6462,7 +6462,9 @@
       "group": "Grouper",
       "ungroup": "Dissocier",
       "lock": "Verrouiller",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "copyStyle": "Copier le style",
+      "pasteStyle": "Coller le style"
     },
     "panel": {
       "label": "Ajouter et organiser",
@@ -6593,7 +6595,10 @@
       "qrValue": "Texte ou lien",
       "qrBackground": "Arrière-plan",
       "background": "Couleur d’arrière-plan",
-      "qrLevel": "Correction d’erreurs"
+      "qrLevel": "Correction d’erreurs",
+      "mixed": "Mixte",
+      "mixedHint": "Les éléments sélectionnés diffèrent ici. La modification s’applique à tous.",
+      "shape": "Forme"
     },
     "align": {
       "left": "Aligner à gauche",
@@ -6636,7 +6641,22 @@
       "style": "Style de ligne",
       "solid": "Plein",
       "dashed": "Tirets",
-      "dotted": "Pointillé"
+      "dotted": "Pointillé",
+      "longDash": "Tirets longs",
+      "dashDot": "Tiret-point",
+      "gap": "Espacement",
+      "cap": "Extrémités",
+      "join": "Angles",
+      "caps": {
+        "butt": "Plates",
+        "round": "Arrondies",
+        "square": "Carrées"
+      },
+      "joins": {
+        "miter": "Pointus",
+        "round": "Arrondis",
+        "bevel": "Biseautés"
+      }
     },
     "fit": {
       "label": "Ajustement de l’image",
@@ -6716,7 +6736,10 @@
       "design": "Couleurs du design",
       "designHint": "Modifiez une couleur ici pour la changer partout dans le design.",
       "element": "Couleurs",
-      "swatch": "Couleur {{color}}"
+      "swatch": "Couleur {{color}}",
+      "document": "Couleurs du document",
+      "recent": "Couleurs récentes",
+      "presets": "Couleurs de base"
     },
     "ornaments": {
       "categories": {
@@ -8277,7 +8300,8 @@
         "margins": "Afficher ou masquer les marges",
         "duplicateDrag": "Dupliquer en faisant glisser",
         "layerOrder": "Monter / descendre le calque actif (panneau Calques)",
-        "enterGroup": "Sélectionner un seul élément dans un groupe"
+        "enterGroup": "Sélectionner un seul élément dans un groupe",
+        "copyPasteStyle": "Copier le style / coller le style"
       }
     },
     "view": {
@@ -8291,6 +8315,24 @@
       "clearGuides": "Supprimer les repères de cette page",
       "rulerHint": "Faites glisser sur la page pour ajouter un repère, ou double-cliquez pour en ajouter un ici",
       "guideHint": "Faites glisser pour déplacer ; faites glisser sur une règle ou double-cliquez pour supprimer"
+    },
+    "style": {
+      "copy": "Copier le style",
+      "paste": "Coller le style"
+    },
+    "gradient": {
+      "stop": "Point de couleur {{number}}",
+      "hint": "Cliquez sur la barre pour ajouter un point de couleur, puis faites-le glisser pour le déplacer.",
+      "stopColor": "Couleur du point",
+      "position": "Position du point",
+      "add": "Ajouter un point de couleur",
+      "remove": "Retirer le point de couleur",
+      "reverse": "Inverser les couleurs",
+      "centreX": "Centre X",
+      "centreY": "Centre Y",
+      "radius": "Taille",
+      "presets": "Dégradés prêts à l’emploi",
+      "preset": "Dégradé {{number}}"
     }
   }
 }

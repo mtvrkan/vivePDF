@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent, type WheelEvent as ReactWheelEvent } from "react";
-import { ArrowDownToLine, ArrowUpToLine, ClipboardPaste, Copy, CopyPlus, Group, Lock, Scissors, Trash2, Ungroup } from "lucide-react";
+import { ArrowDownToLine, ArrowUpToLine, ClipboardPaste, Copy, CopyPlus, Group, Lock, PaintBucket, Paintbrush, Scissors, Trash2, Ungroup } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMenu";
 import { useContextMenu } from "@/components/shared/useContextMenu";
@@ -15,6 +15,7 @@ import { ElementView, PageView } from "./ElementView";
 import { pickImage } from "./pickImage";
 import { CanvasRulers, type RulerExtent, type RulerHandlers } from "./Rulers";
 import { buildSnapIndex, measureAround, snapMove, snapPosition, snapResize, type Axis, type SnapExtras, type SnapIndex, type SnapLine, type Span } from "./snapping";
+import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { TextEditor } from "./TextEditor";
 import { textEditorEntry } from "./textEditorBridge";
 import { HANDLES, boundsOf, resizeBox, rotateElements, rotationFromPointer, scaleElements, turnFromPointer, type Handle, type Vector } from "./transform";
@@ -546,6 +547,8 @@ export function Canvas({ language }: { language: string }) {
     { type: "item", id: "copy", label: t("studio.menu.copy"), icon: Copy, shortcut: "Ctrl+C", disabled: !selection.length, onSelect: state.copy },
     { type: "item", id: "paste", label: t("studio.menu.paste"), icon: ClipboardPaste, shortcut: "Ctrl+V", disabled: !state.clipboard?.length, onSelect: state.paste },
     { type: "item", id: "duplicate", label: t("studio.menu.duplicate"), icon: CopyPlus, shortcut: "Ctrl+D", disabled: !selection.length, onSelect: state.duplicate },
+    { type: "item", id: "copyStyle", label: t("studio.menu.copyStyle"), icon: Paintbrush, shortcut: "Ctrl+Alt+C", disabled: !selection.length, onSelect: copyStyle },
+    { type: "item", id: "pasteStyle", label: t("studio.menu.pasteStyle"), icon: PaintBucket, shortcut: "Ctrl+Alt+V", disabled: !selection.length || !useStyleClipboard.getState().style, onSelect: pasteStyle },
     { type: "separator", id: "s1" },
     { type: "item", id: "front", label: t("studio.menu.front"), icon: ArrowUpToLine, shortcut: "Ctrl+Shift+↑", disabled: !selection.length, onSelect: () => reorder("front") },
     { type: "item", id: "back", label: t("studio.menu.back"), icon: ArrowDownToLine, shortcut: "Ctrl+Shift+↓", disabled: !selection.length, onSelect: () => reorder("back") },

@@ -1,5 +1,8 @@
 import {
+  STUDIO_DASHES,
   STUDIO_DESIGN_VERSION,
+  STUDIO_LINE_CAPS,
+  STUDIO_LINE_JOINS,
   STUDIO_SHAPES,
   type StudioBackground,
   type StudioCrop,
@@ -9,6 +12,8 @@ import {
   type StudioFill,
   type StudioGuide,
   type StudioImageElement,
+  type StudioLineCap,
+  type StudioLineJoin,
   type StudioPage,
   type StudioQrElement,
   type StudioShapeElement,
@@ -44,6 +49,11 @@ export const MAX_PAGE_NAME = 120;
 export const BUILTIN_PLACEHOLDERS = ["n", "date"] as const;
 export const MAX_GUIDES_PER_PAGE = 200;
 export const MAX_MARGIN_MM = 500;
+export const MAX_GRADIENT_STOPS = 32;
+export const MIN_DASH_GAP = 0.25;
+export const MAX_DASH_GAP = 4;
+export const MIN_RADIAL_RADIUS = 0.05;
+export const MAX_RADIAL_RADIUS = 3;
 
 const PLACEHOLDER = /(?<!\{)\{([^{}]+)\}/g;
 const COLOUR = /^#[0-9a-f]{6}$/i;
@@ -196,7 +206,7 @@ function normalizeStops(value: unknown): { offset: number; color: string }[] {
   const stops = (Array.isArray(value) ? value : [])
     .map(record)
     .filter((stop): stop is Record<string, unknown> => stop !== null)
-    .slice(0, 32)
+    .slice(0, MAX_GRADIENT_STOPS)
     .map((stop) => ({ offset: finite(stop.offset, 0, 0, 1), color: colour(stop.color, "#000000") }));
   return stops.length ? stops : [{ offset: 0, color: "#000000" }, { offset: 1, color: "#ffffff" }];
 }
@@ -205,14 +215,24 @@ export function normalizeFill(value: unknown): StudioFill {
   const fill = record(value);
   if (fill?.type === "solid") return { type: "solid", color: colour(fill.color, "#000000") };
   if (fill?.type === "linear") return { type: "linear", angle: finite(fill.angle, 0, -3600, 3600), stops: normalizeStops(fill.stops) };
-  if (fill?.type === "radial") return { type: "radial", stops: normalizeStops(fill.stops) };
+  if (fill?.type === "radial") {
+    const radial: StudioFill = { type: "radial", stops: normalizeStops(fill.stops) };
+    if (typeof fill.cx === "number") radial.cx = finite(fill.cx, 0.5, 0, 1);
+    if (typeof fill.cy === "number") radial.cy = finite(fill.cy, 0.5, 0, 1);
+    if (typeof fill.radius === "number") radial.radius = finite(fill.radius, 1, MIN_RADIAL_RADIUS, MAX_RADIAL_RADIUS);
+    return radial;
+  }
   return { type: "none" };
 }
 
 export function normalizeStroke(value: unknown): StudioStroke | null {
   const stroke = record(value);
   if (!stroke) return null;
-  return { color: colour(stroke.color, "#000000"), width: finite(stroke.width, 1, 0.1, 500), dash: oneOf(stroke.dash, ["solid", "dashed", "dotted"], "solid") };
+  const result: StudioStroke = { color: colour(stroke.color, "#000000"), width: finite(stroke.width, 1, 0.1, 500), dash: oneOf(stroke.dash, STUDIO_DASHES, "solid") };
+  if (STUDIO_LINE_CAPS.includes(stroke.cap as StudioLineCap)) result.cap = stroke.cap as StudioLineCap;
+  if (STUDIO_LINE_JOINS.includes(stroke.join as StudioLineJoin)) result.join = stroke.join as StudioLineJoin;
+  if (typeof stroke.gap === "number" && Number.isFinite(stroke.gap)) result.gap = finite(stroke.gap, 1, MIN_DASH_GAP, MAX_DASH_GAP);
+  return result;
 }
 
 function normalizeCrop(value: unknown): StudioCrop {

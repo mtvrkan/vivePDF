@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { STUDIO_DESIGN_VERSION } from "@/types/studio";
-import { MAX_PAGE_NAME, createDesign, createQr, createShape, createText, hasPlaceholders, libraryFontIds, normalizeDesign, normalizeElement, placeholdersIn, STUDIO_PAGE_SIZES, textDirection } from "./design";
+import { MAX_PAGE_NAME, createDesign, createQr, createShape, createText, hasPlaceholders, libraryFontIds, normalizeDesign, normalizeElement, normalizeFill, normalizeStroke, placeholdersIn, STUDIO_PAGE_SIZES, textDirection } from "./design";
 
 describe("studio design model", () => {
   it("creates a one-page design with a white background", () => {
@@ -81,6 +81,21 @@ describe("studio design model", () => {
     expect(shape.id).not.toBe("same");
     expect(shape.kind === "shape" && shape.shape).toBe("rect");
     expect(shape.kind === "shape" && shape.fill.type === "linear" && shape.fill.stops).toHaveLength(2);
+  });
+
+  it("keeps stroke caps, joins, spacing and new dash patterns and leaves old strokes as they were", () => {
+    expect(normalizeStroke({ color: "#112233", width: 3, dash: "dashDot", cap: "round", join: "bevel", gap: 2 })).toEqual({ color: "#112233", width: 3, dash: "dashDot", cap: "round", join: "bevel", gap: 2 });
+    expect(normalizeStroke({ color: "#112233", width: 3, dash: "dashed" })).toEqual({ color: "#112233", width: 3, dash: "dashed" });
+    expect(normalizeStroke({ color: "#112233", width: 3, dash: "wavy", cap: "pointy", join: 7, gap: 99 })).toEqual({ color: "#112233", width: 3, dash: "solid", gap: 4 });
+  });
+
+  it("keeps a radial gradient's centre and reach and leaves older centred gradients as they were", () => {
+    const stops = [{ offset: 0, color: "#ffffff" }, { offset: 1, color: "#000000" }];
+
+    expect(normalizeFill({ type: "radial", stops })).toEqual({ type: "radial", stops });
+    expect(normalizeFill({ type: "radial", stops, cx: Number.NaN })).toEqual({ type: "radial", stops, cx: 0.5 });
+    expect(normalizeFill({ type: "radial", stops, cx: 0.2, cy: 1.4, radius: 0 })).toEqual({ type: "radial", stops, cx: 0.2, cy: 1, radius: 0.05 });
+    expect(normalizeFill({ type: "linear", angle: 45, stops: Array.from({ length: 40 }, () => stops[0]) })).toMatchObject({ stops: { length: 32 } });
   });
 
   it("refuses files that are not designs or come from a newer version", () => {

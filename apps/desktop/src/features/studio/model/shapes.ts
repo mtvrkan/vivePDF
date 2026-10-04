@@ -1,5 +1,9 @@
 import type {
+  StudioDash,
   StudioFill,
+  StudioGradientStop,
+  StudioLineCap,
+  StudioLineJoin,
   StudioRenderFill,
   StudioRenderPath,
   StudioRenderStroke,
@@ -180,6 +184,22 @@ export function linearGradientLine(angle: number, width: number, height: number)
   return { x1: cx - (dx * length) / 2, y1: cy - (dy * length) / 2, x2: cx + (dx * length) / 2, y2: cy + (dy * length) / 2 };
 }
 
+const MAX_RENDER_RADIUS = 20000;
+const MAX_DASH_LENGTH = 2000;
+
+type DashPiece = { on: number } | { dot: true } | { off: number };
+
+const DASH_PATTERNS: Record<Exclude<StudioDash, "solid">, DashPiece[]> = {
+  dashed: [{ on: 3 }, { off: 2 }],
+  dotted: [{ dot: true }, { off: 1 }],
+  longDash: [{ on: 7 }, { off: 3 }],
+  dashDot: [{ on: 4 }, { off: 2 }, { dot: true }, { off: 2 }],
+};
+
+export function sortedStops(stops: StudioGradientStop[]): StudioGradientStop[] {
+  return [...stops].sort((left, right) => left.offset - right.offset);
+}
+
 export function renderFill(fill: StudioFill, width: number, height: number): StudioRenderFill | null {
   switch (fill.type) {
     case "none":
@@ -187,17 +207,39 @@ export function renderFill(fill: StudioFill, width: number, height: number): Stu
     case "solid":
       return { type: "solid", color: fill.color };
     case "linear":
-      return { type: "linear", ...linearGradientLine(fill.angle, width, height), stops: fill.stops };
-    case "radial":
-      return { type: "radial", cx: width / 2, cy: height / 2, r: Math.max(0.01, Math.hypot(width, height) / 2), stops: fill.stops };
+      return { type: "linear", ...linearGradientLine(fill.angle, width, height), stops: sortedStops(fill.stops) };
+    case "radial": {
+      const r = (Math.hypot(width, height) / 2) * (fill.radius ?? 1);
+      return { type: "radial", cx: width * (fill.cx ?? 0.5), cy: height * (fill.cy ?? 0.5), r: Math.min(MAX_RENDER_RADIUS, Math.max(0.01, r)), stops: sortedStops(fill.stops) };
+    }
   }
+}
+
+export function strokeCap(stroke: StudioStroke): StudioLineCap {
+  return stroke.cap ?? (stroke.dash === "dotted" ? "round" : "butt");
+}
+
+export function strokeJoin(stroke: StudioStroke): StudioLineJoin {
+  return stroke.join ?? (stroke.dash === "dotted" ? "round" : "miter");
+}
+
+function dashArray(stroke: StudioStroke, cap: StudioLineCap): number[] {
+  if (stroke.dash === "solid") return [];
+  const unit = stroke.width;
+  const capLength = cap === "butt" ? 0 : unit;
+  const gap = stroke.gap ?? 1;
+  const length = (value: number) => Math.min(MAX_DASH_LENGTH, Math.max(0, value));
+  return DASH_PATTERNS[stroke.dash].map((piece) => {
+    if ("dot" in piece) return capLength ? 0 : length(unit);
+    if ("on" in piece) return length(piece.on * unit - capLength);
+    return length(piece.off * unit * gap + capLength);
+  });
 }
 
 export function renderStroke(stroke: StudioStroke | null): StudioRenderStroke | null {
   if (!stroke || stroke.width <= 0) return null;
-  if (stroke.dash === "dashed") return { color: stroke.color, width: stroke.width, dash: [stroke.width * 3, stroke.width * 2], cap: "butt", join: "miter" };
-  if (stroke.dash === "dotted") return { color: stroke.color, width: stroke.width, dash: [0, stroke.width * 2], cap: "round", join: "round" };
-  return { color: stroke.color, width: stroke.width, dash: [], cap: "butt", join: "miter" };
+  const cap = strokeCap(stroke);
+  return { color: stroke.color, width: stroke.width, dash: dashArray(stroke, cap), cap, join: strokeJoin(stroke) };
 }
 
 function arrowLinePaths(element: StudioShapeElement): StudioRenderPath[] {

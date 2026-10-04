@@ -6462,7 +6462,9 @@
       "group": "Gruppieren",
       "ungroup": "Gruppierung aufheben",
       "lock": "Sperren",
-      "delete": "Löschen"
+      "delete": "Löschen",
+      "copyStyle": "Stil kopieren",
+      "pasteStyle": "Stil einfügen"
     },
     "panel": {
       "label": "Hinzufügen und anordnen",
@@ -6593,7 +6595,10 @@
       "qrValue": "Text oder Link",
       "qrBackground": "Hintergrund",
       "background": "Hintergrundfarbe",
-      "qrLevel": "Fehlerkorrektur"
+      "qrLevel": "Fehlerkorrektur",
+      "mixed": "Gemischt",
+      "mixedHint": "Die ausgewählten Elemente unterscheiden sich hier. Eine Änderung gilt für alle.",
+      "shape": "Form"
     },
     "align": {
       "left": "Links ausrichten",
@@ -6636,7 +6641,22 @@
       "style": "Linienart",
       "solid": "Durchgehend",
       "dashed": "Gestrichelt",
-      "dotted": "Gepunktet"
+      "dotted": "Gepunktet",
+      "longDash": "Lang gestrichelt",
+      "dashDot": "Strich-Punkt",
+      "gap": "Abstand",
+      "cap": "Linienenden",
+      "join": "Ecken",
+      "caps": {
+        "butt": "Flach",
+        "round": "Rund",
+        "square": "Eckig"
+      },
+      "joins": {
+        "miter": "Spitz",
+        "round": "Rund",
+        "bevel": "Abgeschrägt"
+      }
     },
     "fit": {
       "label": "Bildanpassung",
@@ -6716,7 +6736,10 @@
       "design": "Design-Farben",
       "designHint": "Ändern Sie hier eine Farbe, um sie überall im Design neu einzufärben.",
       "element": "Farben",
-      "swatch": "Farbe {{color}}"
+      "swatch": "Farbe {{color}}",
+      "document": "Farben im Dokument",
+      "recent": "Zuletzt verwendete Farben",
+      "presets": "Grundfarben"
     },
     "ornaments": {
       "categories": {
@@ -8277,7 +8300,8 @@
         "margins": "Ränder ein- oder ausblenden",
         "duplicateDrag": "Beim Ziehen duplizieren",
         "layerOrder": "Fokussierte Ebene nach oben / unten verschieben (Ebenen)",
-        "enterGroup": "Ein einzelnes Element in einer Gruppe auswählen"
+        "enterGroup": "Ein einzelnes Element in einer Gruppe auswählen",
+        "copyPasteStyle": "Stil kopieren / Stil einfügen"
       }
     },
     "view": {
@@ -8291,6 +8315,24 @@
       "clearGuides": "Hilfslinien auf dieser Seite entfernen",
       "rulerHint": "Auf die Seite ziehen, um eine Hilfslinie hinzuzufügen, oder doppelklicken, um hier eine hinzuzufügen",
       "guideHint": "Zum Verschieben ziehen; zum Entfernen auf ein Lineal ziehen oder doppelklicken"
+    },
+    "style": {
+      "copy": "Stil kopieren",
+      "paste": "Stil einfügen"
+    },
+    "gradient": {
+      "stop": "Farbunterbrechung {{number}}",
+      "hint": "Klicken Sie auf den Balken, um eine Farbunterbrechung hinzuzufügen, und ziehen Sie sie, um sie zu verschieben.",
+      "stopColor": "Farbe der Unterbrechung",
+      "position": "Position der Unterbrechung",
+      "add": "Farbunterbrechung hinzufügen",
+      "remove": "Farbunterbrechung entfernen",
+      "reverse": "Farben umkehren",
+      "centreX": "Mitte X",
+      "centreY": "Mitte Y",
+      "radius": "Größe",
+      "presets": "Fertige Verläufe",
+      "preset": "Verlauf {{number}}"
     }
   }
 }

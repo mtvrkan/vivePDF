@@ -141,6 +141,69 @@ def test_strokes_and_dashes_are_not_clipped_by_the_box(tmp_path: Path):
     assert _at(pixels, 50, 260) == WHITE
 
 
+def _stroked(
+    x: float, y: float, d: str, stroke: dict, width: float = 100, height: float = 40
+) -> dict:
+    item = _rect(x, y, width, height)
+    item["paths"][0] = {"d": d, "stroke": {"color": "#000000", **stroke}}
+    return item
+
+
+def test_line_caps_and_joins_match_the_editor(tmp_path: Path):
+    corner = "M0 0 L50 40 L100 0"
+    end = "M0 10 L100 10"
+    items = [
+        _stroked(20, 20, corner, {"width": 30, "join": "miter"}),
+        _stroked(160, 20, corner, {"width": 30, "join": "bevel"}),
+        _stroked(20, 150, end, {"width": 20, "cap": "butt"}, height=20),
+        _stroked(20, 200, end, {"width": 20, "cap": "square"}, height=20),
+        _stroked(20, 250, end, {"width": 20, "cap": "round"}, height=20),
+    ]
+    pixels = _pixels(_render(tmp_path, items))
+
+    assert _at(pixels, 70, 76) == (0, 0, 0)
+    assert _at(pixels, 210, 76) == WHITE
+    assert _at(pixels, 126, 160) == WHITE
+    assert _at(pixels, 126, 210) == (0, 0, 0)
+    assert _at(pixels, 128, 202) == (0, 0, 0)
+    assert _at(pixels, 126, 260) == (0, 0, 0)
+    assert _at(pixels, 128, 252) == WHITE
+
+
+def test_zero_length_dashes_with_round_caps_draw_dots(tmp_path: Path):
+    dash_dot = _stroked(
+        20, 100, "M0 10 L260 10", {"width": 6, "dash": [18, 18, 0, 18], "cap": "round"}, 260, 20
+    )
+    pixels = _pixels(_render(tmp_path, [dash_dot]))
+
+    assert _at(pixels, 30, 110) == (0, 0, 0)
+    assert _at(pixels, 60, 110) == WHITE
+    assert _at(pixels, 74, 110) == (0, 0, 0)
+
+
+def test_radial_gradients_can_start_off_centre(tmp_path: Path):
+    item = _rect(0, 0, 100, 100)
+    item["paths"][0]["fill"] = {
+        "type": "radial",
+        "cx": 0,
+        "cy": 0,
+        "r": 100,
+        "stops": [{"offset": 0, "color": "#ff0000"}, {"offset": 1, "color": "#0000ff"}],
+    }
+    pixels = _pixels(_render(tmp_path, [item]))
+
+    near, far = _at(pixels, 3, 3), _at(pixels, 95, 95)
+    assert near[0] > 220 and near[2] < 35
+    assert far[2] > 220 and far[0] < 35
+
+
+def test_unknown_caps_and_overlong_dashes_fail_validation(tmp_path: Path):
+    with pytest.raises(ValidationError):
+        _render(tmp_path, [_stroked(0, 0, "M0 0 L10 0", {"width": 1, "cap": "pointy"})])
+    with pytest.raises(ValidationError):
+        _render(tmp_path, [_stroked(0, 0, "M0 0 L10 0", {"width": 1, "dash": [2001, 4]})])
+
+
 def test_rotation_turns_clockwise_around_the_centre(tmp_path: Path):
     bar = _rect(100, 140, 100, 20, rotation=90)
     pixels = _pixels(_render(tmp_path, [bar]))

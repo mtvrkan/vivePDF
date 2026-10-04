@@ -6463,7 +6463,9 @@
       "group": "Group",
       "ungroup": "Ungroup",
       "lock": "Lock",
-      "delete": "Delete"
+      "delete": "Delete",
+      "copyStyle": "Copy style",
+      "pasteStyle": "Paste style"
     },
     "panel": {
       "label": "Add and arrange",
@@ -6594,7 +6596,10 @@
       "qrValue": "Text or link",
       "qrBackground": "Background",
       "background": "Background colour",
-      "qrLevel": "Error correction"
+      "qrLevel": "Error correction",
+      "mixed": "Mixed",
+      "mixedHint": "The selected items differ here. A change applies to all of them.",
+      "shape": "Shape"
     },
     "align": {
       "left": "Align left",
@@ -6637,7 +6642,22 @@
       "style": "Line style",
       "solid": "Solid",
       "dashed": "Dashed",
-      "dotted": "Dotted"
+      "dotted": "Dotted",
+      "longDash": "Long dash",
+      "dashDot": "Dash-dot",
+      "gap": "Spacing",
+      "cap": "Line ends",
+      "join": "Corners",
+      "caps": {
+        "butt": "Flat",
+        "round": "Round",
+        "square": "Square"
+      },
+      "joins": {
+        "miter": "Sharp",
+        "round": "Round",
+        "bevel": "Bevelled"
+      }
     },
     "fit": {
       "label": "Picture fit",
@@ -6717,7 +6737,10 @@
       "design": "Design colours",
       "designHint": "Change a colour here to recolour it everywhere in the design.",
       "element": "Colours",
-      "swatch": "Colour {{color}}"
+      "swatch": "Colour {{color}}",
+      "document": "Document colours",
+      "recent": "Recent colours",
+      "presets": "Basic colours"
     },
     "ornaments": {
       "categories": {
@@ -8278,7 +8301,8 @@
         "margins": "Show or hide margins",
         "duplicateDrag": "Duplicate while dragging",
         "layerOrder": "Move the focused layer up / down (Layers panel)",
-        "enterGroup": "Select one item inside a group"
+        "enterGroup": "Select one item inside a group",
+        "copyPasteStyle": "Copy style / paste style"
       }
     },
     "view": {
@@ -8292,6 +8316,24 @@
       "clearGuides": "Remove guides on this page",
       "rulerHint": "Drag onto the page to add a guide, or double-click to add one here",
       "guideHint": "Drag to move; drag onto a ruler or double-click to remove"
+    },
+    "style": {
+      "copy": "Copy style",
+      "paste": "Paste style"
+    },
+    "gradient": {
+      "stop": "Colour stop {{number}}",
+      "hint": "Click the bar to add a colour stop; drag a stop to move it.",
+      "stopColor": "Stop colour",
+      "position": "Stop position",
+      "add": "Add colour stop",
+      "remove": "Remove colour stop",
+      "reverse": "Reverse colours",
+      "centreX": "Centre X",
+      "centreY": "Centre Y",
+      "radius": "Size",
+      "presets": "Ready-made gradients",
+      "preset": "Gradient {{number}}"
     }
   }
 }

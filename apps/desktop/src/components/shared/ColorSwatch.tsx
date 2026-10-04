@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { createPortal } from "react-dom";
-import { Check, Pipette } from "lucide-react";
+import { Check, Minus, Pipette } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { isEyeDropperSupported, pickColorFromScreen } from "@/shared/lib/eyedropper";
@@ -13,7 +13,21 @@ const EDGE = 8;
 const AREA_STEP = 0.02;
 const HUE_STEP = 2;
 
-type ColorSwatchProps = { value: string; onChange: (value: string) => void; label: string; customLabel: string; disabled?: boolean; presets?: string[] };
+export type ColorSwatchRow = { id: string; label: string; colors: string[] };
+
+type ColorSwatchProps = {
+  value: string;
+  onChange: (value: string) => void;
+  label: string;
+  customLabel: string;
+  disabled?: boolean;
+  presets?: string[];
+  presetsLabel?: string;
+  rows?: () => ColorSwatchRow[];
+  onCommit?: (value: string) => void;
+  mixed?: boolean;
+  mixedLabel?: string;
+};
 
 function clamp01(value: number): number {
   return Math.min(1, Math.max(0, value));
@@ -72,19 +86,65 @@ function SaturationArea({ hsv, label, onChange }: { hsv: Hsv; label: string; onC
   );
 }
 
-export function ColorSwatch({ value, onChange, label, customLabel, disabled, presets }: ColorSwatchProps) {
+function SwatchButton({ color, active, onPick }: { color: string; active: boolean; onPick: (color: string) => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={color}
+      aria-pressed={active}
+      onClick={() => onPick(color)}
+      className={cn(
+        "flex size-7 items-center justify-center rounded-md ring-1 ring-inset ring-black/15 transition-transform duration-(--transition-fast) hover:scale-110",
+        active && "ring-2 ring-primary",
+      )}
+      style={{ backgroundColor: color }}
+    >
+      {active ? <Check className={cn("size-3.5", isLightColor(color) ? "text-black" : "text-white")} aria-hidden /> : null}
+    </button>
+  );
+}
+
+function SwatchGrid({ colors, current, onPick }: { colors: string[]; current: string | null; onPick: (color: string) => void }) {
+  return (
+    <div className="grid grid-cols-6 gap-1.5">
+      {colors.map((color) => (
+        <SwatchButton key={color} color={color} active={color === current} onPick={onPick} />
+      ))}
+    </div>
+  );
+}
+
+const SECTION_LABEL = "mb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground";
+
+export function ColorSwatch({ value, onChange, label, customLabel, disabled, presets, presetsLabel, rows, onCommit, mixed = false, mixedLabel }: ColorSwatchProps) {
   const { t } = useTranslation();
   const swatches = presets && presets.length > 0 ? presets.map((preset) => normalizeHex(preset)) : PRESETS;
   const eyeDropperAvailable = isEyeDropperSupported();
   const [open, setOpen] = useState(false);
   const [anchor, setAnchor] = useState<{ top: number; left: number } | null>(null);
   const [draft, setDraft] = useState(value);
+  const [extraRows, setExtraRows] = useState<ColorSwatchRow[]>([]);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const pickingRef = useRef(false);
 
   const normalized = normalizeHex(value);
   const hsv = useMemo(() => hexToHsv(normalized), [normalized]);
+  const latestValue = useRef(normalized);
+  const openedWith = useRef<string | null>(null);
+  const commitRef = useRef(onCommit);
+  latestValue.current = normalized;
+  commitRef.current = onCommit;
+  const current = mixed ? null : normalized;
+
+  useEffect(() => {
+    if (open) {
+      openedWith.current = latestValue.current;
+      return;
+    }
+    if (openedWith.current !== null && openedWith.current !== latestValue.current) commitRef.current?.(latestValue.current);
+    openedWith.current = null;
+  }, [open]);
 
   useEffect(() => {
     setDraft(normalized);
@@ -133,6 +193,7 @@ export function ColorSwatch({ value, onChange, label, customLabel, disabled, pre
       const left = Math.min(Math.max(rect.left, EDGE), window.innerWidth - PANEL_WIDTH - EDGE);
       setAnchor({ top: rect.bottom + GAP, left });
     }
+    setExtraRows((rows?.() ?? []).map((row) => ({ ...row, colors: [...new Set(row.colors.map((color) => normalizeHex(color)))] })).filter((row) => row.colors.length > 0));
     setOpen(true);
   };
 
@@ -143,40 +204,38 @@ export function ColorSwatch({ value, onChange, label, customLabel, disabled, pre
       <button
         ref={triggerRef}
         type="button"
-        aria-label={`${label}: ${normalized}`}
+        aria-label={`${label}: ${mixed && mixedLabel ? mixedLabel : normalized}`}
         aria-haspopup="dialog"
         aria-expanded={open}
         disabled={disabled}
         onClick={toggle}
         className="nav-glass inline-flex h-8 items-center gap-1.5 rounded-lg px-1.5 disabled:opacity-40"
       >
-        <span className="size-5 rounded-md shadow-[inset_0_0_0_1px_hsl(0_0%_0%/0.25)] ring-1 ring-inset ring-white/25" style={{ backgroundColor: normalized }} aria-hidden />
-        <span className="font-mono text-[11px] uppercase text-muted-foreground">{normalized.replace("#", "")}</span>
+        {mixed ? (
+          <>
+            <span className="flex size-5 items-center justify-center rounded-md bg-muted text-muted-foreground ring-1 ring-inset ring-border" aria-hidden>
+              <Minus className="size-3.5" />
+            </span>
+            <span className="text-[11px] text-muted-foreground">{mixedLabel}</span>
+          </>
+        ) : (
+          <>
+            <span className="size-5 rounded-md shadow-[inset_0_0_0_1px_hsl(0_0%_0%/0.25)] ring-1 ring-inset ring-white/25" style={{ backgroundColor: normalized }} aria-hidden />
+            <span className="font-mono text-[11px] uppercase text-muted-foreground">{normalized.replace("#", "")}</span>
+          </>
+        )}
       </button>
       {open && anchor
         ? createPortal(
             <div ref={panelRef} role="dialog" aria-label={label} className="glass-menu fixed z-50 rounded-xl p-2.5" style={{ top: anchor.top, left: anchor.left, width: PANEL_WIDTH }}>
-              <div className="grid grid-cols-6 gap-1.5">
-                {swatches.map((preset) => {
-                  const active = preset === normalized;
-                  return (
-                    <button
-                      key={preset}
-                      type="button"
-                      aria-label={preset}
-                      aria-pressed={active}
-                      onClick={() => onChange(preset)}
-                      className={cn(
-                        "flex size-7 items-center justify-center rounded-md ring-1 ring-inset ring-black/15 transition-transform duration-(--transition-fast) hover:scale-110",
-                        active && "ring-2 ring-primary",
-                      )}
-                      style={{ backgroundColor: preset }}
-                    >
-                      {active ? <Check className={cn("size-3.5", isLightColor(preset) ? "text-black" : "text-white")} aria-hidden /> : null}
-                    </button>
-                  );
-                })}
-              </div>
+              {extraRows.map((row) => (
+                <div key={row.id} className="mb-2.5">
+                  <p className={SECTION_LABEL}>{row.label}</p>
+                  <SwatchGrid colors={row.colors} current={current} onPick={onChange} />
+                </div>
+              ))}
+              {presetsLabel ? <p className={SECTION_LABEL}>{presetsLabel}</p> : null}
+              <SwatchGrid colors={swatches} current={current} onPick={onChange} />
 
               <p className="mb-1.5 mt-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{customLabel}</p>
               <SaturationArea hsv={hsv} label={t("colorPicker.area")} onChange={commitHsv} />

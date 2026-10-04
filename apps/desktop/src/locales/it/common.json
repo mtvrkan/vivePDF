@@ -6462,7 +6462,9 @@
       "group": "Raggruppa",
       "ungroup": "Separa",
       "lock": "Blocca",
-      "delete": "Elimina"
+      "delete": "Elimina",
+      "copyStyle": "Copia stile",
+      "pasteStyle": "Incolla stile"
     },
     "panel": {
       "label": "Aggiungi e disponi",
@@ -6593,7 +6595,10 @@
       "qrValue": "Testo o link",
       "qrBackground": "Sfondo",
       "background": "Colore di sfondo",
-      "qrLevel": "Correzione errori"
+      "qrLevel": "Correzione errori",
+      "mixed": "Misto",
+      "mixedHint": "Gli elementi selezionati hanno valori diversi. La modifica si applica a tutti.",
+      "shape": "Forma"
     },
     "align": {
       "left": "Allinea a sinistra",
@@ -6636,7 +6641,22 @@
       "style": "Stile linea",
       "solid": "Continuo",
       "dashed": "Tratteggiato",
-      "dotted": "Punteggiato"
+      "dotted": "Punteggiato",
+      "longDash": "Tratteggio lungo",
+      "dashDot": "Tratto e punto",
+      "gap": "Spaziatura",
+      "cap": "Estremità",
+      "join": "Angoli",
+      "caps": {
+        "butt": "Piatte",
+        "round": "Arrotondate",
+        "square": "Quadrate"
+      },
+      "joins": {
+        "miter": "Vivi",
+        "round": "Arrotondati",
+        "bevel": "Smussati"
+      }
     },
     "fit": {
       "label": "Adattamento immagine",
@@ -6716,7 +6736,10 @@
       "design": "Colori del design",
       "designHint": "Cambia qui un colore per ricolorarlo in tutto il design.",
       "element": "Colori",
-      "swatch": "Colore {{color}}"
+      "swatch": "Colore {{color}}",
+      "document": "Colori del documento",
+      "recent": "Colori recenti",
+      "presets": "Colori di base"
     },
     "ornaments": {
       "categories": {
@@ -8277,7 +8300,8 @@
         "margins": "Mostra o nascondi i margini",
         "duplicateDrag": "Duplica durante il trascinamento",
         "layerOrder": "Sposta su / giù il livello attivo (pannello Livelli)",
-        "enterGroup": "Seleziona un solo elemento all’interno di un gruppo"
+        "enterGroup": "Seleziona un solo elemento all’interno di un gruppo",
+        "copyPasteStyle": "Copia stile / incolla stile"
       }
     },
     "view": {
@@ -8291,6 +8315,24 @@
       "clearGuides": "Rimuovi le guide da questa pagina",
       "rulerHint": "Trascina sulla pagina per aggiungere una guida o fai doppio clic per aggiungerne una qui",
       "guideHint": "Trascina per spostare; trascina su un righello o fai doppio clic per rimuovere"
+    },
+    "style": {
+      "copy": "Copia stile",
+      "paste": "Incolla stile"
+    },
+    "gradient": {
+      "stop": "Punto colore {{number}}",
+      "hint": "Fai clic sulla barra per aggiungere un punto colore e trascinalo per spostarlo.",
+      "stopColor": "Colore del punto",
+      "position": "Posizione del punto",
+      "add": "Aggiungi punto colore",
+      "remove": "Rimuovi punto colore",
+      "reverse": "Inverti colori",
+      "centreX": "Centro X",
+      "centreY": "Centro Y",
+      "radius": "Dimensione",
+      "presets": "Sfumature pronte",
+      "preset": "Sfumatura {{number}}"
     }
   }
 }

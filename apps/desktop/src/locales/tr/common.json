@@ -6463,7 +6463,9 @@
       "group": "Grupla",
       "ungroup": "Grubu çöz",
       "lock": "Kilitle",
-      "delete": "Sil"
+      "delete": "Sil",
+      "copyStyle": "Stili kopyala",
+      "pasteStyle": "Stili yapıştır"
     },
     "panel": {
       "label": "Ekle ve düzenle",
@@ -6594,7 +6596,10 @@
       "qrValue": "Metin ya da bağlantı",
       "qrBackground": "Arka plan",
       "background": "Arka plan rengi",
-      "qrLevel": "Hata düzeltme"
+      "qrLevel": "Hata düzeltme",
+      "mixed": "Karışık",
+      "mixedHint": "Seçili öğelerde bu değer farklı. Yaptığınız değişiklik hepsine uygulanır.",
+      "shape": "Şekil"
     },
     "align": {
       "left": "Sola hizala",
@@ -6637,7 +6642,22 @@
       "style": "Çizgi stili",
       "solid": "Düz",
       "dashed": "Kesikli",
-      "dotted": "Noktalı"
+      "dotted": "Noktalı",
+      "longDash": "Uzun kesikli",
+      "dashDot": "Kesik-noktalı",
+      "gap": "Aralık",
+      "cap": "Çizgi uçları",
+      "join": "Köşeler",
+      "caps": {
+        "butt": "Düz",
+        "round": "Yuvarlak",
+        "square": "Kare"
+      },
+      "joins": {
+        "miter": "Sivri",
+        "round": "Yuvarlak",
+        "bevel": "Kesik"
+      }
     },
     "fit": {
       "label": "Resim yerleşimi",
@@ -6717,7 +6737,10 @@
       "design": "Tasarım renkleri",
       "designHint": "Buradan değiştirdiğiniz renk tasarımın her yerinde değişir.",
       "element": "Renkler",
-      "swatch": "Renk {{color}}"
+      "swatch": "Renk {{color}}",
+      "document": "Belgedeki renkler",
+      "recent": "Son kullanılan renkler",
+      "presets": "Temel renkler"
     },
     "ornaments": {
       "categories": {
@@ -8278,7 +8301,8 @@
         "margins": "Kenar boşluklarını göster ya da gizle",
         "duplicateDrag": "Sürüklerken çoğalt",
         "layerOrder": "Odaktaki katmanı yukarı / aşağı taşı (Katmanlar paneli)",
-        "enterGroup": "Grubun içindeki tek bir öğeyi seç"
+        "enterGroup": "Grubun içindeki tek bir öğeyi seç",
+        "copyPasteStyle": "Stili kopyala / stili yapıştır"
       }
     },
     "view": {
@@ -8292,6 +8316,24 @@
       "clearGuides": "Bu sayfadaki kılavuz çizgilerini kaldır",
       "rulerHint": "Kılavuz çizgisi eklemek için sayfaya sürükleyin ya da buraya eklemek için çift tıklayın",
       "guideHint": "Taşımak için sürükleyin; kaldırmak için cetvele sürükleyin ya da çift tıklayın"
+    },
+    "style": {
+      "copy": "Stili kopyala",
+      "paste": "Stili yapıştır"
+    },
+    "gradient": {
+      "stop": "{{number}}. renk durağı",
+      "hint": "Renk durağı eklemek için çubuğa tıklayın, taşımak için durağı sürükleyin.",
+      "stopColor": "Durak rengi",
+      "position": "Durak konumu",
+      "add": "Renk durağı ekle",
+      "remove": "Renk durağını kaldır",
+      "reverse": "Renkleri ters çevir",
+      "centreX": "Merkez X",
+      "centreY": "Merkez Y",
+      "radius": "Boyut",
+      "presets": "Hazır renk geçişleri",
+      "preset": "Renk geçişi {{number}}"
     }
   }
 }

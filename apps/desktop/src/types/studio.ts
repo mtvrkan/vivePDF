@@ -6,11 +6,21 @@ export type StudioFill =
   | { type: "none" }
   | { type: "solid"; color: string }
   | { type: "linear"; angle: number; stops: StudioGradientStop[] }
-  | { type: "radial"; stops: StudioGradientStop[] };
+  | { type: "radial"; stops: StudioGradientStop[]; cx?: number; cy?: number; radius?: number };
 
-export type StudioDash = "solid" | "dashed" | "dotted";
+export const STUDIO_DASHES = ["solid", "dashed", "dotted", "longDash", "dashDot"] as const;
 
-export type StudioStroke = { color: string; width: number; dash: StudioDash };
+export type StudioDash = (typeof STUDIO_DASHES)[number];
+
+export const STUDIO_LINE_CAPS = ["butt", "round", "square"] as const;
+
+export type StudioLineCap = (typeof STUDIO_LINE_CAPS)[number];
+
+export const STUDIO_LINE_JOINS = ["miter", "round", "bevel"] as const;
+
+export type StudioLineJoin = (typeof STUDIO_LINE_JOINS)[number];
+
+export type StudioStroke = { color: string; width: number; dash: StudioDash; cap?: StudioLineCap; join?: StudioLineJoin; gap?: number };
 
 export type StudioElementBase = {
   id: string;
@@ -179,8 +189,8 @@ export type StudioRenderStroke = {
   color: string;
   width: number;
   dash: number[];
-  cap: "butt" | "round" | "square";
-  join: "miter" | "round" | "bevel";
+  cap: StudioLineCap;
+  join: StudioLineJoin;
 };
 
 export type StudioRenderPath = {

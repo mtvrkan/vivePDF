@@ -7,6 +7,7 @@ import type { StudioShapeKind } from "@/types/studio";
 import { canvasBridge } from "./canvasBridge";
 import { group, nudge, patchSelected, reorder, selectAll, toggleHiddenSelection, toggleLock, ungroup } from "./commands";
 import { insertShape, insertText, TEXT_PRESETS } from "./insert";
+import { copyStyle, pasteStyle } from "./styleClipboard";
 import { withElementStyle } from "./richText";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { textEditorBridge } from "./textEditorBridge";
@@ -23,6 +24,13 @@ const TOOL_SHAPES: Record<string, StudioShapeKind> = { r: "rect", o: "ellipse", 
 const CONTROL_KEYS = new Set(["Enter", " ", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"]);
 const BODY_PRESET = TEXT_PRESETS[TEXT_PRESETS.length - 1];
 const VIEW_KEYS: Record<string, StudioViewOption> = { r: "rulers", g: "guides", m: "margins" };
+
+function styleKey(event: KeyboardEvent): "copy" | "paste" | null {
+  if (!(event.ctrlKey || event.metaKey) || !event.altKey || event.shiftKey) return null;
+  if (event.code === "KeyC") return "copy";
+  if (event.code === "KeyV") return "paste";
+  return null;
+}
 
 export type StudioShortcutActions = { onOpen?: () => void; onHelp?: () => void };
 
@@ -70,6 +78,8 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
       });
       if (mod && letter === "o" && !event.shiftKey && handlers.actions.onOpen) return run(handlers.actions.onOpen);
       if (isTextEntryTarget(event.target)) return;
+      const style = styleKey(event);
+      if (style && state.selection.length) return run(style === "copy" ? copyStyle : pasteStyle);
       if (!mod && !event.ctrlKey && !event.metaKey && !event.altKey && (event.key === "?" || event.key === "F1") && handlers.actions.onHelp) return run(handlers.actions.onHelp);
       if (mod) {
         if (letter === "z" && !event.shiftKey) return run(state.undo);
