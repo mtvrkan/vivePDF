@@ -8467,7 +8467,7 @@
     },
     "shadow": {
       "title": "Gölge",
-      "on": "Alt gölge",
+      "on": "Gölge düşür",
       "hint": "Öğenin arkasında yumuşak bir gölge; dışa aktarılan dosyada da görünür",
       "color": "Gölge rengi",
       "opacity": "Gölge opaklığı",
