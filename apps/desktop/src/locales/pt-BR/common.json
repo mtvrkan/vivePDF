@@ -6535,7 +6535,12 @@
       "duplicate": "Duplicar página",
       "delete": "Excluir página",
       "moveLeft": "Mover página para a esquerda",
-      "moveRight": "Mover página para a direita"
+      "moveRight": "Mover página para a direita",
+      "pageNamed": "Página {{number}}: {{name}}",
+      "overview": "Todas as páginas",
+      "overviewHint": "Clique em uma página para abri-la. Arraste as páginas ou use os botões de seta para mudar a ordem.",
+      "moveEarlier": "Mover a página {{number}} para antes",
+      "moveLater": "Mover a página {{number}} para depois"
     },
     "page": {
       "size": "Tamanho da página",
@@ -6544,7 +6549,16 @@
       "background": "Plano de fundo",
       "backgroundImage": "Imagem de fundo",
       "replaceImage": "Substituir imagem",
-      "removeImage": "Remover imagem"
+      "removeImage": "Remover imagem",
+      "title": "Página",
+      "name": "Nome da página",
+      "namePlaceholder": "Opcional, por exemplo, Capa",
+      "resizeContent": "Conteúdo ao redimensionar",
+      "resize": {
+        "keep": "Manter como está",
+        "scale": "Ajustar à escala"
+      },
+      "applyToAll": "Aplicar este tamanho a todas as páginas"
     },
     "props": {
       "label": "Propriedades",

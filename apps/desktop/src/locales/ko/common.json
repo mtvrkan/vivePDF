@@ -6535,7 +6535,12 @@
       "duplicate": "페이지 복제",
       "delete": "페이지 삭제",
       "moveLeft": "페이지를 왼쪽으로 이동",
-      "moveRight": "페이지를 오른쪽으로 이동"
+      "moveRight": "페이지를 오른쪽으로 이동",
+      "pageNamed": "{{number}}페이지: {{name}}",
+      "overview": "모든 페이지",
+      "overviewHint": "페이지를 클릭하면 열립니다. 페이지를 드래그하거나 화살표 단추를 사용하여 순서를 바꾸세요.",
+      "moveEarlier": "{{number}}페이지를 앞으로 이동",
+      "moveLater": "{{number}}페이지를 뒤로 이동"
     },
     "page": {
       "size": "페이지 크기",
@@ -6544,7 +6549,16 @@
       "background": "배경",
       "backgroundImage": "배경 그림",
       "replaceImage": "그림 바꾸기",
-      "removeImage": "그림 제거"
+      "removeImage": "그림 제거",
+      "title": "페이지",
+      "name": "페이지 이름",
+      "namePlaceholder": "선택 사항(예: 표지)",
+      "resizeContent": "크기 변경 시 콘텐츠",
+      "resize": {
+        "keep": "그대로 유지",
+        "scale": "맞게 크기 조정"
+      },
+      "applyToAll": "이 크기를 모든 페이지에 적용"
     },
     "props": {
       "label": "속성",

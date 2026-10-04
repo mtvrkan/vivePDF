@@ -77,10 +77,12 @@ export function useDragSort<S, T>({ attribute, axis, container, resolve, drop }:
     return () => window.removeEventListener("keydown", onKey, true);
   }, [drag]);
 
-  const bind = (source: S) => ({
+  const handlers = (sourceOf: (event: ReactPointerEvent<HTMLElement>) => S | null) => ({
     onPointerDown: (event: ReactPointerEvent<HTMLElement>) => {
       swallowClick.current = false;
       if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      const source = sourceOf(event);
+      if (source === null) return;
       pending.current = { source, x: event.clientX, y: event.clientY, pointerId: event.pointerId, node: event.currentTarget, active: false };
     },
     onPointerMove: (event: ReactPointerEvent<HTMLElement>) => {
@@ -115,5 +117,13 @@ export function useDragSort<S, T>({ attribute, axis, container, resolve, drop }:
     },
   });
 
-  return { drag, bind };
+  const bind = (source: S) => handlers(() => source);
+
+  const delegate = (sourceOf: (key: string) => S | null) =>
+    handlers((event) => {
+      const key = (event.target as Element).closest(`[${attribute}]`)?.getAttribute(attribute);
+      return key ? sourceOf(key) : null;
+    });
+
+  return { drag, bind, delegate };
 }

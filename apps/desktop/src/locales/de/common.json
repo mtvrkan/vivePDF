@@ -6535,7 +6535,12 @@
       "duplicate": "Seite duplizieren",
       "delete": "Seite löschen",
       "moveLeft": "Seite nach links verschieben",
-      "moveRight": "Seite nach rechts verschieben"
+      "moveRight": "Seite nach rechts verschieben",
+      "pageNamed": "Seite {{number}}: {{name}}",
+      "overview": "Alle Seiten",
+      "overviewHint": "Klicken Sie auf eine Seite, um sie zu öffnen. Ziehen Sie Seiten oder verwenden Sie die Pfeiltasten darunter, um die Reihenfolge zu ändern.",
+      "moveEarlier": "Seite {{number}} nach vorne verschieben",
+      "moveLater": "Seite {{number}} nach hinten verschieben"
     },
     "page": {
       "size": "Seitengröße",
@@ -6544,7 +6549,16 @@
       "background": "Hintergrund",
       "backgroundImage": "Hintergrundbild",
       "replaceImage": "Bild ersetzen",
-      "removeImage": "Bild entfernen"
+      "removeImage": "Bild entfernen",
+      "title": "Seite",
+      "name": "Seitenname",
+      "namePlaceholder": "Optional, z. B. Titelseite",
+      "resizeContent": "Inhalt beim Ändern der Größe",
+      "resize": {
+        "keep": "Unverändert lassen",
+        "scale": "Mitskalieren"
+      },
+      "applyToAll": "Diese Größe auf alle Seiten anwenden"
     },
     "props": {
       "label": "Eigenschaften",

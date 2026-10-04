@@ -39,6 +39,7 @@ export const MAX_PAGE_SIDE = 14400;
 export const MIN_ELEMENT_SIDE = 1;
 export const MAX_ELEMENTS_PER_PAGE = 2000;
 export const MAX_PAGES = 500;
+export const MAX_PAGE_NAME = 120;
 export const BUILTIN_PLACEHOLDERS = ["n", "date"] as const;
 
 const PLACEHOLDER = /(?<!\{)\{([^{}]+)\}/g;
@@ -53,7 +54,7 @@ export function blankBackground(): StudioBackground {
 }
 
 export function createPage(width: number, height: number): StudioPage {
-  return { id: newId(), width: clampSide(width), height: clampSide(height), background: blankBackground(), elements: [] };
+  return { id: newId(), name: "", width: clampSide(width), height: clampSide(height), background: blankBackground(), elements: [] };
 }
 
 export function createDesign(name: string, width: number, height: number): StudioDesign {
@@ -354,6 +355,7 @@ export function normalizePage(value: unknown): StudioPage | null {
   }
   return {
     id: text(raw.id, "", 100) || newId(),
+    name: text(raw.name, "", MAX_PAGE_NAME).trim(),
     width: clampSide(finite(raw.width, STUDIO_PAGE_SIZES.a4.width)),
     height: clampSide(finite(raw.height, STUDIO_PAGE_SIZES.a4.height)),
     background: normalizeBackground(raw.background),

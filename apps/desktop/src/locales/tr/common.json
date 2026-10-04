@@ -6536,7 +6536,12 @@
       "duplicate": "Sayfayı çoğalt",
       "delete": "Sayfayı sil",
       "moveLeft": "Sayfayı sola taşı",
-      "moveRight": "Sayfayı sağa taşı"
+      "moveRight": "Sayfayı sağa taşı",
+      "pageNamed": "Sayfa {{number}}: {{name}}",
+      "overview": "Tüm sayfalar",
+      "overviewHint": "Açmak için bir sayfaya tıklayın. Sırayı değiştirmek için sayfaları sürükleyin ya da ok düğmelerini kullanın.",
+      "moveEarlier": "{{number}}. sayfayı öne al",
+      "moveLater": "{{number}}. sayfayı geriye al"
     },
     "page": {
       "size": "Sayfa boyutu",
@@ -6545,7 +6550,16 @@
       "background": "Arka plan",
       "backgroundImage": "Arka plan resmi",
       "replaceImage": "Resmi değiştir",
-      "removeImage": "Resmi kaldır"
+      "removeImage": "Resmi kaldır",
+      "title": "Sayfa",
+      "name": "Sayfa adı",
+      "namePlaceholder": "İsteğe bağlı, örneğin Kapak",
+      "resizeContent": "Boyut değişince içerik",
+      "resize": {
+        "keep": "Olduğu gibi kalsın",
+        "scale": "Sayfaya göre ölçekle"
+      },
+      "applyToAll": "Bu boyutu tüm sayfalara uygula"
     },
     "props": {
       "label": "Özellikler",

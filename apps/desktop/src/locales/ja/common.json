@@ -6535,7 +6535,12 @@
       "duplicate": "ページを複製",
       "delete": "ページを削除",
       "moveLeft": "ページを左へ移動",
-      "moveRight": "ページを右へ移動"
+      "moveRight": "ページを右へ移動",
+      "pageNamed": "{{number}} ページ：{{name}}",
+      "overview": "すべてのページ",
+      "overviewHint": "ページをクリックすると開きます。ページをドラッグするか矢印ボタンを使うと、順序を変更できます。",
+      "moveEarlier": "{{number}} ページを前へ移動",
+      "moveLater": "{{number}} ページを後ろへ移動"
     },
     "page": {
       "size": "ページサイズ",
@@ -6544,7 +6549,16 @@
       "background": "背景",
       "backgroundImage": "背景画像",
       "replaceImage": "画像を置き換え",
-      "removeImage": "画像を削除"
+      "removeImage": "画像を削除",
+      "title": "ページ",
+      "name": "ページ名",
+      "namePlaceholder": "任意（例：表紙）",
+      "resizeContent": "サイズ変更時のコンテンツ",
+      "resize": {
+        "keep": "そのまま",
+        "scale": "合わせて拡大縮小"
+      },
+      "applyToAll": "このサイズをすべてのページに適用"
     },
     "props": {
       "label": "プロパティ",

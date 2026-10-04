@@ -149,6 +149,7 @@ export type StudioBackground = { fill: StudioFill; image: StudioBackgroundImage 
 
 export type StudioPage = {
   id: string;
+  name: string;
   width: number;
   height: number;
   background: StudioBackground;
