@@ -1,7 +1,6 @@
 import i18n from "i18next";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
-import { studioLoadDraft, studioSaveDraft } from "@/shared/rpc/operations";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { RpcError } from "@/types";
 import type { StudioDesign } from "@/types/studio";
@@ -17,6 +16,8 @@ let latest: StudioDraft | null = null;
 let timer: ReturnType<typeof setTimeout> | null = null;
 let chain: Promise<void> = Promise.resolve();
 let reported: string | null = null;
+
+const operations = () => import("@/shared/rpc/operations");
 
 const translate = (key: string, options?: Record<string, unknown>) => i18n.t(key, options ?? {});
 
@@ -38,6 +39,7 @@ async function persist(draft: StudioDraft): Promise<boolean> {
       report({ code: "INVALID_PARAMS", message: "draft too large", data: { reason: "draftTooLarge" } });
       return false;
     }
+    const { studioSaveDraft } = await operations();
     await studioSaveDraft({ design: draft.design, filePath: draft.filePath });
     reported = null;
     return true;
@@ -102,6 +104,7 @@ function hasLegacyDraft(): boolean {
 export async function loadDraft(): Promise<StudioDraft | null> {
   if (latest) return latest;
   await chain;
+  const { studioLoadDraft } = await operations();
   const stored = await studioLoadDraft();
   const design = stored.found ? normalizeDesign(stored.design) : null;
   if (design) {
