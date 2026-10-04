@@ -113,18 +113,33 @@ export const STUDIO_SHAPES = [
   "speech",
   "line",
   "arrowLine",
+  "cloud",
 ] as const;
 
 export type StudioShapeKind = (typeof STUDIO_SHAPES)[number];
 
-export type StudioShapeElement = StudioElementBase & {
+export type StudioDropShadow = { color: string; opacity: number; x: number; y: number; blur: number };
+
+export type StudioShadowable = { dropShadow: StudioDropShadow | null };
+
+export const STUDIO_ARROWHEADS = ["none", "arrow", "openArrow", "triangle", "circle", "square", "bar"] as const;
+
+export type StudioArrowhead = (typeof STUDIO_ARROWHEADS)[number];
+
+export type StudioCornerRadii = [number, number, number, number];
+
+export type StudioShapeElement = StudioElementBase & StudioShadowable & {
   kind: "shape";
   shape: StudioShapeKind;
   fill: StudioFill;
   stroke: StudioStroke | null;
   cornerRadius: number;
+  corners: StudioCornerRadii | null;
   points: number;
   innerRatio: number;
+  startArrow: StudioArrowhead;
+  endArrow: StudioArrowhead;
+  arrowSize: number;
 };
 
 export type StudioImageFit = "cover" | "contain" | "stretch";
@@ -133,7 +148,7 @@ export type StudioCrop = { x: number; y: number; width: number; height: number }
 
 export type StudioImageMask = "none" | "rounded" | "circle";
 
-export type StudioImageElement = StudioElementBase & {
+export type StudioImageElement = StudioElementBase & StudioShadowable & {
   kind: "image";
   src: string;
   fit: StudioImageFit;
@@ -145,7 +160,7 @@ export type StudioImageElement = StudioElementBase & {
 
 export type StudioQrLevel = "L" | "M" | "Q" | "H";
 
-export type StudioQrElement = StudioElementBase & {
+export type StudioQrElement = StudioElementBase & StudioShadowable & {
   kind: "qr";
   value: string;
   color: string;
@@ -161,7 +176,7 @@ export type StudioVectorPath = {
   opacity: number;
 };
 
-export type StudioVectorElement = StudioElementBase & {
+export type StudioVectorElement = StudioElementBase & StudioShadowable & {
   kind: "vector";
   viewWidth: number;
   viewHeight: number;
@@ -170,7 +185,7 @@ export type StudioVectorElement = StudioElementBase & {
 
 export type StudioSvgSource = "table" | "chart" | "formula" | "flowchart" | "import";
 
-export type StudioSvgElement = StudioElementBase & {
+export type StudioSvgElement = StudioElementBase & StudioShadowable & {
   kind: "svg";
   svg: string;
   source: StudioSvgSource;
@@ -268,11 +283,15 @@ export type StudioRenderBand = { x: number; y: number; width: number; height: nu
 
 export type StudioMeasuredText = { segments: StudioRenderSegment[]; bands: StudioRenderBand[] };
 
-export type StudioRenderItem =
+export type StudioRenderShape =
   | (StudioRenderBox & { kind: "vector"; paths: StudioRenderPath[]; viewWidth?: number; viewHeight?: number })
   | (StudioRenderBox & { kind: "svg"; svg: string })
   | (StudioRenderBox & { kind: "image"; path: string; fit: StudioImageFit; crop: StudioCrop | null; mask: StudioImageMask; radius: number })
-  | (StudioRenderBox & { kind: "qr"; value: string; color: string; background: string | null; errorLevel: StudioQrLevel })
+  | (StudioRenderBox & { kind: "qr"; value: string; color: string; background: string | null; errorLevel: StudioQrLevel });
+
+export type StudioRenderItem =
+  | StudioRenderShape
+  | (StudioRenderBox & { kind: "shadow"; shadow: StudioDropShadow; items: StudioRenderShape[] })
   | (StudioRenderBox & {
       kind: "text";
       runs: StudioRenderRun[];

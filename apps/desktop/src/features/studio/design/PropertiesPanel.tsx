@@ -10,13 +10,14 @@ import { MAX_PAGE_NAME, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/
 import { align, distribute, patchSelected, toggleLock } from "./commands";
 import { DesignColours, ElementColours } from "./ColorSections";
 import { ColorField, FillEditor, NumberField, OpacityField, PanelSection, StrokeEditor } from "./controls";
-import { deepEqual, isFillable, isRoundable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue, strokeDifferences } from "./multiEdit";
+import { deepEqual, isCornerable, isFillable, isLineElement, isRoundable, isShadowable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue, strokeDifferences } from "./multiEdit";
 import { pickImage } from "./pickImage";
 import { fromMm, toMm } from "./units";
 import { distributableCount, resizeAllPages, resizePage, type PageResizeMode } from "../model/edit";
 import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { TextSection } from "./TextSection";
+import { CornerControls, LineSection, ShadowSection } from "./ShapeSections";
 
 
 function sizeKeyOf(page: StudioPage): StudioPageSize | "custom" {
@@ -216,13 +217,16 @@ function StyleSections({ elements }: { elements: StudioElement[] }) {
   const fillable = elements.filter(isFillable);
   const strokable = elements.filter(isStrokable);
   const roundable = elements.filter(isRoundable);
+  const cornerable = elements.filter(isCornerable);
+  const lines = elements.filter(isLineElement);
+  const shadowable = elements.filter(isShadowable);
   const stars = elements.filter((element): element is StudioShapeElement => element.kind === "shape" && (element.shape === "star" || element.shape === "burst"));
   const fill = sharedValue(fillable.map((element) => element.fill));
   const strokes = strokable.map((element) => element.stroke);
   const shownStroke = strokes.find((stroke) => stroke !== null) ?? null;
   const radius = sharedValue(roundable.map((element) => element.cornerRadius));
   const mixedText = t("studio.props.mixed");
-  const openPath = elements.every((element) => element.kind === "shape" && (element.shape === "line" || element.shape === "arrowLine"));
+  const openPath = lines.length === elements.length;
   const setFill = (next: StudioFill, merge?: string) => patchSelected((element) => (isFillable(element) ? { fill: mergeEdit(element.fill, fill.value, next) } : {}), merge);
   const setStroke = (next: StudioStroke | null, merge?: string) =>
     patchSelected((element) => {
@@ -241,7 +245,9 @@ function StyleSections({ elements }: { elements: StudioElement[] }) {
       {strokable.length === elements.length ? (
         <PanelSection title={t("studio.props.stroke")}>
           <StrokeEditor value={shownStroke} mixed={strokeDifferences(strokes)} openPath={openPath} onChange={setStroke} />
-          {roundable.length === elements.length ? (
+          {cornerable.length === elements.length ? (
+            <CornerControls elements={cornerable} />
+          ) : roundable.length === elements.length ? (
             <SliderField
               label={t("studio.props.cornerRadius")}
               value={radius.value}
@@ -253,12 +259,14 @@ function StyleSections({ elements }: { elements: StudioElement[] }) {
           ) : null}
         </PanelSection>
       ) : null}
+      {lines.length === elements.length ? <LineSection elements={lines} /> : null}
       {stars.length === elements.length ? (
         <PanelSection title={t("studio.props.shape")}>
           <SliderField label={t("studio.props.points")} value={stars[0].points} min={3} max={48} onChange={(points) => setShape({ points }, "points")} />
           <SliderField label={t("studio.props.innerRatio")} value={Math.round(stars[0].innerRatio * 100)} min={10} max={95} format={(value) => `${value}%`} onChange={(value) => setShape({ innerRatio: value / 100 }, "inner")} />
         </PanelSection>
       ) : null}
+      {shadowable.length === elements.length ? <ShadowSection elements={shadowable} /> : null}
     </>
   );
 }

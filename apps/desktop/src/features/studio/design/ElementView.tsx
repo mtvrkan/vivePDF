@@ -6,6 +6,7 @@ import { fillPlaceholders, textDirection } from "../model/design";
 import { elementItems } from "../model/render";
 import { renderFill, roundedRect } from "../model/shapes";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
+import { dropShadowFilter } from "./dropShadow";
 import { elementFaceSignature, ensureElementFonts, useStudioFontsStore } from "./fonts";
 import { placeImage } from "./imageLayout";
 import { fitTextSize } from "./measure";
@@ -191,6 +192,7 @@ function elementFrameStyle(element: StudioElement): React.CSSProperties {
     height: `${element.height}px`,
     transform: element.rotation ? `rotate(${element.rotation}deg)` : undefined,
     opacity: element.opacity < 1 ? element.opacity : undefined,
+    filter: dropShadowFilter(element),
   };
 }
 

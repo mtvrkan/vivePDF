@@ -6517,7 +6517,10 @@
       "cross": "Croix",
       "speech": "Bulle",
       "line": "Ligne",
-      "arrowLine": "Ligne fléchée"
+      "arrowLine": "Ligne fléchée",
+      "roundedRect": "Rectangle arrondi",
+      "doubleArrow": "Double flèche",
+      "cloud": "Nuage"
     },
     "layers": {
       "label": "Calques de cette page",
@@ -8334,7 +8337,8 @@
         "findReplace": "Rechercher et remplacer",
         "strike": "Barré",
         "listLevel": "Changer le niveau de liste",
-        "alignText": "Aligner le texte à gauche, au centre ou à droite (en modification)"
+        "alignText": "Aligner le texte à gauche, au centre ou à droite (en modification)",
+        "arrow": "Ajouter une flèche"
       }
     },
     "view": {
@@ -8460,6 +8464,41 @@
       "total_one": "{{count}} résultat",
       "total_many": "{{count}} résultats",
       "total_other": "{{count}} résultats"
+    },
+    "shadow": {
+      "title": "Ombre",
+      "on": "Ombre portée",
+      "hint": "Une ombre douce derrière l’élément, également dans le fichier exporté",
+      "color": "Couleur de l’ombre",
+      "opacity": "Opacité de l’ombre",
+      "x": "Décalage horizontal",
+      "y": "Décalage vertical",
+      "blur": "Flou"
+    },
+    "arrows": {
+      "title": "Extrémités de ligne",
+      "start": "Début",
+      "end": "Fin",
+      "swap": "Inverser les extrémités",
+      "size": "Taille de la pointe",
+      "kinds": {
+        "none": "Aucune",
+        "arrow": "Flèche",
+        "openArrow": "Flèche ouverte",
+        "triangle": "Triangle",
+        "circle": "Cercle",
+        "square": "Carré",
+        "bar": "Barre"
+      }
+    },
+    "corners": {
+      "separate": "Régler chaque angle séparément",
+      "link": "Utiliser le même arrondi pour tous les angles",
+      "unlink": "Régler chaque angle séparément",
+      "topLeft": "En haut à gauche",
+      "topRight": "En haut à droite",
+      "bottomRight": "En bas à droite",
+      "bottomLeft": "En bas à gauche"
     }
   }
 }

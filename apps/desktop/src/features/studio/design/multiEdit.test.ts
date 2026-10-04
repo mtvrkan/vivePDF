@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { StudioFill, StudioStroke } from "@/types/studio";
 import { createDesign, createImage, createShape, createText } from "../model/design";
-import { isFillable, isRoundable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue } from "./multiEdit";
+import { cornersOf, isCornerable, isFillable, isLineElement, isRoundable, isShadowable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, shadowDifferences, sharedValue, withCorner } from "./multiEdit";
 
 const stroke = (color: string, width: number): StudioStroke => ({ color, width, dash: "solid" });
 
@@ -61,5 +61,31 @@ describe("editing several elements at once", () => {
     expect(selectionFrame(resized.elements.slice(0, 2))).toEqual({ x: 10, y: 10, width: 140, height: 40 });
     expect(resized.elements[0]).toMatchObject({ x: 10, width: 40, height: 20 });
     expect(resizeSelectionTo(page, [], 10, 10)).toBe(page);
+  });
+});
+
+describe("editing shadows, corners and line ends together", () => {
+  const shadow = { color: "#000000", opacity: 0.4, x: 3, y: 5, blur: 8 };
+
+  it("reports which shadow values differ and when only some items have one", () => {
+    expect(shadowDifferences([shadow, { ...shadow, blur: 2 }])).toEqual(new Set(["blur"]));
+    expect(shadowDifferences([shadow, null])).toEqual(new Set(["presence"]));
+    expect(shadowDifferences([null, null]).size).toBe(0);
+  });
+
+  it("changes one corner from the linked radius", () => {
+    const rect = { ...createShape("rect", 0, 0, 100, 100), cornerRadius: 12 };
+
+    expect(cornersOf(rect)).toEqual([12, 12, 12, 12]);
+    expect(withCorner(rect, 2, 30)).toEqual([12, 12, 30, 12]);
+    expect(withCorner({ ...rect, corners: [1, 2, 3, 4] }, 0, 9)).toEqual([9, 2, 3, 4]);
+  });
+
+  it("knows which elements take corners, line ends and shadows", () => {
+    expect(isCornerable(createShape("rect", 0, 0, 1, 1))).toBe(true);
+    expect(isCornerable(createShape("speech", 0, 0, 1, 1))).toBe(false);
+    expect(isLineElement(createShape("arrowLine", 0, 0, 1, 1))).toBe(true);
+    expect(isShadowable(createImage("a.png", 0, 0, 1, 1))).toBe(true);
+    expect(isShadowable(createText(0, 0, 1, 1, "a"))).toBe(false);
   });
 });

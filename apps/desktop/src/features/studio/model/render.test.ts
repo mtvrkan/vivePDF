@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { STUDIO_SHAPES } from "@/types/studio";
 import { createDesign, createImage, createQr, createShape, createText } from "./design";
-import { designToRender, elementItems, hasSeeThroughBackground, imagePaths } from "./render";
+import { designToRender, elementItems, hasSeeThroughBackground, imagePaths, pageToRender, renderItems } from "./render";
 import { linearGradientLine, renderFill, renderStroke, shapeD, shapePaths } from "./shapes";
 
 const PATH_GRAMMAR = /^(?:[MLCZ](?: ?-?\d+(?:\.\d+)?)*\s*)+$/;
@@ -158,5 +158,30 @@ describe("studio render payload", () => {
     design.pages[0].elements.push(createImage("C:/a.png", 0, 0, 10, 10), createImage("C:/a.png", 5, 5, 10, 10));
 
     expect(imagePaths(design)).toEqual(["C:/bg.jpg", "C:/a.png"]);
+  });
+});
+
+describe("element drop shadows", () => {
+  const shadow = { color: "#000000", opacity: 0.4, x: 3, y: 5, blur: 8 };
+
+  it("puts a shadow item with the element's own items under them", () => {
+    const image = { ...createImage("C:/a.png", 10, 20, 30, 40), opacity: 0.5, stroke: { color: "#ff0000", width: 2, dash: "solid" as const }, dropShadow: shadow };
+
+    const items = pageToRender({ ...createDesign("x", 100, 100).pages[0], elements: [image] }).items;
+
+    expect(items.map((item) => item.kind)).toEqual(["shadow", "image", "vector"]);
+    expect(items[0]).toMatchObject({ kind: "shadow", x: 10, y: 20, width: 30, height: 40, opacity: 0.5, shadow });
+    expect(items[0].kind === "shadow" && items[0].items.map((item) => [item.kind, item.opacity])).toEqual([["image", 1], ["vector", 1]]);
+  });
+
+  it("leaves elements without a visible shadow alone", () => {
+    const shape = createShape("rect", 0, 0, 10, 10);
+
+    expect(renderItems(shape)).toEqual(elementItems(shape));
+    expect(renderItems({ ...shape, dropShadow: { ...shadow, opacity: 0 } })).toHaveLength(1);
+  });
+
+  it("casts no shadow from an element that draws nothing", () => {
+    expect(renderItems({ ...createShape("rect", 0, 0, 10, 10), fill: { type: "none" }, dropShadow: shadow })).toEqual([]);
   });
 });

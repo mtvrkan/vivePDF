@@ -6517,7 +6517,10 @@
       "cross": "十字",
       "speech": "吹き出し",
       "line": "線",
-      "arrowLine": "矢印線"
+      "arrowLine": "矢印線",
+      "roundedRect": "角丸四角形",
+      "doubleArrow": "両矢印",
+      "cloud": "雲"
     },
     "layers": {
       "label": "このページのレイヤー",
@@ -8334,7 +8337,8 @@
         "findReplace": "検索と置換",
         "strike": "取り消し線",
         "listLevel": "リストのレベルを変更",
-        "alignText": "文字を左揃え・中央揃え・右揃え（編集中）"
+        "alignText": "文字を左揃え・中央揃え・右揃え（編集中）",
+        "arrow": "矢印を追加"
       }
     },
     "view": {
@@ -8459,6 +8463,41 @@
       "count": "{{current}} / {{total}}",
       "total_one": "{{count}} 件の一致",
       "total_other": "{{count}} 件の一致"
+    },
+    "shadow": {
+      "title": "影",
+      "on": "ドロップシャドウ",
+      "hint": "要素の背後にやわらかい影を付けます。書き出したファイルにも反映されます",
+      "color": "影の色",
+      "opacity": "影の不透明度",
+      "x": "横方向のずれ",
+      "y": "縦方向のずれ",
+      "blur": "ぼかし"
+    },
+    "arrows": {
+      "title": "線の端",
+      "start": "始点",
+      "end": "終点",
+      "swap": "端を入れ替え",
+      "size": "矢じりのサイズ",
+      "kinds": {
+        "none": "なし",
+        "arrow": "矢印",
+        "openArrow": "開いた矢印",
+        "triangle": "三角形",
+        "circle": "円",
+        "square": "四角",
+        "bar": "バー"
+      }
+    },
+    "corners": {
+      "separate": "角ごとに個別に設定",
+      "link": "すべての角に同じ丸みを使用",
+      "unlink": "角ごとに個別に設定",
+      "topLeft": "左上",
+      "topRight": "右上",
+      "bottomRight": "右下",
+      "bottomLeft": "左下"
     }
   }
 }

@@ -37,6 +37,7 @@ export function placeholderOf(element: StudioImageElement): StudioVectorElement 
     viewWidth: width,
     viewHeight: height,
     paths: [solidPath(outline, PLACEHOLDER_FILL), solidPath(peak, PLACEHOLDER_INK), solidPath(hill, PLACEHOLDER_INK), solidPath(sun, PLACEHOLDER_INK)],
+    dropShadow: element.dropShadow,
   };
 }
 

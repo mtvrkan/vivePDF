@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { addElements } from "../model/edit";
 import { createDesign, createShape } from "../model/design";
 import { Canvas } from "./Canvas";
+import { lineEndpoints } from "./lineGeometry";
 import { currentPage, useStudioStore } from "./studioStore";
 import { DEFAULT_VIEW_PREFS, useViewPrefs } from "./viewPrefs";
 
@@ -155,5 +156,48 @@ describe("studio canvas", () => {
 
     expect(screen.queryByTestId("studio-ruler-x")).toBeNull();
     expect(screen.queryByTestId("studio-guide")).toBeNull();
+  });
+});
+
+describe("line ends on the canvas", () => {
+  it("drags one end, keeps the other and steps the angle with Shift in one undo step", () => {
+    const line = createShape("line", 20, 112, 100, 16);
+    act(() => {
+      useStudioStore.getState().applyToPage((current) => addElements(current, [line]));
+      useStudioStore.getState().select([line.id]);
+    });
+    render(<Canvas language="en" />);
+    const viewport = screen.getByTestId("studio-viewport");
+
+    pointer(screen.getByTestId("studio-line-end"), "pointerdown", 120, 120);
+    pointer(viewport, "pointermove", 120, 190);
+    pointer(viewport, "pointermove", 118, 220, { shiftKey: true });
+    pointer(viewport, "pointerup", 118, 220);
+
+    const moved = page().elements.find((element) => element.id === line.id);
+    if (!moved) throw new Error("line lost");
+    const ends = lineEndpoints(moved);
+    expect(moved.rotation).toBeCloseTo(45);
+    expect(moved.width).toBeCloseTo(Math.hypot(98, 100));
+    expect(ends.start.x).toBeCloseTo(20);
+    expect(ends.start.y).toBeCloseTo(120);
+    act(() => useStudioStore.getState().undo());
+    expect(page().elements.find((element) => element.id === line.id)).toMatchObject({ x: 20, y: 112, width: 100, rotation: 0 });
+  });
+
+  it("shows end handles instead of resize handles and puts the line back on Escape", () => {
+    const line = createShape("line", 20, 112, 100, 16);
+    act(() => {
+      useStudioStore.getState().applyToPage((current) => addElements(current, [line]));
+      useStudioStore.getState().select([line.id]);
+    });
+    render(<Canvas language="en" />);
+
+    expect(document.querySelector('[data-handle="e"]')).toBeNull();
+    pointer(screen.getByTestId("studio-line-start"), "pointerdown", 20, 120);
+    pointer(screen.getByTestId("studio-viewport"), "pointermove", 60, 40);
+    fireEvent.keyDown(window, { key: "Escape" });
+
+    expect(page().elements.find((element) => element.id === line.id)).toMatchObject({ x: 20, y: 112, width: 100, rotation: 0 });
   });
 });

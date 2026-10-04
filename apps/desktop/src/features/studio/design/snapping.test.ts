@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSnapIndex, measureAround, nearestTarget, snapMove, snapPosition, snapResize } from "./snapping";
+import { buildSnapIndex, measureAround, nearestTarget, snapMove, snapPoint, snapPosition, snapResize } from "./snapping";
 
 const page = { width: 500, height: 400 };
 
@@ -130,5 +130,20 @@ describe("resize snapping", () => {
   it("leaves turned boxes and far edges alone", () => {
     expect(snapResize({ ...start, rotation: 30 }, "e", 97, 0, {}, index, 4).lines).toEqual([]);
     expect(snapResize(start, "e", 40, 0, {}, index, 4)).toEqual({ box: { ...start, width: 140 }, lines: [] });
+  });
+});
+
+describe("snapping a single point", () => {
+  it("pulls a dragged line end onto nearby edges and reports the guide lines", () => {
+    const index = buildSnapIndex(page, [{ x: 300, y: 20, width: 50, height: 50 }]);
+
+    const snapped = snapPoint(index, { x: 302, y: 68 }, 5);
+
+    expect(snapped).toMatchObject({ x: 300, y: 70 });
+    expect(snapped.lines.map((line) => [line.axis, line.position])).toEqual([["x", 300], ["y", 70]]);
+  });
+
+  it("leaves a point alone when nothing is within reach", () => {
+    expect(snapPoint(buildSnapIndex(page, []), { x: 123, y: 77 }, 4)).toEqual({ x: 123, y: 77, lines: [] });
   });
 });

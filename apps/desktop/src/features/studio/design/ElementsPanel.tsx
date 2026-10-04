@@ -7,14 +7,13 @@ import { toRpcError } from "@/shared/rpc/client";
 import { studioImportSvg } from "@/shared/rpc/operations";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
-import { STUDIO_SHAPES, type StudioShapeKind } from "@/types/studio";
-import { createImage, createQr, createShape, createSvg, createVector } from "../model/design";
+import { createImage, createQr, createSvg, createVector } from "../model/design";
 import { DEFAULT_COLOURS, ORNAMENTS, paletteColours, type Ornament, type OrnamentCategory } from "../ornaments/ornaments";
 import { loadImagePreview } from "./assets";
 import { PathsSvg } from "./ElementView";
-import { centred, insert, insertShape, insertText, TEXT_PRESETS, type TextPreset } from "./insert";
+import { centred, insert, insertShape, insertText, presetShape, SHAPE_PRESETS, TEXT_PRESETS, type ShapePreset, type TextPreset } from "./insert";
 import { pickImage } from "./pickImage";
-import { renderFill, renderStroke, shapePaths } from "../model/shapes";
+import { isLineShape, renderFill, renderStroke, shapePaths } from "../model/shapes";
 import { currentPage, useStudioStore } from "./studioStore";
 import { LayersTab } from "./LayersTab";
 import { insertTemplate } from "../templates/apply";
@@ -50,9 +49,10 @@ function OrnamentPreview({ item }: { item: Ornament }) {
   );
 }
 
-function ShapePreview({ shape }: { shape: StudioShapeKind }) {
-  const element = createShape(shape, 0, 0, 40, shape === "line" || shape === "arrowLine" ? 12 : 40, { fill: { type: "solid", color: "currentColor" } });
-  const paths = shapePaths(shape === "line" || shape === "arrowLine" ? { ...element, stroke: { color: "currentColor", width: 3, dash: "solid" } } : element);
+function ShapePreview({ preset }: { preset: ShapePreset }) {
+  const line = isLineShape(preset.shape);
+  const element = presetShape(preset, 0, 0, 40, line ? 12 : 40, { fill: { type: "solid", color: "currentColor" } });
+  const paths = shapePaths(line ? { ...element, stroke: { color: "currentColor", width: 3, dash: "solid" } } : element);
   return (
     <span className="block size-8 text-primary">
       <PathsSvg paths={paths} width={40} height={element.height} />
@@ -68,7 +68,7 @@ function ElementsTab() {
 
   const addText = (preset: TextPreset) => insertText(page, preset, t(`studio.elements.${preset.key}Text`));
 
-  const addShape = (shape: StudioShapeKind) => insertShape(page, shape);
+  const addShape = (preset: ShapePreset) => insertShape(page, preset);
 
   const addImage = async () => {
     const src = await pickImage(t("studio.elements.image"), { drawings: true });
@@ -134,9 +134,9 @@ function ElementsTab() {
       <section className="space-y-2">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("studio.elements.shapes")}</h3>
         <div className="grid grid-cols-4 gap-2">
-          {STUDIO_SHAPES.map((shape) => (
-            <button key={shape} type="button" onClick={() => addShape(shape)} aria-label={t(`studio.shapes.${shape}`)} title={t(`studio.shapes.${shape}`)} className="card glass-tinted flex aspect-square items-center justify-center rounded-lg hover:ring-2 hover:ring-primary/40">
-              <ShapePreview shape={shape} />
+          {SHAPE_PRESETS.map((preset) => (
+            <button key={preset.key} type="button" data-shape-preset={preset.key} onClick={() => addShape(preset)} aria-label={t(`studio.shapes.${preset.key}`)} title={t(`studio.shapes.${preset.key}`)} className="card glass-tinted flex aspect-square items-center justify-center rounded-lg hover:ring-2 hover:ring-primary/40">
+              <ShapePreview preset={preset} />
             </button>
           ))}
         </div>

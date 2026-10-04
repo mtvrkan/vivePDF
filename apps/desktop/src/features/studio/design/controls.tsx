@@ -158,7 +158,7 @@ export function MixedHint() {
   return <p className="text-xs text-muted-foreground">{t("studio.props.mixedHint")}</p>;
 }
 
-function SelectField({ label, value, options, onChange, placeholder }: { label: string; value: string; options: SelectOption[]; onChange: (value: string) => void; placeholder?: string }) {
+export function SelectField({ label, value, options, onChange, placeholder }: { label: string; value: string; options: SelectOption[]; onChange: (value: string) => void; placeholder?: string }) {
   return (
     <div className="min-w-0">
       <span className="mb-1 block text-xs font-medium text-muted-foreground">{label}</span>

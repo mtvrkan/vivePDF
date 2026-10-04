@@ -1,6 +1,6 @@
-import type { StudioElement, StudioImageElement, StudioPage, StudioShapeElement, StudioStroke } from "@/types/studio";
+import type { StudioCornerRadii, StudioDropShadow, StudioElement, StudioImageElement, StudioPage, StudioShapeElement, StudioStroke, StudioTextElement } from "@/types/studio";
 import { moveElements, type Bounds } from "../model/edit";
-import { strokeCap, strokeJoin } from "../model/shapes";
+import { isLineShape, strokeCap, strokeJoin } from "../model/shapes";
 import { boundsOf, MIN_SIDE, scaleElements } from "./transform";
 
 export type Shared<T> = { value: T; mixed: boolean };
@@ -8,6 +8,7 @@ export type Shared<T> = { value: T; mixed: boolean };
 export type FillableElement = StudioShapeElement;
 export type StrokableElement = StudioShapeElement | StudioImageElement;
 export type RoundableElement = StudioShapeElement | StudioImageElement;
+export type ShadowableElement = Exclude<StudioElement, StudioTextElement>;
 
 export function deepEqual(left: unknown, right: unknown): boolean {
   if (Object.is(left, right)) return true;
@@ -55,7 +56,39 @@ export function strokeDifferences(strokes: readonly (StudioStroke | null)[]): Se
 }
 
 export function isFillable(element: StudioElement): element is FillableElement {
-  return element.kind === "shape" && element.shape !== "line" && element.shape !== "arrowLine";
+  return element.kind === "shape" && !isLineShape(element.shape);
+}
+
+export function isLineElement(element: StudioElement): element is StudioShapeElement {
+  return element.kind === "shape" && isLineShape(element.shape);
+}
+
+export function isCornerable(element: StudioElement): element is StudioShapeElement {
+  return element.kind === "shape" && element.shape === "rect";
+}
+
+export function cornersOf(element: StudioShapeElement): StudioCornerRadii {
+  return element.corners ?? [element.cornerRadius, element.cornerRadius, element.cornerRadius, element.cornerRadius];
+}
+
+export function withCorner(element: StudioShapeElement, index: number, radius: number): StudioCornerRadii {
+  const corners = [...cornersOf(element)] as StudioCornerRadii;
+  corners[index] = radius;
+  return corners;
+}
+
+export function isShadowable(element: StudioElement): element is ShadowableElement {
+  return element.kind !== "text";
+}
+
+const SHADOW_KEYS = ["color", "opacity", "x", "y", "blur"] as const;
+
+export function shadowDifferences(shadows: readonly (StudioDropShadow | null)[]): Set<string> {
+  const present = shadows.filter((shadow): shadow is StudioDropShadow => shadow !== null);
+  const differences = new Set<string>();
+  if (present.length && present.length !== shadows.length) differences.add("presence");
+  for (const key of SHADOW_KEYS) if (sharedValue(present.map((shadow) => shadow[key])).mixed) differences.add(key);
+  return differences;
 }
 
 export function isStrokable(element: StudioElement): element is StrokableElement {

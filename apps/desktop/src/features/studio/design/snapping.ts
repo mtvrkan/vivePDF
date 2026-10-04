@@ -234,6 +234,15 @@ export function snapResize(start: Box, handle: Handle, dx: number, dy: number, o
   return { box: snapped, lines };
 }
 
+export function snapPoint(index: SnapIndex, point: { x: number; y: number }, tolerance: number): { x: number; y: number; lines: SnapLine[] } {
+  const snapX = nearestTarget(index.x, point.x, tolerance);
+  const snapY = nearestTarget(index.y, point.y, tolerance);
+  const x = snapX?.value ?? point.x;
+  const y = snapY?.value ?? point.y;
+  const spot = { x, y, width: 0, height: 0 };
+  return { x, y, lines: [...(snapX ? [lineAt(index.x, "x", x, spot)] : []), ...(snapY ? [lineAt(index.y, "y", y, spot)] : [])] };
+}
+
 export function snapPosition(index: SnapIndex, axis: Axis, value: number, tolerance: number): number {
   return nearestTarget(axis === "x" ? index.x : index.y, value, tolerance)?.value ?? value;
 }

@@ -6517,7 +6517,10 @@
       "cross": "Cruz",
       "speech": "Balão de fala",
       "line": "Linha",
-      "arrowLine": "Linha com seta"
+      "arrowLine": "Linha com seta",
+      "roundedRect": "Retângulo arredondado",
+      "doubleArrow": "Seta dupla",
+      "cloud": "Nuvem"
     },
     "layers": {
       "label": "Camadas desta página",
@@ -8334,7 +8337,8 @@
         "findReplace": "Localizar e substituir",
         "strike": "Tachado",
         "listLevel": "Alterar nível da lista",
-        "alignText": "Alinhar o texto à esquerda, ao centro ou à direita (ao editar)"
+        "alignText": "Alinhar o texto à esquerda, ao centro ou à direita (ao editar)",
+        "arrow": "Adicionar uma seta"
       }
     },
     "view": {
@@ -8460,6 +8464,41 @@
       "total_one": "{{count}} ocorrência",
       "total_many": "{{count}} ocorrências",
       "total_other": "{{count}} ocorrências"
+    },
+    "shadow": {
+      "title": "Sombra",
+      "on": "Sombra projetada",
+      "hint": "Uma sombra suave atrás do item, também no arquivo exportado",
+      "color": "Cor da sombra",
+      "opacity": "Opacidade da sombra",
+      "x": "Deslocamento horizontal",
+      "y": "Deslocamento vertical",
+      "blur": "Desfoque"
+    },
+    "arrows": {
+      "title": "Pontas da linha",
+      "start": "Início",
+      "end": "Fim",
+      "swap": "Inverter pontas",
+      "size": "Tamanho da ponta",
+      "kinds": {
+        "none": "Nenhuma",
+        "arrow": "Seta",
+        "openArrow": "Seta aberta",
+        "triangle": "Triângulo",
+        "circle": "Círculo",
+        "square": "Quadrado",
+        "bar": "Barra"
+      }
+    },
+    "corners": {
+      "separate": "Ajustar cada canto separadamente",
+      "link": "Usar o mesmo arredondamento em todos os cantos",
+      "unlink": "Ajustar cada canto separadamente",
+      "topLeft": "Superior esquerdo",
+      "topRight": "Superior direito",
+      "bottomRight": "Inferior direito",
+      "bottomLeft": "Inferior esquerdo"
     }
   }
 }

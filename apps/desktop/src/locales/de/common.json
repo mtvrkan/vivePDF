@@ -6517,7 +6517,10 @@
       "cross": "Kreuz",
       "speech": "Sprechblase",
       "line": "Linie",
-      "arrowLine": "Pfeillinie"
+      "arrowLine": "Pfeillinie",
+      "roundedRect": "Abgerundetes Rechteck",
+      "doubleArrow": "Doppelpfeil",
+      "cloud": "Wolke"
     },
     "layers": {
       "label": "Ebenen auf dieser Seite",
@@ -8334,7 +8337,8 @@
         "findReplace": "Suchen und ersetzen",
         "strike": "Durchgestrichen",
         "listLevel": "Listenebene ändern",
-        "alignText": "Text links, zentriert oder rechts ausrichten (beim Bearbeiten)"
+        "alignText": "Text links, zentriert oder rechts ausrichten (beim Bearbeiten)",
+        "arrow": "Pfeil hinzufügen"
       }
     },
     "view": {
@@ -8459,6 +8463,41 @@
       "count": "{{current}} von {{total}}",
       "total_one": "{{count}} Treffer",
       "total_other": "{{count}} Treffer"
+    },
+    "shadow": {
+      "title": "Schatten",
+      "on": "Schlagschatten",
+      "hint": "Ein weicher Schatten hinter dem Element, auch in der exportierten Datei",
+      "color": "Schattenfarbe",
+      "opacity": "Schattendeckkraft",
+      "x": "Horizontaler Versatz",
+      "y": "Vertikaler Versatz",
+      "blur": "Weichzeichnung"
+    },
+    "arrows": {
+      "title": "Linienenden",
+      "start": "Anfang",
+      "end": "Ende",
+      "swap": "Enden tauschen",
+      "size": "Pfeilspitzengröße",
+      "kinds": {
+        "none": "Keine",
+        "arrow": "Pfeil",
+        "openArrow": "Offener Pfeil",
+        "triangle": "Dreieck",
+        "circle": "Kreis",
+        "square": "Quadrat",
+        "bar": "Balken"
+      }
+    },
+    "corners": {
+      "separate": "Jede Ecke einzeln festlegen",
+      "link": "Eine Rundung für alle Ecken verwenden",
+      "unlink": "Jede Ecke einzeln festlegen",
+      "topLeft": "Oben links",
+      "topRight": "Oben rechts",
+      "bottomRight": "Unten rechts",
+      "bottomLeft": "Unten links"
     }
   }
 }

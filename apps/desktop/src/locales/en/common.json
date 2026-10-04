@@ -6518,7 +6518,10 @@
       "cross": "Cross",
       "speech": "Speech bubble",
       "line": "Line",
-      "arrowLine": "Arrow line"
+      "arrowLine": "Arrow line",
+      "roundedRect": "Rounded rectangle",
+      "doubleArrow": "Double arrow",
+      "cloud": "Cloud"
     },
     "layers": {
       "label": "Layers on this page",
@@ -8335,7 +8338,8 @@
         "findReplace": "Find and replace",
         "strike": "Strikethrough",
         "listLevel": "Change list level",
-        "alignText": "Align text left, centre or right (while editing)"
+        "alignText": "Align text left, centre or right (while editing)",
+        "arrow": "Add an arrow"
       }
     },
     "view": {
@@ -8460,6 +8464,41 @@
       "count": "{{current}} of {{total}}",
       "total_one": "{{count}} match",
       "total_other": "{{count}} matches"
+    },
+    "shadow": {
+      "title": "Shadow",
+      "on": "Drop shadow",
+      "hint": "A soft shadow behind the item, also in the exported file",
+      "color": "Shadow colour",
+      "opacity": "Shadow opacity",
+      "x": "Horizontal offset",
+      "y": "Vertical offset",
+      "blur": "Blur"
+    },
+    "arrows": {
+      "title": "Line ends",
+      "start": "Start",
+      "end": "End",
+      "swap": "Swap ends",
+      "size": "Arrowhead size",
+      "kinds": {
+        "none": "None",
+        "arrow": "Arrow",
+        "openArrow": "Open arrow",
+        "triangle": "Triangle",
+        "circle": "Circle",
+        "square": "Square",
+        "bar": "Bar"
+      }
+    },
+    "corners": {
+      "separate": "Set each corner separately",
+      "link": "Use one roundness for all corners",
+      "unlink": "Set each corner separately",
+      "topLeft": "Top left",
+      "topRight": "Top right",
+      "bottomRight": "Bottom right",
+      "bottomLeft": "Bottom left"
     }
   }
 }

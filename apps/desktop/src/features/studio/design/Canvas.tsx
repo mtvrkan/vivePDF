@@ -7,6 +7,7 @@ import { cn } from "@/shared/lib/cn";
 import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
 import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
 import { addGuide, guidesOf, marginsOf, moveGuide, removeGuide } from "../model/guides";
+import { isLineShape } from "../model/shapes";
 import { duplicateElements, elementBounds, selectionBounds, unionBounds, updateElement, updatePage, moveElements, withoutGroupOf, type Bounds } from "../model/edit";
 import { canvasBridge } from "./canvasBridge";
 import { HoverOutline, PageFrames, ReadoutTag, SnapLines, SpanMarks, type Readout } from "./CanvasMarks";
@@ -14,7 +15,8 @@ import { canGroup, canUngroup, group, reorder, toggleLock, ungroup } from "./com
 import { ElementView, PageView } from "./ElementView";
 import { pickImage } from "./pickImage";
 import { CanvasRulers, type RulerExtent, type RulerHandlers } from "./Rulers";
-import { buildSnapIndex, measureAround, snapMove, snapPosition, snapResize, type Axis, type SnapExtras, type SnapIndex, type SnapLine, type Span } from "./snapping";
+import { lineEndpoints, moveLineEnd, type LineEnd } from "./lineGeometry";
+import { buildSnapIndex, measureAround, snapMove, snapPoint, snapPosition, snapResize, type Axis, type SnapExtras, type SnapIndex, type SnapLine, type Span } from "./snapping";
 import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { TextEditor } from "./TextEditor";
 import { textEditorEntry } from "./textEditorBridge";
@@ -34,6 +36,7 @@ type Drag =
   | { kind: "move"; before: StudioDesign; base: StudioDesign; ids: string[]; original: string[]; origin: Point; moved: boolean; duplicate: boolean; index: SnapIndex; start: Bounds; anchor: Point }
   | { kind: "resize"; before: StudioDesign; handle: Handle; elements: StudioElement[]; origin: Point; start: Bounds; index: SnapIndex }
   | { kind: "rotate"; before: StudioDesign; element: StudioElement }
+  | { kind: "endpoint"; before: StudioDesign; element: StudioElement; which: LineEnd; grab: Point; index: SnapIndex }
   | { kind: "turn"; before: StudioDesign; elements: StudioElement[]; centre: Point; origin: Point; box: Bounds }
   | { kind: "guide"; before: StudioDesign; pageId: string; index: number; axis: Axis; created: boolean; removing: boolean; snap: SnapIndex }
   | { kind: "marquee"; origin: Point; base: string[] }
@@ -48,10 +51,14 @@ function intersects(a: Bounds, b: Bounds): boolean {
   return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;
 }
 
+function isLine(element: StudioElement): boolean {
+  return element.kind === "shape" && isLineShape(element.shape);
+}
+
 function handlesFor(elements: StudioElement[]): Handle[] {
   if (elements.length !== 1) return ["nw", "ne", "se", "sw"];
   const [element] = elements;
-  if (element.kind === "shape" && (element.shape === "line" || element.shape === "arrowLine")) return ["e", "w"];
+  if (isLine(element)) return [];
   if (element.kind === "text") return ["nw", "ne", "se", "sw", "e", "w"];
   return HANDLES;
 }
@@ -337,7 +344,7 @@ export function Canvas({ language }: { language: string }) {
       beginGuide(event, guide.dataset.axis === "x" ? "x" : "y", Number(guide.dataset.guide));
       return;
     }
-    const handle = target.closest<HTMLElement>("[data-handle]")?.dataset.handle as Handle | "rotate" | undefined;
+    const handle = target.closest<HTMLElement>("[data-handle]")?.dataset.handle as Handle | "rotate" | LineEnd | undefined;
     event.currentTarget.setPointerCapture(event.pointerId);
     if (handle && state.design) {
       event.preventDefault();
@@ -345,7 +352,11 @@ export function Canvas({ language }: { language: string }) {
       if (!elements.length) return;
       const origin = toPage(event.clientX, event.clientY);
       const start = boundsOf(elements) as Bounds;
-      if (handle === "rotate" && state.selection.length > 1) {
+      if (handle === "start" || handle === "end") {
+        const element = elements[0];
+        const end = lineEndpoints(element)[handle];
+        drag.current = { kind: "endpoint", before: state.design, element, which: handle, grab: { x: end.x - origin.x, y: end.y - origin.y }, index: snapIndexFor(page, state.design, new Set(state.selection)) };
+      } else if (handle === "rotate" && state.selection.length > 1) {
         drag.current = { kind: "turn", before: state.design, elements, centre: { x: start.x + start.width / 2, y: start.y + start.height / 2 }, origin, box: start };
       } else if (handle === "rotate") drag.current = { kind: "rotate", before: state.design, element: elements[0] };
       else drag.current = { kind: "resize", before: state.design, handle, elements, origin, start, index: snapIndexFor(page, state.design, new Set(state.selection)) };
@@ -443,6 +454,14 @@ export function Canvas({ language }: { language: string }) {
       const rotation = rotationFromPointer({ x: element.x + element.width / 2, y: element.y + element.height / 2 }, point, { step: event.shiftKey });
       setFeedback({ ...NO_FEEDBACK, readout: { text: degrees(rotation), x: point.x, y: point.y } });
       state.preview(() => updatePage(current.before, page.id, (item) => updateElement(item, element.id, { rotation })));
+      return;
+    }
+    if (current.kind === "endpoint") {
+      const raw = { x: point.x + current.grab.x, y: point.y + current.grab.y };
+      const snapped = !event.shiftKey && snapping(event) ? snapPoint(current.index, raw, tolerance) : { ...raw, lines: [] };
+      const patch = moveLineEnd(current.element, current.which, snapped, { step: event.shiftKey });
+      setFeedback({ ...NO_FEEDBACK, lines: snapped.lines, readout: { text: `${number(patch.width)} mm  ${degrees(patch.rotation)}`, x: point.x, y: point.y } });
+      state.preview(() => updatePage(current.before, page.id, (item) => updateElement<StudioElement>(item, current.element.id, patch)));
       return;
     }
     if (current.kind === "turn") {
@@ -640,6 +659,18 @@ export function Canvas({ language }: { language: string }) {
                           />
                         );
                       })}
+                      {isLine(frame)
+                        ? (["start", "end"] as const).map((end) => (
+                            <span
+                              key={end}
+                              data-handle={end}
+                              data-testid={`studio-line-${end}`}
+                              aria-hidden
+                              className="pointer-events-auto absolute size-3.5 cursor-crosshair rounded-full border-2 border-primary bg-primary"
+                              style={{ left: (end === "start" ? 0 : frame.width * zoom) - 7, top: (frame.height * zoom) / 2 - 7 }}
+                            />
+                          ))
+                        : null}
                       <RotateGrip />
                     </>
                   ) : null}
