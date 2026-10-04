@@ -113,6 +113,10 @@ export function Canvas({ language }: { language: string }) {
 
   const selected = useMemo(() => (page ? page.elements.filter((element) => selection.includes(element.id)) : []), [page, selection]);
   const number = useMemo(() => (points: number) => formatMm(points, language), [language]);
+  const degrees = useMemo(() => {
+    const format = new Intl.NumberFormat(language, { maximumFractionDigits: 1 });
+    return (angle: number) => `${format.format(angle)}°`;
+  }, [language]);
 
   const pageWidth = page?.width ?? 0;
   const pageHeight = page?.height ?? 0;
@@ -436,7 +440,7 @@ export function Canvas({ language }: { language: string }) {
     if (current.kind === "rotate") {
       const element = current.element;
       const rotation = rotationFromPointer({ x: element.x + element.width / 2, y: element.y + element.height / 2 }, point, { step: event.shiftKey });
-      setFeedback({ ...NO_FEEDBACK, readout: { text: `${rotation}°`, x: point.x, y: point.y } });
+      setFeedback({ ...NO_FEEDBACK, readout: { text: degrees(rotation), x: point.x, y: point.y } });
       state.preview(() => updatePage(current.before, page.id, (item) => updateElement(item, element.id, { rotation })));
       return;
     }
@@ -444,7 +448,7 @@ export function Canvas({ language }: { language: string }) {
       const angle = turnFromPointer(current.centre, current.origin, point, { step: event.shiftKey });
       const turned = rotateElements(current.elements, current.centre, angle);
       setTurn({ box: current.box, angle });
-      setFeedback({ ...NO_FEEDBACK, readout: { text: `${angle}°`, x: point.x, y: point.y } });
+      setFeedback({ ...NO_FEEDBACK, readout: { text: degrees(angle), x: point.x, y: point.y } });
       state.preview(() => updatePage(current.before, page.id, (item) => turned.reduce((acc, element) => updateElement<StudioElement>(acc, element.id, element), item)));
       return;
     }
@@ -500,6 +504,7 @@ export function Canvas({ language }: { language: string }) {
 
   const onRulerDoubleClick: RulerHandlers["onDoubleClick"] = (axis, event) => {
     const point = toPage(event.clientX, event.clientY);
+    if (!useViewPrefs.getState().guides) useViewPrefs.getState().toggle("guides");
     store().applyToPage((current) => addGuide(current, axis === "x" ? { axis: "x", position: point.x } : { axis: "y", position: point.y }));
   };
 
