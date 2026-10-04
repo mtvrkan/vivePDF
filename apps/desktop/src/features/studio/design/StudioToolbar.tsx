@@ -1,4 +1,4 @@
-import { ArrowLeft, Download, FilePlus2, Group, Keyboard, Maximize, Redo2, Save, Undo2, Ungroup, ZoomIn, ZoomOut } from "lucide-react";
+import { ArrowLeft, Download, FilePlus2, Group, Keyboard, Maximize, Printer, Redo2, Save, Undo2, Ungroup, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
@@ -10,7 +10,7 @@ import { ViewMenu } from "./ViewMenu";
 
 const ZOOM_STEP = 1.25;
 
-export function StudioToolbar({ onExport, onLeave, onHelp }: { onExport: () => void; onLeave: () => void; onHelp: () => void }) {
+export function StudioToolbar({ onExport, onPrint, onLeave, onHelp }: { onExport: () => void; onPrint: () => void; onLeave: () => void; onHelp: () => void }) {
   const { t } = useTranslation();
   const name = useStudioStore((state) => state.design?.name ?? "");
   const canUndo = useStudioStore((state) => state.past.length > 0);
@@ -54,6 +54,7 @@ export function StudioToolbar({ onExport, onLeave, onHelp }: { onExport: () => v
         <IconButton icon={ZoomIn} label={t("studio.toolbar.zoomIn")} shortcut="Ctrl++" onClick={() => store.setZoom(zoom * ZOOM_STEP)} />
         <IconButton icon={Maximize} label={t("studio.toolbar.fit")} shortcut="Ctrl+0" active={fit} onClick={store.setFit} />
         <IconButton icon={Keyboard} label={t("studio.shortcuts.title")} shortcut="?" onClick={onHelp} />
+        <IconButton icon={Printer} label={t("studio.toolbar.print")} shortcut="Ctrl+P" onClick={onPrint} />
         <Button variant="primary" icon={<Download className="size-4" aria-hidden />} onClick={onExport} className="ml-2">
           {t("studio.toolbar.export")}
         </Button>

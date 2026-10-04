@@ -10,6 +10,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Ctrl S  /  Ctrl Shift S", "save"),
       item("Ctrl O", "open"),
       item("Ctrl E", "export"),
+      item("Ctrl P", "print"),
       item("?  /  F1", "help"),
     ],
   },

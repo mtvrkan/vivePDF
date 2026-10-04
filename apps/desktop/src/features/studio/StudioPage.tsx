@@ -23,6 +23,7 @@ import { PageView } from "./design/ElementView";
 import { ExportDialog } from "./design/ExportDialog";
 import { PagesStrip } from "./design/PagesStrip";
 import { PropertiesPanel } from "./design/PropertiesPanel";
+import { StudioPrintDialog } from "./design/StudioPrintDialog";
 import { StudioShortcutsDialog } from "./design/StudioShortcutsDialog";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { useStudioStore } from "./design/studioStore";
@@ -220,6 +221,7 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
 function StudioEditor({ language }: { language: string }) {
   const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
+  const [printing, setPrinting] = useState(false);
   const [helping, setHelping] = useState(false);
   const close = useStudioStore((state) => state.close);
   const { save } = useDesignSave();
@@ -231,11 +233,11 @@ function StudioEditor({ language }: { language: string }) {
   useStudioShortcuts(
     () => setExporting(true),
     (saveAs) => void save(saveAs),
-    { onOpen: () => void browse(), onHelp: () => setHelping(true) },
+    { onOpen: () => void browse(), onHelp: () => setHelping(true), onPrint: () => setPrinting(true) },
   );
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="studio-editor">
-      <StudioToolbar onExport={() => setExporting(true)} onLeave={close} onHelp={() => setHelping(true)} />
+      <StudioToolbar onExport={() => setExporting(true)} onPrint={() => setPrinting(true)} onLeave={close} onHelp={() => setHelping(true)} />
       <div className="flex min-h-0 flex-1">
         <ElementsPanel />
         <div className="flex min-w-0 flex-1 flex-col">
@@ -246,6 +248,7 @@ function StudioEditor({ language }: { language: string }) {
         <PropertiesPanel />
       </div>
       <ExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />
+      <StudioPrintDialog open={printing} onClose={() => setPrinting(false)} language={language} />
       <StudioShortcutsDialog open={helping} onClose={() => setHelping(false)} />
     </div>
   );

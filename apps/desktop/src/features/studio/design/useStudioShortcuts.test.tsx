@@ -40,6 +40,26 @@ describe("studio shortcuts", () => {
     expect(onSave.mock.calls).toEqual([[false], [true]]);
   });
 
+  it("opens printing with Ctrl+P although the browser guard blocks the WebView print", () => {
+    const onPrint = vi.fn();
+    renderHook(() => useStudioShortcuts(vi.fn(), vi.fn(), { onPrint }));
+
+    press("p");
+    press("P", { shiftKey: true });
+
+    expect(onPrint).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not open printing again while a dialog is open", () => {
+    const onPrint = vi.fn();
+    renderHook(() => useStudioShortcuts(vi.fn(), vi.fn(), { onPrint }));
+    document.body.appendChild(document.createElement("div")).setAttribute("role", "dialog");
+
+    press("p");
+
+    expect(onPrint).not.toHaveBeenCalled();
+  });
+
   it("saves even while the design name is being typed", () => {
     const onSave = vi.fn();
     renderHook(() => useStudioShortcuts(vi.fn(), onSave));
