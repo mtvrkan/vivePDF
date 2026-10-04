@@ -1,4 +1,5 @@
 import type { StudioDesign, StudioElement, StudioFill, StudioPage, StudioStroke } from "@/types/studio";
+import { effectiveSvgColors, swapSvgColors } from "./svgColors";
 
 type Swap = (color: string) => string;
 
@@ -33,7 +34,7 @@ export function elementColors(element: StudioElement): string[] {
     case "vector":
       return element.paths.flatMap((path) => [...fillColors(path.fill), ...(path.stroke ? [path.stroke.color] : [])]);
     case "svg":
-      return [];
+      return effectiveSvgColors(element.svg, element.colorMap);
   }
 }
 
@@ -49,8 +50,13 @@ function swapElement(element: StudioElement, swap: Swap): StudioElement {
       return { ...element, color: swap(element.color), background: element.background ? swap(element.background) : null };
     case "vector":
       return { ...element, paths: element.paths.map((path) => ({ ...path, fill: swapFill(path.fill, swap), stroke: swapStroke(path.stroke, swap) })) };
-    case "svg":
-      return element;
+    case "svg": {
+      const colorMap = swapSvgColors(element.svg, element.colorMap, swap);
+      if (colorMap === element.colorMap) return element;
+      const next = { ...element, colorMap };
+      if (!colorMap) delete next.colorMap;
+      return next;
+    }
   }
 }
 

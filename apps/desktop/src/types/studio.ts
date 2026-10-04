@@ -190,6 +190,7 @@ export type StudioSvgElement = StudioElementBase & StudioShadowable & {
   svg: string;
   source: StudioSvgSource;
   data: unknown;
+  colorMap?: Record<string, string>;
 };
 
 export type StudioElement =

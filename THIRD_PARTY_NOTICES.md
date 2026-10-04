@@ -10,6 +10,7 @@
 | pikepdf / QPDF | MPL-2.0 / Apache-2.0 | Fast web view (linearization) when compressing |
 | PDFium / EmbedPDF | BSD-3 / Apache-2.0 | In-app viewer |
 | Tauri | MIT / Apache-2.0 | Desktop shell |
+| Lucide icons (lucide-react; Lucide Contributors, portions © Cole Bemis as part of Feather) | ISC (Feather portions MIT) | Interface icons and the Studio icon library (icon drawings are inserted into designs and exported PDFs) |
 | IBM Plex Sans / Mono | OFL-1.1 | UI typography |
 | DejaVu Sans (bundled in sidecar) | Bitstream Vera / DejaVu license | Watermark text font |
 | fontTools | MIT | Font subsetting during compression |

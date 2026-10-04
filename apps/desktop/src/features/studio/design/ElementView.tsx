@@ -5,6 +5,7 @@ import { usePreviewValues } from "../merge/mergeStore";
 import { fillPlaceholders, textDirection } from "../model/design";
 import { elementItems } from "../model/render";
 import { renderFill, roundedRect } from "../model/shapes";
+import { recolorSvg } from "../model/svgColors";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
 import { dropShadowFilter } from "./dropShadow";
 import { elementFaceSignature, ensureElementFonts, useStudioFontsStore } from "./fonts";
@@ -162,7 +163,8 @@ function QrContent({ element, language }: { element: StudioQrElement; language: 
 }
 
 function SvgContent({ element }: { element: StudioSvgElement }) {
-  return <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(element.svg)}`} alt="" draggable={false} style={{ display: "block", width: "100%", height: "100%" }} />;
+  const markup = useMemo(() => recolorSvg(element.svg, element.colorMap), [element.svg, element.colorMap]);
+  return <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`} alt="" draggable={false} style={{ display: "block", width: "100%", height: "100%" }} />;
 }
 
 function ElementContent({ element, language }: { element: StudioElement; language: string }) {

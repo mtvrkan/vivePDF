@@ -347,6 +347,19 @@ function normalizeLanguage(value: unknown): string | null {
   return typeof value === "string" && value.length <= 20 && LANGUAGE.test(value) ? value : null;
 }
 
+export const MAX_SVG_COLOR_SWAPS = 256;
+
+function normalizeColorMap(value: unknown): Record<string, string> | undefined {
+  const map = record(value);
+  if (!map) return undefined;
+  const entries = Object.entries(map)
+    .filter((entry): entry is [string, string] => COLOUR.test(entry[0]) && typeof entry[1] === "string" && COLOUR.test(entry[1]))
+    .slice(0, MAX_SVG_COLOR_SWAPS)
+    .map(([from, to]) => [from.toLowerCase(), to.toLowerCase()] as const)
+    .filter(([from, to]) => from !== to);
+  return entries.length ? Object.fromEntries(entries) : undefined;
+}
+
 function normalizePaths(value: unknown): StudioVectorPath[] {
   return (Array.isArray(value) ? value : [])
     .map(record)
@@ -451,9 +464,19 @@ export function normalizeElement(value: unknown): StudioElement | null {
       if (!paths.length) return null;
       return { ...shared, kind: "vector", viewWidth: finite(raw.viewWidth, shared.width, 0.01, 100000), viewHeight: finite(raw.viewHeight, shared.height, 0.01, 100000), paths, dropShadow: normalizeDropShadow(raw.dropShadow) };
     }
-    case "svg":
+    case "svg": {
       if (typeof raw.svg !== "string" || !raw.svg) return null;
-      return { ...shared, kind: "svg", svg: raw.svg.slice(0, 4000000), source: oneOf(raw.source, ["table", "chart", "formula", "flowchart", "import"], "import"), data: raw.data ?? null, dropShadow: normalizeDropShadow(raw.dropShadow) };
+      const colorMap = normalizeColorMap(raw.colorMap);
+      return {
+        ...shared,
+        kind: "svg",
+        svg: raw.svg.slice(0, 4000000),
+        source: oneOf(raw.source, ["table", "chart", "formula", "flowchart", "import"], "import"),
+        data: raw.data ?? null,
+        dropShadow: normalizeDropShadow(raw.dropShadow),
+        ...(colorMap ? { colorMap } : {}),
+      };
+    }
     default:
       return null;
   }
