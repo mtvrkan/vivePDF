@@ -11,6 +11,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - One Esc during a presentation takes exactly one step back (pen → pointer → leave the black or white screen → end); after some redraws it could take two at once and end the presentation early [2026-10-18]
 - A crash inside a presentation keeps the presentation open with its Retry / Exit notice instead of dropping straight back to the viewer [2026-10-18]
 - Batch rename reports a file as failed when it is not at its new name right after the rename (for example when antivirus software moves it away) instead of counting it as renamed [2026-10-18]
+- Saving an edited text block removes the original text completely, glyph by glyph, even when another text frame overlaps it or the page is turned; shadow or glow pictures on the removed letters go too, while backgrounds and nearby pictures stay [2026-10-18]
 - The engine robustness matrix feeds the support bundle its file through attachments instead of the picture list, so the fast robustness tests pass again [2026-10-17]
 
 ## [0.3.0] - 2026-10-15

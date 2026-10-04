@@ -47,6 +47,10 @@ def text_boxes(
     return boxes
 
 
+def _kept_area(rect: pymupdf.Rect) -> float:
+    return rect.get_area() if rect.x1 > rect.x0 and rect.y1 > rect.y0 else 0.0
+
+
 def clip_to_own_text(rect: pymupdf.Rect, foreign_boxes: list[pymupdf.Rect]) -> pymupdf.Rect:
     clipped = pymupdf.Rect(rect)
     for foreign in foreign_boxes:
@@ -54,10 +58,13 @@ def clip_to_own_text(rect: pymupdf.Rect, foreign_boxes: list[pymupdf.Rect]) -> p
             continue
         if foreign.x1 <= clipped.x0 or foreign.x0 >= clipped.x1:
             continue
-        if foreign.y0 >= clipped.y0 + (clipped.y1 - clipped.y0) / 2:
-            clipped.y1 = min(clipped.y1, foreign.y0 - EDGE_GAP)
-        else:
-            clipped.y0 = max(clipped.y0, foreign.y1 + EDGE_GAP)
+        above = pymupdf.Rect(clipped.x0, clipped.y0, clipped.x1, foreign.y0 - EDGE_GAP)
+        below = pymupdf.Rect(clipped.x0, foreign.y1 + EDGE_GAP, clipped.x1, clipped.y1)
+        before = pymupdf.Rect(clipped.x0, clipped.y0, foreign.x0 - EDGE_GAP, clipped.y1)
+        after = pymupdf.Rect(foreign.x1 + EDGE_GAP, clipped.y0, clipped.x1, clipped.y1)
+        best = max((above, below, before, after), key=_kept_area)
+        if _kept_area(best) > 0:
+            clipped = best
     clipped.normalize()
     return clipped
 

@@ -12,6 +12,7 @@ from PIL import Image, ImageOps
 from pydantic import Field
 
 from vivepdf.ops._document import open_document
+from vivepdf.ops._edit_removal import EditedArea, remove_edited_text
 from vivepdf.ops._figure_tag import MAX_ALT_CHARS, is_tagged, tag_placed_figure
 from vivepdf.ops._font_unicode import subset_fonts
 from vivepdf.ops._image_files import image_file_bytes, insert_image_file
@@ -1040,22 +1041,38 @@ def _apply_image_change(
     )
 
 
+def _original_rect(page: pymupdf.Page, item: EditorReplace | EditorBlock) -> pymupdf.Rect:
+    if item.kind == "block" and item.original is not None:
+        x0, y0, x1, y1 = item.original
+        return _visible_rect(page, EditorBox(page=item.page, x0=x0, y0=y0, x1=x1, y1=y1))
+    return _visible_rect(page, item)
+
+
+def _foreign_text(page: pymupdf.Page, base: pymupdf.Rect) -> list[pymupdf.Rect]:
+    if not page.rotation:
+        return text_boxes(page, base)
+    shown = base * page.rotation_matrix
+    shown.normalize()
+    unturned: list[pymupdf.Rect] = []
+    for box in text_boxes(page, shown):
+        moved = box * page.derotation_matrix
+        moved.normalize()
+        unturned.append(moved)
+    return unturned
+
+
 def _redact_rect(
     page: pymupdf.Page, item: EditorReplace | EditorBlock, tight: bool = True
 ) -> pymupdf.Rect:
-    if item.kind == "block" and item.original is not None:
-        x0, y0, x1, y1 = item.original
-        base = _visible_rect(page, EditorBox(page=item.page, x0=x0, y0=y0, x1=x1, y1=y1))
-    else:
-        base = _visible_rect(page, item)
+    base = _original_rect(page, item)
     if tight:
         base = inset(base)
-    return clip_to_own_text(base, text_boxes(page, base))
+    return clip_to_own_text(base, _foreign_text(page, base))
 
 
 def _redact_edits(document: pymupdf.Document, edits: list[EditorReplace | EditorBlock]) -> None:
     scanned: dict[int, list[tuple[pymupdf.Rect, tuple[float, float, float]]]] = {}
-    drawn: dict[int, list[pymupdf.Rect]] = {}
+    drawn: dict[int, list[EditedArea]] = {}
     for item in edits:
         index = item.page - 1
         page = document[index]
@@ -1064,17 +1081,13 @@ def _redact_edits(document: pymupdf.Document, edits: list[EditorReplace | Editor
             area = _redact_rect(page, item, tight=False)
             scanned.setdefault(index, []).append((area, paper_colour(page, area)))
         else:
-            drawn.setdefault(index, []).append(rect)
+            drawn.setdefault(index, []).append(
+                EditedArea(original=_original_rect(page, item), graphics=rect, size=item.font_size)
+            )
     for index, areas in scanned.items():
         erase_scanned_words(document[index], areas)
-    for index, rects in drawn.items():
-        page = document[index]
-        for rect in rects:
-            page.add_redact_annot(rect)
-        page.apply_redactions(
-            images=pymupdf.PDF_REDACT_IMAGE_NONE,
-            graphics=pymupdf.PDF_REDACT_LINE_ART_REMOVE_IF_COVERED,
-        )
+    for index, edited in drawn.items():
+        remove_edited_text(document[index], edited)
 
 
 def _insert_replacement(page: pymupdf.Page, item: EditorReplace) -> None:
