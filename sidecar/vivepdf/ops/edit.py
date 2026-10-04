@@ -226,7 +226,7 @@ def scan_presets(params: ScanPresetsParams, progress: Progress) -> ScanPresetsRe
         scanned = 0
         for index in order:
             progress.check_cancelled()
-            if scanned and time.monotonic() > deadline:
+            if scanned and time.monotonic() >= deadline:
                 break
             for preset, _ in preset_matches(document[index].get_text(), presets):
                 counts[preset] = counts.get(preset, 0) + 1
