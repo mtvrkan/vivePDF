@@ -235,7 +235,8 @@ def _source(
 
 def _faces(font_id: str | None, faces: dict[str | None, TextFaces]) -> TextFaces:
     if font_id not in faces:
-        faces[font_id] = TextFaces(font_id)
+        shared = next(iter(faces.values()), None)
+        faces[font_id] = TextFaces(font_id, shared.store if shared else None)
     return faces[font_id]
 
 
@@ -257,14 +258,14 @@ def draw_page(
             text_faces = _faces(item.font_id, faces)
             texts = run_texts(item, values, language)
             if needs_shaping(item, text_faces, texts):
-                draw_shaped(page, item, texts)
+                draw_shaped(page, item, text_faces, values, language)
                 continue
-            placed = (
-                from_segments(item.segments)
+            text_layout = (
+                from_segments(item)
                 if item.segments is not None and not has_placeholders(item)
                 else layout(item, text_faces, values, language)
             )
-            missing.append(draw_text(page, item, text_faces, placed))
+            missing.append(draw_text(page, item, text_faces, text_layout))
             continue
         source, margin = _source(item, (page_index, item_index), cache, values)
         try:

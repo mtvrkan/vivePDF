@@ -13,7 +13,7 @@ from vivepdf.ops._output import write_atomically
 from vivepdf.ops._studio_models import StudioImageItem, StudioPage, StudioTextItem
 from vivepdf.ops.fonts import resolve_face
 
-CACHE_VERSION = 1
+CACHE_VERSION = 2
 CACHE_LIMIT = 600
 STYLES = ((False, False), (True, False), (False, True), (True, True))
 
@@ -29,7 +29,18 @@ def _stamp(path: Path) -> list[str | int]:
 
 
 def cache_key(page: StudioPage, language: str, side: int) -> str:
-    fonts = sorted({item.font_id or "" for item in page.items if isinstance(item, StudioTextItem)})
+    fonts = sorted(
+        {
+            font_id or ""
+            for item in page.items
+            if isinstance(item, StudioTextItem)
+            for font_id in (
+                item.font_id,
+                *(run.font_id for run in item.runs),
+                *(segment.font_id for segment in item.segments or []),
+            )
+        }
+    )
     faces = [
         [font_id, *_stamp(resolve_face(font_id or None, bold, italic)[0])]
         for font_id in fonts

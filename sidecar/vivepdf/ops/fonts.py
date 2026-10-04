@@ -11,7 +11,7 @@ import pymupdf
 from pydantic import Field
 
 from vivepdf.ops._appdata import user_data_dir
-from vivepdf.ops.font_library import family_info, library_dir, library_face
+from vivepdf.ops.font_library import LIBRARY, family_info, library_dir, library_face
 from vivepdf.ops.font_library_catalog import FAMILIES
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
@@ -96,6 +96,27 @@ FONT_EXTENSIONS = {".ttf", ".otf"}
 LOADABLE_EXTENSIONS = {"ttf", "otf", "cff", "pfb", "pfa", "ttc"}
 
 
+WEIGHT_WORDS = (
+    ("extralight", 200),
+    ("ultralight", 200),
+    ("semilight", 350),
+    ("demilight", 350),
+    ("semibold", 600),
+    ("demibold", 600),
+    ("extrabold", 800),
+    ("ultrabold", 800),
+    ("hairline", 100),
+    ("thin", 100),
+    ("light", 300),
+    ("medium", 500),
+    ("black", 900),
+    ("heavy", 900),
+)
+REGULAR_WEIGHT = 400
+BOLD_WEIGHT = 700
+STANDARD_WEIGHTS = (REGULAR_WEIGHT, BOLD_WEIGHT)
+
+
 def normalize_font_name(name: str) -> str:
     cleaned = SUBSET_PREFIX.sub("", name or "")
     return re.sub(r"[^a-z0-9]", "", cleaned.lower())
@@ -112,6 +133,28 @@ def family_key(name: str) -> str:
         if key.endswith(suffix) and len(key) > len(suffix) + 2:
             key = key[: -len(suffix)]
     return key
+
+
+def weight_of_name(name: str, bold: bool) -> int:
+    key = normalize_font_name(name)
+    for word, weight in WEIGHT_WORDS:
+        if word in key:
+            return weight
+    return BOLD_WEIGHT if bold else REGULAR_WEIGHT
+
+
+def weight_family(name: str) -> str:
+    key = normalize_font_name(name)
+    for word, _weight in WEIGHT_WORDS:
+        key = key.replace(word, "")
+    return family_key(key)
+
+
+def nearest_weight(weights: list[int], wanted: int) -> int:
+    return min(
+        weights,
+        key=lambda weight: (abs(weight - wanted), -weight if wanted >= REGULAR_WEIGHT else weight),
+    )
 
 
 def style_of_name(name: str) -> tuple[bool, bool]:
@@ -161,7 +204,7 @@ def _font_directories() -> list[Path]:
 
 
 class SystemFont:
-    __slots__ = ("bold", "family", "italic", "label", "path")
+    __slots__ = ("bold", "family", "italic", "label", "path", "weight", "weights_key")
 
     def __init__(self, path: Path, name: str, bold: bool, italic: bool) -> None:
         self.path = path
@@ -169,6 +212,8 @@ class SystemFont:
         self.label = family_label(name) or family_label(path.stem) or path.stem
         self.bold = bold
         self.italic = italic
+        self.weight = weight_of_name(name, bold)
+        self.weights_key = weight_family(name)
 
 
 @functools.lru_cache(maxsize=1)
@@ -192,6 +237,19 @@ def system_font_index() -> dict[str, list[SystemFont]]:
             index.setdefault(entry.family, []).append(entry)
             index.setdefault(normalize_font_name(name), []).append(entry)
     return index
+
+
+@functools.lru_cache(maxsize=1)
+def system_weight_index() -> dict[str, list[SystemFont]]:
+    grouped: dict[str, list[SystemFont]] = {}
+    seen: set[Path] = set()
+    for entries in system_font_index().values():
+        for entry in entries:
+            if entry.path in seen:
+                continue
+            seen.add(entry.path)
+            grouped.setdefault(entry.weights_key, []).append(entry)
+    return grouped
 
 
 def find_system_font(name: str | None, bold: bool, italic: bool) -> Path | None:
@@ -597,6 +655,7 @@ class ImportedFace:
         self.name = name
         self.bold = bold
         self.italic = italic
+        self.weight = weight_of_name(name, bold)
 
 
 def _face_of(stem: str, path: Path) -> ImportedFace:
@@ -634,6 +693,7 @@ class FontChoice(RpcModel):
     installed: bool = True
     bytes: int = 0
     category: str = ""
+    weights: list[int] = Field(default_factory=list)
 
 
 def system_families() -> list[tuple[str, str, set[str]]]:
@@ -663,6 +723,54 @@ def system_families() -> list[tuple[str, str, set[str]]]:
     )
 
 
+def _weighted_candidates(font_id: str) -> list[tuple[Path, int, bool]]:
+    kind, _, value = font_id.partition(":")
+    if kind == "system":
+        entries = system_font_index().get(value) or []
+        if not entries:
+            return []
+        group = system_weight_index().get(entries[0].weights_key, [])
+        return [(entry.path, entry.weight, entry.italic) for entry in group]
+    if kind == "imported":
+        faces = imported_faces()
+        lead = next((face for face in faces if face.stem == value), None)
+        if lead is None:
+            return []
+        key = weight_family(lead.name) or lead.stem
+        return [
+            (face.path, face.weight, face.italic)
+            for face in faces
+            if (weight_family(face.name) or face.stem) == key
+        ]
+    return []
+
+
+def family_weights(font_id: str) -> list[int]:
+    kind, _, value = font_id.partition(":")
+    if kind == "library":
+        family = LIBRARY.get(value)
+        styles = {entry.style for entry in family.files} if family else set()
+        return [
+            weight
+            for weight, style in ((REGULAR_WEIGHT, "regular"), (BOLD_WEIGHT, "bold"))
+            if style in styles
+        ]
+    if kind == "bundled":
+        return list(STANDARD_WEIGHTS)
+    return sorted({weight for _path, weight, italic in _weighted_candidates(font_id) if not italic})
+
+
+def weighted_face(font_id: str | None, weight: int, italic: bool) -> tuple[Path, bool] | None:
+    candidates = _weighted_candidates(font_id or "")
+    pool = [entry for entry in candidates if entry[2]] if italic else []
+    real_italic = bool(pool)
+    pool = pool or [entry for entry in candidates if not entry[2]]
+    if not pool:
+        return None
+    best = nearest_weight([entry[1] for entry in pool], weight)
+    return next(entry[0] for entry in pool if entry[1] == best), real_italic
+
+
 def font_catalogue() -> list[FontChoice]:
     choices = [
         FontChoice(
@@ -670,6 +778,7 @@ def font_catalogue() -> list[FontChoice]:
             name=label,
             source="bundled",
             styles=["Bold", "Regular"],
+            weights=list(STANDARD_WEIGHTS),
         )
         for key, (label, _, _) in BUNDLED_FONTS.items()
     ]
@@ -681,6 +790,7 @@ def font_catalogue() -> list[FontChoice]:
                 name=family_label(lead.name) or font_label(lead.path),
                 source="imported",
                 styles=sorted({_style_label(face.bold, face.italic) for face in faces}),
+                weights=family_weights(f"imported:{lead.stem}"),
             )
         )
     directory = library_dir()
@@ -695,10 +805,17 @@ def font_catalogue() -> list[FontChoice]:
                 installed=info.installed,
                 bytes=info.bytes,
                 category=info.category,
+                weights=family_weights(info.id),
             )
         )
     choices.extend(
-        FontChoice(id=f"system:{family}", name=label, source="system", styles=sorted(styles))
+        FontChoice(
+            id=f"system:{family}",
+            name=label,
+            source="system",
+            styles=sorted(styles),
+            weights=family_weights(f"system:{family}"),
+        )
         for family, label, styles in system_families()
     )
     return choices
@@ -732,7 +849,14 @@ def resolve_choice(font_id: str | None, bold: bool) -> Path:
     return fallback
 
 
-def resolve_face(font_id: str | None, bold: bool, italic: bool) -> tuple[Path, bool]:
+def resolve_face(
+    font_id: str | None, bold: bool, italic: bool, weight: int | None = None
+) -> tuple[Path, bool]:
+    if weight is not None and weight not in STANDARD_WEIGHTS:
+        found = weighted_face(font_id, weight, italic)
+        if found is not None:
+            return found
+        bold = weight >= 600
     kind, _, value = (font_id or "").partition(":")
     if italic and kind == "system":
         found = find_system_font(value, bold, True)
@@ -849,6 +973,7 @@ class FontFileParams(RpcModel):
     id: str = Field(min_length=1, max_length=4096)
     bold: bool = False
     italic: bool = False
+    weight: int | None = Field(default=None, ge=1, le=1000)
 
 
 class FontFileResult(RpcModel):
@@ -888,8 +1013,9 @@ def font_file_path(font_id: str, bold: bool) -> Path:
 @op("fonts.file", FontFileParams)
 def font_file(params: FontFileParams, _progress: Progress) -> FontFileResult:
     italic = False
-    if params.italic and not params.id.startswith("file:"):
-        path, italic = resolve_face(params.id, params.bold, True)
+    weighted = params.weight is not None and params.weight not in STANDARD_WEIGHTS
+    if (params.italic or weighted) and not params.id.startswith("file:"):
+        path, italic = resolve_face(params.id, params.bold, params.italic, params.weight)
     else:
         path = font_file_path(params.id, params.bold)
     if path.stat().st_size > FONT_FILE_MAX_BYTES:
