@@ -1,6 +1,6 @@
 import type { RpcCallOptions } from "@/shared/rpc/client";
 import { studioRender } from "@/shared/rpc/operations";
-import type { StudioExportFormat, StudioSignOptions } from "@/types/studio";
+import type { StudioDesign, StudioExportFormat, StudioSignOptions } from "@/types/studio";
 import { designToRender } from "../model/render";
 import { measureTexts } from "./measure";
 import { projectAssets } from "./projectFile";
@@ -22,8 +22,8 @@ export type ExportParams = {
   sign?: StudioSignOptions | null;
 };
 
-export async function exportDesign(params: ExportParams, options?: RpcCallOptions) {
-  const design = useStudioStore.getState().design;
+export async function exportDesign(params: ExportParams, options?: RpcCallOptions, source?: StudioDesign) {
+  const design = source ?? useStudioStore.getState().design;
   if (!design) throw new Error("no design");
   const measured = await measureTexts(design.pages.flatMap((page) => page.elements), params.language);
   return studioRender(

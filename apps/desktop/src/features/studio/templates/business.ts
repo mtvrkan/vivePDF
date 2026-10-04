@@ -232,7 +232,7 @@ export const BUSINESS_TEMPLATES: StudioTemplate[] = [
   { id: "quote", category: "business", size: A4, build: quote },
   { id: "receipt", category: "business", size: RECEIPT, build: receipt },
   { id: "priceList", category: "business", size: A4, build: priceList },
-  { id: "reportCover", category: "business", size: A4, build: reportCover },
-  { id: "proposalCover", category: "business", size: A4, build: proposalCover },
+  { id: "reportCover", category: "covers", size: A4, build: reportCover },
+  { id: "proposalCover", category: "covers", size: A4, build: proposalCover },
   { id: "meetingAgenda", category: "business", size: A4, build: agenda },
 ];

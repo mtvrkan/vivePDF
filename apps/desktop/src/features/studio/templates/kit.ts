@@ -5,7 +5,20 @@ import { ornament, type OrnamentColors } from "../ornaments/ornaments";
 
 export type Translate = (key: string, values?: Record<string, string | number>) => string;
 
-export type TemplateCategory = "certificates" | "invitations" | "cards" | "posters" | "menus" | "business" | "education" | "personal" | "labels";
+export type TemplateCategory =
+  | "resumes"
+  | "certificates"
+  | "invitations"
+  | "social"
+  | "posters"
+  | "flyers"
+  | "covers"
+  | "business"
+  | "cards"
+  | "menus"
+  | "education"
+  | "personal"
+  | "labels";
 
 export type TemplateContext = { t: Translate; language: string };
 

@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { FilePlus2, FileText, ImagePlus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Navigate } from "react-router";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/shared/Button";
 import { ColorSwatch } from "@/components/shared/ColorSwatch";
@@ -20,7 +21,6 @@ import { useUiStore } from "@/shared/store/uiStore";
 import type { CreateFont, CreateTemplate } from "@/types";
 import { BookCreator } from "./BookCreator";
 import { BulkCreator } from "./BulkCreator";
-import { CvCreator } from "./CvCreator";
 import { PaperCreator } from "./PaperCreator";
 import {
   CREATE_FONTS,
@@ -47,7 +47,7 @@ export function CreatePage() {
   const [tab, setTab] = useTabParam(CREATE_TABS, "document");
   const modeSwitch = <Segmented value={tab} options={CREATE_TABS} labelOf={(value) => t(`tools.create.tabs.${value}`)} onChange={setTab} ariaLabel={t("tools.create.tabs.label")} />;
   if (tab === "book") return <BookCreator key="book" modeSwitch={modeSwitch} />;
-  if (tab === "cv") return <CvCreator key="cv" modeSwitch={modeSwitch} />;
+  if (tab === "cv") return <Navigate to="/studio?cv=1" replace />;
   if (tab === "bulk") return <BulkCreator key="bulk" modeSwitch={modeSwitch} />;
   if (tab === "paper") return <PaperCreator key="paper" modeSwitch={modeSwitch} />;
   return <DocumentCreator key="document" modeSwitch={modeSwitch} />;

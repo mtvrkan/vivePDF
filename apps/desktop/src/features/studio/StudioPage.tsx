@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
-import { FolderOpen, Palette, Play, X } from "lucide-react";
+import { FolderOpen, IdCard, Palette, Play, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -24,6 +25,7 @@ import { PropertiesPanel } from "./design/PropertiesPanel";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { readDraft, useStudioStore } from "./design/studioStore";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
+import { useCvStore } from "./cv/cvStore";
 import { DocumentStart } from "./document/DocumentStart";
 import { useDocumentStore } from "./document/documentStore";
 import { useMergeStore } from "./merge/mergeStore";
@@ -31,6 +33,7 @@ import { buildTemplate } from "./templates/catalog";
 import { TemplateGallery } from "./templates/TemplateGallery";
 
 const DocumentEditor = lazy(() => import("./document/DocumentEditor"));
+const CvStudio = lazy(() => import("./cv/CvStudio"));
 
 const START_SIZES: StudioPageSize[] = ["a4", "a4Landscape", "a5", "letter", "square", "story", "presentation", "businessCard", "poster"];
 const PREVIEW_BOX = 96;
@@ -123,6 +126,20 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
             </Button>
           </section>
         ) : null}
+        <section className="card glass-tinted flex flex-wrap items-center gap-4 rounded-xl p-4" aria-labelledby="studio-cv">
+          <span className="tone-tile flex size-12 shrink-0 items-center justify-center rounded-xl" data-tone="toPdf" aria-hidden>
+            <IdCard className="size-6" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <h2 id="studio-cv" className="text-sm font-semibold">
+              {t("studio.cv.startTitle")}
+            </h2>
+            <p className="text-sm text-muted-foreground">{t("studio.cv.startDescription")}</p>
+          </div>
+          <Button variant="primary" icon={<IdCard className="size-4" aria-hidden />} onClick={() => useCvStore.getState().open(locale)} data-testid="studio-cv-start">
+            {t("studio.cv.start")}
+          </Button>
+        </section>
         {recent.length ? (
           <section className="space-y-3" aria-labelledby="studio-recent">
             <h2 id="studio-recent" className="text-base font-semibold">
@@ -195,13 +212,28 @@ export function StudioPage() {
   const document = useDocumentStore((state) => state.document);
   const open = useStudioStore((state) => state.open);
   const locale = useUiStore((state) => state.locale);
+  const cvActive = useCvStore((state) => state.active);
+  const [params, setParams] = useSearchParams();
   const editing = design !== null;
   useEffect(() => {
     if (!editing) useMergeStore.getState().clear();
   }, [editing]);
+  useEffect(() => {
+    if (params.get("cv") !== "1") return;
+    useCvStore.getState().open(locale);
+    setParams((current) => {
+      const next = new URLSearchParams(current);
+      next.delete("cv");
+      return next;
+    }, { replace: true });
+  }, [params, setParams, locale]);
   return (
     <>
-      {design ? (
+      {cvActive ? (
+        <Suspense fallback={<div className="h-full animate-pulse bg-muted/40" aria-busy />}>
+          <CvStudio />
+        </Suspense>
+      ) : design ? (
         <StudioEditor language={locale} />
       ) : document ? (
         <Suspense fallback={<div className="h-full animate-pulse bg-muted/40" aria-busy />}>

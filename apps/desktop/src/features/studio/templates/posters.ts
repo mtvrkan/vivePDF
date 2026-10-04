@@ -168,11 +168,11 @@ function fitness({ t }: TemplateContext) {
 
 export const POSTER_TEMPLATES: StudioTemplate[] = [
   { id: "eventPoster", category: "posters", size: A4, build: eventPoster },
-  { id: "salePost", category: "posters", size: SQUARE, build: salePost },
+  { id: "salePost", category: "social", size: SQUARE, build: salePost },
   { id: "concert", category: "posters", size: A4, build: concert },
   { id: "workshop", category: "posters", size: A4, build: workshop },
   { id: "announcement", category: "posters", size: A4, build: announcement },
-  { id: "comingSoon", category: "posters", size: SQUARE, build: comingSoon },
+  { id: "comingSoon", category: "social", size: SQUARE, build: comingSoon },
   { id: "conference", category: "posters", size: A4, build: conference },
   { id: "fitness", category: "posters", size: A4, build: fitness },
 ];

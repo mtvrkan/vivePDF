@@ -3855,6 +3855,42 @@
       ],
       "tools.omr.review.pickBooklet": [
         "booklet"
+      ],
+      "studio.tpl.extras.jarSubtitle": [
+        "batch"
+      ],
+      "studio.cv.add.certificates": [
+        "certificate"
+      ],
+      "studio.cv.fields.certificate": [
+        "certificate"
+      ],
+      "studio.cv.sections.certificates": [
+        "certificate"
+      ],
+      "studio.tpl.flyers.module3": [
+        "optimize"
+      ],
+      "studio.tpl.extras.cocktailScript": [
+        "signature"
+      ],
+      "studio.cv.skillStyles.chips": [
+        "tag"
+      ],
+      "studio.templates.items.giftTags": [
+        "tag"
+      ],
+      "studio.tpl.flyers.petDetails": [
+        "tag"
+      ],
+      "studio.tpl.social.step3": [
+        "tag"
+      ],
+      "studio.templates.items.youtubeThumbnail": [
+        "thumbnail"
+      ],
+      "studio.tpl.social.reviewRole": [
+        "verify"
       ]
     },
     "ar": {

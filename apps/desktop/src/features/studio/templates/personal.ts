@@ -1,5 +1,5 @@
 import type { StudioElement } from "@/types/studio";
-import { art, box, design, FONTS, grid, linear, pageOf, photoSlot, rule, sizeOf, solid, text, type StudioTemplate, type TemplateContext } from "./kit";
+import { art, box, design, FONTS, grid, linear, pageOf, photoSlot, rule, sizeOf, solid, stroke, text, type StudioTemplate, type TemplateContext } from "./kit";
 
 const A4 = "a4" as const;
 const LANDSCAPE = "a4Landscape" as const;
@@ -175,10 +175,132 @@ function todoList({ t }: TemplateContext) {
   ]);
 }
 
+function habitTracker({ t }: TemplateContext) {
+  const land = sizeOf(LANDSCAPE);
+  const sage = "#6d8b74";
+  const clay = "#c97b5a";
+  const ink = "#3d3a35";
+  const line = "#e5dccf";
+  const labelWidth = 170;
+  const day = 18;
+  const totalWidth = 50;
+  const tableWidth = labelWidth + day * 31 + totalWidth;
+  const left = (land.width - tableWidth) / 2;
+  const daysX = left + labelWidth;
+  const headerY = 100;
+  const rowHeight = 38;
+  const band = rowHeight - 4;
+  return design(t("studio.templates.items.habitTracker"), [sage, clay], [
+    pageOf(LANDSCAPE, solid("#faf7f2"), [
+      art("blob", { primary: "#e8efe4", secondary: "#f6e3d8" }, land.width - 240, -120, 300, 260, { opacity: 0.9 }),
+      art("blob", { primary: "#f6e3d8", secondary: "#e8efe4" }, -100, land.height - 120, 240, 220, { opacity: 0.8, rotation: 90 }),
+      text(left, 26, 420, 44, t("studio.tpl.extras.habitTitle"), { font: FONTS.playfair, size: 30, bold: true, color: ink, valign: "middle", shrink: true }),
+      text(left, 70, 320, 22, t("studio.tpl.extras.habitSubtitle"), { font: FONTS.caveat, size: 18, bold: true, color: clay, shrink: true }),
+      box("rect", left + tableWidth - 170, 38, 170, 32, solid("#ffffff"), { radius: 16, stroke: stroke(line, 1) }),
+      text(left + tableWidth - 170, 38, 170, 32, t("studio.tpl.monthName"), { font: FONTS.montserrat, size: 11, bold: true, color: sage, spacing: 2, upper: true, align: "center", valign: "middle", shrink: true }),
+      box("rect", left, headerY, tableWidth, 24, solid(sage), { radius: 8 }),
+      text(left + 12, headerY, labelWidth - 20, 24, t("studio.tpl.extras.habitLabel"), { font: FONTS.montserrat, size: 9, bold: true, color: "#ffffff", spacing: 1.5, upper: true, valign: "middle", shrink: true }),
+      ...Array.from({ length: 31 }, (_, index) =>
+        text(daysX + index * day, headerY, day, 24, String(index + 1), { font: FONTS.inter, size: 7.5, bold: true, color: "#ffffff", align: "center", valign: "middle" }),
+      ),
+      text(daysX + 31 * day, headerY, totalWidth, 24, t("studio.tpl.total"), { font: FONTS.montserrat, size: 7.5, bold: true, color: "#ffffff", upper: true, align: "center", valign: "middle", shrink: true }),
+      ...Array.from({ length: 10 }, (_, row) => {
+        const y = headerY + 30 + row * rowHeight;
+        const named = row < 8;
+        return [
+          ...(row % 2 === 0 ? [box("rect", left, y, tableWidth, band, solid("#f1ece4"), { radius: 8 })] : []),
+          named
+            ? text(left + 12, y, labelWidth - 20, band, t(`studio.tpl.extras.habit${row + 1}`), { font: FONTS.nunito, size: 10.5, bold: true, color: ink, valign: "middle", shrink: true })
+            : rule(left + 12, y + band - 9, labelWidth - 24, "#cfc6b8", 0.8),
+          ...Array.from({ length: 31 }, (_, index) => box("ellipse", daysX + index * day + 3, y + band / 2 - 6, 12, 12, { type: "none" }, { stroke: stroke(index % 7 === 6 ? clay : sage, 0.8) })),
+          box("rect", daysX + 31 * day + 9, y + 5, totalWidth - 18, band - 10, solid("#ffffff"), { radius: 6, stroke: stroke(line, 0.8) }),
+        ];
+      }).flat(),
+      box("rect", left, 520, tableWidth, 50, solid("#ffffff"), { radius: 10, stroke: stroke(line, 1) }),
+      text(left + 14, 520, 150, 50, t("studio.tpl.extras.habitReflection"), { font: FONTS.caveat, size: 18, bold: true, color: clay, valign: "middle", shrink: true }),
+      rule(left + 170, 540, tableWidth - 190, line, 0.8),
+      rule(left + 170, 558, tableWidth - 190, line, 0.8),
+    ]),
+  ]);
+}
+
+function budgetPlanner({ t }: TemplateContext) {
+  const forest = "#1f3d2b";
+  const gold = "#e9b44c";
+  const ink = "#1f2a24";
+  const line = "#e2ded3";
+  const cardWidth = (W - 80 - 32) / 3;
+  const cards: [string, string, string][] = [
+    ["studio.tpl.extras.budgetIncome", "+", "#2f855a"],
+    ["studio.tpl.extras.budgetExpenses", "−", "#c8553d"],
+    ["studio.tpl.extras.budgetSavings", "=", "#c9971c"],
+  ];
+  const goals = [0.65, 0.35, 0.8];
+  const goalX = W - 40 - 250;
+  const categories = Array.from({ length: 10 }, (_, index) => [t(`studio.tpl.extras.budgetCat${index + 1}`), "", "", ""]);
+  const tableOptions = { font: FONTS.inter, size: 9.5, color: ink, headerFill: forest, lineColor: line, zebra: "#f3f1ea" };
+  return design(t("studio.templates.items.budgetPlanner"), [forest, gold], [
+    pageOf(A4, solid("#fbfaf6"), [
+      box("rect", 0, 0, W, 150, linear(135, forest, "#2f5d43")),
+      art("arcRings", { primary: gold, secondary: "#a7f3d0" }, W - 180, -60, 230, 230, { opacity: 0.35 }),
+      text(40, 34, 380, 48, t("studio.tpl.extras.budgetTitle"), { font: FONTS.playfair, size: 34, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+      text(40, 84, 360, 18, t("studio.tpl.extras.budgetSubtitle"), { font: FONTS.montserrat, size: 9.5, bold: true, color: gold, spacing: 2.5, upper: true, shrink: true }),
+      box("rect", 40, 110, 150, 26, solid("#ffffff"), { radius: 13, opacity: 0.14 }),
+      text(40, 110, 150, 26, t("studio.tpl.monthName"), { font: FONTS.montserrat, size: 10.5, bold: true, color: "#ffffff", spacing: 2, upper: true, align: "center", valign: "middle", shrink: true }),
+      ...cards.flatMap(([key, symbol, colour], index) => {
+        const x = 40 + index * (cardWidth + 16);
+        return [
+          box("rect", x, 172, cardWidth, 74, solid("#ffffff"), { radius: 12, stroke: stroke("#e7e5df", 1) }),
+          box("ellipse", x + 14, 186, 28, 28, solid(colour)),
+          text(x + 14, 186, 28, 28, symbol, { font: FONTS.inter, size: 16, bold: true, color: "#ffffff", align: "center", valign: "middle" }),
+          text(x + 50, 186, cardWidth - 62, 16, t(key), { font: FONTS.montserrat, size: 8.5, bold: true, color: colour, spacing: 1.2, upper: true, valign: "middle", shrink: true }),
+          rule(x + 50, 228, cardWidth - 64, "#d6d3cc", 0.8),
+        ];
+      }),
+      ...heading(40, 270, 250, t("studio.tpl.extras.budgetIncome"), forest, FONTS.montserrat),
+      ...grid(
+        40,
+        304,
+        [150, 100],
+        26,
+        [
+          [t("studio.tpl.extras.budgetSource"), t("studio.tpl.amount")],
+          [t("studio.tpl.extras.budgetSalary"), ""],
+          [t("studio.tpl.extras.budgetSideIncome"), ""],
+          [t("studio.tpl.extras.budgetOtherIncome"), ""],
+          [t("studio.tpl.total"), ""],
+        ],
+        { ...tableOptions, aligns: ["left", "right"] },
+      ),
+      ...heading(goalX, 270, 250, t("studio.tpl.extras.budgetGoals"), forest, FONTS.montserrat),
+      ...goals.flatMap((share, index) => {
+        const y = 308 + index * 42;
+        return [
+          text(goalX, y, 250, 16, t(`studio.tpl.extras.budgetGoal${index + 1}`), { font: FONTS.inter, size: 9.5, bold: true, color: ink, valign: "middle", shrink: true }),
+          box("rect", goalX, y + 20, 250, 10, solid("#ece8dd"), { radius: 5 }),
+          box("rect", goalX, y + 20, 250 * share, 10, linear(90, gold, "#d08c2c"), { radius: 5 }),
+        ];
+      }),
+      ...heading(40, 456, W - 80, t("studio.tpl.extras.budgetExpenses"), forest, FONTS.montserrat),
+      ...grid(
+        40,
+        490,
+        [W - 380, 100, 100, 100],
+        24,
+        [[t("studio.tpl.extras.budgetCategory"), t("studio.tpl.extras.budgetPlanned"), t("studio.tpl.extras.budgetActual"), t("studio.tpl.extras.budgetDifference")], ...categories, [t("studio.tpl.total"), "", "", ""]],
+        { ...tableOptions, aligns: ["left", "right", "right", "right"] },
+      ),
+      text(40, 794, W - 80, 22, t("studio.tpl.extras.budgetNote"), { font: FONTS.caveat, size: 16, bold: true, color: forest, valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
 export const PERSONAL_TEMPLATES: StudioTemplate[] = [
-  { id: "cvDesign", category: "personal", size: A4, build: cv },
+  { id: "cvDesign", category: "resumes", size: A4, build: cv },
   { id: "weeklyPlanner", category: "personal", size: LANDSCAPE, build: weeklyPlanner },
   { id: "monthlyCalendar", category: "personal", size: LANDSCAPE, build: monthlyCalendar },
   { id: "recipeCard", category: "personal", size: { width: 432, height: 648 }, build: recipeCard },
   { id: "todoList", category: "personal", size: A4, build: todoList },
+  { id: "habitTracker", category: "personal", size: LANDSCAPE, build: habitTracker },
+  { id: "budgetPlanner", category: "personal", size: A4, build: budgetPlanner },
 ];

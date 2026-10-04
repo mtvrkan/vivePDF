@@ -1,4 +1,4 @@
-import { art, box, design, FONTS, linear, pageOf, qr, rule, sizeOf, solid, text, vrule, type StudioTemplate, type TemplateContext, type TemplateSize } from "./kit";
+import { art, box, design, FONTS, linear, pageOf, qr, rule, sizeOf, solid, stroke, text, vrule, type StudioTemplate, type TemplateContext, type TemplateSize } from "./kit";
 
 const TICKET: TemplateSize = { width: 540, height: 198 };
 const RAFFLE: TemplateSize = { width: 432, height: 144 };
@@ -109,9 +109,63 @@ function stickerSheet({ t }: TemplateContext) {
   ]);
 }
 
+function jarLabels({ t }: TemplateContext) {
+  const page = sizeOf(A4);
+  const flavours = ["#c0392b", "#e67e22", "#7d3c98", "#c99a06", "#7c8d16", "#2e4a8b"];
+  const side = 230;
+  const gapX = (page.width - side * 2) / 3;
+  const gapY = (page.height - side * 3) / 4;
+  return design(t("studio.templates.items.jarLabels"), flavours.slice(0, 2), [
+    pageOf(A4, solid("#ffffff"), [
+      ...flavours.flatMap((colour, index) => {
+        const x = gapX + (index % 2) * (side + gapX);
+        const y = gapY + Math.floor(index / 2) * (side + gapY);
+        return [
+          box("ellipse", x, y, side, side, solid("#fffaf3"), { stroke: stroke(colour, 2) }),
+          box("ellipse", x + 10, y + 10, side - 20, side - 20, { type: "none" }, { stroke: stroke(colour, 1, "dotted") }),
+          art("laurel", { primary: colour, secondary: colour }, x + side / 2 - 23, y + 26, 46, 44),
+          text(x + 40, y + 74, side - 80, 16, t("studio.tpl.extras.jarHomemade"), { font: FONTS.cinzel, size: 9, bold: true, color: colour, align: "center", spacing: 3, upper: true, shrink: true }),
+          text(x + 28, y + 92, side - 56, 56, t(`studio.tpl.extras.jarFlavour${index + 1}`), { font: FONTS.greatVibes, size: 32, color: "#3b2a20", align: "center", valign: "middle", lineHeight: 1, shrink: true }),
+          text(x + 44, y + 150, side - 88, 16, t("studio.tpl.extras.jarSubtitle"), { font: FONTS.lora, size: 9, italic: true, color: "#6b5b4e", align: "center", shrink: true }),
+          box("rect", x + side / 2 - 58, y + 174, 116, 24, solid(colour), { radius: 12 }),
+          text(x + side / 2 - 58, y + 174, 116, 24, t("studio.tpl.extras.jarSeason"), { font: FONTS.montserrat, size: 8, bold: true, color: "#ffffff", align: "center", valign: "middle", spacing: 1, upper: true, shrink: true }),
+        ];
+      }),
+    ]),
+  ]);
+}
+
+function addressLabels({ t }: TemplateContext) {
+  const page = sizeOf(A4);
+  const ink = "#1e293b";
+  const accent = "#0f766e";
+  const width = 180;
+  const height = 108;
+  const gap = 7.09;
+  const left = (page.width - width * 3 - gap * 2) / 2;
+  const top = (page.height - height * 7) / 2;
+  return design(t("studio.templates.items.addressLabels"), [ink, accent], [
+    pageOf(A4, solid("#ffffff"), [
+      ...Array.from({ length: 21 }, (_, index) => {
+        const x = left + (index % 3) * (width + gap);
+        const y = top + Math.floor(index / 3) * height;
+        return [
+          box("rect", x, y, width, height, { type: "none" }, { radius: 8, stroke: stroke("#cbd5e1", 0.6, "dashed") }),
+          box("rect", x + 14, y + 20, 3, 68, solid(accent), { radius: 1.5 }),
+          text(x + 26, y + 18, width - 40, 18, t("studio.tpl.clientName"), { font: FONTS.montserrat, size: 10.5, bold: true, color: ink, valign: "middle", shrink: true }),
+          text(x + 26, y + 40, width - 40, 32, t("studio.tpl.extras.labelAddress"), { font: FONTS.inter, size: 8.5, color: "#475569", lineHeight: 1.35, shrink: true }),
+          text(x + 26, y + 74, width - 40, 14, t("studio.tpl.extras.labelCountry"), { font: FONTS.montserrat, size: 7.5, bold: true, color: accent, spacing: 1.5, upper: true, shrink: true }),
+        ];
+      }).flat(),
+    ]),
+  ]);
+}
+
 export const LABEL_TEMPLATES: StudioTemplate[] = [
   { id: "eventTicket", category: "labels", size: TICKET, build: eventTicket },
   { id: "raffleTicket", category: "labels", size: RAFFLE, build: raffleTicket },
   { id: "shippingLabel", category: "labels", size: SHIPPING, build: shippingLabel },
   { id: "stickerSheet", category: "labels", size: A4, build: stickerSheet },
+  { id: "jarLabels", category: "labels", size: A4, build: jarLabels },
+  { id: "addressLabels", category: "labels", size: A4, build: addressLabels },
 ];
