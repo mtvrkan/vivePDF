@@ -6462,7 +6462,9 @@
       "group": "Agrupar",
       "ungroup": "Desagrupar",
       "lock": "Bloquear",
-      "delete": "Excluir"
+      "delete": "Excluir",
+      "copyStyle": "Copiar estilo",
+      "pasteStyle": "Colar estilo"
     },
     "panel": {
       "label": "Adicionar e organizar",
@@ -6575,7 +6577,10 @@
       "qrValue": "Texto ou link",
       "qrBackground": "Plano de fundo",
       "background": "Cor de fundo",
-      "qrLevel": "Correção de erros"
+      "qrLevel": "Correção de erros",
+      "mixed": "Misto",
+      "mixedHint": "Os itens selecionados têm valores diferentes aqui. A alteração vale para todos.",
+      "shape": "Forma"
     },
     "align": {
       "left": "Alinhar à esquerda",
@@ -6618,7 +6623,22 @@
       "style": "Estilo da linha",
       "solid": "Contínuo",
       "dashed": "Tracejado",
-      "dotted": "Pontilhado"
+      "dotted": "Pontilhado",
+      "longDash": "Traço longo",
+      "dashDot": "Traço e ponto",
+      "gap": "Espaçamento",
+      "cap": "Pontas da linha",
+      "join": "Cantos",
+      "caps": {
+        "butt": "Retas",
+        "round": "Arredondadas",
+        "square": "Quadradas"
+      },
+      "joins": {
+        "miter": "Vivos",
+        "round": "Arredondados",
+        "bevel": "Chanfrados"
+      }
     },
     "fit": {
       "label": "Ajuste da imagem",
@@ -6698,7 +6718,10 @@
       "design": "Cores do design",
       "designHint": "Mude uma cor aqui para recolori-la em todo o design.",
       "element": "Cores",
-      "swatch": "Cor {{color}}"
+      "swatch": "Cor {{color}}",
+      "document": "Cores do documento",
+      "recent": "Cores recentes",
+      "presets": "Cores básicas"
     },
     "ornaments": {
       "categories": {
@@ -8257,7 +8280,8 @@
         "rulers": "Mostrar ou ocultar as réguas",
         "guides": "Mostrar ou ocultar as guias",
         "margins": "Mostrar ou ocultar as margens",
-        "duplicateDrag": "Duplicar ao arrastar"
+        "duplicateDrag": "Duplicar ao arrastar",
+        "copyPasteStyle": "Copiar estilo / colar estilo"
       }
     },
     "view": {
@@ -8271,6 +8295,24 @@
       "clearGuides": "Remover as guias desta página",
       "rulerHint": "Arraste para a página para adicionar uma guia ou clique duas vezes para adicioná-la aqui",
       "guideHint": "Arraste para mover; arraste até uma régua ou clique duas vezes para remover"
+    },
+    "style": {
+      "copy": "Copiar estilo",
+      "paste": "Colar estilo"
+    },
+    "gradient": {
+      "stop": "Parada de cor {{number}}",
+      "hint": "Clique na barra para adicionar uma parada de cor e arraste-a para movê-la.",
+      "stopColor": "Cor da parada",
+      "position": "Posição da parada",
+      "add": "Adicionar parada de cor",
+      "remove": "Remover parada de cor",
+      "reverse": "Inverter cores",
+      "centreX": "Centro X",
+      "centreY": "Centro Y",
+      "radius": "Tamanho",
+      "presets": "Degradês prontos",
+      "preset": "Degradê {{number}}"
     }
   }
 }

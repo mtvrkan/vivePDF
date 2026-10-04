@@ -6462,7 +6462,9 @@
       "group": "グループ化",
       "ungroup": "グループ解除",
       "lock": "ロック",
-      "delete": "削除"
+      "delete": "削除",
+      "copyStyle": "スタイルをコピー",
+      "pasteStyle": "スタイルを貼り付け"
     },
     "panel": {
       "label": "追加と配置",
@@ -6575,7 +6577,10 @@
       "qrValue": "テキストまたはリンク",
       "qrBackground": "背景",
       "background": "背景色",
-      "qrLevel": "誤り訂正"
+      "qrLevel": "誤り訂正",
+      "mixed": "混在",
+      "mixedHint": "選択した項目の値が異なります。変更はすべてに適用されます。",
+      "shape": "図形"
     },
     "align": {
       "left": "左揃え",
@@ -6618,7 +6623,22 @@
       "style": "線の種類",
       "solid": "実線",
       "dashed": "破線",
-      "dotted": "点線"
+      "dotted": "点線",
+      "longDash": "長い破線",
+      "dashDot": "一点鎖線",
+      "gap": "間隔",
+      "cap": "線端",
+      "join": "角",
+      "caps": {
+        "butt": "平ら",
+        "round": "丸",
+        "square": "四角"
+      },
+      "joins": {
+        "miter": "とがった角",
+        "round": "丸い角",
+        "bevel": "面取り"
+      }
     },
     "fit": {
       "label": "画像の合わせ方",
@@ -6698,7 +6718,10 @@
       "design": "デザインカラー",
       "designHint": "ここで色を変更すると、デザイン全体のその色が変わります。",
       "element": "色",
-      "swatch": "色 {{color}}"
+      "swatch": "色 {{color}}",
+      "document": "ドキュメントの色",
+      "recent": "最近使った色",
+      "presets": "基本色"
     },
     "ornaments": {
       "categories": {
@@ -8257,7 +8280,8 @@
         "rulers": "ルーラーを表示または非表示",
         "guides": "ガイドを表示または非表示",
         "margins": "余白を表示または非表示",
-        "duplicateDrag": "ドラッグして複製"
+        "duplicateDrag": "ドラッグして複製",
+        "copyPasteStyle": "スタイルのコピー / 貼り付け"
       }
     },
     "view": {
@@ -8271,6 +8295,24 @@
       "clearGuides": "このページのガイドを削除",
       "rulerHint": "ページにドラッグしてガイドを追加するか、ダブルクリックしてここに追加します",
       "guideHint": "ドラッグして移動します。ルーラーにドラッグするかダブルクリックすると削除します"
+    },
+    "style": {
+      "copy": "スタイルをコピー",
+      "paste": "スタイルを貼り付け"
+    },
+    "gradient": {
+      "stop": "カラー分岐点 {{number}}",
+      "hint": "バーをクリックするとカラー分岐点を追加でき、分岐点をドラッグすると移動できます。",
+      "stopColor": "分岐点の色",
+      "position": "分岐点の位置",
+      "add": "カラー分岐点を追加",
+      "remove": "カラー分岐点を取り除く",
+      "reverse": "色を反転",
+      "centreX": "中心 X",
+      "centreY": "中心 Y",
+      "radius": "サイズ",
+      "presets": "既成のグラデーション",
+      "preset": "グラデーション {{number}}"
     }
   }
 }

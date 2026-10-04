@@ -6462,7 +6462,9 @@
       "group": "그룹화",
       "ungroup": "그룹 해제",
       "lock": "잠금",
-      "delete": "삭제"
+      "delete": "삭제",
+      "copyStyle": "스타일 복사",
+      "pasteStyle": "스타일 붙여넣기"
     },
     "panel": {
       "label": "추가 및 정렬",
@@ -6575,7 +6577,10 @@
       "qrValue": "텍스트 또는 링크",
       "qrBackground": "배경",
       "background": "배경색",
-      "qrLevel": "오류 정정"
+      "qrLevel": "오류 정정",
+      "mixed": "혼합",
+      "mixedHint": "선택한 항목의 값이 서로 다릅니다. 변경 사항은 모두에 적용됩니다.",
+      "shape": "도형"
     },
     "align": {
       "left": "왼쪽 맞춤",
@@ -6618,7 +6623,22 @@
       "style": "선 스타일",
       "solid": "실선",
       "dashed": "파선",
-      "dotted": "점선"
+      "dotted": "점선",
+      "longDash": "긴 파선",
+      "dashDot": "일점쇄선",
+      "gap": "간격",
+      "cap": "선 끝",
+      "join": "모서리",
+      "caps": {
+        "butt": "평평하게",
+        "round": "둥글게",
+        "square": "사각형"
+      },
+      "joins": {
+        "miter": "뾰족하게",
+        "round": "둥글게",
+        "bevel": "깎기"
+      }
     },
     "fit": {
       "label": "그림 맞춤",
@@ -6698,7 +6718,10 @@
       "design": "디자인 색상",
       "designHint": "여기서 색을 변경하면 디자인 전체에서 이 색이 함께 바뀝니다.",
       "element": "색",
-      "swatch": "색상 {{color}}"
+      "swatch": "색상 {{color}}",
+      "document": "문서 색",
+      "recent": "최근 사용한 색",
+      "presets": "기본 색"
     },
     "ornaments": {
       "categories": {
@@ -8257,7 +8280,8 @@
         "rulers": "눈금자 표시 또는 숨기기",
         "guides": "안내선 표시 또는 숨기기",
         "margins": "여백 표시 또는 숨기기",
-        "duplicateDrag": "끌면서 복제"
+        "duplicateDrag": "끌면서 복제",
+        "copyPasteStyle": "스타일 복사 / 붙여넣기"
       }
     },
     "view": {
@@ -8271,6 +8295,24 @@
       "clearGuides": "이 페이지의 안내선 제거",
       "rulerHint": "페이지로 끌어 안내선을 추가하거나 두 번 클릭하여 여기에 추가하세요",
       "guideHint": "끌어서 이동하세요. 눈금자로 끌거나 두 번 클릭하면 제거됩니다"
+    },
+    "style": {
+      "copy": "스타일 복사",
+      "paste": "스타일 붙여넣기"
+    },
+    "gradient": {
+      "stop": "색 정지점 {{number}}",
+      "hint": "막대를 클릭해 색 정지점을 추가하고, 정지점을 끌어 이동하세요.",
+      "stopColor": "정지점 색",
+      "position": "정지점 위치",
+      "add": "색 정지점 추가",
+      "remove": "색 정지점 제거",
+      "reverse": "색 순서 뒤집기",
+      "centreX": "중심 X",
+      "centreY": "중심 Y",
+      "radius": "크기",
+      "presets": "기본 그라데이션",
+      "preset": "그라데이션 {{number}}"
     }
   }
 }

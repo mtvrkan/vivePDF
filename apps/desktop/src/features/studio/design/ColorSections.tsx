@@ -1,9 +1,8 @@
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
-import { ColorSwatch } from "@/components/shared/ColorSwatch";
 import type { StudioElement } from "@/types/studio";
 import { designColors, recolorDesign, recolorElement, uniqueElementColors } from "../model/colors";
-import { PanelSection } from "./controls";
+import { PanelSection, StudioColorSwatch } from "./controls";
 import { useStudioStore } from "./studioStore";
 
 const MAX_DESIGN_COLOURS = 12;
@@ -13,7 +12,7 @@ function Swatches({ colors, onChange }: { colors: string[]; onChange: (index: nu
   return (
     <div className="flex flex-wrap gap-2">
       {colors.map((color, index) => (
-        <ColorSwatch key={index} value={color} label={t("studio.colors.swatch", { color })} customLabel={t("colorPicker.custom")} onChange={(next) => onChange(index, color, next)} />
+        <StudioColorSwatch key={index} value={color} label={t("studio.colors.swatch", { color })} onChange={(next) => onChange(index, color, next)} />
       ))}
     </div>
   );

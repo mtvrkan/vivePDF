@@ -6462,7 +6462,9 @@
       "group": "Agrupar",
       "ungroup": "Desagrupar",
       "lock": "Bloquear",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "copyStyle": "Copiar estilo",
+      "pasteStyle": "Pegar estilo"
     },
     "panel": {
       "label": "Agregar y organizar",
@@ -6575,7 +6577,10 @@
       "qrValue": "Texto o enlace",
       "qrBackground": "Fondo",
       "background": "Color de fondo",
-      "qrLevel": "Corrección de errores"
+      "qrLevel": "Corrección de errores",
+      "mixed": "Mixto",
+      "mixedHint": "Los elementos seleccionados tienen valores distintos aquí. El cambio se aplica a todos.",
+      "shape": "Forma"
     },
     "align": {
       "left": "Alinear a la izquierda",
@@ -6618,7 +6623,22 @@
       "style": "Estilo de línea",
       "solid": "Continuo",
       "dashed": "Discontinuo",
-      "dotted": "Punteado"
+      "dotted": "Punteado",
+      "longDash": "Guion largo",
+      "dashDot": "Guion y punto",
+      "gap": "Espaciado",
+      "cap": "Extremos de línea",
+      "join": "Esquinas",
+      "caps": {
+        "butt": "Plano",
+        "round": "Redondo",
+        "square": "Cuadrado"
+      },
+      "joins": {
+        "miter": "En punta",
+        "round": "Redondeada",
+        "bevel": "Biselada"
+      }
     },
     "fit": {
       "label": "Ajuste de la imagen",
@@ -6698,7 +6718,10 @@
       "design": "Colores del diseño",
       "designHint": "Cambie aquí un color para recolorearlo en todo el diseño.",
       "element": "Colores",
-      "swatch": "Color {{color}}"
+      "swatch": "Color {{color}}",
+      "document": "Colores del documento",
+      "recent": "Colores recientes",
+      "presets": "Colores básicos"
     },
     "ornaments": {
       "categories": {
@@ -8257,7 +8280,8 @@
         "rulers": "Mostrar u ocultar las reglas",
         "guides": "Mostrar u ocultar las guías",
         "margins": "Mostrar u ocultar los márgenes",
-        "duplicateDrag": "Duplicar al arrastrar"
+        "duplicateDrag": "Duplicar al arrastrar",
+        "copyPasteStyle": "Copiar estilo / pegar estilo"
       }
     },
     "view": {
@@ -8271,6 +8295,24 @@
       "clearGuides": "Quitar las guías de esta página",
       "rulerHint": "Arrastre hasta la página para añadir una guía o haga doble clic para añadirla aquí",
       "guideHint": "Arrastre para mover; arrástrela a una regla o haga doble clic para quitarla"
+    },
+    "style": {
+      "copy": "Copiar estilo",
+      "paste": "Pegar estilo"
+    },
+    "gradient": {
+      "stop": "Parada de color {{number}}",
+      "hint": "Haga clic en la barra para añadir una parada de color y arrástrela para moverla.",
+      "stopColor": "Color de la parada",
+      "position": "Posición de la parada",
+      "add": "Añadir parada de color",
+      "remove": "Quitar parada de color",
+      "reverse": "Invertir colores",
+      "centreX": "Centro X",
+      "centreY": "Centro Y",
+      "radius": "Tamaño",
+      "presets": "Degradados listos",
+      "preset": "Degradado {{number}}"
     }
   }
 }

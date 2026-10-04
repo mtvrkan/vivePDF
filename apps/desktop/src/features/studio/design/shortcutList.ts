@@ -19,6 +19,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Ctrl Z  /  Ctrl Y  ·  Ctrl Shift Z", "undoRedo"),
       item("Ctrl C  /  Ctrl X  /  Ctrl V", "clipboard"),
       item("Ctrl Shift V", "pasteInPlace"),
+      item("Ctrl Alt C  /  Ctrl Alt V", "copyPasteStyle"),
       item("Ctrl D", "duplicate"),
       item("Delete  /  Backspace", "delete"),
       item("Ctrl A", "selectAll"),

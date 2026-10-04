@@ -1,21 +1,23 @@
-import { AlignCenter, AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignJustify, AlignLeft, AlignRight, AlignStartHorizontal, AlignStartVertical, Bold, Italic, Lock, LockOpen, StretchHorizontal, StretchVertical, Underline } from "lucide-react";
+import { AlignCenter, AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignJustify, AlignLeft, AlignRight, AlignStartHorizontal, AlignStartVertical, Bold, Italic, Lock, LockOpen, PaintBucket, Paintbrush, StretchHorizontal, StretchVertical, Underline } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { FontPicker } from "@/components/shared/FontPicker";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { Segmented, SliderField, SwitchField, TextArea } from "@/components/tool/form";
-import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioShapeElement, StudioTextAlign, StudioTextElement, StudioVerticalAlign } from "@/types/studio";
+import type { StudioElement, StudioFill, StudioImageElement, StudioPage, StudioQrElement, StudioShapeElement, StudioStroke, StudioTextAlign, StudioTextElement, StudioVerticalAlign } from "@/types/studio";
 import { STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
 import { align, distribute, patchSelected, toggleLock } from "./commands";
 import { DesignColours, ElementColours } from "./ColorSections";
-import { ColorField, FillEditor, NumberField, PanelSection, StrokeEditor } from "./controls";
+import { ColorField, FillEditor, NumberField, OpacityField, PanelSection, StrokeEditor } from "./controls";
+import { deepEqual, isFillable, isRoundable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue, strokeDifferences } from "./multiEdit";
 import { pickImage } from "./pickImage";
 import { fromMm, toMm } from "./units";
 import { DEFAULT_FONT_ID } from "./fonts";
 import { withElementStyle, type StylePatch } from "./richText";
 import { textEditorBridge } from "./textEditorBridge";
 import { distributableCount } from "../model/edit";
+import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 
 const TEXT_ALIGNS: StudioTextAlign[] = ["left", "center", "right", "justify"];
@@ -81,6 +83,7 @@ function ArrangeSection({ elements }: { elements: StudioElement[] }) {
   const { t } = useTranslation();
   const single = elements.length === 1 ? elements[0] : null;
   const locked = elements.every((element) => element.locked);
+  const opacity = sharedValue(elements.map((element) => element.opacity));
   const distributable = useStudioStore((state) => {
     const page = currentPage(state);
     return page ? distributableCount(page, state.selection) : 0;
@@ -115,16 +118,51 @@ function ArrangeSection({ elements }: { elements: StudioElement[] }) {
           <NumberField label={t("studio.props.height")} suffix="mm" value={toMm(single.height)} min={0.5} step={1} onChange={(value) => patchSelected({ height: fromMm(value) })} disabled={single.locked} />
           <NumberField label={t("studio.props.rotation")} suffix="°" value={Math.round(single.rotation * 10) / 10} min={-360} max={360} onChange={(value) => patchSelected({ rotation: value })} disabled={single.locked} />
         </div>
-      ) : null}
-      <SliderField
-        label={t("studio.props.opacity")}
-        value={Math.round((single?.opacity ?? elements[0].opacity) * 100)}
-        min={0}
-        max={100}
-        format={(value) => `${value}%`}
-        onChange={(value) => patchSelected({ opacity: value / 100 }, "opacity")}
-      />
+      ) : (
+        <GroupGeometry elements={elements} />
+      )}
+      <OpacityField label={t("studio.props.opacity")} value={opacity.value} mixed={opacity.mixed} onChange={(value, merge) => patchSelected({ opacity: value }, merge)} />
+      <StyleClipboardButtons />
     </PanelSection>
+  );
+}
+
+function GroupGeometry({ elements }: { elements: StudioElement[] }) {
+  const { t } = useTranslation();
+  const frame = selectionFrame(elements);
+  const rotation = sharedValue(elements.map((element) => Math.round(element.rotation * 10) / 10));
+  if (!frame) return null;
+  const locked = elements.some((element) => element.locked);
+  const onPage = (change: (page: StudioPage, ids: string[]) => StudioPage) => {
+    const state = useStudioStore.getState();
+    state.applyToPage((page) => change(page, state.selection));
+  };
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <NumberField label="X" suffix="mm" value={toMm(frame.x)} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => moveSelectionTo(page, ids, fromMm(value), frame.y))} />
+      <NumberField label="Y" suffix="mm" value={toMm(frame.y)} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => moveSelectionTo(page, ids, frame.x, fromMm(value)))} />
+      <NumberField label={t("studio.props.width")} suffix="mm" value={toMm(frame.width)} min={0.5} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => resizeSelectionTo(page, ids, fromMm(value), frame.height))} />
+      <NumberField label={t("studio.props.height")} suffix="mm" value={toMm(frame.height)} min={0.5} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => resizeSelectionTo(page, ids, frame.width, fromMm(value)))} />
+      <NumberField label={t("studio.props.rotation")} suffix="°" value={rotation.value} mixed={rotation.mixed} min={-360} max={360} disabled={locked} onChange={(value) => patchSelected({ rotation: value })} />
+    </div>
+  );
+}
+
+function StyleClipboardButtons() {
+  const { t } = useTranslation();
+  const hasStyle = useStyleClipboard((state) => state.style !== null);
+  const chip = "glass-chip inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-40";
+  return (
+    <div className="flex flex-wrap gap-2">
+      <button type="button" className={chip} title={`${t("studio.style.copy")} (Ctrl+Alt+C)`} aria-keyshortcuts="Control+Alt+C" onClick={copyStyle}>
+        <Paintbrush className="size-4" aria-hidden />
+        {t("studio.style.copy")}
+      </button>
+      <button type="button" className={chip} title={`${t("studio.style.paste")} (Ctrl+Alt+V)`} aria-keyshortcuts="Control+Alt+V" disabled={!hasStyle} onClick={pasteStyle}>
+        <PaintBucket className="size-4" aria-hidden />
+        {t("studio.style.paste")}
+      </button>
+    </div>
   );
 }
 
@@ -177,29 +215,54 @@ function TextSection({ elements }: { elements: StudioTextElement[] }) {
   );
 }
 
-function ShapeSection({ element }: { element: StudioShapeElement }) {
+function StyleSections({ elements }: { elements: StudioElement[] }) {
   const { t } = useTranslation();
-  const set = (patch: Partial<StudioShapeElement>, merge?: string) => patchSelected((item) => (item.kind === "shape" ? patch : {}), merge);
-  const lineLike = element.shape === "line" || element.shape === "arrowLine";
+  const fillable = elements.filter(isFillable);
+  const strokable = elements.filter(isStrokable);
+  const roundable = elements.filter(isRoundable);
+  const stars = elements.filter((element): element is StudioShapeElement => element.kind === "shape" && (element.shape === "star" || element.shape === "burst"));
+  const fill = sharedValue(fillable.map((element) => element.fill));
+  const strokes = strokable.map((element) => element.stroke);
+  const shownStroke = strokes.find((stroke) => stroke !== null) ?? null;
+  const radius = sharedValue(roundable.map((element) => element.cornerRadius));
+  const mixedText = t("studio.props.mixed");
+  const openPath = elements.every((element) => element.kind === "shape" && (element.shape === "line" || element.shape === "arrowLine"));
+  const setFill = (next: StudioFill, merge?: string) => patchSelected((element) => (isFillable(element) ? { fill: mergeEdit(element.fill, fill.value, next) } : {}), merge);
+  const setStroke = (next: StudioStroke | null, merge?: string) =>
+    patchSelected((element) => {
+      if (!isStrokable(element)) return {};
+      const turnOn = element.stroke === null && next !== null && deepEqual(shownStroke, next);
+      return { stroke: turnOn ? next : mergeEdit(element.stroke, shownStroke, next) };
+    }, merge);
+  const setShape = (patch: Partial<StudioShapeElement>, merge: string) => patchSelected((element) => (element.kind === "shape" ? patch : {}), merge);
   return (
     <>
-      {lineLike ? null : (
+      {fillable.length === elements.length ? (
         <PanelSection title={t("studio.props.fill")}>
-          <FillEditor value={element.fill} onChange={(fill, merge) => set({ fill }, merge)} />
+          <FillEditor value={fill.value} mixed={fill.mixed} onChange={setFill} />
         </PanelSection>
-      )}
-      <PanelSection title={t("studio.props.stroke")}>
-        <StrokeEditor value={element.stroke} onChange={(stroke, merge) => set({ stroke }, merge)} />
-        {element.shape === "rect" || element.shape === "speech" ? (
-          <SliderField label={t("studio.props.cornerRadius")} value={element.cornerRadius} min={0} max={Math.round(Math.min(element.width, element.height) / 2)} onChange={(cornerRadius) => set({ cornerRadius }, "radius")} />
-        ) : null}
-        {element.shape === "star" || element.shape === "burst" ? (
-          <>
-            <SliderField label={t("studio.props.points")} value={element.points} min={3} max={48} onChange={(points) => set({ points }, "points")} />
-            <SliderField label={t("studio.props.innerRatio")} value={Math.round(element.innerRatio * 100)} min={10} max={95} format={(value) => `${value}%`} onChange={(value) => set({ innerRatio: value / 100 }, "inner")} />
-          </>
-        ) : null}
-      </PanelSection>
+      ) : null}
+      {strokable.length === elements.length ? (
+        <PanelSection title={t("studio.props.stroke")}>
+          <StrokeEditor value={shownStroke} mixed={strokeDifferences(strokes)} openPath={openPath} onChange={setStroke} />
+          {roundable.length === elements.length ? (
+            <SliderField
+              label={t("studio.props.cornerRadius")}
+              value={radius.value}
+              min={0}
+              max={maxCornerRadius(roundable)}
+              format={(value) => (radius.mixed ? mixedText : String(value))}
+              onChange={(cornerRadius) => patchSelected((element) => (isRoundable(element) ? { cornerRadius } : {}), "radius")}
+            />
+          ) : null}
+        </PanelSection>
+      ) : null}
+      {stars.length === elements.length ? (
+        <PanelSection title={t("studio.props.shape")}>
+          <SliderField label={t("studio.props.points")} value={stars[0].points} min={3} max={48} onChange={(points) => setShape({ points }, "points")} />
+          <SliderField label={t("studio.props.innerRatio")} value={Math.round(stars[0].innerRatio * 100)} min={10} max={95} format={(value) => `${value}%`} onChange={(value) => setShape({ innerRatio: value / 100 }, "inner")} />
+        </PanelSection>
+      ) : null}
     </>
   );
 }
@@ -231,16 +294,12 @@ function ImageSection({ element }: { element: StudioImageElement }) {
       </button>
       <Segmented size="sm" value={element.fit} options={["cover", "contain", "stretch"] as const} labelOf={(fit) => t(`studio.fit.${fit}`)} onChange={(fit) => set({ fit })} ariaLabel={t("studio.fit.label")} />
       <Segmented size="sm" value={element.mask} options={["none", "rounded", "circle"] as const} labelOf={(mask) => t(`studio.mask.${mask}`)} onChange={(mask) => set({ mask })} ariaLabel={t("studio.mask.label")} />
-      {element.mask === "rounded" ? (
-        <SliderField label={t("studio.props.cornerRadius")} value={element.cornerRadius} min={0} max={Math.round(Math.min(element.width, element.height) / 2)} onChange={(cornerRadius) => set({ cornerRadius }, "radius")} />
-      ) : null}
       <div className="grid grid-cols-2 gap-x-3">
         <SliderField label={t("studio.crop.left")} value={Math.round(crop.x * 100)} min={0} max={90} format={(value) => `${value}%`} onChange={(value) => setCrop("left", value)} />
         <SliderField label={t("studio.crop.right")} value={Math.round((1 - crop.x - crop.width) * 100)} min={0} max={90} format={(value) => `${value}%`} onChange={(value) => setCrop("right", value)} />
         <SliderField label={t("studio.crop.top")} value={Math.round(crop.y * 100)} min={0} max={90} format={(value) => `${value}%`} onChange={(value) => setCrop("top", value)} />
         <SliderField label={t("studio.crop.bottom")} value={Math.round((1 - crop.y - crop.height) * 100)} min={0} max={90} format={(value) => `${value}%`} onChange={(value) => setCrop("bottom", value)} />
       </div>
-      <StrokeEditor value={element.stroke} onChange={(stroke, merge) => set({ stroke }, merge)} />
     </PanelSection>
   );
 }
@@ -276,9 +335,9 @@ export function PropertiesPanel() {
       {elements.length === 0 ? <DesignColours /> : null}
       {single?.kind === "vector" ? <ElementColours element={single} /> : null}
       {texts.length && kinds.size === 1 ? <TextSection elements={texts} /> : null}
-      {single?.kind === "shape" ? <ShapeSection element={single} /> : null}
       {single?.kind === "image" ? <ImageSection element={single} /> : null}
       {single?.kind === "qr" ? <QrSection element={single} /> : null}
+      {elements.length ? <StyleSections elements={elements} /> : null}
     </aside>
   );
 }

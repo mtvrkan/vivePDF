@@ -4,6 +4,7 @@ import { installBrowserKeyGuard } from "@/shared/lib/browserKeys";
 import { addElements } from "../model/edit";
 import { createDesign, createShape, createText } from "../model/design";
 import { useStudioStore } from "./studioStore";
+import { useStyleClipboard } from "./styleClipboard";
 import { useStudioShortcuts } from "./useStudioShortcuts";
 import { DEFAULT_VIEW_PREFS, useViewPrefs } from "./viewPrefs";
 
@@ -25,6 +26,7 @@ describe("studio shortcuts", () => {
   afterEach(() => {
     removeGuard();
     useStudioStore.getState().close();
+    useStyleClipboard.setState({ style: null });
     document.body.innerHTML = "";
   });
 
@@ -95,6 +97,23 @@ describe("studio shortcuts", () => {
 
     press("ğ", { code: "BracketLeft" });
     expect(useStudioStore.getState().design?.pages[0].elements.map((element) => element.id)).toEqual([first.id, second.id]);
+  });
+
+  it("copies and pastes style with Ctrl+Alt+C and Ctrl+Alt+V by key position, but never while typing", () => {
+    renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    const state = useStudioStore.getState();
+    const [first, second] = state.design?.pages[0].elements ?? [];
+    state.applyToPage((page) => ({ ...page, elements: page.elements.map((element) => (element.id === first.id ? { ...element, opacity: 0.4 } : element)) }));
+    state.select([first.id]);
+
+    press("c", { code: "KeyC", altKey: true });
+    useStudioStore.getState().select([second.id]);
+    const input = document.body.appendChild(document.createElement("input"));
+    press("v", { code: "KeyV", altKey: true }, input);
+    expect(useStudioStore.getState().design?.pages[0].elements[1].opacity).toBe(1);
+
+    press("v", { code: "KeyV", altKey: true });
+    expect(useStudioStore.getState().design?.pages[0].elements[1].opacity).toBe(0.4);
   });
 
   it("pastes in place with Ctrl+Shift+V and leaves Enter to a focused button", () => {
