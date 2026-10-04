@@ -45,6 +45,7 @@ type StudioState = {
   copy: () => void;
   cut: () => void;
   paste: () => void;
+  pasteInPlace: () => void;
   duplicate: () => void;
   remove: () => void;
 };
@@ -116,6 +117,17 @@ export const useStudioStore = create<StudioState>((set, get) => {
     const pageId = design.pages.some((page) => page.id === state.pageId) ? state.pageId : design.pages[0].id;
     set({ design, past, future, dirty: true, mergeKey: null, pageId, selection: validSelection(design, pageId, state.selection), editingId: null });
     writeDraft(design, state.filePath);
+  };
+
+  const pasteClipboard = (offset: number) => {
+    const state = get();
+    const page = currentPage(state);
+    if (!state.clipboard?.length || !page) return;
+    const source = { ...page, elements: state.clipboard };
+    const copies = duplicateElements(source, state.clipboard.map((element) => element.id), offset);
+    const added = copies.page.elements.slice(state.clipboard.length);
+    state.applyToPage((target) => addElements(target, added));
+    set({ selection: added.map((element) => element.id), clipboard: added.map((element) => ({ ...element })) });
   };
 
   return {
@@ -197,16 +209,8 @@ export const useStudioStore = create<StudioState>((set, get) => {
       get().copy();
       get().remove();
     },
-    paste: () => {
-      const state = get();
-      const page = currentPage(state);
-      if (!state.clipboard?.length || !page) return;
-      const source = { ...page, elements: state.clipboard };
-      const copies = duplicateElements(source, state.clipboard.map((element) => element.id), PASTE_OFFSET);
-      const added = copies.page.elements.slice(state.clipboard.length);
-      state.applyToPage((target) => addElements(target, added));
-      set({ selection: added.map((element) => element.id), clipboard: added.map((element) => ({ ...element })) });
-    },
+    paste: () => pasteClipboard(PASTE_OFFSET),
+    pasteInPlace: () => pasteClipboard(0),
     duplicate: () => {
       const state = get();
       const page = currentPage(state);

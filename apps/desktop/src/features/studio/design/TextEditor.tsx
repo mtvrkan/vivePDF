@@ -4,7 +4,7 @@ import { updateElement } from "../model/edit";
 import { TextContent } from "./ElementView";
 import { useStudioFontsStore } from "./fonts";
 import { applyRunStyle, restoreSelection, runsFromDom, selectionOffsets, styleSummary, withElementStyle } from "./richText";
-import { textEditorBridge } from "./textEditorBridge";
+import { textEditorBridge, textEditorEntry } from "./textEditorBridge";
 import { useStudioStore } from "./studioStore";
 import { runsHtml, textBodyStyle } from "./textStyle";
 
@@ -38,6 +38,16 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
     if (!body) return;
     body.innerHTML = runsHtml(latest.current, useStudioFontsStore.getState().faces);
     body.focus();
+    const point = textEditorEntry.point;
+    textEditorEntry.point = null;
+    const caret = point ? document.caretRangeFromPoint?.(point.x, point.y) : null;
+    if (caret && body.contains(caret.startContainer)) {
+      const range = window.getSelection();
+      range?.removeAllRanges();
+      range?.addRange(caret);
+      selection.current = selectionOffsets(body);
+      return;
+    }
     const length = body.textContent?.length ?? 0;
     restoreSelection(body, 0, length);
     selection.current = { start: 0, end: length };

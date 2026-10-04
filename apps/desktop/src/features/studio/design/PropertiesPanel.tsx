@@ -15,6 +15,7 @@ import { fromMm, toMm } from "./units";
 import { DEFAULT_FONT_ID } from "./fonts";
 import { withElementStyle, type StylePatch } from "./richText";
 import { textEditorBridge } from "./textEditorBridge";
+import { distributableCount } from "../model/edit";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 
 const TEXT_ALIGNS: StudioTextAlign[] = ["left", "center", "right", "justify"];
@@ -80,6 +81,10 @@ function ArrangeSection({ elements }: { elements: StudioElement[] }) {
   const { t } = useTranslation();
   const single = elements.length === 1 ? elements[0] : null;
   const locked = elements.every((element) => element.locked);
+  const distributable = useStudioStore((state) => {
+    const page = currentPage(state);
+    return page ? distributableCount(page, state.selection) : 0;
+  });
   const alignButtons = [
     { mode: "left", icon: AlignStartVertical },
     { mode: "centerX", icon: AlignCenterVertical },
@@ -94,7 +99,7 @@ function ArrangeSection({ elements }: { elements: StudioElement[] }) {
         {alignButtons.map(({ mode, icon }) => (
           <IconButton key={mode} icon={icon} label={t(`studio.align.${mode}`)} onClick={() => align(mode)} />
         ))}
-        {elements.length > 2 ? (
+        {distributable > 2 ? (
           <>
             <IconButton icon={StretchHorizontal} label={t("studio.align.distributeHorizontal")} onClick={() => distribute("horizontal")} />
             <IconButton icon={StretchVertical} label={t("studio.align.distributeVertical")} onClick={() => distribute("vertical")} />

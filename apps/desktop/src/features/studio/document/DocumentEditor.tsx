@@ -6,6 +6,7 @@ import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
 import { Segmented } from "@/components/tool/form";
 import { basenameOf } from "@/shared/lib/paths";
+import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import type { DocumentNode } from "@/types/studio";
 import { DocumentExportDialog } from "./DocumentExportDialog";
 import { DocumentPreview } from "./DocumentPreview";
@@ -61,17 +62,19 @@ function useShortcuts(onExport: () => void) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
-      const key = event.key.toLowerCase();
-      if (key === "s") {
+      const letter = shortcutLetter(event);
+      if (letter === "s") {
         event.preventDefault();
+        event.stopPropagation();
         void latest.current.save(event.shiftKey);
-      } else if (key === "e" && !event.shiftKey) {
+      } else if (letter === "e" && !event.shiftKey) {
         event.preventDefault();
+        event.stopPropagation();
         latest.current.onExport();
       }
     };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
   }, []);
 }
 

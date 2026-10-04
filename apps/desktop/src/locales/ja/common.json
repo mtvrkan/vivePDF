@@ -6166,7 +6166,9 @@
         "viewer": "ビューア",
         "editor": "編集",
         "presentation": "プレゼンテーション",
-        "organizer": "ページ整理"
+        "organizer": "ページ整理",
+        "studio": "Studio デザインエディター",
+        "studioDocument": "Studio ドキュメントエディター"
       },
       "items": {
         "presentationEnter": "プレゼンテーションモードの開始 / 終了",
@@ -8199,6 +8201,59 @@
         "certificate": "認定ユーザビリティアナリスト",
         "issuer": "Human Factors International",
         "interests": "写真、サイクリング、陶芸"
+      }
+    },
+    "shortcuts": {
+      "title": "キーボードショートカット",
+      "groups": {
+        "file": "ファイル",
+        "edit": "編集",
+        "arrange": "配置",
+        "insert": "追加",
+        "text": "テキスト",
+        "view": "表示",
+        "mouse": "マウス"
+      },
+      "items": {
+        "save": "保存／名前を付けて保存…",
+        "open": "デザインを開く…",
+        "export": "書き出し…",
+        "help": "キーボードショートカットを表示",
+        "undoRedo": "元に戻す／やり直し",
+        "clipboard": "コピー／切り取り／貼り付け",
+        "pasteInPlace": "同じ位置に貼り付け",
+        "duplicate": "複製",
+        "delete": "削除",
+        "selectAll": "ページ上のすべてを選択",
+        "escape": "選択解除、テキスト編集の終了、またはドラッグの取り消し",
+        "nudge": "1 pt 移動（Shift で 10 pt）",
+        "group": "グループ化／グループ解除",
+        "forwardBackward": "1 つ上へ移動／1 つ下へ移動",
+        "frontBack": "最前面へ移動／最背面へ移動",
+        "lock": "ロックまたはロック解除",
+        "hide": "非表示または表示",
+        "text": "テキストを追加",
+        "rectangle": "四角形を追加",
+        "ellipse": "楕円を追加",
+        "line": "線を追加",
+        "editText": "選択したテキストを編集",
+        "textStyle": "太字／斜体／下線",
+        "fontSize": "文字を大きく／小さく",
+        "zoom": "拡大／縮小",
+        "fit": "ページをウィンドウに合わせる",
+        "actualSize": "実際のサイズ（100%）",
+        "zoomSelection": "選択範囲に合わせて拡大",
+        "pan": "ページ内を移動",
+        "pages": "前のページ／次のページ",
+        "addToSelection": "選択範囲に追加または除外",
+        "axisLock": "水平または垂直方向のみ移動",
+        "noSnap": "スナップせずに移動",
+        "keepRatio": "比率を保持（または解除）してサイズ変更",
+        "fromCentre": "中心からサイズ変更",
+        "rotateStep": "15° 単位で回転",
+        "headings": "見出し 1／2／3",
+        "lists": "箇条書き／番号付きリスト",
+        "lineBreak": "新しい段落を作らずに改行"
       }
     }
   }

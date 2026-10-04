@@ -1,4 +1,4 @@
-import { ArrowLeft, Download, FilePlus2, Group, Maximize, Redo2, Save, Undo2, Ungroup, ZoomIn, ZoomOut } from "lucide-react";
+import { ArrowLeft, Download, FilePlus2, Group, Keyboard, Maximize, Redo2, Save, Undo2, Ungroup, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
@@ -9,7 +9,7 @@ import { useDesignSave } from "./useDesignSave";
 
 const ZOOM_STEP = 1.25;
 
-export function StudioToolbar({ onExport, onLeave }: { onExport: () => void; onLeave: () => void }) {
+export function StudioToolbar({ onExport, onLeave, onHelp }: { onExport: () => void; onLeave: () => void; onHelp: () => void }) {
   const { t } = useTranslation();
   const name = useStudioStore((state) => state.design?.name ?? "");
   const canUndo = useStudioStore((state) => state.past.length > 0);
@@ -49,8 +49,9 @@ export function StudioToolbar({ onExport, onLeave }: { onExport: () => void; onL
         <button type="button" onClick={store.setFit} aria-label={t("studio.toolbar.fit")} title={t("studio.toolbar.fit")} className="h-8 min-w-14 rounded-lg px-2 text-sm tabular-nums text-foreground/80 hover:text-foreground" aria-pressed={fit}>
           {Math.round(zoom * 100)}%
         </button>
-        <IconButton icon={ZoomIn} label={t("studio.toolbar.zoomIn")} shortcut="Ctrl+=" onClick={() => store.setZoom(zoom * ZOOM_STEP)} />
+        <IconButton icon={ZoomIn} label={t("studio.toolbar.zoomIn")} shortcut="Ctrl++" onClick={() => store.setZoom(zoom * ZOOM_STEP)} />
         <IconButton icon={Maximize} label={t("studio.toolbar.fit")} shortcut="Ctrl+0" active={fit} onClick={store.setFit} />
+        <IconButton icon={Keyboard} label={t("studio.shortcuts.title")} shortcut="?" onClick={onHelp} />
         <Button variant="primary" icon={<Download className="size-4" aria-hidden />} onClick={onExport} className="ml-2">
           {t("studio.toolbar.export")}
         </Button>

@@ -4,12 +4,15 @@ import { useTranslation } from "react-i18next";
 import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMenu";
 import { useContextMenu } from "@/components/shared/useContextMenu";
 import { cn } from "@/shared/lib/cn";
+import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
 import type { StudioDesign, StudioElement, StudioTextElement } from "@/types/studio";
-import { elementBounds, selectionBounds, updateElement, moveElements, type Bounds } from "../model/edit";
+import { elementBounds, selectionBounds, updateElement, moveElements, withoutGroupOf, type Bounds } from "../model/edit";
+import { canvasBridge } from "./canvasBridge";
 import { canGroup, canUngroup, group, reorder, toggleLock, ungroup } from "./commands";
 import { ElementView, PageView } from "./ElementView";
 import { pickImage } from "./pickImage";
 import { TextEditor } from "./TextEditor";
+import { textEditorEntry } from "./textEditorBridge";
 import { HANDLES, boundsOf, resizeBox, rotationFromPointer, scaleBoundsByHandle, scaleElements, snapBounds, snapTargets, type Guide, type Handle } from "./transform";
 import { currentPage, useStudioStore } from "./studioStore";
 
@@ -17,13 +20,15 @@ const PAD = 48;
 const DRAG_THRESHOLD = 3;
 const SNAP_PIXELS = 6;
 const ZOOM_STEP = 1.1;
+const SELECTION_ZOOM_MARGIN = 0.8;
 
 type Point = { x: number; y: number };
 type Drag =
   | { kind: "move"; before: StudioDesign; ids: string[]; origin: Point; moved: boolean; targets: ReturnType<typeof snapTargets>; start: Bounds }
   | { kind: "resize"; before: StudioDesign; handle: Handle; elements: StudioElement[]; origin: Point; start: Bounds }
   | { kind: "rotate"; before: StudioDesign; element: StudioElement }
-  | { kind: "marquee"; origin: Point; base: string[] };
+  | { kind: "marquee"; origin: Point; base: string[] }
+  | { kind: "pan"; origin: Point; scroll: Point };
 
 const CURSORS: Record<Handle, string> = { n: "ns-resize", s: "ns-resize", e: "ew-resize", w: "ew-resize", ne: "nesw-resize", sw: "nesw-resize", nw: "nwse-resize", se: "nwse-resize" };
 
@@ -57,6 +62,9 @@ export function Canvas({ language }: { language: string }) {
   const zoomAnchor = useRef<{ page: Point; client: Point } | null>(null);
   const [guides, setGuides] = useState<Guide[]>([]);
   const [marquee, setMarquee] = useState<Bounds | null>(null);
+  const [panReady, setPanReady] = useState(false);
+  const [panning, setPanning] = useState(false);
+  const spaceHeld = useRef(false);
   const menu = useContextMenu();
 
   const selected = useMemo(() => (page ? page.elements.filter((element) => selection.includes(element.id)) : []), [page, selection]);
@@ -88,6 +96,87 @@ export function Canvas({ language }: { language: string }) {
     viewport.scrollLeft += rect.left + anchor.page.x * zoom - anchor.client.x;
     viewport.scrollTop += rect.top + anchor.page.y * zoom - anchor.client.y;
   }, [zoom]);
+
+  useEffect(
+    () =>
+      useStudioStore.subscribe((next, previous) => {
+        if (next.zoom === previous.zoom || next.fit || zoomAnchor.current) return;
+        const viewport = viewportRef.current;
+        const host = pageRef.current;
+        if (!viewport || !host) return;
+        const view = viewport.getBoundingClientRect();
+        const rect = host.getBoundingClientRect();
+        const client = { x: view.left + view.width / 2, y: view.top + view.height / 2 };
+        zoomAnchor.current = { page: { x: (client.x - rect.left) / previous.zoom, y: (client.y - rect.top) / previous.zoom }, client };
+      }),
+    [],
+  );
+
+  useEffect(() => {
+    const release = () => {
+      spaceHeld.current = false;
+      setPanReady(false);
+    };
+    const onKeyDown = (event: KeyboardEvent) => {
+      const current = drag.current;
+      if (event.key === "Escape" && current) {
+        event.preventDefault();
+        event.stopPropagation();
+        drag.current = null;
+        setGuides([]);
+        setMarquee(null);
+        setPanning(false);
+        const state = useStudioStore.getState();
+        if (current.kind === "marquee") state.select(current.base);
+        else if (current.kind !== "pan") state.preview(() => current.before);
+        return;
+      }
+      if (event.code !== "Space" || event.ctrlKey || event.metaKey || event.altKey || isTextEntryTarget(event.target) || isControlTarget(event.target)) return;
+      if (document.querySelector('[role="dialog"]')) return;
+      event.preventDefault();
+      if (!spaceHeld.current) {
+        spaceHeld.current = true;
+        setPanReady(true);
+      }
+    };
+    const onKeyUp = (event: KeyboardEvent) => {
+      if (event.code === "Space") release();
+    };
+    window.addEventListener("keydown", onKeyDown, true);
+    window.addEventListener("keyup", onKeyUp, true);
+    window.addEventListener("blur", release);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, true);
+      window.removeEventListener("keyup", onKeyUp, true);
+      window.removeEventListener("blur", release);
+    };
+  }, []);
+
+  useEffect(() => {
+    canvasBridge.current = {
+      zoomToSelection: () => {
+        const viewport = viewportRef.current;
+        const state = useStudioStore.getState();
+        const current = currentPage(state);
+        if (!viewport || !current) return;
+        const box = (state.selection.length ? selectionBounds(current, state.selection) : null) ?? { x: 0, y: 0, width: current.width, height: current.height };
+        const view = viewport.getBoundingClientRect();
+        const target = Math.min((view.width * SELECTION_ZOOM_MARGIN) / Math.max(1, box.width), (view.height * SELECTION_ZOOM_MARGIN) / Math.max(1, box.height));
+        zoomAnchor.current = { page: { x: box.x + box.width / 2, y: box.y + box.height / 2 }, client: { x: view.left + view.width / 2, y: view.top + view.height / 2 } };
+        state.setZoom(target);
+        if (useStudioStore.getState().zoom === state.zoom) {
+          zoomAnchor.current = null;
+          const rect = pageRef.current?.getBoundingClientRect();
+          if (!rect) return;
+          viewport.scrollLeft += rect.left + (box.x + box.width / 2) * state.zoom - (view.left + view.width / 2);
+          viewport.scrollTop += rect.top + (box.y + box.height / 2) * state.zoom - (view.top + view.height / 2);
+        }
+      },
+    };
+    return () => {
+      canvasBridge.current = null;
+    };
+  }, []);
 
   useEffect(() => {
     const viewport = viewportRef.current;
@@ -133,7 +222,19 @@ export function Canvas({ language }: { language: string }) {
   };
 
   const onPointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    const viewport = viewportRef.current;
+    if (viewport && (event.button === 1 || (event.button === 0 && spaceHeld.current))) {
+      event.preventDefault();
+      event.currentTarget.setPointerCapture(event.pointerId);
+      drag.current = { kind: "pan", origin: { x: event.clientX, y: event.clientY }, scroll: { x: viewport.scrollLeft, y: viewport.scrollTop } };
+      setPanning(true);
+      return;
+    }
     if (event.button !== 0) return;
+    if (viewport && event.target === viewport) {
+      const box = viewport.getBoundingClientRect();
+      if (event.clientX - box.left >= viewport.clientWidth || event.clientY - box.top >= viewport.clientHeight) return;
+    }
     const target = event.target as HTMLElement;
     const handle = target.closest<HTMLElement>("[data-handle]")?.dataset.handle as Handle | "rotate" | undefined;
     const state = store();
@@ -149,9 +250,20 @@ export function Canvas({ language }: { language: string }) {
     const hit = target.closest<HTMLElement>("[data-element-id]")?.dataset.elementId;
     if (state.editingId && hit !== state.editingId) state.setEditing(null);
     if (hit) {
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey) {
+        const stack = [...new Set(document.elementsFromPoint(event.clientX, event.clientY).map((node) => node.closest<HTMLElement>("[data-element-id]")?.dataset.elementId).filter((id): id is string => Boolean(id)))];
+        const index = stack.findIndex((id) => state.selection.includes(id));
+        state.select([stack[index >= 0 ? (index + 1) % stack.length : 0] ?? hit]);
+        beginMove(event, store().selection);
+        return;
+      }
       const ids = state.selection.includes(hit) ? state.selection : [hit];
-      const next = event.shiftKey ? (state.selection.includes(hit) ? state.selection.filter((id) => id !== hit) : [...state.selection, hit]) : ids;
+      const next = event.shiftKey ? (state.selection.includes(hit) ? withoutGroupOf(page, state.selection, hit) : [...state.selection, hit]) : ids;
       state.select(next);
+      if (!event.shiftKey && page.elements.find((element) => element.id === hit)?.locked) {
+        drag.current = { kind: "marquee", origin: toPage(event.clientX, event.clientY), base: [] };
+        return;
+      }
       beginMove(event, store().selection);
       return;
     }
@@ -163,12 +275,19 @@ export function Canvas({ language }: { language: string }) {
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     const current = drag.current;
     if (!current) return;
+    if (current.kind === "pan") {
+      const viewport = viewportRef.current;
+      if (!viewport) return;
+      viewport.scrollLeft = current.scroll.x - (event.clientX - current.origin.x);
+      viewport.scrollTop = current.scroll.y - (event.clientY - current.origin.y);
+      return;
+    }
     const point = toPage(event.clientX, event.clientY);
     const state = store();
     if (current.kind === "marquee") {
       const box = { x: Math.min(point.x, current.origin.x), y: Math.min(point.y, current.origin.y), width: Math.abs(point.x - current.origin.x), height: Math.abs(point.y - current.origin.y) };
       setMarquee(box);
-      const hits = currentPage(state)?.elements.filter((element) => !element.hidden && intersects(elementBounds(element), box)).map((element) => element.id) ?? [];
+      const hits = currentPage(state)?.elements.filter((element) => !element.hidden && !element.locked && intersects(elementBounds(element), box)).map((element) => element.id) ?? [];
       state.select([...new Set([...current.base, ...hits])]);
       return;
     }
@@ -225,7 +344,8 @@ export function Canvas({ language }: { language: string }) {
     drag.current = null;
     setGuides([]);
     setMarquee(null);
-    if (!current || current.kind === "marquee") return;
+    setPanning(false);
+    if (!current || current.kind === "marquee" || current.kind === "pan") return;
     if (current.kind === "move" && !current.moved) return;
     store().settle(current.before);
   };
@@ -235,6 +355,7 @@ export function Canvas({ language }: { language: string }) {
     const element = page.elements.find((item) => item.id === hit);
     if (element?.kind === "text" && !element.locked) {
       store().select([element.id]);
+      textEditorEntry.point = { x: event.clientX, y: event.clientY };
       store().setEditing(element.id);
     }
     if (element?.kind === "image" && !element.locked) {
@@ -257,8 +378,8 @@ export function Canvas({ language }: { language: string }) {
     { type: "item", id: "paste", label: t("studio.menu.paste"), icon: ClipboardPaste, shortcut: "Ctrl+V", disabled: !state.clipboard?.length, onSelect: state.paste },
     { type: "item", id: "duplicate", label: t("studio.menu.duplicate"), icon: CopyPlus, shortcut: "Ctrl+D", disabled: !selection.length, onSelect: state.duplicate },
     { type: "separator", id: "s1" },
-    { type: "item", id: "front", label: t("studio.menu.front"), icon: ArrowUpToLine, shortcut: "Ctrl+Shift+]", disabled: !selection.length, onSelect: () => reorder("front") },
-    { type: "item", id: "back", label: t("studio.menu.back"), icon: ArrowDownToLine, shortcut: "Ctrl+Shift+[", disabled: !selection.length, onSelect: () => reorder("back") },
+    { type: "item", id: "front", label: t("studio.menu.front"), icon: ArrowUpToLine, shortcut: "Ctrl+Shift+↑", disabled: !selection.length, onSelect: () => reorder("front") },
+    { type: "item", id: "back", label: t("studio.menu.back"), icon: ArrowDownToLine, shortcut: "Ctrl+Shift+↓", disabled: !selection.length, onSelect: () => reorder("back") },
     { type: "item", id: "group", label: t("studio.menu.group"), icon: Group, shortcut: "Ctrl+G", disabled: !canGroup(), onSelect: group },
     { type: "item", id: "ungroup", label: t("studio.menu.ungroup"), icon: Ungroup, shortcut: "Ctrl+Shift+G", disabled: !canUngroup(), onSelect: ungroup },
     { type: "item", id: "lock", label: t("studio.menu.lock"), icon: Lock, checked: selected.length > 0 && selected.every((element) => element.locked), disabled: !selection.length, onSelect: toggleLock },
@@ -274,8 +395,11 @@ export function Canvas({ language }: { language: string }) {
     <div
       ref={viewportRef}
       data-testid="studio-viewport"
-      className="relative min-h-0 flex-1 overflow-auto bg-muted/40"
+      className={cn("relative min-h-0 flex-1 overflow-auto bg-muted/40", panning ? "cursor-grabbing" : panReady && "cursor-grab")}
       onPointerDown={onPointerDown}
+      onMouseDown={(event) => {
+        if (event.button === 1) event.preventDefault();
+      }}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}

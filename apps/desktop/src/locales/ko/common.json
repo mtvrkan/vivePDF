@@ -6166,7 +6166,9 @@
         "viewer": "뷰어",
         "editor": "편집",
         "presentation": "프레젠테이션",
-        "organizer": "페이지 구성기"
+        "organizer": "페이지 구성기",
+        "studio": "Studio 디자인 편집기",
+        "studioDocument": "Studio 문서 편집기"
       },
       "items": {
         "presentationEnter": "프레젠테이션 모드 시작 / 종료",
@@ -8199,6 +8201,59 @@
         "certificate": "공인 사용성 분석가",
         "issuer": "Human Factors International",
         "interests": "사진, 자전거, 도예"
+      }
+    },
+    "shortcuts": {
+      "title": "키보드 단축키",
+      "groups": {
+        "file": "파일",
+        "edit": "편집",
+        "arrange": "배치",
+        "insert": "추가",
+        "text": "텍스트",
+        "view": "보기",
+        "mouse": "마우스"
+      },
+      "items": {
+        "save": "저장 / 다른 이름으로 저장…",
+        "open": "디자인 열기…",
+        "export": "내보내기…",
+        "help": "키보드 단축키 표시",
+        "undoRedo": "실행 취소 / 다시 실행",
+        "clipboard": "복사 / 잘라내기 / 붙여넣기",
+        "pasteInPlace": "같은 위치에 붙여넣기",
+        "duplicate": "복제",
+        "delete": "삭제",
+        "selectAll": "페이지의 모든 항목 선택",
+        "escape": "선택 해제, 텍스트 편집 종료 또는 드래그 취소",
+        "nudge": "1 pt 이동(Shift와 함께 10 pt)",
+        "group": "그룹화 / 그룹 해제",
+        "forwardBackward": "한 단계 위로 / 아래로 이동",
+        "frontBack": "맨 앞으로 가져오기 / 맨 뒤로 보내기",
+        "lock": "잠금 또는 잠금 해제",
+        "hide": "숨기기 또는 표시",
+        "text": "텍스트 추가",
+        "rectangle": "사각형 추가",
+        "ellipse": "타원 추가",
+        "line": "선 추가",
+        "editText": "선택한 텍스트 편집",
+        "textStyle": "굵게 / 기울임꼴 / 밑줄",
+        "fontSize": "텍스트 크게 / 작게",
+        "zoom": "확대 / 축소",
+        "fit": "페이지를 창에 맞추기",
+        "actualSize": "실제 크기(100%)",
+        "zoomSelection": "선택 영역으로 확대",
+        "pan": "페이지 안에서 이동",
+        "pages": "이전 / 다음 페이지",
+        "addToSelection": "선택 영역에 추가하거나 제외",
+        "axisLock": "가로 또는 세로로만 이동",
+        "noSnap": "스냅 없이 이동",
+        "keepRatio": "비율을 유지(또는 해제)하면서 크기 조정",
+        "fromCentre": "중심에서 크기 조정",
+        "rotateStep": "15° 단위로 회전",
+        "headings": "제목 1 / 2 / 3",
+        "lists": "글머리 기호 / 번호 매기기 목록",
+        "lineBreak": "새 문단 없이 줄 바꾸기"
       }
     }
   }

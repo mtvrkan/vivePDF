@@ -6166,7 +6166,9 @@
         "viewer": "Viewer",
         "editor": "Editing",
         "presentation": "Presentation",
-        "organizer": "Page organizer"
+        "organizer": "Page organizer",
+        "studio": "Studio design editor",
+        "studioDocument": "Studio document editor"
       },
       "items": {
         "presentationEnter": "Enter / exit presentation mode",
@@ -8200,6 +8202,59 @@
         "certificate": "Certified Usability Analyst",
         "issuer": "Human Factors International",
         "interests": "Photography, cycling, ceramics"
+      }
+    },
+    "shortcuts": {
+      "title": "Keyboard shortcuts",
+      "groups": {
+        "file": "File",
+        "edit": "Edit",
+        "arrange": "Arrange",
+        "insert": "Add",
+        "text": "Text",
+        "view": "View",
+        "mouse": "Mouse"
+      },
+      "items": {
+        "save": "Save / save as…",
+        "open": "Open a design…",
+        "export": "Export…",
+        "help": "Show keyboard shortcuts",
+        "undoRedo": "Undo / redo",
+        "clipboard": "Copy / cut / paste",
+        "pasteInPlace": "Paste in the same place",
+        "duplicate": "Duplicate",
+        "delete": "Delete",
+        "selectAll": "Select everything on the page",
+        "escape": "Deselect, stop editing text or cancel a drag",
+        "nudge": "Move by 1 pt (with Shift 10 pt)",
+        "group": "Group / ungroup",
+        "forwardBackward": "Bring forward / send backward",
+        "frontBack": "Bring to front / send to back",
+        "lock": "Lock or unlock",
+        "hide": "Hide or show",
+        "text": "Add text",
+        "rectangle": "Add a rectangle",
+        "ellipse": "Add an ellipse",
+        "line": "Add a line",
+        "editText": "Edit the selected text",
+        "textStyle": "Bold / italic / underline",
+        "fontSize": "Larger / smaller text",
+        "zoom": "Zoom in / out",
+        "fit": "Fit the page in the window",
+        "actualSize": "Actual size (100%)",
+        "zoomSelection": "Zoom to the selection",
+        "pan": "Move around the page",
+        "pages": "Previous / next page",
+        "addToSelection": "Add to or remove from the selection",
+        "axisLock": "Move only horizontally or vertically",
+        "noSnap": "Move without snapping",
+        "keepRatio": "Resize keeping (or freeing) the proportions",
+        "fromCentre": "Resize from the centre",
+        "rotateStep": "Rotate in 15° steps",
+        "headings": "Heading 1 / 2 / 3",
+        "lists": "Bulleted / numbered list",
+        "lineBreak": "Line break without a new paragraph"
       }
     }
   }

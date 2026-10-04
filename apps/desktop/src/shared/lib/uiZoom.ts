@@ -1,4 +1,5 @@
 import { getCurrentWebview } from "@tauri-apps/api/webview";
+import { zoomKey } from "./shortcutKeys";
 
 export const UI_ZOOMS = [0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2] as const;
 export type UiZoom = (typeof UI_ZOOMS)[number];
@@ -21,10 +22,9 @@ function alternateUiZoomShortcut(event: ShortcutKey): UiZoomShortcut | null {
 export function uiZoomShortcutFor(event: ShortcutKey): UiZoomShortcut | null {
   if (!(event.ctrlKey || event.metaKey)) return null;
   if (event.altKey) return alternateUiZoomShortcut(event);
-  if (event.key === "+" || event.key === "=" || event.code === "Equal" || event.code === "NumpadAdd") return "in";
-  if (event.key === "-" || event.code === "Minus" || event.code === "NumpadSubtract") return "out";
-  if (event.key === "0" || event.code === "Digit0" || event.code === "Numpad0") return "reset";
-  return null;
+  const zoom = zoomKey(event);
+  if (zoom === "zero") return "reset";
+  return zoom;
 }
 
 export function stepUiZoom(current: number, shortcut: UiZoomShortcut): UiZoom {

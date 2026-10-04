@@ -4,6 +4,7 @@ import { createDesign, createPage, createShape } from "./design";
 import {
   addPage,
   alignElements,
+  distributableCount,
   distributeElements,
   duplicateElements,
   duplicatePage,
@@ -17,6 +18,7 @@ import {
   reorderElements,
   selectionBounds,
   ungroupElements,
+  withoutGroupOf,
 } from "./edit";
 
 function pageWith(...boxes: [number, number, number, number][]): StudioPage {
@@ -128,5 +130,24 @@ describe("studio element editing", () => {
     design = removePage(removePage(design, first), copied.pageId as string);
     expect(design.pages).toHaveLength(1);
     expect(removePage(design, design.pages[0].id).pages).toHaveLength(1);
+  });
+});
+
+describe("selection helpers", () => {
+  it("drops a whole group from the selection when one of its members is clicked off", () => {
+    let page = pageWith([0, 0, 10, 10], [20, 0, 10, 10], [40, 0, 10, 10]);
+    page = groupElements(page, ["e0", "e1"]).page;
+
+    expect(withoutGroupOf(page, ["e0", "e1", "e2"], "e1")).toEqual(["e2"]);
+    expect(withoutGroupOf(page, ["e0", "e1", "e2"], "e2")).toEqual(["e0", "e1"]);
+  });
+
+  it("counts a group as one unit and skips locked elements when distributing", () => {
+    let page = pageWith([0, 0, 10, 10], [20, 0, 10, 10], [40, 0, 10, 10], [60, 0, 10, 10]);
+    page = groupElements(page, ["e0", "e1"]).page;
+    page.elements[3] = { ...page.elements[3], locked: true };
+
+    expect(distributableCount(page, ["e0", "e1", "e2", "e3"])).toBe(2);
+    expect(distributableCount(page, [])).toBe(0);
   });
 });

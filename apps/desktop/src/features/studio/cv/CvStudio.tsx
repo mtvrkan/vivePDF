@@ -5,6 +5,7 @@ import { translatorFor } from "@/app/i18n";
 import { Button } from "@/components/shared/Button";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { cn } from "@/shared/lib/cn";
+import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { StudioDesign } from "@/types/studio";
 import { PageView } from "../design/ElementView";
@@ -70,6 +71,20 @@ export default function CvStudio() {
       window.clearTimeout(timer);
     };
   }, [profile, theme, untitled, attempt]);
+
+  const designRef = useRef(design);
+  designRef.current = design;
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || document.querySelector('[role="dialog"]')) return;
+      if (shortcutLetter(event) !== "e" || !designRef.current) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setExporting(true);
+    };
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, []);
 
   const swap = (next: typeof profile, message: string) => {
     const previous = useCvStore.getState().snapshot();

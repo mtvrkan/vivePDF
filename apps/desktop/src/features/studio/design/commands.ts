@@ -55,6 +55,13 @@ export function toggleLock() {
   store().applyToPage((page) => elements.reduce((current, element) => updateElement<StudioElement>(current, element.id, { locked }), page));
 }
 
+export function toggleHiddenSelection() {
+  const elements = selectedElements(store());
+  if (!elements.length) return;
+  const hidden = !elements.every((element) => element.hidden);
+  store().applyToPage((page) => elements.reduce((current, element) => updateElement<StudioElement>(current, element.id, { hidden }), page));
+}
+
 export function toggleHidden(id: string) {
   store().applyToPage((page) => {
     const element = page.elements.find((item) => item.id === id);

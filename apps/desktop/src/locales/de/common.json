@@ -6166,7 +6166,9 @@
         "viewer": "Betrachter",
         "editor": "Bearbeiten",
         "presentation": "Präsentation",
-        "organizer": "Seitenorganisator"
+        "organizer": "Seitenorganisator",
+        "studio": "Studio-Designeditor",
+        "studioDocument": "Studio-Dokumenteditor"
       },
       "items": {
         "presentationEnter": "Präsentationsmodus starten / beenden",
@@ -8199,6 +8201,59 @@
         "certificate": "Zertifizierter Usability-Analyst",
         "issuer": "Human Factors International",
         "interests": "Fotografie, Radfahren, Keramik"
+      }
+    },
+    "shortcuts": {
+      "title": "Tastenkombinationen",
+      "groups": {
+        "file": "Datei",
+        "edit": "Bearbeiten",
+        "arrange": "Anordnen",
+        "insert": "Hinzufügen",
+        "text": "Text",
+        "view": "Ansicht",
+        "mouse": "Maus"
+      },
+      "items": {
+        "save": "Speichern / speichern unter…",
+        "open": "Design öffnen…",
+        "export": "Exportieren…",
+        "help": "Tastenkombinationen anzeigen",
+        "undoRedo": "Rückgängig / wiederholen",
+        "clipboard": "Kopieren / ausschneiden / einfügen",
+        "pasteInPlace": "An derselben Stelle einfügen",
+        "duplicate": "Duplizieren",
+        "delete": "Löschen",
+        "selectAll": "Alles auf der Seite auswählen",
+        "escape": "Auswahl aufheben, Textbearbeitung beenden oder Ziehen abbrechen",
+        "nudge": "Um 1 pt verschieben (mit Shift 10 pt)",
+        "group": "Gruppieren / Gruppierung aufheben",
+        "forwardBackward": "Eine Ebene nach oben / nach unten verschieben",
+        "frontBack": "In den Vordergrund / in den Hintergrund",
+        "lock": "Sperren oder entsperren",
+        "hide": "Ausblenden oder einblenden",
+        "text": "Text hinzufügen",
+        "rectangle": "Rechteck hinzufügen",
+        "ellipse": "Ellipse hinzufügen",
+        "line": "Linie hinzufügen",
+        "editText": "Ausgewählten Text bearbeiten",
+        "textStyle": "Fett / kursiv / unterstrichen",
+        "fontSize": "Text größer / kleiner",
+        "zoom": "Vergrößern / verkleinern",
+        "fit": "Seite an das Fenster anpassen",
+        "actualSize": "Originalgröße (100%)",
+        "zoomSelection": "Auf Auswahl zoomen",
+        "pan": "Auf der Seite bewegen",
+        "pages": "Vorherige / nächste Seite",
+        "addToSelection": "Zur Auswahl hinzufügen oder daraus entfernen",
+        "axisLock": "Nur horizontal oder vertikal verschieben",
+        "noSnap": "Ohne Einrasten verschieben",
+        "keepRatio": "Größe unter Beibehaltung (oder Freigabe) der Proportionen ändern",
+        "fromCentre": "Größe von der Mitte aus ändern",
+        "rotateStep": "In 15°-Schritten drehen",
+        "headings": "Überschrift 1 / 2 / 3",
+        "lists": "Aufzählung / Nummerierung",
+        "lineBreak": "Zeilenumbruch ohne neuen Absatz"
       }
     }
   }

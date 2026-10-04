@@ -37,6 +37,16 @@ export function expandToGroups(page: StudioPage, ids: readonly string[]): string
   return page.elements.filter((element) => chosen.has(element.id) || (element.groupId !== null && groups.has(element.groupId))).map((element) => element.id);
 }
 
+export function withoutGroupOf(page: StudioPage, ids: readonly string[], id: string): string[] {
+  const groupId = page.elements.find((element) => element.id === id)?.groupId ?? null;
+  const members = new Set(groupId === null ? [id] : page.elements.filter((element) => element.groupId === groupId).map((element) => element.id));
+  return ids.filter((other) => !members.has(other));
+}
+
+export function distributableCount(page: StudioPage, ids: readonly string[]): number {
+  return units(page, ids).length;
+}
+
 function units(page: StudioPage, ids: readonly string[]): StudioElement[][] {
   const chosen = new Set(ids);
   const byKey = new Map<string, StudioElement[]>();

@@ -1,3 +1,5 @@
+import { zoomKey } from "@/shared/lib/shortcutKeys";
+
 export type ZoomShortcut = "in" | "out" | "actualSize" | "fitWidth" | "fitPage";
 
 type ShortcutKey = { key: string; code: string; ctrlKey: boolean; metaKey: boolean; altKey: boolean };
@@ -12,9 +14,9 @@ const WHEEL_MAX_STEP = 0.5;
 
 export function zoomShortcutFor(event: ShortcutKey): ZoomShortcut | null {
   if (!(event.ctrlKey || event.metaKey) || event.altKey) return null;
-  if (event.key === "+" || event.key === "=" || event.code === "Equal" || event.code === "NumpadAdd") return "in";
-  if (event.key === "-" || event.code === "Minus" || event.code === "NumpadSubtract") return "out";
-  if (event.key === "0" || event.code === "Digit0" || event.code === "Numpad0") return "actualSize";
+  const zoom = zoomKey(event);
+  if (zoom === "in" || zoom === "out") return zoom;
+  if (zoom === "zero") return "actualSize";
   if (event.key === "1" || event.code === "Digit1" || event.code === "Numpad1") return "fitWidth";
   if (event.key === "2" || event.code === "Digit2" || event.code === "Numpad2") return "fitPage";
   return null;

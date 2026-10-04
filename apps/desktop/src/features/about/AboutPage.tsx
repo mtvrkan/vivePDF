@@ -12,6 +12,7 @@ import { cn } from "@/shared/lib/cn";
 import { useAppVersion } from "@/shared/hooks/useAppVersion";
 import { CreditsTab } from "@/features/about/CreditsTab";
 import { REPO_URL, THIRD_PARTY, WEBSITE_URL } from "@/features/about/credits";
+import { DOCUMENT_SHORTCUTS, STUDIO_SHORTCUT_GROUPS } from "@/features/studio/design/shortcutList";
 import { useReportStore } from "@/shared/store/reportStore";
 import type { LucideIcon } from "lucide-react";
 
@@ -99,6 +100,8 @@ const SHORTCUTS: ShortcutGroup[] = [
       { keys: "← → ↑ ↓", labelKey: "about.shortcuts.items.move" },
     ],
   },
+  { id: "studio", items: STUDIO_SHORTCUT_GROUPS.flatMap((group) => group.items) },
+  { id: "studioDocument", items: DOCUMENT_SHORTCUTS },
 ];
 
 function Eyebrow({ children }: { children: string }) {
@@ -258,7 +261,7 @@ function ShortcutsContent() {
       ) : (
         <div className="grid grid-cols-2 gap-4">
           {groups.map((group) => (
-            <div key={group.id} className={cn("rounded-xl border p-4", (group.id === "organizer" || group.id === "presentation") && "col-span-2")}>
+            <div key={group.id} className={cn("rounded-xl border p-4", (group.id === "organizer" || group.id === "presentation" || group.id === "studio") && "col-span-2")}>
               <p className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 <Keyboard className="size-3.5" aria-hidden />
                 {t(`about.shortcuts.groups.${group.id}`)}

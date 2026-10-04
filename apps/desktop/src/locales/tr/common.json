@@ -6166,7 +6166,9 @@
         "viewer": "Görüntüleyici",
         "editor": "Düzenleme",
         "presentation": "Sunum",
-        "organizer": "Sayfa düzenleyici"
+        "organizer": "Sayfa düzenleyici",
+        "studio": "Studio tasarım düzenleyici",
+        "studioDocument": "Studio belge düzenleyici"
       },
       "items": {
         "presentationEnter": "Sunum moduna gir / çık",
@@ -8200,6 +8202,59 @@
         "certificate": "Sertifikalı Kullanılabilirlik Analisti",
         "issuer": "Human Factors International",
         "interests": "Fotoğrafçılık, bisiklet, seramik"
+      }
+    },
+    "shortcuts": {
+      "title": "Klavye kısayolları",
+      "groups": {
+        "file": "Dosya",
+        "edit": "Düzen",
+        "arrange": "Yerleşim",
+        "insert": "Ekle",
+        "text": "Metin",
+        "view": "Görünüm",
+        "mouse": "Fare"
+      },
+      "items": {
+        "save": "Kaydet / farklı kaydet…",
+        "open": "Tasarım aç…",
+        "export": "Dışa aktar…",
+        "help": "Klavye kısayollarını göster",
+        "undoRedo": "Geri al / yinele",
+        "clipboard": "Kopyala / kes / yapıştır",
+        "pasteInPlace": "Aynı yere yapıştır",
+        "duplicate": "Çoğalt",
+        "delete": "Sil",
+        "selectAll": "Sayfadaki her şeyi seç",
+        "escape": "Seçimi kaldır, metin düzenlemeyi bitir ya da sürüklemeyi iptal et",
+        "nudge": "1 pt kaydır (Shift ile 10 pt)",
+        "group": "Grupla / grubu çöz",
+        "forwardBackward": "Bir öne getir / bir arkaya gönder",
+        "frontBack": "En öne getir / en arkaya gönder",
+        "lock": "Kilitle ya da kilidi aç",
+        "hide": "Gizle ya da göster",
+        "text": "Metin ekle",
+        "rectangle": "Dikdörtgen ekle",
+        "ellipse": "Elips ekle",
+        "line": "Çizgi ekle",
+        "editText": "Seçili metni düzenle",
+        "textStyle": "Kalın / italik / altı çizili",
+        "fontSize": "Yazıyı büyüt / küçült",
+        "zoom": "Yakınlaştır / uzaklaştır",
+        "fit": "Sayfayı pencereye sığdır",
+        "actualSize": "Gerçek boyut (%100)",
+        "zoomSelection": "Seçime yakınlaştır",
+        "pan": "Sayfada gezin",
+        "pages": "Önceki / sonraki sayfa",
+        "addToSelection": "Seçime ekle ya da seçimden çıkar",
+        "axisLock": "Yalnızca yatay ya da dikey taşı",
+        "noSnap": "Hizalamaya yapışmadan taşı",
+        "keepRatio": "Oranı koruyarak (ya da serbest) boyutlandır",
+        "fromCentre": "Merkezden boyutlandır",
+        "rotateStep": "15°'lik adımlarla döndür",
+        "headings": "Başlık 1 / 2 / 3",
+        "lists": "Madde işaretli / numaralı liste",
+        "lineBreak": "Yeni paragraf açmadan alt satıra geç"
       }
     }
   }

@@ -6166,7 +6166,9 @@
         "viewer": "Visualizzatore",
         "editor": "Modifica",
         "presentation": "Presentazione",
-        "organizer": "Organizzatore pagine"
+        "organizer": "Organizzatore pagine",
+        "studio": "Editor di progetti di Studio",
+        "studioDocument": "Editor di documenti di Studio"
       },
       "items": {
         "presentationEnter": "Entra / esci dalla modalità presentazione",
@@ -8199,6 +8201,59 @@
         "certificate": "Analista di usabilità certificata",
         "issuer": "Human Factors International",
         "interests": "Fotografia, ciclismo, ceramica"
+      }
+    },
+    "shortcuts": {
+      "title": "Scorciatoie da tastiera",
+      "groups": {
+        "file": "File",
+        "edit": "Modifica",
+        "arrange": "Disposizione",
+        "insert": "Aggiungi",
+        "text": "Testo",
+        "view": "Visualizza",
+        "mouse": "Mouse"
+      },
+      "items": {
+        "save": "Salva / salva con nome…",
+        "open": "Apri progetto…",
+        "export": "Esporta…",
+        "help": "Mostra le scorciatoie da tastiera",
+        "undoRedo": "Annulla / ripeti",
+        "clipboard": "Copia / taglia / incolla",
+        "pasteInPlace": "Incolla nella stessa posizione",
+        "duplicate": "Duplica",
+        "delete": "Elimina",
+        "selectAll": "Seleziona tutto nella pagina",
+        "escape": "Deseleziona, termina la modifica del testo o annulla il trascinamento",
+        "nudge": "Sposta di 1 pt (con Shift 10 pt)",
+        "group": "Raggruppa / separa",
+        "forwardBackward": "Sposta su / giù di un livello",
+        "frontBack": "Porta in primo piano / in secondo piano",
+        "lock": "Blocca o sblocca",
+        "hide": "Nascondi o mostra",
+        "text": "Aggiungi testo",
+        "rectangle": "Aggiungi un rettangolo",
+        "ellipse": "Aggiungi un'ellisse",
+        "line": "Aggiungi una linea",
+        "editText": "Modifica il testo selezionato",
+        "textStyle": "Grassetto / corsivo / sottolineato",
+        "fontSize": "Aumenta / riduci il testo",
+        "zoom": "Aumenta / riduci lo zoom",
+        "fit": "Adatta la pagina alla finestra",
+        "actualSize": "Dimensione reale (100%)",
+        "zoomSelection": "Aumenta lo zoom sulla selezione",
+        "pan": "Spostati nella pagina",
+        "pages": "Pagina precedente / successiva",
+        "addToSelection": "Aggiungi alla selezione o rimuovi da essa",
+        "axisLock": "Sposta solo in orizzontale o in verticale",
+        "noSnap": "Sposta senza aggancio automatico",
+        "keepRatio": "Ridimensiona mantenendo (o liberando) le proporzioni",
+        "fromCentre": "Ridimensiona dal centro",
+        "rotateStep": "Ruota a scatti di 15°",
+        "headings": "Titolo 1 / 2 / 3",
+        "lists": "Elenco puntato / numerato",
+        "lineBreak": "Interruzione di riga senza nuovo paragrafo"
       }
     }
   }

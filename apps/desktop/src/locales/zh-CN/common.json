@@ -6166,7 +6166,9 @@
         "viewer": "阅读器",
         "editor": "编辑",
         "presentation": "演示",
-        "organizer": "页面管理器"
+        "organizer": "页面管理器",
+        "studio": "Studio 设计编辑器",
+        "studioDocument": "Studio 文档编辑器"
       },
       "items": {
         "presentationEnter": "进入 / 退出演示模式",
@@ -8199,6 +8201,59 @@
         "certificate": "认证可用性分析师",
         "issuer": "Human Factors International",
         "interests": "摄影、骑行、陶艺"
+      }
+    },
+    "shortcuts": {
+      "title": "键盘快捷键",
+      "groups": {
+        "file": "文件",
+        "edit": "编辑",
+        "arrange": "排列",
+        "insert": "添加",
+        "text": "文本",
+        "view": "查看",
+        "mouse": "鼠标"
+      },
+      "items": {
+        "save": "保存 / 另存为…",
+        "open": "打开设计…",
+        "export": "导出…",
+        "help": "显示键盘快捷键",
+        "undoRedo": "撤销 / 重做",
+        "clipboard": "复制 / 剪切 / 粘贴",
+        "pasteInPlace": "粘贴到原位置",
+        "duplicate": "创建副本",
+        "delete": "删除",
+        "selectAll": "选择页面上的全部内容",
+        "escape": "取消选择、结束文本编辑或取消拖动",
+        "nudge": "移动 1 pt（按住 Shift 为 10 pt）",
+        "group": "组合 / 取消组合",
+        "forwardBackward": "上移一层 / 下移一层",
+        "frontBack": "置于顶层 / 置于底层",
+        "lock": "锁定或解锁",
+        "hide": "隐藏或显示",
+        "text": "添加文本",
+        "rectangle": "添加矩形",
+        "ellipse": "添加椭圆",
+        "line": "添加直线",
+        "editText": "编辑所选文本",
+        "textStyle": "加粗 / 倾斜 / 下划线",
+        "fontSize": "放大 / 缩小文字",
+        "zoom": "放大 / 缩小",
+        "fit": "页面适应窗口",
+        "actualSize": "实际大小（100%）",
+        "zoomSelection": "缩放至所选内容",
+        "pan": "在页面中移动",
+        "pages": "上一页 / 下一页",
+        "addToSelection": "添加到所选内容或从中移除",
+        "axisLock": "仅水平或垂直移动",
+        "noSnap": "不自动对齐地移动",
+        "keepRatio": "按比例（或自由）调整大小",
+        "fromCentre": "从中心调整大小",
+        "rotateStep": "按 15° 的步幅旋转",
+        "headings": "标题 1 / 2 / 3",
+        "lists": "项目符号列表 / 编号列表",
+        "lineBreak": "换行但不新建段落"
       }
     }
   }

@@ -22,6 +22,7 @@ import { PageView } from "./design/ElementView";
 import { ExportDialog } from "./design/ExportDialog";
 import { PagesStrip } from "./design/PagesStrip";
 import { PropertiesPanel } from "./design/PropertiesPanel";
+import { StudioShortcutsDialog } from "./design/StudioShortcutsDialog";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { readDraft, useStudioStore } from "./design/studioStore";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
@@ -183,16 +184,24 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
 }
 
 function StudioEditor({ language }: { language: string }) {
+  const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
+  const [helping, setHelping] = useState(false);
   const close = useStudioStore((state) => state.close);
   const { save } = useDesignSave();
+  const { openDesign } = useOpenDesign();
+  const browse = async () => {
+    const path = await pickDesignFile(t("studio.project.filter"));
+    if (path) await openDesign(path);
+  };
   useStudioShortcuts(
     () => setExporting(true),
     (saveAs) => void save(saveAs),
+    { onOpen: () => void browse(), onHelp: () => setHelping(true) },
   );
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="studio-editor">
-      <StudioToolbar onExport={() => setExporting(true)} onLeave={close} />
+      <StudioToolbar onExport={() => setExporting(true)} onLeave={close} onHelp={() => setHelping(true)} />
       <div className="flex min-h-0 flex-1">
         <ElementsPanel />
         <div className="flex min-w-0 flex-1 flex-col">
@@ -203,6 +212,7 @@ function StudioEditor({ language }: { language: string }) {
         <PropertiesPanel />
       </div>
       <ExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />
+      <StudioShortcutsDialog open={helping} onClose={() => setHelping(false)} />
     </div>
   );
 }

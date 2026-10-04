@@ -6166,7 +6166,9 @@
         "viewer": "Visionneuse",
         "editor": "Édition",
         "presentation": "Présentation",
-        "organizer": "Organisateur de pages"
+        "organizer": "Organisateur de pages",
+        "studio": "Éditeur de création Studio",
+        "studioDocument": "Éditeur de documents Studio"
       },
       "items": {
         "presentationEnter": "Entrer / quitter le mode présentation",
@@ -8199,6 +8201,59 @@
         "certificate": "Analyste certifiée en utilisabilité",
         "issuer": "Human Factors International",
         "interests": "Photographie, cyclisme, céramique"
+      }
+    },
+    "shortcuts": {
+      "title": "Raccourcis clavier",
+      "groups": {
+        "file": "Fichier",
+        "edit": "Édition",
+        "arrange": "Disposition",
+        "insert": "Ajouter",
+        "text": "Texte",
+        "view": "Affichage",
+        "mouse": "Souris"
+      },
+      "items": {
+        "save": "Enregistrer / enregistrer sous…",
+        "open": "Ouvrir une création…",
+        "export": "Exporter…",
+        "help": "Afficher les raccourcis clavier",
+        "undoRedo": "Annuler / rétablir",
+        "clipboard": "Copier / couper / coller",
+        "pasteInPlace": "Coller au même endroit",
+        "duplicate": "Dupliquer",
+        "delete": "Supprimer",
+        "selectAll": "Sélectionner tout sur la page",
+        "escape": "Désélectionner, terminer la modification du texte ou annuler un glissement",
+        "nudge": "Déplacer de 1 pt (avec Shift 10 pt)",
+        "group": "Grouper / dissocier",
+        "forwardBackward": "Monter / descendre d’un niveau",
+        "frontBack": "Mettre au premier plan / à l’arrière-plan",
+        "lock": "Verrouiller ou déverrouiller",
+        "hide": "Masquer ou afficher",
+        "text": "Ajouter du texte",
+        "rectangle": "Ajouter un rectangle",
+        "ellipse": "Ajouter une ellipse",
+        "line": "Ajouter une ligne",
+        "editText": "Modifier le texte sélectionné",
+        "textStyle": "Gras / italique / souligné",
+        "fontSize": "Agrandir / réduire le texte",
+        "zoom": "Zoom avant / arrière",
+        "fit": "Ajuster la page à la fenêtre",
+        "actualSize": "Taille réelle (100%)",
+        "zoomSelection": "Zoomer sur la sélection",
+        "pan": "Se déplacer dans la page",
+        "pages": "Page précédente / suivante",
+        "addToSelection": "Ajouter à la sélection ou la retirer",
+        "axisLock": "Déplacer uniquement à l’horizontale ou à la verticale",
+        "noSnap": "Déplacer sans alignement automatique",
+        "keepRatio": "Redimensionner en conservant (ou en libérant) les proportions",
+        "fromCentre": "Redimensionner depuis le centre",
+        "rotateStep": "Pivoter par pas de 15°",
+        "headings": "Titre 1 / 2 / 3",
+        "lists": "Liste à puces / numérotée",
+        "lineBreak": "Saut de ligne sans nouveau paragraphe"
       }
     }
   }
