@@ -6,7 +6,7 @@ import { fillPlaceholders, textDirection, textOf } from "../model/design";
 import { elementItems } from "../model/render";
 import { renderFill, roundedRect } from "../model/shapes";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
-import { ensureElementFonts, useStudioFontsStore } from "./fonts";
+import { elementFaceSignature, ensureElementFonts, useStudioFontsStore } from "./fonts";
 import { placeImage } from "./imageLayout";
 import { fitTextSize } from "./measure";
 import { runCss, runData, textBodyStyle, textFrameStyle } from "./textStyle";
@@ -51,7 +51,8 @@ export function PathsSvg({ paths, width, height }: { paths: StudioRenderPath[]; 
 }
 
 export function TextContent({ element, language, bodyRef, editable }: { element: StudioTextElement; language: string; bodyRef?: React.RefObject<HTMLDivElement | null>; editable?: ReactNode }) {
-  const faces = useStudioFontsStore((state) => state.faces);
+  const faceSignature = useStudioFontsStore((state) => elementFaceSignature(element, state.faces));
+  const faces = useStudioFontsStore.getState().faces;
   const ownRef = useRef<HTMLDivElement>(null);
   const ref = bodyRef ?? ownRef;
   const [size, setSize] = useState(element.fontSize);
@@ -60,12 +61,12 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
 
   useEffect(() => {
     void ensureElementFonts([element]);
-  }, [element, faces]);
+  }, [element, faceSignature]);
 
   useLayoutEffect(() => {
     if (!ref.current) return;
     setSize(element.shrinkToFit ? fitTextSize(ref.current, element) : element.fontSize);
-  }, [element, faces, ref, values]);
+  }, [element, faceSignature, ref, values]);
 
   return (
     <div lang={language} dir={textDirection(textOf(runs))} style={textFrameStyle(element)}>

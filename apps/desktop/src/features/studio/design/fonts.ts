@@ -87,6 +87,15 @@ export function textFaces(element: StudioTextElement): Array<{ bold: boolean; it
   return [...combos.values()];
 }
 
+export function elementFaceSignature(element: StudioTextElement, faces: Record<string, LoadedFace | null>): string {
+  return textFaces(element)
+    .map((combo) => {
+      const key = faceKey(element.fontId, combo.bold, combo.italic);
+      return key in faces ? `${key}=${faces[key]?.family ?? ""}` : key;
+    })
+    .join(";");
+}
+
 export function ensureElementFonts(elements: StudioElement[]): Promise<unknown> {
   const tasks: Promise<unknown>[] = [];
   for (const element of elements) {

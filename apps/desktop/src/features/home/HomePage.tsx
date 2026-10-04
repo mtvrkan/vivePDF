@@ -136,17 +136,19 @@ export function HomePage() {
           {!sideFirst && hasSide ? region("side") : null}
         </div>
         {region("bottom")}
-        <div className="pointer-events-none sticky bottom-0 flex justify-center">
-          {editing ? (
+        {editing ? (
+          <div className="pointer-events-none sticky bottom-0 flex justify-center">
             <Button variant="primary" icon={<Check className="size-4" aria-hidden />} onClick={() => setEditing(false)} className="pointer-events-auto rounded-full shadow-lg">
               {t("home.layout.done")}
             </Button>
-          ) : (
-            <Button size="sm" variant="ghost" icon={<LayoutDashboard className="size-4" aria-hidden />} onClick={() => setEditing(true)} className="glass pointer-events-auto rounded-full">
+          </div>
+        ) : (
+          <div className="flex justify-center">
+            <Button size="sm" variant="ghost" icon={<LayoutDashboard className="size-4" aria-hidden />} onClick={() => setEditing(true)} className="glass rounded-full">
               {t("home.layout.edit")}
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

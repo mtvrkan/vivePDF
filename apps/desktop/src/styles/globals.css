@@ -319,6 +319,11 @@
     box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.08), var(--shadow-card);
     backdrop-filter: blur(20px) saturate(1.3);
   }
+  .card.template-card {
+    backdrop-filter: none;
+    content-visibility: auto;
+    contain-intrinsic-size: auto var(--template-card-height);
+  }
   .card::before,
   .glass::before {
     content: "";

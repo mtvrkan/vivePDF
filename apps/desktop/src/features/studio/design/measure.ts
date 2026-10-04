@@ -23,13 +23,23 @@ export function fitTextSize(body: HTMLElement, element: StudioTextElement): numb
   if (!element.shrinkToFit) return element.fontSize;
   const wrap = body.style.overflowWrap;
   body.style.overflowWrap = "normal";
-  let size = element.fontSize;
-  const overflows = () => body.offsetHeight > element.height + 0.01 || body.scrollWidth > Math.ceil(element.width) + 0.5;
-  body.style.fontSize = `${size}px`;
-  while (size > MIN_FIT_SIZE && overflows()) {
-    size = Math.max(MIN_FIT_SIZE, size - FIT_STEP);
-    body.style.fontSize = `${size}px`;
+  const floor = Math.min(MIN_FIT_SIZE, element.fontSize);
+  const sizeAt = (step: number) => Math.max(floor, element.fontSize - step * FIT_STEP);
+  const fits = (step: number) => {
+    body.style.fontSize = `${sizeAt(step)}px`;
+    return body.offsetHeight <= element.height + 0.01 && body.scrollWidth <= Math.ceil(element.width) + 0.5;
+  };
+  let low = 0;
+  let high = Math.max(0, Math.ceil((element.fontSize - MIN_FIT_SIZE) / FIT_STEP));
+  if (!fits(low) && high > 0) {
+    low = 1;
+    while (low < high) {
+      const middle = (low + high) >> 1;
+      if (fits(middle)) high = middle;
+      else low = middle + 1;
+    }
   }
+  const size = sizeAt(low);
   body.style.overflowWrap = wrap;
   body.style.fontSize = `${size}px`;
   return size;

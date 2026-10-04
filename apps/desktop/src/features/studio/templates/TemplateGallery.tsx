@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { LayoutTemplate, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -9,6 +9,7 @@ import { buildTemplate, STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog"
 import { sizeOf, type StudioTemplate, type TemplateCategory, type Translate } from "./kit";
 
 const previews = new Map<string, StudioDesign>();
+const CARD_CHROME = 48;
 
 function previewOf(template: StudioTemplate, t: Translate, language: string): StudioDesign {
   const key = `${template.id}|${language}`;
@@ -20,7 +21,7 @@ function previewOf(template: StudioTemplate, t: Translate, language: string): St
   return design;
 }
 
-function TemplateCard({ template, box, language, onPick }: { template: StudioTemplate; box: number; language: string; onPick: (template: StudioTemplate) => void }) {
+const TemplateCard = memo(function TemplateCard({ template, box, language, onPick }: { template: StudioTemplate; box: number; language: string; onPick: (template: StudioTemplate) => void }) {
   const { t } = useTranslation();
   const ref = useRef<HTMLButtonElement>(null);
   const [visible, setVisible] = useState(false);
@@ -51,7 +52,15 @@ function TemplateCard({ template, box, language, onPick }: { template: StudioTem
   const page = design?.pages[0];
 
   return (
-    <button ref={ref} type="button" onClick={() => onPick(template)} data-template={template.id} title={name} className="card glass-tinted flex flex-col items-center gap-2 rounded-xl p-3 text-center hover:ring-2 hover:ring-primary/40">
+    <button
+      ref={ref}
+      type="button"
+      onClick={() => onPick(template)}
+      data-template={template.id}
+      title={name}
+      style={{ "--template-card-height": `${box + CARD_CHROME}px` } as CSSProperties}
+      className="card template-card flex flex-col items-center gap-2 rounded-xl p-3 text-center hover:ring-2 hover:ring-primary/40"
+    >
       <span className="flex items-center justify-center" style={{ width: `${box}px`, height: `${box}px` }} aria-hidden>
         <span className="paper-surface relative block overflow-hidden rounded-sm border border-border bg-white shadow-sm" style={{ width: `${width * scale}px`, height: `${height * scale}px` }}>
           {page ? (
@@ -66,7 +75,7 @@ function TemplateCard({ template, box, language, onPick }: { template: StudioTem
       <span className="w-full truncate text-xs font-medium">{name}</span>
     </button>
   );
-}
+});
 
 type Filter = TemplateCategory | "all";
 

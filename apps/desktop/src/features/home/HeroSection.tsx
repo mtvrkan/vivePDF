@@ -70,14 +70,14 @@ export function HeroSection({ size = "medium" }: { size?: HomeSize }) {
         onDragOver={(event) => event.preventDefault()}
         onDrop={() => setDragDepth(0)}
         className={cn(
-          size === "large" ? "h-28" : "h-16",
-          "mt-5 flex w-full items-center justify-between gap-4 rounded-xl border-2 border-dashed border-(--glass-border) px-5 text-sm text-muted-foreground outline-none transition-colors duration-(--transition-fast) hover:border-primary/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none",
+          size === "large" ? "min-h-28" : "min-h-16",
+          "mt-5 flex w-full items-center justify-between gap-4 rounded-xl py-3 border-2 border-dashed border-(--glass-border) px-5 text-sm text-muted-foreground outline-none transition-colors duration-(--transition-fast) hover:border-primary/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none",
           dragDepth > 0 && "border-primary/70 bg-primary/5 text-primary",
         )}
       >
         <span className="flex min-w-0 items-center gap-3">
           <UploadCloud className="size-5 shrink-0" aria-hidden />
-          <span className="truncate font-medium text-foreground">{t("home.dropHint")}</span>
+          <span className="line-clamp-2 text-start font-medium text-foreground">{t("home.dropHint")}</span>
         </span>
         <span className="hidden shrink-0 items-center gap-3 text-xs @2xl:flex">
           <span className="flex items-center gap-1.5">

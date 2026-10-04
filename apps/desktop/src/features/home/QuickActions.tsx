@@ -15,7 +15,7 @@ const GRID: Record<HomeSize, string> = {
   medium: "grid-cols-2 @xs:grid-cols-3 @3xl:grid-cols-6",
   large: "grid-cols-2 @xl:grid-cols-3 @4xl:grid-cols-4",
 };
-const TILE: Record<HomeSize, string> = { small: "h-16 gap-1.5", medium: "h-24 gap-2.5", large: "h-32 gap-3" };
+const TILE: Record<HomeSize, string> = { small: "min-h-16 gap-1.5 py-2", medium: "min-h-24 gap-2.5 py-3", large: "min-h-32 gap-3 py-4" };
 const ICON_BOX: Record<HomeSize, string> = { small: "size-7 rounded-lg", medium: "size-10 rounded-xl", large: "size-12 rounded-2xl" };
 const ICON: Record<HomeSize, string> = { small: "size-3.5", medium: "size-[18px]", large: "size-6" };
 const LABEL: Record<HomeSize, string> = { small: "text-xs", medium: "text-sm", large: "text-base" };
@@ -39,7 +39,7 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
               <span className={cn("tone-tile flex items-center justify-center", ICON_BOX[size])}>
                 <Icon className={ICON[size]} aria-hidden />
               </span>
-              <span className={cn("w-full truncate font-medium", LABEL[size])}>{t(tool.labelKey)}</span>
+              <span className={cn("line-clamp-2 w-full break-words leading-tight font-medium", LABEL[size])}>{t(tool.labelKey)}</span>
             </>
           );
           return (

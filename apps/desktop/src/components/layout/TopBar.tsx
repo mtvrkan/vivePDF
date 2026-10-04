@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { ArrowDownToLine, Bug, Check, CircleHelp, Copy, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Minus, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Square, Sun, Wrench, X } from "lucide-react";
 import { Link, NavLink, useLocation } from "react-router";
@@ -13,7 +13,6 @@ import { Logo } from "@/components/shared/Logo";
 import { ToolBrowser } from "@/features/home/ToolBrowser";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { cn } from "@/shared/lib/cn";
-import { rootFontScale } from "@/shared/lib/uiZoom";
 import { useActiveOpenDocument } from "@/shared/store/documentStore";
 import { useOpenStore } from "@/shared/store/openStore";
 import { usePaletteStore } from "@/shared/store/paletteStore";
@@ -25,12 +24,12 @@ import { useUpdateStore } from "@/shared/store/updateStore";
 import type { Locale } from "@/types";
 import { HeaderMenu, MenuLink, MenuSeparator } from "./HeaderMenu";
 
-const COMPACT_NAV_BREAKPOINT = 1180;
-const COMPACT_SEARCH_BREAKPOINT = 1000;
-const COMPACT_ACTIONS_BREAKPOINT = 760;
-const HIDE_QUICK_TOGGLES_BREAKPOINT = 720;
-const ICON_MENUS_BREAKPOINT = 600;
-const HIDE_PRIMARY_NAV_BREAKPOINT = 480;
+const COMPACT_SEARCH_LEVEL = 1;
+const COMPACT_NAV_LEVEL = 2;
+const COMPACT_ACTIONS_LEVEL = 3;
+const HIDE_QUICK_TOGGLES_LEVEL = 4;
+const ICON_MENUS_LEVEL = 5;
+const HIDE_PRIMARY_NAV_LEVEL = 6;
 const TOOL_MENU_COLUMNS: ToolGroup[][] = [["organize", "fromPdf"], ["improve"], ["toPdf", "edit", "security"]];
 
 function runWindowCommand(command: () => Promise<void>) {
@@ -276,9 +275,12 @@ export function TopBar() {
   const openPalette = usePaletteStore((state) => state.open);
   const activeDocument = useActiveOpenDocument();
   const barRef = useRef<HTMLElement>(null);
-  const [width, setWidth] = useState(Number.POSITIVE_INFINITY);
+  const [width, setWidth] = useState(0);
+  const [level, setLevel] = useState(0);
   const uiScale = usePreferencesStore((state) => state.uiScale);
   const uiZoom = usePreferencesStore((state) => state.uiZoom);
+  const locale = useUiStore((state) => state.locale);
+  const updateStatus = useUpdateStore((state) => state.status);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
   useEffect(() => {
@@ -289,6 +291,15 @@ export function TopBar() {
     return () => observer.disconnect();
   }, []);
 
+  useLayoutEffect(() => {
+    setLevel(0);
+  }, [width, uiScale, uiZoom, locale, updateStatus]);
+
+  useLayoutEffect(() => {
+    const el = barRef.current;
+    if (el && el.scrollWidth > el.clientWidth + 1) setLevel((current) => Math.min(current + 1, HIDE_PRIMARY_NAV_LEVEL));
+  }, [level, width, uiScale, uiZoom, locale, updateStatus]);
+
   useEffect(() => {
     setOpenMenu(null);
   }, [location.pathname, location.search]);
@@ -298,17 +309,16 @@ export function TopBar() {
     getCurrentWindow().setTitle(title).catch(() => undefined);
   }, [activeDocument]);
 
-  const layoutWidth = width / rootFontScale(uiScale, uiZoom);
-  const compactNav = layoutWidth < COMPACT_NAV_BREAKPOINT;
-  const compactSearch = layoutWidth < COMPACT_SEARCH_BREAKPOINT;
-  const compactActions = layoutWidth < COMPACT_ACTIONS_BREAKPOINT;
-  const hideQuickToggles = layoutWidth < HIDE_QUICK_TOGGLES_BREAKPOINT;
-  const iconMenus = layoutWidth < ICON_MENUS_BREAKPOINT;
-  const hidePrimaryNav = layoutWidth < HIDE_PRIMARY_NAV_BREAKPOINT;
+  const compactSearch = level >= COMPACT_SEARCH_LEVEL;
+  const compactNav = level >= COMPACT_NAV_LEVEL;
+  const compactActions = level >= COMPACT_ACTIONS_LEVEL;
+  const hideQuickToggles = level >= HIDE_QUICK_TOGGLES_LEVEL;
+  const iconMenus = level >= ICON_MENUS_LEVEL;
+  const hidePrimaryNav = level >= HIDE_PRIMARY_NAV_LEVEL;
   const settingsActive = location.pathname.startsWith("/settings");
 
   return (
-    <header ref={barRef} data-tauri-drag-region className="glass-flat flex h-topbar select-none items-center gap-1.5 border-b ps-3 pe-0">
+    <header ref={barRef} data-tauri-drag-region className="glass-flat flex h-topbar select-none items-center gap-1.5 overflow-hidden border-b ps-3 pe-0">
       <Link to="/" aria-label={t("app.name")} className="me-2 flex h-8 shrink-0 items-center gap-2 rounded-lg px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-ring">
         <Logo size={22} />
         {compactNav ? null : (

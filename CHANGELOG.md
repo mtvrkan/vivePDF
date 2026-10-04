@@ -3,6 +3,10 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- Top bar: in a narrower window the Open PDF button and the window buttons no longer slide off the right edge; the bar now measures what fits and folds the search box, then the menu labels, into icons only when they actually do not fit [2026-10-04]
+- Home: quick access tiles and the drop area wrap long names onto a second line instead of cutting them off, and the Customize home button sits below the last section instead of floating over recent files [2026-10-04]
+- Studio: the template gallery scrolls and opens smoothly — a font finishing loading now redraws only the texts that use it, fitting text into its box takes a handful of measurements instead of dozens, and cards off screen are skipped and no longer blur what is behind them [2026-10-04]
 
 ## [0.1.1] - 2026-10-03
 ### Added
