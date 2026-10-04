@@ -6,6 +6,14 @@ const { width: W, height: H } = sizeOf(SIZE);
 
 type Wording = { title: string; subtitle: string; lead: string; body: string; left: string; right: string };
 
+const QUALIFIER_FIRST = new Set(["tr"]);
+
+function titleLines({ t, language }: TemplateContext, words: Wording): [string, string] {
+  const certificate = t("studio.tpl.certificate");
+  const qualifier = t(words.subtitle);
+  return QUALIFIER_FIRST.has(language) ? [qualifier, certificate] : [certificate, qualifier];
+}
+
 function signature(x: number, y: number, label: string, value: string, color: string, font: string, lineColor: string): StudioElement[] {
   return [
     text(x, y - 26, 200, 22, value, { font, size: 13, color, align: "center", valign: "bottom", shrink: true }),
@@ -17,12 +25,13 @@ function signature(x: number, y: number, label: string, value: string, color: st
 function classic(context: TemplateContext, words: Wording, primary: string, secondary: string) {
   const { t } = context;
   const colours = { primary, secondary };
+  const [heading, subtitle] = titleLines(context, words);
   return design(t(words.title), [primary, secondary], [
     pageOf(SIZE, solid("#fffdf7"), [
       frame("guillocheFrame", colours, { width: W, height: H }),
       centredText({ width: W }, 74, 18, t("studio.tpl.orgName"), { font: FONTS.cinzel, size: 11, color: primary, spacing: 4, shrink: true }),
-      centredText({ width: W }, 96, 64, t("studio.tpl.certificate"), { font: FONTS.cinzel, size: 54, bold: true, color: primary, spacing: 6, upper: true, shrink: true }),
-      centredText({ width: W }, 158, 48, t(words.subtitle), { font: FONTS.greatVibes, size: 36, color: secondary, shrink: true }),
+      centredText({ width: W }, 96, 64, heading, { font: FONTS.cinzel, size: 54, bold: true, color: primary, spacing: 6, upper: true, shrink: true }),
+      centredText({ width: W }, 158, 48, subtitle, { font: FONTS.greatVibes, size: 36, color: secondary, shrink: true }),
       centredText({ width: W }, 222, 24, t(words.lead), { font: FONTS.garamond, size: 15, italic: true, color: "#4b5563", shrink: true }),
       centredText({ width: W }, 250, 72, t("studio.tpl.recipientName"), { font: FONTS.greatVibes, size: 54, color: "#1f2937", shrink: true, valign: "middle" }),
       rule(W * 0.28, 324, W * 0.44, secondary, 1),
@@ -39,6 +48,7 @@ function band(context: TemplateContext, words: Wording, primary: string, seconda
   const left = 250;
   const content = W - left - 70;
   const white = { primary: "#ffffff", secondary };
+  const [heading, subtitle] = titleLines(context, words);
   return design(t(words.title), [primary, secondary], [
     pageOf(SIZE, solid("#ffffff"), [
       box("rect", 0, 0, 200, H, linear(180, primary, "#0b1220")),
@@ -47,8 +57,8 @@ function band(context: TemplateContext, words: Wording, primary: string, seconda
       text(20, 330, 160, 40, "2026", { font: FONTS.montserrat, size: 30, bold: true, color: "#ffffff", align: "center", spacing: 2 }),
       art("cornerTriangles", { primary, secondary }, W - 140, 0, 140, 140, { rotation: 90 }),
       text(left, 92, content, 18, t("studio.tpl.orgName"), { font: FONTS.montserrat, size: 11, bold: true, color: primary, spacing: 3, upper: true }),
-      text(left, 118, content, 56, t("studio.tpl.certificate"), { font: FONTS.montserrat, size: 46, bold: true, color: "#111827", spacing: 3, upper: true, shrink: true }),
-      text(left, 174, content, 28, t(words.subtitle), { font: FONTS.montserrat, size: 18, color: primary, spacing: 6, upper: true, shrink: true }),
+      text(left, 118, content, 56, heading, { font: FONTS.montserrat, size: 46, bold: true, color: "#111827", spacing: 3, upper: true, shrink: true }),
+      text(left, 174, content, 28, subtitle, { font: FONTS.montserrat, size: 18, color: primary, spacing: 6, upper: true, shrink: true }),
       text(left, 236, content, 22, t(words.lead), { font: FONTS.inter, size: 13, color: "#6b7280", shrink: true }),
       text(left, 262, content, 60, t("studio.tpl.recipientName"), { font: FONTS.playfair, size: 44, bold: true, color: "#111827", shrink: true, valign: "middle" }),
       rule(left, 330, content * 0.7, secondary, 2),
