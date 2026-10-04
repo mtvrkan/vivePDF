@@ -1,12 +1,11 @@
-import { AlignCenter, AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignJustify, AlignLeft, AlignRight, AlignStartHorizontal, AlignStartVertical, Bold, Italic, Lock, LockOpen, PaintBucket, Paintbrush, StretchHorizontal, StretchVertical, Underline } from "lucide-react";
+import { AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignStartHorizontal, AlignStartVertical, Lock, LockOpen, PaintBucket, Paintbrush, StretchHorizontal, StretchVertical } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
-import { FontPicker } from "@/components/shared/FontPicker";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { Segmented, SliderField, SwitchField, TextArea, TextInput } from "@/components/tool/form";
-import type { StudioElement, StudioFill, StudioImageElement, StudioPage, StudioQrElement, StudioShapeElement, StudioStroke, StudioTextAlign, StudioTextElement, StudioVerticalAlign } from "@/types/studio";
+import type { StudioElement, StudioFill, StudioImageElement, StudioPage, StudioQrElement, StudioShapeElement, StudioStroke, StudioTextElement } from "@/types/studio";
 import { MAX_PAGE_NAME, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
 import { align, distribute, patchSelected, toggleLock } from "./commands";
 import { DesignColours, ElementColours } from "./ColorSections";
@@ -14,16 +13,11 @@ import { ColorField, FillEditor, NumberField, OpacityField, PanelSection, Stroke
 import { deepEqual, isFillable, isRoundable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue, strokeDifferences } from "./multiEdit";
 import { pickImage } from "./pickImage";
 import { fromMm, toMm } from "./units";
-import { DEFAULT_FONT_ID } from "./fonts";
-import { withElementStyle, type StylePatch } from "./richText";
-import { textEditorBridge } from "./textEditorBridge";
 import { distributableCount, resizeAllPages, resizePage, type PageResizeMode } from "../model/edit";
 import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
+import { TextSection } from "./TextSection";
 
-const TEXT_ALIGNS: StudioTextAlign[] = ["left", "center", "right", "justify"];
-const VERTICAL_ALIGNS: StudioVerticalAlign[] = ["top", "middle", "bottom"];
-const ALIGN_ICONS = { left: AlignLeft, center: AlignCenter, right: AlignRight, justify: AlignJustify } as const;
 
 function sizeKeyOf(page: StudioPage): StudioPageSize | "custom" {
   const match = (Object.keys(STUDIO_PAGE_SIZES) as StudioPageSize[]).find((key) => Math.abs(STUDIO_PAGE_SIZES[key].width - page.width) < 0.5 && Math.abs(STUDIO_PAGE_SIZES[key].height - page.height) < 0.5);
@@ -214,55 +208,6 @@ function StyleClipboardButtons() {
         {t("studio.style.paste")}
       </button>
     </div>
-  );
-}
-
-function styleToggle(elements: StudioTextElement[], key: "bold" | "italic" | "underline") {
-  const editing = textEditorBridge.current;
-  if (editing) {
-    const summary = editing.summary();
-    const current = summary ? summary[key] : elements[0][key];
-    editing.applyStyle({ [key]: !current });
-    return;
-  }
-  const next = !elements.every((element) => element[key]);
-  patchSelected((element) => (element.kind === "text" ? withElementStyle(element, { [key]: next }) : {}));
-}
-
-function applyTextStyle(patch: StylePatch) {
-  const editing = textEditorBridge.current;
-  if (editing) editing.applyStyle(patch);
-  else patchSelected((element) => (element.kind === "text" ? withElementStyle(element, patch) : {}));
-}
-
-function TextSection({ elements }: { elements: StudioTextElement[] }) {
-  const { t } = useTranslation();
-  const first = elements[0];
-  const patchText = (patch: Partial<StudioTextElement>, merge?: string) => patchSelected((element) => (element.kind === "text" ? patch : {}), merge);
-  const keep = (event: React.MouseEvent) => event.preventDefault();
-  return (
-    <PanelSection title={t("studio.props.text")}>
-      <FontPicker value={first.fontId ?? DEFAULT_FONT_ID} onChange={(fontId) => patchText({ fontId })} />
-      <div className="grid grid-cols-[1fr_auto] items-end gap-2">
-        <NumberField label={t("studio.props.fontSize")} suffix="pt" value={Math.round(first.fontSize * 10) / 10} min={1} max={1000} onChange={(fontSize) => patchText({ fontSize })} />
-        <div className="flex gap-1" onMouseDown={keep}>
-          <IconButton icon={Bold} label={t("studio.props.bold")} shortcut="Ctrl+B" active={first.bold} onClick={() => styleToggle(elements, "bold")} />
-          <IconButton icon={Italic} label={t("studio.props.italic")} shortcut="Ctrl+I" active={first.italic} onClick={() => styleToggle(elements, "italic")} />
-          <IconButton icon={Underline} label={t("studio.props.underline")} shortcut="Ctrl+U" active={first.underline} onClick={() => styleToggle(elements, "underline")} />
-        </div>
-      </div>
-      <ColorField label={t("studio.props.color")} value={first.color} onChange={(color) => applyTextStyle({ color })} />
-      <div className="flex flex-wrap items-center gap-1" role="group" aria-label={t("studio.props.align")}>
-        {TEXT_ALIGNS.map((value) => (
-          <IconButton key={value} icon={ALIGN_ICONS[value]} active={first.align === value} label={t(`studio.textAlign.${value}`)} onClick={() => patchText({ align: value })} />
-        ))}
-      </div>
-      <Segmented size="sm" value={first.verticalAlign} options={VERTICAL_ALIGNS} labelOf={(value) => t(`studio.verticalAlign.${value}`)} onChange={(verticalAlign) => patchText({ verticalAlign })} ariaLabel={t("studio.props.verticalAlign")} />
-      <SliderField label={t("studio.props.lineHeight")} value={first.lineHeight} min={0.6} max={3} step={0.05} format={(value) => value.toFixed(2)} onChange={(lineHeight) => patchText({ lineHeight }, "line-height")} />
-      <SliderField label={t("studio.props.letterSpacing")} value={Math.round(first.letterSpacing * 1000)} min={-100} max={800} step={10} format={(value) => `${value}`} onChange={(value) => patchText({ letterSpacing: value / 1000 }, "letter-spacing")} />
-      <SwitchField label={t("studio.props.uppercase")} checked={first.uppercase} onChange={(uppercase) => patchText({ uppercase })} />
-      <SwitchField label={t("studio.props.shrinkToFit")} hint={t("studio.props.shrinkHint")} checked={first.shrinkToFit} onChange={(shrinkToFit) => patchText({ shrinkToFit })} />
-    </PanelSection>
   );
 }
 

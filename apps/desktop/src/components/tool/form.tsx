@@ -25,7 +25,7 @@ export function Field({ label, hint, note, children, className }: { label: strin
   );
 }
 
-export function TextInput({ className, ...rest }: InputHTMLAttributes<HTMLInputElement>) {
+export function TextInput({ className, ...rest }: InputHTMLAttributes<HTMLInputElement> & { ref?: Ref<HTMLInputElement> }) {
   const describedBy = useFieldDescription();
   return <input aria-describedby={describedBy} {...rest} className={fieldClass(inputClass, className)} />;
 }

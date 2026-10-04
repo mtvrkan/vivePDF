@@ -3,12 +3,12 @@ import { useTranslation } from "react-i18next";
 import { isBrowserShortcut } from "@/shared/lib/browserKeys";
 import { bracketKey, digitKey, shortcutLetter, zoomKey } from "@/shared/lib/shortcutKeys";
 import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
-import type { StudioShapeKind } from "@/types/studio";
+import type { StudioListKind, StudioShapeKind } from "@/types/studio";
 import { canvasBridge } from "./canvasBridge";
 import { group, nudge, patchSelected, reorder, selectAll, toggleHiddenSelection, toggleLock, ungroup } from "./commands";
 import { insertShape, insertText, TEXT_PRESETS } from "./insert";
 import { copyStyle, pasteStyle } from "./styleClipboard";
-import { withElementStyle } from "./richText";
+import { boldPatch, toggleList, updateParagraphs, withElementStyle } from "./richText";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { textEditorBridge } from "./textEditorBridge";
 import { useViewPrefs, type StudioViewOption } from "./viewPrefs";
@@ -24,6 +24,7 @@ const TOOL_SHAPES: Record<string, StudioShapeKind> = { r: "rect", o: "ellipse", 
 const CONTROL_KEYS = new Set(["Enter", " ", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"]);
 const BODY_PRESET = TEXT_PRESETS[TEXT_PRESETS.length - 1];
 const VIEW_KEYS: Record<string, StudioViewOption> = { r: "rulers", g: "guides", m: "margins" };
+const LIST_DIGITS: Record<number, StudioListKind> = { 7: "decimal", 8: "bullet" };
 
 function styleKey(event: KeyboardEvent): "copy" | "paste" | null {
   if (!(event.ctrlKey || event.metaKey) || !event.altKey || event.shiftKey) return null;
@@ -32,7 +33,7 @@ function styleKey(event: KeyboardEvent): "copy" | "paste" | null {
   return null;
 }
 
-export type StudioShortcutActions = { onOpen?: () => void; onHelp?: () => void; onPrint?: () => void };
+export type StudioShortcutActions = { onOpen?: () => void; onHelp?: () => void; onPrint?: () => void; onFind?: (replace: boolean) => void };
 
 function fontSizeStep(event: KeyboardEvent): 1 | -1 | null {
   if (!event.shiftKey) return null;
@@ -82,6 +83,8 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         commitText();
         onPrint();
       });
+      const find = handlers.actions.onFind;
+      if (mod && !event.shiftKey && (letter === "f" || letter === "h") && find) return run(() => find(letter === "h"));
       if (isTextEntryTarget(event.target)) return;
       const style = styleKey(event);
       if (style && state.selection.length) return run(style === "copy" ? copyStyle : pasteStyle);
@@ -114,7 +117,16 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         const style = letter ? STYLE_KEYS[letter] : undefined;
         if (style && !event.shiftKey && texts.length) {
           const next = !texts.every((element) => element.kind === "text" && element[style]);
-          return run(() => patchSelected((element) => (element.kind === "text" ? withElementStyle(element, { [style]: next }) : {})));
+          return run(() => patchSelected((element) => (element.kind === "text" ? withElementStyle(element, style === "bold" ? boldPatch(next) : { [style]: next }) : {})));
+        }
+        if (letter === "x" && event.shiftKey && texts.length) {
+          const next = !texts.every((element) => element.kind === "text" && element.strike);
+          return run(() => patchSelected((element) => (element.kind === "text" ? withElementStyle(element, { strike: next }) : {})));
+        }
+        const digit = digitKey(event);
+        const list = event.shiftKey && digit !== null ? LIST_DIGITS[digit] : undefined;
+        if (list && texts.length) {
+          return run(() => patchSelected((element) => (element.kind === "text" ? { paragraphs: updateParagraphs(element, null, toggleList(element.paragraphs, list)) } : {})));
         }
         return;
       }

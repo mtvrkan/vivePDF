@@ -8330,7 +8330,11 @@
         "layerOrder": "フォーカス中のレイヤーを上へ / 下へ移動（レイヤーパネル）",
         "enterGroup": "グループ内の 1 つの要素を選択",
         "copyPasteStyle": "スタイルのコピー / 貼り付け",
-        "print": "印刷…"
+        "print": "印刷…",
+        "findReplace": "検索と置換",
+        "strike": "取り消し線",
+        "listLevel": "リストのレベルを変更",
+        "alignText": "文字を左揃え・中央揃え・右揃え（編集中）"
       }
     },
     "view": {
@@ -8371,6 +8375,90 @@
       "tooLarge": "このデザインは大きすぎるため、自動下書きに保存できません。失われないようにプロジェクト ファイルとして保存してください。",
       "failed": "自動下書きを保存できませんでした：{{error}}",
       "loadFailed": "前回の下書きを読み込めませんでした"
+    },
+    "text": {
+      "weight": "太さ",
+      "strike": "取り消し線",
+      "lists": "リスト",
+      "bulleted": "箇条書き",
+      "numbered": "番号付きリスト",
+      "indent": "リストのレベルを上げる",
+      "outdent": "リストのレベルを下げる",
+      "listStyle": "リストのスタイル",
+      "case": "大文字と小文字",
+      "autoSize": "ボックスのサイズ",
+      "language": "テキストの言語",
+      "languageAuto": "アプリの言語",
+      "spellCheck": "スペル チェック",
+      "effects": "文字の効果",
+      "outline": "輪郭",
+      "outlineColor": "輪郭の色",
+      "outlineWidth": "輪郭の太さ",
+      "shadow": "影",
+      "shadowHint": "文字の後ろにくっきりした影を付けます",
+      "shadowColor": "影の色",
+      "shadowX": "横方向のずれ",
+      "shadowY": "縦方向のずれ",
+      "shadowOpacity": "影の不透明度",
+      "highlight": "蛍光ペン",
+      "highlightColor": "蛍光ペンの色",
+      "highlightPadding": "蛍光ペンの余白",
+      "weights": {
+        "100": "極細",
+        "200": "特細",
+        "300": "細字",
+        "350": "やや細字",
+        "400": "標準",
+        "500": "中太",
+        "600": "やや太字",
+        "700": "太字",
+        "800": "極太",
+        "900": "ブラック"
+      },
+      "listKinds": {
+        "none": "リストなし",
+        "bullet": "行頭文字 •",
+        "dash": "ダッシュ –",
+        "check": "チェック マーク ✓",
+        "decimal": "数字 1.",
+        "alpha": "英字 a)",
+        "roman": "ローマ数字 i."
+      },
+      "cases": {
+        "none": "入力どおり",
+        "upper": "すべて大文字",
+        "lower": "すべて小文字",
+        "title": "各単語の先頭を大文字"
+      },
+      "autoSizes": {
+        "fixed": "固定",
+        "height": "高さを自動調整",
+        "width": "幅を自動調整",
+        "shrink": "文字を縮小して合わせる"
+      },
+      "autoSizeHints": {
+        "fixed": "ボックスのサイズを保ち、入力した文字が収まらなくなったときだけ高さを広げます。",
+        "height": "ボックスの高さが文字に合わせて伸び縮みします。",
+        "width": "ボックスの幅が各行に合わせて広がり、Enter キーを押した位置でだけ改行します。",
+        "shrink": "ボックスのサイズを保ち、長い文字は収まるように縮小します。"
+      }
+    },
+    "find": {
+      "title": "検索と置換",
+      "find": "検索",
+      "replaceWith": "置換後の文字列",
+      "toggleReplace": "置換を表示",
+      "close": "閉じる",
+      "matchCase": "大文字と小文字を区別",
+      "wholeWord": "単語単位で検索",
+      "previous": "前の一致",
+      "next": "次の一致",
+      "replace": "置換",
+      "replaceAll": "すべて置換",
+      "none": "一致する項目はありません",
+      "count": "{{current}} / {{total}}",
+      "total_one": "{{count}} 件の一致",
+      "total_other": "{{count}} 件の一致"
     }
   }
 }

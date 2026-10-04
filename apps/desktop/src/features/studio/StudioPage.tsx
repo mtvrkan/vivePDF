@@ -20,6 +20,7 @@ import { useOpenDesign } from "./design/useOpenDesign";
 import { fromMm, toMm } from "./design/units";
 import { ElementsPanel } from "./design/ElementsPanel";
 import { PageView } from "./design/ElementView";
+import { FindReplacePanel, type FindMode } from "./design/FindReplacePanel";
 import { ExportDialog } from "./design/ExportDialog";
 import { PagesStrip } from "./design/PagesStrip";
 import { PropertiesPanel } from "./design/PropertiesPanel";
@@ -223,6 +224,7 @@ function StudioEditor({ language }: { language: string }) {
   const [exporting, setExporting] = useState(false);
   const [printing, setPrinting] = useState(false);
   const [helping, setHelping] = useState(false);
+  const [finding, setFinding] = useState<FindMode | null>(null);
   const close = useStudioStore((state) => state.close);
   const { save } = useDesignSave();
   const { openDesign } = useOpenDesign();
@@ -233,16 +235,22 @@ function StudioEditor({ language }: { language: string }) {
   useStudioShortcuts(
     () => setExporting(true),
     (saveAs) => void save(saveAs),
-    { onOpen: () => void browse(), onHelp: () => setHelping(true), onPrint: () => setPrinting(true) },
+    {
+      onOpen: () => void browse(),
+      onHelp: () => setHelping(true),
+      onPrint: () => setPrinting(true),
+      onFind: (replace) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 })),
+    },
   );
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="studio-editor">
       <StudioToolbar onExport={() => setExporting(true)} onPrint={() => setPrinting(true)} onLeave={close} onHelp={() => setHelping(true)} />
       <div className="flex min-h-0 flex-1">
         <ElementsPanel />
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="relative flex min-w-0 flex-1 flex-col">
           <MissingFontsBar />
           <Canvas language={language} />
+          {finding ? <FindReplacePanel mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
           <PagesStrip language={language} />
         </div>
         <PropertiesPanel />

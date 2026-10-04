@@ -8330,7 +8330,11 @@
         "layerOrder": "Sposta su / giù il livello attivo (pannello Livelli)",
         "enterGroup": "Seleziona un solo elemento all’interno di un gruppo",
         "copyPasteStyle": "Copia stile / incolla stile",
-        "print": "Stampa…"
+        "print": "Stampa…",
+        "findReplace": "Trova e sostituisci",
+        "strike": "Barrato",
+        "listLevel": "Cambia livello elenco",
+        "alignText": "Allinea il testo a sinistra, al centro o a destra (durante la modifica)"
       }
     },
     "view": {
@@ -8371,6 +8375,91 @@
       "tooLarge": "Questo progetto è troppo grande per la bozza automatica. Salvalo come file di progetto per non perdere nulla.",
       "failed": "Impossibile salvare la bozza automatica: {{error}}",
       "loadFailed": "Impossibile caricare l'ultima bozza"
+    },
+    "text": {
+      "weight": "Spessore",
+      "strike": "Barrato",
+      "lists": "Elenchi",
+      "bulleted": "Elenco puntato",
+      "numbered": "Elenco numerato",
+      "indent": "Aumenta livello elenco",
+      "outdent": "Riduci livello elenco",
+      "listStyle": "Stile elenco",
+      "case": "Maiuscole/minuscole",
+      "autoSize": "Dimensione riquadro",
+      "language": "Lingua del testo",
+      "languageAuto": "Lingua dell’app",
+      "spellCheck": "Controllo ortografico",
+      "effects": "Effetti testo",
+      "outline": "Contorno",
+      "outlineColor": "Colore contorno",
+      "outlineWidth": "Spessore contorno",
+      "shadow": "Ombra",
+      "shadowHint": "Un’ombra netta dietro le lettere",
+      "shadowColor": "Colore ombra",
+      "shadowX": "Spostamento orizzontale",
+      "shadowY": "Spostamento verticale",
+      "shadowOpacity": "Opacità ombra",
+      "highlight": "Evidenziazione",
+      "highlightColor": "Colore evidenziazione",
+      "highlightPadding": "Margine evidenziazione",
+      "weights": {
+        "100": "Thin",
+        "200": "Extra light",
+        "300": "Light",
+        "350": "Semilight",
+        "400": "Normale",
+        "500": "Medium",
+        "600": "Semigrassetto",
+        "700": "Grassetto",
+        "800": "Extra grassetto",
+        "900": "Black"
+      },
+      "listKinds": {
+        "none": "Nessun elenco",
+        "bullet": "Punto elenco •",
+        "dash": "Trattino –",
+        "check": "Segno di spunta ✓",
+        "decimal": "Numeri 1.",
+        "alpha": "Lettere a)",
+        "roman": "Numeri romani i."
+      },
+      "cases": {
+        "none": "Come digitato",
+        "upper": "MAIUSCOLO",
+        "lower": "minuscolo",
+        "title": "Iniziali Maiuscole"
+      },
+      "autoSizes": {
+        "fixed": "Fissa",
+        "height": "Altezza automatica",
+        "width": "Larghezza automatica",
+        "shrink": "Riduci il testo per adattarlo"
+      },
+      "autoSizeHints": {
+        "fixed": "Il riquadro mantiene la sua dimensione e si allunga solo quando il testo digitato non entra più.",
+        "height": "L’altezza del riquadro segue il testo, crescendo e riducendosi.",
+        "width": "Il riquadro si allarga per ogni riga; le righe vanno a capo solo dove premi Invio.",
+        "shrink": "Il riquadro mantiene la sua dimensione; il testo lungo si riduce per entrarci."
+      }
+    },
+    "find": {
+      "title": "Trova e sostituisci",
+      "find": "Trova",
+      "replaceWith": "Sostituisci con",
+      "toggleReplace": "Mostra sostituzione",
+      "close": "Chiudi",
+      "matchCase": "Maiuscole/minuscole",
+      "wholeWord": "Solo parole intere",
+      "previous": "Corrispondenza precedente",
+      "next": "Corrispondenza successiva",
+      "replace": "Sostituisci",
+      "replaceAll": "Sostituisci tutto",
+      "none": "Nessuna corrispondenza",
+      "count": "{{current}} di {{total}}",
+      "total_one": "{{count}} corrispondenza",
+      "total_many": "{{count}} corrispondenze",
+      "total_other": "{{count}} corrispondenze"
     }
   }
 }

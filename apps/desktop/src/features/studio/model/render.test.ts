@@ -107,15 +107,39 @@ describe("studio render payload", () => {
   it("fills text styling from the element and uses measured segments only without placeholders", () => {
     const text = createText(0, 0, 100, 40, "", { bold: true, color: "#112233", letterSpacing: 0.1, fontSize: 20 });
     text.runs = [{ text: "Hello " }, { text: "world", bold: false, color: "#ff0000" }];
-    const measured = new Map([[text.id, [{ text: "Hello", x: 0, y: 10, size: 20, bold: true, italic: false, underline: false, color: "#112233", letterSpacing: 2 }]]]);
+    const segment = { text: "Hello", x: 0, y: 10, size: 20, bold: true, italic: false, underline: false, strike: false, color: "#112233", letterSpacing: 2, fontId: null, weight: 700 };
+    const measured = new Map([[text.id, { segments: [segment], bands: [] }]]);
 
     const [item] = elementItems(text, measured);
     const [merged] = elementItems({ ...text, runs: [{ text: "Hi {Name}" }] }, measured);
 
-    expect(item.kind === "text" && item.runs[1]).toEqual({ text: "world", bold: false, italic: false, underline: false, color: "#ff0000" });
+    expect(item.kind === "text" && item.runs[1]).toEqual({ text: "world", bold: false, italic: false, underline: false, strike: false, color: "#ff0000", fontId: null, size: 20, weight: 400 });
     expect(item.kind === "text" && item.letterSpacing).toBe(2);
     expect(item.kind === "text" && item.segments).toHaveLength(1);
     expect(merged.kind === "text" && merged.segments).toBeUndefined();
+  });
+
+  it("sends run fonts, scaled sizes, weights and text effects to the exporter", () => {
+    const text = createText(0, 0, 100, 40, "", {
+      fontId: "system:arial",
+      fontSize: 10,
+      weight: 300,
+      textCase: "upper",
+      paragraphs: [{ list: "bullet", level: 1 }],
+      outline: { color: "#000000", width: 1 },
+      highlight: { color: "#fde047", padding: 2 },
+      runs: [{ text: "a", fontId: "system:georgia", scale: 2.5, weight: 800 }, { text: "b", scale: 500 }],
+    });
+    const measured = new Map([[text.id, { segments: [], bands: [{ x: 0, y: 0, width: 10, height: 5 }] }]]);
+
+    const [item] = elementItems(text, measured);
+
+    expect(item.kind === "text" && item.runs.map((run) => [run.fontId, run.size, run.weight])).toEqual([
+      ["system:georgia", 25, 800],
+      ["system:arial", 1000, 300],
+    ]);
+    expect(item).toMatchObject({ textCase: "upper", paragraphs: [{ list: "bullet", level: 1 }], outline: { width: 1 }, bands: [{ width: 10 }] });
+    expect(elementItems({ ...text, highlight: null }, measured)[0]).not.toHaveProperty("bands");
   });
 
   it("adds a frame stroke that follows the image mask", () => {

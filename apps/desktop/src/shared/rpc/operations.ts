@@ -494,7 +494,7 @@ export const imagePreview = (params: { path: string }, options?: RpcCallOptions)
 export const applyEditor = (params: EditorApplyParams, options?: RpcCallOptions) => rpc<EditorApplyResult>("editor.apply", params, options);
 export const editorBlocks = (params: { path: string; password?: string; page: number }, options?: RpcCallOptions) => rpc<EditorBlocksResult>("editor.blocks", params, options);
 export const editorFont = (params: { path: string; password?: string; xref: number }, options?: RpcCallOptions) => rpc<EditorFontResult>("editor.font", params, options);
-export const fontFile = (params: { id: string; bold?: boolean; italic?: boolean }, options?: RpcCallOptions) => rpc<FontFileResult>("fonts.file", params, options);
+export const fontFile = (params: { id: string; bold?: boolean; italic?: boolean; weight?: number }, options?: RpcCallOptions) => rpc<FontFileResult>("fonts.file", params, options);
 export const editorFontPlan = (params: EditorFontPlanParams, options?: RpcCallOptions) => rpc<EditorFontResolution>("editor.font_plan", params, options);
 export const editorSystemFonts = (options?: RpcCallOptions) => rpc<EditorSystemFontsResult>("editor.system_fonts", {}, options);
 export const imageAt = (params: { path: string; password?: string; page: number; x: number; y: number; previewMaxSide?: number }, options?: RpcCallOptions) => rpc<ImageAtResult>("images.at", params, options);

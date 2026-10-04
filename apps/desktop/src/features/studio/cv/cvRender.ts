@@ -13,7 +13,7 @@ export function domMeasure(language: string): { measure: CvMeasure; dispose: () 
   document.body.append(host);
   const cache = new Map<string, number>();
   const measure: CvMeasure = (element) => {
-    const key = [element.fontId, element.fontSize, element.bold, element.italic, element.uppercase, element.letterSpacing, element.lineHeight, Math.round(element.width * 10), textOf(element.runs)].join("|");
+    const key = [element.fontId, element.fontSize, element.bold, element.italic, element.textCase, element.letterSpacing, element.lineHeight, Math.round(element.width * 10), textOf(element.runs)].join("|");
     const known = cache.get(key);
     if (known !== undefined) return known;
     const { frame, body } = buildTextNode(element, language);
@@ -28,7 +28,7 @@ export function domMeasure(language: string): { measure: CvMeasure; dispose: () 
 
 export async function loadCvFonts(fontIds: string[]): Promise<void> {
   const unique = [...new Set(fontIds)];
-  await Promise.all(unique.flatMap((id) => [false, true].flatMap((bold) => [false, true].map((italic) => ensureFace(id, bold, italic)))));
+  await Promise.all(unique.flatMap((id) => [400, 700].flatMap((weight) => [false, true].map((italic) => ensureFace(id, weight, italic)))));
   await document.fonts.ready;
 }
 

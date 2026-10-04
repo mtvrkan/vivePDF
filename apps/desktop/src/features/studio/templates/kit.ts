@@ -88,9 +88,9 @@ export function text(x: number, y: number, width: number, height: number, value:
     align: options.align ?? "left",
     verticalAlign: options.valign ?? "top",
     letterSpacing: Math.round(((options.spacing ?? 0) / fontSize) * 1000) / 1000,
-    uppercase: options.upper ?? false,
+    textCase: options.upper ? "upper" : "none",
     lineHeight: options.lineHeight ?? 1.3,
-    shrinkToFit: options.shrink ?? false,
+    autoSize: options.shrink ? "shrink" : "fixed",
     rotation: options.rotation ?? 0,
   });
 }

@@ -5,14 +5,16 @@ import type {
   StudioPage,
   StudioRenderBox,
   StudioRenderItem,
+  StudioMeasuredText,
   StudioRenderPage,
-  StudioRenderSegment,
   StudioTextElement,
 } from "@/types/studio";
 import { hasPlaceholders, textOf } from "./design";
+import { fitParagraphs, paragraphCount, weightOf } from "./typography";
 import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./shapes";
 
-export type MeasuredText = ReadonlyMap<string, StudioRenderSegment[]>;
+export type MeasuredText = ReadonlyMap<string, StudioMeasuredText>;
+const MAX_RUN_SIZE = 1000;
 
 export type RenderOptions = { keepWhite?: boolean };
 
@@ -21,26 +23,41 @@ function box(element: StudioElement): StudioRenderBox {
 }
 
 function textItem(element: StudioTextElement, measured: MeasuredText): StudioRenderItem {
-  const segments = measured.get(element.id);
+  const layout = hasPlaceholders(textOf(element.runs)) ? undefined : measured.get(element.id);
   return {
     ...box(element),
     kind: "text",
-    runs: element.runs.map((run) => ({
-      text: run.text,
-      bold: run.bold ?? element.bold,
-      italic: run.italic ?? element.italic,
-      underline: run.underline ?? element.underline,
-      color: run.color ?? element.color,
-    })),
+    runs: element.runs.map((run) => {
+      const bold = run.bold ?? element.bold;
+      return {
+        text: run.text,
+        bold,
+        italic: run.italic ?? element.italic,
+        underline: run.underline ?? element.underline,
+        strike: run.strike ?? element.strike,
+        color: run.color ?? element.color,
+        fontId: run.fontId ?? element.fontId,
+        size: Math.min(MAX_RUN_SIZE, (run.scale ?? 1) * element.fontSize),
+        weight: weightOf(bold, run.weight !== undefined ? run.weight : element.weight),
+      };
+    }),
     fontId: element.fontId,
     fontSize: element.fontSize,
+    weight: weightOf(element.bold, element.weight),
+    color: element.color,
     align: element.align,
     verticalAlign: element.verticalAlign,
     lineHeight: element.lineHeight,
     letterSpacing: element.letterSpacing * element.fontSize,
-    uppercase: element.uppercase,
-    shrinkToFit: element.shrinkToFit,
-    ...(segments && !hasPlaceholders(textOf(element.runs)) ? { segments } : {}),
+    textCase: element.textCase,
+    shrinkToFit: element.autoSize === "shrink",
+    autoWidth: element.autoSize === "width",
+    paragraphs: fitParagraphs(element.paragraphs, paragraphCount(element.runs)),
+    outline: element.outline,
+    shadow: element.shadow,
+    highlight: element.highlight,
+    ...(element.language ? { language: element.language } : {}),
+    ...(layout ? { segments: layout.segments, ...(element.highlight ? { bands: layout.bands } : {}) } : {}),
   };
 }
 

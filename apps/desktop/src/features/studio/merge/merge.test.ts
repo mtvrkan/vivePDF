@@ -104,7 +104,7 @@ describe("insertPlaceholder", () => {
     useStudioStore.getState().select([qr.id]);
     insertPlaceholder("Id");
     const insert = vi.fn();
-    textEditorBridge.current = { applyStyle: vi.fn(), summary: () => null, commit: vi.fn(), insert };
+    textEditorBridge.current = { applyStyle: vi.fn(), applyParagraphs: vi.fn(), update: vi.fn(), summary: () => null, selectedParagraphs: () => [], selectedText: () => "", commit: vi.fn(), insert };
     useStudioStore.getState().setEditing(qr.id);
 
     insertPlaceholder("n");

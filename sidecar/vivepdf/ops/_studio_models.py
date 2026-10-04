@@ -19,6 +19,10 @@ Unit = Annotated[float, Field(ge=0, le=1)]
 TextAlign = Literal["left", "center", "right", "justify"]
 VerticalAlign = Literal["top", "middle", "bottom"]
 ErrorLevel = Literal["L", "M", "Q", "H"]
+TextCase = Literal["none", "upper", "lower", "title"]
+ListKind = Literal["none", "bullet", "dash", "check", "decimal", "alpha", "roman"]
+Weight = Annotated[int, Field(ge=1, le=1000)]
+FontId = Annotated[str, Field(max_length=1024)]
 FilePath = Annotated[str, Field(min_length=1, max_length=4096)]
 
 
@@ -118,7 +122,11 @@ class StudioRun(RpcModel):
     bold: bool = False
     italic: bool = False
     underline: bool = False
+    strike: bool = False
     color: Colour = "#000000"
+    font_id: FontId | None = None
+    size: float | None = Field(default=None, gt=0, le=1000)
+    weight: Weight | None = None
 
 
 class StudioSegment(RpcModel):
@@ -129,8 +137,40 @@ class StudioSegment(RpcModel):
     bold: bool = False
     italic: bool = False
     underline: bool = False
+    strike: bool = False
     color: Colour = "#000000"
     letter_spacing: float = Field(default=0.0, ge=-100, le=1000)
+    font_id: FontId | None = None
+    weight: Weight | None = None
+
+
+class StudioParagraph(RpcModel):
+    list: ListKind = "none"
+    level: int = Field(default=0, ge=0, le=8)
+
+
+class StudioTextOutline(RpcModel):
+    color: Colour
+    width: float = Field(gt=0, le=50)
+
+
+class StudioTextShadow(RpcModel):
+    color: Colour
+    x: float = Field(default=0.0, ge=-500, le=500)
+    y: float = Field(default=0.0, ge=-500, le=500)
+    opacity: Unit = 1.0
+
+
+class StudioTextHighlight(RpcModel):
+    color: Colour
+    padding: float = Field(default=0.0, ge=0, le=200)
+
+
+class StudioBand(RpcModel):
+    x: Coordinate
+    y: Coordinate
+    width: float = Field(ge=0, le=100_000)
+    height: float = Field(ge=0, le=100_000)
 
 
 class StudioTextItem(StudioBox):
@@ -138,13 +178,27 @@ class StudioTextItem(StudioBox):
     runs: list[StudioRun] = Field(min_length=1, max_length=2000)
     font_id: str | None = Field(default=None, max_length=1024)
     font_size: float = Field(default=12.0, ge=1, le=1000)
+    weight: Weight | None = None
+    color: Colour = "#000000"
     align: TextAlign = "left"
     vertical_align: VerticalAlign = "top"
     line_height: float = Field(default=1.2, ge=0.5, le=5)
     letter_spacing: float = Field(default=0.0, ge=-100, le=1000)
     uppercase: bool = False
+    text_case: TextCase = "none"
     shrink_to_fit: bool = False
+    auto_width: bool = False
+    paragraphs: list[StudioParagraph] = Field(default_factory=list, max_length=20_000)
+    outline: StudioTextOutline | None = None
+    shadow: StudioTextShadow | None = None
+    highlight: StudioTextHighlight | None = None
+    language: str | None = Field(default=None, max_length=20)
     segments: list[StudioSegment] | None = Field(default=None, max_length=20_000)
+    bands: list[StudioBand] | None = Field(default=None, max_length=5000)
+
+    @property
+    def case(self) -> str:
+        return "upper" if self.uppercase and self.text_case == "none" else self.text_case
 
 
 StudioItem = Annotated[

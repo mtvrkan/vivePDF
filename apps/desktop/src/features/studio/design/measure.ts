@@ -1,26 +1,18 @@
-import type { StudioElement, StudioRenderSegment, StudioTextElement } from "@/types/studio";
-import { hasPlaceholders, textOf } from "../model/design";
+import type { StudioElement, StudioMeasuredText, StudioRenderBand, StudioRenderSegment, StudioTextElement } from "@/types/studio";
+import { hasPlaceholders, MIN_ELEMENT_SIDE, textDirection, textOf } from "../model/design";
+import { BOLD_WEIGHT, REGULAR_WEIGHT } from "../model/typography";
 import { ensureElementFonts, useStudioFontsStore } from "./fonts";
-import { runStyle } from "./richText";
-import { runsHtml, textBodyStyle, textFrameStyle } from "./textStyle";
+import { applyCss, blockNodes, textBlocks, textBodyStyle, textFrameStyle } from "./textStyle";
 
 export const MIN_FIT_SIZE = 4;
 export const FIT_STEP = 0.5;
 const SAME_LINE = 0.5;
 const TOUCHING = 0.75;
-const DOTLESS = new Set(["tr", "az"]);
-
-export function upperText(text: string, language: string): string {
-  const prefix = language.split("-")[0].toLowerCase();
-  return (DOTLESS.has(prefix) ? text.replace(/i/g, "İ") : text).toUpperCase();
-}
-
-function applyStyle(node: HTMLElement, style: object) {
-  Object.assign(node.style, style);
-}
+const FIT_TOLERANCE = 0.25;
+const ANCHOR = { left: 0, center: 0.5, right: 1, justify: 0 } as const;
 
 export function fitTextSize(body: HTMLElement, element: StudioTextElement): number {
-  if (!element.shrinkToFit) return element.fontSize;
+  if (element.autoSize !== "shrink") return element.fontSize;
   const wrap = body.style.overflowWrap;
   body.style.overflowWrap = "normal";
   const floor = Math.min(MIN_FIT_SIZE, element.fontSize);
@@ -48,7 +40,7 @@ export function fitTextSize(body: HTMLElement, element: StudioTextElement): numb
 const ascents = new Map<string, number>();
 
 function ascentOf(span: HTMLElement, size: number): number {
-  const key = `${span.style.fontFamily}|${span.style.fontStyle}|${size}`;
+  const key = `${span.style.fontFamily}|${span.style.fontStyle}|${span.style.fontWeight}|${size}`;
   const known = ascents.get(key);
   if (known !== undefined) return known;
   const probe = document.createElement("span");
@@ -69,23 +61,42 @@ function ascentOf(span: HTMLElement, size: number): number {
   return ascent;
 }
 
-type Open = { segment: StudioRenderSegment; right: number; top: number; run: number };
+function spanSize(span: HTMLElement, fallback: number): number {
+  const size = parseFloat(getComputedStyle(span).fontSize);
+  return Number.isFinite(size) && size > 0 ? size : fallback;
+}
 
-export function segmentsOf(frame: HTMLElement, element: StudioTextElement, size: number, language: string): StudioRenderSegment[] {
+type Open = { segment: StudioRenderSegment; right: number; top: number; span: number };
+type LineBox = { baseline: number; left: number; right: number; top: number; bottom: number };
+
+export function measureLayout(frame: HTMLElement, element: StudioTextElement, size: number, scale = 1): StudioMeasuredText {
   const origin = frame.getBoundingClientRect();
   const segments: StudioRenderSegment[] = [];
+  const lines: LineBox[] = [];
   let open: Open | null = null;
   const close = () => {
     if (open) segments.push(open.segment);
     open = null;
   };
-  const spans = Array.from(frame.querySelectorAll<HTMLElement>("span[data-b]"));
-  spans.forEach((span, runIndex) => {
+  const addToLine = (baseline: number, left: number, right: number, top: number, bottom: number) => {
+    const line = lines.find((item) => Math.abs(item.baseline - baseline) < SAME_LINE);
+    if (!line) {
+      lines.push({ baseline, left, right, top, bottom });
+      return;
+    }
+    line.left = Math.min(line.left, left);
+    line.right = Math.max(line.right, right);
+    line.top = Math.min(line.top, top);
+    line.bottom = Math.max(line.bottom, bottom);
+  };
+  const spans = Array.from(frame.querySelectorAll<HTMLElement>("span[data-run], span[data-marker]"));
+  spans.forEach((span, spanIndex) => {
     const node = span.firstChild;
-    const run = element.runs[runIndex];
-    if (!(node instanceof Text) || !run) return;
-    const style = runStyle(element, run);
-    const ascent = ascentOf(span, size);
+    if (!(node instanceof Text)) return;
+    const data = span.dataset;
+    const weight = data.w ? Number(data.w) : data.b === "1" ? BOLD_WEIGHT : REGULAR_WEIGHT;
+    const pointSize = spanSize(span, size);
+    const ascent = ascentOf(span, pointSize);
     const text = node.data;
     const range = document.createRange();
     for (let index = 0; index < text.length; index += 1) {
@@ -98,63 +109,106 @@ export function segmentsOf(frame: HTMLElement, element: StudioTextElement, size:
       range.setEnd(node, index + 1);
       const rect = range.getClientRects()[0];
       if (!rect) continue;
+      const left = (rect.left - origin.left) / scale;
+      const right = (rect.right - origin.left) / scale;
+      const top = (rect.top - origin.top) / scale;
+      const baseline = top + ascent;
+      if (element.highlight) addToLine(baseline, left, right, top, (rect.bottom - origin.top) / scale);
       const current = open as Open | null;
-      if (current && current.run === runIndex && Math.abs(rect.top - current.top) < SAME_LINE && Math.abs(rect.left - current.right) < TOUCHING) {
+      if (current && current.span === spanIndex && Math.abs(rect.top - current.top) < SAME_LINE && Math.abs(rect.left - current.right) < TOUCHING) {
         current.segment.text += char;
         current.right = rect.right;
         continue;
       }
       close();
       open = {
-        run: runIndex,
+        span: spanIndex,
         top: rect.top,
         right: rect.right,
         segment: {
           text: char,
-          x: rect.left - origin.left,
-          y: rect.top - origin.top + ascent,
-          size,
-          bold: style.bold,
-          italic: style.italic,
-          underline: style.underline,
-          color: style.color,
+          x: left,
+          y: baseline,
+          size: pointSize,
+          bold: weight >= 600,
+          italic: data.i === "1",
+          underline: data.u === "1",
+          strike: data.s === "1",
+          color: data.c ?? element.color,
           letterSpacing: element.letterSpacing * size,
+          fontId: data.f || null,
+          weight,
         },
       };
     }
     close();
   });
   close();
-  if (element.uppercase) for (const segment of segments) segment.text = upperText(segment.text, language);
-  return segments;
+  const bands: StudioRenderBand[] = lines.map((line) => ({ x: line.left, y: line.top, width: line.right - line.left, height: line.bottom - line.top }));
+  return { segments, bands };
 }
 
 export function buildTextNode(element: StudioTextElement, language: string): { frame: HTMLDivElement; body: HTMLDivElement } {
   const frame = document.createElement("div");
-  frame.lang = language;
-  applyStyle(frame, { ...textFrameStyle(element), width: `${element.width}px`, height: `${element.height}px` });
+  const blocks = textBlocks(element, { language });
+  frame.lang = element.language ?? language;
+  frame.dir = textDirection(blocks.map((block) => block.spans.map((span) => span.text).join("")).join("\n"));
+  applyCss(frame, { ...textFrameStyle(element), width: `${element.width}px`, height: `${element.height}px` });
   const body = document.createElement("div");
-  applyStyle(body, textBodyStyle(element, element.fontSize));
-  body.innerHTML = runsHtml(element, useStudioFontsStore.getState().faces);
+  body.dataset.textBody = "";
+  applyCss(body, textBodyStyle(element, element.fontSize));
+  body.append(...blockNodes(blocks, useStudioFontsStore.getState().faces, false));
   frame.append(body);
   return { frame, body };
 }
 
-export async function measureTexts(elements: StudioElement[], language: string): Promise<Map<string, StudioRenderSegment[]>> {
-  const texts = elements.filter((element): element is StudioTextElement => element.kind === "text" && !element.hidden && textOf(element.runs).trim() !== "" && !hasPlaceholders(textOf(element.runs)));
-  const measured = new Map<string, StudioRenderSegment[]>();
-  if (!texts.length) return measured;
-  await ensureElementFonts(texts);
-  await document.fonts.ready;
+function offscreenHost(): HTMLDivElement {
   const host = document.createElement("div");
   host.style.cssText = "position:fixed;left:-100000px;top:0;visibility:hidden;pointer-events:none;contain:layout style";
   document.body.append(host);
+  return host;
+}
+
+export function naturalTextSize(element: StudioTextElement, language: string): { width: number; height: number } {
+  const host = offscreenHost();
+  try {
+    const { frame, body } = buildTextNode(element, language);
+    if (element.autoSize === "width") body.style.minWidth = "0";
+    host.append(frame);
+    const rect = body.getBoundingClientRect();
+    return { width: rect.width, height: rect.height };
+  } finally {
+    host.remove();
+  }
+}
+
+export function fitTextBox(element: StudioTextElement, language: string): Pick<StudioTextElement, "x" | "y" | "width" | "height"> | null {
+  if (element.autoSize !== "height" && element.autoSize !== "width") return null;
+  const natural = naturalTextSize(element, language);
+  const width = element.autoSize === "width" ? Math.max(MIN_ELEMENT_SIDE, Math.ceil(natural.width * 100) / 100) : element.width;
+  const height = Math.max(MIN_ELEMENT_SIDE, Math.ceil(natural.height * 100) / 100);
+  if (Math.abs(width - element.width) < FIT_TOLERANCE && Math.abs(height - element.height) < FIT_TOLERANCE) return null;
+  const angle = (element.rotation * Math.PI) / 180;
+  const shiftX = (0.5 - ANCHOR[element.align]) * (width - element.width);
+  const shiftY = 0.5 * (height - element.height);
+  const centreX = element.x + element.width / 2 + Math.cos(angle) * shiftX - Math.sin(angle) * shiftY;
+  const centreY = element.y + element.height / 2 + Math.sin(angle) * shiftX + Math.cos(angle) * shiftY;
+  return { x: centreX - width / 2, y: centreY - height / 2, width, height };
+}
+
+export async function measureTexts(elements: StudioElement[], language: string): Promise<Map<string, StudioMeasuredText>> {
+  const texts = elements.filter((element): element is StudioTextElement => element.kind === "text" && !element.hidden && textOf(element.runs).trim() !== "" && !hasPlaceholders(textOf(element.runs)));
+  const measured = new Map<string, StudioMeasuredText>();
+  if (!texts.length) return measured;
+  await ensureElementFonts(texts);
+  await document.fonts.ready;
+  const host = offscreenHost();
   try {
     for (const element of texts) {
       const { frame, body } = buildTextNode(element, language);
       host.append(frame);
       const size = fitTextSize(body, element);
-      measured.set(element.id, segmentsOf(frame, element, size, language));
+      measured.set(element.id, measureLayout(frame, element, size));
       frame.remove();
     }
   } finally {

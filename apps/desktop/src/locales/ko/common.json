@@ -8330,7 +8330,11 @@
         "layerOrder": "포커스된 레이어를 위 / 아래로 이동(레이어 패널)",
         "enterGroup": "그룹 안의 요소 하나 선택",
         "copyPasteStyle": "스타일 복사 / 붙여넣기",
-        "print": "인쇄…"
+        "print": "인쇄…",
+        "findReplace": "찾기 및 바꾸기",
+        "strike": "취소선",
+        "listLevel": "목록 수준 변경",
+        "alignText": "텍스트 왼쪽, 가운데, 오른쪽 맞춤(편집 중)"
       }
     },
     "view": {
@@ -8371,6 +8375,90 @@
       "tooLarge": "이 디자인은 너무 커서 자동 임시 저장을 할 수 없습니다. 작업을 잃지 않도록 프로젝트 파일로 저장하세요.",
       "failed": "자동 임시 저장을 하지 못했습니다: {{error}}",
       "loadFailed": "마지막 임시 저장본을 불러오지 못했습니다"
+    },
+    "text": {
+      "weight": "굵기",
+      "strike": "취소선",
+      "lists": "목록",
+      "bulleted": "글머리 기호 목록",
+      "numbered": "번호 매기기 목록",
+      "indent": "목록 수준 올리기",
+      "outdent": "목록 수준 내리기",
+      "listStyle": "목록 스타일",
+      "case": "대/소문자",
+      "autoSize": "상자 크기",
+      "language": "텍스트 언어",
+      "languageAuto": "앱 언어",
+      "spellCheck": "맞춤법 검사",
+      "effects": "텍스트 효과",
+      "outline": "윤곽선",
+      "outlineColor": "윤곽선 색",
+      "outlineWidth": "윤곽선 두께",
+      "shadow": "그림자",
+      "shadowHint": "글자 뒤의 선명한 그림자",
+      "shadowColor": "그림자 색",
+      "shadowX": "가로 오프셋",
+      "shadowY": "세로 오프셋",
+      "shadowOpacity": "그림자 불투명도",
+      "highlight": "형광펜",
+      "highlightColor": "형광펜 색",
+      "highlightPadding": "형광펜 여백",
+      "weights": {
+        "100": "Thin",
+        "200": "Extra Light",
+        "300": "Light",
+        "350": "Semilight",
+        "400": "보통",
+        "500": "Medium",
+        "600": "약간 굵게",
+        "700": "굵게",
+        "800": "아주 굵게",
+        "900": "Black"
+      },
+      "listKinds": {
+        "none": "목록 없음",
+        "bullet": "글머리 기호 •",
+        "dash": "대시 –",
+        "check": "확인 표시 ✓",
+        "decimal": "숫자 1.",
+        "alpha": "문자 a)",
+        "roman": "로마 숫자 i."
+      },
+      "cases": {
+        "none": "입력한 대로",
+        "upper": "모두 대문자",
+        "lower": "모두 소문자",
+        "title": "단어 첫 글자를 대문자로"
+      },
+      "autoSizes": {
+        "fixed": "고정",
+        "height": "높이 자동 조정",
+        "width": "너비 자동 조정",
+        "shrink": "텍스트를 줄여 맞추기"
+      },
+      "autoSizeHints": {
+        "fixed": "상자는 크기를 유지하고, 입력한 텍스트가 더 이상 들어가지 않을 때만 높이가 늘어납니다.",
+        "height": "상자 높이가 텍스트에 맞춰 늘어나고 줄어듭니다.",
+        "width": "상자가 각 줄에 맞게 넓어지며, Enter 키를 누른 곳에서만 줄이 바뀝니다.",
+        "shrink": "상자는 크기를 유지하고, 긴 텍스트는 들어가도록 작아집니다."
+      }
+    },
+    "find": {
+      "title": "찾기 및 바꾸기",
+      "find": "찾기",
+      "replaceWith": "바꿀 내용",
+      "toggleReplace": "바꾸기 표시",
+      "close": "닫기",
+      "matchCase": "대/소문자 구분",
+      "wholeWord": "전체 단어만",
+      "previous": "이전 항목",
+      "next": "다음 항목",
+      "replace": "바꾸기",
+      "replaceAll": "모두 바꾸기",
+      "none": "일치하는 항목이 없습니다",
+      "count": "{{current}}/{{total}}",
+      "total_one": "{{count}}개 일치",
+      "total_other": "{{count}}개 일치"
     }
   }
 }

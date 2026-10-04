@@ -36,7 +36,34 @@ export type StudioElementBase = {
   groupId: string | null;
 };
 
-export type StudioTextRun = { text: string; bold?: boolean; italic?: boolean; underline?: boolean; color?: string };
+export type StudioTextRun = {
+  text: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strike?: boolean;
+  color?: string;
+  fontId?: string;
+  scale?: number;
+  weight?: number | null;
+};
+
+export const STUDIO_TEXT_CASES = ["none", "upper", "lower", "title"] as const;
+export type StudioTextCase = (typeof STUDIO_TEXT_CASES)[number];
+
+export const STUDIO_TEXT_AUTO_SIZES = ["fixed", "height", "width", "shrink"] as const;
+export type StudioTextAutoSize = (typeof STUDIO_TEXT_AUTO_SIZES)[number];
+
+export const STUDIO_LIST_KINDS = ["none", "bullet", "dash", "check", "decimal", "alpha", "roman"] as const;
+export type StudioListKind = (typeof STUDIO_LIST_KINDS)[number];
+
+export type StudioParagraph = { list: StudioListKind; level: number };
+
+export type StudioTextOutline = { color: string; width: number };
+
+export type StudioTextShadow = { color: string; x: number; y: number; opacity: number };
+
+export type StudioTextHighlight = { color: string; padding: number };
 
 export type StudioTextAlign = "left" | "center" | "right" | "justify";
 
@@ -51,12 +78,19 @@ export type StudioTextElement = StudioElementBase & {
   bold: boolean;
   italic: boolean;
   underline: boolean;
+  strike: boolean;
+  weight: number | null;
   align: StudioTextAlign;
   verticalAlign: StudioVerticalAlign;
   lineHeight: number;
   letterSpacing: number;
-  uppercase: boolean;
-  shrinkToFit: boolean;
+  textCase: StudioTextCase;
+  autoSize: StudioTextAutoSize;
+  paragraphs: StudioParagraph[];
+  outline: StudioTextOutline | null;
+  shadow: StudioTextShadow | null;
+  highlight: StudioTextHighlight | null;
+  language: string | null;
 };
 
 export const STUDIO_SHAPES = [
@@ -211,9 +245,28 @@ export type StudioRenderSegment = {
   bold: boolean;
   italic: boolean;
   underline: boolean;
+  strike: boolean;
   color: string;
   letterSpacing: number;
+  fontId: string | null;
+  weight: number;
 };
+
+export type StudioRenderRun = {
+  text: string;
+  bold: boolean;
+  italic: boolean;
+  underline: boolean;
+  strike: boolean;
+  color: string;
+  fontId: string | null;
+  size: number;
+  weight: number;
+};
+
+export type StudioRenderBand = { x: number; y: number; width: number; height: number };
+
+export type StudioMeasuredText = { segments: StudioRenderSegment[]; bands: StudioRenderBand[] };
 
 export type StudioRenderItem =
   | (StudioRenderBox & { kind: "vector"; paths: StudioRenderPath[]; viewWidth?: number; viewHeight?: number })
@@ -222,16 +275,25 @@ export type StudioRenderItem =
   | (StudioRenderBox & { kind: "qr"; value: string; color: string; background: string | null; errorLevel: StudioQrLevel })
   | (StudioRenderBox & {
       kind: "text";
-      runs: { text: string; bold: boolean; italic: boolean; underline: boolean; color: string }[];
+      runs: StudioRenderRun[];
       fontId: string | null;
       fontSize: number;
+      color: string;
+      weight: number;
       align: StudioTextAlign;
       verticalAlign: StudioVerticalAlign;
       lineHeight: number;
       letterSpacing: number;
-      uppercase: boolean;
+      textCase: StudioTextCase;
       shrinkToFit: boolean;
+      autoWidth: boolean;
+      paragraphs: StudioParagraph[];
+      outline: StudioTextOutline | null;
+      shadow: StudioTextShadow | null;
+      highlight: StudioTextHighlight | null;
+      language?: string;
       segments?: StudioRenderSegment[];
+      bands?: StudioRenderBand[];
     });
 
 export type StudioRenderPage = { width: number; height: number; items: StudioRenderItem[] };

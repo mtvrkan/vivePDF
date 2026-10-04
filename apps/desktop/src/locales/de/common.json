@@ -8330,7 +8330,11 @@
         "layerOrder": "Fokussierte Ebene nach oben / unten verschieben (Ebenen)",
         "enterGroup": "Ein einzelnes Element in einer Gruppe auswählen",
         "copyPasteStyle": "Stil kopieren / Stil einfügen",
-        "print": "Drucken…"
+        "print": "Drucken…",
+        "findReplace": "Suchen und ersetzen",
+        "strike": "Durchgestrichen",
+        "listLevel": "Listenebene ändern",
+        "alignText": "Text links, zentriert oder rechts ausrichten (beim Bearbeiten)"
       }
     },
     "view": {
@@ -8371,6 +8375,90 @@
       "tooLarge": "Dieses Design ist zu groß für den automatischen Entwurf. Speichern Sie es als Projektdatei, damit nichts verloren geht.",
       "failed": "Der automatische Entwurf konnte nicht gespeichert werden: {{error}}",
       "loadFailed": "Der letzte Entwurf konnte nicht geladen werden"
+    },
+    "text": {
+      "weight": "Schriftstärke",
+      "strike": "Durchgestrichen",
+      "lists": "Listen",
+      "bulleted": "Aufzählung",
+      "numbered": "Nummerierte Liste",
+      "indent": "Listenebene erhöhen",
+      "outdent": "Listenebene verringern",
+      "listStyle": "Listenformat",
+      "case": "Groß-/Kleinschreibung",
+      "autoSize": "Rahmengröße",
+      "language": "Textsprache",
+      "languageAuto": "App-Sprache",
+      "spellCheck": "Rechtschreibprüfung",
+      "effects": "Texteffekte",
+      "outline": "Kontur",
+      "outlineColor": "Konturfarbe",
+      "outlineWidth": "Konturstärke",
+      "shadow": "Schatten",
+      "shadowHint": "Ein scharfer Schatten hinter den Buchstaben",
+      "shadowColor": "Schattenfarbe",
+      "shadowX": "Horizontaler Versatz",
+      "shadowY": "Vertikaler Versatz",
+      "shadowOpacity": "Schattendeckkraft",
+      "highlight": "Hervorhebung",
+      "highlightColor": "Hervorhebungsfarbe",
+      "highlightPadding": "Hervorhebungsabstand",
+      "weights": {
+        "100": "Thin",
+        "200": "Extra Light",
+        "300": "Light",
+        "350": "Semilight",
+        "400": "Normal",
+        "500": "Medium",
+        "600": "Halbfett",
+        "700": "Fett",
+        "800": "Extrafett",
+        "900": "Black"
+      },
+      "listKinds": {
+        "none": "Keine Liste",
+        "bullet": "Aufzählungszeichen •",
+        "dash": "Gedankenstrich –",
+        "check": "Häkchen ✓",
+        "decimal": "Zahlen 1.",
+        "alpha": "Buchstaben a)",
+        "roman": "Römische Zahlen i."
+      },
+      "cases": {
+        "none": "Wie eingegeben",
+        "upper": "GROSSBUCHSTABEN",
+        "lower": "kleinbuchstaben",
+        "title": "Jedes Wort Groß"
+      },
+      "autoSizes": {
+        "fixed": "Fest",
+        "height": "Automatische Höhe",
+        "width": "Automatische Breite",
+        "shrink": "Text verkleinern, bis er passt"
+      },
+      "autoSizeHints": {
+        "fixed": "Der Rahmen behält seine Größe und wird nur höher, wenn eingegebener Text nicht mehr passt.",
+        "height": "Die Rahmenhöhe folgt dem Text und wächst oder schrumpft mit.",
+        "width": "Der Rahmen wird für jede Zeile breiter; Zeilen brechen nur dort um, wo Sie die Eingabetaste drücken.",
+        "shrink": "Der Rahmen behält seine Größe; langer Text wird verkleinert, bis er passt."
+      }
+    },
+    "find": {
+      "title": "Suchen und ersetzen",
+      "find": "Suchen",
+      "replaceWith": "Ersetzen durch",
+      "toggleReplace": "Ersetzen anzeigen",
+      "close": "Schließen",
+      "matchCase": "Groß-/Kleinschreibung beachten",
+      "wholeWord": "Nur ganze Wörter",
+      "previous": "Vorheriger Treffer",
+      "next": "Nächster Treffer",
+      "replace": "Ersetzen",
+      "replaceAll": "Alle ersetzen",
+      "none": "Keine Treffer",
+      "count": "{{current}} von {{total}}",
+      "total_one": "{{count}} Treffer",
+      "total_other": "{{count}} Treffer"
     }
   }
 }

@@ -8331,7 +8331,11 @@
         "layerOrder": "Move the focused layer up / down (Layers panel)",
         "enterGroup": "Select one item inside a group",
         "copyPasteStyle": "Copy style / paste style",
-        "print": "Print…"
+        "print": "Print…",
+        "findReplace": "Find and replace",
+        "strike": "Strikethrough",
+        "listLevel": "Change list level",
+        "alignText": "Align text left, centre or right (while editing)"
       }
     },
     "view": {
@@ -8372,6 +8376,90 @@
       "tooLarge": "This design is too large for the automatic draft. Save it as a project file so nothing is lost.",
       "failed": "The automatic draft could not be saved: {{error}}",
       "loadFailed": "The last draft could not be loaded"
+    },
+    "text": {
+      "weight": "Weight",
+      "strike": "Strikethrough",
+      "lists": "Lists",
+      "bulleted": "Bulleted list",
+      "numbered": "Numbered list",
+      "indent": "Increase list level",
+      "outdent": "Decrease list level",
+      "listStyle": "List style",
+      "case": "Text case",
+      "autoSize": "Box size",
+      "language": "Text language",
+      "languageAuto": "App language",
+      "spellCheck": "Check spelling",
+      "effects": "Text effects",
+      "outline": "Outline",
+      "outlineColor": "Outline colour",
+      "outlineWidth": "Outline width",
+      "shadow": "Shadow",
+      "shadowHint": "A sharp shadow behind the letters",
+      "shadowColor": "Shadow colour",
+      "shadowX": "Horizontal offset",
+      "shadowY": "Vertical offset",
+      "shadowOpacity": "Shadow opacity",
+      "highlight": "Highlight",
+      "highlightColor": "Highlight colour",
+      "highlightPadding": "Highlight padding",
+      "weights": {
+        "100": "Thin",
+        "200": "Extra light",
+        "300": "Light",
+        "350": "Semilight",
+        "400": "Regular",
+        "500": "Medium",
+        "600": "Semibold",
+        "700": "Bold",
+        "800": "Extra bold",
+        "900": "Black"
+      },
+      "listKinds": {
+        "none": "No list",
+        "bullet": "Bullet •",
+        "dash": "Dash –",
+        "check": "Check mark ✓",
+        "decimal": "Numbers 1.",
+        "alpha": "Letters a)",
+        "roman": "Roman numerals i."
+      },
+      "cases": {
+        "none": "As typed",
+        "upper": "UPPERCASE",
+        "lower": "lowercase",
+        "title": "Title Case"
+      },
+      "autoSizes": {
+        "fixed": "Fixed",
+        "height": "Auto height",
+        "width": "Auto width",
+        "shrink": "Shrink text to fit"
+      },
+      "autoSizeHints": {
+        "fixed": "The box keeps its size and grows taller only when typed text no longer fits.",
+        "height": "The box height follows the text, growing and shrinking.",
+        "width": "The box widens to fit each line; lines break only where you press Enter.",
+        "shrink": "The box keeps its size; long text gets smaller to fit."
+      }
+    },
+    "find": {
+      "title": "Find and replace",
+      "find": "Find",
+      "replaceWith": "Replace with",
+      "toggleReplace": "Show replace",
+      "close": "Close",
+      "matchCase": "Match case",
+      "wholeWord": "Whole words only",
+      "previous": "Previous match",
+      "next": "Next match",
+      "replace": "Replace",
+      "replaceAll": "Replace all",
+      "none": "No matches",
+      "count": "{{current}} of {{total}}",
+      "total_one": "{{count}} match",
+      "total_other": "{{count}} matches"
     }
   }
 }

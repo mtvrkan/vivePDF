@@ -8331,7 +8331,11 @@
         "layerOrder": "Odaktaki katmanı yukarı / aşağı taşı (Katmanlar paneli)",
         "enterGroup": "Grubun içindeki tek bir öğeyi seç",
         "copyPasteStyle": "Stili kopyala / stili yapıştır",
-        "print": "Yazdır…"
+        "print": "Yazdır…",
+        "findReplace": "Bul ve değiştir",
+        "strike": "Üstü çizili",
+        "listLevel": "Liste düzeyini değiştir",
+        "alignText": "Metni sola, ortaya veya sağa hizala (düzenlerken)"
       }
     },
     "view": {
@@ -8372,6 +8376,90 @@
       "tooLarge": "Bu tasarım otomatik taslak için çok büyük. Çalışmanız kaybolmasın diye proje dosyası olarak kaydedin.",
       "failed": "Otomatik taslak kaydedilemedi: {{error}}",
       "loadFailed": "Son taslak yüklenemedi"
+    },
+    "text": {
+      "weight": "Kalınlık",
+      "strike": "Üstü çizili",
+      "lists": "Listeler",
+      "bulleted": "Madde işaretli liste",
+      "numbered": "Numaralı liste",
+      "indent": "Liste düzeyini artır",
+      "outdent": "Liste düzeyini azalt",
+      "listStyle": "Liste stili",
+      "case": "Büyük/küçük harf",
+      "autoSize": "Kutu boyutu",
+      "language": "Metin dili",
+      "languageAuto": "Uygulama dili",
+      "spellCheck": "Yazım denetimi",
+      "effects": "Metin efektleri",
+      "outline": "Dış çizgi",
+      "outlineColor": "Dış çizgi rengi",
+      "outlineWidth": "Dış çizgi kalınlığı",
+      "shadow": "Gölge",
+      "shadowHint": "Harflerin arkasında keskin bir gölge",
+      "shadowColor": "Gölge rengi",
+      "shadowX": "Yatay kaydırma",
+      "shadowY": "Dikey kaydırma",
+      "shadowOpacity": "Gölge opaklığı",
+      "highlight": "Vurgu",
+      "highlightColor": "Vurgu rengi",
+      "highlightPadding": "Vurgu boşluğu",
+      "weights": {
+        "100": "İnce",
+        "200": "Çok hafif",
+        "300": "Hafif",
+        "350": "Yarı hafif",
+        "400": "Normal",
+        "500": "Orta",
+        "600": "Yarı kalın",
+        "700": "Kalın",
+        "800": "Çok kalın",
+        "900": "Siyah"
+      },
+      "listKinds": {
+        "none": "Liste yok",
+        "bullet": "Madde işareti •",
+        "dash": "Tire –",
+        "check": "Onay işareti ✓",
+        "decimal": "Rakamlar 1.",
+        "alpha": "Harfler a)",
+        "roman": "Roma rakamları i."
+      },
+      "cases": {
+        "none": "Yazıldığı gibi",
+        "upper": "BÜYÜK HARF",
+        "lower": "küçük harf",
+        "title": "Baş Harfler Büyük"
+      },
+      "autoSizes": {
+        "fixed": "Sabit",
+        "height": "Otomatik yükseklik",
+        "width": "Otomatik genişlik",
+        "shrink": "Metni sığdırmak için küçült"
+      },
+      "autoSizeHints": {
+        "fixed": "Kutu boyutunu korur; yalnızca yazılan metin artık sığmadığında uzar.",
+        "height": "Kutunun yüksekliği metne uyar; büyür ve küçülür.",
+        "width": "Kutu her satıra göre genişler; satırlar yalnızca Enter'a bastığınız yerde kırılır.",
+        "shrink": "Kutu boyutunu korur; uzun metin sığmak için küçülür."
+      }
+    },
+    "find": {
+      "title": "Bul ve değiştir",
+      "find": "Bul",
+      "replaceWith": "Şununla değiştir",
+      "toggleReplace": "Değiştirmeyi göster",
+      "close": "Kapat",
+      "matchCase": "Büyük/küçük harf eşleştir",
+      "wholeWord": "Yalnızca tam sözcükler",
+      "previous": "Önceki eşleşme",
+      "next": "Sonraki eşleşme",
+      "replace": "Değiştir",
+      "replaceAll": "Tümünü değiştir",
+      "none": "Eşleşme yok",
+      "count": "{{current}} / {{total}}",
+      "total_one": "{{count}} eşleşme",
+      "total_other": "{{count}} eşleşme"
     }
   }
 }
