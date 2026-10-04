@@ -218,6 +218,24 @@ def test_a_flowchart_is_exported_with_real_text_and_opacity(tmp_path: Path):
         assert any(" .5" in entry and "/ca" in entry for entry in objects)
 
 
+def test_a_shadowed_table_casts_its_shape_and_keeps_one_copy_of_its_text(tmp_path: Path):
+    spec = _table(cells=[["{Ad}", "Not"], ["Çay", "2"]], headerFill="#ffffff")
+    height = _height(spec)
+    table = _item("table", spec, (20, 30, 200, height))
+    box = {key: table[key] for key in ("x", "y", "width", "height")}
+    shadow = {"color": "#ff0000", "opacity": 1, "x": 0, "y": 40, "blur": 0}
+    items = [{**box, "kind": "shadow", "shadow": shadow, "items": [table]}, table]
+    target = _render(tmp_path, items, rows=[{"Ad": "Ayşe"}])
+    with pymupdf.open(target) as document:
+        texts = [word[4] for word in document[0].get_text("words")]
+    assert texts.count("Ayşe") == 1
+    assert "{Ad}" not in texts
+    pixels = _pixels(target)
+    below = int(30 + height + 5)
+    assert pixels[below, 100][0] > 200 and pixels[below, 100][1] < 80
+    assert tuple(pixels[int(30 + height + 60), 100]) == (255, 255, 255)
+
+
 def test_an_svg_item_without_a_graphic_still_draws_its_markup(tmp_path: Path):
     svg = (
         '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50">'
