@@ -3711,7 +3711,8 @@
         "contextMenu": "Sayfa menüsü",
         "clipboard": "Sayfaları kopyala / kes / yapıştır",
         "nudge": "Seçili sayfaları bir adım, bir satır ya da başa / sona taşı",
-        "move": "Seçili sayfaları bir sayfa numarasına taşı"
+        "move": "Seçili sayfaları bir sayfa numarasına taşı",
+        "previewSelect": "Önizlemede: sayfayı seç / seçimi genişlet"
       },
       "blank": "boş",
       "paperSize": "Kâğıt boyutu",
@@ -3844,7 +3845,8 @@
         "originalPage": "Asıl sayfa {{page}}",
         "previous": "Önceki sayfa",
         "next": "Sonraki sayfa",
-        "hint": "← → sayfalar arasında gezer · R döndürür · Boşluk ya da Esc kapatır"
+        "hint": "← → sayfalar arasında gezer · Enter sayfayı seçer ya da seçimi kaldırır · Shift+← → seçimi genişletir · R döndürür · Boşluk ya da Esc kapatır",
+        "select": "Bu sayfayı seç"
       },
       "clipboard": {
         "copy": "Sayfaları kopyala",

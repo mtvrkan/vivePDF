@@ -3711,7 +3711,8 @@
         "insertBlank": "Inserir uma página em branco",
         "marquee": "Arraste de uma área vazia para selecionar (Ctrl inverte, Shift adiciona)",
         "preview": "Visualizar a página",
-        "range": "Selecionar por números de página"
+        "range": "Selecionar por números de página",
+        "previewSelect": "Na visualização: selecionar a página / ampliar a seleção"
       },
       "blank": "em branco",
       "paperSize": "Tamanho do papel",
@@ -3852,11 +3853,12 @@
         "title": "Etiqueta de página a partir da página {{page}}"
       },
       "preview": {
-        "hint": "← → mover entre páginas · R gira · Espaço ou Esc fecha",
+        "hint": "← → mover entre páginas · Enter seleciona ou desmarca a página · Shift+← → amplia a seleção · R gira · Espaço ou Esc fecha",
         "next": "Próxima página",
         "originalPage": "Página original {{page}}",
         "previous": "Página anterior",
-        "title": "Página {{page}} de {{total}}"
+        "title": "Página {{page}} de {{total}}",
+        "select": "Selecionar esta página"
       },
       "range": {
         "hint": "Vírgulas e intervalos, ex. 1-5, 9, 12- (até o final)",

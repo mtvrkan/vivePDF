@@ -3711,7 +3711,8 @@
         "insertBlank": "Insérer une page vierge",
         "marquee": "Glissez depuis une zone vide pour sélectionner (Ctrl inverse, Maj ajoute)",
         "preview": "Afficher l’aperçu de la page",
-        "range": "Sélectionner par numéros de page"
+        "range": "Sélectionner par numéros de page",
+        "previewSelect": "Dans l’aperçu : sélectionner la page / étendre la sélection"
       },
       "blank": "blanc",
       "paperSize": "Format de papier",
@@ -3852,11 +3853,12 @@
         "title": "Étiquette de page à partir de la page {{page}}"
       },
       "preview": {
-        "hint": "← → se déplacer entre les pages · R pivote · Espace ou Échap ferme",
+        "hint": "← → se déplacer entre les pages · Entrée sélectionne ou désélectionne la page · Maj+← → étend la sélection · R pivote · Espace ou Échap ferme",
         "next": "Page suivante",
         "originalPage": "Page d’origine {{page}}",
         "previous": "Page précédente",
-        "title": "Page {{page}} sur {{total}}"
+        "title": "Page {{page}} sur {{total}}",
+        "select": "Sélectionner cette page"
       },
       "range": {
         "hint": "Virgules et plages, ex. 1-5, 9, 12- (jusqu’à la fin)",

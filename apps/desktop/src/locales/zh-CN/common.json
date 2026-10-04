@@ -3711,7 +3711,8 @@
         "insertBlank": "插入一张空白页",
         "marquee": "从空白区域拖动进行选择（Ctrl 反选，Shift 添加）",
         "preview": "预览页面",
-        "range": "按页码选择"
+        "range": "按页码选择",
+        "previewSelect": "预览中：选择页面 / 扩展选择范围"
       },
       "blank": "空白",
       "paperSize": "纸张大小",
@@ -3852,11 +3853,12 @@
         "title": "从第 {{page}} 页开始的页面标签"
       },
       "preview": {
-        "hint": "← → 切换页面 · R 旋转 · 空格键或 Esc 关闭",
+        "hint": "← → 切换页面 · Enter 选择或取消选择该页 · Shift+← → 扩展选择范围 · R 旋转 · 空格键或 Esc 关闭",
         "next": "下一页",
         "originalPage": "原始页面 {{page}}",
         "previous": "上一页",
-        "title": "第 {{page}} 页，共 {{total}} 页"
+        "title": "第 {{page}} 页，共 {{total}} 页",
+        "select": "选择此页"
       },
       "range": {
         "hint": "逗号和范围，例如 1-5, 9, 12-（到末尾）",

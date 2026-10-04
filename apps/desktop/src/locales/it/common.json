@@ -3711,7 +3711,8 @@
         "insertBlank": "Inserisci una pagina vuota",
         "marquee": "Trascina da un'area vuota per selezionare (Ctrl inverte, Maiusc aggiunge)",
         "preview": "Visualizza l'anteprima della pagina",
-        "range": "Seleziona per numeri di pagina"
+        "range": "Seleziona per numeri di pagina",
+        "previewSelect": "Nell'anteprima: seleziona la pagina / estendi la selezione"
       },
       "blank": "vuota",
       "paperSize": "Formato carta",
@@ -3852,11 +3853,12 @@
         "title": "Etichetta di pagina dalla pagina {{page}}"
       },
       "preview": {
-        "hint": "← → passa tra le pagine · R ruota · Spazio o Esc chiude",
+        "hint": "← → passa tra le pagine · Invio seleziona o deseleziona la pagina · Maiusc+← → estende la selezione · R ruota · Spazio o Esc chiude",
         "next": "Pagina successiva",
         "originalPage": "Pagina originale {{page}}",
         "previous": "Pagina precedente",
-        "title": "Pagina {{page}} di {{total}}"
+        "title": "Pagina {{page}} di {{total}}",
+        "select": "Seleziona questa pagina"
       },
       "range": {
         "hint": "Virgole e intervalli, es. 1-5, 9, 12- (fino alla fine)",

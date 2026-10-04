@@ -12,7 +12,6 @@ export type TileActions = {
   pointerDown: (event: PointerEvent, key: string) => void;
   click: (event: MouseEvent, key: string) => void;
   check: (event: MouseEvent, key: string) => void;
-  open: (tile: OrganizerTile) => void;
   menu: (key: string, x: number, y: number) => void;
   toggleCut: (key: string) => void;
 };
@@ -27,7 +26,7 @@ type PageTileProps = {
   dropBefore: boolean;
   dropAfter: boolean;
   dimmed: boolean;
-  checkboxShown: boolean;
+  clickPreviews: boolean;
   labelText: string | null;
   labelStart: boolean;
   sources: Record<string, OrganizerSource>;
@@ -36,7 +35,7 @@ type PageTileProps = {
   actions: TileActions;
 };
 
-export const PageTile = memo(function PageTile({ tile, position, total, isLast, isSelected, isCut, dropBefore, dropAfter, dimmed, checkboxShown, labelText, labelStart, sources, width, height, actions }: PageTileProps) {
+export const PageTile = memo(function PageTile({ tile, position, total, isLast, isSelected, isCut, dropBefore, dropAfter, dimmed, clickPreviews, labelText, labelStart, sources, width, height, actions }: PageTileProps) {
   const { t } = useTranslation();
   return (
     <li
@@ -49,15 +48,15 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
       data-tile-key={tile.key}
       onPointerDown={(event) => actions.pointerDown(event, tile.key)}
       onClick={(event) => actions.click(event, tile.key)}
-      onDoubleClick={() => actions.open(tile)}
       onContextMenu={(event) => {
         event.preventDefault();
         actions.menu(tile.key, event.clientX, event.clientY);
       }}
       aria-selected={isSelected}
       className={cn(
-        "card group relative flex cursor-default touch-none flex-col gap-1.5 rounded-xl p-2 select-none transition-[transform,box-shadow,border-color] duration-(--transition-fast)",
+        "card group relative flex touch-none flex-col gap-1.5 rounded-xl p-2 select-none transition-[transform,box-shadow,border-color] duration-(--transition-fast)",
         "hover:z-10 focus-within:z-10",
+        clickPreviews ? "cursor-zoom-in" : "cursor-default",
         isSelected ? "border-primary ring-4 ring-primary/20" : "hover:-translate-y-0.5 hover:border-primary/40",
         dimmed ? "opacity-40" : "",
       )}
@@ -72,12 +71,10 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
         aria-label={t("tools.pages.selectPage", { page: position + 1 })}
         title={t("tools.pages.selectPageHint")}
         onPointerDown={(event) => event.stopPropagation()}
-        onDoubleClick={(event) => event.stopPropagation()}
         onClick={(event) => actions.check(event, tile.key)}
         className={cn(
-          "absolute start-3 top-3 z-10 flex size-6 items-center justify-center rounded-md border shadow-md transition-opacity duration-(--transition-fast) focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          isSelected ? "border-primary bg-primary text-primary-foreground opacity-100" : "bg-card text-transparent hover:text-muted-foreground group-hover:opacity-100",
-          !isSelected && (checkboxShown ? "opacity-100" : "opacity-0"),
+          "absolute start-3 top-3 z-10 flex size-6 cursor-pointer items-center justify-center rounded-md border shadow-md transition-colors duration-(--transition-fast) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          isSelected ? "border-primary bg-primary text-primary-foreground" : "bg-card text-transparent hover:border-primary/60 hover:text-muted-foreground",
         )}
       >
         <Check className="size-4" aria-hidden />
@@ -89,8 +86,7 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
           aria-pressed={isCut}
           title={t("tools.pages.cutAfter", { page: position + 1 })}
           onPointerDown={(event) => event.stopPropagation()}
-          onDoubleClick={(event) => event.stopPropagation()}
-          onClick={(event) => {
+            onClick={(event) => {
             event.stopPropagation();
             actions.toggleCut(tile.key);
           }}

@@ -6,6 +6,10 @@ const SCROLL_STEP = 14;
 
 type DragState = { key: string; count: number; x: number; y: number };
 
+export function passedDragThreshold(startX: number, startY: number, x: number, y: number): boolean {
+  return Math.hypot(x - startX, y - startY) >= DRAG_THRESHOLD;
+}
+
 type UseTileDragOptions = {
   scrollRef: RefObject<HTMLElement | null>;
   dropIndexAt: (clientX: number, clientY: number) => number;
@@ -47,7 +51,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
       pointerRef.current = { x: event.clientX, y: event.clientY };
       const pending = pendingRef.current;
       if (pending && !dragRef.current) {
-        if (Math.hypot(event.clientX - pending.startX, event.clientY - pending.startY) < DRAG_THRESHOLD) return;
+        if (!passedDragThreshold(pending.startX, pending.startY, event.clientX, event.clientY)) return;
         const count = selectedKeys.has(pending.key) ? selectedKeys.size : 1;
         dragRef.current = { key: pending.key, count, x: event.clientX, y: event.clientY };
         setDrag(dragRef.current);

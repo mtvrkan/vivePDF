@@ -1,10 +1,11 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft, ChevronRight, RotateCcw, RotateCw } from "lucide-react";
+import { BookOpen, Check, ChevronLeft, ChevronRight, RotateCcw, RotateCw } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
 import { Field, SelectInput, SwitchField, TextInput } from "@/components/tool/form";
+import { cn } from "@/shared/lib/cn";
 import type { OrganizerSource, OrganizerTile, PageLabelStyle } from "@/types";
 import { MAIN_SOURCE_ID } from "./organizerStore";
 import { formatLabel, type TileLabel } from "./organizerTools";
@@ -19,12 +20,22 @@ type PreviewProps = {
   total: number;
   label: string | null;
   sources: Record<string, OrganizerSource>;
+  selected: boolean;
+  selectedCount: number;
   onClose: () => void;
-  onStep: (delta: number) => void;
+  onStep: (delta: number, extend: boolean) => void;
   onRotate: (delta: 90 | -90) => void;
+  onToggleSelect: () => void;
+  onOpenInViewer: (() => void) | null;
 };
 
-export function PagePreviewDialog({ tile, position, total, label, sources, onClose, onStep, onRotate }: PreviewProps) {
+function pressesOtherButton(target: EventTarget | null): boolean {
+  if (!(target instanceof Element)) return false;
+  const control = target.closest("button, a[href], [role='button']");
+  return control !== null && !control.hasAttribute("data-preview-select");
+}
+
+export function PagePreviewDialog({ tile, position, total, label, sources, selected, selectedCount, onClose, onStep, onRotate, onToggleSelect, onOpenInViewer }: PreviewProps) {
   const { t } = useTranslation();
   const open = tile !== null;
 
@@ -34,10 +45,13 @@ export function PagePreviewDialog({ tile, position, total, label, sources, onClo
       if (event.ctrlKey || event.metaKey || event.altKey) return;
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
         event.preventDefault();
-        onStep(event.key === "ArrowLeft" ? -1 : 1);
+        onStep(event.key === "ArrowLeft" ? -1 : 1, event.shiftKey);
       } else if (event.key === " ") {
         event.preventDefault();
         onClose();
+      } else if (event.key === "Enter" && !event.shiftKey && !event.repeat && !pressesOtherButton(event.target)) {
+        event.preventDefault();
+        onToggleSelect();
       } else if (event.key.toLowerCase() === "r") {
         event.preventDefault();
         onRotate(event.shiftKey ? -90 : 90);
@@ -45,7 +59,7 @@ export function PagePreviewDialog({ tile, position, total, label, sources, onClo
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [open, onClose, onStep, onRotate]);
+  }, [open, onClose, onStep, onRotate, onToggleSelect]);
 
   if (!tile) return null;
   const origin =
@@ -60,12 +74,41 @@ export function PagePreviewDialog({ tile, position, total, label, sources, onClo
   return (
     <Dialog open title={t("tools.pages.preview.title", { page: position + 1, total })} onClose={onClose} size="xl">
       <div data-testid="page-preview" className="space-y-3">
-        <PageThumbnail tile={tile} sources={sources} width={PREVIEW_WIDTH} height={Math.round(window.innerHeight * 0.62)} className="rounded-lg" />
+        <PageThumbnail
+          tile={tile}
+          sources={sources}
+          width={PREVIEW_WIDTH}
+          height={Math.round(window.innerHeight * 0.62)}
+          className={cn("rounded-lg transition-shadow duration-(--transition-fast)", selected && "ring-4 ring-primary/40")}
+        />
         <div className="flex flex-wrap items-center gap-2">
-          <IconButton icon={ChevronLeft} label={t("tools.pages.preview.previous")} shortcut="←" disabled={position === 0} onClick={() => onStep(-1)} />
-          <IconButton icon={ChevronRight} label={t("tools.pages.preview.next")} shortcut="→" disabled={position >= total - 1} onClick={() => onStep(1)} />
+          <button
+            type="button"
+            role="checkbox"
+            aria-checked={selected}
+            aria-keyshortcuts="Enter"
+            title={`${t("tools.pages.preview.select")} (Enter)`}
+            data-preview-select=""
+            onClick={onToggleSelect}
+            className={cn(
+              "inline-flex h-8 items-center gap-2 rounded-lg border px-2.5 text-sm font-medium outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
+              selected ? "border-primary bg-primary/10 text-foreground" : "bg-card text-foreground/80 hover:border-primary/40 hover:text-foreground",
+            )}
+          >
+            <span aria-hidden className={cn("flex size-5 items-center justify-center rounded-md border", selected ? "border-primary bg-primary text-primary-foreground" : "bg-card text-transparent")}>
+              <Check className="size-3.5" />
+            </span>
+            {t("tools.pages.preview.select")}
+          </button>
+          <span role="status" className="text-xs text-muted-foreground tabular-nums">
+            {t("tools.pages.selectedCount", { count: selectedCount })}
+          </span>
+          <span className="mx-1 h-5 w-px bg-border" aria-hidden />
+          <IconButton icon={ChevronLeft} label={t("tools.pages.preview.previous")} shortcut="← / Shift+←" disabled={position === 0} onClick={(event) => onStep(-1, event.shiftKey)} />
+          <IconButton icon={ChevronRight} label={t("tools.pages.preview.next")} shortcut="→ / Shift+→" disabled={position >= total - 1} onClick={(event) => onStep(1, event.shiftKey)} />
           <IconButton icon={RotateCcw} label={t("tools.pages.rotateLeft")} shortcut="Shift+R" onClick={() => onRotate(-90)} />
           <IconButton icon={RotateCw} label={t("tools.pages.rotateRight")} shortcut="R" onClick={() => onRotate(90)} />
+          {onOpenInViewer ? <IconButton icon={BookOpen} label={t("tools.pages.menu.openInViewer")} onClick={onOpenInViewer} /> : null}
           <p className="min-w-0 flex-1 truncate text-end text-sm text-muted-foreground">
             {origin}
             {label ? ` · ${t("tools.pages.labels.shown", { label })}` : ""}

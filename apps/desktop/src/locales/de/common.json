@@ -3711,7 +3711,8 @@
         "insertBlank": "Eine leere Seite einfügen",
         "marquee": "Von einem leeren Bereich aus ziehen, um auszuwählen (Strg kehrt um, Umschalt fügt hinzu)",
         "preview": "Die Seite in der Vorschau anzeigen",
-        "range": "Nach Seitenzahlen auswählen"
+        "range": "Nach Seitenzahlen auswählen",
+        "previewSelect": "In der Vorschau: Seite auswählen / Auswahl erweitern"
       },
       "blank": "leer",
       "paperSize": "Papiergröße",
@@ -3852,11 +3853,12 @@
         "title": "Seitenbeschriftung ab Seite {{page}}"
       },
       "preview": {
-        "hint": "← → zwischen Seiten wechseln · R dreht · Leertaste oder Esc schließt",
+        "hint": "← → zwischen Seiten wechseln · Enter wählt die Seite aus oder ab · Umschalt+← → erweitert die Auswahl · R dreht · Leertaste oder Esc schließt",
         "next": "Nächste Seite",
         "originalPage": "Originalseite {{page}}",
         "previous": "Vorherige Seite",
-        "title": "Seite {{page}} von {{total}}"
+        "title": "Seite {{page}} von {{total}}",
+        "select": "Diese Seite auswählen"
       },
       "range": {
         "hint": "Kommas und Bereiche, z. B. 1-5, 9, 12- (bis zum Ende)",
