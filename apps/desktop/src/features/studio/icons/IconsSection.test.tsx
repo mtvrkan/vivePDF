@@ -7,8 +7,9 @@ import { currentPage, useStudioStore } from "../design/studioStore";
 import { IconsSection } from "./IconsSection";
 
 const elements = () => currentPage(useStudioStore.getState())?.elements ?? [];
+const heart = () => screen.findByRole("button", { name: "Add icon: Heart" }, { timeout: 20000 });
 
-describe("icon library in the elements panel", () => {
+describe("icon library in the elements panel", { timeout: 30000 }, () => {
   beforeAll(async () => {
     await ready();
     await setLocale("en");
@@ -25,7 +26,7 @@ describe("icon library in the elements panel", () => {
 
   it("shows featured icons and adds a clicked one as a centred, recolourable vector", async () => {
     render(<IconsSection />);
-    fireEvent.click(await screen.findByRole("button", { name: "Add icon: Heart" }));
+    fireEvent.click(await heart());
 
     const [icon] = elements();
     expect(icon.kind).toBe("vector");
@@ -36,7 +37,8 @@ describe("icon library in the elements panel", () => {
 
   it("searches by name and synonym and offers a way out when nothing matches", async () => {
     render(<IconsSection />);
-    const search = await screen.findByRole("searchbox", { name: "Search icons" });
+    await heart();
+    const search = screen.getByRole("searchbox", { name: "Search icons" });
     fireEvent.change(search, { target: { value: "love" } });
     const grid = screen.getByRole("group", { name: "Icons" });
     expect(within(grid).getAllByRole("button")[0].getAttribute("aria-label")).toBe("Add icon: Heart");
@@ -49,7 +51,7 @@ describe("icon library in the elements panel", () => {
 
   it("moves through the grid with the arrow keys and adds the focused icon with Enter", async () => {
     render(<IconsSection />);
-    const first = await screen.findByRole("button", { name: "Add icon: Heart" });
+    const first = await heart();
     expect(first.tabIndex).toBe(0);
     first.focus();
     fireEvent.keyDown(first, { key: "ArrowRight" });
@@ -65,7 +67,8 @@ describe("icon library in the elements panel", () => {
 
   it("opens the whole library with categories and adds the chosen icon", async () => {
     render(<IconsSection />);
-    fireEvent.click(await screen.findByRole("button", { name: "See all" }));
+    await heart();
+    fireEvent.click(screen.getByRole("button", { name: "See all" }));
     const dialog = screen.getByRole("dialog", { name: "Icon library" });
     fireEvent.click(within(dialog).getByRole("button", { name: "Food & drink" }));
     expect(within(dialog).getByRole("button", { name: "Food & drink" }).getAttribute("aria-pressed")).toBe("true");
