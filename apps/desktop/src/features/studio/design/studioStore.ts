@@ -1,15 +1,13 @@
 import { create } from "zustand";
 import type { StudioDesign, StudioElement, StudioPage } from "@/types/studio";
-import { normalizeDesign } from "../model/design";
 import { addElements, duplicateElements, expandToGroups, removeElements, updatePage } from "../model/edit";
+import { flushDraft, scheduleDraft } from "./draftStorage";
 
-export const STUDIO_DRAFT_KEY = "vivepdf.studioDraft";
 export const HISTORY_LIMIT = 100;
 export const MERGE_WINDOW_MS = 800;
 export const MIN_ZOOM = 0.05;
 export const MAX_ZOOM = 8;
 const PASTE_OFFSET = 12;
-const DRAFT_DELAY_MS = 600;
 
 type ChangeOptions = { merge?: string };
 
@@ -53,36 +51,6 @@ type StudioState = {
   remove: () => void;
 };
 
-let draftTimer: ReturnType<typeof setTimeout> | null = null;
-
-function storeDraft(design: StudioDesign, filePath: string | null) {
-  try {
-    localStorage.setItem(STUDIO_DRAFT_KEY, JSON.stringify({ design, filePath }));
-  } catch {
-    return;
-  }
-}
-
-function writeDraft(design: StudioDesign, filePath: string | null) {
-  if (draftTimer) clearTimeout(draftTimer);
-  draftTimer = setTimeout(() => {
-    draftTimer = null;
-    storeDraft(design, filePath);
-  }, DRAFT_DELAY_MS);
-}
-
-export function readDraft(): { design: StudioDesign; filePath: string | null } | null {
-  try {
-    const raw = localStorage.getItem(STUDIO_DRAFT_KEY);
-    if (!raw) return null;
-    const parsed = JSON.parse(raw) as { design?: unknown; filePath?: unknown };
-    const design = normalizeDesign(parsed.design);
-    return design ? { design, filePath: typeof parsed.filePath === "string" ? parsed.filePath : null } : null;
-  } catch {
-    return null;
-  }
-}
-
 export function currentPage(state: Pick<StudioState, "design" | "pageId">): StudioPage | null {
   const design = state.design;
   if (!design) return null;
@@ -120,14 +88,14 @@ export const useStudioStore = create<StudioState>((set, get) => {
     const past = merging ? state.past : [...state.past, current].slice(-HISTORY_LIMIT);
     const pageId = next.pages.some((page) => page.id === state.pageId) ? state.pageId : next.pages[0].id;
     set({ design: next, past, future: [], dirty: true, mergeKey: options?.merge ?? null, mergeAt: now, pageId, selection: validSelection(next, pageId, state.selection) });
-    writeDraft(next, state.filePath);
+    scheduleDraft(next, state.filePath);
   };
 
   const restore = (design: StudioDesign, past: StudioDesign[], future: StudioDesign[]) => {
     const state = get();
     const pageId = design.pages.some((page) => page.id === state.pageId) ? state.pageId : design.pages[0].id;
     set({ design, past, future, dirty: true, mergeKey: null, pageId, selection: validSelection(design, pageId, state.selection), editingId: null });
-    writeDraft(design, state.filePath);
+    scheduleDraft(design, state.filePath);
   };
 
   const pasteClipboard = (offset: number) => {
@@ -158,13 +126,12 @@ export const useStudioStore = create<StudioState>((set, get) => {
     clipboard: null,
     open: (design, filePath = null) => {
       set({ design, filePath, dirty: false, pageId: design.pages[0].id, selection: [], groupScope: null, editingId: null, past: [], future: [], mergeKey: null, fit: true });
-      writeDraft(design, filePath);
+      scheduleDraft(design, filePath);
     },
     close: () => {
       const state = get();
-      if (draftTimer) clearTimeout(draftTimer);
-      draftTimer = null;
-      if (state.design) storeDraft(state.design, state.filePath);
+      if (state.design) scheduleDraft(state.design, state.filePath);
+      void flushDraft();
       set({ design: null, filePath: null, dirty: false, pageId: null, selection: [], groupScope: null, editingId: null, past: [], future: [] });
     },
     apply: (change, options) => {
@@ -186,7 +153,7 @@ export const useStudioStore = create<StudioState>((set, get) => {
       const state = get();
       if (!state.design || state.design === before) return;
       set({ past: [...state.past, before].slice(-HISTORY_LIMIT), future: [], dirty: true, mergeKey: null });
-      writeDraft(state.design, state.filePath);
+      scheduleDraft(state.design, state.filePath);
     },
     undo: () => {
       const state = get();
@@ -224,7 +191,7 @@ export const useStudioStore = create<StudioState>((set, get) => {
     markSaved: (filePath) => {
       set({ filePath, dirty: false });
       const design = get().design;
-      if (design) writeDraft(design, filePath);
+      if (design) scheduleDraft(design, filePath);
     },
     copy: () => {
       const elements = selectedElements(get());

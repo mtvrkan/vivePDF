@@ -290,6 +290,9 @@ import type {
   StudioDocumentContent,
   StudioDocumentPage,
   StudioDocumentPreview,
+  StudioDraftLoadResult,
+  StudioDraftSaveParams,
+  StudioDraftSaveResult,
   StudioImageInfo,
   StudioImportedSvg,
   StudioProjectOpenResult,
@@ -665,7 +668,12 @@ export const studioThumbnail = (params: StudioThumbnailParams, options?: RpcCall
 export const studioOpenProject = (params: { path: string; password?: string | null }, options?: RpcCallOptions) =>
   rpc<StudioProjectOpenResult>("studio.open_project", params, options);
 
-export const studioRenderDocument = (params: StudioDocumentContent & { output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
+export const studioSaveDraft = (params: StudioDraftSaveParams, options?: RpcCallOptions) =>
+  rpc<StudioDraftSaveResult>("studio.save_draft", params, options);
+
+export const studioLoadDraft = (options?: RpcCallOptions) => rpc<StudioDraftLoadResult>("studio.load_draft", {}, options);
+
+export const studioRenderDocument =(params: StudioDocumentContent & { output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
   rpc<OutputResult>("studio.render_document", params, options);
 
 export const studioPreviewDocument = (params: StudioDocumentContent, options?: RpcCallOptions) =>
