@@ -1,5 +1,5 @@
 import { renderHook } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, onTestFinished, vi } from "vitest";
 import { installBrowserKeyGuard } from "@/shared/lib/browserKeys";
 import { addElements } from "../model/edit";
 import { createDesign, createShape, createText } from "../model/design";
@@ -100,7 +100,8 @@ describe("studio shortcuts", () => {
   });
 
   it("copies and pastes style with Ctrl+Alt+C and Ctrl+Alt+V by key position, but never while typing", () => {
-    renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    const { unmount } = renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    onTestFinished(unmount);
     const state = useStudioStore.getState();
     const [first, second] = state.design?.pages[0].elements ?? [];
     state.applyToPage((page) => ({ ...page, elements: page.elements.map((element) => (element.id === first.id ? { ...element, opacity: 0.4 } : element)) }));
