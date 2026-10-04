@@ -8253,8 +8253,24 @@
         "rotateStep": "Pivoter par pas de 15°",
         "headings": "Titre 1 / 2 / 3",
         "lists": "Liste à puces / numérotée",
-        "lineBreak": "Saut de ligne sans nouveau paragraphe"
+        "lineBreak": "Saut de ligne sans nouveau paragraphe",
+        "rulers": "Afficher ou masquer les règles",
+        "guides": "Afficher ou masquer les repères",
+        "margins": "Afficher ou masquer les marges",
+        "duplicateDrag": "Dupliquer en faisant glisser"
       }
+    },
+    "view": {
+      "menu": "Affichage",
+      "rulers": "Règles",
+      "guides": "Repères",
+      "margins": "Marges",
+      "bleed": "Fond perdu (3 mm)",
+      "snap": "Magnétisme",
+      "marginSize": "Marges de page",
+      "clearGuides": "Supprimer les repères de cette page",
+      "rulerHint": "Faites glisser sur la page pour ajouter un repère, ou double-cliquez pour en ajouter un ici",
+      "guideHint": "Faites glisser pour déplacer ; faites glisser sur une règle ou double-cliquez pour supprimer"
     }
   }
 }

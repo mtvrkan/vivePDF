@@ -8253,8 +8253,24 @@
         "rotateStep": "Girar en pasos de 15°",
         "headings": "Título 1 / 2 / 3",
         "lists": "Lista con viñetas / numerada",
-        "lineBreak": "Salto de línea sin crear un párrafo nuevo"
+        "lineBreak": "Salto de línea sin crear un párrafo nuevo",
+        "rulers": "Mostrar u ocultar las reglas",
+        "guides": "Mostrar u ocultar las guías",
+        "margins": "Mostrar u ocultar los márgenes",
+        "duplicateDrag": "Duplicar al arrastrar"
       }
+    },
+    "view": {
+      "menu": "Vista",
+      "rulers": "Reglas",
+      "guides": "Guías",
+      "margins": "Márgenes",
+      "bleed": "Sangrado (3 mm)",
+      "snap": "Ajuste automático",
+      "marginSize": "Márgenes de página",
+      "clearGuides": "Quitar las guías de esta página",
+      "rulerHint": "Arrastre hasta la página para añadir una guía o haga doble clic para añadirla aquí",
+      "guideHint": "Arrastre para mover; arrástrela a una regla o haga doble clic para quitarla"
     }
   }
 }

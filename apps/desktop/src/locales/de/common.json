@@ -8253,8 +8253,24 @@
         "rotateStep": "In 15°-Schritten drehen",
         "headings": "Überschrift 1 / 2 / 3",
         "lists": "Aufzählung / Nummerierung",
-        "lineBreak": "Zeilenumbruch ohne neuen Absatz"
+        "lineBreak": "Zeilenumbruch ohne neuen Absatz",
+        "rulers": "Lineale ein- oder ausblenden",
+        "guides": "Hilfslinien ein- oder ausblenden",
+        "margins": "Ränder ein- oder ausblenden",
+        "duplicateDrag": "Beim Ziehen duplizieren"
       }
+    },
+    "view": {
+      "menu": "Ansicht",
+      "rulers": "Lineale",
+      "guides": "Hilfslinien",
+      "margins": "Ränder",
+      "bleed": "Beschnittzugabe (3 mm)",
+      "snap": "Einrasten",
+      "marginSize": "Seitenränder",
+      "clearGuides": "Hilfslinien auf dieser Seite entfernen",
+      "rulerHint": "Auf die Seite ziehen, um eine Hilfslinie hinzuzufügen, oder doppelklicken, um hier eine hinzuzufügen",
+      "guideHint": "Zum Verschieben ziehen; zum Entfernen auf ein Lineal ziehen oder doppelklicken"
     }
   }
 }

@@ -10,6 +10,7 @@ import { insertShape, insertText, TEXT_PRESETS } from "./insert";
 import { withElementStyle } from "./richText";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { textEditorBridge } from "./textEditorBridge";
+import { useViewPrefs, type StudioViewOption } from "./viewPrefs";
 
 const NUDGE = 1;
 const NUDGE_FAR = 10;
@@ -21,6 +22,7 @@ const ARROWS: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRigh
 const TOOL_SHAPES: Record<string, StudioShapeKind> = { r: "rect", o: "ellipse", l: "line" };
 const CONTROL_KEYS = new Set(["Enter", " ", "ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"]);
 const BODY_PRESET = TEXT_PRESETS[TEXT_PRESETS.length - 1];
+const VIEW_KEYS: Record<string, StudioViewOption> = { r: "rulers", g: "guides", m: "margins" };
 
 export type StudioShortcutActions = { onOpen?: () => void; onHelp?: () => void };
 
@@ -80,6 +82,7 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         if (letter === "g") return run(event.shiftKey ? ungroup : group);
         if (letter === "l" && event.shiftKey) return run(toggleLock);
         if (letter === "h" && event.shiftKey) return run(toggleHiddenSelection);
+        if (letter === "r" && !event.shiftKey) return run(() => useViewPrefs.getState().toggle("rulers"));
         const zoom = zoomKey(event);
         if (zoom === "in") return run(() => state.setZoom(state.zoom * ZOOM_STEP));
         if (zoom === "out") return run(() => state.setZoom(state.zoom / ZOOM_STEP));
@@ -121,6 +124,8 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         const digit = digitKey(event);
         if (digit === 1) return run(state.setFit);
         if (digit === 2) return run(() => canvasBridge.current?.zoomToSelection());
+        const view = letter ? VIEW_KEYS[letter] : undefined;
+        if (view) return run(() => useViewPrefs.getState().toggle(view));
         return;
       }
       const page = currentPage(state);

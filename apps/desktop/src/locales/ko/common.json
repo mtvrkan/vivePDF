@@ -8253,8 +8253,24 @@
         "rotateStep": "15° 단위로 회전",
         "headings": "제목 1 / 2 / 3",
         "lists": "글머리 기호 / 번호 매기기 목록",
-        "lineBreak": "새 문단 없이 줄 바꾸기"
+        "lineBreak": "새 문단 없이 줄 바꾸기",
+        "rulers": "눈금자 표시 또는 숨기기",
+        "guides": "안내선 표시 또는 숨기기",
+        "margins": "여백 표시 또는 숨기기",
+        "duplicateDrag": "끌면서 복제"
       }
+    },
+    "view": {
+      "menu": "보기",
+      "rulers": "눈금자",
+      "guides": "안내선",
+      "margins": "여백",
+      "bleed": "도련 영역(3mm)",
+      "snap": "스냅",
+      "marginSize": "페이지 여백",
+      "clearGuides": "이 페이지의 안내선 제거",
+      "rulerHint": "페이지로 끌어 안내선을 추가하거나 두 번 클릭하여 여기에 추가하세요",
+      "guideHint": "끌어서 이동하세요. 눈금자로 끌거나 두 번 클릭하면 제거됩니다"
     }
   }
 }

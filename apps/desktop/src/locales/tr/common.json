@@ -8254,8 +8254,24 @@
         "rotateStep": "15°'lik adımlarla döndür",
         "headings": "Başlık 1 / 2 / 3",
         "lists": "Madde işaretli / numaralı liste",
-        "lineBreak": "Yeni paragraf açmadan alt satıra geç"
+        "lineBreak": "Yeni paragraf açmadan alt satıra geç",
+        "rulers": "Cetvelleri göster ya da gizle",
+        "guides": "Kılavuz çizgilerini göster ya da gizle",
+        "margins": "Kenar boşluklarını göster ya da gizle",
+        "duplicateDrag": "Sürüklerken çoğalt"
       }
+    },
+    "view": {
+      "menu": "Görünüm",
+      "rulers": "Cetveller",
+      "guides": "Kılavuz çizgileri",
+      "margins": "Kenar boşlukları",
+      "bleed": "Taşma payı (3 mm)",
+      "snap": "Hizalamaya yapışma",
+      "marginSize": "Sayfa kenar boşluğu",
+      "clearGuides": "Bu sayfadaki kılavuz çizgilerini kaldır",
+      "rulerHint": "Kılavuz çizgisi eklemek için sayfaya sürükleyin ya da buraya eklemek için çift tıklayın",
+      "guideHint": "Taşımak için sürükleyin; kaldırmak için cetvele sürükleyin ya da çift tıklayın"
     }
   }
 }

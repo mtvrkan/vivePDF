@@ -5,6 +5,7 @@ import { addElements } from "../model/edit";
 import { createDesign, createShape, createText } from "../model/design";
 import { useStudioStore } from "./studioStore";
 import { useStudioShortcuts } from "./useStudioShortcuts";
+import { DEFAULT_VIEW_PREFS, useViewPrefs } from "./viewPrefs";
 
 function press(key: string, options: KeyboardEventInit = {}, target: EventTarget = window) {
   target.dispatchEvent(new KeyboardEvent("keydown", { key, ctrlKey: true, bubbles: true, cancelable: true, ...options }));
@@ -115,5 +116,29 @@ describe("studio shortcuts", () => {
     expect(elements).toHaveLength(3);
     expect(elements[2]).toMatchObject({ x: first.x, y: first.y });
     expect(useStudioStore.getState().editingId).toBeNull();
+  });
+
+  it("toggles rulers, guides and margins with layout-safe keys, also with Ctrl+R past the reload guard", () => {
+    useViewPrefs.setState(DEFAULT_VIEW_PREFS);
+    renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+
+    press("R", { ctrlKey: false, shiftKey: true, code: "KeyR" });
+    expect(useViewPrefs.getState().rulers).toBe(false);
+    press("r");
+    expect(useViewPrefs.getState().rulers).toBe(true);
+    press("G", { ctrlKey: false, shiftKey: true, code: "KeyG" });
+    press("M", { ctrlKey: false, shiftKey: true, code: "KeyM" });
+
+    expect(useViewPrefs.getState()).toMatchObject({ guides: false, margins: false, rulers: true });
+  });
+
+  it("leaves the view alone while a field is being typed in", () => {
+    useViewPrefs.setState(DEFAULT_VIEW_PREFS);
+    renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    const input = document.body.appendChild(document.createElement("input"));
+
+    press("R", { ctrlKey: false, shiftKey: true, code: "KeyR" }, input);
+
+    expect(useViewPrefs.getState().rulers).toBe(true);
   });
 });

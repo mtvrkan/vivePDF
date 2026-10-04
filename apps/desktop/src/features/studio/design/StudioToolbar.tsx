@@ -6,6 +6,7 @@ import { canGroup, canUngroup, group, ungroup } from "./commands";
 import { basenameOf } from "@/shared/lib/paths";
 import { useStudioStore } from "./studioStore";
 import { useDesignSave } from "./useDesignSave";
+import { ViewMenu } from "./ViewMenu";
 
 const ZOOM_STEP = 1.25;
 
@@ -45,6 +46,7 @@ export function StudioToolbar({ onExport, onLeave, onHelp }: { onExport: () => v
       <IconButton icon={Group} label={t("studio.menu.group")} shortcut="Ctrl+G" disabled={!canGroup()} onClick={group} />
       <IconButton icon={Ungroup} label={t("studio.menu.ungroup")} shortcut="Ctrl+Shift+G" disabled={!canUngroup()} onClick={ungroup} />
       <div className="ml-auto flex items-center gap-1">
+        <ViewMenu />
         <IconButton icon={ZoomOut} label={t("studio.toolbar.zoomOut")} shortcut="Ctrl+-" onClick={() => store.setZoom(zoom / ZOOM_STEP)} />
         <button type="button" onClick={store.setFit} aria-label={t("studio.toolbar.fit")} title={t("studio.toolbar.fit")} className="h-8 min-w-14 rounded-lg px-2 text-sm tabular-nums text-foreground/80 hover:text-foreground" aria-pressed={fit}>
           {Math.round(zoom * 100)}%

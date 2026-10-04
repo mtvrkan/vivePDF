@@ -8253,8 +8253,24 @@
         "rotateStep": "按 15° 的步幅旋转",
         "headings": "标题 1 / 2 / 3",
         "lists": "项目符号列表 / 编号列表",
-        "lineBreak": "换行但不新建段落"
+        "lineBreak": "换行但不新建段落",
+        "rulers": "显示或隐藏标尺",
+        "guides": "显示或隐藏参考线",
+        "margins": "显示或隐藏边距",
+        "duplicateDrag": "拖动时创建副本"
       }
+    },
+    "view": {
+      "menu": "视图",
+      "rulers": "标尺",
+      "guides": "参考线",
+      "margins": "边距",
+      "bleed": "出血区域（3 mm）",
+      "snap": "吸附",
+      "marginSize": "页边距",
+      "clearGuides": "删除此页上的参考线",
+      "rulerHint": "拖到页面上可添加参考线，双击可在此处添加",
+      "guideHint": "拖动可移动；拖到标尺上或双击可删除"
     }
   }
 }

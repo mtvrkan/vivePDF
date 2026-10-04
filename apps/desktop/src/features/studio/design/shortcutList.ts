@@ -62,6 +62,9 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Shift 2", "zoomSelection"),
       item("Space + Drag  ·  Middle Drag", "pan"),
       item("PgUp  /  PgDn", "pages"),
+      item("Shift R  /  Ctrl R", "rulers"),
+      item("Shift G", "guides"),
+      item("Shift M", "margins"),
     ],
   },
   {
@@ -70,6 +73,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Shift Click", "addToSelection"),
       item("Shift Drag", "axisLock"),
       item("Ctrl Drag", "noSnap"),
+      item("Alt Drag", "duplicateDrag"),
       item("Shift Resize", "keepRatio"),
       item("Alt Resize", "fromCentre"),
       item("Shift Rotate", "rotateStep"),

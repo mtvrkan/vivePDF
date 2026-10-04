@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { createShape, createText } from "../model/design";
-import { normalizeAngle, resizeBox, rotationFromPointer, scaleElements, snapBounds, snapTargets } from "./transform";
+import { normalizeAngle, resizeBox, rotateElements, rotationFromPointer, scaleBoundsByHandle, scaleElements, turnFromPointer } from "./transform";
 
 const box = { x: 100, y: 100, width: 100, height: 50, rotation: 0 };
 
@@ -56,14 +56,36 @@ describe("studio transforms", () => {
     expect(stretched.kind === "text" && stretched.fontSize).toBe(10);
   });
 
-  it("snaps edges and centres to the page and other elements", () => {
-    const targets = snapTargets(500, 400, [{ x: 300, y: 20, width: 50, height: 50 }]);
+  it("turns a selection as a whole around its centre", () => {
+    const left = createShape("rect", 0, 0, 20, 10);
+    const right = createShape("rect", 80, 0, 20, 10, { rotation: 10 });
 
-    const snapped = snapBounds({ x: 203, y: 172, width: 100, height: 50 }, targets, 4);
+    const [a, b] = rotateElements([left, right], { x: 50, y: 5 }, 90);
 
-    expect(snapped.dx).toBe(-3);
-    expect(snapped.dy).toBe(3);
-    expect(snapped.guides.map((guide) => guide.axis)).toEqual(["x", "y"]);
-    expect(snapBounds({ x: 120, y: 120, width: 10, height: 10 }, targets, 4)).toEqual({ dx: 0, dy: 0, guides: [] });
+    expect(a.x + a.width / 2).toBeCloseTo(50);
+    expect(a.y + a.height / 2).toBeCloseTo(-35);
+    expect(a.rotation).toBe(90);
+    expect(b.x + b.width / 2).toBeCloseTo(50);
+    expect(b.y + b.height / 2).toBeCloseTo(45);
+    expect(b.rotation).toBe(100);
+    expect(rotateElements([left], { x: 0, y: 0 }, 0)[0]).toBe(left);
+  });
+
+  it("measures the turn from where the drag started, with 15° steps and a 45° magnet", () => {
+    const centre = { x: 0, y: 0 };
+    const origin = { x: 10, y: 0 };
+
+    expect(turnFromPointer(centre, origin, { x: 0, y: 10 })).toBe(90);
+    expect(turnFromPointer(centre, origin, { x: 10, y: 1.5 })).toBeCloseTo(8.5);
+    expect(turnFromPointer(centre, origin, { x: 10, y: 0.3 })).toBe(0);
+    expect(turnFromPointer(centre, origin, { x: 10, y: 3.5 }, { step: true })).toBe(15);
+    expect(turnFromPointer(centre, origin, { x: -10, y: -0.1 })).toBe(180);
+  });
+
+  it("scales a selection box from its centre with Alt", () => {
+    const start = { x: 0, y: 0, width: 100, height: 50 };
+
+    expect(scaleBoundsByHandle(start, "se", 10, 0, false, true)).toEqual({ x: -10, y: 0, width: 120, height: 50 });
+    expect(scaleBoundsByHandle(start, "se", 10, 0, false)).toEqual({ x: 0, y: 0, width: 110, height: 50 });
   });
 });

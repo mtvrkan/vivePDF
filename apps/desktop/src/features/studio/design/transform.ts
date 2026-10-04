@@ -3,14 +3,13 @@ import { elementBounds, type Bounds } from "../model/edit";
 
 export type Box = { x: number; y: number; width: number; height: number; rotation: number };
 export type Handle = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
-export type Guide = { axis: "x" | "y"; position: number; from: number; to: number };
 
 export const HANDLES: Handle[] = ["nw", "n", "ne", "e", "se", "s", "sw", "w"];
 export const MIN_SIDE = 2;
 export const ROTATION_STEP = 15;
 export const ROTATION_MAGNET = 3;
 
-type Vector = { x: number; y: number };
+export type Vector = { x: number; y: number };
 
 function rotate(point: Vector, degrees: number): Vector {
   const radians = (degrees * Math.PI) / 180;
@@ -19,7 +18,7 @@ function rotate(point: Vector, degrees: number): Vector {
   return { x: point.x * cos - point.y * sin, y: point.x * sin + point.y * cos };
 }
 
-function handleSigns(handle: Handle): Vector {
+export function handleSigns(handle: Handle): Vector {
   return { x: handle.includes("e") ? 1 : handle.includes("w") ? -1 : 0, y: handle.includes("s") ? 1 : handle.includes("n") ? -1 : 0 };
 }
 
@@ -77,45 +76,28 @@ export function scaleElements<T extends StudioElement>(elements: T[], from: Boun
   });
 }
 
-export function scaleBoundsByHandle(start: Bounds, handle: Handle, dx: number, dy: number, keepRatio: boolean): Bounds {
-  const box = resizeBox({ ...start, rotation: 0 }, handle, dx, dy, { keepRatio });
+export function scaleBoundsByHandle(start: Bounds, handle: Handle, dx: number, dy: number, keepRatio: boolean, fromCenter = false): Bounds {
+  const box = resizeBox({ ...start, rotation: 0 }, handle, dx, dy, { keepRatio, fromCenter });
   return { x: box.x, y: box.y, width: box.width, height: box.height };
 }
 
-export type SnapTargets = { x: number[]; y: number[] };
-
-export function snapTargets(pageWidth: number, pageHeight: number, others: Bounds[]): SnapTargets {
-  const x = [0, pageWidth / 2, pageWidth];
-  const y = [0, pageHeight / 2, pageHeight];
-  for (const box of others) {
-    x.push(box.x, box.x + box.width / 2, box.x + box.width);
-    y.push(box.y, box.y + box.height / 2, box.y + box.height);
-  }
-  return { x, y };
+function pointerAngle(centre: Vector, pointer: Vector): number {
+  return (Math.atan2(pointer.y - centre.y, pointer.x - centre.x) * 180) / Math.PI;
 }
 
-function bestOffset(edges: number[], targets: number[], tolerance: number): { offset: number; target: number } | null {
-  let best: { offset: number; target: number } | null = null;
-  for (const edge of edges) {
-    for (const target of targets) {
-      const offset = target - edge;
-      if (Math.abs(offset) <= tolerance && (!best || Math.abs(offset) < Math.abs(best.offset))) best = { offset, target };
-    }
-  }
-  return best;
+export function turnFromPointer(centre: Vector, origin: Vector, pointer: Vector, options: { step?: boolean } = {}): number {
+  const raw = normalizeAngle(pointerAngle(centre, pointer) - pointerAngle(centre, origin));
+  if (options.step) return normalizeAngle(Math.round(raw / ROTATION_STEP) * ROTATION_STEP);
+  const nearest = Math.round(raw / 45) * 45;
+  return normalizeAngle(Math.abs(raw - nearest) <= ROTATION_MAGNET ? nearest : Math.round(raw * 10) / 10);
 }
 
-export function snapBounds(moving: Bounds, targets: SnapTargets, tolerance: number): { dx: number; dy: number; guides: Guide[] } {
-  const xs = [moving.x, moving.x + moving.width / 2, moving.x + moving.width];
-  const ys = [moving.y, moving.y + moving.height / 2, moving.y + moving.height];
-  const snapX = bestOffset(xs, targets.x, tolerance);
-  const snapY = bestOffset(ys, targets.y, tolerance);
-  const guides: Guide[] = [];
-  const dx = snapX?.offset ?? 0;
-  const dy = snapY?.offset ?? 0;
-  if (snapX) guides.push({ axis: "x", position: snapX.target, from: moving.y + dy, to: moving.y + dy + moving.height });
-  if (snapY) guides.push({ axis: "y", position: snapY.target, from: moving.x + dx, to: moving.x + dx + moving.width });
-  return { dx, dy, guides };
+export function rotateElements<T extends StudioElement>(elements: T[], centre: Vector, degrees: number): T[] {
+  if (!degrees) return elements;
+  return elements.map((element) => {
+    const offset = rotate({ x: element.x + element.width / 2 - centre.x, y: element.y + element.height / 2 - centre.y }, degrees);
+    return { ...element, x: centre.x + offset.x - element.width / 2, y: centre.y + offset.y - element.height / 2, rotation: normalizeAngle(element.rotation + degrees) };
+  });
 }
 
 export function boundsOf(elements: StudioElement[]): Bounds | null {

@@ -8254,8 +8254,24 @@
         "rotateStep": "Rotate in 15° steps",
         "headings": "Heading 1 / 2 / 3",
         "lists": "Bulleted / numbered list",
-        "lineBreak": "Line break without a new paragraph"
+        "lineBreak": "Line break without a new paragraph",
+        "rulers": "Show or hide rulers",
+        "guides": "Show or hide guides",
+        "margins": "Show or hide margins",
+        "duplicateDrag": "Duplicate while dragging"
       }
+    },
+    "view": {
+      "menu": "View",
+      "rulers": "Rulers",
+      "guides": "Guides",
+      "margins": "Margins",
+      "bleed": "Bleed area (3 mm)",
+      "snap": "Snapping",
+      "marginSize": "Page margins",
+      "clearGuides": "Remove guides on this page",
+      "rulerHint": "Drag onto the page to add a guide, or double-click to add one here",
+      "guideHint": "Drag to move; drag onto a ruler or double-click to remove"
     }
   }
 }

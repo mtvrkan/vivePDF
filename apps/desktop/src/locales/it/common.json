@@ -8253,8 +8253,24 @@
         "rotateStep": "Ruota a scatti di 15°",
         "headings": "Titolo 1 / 2 / 3",
         "lists": "Elenco puntato / numerato",
-        "lineBreak": "Interruzione di riga senza nuovo paragrafo"
+        "lineBreak": "Interruzione di riga senza nuovo paragrafo",
+        "rulers": "Mostra o nascondi i righelli",
+        "guides": "Mostra o nascondi le guide",
+        "margins": "Mostra o nascondi i margini",
+        "duplicateDrag": "Duplica durante il trascinamento"
       }
+    },
+    "view": {
+      "menu": "Visualizza",
+      "rulers": "Righelli",
+      "guides": "Guide",
+      "margins": "Margini",
+      "bleed": "Area di abbondanza (3 mm)",
+      "snap": "Aggancio",
+      "marginSize": "Margini pagina",
+      "clearGuides": "Rimuovi le guide da questa pagina",
+      "rulerHint": "Trascina sulla pagina per aggiungere una guida o fai doppio clic per aggiungerne una qui",
+      "guideHint": "Trascina per spostare; trascina su un righello o fai doppio clic per rimuovere"
     }
   }
 }
