@@ -7,6 +7,7 @@ import {
   type StudioElement,
   type StudioElementBase,
   type StudioFill,
+  type StudioGuide,
   type StudioImageElement,
   type StudioPage,
   type StudioQrElement,
@@ -40,6 +41,8 @@ export const MIN_ELEMENT_SIDE = 1;
 export const MAX_ELEMENTS_PER_PAGE = 2000;
 export const MAX_PAGES = 500;
 export const BUILTIN_PLACEHOLDERS = ["n", "date"] as const;
+export const MAX_GUIDES_PER_PAGE = 200;
+export const MAX_MARGIN_MM = 500;
 
 const PLACEHOLDER = /(?<!\{)\{([^{}]+)\}/g;
 const COLOUR = /^#[0-9a-f]{6}$/i;
@@ -53,11 +56,11 @@ export function blankBackground(): StudioBackground {
 }
 
 export function createPage(width: number, height: number): StudioPage {
-  return { id: newId(), width: clampSide(width), height: clampSide(height), background: blankBackground(), elements: [] };
+  return { id: newId(), width: clampSide(width), height: clampSide(height), background: blankBackground(), elements: [], guides: [] };
 }
 
 export function createDesign(name: string, width: number, height: number): StudioDesign {
-  return { version: STUDIO_DESIGN_VERSION, kind: "design", name, palette: [], pages: [createPage(width, height)] };
+  return { version: STUDIO_DESIGN_VERSION, kind: "design", name, palette: [], pages: [createPage(width, height)], margins: 0 };
 }
 
 function base(x: number, y: number, width: number, height: number, name: string): StudioElementBase {
@@ -340,6 +343,14 @@ function normalizeBackground(value: unknown): StudioBackground {
   };
 }
 
+function normalizeGuides(value: unknown): StudioGuide[] {
+  return (Array.isArray(value) ? value : [])
+    .map(record)
+    .filter((guide): guide is Record<string, unknown> => guide !== null && (guide.axis === "x" || guide.axis === "y") && typeof guide.position === "number" && Number.isFinite(guide.position))
+    .slice(0, MAX_GUIDES_PER_PAGE)
+    .map((guide) => ({ axis: guide.axis as StudioGuide["axis"], position: finite(guide.position, 0, -MAX_PAGE_SIDE, MAX_PAGE_SIDE * 2) }));
+}
+
 export function normalizePage(value: unknown): StudioPage | null {
   const raw = record(value);
   if (!raw) return null;
@@ -358,6 +369,7 @@ export function normalizePage(value: unknown): StudioPage | null {
     height: clampSide(finite(raw.height, STUDIO_PAGE_SIZES.a4.height)),
     background: normalizeBackground(raw.background),
     elements,
+    guides: normalizeGuides(raw.guides),
   };
 }
 
@@ -368,7 +380,7 @@ export function normalizeDesign(value: unknown): StudioDesign | null {
   const pages = (Array.isArray(raw.pages) ? raw.pages.slice(0, MAX_PAGES) : []).map(normalizePage).filter((page): page is StudioPage => page !== null);
   if (!pages.length) return null;
   const palette = (Array.isArray(raw.palette) ? raw.palette : []).filter((item): item is string => typeof item === "string" && COLOUR.test(item)).slice(0, 24);
-  return { version: STUDIO_DESIGN_VERSION, kind: "design", name: text(raw.name, "", 200), palette, pages };
+  return { version: STUDIO_DESIGN_VERSION, kind: "design", name: text(raw.name, "", 200), palette, pages, margins: finite(raw.margins, 0, 0, MAX_MARGIN_MM) };
 }
 
 export function libraryFontIds(design: StudioDesign | null): string[] {

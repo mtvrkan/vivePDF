@@ -158,7 +158,7 @@ export function pageOf(size: TemplateSize, background: StudioFill, elements: Stu
 }
 
 export function design(name: string, palette: string[], pages: StudioPage[]): StudioDesign {
-  return { version: STUDIO_DESIGN_VERSION, kind: "design", name, palette, pages: pages.map((page) => ({ ...page, id: page.id || newId() })) };
+  return { version: STUDIO_DESIGN_VERSION, kind: "design", name, palette, pages: pages.map((page) => ({ ...page, id: page.id || newId() })), margins: 0 };
 }
 
 export function sizeOf(size: TemplateSize): { width: number; height: number } {

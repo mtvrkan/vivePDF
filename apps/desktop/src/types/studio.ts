@@ -147,12 +147,15 @@ export type StudioBackgroundImage = { src: string; fit: StudioImageFit; opacity:
 
 export type StudioBackground = { fill: StudioFill; image: StudioBackgroundImage | null };
 
+export type StudioGuide = { axis: "x" | "y"; position: number };
+
 export type StudioPage = {
   id: string;
   width: number;
   height: number;
   background: StudioBackground;
   elements: StudioElement[];
+  guides?: StudioGuide[];
 };
 
 export type StudioDesign = {
@@ -161,6 +164,7 @@ export type StudioDesign = {
   name: string;
   palette: string[];
   pages: StudioPage[];
+  margins?: number;
 };
 
 export type StudioRenderStop = { offset: number; color: string };
