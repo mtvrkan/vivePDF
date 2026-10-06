@@ -166,6 +166,11 @@
       "more_one": "and {{count}} more",
       "more_other": "and {{count}} more",
       "open": "Open all",
+      "view": "Show files",
+      "viewOf": "Show the files in {{name}}",
+      "openFile": "Open {{name}}",
+      "missing": "File not found",
+      "color": "Colour",
       "emptyTitle": "No collections yet",
       "emptyDescription": "Keep files you work on together in a named collection and open them all as one tab group.",
       "saved": "Saved as collection {{name}}"
@@ -1393,7 +1398,14 @@
         "orange": "Orange",
         "purple": "Purple",
         "amber": "Yellow",
-        "red": "Red"
+        "red": "Red",
+        "teal": "Teal",
+        "cyan": "Cyan",
+        "indigo": "Indigo",
+        "pink": "Pink",
+        "lime": "Lime",
+        "brown": "Brown",
+        "gray": "Grey"
       },
       "collapse": "Collapse group",
       "expand": "Expand group",

@@ -166,6 +166,11 @@
       "more_one": "und {{count}} weitere",
       "more_other": "und {{count}} weitere",
       "open": "Alle öffnen",
+      "view": "Dateien anzeigen",
+      "viewOf": "Dateien in {{name}} anzeigen",
+      "openFile": "{{name}} öffnen",
+      "missing": "Datei nicht gefunden",
+      "color": "Farbe",
       "emptyTitle": "Noch keine Sammlungen",
       "emptyDescription": "Bewahren Sie zusammengehörige Dateien in einer benannten Sammlung auf und öffnen Sie sie alle als eine Tabgruppe.",
       "saved": "Als Sammlung {{name}} gespeichert"
@@ -1393,7 +1398,14 @@
         "orange": "Orange",
         "purple": "Lila",
         "amber": "Gelb",
-        "red": "Rot"
+        "red": "Rot",
+        "teal": "Petrol",
+        "cyan": "Cyan",
+        "indigo": "Indigo",
+        "pink": "Pink",
+        "lime": "Limette",
+        "brown": "Braun",
+        "gray": "Grau"
       },
       "collapse": "Gruppe einklappen",
       "expand": "Gruppe ausklappen",

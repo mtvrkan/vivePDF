@@ -46,6 +46,13 @@
   --tone-edit-soft: hsl(40 95% 90%);
   --tone-security: hsl(348 68% 44%);
   --tone-security-soft: hsl(348 75% 94%);
+  --group-teal: hsl(174 72% 28%);
+  --group-cyan: hsl(192 85% 34%);
+  --group-indigo: hsl(234 58% 52%);
+  --group-pink: hsl(326 70% 46%);
+  --group-lime: hsl(84 70% 30%);
+  --group-brown: hsl(25 45% 36%);
+  --group-gray: hsl(220 10% 44%);
   --tone: var(--primary);
   --tone-soft: var(--accent);
   --glass-edge: linear-gradient(135deg, hsl(0 0% 100% / 0.7), hsl(202 90% 55% / 0.28) 35%, hsl(262 70% 60% / 0.22) 70%, hsl(24 90% 58% / 0.16));
@@ -111,6 +118,13 @@
   --tone-edit-soft: hsl(40 50% 16%);
   --tone-security: hsl(348 80% 66%);
   --tone-security-soft: hsl(348 45% 18%);
+  --group-teal: hsl(172 60% 48%);
+  --group-cyan: hsl(190 80% 56%);
+  --group-indigo: hsl(232 80% 72%);
+  --group-pink: hsl(326 80% 70%);
+  --group-lime: hsl(84 62% 52%);
+  --group-brown: hsl(28 45% 58%);
+  --group-gray: hsl(220 10% 62%);
   --tone: var(--primary);
   --tone-soft: var(--accent);
   --glass-edge: linear-gradient(135deg, hsl(0 0% 100% / 0.22), hsl(202 90% 62% / 0.24) 35%, hsl(262 70% 68% / 0.20) 70%, hsl(24 90% 62% / 0.10));

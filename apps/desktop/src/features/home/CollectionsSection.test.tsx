@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { useDocumentStore } from "@/shared/store/documentStore";
@@ -8,9 +8,13 @@ import { useCollectionsStore } from "./collectionsStore";
 
 const openDialog = vi.fn();
 const openCollection = vi.fn();
+const openPath = vi.fn();
+const invoke = vi.fn();
 
 vi.mock("@tauri-apps/plugin-dialog", () => ({ open: (...args: unknown[]) => openDialog(...args) }));
 vi.mock("./useOpenCollection", () => ({ useOpenCollection: () => openCollection }));
+vi.mock("@/features/viewer/useOpenPdf", () => ({ useOpenPdf: () => ({ openPath }) }));
+vi.mock("@tauri-apps/api/core", () => ({ invoke: (...args: unknown[]) => invoke(...args) }));
 
 const { CollectionsSection } = await import("./CollectionsSection");
 
@@ -22,6 +26,9 @@ beforeAll(async () => {
 beforeEach(() => {
   openDialog.mockReset();
   openCollection.mockReset();
+  openPath.mockReset();
+  invoke.mockReset();
+  invoke.mockResolvedValue([]);
   useCollectionsStore.setState({ collections: [] });
   useDocumentStore.setState({ documents: {}, order: [], activeId: null });
   useToastStore.setState({ toasts: [] });
@@ -67,5 +74,43 @@ describe("CollectionsSection", () => {
     expect(useCollectionsStore.getState().collections).toEqual([]);
     act(() => useToastStore.getState().toasts[0].action?.onClick());
     expect(useCollectionsStore.getState().collections).toHaveLength(1);
+  });
+
+  it("shows the files of a collection, marks the missing ones and opens one of them", async () => {
+    useCollectionsStore.getState().create("Invoices", ["C:/Docs/a.pdf", "C:/Old/gone.pdf"]);
+    invoke.mockResolvedValue([true, false]);
+    render(<CollectionsSection />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Show the files in Invoices" }));
+    const dialog = within(screen.getByRole("dialog"));
+    await waitFor(() => expect(dialog.getByText("File not found")).toBeTruthy());
+    expect(await axeViolations(screen.getByRole("dialog"))).toEqual([]);
+    fireEvent.click(dialog.getByRole("button", { name: "Open a.pdf" }));
+
+    expect(invoke).toHaveBeenCalledWith("path_exists", { paths: ["C:/Docs/a.pdf", "C:/Old/gone.pdf"] });
+    expect((screen.queryByRole("dialog"))).toBeNull();
+    expect(openPath).toHaveBeenCalledWith("C:/Docs/a.pdf");
+  });
+
+  it("recolours a collection from its swatches and takes a file out of it", () => {
+    const id = useCollectionsStore.getState().create("Invoices", ["C:/Docs/a.pdf", "C:/Docs/b.pdf"]);
+    render(<CollectionsSection />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Show the files in Invoices" }));
+    const dialog = within(screen.getByRole("dialog"));
+    fireEvent.click(dialog.getByRole("radio", { name: "Teal" }));
+    fireEvent.click(dialog.getByRole("button", { name: "Remove from the collection: a.pdf" }));
+
+    expect(useCollectionsStore.getState().collections.find((collection) => collection.id === id)).toMatchObject({ color: "teal", paths: ["C:/Docs/b.pdf"] });
+    expect(dialog.getByRole("radio", { name: "Teal" }).getAttribute("aria-checked")).toBe("true");
+  });
+
+  it("opens a single file straight from the card", () => {
+    useCollectionsStore.getState().create("Invoices", ["C:/Docs/a.pdf", "C:/Docs/b.pdf"]);
+    render(<CollectionsSection />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open b.pdf" }));
+
+    expect(openPath).toHaveBeenCalledWith("C:/Docs/b.pdf");
   });
 });

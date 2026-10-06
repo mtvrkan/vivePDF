@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
-import { bootApp, chooseOption, openTool, t } from "../support/app.ts";
+import { answerDialogs, bootApp, chooseOption, copyFixture, fixtures, openTool, t, waitForDialogsAnswered, workDir } from "../support/app.ts";
 
 const region = (name: string) => $(`[data-testid="home-region-${name}"]`);
 const quickTiles = () => $$(`[data-testid="home-region-main"] [data-quick-action], [data-testid="home-region-top"] [data-quick-action]`).map((tile) => tile.getAttribute("data-quick-action"));
@@ -93,5 +93,27 @@ describe("home layout", () => {
     await finishEditing();
 
     expect((await quickTiles()).slice(0, 3)).toEqual(["split", "compress", "merge"]);
+  });
+
+  it("shows what a collection holds, recolours it and opens one of its files", async () => {
+    const report = copyFixture(fixtures().sample, "collection-report.pdf");
+    const gone = join(workDir(), "collection-gone.pdf");
+    await $(`//button[normalize-space(.)="${t("home.collections.create")}"]`).scrollIntoView({ block: "center" });
+    await $(`//button[normalize-space(.)="${t("home.collections.create")}"]`).click();
+    await $(`input[placeholder="${t("home.collections.namePlaceholder")}"]`).setValue("Archive");
+    answerDialogs([report, gone]);
+    await $(`//button[normalize-space(.)="${t("home.collections.addFiles")}"]`).click();
+    await waitForDialogsAnswered();
+    await $(`//button[normalize-space(.)="${t("home.collections.save")}"]`).click();
+
+    await $(`button[aria-label="${t("home.collections.viewOf", { name: "Archive" })}"]`).click();
+    const view = $('[data-testid="collection-view"]');
+    await view.$(`//*[normalize-space(text())="${t("home.collections.missing")}"]`).waitForDisplayed({ timeout: 15000 });
+    await view.$(`button[role="radio"][aria-label="${t("viewer.tabGroups.colors.teal")}"]`).click();
+    await expect(view.$(`button[role="radio"][aria-label="${t("viewer.tabGroups.colors.teal")}"]`)).toHaveAttribute("aria-checked", "true");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "home-collection-view.png"));
+
+    await view.$(`button[aria-label="${t("home.collections.openFile", { name: "collection-report.pdf" })}"]`).click();
+    await $(`//*[@role="tab"][@aria-selected="true"][.//span[@title="collection-report.pdf"]]`).waitForDisplayed({ timeout: 60000 });
   });
 });

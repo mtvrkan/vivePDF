@@ -166,6 +166,11 @@
       "more_one": "et {{count}} de plus",
       "more_other": "et {{count}} de plus",
       "open": "Tout ouvrir",
+      "view": "Afficher les fichiers",
+      "viewOf": "Afficher les fichiers de {{name}}",
+      "openFile": "Ouvrir {{name}}",
+      "missing": "Fichier introuvable",
+      "color": "Couleur",
       "emptyTitle": "Aucune collection pour l’instant",
       "emptyDescription": "Regroupez les fichiers sur lesquels vous travaillez dans une collection nommée et ouvrez-les tous comme un groupe d’onglets.",
       "saved": "Enregistré comme collection {{name}}"
@@ -1393,7 +1398,14 @@
         "orange": "Orange",
         "purple": "Violet",
         "amber": "Jaune",
-        "red": "Rouge"
+        "red": "Rouge",
+        "teal": "Sarcelle",
+        "cyan": "Cyan",
+        "indigo": "Indigo",
+        "pink": "Rose",
+        "lime": "Vert citron",
+        "brown": "Marron",
+        "gray": "Gris"
       },
       "collapse": "Réduire le groupe",
       "expand": "Développer le groupe",

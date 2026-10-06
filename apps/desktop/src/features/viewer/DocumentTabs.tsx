@@ -332,7 +332,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                 type: "submenu",
                 id: "color",
                 label: t("viewer.tabGroups.color"),
-                items: GROUP_COLORS.map((color) => ({ type: "item" as const, id: `color-${color}`, label: t(`viewer.tabGroups.colors.${color}`), checked: group.color === color, onSelect: () => store.recolor(group.id, color) })),
+                items: GROUP_COLORS.map((color) => ({ type: "item" as const, id: `color-${color}`, label: t(`viewer.tabGroups.colors.${color}`), swatch: GROUP_TONES[color], checked: group.color === color, onSelect: () => store.recolor(group.id, color) })),
               },
               { type: "item", id: "collapse", label: t(group.collapsed ? "viewer.tabGroups.expand" : "viewer.tabGroups.collapse"), onSelect: () => store.setCollapsed(group.id, !group.collapsed) },
               { type: "separator", id: "sep-group-end" },

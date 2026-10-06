@@ -166,6 +166,11 @@
       "more_one": "ve {{count}} dosya daha",
       "more_other": "ve {{count}} dosya daha",
       "open": "Hepsini aç",
+      "view": "Dosyaları göster",
+      "viewOf": "{{name}} koleksiyonundaki dosyaları göster",
+      "openFile": "{{name}} dosyasını aç",
+      "missing": "Dosya bulunamadı",
+      "color": "Renk",
       "emptyTitle": "Henüz koleksiyon yok",
       "emptyDescription": "Birlikte çalıştığınız dosyaları adlandırılmış bir koleksiyonda tutun ve hepsini tek bir sekme grubu olarak açın.",
       "saved": "{{name}} koleksiyonu olarak kaydedildi"
@@ -1393,7 +1398,14 @@
         "orange": "Turuncu",
         "purple": "Mor",
         "amber": "Sarı",
-        "red": "Kırmızı"
+        "red": "Kırmızı",
+        "teal": "Deniz yeşili",
+        "cyan": "Camgöbeği",
+        "indigo": "Lacivert",
+        "pink": "Pembe",
+        "lime": "Fıstık yeşili",
+        "brown": "Kahverengi",
+        "gray": "Gri"
       },
       "collapse": "Grubu daralt",
       "expand": "Grubu genişlet",

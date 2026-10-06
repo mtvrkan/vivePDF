@@ -166,6 +166,11 @@
       "more_one": "e altri {{count}}",
       "more_other": "e altri {{count}}",
       "open": "Apri tutto",
+      "view": "Mostra i file",
+      "viewOf": "Mostra i file di {{name}}",
+      "openFile": "Apri {{name}}",
+      "missing": "File non trovato",
+      "color": "Colore",
       "emptyTitle": "Ancora nessuna raccolta",
       "emptyDescription": "Tieni insieme i file su cui lavori in una raccolta con nome e aprili tutti come un gruppo di schede.",
       "saved": "Salvato come raccolta {{name}}"
@@ -1393,7 +1398,14 @@
         "orange": "Arancione",
         "purple": "Viola",
         "amber": "Giallo",
-        "red": "Rosso"
+        "red": "Rosso",
+        "teal": "Verde acqua",
+        "cyan": "Ciano",
+        "indigo": "Indaco",
+        "pink": "Rosa",
+        "lime": "Lime",
+        "brown": "Marrone",
+        "gray": "Grigio"
       },
       "collapse": "Comprimi gruppo",
       "expand": "Espandi gruppo",

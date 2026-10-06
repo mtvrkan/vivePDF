@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export const GROUP_COLORS = ["blue", "green", "orange", "purple", "amber", "red"] as const;
+export const GROUP_COLORS = ["blue", "green", "orange", "purple", "amber", "red", "teal", "cyan", "indigo", "pink", "lime", "brown", "gray"] as const;
 export type GroupColor = (typeof GROUP_COLORS)[number];
 
 export const GROUP_TONES: Record<GroupColor, string> = {
@@ -10,6 +10,13 @@ export const GROUP_TONES: Record<GroupColor, string> = {
   purple: "var(--tone-fromPdf)",
   amber: "var(--tone-edit)",
   red: "var(--tone-security)",
+  teal: "var(--group-teal)",
+  cyan: "var(--group-cyan)",
+  indigo: "var(--group-indigo)",
+  pink: "var(--group-pink)",
+  lime: "var(--group-lime)",
+  brown: "var(--group-brown)",
+  gray: "var(--group-gray)",
 };
 
 export type TabGroup = { id: string; name: string; color: GroupColor; collapsed: boolean };

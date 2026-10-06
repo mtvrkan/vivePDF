@@ -10,7 +10,7 @@ export type ContextMenuAnchor = { x: number; y: number };
 
 export type ContextMenuItem =
   | { type: "separator"; id: string }
-  | { type: "item"; id: string; label: string; icon?: LucideIcon; shortcut?: string; disabled?: boolean; checked?: boolean; onSelect: () => void }
+  | { type: "item"; id: string; label: string; icon?: LucideIcon; swatch?: string; shortcut?: string; disabled?: boolean; checked?: boolean; onSelect: () => void }
   | { type: "submenu"; id: string; label: string; icon?: LucideIcon; disabled?: boolean; items: ContextMenuItem[] };
 
 function flattenSelectable(items: ContextMenuItem[]): string[] {
@@ -171,6 +171,7 @@ function ContextMenuItems({
             className="flex h-9 w-full items-center gap-2.5 rounded-lg px-2.5 text-sm hover:bg-secondary focus:bg-secondary focus:outline-none disabled:opacity-40 disabled:hover:bg-transparent"
           >
             {Icon ? <Icon className="size-4" aria-hidden /> : null}
+            {item.swatch ? <span aria-hidden className="size-3.5 shrink-0 rounded-full ring-1 ring-foreground/15" style={{ background: item.swatch }} /> : null}
             <span className="flex-1 text-left">{item.label}</span>
             {item.shortcut ? <span className="text-xs text-muted-foreground">{item.shortcut}</span> : null}
             {item.checked ? <Check className="size-3.5 text-primary" aria-hidden /> : null}

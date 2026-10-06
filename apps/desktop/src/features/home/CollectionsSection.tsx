@@ -1,5 +1,5 @@
 import { useState, type CSSProperties } from "react";
-import { FilePlus2, Files, FolderOpen, Library, MoreHorizontal, Plus, X } from "lucide-react";
+import { Eye, FilePlus2, Files, FolderOpen, Library, MoreHorizontal, Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/shared/Button";
@@ -9,10 +9,12 @@ import { IconButton } from "@/components/shared/IconButton";
 import { useContextMenu } from "@/components/shared/useContextMenu";
 import { OPEN_CONVERTIBLE_EXTENSIONS, sessionPathOf } from "@/features/viewer/convertedDocuments";
 import { GROUP_COLORS, GROUP_TONES } from "@/features/viewer/tabGroups";
+import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { basenameOf, pathKey } from "@/shared/lib/paths";
 import { inTabOrder, useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { COLLECTION_FILES_MAX, COLLECTION_NAME_MAX, useCollectionsStore, type Collection } from "./collectionsStore";
+import { CollectionView } from "./CollectionView";
 import { bySize, type HomeSize } from "./homeLayout";
 import { useOpenCollection } from "./useOpenCollection";
 
@@ -137,8 +139,9 @@ function CollectionDialog({ draft, onChange, onClose }: { draft: Draft; onChange
   );
 }
 
-function CollectionCard({ collection, onEdit, preview }: { collection: Collection; onEdit: () => void; preview: number }) {
+function CollectionCard({ collection, onEdit, onView, preview }: { collection: Collection; onEdit: () => void; onView: () => void; preview: number }) {
   const { t } = useTranslation();
+  const { openPath } = useOpenPdf();
   const openCollection = useOpenCollection();
   const recolor = useCollectionsStore((state) => state.recolor);
   const remove = useCollectionsStore((state) => state.remove);
@@ -163,12 +166,13 @@ function CollectionCard({ collection, onEdit, preview }: { collection: Collectio
   };
 
   const items: ContextMenuItem[] = [
+    { type: "item", id: "view", label: t("home.collections.view"), icon: Eye, onSelect: onView },
     { type: "item", id: "edit", label: t("home.collections.edit"), onSelect: onEdit },
     {
       type: "submenu",
       id: "color",
       label: t("viewer.tabGroups.color"),
-      items: GROUP_COLORS.map((color) => ({ type: "item" as const, id: `color-${color}`, label: t(`viewer.tabGroups.colors.${color}`), checked: collection.color === color, onSelect: () => recolor(collection.id, color) })),
+      items: GROUP_COLORS.map((color) => ({ type: "item" as const, id: `color-${color}`, label: t(`viewer.tabGroups.colors.${color}`), swatch: GROUP_TONES[color], checked: collection.color === color, onSelect: () => recolor(collection.id, color) })),
     },
     { type: "separator", id: "sep" },
     { type: "item", id: "remove", label: t("home.collections.remove"), onSelect: removeCollection },
@@ -178,27 +182,38 @@ function CollectionCard({ collection, onEdit, preview }: { collection: Collectio
     <li data-collection={collection.name} style={toneStyle(collection)} className="glass-flat relative flex flex-col overflow-hidden rounded-xl border border-(--glass-border)">
       <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-(--tone)" />
       <div className="flex items-start gap-3 p-3 pt-4" onContextMenu={menu.open}>
-        <span className="tone-tile flex size-9 shrink-0 items-center justify-center rounded-xl">
-          <Library className="size-4" aria-hidden />
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold" title={collection.name}>
-            {collection.name}
-          </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">{t("home.collections.files", { count: collection.paths.length })}</p>
-        </div>
+        <button type="button" onClick={onView} aria-label={t("home.collections.viewOf", { name: collection.name })} className="flex min-w-0 flex-1 items-start gap-3 rounded-lg text-start outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          <span className="tone-tile flex size-9 shrink-0 items-center justify-center rounded-xl">
+            <Library className="size-4" aria-hidden />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-sm font-semibold hover:underline" title={collection.name}>
+              {collection.name}
+            </span>
+            <span className="mt-0.5 block text-xs text-muted-foreground">{t("home.collections.files", { count: collection.paths.length })}</span>
+          </span>
+        </button>
         <IconButton icon={MoreHorizontal} label={t("home.collections.actions", { name: collection.name })} aria-haspopup="menu" onClick={(event) => menu.open(event)} />
       </div>
       <ul className="flex flex-1 flex-col gap-0.5 px-3 pb-2 text-xs text-muted-foreground">
         {collection.paths.slice(0, preview).map((path) => (
-          <li key={path} className="truncate" title={path}>
-            {basenameOf(path)}
+          <li key={path} className="min-w-0">
+            <button type="button" onClick={() => void openPath(path)} title={path} aria-label={t("home.collections.openFile", { name: basenameOf(path) })} className="block w-full truncate rounded text-start outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring">
+              {basenameOf(path)}
+            </button>
           </li>
         ))}
-        {preview > 0 && collection.paths.length > preview ? <li>{t("home.collections.more", { count: collection.paths.length - preview })}</li> : null}
+        {preview > 0 && collection.paths.length > preview ? (
+          <li>
+            <button type="button" onClick={onView} className="rounded text-start outline-none hover:text-foreground hover:underline focus-visible:ring-2 focus-visible:ring-ring">
+              {t("home.collections.more", { count: collection.paths.length - preview })}
+            </button>
+          </li>
+        ) : null}
       </ul>
-      <div className="px-3 pb-3">
-        <Button size="sm" className="w-full" loading={opening} disabled={collection.paths.length === 0} onClick={() => void open()}>
+      <div className="flex gap-2 px-3 pb-3">
+        <IconButton icon={Eye} label={t("home.collections.view")} onClick={onView} className="shrink-0 border border-border" />
+        <Button size="sm" className="min-w-0 flex-1" loading={opening} disabled={collection.paths.length === 0} onClick={() => void open()}>
           {t("home.collections.open")}
         </Button>
       </div>
@@ -211,6 +226,7 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
   const { t } = useTranslation();
   const collections = useCollectionsStore((state) => state.collections);
   const [draft, setDraft] = useState<Draft | null>(null);
+  const [viewing, setViewing] = useState<string | null>(null);
   const startCreating = () => setDraft({ id: null, name: "", paths: openDocumentPaths() });
 
   return (
@@ -243,10 +259,20 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
       ) : (
         <ul className="mt-4 grid grid-cols-1 gap-3 @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">
           {collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} preview={bySize(size, 0, 3, 6)} onEdit={() => setDraft({ id: collection.id, name: collection.name, paths: collection.paths })} />
+            <CollectionCard key={collection.id} collection={collection} preview={bySize(size, 0, 3, 6)} onView={() => setViewing(collection.id)} onEdit={() => setDraft({ id: collection.id, name: collection.name, paths: collection.paths })} />
           ))}
         </ul>
       )}
+      {viewing && !draft ? (
+        <CollectionView
+          collectionId={viewing}
+          onClose={() => setViewing(null)}
+          onEdit={() => {
+            const collection = collections.find((item) => item.id === viewing);
+            if (collection) setDraft({ id: collection.id, name: collection.name, paths: collection.paths });
+          }}
+        />
+      ) : null}
       {draft ? <CollectionDialog draft={draft} onChange={setDraft} onClose={() => setDraft(null)} /> : null}
     </section>
   );

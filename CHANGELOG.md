@@ -4,6 +4,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Home collections: click a collection's name, the eye button or "and N more" to see every file in it with its folder, open one file on its own, show it in its folder or take it out of the collection; files that are no longer on disk are marked as not found. File names on the card open that file directly [2026-10-06]
+- Collections and tab groups have 13 colours instead of 6 (teal, cyan, indigo, pink, lime, brown and grey are new), with a colour dot next to each name in the menu and a row of colour swatches in the collection view [2026-10-06]
 - Home: a Studio section lists the designs and documents you saved in Studio and opens one with a click, with buttons to open Studio and the CV builder; like every home section it can be moved, resized or hidden [2026-10-06]
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 

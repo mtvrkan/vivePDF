@@ -166,6 +166,11 @@
       "more_one": "y {{count}} más",
       "more_other": "y {{count}} más",
       "open": "Abrir todo",
+      "view": "Mostrar archivos",
+      "viewOf": "Mostrar los archivos de {{name}}",
+      "openFile": "Abrir {{name}}",
+      "missing": "Archivo no encontrado",
+      "color": "Color",
       "emptyTitle": "Aún no hay colecciones",
       "emptyDescription": "Guarde juntos los archivos con los que trabaja en una colección con nombre y ábralos todos como un grupo de pestañas.",
       "saved": "Guardado como colección {{name}}"
@@ -1393,7 +1398,14 @@
         "orange": "Naranja",
         "purple": "Morado",
         "amber": "Amarillo",
-        "red": "Rojo"
+        "red": "Rojo",
+        "teal": "Verde azulado",
+        "cyan": "Cian",
+        "indigo": "Índigo",
+        "pink": "Rosa",
+        "lime": "Lima",
+        "brown": "Marrón",
+        "gray": "Gris"
       },
       "collapse": "Contraer grupo",
       "expand": "Expandir grupo",
