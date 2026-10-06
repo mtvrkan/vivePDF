@@ -61,6 +61,7 @@ describe("studio", () => {
       .perform();
     const box = $('[data-testid="studio-viewport"] [role="textbox"]');
     await box.waitForDisplayed();
+    await pressShortcut("a");
     await browser.keys("Hello Studio İğ");
     await browser.execute(() => {
       const editor = document.querySelector('[data-testid="studio-viewport"] [role="textbox"]') as HTMLElement;
@@ -146,6 +147,7 @@ describe("studio", () => {
     await browser.waitUntil(async () => (await elements().length) === 4, { timeoutMsg: "the saved design did not come back with its four elements" });
     await expect($(`input[aria-label="${t("studio.toolbar.name")}"]`)).toHaveValue("Poster");
 
+    await openTool("nav.viewer");
     await openInViewer(join(workDir(), "Studio design.pdf"));
     const edit = $('[data-testid="edit-in-studio"]');
     await edit.waitForDisplayed({ timeout: 30000 });
