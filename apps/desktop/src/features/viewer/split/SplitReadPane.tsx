@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Eye, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { MatchFlag } from "@embedpdf/models";
@@ -51,7 +51,7 @@ export function SplitReadPane({ primaryId, path, password, pageColors }: SplitRe
       </div>
       <div className="relative min-h-0 flex-1">
         {status === "success" && documentId ? (
-          <ReadPaneDocument key={documentId} documentId={documentId} path={path} pageColors={pageColors} />
+          <ReadPaneDocument key={documentId} documentId={documentId} path={path} password={password} pageColors={pageColors} />
         ) : status === "error" ? (
           <ErrorState title={t("viewer.split.openFailed")} message={error ? describeError(t, error) : t("errors.INTERNAL")} onRetry={() => setAttempt((value) => value + 1)} />
         ) : (
@@ -74,7 +74,9 @@ function PaneCounter({ documentId }: { documentId: string }) {
   );
 }
 
-function ReadPaneDocument({ documentId, path, pageColors }: { documentId: string; path: string; pageColors: PageColorScheme }) {
+type ReadPaneDocumentProps = { documentId: string; path: string; password: string | null; pageColors: PageColorScheme };
+
+function ReadPaneDocument({ documentId, path, password, pageColors }: ReadPaneDocumentProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const { provides: search } = useSearch(documentId);
   const { provides: selection } = useSelectionCapability();
@@ -82,6 +84,7 @@ function ReadPaneDocument({ documentId, path, pageColors }: { documentId: string
   const query = useSearchBarState((state) => state.query);
   const caseSensitive = useSearchBarState((state) => state.caseSensitive);
   const wholeWord = useSearchBarState((state) => state.wholeWord);
+  const source = useMemo(() => ({ path, password }), [path, password]);
   useRestoredSplitPage(documentId, path);
 
   useEffect(() => {
@@ -124,7 +127,7 @@ function ReadPaneDocument({ documentId, path, pageColors }: { documentId: string
 
   return (
     <div ref={hostRef} className="h-full">
-      <PageView documentId={documentId} pageColors={pageColors} readOnly />
+      <PageView documentId={documentId} pageColors={pageColors} readOnly readOnlySource={source} />
     </div>
   );
 }

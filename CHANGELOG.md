@@ -9,6 +9,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ### Changed
 - Merge: a file already in the list is never added twice, whether it comes from the picker, a folder, a drop or the command line, and a short notice says how many were skipped [2026-10-04]
 - Page organizer: a click on a page opens its preview, Ctrl+click and Shift+click select, the corner checkbox is always shown, and the preview has Select this page (Enter), Shift+arrows to extend the selection and an Open in viewer button; double-click no longer opens the viewer [2026-10-04]
+- Viewer: the read-only pane of the split window has a right-click menu too — copy (also as a quotation, Markdown or code), search, translate, read aloud, pictures, go to page, page link, print and page export; changes such as bookmarks stay in the main pane [2026-10-06]
 
 ### Fixed
 - Text in PDFs that vivePDF lays out (Create PDF, book, CV, cover page, text, Markdown, web page and e-mail conversions, Studio documents and designs) copies and searches as plain letters: "fi", "fl", "ff", "ffi", "ffl" and "st" no longer come out as single ligature characters in other PDF readers [2026-10-06]

@@ -25,7 +25,7 @@ import { highlighterCursor, penCursor } from "./presentation/toolCursor";
 import { useViewportPan } from "./useViewportPan";
 import { useSelectionRelease } from "./useSelectionRelease";
 import { useWheelZoom } from "./useWheelZoom";
-import { ViewerContextMenu } from "./ViewerContextMenu";
+import { ViewerContextMenu, type ReadOnlySource } from "./ViewerContextMenu";
 import { ZoomBadge } from "./ZoomBadge";
 
 const CLICK_MOVE_LIMIT_PX = 4;
@@ -35,9 +35,9 @@ const READ_ONLY_LAYER = { display: "contents", pointerEvents: "none" } as const;
 
 export type PageDecoration = (pageIndex: number, width: number, height: number) => ReactNode;
 
-type PageViewProps = { documentId: string; decoratePage?: PageDecoration; pageColors?: PageColorScheme; readOnly?: boolean };
+type PageViewProps = { documentId: string; decoratePage?: PageDecoration; pageColors?: PageColorScheme; readOnly?: boolean; readOnlySource?: ReadOnlySource };
 
-export function PageView({ documentId, decoratePage, pageColors = "normal", readOnly = false }: PageViewProps) {
+export function PageView({ documentId, decoratePage, pageColors = "normal", readOnly = false, readOnlySource }: PageViewProps) {
   const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
   const selectionColor = usePreferencesStore((state) => state.selectionColor);
@@ -142,7 +142,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
         </Viewport>
       </GlobalPointerProvider>
       <ZoomBadge documentId={documentId} />
-      {readOnly ? null : <ViewerContextMenu documentId={documentId} hostRef={hostRef} />}
+      {readOnly && !readOnlySource ? null : <ViewerContextMenu documentId={documentId} hostRef={hostRef} readOnlySource={readOnlySource} />}
       <LinkPreview documentId={documentId} hostRef={hostRef} />
     </div>
   );

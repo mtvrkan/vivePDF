@@ -60,7 +60,7 @@ import { speechFailureKey, useSpeechStore } from "@/shared/store/speechStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { requestSearchable } from "./searchableStore";
-import { arrangeMenu, menuFocus, pointOnRects, type PageRect } from "./contextMenuLayout";
+import { arrangeMenu, menuFocus, pointOnRects, withoutItems, type PageRect } from "./contextMenuLayout";
 import { bookmarkTitleFrom } from "./bookmarkTitle";
 import { usePageNavigation } from "./usePageNavigation";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
@@ -77,6 +77,9 @@ const VIEWABLE_PICTURE_EXTENSIONS = new Set(["png", "jpg", "jpeg"]);
 const TYPING_TARGETS = "input, textarea, [data-editor-input]";
 const SECONDARY_BUTTON = 2;
 const SECONDARY_BUTTON_EVENTS = ["pointerdown", "pointerup", "mousedown", "mouseup"] as const;
+const EDITING_ITEMS: ReadonlySet<string> = new Set(["add-bookmark", "edit-image", "image-text", "snapshot", "zoom-area", "page-selectable"]);
+
+export type ReadOnlySource = { path: string; password: string | null };
 
 type SelectionRect = { x: number; y: number; width: number; height: number };
 
@@ -100,10 +103,13 @@ function base64ToBlob(base64: string, type: string): Blob {
   return new Blob([bytes], { type });
 }
 
-export function ViewerContextMenu({ documentId, hostRef }: { documentId: string; hostRef: RefObject<HTMLDivElement | null> }) {
+type ViewerContextMenuProps = { documentId: string; hostRef: RefObject<HTMLDivElement | null>; readOnlySource?: ReadOnlySource };
+
+export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: ViewerContextMenuProps) {
   const { t, i18n } = useTranslation();
   const toast = useToastStore((state) => state.push);
-  const document = useDocumentStore((state) => state.documents[documentId] ?? null);
+  const registered = useDocumentStore((state) => state.documents[documentId] ?? null);
+  const document = readOnlySource ?? registered;
   const labels = usePageLabels(documentId);
   const { provides: selection } = useSelectionCapability();
   const { provides: zoom } = useZoomCapability();
@@ -679,11 +685,13 @@ export function ViewerContextMenu({ documentId, hostRef }: { documentId: string;
     },
   ];
 
+  const shown = (groupItems: ContextMenuItem[]) => (readOnlySource ? withoutItems(groupItems, EDITING_ITEMS) : groupItems);
+
   const items = arrangeMenu(
     [
-      { id: "selection", label: t("viewer.context.selectionGroup"), icon: TextSelect, items: selectionItems },
-      { id: "picture", label: t("viewer.context.pictureGroup"), icon: ImageIcon, items: pictureItems },
-      { id: "page", label: t("viewer.context.pageGroup"), icon: FileText, items: pageItems },
+      { id: "selection", label: t("viewer.context.selectionGroup"), icon: TextSelect, items: shown(selectionItems) },
+      { id: "picture", label: t("viewer.context.pictureGroup"), icon: ImageIcon, items: shown(pictureItems) },
+      { id: "page", label: t("viewer.context.pageGroup"), icon: FileText, items: shown(pageItems) },
     ],
     menuFocus({ onSelection: menu.onSelection, hasPicture: found }),
   );

@@ -86,6 +86,22 @@ describe("split window", () => {
     await browser.saveScreenshot(join(workDir(), "split-columns.png"));
   });
 
+  it("offers the reading part of the right-click menu in the pane", async () => {
+    const menu = $(`[role="menu"][aria-label="${t("viewer.context.title")}"]`);
+    const point = await browser.execute(() => {
+      const rect = (document.querySelector('section[data-split-pane] [data-page-index="2"]') as HTMLElement).getBoundingClientRect();
+      return { x: Math.round(rect.left + rect.width / 2), y: Math.round(rect.top + 12) };
+    });
+    await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move({ origin: "viewport", ...point }).down({ button: 2 }).up({ button: 2 }).perform();
+    await menu.waitForDisplayed({ timeoutMsg: "no context menu opened in the read-only pane" });
+    await expect(menu.$('[data-menu-id="go-to-page"]')).toBeExisting();
+    await expect(menu.$('[data-menu-id="copy-page-link"]')).toBeExisting();
+    await expect(menu.$('[data-menu-id="add-bookmark"]')).not.toBeExisting();
+    await expect(menu.$('[data-menu-id="page-selectable"]')).not.toBeExisting();
+    await browser.keys(ESCAPE_KEY);
+    await menu.waitForDisplayed({ reverse: true, timeoutMsg: "the pane menu stayed open after Escape" });
+  });
+
   it("resizes from the keyboard, stacks the panes and closes with the shortcut", async () => {
     await browser.keys(ESCAPE_KEY);
     const divider = $('[role="separator"][data-split-divider]');

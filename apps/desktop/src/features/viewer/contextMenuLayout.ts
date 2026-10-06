@@ -36,3 +36,19 @@ export function arrangeMenu(groups: MenuGroup[], focus: MenuFocus): ContextMenuI
     ...others.map((group): ContextMenuItem => ({ type: "submenu", id: `group-${group.id}`, icon: group.icon, label: group.label, items: group.items })),
   ];
 }
+
+export function withoutItems(items: ContextMenuItem[], hidden: ReadonlySet<string>): ContextMenuItem[] {
+  const kept: ContextMenuItem[] = [];
+  for (const item of items) {
+    if (hidden.has(item.id)) continue;
+    if (item.type === "submenu") {
+      const children = withoutItems(item.items, hidden);
+      if (children.length > 0) kept.push({ ...item, items: children });
+      continue;
+    }
+    if (item.type === "separator" && (kept.length === 0 || kept[kept.length - 1].type === "separator")) continue;
+    kept.push(item);
+  }
+  while (kept.length > 0 && kept[kept.length - 1].type === "separator") kept.pop();
+  return kept;
+}

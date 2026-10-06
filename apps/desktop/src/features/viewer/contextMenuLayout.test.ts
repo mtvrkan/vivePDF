@@ -1,7 +1,7 @@
 import { Copy, FileText, Image } from "lucide-react";
 import { describe, expect, it, vi } from "vitest";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
-import { arrangeMenu, menuFocus, pointOnRects, type MenuGroup } from "./contextMenuLayout";
+import { arrangeMenu, menuFocus, pointOnRects, withoutItems, type MenuGroup } from "./contextMenuLayout";
 
 const item = (id: string): ContextMenuItem => ({ type: "item", id, label: id, onSelect: vi.fn() });
 
@@ -54,5 +54,27 @@ describe("arrangeMenu", () => {
   it("skips empty groups and falls back to the page group when the focused one is empty", () => {
     expect(ids(arrangeMenu(groups([], ["copy-image"], ["go-to-page"]), "selection"))).toEqual(["go-to-page", "sep-page-groups", "group-picture"]);
     expect(arrangeMenu(groups([], [], []), "page")).toEqual([]);
+  });
+});
+
+describe("withoutItems", () => {
+  const separator = (id: string): ContextMenuItem => ({ type: "separator", id });
+  const submenu = (id: string, items: ContextMenuItem[]): ContextMenuItem => ({ type: "submenu", id, label: id, items });
+
+  it("drops hidden items inside submenus and submenus left empty", () => {
+    const menu = [item("copy"), submenu("export", [item("png"), item("snapshot")]), submenu("searchable", [item("page"), item("document")])];
+    const kept = withoutItems(menu, new Set(["snapshot", "page", "document"]));
+    expect(ids(kept)).toEqual(["copy", "export"]);
+    expect(ids((kept[1] as { items: ContextMenuItem[] }).items)).toEqual(["png"]);
+  });
+
+  it("never leaves a separator at either end or two in a row", () => {
+    const menu = [item("bookmark"), separator("a"), item("go"), separator("b"), item("print"), separator("c"), item("edit")];
+    expect(ids(withoutItems(menu, new Set(["bookmark", "print", "edit"])))).toEqual(["go"]);
+  });
+
+  it("keeps every item when nothing is hidden", () => {
+    const menu = [item("one"), separator("a"), item("two")];
+    expect(withoutItems(menu, new Set())).toEqual(menu);
   });
 });
