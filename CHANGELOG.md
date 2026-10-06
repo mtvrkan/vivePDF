@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Viewer annotations: an Eraser next to the pen rubs out just the part of a pen drawing you drag over, cutting a line in two where needed and removing a drawing once nothing is left of it; its size is set in the bar, a circle shows where it will erase, and Undo brings the erased part back [2026-10-06]
 - Viewer annotations: Select an area lets you drag a box over the page to select every mark it touches (Shift or Ctrl adds to the selection), and several selected marks can be restyled or deleted together, with the bar showing how many are selected; Delete all marks removes every drawing, shape, highlight and text box in the document after a confirmation [2026-10-06]
 - Home collections can be rearranged by dragging the handle at the start of a card, with the arrow keys on that handle, or with Move earlier and Move later in the card's menu; Pin to the front keeps a collection ahead of the others with a pin next to its name, and the order is remembered [2026-10-06]
 - Collection view: search the files by name or folder, sort them by collection order, name (A–Z or Z–A), folder or file type, and tick several files (or every shown one) to open them together or take them out of the collection with an undo; Open all follows the chosen order [2026-10-06]
@@ -13,8 +14,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Viewer: the unsaved-changes chip uses the app's blue tones to match its Save button instead of amber [2026-10-06]
+- Viewer annotations: each tool keeps its own colour, so the pen starts in red and the highlighter in yellow instead of sharing the last colour picked for another tool [2026-10-06]
 - Viewer: the back and forward arrows next to the page buttons are gone; Alt+Left and Alt+Right still step through the places you jumped to [2026-10-06]
-- Viewer: the unsaved-changes chip is amber with a status dot, its Save and discard buttons fit inside it and react to the pointer; the close-without-saving question has room for its buttons on one row, with Close without saving as a quiet red text button on the left and Cancel and Save and close on the right [2026-10-06]
+- Viewer: the unsaved-changes chip has a status dot, its Save and discard buttons fit inside it and react to the pointer; the close-without-saving question has room for its buttons on one row, with Close without saving as a quiet red text button on the left and Cancel and Save and close on the right [2026-10-06]
 - Windows can no longer be shrunk below 900 × 600, where the layout starts to break [2026-10-06]
 - Viewer tab groups work like browser tab groups: clicking a group's name now collapses it even when one of its documents is open, switching to the nearest document outside the group; the name can be dragged to move the whole group, or moved with Ctrl+Shift+Left/Right; the group menu adds Open a document in this group and Move group to new window; the group's colour line runs unbroken across its tabs, and the name keeps keyboard focus when it collapses [2026-10-06]
 - Home: Small, Medium and Large now visibly change every section — spacing grows and shrinks with the size; Recent documents become a compact list without previews when small and larger previews when large; Studio and collections fit more or fewer per row; the overview card adds Close document (Ctrl W) and Full screen (F11) shortcuts when large [2026-10-06]

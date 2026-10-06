@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useRovingRadios } from "@/shared/hooks/useRovingRadios";
 import {
   ArrowRight,
@@ -44,10 +44,10 @@ import { outsideRender } from "@/shared/lib/outsideRender";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { LucideIcon } from "lucide-react";
 import { describeError } from "@/shared/lib/errorMessage";
-import { DASH_TOOLS, DEFAULT_LINE_ENDINGS, FALLBACK_COLORS, FILL_TOOLS, LINE_ENDING_LABEL_KEYS, LINE_ENDING_OPTIONS, LINE_TOOLS, MAX_STROKE_WIDTH, MIN_STROKE_WIDTH, STROKE_TOOLS, STROKE_WIDTH_STEP, SUBTYPE_TOOLS, stylePatchFor, type StyleValues } from "./annotateStyle";
+import { DASH_TOOLS, DEFAULT_LINE_ENDINGS, FALLBACK_COLORS, FILL_TOOLS, LINE_ENDING_LABEL_KEYS, LINE_ENDING_OPTIONS, LINE_TOOLS, MAX_STROKE_WIDTH, MIN_STROKE_WIDTH, STROKE_TOOLS, STROKE_WIDTH_STEP, SUBTYPE_TOOLS, stylePatchFor, toolColorFrom, type StyleValues } from "./annotateStyle";
 import { CURVE_STEP, MAX_CURVE, MIN_CURVE, currentCurve, curveRectPatch, curvedVertices, lineEndpoints, polylineFromLine } from "./lineCurve";
 import { MARKUP_SUBTYPES, hasSelectionRects, markupRequests } from "./selectionMarkup";
-import { allMarks, useAreaSelectStore } from "./markArea";
+import { MAX_ERASER_SIZE, MIN_ERASER_SIZE, allMarks, useMarkToolMode, useMarkToolStore } from "./markArea";
 
 type Tool = { id: string; icon: LucideIcon; labelKey: string };
 
@@ -85,7 +85,10 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   const [saving, setSaving] = useState(false);
   const [overwriteOpen, setOverwriteOpen] = useState(false);
   const [deleteAllOpen, setDeleteAllOpen] = useState(false);
-  const areaActive = useAreaSelectStore((state) => state.documentId === documentId);
+  const markMode = useMarkToolMode(documentId);
+  const areaActive = markMode === "area";
+  const eraseActive = markMode === "erase";
+  const eraserSize = useMarkToolStore((state) => state.eraserSize);
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const [color, setColor] = useState(FALLBACK_COLORS[0]);
   const [strokeWidth, setStrokeWidth] = useState(2);
@@ -150,7 +153,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
 
   const selectionRects = (): Record<string, Rect[]> => (selectionScope?.getHighlightRects() ?? {}) as Record<string, Rect[]>;
 
-  const markSelection = (toolId: string) => {
+  const markSelection = (toolId: string, toolColor: string) => {
     const subtype = MARKUP_SUBTYPES[toolId];
     if (subtype === undefined || !annotation || !selectionScope) return;
     const requests = markupRequests(selectionRects());
@@ -159,7 +162,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
     for (const request of requests) {
       annotation.createAnnotation(request.pageIndex, {
         ...defaults,
-        ...stylePatchFor(toolId, { color, opacity }),
+        ...stylePatchFor(toolId, { color: toolColor, opacity }),
         type: subtype,
         id: crypto.randomUUID(),
         pageIndex: request.pageIndex,
@@ -171,18 +174,20 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const selectTool = (id: string) => {
-    useAreaSelectStore.getState().stop();
+    useMarkToolStore.getState().stop();
     if (redactActive) redaction?.toggleRedact();
     const next = activeTool === id ? null : id;
     if (next) {
-      annotationCapability?.setToolDefaults(next, stylePatchFor(next, { color, fill, strokeWidth, opacity, dashed, lineEndings: toolEndings[next] }));
-      markSelection(next);
+      const toolColor = toolColorFrom(next, annotationCapability?.getTool(next)?.defaults as Record<string, unknown> | undefined) ?? color;
+      setColor(toolColor);
+      annotationCapability?.setToolDefaults(next, stylePatchFor(next, { color: toolColor, fill, strokeWidth, opacity, dashed, lineEndings: toolEndings[next] }));
+      markSelection(next, toolColor);
     }
     annotation?.setActiveTool(next);
   };
 
   const disarmTools = () => {
-    useAreaSelectStore.getState().stop();
+    useMarkToolStore.getState().stop();
     annotation?.setActiveTool(null);
     if (redaction?.isRedactActive()) redaction.toggleRedact();
   };
@@ -200,7 +205,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const toggleRedact = () => {
-    useAreaSelectStore.getState().stop();
+    useMarkToolStore.getState().stop();
     annotation?.setActiveTool(null);
     if (!redactActive && redaction && hasSelectionRects(selectionRects())) {
       void redaction
@@ -241,7 +246,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const pickPointer = () => {
-    useAreaSelectStore.getState().stop();
+    useMarkToolStore.getState().stop();
     annotation?.setActiveTool(null);
     if (redactActive) redaction?.toggleRedact();
   };
@@ -249,7 +254,14 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   const toggleArea = () => {
     annotation?.setActiveTool(null);
     if (redactActive) redaction?.toggleRedact();
-    useAreaSelectStore.getState().toggle(documentId);
+    useMarkToolStore.getState().toggle(documentId, "area");
+  };
+
+  const toggleEraser = () => {
+    annotation?.setActiveTool(null);
+    annotation?.deselectAnnotation();
+    if (redactActive) redaction?.toggleRedact();
+    useMarkToolStore.getState().toggle(documentId, "erase");
   };
 
   const saveTo = async (path?: string) => {
@@ -325,11 +337,14 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   if (layout === "dock") {
     return (
       <div className="glass flex w-12 flex-col items-center gap-1 rounded-2xl p-1.5">
-        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive && !areaActive} onClick={pickPointer} />
+        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive && !markMode} onClick={pickPointer} />
         <IconButton icon={SquareDashedMousePointer} label={t("annotate.areaSelect")} active={areaActive} onClick={toggleArea} />
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />
         {TOOLS.map((tool) => (
-          <IconButton key={tool.id} icon={tool.icon} label={t(tool.labelKey)} active={activeTool === tool.id} onClick={() => selectTool(tool.id)} />
+          <Fragment key={tool.id}>
+            <IconButton icon={tool.icon} label={t(tool.labelKey)} active={activeTool === tool.id} onClick={() => selectTool(tool.id)} />
+            {tool.id === "ink" ? <IconButton icon={Eraser} label={t("annotate.eraser")} active={eraseActive} onClick={toggleEraser} /> : null}
+          </Fragment>
         ))}
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />
         <div role="radiogroup" aria-label={t("annotate.color")} className="grid grid-cols-2 gap-1.5 px-0.5 py-0.5">
@@ -385,11 +400,14 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   return (
     <div className="relative z-40 glass-flat border-b">
       <div className="flex h-row items-center gap-1.5 px-2">
-        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive && !areaActive} onClick={pickPointer} />
+        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive && !markMode} onClick={pickPointer} />
         <IconButton icon={SquareDashedMousePointer} label={t("annotate.areaSelect")} active={areaActive} onClick={toggleArea} />
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         {TOOLS.map((tool) => (
-          <IconButton key={tool.id} icon={tool.icon} label={t(tool.labelKey)} active={activeTool === tool.id} onClick={() => selectTool(tool.id)} />
+          <Fragment key={tool.id}>
+            <IconButton icon={tool.icon} label={t(tool.labelKey)} active={activeTool === tool.id} onClick={() => selectTool(tool.id)} />
+            {tool.id === "ink" ? <IconButton icon={Eraser} label={t("annotate.eraser")} active={eraseActive} onClick={toggleEraser} /> : null}
+          </Fragment>
         ))}
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         <IconButton icon={ScanEye} label={t("annotate.redact")} active={redactActive} onClick={toggleRedact} />
@@ -412,7 +430,24 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
         </Button>
         <IconButton icon={X} label={t("common.close")} onClick={closeBar} />
       </div>
-      {styleTarget ? (
+      {eraseActive ? (
+        <div className="flex min-h-9 flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-2 py-1 text-xs">
+          <span className="glass-chip inline-flex h-7 items-center rounded-xl px-2.5 text-muted-foreground">{t("annotate.eraserHint")}</span>
+          <div className="flex items-center gap-2">
+            <span className="text-muted-foreground">{t("annotate.eraserSize")}</span>
+            <input
+              type="range"
+              min={MIN_ERASER_SIZE}
+              max={MAX_ERASER_SIZE}
+              value={eraserSize}
+              onChange={(event) => useMarkToolStore.getState().setEraserSize(Number(event.target.value))}
+              className="w-28 accent-primary"
+              aria-label={t("annotate.eraserSize")}
+            />
+            <span className="w-12 text-end font-mono tabular-nums">{eraserSize} px</span>
+          </div>
+        </div>
+      ) : styleTarget ? (
         <div className="flex min-h-9 flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-2 py-1 text-xs">
           <span className="glass-chip inline-flex h-7 items-center rounded-xl px-2.5 text-muted-foreground">
             {styleTarget !== "selected" ? t("annotate.newMarks") : selectedMarks.length > 1 ? t("annotate.selectedMarks", { count: selectedMarks.length }) : t("annotate.selectedMark")}

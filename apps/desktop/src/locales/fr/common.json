@@ -5769,7 +5769,10 @@
     "deleteAllTitle": "Supprimer toutes les marques ?",
     "deleteAllBody_one": "{{count}} marque de {{name}} sera supprimée.",
     "deleteAllBody_other": "{{count}} marques de {{name}} seront supprimées.",
-    "selectedMarks": "{{count}} marques sélectionnées"
+    "selectedMarks": "{{count}} marques sélectionnées",
+    "eraser": "Gomme (efface une partie des tracés au stylo)",
+    "eraserSize": "Taille de la gomme",
+    "eraserHint": "Passez sur un tracé au stylo pour en effacer cette partie"
   },
   "recovery": {
     "discard": "Ignorer",

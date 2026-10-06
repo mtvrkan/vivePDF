@@ -4,17 +4,33 @@ import { SUBTYPE_TOOLS } from "./annotateStyle";
 
 export type MarkRef = { pageIndex: number; id: string };
 
-type AreaSelectState = {
+export type MarkToolMode = "area" | "erase";
+
+export const MIN_ERASER_SIZE = 4;
+export const MAX_ERASER_SIZE = 40;
+export const DEFAULT_ERASER_SIZE = 10;
+
+type MarkToolState = {
   documentId: string | null;
-  toggle: (documentId: string) => void;
+  mode: MarkToolMode | null;
+  eraserSize: number;
+  toggle: (documentId: string, mode: MarkToolMode) => void;
   stop: () => void;
+  setEraserSize: (size: number) => void;
 };
 
-export const useAreaSelectStore = create<AreaSelectState>((set) => ({
+export const useMarkToolStore = create<MarkToolState>((set) => ({
   documentId: null,
-  toggle: (documentId) => set((state) => ({ documentId: state.documentId === documentId ? null : documentId })),
-  stop: () => set({ documentId: null }),
+  mode: null,
+  eraserSize: DEFAULT_ERASER_SIZE,
+  toggle: (documentId, mode) => set((state) => (state.documentId === documentId && state.mode === mode ? { documentId: null, mode: null } : { documentId, mode })),
+  stop: () => set({ documentId: null, mode: null }),
+  setEraserSize: (size) => set({ eraserSize: Math.min(MAX_ERASER_SIZE, Math.max(MIN_ERASER_SIZE, size)) }),
 }));
+
+export function useMarkToolMode(documentId: string): MarkToolMode | null {
+  return useMarkToolStore((state) => (state.documentId === documentId ? state.mode : null));
+}
 
 export function isMark(object: PdfAnnotationObject): boolean {
   return SUBTYPE_TOOLS[object.type] !== undefined;

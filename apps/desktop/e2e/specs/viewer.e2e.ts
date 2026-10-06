@@ -173,6 +173,32 @@ describe("viewer", () => {
     await browser.waitUntil(async () => (await blueStrokes()) >= 2, { timeoutMsg: "undo did not bring the deleted marks back" });
   });
 
+  it("rubs out part of a pen drawing with the eraser and removes a drawing erased completely", async () => {
+    await closeAllDocuments();
+    await openInViewer(copyFixture(fixtures().sample, "eraser.pdf"));
+    if (!(await button(t("annotate.ink")).isDisplayed())) await clickButton(t("viewer.annotate"));
+    await clickButton(t("annotate.ink"));
+    let stroke = browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 120, 200)).down();
+    for (const x of [180, 240, 300, 360]) stroke = stroke.move({ ...(await pagePoint(0, x, 200)), duration: 60 });
+    await stroke.up().perform();
+    const drawnLines = () =>
+      browser.execute(() => Array.from(document.querySelectorAll<SVGPathElement>('[data-page-index="0"] [data-annotation-layer] svg path')).filter((path) => path.style.stroke !== "" && path.getAttribute("stroke") !== "transparent").length);
+    await browser.waitUntil(async () => (await drawnLines()) === 1, { timeoutMsg: "the pen line was not drawn" });
+    await $('[data-page-index="0"] [data-epdf-handle]').waitForExist({ timeoutMsg: "the pen line never became a mark" });
+
+    await clickButton(t("annotate.eraser"));
+    await expect($(`//span[normalize-space()="${t("annotate.eraserHint")}"]`)).toBeDisplayed();
+    await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 240, 170)).down().move({ ...(await pagePoint(0, 240, 200)), duration: 80 }).move({ ...(await pagePoint(0, 240, 230)), duration: 80 }).up().perform();
+    await browser.waitUntil(async () => (await drawnLines()) === 2, { timeoutMsg: "the eraser did not cut the pen line in two" });
+
+    let rub = browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 110, 200)).down();
+    for (const x of [160, 210, 260, 310, 370]) rub = rub.move({ ...(await pagePoint(0, x, 200)), duration: 60 });
+    await rub.up().perform();
+    await browser.waitUntil(async () => (await drawnLines()) === 0, { timeoutMsg: "erasing the whole drawing left part of it" });
+    await clickButton(t("tools.pages.undo"));
+    await browser.waitUntil(async () => (await drawnLines()) === 2, { timeoutMsg: "undo did not bring the erased drawing back" });
+  });
+
   it("starts the presentation from the first page on F5 and from the current page on Shift F5", async () => {
     const path = copyFixture(fixtures().six, "present.pdf");
     await openInViewer(path);

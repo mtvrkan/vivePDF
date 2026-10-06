@@ -15,7 +15,7 @@ import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { useSplitViewStore } from "@/shared/store/splitViewStore";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { copySelection } from "./copySelection";
-import { useAreaSelectStore } from "./markArea";
+import { useMarkToolStore } from "./markArea";
 import { hasOpenModal, hasTextSelectionOutsidePages, isActivatableTarget, isInsideCompositeWidget } from "./viewerKeyTarget";
 import { isSplitViewToggle } from "./split/splitShortcut";
 import { usePageNavigation } from "./usePageNavigation";
@@ -198,7 +198,7 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         return;
       }
       if (key === "Escape") {
-        useAreaSelectStore.getState().stop();
+        useMarkToolStore.getState().stop();
         if (annotation?.getActiveTool()) annotation.setActiveTool(null);
         if (redaction?.isRedactActive()) redaction.toggleRedact();
       }

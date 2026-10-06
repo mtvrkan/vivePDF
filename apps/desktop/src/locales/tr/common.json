@@ -5769,7 +5769,10 @@
     "deleteAllTitle": "Tüm işaretler silinsin mi?",
     "deleteAllBody_one": "{{name}} içindeki {{count}} işaret silinecek.",
     "deleteAllBody_other": "{{name}} içindeki {{count}} işaret silinecek.",
-    "selectedMarks": "{{count}} seçili işaret"
+    "selectedMarks": "{{count}} seçili işaret",
+    "eraser": "Silgi (kalem çizimlerinin bir kısmını siler)",
+    "eraserSize": "Silgi boyutu",
+    "eraserHint": "Silmek istediğiniz kalem çizgisinin üzerinden geçin"
   },
   "recovery": {
     "discard": "Yoksay",

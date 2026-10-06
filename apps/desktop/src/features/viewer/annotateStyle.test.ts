@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PdfAnnotationBorderStyle, PdfAnnotationSubtype } from "@embedpdf/models";
-import { NO_FILL, SUBTYPE_TOOLS, stylePatchFor } from "./annotateStyle";
+import { NO_FILL, SUBTYPE_TOOLS, stylePatchFor, toolColorFrom } from "./annotateStyle";
 
 describe("stylePatchFor colour routing", () => {
   it("sends colour to the outline for shapes and leaves fill alone", () => {
@@ -76,5 +76,17 @@ describe("SUBTYPE_TOOLS", () => {
     expect(SUBTYPE_TOOLS[PdfAnnotationSubtype.INK]).toBe("ink");
     expect(SUBTYPE_TOOLS[PdfAnnotationSubtype.FREETEXT]).toBe("freeText");
     expect(SUBTYPE_TOOLS[PdfAnnotationSubtype.SQUIGGLY]).toBe("squiggly");
+  });
+});
+
+describe("toolColorFrom", () => {
+  it("reads the colour each tool actually paints with", () => {
+    expect(toolColorFrom("ink", { strokeColor: "#E44234", color: "#FFD400" })).toBe("#E44234");
+    expect(toolColorFrom("highlight", { color: "#FFD400" })).toBe("#FFD400");
+    expect(toolColorFrom("freeText", { fontColor: "#111111", color: "transparent" })).toBe("#111111");
+  });
+
+  it("has no colour for a tool without defaults", () => {
+    expect(toolColorFrom("ink", undefined)).toBeNull();
   });
 });

@@ -5769,7 +5769,10 @@
     "deleteAllTitle": "¿Eliminar todas las marcas?",
     "deleteAllBody_one": "Se eliminará {{count}} marca de {{name}}.",
     "deleteAllBody_other": "Se eliminarán {{count}} marcas de {{name}}.",
-    "selectedMarks": "{{count}} marcas seleccionadas"
+    "selectedMarks": "{{count}} marcas seleccionadas",
+    "eraser": "Borrador (borra partes de los trazos de lápiz)",
+    "eraserSize": "Tamaño del borrador",
+    "eraserHint": "Pase sobre un trazo de lápiz para borrar esa parte"
   },
   "recovery": {
     "discard": "Descartar",

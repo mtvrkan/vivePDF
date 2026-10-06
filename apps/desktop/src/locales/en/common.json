@@ -5769,7 +5769,10 @@
     "deleteAllTitle": "Delete every mark?",
     "deleteAllBody_one": "{{count}} mark in {{name}} will be deleted.",
     "deleteAllBody_other": "{{count}} marks in {{name}} will be deleted.",
-    "selectedMarks": "{{count}} selected marks"
+    "selectedMarks": "{{count}} selected marks",
+    "eraser": "Eraser (rub out parts of pen drawings)",
+    "eraserSize": "Eraser size",
+    "eraserHint": "Rub over a pen drawing to erase that part"
   },
   "recovery": {
     "discard": "Discard",

@@ -6528,7 +6528,10 @@
     "deleteAllBody_few": "سيتم حذف {{count}} علامات من {{name}}.",
     "deleteAllBody_many": "سيتم حذف {{count}} علامة من {{name}}.",
     "deleteAllBody_other": "سيتم حذف {{count}} علامة من {{name}}.",
-    "selectedMarks": "{{count}} علامات محددة"
+    "selectedMarks": "{{count}} علامات محددة",
+    "eraser": "ممحاة (تمسح أجزاء من رسومات القلم)",
+    "eraserSize": "حجم الممحاة",
+    "eraserHint": "مرّر فوق رسم القلم لمسح ذلك الجزء"
   },
   "recovery": {
     "discard": "تجاهل",

@@ -5769,7 +5769,10 @@
     "deleteAllTitle": "Excluir todas as marcas?",
     "deleteAllBody_one": "{{count}} marca de {{name}} será excluída.",
     "deleteAllBody_other": "{{count}} marcas de {{name}} serão excluídas.",
-    "selectedMarks": "{{count}} marcas selecionadas"
+    "selectedMarks": "{{count}} marcas selecionadas",
+    "eraser": "Borracha (apaga partes dos traços de caneta)",
+    "eraserSize": "Tamanho da borracha",
+    "eraserHint": "Passe sobre um traço de caneta para apagar essa parte"
   },
   "recovery": {
     "discard": "Descartar",

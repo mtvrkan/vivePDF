@@ -173,8 +173,8 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />
 
       {unsavedCount > 0 ? (
-        <div className="flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-warning/40 bg-warning/10 ps-2.5 pe-0.5 text-xs">
-          <span className="size-1.5 shrink-0 rounded-full bg-warning" aria-hidden />
+        <div className="flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 ps-2.5 pe-0.5 text-xs">
+          <span className="size-1.5 shrink-0 rounded-full bg-primary" aria-hidden />
           <span className="whitespace-nowrap font-medium text-foreground">{t("viewer.save.unsaved")}</span>
           <button
             type="button"
@@ -190,7 +190,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
             disabled={savingDocument}
             aria-label={t("viewer.save.discard")}
             title={t("viewer.save.discard")}
-            className="flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none transition-colors duration-(--transition-fast) hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"
+            className="flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none transition-colors duration-(--transition-fast) hover:bg-primary/15 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"
           >
             <X className="size-3.5" aria-hidden />
           </button>

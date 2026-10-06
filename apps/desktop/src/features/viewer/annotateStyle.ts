@@ -50,6 +50,12 @@ export const STROKE_WIDTH_STEP = 0.5;
 export type StylePatch = { color?: string; strokeColor?: string; fontColor?: string; strokeWidth?: number; opacity?: number; strokeStyle?: PdfAnnotationBorderStyle; strokeDashArray?: number[]; lineEndings?: LineEndings };
 export type StyleValues = { color?: string; fill?: string | null; strokeWidth?: number; opacity?: number; dashed?: boolean; lineEndings?: LineEndings };
 
+export function toolColorFrom(toolId: string, defaults: Record<string, unknown> | undefined): string | null {
+  const key = STROKE_TOOLS.has(toolId) || RULED_MARKUP_TOOLS.has(toolId) ? "strokeColor" : TEXT_TOOLS.has(toolId) ? "fontColor" : "color";
+  const value = defaults?.[key];
+  return typeof value === "string" ? value : null;
+}
+
 export function stylePatchFor(toolId: string, values: StyleValues): StylePatch {
   const patch: StylePatch = {};
   const { color, fill, strokeWidth, opacity, dashed, lineEndings } = values;

@@ -5769,7 +5769,10 @@
     "deleteAllTitle": "Eliminare tutti i segni?",
     "deleteAllBody_one": "Verrà eliminato {{count}} segno da {{name}}.",
     "deleteAllBody_other": "Verranno eliminati {{count}} segni da {{name}}.",
-    "selectedMarks": "{{count}} segni selezionati"
+    "selectedMarks": "{{count}} segni selezionati",
+    "eraser": "Gomma (cancella parti dei tratti a penna)",
+    "eraserSize": "Dimensione gomma",
+    "eraserHint": "Passa sopra un tratto a penna per cancellarne quella parte"
   },
   "recovery": {
     "discard": "Scarta",

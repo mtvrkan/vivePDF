@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PdfAnnotationSubtype, type PdfAnnotationObject } from "@embedpdf/models";
-import { allMarks, areaBetween, marksInArea, useAreaSelectStore } from "./markArea";
+import { MAX_ERASER_SIZE, MIN_ERASER_SIZE, allMarks, areaBetween, marksInArea, useMarkToolStore } from "./markArea";
 
 const mark = (id: string, type: PdfAnnotationSubtype, x: number, y: number, pageIndex = 0) =>
   ({ id, type, pageIndex, rect: { origin: { x, y }, size: { width: 20, height: 10 } } }) as PdfAnnotationObject;
@@ -41,14 +41,26 @@ describe("areaBetween", () => {
   });
 });
 
-describe("useAreaSelectStore", () => {
-  it("toggles area selection per document and stops it", () => {
-    useAreaSelectStore.getState().toggle("doc-1");
-    expect(useAreaSelectStore.getState().documentId).toBe("doc-1");
-    useAreaSelectStore.getState().toggle("doc-1");
-    expect(useAreaSelectStore.getState().documentId).toBeNull();
-    useAreaSelectStore.getState().toggle("doc-2");
-    useAreaSelectStore.getState().stop();
-    expect(useAreaSelectStore.getState().documentId).toBeNull();
+describe("useMarkToolStore", () => {
+  it("toggles a tool per document, switches between tools and stops", () => {
+    const store = useMarkToolStore.getState;
+
+    store().toggle("doc-1", "area");
+    expect(store()).toMatchObject({ documentId: "doc-1", mode: "area" });
+    store().toggle("doc-1", "erase");
+    expect(store()).toMatchObject({ documentId: "doc-1", mode: "erase" });
+    store().toggle("doc-1", "erase");
+    expect(store()).toMatchObject({ documentId: null, mode: null });
+    store().toggle("doc-2", "area");
+    store().stop();
+
+    expect(store().mode).toBeNull();
+  });
+
+  it("keeps the eraser size within its range", () => {
+    useMarkToolStore.getState().setEraserSize(1000);
+    expect(useMarkToolStore.getState().eraserSize).toBe(MAX_ERASER_SIZE);
+    useMarkToolStore.getState().setEraserSize(0);
+    expect(useMarkToolStore.getState().eraserSize).toBe(MIN_ERASER_SIZE);
   });
 });

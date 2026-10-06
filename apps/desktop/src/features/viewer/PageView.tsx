@@ -15,7 +15,7 @@ import { MarqueeZoom, ZoomGestureWrapper } from "@embedpdf/plugin-zoom/react";
 import type { PageColorScheme } from "@/shared/lib/pageColors";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { AnnotationSelectionMenu } from "./AnnotationSelectionMenu";
-import { AreaSelectLayer } from "./AreaSelectLayer";
+import { MarkToolLayer } from "./MarkToolLayer";
 import { LinkPreview } from "./LinkPreview";
 import { PageBitmap } from "./PageBitmap";
 import { PageSkeleton } from "./PageSkeleton";
@@ -133,7 +133,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
                         <FieldHighlights documentId={documentId} pageIndex={pageIndex} />
                         <MarqueeZoom documentId={documentId} pageIndex={pageIndex} stroke="var(--primary)" fill="color-mix(in oklab, var(--primary) 18%, transparent)" />
                         <PageOverlayLayer documentId={documentId} pageIndex={pageIndex} width={width} height={height} />
-                        <AreaSelectLayer documentId={documentId} pageIndex={pageIndex} />
+                        <MarkToolLayer documentId={documentId} pageIndex={pageIndex} />
                       </>
                     )}
                   </PagePointerProvider>
