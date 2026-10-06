@@ -7,7 +7,7 @@ from pathlib import Path
 import pymupdf
 
 from vivepdf.ops._document import forget_document
-from vivepdf.ops._font_unicode import use_ascii_for_shared_glyphs
+from vivepdf.ops._font_unicode import repair_unicode_maps
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.protocol import RpcModel
 
@@ -84,7 +84,7 @@ def deduplicate_annotation_names(document: pymupdf.Document) -> int:
 
 def prepare_for_save(document: pymupdf.Document) -> None:
     deduplicate_annotation_names(document)
-    use_ascii_for_shared_glyphs(document)
+    repair_unicode_maps(document)
 
 
 def garbage_level(document: pymupdf.Document, deduplicating: int = 3) -> int:

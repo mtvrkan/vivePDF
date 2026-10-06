@@ -10,6 +10,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: a file already in the list is never added twice, whether it comes from the picker, a folder, a drop or the command line, and a short notice says how many were skipped [2026-10-04]
 - Page organizer: a click on a page opens its preview, Ctrl+click and Shift+click select, the corner checkbox is always shown, and the preview has Select this page (Enter), Shift+arrows to extend the selection and an Open in viewer button; double-click no longer opens the viewer [2026-10-04]
 
+### Fixed
+- Text in PDFs that vivePDF lays out (Create PDF, book, CV, cover page, text, Markdown, web page and e-mail conversions, Studio documents and designs) copies and searches as plain letters: "fi", "fl", "ff", "ffi", "ffl" and "st" no longer come out as single ligature characters in other PDF readers [2026-10-06]
+
 ## [0.1.1] - 2026-10-04
 ### Added
 - Studio can flip any element horizontally or vertically (Shift+H / Shift+V, the properties panel or the right-click menu), and the export matches the canvas, text and shadows included [2026-10-04]

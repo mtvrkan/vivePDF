@@ -5,7 +5,7 @@ import pymupdf
 from pymupdf import mupdf
 
 from vivepdf.ops._document import forget_document
-from vivepdf.ops._font_unicode import use_ascii_for_shared_glyphs
+from vivepdf.ops._font_unicode import repair_unicode_maps
 from vivepdf.ops._output import OutputResult, garbage_level, prepare_output, save_document
 
 INCREMENTAL_SAVE_ERRORS = (RuntimeError, ValueError, mupdf.FzErrorBase)
@@ -29,7 +29,7 @@ def save_incrementally(document: pymupdf.Document, path: str) -> None:
 
 def save_in_place(document: pymupdf.Document, path: str) -> OutputResult:
     forget_document(path)
-    use_ascii_for_shared_glyphs(document)
+    repair_unicode_maps(document)
     try:
         save_incrementally(document, path)
         document.close()
@@ -46,7 +46,7 @@ def save_in_place(document: pymupdf.Document, path: str) -> OutputResult:
 
 def rewrite_in_place(document: pymupdf.Document, path: str) -> OutputResult:
     forget_document(path)
-    use_ascii_for_shared_glyphs(document)
+    repair_unicode_maps(document)
     page_count = document.page_count
     replace_through_temporary(document, path, garbage=garbage_level(document), deflate=True)
     return OutputResult(output=path, page_count=page_count, bytes=Path(path).stat().st_size)

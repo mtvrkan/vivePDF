@@ -46,6 +46,10 @@ def store(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     return folder
 
 
+def _stored(store: Path) -> list[Path]:
+    return [path for path in store.iterdir() if not path.name.lower().endswith(".tmp")]
+
+
 def _authority(name: str, days: int = 365) -> tuple[x509.Certificate, ec.EllipticCurvePrivateKey]:
     key = ec.generate_private_key(ec.SECP256R1())
     subject = x509.Name([x509.NameAttribute(NameOID.COMMON_NAME, name)])
@@ -187,7 +191,7 @@ def test_adding_the_same_root_twice_keeps_one_copy(store: Path, tmp_path: Path) 
     trust_add(_params(path=str(source)), silent_progress())
     again = trust_add(_params(path=str(source)), silent_progress())
     assert again.added == [] and again.known == 1
-    assert len(list(store.iterdir())) == 1
+    assert len(list(_stored(store))) == 1
 
 
 def test_a_pem_bundle_adds_each_certificate_and_never_stores_the_key(
@@ -208,7 +212,7 @@ def test_a_pem_bundle_adds_each_certificate_and_never_stores_the_key(
     added = trust_add(_params(path=str(bundle)), silent_progress())
     assert [root.subject for root in added.added] == ["Birinci", "İkinci"]
     assert [root.expired for root in added.added] == [False, True]
-    stored = sorted(path.read_bytes() for path in store.iterdir())
+    stored = sorted(path.read_bytes() for path in _stored(store))
     assert stored == sorted(
         certificate.public_bytes(serialization.Encoding.DER) for certificate in (first, second)
     )
@@ -222,7 +226,7 @@ def test_a_file_that_is_not_a_certificate_is_refused(store: Path, tmp_path: Path
         trust_add(_params(path=str(source)), silent_progress())
     assert caught.value.code == ErrorCode.INVALID_PARAMS
     assert caught.value.data == {"reason": "trustFileFormat"}
-    assert list(store.iterdir()) == []
+    assert list(_stored(store)) == []
 
 
 def test_a_missing_file_is_reported(store: Path, tmp_path: Path) -> None:
@@ -241,7 +245,7 @@ def test_unreadable_files_in_the_store_are_named_and_can_be_removed(store: Path)
     assert listed.roots == [] and listed.unreadable == ["bozuk.pem"]
     removed = trust_remove(TrustRemoveParams(id="bozuk.pem"), silent_progress())
     assert removed.removed == 0
-    assert sorted(path.name for path in store.iterdir()) == ["notlar.txt"]
+    assert sorted(path.name for path in _stored(store)) == ["notlar.txt"]
 
 
 def test_removing_a_root_deletes_its_file(store: Path, tmp_path: Path) -> None:
@@ -354,7 +358,7 @@ def test_a_list_of_lists_without_pointers_and_a_list_without_authorities_are_exp
     no_roots = tmp_path / "settings.xml"
     no_roots.write_bytes(_security_settings([(withdrawn, "0")]))
     assert _refusal(no_roots) == {"reason": "trustListEmpty"}
-    assert list(store.iterdir()) == []
+    assert list(_stored(store)) == []
 
 
 @pytest.mark.parametrize(
@@ -378,7 +382,7 @@ def test_malformed_or_foreign_markup_is_refused_as_an_unreadable_trust_file(
     source = tmp_path / "list.xml"
     source.write_bytes(content)
     assert _refusal(source) == {"reason": "trustFileFormat"}
-    assert list(store.iterdir()) == []
+    assert list(_stored(store)) == []
 
 
 def test_broken_entries_in_a_trust_list_are_skipped(store: Path, tmp_path: Path) -> None:
@@ -408,7 +412,7 @@ def test_clearing_the_store_removes_every_root_file(store: Path, tmp_path: Path)
     (store / "bozuk.pem").write_bytes(b"-----BEGIN CERTIFICATE-----\nAAAA\n")
     (store / "notlar.txt").write_bytes(b"kept")
     assert trust_clear(TrustClearParams(), silent_progress()).removed == 3
-    assert sorted(path.name for path in store.iterdir()) == ["notlar.txt"]
+    assert sorted(path.name for path in _stored(store)) == ["notlar.txt"]
     assert trust_clear(TrustClearParams(), silent_progress()).removed == 0
 
 
@@ -446,19 +450,19 @@ def test_a_newer_trusted_list_withdraws_the_providers_it_dropped(
     assert _added(_national(tmp_path, "de-1.xml", [kept, dropped])) == ["Kalan", "Çıkarılan"]
     assert _sources() == {"Kalan": [GERMAN], "Çıkarılan": [GERMAN]}
     newer = _national(tmp_path, "de-2.xml", [kept, joined])
-    before = sorted(path.read_bytes() for path in store.iterdir())
+    before = sorted(path.read_bytes() for path in _stored(store))
     preview = _preview(newer)
     assert preview.source == GERMAN
     assert [root.subject for root in preview.added] == ["Yeni Gelen"]
     assert preview.added[0].lists == [GERMAN]
     assert preview.known == 1
     assert [root.subject for root in preview.withdrawn] == ["Çıkarılan"]
-    assert sorted(path.read_bytes() for path in store.iterdir()) == before
+    assert sorted(path.read_bytes() for path in _stored(store)) == before
     result = trust_add(_params(path=str(newer)), silent_progress())
     assert [root.subject for root in result.added] == ["Yeni Gelen"]
     assert result.known == 1 and result.withdrawn == 1
     assert _sources() == {"Kalan": [GERMAN], "Yeni Gelen": [GERMAN]}
-    assert len([path for path in store.iterdir() if path.suffix == ".cer"]) == 2
+    assert len([path for path in _stored(store) if path.suffix == ".cer"]) == 2
 
 
 def test_a_root_added_by_hand_or_by_another_list_outlives_its_withdrawal(
@@ -559,7 +563,7 @@ def test_removing_a_listed_root_forgets_its_source_and_clearing_drops_the_record
     assert not (store / SOURCES_FILE).exists()
     _added(_national(tmp_path, "de.xml", [first]))
     assert trust_clear(TrustClearParams(), silent_progress()).removed == 1
-    assert list(store.iterdir()) == []
+    assert list(_stored(store)) == []
 
 
 def test_the_preview_refuses_what_the_import_refuses(store: Path, tmp_path: Path) -> None:
@@ -571,7 +575,7 @@ def test_the_preview_refuses_what_the_import_refuses(store: Path, tmp_path: Path
     with pytest.raises(OpError) as missing:
         _preview(tmp_path / "yok.xml")
     assert missing.value.code == ErrorCode.FILE_NOT_FOUND
-    assert list(store.iterdir()) == []
+    assert list(_stored(store)) == []
 
 
 def test_a_root_imported_from_a_security_settings_pdf_makes_its_signature_trusted(

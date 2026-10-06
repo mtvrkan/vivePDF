@@ -1,4 +1,5 @@
 import re
+import unicodedata
 
 import pymupdf
 
@@ -16,6 +17,12 @@ SHARED_CODE_POINTS = {
     0x2D: (0x00AD, 0x2010, 0x2011),
     0x3B: (0x037E,),
     0x4B: (0x212A,),
+}
+LIGATURE_LETTERS = {
+    f"{code:04X}": "".join(
+        f"{ord(letter):04X}" for letter in unicodedata.normalize("NFKC", chr(code))
+    )
+    for code in range(0xFB00, 0xFB07)
 }
 
 
@@ -173,6 +180,30 @@ def write_unicode_map(template: bytes, mapping: dict[int, str]) -> bytes:
     return head + _blocks(ranges, b"bfrange") + _blocks(chars, b"bfchar") + tail.lstrip(b"\n")
 
 
+def _use_ascii(mapping: dict[int, str], program: bytes | None) -> bool:
+    if not program:
+        return False
+    glyphs = _ascii_glyphs(program) or _claimed_ascii_glyphs(mapping)
+    changed = False
+    for glyph, code in glyphs.items():
+        target = f"{code:04X}"
+        current = mapping.get(glyph)
+        if current is not None and current != target and not _is_printable_ascii(current):
+            mapping[glyph] = target
+            changed = True
+    return changed
+
+
+def _split_ligatures(mapping: dict[int, str]) -> bool:
+    changed = False
+    for glyph, target in mapping.items():
+        letters = LIGATURE_LETTERS.get(target)
+        if letters:
+            mapping[glyph] = letters
+            changed = True
+    return changed
+
+
 def _repair_font(document: pymupdf.Document, font_xref: int) -> bool:
     if document.xref_get_key(font_xref, "Subtype") != ("name", "/Type0"):
         return False
@@ -186,23 +217,15 @@ def _repair_font(document: pymupdf.Document, font_xref: int) -> bool:
         return False
     descendant = _descendant(document, font_xref)
     program = _font_program(document, descendant) if descendant else None
-    if not program:
-        return False
     mapping = parse_unicode_map(cmap)
-    glyphs = _ascii_glyphs(program) or _claimed_ascii_glyphs(mapping)
-    changed = False
-    for glyph, code in glyphs.items():
-        target = f"{code:04X}"
-        current = mapping.get(glyph)
-        if current is not None and current != target and not _is_printable_ascii(current):
-            mapping[glyph] = target
-            changed = True
+    changed = _use_ascii(mapping, program)
+    changed = _split_ligatures(mapping) or changed
     if changed:
         document.update_stream(unicode_xref, write_unicode_map(cmap, mapping))
     return changed
 
 
-def use_ascii_for_shared_glyphs(document: pymupdf.Document) -> int:
+def repair_unicode_maps(document: pymupdf.Document) -> int:
     if not document.is_pdf or document.is_encrypted:
         return 0
     seen: set[int] = set()
@@ -219,5 +242,5 @@ def use_ascii_for_shared_glyphs(document: pymupdf.Document) -> int:
 
 
 def subset_fonts(document: pymupdf.Document, **options: object) -> None:
-    use_ascii_for_shared_glyphs(document)
+    repair_unicode_maps(document)
     document.subset_fonts(**options)

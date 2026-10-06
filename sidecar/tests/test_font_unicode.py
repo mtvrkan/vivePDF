@@ -6,13 +6,15 @@ from fontTools.ttLib import TTFont
 
 from vivepdf.ops import _font_unicode
 from vivepdf.ops._font_unicode import (
+    LIGATURE_LETTERS,
     MUPDF_UNICODE_MARK,
     parse_unicode_map,
+    repair_unicode_maps,
     subset_fonts,
-    use_ascii_for_shared_glyphs,
     write_unicode_map,
 )
 from vivepdf.ops._output import save_document
+from vivepdf.ops._story import MARGIN, story_pdf_bytes
 
 DEJAVU = Path(_font_unicode.__file__).resolve().parents[1] / "assets" / "fonts" / "DejaVuSans.ttf"
 TEXT = "Season 2024-2025; (draft) K"
@@ -79,15 +81,19 @@ def test_subsetting_through_the_helper_keeps_the_repair(twin_font: Path):
 def test_a_font_subset_before_the_repair_is_mended_from_its_unicode_map(twin_font: Path):
     document = _written(twin_font)
     document.subset_fonts(fallback=False)
-    assert use_ascii_for_shared_glyphs(document) == 1
+    assert repair_unicode_maps(document) == 1
     assert _text_after_saving(document) == TEXT
 
 
-def test_a_font_with_separate_glyphs_is_left_untouched():
+def test_a_font_with_separate_glyphs_keeps_every_letter_it_maps():
     document = _written(DEJAVU)
     _xref, before = _unicode_stream(document)
-    assert use_ascii_for_shared_glyphs(document) == 0
-    assert _unicode_stream(document)[1] == before
+    repair_unicode_maps(document)
+    expected = {
+        glyph: LIGATURE_LETTERS.get(target, target)
+        for glyph, target in parse_unicode_map(before).items()
+    }
+    assert parse_unicode_map(_unicode_stream(document)[1]) == expected
     assert _text_after_saving(document) == TEXT
 
 
@@ -99,7 +105,7 @@ def test_a_unicode_map_another_program_wrote_is_left_alone(twin_font: Path):
         b"/CIDSystemInfo << /Registry (Adobe) /Ordering (UCS) /Supplement 0 >> def",
     )
     document.update_stream(unicode_xref, foreign)
-    assert use_ascii_for_shared_glyphs(document) == 0
+    assert repair_unicode_maps(document) == 0
     assert SOFT_HYPHEN in _text_after_saving(document)
 
 
@@ -107,7 +113,7 @@ def test_letters_sharing_a_glyph_keep_the_mapping_mupdf_chose(tmp_path: Path):
     font = _font_with_twins(tmp_path, {0x61: 0x41})
     document = _written(font, "Aa")
     before = _text_after_saving(document)
-    assert use_ascii_for_shared_glyphs(document) == 0
+    repair_unicode_maps(document)
     assert _text_after_saving(document) == before
 
 
@@ -128,3 +134,39 @@ def test_the_unicode_map_round_trips_ranges_arrays_and_long_targets():
     assert parse_unicode_map(rewritten) == mapping
     assert rewritten.startswith(b"begincmap\n1 begincodespacerange")
     assert rewritten.rstrip().endswith(b"endcmap")
+
+
+LIGATURE_TEXT = "office finally fluffy affix waffle"
+
+
+def _story_document() -> pymupdf.Document:
+    page = pymupdf.paper_rect("a4")
+    payload = story_pdf_bytes(
+        f"<p>{LIGATURE_TEXT}</p>", page, page + (MARGIN, MARGIN, -MARGIN, -MARGIN)
+    )
+    return pymupdf.open("pdf", payload)
+
+
+def test_ligature_glyphs_map_back_to_their_letters():
+    assert LIGATURE_LETTERS["FB01"] == "00660069"
+    assert LIGATURE_LETTERS["FB03"] == "006600660069"
+    assert LIGATURE_LETTERS["FB06"] == "00730074"
+
+
+def test_laid_out_text_copies_without_ligature_characters(tmp_path: Path):
+    document = _story_document()
+    assert "ﬃ" in document[0].get_text()
+    output = tmp_path / "story.pdf"
+    save_document(document, output)
+    with pymupdf.open(output) as saved:
+        text = saved[0].get_text().strip()
+        assert text == LIGATURE_TEXT
+        assert saved[0].search_for("waffle")
+
+
+def test_ligatures_are_split_after_subsetting_and_only_once():
+    document = _story_document()
+    document.subset_fonts(fallback=False)
+    assert repair_unicode_maps(document) == 1
+    assert repair_unicode_maps(document) == 0
+    assert _text_after_saving(document) == LIGATURE_TEXT
