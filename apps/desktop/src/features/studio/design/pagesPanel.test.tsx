@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { createDesign, createShape } from "../model/design";
-import { addPage } from "../model/edit";
+import { addPage } from "../model/pages";
 import { PagesStrip } from "./PagesStrip";
 import { PropertiesPanel } from "./PropertiesPanel";
 import { useStudioStore } from "./studioStore";

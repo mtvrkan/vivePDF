@@ -1,5 +1,6 @@
 import type { StudioElement } from "@/types/studio";
-import { alignElements, distributeElements, groupElements, moveElements, reorderElements, ungroupElements, updateElement, type AlignMode, type ReorderDirection } from "../model/edit";
+import { alignElements, distributeElements, moveElements, updateElement, type AlignMode } from "../model/edit";
+import { groupElements, reorderElements, ungroupElements, type ReorderDirection } from "../model/layers";
 import { flipElements, type FlipAxis } from "../model/flip";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 

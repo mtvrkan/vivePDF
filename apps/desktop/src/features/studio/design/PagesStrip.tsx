@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import type { StudioPage } from "@/types/studio";
-import { addPage, duplicatePage, movePage, removePage } from "../model/edit";
+import { addPage, duplicatePage, movePage, removePage } from "../model/pages";
 import type { DropSide } from "./dragSort";
 import { PAGE_DROP_ATTRIBUTE, pageLabel, usePageDrag } from "./pageDrag";
 import { PageOverview } from "./PageOverview";

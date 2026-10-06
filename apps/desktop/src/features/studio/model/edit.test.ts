@@ -2,28 +2,32 @@ import { describe, expect, it } from "vitest";
 import type { StudioPage } from "@/types/studio";
 import { createDesign, createPage, createShape, createText } from "./design";
 import {
-  addPage,
   alignElements,
   distributableCount,
   distributeElements,
   duplicateElements,
-  duplicatePage,
   elementBounds,
   expandToGroups,
-  groupElements,
-  layerRuns,
   moveElements,
-  movePage,
-  placeElements,
   removeElements,
-  removePage,
-  reorderElements,
-  resizeAllPages,
-  resizePage,
   selectionBounds,
-  ungroupElements,
   withoutGroupOf,
 } from "./edit";
+import {
+  groupElements,
+  layerRuns,
+  placeElements,
+  reorderElements,
+  ungroupElements,
+} from "./layers";
+import {
+  addPage,
+  duplicatePage,
+  movePage,
+  removePage,
+  resizeAllPages,
+  resizePage,
+} from "./pages";
 
 function pageWith(...boxes: [number, number, number, number][]): StudioPage {
   const page = createPage(500, 400);

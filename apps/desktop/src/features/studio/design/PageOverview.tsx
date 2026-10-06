@@ -5,7 +5,7 @@ import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import type { StudioPage } from "@/types/studio";
-import { movePage } from "../model/edit";
+import { movePage } from "../model/pages";
 import type { DropSide } from "./dragSort";
 import { PAGE_DROP_ATTRIBUTE, pageLabel, usePageDrag } from "./pageDrag";
 import { PageDropLine, PageThumbnail } from "./PageThumbnail";

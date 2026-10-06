@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { createDesign, createShape } from "../model/design";
-import { groupElements } from "../model/edit";
+import { groupElements } from "../model/layers";
 import { LayersTab } from "./LayersTab";
 import { currentPage, useStudioStore } from "./studioStore";
 

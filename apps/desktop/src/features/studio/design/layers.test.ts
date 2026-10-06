@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import type { StudioPage } from "@/types/studio";
 import { createDesign, createPage, createShape } from "../model/design";
-import { groupElements } from "../model/edit";
+import { groupElements } from "../model/layers";
 import { dropSide, moveIndex } from "./dragSort";
 import { canShift, layerRows, layerSource, resolveLayerDrop, type LayerRow } from "./layerRows";
 import { useStudioStore } from "./studioStore";

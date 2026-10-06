@@ -1,6 +1,6 @@
 import type { RefObject } from "react";
 import type { StudioPage } from "@/types/studio";
-import { movePage } from "../model/edit";
+import { movePage } from "../model/pages";
 import { moveIndex, useDragSort, type DropSide } from "./dragSort";
 import { useStudioStore } from "./studioStore";
 

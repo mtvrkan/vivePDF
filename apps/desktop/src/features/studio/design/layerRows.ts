@@ -1,5 +1,5 @@
 import type { StudioElement, StudioPage } from "@/types/studio";
-import { layerRuns, placeElements } from "../model/edit";
+import { layerRuns, placeElements } from "../model/layers";
 import type { DropProbe, DropSide } from "./dragSort";
 
 export type GroupRow = { kind: "group"; key: string; groupId: string; elements: StudioElement[]; start: number; end: number; open: boolean };
