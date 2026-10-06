@@ -292,8 +292,6 @@
     "searchToggleResults": "Mostrar u ocultar la lista de resultados",
     "searchPageGroup": "Página {{page}} · {{count}}",
     "previousPage": "Página anterior",
-    "navigateBack": "Volver a la vista anterior (Alt+Izquierda)",
-    "navigateForward": "Avanzar a la vista siguiente (Alt+Derecha)",
     "nextPage": "Página siguiente",
     "pageNumber": "Número de página",
     "zoom": "Zoom",

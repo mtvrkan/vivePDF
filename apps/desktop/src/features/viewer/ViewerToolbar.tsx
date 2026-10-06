@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  ArrowLeft,
-  ArrowRight,
   ChevronLeft,
   ChevronRight,
   Camera,
@@ -66,7 +64,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
   const { save, discard } = useDocumentSave(documentId);
   const hasMarkChanges = useUnsavedMarks(documentId);
   const [savingDocument, setSavingDocument] = useState(false);
-  const { jumpTo, goBack, goForward, canGoBack, canGoForward } = usePageNavigation(documentId);
+  const { jumpTo } = usePageNavigation(documentId);
 
   const unsavedCount = (hasMarkChanges ? 1 : 0) + queuedChanges.length;
 
@@ -143,8 +141,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       <IconButton icon={Search} label={t("viewer.search")} active={panels.search} onClick={() => onTogglePanel("search")} />
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />
 
-      <IconButton icon={ArrowLeft} label={t("viewer.navigateBack")} disabled={!canGoBack} onClick={goBack} />
-      <IconButton icon={ArrowRight} label={t("viewer.navigateForward")} disabled={!canGoForward} onClick={goForward} />
       <IconButton
         icon={ChevronLeft}
         label={t("viewer.previousPage")}
@@ -177,17 +173,27 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />
 
       {unsavedCount > 0 ? (
-        <div className="glass-chip flex h-7 shrink-0 items-center gap-1 rounded-full ps-2.5 pe-1 text-xs" data-tone="warning">
-          <span className="whitespace-nowrap font-medium">{t("viewer.save.unsaved")}</span>
+        <div className="flex h-7 shrink-0 items-center gap-1.5 rounded-full border border-warning/40 bg-warning/10 ps-2.5 pe-0.5 text-xs">
+          <span className="size-1.5 shrink-0 rounded-full bg-warning" aria-hidden />
+          <span className="whitespace-nowrap font-medium text-foreground">{t("viewer.save.unsaved")}</span>
           <button
             type="button"
             onClick={() => void runSave()}
             disabled={savingDocument}
-            className="h-5 whitespace-nowrap rounded-full bg-primary px-2 text-[11px] font-medium text-primary-foreground disabled:opacity-40"
+            className="ms-0.5 flex h-6 items-center whitespace-nowrap rounded-full bg-primary px-2.5 text-[11px] font-semibold text-primary-foreground outline-none transition-colors duration-(--transition-fast) hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-40"
           >
             {t("viewer.save.save")}
           </button>
-          <IconButton icon={X} label={t("viewer.save.discard")} disabled={savingDocument} onClick={runDiscard} />
+          <button
+            type="button"
+            onClick={runDiscard}
+            disabled={savingDocument}
+            aria-label={t("viewer.save.discard")}
+            title={t("viewer.save.discard")}
+            className="flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground outline-none transition-colors duration-(--transition-fast) hover:bg-foreground/10 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40"
+          >
+            <X className="size-3.5" aria-hidden />
+          </button>
         </div>
       ) : null}
 

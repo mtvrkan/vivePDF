@@ -324,8 +324,6 @@
     "searchToggleResults": "إظهار/إخفاء قائمة النتائج",
     "searchPageGroup": "صفحة {{page}} · {{count}}",
     "previousPage": "الصفحة السابقة",
-    "navigateBack": "العودة إلى العرض السابق (Alt+يسار)",
-    "navigateForward": "التقدم إلى العرض التالي (Alt+يمين)",
     "nextPage": "الصفحة التالية",
     "pageNumber": "رقم الصفحة",
     "zoom": "التكبير",

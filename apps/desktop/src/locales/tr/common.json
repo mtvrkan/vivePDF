@@ -292,8 +292,6 @@
     "searchToggleResults": "Sonuç listesini aç/kapat",
     "searchPageGroup": "Sayfa {{page}} · {{count}}",
     "previousPage": "Önceki sayfa",
-    "navigateBack": "Önceki görünüme dön (Alt+Sol)",
-    "navigateForward": "Sonraki görünüme ilerle (Alt+Sağ)",
     "nextPage": "Sonraki sayfa",
     "pageNumber": "Sayfa numarası",
     "zoom": "Yakınlaştırma",

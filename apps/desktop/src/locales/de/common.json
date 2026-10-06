@@ -292,8 +292,6 @@
     "searchToggleResults": "Trefferliste ein-/ausblenden",
     "searchPageGroup": "Seite {{page}} · {{count}}",
     "previousPage": "Vorherige Seite",
-    "navigateBack": "Zurück zur vorherigen Ansicht (Alt+Links)",
-    "navigateForward": "Vor zur nächsten Ansicht (Alt+Rechts)",
     "nextPage": "Nächste Seite",
     "pageNumber": "Seitenzahl",
     "zoom": "Zoom",

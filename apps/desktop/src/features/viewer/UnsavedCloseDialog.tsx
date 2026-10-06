@@ -50,17 +50,18 @@ function UnsavedCloseStep({ documentId, remaining }: { documentId: string; remai
   return (
     <Dialog
       open
+      size="lg"
       title={t("viewer.unsavedClose.title")}
       onClose={() => {
         if (!saving) cancel();
       }}
       footer={
         <>
+          <Button variant="ghost" disabled={saving} onClick={discardAndClose} className="me-auto text-destructive hover:text-destructive">
+            {t("viewer.unsavedClose.discard")}
+          </Button>
           <Button variant="ghost" disabled={saving} onClick={cancel}>
             {t("common.cancel")}
-          </Button>
-          <Button variant="destructive" disabled={saving} onClick={discardAndClose}>
-            {t("viewer.unsavedClose.discard")}
           </Button>
           <Button variant="primary" loading={saving} onClick={() => void saveAndClose()}>
             {t("viewer.unsavedClose.save")}

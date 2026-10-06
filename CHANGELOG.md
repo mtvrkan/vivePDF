@@ -12,6 +12,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Viewer: the back and forward arrows next to the page buttons are gone; Alt+Left and Alt+Right still step through the places you jumped to [2026-10-06]
+- Viewer: the unsaved-changes chip is amber with a status dot, its Save and discard buttons fit inside it and react to the pointer; the close-without-saving question has room for its buttons on one row, with Close without saving as a quiet red text button on the left and Cancel and Save and close on the right [2026-10-06]
 - Windows can no longer be shrunk below 900 × 600, where the layout starts to break [2026-10-06]
 - Viewer tab groups work like browser tab groups: clicking a group's name now collapses it even when one of its documents is open, switching to the nearest document outside the group; the name can be dragged to move the whole group, or moved with Ctrl+Shift+Left/Right; the group menu adds Open a document in this group and Move group to new window; the group's colour line runs unbroken across its tabs, and the name keeps keyboard focus when it collapses [2026-10-06]
 - Home: Small, Medium and Large now visibly change every section — spacing grows and shrinks with the size; Recent documents become a compact list without previews when small and larger previews when large; Studio and collections fit more or fewer per row; the overview card adds Close document (Ctrl W) and Full screen (F11) shortcuts when large [2026-10-06]

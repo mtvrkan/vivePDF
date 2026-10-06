@@ -292,8 +292,6 @@
     "searchToggleResults": "Toggle results list",
     "searchPageGroup": "Page {{page}} · {{count}}",
     "previousPage": "Previous page",
-    "navigateBack": "Back to previous view (Alt+Left)",
-    "navigateForward": "Forward to next view (Alt+Right)",
     "nextPage": "Next page",
     "pageNumber": "Page number",
     "zoom": "Zoom",

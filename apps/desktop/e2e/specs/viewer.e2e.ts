@@ -207,10 +207,9 @@ describe("viewer", () => {
 
     await pressAlt(LEFT_KEY);
     await expect(pageInput).toHaveValue("i");
-    await expect($(`button[aria-label="${t("viewer.navigateForward")}"]`)).toBeEnabled();
     await pressAlt(RIGHT_KEY);
     await expect(pageInput).toHaveValue("4");
-    await clickButton(t("viewer.navigateBack"));
+    await pressAlt(LEFT_KEY);
     await expect(pageInput).toHaveValue("i");
   });
 
