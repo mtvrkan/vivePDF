@@ -7,13 +7,9 @@ from pydantic import ValidationError
 
 from vivepdf.ops import fonts
 from vivepdf.ops._studio_models import StudioRenderParams, StudioTextItem
-from vivepdf.ops._studio_text import (
-    TextFaces,
-    case_texts,
-    layout,
-    list_markers,
-    text_paragraphs,
-)
+from vivepdf.ops._studio_text import TextFaces
+from vivepdf.ops._studio_text_layout import layout
+from vivepdf.ops._studio_text_paragraphs import case_texts, list_markers, text_paragraphs
 from vivepdf.ops.fonts import (
     FONT_DIR,
     FontFileParams,

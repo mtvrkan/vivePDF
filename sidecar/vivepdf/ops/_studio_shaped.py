@@ -17,12 +17,10 @@ from vivepdf.ops._studio_text import (
     Paragraph,
     Style,
     TextFaces,
-    case_texts,
-    draw_bands,
-    item_language,
     run_style,
-    text_paragraphs,
 )
+from vivepdf.ops._studio_text_draw import draw_bands
+from vivepdf.ops._studio_text_paragraphs import case_texts, item_language, text_paragraphs
 from vivepdf.ops._studio_vector import mirror
 from vivepdf.ops.create_bulk import fill_placeholders
 from vivepdf.ops.fonts import resolve_face

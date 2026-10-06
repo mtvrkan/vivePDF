@@ -35,7 +35,10 @@ from vivepdf.ops._studio_models import (
 from vivepdf.ops._studio_project import build_archive, embed_archive, missing_asset
 from vivepdf.ops._studio_shadow import shadow_document
 from vivepdf.ops._studio_shaped import draw_shaped, needs_shaping, run_texts
-from vivepdf.ops._studio_text import TextFaces, draw_text, from_segments, has_placeholders, layout
+from vivepdf.ops._studio_text import TextFaces
+from vivepdf.ops._studio_text_draw import draw_text
+from vivepdf.ops._studio_text_layout import from_segments, layout
+from vivepdf.ops._studio_text_paragraphs import has_placeholders
 from vivepdf.ops._studio_vector import group_opacity, mirror, place, vector_document
 from vivepdf.ops._svg import clean_svg_markup, drawing_pdf
 from vivepdf.ops.create_bulk import PLACEHOLDER, fill_placeholders
