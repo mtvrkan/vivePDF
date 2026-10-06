@@ -111,6 +111,8 @@ describe("home layout", () => {
     await view.$(`//*[normalize-space(text())="${t("home.collections.missing")}"]`).waitForDisplayed({ timeout: 15000 });
     await view.$(`button[role="radio"][aria-label="${t("viewer.tabGroups.colors.teal")}"]`).click();
     await expect(view.$(`button[role="radio"][aria-label="${t("viewer.tabGroups.colors.teal")}"]`)).toHaveAttribute("aria-checked", "true");
+    await view.$(`button[role="checkbox"][aria-label="${t("home.collections.selectFile", { name: "collection-gone.pdf" })}"]`).click();
+    await expect(view).toHaveText(expect.stringContaining(t("home.collections.selected", { count: 1 })));
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "home-collection-view.png"));
 
     await view.$(`button[aria-label="${t("home.collections.openFile", { name: "collection-report.pdf" })}"]`).click();

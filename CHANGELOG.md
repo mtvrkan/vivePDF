@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Collection view: search the files by name or folder, sort them by collection order, name (A–Z or Z–A), folder or file type, and tick several files (or every shown one) to open them together or take them out of the collection with an undo; Open all follows the chosen order [2026-10-06]
 - Home collections: click a collection's name, the eye button or "and N more" to see every file in it with its folder, open one file on its own, show it in its folder or take it out of the collection; files that are no longer on disk are marked as not found. File names on the card open that file directly [2026-10-06]
 - Collections and tab groups have 13 colours instead of 6 (teal, cyan, indigo, pink, lime, brown and grey are new), with a colour dot next to each name in the menu and a row of colour swatches in the collection view [2026-10-06]
 - Home: a Studio section lists the designs and documents you saved in Studio and opens one with a click, with buttons to open Studio and the CV builder; like every home section it can be moved, resized or hidden [2026-10-06]
@@ -23,6 +24,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Collection view: the ring around the chosen colour is no longer cut off at the top, and the hover highlight covers the whole file row instead of stopping before its buttons [2026-10-06]
 - Home: Customize home is a bordered button again instead of a faint pill that looked cut off; while editing, the pinned editing bar no longer hides the controls of the section you scroll or tab to; section names in the editing frames keep room instead of shrinking to a few letters; and the empty Recent documents card has an Open PDF button [2026-10-06]
 - Text in PDFs that vivePDF lays out (Create PDF, book, CV, cover page, text, Markdown, web page and e-mail conversions, Studio documents and designs) copies and searches as plain letters: "fi", "fl", "ff", "ffi", "ffl" and "st" no longer come out as single ligature characters in other PDF readers [2026-10-06]
 

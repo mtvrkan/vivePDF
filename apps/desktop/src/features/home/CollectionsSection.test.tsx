@@ -19,6 +19,7 @@ vi.mock("@tauri-apps/api/core", () => ({ invoke: (...args: unknown[]) => invoke(
 const { CollectionsSection } = await import("./CollectionsSection");
 
 beforeAll(async () => {
+  Element.prototype.scrollIntoView = () => undefined;
   await ready();
   await setLocale("en");
 });
@@ -113,4 +114,54 @@ describe("CollectionsSection", () => {
 
     expect(openPath).toHaveBeenCalledWith("C:/Docs/b.pdf");
   });
+
+  it("searches and sorts the files of a collection", () => {
+    useCollectionsStore.getState().create("Invoices", ["C:/Docs/b.pdf", "C:/Docs/a.pdf", "C:/Other/c.pdf"]);
+    render(<CollectionsSection />);
+    fireEvent.click(screen.getByRole("button", { name: "Show the files in Invoices" }));
+    const dialog = within(screen.getByRole("dialog"));
+    const names = () => Array.from(screen.getByRole("dialog").querySelectorAll("[data-collection-file]")).map((row) => row.getAttribute("data-collection-file"));
+
+    fireEvent.change(dialog.getByLabelText("Search the files"), { target: { value: "docs" } });
+    expect(names()).toEqual(["b.pdf", "a.pdf"]);
+    fireEvent.change(dialog.getByLabelText("Search the files"), { target: { value: "zzz" } });
+    expect(dialog.getByText("No file matches “zzz”.")).toBeTruthy();
+    fireEvent.change(dialog.getByLabelText("Search the files"), { target: { value: "" } });
+    fireEvent.click(dialog.getByRole("combobox", { name: "Sort by" }));
+    fireEvent.click(screen.getByRole("option", { name: "Name (A–Z)" }));
+
+    expect(names()).toEqual(["a.pdf", "b.pdf", "c.pdf"]);
+  });
+
+  it("opens the selected files in the shown order and removes a selection with an undo", () => {
+    const id = useCollectionsStore.getState().create("Invoices", ["C:/Docs/b.pdf", "C:/Docs/a.pdf", "C:/Docs/c.pdf"]);
+    render(<CollectionsSection />);
+    fireEvent.click(screen.getByRole("button", { name: "Show the files in Invoices" }));
+    const dialog = within(screen.getByRole("dialog"));
+
+    fireEvent.click(dialog.getByRole("checkbox", { name: "Select c.pdf" }));
+    fireEvent.click(dialog.getByRole("checkbox", { name: "Select b.pdf" }));
+    expect(dialog.getByText("2 selected")).toBeTruthy();
+    fireEvent.click(dialog.getByRole("button", { name: "Open selected" }));
+    expect(openCollection).toHaveBeenCalledWith(expect.objectContaining({ id, paths: ["C:/Docs/b.pdf", "C:/Docs/c.pdf"] }));
+
+    fireEvent.click(dialog.getByRole("button", { name: "Remove selected" }));
+    expect(useCollectionsStore.getState().collections[0]?.paths).toEqual(["C:/Docs/a.pdf"]);
+    act(() => useToastStore.getState().toasts[0]?.action?.onClick());
+    expect(useCollectionsStore.getState().collections[0]?.paths).toEqual(["C:/Docs/b.pdf", "C:/Docs/a.pdf", "C:/Docs/c.pdf"]);
+  });
+
+  it("selects every shown file at once and clears the selection again", () => {
+    useCollectionsStore.getState().create("Invoices", ["C:/Docs/a.pdf", "C:/Docs/b.pdf"]);
+    render(<CollectionsSection />);
+    fireEvent.click(screen.getByRole("button", { name: "Show the files in Invoices" }));
+    const dialog = within(screen.getByRole("dialog"));
+
+    fireEvent.click(dialog.getByRole("checkbox", { name: "Select all shown" }));
+    expect(dialog.getByText("2 selected")).toBeTruthy();
+    fireEvent.click(dialog.getByRole("button", { name: "Clear selection" }));
+
+    expect(dialog.getByRole("checkbox", { name: "Select a.pdf" }).getAttribute("aria-checked")).toBe("false");
+  });
 });
+

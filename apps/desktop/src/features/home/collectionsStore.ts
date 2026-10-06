@@ -67,6 +67,7 @@ type CollectionsState = {
   recolor: (id: string, color: GroupColor) => void;
   addPaths: (id: string, paths: string[]) => void;
   removePath: (id: string, path: string) => void;
+  removePaths: (id: string, paths: string[]) => void;
   remove: (id: string) => void;
   restore: (collections: Collection[]) => void;
 };
@@ -89,6 +90,10 @@ export const useCollectionsStore = create<CollectionsState>((set, get) => {
     recolor: (id, color) => change(id, (collection) => ({ ...collection, color })),
     addPaths: (id, paths) => change(id, (collection) => ({ ...collection, paths: uniquePaths([...collection.paths, ...paths]).slice(0, COLLECTION_FILES_MAX) })),
     removePath: (id, path) => change(id, (collection) => ({ ...collection, paths: collection.paths.filter((entry) => pathKey(entry) !== pathKey(path)) })),
+    removePaths: (id, paths) => {
+      const keys = new Set(paths.map(pathKey));
+      change(id, (collection) => ({ ...collection, paths: collection.paths.filter((entry) => !keys.has(pathKey(entry))) }));
+    },
     remove: (id) => update(get().collections.filter((collection) => collection.id !== id)),
     restore: (collections) => update(collections),
   };
