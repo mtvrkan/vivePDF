@@ -103,6 +103,32 @@ describe("viewer", () => {
     expect(probe(path).pages?.[0].annotations).toEqual([]);
   });
 
+  it("moves a selected pen mark by dragging anywhere inside its frame, with the mark's menu kept out of the way", async () => {
+    await openInViewer(copyFixture(fixtures().sample, "move-mark.pdf"));
+    if (!(await button(t("annotate.ink")).isDisplayed())) await clickButton(t("viewer.annotate"));
+    await clickButton(t("annotate.ink"));
+    let stroke = browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 150, 180)).down();
+    for (const [x, y] of [[200, 140], [250, 220], [300, 160], [350, 210]]) stroke = stroke.move({ ...(await pagePoint(0, x, y)), duration: 80 });
+    await stroke.up().perform();
+    await clickButton(t("annotate.select"));
+    await browser.action("pointer").move(await pagePoint(0, 250, 220)).down().up().perform();
+    const menu = $("[data-annotation-menu]");
+    await menu.waitForExist();
+    const markTop = () => browser.execute(() => (document.querySelector('[data-page-index="0"] [data-annotation-menu]')?.getBoundingClientRect().top ?? 0));
+    const before = await markTop();
+
+    await browser.action("pointer").move(await pagePoint(0, 250, 175)).down().move({ ...(await pagePoint(0, 250, 200)), duration: 150 }).move({ ...(await pagePoint(0, 250, 235)), duration: 150 }).up().perform();
+
+    await browser.waitUntil(async () => (await markTop()) > before + 40, { timeoutMsg: "dragging inside the selected pen mark did not move it" });
+    const frame = await browser.execute(() => {
+      const wrapper = document.querySelector("[data-annotation-menu]") as HTMLElement;
+      const panel = wrapper.firstElementChild as HTMLElement;
+      return { wrapperEvents: getComputedStyle(wrapper).pointerEvents, panelTop: panel.getBoundingClientRect().top, frameBottom: wrapper.getBoundingClientRect().bottom };
+    });
+    expect(frame.wrapperEvents).toBe("none");
+    expect(frame.panelTop).toBeGreaterThan(frame.frameBottom);
+  });
+
   it("starts the presentation from the first page on F5 and from the current page on Shift F5", async () => {
     const path = copyFixture(fixtures().six, "present.pdf");
     await openInViewer(path);

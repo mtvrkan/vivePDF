@@ -77,8 +77,8 @@ export function AnnotationSelectionMenu({ documentId, ...props }: SelectionMenuP
   };
 
   return (
-    <div {...menuWrapperProps} data-annotation-menu style={{ ...wrapperStyle, zIndex: MENU_Z_INDEX, pointerEvents: "auto" }}>
-      <div className="glass-menu inline-flex w-fit max-w-[min(80vw,22rem)] flex-col gap-1 rounded-xl p-1">
+    <div {...menuWrapperProps} data-annotation-menu style={{ ...wrapperStyle, zIndex: MENU_Z_INDEX, pointerEvents: "none" }}>
+      <div className="glass-menu pointer-events-auto absolute start-0 top-full mt-3 inline-flex w-max max-w-[min(80vw,22rem)] flex-col gap-1 rounded-xl p-1">
         <div className="flex items-center gap-1">
           {uri ? (
             <>

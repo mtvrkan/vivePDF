@@ -31,6 +31,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Viewer: a selected mark (pen drawing, shape, highlight, text box) can be dragged from anywhere inside its frame again; an invisible layer behind its small menu covered the whole frame and swallowed the drag. The menu now sits just below the frame instead of over the mark [2026-10-06]
 - Top bar: in a narrow window the menus turn into icons again so the search, settings, Open PDF and window buttons stay visible; the window buttons used to shrink away instead of making room [2026-10-06]
 - Home editing: the remove button on quick access tiles no longer sits on top of the tool's icon, and the tiles in a row keep the same height [2026-10-06]
 - Collection view: the ring around the chosen colour is no longer cut off at the top, and the hover highlight covers the whole file row instead of stopping before its buttons [2026-10-06]
