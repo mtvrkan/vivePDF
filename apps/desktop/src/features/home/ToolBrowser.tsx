@@ -95,9 +95,10 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
             type="button"
             aria-pressed={group === "all"}
             onClick={() => setGroup("all")}
-            className={cn("flex h-8 items-center rounded-full px-3 text-xs font-medium transition-colors duration-(--transition-fast)", group === "all" ? "glass-chip glass-chip-tone text-foreground" : "glass-chip text-foreground/75 hover:text-foreground")}
+            className={cn("flex h-8 items-center rounded-full px-3 text-xs font-medium transition-colors duration-(--transition-fast)", group === "all" ? "glass-chip glass-chip-tone text-(--chip-tone-text)" : "glass-chip text-foreground/75 hover:text-foreground")}
           >
-            {t("home.catalog.all")} · {toolShortcuts.length}
+            {t("home.catalog.all")}
+            <span className="ms-1.5 tabular-nums opacity-60">{toolShortcuts.length}</span>
           </button>
           {toolGroups.map((toolGroup) => {
             const Icon = toolGroupIcons[toolGroup];
@@ -111,13 +112,14 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
                 onClick={() => setGroup(toolGroup)}
                 className={cn(
                   "flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors duration-(--transition-fast)",
-                  group === toolGroup ? "glass-chip glass-chip-tone text-foreground" : "glass-chip text-foreground/75 hover:text-foreground",
+                  group === toolGroup ? "glass-chip glass-chip-tone text-(--chip-tone-text)" : "glass-chip text-foreground/75 hover:text-foreground",
                 )}
               >
                 <span data-tone={toolGroup} className="flex">
                   <Icon className={cn("size-3.5", group === toolGroup ? "text-(--tone)" : "text-(--tone) opacity-80")} aria-hidden />
                 </span>
-                {t(`tools.grid.groups.${toolGroup}`)} · {count}
+                {t(`tools.grid.groups.${toolGroup}`)}
+                <span className="tabular-nums opacity-60">{count}</span>
               </button>
             );
           })}

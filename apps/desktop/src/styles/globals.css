@@ -60,6 +60,10 @@
   --chip-bg: hsl(0 0% 100% / 0.94);
   --chip-tone-strength: 22%;
   --chip-ring: color-mix(in oklab, var(--foreground) 11%, transparent);
+  --chip-tone-ring: 45%;
+  --chip-highlight: hsl(0 0% 100% / 0.18);
+  --chip-shadow: var(--shadow-card);
+  --chip-tone-text: var(--foreground);
   --hover-bg: color-mix(in oklab, var(--foreground) 5%, transparent);
   --field-inline-bg: color-mix(in oklab, var(--foreground) 4%, transparent);
   --field-inline-ring: color-mix(in oklab, var(--foreground) 13%, transparent);
@@ -129,9 +133,13 @@
   --tone-soft: var(--accent);
   --glass-edge: linear-gradient(135deg, hsl(0 0% 100% / 0.22), hsl(202 90% 62% / 0.24) 35%, hsl(262 70% 68% / 0.20) 70%, hsl(24 90% 62% / 0.10));
   --glass-sheen: 0.06;
-  --chip-bg: hsl(0 0% 100% / 0.07);
-  --chip-tone-strength: 30%;
-  --chip-ring: hsl(0 0% 100% / 0.14);
+  --chip-bg: hsl(0 0% 100% / 0.045);
+  --chip-tone-strength: 16%;
+  --chip-ring: hsl(0 0% 100% / 0.1);
+  --chip-tone-ring: 60%;
+  --chip-highlight: hsl(0 0% 100% / 0.05);
+  --chip-shadow: 0 1px 2px hsl(0 0% 0% / 0.35);
+  --chip-tone-text: color-mix(in oklab, var(--tone) 30%, var(--foreground));
   --hover-bg: hsl(0 0% 100% / 0.06);
   --field-inline-bg: var(--hover-bg);
   --field-inline-ring: hsl(0 0% 100% / 0.10);
@@ -433,13 +441,13 @@
   }
   .glass-chip {
     background: var(--chip-bg);
-    box-shadow: inset 0 0 0 1px var(--chip-ring), inset 0 1px 0 hsl(0 0% 100% / 0.18), var(--shadow-card);
+    box-shadow: inset 0 0 0 1px var(--chip-ring), inset 0 1px 0 var(--chip-highlight), var(--chip-shadow);
     backdrop-filter: blur(14px) saturate(1.4);
   }
   .glass-chip[data-tone],
   .glass-chip-tone {
     background: color-mix(in oklab, var(--tone) var(--chip-tone-strength), var(--chip-bg));
-    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tone) 45%, transparent), inset 0 1px 0 hsl(0 0% 100% / 0.18), var(--shadow-card);
+    box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--tone) var(--chip-tone-ring), transparent), inset 0 1px 0 var(--chip-highlight), var(--chip-shadow);
   }
   .glass-chip:hover:not(:disabled):not(.glass-chip-tone) {
     background: color-mix(in oklab, var(--foreground) 6%, var(--chip-bg));

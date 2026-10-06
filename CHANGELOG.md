@@ -12,6 +12,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Home: Small, Medium and Large now visibly change every section — spacing grows and shrinks with the size; Recent documents become a compact list without previews when small and larger previews when large; Studio and collections fit more or fewer per row; the overview card adds Close document (Ctrl W) and Full screen (F11) shortcuts when large [2026-10-06]
+- Dark theme: filter and pill buttons such as the tool categories are calmer — a quieter background and outline, the selected one tinted in its own colour with matching text, and the counts shown dimmer next to the name [2026-10-06]
 - Studio is called by its local name where the language has one: Stüdyo in Turkish, Estudio in Spanish, Estúdio in Brazilian Portuguese and الاستوديو throughout Arabic; German, French and Italian keep Studio [2026-10-06]
 - Home: while editing, a hidden section stays where it was as a slim row with a Show button instead of moving to a list at the top; Edit home page now sits at the top right, and Done sits in the editing bar, which stays pinned at the top while you scroll instead of floating over the sections; the new home strings are translated into every language [2026-10-06]
 - Home: while the home page is being edited, quick access tools can be dragged by their tile into a new order; the tiles make room as you drag and the arrow buttons still do the same from the keyboard [2026-10-06]

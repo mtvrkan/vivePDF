@@ -57,6 +57,9 @@ describe("home layout", () => {
     expect(tiles).toContain("ocr");
     expect(tiles).not.toContain("merge");
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "home-custom.png"));
+    const allTools = $(`//button[@aria-pressed="true"][starts-with(normalize-space(.), "${t("home.catalog.all")}")]`);
+    await allTools.scrollIntoView({ block: "center" });
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "home-tool-catalogue.png"));
 
     await browser.refresh();
     await region("top").waitForDisplayed({ timeout: 60000 });

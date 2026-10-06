@@ -5,7 +5,7 @@ import { Button } from "@/components/shared/Button";
 import { useRecentDesignsStore, type StudioRouteState } from "@/features/studio/design/recentDesigns";
 import { cn } from "@/shared/lib/cn";
 import { useUiStore } from "@/shared/store/uiStore";
-import { bySize, type HomeSize } from "./homeLayout";
+import { bySize, sectionPadding, type HomeSize } from "./homeLayout";
 import { formatRelativeMoment } from "./homeSearch";
 
 export function StudioSection({ size = "medium" }: { size?: HomeSize }) {
@@ -17,7 +17,7 @@ export function StudioSection({ size = "medium" }: { size?: HomeSize }) {
   const open = (path: string) => void navigate("/studio", { state: { designPath: path } satisfies StudioRouteState });
 
   return (
-    <section className="glass @container rounded-2xl p-5" data-testid="home-studio">
+    <section className={cn("glass @container rounded-2xl", sectionPadding(size))} data-testid="home-studio">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.studio.title")}</p>
         <div className="flex flex-wrap gap-2">
@@ -30,9 +30,9 @@ export function StudioSection({ size = "medium" }: { size?: HomeSize }) {
         </div>
       </div>
       {shown.length === 0 ? (
-        <p className="mt-3 text-sm text-muted-foreground">{t("home.studio.empty")}</p>
+        <p className={cn("text-sm text-muted-foreground", bySize(size, "mt-2", "mt-3", "mt-4 py-10 text-center"))}>{t("home.studio.empty")}</p>
       ) : (
-        <ul className={cn("mt-4 grid gap-3", size === "small" ? "grid-cols-3 @2xl:grid-cols-6" : "grid-cols-2 @md:grid-cols-3 @3xl:grid-cols-4")}>
+        <ul className={cn("mt-4 grid gap-3", bySize(size, "grid-cols-3 @lg:grid-cols-4 @2xl:grid-cols-8", "grid-cols-2 @md:grid-cols-3 @3xl:grid-cols-4", "grid-cols-1 @md:grid-cols-2 @3xl:grid-cols-3"))}>
           {shown.map((item) => (
             <li key={item.path}>
               <button

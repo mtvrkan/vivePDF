@@ -2,11 +2,12 @@ import { useState } from "react";
 import { History, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
+import { cn } from "@/shared/lib/cn";
 import { basenameOf } from "@/shared/lib/paths";
 import { readSession, readStartupSession, writeSession } from "@/shared/session/sessionStore";
 import { useRestoreSession } from "@/shared/session/useRestoreSession";
 import { useOpenStore } from "@/shared/store/openStore";
-import { bySize, type HomeSize } from "./homeLayout";
+import { bySize, sectionPadding, type HomeSize } from "./homeLayout";
 
 export function ContinueStrip({ size = "medium" }: { size?: HomeSize }) {
   const { t } = useTranslation();
@@ -26,7 +27,7 @@ export function ContinueStrip({ size = "medium" }: { size?: HomeSize }) {
   const shown = session.documents.slice(0, bySize(size, 2, 3, 6));
 
   return (
-    <section className="glass glass-tinted rounded-2xl p-5" data-tone="improve">
+    <section className={cn("glass glass-tinted rounded-2xl", sectionPadding(size))} data-tone="improve">
       <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.lastSession")}</p>
       <p className="mt-1 text-sm">{t("recovery.lastSessionDescription", { count: session.documents.length })}</p>
       <ul className="mt-2 flex flex-wrap gap-2">

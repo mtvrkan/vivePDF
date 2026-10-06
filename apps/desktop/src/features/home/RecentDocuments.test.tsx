@@ -58,4 +58,16 @@ describe("RecentDocuments", () => {
     expect(screen.queryByRole("button", { name: "Open PDF" })).toBeNull();
     expect(screen.getByRole("button", { name: "report.pdf" }).title).toBe("C:/Docs/report.pdf");
   });
+
+  it("lists documents as compact rows without previews when small", () => {
+    useRecentStore.setState({ items: [{ path: "C:/Docs/report.pdf", fileName: "report.pdf", openedAt: Date.now() }, { path: "C:/Docs/plan.pdf", fileName: "plan.pdf", openedAt: Date.now() }] });
+
+    render(<RecentDocuments size="small" />);
+
+    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    expect(document.querySelector("img")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Close: plan.pdf" }));
+    expect(useRecentStore.getState().items.map((item) => item.fileName)).toEqual(["report.pdf"]);
+  });
 });
+

@@ -9,7 +9,7 @@ import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { useWatchStore } from "@/shared/store/watchStore";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { cn } from "@/shared/lib/cn";
-import type { HomeSize } from "./homeLayout";
+import { listPadding, type HomeSize } from "./homeLayout";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -92,7 +92,7 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
   const toolsHealth = (ready: boolean): Health => (toolsStatus === "success" ? (ready ? "ok" : "off") : "warn");
 
   return (
-    <section className="glass rounded-2xl p-3">
+    <section className={`glass rounded-2xl ${listPadding(size)}`}>
       <p className="px-2 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.stats.title")}</p>
       <div className="space-y-px">
         <OverviewRow label={t("home.stats.week")} value={String(weekCount)} />
@@ -125,6 +125,12 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
           <ShortcutRow label={t("emptyDoc.palette")} keys="Ctrl K" onClick={openPalette} />
           <ShortcutRow label={t("about.shortcuts.items.search")} keys="Ctrl F" onClick={() => void navigate("/viewer")} />
           <ShortcutRow label={t("about.shortcuts.items.print")} keys="Ctrl P" onClick={() => void navigate("/viewer")} />
+          {size === "large" ? (
+            <>
+              <ShortcutRow label={t("about.shortcuts.items.closeDocument")} keys="Ctrl W" onClick={() => void navigate("/viewer")} />
+              <ShortcutRow label={t("about.shortcuts.items.fullscreen")} keys="F11" onClick={() => void navigate("/viewer")} />
+            </>
+          ) : null}
         </div>
       </div>
       )}

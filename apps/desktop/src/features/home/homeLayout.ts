@@ -148,3 +148,15 @@ export function dropIndex(midpoints: number[], pointer: number): number {
 export function bySize<T>(size: HomeSize, small: T, medium: T, large: T): T {
   return size === "small" ? small : size === "large" ? large : medium;
 }
+
+export function sectionPadding(size: HomeSize): string {
+  return bySize(size, "p-3.5", "p-5", "p-7");
+}
+
+export function listPadding(size: HomeSize): string {
+  return bySize(size, "p-2", "p-3", "p-4");
+}
+
+export function emptyPadding(size: HomeSize): string {
+  return bySize(size, "py-4", "py-10", "py-16");
+}

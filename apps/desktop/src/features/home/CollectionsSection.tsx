@@ -16,7 +16,7 @@ import { inTabOrder, useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { COLLECTION_FILES_MAX, COLLECTION_NAME_MAX, moveCollection, pinnedFirst, useCollectionsStore, type Collection } from "./collectionsStore";
 import { CollectionView } from "./CollectionView";
-import { bySize, type HomeSize } from "./homeLayout";
+import { bySize, emptyPadding, sectionPadding, type HomeSize } from "./homeLayout";
 import { useOpenCollection } from "./useOpenCollection";
 
 
@@ -311,7 +311,7 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
   const startCreating = () => setDraft({ id: null, name: "", paths: openDocumentPaths() });
 
   return (
-    <section className="glass @container rounded-2xl p-5" aria-labelledby="home-collections-title">
+    <section className={cn("glass @container rounded-2xl", sectionPadding(size))} aria-labelledby="home-collections-title">
       <div className="flex items-center justify-between gap-3">
         <p id="home-collections-title" className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           {t("home.collections.title")}
@@ -325,7 +325,7 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
       </div>
 
       {collections.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 px-4 py-8 text-center">
+        <div className={cn("flex flex-col items-center gap-3 px-4 text-center", emptyPadding(size))}>
           <span className="tone-tile flex size-11 items-center justify-center rounded-2xl">
             <Library className="size-5" aria-hidden />
           </span>
@@ -338,7 +338,7 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
           </Button>
         </div>
       ) : (
-        <ul ref={listRef} className="mt-4 grid grid-cols-1 gap-3 @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">
+        <ul ref={listRef} className={cn("mt-4 grid gap-3", bySize(size, "grid-cols-1 @sm:grid-cols-2 @3xl:grid-cols-4 @5xl:grid-cols-5", "grid-cols-1 @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4", "grid-cols-1 @xl:grid-cols-2 @4xl:grid-cols-3"))}>
           {shown.map((collection) => {
             const index = ordered.indexOf(collection);
             const placement = { index, first: index === 0 || index === pinnedCount, last: index === ordered.length - 1 || index === pinnedCount - 1, dragging: drag?.id === collection.id };

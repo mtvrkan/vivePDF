@@ -17,7 +17,7 @@ import { useHistoryStore, type HistoryEntry } from "@/shared/store/historyStore"
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { describeError } from "@/shared/lib/errorMessage";
-import { bySize, type HomeSize } from "./homeLayout";
+import { bySize, listPadding, type HomeSize } from "./homeLayout";
 
 
 export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
@@ -90,7 +90,7 @@ export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
   if (items.length === 0) return null;
 
   return (
-    <section className="glass rounded-2xl p-3">
+    <section className={`glass rounded-2xl ${listPadding(size)}`}>
       <div className="flex h-9 items-center justify-between px-2">
         <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.history.title")}</span>
         <button type="button" onClick={clearHistory} className="flex min-h-6 items-center rounded-full px-2 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground">
