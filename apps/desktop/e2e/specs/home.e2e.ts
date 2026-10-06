@@ -10,6 +10,20 @@ async function startEditing() {
   await $(`//button[normalize-space(.)="${t("home.layout.done")}"]`).waitForDisplayed({ timeout: 30000 });
 }
 
+const collectionOrder = () => $$("[data-collection]").map((card) => card.getAttribute("data-collection"));
+
+async function createCollection(name: string, paths: string[]) {
+  const create = $(`//button[normalize-space(.)="${t("home.collections.create")}" or normalize-space(.)="${t("home.collections.new")}"]`);
+  await create.scrollIntoView({ block: "center" });
+  await create.click();
+  await $(`input[placeholder="${t("home.collections.namePlaceholder")}"]`).setValue(name);
+  answerDialogs(paths);
+  await $(`//button[normalize-space(.)="${t("home.collections.addFiles")}"]`).click();
+  await waitForDialogsAnswered();
+  await $(`//button[normalize-space(.)="${t("home.collections.save")}"]`).click();
+  await $(`[data-collection="${name}"]`).waitForDisplayed();
+}
+
 async function finishEditing() {
   await $(`//button[normalize-space(.)="${t("home.layout.done")}"]`).click();
   await $(`//button[normalize-space(.)="${t("home.layout.edit")}"]`).waitForDisplayed();
@@ -95,16 +109,35 @@ describe("home layout", () => {
     expect((await quickTiles()).slice(0, 3)).toEqual(["split", "compress", "merge"]);
   });
 
+  it("drags a collection to a new place and pins another one to the front", async () => {
+    const report = copyFixture(fixtures().sample, "collection-report.pdf");
+    await createCollection("Drafts", [report]);
+    await createCollection("Notes", [report]);
+    expect(await collectionOrder()).toEqual(["Drafts", "Notes"]);
+
+    const handle = $(`button[aria-label="${t("home.collections.dragHandle", { name: "Notes" })}"]`);
+    const target = $('[data-collection="Drafts"]');
+    await target.scrollIntoView({ block: "center" });
+    await browser
+      .action("pointer")
+      .move({ origin: handle })
+      .down()
+      .move({ origin: handle, x: -10, y: 0, duration: 100 })
+      .move({ origin: target, duration: 400 })
+      .up()
+      .perform();
+    await browser.waitUntil(async () => (await collectionOrder()).join() === "Notes,Drafts", { timeoutMsg: "the dragged collection did not move" });
+
+    await $(`button[aria-label="${t("home.collections.actions", { name: "Drafts" })}"]`).click();
+    await $(`//*[@role="menuitem"][normalize-space(.)="${t("home.collections.pin")}"]`).click();
+    expect(await collectionOrder()).toEqual(["Drafts", "Notes"]);
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "home-collections-order.png"));
+  });
+
   it("shows what a collection holds, recolours it and opens one of its files", async () => {
     const report = copyFixture(fixtures().sample, "collection-report.pdf");
     const gone = join(workDir(), "collection-gone.pdf");
-    await $(`//button[normalize-space(.)="${t("home.collections.create")}"]`).scrollIntoView({ block: "center" });
-    await $(`//button[normalize-space(.)="${t("home.collections.create")}"]`).click();
-    await $(`input[placeholder="${t("home.collections.namePlaceholder")}"]`).setValue("Archive");
-    answerDialogs([report, gone]);
-    await $(`//button[normalize-space(.)="${t("home.collections.addFiles")}"]`).click();
-    await waitForDialogsAnswered();
-    await $(`//button[normalize-space(.)="${t("home.collections.save")}"]`).click();
+    await createCollection("Archive", [report, gone]);
 
     await $(`button[aria-label="${t("home.collections.viewOf", { name: "Archive" })}"]`).click();
     const view = $('[data-testid="collection-view"]');

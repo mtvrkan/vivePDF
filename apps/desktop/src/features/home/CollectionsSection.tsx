@@ -1,5 +1,5 @@
-import { useState, type CSSProperties } from "react";
-import { Eye, FilePlus2, Files, FolderOpen, Library, MoreHorizontal, Plus, X } from "lucide-react";
+import { useMemo, useRef, useState, type CSSProperties, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
+import { ArrowLeft, ArrowRight, Eye, FilePlus2, Files, FolderOpen, GripVertical, Library, MoreHorizontal, Pin, PinOff, Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/shared/Button";
@@ -10,10 +10,11 @@ import { useContextMenu } from "@/components/shared/useContextMenu";
 import { OPEN_CONVERTIBLE_EXTENSIONS, sessionPathOf } from "@/features/viewer/convertedDocuments";
 import { GROUP_COLORS, GROUP_TONES } from "@/features/viewer/tabGroups";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
+import { cn } from "@/shared/lib/cn";
 import { basenameOf, pathKey } from "@/shared/lib/paths";
 import { inTabOrder, useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
-import { COLLECTION_FILES_MAX, COLLECTION_NAME_MAX, useCollectionsStore, type Collection } from "./collectionsStore";
+import { COLLECTION_FILES_MAX, COLLECTION_NAME_MAX, moveCollection, pinnedFirst, useCollectionsStore, type Collection } from "./collectionsStore";
 import { CollectionView } from "./CollectionView";
 import { bySize, type HomeSize } from "./homeLayout";
 import { useOpenCollection } from "./useOpenCollection";
@@ -139,12 +140,25 @@ function CollectionDialog({ draft, onChange, onClose }: { draft: Draft; onChange
   );
 }
 
-function CollectionCard({ collection, onEdit, onView, preview }: { collection: Collection; onEdit: () => void; onView: () => void; preview: number }) {
+type Placement = { index: number; first: boolean; last: boolean; dragging: boolean };
+
+type DragHandlers = {
+  onDragStart: (event: ReactPointerEvent<HTMLButtonElement>) => void;
+  onDragMove: (event: ReactPointerEvent<HTMLButtonElement>) => void;
+  onDragEnd: () => void;
+  onDragCancel: () => void;
+};
+
+const ARROW_STEPS: Record<string, number> = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 };
+
+function CollectionCard({ collection, onEdit, onView, preview, placement, drag }: { collection: Collection; onEdit: () => void; onView: () => void; preview: number; placement: Placement; drag: DragHandlers }) {
   const { t } = useTranslation();
   const { openPath } = useOpenPdf();
   const openCollection = useOpenCollection();
   const recolor = useCollectionsStore((state) => state.recolor);
   const remove = useCollectionsStore((state) => state.remove);
+  const move = useCollectionsStore((state) => state.move);
+  const setPinned = useCollectionsStore((state) => state.setPinned);
   const restore = useCollectionsStore((state) => state.restore);
   const toast = useToastStore((state) => state.push);
   const menu = useContextMenu();
@@ -165,9 +179,22 @@ function CollectionCard({ collection, onEdit, onView, preview }: { collection: C
     toast("info", t("home.collections.removed", { name: collection.name }), { label: t("common.undo"), onClick: () => restore(snapshot) });
   };
 
+  const moveBy = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+    const step = ARROW_STEPS[event.key];
+    if (step === undefined) return;
+    event.preventDefault();
+    const mirrored = document.documentElement.dir === "rtl" && (event.key === "ArrowLeft" || event.key === "ArrowRight");
+    move(collection.id, placement.index + (mirrored ? -step : step));
+  };
+
   const items: ContextMenuItem[] = [
     { type: "item", id: "view", label: t("home.collections.view"), icon: Eye, onSelect: onView },
     { type: "item", id: "edit", label: t("home.collections.edit"), onSelect: onEdit },
+    collection.pinned
+      ? { type: "item", id: "unpin", label: t("home.collections.unpin"), icon: PinOff, onSelect: () => setPinned(collection.id, false) }
+      : { type: "item", id: "pin", label: t("home.collections.pin"), icon: Pin, onSelect: () => setPinned(collection.id, true) },
+    { type: "item", id: "earlier", label: t("home.collections.moveEarlier"), icon: ArrowLeft, disabled: placement.first, onSelect: () => move(collection.id, placement.index - 1) },
+    { type: "item", id: "later", label: t("home.collections.moveLater"), icon: ArrowRight, disabled: placement.last, onSelect: () => move(collection.id, placement.index + 1) },
     {
       type: "submenu",
       id: "color",
@@ -179,16 +206,42 @@ function CollectionCard({ collection, onEdit, onView, preview }: { collection: C
   ];
 
   return (
-    <li data-collection={collection.name} style={toneStyle(collection)} className="glass-flat relative flex flex-col overflow-hidden rounded-xl border border-(--glass-border)">
+    <li
+      data-collection={collection.name}
+      data-collection-id={collection.id}
+      style={toneStyle(collection)}
+      className={cn("glass-flat relative flex flex-col overflow-hidden rounded-xl border border-(--glass-border)", placement.dragging && "opacity-60 ring-2 ring-primary")}
+    >
       <span aria-hidden className="absolute inset-x-0 top-0 h-1 bg-(--tone)" />
-      <div className="flex items-start gap-3 p-3 pt-4" onContextMenu={menu.open}>
-        <button type="button" onClick={onView} aria-label={t("home.collections.viewOf", { name: collection.name })} className="flex min-w-0 flex-1 items-start gap-3 rounded-lg text-start outline-none focus-visible:ring-2 focus-visible:ring-ring">
+      <div className="flex items-start gap-1 p-3 ps-1.5 pt-4" onContextMenu={menu.open}>
+        <button
+          type="button"
+          aria-label={t("home.collections.dragHandle", { name: collection.name })}
+          title={t("home.collections.dragHint")}
+          onPointerDown={drag.onDragStart}
+          onPointerMove={drag.onDragMove}
+          onPointerUp={drag.onDragEnd}
+          onPointerCancel={drag.onDragCancel}
+          onKeyDown={moveBy}
+          className={cn("flex h-9 w-5 shrink-0 cursor-grab touch-none items-center justify-center rounded text-muted-foreground/60 outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring", placement.dragging && "cursor-grabbing")}
+        >
+          <GripVertical className="size-4" aria-hidden />
+        </button>
+        <button type="button" onClick={onView} aria-label={t("home.collections.viewOf", { name: collection.name })} className="ms-1 flex min-w-0 flex-1 items-start gap-3 rounded-lg text-start outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <span className="tone-tile flex size-9 shrink-0 items-center justify-center rounded-xl">
             <Library className="size-4" aria-hidden />
           </span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-sm font-semibold hover:underline" title={collection.name}>
-              {collection.name}
+            <span className="flex min-w-0 items-center gap-1.5">
+              <span className="truncate text-sm font-semibold hover:underline" title={collection.name}>
+                {collection.name}
+              </span>
+              {collection.pinned ? (
+                <span title={t("home.collections.pinned")} className="shrink-0 text-(--tone)">
+                  <Pin className="size-3.5 fill-current" aria-hidden />
+                  <span className="sr-only">{t("home.collections.pinned")}</span>
+                </span>
+              ) : null}
             </span>
             <span className="mt-0.5 block text-xs text-muted-foreground">{t("home.collections.files", { count: collection.paths.length })}</span>
           </span>
@@ -227,6 +280,34 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
   const collections = useCollectionsStore((state) => state.collections);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [viewing, setViewing] = useState<string | null>(null);
+  const [drag, setDrag] = useState<{ id: string; index: number } | null>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const move = useCollectionsStore((state) => state.move);
+  const ordered = useMemo(() => pinnedFirst(collections), [collections]);
+  const shown = drag ? moveCollection(collections, drag.id, drag.index) : ordered;
+  const pinnedCount = ordered.filter((collection) => collection.pinned).length;
+
+  const dragHandlers = (collection: Collection): DragHandlers => ({
+    onDragStart: (event) => {
+      if (event.button !== 0) return;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      setDrag({ id: collection.id, index: ordered.indexOf(collection) });
+    },
+    onDragMove: (event) => {
+      if (!drag) return;
+      const over = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-collection-id]");
+      if (!over || !listRef.current?.contains(over)) return;
+      const index = shown.findIndex((item) => item.id === over.dataset.collectionId);
+      if (index >= 0 && index !== drag.index) setDrag({ ...drag, index });
+    },
+    onDragEnd: () => {
+      if (!drag) return;
+      move(drag.id, drag.index);
+      setDrag(null);
+    },
+    onDragCancel: () => setDrag(null),
+  });
+
   const startCreating = () => setDraft({ id: null, name: "", paths: openDocumentPaths() });
 
   return (
@@ -257,10 +338,14 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
           </Button>
         </div>
       ) : (
-        <ul className="mt-4 grid grid-cols-1 gap-3 @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">
-          {collections.map((collection) => (
-            <CollectionCard key={collection.id} collection={collection} preview={bySize(size, 0, 3, 6)} onView={() => setViewing(collection.id)} onEdit={() => setDraft({ id: collection.id, name: collection.name, paths: collection.paths })} />
-          ))}
+        <ul ref={listRef} className="mt-4 grid grid-cols-1 gap-3 @md:grid-cols-2 @3xl:grid-cols-3 @5xl:grid-cols-4">
+          {shown.map((collection) => {
+            const index = ordered.indexOf(collection);
+            const placement = { index, first: index === 0 || index === pinnedCount, last: index === ordered.length - 1 || index === pinnedCount - 1, dragging: drag?.id === collection.id };
+            return (
+              <CollectionCard key={collection.id} collection={collection} preview={bySize(size, 0, 3, 6)} placement={placement} drag={dragHandlers(collection)} onView={() => setViewing(collection.id)} onEdit={() => setDraft({ id: collection.id, name: collection.name, paths: collection.paths })} />
+            );
+          })}
         </ul>
       )}
       {viewing && !draft ? (

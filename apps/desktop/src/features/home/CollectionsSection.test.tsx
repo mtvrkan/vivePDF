@@ -163,5 +163,36 @@ describe("CollectionsSection", () => {
 
     expect(dialog.getByRole("checkbox", { name: "Select a.pdf" }).getAttribute("aria-checked")).toBe("false");
   });
+
+  it("pins a collection to the front from its menu and moves cards with the arrow keys", () => {
+    useCollectionsStore.getState().create("Invoices", ["C:/Docs/1.pdf"]);
+    useCollectionsStore.getState().create("Contracts", ["C:/Docs/2.pdf"]);
+    useCollectionsStore.getState().create("Letters", ["C:/Docs/3.pdf"]);
+    render(<CollectionsSection />);
+    const cards = () => Array.from(document.querySelectorAll("[data-collection]")).map((card) => card.getAttribute("data-collection"));
+
+    fireEvent.click(screen.getByRole("button", { name: "Actions for Letters" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Pin to the front" }));
+    expect(cards()).toEqual(["Letters", "Invoices", "Contracts"]);
+    expect(screen.getAllByText("Pinned").length).toBeGreaterThan(0);
+
+    fireEvent.keyDown(screen.getByRole("button", { name: "Move Contracts" }), { key: "ArrowLeft" });
+    expect(cards()).toEqual(["Letters", "Contracts", "Invoices"]);
+    fireEvent.keyDown(screen.getByRole("button", { name: "Move Contracts" }), { key: "ArrowLeft" });
+    expect(cards()).toEqual(["Letters", "Contracts", "Invoices"]);
+  });
+
+  it("moves a collection later from its menu and turns the move off at the end of the list", () => {
+    useCollectionsStore.getState().create("Invoices", ["C:/Docs/1.pdf"]);
+    useCollectionsStore.getState().create("Contracts", ["C:/Docs/2.pdf"]);
+    render(<CollectionsSection />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Actions for Invoices" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Move later" }));
+    fireEvent.click(screen.getByRole("button", { name: "Actions for Invoices" }));
+
+    expect(Array.from(document.querySelectorAll("[data-collection]")).map((card) => card.getAttribute("data-collection"))).toEqual(["Contracts", "Invoices"]);
+    expect((screen.getByRole("menuitem", { name: "Move later" }) as HTMLButtonElement).disabled).toBe(true);
+  });
 });
 

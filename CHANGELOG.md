@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Home collections can be rearranged by dragging the handle at the start of a card, with the arrow keys on that handle, or with Move earlier and Move later in the card's menu; Pin to the front keeps a collection ahead of the others with a pin next to its name, and the order is remembered [2026-10-06]
 - Collection view: search the files by name or folder, sort them by collection order, name (A–Z or Z–A), folder or file type, and tick several files (or every shown one) to open them together or take them out of the collection with an undo; Open all follows the chosen order [2026-10-06]
 - Home collections: click a collection's name, the eye button or "and N more" to see every file in it with its folder, open one file on its own, show it in its folder or take it out of the collection; files that are no longer on disk are marked as not found. File names on the card open that file directly [2026-10-06]
 - Collections and tab groups have 13 colours instead of 6 (teal, cyan, indigo, pink, lime, brown and grey are new), with a colour dot next to each name in the menu and a row of colour swatches in the collection view [2026-10-06]

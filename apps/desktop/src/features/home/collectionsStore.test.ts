@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { GROUP_COLORS } from "@/features/viewer/tabGroups";
-import { COLLECTION_NAME_MAX, nextCollectionColor, readCollections, useCollectionsStore } from "./collectionsStore";
+import { COLLECTION_NAME_MAX, moveCollection, nextCollectionColor, pinnedFirst, readCollections, useCollectionsStore, withPinned, type Collection } from "./collectionsStore";
 
 beforeEach(() => {
   useCollectionsStore.setState({ collections: [] });
@@ -51,3 +51,45 @@ describe("nextCollectionColor", () => {
     expect(nextCollectionColor(taken)).toBe("blue");
   });
 });
+
+const named = (name: string, pinned = false): Collection => (pinned ? { id: name, name, color: "blue", paths: [], pinned: true } : { id: name, name, color: "blue", paths: [] });
+const names = (collections: Collection[]) => collections.map((collection) => collection.name);
+
+describe("collection order", () => {
+  it("moves a collection to a new place and keeps it inside its pinned or unpinned group", () => {
+    const list = [named("A", true), named("B"), named("C"), named("D")];
+
+    expect(names(moveCollection(list, "D", 1))).toEqual(["A", "D", "B", "C"]);
+    expect(names(moveCollection(list, "B", 0))).toEqual(["A", "B", "C", "D"]);
+    expect(names(moveCollection(list, "A", 3))).toEqual(["A", "B", "C", "D"]);
+    expect(moveCollection(list, "missing", 0)).toBe(list);
+  });
+
+  it("puts a newly pinned collection after the other pinned ones and an unpinned one first among the rest", () => {
+    const list = [named("A", true), named("B"), named("C")];
+
+    const pinned = withPinned(list, "C", true);
+    expect(names(pinned)).toEqual(["A", "C", "B"]);
+    expect(pinned[1]?.pinned).toBe(true);
+    const unpinned = withPinned(pinned, "A", false);
+    expect(names(unpinned)).toEqual(["C", "A", "B"]);
+    expect("pinned" in (unpinned[1] ?? {})).toBe(false);
+  });
+
+  it("shows pinned collections first, reads the pin back from storage and moves and pins in the store", () => {
+    expect(names(pinnedFirst([named("A"), named("B", true)]))).toEqual(["B", "A"]);
+    expect(readCollections(JSON.stringify([{ id: "1", name: "Kept", color: "blue", paths: [], pinned: true }, { id: "2", name: "Plain", color: "blue", paths: [], pinned: "yes" }]))).toEqual([
+      { id: "1", name: "Kept", color: "blue", paths: [], pinned: true },
+      { id: "2", name: "Plain", color: "blue", paths: [] },
+    ]);
+    const store = useCollectionsStore.getState();
+    const first = store.create("First", []);
+    store.create("Second", []);
+    store.move(first, 1);
+    store.setPinned(first, true);
+
+    expect(names(useCollectionsStore.getState().collections)).toEqual(["First", "Second"]);
+    expect(useCollectionsStore.getState().collections[0]?.pinned).toBe(true);
+  });
+});
+
