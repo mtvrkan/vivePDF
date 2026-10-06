@@ -5772,7 +5772,8 @@
     "selectedMarks": "{{count}} marques sélectionnées",
     "eraser": "Gomme (efface une partie des tracés au stylo)",
     "eraserSize": "Taille de la gomme",
-    "eraserHint": "Passez sur un tracé au stylo pour en effacer cette partie"
+    "eraserHint": "Passez sur un tracé au stylo pour en effacer cette partie",
+    "textPlaceholder": "Écrivez ici"
   },
   "recovery": {
     "discard": "Ignorer",

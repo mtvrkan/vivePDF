@@ -23,6 +23,7 @@ import { MAX_OPEN_DOCUMENTS } from "@/shared/lib/documentLimit";
 
 const SHAPE_CLICK_SIZE = { width: 100, height: 100 };
 const LINE_CLICK_LENGTH = 100;
+const ONE_SHOT_SHAPE = { deactivateToolAfterCreate: true, selectAfterCreate: true, editAfterCreate: false };
 
 export const THUMBNAIL_WIDTH = 140;
 
@@ -54,10 +55,11 @@ export const viewerPlugins = [
     annotationAuthor: DEFAULT_ANNOTATION_AUTHOR,
     autoCommit: true,
     tools: [
-      { id: "square", clickBehavior: { enabled: false, defaultSize: SHAPE_CLICK_SIZE } },
-      { id: "circle", clickBehavior: { enabled: false, defaultSize: SHAPE_CLICK_SIZE } },
-      { id: "line", clickBehavior: { enabled: false, defaultLength: LINE_CLICK_LENGTH } },
-      { id: "lineArrow", clickBehavior: { enabled: false, defaultLength: LINE_CLICK_LENGTH } },
+      { id: "square", clickBehavior: { enabled: false, defaultSize: SHAPE_CLICK_SIZE }, behavior: ONE_SHOT_SHAPE },
+      { id: "circle", clickBehavior: { enabled: false, defaultSize: SHAPE_CLICK_SIZE }, behavior: ONE_SHOT_SHAPE },
+      { id: "line", clickBehavior: { enabled: false, defaultLength: LINE_CLICK_LENGTH }, behavior: ONE_SHOT_SHAPE },
+      { id: "lineArrow", clickBehavior: { enabled: false, defaultLength: LINE_CLICK_LENGTH }, behavior: ONE_SHOT_SHAPE },
+      { id: "freeText", behavior: { insertUpright: true, editAfterCreate: true, selectAfterCreate: true, deactivateToolAfterCreate: true } },
     ],
     colorPresets: ["#FFD400", "#FF6B00", "#E5484D", "#D6409F", "#8E4EC6", "#3E63DD", "#0090FF", "#12A594", "#30A46C", "#000000"],
   }),

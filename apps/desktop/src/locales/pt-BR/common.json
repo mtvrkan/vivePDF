@@ -5772,7 +5772,8 @@
     "selectedMarks": "{{count}} marcas selecionadas",
     "eraser": "Borracha (apaga partes dos traços de caneta)",
     "eraserSize": "Tamanho da borracha",
-    "eraserHint": "Passe sobre um traço de caneta para apagar essa parte"
+    "eraserHint": "Passe sobre um traço de caneta para apagar essa parte",
+    "textPlaceholder": "Digite aqui"
   },
   "recovery": {
     "discard": "Descartar",

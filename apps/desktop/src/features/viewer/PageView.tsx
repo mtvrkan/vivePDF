@@ -41,19 +41,19 @@ type PageViewProps = { documentId: string; decoratePage?: PageDecoration; pageCo
 export function PageView({ documentId, decoratePage, pageColors = "normal", readOnly = false, readOnlySource }: PageViewProps) {
   const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
+  const clickOrigin = useRef<{ x: number; y: number } | null>(null);
   const selectionColor = usePreferencesStore((state) => state.selectionColor);
   const { provides: annotation, state: annotationState } = useAnnotation(documentId);
 
   useEffect(() => {
     const host = hostRef.current;
     if (!host || !annotation) return;
-    let origin: { x: number; y: number } | null = null;
     const onPointerDown = (event: PointerEvent) => {
-      origin = { x: event.clientX, y: event.clientY };
+      clickOrigin.current = { x: event.clientX, y: event.clientY };
     };
     const onClick = (event: MouseEvent) => {
-      const start = origin;
-      origin = null;
+      const start = clickOrigin.current;
+      clickOrigin.current = null;
       if (!start) return;
       if (Math.hypot(event.clientX - start.x, event.clientY - start.y) > CLICK_MOVE_LIMIT_PX) return;
       const target = event.target as HTMLElement | null;

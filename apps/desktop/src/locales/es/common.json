@@ -5772,7 +5772,8 @@
     "selectedMarks": "{{count}} marcas seleccionadas",
     "eraser": "Borrador (borra partes de los trazos de lápiz)",
     "eraserSize": "Tamaño del borrador",
-    "eraserHint": "Pase sobre un trazo de lápiz para borrar esa parte"
+    "eraserHint": "Pase sobre un trazo de lápiz para borrar esa parte",
+    "textPlaceholder": "Escriba aquí"
   },
   "recovery": {
     "discard": "Descartar",

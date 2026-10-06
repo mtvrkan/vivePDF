@@ -5772,7 +5772,8 @@
     "selectedMarks": "{{count}} ausgewählte Markierungen",
     "eraser": "Radierer (Teile von Stiftzeichnungen entfernen)",
     "eraserSize": "Radierergröße",
-    "eraserHint": "Über eine Stiftzeichnung fahren, um diesen Teil zu entfernen"
+    "eraserHint": "Über eine Stiftzeichnung fahren, um diesen Teil zu entfernen",
+    "textPlaceholder": "Hier schreiben"
   },
   "recovery": {
     "discard": "Verwerfen",

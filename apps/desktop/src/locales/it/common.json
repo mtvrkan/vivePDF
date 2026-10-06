@@ -5772,7 +5772,8 @@
     "selectedMarks": "{{count}} segni selezionati",
     "eraser": "Gomma (cancella parti dei tratti a penna)",
     "eraserSize": "Dimensione gomma",
-    "eraserHint": "Passa sopra un tratto a penna per cancellarne quella parte"
+    "eraserHint": "Passa sopra un tratto a penna per cancellarne quella parte",
+    "textPlaceholder": "Scrivi qui"
   },
   "recovery": {
     "discard": "Scarta",

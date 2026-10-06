@@ -199,6 +199,36 @@ describe("viewer", () => {
     await browser.waitUntil(async () => (await drawnLines()) === 2, { timeoutMsg: "undo did not bring the erased drawing back" });
   });
 
+  it("creates one text box or shape per use of the tool and drops a text box left empty", async () => {
+    await closeAllDocuments();
+    await openInViewer(copyFixture(fixtures().sample, "one-shot.pdf"));
+    if (!(await button(t("annotate.freeText")).isDisplayed())) await clickButton(t("viewer.annotate"));
+    const layerText = () => browser.execute(() => (document.querySelector('[data-page-index="0"] [data-annotation-layer]') as HTMLElement).innerText);
+    const pressed = async (label: string) => (await button(label).getAttribute("aria-pressed")) === "true";
+    const clickAt = async (x: number, y: number) => browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, x, y)).down().up().perform();
+
+    await clickButton(t("annotate.freeText"));
+    await clickAt(150, 240);
+    await browser.waitUntil(async () => (await layerText()).includes(t("annotate.textPlaceholder")), { timeoutMsg: "the text box did not open with its placeholder" });
+    await browser.keys("deneme");
+    await clickAt(350, 330);
+    await browser.waitUntil(async () => (await layerText()).includes("deneme"), { timeoutMsg: "the typed text was not kept" });
+    await $('[data-page-index="0"] [data-epdf-handle]').waitForExist({ reverse: true, timeoutMsg: "one click beside the text box did not deselect it" });
+    expect(await pressed(t("annotate.freeText"))).toBe(false);
+    expect((await layerText()).includes(t("annotate.textPlaceholder"))).toBe(false);
+
+    await clickButton(t("annotate.freeText"));
+    await clickAt(150, 300);
+    await browser.waitUntil(async () => (await layerText()).includes(t("annotate.textPlaceholder")));
+    await clickAt(350, 330);
+    await browser.waitUntil(async () => !(await layerText()).includes(t("annotate.textPlaceholder")), { timeoutMsg: "an untouched text box was left on the page" });
+    expect(await layerText()).toContain("deneme");
+
+    await clickButton(t("annotate.square"));
+    await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 300, 120)).down().move({ ...(await pagePoint(0, 340, 150)), duration: 80 }).move({ ...(await pagePoint(0, 380, 180)), duration: 80 }).up().perform();
+    await browser.waitUntil(async () => !(await pressed(t("annotate.square"))), { timeoutMsg: "the rectangle tool stayed on after drawing one" });
+  });
+
   it("starts the presentation from the first page on F5 and from the current page on Shift F5", async () => {
     const path = copyFixture(fixtures().six, "present.pdf");
     await openInViewer(path);

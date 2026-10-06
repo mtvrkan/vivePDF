@@ -47,9 +47,12 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { DASH_TOOLS, DEFAULT_LINE_ENDINGS, FALLBACK_COLORS, FILL_TOOLS, LINE_ENDING_LABEL_KEYS, LINE_ENDING_OPTIONS, LINE_TOOLS, MAX_STROKE_WIDTH, MIN_STROKE_WIDTH, STROKE_TOOLS, STROKE_WIDTH_STEP, SUBTYPE_TOOLS, stylePatchFor, toolColorFrom, type StyleValues } from "./annotateStyle";
 import { CURVE_STEP, MAX_CURVE, MIN_CURVE, currentCurve, curveRectPatch, curvedVertices, lineEndpoints, polylineFromLine } from "./lineCurve";
 import { MARKUP_SUBTYPES, hasSelectionRects, markupRequests } from "./selectionMarkup";
+import { ENGINE_TEXT_PLACEHOLDER, droppedUntouchedTexts } from "./untouchedText";
 import { MAX_ERASER_SIZE, MIN_ERASER_SIZE, allMarks, useMarkToolMode, useMarkToolStore } from "./markArea";
 
 type Tool = { id: string; icon: LucideIcon; labelKey: string };
+
+const UNTOUCHED_TEXT_DELAY_MS = 300;
 
 type LineLikeAnnotation = PdfLineAnnoObject | PdfPolylineAnnoObject;
 
@@ -173,6 +176,16 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
     selectionScope.clear();
   };
 
+  const placeTextPlaceholder = () => {
+    const tool = annotationCapability?.getTool("freeText");
+    if (!annotationCapability || !tool) return;
+    annotationCapability.setToolDefaults("freeText", { contents: textPlaceholder });
+    const clickBehavior = "clickBehavior" in tool ? tool.clickBehavior : undefined;
+    if (clickBehavior && "defaultContent" in clickBehavior && clickBehavior.defaultContent !== textPlaceholder) {
+      annotationCapability.addTool({ ...annotationCapability.getTool("freeText"), clickBehavior: { ...clickBehavior, defaultContent: textPlaceholder } } as typeof tool);
+    }
+  };
+
   const selectTool = (id: string) => {
     useMarkToolStore.getState().stop();
     if (redactActive) redaction?.toggleRedact();
@@ -181,6 +194,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
       const toolColor = toolColorFrom(next, annotationCapability?.getTool(next)?.defaults as Record<string, unknown> | undefined) ?? color;
       setColor(toolColor);
       annotationCapability?.setToolDefaults(next, stylePatchFor(next, { color: toolColor, fill, strokeWidth, opacity, dashed, lineEndings: toolEndings[next] }));
+      if (next === "freeText") placeTextPlaceholder();
       markSelection(next, toolColor);
     }
     annotation?.setActiveTool(next);
@@ -198,6 +212,21 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   useEffect(() => {
     return () => disarmRef.current();
   }, []);
+
+  const textPlaceholder = t("annotate.textPlaceholder");
+  const selectionKey = (annotationState.selectedUids ?? []).join("|");
+  const previousSelection = useRef<string[]>([]);
+
+  useEffect(() => {
+    const previous = previousSelection.current;
+    previousSelection.current = selectionKey ? selectionKey.split("|") : [];
+    if (!annotation || previous.length === 0) return;
+    window.setTimeout(() => {
+      const state = annotation.getState();
+      const dropped = droppedUntouchedTexts(previous, state.selectedUids ?? [], state.byUid, [ENGINE_TEXT_PLACEHOLDER, textPlaceholder]);
+      if (dropped.length > 0) annotation.deleteAnnotations(dropped);
+    }, UNTOUCHED_TEXT_DELAY_MS);
+  }, [selectionKey, annotation, textPlaceholder]);
 
   const closeBar = () => {
     disarmTools();

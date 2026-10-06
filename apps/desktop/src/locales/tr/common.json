@@ -5772,7 +5772,8 @@
     "selectedMarks": "{{count}} seçili işaret",
     "eraser": "Silgi (kalem çizimlerinin bir kısmını siler)",
     "eraserSize": "Silgi boyutu",
-    "eraserHint": "Silmek istediğiniz kalem çizgisinin üzerinden geçin"
+    "eraserHint": "Silmek istediğiniz kalem çizgisinin üzerinden geçin",
+    "textPlaceholder": "Buraya yazın"
   },
   "recovery": {
     "discard": "Yoksay",

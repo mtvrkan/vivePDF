@@ -14,6 +14,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Viewer annotations: the text box, rectangle, ellipse, line and arrow tools switch off after placing one, so further clicks no longer pile up new boxes; a new text box says "Type here" in the interface language instead of "Insert text", and one left untouched or empty is removed once you click away [2026-10-06]
 - Viewer: the unsaved-changes chip uses the app's blue tones to match its Save button instead of amber [2026-10-06]
 - Viewer annotations: each tool keeps its own colour, so the pen starts in red and the highlighter in yellow instead of sharing the last colour picked for another tool [2026-10-06]
 - Viewer: the back and forward arrows next to the page buttons are gone; Alt+Left and Alt+Right still step through the places you jumped to [2026-10-06]
@@ -35,6 +36,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Viewer: one click beside a selected mark deselects it again; the page forgot where the click started whenever the screen updated in between, so it often took a second click [2026-10-06]
 - Viewer: the pen draws in the colour you pick; it always drew in red because the colour went to a field the pen ignores [2026-10-06]
 - Viewer: a selected mark (pen drawing, shape, highlight, text box) can be dragged from anywhere inside its frame again; an invisible layer behind its small menu covered the whole frame and swallowed the drag. The menu now sits just below the frame instead of over the mark [2026-10-06]
 - Top bar: in a narrow window the menus turn into icons again so the search, settings, Open PDF and window buttons stay visible; the window buttons used to shrink away instead of making room [2026-10-06]

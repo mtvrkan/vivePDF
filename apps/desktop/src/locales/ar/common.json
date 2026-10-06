@@ -6531,7 +6531,8 @@
     "selectedMarks": "{{count}} علامات محددة",
     "eraser": "ممحاة (تمسح أجزاء من رسومات القلم)",
     "eraserSize": "حجم الممحاة",
-    "eraserHint": "مرّر فوق رسم القلم لمسح ذلك الجزء"
+    "eraserHint": "مرّر فوق رسم القلم لمسح ذلك الجزء",
+    "textPlaceholder": "اكتب هنا"
   },
   "recovery": {
     "discard": "تجاهل",
