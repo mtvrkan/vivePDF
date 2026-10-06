@@ -8,6 +8,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Studio is called by its local name where the language has one: Stüdyo in Turkish, Estudio in Spanish, Estúdio in Brazilian Portuguese and الاستوديو throughout Arabic; German, French and Italian keep Studio [2026-10-06]
 - Home: while editing, a hidden section stays where it was as a slim row with a Show button instead of moving to a list at the top; Edit home page now sits at the top right, and Done sits in the editing bar, which stays pinned at the top while you scroll instead of floating over the sections; the new home strings are translated into every language [2026-10-06]
 - Home: while the home page is being edited, quick access tools can be dragged by their tile into a new order; the tiles make room as you drag and the arrow buttons still do the same from the keyboard [2026-10-06]
 - Merge: a file already in the list is never added twice, whether it comes from the picker, a folder, a drop or the command line, and a short notice says how many were skipped [2026-10-04]
@@ -20,6 +21,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Home: Customize home is a bordered button again instead of a faint pill that looked cut off; while editing, the pinned editing bar no longer hides the controls of the section you scroll or tab to; section names in the editing frames keep room instead of shrinking to a few letters; and the empty Recent documents card has an Open PDF button [2026-10-06]
 - Text in PDFs that vivePDF lays out (Create PDF, book, CV, cover page, text, Markdown, web page and e-mail conversions, Studio documents and designs) copies and searches as plain letters: "fi", "fl", "ff", "ffi", "ffl" and "st" no longer come out as single ligature characters in other PDF readers [2026-10-06]
 
 ## [0.1.1] - 2026-10-04

@@ -57,7 +57,7 @@ export function HomeEditBar() {
   };
 
   return (
-    <div role="region" aria-label={t("home.layout.editing")} className="glass glass-tinted sticky top-0 z-20 space-y-3 rounded-2xl p-4 shadow-lg">
+    <div role="region" aria-label={t("home.layout.editing")} className="glass glass-tinted space-y-3 rounded-2xl p-4 shadow-lg">
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold">{t("home.layout.editing")}</p>
@@ -118,7 +118,7 @@ export function HomeSectionFrame({ section, dragging, onDragStart, onDragMove, o
         >
           <GripVertical className="size-4" aria-hidden />
         </button>
-        <span className="min-w-0 flex-1 truncate text-sm font-semibold">{title}</span>
+        <span title={title} className="min-w-32 flex-1 truncate text-sm font-semibold">{title}</span>
         <Segmented size="sm" value={section.size} options={HOME_SIZES} labelOf={(value) => t(`home.layout.sizes.${value}`)} onChange={(size) => change((current) => updateSection(current, section.id, { size }))} ariaLabel={t("home.layout.sizeOf", { name: title })} />
         <span className="w-28">
           <Select

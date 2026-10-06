@@ -6944,8 +6944,8 @@
         "editor": "التحرير",
         "presentation": "العرض التقديمي",
         "organizer": "منظّم الصفحات",
-        "studio": "محرر تصميم Studio",
-        "studioDocument": "محرر مستندات Studio"
+        "studio": "محرر تصميم الاستوديو",
+        "studioDocument": "محرر مستندات الاستوديو"
       },
       "items": {
         "presentationEnter": "الدخول إلى وضع العرض التقديمي / الخروج منه",

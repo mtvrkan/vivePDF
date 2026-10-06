@@ -56,13 +56,14 @@ describe("home layout", () => {
     const history = t("home.history.title");
     const handle = $(`button[aria-label="${t("home.layout.dragHandle", { name: history })}"]`);
     const target = $(`[data-testid="home-region-top"]`);
-    await browser.execute(() => document.querySelector('[data-testid="home-region-top"]')?.scrollIntoView({ block: "start" }));
+    await handle.scrollIntoView({ block: "end" });
+    const { height } = await target.getSize();
     await browser
       .action("pointer")
       .move({ origin: handle })
       .down()
-      .move({ origin: handle, x: 0, y: 20, duration: 100 })
-      .move({ origin: target, duration: 400 })
+      .move({ origin: handle, x: 0, y: -20, duration: 100 })
+      .move({ origin: target, y: Math.floor(height / 2) - 24, duration: 400 })
       .up()
       .perform();
     await expect(target).toHaveText(expect.stringContaining(history), { ignoreCase: true });

@@ -43,6 +43,8 @@ export function HomePage() {
   const setEditing = useHomeLayoutStore((state) => state.setEditing);
   const change = useHomeLayoutStore((state) => state.change);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const editBarRef = useRef<HTMLDivElement>(null);
+  const [editBarHeight, setEditBarHeight] = useState(0);
   const [drag, setDrag] = useState<Drag>(null);
 
   useEffect(() => {
@@ -54,6 +56,15 @@ export function HomePage() {
       }, 0);
     };
   }, []);
+
+  useEffect(() => {
+    const bar = editBarRef.current;
+    if (!editing || !bar) return;
+    setEditBarHeight(bar.offsetHeight);
+    const observer = new ResizeObserver(() => setEditBarHeight(bar.offsetHeight));
+    observer.observe(bar);
+    return () => observer.disconnect();
+  }, [editing]);
 
   const targetAt = (x: number, y: number): { region: HomeRegion; index: number } | null => {
     const zone = document.elementFromPoint(x, y)?.closest<HTMLElement>("[data-home-drop]");
@@ -133,13 +144,15 @@ export function HomePage() {
   const columns = hasSide ? (sideFirst ? `${SIDEBAR_COLUMNS[layout.sidebar.width]} minmax(0,1fr)` : `minmax(0,1fr) ${SIDEBAR_COLUMNS[layout.sidebar.width]}`) : undefined;
 
   return (
-    <div ref={scrollRef} className="h-full overflow-auto">
+    <div ref={scrollRef} className="h-full overflow-auto" style={editing && editBarHeight > 0 ? { scrollPaddingTop: editBarHeight + 16 } : undefined}>
       <div className="space-y-6 p-4 md:p-8">
         {editing ? (
-          <HomeEditBar />
+          <div ref={editBarRef} className="sticky top-0 z-20">
+            <HomeEditBar />
+          </div>
         ) : (
           <div className="flex justify-end">
-            <Button size="sm" variant="ghost" icon={<LayoutDashboard className="size-4" aria-hidden />} onClick={() => setEditing(true)} className="glass rounded-full">
+            <Button size="sm" icon={<LayoutDashboard className="size-4" aria-hidden />} onClick={() => setEditing(true)} className="rounded-full px-3.5">
               {t("home.layout.edit")}
             </Button>
           </div>

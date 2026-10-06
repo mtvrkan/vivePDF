@@ -1,12 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Clock, FileText, FolderSearch, X } from "lucide-react";
+import { ArrowRight, Clock, FileText, FolderOpen, FolderSearch, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Button } from "@/components/shared/Button";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { bySize, type HomeSize } from "./homeLayout";
 import { formatRelativeMoment } from "./homeSearch";
 import { cn } from "@/shared/lib/cn";
 import { RevealError, revealPath } from "@/shared/lib/reveal";
 import { renderThumbnail, thumbnailDataUrl } from "@/shared/rpc/thumbnail";
+import { useOpenStore } from "@/shared/store/openStore";
 import { useRecentStore } from "@/shared/store/recentStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
@@ -92,6 +94,8 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
   const clearStore = useRecentStore((state) => state.clear);
   const restoreRecent = useRecentStore((state) => state.restore);
   const toast = useToastStore((state) => state.push);
+  const { pickAndOpen } = useOpenPdf();
+  const busy = useOpenStore((state) => state.busy);
   const [showAll, setShowAll] = useState(false);
   const clearRecent = () => {
     const snapshot = recent;
@@ -127,6 +131,9 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
             <p className="text-sm font-medium">{t("home.recentEmpty.title")}</p>
             <p className="mt-1 text-xs text-muted-foreground">{t("home.recentEmpty.description")}</p>
           </div>
+          <Button size="sm" icon={<FolderOpen className="size-4" aria-hidden />} loading={busy} onClick={() => void pickAndOpen()}>
+            {t("common.openPdf")}
+          </Button>
         </div>
       ) : (
         <div className={cn("mt-4 grid gap-3", size === "small" ? "grid-cols-2 @lg:grid-cols-4 @5xl:grid-cols-6" : "grid-cols-2 @md:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-6")}>

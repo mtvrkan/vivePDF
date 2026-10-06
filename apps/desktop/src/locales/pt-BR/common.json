@@ -37,7 +37,7 @@
     "pdfa": "Arquivo PDF/A",
     "omr": "Folhas de respostas",
     "create": "Criar PDF",
-    "studio": "Studio"
+    "studio": "Estúdio"
   },
   "common": {
     "retry": "Repetir",
@@ -139,9 +139,9 @@
     },
     "recentCleared": "Lista de documentos recentes apagada.",
     "studio": {
-      "title": "Studio",
-      "open": "Abrir o Studio",
-      "empty": "Os designs e documentos que você salvar no Studio aparecem aqui."
+      "title": "Estúdio",
+      "open": "Abrir o Estúdio",
+      "empty": "Os designs e documentos que você salvar no Estúdio aparecem aqui."
     },
     "collections": {
       "title": "Coleções",
@@ -1153,8 +1153,8 @@
       },
       "dismiss": "Fechar mensagem",
       "studio": {
-        "present": "Este PDF foi feito no Studio e pode ser editado lá.",
-        "open": "Editar no Studio"
+        "present": "Este PDF foi feito no Estúdio e pode ser editado lá.",
+        "open": "Editar no Estúdio"
       }
     },
     "signatures": {
@@ -6002,7 +6002,7 @@
       "notProject": "Este arquivo não é um design do vivePDF.",
       "newerProject": "Este design foi feito com uma versão mais nova do vivePDF. Atualize o aplicativo para abri-lo.",
       "projectTooLarge": "O design é maior que {{limitMb}} MB.",
-      "noDesign": "Este PDF não contém um design do Studio.",
+      "noDesign": "Este PDF não contém um design do Estúdio.",
       "missingImage": "Uma imagem usada no design não foi encontrada: {{path}}",
       "tooManyOutputPages": "O resultado teria mais de {{limit}} páginas. Use menos linhas ou páginas.",
       "badPath": "Um desenho do design tem dados de contorno que não podem ser lidos.",
@@ -6013,7 +6013,7 @@
       "previewGone": "A pré-visualização expirou; ela será criada novamente.",
       "documentFileTooLarge": "O documento tem mais de {{limitMb}} MB.",
       "draftTooLarge": "Este design é grande demais para o rascunho automático (limite de {{limit}} bytes). Salve-o como arquivo de projeto.",
-      "notDesign": "Este arquivo não é um design do Studio.",
+      "notDesign": "Este arquivo não é um design do Estúdio.",
       "badPageNumbers": "Os números de página escolhidos não correspondem às páginas exportadas."
     },
     "revealEmptyPath": "O caminho está vazio.",
@@ -6189,8 +6189,8 @@
         "editor": "Edição",
         "presentation": "Apresentação",
         "organizer": "Organizador de páginas",
-        "studio": "Editor de design do Studio",
-        "studioDocument": "Editor de documentos do Studio"
+        "studio": "Editor de design do Estúdio",
+        "studioDocument": "Editor de documentos do Estúdio"
       },
       "items": {
         "presentationEnter": "Entrar / sair do modo de apresentação",
@@ -6435,7 +6435,7 @@
     "noOpenableFiles": "Nenhum dos arquivos copiados pode ser aberto."
   },
   "studio": {
-    "title": "Studio",
+    "title": "Estúdio",
     "description": "Crie certificados, cartazes, cartões e muito mais do zero e salve-os como PDF ou imagens",
     "untitled": "Design sem título",
     "canvas": {
@@ -6725,8 +6725,8 @@
       "idleTitle": "Pronto para exportar",
       "idleDescription": "O texto continua selecionável e as fontes são incorporadas ao PDF.",
       "missingGlyphs": "Alguns caracteres não estão na fonte escolhida e podem não aparecer: {{glyphs}}",
-      "embed": "Manter editável no Studio",
-      "embedHint": "O design fica guardado dentro do PDF; ao abrir o PDF, aparece Editar no Studio. Imagens aumentam o arquivo.",
+      "embed": "Manter editável no Estúdio",
+      "embedHint": "O design fica guardado dentro do PDF; ao abrir o PDF, aparece Editar no Estúdio. Imagens aumentam o arquivo.",
       "runRows_one": "Exportar {{count}} cópia",
       "runRows_other": "Exportar {{count}} cópias",
       "useData_one": "Preencher pela tabela ({{count}} linha)",
@@ -8214,7 +8214,7 @@
       "sampleFilled": "Currículo de exemplo preenchido",
       "clear": "Limpar",
       "cleared": "Currículo limpo",
-      "editInStudio": "Editar livremente no Studio",
+      "editInStudio": "Editar livremente no Estúdio",
       "export": {
         "open": "Exportar",
         "title": "Exportar currículo",

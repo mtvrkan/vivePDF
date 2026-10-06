@@ -37,7 +37,7 @@
     "pdfa": "PDF/A arşiv",
     "omr": "Optik formlar",
     "create": "PDF Oluştur",
-    "studio": "Studio"
+    "studio": "Stüdyo"
   },
   "common": {
     "retry": "Tekrar dene",
@@ -139,9 +139,9 @@
     },
     "recentCleared": "Son belgeler listesi temizlendi.",
     "studio": {
-      "title": "Studio",
-      "open": "Studio'yu aç",
-      "empty": "Studio'da kaydettiğiniz tasarımlar ve belgeler burada görünür."
+      "title": "Stüdyo",
+      "open": "Stüdyo'yu aç",
+      "empty": "Stüdyo'da kaydettiğiniz tasarımlar ve belgeler burada görünür."
     },
     "collections": {
       "title": "Koleksiyonlar",
@@ -1153,8 +1153,8 @@
       },
       "dismiss": "Mesajı kapat",
       "studio": {
-        "present": "Bu PDF Studio'da hazırlandı ve orada düzenlenebilir.",
-        "open": "Studio'da düzenle"
+        "present": "Bu PDF Stüdyo'da hazırlandı ve orada düzenlenebilir.",
+        "open": "Stüdyo'da düzenle"
       }
     },
     "signatures": {
@@ -6002,7 +6002,7 @@
       "notProject": "Bu dosya bir vivePDF tasarımı değil.",
       "newerProject": "Bu tasarım vivePDF'in daha yeni bir sürümüyle hazırlanmış. Açmak için uygulamayı güncelleyin.",
       "projectTooLarge": "Tasarım {{limitMb}} MB'tan büyük.",
-      "noDesign": "Bu PDF bir Studio tasarımı içermiyor.",
+      "noDesign": "Bu PDF bir Stüdyo tasarımı içermiyor.",
       "missingImage": "Tasarımda kullanılan bir resim bulunamadı: {{path}}",
       "tooManyOutputPages": "Sonuç {{limit}} sayfadan fazla olurdu. Daha az satır veya sayfa kullanın.",
       "badPath": "Tasarımdaki bir çizimin anahat verisi okunamıyor.",
@@ -6013,7 +6013,7 @@
       "previewGone": "Önizlemenin süresi doldu; yeniden oluşturulacak.",
       "documentFileTooLarge": "Belge {{limitMb}} MB'tan büyük.",
       "draftTooLarge": "Bu tasarım otomatik taslak için çok büyük (sınır {{limit}} bayt). Proje dosyası olarak kaydedin.",
-      "notDesign": "Bu dosya bir Studio tasarımı değil.",
+      "notDesign": "Bu dosya bir Stüdyo tasarımı değil.",
       "badPageNumbers": "Seçilen sayfa numaraları dışa aktarılan sayfalarla eşleşmiyor."
     },
     "revealEmptyPath": "Yol boş.",
@@ -6189,8 +6189,8 @@
         "editor": "Düzenleme",
         "presentation": "Sunum",
         "organizer": "Sayfa düzenleyici",
-        "studio": "Studio tasarım düzenleyici",
-        "studioDocument": "Studio belge düzenleyici"
+        "studio": "Stüdyo tasarım düzenleyici",
+        "studioDocument": "Stüdyo belge düzenleyici"
       },
       "items": {
         "presentationEnter": "Sunum moduna gir / çık",
@@ -6436,7 +6436,7 @@
     "noOpenableFiles": "Kopyalanan dosyaların hiçbiri açılamıyor."
   },
   "studio": {
-    "title": "Studio",
+    "title": "Stüdyo",
     "description": "Sertifika, afiş, kart ve daha fazlasını sıfırdan tasarlayın; PDF ya da resim olarak kaydedin",
     "untitled": "Adsız tasarım",
     "canvas": {
@@ -6726,8 +6726,8 @@
       "idleTitle": "Dışa aktarmaya hazır",
       "idleDescription": "PDF'te metin seçilebilir kalır ve yazı tipleri gömülür.",
       "missingGlyphs": "Bazı karakterler seçilen yazı tipinde yok ve görünmeyebilir: {{glyphs}}",
-      "embed": "Studio'da düzenlenebilir kalsın",
-      "embedHint": "Tasarım PDF'in içinde saklanır; PDF açıldığında Studio'da düzenle seçeneği çıkar. Resimler dosyayı büyütür.",
+      "embed": "Stüdyo'da düzenlenebilir kalsın",
+      "embedHint": "Tasarım PDF'in içinde saklanır; PDF açıldığında Stüdyo'da düzenle seçeneği çıkar. Resimler dosyayı büyütür.",
       "runRows_one": "{{count}} kopya dışa aktar",
       "runRows_other": "{{count}} kopya dışa aktar",
       "useData_one": "Tablodan doldur ({{count}} satır)",
@@ -8215,7 +8215,7 @@
       "sampleFilled": "Örnek CV dolduruldu",
       "clear": "Temizle",
       "cleared": "CV temizlendi",
-      "editInStudio": "Studio'da serbest düzenle",
+      "editInStudio": "Stüdyo'da serbest düzenle",
       "export": {
         "open": "Dışa aktar",
         "title": "CV'yi dışa aktar",
