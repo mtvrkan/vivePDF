@@ -1,6 +1,6 @@
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
-import { answerDialogs, bootApp, chooseOption, copyFixture, fixtures, openTool, t, waitForDialogsAnswered, workDir } from "../support/app.ts";
+import { answerDialogs, bootApp, chooseOption, copyFixture, fixtures, openInViewer, openTool, t, waitForDialogsAnswered, workDir } from "../support/app.ts";
 
 const region = (name: string) => $(`[data-testid="home-region-${name}"]`);
 const quickTiles = () => $$(`[data-testid="home-region-main"] [data-quick-action], [data-testid="home-region-top"] [data-quick-action]`).map((tile) => tile.getAttribute("data-quick-action"));
@@ -153,5 +153,58 @@ describe("home layout", () => {
 
     await view.$(`button[aria-label="${t("home.collections.openFile", { name: "collection-report.pdf" })}"]`).click();
     await $(`//*[@role="tab"][@aria-selected="true"][.//span[@title="collection-report.pdf"]]`).waitForDisplayed({ timeout: 60000 });
+  });
+
+  it("collapses an opened collection's tab group from its name and moves the whole group like a browser", async () => {
+    const first = copyFixture(fixtures().sample, "pair-a.pdf");
+    const second = copyFixture(fixtures().sample, "pair-b.pdf");
+    await $(`//a[normalize-space(.)="${t("nav.home")}"] | //button[normalize-space(.)="${t("nav.home")}"]`).click();
+    await createCollection("Pair", [first, second]);
+    await $('[data-collection="Pair"]').$(`.//button[normalize-space(.)="${t("home.collections.open")}"]`).click();
+
+    const chip = $(`//button[@aria-expanded][starts-with(normalize-space(.), "Pair")]`);
+    const pairTab = (name: string) => $(`//*[@role="tab"][.//span[normalize-space(.)="${name}"]]`);
+    const tabNames = () => $$('[role="tab"]').map((tab) => tab.getText());
+    await chip.waitForDisplayed({ timeout: 60000 });
+    await pairTab("pair-b.pdf").waitForDisplayed({ timeout: 60000 });
+    await openInViewer(copyFixture(fixtures().sample, "loose.pdf"));
+    await pairTab("pair-b.pdf").click();
+    await expect(pairTab("pair-b.pdf")).toHaveAttribute("aria-selected", "true");
+
+    await chip.click();
+    await expect(chip).toHaveAttribute("aria-expanded", "false");
+    await expect(pairTab("loose.pdf")).toHaveAttribute("aria-selected", "true");
+    await expect(pairTab("pair-a.pdf")).not.toBeExisting();
+    await expect(pairTab("pair-b.pdf")).not.toBeExisting();
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "viewer-collection-collapsed.png"));
+
+    await chip.click();
+    await expect(chip).toHaveAttribute("aria-expanded", "true");
+    await pairTab("pair-a.pdf").waitForExist();
+    expect((await tabNames()).at(-1)).toBe("loose.pdf");
+
+    await chip.click({ button: "right" });
+    await $(`//*[@role="menuitem"][normalize-space(.)="${t("viewer.tabGroups.newDocument")}"]`).waitForDisplayed();
+    await expect($(`//*[@role="menuitem"][normalize-space(.)="${t("viewer.tabGroups.moveToWindow")}"]`)).toBeExisting();
+    await browser.keys("Escape");
+
+    await chip.click();
+    await chip.click();
+    await expect(chip).toBeFocused();
+    await browser.keys(["Control", "Shift", "ArrowRight"]);
+    await browser.waitUntil(async () => (await tabNames())[0] === "loose.pdf", { timeoutMsg: "the group did not move after the loose tab" });
+
+    const loose = pairTab("loose.pdf");
+    const { width } = await loose.getSize();
+    await browser
+      .action("pointer")
+      .move({ origin: chip })
+      .down()
+      .move({ origin: chip, x: -10, y: 0, duration: 100 })
+      .move({ origin: loose, x: -Math.floor(width / 2) + 6, y: 0, duration: 400 })
+      .up()
+      .perform();
+    await browser.waitUntil(async () => (await tabNames()).at(-1) === "loose.pdf", { timeoutMsg: "dragging the group name did not move the group back" });
+    await expect(chip).toHaveAttribute("aria-expanded", "true");
   });
 });

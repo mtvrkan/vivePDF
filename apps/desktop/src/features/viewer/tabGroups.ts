@@ -53,6 +53,13 @@ function withoutEmpty(groups: TabGroup[], memberOf: Record<string, string>): Tab
   return groups.filter((group) => live.has(group.id));
 }
 
+export function tabOutsideGroup(order: string[], memberOf: Record<string, string>, groupId: string): string | null {
+  const first = order.findIndex((id) => memberOf[id] === groupId);
+  if (first < 0) return null;
+  const after = order.slice(first).find((id) => memberOf[id] !== groupId);
+  return after ?? [...order.slice(0, first)].reverse().find((id) => memberOf[id] !== groupId) ?? null;
+}
+
 export function isGroupColor(value: unknown): value is GroupColor {
   return typeof value === "string" && (GROUP_COLORS as readonly string[]).includes(value);
 }
@@ -132,6 +139,23 @@ export function groupAfterMove(order: string[], movedId: string, memberOf: Recor
   const own = memberOf[movedId];
   if (own && (left === own || right === own)) return own;
   return null;
+}
+
+export function movedGroupOrder(order: string[], memberOf: Record<string, string>, groupId: string, targetId: string, after: boolean): string[] {
+  const members = order.filter((id) => memberOf[id] === groupId);
+  const rest = order.filter((id) => memberOf[id] !== groupId);
+  if (members.length === 0 || !rest.includes(targetId)) return order;
+  const owner = memberOf[targetId];
+  const run = owner ? rest.filter((id) => memberOf[id] === owner) : [targetId];
+  const index = after ? rest.indexOf(run[run.length - 1] ?? targetId) + 1 : rest.indexOf(run[0] ?? targetId);
+  return [...rest.slice(0, index), ...members, ...rest.slice(index)];
+}
+
+export function groupNeighbour(order: string[], memberOf: Record<string, string>, groupId: string, step: number): string | null {
+  const first = order.findIndex((id) => memberOf[id] === groupId);
+  if (first < 0) return null;
+  const last = order.length - 1 - [...order].reverse().findIndex((id) => memberOf[id] === groupId);
+  return order[step < 0 ? first - 1 : last + 1] ?? null;
 }
 
 export function savedGroups(order: string[], pathOf: (id: string) => string | undefined): SavedTabGroup[] {

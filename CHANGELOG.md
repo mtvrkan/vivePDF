@@ -12,6 +12,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Viewer tab groups work like browser tab groups: clicking a group's name now collapses it even when one of its documents is open, switching to the nearest document outside the group; the name can be dragged to move the whole group, or moved with Ctrl+Shift+Left/Right; the group menu adds Open a document in this group and Move group to new window; the group's colour line runs unbroken across its tabs, and the name keeps keyboard focus when it collapses [2026-10-06]
 - Home: Small, Medium and Large now visibly change every section — spacing grows and shrinks with the size; Recent documents become a compact list without previews when small and larger previews when large; Studio and collections fit more or fewer per row; the overview card adds Close document (Ctrl W) and Full screen (F11) shortcuts when large [2026-10-06]
 - Dark theme: filter and pill buttons such as the tool categories are calmer — a quieter background and outline, the selected one tinted in its own colour with matching text, and the counts shown dimmer next to the name [2026-10-06]
 - Studio is called by its local name where the language has one: Stüdyo in Turkish, Estudio in Spanish, Estúdio in Brazilian Portuguese and الاستوديو throughout Arabic; German, French and Italian keep Studio [2026-10-06]

@@ -1439,8 +1439,10 @@
       "close": "Fermer les documents du groupe",
       "unnamed": "Groupe",
       "name": "Nom du groupe",
-      "toggle": "Cliquez pour réduire ou développer, double-cliquez pour renommer",
-      "saveAsCollection": "Enregistrer comme collection"
+      "toggle": "Cliquez pour réduire ou développer, double-cliquez pour renommer, faites glisser pour déplacer le groupe",
+      "saveAsCollection": "Enregistrer comme collection",
+      "newDocument": "Ouvrir un document dans ce groupe",
+      "moveToWindow": "Déplacer le groupe vers une nouvelle fenêtre"
     },
     "converted": {
       "converting": "Conversion de {{name}} en PDF…",

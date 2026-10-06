@@ -1439,8 +1439,10 @@
       "close": "Close the group's documents",
       "unnamed": "Group",
       "name": "Group name",
-      "toggle": "Click to collapse or expand, double-click to rename",
-      "saveAsCollection": "Save as collection"
+      "toggle": "Click to collapse or expand, double-click to rename, drag to move the group",
+      "saveAsCollection": "Save as collection",
+      "newDocument": "Open a document in this group",
+      "moveToWindow": "Move group to new window"
     },
     "converted": {
       "converting": "Converting {{name}} to PDF…",

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { GROUP_COLORS, groupAfterMove, groupedOrder, isGroupColor, nextColor, savedGroups, useTabGroupStore } from "./tabGroups";
+import { GROUP_COLORS, groupAfterMove, groupedOrder, groupNeighbour, isGroupColor, movedGroupOrder, nextColor, savedGroups, tabOutsideGroup, useTabGroupStore } from "./tabGroups";
 
 beforeEach(() => {
   useTabGroupStore.setState({ groups: [], memberOf: {} });
@@ -75,3 +75,43 @@ describe("group colours", () => {
     expect(isGroupColor("#ff0000")).toBe(false);
   });
 });
+
+describe("tabOutsideGroup", () => {
+  it("picks the first tab after the group, then the nearest one before it", () => {
+    expect(tabOutsideGroup(["x", "a", "b", "y"], { a: "g", b: "g" }, "g")).toBe("y");
+    expect(tabOutsideGroup(["x", "w", "a", "b"], { a: "g", b: "g" }, "g")).toBe("w");
+  });
+
+  it("returns nothing when every tab is in the group or the group has no tabs", () => {
+    expect(tabOutsideGroup(["a", "b"], { a: "g", b: "g" }, "g")).toBeNull();
+    expect(tabOutsideGroup(["x"], {}, "g")).toBeNull();
+  });
+});
+
+describe("movedGroupOrder", () => {
+  const memberOf = { a: "g", b: "g", c: "h", d: "h" };
+
+  it("moves every member of a group before or after a loose tab", () => {
+    expect(movedGroupOrder(["a", "b", "x", "y"], memberOf, "g", "y", true)).toEqual(["x", "y", "a", "b"]);
+    expect(movedGroupOrder(["x", "y", "a", "b"], memberOf, "g", "y", false)).toEqual(["x", "a", "b", "y"]);
+  });
+
+  it("never splits another group and leaves the order alone for its own tabs or unknown ones", () => {
+    expect(movedGroupOrder(["a", "b", "c", "d"], memberOf, "g", "c", false)).toEqual(["a", "b", "c", "d"]);
+    expect(movedGroupOrder(["a", "b", "c", "d"], memberOf, "g", "c", true)).toEqual(["c", "d", "a", "b"]);
+    expect(movedGroupOrder(["c", "d", "a", "b"], memberOf, "g", "d", false)).toEqual(["a", "b", "c", "d"]);
+    const order = ["a", "b", "x"];
+    expect(movedGroupOrder(order, memberOf, "g", "b", true)).toBe(order);
+    expect(movedGroupOrder(order, memberOf, "g", "missing", true)).toBe(order);
+  });
+});
+
+describe("groupNeighbour", () => {
+  it("finds the tab just before or after the whole group", () => {
+    expect(groupNeighbour(["x", "a", "b", "y"], { a: "g", b: "g" }, "g", -1)).toBe("x");
+    expect(groupNeighbour(["x", "a", "b", "y"], { a: "g", b: "g" }, "g", 1)).toBe("y");
+    expect(groupNeighbour(["a", "b"], { a: "g", b: "g" }, "g", 1)).toBeNull();
+    expect(groupNeighbour(["x"], {}, "g", 1)).toBeNull();
+  });
+});
+

@@ -1439,8 +1439,10 @@
       "close": "Dokumente der Gruppe schließen",
       "unnamed": "Gruppe",
       "name": "Gruppenname",
-      "toggle": "Klicken zum Ein- oder Ausklappen, Doppelklick zum Umbenennen",
-      "saveAsCollection": "Als Sammlung speichern"
+      "toggle": "Klicken zum Ein- oder Ausklappen, Doppelklick zum Umbenennen, Ziehen zum Verschieben der Gruppe",
+      "saveAsCollection": "Als Sammlung speichern",
+      "newDocument": "Dokument in dieser Gruppe öffnen",
+      "moveToWindow": "Gruppe in neues Fenster verschieben"
     },
     "converted": {
       "converting": "{{name}} wird in PDF umgewandelt…",

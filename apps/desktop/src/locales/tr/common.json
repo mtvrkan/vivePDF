@@ -1439,8 +1439,10 @@
       "close": "Gruptaki belgeleri kapat",
       "unnamed": "Grup",
       "name": "Grup adı",
-      "toggle": "Daraltmak ya da genişletmek için tıklayın, adlandırmak için çift tıklayın",
-      "saveAsCollection": "Koleksiyon olarak kaydet"
+      "toggle": "Daraltmak ya da genişletmek için tıklayın, adlandırmak için çift tıklayın, grubu taşımak için sürükleyin",
+      "saveAsCollection": "Koleksiyon olarak kaydet",
+      "newDocument": "Bu grupta belge aç",
+      "moveToWindow": "Grubu yeni pencereye taşı"
     },
     "converted": {
       "converting": "{{name}} PDF'e dönüştürülüyor…",

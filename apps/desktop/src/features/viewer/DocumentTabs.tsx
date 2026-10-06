@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useActiveDocument, useOpenDocuments } from "@embedpdf/plugin-document-manager/react";
@@ -21,7 +21,9 @@ import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { isPendingChange } from "./overlay/pending";
 import { useCollectionsStore } from "@/features/home/collectionsStore";
 import { sessionPathOf } from "./convertedDocuments";
-import { GROUP_COLORS, GROUP_TONES, groupAfterMove, groupedOrder, useTabGroupStore } from "./tabGroups";
+import { GROUP_COLORS, GROUP_TONES, groupAfterMove, groupNeighbour, groupedOrder, movedGroupOrder, tabOutsideGroup, useTabGroupStore, type TabGroup } from "./tabGroups";
+
+type GroupDrag = { groupId: string; startX: number; moved: boolean; targetId: string | null; after: boolean; markX: number };
 
 export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void) => void } = {}) {
   const { t } = useTranslation();
@@ -34,6 +36,8 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
   const groupMenu = useContextMenu();
   const [menuGroupId, setMenuGroupId] = useState<string | null>(null);
   const [renamingGroupId, setRenamingGroupId] = useState<string | null>(null);
+  const [groupDrag, setGroupDrag] = useState<GroupDrag | null>(null);
+  const skipChipClick = useRef(false);
   const { activeDocumentId } = useActiveDocument();
   const { activate, closeDocument, pickAndOpen, openPath } = useOpenPdf();
   const { closeDocuments, hasUnsavedWork } = useCloseDocuments();
@@ -85,10 +89,80 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
     for (const id of Object.keys(memberOf)) if (!registered[id]) useTabGroupStore.getState().forget(id);
   }, [memberOf, registered]);
 
-  const activeGroup = activeDocumentId ? groups.find((group) => group.id === memberOf[activeDocumentId]) : undefined;
   useEffect(() => {
-    if (activeGroup?.collapsed) useTabGroupStore.getState().setCollapsed(activeGroup.id, false);
-  }, [activeGroup]);
+    if (!activeDocumentId) return;
+    const tabGroups = useTabGroupStore.getState();
+    const group = tabGroups.groups.find((entry) => entry.id === tabGroups.memberOf[activeDocumentId]);
+    if (group?.collapsed) tabGroups.setCollapsed(group.id, false);
+  }, [activeDocumentId]);
+
+  const moveGroup = (groupId: string, targetId: string, after: boolean) => {
+    const store = useDocumentStore.getState();
+    useDocumentStore.setState({ order: movedGroupOrder(store.order, useTabGroupStore.getState().memberOf, groupId, targetId, after) });
+  };
+  const moveGroupBy = (groupId: string, step: number) => {
+    const { order } = useDocumentStore.getState();
+    const visible = new Set(documents.map((doc) => doc.id));
+    const neighbour = groupNeighbour(order.filter((id) => visible.has(id)), memberOf, groupId, step);
+    if (neighbour) moveGroup(groupId, neighbour, step > 0);
+  };
+  const openInGroup = async (group: TabGroup) => {
+    const before = new Set(useDocumentStore.getState().order);
+    await pickAndOpen();
+    const added = useDocumentStore.getState().order.filter((id) => !before.has(id));
+    if (added.length === 0) return;
+    const tabGroups = useTabGroupStore.getState();
+    for (const id of added) tabGroups.join(id, group.id);
+    tabGroups.setCollapsed(group.id, false);
+    regroup();
+  };
+  const moveGroupToWindow = async (members: string[]) => {
+    const blocked = members.find((id) => hasUnsavedWork(id) || (hasPending && id === activeDocumentId));
+    if (blocked) {
+      toast("info", t("viewer.window.saveFirst", { name: registered[blocked]?.fileName ?? "" }));
+      return;
+    }
+    const paths = members.map((id) => registered[id]?.path).filter((path): path is string => !!path);
+    if (await openWindow(paths)) for (const id of members) closeDocument(id);
+  };
+  const groupDragHandlers = (group: TabGroup) => ({
+    onPointerDown: (event: ReactPointerEvent<HTMLButtonElement>) => {
+      if (event.button !== 0) return;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      setGroupDrag({ groupId: group.id, startX: event.clientX, moved: false, targetId: null, after: false, markX: 0 });
+    },
+    onPointerMove: (event: ReactPointerEvent<HTMLButtonElement>) => {
+      if (!groupDrag || groupDrag.groupId !== group.id) return;
+      if (!groupDrag.moved && Math.abs(event.clientX - groupDrag.startX) < 5) return;
+      const strip = stripRef.current;
+      const over = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-tab-id]");
+      if (!strip || !over || !strip.contains(over) || memberOf[over.dataset.tabId ?? ""] === group.id) {
+        setGroupDrag({ ...groupDrag, moved: true, targetId: null });
+        return;
+      }
+      const rect = over.getBoundingClientRect();
+      const rtl = getComputedStyle(strip).direction === "rtl";
+      const after = rtl ? event.clientX < rect.left + rect.width / 2 : event.clientX > rect.left + rect.width / 2;
+      const edge = after !== rtl ? rect.right : rect.left;
+      setGroupDrag({ ...groupDrag, moved: true, targetId: over.dataset.tabId ?? null, after, markX: edge - strip.getBoundingClientRect().left });
+    },
+    onPointerUp: () => {
+      if (!groupDrag) return;
+      if (groupDrag.moved) {
+        skipChipClick.current = true;
+        if (groupDrag.targetId) moveGroup(group.id, groupDrag.targetId, groupDrag.after);
+      }
+      setGroupDrag(null);
+    },
+    onPointerCancel: () => setGroupDrag(null),
+  });
+
+  const toggleGroup = (group: TabGroup) => {
+    useTabGroupStore.getState().setCollapsed(group.id, !group.collapsed);
+    if (group.collapsed || !activeDocumentId || memberOf[activeDocumentId] !== group.id) return;
+    const outside = tabOutsideGroup(documents.map((doc) => doc.id), memberOf, group.id);
+    if (outside) guardedActivate(outside);
+  };
 
   const chipped = new Set<string>();
   const tearOff = useTabTearOff((id) => void moveToWindow(id), { strip: () => stripRef.current, onReorder: reorderTo });
@@ -121,6 +195,9 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
   return (
     <div className="flex h-9 items-stretch overflow-x-auto glass-flat border-b">
       <div ref={stripRef} role="tablist" aria-label={t("viewer.tabs")} className="relative flex items-stretch">
+      {groupDrag?.targetId ? (
+        <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: groupDrag.markX }} />
+      ) : null}
       {tearOff.dropMark ? (
         <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: tearOff.dropMark.x }} />
       ) : null}
@@ -157,15 +234,35 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               <button
                 key={`chip-${group.id}`}
                 type="button"
+                data-tab-id={doc.id}
                 aria-expanded={!group.collapsed}
+                aria-keyshortcuts="Control+Shift+ArrowLeft Control+Shift+ArrowRight"
                 title={t("viewer.tabGroups.toggle")}
-                onClick={() => useTabGroupStore.getState().setCollapsed(group.id, !group.collapsed)}
+                {...groupDragHandlers(group)}
+                onClick={() => {
+                  if (skipChipClick.current) {
+                    skipChipClick.current = false;
+                    return;
+                  }
+                  toggleGroup(group);
+                }}
+                onKeyDown={(event) => {
+                  if (!event.ctrlKey || !event.shiftKey || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+                  event.preventDefault();
+                  const forward = event.key === "ArrowRight" !== (getComputedStyle(event.currentTarget).direction === "rtl");
+                  moveGroupBy(group.id, forward ? 1 : -1);
+                  const chipButton = event.currentTarget;
+                  requestAnimationFrame(() => chipButton.focus());
+                }}
                 onDoubleClick={() => setRenamingGroupId(group.id)}
                 onContextMenu={(event) => {
                   setMenuGroupId(group.id);
                   groupMenu.open(event);
                 }}
-                className="my-1.5 ms-1 flex max-w-36 items-center gap-1.5 rounded-md px-2 text-xs font-semibold text-background outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className={cn(
+                  "my-1.5 ms-1 flex max-w-36 touch-none select-none items-center gap-1.5 rounded-md px-2 text-xs font-semibold text-background outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  groupDrag?.groupId === group.id && groupDrag.moved && "cursor-grabbing opacity-70",
+                )}
                 style={{ backgroundColor: tone }}
               >
                 <span className="truncate">{group.name || t("viewer.tabGroups.unnamed")}</span>
@@ -173,12 +270,13 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               </button>
             )
           ) : null;
-        if (group?.collapsed && !active) return chip;
+        if (group?.collapsed && !active) return <Fragment key={doc.id}>{chip}</Fragment>;
         return (
           <Fragment key={doc.id}>
           {chip}
           <div
             role="tab"
+            data-tab-id={doc.id}
             aria-selected={active}
             tabIndex={active ? 0 : -1}
             aria-keyshortcuts="Delete Control+Shift+ArrowLeft Control+Shift+ArrowRight"
@@ -238,10 +336,10 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               active
                 ? "border-b-primary bg-primary/8 font-medium text-foreground"
                 : "border-b-transparent text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
-              tearOff.draggingId === doc.id && "cursor-grabbing opacity-60",
+              (tearOff.draggingId === doc.id || (group && groupDrag?.groupId === group.id && groupDrag.moved)) && "cursor-grabbing opacity-60",
             )}
           >
-            {tone ? <span aria-hidden className="pointer-events-none absolute inset-x-1 top-0 h-0.5 rounded-b-full" style={{ backgroundColor: tone }} /> : null}
+            {tone ? <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-0.5" style={{ backgroundColor: tone }} /> : null}
             <span className="min-w-0 flex-1 truncate" title={label}>
               {label}
             </span>
@@ -334,7 +432,10 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                 label: t("viewer.tabGroups.color"),
                 items: GROUP_COLORS.map((color) => ({ type: "item" as const, id: `color-${color}`, label: t(`viewer.tabGroups.colors.${color}`), swatch: GROUP_TONES[color], checked: group.color === color, onSelect: () => store.recolor(group.id, color) })),
               },
-              { type: "item", id: "collapse", label: t(group.collapsed ? "viewer.tabGroups.expand" : "viewer.tabGroups.collapse"), onSelect: () => store.setCollapsed(group.id, !group.collapsed) },
+              { type: "item", id: "collapse", label: t(group.collapsed ? "viewer.tabGroups.expand" : "viewer.tabGroups.collapse"), onSelect: () => toggleGroup(group) },
+              { type: "separator", id: "sep-group-docs" },
+              { type: "item", id: "new-document", label: t("viewer.tabGroups.newDocument"), onSelect: () => void openInGroup(group) },
+              { type: "item", id: "move-to-window", label: t("viewer.tabGroups.moveToWindow"), onSelect: () => void moveGroupToWindow(members) },
               { type: "separator", id: "sep-group-end" },
               {
                 type: "item",
