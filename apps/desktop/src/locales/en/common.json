@@ -138,6 +138,11 @@
       "activeOf": "{{active}} / {{total}} active"
     },
     "recentCleared": "Recent documents list cleared.",
+    "studio": {
+      "title": "Studio",
+      "open": "Open Studio",
+      "empty": "Designs and documents you save in Studio appear here."
+    },
     "collections": {
       "title": "Collections",
       "new": "New collection",

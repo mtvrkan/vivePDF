@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Home: a Studio section lists the designs and documents you saved in Studio and opens one with a click, with buttons to open Studio and the CV builder; like every home section it can be moved, resized or hidden [2026-10-06]
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed

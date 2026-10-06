@@ -1,6 +1,6 @@
 import { homeQuickActionIds } from "@/app/navigation";
 
-export const HOME_SECTION_IDS = ["hero", "quickActions", "recent", "collections", "tools", "continue", "history", "stats"] as const;
+export const HOME_SECTION_IDS = ["hero", "quickActions", "recent", "studio", "collections", "tools", "continue", "history", "stats"] as const;
 export type HomeSectionId = (typeof HOME_SECTION_IDS)[number];
 export const HOME_REGIONS = ["top", "main", "side", "bottom"] as const;
 export type HomeRegion = (typeof HOME_REGIONS)[number];
@@ -26,6 +26,7 @@ export function defaultHomeLayout(): HomeLayout {
       { id: "hero", region: "main", size: "medium", hidden: false },
       { id: "quickActions", region: "main", size: "medium", hidden: false },
       { id: "recent", region: "main", size: "medium", hidden: false },
+      { id: "studio", region: "main", size: "medium", hidden: false },
       { id: "collections", region: "main", size: "medium", hidden: false },
       { id: "tools", region: "main", size: "medium", hidden: false },
       { id: "continue", region: "side", size: "medium", hidden: false },

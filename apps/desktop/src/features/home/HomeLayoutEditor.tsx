@@ -27,6 +27,7 @@ export const SECTION_TITLE_KEYS = {
   hero: "home.layout.sections.hero",
   quickActions: "home.quickActions",
   recent: "home.recent",
+  studio: "home.studio.title",
   collections: "home.collections.title",
   tools: "home.catalog.title",
   continue: "home.lastSession",

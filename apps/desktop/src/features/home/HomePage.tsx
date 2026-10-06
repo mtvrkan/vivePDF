@@ -13,6 +13,7 @@ import { useHomeLayoutStore } from "./homeLayoutStore";
 import { QuickActions } from "./QuickActions";
 import { RecentDocuments } from "./RecentDocuments";
 import { StatsCard } from "./StatsCard";
+import { StudioSection } from "./StudioSection";
 import { ToolCatalogue } from "./ToolCatalogue";
 
 const SIDEBAR_COLUMNS: Record<SidebarWidth, string> = { narrow: "16rem", normal: "20rem", wide: "26rem" };
@@ -27,6 +28,7 @@ function SectionContent({ id, size, editing }: { id: HomeSectionId; size: HomeSi
   if (id === "hero") return <HeroSection size={size} />;
   if (id === "quickActions") return <QuickActions size={size} editing={editing} />;
   if (id === "recent") return <RecentDocuments size={size} />;
+  if (id === "studio") return <StudioSection size={size} />;
   if (id === "collections") return <CollectionsSection size={size} />;
   if (id === "tools") return <ToolCatalogue size={size} />;
   if (id === "continue") return <ContinueStrip size={size} />;

@@ -74,4 +74,23 @@ describe("home layout", () => {
     await finishEditing();
     expect(await quickTiles()).toContain("merge");
   });
+
+  it("drags a quick access tile onto another one and shows Studio on the home page", async () => {
+    await expect($('[data-testid="home-studio"]')).toBeDisplayed();
+    await startEditing();
+    const merge = $(`[data-testid="home-region-main"] [data-quick-action="merge"] > div`);
+    const compress = $(`[data-testid="home-region-main"] [data-quick-action="compress"] > div`);
+    await merge.scrollIntoView({ block: "center" });
+    await browser
+      .action("pointer")
+      .move({ origin: merge })
+      .down()
+      .move({ origin: merge, x: 10, y: 0, duration: 100 })
+      .move({ origin: compress, duration: 400 })
+      .up()
+      .perform();
+    await finishEditing();
+
+    expect((await quickTiles()).slice(0, 3)).toEqual(["split", "compress", "merge"]);
+  });
 });

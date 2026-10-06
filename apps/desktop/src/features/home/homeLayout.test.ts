@@ -35,7 +35,7 @@ describe("normalizeHomeLayout", () => {
       { id: "stats", region: "top", size: "large", hidden: false },
       { id: "hero", region: "bottom", size: "small", hidden: true },
     ]);
-    expect(layout.sections).toHaveLength(8);
+    expect(layout.sections).toHaveLength(9);
     expect(layout.sidebar).toEqual({ side: "start", width: "wide" });
     expect(layout.quickActions).toEqual(["ocr", "sign"]);
   });
@@ -61,7 +61,7 @@ describe("moveSection", () => {
   it("moves a section into another region at the given position", () => {
     const layout = moveSection(defaultHomeLayout(), "stats", "main", 1);
 
-    expect(ids(layout, "main")).toEqual(["hero", "stats", "quickActions", "recent", "collections", "tools"]);
+    expect(ids(layout, "main")).toEqual(["hero", "stats", "quickActions", "recent", "studio", "collections", "tools"]);
     expect(ids(layout, "side")).toEqual(["continue", "history"]);
   });
 
@@ -86,7 +86,7 @@ describe("shiftSection", () => {
   it("swaps a section with its visible neighbour in the same region only", () => {
     const layout = shiftSection(defaultHomeLayout(), "recent", -1);
 
-    expect(ids(layout, "main")).toEqual(["hero", "recent", "quickActions", "collections", "tools"]);
+    expect(ids(layout, "main")).toEqual(["hero", "recent", "quickActions", "studio", "collections", "tools"]);
     expect(ids(shiftSection(layout, "tools", 1), "main")).toEqual(ids(layout, "main"));
     expect(ids(shiftSection(defaultHomeLayout(), "history", 1), "side")).toEqual(["continue", "stats", "history"]);
   });

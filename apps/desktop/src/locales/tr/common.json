@@ -138,6 +138,11 @@
       "activeOf": "{{active}} / {{total}} etkin"
     },
     "recentCleared": "Son belgeler listesi temizlendi.",
+    "studio": {
+      "title": "Studio",
+      "open": "Studio'yu aç",
+      "empty": "Studio'da kaydettiğiniz tasarımlar ve belgeler burada görünür."
+    },
     "collections": {
       "title": "Koleksiyonlar",
       "new": "Yeni koleksiyon",

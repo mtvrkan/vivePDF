@@ -1,7 +1,7 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { FolderOpen, IdCard, Palette, Play, RotateCw, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useSearchParams } from "react-router";
+import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
 import { PageHeader } from "@/components/shared/PageHeader";
@@ -14,7 +14,7 @@ import { NumberField } from "./design/controls";
 import { DesignLauncher } from "./design/DesignLauncher";
 import { MissingFontsBar } from "./design/MissingFontsBar";
 import { pickDesignFile } from "./design/projectFile";
-import { useRecentDesignsStore, type RecentDesign } from "./design/recentDesigns";
+import { useRecentDesignsStore, type RecentDesign, type StudioRouteState } from "./design/recentDesigns";
 import { useDesignSave } from "./design/useDesignSave";
 import { useOpenDesign } from "./design/useOpenDesign";
 import { fromMm, toMm } from "./design/units";
@@ -273,7 +273,19 @@ export function StudioPage() {
   const locale = useUiStore((state) => state.locale);
   const cvActive = useCvStore((state) => state.active);
   const [params, setParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { openDesign } = useOpenDesign();
+  const handledLocation = useRef<string | null>(null);
   const editing = design !== null;
+  useEffect(() => {
+    const designPath = (location.state as Partial<StudioRouteState> | null)?.designPath;
+    if (typeof designPath !== "string" || handledLocation.current === location.key) return;
+    handledLocation.current = location.key;
+    void navigate(`${location.pathname}${location.search}`, { replace: true, state: null });
+    useCvStore.getState().close();
+    void openDesign(designPath);
+  }, [location, navigate, openDesign]);
   useEffect(() => {
     if (!editing) useMergeStore.getState().clear();
   }, [editing]);

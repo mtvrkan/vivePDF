@@ -5,6 +5,7 @@ export const RECENT_DESIGNS_KEY = "vivepdf.studioRecent";
 export const MAX_RECENT_DESIGNS = 12;
 
 export type RecentDesign = { path: string; name: string; savedAt: number; width: number; height: number; thumbnail: string };
+export type StudioRouteState = { designPath: string };
 
 type RecentDesignsState = {
   items: RecentDesign[];
