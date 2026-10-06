@@ -130,6 +130,15 @@ export function shiftQuickAction(layout: HomeLayout, toolId: string, delta: numb
   return { ...layout, quickActions: next };
 }
 
+export function moveQuickAction(layout: HomeLayout, toolId: string, index: number): HomeLayout {
+  const from = layout.quickActions.indexOf(toolId);
+  if (from < 0) return layout;
+  const rest = layout.quickActions.filter((id) => id !== toolId);
+  const target = Math.max(0, Math.min(rest.length, index));
+  if (target === from) return layout;
+  return { ...layout, quickActions: [...rest.slice(0, target), toolId, ...rest.slice(target)] };
+}
+
 export function dropIndex(midpoints: number[], pointer: number): number {
   const after = midpoints.findIndex((middle) => pointer < middle);
   return after < 0 ? midpoints.length : after;

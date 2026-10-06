@@ -7,6 +7,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Home: while the home page is being edited, quick access tools can be dragged by their tile into a new order; the tiles make room as you drag and the arrow buttons still do the same from the keyboard [2026-10-06]
 - Merge: a file already in the list is never added twice, whether it comes from the picker, a folder, a drop or the command line, and a short notice says how many were skipped [2026-10-04]
 - Page organizer: a click on a page opens its preview, Ctrl+click and Shift+click select, the corner checkbox is always shown, and the preview has Select this page (Enter), Shift+arrows to extend the selection and an Open in viewer button; double-click no longer opens the viewer [2026-10-04]
 - Viewer: the read-only pane of the split window has a right-click menu too — copy (also as a quotation, Markdown or code), search, translate, read aloud, pictures, go to page, page link, print and page export; changes such as bookmarks stay in the main pane [2026-10-06]

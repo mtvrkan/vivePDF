@@ -168,7 +168,7 @@
     "layout": {
       "edit": "Ana sayfayı düzenle",
       "editing": "Ana sayfa düzenleniyor",
-      "editingHint": "Bölümleri tutamağından sürükleyin ya da düğmeleri kullanın; değişiklikler anında kaydedilir.",
+      "editingHint": "Bölümleri tutamağından, hızlı erişim araçlarını kutucuğundan sürükleyin ya da düğmeleri kullanın; değişiklikler anında kaydedilir.",
       "reset": "Varsayılana dön",
       "resetDone": "Ana sayfa varsayılana döndü.",
       "done": "Bitti",
@@ -215,7 +215,8 @@
         "add": "Araç ekle",
         "empty": "Hızlı erişimde araç yok. Eklemek için ana sayfayı düzenleyin.",
         "pickTitle": "Hızlı erişime araç ekle",
-        "pickHint": "{{count}} / {{max}} araç. Eklemek için bir araca tıklayın."
+        "pickHint": "{{count}} / {{max}} araç. Eklemek için bir araca tıklayın.",
+        "dragHint": "Sırayı değiştirmek için sürükleyin; ok düğmeleri aynı işi klavyeden yapar."
       }
     }
   },

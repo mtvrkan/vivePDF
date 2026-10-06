@@ -168,7 +168,7 @@
     "layout": {
       "edit": "Customize home",
       "editing": "Customizing the home page",
-      "editingHint": "Drag sections by their handle or use the buttons; changes are saved right away.",
+      "editingHint": "Drag sections by their handle and quick access tools by their tile, or use the buttons; changes are saved right away.",
       "reset": "Reset to default",
       "resetDone": "The home page was reset.",
       "done": "Done",
@@ -215,7 +215,8 @@
         "add": "Add tool",
         "empty": "No tools in quick access. Customize home to add some.",
         "pickTitle": "Add tools to quick access",
-        "pickHint": "{{count}} of {{max}} tools. Click a tool to add it."
+        "pickHint": "{{count}} of {{max}} tools. Click a tool to add it.",
+        "dragHint": "Drag to change the order; the arrow buttons do the same from the keyboard."
       }
     }
   },

@@ -4,6 +4,7 @@ import {
   defaultHomeLayout,
   dropIndex,
   hiddenSections,
+  moveQuickAction,
   moveSection,
   normalizeHomeLayout,
   sectionsIn,
@@ -105,6 +106,29 @@ describe("quick actions", () => {
     const full = { ...defaultHomeLayout(), quickActions: Array.from({ length: MAX_QUICK_ACTIONS }, (_, index) => `tool-${index}`) };
 
     expect(withQuickAction(full, "ocr")).toBe(full);
+  });
+});
+
+describe("moveQuickAction", () => {
+  it("puts the tool at the given place and shifts the others", () => {
+    const layout = defaultHomeLayout();
+
+    expect(moveQuickAction(layout, "merge", 3).quickActions).toEqual(["split", "compress", "images-to-pdf", "merge", "docx", "pages"]);
+    expect(moveQuickAction(layout, "pages", 0).quickActions).toEqual(["pages", "merge", "split", "compress", "images-to-pdf", "docx"]);
+  });
+
+  it("clamps the place to the ends of the list", () => {
+    const layout = defaultHomeLayout();
+
+    expect(moveQuickAction(layout, "split", 99).quickActions.at(-1)).toBe("split");
+    expect(moveQuickAction(layout, "split", -4).quickActions[0]).toBe("split");
+  });
+
+  it("leaves the layout alone for an unknown tool or the same place", () => {
+    const layout = defaultHomeLayout();
+
+    expect(moveQuickAction(layout, "ocr", 0)).toBe(layout);
+    expect(moveQuickAction(layout, "compress", 2)).toBe(layout);
   });
 });
 

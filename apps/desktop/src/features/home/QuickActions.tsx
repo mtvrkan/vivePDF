@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Link } from "react-router";
 import { ArrowLeft, ArrowRight, Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -6,7 +6,7 @@ import { toolShortcuts, type ToolShortcut } from "@/app/navigation";
 import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
-import { MAX_QUICK_ACTIONS, shiftQuickAction, withQuickAction, withoutQuickAction, type HomeSize } from "./homeLayout";
+import { MAX_QUICK_ACTIONS, moveQuickAction, shiftQuickAction, withQuickAction, withoutQuickAction, type HomeSize } from "./homeLayout";
 import { useHomeLayoutStore } from "./homeLayoutStore";
 import { ToolBrowser } from "./ToolBrowser";
 
@@ -22,16 +22,41 @@ const LABEL: Record<HomeSize, string> = { small: "text-xs", medium: "text-sm", l
 
 export function QuickActions({ size = "medium", editing = false }: { size?: HomeSize; editing?: boolean }) {
   const { t } = useTranslation();
-  const ids = useHomeLayoutStore((state) => state.layout.quickActions);
+  const layout = useHomeLayoutStore((state) => state.layout);
+  const ids = layout.quickActions;
   const change = useHomeLayoutStore((state) => state.change);
   const [picking, setPicking] = useState(false);
-  const actions = ids.map((id) => toolShortcuts.find((tool) => tool.id === id)).filter((tool): tool is ToolShortcut => tool !== undefined);
+  const [drag, setDrag] = useState<{ id: string; index: number } | null>(null);
+  const listRef = useRef<HTMLUListElement>(null);
+  const shown = drag ? moveQuickAction(layout, drag.id, drag.index).quickActions : ids;
+  const actions = shown.map((id) => toolShortcuts.find((tool) => tool.id === id)).filter((tool): tool is ToolShortcut => tool !== undefined);
   const tileClass = cn("glass group flex flex-col items-center justify-center rounded-2xl px-3 text-center outline-none", TILE[size]);
+
+  const startDrag = (id: string, event: ReactPointerEvent<HTMLLIElement>) => {
+    if (event.button !== 0 || (event.target as HTMLElement).closest("button")) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    setDrag({ id, index: ids.indexOf(id) });
+  };
+
+  const moveDrag = (event: ReactPointerEvent<HTMLLIElement>) => {
+    if (!drag) return;
+    const over = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-quick-action]");
+    if (!over || !listRef.current?.contains(over)) return;
+    const index = shown.indexOf(over.dataset.quickAction ?? "");
+    if (index >= 0 && index !== drag.index) setDrag({ ...drag, index });
+  };
+
+  const endDrag = () => {
+    if (!drag) return;
+    const { id, index } = drag;
+    change((current) => moveQuickAction(current, id, index));
+    setDrag(null);
+  };
 
   return (
     <section className="@container">
       <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.quickActions")}</p>
-      <ul className={cn("grid gap-3", GRID[size])}>
+      <ul ref={listRef} className={cn("grid gap-3", GRID[size])}>
         {actions.map((tool, index) => {
           const Icon = tool.icon;
           const body = (
@@ -43,10 +68,22 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
             </>
           );
           return (
-            <li key={tool.id} className="relative" data-quick-action={tool.id}>
+            <li
+              key={tool.id}
+              className={cn("relative", drag?.id === tool.id && "opacity-60")}
+              data-quick-action={tool.id}
+              onPointerDown={editing ? (event) => startDrag(tool.id, event) : undefined}
+              onPointerMove={editing ? moveDrag : undefined}
+              onPointerUp={editing ? endDrag : undefined}
+              onPointerCancel={editing ? () => setDrag(null) : undefined}
+            >
               {editing ? (
                 <>
-                  <div data-tone={tool.group} className={cn(tileClass, "border border-dashed border-(--glass-border)")}>
+                  <div
+                    data-tone={tool.group}
+                    title={t("home.layout.quick.dragHint")}
+                    className={cn(tileClass, "cursor-grab touch-none select-none border border-dashed border-(--glass-border)", drag?.id === tool.id && "cursor-grabbing ring-2 ring-primary")}
+                  >
                     {body}
                   </div>
                   <span className="absolute inset-x-1 top-1 flex justify-between">
