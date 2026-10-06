@@ -138,6 +138,11 @@
       "activeOf": "{{active}} / {{total}} attive"
     },
     "recentCleared": "Elenco dei documenti recenti cancellato.",
+    "studio": {
+      "title": "Studio",
+      "open": "Apri Studio",
+      "empty": "Qui compaiono i progetti e i documenti che salvi in Studio."
+    },
     "collections": {
       "title": "Raccolte",
       "new": "Nuova raccolta",
@@ -168,7 +173,7 @@
     "layout": {
       "edit": "Personalizza home",
       "editing": "Personalizzazione della home",
-      "editingHint": "Trascina le sezioni dalla maniglia o usa i pulsanti; le modifiche vengono salvate subito.",
+      "editingHint": "Trascina le sezioni dalla maniglia e gli strumenti di accesso rapido dal loro riquadro, oppure usa i pulsanti; le sezioni nascoste restano al loro posto. Le modifiche vengono salvate subito.",
       "reset": "Ripristina predefinito",
       "resetDone": "La home è stata ripristinata.",
       "done": "Fine",
@@ -183,7 +188,7 @@
         "normal": "Normale",
         "wide": "Larga"
       },
-      "hiddenTray": "Nascoste:",
+      "hiddenLabel": "Nascosta",
       "sections": {
         "hero": "Benvenuto"
       },
@@ -205,6 +210,8 @@
       "moveUp": "Sposta su {{name}}",
       "moveDown": "Sposta giù {{name}}",
       "hide": "Nascondi {{name}}",
+      "show": "Mostra {{name}}",
+      "showShort": "Mostra",
       "emptySection": "Al momento non c'è nulla da mostrare qui",
       "dropHere": "Rilascia qui una sezione",
       "quick": {
@@ -215,7 +222,8 @@
         "add": "Aggiungi strumento",
         "empty": "Nessuno strumento nell'accesso rapido. Personalizza la home per aggiungerne.",
         "pickTitle": "Aggiungi strumenti all'accesso rapido",
-        "pickHint": "{{count}} di {{max}} strumenti. Fai clic su uno strumento per aggiungerlo."
+        "pickHint": "{{count}} di {{max}} strumenti. Fai clic su uno strumento per aggiungerlo.",
+        "dragHint": "Trascina per cambiare l’ordine; i pulsanti freccia fanno lo stesso da tastiera."
       }
     }
   },

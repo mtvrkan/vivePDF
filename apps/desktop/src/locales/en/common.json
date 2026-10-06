@@ -173,7 +173,7 @@
     "layout": {
       "edit": "Customize home",
       "editing": "Customizing the home page",
-      "editingHint": "Drag sections by their handle and quick access tools by their tile, or use the buttons; changes are saved right away.",
+      "editingHint": "Drag sections by their handle and quick access tools by their tile, or use the buttons; hidden sections keep their place. Changes are saved right away.",
       "reset": "Reset to default",
       "resetDone": "The home page was reset.",
       "done": "Done",
@@ -188,7 +188,7 @@
         "normal": "Normal",
         "wide": "Wide"
       },
-      "hiddenTray": "Hidden:",
+      "hiddenLabel": "Hidden",
       "sections": {
         "hero": "Welcome"
       },
@@ -210,6 +210,8 @@
       "moveUp": "Move {{name}} up",
       "moveDown": "Move {{name}} down",
       "hide": "Hide {{name}}",
+      "show": "Show {{name}}",
+      "showShort": "Show",
       "emptySection": "Nothing to show here right now",
       "dropHere": "Drop a section here",
       "quick": {

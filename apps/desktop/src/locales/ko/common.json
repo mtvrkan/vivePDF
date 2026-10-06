@@ -138,6 +138,11 @@
       "activeOf": "{{active}} / {{total}} 활성"
     },
     "recentCleared": "최근 문서 목록을 지웠습니다.",
+    "studio": {
+      "title": "스튜디오",
+      "open": "스튜디오 열기",
+      "empty": "스튜디오에서 저장한 디자인과 문서가 여기에 표시됩니다."
+    },
     "collections": {
       "title": "컬렉션",
       "new": "새 컬렉션",
@@ -168,7 +173,7 @@
     "layout": {
       "edit": "홈 사용자 지정",
       "editing": "홈 화면 사용자 지정 중",
-      "editingHint": "섹션을 손잡이로 끌거나 버튼을 사용하세요. 변경 사항은 바로 저장됩니다.",
+      "editingHint": "섹션은 손잡이를, 빠른 실행 도구는 타일을 끌거나 버튼을 사용하세요. 숨긴 섹션은 제자리에 남습니다. 변경 사항은 바로 저장됩니다.",
       "reset": "기본값으로 재설정",
       "resetDone": "홈 화면을 기본값으로 재설정했습니다.",
       "done": "완료",
@@ -183,7 +188,7 @@
         "normal": "보통",
         "wide": "넓게"
       },
-      "hiddenTray": "숨김:",
+      "hiddenLabel": "숨김",
       "sections": {
         "hero": "환영"
       },
@@ -205,6 +210,8 @@
       "moveUp": "{{name}} 위로",
       "moveDown": "{{name}} 아래로",
       "hide": "{{name}} 숨기기",
+      "show": "{{name}} 표시",
+      "showShort": "표시",
       "emptySection": "지금은 표시할 내용이 없습니다",
       "dropHere": "여기에 섹션을 놓으세요",
       "quick": {
@@ -215,7 +222,8 @@
         "add": "도구 추가",
         "empty": "빠른 실행에 도구가 없습니다. 홈을 사용자 지정해 추가하세요.",
         "pickTitle": "빠른 실행에 도구 추가",
-        "pickHint": "{{max}}개 중 {{count}}개. 도구를 클릭해 추가하세요."
+        "pickHint": "{{max}}개 중 {{count}}개. 도구를 클릭해 추가하세요.",
+        "dragHint": "끌어서 순서를 바꿉니다. 화살표 버튼으로도 키보드에서 같은 작업을 할 수 있습니다."
       }
     }
   },

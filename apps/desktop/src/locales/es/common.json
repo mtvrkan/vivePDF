@@ -138,6 +138,11 @@
       "activeOf": "{{active}} / {{total}} activas"
     },
     "recentCleared": "Lista de documentos recientes borrada.",
+    "studio": {
+      "title": "Studio",
+      "open": "Abrir Studio",
+      "empty": "Aquí aparecen los diseños y documentos que guarde en Studio."
+    },
     "collections": {
       "title": "Colecciones",
       "new": "Nueva colección",
@@ -168,7 +173,7 @@
     "layout": {
       "edit": "Personalizar inicio",
       "editing": "Personalizando la página de inicio",
-      "editingHint": "Arrastre las secciones por su asa o use los botones; los cambios se guardan al instante.",
+      "editingHint": "Arrastre las secciones por su asa y las herramientas de acceso rápido por su mosaico, o use los botones; las secciones ocultas conservan su lugar. Los cambios se guardan al instante.",
       "reset": "Restablecer",
       "resetDone": "Se restableció la página de inicio.",
       "done": "Listo",
@@ -183,7 +188,7 @@
         "normal": "Normal",
         "wide": "Ancha"
       },
-      "hiddenTray": "Ocultas:",
+      "hiddenLabel": "Oculta",
       "sections": {
         "hero": "Bienvenida"
       },
@@ -205,6 +210,8 @@
       "moveUp": "Subir {{name}}",
       "moveDown": "Bajar {{name}}",
       "hide": "Ocultar {{name}}",
+      "show": "Mostrar {{name}}",
+      "showShort": "Mostrar",
       "emptySection": "Ahora no hay nada que mostrar aquí",
       "dropHere": "Suelte una sección aquí",
       "quick": {
@@ -215,7 +222,8 @@
         "add": "Añadir herramienta",
         "empty": "No hay herramientas en el acceso rápido. Personalice el inicio para añadirlas.",
         "pickTitle": "Añadir herramientas al acceso rápido",
-        "pickHint": "{{count}} de {{max}} herramientas. Haga clic en una para añadirla."
+        "pickHint": "{{count}} de {{max}} herramientas. Haga clic en una para añadirla.",
+        "dragHint": "Arrastra para cambiar el orden; los botones de flecha hacen lo mismo con el teclado."
       }
     }
   },

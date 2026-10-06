@@ -138,6 +138,11 @@
       "activeOf": "{{active}} / {{total}} aktiv"
     },
     "recentCleared": "Liste der zuletzt verwendeten Dokumente gelöscht.",
+    "studio": {
+      "title": "Studio",
+      "open": "Studio öffnen",
+      "empty": "Hier erscheinen die Entwürfe und Dokumente, die Sie in Studio speichern."
+    },
     "collections": {
       "title": "Sammlungen",
       "new": "Neue Sammlung",
@@ -168,7 +173,7 @@
     "layout": {
       "edit": "Startseite anpassen",
       "editing": "Startseite wird angepasst",
-      "editingHint": "Ziehen Sie Bereiche am Griff oder nutzen Sie die Schaltflächen; Änderungen werden sofort gespeichert.",
+      "editingHint": "Ziehen Sie Bereiche am Griff und Schnellzugriff-Werkzeuge an ihrer Kachel oder nutzen Sie die Schaltflächen; ausgeblendete Bereiche bleiben an ihrem Platz. Änderungen werden sofort gespeichert.",
       "reset": "Auf Standard zurücksetzen",
       "resetDone": "Die Startseite wurde zurückgesetzt.",
       "done": "Fertig",
@@ -183,7 +188,7 @@
         "normal": "Normal",
         "wide": "Breit"
       },
-      "hiddenTray": "Ausgeblendet:",
+      "hiddenLabel": "Ausgeblendet",
       "sections": {
         "hero": "Begrüßung"
       },
@@ -205,6 +210,8 @@
       "moveUp": "{{name}} nach oben",
       "moveDown": "{{name}} nach unten",
       "hide": "{{name}} ausblenden",
+      "show": "{{name}} einblenden",
+      "showShort": "Einblenden",
       "emptySection": "Hier gibt es gerade nichts anzuzeigen",
       "dropHere": "Bereich hier ablegen",
       "quick": {
@@ -215,7 +222,8 @@
         "add": "Werkzeug hinzufügen",
         "empty": "Keine Werkzeuge im Schnellzugriff. Passen Sie die Startseite an, um welche hinzuzufügen.",
         "pickTitle": "Werkzeuge zum Schnellzugriff hinzufügen",
-        "pickHint": "{{count}} von {{max}} Werkzeugen. Klicken Sie auf ein Werkzeug, um es hinzuzufügen."
+        "pickHint": "{{count}} von {{max}} Werkzeugen. Klicken Sie auf ein Werkzeug, um es hinzuzufügen.",
+        "dragHint": "Ziehen ändert die Reihenfolge; die Pfeiltasten tun dasselbe per Tastatur."
       }
     }
   },

@@ -8,6 +8,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Home: while editing, a hidden section stays where it was as a slim row with a Show button instead of moving to a list at the top; Edit home page now sits at the top right, and Done sits in the editing bar, which stays pinned at the top while you scroll instead of floating over the sections; the new home strings are translated into every language [2026-10-06]
 - Home: while the home page is being edited, quick access tools can be dragged by their tile into a new order; the tiles make room as you drag and the arrow buttons still do the same from the keyboard [2026-10-06]
 - Merge: a file already in the list is never added twice, whether it comes from the picker, a folder, a drop or the command line, and a short notice says how many were skipped [2026-10-04]
 - Page organizer: a click on a page opens its preview, Ctrl+click and Shift+click select, the corner checkbox is always shown, and the preview has Select this page (Enter), Shift+arrows to extend the selection and an Open in viewer button; double-click no longer opens the viewer [2026-10-04]

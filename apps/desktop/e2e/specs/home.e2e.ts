@@ -25,7 +25,7 @@ describe("home layout", () => {
 
     await chooseOption(t("home.layout.regionOf", { name: recent }), t("home.layout.regions.top"));
     await $(`button[aria-label="${t("home.layout.hide", { name: stats })}"]`).click();
-    await $(`//button[normalize-space(.)="${stats}"]`).waitForDisplayed();
+    await region("side").$('[data-hidden-section="stats"]').waitForDisplayed();
     await $(`//*[@data-testid="home-frame-quickActions"]//*[@role="radio"][normalize-space(.)="${t("home.layout.sizes.large")}"]`).click();
     await $(`button[aria-label="${t("home.layout.quick.remove", { name: t("nav.merge") })}"]`).click();
     await $(`//button[normalize-space(.)="${t("home.layout.quick.add")}"]`).click();

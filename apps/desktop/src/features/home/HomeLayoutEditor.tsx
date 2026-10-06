@@ -1,5 +1,5 @@
 import { useEffect, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import { ArrowDown, ArrowUp, Eye, EyeOff, GripVertical, RotateCcw } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, Eye, EyeOff, GripVertical, RotateCcw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
@@ -13,7 +13,6 @@ import {
   SIDEBAR_SIDES,
   SIDEBAR_WIDTHS,
   defaultHomeLayout,
-  hiddenSections,
   moveSection,
   sectionsIn,
   shiftSection,
@@ -42,7 +41,6 @@ export function HomeEditBar() {
   const replace = useHomeLayoutStore((state) => state.replace);
   const setEditing = useHomeLayoutStore((state) => state.setEditing);
   const toast = useToastStore((state) => state.push);
-  const hidden = hiddenSections(layout);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -59,7 +57,7 @@ export function HomeEditBar() {
   };
 
   return (
-    <div role="region" aria-label={t("home.layout.editing")} className="glass glass-tinted space-y-3 rounded-2xl p-4">
+    <div role="region" aria-label={t("home.layout.editing")} className="glass glass-tinted sticky top-0 z-20 space-y-3 rounded-2xl p-4 shadow-lg">
       <div className="flex flex-wrap items-center gap-3">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold">{t("home.layout.editing")}</p>
@@ -67,6 +65,9 @@ export function HomeEditBar() {
         </div>
         <Button variant="ghost" icon={<RotateCcw className="size-4" aria-hidden />} onClick={reset}>
           {t("home.layout.reset")}
+        </Button>
+        <Button variant="primary" icon={<Check className="size-4" aria-hidden />} onClick={() => setEditing(false)}>
+          {t("home.layout.done")}
         </Button>
       </div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
@@ -79,22 +80,6 @@ export function HomeEditBar() {
           <Segmented size="sm" value={layout.sidebar.width} options={SIDEBAR_WIDTHS} labelOf={(value) => t(`home.layout.widths.${value}`)} onChange={(width) => change((current) => ({ ...current, sidebar: { ...current.sidebar, width } }))} ariaLabel={t("home.layout.sidebarWidth")} />
         </span>
       </div>
-      {hidden.length > 0 ? (
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="text-muted-foreground">{t("home.layout.hiddenTray")}</span>
-          {hidden.map((section) => (
-            <button
-              key={section.id}
-              type="button"
-              onClick={() => change((current) => updateSection(current, section.id, { hidden: false }))}
-              className="glass-chip flex h-7 items-center gap-1.5 rounded-full px-3 font-medium hover:text-foreground"
-            >
-              <Eye className="size-3.5" aria-hidden />
-              {t(SECTION_TITLE_KEYS[section.id])}
-            </button>
-          ))}
-        </div>
-      ) : null}
     </div>
   );
 }
@@ -156,6 +141,23 @@ export function HomeSectionFrame({ section, dragging, onDragStart, onDragMove, o
         </div>
         <p className="hidden rounded-xl border border-dashed px-4 py-6 text-center text-xs text-muted-foreground peer-empty:block">{t("home.layout.emptySection")}</p>
       </div>
+    </div>
+  );
+}
+
+export function HiddenSectionFrame({ section }: { section: HomeSectionLayout }) {
+  const { t } = useTranslation();
+  const change = useHomeLayoutStore((state) => state.change);
+  const title = t(SECTION_TITLE_KEYS[section.id]);
+
+  return (
+    <div data-testid={`home-frame-${section.id}`} data-hidden-section={section.id} className="flex flex-wrap items-center gap-2 rounded-2xl border-2 border-dashed border-(--glass-border) px-3 py-2 text-muted-foreground">
+      <EyeOff className="size-4 shrink-0" aria-hidden />
+      <span className="min-w-0 flex-1 truncate text-sm font-semibold line-through decoration-1">{title}</span>
+      <span className="text-xs">{t("home.layout.hiddenLabel")}</span>
+      <Button size="sm" icon={<Eye className="size-4" aria-hidden />} onClick={() => change((current) => updateSection(current, section.id, { hidden: false }))} aria-label={t("home.layout.show", { name: title })}>
+        {t("home.layout.showShort")}
+      </Button>
     </div>
   );
 }

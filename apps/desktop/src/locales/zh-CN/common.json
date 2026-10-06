@@ -138,6 +138,11 @@
       "activeOf": "{{active}} / {{total}} 已启用"
     },
     "recentCleared": "最近的文档列表已清除。",
+    "studio": {
+      "title": "工作室",
+      "open": "打开工作室",
+      "empty": "你在工作室中保存的设计和文档会显示在这里。"
+    },
     "collections": {
       "title": "合集",
       "new": "新建合集",
@@ -168,7 +173,7 @@
     "layout": {
       "edit": "自定义主页",
       "editing": "正在自定义主页",
-      "editingHint": "拖动各部分的手柄或使用按钮；更改会立即保存。",
+      "editingHint": "拖动分区的手柄或快速访问工具的磁贴，或使用按钮；隐藏的分区会留在原位。更改会立即保存。",
       "reset": "恢复默认",
       "resetDone": "主页已恢复默认。",
       "done": "完成",
@@ -183,7 +188,7 @@
         "normal": "标准",
         "wide": "宽"
       },
-      "hiddenTray": "已隐藏：",
+      "hiddenLabel": "已隐藏",
       "sections": {
         "hero": "欢迎"
       },
@@ -205,6 +210,8 @@
       "moveUp": "上移{{name}}",
       "moveDown": "下移{{name}}",
       "hide": "隐藏{{name}}",
+      "show": "显示{{name}}",
+      "showShort": "显示",
       "emptySection": "此处暂时没有可显示的内容",
       "dropHere": "将部分拖放到这里",
       "quick": {
@@ -215,7 +222,8 @@
         "add": "添加工具",
         "empty": "快速访问中没有工具。自定义主页即可添加。",
         "pickTitle": "向快速访问添加工具",
-        "pickHint": "已选 {{count}} / {{max}} 个工具。点击工具即可添加。"
+        "pickHint": "已选 {{count}} / {{max}} 个工具。点击工具即可添加。",
+        "dragHint": "拖动可改变顺序；箭头按钮也可用键盘完成同样操作。"
       }
     }
   },

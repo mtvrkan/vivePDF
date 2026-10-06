@@ -173,7 +173,7 @@
     "layout": {
       "edit": "Ana sayfayı düzenle",
       "editing": "Ana sayfa düzenleniyor",
-      "editingHint": "Bölümleri tutamağından, hızlı erişim araçlarını kutucuğundan sürükleyin ya da düğmeleri kullanın; değişiklikler anında kaydedilir.",
+      "editingHint": "Bölümleri tutamağından, hızlı erişim araçlarını kutucuğundan sürükleyin ya da düğmeleri kullanın; gizlenen bölümler yerinde kalır. Değişiklikler anında kaydedilir.",
       "reset": "Varsayılana dön",
       "resetDone": "Ana sayfa varsayılana döndü.",
       "done": "Bitti",
@@ -188,7 +188,7 @@
         "normal": "Normal",
         "wide": "Geniş"
       },
-      "hiddenTray": "Gizli:",
+      "hiddenLabel": "Gizli",
       "sections": {
         "hero": "Karşılama"
       },
@@ -210,6 +210,8 @@
       "moveUp": "{{name}} bölümünü yukarı taşı",
       "moveDown": "{{name}} bölümünü aşağı taşı",
       "hide": "{{name}} bölümünü gizle",
+      "show": "{{name}} bölümünü göster",
+      "showShort": "Göster",
       "emptySection": "Şu an burada gösterilecek bir şey yok",
       "dropHere": "Bir bölümü buraya bırakın",
       "quick": {
