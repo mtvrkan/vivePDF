@@ -16,6 +16,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Internal: the Studio canvas, properties panel and edit model are split into smaller files — pointer handling, zoom and scrolling, the selection frame, guides and the right-click menu; one file per properties section; layer order and page changes — and the engine's Studio text code into its model, paragraphs, layout and drawing; nothing changes on screen or in exports [2026-10-06]
 - Internal: the Studio end-to-end flow goes to the viewer before opening the exported PDF (Ctrl+O in Studio opens a design since 2026-10-04) and selects the heading's text before retyping it, since a double-click now puts the caret where it was clicked [2026-10-06]
 
+### Removed
+- Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
+
 ### Fixed
 - Text in PDFs that vivePDF lays out (Create PDF, book, CV, cover page, text, Markdown, web page and e-mail conversions, Studio documents and designs) copies and searches as plain letters: "fi", "fl", "ff", "ffi", "ffl" and "st" no longer come out as single ligature characters in other PDF readers [2026-10-06]
 

@@ -13,7 +13,7 @@ Website: https://vivepdf.com · Downloads: [Releases](https://github.com/mtvrkan
 - **Security** — passwords, permissions, redaction, metadata clean-up, digital signatures and certificate checks.
 - **Forms and codes** — fill and build forms, QR and barcodes, optical answer sheets that grade themselves.
 - **Compare, compress, batch** — side-by-side and text/visual compare, compression, batch runs, watched folders and bulk rename.
-- **Accessibility** — tagged-PDF checks and alt text; the interface comes in 12 languages (tr, en, de, fr, es, it, pt-BR, ru, ar, zh-CN, ja, ko), Arabic right-to-left.
+- **Accessibility** — tagged-PDF checks and alt text; the interface comes in 8 languages (tr, en, de, fr, es, it, pt-BR, ar), Arabic right-to-left.
 
 ## Install
 Windows 10 or 11 (64-bit): download `vivePDF_<version>_x64-setup.exe` from [Releases](https://github.com/mtvrkan/vivePDF/releases/latest) and run it. The app checks for updates itself (Settings › Updates) and installs nothing without asking.

@@ -14,8 +14,8 @@ function missing(keys: string[]) {
 }
 
 describe("navigation labels", () => {
-  it("reads all twelve language catalogues", () => {
-    expect(Object.keys(catalogs)).toHaveLength(12);
+  it("reads all eight language catalogues", () => {
+    expect(Object.keys(catalogs)).toHaveLength(8);
   });
 
   it("names and describes every tool card in every language", () => {

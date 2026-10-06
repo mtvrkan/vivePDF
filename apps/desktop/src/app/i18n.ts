@@ -14,11 +14,7 @@ const catalogLoaders: Record<Locale, () => Promise<{ default: Record<string, unk
   es: () => import("@/locales/es/common.json"),
   it: () => import("@/locales/it/common.json"),
   "pt-BR": () => import("@/locales/pt-BR/common.json"),
-  ru: () => import("@/locales/ru/common.json"),
   ar: () => import("@/locales/ar/common.json"),
-  "zh-CN": () => import("@/locales/zh-CN/common.json"),
-  ja: () => import("@/locales/ja/common.json"),
-  ko: () => import("@/locales/ko/common.json"),
 };
 
 const loadedLocales = new Set<Locale>(["en"]);

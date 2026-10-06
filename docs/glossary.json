@@ -6,11 +6,7 @@
     "es",
     "fr",
     "it",
-    "ja",
-    "ko",
-    "pt-BR",
-    "ru",
-    "zh-CN"
+    "pt-BR"
   ],
   "normalization": "Case-insensitive, NFC, Arabic diacritics and tatweel stripped, Russian ё treated as е, {{placeholders}} and {tokens} removed from English before matching.",
   "register": {
@@ -19,11 +15,7 @@
     "es": "usted; buttons as infinitives (Eliminar páginas); descriptions in third person or usted imperative, never tú.",
     "fr": "vous; buttons as infinitives; typographic apostrophe and narrow space before ; : ? ! accepted as in catalogue.",
     "it": "tu (Microsoft Italian style); buttons as imperatives (Elimina pagine).",
-    "ja": "です・ます調; full-width punctuation 。、（）：; no space between Japanese and Latin words except around placeholders as already used.",
-    "ko": "합니다 for statements, 하세요 for instructions (Microsoft Korean style), no 해요 endings; buttons as noun phrases (페이지 삭제).",
-    "pt-BR": "você; buttons as infinitives (Excluir páginas).",
-    "ru": "вы, capitalised only at sentence start; prefer impersonal phrasing; buttons as infinitives (Удалить страницы); ё optional.",
-    "zh-CN": "你 (Microsoft Simplified Chinese style), never 您; full-width punctuation ，。；：（）！？; half-width space between Chinese and Latin/digits only where the catalogue already does so."
+    "pt-BR": "você; buttons as infinitives (Excluir páginas)."
   },
   "ignoreKeyPattern": "(^|\\.)([A-Za-z]*[sS]uffix|chainsFileName|mergedName)$",
   "terms": [
@@ -38,11 +30,7 @@
         "es": "combinar",
         "fr": "fusionner",
         "it": "unire",
-        "ja": "結合",
-        "ko": "병합",
-        "pt-BR": "mesclar",
-        "ru": "объединить",
-        "zh-CN": "合并"
+        "pt-BR": "mesclar"
       },
       "match": {
         "ar": [
@@ -67,20 +55,8 @@
           "unit",
           "unio"
         ],
-        "ja": [
-          "結合"
-        ],
-        "ko": [
-          "병합"
-        ],
         "pt-BR": [
           "mescl"
-        ],
-        "ru": [
-          "объедин"
-        ],
-        "zh-CN": [
-          "合并"
         ]
       }
     },
@@ -95,11 +71,7 @@
         "es": "dividir",
         "fr": "diviser",
         "it": "dividere",
-        "ja": "分割",
-        "ko": "분할",
-        "pt-BR": "dividir",
-        "ru": "разделить",
-        "zh-CN": "拆分"
+        "pt-BR": "dividir"
       },
       "match": {
         "ar": [
@@ -124,21 +96,9 @@
           "divid",
           "divis"
         ],
-        "ja": [
-          "分割"
-        ],
-        "ko": [
-          "분할"
-        ],
         "pt-BR": [
           "divid",
           "divis"
-        ],
-        "ru": [
-          "раздел"
-        ],
-        "zh-CN": [
-          "拆分"
         ]
       }
     },
@@ -153,11 +113,7 @@
         "es": "comprimir",
         "fr": "compresser",
         "it": "comprimere",
-        "ja": "圧縮",
-        "ko": "압축",
-        "pt-BR": "comprimir",
-        "ru": "сжать",
-        "zh-CN": "压缩"
+        "pt-BR": "comprimir"
       },
       "match": {
         "ar": [
@@ -178,23 +134,9 @@
           "compri",
           "compress"
         ],
-        "ja": [
-          "圧縮"
-        ],
-        "ko": [
-          "압축"
-        ],
         "pt-BR": [
           "compri",
           "compress"
-        ],
-        "ru": [
-          "сжат",
-          "сжим",
-          "сжа"
-        ],
-        "zh-CN": [
-          "压缩"
         ]
       }
     },
@@ -209,11 +151,7 @@
         "es": "censurar",
         "fr": "caviarder",
         "it": "oscurare",
-        "ja": "墨消し",
-        "ko": "마스킹",
-        "pt-BR": "censurar",
-        "ru": "вымарать",
-        "zh-CN": "涂黑"
+        "pt-BR": "censurar"
       },
       "match": {
         "ar": [
@@ -235,20 +173,8 @@
         "it": [
           "oscur"
         ],
-        "ja": [
-          "墨消"
-        ],
-        "ko": [
-          "마스킹"
-        ],
         "pt-BR": [
           "censur"
-        ],
-        "ru": [
-          "вымар"
-        ],
-        "zh-CN": [
-          "涂黑"
         ]
       },
       "note": "Permanent removal of content; not the same as hiding or editing."
@@ -264,11 +190,7 @@
         "es": "marca de agua",
         "fr": "filigrane",
         "it": "filigrana",
-        "ja": "透かし",
-        "ko": "워터마크",
-        "pt-BR": "marca-d'água",
-        "ru": "водяной знак",
-        "zh-CN": "水印"
+        "pt-BR": "marca-d'água"
       },
       "match": {
         "ar": [
@@ -286,21 +208,9 @@
         "it": [
           "filigran"
         ],
-        "ja": [
-          "透かし"
-        ],
-        "ko": [
-          "워터마크"
-        ],
         "pt-BR": [
           "d'água",
           "d’água"
-        ],
-        "ru": [
-          "водян"
-        ],
-        "zh-CN": [
-          "水印"
         ]
       }
     },
@@ -315,11 +225,7 @@
         "es": "sello",
         "fr": "tampon",
         "it": "timbro",
-        "ja": "スタンプ",
-        "ko": "스탬프",
-        "pt-BR": "carimbo",
-        "ru": "штамп",
-        "zh-CN": "图章"
+        "pt-BR": "carimbo"
       },
       "match": {
         "ar": [
@@ -341,23 +247,8 @@
         "it": [
           "timbr"
         ],
-        "ja": [
-          "スタンプ",
-          "押印"
-        ],
-        "ko": [
-          "스탬프"
-        ],
         "pt-BR": [
           "carimb"
-        ],
-        "ru": [
-          "штамп"
-        ],
-        "zh-CN": [
-          "图章",
-          "盖章",
-          "加盖"
         ]
       },
       "note": "Annotation-style rubber stamp. In ar and es the stamp and seal words share a root; context disambiguates."
@@ -373,11 +264,7 @@
         "es": "marcador",
         "fr": "signet",
         "it": "segnalibro",
-        "ja": "しおり",
-        "ko": "책갈피",
-        "pt-BR": "marcador",
-        "ru": "закладка",
-        "zh-CN": "书签"
+        "pt-BR": "marcador"
       },
       "match": {
         "ar": [
@@ -396,20 +283,8 @@
         "it": [
           "segnalibr"
         ],
-        "ja": [
-          "しおり"
-        ],
-        "ko": [
-          "책갈피"
-        ],
         "pt-BR": [
           "marcador"
-        ],
-        "ru": [
-          "заклад"
-        ],
-        "zh-CN": [
-          "书签"
         ]
       }
     },
@@ -424,11 +299,7 @@
         "es": "anotación",
         "fr": "annotation",
         "it": "annotazione",
-        "ja": "注釈",
-        "ko": "주석",
-        "pt-BR": "anotação",
-        "ru": "аннотация",
-        "zh-CN": "批注"
+        "pt-BR": "anotação"
       },
       "match": {
         "ar": [
@@ -453,26 +324,9 @@
           "annotazion",
           "comment"
         ],
-        "ja": [
-          "注釈",
-          "コメント"
-        ],
-        "ko": [
-          "주석",
-          "메모"
-        ],
         "pt-BR": [
           "anotaç",
           "comentário"
-        ],
-        "ru": [
-          "аннотац",
-          "комментар",
-          "пометк"
-        ],
-        "zh-CN": [
-          "注释",
-          "批注"
         ]
       },
       "note": "PDF annotation objects. Acrobat uses the comment word for most of them, so both are accepted."
@@ -488,11 +342,7 @@
         "es": "comentario",
         "fr": "commentaire",
         "it": "commento",
-        "ja": "コメント",
-        "ko": "메모",
-        "pt-BR": "comentário",
-        "ru": "комментарий",
-        "zh-CN": "批注"
+        "pt-BR": "comentário"
       },
       "match": {
         "ar": [
@@ -510,26 +360,9 @@
         "it": [
           "comment"
         ],
-        "ja": [
-          "コメント",
-          "注釈"
-        ],
-        "ko": [
-          "메모",
-          "주석",
-          "댓글"
-        ],
         "pt-BR": [
           "comentário",
           "comentari"
-        ],
-        "ru": [
-          "комментар"
-        ],
-        "zh-CN": [
-          "批注",
-          "注释",
-          "评论"
         ]
       }
     },
@@ -544,11 +377,7 @@
         "es": "formulario",
         "fr": "formulaire",
         "it": "modulo",
-        "ja": "フォーム",
-        "ko": "양식",
-        "pt-BR": "formulário",
-        "ru": "форма",
-        "zh-CN": "表单"
+        "pt-BR": "formulário"
       },
       "match": {
         "ar": [
@@ -567,21 +396,9 @@
         "it": [
           "modul"
         ],
-        "ja": [
-          "フォーム"
-        ],
-        "ko": [
-          "양식"
-        ],
         "pt-BR": [
           "formulário",
           "formulari"
-        ],
-        "ru": [
-          "форм"
-        ],
-        "zh-CN": [
-          "表单"
         ]
       },
       "note": "Fillable PDF form (AcroForm). Not a layout shape."
@@ -597,11 +414,7 @@
         "es": "campo de formulario",
         "fr": "champ de formulaire",
         "it": "campo modulo",
-        "ja": "フォームフィールド",
-        "ko": "양식 필드",
-        "pt-BR": "campo de formulário",
-        "ru": "поле формы",
-        "zh-CN": "表单字段"
+        "pt-BR": "campo de formulário"
       },
       "match": {
         "ar": [
@@ -621,25 +434,8 @@
         "it": [
           "camp"
         ],
-        "ja": [
-          "フィールド"
-        ],
-        "ko": [
-          "필드"
-        ],
         "pt-BR": [
           "campo"
-        ],
-        "ru": [
-          "поле",
-          "поля",
-          "полей",
-          "полям",
-          "полях",
-          "полем"
-        ],
-        "zh-CN": [
-          "字段"
         ]
       }
     },
@@ -654,11 +450,7 @@
         "es": "firma",
         "fr": "signature",
         "it": "firma",
-        "ja": "署名",
-        "ko": "서명",
-        "pt-BR": "assinatura",
-        "ru": "подпись",
-        "zh-CN": "签名"
+        "pt-BR": "assinatura"
       },
       "match": {
         "ar": [
@@ -683,21 +475,8 @@
         "it": [
           "firm"
         ],
-        "ja": [
-          "署名"
-        ],
-        "ko": [
-          "서명"
-        ],
         "pt-BR": [
           "assin"
-        ],
-        "ru": [
-          "подпис"
-        ],
-        "zh-CN": [
-          "签名",
-          "签署"
         ]
       },
       "note": "Digital signature and drawn signature; de accepts Unterschrift for the drawn one."
@@ -713,11 +492,7 @@
         "es": "certificado",
         "fr": "certificat",
         "it": "certificato",
-        "ja": "証明書",
-        "ko": "인증서",
-        "pt-BR": "certificado",
-        "ru": "сертификат",
-        "zh-CN": "证书"
+        "pt-BR": "certificado"
       },
       "match": {
         "ar": [
@@ -735,20 +510,8 @@
         "it": [
           "certificat"
         ],
-        "ja": [
-          "証明書"
-        ],
-        "ko": [
-          "인증서"
-        ],
         "pt-BR": [
           "certificad"
-        ],
-        "ru": [
-          "сертификат"
-        ],
-        "zh-CN": [
-          "证书"
         ]
       }
     },
@@ -763,11 +526,7 @@
         "es": "sellar",
         "fr": "sceller",
         "it": "sigillare",
-        "ja": "封印",
-        "ko": "봉인",
-        "pt-BR": "selar",
-        "ru": "запечатать",
-        "zh-CN": "封存"
+        "pt-BR": "selar"
       },
       "match": {
         "ar": [
@@ -786,25 +545,12 @@
         "it": [
           "sigill"
         ],
-        "ja": [
-          "封印"
-        ],
-        "ko": [
-          "봉인"
-        ],
         "pt-BR": [
           "selar",
           "selad",
           "selo",
           "selag",
           "sela"
-        ],
-        "ru": [
-          "запечат",
-          "печат"
-        ],
-        "zh-CN": [
-          "封存"
         ]
       },
       "note": "vivePDF seal = certificate encryption for named recipients, not an electronic seal signature."
@@ -820,11 +566,7 @@
         "es": "aplanar",
         "fr": "aplatir",
         "it": "appiattire",
-        "ja": "フラット化",
-        "ko": "평면화",
-        "pt-BR": "achatar",
-        "ru": "сведение",
-        "zh-CN": "拼合"
+        "pt-BR": "achatar"
       },
       "match": {
         "ar": [
@@ -846,21 +588,8 @@
         "it": [
           "appiatt"
         ],
-        "ja": [
-          "フラット化"
-        ],
-        "ko": [
-          "평면화"
-        ],
         "pt-BR": [
           "achat"
-        ],
-        "ru": [
-          "свед",
-          "свест"
-        ],
-        "zh-CN": [
-          "拼合"
         ]
       },
       "note": "Burn annotations/form fields into page content. Acrobat terms: de reduzieren, ja フラット化, zh-CN 拼合, ru сведение."
@@ -876,11 +605,7 @@
         "es": "OCR",
         "fr": "OCR",
         "it": "OCR",
-        "ja": "OCR",
-        "ko": "OCR",
-        "pt-BR": "OCR",
-        "ru": "OCR",
-        "zh-CN": "OCR"
+        "pt-BR": "OCR"
       },
       "match": {
         "ar": [
@@ -898,19 +623,7 @@
         "it": [
           "ocr"
         ],
-        "ja": [
-          "ocr"
-        ],
-        "ko": [
-          "ocr"
-        ],
         "pt-BR": [
-          "ocr"
-        ],
-        "ru": [
-          "ocr"
-        ],
-        "zh-CN": [
           "ocr"
         ]
       }
@@ -926,11 +639,7 @@
         "es": "con búsqueda",
         "fr": "avec texte interrogeable",
         "it": "ricercabile",
-        "ja": "検索可能",
-        "ko": "검색 가능",
-        "pt-BR": "pesquisável",
-        "ru": "с поиском по тексту",
-        "zh-CN": "可搜索"
+        "pt-BR": "pesquisável"
       }
     },
     {
@@ -944,11 +653,7 @@
         "es": "organizador de páginas",
         "fr": "organisateur de pages",
         "it": "organizzatore pagine",
-        "ja": "ページ整理",
-        "ko": "페이지 구성기",
-        "pt-BR": "organizador de páginas",
-        "ru": "организатор страниц",
-        "zh-CN": "页面管理器"
+        "pt-BR": "organizador de páginas"
       }
     },
     {
@@ -962,11 +667,7 @@
         "es": "lote",
         "fr": "lot",
         "it": "batch",
-        "ja": "一括処理",
-        "ko": "일괄 처리",
-        "pt-BR": "lote",
-        "ru": "пакет",
-        "zh-CN": "批处理"
+        "pt-BR": "lote"
       },
       "match": {
         "ar": [
@@ -986,22 +687,8 @@
           "batch",
           "blocco"
         ],
-        "ja": [
-          "一括",
-          "束"
-        ],
-        "ko": [
-          "일괄",
-          "대량"
-        ],
         "pt-BR": [
           "lote"
-        ],
-        "ru": [
-          "пакет"
-        ],
-        "zh-CN": [
-          "批"
         ]
       },
       "note": "Running a tool over many files at once; in the scan tool it also means a stack of scanned sheets."
@@ -1017,11 +704,7 @@
         "es": "cadena",
         "fr": "chaîne",
         "it": "catena",
-        "ja": "チェーン",
-        "ko": "체인",
-        "pt-BR": "sequência",
-        "ru": "цепочка",
-        "zh-CN": "链"
+        "pt-BR": "sequência"
       },
       "match": {
         "ar": [
@@ -1041,20 +724,8 @@
         "it": [
           "caten"
         ],
-        "ja": [
-          "チェーン"
-        ],
-        "ko": [
-          "체인"
-        ],
         "pt-BR": [
           "sequênci"
-        ],
-        "ru": [
-          "цепоч"
-        ],
-        "zh-CN": [
-          "链"
         ]
       },
       "note": "A saved sequence of tools run one after another (like an Acrobat Action)."
@@ -1070,11 +741,7 @@
         "es": "carpeta vigilada",
         "fr": "dossier surveillé",
         "it": "cartella monitorata",
-        "ja": "監視フォルダー",
-        "ko": "감시 폴더",
-        "pt-BR": "pasta monitorada",
-        "ru": "отслеживаемая папка",
-        "zh-CN": "监控文件夹"
+        "pt-BR": "pasta monitorada"
       },
       "match": {
         "ar": [
@@ -1092,20 +759,8 @@
         "it": [
           "monitor"
         ],
-        "ja": [
-          "監視"
-        ],
-        "ko": [
-          "감시"
-        ],
         "pt-BR": [
           "monitor"
-        ],
-        "ru": [
-          "отслежива"
-        ],
-        "zh-CN": [
-          "监控"
         ]
       }
     },
@@ -1120,11 +775,7 @@
         "es": "carpeta",
         "fr": "dossier",
         "it": "cartella",
-        "ja": "フォルダー",
-        "ko": "폴더",
-        "pt-BR": "pasta",
-        "ru": "папка",
-        "zh-CN": "文件夹"
+        "pt-BR": "pasta"
       }
     },
     {
@@ -1138,11 +789,7 @@
         "es": "control de impresión",
         "fr": "contrôle d’impression",
         "it": "controllo di stampa",
-        "ja": "印刷前チェック",
-        "ko": "인쇄 전 검사",
-        "pt-BR": "verificação de impressão",
-        "ru": "проверка перед печатью",
-        "zh-CN": "印前检查"
+        "pt-BR": "verificação de impressão"
       },
       "match": {
         "ar": [
@@ -1160,20 +807,8 @@
         "it": [
           "stampa"
         ],
-        "ja": [
-          "印刷前"
-        ],
-        "ko": [
-          "인쇄 전"
-        ],
         "pt-BR": [
           "impress"
-        ],
-        "ru": [
-          "печат"
-        ],
-        "zh-CN": [
-          "印前"
         ]
       }
     },
@@ -1188,11 +823,7 @@
         "es": "accesibilidad",
         "fr": "accessibilité",
         "it": "accessibilità",
-        "ja": "アクセシビリティ",
-        "ko": "접근성",
-        "pt-BR": "acessibilidade",
-        "ru": "доступность",
-        "zh-CN": "无障碍"
+        "pt-BR": "acessibilidade"
       },
       "match": {
         "ar": [
@@ -1211,25 +842,9 @@
         "it": [
           "accessib"
         ],
-        "ja": [
-          "アクセシビリティ",
-          "アクセシブル"
-        ],
-        "ko": [
-          "접근성",
-          "접근"
-        ],
         "pt-BR": [
           "acessib",
           "acessív"
-        ],
-        "ru": [
-          "доступн",
-          "специальн"
-        ],
-        "zh-CN": [
-          "无障碍",
-          "辅助"
         ]
       }
     },
@@ -1244,11 +859,7 @@
         "es": "archivo de salida",
         "fr": "fichier de sortie",
         "it": "file di output",
-        "ja": "出力ファイル",
-        "ko": "출력 파일",
-        "pt-BR": "arquivo de saída",
-        "ru": "выходной файл",
-        "zh-CN": "输出文件"
+        "pt-BR": "arquivo de saída"
       },
       "match": {
         "ar": [
@@ -1274,23 +885,8 @@
           "uscita",
           "generat"
         ],
-        "ja": [
-          "出力"
-        ],
-        "ko": [
-          "출력",
-          "결과"
-        ],
         "pt-BR": [
           "saída"
-        ],
-        "ru": [
-          "выходн",
-          "результ",
-          "вывод"
-        ],
-        "zh-CN": [
-          "输出"
         ]
       }
     },
@@ -1305,11 +901,7 @@
         "es": "sobrescribir",
         "fr": "écraser",
         "it": "sovrascrivere",
-        "ja": "上書き",
-        "ko": "덮어쓰기",
-        "pt-BR": "substituir",
-        "ru": "перезаписать",
-        "zh-CN": "覆盖"
+        "pt-BR": "substituir"
       },
       "match": {
         "ar": [
@@ -1332,21 +924,9 @@
           "sovrascriv",
           "sovrascritt"
         ],
-        "ja": [
-          "上書き"
-        ],
-        "ko": [
-          "덮어"
-        ],
         "pt-BR": [
           "substitu",
           "sobrescrev"
-        ],
-        "ru": [
-          "перезапис"
-        ],
-        "zh-CN": [
-          "覆盖"
         ]
       }
     },
@@ -1361,11 +941,7 @@
         "es": "contraseña",
         "fr": "mot de passe",
         "it": "password",
-        "ja": "パスワード",
-        "ko": "비밀번호",
-        "pt-BR": "senha",
-        "ru": "пароль",
-        "zh-CN": "密码"
+        "pt-BR": "senha"
       },
       "match": {
         "ar": [
@@ -1385,21 +961,8 @@
         "it": [
           "password"
         ],
-        "ja": [
-          "パスワード"
-        ],
-        "ko": [
-          "비밀번호",
-          "암호"
-        ],
         "pt-BR": [
           "senha"
-        ],
-        "ru": [
-          "парол"
-        ],
-        "zh-CN": [
-          "密码"
         ]
       }
     },
@@ -1414,11 +977,7 @@
         "es": "cifrar",
         "fr": "chiffrer",
         "it": "crittografare",
-        "ja": "暗号化",
-        "ko": "암호화",
-        "pt-BR": "criptografar",
-        "ru": "зашифровать",
-        "zh-CN": "加密"
+        "pt-BR": "criptografar"
       },
       "match": {
         "ar": [
@@ -1439,20 +998,8 @@
           "crittograf",
           "cifr"
         ],
-        "ja": [
-          "暗号化"
-        ],
-        "ko": [
-          "암호화"
-        ],
         "pt-BR": [
           "criptograf"
-        ],
-        "ru": [
-          "шифр"
-        ],
-        "zh-CN": [
-          "加密"
         ]
       }
     },
@@ -1467,11 +1014,7 @@
         "es": "permiso",
         "fr": "autorisation",
         "it": "autorizzazione",
-        "ja": "権限",
-        "ko": "권한",
-        "pt-BR": "permissão",
-        "ru": "разрешение",
-        "zh-CN": "权限"
+        "pt-BR": "permissão"
       },
       "match": {
         "ar": [
@@ -1495,21 +1038,8 @@
           "autorizz",
           "permess"
         ],
-        "ja": [
-          "権限"
-        ],
-        "ko": [
-          "권한"
-        ],
         "pt-BR": [
           "permiss"
-        ],
-        "ru": [
-          "разреш",
-          "прав"
-        ],
-        "zh-CN": [
-          "权限"
         ]
       }
     },
@@ -1524,11 +1054,7 @@
         "es": "metadatos",
         "fr": "métadonnées",
         "it": "metadati",
-        "ja": "メタデータ",
-        "ko": "메타데이터",
-        "pt-BR": "metadados",
-        "ru": "метаданные",
-        "zh-CN": "元数据"
+        "pt-BR": "metadados"
       },
       "match": {
         "ar": [
@@ -1549,20 +1075,8 @@
         "it": [
           "metadat"
         ],
-        "ja": [
-          "メタデータ"
-        ],
-        "ko": [
-          "메타데이터"
-        ],
         "pt-BR": [
           "metadad"
-        ],
-        "ru": [
-          "метадан"
-        ],
-        "zh-CN": [
-          "元数据"
         ]
       }
     },
@@ -1577,11 +1091,7 @@
         "es": "archivo adjunto",
         "fr": "pièce jointe",
         "it": "allegato",
-        "ja": "添付ファイル",
-        "ko": "첨부 파일",
-        "pt-BR": "anexo",
-        "ru": "вложение",
-        "zh-CN": "附件"
+        "pt-BR": "anexo"
       },
       "match": {
         "ar": [
@@ -1602,22 +1112,8 @@
         "it": [
           "allega"
         ],
-        "ja": [
-          "添付"
-        ],
-        "ko": [
-          "첨부"
-        ],
         "pt-BR": [
           "anex"
-        ],
-        "ru": [
-          "вложен",
-          "влож"
-        ],
-        "zh-CN": [
-          "附件",
-          "附加"
         ]
       }
     },
@@ -1632,11 +1128,7 @@
         "es": "miniatura",
         "fr": "miniature",
         "it": "miniatura",
-        "ja": "サムネイル",
-        "ko": "썸네일",
-        "pt-BR": "miniatura",
-        "ru": "миниатюра",
-        "zh-CN": "缩略图"
+        "pt-BR": "miniatura"
       },
       "match": {
         "ar": [
@@ -1655,21 +1147,8 @@
         "it": [
           "miniatur"
         ],
-        "ja": [
-          "サムネ"
-        ],
-        "ko": [
-          "썸네일",
-          "축소판"
-        ],
         "pt-BR": [
           "miniatur"
-        ],
-        "ru": [
-          "миниатюр"
-        ],
-        "zh-CN": [
-          "缩略图"
         ]
       }
     },
@@ -1684,11 +1163,7 @@
         "es": "girar",
         "fr": "faire pivoter",
         "it": "ruotare",
-        "ja": "回転",
-        "ko": "회전",
-        "pt-BR": "girar",
-        "ru": "повернуть",
-        "zh-CN": "旋转"
+        "pt-BR": "girar"
       },
       "match": {
         "ar": [
@@ -1712,24 +1187,9 @@
           "ruot",
           "rotaz"
         ],
-        "ja": [
-          "回転"
-        ],
-        "ko": [
-          "회전"
-        ],
         "pt-BR": [
           "gir",
           "rotaç"
-        ],
-        "ru": [
-          "поворот",
-          "поверн",
-          "повора",
-          "вращ"
-        ],
-        "zh-CN": [
-          "旋转"
         ]
       }
     },
@@ -1744,11 +1204,7 @@
         "es": "recortar",
         "fr": "rogner",
         "it": "ritagliare",
-        "ja": "切り抜き",
-        "ko": "자르기",
-        "pt-BR": "cortar",
-        "ru": "обрезать",
-        "zh-CN": "裁剪"
+        "pt-BR": "cortar"
       },
       "match": {
         "ar": [
@@ -1768,27 +1224,8 @@
         "it": [
           "ritagli"
         ],
-        "ja": [
-          "切り抜",
-          "切り取"
-        ],
-        "ko": [
-          "자르",
-          "잘라",
-          "자름",
-          "자릅",
-          "잘리",
-          "잘립",
-          "잘림"
-        ],
         "pt-BR": [
           "cort"
-        ],
-        "ru": [
-          "обре"
-        ],
-        "zh-CN": [
-          "裁剪"
         ]
       }
     },
@@ -1803,11 +1240,7 @@
         "es": "encabezado",
         "fr": "en-tête",
         "it": "intestazione",
-        "ja": "ヘッダー",
-        "ko": "머리글",
-        "pt-BR": "cabeçalho",
-        "ru": "верхний колонтитул",
-        "zh-CN": "页眉"
+        "pt-BR": "cabeçalho"
       },
       "match": {
         "ar": [
@@ -1827,21 +1260,8 @@
         "it": [
           "intestazion"
         ],
-        "ja": [
-          "ヘッダー"
-        ],
-        "ko": [
-          "머리글"
-        ],
         "pt-BR": [
           "cabeçalho"
-        ],
-        "ru": [
-          "колонтитул",
-          "верхн"
-        ],
-        "zh-CN": [
-          "页眉"
         ]
       }
     },
@@ -1856,11 +1276,7 @@
         "es": "pie de página",
         "fr": "pied de page",
         "it": "piè di pagina",
-        "ja": "フッター",
-        "ko": "바닥글",
-        "pt-BR": "rodapé",
-        "ru": "нижний колонтитул",
-        "zh-CN": "页脚"
+        "pt-BR": "rodapé"
       },
       "match": {
         "ar": [
@@ -1881,21 +1297,8 @@
         "it": [
           "piè di pagina"
         ],
-        "ja": [
-          "フッター"
-        ],
-        "ko": [
-          "바닥글"
-        ],
         "pt-BR": [
           "rodapé"
-        ],
-        "ru": [
-          "колонтитул",
-          "нижн"
-        ],
-        "zh-CN": [
-          "页脚"
         ]
       }
     },
@@ -1910,11 +1313,7 @@
         "es": "membrete",
         "fr": "papier à en-tête",
         "it": "carta intestata",
-        "ja": "レターヘッド",
-        "ko": "레터헤드",
-        "pt-BR": "papel timbrado",
-        "ru": "фирменный бланк",
-        "zh-CN": "信头纸"
+        "pt-BR": "papel timbrado"
       },
       "match": {
         "ar": [
@@ -1933,20 +1332,8 @@
         "it": [
           "intestat"
         ],
-        "ja": [
-          "レターヘッド"
-        ],
-        "ko": [
-          "레터헤드"
-        ],
         "pt-BR": [
           "timbrado"
-        ],
-        "ru": [
-          "бланк"
-        ],
-        "zh-CN": [
-          "信头"
         ]
       }
     },
@@ -1961,11 +1348,7 @@
         "es": "folleto",
         "fr": "livret",
         "it": "opuscolo",
-        "ja": "冊子",
-        "ko": "소책자",
-        "pt-BR": "livreto",
-        "ru": "буклет",
-        "zh-CN": "小册子"
+        "pt-BR": "livreto"
       },
       "match": {
         "ar": [
@@ -1984,20 +1367,8 @@
         "it": [
           "opuscol"
         ],
-        "ja": [
-          "冊子"
-        ],
-        "ko": [
-          "소책자"
-        ],
         "pt-BR": [
           "livreto"
-        ],
-        "ru": [
-          "буклет"
-        ],
-        "zh-CN": [
-          "小册子"
         ]
       }
     },
@@ -2012,11 +1383,7 @@
         "es": "N por hoja",
         "fr": "N-up",
         "it": "N-up",
-        "ja": "面付け",
-        "ko": "N-up",
-        "pt-BR": "N por folha",
-        "ru": "N на странице",
-        "zh-CN": "拼版"
+        "pt-BR": "N por folha"
       }
     },
     {
@@ -2030,11 +1397,7 @@
         "es": "comparar",
         "fr": "comparer",
         "it": "confrontare",
-        "ja": "比較",
-        "ko": "비교",
-        "pt-BR": "comparar",
-        "ru": "сравнить",
-        "zh-CN": "比较"
+        "pt-BR": "comparar"
       },
       "match": {
         "ar": [
@@ -2054,21 +1417,8 @@
         "it": [
           "confront"
         ],
-        "ja": [
-          "比較"
-        ],
-        "ko": [
-          "비교"
-        ],
         "pt-BR": [
           "compar"
-        ],
-        "ru": [
-          "сравн"
-        ],
-        "zh-CN": [
-          "比较",
-          "对比"
         ]
       }
     },
@@ -2083,11 +1433,7 @@
         "es": "reparar",
         "fr": "réparer",
         "it": "riparare",
-        "ja": "修復",
-        "ko": "복구",
-        "pt-BR": "reparar",
-        "ru": "восстановить",
-        "zh-CN": "修复"
+        "pt-BR": "reparar"
       },
       "match": {
         "ar": [
@@ -2107,20 +1453,8 @@
         "it": [
           "ripar"
         ],
-        "ja": [
-          "修復"
-        ],
-        "ko": [
-          "복구"
-        ],
         "pt-BR": [
           "repar"
-        ],
-        "ru": [
-          "восстан"
-        ],
-        "zh-CN": [
-          "修复"
         ]
       }
     },
@@ -2135,11 +1469,7 @@
         "es": "capa",
         "fr": "calque",
         "it": "livello",
-        "ja": "レイヤー",
-        "ko": "레이어",
-        "pt-BR": "camada",
-        "ru": "слой",
-        "zh-CN": "图层"
+        "pt-BR": "camada"
       },
       "match": {
         "ar": [
@@ -2160,21 +1490,8 @@
           "strato",
           "strati"
         ],
-        "ja": [
-          "レイヤー"
-        ],
-        "ko": [
-          "레이어"
-        ],
         "pt-BR": [
           "camada"
-        ],
-        "ru": [
-          "сло"
-        ],
-        "zh-CN": [
-          "图层",
-          "层"
         ]
       }
     },
@@ -2189,11 +1506,7 @@
         "es": "resaltar",
         "fr": "surligner",
         "it": "evidenziare",
-        "ja": "ハイライト",
-        "ko": "강조 표시",
-        "pt-BR": "realçar",
-        "ru": "выделить",
-        "zh-CN": "高亮"
+        "pt-BR": "realçar"
       }
     },
     {
@@ -2207,11 +1520,7 @@
         "es": "subrayar",
         "fr": "souligner",
         "it": "sottolineare",
-        "ja": "下線",
-        "ko": "밑줄",
-        "pt-BR": "sublinhar",
-        "ru": "подчеркнуть",
-        "zh-CN": "下划线"
+        "pt-BR": "sublinhar"
       },
       "match": {
         "ar": [
@@ -2231,20 +1540,8 @@
         "it": [
           "sottolin"
         ],
-        "ja": [
-          "下線"
-        ],
-        "ko": [
-          "밑줄"
-        ],
         "pt-BR": [
           "sublinh"
-        ],
-        "ru": [
-          "подчерк"
-        ],
-        "zh-CN": [
-          "下划线"
         ]
       }
     },
@@ -2259,11 +1556,7 @@
         "es": "tachado",
         "fr": "barré",
         "it": "barrato",
-        "ja": "取り消し線",
-        "ko": "취소선",
-        "pt-BR": "tachado",
-        "ru": "зачёркивание",
-        "zh-CN": "删除线"
+        "pt-BR": "tachado"
       },
       "match": {
         "ar": [
@@ -2283,21 +1576,8 @@
         "it": [
           "barrat"
         ],
-        "ja": [
-          "取り消し線"
-        ],
-        "ko": [
-          "취소선"
-        ],
         "pt-BR": [
           "tach"
-        ],
-        "ru": [
-          "зачерк",
-          "зачёрк"
-        ],
-        "zh-CN": [
-          "删除线"
         ]
       }
     },
@@ -2312,11 +1592,7 @@
         "es": "plantilla",
         "fr": "modèle",
         "it": "modello",
-        "ja": "テンプレート",
-        "ko": "템플릿",
-        "pt-BR": "modelo",
-        "ru": "шаблон",
-        "zh-CN": "模板"
+        "pt-BR": "modelo"
       },
       "match": {
         "ar": [
@@ -2335,24 +1611,8 @@
         "it": [
           "modell"
         ],
-        "ja": [
-          "テンプレート",
-          "台紙",
-          "ひな形"
-        ],
-        "ko": [
-          "템플릿",
-          "서식"
-        ],
         "pt-BR": [
           "modelo"
-        ],
-        "ru": [
-          "шаблон",
-          "бланк"
-        ],
-        "zh-CN": [
-          "模板"
         ]
       }
     },
@@ -2367,11 +1627,7 @@
         "es": "sello de tiempo",
         "fr": "horodatage",
         "it": "marca temporale",
-        "ja": "タイムスタンプ",
-        "ko": "타임스탬프",
-        "pt-BR": "carimbo de tempo",
-        "ru": "метка времени",
-        "zh-CN": "时间戳"
+        "pt-BR": "carimbo de tempo"
       },
       "match": {
         "ar": [
@@ -2391,25 +1647,11 @@
         "it": [
           "temporal"
         ],
-        "ja": [
-          "タイムスタンプ"
-        ],
-        "ko": [
-          "타임스탬프"
-        ],
         "pt-BR": [
           "carimbo de tempo",
           "carimbos de tempo",
           "carimbo do tempo",
           "carimbo de data"
-        ],
-        "ru": [
-          "метк",
-          "меток",
-          "штамп времени"
-        ],
-        "zh-CN": [
-          "时间戳"
         ]
       }
     },
@@ -2424,11 +1666,7 @@
         "es": "código QR",
         "fr": "code QR",
         "it": "codice QR",
-        "ja": "QR コード",
-        "ko": "QR 코드",
-        "pt-BR": "código QR",
-        "ru": "QR-код",
-        "zh-CN": "二维码"
+        "pt-BR": "código QR"
       },
       "match": {
         "ar": [
@@ -2446,20 +1684,7 @@
         "it": [
           "qr"
         ],
-        "ja": [
-          "qr"
-        ],
-        "ko": [
-          "qr"
-        ],
         "pt-BR": [
-          "qr"
-        ],
-        "ru": [
-          "qr"
-        ],
-        "zh-CN": [
-          "二维码",
           "qr"
         ]
       }
@@ -2475,11 +1700,7 @@
         "es": "código de barras",
         "fr": "code-barres",
         "it": "codice a barre",
-        "ja": "バーコード",
-        "ko": "바코드",
-        "pt-BR": "código de barras",
-        "ru": "штрихкод",
-        "zh-CN": "条形码"
+        "pt-BR": "código de barras"
       },
       "match": {
         "ar": [
@@ -2500,21 +1721,8 @@
         "it": [
           "a barre"
         ],
-        "ja": [
-          "バーコード"
-        ],
-        "ko": [
-          "바코드"
-        ],
         "pt-BR": [
           "barras"
-        ],
-        "ru": [
-          "штрих"
-        ],
-        "zh-CN": [
-          "条形码",
-          "条码"
         ]
       }
     },
@@ -2529,11 +1737,7 @@
         "es": "fuente",
         "fr": "police",
         "it": "carattere",
-        "ja": "フォント",
-        "ko": "글꼴",
-        "pt-BR": "fonte",
-        "ru": "шрифт",
-        "zh-CN": "字体"
+        "pt-BR": "fonte"
       },
       "match": {
         "ar": [
@@ -2552,20 +1756,8 @@
           "caratter",
           "font"
         ],
-        "ja": [
-          "フォント"
-        ],
-        "ko": [
-          "글꼴"
-        ],
         "pt-BR": [
           "fonte"
-        ],
-        "ru": [
-          "шрифт"
-        ],
-        "zh-CN": [
-          "字体"
         ]
       }
     },
@@ -2580,11 +1772,7 @@
         "es": "incrustar",
         "fr": "incorporer",
         "it": "incorporare",
-        "ja": "埋め込み",
-        "ko": "포함",
-        "pt-BR": "incorporar",
-        "ru": "внедрить",
-        "zh-CN": "嵌入"
+        "pt-BR": "incorporar"
       }
     },
     {
@@ -2598,11 +1786,7 @@
         "es": "escanear",
         "fr": "numériser",
         "it": "scansionare",
-        "ja": "スキャン",
-        "ko": "스캔",
-        "pt-BR": "digitalizar",
-        "ru": "сканировать",
-        "zh-CN": "扫描"
+        "pt-BR": "digitalizar"
       }
     },
     {
@@ -2616,11 +1800,7 @@
         "es": "intervalo de páginas",
         "fr": "plage de pages",
         "it": "intervallo di pagine",
-        "ja": "ページ範囲",
-        "ko": "페이지 범위",
-        "pt-BR": "intervalo de páginas",
-        "ru": "диапазон страниц",
-        "zh-CN": "页面范围"
+        "pt-BR": "intervalo de páginas"
       },
       "match": {
         "ar": [
@@ -2640,20 +1820,8 @@
         "it": [
           "intervall"
         ],
-        "ja": [
-          "範囲"
-        ],
-        "ko": [
-          "범위"
-        ],
         "pt-BR": [
           "interval"
-        ],
-        "ru": [
-          "диапазон"
-        ],
-        "zh-CN": [
-          "范围"
         ]
       }
     },
@@ -2668,11 +1836,7 @@
         "es": "insertar",
         "fr": "insérer",
         "it": "inserire",
-        "ja": "挿入",
-        "ko": "삽입",
-        "pt-BR": "inserir",
-        "ru": "вставить",
-        "zh-CN": "插入"
+        "pt-BR": "inserir"
       },
       "match": {
         "ar": [
@@ -2696,20 +1860,8 @@
         "it": [
           "inser"
         ],
-        "ja": [
-          "挿入"
-        ],
-        "ko": [
-          "삽입"
-        ],
         "pt-BR": [
           "inser"
-        ],
-        "ru": [
-          "встав"
-        ],
-        "zh-CN": [
-          "插入"
         ]
       }
     },
@@ -2724,11 +1876,7 @@
         "es": "eliminar",
         "fr": "supprimer",
         "it": "eliminare",
-        "ja": "削除",
-        "ko": "삭제",
-        "pt-BR": "excluir",
-        "ru": "удалить",
-        "zh-CN": "删除"
+        "pt-BR": "excluir"
       }
     },
     {
@@ -2742,11 +1890,7 @@
         "es": "extraer",
         "fr": "extraire",
         "it": "estrarre",
-        "ja": "抽出",
-        "ko": "추출",
-        "pt-BR": "extrair",
-        "ru": "извлечь",
-        "zh-CN": "提取"
+        "pt-BR": "extrair"
       },
       "match": {
         "ar": [
@@ -2768,21 +1912,8 @@
           "estra",
           "estratt"
         ],
-        "ja": [
-          "抽出"
-        ],
-        "ko": [
-          "추출"
-        ],
         "pt-BR": [
           "extra"
-        ],
-        "ru": [
-          "извле",
-          "извлеч"
-        ],
-        "zh-CN": [
-          "提取"
         ]
       }
     },
@@ -2797,11 +1928,7 @@
         "es": "exportar",
         "fr": "exporter",
         "it": "esportare",
-        "ja": "書き出し",
-        "ko": "내보내기",
-        "pt-BR": "exportar",
-        "ru": "экспортировать",
-        "zh-CN": "导出"
+        "pt-BR": "exportar"
       },
       "match": {
         "ar": [
@@ -2823,21 +1950,8 @@
         "it": [
           "esport"
         ],
-        "ja": [
-          "書き出",
-          "エクスポート"
-        ],
-        "ko": [
-          "내보"
-        ],
         "pt-BR": [
           "export"
-        ],
-        "ru": [
-          "экспорт"
-        ],
-        "zh-CN": [
-          "导出"
         ]
       }
     },
@@ -2852,11 +1966,7 @@
         "es": "importar",
         "fr": "importer",
         "it": "importare",
-        "ja": "読み込み",
-        "ko": "가져오기",
-        "pt-BR": "importar",
-        "ru": "импортировать",
-        "zh-CN": "导入"
+        "pt-BR": "importar"
       },
       "match": {
         "ar": [
@@ -2876,22 +1986,8 @@
         "it": [
           "import"
         ],
-        "ja": [
-          "読み込",
-          "インポート",
-          "取り込"
-        ],
-        "ko": [
-          "가져"
-        ],
         "pt-BR": [
           "import"
-        ],
-        "ru": [
-          "импорт"
-        ],
-        "zh-CN": [
-          "导入"
         ]
       }
     },
@@ -2906,11 +2002,7 @@
         "es": "imprimir",
         "fr": "imprimer",
         "it": "stampare",
-        "ja": "印刷",
-        "ko": "인쇄",
-        "pt-BR": "imprimir",
-        "ru": "печать",
-        "zh-CN": "打印"
+        "pt-BR": "imprimir"
       }
     },
     {
@@ -2924,11 +2016,7 @@
         "es": "convertir",
         "fr": "convertir",
         "it": "convertire",
-        "ja": "変換",
-        "ko": "변환",
-        "pt-BR": "converter",
-        "ru": "преобразовать",
-        "zh-CN": "转换"
+        "pt-BR": "converter"
       },
       "match": {
         "ar": [
@@ -2955,25 +2043,9 @@
           "convert",
           "conversion"
         ],
-        "ja": [
-          "変換"
-        ],
-        "ko": [
-          "변환"
-        ],
         "pt-BR": [
           "convert",
           "convers"
-        ],
-        "ru": [
-          "преобраз",
-          "конверт"
-        ],
-        "zh-CN": [
-          "转换",
-          "转为",
-          "转成",
-          "转"
         ]
       }
     },
@@ -2988,11 +2060,7 @@
         "es": "imagen",
         "fr": "image",
         "it": "immagine",
-        "ja": "画像",
-        "ko": "이미지",
-        "pt-BR": "imagem",
-        "ru": "изображение",
-        "zh-CN": "图像"
+        "pt-BR": "imagem"
       }
     },
     {
@@ -3006,11 +2074,7 @@
         "es": "vínculo",
         "fr": "lien",
         "it": "collegamento",
-        "ja": "リンク",
-        "ko": "링크",
-        "pt-BR": "link",
-        "ru": "ссылка",
-        "zh-CN": "链接"
+        "pt-BR": "link"
       },
       "match": {
         "ar": [
@@ -3033,20 +2097,8 @@
           "collegament",
           "link"
         ],
-        "ja": [
-          "リンク"
-        ],
-        "ko": [
-          "링크"
-        ],
         "pt-BR": [
           "link"
-        ],
-        "ru": [
-          "ссыл"
-        ],
-        "zh-CN": [
-          "链接"
         ]
       }
     },
@@ -3061,11 +2113,7 @@
         "es": "ID digital",
         "fr": "identifiant numérique",
         "it": "ID digitale",
-        "ja": "デジタル ID",
-        "ko": "디지털 ID",
-        "pt-BR": "ID digital",
-        "ru": "цифровое удостоверение",
-        "zh-CN": "数字身份证"
+        "pt-BR": "ID digital"
       }
     },
     {
@@ -3079,11 +2127,7 @@
         "es": "verificar",
         "fr": "vérifier",
         "it": "verificare",
-        "ja": "検証",
-        "ko": "검증",
-        "pt-BR": "verificar",
-        "ru": "проверить",
-        "zh-CN": "验证"
+        "pt-BR": "verificar"
       },
       "match": {
         "ar": [
@@ -3104,21 +2148,8 @@
         "it": [
           "verific"
         ],
-        "ja": [
-          "検証"
-        ],
-        "ko": [
-          "검증",
-          "확인"
-        ],
         "pt-BR": [
           "verifi"
-        ],
-        "ru": [
-          "провер"
-        ],
-        "zh-CN": [
-          "验证"
         ]
       }
     },
@@ -3133,11 +2164,7 @@
         "es": "datos ocultos",
         "fr": "données masquées",
         "it": "dati nascosti",
-        "ja": "非表示データ",
-        "ko": "숨겨진 데이터",
-        "pt-BR": "dados ocultos",
-        "ru": "скрытые данные",
-        "zh-CN": "隐藏数据"
+        "pt-BR": "dados ocultos"
       }
     },
     {
@@ -3151,11 +2178,7 @@
         "es": "optimizar",
         "fr": "optimiser",
         "it": "ottimizzare",
-        "ja": "最適化",
-        "ko": "최적화",
-        "pt-BR": "otimizar",
-        "ru": "оптимизировать",
-        "zh-CN": "优化"
+        "pt-BR": "otimizar"
       },
       "match": {
         "ar": [
@@ -3174,20 +2197,8 @@
         "it": [
           "ottimizz"
         ],
-        "ja": [
-          "最適化"
-        ],
-        "ko": [
-          "최적화"
-        ],
         "pt-BR": [
           "otimiz"
-        ],
-        "ru": [
-          "оптимиз"
-        ],
-        "zh-CN": [
-          "优化"
         ]
       }
     },
@@ -3202,11 +2213,7 @@
         "es": "fondo",
         "fr": "arrière-plan",
         "it": "sfondo",
-        "ja": "背景",
-        "ko": "배경",
-        "pt-BR": "plano de fundo",
-        "ru": "фон",
-        "zh-CN": "背景"
+        "pt-BR": "plano de fundo"
       }
     },
     {
@@ -3220,11 +2227,7 @@
         "es": "escala de grises",
         "fr": "niveaux de gris",
         "it": "scala di grigi",
-        "ja": "グレースケール",
-        "ko": "회색조",
-        "pt-BR": "escala de cinza",
-        "ru": "оттенки серого",
-        "zh-CN": "灰度"
+        "pt-BR": "escala de cinza"
       },
       "match": {
         "ar": [
@@ -3242,23 +2245,8 @@
         "it": [
           "grigi"
         ],
-        "ja": [
-          "グレースケール"
-        ],
-        "ko": [
-          "회색조",
-          "흑백"
-        ],
         "pt-BR": [
           "cinza"
-        ],
-        "ru": [
-          "серого",
-          "серый",
-          "серых"
-        ],
-        "zh-CN": [
-          "灰度"
         ]
       }
     },
@@ -3273,11 +2261,7 @@
         "es": "etiqueta",
         "fr": "balise",
         "it": "tag",
-        "ja": "タグ",
-        "ko": "태그",
-        "pt-BR": "tag",
-        "ru": "тег",
-        "zh-CN": "标签"
+        "pt-BR": "tag"
       },
       "match": {
         "ar": [
@@ -3297,25 +2281,10 @@
         "it": [
           "tag"
         ],
-        "ja": [
-          "タグ"
-        ],
-        "ko": [
-          "태그"
-        ],
         "pt-BR": [
           "tag",
           "marcaç",
           "marcad"
-        ],
-        "ru": [
-          "тег",
-          "размет",
-          "размеч"
-        ],
-        "zh-CN": [
-          "标签",
-          "标记"
         ]
       }
     },
@@ -3330,11 +2299,7 @@
         "es": "texto alternativo",
         "fr": "texte de remplacement",
         "it": "testo alternativo",
-        "ja": "代替テキスト",
-        "ko": "대체 텍스트",
-        "pt-BR": "texto alternativo",
-        "ru": "замещающий текст",
-        "zh-CN": "替代文本"
+        "pt-BR": "texto alternativo"
       },
       "match": {
         "ar": [
@@ -3355,21 +2320,8 @@
         "it": [
           "alternativ"
         ],
-        "ja": [
-          "代替テキスト"
-        ],
-        "ko": [
-          "대체 텍스트"
-        ],
         "pt-BR": [
           "alternativo"
-        ],
-        "ru": [
-          "замещающ",
-          "альтернатив"
-        ],
-        "zh-CN": [
-          "替代文本"
         ]
       }
     },
@@ -3384,11 +2336,7 @@
         "es": "orden de lectura",
         "fr": "ordre de lecture",
         "it": "ordine di lettura",
-        "ja": "読み上げ順序",
-        "ko": "읽기 순서",
-        "pt-BR": "ordem de leitura",
-        "ru": "порядок чтения",
-        "zh-CN": "阅读顺序"
+        "pt-BR": "ordem de leitura"
       },
       "match": {
         "ar": [
@@ -3406,21 +2354,8 @@
         "it": [
           "lettura"
         ],
-        "ja": [
-          "順序",
-          "順"
-        ],
-        "ko": [
-          "읽기 순서"
-        ],
         "pt-BR": [
           "leitura"
-        ],
-        "ru": [
-          "чтения"
-        ],
-        "zh-CN": [
-          "阅读顺序"
         ]
       }
     },
@@ -3435,11 +2370,7 @@
         "es": "zoom",
         "fr": "zoom",
         "it": "zoom",
-        "ja": "ズーム",
-        "ko": "확대/축소",
-        "pt-BR": "zoom",
-        "ru": "масштаб",
-        "zh-CN": "缩放"
+        "pt-BR": "zoom"
       }
     },
     {
@@ -3453,11 +2384,7 @@
         "es": "nota",
         "fr": "note",
         "it": "nota",
-        "ja": "ノート",
-        "ko": "메모",
-        "pt-BR": "nota",
-        "ru": "заметка",
-        "zh-CN": "便笺"
+        "pt-BR": "nota"
       }
     },
     {
@@ -3471,11 +2398,7 @@
         "es": "ajuste preestablecido",
         "fr": "préréglage",
         "it": "preimpostazione",
-        "ja": "プリセット",
-        "ko": "사전 설정",
-        "pt-BR": "predefinição",
-        "ru": "предустановка",
-        "zh-CN": "预设"
+        "pt-BR": "predefinição"
       },
       "match": {
         "ar": [
@@ -3496,22 +2419,8 @@
         "it": [
           "preimpostazion"
         ],
-        "ja": [
-          "プリセット"
-        ],
-        "ko": [
-          "사전 설정",
-          "프리셋"
-        ],
         "pt-BR": [
           "predefini"
-        ],
-        "ru": [
-          "предустанов",
-          "шаблон"
-        ],
-        "zh-CN": [
-          "预设"
         ]
       }
     },
@@ -3526,11 +2435,7 @@
         "es": "herramienta",
         "fr": "outil",
         "it": "strumento",
-        "ja": "ツール",
-        "ko": "도구",
-        "pt-BR": "ferramenta",
-        "ru": "инструмент",
-        "zh-CN": "工具"
+        "pt-BR": "ferramenta"
       }
     },
     {
@@ -3544,11 +2449,7 @@
         "es": "número de página",
         "fr": "numéro de page",
         "it": "numero di pagina",
-        "ja": "ページ番号",
-        "ko": "페이지 번호",
-        "pt-BR": "número de página",
-        "ru": "номер страницы",
-        "zh-CN": "页码"
+        "pt-BR": "número de página"
       }
     },
     {
@@ -3562,11 +2463,7 @@
         "es": "numeración Bates",
         "fr": "numérotation Bates",
         "it": "numerazione Bates",
-        "ja": "Bates 番号",
-        "ko": "Bates 번호",
-        "pt-BR": "numeração Bates",
-        "ru": "нумерация Бейтса",
-        "zh-CN": "Bates 编号"
+        "pt-BR": "numeração Bates"
       },
       "match": {
         "ar": [
@@ -3584,20 +2481,7 @@
         "it": [
           "bates"
         ],
-        "ja": [
-          "bates"
-        ],
-        "ko": [
-          "bates"
-        ],
         "pt-BR": [
-          "bates"
-        ],
-        "ru": [
-          "бейтс",
-          "bates"
-        ],
-        "zh-CN": [
           "bates"
         ]
       }
@@ -3613,11 +2497,7 @@
         "es": "limpiar",
         "fr": "nettoyer",
         "it": "ripulire",
-        "ja": "サニタイズ",
-        "ko": "정리",
-        "pt-BR": "limpar",
-        "ru": "очистить",
-        "zh-CN": "清理"
+        "pt-BR": "limpar"
       }
     },
     {
@@ -3631,11 +2511,7 @@
         "es": "deshacer",
         "fr": "annuler",
         "it": "annulla",
-        "ja": "元に戻す",
-        "ko": "실행 취소",
-        "pt-BR": "desfazer",
-        "ru": "отменить",
-        "zh-CN": "撤销"
+        "pt-BR": "desfazer"
       }
     },
     {
@@ -3649,11 +2525,7 @@
         "es": "rehacer",
         "fr": "rétablir",
         "it": "ripeti",
-        "ja": "やり直し",
-        "ko": "다시 실행",
-        "pt-BR": "refazer",
-        "ru": "повторить",
-        "zh-CN": "重做"
+        "pt-BR": "refazer"
       }
     },
     {
@@ -3667,11 +2539,7 @@
         "es": "buscar y reemplazar",
         "fr": "rechercher et remplacer",
         "it": "trova e sostituisci",
-        "ja": "検索と置換",
-        "ko": "찾기 및 바꾸기",
-        "pt-BR": "localizar e substituir",
-        "ru": "найти и заменить",
-        "zh-CN": "查找和替换"
+        "pt-BR": "localizar e substituir"
       }
     },
     {
@@ -3685,11 +2553,7 @@
         "es": "escáner",
         "fr": "scanner",
         "it": "scanner",
-        "ja": "スキャナー",
-        "ko": "스캐너",
-        "pt-BR": "scanner",
-        "ru": "сканер",
-        "zh-CN": "扫描仪"
+        "pt-BR": "scanner"
       }
     },
     {
@@ -3703,11 +2567,7 @@
         "es": "desbloquear",
         "fr": "déverrouiller",
         "it": "sbloccare",
-        "ja": "ロック解除",
-        "ko": "잠금 해제",
-        "pt-BR": "desbloquear",
-        "ru": "разблокировать",
-        "zh-CN": "解锁"
+        "pt-BR": "desbloquear"
       }
     },
     {
@@ -3721,11 +2581,7 @@
         "es": "destinatario",
         "fr": "destinataire",
         "it": "destinatario",
-        "ja": "受信者",
-        "ko": "수신자",
-        "pt-BR": "destinatário",
-        "ru": "получатель",
-        "zh-CN": "接收者"
+        "pt-BR": "destinatário"
       },
       "match": {
         "ar": [
@@ -3744,25 +2600,8 @@
         "it": [
           "destinatari"
         ],
-        "ja": [
-          "受信者",
-          "受取人"
-        ],
-        "ko": [
-          "수신자",
-          "받는 사람"
-        ],
         "pt-BR": [
           "destinatári"
-        ],
-        "ru": [
-          "получат",
-          "адресат"
-        ],
-        "zh-CN": [
-          "接收者",
-          "收件人",
-          "接收人"
         ]
       }
     },
@@ -3777,11 +2616,7 @@
         "es": "resolución",
         "fr": "résolution",
         "it": "risoluzione",
-        "ja": "解像度",
-        "ko": "해상도",
-        "pt-BR": "resolução",
-        "ru": "разрешение",
-        "zh-CN": "分辨率"
+        "pt-BR": "resolução"
       }
     }
   ],
@@ -3901,49 +2736,6 @@
         "header"
       ]
     },
-    "ja": {
-      "tools.scan.enhance.modes.gray.description": [
-        "form"
-      ],
-      "studio.tpl.certificate": [
-        "certificate"
-      ],
-      "studio.tpl.presentedTo": [
-        "certificate"
-      ],
-      "studio.tpl.recipientName": [
-        "recipient"
-      ],
-      "studio.doc.table.headerRow": [
-        "header"
-      ],
-      "studio.doc.starters.letter.recipient": [
-        "recipient"
-      ],
-      "studio.doc.starters.letter.recipientAddress": [
-        "recipient"
-      ],
-      "studio.doc.starters.letter.greeting": [
-        "recipient"
-      ]
-    },
-    "ko": {
-      "tools.split.bookmarkLevelHint": [
-        "split"
-      ],
-      "studio.templates.categories.certificates": [
-        "certificate"
-      ],
-      "studio.tpl.certificate": [
-        "certificate"
-      ],
-      "studio.tpl.presentedTo": [
-        "certificate"
-      ],
-      "studio.tpl.recipientName": [
-        "recipient"
-      ]
-    },
     "pt-BR": {
       "tools.sign.verify.hint": [
         "chain"
@@ -3965,31 +2757,12 @@
       ]
     },
     "it": {},
-    "zh-CN": {
-      "studio.tpl.recipientName": [
-        "recipient"
-      ],
-      "studio.doc.table.headerRow": [
-        "header"
-      ]
-    },
     "de": {
       "studio.doc.starters.descriptions.petition": [
         "attachment"
       ],
       "studio.doc.starters.petition.attachments": [
         "attachment"
-      ]
-    },
-    "ru": {
-      "studio.doc.starters.descriptions.petition": [
-        "attachment"
-      ],
-      "studio.doc.starters.petition.attachments": [
-        "attachment"
-      ],
-      "studio.doc.table.headerRow": [
-        "header"
       ]
     }
   }

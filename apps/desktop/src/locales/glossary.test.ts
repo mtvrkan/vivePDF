@@ -6,11 +6,7 @@ import en from "./en/common.json";
 import es from "./es/common.json";
 import fr from "./fr/common.json";
 import it_ from "./it/common.json";
-import ja from "./ja/common.json";
-import ko from "./ko/common.json";
 import ptBR from "./pt-BR/common.json";
-import ru from "./ru/common.json";
-import zhCN from "./zh-CN/common.json";
 
 type Catalog = Record<string, unknown>;
 
@@ -36,11 +32,7 @@ const catalogs: Record<string, Catalog> = {
   es,
   fr,
   it: it_,
-  ja,
-  ko,
   "pt-BR": ptBR,
-  ru,
-  "zh-CN": zhCN,
 };
 
 const data = glossary as unknown as Glossary;

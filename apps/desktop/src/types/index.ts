@@ -1,6 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
-export type Locale = "tr" | "en" | "de" | "fr" | "es" | "it" | "pt-BR" | "ru" | "ar" | "zh-CN" | "ja" | "ko";
+export type Locale = "tr" | "en" | "de" | "fr" | "es" | "it" | "pt-BR" | "ar";
 
 export type ThemeMode = "light" | "dark" | "system";
 

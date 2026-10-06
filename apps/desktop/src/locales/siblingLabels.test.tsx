@@ -8,14 +8,10 @@ import en from "./en/common.json";
 import es from "./es/common.json";
 import fr from "./fr/common.json";
 import it_ from "./it/common.json";
-import ja from "./ja/common.json";
-import ko from "./ko/common.json";
 import ptBR from "./pt-BR/common.json";
-import ru from "./ru/common.json";
 import tr from "./tr/common.json";
-import zhCN from "./zh-CN/common.json";
 
-const catalogs: Record<string, unknown> = { ar, de, en, es, fr, it: it_, ja, ko, "pt-BR": ptBR, ru, tr, "zh-CN": zhCN };
+const catalogs: Record<string, unknown> = { ar, de, en, es, fr, it: it_, "pt-BR": ptBR, tr };
 
 function lookup(catalog: unknown, key: string): string {
   const value = key.split(".").reduce<unknown>((node, part) => (node && typeof node === "object" ? (node as Record<string, unknown>)[part] : undefined), catalog);

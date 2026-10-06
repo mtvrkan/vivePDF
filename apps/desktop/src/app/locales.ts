@@ -10,11 +10,7 @@ export const LOCALES: LocaleMeta[] = [
   { code: "es", nativeName: "Español", dir: "ltr" },
   { code: "it", nativeName: "Italiano", dir: "ltr" },
   { code: "pt-BR", nativeName: "Português (Brasil)", dir: "ltr" },
-  { code: "ru", nativeName: "Русский", dir: "ltr" },
   { code: "ar", nativeName: "العربية", dir: "rtl" },
-  { code: "zh-CN", nativeName: "简体中文", dir: "ltr" },
-  { code: "ja", nativeName: "日本語", dir: "ltr" },
-  { code: "ko", nativeName: "한국어", dir: "ltr" },
 ];
 
 export const LOCALE_CODES: Locale[] = LOCALES.map((item) => item.code);
@@ -34,7 +30,13 @@ export function localeName(code: string): string {
   if (exact) return exact.nativeName;
   const base = lower.split("-")[0];
   const byBase = LOCALES.find((item) => item.code.toLowerCase().split("-")[0] === base);
-  return byBase?.nativeName ?? code;
+  if (byBase) return byBase.nativeName;
+  try {
+    const name = new Intl.DisplayNames([code], { type: "language" }).of(code);
+    return name ? name.charAt(0).toLocaleUpperCase(code) + name.slice(1) : code;
+  } catch {
+    return code;
+  }
 }
 
 export function localeGroupOrder(locale: Locale): (code: string) => number {
@@ -62,11 +64,7 @@ const TESSERACT_CODES: Record<Locale, string> = {
   es: "spa",
   it: "ita",
   "pt-BR": "por",
-  ru: "rus",
   ar: "ara",
-  "zh-CN": "chi_sim",
-  ja: "jpn",
-  ko: "kor",
 };
 
 export function defaultOcrLanguages(locale: Locale): string[] {
