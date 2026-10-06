@@ -5728,7 +5728,7 @@
     "redact": "Schwärzung markieren (Text auswählen oder einen Bereich zeichnen)",
     "applyRedactions_one": "{{count}} Schwärzung anwenden",
     "applyRedactions_other": "{{count}} Schwärzungen anwenden",
-    "deleteSelected": "Ausgewählte Anmerkung löschen",
+    "deleteSelected": "Ausgewählte Markierungen löschen",
     "save": "Speichern",
     "saveAs": "Speichern unter",
     "suffix": "annotiert",
@@ -5763,7 +5763,13 @@
     "curve": "Krümmung",
     "straighten": "Begradigen",
     "note": "Notiz",
-    "notePlaceholder": "Notiz zu dieser Markierung hinzufügen"
+    "notePlaceholder": "Notiz zu dieser Markierung hinzufügen",
+    "areaSelect": "Bereich auswählen (über Markierungen ziehen)",
+    "deleteAll": "Alle Markierungen löschen",
+    "deleteAllTitle": "Alle Markierungen löschen?",
+    "deleteAllBody_one": "{{count}} Markierung in {{name}} wird gelöscht.",
+    "deleteAllBody_other": "{{count}} Markierungen in {{name}} werden gelöscht.",
+    "selectedMarks": "{{count}} ausgewählte Markierungen"
   },
   "recovery": {
     "discard": "Verwerfen",

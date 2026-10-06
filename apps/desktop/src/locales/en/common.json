@@ -5728,7 +5728,7 @@
     "redact": "Mark redaction (select text or draw an area)",
     "applyRedactions_one": "Apply {{count}} redaction",
     "applyRedactions_other": "Apply {{count}} redactions",
-    "deleteSelected": "Delete selected annotation",
+    "deleteSelected": "Delete selected marks",
     "save": "Save",
     "saveAs": "Save as",
     "suffix": "annotated",
@@ -5763,7 +5763,13 @@
     "curve": "Curve",
     "straighten": "Straighten",
     "note": "Note",
-    "notePlaceholder": "Add a note to this mark"
+    "notePlaceholder": "Add a note to this mark",
+    "areaSelect": "Select an area (drag over marks)",
+    "deleteAll": "Delete all marks",
+    "deleteAllTitle": "Delete every mark?",
+    "deleteAllBody_one": "{{count}} mark in {{name}} will be deleted.",
+    "deleteAllBody_other": "{{count}} marks in {{name}} will be deleted.",
+    "selectedMarks": "{{count}} selected marks"
   },
   "recovery": {
     "discard": "Discard",

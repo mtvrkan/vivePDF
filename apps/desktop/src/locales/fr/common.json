@@ -5728,7 +5728,7 @@
     "redact": "Marquer un caviardage (sélectionnez du texte ou dessinez une zone)",
     "applyRedactions_one": "Appliquer {{count}} caviardage",
     "applyRedactions_other": "Appliquer {{count}} caviardages",
-    "deleteSelected": "Supprimer l’annotation sélectionnée",
+    "deleteSelected": "Supprimer les marques sélectionnées",
     "save": "Enregistrer",
     "saveAs": "Enregistrer sous",
     "suffix": "annote",
@@ -5763,7 +5763,13 @@
     "curve": "Courbure",
     "straighten": "Redresser",
     "note": "Note",
-    "notePlaceholder": "Ajouter une note à cette annotation"
+    "notePlaceholder": "Ajouter une note à cette annotation",
+    "areaSelect": "Sélectionner une zone (glisser sur les marques)",
+    "deleteAll": "Supprimer toutes les marques",
+    "deleteAllTitle": "Supprimer toutes les marques ?",
+    "deleteAllBody_one": "{{count}} marque de {{name}} sera supprimée.",
+    "deleteAllBody_other": "{{count}} marques de {{name}} seront supprimées.",
+    "selectedMarks": "{{count}} marques sélectionnées"
   },
   "recovery": {
     "discard": "Ignorer",

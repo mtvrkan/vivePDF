@@ -5728,7 +5728,7 @@
     "redact": "Marcar censura (seleccione texto o dibuje un área)",
     "applyRedactions_one": "Aplicar {{count}} censura",
     "applyRedactions_other": "Aplicar {{count}} censuras",
-    "deleteSelected": "Eliminar anotación seleccionada",
+    "deleteSelected": "Eliminar las marcas seleccionadas",
     "save": "Guardar",
     "saveAs": "Guardar como",
     "suffix": "anotado",
@@ -5763,7 +5763,13 @@
     "curve": "Curvatura",
     "straighten": "Enderezar",
     "note": "Nota",
-    "notePlaceholder": "Añadir una nota a esta marca"
+    "notePlaceholder": "Añadir una nota a esta marca",
+    "areaSelect": "Seleccionar un área (arrastre sobre las marcas)",
+    "deleteAll": "Eliminar todas las marcas",
+    "deleteAllTitle": "¿Eliminar todas las marcas?",
+    "deleteAllBody_one": "Se eliminará {{count}} marca de {{name}}.",
+    "deleteAllBody_other": "Se eliminarán {{count}} marcas de {{name}}.",
+    "selectedMarks": "{{count}} marcas seleccionadas"
   },
   "recovery": {
     "discard": "Descartar",

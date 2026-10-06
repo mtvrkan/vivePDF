@@ -129,6 +129,50 @@ describe("viewer", () => {
     expect(frame.panelTop).toBeGreaterThan(frame.frameBottom);
   });
 
+  it("draws in the picked pen colour, selects marks by area and deletes all marks in one go", async () => {
+    await closeAllDocuments();
+    await openInViewer(copyFixture(fixtures().sample, "pen-colour.pdf"));
+    if (!(await button(t("annotate.ink")).isDisplayed())) await clickButton(t("viewer.annotate"));
+    await clickButton(t("annotate.ink"));
+    await $(`button[aria-label^="${t("annotate.color")}: "]`).click();
+    await $('button[aria-label="#3e63dd"]').click();
+    await browser.keys(ESCAPE_KEY);
+    if ((await button(t("annotate.ink")).getAttribute("aria-pressed")) !== "true") await clickButton(t("annotate.ink"));
+    const draw = async (points: number[][]) => {
+      let stroke = browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, points[0][0], points[0][1])).down();
+      for (const [x, y] of points.slice(1)) stroke = stroke.move({ ...(await pagePoint(0, x, y)), duration: 80 });
+      await stroke.up().perform();
+      await browser.pause(1200);
+    };
+    const blueStrokes = () =>
+      browser.execute(() =>
+        Array.from(document.querySelectorAll('[data-page-index="0"] [data-annotation-layer] svg *')).filter((node) => getComputedStyle(node).stroke === "rgb(62, 99, 221)").length,
+      );
+    await draw([[150, 160], [200, 130], [250, 190]]);
+    await draw([[150, 240], [200, 210], [250, 270]]);
+    await browser.waitUntil(async () => (await blueStrokes()) >= 2, { timeoutMsg: "the pen did not draw in the picked colour" });
+
+    await clickButton(t("annotate.areaSelect"));
+    await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 120, 110)).down().move({ ...(await pagePoint(0, 200, 200)), duration: 120 }).move({ ...(await pagePoint(0, 280, 290)), duration: 120 }).up().perform();
+    await $('[data-page-index="0"] [data-group-selection-box]').waitForExist({ timeoutMsg: "dragging an area did not select both marks" });
+    await expect($(`//span[normalize-space()="${t("annotate.selectedMarks", { count: 2 })}"]`)).toBeDisplayed();
+    await clickButton(t("annotate.deleteSelected"));
+    await browser.waitUntil(async () => (await blueStrokes()) === 0, { timeoutMsg: "deleting an area selection left marks behind" });
+
+    await clickButton(t("annotate.ink"));
+    await draw([[150, 160], [200, 130], [250, 190]]);
+    await draw([[150, 240], [200, 210], [250, 270]]);
+    await browser.waitUntil(async () => (await blueStrokes()) >= 2);
+    await clickButton(t("annotate.deleteAll"));
+    const dialog = $('[role="dialog"]');
+    await dialog.waitForDisplayed();
+    await dialog.$(`.//button[normalize-space()="${t("annotate.deleteAll")}"]`).click();
+    await browser.waitUntil(async () => (await blueStrokes()) === 0, { timeoutMsg: "delete all left marks behind" });
+    await clickButton(t("tools.pages.undo"));
+    await clickButton(t("tools.pages.undo"));
+    await browser.waitUntil(async () => (await blueStrokes()) >= 2, { timeoutMsg: "undo did not bring the deleted marks back" });
+  });
+
   it("starts the presentation from the first page on F5 and from the current page on Shift F5", async () => {
     const path = copyFixture(fixtures().six, "present.pdf");
     await openInViewer(path);

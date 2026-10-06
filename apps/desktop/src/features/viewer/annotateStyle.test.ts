@@ -8,8 +8,11 @@ describe("stylePatchFor colour routing", () => {
     expect(stylePatchFor("circle", { color: "#FF0000" })).toEqual({ strokeColor: "#FF0000" });
   });
 
-  it("sends colour to the body for ink and markup", () => {
-    expect(stylePatchFor("ink", { color: "#FF0000" })).toEqual({ color: "#FF0000" });
+  it("sends colour to the pen's line, which is what a drawn stroke is painted with", () => {
+    expect(stylePatchFor("ink", { color: "#3E63DD" })).toEqual({ strokeColor: "#3E63DD" });
+  });
+
+  it("sends colour to the body for markup", () => {
     expect(stylePatchFor("highlight", { color: "#FF0000" })).toEqual({ color: "#FF0000" });
   });
 

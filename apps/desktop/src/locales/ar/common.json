@@ -6479,7 +6479,7 @@
     "applyRedactions_few": "تطبيق {{count}} تنقيحات",
     "applyRedactions_many": "تطبيق {{count}} تنقيحًا",
     "applyRedactions_other": "تطبيق {{count}} تنقيح",
-    "deleteSelected": "حذف التعليق المحدد",
+    "deleteSelected": "حذف العلامات المحددة",
     "save": "حفظ",
     "saveAs": "حفظ باسم",
     "suffix": "annotated",
@@ -6518,7 +6518,17 @@
     "curve": "الانحناء",
     "straighten": "استقامة",
     "note": "ملاحظة",
-    "notePlaceholder": "أضف ملاحظة إلى هذه العلامة"
+    "notePlaceholder": "أضف ملاحظة إلى هذه العلامة",
+    "areaSelect": "تحديد منطقة (اسحب فوق العلامات)",
+    "deleteAll": "حذف كل العلامات",
+    "deleteAllTitle": "هل تريد حذف كل العلامات؟",
+    "deleteAllBody_zero": "لا توجد علامات للحذف في {{name}}.",
+    "deleteAllBody_one": "سيتم حذف علامة واحدة من {{name}}.",
+    "deleteAllBody_two": "سيتم حذف علامتين من {{name}}.",
+    "deleteAllBody_few": "سيتم حذف {{count}} علامات من {{name}}.",
+    "deleteAllBody_many": "سيتم حذف {{count}} علامة من {{name}}.",
+    "deleteAllBody_other": "سيتم حذف {{count}} علامة من {{name}}.",
+    "selectedMarks": "{{count}} علامات محددة"
   },
   "recovery": {
     "discard": "تجاهل",

@@ -5728,7 +5728,7 @@
     "redact": "Karartma işaretle (metin seç veya alan çiz)",
     "applyRedactions_one": "{{count}} karartmayı uygula",
     "applyRedactions_other": "{{count}} karartmayı uygula",
-    "deleteSelected": "Seçili notu sil",
+    "deleteSelected": "Seçili işaretleri sil",
     "save": "Kaydet",
     "saveAs": "Farklı kaydet",
     "suffix": "isaretli",
@@ -5763,7 +5763,13 @@
     "curve": "Kavis",
     "straighten": "Düzleştir",
     "note": "Not",
-    "notePlaceholder": "Bu işarete not ekleyin"
+    "notePlaceholder": "Bu işarete not ekleyin",
+    "areaSelect": "Alan seç (işaretlerin üzerinden sürükleyin)",
+    "deleteAll": "Tüm işaretleri sil",
+    "deleteAllTitle": "Tüm işaretler silinsin mi?",
+    "deleteAllBody_one": "{{name}} içindeki {{count}} işaret silinecek.",
+    "deleteAllBody_other": "{{name}} içindeki {{count}} işaret silinecek.",
+    "selectedMarks": "{{count}} seçili işaret"
   },
   "recovery": {
     "discard": "Yoksay",

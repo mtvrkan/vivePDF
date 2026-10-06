@@ -3,6 +3,7 @@ import { useRovingRadios } from "@/shared/hooks/useRovingRadios";
 import {
   ArrowRight,
   Baseline,
+  BrushCleaning,
   Circle,
   Eraser,
   Highlighter,
@@ -13,6 +14,7 @@ import {
   SaveAll,
   ScanEye,
   Square,
+  SquareDashedMousePointer,
   Strikethrough,
   TextCursorInput,
   Trash2,
@@ -45,6 +47,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { DASH_TOOLS, DEFAULT_LINE_ENDINGS, FALLBACK_COLORS, FILL_TOOLS, LINE_ENDING_LABEL_KEYS, LINE_ENDING_OPTIONS, LINE_TOOLS, MAX_STROKE_WIDTH, MIN_STROKE_WIDTH, STROKE_TOOLS, STROKE_WIDTH_STEP, SUBTYPE_TOOLS, stylePatchFor, type StyleValues } from "./annotateStyle";
 import { CURVE_STEP, MAX_CURVE, MIN_CURVE, currentCurve, curveRectPatch, curvedVertices, lineEndpoints, polylineFromLine } from "./lineCurve";
 import { MARKUP_SUBTYPES, hasSelectionRects, markupRequests } from "./selectionMarkup";
+import { allMarks, useAreaSelectStore } from "./markArea";
 
 type Tool = { id: string; icon: LucideIcon; labelKey: string };
 
@@ -81,6 +84,8 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   const { provides: exporter } = useExport(documentId);
   const [saving, setSaving] = useState(false);
   const [overwriteOpen, setOverwriteOpen] = useState(false);
+  const [deleteAllOpen, setDeleteAllOpen] = useState(false);
+  const areaActive = useAreaSelectStore((state) => state.documentId === documentId);
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const [color, setColor] = useState(FALLBACK_COLORS[0]);
   const [strokeWidth, setStrokeWidth] = useState(2);
@@ -104,7 +109,9 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   const activeTool = annotationState.activeToolId ?? null;
   const redactActive = redaction?.isRedactActive() ?? false;
   const pendingCount = redactionState.pendingCount ?? 0;
-  const selected = annotation?.getSelectedAnnotation() ?? null;
+  const selectedMarks = annotation?.getSelectedAnnotations() ?? [];
+  const selected = annotation?.getSelectedAnnotation() ?? selectedMarks[0] ?? null;
+  const markCount = allMarks(annotationState.byUid ?? {}).length;
   const presets: string[] = annotationCapability?.getColorPresets() ?? FALLBACK_COLORS;
   const swatches = presets.slice(0, 8);
   const colorRoving = useRovingRadios(swatches, Math.max(0, swatches.findIndex((preset) => preset.toLowerCase() === color.toLowerCase())), (preset) => applyStyle({ color: preset }), 2);
@@ -115,7 +122,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   const showFill = styleTool !== null && FILL_TOOLS.has(styleTool);
   const showDash = styleTool !== null && DASH_TOOLS.has(styleTool);
   const showEndings = styleTool !== null && LINE_TOOLS.has(styleTool);
-  const selectedLine = asLineLike(selected?.object);
+  const selectedLine = selectedMarks.length > 1 ? null : asLineLike(selected?.object);
   const endings = selectedLine?.lineEndings ?? toolEndings[styleTool ?? ""] ?? DEFAULT_LINE_ENDINGS.lineArrow;
   const curve = selectedLine ? currentCurve(selectedLine) : 0;
   const endingOptions = LINE_ENDING_OPTIONS.map((ending) => ({ value: String(ending), label: t(LINE_ENDING_LABEL_KEYS[ending] ?? "annotate.endNone") }));
@@ -133,9 +140,9 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
     if (activeTool) {
       annotationCapability?.setToolDefaults(activeTool, stylePatchFor(activeTool, next));
     }
-    if (selected) {
-      const selectedTool = SUBTYPE_TOOLS[selected.object.type] ?? "ink";
-      annotation.updateAnnotation(selected.object.pageIndex, selected.object.id, { ...stylePatchFor(selectedTool, next), author: selected.object.author });
+    for (const { object } of selectedMarks) {
+      const markTool = SUBTYPE_TOOLS[object.type] ?? "ink";
+      annotation.updateAnnotation(object.pageIndex, object.id, { ...stylePatchFor(markTool, next), author: object.author });
     }
   };
 
@@ -164,6 +171,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const selectTool = (id: string) => {
+    useAreaSelectStore.getState().stop();
     if (redactActive) redaction?.toggleRedact();
     const next = activeTool === id ? null : id;
     if (next) {
@@ -174,6 +182,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const disarmTools = () => {
+    useAreaSelectStore.getState().stop();
     annotation?.setActiveTool(null);
     if (redaction?.isRedactActive()) redaction.toggleRedact();
   };
@@ -191,6 +200,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const toggleRedact = () => {
+    useAreaSelectStore.getState().stop();
     annotation?.setActiveTool(null);
     if (!redactActive && redaction && hasSelectionRects(selectionRects())) {
       void redaction
@@ -222,7 +232,24 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const deleteSelected = () => {
-    if (selected) annotation?.deleteAnnotation(selected.object.pageIndex, selected.object.id);
+    annotation?.deleteAnnotations(selectedMarks.map(({ object }) => ({ pageIndex: object.pageIndex, id: object.id })));
+  };
+
+  const deleteAll = () => {
+    setDeleteAllOpen(false);
+    annotation?.deleteAnnotations(allMarks(annotationState.byUid ?? {}));
+  };
+
+  const pickPointer = () => {
+    useAreaSelectStore.getState().stop();
+    annotation?.setActiveTool(null);
+    if (redactActive) redaction?.toggleRedact();
+  };
+
+  const toggleArea = () => {
+    annotation?.setActiveTool(null);
+    if (redactActive) redaction?.toggleRedact();
+    useAreaSelectStore.getState().toggle(documentId);
   };
 
   const saveTo = async (path?: string) => {
@@ -252,6 +279,26 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
     if (selectedPath) await saveTo(selectedPath.toLowerCase().endsWith(".pdf") ? selectedPath : `${selectedPath}.pdf`);
   };
 
+  const deleteAllDialog = (
+    <Dialog
+      open={deleteAllOpen}
+      title={t("annotate.deleteAllTitle")}
+      onClose={() => setDeleteAllOpen(false)}
+      footer={
+        <>
+          <Button variant="ghost" onClick={() => setDeleteAllOpen(false)}>
+            {t("common.cancel")}
+          </Button>
+          <Button variant="destructive" onClick={deleteAll}>
+            {t("annotate.deleteAll")}
+          </Button>
+        </>
+      }
+    >
+      <p className="text-sm">{t("annotate.deleteAllBody", { count: markCount, name: document?.fileName ?? "" })}</p>
+    </Dialog>
+  );
+
   const overwriteDialog = (
     <Dialog
       open={overwriteOpen}
@@ -278,7 +325,8 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   if (layout === "dock") {
     return (
       <div className="glass flex w-12 flex-col items-center gap-1 rounded-2xl p-1.5">
-        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive} onClick={() => { annotation?.setActiveTool(null); if (redactActive) redaction?.toggleRedact(); }} />
+        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive && !areaActive} onClick={pickPointer} />
+        <IconButton icon={SquareDashedMousePointer} label={t("annotate.areaSelect")} active={areaActive} onClick={toggleArea} />
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />
         {TOOLS.map((tool) => (
           <IconButton key={tool.id} icon={tool.icon} label={t(tool.labelKey)} active={activeTool === tool.id} onClick={() => selectTool(tool.id)} />
@@ -323,11 +371,13 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />
         <IconButton icon={Undo2} label={t("tools.pages.undo")} disabled={!historyState.canUndo} onClick={() => history?.undo()} />
         <IconButton icon={Redo2} label={t("tools.pages.redo")} disabled={!historyState.canRedo} onClick={() => history?.redo()} />
-        <IconButton icon={Trash2} label={t("annotate.deleteSelected")} disabled={!annotationState.selectedUid} onClick={deleteSelected} />
+        <IconButton icon={Trash2} label={t("annotate.deleteSelected")} disabled={selectedMarks.length === 0} onClick={deleteSelected} />
+        <IconButton icon={BrushCleaning} label={t("annotate.deleteAll")} disabled={markCount === 0} onClick={() => setDeleteAllOpen(true)} />
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />
         <IconButton icon={Save} label={t("annotate.save")} disabled={!exporter || !document || saving} onClick={requestOverwrite} />
         <IconButton icon={SaveAll} label={t("annotate.saveAs")} disabled={!exporter || saving} onClick={() => void saveAs()} />
         {overwriteDialog}
+        {deleteAllDialog}
       </div>
     );
   }
@@ -335,7 +385,8 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   return (
     <div className="relative z-40 glass-flat border-b">
       <div className="flex h-row items-center gap-1.5 px-2">
-        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive} onClick={() => { annotation?.setActiveTool(null); if (redactActive) redaction?.toggleRedact(); }} />
+        <IconButton icon={MousePointer2} label={t("annotate.select")} active={!activeTool && !redactActive && !areaActive} onClick={pickPointer} />
+        <IconButton icon={SquareDashedMousePointer} label={t("annotate.areaSelect")} active={areaActive} onClick={toggleArea} />
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         {TOOLS.map((tool) => (
           <IconButton key={tool.id} icon={tool.icon} label={t(tool.labelKey)} active={activeTool === tool.id} onClick={() => selectTool(tool.id)} />
@@ -348,7 +399,8 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
           </Button>
         ) : null}
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
-        <IconButton icon={Trash2} label={t("annotate.deleteSelected")} disabled={!annotationState.selectedUid} onClick={deleteSelected} />
+        <IconButton icon={Trash2} label={t("annotate.deleteSelected")} disabled={selectedMarks.length === 0} onClick={deleteSelected} />
+        <IconButton icon={BrushCleaning} label={t("annotate.deleteAll")} disabled={markCount === 0} onClick={() => setDeleteAllOpen(true)} />
         <IconButton icon={Undo2} label={t("tools.pages.undo")} disabled={!historyState.canUndo} onClick={() => history?.undo()} />
         <IconButton icon={Redo2} label={t("tools.pages.redo")} disabled={!historyState.canRedo} onClick={() => history?.redo()} />
         <span className="flex-1" />
@@ -363,7 +415,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
       {styleTarget ? (
         <div className="flex min-h-9 flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-2 py-1 text-xs">
           <span className="glass-chip inline-flex h-7 items-center rounded-xl px-2.5 text-muted-foreground">
-            {styleTarget === "selected" ? t("annotate.selectedMark") : t("annotate.newMarks")}
+            {styleTarget !== "selected" ? t("annotate.newMarks") : selectedMarks.length > 1 ? t("annotate.selectedMarks", { count: selectedMarks.length }) : t("annotate.selectedMark")}
           </span>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground">{showFill ? t("annotate.stroke") : t("annotate.color")}</span>
@@ -486,6 +538,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
         </div>
       ) : null}
       {overwriteDialog}
+      {deleteAllDialog}
     </div>
   );
 }

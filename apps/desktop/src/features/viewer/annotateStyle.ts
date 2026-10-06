@@ -54,9 +54,8 @@ export function stylePatchFor(toolId: string, values: StyleValues): StylePatch {
   const patch: StylePatch = {};
   const { color, fill, strokeWidth, opacity, dashed, lineEndings } = values;
   if (color) {
-    if (toolId === "ink" || (!STROKE_TOOLS.has(toolId) && !TEXT_TOOLS.has(toolId))) patch.color = color;
-    if (STROKE_TOOLS.has(toolId) && toolId !== "ink") patch.strokeColor = color;
-    if (RULED_MARKUP_TOOLS.has(toolId)) patch.strokeColor = color;
+    if (!STROKE_TOOLS.has(toolId) && !TEXT_TOOLS.has(toolId)) patch.color = color;
+    if (STROKE_TOOLS.has(toolId) || RULED_MARKUP_TOOLS.has(toolId)) patch.strokeColor = color;
     if (TEXT_TOOLS.has(toolId)) patch.fontColor = color;
   }
   if (fill !== undefined && FILL_TOOLS.has(toolId)) patch.color = fill ?? NO_FILL;

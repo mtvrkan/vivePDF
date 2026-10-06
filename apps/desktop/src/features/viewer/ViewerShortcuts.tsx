@@ -15,6 +15,7 @@ import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { useSplitViewStore } from "@/shared/store/splitViewStore";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { copySelection } from "./copySelection";
+import { useAreaSelectStore } from "./markArea";
 import { hasOpenModal, hasTextSelectionOutsidePages, isActivatableTarget, isInsideCompositeWidget } from "./viewerKeyTarget";
 import { isSplitViewToggle } from "./split/splitShortcut";
 import { usePageNavigation } from "./usePageNavigation";
@@ -190,13 +191,14 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         return;
       }
       if (key === "Delete" || key === "Backspace") {
-        if (selectedAnnotation) {
+        if (selectedAnnotation && annotation) {
           event.preventDefault();
-          annotation?.deleteAnnotation(selectedAnnotation.object.pageIndex, selectedAnnotation.object.id);
+          annotation.deleteAnnotations(annotation.getSelectedAnnotations().map(({ object }) => ({ pageIndex: object.pageIndex, id: object.id })));
         }
         return;
       }
       if (key === "Escape") {
+        useAreaSelectStore.getState().stop();
         if (annotation?.getActiveTool()) annotation.setActiveTool(null);
         if (redaction?.isRedactActive()) redaction.toggleRedact();
       }

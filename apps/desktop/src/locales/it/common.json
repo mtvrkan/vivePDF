@@ -5728,7 +5728,7 @@
     "redact": "Segna oscuramento (seleziona il testo o disegna un’area)",
     "applyRedactions_one": "Applica {{count}} oscuramento",
     "applyRedactions_other": "Applica {{count}} oscuramenti",
-    "deleteSelected": "Elimina annotazione selezionata",
+    "deleteSelected": "Elimina i segni selezionati",
     "save": "Salva",
     "saveAs": "Salva con nome",
     "suffix": "annotato",
@@ -5763,7 +5763,13 @@
     "curve": "Curvatura",
     "straighten": "Raddrizza",
     "note": "Nota",
-    "notePlaceholder": "Aggiungi una nota a questo contrassegno"
+    "notePlaceholder": "Aggiungi una nota a questo contrassegno",
+    "areaSelect": "Seleziona un’area (trascina sopra i segni)",
+    "deleteAll": "Elimina tutti i segni",
+    "deleteAllTitle": "Eliminare tutti i segni?",
+    "deleteAllBody_one": "Verrà eliminato {{count}} segno da {{name}}.",
+    "deleteAllBody_other": "Verranno eliminati {{count}} segni da {{name}}.",
+    "selectedMarks": "{{count}} segni selezionati"
   },
   "recovery": {
     "discard": "Scarta",

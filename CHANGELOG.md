@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Viewer annotations: Select an area lets you drag a box over the page to select every mark it touches (Shift or Ctrl adds to the selection), and several selected marks can be restyled or deleted together, with the bar showing how many are selected; Delete all marks removes every drawing, shape, highlight and text box in the document after a confirmation [2026-10-06]
 - Home collections can be rearranged by dragging the handle at the start of a card, with the arrow keys on that handle, or with Move earlier and Move later in the card's menu; Pin to the front keeps a collection ahead of the others with a pin next to its name, and the order is remembered [2026-10-06]
 - Collection view: search the files by name or folder, sort them by collection order, name (A–Z or Z–A), folder or file type, and tick several files (or every shown one) to open them together or take them out of the collection with an undo; Open all follows the chosen order [2026-10-06]
 - Home collections: click a collection's name, the eye button or "and N more" to see every file in it with its folder, open one file on its own, show it in its folder or take it out of the collection; files that are no longer on disk are marked as not found. File names on the card open that file directly [2026-10-06]
@@ -31,6 +32,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Viewer: the pen draws in the colour you pick; it always drew in red because the colour went to a field the pen ignores [2026-10-06]
 - Viewer: a selected mark (pen drawing, shape, highlight, text box) can be dragged from anywhere inside its frame again; an invisible layer behind its small menu covered the whole frame and swallowed the drag. The menu now sits just below the frame instead of over the mark [2026-10-06]
 - Top bar: in a narrow window the menus turn into icons again so the search, settings, Open PDF and window buttons stay visible; the window buttons used to shrink away instead of making room [2026-10-06]
 - Home editing: the remove button on quick access tiles no longer sits on top of the tool's icon, and the tiles in a row keep the same height [2026-10-06]
