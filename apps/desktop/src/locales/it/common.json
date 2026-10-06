@@ -246,15 +246,13 @@
       "emptySection": "Al momento non c'è nulla da mostrare qui",
       "dropHere": "Rilascia qui una sezione",
       "quick": {
-        "earlier": "Sposta {{name}} prima",
-        "later": "Sposta {{name}} dopo",
         "remove": "Rimuovi {{name}} dall'accesso rapido",
         "full": "L'accesso rapido contiene fino a {{count}} strumenti",
         "add": "Aggiungi strumento",
         "empty": "Nessuno strumento nell'accesso rapido. Personalizza la home per aggiungerne.",
         "pickTitle": "Aggiungi strumenti all'accesso rapido",
         "pickHint": "{{count}} di {{max}} strumenti. Fai clic su uno strumento per aggiungerlo.",
-        "dragHint": "Trascina per cambiare l’ordine; i pulsanti freccia fanno lo stesso da tastiera."
+        "dragHint": "Trascina per cambiare l’ordine, oppure seleziona un riquadro e usa i tasti freccia."
       }
     }
   },

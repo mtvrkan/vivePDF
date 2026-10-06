@@ -246,15 +246,13 @@
       "emptySection": "Hier gibt es gerade nichts anzuzeigen",
       "dropHere": "Bereich hier ablegen",
       "quick": {
-        "earlier": "{{name}} nach vorn",
-        "later": "{{name}} nach hinten",
         "remove": "{{name}} aus dem Schnellzugriff entfernen",
         "full": "Der Schnellzugriff fasst bis zu {{count}} Werkzeuge",
         "add": "Werkzeug hinzufügen",
         "empty": "Keine Werkzeuge im Schnellzugriff. Passen Sie die Startseite an, um welche hinzuzufügen.",
         "pickTitle": "Werkzeuge zum Schnellzugriff hinzufügen",
         "pickHint": "{{count}} von {{max}} Werkzeugen. Klicken Sie auf ein Werkzeug, um es hinzuzufügen.",
-        "dragHint": "Ziehen ändert die Reihenfolge; die Pfeiltasten tun dasselbe per Tastatur."
+        "dragHint": "Ziehen ändert die Reihenfolge – oder eine Kachel auswählen und die Pfeiltasten nutzen."
       }
     }
   },

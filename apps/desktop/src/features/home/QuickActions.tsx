@@ -1,6 +1,6 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Link } from "react-router";
-import { ArrowLeft, ArrowRight, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toolShortcuts, type ToolShortcut } from "@/app/navigation";
 import { Dialog } from "@/components/shared/Dialog";
@@ -19,6 +19,7 @@ const TILE: Record<HomeSize, string> = { small: "min-h-16 gap-1.5 py-2", medium:
 const ICON_BOX: Record<HomeSize, string> = { small: "size-7 rounded-lg", medium: "size-10 rounded-xl", large: "size-12 rounded-2xl" };
 const ICON: Record<HomeSize, string> = { small: "size-3.5", medium: "size-[18px]", large: "size-6" };
 const LABEL: Record<HomeSize, string> = { small: "text-xs", medium: "text-sm", large: "text-base" };
+const KEY_STEPS: Record<string, number> = { ArrowLeft: -1, ArrowUp: -1, ArrowRight: 1, ArrowDown: 1 };
 
 export function QuickActions({ size = "medium", editing = false }: { size?: HomeSize; editing?: boolean }) {
   const { t } = useTranslation();
@@ -57,7 +58,7 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
     <section className="@container">
       <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.quickActions")}</p>
       <ul ref={listRef} className={cn("grid gap-3", GRID[size])}>
-        {actions.map((tool, index) => {
+        {actions.map((tool) => {
           const Icon = tool.icon;
           const body = (
             <>
@@ -81,16 +82,23 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
                 <>
                   <div
                     data-tone={tool.group}
+                    tabIndex={0}
+                    aria-label={t(tool.labelKey)}
+                    aria-description={t("home.layout.quick.dragHint")}
+                    aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
                     title={t("home.layout.quick.dragHint")}
-                    className={cn(tileClass, "h-full cursor-grab touch-none select-none border border-dashed border-(--glass-border) pt-10", drag?.id === tool.id && "cursor-grabbing ring-2 ring-primary")}
+                    onKeyDown={(event) => {
+                      const step = KEY_STEPS[event.key];
+                      if (step === undefined) return;
+                      event.preventDefault();
+                      const mirrored = (event.key === "ArrowLeft" || event.key === "ArrowRight") && getComputedStyle(event.currentTarget).direction === "rtl";
+                      change((layout) => shiftQuickAction(layout, tool.id, mirrored ? -step : step));
+                    }}
+                    className={cn(tileClass, "h-full cursor-grab touch-none select-none border border-dashed border-(--glass-border) focus-visible:ring-2 focus-visible:ring-ring", drag?.id === tool.id && "cursor-grabbing ring-2 ring-primary")}
                   >
                     {body}
                   </div>
-                  <span className="absolute inset-x-1 top-1 flex justify-between">
-                    <span className="flex">
-                      <IconButton icon={ArrowLeft} label={t("home.layout.quick.earlier", { name: t(tool.labelKey) })} disabled={index === 0} onClick={() => change((layout) => shiftQuickAction(layout, tool.id, -1))} />
-                      <IconButton icon={ArrowRight} label={t("home.layout.quick.later", { name: t(tool.labelKey) })} disabled={index === actions.length - 1} onClick={() => change((layout) => shiftQuickAction(layout, tool.id, 1))} />
-                    </span>
+                  <span className="absolute end-1 top-1">
                     <IconButton icon={X} label={t("home.layout.quick.remove", { name: t(tool.labelKey) })} onClick={() => change((layout) => withoutQuickAction(layout, tool.id))} />
                   </span>
                 </>

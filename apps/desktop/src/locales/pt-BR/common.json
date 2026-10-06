@@ -246,15 +246,13 @@
       "emptySection": "Nada para mostrar aqui agora",
       "dropHere": "Solte uma seção aqui",
       "quick": {
-        "earlier": "Mover {{name}} para antes",
-        "later": "Mover {{name}} para depois",
         "remove": "Remover {{name}} do acesso rápido",
         "full": "O acesso rápido comporta até {{count}} ferramentas",
         "add": "Adicionar ferramenta",
         "empty": "Nenhuma ferramenta no acesso rápido. Personalize o início para adicionar.",
         "pickTitle": "Adicionar ferramentas ao acesso rápido",
         "pickHint": "{{count}} de {{max}} ferramentas. Clique em uma ferramenta para adicioná-la.",
-        "dragHint": "Arraste para mudar a ordem; os botões de seta fazem o mesmo pelo teclado."
+        "dragHint": "Arraste para mudar a ordem ou selecione um bloco e use as teclas de seta."
       }
     }
   },

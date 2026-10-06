@@ -246,15 +246,13 @@
       "emptySection": "Rien à afficher ici pour le moment",
       "dropHere": "Déposez une section ici",
       "quick": {
-        "earlier": "Avancer {{name}}",
-        "later": "Reculer {{name}}",
         "remove": "Retirer {{name}} de l'accès rapide",
         "full": "L'accès rapide contient jusqu'à {{count}} outils",
         "add": "Ajouter un outil",
         "empty": "Aucun outil dans l'accès rapide. Personnalisez l'accueil pour en ajouter.",
         "pickTitle": "Ajouter des outils à l'accès rapide",
         "pickHint": "{{count}} sur {{max}} outils. Cliquez sur un outil pour l'ajouter.",
-        "dragHint": "Glissez pour changer l’ordre ; les boutons fléchés font de même au clavier."
+        "dragHint": "Glissez pour changer l’ordre, ou sélectionnez une tuile et utilisez les flèches du clavier."
       }
     }
   },

@@ -246,15 +246,13 @@
       "emptySection": "Şu an burada gösterilecek bir şey yok",
       "dropHere": "Bir bölümü buraya bırakın",
       "quick": {
-        "earlier": "{{name}} aracını öne al",
-        "later": "{{name}} aracını sona doğru taşı",
         "remove": "{{name}} aracını hızlı erişimden kaldır",
         "full": "Hızlı erişimde en fazla {{count}} araç olabilir",
         "add": "Araç ekle",
         "empty": "Hızlı erişimde araç yok. Eklemek için ana sayfayı düzenleyin.",
         "pickTitle": "Hızlı erişime araç ekle",
         "pickHint": "{{count}} / {{max}} araç. Eklemek için bir araca tıklayın.",
-        "dragHint": "Sırayı değiştirmek için sürükleyin; ok düğmeleri aynı işi klavyeden yapar."
+        "dragHint": "Sırayı değiştirmek için sürükleyin ya da kutuyu seçip ok tuşlarını kullanın."
       }
     }
   },

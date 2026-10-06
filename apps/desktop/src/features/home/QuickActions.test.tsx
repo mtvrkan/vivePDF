@@ -39,11 +39,11 @@ describe("QuickActions", () => {
     expect(useHomeLayoutStore.getState().layout.quickActions).toEqual(["split", "compress", "images-to-pdf", "merge", "docx", "pages"]);
   });
 
-  it("does not start a drag from the tile's buttons", () => {
+  it("does not start a drag from the tile's remove button", () => {
     render(<QuickActions editing />, { wrapper: MemoryRouter });
-    const later = screen.getByRole("button", { name: "Move Merge later" });
+    const remove = screen.getByRole("button", { name: "Remove Merge from quick access" });
 
-    fireEvent.pointerDown(later, { button: 0, pointerId: 1 });
+    fireEvent.pointerDown(remove, { button: 0, pointerId: 1 });
     pointAt("pages");
     fireEvent.pointerMove(tile("merge"), { pointerId: 1 });
     fireEvent.pointerUp(tile("merge"), { pointerId: 1 });
@@ -62,4 +62,15 @@ describe("QuickActions", () => {
     expect(order()).toEqual(defaultHomeLayout().quickActions);
     expect(useHomeLayoutStore.getState().layout.quickActions).toEqual(defaultHomeLayout().quickActions);
   });
+
+  it("moves a tile with the arrow keys and shows no arrow buttons", () => {
+    render(<QuickActions editing />, { wrapper: MemoryRouter });
+
+    expect(screen.queryByRole("button", { name: /earlier|later/ })).toBeNull();
+    fireEvent.keyDown(tile("merge").firstElementChild as HTMLElement, { key: "ArrowRight" });
+    expect(useHomeLayoutStore.getState().layout.quickActions.slice(0, 2)).toEqual(["split", "merge"]);
+    fireEvent.keyDown(tile("merge").firstElementChild as HTMLElement, { key: "ArrowLeft" });
+    expect(useHomeLayoutStore.getState().layout.quickActions[0]).toBe("merge");
+  });
 });
+

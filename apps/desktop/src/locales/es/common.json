@@ -246,15 +246,13 @@
       "emptySection": "Ahora no hay nada que mostrar aquí",
       "dropHere": "Suelte una sección aquí",
       "quick": {
-        "earlier": "Mover {{name}} antes",
-        "later": "Mover {{name}} después",
         "remove": "Quitar {{name}} del acceso rápido",
         "full": "El acceso rápido admite hasta {{count}} herramientas",
         "add": "Añadir herramienta",
         "empty": "No hay herramientas en el acceso rápido. Personalice el inicio para añadirlas.",
         "pickTitle": "Añadir herramientas al acceso rápido",
         "pickHint": "{{count}} de {{max}} herramientas. Haga clic en una para añadirla.",
-        "dragHint": "Arrastra para cambiar el orden; los botones de flecha hacen lo mismo con el teclado."
+        "dragHint": "Arrastra para cambiar el orden, o selecciona un mosaico y usa las teclas de flecha."
       }
     }
   },

@@ -246,15 +246,13 @@
       "emptySection": "Nothing to show here right now",
       "dropHere": "Drop a section here",
       "quick": {
-        "earlier": "Move {{name}} earlier",
-        "later": "Move {{name}} later",
         "remove": "Remove {{name}} from quick access",
         "full": "Quick access holds up to {{count}} tools",
         "add": "Add tool",
         "empty": "No tools in quick access. Customize home to add some.",
         "pickTitle": "Add tools to quick access",
         "pickHint": "{{count}} of {{max}} tools. Click a tool to add it.",
-        "dragHint": "Drag to change the order; the arrow buttons do the same from the keyboard."
+        "dragHint": "Drag to change the order, or select a tile and use the arrow keys."
       }
     }
   },
