@@ -207,4 +207,21 @@ describe("home layout", () => {
     await browser.waitUntil(async () => (await tabNames()).at(-1) === "loose.pdf", { timeoutMsg: "dragging the group name did not move the group back" });
     await expect(chip).toHaveAttribute("aria-expanded", "true");
   });
+
+  it("keeps every top bar control on screen at the smallest window size", async () => {
+    await browser.setWindowSize(900, 600);
+    await browser.waitUntil(async () => (await browser.execute(() => window.innerWidth)) <= 900, { timeoutMsg: "the window did not shrink" });
+    const inside = async (label: string) =>
+      browser.execute((name) => {
+        const element = Array.from(document.querySelectorAll("header button, header a")).find((candidate) => (candidate.getAttribute("aria-label") ?? candidate.textContent?.trim()) === name);
+        if (!element) return false;
+        const box = element.getBoundingClientRect();
+        return box.width > 0 && box.left >= 0 && box.right <= window.innerWidth + 0.5;
+      }, label);
+    await browser.waitUntil(async () => inside(t("window.close")), { timeoutMsg: "the close button fell off the top bar" });
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "home-smallest-window.png"));
+    for (const label of [t("common.openPdf"), t("nav.settings"), t("window.minimize"), t("nav.help")]) expect(`${label}: ${await inside(label)}`).toBe(`${label}: true`);
+    await browser.setWindowSize(1280, 800);
+  });
 });
+

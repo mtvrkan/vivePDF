@@ -139,7 +139,7 @@ pub fn open_window<R: Runtime>(
     let built = WebviewWindowBuilder::new(app, &label, WebviewUrl::App("index.html".into()))
         .title("vivePDF")
         .inner_size(1280.0, 800.0)
-        .min_inner_size(560.0, 480.0)
+        .min_inner_size(900.0, 600.0)
         .decorations(false)
         .center()
         .focused(true)

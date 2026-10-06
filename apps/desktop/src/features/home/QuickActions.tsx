@@ -82,7 +82,7 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
                   <div
                     data-tone={tool.group}
                     title={t("home.layout.quick.dragHint")}
-                    className={cn(tileClass, "cursor-grab touch-none select-none border border-dashed border-(--glass-border)", drag?.id === tool.id && "cursor-grabbing ring-2 ring-primary")}
+                    className={cn(tileClass, "h-full cursor-grab touch-none select-none border border-dashed border-(--glass-border) pt-10", drag?.id === tool.id && "cursor-grabbing ring-2 ring-primary")}
                   >
                     {body}
                   </div>
@@ -99,7 +99,7 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
                   to={tool.route}
                   data-tone={tool.group}
                   title={t(tool.labelKey)}
-                  className={cn(tileClass, "transition-[transform,box-shadow] duration-(--transition-fast) hover:-translate-y-px focus-visible:ring-2 focus-visible:ring-ring")}
+                  className={cn(tileClass, "h-full transition-[transform,box-shadow] duration-(--transition-fast) hover:-translate-y-px focus-visible:ring-2 focus-visible:ring-ring")}
                 >
                   {body}
                 </Link>
@@ -114,7 +114,7 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
               onClick={() => setPicking(true)}
               disabled={ids.length >= MAX_QUICK_ACTIONS}
               title={ids.length >= MAX_QUICK_ACTIONS ? t("home.layout.quick.full", { count: MAX_QUICK_ACTIONS }) : undefined}
-              className={cn(tileClass, "w-full border-2 border-dashed border-(--glass-border) text-muted-foreground hover:border-primary/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50")}
+              className={cn(tileClass, "h-full w-full border-2 border-dashed border-(--glass-border) text-muted-foreground hover:border-primary/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-50")}
             >
               <Plus className={ICON[size]} aria-hidden />
               <span className={cn("w-full truncate font-medium", LABEL[size])}>{t("home.layout.quick.add")}</span>

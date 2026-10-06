@@ -12,6 +12,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Windows can no longer be shrunk below 900 × 600, where the layout starts to break [2026-10-06]
 - Viewer tab groups work like browser tab groups: clicking a group's name now collapses it even when one of its documents is open, switching to the nearest document outside the group; the name can be dragged to move the whole group, or moved with Ctrl+Shift+Left/Right; the group menu adds Open a document in this group and Move group to new window; the group's colour line runs unbroken across its tabs, and the name keeps keyboard focus when it collapses [2026-10-06]
 - Home: Small, Medium and Large now visibly change every section — spacing grows and shrinks with the size; Recent documents become a compact list without previews when small and larger previews when large; Studio and collections fit more or fewer per row; the overview card adds Close document (Ctrl W) and Full screen (F11) shortcuts when large [2026-10-06]
 - Dark theme: filter and pill buttons such as the tool categories are calmer — a quieter background and outline, the selected one tinted in its own colour with matching text, and the counts shown dimmer next to the name [2026-10-06]
@@ -28,6 +29,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Top bar: in a narrow window the menus turn into icons again so the search, settings, Open PDF and window buttons stay visible; the window buttons used to shrink away instead of making room [2026-10-06]
+- Home editing: the move and remove buttons on quick access tiles no longer sit on top of the tool's icon, and the tiles in a row keep the same height [2026-10-06]
 - Collection view: the ring around the chosen colour is no longer cut off at the top, and the hover highlight covers the whole file row instead of stopping before its buttons [2026-10-06]
 - Home: Customize home is a bordered button again instead of a faint pill that looked cut off; while editing, the pinned editing bar no longer hides the controls of the section you scroll or tab to; section names in the editing frames keep room instead of shrinking to a few letters; and the empty Recent documents card has an Open PDF button [2026-10-06]
 - Text in PDFs that vivePDF lays out (Create PDF, book, CV, cover page, text, Markdown, web page and e-mail conversions, Studio documents and designs) copies and searches as plain letters: "fi", "fl", "ff", "ffi", "ffl" and "st" no longer come out as single ligature characters in other PDF readers [2026-10-06]

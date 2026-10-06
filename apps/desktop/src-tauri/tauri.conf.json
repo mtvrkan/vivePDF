@@ -15,8 +15,8 @@
         "title": "vivePDF",
         "width": 1280,
         "height": 800,
-        "minWidth": 560,
-        "minHeight": 480,
+        "minWidth": 900,
+        "minHeight": 600,
         "center": true,
         "decorations": false,
         "visible": false

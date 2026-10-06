@@ -57,7 +57,7 @@ function WindowControls() {
     "flex h-full w-11 items-center justify-center text-muted-foreground transition-colors duration-(--transition-fast) hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset";
 
   return (
-    <div className="ms-1 flex h-full items-stretch">
+    <div className="ms-1 flex h-full shrink-0 items-stretch">
       <button type="button" aria-label={t("window.minimize")} onClick={() => runWindowCommand(() => getCurrentWindow().minimize())} className={control}>
         <Minus className="size-4" aria-hidden />
       </button>
