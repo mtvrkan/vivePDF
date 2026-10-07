@@ -4043,7 +4043,11 @@
         "continue": "Continuar sin ellos"
       },
       "papers": {
-        "letter": "Carta"
+        "letter": "Carta",
+        "a3": "A3",
+        "a4": "A4",
+        "a5": "A5",
+        "legal": "Legal"
       },
       "sourceChanged": "{{name}} cambió después de añadir sus páginas, así que ya no se pueden mostrar. Inserta el archivo de nuevo.",
       "previewFailed": "No se pudo dibujar la vista previa",
@@ -4066,6 +4070,23 @@
         "block": "Después de la selección, en orden (1, 2, 1, 2)",
         "invalid": "Introduce un número del 1 al {{limit}}.",
         "submit": "Hacer copias"
+      },
+      "selectPortrait": "Páginas verticales",
+      "selectLandscape": "Páginas horizontales",
+      "selectBySize": "Por tamaño de página",
+      "sizeGroup": "{{size}} ({{count}})",
+      "textSelect": {
+        "menu": "Seleccionar por texto…",
+        "title": "Seleccionar páginas que contienen un texto",
+        "query": "Texto que buscar",
+        "hint": "Las páginas escaneadas sin capa de texto no coinciden; aplica OCR primero.",
+        "matchCase": "Distinguir mayúsculas y minúsculas",
+        "wholeWord": "Solo palabras completas",
+        "addToSelection": "Añadir a la selección actual",
+        "submit": "Seleccionar páginas",
+        "none": "Ninguna página contiene ese texto; la selección no cambia.",
+        "found_one": "{{count}} página con el texto seleccionada.",
+        "found_other": "{{count}} páginas con el texto seleccionadas."
       }
     },
     "dropHint": "Suelte el PDF aquí o haga clic para elegirlo",
@@ -6206,7 +6227,8 @@
       "badPageNumbers": "Los números de página elegidos no coinciden con las páginas que se exportan.",
       "outputRequired": "No se indicó dónde guardar el resultado.",
       "outputAndInPlace": "El resultado se puede guardar en un archivo nuevo o sobre el original, pero no en ambos.",
-      "allPagesDeleted": "Todas las páginas se marcaron para eliminar; un PDF necesita al menos una página."
+      "allPagesDeleted": "Todas las páginas se marcaron para eliminar; un PDF necesita al menos una página.",
+      "emptyQuery": "Escribe el texto que quieres buscar."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",

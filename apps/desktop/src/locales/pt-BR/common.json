@@ -4043,7 +4043,11 @@
         "continue": "Continuar sem elas"
       },
       "papers": {
-        "letter": "Carta"
+        "letter": "Carta",
+        "a3": "A3",
+        "a4": "A4",
+        "a5": "A5",
+        "legal": "Legal"
       },
       "sourceChanged": "{{name}} mudou depois que suas páginas foram adicionadas, então elas não podem mais ser exibidas. Volte a inserir o arquivo.",
       "previewFailed": "Não foi possível desenhar a pré-visualização",
@@ -4066,6 +4070,23 @@
         "block": "Depois da seleção, em ordem (1, 2, 1, 2)",
         "invalid": "Digite um número de 1 a {{limit}}.",
         "submit": "Fazer cópias"
+      },
+      "selectPortrait": "Páginas em retrato",
+      "selectLandscape": "Páginas em paisagem",
+      "selectBySize": "Por tamanho de página",
+      "sizeGroup": "{{size}} ({{count}})",
+      "textSelect": {
+        "menu": "Selecionar por texto…",
+        "title": "Selecionar páginas que contêm um texto",
+        "query": "Texto a procurar",
+        "hint": "Páginas digitalizadas sem camada de texto não são encontradas; aplique OCR primeiro.",
+        "matchCase": "Diferenciar maiúsculas e minúsculas",
+        "wholeWord": "Somente palavras inteiras",
+        "addToSelection": "Adicionar à seleção atual",
+        "submit": "Selecionar páginas",
+        "none": "Nenhuma página contém esse texto; a seleção não mudou.",
+        "found_one": "{{count}} página com o texto selecionada.",
+        "found_other": "{{count}} páginas com o texto selecionadas."
       }
     },
     "dropHint": "Solte o PDF aqui ou clique para escolhê-lo",
@@ -6206,7 +6227,8 @@
       "badPageNumbers": "Os números de página escolhidos não correspondem às páginas exportadas.",
       "outputRequired": "Não foi informado onde salvar o resultado.",
       "outputAndInPlace": "O resultado pode ser salvo em um novo arquivo ou sobre o original, não nos dois.",
-      "allPagesDeleted": "Todas as páginas foram marcadas para exclusão; um PDF precisa de pelo menos uma página."
+      "allPagesDeleted": "Todas as páginas foram marcadas para exclusão; um PDF precisa de pelo menos uma página.",
+      "emptyQuery": "Digite o texto a procurar."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",

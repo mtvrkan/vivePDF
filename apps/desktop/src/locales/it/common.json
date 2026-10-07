@@ -4043,7 +4043,11 @@
         "continue": "Continua senza"
       },
       "papers": {
-        "letter": "Letter"
+        "letter": "Letter",
+        "a3": "A3",
+        "a4": "A4",
+        "a5": "A5",
+        "legal": "Legal"
       },
       "sourceChanged": "{{name}} è cambiato dopo l'aggiunta delle sue pagine, quindi non possono più essere mostrate. Inserisci di nuovo il file.",
       "previewFailed": "Impossibile disegnare l'anteprima",
@@ -4066,6 +4070,23 @@
         "block": "Dopo la selezione, in ordine (1, 2, 1, 2)",
         "invalid": "Inserisci un numero da 1 a {{limit}}.",
         "submit": "Crea copie"
+      },
+      "selectPortrait": "Pagine verticali",
+      "selectLandscape": "Pagine orizzontali",
+      "selectBySize": "Per formato pagina",
+      "sizeGroup": "{{size}} ({{count}})",
+      "textSelect": {
+        "menu": "Seleziona per testo…",
+        "title": "Seleziona le pagine che contengono un testo",
+        "query": "Testo da cercare",
+        "hint": "Le pagine scansionate senza livello di testo non vengono trovate; esegui prima l'OCR.",
+        "matchCase": "Maiuscole/minuscole",
+        "wholeWord": "Solo parole intere",
+        "addToSelection": "Aggiungi alla selezione attuale",
+        "submit": "Seleziona pagine",
+        "none": "Nessuna pagina contiene quel testo; la selezione non cambia.",
+        "found_one": "{{count}} pagina con il testo selezionata.",
+        "found_other": "{{count}} pagine con il testo selezionate."
       }
     },
     "dropHint": "Trascina qui il PDF o fai clic per sceglierlo",
@@ -6206,7 +6227,8 @@
       "badPageNumbers": "I numeri di pagina scelti non corrispondono alle pagine esportate.",
       "outputRequired": "Non è stato indicato dove salvare il risultato.",
       "outputAndInPlace": "Il risultato può essere salvato in un nuovo file o sull'originale, non in entrambi.",
-      "allPagesDeleted": "Tutte le pagine sono state contrassegnate per l’eliminazione; un PDF deve avere almeno una pagina."
+      "allPagesDeleted": "Tutte le pagine sono state contrassegnate per l’eliminazione; un PDF deve avere almeno una pagina.",
+      "emptyQuery": "Digita il testo da cercare."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",

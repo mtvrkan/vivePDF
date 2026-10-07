@@ -182,6 +182,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "pages.delete",
         "pages.edit",
         "pages.extract",
+        "pages.find_text",
         "pages.insert_blank",
         "pages.insert_from",
         "pages.reverse",

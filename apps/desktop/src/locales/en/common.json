@@ -4043,7 +4043,11 @@
         "continue": "Continue without them"
       },
       "papers": {
-        "letter": "Letter"
+        "letter": "Letter",
+        "a3": "A3",
+        "a4": "A4",
+        "a5": "A5",
+        "legal": "Legal"
       },
       "sourceChanged": "{{name}} has changed since its pages were added, so they can no longer be shown. Insert the file again.",
       "previewFailed": "Preview could not be drawn",
@@ -4066,6 +4070,23 @@
         "block": "After the selection, in order (1, 2, 1, 2)",
         "invalid": "Enter a number from 1 to {{limit}}.",
         "submit": "Make copies"
+      },
+      "selectPortrait": "Portrait pages",
+      "selectLandscape": "Landscape pages",
+      "selectBySize": "By page size",
+      "sizeGroup": "{{size}} ({{count}})",
+      "textSelect": {
+        "menu": "Select by text…",
+        "title": "Select pages that contain text",
+        "query": "Text to find",
+        "hint": "Scanned pages without a text layer are not matched; run OCR on them first.",
+        "matchCase": "Match case",
+        "wholeWord": "Whole words only",
+        "addToSelection": "Add to the current selection",
+        "submit": "Select pages",
+        "none": "No page contains that text; the selection is unchanged.",
+        "found_one": "{{count}} page with the text selected.",
+        "found_other": "{{count}} pages with the text selected."
       }
     },
     "dropHint": "Drop the PDF here or click to choose it",
@@ -6206,7 +6227,8 @@
       "badPageNumbers": "The chosen page numbers do not match the pages being exported.",
       "outputRequired": "No place to save the result was given.",
       "outputAndInPlace": "The result can be saved to a new file or over the original, not both.",
-      "allPagesDeleted": "Every page was marked for deletion; a PDF needs at least one page."
+      "allPagesDeleted": "Every page was marked for deletion; a PDF needs at least one page.",
+      "emptyQuery": "Type the text to search for."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

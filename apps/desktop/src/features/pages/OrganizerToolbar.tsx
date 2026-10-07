@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ArrowDownUp,
@@ -28,15 +29,19 @@ import {
   PanelRight,
   PencilRuler,
   Printer,
+  RectangleHorizontal,
+  RectangleVertical,
   Redo2,
   Replace,
   RotateCcw,
   RotateCw,
+  Ruler,
   ScanSearch,
   Scissors,
   Square,
   Tag,
   TextCursorInput,
+  TextSearch,
   ToggleRight,
   Trash2,
   Undo2,
@@ -49,11 +54,14 @@ import { Button } from "@/components/shared/Button";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import { IconButton } from "@/components/shared/IconButton";
 import { MenuButton } from "@/components/shared/MenuButton";
+import { formatPageSize } from "@/shared/lib/format";
 import { PAGES_ZOOM_MAX, PAGES_ZOOM_MIN, useUiStore } from "@/shared/store/uiStore";
 import { cutStarts, tilesAtParity, useOrganizerStore } from "./organizerStore";
 import { usePageClipboard } from "./pageClipboard";
+import { sizeGroups, tilesInOrientation } from "./pageShapes";
 import type { OrganizerEdits } from "./useOrganizerEdits";
 import type { Inspection, PageInspections } from "./usePageInspections";
+import { usePageSizes } from "./usePageSizes";
 
 export type ToolbarCommands = {
   openRange: () => void;
@@ -66,6 +74,7 @@ export type ToolbarCommands = {
   extractSelection: () => void;
   pastePages: () => void;
   openCopies: () => void;
+  openTextSelect: () => void;
 };
 
 type OrganizerToolbarProps = {
@@ -97,6 +106,12 @@ export function OrganizerToolbar({ edits, inspections, commands, multiSelect, pa
   const insertPlace = useUiStore((state) => state.pagesInsertPlace);
   const setInsertPlace = useUiStore((state) => state.setPagesInsertPlace);
   const { inspecting, inspectionControl } = inspections;
+  const sizes = usePageSizes();
+  const shapes = useMemo(
+    () => ({ portrait: tilesInOrientation(tiles, sizes, "portrait"), landscape: tilesInOrientation(tiles, sizes, "landscape"), groups: sizeGroups(tiles, sizes) }),
+    [tiles, sizes],
+  );
+  const textControl = inspectionControl("text", commands.openTextSelect);
 
   const inspectionItem = (kind: Inspection, id: string, label: string, icon: LucideIcon): ContextMenuItem => {
     const control = inspectionControl(kind);
@@ -114,6 +129,23 @@ export function OrganizerToolbar({ edits, inspections, commands, multiSelect, pa
     inspectionItem("blank", "select-blank", t("tools.pages.selectBlank"), FileX2),
     inspectionItem("scanned", "select-scanned", t("tools.pages.selectScanned"), ScanSearch),
     inspectionItem("duplicates", "select-duplicates", t("tools.pages.duplicates.select"), CopyX),
+    { type: "item", id: "select-text", label: t("tools.pages.textSelect.menu"), icon: TextSearch, disabled: tiles.length === 0 || textControl.disabled || textControl.busy, onSelect: textControl.onClick },
+    { type: "separator", id: "select-shape" },
+    { type: "item", id: "select-portrait", label: t("tools.pages.selectPortrait"), icon: RectangleVertical, disabled: shapes.portrait.length === 0, onSelect: () => edits.selectAndReveal(shapes.portrait) },
+    { type: "item", id: "select-landscape", label: t("tools.pages.selectLandscape"), icon: RectangleHorizontal, disabled: shapes.landscape.length === 0, onSelect: () => edits.selectAndReveal(shapes.landscape) },
+    {
+      type: "submenu",
+      id: "select-size",
+      label: t("tools.pages.selectBySize"),
+      icon: Ruler,
+      disabled: shapes.groups.length === 0,
+      items: shapes.groups.map((group) => ({
+        type: "item",
+        id: `select-size-${group.id}`,
+        label: t("tools.pages.sizeGroup", { size: group.paper ? `${t(`tools.pages.papers.${group.paper}`)} · ${formatPageSize({ ...group.size, rotation: 0 })}` : formatPageSize({ ...group.size, rotation: 0 }), count: group.keys.length }),
+        onSelect: () => edits.selectAndReveal(group.keys),
+      })),
+    },
   ];
 
   const insertItems: ContextMenuItem[] = [

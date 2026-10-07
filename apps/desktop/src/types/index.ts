@@ -201,7 +201,8 @@ export type PageLabelRule = { start: number; style?: PageLabelStyle; prefix?: st
 export type AssembleParams = {
   sources: AssembleSource[];
   pages: AssemblePage[];
-  output: string;
+  output?: string;
+  inPlace?: boolean;
   overwrite?: boolean;
   labels?: PageLabelRule[] | null;
 };
@@ -884,6 +885,8 @@ export type SetMetadataParams = { path: string; password?: string; output?: stri
 export type SetMetadataResult = OutputResult & { metadata: Record<string, string> };
 export type ExtractImagesParams = { path: string; password?: string; outputDir: string; pages?: string; minSize?: number; dedupe?: boolean };
 export type ExtractImagesResult = { outputs: string[]; count: number; skipped: number; bytes: number };
+export type FindTextParams = { path: string; password?: string; query: string; matchCase?: boolean; wholeWord?: boolean };
+export type FindTextResult = { pages: number[] };
 export type DetectRotationParams = { path: string; password?: string; pages?: string; ocr?: boolean; languages?: string[] };
 export type PageRotationItem = { page: number; rotation: number; method: string };
 export type DetectRotationResult = { items: PageRotationItem[]; upright: number[]; checked: number };

@@ -87,6 +87,8 @@ import type {
   DataPreviewResult,
   DecryptParams,
   DetectRotationParams,
+  FindTextParams,
+  FindTextResult,
   DetectRotationResult,
   DetectWatermarkResult,
   DocxParams,
@@ -476,6 +478,7 @@ export const checkPreflight = (params: { path: string; password?: string; profil
   rpc<PreflightReport>("preflight.check", params, options);
 export const setMetadata = (params: SetMetadataParams, options?: RpcCallOptions) => rpc<SetMetadataResult>("info.set_metadata", params, options);
 export const extractImages = (params: ExtractImagesParams, options?: RpcCallOptions) => rpc<ExtractImagesResult>("convert.extract_images", params, options);
+export const findTextPages = (params: FindTextParams, options?: RpcCallOptions) => rpc<FindTextResult>("pages.find_text", params, options);
 export const detectRotation = (params: DetectRotationParams, options?: RpcCallOptions) => rpc<DetectRotationResult>("pages.detect_rotation", params, options);
 export const autoRotatePages = (params: AutoRotateParams, options?: RpcCallOptions) => rpc<AutoRotateResult>("pages.auto_rotate", params, options);
 export const applyLetterhead = (params: LetterheadParams, options?: RpcCallOptions) => rpc<LetterheadResult>("pages.letterhead", params, options);

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { analyzePages, findDuplicatePages } from "@/shared/rpc/analyze";
 import { toRpcError } from "@/shared/rpc/client";
-import { detectRotation, getBookmarks } from "@/shared/rpc/operations";
+import { detectRotation, findTextPages, getBookmarks } from "@/shared/rpc/operations";
 import { describeError } from "@/shared/lib/errorMessage";
 import { useToastStore } from "@/shared/store/toastStore";
 import { defaultOcrLanguages } from "@/app/locales";
@@ -11,9 +11,10 @@ import type { OrganizerSource, RpcError } from "@/types";
 import { analyzedTiles, sourcesInUse, withDetectedRotation, type PagesBySource, type RotationsBySource } from "./analyzedSelection";
 import { bookmarkCuts, duplicateTiles, imageGroupKey, topLevelStarts, type DuplicateGroups, type PageKeysBySource } from "./organizerTools";
 import { useOrganizerStore } from "./organizerStore";
+import type { TextQuery } from "./OrganizerDialogs";
 import type { OrganizerEdits } from "./useOrganizerEdits";
 
-export type Inspection = "blank" | "scanned" | "rotation" | "bookmarks" | "duplicates";
+export type Inspection = "blank" | "scanned" | "rotation" | "bookmarks" | "duplicates" | "text";
 
 export function usePageInspections(activeDocumentId: string | null, edits: Pick<OrganizerEdits, "setCuts" | "selectAndReveal">) {
   const { t } = useTranslation();
@@ -119,6 +120,25 @@ export function usePageInspections(activeDocumentId: string | null, edits: Pick<
     [inspectSources, selectAndReveal, pushToast, t],
   );
 
+  const selectByText = useCallback(
+    async ({ query, matchCase, wholeWord, addToSelection }: TextQuery) => {
+      const found = await inspectSources("text", (source, signal) =>
+        findTextPages({ path: source.path, password: source.password ?? undefined, query, matchCase, wholeWord }, { signal }),
+      );
+      if (!found) return;
+      const pages: PagesBySource = {};
+      for (const [sourceId, result] of found) pages[sourceId] = new Set(result.pages);
+      const keys = analyzedTiles(useOrganizerStore.getState().tiles, pages, false);
+      if (keys.length === 0) {
+        pushToast("info", t("tools.pages.textSelect.none"));
+        return;
+      }
+      selectAndReveal(addToSelection ? [...new Set([...keys, ...useOrganizerStore.getState().selected])] : keys);
+      pushToast("success", t("tools.pages.textSelect.found", { count: keys.length }));
+    },
+    [inspectSources, selectAndReveal, pushToast, t],
+  );
+
   const cutAtChapters = useCallback(async () => {
     const outlines = await inspectSources("bookmarks", (source, signal) => getBookmarks({ path: source.path, password: source.password ?? undefined }, { signal }));
     if (!outlines) return;
@@ -174,11 +194,12 @@ export function usePageInspections(activeDocumentId: string | null, edits: Pick<
     rotation: () => void autoRotateTiles(),
     bookmarks: () => void cutAtChapters(),
     duplicates: () => void selectDuplicates(),
+    text: () => undefined,
   };
 
-  const inspectionControl = (kind: Inspection) => inspectionButton(kind, runners[kind]);
+  const inspectionControl = (kind: Inspection, run: () => void = runners[kind]) => inspectionButton(kind, run);
 
-  return { inspecting, inspectionControl };
+  return { inspecting, inspectionControl, selectByText };
 }
 
 export type PageInspections = ReturnType<typeof usePageInspections>;

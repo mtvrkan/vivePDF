@@ -4,6 +4,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Engine: `pages.find_text` lists the pages that contain a text, and `pages.assemble` can write the arrangement over the original file through a staging file [2026-10-07]
+- Page organizer: Select › Portrait pages, Landscape pages and By page size (A4, Letter… with counts, after rotation) pick pages by shape, and Select by text… picks the pages that contain a text (match case, whole words, add to the current selection) [2026-10-07]
 - Page organizer: Select › Invert selection (Ctrl+I) selects every page that was not selected and clears the rest [2026-10-07]
 - Page organizer: Edit pages › Reverse selected pages flips the order of just the selected pages in their own places, and Make copies… adds 1–99 copies either right after each page or as a block after the selection; both are also in the right-click menu [2026-10-07]
 - Page organizer: Insert › Insert new pages chooses whether blank pages, PDFs, pictures and pasted pages go after the selection, before it or at the end; the choice is remembered [2026-10-07]

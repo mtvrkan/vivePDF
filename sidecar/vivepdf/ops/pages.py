@@ -91,7 +91,8 @@ def _unique_source_ids(sources: list[AssembleSource]) -> None:
 class AssembleParams(RpcModel):
     sources: list[AssembleSource] = Field(min_length=1)
     pages: list[AssemblePage] = Field(min_length=1)
-    output: str
+    output: str | None = None
+    in_place: bool = False
     overwrite: bool = False
     labels: list[PageLabelRule] | None = None
 
@@ -415,14 +416,59 @@ def _open_sources(sources: list[AssembleSource], documents: dict[str, pymupdf.Do
         documents[source.id] = open_document(source.path, source.password)
 
 
+def _assemble_target(params: AssembleParams) -> Path | None:
+    if params.in_place and params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "give either an output file or in-place, not both",
+            {"reason": "outputAndInPlace"},
+        )
+    if params.in_place:
+        return None
+    if not params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "an output file or in-place is required",
+            {"reason": "outputRequired"},
+        )
+    return prepare_output(
+        params.output, [source.path for source in params.sources], params.overwrite
+    )
+
+
+def _save_assembled_in_place(
+    result: pymupdf.Document,
+    documents: dict[str, pymupdf.Document],
+    seal: SourceSeal | None,
+    protection: Protection | None,
+    main_path: str,
+) -> OutputResult:
+    original = Path(main_path)
+    staging = original.parent / f".vivepdf-{uuid.uuid4().hex[:12]}.part"
+    try:
+        saved = save_protected(result, staging, seal, protection)
+        result.close()
+        if seal is not None:
+            seal.close()
+        for document in documents.values():
+            document.close()
+        forget_document(main_path)
+        replace_patiently(staging, original)
+    except BaseException:
+        with contextlib.suppress(OSError):
+            unlink_patiently(staging)
+        raise
+    return OutputResult(
+        output=main_path, page_count=saved.page_count, bytes=original.stat().st_size
+    )
+
+
 @op("pages.assemble", AssembleParams)
 def assemble(params: AssembleParams, progress: Progress) -> OutputResult:
     label_parts = (
         None if params.labels is None else explicit_label_parts(params.labels, len(params.pages))
     )
-    target = prepare_output(
-        params.output, [source.path for source in params.sources], params.overwrite
-    )
+    target = _assemble_target(params)
     documents: dict[str, pymupdf.Document] = {}
     try:
         _open_sources(params.sources, documents)
@@ -439,14 +485,20 @@ def assemble(params: AssembleParams, progress: Progress) -> OutputResult:
         seal, protection = _main_protection(params.sources, documents)
         try:
             progress.report(0.9, "progress.saving")
+            if target is None:
+                return _save_assembled_in_place(
+                    result, documents, seal, protection, params.sources[0].path
+                )
             return save_protected(result, target, seal, protection)
         finally:
-            result.close()
+            if not result.is_closed:
+                result.close()
             if seal is not None:
                 seal.close()
     finally:
         for document in documents.values():
-            document.close()
+            if not document.is_closed:
+                document.close()
 
 
 class AssemblePartsParams(RpcModel):
@@ -1066,3 +1118,47 @@ def insert_from(params: InsertFromParams, progress: Progress) -> InsertFromResul
     finally:
         if not document.is_closed:
             document.close()
+
+
+class FindTextParams(RpcModel):
+    path: str
+    password: str | None = None
+    query: str = Field(min_length=1, max_length=500)
+    match_case: bool = False
+    whole_word: bool = False
+
+
+class FindTextResult(RpcModel):
+    pages: list[int]
+
+
+def _squashed(text: str) -> str:
+    return " ".join(text.replace("­", "").split())
+
+
+def _find_pattern(query: str, match_case: bool, whole_word: bool) -> re.Pattern[str]:
+    needle = query if match_case else query.casefold()
+    escaped = re.escape(needle)
+    if whole_word:
+        escaped = rf"(?<!\w){escaped}(?!\w)"
+    return re.compile(escaped, re.UNICODE)
+
+
+@op("pages.find_text", FindTextParams)
+def find_text(params: FindTextParams, progress: Progress) -> FindTextResult:
+    query = _squashed(params.query)
+    if not query:
+        raise OpError(ErrorCode.INVALID_PARAMS, "the query is empty", {"reason": "emptyQuery"})
+    pattern = _find_pattern(query, params.match_case, params.whole_word)
+    found: list[int] = []
+    with open_document(params.path, params.password) as document:
+        count = document.page_count
+        for index in range(count):
+            progress.check_cancelled()
+            text = _squashed(document[index].get_text("text"))
+            if not params.match_case:
+                text = text.casefold()
+            if pattern.search(text):
+                found.append(index + 1)
+            progress.report((index + 1) / count, "progress.searching")
+    return FindTextResult(pages=found)

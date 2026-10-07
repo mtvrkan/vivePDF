@@ -4043,7 +4043,11 @@
         "continue": "Continuer sans elles"
       },
       "papers": {
-        "letter": "Letter"
+        "letter": "Letter",
+        "a3": "A3",
+        "a4": "A4",
+        "a5": "A5",
+        "legal": "Legal"
       },
       "sourceChanged": "{{name}} a changé depuis l'ajout de ses pages, elles ne peuvent plus être affichées. Insérez à nouveau le fichier.",
       "previewFailed": "Impossible d'afficher l'aperçu",
@@ -4066,6 +4070,23 @@
         "block": "Après la sélection, dans l'ordre (1, 2, 1, 2)",
         "invalid": "Saisissez un nombre de 1 à {{limit}}.",
         "submit": "Faire les copies"
+      },
+      "selectPortrait": "Pages en portrait",
+      "selectLandscape": "Pages en paysage",
+      "selectBySize": "Par format de page",
+      "sizeGroup": "{{size}} ({{count}})",
+      "textSelect": {
+        "menu": "Sélectionner par texte…",
+        "title": "Sélectionner les pages contenant un texte",
+        "query": "Texte à rechercher",
+        "hint": "Les pages numérisées sans couche de texte ne sont pas trouvées ; lancez d'abord l'OCR.",
+        "matchCase": "Respecter la casse",
+        "wholeWord": "Mots entiers uniquement",
+        "addToSelection": "Ajouter à la sélection actuelle",
+        "submit": "Sélectionner les pages",
+        "none": "Aucune page ne contient ce texte ; la sélection est inchangée.",
+        "found_one": "{{count}} page contenant le texte sélectionnée.",
+        "found_other": "{{count}} pages contenant le texte sélectionnées."
       }
     },
     "dropHint": "Déposez le PDF ici ou cliquez pour le choisir",
@@ -6206,7 +6227,8 @@
       "badPageNumbers": "Les numéros de page choisis ne correspondent pas aux pages exportées.",
       "outputRequired": "Aucun emplacement d'enregistrement du résultat n'a été indiqué.",
       "outputAndInPlace": "Le résultat peut être enregistré dans un nouveau fichier ou sur l'original, pas les deux.",
-      "allPagesDeleted": "Toutes les pages ont été marquées pour suppression ; un PDF doit garder au moins une page."
+      "allPagesDeleted": "Toutes les pages ont été marquées pour suppression ; un PDF doit garder au moins une page.",
+      "emptyQuery": "Saisissez le texte à rechercher."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

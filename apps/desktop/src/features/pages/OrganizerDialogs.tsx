@@ -4,7 +4,7 @@ import { BookOpen, Check, ChevronLeft, ChevronRight, RotateCcw, RotateCw } from 
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
-import { Field, SelectInput, SwitchField, TextInput } from "@/components/tool/form";
+import { Checkbox, Field, SelectInput, SwitchField, TextInput } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
 import type { OrganizerSource, OrganizerTile, PageLabelStyle } from "@/types";
 import { MAIN_SOURCE_ID, type CopyLayout } from "./organizerStore";
@@ -238,6 +238,40 @@ export function DuplicateDialog({ open, count, onClose, onDuplicate }: Duplicate
         <div className="flex justify-end gap-2 pt-1">
           <Button variant="ghost" onClick={onClose}>{t("common.cancel")}</Button>
           <Button type="submit" variant="primary" disabled={!valid}>{t("tools.pages.copies.submit")}</Button>
+        </div>
+      </form>
+    </Dialog>
+  );
+}
+
+export type TextQuery = { query: string; matchCase: boolean; wholeWord: boolean; addToSelection: boolean };
+
+type TextSelectProps = { open: boolean; hasSelection: boolean; onClose: () => void; onSearch: (query: TextQuery) => void };
+
+export function TextSelectDialog({ open, hasSelection, onClose, onSearch }: TextSelectProps) {
+  const { t } = useTranslation();
+  const [query, setQuery] = useState<TextQuery>({ query: "", matchCase: false, wholeWord: false, addToSelection: false });
+  const valid = query.query.trim().length > 0;
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    if (valid) onSearch({ ...query, addToSelection: query.addToSelection && hasSelection });
+  };
+
+  return (
+    <Dialog open={open} title={t("tools.pages.textSelect.title")} onClose={onClose}>
+      <form onSubmit={submit} className="space-y-3">
+        <Field label={t("tools.pages.textSelect.query")} hint={t("tools.pages.textSelect.hint")}>
+          <TextInput autoFocus value={query.query} maxLength={500} onChange={(event) => setQuery((current) => ({ ...current, query: event.target.value }))} />
+        </Field>
+        <div className="space-y-1">
+          <Checkbox label={t("tools.pages.textSelect.matchCase")} checked={query.matchCase} onChange={(matchCase) => setQuery((current) => ({ ...current, matchCase }))} />
+          <Checkbox label={t("tools.pages.textSelect.wholeWord")} checked={query.wholeWord} onChange={(wholeWord) => setQuery((current) => ({ ...current, wholeWord }))} />
+          <Checkbox label={t("tools.pages.textSelect.addToSelection")} checked={query.addToSelection && hasSelection} disabled={!hasSelection} onChange={(addToSelection) => setQuery((current) => ({ ...current, addToSelection }))} />
+        </div>
+        <div className="flex justify-end gap-2 pt-1">
+          <Button variant="ghost" onClick={onClose}>{t("common.cancel")}</Button>
+          <Button type="submit" variant="primary" disabled={!valid}>{t("tools.pages.textSelect.submit")}</Button>
         </div>
       </form>
     </Dialog>

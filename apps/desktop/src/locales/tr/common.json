@@ -4043,7 +4043,11 @@
         "continue": "Onlarsız devam et"
       },
       "papers": {
-        "letter": "Letter"
+        "letter": "Letter",
+        "a3": "A3",
+        "a4": "A4",
+        "a5": "A5",
+        "legal": "Legal"
       },
       "sourceChanged": "{{name}} sayfaları eklendikten sonra değişti, bu yüzden artık gösterilemiyor. Dosyayı yeniden ekleyin.",
       "previewFailed": "Önizleme çizilemedi",
@@ -4066,6 +4070,23 @@
         "block": "Seçimden sonra, sırayla (1, 2, 1, 2)",
         "invalid": "1 ile {{limit}} arasında bir sayı girin.",
         "submit": "Kopyaları çıkar"
+      },
+      "selectPortrait": "Dikey sayfalar",
+      "selectLandscape": "Yatay sayfalar",
+      "selectBySize": "Sayfa boyutuna göre",
+      "sizeGroup": "{{size}} ({{count}})",
+      "textSelect": {
+        "menu": "Metne göre seç…",
+        "title": "Metin içeren sayfaları seç",
+        "query": "Aranacak metin",
+        "hint": "Metin katmanı olmayan taranmış sayfalar eşleşmez; önce OCR uygulayın.",
+        "matchCase": "Büyük/küçük harfe duyarlı",
+        "wholeWord": "Yalnızca tam kelime",
+        "addToSelection": "Mevcut seçime ekle",
+        "submit": "Sayfaları seç",
+        "none": "Bu metni içeren sayfa yok; seçim değişmedi.",
+        "found_one": "Metni içeren {{count}} sayfa seçildi.",
+        "found_other": "Metni içeren {{count}} sayfa seçildi."
       }
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",
@@ -6206,7 +6227,8 @@
       "badPageNumbers": "Seçilen sayfa numaraları dışa aktarılan sayfalarla eşleşmiyor.",
       "outputRequired": "Sonucun kaydedileceği yer belirtilmedi.",
       "outputAndInPlace": "Sonuç yeni bir dosyaya ya da özgün dosyanın üzerine kaydedilebilir, ikisine birden değil.",
-      "allPagesDeleted": "Tüm sayfalar silinmek üzere işaretlendi; bir PDF'te en az bir sayfa olmalı."
+      "allPagesDeleted": "Tüm sayfalar silinmek üzere işaretlendi; bir PDF'te en az bir sayfa olmalı.",
+      "emptyQuery": "Aranacak metni yazın."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

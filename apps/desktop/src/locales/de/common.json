@@ -4043,7 +4043,11 @@
         "continue": "Ohne sie fortfahren"
       },
       "papers": {
-        "letter": "Letter"
+        "letter": "Letter",
+        "a3": "A3",
+        "a4": "A4",
+        "a5": "A5",
+        "legal": "Legal"
       },
       "sourceChanged": "{{name}} wurde geändert, nachdem seine Seiten eingefügt wurden, und kann nicht mehr angezeigt werden. Fügen Sie die Datei erneut ein.",
       "previewFailed": "Vorschau konnte nicht erstellt werden",
@@ -4066,6 +4070,23 @@
         "block": "Nach der Auswahl, der Reihe nach (1, 2, 1, 2)",
         "invalid": "Geben Sie eine Zahl von 1 bis {{limit}} ein.",
         "submit": "Kopien erstellen"
+      },
+      "selectPortrait": "Hochformatseiten",
+      "selectLandscape": "Querformatseiten",
+      "selectBySize": "Nach Seitengröße",
+      "sizeGroup": "{{size}} ({{count}})",
+      "textSelect": {
+        "menu": "Nach Text auswählen…",
+        "title": "Seiten mit einem Text auswählen",
+        "query": "Gesuchter Text",
+        "hint": "Gescannte Seiten ohne Textebene werden nicht gefunden; führen Sie zuerst OCR aus.",
+        "matchCase": "Groß-/Kleinschreibung beachten",
+        "wholeWord": "Nur ganze Wörter",
+        "addToSelection": "Zur aktuellen Auswahl hinzufügen",
+        "submit": "Seiten auswählen",
+        "none": "Keine Seite enthält diesen Text; die Auswahl bleibt unverändert.",
+        "found_one": "{{count}} Seite mit dem Text ausgewählt.",
+        "found_other": "{{count}} Seiten mit dem Text ausgewählt."
       }
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",
@@ -6206,7 +6227,8 @@
       "badPageNumbers": "Die gewählten Seitenzahlen passen nicht zu den exportierten Seiten.",
       "outputRequired": "Es wurde kein Speicherort für das Ergebnis angegeben.",
       "outputAndInPlace": "Das Ergebnis kann in einer neuen Datei oder über dem Original gespeichert werden, nicht beides.",
-      "allPagesDeleted": "Alle Seiten wurden zum Löschen markiert; ein PDF braucht mindestens eine Seite."
+      "allPagesDeleted": "Alle Seiten wurden zum Löschen markiert; ein PDF braucht mindestens eine Seite.",
+      "emptyQuery": "Geben Sie den gesuchten Text ein."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

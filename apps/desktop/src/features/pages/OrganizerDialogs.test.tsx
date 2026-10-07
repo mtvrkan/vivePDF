@@ -5,7 +5,7 @@ import type { OrganizerTile } from "@/types";
 
 vi.mock("./PageThumbnail", () => ({ PageThumbnail: () => <div data-testid="thumbnail" /> }));
 
-const { PagePreviewDialog } = await import("./OrganizerDialogs");
+const { PagePreviewDialog, TextSelectDialog } = await import("./OrganizerDialogs");
 
 const tile: OrganizerTile = { key: "p2", kind: "page", sourceId: "main", index: 2, rotate: 0 };
 
@@ -91,5 +91,39 @@ describe("PagePreviewDialog selection", () => {
     expect(screen.getByText(/Enter selects or deselects the page/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Open in viewer" }));
     expect(onOpenInViewer).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("TextSelectDialog", () => {
+  it("searches with the chosen options", () => {
+    const onSearch = vi.fn();
+    render(<TextSelectDialog open hasSelection onClose={vi.fn()} onSearch={onSearch} />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Text to find" }), { target: { value: "Invoice" } });
+    fireEvent.click(screen.getByRole("switch", { name: "Match case" }));
+    fireEvent.click(screen.getByRole("switch", { name: "Add to the current selection" }));
+    fireEvent.click(screen.getByRole("button", { name: "Select pages" }));
+
+    expect(onSearch).toHaveBeenCalledWith({ query: "Invoice", matchCase: true, wholeWord: false, addToSelection: true });
+  });
+
+  it("keeps the search disabled until there is text to find", () => {
+    const onSearch = vi.fn();
+    render(<TextSelectDialog open hasSelection onClose={vi.fn()} onSearch={onSearch} />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Text to find" }), { target: { value: "   " } });
+
+    expect((screen.getByRole("button", { name: "Select pages" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("cannot add to a selection that does not exist", () => {
+    const onSearch = vi.fn();
+    render(<TextSelectDialog open hasSelection={false} onClose={vi.fn()} onSearch={onSearch} />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Text to find" }), { target: { value: "total" } });
+    fireEvent.click(screen.getByRole("button", { name: "Select pages" }));
+
+    expect((screen.getByRole("switch", { name: "Add to the current selection" }) as HTMLInputElement).disabled).toBe(true);
+    expect(onSearch).toHaveBeenCalledWith(expect.objectContaining({ query: "total", addToSelection: false }));
   });
 });
