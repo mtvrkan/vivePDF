@@ -83,3 +83,52 @@ describe("useTileDrag click and drag", () => {
     expect(onMove).toHaveBeenCalledWith(new Set(["p1", "p2"]), 3);
   });
 });
+
+describe("useTileDrag onto another document", () => {
+  it("copies the dragged pages to the document under the pointer instead of reordering", () => {
+    const onDropOnDocument = vi.fn();
+    const documentAt = (_x: number, y: number) => (y < 0 ? "other" : null);
+    const drag = renderHook(() => useTileDrag({ scrollRef: { current: null }, dropIndexAt: () => 3, selectedKeys: new Set(["p1", "p2"]), onMove, documentAt, onDropOnDocument }));
+
+    act(() => {
+      drag.result.current.onTilePointerDown({ button: 0, clientX: 10, clientY: 10 } as ReactPointerEvent, "p1");
+      pointer("pointermove", 10, -20);
+      pointer("pointerup", 10, -20);
+    });
+
+    expect(onDropOnDocument).toHaveBeenCalledWith("other", new Set(["p1", "p2"]));
+    expect(onMove).not.toHaveBeenCalled();
+    expect(drag.result.current.dropDocument).toBeNull();
+  });
+
+  it("reorders as usual when the pointer comes back to the grid before release", () => {
+    const onDropOnDocument = vi.fn();
+    const documentAt = (_x: number, y: number) => (y < 0 ? "other" : null);
+    const drag = renderHook(() => useTileDrag({ scrollRef: { current: null }, dropIndexAt: () => 2, selectedKeys: new Set(), onMove, documentAt, onDropOnDocument }));
+
+    act(() => {
+      drag.result.current.onTilePointerDown({ button: 0, clientX: 10, clientY: 10 } as ReactPointerEvent, "p4");
+      pointer("pointermove", 10, -20);
+      pointer("pointermove", 40, 60);
+      pointer("pointerup", 40, 60);
+    });
+
+    expect(onDropOnDocument).not.toHaveBeenCalled();
+    expect(onMove).toHaveBeenCalledWith(new Set(["p4"]), 2);
+  });
+
+  it("drops nothing when Escape cancels a drag over a tab", () => {
+    const onDropOnDocument = vi.fn();
+    const drag = renderHook(() => useTileDrag({ scrollRef: { current: null }, dropIndexAt: () => 2, selectedKeys: new Set(), onMove, documentAt: () => "other", onDropOnDocument }));
+
+    act(() => {
+      drag.result.current.onTilePointerDown({ button: 0, clientX: 10, clientY: 10 } as ReactPointerEvent, "p4");
+      pointer("pointermove", 10, -20);
+      window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));
+      pointer("pointerup", 10, -20);
+    });
+
+    expect(onDropOnDocument).not.toHaveBeenCalled();
+    expect(onMove).not.toHaveBeenCalled();
+  });
+});

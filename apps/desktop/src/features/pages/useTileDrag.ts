@@ -18,11 +18,15 @@ type UseTileDragOptions = {
   dropIndexAt: (clientX: number, clientY: number) => number;
   selectedKeys: Set<string>;
   onMove: (keys: Set<string>, dropIndex: number) => void;
+  documentAt?: (clientX: number, clientY: number) => string | null;
+  onDropOnDocument?: (documentId: string, keys: Set<string>) => void;
 };
 
-export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: UseTileDragOptions) {
+export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove, documentAt, onDropOnDocument }: UseTileDragOptions) {
   const [drag, setDrag] = useState<DragState | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const [dropDocument, setDropDocument] = useState<string | null>(null);
+  const dropDocumentRef = useRef<string | null>(null);
   const [pointer] = useState(() => createLiveValue<DragPoint>());
   const pendingRef = useRef<{ key: string; startX: number; startY: number } | null>(null);
   const dragRef = useRef<DragState | null>(null);
@@ -45,6 +49,10 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
     }
     const rect = container.getBoundingClientRect();
     const { y } = pointerRef.current;
+    if (dropDocumentRef.current) {
+      rafRef.current = requestAnimationFrame(autoScroll);
+      return;
+    }
     if (y < rect.top + EDGE_ZONE) container.scrollTop -= SCROLL_STEP;
     else if (y > rect.bottom - EDGE_ZONE) container.scrollTop += SCROLL_STEP;
     rafRef.current = requestAnimationFrame(autoScroll);
@@ -73,7 +81,12 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
       const active = dragRef.current;
       if (!active) return;
       pointer.set({ x: active.x, y: active.y });
-      const index = dropIndexAt(active.x, active.y);
+      const documentId = documentAt?.(active.x, active.y) ?? null;
+      if (dropDocumentRef.current !== documentId) {
+        dropDocumentRef.current = documentId;
+        setDropDocument(documentId);
+      }
+      const index = documentId ? null : dropIndexAt(active.x, active.y);
       if (dropRef.current !== index) {
         dropRef.current = index;
         setDropIndex(index);
@@ -86,20 +99,25 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
     const finish = (commit: boolean) => {
       if (moveFrameRef.current !== null && dragRef.current) {
         cancelMoveFrame();
-        dropRef.current = dropIndexAt(dragRef.current.x, dragRef.current.y);
+        dropDocumentRef.current = documentAt?.(dragRef.current.x, dragRef.current.y) ?? null;
+        dropRef.current = dropDocumentRef.current ? null : dropIndexAt(dragRef.current.x, dragRef.current.y);
       }
       const active = dragRef.current;
       const target = dropRef.current;
+      const targetDocument = dropDocumentRef.current;
       pendingRef.current = null;
       dragRef.current = null;
       dropRef.current = null;
+      dropDocumentRef.current = null;
       stopAutoScroll();
       pointer.set(null);
       setDrag(null);
       setDropIndex(null);
-      if (commit && active && target !== null) {
+      setDropDocument(null);
+      if (commit && active) {
         const keys = selectedKeys.has(active.key) ? new Set(selectedKeys) : new Set([active.key]);
-        onMove(keys, target);
+        if (targetDocument) onDropOnDocument?.(targetDocument, keys);
+        else if (target !== null) onMove(keys, target);
       }
       window.setTimeout(() => {
         suppressClickRef.current = false;
@@ -123,7 +141,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
       cancelMoveFrame();
       stopAutoScroll();
     };
-  }, [selectedKeys, onMove, dropIndexAt, autoScroll, pointer]);
+  }, [selectedKeys, onMove, dropIndexAt, documentAt, onDropOnDocument, autoScroll, pointer]);
 
   const onTilePointerDown = useCallback((event: ReactPointerEvent, key: string) => {
     if (event.button !== 0) return;
@@ -132,5 +150,5 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
 
   const wasDragged = useCallback(() => suppressClickRef.current, []);
 
-  return { drag, dropIndex, pointer, onTilePointerDown, wasDragged };
+  return { drag, dropIndex, dropDocument, pointer, onTilePointerDown, wasDragged };
 }

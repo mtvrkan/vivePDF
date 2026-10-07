@@ -19,6 +19,7 @@ import { useDocumentWindow } from "./useDocumentWindow";
 import { useTabTearOff } from "./tabTearOff";
 import { openBeside } from "./split/splitTargets";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { usePageDropTargetStore } from "@/shared/store/pageDropTargetStore";
 import { isPendingChange } from "./overlay/pending";
 import { useCollectionsStore } from "@/features/home/collectionsStore";
 import { sessionPathOf } from "./convertedDocuments";
@@ -168,6 +169,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
     if (outside) guardedActivate(outside);
   };
 
+  const pageDropTarget = usePageDropTargetStore((state) => state.documentId);
   const chipped = new Set<string>();
   const tearOff = useTabTearOff((id) => void moveToWindow(id), { strip: () => stripRef.current, onReorder: reorderTo });
 
@@ -341,6 +343,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                 ? "border-b-primary bg-primary/8 font-medium text-foreground"
                 : "border-b-transparent text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
               (tearOff.draggingId === doc.id || (group && groupDrag?.groupId === group.id && groupDrag.moved)) && "cursor-grabbing opacity-60",
+              pageDropTarget === doc.id && "bg-primary/15 text-foreground",
             )}
           >
             {tone ? <span aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-0.5" style={{ backgroundColor: tone }} /> : null}

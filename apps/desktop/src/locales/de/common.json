@@ -4114,6 +4114,11 @@
       },
       "print": {
         "menu": "Drucken…"
+      },
+      "drag": {
+        "copyTo": "Nach {{name}} kopieren",
+        "copied_one": "{{count}} Seite am Ende von {{name}} hinzugefügt.",
+        "copied_other": "{{count}} Seiten am Ende von {{name}} hinzugefügt."
       }
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",

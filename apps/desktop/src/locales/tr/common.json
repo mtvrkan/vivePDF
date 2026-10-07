@@ -4114,6 +4114,11 @@
       },
       "print": {
         "menu": "Yazdır…"
+      },
+      "drag": {
+        "copyTo": "{{name}} belgesine kopyala",
+        "copied_one": "{{count}} sayfa {{name}} belgesinin sonuna eklendi.",
+        "copied_other": "{{count}} sayfa {{name}} belgesinin sonuna eklendi."
       }
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",

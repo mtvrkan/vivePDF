@@ -3,10 +3,10 @@ import type { OrganizerTile } from "@/types";
 
 vi.mock("@tauri-apps/api/path", () => ({ tempDir: async () => "C:/tmp", join: async (...parts: string[]) => parts.join("/") }));
 vi.mock("@/shared/rpc/files", () => ({ deleteFile: vi.fn(async () => undefined) }));
-vi.mock("@/shared/rpc/operations", () => ({ assemblePages: vi.fn(async () => ({ output: "", pageCount: 2, bytes: 10 })) }));
+vi.mock("@/shared/rpc/operations", () => ({ assemblePages: vi.fn(async () => ({ output: "", pageCount: 2, bytes: 10 })), insertPagesFrom: vi.fn(async () => ({ output: "", bytes: 10, inserted: 2 })) }));
 
-const { directMainPages, exportSourceOf } = await import("./organizerExport");
-const { assemblePages } = await import("@/shared/rpc/operations");
+const { copyPagesInto, directMainPages, exportSourceOf } = await import("./organizerExport");
+const { assemblePages, insertPagesFrom } = await import("@/shared/rpc/operations");
 const { deleteFile } = await import("@/shared/rpc/files");
 
 const page = (index: number, extra: Partial<Extract<OrganizerTile, { kind: "page" }>> = {}): OrganizerTile => ({ key: `p${index}`, kind: "page", sourceId: "main", index, rotate: 0, ...extra });
@@ -15,6 +15,7 @@ const arranged = { sources: [{ id: "main", path: main.path, password: "pw" }], p
 
 beforeEach(() => {
   vi.mocked(assemblePages).mockClear();
+  vi.mocked(insertPagesFrom).mockClear();
   vi.mocked(deleteFile).mockClear();
 });
 
@@ -52,6 +53,35 @@ describe("exportSourceOf", () => {
     vi.mocked(assemblePages).mockRejectedValueOnce(new Error("disk full"));
 
     await expect(exportSourceOf([page(2), page(1)], main, arranged)).rejects.toThrow("disk full");
+
+    expect(deleteFile).toHaveBeenCalledWith(expect.stringMatching(/vivepdf-pages-.+\.pdf$/));
+  });
+});
+
+describe("copyPagesInto", () => {
+  const target = { path: "C:/docs/other.pdf", password: null };
+
+  it("appends unchanged pages straight from the open file", async () => {
+    const inserted = await copyPagesInto(target, [page(2), page(4)], main, arranged);
+
+    expect(inserted).toBe(2);
+    expect(vi.mocked(insertPagesFrom).mock.calls[0][0]).toEqual({ path: target.path, password: undefined, sourcePath: main.path, sourcePassword: "pw", sourcePages: [2, 4], at: 0 });
+    expect(deleteFile).not.toHaveBeenCalled();
+  });
+
+  it("appends every page of the arranged copy and then deletes the copy", async () => {
+    await copyPagesInto(target, [page(3), page(1)], main, arranged);
+
+    const params = vi.mocked(insertPagesFrom).mock.calls[0][0];
+    expect(params.sourcePath).toMatch(/vivepdf-pages-.+\.pdf$/);
+    expect(params.sourcePages).toEqual([1, 2]);
+    expect(deleteFile).toHaveBeenCalledWith(params.sourcePath);
+  });
+
+  it("still deletes the copy when the target cannot take the pages", async () => {
+    vi.mocked(insertPagesFrom).mockRejectedValueOnce(new Error("locked"));
+
+    await expect(copyPagesInto(target, [page(3), page(1)], main, arranged)).rejects.toThrow("locked");
 
     expect(deleteFile).toHaveBeenCalledWith(expect.stringMatching(/vivepdf-pages-.+\.pdf$/));
   });

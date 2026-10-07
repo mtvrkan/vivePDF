@@ -3,7 +3,7 @@ import * as logger from "@/shared/lib/logger";
 import { rangesOf } from "@/shared/rpc/analyze";
 import type { RpcCallOptions } from "@/shared/rpc/client";
 import { deleteFile } from "@/shared/rpc/files";
-import { assemblePages } from "@/shared/rpc/operations";
+import { assemblePages, insertPagesFrom } from "@/shared/rpc/operations";
 import type { OrganizerTile } from "@/types";
 import type { Arrangement } from "./arrangement";
 import { MAIN_SOURCE_ID } from "./organizerStore";
@@ -39,5 +39,21 @@ export async function exportSourceOf(
   } catch (caught) {
     discardExportCopy(path);
     throw caught;
+  }
+}
+
+export async function copyPagesInto(
+  target: { path: string; password?: string | null },
+  tiles: readonly OrganizerTile[],
+  main: { path: string; password: string | null },
+  arranged: Arrangement,
+): Promise<number> {
+  const source = await exportSourceOf(tiles, main, arranged);
+  try {
+    const sourcePages = source.temporary ? Array.from({ length: source.pageCount }, (_, index) => index + 1) : tiles.flatMap((tile) => (tile.kind === "page" ? [tile.index] : []));
+    const { inserted } = await insertPagesFrom({ path: target.path, password: target.password ?? undefined, sourcePath: source.path, sourcePassword: source.password ?? undefined, sourcePages, at: 0 });
+    return inserted;
+  } finally {
+    if (source.temporary) discardExportCopy(source.path);
   }
 }

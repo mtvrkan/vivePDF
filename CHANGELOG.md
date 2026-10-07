@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Page organizer: drag pages onto another document's tab to copy them to the end of that document; the tab lights up while you hover it [2026-10-07]
 - Page organizer: Export › Save as pictures… (PNG, JPG, WebP or TIFF at 72–600 dpi, into a folder you choose) and Print… (Ctrl+P) work on the selected pages, or on all pages when nothing is selected, in the order and turn shown; both are also on the selection bar and in the right-click menu. Unchanged pages of the open file are used directly, anything else goes through a temporary copy that is deleted afterwards [2026-10-07]
 - Page organizer: Overwrite the original file (under the output path, remembered) makes Apply write the new page order into the open PDF and reopen it; it is blocked while the viewer has unsaved changes, and Extract and split parts still save to the output folder [2026-10-07]
 - Engine: `pages.find_text` lists the pages that contain a text, and `pages.assemble` can write the arrangement over the original file through a staging file [2026-10-07]

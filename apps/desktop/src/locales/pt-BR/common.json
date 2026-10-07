@@ -4114,6 +4114,11 @@
       },
       "print": {
         "menu": "Imprimir…"
+      },
+      "drag": {
+        "copyTo": "Copiar para {{name}}",
+        "copied_one": "{{count}} página adicionada ao final de {{name}}.",
+        "copied_other": "{{count}} páginas adicionadas ao final de {{name}}."
       }
     },
     "dropHint": "Solte o PDF aqui ou clique para escolhê-lo",

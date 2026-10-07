@@ -17,6 +17,7 @@ import { MenuButton } from "@/components/shared/MenuButton";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError, type RpcCallOptions } from "@/shared/rpc/client";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
+import { usePageDropTargetStore } from "@/shared/store/pageDropTargetStore";
 import { useOperation } from "@/shared/hooks/useOperation";
 import { basenameOf, dirnameOf, joinPath, stemOf, suggestOutputPath } from "@/shared/lib/paths";
 import { assemblePageParts, assemblePages } from "@/shared/rpc/operations";
@@ -49,7 +50,7 @@ import { OrganizerToolbar, SelectionBar } from "./OrganizerToolbar";
 import { OrganizerOutput } from "./OrganizerOutput";
 import { arrangementOf, type Arrangement } from "./arrangement";
 import { ExportImagesDialog } from "./ExportImagesDialog";
-import { exportSourceOf } from "./organizerExport";
+import { copyPagesInto, exportSourceOf } from "./organizerExport";
 import { DragBadge, MarqueeRect } from "./LiveOverlays";
 import { usePageClipboardActions } from "./usePageClipboardActions";
 import { usePageClipboard } from "./pageClipboard";
@@ -67,7 +68,7 @@ export function PagesPage() {
   const setApplyInPlace = useUiStore((state) => state.setPagesApplyInPlace);
   const { activeDocumentId } = useLiveActiveDocument();
   const document = useDocumentStore((state) => (activeDocumentId ? (state.documents[activeDocumentId] ?? null) : null));
-  const { pickAndOpen, openPath, closeDocument } = useOpenPdf();
+  const { pickAndOpen, openPath, closeDocument, activate } = useOpenPdf();
   const pushToast = useToastStore((state) => state.push);
   const { provides: scrollCapability } = useScrollCapability();
   const operation = useOperation(assemblePages);
@@ -176,7 +177,52 @@ export function PagesPage() {
     },
     [commit],
   );
-  const { drag, dropIndex, pointer: dragPointer, onTilePointerDown, wasDragged } = useTileDrag({ scrollRef, dropIndexAt: grid.dropIndexAtClient, selectedKeys: selected, onMove });
+  const documentAt = useCallback(
+    (x: number, y: number) => {
+      const id = window.document.elementFromPoint(x, y)?.closest<HTMLElement>('[role="tab"][data-tab-id]')?.dataset.tabId ?? null;
+      return id && id !== activeDocumentId ? id : null;
+    },
+    [activeDocumentId],
+  );
+
+  const copyToDocument = useCallback(
+    async (targetId: string, keys: Set<string>) => {
+      const target = useDocumentStore.getState().documents[targetId];
+      if (!document || !activeDocumentId || !target) return;
+      if (hasUnsavedWork(targetId)) {
+        pushToast("info", t("viewer.saveBeforePageDrop", { name: target.fileName }));
+        return;
+      }
+      const state = useOrganizerStore.getState();
+      const chosen = state.tiles.filter((tile) => keys.has(tile.key));
+      const returnTo = activeDocumentId;
+      try {
+        const inserted = await copyPagesInto(target, chosen, document, arrangementOf(chosen, state.sources, document, { mainFirst: true }));
+        pushToast("success", t("tools.pages.drag.copied", { count: inserted, name: target.fileName }));
+        await reloadDocument(targetId, { openPath, closeDocument, page: 1 });
+        if (useDocumentStore.getState().documents[returnTo]) activate(returnTo);
+      } catch (caught) {
+        pushToast("error", describeError(t, toRpcError(caught)));
+      }
+    },
+    [document, activeDocumentId, hasUnsavedWork, pushToast, t, openPath, closeDocument, activate],
+  );
+
+  const dropOnDocument = useCallback((targetId: string, keys: Set<string>) => withViewerSaved(() => void copyToDocument(targetId, keys)), [withViewerSaved, copyToDocument]);
+
+  const { drag, dropIndex, dropDocument, pointer: dragPointer, onTilePointerDown, wasDragged } = useTileDrag({
+    scrollRef,
+    dropIndexAt: grid.dropIndexAtClient,
+    selectedKeys: selected,
+    onMove,
+    documentAt,
+    onDropOnDocument: dropOnDocument,
+  });
+
+  useEffect(() => {
+    usePageDropTargetStore.getState().setDocumentId(dropDocument);
+    return () => usePageDropTargetStore.getState().setDocumentId(null);
+  }, [dropDocument]);
 
   const applyClick = (key: string, mode: ClickMode) => {
     const next = clickSelection(tiles, selected, anchor, key, mode);
@@ -564,7 +610,7 @@ export function PagesPage() {
           </ol>
           <SelectionBar edits={edits} busy={busy || preparingPrint} onExtract={() => apply(true)} onSaveImages={saveImages} onPrint={printPages} onCopy={() => void clipboard.copyPages()} onCut={clipboard.cutPages} />
           {marqueeActive ? <MarqueeRect live={marqueeBox} /> : null}
-          {drag ? <DragBadge live={dragPointer} label={`${drag.count} ${t("info.pages")}`} /> : null}
+          {drag ? <DragBadge live={dragPointer} label={dropDocument ? t("tools.pages.drag.copyTo", { name: useDocumentStore.getState().documents[dropDocument]?.fileName ?? "" }) : `${drag.count} ${t("info.pages")}`} /> : null}
         </div>
         <OrganizerOutput
           output={output}
