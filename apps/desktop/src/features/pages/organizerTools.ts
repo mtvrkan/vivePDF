@@ -90,6 +90,25 @@ export function labelRules(tiles: OrganizerTile[], labels: TileLabels): PageLabe
   });
 }
 
+export function subsetLabelRules(tiles: OrganizerTile[], labels: TileLabels, keep: ReadonlySet<string>): PageLabelRule[] {
+  const rules: PageLabelRule[] = [];
+  let governing: { label: TileLabel; start: number } | null = null;
+  let previous: { label: TileLabel; value: number } | null = null;
+  let kept = 0;
+  for (const [position, tile] of tiles.entries()) {
+    const own = labels[tile.key];
+    if (own) governing = { label: own, start: position };
+    if (!keep.has(tile.key)) continue;
+    if (governing) {
+      const value = governing.label.firstNumber + position - governing.start;
+      if (!previous || previous.label !== governing.label || previous.value + 1 !== value) rules.push({ start: kept, style: governing.label.style, prefix: governing.label.prefix, firstNumber: value });
+      previous = { label: governing.label, value };
+    }
+    kept += 1;
+  }
+  return rules;
+}
+
 const ROMAN: Array<[number, string]> = [
   [1000, "m"],
   [900, "cm"],

@@ -70,4 +70,37 @@ describe("organizer preview keys", () => {
     expect(openPreview).not.toHaveBeenCalled();
     expect(space.defaultPrevented).toBe(false);
   });
+
+  it("lets Space press a focused toolbar button instead of opening the preview", () => {
+    mount('<button type="button" id="undo">Undo</button>');
+    renderShortcuts();
+
+    const space = press(" ", document.getElementById("undo") as HTMLElement);
+
+    expect(openPreview).not.toHaveBeenCalled();
+    expect(space.defaultPrevented).toBe(false);
+  });
+
+  it("leaves every key to an open menu", () => {
+    mount('<div role="menu"><button type="button" role="menuitem" id="item">Rotate</button></div><div data-context-menu-layer><span id="layer"></span></div>');
+    renderShortcuts();
+
+    const enter = press("Enter", document.getElementById("item") as HTMLElement);
+    const remove = press("Delete", document.getElementById("layer") as HTMLElement);
+
+    expect(openPreview).not.toHaveBeenCalled();
+    expect(enter.defaultPrevented).toBe(false);
+    expect(remove.defaultPrevented).toBe(false);
+  });
+
+  it("ignores a key another handler already took", () => {
+    mount('<ol role="listbox" tabindex="0" id="grid"></ol>');
+    renderShortcuts();
+    const grid = document.getElementById("grid") as HTMLElement;
+    grid.addEventListener("keydown", (event) => event.preventDefault());
+
+    press(" ", grid);
+
+    expect(openPreview).not.toHaveBeenCalled();
+  });
 });

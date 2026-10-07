@@ -3807,7 +3807,7 @@
       "extractSuffix": "secili",
       "needDocument": "Sayfa düzenleyici, görüntüleyicide açık belge üzerinde çalışır.",
       "leaveTitle": "Sayfa değişiklikleri bırakılsın mı?",
-      "leaveBody": "Düzenlediğiniz sayfalar henüz uygulanmadı. Belgeyi değiştirmek veya kapatmak bu değişiklikleri siler.",
+      "leaveBody": "Düzenlediğiniz sayfalar henüz uygulanmadı. Belgeyi kapatmak bu değişiklikleri siler.",
       "selected": "seçili",
       "selectAll": "Tümünü seç",
       "selectNone": "Seçimi kaldır",
@@ -4035,7 +4035,17 @@
         "rotateLeft": "{{page}}. sayfayı sola döndür",
         "rotateRight": "{{page}}. sayfayı sağa döndür",
         "delete": "{{page}}. sayfayı sil"
-      }
+      },
+      "viewerUnsaved": {
+        "title": "Görüntüleyicideki değişiklikler kaydedilmedi",
+        "body": "{{name}} belgesinde görüntüleyicide kaydedilmemiş notlar veya değişiklikler var; yeni dosyada yer almayacaklar. Önce görüntüleyicide kaydedin ya da onlarsız devam edin.",
+        "continue": "Onlarsız devam et"
+      },
+      "papers": {
+        "letter": "Letter"
+      },
+      "sourceChanged": "{{name}} sayfaları eklendikten sonra değişti, bu yüzden artık gösterilemiyor. Dosyayı yeniden ekleyin.",
+      "previewFailed": "Önizleme çizilemedi"
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",
     "batch": {

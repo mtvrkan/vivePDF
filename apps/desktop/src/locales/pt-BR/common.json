@@ -3807,7 +3807,7 @@
       "extractSuffix": "selecionado",
       "needDocument": "O organizador de páginas funciona com o documento aberto no visualizador.",
       "leaveTitle": "Descartar as alterações de páginas?",
-      "leaveBody": "As páginas reorganizadas ainda não foram aplicadas. Trocar ou fechar o documento descarta tudo.",
+      "leaveBody": "As páginas que você reorganizou ainda não foram aplicadas. Fechar o documento as descarta.",
       "selected": "selecionado(s)",
       "selectAll": "Selecionar tudo",
       "selectNone": "Limpar seleção",
@@ -4035,7 +4035,17 @@
         "rotateLeft": "Girar a página {{page}} para a esquerda",
         "rotateRight": "Girar a página {{page}} para a direita",
         "delete": "Excluir a página {{page}}"
-      }
+      },
+      "viewerUnsaved": {
+        "title": "As alterações do visualizador não foram salvas",
+        "body": "{{name}} tem anotações ou alterações não salvas no visualizador, então o novo arquivo não as incluirá. Salve-as primeiro no visualizador ou continue sem elas.",
+        "continue": "Continuar sem elas"
+      },
+      "papers": {
+        "letter": "Carta"
+      },
+      "sourceChanged": "{{name}} mudou depois que suas páginas foram adicionadas, então elas não podem mais ser exibidas. Volte a inserir o arquivo.",
+      "previewFailed": "Não foi possível desenhar a pré-visualização"
     },
     "dropHint": "Solte o PDF aqui ou clique para escolhê-lo",
     "batch": {

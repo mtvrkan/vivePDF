@@ -10,15 +10,16 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { IconButton } from "@/components/shared/IconButton";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { useLiveActiveDocument } from "@/features/viewer/useLiveActiveDocument";
+import { useCloseDocuments } from "@/features/viewer/useCloseDocuments";
 import { useOperation } from "@/shared/hooks/useOperation";
-import { dirnameOf, stemOf, suggestOutputPath } from "@/shared/lib/paths";
+import { basenameOf, dirnameOf, joinPath, stemOf, suggestOutputPath } from "@/shared/lib/paths";
 import { assemblePageParts, assemblePages } from "@/shared/rpc/operations";
 import { isPdfPath } from "@/shared/rpc/files";
 import { useMarqueeSelection, type MarqueeBox, type TileRect } from "./useMarqueeSelection";
 import { useVirtualGrid } from "./useVirtualGrid";
 import { clickSelection, tileClickAction, type ClickMode } from "./tileSelection";
 import { usePagePreview } from "./usePagePreview";
-import { duplexOrder, labelRules, positionsToKeys, tileLabelTexts } from "./organizerTools";
+import { duplexOrder, labelRules, positionsToKeys, subsetLabelRules, tileLabelTexts } from "./organizerTools";
 import { DuplexDialog, MovePagesDialog, PageLabelDialog, PagePreviewDialog, RangeSelectDialog, type DuplexChoice } from "./OrganizerDialogs";
 import { ContextMenu } from "@/components/shared/ContextMenu";
 import { useToastStore } from "@/shared/store/toastStore";
@@ -79,10 +80,13 @@ export function PagesPage() {
 
   const [output, setOutput] = useState("");
   const [blankOpen, setBlankOpen] = useState(false);
-  const [pdfToInsert, setPdfToInsert] = useState<string | null>(null);
+  const [insertQueue, setInsertQueue] = useState<string[]>([]);
+  const pdfToInsert = insertQueue[0] ?? null;
   const [replacing, setReplacing] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [pendingLeave, setPendingLeave] = useState<(() => void) | null>(null);
+  const [pendingSaveRun, setPendingSaveRun] = useState<(() => void) | null>(null);
+  const { hasUnsavedWork } = useCloseDocuments();
   const [resultKind, setResultKind] = useState<"single" | "parts">("single");
   const [rangeOpen, setRangeOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
@@ -96,7 +100,8 @@ export function PagesPage() {
   const tileHeight = Math.round(zoom * 1.3);
   const grid = useVirtualGrid({ mounted: hasDocument, scrollRef, gridRef, count: tiles.length, minColumnWidth: zoom, rowHeight: tileHeight + TILE_CHROME_HEIGHT });
 
-  const edits = useOrganizerEdits(grid.revealIndex);
+  const focusGrid = useCallback(() => gridRef.current?.focus({ preventScroll: true }), []);
+  const edits = useOrganizerEdits(grid.revealIndex, focusGrid);
   const { setLabels, insertAtSelection, replaceSelection, selectAndReveal } = edits;
   const inspections = usePageInspections(activeDocumentId, edits);
   const clipboard = usePageClipboardActions(edits);
@@ -136,8 +141,24 @@ export function PagesPage() {
   const selectedCount = selected.size;
   const partStarts = useMemo(() => cutStarts(tiles, cuts), [tiles, cuts]);
   const busy = operation.running || partsOperation.running;
+  const unsaved = dirty || partStarts.length > 0;
 
-  const onMove = useCallback((keys: Set<string>, dropIndex: number) => commit(moveTiles(useOrganizerStore.getState().tiles, keys, dropIndex)), [commit]);
+  const withViewerSaved = useCallback(
+    (run: () => void) => {
+      if (activeDocumentId && hasUnsavedWork(activeDocumentId)) setPendingSaveRun(() => run);
+      else run();
+    },
+    [activeDocumentId, hasUnsavedWork],
+  );
+
+  const onMove = useCallback(
+    (keys: Set<string>, dropIndex: number) => {
+      const current = useOrganizerStore.getState().tiles;
+      const next = moveTiles(current, keys, dropIndex);
+      if (next !== current) commit(next);
+    },
+    [commit],
+  );
   const { drag, dropIndex, pointer: dragPointer, onTilePointerDown, wasDragged } = useTileDrag({ scrollRef, dropIndexAt: grid.dropIndexAtClient, selectedKeys: selected, onMove });
 
   const applyClick = (key: string, mode: ClickMode) => {
@@ -167,7 +188,7 @@ export function PagesPage() {
           insertAtSelection(pageTiles(load.source, Array.from({ length: load.source.pageCount }, (_, index) => index + 1)));
         } else if (load.status === "password") {
           setReplacing(false);
-          setPdfToInsert(pdf);
+          setInsertQueue((queue) => [...queue, pdf]);
         }
       }
     },
@@ -191,7 +212,7 @@ export function PagesPage() {
     const selectedPath = await openDialog({ multiple: false, directory: false, filters: [{ name: "PDF", extensions: ["pdf"] }] });
     if (typeof selectedPath !== "string") return;
     setReplacing(replace);
-    setPdfToInsert(selectedPath);
+    setInsertQueue([selectedPath]);
   };
 
   const openInViewer = (tile: OrganizerTile) => {
@@ -223,7 +244,7 @@ export function PagesPage() {
     [document],
   );
 
-  const apply = useCallback(
+  const runApply = useCallback(
     (subset: boolean) => {
       const state = useOrganizerStore.getState();
       if (!document || !output) return;
@@ -231,18 +252,20 @@ export function PagesPage() {
       if (chosen.length === 0) return;
       const arranged = arrangement(chosen);
       if (!arranged) return;
-      const rules = labelRules(chosen, labels);
+      const rules = subset ? subsetLabelRules(state.tiles, labels, state.selected) : labelRules(chosen, labels);
       setResultKind("single");
       void operation.run({
         ...arranged,
-        output: subset ? suggestOutputPath(document.path, t("tools.pages.extractSuffix")) : output,
+        output: subset ? joinPath(dirnameOf(output), basenameOf(suggestOutputPath(document.path, t("tools.pages.extractSuffix")))) : output,
         labels: rules.length > 0 ? rules : undefined,
       });
     },
     [document, output, operation, t, arrangement, labels],
   );
 
-  const saveParts = useCallback(() => {
+  const apply = useCallback((subset: boolean) => withViewerSaved(() => runApply(subset)), [withViewerSaved, runApply]);
+
+  const runSaveParts = useCallback(() => {
     const state = useOrganizerStore.getState();
     if (!output) return;
     const starts = cutStarts(state.tiles, cuts);
@@ -253,6 +276,8 @@ export function PagesPage() {
     setResultKind("parts");
     void partsOperation.run({ ...arranged, cuts: starts, outputDir: dirnameOf(output), baseName: stemOf(output), labels: rules.length > 0 ? rules : undefined });
   }, [output, cuts, arrangement, partsOperation, labels]);
+
+  const saveParts = useCallback(() => withViewerSaved(runSaveParts), [withViewerSaved, runSaveParts]);
 
   const openMenu = useCallback(
     (key: string, x: number, y: number) => {
@@ -268,7 +293,10 @@ export function PagesPage() {
       pointerDown: onTilePointerDown,
       click: clickTile,
       check: checkTile,
-      preview: preview.open,
+      preview: (key) => {
+        if (!useOrganizerStore.getState().selected.has(key)) select([key], key);
+        preview.open(key);
+      },
       rotate: edits.rotateTile,
       remove: edits.deleteTile,
       menu: openMenu,
@@ -289,7 +317,7 @@ export function PagesPage() {
     [],
   );
 
-  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || labelTarget !== null || menu !== null;
+  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || labelTarget !== null || menu !== null || pendingLeave !== null || pendingSaveRun !== null;
   useOrganizerShortcuts({
     enabled: Boolean(activeDocumentId) && !dialogOpen,
     layout: { columns: grid.columns, clientBoxOf: grid.clientBoxOf },
@@ -382,7 +410,7 @@ export function PagesPage() {
   const anchorPosition = anchor ? tiles.findIndex((tile) => tile.key === anchor) : -1;
 
   const confirmLeave = (run: () => void) => {
-    if (!dirty) {
+    if (!unsaved) {
       run();
       return;
     }
@@ -400,7 +428,7 @@ export function PagesPage() {
         description={`${document.fileName} · ${tiles.length} ${t("info.pages")} · ${selectedCount} ${t("tools.pages.selected")}`}
         actions={
           <>
-            <IconButton icon={History} label={t("tools.pages.reset")} disabled={!dirty} onClick={reset} />
+            <IconButton icon={History} label={t("tools.pages.reset")} disabled={!unsaved} onClick={reset} />
             <Button size="sm" icon={<FileOutput className="size-4" aria-hidden />} title={`${t("tools.pages.shortcut.extract")} (Ctrl+E)`} disabled={selectedCount === 0 || busy} onClick={() => apply(true)}>
               {t("tools.pages.extract")}
             </Button>
@@ -502,13 +530,13 @@ export function PagesPage() {
         path={pdfToInsert}
         replacing={replacing}
         onClose={() => {
-          setPdfToInsert(null);
+          setInsertQueue((queue) => queue.slice(1));
           useOrganizerStore.getState().pruneUnusedSources();
         }}
         onInsert={(source, pages) => {
           if (replacing) replaceSelection(pageTiles(source, pages));
           else insertAtSelection(pageTiles(source, pages));
-          setPdfToInsert(null);
+          setInsertQueue((queue) => queue.slice(1));
         }}
       />
       <SourcePasswordDialog request={restoredSources.request} busy={restoredSources.busy} onSubmit={(password) => void restoredSources.submit(password)} onSkip={restoredSources.skip} />
@@ -617,6 +645,31 @@ export function PagesPage() {
         }
       >
         <p className="text-sm text-muted-foreground">{t("tools.pages.leaveBody")}</p>
+      </Dialog>
+      <Dialog
+        open={pendingSaveRun !== null}
+        title={t("tools.pages.viewerUnsaved.title")}
+        onClose={() => setPendingSaveRun(null)}
+        footer={
+          <>
+            <Button size="sm" variant="ghost" onClick={() => setPendingSaveRun(null)}>
+              {t("common.cancel")}
+            </Button>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={() => {
+                const run = pendingSaveRun;
+                setPendingSaveRun(null);
+                run?.();
+              }}
+            >
+              {t("tools.pages.viewerUnsaved.continue")}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground">{t("tools.pages.viewerUnsaved.body", { name: document.fileName })}</p>
       </Dialog>
     </div>
   );

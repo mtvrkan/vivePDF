@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { OrganizerTile } from "@/types";
-import { MAIN_SOURCE_ID, cutStarts, droppedPreviews, insertTiles, insertionPoint, isDirty, moveTiles, moveToPosition, nudgeTiles, replaceTiles, rotateBy, sameKeys, sameLabels, tilesAtParity, toggleCuts, useOrganizerStore, withoutUnusedSources } from "./organizerStore";
+import { MAIN_SOURCE_ID, carryMarks, cutStarts, droppedPreviews, insertTiles, insertionPoint, isDirty, moveTiles, moveToPosition, nudgeTiles, replaceTiles, rotateBy, sameKeys, sameLabels, tilesAtParity, toggleCuts, useOrganizerStore, forgetOrganizerOf, withoutUnusedSources } from "./organizerStore";
 import type { OrganizerSource } from "@/types";
 
 function page(index: number): OrganizerTile {
@@ -16,6 +16,11 @@ describe("moveTiles", () => {
 
   it("keeps the relative order of a multi-selection", () => {
     expect(moveTiles(tiles, new Set(["p1", "p3"]), 5).map((t) => t.key)).toEqual(["p2", "p4", "p5", "p1", "p3"]);
+  });
+
+  it("returns the same list when nothing moves so no empty undo step is recorded", () => {
+    expect(moveTiles(tiles, new Set(["p2"]), 1)).toBe(tiles);
+    expect(moveTiles(tiles, new Set(["p2"]), 4)).not.toBe(tiles);
   });
 
   it("is a no-op when dropping onto the same spot", () => {
@@ -211,5 +216,79 @@ describe("sameKeys / sameLabels", () => {
     expect(sameKeys(new Set(["a"]), new Set(["a", "b"]))).toBe(false);
     expect(sameLabels({ a: label }, { a: label })).toBe(true);
     expect(sameLabels({ a: label }, { b: label })).toBe(false);
+  });
+});
+
+describe("carryMarks", () => {
+  const roman = { style: "r" as const, prefix: "", firstNumber: 1 };
+
+  it("hands a deleted page's label to the page that takes its place", () => {
+    const after = [page(2), page(3), page(4), page(5)];
+
+    const marks = carryMarks(tiles, after, { cuts: new Set(), labels: { p1: roman } });
+
+    expect(marks.labels).toEqual({ p2: roman });
+  });
+
+  it("moves a split and a label from a replaced page to its replacement", () => {
+    const replacement: OrganizerTile = { key: "new", kind: "blank", width: 595, height: 842, rotate: 0 };
+    const after = [page(1), page(2), replacement, page(4), page(5)];
+
+    const marks = carryMarks(tiles, after, { cuts: new Set(["p3"]), labels: { p3: roman } });
+
+    expect([...marks.cuts]).toEqual(["new"]);
+    expect(marks.labels).toEqual({ new: roman });
+  });
+
+  it("drops a split after the deleted last page and leaves untouched marks as they were", () => {
+    const untouched = { cuts: new Set(["p1"]), labels: {} };
+    expect(carryMarks(tiles, tiles.slice(0, 4), untouched)).toBe(untouched);
+
+    const marks = carryMarks(tiles, tiles.slice(0, 4), { cuts: new Set(["p5"]), labels: { p4: roman, p5: roman } });
+
+    expect(marks.cuts.size).toBe(0);
+    expect(marks.labels).toEqual({ p4: roman });
+  });
+});
+
+describe("organizer work per document", () => {
+  const store = () => useOrganizerStore.getState();
+  const main = (embedDocId: string, pageCount = 3) => ({ id: MAIN_SOURCE_ID, path: `C:/${embedDocId}.pdf`, password: null, fileName: `${embedDocId}.pdf`, embedDocId, pageCount });
+
+  beforeEach(() => store().clear());
+
+  it("brings back the rearranged pages after switching to another document and back", () => {
+    store().initialize(main("a"));
+    store().commit([...store().tiles].reverse(), { cuts: new Set(["p2"]) });
+
+    store().initialize(main("b"));
+    expect(store().tiles.map((tile) => tile.key)).toEqual(["p1", "p2", "p3"]);
+    store().initialize(main("a"));
+
+    expect(store().tiles.map((tile) => tile.key)).toEqual(["p3", "p2", "p1"]);
+    expect([...store().cuts]).toEqual(["p2"]);
+    expect(store().past).toHaveLength(1);
+  });
+
+  it("starts fresh when the document now has a different page count", () => {
+    store().initialize(main("a"));
+    store().commit([...store().tiles].reverse());
+    store().initialize(main("b"));
+
+    store().initialize(main("a", 5));
+
+    expect(store().tiles).toHaveLength(5);
+    expect(store().past).toHaveLength(0);
+  });
+
+  it("forgets a document's work once it is closed", () => {
+    store().initialize(main("a"));
+    store().commit([...store().tiles].reverse());
+    store().initialize(main("b"));
+
+    forgetOrganizerOf("a");
+    store().initialize(main("a"));
+
+    expect(store().tiles.map((tile) => tile.key)).toEqual(["p1", "p2", "p3"]);
   });
 });

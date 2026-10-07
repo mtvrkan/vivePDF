@@ -3807,7 +3807,7 @@
       "extractSuffix": "selected",
       "needDocument": "The page organizer works on the document open in the viewer.",
       "leaveTitle": "Leave these page changes?",
-      "leaveBody": "The pages you rearranged have not been applied yet. Switching or closing the document discards them.",
+      "leaveBody": "The pages you rearranged have not been applied yet. Closing the document discards them.",
       "selected": "selected",
       "selectAll": "Select all",
       "selectNone": "Clear selection",
@@ -4035,7 +4035,17 @@
         "rotateLeft": "Rotate page {{page}} left",
         "rotateRight": "Rotate page {{page}} right",
         "delete": "Delete page {{page}}"
-      }
+      },
+      "viewerUnsaved": {
+        "title": "Viewer changes are not saved",
+        "body": "{{name}} has annotations or changes in the viewer that are not saved, so the new file will not include them. Save them in the viewer first, or continue without them.",
+        "continue": "Continue without them"
+      },
+      "papers": {
+        "letter": "Letter"
+      },
+      "sourceChanged": "{{name}} has changed since its pages were added, so they can no longer be shown. Insert the file again.",
+      "previewFailed": "Preview could not be drawn"
     },
     "dropHint": "Drop the PDF here or click to choose it",
     "batch": {

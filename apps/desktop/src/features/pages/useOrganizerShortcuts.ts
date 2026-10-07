@@ -35,8 +35,8 @@ export function isEditableTarget(target: EventTarget | null): boolean {
   return target.closest("input, textarea, select, [contenteditable='true'], [role='dialog']") !== null;
 }
 
-export function isTileControl(target: EventTarget | null): boolean {
-  return target instanceof Element && target.closest("[data-tile-key] button") !== null;
+export function isMenuTarget(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest("[role='menu'], [data-context-menu-layer]") !== null;
 }
 
 export function isActivatableTarget(target: EventTarget | null): boolean {
@@ -52,7 +52,7 @@ export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseO
   useEffect(() => {
     if (!enabled) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (isEditableTarget(event.target)) return;
+      if (event.defaultPrevented || isEditableTarget(event.target) || isMenuTarget(event.target)) return;
       const { edits: current, commands: run, layout: grid } = latest.current;
       const { undo, redo, select } = useOrganizerStore.getState();
       const key = event.key.toLowerCase();
@@ -82,7 +82,7 @@ export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseO
       } else if (mod && key === "g") {
         event.preventDefault();
         run.openRange();
-      } else if (!mod && (event.key === " " ? !isTileControl(event.target) : key === "enter" && !event.altKey && !event.shiftKey && !isActivatableTarget(event.target))) {
+      } else if (!mod && !event.altKey && !event.shiftKey && (event.key === " " || key === "enter") && !isActivatableTarget(event.target)) {
         event.preventDefault();
         const focused = current.focusTileKey();
         if (focused) run.openPreview(focused);

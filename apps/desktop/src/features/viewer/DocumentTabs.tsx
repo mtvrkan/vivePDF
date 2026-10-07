@@ -50,8 +50,11 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
   const objects = useViewerOverlayStore((state) => state.objects);
   const hasPending = objects.filter(isPendingChange).length > 0;
   const guard = (run: () => void) => (confirmLeave ? confirmLeave(run) : run());
-  const guardedActivate = (id: string) => requestLeave(() => guard(() => activate(id)), hasPending);
-  const guardedClose = (ids: string[]) => requestLeave(() => guard(() => closeDocuments(ids)), hasPending && ids.includes(activeDocumentId ?? ""));
+  const guardedActivate = (id: string) => requestLeave(() => activate(id), hasPending);
+  const guardedClose = (ids: string[]) => {
+    const closesActive = ids.includes(activeDocumentId ?? "");
+    requestLeave(() => (closesActive ? guard(() => closeDocuments(ids)) : closeDocuments(ids)), hasPending && closesActive);
+  };
 
   const moveToWindow = async (id: string) => {
     const doc = registered[id];

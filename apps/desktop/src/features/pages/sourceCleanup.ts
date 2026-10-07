@@ -1,6 +1,6 @@
 import { releaseViewSourceOf } from "@/shared/session/viewSources";
 import { useDocumentStore } from "@/shared/store/documentStore";
-import { hiddenDocumentIds, useOrganizerStore } from "./organizerStore";
+import { forgetOrganizerOf, hiddenDocumentIds, useOrganizerStore } from "./organizerStore";
 import { forgetDocumentThumbnails } from "./thumbnailCache";
 
 export type HiddenDocumentCloser = { isDocumentOpen: (id: string) => boolean; closeDocument: (id: string) => void };
@@ -22,7 +22,10 @@ export function watchDocumentLifecycles(closer: () => HiddenDocumentCloser | nul
   });
   const stopDocuments = useDocumentStore.subscribe((state, previous) => {
     if (state.documents === previous.documents) return;
-    for (const id of droppedIds(Object.keys(previous.documents), Object.keys(state.documents))) forgetDocumentThumbnails(id);
+    for (const id of droppedIds(Object.keys(previous.documents), Object.keys(state.documents))) {
+      forgetDocumentThumbnails(id);
+      forgetOrganizerOf(id);
+    }
   });
   return () => {
     stopSources();

@@ -56,6 +56,18 @@ describe("PageTile", () => {
     expect(tileActions.click).not.toHaveBeenCalled();
   });
 
+  it("keeps its buttons out of the tab order and does not preview on a double click of one", () => {
+    const tileActions = actions();
+    renderTile(tileActions);
+
+    const buttons = screen.getByRole("option").querySelectorAll("button");
+    fireEvent.doubleClick(screen.getByRole("checkbox"));
+    fireEvent.doubleClick(screen.getByRole("button", { name: "Rotate page 1 left" }));
+
+    expect([...buttons].every((button) => button.tabIndex === -1)).toBe(true);
+    expect(tileActions.preview).not.toHaveBeenCalled();
+  });
+
   it("keeps the only page from being deleted", () => {
     const tileActions = actions();
     renderTile(tileActions, 1);

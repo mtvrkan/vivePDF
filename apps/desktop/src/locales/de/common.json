@@ -3807,7 +3807,7 @@
       "extractSuffix": "ausgewaehlt",
       "needDocument": "Der Seitenorganisator arbeitet mit dem im Betrachter geöffneten Dokument.",
       "leaveTitle": "Seitenänderungen verwerfen?",
-      "leaveBody": "Die neu angeordneten Seiten wurden noch nicht angewendet. Beim Wechseln oder Schließen gehen sie verloren.",
+      "leaveBody": "Die neu angeordneten Seiten wurden noch nicht angewendet. Beim Schließen des Dokuments gehen sie verloren.",
       "selected": "ausgewählt",
       "selectAll": "Alle auswählen",
       "selectNone": "Auswahl aufheben",
@@ -4035,7 +4035,17 @@
         "rotateLeft": "Seite {{page}} nach links drehen",
         "rotateRight": "Seite {{page}} nach rechts drehen",
         "delete": "Seite {{page}} löschen"
-      }
+      },
+      "viewerUnsaved": {
+        "title": "Änderungen in der Ansicht sind nicht gespeichert",
+        "body": "{{name}} enthält in der Ansicht nicht gespeicherte Anmerkungen oder Änderungen, die neue Datei enthält sie daher nicht. Speichern Sie sie zuerst in der Ansicht oder fahren Sie ohne sie fort.",
+        "continue": "Ohne sie fortfahren"
+      },
+      "papers": {
+        "letter": "Letter"
+      },
+      "sourceChanged": "{{name}} wurde geändert, nachdem seine Seiten eingefügt wurden, und kann nicht mehr angezeigt werden. Fügen Sie die Datei erneut ein.",
+      "previewFailed": "Vorschau konnte nicht erstellt werden"
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",
     "batch": {

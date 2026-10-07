@@ -46,7 +46,7 @@ export function PagePreviewDialog({ tile, position, total, label, sources, selec
       if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
         event.preventDefault();
         onStep(event.key === "ArrowLeft" ? -1 : 1, event.shiftKey);
-      } else if (event.key === " ") {
+      } else if (event.key === " " && !pressesOtherButton(event.target)) {
         event.preventDefault();
         onClose();
       } else if (event.key === "Enter" && !event.shiftKey && !event.repeat && !pressesOtherButton(event.target)) {

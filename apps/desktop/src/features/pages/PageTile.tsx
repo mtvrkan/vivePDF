@@ -73,7 +73,9 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
         aria-checked={isSelected}
         aria-label={t("tools.pages.selectPage", { page: position + 1 })}
         title={t("tools.pages.selectPageHint")}
+        tabIndex={-1}
         onPointerDown={(event) => event.stopPropagation()}
+        onDoubleClick={(event) => event.stopPropagation()}
         onClick={(event) => actions.check(event, tile.key)}
         className={cn(
           "absolute start-3 top-3 z-10 flex size-6 cursor-pointer items-center justify-center rounded-md border shadow-md transition-colors duration-(--transition-fast) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
@@ -93,7 +95,9 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
           aria-label={t("tools.pages.cutAfter", { page: position + 1 })}
           aria-pressed={isCut}
           title={t("tools.pages.cutAfter", { page: position + 1 })}
+          tabIndex={-1}
           onPointerDown={(event) => event.stopPropagation()}
+          onDoubleClick={(event) => event.stopPropagation()}
           onClick={(event) => {
             event.stopPropagation();
             actions.toggleCut(tile.key);
@@ -140,6 +144,7 @@ function TileQuickButton({ icon: Icon, label, danger = false, disabled = false, 
       aria-label={label}
       title={label}
       disabled={disabled}
+      tabIndex={-1}
       onPointerDown={(event) => event.stopPropagation()}
       onDoubleClick={(event) => event.stopPropagation()}
       onClick={(event) => {

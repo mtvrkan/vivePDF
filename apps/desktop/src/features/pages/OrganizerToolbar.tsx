@@ -46,7 +46,7 @@ import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import { IconButton } from "@/components/shared/IconButton";
 import { MenuButton } from "@/components/shared/MenuButton";
 import { PAGES_ZOOM_MAX, PAGES_ZOOM_MIN } from "@/shared/store/uiStore";
-import { tilesAtParity, useOrganizerStore } from "./organizerStore";
+import { cutStarts, tilesAtParity, useOrganizerStore } from "./organizerStore";
 import { usePageClipboard } from "./pageClipboard";
 import type { OrganizerEdits } from "./useOrganizerEdits";
 import type { Inspection, PageInspections } from "./usePageInspections";
@@ -82,7 +82,7 @@ export function OrganizerToolbar({ edits, inspections, commands, multiSelect, pa
   const { t } = useTranslation();
   const tiles = useOrganizerStore((state) => state.tiles);
   const selectedCount = useOrganizerStore((state) => state.selected.size);
-  const cutCount = useOrganizerStore((state) => state.cuts.size);
+  const cutCount = useOrganizerStore((state) => cutStarts(state.tiles, state.cuts).length);
   const canUndo = useOrganizerStore((state) => state.past.length > 0);
   const canRedo = useOrganizerStore((state) => state.future.length > 0);
   const undo = useOrganizerStore((state) => state.undo);

@@ -3807,7 +3807,7 @@
       "extractSuffix": "selectionne",
       "needDocument": "L’organisateur de pages fonctionne sur le document ouvert dans la visionneuse.",
       "leaveTitle": "Abandonner ces modifications ?",
-      "leaveBody": "Les pages réorganisées n’ont pas encore été appliquées. Changer ou fermer le document les abandonne.",
+      "leaveBody": "Les pages réorganisées n'ont pas encore été appliquées. Fermer le document les abandonne.",
       "selected": "sélectionné",
       "selectAll": "Tout sélectionner",
       "selectNone": "Effacer la sélection",
@@ -4035,7 +4035,17 @@
         "rotateLeft": "Faire pivoter la page {{page}} vers la gauche",
         "rotateRight": "Faire pivoter la page {{page}} vers la droite",
         "delete": "Supprimer la page {{page}}"
-      }
+      },
+      "viewerUnsaved": {
+        "title": "Les modifications de la visionneuse ne sont pas enregistrées",
+        "body": "{{name}} contient des annotations ou des modifications non enregistrées dans la visionneuse : le nouveau fichier ne les inclura pas. Enregistrez-les d'abord dans la visionneuse ou continuez sans elles.",
+        "continue": "Continuer sans elles"
+      },
+      "papers": {
+        "letter": "Letter"
+      },
+      "sourceChanged": "{{name}} a changé depuis l'ajout de ses pages, elles ne peuvent plus être affichées. Insérez à nouveau le fichier.",
+      "previewFailed": "Impossible d'afficher l'aperçu"
     },
     "dropHint": "Déposez le PDF ici ou cliquez pour le choisir",
     "batch": {

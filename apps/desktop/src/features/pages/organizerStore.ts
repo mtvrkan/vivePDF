@@ -131,8 +131,36 @@ function stepOf(state: OrganizerStep): OrganizerStep {
   return { tiles: state.tiles, cuts: state.cuts, labels: state.labels };
 }
 
-function historyTiles(state: OrganizerState): OrganizerTile[][] {
+type OrganizerHistory = Pick<OrganizerState, "tiles" | "initialTiles" | "past" | "future">;
+
+function historyTiles(state: OrganizerHistory): OrganizerTile[][] {
   return [state.tiles, state.initialTiles, ...tilesOf(state.past), ...tilesOf(state.future)];
+}
+
+type OrganizerStash = OrganizerMarks & OrganizerHistory & Pick<OrganizerState, "sources" | "selected" | "anchor">;
+
+const stashes = new Map<string, OrganizerStash>();
+
+function stashOf(state: OrganizerState): OrganizerStash {
+  const sources = Object.fromEntries(Object.entries(state.sources).map(([id, source]) => [id, id === MAIN_SOURCE_ID ? source : { ...source, embedDocId: null }]));
+  return { sources, tiles: state.tiles, initialTiles: state.initialTiles, past: state.past, future: state.future, selected: state.selected, anchor: state.anchor, cuts: state.cuts, labels: state.labels };
+}
+
+function takeStash(main: OrganizerSource & { embedDocId: string }): OrganizerStash | null {
+  const saved = stashes.get(main.embedDocId) ?? null;
+  stashes.delete(main.embedDocId);
+  if (!saved) return null;
+  const stashedMain = saved.sources[MAIN_SOURCE_ID];
+  if (stashedMain?.path === main.path && stashedMain.pageCount === main.pageCount) return saved;
+  releasePreviews(historyTiles(saved));
+  return null;
+}
+
+export function forgetOrganizerOf(documentId: string): void {
+  const saved = stashes.get(documentId);
+  if (!saved) return;
+  stashes.delete(documentId);
+  releasePreviews(historyTiles(saved));
 }
 
 export const useOrganizerStore = create<OrganizerState>((set, get) => ({
@@ -147,7 +175,18 @@ export const useOrganizerStore = create<OrganizerState>((set, get) => ({
   anchor: null,
   unavailable: new Set(),
   initialize: (main) => {
-    releasePreviews(historyTiles(get()));
+    const current = get();
+    if (current.documentId && current.documentId !== main.embedDocId && (current.past.length > 0 || current.future.length > 0)) {
+      forgetOrganizerOf(current.documentId);
+      stashes.set(current.documentId, stashOf(current));
+    } else {
+      releasePreviews(historyTiles(current));
+    }
+    const saved = takeStash(main);
+    if (saved) {
+      set({ ...saved, documentId: main.embedDocId, sources: { ...saved.sources, [MAIN_SOURCE_ID]: { ...main, id: MAIN_SOURCE_ID } }, unavailable: new Set() });
+      return;
+    }
     const tiles: OrganizerTile[] = Array.from({ length: main.pageCount }, (_, index) => ({
       key: `p${index + 1}`,
       kind: "page",
@@ -194,10 +233,11 @@ export const useOrganizerStore = create<OrganizerState>((set, get) => ({
       const before = historyTiles(state);
       const after = [tiles, state.initialTiles, ...tilesOf(past)];
       for (const url of droppedPreviews(before, after)) URL.revokeObjectURL(url);
+      const carried = carryMarks(state.tiles, tiles, { cuts: marks.cuts ?? state.cuts, labels: marks.labels ?? state.labels });
       return {
         tiles,
-        cuts: marks.cuts ?? state.cuts,
-        labels: marks.labels ?? state.labels,
+        cuts: carried.cuts,
+        labels: carried.labels,
         past,
         future: [],
         sources: tiles === state.tiles ? state.sources : pruneDroppedSources(state.sources, before, after),
@@ -276,6 +316,36 @@ export const useOrganizerStore = create<OrganizerState>((set, get) => ({
   },
 }));
 
+export function carryMarks(before: OrganizerTile[], after: OrganizerTile[], marks: OrganizerMarks): OrganizerMarks {
+  if (before === after) return marks;
+  const alive = new Map(after.map((tile, position) => [tile.key, position]));
+  const deadCuts = [...marks.cuts].filter((key) => !alive.has(key));
+  const deadLabels = Object.keys(marks.labels).filter((key) => !alive.has(key));
+  if (deadCuts.length === 0 && deadLabels.length === 0) return marks;
+  const oldPosition = new Map(before.map((tile, position) => [tile.key, position]));
+  const aliveNeighbour = (key: string, step: 1 | -1): number | null => {
+    const start = oldPosition.get(key);
+    if (start === undefined) return null;
+    for (let position = start + step; position >= 0 && position < before.length; position += step) {
+      const found = alive.get(before[position].key);
+      if (found !== undefined) return found;
+    }
+    return null;
+  };
+  const cuts = new Set([...marks.cuts].filter((key) => alive.has(key)));
+  for (const key of deadCuts) {
+    const next = aliveNeighbour(key, 1);
+    if (next !== null && next > 0) cuts.add(after[next - 1].key);
+  }
+  const labels: TileLabels = Object.fromEntries(Object.entries(marks.labels).filter(([key]) => alive.has(key)));
+  for (const key of deadLabels) {
+    const previous = aliveNeighbour(key, -1);
+    const target = after[previous === null ? 0 : previous + 1];
+    if (oldPosition.has(key) && target && !(target.key in labels)) labels[target.key] = marks.labels[key];
+  }
+  return { cuts, labels };
+}
+
 export function isDirty(tiles: OrganizerTile[], initialTiles: OrganizerTile[]): boolean {
   if (tiles.length !== initialTiles.length) return true;
   return tiles.some((tile, position) => {
@@ -289,7 +359,8 @@ export function moveTiles(tiles: OrganizerTile[], keys: Set<string>, dropIndex: 
   if (moving.length === 0) return tiles;
   const before = tiles.slice(0, dropIndex).filter((tile) => !keys.has(tile.key));
   const after = tiles.slice(dropIndex).filter((tile) => !keys.has(tile.key));
-  return [...before, ...moving, ...after];
+  const next = [...before, ...moving, ...after];
+  return next.every((tile, position) => tile === tiles[position]) ? tiles : next;
 }
 
 export function nudgeTiles(tiles: OrganizerTile[], keys: ReadonlySet<string>, delta: number): OrganizerTile[] {

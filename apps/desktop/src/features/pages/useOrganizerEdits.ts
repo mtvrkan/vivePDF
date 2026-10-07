@@ -9,7 +9,7 @@ export type LabelsUpdate = TileLabels | ((current: TileLabels) => TileLabels);
 
 type ExtendRun = { origin: string; base: ReadonlySet<string>; focus: string; selection: ReadonlySet<string> };
 
-export function useOrganizerEdits(revealIndex: (index: number) => void) {
+export function useOrganizerEdits(revealIndex: (index: number) => void, focusGrid?: () => void) {
   const commit = useOrganizerStore((state) => state.commit);
   const select = useOrganizerStore((state) => state.select);
   const setMarks = useOrganizerStore((state) => state.setMarks);
@@ -46,6 +46,22 @@ export function useOrganizerEdits(revealIndex: (index: number) => void) {
     [select, scrollToTile],
   );
 
+  const settleAfterRemoval = useCallback(
+    (position: number, reselect: boolean) => {
+      const { tiles } = useOrganizerStore.getState();
+      const key = tiles[Math.min(position, tiles.length - 1)]?.key;
+      if (reselect && key) {
+        select([key], key);
+        scrollToTile(key);
+      }
+      requestAnimationFrame(() => {
+        const active = document.activeElement;
+        if (!active || active === document.body) focusGrid?.();
+      });
+    },
+    [select, scrollToTile, focusGrid],
+  );
+
   const updateSelected = useCallback(
     (update: (tile: OrganizerTile) => OrganizerTile) => {
       const state = useOrganizerStore.getState();
@@ -60,8 +76,10 @@ export function useOrganizerEdits(revealIndex: (index: number) => void) {
   const deleteSelected = useCallback(() => {
     const state = useOrganizerStore.getState();
     if (state.selected.size === 0 || state.selected.size === state.tiles.length) return;
+    const first = state.tiles.findIndex((tile) => state.selected.has(tile.key));
     commit(state.tiles.filter((tile) => !state.selected.has(tile.key)));
-  }, [commit]);
+    settleAfterRemoval(first, true);
+  }, [commit, settleAfterRemoval]);
 
   const rotateTile = useCallback(
     (key: string, delta: 90 | -90) => {
@@ -74,10 +92,12 @@ export function useOrganizerEdits(revealIndex: (index: number) => void) {
   const deleteTile = useCallback(
     (key: string) => {
       const { tiles } = useOrganizerStore.getState();
-      if (tiles.length <= 1 || !tiles.some((tile) => tile.key === key)) return;
+      const position = tiles.findIndex((tile) => tile.key === key);
+      if (tiles.length <= 1 || position < 0) return;
       commit(tiles.filter((tile) => tile.key !== key));
+      settleAfterRemoval(position, false);
     },
-    [commit],
+    [commit, settleAfterRemoval],
   );
 
   const deleteRelative = useCallback(

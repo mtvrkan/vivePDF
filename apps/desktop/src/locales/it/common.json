@@ -3807,7 +3807,7 @@
       "extractSuffix": "selezionato",
       "needDocument": "L’organizzatore pagine lavora sul documento aperto nel visualizzatore.",
       "leaveTitle": "Annullare le modifiche alle pagine?",
-      "leaveBody": "Le pagine riordinate non sono ancora state applicate. Cambiare o chiudere il documento le annulla.",
+      "leaveBody": "Le pagine riorganizzate non sono ancora state applicate. Chiudere il documento le scarta.",
       "selected": "selezionate",
       "selectAll": "Seleziona tutto",
       "selectNone": "Deseleziona tutto",
@@ -4035,7 +4035,17 @@
         "rotateLeft": "Ruota la pagina {{page}} a sinistra",
         "rotateRight": "Ruota la pagina {{page}} a destra",
         "delete": "Elimina la pagina {{page}}"
-      }
+      },
+      "viewerUnsaved": {
+        "title": "Le modifiche nel visualizzatore non sono salvate",
+        "body": "{{name}} ha annotazioni o modifiche non salvate nel visualizzatore, quindi il nuovo file non le includerà. Salvale prima nel visualizzatore oppure continua senza.",
+        "continue": "Continua senza"
+      },
+      "papers": {
+        "letter": "Letter"
+      },
+      "sourceChanged": "{{name}} è cambiato dopo l'aggiunta delle sue pagine, quindi non possono più essere mostrate. Inserisci di nuovo il file.",
+      "previewFailed": "Impossibile disegnare l'anteprima"
     },
     "dropHint": "Trascina qui il PDF o fai clic per sceglierlo",
     "batch": {

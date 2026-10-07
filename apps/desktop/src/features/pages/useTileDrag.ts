@@ -107,17 +107,19 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
     };
     const onPointerUp = () => finish(true);
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && dragRef.current) finish(false);
+      if (event.key !== "Escape" || !dragRef.current) return;
+      event.stopPropagation();
+      finish(false);
     };
     window.addEventListener("pointermove", onPointerMove);
     window.addEventListener("pointerup", onPointerUp);
     window.addEventListener("pointercancel", onPointerUp);
-    window.addEventListener("keydown", onKeyDown);
+    window.addEventListener("keydown", onKeyDown, true);
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
-      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("keydown", onKeyDown, true);
       cancelMoveFrame();
       stopAutoScroll();
     };

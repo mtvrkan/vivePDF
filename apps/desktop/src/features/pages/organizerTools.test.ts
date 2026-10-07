@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { OrganizerTile } from "@/types";
-import { bookmarkCuts, duplexOrder, duplicateTiles, formatLabel, imageGroupKey, labelRules, positionsToKeys, restoredCuts, restoredLabels, tileLabelTexts, topLevelStarts } from "./organizerTools";
+import { bookmarkCuts, duplexOrder, duplicateTiles, formatLabel, imageGroupKey, labelRules, positionsToKeys, restoredCuts, restoredLabels, subsetLabelRules, tileLabelTexts, topLevelStarts } from "./organizerTools";
 
 function page(index: number, sourceId = "main", key = `${sourceId}-${index}`): OrganizerTile {
   return { key, kind: "page", sourceId, index, rotate: 0 };
@@ -149,5 +149,38 @@ describe("restoredLabels / restoredCuts", () => {
     expect(restoredLabels(undefined, keys)).toEqual({});
     expect(restoredLabels("p1", keys)).toEqual({});
     expect(restoredCuts({ p1: true }, keys).size).toBe(0);
+  });
+});
+
+describe("subsetLabelRules", () => {
+  const roman = { style: "r" as const, prefix: "", firstNumber: 1 };
+  const decimal = { style: "D" as const, prefix: "A-", firstNumber: 1 };
+
+  it("keeps the numbering the extracted pages had, even when their rule starts on an unselected page", () => {
+    const list = pages(6);
+    const labels = { [list[0].key]: roman, [list[2].key]: decimal };
+
+    const rules = subsetLabelRules(list, labels, new Set([list[1].key, list[3].key, list[4].key]));
+
+    expect(rules).toEqual([
+      { start: 0, style: "r", prefix: "", firstNumber: 2 },
+      { start: 1, style: "D", prefix: "A-", firstNumber: 2 },
+    ]);
+  });
+
+  it("starts a new rule where the selection skips pages", () => {
+    const list = pages(5);
+
+    const rules = subsetLabelRules(list, { [list[0].key]: decimal }, new Set([list[0].key, list[3].key]));
+
+    expect(rules).toEqual([
+      { start: 0, style: "D", prefix: "A-", firstNumber: 1 },
+      { start: 1, style: "D", prefix: "A-", firstNumber: 4 },
+    ]);
+  });
+
+  it("returns no rules when no page has a label", () => {
+    const list = pages(3);
+    expect(subsetLabelRules(list, {}, new Set([list[1].key]))).toEqual([]);
   });
 });

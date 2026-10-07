@@ -74,13 +74,27 @@ export function useInsertSources() {
     [toast, t],
   );
 
+  const changedSource = useCallback(
+    (source: OrganizerSource, embedDocId: string | null): { status: "error" } => {
+      if (docManager && embedDocId) closeViewable(docManager, embedDocId);
+      toast("error", t("tools.pages.sourceChanged", { name: source.fileName }));
+      return { status: "error" };
+    },
+    [docManager, toast, t],
+  );
+
   const loadPdfSource = useCallback(
     async (path: string, password: string | null): Promise<PdfSourceLoad> => {
       const existing = Object.values(useOrganizerStore.getState().sources).find((source) => source.path === path);
-      if (existing) return { status: "ready", source: existing };
+      if (existing && (existing.embedDocId || !docManager)) return { status: "ready", source: existing };
       try {
         const embedded = await openEmbedded(path, password);
         if (!embedded) return { status: "error" };
+        if (existing) {
+          if (embedded.pageCount !== existing.pageCount) return changedSource(existing, embedded.embedDocId);
+          attachSource(existing.id, { embedDocId: embedded.embedDocId, password });
+          return { status: "ready", source: { ...existing, embedDocId: embedded.embedDocId, password } };
+        }
         const source: OrganizerSource = {
           id: `s-${crypto.randomUUID().slice(0, 8)}`,
           path,
@@ -95,7 +109,7 @@ export function useInsertSources() {
         return failedLoad(error, password);
       }
     },
-    [openEmbedded, failedLoad, addSource],
+    [openEmbedded, failedLoad, addSource, attachSource, changedSource, docManager],
   );
 
   const reattachSource = useCallback(
@@ -103,13 +117,14 @@ export function useInsertSources() {
       try {
         const embedded = await openEmbedded(source.path, password);
         if (!embedded) return { status: "stale" };
+        if (embedded.pageCount !== source.pageCount) return changedSource(source, embedded.embedDocId);
         attachSource(source.id, { embedDocId: embedded.embedDocId, password });
         return { status: "ready" };
       } catch (error) {
         return failedLoad(error, password);
       }
     },
-    [openEmbedded, failedLoad, attachSource],
+    [openEmbedded, failedLoad, attachSource, changedSource],
   );
 
   const imageTiles = useCallback(async (paths: string[]): Promise<OrganizerTile[]> => {

@@ -6,6 +6,7 @@ import { Dialog } from "@/components/shared/Dialog";
 import { Checkbox, Field, SelectInput, SliderField, TextInput } from "@/components/tool/form";
 import { basenameOf } from "@/shared/lib/paths";
 import type { OrganizerSource, PageSize, PaperPattern, PaperPreset, PaperStyle } from "@/types";
+import { useOrganizerStore } from "./organizerStore";
 import { PaperPreview } from "./PaperPreview";
 import { DEFAULT_PAPER_COLOR, DEFAULT_SPACING, PAPER_SPACING, PAPER_STYLES } from "./paperPattern";
 import { parseRanges, useInsertSources, type PdfSourceLoad } from "./useInsertSources";
@@ -60,7 +61,7 @@ export function InsertBlankDialog({ open, onClose, onInsert, matchSize }: BlankD
               <option value="a4">A4</option>
               <option value="a5">A5</option>
               <option value="a3">A3</option>
-              <option value="letter">Letter</option>
+              <option value="letter">{t("tools.pages.papers.letter")}</option>
             </SelectInput>
           </Field>
           <Field label={t("tools.pages.orientation")}>
@@ -127,14 +128,21 @@ export function InsertPdfDialog({ path, replacing = false, onClose, onInsert }: 
   const [ranges, setRanges] = useState("");
 
   useEffect(() => {
+    setPassword("");
+    setRanges("");
     if (!path) {
       setLoad(null);
-      setPassword("");
-      setRanges("");
       return;
     }
+    let cancelled = false;
     setLoad({ status: "loading" });
-    void loadPdfSource(path, null).then(setLoad);
+    void loadPdfSource(path, null).then((result) => {
+      if (cancelled) useOrganizerStore.getState().pruneUnusedSources();
+      else setLoad(result);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [path, loadPdfSource]);
 
   const retryWithPassword = (event: FormEvent) => {
