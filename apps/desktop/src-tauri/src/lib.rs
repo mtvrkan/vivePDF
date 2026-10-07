@@ -141,6 +141,8 @@ pub fn run() {
             diagnostics::path_exists,
             diagnostics::path_kinds,
             files::open_produced_picture,
+            files::open_produced_file,
+            files::open_folder,
             lens::search_picture_with_lens,
             tray::tray_configure,
             tray::window_hide_to_tray,

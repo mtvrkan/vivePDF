@@ -6,7 +6,7 @@ import { useOperationStore } from "@/shared/store/operationStore";
 import { useSourceChangeStore } from "@/shared/store/sourceChangeStore";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { revealPath } from "@/shared/lib/reveal";
-import { openPath as openWithDefaultApp } from "@tauri-apps/plugin-opener";
+import { openProducedFile } from "@/shared/rpc/files";
 import { toRpcError, type RpcCallOptions } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { OperationStatus, RpcError, RpcProgress } from "@/types";
@@ -22,7 +22,7 @@ async function runAfterOperation(outputs: string[]) {
   const { afterOperation } = usePreferencesStore.getState();
   try {
     if (afterOperation === "reveal") await revealPath(first);
-    else if (afterOperation === "open") await openWithDefaultApp(first);
+    else if (afterOperation === "open") await openProducedFile(first);
   } catch {
     return;
   }

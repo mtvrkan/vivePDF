@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { FolderOpen, Loader2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
-import { openPath as openWithDefaultApp } from "@tauri-apps/plugin-opener";
+import { openFolder, openProducedFile } from "@/shared/rpc/files";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -156,7 +156,7 @@ export function ResultPanel({
 
   const handleOpenFolder = async (dir: string) => {
     try {
-      await openWithDefaultApp(dir);
+      await openFolder(dir);
     } catch {
       await handleReveal(dir);
     }
@@ -168,7 +168,7 @@ export function ResultPanel({
       return;
     }
     try {
-      await openWithDefaultApp(output);
+      await openProducedFile(output);
     } catch {
       await handleReveal(output);
     }

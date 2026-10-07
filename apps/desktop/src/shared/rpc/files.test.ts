@@ -4,7 +4,7 @@ const invoke = vi.fn();
 vi.mock("@tauri-apps/api/core", () => ({ invoke: (...args: unknown[]) => invoke(...args) }));
 vi.mock("@/shared/store/preferencesStore", () => ({ readPreferences: () => ({ keepBackups: false }) }));
 
-import { openProducedPicture } from "./files";
+import { openFolder, openProducedFile, openProducedPicture } from "./files";
 import { RpcCallError } from "./client";
 
 describe("openProducedPicture", () => {
@@ -28,5 +28,36 @@ describe("openProducedPicture", () => {
     }
     expect(outcome).toBeInstanceOf(RpcCallError);
     expect((outcome as RpcCallError).code).toBe("PERMISSION_DENIED");
+  });
+});
+
+describe("openProducedFile", () => {
+  beforeEach(() => {
+    invoke.mockReset();
+  });
+
+  it("asks the shell to open a document the session wrote", async () => {
+    invoke.mockResolvedValue(undefined);
+
+    await openProducedFile("C:/out/rapor.docx");
+
+    expect(invoke).toHaveBeenCalledWith("open_produced_file", { path: "C:/out/rapor.docx" });
+  });
+
+  it("turns a refused program into an RpcCallError", async () => {
+    invoke.mockRejectedValue(Object.assign(new Error("not a document written by this session"), { code: "PERMISSION_DENIED" }));
+
+    const outcome = await openProducedFile("C:/out/ek.exe").catch((error: unknown) => error);
+
+    expect(outcome).toBeInstanceOf(RpcCallError);
+    expect((outcome as RpcCallError).code).toBe("PERMISSION_DENIED");
+  });
+
+  it("opens folders through their own command", async () => {
+    invoke.mockResolvedValue(undefined);
+
+    await openFolder("C:/out");
+
+    expect(invoke).toHaveBeenCalledWith("open_folder", { path: "C:/out" });
   });
 });

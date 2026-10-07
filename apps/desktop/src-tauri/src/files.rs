@@ -264,10 +264,24 @@ const OPENABLE_PICTURE_EXTENSIONS: [&str; 11] = [
     "png", "jpg", "jpeg", "jpx", "jp2", "bmp", "gif", "tif", "tiff", "webp", "jxr",
 ];
 
-fn is_openable_picture(path: &Path) -> bool {
+const OPENABLE_DOCUMENT_EXTENSIONS: [&str; 22] = [
+    "pdf", "docx", "doc", "xlsx", "xls", "pptx", "ppt", "odt", "ods", "odp", "rtf", "txt", "md",
+    "csv", "tsv", "json", "xml", "html", "htm", "epub", "svg", "zip",
+];
+
+fn extension_of(path: &Path) -> Option<String> {
     path.extension()
         .map(|value| value.to_string_lossy().to_lowercase())
-        .is_some_and(|ext| OPENABLE_PICTURE_EXTENSIONS.contains(&ext.as_str()))
+}
+
+fn is_openable_picture(path: &Path) -> bool {
+    extension_of(path).is_some_and(|ext| OPENABLE_PICTURE_EXTENSIONS.contains(&ext.as_str()))
+}
+
+fn is_openable_output(path: &Path) -> bool {
+    is_openable_picture(path)
+        || extension_of(path)
+            .is_some_and(|ext| OPENABLE_DOCUMENT_EXTENSIONS.contains(&ext.as_str()))
 }
 
 #[tauri::command]
@@ -291,6 +305,42 @@ pub async fn open_produced_picture(app: tauri::AppHandle, path: String) -> Resul
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
 }
 
+#[tauri::command]
+pub async fn open_produced_file(app: tauri::AppHandle, path: String) -> Result<(), RpcError> {
+    use tauri_plugin_opener::OpenerExt;
+    let target = PathBuf::from(&path);
+    if !target.is_file() {
+        return Err(RpcError::new(
+            "FILE_NOT_FOUND",
+            format!("not a file: {path}"),
+        ));
+    }
+    if !is_openable_output(&target) || !was_produced(&target) {
+        return Err(RpcError::new(
+            "PERMISSION_DENIED",
+            format!("not a document written by this session: {path}"),
+        ));
+    }
+    app.opener()
+        .open_path(target.to_string_lossy().to_string(), None::<&str>)
+        .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
+}
+
+#[tauri::command]
+pub async fn open_folder(app: tauri::AppHandle, path: String) -> Result<(), RpcError> {
+    use tauri_plugin_opener::OpenerExt;
+    let target = PathBuf::from(&path);
+    if !target.is_dir() {
+        return Err(RpcError::new(
+            "FILE_NOT_FOUND",
+            format!("not a folder: {path}"),
+        ));
+    }
+    app.opener()
+        .open_path(target.to_string_lossy().to_string(), None::<&str>)
+        .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -302,6 +352,18 @@ mod tests {
         assert!(!is_openable_picture(Path::new("/tmp/setup.exe")));
         assert!(!is_openable_picture(Path::new("/tmp/script.bat")));
         assert!(!is_openable_picture(Path::new("/tmp/no-extension")));
+    }
+
+    #[test]
+    fn outputs_open_only_as_documents_or_pictures() {
+        assert!(is_openable_output(Path::new("C:/out/rapor.PDF")));
+        assert!(is_openable_output(Path::new("C:/out/rapor.docx")));
+        assert!(is_openable_output(Path::new("C:/out/sayfa-1.png")));
+        assert!(!is_openable_output(Path::new("C:/out/ek.exe")));
+        assert!(!is_openable_output(Path::new("C:/out/ek.lnk")));
+        assert!(!is_openable_output(Path::new("C:/out/ek.hta")));
+        assert!(!is_openable_output(Path::new("C:/out/ek.cmd")));
+        assert!(!is_openable_output(Path::new("C:/out/no-extension")));
     }
 
     #[test]

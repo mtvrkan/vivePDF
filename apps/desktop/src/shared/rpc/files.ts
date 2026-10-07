@@ -53,6 +53,22 @@ export async function openProducedPicture(path: string): Promise<void> {
   }
 }
 
+export async function openProducedFile(path: string): Promise<void> {
+  try {
+    await invoke("open_produced_file", { path });
+  } catch (error) {
+    throw new RpcCallError(toRpcError(error));
+  }
+}
+
+export async function openFolder(path: string): Promise<void> {
+  try {
+    await invoke("open_folder", { path });
+  } catch (error) {
+    throw new RpcCallError(toRpcError(error));
+  }
+}
+
 export async function searchPictureWithLens(pngBase64: string, width: number, height: number): Promise<void> {
   try {
     await invoke("search_picture_with_lens", { pngBase64, width, height });
