@@ -1,5 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { invoke } from "@tauri-apps/api/core";
+import { useMemo, useState, type CSSProperties } from "react";
 import { AlertTriangle, Check, FileText, FolderOpen, FolderSearch, Minus, Pencil, Search, Trash2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
@@ -15,28 +14,8 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { COLLECTION_SORTS, matchingPaths, sortedPaths, type CollectionSort } from "./collectionFiles";
 import { useCollectionsStore } from "./collectionsStore";
+import { useMissingPaths } from "./useMissingPaths";
 import { useOpenCollection } from "./useOpenCollection";
-
-function useMissingPaths(paths: string[]): Set<string> {
-  const [missing, setMissing] = useState<Set<string>>(new Set());
-  const key = paths.join("\n");
-
-  useEffect(() => {
-    const list = key ? key.split("\n") : [];
-    if (list.length === 0) return;
-    let cancelled = false;
-    invoke<boolean[]>("path_exists", { paths: list })
-      .then((results) => {
-        if (!cancelled) setMissing(new Set(list.filter((_, index) => !results[index])));
-      })
-      .catch(() => undefined);
-    return () => {
-      cancelled = true;
-    };
-  }, [key]);
-
-  return missing;
-}
 
 function SelectBox({ state, label, onClick }: { state: boolean | "mixed"; label: string; onClick: () => void }) {
   const on = state !== false;
@@ -83,9 +62,14 @@ export function CollectionView({ collectionId, onClose, onEdit }: { collectionId
   if (!collection) return null;
 
   const openFiles = async (files: string[]) => {
+    const existing = files.filter((path) => !missing.has(path));
+    if (existing.length === 0) {
+      toast("error", t("home.collections.nothingToOpen"));
+      return;
+    }
     setOpening(true);
     try {
-      await openCollection({ ...collection, paths: files });
+      await openCollection({ ...collection, paths: existing });
       onClose();
     } finally {
       setOpening(false);

@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { useOpenStore } from "@/shared/store/openStore";
@@ -7,6 +7,12 @@ import { axeViolations } from "@/test/axe";
 import { RecentDocuments } from "./RecentDocuments";
 
 const pickAndOpen = vi.fn(() => Promise.resolve());
+const invoke = vi.fn();
+
+vi.mock("@tauri-apps/api/core", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@tauri-apps/api/core")>()),
+  invoke: (...args: unknown[]) => invoke(...args),
+}));
 
 vi.mock("@/features/viewer/useOpenPdf", () => ({
   useOpenPdf: () => ({ pickAndOpen, openPath: vi.fn() }),
@@ -19,6 +25,8 @@ beforeAll(async () => {
 
 beforeEach(() => {
   pickAndOpen.mockClear();
+  invoke.mockReset();
+  invoke.mockRejectedValue(new Error("unavailable"));
   useRecentStore.setState({ items: [] });
   useOpenStore.setState({ busy: false });
 });
@@ -66,8 +74,20 @@ describe("RecentDocuments", () => {
 
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
     expect(document.querySelector("img")).toBeNull();
-    fireEvent.click(screen.getByRole("button", { name: "Close: plan.pdf" }));
+    fireEvent.click(screen.getByRole("button", { name: "Remove plan.pdf from recent" }));
     expect(useRecentStore.getState().items.map((item) => item.fileName)).toEqual(["report.pdf"]);
   });
-});
 
+  it("dims a missing document, disables opening it and keeps a remove action", async () => {
+    invoke.mockResolvedValue([false, true]);
+    useRecentStore.setState({ items: [{ path: "C:/Docs/gone.pdf", fileName: "gone.pdf", openedAt: Date.now() }, { path: "C:/Docs/here.pdf", fileName: "here.pdf", openedAt: Date.now() }] });
+
+    render(<RecentDocuments size="small" />);
+
+    await waitFor(() => expect((screen.getByRole("button", { name: "gone.pdf" }) as HTMLButtonElement).disabled).toBe(true));
+    expect(screen.getByText("File not found")).toBeTruthy();
+    expect((screen.getByRole("button", { name: "here.pdf" }) as HTMLButtonElement).disabled).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Remove gone.pdf from recent" }));
+    expect(useRecentStore.getState().items.map((item) => item.fileName)).toEqual(["here.pdf"]);
+  });
+});

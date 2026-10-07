@@ -1,10 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useNavigate } from "react-router";
 import { ClipboardPaste, FolderOpen, Search as SearchIcon, UploadCloud } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { cn } from "@/shared/lib/cn";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
+import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useOpenStore } from "@/shared/store/openStore";
 import type { HomeSize } from "./homeLayout";
 
@@ -23,7 +24,7 @@ export function HeroSection({ size = "medium" }: { size?: HomeSize }) {
   const navigate = useNavigate();
   const { pickAndOpen, openClipboard } = useOpenPdf();
   const busy = useOpenStore((state) => state.busy);
-  const [dragDepth, setDragDepth] = useState(0);
+  const dragging = useDropTargetStore((state) => state.dragging);
   const greeting = useMemo(() => t(`home.greeting.${greetingKey(new Date().getHours())}`), [t]);
 
   return (
@@ -58,21 +59,11 @@ export function HeroSection({ size = "medium" }: { size?: HomeSize }) {
         type="button"
         onClick={() => void pickAndOpen()}
         disabled={busy}
-        data-active={dragDepth > 0 || undefined}
-        onDragEnter={(event) => {
-          event.preventDefault();
-          setDragDepth((depth) => depth + 1);
-        }}
-        onDragLeave={(event) => {
-          event.preventDefault();
-          setDragDepth((depth) => Math.max(0, depth - 1));
-        }}
-        onDragOver={(event) => event.preventDefault()}
-        onDrop={() => setDragDepth(0)}
+        data-active={dragging || undefined}
         className={cn(
           size === "large" ? "min-h-28" : "min-h-16",
           "mt-5 flex w-full items-center justify-between gap-4 rounded-xl py-3 border-2 border-dashed border-(--glass-border) px-5 text-sm text-muted-foreground outline-none transition-colors duration-(--transition-fast) hover:border-primary/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none",
-          dragDepth > 0 && "border-primary/70 bg-primary/5 text-primary",
+          dragging && "border-primary/70 bg-primary/5 text-primary",
         )}
       >
         <span className="flex min-w-0 items-center gap-3">

@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { FolderSearch, History, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { invoke } from "@tauri-apps/api/core";
 import { findNavItemByRoute } from "@/app/navigation";
 import { Button } from "@/components/shared/Button";
 import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMenu";
@@ -18,6 +17,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { describeError } from "@/shared/lib/errorMessage";
 import { bySize, listPadding, type HomeSize } from "./homeLayout";
+import { useMissingPaths } from "./useMissingPaths";
 
 
 export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
@@ -36,28 +36,21 @@ export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
   const { openPath } = useOpenPdf();
   const [pending, setPending] = useState<HistoryEntry | null>(null);
   const [deleting, setDeleting] = useState(false);
-  const [missing, setMissing] = useState<Record<string, boolean>>({});
   const menu = useContextMenu();
   const [menuEntry, setMenuEntry] = useState<HistoryEntry | null>(null);
 
-  useEffect(() => {
-    const paths = items.map((entry) => entry.outputs[0] ?? "");
-    if (paths.length === 0) return;
-    let cancelled = false;
-    invoke<boolean[]>("path_exists", { paths })
-      .then((results) => {
-        if (cancelled) return;
-        const next: Record<string, boolean> = {};
-        paths.forEach((path, index) => {
-          next[path] = !results[index];
-        });
-        setMissing(next);
-      })
-      .catch(() => undefined);
-    return () => {
-      cancelled = true;
-    };
-  }, [items]);
+  const allOutputs = useMemo(() => items.flatMap((entry) => entry.outputs), [items]);
+  const missingPaths = useMissingPaths(allOutputs);
+  const isEntryMissing = (entry: HistoryEntry) => entry.outputs.length > 0 && entry.outputs.every((output) => missingPaths.has(output));
+
+  const handleCopyPath = async (path: string) => {
+    try {
+      await navigator.clipboard.writeText(path);
+      toast("success", t("viewer.selection.copied"));
+    } catch {
+      toast("error", t("tools.codes.read.copyFailed"));
+    }
+  };
 
   const handleReveal = async (path: string) => {
     try {
@@ -72,20 +65,21 @@ export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
     if (!pending) return;
     setDeleting(true);
     try {
-      for (const output of pending.outputs) await deleteFile(output);
-      remove(pending.id);
-      toast("success", t("home.history.deleted"));
-      setPending(null);
-    } catch (error) {
-      const rpcError = toRpcError(error);
-      toast("error", describeError(t, rpcError));
+      const results = await Promise.allSettled(pending.outputs.map((output) => deleteFile(output)));
+      const failure = results.find((result): result is PromiseRejectedResult => result.status === "rejected" && toRpcError(result.reason).code !== "FILE_NOT_FOUND");
+      if (failure) {
+        toast("error", describeError(t, toRpcError(failure.reason)));
+      } else {
+        remove(pending.id);
+        toast("success", t("home.history.deleted"));
+        setPending(null);
+      }
     } finally {
       setDeleting(false);
     }
   };
 
-  const available = items.filter((entry) => missing[entry.outputs[0] ?? ""] !== true);
-  const shown = available.slice(0, bySize(size, 3, 6, 12));
+  const shown = items.slice(0, bySize(size, 3, 6, 12));
 
   if (items.length === 0) return null;
 
@@ -97,12 +91,11 @@ export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
           {t("home.clearRecent")}
         </button>
       </div>
-      {shown.length === 0 ? <p className="px-2 pb-2 text-xs text-muted-foreground">{t("home.history.allMissing")}</p> : null}
       <ul className="space-y-1">
         {shown.map((entry) => {
           const item = findNavItemByRoute(entry.tool);
           const first = entry.outputs[0] ?? "";
-          const isMissing = missing[first] === true;
+          const isMissing = isEntryMissing(entry);
           return (
             <li key={entry.id} className={`nav-glass group flex items-center gap-1 rounded-xl px-2 py-1.5 ${isMissing ? "opacity-50" : ""}`}>
               <button
@@ -170,7 +163,7 @@ export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
             const items: ContextMenuItem[] = [
               { type: "item", id: "open", label: t("home.history.open"), onSelect: () => (isPdfPath(first) ? void openPath(first) : void handleReveal(first)) },
               { type: "item", id: "show-in-folder", label: t("tools.reveal"), onSelect: () => void handleReveal(first) },
-              { type: "item", id: "copy-path", label: t("viewer.context.copyPath"), onSelect: () => void navigator.clipboard.writeText(first) },
+              { type: "item", id: "copy-path", label: t("viewer.context.copyPath"), onSelect: () => void handleCopyPath(first) },
               { type: "separator", id: "sep-remove" },
               { type: "item", id: "remove-from-list", label: t("home.history.removeFromList"), onSelect: () => remove(menuEntry.id) },
             ];

@@ -14,6 +14,7 @@ export function ContinueStrip({ size = "medium" }: { size?: HomeSize }) {
   const [session] = useState(() => (readSession() ? readStartupSession() : null));
   const [restored, setRestored] = useState(false);
   const [discarded, setDiscarded] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const restoreSession = useRestoreSession();
   const busy = useOpenStore((state) => state.busy);
 
@@ -22,6 +23,15 @@ export function ContinueStrip({ size = "medium" }: { size?: HomeSize }) {
   const discard = () => {
     writeSession(null);
     setDiscarded(true);
+  };
+
+  const restore = async () => {
+    setRestoring(true);
+    try {
+      setRestored(await restoreSession(session));
+    } finally {
+      setRestoring(false);
+    }
   };
 
   const shown = session.documents.slice(0, bySize(size, 2, 3, 6));
@@ -41,7 +51,7 @@ export function ContinueStrip({ size = "medium" }: { size?: HomeSize }) {
         ) : null}
       </ul>
       <div className="mt-4 flex flex-col gap-1.5">
-        <Button icon={<History className="size-4" aria-hidden />} onClick={() => void restoreSession(session).then((ok) => setRestored(ok))} disabled={busy} className="w-full rounded-full">
+        <Button icon={<History className="size-4" aria-hidden />} loading={restoring} onClick={() => void restore()} disabled={busy || restoring} className="w-full rounded-full">
           {t("recovery.restoreLast")}
         </Button>
         <Button size="sm" variant="ghost" icon={<X className="size-3.5" aria-hidden />} onClick={discard} disabled={busy} className="w-full rounded-full text-muted-foreground">

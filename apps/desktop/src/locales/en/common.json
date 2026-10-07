@@ -133,11 +133,13 @@
       "watch": "Watched folders",
       "ready": "Ready",
       "notInstalled": "Not installed",
+      "checkFailed": "Check failed",
       "languages_one": "{{count}} language",
       "languages_other": "{{count}} languages",
       "activeOf": "{{active}} / {{total}} active"
     },
     "recentCleared": "Recent documents list cleared.",
+    "removeRecent": "Remove {{name}} from recent",
     "studio": {
       "title": "Studio",
       "open": "Open Studio",
@@ -177,6 +179,7 @@
       "viewOf": "Show the files in {{name}}",
       "openFile": "Open {{name}}",
       "missing": "File not found",
+      "nothingToOpen": "None of these files exist any more.",
       "color": "Colour",
       "search": "Search the files",
       "noMatches": "No file matches “{{query}}”.",
@@ -414,7 +417,8 @@
         "Rejected": "Rejected",
         "Cancelled": "Cancelled",
         "Completed": "Completed"
-      }
+      },
+      "noMatches": "No comments match the filters."
     },
     "readAloud": {
       "title": "Read aloud",

@@ -133,11 +133,13 @@
       "watch": "Überwachte Ordner",
       "ready": "Bereit",
       "notInstalled": "Nicht installiert",
+      "checkFailed": "Prüfung fehlgeschlagen",
       "languages_one": "{{count}} Sprache",
       "languages_other": "{{count}} Sprachen",
       "activeOf": "{{active}} / {{total}} aktiv"
     },
     "recentCleared": "Liste der zuletzt verwendeten Dokumente gelöscht.",
+    "removeRecent": "{{name}} aus Zuletzt geöffnet entfernen",
     "studio": {
       "title": "Studio",
       "open": "Studio öffnen",
@@ -177,6 +179,7 @@
       "viewOf": "Dateien in {{name}} anzeigen",
       "openFile": "{{name}} öffnen",
       "missing": "Datei nicht gefunden",
+      "nothingToOpen": "Keine dieser Dateien ist mehr vorhanden.",
       "color": "Farbe",
       "search": "Dateien durchsuchen",
       "noMatches": "Keine Datei passt zu „{{query}}“.",
@@ -414,7 +417,8 @@
         "Rejected": "Abgelehnt",
         "Cancelled": "Abgebrochen",
         "Completed": "Abgeschlossen"
-      }
+      },
+      "noMatches": "Keine Kommentare entsprechen den Filtern."
     },
     "readAloud": {
       "title": "Vorlesen",

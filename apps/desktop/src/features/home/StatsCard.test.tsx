@@ -1,6 +1,7 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
+import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { ready, setLocale } from "@/app/i18n";
 import { StatsCard } from "./StatsCard";
 
@@ -29,6 +30,19 @@ describe("StatsCard", () => {
 
     render(<StatsCard size="large" />, { wrapper: MemoryRouter });
     expect(shortcutKeys()).toEqual(["Ctrl O", "Ctrl K", "Ctrl F", "Ctrl P", "Ctrl W", "F11"]);
-    expect(screen.getByRole("button", { name: /Close active document/ })).toBeTruthy();
+    expect(screen.getByText(/Close active document/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /Close active document/ })).toBeNull();
+  });
+
+  it("shows an error state with a retry control when the tools check fails", () => {
+    const refresh = vi.fn(() => Promise.resolve());
+    useToolsStatusStore.setState({ status: "error", tools: null, refresh });
+
+    render(<StatsCard size="small" />, { wrapper: MemoryRouter });
+
+    expect(screen.getAllByText("Check failed")).toHaveLength(2);
+    expect(screen.queryByText("…")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    expect(refresh).toHaveBeenCalledOnce();
   });
 });

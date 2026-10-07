@@ -141,6 +141,7 @@
       "watch": "المجلدات المراقبة",
       "ready": "جاهز",
       "notInstalled": "غير مثبّت",
+      "checkFailed": "فشل الفحص",
       "languages_zero": "{{count}} لغة",
       "languages_one": "{{count}} لغة",
       "languages_two": "لغتان",
@@ -150,6 +151,7 @@
       "activeOf": "{{active}} / {{total}} نشط"
     },
     "recentCleared": "تم مسح قائمة المستندات الأخيرة.",
+    "removeRecent": "إزالة {{name}} من الأخيرة",
     "studio": {
       "title": "الاستوديو",
       "open": "فتح الاستوديو",
@@ -201,6 +203,7 @@
       "viewOf": "عرض الملفات في {{name}}",
       "openFile": "فتح {{name}}",
       "missing": "الملف غير موجود",
+      "nothingToOpen": "لم يعد أي من هذه الملفات موجودًا.",
       "color": "اللون",
       "search": "البحث في الملفات",
       "noMatches": "لا يوجد ملف يطابق «{{query}}».",
@@ -454,7 +457,8 @@
         "Rejected": "مرفوض",
         "Cancelled": "ملغى",
         "Completed": "مكتمل"
-      }
+      },
+      "noMatches": "لا توجد تعليقات تطابق عوامل التصفية."
     },
     "readAloud": {
       "title": "قراءة بصوت عالٍ",

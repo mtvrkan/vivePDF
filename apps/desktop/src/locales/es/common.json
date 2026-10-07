@@ -133,11 +133,13 @@
       "watch": "Carpetas vigiladas",
       "ready": "Listo",
       "notInstalled": "No instalado",
+      "checkFailed": "Error de comprobación",
       "languages_one": "{{count}} idioma",
       "languages_other": "{{count}} idiomas",
       "activeOf": "{{active}} / {{total}} activas"
     },
     "recentCleared": "Lista de documentos recientes borrada.",
+    "removeRecent": "Quitar {{name}} de recientes",
     "studio": {
       "title": "Estudio",
       "open": "Abrir Estudio",
@@ -177,6 +179,7 @@
       "viewOf": "Mostrar los archivos de {{name}}",
       "openFile": "Abrir {{name}}",
       "missing": "Archivo no encontrado",
+      "nothingToOpen": "Ninguno de estos archivos existe ya.",
       "color": "Color",
       "search": "Buscar en los archivos",
       "noMatches": "Ningún archivo coincide con «{{query}}».",
@@ -414,7 +417,8 @@
         "Rejected": "Rechazado",
         "Cancelled": "Cancelado",
         "Completed": "Completado"
-      }
+      },
+      "noMatches": "Ningún comentario coincide con los filtros."
     },
     "readAloud": {
       "title": "Leer en voz alta",

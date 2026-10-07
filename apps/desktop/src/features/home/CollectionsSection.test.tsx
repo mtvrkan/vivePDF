@@ -194,5 +194,32 @@ describe("CollectionsSection", () => {
     expect(Array.from(document.querySelectorAll("[data-collection]")).map((card) => card.getAttribute("data-collection"))).toEqual(["Contracts", "Invoices"]);
     expect((screen.getByRole("menuitem", { name: "Move later" }) as HTMLButtonElement).disabled).toBe(true);
   });
-});
 
+  it("leaves missing files out when opening a collection", async () => {
+    useCollectionsStore.getState().create("Invoices", ["C:/Docs/a.pdf", "C:/Old/gone.pdf"]);
+    invoke.mockResolvedValue([true, false]);
+    render(<CollectionsSection />);
+    fireEvent.click(screen.getByRole("button", { name: "Show the files in Invoices" }));
+    const dialog = within(screen.getByRole("dialog"));
+    await waitFor(() => expect(dialog.getByText("File not found")).toBeTruthy());
+
+    fireEvent.click(dialog.getByRole("button", { name: "Open all" }));
+
+    await waitFor(() => expect(openCollection).toHaveBeenCalledWith(expect.objectContaining({ paths: ["C:/Docs/a.pdf"] })));
+  });
+
+  it("opens nothing and shows one toast when every file of the collection is missing", async () => {
+    useToastStore.setState({ toasts: [] });
+    useCollectionsStore.getState().create("Invoices", ["C:/Old/x.pdf", "C:/Old/gone.pdf"]);
+    invoke.mockResolvedValue([false, false]);
+    render(<CollectionsSection />);
+    fireEvent.click(screen.getByRole("button", { name: "Show the files in Invoices" }));
+    const dialog = within(screen.getByRole("dialog"));
+    await waitFor(() => expect(dialog.getAllByText("File not found")).toHaveLength(2));
+
+    fireEvent.click(dialog.getByRole("button", { name: "Open all" }));
+
+    expect(openCollection).not.toHaveBeenCalled();
+    expect(useToastStore.getState().toasts).toHaveLength(1);
+  });
+});

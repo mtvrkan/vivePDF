@@ -37,11 +37,17 @@ function OverviewRow({ label, value, health, onClick, mono = true }: { label: st
   );
 }
 
-function ShortcutRow({ label, keys, onClick }: { label: string; keys: string; onClick: () => void }) {
-  return (
-    <button type="button" onClick={onClick} className="nav-glass flex h-8 w-full items-center justify-between gap-3 rounded-lg px-2 text-start text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+function ShortcutRow({ label, keys, onClick }: { label: string; keys: string; onClick?: () => void }) {
+  const content = (
+    <>
       <span className="min-w-0 truncate">{label}</span>
       <kbd className="glass-chip shrink-0 rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{keys}</kbd>
+    </>
+  );
+  if (!onClick) return <div className="flex h-8 items-center justify-between gap-3 px-2 text-sm text-muted-foreground">{content}</div>;
+  return (
+    <button type="button" onClick={onClick} className="nav-glass flex h-8 w-full items-center justify-between gap-3 rounded-lg px-2 text-start text-sm text-muted-foreground outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+      {content}
     </button>
   );
 }
@@ -89,7 +95,9 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
   const enabledRules = rules.filter((rule) => rule.enabled).length;
   const ocrLanguages = tools?.ocrLanguages.length ?? 0;
   const engineHealth: Health = engineStatus === "success" ? "ok" : engineStatus === "error" ? "off" : "warn";
-  const toolsHealth = (ready: boolean): Health => (toolsStatus === "success" ? (ready ? "ok" : "off") : "warn");
+  const toolsFailed = toolsStatus === "error";
+  const toolsHealth = (ready: boolean): Health => (toolsStatus === "success" ? (ready ? "ok" : "off") : toolsFailed ? "off" : "warn");
+  const toolsValue = (ready: string): string => (toolsStatus === "success" ? ready : toolsFailed ? t("home.stats.checkFailed") : "…");
 
   return (
     <section className={`glass rounded-2xl ${listPadding(size)}`}>
@@ -99,16 +107,23 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
         {topTool ? <OverviewRow label={t("home.stats.topTool")} value={topTool.label} mono={false} onClick={() => void navigate(topTool.route)} /> : null}
         <OverviewRow
           label={t("home.stats.ocr")}
-          value={toolsStatus === "success" ? (ocrLanguages > 0 ? t("home.stats.languages", { count: ocrLanguages }) : t("home.stats.notInstalled")) : "…"}
+          value={toolsValue(ocrLanguages > 0 ? t("home.stats.languages", { count: ocrLanguages }) : t("home.stats.notInstalled"))}
           health={toolsHealth(ocrLanguages > 0)}
           onClick={() => void navigate(`/settings?section=tools${backParam}`)}
         />
         <OverviewRow
           label={t("home.stats.office")}
-          value={toolsStatus === "success" ? (tools?.libreoffice ? t("home.stats.ready") : t("home.stats.notInstalled")) : "…"}
+          value={toolsValue(tools?.libreoffice ? t("home.stats.ready") : t("home.stats.notInstalled"))}
           health={toolsHealth(Boolean(tools?.libreoffice))}
           onClick={() => void navigate(`/settings?section=tools${backParam}`)}
         />
+        {toolsFailed ? (
+          <div className="flex h-8 items-center justify-end px-2">
+            <button type="button" onClick={() => void refreshTools()} className="flex min-h-6 items-center rounded-full px-2 text-xs text-muted-foreground outline-none hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring">
+              {t("common.retry")}
+            </button>
+          </div>
+        ) : null}
         <OverviewRow
           label={t("home.stats.watch")}
           value={rules.length > 0 ? t("home.stats.activeOf", { active: enabledRules, total: rules.length }) : "—"}
@@ -123,12 +138,12 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
         <div className="space-y-px">
           <ShortcutRow label={t("common.openPdf")} keys="Ctrl O" onClick={() => void pickAndOpen()} />
           <ShortcutRow label={t("emptyDoc.palette")} keys="Ctrl K" onClick={openPalette} />
-          <ShortcutRow label={t("about.shortcuts.items.search")} keys="Ctrl F" onClick={() => void navigate("/viewer")} />
-          <ShortcutRow label={t("about.shortcuts.items.print")} keys="Ctrl P" onClick={() => void navigate("/viewer")} />
+          <ShortcutRow label={t("about.shortcuts.items.search")} keys="Ctrl F" />
+          <ShortcutRow label={t("about.shortcuts.items.print")} keys="Ctrl P" />
           {size === "large" ? (
             <>
-              <ShortcutRow label={t("about.shortcuts.items.closeDocument")} keys="Ctrl W" onClick={() => void navigate("/viewer")} />
-              <ShortcutRow label={t("about.shortcuts.items.fullscreen")} keys="F11" onClick={() => void navigate("/viewer")} />
+              <ShortcutRow label={t("about.shortcuts.items.closeDocument")} keys="Ctrl W" />
+              <ShortcutRow label={t("about.shortcuts.items.fullscreen")} keys="F11" />
             </>
           ) : null}
         </div>

@@ -133,11 +133,13 @@
       "watch": "İzlenen klasörler",
       "ready": "Hazır",
       "notInstalled": "Kurulu değil",
+      "checkFailed": "Denetlenemedi",
       "languages_one": "{{count}} dil",
       "languages_other": "{{count}} dil",
       "activeOf": "{{active}} / {{total}} etkin"
     },
     "recentCleared": "Son belgeler listesi temizlendi.",
+    "removeRecent": "{{name}} son açılanlardan kaldır",
     "studio": {
       "title": "Stüdyo",
       "open": "Stüdyo'yu aç",
@@ -177,6 +179,7 @@
       "viewOf": "{{name}} koleksiyonundaki dosyaları göster",
       "openFile": "{{name}} dosyasını aç",
       "missing": "Dosya bulunamadı",
+      "nothingToOpen": "Bu dosyaların hiçbiri artık yerinde değil.",
       "color": "Renk",
       "search": "Dosyalarda ara",
       "noMatches": "“{{query}}” ile eşleşen dosya yok.",
@@ -414,7 +417,8 @@
         "Rejected": "Reddedildi",
         "Cancelled": "İptal edildi",
         "Completed": "Tamamlandı"
-      }
+      },
+      "noMatches": "Süzgeçlerle eşleşen yorum yok."
     },
     "readAloud": {
       "title": "Sesli oku",
