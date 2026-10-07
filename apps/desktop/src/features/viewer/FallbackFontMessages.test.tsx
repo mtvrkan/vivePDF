@@ -3,6 +3,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import { ready, setLocale } from "@/app/i18n";
 import { RpcCallError } from "@/shared/rpc/client";
 import { useFallbackFontsStore } from "@/shared/store/fallbackFontsStore";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePendingChangesStore } from "@/shared/store/pendingChangesStore";
 import { axeViolations } from "@/test/axe";
 
@@ -11,6 +12,9 @@ const rpc = vi.hoisted(() => ({ fallbackFontsDownload: vi.fn() }));
 
 vi.mock("@/shared/rpc/fallbackFonts", () => rpc);
 vi.mock("./useReloadDocument", () => ({ useReloadDocument: () => hooks.reload }));
+vi.mock("@embedpdf/plugin-history/react", () => ({
+  useHistoryCapability: () => ({ provides: { forDocument: () => ({ canUndo: () => hooks.unsaved }) } }),
+}));
 vi.mock("./useUnsavedMarks", () => ({ useUnsavedMarks: () => hooks.unsaved }));
 
 const { FallbackFontMessages } = await import("./FallbackFontMessages");
@@ -25,6 +29,9 @@ beforeAll(async () => {
 beforeEach(() => {
   hooks.reload.mockClear();
   hooks.unsaved = false;
+  useDocumentStore.setState({ documents: {}, order: [], activeId: null });
+  useDocumentStore.getState().register(DOCUMENT_ID, "C:/belgeler/yazi.pdf", null);
+  useDocumentStore.getState().setActive(DOCUMENT_ID);
   rpc.fallbackFontsDownload.mockReset();
   rpc.fallbackFontsDownload.mockResolvedValue({ set: "ja", bytes: 1 });
   usePendingChangesStore.setState({ changes: {} });
@@ -71,6 +78,37 @@ describe("FallbackFontMessages", () => {
     expect(hooks.reload).not.toHaveBeenCalled();
     expect(screen.getByText("The Korean font is ready. Save the document and open it again to show the text.")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Reload" })).toBeNull();
+  });
+
+  it("keeps the manual reload when marks were added while the font downloaded", async () => {
+    let finish: (value: { set: string; bytes: number }) => void = () => undefined;
+    rpc.fallbackFontsDownload.mockReturnValue(new Promise((resolve) => (finish = resolve)));
+    missing("ja");
+    render(<FallbackFontMessages documentId={DOCUMENT_ID} />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Download" }));
+    });
+    hooks.unsaved = true;
+    await act(async () => {
+      finish({ set: "ja", bytes: 1 });
+    });
+    expect(hooks.reload).not.toHaveBeenCalled();
+  });
+
+  it("keeps the manual reload when another document became active during the download", async () => {
+    let finish: (value: { set: string; bytes: number }) => void = () => undefined;
+    rpc.fallbackFontsDownload.mockReturnValue(new Promise((resolve) => (finish = resolve)));
+    missing("ja");
+    render(<FallbackFontMessages documentId={DOCUMENT_ID} />);
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Download" }));
+    });
+    useDocumentStore.getState().register("doc-other", "C:/belgeler/baska.pdf", null);
+    useDocumentStore.getState().setActive("doc-other");
+    await act(async () => {
+      finish({ set: "ja", bytes: 1 });
+    });
+    expect(hooks.reload).not.toHaveBeenCalled();
   });
 
   it("shows the failure and offers a retry", async () => {

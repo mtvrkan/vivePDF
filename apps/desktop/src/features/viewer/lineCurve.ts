@@ -72,6 +72,11 @@ export function lineEndpoints(object: PdfLineAnnoObject | PdfPolylineAnnoObject)
   return object.linePoints;
 }
 
+export function isCurvable(object: PdfLineAnnoObject | PdfPolylineAnnoObject): boolean {
+  if (object.type !== PdfAnnotationSubtype.POLYLINE) return true;
+  return object.vertices.length === 2 || object.vertices.length === CURVE_SEGMENTS + 1;
+}
+
 export function currentCurve(object: PdfLineAnnoObject | PdfPolylineAnnoObject): number {
   return object.type === PdfAnnotationSubtype.POLYLINE ? curveFromVertices(object.vertices) : 0;
 }

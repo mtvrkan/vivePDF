@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
 import { AArrowDown, AArrowUp, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
@@ -13,7 +13,7 @@ import { getPageText } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { READING_FONT_MAX, READING_FONT_MIN, useReadingStore, type ActiveSentence } from "@/shared/store/readingStore";
 import type { PageText, ReadingTheme, ReadingWidth } from "@/types";
-import { overlapsRange, placeholderHeight, readingParagraphs, type MeasuredHeight, type ReadingPiece } from "./readingLayout";
+import { overlapsRange, placeholderHeight, readingParagraphs, type MeasuredHeight, type ReadingParagraph, type ReadingPiece } from "./readingLayout";
 
 const THEMES: ReadingTheme[] = ["paper", "sepia", "dark"];
 const WIDTHS: ReadingWidth[] = ["narrow", "medium", "wide"];
@@ -31,7 +31,15 @@ function isActivePiece(piece: ReadingPiece, active: ActiveSentence | null, page:
   return piece.sentenceIndex === active.index;
 }
 
-function PageSection({
+const NO_PARAGRAPHS: ReadingParagraph[] = [];
+
+function useVisibleParagraphs(text: string, visible: boolean): ReadingParagraph[] {
+  const cache = useRef<{ text: string; value: ReadingParagraph[] } | null>(null);
+  if (visible && cache.current?.text !== text) cache.current = { text, value: readingParagraphs(text) };
+  return visible && cache.current ? cache.current.value : NO_PARAGRAPHS;
+}
+
+const PageSection = memo(function PageSection({
   entry,
   fontSize,
   layoutKey,
@@ -49,7 +57,7 @@ function PageSection({
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [measured, setMeasured] = useState<MeasuredHeight | null>(null);
-  const paragraphs = useMemo(() => readingParagraphs(entry.text), [entry.text]);
+  const paragraphs = useVisibleParagraphs(entry.text, visible);
 
   useEffect(() => {
     const node = ref.current;
@@ -93,7 +101,7 @@ function PageSection({
       )}
     </section>
   );
-}
+});
 
 export function ReadingView({ documentId, onExit }: { documentId: string; onExit: () => void }) {
   const { t } = useTranslation();
@@ -109,7 +117,8 @@ export function ReadingView({ documentId, onExit }: { documentId: string; onExit
   const [pages, setPages] = useState<PageText[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const initialPage = useRef(scroll?.getCurrentPage() ?? scrollState.currentPage);
+  const initialPage = useRef({ documentId, page: scroll?.getCurrentPage() ?? scrollState.currentPage });
+  if (initialPage.current.documentId !== documentId) initialPage.current = { documentId, page: scroll?.getCurrentPage() ?? scrollState.currentPage };
   const [attempt, setAttempt] = useState(0);
   const path = document?.path ?? null;
   const password = document?.password ?? undefined;
@@ -133,7 +142,7 @@ export function ReadingView({ documentId, onExit }: { documentId: string; onExit
 
   useEffect(() => {
     if (!pages || !containerRef.current) return;
-    const target = containerRef.current.querySelector<HTMLElement>(`[data-page="${initialPage.current}"]`);
+    const target = containerRef.current.querySelector<HTMLElement>(`[data-page="${initialPage.current.page}"]`);
     target?.scrollIntoView({ block: "start" });
   }, [pages]);
 
@@ -152,10 +161,12 @@ export function ReadingView({ documentId, onExit }: { documentId: string; onExit
     target?.scrollIntoView({ block: "center", behavior: "smooth" });
   }, [activeSentence]);
 
-  const exitTo = (page: number) => {
-    scroll?.scrollToPage({ pageNumber: page });
-    onExit();
-  };
+  const exitHandlers = useRef({ scroll, onExit });
+  exitHandlers.current = { scroll, onExit };
+  const exitTo = useCallback((page: number) => {
+    exitHandlers.current.scroll?.scrollToPage({ pageNumber: page });
+    exitHandlers.current.onExit();
+  }, []);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -185,7 +196,7 @@ export function ReadingView({ documentId, onExit }: { documentId: string; onExit
                 entry={entry}
                 fontSize={fontSize}
                 layoutKey={`${fontSize}|${width}`}
-                active={activeSentence}
+                active={activeSentence?.page === entry.page ? activeSentence : null}
                 onExit={exitTo}
                 t={t}
               />

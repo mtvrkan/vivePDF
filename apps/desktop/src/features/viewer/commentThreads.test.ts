@@ -36,4 +36,9 @@ describe("commentThreads", () => {
       [2, 1],
     ]);
   });
+
+  it("hides the replies of a filtered-out comment instead of listing them as threads", () => {
+    const items = [comment(1, null, "Can"), comment(2, 1, "Ayşe"), comment(3, 2, "Ayşe"), comment(4, null, "Ayşe")];
+    expect(layout(commentThreads(items, (item) => item.author === "Ayşe"))).toEqual([[4, 0]]);
+  });
 });

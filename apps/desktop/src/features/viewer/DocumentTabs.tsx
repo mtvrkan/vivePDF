@@ -307,9 +307,9 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                 const index = tabs.indexOf(event.currentTarget);
                 const step = event.key === "ArrowRight" ? 1 : -1;
                 const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + step + tabs.length) % tabs.length;
-                const next = documents[nextIndex];
-                tabs[nextIndex]?.focus();
-                if (next) guardedActivate(next.id);
+                const nextTab = tabs[nextIndex];
+                nextTab?.focus();
+                if (nextTab?.dataset.tabId) guardedActivate(nextTab.dataset.tabId);
               }
             }}
             onAuxClick={(event) => {

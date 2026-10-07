@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
+import { useDocumentStore } from "./documentStore";
 import { eraseFromStroke, eraseFromStrokes, usePresentationStore, type Stroke } from "./presentationStore";
 
 function line(id: string, points: Array<[number, number]>, width = 0): Stroke {
@@ -152,5 +153,31 @@ describe("drawn shapes and text", () => {
 
     const state = usePresentationStore.getState();
     expect([state.penWidth, state.highlighterWidth, state.penOpacity, state.textSize]).toEqual([24, 4, 0.1, 96]);
+  });
+});
+
+describe("document scope", () => {
+  it("drops drawings and cached code blocks when the active document changes", () => {
+    useDocumentStore.setState({ activeId: "a" });
+    const store = usePresentationStore.getState();
+    store.addStroke(2, line("s", [[0.1, 0.1], [0.2, 0.2]]));
+    store.setCodeBlocksForPage(2, { width: 1, height: 1, blocks: [] });
+    store.selectDrawing({ surface: 2, id: "s" });
+
+    useDocumentStore.setState({ activeId: "b" });
+
+    const state = usePresentationStore.getState();
+    expect(state.strokesByPage).toEqual({});
+    expect(state.codeBlocksByPage).toEqual({});
+    expect(state.selectedDrawing).toBeNull();
+  });
+
+  it("keeps drawings while the same document stays active", () => {
+    useDocumentStore.setState({ activeId: "a" });
+    usePresentationStore.getState().addStroke(0, line("s", [[0.1, 0.1], [0.2, 0.2]]));
+
+    useDocumentStore.setState({ activeId: "a", order: [] });
+
+    expect(usePresentationStore.getState().strokesByPage[0]).toHaveLength(1);
   });
 });

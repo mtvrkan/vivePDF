@@ -17,6 +17,7 @@ import { useSplitViewStore } from "@/shared/store/splitViewStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { planRedactionScrub, scrubRedactedFile } from "./redactionScrub";
 import { annotationAuthorName } from "./annotationAuthor";
+import { invalidatePageText } from "./pageTextCache";
 import { useReloadDocument } from "./useReloadDocument";
 import { restoreSavedView } from "./viewableBytes";
 import { originalOf, useConvertedStore } from "./convertedDocuments";
@@ -80,15 +81,18 @@ export function useDocumentSave(documentId: string) {
         const current = refs.current;
         if (!current.exporter) return false;
         const scrubPlan = current.pendingCount > 0 ? await planRedactionScrub(document.path, password, current.pendingRedactions) : null;
-        if (current.pendingCount > 0) await current.redaction?.commitAllPending();
-        await current.annotation?.commit();
+        if (current.pendingCount > 0) await current.redaction?.commitAllPending().toPromise();
+        await current.annotation?.commit().toPromise();
         const bytes = await current.exporter.saveAsCopy().toPromise();
         if (!bytes) return false;
         await writeDocumentBytes(path, bytes);
         await restoreSavedView(document.path, path, password);
         scrubbed = await scrubRedactedFile(path, password, scrubPlan);
       }
-      for (const change of queued) await applyChange(change, path, password);
+      for (const change of queued) {
+        await applyChange(change, path, password);
+        if (settles) usePendingChangesStore.getState().drop(documentId, change.id);
+      }
       if (settles) {
         usePendingChangesStore.getState().clear(documentId);
         refs.current.historyCapability?.forDocument(documentId).purgeByMetadata(() => true);
@@ -100,7 +104,10 @@ export function useDocumentSave(documentId: string) {
       }
       toast("success", t("viewer.save.saved", { name: basenameOf(path) }));
       if (scrubbed > 0) toast("info", t("viewer.save.hiddenScrubbed", { count: scrubbed }));
-      if (samePath) useSplitViewStore.getState().refresh(path);
+      if (samePath) {
+        useSplitViewStore.getState().refresh(path);
+        invalidatePageText(documentId);
+      }
       if (samePath && (scrubbed > 0 || queued.length > 0)) await reload();
       else if (samePath) void useDocumentStore.getState().loadInfo(documentId);
       return true;

@@ -7,12 +7,33 @@ import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import { appendDigit, emptyJumpState, isJumpDigit, jumpResetDelayMs, resolveJumpPage, type DigitJumpState } from "./pageJump";
 
+const VISIBLE_MARGIN = "240px";
+
 function GridThumb({ documentId, pageIndex, active, onSelect }: { documentId: string; pageIndex: number; active: boolean; onSelect: () => void }) {
   const { provides: thumbnailCapability } = useThumbnailCapability();
   const [src, setSrc] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
+  const cellRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (!thumbnailCapability) return;
+    const node = cellRef.current;
+    if (!node || visible) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setVisible(true);
+      },
+      { rootMargin: VISIBLE_MARGIN },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [visible]);
+
+  useEffect(() => {
+    if (!thumbnailCapability || !visible) return;
     let cancelled = false;
     let objectUrl: string | null = null;
     const scope = thumbnailCapability.forDocument(documentId);
@@ -29,10 +50,11 @@ function GridThumb({ documentId, pageIndex, active, onSelect }: { documentId: st
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [thumbnailCapability, documentId, pageIndex]);
+  }, [thumbnailCapability, documentId, pageIndex, visible]);
 
   return (
     <button
+      ref={cellRef}
       type="button"
       onClick={onSelect}
       className={cn(

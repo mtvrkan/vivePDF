@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DropZone } from "@/components/tool/DropZone";
-import { useDropHandler } from "@/shared/hooks/useDropHandler";
+import { useDropPositionHandler } from "@/shared/hooks/useDropHandler";
 import { FolderDown, Paperclip, Plus, RefreshCw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
@@ -68,8 +68,20 @@ export function AttachmentsPanel({ documentId }: { documentId: string }) {
     },
     [path, queue, documentId],
   );
-  const onDrop = useCallback((paths: string[]) => requestAttach(paths), [requestAttach]);
-  useDropHandler(onDrop);
+  const panelRef = useRef<HTMLElement>(null);
+  const onDrop = useCallback(
+    (paths: string[], position: { x: number; y: number }) => {
+      const rect = panelRef.current?.getBoundingClientRect();
+      if (!rect) return false;
+      const x = position.x / window.devicePixelRatio;
+      const y = position.y / window.devicePixelRatio;
+      if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) return false;
+      requestAttach(paths);
+      return true;
+    },
+    [requestAttach],
+  );
+  useDropPositionHandler(onDrop);
 
   const add = async () => {
     if (!path) return;
@@ -111,7 +123,7 @@ export function AttachmentsPanel({ documentId }: { documentId: string }) {
   const extractable = items.filter((item) => !isAttachmentRemoved(changes, item.name));
 
   return (
-    <aside aria-label={t("viewer.attachments.title")} className="flex h-full w-inspector flex-col border-e bg-card">
+    <aside ref={panelRef} aria-label={t("viewer.attachments.title")} className="flex h-full w-inspector flex-col border-e bg-card">
       <div className="flex h-row items-center gap-2 border-b px-3">
         <Paperclip className="size-4 text-primary" aria-hidden />
         <span className="flex-1 text-sm font-semibold">{t("viewer.attachments.title")}</span>

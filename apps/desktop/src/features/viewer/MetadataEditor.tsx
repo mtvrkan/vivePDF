@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Save } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
@@ -17,22 +17,39 @@ export function MetadataEditor({ document }: { document: OpenDocument }) {
   const [saving, setSaving] = useState(false);
   const metadata = document.info?.metadata;
 
+  const dirty = FIELDS.some((field) => (metadata?.[field] ?? "") !== values[field]);
+  const dirtyRef = useRef(dirty);
+  dirtyRef.current = dirty;
+  const loadedFor = useRef<string | null>(null);
+
   useEffect(() => {
+    const sameDocument = loadedFor.current === document.id;
+    if (sameDocument && dirtyRef.current) return;
+    loadedFor.current = document.id;
     setValues({
       title: metadata?.title ?? "",
       author: metadata?.author ?? "",
       subject: metadata?.subject ?? "",
       keywords: metadata?.keywords ?? "",
     });
-  }, [metadata]);
-
-  const dirty = FIELDS.some((field) => (metadata?.[field] ?? "") !== values[field]);
+  }, [metadata, document.id]);
 
   const save = async () => {
     setSaving(true);
-    usePendingChangesStore.getState().queue(document.id, { kind: "metadataChanged", metadata: { ...values }, label: t("viewer.metadata.title") });
-    await saveDocument();
-    setSaving(false);
+    try {
+      const store = usePendingChangesStore.getState();
+      const before = new Set((store.changes[document.id] ?? []).map((change) => change.id));
+      store.queue(document.id, { kind: "metadataChanged", metadata: { ...values }, label: t("viewer.metadata.title") });
+      const saved = await saveDocument();
+      if (!saved) {
+        const state = usePendingChangesStore.getState();
+        for (const change of state.changes[document.id] ?? []) {
+          if (change.kind === "metadataChanged" && !before.has(change.id)) state.drop(document.id, change.id);
+        }
+      }
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (

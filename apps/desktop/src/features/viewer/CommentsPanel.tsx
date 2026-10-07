@@ -83,8 +83,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
   const document = useDocumentStore((state) => state.documents[documentId] ?? null);
   const { provides: scroll } = useScroll(documentId);
   const queue = usePendingChangesStore((state) => state.queue);
-  const allChanges = usePendingChangesStore((state) => state.changes);
-  const changes = useMemo(() => pendingChangesFor(allChanges, documentId), [allChanges, documentId]);
+  const changes = usePendingChangesStore((state) => pendingChangesFor(state.changes, documentId));
   const [data, setData] = useState<CommentsListResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -174,6 +173,20 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
     return commentThreads(all, keepRoot);
   }, [data, queuedReplies, author, type, page, showResolved, status, replies, effectiveState, changes]);
 
+  const deletedXrefs = useMemo(() => {
+    const deleted = new Set<number>();
+    const inherited: boolean[] = [];
+    for (const { item, depth } of entries) {
+      const marked = (depth > 0 && inherited[depth - 1] === true) || isCommentDeleted(changes, item.xref);
+      inherited[depth] = marked;
+      inherited.length = depth + 1;
+      if (marked) deleted.add(item.xref);
+    }
+    return deleted;
+  }, [entries, changes]);
+
+  const isDeleted = (item: CommentItem) => deletedXrefs.has(item.xref) || isCommentDeleted(changes, item.xref);
+
   const pendingReplyId = (item: CommentItem) => queuedReplies.find((entry) => entry.item.xref === item.xref)?.changeId ?? null;
 
   const commentLabel = (item: CommentItem) => item.author || item.content?.slice(0, 40) || typeLabel(item.type);
@@ -198,7 +211,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
     setReplyingTo(null);
   };
 
-  const canAnswer = (item: CommentItem) => item.xref > 0 && !isCommentDeleted(changes, item.xref);
+  const canAnswer = (item: CommentItem) => item.xref > 0 && !isDeleted(item);
 
   const stateLabel = (state: ReviewState | null) => (state ? t(`viewer.comments.states.${state}`) : t("viewer.comments.noStatus"));
 
@@ -302,19 +315,30 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
       ) : null}
       <div className="min-h-0 flex-1 overflow-auto p-2">
         {loading && !data ? <SkeletonCard lines={5} /> : null}
-        {error ? <p className="p-2 text-sm text-destructive">{error}</p> : null}
+        {error ? (
+          <div className="flex flex-col items-start gap-2 p-2 text-sm text-destructive" role="alert">
+            <p>{error}</p>
+            <Button size="sm" onClick={() => void load()} loading={loading}>
+              {t("common.retry")}
+            </Button>
+          </div>
+        ) : null}
         {data && data.items.length === 0 ? (
           <div className="flex flex-col gap-1 p-3 text-sm text-muted-foreground">
             <span>{t("viewer.comments.empty")}</span>
             <span className="text-xs">{t("viewer.comments.hint")}</span>
           </div>
         ) : null}
+        {data && data.items.length > 0 && entries.length === 0 ? (
+          <div className="p-3 text-sm text-muted-foreground">{t("viewer.comments.noMatches")}</div>
+        ) : null}
         <ul className="flex flex-col gap-1.5">
           {entries.map(({ item, depth }) => {
             const state = effectiveState(item);
             const resolved = state === "Completed";
             const pending = item.xref < 0;
-            const deleted = isCommentDeleted(changes, item.xref);
+            const deleted = isDeleted(item);
+            const ownDeleted = isCommentDeleted(changes, item.xref);
             const unsaved = pending || deleted || reviewStateOverride(changes, item.xref) !== null;
             const meta = [item.author, item.created].filter(Boolean).join(" · ");
             const metaTitle = resolved ? `${meta} · ${t("viewer.comments.resolved")}` : meta;
@@ -362,7 +386,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
                     disabled={pending || deleted}
                     onClick={() => toggleResolved(item)}
                   />
-                  <IconButton icon={Trash2} label={pending ? t("viewer.comments.discardReply") : t("viewer.comments.delete")} disabled={deleted} onClick={() => requestDelete(item)} />
+                  <IconButton icon={Trash2} label={pending ? t("viewer.comments.discardReply") : t("viewer.comments.delete")} disabled={ownDeleted || (deleted && !pending)} onClick={() => requestDelete(item)} />
                 </div>
                 {replyingTo === item.xref && canAnswer(item) ? (
                   <ReplyBox label={t("viewer.comments.replyTo", { name: item.author || heading })} onSubmit={(content) => sendReply(item, content)} onCancel={() => setReplyingTo(null)} />
@@ -394,7 +418,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
       {menu.anchor && menuItem
         ? (() => {
             const menuResolved = effectiveResolved(menuItem);
-            const menuDeleted = isCommentDeleted(changes, menuItem.xref);
+            const menuDeleted = isDeleted(menuItem);
             const menuPending = menuItem.xref < 0;
             const items: ContextMenuItem[] = [
               { type: "item", id: "go-to-page", label: t("viewer.context.goToPage"), onSelect: () => scroll?.scrollToPage({ pageNumber: menuItem.page }) },
@@ -416,7 +440,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
               },
               { type: "submenu", id: "status", icon: ListChecks, label: t("viewer.comments.status"), disabled: menuDeleted || menuPending, items: statusItems(menuItem) },
               { type: "separator", id: "sep-delete" },
-              { type: "item", id: "delete", icon: Trash2, label: menuPending ? t("viewer.comments.discardReply") : t("viewer.comments.delete"), disabled: menuDeleted, onSelect: () => requestDelete(menuItem) },
+              { type: "item", id: "delete", icon: Trash2, label: menuPending ? t("viewer.comments.discardReply") : t("viewer.comments.delete"), disabled: isCommentDeleted(changes, menuItem.xref) || (menuDeleted && !menuPending), onSelect: () => requestDelete(menuItem) },
             ];
             return <ContextMenu anchor={menu.anchor} items={items} label={t("viewer.comments.title")} onClose={menu.close} />;
           })()

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { CodeBlock } from "@/types";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { distanceToSegment, hitsDrawing, isFreehand } from "@/shared/lib/drawingGeometry";
 
 export type PresentationTool = "pointer" | "laser" | "pen" | "highlighter" | "shape" | "text" | "select" | "eraser" | "spotlight" | "magnifier";
@@ -180,6 +181,7 @@ type PresentationState = {
   setCodeBlocksForPage: (pageIndex: number, entry: CodeBlockCache) => void;
   openCodeBlock: (pageIndex: number, blockId: string) => void;
   closeCodeBlock: () => void;
+  resetDocumentScope: () => void;
   resetSession: () => void;
 };
 
@@ -502,6 +504,15 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   openCodeBlock: (pageIndex, blockId) => set({ codeBlockOpen: { pageIndex, blockId } }),
   closeCodeBlock: () => set({ codeBlockOpen: null }),
 
+  resetDocumentScope: () =>
+    set({
+      strokesByPage: {},
+      redoByPage: {},
+      codeBlocksByPage: {},
+      codeBlockOpen: null,
+      selectedDrawing: null,
+    }),
+
   resetSession: () =>
     set({
       tool: "pointer",
@@ -518,3 +529,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       selectedDrawing: null,
     }),
 }));
+
+useDocumentStore.subscribe((state, previous) => {
+  if (state.activeId !== previous.activeId) usePresentationStore.getState().resetDocumentScope();
+});

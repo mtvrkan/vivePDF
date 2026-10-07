@@ -2,6 +2,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { PageTextLayer } from "./PageTextLayer";
+import { invalidatePageText } from "./pageTextCache";
 
 const getPageText = vi.hoisted(() => vi.fn());
 vi.mock("@/shared/rpc/operations", () => ({ getPageText }));
@@ -28,6 +29,7 @@ function showAll() {
 beforeEach(() => {
   vi.useFakeTimers();
   observers.length = 0;
+  invalidatePageText("doc-a11y");
   getPageText.mockReset();
   vi.stubGlobal("IntersectionObserver", FakeIntersectionObserver);
   useDocumentStore.getState().register("doc-a11y", "C:/belgeler/erişilebilir.pdf", null);
@@ -76,5 +78,49 @@ describe("PageTextLayer", () => {
     const layer = container.querySelector("[data-page-text]");
     expect(layer?.getAttribute("aria-hidden")).toBe("true");
     expect(layer?.textContent).toBe("");
+  });
+
+  it("retries a failed batch after a delay and shows the text once it arrives", async () => {
+    getPageText.mockRejectedValueOnce(new Error("busy")).mockResolvedValueOnce({ pages: [{ page: 1, text: "Geç gelen metin." }], pageCount: 1 });
+    const { container } = render(<PageTextLayer documentId="doc-a11y" pageIndex={0} />);
+    await act(async () => {
+      showAll();
+      await vi.advanceTimersByTimeAsync(500);
+    });
+    expect(container.querySelector("[data-page-text]")?.getAttribute("aria-hidden")).toBe("true");
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(2500);
+    });
+    expect(getPageText).toHaveBeenCalledTimes(2);
+    expect(container.querySelector(".sr-only")?.textContent).toContain("Geç gelen metin.");
+  });
+
+  it("gives up after a bounded number of retries", async () => {
+    getPageText.mockRejectedValue(new Error("down"));
+    render(<PageTextLayer documentId="doc-a11y" pageIndex={0} />);
+    await act(async () => {
+      showAll();
+      await vi.advanceTimersByTimeAsync(30000);
+    });
+    expect(getPageText).toHaveBeenCalledTimes(3);
+  });
+
+  it("drops the cached text of a document after invalidation", async () => {
+    getPageText.mockResolvedValueOnce({ pages: [{ page: 1, text: "Eski metin." }], pageCount: 1 }).mockResolvedValueOnce({ pages: [{ page: 1, text: "Yeni metin." }], pageCount: 1 });
+    const { container } = render(<PageTextLayer documentId="doc-a11y" pageIndex={0} />);
+    await act(async () => {
+      showAll();
+      await vi.advanceTimersByTimeAsync(500);
+    });
+    expect(container.querySelector(".sr-only")?.textContent).toContain("Eski metin.");
+    await act(async () => {
+      invalidatePageText("doc-a11y");
+      await vi.advanceTimersByTimeAsync(0);
+    });
+    await act(async () => {
+      showAll();
+      await vi.advanceTimersByTimeAsync(500);
+    });
+    expect(container.querySelector(".sr-only")?.textContent).toContain("Yeni metin.");
   });
 });

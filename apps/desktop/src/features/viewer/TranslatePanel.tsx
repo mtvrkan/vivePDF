@@ -104,6 +104,8 @@ export function TranslatePanel() {
   const run = useTranslationStore((state) => state.run);
   const cancel = useTranslationStore((state) => state.cancel);
 
+  useEffect(() => cancel, [cancel]);
+
   useEffect(() => {
     if (!modelsLoaded && !modelsLoading) void refreshModels();
   }, [modelsLoaded, modelsLoading, refreshModels]);
@@ -137,7 +139,7 @@ export function TranslatePanel() {
     try {
       await openExternal(translateUrl(text, locale));
     } catch {
-      toast("error", t("viewer.context.copyFailed"));
+      toast("error", t("viewer.link.openFailed"));
     }
   };
 

@@ -18,9 +18,15 @@ export function pageSentences(text: string): Sentence[] {
   return locateSentences(normalized, splitSentences(normalized));
 }
 
-function sentenceAt(sentences: Sentence[], offset: number): number {
-  for (let index = 0; index < sentences.length; index += 1) if (offset < sentences[index].end) return index;
-  return Math.max(0, sentences.length - 1);
+export function sentenceAt(sentences: Sentence[], offset: number): number {
+  let low = 0;
+  let high = sentences.length;
+  while (low < high) {
+    const middle = (low + high) >>> 1;
+    if (offset < sentences[middle].end) high = middle;
+    else low = middle + 1;
+  }
+  return low < sentences.length ? low : Math.max(0, sentences.length - 1);
 }
 
 function paragraphPieces(cleaned: string, normalized: string, cursor: number, sentences: Sentence[]): { pieces: ReadingPiece[]; cursor: number } {

@@ -1,12 +1,14 @@
 import { useEffect, type RefObject } from "react";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
-import { isActivatableTarget, isInsideCompositeWidget } from "./viewerKeyTarget";
+import { hasOpenModal, isActivatableTarget, isInsideCompositeWidget } from "./viewerKeyTarget";
 import { useUiStore } from "@/shared/store/uiStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 
 const MIDDLE_BUTTON = 1;
 const TAP_MS = 250;
 const PAGE_SCROLL_RATIO = 0.9;
+
+let lastPointerHost: HTMLElement | null = null;
 
 type Drag = { pointerId: number; x: number; y: number; left: number; top: number; moved: boolean };
 
@@ -24,7 +26,18 @@ export function useViewportPan(hostRef: RefObject<HTMLDivElement | null>) {
       if (ready) host.dataset.panReady = "";
       else delete host.dataset.panReady;
     };
-    const spaceAllowed = () => !useViewerOverlayStore.getState().mode && !useUiStore.getState().immersive;
+    const ownsKeyboard = () => {
+      const focused = document.activeElement;
+      if (focused && focused !== document.body && focused !== document.documentElement) {
+        const owner = focused.closest<HTMLElement>("[data-pan-host]");
+        if (owner) return owner === host;
+      }
+      return !lastPointerHost || !lastPointerHost.isConnected || lastPointerHost === host;
+    };
+    const spaceAllowed = () => !useViewerOverlayStore.getState().mode && !useUiStore.getState().immersive && !hasOpenModal() && ownsKeyboard();
+    const markPointer = () => {
+      lastPointerHost = host;
+    };
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.code !== "Space" || isTypingTarget(event.target) || isActivatableTarget(event.target) || isInsideCompositeWidget(event.target) || !spaceAllowed()) return;
@@ -85,6 +98,9 @@ export function useViewportPan(hostRef: RefObject<HTMLDivElement | null>) {
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     window.addEventListener("blur", onBlur);
+    host.dataset.panHost = "";
+    host.addEventListener("pointerenter", markPointer);
+    host.addEventListener("pointerdown", markPointer, true);
     host.addEventListener("pointerdown", onPointerDown, true);
     host.addEventListener("pointermove", onPointerMove, true);
     host.addEventListener("pointerup", endDrag, true);
@@ -95,6 +111,8 @@ export function useViewportPan(hostRef: RefObject<HTMLDivElement | null>) {
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
       window.removeEventListener("blur", onBlur);
+      host.removeEventListener("pointerenter", markPointer);
+      host.removeEventListener("pointerdown", markPointer, true);
       host.removeEventListener("pointerdown", onPointerDown, true);
       host.removeEventListener("pointermove", onPointerMove, true);
       host.removeEventListener("pointerup", endDrag, true);
@@ -103,6 +121,8 @@ export function useViewportPan(hostRef: RefObject<HTMLDivElement | null>) {
       host.removeEventListener("auxclick", swallowMiddle, true);
       delete host.dataset.panning;
       delete host.dataset.panReady;
+      delete host.dataset.panHost;
+      if (lastPointerHost === host) lastPointerHost = null;
     };
   }, [hostRef]);
 }

@@ -20,6 +20,7 @@ export function PasswordDialog() {
   if (!request) return null;
 
   const close = () => {
+    if (busy) return;
     setPassword("");
     cancelPassword(request.documentId);
   };

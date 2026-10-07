@@ -2,6 +2,8 @@ import { act, cleanup, fireEvent, render, screen } from "@testing-library/react"
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RpcCallError } from "@/shared/rpc/client";
+import { openExternal } from "@/shared/lib/openExternal";
+import { useToastStore } from "@/shared/store/toastStore";
 import { translateDownload, translateModels, translateText } from "@/shared/rpc/operations";
 import { useTranslateModelsStore } from "@/shared/store/translateModelsStore";
 import { useTranslationStore } from "@/shared/store/translationStore";
@@ -23,6 +25,8 @@ vi.mock("@/shared/rpc/operations", () => ({
   translateRemove: vi.fn(),
   translateText: vi.fn(),
 }));
+
+vi.mock("@/shared/lib/openExternal", () => ({ openExternal: vi.fn() }));
 
 const { TranslatePanel } = await import("./TranslatePanel");
 
@@ -106,5 +110,24 @@ describe("TranslatePanel", () => {
       fireEvent.click(screen.getByRole("combobox", { name: "From" }));
     });
     expect(screen.getAllByRole("option").map((option) => option.textContent)).toEqual(["English", "German", "French", "Turkish"]);
+  });
+
+  it("cancels a running translation when the panel unmounts", () => {
+    const cancel = vi.fn();
+    useTranslationStore.setState({ cancel });
+    const { unmount } = renderPanel();
+    unmount();
+    expect(cancel).toHaveBeenCalled();
+  });
+
+  it("reports a failed browser launch as an open failure, not a copy failure", async () => {
+    vi.mocked(openExternal).mockRejectedValueOnce(new Error("blocked"));
+    useToastStore.setState({ toasts: [] });
+    useTranslationStore.setState({ text: "Hallo", status: "done", result: { text: "Merhaba", source: "de", target: "tr", route: ["de_en"] } });
+    renderPanel();
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Open in Google Translate" }));
+    });
+    expect(useToastStore.getState().toasts.map((toast) => toast.message)).toEqual(["The link could not be opened."]);
   });
 });

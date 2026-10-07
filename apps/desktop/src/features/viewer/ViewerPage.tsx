@@ -59,6 +59,7 @@ import { ViewerShortcuts } from "./ViewerShortcuts";
 import { ViewerToolbar } from "./ViewerToolbar";
 import { NavigationRail, ToolsRail } from "./ViewerRails";
 import { useOpenPdf } from "./useOpenPdf";
+import { hasOpenModal } from "./viewerKeyTarget";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useLiveActiveDocument } from "./useLiveActiveDocument";
 
@@ -82,6 +83,7 @@ export function ViewerPage() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (hasOpenModal() && !usePresentationStore.getState().codeBlockOpen) return;
       if (event.key === "F11" && activeDocumentId && !isTypingTarget(event.target)) {
         event.preventDefault();
         if (useUiStore.getState().immersive) void exitImmersive();
@@ -228,7 +230,7 @@ export function ViewerPage() {
                   {panels.signatures && signed && !panels.reading ? <SignaturesPanel documentId={activeDocumentId} /> : null}
                   {panels.layers && layered && !panels.reading ? <LayersPanel key={activeDocumentId} documentId={activeDocumentId} /> : null}
                   {panels.reading ? (
-                    <ReadingView documentId={activeDocumentId} onExit={() => setPanels((state) => ({ ...state, reading: false }))} />
+                    <ReadingView key={activeDocumentId} documentId={activeDocumentId} onExit={() => setPanels((state) => ({ ...state, reading: false }))} />
                   ) : (
                     <div ref={stageRef} className="relative min-w-0 flex-1">
                       <PageColorFilters />

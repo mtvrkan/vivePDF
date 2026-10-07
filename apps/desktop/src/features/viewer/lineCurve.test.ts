@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { PdfAnnotationSubtype } from "@embedpdf/models";
-import { boundsOf, curveFromVertices, curvedVertices, currentCurve, lineEndpoints, polylineFromLine } from "./lineCurve";
+import { boundsOf, isCurvable, curveFromVertices, curvedVertices, currentCurve, lineEndpoints, polylineFromLine } from "./lineCurve";
 
 const start = { x: 0, y: 0 };
 const end = { x: 100, y: 0 };
@@ -91,5 +91,19 @@ describe("reading a selected mark", () => {
   it("reports a straight line as uncurved and a bent polyline by its curve", () => {
     expect(currentCurve(line)).toBe(0);
     expect(currentCurve(polylineFromLine(line, curvedVertices(start, end, 45), "a2"))).toBe(45);
+  });
+});
+
+describe("isCurvable", () => {
+  const polyline = (count: number) => ({ type: PdfAnnotationSubtype.POLYLINE, vertices: Array.from({ length: count }, (_, index) => ({ x: index, y: 0 })) }) as never;
+
+  it("accepts lines, two-point polylines and helper-made curves", () => {
+    expect(isCurvable({ type: PdfAnnotationSubtype.LINE } as never)).toBe(true);
+    expect(isCurvable(polyline(2))).toBe(true);
+    expect(isCurvable(polyline(13))).toBe(true);
+  });
+
+  it("rejects polylines with their own vertices", () => {
+    expect(isCurvable(polyline(5))).toBe(false);
   });
 });

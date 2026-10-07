@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { estimateSectionHeight, normalizePageText, overlapsRange, pageSentences, placeholderHeight, readingParagraphs } from "./readingLayout";
+import { estimateSectionHeight, normalizePageText, overlapsRange, pageSentences, placeholderHeight, readingParagraphs, sentenceAt } from "./readingLayout";
 
 const PAGE = "Birinci cümle burada. İkinci cümle\nsatır sonunda devam eder.\n\nBaşlıksız paragraf\n\nÜçüncü cümle! Son mu?";
 
@@ -68,5 +68,38 @@ describe("placeholderHeight", () => {
   it("falls back to the estimate when font size or width changed", () => {
     expect(placeholderHeight({ layoutKey: "18|medium", height: 812 }, "20|medium", "x", 20)).toBe(estimateSectionHeight("x", 20));
     expect(placeholderHeight(null, "18|medium", "x", 18)).toBe(estimateSectionHeight("x", 18));
+  });
+});
+
+describe("sentenceAt", () => {
+  const sentences = [
+    { text: "One.", start: 0, end: 4 },
+    { text: "Two.", start: 5, end: 9 },
+    { text: "Three.", start: 10, end: 16 },
+  ];
+
+  it("returns the first sentence whose end lies past the offset", () => {
+    expect([0, 3, 4, 8, 9, 10, 15].map((offset) => sentenceAt(sentences, offset))).toEqual([0, 0, 1, 1, 2, 2, 2]);
+  });
+
+  it("clamps offsets beyond the last sentence to the last index", () => {
+    expect(sentenceAt(sentences, 99)).toBe(2);
+  });
+
+  it("returns zero for an empty sentence list", () => {
+    expect(sentenceAt([], 5)).toBe(0);
+  });
+
+  it("agrees with a linear scan on a long page", () => {
+    const text = Array.from({ length: 400 }, (_, index) => `Sentence number ${index} ends here.`).join(" ");
+    const located = pageSentences(text);
+    const linear = (offset: number) => {
+      for (let index = 0; index < located.length; index += 1) if (offset < located[index].end) return index;
+      return Math.max(0, located.length - 1);
+    };
+
+    const offsets = Array.from({ length: normalizePageText(text).length + 3 }, (_, offset) => offset);
+
+    expect(offsets.map((offset) => sentenceAt(located, offset))).toEqual(offsets.map(linear));
   });
 });

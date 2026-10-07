@@ -23,6 +23,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useTranslationStore } from "@/shared/store/translationStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
+import { selectionBoxOf } from "./selectionBox";
 import { copySelection } from "./copySelection";
 import { normalizeLinkUri } from "./linkUri";
 import type { CodeBlock } from "@/types";
@@ -131,6 +132,23 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
   };
 
   useEffect(() => {
+    if (!anchor) return;
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      const inside = event.target instanceof Element && event.target.closest("[data-selection-actions]") !== null;
+      if (!inside && isTypingTarget(event.target)) return;
+      if (window.document.querySelector('[aria-modal="true"], [role="menu"], [data-context-menu-layer]')) return;
+      setAnchor(null);
+      setLinkOpen(false);
+      setLinkUrl("");
+      setCodeBlock(null);
+      selection?.forDocument(documentId).clear();
+    };
+    window.addEventListener("keydown", onEscape);
+    return () => window.removeEventListener("keydown", onEscape);
+  }, [anchor, selection, documentId]);
+
+  useEffect(() => {
     if (!anchor || !text || !document || !selection) {
       setCodeBlock(null);
       return;
@@ -142,14 +160,11 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
       setCodeBlock(null);
       return;
     }
-    const box = items.reduce((acc, item) => ({
-      x: Math.min(acc.x, item.origin.x),
-      y: Math.min(acc.y, item.origin.y),
-      right: Math.max(acc.x + acc.width, item.origin.x + item.size.width),
-      bottom: Math.max(acc.y + acc.height, item.origin.y + item.size.height),
-      width: 0,
-      height: 0,
-    }), { x: items[0].origin.x, y: items[0].origin.y, width: 0, height: 0, right: 0, bottom: 0 });
+    const box = selectionBoxOf(items);
+    if (!box) {
+      setCodeBlock(null);
+      return;
+    }
     let cancelled = false;
     const timer = window.setTimeout(() => {
       void getCodeBlocks({ path: document.path, password: document.password ?? undefined, page: Number(pageIndex), visible: true })

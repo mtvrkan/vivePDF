@@ -1,9 +1,12 @@
+import { useRef } from "react";
 import { Languages, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useHistoryCapability } from "@embedpdf/plugin-history/react";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
 import { describeError } from "@/shared/lib/errorMessage";
 import { formatBytes } from "@/shared/lib/format";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { downloadFontSet } from "@/shared/session/fallbackFonts";
 import { useFallbackFontsStore, type FontDownload } from "@/shared/store/fallbackFontsStore";
 import { pendingChangesFor, usePendingChangesStore } from "@/shared/store/pendingChangesStore";
@@ -39,11 +42,21 @@ function FallbackFontRows({ documentId, sets }: { documentId: string; sets: stri
   const unsavedMarks = useUnsavedMarks(documentId);
   const queued = usePendingChangesStore((state) => pendingChangesFor(state.changes, documentId).length);
   const reload = useReloadDocument(documentId);
+  const { provides: historyCapability } = useHistoryCapability();
+  const historyRef = useRef(historyCapability);
+  historyRef.current = historyCapability;
+  const reloadRef = useRef(reload);
+  reloadRef.current = reload;
   const unsaved = unsavedMarks || queued > 0;
 
   const download = async (fontSet: string) => {
     const installed = await downloadFontSet(fontSet);
-    if (installed && !unsaved) await reload();
+    if (!installed) return;
+    const documents = useDocumentStore.getState();
+    const stillOpen = documents.documents[documentId] !== undefined && documents.activeId === documentId;
+    const hasMarks = historyRef.current?.forDocument(documentId).canUndo() ?? false;
+    const hasQueued = pendingChangesFor(usePendingChangesStore.getState().changes, documentId).length > 0;
+    if (stillOpen && !hasMarks && !hasQueued) await reloadRef.current();
   };
 
   return (

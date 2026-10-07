@@ -68,6 +68,7 @@ export function ReadAloudBar({ documentId, onClose }: { documentId: string; onCl
     void refreshVoices();
     return () => {
       synth.removeEventListener("voiceschanged", refresh);
+      requestRef.current += 1;
       useSpeechStore.getState().release();
       audioRef.current?.pause();
       audioRef.current = null;

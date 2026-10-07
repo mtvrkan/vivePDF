@@ -45,7 +45,8 @@ import { useToastStore } from "@/shared/store/toastStore";
 import type { LucideIcon } from "lucide-react";
 import { describeError } from "@/shared/lib/errorMessage";
 import { DASH_TOOLS, DEFAULT_LINE_ENDINGS, FALLBACK_COLORS, FILL_TOOLS, LINE_ENDING_LABEL_KEYS, LINE_ENDING_OPTIONS, LINE_TOOLS, MAX_STROKE_WIDTH, MIN_STROKE_WIDTH, STROKE_TOOLS, STROKE_WIDTH_STEP, SUBTYPE_TOOLS, stylePatchFor, toolColorFrom, type StyleValues } from "./annotateStyle";
-import { CURVE_STEP, MAX_CURVE, MIN_CURVE, currentCurve, curveRectPatch, curvedVertices, lineEndpoints, polylineFromLine } from "./lineCurve";
+import { CURVE_STEP, MAX_CURVE, MIN_CURVE, currentCurve, curveRectPatch, curvedVertices, isCurvable, lineEndpoints, polylineFromLine } from "./lineCurve";
+import { styleValuesOf } from "./selectedStyle";
 import { MARKUP_SUBTYPES, hasSelectionRects, markupRequests } from "./selectionMarkup";
 import { ENGINE_TEXT_PLACEHOLDER, droppedUntouchedTexts } from "./untouchedText";
 import { MAX_ERASER_SIZE, MIN_ERASER_SIZE, allMarks, useMarkToolMode, useMarkToolStore } from "./markArea";
@@ -130,9 +131,25 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   const showEndings = styleTool !== null && LINE_TOOLS.has(styleTool);
   const selectedLine = selectedMarks.length > 1 ? null : asLineLike(selected?.object);
   const endings = selectedLine?.lineEndings ?? toolEndings[styleTool ?? ""] ?? DEFAULT_LINE_ENDINGS.lineArrow;
+  const curvableLine = selectedLine && isCurvable(selectedLine) ? selectedLine : null;
   const curve = selectedLine ? currentCurve(selectedLine) : 0;
   const endingOptions = LINE_ENDING_OPTIONS.map((ending) => ({ value: String(ending), label: t(LINE_ENDING_LABEL_KEYS[ending] ?? "annotate.endNone") }));
   const endingFromValue = (value: string) => LINE_ENDING_OPTIONS.find((ending) => String(ending) === value) ?? LINE_ENDING_OPTIONS[0];
+
+  const selectedObjectId = selected?.object.id ?? null;
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
+
+  useEffect(() => {
+    const object = selectedRef.current?.object;
+    if (!object) return;
+    const values = styleValuesOf(object);
+    if (values.color !== undefined) setColor(values.color);
+    if (values.fill !== undefined) setFill(values.fill);
+    if (values.strokeWidth !== undefined) setStrokeWidth(values.strokeWidth);
+    if (values.opacity !== undefined) setOpacity(values.opacity);
+    if (values.dashed !== undefined) setDashed(values.dashed);
+  }, [selectedObjectId]);
 
   const applyStyle = (next: StyleValues) => {
     if (next.color !== undefined) setColor(next.color);
@@ -250,7 +267,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   };
 
   const applyCurve = (next: number) => {
-    if (!annotation || !selectedLine) return;
+    if (!annotation || !selectedLine || !curvableLine) return;
     const { start, end } = lineEndpoints(selectedLine);
     const vertices = curvedVertices(start, end, next);
     const pageIndex = selectedLine.pageIndex;
@@ -562,7 +579,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
               />
             </div>
           ) : null}
-          {selectedLine ? (
+          {curvableLine ? (
             <div className="flex items-center gap-2">
               <span className="text-muted-foreground">{t("annotate.curve")}</span>
               <input

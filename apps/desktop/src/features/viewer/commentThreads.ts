@@ -23,7 +23,14 @@ export function commentThreads(items: CommentItem[], keepRoot: (item: CommentIte
     entries.push({ item, depth });
     for (const child of children.get(item.xref) ?? []) walk(child, depth + 1);
   };
+  const reachable = new Set<number>();
+  const reach = (item: CommentItem) => {
+    if (reachable.has(item.xref)) return;
+    reachable.add(item.xref);
+    for (const child of children.get(item.xref) ?? []) reach(child);
+  };
+  roots.forEach(reach);
   for (const root of roots) if (keepRoot(root)) walk(root, 0);
-  for (const item of items) if (!visited.has(item.xref) && keepRoot(item)) walk(item, 0);
+  for (const item of items) if (!visited.has(item.xref) && !reachable.has(item.xref) && keepRoot(item)) walk(item, 0);
   return entries;
 }

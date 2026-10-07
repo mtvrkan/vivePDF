@@ -32,7 +32,22 @@ import { useLaunchStore } from "@/shared/store/launchStore";
 import { isDesignPath, useStudioLaunchStore } from "@/shared/store/studioLaunchStore";
 import { convertedCopyOf, isConvertibleOnOpen, isOpenablePath, isUnsavedCopy, OPEN_CONVERTIBLE_EXTENSIONS, originalOf, useConvertedStore } from "./convertedDocuments";
 import { closeViewable, openViewable, type ViewableSource } from "@/shared/session/viewSources";
+import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { isPendingChange } from "./overlay/pending";
+import { neighbourAfterClose, restoreTabPlace, tabPlaceOf } from "./tabPlace";
 import { STUDIO_PROJECT_EXTENSION } from "@/types/studio";
+
+const openingPaths = new Set<string>();
+let openQueue: Promise<void> = Promise.resolve();
+
+export function editsBlockOpening(paths: string[]): boolean {
+  if (!useViewerOverlayStore.getState().objects.some(isPendingChange)) return false;
+  const documents = useDocumentStore.getState();
+  const active = documents.activeId ? documents.documents[documents.activeId] : undefined;
+  if (!active) return false;
+  const activeKey = pathKey(active.path);
+  return paths.some((path) => pathKey(path) !== activeKey);
+}
 
 function forgetDocumentState(documentId: string) {
   usePendingChangesStore.getState().clear(documentId);
@@ -77,7 +92,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
         if (usePreferencesStore.getState().rememberRecent) void rememberRecentDocument(recentPath).catch(() => undefined);
       }
       setActive(documentId);
-      requestPassword(null);
+      if (useOpenStore.getState().passwordRequest?.documentId === documentId) requestPassword(null);
       void loadInfo(documentId);
       goToDocument();
     },
@@ -134,17 +149,23 @@ export function useOpenPdf(documentRoute = "/viewer") {
         useConvertedStore.getState().remember(output, path);
         return openPathRef.current(output);
       }
-      const alreadyOpen = Object.values(useDocumentStore.getState().documents).find((doc) => doc.path === path);
+      const key = pathKey(path);
+      const alreadyOpen = Object.values(useDocumentStore.getState().documents).find((doc) => pathKey(doc.path) === key);
       if (alreadyOpen && activateDocument(alreadyOpen.id, docManager)) {
         goToDocument();
         return true;
       }
+      if (openingPaths.has(key)) return false;
       const noRoom = documentRoomError(docManager.getDocumentCount());
       if (noRoom) {
         toast("error", describeError(t, noRoom));
         return false;
       }
-      if (await claimDocument(path)) return false;
+      openingPaths.add(key);
+      if (await claimDocument(path)) {
+        openingPaths.delete(key);
+        return false;
+      }
       const documentId = crypto.randomUUID();
       setBusy(true);
       try {
@@ -172,6 +193,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
         toast("error", describeError(t, rpcError), repair);
         return false;
       } finally {
+        openingPaths.delete(key);
         setBusy(false);
       }
     },
@@ -214,6 +236,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
           requestPassword({ documentId, fileName: document.fileName, wrongPassword: true });
           return;
         }
+        closeViewable(docManager, documentId);
         removeDocument(documentId);
         requestPassword(null);
         const rpcError = toRpcError(error);
@@ -234,7 +257,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
     [docManager, requestPassword, removeDocument],
   );
 
-  const openPaths = useCallback(
+  const openPathsNow = useCallback(
     async (paths: string[]) => {
       const store = useOpenStore.getState();
       if (store.passwordRequest) {
@@ -243,14 +266,32 @@ export function useOpenPdf(documentRoute = "/viewer") {
       }
       for (let index = 0; index < paths.length; index += 1) {
         const opened = await openPath(paths[index]);
-        if (!opened && useOpenStore.getState().passwordRequest) {
+        if (opened) continue;
+        if (useOpenStore.getState().passwordRequest) {
           useOpenStore.getState().queueWaiting(paths.slice(index + 1));
           return;
         }
+        if (!docManager || documentRoomError(docManager.getDocumentCount())) return;
       }
     },
-    [openPath],
+    [openPath, docManager],
   );
+
+  const openPaths = useCallback(
+    (paths: string[]): Promise<void> => {
+      if (editsBlockOpening(paths)) {
+        goToDocument();
+        useViewerOverlayStore.getState().requestLeave(() => void openPathsRef.current(paths), true);
+        return Promise.resolve();
+      }
+      const run = openQueue.then(() => openPathsNow(paths));
+      openQueue = run.catch(() => undefined);
+      return run;
+    },
+    [openPathsNow, goToDocument],
+  );
+  const openPathsRef = useRef(openPaths);
+  openPathsRef.current = openPaths;
 
   const openClipboard = useCallback(async (): Promise<boolean> => {
     if (!docManager) {
@@ -306,12 +347,13 @@ export function useOpenPdf(documentRoute = "/viewer") {
     (documentId: string) => {
       const current = docManager?.getActiveDocumentId() ?? null;
       const path = useDocumentStore.getState().documents[documentId]?.path;
+      const order = useDocumentStore.getState().order;
       docManager?.closeDocument(documentId);
       removeDocument(documentId);
       forgetDocumentState(documentId);
       if (path) useLayerViewStore.getState().clearChoices(path);
       const remaining = Object.keys(useDocumentStore.getState().documents);
-      const next = current && current !== documentId && remaining.includes(current) ? current : (remaining.at(-1) ?? null);
+      const next = current && current !== documentId && remaining.includes(current) ? current : neighbourAfterClose(order, documentId, remaining);
       if (!next || !activateDocument(next, docManager)) setActive(null);
     },
     [docManager, removeDocument, setActive, activateDocument],
@@ -333,10 +375,12 @@ export function useOpenPdf(documentRoute = "/viewer") {
         },
       );
       if (!opened) return false;
+      const place = tabPlaceOf(documentId);
       docManager.closeDocument(documentId);
       removeDocument(documentId);
       forgetDocumentState(documentId);
       registerDocument(copyId, document.path, document.password);
+      restoreTabPlace(copyId, place);
       finishOpen(copyId, document.path);
       return true;
     },
