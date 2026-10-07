@@ -1,7 +1,7 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
 import { dropIndexAt, gridHeight, gridMetrics, indexesNear, mirrorBox, revealOffset, rowStride, rowsRange, sameRowWindow, tileBox, type GridBox, type TileRange } from "./gridGeometry";
 
-export const VIRTUALIZE_FROM = 150;
+export const VIRTUALIZE_FROM = 48;
 const OVERSCAN_ROWS = 3;
 const REVEAL_MARGIN = 16;
 
@@ -39,23 +39,35 @@ export function useVirtualGrid({ mounted, scrollRef, gridRef, count, minColumnWi
     settings.current = { count, minColumnWidth, rowHeight };
   });
 
-  const measureFrame = useCallback(() => {
+  const layout = useRef<{ width: number; gap: number; rtl: boolean; offsetTop: number; height: number } | null>(null);
+
+  const measureLayout = useCallback(() => {
     const container = scrollRef.current;
     const grid = gridRef.current;
     if (!container || !grid) return;
     const style = getComputedStyle(grid);
+    layout.current = { width: grid.clientWidth, gap: Number.parseFloat(style.rowGap) || 0, rtl: style.direction === "rtl", offsetTop: grid.offsetTop, height: container.clientHeight };
+  }, [scrollRef, gridRef]);
+
+  const measureFrame = useCallback(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+    if (!layout.current) measureLayout();
+    const measured = layout.current;
+    if (!measured) return;
     const next: Frame = {
-      width: grid.clientWidth,
-      gap: Number.parseFloat(style.rowGap) || 0,
-      rtl: style.direction === "rtl",
-      top: container.scrollTop - grid.offsetTop,
-      height: container.clientHeight,
+      width: measured.width,
+      gap: measured.gap,
+      rtl: measured.rtl,
+      top: container.scrollTop - measured.offsetTop,
+      height: measured.height,
     };
     setFrame((current) => (sameWindow(current, next, settings.current) ? current : next));
-  }, [scrollRef, gridRef]);
+  }, [scrollRef, measureLayout]);
 
   useLayoutEffect(() => {
     if (!mounted) return;
+    measureLayout();
     measureFrame();
     const container = scrollRef.current;
     const grid = gridRef.current;
@@ -68,7 +80,10 @@ export function useVirtualGrid({ mounted, scrollRef, gridRef, count, minColumnWi
         measureFrame();
       });
     };
-    const observer = new ResizeObserver(() => measureFrame());
+    const observer = new ResizeObserver(() => {
+      measureLayout();
+      measureFrame();
+    });
     observer.observe(container);
     observer.observe(grid);
     container.addEventListener("scroll", onScroll, { passive: true });
@@ -77,7 +92,7 @@ export function useVirtualGrid({ mounted, scrollRef, gridRef, count, minColumnWi
       container.removeEventListener("scroll", onScroll);
       if (frameId !== null) cancelAnimationFrame(frameId);
     };
-  }, [mounted, scrollRef, gridRef, measureFrame]);
+  }, [mounted, scrollRef, gridRef, measureLayout, measureFrame]);
 
   const contentOrigin = useCallback((): { left: number; top: number } | null => {
     const container = scrollRef.current;

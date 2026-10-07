@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
+import { createLiveValue } from "./liveValue";
 
 const START_THRESHOLD = 4;
 const EDGE_ZONE = 40;
@@ -68,7 +69,8 @@ function contentPoint(container: HTMLElement, clientX: number, clientY: number):
 }
 
 export function useMarqueeSelection({ scrollRef, gridRef, tilesNear, selected, onSelect }: UseMarqueeSelectionOptions) {
-  const [box, setBox] = useState<MarqueeBox | null>(null);
+  const [active, setActive] = useState(false);
+  const [box] = useState(() => createLiveValue<MarqueeBox>());
   const sessionRef = useRef<Session | null>(null);
   const frameRef = useRef<number | null>(null);
   const selectedRef = useRef(selected);
@@ -93,13 +95,14 @@ export function useMarqueeSelection({ scrollRef, gridRef, tilesNear, selected, o
       session.active = true;
     }
     const next = boxBetween(session.origin, current);
-    setBox((previous) => (sameBox(previous, next) ? previous : next));
+    if (!sameBox(box.get(), next)) box.set(next);
+    setActive(true);
     const hits = hitKeys(next, tilesNearRef.current(next));
     const signature = hits.join(" ");
     if (signature === session.hits) return;
     session.hits = signature;
     onSelectRef.current(combineSelection(session.base, hits, session.mode));
-  }, [scrollRef]);
+  }, [scrollRef, box]);
 
   const scrollNearEdges = useCallback(() => {
     const container = scrollRef.current;
@@ -127,9 +130,10 @@ export function useMarqueeSelection({ scrollRef, gridRef, tilesNear, selected, o
     const session = sessionRef.current;
     sessionRef.current = null;
     stopScrolling();
-    setBox(null);
+    box.set(null);
+    setActive(false);
     if (session && !session.active && session.mode === "replace") onSelectRef.current(new Set());
-  }, []);
+  }, [box]);
 
   const onPointerDown = useCallback(
     (event: ReactPointerEvent<HTMLElement>) => {
@@ -199,5 +203,5 @@ export function useMarqueeSelection({ scrollRef, gridRef, tilesNear, selected, o
     };
   }, [finish]);
 
-  return { box, handlers: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp, onScroll } };
+  return { active, box, handlers: { onPointerDown, onPointerMove, onPointerUp, onPointerCancel: onPointerUp, onScroll } };
 }

@@ -40,6 +40,7 @@ import { useOrganizerShortcuts } from "./useOrganizerShortcuts";
 import { tileMenuItems } from "./organizerMenu";
 import { OrganizerToolbar, SelectionBar } from "./OrganizerToolbar";
 import { OrganizerOutput } from "./OrganizerOutput";
+import { DragBadge, MarqueeRect } from "./LiveOverlays";
 import { usePageClipboardActions } from "./usePageClipboardActions";
 import { usePageClipboard } from "./pageClipboard";
 
@@ -137,7 +138,7 @@ export function PagesPage() {
   const busy = operation.running || partsOperation.running;
 
   const onMove = useCallback((keys: Set<string>, dropIndex: number) => commit(moveTiles(useOrganizerStore.getState().tiles, keys, dropIndex)), [commit]);
-  const { drag, dropIndex, onTilePointerDown, wasDragged } = useTileDrag({ scrollRef, dropIndexAt: grid.dropIndexAtClient, selectedKeys: selected, onMove });
+  const { drag, dropIndex, pointer: dragPointer, onTilePointerDown, wasDragged } = useTileDrag({ scrollRef, dropIndexAt: grid.dropIndexAtClient, selectedKeys: selected, onMove });
 
   const applyClick = (key: string, mode: ClickMode) => {
     const next = clickSelection(tiles, selected, anchor, key, mode);
@@ -354,7 +355,7 @@ export function PagesPage() {
     },
     [indexBoxesNear],
   );
-  const { box: marquee, handlers: marqueeHandlers } = useMarqueeSelection({ scrollRef, gridRef, tilesNear, selected, onSelect: select });
+  const { active: marqueeActive, box: marqueeBox, handlers: marqueeHandlers } = useMarqueeSelection({ scrollRef, gridRef, tilesNear, selected, onSelect: select });
 
   if (!activeDocumentId || !document) {
     return (
@@ -473,22 +474,8 @@ export function PagesPage() {
             })}
           </ol>
           <SelectionBar edits={edits} busy={busy} onExtract={() => apply(true)} onCopy={() => void clipboard.copyPages()} onCut={clipboard.cutPages} />
-          {marquee ? (
-            <div
-              aria-hidden
-              className="pointer-events-none absolute z-20 rounded-sm border border-primary bg-primary/15"
-              style={{ left: marquee.left, top: marquee.top, width: marquee.width, height: marquee.height }}
-            />
-          ) : null}
-          {drag ? (
-            <div
-              aria-hidden
-              className="glass pointer-events-none fixed z-50 rounded-lg px-2.5 py-1 font-mono text-xs"
-              style={{ left: drag.x + 12, top: drag.y + 12 }}
-            >
-              {drag.count} {t("info.pages")}
-            </div>
-          ) : null}
+          {marqueeActive ? <MarqueeRect live={marqueeBox} /> : null}
+          {drag ? <DragBadge live={dragPointer} label={`${drag.count} ${t("info.pages")}`} /> : null}
         </div>
         <OrganizerOutput
           output={output}

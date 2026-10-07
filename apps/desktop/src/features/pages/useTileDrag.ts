@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
+import { createLiveValue } from "./liveValue";
 
 const DRAG_THRESHOLD = 6;
 const EDGE_ZONE = 48;
 const SCROLL_STEP = 14;
 
 type DragState = { key: string; count: number; x: number; y: number };
+
+type DragPoint = { x: number; y: number };
 
 export function passedDragThreshold(startX: number, startY: number, x: number, y: number): boolean {
   return Math.hypot(x - startX, y - startY) >= DRAG_THRESHOLD;
@@ -20,6 +23,7 @@ type UseTileDragOptions = {
 export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: UseTileDragOptions) {
   const [drag, setDrag] = useState<DragState | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
+  const [pointer] = useState(() => createLiveValue<DragPoint>());
   const pendingRef = useRef<{ key: string; startX: number; startY: number } | null>(null);
   const dragRef = useRef<DragState | null>(null);
   const dropRef = useRef<number | null>(null);
@@ -55,6 +59,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
         const count = selectedKeys.has(pending.key) ? selectedKeys.size : 1;
         dragRef.current = { key: pending.key, count, x: event.clientX, y: event.clientY };
         setDrag(dragRef.current);
+        pointer.set({ x: event.clientX, y: event.clientY });
         suppressClickRef.current = true;
         rafRef.current = requestAnimationFrame(autoScroll);
       }
@@ -67,7 +72,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
       moveFrameRef.current = null;
       const active = dragRef.current;
       if (!active) return;
-      setDrag(active);
+      pointer.set({ x: active.x, y: active.y });
       const index = dropIndexAt(active.x, active.y);
       if (dropRef.current !== index) {
         dropRef.current = index;
@@ -89,6 +94,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
       dragRef.current = null;
       dropRef.current = null;
       stopAutoScroll();
+      pointer.set(null);
       setDrag(null);
       setDropIndex(null);
       if (commit && active && target !== null) {
@@ -115,7 +121,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
       cancelMoveFrame();
       stopAutoScroll();
     };
-  }, [selectedKeys, onMove, dropIndexAt, autoScroll]);
+  }, [selectedKeys, onMove, dropIndexAt, autoScroll, pointer]);
 
   const onTilePointerDown = useCallback((event: ReactPointerEvent, key: string) => {
     if (event.button !== 0) return;
@@ -124,5 +130,5 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove }: Us
 
   const wasDragged = useCallback(() => suppressClickRef.current, []);
 
-  return { drag, dropIndex, onTilePointerDown, wasDragged };
+  return { drag, dropIndex, pointer, onTilePointerDown, wasDragged };
 }

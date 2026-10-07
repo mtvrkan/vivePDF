@@ -54,10 +54,32 @@ export function hiddenDocumentIds(sources: Record<string, OrganizerSource>): Set
   return ids;
 }
 
+const sourceIdsByGroup = new WeakMap<OrganizerTile[], Set<string>>();
+const previewUrlsByGroup = new WeakMap<OrganizerTile[], Set<string>>();
+
+function groupSet(cache: WeakMap<OrganizerTile[], Set<string>>, group: OrganizerTile[], pick: (tile: OrganizerTile) => string | null): Set<string> {
+  const cached = cache.get(group);
+  if (cached) return cached;
+  const values = new Set<string>();
+  for (const tile of group) {
+    const value = pick(tile);
+    if (value) values.add(value);
+  }
+  cache.set(group, values);
+  return values;
+}
+
+function unionOf(cache: WeakMap<OrganizerTile[], Set<string>>, groups: OrganizerTile[][], pick: (tile: OrganizerTile) => string | null): Set<string> {
+  const values = new Set<string>();
+  for (const group of groups) for (const value of groupSet(cache, group, pick)) values.add(value);
+  return values;
+}
+
+const sourceIdOf = (tile: OrganizerTile) => (tile.kind === "page" ? tile.sourceId : null);
+const previewUrlOf = (tile: OrganizerTile) => (tile.kind === "image" && tile.previewUrl ? tile.previewUrl : null);
+
 export function referencedSourceIds(groups: OrganizerTile[][]): Set<string> {
-  const ids = new Set<string>();
-  for (const group of groups) for (const tile of group) if (tile.kind === "page") ids.add(tile.sourceId);
-  return ids;
+  return unionOf(sourceIdsByGroup, groups, sourceIdOf);
 }
 
 export function pruneDroppedSources(sources: Record<string, OrganizerSource>, before: OrganizerTile[][], after: OrganizerTile[][]): Record<string, OrganizerSource> {
@@ -71,9 +93,7 @@ export function pruneDroppedSources(sources: Record<string, OrganizerSource>, be
 }
 
 function previewUrls(groups: OrganizerTile[][]): Set<string> {
-  const urls = new Set<string>();
-  for (const group of groups) for (const tile of group) if (tile.kind === "image" && tile.previewUrl) urls.add(tile.previewUrl);
-  return urls;
+  return unionOf(previewUrlsByGroup, groups, previewUrlOf);
 }
 
 function releasePreviews(groups: OrganizerTile[][]): void {

@@ -189,7 +189,7 @@ export function SelectionBar({ edits, busy, onExtract, onCopy, onCut }: Selectio
   return (
     <div data-no-marquee className="pointer-events-none sticky bottom-0 z-30 mt-4 flex justify-center">
       {selectedCount > 0 ? (
-        <div role="toolbar" aria-label={t("tools.pages.selectionBar")} className="glass pointer-events-auto flex flex-wrap items-center gap-1 rounded-xl px-2 py-1.5 shadow-(--shadow-float)">
+        <div role="toolbar" aria-label={t("tools.pages.selectionBar")} className="glass glass-solid pointer-events-auto flex flex-wrap items-center gap-1 rounded-xl px-2 py-1.5 shadow-(--shadow-float)">
           <span role="status" className="px-2 text-sm font-medium">
             {t("tools.pages.selectedCount", { count: selectedCount })}
           </span>
@@ -207,7 +207,7 @@ export function SelectionBar({ edits, busy, onExtract, onCopy, onCut }: Selectio
           <IconButton icon={X} label={t("tools.pages.selectNone")} shortcut="Esc" onClick={() => select([])} />
         </div>
       ) : (
-        <p className="glass pointer-events-auto flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs text-muted-foreground">
+        <p className="glass glass-solid pointer-events-auto flex items-center gap-2 rounded-xl px-3 py-1.5 text-xs text-muted-foreground">
           <MousePointerClick className="size-4 shrink-0" aria-hidden />
           {t("tools.pages.selectHint")}
         </p>

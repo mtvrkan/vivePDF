@@ -25,6 +25,10 @@ function serializableTiles(tiles: OrganizerTile[]): OrganizerTile[] {
   return tiles.map((tile) => (tile.kind === "image" ? { ...tile, previewUrl: "" } : tile));
 }
 
+function hasSessionDocuments(): boolean {
+  return Object.values(useDocumentStore.getState().documents).some((doc) => !isUnsavedCopy(doc.path));
+}
+
 function buildSnapshot(route: string): SessionSnapshot | null {
   const documents = useDocumentStore.getState();
   const organizer = useOrganizerStore.getState();
@@ -124,8 +128,7 @@ export function SessionManager() {
   useEffect(() => {
     const schedule = () => {
       if (timerRef.current !== null) window.clearTimeout(timerRef.current);
-      const snapshot = buildSnapshot(routeRef.current);
-      if (!snapshot) {
+      if (!hasSessionDocuments()) {
         if (everOpenedRef.current) writeSession(null);
         return;
       }
@@ -136,7 +139,9 @@ export function SessionManager() {
     };
     const unsubscribeDocuments = useDocumentStore.subscribe(schedule);
     const unsubscribeGroups = useTabGroupStore.subscribe(schedule);
-    const unsubscribeOrganizer = useOrganizerStore.subscribe(schedule);
+    const unsubscribeOrganizer = useOrganizerStore.subscribe((state, previous) => {
+      if (state.tiles !== previous.tiles || state.selected !== previous.selected || state.cuts !== previous.cuts || state.labels !== previous.labels || state.sources !== previous.sources) schedule();
+    });
     schedule();
     return () => {
       unsubscribeDocuments();

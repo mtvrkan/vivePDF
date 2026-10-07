@@ -57,7 +57,7 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
       }}
       aria-selected={isSelected}
       className={cn(
-        "card group relative flex touch-none flex-col gap-1.5 rounded-xl p-2 select-none transition-[transform,box-shadow,border-color] duration-(--transition-fast)",
+        "card tile-card group relative flex touch-none flex-col gap-1.5 rounded-xl p-2 select-none transition-[transform,box-shadow,border-color] duration-(--transition-fast)",
         "hover:z-10 focus-within:z-10",
         "cursor-default",
         isSelected ? "border-primary ring-4 ring-primary/20" : "hover:-translate-y-0.5 hover:border-primary/40",
