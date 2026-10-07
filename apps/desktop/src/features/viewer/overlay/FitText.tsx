@@ -12,6 +12,8 @@ export function FitText({
   className,
   baseSizePt,
   pxPerPt,
+  boxWidth,
+  boxHeight,
   onFittedSize,
 }: {
   runs: BlockRun[];
@@ -20,6 +22,8 @@ export function FitText({
   className?: string;
   baseSizePt: number;
   pxPerPt: number;
+  boxWidth?: number;
+  boxHeight?: number;
   onFittedSize?: (sizePt: number | null) => void;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -28,7 +32,7 @@ export function FitText({
 
   useLayoutEffect(() => {
     setSizePt(baseSizePt);
-  }, [text, baseSizePt, style.lineHeight, style.fontWeight]);
+  }, [text, baseSizePt, style.lineHeight, style.fontWeight, boxWidth, boxHeight]);
 
   useLayoutEffect(() => {
     const element = ref.current;

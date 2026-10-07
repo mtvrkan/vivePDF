@@ -606,7 +606,8 @@
       "delete": "Unterschrift löschen",
       "name": "Unterschrift {{n}}",
       "penColor": "Stiftfarbe",
-      "hint": "Mit Maus, Stift oder Finger zeichnen. Der Hintergrund bleibt transparent."
+      "hint": "Mit Maus, Stift oder Finger zeichnen. Der Hintergrund bleibt transparent.",
+      "penBlack": "Schwarz"
     },
     "formula": {
       "menu": "Formel einfügen",

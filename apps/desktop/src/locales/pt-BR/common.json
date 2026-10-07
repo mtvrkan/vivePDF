@@ -606,7 +606,8 @@
       "delete": "Excluir assinatura",
       "name": "Assinatura {{n}}",
       "penColor": "Cor da caneta",
-      "hint": "Desenhe com o mouse, caneta ou dedo. O fundo fica transparente."
+      "hint": "Desenhe com o mouse, caneta ou dedo. O fundo fica transparente.",
+      "penBlack": "Preto"
     },
     "formula": {
       "menu": "Inserir fórmula",

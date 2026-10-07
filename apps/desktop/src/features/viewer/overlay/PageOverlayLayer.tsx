@@ -1,5 +1,6 @@
-import { useEffect, useReducer, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
 import { Move, X } from "lucide-react";
+import { useShallow } from "zustand/react/shallow";
 import { useTranslation } from "react-i18next";
 import { editorBlocks, imageAt, imagePreview } from "@/shared/rpc/operations";
 import { describeError } from "@/shared/lib/errorMessage";
@@ -28,7 +29,7 @@ import { computeSnappedRect } from "./snapIntegration";
 import { SnapGuides } from "./SnapGuides";
 import { ObjectToolbar } from "./ObjectToolbar";
 import { pickLayerHit, type HitKind, type HitSource } from "./hitTest";
-import { layerKey } from "./layers";
+import { imagePreviewKey, isLayerLocked, layerKey } from "./layers";
 import { isDrawingImage } from "./drawing/drawingSource";
 import type { EditorBlockInfo, EditorImageBlock, EditorTextBlock } from "@/types";
 
@@ -54,10 +55,6 @@ function blockArea(block: EditorBlockInfo): number {
   return (block.bbox[2] - block.bbox[0]) * (block.bbox[3] - block.bbox[1]);
 }
 
-function imagePreviewKey(pageIndex: number, xref: number): string {
-  return `${pageIndex}:${xref}`;
-}
-
 function objectHitKind(item: EditorPending): HitKind {
   return item.kind === "image" || item.kind === "imageChange" ? "image" : "text";
 }
@@ -77,15 +74,15 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   const { t } = useTranslation();
   const toast = useToastStore((state) => state.push);
   const mode = useViewerOverlayStore((state) => state.mode);
-  const selection = useViewerOverlayStore((state) => state.selection);
-  const measure = useViewerOverlayStore((state) => state.measure);
-  const measurements = useViewerOverlayStore((state) => state.measurements);
-  const placement = useViewerOverlayStore((state) => state.placement);
+  const selection = useViewerOverlayStore((state) => (state.selection?.pageIndex === pageIndex ? state.selection : null));
+  const measure = useViewerOverlayStore((state) => (state.measure?.pageIndex === pageIndex ? state.measure : null));
+  const measurements = useViewerOverlayStore(useShallow((state) => state.measurements.filter((line) => line.pageIndex === pageIndex)));
+  const placement = useViewerOverlayStore((state) => (state.placement?.pageIndex === pageIndex ? state.placement : null));
   const signatureId = useViewerOverlayStore((state) => state.signatureId);
   const signatureWidthMm = useViewerOverlayStore((state) => state.signatureWidthMm);
   const scaleDenominator = useViewerOverlayStore((state) => state.scaleDenominator);
   const unit = useViewerOverlayStore((state) => state.unit);
-  const objects = useViewerOverlayStore((state) => state.objects);
+  const objects = useViewerOverlayStore(useShallow((state) => state.objects.filter((item) => item.pageIndex === pageIndex)));
   const selectedObjectId = useViewerOverlayStore((state) => state.selectedObjectId);
   const editingObjectId = useViewerOverlayStore((state) => state.editingObjectId);
   const textStyle = useViewerOverlayStore((state) => state.textStyle);
@@ -93,9 +90,16 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   const blocks = useViewerOverlayStore((state) => state.blocksByPage[pageIndex]);
   const hiddenLayerKeys = useViewerOverlayStore((state) => state.hiddenLayerKeys);
   const lockedLayerKeys = useViewerOverlayStore((state) => state.lockedLayerKeys);
-  const hoveredLayerKey = useViewerOverlayStore((state) => state.hoveredLayerKey);
+  const hoveredLayerKey = useViewerOverlayStore((state) => (state.hoveredLayerKey?.startsWith(`${pageIndex}:`) ? state.hoveredLayerKey : null));
   const fontFamilies = useViewerOverlayStore((state) => state.fontFamilies);
-  const imagePreviews = useViewerOverlayStore((state) => state.imagePreviews);
+  const previewPrefix = `${documentId}:${pageIndex}:`;
+  const imagePreviews = useViewerOverlayStore(
+    useShallow((state) => {
+      const subset: Record<string, string> = {};
+      for (const [key, value] of Object.entries(state.imagePreviews)) if (key.startsWith(previewPrefix)) subset[key] = value;
+      return subset;
+    }),
+  );
   const fontResolutions = useViewerOverlayStore((state) => state.fontResolutions);
   const focusRequest = useViewerOverlayStore((state) => state.focusRequest);
   const document = useDocumentStore((state) => state.documents[documentId] ?? null);
@@ -125,6 +129,8 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
     return hit.source === "object" ? { source: "object", item: hit.value } : { source: "block", block: hit.value };
   };
 
+  const reportError = (caught: unknown) => toast("error", describeError(t, toRpcError(caught)));
+
   const handleImageDrop = (paths: string[], position: { x: number; y: number }): boolean => {
     if (!editorActive || !document) return false;
     const files = paths.map((path) => ({ name: path.split(/[\\/]/).pop() ?? path }));
@@ -145,39 +151,51 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
     if (action === "replaceImage") {
       const path = paths[0];
       if (hitObject && hitObject.kind === "imageChange") {
-        void replaceImageAt(hitObject, path);
+        replaceImageAt(hitObject, path).catch(reportError);
       } else if (hitObject && hitObject.kind === "image") {
-        void imagePreview({ path }).then((preview) => {
-          const activeStore = useViewerOverlayStore.getState();
-          activeStore.snapshot();
-          activeStore.updateObject(hitObject.id, { dataUrl: `data:image/png;base64,${preview.pngBase64}`, path, aspect: preview.width / preview.height, drawing: undefined });
-        });
+        const token = useViewerOverlayStore.getState().sessionToken;
+        imagePreview({ path })
+          .then((preview) => {
+            const activeStore = useViewerOverlayStore.getState();
+            if (activeStore.sessionToken !== token || !activeStore.objects.some((entry) => entry.id === hitObject.id)) return;
+            activeStore.snapshot();
+            activeStore.updateObject(hitObject.id, { dataUrl: `data:image/png;base64,${preview.pngBase64}`, path, aspect: preview.width / preview.height, drawing: undefined });
+          })
+          .catch(reportError);
       } else if (hitBlock && hitBlock.kind === "image") {
         const newItem = imageChangeFromBlock(hitBlock, pageIndex);
         const activeStore = useViewerOverlayStore.getState();
         activeStore.snapshot();
         activeStore.addObject(newItem);
-        void replaceImageAt(newItem, path);
+        replaceImageAt(newItem, path).catch(reportError);
       } else {
         return false;
       }
       return true;
     }
     if (action === "createImage") {
-      void imagePreview({ path: paths[0] }).then((preview) => {
-        const aspect = preview.width / preview.height;
-        const objectWidth = Math.min(DEFAULT_IMAGE_WIDTH, page.width - 4);
-        const objectHeight = objectWidth / aspect;
-        const activeStore = useViewerOverlayStore.getState();
-        activeStore.snapshot();
-        activeStore.addObject({ id: crypto.randomUUID(), kind: "image", pageIndex, x: Math.max(0, point.x - objectWidth / 2), y: Math.max(0, point.y - objectHeight / 2), width: objectWidth, height: objectHeight, dataUrl: `data:image/png;base64,${preview.pngBase64}`, path: paths[0], aspect, opacity: 1 });
-      });
+      const token = useViewerOverlayStore.getState().sessionToken;
+      imagePreview({ path: paths[0] })
+        .then((preview) => {
+          const activeStore = useViewerOverlayStore.getState();
+          if (activeStore.sessionToken !== token || activeStore.mode === null || !EDITOR_MODES.includes(activeStore.mode)) return;
+          const aspect = preview.width / preview.height;
+          const objectWidth = Math.min(DEFAULT_IMAGE_WIDTH, page.width - 4);
+          const objectHeight = objectWidth / aspect;
+          activeStore.snapshot();
+          activeStore.addObject({ id: crypto.randomUUID(), kind: "image", pageIndex, x: Math.max(0, point.x - objectWidth / 2), y: Math.max(0, point.y - objectHeight / 2), width: objectWidth, height: objectHeight, dataUrl: `data:image/png;base64,${preview.pngBase64}`, path: paths[0], aspect, opacity: 1 });
+        })
+        .catch(reportError);
       return true;
     }
     return false;
   };
 
-  useDropPositionHandler(editorActive ? handleImageDrop : null);
+  const dropRef = useRef(handleImageDrop);
+  dropRef.current = handleImageDrop;
+  const stableDrop = useCallback((paths: string[], position: { x: number; y: number }) => dropRef.current(paths, position), []);
+
+  useDropPositionHandler(editorActive ? stableDrop : null);
 
   useEffect(() => {
     if (!editorActive || blocks !== undefined || !document) return;
@@ -199,7 +217,6 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   useEffect(() => {
     if (!editorActive) return;
     for (const item of objects) {
-      if (item.pageIndex !== pageIndex) continue;
       if (item.kind === "text" && item.style.fontId) void loadFontFile(item.style.fontId, item.style.bold);
       const resolution = item.kind === "block" ? fontResolutions[item.id] : undefined;
       if (resolution?.source === "system" && resolution.fontId) void loadFontFile(resolution.fontId, false);
@@ -311,7 +328,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
       : null;
 
   const finishEditing = () => {
-    const editing = objects.find((item) => item.id === editingObjectId);
+    const editing = useViewerOverlayStore.getState().objects.find((item) => item.id === editingObjectId);
     store.setEditingObject(null);
     if (!editing) return;
     if (editing.kind === "text" && !editing.text.trim()) store.removeObject(editing.id);
@@ -332,7 +349,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
     return resolved?.source === "block" ? resolved.block : null;
   };
 
-  const isLocked = (id: string) => Boolean(lockedLayerKeys[layerKey(pageIndex, id)]);
+  const isLocked = (id: string) => isLayerLocked(lockedLayerKeys, pageIndex, id);
 
   const adoptTextBlock = (block: EditorTextBlock, event: ReactMouseEvent) => {
     const id = crypto.randomUUID();
@@ -373,10 +390,12 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
     store.snapshot();
     store.addObject(created);
     dragRef.current = { kind: "object-move", id: created.id, offset: { x: point.x - rect.x, y: point.y - rect.y }, moved: false };
-    const key = imagePreviewKey(pageIndex, block.xref);
+    const key = imagePreviewKey(documentId, pageIndex, block.xref);
     if (document && !imagePreviews[key]) {
+      const token = useViewerOverlayStore.getState().sessionToken;
       void imageAt({ path: document.path, password: document.password ?? undefined, page: pageIndex + 1, x: rect.x + rect.width / 2, y: rect.y + rect.height / 2, previewMaxSide: PREVIEW_MAX_SIDE })
         .then((result) => {
+          if (useViewerOverlayStore.getState().sessionToken !== token) return;
           if (result.found && result.xref === block.xref && result.pngBase64) useViewerOverlayStore.getState().setImagePreview(key, `data:image/png;base64,${result.pngBase64}`);
         })
         .catch(() => undefined);
@@ -434,6 +453,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
         if (isLocked(hit.id)) return;
         if (hit.kind === "block" || hit.kind === "edit") {
           caretRef.current = { x: event.clientX, y: event.clientY };
+          store.snapshot();
           store.setEditingObject(hit.id);
           return;
         }
@@ -576,6 +596,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
     if (!hit || isLocked(hit.id)) return;
     if (hit.kind === "text") {
       caretRef.current = { x: event.clientX, y: event.clientY };
+      store.snapshot();
       store.setEditingObject(hit.id);
       return;
     }
@@ -590,9 +611,9 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
     }
   };
 
-  const activeSelection = selection && selection.pageIndex === pageIndex ? selection : null;
-  const activeMeasure = measure && measure.pageIndex === pageIndex ? measure : null;
-  const measureLines: DrawnMeasure[] = mode === "measure" ? measurements.filter((line) => line.pageIndex === pageIndex) : [];
+  const activeSelection = selection;
+  const activeMeasure = measure;
+  const measureLines: DrawnMeasure[] = mode === "measure" ? [...measurements] : [];
   if (mode === "measure" && activeMeasure && hover) measureLines.push({ id: null, a: activeMeasure.points[0], b: hover });
   else if (mode === "measure" && activeMeasure) measureLines.push({ id: null, a: activeMeasure.points[0], b: activeMeasure.points[0] });
   const selectionTone = mode === "redact" ? "border-destructive bg-destructive/25" : mode === "link" ? "border-success bg-success/15" : mode === "areaText" || mode === "snapshot" ? "border-primary bg-primary/10 border-dashed" : "border-primary bg-primary/15";
@@ -666,7 +687,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   const isDraggingSelected = dragRef.current !== null;
   const isEditingSelected = editingObjectId !== null && editingObjectId === selectedObjectId;
   const layerRect = layerRef.current?.getBoundingClientRect() ?? null;
-  const toolbarObject = isEditor && selectedObject && !isDraggingSelected && !isEditingSelected ? selectedObject : null;
+  const toolbarObject = isEditor && selectedObject && !isDraggingSelected && !isEditingSelected && !isLocked(selectedObject.id) ? selectedObject : null;
   const toolbarAnchorRect = toolbarObject && layerRect ? frameToScreen({ x: px(toolbarObject.x), y: px(toolbarObject.y), width: px(toolbarObject.width), height: px(toolbarObject.height) }, layerRect, viewTurnsOf(layerRef.current)) : null;
 
   return (
@@ -804,6 +825,8 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
                     style={{ ...containerStyle, backgroundColor: backgroundFor(item) }}
                     baseSizePt={item.style.fontSize}
                     pxPerPt={scale}
+                    boxWidth={px(item.width)}
+                    boxHeight={px(item.height)}
                     onFittedSize={(size) => {
                       if (size !== item.fittedSize) store.updateObject(item.id, { fittedSize: size });
                     }}
@@ -816,7 +839,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
         }
         if (item.kind === "imageChange") {
           const moved = rectChanged(item);
-          const preview = item.replacement?.dataUrl ?? imagePreviews[imagePreviewKey(pageIndex, item.xref)] ?? null;
+          const preview = item.replacement?.dataUrl ?? imagePreviews[imagePreviewKey(documentId, pageIndex, item.xref)] ?? null;
           return (
             <div key={item.id}>
               {moved || item.deleted ? (
@@ -877,7 +900,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
         );
       })}
       {snapGuides ? <SnapGuides guides={snapGuides} scale={scale} width={frame.width} height={frame.height} /> : null}
-      {toolbarObject && toolbarAnchorRect ? <ObjectToolbar item={toolbarObject} anchorRect={toolbarAnchorRect} viewportSize={{ width: window.innerWidth, height: window.innerHeight }} /> : null}
+      {toolbarObject && toolbarAnchorRect ? <ObjectToolbar documentId={documentId} item={toolbarObject} anchorRect={toolbarAnchorRect} viewportSize={{ width: window.innerWidth, height: window.innerHeight }} /> : null}
     </div>
   );
 }

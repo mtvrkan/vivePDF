@@ -47,7 +47,7 @@ describe("viewerOverlayStore paste", () => {
   it("pastes a paragraph as a text object that keeps every run style", () => {
     const store = useViewerOverlayStore.getState();
     store.copyObject(block());
-    store.pasteObject(1, 600, 800);
+    store.pasteObject("doc", 1, 600, 800);
     const pasted = useViewerOverlayStore.getState().objects[0];
     expect(pasted.kind).toBe("text");
     if (pasted.kind !== "text") return;
@@ -62,7 +62,7 @@ describe("viewerOverlayStore paste", () => {
     const source = block();
     const store = useViewerOverlayStore.getState();
     store.copyObject(source);
-    store.pasteObject(0, 600, 800);
+    store.pasteObject("doc", 0, 600, 800);
     const pasted = useViewerOverlayStore.getState().objects[0];
     if (pasted.kind !== "text" || !pasted.runs) throw new Error("expected runs");
     pasted.runs[0].text = "changed";
@@ -72,7 +72,7 @@ describe("viewerOverlayStore paste", () => {
   it("applies a whole-object style change to the pasted runs too", () => {
     const store = useViewerOverlayStore.getState();
     store.copyObject(block());
-    store.pasteObject(0, 600, 800);
+    store.pasteObject("doc", 0, 600, 800);
     const pasted = useViewerOverlayStore.getState().objects[0];
     store.setSelectedObject(pasted.id);
     store.setTextStyle({ color: "#ff0000" });
@@ -80,6 +80,65 @@ describe("viewerOverlayStore paste", () => {
     if (updated.kind !== "text") throw new Error("expected text");
     expect(updated.style.color).toBe("#ff0000");
     expect(updated.runs?.every((run) => run.color === "#ff0000")).toBe(true);
+  });
+});
+
+describe("viewerOverlayStore duplicate and paste of pictures", () => {
+  const imageChange: EditorPending = { id: "i1", kind: "imageChange", pageIndex: 0, x: 10, y: 10, width: 100, height: 50, blockId: "img0", xref: 7, original: { x: 10, y: 10, width: 100, height: 50 }, deleted: false, aspect: 2, aspectLocked: true, replacement: null, rotate: 0, flipH: false, flipV: false, opacity: 1, placementRotation: 0 };
+
+  beforeEach(() => {
+    useViewerOverlayStore.setState({ objects: [], clipboard: null, past: [], future: [], imagePreviews: {} });
+  });
+
+  it("duplicates a paragraph as a new text object, not a second claim on the same block", () => {
+    useViewerOverlayStore.getState().duplicateObject("doc", block());
+    const [copy] = useViewerOverlayStore.getState().objects;
+    expect(copy.kind).toBe("text");
+    expect(copy.id).not.toBe("b1");
+    expect(useViewerOverlayStore.getState().past).toHaveLength(1);
+  });
+
+  it("duplicates an untouched page picture only when its preview is known", () => {
+    useViewerOverlayStore.getState().duplicateObject("doc", imageChange);
+    expect(useViewerOverlayStore.getState().objects).toHaveLength(0);
+    expect(useViewerOverlayStore.getState().past).toHaveLength(0);
+    useViewerOverlayStore.setState({ imagePreviews: { "doc:0:7": "data:image/png;base64,AA" } });
+    useViewerOverlayStore.getState().duplicateObject("doc", imageChange);
+    const [copy] = useViewerOverlayStore.getState().objects;
+    expect(copy.kind).toBe("image");
+  });
+
+  it("skips pasting a picture without a preview", () => {
+    const store = useViewerOverlayStore.getState();
+    store.copyObject(imageChange);
+    store.pasteObject("doc", 0, 600, 800);
+    expect(useViewerOverlayStore.getState().objects).toHaveLength(0);
+  });
+});
+
+describe("viewerOverlayStore discarding", () => {
+  it("drops undo history when leaving an editor mode for a page tool", () => {
+    const store = useViewerOverlayStore.getState();
+    store.setMode("text");
+    store.snapshot();
+    store.addObject(block());
+    const token = useViewerOverlayStore.getState().sessionToken;
+    store.setMode("crop");
+    const after = useViewerOverlayStore.getState();
+    expect(after.objects).toHaveLength(0);
+    expect(after.past).toHaveLength(0);
+    expect(after.future).toHaveLength(0);
+    expect(after.sessionToken).toBeGreaterThan(token);
+    store.setMode(null);
+  });
+
+  it("keeps undo history when moving between text and picture editing", () => {
+    const store = useViewerOverlayStore.getState();
+    store.setMode("text");
+    store.snapshot();
+    store.setMode("image");
+    expect(useViewerOverlayStore.getState().past).toHaveLength(1);
+    store.setMode(null);
   });
 });
 

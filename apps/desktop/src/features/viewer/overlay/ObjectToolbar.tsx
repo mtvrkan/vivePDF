@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { ColorSwatch } from "@/components/shared/ColorSwatch";
 import { FontPicker } from "@/components/shared/FontPicker";
+import { describeError } from "@/shared/lib/errorMessage";
+import { toRpcError } from "@/shared/rpc/client";
+import { useToastStore } from "@/shared/store/toastStore";
 import { useViewerOverlayStore, type BlockAlign, type EditorPending, type ImageRotation } from "@/shared/store/viewerOverlayStore";
 import { DRAWING_SPECS } from "./drawing/drawingKinds";
 import { isDrawingImage, isDrawingKind, type DrawingImage } from "./drawing/drawingSource";
@@ -24,8 +27,9 @@ function turned(rotation: ImageRotation, delta: 90 | -90): ImageRotation {
   return ((((rotation + delta) % 360) + 360) % 360) as ImageRotation;
 }
 
-export function ObjectToolbar({ item, anchorRect, viewportSize }: { item: EditorPending; anchorRect: ToolbarRect; viewportSize: ToolbarSize }) {
+export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { documentId: string; item: EditorPending; anchorRect: ToolbarRect; viewportSize: ToolbarSize }) {
   const { t } = useTranslation();
+  const toast = useToastStore((state) => state.push);
   const store = useViewerOverlayStore.getState();
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [measured, setMeasured] = useState<ToolbarSize>({ width: 0, height: 40 });
@@ -48,9 +52,10 @@ export function ObjectToolbar({ item, anchorRect, viewportSize }: { item: Editor
 
   const placement = computeToolbarPlacement(anchorRect, measured.width ? measured : { width: 260, height: 40 }, viewportSize, 8);
 
-  const duplicate = () => {
-    store.snapshot();
-    store.addObject({ ...item, id: crypto.randomUUID(), x: item.x + 12, y: item.y + 12 } as EditorPending);
+  const duplicate = () => store.duplicateObject(documentId, item);
+
+  const replaceImage = (target: ImageChangePending) => {
+    replaceImageWithDialog(target, t).catch((caught) => toast("error", describeError(t, toRpcError(caught))));
   };
 
   const remove = () => {
@@ -96,7 +101,7 @@ export function ObjectToolbar({ item, anchorRect, viewportSize }: { item: Editor
     };
     return (
       <>
-        <IconButton icon={ImageUp} label={t("viewer.editPanel.replaceImage")} onClick={() => void replaceImageWithDialog(imageChange, t)} />
+        <IconButton icon={ImageUp} label={t("viewer.editPanel.replaceImage")} onClick={() => replaceImage(imageChange)} />
         <IconButton icon={RotateCcw} label={t("viewer.editPanel.rotateLeft")} onClick={() => rotateImage(-90)} />
         <IconButton icon={RotateCw} label={t("viewer.editPanel.rotateRight")} onClick={() => rotateImage(90)} />
         <IconButton icon={FlipHorizontal2} label={t("viewer.editPanel.flipH")} active={imageChange.flipH} onClick={() => { store.snapshot(); store.updateObject(imageChange.id, { flipH: !imageChange.flipH }); }} />

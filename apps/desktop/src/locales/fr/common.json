@@ -606,7 +606,8 @@
       "delete": "Supprimer la signature",
       "name": "Signature {{n}}",
       "penColor": "Couleur du stylo",
-      "hint": "Dessinez à la souris, au stylet ou au doigt. Le fond reste transparent."
+      "hint": "Dessinez à la souris, au stylet ou au doigt. Le fond reste transparent.",
+      "penBlack": "Noir"
     },
     "formula": {
       "menu": "Insérer une formule",

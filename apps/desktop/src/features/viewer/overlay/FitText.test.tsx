@@ -1,5 +1,5 @@
 import { cleanup, render } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import type { BlockRun } from "@/shared/store/viewerOverlayStore";
 import { FitText } from "./FitText";
 
@@ -31,5 +31,21 @@ describe("FitText", () => {
     render(<FitText runs={[run("Fits", 12)]} runStyle={(_, size) => ({ fontSize: size })} style={{}} baseSizePt={12} pxPerPt={1} onFittedSize={(size) => (reported = size)} />);
 
     expect(reported).toBeNull();
+  });
+
+  it("grows back to the base size when the box becomes tall enough again", () => {
+    let available = 60;
+    vi.spyOn(HTMLElement.prototype, "clientHeight", "get").mockImplementation(() => available);
+    vi.spyOn(HTMLElement.prototype, "scrollHeight", "get").mockImplementation(function (this: HTMLElement) {
+      return parseFloat(this.style.fontSize) * 5;
+    });
+    const props = { runs: [run("Long text", 20)], runStyle: (_: BlockRun, size: number) => ({ fontSize: size }), style: {}, baseSizePt: 20, pxPerPt: 1 };
+    const { container, rerender } = render(<FitText {...props} boxWidth={100} boxHeight={60} />);
+    expect(parseFloat(box(container).style.fontSize)).toBeLessThan(20);
+
+    available = 200;
+    rerender(<FitText {...props} boxWidth={100} boxHeight={200} />);
+    expect(box(container).style.fontSize).toBe("20px");
+    vi.restoreAllMocks();
   });
 });

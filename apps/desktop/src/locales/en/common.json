@@ -606,7 +606,8 @@
       "delete": "Delete signature",
       "name": "Signature {{n}}",
       "penColor": "Pen colour",
-      "hint": "Draw with the mouse, a pen or your finger. The background stays transparent."
+      "hint": "Draw with the mouse, a pen or your finger. The background stays transparent.",
+      "penBlack": "Black"
     },
     "formula": {
       "menu": "Add formula",

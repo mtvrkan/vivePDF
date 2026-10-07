@@ -16,6 +16,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 const CANVAS_WIDTH = 372;
 const CANVAS_HEIGHT = 160;
 const PEN_COLORS = ["#101828", "#1d4ed8"];
+const PEN_COLOR_LABELS: Record<string, string> = { "#101828": "viewer.signature.penBlack", "#1d4ed8": "viewer.tabGroups.colors.blue" };
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "bmp", "heic", "heif"];
 
 type SignatureDialogProps = { open: boolean; onClose: () => void; onPick: (id: string) => void };
@@ -206,7 +207,7 @@ export function SignatureDialog({ open, onClose, onPick }: SignatureDialogProps)
                   type="button"
                   role="radio"
                   aria-checked={color === preset}
-                  aria-label={preset}
+                  aria-label={t(PEN_COLOR_LABELS[preset])}
                   tabIndex={penRoving.tabIndexOf(index)}
                   onKeyDown={penRoving.onKeyDown}
                   onClick={() => setColor(preset)}

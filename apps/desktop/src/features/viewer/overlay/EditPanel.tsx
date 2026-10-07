@@ -217,7 +217,10 @@ export function EditPanel({ documentId }: { documentId: string }) {
                   icon={selected.aspectLocked ? Lock : Unlock}
                   label={t("viewer.editPanel.aspectLock")}
                   active={selected.aspectLocked}
-                  onClick={() => store.updateObject(selected.id, { aspectLocked: !selected.aspectLocked })}
+                  onClick={() => {
+                    store.snapshot();
+                    store.updateObject(selected.id, { aspectLocked: !selected.aspectLocked });
+                  }}
                 />
               ) : null}
             </p>

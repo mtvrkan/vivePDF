@@ -3,6 +3,7 @@ import { Camera, Crop, Eraser, FilePenLine, ImagePlus, Images, Link2, PenTool, P
 import { useTranslation } from "react-i18next";
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
+import { useHistoryCapability } from "@embedpdf/plugin-history/react";
 import { requestSearchable } from "../searchableStore";
 import { useAnnotation } from "@embedpdf/plugin-annotation/react";
 import { PdfActionType, PdfAnnotationSubtype, PdfZoomMode } from "@embedpdf/models";
@@ -19,6 +20,7 @@ import { toRpcError } from "@/shared/rpc/client";
 import { normalizeLinkUri } from "../linkUri";
 import { applyEditor, cropPages, imagePreview, placeSignature, redactPdf } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
+import { pendingChangesFor, usePendingChangesStore } from "@/shared/store/pendingChangesStore";
 import { useSignatureStore } from "@/shared/store/signatureStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
@@ -36,10 +38,14 @@ import { DRAWING_SPECS, drawingAltText } from "./drawing/drawingKinds";
 import { DRAWING_KINDS, isDrawingImage, toDrawingObject } from "./drawing/drawingSource";
 import { EditBarMenu } from "./EditBarMenu";
 import { isEditingMode, PAGE_TOOLS, switchOverlayMode } from "./editorModes";
-import { isPendingChange } from "./pending";
+import { isPendingChange, keepsEditsOnLeave } from "./pending";
 import { hasMixedStyles, toEditorRun } from "./runs";
+import { isLayerLocked } from "./layers";
 
 const MM_TO_PT = 72 / 25.4;
+const NUDGE_BURST_MS = 600;
+const INTERACTIVE_SURFACE = "[role=menu],[role=dialog],[role=listbox],[role=toolbar],[data-layers-list]";
+const PAGE_SURFACE = "[data-pan-scroller]";
 const ERASE_FILL = "#ffffff";
 const UNITS: MeasureUnit[] = ["mm", "cm", "m"];
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "bmp", "gif", "heic", "heif"];
@@ -66,24 +72,35 @@ export function OverlayBar({ documentId }: { documentId: string }) {
   const objects = useViewerOverlayStore((state) => state.objects);
   const selectedObjectId = useViewerOverlayStore((state) => state.selectedObjectId);
   const pendingImage = useViewerOverlayStore((state) => state.pendingImage);
+  const lockedLayerKeys = useViewerOverlayStore((state) => state.lockedLayerKeys);
   const setMode = useViewerOverlayStore((state) => state.setMode);
   const signatures = useSignatureStore((state) => state.items);
-  const { provides: redaction } = useRedaction(documentId);
+  const { provides: redaction, state: redactionState } = useRedaction(documentId);
   const { provides: annotation } = useAnnotation(documentId);
+  const { provides: historyCapability } = useHistoryCapability();
   const [busy, setBusy] = useState(false);
+  const busyRef = useRef(false);
+  const nudgeAtRef = useRef(0);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
   const [linkPage, setLinkPage] = useState("");
   const leaveNext = useViewerOverlayStore((state) => state.leaveNext);
 
   useEffect(() => {
+    const overlay = useViewerOverlayStore.getState();
+    if (overlay.editingDocumentId !== null && overlay.editingDocumentId !== documentId) overlay.setMode(null);
+    useViewerOverlayStore.setState({ editingDocumentId: documentId });
     return () => {
-      useViewerOverlayStore.getState().setMode(null);
+      const current = useViewerOverlayStore.getState();
+      if (keepsEditsOnLeave(current.objects, useDocumentStore.getState().documents[documentId] !== undefined)) return;
+      current.setMode(null);
       clearEmbeddedFontCache(documentId);
     };
   }, [documentId]);
 
   const actionsRef = useRef<{ save: (inPlace: boolean) => void }>({ save: () => undefined });
+  const documentIdRef = useRef(documentId);
+  documentIdRef.current = documentId;
 
   useEffect(() => {
     if (mode !== "measure") return;
@@ -113,8 +130,9 @@ export function OverlayBar({ documentId }: { documentId: string }) {
         actionsRef.current.save(!event.shiftKey);
         return;
       }
-      if (typing) return;
+      if (typing || event.defaultPrevented || state.leaveNext !== null || (target instanceof Element && target.closest(INTERACTIVE_SURFACE))) return;
       const current = state.objects.find((item) => item.id === state.selectedObjectId) ?? null;
+      const locked = current ? isLayerLocked(state.lockedLayerKeys, current.pageIndex, current.id) : false;
       if (event.key === "Escape") {
         if (window.document.querySelector("[role=menu], [role=dialog], [role=listbox]")) return;
         event.preventDefault();
@@ -136,12 +154,16 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       }
       if (modifier && key === "b") {
         event.preventDefault();
-        const style = current && (current.kind === "text" || current.kind === "edit" || current.kind === "block") ? current.style : state.textStyle;
-        state.setTextStyle({ bold: !style.bold });
+        const styled = current && (current.kind === "text" || current.kind === "edit" || current.kind === "block") ? current : null;
+        if (styled && locked) return;
+        if (styled) state.snapshot();
+        state.setTextStyle({ bold: !(styled ? styled.style : state.textStyle).bold });
         return;
       }
       if (modifier && key === "i" && (current?.kind === "edit" || current?.kind === "block")) {
         event.preventDefault();
+        if (locked) return;
+        state.snapshot();
         state.updateObject(current.id, { style: { ...current.style, italic: !current.style.italic } } as Partial<EditorPending>);
         return;
       }
@@ -153,22 +175,27 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       if (modifier && key === "v" && state.clipboard && !state.editingObjectId) {
         event.preventDefault();
         const targetPageIndex = current ? current.pageIndex : state.clipboard.pageIndex;
-        const targetPage = visiblePageSize(documentId, targetPageIndex, 1, 1);
-        state.pasteObject(targetPageIndex, targetPage.width, targetPage.height);
+        const targetPage = visiblePageSize(documentIdRef.current, targetPageIndex, 1, 1);
+        state.pasteObject(documentIdRef.current, targetPageIndex, targetPage.width, targetPage.height);
         return;
       }
-      if (event.key === "Tab" && !modifier && !state.editingObjectId && state.objects.length > 0) {
-        event.preventDefault();
+      if (event.key === "Tab" && !modifier && !state.editingObjectId && state.objects.length > 0 && (!target || target === window.document.body || (target instanceof Element && target.closest(PAGE_SURFACE)))) {
         const pageIndex = current ? current.pageIndex : state.objects[0].pageIndex;
         const onPage = state.objects.filter((item) => item.pageIndex === pageIndex);
-        if (onPage.length > 0) {
-          const currentIndex = current ? onPage.findIndex((item) => item.id === current.id) : -1;
-          const nextIndex = event.shiftKey ? (currentIndex - 1 + onPage.length) % onPage.length : (currentIndex + 1) % onPage.length;
-          state.setSelectedObject(onPage[nextIndex].id);
-        }
+        const currentIndex = current ? onPage.findIndex((item) => item.id === current.id) : -1;
+        const nextIndex = currentIndex + (event.shiftKey ? -1 : 1);
+        if (nextIndex < 0 || nextIndex >= onPage.length) return;
+        event.preventDefault();
+        state.setSelectedObject(onPage[nextIndex].id);
         return;
       }
       if (!current || state.editingObjectId) return;
+      if (modifier && key === "d") {
+        event.preventDefault();
+        state.duplicateObject(documentIdRef.current, current);
+        return;
+      }
+      if (locked) return;
       if (event.key === "Delete" || event.key === "Backspace") {
         event.preventDefault();
         state.snapshot();
@@ -184,12 +211,8 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       }
       if (event.key === "Enter" && (current.kind === "text" || current.kind === "edit" || current.kind === "block")) {
         event.preventDefault();
+        state.snapshot();
         state.setEditingObject(current.id);
-        return;
-      }
-      if (modifier && key === "d" && (current.kind === "text" || current.kind === "image")) {
-        event.preventDefault();
-        state.addObject({ ...current, id: crypto.randomUUID(), x: current.x + 12, y: current.y + 12 });
         return;
       }
       const step = event.shiftKey ? 10 : 1;
@@ -197,12 +220,15 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       const delta = nudge[event.key];
       if (delta) {
         event.preventDefault();
+        const now = Date.now();
+        if (now - nudgeAtRef.current > NUDGE_BURST_MS) state.snapshot();
+        nudgeAtRef.current = now;
         state.updateObject(current.id, { x: Math.max(0, current.x + delta[0]), y: Math.max(0, current.y + delta[1]) });
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [documentId]);
+  }, []);
 
   if (!mode || !document) return null;
 
@@ -217,13 +243,25 @@ export function OverlayBar({ documentId }: { documentId: string }) {
   };
 
   const runGuarded = async (work: () => Promise<void>) => {
+    if (busyRef.current) return;
+    busyRef.current = true;
     setBusy(true);
     try {
       await work();
     } catch (caught) {
       toast("error", describeError(t, toRpcError(caught)));
     } finally {
+      busyRef.current = false;
       setBusy(false);
+    }
+  };
+
+  const hasOtherUnsavedWork = () => {
+    if (pendingChangesFor(usePendingChangesStore.getState().changes, documentId).length > 0 || (redactionState.pendingCount ?? 0) > 0) return true;
+    try {
+      return historyCapability?.forDocument(documentId).canUndo() ?? false;
+    } catch {
+      return false;
     }
   };
 
@@ -392,10 +430,15 @@ export function OverlayBar({ documentId }: { documentId: string }) {
                   : { id: item.id, kind: "image", page: item.pageIndex + 1, x0: item.x, y0: item.y, x1: item.x + item.width, y1: item.y + item.height, pngBase64: item.path ? undefined : item.dataUrl.replace(/^data:image\/\w+;base64,/, ""), path: item.path ?? undefined, opacity: item.opacity, ...(item.alt?.trim() ? { alt: tidyAlt(item.alt) } : {}) },
       );
 
-  const saveEdits = (inPlace: boolean) =>
-    runGuarded(async () => {
+  const saveEdits = async (inPlace: boolean): Promise<boolean> => {
+    let saved = false;
+    await runGuarded(async () => {
       const payload = editorObjects();
       if (payload.length === 0) return;
+      if (inPlace && hasOtherUnsavedWork()) {
+        toast("info", t("viewer.saveBeforePageDrop", { name: document.fileName }));
+        return;
+      }
       let output: string | undefined;
       if (!inPlace) {
         const selectedPath = await saveDialog({ defaultPath: suggestOutputPath(document.path, t("viewer.overlay.editSuffix")), filters: [{ name: "PDF", extensions: ["pdf"] }] });
@@ -417,15 +460,19 @@ export function OverlayBar({ documentId }: { documentId: string }) {
         store.setWarnings(result.warnings);
         store.clearObjects();
         useViewerOverlayStore.getState().setMode(currentMode);
+        saved = true;
         return;
       }
       store.setWarnings(result.warnings);
       store.clearObjects();
+      saved = true;
       if (output) {
         close();
         await openPath(output);
       }
     });
+    return saved;
+  };
 
   actionsRef.current.save = (inPlace) => void saveEdits(inPlace);
 
@@ -587,6 +634,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
             })()}
             {selected ? (
               <IconButton
+                disabled={isLayerLocked(lockedLayerKeys, selected.pageIndex, selected.id)}
                 icon={Trash2}
                 label={(selected.kind === "edit" || selected.kind === "block") && selected.text !== "" ? t("viewer.overlay.deleteText") : selected.kind === "imageChange" && !selected.deleted ? t("viewer.overlay.deleteImage") : t("viewer.overlay.deleteObject")}
                 onClick={() => {
@@ -630,8 +678,11 @@ export function OverlayBar({ documentId }: { documentId: string }) {
               size="sm"
               variant="primary"
               onClick={() => {
+                const next = leaveNext;
                 store.cancelLeave();
-                void saveEdits(true);
+                void saveEdits(true).then((saved) => {
+                  if (saved) next?.();
+                });
               }}
               disabled={busy}
               loading={busy}

@@ -324,6 +324,24 @@ describe("page editor", () => {
     expect(page?.text).toContain("Sample page 1");
   });
 
+  it("keeps unsaved new text when the user leaves the viewer and comes back", async () => {
+    const source = copyFixture(fixtures().sample, "editor-leave-and-return.pdf");
+    await openInViewer(source);
+    await enterEditor("viewer.overlay.editTexts");
+    await clickPage(0, 300, 520);
+    await typeText("Geri dönünce burada");
+    await waitForPending(1);
+
+    await $(`//a[normalize-space(.)="${t("nav.home")}"] | //button[normalize-space(.)="${t("nav.home")}"]`).click();
+    await $(`//*[@data-overlay-bar]`).waitForExist({ reverse: true, timeout: 10000, timeoutMsg: "the viewer never closed" });
+    await $(`//a[normalize-space(.)="${t("nav.viewer")}"] | //button[normalize-space(.)="${t("nav.viewer")}"]`).click();
+
+    await waitForPending(1);
+    const kept = await browser.execute(() => Array.from(document.querySelectorAll<HTMLElement>('[data-page-index="0"] [data-layer-key]')).some((element) => element.textContent?.includes("Geri dönünce burada")));
+    expect(kept).toBe(true);
+    expect(probe(source).pages?.[0].text ?? "").not.toContain("Geri dönünce burada");
+  });
+
   it("places a picture, sizes it from the panel, undoes and redoes, duplicates and deletes it", async () => {
     const source = copyFixture(fixtures().sample, "editor-picture.pdf");
     const before = probe(source);

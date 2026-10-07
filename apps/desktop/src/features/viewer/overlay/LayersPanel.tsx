@@ -92,7 +92,7 @@ export function LayersPanel({ documentId }: { documentId: string }) {
   };
 
   const deleteRow = (row: LayerRow) => {
-    if (row.source !== "pending") return;
+    if (row.source !== "pending" || lockedLayerKeys[row.key]) return;
     store.snapshot();
     store.removeObject(row.item.id);
   };
@@ -101,12 +101,14 @@ export function LayersPanel({ documentId }: { documentId: string }) {
     if (filteredRows.length === 0) return;
     if (event.key === "ArrowDown") {
       event.preventDefault();
+      event.stopPropagation();
       const next = activeIndex === null ? 0 : Math.min(filteredRows.length - 1, activeIndex + 1);
       setActiveIndex(next);
       return;
     }
     if (event.key === "ArrowUp") {
       event.preventDefault();
+      event.stopPropagation();
       const next = activeIndex === null ? filteredRows.length - 1 : Math.max(0, activeIndex - 1);
       setActiveIndex(next);
       return;
@@ -116,21 +118,25 @@ export function LayersPanel({ documentId }: { documentId: string }) {
     if (!row) return;
     if (event.key === "Enter") {
       event.preventDefault();
+      event.stopPropagation();
       focusRow(row);
       return;
     }
     if (event.key === "Delete" || event.key === "Backspace") {
       event.preventDefault();
+      event.stopPropagation();
       deleteRow(row);
       return;
     }
     if (event.key.toLowerCase() === "h") {
       event.preventDefault();
+      event.stopPropagation();
       store.toggleLayerHidden(row.key);
       return;
     }
     if (event.key.toLowerCase() === "l") {
       event.preventDefault();
+      event.stopPropagation();
       store.toggleLayerLocked(row.key);
     }
   };
@@ -166,7 +172,7 @@ export function LayersPanel({ documentId }: { documentId: string }) {
           {filteredRows.length === 0 ? (
             <p className="text-xs text-muted-foreground">{t("viewer.editPanel.layers.empty")}</p>
           ) : (
-            <ul className="space-y-1" onKeyDown={onKeyDown} tabIndex={0}>
+            <ul className="space-y-1" data-layers-list="" onKeyDown={onKeyDown} tabIndex={0}>
               {filteredRows.map((row, index) => {
                 const kind = rowKind(row);
                 const Icon = row.source === "pending" && isDrawingImage(row.item) ? DRAWING_SPECS[row.item.drawing.kind].icon : kind === "image" ? ImageIcon : Type;

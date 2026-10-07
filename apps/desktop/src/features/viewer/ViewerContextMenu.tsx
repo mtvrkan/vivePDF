@@ -66,6 +66,7 @@ import { usePageNavigation } from "./usePageNavigation";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { useTranslationStore } from "@/shared/store/translationStore";
 import { useWebSearchStore } from "@/shared/store/webSearchStore";
+import { switchOverlayMode } from "./overlay/editorModes";
 import { visiblePageSize } from "./overlay/pageSize";
 import { frameSizePx, quarterTurns, screenToFrame } from "./overlay/pageFrame";
 import type { ImageAtResult } from "@/types";
@@ -659,7 +660,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
         { type: "item", id: "copy-page-image", icon: Images, label: t("viewer.context.copyPageImage"), disabled: busy, onSelect: () => void copyPageAsImage() },
         { type: "item", id: "save-page-png", icon: FileImage, label: t("viewer.context.savePagePng"), disabled: busy, onSelect: () => setPngRequest({ page: menu.page }) },
         { type: "item", id: "extract-page", icon: FileOutput, label: t("viewer.context.extractPage"), disabled: busy, onSelect: () => void extractPageAsPdf() },
-        { type: "item", id: "snapshot", icon: Camera, label: t("viewer.snapshot.tool"), onSelect: () => setOverlayMode("snapshot") },
+        { type: "item", id: "snapshot", icon: Camera, label: t("viewer.snapshot.tool"), onSelect: () => switchOverlayMode("snapshot") },
       ],
     },
     {

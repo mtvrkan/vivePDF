@@ -128,11 +128,13 @@ describe("loadFontFile", () => {
 
 describe("loadEmbeddedFont", () => {
   const added: unknown[] = [];
+  const removed: unknown[] = [];
   let rejectLoad = false;
 
   beforeEach(() => {
     editorFont.mockReset();
     added.length = 0;
+    removed.length = 0;
     rejectLoad = false;
     class FakeFontFace {
       family: string;
@@ -146,8 +148,27 @@ describe("loadEmbeddedFont", () => {
       }
     }
     vi.stubGlobal("FontFace", FakeFontFace);
-    vi.stubGlobal("window", { atob: (value: string) => Buffer.from(value, "base64").toString("binary"), document: { fonts: { add: (face: unknown) => added.push(face) } } });
+    vi.stubGlobal("window", { atob: (value: string) => Buffer.from(value, "base64").toString("binary"), document: { fonts: { add: (face: unknown) => added.push(face), delete: (face: unknown) => removed.push(face) } } });
     useViewerOverlayStore.setState({ fontFamilies: {} });
+  });
+
+  it("re-applies the family on a cache hit after the overlay store was cleared", async () => {
+    editorFont.mockResolvedValue({ name: "BCDEEE+Calibri", ext: "ttf", base64: "AAEAAA==" });
+    const source = { id: "doc-reenter", path: "e.pdf", password: null };
+    const first = await loadEmbeddedFont(source, 9, "ttf");
+    useViewerOverlayStore.setState({ fontFamilies: {} });
+    const second = await loadEmbeddedFont(source, 9, "ttf");
+    expect(second).toBe(first);
+    expect(editorFont).toHaveBeenCalledTimes(1);
+    expect(useViewerOverlayStore.getState().fontFamilies["doc-reenter:9"]).toBe(first);
+  });
+
+  it("removes the document's font faces from the webview when the cache is cleared", async () => {
+    editorFont.mockResolvedValue({ name: "BCDEEE+Calibri", ext: "ttf", base64: "AAEAAA==" });
+    await loadEmbeddedFont({ id: "doc-faces", path: "f.pdf", password: null }, 3, "ttf");
+    clearEmbeddedFontCache("doc-faces");
+    expect(removed).toEqual(added);
+    expect(removed).toHaveLength(1);
   });
 
   it("registers the subset program the sidecar repaired as the run's webfont", async () => {

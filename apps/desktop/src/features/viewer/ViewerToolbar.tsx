@@ -29,6 +29,7 @@ import { useUnsavedMarks } from "./useUnsavedMarks";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import type { ViewerPanels } from "@/shared/store/viewerPanelsStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { switchOverlayMode } from "./overlay/editorModes";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { setImmersiveFullscreen } from "./immersive";
@@ -53,7 +54,6 @@ const PRIMARY_BUTTON = 0;
 export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolbarProps) {
   const { t } = useTranslation();
   const overlayMode = useViewerOverlayStore((state) => state.mode);
-  const setOverlayMode = useViewerOverlayStore((state) => state.setMode);
   const { state: scrollState, provides: scroll } = useScroll(documentId);
   const { state: zoomState, provides: zoom } = useZoom(documentId);
   const { provides: rotate } = useRotate(documentId);
@@ -203,7 +203,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
         active={overlayMode === "areaText"}
         onClick={() => {
           if (zoomState.isMarqueeZoomActive) zoom?.disableMarqueeZoom();
-          setOverlayMode(overlayMode === "areaText" ? null : "areaText");
+          switchOverlayMode(overlayMode === "areaText" ? null : "areaText");
         }}
       />
       <IconButton
@@ -212,7 +212,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
         active={overlayMode === "snapshot"}
         onClick={() => {
           if (zoomState.isMarqueeZoomActive) zoom?.disableMarqueeZoom();
-          setOverlayMode(overlayMode === "snapshot" ? null : "snapshot");
+          switchOverlayMode(overlayMode === "snapshot" ? null : "snapshot");
         }}
       />
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />

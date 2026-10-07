@@ -5,6 +5,10 @@ import { restoreOriginalRunStyles, sameRuns, styleOf } from "./runs";
 type BlockPending = Extract<EditorPending, { kind: "block" }>;
 type ImageChangePending = Extract<EditorPending, { kind: "imageChange" }>;
 
+export function keepsEditsOnLeave(objects: EditorPending[], documentStillOpen: boolean): boolean {
+  return documentStillOpen && objects.some(isPendingChange);
+}
+
 export function isPendingChange(item: EditorPending): boolean {
   if (item.kind === "image") return true;
   if (item.kind === "edit") return item.text !== item.original;

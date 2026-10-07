@@ -24,9 +24,11 @@ export function placedAspect(width: number, height: number, placementRotation: n
 }
 
 export async function replaceImageAt(item: ImageChangePending, path: string): Promise<void> {
+  const token = useViewerOverlayStore.getState().sessionToken;
   const preview = await imagePreview({ path });
-  const aspect = placedAspect(preview.width, preview.height, item.placementRotation);
   const store = useViewerOverlayStore.getState();
+  if (store.sessionToken !== token || !store.objects.some((entry) => entry.id === item.id)) return;
+  const aspect = placedAspect(preview.width, preview.height, item.placementRotation);
   store.snapshot();
   store.updateObject(item.id, { replacement: { dataUrl: `data:image/png;base64,${preview.pngBase64}`, width: preview.width, height: preview.height, path }, aspect, height: item.width / aspect, rotate: 0, flipH: false, flipV: false });
 }

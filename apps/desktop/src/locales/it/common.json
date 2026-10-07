@@ -606,7 +606,8 @@
       "delete": "Elimina firma",
       "name": "Firma {{n}}",
       "penColor": "Colore penna",
-      "hint": "Disegna con mouse, penna o dito. Lo sfondo resta trasparente."
+      "hint": "Disegna con mouse, penna o dito. Lo sfondo resta trasparente.",
+      "penBlack": "Nero"
     },
     "formula": {
       "menu": "Inserisci formula",

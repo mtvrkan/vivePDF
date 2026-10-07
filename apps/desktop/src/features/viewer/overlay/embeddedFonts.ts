@@ -11,6 +11,7 @@ const BUNDLED_FONTS = [
 const BASE64_CHUNK = 0x8000;
 const fontSources = new Map<string, string[]>();
 const familyByKey = new Map<string, string>();
+const facesByKey = new Map<string, FontFace>();
 let fontSourceCount = 0;
 let bundledFonts: Promise<boolean> | null = null;
 
@@ -88,7 +89,12 @@ export function loadEmbeddedFont(source: { id: string; path: string; password: s
   if (!xref || (ext !== null && !embeddedFontLoadable(ext))) return Promise.resolve(null);
   const key = `${source.id}:${xref}`;
   const known = pending.get(key);
-  if (known) return known;
+  if (known) {
+    return known.then((knownFamily) => {
+      if (knownFamily) useViewerOverlayStore.getState().setFontFamily(key, knownFamily);
+      return knownFamily;
+    });
+  }
   const family = `vp-embedded-${xref}-${source.id.slice(0, 8)}`;
   const task = editorFont({ path: source.path, password: source.password ?? undefined, xref })
     .then(async (result) => {
@@ -96,6 +102,7 @@ export function loadEmbeddedFont(source: { id: string; path: string; password: s
       const face = new FontFace(family, decodeBase64(result.base64));
       const loaded = await face.load();
       window.document.fonts.add(loaded);
+      facesByKey.set(key, loaded);
       rememberFontSource(key, family, result.base64, result.ext);
       useViewerOverlayStore.getState().setFontFamily(key, family);
       return family;
@@ -116,6 +123,11 @@ export function clearEmbeddedFontCache(documentId: string): void {
     if (!key.startsWith(prefix)) continue;
     fontSources.delete(family);
     familyByKey.delete(key);
+  }
+  for (const [key, face] of facesByKey) {
+    if (!key.startsWith(prefix)) continue;
+    window.document.fonts.delete(face);
+    facesByKey.delete(key);
   }
 }
 

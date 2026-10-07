@@ -606,7 +606,8 @@
       "delete": "Eliminar firma",
       "name": "Firma {{n}}",
       "penColor": "Color del bolígrafo",
-      "hint": "Dibuje con el ratón, un lápiz o el dedo. El fondo queda transparente."
+      "hint": "Dibuje con el ratón, un lápiz o el dedo. El fondo queda transparente.",
+      "penBlack": "Negro"
     },
     "formula": {
       "menu": "Insertar fórmula",

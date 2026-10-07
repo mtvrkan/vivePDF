@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { EditorBlockInfo, EditorFontResolution, EditorWarning, TextSpan } from "@/types";
 import { pastePosition } from "@/features/viewer/overlay/clipboard";
+import { imagePreviewKey } from "@/features/viewer/overlay/layers";
 import type { DrawingKind, DrawingSource } from "@/features/viewer/overlay/drawing/drawingSource";
 import { applyStyleToRuns } from "@/features/viewer/overlay/runs";
 
@@ -103,6 +104,8 @@ type OverlayState = {
   clearAreaText: () => void;
   past: EditorPending[][];
   future: EditorPending[][];
+  sessionToken: number;
+  editingDocumentId: string | null;
   snapshot: () => void;
   undo: () => void;
   redo: () => void;
@@ -127,7 +130,8 @@ type OverlayState = {
   setPendingImage: (image: PendingImage | null) => void;
   clipboard: { object: EditorPending; pageIndex: number } | null;
   copyObject: (object: EditorPending) => void;
-  pasteObject: (targetPageIndex: number, pageWidth: number, pageHeight: number) => void;
+  pasteObject: (documentId: string, targetPageIndex: number, pageWidth: number, pageHeight: number) => void;
+  duplicateObject: (documentId: string, object: EditorPending) => void;
   leaveNext: (() => void) | null;
   requestLeave: (next: () => void, hasPending: boolean) => boolean;
   cancelLeave: () => void;
@@ -142,14 +146,14 @@ function withStylePatch(item: Extract<EditorPending, { kind: "text" | "edit" | "
 
 const DEFAULT_TEXT_STYLE: TextStyle = { fontSize: 14, color: "#111111", bold: false, align: "left" };
 
-function toPastedObject(item: EditorPending, imagePreviews: Record<string, string>, sourcePageIndex: number, targetPageIndex: number, x: number, y: number): EditorPending {
+function toPastedObject(item: EditorPending, imagePreviews: Record<string, string>, documentId: string, sourcePageIndex: number, targetPageIndex: number, x: number, y: number): EditorPending | null {
   const id = crypto.randomUUID();
   if (item.kind === "block") {
     return { id, kind: "text", pageIndex: targetPageIndex, x, y, width: item.width, height: item.height, text: item.text, style: { fontSize: item.style.fontSize, color: item.style.color, bold: item.style.bold, align: item.style.align === "justify" ? "left" : item.style.align }, opacity: item.opacity, runs: item.runs.map((run) => ({ ...run })) };
   }
   if (item.kind === "imageChange") {
-    const dataUrl = item.replacement?.dataUrl ?? imagePreviews[`${sourcePageIndex}:${item.xref}`] ?? null;
-    if (!dataUrl) return { ...item, id, pageIndex: targetPageIndex, x, y };
+    const dataUrl = item.replacement?.dataUrl ?? imagePreviews[imagePreviewKey(documentId, sourcePageIndex, item.xref)] ?? null;
+    if (!dataUrl) return null;
     return { id, kind: "image", pageIndex: targetPageIndex, x, y, width: item.width, height: item.height, dataUrl, path: item.replacement?.path ?? null, aspect: item.aspect, opacity: item.opacity };
   }
   return { ...item, id, pageIndex: targetPageIndex, x, y };
@@ -214,6 +218,8 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
   clearSnapshot: () => set({ snapshotRequest: null }),
   past: [],
   future: [],
+  sessionToken: 0,
+  editingDocumentId: null,
   snapshot: () => set({ past: [...get().past.slice(-49), get().objects], future: [] }),
   undo: () => {
     const past = get().past;
@@ -229,8 +235,9 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
   },
   setMode: (mode) => {
     const keepObjects = mode !== null && EDITOR_MODES.includes(mode) && get().mode !== null && EDITOR_MODES.includes(get().mode as OverlayMode);
-    set({ mode, selection: null, measure: null, measurements: [], placement: null, areaTextRequest: null, editingObjectId: null, selectedObjectId: keepObjects ? get().selectedObjectId : null, objects: keepObjects || mode === null ? get().objects : [] });
-    if (mode === null) set({ objects: [], pendingImage: null, drawingEditor: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, warnings: [], fontResolutions: {}, focusRequest: null, past: [], future: [], clipboard: null });
+    const discard = keepObjects ? {} : { objects: [], past: [], future: [], sessionToken: get().sessionToken + 1 };
+    set({ mode, selection: null, measure: null, measurements: [], placement: null, areaTextRequest: null, editingObjectId: null, selectedObjectId: keepObjects ? get().selectedObjectId : null, ...discard });
+    if (mode === null) set({ pendingImage: null, drawingEditor: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, warnings: [], fontResolutions: {}, focusRequest: null, past: [], future: [], clipboard: null });
   },
   setSelection: (selection) => set({ selection }),
   addMeasurePoint: (pageIndex, point) => {
@@ -255,7 +262,7 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
   addObject: (object) => set({ objects: [...get().objects, object], selectedObjectId: object.id }),
   updateObject: (id, patch) => set({ objects: get().objects.map((item) => (item.id === id ? ({ ...item, ...patch } as EditorPending) : item)) }),
   removeObject: (id) => set({ objects: get().objects.filter((item) => item.id !== id), selectedObjectId: get().selectedObjectId === id ? null : get().selectedObjectId, editingObjectId: get().editingObjectId === id ? null : get().editingObjectId }),
-  clearObjects: () => set({ objects: [], selectedObjectId: null, editingObjectId: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, fontResolutions: {}, focusRequest: null, past: [], future: [], clipboard: null }),
+  clearObjects: () => set({ objects: [], sessionToken: get().sessionToken + 1, selectedObjectId: null, editingObjectId: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, fontResolutions: {}, focusRequest: null, past: [], future: [], clipboard: null }),
   setSelectedObject: (id) => set({ selectedObjectId: id }),
   setEditingObject: (id) => set({ editingObjectId: id, selectedObjectId: id ?? get().selectedObjectId }),
   setTextStyle: (patch) => {
@@ -269,13 +276,20 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
   setPendingImage: (image) => set({ pendingImage: image }),
   clipboard: null,
   copyObject: (object) => set({ clipboard: { object, pageIndex: object.pageIndex } }),
-  pasteObject: (targetPageIndex, pageWidth, pageHeight) => {
+  pasteObject: (documentId, targetPageIndex, pageWidth, pageHeight) => {
     const clipboard = get().clipboard;
     if (!clipboard) return;
     const position = pastePosition(clipboard.object, clipboard.pageIndex, targetPageIndex, pageWidth, pageHeight);
+    const pasted = toPastedObject(clipboard.object, get().imagePreviews, documentId, clipboard.pageIndex, targetPageIndex, position.x, position.y);
+    if (!pasted) return;
     get().snapshot();
-    const pasted = toPastedObject(clipboard.object, get().imagePreviews, clipboard.pageIndex, targetPageIndex, position.x, position.y);
     get().addObject(pasted);
+  },
+  duplicateObject: (documentId, object) => {
+    const duplicate = toPastedObject(object, get().imagePreviews, documentId, object.pageIndex, object.pageIndex, object.x + 12, object.y + 12);
+    if (!duplicate) return;
+    get().snapshot();
+    get().addObject(duplicate);
   },
   leaveNext: null,
   requestLeave: (next, hasPending) => {

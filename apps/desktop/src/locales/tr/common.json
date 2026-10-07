@@ -606,7 +606,8 @@
       "delete": "İmzayı sil",
       "name": "İmza {{n}}",
       "penColor": "Kalem rengi",
-      "hint": "Fare, kalem ya da parmağınızla çizin. Arka plan şeffaf kalır."
+      "hint": "Fare, kalem ya da parmağınızla çizin. Arka plan şeffaf kalır.",
+      "penBlack": "Siyah"
     },
     "formula": {
       "menu": "Formül ekle",
