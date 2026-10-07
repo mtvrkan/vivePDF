@@ -14,6 +14,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Viewer: Get text from area reads pictures more accurately: a line is no longer broken into pieces when its words are spread out, light text on dark backgrounds (code screenshots, banners) is read correctly, the picture is read three ways and the version most of them agree on is kept, and half-cut lines at the edge of the selection no longer add stray words [2026-10-07]
 - Viewer annotations: the text box, rectangle, ellipse, line and arrow tools switch off after placing one, so further clicks no longer pile up new boxes; a new text box says "Type here" in the interface language instead of "Insert text", and one left untouched or empty is removed once you click away [2026-10-06]
 - Viewer: the unsaved-changes chip uses the app's blue tones to match its Save button instead of amber [2026-10-06]
 - Viewer annotations: each tool keeps its own colour, so the pen starts in red and the highlighter in yellow instead of sharing the last colour picked for another tool [2026-10-06]

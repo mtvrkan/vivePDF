@@ -8,6 +8,7 @@ from pydantic import Field
 
 from vivepdf.ops._document import open_document, unwrap_document
 from vivepdf.ops._inplace import save_in_place
+from vivepdf.ops._ocr_area import read_area
 from vivepdf.ops._ocr_parallel import Sheet, recognised_in_order, rendered_sheet, worker_count
 from vivepdf.ops._orientation import best_rotation, capped_dpi
 from vivepdf.ops._output import prepare_data_output, prepare_output, save_document
@@ -405,21 +406,6 @@ def _lines_from_words(
     return lines
 
 
-def _placed_sheet_words(page: pymupdf.Page, sheet: pymupdf.Page, area: pymupdf.Rect) -> list:
-    scale_x = area.width / sheet.rect.width if sheet.rect.width else 1.0
-    scale_y = area.height / sheet.rect.height if sheet.rect.height else 1.0
-    placed = []
-    for word in sheet.get_text("words"):
-        shown = pymupdf.Rect(
-            area.x0 + word[0] * scale_x,
-            area.y0 + word[1] * scale_y,
-            area.x0 + word[2] * scale_x,
-            area.y0 + word[3] * scale_y,
-        )
-        placed.append((*(shown * page.derotation_matrix), *word[4:]))
-    return placed
-
-
 @op("ocr.area", OcrAreaParams)
 def ocr_area(params: OcrAreaParams, progress: Progress) -> OcrAreaResult:
     with open_document(params.path, params.password, mutable=False) as cached:
@@ -438,13 +424,24 @@ def ocr_area(params: OcrAreaParams, progress: Progress) -> OcrAreaResult:
         progress.check_cancelled()
         progress.report(0.2, "progress.ocr", {"current": 1, "total": 1})
         area = _visible_rect(page, clip)
-        pixmap = page.get_pixmap(dpi=capped_dpi(area, params.dpi), clip=area, alpha=False)
-        data = pixmap.pdfocr_tobytes(
-            compress=True, language=language, tessdata=str(writable_tessdata_dir())
+        rows = read_area(
+            page,
+            area,
+            params.dpi,
+            language,
+            str(writable_tessdata_dir()),
+            progress.check_cancelled,
         )
-        with pymupdf.open("pdf", data) as recognised:
-            words = _placed_sheet_words(page, recognised[0], area)
-            lines = _lines_from_words(page, words, (1.0, 1.0), (0.0, 0.0))
+        lines = [
+            OcrAreaLine(
+                text=row.text,
+                x0=round(row.rect.x0, 2),
+                y0=round(row.rect.y0, 2),
+                x1=round(row.rect.x1, 2),
+                y1=round(row.rect.y1, 2),
+            )
+            for row in rows
+        ]
         progress.report(1.0, "progress.ocr", {"current": 1, "total": 1})
         return OcrAreaResult(
             text="\n".join(line.text for line in lines), lines=lines, recognized=True
