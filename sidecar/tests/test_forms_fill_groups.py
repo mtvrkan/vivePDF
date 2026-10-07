@@ -21,7 +21,7 @@ from vivepdf.ops.forms_data import (
 from vivepdf.ops.sign import sign as sign_document
 from vivepdf.ops.sign_certificate import CreateCertificateParams, create_certificate
 from vivepdf.ops.sign_verify import VerifyParams, verify
-from vivepdf.rpc.errors import OpError
+from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
 RADIO_XREF = 5
@@ -291,3 +291,62 @@ def test_a_signed_form_is_not_flattened(signed_form: Path, tmp_path: Path):
 
     assert caught.value.data == {"reason": "signedFlatten"}
     assert not list(Path(tmp_path).glob(".vivepdf-*.part"))
+
+
+def _fill_in_place(source: Path, values: dict, **extra):
+    return fill_fields(
+        FillParams(path=str(source), in_place=True, values=values, **extra),
+        silent_progress(),
+    )
+
+
+def test_filling_in_place_writes_the_values_into_the_same_file(form: Path):
+    result = _fill_in_place(form, {"note": "typed in the viewer"})
+
+    assert Path(result.output) == form.resolve()
+    assert _fields(form)["note"].value == "typed in the viewer"
+    assert not list(form.parent.glob(".vivepdf-*.part"))
+
+
+def test_filling_a_signed_form_in_place_keeps_its_signature(signed_form: Path):
+    original = signed_form.read_bytes()
+
+    result = _fill_in_place(signed_form, {"note": "after signing"})
+
+    assert result.signatures_kept
+    assert signed_form.read_bytes().startswith(original)
+    assert verify(VerifyParams(path=str(signed_form)), silent_progress()).signatures[0].intact
+    assert _fields(signed_form)["note"].value == "after signing"
+    assert not list(signed_form.parent.glob(".vivepdf-*.part"))
+
+
+def test_a_failed_in_place_fill_leaves_the_input_untouched(form: Path):
+    original = form.read_bytes()
+
+    with pytest.raises(OpError):
+        _fill_in_place(form, {"size": "Huge"})
+
+    assert form.read_bytes() == original
+    assert not list(form.parent.glob(".vivepdf-*.part"))
+
+
+def test_fill_needs_an_output_or_in_place(form: Path):
+    with pytest.raises(OpError) as caught:
+        fill_fields(FillParams(path=str(form), values={"note": "x"}), silent_progress())
+
+    assert caught.value.code == ErrorCode.INVALID_PARAMS
+    assert caught.value.data == {"reason": "outputRequired"}
+
+
+def test_fill_refuses_both_an_output_and_in_place(form: Path, tmp_path: Path):
+    with pytest.raises(OpError) as caught:
+        _fill_in_place(form, {"note": "x"}, output=str(tmp_path / "out.pdf"))
+
+    assert caught.value.data == {"reason": "outputAndInPlace"}
+
+
+def test_each_radio_widget_carries_its_state(form: Path):
+    widgets = _fields(form)["size"].widgets
+
+    assert [widget.state for widget in widgets] == ["S", "M", "L"]
+    assert all(widget.page == 1 for widget in widgets)

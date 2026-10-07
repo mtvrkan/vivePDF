@@ -15,10 +15,15 @@ function withFailures(caption: string, failed: number, t: Translate): string {
   return failed > 0 ? `${caption} · ${t("tools.forms.merge.failedCaption", { count: failed })}` : caption;
 }
 
-function withFillNotes(caption: string, result: FillResult, t: Translate): string {
-  const notes = [caption];
+export function fillProblemNotes(result: FillResult, t: Translate): string[] {
+  const notes: string[] = [];
   if (result.truncated?.length) notes.push(t("tools.forms.truncated", { count: result.truncated.length, names: result.truncated.join(", ") }));
   if (result.missingGlyphs?.length) notes.push(t("tools.forms.missingGlyphs", { characters: result.missingGlyphs.join(" ") }));
+  return notes;
+}
+
+function withFillNotes(caption: string, result: FillResult, t: Translate): string {
+  const notes = [caption, ...fillProblemNotes(result, t)];
   if (result.xfaRemoved) notes.push(t("tools.forms.xfaRemoved"));
   if (result.signaturesKept) notes.push(t("tools.forms.signaturesKept"));
   return notes.join(" · ");

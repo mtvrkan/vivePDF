@@ -2,6 +2,7 @@ mod autostart;
 mod chain_secrets;
 mod desktop_links;
 mod diagnostics;
+mod doc_watch;
 mod document_windows;
 mod e2e;
 mod file_association;
@@ -46,6 +47,7 @@ pub fn run() {
         .plugin(navigation::guard())
         .manage(sidecar::Sidecar::default())
         .manage(watcher::Watchers::default())
+        .manage(doc_watch::DocumentWatch::default())
         .manage(tray::TrayState::default())
         .manage(document_windows::DocumentWindows::default())
         .manage(chain_secrets::ChainSecrets::default())
@@ -131,6 +133,8 @@ pub fn run() {
             watcher::watch_folder_start,
             watcher::watch_folder_stop,
             watcher::watch_path_relation,
+            doc_watch::watch_document,
+            doc_watch::unwatch_document,
             session_file::session_read,
             session_file::session_write,
             diagnostics::log_line,

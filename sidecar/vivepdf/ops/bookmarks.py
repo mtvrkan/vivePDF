@@ -89,7 +89,8 @@ def _validate_items(
 class BookmarksSetParams(RpcModel):
     path: str
     password: str | None = None
-    output: str
+    output: str | None = None
+    in_place: bool = False
     overwrite: bool = False
     items: list[BookmarkItem]
     open_panel: bool = False
@@ -99,17 +100,41 @@ def _show_outline_panel(document: pymupdf.Document) -> None:
     document.xref_set_key(document.pdf_catalog(), "PageMode", "/UseOutlines")
 
 
+def _check_destination(params: BookmarksSetParams) -> None:
+    if params.in_place and params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "give either an output file or in-place, not both",
+            {"reason": "outputAndInPlace"},
+        )
+    if not params.in_place and not params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "an output file or in-place is required",
+            {"reason": "outputRequired"},
+        )
+
+
 @op("bookmarks.set", BookmarksSetParams)
 def set_bookmarks(params: BookmarksSetParams, progress: Progress) -> OutputResult:
-    target = prepare_output(params.output, [params.path], params.overwrite)
-    with open_document(params.path, params.password) as document:
+    _check_destination(params)
+    target = (
+        None if params.in_place else prepare_output(params.output, [params.path], params.overwrite)
+    )
+    document = open_document(params.path, params.password)
+    try:
         kept = _kept_actions(document)
         _validate_items(params.items, document.page_count, kept)
         _write_items(document, params.items, kept)
         if params.open_panel and params.items:
             _show_outline_panel(document)
         progress.report(0.9, "progress.saving")
+        if target is None:
+            return save_in_place(document, params.path)
         return save_document(document, target)
+    finally:
+        if not document.is_closed:
+            document.close()
 
 
 @op("bookmarks.suggest", BookmarksSuggestParams)

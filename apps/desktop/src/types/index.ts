@@ -108,6 +108,7 @@ export type RecentFile = {
   path: string;
   fileName: string;
   openedAt: number;
+  pinned?: boolean;
 };
 
 export type PasswordRequest = {
@@ -934,7 +935,8 @@ export type PagesPerSheet = 1 | 2 | 4 | 6 | 9;
 export type PrintRunParams = { path: string; password?: string; printer?: string; pages?: string; copies?: number; scale?: "fit" | "actual"; grayscale?: boolean; subset?: PrintSubset; reverse?: boolean; annotations?: boolean; autoRotate?: boolean; pagesPerSheet?: PagesPerSheet };
 export type PrintRunResult = { printer: string; pages: number; copies: number; sheets: number };
 export type ImageSaveResult = { output: string; ext: string; width: number; height: number; bytes: number };
-export type EditorRun = { text: string; font?: string | null; fontXref?: number; size: number; color?: string; bold?: boolean; italic?: boolean; superscript?: boolean };
+export type EditorFontOrigin = { path: string; password?: string | null };
+export type EditorRun = { text: string; font?: string | null; fontXref?: number; fontSource?: EditorFontOrigin | null; size: number; color?: string; bold?: boolean; italic?: boolean; superscript?: boolean };
 export type EditorTextObject = { id?: string; kind: "text"; page: number; x0: number; y0: number; x1: number; y1: number; text: string; fontSize?: number; color?: string; bold?: boolean; align?: "left" | "center" | "right"; opacity?: number; fontId?: string; runs?: EditorRun[] };
 export type EditorImageObject = { id?: string; kind: "image"; page: number; x0: number; y0: number; x1: number; y1: number; pngBase64?: string; path?: string; opacity?: number; alt?: string };
 export type EditorDrawingObject = { id?: string; kind: "drawing"; page: number; x0: number; y0: number; x1: number; y1: number; svg: string; opacity?: number; alt?: string };
@@ -1516,10 +1518,12 @@ export type FormField = {
   optionLabels?: string[];
   maxLength?: number | null;
   editable?: boolean;
+  visibleRect?: number[];
+  widgets?: { page: number; visibleRect: number[]; state: string | null }[];
 };
 export type FieldBox = { name: string; page: number; left: number; top: number; width: number; height: number };
 export type FieldsResult = { fields: FormField[]; isForm: boolean; xfa: boolean; signed?: boolean; boxes: FieldBox[] };
-export type FillParams = { path: string; password?: string; output: string; overwrite?: boolean; values: Record<string, string | boolean | string[]>; flatten: boolean; language?: string };
+export type FillParams = { path: string; password?: string; output?: string; inPlace?: boolean; overwrite?: boolean; values: Record<string, string | boolean | string[]>; flatten: boolean; language?: string };
 export type FillResult = OutputResult & {
   filled: number;
   recalculated?: number;
@@ -1627,7 +1631,7 @@ export type BookmarksGetParams = { path: string; password?: string };
 export type BookmarksGetResult = { items: BookmarkItem[] };
 export type BookmarkAddParams = { path: string; password?: string; title: string; page: number; x?: number; y?: number };
 export type BookmarkAddResult = OutputResult & { index: number };
-export type BookmarksSetParams = { path: string; password?: string; output: string; overwrite?: boolean; items: BookmarkItem[]; openPanel?: boolean };
+export type BookmarksSetParams = { path: string; password?: string; output?: string; inPlace?: boolean; overwrite?: boolean; items: BookmarkItem[]; openPanel?: boolean };
 export type BookmarksGenerateParams = { path: string; password?: string; output: string; overwrite?: boolean; mode?: "headings" | "everyPage"; maxLevels?: number; minFontSize?: number; every?: number; label?: string };
 export type BookmarksExportParams = { path: string; password?: string; output: string; overwrite?: boolean };
 export type BookmarksExportResult = { output: string; count: number };

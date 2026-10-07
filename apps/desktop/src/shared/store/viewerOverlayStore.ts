@@ -1,6 +1,9 @@
 import { create } from "zustand";
 import type { EditorBlockInfo, EditorFontResolution, EditorWarning, TextSpan } from "@/types";
 import { pastePosition } from "@/features/viewer/overlay/clipboard";
+import { useEditorClipboard } from "@/features/viewer/overlay/editorClipboard";
+import { useDocumentStore } from "@/shared/store/documentStore";
+import { pathKey } from "@/shared/lib/paths";
 import { imagePreviewKey } from "@/features/viewer/overlay/layers";
 import type { DrawingKind, DrawingSource } from "@/features/viewer/overlay/drawing/drawingSource";
 import { applyStyleToRuns } from "@/features/viewer/overlay/runs";
@@ -25,8 +28,10 @@ export type ImageRotation = 0 | 90 | 180 | 270;
 export type FocusRequest = { page: number; x: number; y: number };
 export type RunStyle = { font: string | null; fontXref: number; size: number; color: string; bold: boolean; italic: boolean; superscript: boolean };
 export type BlockRun = RunStyle & { text: string };
+export type PastedFontSource = { path: string; password: string | null; key: string };
+export type PastePoint = { x: number; y: number };
 export type EditorPending =
-  | { id: string; kind: "text"; pageIndex: number; x: number; y: number; width: number; height: number; text: string; style: TextStyle; opacity: number; runs?: BlockRun[] }
+  | { id: string; kind: "text"; pageIndex: number; x: number; y: number; width: number; height: number; text: string; style: TextStyle; opacity: number; runs?: BlockRun[]; fontSource?: PastedFontSource }
   | { id: string; kind: "edit"; pageIndex: number; x: number; y: number; width: number; height: number; text: string; original: string; spanId: string; style: ReplaceStyle; opacity: number }
   | {
       id: string;
@@ -128,9 +133,7 @@ type OverlayState = {
   setEditingObject: (id: string | null) => void;
   setTextStyle: (patch: Partial<TextStyle>) => void;
   setPendingImage: (image: PendingImage | null) => void;
-  clipboard: { object: EditorPending; pageIndex: number } | null;
-  copyObject: (object: EditorPending) => void;
-  pasteObject: (documentId: string, targetPageIndex: number, pageWidth: number, pageHeight: number) => void;
+  pasteObject: (documentId: string, targetPageIndex: number, pageWidth: number, pageHeight: number, point?: PastePoint | null) => EditorPending | null;
   duplicateObject: (documentId: string, object: EditorPending) => void;
   leaveNext: (() => void) | null;
   requestLeave: (next: () => void, hasPending: boolean) => boolean;
@@ -237,7 +240,7 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
     const keepObjects = mode !== null && EDITOR_MODES.includes(mode) && get().mode !== null && EDITOR_MODES.includes(get().mode as OverlayMode);
     const discard = keepObjects ? {} : { objects: [], past: [], future: [], sessionToken: get().sessionToken + 1 };
     set({ mode, selection: null, measure: null, measurements: [], placement: null, areaTextRequest: null, editingObjectId: null, selectedObjectId: keepObjects ? get().selectedObjectId : null, ...discard });
-    if (mode === null) set({ pendingImage: null, drawingEditor: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, warnings: [], fontResolutions: {}, focusRequest: null, past: [], future: [], clipboard: null });
+    if (mode === null) set({ pendingImage: null, drawingEditor: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, warnings: [], fontResolutions: {}, focusRequest: null, past: [], future: [] });
   },
   setSelection: (selection) => set({ selection }),
   addMeasurePoint: (pageIndex, point) => {
@@ -262,7 +265,7 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
   addObject: (object) => set({ objects: [...get().objects, object], selectedObjectId: object.id }),
   updateObject: (id, patch) => set({ objects: get().objects.map((item) => (item.id === id ? ({ ...item, ...patch } as EditorPending) : item)) }),
   removeObject: (id) => set({ objects: get().objects.filter((item) => item.id !== id), selectedObjectId: get().selectedObjectId === id ? null : get().selectedObjectId, editingObjectId: get().editingObjectId === id ? null : get().editingObjectId }),
-  clearObjects: () => set({ objects: [], sessionToken: get().sessionToken + 1, selectedObjectId: null, editingObjectId: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, fontResolutions: {}, focusRequest: null, past: [], future: [], clipboard: null }),
+  clearObjects: () => set({ objects: [], sessionToken: get().sessionToken + 1, selectedObjectId: null, editingObjectId: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, fontResolutions: {}, focusRequest: null, past: [], future: [] }),
   setSelectedObject: (id) => set({ selectedObjectId: id }),
   setEditingObject: (id) => set({ editingObjectId: id, selectedObjectId: id ?? get().selectedObjectId }),
   setTextStyle: (patch) => {
@@ -274,16 +277,19 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
     });
   },
   setPendingImage: (image) => set({ pendingImage: image }),
-  clipboard: null,
-  copyObject: (object) => set({ clipboard: { object, pageIndex: object.pageIndex } }),
-  pasteObject: (documentId, targetPageIndex, pageWidth, pageHeight) => {
-    const clipboard = get().clipboard;
-    if (!clipboard) return;
-    const position = pastePosition(clipboard.object, clipboard.pageIndex, targetPageIndex, pageWidth, pageHeight);
-    const pasted = toPastedObject(clipboard.object, get().imagePreviews, documentId, clipboard.pageIndex, targetPageIndex, position.x, position.y);
-    if (!pasted) return;
+  pasteObject: (documentId, targetPageIndex, pageWidth, pageHeight, point) => {
+    const entry = useEditorClipboard.getState().entry;
+    if (!entry) return null;
+    const source = entry.object;
+    const position = point
+      ? { x: Math.min(Math.max(0, pageWidth - source.width), Math.max(0, point.x)), y: Math.min(Math.max(0, pageHeight - source.height), Math.max(0, point.y)) }
+      : pastePosition(source, entry.documentId === documentId ? entry.pageIndex : -1, targetPageIndex, pageWidth, pageHeight);
+    const path = useDocumentStore.getState().documents[documentId]?.path ?? null;
+    const ownFont = source.kind === "text" && source.fontSource && path !== null && pathKey(source.fontSource.path) === pathKey(path);
+    const pasted = { ...source, id: crypto.randomUUID(), pageIndex: targetPageIndex, x: position.x, y: position.y, ...(ownFont ? { fontSource: undefined } : {}) } as EditorPending;
     get().snapshot();
     get().addObject(pasted);
+    return pasted;
   },
   duplicateObject: (documentId, object) => {
     const duplicate = toPastedObject(object, get().imagePreviews, documentId, object.pageIndex, object.pageIndex, object.x + 12, object.y + 12);

@@ -232,6 +232,7 @@ pub async fn write_document(app: tauri::AppHandle, request: Request<'_>) -> Resu
             let _ = std::fs::remove_file(&temporary);
             return Err(io_error(error));
         }
+        crate::doc_watch::refresh_stamp(&target);
         Ok(bytes.len() as u64)
     })
     .await

@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { useViewerOverlayStore, type BlockRun, type EditorPending } from "./viewerOverlayStore";
 import { styleUnchanged } from "@/features/viewer/overlay/pending";
+import { toClipboardObject, useEditorClipboard } from "@/features/viewer/overlay/editorClipboard";
+import { useDocumentStore } from "./documentStore";
 
 const PLAIN = { font: "Helvetica", fontXref: 5, size: 12, color: "#111111", bold: false, italic: false, superscript: false };
 const BOLD = { ...PLAIN, bold: true };
@@ -39,14 +41,20 @@ function block(overrides: Partial<Extract<EditorPending, { kind: "block" }>> = {
   };
 }
 
+function copy(object: EditorPending, documentId = "doc", path = "C:/docs/source.pdf") {
+  const copied = toClipboardObject(object, { documentId, path, password: null, imagePreviews: useViewerOverlayStore.getState().imagePreviews });
+  useEditorClipboard.getState().setEntry(copied ? { object: copied, documentId, pageIndex: object.pageIndex, systemText: null } : null);
+}
+
 describe("viewerOverlayStore paste", () => {
   beforeEach(() => {
-    useViewerOverlayStore.setState({ objects: [], clipboard: null, past: [], future: [] });
+    useViewerOverlayStore.setState({ objects: [], past: [], future: [] });
+    useEditorClipboard.setState({ entry: null, pasteRequest: null });
   });
 
   it("pastes a paragraph as a text object that keeps every run style", () => {
     const store = useViewerOverlayStore.getState();
-    store.copyObject(block());
+    copy(block());
     store.pasteObject("doc", 1, 600, 800);
     const pasted = useViewerOverlayStore.getState().objects[0];
     expect(pasted.kind).toBe("text");
@@ -61,7 +69,7 @@ describe("viewerOverlayStore paste", () => {
   it("copies the runs so editing the paste leaves the source alone", () => {
     const source = block();
     const store = useViewerOverlayStore.getState();
-    store.copyObject(source);
+    copy(source);
     store.pasteObject("doc", 0, 600, 800);
     const pasted = useViewerOverlayStore.getState().objects[0];
     if (pasted.kind !== "text" || !pasted.runs) throw new Error("expected runs");
@@ -71,7 +79,7 @@ describe("viewerOverlayStore paste", () => {
 
   it("applies a whole-object style change to the pasted runs too", () => {
     const store = useViewerOverlayStore.getState();
-    store.copyObject(block());
+    copy(block());
     store.pasteObject("doc", 0, 600, 800);
     const pasted = useViewerOverlayStore.getState().objects[0];
     store.setSelectedObject(pasted.id);
@@ -87,7 +95,8 @@ describe("viewerOverlayStore duplicate and paste of pictures", () => {
   const imageChange: EditorPending = { id: "i1", kind: "imageChange", pageIndex: 0, x: 10, y: 10, width: 100, height: 50, blockId: "img0", xref: 7, original: { x: 10, y: 10, width: 100, height: 50 }, deleted: false, aspect: 2, aspectLocked: true, replacement: null, rotate: 0, flipH: false, flipV: false, opacity: 1, placementRotation: 0 };
 
   beforeEach(() => {
-    useViewerOverlayStore.setState({ objects: [], clipboard: null, past: [], future: [], imagePreviews: {} });
+    useViewerOverlayStore.setState({ objects: [], past: [], future: [], imagePreviews: {} });
+    useEditorClipboard.setState({ entry: null, pasteRequest: null });
   });
 
   it("duplicates a paragraph as a new text object, not a second claim on the same block", () => {
@@ -110,9 +119,52 @@ describe("viewerOverlayStore duplicate and paste of pictures", () => {
 
   it("skips pasting a picture without a preview", () => {
     const store = useViewerOverlayStore.getState();
-    store.copyObject(imageChange);
+    copy(imageChange);
     store.pasteObject("doc", 0, 600, 800);
     expect(useViewerOverlayStore.getState().objects).toHaveLength(0);
+  });
+});
+
+describe("viewerOverlayStore paste across documents", () => {
+  beforeEach(() => {
+    useViewerOverlayStore.setState({ objects: [], past: [], future: [], imagePreviews: {} });
+    useEditorClipboard.setState({ entry: null, pasteRequest: null });
+    useDocumentStore.getState().register("source", "C:/docs/source.pdf", null);
+    useDocumentStore.getState().register("target", "C:/docs/target.pdf", null);
+  });
+
+  it("keeps a copied object after the editing session ends", () => {
+    copy(block(), "source");
+
+    useViewerOverlayStore.getState().setMode(null);
+    useViewerOverlayStore.getState().pasteObject("target", 0, 600, 800);
+
+    expect(useViewerOverlayStore.getState().objects).toHaveLength(1);
+  });
+
+  it("carries the source document's fonts into another document", () => {
+    copy(block(), "source");
+
+    const pasted = useViewerOverlayStore.getState().pasteObject("target", 0, 600, 800);
+
+    expect(pasted?.kind === "text" && pasted.fontSource?.path).toBe("C:/docs/source.pdf");
+    expect(pasted?.kind === "text" && pasted.runs?.map((run) => run.fontXref)).toEqual([5, 5]);
+  });
+
+  it("drops the font source when pasting back into the same file", () => {
+    copy(block(), "source");
+
+    const pasted = useViewerOverlayStore.getState().pasteObject("source", 0, 600, 800);
+
+    expect(pasted?.kind === "text" && pasted.fontSource).toBeUndefined();
+  });
+
+  it("places a paste at the requested point inside the page", () => {
+    copy(block(), "source");
+
+    const pasted = useViewerOverlayStore.getState().pasteObject("target", 2, 600, 800, { x: 590, y: 50 });
+
+    expect(pasted && [pasted.pageIndex, pasted.x, pasted.y]).toEqual([2, 400, 50]);
   });
 });
 

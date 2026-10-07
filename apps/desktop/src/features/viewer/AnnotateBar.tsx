@@ -30,7 +30,7 @@ import { useHistoryCapability } from "@embedpdf/plugin-history/react";
 import { useDocumentSave } from "./useDocumentSave";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
-import { PdfAnnotationSubtype, type LineEndings, type PdfAnnotationObject, type PdfLineAnnoObject, type PdfPolylineAnnoObject, type Rect } from "@embedpdf/models";
+import { PdfAnnotationSubtype, type LineEndings, type PdfLineAnnoObject, type PdfPolylineAnnoObject, type Rect } from "@embedpdf/models";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
@@ -47,7 +47,8 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { DASH_TOOLS, DEFAULT_LINE_ENDINGS, FALLBACK_COLORS, FILL_TOOLS, LINE_ENDING_LABEL_KEYS, LINE_ENDING_OPTIONS, LINE_TOOLS, MAX_STROKE_WIDTH, MIN_STROKE_WIDTH, STROKE_TOOLS, STROKE_WIDTH_STEP, SUBTYPE_TOOLS, stylePatchFor, toolColorFrom, type StyleValues } from "./annotateStyle";
 import { CURVE_STEP, MAX_CURVE, MIN_CURVE, currentCurve, curveRectPatch, curvedVertices, isCurvable, lineEndpoints, polylineFromLine } from "./lineCurve";
 import { styleValuesOf } from "./selectedStyle";
-import { MARKUP_SUBTYPES, hasSelectionRects, markupRequests } from "./selectionMarkup";
+import { hasSelectionRects } from "./selectionMarkup";
+import { markupSelection } from "./markupSelection";
 import { ENGINE_TEXT_PLACEHOLDER, droppedUntouchedTexts } from "./untouchedText";
 import { MAX_ERASER_SIZE, MIN_ERASER_SIZE, allMarks, useMarkToolMode, useMarkToolStore } from "./markArea";
 
@@ -174,23 +175,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
   const selectionRects = (): Record<string, Rect[]> => (selectionScope?.getHighlightRects() ?? {}) as Record<string, Rect[]>;
 
   const markSelection = (toolId: string, toolColor: string) => {
-    const subtype = MARKUP_SUBTYPES[toolId];
-    if (subtype === undefined || !annotation || !selectionScope) return;
-    const requests = markupRequests(selectionRects());
-    if (requests.length === 0) return;
-    const defaults = annotationCapability?.getTool(toolId)?.defaults ?? {};
-    for (const request of requests) {
-      annotation.createAnnotation(request.pageIndex, {
-        ...defaults,
-        ...stylePatchFor(toolId, { color: toolColor, opacity }),
-        type: subtype,
-        id: crypto.randomUUID(),
-        pageIndex: request.pageIndex,
-        rect: request.rect,
-        segmentRects: request.segmentRects,
-      } as PdfAnnotationObject);
-    }
-    selectionScope.clear();
+    markupSelection({ annotation, selection: selectionScope, toolId, color: toolColor, opacity, defaults: annotationCapability?.getTool(toolId)?.defaults ?? {} });
   };
 
   const placeTextPlaceholder = () => {

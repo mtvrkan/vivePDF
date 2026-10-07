@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use tauri::AppHandle;
 
+use crate::doc_watch;
 use crate::files;
 use crate::sidecar;
 
@@ -63,9 +64,18 @@ pub async fn rpc(
     if method == "cancel" {
         return Err(RpcError::new("INVALID_PARAMS", "use rpc_cancel"));
     }
-    let result = sidecar::call(&app, id, method, params).await?;
-    remember_outputs(&result);
-    Ok(result)
+    let watched = doc_watch::begin_call(&params);
+    let result = sidecar::call(&app, id, method, params).await;
+    if let Ok(value) = &result {
+        remember_outputs(value);
+    }
+    doc_watch::end_call(watched);
+    result
+}
+
+fn remember_output(path: &str) {
+    files::remember_produced(path);
+    doc_watch::refresh_stamp(std::path::Path::new(path));
 }
 
 pub(crate) fn remember_outputs(value: &Value) {
@@ -73,11 +83,11 @@ pub(crate) fn remember_outputs(value: &Value) {
         Value::Object(map) => {
             for (key, child) in map {
                 match (key.as_str(), child) {
-                    ("output", Value::String(path)) => files::remember_produced(path),
+                    ("output", Value::String(path)) => remember_output(path),
                     ("outputs", Value::Array(items)) => {
                         for item in items {
                             if let Value::String(path) = item {
-                                files::remember_produced(path);
+                                remember_output(path);
                             }
                         }
                     }

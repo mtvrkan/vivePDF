@@ -257,7 +257,20 @@
         "pickHint": "{{count}} di {{max}} strumenti. Fai clic su uno strumento per aggiungerlo.",
         "dragHint": "Trascina per cambiare l’ordine, oppure seleziona un riquadro e usa i tasti freccia."
       }
-    }
+    },
+    "recentSearch": "Cerca nei documenti recenti",
+    "recentNoMatches": "Nessun documento recente corrisponde a “{{query}}”.",
+    "recentSort": "Ordina i documenti recenti",
+    "recentSorts": {
+      "recent": "Più recenti",
+      "name": "Nome (A–Z)",
+      "folder": "Cartella"
+    },
+    "recentPinned": "Fissati",
+    "recentOthers": "Altri documenti",
+    "pinRecent": "Fissa {{name}}",
+    "unpinRecent": "Rimuovi {{name}} dai fissati",
+    "clearRecentUnpinned": "Cancella i non fissati"
   },
   "viewer": {
     "engineLoading": "Caricamento del visualizzatore PDF…",
@@ -280,7 +293,16 @@
       "emptyHint": "Questo PDF non ha un indice. Puoi aggiungerne uno in Modifica → Segnalibri.",
       "create": "Crea una struttura",
       "loadFailed": "Impossibile leggere la struttura",
-      "loadFailedHint": "Non è stato possibile leggere l'indice del documento."
+      "loadFailedHint": "Non è stato possibile leggere l'indice del documento.",
+      "edit": "Modifica segnalibri",
+      "editTools": "Modifica dei segnalibri",
+      "pendingLabel": "Segnalibri modificati",
+      "newBookmark": "Nuovo segnalibro",
+      "addAtPage": "Aggiungi segnalibro a pagina {{page}}",
+      "addChild": "Aggiungi sottosegnalibro",
+      "rename": "Rinomina",
+      "linkToPage": "Crea collegamento a pagina {{page}}",
+      "editEmptyHint": "Aggiungi un segnalibro per la pagina che stai leggendo; viene scritto al salvataggio."
     },
     "resume": {
       "toast": "Riprendi da dove avevi lasciato.",
@@ -335,7 +357,13 @@
       "unsaved": "Le modifiche non salvate appariranno qui dopo il salvataggio.",
       "close": "Chiudi divisione",
       "divider": "Ridimensiona la divisione",
-      "openFailed": "Il secondo riquadro non è riuscito ad aprire il file"
+      "openFailed": "Il secondo riquadro non è riuscito ad aprire il file",
+      "sameDocument": "Stesso documento",
+      "chooseFile": "Scegli un file…",
+      "pickDocument": "Documento nel secondo riquadro: {{name}}",
+      "compareWith": "Confronta con un altro documento…",
+      "openBeside": "Apri accanto al documento corrente",
+      "syncScroll": "Sincronizza scorrimento"
     },
     "pan": "Strumento mano",
     "copy": "Copia selezione",
@@ -594,7 +622,11 @@
       "measureTotal_other": "{{count}} misure · totale {{total}}",
       "measureUndo": "Annulla l'ultima misura",
       "measureClear": "Cancella tutte le misure",
-      "measureRemove": "Rimuovi misura"
+      "measureRemove": "Rimuovi misura",
+      "copyObject": "Copia",
+      "copied": "Copiato. Premi Ctrl+V in qualsiasi pagina o in un altro documento per incollarlo.",
+      "copyUnavailable": "Questo oggetto non può ancora essere copiato. Attendi il caricamento dell'anteprima e riprova.",
+      "pasteFailed": "Impossibile incollare l'immagine dagli appunti."
     },
     "signature": {
       "title": "Firme",
@@ -938,7 +970,8 @@
       "copyAsCode": "Copia come codice",
       "readAloudUnavailable": "La sintesi vocale non è disponibile su questo sistema.",
       "redactQueued": "Oscurato. Salva il documento per applicarlo.",
-      "redactUnavailable": "L’oscuramento non è disponibile per questo documento."
+      "redactUnavailable": "L’oscuramento non è disponibile per questo documento.",
+      "moreMarkup": "Altri segni di testo"
     },
     "context": {
       "title": "Menu pagina",
@@ -1003,7 +1036,8 @@
       "pictureGroup": "Immagine",
       "pageGroup": "Pagina",
       "offlineTranslator": "Traduttore offline",
-      "googleTranslate": "Google Traduttore"
+      "googleTranslate": "Google Traduttore",
+      "pasteObject": "Incolla qui"
     },
     "printDialog": {
       "title": "Stampa",
@@ -1462,6 +1496,22 @@
       "openTool": "Apri in Converti",
       "allSupported": "Tutti i file supportati",
       "fromClipboard": "Creato dagli appunti, non ancora salvato."
+    },
+    "formFill": {
+      "label": "Campi del modulo",
+      "option": "{{field}}: {{option}}",
+      "page": "Campi del modulo a pagina {{page}}",
+      "xfaOnly": "Questo modulo usa XFA e può essere compilato solo nello strumento Moduli",
+      "savedWithNotes": "Il modulo è stato salvato con delle note: {{notes}}"
+    },
+    "fileChanged": {
+      "updated": "Aggiornato dal disco",
+      "changed": "{{name}} è stato modificato sul disco.",
+      "conflict": "{{name}} è stato modificato da un altro programma. Ricaricando perderai le modifiche non salvate.",
+      "missing": "{{name}} è stato spostato o eliminato.",
+      "reload": "Ricarica",
+      "keepMine": "Mantieni la mia",
+      "saveCopy": "Salva una copia…"
     }
   },
   "presentation": {
@@ -1804,7 +1854,9 @@
       "selectionToolbar": "Barra strumenti sulla selezione del testo",
       "selectionToolbarHint": "Mostra una piccola barra mobile quando selezioni del testo nel visualizzatore.",
       "annotationAuthor": "Nome dell’autore dei commenti",
-      "annotationAuthorHint": "Viene scritto nelle nuove annotazioni e nei commenti risolti o riaperti, così gli altri revisori vedono chi li ha fatti. Se vuoto, si usa “vivePDF”."
+      "annotationAuthorHint": "Viene scritto nelle nuove annotazioni e nei commenti risolti o riaperti, così gli altri revisori vedono chi li ha fatti. Se vuoto, si usa “vivePDF”.",
+      "reloadOnFileChange": "Ricarica quando il file cambia",
+      "reloadOnFileChangeHint": "Quando un altro programma (come LaTeX) riscrive un PDF aperto, mostra automaticamente la nuova versione. Per i documenti con modifiche non salvate viene sempre chiesto prima."
     },
     "reading": {
       "fontSize": "Dimensione testo",
@@ -1864,7 +1916,7 @@
       "keepHistory": "Conserva la cronologia delle operazioni",
       "keepHistoryHint": "Registra le operazioni completate e i relativi file di output su questo dispositivo.",
       "recentLimit": "File recenti da conservare",
-      "recentLimitHint": "Quanti file aperti di recente vengono ricordati.",
+      "recentLimitHint": "Quanti file aperti di recente vengono ricordati. I file fissati vengono mantenuti in aggiunta.",
       "confirmClose": "Chiedi prima di chiudere",
       "confirmCloseHint": "Avvisa se ci sono documenti aperti o un’operazione in corso.",
       "successToasts": "Mostra le notifiche di successo",
@@ -5804,7 +5856,8 @@
     "eraserSize": "Dimensione gomma",
     "eraserHint": "Passa sopra un tratto a penna per cancellarne quella parte",
     "styleHint": "Scegli uno strumento o un contrassegno per cambiarne colore e spessore",
-    "textPlaceholder": "Scrivi qui"
+    "textPlaceholder": "Scrivi qui",
+    "squiggly": "Sottolineatura ondulata"
   },
   "recovery": {
     "discard": "Scarta",
@@ -6091,7 +6144,9 @@
       "documentFileTooLarge": "Il documento supera {{limitMb}} MB.",
       "draftTooLarge": "Questo progetto è troppo grande per la bozza automatica (limite {{limit}} byte). Salvalo come file di progetto.",
       "notDesign": "Questo file non è un progetto di Studio.",
-      "badPageNumbers": "I numeri di pagina scelti non corrispondono alle pagine esportate."
+      "badPageNumbers": "I numeri di pagina scelti non corrispondono alle pagine esportate.",
+      "outputRequired": "Non è stato indicato dove salvare il risultato.",
+      "outputAndInPlace": "Il risultato può essere salvato in un nuovo file o sull'originale, non in entrambi."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",

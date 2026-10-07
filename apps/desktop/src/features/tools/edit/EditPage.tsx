@@ -10,7 +10,7 @@ import { ResultPanel } from "@/components/tool/ResultPanel";
 import { SourcePicker } from "@/components/tool/SourcePicker";
 import { ToolLayout } from "@/components/tool/ToolLayout";
 import { BookmarksTab } from "./BookmarksTab";
-import { bookmarkIssue } from "./bookmarkTree";
+import { bookmarkIssue } from "@/shared/lib/bookmarkTree";
 import { ImposeTab, type ImposeSettings } from "./ImposeTab";
 import { IMPOSE_GAP_MM, IMPOSE_GRID, IMPOSE_GUTTER_MM, IMPOSE_MARGIN_MM, gridOf, hasSpine } from "./imposeOrder";
 import { TextEditTab } from "./TextEditTab";

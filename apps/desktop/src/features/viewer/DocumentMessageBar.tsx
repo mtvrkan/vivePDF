@@ -8,6 +8,7 @@ import { signaturesStatus, type SignaturesStatus } from "@/shared/lib/signatureV
 import { useDocumentMessagesStore } from "@/shared/store/documentMessagesStore";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { checkSignatures, toggleFieldHighlight } from "./documentChecks";
+import { isXfaOnly, useFormFillStore } from "./forms/formFillStore";
 import { MessageRow } from "./MessageRow";
 
 const checkedInfos = new WeakSet<object>();
@@ -22,6 +23,7 @@ export function DocumentMessageBar({ documentId, onOpenSignatures }: { documentI
   const highlight = useDocumentMessagesStore((state) => state.highlights[documentId] ?? null);
   const dismissed = useDocumentMessagesStore((state) => state.dismissed[documentId]);
   const dismiss = useDocumentMessagesStore((state) => state.dismiss);
+  const xfaOnly = useFormFillStore((state) => isXfaOnly(state.loads[documentId] ?? null));
   const info = document?.info ?? null;
 
   useEffect(() => {
@@ -33,7 +35,7 @@ export function DocumentMessageBar({ documentId, onOpenSignatures }: { documentI
   if (!document) return null;
   const source = { id: document.id, path: document.path, password: document.password };
   const showSignatures = check?.state === "checked" && !dismissed?.includes("signatures");
-  const showForms = Boolean(info?.hasForms) && !dismissed?.includes("forms");
+  const showForms = Boolean(info?.hasForms) && !xfaOnly && !dismissed?.includes("forms");
   if (!showSignatures && !showForms) return null;
 
   const status = check?.state === "checked" ? signaturesStatus(check.signatures) : null;

@@ -257,7 +257,20 @@
         "pickHint": "{{count}} von {{max}} Werkzeugen. Klicken Sie auf ein Werkzeug, um es hinzuzufügen.",
         "dragHint": "Ziehen ändert die Reihenfolge – oder eine Kachel auswählen und die Pfeiltasten nutzen."
       }
-    }
+    },
+    "recentSearch": "Zuletzt verwendete Dokumente durchsuchen",
+    "recentNoMatches": "Keine zuletzt verwendeten Dokumente passen zu „{{query}}“.",
+    "recentSort": "Zuletzt verwendete Dokumente sortieren",
+    "recentSorts": {
+      "recent": "Zuletzt geöffnet",
+      "name": "Name (A–Z)",
+      "folder": "Ordner"
+    },
+    "recentPinned": "Angeheftet",
+    "recentOthers": "Weitere Dokumente",
+    "pinRecent": "{{name}} anheften",
+    "unpinRecent": "{{name}} lösen",
+    "clearRecentUnpinned": "Nicht angeheftete leeren"
   },
   "viewer": {
     "engineLoading": "PDF-Betrachter wird geladen…",
@@ -280,7 +293,16 @@
       "emptyHint": "Dieses PDF hat kein Inhaltsverzeichnis. Unter Bearbeiten → Lesezeichen können Sie eines anlegen.",
       "create": "Gliederung erstellen",
       "loadFailed": "Gliederung konnte nicht gelesen werden",
-      "loadFailedHint": "Das Inhaltsverzeichnis des Dokuments konnte nicht gelesen werden."
+      "loadFailedHint": "Das Inhaltsverzeichnis des Dokuments konnte nicht gelesen werden.",
+      "edit": "Lesezeichen bearbeiten",
+      "editTools": "Lesezeichen-Bearbeitung",
+      "pendingLabel": "Lesezeichen bearbeitet",
+      "newBookmark": "Neues Lesezeichen",
+      "addAtPage": "Lesezeichen auf Seite {{page}} hinzufügen",
+      "addChild": "Unterlesezeichen hinzufügen",
+      "rename": "Umbenennen",
+      "linkToPage": "Mit Seite {{page}} verknüpfen",
+      "editEmptyHint": "Fügen Sie ein Lesezeichen für die aktuelle Seite hinzu; es wird beim Speichern geschrieben."
     },
     "resume": {
       "toast": "Weiter an der Stelle, an der Sie aufgehört haben.",
@@ -335,7 +357,13 @@
       "unsaved": "Ungespeicherte Änderungen erscheinen hier nach dem Speichern.",
       "close": "Teilung schließen",
       "divider": "Teilung anpassen",
-      "openFailed": "Der zweite Bereich konnte die Datei nicht öffnen"
+      "openFailed": "Der zweite Bereich konnte die Datei nicht öffnen",
+      "sameDocument": "Dasselbe Dokument",
+      "chooseFile": "Datei auswählen…",
+      "pickDocument": "Dokument im zweiten Bereich: {{name}}",
+      "compareWith": "Mit anderem Dokument vergleichen…",
+      "openBeside": "Neben dem aktuellen Dokument öffnen",
+      "syncScroll": "Bildlauf synchronisieren"
     },
     "pan": "Verschieben",
     "copy": "Auswahl kopieren",
@@ -594,7 +622,11 @@
       "measureTotal_other": "{{count}} Messungen · gesamt {{total}}",
       "measureUndo": "Letzte Messung rückgängig",
       "measureClear": "Alle Messungen löschen",
-      "measureRemove": "Messung entfernen"
+      "measureRemove": "Messung entfernen",
+      "copyObject": "Kopieren",
+      "copied": "Kopiert. Drücken Sie Strg+V auf einer beliebigen Seite oder in einem anderen Dokument, um es einzufügen.",
+      "copyUnavailable": "Dieses Objekt kann noch nicht kopiert werden. Warten Sie, bis die Vorschau geladen ist, und versuchen Sie es erneut.",
+      "pasteFailed": "Das Bild in der Zwischenablage konnte nicht eingefügt werden."
     },
     "signature": {
       "title": "Unterschriften",
@@ -938,7 +970,8 @@
       "copyAsCode": "Als Code kopieren",
       "readAloudUnavailable": "Sprachausgabe ist auf diesem System nicht verfügbar.",
       "redactQueued": "Geschwärzt. Speichern Sie das Dokument, um es anzuwenden.",
-      "redactUnavailable": "Schwärzen ist für dieses Dokument nicht verfügbar."
+      "redactUnavailable": "Schwärzen ist für dieses Dokument nicht verfügbar.",
+      "moreMarkup": "Weitere Textmarkierungen"
     },
     "context": {
       "title": "Seitenmenü",
@@ -1003,7 +1036,8 @@
       "pictureGroup": "Bild",
       "pageGroup": "Seite",
       "offlineTranslator": "Offline-Übersetzer",
-      "googleTranslate": "Google Übersetzer"
+      "googleTranslate": "Google Übersetzer",
+      "pasteObject": "Hier einfügen"
     },
     "printDialog": {
       "title": "Drucken",
@@ -1462,6 +1496,22 @@
       "openTool": "In Umwandeln öffnen",
       "allSupported": "Alle unterstützten Dateien",
       "fromClipboard": "Aus der Zwischenablage erstellt, noch nicht gespeichert."
+    },
+    "formFill": {
+      "label": "Formularfelder",
+      "option": "{{field}}: {{option}}",
+      "page": "Formularfelder auf Seite {{page}}",
+      "xfaOnly": "Dieses Formular verwendet XFA und kann nur im Formular-Werkzeug ausgefüllt werden",
+      "savedWithNotes": "Das Formular wurde mit Hinweisen gespeichert: {{notes}}"
+    },
+    "fileChanged": {
+      "updated": "Von der Festplatte aktualisiert",
+      "changed": "{{name}} wurde auf der Festplatte geändert.",
+      "conflict": "{{name}} wurde von einem anderen Programm geändert. Beim Neuladen gehen Ihre nicht gespeicherten Änderungen verloren.",
+      "missing": "{{name}} wurde verschoben oder gelöscht.",
+      "reload": "Neu laden",
+      "keepMine": "Meine behalten",
+      "saveCopy": "Kopie speichern…"
     }
   },
   "presentation": {
@@ -1804,7 +1854,9 @@
       "selectionToolbar": "Werkzeugleiste bei Textauswahl",
       "selectionToolbarHint": "Zeigt eine kleine schwebende Werkzeugleiste, wenn Sie im Betrachter Text auswählen.",
       "annotationAuthor": "Autorenname für Kommentare",
-      "annotationAuthorHint": "Wird in neue Markierungen sowie in erledigte oder wieder geöffnete Kommentare geschrieben, damit andere Prüfende sehen, von wem sie stammen. Leer bleibt „vivePDF“."
+      "annotationAuthorHint": "Wird in neue Markierungen sowie in erledigte oder wieder geöffnete Kommentare geschrieben, damit andere Prüfende sehen, von wem sie stammen. Leer bleibt „vivePDF“.",
+      "reloadOnFileChange": "Neu laden, wenn sich die Datei ändert",
+      "reloadOnFileChangeHint": "Wenn ein anderes Programm (etwa LaTeX) eine geöffnete PDF neu schreibt, wird die neue Version automatisch angezeigt. Bei ungespeicherten Änderungen wird immer zuerst gefragt."
     },
     "reading": {
       "fontSize": "Textgröße",
@@ -1864,7 +1916,7 @@
       "keepHistory": "Vorgangsverlauf behalten",
       "keepHistoryHint": "Speichert abgeschlossene Vorgänge und ihre Ausgabedateien auf diesem Gerät.",
       "recentLimit": "Zuletzt verwendete Dateien",
-      "recentLimitHint": "Wie viele zuletzt geöffnete Dateien gemerkt werden.",
+      "recentLimitHint": "Wie viele zuletzt geöffnete Dateien gemerkt werden. Angeheftete Dateien werden zusätzlich behalten.",
       "confirmClose": "Vor dem Schließen fragen",
       "confirmCloseHint": "Warnt, wenn Dokumente offen sind oder ein Vorgang noch läuft.",
       "successToasts": "Erfolgsmeldungen anzeigen",
@@ -5804,7 +5856,8 @@
     "eraserSize": "Radierergröße",
     "eraserHint": "Über eine Stiftzeichnung fahren, um diesen Teil zu entfernen",
     "styleHint": "Werkzeug oder Markierung wählen, um Farbe und Stärke zu ändern",
-    "textPlaceholder": "Hier schreiben"
+    "textPlaceholder": "Hier schreiben",
+    "squiggly": "Wellenlinie"
   },
   "recovery": {
     "discard": "Verwerfen",
@@ -6091,7 +6144,9 @@
       "documentFileTooLarge": "Das Dokument ist größer als {{limitMb}} MB.",
       "draftTooLarge": "Dieses Design ist zu groß für den automatischen Entwurf (Grenze {{limit}} Byte). Speichern Sie es als Projektdatei.",
       "notDesign": "Diese Datei ist kein Studio-Design.",
-      "badPageNumbers": "Die gewählten Seitenzahlen passen nicht zu den exportierten Seiten."
+      "badPageNumbers": "Die gewählten Seitenzahlen passen nicht zu den exportierten Seiten.",
+      "outputRequired": "Es wurde kein Speicherort für das Ergebnis angegeben.",
+      "outputAndInPlace": "Das Ergebnis kann in einer neuen Datei oder über dem Original gespeichert werden, nicht beides."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

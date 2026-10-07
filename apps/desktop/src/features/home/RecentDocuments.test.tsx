@@ -21,13 +21,14 @@ vi.mock("@/features/viewer/useOpenPdf", () => ({
 beforeAll(async () => {
   await ready();
   await setLocale("en");
+  Element.prototype.scrollIntoView = () => undefined;
 });
 
 beforeEach(() => {
   pickAndOpen.mockClear();
   invoke.mockReset();
   invoke.mockRejectedValue(new Error("unavailable"));
-  useRecentStore.setState({ items: [] });
+  useRecentStore.setState({ items: [], sort: "recent" });
   useOpenStore.setState({ busy: false });
 });
 
@@ -89,5 +90,95 @@ describe("RecentDocuments", () => {
     expect((screen.getByRole("button", { name: "here.pdf" }) as HTMLButtonElement).disabled).toBe(false);
     fireEvent.click(screen.getByRole("button", { name: "Remove gone.pdf from recent" }));
     expect(useRecentStore.getState().items.map((item) => item.fileName)).toEqual(["here.pdf"]);
+  });
+
+  it("filters by file name and by folder, ignoring case and accents", () => {
+    useRecentStore.setState({ items: [
+      { path: "C:/Müşteri/özet.pdf", fileName: "özet.pdf", openedAt: 3 },
+      { path: "C:/Work/invoice.pdf", fileName: "invoice.pdf", openedAt: 2 },
+      { path: "C:/Home/notes.pdf", fileName: "notes.pdf", openedAt: 1 },
+    ] });
+    render(<RecentDocuments size="small" />);
+    const search = screen.getByRole("textbox", { name: "Search recent documents" });
+
+    fireEvent.change(search, { target: { value: "OZET" } });
+    const byName = screen.getAllByRole("listitem").map((item) => item.textContent);
+    fireEvent.change(search, { target: { value: "work" } });
+    const byFolder = screen.getAllByRole("listitem").map((item) => item.textContent);
+
+    expect(byName).toHaveLength(1);
+    expect(byName[0]).toContain("özet.pdf");
+    expect(byFolder).toHaveLength(1);
+    expect(byFolder[0]).toContain("invoice.pdf");
+  });
+
+  it("says nothing matches instead of showing the empty state", () => {
+    useRecentStore.setState({ items: [{ path: "C:/Docs/report.pdf", fileName: "report.pdf", openedAt: 2 }, { path: "C:/Docs/plan.pdf", fileName: "plan.pdf", openedAt: 1 }] });
+    render(<RecentDocuments size="small" />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search recent documents" }), { target: { value: "budget" } });
+
+    expect(screen.getByRole("status").textContent).toBe("No recent documents match “budget”.");
+    expect(screen.queryByRole("button", { name: "Open PDF" })).toBeNull();
+  });
+
+  it("sorts by name when chosen from the sort menu and remembers it", () => {
+    useRecentStore.setState({ items: [{ path: "C:/Docs/zeta.pdf", fileName: "zeta.pdf", openedAt: 2 }, { path: "C:/Docs/alpha.pdf", fileName: "alpha.pdf", openedAt: 1 }] });
+    render(<RecentDocuments size="small" />);
+
+    fireEvent.click(screen.getByRole("combobox", { name: "Sort recent documents" }));
+    fireEvent.click(screen.getByRole("option", { name: "Name (A–Z)" }));
+
+    expect(screen.getAllByRole("listitem").map((item) => item.textContent?.match(/^\w+\.pdf/)?.[0])).toEqual(["alpha.pdf", "zeta.pdf"]);
+    expect(useRecentStore.getState().sort).toBe("name");
+  });
+
+  it("shows pinned documents first under their own label", () => {
+    useRecentStore.setState({ items: [{ path: "C:/Docs/new.pdf", fileName: "new.pdf", openedAt: 2 }, { path: "C:/Docs/old.pdf", fileName: "old.pdf", openedAt: 1, pinned: true }] });
+
+    render(<RecentDocuments size="small" />);
+
+    const pinnedList = screen.getByRole("list", { name: "Pinned" });
+    expect(pinnedList.textContent).toContain("old.pdf");
+    expect(screen.getAllByRole("listitem")[0]?.textContent).toContain("old.pdf");
+    expect(screen.getByRole("list", { name: "Other documents" }).textContent).toContain("new.pdf");
+  });
+
+  it("pins and unpins a document from its pin button", () => {
+    useRecentStore.setState({ items: [{ path: "C:/Docs/report.pdf", fileName: "report.pdf", openedAt: 2 }, { path: "C:/Docs/plan.pdf", fileName: "plan.pdf", openedAt: 1 }] });
+    render(<RecentDocuments size="small" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Pin plan.pdf" }));
+    const afterPin = useRecentStore.getState().items.find((item) => item.fileName === "plan.pdf")?.pinned;
+    fireEvent.click(screen.getByRole("button", { name: "Unpin plan.pdf" }));
+    const afterUnpin = useRecentStore.getState().items.find((item) => item.fileName === "plan.pdf")?.pinned;
+
+    expect(afterPin).toBe(true);
+    expect(afterUnpin).toBe(false);
+  });
+
+  it("keeps pinned documents when the list is cleared", () => {
+    useRecentStore.setState({ items: [{ path: "C:/Docs/report.pdf", fileName: "report.pdf", openedAt: 2 }, { path: "C:/Docs/plan.pdf", fileName: "plan.pdf", openedAt: 1, pinned: true }] });
+    render(<RecentDocuments size="small" />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Clear unpinned" }));
+
+    expect(useRecentStore.getState().items.map((item) => item.fileName)).toEqual(["plan.pdf"]);
+  });
+
+  it("limits the filtered list and offers to show all of it", () => {
+    vi.stubGlobal("IntersectionObserver", class {
+      observe() {}
+      disconnect() {}
+    });
+    useRecentStore.setState({ items: Array.from({ length: 6 }, (_, index) => ({ path: `C:/Docs/report-${index}.pdf`, fileName: `report-${index}.pdf`, openedAt: index })).concat({ path: "C:/Docs/plan.pdf", fileName: "plan.pdf", openedAt: 9 }) });
+    render(<RecentDocuments size="small" />);
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Search recent documents" }), { target: { value: "report" } });
+    const limited = screen.getAllByRole("listitem").length;
+    fireEvent.click(screen.getByRole("button", { name: "Show all · 6" }));
+
+    expect(limited).toBe(4);
+    expect(screen.getAllByRole("listitem")).toHaveLength(6);
   });
 });

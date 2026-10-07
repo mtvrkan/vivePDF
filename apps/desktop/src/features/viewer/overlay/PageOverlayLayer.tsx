@@ -658,7 +658,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   const chosenFamily = (item: Extract<EditorPending, { kind: "text" }>): string | null => (item.style.fontId ? (fontFamilies[fontFileKey(item.style.fontId, item.style.bold)] ?? null) : null);
   const textRunFamily = (item: Extract<EditorPending, { kind: "text" }>, run: BlockRun): string => {
     const chosen = chosenFamily(item);
-    const stack = run.fontXref ? fontStackForRun(run.font, run.fontXref, 0, "", fontFamilies, documentId, run.text || item.text) : fontStackFor(null, "", null, run.text || item.text);
+    const stack = run.fontXref ? fontStackForRun(run.font, run.fontXref, 0, "", fontFamilies, item.fontSource?.key ?? documentId, run.text || item.text) : fontStackFor(null, "", null, run.text || item.text);
     return chosen ? `"${chosen}", ${stack}` : stack;
   };
   const blockEditorRunStyle = (item: BlockPending): RunStyler => (run) => runCss(run, blockRunFamily(item, run), px(run.size));

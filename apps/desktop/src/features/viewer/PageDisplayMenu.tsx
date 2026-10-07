@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpen, Columns2, File, MoveHorizontal, MoveVertical, Palette, PlayCircle, SquareSplitHorizontal, SquareSplitVertical } from "lucide-react";
+import { BookOpen, Columns2, File, Files, MoveHorizontal, MoveVertical, Palette, PlayCircle, SquareSplitHorizontal, SquareSplitVertical } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ScrollStrategy } from "@embedpdf/plugin-scroll";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
@@ -12,6 +12,7 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import { scrollDirectionOf, usePageDisplayStore, type ScrollDirection } from "@/shared/store/pageDisplayStore";
 import { choosePageColors, useReadingStore } from "@/shared/store/readingStore";
 import { splitViewOf, useSplitViewStore, type SplitLayout } from "@/shared/store/splitViewStore";
+import { compareWithAnotherDocument } from "./split/splitTargets";
 
 export const AUTO_SCROLL_SHORTCUT = "Ctrl+Shift+H";
 
@@ -88,6 +89,8 @@ export function PageDisplayMenu({ documentId }: { documentId: string }) {
         },
         splitItem("split-columns", "columns", t("viewer.split.columns"), SquareSplitHorizontal),
         splitItem("split-rows", "rows", t("viewer.split.rows"), SquareSplitVertical),
+        { type: "separator", id: "sep-split-compare" },
+        { type: "item", id: "split-compare", icon: Files, label: t("viewer.split.compareWith"), onSelect: () => void compareWithAnotherDocument(documentId) },
       ],
     },
     {

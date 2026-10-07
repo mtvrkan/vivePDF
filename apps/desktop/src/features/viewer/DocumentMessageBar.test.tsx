@@ -6,6 +6,7 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import type { DocumentInfo, SignatureInfo } from "@/types";
 import { axeViolations } from "@/test/axe";
 import { DocumentMessageBar } from "./DocumentMessageBar";
+import { loadedFields, useFormFillStore } from "./forms/formFillStore";
 
 const rpc = vi.hoisted(() => ({ countSignatures: vi.fn(), verifySignatures: vi.fn(), listFormFields: vi.fn() }));
 vi.mock("@/shared/rpc/operations", () => rpc);
@@ -112,6 +113,17 @@ describe("DocumentMessageBar", () => {
       fireEvent.click(toggle);
     });
     expect(useDocumentMessagesStore.getState().highlights[DOCUMENT_ID]).toBeUndefined();
+  });
+
+  it("leaves the fillable-fields row out for a form only XFA can fill", async () => {
+    rpc.countSignatures.mockResolvedValue({ count: 0 });
+    openDocument(true);
+    useFormFillStore.setState({ loads: { [DOCUMENT_ID]: loadedFields({ fields: [], isForm: true, xfa: true, boxes: [] }) } });
+
+    await renderBar();
+
+    expect(screen.queryByText("This document has fillable form fields.")).toBeNull();
+    useFormFillStore.setState({ loads: {} });
   });
 
   it("marks the check as failed when the engine cannot read the signatures", async () => {

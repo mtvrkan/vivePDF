@@ -22,6 +22,8 @@ import { PageSkeleton } from "./PageSkeleton";
 import { PageTextLayer } from "./PageTextLayer";
 import { FieldHighlights } from "./FieldHighlights";
 import { PageOverlayLayer } from "./overlay/PageOverlayLayer";
+import { FormFieldLayer } from "./forms/FormFieldLayer";
+import { FormXfaNotice } from "./forms/FormXfaNotice";
 import { highlighterCursor, penCursor } from "./presentation/toolCursor";
 import { useViewportPan } from "./useViewportPan";
 import { useSelectionRelease } from "./useSelectionRelease";
@@ -133,6 +135,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
                       <>
                         <RedactionLayer documentId={documentId} pageIndex={pageIndex} />
                         <FieldHighlights documentId={documentId} pageIndex={pageIndex} />
+                        {decoratePage ? null : <FormFieldLayer documentId={documentId} pageIndex={pageIndex} width={width} height={height} />}
                         <MarqueeZoom documentId={documentId} pageIndex={pageIndex} stroke="var(--primary)" fill="color-mix(in oklab, var(--primary) 18%, transparent)" />
                         <PageOverlayLayer documentId={documentId} pageIndex={pageIndex} width={width} height={height} />
                         <MarkToolLayer documentId={documentId} pageIndex={pageIndex} />
@@ -146,6 +149,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
         </Viewport>
       </GlobalPointerProvider>
       <ZoomBadge documentId={documentId} />
+      {readOnly || decoratePage ? null : <FormXfaNotice documentId={documentId} />}
       {readOnly && !readOnlySource ? null : <ViewerContextMenu documentId={documentId} hostRef={hostRef} readOnlySource={readOnlySource} />}
       <LinkPreview documentId={documentId} hostRef={hostRef} />
     </div>

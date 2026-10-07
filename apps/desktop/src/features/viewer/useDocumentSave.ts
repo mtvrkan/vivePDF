@@ -9,7 +9,7 @@ import { basenameOf, siblingPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { writeDocumentBytes } from "@/shared/rpc/files";
-import { addAttachments, addBookmark, deleteComments, removeAttachments, replyToComment, setCommentsResolved, setCommentsState, setMetadata } from "@/shared/rpc/operations";
+import { addAttachments, addBookmark, deleteComments, fillFormFields, removeAttachments, replyToComment, setBookmarks, setCommentsResolved, setCommentsState, setMetadata } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { pendingChangesFor, usePendingChangesStore, type PendingChange } from "@/shared/store/pendingChangesStore";
@@ -18,13 +18,15 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { planRedactionScrub, scrubRedactedFile } from "./redactionScrub";
 import { annotationAuthorName } from "./annotationAuthor";
 import { invalidatePageText } from "./pageTextCache";
+import { fillProblemNotes } from "@/features/tools/forms/formsResult";
 import { useReloadDocument } from "./useReloadDocument";
 import { restoreSavedView } from "./viewableBytes";
 import { originalOf, useConvertedStore } from "./convertedDocuments";
+import type { FillResult } from "@/types";
 
 const UNDO_LIMIT = 500;
 
-async function applyChange(change: PendingChange, path: string, password: string | undefined) {
+async function applyChange(change: PendingChange, path: string, password: string | undefined): Promise<FillResult | null> {
   const author = annotationAuthorName(usePreferencesStore.getState().annotationAuthor);
   if (change.kind === "commentResolved") await setCommentsResolved({ path, password, xrefs: change.xrefs, resolved: change.resolved, author });
   else if (change.kind === "commentDeleted") await deleteComments({ path, password, xrefs: change.xrefs });
@@ -33,7 +35,10 @@ async function applyChange(change: PendingChange, path: string, password: string
   else if (change.kind === "attachmentAdded") await addAttachments({ path, password, files: change.files });
   else if (change.kind === "metadataChanged") await setMetadata({ path, password, inPlace: true, ...change.metadata });
   else if (change.kind === "bookmarkAdded") await addBookmark({ path, password, title: change.title, page: change.page, x: change.x, y: change.y });
+  else if (change.kind === "outlineReplaced") await setBookmarks({ path, password, inPlace: true, items: change.items });
+  else if (change.kind === "formFilled") return fillFormFields({ path, password, inPlace: true, values: change.values, flatten: false });
   else await removeAttachments({ path, password, names: change.names });
+  return null;
 }
 
 export function useDocumentSave(documentId: string) {
@@ -59,7 +64,7 @@ export function useDocumentSave(documentId: string) {
 
   const unsavedCount = () => markCount() + queuedChanges().length;
 
-  const save = async (targetPath?: string): Promise<boolean> => {
+  const save = async (targetPath?: string, rewrite = false): Promise<boolean> => {
     const document = useDocumentStore.getState().documents[documentId];
     if (!document) return false;
     const original = targetPath ? null : originalOf(document.path);
@@ -74,10 +79,11 @@ export function useDocumentSave(documentId: string) {
     const password = document.password ?? undefined;
     const queued = queuedChanges();
     const hasMarks = markCount() > 0;
-    if (samePath && !hasMarks && queued.length === 0) return true;
+    const exportsCopy = hasMarks || !samePath || rewrite;
+    if (!exportsCopy && queued.length === 0) return true;
     try {
       let scrubbed = 0;
-      if (hasMarks || !samePath) {
+      if (exportsCopy) {
         const current = refs.current;
         if (!current.exporter) return false;
         const scrubPlan = current.pendingCount > 0 ? await planRedactionScrub(document.path, password, current.pendingRedactions) : null;
@@ -89,8 +95,10 @@ export function useDocumentSave(documentId: string) {
         await restoreSavedView(document.path, path, password);
         scrubbed = await scrubRedactedFile(path, password, scrubPlan);
       }
+      const notes: string[] = [];
       for (const change of queued) {
-        await applyChange(change, path, password);
+        const filled = await applyChange(change, path, password);
+        if (filled) notes.push(...fillProblemNotes(filled, t));
         if (settles) usePendingChangesStore.getState().drop(documentId, change.id);
       }
       if (settles) {
@@ -104,6 +112,7 @@ export function useDocumentSave(documentId: string) {
       }
       toast("success", t("viewer.save.saved", { name: basenameOf(path) }));
       if (scrubbed > 0) toast("info", t("viewer.save.hiddenScrubbed", { count: scrubbed }));
+      if (notes.length > 0) toast("info", t("viewer.formFill.savedWithNotes", { notes: notes.join(" · ") }));
       if (samePath) {
         useSplitViewStore.getState().refresh(path);
         invalidatePageText(documentId);

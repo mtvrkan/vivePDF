@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ReviewState } from "@/types";
+import type { BookmarkItem, ReviewState } from "@/types";
 
 export type PendingChange =
   | { id: string; kind: "commentResolved"; xrefs: number[]; resolved: boolean; label: string }
@@ -9,7 +9,9 @@ export type PendingChange =
   | { id: string; kind: "attachmentAdded"; files: string[]; label: string }
   | { id: string; kind: "attachmentRemoved"; names: string[]; label: string }
   | { id: string; kind: "bookmarkAdded"; title: string; page: number; x?: number; y?: number; label: string }
-  | { id: string; kind: "metadataChanged"; metadata: { title: string; author: string; subject: string; keywords: string }; label: string };
+  | { id: string; kind: "metadataChanged"; metadata: { title: string; author: string; subject: string; keywords: string }; label: string }
+  | { id: string; kind: "outlineReplaced"; items: BookmarkItem[]; label: string }
+  | { id: string; kind: "formFilled"; values: Record<string, string | boolean | string[]>; label: string };
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
@@ -18,6 +20,7 @@ export type PendingChangeInput = DistributiveOmit<PendingChange, "id">;
 type PendingChangesState = {
   changes: Record<string, PendingChange[]>;
   queue: (documentId: string, change: PendingChangeInput) => void;
+  replace: (documentId: string, change: PendingChangeInput) => void;
   drop: (documentId: string, changeId: string) => void;
   clear: (documentId: string) => void;
 };
@@ -28,6 +31,13 @@ export const usePendingChangesStore = create<PendingChangesState>((set) => ({
     set((state) => ({
       changes: { ...state.changes, [documentId]: [...(state.changes[documentId] ?? []), { ...change, id: crypto.randomUUID() } as PendingChange] },
     })),
+  replace: (documentId, change) =>
+    set((state) => {
+      const current = state.changes[documentId] ?? [];
+      const index = current.findIndex((entry) => entry.kind === change.kind);
+      const next = index < 0 ? [...current, { ...change, id: crypto.randomUUID() } as PendingChange] : current.map((entry, position) => (position === index ? ({ ...change, id: entry.id } as PendingChange) : entry));
+      return { changes: { ...state.changes, [documentId]: next } };
+    }),
   drop: (documentId, changeId) =>
     set((state) => {
       const current = state.changes[documentId];

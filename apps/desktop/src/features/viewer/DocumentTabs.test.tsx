@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { useDocumentStore } from "@/shared/store/documentStore";
+import { splitViewOf, useSplitViewStore } from "@/shared/store/splitViewStore";
 import { DocumentTabs } from "./DocumentTabs";
 import { useTabGroupStore } from "./tabGroups";
 
@@ -64,5 +65,25 @@ describe("DocumentTabs keyboard navigation", () => {
     fireEvent.keyDown(screen.getAllByRole("tab")[0], { key: "End" });
 
     expect(activate).toHaveBeenCalledWith("b");
+  });
+});
+
+describe("DocumentTabs split entry", () => {
+  it("opens a background tab beside the active document", () => {
+    useSplitViewStore.setState({ views: {}, revisions: {}, lastLayout: "rows" });
+    render(<DocumentTabs />);
+
+    fireEvent.contextMenu(screen.getAllByRole("tab")[1]);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Open beside current document" }));
+
+    expect(splitViewOf(useSplitViewStore.getState(), "/tmp/a.pdf")).toMatchObject({ layout: "rows", secondary: { path: "/tmp/b.pdf", password: null } });
+  });
+
+  it("does not offer it on the active tab", () => {
+    render(<DocumentTabs />);
+
+    fireEvent.contextMenu(screen.getAllByRole("tab")[0]);
+
+    expect(screen.queryByRole("menuitem", { name: "Open beside current document" })).toBeNull();
   });
 });

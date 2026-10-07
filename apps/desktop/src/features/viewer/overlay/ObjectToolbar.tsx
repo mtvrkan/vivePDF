@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Copy, FlipHorizontal2, FlipVertical2, ImageUp, Italic, Minus, Plus, RotateCcw, RotateCw, SlidersHorizontal, Trash2, Type, Undo2 } from "lucide-react";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, ClipboardCopy, Copy, FlipHorizontal2, FlipVertical2, ImageUp, Italic, Minus, Plus, RotateCcw, RotateCw, SlidersHorizontal, Trash2, Type, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { ColorSwatch } from "@/components/shared/ColorSwatch";
@@ -10,6 +10,7 @@ import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useViewerOverlayStore, type BlockAlign, type EditorPending, type ImageRotation } from "@/shared/store/viewerOverlayStore";
 import { DRAWING_SPECS } from "./drawing/drawingKinds";
+import { copyEditorObject } from "./editorPaste";
 import { isDrawingImage, isDrawingKind, type DrawingImage } from "./drawing/drawingSource";
 import { formulaDataUrl } from "./formula/formulaSvg";
 import { ImageAltButton } from "./ImageAltButton";
@@ -53,6 +54,10 @@ export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { 
   const placement = computeToolbarPlacement(anchorRect, measured.width ? measured : { width: 260, height: 40 }, viewportSize, 8);
 
   const duplicate = () => store.duplicateObject(documentId, item);
+  const copyToClipboard = () => {
+    const outcome = copyEditorObject(documentId, item, false);
+    toast("info", outcome === "copied" ? t("viewer.overlay.copied") : t("viewer.overlay.copyUnavailable"));
+  };
 
   const replaceImage = (target: ImageChangePending) => {
     replaceImageWithDialog(target, t).catch((caught) => toast("error", describeError(t, toRpcError(caught))));
@@ -109,6 +114,7 @@ export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { 
         {opacityButton}
         <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
         <IconButton icon={Copy} label={t("viewer.overlay.duplicate")} onClick={duplicate} />
+        <IconButton icon={ClipboardCopy} label={t("viewer.overlay.copyObject")} shortcut="Ctrl+C" onClick={copyToClipboard} />
         <IconButton icon={Trash2} label={deleteLabel} onClick={remove} />
         <IconButton icon={Undo2} label={t("viewer.overlay.reset")} onClick={resetImage} />
       </>
@@ -134,6 +140,7 @@ export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { 
       {opacityButton}
       <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
       <IconButton icon={Copy} label={t("viewer.overlay.duplicate")} onClick={duplicate} />
+        <IconButton icon={ClipboardCopy} label={t("viewer.overlay.copyObject")} shortcut="Ctrl+C" onClick={copyToClipboard} />
       <IconButton icon={Trash2} label={deleteLabel} onClick={remove} />
     </>
   );
@@ -178,6 +185,7 @@ export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { 
         {opacityButton}
         <span className="mx-0.5 h-4 w-px bg-border" aria-hidden />
         <IconButton icon={Copy} label={t("viewer.overlay.duplicate")} onClick={duplicate} />
+        <IconButton icon={ClipboardCopy} label={t("viewer.overlay.copyObject")} shortcut="Ctrl+C" onClick={copyToClipboard} />
         <IconButton icon={Trash2} label={deleteLabel} onClick={remove} />
       </>
     );

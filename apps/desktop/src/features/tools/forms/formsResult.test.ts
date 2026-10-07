@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { summarizeFormsResult } from "./formsResult";
+import { fillProblemNotes, summarizeFormsResult } from "./formsResult";
 
 const t = (key: string, options?: Record<string, unknown>) => (options ? `${key}:${JSON.stringify(options)}` : key);
 
@@ -28,5 +28,10 @@ describe("summarizeFormsResult", () => {
   it("tells what filling had to change or keep", () => {
     const summary = summarizeFormsResult({ output: "o.pdf", pageCount: 1, bytes: 10, filled: 2, truncated: ["code"], missingGlyphs: ["漢"], xfaRemoved: true, signaturesKept: true }, t);
     expect(summary.caption).toBe('tools.forms.filledCaption · tools.forms.truncated:{"count":1,"names":"code"} · tools.forms.missingGlyphs:{"characters":"漢"} · tools.forms.xfaRemoved · tools.forms.signaturesKept');
+  });
+
+  it("lists only the problems a fill ran into for the viewer save notice", () => {
+    expect(fillProblemNotes({ output: "o.pdf", pageCount: 1, bytes: 10, filled: 2, truncated: ["code"], xfaRemoved: true }, t)).toEqual(['tools.forms.truncated:{"count":1,"names":"code"}']);
+    expect(fillProblemNotes({ output: "o.pdf", pageCount: 1, bytes: 10, filled: 2 }, t)).toEqual([]);
   });
 });

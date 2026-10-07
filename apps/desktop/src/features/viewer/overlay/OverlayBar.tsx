@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
 import { useHistoryCapability } from "@embedpdf/plugin-history/react";
+import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { requestSearchable } from "../searchableStore";
 import { useAnnotation } from "@embedpdf/plugin-annotation/react";
 import { PdfActionType, PdfAnnotationSubtype, PdfZoomMode } from "@embedpdf/models";
@@ -15,6 +16,7 @@ import { TextInput } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
 import { basenameOf, suggestOutputPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
+import { claimSystemPaste, clipboardImages, expectSystemPaste } from "@/shared/lib/systemPaste";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { toRpcError } from "@/shared/rpc/client";
 import { normalizeLinkUri } from "../linkUri";
@@ -29,6 +31,8 @@ import type { EditorObject } from "@/types";
 import { Dialog } from "@/components/shared/Dialog";
 import { useOpenPdf } from "../useOpenPdf";
 import { clearEmbeddedFontCache } from "./embeddedFonts";
+import { useEditorClipboard } from "./editorClipboard";
+import { copyEditorObject, pasteEditorObject, pastePictureFiles, pastePlainText } from "./editorPaste";
 import { formatArea, formatLength, measureDistance, rectAreaMm2 } from "./measure";
 import { unrotatedRect, visiblePageSize } from "./pageSize";
 import { SignatureDialog } from "./SignatureDialog";
@@ -85,6 +89,9 @@ export function OverlayBar({ documentId }: { documentId: string }) {
   const [linkUrl, setLinkUrl] = useState("");
   const [linkPage, setLinkPage] = useState("");
   const leaveNext = useViewerOverlayStore((state) => state.leaveNext);
+  const { state: scrollState } = useScroll(documentId);
+  const currentPageRef = useRef(0);
+  currentPageRef.current = Math.max(0, scrollState.currentPage - 1);
 
   useEffect(() => {
     const overlay = useViewerOverlayStore.getState();
@@ -101,6 +108,10 @@ export function OverlayBar({ documentId }: { documentId: string }) {
   const actionsRef = useRef<{ save: (inPlace: boolean) => void }>({ save: () => undefined });
   const documentIdRef = useRef(documentId);
   documentIdRef.current = documentId;
+  const tRef = useRef(t);
+  tRef.current = t;
+  const pushToastRef = useRef(toast);
+  pushToastRef.current = toast;
 
   useEffect(() => {
     if (mode !== "measure") return;
@@ -167,16 +178,15 @@ export function OverlayBar({ documentId }: { documentId: string }) {
         state.updateObject(current.id, { style: { ...current.style, italic: !current.style.italic } } as Partial<EditorPending>);
         return;
       }
-      if (modifier && key === "c" && current && !state.editingObjectId) {
+      if (modifier && (key === "c" || key === "x") && current && !state.editingObjectId) {
         event.preventDefault();
-        state.copyObject(current);
+        const outcome = copyEditorObject(documentIdRef.current, current, key === "x");
+        if (outcome === "unavailable") pushToastRef.current("info", tRef.current("viewer.overlay.copyUnavailable"));
         return;
       }
-      if (modifier && key === "v" && state.clipboard && !state.editingObjectId) {
-        event.preventDefault();
-        const targetPageIndex = current ? current.pageIndex : state.clipboard.pageIndex;
-        const targetPage = visiblePageSize(documentIdRef.current, targetPageIndex, 1, 1);
-        state.pasteObject(documentIdRef.current, targetPageIndex, targetPage.width, targetPage.height);
+      if (modifier && key === "v" && !event.shiftKey && !state.editingObjectId) {
+        const targetPageIndex = current ? current.pageIndex : currentPageRef.current;
+        if (useEditorClipboard.getState().entry) expectSystemPaste(() => pasteEditorObject(documentIdRef.current, targetPageIndex, null));
         return;
       }
       if (event.key === "Tab" && !modifier && !state.editingObjectId && state.objects.length > 0 && (!target || target === window.document.body || (target instanceof Element && target.closest(PAGE_SURFACE)))) {
@@ -229,6 +239,43 @@ export function OverlayBar({ documentId }: { documentId: string }) {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+
+  useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      const state = useViewerOverlayStore.getState();
+      if (!state.mode || !EDITOR_MODES.includes(state.mode) || state.drawingEditor || state.editingObjectId || state.leaveNext !== null) return;
+      if (isTypingTarget(event.target) || window.document.querySelector("[role=dialog]")) return;
+      const current = state.objects.find((item) => item.id === state.selectedObjectId) ?? null;
+      const pageIndex = current ? current.pageIndex : currentPageRef.current;
+      const images = clipboardImages(event.clipboardData);
+      if (images.length) {
+        event.preventDefault();
+        claimSystemPaste();
+        pastePictureFiles(documentIdRef.current, pageIndex, images, null).catch(() => pushToastRef.current("error", tRef.current("viewer.overlay.pasteFailed")));
+        return;
+      }
+      const text = event.clipboardData?.getData("text/plain") ?? "";
+      const entry = useEditorClipboard.getState().entry;
+      if (text.trim() && (!entry || text !== entry.systemText)) {
+        event.preventDefault();
+        claimSystemPaste();
+        pastePlainText(documentIdRef.current, pageIndex, text, null);
+        return;
+      }
+      if (claimSystemPaste()) {
+        event.preventDefault();
+        pasteEditorObject(documentIdRef.current, pageIndex, null);
+      }
+    };
+    window.addEventListener("paste", onPaste);
+    return () => window.removeEventListener("paste", onPaste);
+  }, []);
+
+  useEffect(() => {
+    if (!mode || !EDITOR_MODES.includes(mode)) return;
+    const request = useEditorClipboard.getState().takePasteRequest(documentId);
+    if (request) pasteEditorObject(documentId, request.pageIndex, request.point);
+  }, [mode, documentId]);
 
   if (!mode || !document) return null;
 
@@ -379,7 +426,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       .filter(isPendingChange)
       .map((item) =>
         item.kind === "text"
-          ? { id: item.id, kind: "text", page: item.pageIndex + 1, x0: item.x, y0: item.y, x1: item.x + item.width, y1: item.y + item.height, text: item.text, fontSize: item.style.fontSize, color: item.style.color, bold: item.style.bold, align: item.style.align, opacity: item.opacity, fontId: item.style.fontId, runs: item.runs && hasMixedStyles(item.runs) ? item.runs.map(toEditorRun) : undefined }
+          ? { id: item.id, kind: "text", page: item.pageIndex + 1, x0: item.x, y0: item.y, x1: item.x + item.width, y1: item.y + item.height, text: item.text, fontSize: item.style.fontSize, color: item.style.color, bold: item.style.bold, align: item.style.align, opacity: item.opacity, fontId: item.style.fontId, runs: item.runs && (hasMixedStyles(item.runs) || item.runs.some((run) => run.fontXref > 0)) ? item.runs.map((run) => ({ ...toEditorRun(run), fontSource: item.fontSource && run.fontXref > 0 ? { path: item.fontSource.path, password: item.fontSource.password } : undefined })) : undefined }
           : item.kind === "edit"
             ? { id: item.id, kind: "edit", page: item.pageIndex + 1, x0: item.x, y0: item.y, x1: item.x + item.width, y1: item.y + item.height, text: item.text, fontSize: item.style.fontSize, color: item.style.color, bold: item.style.bold, italic: item.style.italic, font: item.style.font, opacity: item.opacity }
             : item.kind === "block"

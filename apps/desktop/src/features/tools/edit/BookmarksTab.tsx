@@ -6,7 +6,7 @@ import { Section, SelectInput, SwitchField, TextInput } from "@/components/tool/
 import { cn } from "@/shared/lib/cn";
 import { withinRange } from "@/shared/lib/numberRange";
 import type { BookmarkItem } from "@/types";
-import { type BookmarkIssue, hasChildren, isPageTarget, pageOutOfRange, titleMissing } from "./bookmarkTree";
+import { type BookmarkIssue, hasChildren, isPageTarget, pageOutOfRange, titleMissing } from "@/shared/lib/bookmarkTree";
 
 const BOOKMARK_EVERY = { min: 1, max: 500 };
 const ISSUE_MESSAGES: Record<BookmarkIssue, string> = {

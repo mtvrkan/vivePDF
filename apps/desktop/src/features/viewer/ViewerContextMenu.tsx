@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import {
   BookmarkPlus,
+  ClipboardPaste,
   Braces,
   Camera,
   Copy,
@@ -12,6 +13,7 @@ import {
   FileText,
   Globe,
   Hash,
+  Highlighter,
   Image as ImageIcon,
   ImageDown,
   Images,
@@ -23,6 +25,8 @@ import {
   RotateCcw,
   RotateCw,
   Search,
+  Strikethrough,
+  Underline,
   Volume2,
   ScanSearch,
   ScanText,
@@ -37,6 +41,7 @@ import { save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { join, tempDir } from "@tauri-apps/api/path";
 import { Select } from "@/components/shared/Select";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
+import { useAnnotation, useAnnotationCapability } from "@embedpdf/plugin-annotation/react";
 import { useRotate } from "@embedpdf/plugin-rotate/react";
 import { useZoomCapability } from "@embedpdf/plugin-zoom/react";
 import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMenu";
@@ -53,20 +58,24 @@ import { assemblePages, convertToImages, getCodeBlocks, imageAt, imageSave } fro
 import { openProducedPicture, searchPictureWithLens } from "@/shared/rpc/files";
 import { renderThumbnail } from "@/shared/rpc/thumbnail";
 import { useDocumentStore } from "@/shared/store/documentStore";
-import { usePendingChangesStore } from "@/shared/store/pendingChangesStore";
+import { pendingChangesFor, usePendingChangesStore } from "@/shared/store/pendingChangesStore";
+import { mergeAddedBookmarks, pendingOutline } from "./outline/outlineEdit";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { useSearchRequestStore } from "@/shared/store/searchRequestStore";
 import { speechFailureKey, useSpeechStore } from "@/shared/store/speechStore";
 import { useToastStore } from "@/shared/store/toastStore";
-import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { EDITOR_MODES, useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { requestSearchable } from "./searchableStore";
 import { arrangeMenu, menuFocus, pointOnRects, withoutItems, type PageRect } from "./contextMenuLayout";
 import { bookmarkTitleFrom } from "./bookmarkTitle";
+import { markSelectionWithTool, type MarkupToolId } from "./markupSelection";
 import { usePageNavigation } from "./usePageNavigation";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { useTranslationStore } from "@/shared/store/translationStore";
 import { useWebSearchStore } from "@/shared/store/webSearchStore";
 import { switchOverlayMode } from "./overlay/editorModes";
+import { useEditorClipboard } from "./overlay/editorClipboard";
+import { openEditorAndPaste, pasteEditorObject } from "./overlay/editorPaste";
 import { visiblePageSize } from "./overlay/pageSize";
 import { frameSizePx, quarterTurns, screenToFrame } from "./overlay/pageFrame";
 import type { ImageAtResult } from "@/types";
@@ -78,7 +87,7 @@ const VIEWABLE_PICTURE_EXTENSIONS = new Set(["png", "jpg", "jpeg"]);
 const TYPING_TARGETS = "input, textarea, [data-editor-input]";
 const SECONDARY_BUTTON = 2;
 const SECONDARY_BUTTON_EVENTS = ["pointerdown", "pointerup", "mousedown", "mouseup"] as const;
-const EDITING_ITEMS: ReadonlySet<string> = new Set(["add-bookmark", "edit-image", "image-text", "snapshot", "zoom-area", "page-selectable"]);
+const EDITING_ITEMS: ReadonlySet<string> = new Set(["paste-object", "add-bookmark", "edit-image", "image-text", "snapshot", "zoom-area", "page-selectable"]);
 
 export type ReadOnlySource = { path: string; password: string | null };
 
@@ -113,9 +122,12 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
   const document = readOnlySource ?? registered;
   const labels = usePageLabels(documentId);
   const { provides: selection } = useSelectionCapability();
+  const { provides: annotation } = useAnnotation(documentId);
+  const { provides: annotationTools } = useAnnotationCapability();
   const { provides: zoom } = useZoomCapability();
   const { provides: rotate, rotation: viewRotation } = useRotate(documentId);
   const { jumpTo } = usePageNavigation(documentId);
+  const clipboardEntry = useEditorClipboard((state) => state.entry);
   const setPrintOpen = usePrintDialogStore((state) => state.setOpen);
   const [menu, setMenu] = useState<MenuState | null>(null);
   const [image, setImage] = useState<ImageAtResult | null | "loading">(null);
@@ -253,7 +265,10 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
     const title = request?.title.trim() ?? "";
     if (!request || !title) return;
     setBookmarkRequest(null);
-    queueChange(documentId, { kind: "bookmarkAdded", title, page: request.page, x: request.x, y: request.y, label: title });
+    const pending = usePendingChangesStore.getState();
+    const outline = pendingOutline(pendingChangesFor(pending.changes, documentId));
+    if (outline) pending.replace(documentId, { kind: "outlineReplaced", items: mergeAddedBookmarks(outline.items, [{ title, page: request.page, y: request.y }]), label: outline.label });
+    else queueChange(documentId, { kind: "bookmarkAdded", title, page: request.page, x: request.x, y: request.y, label: title });
     toast("info", t("viewer.context.bookmarkQueued", { title }));
   };
 
@@ -566,6 +581,18 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
     setGoToOpen(true);
   };
 
+  const pasteHere = () => {
+    const entry = useEditorClipboard.getState().entry;
+    if (!entry) return;
+    const request = { documentId, pageIndex: menu.page - 1, point: { x: menu.pageX, y: menu.pageY } };
+    const overlay = useViewerOverlayStore.getState();
+    if (overlay.mode !== null && EDITOR_MODES.includes(overlay.mode) && overlay.editingDocumentId === documentId) {
+      pasteEditorObject(request.documentId, request.pageIndex, request.point);
+      return;
+    }
+    openEditorAndPaste(request.documentId, request.pageIndex, request.point);
+  };
+
   const addBookmarkHere = () => {
     const title = bookmarkTitleFrom(menu.selectionText) || t("viewer.context.bookmarkDefaultTitle", { page: menu.page });
     setBookmarkRequest({ page: menu.page, x: menu.pageX, y: menu.pageY, title });
@@ -601,6 +628,17 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
     close();
   };
 
+  const markText = (toolId: MarkupToolId) => markSelectionWithTool(annotationTools, annotation, selection?.forDocument(documentId), toolId);
+
+  const markupItems: ContextMenuItem[] =
+    annotation && !readOnlySource
+      ? [
+          { type: "item", id: "mark-highlight", icon: Highlighter, label: t("annotate.highlight"), onSelect: () => markText("highlight") },
+          { type: "item", id: "mark-underline", icon: Underline, label: t("annotate.underline"), onSelect: () => markText("underline") },
+          { type: "item", id: "mark-strikeout", icon: Strikethrough, label: t("annotate.strikeout"), onSelect: () => markText("strikeout") },
+        ]
+      : [];
+
   const selectionItems: ContextMenuItem[] = menu.selectionText
     ? [
         { type: "item", id: "copy-text", icon: Copy, label: t("viewer.context.copyText"), onSelect: () => void copyText() },
@@ -616,6 +654,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
             { type: "item", id: "copy-code", icon: Braces, label: t("viewer.context.copyAsCode"), onSelect: () => void copyAsCode() },
           ],
         },
+        ...(markupItems.length > 0 ? [{ type: "separator", id: "sep-selection-markup" } as const, ...markupItems] : []),
         { type: "separator", id: "sep-selection-copy" },
         { type: "item", id: "search-doc", icon: Search, label: t("viewer.context.searchInDocument"), onSelect: searchInDocument },
         { type: "submenu", id: "search-web", icon: Globe, label: t("viewer.context.searchWeb"), items: webSearchItems },
@@ -646,6 +685,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
     : [];
 
   const pageItems: ContextMenuItem[] = [
+    ...(clipboardEntry ? [{ type: "item" as const, id: "paste-object", icon: ClipboardPaste, label: t("viewer.context.pasteObject"), shortcut: "Ctrl+V", onSelect: pasteHere }, { type: "separator" as const, id: "sep-paste" }] : []),
     { type: "item", id: "go-to-page", icon: Hash, label: t("viewer.context.goToPage"), onSelect: goToPage },
     { type: "item", id: "add-bookmark", icon: BookmarkPlus, label: t("viewer.context.addBookmark"), onSelect: addBookmarkHere },
     { type: "item", id: "copy-page-link", icon: Link2, label: t("viewer.context.copyPageLink"), onSelect: () => void copyLinkToPage() },

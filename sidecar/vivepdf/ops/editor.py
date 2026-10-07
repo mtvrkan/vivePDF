@@ -1,6 +1,8 @@
 import base64
 import contextlib
 import io
+import os
+import zlib
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Literal
@@ -31,7 +33,9 @@ from vivepdf.ops.fonts import (
     ResolvedFont,
     describe_resolution,
     display_font_name,
+    embedded_font,
     ensure_font,
+    font_covers,
     font_name_for,
     normalize_font_name,
     resolve_choice,
@@ -74,10 +78,16 @@ class EditorBox(RpcModel):
     opacity: float = Field(default=1.0, ge=0, le=1)
 
 
+class EditorFontSource(RpcModel):
+    path: str = Field(min_length=1, max_length=4096)
+    password: str | None = None
+
+
 class EditorRun(RpcModel):
     text: str
     font: str | None = None
     font_xref: int | None = Field(default=None, ge=0)
+    font_source: EditorFontSource | None = None
     size: float = Field(default=12, ge=3, le=200)
     color: str = "#111111"
     bold: bool = False
@@ -221,6 +231,80 @@ def _chosen_font(font_id: str, bold: bool) -> ResolvedFont:
     return ResolvedFont(font_name_for(chosen), str(chosen), None)
 
 
+ForeignFonts = dict[int, ResolvedFont]
+FOREIGN_XREF_BASE = 10_000_000
+
+
+def _path_key(path: str) -> str:
+    return os.path.normcase(os.path.abspath(path))
+
+
+def _source_font(
+    sources: dict[str, pymupdf.Document | None], origin: EditorFontSource, xref: int
+) -> ResolvedFont | None:
+    key = _path_key(origin.path)
+    if key not in sources:
+        try:
+            sources[key] = open_document(origin.path, origin.password)
+        except OpError:
+            sources[key] = None
+    source = sources[key]
+    if source is None:
+        return None
+    extracted = embedded_font(source, xref)
+    if extracted is None:
+        return None
+    name, _ext, buffer = extracted
+    return ResolvedFont(f"vpfx{zlib.crc32(buffer):08x}", None, buffer, name)
+
+
+def _adopt_foreign_fonts(
+    target_path: str, objects: list["EditorObject"], warnings: list[EditorWarning]
+) -> tuple[list["EditorObject"], ForeignFonts]:
+    foreign: ForeignFonts = {}
+    adopted_xrefs: dict[tuple[str, int], int | None] = {}
+    sources: dict[str, pymupdf.Document | None] = {}
+    target = _path_key(target_path)
+    adopted: list[EditorObject] = []
+    try:
+        for index, item in enumerate(objects):
+            if item.kind != "text" or not any(run.font_source for run in item.runs):
+                adopted.append(item)
+                continue
+            object_id = item.id or f"{item.kind}{index}"
+            runs: list[EditorRun] = []
+            lost: set[str] = set()
+            for run in item.runs:
+                origin = run.font_source
+                if origin is None or _path_key(origin.path) == target or not run.font_xref:
+                    runs.append(run.model_copy(update={"font_source": None}))
+                    continue
+                key = (_path_key(origin.path), run.font_xref)
+                if key not in adopted_xrefs:
+                    font = _source_font(sources, origin, run.font_xref)
+                    synthetic = FOREIGN_XREF_BASE + len(foreign) if font else None
+                    if font is not None and synthetic is not None:
+                        foreign[synthetic] = font
+                    adopted_xrefs[key] = synthetic
+                synthetic = adopted_xrefs[key]
+                if synthetic is None:
+                    family = display_font_name(run.font or "")
+                    if family not in lost:
+                        lost.add(family)
+                        warnings.append(
+                            EditorWarning(
+                                object_id=object_id, code="fontSubstituted", detail=family
+                            )
+                        )
+                runs.append(run.model_copy(update={"font_source": None, "font_xref": synthetic}))
+            adopted.append(item.model_copy(update={"runs": runs}))
+    finally:
+        for source in sources.values():
+            if source is not None and not source.is_closed:
+                source.close()
+    return adopted, foreign
+
+
 def _text_as_block(item: EditorText) -> EditorBlock:
     return EditorBlock(
         id=item.id,
@@ -247,6 +331,7 @@ def _insert_text(
     item: EditorText,
     object_id: str,
     warnings: list[EditorWarning],
+    foreign: ForeignFonts | None = None,
 ) -> None:
     on_page = pymupdf.Rect(item.x0, item.y0, item.x1, item.y1).normalize() & page.rect
     if on_page.is_empty:
@@ -256,7 +341,7 @@ def _insert_text(
         update={"x0": on_page.x0, "y0": on_page.y0, "x1": on_page.x1, "y1": on_page.y1}
     )
     if item.runs and _runs_text(item).strip():
-        _insert_block(document, page, _text_as_block(item), object_id, warnings)
+        _insert_block(document, page, _text_as_block(item), object_id, warnings, foreign)
         return
     rect = _visible_rect(page, item)
     if item.font_id:
@@ -512,6 +597,7 @@ def _resolve_styles(
     object_id: str,
     warnings: list[EditorWarning],
     font_id: str | None = None,
+    foreign: ForeignFonts | None = None,
 ) -> dict[tuple[str | None, int | None, bool, bool], tuple[ResolvedFont, pymupdf.Font]]:
     combined: dict[tuple[str | None, int | None, bool, bool], str] = {}
     order: list[tuple[str | None, int | None, bool, bool]] = []
@@ -530,19 +616,21 @@ def _resolve_styles(
     for key in order:
         font_name, font_xref, bold, italic = key
         text = combined[key] or "A"
-        resolved = (
-            _chosen_font(font_id, bold)
-            if font_id
-            else resolve_font(
+        adopted = foreign.get(font_xref) if foreign and font_xref is not None else None
+        if font_id:
+            resolved = _chosen_font(font_id, bold)
+        elif adopted is not None and font_covers(text, fontbuffer=adopted.fontbuffer):
+            resolved = adopted
+        else:
+            resolved = resolve_font(
                 document,
                 text,
                 font_name=font_name,
-                font_xref=font_xref,
+                font_xref=None if adopted is not None else font_xref,
                 bold=bold,
                 italic=italic,
                 page=page,
             )
-        )
         resolution = describe_resolution(resolved, font_name, text)
         if font_xref and not font_id and resolution.source != "embedded":
             warn_key = (object_id, "fontSubstituted", resolution.family)
@@ -734,6 +822,7 @@ def _insert_block(
     item: EditorBlock,
     object_id: str,
     warnings: list[EditorWarning],
+    foreign: ForeignFonts | None = None,
 ) -> None:
     if not item.text.strip():
         return
@@ -778,7 +867,7 @@ def _insert_block(
         warnings.append(_overflow_warning(object_id, _block_text(item)))
         return
     atoms = _tokenize(_effective_runs(item))
-    resolved = _resolve_styles(document, page, atoms, object_id, warnings, item.font_id)
+    resolved = _resolve_styles(document, page, atoms, object_id, warnings, item.font_id, foreign)
     lines, line_height, delta = _layout_block(item, atoms, resolved, rect)
     if line_height * max(1, len(lines)) > rect.height:
         warnings.append(_overflow_warning(object_id, _block_text(item)))
@@ -1022,13 +1111,14 @@ def apply(params: EditorApplyParams, progress: Progress) -> EditorApplyResult:
                 )
             if item.kind == "imageChange" and item.new_x0 is not None:
                 _replacement_bytes(item)
-        _redact_edits(document, [item for item in params.objects if item.kind in ("edit", "block")])
-        for index, item in enumerate(params.objects):
+        objects, foreign = _adopt_foreign_fonts(params.path, params.objects, warnings)
+        _redact_edits(document, [item for item in objects if item.kind in ("edit", "block")])
+        for index, item in enumerate(objects):
             progress.check_cancelled()
             page = document[item.page - 1]
             object_id = item.id or f"{item.kind}{index}"
             if item.kind == "text":
-                _insert_text(document, page, item, object_id, warnings)
+                _insert_text(document, page, item, object_id, warnings, foreign)
             elif item.kind == "edit":
                 _insert_replacement(page, item)
             elif item.kind == "block":

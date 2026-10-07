@@ -5,21 +5,29 @@ import { useRedaction } from "@embedpdf/plugin-redaction/react";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
 import { ZoomMode, useZoom } from "@embedpdf/plugin-zoom/react";
+import { claimSystemPaste, expectSystemPaste } from "@/shared/lib/systemPaste";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { clearWithUndo } from "./presentation/drawingCleanup";
 import { useUiStore } from "@/shared/store/uiStore";
-import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { EDITOR_MODES, useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { useSplitViewStore } from "@/shared/store/splitViewStore";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { copySelection } from "./copySelection";
+import { holdsEditorObject, useEditorClipboard } from "./overlay/editorClipboard";
+import { openEditorAndPaste } from "./overlay/editorPaste";
 import { useMarkToolStore } from "./markArea";
 import { hasOpenModal, hasTextSelectionOutsidePages, isActivatableTarget, isInsideCompositeWidget } from "./viewerKeyTarget";
 import { isSplitViewToggle } from "./split/splitShortcut";
 import { usePageNavigation } from "./usePageNavigation";
 import { zoomShortcutFor } from "./zoomShortcuts";
+
+function editingHere(documentId: string): boolean {
+  const overlay = useViewerOverlayStore.getState();
+  return overlay.mode !== null && EDITOR_MODES.includes(overlay.mode) && overlay.editingDocumentId === documentId;
+}
 
 export function ViewerShortcuts({ documentId }: { documentId: string }) {
   const { provides: zoom, state: zoomState } = useZoom(documentId);
@@ -147,6 +155,11 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
           return;
         }
       }
+      if (modifier && !event.shiftKey && !event.altKey && key.toLowerCase() === "v" && !immersive && !editingHere(documentId) && useEditorClipboard.getState().entry) {
+        const pageIndex = scrollState.currentPage - 1;
+        expectSystemPaste(() => openEditorAndPaste(documentId, pageIndex, null));
+        return;
+      }
       if (key === "Escape" && zoomState.isMarqueeZoomActive) {
         zoom?.disableMarqueeZoom();
         return;
@@ -212,8 +225,19 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         if (redaction?.isRedactActive()) redaction.toggleRedact();
       }
     };
+    const onPaste = (event: ClipboardEvent) => {
+      const entry = useEditorClipboard.getState().entry;
+      if (!entry || editingHere(documentId) || !claimSystemPaste()) return;
+      if (!holdsEditorObject(event.clipboardData, entry)) return;
+      event.preventDefault();
+      openEditorAndPaste(documentId, scrollState.currentPage - 1, null);
+    };
     window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
+    window.addEventListener("paste", onPaste);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("paste", onPaste);
+    };
   }, [documentId, zoom, zoomState.isMarqueeZoomActive, scroll, scrollState.currentPage, scrollState.totalPages, annotation, historyCapability, redaction, selectionCapability, immersive, goBack, goForward]);
 
   return null;

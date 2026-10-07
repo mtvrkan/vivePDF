@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 import { addedAttachmentNames, isAttachmentRemoved, isCommentDeleted, pendingChangesFor, pendingReplies, resolvedOverride, reviewStateOverride, usePendingChangesStore, type PendingChange } from "./pendingChangesStore";
 
 const resolveOn: PendingChange = { id: "a", kind: "commentResolved", xrefs: [10], resolved: true, label: "x" };
@@ -94,5 +94,29 @@ describe("attachment helpers", () => {
   it("collects queued additions", () => {
     expect(addedAttachmentNames([added, removed])).toEqual(["C:/tmp/a.txt"]);
     expect(addedAttachmentNames([removed])).toEqual([]);
+  });
+});
+
+describe("replace", () => {
+  beforeEach(() => usePendingChangesStore.setState({ changes: {} }));
+
+  it("keeps one change of a kind and updates it in place", () => {
+    const store = usePendingChangesStore.getState();
+    store.queue("doc", { kind: "attachmentRemoved", names: ["a.txt"], label: "a" });
+    store.replace("doc", { kind: "formFilled", values: { name: "Ada" }, label: "form" });
+    store.queue("doc", { kind: "attachmentRemoved", names: ["b.txt"], label: "b" });
+    const firstId = usePendingChangesStore.getState().changes.doc[1].id;
+
+    usePendingChangesStore.getState().replace("doc", { kind: "formFilled", values: { name: "Grace" }, label: "form" });
+
+    const changes = usePendingChangesStore.getState().changes.doc;
+    expect(changes.map((change) => change.kind)).toEqual(["attachmentRemoved", "formFilled", "attachmentRemoved"]);
+    expect(changes[1]).toMatchObject({ id: firstId, values: { name: "Grace" } });
+  });
+
+  it("adds the change when the document has none queued", () => {
+    usePendingChangesStore.getState().replace("fresh", { kind: "outlineReplaced", items: [], label: "outline" });
+
+    expect(usePendingChangesStore.getState().changes.fresh).toHaveLength(1);
   });
 });

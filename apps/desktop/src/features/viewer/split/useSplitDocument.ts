@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/react";
 import { documentRoomError } from "@/shared/lib/documentLimit";
+import { isPdfPasswordError } from "@/shared/lib/pdfPassword";
 import { toRpcError } from "@/shared/rpc/client";
 import { fileNameOf } from "@/shared/rpc/files";
 import { attachViewSource, closeViewable, openViewable, readOriginalSource } from "@/shared/session/viewSources";
 import type { AsyncStatus, RpcError } from "@/types";
 
 export type SplitDocumentState = { documentId: string | null; status: AsyncStatus; error: RpcError | null };
+
+function splitOpenError(caught: unknown): RpcError {
+  const error = toRpcError(caught);
+  return isPdfPasswordError(caught) ? { ...error, code: "NEEDS_PASSWORD" } : error;
+}
 
 export function useSplitDocument(path: string, password: string | null, revision: number, attempt: number): SplitDocumentState {
   const { provides: docManager } = useDocumentManagerCapability();
@@ -38,7 +44,7 @@ export function useSplitDocument(path: string, password: string | null, revision
         setState({ documentId, status: "success", error: null });
       } catch (caught) {
         closeViewable(docManager, documentId);
-        if (!cancelled) setState({ documentId: null, status: "error", error: toRpcError(caught) });
+        if (!cancelled) setState({ documentId: null, status: "error", error: splitOpenError(caught) });
       }
     })();
     return () => {

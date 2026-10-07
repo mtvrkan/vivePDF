@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AlertTriangle, ArrowRight, Clock, FileText, FolderOpen, FolderSearch, X } from "lucide-react";
+import { AlertTriangle, ArrowRight, Clock, FileText, FolderOpen, FolderSearch, Pin, PinOff, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
+import { Select } from "@/components/shared/Select";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { bySize, emptyPadding, sectionPadding, type HomeSize } from "./homeLayout";
 import { formatRelativeMoment } from "./homeSearch";
+import { matchingRecent, pinnedFirst, sortedRecent } from "./recentList";
 import { useMissingPaths } from "./useMissingPaths";
 import { cn } from "@/shared/lib/cn";
 import { RevealError, revealPath } from "@/shared/lib/reveal";
 import { renderThumbnail, thumbnailDataUrl } from "@/shared/rpc/thumbnail";
 import { useOpenStore } from "@/shared/store/openStore";
-import { useRecentStore } from "@/shared/store/recentStore";
+import { RECENT_SORTS, useRecentStore, type RecentSort } from "@/shared/store/recentStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import type { RecentFile } from "@/types";
@@ -34,6 +36,22 @@ function storeThumbnail(path: string, url: string) {
     if (oldest === undefined) break;
     thumbnailCache.delete(oldest);
   }
+}
+
+function PinButton({ item, className }: { item: RecentFile; className?: string }) {
+  const { t } = useTranslation();
+  const togglePin = useRecentStore((state) => state.togglePin);
+  const Icon = item.pinned ? PinOff : Pin;
+
+  return (
+    <button type="button" onClick={() => togglePin(item.path)} aria-label={t(item.pinned ? "home.unpinRecent" : "home.pinRecent", { name: item.fileName })} aria-pressed={item.pinned === true} className={cn("rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground", className)}>
+      <Icon className="size-3.5" aria-hidden />
+    </button>
+  );
+}
+
+function PinnedMarker({ item }: { item: RecentFile }) {
+  return item.pinned ? <Pin className="size-3 shrink-0 text-primary" aria-hidden /> : null;
 }
 
 function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; isMissing: boolean; className?: string }) {
@@ -93,7 +111,10 @@ function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; 
       </button>
       <div className="flex items-center gap-1 p-2.5">
         <div className="min-w-0 flex-1">
-          <p title={item.fileName} className="truncate text-sm font-medium">{item.fileName}</p>
+          <p title={item.fileName} className="flex items-center gap-1 text-sm font-medium">
+            <PinnedMarker item={item} />
+            <span className="min-w-0 truncate">{item.fileName}</span>
+          </p>
           <p className={cn("mt-0.5 truncate text-[11px]", isMissing ? "text-warning" : "font-mono text-muted-foreground")}>{isMissing ? t("home.collections.missing") : formatRelativeMoment(item.openedAt, locale, Date.now(), t("home.justNow"))}</p>
         </div>
         <div className={cn("flex shrink-0 items-center transition-opacity duration-(--transition-fast) focus-within:opacity-100 group-hover:opacity-100", isMissing ? "opacity-100" : "opacity-0")}>
@@ -102,6 +123,7 @@ function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; 
               <FolderSearch className="size-3.5" aria-hidden />
             </button>
           )}
+          <PinButton item={item} />
           <button type="button" onClick={() => removeRecent(item.path)} aria-label={t("home.removeRecent", { name: item.fileName })} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
             <X className="size-3.5" aria-hidden />
           </button>
@@ -122,8 +144,10 @@ function RecentDocumentRow({ item, isMissing }: { item: RecentFile; isMissing: b
       <button type="button" disabled={isMissing} onClick={() => void openPath(item.path)} title={isMissing ? t("home.collections.missing") : item.path} aria-label={item.fileName} className="flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2 py-1.5 text-start outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed">
         {isMissing ? <AlertTriangle className="size-4 shrink-0 text-warning" aria-hidden /> : <FileText className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
         <span className="min-w-0 flex-1 truncate text-sm">{item.fileName}</span>
+        <PinnedMarker item={item} />
         <span className={cn("shrink-0 text-[11px]", isMissing ? "text-warning" : "font-mono text-muted-foreground")}>{isMissing ? t("home.collections.missing") : formatRelativeMoment(item.openedAt, locale, Date.now(), t("home.justNow"))}</span>
       </button>
+      <PinButton item={item} className={cn("transition-opacity duration-(--transition-fast) focus-visible:opacity-100 group-hover:opacity-100", isMissing ? "opacity-100" : "opacity-0")} />
       <button type="button" onClick={() => removeRecent(item.path)} aria-label={t("home.removeRecent", { name: item.fileName })} className={cn("rounded-full p-1.5 text-muted-foreground transition-opacity duration-(--transition-fast) hover:bg-secondary hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100", isMissing ? "opacity-100" : "opacity-0")}>
         <X className="size-3.5" aria-hidden />
       </button>
@@ -134,34 +158,77 @@ function RecentDocumentRow({ item, isMissing }: { item: RecentFile; isMissing: b
 export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
   const limit = bySize(size, 4, 6, 12);
   const { t } = useTranslation();
+  const locale = useUiStore((state) => state.locale);
   const recent = useRecentStore((state) => state.items);
+  const sort = useRecentStore((state) => state.sort);
+  const setSort = useRecentStore((state) => state.setSort);
   const clearStore = useRecentStore((state) => state.clear);
   const restoreRecent = useRecentStore((state) => state.restore);
   const toast = useToastStore((state) => state.push);
   const { pickAndOpen } = useOpenPdf();
   const busy = useOpenStore((state) => state.busy);
   const [showAll, setShowAll] = useState(false);
+  const [query, setQuery] = useState("");
+  const hasControls = recent.length > 1;
+  const activeQuery = hasControls ? query : "";
+  const ordered = useMemo(() => pinnedFirst(sortedRecent(matchingRecent(recent, activeQuery, locale), sort, locale)), [recent, activeQuery, sort, locale]);
+  const hasPinned = recent.some((item) => item.pinned === true);
+  const hasUnpinned = recent.some((item) => item.pinned !== true);
   const clearRecent = () => {
     const snapshot = recent;
     clearStore();
     toast("info", t("home.recentCleared"), { label: t("common.undo"), onClick: () => restoreRecent(snapshot) });
   };
-  const shown = showAll ? recent : recent.slice(0, limit);
+  const shown = useMemo(() => (showAll ? ordered : ordered.slice(0, limit)), [showAll, ordered, limit]);
   const missing = useMissingPaths(useMemo(() => shown.map((item) => item.path), [shown]));
+  const shownPinned = shown.filter((item) => item.pinned === true);
+  const shownOthers = shown.filter((item) => item.pinned !== true);
+  const groups = [
+    { key: "pinned", label: shownPinned.length > 0 ? t("home.recentPinned") : null, items: shownPinned },
+    { key: "others", label: shownPinned.length > 0 && shownOthers.length > 0 ? t("home.recentOthers") : null, items: shownOthers },
+  ].filter((group) => group.items.length > 0);
 
   return (
     <section className={cn("glass @container rounded-2xl", sectionPadding(size))}>
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.recent")}</p>
-        <div className="flex items-center gap-2">
-          {recent.length > limit ? (
+        <div className="flex flex-wrap items-center gap-2">
+          {hasControls ? (
+            <>
+              <label className="field flex h-7 w-44 items-center gap-1.5 rounded-md px-2 text-xs">
+                <Search className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
+                <input
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={t("home.recentSearch")}
+                  aria-label={t("home.recentSearch")}
+                  className="min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+                />
+                {query ? (
+                  <button type="button" onClick={() => setQuery("")} aria-label={t("common.close")} className="rounded-full p-0.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
+                    <X className="size-3" aria-hidden />
+                  </button>
+                ) : null}
+              </label>
+              <span className="w-36">
+                <Select
+                  size="sm"
+                  value={sort}
+                  options={RECENT_SORTS.map((value) => ({ value, label: t(`home.recentSorts.${value}`) }))}
+                  onChange={(value) => setSort(value as RecentSort)}
+                  ariaLabel={t("home.recentSort")}
+                />
+              </span>
+            </>
+          ) : null}
+          {ordered.length > limit ? (
             <button type="button" onClick={() => setShowAll((value) => !value)} className="flex min-h-6 items-center rounded-full px-2 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground">
-              {showAll ? t("home.showLess") : `${t("home.showAll")} · ${recent.length}`}
+              {showAll ? t("home.showLess") : `${t("home.showAll")} · ${ordered.length}`}
             </button>
           ) : null}
-          {recent.length > 0 ? (
+          {hasUnpinned ? (
             <button type="button" onClick={clearRecent} className="flex min-h-6 items-center rounded-full px-2 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground">
-              {t("home.clearRecent")}
+              {hasPinned ? t("home.clearRecentUnpinned") : t("home.clearRecent")}
             </button>
           ) : null}
         </div>
@@ -180,20 +247,27 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
             {t("common.openPdf")}
           </Button>
         </div>
+      ) : ordered.length === 0 ? (
+        <p role="status" className="mt-4 px-2 py-6 text-center text-sm text-muted-foreground">{t("home.recentNoMatches", { query: activeQuery.trim() })}</p>
       ) : (
-        size === "small" ? (
-          <ul className="mt-3 grid gap-x-3 gap-y-0.5 @2xl:grid-cols-2">
-            {shown.map((item) => (
-              <RecentDocumentRow key={item.path} item={item} isMissing={missing.has(item.path)} />
-            ))}
-          </ul>
-        ) : (
-        <div className={cn("mt-4 grid gap-3", size === "large" ? "grid-cols-1 @md:grid-cols-2 @3xl:grid-cols-3" : "grid-cols-2 @md:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-6")}>
-          {shown.map((item) => (
-            <RecentDocumentCard key={item.path} item={item} isMissing={missing.has(item.path)} />
-          ))}
-        </div>
-        )
+        groups.map((group) => (
+          <div key={group.key} className={size === "small" ? "mt-3" : "mt-4"}>
+            {group.label ? <p className="mb-1.5 px-1 text-[11px] font-medium text-muted-foreground">{group.label}</p> : null}
+            {size === "small" ? (
+              <ul aria-label={group.label ?? undefined} className="grid gap-x-3 gap-y-0.5 @2xl:grid-cols-2">
+                {group.items.map((item) => (
+                  <RecentDocumentRow key={item.path} item={item} isMissing={missing.has(item.path)} />
+                ))}
+              </ul>
+            ) : (
+              <div className={cn("grid gap-3", size === "large" ? "grid-cols-1 @md:grid-cols-2 @3xl:grid-cols-3" : "grid-cols-2 @md:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-6")}>
+                {group.items.map((item) => (
+                  <RecentDocumentCard key={item.path} item={item} isMissing={missing.has(item.path)} />
+                ))}
+              </div>
+            )}
+          </div>
+        ))
       )}
     </section>
   );

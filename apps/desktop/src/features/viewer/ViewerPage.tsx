@@ -22,6 +22,7 @@ import { ConvertedMessage } from "./ConvertedMessage";
 import { DocumentMessageBar } from "./DocumentMessageBar";
 import { StudioDesignMessage } from "./StudioDesignMessage";
 import { FallbackFontMessages } from "./FallbackFontMessages";
+import { FileChangedMessage } from "./FileChangedBanner";
 import { SignaturesPanel } from "./SignaturesPanel";
 import { LayersPanel } from "./LayersPanel";
 import { useLayerCheck } from "./useLayerCheck";
@@ -62,6 +63,7 @@ import { useOpenPdf } from "./useOpenPdf";
 import { hasOpenModal } from "./viewerKeyTarget";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useLiveActiveDocument } from "./useLiveActiveDocument";
+import { useDocumentFileWatch } from "./useDocumentFileWatch";
 
 export function ViewerPage() {
   const { t } = useTranslation();
@@ -80,6 +82,7 @@ export function ViewerPage() {
   const signed = useDocumentMessagesStore((state) => (activeDocumentId ? state.signatures[activeDocumentId]?.state === "checked" : false));
   const layered = useLayerViewStore((state) => (activeDocumentId ? hasLayers(state.lists[activeDocumentId]) : false));
   useLayerCheck(activeDocumentId);
+  useDocumentFileWatch();
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -208,6 +211,7 @@ export function ViewerPage() {
               <>
                 <ViewerToolbar documentId={activeDocumentId} panels={panels} onTogglePanel={togglePanel} />
                 <DocumentMessageBar documentId={activeDocumentId} onOpenSignatures={() => setPanels((state) => ({ ...state, signatures: true }))} />
+                <FileChangedMessage documentId={activeDocumentId} />
                 <ConvertedMessage documentId={activeDocumentId} />
                 <StudioDesignMessage documentId={activeDocumentId} />
                 <FallbackFontMessages documentId={activeDocumentId} />

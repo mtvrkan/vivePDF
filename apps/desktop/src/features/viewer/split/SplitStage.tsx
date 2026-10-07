@@ -10,7 +10,7 @@ export function SplitStage({ documentId, pageColors }: { documentId: string; pag
   const containerRef = useRef<HTMLDivElement>(null);
   const document = useDocumentStore((state) => state.documents[documentId] ?? null);
   const view = useSplitViewStore((state) => splitViewOf(state, document?.path));
-  const split = document && view ? { ...view, path: document.path, password: document.password } : null;
+  const split = document && view ? { ...view, path: view.secondary?.path ?? document.path, password: view.secondary ? view.secondary.password : document.password, primaryPath: document.path } : null;
   const template = split ? `minmax(0, ${split.ratio}fr) auto minmax(0, ${1 - split.ratio}fr)` : "minmax(0, 1fr)";
 
   return (
@@ -24,9 +24,11 @@ export function SplitStage({ documentId, pageColors }: { documentId: string; pag
         <PageView documentId={documentId} pageColors={pageColors} />
       </div>
       {split ? (
-        <SplitDivider layout={split.layout} ratio={split.ratio} containerRef={containerRef} onRatioChange={(ratio) => useSplitViewStore.getState().setRatio(split.path, ratio)} />
+        <SplitDivider layout={split.layout} ratio={split.ratio} containerRef={containerRef} onRatioChange={(ratio) => useSplitViewStore.getState().setRatio(split.primaryPath, ratio)} />
       ) : null}
-      {split ? <SplitReadPane primaryId={documentId} path={split.path} password={split.password} pageColors={pageColors} /> : null}
+      {split ? (
+        <SplitReadPane primaryId={documentId} primaryPath={split.primaryPath} path={split.path} password={split.password} separate={split.secondary !== null} syncScroll={split.syncScroll} pageColors={pageColors} />
+      ) : null}
     </div>
   );
 }

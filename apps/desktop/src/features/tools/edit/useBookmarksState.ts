@@ -7,7 +7,7 @@ import { joinPath, outputDirectoryFor, stemOf } from "@/shared/lib/paths";
 import { toRpcError } from "@/shared/rpc/client";
 import { getBookmarks, parseBookmarks, suggestBookmarks } from "@/shared/rpc/operations";
 import type { BookmarkItem, SourceDocument, ToastKind } from "@/types";
-import { moveBookmarkBranch, serializeBookmarks, setAllCollapsed, sortBookmarksByPage, withPage } from "./bookmarkTree";
+import { moveBookmarkBranch, serializeBookmarks, setAllCollapsed, sortBookmarksByPage, withPage } from "@/shared/lib/bookmarkTree";
 import type { Tab } from "./editShared";
 
 export function useBookmarksState(source: SourceDocument | null, tab: Tab, t: TFunction, toast: (kind: ToastKind, message: string) => void) {

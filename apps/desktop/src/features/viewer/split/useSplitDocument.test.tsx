@@ -1,5 +1,6 @@
 import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { PdfErrorCode } from "@embedpdf/models";
 
 const sources = vi.hoisted(() => ({
   readOriginalSource: vi.fn(),
@@ -51,6 +52,14 @@ describe("useSplitDocument", () => {
     await waitFor(() => expect(result.current.status).toBe("error"));
     expect(result.current.documentId).toBeNull();
     expect(sources.closeViewable).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports a locked file as NEEDS_PASSWORD so the pane can ask for it", async () => {
+    sources.openViewable.mockRejectedValue({ reason: { code: PdfErrorCode.Password, message: "password required" } });
+
+    const { result } = renderHook(() => useSplitDocument(PATH, null, 0, 0));
+
+    await waitFor(() => expect(result.current.error?.code).toBe("NEEDS_PASSWORD"));
   });
 
   it("refuses to open when the document limit is reached", () => {

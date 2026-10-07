@@ -257,7 +257,20 @@
         "pickHint": "{{count}} sur {{max}} outils. Cliquez sur un outil pour l'ajouter.",
         "dragHint": "Glissez pour changer l’ordre, ou sélectionnez une tuile et utilisez les flèches du clavier."
       }
-    }
+    },
+    "recentSearch": "Rechercher dans les documents récents",
+    "recentNoMatches": "Aucun document récent ne correspond à « {{query}} ».",
+    "recentSort": "Trier les documents récents",
+    "recentSorts": {
+      "recent": "Plus récents",
+      "name": "Nom (A–Z)",
+      "folder": "Dossier"
+    },
+    "recentPinned": "Épinglés",
+    "recentOthers": "Autres documents",
+    "pinRecent": "Épingler {{name}}",
+    "unpinRecent": "Désépingler {{name}}",
+    "clearRecentUnpinned": "Effacer les non épinglés"
   },
   "viewer": {
     "engineLoading": "Chargement de la visionneuse PDF…",
@@ -280,7 +293,16 @@
       "emptyHint": "Ce PDF n'a pas de table des matières. Vous pouvez en ajouter une dans Modifier → Signets.",
       "create": "Créer un plan",
       "loadFailed": "Impossible de lire le plan",
-      "loadFailedHint": "La table des matières du document n'a pas pu être lue."
+      "loadFailedHint": "La table des matières du document n'a pas pu être lue.",
+      "edit": "Modifier les signets",
+      "editTools": "Modification des signets",
+      "pendingLabel": "Signets modifiés",
+      "newBookmark": "Nouveau signet",
+      "addAtPage": "Ajouter un signet à la page {{page}}",
+      "addChild": "Ajouter un sous-signet",
+      "rename": "Renommer",
+      "linkToPage": "Créer un lien vers la page {{page}}",
+      "editEmptyHint": "Ajoutez un signet pour la page que vous lisez ; il est écrit à l'enregistrement."
     },
     "resume": {
       "toast": "Reprise là où vous vous étiez arrêté.",
@@ -335,7 +357,13 @@
       "unsaved": "Les modifications non enregistrées apparaîtront ici après l’enregistrement.",
       "close": "Fermer la division",
       "divider": "Redimensionner la division",
-      "openFailed": "Le second volet n’a pas pu ouvrir le fichier"
+      "openFailed": "Le second volet n’a pas pu ouvrir le fichier",
+      "sameDocument": "Même document",
+      "chooseFile": "Choisir un fichier…",
+      "pickDocument": "Document du second volet : {{name}}",
+      "compareWith": "Comparer avec un autre document…",
+      "openBeside": "Ouvrir à côté du document actuel",
+      "syncScroll": "Synchroniser le défilement"
     },
     "pan": "Outil de déplacement",
     "copy": "Copier la sélection",
@@ -594,7 +622,11 @@
       "measureTotal_other": "{{count}} mesures · total {{total}}",
       "measureUndo": "Annuler la dernière mesure",
       "measureClear": "Effacer toutes les mesures",
-      "measureRemove": "Supprimer la mesure"
+      "measureRemove": "Supprimer la mesure",
+      "copyObject": "Copier",
+      "copied": "Copié. Appuyez sur Ctrl+V sur n'importe quelle page ou dans un autre document pour le coller.",
+      "copyUnavailable": "Cet objet ne peut pas encore être copié. Attendez que son aperçu soit chargé, puis réessayez.",
+      "pasteFailed": "Impossible de coller l'image du presse-papiers."
     },
     "signature": {
       "title": "Signatures",
@@ -938,7 +970,8 @@
       "copyAsCode": "Copier comme code",
       "readAloudUnavailable": "La synthèse vocale n’est pas disponible sur ce système.",
       "redactQueued": "Masqué. Enregistrez le document pour l’appliquer.",
-      "redactUnavailable": "Le masquage n’est pas disponible pour ce document."
+      "redactUnavailable": "Le masquage n’est pas disponible pour ce document.",
+      "moreMarkup": "Autres marques de texte"
     },
     "context": {
       "title": "Menu de la page",
@@ -1003,7 +1036,8 @@
       "pictureGroup": "Image",
       "pageGroup": "Page",
       "offlineTranslator": "Traducteur hors ligne",
-      "googleTranslate": "Google Traduction"
+      "googleTranslate": "Google Traduction",
+      "pasteObject": "Coller ici"
     },
     "printDialog": {
       "title": "Imprimer",
@@ -1462,6 +1496,22 @@
       "openTool": "Ouvrir dans Convertir",
       "allSupported": "Tous les fichiers pris en charge",
       "fromClipboard": "Créé depuis le presse-papiers, pas encore enregistré."
+    },
+    "formFill": {
+      "label": "Champs du formulaire",
+      "option": "{{field}} : {{option}}",
+      "page": "Champs du formulaire de la page {{page}}",
+      "xfaOnly": "Ce formulaire utilise XFA et ne peut être rempli que dans l'outil Formulaires",
+      "savedWithNotes": "Le formulaire a été enregistré avec des remarques : {{notes}}"
+    },
+    "fileChanged": {
+      "updated": "Mis à jour depuis le disque",
+      "changed": "{{name}} a été modifié sur le disque.",
+      "conflict": "{{name}} a été modifié par un autre programme. Le recharger supprime vos modifications non enregistrées.",
+      "missing": "{{name}} a été déplacé ou supprimé.",
+      "reload": "Recharger",
+      "keepMine": "Garder la mienne",
+      "saveCopy": "Enregistrer une copie…"
     }
   },
   "presentation": {
@@ -1804,7 +1854,9 @@
       "selectionToolbar": "Barre d’outils lors de la sélection de texte",
       "selectionToolbarHint": "Affiche une petite barre d’outils flottante lorsque vous sélectionnez du texte dans la visionneuse.",
       "annotationAuthor": "Nom d’auteur des commentaires",
-      "annotationAuthorHint": "Inscrit dans les nouvelles annotations et dans les commentaires résolus ou rouverts, pour que les autres relecteurs voient qui les a faits. Vide, « vivePDF » est utilisé."
+      "annotationAuthorHint": "Inscrit dans les nouvelles annotations et dans les commentaires résolus ou rouverts, pour que les autres relecteurs voient qui les a faits. Vide, « vivePDF » est utilisé.",
+      "reloadOnFileChange": "Recharger quand le fichier change",
+      "reloadOnFileChangeHint": "Quand un autre programme (comme LaTeX) réécrit un PDF ouvert, affiche automatiquement la nouvelle version. Les documents avec des modifications non enregistrées demandent toujours d'abord."
     },
     "reading": {
       "fontSize": "Taille du texte",
@@ -1864,7 +1916,7 @@
       "keepHistory": "Conserver l’historique des opérations",
       "keepHistoryHint": "Enregistre les opérations terminées et leurs fichiers de sortie sur cet appareil.",
       "recentLimit": "Fichiers récents à conserver",
-      "recentLimitHint": "Nombre de fichiers récemment ouverts mémorisés.",
+      "recentLimitHint": "Nombre de fichiers récemment ouverts mémorisés. Les fichiers épinglés sont conservés en plus.",
       "confirmClose": "Demander avant de fermer",
       "confirmCloseHint": "Avertit si des documents sont ouverts ou si une opération est en cours.",
       "successToasts": "Afficher les notifications de réussite",
@@ -5804,7 +5856,8 @@
     "eraserSize": "Taille de la gomme",
     "eraserHint": "Passez sur un tracé au stylo pour en effacer cette partie",
     "styleHint": "Choisissez un outil ou une annotation pour en changer la couleur et l'épaisseur",
-    "textPlaceholder": "Écrivez ici"
+    "textPlaceholder": "Écrivez ici",
+    "squiggly": "Soulignement ondulé"
   },
   "recovery": {
     "discard": "Ignorer",
@@ -6091,7 +6144,9 @@
       "documentFileTooLarge": "Le document dépasse {{limitMb}} Mo.",
       "draftTooLarge": "Cette création est trop volumineuse pour le brouillon automatique (limite {{limit}} octets). Enregistrez-la comme fichier de projet.",
       "notDesign": "Ce fichier n’est pas une création Studio.",
-      "badPageNumbers": "Les numéros de page choisis ne correspondent pas aux pages exportées."
+      "badPageNumbers": "Les numéros de page choisis ne correspondent pas aux pages exportées.",
+      "outputRequired": "Aucun emplacement d'enregistrement du résultat n'a été indiqué.",
+      "outputAndInPlace": "Le résultat peut être enregistré dans un nouveau fichier ou sur l'original, pas les deux."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

@@ -1,10 +1,11 @@
 import { createPortal } from "react-dom";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { Braces, Copy, Languages, Link2, Quote, SquareDashed, Volume2, X } from "lucide-react";
+import { Braces, ChevronDown, Copy, Highlighter, Languages, Link2, Quote, SquareDashed, Strikethrough, Underline, Volume2, Waves, X } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
-import { useAnnotation } from "@embedpdf/plugin-annotation/react";
+import { useAnnotation, useAnnotationCapability } from "@embedpdf/plugin-annotation/react";
 import { PdfActionType, PdfAnnotationSubtype } from "@embedpdf/models";
 import { IconButton } from "@/components/shared/IconButton";
 import { reindentLines } from "@/shared/lib/codeReindent";
@@ -26,12 +27,19 @@ import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { selectionBoxOf } from "./selectionBox";
 import { copySelection } from "./copySelection";
 import { normalizeLinkUri } from "./linkUri";
+import { markSelectionWithTool, type MarkupToolId } from "./markupSelection";
 import type { CodeBlock } from "@/types";
 
 type PdfRect = { origin: { x: number; y: number }; size: { width: number; height: number } };
 type Anchor = { x: number; y: number };
 
 const SECONDARY_BUTTON = 2;
+
+const MORE_MARKUP: Array<{ id: MarkupToolId; icon: LucideIcon; labelKey: string }> = [
+  { id: "underline", icon: Underline, labelKey: "annotate.underline" },
+  { id: "strikeout", icon: Strikethrough, labelKey: "annotate.strikeout" },
+  { id: "squiggly", icon: Waves, labelKey: "annotate.squiggly" },
+];
 
 export function SelectionActions({ documentId, containerRef }: { documentId: string; containerRef: React.RefObject<HTMLDivElement | null> }) {
   const { t } = useTranslation();
@@ -43,9 +51,12 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
   const { provides: selection } = useSelectionCapability();
   const { provides: redaction } = useRedaction(documentId);
   const { provides: annotation } = useAnnotation(documentId);
+  const { provides: annotationTools } = useAnnotationCapability();
   const [anchor, setAnchor] = useState<Anchor | null>(null);
   const [text, setText] = useState("");
   const [linkOpen, setLinkOpen] = useState(false);
+  const [markupOpen, setMarkupOpen] = useState(false);
+  const markupMenuRef = useRef<HTMLDivElement>(null);
   const [linkUrl, setLinkUrl] = useState("");
   const [busy, setBusy] = useState(false);
   const pointerRef = useRef<Anchor | null>(null);
@@ -81,6 +92,7 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
           }
           setText(joined);
           setLinkOpen(false);
+          setMarkupOpen(false);
           setAnchor(pointerRef.current);
         })
         .catch(() => setAnchor(null));
@@ -127,6 +139,7 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
   const dismiss = () => {
     setAnchor(null);
     setLinkOpen(false);
+    setMarkupOpen(false);
     setLinkUrl("");
     setCodeBlock(null);
   };
@@ -198,6 +211,10 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [anchor, text]);
 
+  useEffect(() => {
+    if (markupOpen) markupMenuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus();
+  }, [markupOpen]);
+
   useLayoutEffect(() => {
     if (!anchor || !containerRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -209,7 +226,7 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
     const viewportTop = containerRect.top + anchor.y + 12;
     const clampedTop = Math.min(Math.max(margin, viewportTop), window.innerHeight - margin);
     setBubbleStyle({ left: clampedLeft, top: clampedTop });
-  }, [anchor, containerRef, linkOpen]);
+  }, [anchor, containerRef, linkOpen, markupOpen]);
 
   if (!anchor || !document || overlayMode || !toolbarEnabled) return null;
   const containerRect = containerRef.current?.getBoundingClientRect();
@@ -281,6 +298,30 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
     dismiss();
   };
 
+  const markText = (toolId: MarkupToolId) => {
+    markSelectionWithTool(annotationTools, annotation, scope, toolId);
+    dismiss();
+  };
+
+  const closeMarkupMenu = () => {
+    setMarkupOpen(false);
+    bubbleRef.current?.querySelector<HTMLElement>('[aria-haspopup="menu"]')?.focus();
+  };
+
+  const onMarkupMenuKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMarkupMenu();
+      return;
+    }
+    if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+    event.preventDefault();
+    const items = Array.from(markupMenuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ?? []);
+    const index = items.indexOf(window.document.activeElement as HTMLElement);
+    const next = (index + (event.key === "ArrowDown" ? 1 : -1) + items.length) % items.length;
+    items[next]?.focus();
+  };
+
   const redact = () =>
     guarded(async () => {
       if (!redaction) {
@@ -335,10 +376,39 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
         <IconButton icon={Quote} label={t("viewer.context.copyQuotation")} onClick={() => void copyAsQuotation()} />
         <IconButton icon={Volume2} label={t("viewer.selection.readAloud")} onClick={speak} />
         <IconButton icon={Languages} label={t("viewer.selection.translate")} onClick={translate} />
+        {annotation ? (
+          <>
+            <IconButton icon={Highlighter} label={t("annotate.highlight")} onClick={() => markText("highlight")} />
+            <IconButton
+              icon={ChevronDown}
+              label={t("viewer.selection.moreMarkup")}
+              aria-haspopup="menu"
+              aria-expanded={markupOpen}
+              active={markupOpen}
+              onClick={() => setMarkupOpen((state) => !state)}
+            />
+          </>
+        ) : null}
         <IconButton icon={SquareDashed} label={t("viewer.selection.redact")} disabled={busy} onClick={() => void redact()} />
         <IconButton icon={Link2} label={t("viewer.selection.link")} active={linkOpen} onClick={() => setLinkOpen((state) => !state)} />
         <IconButton icon={X} label={t("common.close")} onClick={dismiss} />
       </div>
+      {markupOpen && annotation ? (
+        <div ref={markupMenuRef} role="menu" aria-label={t("viewer.selection.moreMarkup")} className="flex flex-col border-t border-(--chip-ring) pt-1" onKeyDown={onMarkupMenuKeyDown}>
+          {MORE_MARKUP.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              role="menuitem"
+              onClick={() => markText(item.id)}
+              className="flex h-8 w-full items-center gap-2.5 rounded-lg px-2.5 text-sm hover:bg-secondary focus:bg-secondary focus:outline-none"
+            >
+              <item.icon className="size-4" aria-hidden />
+              <span className="flex-1 text-left">{t(item.labelKey)}</span>
+            </button>
+          ))}
+        </div>
+      ) : null}
       {linkOpen ? (
         <form
           noValidate

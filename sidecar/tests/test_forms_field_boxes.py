@@ -66,3 +66,27 @@ def test_a_document_without_fields_has_no_boxes(tmp_path: Path):
 def test_a_missing_file_is_refused(tmp_path: Path):
     with pytest.raises(OpError):
         list_fields(FieldsParams(path=str(tmp_path / "missing.pdf")), silent_progress())
+
+
+def _visible(path: Path) -> dict:
+    result = list_fields(FieldsParams(path=str(path)), silent_progress())
+    return {field.name: field.visible_rect for field in result.fields}
+
+
+def test_an_upright_page_shows_fields_where_they_are(tmp_path: Path):
+    visible = _visible(_form(tmp_path / "form.pdf"))
+    assert visible["first"] == pytest.approx([60, 80, 300, 120])
+
+
+def test_a_turned_page_with_an_offset_crop_box_gives_visible_rects(tmp_path: Path):
+    path = _form(tmp_path / "turned.pdf", rotation=90, crop=pymupdf.Rect(50, 40, 550, 800))
+    visible = _visible(path)
+    assert visible["first"] == pytest.approx([680, 10, 720, 250])
+    assert visible["second"] == pytest.approx([360, 250, 400, 490])
+
+
+def test_each_widget_of_a_field_is_listed_with_its_page(tmp_path: Path):
+    result = list_fields(FieldsParams(path=str(_form(tmp_path / "form.pdf"))), silent_progress())
+    first = next(field for field in result.fields if field.name == "first")
+    assert [(widget.page, widget.state) for widget in first.widgets] == [(1, None)]
+    assert first.widgets[0].visible_rect == pytest.approx([60, 80, 300, 120])

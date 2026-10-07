@@ -48,6 +48,7 @@ export type Preferences = {
   breachCheckOnline: boolean;
   keepInTray: KeepInTray;
   annotationAuthor: string;
+  reloadOnFileChange: boolean;
 };
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -75,6 +76,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   breachCheckOnline: false,
   keepInTray: "auto",
   annotationAuthor: "",
+  reloadOnFileChange: true,
 };
 
 type Validator<T> = (value: unknown) => value is T;
@@ -113,6 +115,7 @@ const VALIDATORS: { [Key in keyof Preferences]: Validator<Preferences[Key]> } = 
   breachCheckOnline: isBoolean,
   keepInTray: oneOf(KEEP_IN_TRAY_MODES),
   annotationAuthor: isAuthorName,
+  reloadOnFileChange: isBoolean,
 };
 
 const KEYS = Object.keys(DEFAULT_PREFERENCES) as Array<keyof Preferences>;

@@ -257,7 +257,20 @@
         "pickHint": "{{count}} of {{max}} tools. Click a tool to add it.",
         "dragHint": "Drag to change the order, or select a tile and use the arrow keys."
       }
-    }
+    },
+    "recentSearch": "Search recent documents",
+    "recentNoMatches": "No recent documents match “{{query}}”.",
+    "recentSort": "Sort recent documents",
+    "recentSorts": {
+      "recent": "Most recent",
+      "name": "Name (A–Z)",
+      "folder": "Folder"
+    },
+    "recentPinned": "Pinned",
+    "recentOthers": "Other documents",
+    "pinRecent": "Pin {{name}}",
+    "unpinRecent": "Unpin {{name}}",
+    "clearRecentUnpinned": "Clear unpinned"
   },
   "viewer": {
     "engineLoading": "Loading PDF viewer…",
@@ -280,7 +293,16 @@
       "emptyHint": "This PDF has no table of contents. You can add one under Edit → Bookmarks.",
       "create": "Create an outline",
       "loadFailed": "Couldn't read the outline",
-      "loadFailedHint": "The document's table of contents could not be read."
+      "loadFailedHint": "The document's table of contents could not be read.",
+      "edit": "Edit bookmarks",
+      "editTools": "Bookmark editing",
+      "pendingLabel": "Bookmarks edited",
+      "newBookmark": "New bookmark",
+      "addAtPage": "Add bookmark at page {{page}}",
+      "addChild": "Add sub-bookmark",
+      "rename": "Rename",
+      "linkToPage": "Link to page {{page}}",
+      "editEmptyHint": "Add a bookmark for the page you are reading; it is written when you save."
     },
     "resume": {
       "toast": "Continuing where you left off.",
@@ -335,7 +357,13 @@
       "unsaved": "Unsaved changes appear here after you save.",
       "close": "Close split",
       "divider": "Resize the split",
-      "openFailed": "The second pane could not open the file"
+      "openFailed": "The second pane could not open the file",
+      "sameDocument": "Same document",
+      "chooseFile": "Choose a file…",
+      "pickDocument": "Document in the second pane: {{name}}",
+      "compareWith": "Compare with another document…",
+      "openBeside": "Open beside current document",
+      "syncScroll": "Sync scrolling"
     },
     "pan": "Pan tool",
     "copy": "Copy selection",
@@ -594,7 +622,11 @@
       "measureTotal_other": "{{count}} measurements · total {{total}}",
       "measureUndo": "Undo last measurement",
       "measureClear": "Clear all measurements",
-      "measureRemove": "Remove measurement"
+      "measureRemove": "Remove measurement",
+      "copyObject": "Copy",
+      "copied": "Copied. Press Ctrl+V on any page or in another document to paste it.",
+      "copyUnavailable": "This object can't be copied yet. Wait for its preview to load and try again.",
+      "pasteFailed": "The picture on the clipboard couldn't be pasted."
     },
     "signature": {
       "title": "Signatures",
@@ -938,7 +970,8 @@
       "copyAsCode": "Copy as code",
       "readAloudUnavailable": "Speech is not available on this system.",
       "redactQueued": "Blacked out. Save the document to apply it.",
-      "redactUnavailable": "Blackout is not available for this document."
+      "redactUnavailable": "Blackout is not available for this document.",
+      "moreMarkup": "More text marks"
     },
     "context": {
       "title": "Page menu",
@@ -1003,7 +1036,8 @@
       "pictureGroup": "Picture",
       "pageGroup": "Page",
       "offlineTranslator": "Offline translator",
-      "googleTranslate": "Google Translate"
+      "googleTranslate": "Google Translate",
+      "pasteObject": "Paste here"
     },
     "printDialog": {
       "title": "Print",
@@ -1462,6 +1496,22 @@
       "openTool": "Open in Convert",
       "allSupported": "All supported files",
       "fromClipboard": "Made from the clipboard and not saved yet."
+    },
+    "formFill": {
+      "label": "Form fields",
+      "option": "{{field}}: {{option}}",
+      "page": "Form fields on page {{page}}",
+      "xfaOnly": "This form uses XFA and can only be filled in the Forms tool",
+      "savedWithNotes": "The form was saved with notes: {{notes}}"
+    },
+    "fileChanged": {
+      "updated": "Updated from disk",
+      "changed": "{{name}} changed on disk.",
+      "conflict": "{{name}} was changed by another program. Reloading discards your unsaved changes.",
+      "missing": "{{name}} was moved or deleted.",
+      "reload": "Reload",
+      "keepMine": "Keep mine",
+      "saveCopy": "Save a copy…"
     }
   },
   "presentation": {
@@ -1804,7 +1854,9 @@
       "selectionToolbar": "Toolbar on text selection",
       "selectionToolbarHint": "Show a small floating toolbar when you select text in the viewer.",
       "annotationAuthor": "Author name for comments",
-      "annotationAuthorHint": "Written into new marks and into resolved or reopened comments so other reviewers see who made them. Left empty, “vivePDF” is used."
+      "annotationAuthorHint": "Written into new marks and into resolved or reopened comments so other reviewers see who made them. Left empty, “vivePDF” is used.",
+      "reloadOnFileChange": "Reload when the file changes",
+      "reloadOnFileChangeHint": "When another program (such as LaTeX) rewrites an open PDF, show the new version automatically. Documents with unsaved changes always ask first."
     },
     "reading": {
       "fontSize": "Text size",
@@ -1864,7 +1916,7 @@
       "keepHistory": "Keep operation history",
       "keepHistoryHint": "Records finished operations and their output files on this device.",
       "recentLimit": "Recent files to keep",
-      "recentLimitHint": "How many recently opened files are remembered.",
+      "recentLimitHint": "How many recently opened files are remembered. Pinned files are kept on top of this.",
       "confirmClose": "Ask before closing",
       "confirmCloseHint": "Warns when documents are open or an operation is still running.",
       "successToasts": "Show success notifications",
@@ -5804,7 +5856,8 @@
     "eraserSize": "Eraser size",
     "eraserHint": "Rub over a pen drawing to erase that part",
     "styleHint": "Pick a tool or select a mark to change its color and size",
-    "textPlaceholder": "Type here"
+    "textPlaceholder": "Type here",
+    "squiggly": "Squiggly"
   },
   "recovery": {
     "discard": "Discard",
@@ -6091,7 +6144,9 @@
       "documentFileTooLarge": "The document is larger than {{limitMb}} MB.",
       "draftTooLarge": "This design is too large for the automatic draft (limit {{limit}} bytes). Save it as a project file.",
       "notDesign": "This file is not a Studio design.",
-      "badPageNumbers": "The chosen page numbers do not match the pages being exported."
+      "badPageNumbers": "The chosen page numbers do not match the pages being exported.",
+      "outputRequired": "No place to save the result was given.",
+      "outputAndInPlace": "The result can be saved to a new file or over the original, not both."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

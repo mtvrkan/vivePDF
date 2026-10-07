@@ -257,7 +257,20 @@
         "pickHint": "{{count}} / {{max}} araç. Eklemek için bir araca tıklayın.",
         "dragHint": "Sırayı değiştirmek için sürükleyin ya da kutuyu seçip ok tuşlarını kullanın."
       }
-    }
+    },
+    "recentSearch": "Son belgelerde ara",
+    "recentNoMatches": "“{{query}}” ile eşleşen son belge yok.",
+    "recentSort": "Son belgeleri sırala",
+    "recentSorts": {
+      "recent": "En son açılan",
+      "name": "Ad (A–Z)",
+      "folder": "Klasör"
+    },
+    "recentPinned": "Sabitlenenler",
+    "recentOthers": "Diğer belgeler",
+    "pinRecent": "{{name}} belgesini sabitle",
+    "unpinRecent": "{{name}} belgesinin sabitlemesini kaldır",
+    "clearRecentUnpinned": "Sabitlenmemişleri temizle"
   },
   "viewer": {
     "engineLoading": "PDF görüntüleyici yükleniyor…",
@@ -280,7 +293,16 @@
       "emptyHint": "Bu PDF'te içindekiler tablosu yok. Düzenle → Yer imleri bölümünden ekleyebilirsin.",
       "create": "İçindekiler oluştur",
       "loadFailed": "İçindekiler okunamadı",
-      "loadFailedHint": "Belgenin içindekiler tablosu okunamadı."
+      "loadFailedHint": "Belgenin içindekiler tablosu okunamadı.",
+      "edit": "Yer imlerini düzenle",
+      "editTools": "Yer imi düzenleme",
+      "pendingLabel": "Yer imleri düzenlendi",
+      "newBookmark": "Yeni yer imi",
+      "addAtPage": "{{page}}. sayfaya yer imi ekle",
+      "addChild": "Alt yer imi ekle",
+      "rename": "Yeniden adlandır",
+      "linkToPage": "{{page}}. sayfaya bağla",
+      "editEmptyHint": "Okuduğunuz sayfaya bir yer imi ekleyin; kaydettiğinizde dosyaya yazılır."
     },
     "resume": {
       "toast": "Kaldığın yerden devam ediliyor.",
@@ -335,7 +357,13 @@
       "unsaved": "Kaydedilmemiş değişiklikler kaydedince burada görünür.",
       "close": "Bölmeyi kapat",
       "divider": "Bölmeyi yeniden boyutlandır",
-      "openFailed": "İkinci bölme dosyayı açamadı"
+      "openFailed": "İkinci bölme dosyayı açamadı",
+      "sameDocument": "Aynı belge",
+      "chooseFile": "Dosya seç…",
+      "pickDocument": "İkinci bölmedeki belge: {{name}}",
+      "compareWith": "Başka bir belgeyle karşılaştır…",
+      "openBeside": "Geçerli belgenin yanında aç",
+      "syncScroll": "Kaydırmayı eşitle"
     },
     "pan": "Kaydırma eli",
     "copy": "Seçimi kopyala",
@@ -594,7 +622,11 @@
       "measureTotal_other": "{{count}} ölçüm · toplam {{total}}",
       "measureUndo": "Son ölçümü geri al",
       "measureClear": "Tüm ölçümleri temizle",
-      "measureRemove": "Ölçümü sil"
+      "measureRemove": "Ölçümü sil",
+      "copyObject": "Kopyala",
+      "copied": "Kopyalandı. Yapıştırmak için herhangi bir sayfada ya da başka bir belgede Ctrl+V'ye basın.",
+      "copyUnavailable": "Bu nesne henüz kopyalanamıyor. Önizlemesinin yüklenmesini bekleyip tekrar deneyin.",
+      "pasteFailed": "Panodaki resim yapıştırılamadı."
     },
     "signature": {
       "title": "İmzalar",
@@ -938,7 +970,8 @@
       "copyAsCode": "Kod olarak kopyala",
       "readAloudUnavailable": "Bu sistemde seslendirme kullanılamıyor.",
       "redactQueued": "Karartıldı. Uygulamak için belgeyi kaydedin.",
-      "redactUnavailable": "Bu belge için karartma kullanılamıyor."
+      "redactUnavailable": "Bu belge için karartma kullanılamıyor.",
+      "moreMarkup": "Diğer metin işaretleri"
     },
     "context": {
       "title": "Sayfa menüsü",
@@ -1003,7 +1036,8 @@
       "pictureGroup": "Görsel",
       "pageGroup": "Sayfa",
       "offlineTranslator": "Çevrimdışı çevirmen",
-      "googleTranslate": "Google Çeviri"
+      "googleTranslate": "Google Çeviri",
+      "pasteObject": "Buraya yapıştır"
     },
     "printDialog": {
       "title": "Yazdır",
@@ -1462,6 +1496,22 @@
       "openTool": "Dönüştür aracında aç",
       "allSupported": "Desteklenen tüm dosyalar",
       "fromClipboard": "Panodan oluşturuldu, henüz kaydedilmedi."
+    },
+    "formFill": {
+      "label": "Form alanları",
+      "option": "{{field}}: {{option}}",
+      "page": "{{page}}. sayfadaki form alanları",
+      "xfaOnly": "Bu form XFA kullanıyor ve yalnızca Formlar aracında doldurulabilir",
+      "savedWithNotes": "Form notlarla kaydedildi: {{notes}}"
+    },
+    "fileChanged": {
+      "updated": "Diskten güncellendi",
+      "changed": "{{name}} diskte değişti.",
+      "conflict": "{{name}} başka bir program tarafından değiştirildi. Yeniden yüklemek kaydedilmemiş değişikliklerinizi siler.",
+      "missing": "{{name}} taşındı veya silindi.",
+      "reload": "Yeniden yükle",
+      "keepMine": "Benimkini koru",
+      "saveCopy": "Kopya kaydet…"
     }
   },
   "presentation": {
@@ -1804,7 +1854,9 @@
       "selectionToolbar": "Metin seçiminde araç çubuğu",
       "selectionToolbarHint": "Görüntüleyicide metin seçtiğinizde küçük bir yüzen araç çubuğu gösterilir.",
       "annotationAuthor": "Yorumlar için yazar adı",
-      "annotationAuthorHint": "Yeni işaretlemelere ve çözüldü ya da yeniden açıldı olarak işaretlenen yorumlara yazılır; diğer inceleyenler kimin yaptığını görür. Boş bırakılırsa “vivePDF” kullanılır."
+      "annotationAuthorHint": "Yeni işaretlemelere ve çözüldü ya da yeniden açıldı olarak işaretlenen yorumlara yazılır; diğer inceleyenler kimin yaptığını görür. Boş bırakılırsa “vivePDF” kullanılır.",
+      "reloadOnFileChange": "Dosya değişince yeniden yükle",
+      "reloadOnFileChangeHint": "Başka bir program (ör. LaTeX) açık bir PDF'i yeniden yazdığında yeni sürümü otomatik gösterir. Kaydedilmemiş değişiklik içeren belgelerde her zaman önce sorulur."
     },
     "reading": {
       "fontSize": "Yazı boyutu",
@@ -1864,7 +1916,7 @@
       "keepHistory": "İşlem geçmişini tut",
       "keepHistoryHint": "Tamamlanan işlemleri ve çıktı dosyalarını bu cihazda kaydeder.",
       "recentLimit": "Tutulacak son dosya sayısı",
-      "recentLimitHint": "Son açılan kaç dosyanın hatırlanacağı.",
+      "recentLimitHint": "Son açılan kaç dosyanın hatırlanacağı. Sabitlenen dosyalar bu sayıya ek olarak tutulur.",
       "confirmClose": "Kapatmadan önce sor",
       "confirmCloseHint": "Açık belge varken veya bir işlem sürerken uyarır.",
       "successToasts": "Başarı bildirimlerini göster",
@@ -5804,7 +5856,8 @@
     "eraserSize": "Silgi boyutu",
     "eraserHint": "Silmek istediğiniz kalem çizgisinin üzerinden geçin",
     "styleHint": "Rengini ve kalınlığını değiştirmek için bir araç ya da işaret seçin",
-    "textPlaceholder": "Buraya yazın"
+    "textPlaceholder": "Buraya yazın",
+    "squiggly": "Dalgalı alt çizgi"
   },
   "recovery": {
     "discard": "Yoksay",
@@ -6091,7 +6144,9 @@
       "documentFileTooLarge": "Belge {{limitMb}} MB'tan büyük.",
       "draftTooLarge": "Bu tasarım otomatik taslak için çok büyük (sınır {{limit}} bayt). Proje dosyası olarak kaydedin.",
       "notDesign": "Bu dosya bir Stüdyo tasarımı değil.",
-      "badPageNumbers": "Seçilen sayfa numaraları dışa aktarılan sayfalarla eşleşmiyor."
+      "badPageNumbers": "Seçilen sayfa numaraları dışa aktarılan sayfalarla eşleşmiyor.",
+      "outputRequired": "Sonucun kaydedileceği yer belirtilmedi.",
+      "outputAndInPlace": "Sonuç yeni bir dosyaya ya da özgün dosyanın üzerine kaydedilebilir, ikisine birden değil."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

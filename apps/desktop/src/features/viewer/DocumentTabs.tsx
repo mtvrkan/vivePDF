@@ -17,6 +17,7 @@ import { useOpenPdf } from "./useOpenPdf";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useDocumentWindow } from "./useDocumentWindow";
 import { useTabTearOff } from "./tabTearOff";
+import { openBeside } from "./split/splitTargets";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { isPendingChange } from "./overlay/pending";
 import { useCollectionsStore } from "@/features/home/collectionsStore";
@@ -404,6 +405,9 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                 : []),
               { type: "separator", id: "sep-window" },
               { type: "item", id: "move-to-window", label: t("viewer.window.moveToNew"), onSelect: () => void moveToWindow(menuDocId) },
+              ...(activeDocumentId && activeDocumentId !== menuDocId && registered[activeDocumentId]
+                ? [{ type: "item" as const, id: "open-beside", label: t("viewer.split.openBeside"), onSelect: () => openBeside(activeDocumentId, menuDocId) }]
+                : []),
               { type: "separator", id: "sep-file" },
               {
                 type: "item",

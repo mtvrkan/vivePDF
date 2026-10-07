@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Eye, X } from "lucide-react";
+import { Eye, Link2, Link2Off, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { MatchFlag } from "@embedpdf/models";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
@@ -20,38 +20,57 @@ import { PageView } from "../PageView";
 import { effectiveSearchQuery } from "../search/searchQuery";
 import { useSearchBarState } from "../search/useSearchBarState";
 import { useUnsavedMarks } from "../useUnsavedMarks";
+import { SplitDocumentPicker } from "./SplitDocumentPicker";
+import { SplitPasswordForm } from "./SplitPasswordForm";
 import { useRestoredSplitPage } from "./useRestoredSplitPage";
 import { useSplitDocument } from "./useSplitDocument";
+import { useSyncedScroll } from "./useSyncedScroll";
 
 const SEARCH_DEBOUNCE_MS = 250;
 
-type SplitReadPaneProps = { primaryId: string; path: string; password: string | null; pageColors: PageColorScheme };
+type SplitReadPaneProps = {
+  primaryId: string;
+  primaryPath: string;
+  path: string;
+  password: string | null;
+  separate: boolean;
+  syncScroll: boolean;
+  pageColors: PageColorScheme;
+};
 
-export function SplitReadPane({ primaryId, path, password, pageColors }: SplitReadPaneProps) {
+export function SplitReadPane({ primaryId, primaryPath, path, password, separate, syncScroll, pageColors }: SplitReadPaneProps) {
   const { t } = useTranslation();
   const revision = useSplitViewStore((state) => state.revisions[path] ?? 0);
   const [attempt, setAttempt] = useState(0);
   const { documentId, status, error } = useSplitDocument(path, password, revision, attempt);
   const unsavedMarks = useUnsavedMarks(primaryId);
   const queued = usePendingChangesStore((state) => pendingChangesFor(state.changes, primaryId).length);
-  const unsaved = unsavedMarks || queued > 0;
+  const unsaved = !separate && (unsavedMarks || queued > 0);
+  const locked = separate && status === "error" && error?.code === "NEEDS_PASSWORD";
   const name = fileNameOf(path);
 
   return (
     <section className="flex h-full min-h-0 min-w-0 flex-col" aria-label={t("viewer.split.pane", { name })} data-split-pane="" data-split-document={documentId ?? undefined}>
       <div className="glass-flat flex h-9 shrink-0 items-center gap-2 border-b px-3 text-xs">
         <Eye className="size-4 shrink-0 text-muted-foreground" aria-hidden />
-        <span className="min-w-0 truncate text-sm" title={name}>
-          {name}
-        </span>
+        <SplitDocumentPicker primaryId={primaryId} primaryPath={primaryPath} path={path} name={name} separate={separate} />
         <span className="glass-chip shrink-0 rounded-md px-1.5 py-0.5 text-muted-foreground">{t("viewer.split.readOnly")}</span>
         {unsaved ? <span className="min-w-0 flex-1 truncate text-muted-foreground" role="status">{t("viewer.split.unsaved")}</span> : <span className="flex-1" />}
         {documentId ? <PaneCounter documentId={documentId} /> : null}
-        <IconButton icon={X} label={t("viewer.split.close")} onClick={() => useSplitViewStore.getState().close(path)} />
+        <IconButton
+          icon={syncScroll ? Link2 : Link2Off}
+          label={t("viewer.split.syncScroll")}
+          active={syncScroll}
+          aria-pressed={syncScroll}
+          onClick={() => useSplitViewStore.getState().toggleSync(primaryPath)}
+        />
+        <IconButton icon={X} label={t("viewer.split.close")} onClick={() => useSplitViewStore.getState().close(primaryPath)} />
       </div>
       <div className="relative min-h-0 flex-1">
         {status === "success" && documentId ? (
-          <ReadPaneDocument key={documentId} documentId={documentId} path={path} password={password} pageColors={pageColors} />
+          <ReadPaneDocument key={documentId} documentId={documentId} primaryId={primaryId} syncScroll={syncScroll} path={path} password={password} pageColors={pageColors} />
+        ) : locked ? (
+          <SplitPasswordForm key={`${path}:${password ?? ""}`} name={name} wrong={password !== null} onSubmit={(value) => useSplitViewStore.getState().setSecondary(primaryPath, { path, password: value })} />
         ) : status === "error" ? (
           <ErrorState title={t("viewer.split.openFailed")} message={error ? describeError(t, error) : t("errors.INTERNAL")} onRetry={() => setAttempt((value) => value + 1)} />
         ) : (
@@ -74,9 +93,9 @@ function PaneCounter({ documentId }: { documentId: string }) {
   );
 }
 
-type ReadPaneDocumentProps = { documentId: string; path: string; password: string | null; pageColors: PageColorScheme };
+type ReadPaneDocumentProps = { documentId: string; primaryId: string; syncScroll: boolean; path: string; password: string | null; pageColors: PageColorScheme };
 
-function ReadPaneDocument({ documentId, path, password, pageColors }: ReadPaneDocumentProps) {
+function ReadPaneDocument({ documentId, primaryId, syncScroll, path, password, pageColors }: ReadPaneDocumentProps) {
   const hostRef = useRef<HTMLDivElement>(null);
   const { provides: search } = useSearch(documentId);
   const { provides: selection } = useSelectionCapability();
@@ -86,6 +105,7 @@ function ReadPaneDocument({ documentId, path, password, pageColors }: ReadPaneDo
   const wholeWord = useSearchBarState((state) => state.wholeWord);
   const source = useMemo(() => ({ path, password }), [path, password]);
   useRestoredSplitPage(documentId, path);
+  useSyncedScroll(syncScroll, primaryId, documentId);
 
   useEffect(() => {
     if (!search || !searchOpen) return;

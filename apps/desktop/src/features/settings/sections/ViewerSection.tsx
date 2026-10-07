@@ -18,6 +18,7 @@ export function ViewerSection({ query, onEmptyChange }: SettingsSectionProps) {
   const selectionColor = usePreferencesStore((state) => state.selectionColor);
   const annotationAuthor = usePreferencesStore((state) => state.annotationAuthor);
   const selectionToolbar = usePreferencesStore((state) => state.selectionToolbar);
+  const reloadOnFileChange = usePreferencesStore((state) => state.reloadOnFileChange);
   const updatePreferences = usePreferencesStore((state) => state.update);
   const panels = useViewerPanelsStore((state) => state.panels);
   const togglePanel = useViewerPanelsStore((state) => state.toggle);
@@ -50,6 +51,9 @@ export function ViewerSection({ query, onEmptyChange }: SettingsSectionProps) {
       </SettingRow>
       <SettingRow label={t("settings.viewer.selectionToolbar")} hint={t("settings.viewer.selectionToolbarHint")}>
         <Checkbox label="" checked={selectionToolbar} onChange={(value) => updatePreferences({ selectionToolbar: value })} />
+      </SettingRow>
+      <SettingRow label={t("settings.viewer.reloadOnFileChange")} hint={t("settings.viewer.reloadOnFileChangeHint")}>
+        <Checkbox label="" checked={reloadOnFileChange} onChange={(value) => updatePreferences({ reloadOnFileChange: value })} />
       </SettingRow>
       <SettingRow label={t("settings.viewer.selectionColor")} hint={t("settings.viewer.selectionColorHint")}>
         <ColorSwatch value={selectionColor} onChange={(value) => updatePreferences({ selectionColor: value })} label={t("settings.viewer.selectionColor")} customLabel={t("colorPicker.custom")} />

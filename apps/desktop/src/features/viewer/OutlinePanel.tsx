@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
-import { Bookmark, ChevronRight, ChevronsDownUp, ChevronsUpDown, ExternalLink, ListTree } from "lucide-react";
+import { Bookmark, ChevronRight, ChevronsDownUp, ChevronsUpDown, ExternalLink, ListTree, Pencil } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { useRegistry } from "@embedpdf/core/react";
@@ -14,8 +14,11 @@ import { cn } from "@/shared/lib/cn";
 import { openExternal } from "@/shared/lib/openExternal";
 import { pageLabelOf } from "@/shared/lib/pageLabels";
 import { usePageLabels } from "@/shared/store/pageLabelsStore";
+import { pendingChangesFor, usePendingChangesStore } from "@/shared/store/pendingChangesStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { isOpenableUri } from "./linkUri";
+import { OutlineEditor } from "./outline/OutlineEditor";
+import { pendingOutline, rowsFromItems } from "./outline/outlineEdit";
 import { activeOutlineId, ancestorIds, flattenOutline, shownActiveId, visibleOutline, type OutlineRow } from "./outlineTree";
 import { usePageNavigation } from "./usePageNavigation";
 
@@ -28,13 +31,15 @@ export function OutlinePanel({ documentId }: { documentId: string }) {
   const { registry, documents } = useRegistry();
   const pdfDocument = documents[documentId]?.document ?? null;
   const { state: scrollState } = useScroll(documentId);
-  const { followLink } = usePageNavigation(documentId);
+  const { followLink, jumpTo } = usePageNavigation(documentId);
   const labels = usePageLabels(documentId);
   const [load, setLoad] = useState<LoadState>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(() => new Set());
   const [filter, setFilter] = useState("");
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const pendingItems = usePendingChangesStore((state) => pendingOutline(pendingChangesFor(state.changes, documentId))?.items ?? null);
   const treeRef = useRef<HTMLUListElement>(null);
 
   useEffect(() => {
@@ -57,7 +62,9 @@ export function OutlinePanel({ documentId }: { documentId: string }) {
     };
   }, [registry, pdfDocument, attempt]);
 
-  const rows = useMemo(() => (load.status === "ready" ? load.rows : []), [load]);
+  const pendingRows = useMemo(() => (pendingItems ? rowsFromItems(pendingItems) : null), [pendingItems]);
+  const shown: LoadState = pendingRows ? { status: "ready", rows: pendingRows } : load;
+  const rows = useMemo(() => pendingRows ?? (load.status === "ready" ? load.rows : []), [pendingRows, load]);
   const activeId = useMemo(() => activeOutlineId(rows, scrollState.currentPage - 1), [rows, scrollState.currentPage]);
 
   useEffect(() => {
@@ -86,8 +93,9 @@ export function OutlinePanel({ documentId }: { documentId: string }) {
     });
 
   const activate = (row: OutlineRow) => {
-    if (row.target && row.pageIndex !== null) {
-      followLink(row.target, row.pageIndex);
+    if (row.pageIndex !== null) {
+      if (row.target) followLink(row.target, row.pageIndex);
+      else jumpTo(row.pageIndex + 1);
       return;
     }
     if (row.uri && isOpenableUri(row.uri)) void openExternal(row.uri).catch(() => toast("error", t("viewer.link.openFailed")));
@@ -148,16 +156,22 @@ export function OutlinePanel({ documentId }: { documentId: string }) {
       <div className="flex h-row items-center gap-2 border-b px-3">
         <ListTree className="size-4 text-primary" aria-hidden />
         <span className="flex-1 truncate text-sm font-semibold">{t("viewer.outline.title")}</span>
-        <IconButton icon={ChevronsUpDown} label={t("viewer.outline.expandAll")} disabled={branchIds.length === 0 || filtering} onClick={() => setExpanded(new Set(branchIds))} />
-        <IconButton icon={ChevronsDownUp} label={t("viewer.outline.collapseAll")} disabled={branchIds.length === 0 || filtering} onClick={() => setExpanded(new Set())} />
+        {editing ? null : (
+          <>
+            <IconButton icon={ChevronsUpDown} label={t("viewer.outline.expandAll")} disabled={branchIds.length === 0 || filtering} onClick={() => setExpanded(new Set(branchIds))} />
+            <IconButton icon={ChevronsDownUp} label={t("viewer.outline.collapseAll")} disabled={branchIds.length === 0 || filtering} onClick={() => setExpanded(new Set())} />
+          </>
+        )}
+        <IconButton icon={Pencil} label={t("viewer.outline.edit")} active={editing} aria-pressed={editing} onClick={() => setEditing((value) => !value)} />
       </div>
-      {load.status === "loading" ? (
+      {editing ? <OutlineEditor documentId={documentId} pageCount={pdfDocument?.pageCount ?? scrollState.totalPages} currentPage={Math.max(1, scrollState.currentPage)} reloadKey={pdfDocument} onOpen={activate} /> : null}
+      {!editing && shown.status === "loading" ? (
         <div className="p-2">
           <SkeletonCard lines={6} />
         </div>
       ) : null}
-      {load.status === "error" ? <ErrorState title={t("viewer.outline.loadFailed")} message={t("viewer.outline.loadFailedHint")} onRetry={() => setAttempt((value) => value + 1)} /> : null}
-      {load.status === "ready" && rows.length === 0 ? (
+      {!editing && shown.status === "error" ? <ErrorState title={t("viewer.outline.loadFailed")} message={t("viewer.outline.loadFailedHint")} onRetry={() => setAttempt((value) => value + 1)} /> : null}
+      {!editing && shown.status === "ready" && rows.length === 0 ? (
         <EmptyState
           icon={ListTree}
           title={t("viewer.outline.empty")}
@@ -169,7 +183,7 @@ export function OutlinePanel({ documentId }: { documentId: string }) {
           }
         />
       ) : null}
-      {load.status === "ready" && rows.length > 0 ? (
+      {!editing && shown.status === "ready" && rows.length > 0 ? (
         <>
           <div className="border-b p-2">
             <TextInput

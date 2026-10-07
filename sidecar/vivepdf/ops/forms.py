@@ -21,7 +21,7 @@ from vivepdf.ops._form_appearance import (
 from vivepdf.ops._form_calc import recalculate
 from vivepdf.ops._inplace import INCREMENTAL_SAVE_ERRORS
 from vivepdf.ops._name_syntax import pdf_name
-from vivepdf.ops._output import OutputResult, prepare_output, save_document
+from vivepdf.ops._output import OutputResult, prepare_output, replace_patiently, save_document
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
@@ -41,6 +41,12 @@ OFF_WORDS = ("", "off", "false", "0")
 CHOICE_IS_EDITABLE = 262144
 
 
+class FieldWidget(RpcModel):
+    page: int
+    visible_rect: list[float]
+    state: str | None = None
+
+
 class FormField(RpcModel):
     name: str
     kind: str
@@ -52,10 +58,12 @@ class FormField(RpcModel):
     required: bool
     multiline: bool
     rect: list[float]
+    visible_rect: list[float] = Field(default_factory=list)
     multi_select: bool = False
     option_labels: list[str] = Field(default_factory=list)
     max_length: int | None = None
     editable: bool = False
+    widgets: list[FieldWidget] = Field(default_factory=list)
 
 
 class FieldsParams(RpcModel):
@@ -161,6 +169,19 @@ def form_widgets(
     return pages, groups
 
 
+def visible_rect(widget: pymupdf.Widget) -> list[float]:
+    turned = widget.rect * widget.parent.rotation_matrix
+    turned.normalize()
+    return [turned.x0, turned.y0, turned.x1, turned.y1]
+
+
+def _field_widget(widget: pymupdf.Widget, kind: str) -> FieldWidget:
+    state = str(widget.on_state()) if kind in ("radio", "checkbox") else None
+    return FieldWidget(
+        page=widget.parent.number + 1, visible_rect=visible_rect(widget), state=state
+    )
+
+
 def describe_field(
     document: pymupdf.Document, name: str, widgets: list[pymupdf.Widget], page: int
 ) -> FormField:
@@ -195,9 +216,11 @@ def describe_field(
         if kind == "text"
         else False,
         rect=[first.rect.x0, first.rect.y0, first.rect.x1, first.rect.y1],
+        visible_rect=visible_rect(first),
         multi_select=is_multi_select(first),
         max_length=max_length or None,
         editable=kind == "combobox" and bool(first.field_flags & CHOICE_IS_EDITABLE),
+        widgets=[_field_widget(widget, kind) for widget in widgets],
     )
 
 
@@ -257,7 +280,8 @@ def list_fields(params: FieldsParams, progress: Progress) -> FieldsResult:
 class FillParams(RpcModel):
     path: str
     password: str | None = None
-    output: str
+    output: str | None = None
+    in_place: bool = False
     overwrite: bool = False
     values: dict[str, Any] = Field(default_factory=dict)
     flatten: bool = False
@@ -455,10 +479,10 @@ def _partial_path(target: Path) -> Path:
 
 
 def open_form(
-    path: str, password: str | None, target: Path
+    path: str, password: str | None, target: Path, copy: bool = False
 ) -> tuple[pymupdf.Document, Path | None]:
     document = open_document(path, password)
-    if not is_signed_document(document):
+    if not copy and not is_signed_document(document):
         return document, None
     document.close()
     partial = _partial_path(target)
@@ -484,7 +508,7 @@ def save_form(
     document.close()
     if target.exists():
         forget_document(str(target))
-    partial.replace(target)
+    replace_patiently(partial, target)
     return OutputResult(
         output=str(target), page_count=page_count, bytes=target.stat().st_size
     ), True
@@ -506,18 +530,37 @@ def _refuse_signed_flatten(partial: Path | None, flatten: bool) -> None:
         )
 
 
+def _fill_target(params: FillParams) -> Path:
+    if params.in_place and params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "give either an output file or in-place, not both",
+            {"reason": "outputAndInPlace"},
+        )
+    if params.in_place:
+        return Path(params.path).resolve()
+    if not params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "an output file or in-place is required",
+            {"reason": "outputRequired"},
+        )
+    return prepare_output(params.output, [params.path], params.overwrite)
+
+
 @op("forms.fill", FillParams)
 def fill_fields(params: FillParams, progress: Progress) -> FillResult:
-    target = prepare_output(params.output, [params.path], params.overwrite)
+    target = _fill_target(params)
     report = FillReport()
     filled = 0
-    document, partial = open_form(params.path, params.password, target)
+    document, partial = open_form(params.path, params.password, target, copy=params.in_place)
     try:
         if not document.is_form_pdf:
             raise OpError(
                 ErrorCode.INVALID_PARAMS, "document has no form fields", {"reason": "noForm"}
             )
-        _refuse_signed_flatten(partial, params.flatten)
+        signed = partial is not None and (not params.in_place or is_signed_document(document))
+        _refuse_signed_flatten(partial if signed else None, params.flatten)
         appearance = UnicodeAppearance(document)
         _pages, groups = form_widgets(document)
         names = [name for name in params.values if name in groups]
@@ -528,10 +571,11 @@ def fill_fields(params: FillParams, progress: Progress) -> FillResult:
             progress.report((position + 1) / max(1, len(names)), "progress.filling")
         calculation = recalculate(document, appearance, params.language)
         appearance.finish()
-        xfa_removed = partial is None and remove_xfa(document)
+        xfa_removed = not signed and remove_xfa(document)
         if params.flatten:
             document.bake(annots=False, widgets=True)
-        saved, kept = save_form(document, target, partial)
+        saved, incremental = save_form(document, target, partial)
+        kept = signed and incremental
         return FillResult(
             output=saved.output,
             page_count=saved.page_count,
