@@ -11,6 +11,7 @@ const ALT_KEY = String.fromCharCode(0xe00a);
 const LEFT_KEY = String.fromCharCode(0xe012);
 const RIGHT_KEY = String.fromCharCode(0xe014);
 const DOWN_KEY = String.fromCharCode(0xe015);
+const SELECTION_SETTLE_MS = 700;
 
 async function pagePoint(pageIndex: number, x: number, y: number) {
   const page = $(`[data-page-index="${pageIndex}"]`);
@@ -210,6 +211,9 @@ describe("viewer", () => {
     await clickButton(t("annotate.freeText"));
     await clickAt(150, 240);
     await browser.waitUntil(async () => (await layerText()).includes(t("annotate.textPlaceholder")), { timeoutMsg: "the text box did not open with its placeholder" });
+    await browser.pause(SELECTION_SETTLE_MS);
+    expect(await layerText()).toContain(t("annotate.textPlaceholder"));
+    expect(await $('[data-page-index="0"] [data-epdf-handle]').isExisting()).toBe(true);
     await browser.keys("deneme");
     await clickAt(350, 330);
     await browser.waitUntil(async () => (await layerText()).includes("deneme"), { timeoutMsg: "the typed text was not kept" });
@@ -227,6 +231,15 @@ describe("viewer", () => {
     await clickButton(t("annotate.square"));
     await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 300, 120)).down().move({ ...(await pagePoint(0, 340, 150)), duration: 80 }).move({ ...(await pagePoint(0, 380, 180)), duration: 80 }).up().perform();
     await browser.waitUntil(async () => !(await pressed(t("annotate.square"))), { timeoutMsg: "the rectangle tool stayed on after drawing one" });
+
+    await clickButton(t("annotate.line"));
+    await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 60, 80)).down().move({ ...(await pagePoint(0, 150, 80)), duration: 80 }).move({ ...(await pagePoint(0, 240, 80)), duration: 80 }).up().perform();
+    await $('[data-page-index="0"] [data-epdf-vertex]').waitForExist({ timeoutMsg: "the drawn line was not selected" });
+    await clickAt(350, 330);
+    await $('[data-page-index="0"] [data-epdf-vertex]').waitForExist({ reverse: true, timeoutMsg: "the line stayed selected after a click beside it" });
+    await clickAt(150, 80);
+    await browser.pause(SELECTION_SETTLE_MS);
+    expect(await $('[data-page-index="0"] [data-epdf-vertex]').isExisting()).toBe(true);
   });
 
   it("starts the presentation from the first page on F5 and from the current page on Shift F5", async () => {

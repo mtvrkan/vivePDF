@@ -37,6 +37,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Viewer annotations: a new text box no longer vanishes the moment it is placed, and clicking a line, arrow or other mark selects it instead of letting go of it straight away; the click-beside-to-deselect fix from the day before also undid the selection the same click had just made [2026-10-07]
 - Viewer right-click menu: on slides and documents whose pages sit on a full-page background picture (a paper texture or slide template), right-clicking text no longer offers an Image section for that background; real pictures on the page still get it, and full-page scans and photos without visible text are still treated as pictures [2026-10-07]
 - Viewer: one click beside a selected mark deselects it again; the page forgot where the click started whenever the screen updated in between, so it often took a second click [2026-10-06]
 - Viewer: the pen draws in the colour you pick; it always drew in red because the colour went to a field the pen ignores [2026-10-06]
