@@ -24,6 +24,7 @@ export function clickSelection(
     const range = tiles.slice(start, end + 1).map((tile) => tile.key);
     return { keys: mode === "range" ? range : [...new Set([...selected, ...range])], anchor };
   }
+  if (mode === "replace" && selected.size === 1 && selected.has(key)) return { keys: [], anchor: key };
   if (mode === "replace" || mode === "range") return { keys: [key], anchor: key };
   return { keys: [...toggledSelection(selected, key)], anchor: key };
 }
@@ -35,11 +36,10 @@ export function spanSelection(tiles: OrganizerTile[], base: ReadonlySet<string>,
   return [...new Set([...base, ...tiles.slice(start, end + 1).map((tile) => tile.key)])];
 }
 
-export type TileClickAction = { kind: "preview" } | { kind: "select"; mode: ClickMode } | { kind: "none" };
+export type TileClickAction = { kind: "select"; mode: ClickMode } | { kind: "none" };
 
 export function tileClickAction(event: ClickModifiers, multiSelect: boolean, dragged: boolean): TileClickAction {
   if (dragged) return { kind: "none" };
-  if (!multiSelect && !event.shiftKey && !event.ctrlKey && !event.metaKey) return { kind: "preview" };
   return { kind: "select", mode: tileClickMode(event, multiSelect) };
 }
 

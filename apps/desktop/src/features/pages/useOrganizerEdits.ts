@@ -63,6 +63,23 @@ export function useOrganizerEdits(revealIndex: (index: number) => void) {
     commit(state.tiles.filter((tile) => !state.selected.has(tile.key)));
   }, [commit]);
 
+  const rotateTile = useCallback(
+    (key: string, delta: 90 | -90) => {
+      const { tiles } = useOrganizerStore.getState();
+      commit(tiles.map((tile) => (tile.key === key ? { ...tile, rotate: rotateBy(tile.rotate, delta) } : tile)));
+    },
+    [commit],
+  );
+
+  const deleteTile = useCallback(
+    (key: string) => {
+      const { tiles } = useOrganizerStore.getState();
+      if (tiles.length <= 1 || !tiles.some((tile) => tile.key === key)) return;
+      commit(tiles.filter((tile) => tile.key !== key));
+    },
+    [commit],
+  );
+
   const deleteRelative = useCallback(
     (direction: "before" | "after") => {
       const { tiles, selected } = useOrganizerStore.getState();
@@ -174,6 +191,8 @@ export function useOrganizerEdits(revealIndex: (index: number) => void) {
     updateSelected,
     rotateSelected,
     deleteSelected,
+    rotateTile,
+    deleteTile,
     deleteRelative,
     reverseAll,
     duplicateSelected,

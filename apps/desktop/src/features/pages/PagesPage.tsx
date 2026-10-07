@@ -145,9 +145,9 @@ export function PagesPage() {
   };
 
   const clickTile = (event: MouseEvent, key: string) => {
+    if (event.detail > 1) return;
     const action = tileClickAction(event, multiSelect, wasDragged());
-    if (action.kind === "preview") preview.open(key);
-    else if (action.kind === "select") applyClick(key, action.mode);
+    if (action.kind === "select") applyClick(key, action.mode);
   };
 
   const checkTile = (event: MouseEvent, key: string) => {
@@ -267,6 +267,9 @@ export function PagesPage() {
       pointerDown: onTilePointerDown,
       click: clickTile,
       check: checkTile,
+      preview: preview.open,
+      rotate: edits.rotateTile,
+      remove: edits.deleteTile,
       menu: openMenu,
       toggleCut: edits.toggleCutAt,
     };
@@ -276,6 +279,9 @@ export function PagesPage() {
       pointerDown: (event, key) => tileActionsRef.current?.pointerDown(event, key),
       click: (event, key) => tileActionsRef.current?.click(event, key),
       check: (event, key) => tileActionsRef.current?.check(event, key),
+      preview: (key) => tileActionsRef.current?.preview(key),
+      rotate: (key, delta) => tileActionsRef.current?.rotate(key, delta),
+      remove: (key) => tileActionsRef.current?.remove(key),
       menu: (key, x, y) => tileActionsRef.current?.menu(key, x, y),
       toggleCut: (key) => tileActionsRef.current?.toggleCut(key),
     }),
@@ -437,7 +443,7 @@ export function PagesPage() {
             aria-label={t("nav.pages")}
             aria-activedescendant={anchorPosition >= range.start && anchorPosition < range.end ? `page-tile-${anchor}` : undefined}
             tabIndex={0}
-            className="grid gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+            className="grid gap-3 outline-none"
             style={{ gridTemplateColumns: `repeat(${grid.metrics.columns}, minmax(${zoom}px, 1fr))`, gridAutoRows: `${grid.metrics.rowHeight}px`, paddingTop: grid.paddingTop, paddingBottom: grid.paddingBottom }}
           >
             {tiles.slice(range.start, range.end).map((tile, offset) => {
@@ -456,7 +462,6 @@ export function PagesPage() {
                   dropBefore={dropIndex === position}
                   dropAfter={dropIndex === tiles.length && isLast}
                   dimmed={Boolean(drag && (drag.key === tile.key || (isSelected && selected.has(drag.key))))}
-                  clickPreviews={!multiSelect}
                   labelText={labelTexts ? labelTexts[position] : null}
                   labelStart={Boolean(labels[tile.key])}
                   sources={sources}

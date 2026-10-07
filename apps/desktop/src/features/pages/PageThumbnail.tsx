@@ -4,24 +4,20 @@ import { useTranslation } from "react-i18next";
 import { PdfErrorCode } from "@embedpdf/models";
 import { useRenderCapability } from "@embedpdf/plugin-render/react";
 import { cn } from "@/shared/lib/cn";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import type { OrganizerSource, OrganizerTile } from "@/types";
 import { PaperPreview } from "./PaperPreview";
 import { thumbnails } from "./thumbnailCache";
+import { thumbnailScale } from "./thumbnailScale";
 import { observeVisibility } from "./sharedVisibility";
 import { useOrganizerStore } from "./organizerStore";
 
 const RENDER_SETTLE_MS = 120;
 
-function scaleForWidth(width: number): number {
-  if (width <= 160) return 0.25;
-  if (width <= 260) return 0.45;
-  if (width <= 600) return 0.8;
-  return 1.5;
-}
-
-function RenderedPage({ documentId, pageIndex, width }: { documentId: string; pageIndex: number; width: number }) {
+function RenderedPage({ documentId, pageIndex, width, height }: { documentId: string; pageIndex: number; width: number; height: number }) {
   const { provides: render } = useRenderCapability();
-  const scale = scaleForWidth(width);
+  const pageSize = useDocumentStore((state) => state.documents[documentId]?.info?.pageSizes[pageIndex] ?? null);
+  const scale = thumbnailScale({ width, height }, pageSize, window.devicePixelRatio);
   const key = `${documentId}:${pageIndex}:${scale}`;
   const [url, setUrl] = useState<string | null>(() => thumbnails.recall(key));
   const [visible, setVisible] = useState(false);
@@ -76,7 +72,7 @@ function RenderedPage({ documentId, pageIndex, width }: { documentId: string; pa
 
   return (
     <div ref={ref} className="flex size-full items-center justify-center">
-      {url ? <img src={url} alt="" draggable={false} className="max-h-full max-w-full object-contain shadow-none" /> : <div className="size-full animate-pulse bg-muted" />}
+      {url ? <img src={url} alt="" draggable={false} decoding="async" className="max-h-full max-w-full object-contain shadow-none" /> : <div className="size-full animate-pulse bg-muted" />}
     </div>
   );
 }
@@ -101,7 +97,7 @@ export const PageThumbnail = memo(function PageThumbnail({ tile, sources, width,
       >
         {tile.kind === "page" ? (
           sources[tile.sourceId]?.embedDocId ? (
-            <RenderedPage documentId={sources[tile.sourceId].embedDocId as string} pageIndex={tile.index - 1} width={width} />
+            <RenderedPage documentId={sources[tile.sourceId].embedDocId as string} pageIndex={tile.index - 1} width={width} height={height} />
           ) : unavailable ? (
             <Lock role="img" aria-label={t("tools.pages.sourceUnavailable")} className="size-8 text-muted-foreground" />
           ) : (

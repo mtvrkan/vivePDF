@@ -11,7 +11,8 @@ export type PendingChange =
   | { id: string; kind: "bookmarkAdded"; title: string; page: number; x?: number; y?: number; label: string }
   | { id: string; kind: "metadataChanged"; metadata: { title: string; author: string; subject: string; keywords: string }; label: string }
   | { id: string; kind: "outlineReplaced"; items: BookmarkItem[]; label: string }
-  | { id: string; kind: "formFilled"; values: Record<string, string | boolean | string[]>; label: string };
+  | { id: string; kind: "formFilled"; values: Record<string, string | boolean | string[]>; label: string }
+  | { id: string; kind: "pagesEdited"; deleted: number[]; rotations: Record<number, number>; label: string };
 
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 

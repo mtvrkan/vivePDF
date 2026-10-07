@@ -1008,7 +1008,6 @@
       "goToPage": "Ir a la página…",
       "goToPagePrompt": "Ir a la página",
       "copyPageLink": "Copiar enlace a la página",
-      "deletePage": "Eliminar página…",
       "closeOthers": "Cerrar los demás",
       "closeAll": "Cerrar todos",
       "copyPath": "Copiar ruta",
@@ -1512,6 +1511,23 @@
       "reload": "Recargar",
       "keepMine": "Conservar la mía",
       "saveCopy": "Guardar una copia…"
+    },
+    "pageEdits": {
+      "label": "Cambios de páginas",
+      "menu": "Editar página",
+      "rotateRight": "Girar página a la derecha (se guarda)",
+      "rotateLeft": "Girar página a la izquierda (se guarda)",
+      "delete": "Eliminar página",
+      "restore": "Restaurar página",
+      "openOrganizer": "Abrir en el organizador de páginas",
+      "rotateRightPage": "Girar la página {{page}} a la derecha",
+      "deletePage": "Eliminar la página {{page}}",
+      "restorePage": "Restaurar la página {{page}}",
+      "markedDeleted": "se eliminará al guardar",
+      "markedRotated": "se girará {{degrees}}° al guardar",
+      "willDelete": "Esta página se eliminará al guardar.",
+      "willRotate": "Se girará {{degrees}}° al guardar",
+      "keepOnePage": "Un documento necesita al menos una página. Restaure primero otra página."
     }
   },
   "presentation": {
@@ -3920,7 +3936,7 @@
       "scannedNone": "No se encontró ninguna página escaneada; la selección no ha cambiado.",
       "inspecting": "Inspeccionando páginas… Vuelva a hacer clic para cancelar.",
       "multiSelectMode": "Modo de selección múltiple: cada página en la que hace clic se añade a la selección",
-      "selectHint": "Para seleccionar varias páginas, marque la casilla de la esquina de una tarjeta, arrastre sobre una zona vacía o haga clic con Ctrl/Shift.",
+      "selectHint": "Haz clic en una página para seleccionarla y doble clic para previsualizarla. Para varias páginas, marca la casilla de la esquina de la tarjeta, arrastra sobre un área vacía o haz clic con Ctrl/Mayús.",
       "selectPage": "Seleccionar página {{page}}",
       "selectPageHint": "Añadir o quitar de la selección (Shift añade un rango)",
       "selectionBar": "Páginas seleccionadas",
@@ -4007,6 +4023,18 @@
         "millimetres": "{{value}} mm",
         "color": "Color de las líneas",
         "margin": "Línea de margen"
+      },
+      "toolbar": "Herramientas de página",
+      "groups": {
+        "select": "Seleccionar",
+        "insert": "Insertar",
+        "edit": "Editar páginas",
+        "split": "Dividir"
+      },
+      "tile": {
+        "rotateLeft": "Girar la página {{page}} a la izquierda",
+        "rotateRight": "Girar la página {{page}} a la derecha",
+        "delete": "Eliminar la página {{page}}"
       }
     },
     "dropHint": "Suelte el PDF aquí o haga clic para elegirlo",
@@ -6146,7 +6174,8 @@
       "notDesign": "Este archivo no es un diseño de Estudio.",
       "badPageNumbers": "Los números de página elegidos no coinciden con las páginas que se exportan.",
       "outputRequired": "No se indicó dónde guardar el resultado.",
-      "outputAndInPlace": "El resultado se puede guardar en un archivo nuevo o sobre el original, pero no en ambos."
+      "outputAndInPlace": "El resultado se puede guardar en un archivo nuevo o sobre el original, pero no en ambos.",
+      "allPagesDeleted": "Todas las páginas se marcaron para eliminar; un PDF necesita al menos una página."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",

@@ -51,6 +51,12 @@ export function rowsRange(metrics: GridMetrics, top: number, bottom: number, ove
   return { start: firstRow * metrics.columns, end: Math.min(metrics.count, (lastRow + 1) * metrics.columns) };
 }
 
+export function sameRowWindow(metrics: GridMetrics, fromTop: number, toTop: number, height: number, overscan: number): boolean {
+  const before = rowsRange(metrics, fromTop, fromTop + height, overscan);
+  const after = rowsRange(metrics, toTop, toTop + height, overscan);
+  return before.start === after.start && before.end === after.end;
+}
+
 export function mirrorBox(metrics: GridMetrics, box: GridBox): GridBox {
   return { ...box, left: metrics.width - box.left - box.width };
 }

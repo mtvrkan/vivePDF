@@ -201,7 +201,7 @@ const SHORTCUTS = [
   ["Ctrl+E", "extract"],
   ["Ctrl+A / Esc", "selectAllNone"],
   ["Ctrl+G", "range"],
-  ["{click} / Space / Enter", "preview"],
+  ["{doubleClick} / Space / Enter", "preview"],
   ["Enter / Shift+← →", "previewSelect"],
   ["Shift+F10", "contextMenu"],
   ["Shift+{click} / Ctrl+{click}", "multiSelect"],

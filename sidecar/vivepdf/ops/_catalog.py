@@ -180,6 +180,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "pages.assemble",
         "pages.assemble_parts",
         "pages.delete",
+        "pages.edit",
         "pages.extract",
         "pages.insert_blank",
         "pages.insert_from",

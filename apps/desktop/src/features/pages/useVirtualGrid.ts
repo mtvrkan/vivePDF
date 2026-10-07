@@ -1,11 +1,19 @@
 import { useCallback, useLayoutEffect, useMemo, useRef, useState, type RefObject } from "react";
-import { dropIndexAt, gridHeight, gridMetrics, indexesNear, mirrorBox, revealOffset, rowStride, rowsRange, tileBox, type GridBox, type TileRange } from "./gridGeometry";
+import { dropIndexAt, gridHeight, gridMetrics, indexesNear, mirrorBox, revealOffset, rowStride, rowsRange, sameRowWindow, tileBox, type GridBox, type TileRange } from "./gridGeometry";
 
 export const VIRTUALIZE_FROM = 150;
 const OVERSCAN_ROWS = 3;
 const REVEAL_MARGIN = 16;
 
 type Frame = { width: number; gap: number; rtl: boolean; top: number; height: number };
+
+type GridSettings = { count: number; minColumnWidth: number; rowHeight: number };
+
+function sameWindow(current: Frame, next: Frame, { count, minColumnWidth, rowHeight }: GridSettings): boolean {
+  if (current.width !== next.width || current.gap !== next.gap || current.rtl !== next.rtl || current.height !== next.height) return false;
+  if (current.top === next.top || count < VIRTUALIZE_FROM) return true;
+  return sameRowWindow(gridMetrics(count, next.width, minColumnWidth, rowHeight, next.gap), current.top, next.top, next.height, OVERSCAN_ROWS);
+}
 
 type UseVirtualGridOptions = {
   mounted: boolean;
@@ -25,8 +33,10 @@ export function useVirtualGrid({ mounted, scrollRef, gridRef, count, minColumnWi
   const range = useMemo<TileRange>(() => ({ start: computed.start, end: computed.end }), [computed.start, computed.end]);
 
   const latest = useRef({ metrics, rtl: frame.rtl });
+  const settings = useRef<GridSettings>({ count, minColumnWidth, rowHeight });
   useLayoutEffect(() => {
     latest.current = { metrics, rtl: frame.rtl };
+    settings.current = { count, minColumnWidth, rowHeight };
   });
 
   const measureFrame = useCallback(() => {
@@ -41,7 +51,7 @@ export function useVirtualGrid({ mounted, scrollRef, gridRef, count, minColumnWi
       top: container.scrollTop - grid.offsetTop,
       height: container.clientHeight,
     };
-    setFrame((current) => (current.width === next.width && current.gap === next.gap && current.rtl === next.rtl && current.top === next.top && current.height === next.height ? current : next));
+    setFrame((current) => (sameWindow(current, next, settings.current) ? current : next));
   }, [scrollRef, gridRef]);
 
   useLayoutEffect(() => {

@@ -1008,7 +1008,6 @@
       "goToPage": "Gehe zu Seite…",
       "goToPagePrompt": "Gehe zu Seite",
       "copyPageLink": "Link zur Seite kopieren",
-      "deletePage": "Seite löschen…",
       "closeOthers": "Andere schließen",
       "closeAll": "Alle schließen",
       "copyPath": "Pfad kopieren",
@@ -1512,6 +1511,23 @@
       "reload": "Neu laden",
       "keepMine": "Meine behalten",
       "saveCopy": "Kopie speichern…"
+    },
+    "pageEdits": {
+      "label": "Seitenänderungen",
+      "menu": "Seite bearbeiten",
+      "rotateRight": "Seite nach rechts drehen (wird gespeichert)",
+      "rotateLeft": "Seite nach links drehen (wird gespeichert)",
+      "delete": "Seite löschen",
+      "restore": "Seite wiederherstellen",
+      "openOrganizer": "Im Seitenorganisator öffnen",
+      "rotateRightPage": "Seite {{page}} nach rechts drehen",
+      "deletePage": "Seite {{page}} löschen",
+      "restorePage": "Seite {{page}} wiederherstellen",
+      "markedDeleted": "wird beim Speichern gelöscht",
+      "markedRotated": "wird beim Speichern um {{degrees}}° gedreht",
+      "willDelete": "Diese Seite wird beim Speichern gelöscht.",
+      "willRotate": "Wird beim Speichern um {{degrees}}° gedreht",
+      "keepOnePage": "Ein Dokument braucht mindestens eine Seite. Stellen Sie zuerst eine andere Seite wieder her."
     }
   },
   "presentation": {
@@ -3920,7 +3936,7 @@
       "scannedNone": "Keine gescannte Seite gefunden; die Auswahl ist unverändert.",
       "inspecting": "Seiten werden geprüft… Zum Abbrechen erneut klicken.",
       "multiSelectMode": "Mehrfachauswahlmodus: Jede angeklickte Seite wird der Auswahl hinzugefügt",
-      "selectHint": "Um mehrere Seiten auszuwählen, das Kästchen in der Ecke einer Karte anklicken, über einen leeren Bereich ziehen oder mit Strg/Umschalt klicken.",
+      "selectHint": "Klicken Sie auf eine Seite, um sie auszuwählen, und doppelklicken Sie für eine Vorschau. Für mehrere Seiten das Kästchen in der Kartenecke ankreuzen, über einen leeren Bereich ziehen oder mit Strg/Umschalt klicken.",
       "selectPage": "Seite {{page}} auswählen",
       "selectPageHint": "Zur Auswahl hinzufügen oder daraus entfernen (Umschalt fügt einen Bereich hinzu)",
       "selectionBar": "Ausgewählte Seiten",
@@ -4007,6 +4023,18 @@
         "millimetres": "{{value}} mm",
         "color": "Linienfarbe",
         "margin": "Randlinie"
+      },
+      "toolbar": "Seitenwerkzeuge",
+      "groups": {
+        "select": "Auswählen",
+        "insert": "Einfügen",
+        "edit": "Seiten bearbeiten",
+        "split": "Teilen"
+      },
+      "tile": {
+        "rotateLeft": "Seite {{page}} nach links drehen",
+        "rotateRight": "Seite {{page}} nach rechts drehen",
+        "delete": "Seite {{page}} löschen"
       }
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",
@@ -6146,7 +6174,8 @@
       "notDesign": "Diese Datei ist kein Studio-Design.",
       "badPageNumbers": "Die gewählten Seitenzahlen passen nicht zu den exportierten Seiten.",
       "outputRequired": "Es wurde kein Speicherort für das Ergebnis angegeben.",
-      "outputAndInPlace": "Das Ergebnis kann in einer neuen Datei oder über dem Original gespeichert werden, nicht beides."
+      "outputAndInPlace": "Das Ergebnis kann in einer neuen Datei oder über dem Original gespeichert werden, nicht beides.",
+      "allPagesDeleted": "Alle Seiten wurden zum Löschen markiert; ein PDF braucht mindestens eine Seite."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

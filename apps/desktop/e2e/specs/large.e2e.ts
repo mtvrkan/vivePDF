@@ -6,6 +6,7 @@ import {
   ENTER_KEY,
   answerDialogs,
   bootApp,
+  chooseFromToolbarMenu,
   clickButton,
   closeAllDocuments,
   copyFixture,
@@ -186,7 +187,7 @@ suite("large documents", () => {
     await expect($$("li[data-tile-index]")).toBeElementsArrayOfSize(3);
 
     answerDialogs(inserted);
-    await clickButton(t("tools.pages.insertPdf"));
+    await chooseFromToolbarMenu(t("tools.pages.groups.insert"), "insert-pdf");
     await waitForDialogsAnswered();
     await typeInto($(`//*[@role="dialog"]//input[not(@type="password")]`), "239-240");
     await clickButton(t("tools.pages.insertCount", { count: 2 }));

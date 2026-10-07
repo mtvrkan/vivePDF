@@ -1008,7 +1008,6 @@
       "goToPage": "Aller à la page…",
       "goToPagePrompt": "Aller à la page",
       "copyPageLink": "Copier le lien vers la page",
-      "deletePage": "Supprimer la page…",
       "closeOthers": "Fermer les autres",
       "closeAll": "Tout fermer",
       "copyPath": "Copier le chemin",
@@ -1512,6 +1511,23 @@
       "reload": "Recharger",
       "keepMine": "Garder la mienne",
       "saveCopy": "Enregistrer une copie…"
+    },
+    "pageEdits": {
+      "label": "Modifications des pages",
+      "menu": "Modifier la page",
+      "rotateRight": "Faire pivoter la page à droite (enregistré)",
+      "rotateLeft": "Faire pivoter la page à gauche (enregistré)",
+      "delete": "Supprimer la page",
+      "restore": "Restaurer la page",
+      "openOrganizer": "Ouvrir dans l’organiseur de pages",
+      "rotateRightPage": "Faire pivoter la page {{page}} à droite",
+      "deletePage": "Supprimer la page {{page}}",
+      "restorePage": "Restaurer la page {{page}}",
+      "markedDeleted": "sera supprimée à l’enregistrement",
+      "markedRotated": "sera pivotée de {{degrees}}° à l’enregistrement",
+      "willDelete": "Cette page sera supprimée à l’enregistrement.",
+      "willRotate": "Sera pivotée de {{degrees}}° à l’enregistrement",
+      "keepOnePage": "Un document doit garder au moins une page. Restaurez d’abord une autre page."
     }
   },
   "presentation": {
@@ -3920,7 +3936,7 @@
       "scannedNone": "Aucune page numérisée trouvée ; la sélection reste inchangée.",
       "inspecting": "Inspection des pages… Cliquez à nouveau pour annuler.",
       "multiSelectMode": "Mode sélection multiple : chaque page cliquée est ajoutée à la sélection",
-      "selectHint": "Pour sélectionner plusieurs pages, cochez la case dans le coin d’une vignette, glissez sur une zone vide, ou cliquez avec Ctrl/Maj.",
+      "selectHint": "Cliquez sur une page pour la sélectionner et double-cliquez pour l'aperçu. Pour plusieurs pages, cochez la case dans le coin d'une vignette, faites glisser sur une zone vide ou cliquez avec Ctrl/Maj.",
       "selectPage": "Sélectionner la page {{page}}",
       "selectPageHint": "Ajouter à la sélection ou en retirer (Maj ajoute une plage)",
       "selectionBar": "Pages sélectionnées",
@@ -4007,6 +4023,18 @@
         "millimetres": "{{value}} mm",
         "color": "Couleur des lignes",
         "margin": "Ligne de marge"
+      },
+      "toolbar": "Outils de page",
+      "groups": {
+        "select": "Sélectionner",
+        "insert": "Insérer",
+        "edit": "Modifier les pages",
+        "split": "Diviser"
+      },
+      "tile": {
+        "rotateLeft": "Faire pivoter la page {{page}} vers la gauche",
+        "rotateRight": "Faire pivoter la page {{page}} vers la droite",
+        "delete": "Supprimer la page {{page}}"
       }
     },
     "dropHint": "Déposez le PDF ici ou cliquez pour le choisir",
@@ -6146,7 +6174,8 @@
       "notDesign": "Ce fichier n’est pas une création Studio.",
       "badPageNumbers": "Les numéros de page choisis ne correspondent pas aux pages exportées.",
       "outputRequired": "Aucun emplacement d'enregistrement du résultat n'a été indiqué.",
-      "outputAndInPlace": "Le résultat peut être enregistré dans un nouveau fichier ou sur l'original, pas les deux."
+      "outputAndInPlace": "Le résultat peut être enregistré dans un nouveau fichier ou sur l'original, pas les deux.",
+      "allPagesDeleted": "Toutes les pages ont été marquées pour suppression ; un PDF doit garder au moins une page."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

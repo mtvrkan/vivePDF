@@ -79,7 +79,7 @@ export function PagePreviewDialog({ tile, position, total, label, sources, selec
           sources={sources}
           width={PREVIEW_WIDTH}
           height={Math.round(window.innerHeight * 0.62)}
-          className={cn("rounded-lg transition-shadow duration-(--transition-fast)", selected && "ring-4 ring-primary/40")}
+          className="rounded-lg"
         />
         <div className="flex flex-wrap items-center gap-2">
           <button

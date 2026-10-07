@@ -5,7 +5,7 @@ import { ContextMenu, MENU_LAYER, type ContextMenuAnchor, type ContextMenuItem }
 
 const MENU_GAP = 4;
 
-export function EditBarMenu({ icon: Icon, label, items, disabled = false }: { icon: LucideIcon; label: string; items: ContextMenuItem[]; disabled?: boolean }) {
+export function MenuButton({ icon: Icon, label, items, disabled = false }: { icon: LucideIcon; label: string; items: ContextMenuItem[]; disabled?: boolean }) {
   const [anchor, setAnchor] = useState<ContextMenuAnchor | null>(null);
 
   const toggle = (trigger: HTMLButtonElement) => {

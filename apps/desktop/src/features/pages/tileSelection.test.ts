@@ -30,6 +30,14 @@ describe("clickSelection", () => {
     expect(clickSelection(tiles, new Set(["p1", "p2"]), "p1", "p4", "replace")).toEqual({ keys: ["p4"], anchor: "p4" });
   });
 
+  it("clears the selection when the only selected tile is clicked again", () => {
+    expect(clickSelection(tiles, new Set(["p4"]), "p4", "p4", "replace")).toEqual({ keys: [], anchor: "p4" });
+  });
+
+  it("keeps just the clicked tile when it was one of several selected", () => {
+    expect(clickSelection(tiles, new Set(["p2", "p4"]), "p2", "p4", "replace")).toEqual({ keys: ["p4"], anchor: "p4" });
+  });
+
   it("adds and removes a tile when toggling", () => {
     expect(clickSelection(tiles, new Set(["p1"]), "p1", "p3", "toggle").keys).toEqual(["p1", "p3"]);
     expect(clickSelection(tiles, new Set(["p1", "p3"]), "p1", "p3", "toggle").keys).toEqual(["p1"]);
@@ -65,8 +73,8 @@ describe("spanSelection", () => {
 });
 
 describe("tileClickAction", () => {
-  it("opens the preview on a plain click", () => {
-    expect(tileClickAction(plain, false, false)).toEqual({ kind: "preview" });
+  it("selects only the clicked page on a plain click", () => {
+    expect(tileClickAction(plain, false, false)).toEqual({ kind: "select", mode: "replace" });
   });
 
   it("keeps Ctrl, Cmd and Shift clicks for selecting", () => {
@@ -75,7 +83,7 @@ describe("tileClickAction", () => {
     expect(tileClickAction({ ...plain, shiftKey: true }, false, false)).toEqual({ kind: "select", mode: "range" });
   });
 
-  it("toggles instead of previewing in multi-select mode", () => {
+  it("toggles instead of replacing in multi-select mode", () => {
     expect(tileClickAction(plain, true, false)).toEqual({ kind: "select", mode: "toggle" });
     expect(tileClickAction({ ...plain, shiftKey: true }, true, false)).toEqual({ kind: "select", mode: "rangeAdd" });
   });

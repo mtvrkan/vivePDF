@@ -9,7 +9,7 @@ import { basenameOf, siblingPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { writeDocumentBytes } from "@/shared/rpc/files";
-import { addAttachments, addBookmark, deleteComments, fillFormFields, removeAttachments, replyToComment, setBookmarks, setCommentsResolved, setCommentsState, setMetadata } from "@/shared/rpc/operations";
+import { addAttachments, addBookmark, deleteComments, editPages, fillFormFields, removeAttachments, replyToComment, setBookmarks, setCommentsResolved, setCommentsState, setMetadata } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { pendingChangesFor, usePendingChangesStore, type PendingChange } from "@/shared/store/pendingChangesStore";
@@ -20,6 +20,7 @@ import { annotationAuthorName } from "./annotationAuthor";
 import { invalidatePageText } from "./pageTextCache";
 import { fillProblemNotes } from "@/features/tools/forms/formsResult";
 import { useReloadDocument } from "./useReloadDocument";
+import { orderedForSave, pageTurns } from "./pageEdits";
 import { restoreSavedView } from "./viewableBytes";
 import { originalOf, useConvertedStore } from "./convertedDocuments";
 import type { FillResult } from "@/types";
@@ -37,6 +38,7 @@ async function applyChange(change: PendingChange, path: string, password: string
   else if (change.kind === "bookmarkAdded") await addBookmark({ path, password, title: change.title, page: change.page, x: change.x, y: change.y });
   else if (change.kind === "outlineReplaced") await setBookmarks({ path, password, inPlace: true, items: change.items });
   else if (change.kind === "formFilled") return fillFormFields({ path, password, inPlace: true, values: change.values, flatten: false });
+  else if (change.kind === "pagesEdited") await editPages({ path, password, inPlace: true, delete: change.deleted, rotations: pageTurns(change) });
   else await removeAttachments({ path, password, names: change.names });
   return null;
 }
@@ -96,7 +98,7 @@ export function useDocumentSave(documentId: string) {
         scrubbed = await scrubRedactedFile(path, password, scrubPlan);
       }
       const notes: string[] = [];
-      for (const change of queued) {
+      for (const change of orderedForSave(queued)) {
         const filled = await applyChange(change, path, password);
         if (filled) notes.push(...fillProblemNotes(filled, t));
         if (settles) usePendingChangesStore.getState().drop(documentId, change.id);

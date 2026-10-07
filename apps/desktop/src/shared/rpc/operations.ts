@@ -11,6 +11,7 @@ import type {
   AutoLinkParams,
   PagesParams,
   RotatePagesParams,
+  EditPagesParams,
   AutoLinkResult,
   PdfaCheckParams,
   PdfaConvertParams,
@@ -325,6 +326,8 @@ export const mergePdfs = (params: MergeParams, options?: RpcCallOptions) =>
   rpc<MergeResult>("pages.merge", { mailLabels: mailLabels(), ...params }, options);
 
 export const rotatePages = (params: RotatePagesParams, options?: RpcCallOptions) => rpc<OutputResult>("pages.rotate", params, options);
+
+export const editPages = (params: EditPagesParams, options?: RpcCallOptions) => rpc<OutputResult>("pages.edit", params, options);
 
 export const deletePages = (params: PagesParams, options?: RpcCallOptions) => rpc<OutputResult>("pages.delete", params, options);
 

@@ -200,6 +200,13 @@ export async function clickButton(label: string) {
   await target.click();
 }
 
+export async function chooseFromToolbarMenu(group: string, id: string) {
+  await clickButton(group);
+  const item = $(`[role="menuitem"][data-menu-id="${id}"]`);
+  await item.waitForClickable();
+  await item.click();
+}
+
 export async function chooseSource(path: string, { locked = false }: { locked?: boolean } = {}) {
   answerDialogs(path);
   const choose = t("tools.chooseSource");

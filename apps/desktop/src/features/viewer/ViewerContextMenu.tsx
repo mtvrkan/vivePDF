@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 import {
+  ArchiveRestore,
   BookmarkPlus,
   ClipboardPaste,
   Braces,
@@ -11,6 +12,7 @@ import {
   FileOutput,
   FileSearch,
   FileText,
+  FilePen,
   Globe,
   Hash,
   Highlighter,
@@ -31,6 +33,7 @@ import {
   ScanSearch,
   ScanText,
   TextSelect,
+  Trash2,
   ZoomIn,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -70,6 +73,8 @@ import { arrangeMenu, menuFocus, pointOnRects, withoutItems, type PageRect } fro
 import { bookmarkTitleFrom } from "./bookmarkTitle";
 import { markSelectionWithTool, type MarkupToolId } from "./markupSelection";
 import { usePageNavigation } from "./usePageNavigation";
+import { usePageEdits } from "./usePageEdits";
+import { isPageDeleted } from "./pageEdits";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { useTranslationStore } from "@/shared/store/translationStore";
 import { useWebSearchStore } from "@/shared/store/webSearchStore";
@@ -87,7 +92,7 @@ const VIEWABLE_PICTURE_EXTENSIONS = new Set(["png", "jpg", "jpeg"]);
 const TYPING_TARGETS = "input, textarea, [data-editor-input]";
 const SECONDARY_BUTTON = 2;
 const SECONDARY_BUTTON_EVENTS = ["pointerdown", "pointerup", "mousedown", "mouseup"] as const;
-const EDITING_ITEMS: ReadonlySet<string> = new Set(["paste-object", "add-bookmark", "edit-image", "image-text", "snapshot", "zoom-area", "page-selectable"]);
+const EDITING_ITEMS: ReadonlySet<string> = new Set(["paste-object", "add-bookmark", "edit-image", "image-text", "snapshot", "zoom-area", "page-selectable", "page-edit"]);
 
 export type ReadOnlySource = { path: string; password: string | null };
 
@@ -127,6 +132,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
   const { provides: zoom } = useZoomCapability();
   const { provides: rotate, rotation: viewRotation } = useRotate(documentId);
   const { jumpTo } = usePageNavigation(documentId);
+  const pageEdits = usePageEdits(documentId);
   const clipboardEntry = useEditorClipboard((state) => state.entry);
   const setPrintOpen = usePrintDialogStore((state) => state.setOpen);
   const [menu, setMenu] = useState<MenuState | null>(null);
@@ -712,6 +718,19 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
         { type: "item", id: "zoom-area", icon: ZoomIn, label: t("viewer.context.zoomToArea"), onSelect: zoomToArea },
         { type: "item", id: "rotate-forward", icon: RotateCw, label: t("viewer.context.rotateViewForward"), onSelect: rotateViewForward },
         { type: "item", id: "rotate-backward", icon: RotateCcw, label: t("viewer.context.rotateViewBackward"), onSelect: rotateViewBackward },
+      ],
+    },
+    {
+      type: "submenu",
+      id: "page-edit",
+      icon: FilePen,
+      label: t("viewer.pageEdits.menu"),
+      items: [
+        { type: "item", id: "rotate-page-right", icon: RotateCw, label: t("viewer.pageEdits.rotateRight"), onSelect: () => pageEdits.rotate(menu.page - 1, 90) },
+        { type: "item", id: "rotate-page-left", icon: RotateCcw, label: t("viewer.pageEdits.rotateLeft"), onSelect: () => pageEdits.rotate(menu.page - 1, -90) },
+        isPageDeleted(pageEdits.edits, menu.page - 1)
+          ? { type: "item", id: "restore-page", icon: ArchiveRestore, label: t("viewer.pageEdits.restore"), onSelect: () => pageEdits.toggleDelete(menu.page - 1) }
+          : { type: "item", id: "delete-page", icon: Trash2, label: t("viewer.pageEdits.delete"), disabled: !pageEdits.canDelete(menu.page - 1), onSelect: () => pageEdits.toggleDelete(menu.page - 1) },
       ],
     },
     {

@@ -1,6 +1,6 @@
 import { memo, type MouseEvent, type PointerEvent } from "react";
 import { useTranslation } from "react-i18next";
-import { Check, Scissors } from "lucide-react";
+import { Check, RotateCcw, RotateCw, Scissors, Trash2, type LucideIcon } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import type { OrganizerSource, OrganizerTile } from "@/types";
 import { PageThumbnail } from "./PageThumbnail";
@@ -12,6 +12,9 @@ export type TileActions = {
   pointerDown: (event: PointerEvent, key: string) => void;
   click: (event: MouseEvent, key: string) => void;
   check: (event: MouseEvent, key: string) => void;
+  preview: (key: string) => void;
+  rotate: (key: string, delta: 90 | -90) => void;
+  remove: (key: string) => void;
   menu: (key: string, x: number, y: number) => void;
   toggleCut: (key: string) => void;
 };
@@ -26,7 +29,6 @@ type PageTileProps = {
   dropBefore: boolean;
   dropAfter: boolean;
   dimmed: boolean;
-  clickPreviews: boolean;
   labelText: string | null;
   labelStart: boolean;
   sources: Record<string, OrganizerSource>;
@@ -35,7 +37,7 @@ type PageTileProps = {
   actions: TileActions;
 };
 
-export const PageTile = memo(function PageTile({ tile, position, total, isLast, isSelected, isCut, dropBefore, dropAfter, dimmed, clickPreviews, labelText, labelStart, sources, width, height, actions }: PageTileProps) {
+export const PageTile = memo(function PageTile({ tile, position, total, isLast, isSelected, isCut, dropBefore, dropAfter, dimmed, labelText, labelStart, sources, width, height, actions }: PageTileProps) {
   const { t } = useTranslation();
   return (
     <li
@@ -48,6 +50,7 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
       data-tile-key={tile.key}
       onPointerDown={(event) => actions.pointerDown(event, tile.key)}
       onClick={(event) => actions.click(event, tile.key)}
+      onDoubleClick={() => actions.preview(tile.key)}
       onContextMenu={(event) => {
         event.preventDefault();
         actions.menu(tile.key, event.clientX, event.clientY);
@@ -56,7 +59,7 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
       className={cn(
         "card group relative flex touch-none flex-col gap-1.5 rounded-xl p-2 select-none transition-[transform,box-shadow,border-color] duration-(--transition-fast)",
         "hover:z-10 focus-within:z-10",
-        clickPreviews ? "cursor-zoom-in" : "cursor-default",
+        "cursor-default",
         isSelected ? "border-primary ring-4 ring-primary/20" : "hover:-translate-y-0.5 hover:border-primary/40",
         dimmed ? "opacity-40" : "",
       )}
@@ -79,6 +82,11 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
       >
         <Check className="size-4" aria-hidden />
       </button>
+      <div className="absolute inset-x-0 bottom-12 z-10 mx-auto flex w-fit gap-0.5 rounded-lg border bg-card p-0.5 opacity-0 shadow-md transition-opacity duration-(--transition-fast) group-hover:opacity-100 focus-within:opacity-100">
+        <TileQuickButton icon={RotateCcw} label={t("tools.pages.tile.rotateLeft", { page: position + 1 })} onPress={() => actions.rotate(tile.key, -90)} />
+        <TileQuickButton icon={RotateCw} label={t("tools.pages.tile.rotateRight", { page: position + 1 })} onPress={() => actions.rotate(tile.key, 90)} />
+        <TileQuickButton icon={Trash2} label={t("tools.pages.tile.delete", { page: position + 1 })} danger disabled={total <= 1} onPress={() => actions.remove(tile.key)} />
+      </div>
       {isLast ? null : (
         <button
           type="button"
@@ -86,7 +94,7 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
           aria-pressed={isCut}
           title={t("tools.pages.cutAfter", { page: position + 1 })}
           onPointerDown={(event) => event.stopPropagation()}
-            onClick={(event) => {
+          onClick={(event) => {
             event.stopPropagation();
             actions.toggleCut(tile.key);
           }}
@@ -124,3 +132,26 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
     </li>
   );
 });
+
+function TileQuickButton({ icon: Icon, label, danger = false, disabled = false, onPress }: { icon: LucideIcon; label: string; danger?: boolean; disabled?: boolean; onPress: () => void }) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      disabled={disabled}
+      onPointerDown={(event) => event.stopPropagation()}
+      onDoubleClick={(event) => event.stopPropagation()}
+      onClick={(event) => {
+        event.stopPropagation();
+        onPress();
+      }}
+      className={cn(
+        "flex size-6 items-center justify-center rounded-md text-muted-foreground transition-colors duration-(--transition-fast) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-40",
+        danger ? "hover:bg-destructive/10 hover:text-destructive" : "hover:bg-muted hover:text-foreground",
+      )}
+    >
+      <Icon className="size-3.5" aria-hidden />
+    </button>
+  );
+}

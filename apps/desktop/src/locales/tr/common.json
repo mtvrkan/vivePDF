@@ -1008,7 +1008,6 @@
       "goToPage": "Sayfaya git…",
       "goToPagePrompt": "Sayfaya git",
       "copyPageLink": "Sayfa bağlantısını kopyala",
-      "deletePage": "Sayfayı sil…",
       "closeOthers": "Diğerlerini kapat",
       "closeAll": "Tümünü kapat",
       "copyPath": "Yolu kopyala",
@@ -1512,6 +1511,23 @@
       "reload": "Yeniden yükle",
       "keepMine": "Benimkini koru",
       "saveCopy": "Kopya kaydet…"
+    },
+    "pageEdits": {
+      "label": "Sayfa değişiklikleri",
+      "menu": "Sayfayı düzenle",
+      "rotateRight": "Sayfayı sağa döndür (kaydedilir)",
+      "rotateLeft": "Sayfayı sola döndür (kaydedilir)",
+      "delete": "Sayfayı sil",
+      "restore": "Sayfayı geri al",
+      "openOrganizer": "Sayfa düzenleyicide aç",
+      "rotateRightPage": "{{page}}. sayfayı sağa döndür",
+      "deletePage": "{{page}}. sayfayı sil",
+      "restorePage": "{{page}}. sayfayı geri al",
+      "markedDeleted": "kaydettiğinizde silinecek",
+      "markedRotated": "kaydettiğinizde {{degrees}}° döndürülecek",
+      "willDelete": "Bu sayfa kaydettiğinizde silinecek.",
+      "willRotate": "Kaydettiğinizde {{degrees}}° döndürülecek",
+      "keepOnePage": "Bir belgede en az bir sayfa kalmalı. Önce başka bir sayfayı geri alın."
     }
   },
   "presentation": {
@@ -3892,7 +3908,7 @@
       "selectionBar": "Seçili sayfalar",
       "selectedCount_one": "{{count}} sayfa seçili",
       "selectedCount_other": "{{count}} sayfa seçili",
-      "selectHint": "Birden çok sayfa seçmek için kartların köşesindeki kutucuğa tıklayın, boş alandan sürükleyin ya da Ctrl/Shift ile tıklayın.",
+      "selectHint": "Seçmek için sayfaya tıklayın, önizlemek için çift tıklayın. Birden çok sayfa için kartın köşesindeki kutuyu işaretleyin, boş bir alanda sürükleyin ya da Ctrl/Shift ile tıklayın.",
       "multiSelectMode": "Çoklu seçim modu: tıklanan her sayfa seçime eklenir",
       "range": {
         "title": "Sayfa numarasıyla seç",
@@ -4007,6 +4023,18 @@
         "millimetres": "{{value}} mm",
         "color": "Çizgi rengi",
         "margin": "Kenar çizgisi"
+      },
+      "toolbar": "Sayfa araçları",
+      "groups": {
+        "select": "Seç",
+        "insert": "Ekle",
+        "edit": "Sayfaları düzenle",
+        "split": "Böl"
+      },
+      "tile": {
+        "rotateLeft": "{{page}}. sayfayı sola döndür",
+        "rotateRight": "{{page}}. sayfayı sağa döndür",
+        "delete": "{{page}}. sayfayı sil"
       }
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",
@@ -6146,7 +6174,8 @@
       "notDesign": "Bu dosya bir Stüdyo tasarımı değil.",
       "badPageNumbers": "Seçilen sayfa numaraları dışa aktarılan sayfalarla eşleşmiyor.",
       "outputRequired": "Sonucun kaydedileceği yer belirtilmedi.",
-      "outputAndInPlace": "Sonuç yeni bir dosyaya ya da özgün dosyanın üzerine kaydedilebilir, ikisine birden değil."
+      "outputAndInPlace": "Sonuç yeni bir dosyaya ya da özgün dosyanın üzerine kaydedilebilir, ikisine birden değil.",
+      "allPagesDeleted": "Tüm sayfalar silinmek üzere işaretlendi; bir PDF'te en az bir sayfa olmalı."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

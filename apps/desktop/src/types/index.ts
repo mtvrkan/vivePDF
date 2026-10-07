@@ -171,6 +171,18 @@ export type RotatePagesParams = {
   degrees: 90 | 180 | 270;
 };
 
+export type PageTurn = { page: number; rotate: 90 | 180 | 270 };
+
+export type EditPagesParams = {
+  path: string;
+  password?: string;
+  output?: string;
+  inPlace?: boolean;
+  overwrite?: boolean;
+  delete?: number[];
+  rotations?: PageTurn[];
+};
+
 export type AssembleSource = { id: string; path: string; password?: string };
 
 export type PaperStyle = "lined" | "grid" | "dots" | "isometric" | "handwriting" | "staff";

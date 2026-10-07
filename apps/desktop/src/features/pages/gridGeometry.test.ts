@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { columnCount, dropIndexAt, gridHeight, gridMetrics, indexesNear, mirrorBox, revealOffset, rowsRange, tileBox } from "./gridGeometry";
+import { columnCount, dropIndexAt, gridHeight, gridMetrics, indexesNear, mirrorBox, revealOffset, rowsRange, sameRowWindow, tileBox } from "./gridGeometry";
 
 const metrics = gridMetrics(10, 440, 100, 150, 12);
 
@@ -18,6 +18,22 @@ describe("gridMetrics", () => {
 
   it("has no height without tiles", () => {
     expect(gridHeight(gridMetrics(0, 440, 100, 150, 12))).toBe(0);
+  });
+});
+
+describe("sameRowWindow", () => {
+  const metrics = gridMetrics(400, 800, 180, 200, 20);
+
+  it("treats a scroll inside the same row as no change", () => {
+    expect(sameRowWindow(metrics, 880, 900, 600, 3)).toBe(true);
+  });
+
+  it("reports a change once the scroll crosses into another row", () => {
+    expect(sameRowWindow(metrics, 880, 880 + 220, 600, 3)).toBe(false);
+  });
+
+  it("treats an empty grid as unchanged wherever it scrolls", () => {
+    expect(sameRowWindow(gridMetrics(0, 800, 180, 200, 20), 0, 5000, 600, 3)).toBe(true);
   });
 });
 

@@ -40,7 +40,7 @@ import { DrawingEditorHost } from "./drawing/DrawingEditorHost";
 import { tidyAlt } from "./drawing/drawingAltText";
 import { DRAWING_SPECS, drawingAltText } from "./drawing/drawingKinds";
 import { DRAWING_KINDS, isDrawingImage, toDrawingObject } from "./drawing/drawingSource";
-import { EditBarMenu } from "./EditBarMenu";
+import { MenuButton } from "@/components/shared/MenuButton";
 import { isEditingMode, PAGE_TOOLS, switchOverlayMode } from "./editorModes";
 import { isPendingChange, keepsEditsOnLeave } from "./pending";
 import { hasMixedStyles, toEditorRun } from "./runs";
@@ -673,7 +673,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
                 </button>
               ))}
             </div>
-            <EditBarMenu icon={Plus} label={t("viewer.overlay.insert")} items={insertItems} disabled={busy} />
+            <MenuButton icon={Plus} label={t("viewer.overlay.insert")} items={insertItems} disabled={busy} />
             {mode === "image" && pendingImage ? <img src={pendingImage.dataUrl} alt="" className={pendingImage.drawing ? "h-7 max-w-24 rounded border bg-white object-contain px-1" : "h-7 max-w-16 rounded border object-contain"} draggable={false} /> : null}
             {(() => {
               const hint = mode === "text" ? t("viewer.overlay.textHint") : pendingImage ? (pendingImage.drawing ? t(DRAWING_SPECS[pendingImage.drawing.kind].labels.placeHint) : t("viewer.overlay.imageHint")) : t("viewer.overlay.imagesHint");
@@ -697,7 +697,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
             <Button size="sm" icon={<SaveAll className="size-4" aria-hidden />} onClick={() => void saveEdits(false)} disabled={pendingCount === 0 || busy}>{t("viewer.overlay.saveAs")}</Button>
           </>
         ) : null}
-        {isEditingMode(mode) ? <EditBarMenu icon={Wrench} label={t("viewer.overlay.moreTools")} items={toolItems} /> : null}
+        {isEditingMode(mode) ? <MenuButton icon={Wrench} label={t("viewer.overlay.moreTools")} items={toolItems} /> : null}
         <IconButton icon={X} label={t("common.close")} onClick={() => store.requestLeave(close, pendingCount > 0)} />
       </div>
       <SignatureDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onPick={(id) => store.setSignatureId(id)} />

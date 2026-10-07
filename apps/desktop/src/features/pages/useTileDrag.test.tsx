@@ -42,7 +42,7 @@ describe("passedDragThreshold", () => {
 });
 
 describe("useTileDrag click and drag", () => {
-  it("lets a press and release without movement through as a preview click", () => {
+  it("lets a press and release without movement through as a selecting click", () => {
     const drag = renderDrag();
 
     act(() => {
@@ -53,7 +53,7 @@ describe("useTileDrag click and drag", () => {
 
     expect(onMove).not.toHaveBeenCalled();
     expect(drag.result.current.wasDragged()).toBe(false);
-    expect(tileClickAction(plain, false, drag.result.current.wasDragged())).toEqual({ kind: "preview" });
+    expect(tileClickAction(plain, false, drag.result.current.wasDragged())).toEqual({ kind: "select", mode: "replace" });
   });
 
   it("moves the tile and swallows the click that ends a drag", async () => {

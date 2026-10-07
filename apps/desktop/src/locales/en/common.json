@@ -1008,7 +1008,6 @@
       "goToPage": "Go to page…",
       "goToPagePrompt": "Go to page",
       "copyPageLink": "Copy link to page",
-      "deletePage": "Delete page…",
       "closeOthers": "Close others",
       "closeAll": "Close all",
       "copyPath": "Copy path",
@@ -1512,6 +1511,23 @@
       "reload": "Reload",
       "keepMine": "Keep mine",
       "saveCopy": "Save a copy…"
+    },
+    "pageEdits": {
+      "label": "Page changes",
+      "menu": "Edit page",
+      "rotateRight": "Rotate page right (saved)",
+      "rotateLeft": "Rotate page left (saved)",
+      "delete": "Delete page",
+      "restore": "Restore page",
+      "openOrganizer": "Open in page organizer",
+      "rotateRightPage": "Rotate page {{page}} right",
+      "deletePage": "Delete page {{page}}",
+      "restorePage": "Restore page {{page}}",
+      "markedDeleted": "will be deleted when you save",
+      "markedRotated": "will be rotated {{degrees}}° when you save",
+      "willDelete": "This page will be deleted when you save.",
+      "willRotate": "Will be rotated {{degrees}}° when you save",
+      "keepOnePage": "A document needs at least one page. Restore another page first."
     }
   },
   "presentation": {
@@ -3892,7 +3908,7 @@
       "selectionBar": "Selected pages",
       "selectedCount_one": "{{count}} page selected",
       "selectedCount_other": "{{count}} pages selected",
-      "selectHint": "To select several pages, tick the box in a card's corner, drag across an empty area, or Ctrl/Shift-click.",
+      "selectHint": "Click a page to select it and double-click to preview it. For several pages, tick the box in a card's corner, drag across an empty area, or Ctrl/Shift-click.",
       "multiSelectMode": "Multi-select mode: every page you click is added to the selection",
       "range": {
         "title": "Select by page numbers",
@@ -4007,6 +4023,18 @@
         "millimetres": "{{value}} mm",
         "color": "Line colour",
         "margin": "Margin line"
+      },
+      "toolbar": "Page tools",
+      "groups": {
+        "select": "Select",
+        "insert": "Insert",
+        "edit": "Edit pages",
+        "split": "Split"
+      },
+      "tile": {
+        "rotateLeft": "Rotate page {{page}} left",
+        "rotateRight": "Rotate page {{page}} right",
+        "delete": "Delete page {{page}}"
       }
     },
     "dropHint": "Drop the PDF here or click to choose it",
@@ -6146,7 +6174,8 @@
       "notDesign": "This file is not a Studio design.",
       "badPageNumbers": "The chosen page numbers do not match the pages being exported.",
       "outputRequired": "No place to save the result was given.",
-      "outputAndInPlace": "The result can be saved to a new file or over the original, not both."
+      "outputAndInPlace": "The result can be saved to a new file or over the original, not both.",
+      "allPagesDeleted": "Every page was marked for deletion; a PDF needs at least one page."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

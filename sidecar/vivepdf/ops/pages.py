@@ -1,3 +1,4 @@
+import contextlib
 import itertools
 import re
 import uuid
@@ -13,13 +14,20 @@ from pydantic import Field, model_validator
 from vivepdf.ops._document import forget_document, open_document
 from vivepdf.ops._image_files import insert_image_file, picture_too_large, picture_unreadable
 from vivepdf.ops._naming import sanitize_file_name
-from vivepdf.ops._output import OutputResult, prepare_output, save_document
+from vivepdf.ops._output import (
+    OutputResult,
+    prepare_output,
+    replace_patiently,
+    save_document,
+    unlink_patiently,
+)
 from vivepdf.ops._page_pruning import keep_only_present_pages
 from vivepdf.ops._paper import PaperPattern, draw_paper
 from vivepdf.ops._protection import protection_source, save_protected
 from vivepdf.ops._ranges import (
     PageScope,
     contiguous_runs,
+    no_pages_selected,
     one_based_to_indices,
     parse_page_ranges,
     scope_indices,
@@ -525,6 +533,21 @@ class PagesParams(SourceParams):
         return one_based_to_indices(self.pages or [], page_count)
 
 
+class PageTurn(RpcModel):
+    page: int
+    rotate: Literal[90, 180, 270]
+
+
+class EditPagesParams(RpcModel):
+    path: str
+    password: str | None = None
+    output: str | None = None
+    in_place: bool = False
+    overwrite: bool = False
+    delete: list[int] = Field(default_factory=list)
+    rotations: list[PageTurn] = Field(default_factory=list)
+
+
 KIDS_ARRAY = re.compile(r"\[\s*(?:\d+\s+\d+\s+R\s*)*\]")
 KID_REFERENCE = re.compile(r"\d+\s+\d+\s+R")
 
@@ -636,7 +659,7 @@ def _select_keeping_structure(document: pymupdf.Document, indices: list[int]) ->
 def _save_selection(
     document: pymupdf.Document,
     target: Path,
-    params: SourceParams,
+    params: SourceParams | EditPagesParams,
     every_page_kept: bool,
 ) -> OutputResult:
     if every_page_kept:
@@ -694,6 +717,95 @@ def rotate_pages(params: RotateParams, progress: Progress) -> OutputResult:
             page.set_rotation((page.rotation + params.degrees) % 360)
         progress.report(0.8, "progress.saving")
         return save_document(document, target)
+
+
+def _edit_target(params: EditPagesParams) -> Path | None:
+    if params.in_place and params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "give either an output file or in-place, not both",
+            {"reason": "outputAndInPlace"},
+        )
+    if params.in_place:
+        return None
+    if not params.output:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "an output file or in-place is required",
+            {"reason": "outputRequired"},
+        )
+    return prepare_output(params.output, [params.path], params.overwrite)
+
+
+def _checked_page(page: int, page_count: int) -> int:
+    if 0 <= page < page_count:
+        return page
+    raise OpError(
+        ErrorCode.INVALID_PARAMS,
+        f"page index {page} is outside 0..{page_count - 1}",
+        {"reason": "pageOutOfRange", "page": page + 1, "pageCount": page_count},
+    )
+
+
+def _page_turns(rotations: list[PageTurn], page_count: int) -> dict[int, int]:
+    turns: dict[int, int] = {}
+    for turn in rotations:
+        index = _checked_page(turn.page, page_count)
+        turns[index] = (turns.get(index, 0) + turn.rotate) % 360
+    return {index: degrees for index, degrees in turns.items() if degrees}
+
+
+def _replace_with_selection(
+    document: pymupdf.Document, params: EditPagesParams, every_page_kept: bool
+) -> OutputResult:
+    original = Path(params.path)
+    staging = original.parent / f".vivepdf-{uuid.uuid4().hex[:12]}.part"
+    try:
+        _save_selection(document, staging, params, every_page_kept)
+        page_count = document.page_count
+        document.close()
+        forget_document(params.path)
+        replace_patiently(staging, original)
+    except BaseException:
+        with contextlib.suppress(OSError):
+            unlink_patiently(staging)
+        raise
+    return OutputResult(output=params.path, page_count=page_count, bytes=original.stat().st_size)
+
+
+@op("pages.edit", EditPagesParams)
+def edit_pages(params: EditPagesParams, progress: Progress) -> OutputResult:
+    from vivepdf.ops._inplace import save_in_place
+
+    target = _edit_target(params)
+    document = open_document(params.path, params.password)
+    try:
+        count = document.page_count
+        remove = {_checked_page(page, count) for page in params.delete}
+        turns = _page_turns(params.rotations, count)
+        if not remove and not turns:
+            raise no_pages_selected()
+        keep = [index for index in range(count) if index not in remove]
+        if not keep:
+            raise OpError(
+                ErrorCode.INVALID_PARAMS, "cannot delete every page", {"reason": "allPagesDeleted"}
+            )
+        for index, degrees in turns.items():
+            if index not in remove:
+                page = document[index]
+                page.set_rotation((page.rotation + degrees) % 360)
+        progress.report(0.8, "progress.saving")
+        if not remove:
+            if target is None:
+                return save_in_place(document, params.path)
+            return save_document(document, target)
+        complete = _select_keeping_structure(document, keep)
+        if target is None:
+            return _replace_with_selection(document, params, complete)
+        return _save_selection(document, target, params, complete)
+    finally:
+        if not document.is_closed:
+            document.close()
 
 
 @op("pages.reverse", SourceParams)

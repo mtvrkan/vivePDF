@@ -24,6 +24,7 @@ import { FieldHighlights } from "./FieldHighlights";
 import { PageOverlayLayer } from "./overlay/PageOverlayLayer";
 import { FormFieldLayer } from "./forms/FormFieldLayer";
 import { FormXfaNotice } from "./forms/FormXfaNotice";
+import { PageEditLayer } from "./PageEditLayer";
 import { highlighterCursor, penCursor } from "./presentation/toolCursor";
 import { useViewportPan } from "./useViewportPan";
 import { useSelectionRelease } from "./useSelectionRelease";
@@ -139,6 +140,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
                         <MarqueeZoom documentId={documentId} pageIndex={pageIndex} stroke="var(--primary)" fill="color-mix(in oklab, var(--primary) 18%, transparent)" />
                         <PageOverlayLayer documentId={documentId} pageIndex={pageIndex} width={width} height={height} />
                         <MarkToolLayer documentId={documentId} pageIndex={pageIndex} />
+                        {decoratePage ? null : <PageEditLayer documentId={documentId} pageIndex={pageIndex} />}
                       </>
                     )}
                   </PagePointerProvider>
