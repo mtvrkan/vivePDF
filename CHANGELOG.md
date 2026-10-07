@@ -55,6 +55,11 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Page organizer: applied and split files keep the original's password protection, document properties (title, author, keywords) and attached files instead of coming out unprotected and bare [2026-10-07]
+- Page organizer: links inside the document that point to another page, including named links from LaTeX, keep working after pages are rearranged, inserted or split into parts, and still land on the same spot and zoom; links to pages that were removed are dropped [2026-10-07]
+- Page organizer: bookmarks keep their colour, bold and italic style, open or closed state and exact target spot and zoom after applying [2026-10-07]
+- Page organizer: photos taken sideways (EXIF orientation) are inserted upright on a page of the right shape; editing pictures into a PDF also honours it [2026-10-07]
+- Page organizer: in split parts, pages without a page-label rule are numbered from 1 in each part instead of continuing the original numbering [2026-10-07]
 - Page organizer: while a toolbar menu is open its keys (Enter, arrows, Delete, R and others) no longer also act on the pages, and Space presses a focused button instead of opening the preview [2026-10-07]
 - Page organizer: Apply, Extract and saving split parts warn when the document has unsaved changes in the viewer, which the new file would not include [2026-10-07]
 - Page organizer: after deleting pages the page at the same place is selected and the keyboard stays on the page grid; the in-card buttons no longer add dozens of Tab stops, and double-clicking a selected page, its tick box or its quick buttons no longer flips the selection [2026-10-07]

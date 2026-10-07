@@ -10,9 +10,16 @@ from typing import Literal
 import pymupdf
 from PIL import Image
 from pydantic import Field, model_validator
+from pymupdf import mupdf
 
 from vivepdf.ops._document import forget_document, open_document
-from vivepdf.ops._image_files import insert_image_file, picture_too_large, picture_unreadable
+from vivepdf.ops._image_files import (
+    SIDEWAYS_ORIENTATIONS,
+    exif_orientation,
+    insert_image_file,
+    picture_too_large,
+    picture_unreadable,
+)
 from vivepdf.ops._naming import sanitize_file_name
 from vivepdf.ops._output import (
     OutputResult,
@@ -23,7 +30,7 @@ from vivepdf.ops._output import (
 )
 from vivepdf.ops._page_pruning import keep_only_present_pages
 from vivepdf.ops._paper import PaperPattern, draw_paper
-from vivepdf.ops._protection import protection_source, save_protected
+from vivepdf.ops._protection import Protection, SourceSeal, protection_source, save_protected
 from vivepdf.ops._ranges import (
     PageScope,
     contiguous_runs,
@@ -106,6 +113,8 @@ def _image_pixels(path: Path) -> tuple[int, int]:
             warnings.simplefilter("ignore", Image.DecompressionBombWarning)
             with Image.open(path) as image:
                 width, height = image.size
+                if exif_orientation(image) in SIDEWAYS_ORIENTATIONS:
+                    width, height = height, width
     except Image.DecompressionBombError as error:
         raise picture_too_large(path) from error
     except Exception as error:  # noqa: BLE001
@@ -233,15 +242,9 @@ def _assembled(
             cursor += 1
             if cursor % 25 == 0:
                 report(cursor / len(pages))
-        toc: list[list] = []
-        for source in sources:
-            for level, title, page_number in documents[source.id].get_toc(simple=True):
-                position = first_position.get((source.id, page_number - 1))
-                if position is not None:
-                    toc.append([level, title, position + 1])
-        if toc:
-            toc.sort(key=lambda entry: entry[2])
-            result.set_toc(normalized_toc(toc))
+        _rebuild_internal_links(result, documents, origins, first_position)
+        _carry_bookmarks(result, sources, documents, first_position)
+        _carry_document_extras(result, documents[sources[0].id])
         labels = (
             _assembled_labels(documents, origins)
             if label_parts is None
@@ -253,6 +256,158 @@ def _assembled(
     except BaseException:
         result.close()
         raise
+
+
+DESTINATION_ARRAY = re.compile(r"\[\s*\d+\s+\d+\s+R\s*([^\[\]]*)\]")
+METADATA_SKIPPED = frozenset({"format", "encryption"})
+BOOKMARK_STYLE_KEYS = ("color", "bold", "italic", "collapse")
+
+
+def _named_destination(document: pymupdf.Document, kind: str, value: str) -> str:
+    try:
+        needle = (
+            mupdf.pdf_new_name(value.lstrip("/"))
+            if kind == "name"
+            else mupdf.pdf_new_text_string(value)
+        )
+        found = mupdf.pdf_lookup_dest(pymupdf._as_pdf_document(document), needle)
+        if not found.m_internal:
+            return ""
+        resolved = mupdf.pdf_resolve_indirect(found)
+        if resolved.pdf_is_dict():
+            resolved = mupdf.pdf_resolve_indirect(mupdf.pdf_dict_gets(resolved, "D"))
+        printed = pymupdf.JM_object_to_buffer(resolved, 1, 0)
+        return printed.fz_buffer_extract().decode("latin-1")
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _destination_view(document: pymupdf.Document, xref: int) -> str:
+    for key in ("Dest", "A/D"):
+        kind, value = document.xref_get_key(xref, key)
+        if kind == "array":
+            text = value
+        elif kind == "xref":
+            text = document.xref_object(int(value.split()[0]), compressed=True)
+        elif kind in ("string", "name"):
+            text = _named_destination(document, kind, value)
+        else:
+            continue
+        found = DESTINATION_ARRAY.search(text)
+        if found:
+            return found.group(1).strip() or "/Fit"
+    return "/Fit"
+
+
+def _goto_action(result: pymupdf.Document, position: int, view: str) -> str:
+    return f"<</S/GoTo/D[{result.page_xref(position)} 0 R {view}]>>"
+
+
+def _is_internal_link(link: dict) -> bool:
+    if link.get("page", -1) < 0 or not link.get("xref"):
+        return False
+    return link["kind"] == pymupdf.LINK_GOTO or (
+        link["kind"] == pymupdf.LINK_NAMED and "nameddest" in link
+    )
+
+
+def _rebuild_internal_links(
+    result: pymupdf.Document,
+    documents: dict[str, pymupdf.Document],
+    origins: list[tuple[str, int] | None],
+    first_position: dict[tuple[str, int], int],
+) -> None:
+    for position, origin in enumerate(origins):
+        if origin is None:
+            continue
+        source = documents[origin[0]]
+        wanted = [
+            (link, first_position[(origin[0], link["page"])])
+            for link in source[origin[1]].get_links()
+            if _is_internal_link(link) and (origin[0], link["page"]) in first_position
+        ]
+        page = result[position]
+        for link in page.get_links():
+            if link["kind"] == pymupdf.LINK_GOTO:
+                page.delete_link(link)
+        if not wanted:
+            continue
+        page = result.reload_page(page)
+        before = {link["xref"] for link in page.get_links()}
+        for _link, target in wanted:
+            page.insert_link(
+                {
+                    "kind": pymupdf.LINK_GOTO,
+                    "from": pymupdf.Rect(0, 0, 1, 1),
+                    "page": target,
+                    "to": pymupdf.Point(0, 0),
+                }
+            )
+        page = result.reload_page(page)
+        created = [link["xref"] for link in page.get_links() if link["xref"] not in before]
+        for xref, (link, target) in zip(created, wanted, strict=True):
+            kind, rect = source.xref_get_key(link["xref"], "Rect")
+            if kind == "array":
+                result.xref_set_key(xref, "Rect", rect)
+            view = _destination_view(source, link["xref"])
+            result.xref_set_key(xref, "A", _goto_action(result, target, view))
+            result.xref_set_key(xref, "Dest", "null")
+
+
+def _carry_bookmarks(
+    result: pymupdf.Document,
+    sources: list[AssembleSource],
+    documents: dict[str, pymupdf.Document],
+    first_position: dict[tuple[str, int], int],
+) -> None:
+    entries: list[tuple[list, pymupdf.Document, int]] = []
+    for source in sources:
+        document = documents[source.id]
+        for level, title, page_number, *rest in document.get_toc(simple=False):
+            position = first_position.get((source.id, page_number - 1))
+            if position is None:
+                continue
+            dest = rest[0] if rest and isinstance(rest[0], dict) else {}
+            style = {key: dest[key] for key in BOOKMARK_STYLE_KEYS if key in dest}
+            style["kind"] = pymupdf.LINK_GOTO
+            entries.append(([level, title, position + 1, style], document, dest.get("xref", 0)))
+    if not entries:
+        return
+    entries.sort(key=lambda entry: entry[0][2])
+    result.set_toc(normalized_toc([entry[0] for entry in entries]))
+    outline = result.get_outline_xrefs()
+    if len(outline) != len(entries):
+        return
+    for xref, (toc_entry, document, source_xref) in zip(outline, entries, strict=True):
+        if not source_xref:
+            continue
+        view = _destination_view(document, source_xref)
+        result.xref_set_key(xref, "A", _goto_action(result, toc_entry[2] - 1, view))
+        result.xref_set_key(xref, "Dest", "null")
+
+
+def _carry_document_extras(result: pymupdf.Document, main: pymupdf.Document) -> None:
+    metadata = {
+        key: value for key, value in (main.metadata or {}).items() if key not in METADATA_SKIPPED
+    }
+    if any(metadata.values()):
+        result.set_metadata(metadata)
+    for name in main.embfile_names():
+        info = main.embfile_info(name)
+        result.embfile_add(
+            name,
+            main.embfile_get(name),
+            filename=info.get("filename") or name,
+            ufilename=info.get("ufilename") or name,
+            desc=info.get("description") or "",
+        )
+
+
+def _main_protection(
+    sources: list[AssembleSource], documents: dict[str, pymupdf.Document]
+) -> tuple[SourceSeal | None, Protection | None]:
+    main = sources[0]
+    return protection_source(documents[main.id], main.path, main.password)
 
 
 def _open_sources(sources: list[AssembleSource], documents: dict[str, pymupdf.Document]) -> None:
@@ -281,11 +436,14 @@ def assemble(params: AssembleParams, progress: Progress) -> OutputResult:
             lambda fraction: progress.report(fraction, "progress.assembling"),
             label_parts,
         )
+        seal, protection = _main_protection(params.sources, documents)
         try:
             progress.report(0.9, "progress.saving")
-            return save_document(result, target)
+            return save_protected(result, target, seal, protection)
         finally:
             result.close()
+            if seal is not None:
+                seal.close()
     finally:
         for document in documents.values():
             document.close()
@@ -359,9 +517,11 @@ def assemble_parts(params: AssemblePartsParams, progress: Progress) -> AssembleP
     documents: dict[str, pymupdf.Document] = {}
     outputs: list[AssembledPart] = []
     staged: list[Path] = []
+    seal: SourceSeal | None = None
     try:
         _open_sources(params.sources, documents)
         _validate_pages(params.pages, documents)
+        seal, protection = _main_protection(params.sources, documents)
         for position, (start, end) in enumerate(bounds):
             progress.check_cancelled()
             progress.report(
@@ -376,12 +536,14 @@ def assemble_parts(params: AssemblePartsParams, progress: Progress) -> AssembleP
                 documents,
                 progress,
                 lambda _fraction: None,
-                None if label_parts is None else label_parts[start:end],
+                None
+                if label_parts is None or params.labels is None
+                else _part_labels(label_parts, params.labels, start, end),
             )
             stage = _staging_path(targets[position])
             staged.append(stage)
             try:
-                saved = save_document(result, stage)
+                saved = save_protected(result, stage, seal, protection)
             finally:
                 result.close()
             outputs.append(
@@ -404,9 +566,21 @@ def assemble_parts(params: AssemblePartsParams, progress: Progress) -> AssembleP
             stage.unlink(missing_ok=True)
         raise
     finally:
+        if seal is not None:
+            seal.close()
         for document in documents.values():
             document.close()
     return AssemblePartsResult(outputs=outputs)
+
+
+def _part_labels(
+    parts: "list[LabelParts]", rules: list[PageLabelRule], start: int, end: int
+) -> "list[LabelParts]":
+    first_rule = min((rule.start for rule in rules), default=len(parts))
+    return [
+        ("D", "", position - start + 1) if position < first_rule else parts[position]
+        for position in range(start, end)
+    ]
 
 
 def _assembled_labels(

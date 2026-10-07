@@ -20,6 +20,8 @@ DECODED_JPEG_QUALITY = 92
 LARGE_PICTURE_PIXELS = 300_000_000
 HIGH_DEPTH_MODES = frozenset({"I;16", "I;16L", "I;16B", "I;16N", "I"})
 SIXTEEN_BIT_SCALE = 257
+EXIF_ORIENTATION = 0x0112
+SIDEWAYS_ORIENTATIONS = frozenset({5, 6, 7, 8})
 _pixel_limit_lock = threading.Lock()
 
 
@@ -72,6 +74,21 @@ def pillow_only(path: str | Path) -> bool:
         return Path(path).suffix.lower().lstrip(".") in HEIF_EXTENSIONS
 
 
+def exif_orientation(image: Image.Image) -> int:
+    try:
+        return int(image.getexif().get(EXIF_ORIENTATION, 1) or 1)
+    except Exception:  # noqa: BLE001
+        return 1
+
+
+def _needs_decoding(path: str | Path) -> bool:
+    try:
+        with Image.open(path) as opened:
+            return (opened.format or "") in PILLOW_ONLY_FORMATS or exif_orientation(opened) != 1
+    except (OSError, ValueError, Image.DecompressionBombError):
+        return Path(path).suffix.lower().lstrip(".") in HEIF_EXTENSIONS
+
+
 def decoded_image_bytes(path: str | Path) -> bytes:
     with Image.open(path) as opened:
         image = ImageOps.exif_transpose(opened)
@@ -96,7 +113,7 @@ def image_file_bytes(path: str | Path) -> bytes:
 
 
 def insert_image_file(page: pymupdf.Page, rect: pymupdf.Rect, path: str | Path, **options) -> None:
-    if pillow_only(path):
+    if _needs_decoding(path):
         page.insert_image(rect, stream=decoded_image_bytes(path), **options)
         return
     page.insert_image(rect, filename=str(path), **options)
