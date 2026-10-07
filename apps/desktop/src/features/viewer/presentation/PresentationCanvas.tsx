@@ -23,11 +23,12 @@ const LASER_FADE_MS = 700;
 
 const ERASER_RADIUS = 0.02;
 const PICK_TOLERANCE_PX = 6;
+const DRAG_THRESHOLD_PX = 3;
 const DRAWING_TOOLS = new Set(["pen", "highlighter", "shape", "eraser"]);
 const NO_STROKES: Stroke[] = [];
 
 type TextDraftState = { pageIndex: number; anchor: StrokePoint; initial: string; original: Stroke | null };
-type MoveState = { pageIndex: number; original: Stroke; start: StrokePoint };
+type MoveState = { pageIndex: number; original: Stroke; start: StrokePoint; moved: boolean; editOnClick: boolean };
 
 function pagePoint(rect: PageRect, x: number, y: number) {
   return clampStrokePoint({ x: (x - rect.left) / rect.width, y: (y - rect.top) / rect.height });
@@ -109,14 +110,10 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
 
   const drawingAt = (rect: PageRect, point: StrokePoint) => topDrawingAt(pageStrokes(rect.pageIndex), point, PICK_TOLERANCE_PX, { x: rect.width, y: rect.height });
 
-  const startText = (rect: PageRect, point: StrokePoint) => {
-    const hit = drawingAt(rect, point);
-    if (hit?.tool === "text") {
-      usePresentationStore.getState().removeDrawing(rect.pageIndex, hit.id);
-      setTextDraft({ pageIndex: rect.pageIndex, anchor: hit.points[0], initial: hit.text ?? "", original: hit });
-      return;
-    }
-    setTextDraft({ pageIndex: rect.pageIndex, anchor: point, initial: "", original: null });
+  const editText = (pageIndex: number, label: Stroke) => {
+    const current = pageStrokes(pageIndex).find((stroke) => stroke.id === label.id) ?? label;
+    usePresentationStore.getState().removeDrawing(pageIndex, current.id);
+    setTextDraft({ pageIndex, anchor: current.points[0], initial: current.text ?? "", original: current });
   };
 
   const commitText = (draft: TextDraftState, text: string) => {
@@ -169,7 +166,14 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
       const pageRect = nearestPageRect(pageRects, point.x, point.y);
       if (!pageRect) return;
       event.preventDefault();
-      startText(pageRect, pagePoint(pageRect, point.x, point.y));
+      const normalized = pagePoint(pageRect, point.x, point.y);
+      const hit = drawingAt(pageRect, normalized);
+      if (hit?.tool === "text") {
+        moveRef.current = { pageIndex: pageRect.pageIndex, original: hit, start: normalized, moved: false, editOnClick: true };
+        event.currentTarget.setPointerCapture(event.pointerId);
+        return;
+      }
+      setTextDraft({ pageIndex: pageRect.pageIndex, anchor: normalized, initial: "", original: null });
       return;
     }
     if (tool === "select") {
@@ -182,7 +186,7 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
         return;
       }
       usePresentationStore.getState().selectDrawing({ surface: pageRect.pageIndex, id: hit.id });
-      moveRef.current = { pageIndex: pageRect.pageIndex, original: hit, start: normalized };
+      moveRef.current = { pageIndex: pageRect.pageIndex, original: hit, start: normalized, moved: false, editOnClick: false };
       setHoverMovable(true);
       event.currentTarget.setPointerCapture(event.pointerId);
       return;
@@ -214,6 +218,19 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
       scroller.scrollTop = pan.top - (event.clientY - pan.y);
       return;
     }
+    const move = moveRef.current;
+    if (move) {
+      const pageRect = pageRects.find((rect) => rect.pageIndex === move.pageIndex);
+      if (!pageRect) return;
+      const point = toContainerPoint(event);
+      const normalized = pagePoint(pageRect, point.x, point.y);
+      const dx = normalized.x - move.start.x;
+      const dy = normalized.y - move.start.y;
+      if (!move.moved && Math.hypot(dx * pageRect.width, dy * pageRect.height) < DRAG_THRESHOLD_PX) return;
+      move.moved = true;
+      usePresentationStore.getState().replaceDrawing(move.pageIndex, translateDrawing(move.original, dx, dy));
+      return;
+    }
     if (tool === "laser") {
       const next = { x: event.clientX, y: event.clientY };
       setPointer(next);
@@ -232,18 +249,11 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
       setPointer({ x: event.clientX, y: event.clientY });
       return;
     }
-    if (tool === "select") {
+    if (tool === "select" || tool === "text") {
       const point = toContainerPoint(event);
-      const move = moveRef.current;
-      if (move) {
-        const pageRect = pageRects.find((rect) => rect.pageIndex === move.pageIndex);
-        if (!pageRect) return;
-        const normalized = pagePoint(pageRect, point.x, point.y);
-        usePresentationStore.getState().replaceDrawing(move.pageIndex, translateDrawing(move.original, normalized.x - move.start.x, normalized.y - move.start.y));
-        return;
-      }
       const pageRect = pageRectAt(pageRects, point.x, point.y);
-      setHoverMovable(!!pageRect && !!drawingAt(pageRect, pagePoint(pageRect, point.x, point.y)));
+      const hit = pageRect ? drawingAt(pageRect, pagePoint(pageRect, point.x, point.y)) : null;
+      setHoverMovable(tool === "select" ? !!hit : hit?.tool === "text");
       return;
     }
     if (!DRAWING_TOOLS.has(tool)) return;
@@ -269,6 +279,12 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
       panRef.current = null;
       return;
     }
+    const move = moveRef.current;
+    if (move) {
+      moveRef.current = null;
+      if (move.editOnClick && !move.moved) editText(move.pageIndex, move.original);
+      return;
+    }
     if (tool === "laser") {
       releaseLaserStroke();
       return;
@@ -277,10 +293,7 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
       erasingRef.current = false;
       return;
     }
-    if (tool === "select") {
-      moveRef.current = null;
-      return;
-    }
+    if (tool === "select") return;
     const current = drawingRef.current;
     const currentRect = current ? pageRects.find((rect) => rect.pageIndex === current.pageIndex) : undefined;
     if (current && currentRect && isDrawingKept(current.stroke, rectSize(currentRect))) addStroke(current.pageIndex, current.stroke);
@@ -296,10 +309,8 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
   }, [tool]);
 
   useEffect(() => {
-    if (tool !== "select") {
-      moveRef.current = null;
-      setHoverMovable(false);
-    }
+    moveRef.current = null;
+    setHoverMovable(false);
   }, [tool]);
 
   useEffect(() => {
@@ -339,7 +350,9 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
           : tool === "eraser"
             ? eraserCursor("#1f2937")
             : tool === "text"
-              ? "text"
+              ? hoverMovable
+                ? "move"
+                : "text"
               : tool === "select"
                 ? hoverMovable
                   ? "move"

@@ -176,7 +176,7 @@ describe("PresentationCanvas", () => {
     });
     render(<Stage />);
 
-    fireEvent.pointerDown(capture(), { button: 0, pointerId: 1, clientX: 310, clientY: 160 });
+    drag([[310, 160]]);
     const field = screen.getByRole("textbox", { name: "Text" }) as HTMLTextAreaElement;
     expect(field.value).toBe("Eski");
     fireEvent.change(field, { target: { value: "Yeni" } });
@@ -184,5 +184,23 @@ describe("PresentationCanvas", () => {
 
     expect(pageStrokes()).toHaveLength(1);
     expect(pageStrokes()[0]).toMatchObject({ id: "note", text: "Yeni", fontSize: 0.04, points: [{ x: 0.25, y: 0.25 }] });
+  });
+
+  it("moves a placed text when the text tool drags it, without opening it for editing", () => {
+    act(() => {
+      usePresentationStore.getState().addStroke(0, { id: "note", tool: "text", color: "#000000", width: 0, points: [{ x: 0.25, y: 0.25 }], text: "Eski", fontSize: 0.04, size: { width: 0.1, height: 0.1 } });
+      usePresentationStore.getState().setTool("text");
+    });
+    render(<Stage />);
+
+    drag([
+      [310, 160],
+      [390, 200],
+    ]);
+
+    expect(screen.queryByRole("textbox")).toBeNull();
+    expect(pageStrokes()).toHaveLength(1);
+    expect(pageStrokes()[0].points[0].x).toBeCloseTo(0.35);
+    expect(pageStrokes()[0].points[0].y).toBeCloseTo(0.35);
   });
 });
