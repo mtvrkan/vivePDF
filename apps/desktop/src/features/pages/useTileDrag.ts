@@ -13,6 +13,10 @@ export function passedDragThreshold(startX: number, startY: number, x: number, y
   return Math.hypot(x - startX, y - startY) >= DRAG_THRESHOLD;
 }
 
+function outsideWindow(x: number, y: number): boolean {
+  return x < 0 || y < 0 || x >= window.innerWidth || y >= window.innerHeight;
+}
+
 type UseTileDragOptions = {
   scrollRef: RefObject<HTMLElement | null>;
   dropIndexAt: (clientX: number, clientY: number) => number;
@@ -20,9 +24,10 @@ type UseTileDragOptions = {
   onMove: (keys: Set<string>, dropIndex: number) => void;
   documentAt?: (clientX: number, clientY: number) => string | null;
   onDropOnDocument?: (documentId: string, keys: Set<string>) => void;
+  onDragOutside?: (keys: Set<string>) => void;
 };
 
-export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove, documentAt, onDropOnDocument }: UseTileDragOptions) {
+export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove, documentAt, onDropOnDocument, onDragOutside }: UseTileDragOptions) {
   const [drag, setDrag] = useState<DragState | null>(null);
   const [dropIndex, setDropIndex] = useState<number | null>(null);
   const [dropDocument, setDropDocument] = useState<string | null>(null);
@@ -71,6 +76,12 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove, docu
         suppressClickRef.current = true;
         rafRef.current = requestAnimationFrame(autoScroll);
       }
+      if (dragRef.current && onDragOutside && (event.buttons & 1) === 1 && outsideWindow(event.clientX, event.clientY)) {
+        const keys = keysFor(dragRef.current.key);
+        finish(false);
+        onDragOutside(keys);
+        return;
+      }
       if (dragRef.current) {
         dragRef.current = { ...dragRef.current, x: event.clientX, y: event.clientY };
         if (moveFrameRef.current === null) moveFrameRef.current = requestAnimationFrame(flushMove);
@@ -92,6 +103,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove, docu
         setDropIndex(index);
       }
     };
+    const keysFor = (key: string) => (selectedKeys.has(key) ? new Set(selectedKeys) : new Set([key]));
     const cancelMoveFrame = () => {
       if (moveFrameRef.current !== null) cancelAnimationFrame(moveFrameRef.current);
       moveFrameRef.current = null;
@@ -115,7 +127,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove, docu
       setDropIndex(null);
       setDropDocument(null);
       if (commit && active) {
-        const keys = selectedKeys.has(active.key) ? new Set(selectedKeys) : new Set([active.key]);
+        const keys = keysFor(active.key);
         if (targetDocument) onDropOnDocument?.(targetDocument, keys);
         else if (target !== null) onMove(keys, target);
       }
@@ -141,7 +153,7 @@ export function useTileDrag({ scrollRef, dropIndexAt, selectedKeys, onMove, docu
       cancelMoveFrame();
       stopAutoScroll();
     };
-  }, [selectedKeys, onMove, dropIndexAt, documentAt, onDropOnDocument, autoScroll, pointer]);
+  }, [selectedKeys, onMove, dropIndexAt, documentAt, onDropOnDocument, onDragOutside, autoScroll, pointer]);
 
   const onTilePointerDown = useCallback((event: ReactPointerEvent, key: string) => {
     if (event.button !== 0) return;

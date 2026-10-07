@@ -20,6 +20,22 @@ export function directMainPages(tiles: readonly OrganizerTile[]): string | null 
   return indexes.length > 0 ? rangesOf(indexes.map((index) => index - 1)) : null;
 }
 
+export function dragFileName(documentName: string, label: string): string {
+  const stem = documentName.replace(/\.pdf$/i, "");
+  return `${`${stem} - ${label}`.replace(/[<>:"/\\|?*]/g, "_").trim().slice(0, 150)}.pdf`;
+}
+
+export async function writeDragCopy(name: string, arranged: Arrangement): Promise<string> {
+  const path = await join(await tempDir(), "vivepdf-drag", name);
+  try {
+    await assemblePages({ ...arranged, output: path, overwrite: true });
+    return path;
+  } catch (caught) {
+    discardExportCopy(path);
+    throw caught;
+  }
+}
+
 export function discardExportCopy(path: string): void {
   void deleteFile(path).catch((caught: unknown) => logger.warn("pages.export", `could not delete ${path}: ${String(caught)}`));
 }

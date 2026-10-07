@@ -5,7 +5,7 @@ vi.mock("@tauri-apps/api/path", () => ({ tempDir: async () => "C:/tmp", join: as
 vi.mock("@/shared/rpc/files", () => ({ deleteFile: vi.fn(async () => undefined) }));
 vi.mock("@/shared/rpc/operations", () => ({ assemblePages: vi.fn(async () => ({ output: "", pageCount: 2, bytes: 10 })), insertPagesFrom: vi.fn(async () => ({ output: "", bytes: 10, inserted: 2 })) }));
 
-const { copyPagesInto, directMainPages, exportSourceOf } = await import("./organizerExport");
+const { copyPagesInto, directMainPages, dragFileName, exportSourceOf, writeDragCopy } = await import("./organizerExport");
 const { assemblePages, insertPagesFrom } = await import("@/shared/rpc/operations");
 const { deleteFile } = await import("@/shared/rpc/files");
 
@@ -84,5 +84,37 @@ describe("copyPagesInto", () => {
     await expect(copyPagesInto(target, [page(3), page(1)], main, arranged)).rejects.toThrow("locked");
 
     expect(deleteFile).toHaveBeenCalledWith(expect.stringMatching(/vivepdf-pages-.+\.pdf$/));
+  });
+});
+
+describe("dragFileName", () => {
+  it("names the dragged file after the document and the pages", () => {
+    expect(dragFileName("report.pdf", "pages 1-3, 5")).toBe("report - pages 1-3, 5.pdf");
+  });
+
+  it("replaces characters Windows refuses in a file name", () => {
+    expect(dragFileName("a:b?.PDF", "2 pages")).toBe("a_b_ - 2 pages.pdf");
+    expect(dragFileName("notes.txt.pdf", "page 4")).toBe("notes.txt - page 4.pdf");
+  });
+
+  it("shortens very long names", () => {
+    expect(dragFileName(`${"x".repeat(300)}.pdf`, "page 1")).toHaveLength(154);
+  });
+});
+
+describe("writeDragCopy", () => {
+  it("writes the arrangement under the drag folder in the temporary directory", async () => {
+    const path = await writeDragCopy("report - page 2.pdf", arranged);
+
+    expect(path).toBe("C:/tmp/vivepdf-drag/report - page 2.pdf");
+    expect(vi.mocked(assemblePages).mock.calls[0][0]).toMatchObject({ output: path, overwrite: true });
+  });
+
+  it("removes a half-written file when arranging fails", async () => {
+    vi.mocked(assemblePages).mockRejectedValueOnce(new Error("disk full"));
+
+    await expect(writeDragCopy("report - page 2.pdf", arranged)).rejects.toThrow("disk full");
+
+    expect(deleteFile).toHaveBeenCalledWith("C:/tmp/vivepdf-drag/report - page 2.pdf");
   });
 });

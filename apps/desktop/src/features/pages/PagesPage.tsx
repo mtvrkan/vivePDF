@@ -21,7 +21,7 @@ import { usePageDropTargetStore } from "@/shared/store/pageDropTargetStore";
 import { useOperation } from "@/shared/hooks/useOperation";
 import { basenameOf, dirnameOf, joinPath, stemOf, suggestOutputPath } from "@/shared/lib/paths";
 import { assemblePageParts, assemblePages } from "@/shared/rpc/operations";
-import { isPdfPath } from "@/shared/rpc/files";
+import { fileDragSupported, isPdfPath, startFileDrag } from "@/shared/rpc/files";
 import { useMarqueeSelection, type MarqueeBox, type TileRect } from "./useMarqueeSelection";
 import { useVirtualGrid } from "./useVirtualGrid";
 import { clickSelection, tileClickAction, type ClickMode } from "./tileSelection";
@@ -50,7 +50,7 @@ import { OrganizerToolbar, SelectionBar } from "./OrganizerToolbar";
 import { OrganizerOutput } from "./OrganizerOutput";
 import { arrangementOf, type Arrangement } from "./arrangement";
 import { ExportImagesDialog } from "./ExportImagesDialog";
-import { copyPagesInto, exportSourceOf } from "./organizerExport";
+import { copyPagesInto, directMainPages, discardExportCopy, dragFileName, exportSourceOf, writeDragCopy } from "./organizerExport";
 import { DragBadge, MarqueeRect } from "./LiveOverlays";
 import { usePageClipboardActions } from "./usePageClipboardActions";
 import { usePageClipboard } from "./pageClipboard";
@@ -58,6 +58,7 @@ import { usePageClipboard } from "./pageClipboard";
 type TileMenu = { x: number; y: number; key: string };
 
 const TILE_CHROME_HEIGHT = 48;
+const DRAG_COPY_LIFETIME_MS = 60_000;
 
 export function PagesPage() {
   const { t } = useTranslation();
@@ -210,6 +211,39 @@ export function PagesPage() {
 
   const dropOnDocument = useCallback((targetId: string, keys: Set<string>) => withViewerSaved(() => void copyToDocument(targetId, keys)), [withViewerSaved, copyToDocument]);
 
+  const dragOut = useCallback(
+    async (keys: Set<string>) => {
+      if (!document || !activeDocumentId) return;
+      if (hasUnsavedWork(activeDocumentId)) {
+        pushToast("info", t("viewer.saveBeforePageDrop", { name: document.fileName }));
+        return;
+      }
+      const released = { current: false };
+      const onRelease = () => {
+        released.current = true;
+      };
+      window.addEventListener("pointerup", onRelease);
+      let path: string | null = null;
+      try {
+        const state = useOrganizerStore.getState();
+        const chosen = state.tiles.filter((tile) => keys.has(tile.key));
+        const range = directMainPages(chosen);
+        const label = range ? t("tools.pages.drag.fileRange", { count: chosen.length, range }) : t("tools.pages.drag.fileCount", { count: chosen.length });
+        path = await writeDragCopy(dragFileName(document.fileName, label), arrangementOf(chosen, state.sources, document, { mainFirst: true }));
+        if (!released.current) await startFileDrag(path);
+      } catch (caught) {
+        pushToast("error", describeError(t, toRpcError(caught)));
+      } finally {
+        window.removeEventListener("pointerup", onRelease);
+        if (path) {
+          const written = path;
+          window.setTimeout(() => discardExportCopy(written), DRAG_COPY_LIFETIME_MS);
+        }
+      }
+    },
+    [document, activeDocumentId, hasUnsavedWork, pushToast, t],
+  );
+
   const { drag, dropIndex, dropDocument, pointer: dragPointer, onTilePointerDown, wasDragged } = useTileDrag({
     scrollRef,
     dropIndexAt: grid.dropIndexAtClient,
@@ -217,6 +251,7 @@ export function PagesPage() {
     onMove,
     documentAt,
     onDropOnDocument: dropOnDocument,
+    onDragOutside: fileDragSupported() ? (keys) => void dragOut(keys) : undefined,
   });
 
   useEffect(() => {

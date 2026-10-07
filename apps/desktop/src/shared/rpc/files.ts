@@ -61,6 +61,18 @@ export async function openProducedFile(path: string): Promise<void> {
   }
 }
 
+export function fileDragSupported(): boolean {
+  return navigator.userAgent.includes("Windows");
+}
+
+export async function startFileDrag(path: string): Promise<boolean> {
+  try {
+    return await invoke<boolean>("start_file_drag", { path });
+  } catch (error) {
+    throw new RpcCallError(toRpcError(error));
+  }
+}
+
 export async function openFolder(path: string): Promise<void> {
   try {
     await invoke("open_folder", { path });

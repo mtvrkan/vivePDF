@@ -132,3 +132,49 @@ describe("useTileDrag onto another document", () => {
     expect(onMove).not.toHaveBeenCalled();
   });
 });
+
+describe("useTileDrag out of the window", () => {
+  const held = (x: number, y: number) => window.dispatchEvent(new MouseEvent("pointermove", { clientX: x, clientY: y, buttons: 1 }));
+
+  it("hands the dragged pages over once the pointer leaves the window with the button held", () => {
+    const onDragOutside = vi.fn();
+    const drag = renderHook(() => useTileDrag({ scrollRef: { current: null }, dropIndexAt: () => 3, selectedKeys: new Set(["p1", "p2"]), onMove, onDragOutside }));
+
+    act(() => {
+      drag.result.current.onTilePointerDown({ button: 0, clientX: 10, clientY: 10 } as ReactPointerEvent, "p2");
+      held(40, 40);
+      held(-5, 40);
+      pointer("pointerup", -5, 40);
+    });
+
+    expect(onDragOutside).toHaveBeenCalledWith(new Set(["p1", "p2"]));
+    expect(onMove).not.toHaveBeenCalled();
+    expect(drag.result.current.drag).toBeNull();
+  });
+
+  it("keeps the drag inside the organizer when no outside handler is given", () => {
+    const drag = renderHook(() => useTileDrag({ scrollRef: { current: null }, dropIndexAt: () => 2, selectedKeys: new Set(), onMove }));
+
+    act(() => {
+      drag.result.current.onTilePointerDown({ button: 0, clientX: 10, clientY: 10 } as ReactPointerEvent, "p4");
+      held(-5, 40);
+      pointer("pointerup", -5, 40);
+    });
+
+    expect(onMove).toHaveBeenCalledWith(new Set(["p4"]), 2);
+  });
+
+  it("ignores a pointer that is outside the window once the button is already up", () => {
+    const onDragOutside = vi.fn();
+    const drag = renderHook(() => useTileDrag({ scrollRef: { current: null }, dropIndexAt: () => 2, selectedKeys: new Set(), onMove, onDragOutside }));
+
+    act(() => {
+      drag.result.current.onTilePointerDown({ button: 0, clientX: 10, clientY: 10 } as ReactPointerEvent, "p4");
+      held(40, 40);
+      pointer("pointermove", -5, 40);
+    });
+
+    expect(onDragOutside).not.toHaveBeenCalled();
+    expect(drag.result.current.drag).not.toBeNull();
+  });
+});

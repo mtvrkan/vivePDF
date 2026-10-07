@@ -4118,7 +4118,11 @@
       "drag": {
         "copyTo": "Copiar para {{name}}",
         "copied_one": "{{count}} página adicionada ao final de {{name}}.",
-        "copied_other": "{{count}} páginas adicionadas ao final de {{name}}."
+        "copied_other": "{{count}} páginas adicionadas ao final de {{name}}.",
+        "fileRange_one": "página {{range}}",
+        "fileRange_other": "páginas {{range}}",
+        "fileCount_one": "{{count}} página",
+        "fileCount_other": "{{count}} páginas"
       }
     },
     "dropHint": "Solte o PDF aqui ou clique para escolhê-lo",

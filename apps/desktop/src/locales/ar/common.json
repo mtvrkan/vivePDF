@@ -4466,7 +4466,19 @@
         "copied_two": "تمت إضافة صفحتين إلى نهاية {{name}}.",
         "copied_few": "تمت إضافة {{count}} صفحات إلى نهاية {{name}}.",
         "copied_many": "تمت إضافة {{count}} صفحة إلى نهاية {{name}}.",
-        "copied_other": "تمت إضافة {{count}} صفحة إلى نهاية {{name}}."
+        "copied_other": "تمت إضافة {{count}} صفحة إلى نهاية {{name}}.",
+        "fileRange_zero": "الصفحات {{range}}",
+        "fileRange_one": "الصفحة {{range}}",
+        "fileRange_two": "الصفحتان {{range}}",
+        "fileRange_few": "الصفحات {{range}}",
+        "fileRange_many": "الصفحات {{range}}",
+        "fileRange_other": "الصفحات {{range}}",
+        "fileCount_zero": "بلا صفحات",
+        "fileCount_one": "صفحة واحدة",
+        "fileCount_two": "صفحتان",
+        "fileCount_few": "{{count}} صفحات",
+        "fileCount_many": "{{count}} صفحة",
+        "fileCount_other": "{{count}} صفحة"
       }
     },
     "dropHint": "أفلت ملف PDF هنا أو انقر لاختياره",

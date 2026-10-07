@@ -6,6 +6,7 @@ mod doc_watch;
 mod document_windows;
 mod e2e;
 mod file_association;
+mod file_drag;
 mod files;
 mod font_source;
 mod launch;
@@ -147,6 +148,7 @@ pub fn run() {
             files::open_produced_picture,
             files::open_produced_file,
             files::open_folder,
+            file_drag::start_file_drag,
             lens::search_picture_with_lens,
             tray::tray_configure,
             tray::window_hide_to_tray,

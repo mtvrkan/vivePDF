@@ -4118,7 +4118,11 @@
       "drag": {
         "copyTo": "{{name}} belgesine kopyala",
         "copied_one": "{{count}} sayfa {{name}} belgesinin sonuna eklendi.",
-        "copied_other": "{{count}} sayfa {{name}} belgesinin sonuna eklendi."
+        "copied_other": "{{count}} sayfa {{name}} belgesinin sonuna eklendi.",
+        "fileRange_one": "sayfa {{range}}",
+        "fileRange_other": "sayfa {{range}}",
+        "fileCount_one": "{{count}} sayfa",
+        "fileCount_other": "{{count}} sayfa"
       }
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",

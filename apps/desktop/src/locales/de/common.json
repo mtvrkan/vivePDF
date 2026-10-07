@@ -4118,7 +4118,11 @@
       "drag": {
         "copyTo": "Nach {{name}} kopieren",
         "copied_one": "{{count}} Seite am Ende von {{name}} hinzugefügt.",
-        "copied_other": "{{count}} Seiten am Ende von {{name}} hinzugefügt."
+        "copied_other": "{{count}} Seiten am Ende von {{name}} hinzugefügt.",
+        "fileRange_one": "Seite {{range}}",
+        "fileRange_other": "Seiten {{range}}",
+        "fileCount_one": "{{count}} Seite",
+        "fileCount_other": "{{count}} Seiten"
       }
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",
