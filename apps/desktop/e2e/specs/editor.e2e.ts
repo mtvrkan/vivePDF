@@ -20,9 +20,19 @@ async function waitForPending(count: number) {
   await pendingCount(count).waitForDisplayed({ timeout: 15000, timeoutMsg: `the editor never counted ${count} pending changes` });
 }
 
-async function enterEditor(labelKey: "viewer.overlay.text" | "viewer.overlay.image") {
+async function chooseEditorItem(menuKey: "viewer.overlay.insert" | "viewer.overlay.moreTools", itemKey: string) {
+  const trigger = $(`//*[@data-overlay-bar]//button[normalize-space(.)="${t(menuKey)}"]`);
+  if (!(await trigger.isDisplayed())) await clickButton(t("viewer.overlay.editMenu"));
+  await trigger.waitForClickable();
+  await trigger.click();
+  const item = $(`//*[@role="menu"]//button[normalize-space(.)="${t(itemKey)}"]`);
+  await item.waitForClickable();
+  await item.click();
+}
+
+async function enterEditor(target: "viewer.overlay.editTexts" | "viewer.overlay.editImages") {
   await clickButton(t("viewer.overlay.editMenu"));
-  await clickButton(t(labelKey));
+  if (target === "viewer.overlay.editImages") await $(`//*[@role="group"][@aria-label="${t("viewer.overlay.editTarget")}"]//button[normalize-space(.)="${t(target)}"]`).click();
   await $(`[data-page-index="0"] [data-block-kind]`).waitForExist({ timeout: 30000, timeoutMsg: "the page blocks never loaded" });
   await waitForSteadyPage();
 }
@@ -142,7 +152,7 @@ describe("page editor", () => {
     const source = copyFixture(fixtures().sample, "editor-rewrite.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
 
     await clickPage(0, 222, 157);
     await $("[data-editor-input]").waitForDisplayed({ timeout: 10000 });
@@ -163,7 +173,7 @@ describe("page editor", () => {
 
   it("keeps the page's line spacing while a small paragraph is being edited", async () => {
     await openInViewer(copyFixture(fixtures().memo, "editor-memo.pdf"));
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
 
     await clickPage(0, 150, 130);
     await $("[data-editor-input]").waitForDisplayed({ timeout: 10000 });
@@ -204,7 +214,7 @@ describe("page editor", () => {
 
   it("edits light text on a coloured background over that colour, not a dark box", async () => {
     await openInViewer(copyFixture(fixtures().banner, "editor-banner.pdf"));
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
 
     await clickPage(0, 150, 125);
     await $("[data-editor-input]").waitForDisplayed({ timeout: 10000 });
@@ -220,8 +230,7 @@ describe("page editor", () => {
   it("erases the area drawn in crop mode instead of keeping it when asked", async () => {
     const source = copyFixture(fixtures().sample, "editor-erase-area.pdf");
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.overlay.crop"));
+    await chooseEditorItem("viewer.overlay.moreTools", "viewer.overlay.crop");
 
     await dragPage(0, [60, 108], [320, 136]);
     await clickButton(t("viewer.overlay.eraseArea"));
@@ -239,8 +248,7 @@ describe("page editor", () => {
     const source = copyFixture(fixtures().turned, "editor-erase-turned.pdf");
     const box = spanWith(probe(source).pages?.[0].spans, "Turned page marker").box;
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.overlay.crop"));
+    await chooseEditorItem("viewer.overlay.moreTools", "viewer.overlay.crop");
 
     await dragPage(0, [box[0] - 4, box[1] - 4], [box[2] + 4, box[3] + 4], TURNED_WIDTH);
     await clickButton(t("viewer.overlay.eraseArea"));
@@ -257,8 +265,7 @@ describe("page editor", () => {
     const source = copyFixture(fixtures().turned, "editor-redact-turned.pdf");
     const box = spanWith(probe(source).pages?.[0].spans, "Turned page marker").box;
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.overlay.redact"));
+    await chooseEditorItem("viewer.overlay.moreTools", "viewer.overlay.redact");
 
     await dragPage(0, [box[0] - 4, box[1] - 4], [box[2] + 4, box[3] + 4], TURNED_WIDTH);
     await clickButton(t("viewer.overlay.redactApply"));
@@ -272,8 +279,7 @@ describe("page editor", () => {
     const source = copyFixture(fixtures().turned, "editor-link-turned.pdf");
     const box = spanWith(probe(source).pages?.[0].spans, "Turned page marker").box;
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.overlay.link"));
+    await chooseEditorItem("viewer.overlay.moreTools", "viewer.overlay.link");
 
     await dragPage(0, [box[0] - 4, box[1] - 4], [box[2] + 4, box[3] + 4], TURNED_WIDTH);
     await typeInto($(`input[aria-label="${t("viewer.overlay.linkUrl")}"]`), "https://example.org/turned");
@@ -291,7 +297,7 @@ describe("page editor", () => {
   it("adds new text with the size and weight chosen in the panel and saves it into the open file", async () => {
     const source = copyFixture(fixtures().sample, "editor-new-text.pdf");
     await openInViewer(source);
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
     await chooseOption(t("viewer.overlay.fontSize"), "24 pt");
     await clickButton(t("tools.bold"));
 
@@ -322,9 +328,9 @@ describe("page editor", () => {
     const source = copyFixture(fixtures().sample, "editor-picture.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await enterEditor("viewer.overlay.image");
+    await enterEditor("viewer.overlay.editImages");
     answerDialogs(fixtures().red);
-    await clickButton(t("viewer.overlay.pickImage"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.overlay.image");
     await waitForDialogsAnswered();
     await $(`//*[normalize-space(.)="${t("viewer.overlay.imageHint")}"]`).waitForDisplayed({ timeout: 30000 });
 
@@ -368,15 +374,13 @@ describe("page editor", () => {
   it("filters, locks, hides and removes objects from the Layers list", async () => {
     const source = copyFixture(fixtures().sample, "editor-layers.pdf");
     await openInViewer(source);
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
     await clickPage(0, 300, 640);
     await typeText("Katman metni");
     await waitForPending(1);
 
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.overlay.image"));
     answerDialogs(fixtures().blue);
-    await clickButton(t("viewer.overlay.pickImage"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.overlay.image");
     await waitForDialogsAnswered();
     await $(`//*[normalize-space(.)="${t("viewer.overlay.imageHint")}"]`).waitForDisplayed({ timeout: 30000 });
     await clickPage(0, 300, 420);
@@ -423,8 +427,7 @@ describe("page editor", () => {
     const source = copyFixture(fixtures().sample, "editor-reedit.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.formula.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.formula.menu");
     const area = $('[role="dialog"] textarea');
     await area.waitForDisplayed();
     await typeInto(area, "x^2");
@@ -456,7 +459,7 @@ describe("page editor", () => {
     const before = probe(source);
     expect(before.pages?.[0].rotation).toBe(90);
     await openInViewer(source);
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
 
     await clickPage(0, 400, 300, TURNED_WIDTH);
     await typeText("Döndürülmüş not");
@@ -478,7 +481,7 @@ describe("page editor", () => {
     await openInViewer(source);
     await clickButton(t("viewer.rotate"));
     await waitForSteadyPage();
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
 
     const [point] = await pagePoints(0, [[842 - 520, 300]], 842);
     await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(point).down().up().perform();
@@ -498,7 +501,7 @@ describe("page editor", () => {
     const before = probe(source);
     const [original] = before.pages?.[0].imageBoxes ?? [];
     await openInViewer(source);
-    await enterEditor("viewer.overlay.image");
+    await enterEditor("viewer.overlay.editImages");
     await $(`[data-page-index="0"] [data-block-kind="image"]`).waitForExist({ timeout: 30000 });
 
     const middle: [number, number] = [(original[0] + original[2]) / 2, (original[1] + original[3]) / 2];
@@ -513,7 +516,7 @@ describe("page editor", () => {
     expect(movedBox[2] - movedBox[0]).toBeCloseTo(original[2] - original[0], 0);
     expect(movedPage?.text).toContain("Menu check first line");
 
-    await enterEditor("viewer.overlay.image");
+    await enterEditor("viewer.overlay.editImages");
     await $(`[data-page-index="0"] [data-block-kind="image"]`).waitForExist({ timeout: 30000 });
     await clickPage(0, (movedBox[0] + movedBox[2]) / 2, (movedBox[1] + movedBox[3]) / 2);
     await clickButton(t("viewer.overlay.deleteImage"));
@@ -529,7 +532,7 @@ describe("page editor", () => {
     const before = probe(source);
     expect(before.layers).toBe(3);
     await openInViewer(source);
-    await enterEditor("viewer.overlay.text");
+    await enterEditor("viewer.overlay.editTexts");
     await clickPage(0, 300, 700);
     await typeText("Katmanlı belge notu");
     await waitForPending(1);

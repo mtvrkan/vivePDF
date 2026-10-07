@@ -3,6 +3,16 @@ import { $, browser, expect } from "@wdio/globals";
 import { answerDialogs, bootApp, button, chooseSource, clickButton, closeAllDocuments, copyFixture, fill, fixtures, openInViewer, openTool, outputPath, probe, runPrimary, t, typeInto, waitForDialogsAnswered, waitForFile, waitForOutputs, workDir } from "../support/app.ts";
 import { pagePoint } from "../support/desktop.ts";
 
+async function chooseEditorItem(menuKey: "viewer.overlay.insert" | "viewer.overlay.moreTools", itemKey: string) {
+  const trigger = $(`//*[@data-overlay-bar]//button[normalize-space(.)="${t(menuKey)}"]`);
+  if (!(await trigger.isDisplayed())) await clickButton(t("viewer.overlay.editMenu"));
+  await trigger.waitForClickable();
+  await trigger.click();
+  const item = $(`//*[@role="menu"]//button[normalize-space(.)="${t(itemKey)}"]`);
+  await item.waitForClickable();
+  await item.click();
+}
+
 const TURKISH_NAME = "Çağla Şüküroğlu İğdır Işık";
 
 describe("edit", () => {
@@ -44,8 +54,7 @@ describe("edit", () => {
     const source = copyFixture(fixtures().sample, "formula.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.formula.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.formula.menu");
     const area = $('[role="dialog"] textarea');
     await area.waitForDisplayed();
     const latex = String.raw`\int_0^1 x^2\,dx = \frac{1}{3}`;
@@ -81,8 +90,7 @@ describe("edit", () => {
     const source = copyFixture(fixtures().sample, "shape.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.shapes.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.shapes.menu");
     const dialog = $(`//div[@role="dialog"][.//h2[normalize-space(.)="${t("viewer.shapes.title")}"]]`);
     await dialog.waitForDisplayed();
     await $(`//div[@role="dialog"]//button[@role="radio"][normalize-space(.)="${t("viewer.shapes.groups.solids")}"]`).click();
@@ -118,8 +126,7 @@ describe("edit", () => {
     const source = copyFixture(fixtures().sample, "graph.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.graph.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.graph.menu");
     const input = $(`[role="dialog"] input[aria-label="${t("viewer.graph.functionLabel", { name: "f" })}"]`);
     await input.waitForDisplayed();
     await typeInto(input, "x^3 - 3x");
@@ -154,8 +161,7 @@ describe("edit", () => {
     const source = copyFixture(fixtures().sample, "table.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.table.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.table.menu");
     const cell = (row: number, column: number) => $(`[role="dialog"] input[aria-label="${t("viewer.grid.cellLabel", { row, column })}"]`);
     await cell(1, 1).waitForDisplayed();
     await typeInto(cell(1, 1), "Ürün");
@@ -193,8 +199,7 @@ describe("edit", () => {
   it("writes a multiple-choice question and its answer key and saves both as real text", async () => {
     const source = copyFixture(fixtures().sample, "question.pdf");
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.question.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.question.menu");
     const stem = $(`//div[@role="dialog"]//label[span[normalize-space(.)="${t("viewer.question.stem")}"]]//textarea`);
     await stem.waitForDisplayed();
     await typeInto(stem, "Türkiye'nin başkenti hangisidir?");
@@ -212,8 +217,7 @@ describe("edit", () => {
     await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(await pagePoint(0, 300, 250)).down().up().perform();
     await $(`//span[normalize-space(.)="${t("viewer.overlay.pending", { count: 1 })}"]`).waitForDisplayed({ timeout: 10000 });
 
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.answerKey.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.answerKey.menu");
     const cell = (row: number, column: number) => $(`[role="dialog"] input[aria-label="${t("viewer.grid.cellLabel", { row, column })}"]`);
     await cell(1, 1).waitForDisplayed();
     await expect(cell(1, 1)).toHaveValue("1");
@@ -244,8 +248,7 @@ describe("edit", () => {
     const source = copyFixture(fixtures().sample, "chart.pdf");
     const before = probe(source);
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.chart.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.chart.menu");
     const cell = (row: number, column: number) => $(`[role="dialog"] input[aria-label="${t("viewer.grid.cellLabel", { row, column })}"]`);
     await cell(2, 1).waitForDisplayed();
     await typeInto(cell(2, 1), "Çay");
@@ -281,8 +284,7 @@ describe("edit", () => {
   it("turns the sample data into a histogram with its bin edges saved as text", async () => {
     const source = copyFixture(fixtures().sample, "histogram.pdf");
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.chart.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.chart.menu");
     await $(`//div[@role="dialog"]//*[@role="radio"][normalize-space(.)="${t("viewer.chart.types.histogram")}"]`).click();
     await expect($(`//div[@role="dialog"]//*[@role="radio"][normalize-space(.)="${t("viewer.chart.types.histogram")}"]`)).toHaveAttribute("aria-checked", "true");
     await expect($(`//div[@role="dialog"]//*[normalize-space(.)="${t("viewer.chart.dataHintSamples")}"]`)).toBeDisplayed();
@@ -309,8 +311,7 @@ describe("edit", () => {
   it("lays out a flowchart from its steps and saves the step texts as real text", async () => {
     const source = copyFixture(fixtures().sample, "flowchart.pdf");
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.flowchart.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.flowchart.menu");
     const stepText = (number: number) => $(`[role="dialog"] input[aria-label="${t("viewer.flowchart.stepText", { number })}"]`);
     await stepText(1).waitForDisplayed();
     await expect(stepText(1)).toHaveValue(t("viewer.flowchart.sample.start"));
@@ -341,8 +342,7 @@ describe("edit", () => {
   it("draws a molecule from SMILES and saves its atom labels as real text", async () => {
     const source = copyFixture(fixtures().sample, "molecule.pdf");
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.molecule.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.molecule.menu");
     const smiles = $(`[role="dialog"] input[dir="ltr"]`);
     await smiles.waitForDisplayed();
     await clickButton(t("viewer.molecule.names.aspirin"));
@@ -372,8 +372,7 @@ describe("edit", () => {
   it("tags a drawing placed in a tagged PDF as a figure with a written description", async () => {
     const source = copyFixture(fixtures().tagged, "tagged-figure.pdf");
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.molecule.menu"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.molecule.menu");
     await clickButton(t("viewer.molecule.names.ethanol"));
     await $(`[role="dialog"] [role="status"] img[alt="${t("viewer.molecule.previewAlt", { smiles: "CCO" })}"]`).waitForDisplayed({ timeout: 30000 });
     await clickButton(t("viewer.molecule.insert"));
@@ -395,10 +394,8 @@ describe("edit", () => {
     const picture = copyFixture(fixtures().red, "red-banner.png");
     await closeAllDocuments();
     await openInViewer(source);
-    await clickButton(t("viewer.overlay.editMenu"));
-    await clickButton(t("viewer.overlay.image"));
     answerDialogs(picture);
-    await clickButton(t("viewer.overlay.pickImage"));
+    await chooseEditorItem("viewer.overlay.insert", "viewer.overlay.image");
     await waitForDialogsAnswered();
     await $(`//*[normalize-space(.)="${t("viewer.overlay.imageHint")}"]`).waitForDisplayed({ timeout: 30000 });
     const spot = await pagePoint(0, 300, 420);

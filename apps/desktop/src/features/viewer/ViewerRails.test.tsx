@@ -67,20 +67,40 @@ describe("ToolsRail", () => {
     expect(usePresentationStore.getState().tool).toBe("pointer");
   });
 
-  it("opens the edit menu beside the rail and names the active editing mode", () => {
-    useViewerOverlayStore.getState().setMode("text");
+  it("enters PDF editing with one click and leaves it with the next", () => {
     render(<ToolsRail panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn onTogglePageColors={vi.fn()} />);
     const trigger = screen.getByRole("button", { name: "Edit" });
-    expect(trigger.getAttribute("data-tip") ?? trigger.getAttribute("title")).toBe("Edit: Edit PDF");
-    expect(screen.getByRole("button", { name: "Page colours" }).getAttribute("aria-pressed")).toBe("true");
+
     fireEvent.click(trigger);
-    expect(screen.getByRole("menu", { name: "Edit" })).toBeTruthy();
-    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(useViewerOverlayStore.getState().mode).toBe("text");
+    expect(trigger.getAttribute("aria-pressed")).toBe("true");
+    expect(screen.queryByRole("menu")).toBeNull();
+    fireEvent.click(trigger);
+
+    expect(useViewerOverlayStore.getState().mode).toBeNull();
+    expect(screen.getByRole("button", { name: "Page colours" }).getAttribute("aria-pressed")).toBe("true");
   });
 
-  it("keeps the edit menu closed until the trigger is pressed", () => {
+  it("asks before leaving editing that has unsaved changes", () => {
+    useViewerOverlayStore.getState().setMode("text");
+    useViewerOverlayStore.getState().addObject({ id: "note", kind: "text", pageIndex: 0, x: 10, y: 10, width: 100, height: 20, text: "Hi", style: { fontSize: 12, color: "#000000", bold: false, align: "left" }, opacity: 1 });
     render(<ToolsRail panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
-    expect(screen.queryByRole("menu")).toBeNull();
-    expect(screen.getByRole("button", { name: "Edit" }).getAttribute("aria-expanded")).toBe("false");
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit" }));
+
+    expect(useViewerOverlayStore.getState().mode).toBe("text");
+    expect(useViewerOverlayStore.getState().leaveNext).not.toBeNull();
+    useViewerOverlayStore.getState().cancelLeave();
+  });
+
+  it("shows a page tool as part of editing and closes it from the rail", () => {
+    useViewerOverlayStore.getState().setMode("signature");
+    render(<ToolsRail panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
+    const trigger = screen.getByRole("button", { name: "Edit" });
+
+    expect(trigger.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(trigger);
+
+    expect(useViewerOverlayStore.getState().mode).toBeNull();
   });
 });

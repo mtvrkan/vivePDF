@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, Crop, Eraser, ImagePlus, Link2, PenTool, Plus, RotateCcw, Ruler, Save, SaveAll, ScanText, SquareDashed, Trash2, Type, X } from "lucide-react";
+import { Camera, Crop, Eraser, FilePenLine, ImagePlus, Images, Link2, PenTool, Plus, RotateCcw, Ruler, Save, SaveAll, ScanText, SquareDashed, Trash2, Type, Wrench, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
@@ -7,9 +7,11 @@ import { requestSearchable } from "../searchableStore";
 import { useAnnotation } from "@embedpdf/plugin-annotation/react";
 import { PdfActionType, PdfAnnotationSubtype, PdfZoomMode } from "@embedpdf/models";
 import { Button } from "@/components/shared/Button";
+import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { TextInput } from "@/components/tool/form";
+import { cn } from "@/shared/lib/cn";
 import { basenameOf, suggestOutputPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
@@ -19,7 +21,7 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import { useSignatureStore } from "@/shared/store/signatureStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
-import { EDITOR_MODES, useViewerOverlayStore, type EditorPending, type MeasureUnit } from "@/shared/store/viewerOverlayStore";
+import { EDITOR_MODES, useViewerOverlayStore, type EditorPending, type MeasureUnit, type OverlayMode } from "@/shared/store/viewerOverlayStore";
 import type { EditorObject } from "@/types";
 import { Dialog } from "@/components/shared/Dialog";
 import { useOpenPdf } from "../useOpenPdf";
@@ -31,6 +33,8 @@ import { DrawingEditorHost } from "./drawing/DrawingEditorHost";
 import { tidyAlt } from "./drawing/drawingAltText";
 import { DRAWING_SPECS, drawingAltText } from "./drawing/drawingKinds";
 import { DRAWING_KINDS, isDrawingImage, toDrawingObject } from "./drawing/drawingSource";
+import { EditBarMenu } from "./EditBarMenu";
+import { isEditingMode, PAGE_TOOLS, switchOverlayMode } from "./editorModes";
 import { isPendingChange } from "./pending";
 import { hasMixedStyles, toEditorRun } from "./runs";
 
@@ -38,6 +42,10 @@ const MM_TO_PT = 72 / 25.4;
 const ERASE_FILL = "#ffffff";
 const UNITS: MeasureUnit[] = ["mm", "cm", "m"];
 const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "bmp", "gif", "heic", "heif"];
+const EDIT_TARGETS: Array<{ mode: OverlayMode; icon: typeof Type; labelKey: string }> = [
+  { mode: "text", icon: Type, labelKey: "viewer.overlay.editTexts" },
+  { mode: "image", icon: Images, labelKey: "viewer.overlay.editImages" },
+];
 
 export function OverlayBar({ documentId }: { documentId: string }) {
   const { t } = useTranslation();
@@ -418,9 +426,40 @@ export function OverlayBar({ documentId }: { documentId: string }) {
   const distance = measure && measure.points.length === 2 ? measureDistance(measure.points[0], measure.points[1]) * scaleDenominator : null;
   const pendingCount = objects.filter(isPendingChange).length;
 
+  const insertItems: ContextMenuItem[] = [
+    { type: "item", id: "text", label: t("viewer.overlay.insertText"), icon: Type, onSelect: () => switchOverlayMode("text") },
+    {
+      type: "item",
+      id: "image",
+      label: t("viewer.overlay.image"),
+      icon: ImagePlus,
+      onSelect: () => {
+        switchOverlayMode("image");
+        void pickImage();
+      },
+    },
+    { type: "separator", id: "drawings" },
+    ...DRAWING_KINDS.map((kind): ContextMenuItem => ({
+      type: "item",
+      id: kind,
+      label: t(DRAWING_SPECS[kind].labels.menu),
+      icon: DRAWING_SPECS[kind].icon,
+      onSelect: () => {
+        switchOverlayMode("image");
+        store.openDrawingEditor(kind, null);
+      },
+    })),
+  ];
+
+  const toolItems: ContextMenuItem[] = [
+    { type: "item", id: "edit", label: t("viewer.overlay.text"), icon: FilePenLine, checked: mode !== null && EDITOR_MODES.includes(mode), onSelect: () => switchOverlayMode("text") },
+    { type: "separator", id: "page-tools" },
+    ...PAGE_TOOLS.map((tool): ContextMenuItem => ({ type: "item", id: tool.mode, label: t(tool.labelKey), icon: tool.icon, checked: mode === tool.mode, onSelect: () => switchOverlayMode(tool.mode) })),
+  ];
+
   return (
     <>
-      <div className="relative z-40 flex min-h-topbar flex-wrap items-center gap-2 glass-flat border-b px-3 py-1 text-sm">
+      <div data-overlay-bar="" className="relative z-40 flex min-h-topbar flex-wrap items-center gap-2 glass-flat border-b px-3 py-1 text-sm">
         {mode === "crop" ? (
           <>
             <Crop className="size-4 text-primary" aria-hidden />
@@ -503,25 +542,26 @@ export function OverlayBar({ documentId }: { documentId: string }) {
         ) : null}
         {mode === "text" || mode === "image" ? (
           <>
-            {mode === "text" ? <Type className="size-4 text-primary" aria-hidden /> : <ImagePlus className="size-4 text-primary" aria-hidden />}
-            {mode === "text" ? (
-              <span className="min-w-0 max-w-[30rem] truncate text-xs text-muted-foreground" title={t("viewer.overlay.textHint")}>{t("viewer.overlay.textHint")}</span>
-            ) : (
-              <>
-                <Button size="sm" icon={<ImagePlus className="size-4" aria-hidden />} onClick={() => void pickImage()} disabled={busy}>{t("viewer.overlay.pickImage")}</Button>
-                {DRAWING_KINDS.map((kind) => {
-                  const { icon: Icon, labels } = DRAWING_SPECS[kind];
-                  return (
-                    <Button key={kind} size="sm" icon={<Icon className="size-4" aria-hidden />} onClick={() => store.openDrawingEditor(kind, null)} disabled={busy}>
-                      {t(labels.pick)}
-                    </Button>
-                  );
-                })}
-                {pendingImage ? <img src={pendingImage.dataUrl} alt="" className={pendingImage.drawing ? "h-7 max-w-24 rounded border bg-white object-contain px-1" : "h-7 max-w-16 rounded border object-contain"} draggable={false} /> : null}
-                <span className="text-xs text-muted-foreground">{pendingImage ? (pendingImage.drawing ? t(DRAWING_SPECS[pendingImage.drawing.kind].labels.placeHint) : t("viewer.overlay.imageHint")) : t("viewer.overlay.imagePick")}</span>
-              </>
-            )}
-            <span className="flex-1" />
+            <div role="group" aria-label={t("viewer.overlay.editTarget")} className="nav-glass flex items-center gap-0.5 rounded-lg p-0.5">
+              {EDIT_TARGETS.map(({ mode: target, icon: Icon, labelKey }) => (
+                <button
+                  key={target}
+                  type="button"
+                  aria-pressed={mode === target}
+                  onClick={() => switchOverlayMode(target)}
+                  className={cn("inline-flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium", mode === target ? "glass-chip text-primary" : "text-muted-foreground hover:text-foreground")}
+                >
+                  <Icon className="size-3.5" aria-hidden />
+                  {t(labelKey)}
+                </button>
+              ))}
+            </div>
+            <EditBarMenu icon={Plus} label={t("viewer.overlay.insert")} items={insertItems} disabled={busy} />
+            {mode === "image" && pendingImage ? <img src={pendingImage.dataUrl} alt="" className={pendingImage.drawing ? "h-7 max-w-24 rounded border bg-white object-contain px-1" : "h-7 max-w-16 rounded border object-contain"} draggable={false} /> : null}
+            {(() => {
+              const hint = mode === "text" ? t("viewer.overlay.textHint") : pendingImage ? (pendingImage.drawing ? t(DRAWING_SPECS[pendingImage.drawing.kind].labels.placeHint) : t("viewer.overlay.imageHint")) : t("viewer.overlay.imagesHint");
+              return <span className="min-w-0 flex-1 truncate text-xs text-muted-foreground" title={hint}>{hint}</span>;
+            })()}
             {selected ? (
               <IconButton
                 icon={Trash2}
@@ -539,6 +579,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
             <Button size="sm" icon={<SaveAll className="size-4" aria-hidden />} onClick={() => void saveEdits(false)} disabled={pendingCount === 0 || busy}>{t("viewer.overlay.saveAs")}</Button>
           </>
         ) : null}
+        {isEditingMode(mode) ? <EditBarMenu icon={Wrench} label={t("viewer.overlay.moreTools")} items={toolItems} /> : null}
         <IconButton icon={X} label={t("common.close")} onClick={() => store.requestLeave(close, pendingCount > 0)} />
       </div>
       <SignatureDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onPick={(id) => store.setSignatureId(id)} />
