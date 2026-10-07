@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { OrganizerSource, OrganizerTile, PageRotation } from "@/types";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import type { PagesInsertPlace } from "@/shared/store/uiStore";
 import { restoredCuts, restoredLabels, type TileLabels } from "./organizerTools";
 
@@ -177,7 +178,8 @@ export const useOrganizerStore = create<OrganizerState>((set, get) => ({
   unavailable: new Set(),
   initialize: (main) => {
     const current = get();
-    if (current.documentId && current.documentId !== main.embedDocId && (current.past.length > 0 || current.future.length > 0)) {
+    const stillOpen = current.documentId !== null && useDocumentStore.getState().documents[current.documentId] !== undefined;
+    if (stillOpen && current.documentId && current.documentId !== main.embedDocId && (current.past.length > 0 || current.future.length > 0)) {
       forgetOrganizerOf(current.documentId);
       stashes.set(current.documentId, stashOf(current));
     } else {

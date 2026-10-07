@@ -4087,6 +4087,15 @@
         "none": "Ninguna página contiene ese texto; la selección no cambia.",
         "found_one": "{{count}} página con el texto seleccionada.",
         "found_other": "{{count}} páginas con el texto seleccionadas."
+      },
+      "inPlace": {
+        "toggle": "Sobrescribir el archivo original",
+        "hint": "Aplicar escribe el nuevo orden de páginas en {{name}} y lo vuelve a abrir. Extraer y dividir en partes siguen guardando en la carpeta de arriba.",
+        "apply": "Aplicar al original",
+        "done": "{{name}} ya tiene el nuevo orden de páginas.",
+        "blockedTitle": "Guarda primero los cambios del visor",
+        "blockedBody": "{{name}} tiene cambios sin guardar en el visor. Sobrescribir el archivo los perdería; guárdalos o descártalos primero en el visor.",
+        "goToViewer": "Ir al visor"
       }
     },
     "dropHint": "Suelte el PDF aquí o haga clic para elegirlo",

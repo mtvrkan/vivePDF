@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { LayoutGrid } from "lucide-react";
 import { OutputPathField } from "@/components/tool/OutputPathField";
+import { Checkbox } from "@/components/tool/form";
 import { ResultPanel } from "@/components/tool/ResultPanel";
 import type { useOperation } from "@/shared/hooks/useOperation";
 import { formatNumber } from "@/shared/lib/format";
@@ -13,6 +14,9 @@ type PartsOperation = ReturnType<typeof useOperation<AssemblePartsParams, Assemb
 type OrganizerOutputProps = {
   output: string;
   onOutputChange: (output: string) => void;
+  inPlace: boolean;
+  onInPlaceChange: (inPlace: boolean) => void;
+  originalName: string;
   busy: boolean;
   resultKind: "single" | "parts";
   operation: SingleOperation;
@@ -22,13 +26,14 @@ type OrganizerOutputProps = {
   onRetryParts: () => void;
 };
 
-export function OrganizerOutput({ output, onOutputChange, busy, resultKind, operation, partsOperation, sourcePassword, onRetrySingle, onRetryParts }: OrganizerOutputProps) {
+export function OrganizerOutput({ output, onOutputChange, inPlace, onInPlaceChange, originalName, busy, resultKind, operation, partsOperation, sourcePassword, onRetrySingle, onRetryParts }: OrganizerOutputProps) {
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   return (
     <div className="glass-flat flex min-h-0 flex-col">
-      <div className="border-b p-4">
+      <div className="space-y-2 border-b p-4">
         <OutputPathField value={output} onChange={onOutputChange} disabled={busy} />
+        <Checkbox label={t("tools.pages.inPlace.toggle")} hint={inPlace ? t("tools.pages.inPlace.hint", { name: originalName }) : undefined} checked={inPlace} disabled={busy} onChange={onInPlaceChange} />
       </div>
       <div className="min-h-0 flex-1">
         {resultKind === "parts" ? (

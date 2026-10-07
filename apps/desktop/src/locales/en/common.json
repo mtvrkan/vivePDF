@@ -4087,6 +4087,15 @@
         "none": "No page contains that text; the selection is unchanged.",
         "found_one": "{{count}} page with the text selected.",
         "found_other": "{{count}} pages with the text selected."
+      },
+      "inPlace": {
+        "toggle": "Overwrite the original file",
+        "hint": "Apply writes the new page order into {{name}} and reopens it. Extract and split parts still save to the folder above.",
+        "apply": "Apply to original",
+        "done": "{{name}} now has the new page order.",
+        "blockedTitle": "Save the viewer changes first",
+        "blockedBody": "{{name}} has changes in the viewer that are not saved. Overwriting the file would lose them, so save or discard them in the viewer first.",
+        "goToViewer": "Go to viewer"
       }
     },
     "dropHint": "Drop the PDF here or click to choose it",

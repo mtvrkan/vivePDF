@@ -11,6 +11,7 @@ import { IconButton } from "@/components/shared/IconButton";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { useLiveActiveDocument } from "@/features/viewer/useLiveActiveDocument";
 import { useCloseDocuments } from "@/features/viewer/useCloseDocuments";
+import { reloadDocument } from "@/features/viewer/useReloadDocument";
 import { useOperation } from "@/shared/hooks/useOperation";
 import { basenameOf, dirnameOf, joinPath, stemOf, suggestOutputPath } from "@/shared/lib/paths";
 import { assemblePageParts, assemblePages } from "@/shared/rpc/operations";
@@ -26,7 +27,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useUiStore } from "@/shared/store/uiStore";
-import type { AssemblePage, AssembleSource, OrganizerSource, OrganizerTile } from "@/types";
+import type { OrganizerTile } from "@/types";
 import { DocumentTabs } from "@/features/viewer/DocumentTabs";
 import { Dialog } from "@/components/shared/Dialog";
 import { PageTile, type TileActions } from "./PageTile";
@@ -41,6 +42,7 @@ import { useOrganizerShortcuts } from "./useOrganizerShortcuts";
 import { tileMenuItems } from "./organizerMenu";
 import { OrganizerToolbar, SelectionBar } from "./OrganizerToolbar";
 import { OrganizerOutput } from "./OrganizerOutput";
+import { arrangementOf, type Arrangement } from "./arrangement";
 import { DragBadge, MarqueeRect } from "./LiveOverlays";
 import { usePageClipboardActions } from "./usePageClipboardActions";
 import { usePageClipboard } from "./pageClipboard";
@@ -54,9 +56,11 @@ export function PagesPage() {
   const navigate = useNavigate();
   const zoom = useUiStore((state) => state.pagesZoom);
   const setZoom = useUiStore((state) => state.setPagesZoom);
+  const applyInPlace = useUiStore((state) => state.pagesApplyInPlace);
+  const setApplyInPlace = useUiStore((state) => state.setPagesApplyInPlace);
   const { activeDocumentId } = useLiveActiveDocument();
   const document = useDocumentStore((state) => (activeDocumentId ? (state.documents[activeDocumentId] ?? null) : null));
-  const { pickAndOpen, openPath } = useOpenPdf();
+  const { pickAndOpen, openPath, closeDocument } = useOpenPdf();
   const pushToast = useToastStore((state) => state.push);
   const { provides: scrollCapability } = useScrollCapability();
   const operation = useOperation(assemblePages);
@@ -86,6 +90,7 @@ export function PagesPage() {
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [pendingLeave, setPendingLeave] = useState<(() => void) | null>(null);
   const [pendingSaveRun, setPendingSaveRun] = useState<(() => void) | null>(null);
+  const [inPlaceBlocked, setInPlaceBlocked] = useState(false);
   const { hasUnsavedWork } = useCloseDocuments();
   const [resultKind, setResultKind] = useState<"single" | "parts">("single");
   const [rangeOpen, setRangeOpen] = useState(false);
@@ -224,37 +229,37 @@ export function PagesPage() {
   };
 
   const arrangement = useCallback(
-    (chosen: OrganizerTile[]): { sources: AssembleSource[]; pages: AssemblePage[] } | null => {
-      const state = useOrganizerStore.getState();
-      if (!document) return null;
-      const usedSources = new Set(chosen.filter((tile): tile is Extract<OrganizerTile, { kind: "page" }> => tile.kind === "page").map((tile) => tile.sourceId));
-      const assembleSources: AssembleSource[] = Object.values(state.sources)
-        .filter((source: OrganizerSource) => usedSources.has(source.id))
-        .map((source) => ({ id: source.id, path: source.path, password: source.password ?? undefined }));
-      const pages: AssemblePage[] = chosen.map((tile) =>
-        tile.kind === "page"
-          ? { kind: "page", source: tile.sourceId, index: tile.index, rotate: tile.rotate }
-          : tile.kind === "blank"
-            ? { kind: "blank", width: tile.width, height: tile.height, rotate: tile.rotate, ...(tile.paper ? { paper: tile.paper } : {}) }
-            : { kind: "image", path: tile.path, rotate: tile.rotate },
-      );
-      return {
-        sources: assembleSources.length > 0 ? assembleSources : [{ id: MAIN_SOURCE_ID, path: document.path, password: document.password ?? undefined }],
-        pages,
-      };
-    },
+    (chosen: OrganizerTile[], mainFirst = false): Arrangement | null =>
+      document ? arrangementOf(chosen, useOrganizerStore.getState().sources, document, { mainFirst }) : null,
     [document],
+  );
+
+  const applyOverOriginal = useCallback(
+    async (arranged: Arrangement, rules: ReturnType<typeof labelRules>) => {
+      if (!activeDocumentId || !document) return;
+      setResultKind("single");
+      const result = await operation.run({ ...arranged, inPlace: true, labels: rules.length > 0 ? rules : undefined }, { quiet: true });
+      if (!result) return;
+      const reloaded = await reloadDocument(activeDocumentId, { openPath, closeDocument, page: 1 });
+      if (reloaded) pushToast("success", t("tools.pages.inPlace.done", { name: document.fileName }));
+    },
+    [activeDocumentId, document, operation, openPath, closeDocument, pushToast, t],
   );
 
   const runApply = useCallback(
     (subset: boolean) => {
       const state = useOrganizerStore.getState();
-      if (!document || !output) return;
+      const inPlace = !subset && useUiStore.getState().pagesApplyInPlace;
+      if (!document || (!output && !inPlace)) return;
       const chosen = subset ? state.tiles.filter((tile) => state.selected.has(tile.key)) : state.tiles;
       if (chosen.length === 0) return;
-      const arranged = arrangement(chosen);
+      const arranged = arrangement(chosen, inPlace);
       if (!arranged) return;
       const rules = subset ? subsetLabelRules(state.tiles, labels, state.selected) : labelRules(chosen, labels);
+      if (inPlace) {
+        void applyOverOriginal(arranged, rules);
+        return;
+      }
       setResultKind("single");
       void operation.run({
         ...arranged,
@@ -262,10 +267,16 @@ export function PagesPage() {
         labels: rules.length > 0 ? rules : undefined,
       });
     },
-    [document, output, operation, t, arrangement, labels],
+    [document, output, operation, t, arrangement, labels, applyOverOriginal],
   );
 
-  const apply = useCallback((subset: boolean) => withViewerSaved(() => runApply(subset)), [withViewerSaved, runApply]);
+  const apply = useCallback(
+    (subset: boolean) => {
+      if (!subset && useUiStore.getState().pagesApplyInPlace && activeDocumentId && hasUnsavedWork(activeDocumentId)) setInPlaceBlocked(true);
+      else withViewerSaved(() => runApply(subset));
+    },
+    [activeDocumentId, hasUnsavedWork, withViewerSaved, runApply],
+  );
 
   const runSaveParts = useCallback(() => {
     const state = useOrganizerStore.getState();
@@ -319,7 +330,7 @@ export function PagesPage() {
     [],
   );
 
-  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || copiesOpen || textSelectOpen || labelTarget !== null || menu !== null || pendingLeave !== null || pendingSaveRun !== null;
+  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || copiesOpen || textSelectOpen || labelTarget !== null || menu !== null || pendingLeave !== null || pendingSaveRun !== null || inPlaceBlocked;
   useOrganizerShortcuts({
     enabled: Boolean(activeDocumentId) && !dialogOpen,
     layout: { columns: grid.columns, clientBoxOf: grid.clientBoxOf },
@@ -440,7 +451,7 @@ export function PagesPage() {
               </Button>
             ) : null}
             <Button size="sm" variant="primary" title={`${t("tools.pages.shortcut.apply")} (Ctrl+Enter)`} disabled={!dirty || tiles.length === 0 || busy} loading={operation.running} onClick={() => apply(false)}>
-              {t("tools.pages.apply")}
+              {t(applyInPlace ? "tools.pages.inPlace.apply" : "tools.pages.apply")}
             </Button>
           </>
         }
@@ -512,6 +523,9 @@ export function PagesPage() {
         <OrganizerOutput
           output={output}
           onOutputChange={setOutput}
+          inPlace={applyInPlace}
+          onInPlaceChange={setApplyInPlace}
+          originalName={document.fileName}
           busy={busy}
           resultKind={resultKind}
           operation={operation}
@@ -694,6 +708,30 @@ export function PagesPage() {
         }
       >
         <p className="text-sm text-muted-foreground">{t("tools.pages.viewerUnsaved.body", { name: document.fileName })}</p>
+      </Dialog>
+      <Dialog
+        open={inPlaceBlocked}
+        title={t("tools.pages.inPlace.blockedTitle")}
+        onClose={() => setInPlaceBlocked(false)}
+        footer={
+          <>
+            <Button size="sm" variant="ghost" onClick={() => setInPlaceBlocked(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={() => {
+                setInPlaceBlocked(false);
+                void navigate("/viewer");
+              }}
+            >
+              {t("tools.pages.inPlace.goToViewer")}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground">{t("tools.pages.inPlace.blockedBody", { name: document.fileName })}</p>
       </Dialog>
     </div>
   );

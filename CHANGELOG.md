@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Page organizer: Overwrite the original file (under the output path, remembered) makes Apply write the new page order into the open PDF and reopen it; it is blocked while the viewer has unsaved changes, and Extract and split parts still save to the output folder [2026-10-07]
 - Engine: `pages.find_text` lists the pages that contain a text, and `pages.assemble` can write the arrangement over the original file through a staging file [2026-10-07]
 - Page organizer: Select › Portrait pages, Landscape pages and By page size (A4, Letter… with counts, after rotation) pick pages by shape, and Select by text… picks the pages that contain a text (match case, whole words, add to the current selection) [2026-10-07]
 - Page organizer: Select › Invert selection (Ctrl+I) selects every page that was not selected and clears the rest [2026-10-07]

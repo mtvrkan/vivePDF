@@ -4087,6 +4087,15 @@
         "none": "Keine Seite enthält diesen Text; die Auswahl bleibt unverändert.",
         "found_one": "{{count}} Seite mit dem Text ausgewählt.",
         "found_other": "{{count}} Seiten mit dem Text ausgewählt."
+      },
+      "inPlace": {
+        "toggle": "Originaldatei überschreiben",
+        "hint": "Anwenden schreibt die neue Seitenfolge in {{name}} und öffnet die Datei neu. Extrahieren und Teile speichern weiterhin im Ordner oben.",
+        "apply": "Auf Original anwenden",
+        "done": "{{name}} hat jetzt die neue Seitenfolge.",
+        "blockedTitle": "Zuerst die Änderungen im Viewer speichern",
+        "blockedBody": "{{name}} hat ungespeicherte Änderungen im Viewer. Beim Überschreiben gingen sie verloren; speichern oder verwerfen Sie sie zuerst im Viewer.",
+        "goToViewer": "Zum Viewer"
       }
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",

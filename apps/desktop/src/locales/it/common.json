@@ -4087,6 +4087,15 @@
         "none": "Nessuna pagina contiene quel testo; la selezione non cambia.",
         "found_one": "{{count}} pagina con il testo selezionata.",
         "found_other": "{{count}} pagine con il testo selezionate."
+      },
+      "inPlace": {
+        "toggle": "Sovrascrivi il file originale",
+        "hint": "Applica scrive il nuovo ordine delle pagine in {{name}} e lo riapre. Estrai e dividi in parti salvano comunque nella cartella qui sopra.",
+        "apply": "Applica all'originale",
+        "done": "{{name}} ha ora il nuovo ordine delle pagine.",
+        "blockedTitle": "Salva prima le modifiche del visualizzatore",
+        "blockedBody": "{{name}} ha modifiche non salvate nel visualizzatore. Sovrascrivere il file le farebbe perdere; salvale o scartale prima nel visualizzatore.",
+        "goToViewer": "Vai al visualizzatore"
       }
     },
     "dropHint": "Trascina qui il PDF o fai clic per sceglierlo",

@@ -4087,6 +4087,15 @@
         "none": "Aucune page ne contient ce texte ; la sélection est inchangée.",
         "found_one": "{{count}} page contenant le texte sélectionnée.",
         "found_other": "{{count}} pages contenant le texte sélectionnées."
+      },
+      "inPlace": {
+        "toggle": "Remplacer le fichier d'origine",
+        "hint": "Appliquer écrit le nouvel ordre des pages dans {{name}} et le rouvre. Extraire et diviser en parties enregistrent toujours dans le dossier ci-dessus.",
+        "apply": "Appliquer à l'original",
+        "done": "{{name}} a maintenant le nouvel ordre des pages.",
+        "blockedTitle": "Enregistrez d'abord les modifications de la visionneuse",
+        "blockedBody": "{{name}} a des modifications non enregistrées dans la visionneuse. Remplacer le fichier les ferait perdre ; enregistrez-les ou abandonnez-les d'abord dans la visionneuse.",
+        "goToViewer": "Aller à la visionneuse"
       }
     },
     "dropHint": "Déposez le PDF ici ou cliquez pour le choisir",

@@ -4087,6 +4087,15 @@
         "none": "Bu metni içeren sayfa yok; seçim değişmedi.",
         "found_one": "Metni içeren {{count}} sayfa seçildi.",
         "found_other": "Metni içeren {{count}} sayfa seçildi."
+      },
+      "inPlace": {
+        "toggle": "Orijinal dosyanın üzerine yaz",
+        "hint": "Uygula, yeni sayfa düzenini {{name}} dosyasına yazar ve yeniden açar. Çıkar ve parçalara böl yine yukarıdaki klasöre kaydeder.",
+        "apply": "Orijinale uygula",
+        "done": "{{name}} yeni sayfa düzeniyle kaydedildi.",
+        "blockedTitle": "Önce görüntüleyicideki değişiklikleri kaydedin",
+        "blockedBody": "{{name}} görüntüleyicide kaydedilmemiş değişiklikler içeriyor. Dosyanın üzerine yazmak bunları kaybettirir; önce görüntüleyicide kaydedin ya da vazgeçin.",
+        "goToViewer": "Görüntüleyiciye git"
       }
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",

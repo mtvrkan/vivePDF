@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import type { OrganizerTile } from "@/types";
 import { MAIN_SOURCE_ID, carryMarks, cutStarts, reverseWithin, withCopies, droppedPreviews, insertTiles, insertionPoint, isDirty, moveTiles, moveToPosition, nudgeTiles, replaceTiles, rotateBy, sameKeys, sameLabels, tilesAtParity, toggleCuts, useOrganizerStore, forgetOrganizerOf, withoutUnusedSources } from "./organizerStore";
 import type { OrganizerSource } from "@/types";
+import { useDocumentStore } from "@/shared/store/documentStore";
 
 function page(index: number): OrganizerTile {
   return { key: `p${index}`, kind: "page", sourceId: "main", index, rotate: 0 };
@@ -255,7 +256,10 @@ describe("organizer work per document", () => {
   const store = () => useOrganizerStore.getState();
   const main = (embedDocId: string, pageCount = 3) => ({ id: MAIN_SOURCE_ID, path: `C:/${embedDocId}.pdf`, password: null, fileName: `${embedDocId}.pdf`, embedDocId, pageCount });
 
-  beforeEach(() => store().clear());
+  beforeEach(() => {
+    store().clear();
+    useDocumentStore.setState({ documents: { a: {}, b: {} } as never });
+  });
 
   it("brings back the rearranged pages after switching to another document and back", () => {
     store().initialize(main("a"));
@@ -290,6 +294,19 @@ describe("organizer work per document", () => {
     store().initialize(main("a"));
 
     expect(store().tiles.map((tile) => tile.key)).toEqual(["p1", "p2", "p3"]);
+  });
+
+  it("keeps no work for a document that was already closed, as after an in-place reload", () => {
+    store().initialize(main("a"));
+    store().commit([...store().tiles].reverse());
+    useDocumentStore.setState({ documents: { b: {} } as never });
+
+    store().initialize(main("b"));
+    useDocumentStore.setState({ documents: { a: {}, b: {} } as never });
+    store().initialize(main("a"));
+
+    expect(store().tiles.map((tile) => tile.key)).toEqual(["p1", "p2", "p3"]);
+    expect(store().past).toHaveLength(0);
   });
 });
 
