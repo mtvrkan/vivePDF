@@ -1,19 +1,33 @@
+import { Pipette } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
-import { usePresentationStore, type LensShape, type PresentationTool } from "@/shared/store/presentationStore";
+import {
+  HIGHLIGHTER_WIDTH_RANGE,
+  OPACITY_RANGE,
+  PEN_WIDTH_RANGE,
+  TEXT_SIZE_RANGE,
+  usePresentationStore,
+  type LensShape,
+  type PresentationTool,
+  type ShapeKind,
+} from "@/shared/store/presentationStore";
 import {
   LASER_COLORS,
   LASER_SIZES,
   MAGNIFIER_SIZES,
   MAGNIFIER_ZOOMS,
   PEN_COLORS,
-  PEN_WIDTHS,
   PRESENTATION_TOOLS,
+  SHAPE_KINDS,
   SPOTLIGHT_DIMS,
   SPOTLIGHT_SIZES,
   hasStyleOptions,
+  usesInkColor,
 } from "./toolPresets";
+import { HIGHLIGHTER_ALPHA } from "./strokes";
+
+const PERCENT = 100;
 
 export function PresentationToolButtons({ onSelect }: { onSelect?: (tool: PresentationTool) => void }) {
   const { t } = useTranslation();
@@ -43,7 +57,7 @@ export function PresentationStyleTrigger({ open, onToggle }: { open: boolean; on
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
   const laserColor = usePresentationStore((state) => state.laserColor);
-  const isColorTool = tool === "pen" || tool === "highlighter" || tool === "laser";
+  const isColorTool = usesInkColor(tool) || tool === "laser";
   const Icon = PRESENTATION_TOOLS.find((entry) => entry.id === tool)?.icon;
   if (!hasStyleOptions(tool)) return <span className="inline-block size-8" aria-hidden />;
   return (
@@ -126,15 +140,18 @@ function ShapeRow({ current, onPick }: { current: LensShape; onPick: (shape: Len
   );
 }
 
-function ColorRow({ colors, current, onPick }: { colors: readonly string[]; current: string; onPick: (color: string) => void }) {
+function ColorRow({ colors, current, onPick, custom = false }: { colors: readonly string[]; current: string; onPick: (color: string) => void; custom?: boolean }) {
+  const { t } = useTranslation();
+  const isPreset = colors.some((preset) => preset.toLowerCase() === current.toLowerCase());
   return (
-    <div className="mt-2 flex items-center gap-1.5">
+    <div className={cn("mt-2 gap-1.5", custom ? "grid grid-cols-7" : "flex items-center")}>
       {colors.map((preset) => (
         <button
           key={preset}
           type="button"
           onClick={() => onPick(preset)}
           aria-label={preset}
+          aria-pressed={current.toLowerCase() === preset.toLowerCase()}
           className={cn(
             "size-5 rounded-full border transition-transform duration-(--transition-fast) hover:scale-110",
             current.toLowerCase() === preset.toLowerCase() ? "border-foreground ring-2 ring-ring/40" : "border-border",
@@ -142,6 +159,64 @@ function ColorRow({ colors, current, onPick }: { colors: readonly string[]; curr
           style={{ backgroundColor: preset }}
         />
       ))}
+      {custom ? (
+        <label
+          title={t("presentation.customColor")}
+          className={cn("relative flex size-5 items-center justify-center overflow-hidden rounded-full border bg-muted", isPreset ? "border-border" : "border-foreground ring-2 ring-ring/40")}
+          style={isPreset ? undefined : { backgroundColor: current }}
+        >
+          {isPreset ? <Pipette className="size-3 text-muted-foreground" aria-hidden /> : null}
+          <input type="color" aria-label={t("presentation.customColor")} value={current} onChange={(event) => onPick(event.target.value)} className="absolute inset-0 size-full cursor-pointer opacity-0" />
+        </label>
+      ) : null}
+    </div>
+  );
+}
+
+function RangeRow({
+  label,
+  range,
+  step,
+  value,
+  format,
+  onChange,
+}: {
+  label: string;
+  range: readonly [number, number];
+  step: number;
+  value: number;
+  format: (value: number) => string;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="mt-2 block">
+      <span className="mb-1 flex items-center justify-between text-[11px] text-muted-foreground">
+        {label}
+        <span className="font-mono tabular-nums text-foreground">{format(value)}</span>
+      </span>
+      <input type="range" min={range[0]} max={range[1]} step={step} value={value} onChange={(event) => onChange(Number(event.target.value))} className="w-full accent-primary" />
+    </label>
+  );
+}
+
+function ShapeKindRow({ current, onPick }: { current: ShapeKind; onPick: (kind: ShapeKind) => void }) {
+  const { t } = useTranslation();
+  return (
+    <div className="mt-2">
+      <p className="mb-1 text-[11px] text-muted-foreground">{t("presentation.shape")}</p>
+      <div className="flex items-center gap-1">
+        {SHAPE_KINDS.map((kind) => (
+          <IconButton key={kind.id} icon={kind.icon} label={t(kind.labelKey)} active={current === kind.id} onClick={() => onPick(kind.id)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WidthPreview({ color, width, opacity }: { color: string; width: number; opacity: number }) {
+  return (
+    <div className="mt-2 flex h-8 items-center rounded-md bg-muted px-2" aria-hidden>
+      <span className="block w-full rounded-full" style={{ height: width, backgroundColor: color, opacity }} />
     </div>
   );
 }
@@ -153,6 +228,14 @@ export function PresentationStyleControls() {
   const setPenColor = usePresentationStore((state) => state.setPenColor);
   const penWidth = usePresentationStore((state) => state.penWidth);
   const setPenWidth = usePresentationStore((state) => state.setPenWidth);
+  const highlighterWidth = usePresentationStore((state) => state.highlighterWidth);
+  const setHighlighterWidth = usePresentationStore((state) => state.setHighlighterWidth);
+  const penOpacity = usePresentationStore((state) => state.penOpacity);
+  const setPenOpacity = usePresentationStore((state) => state.setPenOpacity);
+  const shapeKind = usePresentationStore((state) => state.shapeKind);
+  const setShapeKind = usePresentationStore((state) => state.setShapeKind);
+  const textSize = usePresentationStore((state) => state.textSize);
+  const setTextSize = usePresentationStore((state) => state.setTextSize);
   const laserColor = usePresentationStore((state) => state.laserColor);
   const setLaserColor = usePresentationStore((state) => state.setLaserColor);
   const laserSize = usePresentationStore((state) => state.laserSize);
@@ -175,11 +258,23 @@ export function PresentationStyleControls() {
   return (
     <div className="w-56">
       <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">{t(heading)}</p>
-      {tool === "pen" || tool === "highlighter" ? (
+      {tool === "shape" ? <ShapeKindRow current={shapeKind} onPick={setShapeKind} /> : null}
+      {usesInkColor(tool) ? <ColorRow colors={PEN_COLORS} current={penColor} onPick={setPenColor} custom /> : null}
+      {tool === "pen" || tool === "shape" ? (
         <>
-          <ColorRow colors={PEN_COLORS} current={penColor} onPick={setPenColor} />
-          <ChipRow label={t("presentation.size")} values={PEN_WIDTHS} current={penWidth} format={(value) => `${value}px`} onPick={setPenWidth} />
+          <RangeRow label={t("presentation.thickness")} range={PEN_WIDTH_RANGE} step={1} value={penWidth} format={(value) => `${value} px`} onChange={setPenWidth} />
+          <WidthPreview color={penColor} width={penWidth} opacity={penOpacity} />
         </>
+      ) : null}
+      {tool === "highlighter" ? (
+        <>
+          <RangeRow label={t("presentation.thickness")} range={HIGHLIGHTER_WIDTH_RANGE} step={1} value={highlighterWidth} format={(value) => `${value} px`} onChange={setHighlighterWidth} />
+          <WidthPreview color={penColor} width={highlighterWidth} opacity={HIGHLIGHTER_ALPHA} />
+        </>
+      ) : null}
+      {tool === "text" ? <RangeRow label={t("presentation.textSize")} range={TEXT_SIZE_RANGE} step={1} value={textSize} format={(value) => `${value} px`} onChange={setTextSize} /> : null}
+      {tool === "pen" || tool === "shape" || tool === "text" ? (
+        <RangeRow label={t("presentation.opacity")} range={OPACITY_RANGE} step={0.05} value={penOpacity} format={(value) => `${Math.round(value * PERCENT)}%`} onChange={setPenOpacity} />
       ) : null}
       {tool === "laser" ? (
         <>

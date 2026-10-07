@@ -71,6 +71,25 @@ describe("BlackoutLayer", () => {
     expect(usePresentationStore.getState().strokesByPage).toEqual({});
   });
 
+  it("draws a held-Shift square on the board at the picked pixel width", () => {
+    act(() => {
+      usePresentationStore.getState().setBlackout("white");
+      usePresentationStore.getState().setShapeKind("rect");
+      usePresentationStore.getState().setPenWidth(6);
+      usePresentationStore.getState().setTool("shape");
+    });
+    render(<BlackoutLayer />);
+    const target = board();
+    fireEvent.pointerDown(target, { button: 0, pointerId: 1, clientX: 100, clientY: 100 });
+    fireEvent.pointerMove(target, { pointerId: 1, clientX: 300, clientY: 150, shiftKey: true });
+    fireEvent.pointerUp(target, { pointerId: 1 });
+
+    const [square] = usePresentationStore.getState().boardStrokes.white;
+    expect(square.tool).toBe("rect");
+    expect(square.width * 1000).toBeCloseTo(6);
+    expect(square.points[1].x * 1000 - 100).toBeCloseTo(square.points[1].y * 500 - 100);
+  });
+
   it("erases board strokes and ignores the pointer tool", () => {
     act(() => {
       usePresentationStore.getState().setBlackout("black");

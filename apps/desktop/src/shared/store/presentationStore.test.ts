@@ -100,3 +100,57 @@ describe("presentation drawing cleanup", () => {
     expect(state.boardStrokes.white.map((stroke) => stroke.id)).toEqual(["b"]);
   });
 });
+
+describe("drawn shapes and text", () => {
+  const box: Stroke = { id: "box", tool: "rect", color: "#000000", width: 0.004, points: [{ x: 0.2, y: 0.2 }, { x: 0.4, y: 0.4 }] };
+
+  it("erases a shape or a text as a whole when the eraser touches it", () => {
+    const label: Stroke = { id: "label", tool: "text", color: "#000000", width: 0, points: [{ x: 0.6, y: 0.6 }], text: "Hi", fontSize: 0.02, size: { width: 0.05, height: 0.03 } };
+
+    expect(eraseFromStroke(box, { x: 0.4, y: 0.3 }, 0.01)).toEqual([]);
+    expect(eraseFromStroke(box, { x: 0.3, y: 0.3 }, 0.01)).toBeNull();
+    expect(eraseFromStroke(label, { x: 0.62, y: 0.61 }, 0.01)).toEqual([]);
+  });
+
+  it("moves and removes one drawing on a page or a board and forgets its selection", () => {
+    const store = usePresentationStore.getState();
+    store.addStroke(1, box);
+    store.addBoardStroke("black", { ...box, id: "board-box" });
+    store.setTool("select");
+    store.selectDrawing({ surface: 1, id: "box" });
+
+    usePresentationStore.getState().replaceDrawing(1, { ...box, points: [{ x: 0.3, y: 0.3 }, { x: 0.5, y: 0.5 }] });
+    usePresentationStore.getState().removeDrawing("black", "board-box");
+
+    let state = usePresentationStore.getState();
+    expect(state.strokesByPage[1][0].points[0]).toEqual({ x: 0.3, y: 0.3 });
+    expect(state.boardStrokes.black).toEqual([]);
+    expect(state.selectedDrawing).toEqual({ surface: 1, id: "box" });
+
+    usePresentationStore.getState().removeDrawing(1, "box");
+    state = usePresentationStore.getState();
+    expect(state.strokesByPage[1]).toEqual([]);
+    expect(state.selectedDrawing).toBeNull();
+  });
+
+  it("drops the selection when another tool is picked", () => {
+    usePresentationStore.getState().setTool("select");
+    usePresentationStore.getState().selectDrawing({ surface: 0, id: "box" });
+
+    usePresentationStore.getState().setTool("pen");
+
+    expect(usePresentationStore.getState().selectedDrawing).toBeNull();
+  });
+
+  it("keeps widths, opacity and text size inside their ranges", () => {
+    const store = usePresentationStore.getState();
+
+    store.setPenWidth(99);
+    store.setHighlighterWidth(1);
+    store.setPenOpacity(0);
+    store.setTextSize(500);
+
+    const state = usePresentationStore.getState();
+    expect([state.penWidth, state.highlighterWidth, state.penOpacity, state.textSize]).toEqual([24, 4, 0.1, 96]);
+  });
+});

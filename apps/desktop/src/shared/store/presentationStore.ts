@@ -1,14 +1,28 @@
 import { create } from "zustand";
 import type { CodeBlock } from "@/types";
+import { distanceToSegment, hitsDrawing, isFreehand } from "@/shared/lib/drawingGeometry";
 
-export type PresentationTool = "pointer" | "laser" | "pen" | "highlighter" | "eraser" | "spotlight" | "magnifier";
+export type PresentationTool = "pointer" | "laser" | "pen" | "highlighter" | "shape" | "text" | "select" | "eraser" | "spotlight" | "magnifier";
+export type ShapeKind = "line" | "arrow" | "rect" | "ellipse";
 export type BlackoutMode = "none" | "black" | "white";
 export type BoardMode = Exclude<BlackoutMode, "none">;
 export type DrawingsMode = "temporary" | "annotations";
 export type LensShape = "circle" | "rect";
 export type StrokePoint = { x: number; y: number };
-export type Stroke = { id: string; tool: "pen" | "highlighter"; color: string; width: number; points: StrokePoint[] };
+export type Stroke = {
+  id: string;
+  tool: "pen" | "highlighter" | ShapeKind | "text";
+  color: string;
+  width: number;
+  points: StrokePoint[];
+  opacity?: number;
+  text?: string;
+  fontSize?: number;
+  size?: { width: number; height: number };
+};
 export type DrawingSnapshot = { strokesByPage: Record<number, Stroke[]>; boardStrokes: Record<BoardMode, Stroke[]> };
+export type DrawingSurface = number | BoardMode;
+export type DrawingSelection = { surface: DrawingSurface; id: string };
 export type CodeBlockCache = { width: number; height: number; blocks: CodeBlock[] };
 
 const STORAGE_KEY = "vivepdf.presentation";
@@ -17,10 +31,22 @@ const SPOTLIGHT_MAX = 400;
 const MAGNIFIER_ZOOM_MIN = 1.5;
 const MAGNIFIER_ZOOM_MAX = 6;
 const MIN_PIECE_LENGTH = 0.002;
+export const PEN_WIDTH_RANGE = [1, 24] as const;
+export const HIGHLIGHTER_WIDTH_RANGE = [4, 48] as const;
+export const OPACITY_RANGE = [0.1, 1] as const;
+export const TEXT_SIZE_RANGE = [12, 96] as const;
+
+function clampTo([min, max]: readonly [number, number], value: number): number {
+  return Math.max(min, Math.min(max, value));
+}
 
 type PersistedPrefs = {
   penColor: string;
   penWidth: number;
+  highlighterWidth: number;
+  penOpacity: number;
+  shapeKind: ShapeKind;
+  textSize: number;
   laserColor: string;
   laserSize: number;
   spotlightRadius: number;
@@ -38,6 +64,10 @@ type PersistedPrefs = {
 const DEFAULT_PREFS: PersistedPrefs = {
   penColor: "#E5484D",
   penWidth: 3,
+  highlighterWidth: 18,
+  penOpacity: 1,
+  shapeKind: "arrow",
+  textSize: 28,
   laserColor: "#E5484D",
   laserSize: 8,
   spotlightRadius: 180,
@@ -74,6 +104,10 @@ type PresentationState = {
   tool: PresentationTool;
   penColor: string;
   penWidth: number;
+  highlighterWidth: number;
+  penOpacity: number;
+  shapeKind: ShapeKind;
+  textSize: number;
   laserColor: string;
   laserSize: number;
   spotlightRadius: number;
@@ -96,11 +130,16 @@ type PresentationState = {
   codeBlocksByPage: Record<number, CodeBlockCache | undefined>;
   codeBlockOpen: { pageIndex: number; blockId: string } | null;
   overviewOpen: boolean;
+  selectedDrawing: DrawingSelection | null;
   setOverviewOpen: (open: boolean) => void;
   toggleOverview: () => void;
   setTool: (tool: PresentationTool) => void;
   setPenColor: (color: string) => void;
   setPenWidth: (width: number) => void;
+  setHighlighterWidth: (width: number) => void;
+  setPenOpacity: (opacity: number) => void;
+  setShapeKind: (kind: ShapeKind) => void;
+  setTextSize: (size: number) => void;
   setLaserColor: (color: string) => void;
   setLaserSize: (size: number) => void;
   setSpotlightRadius: (radius: number) => void;
@@ -133,6 +172,9 @@ type PresentationState = {
   clearBoard: (board: BoardMode) => void;
   clearVisible: (pageIndex: number) => void;
   restoreDrawings: (snapshot: DrawingSnapshot) => void;
+  selectDrawing: (selection: DrawingSelection | null) => void;
+  replaceDrawing: (surface: DrawingSurface, stroke: Stroke) => void;
+  removeDrawing: (surface: DrawingSurface, id: string) => void;
   visibleStrokeCount: (pageIndex: number) => number;
   totalStrokeCount: () => number;
   setCodeBlocksForPage: (pageIndex: number, entry: CodeBlockCache) => void;
@@ -140,17 +182,6 @@ type PresentationState = {
   closeCodeBlock: () => void;
   resetSession: () => void;
 };
-
-function distanceToSegment(p: StrokePoint, a: StrokePoint, b: StrokePoint): number {
-  const dx = b.x - a.x;
-  const dy = b.y - a.y;
-  const lengthSq = dx * dx + dy * dy;
-  if (lengthSq === 0) return Math.hypot(p.x - a.x, p.y - a.y);
-  const t = Math.max(0, Math.min(1, ((p.x - a.x) * dx + (p.y - a.y) * dy) / lengthSq));
-  const projX = a.x + t * dx;
-  const projY = a.y + t * dy;
-  return Math.hypot(p.x - projX, p.y - projY);
-}
 
 function strokeHit(stroke: Stroke, point: StrokePoint, radius: number): boolean {
   const threshold = radius + stroke.width / 2;
@@ -194,6 +225,7 @@ function polylineLength(points: StrokePoint[]): number {
 }
 
 export function eraseFromStroke(stroke: Stroke, point: StrokePoint, radius: number): Stroke[] | null {
+  if (!isFreehand(stroke)) return hitsDrawing(stroke, point, radius) ? [] : null;
   if (!strokeHit(stroke, point, radius)) return null;
   if (stroke.points.length < 2) return [];
   const threshold = radius + stroke.width / 2;
@@ -235,6 +267,10 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   tool: "pointer",
   penColor: initialPrefs.penColor,
   penWidth: initialPrefs.penWidth,
+  highlighterWidth: initialPrefs.highlighterWidth,
+  penOpacity: initialPrefs.penOpacity,
+  shapeKind: initialPrefs.shapeKind,
+  textSize: initialPrefs.textSize,
   laserColor: initialPrefs.laserColor,
   laserSize: initialPrefs.laserSize,
   spotlightRadius: initialPrefs.spotlightRadius,
@@ -257,18 +293,39 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   codeBlocksByPage: {},
   codeBlockOpen: null,
   overviewOpen: false,
+  selectedDrawing: null,
 
   setOverviewOpen: (open) => set({ overviewOpen: open }),
   toggleOverview: () => set((state) => ({ overviewOpen: !state.overviewOpen })),
-  setTool: (tool) => set({ tool }),
+  setTool: (tool) => set((state) => ({ tool, selectedDrawing: tool === "select" ? state.selectedDrawing : null })),
 
   setPenColor: (color) => {
     persistPrefs({ ...readPrefs(), penColor: color });
     set({ penColor: color });
   },
   setPenWidth: (width) => {
-    persistPrefs({ ...readPrefs(), penWidth: width });
-    set({ penWidth: width });
+    const clamped = Math.round(clampTo(PEN_WIDTH_RANGE, width));
+    persistPrefs({ ...readPrefs(), penWidth: clamped });
+    set({ penWidth: clamped });
+  },
+  setHighlighterWidth: (width) => {
+    const clamped = Math.round(clampTo(HIGHLIGHTER_WIDTH_RANGE, width));
+    persistPrefs({ ...readPrefs(), highlighterWidth: clamped });
+    set({ highlighterWidth: clamped });
+  },
+  setPenOpacity: (opacity) => {
+    const clamped = Math.round(clampTo(OPACITY_RANGE, opacity) * 100) / 100;
+    persistPrefs({ ...readPrefs(), penOpacity: clamped });
+    set({ penOpacity: clamped });
+  },
+  setShapeKind: (kind) => {
+    persistPrefs({ ...readPrefs(), shapeKind: kind });
+    set({ shapeKind: kind });
+  },
+  setTextSize: (size) => {
+    const clamped = Math.round(clampTo(TEXT_SIZE_RANGE, size));
+    persistPrefs({ ...readPrefs(), textSize: clamped });
+    set({ textSize: clamped });
   },
   setLaserColor: (color) => {
     persistPrefs({ ...readPrefs(), laserColor: color });
@@ -381,8 +438,9 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
     set((state) => ({
       strokesByPage: { ...state.strokesByPage, [pageIndex]: [] },
       redoByPage: { ...state.redoByPage, [pageIndex]: [] },
+      selectedDrawing: state.selectedDrawing?.surface === pageIndex ? null : state.selectedDrawing,
     })),
-  clearAllDrawings: () => set({ strokesByPage: {}, redoByPage: {}, boardStrokes: { black: [], white: [] } }),
+  clearAllDrawings: () => set({ strokesByPage: {}, redoByPage: {}, boardStrokes: { black: [], white: [] }, selectedDrawing: null }),
   addBoardStroke: (board, stroke) => set((state) => ({ boardStrokes: { ...state.boardStrokes, [board]: [...state.boardStrokes[board], stroke] } })),
   eraseBoardAt: (board, point, radius) =>
     set((state) => {
@@ -390,7 +448,11 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       const remaining = eraseFromStrokes(strokes, point, radius);
       return remaining === strokes ? state : { boardStrokes: { ...state.boardStrokes, [board]: remaining } };
     }),
-  clearBoard: (board) => set((state) => ({ boardStrokes: { ...state.boardStrokes, [board]: [] } })),
+  clearBoard: (board) =>
+    set((state) => ({
+      boardStrokes: { ...state.boardStrokes, [board]: [] },
+      selectedDrawing: state.selectedDrawing?.surface === board ? null : state.selectedDrawing,
+    })),
   clearVisible: (pageIndex) => {
     const { blackout, clearBoard, clearPage } = get();
     if (blackout === "none") clearPage(pageIndex);
@@ -410,6 +472,21 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
         return [...snapshot.boardStrokes[mode].filter((stroke) => !ids.has(stroke.id)), ...state.boardStrokes[mode]];
       };
       return { strokesByPage, boardStrokes: { black: board("black"), white: board("white") } };
+    }),
+  selectDrawing: (selection) => set({ selectedDrawing: selection }),
+  replaceDrawing: (surface, stroke) =>
+    set((state) => {
+      const swap = (strokes: Stroke[]) => (strokes.some((entry) => entry.id === stroke.id) ? strokes.map((entry) => (entry.id === stroke.id ? stroke : entry)) : strokes);
+      if (typeof surface === "number") return { strokesByPage: { ...state.strokesByPage, [surface]: swap(state.strokesByPage[surface] ?? []) } };
+      return { boardStrokes: { ...state.boardStrokes, [surface]: swap(state.boardStrokes[surface]) } };
+    }),
+  removeDrawing: (surface, id) =>
+    set((state) => {
+      const selectedDrawing = state.selectedDrawing?.id === id ? null : state.selectedDrawing;
+      if (typeof surface === "number") {
+        return { selectedDrawing, strokesByPage: { ...state.strokesByPage, [surface]: (state.strokesByPage[surface] ?? []).filter((entry) => entry.id !== id) } };
+      }
+      return { selectedDrawing, boardStrokes: { ...state.boardStrokes, [surface]: state.boardStrokes[surface].filter((entry) => entry.id !== id) } };
     }),
   visibleStrokeCount: (pageIndex) => {
     const { blackout, boardStrokes, strokesByPage } = get();
@@ -438,5 +515,6 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       codeBlocksByPage: {},
       codeBlockOpen: null,
       overviewOpen: false,
+      selectedDrawing: null,
     }),
 }));

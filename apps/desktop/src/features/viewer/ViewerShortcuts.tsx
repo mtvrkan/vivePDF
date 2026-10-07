@@ -71,6 +71,12 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
       if (immersive && !modifier) {
         const presentation = usePresentationStore.getState();
         const lower = key.toLowerCase();
+        const pickedDrawing = presentation.tool === "select" ? presentation.selectedDrawing : null;
+        if (pickedDrawing && (key === "Delete" || key === "Backspace")) {
+          event.preventDefault();
+          presentation.removeDrawing(pickedDrawing.surface, pickedDrawing.id);
+          return;
+        }
         if (presentation.codeBlockOpen && lower === "k") {
           event.preventDefault();
           const pageIndex = presentation.codeBlockOpen.pageIndex;
@@ -108,6 +114,9 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         } else if (lower === "m") {
           event.preventDefault();
           presentation.setTool(presentation.tool === "magnifier" ? "pointer" : "magnifier");
+        } else if (lower === "v") {
+          event.preventDefault();
+          presentation.setTool(presentation.tool === "select" ? "pointer" : "select");
         } else if (lower === "z") {
           event.preventDefault();
           zoom?.toggleMarqueeZoom();

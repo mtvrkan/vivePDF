@@ -2,13 +2,13 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore, type BoardMode, type Stroke } from "@/shared/store/presentationStore";
+import { beginDrawing, extendDrawing, isDrawingKept, makeDrawingId } from "./drawingGestures";
 import { drawStroke, readableOnDark } from "./strokes";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 
 const HINT_VISIBLE_MS = 4000;
 const ERASER_RADIUS = 0.015;
-const BOARD_WIDTH_FACTOR = 0.006;
-const BOARD_TOOLS = new Set(["pen", "highlighter", "eraser"]);
+const BOARD_TOOLS = new Set(["pen", "highlighter", "shape", "eraser"]);
 
 function strokeColor(board: BoardMode, color: string) {
   return board === "black" ? readableOnDark(color) : color;
@@ -38,6 +38,9 @@ function Board({ board }: { board: BoardMode }) {
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
   const penWidth = usePresentationStore((state) => state.penWidth);
+  const highlighterWidth = usePresentationStore((state) => state.highlighterWidth);
+  const penOpacity = usePresentationStore((state) => state.penOpacity);
+  const shapeKind = usePresentationStore((state) => state.shapeKind);
   const strokes = usePresentationStore((state) => state.boardStrokes[board]);
   const [live, setLive] = useState<Stroke | null>(null);
   const [hintVisible, setHintVisible] = useState(true);
@@ -50,6 +53,7 @@ function Board({ board }: { board: BoardMode }) {
   }, []);
 
   const pointOf = (event: PointerEvent) => ({ x: event.clientX / window.innerWidth, y: event.clientY / window.innerHeight });
+  const surface = () => ({ width: window.innerWidth, height: window.innerHeight });
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!drawing || event.button !== 0) return;
@@ -59,13 +63,8 @@ function Board({ board }: { board: BoardMode }) {
       usePresentationStore.getState().eraseBoardAt(board, pointOf(event), ERASER_RADIUS);
       return;
     }
-    setLive({
-      id: `board-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      tool: tool === "highlighter" ? "highlighter" : "pen",
-      color: penColor,
-      width: (tool === "highlighter" ? penWidth * 3 : penWidth) * BOARD_WIDTH_FACTOR,
-      points: [pointOf(event)],
-    });
+    const style = { tool: tool === "highlighter" ? "highlighter" : tool === "shape" ? "shape" : "pen", color: penColor, penWidth, highlighterWidth, penOpacity, shapeKind } as const;
+    setLive(beginDrawing(style, pointOf(event), surface(), makeDrawingId("board")));
   };
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -75,16 +74,17 @@ function Board({ board }: { board: BoardMode }) {
     }
     if (!live) return;
     const point = pointOf(event);
-    setLive((stroke) => (stroke ? { ...stroke, points: [...stroke.points, point] } : stroke));
+    const constrain = event.shiftKey;
+    setLive((stroke) => (stroke ? extendDrawing(stroke, point, surface(), constrain) : stroke));
   };
 
   const onPointerUp = () => {
     erasingRef.current = false;
-    if (live && live.points.length > 1) usePresentationStore.getState().addBoardStroke(board, live);
+    if (live && isDrawingKept(live, surface())) usePresentationStore.getState().addBoardStroke(board, live);
     setLive(null);
   };
 
-  const cursor = tool === "pen" ? penCursor(strokeColor(board, penColor)) : tool === "highlighter" ? highlighterCursor(strokeColor(board, penColor)) : tool === "eraser" ? eraserCursor(board === "black" ? "#f8fafc" : "#1f2937") : undefined;
+  const cursor = tool === "shape" ? "crosshair" : tool === "pen" ? penCursor(strokeColor(board, penColor)) : tool === "highlighter" ? highlighterCursor(strokeColor(board, penColor)) : tool === "eraser" ? eraserCursor(board === "black" ? "#f8fafc" : "#1f2937") : undefined;
 
   return (
     <div

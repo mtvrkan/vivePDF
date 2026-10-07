@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Stroke } from "@/shared/store/presentationStore";
-import { clampStrokePoint, readableOnDark, strokeCanvasBox } from "./strokes";
+import { TEXT_LINE_HEIGHT, arrowHeadLength, clampStrokePoint, measureTextBlock, readableOnDark, strokeCanvasBox } from "./strokes";
 import { nearestPageRect, type PageRect } from "./usePageRects";
 
 const stroke = (points: Array<[number, number]>): Stroke => ({ id: "s", tool: "pen", color: "#e11d48", width: 0.01, points: points.map(([x, y]) => ({ x, y })) });
@@ -52,5 +52,34 @@ describe("readableOnDark", () => {
     expect(readableOnDark("#111827")).toBe("#ffffff");
     expect(readableOnDark("#facc15")).toBe("#facc15");
     expect(readableOnDark("red")).toBe("red");
+  });
+});
+
+describe("strokeCanvasBox for shapes and text", () => {
+  it("leaves room for an arrow head past the page edge", () => {
+    const arrow: Stroke = { id: "a", tool: "arrow", color: "#000000", width: 0.01, points: [{ x: 0.5, y: 0.5 }, { x: 1, y: 0.5 }] };
+
+    const box = strokeCanvasBox([arrow], 200, 100);
+
+    expect(box.left + box.width).toBeGreaterThanOrEqual(200 + arrowHeadLength(2));
+  });
+
+  it("grows to hold text that runs past the page", () => {
+    const label: Stroke = { id: "t", tool: "text", color: "#000000", width: 0, points: [{ x: 0.9, y: 0.9 }], text: "Hi", fontSize: 0.1, size: { width: 0.5, height: 0.2 } };
+
+    const box = strokeCanvasBox([label], 200, 100);
+
+    expect(box.left + box.width).toBeGreaterThanOrEqual(280);
+    expect(box.top + box.height).toBeGreaterThanOrEqual(110);
+  });
+});
+
+describe("measureTextBlock", () => {
+  it("makes one line per break and keeps the widest line", () => {
+    const single = measureTextBlock("abc", 20);
+    const double = measureTextBlock("abc\nabcdef", 20);
+
+    expect(double.height).toBe(Math.ceil(2 * 20 * TEXT_LINE_HEIGHT));
+    expect(double.width).toBeGreaterThan(single.width);
   });
 });

@@ -35,12 +35,25 @@ function strokeCanvasReach() {
   });
 }
 
+function drawnPixels() {
+  return browser.execute(() =>
+    Array.from(document.querySelectorAll<HTMLCanvasElement>(".immersive-view canvas.pointer-events-none.absolute"))
+      .filter((canvas) => !canvas.closest("[data-page-index]") && canvas.width > 0 && canvas.height > 0)
+      .reduce((total, canvas) => {
+        const pixels = (canvas.getContext("2d") as CanvasRenderingContext2D).getImageData(0, 0, canvas.width, canvas.height).data;
+        let count = 0;
+        for (let index = 3; index < pixels.length; index += 4) if (pixels[index] > 0) count += 1;
+        return total + count;
+      }, 0),
+  );
+}
+
 type PageBox = { left: number; right: number; top: number; bottom: number };
 
-async function redPixels(outside: PageBox | null): Promise<number> {
+async function redPixels(outside: PageBox | null, within: PageBox | null = null): Promise<number> {
   const png = await browser.takeScreenshot();
   return browser.execute(
-    async (data: string, page: PageBox | null) => {
+    async (data: string, page: PageBox | null, area: PageBox | null) => {
       const image = new Image();
       image.src = `data:image/png;base64,${data}`;
       await image.decode();
@@ -56,13 +69,16 @@ async function redPixels(outside: PageBox | null): Promise<number> {
         if (!(pixels[index] > 170 && pixels[index + 1] < 120 && pixels[index + 2] < 120)) continue;
         const pixel = index / 4;
         const x = (pixel % canvas.width) / scale;
+        const y = Math.floor(pixel / canvas.width) / scale;
         if (page && x >= page.left - 4 && x <= page.right + 4) continue;
+        if (area && (x < area.left || x > area.right || y < area.top || y > area.bottom)) continue;
         count += 1;
       }
       return count;
     },
     png,
     outside,
+    within,
   );
 }
 
@@ -195,5 +211,58 @@ describe("presentation", () => {
     await browser.keys(ESCAPE_KEY);
     await board.waitForExist({ reverse: true, timeoutMsg: "Esc did not leave the black screen" });
     await browser.keys(ESCAPE_KEY);
+  });
+
+  it("draws a rectangle and a text, then moves and deletes a drawing", async () => {
+    const page = $('[data-page-index="0"]');
+    if (!(await $(".immersive-view").isExisting())) {
+      await page.click();
+      await browser.keys("F11");
+    }
+    const shapeButton = $(`button[aria-label="${t("presentation.tools.shape")}"]`);
+    await shapeButton.waitForDisplayed({ timeout: 20000 });
+    await waitForStableLayout();
+    const selection = $("[data-presentation-selection]");
+    const selectionLeft = async () => (await selection.getLocation()).x;
+    const clickAt = (point: Point) => browser.action("pointer", { parameters: { pointerType: "mouse" } }).move({ origin: "viewport", ...point }).down().up().perform();
+
+    await clickButton(t("presentation.tools.shape"));
+    await clickButton(t("presentation.style"));
+    await clickButton(t("presentation.shapes.rect"));
+    await clickButton(t("presentation.style"));
+    const blank = await drawnPixels();
+    await drawLine(await pagePoint(100, 100), await pagePoint(250, 200));
+    await browser.waitUntil(async () => (await drawnPixels()) > blank + 500, { timeoutMsg: "the rectangle left no ink on the page" });
+    const withRect = await drawnPixels();
+    const corner = await pagePoint(90, 90);
+    const farCorner = await pagePoint(260, 210);
+    expect(await redPixels(null, { left: corner.x, top: corner.y, right: farCorner.x, bottom: farCorner.y })).toBeGreaterThan(300);
+
+    await clickButton(t("presentation.tools.text"));
+    await clickAt(await pagePoint(100, 420));
+    const field = $(`textarea[aria-label="${t("presentation.tools.text")}"]`);
+    await field.waitForDisplayed({ timeoutMsg: "the text tool did not open a text field" });
+    await browser.keys("Merhaba");
+    await browser.keys(String.fromCharCode(0xe007));
+    await field.waitForExist({ reverse: true, timeoutMsg: "Enter did not place the text" });
+    await browser.waitUntil(async () => (await drawnPixels()) > withRect + 300, { timeoutMsg: "the placed text left no ink on the page" });
+
+    await browser.keys("v");
+    await clickAt(await pagePoint(100, 150));
+    await selection.waitForExist({ timeoutMsg: "a click on the rectangle did not select it" });
+    const before = await selectionLeft();
+    const edge = await pagePoint(100, 150);
+    await drawLine(edge, { x: edge.x + 60, y: edge.y });
+    await browser.waitUntil(async () => (await selectionLeft()) - before > 50, { timeoutMsg: "dragging the selected rectangle did not move it" });
+    await browser.saveScreenshot(join(workDir(), "presentation-shapes.png"));
+
+    await browser.keys(String.fromCharCode(0xe017));
+    await selection.waitForExist({ reverse: true, timeoutMsg: "Delete did not remove the selected rectangle" });
+    await clickAt({ x: edge.x + 60, y: edge.y });
+    await browser.pause(300);
+    expect(await selection.isExisting()).toBe(false);
+
+    await clickAt(await pagePoint(110, 428));
+    await selection.waitForExist({ timeoutMsg: "the placed text could not be selected" });
   });
 });
