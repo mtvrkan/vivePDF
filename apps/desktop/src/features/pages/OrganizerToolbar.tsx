@@ -1,5 +1,6 @@
 import { useTranslation } from "react-i18next";
 import {
+  ArrowDownUp,
   ArrowLeftToLine,
   ArrowRightToLine,
   BookMarked,
@@ -9,6 +10,7 @@ import {
   ClipboardX,
   Compass,
   Copy,
+  CopyPlus,
   CopyX,
   Eraser,
   FileImage,
@@ -19,6 +21,7 @@ import {
   FlipHorizontal2,
   Keyboard,
   ListChecks,
+  ListEnd,
   Loader2,
   MousePointerClick,
   PanelLeft,
@@ -34,6 +37,7 @@ import {
   Square,
   Tag,
   TextCursorInput,
+  ToggleRight,
   Trash2,
   Undo2,
   X,
@@ -45,7 +49,7 @@ import { Button } from "@/components/shared/Button";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import { IconButton } from "@/components/shared/IconButton";
 import { MenuButton } from "@/components/shared/MenuButton";
-import { PAGES_ZOOM_MAX, PAGES_ZOOM_MIN } from "@/shared/store/uiStore";
+import { PAGES_ZOOM_MAX, PAGES_ZOOM_MIN, useUiStore } from "@/shared/store/uiStore";
 import { cutStarts, tilesAtParity, useOrganizerStore } from "./organizerStore";
 import { usePageClipboard } from "./pageClipboard";
 import type { OrganizerEdits } from "./useOrganizerEdits";
@@ -61,6 +65,7 @@ export type ToolbarCommands = {
   openShortcuts: () => void;
   extractSelection: () => void;
   pastePages: () => void;
+  openCopies: () => void;
 };
 
 type OrganizerToolbarProps = {
@@ -89,6 +94,8 @@ export function OrganizerToolbar({ edits, inspections, commands, multiSelect, pa
   const redo = useOrganizerStore((state) => state.redo);
   const select = useOrganizerStore((state) => state.select);
   const canPaste = usePageClipboard((state) => state.tiles.length > 0);
+  const insertPlace = useUiStore((state) => state.pagesInsertPlace);
+  const setInsertPlace = useUiStore((state) => state.setPagesInsertPlace);
   const { inspecting, inspectionControl } = inspections;
 
   const inspectionItem = (kind: Inspection, id: string, label: string, icon: LucideIcon): ContextMenuItem => {
@@ -100,6 +107,7 @@ export function OrganizerToolbar({ edits, inspections, commands, multiSelect, pa
     { type: "item", id: "select-all", label: t("tools.pages.selectAll"), icon: CheckSquare, shortcut: "Ctrl+A", disabled: tiles.length === 0, onSelect: () => select(tiles.map((tile) => tile.key)) },
     { type: "item", id: "select-none", label: t("tools.pages.selectNone"), icon: Square, shortcut: "Esc", disabled: selectedCount === 0, onSelect: () => select([]) },
     { type: "item", id: "select-range", label: t("tools.pages.range.title"), icon: TextCursorInput, shortcut: "Ctrl+G", onSelect: commands.openRange },
+    { type: "item", id: "select-invert", label: t("tools.pages.selectInvert"), icon: ToggleRight, shortcut: "Ctrl+I", disabled: tiles.length === 0, onSelect: edits.invertSelection },
     { type: "item", id: "select-odd", label: t("tools.pages.selectOdd"), icon: PanelRight, disabled: tiles.length === 0, onSelect: () => select(tilesAtParity(tiles, "odd")) },
     { type: "item", id: "select-even", label: t("tools.pages.selectEven"), icon: PanelLeft, disabled: tiles.length < 2, onSelect: () => select(tilesAtParity(tiles, "even")) },
     { type: "separator", id: "select-find" },
@@ -113,6 +121,14 @@ export function OrganizerToolbar({ edits, inspections, commands, multiSelect, pa
     { type: "item", id: "insert-pdf", label: t("tools.pages.insertPdf"), icon: FileText, onSelect: () => commands.pickPdf(false) },
     { type: "item", id: "insert-images", label: t("tools.pages.insertImages"), icon: FileImage, onSelect: commands.pickImages },
     { type: "item", id: "insert-paste", label: t("tools.pages.clipboard.paste"), icon: ClipboardPaste, shortcut: "Ctrl+V", disabled: !canPaste || pasting, onSelect: commands.pastePages },
+    { type: "separator", id: "insert-place" },
+    {
+      type: "submenu",
+      id: "insert-where",
+      label: t("tools.pages.insertPlace.title"),
+      icon: ListEnd,
+      items: (["after", "before", "end"] as const).map((place) => ({ type: "item", id: `insert-place-${place}`, label: t(`tools.pages.insertPlace.${place}`), checked: insertPlace === place, onSelect: () => setInsertPlace(place) })),
+    },
     { type: "separator", id: "insert-replace" },
     { type: "item", id: "replace-pdf", label: t("tools.pages.replacePdf"), icon: Replace, disabled: selectedCount === 0, onSelect: () => commands.pickPdf(true) },
   ];
@@ -121,6 +137,8 @@ export function OrganizerToolbar({ edits, inspections, commands, multiSelect, pa
     { type: "item", id: "rotate-left", label: t("tools.pages.rotateLeft"), icon: RotateCcw, shortcut: "Shift+R", disabled: selectedCount === 0, onSelect: () => edits.rotateSelected(-90) },
     { type: "item", id: "rotate-right", label: t("tools.pages.rotateRight"), icon: RotateCw, shortcut: "R", disabled: selectedCount === 0, onSelect: () => edits.rotateSelected(90) },
     { type: "item", id: "duplicate", label: t("tools.pages.duplicate"), icon: Copy, shortcut: "Ctrl+D", disabled: selectedCount === 0, onSelect: edits.duplicateSelected },
+    { type: "item", id: "duplicate-many", label: t("tools.pages.copies.menu"), icon: CopyPlus, disabled: selectedCount === 0, onSelect: commands.openCopies },
+    { type: "item", id: "reverse-selection", label: t("tools.pages.reverseSelection"), icon: ArrowDownUp, disabled: selectedCount < 2, onSelect: edits.reverseSelected },
     { type: "item", id: "delete", label: t("tools.pages.delete"), icon: Trash2, shortcut: "Delete", disabled: selectedCount === 0 || selectedCount === tiles.length, onSelect: edits.deleteSelected },
     { type: "item", id: "delete-before", label: t("tools.pages.deleteBefore"), icon: ArrowLeftToLine, disabled: selectedCount !== 1, onSelect: () => edits.deleteRelative("before") },
     { type: "item", id: "delete-after", label: t("tools.pages.deleteAfter"), icon: ArrowRightToLine, disabled: selectedCount !== 1, onSelect: () => edits.deleteRelative("after") },

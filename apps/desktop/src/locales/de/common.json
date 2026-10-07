@@ -3856,7 +3856,8 @@
         "marquee": "Von einem leeren Bereich aus ziehen, um auszuwählen (Strg kehrt um, Umschalt fügt hinzu)",
         "preview": "Die Seite in der Vorschau anzeigen",
         "range": "Nach Seitenzahlen auswählen",
-        "previewSelect": "In der Vorschau: Seite auswählen / Auswahl erweitern"
+        "previewSelect": "In der Vorschau: Seite auswählen / Auswahl erweitern",
+        "invertSelection": "Auswahl umkehren"
       },
       "blank": "leer",
       "paperSize": "Papiergröße",
@@ -4045,7 +4046,27 @@
         "letter": "Letter"
       },
       "sourceChanged": "{{name}} wurde geändert, nachdem seine Seiten eingefügt wurden, und kann nicht mehr angezeigt werden. Fügen Sie die Datei erneut ein.",
-      "previewFailed": "Vorschau konnte nicht erstellt werden"
+      "previewFailed": "Vorschau konnte nicht erstellt werden",
+      "selectInvert": "Auswahl umkehren",
+      "reverseSelection": "Ausgewählte Seiten umdrehen",
+      "insertPlace": {
+        "title": "Neue Seiten einfügen",
+        "after": "Nach der Auswahl",
+        "before": "Vor der Auswahl",
+        "end": "Am Ende"
+      },
+      "copies": {
+        "menu": "Kopien erstellen…",
+        "title": "Kopien der ausgewählten Seiten erstellen",
+        "count": "Anzahl der Kopien",
+        "hint_one": "Die ausgewählte Seite wird kopiert.",
+        "hint_other": "Die {{count}} ausgewählten Seiten werden kopiert.",
+        "layout": "Kopien platzieren",
+        "each": "Direkt nach jeder Seite (1, 1, 2, 2)",
+        "block": "Nach der Auswahl, der Reihe nach (1, 2, 1, 2)",
+        "invalid": "Geben Sie eine Zahl von 1 bis {{limit}} ein.",
+        "submit": "Kopien erstellen"
+      }
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",
     "batch": {

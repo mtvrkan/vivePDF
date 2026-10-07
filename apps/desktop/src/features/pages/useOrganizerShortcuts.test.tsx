@@ -93,6 +93,17 @@ describe("organizer preview keys", () => {
     expect(remove.defaultPrevented).toBe(false);
   });
 
+  it("inverts the selection with Ctrl+I", () => {
+    const invertSelection = vi.fn();
+    const edits = { focusTileKey: () => "p2", invertSelection } as unknown as OrganizerEdits;
+    renderHook(() => useOrganizerShortcuts({ enabled: true, layout: { columns: () => 4, clientBoxOf: () => null }, edits, commands: {} as ShortcutCommands }));
+
+    const event = press("i", document.body, { ctrlKey: true });
+
+    expect(invertSelection).toHaveBeenCalledTimes(1);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
   it("ignores a key another handler already took", () => {
     mount('<ol role="listbox" tabindex="0" id="grid"></ol>');
     renderShortcuts();

@@ -3856,7 +3856,8 @@
         "clipboard": "Sayfaları kopyala / kes / yapıştır",
         "nudge": "Seçili sayfaları bir adım, bir satır ya da başa / sona taşı",
         "move": "Seçili sayfaları bir sayfa numarasına taşı",
-        "previewSelect": "Önizlemede: sayfayı seç / seçimi genişlet"
+        "previewSelect": "Önizlemede: sayfayı seç / seçimi genişlet",
+        "invertSelection": "Seçimi tersine çevir"
       },
       "blank": "boş",
       "paperSize": "Kâğıt boyutu",
@@ -4045,7 +4046,27 @@
         "letter": "Letter"
       },
       "sourceChanged": "{{name}} sayfaları eklendikten sonra değişti, bu yüzden artık gösterilemiyor. Dosyayı yeniden ekleyin.",
-      "previewFailed": "Önizleme çizilemedi"
+      "previewFailed": "Önizleme çizilemedi",
+      "selectInvert": "Seçimi tersine çevir",
+      "reverseSelection": "Seçili sayfaları ters sırala",
+      "insertPlace": {
+        "title": "Yeni sayfaları ekleme yeri",
+        "after": "Seçimden sonra",
+        "before": "Seçimden önce",
+        "end": "En sona"
+      },
+      "copies": {
+        "menu": "Kopya çıkar…",
+        "title": "Seçili sayfaların kopyalarını çıkar",
+        "count": "Kopya sayısı",
+        "hint_one": "Seçili sayfanın kopyası çıkarılır.",
+        "hint_other": "Seçili {{count}} sayfanın kopyası çıkarılır.",
+        "layout": "Kopyaların yeri",
+        "each": "Her sayfanın hemen arkasına (1, 1, 2, 2)",
+        "block": "Seçimden sonra, sırayla (1, 2, 1, 2)",
+        "invalid": "1 ile {{limit}} arasında bir sayı girin.",
+        "submit": "Kopyaları çıkar"
+      }
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",
     "batch": {

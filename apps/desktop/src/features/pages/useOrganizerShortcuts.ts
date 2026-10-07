@@ -67,6 +67,9 @@ export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseO
       } else if (mod && key === "a") {
         event.preventDefault();
         select(useOrganizerStore.getState().tiles.map((tile) => tile.key));
+      } else if (mod && !event.shiftKey && key === "i") {
+        event.preventDefault();
+        current.invertSelection();
       } else if (mod && key === "d") {
         event.preventDefault();
         current.duplicateSelected();

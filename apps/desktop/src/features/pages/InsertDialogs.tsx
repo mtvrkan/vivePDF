@@ -208,6 +208,7 @@ const SHORTCUTS = [
   ["B", "insertBlank"],
   ["Ctrl+E", "extract"],
   ["Ctrl+A / Esc", "selectAllNone"],
+  ["Ctrl+I", "invertSelection"],
   ["Ctrl+G", "range"],
   ["{doubleClick} / Space / Enter", "preview"],
   ["Enter / Shift+← →", "previewSelect"],

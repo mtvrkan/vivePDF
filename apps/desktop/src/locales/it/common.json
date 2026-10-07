@@ -3856,7 +3856,8 @@
         "marquee": "Trascina da un'area vuota per selezionare (Ctrl inverte, Maiusc aggiunge)",
         "preview": "Visualizza l'anteprima della pagina",
         "range": "Seleziona per numeri di pagina",
-        "previewSelect": "Nell'anteprima: seleziona la pagina / estendi la selezione"
+        "previewSelect": "Nell'anteprima: seleziona la pagina / estendi la selezione",
+        "invertSelection": "Inverti selezione"
       },
       "blank": "vuota",
       "paperSize": "Formato carta",
@@ -4045,7 +4046,27 @@
         "letter": "Letter"
       },
       "sourceChanged": "{{name}} è cambiato dopo l'aggiunta delle sue pagine, quindi non possono più essere mostrate. Inserisci di nuovo il file.",
-      "previewFailed": "Impossibile disegnare l'anteprima"
+      "previewFailed": "Impossibile disegnare l'anteprima",
+      "selectInvert": "Inverti selezione",
+      "reverseSelection": "Inverti l'ordine delle pagine selezionate",
+      "insertPlace": {
+        "title": "Inserisci le nuove pagine",
+        "after": "Dopo la selezione",
+        "before": "Prima della selezione",
+        "end": "Alla fine"
+      },
+      "copies": {
+        "menu": "Crea copie…",
+        "title": "Crea copie delle pagine selezionate",
+        "count": "Numero di copie",
+        "hint_one": "Viene copiata la pagina selezionata.",
+        "hint_other": "Vengono copiate le {{count}} pagine selezionate.",
+        "layout": "Posiziona le copie",
+        "each": "Subito dopo ogni pagina (1, 1, 2, 2)",
+        "block": "Dopo la selezione, in ordine (1, 2, 1, 2)",
+        "invalid": "Inserisci un numero da 1 a {{limit}}.",
+        "submit": "Crea copie"
+      }
     },
     "dropHint": "Trascina qui il PDF o fai clic per sceglierlo",
     "batch": {

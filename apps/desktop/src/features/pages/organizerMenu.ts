@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import { ArrowRightLeft, BookOpen, ClipboardCopy, ClipboardPaste, ClipboardX, Copy, Eye, FileOutput, FilePlus2, RotateCcw, RotateCw, Scissors, Tag, Trash2 } from "lucide-react";
+import { ArrowDownUp, ArrowRightLeft, BookOpen, ClipboardCopy, ClipboardPaste, ClipboardX, Copy, CopyPlus, Eye, FileOutput, FilePlus2, RotateCcw, RotateCw, Scissors, Tag, Trash2 } from "lucide-react";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import type { OrganizerTile } from "@/types";
 import { MAIN_SOURCE_ID } from "./organizerStore";
@@ -15,6 +15,8 @@ export type TileMenuContext = {
   onOpenInViewer: (tile: OrganizerTile) => void;
   onRotate: (delta: 90 | -90) => void;
   onDuplicate: () => void;
+  onCopies: () => void;
+  onReverse: () => void;
   onDelete: () => void;
   onCopy: () => void;
   onCut: () => void;
@@ -40,6 +42,8 @@ export function tileMenuItems(key: string, context: TileMenuContext): ContextMen
     { type: "item", id: "rotate-left", label: t("tools.pages.rotateLeft"), icon: RotateCcw, shortcut: "Shift+R", onSelect: () => context.onRotate(-90) },
     { type: "item", id: "rotate-right", label: t("tools.pages.rotateRight"), icon: RotateCw, shortcut: "R", onSelect: () => context.onRotate(90) },
     { type: "item", id: "duplicate", label: t("tools.pages.duplicate"), icon: Copy, shortcut: "Ctrl+D", onSelect: context.onDuplicate },
+    { type: "item", id: "copies", label: t("tools.pages.copies.menu"), icon: CopyPlus, onSelect: context.onCopies },
+    { type: "item", id: "reverse", label: t("tools.pages.reverseSelection"), icon: ArrowDownUp, disabled: count < 2, onSelect: context.onReverse },
     { type: "item", id: "delete", label: t("tools.pages.delete"), icon: Trash2, shortcut: "Delete", disabled: count >= tiles.length, onSelect: context.onDelete },
     { type: "item", id: "move", label: t("tools.pages.menu.move", { count }), icon: ArrowRightLeft, shortcut: "M", disabled: count >= tiles.length, onSelect: context.onMove },
     { type: "separator", id: "clipboard-start" },

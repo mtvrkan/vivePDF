@@ -1,7 +1,8 @@
 import { useCallback, useRef } from "react";
 import type { OrganizerTile } from "@/types";
 import type { TileLabels } from "./organizerTools";
-import { insertTiles, insertionPoint, moveToPosition, nudgeTiles, replaceTiles, rotateBy, tileKey, toggleCuts, useOrganizerStore } from "./organizerStore";
+import { useUiStore } from "@/shared/store/uiStore";
+import { insertTiles, insertionPoint, moveToPosition, nudgeTiles, replaceTiles, reverseWithin, rotateBy, tileKey, toggleCuts, useOrganizerStore, withCopies, type CopyLayout } from "./organizerStore";
 import { spanSelection } from "./tileSelection";
 
 export type CutsUpdate = ReadonlySet<string> | ((current: ReadonlySet<string>) => ReadonlySet<string>);
@@ -113,27 +114,38 @@ export function useOrganizerEdits(revealIndex: (index: number) => void, focusGri
 
   const reverseAll = useCallback(() => commit([...useOrganizerStore.getState().tiles].reverse()), [commit]);
 
-  const duplicateSelected = useCallback(() => {
+  const duplicateSelectedTimes = useCallback(
+    (count: number, layout: CopyLayout) => {
+      const state = useOrganizerStore.getState();
+      if (state.selected.size === 0) return;
+      const outcome = withCopies(state.tiles, state.selected, count, layout, tileKey);
+      if (outcome.copies.length === 0) return;
+      commit(outcome.tiles);
+      select(outcome.copies, outcome.copies[0]);
+      scrollToTile(outcome.copies[0]);
+    },
+    [commit, select, scrollToTile],
+  );
+
+  const duplicateSelected = useCallback(() => duplicateSelectedTimes(1, "each"), [duplicateSelectedTimes]);
+
+  const reverseSelected = useCallback(() => {
     const state = useOrganizerStore.getState();
-    if (state.selected.size === 0) return;
-    const next: OrganizerTile[] = [];
-    const copies: string[] = [];
-    for (const tile of state.tiles) {
-      next.push(tile);
-      if (state.selected.has(tile.key)) {
-        const copy = { ...tile, key: tileKey() };
-        next.push(copy);
-        copies.push(copy.key);
-      }
-    }
-    commit(next);
-    select(copies);
-  }, [commit, select]);
+    const next = reverseWithin(state.tiles, state.selected);
+    if (next !== state.tiles) commit(next);
+  }, [commit]);
+
+  const invertSelection = useCallback(() => {
+    const state = useOrganizerStore.getState();
+    const inverted = state.tiles.filter((tile) => !state.selected.has(tile.key)).map((tile) => tile.key);
+    select(inverted, inverted[0] ?? null);
+    if (inverted[0]) scrollToTile(inverted[0]);
+  }, [select, scrollToTile]);
 
   const insertAtSelection = useCallback(
     (incoming: OrganizerTile[]) => {
       const state = useOrganizerStore.getState();
-      const at = insertionPoint(state.tiles, state.selected);
+      const at = insertionPoint(state.tiles, state.selected, useUiStore.getState().pagesInsertPlace);
       commit(insertTiles(state.tiles, at, incoming));
       select(incoming.map((tile) => tile.key), incoming[0]?.key ?? null);
     },
@@ -216,6 +228,9 @@ export function useOrganizerEdits(revealIndex: (index: number) => void, focusGri
     deleteRelative,
     reverseAll,
     duplicateSelected,
+    duplicateSelectedTimes,
+    reverseSelected,
+    invertSelection,
     insertAtSelection,
     replaceSelection,
     moveSelection,

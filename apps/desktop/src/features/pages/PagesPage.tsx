@@ -20,7 +20,7 @@ import { useVirtualGrid } from "./useVirtualGrid";
 import { clickSelection, tileClickAction, type ClickMode } from "./tileSelection";
 import { usePagePreview } from "./usePagePreview";
 import { duplexOrder, labelRules, positionsToKeys, subsetLabelRules, tileLabelTexts } from "./organizerTools";
-import { DuplexDialog, MovePagesDialog, PageLabelDialog, PagePreviewDialog, RangeSelectDialog, type DuplexChoice } from "./OrganizerDialogs";
+import { DuplexDialog, DuplicateDialog, MovePagesDialog, PageLabelDialog, PagePreviewDialog, RangeSelectDialog, type DuplexChoice } from "./OrganizerDialogs";
 import { ContextMenu } from "@/components/shared/ContextMenu";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useDocumentStore } from "@/shared/store/documentStore";
@@ -91,6 +91,7 @@ export function PagesPage() {
   const [rangeOpen, setRangeOpen] = useState(false);
   const [moveOpen, setMoveOpen] = useState(false);
   const [duplexOpen, setDuplexOpen] = useState(false);
+  const [copiesOpen, setCopiesOpen] = useState(false);
   const [labelTarget, setLabelTarget] = useState<string | null>(null);
   const [menu, setMenu] = useState<TileMenu | null>(null);
   const [multiSelect, setMultiSelect] = useState(false);
@@ -317,7 +318,7 @@ export function PagesPage() {
     [],
   );
 
-  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || labelTarget !== null || menu !== null || pendingLeave !== null || pendingSaveRun !== null;
+  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || copiesOpen || labelTarget !== null || menu !== null || pendingLeave !== null || pendingSaveRun !== null;
   useOrganizerShortcuts({
     enabled: Boolean(activeDocumentId) && !dialogOpen,
     layout: { columns: grid.columns, clientBoxOf: grid.clientBoxOf },
@@ -461,6 +462,7 @@ export function PagesPage() {
           openShortcuts: () => setShortcutsOpen(true),
           extractSelection: () => apply(true),
           pastePages: () => void clipboard.pastePages(),
+          openCopies: () => setCopiesOpen(true),
         }}
       />
       <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,3fr)_minmax(0,2fr)] md:grid-cols-[minmax(0,1fr)_var(--spacing-inspector)] md:grid-rows-1">
@@ -573,6 +575,15 @@ export function PagesPage() {
           edits.moveSelectedTo(position);
         }}
       />
+      <DuplicateDialog
+        open={copiesOpen}
+        count={selectedCount}
+        onClose={() => setCopiesOpen(false)}
+        onDuplicate={(copies, layout) => {
+          setCopiesOpen(false);
+          edits.duplicateSelectedTimes(copies, layout);
+        }}
+      />
       <DuplexDialog open={duplexOpen} total={tiles.length} onClose={() => setDuplexOpen(false)} onApply={applyDuplex} />
       <PageLabelDialog
         open={labelTarget !== null && labelPosition >= 0}
@@ -607,6 +618,8 @@ export function PagesPage() {
             onOpenInViewer: openInViewer,
             onRotate: edits.rotateSelected,
             onDuplicate: edits.duplicateSelected,
+            onCopies: () => setCopiesOpen(true),
+            onReverse: edits.reverseSelected,
             onDelete: edits.deleteSelected,
             onCopy: () => void clipboard.copyPages(),
             onCut: clipboard.cutPages,

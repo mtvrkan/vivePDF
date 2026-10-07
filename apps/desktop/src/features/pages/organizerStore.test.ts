@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { OrganizerTile } from "@/types";
-import { MAIN_SOURCE_ID, carryMarks, cutStarts, droppedPreviews, insertTiles, insertionPoint, isDirty, moveTiles, moveToPosition, nudgeTiles, replaceTiles, rotateBy, sameKeys, sameLabels, tilesAtParity, toggleCuts, useOrganizerStore, forgetOrganizerOf, withoutUnusedSources } from "./organizerStore";
+import { MAIN_SOURCE_ID, carryMarks, cutStarts, reverseWithin, withCopies, droppedPreviews, insertTiles, insertionPoint, isDirty, moveTiles, moveToPosition, nudgeTiles, replaceTiles, rotateBy, sameKeys, sameLabels, tilesAtParity, toggleCuts, useOrganizerStore, forgetOrganizerOf, withoutUnusedSources } from "./organizerStore";
 import type { OrganizerSource } from "@/types";
 
 function page(index: number): OrganizerTile {
@@ -290,5 +290,38 @@ describe("organizer work per document", () => {
     store().initialize(main("a"));
 
     expect(store().tiles.map((tile) => tile.key)).toEqual(["p1", "p2", "p3"]);
+  });
+});
+
+describe("selection edits", () => {
+  const keys = (list: OrganizerTile[]) => list.map((tile) => tile.key);
+
+  it("reverses only the selected pages in their own places", () => {
+    expect(keys(reverseWithin(tiles, new Set(["p1", "p3", "p5"])))).toEqual(["p5", "p2", "p3", "p4", "p1"]);
+    expect(reverseWithin(tiles, new Set(["p2"]))).toBe(tiles);
+  });
+
+  it("puts copies right after each page or as a block after the selection", () => {
+    let counter = 0;
+    const makeKey = () => `c${++counter}`;
+
+    const each = withCopies(tiles, new Set(["p2", "p4"]), 2, "each", makeKey);
+    const block = withCopies(tiles, new Set(["p2", "p4"]), 2, "block", makeKey);
+
+    expect(keys(each.tiles)).toEqual(["p1", "p2", "c1", "c2", "p3", "p4", "c3", "c4", "p5"]);
+    expect(each.copies).toEqual(["c1", "c2", "c3", "c4"]);
+    expect(keys(block.tiles)).toEqual(["p1", "p2", "p3", "p4", "c5", "c6", "c7", "c8", "p5"]);
+    expect(block.tiles[4]).toMatchObject({ index: 2 });
+    expect(block.tiles[5]).toMatchObject({ index: 4 });
+  });
+
+  it("makes no copies without a selection and inserts before, after or at the end", () => {
+    expect(withCopies(tiles, new Set(), 3, "each", () => "x").copies).toEqual([]);
+    const selected = new Set(["p2", "p3"]);
+
+    expect(insertionPoint(tiles, selected, "before")).toBe(1);
+    expect(insertionPoint(tiles, selected, "after")).toBe(3);
+    expect(insertionPoint(tiles, selected, "end")).toBe(5);
+    expect(insertionPoint(tiles, new Set(), "before")).toBe(5);
   });
 });

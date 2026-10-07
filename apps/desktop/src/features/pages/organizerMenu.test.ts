@@ -21,6 +21,8 @@ function context(overrides: Partial<TileMenuContext> = {}): TileMenuContext {
     onOpenInViewer: vi.fn(),
     onRotate: vi.fn(),
     onDuplicate: vi.fn(),
+    onCopies: vi.fn(),
+    onReverse: vi.fn(),
     onDelete: vi.fn(),
     onCopy: vi.fn(),
     onCut: vi.fn(),

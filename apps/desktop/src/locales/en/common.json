@@ -3856,7 +3856,8 @@
         "clipboard": "Copy / cut / paste pages",
         "nudge": "Move the selected pages one step, a row, or to the start / end",
         "move": "Move the selected pages to a page number",
-        "previewSelect": "In the preview: select the page / extend the selection"
+        "previewSelect": "In the preview: select the page / extend the selection",
+        "invertSelection": "Invert selection"
       },
       "blank": "blank",
       "paperSize": "Paper size",
@@ -4045,7 +4046,27 @@
         "letter": "Letter"
       },
       "sourceChanged": "{{name}} has changed since its pages were added, so they can no longer be shown. Insert the file again.",
-      "previewFailed": "Preview could not be drawn"
+      "previewFailed": "Preview could not be drawn",
+      "selectInvert": "Invert selection",
+      "reverseSelection": "Reverse selected pages",
+      "insertPlace": {
+        "title": "Insert new pages",
+        "after": "After the selection",
+        "before": "Before the selection",
+        "end": "At the end"
+      },
+      "copies": {
+        "menu": "Make copies…",
+        "title": "Make copies of the selected pages",
+        "count": "Number of copies",
+        "hint_one": "The selected page is copied.",
+        "hint_other": "The {{count}} selected pages are copied.",
+        "layout": "Place the copies",
+        "each": "Right after each page (1, 1, 2, 2)",
+        "block": "After the selection, in order (1, 2, 1, 2)",
+        "invalid": "Enter a number from 1 to {{limit}}.",
+        "submit": "Make copies"
+      }
     },
     "dropHint": "Drop the PDF here or click to choose it",
     "batch": {

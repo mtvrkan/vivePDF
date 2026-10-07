@@ -3,6 +3,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import { ready, setLocale } from "@/app/i18n";
 import type { OrganizerTile } from "@/types";
 import { axeViolations } from "@/test/axe";
+import { useUiStore } from "@/shared/store/uiStore";
 import { useOrganizerStore } from "./organizerStore";
 import { OrganizerToolbar, type ToolbarCommands } from "./OrganizerToolbar";
 import type { OrganizerEdits } from "./useOrganizerEdits";
@@ -21,7 +22,7 @@ function inspections(inspecting: Inspection | null, cancel = vi.fn()): PageInspe
   } as PageInspections;
 }
 
-const commands = { openRange: vi.fn(), openDuplex: vi.fn(), openLabels: vi.fn(), openBlank: vi.fn(), pickPdf: vi.fn(), pickImages: vi.fn(), openShortcuts: vi.fn(), extractSelection: vi.fn(), pastePages: vi.fn() } satisfies ToolbarCommands;
+const commands = { openRange: vi.fn(), openDuplex: vi.fn(), openLabels: vi.fn(), openBlank: vi.fn(), pickPdf: vi.fn(), pickImages: vi.fn(), openShortcuts: vi.fn(), extractSelection: vi.fn(), pastePages: vi.fn(), openCopies: vi.fn() } satisfies ToolbarCommands;
 
 function renderToolbar(organizerEdits: OrganizerEdits, pageInspections: PageInspections) {
   return render(<OrganizerToolbar edits={organizerEdits} inspections={pageInspections} commands={commands} multiSelect={false} pasting={false} onToggleMultiSelect={vi.fn()} zoom={160} onZoom={vi.fn()} />);
@@ -55,6 +56,20 @@ describe("OrganizerToolbar", () => {
     fireEvent.click(screen.getByRole("menuitem", { name: /Rotate right/ }));
 
     expect(organizerEdits.rotateSelected).toHaveBeenCalledWith(90);
+  });
+
+  it("remembers where new pages go and marks the chosen place", () => {
+    renderToolbar(edits(), inspections(null));
+
+    fireEvent.click(screen.getByRole("button", { name: "Insert" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: /Insert new pages/ }));
+    fireEvent.click(screen.getByRole("menuitemcheckbox", { name: /Before the selection/ }));
+
+    expect(useUiStore.getState().pagesInsertPlace).toBe("before");
+    fireEvent.click(screen.getByRole("button", { name: "Insert" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: /Insert new pages/ }));
+    expect(screen.getByRole("menuitemcheckbox", { name: /Before the selection/ }).getAttribute("aria-checked")).toBe("true");
+    useUiStore.getState().setPagesInsertPlace("after");
   });
 
   it("blocks other page checks while one runs and offers to cancel it", () => {

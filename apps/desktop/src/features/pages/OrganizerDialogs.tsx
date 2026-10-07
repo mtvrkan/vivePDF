@@ -7,7 +7,7 @@ import { IconButton } from "@/components/shared/IconButton";
 import { Field, SelectInput, SwitchField, TextInput } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
 import type { OrganizerSource, OrganizerTile, PageLabelStyle } from "@/types";
-import { MAIN_SOURCE_ID } from "./organizerStore";
+import { MAIN_SOURCE_ID, type CopyLayout } from "./organizerStore";
 import { formatLabel, type TileLabel } from "./organizerTools";
 import { PageThumbnail } from "./PageThumbnail";
 import { parseRanges } from "./useInsertSources";
@@ -191,6 +191,53 @@ export function MovePagesDialog({ open, total, count, onClose, onMove }: MovePro
         <div className="flex justify-end gap-2 pt-1">
           <Button variant="ghost" onClick={onClose}>{t("common.cancel")}</Button>
           <Button type="submit" variant="primary" disabled={!valid}>{t("tools.pages.move.submit")}</Button>
+        </div>
+      </form>
+    </Dialog>
+  );
+}
+
+export const COPY_LIMIT = 99;
+
+type DuplicateProps = { open: boolean; count: number; onClose: () => void; onDuplicate: (copies: number, layout: CopyLayout) => void };
+
+export function DuplicateDialog({ open, count, onClose, onDuplicate }: DuplicateProps) {
+  const { t } = useTranslation();
+  const [value, setValue] = useState("1");
+  const [layout, setLayout] = useState<CopyLayout>("each");
+
+  useEffect(() => {
+    if (open) setValue("1");
+  }, [open]);
+
+  const copies = Number(value);
+  const valid = Number.isInteger(copies) && copies >= 1 && copies <= COPY_LIMIT;
+
+  const submit = (event: FormEvent) => {
+    event.preventDefault();
+    if (valid) onDuplicate(copies, layout);
+  };
+
+  return (
+    <Dialog open={open} title={t("tools.pages.copies.title")} onClose={onClose}>
+      <form onSubmit={submit} className="space-y-3">
+        <Field label={t("tools.pages.copies.count")} hint={t("tools.pages.copies.hint", { count })}>
+          <TextInput autoFocus type="number" min={1} max={COPY_LIMIT} value={value} onChange={(event) => setValue(event.target.value)} className="w-24 font-mono" aria-invalid={valid ? undefined : true} />
+        </Field>
+        <Field label={t("tools.pages.copies.layout")}>
+          <SelectInput value={layout} onChange={(event) => setLayout(event.target.value as CopyLayout)}>
+            <option value="each">{t("tools.pages.copies.each")}</option>
+            <option value="block">{t("tools.pages.copies.block")}</option>
+          </SelectInput>
+        </Field>
+        {valid ? null : (
+          <p role="status" className="text-sm text-destructive">
+            {t("tools.pages.copies.invalid", { limit: COPY_LIMIT })}
+          </p>
+        )}
+        <div className="flex justify-end gap-2 pt-1">
+          <Button variant="ghost" onClick={onClose}>{t("common.cancel")}</Button>
+          <Button type="submit" variant="primary" disabled={!valid}>{t("tools.pages.copies.submit")}</Button>
         </div>
       </form>
     </Dialog>

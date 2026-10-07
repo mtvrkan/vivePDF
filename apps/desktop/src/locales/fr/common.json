@@ -3856,7 +3856,8 @@
         "marquee": "Glissez depuis une zone vide pour sélectionner (Ctrl inverse, Maj ajoute)",
         "preview": "Afficher l’aperçu de la page",
         "range": "Sélectionner par numéros de page",
-        "previewSelect": "Dans l’aperçu : sélectionner la page / étendre la sélection"
+        "previewSelect": "Dans l’aperçu : sélectionner la page / étendre la sélection",
+        "invertSelection": "Inverser la sélection"
       },
       "blank": "blanc",
       "paperSize": "Format de papier",
@@ -4045,7 +4046,27 @@
         "letter": "Letter"
       },
       "sourceChanged": "{{name}} a changé depuis l'ajout de ses pages, elles ne peuvent plus être affichées. Insérez à nouveau le fichier.",
-      "previewFailed": "Impossible d'afficher l'aperçu"
+      "previewFailed": "Impossible d'afficher l'aperçu",
+      "selectInvert": "Inverser la sélection",
+      "reverseSelection": "Inverser l'ordre des pages sélectionnées",
+      "insertPlace": {
+        "title": "Insérer les nouvelles pages",
+        "after": "Après la sélection",
+        "before": "Avant la sélection",
+        "end": "À la fin"
+      },
+      "copies": {
+        "menu": "Faire des copies…",
+        "title": "Faire des copies des pages sélectionnées",
+        "count": "Nombre de copies",
+        "hint_one": "La page sélectionnée est copiée.",
+        "hint_other": "Les {{count}} pages sélectionnées sont copiées.",
+        "layout": "Placer les copies",
+        "each": "Juste après chaque page (1, 1, 2, 2)",
+        "block": "Après la sélection, dans l'ordre (1, 2, 1, 2)",
+        "invalid": "Saisissez un nombre de 1 à {{limit}}.",
+        "submit": "Faire les copies"
+      }
     },
     "dropHint": "Déposez le PDF ici ou cliquez pour le choisir",
     "batch": {

@@ -3856,7 +3856,8 @@
         "marquee": "Arrastre desde una zona vacía para seleccionar (Ctrl invierte, Shift añade)",
         "preview": "Ver la vista previa de la página",
         "range": "Seleccionar por números de página",
-        "previewSelect": "En la vista previa: seleccionar la página / ampliar la selección"
+        "previewSelect": "En la vista previa: seleccionar la página / ampliar la selección",
+        "invertSelection": "Invertir selección"
       },
       "blank": "en blanco",
       "paperSize": "Tamaño de papel",
@@ -4045,7 +4046,27 @@
         "letter": "Carta"
       },
       "sourceChanged": "{{name}} cambió después de añadir sus páginas, así que ya no se pueden mostrar. Inserta el archivo de nuevo.",
-      "previewFailed": "No se pudo dibujar la vista previa"
+      "previewFailed": "No se pudo dibujar la vista previa",
+      "selectInvert": "Invertir selección",
+      "reverseSelection": "Invertir el orden de las páginas seleccionadas",
+      "insertPlace": {
+        "title": "Insertar páginas nuevas",
+        "after": "Después de la selección",
+        "before": "Antes de la selección",
+        "end": "Al final"
+      },
+      "copies": {
+        "menu": "Hacer copias…",
+        "title": "Hacer copias de las páginas seleccionadas",
+        "count": "Número de copias",
+        "hint_one": "Se copia la página seleccionada.",
+        "hint_other": "Se copian las {{count}} páginas seleccionadas.",
+        "layout": "Colocar las copias",
+        "each": "Justo después de cada página (1, 1, 2, 2)",
+        "block": "Después de la selección, en orden (1, 2, 1, 2)",
+        "invalid": "Introduce un número del 1 al {{limit}}.",
+        "submit": "Hacer copias"
+      }
     },
     "dropHint": "Suelte el PDF aquí o haga clic para elegirlo",
     "batch": {

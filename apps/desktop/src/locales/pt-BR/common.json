@@ -3856,7 +3856,8 @@
         "marquee": "Arraste de uma área vazia para selecionar (Ctrl inverte, Shift adiciona)",
         "preview": "Visualizar a página",
         "range": "Selecionar por números de página",
-        "previewSelect": "Na visualização: selecionar a página / ampliar a seleção"
+        "previewSelect": "Na visualização: selecionar a página / ampliar a seleção",
+        "invertSelection": "Inverter seleção"
       },
       "blank": "em branco",
       "paperSize": "Tamanho do papel",
@@ -4045,7 +4046,27 @@
         "letter": "Carta"
       },
       "sourceChanged": "{{name}} mudou depois que suas páginas foram adicionadas, então elas não podem mais ser exibidas. Volte a inserir o arquivo.",
-      "previewFailed": "Não foi possível desenhar a pré-visualização"
+      "previewFailed": "Não foi possível desenhar a pré-visualização",
+      "selectInvert": "Inverter seleção",
+      "reverseSelection": "Inverter a ordem das páginas selecionadas",
+      "insertPlace": {
+        "title": "Inserir novas páginas",
+        "after": "Depois da seleção",
+        "before": "Antes da seleção",
+        "end": "No final"
+      },
+      "copies": {
+        "menu": "Fazer cópias…",
+        "title": "Fazer cópias das páginas selecionadas",
+        "count": "Número de cópias",
+        "hint_one": "A página selecionada é copiada.",
+        "hint_other": "As {{count}} páginas selecionadas são copiadas.",
+        "layout": "Posicionar as cópias",
+        "each": "Logo após cada página (1, 1, 2, 2)",
+        "block": "Depois da seleção, em ordem (1, 2, 1, 2)",
+        "invalid": "Digite um número de 1 a {{limit}}.",
+        "submit": "Fazer cópias"
+      }
     },
     "dropHint": "Solte o PDF aqui ou clique para escolhê-lo",
     "batch": {

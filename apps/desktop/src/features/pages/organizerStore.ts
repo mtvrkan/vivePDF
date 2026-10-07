@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { OrganizerSource, OrganizerTile, PageRotation } from "@/types";
+import type { PagesInsertPlace } from "@/shared/store/uiStore";
 import { restoredCuts, restoredLabels, type TileLabels } from "./organizerTools";
 
 const HISTORY_LIMIT = 100;
@@ -400,12 +401,44 @@ export function insertTiles(tiles: OrganizerTile[], position: number, incoming: 
   return [...tiles.slice(0, at), ...incoming, ...tiles.slice(at)];
 }
 
-export function insertionPoint(tiles: OrganizerTile[], selected: Set<string>): number {
+export type CopyLayout = "each" | "block";
+
+export function insertionPoint(tiles: OrganizerTile[], selected: ReadonlySet<string>, place: PagesInsertPlace = "after"): number {
+  if (place === "end") return tiles.length;
+  if (place === "before") {
+    const first = tiles.findIndex((tile) => selected.has(tile.key));
+    return first >= 0 ? first : tiles.length;
+  }
   let last = -1;
   tiles.forEach((tile, position) => {
     if (selected.has(tile.key)) last = position;
   });
   return last >= 0 ? last + 1 : tiles.length;
+}
+
+export function reverseWithin(tiles: OrganizerTile[], keys: ReadonlySet<string>): OrganizerTile[] {
+  const chosen = tiles.filter((tile) => keys.has(tile.key));
+  if (chosen.length < 2) return tiles;
+  const reversed = [...chosen].reverse();
+  let next = 0;
+  return tiles.map((tile) => (keys.has(tile.key) ? reversed[next++] : tile));
+}
+
+export function withCopies(tiles: OrganizerTile[], keys: ReadonlySet<string>, copies: number, layout: CopyLayout, makeKey: () => string): { tiles: OrganizerTile[]; copies: string[] } {
+  const chosen = tiles.filter((tile) => keys.has(tile.key));
+  if (chosen.length === 0 || copies < 1) return { tiles, copies: [] };
+  const made: string[] = [];
+  const copy = (tile: OrganizerTile): OrganizerTile => {
+    const key = makeKey();
+    made.push(key);
+    return { ...tile, key };
+  };
+  if (layout === "each") {
+    const next = tiles.flatMap((tile) => (keys.has(tile.key) ? [tile, ...Array.from({ length: copies }, () => copy(tile))] : [tile]));
+    return { tiles: next, copies: made };
+  }
+  const block = Array.from({ length: copies }, () => chosen.map(copy)).flat();
+  return { tiles: insertTiles(tiles, insertionPoint(tiles, keys), block), copies: made };
 }
 
 export function tilesAtParity(tiles: OrganizerTile[], parity: "odd" | "even"): string[] {

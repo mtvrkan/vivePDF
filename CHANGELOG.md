@@ -4,6 +4,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Page organizer: Select › Invert selection (Ctrl+I) selects every page that was not selected and clears the rest [2026-10-07]
+- Page organizer: Edit pages › Reverse selected pages flips the order of just the selected pages in their own places, and Make copies… adds 1–99 copies either right after each page or as a block after the selection; both are also in the right-click menu [2026-10-07]
+- Page organizer: Insert › Insert new pages chooses whether blank pages, PDFs, pictures and pasted pages go after the selection, before it or at the end; the choice is remembered [2026-10-07]
 - Viewer: delete pages and rotate them for good right from the viewer — point at a thumbnail for Rotate and Delete buttons, press Delete or R/Shift+R on a focused thumbnail, or use Edit page in the right-click menus. Nothing is written until you save: a page marked for deletion is greyed out with a Restore button, a rotated one shows a note, and Discard drops it all [2026-10-07]
 - Page organizer: each page card shows Rotate left, Rotate right and Delete buttons when you point at it or tab into it; they act on that page only and can be undone [2026-10-07]
 - Viewer: fill in form fields right on the page — text boxes (multi-line ones too, with the field's length limit), check boxes, radio groups, drop-downs and list boxes sit on top of the fields at any zoom or page turn, Tab moves through them top to bottom, read-only fields stay locked, and the values count as unsaved changes until Save writes them into the same file (signed files keep their signatures; values shortened to a field's limit or using letters the field font lacks are listed after saving). Forms only XFA can fill say so instead [2026-10-07]
