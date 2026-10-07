@@ -2,14 +2,13 @@ from pathlib import Path
 
 import pymupdf
 import pytest
-from PIL import Image
 
+from vivepdf.ops import ocr
 from vivepdf.ops._ocr_area import (
     Row,
     Word,
-    binarised,
+    _reading_dpis,
     consensus_rows,
-    dark_on_light,
     visual_rows,
     without_clipped_rows,
 )
@@ -75,6 +74,16 @@ def test_consensus_picks_the_reading_most_readings_agree_with() -> None:
     assert [row.text for row in rows] == ["if (r = t.call(e[i], i, e[i])"]
 
 
+def test_consensus_keeps_the_base_reading_when_the_others_disagree_equally() -> None:
+    base = [_row("t.call(e[i], i, e[i])", 50, 62)]
+    low = [_row("t.call(el[i]l, i, e[i])", 50, 62)]
+    high = [_row("t.call(e[i], 1, e[i1])", 50, 62)]
+
+    rows = consensus_rows([base, low, high])
+
+    assert [row.text for row in rows] == ["t.call(e[i], i, e[i])"]
+
+
 def test_consensus_drops_a_row_only_one_reading_saw() -> None:
     raw = [_row("wie Ki AV SS", 10, 18), _row("return e", 50, 62)]
     inverted = [_row("return e", 50, 62)]
@@ -94,16 +103,12 @@ def test_clipped_edge_row_is_dropped_but_a_lone_row_is_kept() -> None:
     assert without_clipped_rows([cut], area) == [cut]
 
 
-def test_light_text_on_dark_is_turned_dark_on_light() -> None:
-    picture = Image.new("RGB", (40, 20), (10, 30, 70))
-    picture.putpixel((5, 5), (230, 240, 255))
+def test_a_small_area_is_read_at_three_resolutions_and_a_large_one_once() -> None:
+    line = pymupdf.Rect(150, 80, 450, 94)
+    page = pymupdf.Rect(0, 0, 595, 842)
 
-    normalised = dark_on_light(picture)
-    flat = binarised(picture)
-
-    assert normalised.getpixel((0, 0)) > 200
-    assert normalised.getpixel((5, 5)) < 50
-    assert {level for level, count in enumerate(flat.histogram()) if count} <= {0, 255}
+    assert _reading_dpis(line, 300) == [300, 200, 400]
+    assert len(_reading_dpis(page, 300)) == 1
 
 
 def test_ocr_area_reads_a_light_on_dark_code_line_as_one_line(dark_code_scan: Path) -> None:
@@ -117,3 +122,28 @@ def test_ocr_area_reads_a_light_on_dark_code_line_as_one_line(dark_code_scan: Pa
     assert result.lines[0].text.count("e[i]") == 2
     assert result.lines[0].text.endswith("break;")
     assert all(line.y0 >= 70 and line.y1 <= 96 for line in result.lines)
+
+
+@pytest.mark.parametrize(
+    ("languages", "folder"), [(["tur", "eng"], "tessdata-best"), (["eng", "deu"], "tessdata")]
+)
+def test_ocr_area_uses_best_models_only_when_every_language_has_one(
+    dark_code_scan: Path,
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    languages: list[str],
+    folder: str,
+) -> None:
+    monkeypatch.setenv("VIVEPDF_TESSDATA_DIR", str(tmp_path / "tessdata"))
+    monkeypatch.setattr(ocr, "_language_string", lambda chosen: "+".join(chosen))
+    used: list[str] = []
+    monkeypatch.setattr(ocr, "read_area", lambda *args: used.append(args[4]) or [])
+
+    ocr_area(
+        OcrAreaParams(
+            path=str(dark_code_scan), page=0, rect=[30, 70, 560, 96], languages=languages
+        ),
+        silent_progress(),
+    )
+
+    assert used == [str(tmp_path / folder)]

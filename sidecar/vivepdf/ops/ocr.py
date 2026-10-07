@@ -14,7 +14,7 @@ from vivepdf.ops._orientation import best_rotation, capped_dpi
 from vivepdf.ops._output import prepare_data_output, prepare_output, save_document
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._toc import normalized_toc
-from vivepdf.ops.tessdata import installed_languages, writable_tessdata_dir
+from vivepdf.ops.tessdata import accurate_tessdata_dir, installed_languages, writable_tessdata_dir
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
@@ -424,12 +424,13 @@ def ocr_area(params: OcrAreaParams, progress: Progress) -> OcrAreaResult:
         progress.check_cancelled()
         progress.report(0.2, "progress.ocr", {"current": 1, "total": 1})
         area = _visible_rect(page, clip)
+        tessdata = accurate_tessdata_dir(params.languages) or writable_tessdata_dir()
         rows = read_area(
             page,
             area,
             params.dpi,
             language,
-            str(writable_tessdata_dir()),
+            str(tessdata),
             progress.check_cancelled,
         )
         lines = [

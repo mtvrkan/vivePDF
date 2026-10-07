@@ -1,18 +1,13 @@
 import statistics
 from collections.abc import Callable
 from dataclasses import dataclass, field
-from difflib import SequenceMatcher
 
 import pymupdf
-from PIL import Image, ImageOps
 
 from vivepdf.ops._orientation import capped_dpi
 
-CONSENSUS_MAX_PIXELS = 3_000_000
-SHARP_DPI_RATIO = 4 / 3
-SHARP_MAX_DPI = 400
-DARK_MEAN = 128
-PADDING_PX = 24
+CONSENSUS_MAX_PIXELS = 400_000
+CONSENSUS_DPI_RATIOS = (1.0, 2 / 3, 4 / 3)
 ROW_JOIN_RATIO = 0.5
 CLUSTER_OVERLAP_RATIO = 0.5
 EDGE_SLACK = 1.5
@@ -75,8 +70,20 @@ def _same_row(first: Row, second: Row) -> bool:
     return overlap > CLUSTER_OVERLAP_RATIO * min(top.height, bottom.height)
 
 
-def _text_distance(first: str, second: str) -> float:
-    return 1 - SequenceMatcher(None, first, second).ratio()
+def edit_distance(first: str, second: str) -> int:
+    previous = list(range(len(second) + 1))
+    for row, left in enumerate(first, start=1):
+        current = [row]
+        for column, right in enumerate(second, start=1):
+            current.append(
+                min(
+                    previous[column] + 1,
+                    current[column - 1] + 1,
+                    previous[column - 1] + (left != right),
+                )
+            )
+        previous = current
+    return previous[-1]
 
 
 def consensus_rows(readings: list[list[Row]]) -> list[Row]:
@@ -104,7 +111,7 @@ def consensus_rows(readings: list[list[Row]]) -> list[Row]:
         chosen.append(
             min(
                 candidates,
-                key=lambda candidate: sum(_text_distance(candidate.text, other) for other in texts),
+                key=lambda candidate: sum(edit_distance(candidate.text, other) for other in texts),
             )
         )
     return sorted(chosen, key=lambda row: row.center)
@@ -124,86 +131,42 @@ def without_clipped_rows(rows: list[Row], area: pymupdf.Rect) -> list[Row]:
     ]
 
 
-def _image(pixmap: pymupdf.Pixmap) -> Image.Image:
-    return Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
-
-
-def _otsu_threshold(gray: Image.Image) -> int:
-    histogram = gray.histogram()
-    total = sum(histogram)
-    weighted_total = sum(level * count for level, count in enumerate(histogram))
-    background = 0
-    background_sum = 0
-    best_spread = -1.0
-    threshold = DARK_MEAN
-    for level, count in enumerate(histogram):
-        background += count
-        if not background:
-            continue
-        foreground = total - background
-        if not foreground:
-            break
-        background_sum += level * count
-        background_mean = background_sum / background
-        foreground_mean = (weighted_total - background_sum) / foreground
-        spread = background * foreground * (background_mean - foreground_mean) ** 2
-        if spread > best_spread:
-            best_spread = spread
-            threshold = level
-    return threshold
-
-
-def dark_on_light(image: Image.Image) -> Image.Image:
-    gray = ImageOps.grayscale(image)
-    histogram = gray.histogram()
-    mean = sum(level * count for level, count in enumerate(histogram)) / max(1, sum(histogram))
-    if mean < DARK_MEAN:
-        gray = ImageOps.invert(gray)
-    return ImageOps.autocontrast(gray, cutoff=1)
-
-
-def binarised(image: Image.Image) -> Image.Image:
-    gray = dark_on_light(image)
-    threshold = _otsu_threshold(gray)
-    return gray.point(lambda level: 255 if level > threshold else 0)
-
-
-def _padded(image: Image.Image) -> Image.Image:
-    return ImageOps.expand(image, border=PADDING_PX, fill=255)
-
-
 def _reading(
-    image: Image.Image,
-    padding: int,
-    dpi: int,
-    area: pymupdf.Rect,
-    language: str,
-    tessdata: str,
+    page: pymupdf.Page, area: pymupdf.Rect, dpi: int, language: str, tessdata: str
 ) -> list[Row]:
-    rgb = image.convert("RGB")
-    pixmap = pymupdf.Pixmap(pymupdf.csRGB, rgb.width, rgb.height, rgb.tobytes(), False)
-    pixmap.set_dpi(dpi, dpi)
+    pixmap = page.get_pixmap(dpi=dpi, clip=area, alpha=False)
     data = pixmap.pdfocr_tobytes(compress=True, language=language, tessdata=tessdata)
     with pymupdf.open("pdf", data) as recognised:
         sheet = recognised[0].rect
-        inset = padding * sheet.width / rgb.width if rgb.width else 0.0
-        inner_width = sheet.width - 2 * inset
-        inner_height = sheet.height - 2 * inset
-        scale_x = area.width / inner_width if inner_width > 0 else 1.0
-        scale_y = area.height / inner_height if inner_height > 0 else 1.0
+        scale_x = area.width / sheet.width if sheet.width else 1.0
+        scale_y = area.height / sheet.height if sheet.height else 1.0
         words = [
             Word(
                 pymupdf.Rect(
-                    area.x0 + (word[0] - inset) * scale_x,
-                    area.y0 + (word[1] - inset) * scale_y,
-                    area.x0 + (word[2] - inset) * scale_x,
-                    area.y0 + (word[3] - inset) * scale_y,
+                    area.x0 + word[0] * scale_x,
+                    area.y0 + word[1] * scale_y,
+                    area.x0 + word[2] * scale_x,
+                    area.y0 + word[3] * scale_y,
                 ),
                 word[4],
             )
             for word in recognised[0].get_text("words")
         ]
     return visual_rows(words)
+
+
+def _reading_dpis(area: pymupdf.Rect, dpi: int) -> list[int]:
+    base = capped_dpi(area, dpi)
+    pixels = (area.width * base / 72) * (area.height * base / 72)
+    if pixels > CONSENSUS_MAX_PIXELS:
+        return [base]
+    return list(
+        dict.fromkeys(capped_dpi(area, round(dpi * ratio)) for ratio in CONSENSUS_DPI_RATIOS)
+    )
+
+
+def _same_texts(first: list[Row], second: list[Row]) -> bool:
+    return [row.text for row in first] == [row.text for row in second]
 
 
 def read_area(
@@ -214,23 +177,13 @@ def read_area(
     tessdata: str,
     check_cancelled: Callable[[], None],
 ) -> list[Row]:
-    base_dpi = capped_dpi(area, dpi)
-    base = page.get_pixmap(dpi=base_dpi, clip=area, alpha=False)
-    picture = _image(base)
-    readings = [_reading(picture, 0, base_dpi, area, language, tessdata)]
-    if base.width * base.height <= CONSENSUS_MAX_PIXELS:
+    dpis = _reading_dpis(area, dpi)
+    readings: dict[int, list[Row]] = {}
+    for position in sorted(range(len(dpis)), key=lambda index: dpis[index]):
+        if len(readings) == 2 and _same_texts(*readings.values()):
+            break
         check_cancelled()
-        normalised = _padded(dark_on_light(picture))
-        readings.append(_reading(normalised, PADDING_PX, base_dpi, area, language, tessdata))
-        check_cancelled()
-        sharp_dpi = capped_dpi(
-            area, max(base_dpi, min(SHARP_MAX_DPI, round(dpi * SHARP_DPI_RATIO)))
-        )
-        sharp = _image(page.get_pixmap(dpi=sharp_dpi, clip=area, alpha=False))
-        readings.append(
-            _reading(_padded(binarised(sharp)), PADDING_PX, sharp_dpi, area, language, tessdata)
-        )
-        rows = consensus_rows(readings)
-    else:
-        rows = readings[0]
+        readings[position] = _reading(page, area, dpis[position], language, tessdata)
+    ordered = [readings[position] for position in sorted(readings)]
+    rows = ordered[0] if len(ordered) == 1 else consensus_rows(ordered)
     return without_clipped_rows(rows, area)

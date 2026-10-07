@@ -173,3 +173,30 @@ def test_every_language_has_a_sha256_and_bundled_files_match() -> None:
     for source in tessdata.BUNDLED_TESSDATA_DIR.glob("*.traineddata"):
         digest = hashlib.sha256(source.read_bytes()).hexdigest()
         assert digest == tessdata.LANGUAGE_SHA256[source.stem]
+
+
+def test_accurate_tessdata_dir_copies_the_bundled_best_models(_writable_dir: Path) -> None:
+    directory = tessdata.accurate_tessdata_dir(["tur", "eng"])
+
+    assert directory == _writable_dir.parent / "tessdata-best"
+    for code in ("tur", "eng"):
+        copied = directory / f"{code}.traineddata"
+        bundled = tessdata.BUNDLED_BEST_TESSDATA_DIR / f"{code}.traineddata"
+        assert copied.stat().st_size == bundled.stat().st_size
+    assert not list(directory.glob("*.part"))
+
+
+def test_accurate_tessdata_dir_is_none_unless_every_language_has_a_best_model() -> None:
+    assert tessdata.accurate_tessdata_dir(["eng", "deu"]) is None
+    assert tessdata.accurate_tessdata_dir([]) is None
+
+
+def test_accurate_tessdata_dir_replaces_a_truncated_copy(_writable_dir: Path) -> None:
+    directory = _writable_dir.parent / "tessdata-best"
+    directory.mkdir(parents=True)
+    (directory / "eng.traineddata").write_bytes(b"cut short")
+
+    tessdata.accurate_tessdata_dir(["eng"])
+
+    bundled = tessdata.BUNDLED_BEST_TESSDATA_DIR / "eng.traineddata"
+    assert (directory / "eng.traineddata").read_bytes() == bundled.read_bytes()

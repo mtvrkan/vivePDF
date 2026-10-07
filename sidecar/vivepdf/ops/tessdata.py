@@ -14,6 +14,7 @@ from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 BUNDLED_TESSDATA_DIR = Path(__file__).resolve().parent.parent / "assets" / "tessdata"
+BUNDLED_BEST_TESSDATA_DIR = Path(__file__).resolve().parent.parent / "assets" / "tessdata_best"
 TESSDATA_COMMIT = "87416418657359cb625c412a48b6e1d6d41c29bd"
 TESSDATA_BASE_URL = f"https://github.com/tesseract-ocr/tessdata_fast/raw/{TESSDATA_COMMIT}"
 DOWNLOAD_TIMEOUT = 60.0
@@ -128,6 +129,32 @@ def ensure_bundled_copied(directory: Path) -> None:
         target = directory / source.name
         if not target.exists():
             shutil.copyfile(source, target)
+
+
+def _copy_if_stale(source: Path, target: Path) -> None:
+    if target.is_file() and target.stat().st_size == source.stat().st_size:
+        return
+    temp_fd, temp_name = tempfile.mkstemp(
+        dir=target.parent, prefix=f".{target.stem}-", suffix=".part"
+    )
+    os.close(temp_fd)
+    try:
+        shutil.copyfile(source, temp_name)
+        os.replace(temp_name, target)
+    finally:
+        Path(temp_name).unlink(missing_ok=True)
+
+
+def accurate_tessdata_dir(languages: list[str]) -> Path | None:
+    sources = [BUNDLED_BEST_TESSDATA_DIR / f"{code}.traineddata" for code in languages]
+    if not sources or not all(source.is_file() for source in sources):
+        return None
+    fast = writable_tessdata_dir()
+    directory = fast.parent / f"{fast.name}-best"
+    directory.mkdir(parents=True, exist_ok=True)
+    for source in sources:
+        _copy_if_stale(source, directory / source.name)
+    return directory
 
 
 def installed_languages() -> list[str]:

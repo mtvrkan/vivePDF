@@ -4,6 +4,7 @@
 |---|---|---|
 | MuPDF / PyMuPDF (Artifex) | AGPL-3.0 | PDF engine |
 | Tesseract OCR | Apache-2.0 | OCR engine |
+| Tesseract trained data (tessdata_fast, tessdata_best) | Apache-2.0 | OCR language models |
 | OCRmyPDF | MPL-2.0 | OCR pipeline |
 | pdf2docx | GPL-3.0 | PDF → DOCX |
 | pyHanko | MIT | Digital signatures |
