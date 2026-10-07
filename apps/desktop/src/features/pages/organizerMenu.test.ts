@@ -29,6 +29,8 @@ function context(overrides: Partial<TileMenuContext> = {}): TileMenuContext {
     onPaste: vi.fn(),
     onToggleCut: vi.fn(),
     onExtract: vi.fn(),
+    onSaveImages: vi.fn(),
+    onPrint: vi.fn(),
     onInsertBlank: vi.fn(),
     onLabel: vi.fn(),
     onMove: vi.fn(),

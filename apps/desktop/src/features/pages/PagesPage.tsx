@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent } from "react";
 import { useNavigate } from "react-router";
-import { FileOutput, FilePlus2, History, LayoutGrid, Move, RotateCw, Scissors } from "lucide-react";
+import { FileOutput, FilePlus2, History, Images, LayoutGrid, Move, Printer, RotateCw, Scissors, Share } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { useScrollCapability } from "@embedpdf/plugin-scroll/react";
@@ -12,6 +12,11 @@ import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { useLiveActiveDocument } from "@/features/viewer/useLiveActiveDocument";
 import { useCloseDocuments } from "@/features/viewer/useCloseDocuments";
 import { reloadDocument } from "@/features/viewer/useReloadDocument";
+import { PrintDialog } from "@/features/viewer/PrintDialog";
+import { MenuButton } from "@/components/shared/MenuButton";
+import { describeError } from "@/shared/lib/errorMessage";
+import { toRpcError, type RpcCallOptions } from "@/shared/rpc/client";
+import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { useOperation } from "@/shared/hooks/useOperation";
 import { basenameOf, dirnameOf, joinPath, stemOf, suggestOutputPath } from "@/shared/lib/paths";
 import { assemblePageParts, assemblePages } from "@/shared/rpc/operations";
@@ -43,6 +48,8 @@ import { tileMenuItems } from "./organizerMenu";
 import { OrganizerToolbar, SelectionBar } from "./OrganizerToolbar";
 import { OrganizerOutput } from "./OrganizerOutput";
 import { arrangementOf, type Arrangement } from "./arrangement";
+import { ExportImagesDialog } from "./ExportImagesDialog";
+import { exportSourceOf } from "./organizerExport";
 import { DragBadge, MarqueeRect } from "./LiveOverlays";
 import { usePageClipboardActions } from "./usePageClipboardActions";
 import { usePageClipboard } from "./pageClipboard";
@@ -91,6 +98,9 @@ export function PagesPage() {
   const [pendingLeave, setPendingLeave] = useState<(() => void) | null>(null);
   const [pendingSaveRun, setPendingSaveRun] = useState<(() => void) | null>(null);
   const [inPlaceBlocked, setInPlaceBlocked] = useState(false);
+  const [imagesOpen, setImagesOpen] = useState(false);
+  const [preparingPrint, setPreparingPrint] = useState(false);
+  const printOpen = usePrintDialogStore((state) => state.open);
   const { hasUnsavedWork } = useCloseDocuments();
   const [resultKind, setResultKind] = useState<"single" | "parts">("single");
   const [rangeOpen, setRangeOpen] = useState(false);
@@ -278,6 +288,32 @@ export function PagesPage() {
     [activeDocumentId, hasUnsavedWork, withViewerSaved, runApply],
   );
 
+  const exportSource = useCallback(
+    (options: RpcCallOptions) => {
+      const state = useOrganizerStore.getState();
+      const chosen = state.selected.size > 0 ? state.tiles.filter((tile) => state.selected.has(tile.key)) : state.tiles;
+      if (!document) return Promise.reject(new Error("no document"));
+      return exportSourceOf(chosen, document, arrangementOf(chosen, state.sources, document, { mainFirst: true }), options);
+    },
+    [document],
+  );
+
+  const saveImages = useCallback(() => withViewerSaved(() => setImagesOpen(true)), [withViewerSaved]);
+
+  const printPages = useCallback(() => {
+    if (preparingPrint) return;
+    withViewerSaved(() => {
+      setPreparingPrint(true);
+      void exportSource({})
+        .then((source) => {
+          if (source.temporary) usePrintDialogStore.getState().openFile({ path: source.path, password: source.password, pageCount: source.pageCount, temporary: true });
+          else usePrintDialogStore.getState().setOpen(true, source.pages);
+        })
+        .catch((caught: unknown) => pushToast("error", describeError(t, toRpcError(caught))))
+        .finally(() => setPreparingPrint(false));
+    });
+  }, [preparingPrint, withViewerSaved, exportSource, pushToast, t]);
+
   const runSaveParts = useCallback(() => {
     const state = useOrganizerStore.getState();
     if (!output) return;
@@ -330,7 +366,7 @@ export function PagesPage() {
     [],
   );
 
-  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || copiesOpen || textSelectOpen || labelTarget !== null || menu !== null || pendingLeave !== null || pendingSaveRun !== null || inPlaceBlocked;
+  const dialogOpen = blankOpen || pdfToInsert !== null || shortcutsOpen || previewKey !== null || rangeOpen || moveOpen || duplexOpen || copiesOpen || textSelectOpen || labelTarget !== null || menu !== null || pendingLeave !== null || pendingSaveRun !== null || inPlaceBlocked || imagesOpen || printOpen;
   useOrganizerShortcuts({
     enabled: Boolean(activeDocumentId) && !dialogOpen,
     layout: { columns: grid.columns, clientBoxOf: grid.clientBoxOf },
@@ -343,6 +379,7 @@ export function PagesPage() {
       openBlank: () => setBlankOpen(true),
       openShortcuts: () => setShortcutsOpen(true),
       extractSelection: () => apply(true),
+      printPages,
       applyAll: () => apply(false),
       zoomBy: (delta) => setZoom(zoom + delta),
       copyPages: () => void clipboard.copyPages(),
@@ -445,6 +482,15 @@ export function PagesPage() {
             <Button size="sm" icon={<FileOutput className="size-4" aria-hidden />} title={`${t("tools.pages.shortcut.extract")} (Ctrl+E)`} disabled={selectedCount === 0 || busy} onClick={() => apply(true)}>
               {t("tools.pages.extract")}
             </Button>
+            <MenuButton
+              icon={Share}
+              label={t("tools.pages.export.menu")}
+              disabled={busy || preparingPrint || tiles.length === 0}
+              items={[
+                { type: "item", id: "export-images", label: t("tools.pages.exportImages.menu"), icon: Images, onSelect: saveImages },
+                { type: "item", id: "export-print", label: t("tools.pages.print.menu"), icon: Printer, shortcut: "Ctrl+P", onSelect: printPages },
+              ]}
+            />
             {partStarts.length > 0 ? (
               <Button size="sm" icon={<Scissors className="size-4" aria-hidden />} disabled={busy} loading={partsOperation.running} onClick={saveParts}>
                 {t("tools.pages.splitParts", { count: partStarts.length + 1 })}
@@ -516,7 +562,7 @@ export function PagesPage() {
               );
             })}
           </ol>
-          <SelectionBar edits={edits} busy={busy} onExtract={() => apply(true)} onCopy={() => void clipboard.copyPages()} onCut={clipboard.cutPages} />
+          <SelectionBar edits={edits} busy={busy || preparingPrint} onExtract={() => apply(true)} onSaveImages={saveImages} onPrint={printPages} onCopy={() => void clipboard.copyPages()} onCut={clipboard.cutPages} />
           {marqueeActive ? <MarqueeRect live={marqueeBox} /> : null}
           {drag ? <DragBadge live={dragPointer} label={`${drag.count} ${t("info.pages")}`} /> : null}
         </div>
@@ -600,6 +646,15 @@ export function PagesPage() {
           edits.duplicateSelectedTimes(copies, layout);
         }}
       />
+      <ExportImagesDialog
+        open={imagesOpen}
+        count={selectedCount > 0 ? selectedCount : tiles.length}
+        documentPath={document.path}
+        defaultDir={output ? dirnameOf(output) : dirnameOf(document.path)}
+        prepare={exportSource}
+        onClose={() => setImagesOpen(false)}
+      />
+      {activeDocumentId ? <PrintDialog documentId={activeDocumentId} /> : null}
       <TextSelectDialog
         open={textSelectOpen}
         hasSelection={selectedCount > 0}
@@ -651,6 +706,8 @@ export function PagesPage() {
             onPaste: () => void clipboard.pastePages(),
             onToggleCut: edits.toggleCutAt,
             onExtract: () => apply(true),
+            onSaveImages: saveImages,
+            onPrint: printPages,
             onInsertBlank: () => setBlankOpen(true),
             onLabel: setLabelTarget,
             onMove: () => setMoveOpen(true),

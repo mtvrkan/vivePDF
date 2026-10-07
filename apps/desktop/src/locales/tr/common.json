@@ -3857,7 +3857,8 @@
         "nudge": "Seçili sayfaları bir adım, bir satır ya da başa / sona taşı",
         "move": "Seçili sayfaları bir sayfa numarasına taşı",
         "previewSelect": "Önizlemede: sayfayı seç / seçimi genişlet",
-        "invertSelection": "Seçimi tersine çevir"
+        "invertSelection": "Seçimi tersine çevir",
+        "print": "Seçili sayfaları ya da tümünü yazdır"
       },
       "blank": "boş",
       "paperSize": "Kâğıt boyutu",
@@ -4096,6 +4097,23 @@
         "blockedTitle": "Önce görüntüleyicideki değişiklikleri kaydedin",
         "blockedBody": "{{name}} görüntüleyicide kaydedilmemiş değişiklikler içeriyor. Dosyanın üzerine yazmak bunları kaybettirir; önce görüntüleyicide kaydedin ya da vazgeçin.",
         "goToViewer": "Görüntüleyiciye git"
+      },
+      "export": {
+        "menu": "Dışa aktar"
+      },
+      "exportImages": {
+        "menu": "Resim olarak kaydet…",
+        "title": "Sayfaları resim olarak kaydet",
+        "scope_one": "{{count}} sayfa, burada göründüğü gibi.",
+        "scope_other": "{{count}} sayfa, burada görünen sıra ve yönde.",
+        "submit": "Resimleri kaydet",
+        "replace": "Üzerine yaz",
+        "exists": "Bu adlarla resimler klasörde zaten var.",
+        "done_one": "{{count}} resim kaydedildi.",
+        "done_other": "{{count}} resim kaydedildi."
+      },
+      "print": {
+        "menu": "Yazdır…"
       }
     },
     "dropHint": "PDF’i bu alana bırakın ya da seçmek için tıklayın",

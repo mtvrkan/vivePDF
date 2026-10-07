@@ -11,6 +11,7 @@ export type ShortcutCommands = {
   openBlank: () => void;
   openShortcuts: () => void;
   extractSelection: () => void;
+  printPages: () => void;
   applyAll: () => void;
   zoomBy: (delta: number) => void;
   copyPages: () => void;
@@ -82,6 +83,9 @@ export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseO
       } else if (mod && !event.shiftKey && key === "v") {
         event.preventDefault();
         run.pastePages();
+      } else if (mod && !event.shiftKey && key === "p") {
+        event.preventDefault();
+        run.printPages();
       } else if (mod && key === "g") {
         event.preventDefault();
         run.openRange();

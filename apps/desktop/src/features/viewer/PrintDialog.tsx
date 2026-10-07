@@ -11,6 +11,7 @@ import { Dialog } from "@/components/shared/Dialog";
 import { Select } from "@/components/shared/Select";
 import { Checkbox, Field, TextInput } from "@/components/tool/form";
 import { describeError } from "@/shared/lib/errorMessage";
+import * as logger from "@/shared/lib/logger";
 import { toRpcError } from "@/shared/rpc/client";
 import { deleteFile, writeDocumentBytes } from "@/shared/rpc/files";
 import { listPrinters, runPrint } from "@/shared/rpc/operations";
@@ -31,6 +32,7 @@ export function PrintDialog({ documentId }: { documentId: string }) {
   const open = usePrintDialogStore((state) => state.open);
   const setOpen = usePrintDialogStore((state) => state.setOpen);
   const presetPages = usePrintDialogStore((state) => state.presetPages);
+  const file = usePrintDialogStore((state) => state.file);
   const { provides: exporter } = useExport(documentId);
   const { provides: annotation } = useAnnotation(documentId);
   const hasUnsavedMarks = useUnsavedMarks(documentId);
@@ -72,15 +74,26 @@ export function PrintDialog({ documentId }: { documentId: string }) {
     setRange(presetPages);
   }, [open, presetPages]);
 
+  useEffect(() => {
+    if (open && file) setPagesMode((mode) => (mode === "current" ? "all" : mode));
+  }, [open, file]);
+
   if (!open || !document) return null;
+
+  const totalPages = file ? file.pageCount : scrollState.totalPages;
 
   const copiesValue = Math.min(99, Math.max(1, Number.parseInt(copies, 10) || 1));
   const pagesSpec = pagesMode === "all" ? undefined : pagesMode === "current" ? String(scrollState.currentPage) : range.trim();
   const canPrint = !busy && !loadingPrinters && printers.length > 0 && (pagesMode !== "range" || pagesSpec !== "");
 
+  const finish = () => {
+    if (file?.temporary) void deleteFile(file.path).catch((caught: unknown) => logger.warn("viewer.print", `could not delete ${file.path}: ${String(caught)}`));
+    setOpen(false);
+  };
+
   const close = () => {
     if (busy) return;
-    setOpen(false);
+    finish();
   };
 
   const print = async () => {
@@ -90,18 +103,18 @@ export function PrintDialog({ documentId }: { documentId: string }) {
     setProgress(null);
     let snapshot: string | null = null;
     try {
-      if (hasUnsavedMarks && exporter) {
+      if (!file && hasUnsavedMarks && exporter) {
         await annotation?.commit().toPromise();
         const bytes = await exporter.saveAsCopy().toPromise();
         snapshot = await join(await tempDir(), `vivepdf-print-${crypto.randomUUID()}.pdf`);
         await writeDocumentBytes(snapshot, bytes);
       }
       const result = await runPrint(
-        { path: snapshot ?? document.path, password: document.password ?? undefined, printer: printer || undefined, pages: pagesSpec, copies: copiesValue, scale, grayscale, subset, reverse, annotations, autoRotate, pagesPerSheet },
+        { path: snapshot ?? file?.path ?? document.path, password: (file ? file.password : document.password) ?? undefined, printer: printer || undefined, pages: pagesSpec, copies: copiesValue, scale, grayscale, subset, reverse, annotations, autoRotate, pagesPerSheet },
         { onProgress: setProgress, signal: controller.signal },
       );
       toast("success", t("viewer.printDialog.done", { pages: result.pages, printer: result.printer }));
-      setOpen(false);
+      finish();
     } catch (caught) {
       const error = toRpcError(caught);
       if (error.code !== "CANCELLED") toast("error", describeError(t, error));
@@ -127,9 +140,11 @@ export function PrintDialog({ documentId }: { documentId: string }) {
       onClose={close}
       footer={
         <div className="flex items-center gap-2">
-          <Button type="button" variant="ghost" onClick={systemPreview} disabled={busy}>
-            {t("viewer.printDialog.preview")}
-          </Button>
+          {file ? null : (
+            <Button type="button" variant="ghost" onClick={systemPreview} disabled={busy}>
+              {t("viewer.printDialog.preview")}
+            </Button>
+          )}
           <span className="flex-1" />
           {busy ? (
             <Button type="button" variant="secondary" onClick={() => abortRef.current?.abort()}>
@@ -159,8 +174,8 @@ export function PrintDialog({ documentId }: { documentId: string }) {
             <Select
               value={pagesMode}
               options={[
-                { value: "all", label: t("viewer.printDialog.pagesAll", { count: scrollState.totalPages }) },
-                { value: "current", label: t("viewer.printDialog.pagesCurrent", { page: scrollState.currentPage }) },
+                { value: "all", label: t("viewer.printDialog.pagesAll", { count: totalPages }) },
+                ...(file ? [] : [{ value: "current", label: t("viewer.printDialog.pagesCurrent", { page: scrollState.currentPage }) }]),
                 { value: "range", label: t("viewer.printDialog.pagesRange") },
               ]}
               onChange={(value) => setPagesMode(value as PagesMode)}

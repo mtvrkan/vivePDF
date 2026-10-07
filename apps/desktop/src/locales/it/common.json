@@ -3857,7 +3857,8 @@
         "preview": "Visualizza l'anteprima della pagina",
         "range": "Seleziona per numeri di pagina",
         "previewSelect": "Nell'anteprima: seleziona la pagina / estendi la selezione",
-        "invertSelection": "Inverti selezione"
+        "invertSelection": "Inverti selezione",
+        "print": "Stampa le pagine selezionate o tutte"
       },
       "blank": "vuota",
       "paperSize": "Formato carta",
@@ -4096,6 +4097,23 @@
         "blockedTitle": "Salva prima le modifiche del visualizzatore",
         "blockedBody": "{{name}} ha modifiche non salvate nel visualizzatore. Sovrascrivere il file le farebbe perdere; salvale o scartale prima nel visualizzatore.",
         "goToViewer": "Vai al visualizzatore"
+      },
+      "export": {
+        "menu": "Esporta"
+      },
+      "exportImages": {
+        "menu": "Salva come immagini…",
+        "title": "Salva le pagine come immagini",
+        "scope_one": "{{count}} pagina, così come appare qui.",
+        "scope_other": "{{count}} pagine, nell'ordine e nella rotazione mostrati qui.",
+        "submit": "Salva immagini",
+        "replace": "Sostituiscile",
+        "exists": "Nella cartella ci sono già immagini con questi nomi.",
+        "done_one": "{{count}} immagine salvata.",
+        "done_other": "{{count}} immagini salvate."
+      },
+      "print": {
+        "menu": "Stampa…"
       }
     },
     "dropHint": "Trascina qui il PDF o fai clic per sceglierlo",

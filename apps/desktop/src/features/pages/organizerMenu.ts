@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import { ArrowDownUp, ArrowRightLeft, BookOpen, ClipboardCopy, ClipboardPaste, ClipboardX, Copy, CopyPlus, Eye, FileOutput, FilePlus2, RotateCcw, RotateCw, Scissors, Tag, Trash2 } from "lucide-react";
+import { ArrowDownUp, ArrowRightLeft, BookOpen, ClipboardCopy, ClipboardPaste, ClipboardX, Copy, CopyPlus, Eye, FileOutput, FilePlus2, Images, Printer, RotateCcw, RotateCw, Scissors, Tag, Trash2 } from "lucide-react";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import type { OrganizerTile } from "@/types";
 import { MAIN_SOURCE_ID } from "./organizerStore";
@@ -23,6 +23,8 @@ export type TileMenuContext = {
   onPaste: () => void;
   onToggleCut: (key: string) => void;
   onExtract: () => void;
+  onSaveImages: () => void;
+  onPrint: () => void;
   onInsertBlank: () => void;
   onLabel: (key: string) => void;
   onMove: () => void;
@@ -60,6 +62,8 @@ export function tileMenuItems(key: string, context: TileMenuContext): ContextMen
       onSelect: () => context.onToggleCut(key),
     },
     { type: "item", id: "extract", label: t("tools.pages.menu.extract", { count }), icon: FileOutput, shortcut: "Ctrl+E", disabled: busy, onSelect: context.onExtract },
+    { type: "item", id: "images", label: t("tools.pages.exportImages.menu"), icon: Images, disabled: busy, onSelect: context.onSaveImages },
+    { type: "item", id: "print", label: t("tools.pages.print.menu"), icon: Printer, shortcut: "Ctrl+P", disabled: busy, onSelect: context.onPrint },
     { type: "separator", id: "output-end" },
     { type: "item", id: "blank", label: t("tools.pages.menu.insertBlank"), icon: FilePlus2, shortcut: "B", onSelect: context.onInsertBlank },
     { type: "item", id: "label", label: t("tools.pages.menu.label"), icon: Tag, onSelect: () => context.onLabel(key) },

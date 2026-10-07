@@ -3857,7 +3857,8 @@
         "preview": "Visualizar a página",
         "range": "Selecionar por números de página",
         "previewSelect": "Na visualização: selecionar a página / ampliar a seleção",
-        "invertSelection": "Inverter seleção"
+        "invertSelection": "Inverter seleção",
+        "print": "Imprimir as páginas selecionadas ou todas"
       },
       "blank": "em branco",
       "paperSize": "Tamanho do papel",
@@ -4096,6 +4097,23 @@
         "blockedTitle": "Salve primeiro as alterações do visualizador",
         "blockedBody": "{{name}} tem alterações não salvas no visualizador. Substituir o arquivo as perderia; salve-as ou descarte-as primeiro no visualizador.",
         "goToViewer": "Ir para o visualizador"
+      },
+      "export": {
+        "menu": "Exportar"
+      },
+      "exportImages": {
+        "menu": "Salvar como imagens…",
+        "title": "Salvar páginas como imagens",
+        "scope_one": "{{count}} página, como aparece aqui.",
+        "scope_other": "{{count}} páginas, na ordem e na rotação mostradas aqui.",
+        "submit": "Salvar imagens",
+        "replace": "Substituir",
+        "exists": "Já existem imagens com esses nomes na pasta.",
+        "done_one": "{{count}} imagem salva.",
+        "done_other": "{{count}} imagens salvas."
+      },
+      "print": {
+        "menu": "Imprimir…"
       }
     },
     "dropHint": "Solte o PDF aqui ou clique para escolhê-lo",

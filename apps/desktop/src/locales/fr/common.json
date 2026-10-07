@@ -3857,7 +3857,8 @@
         "preview": "Afficher l’aperçu de la page",
         "range": "Sélectionner par numéros de page",
         "previewSelect": "Dans l’aperçu : sélectionner la page / étendre la sélection",
-        "invertSelection": "Inverser la sélection"
+        "invertSelection": "Inverser la sélection",
+        "print": "Imprimer les pages sélectionnées ou toutes"
       },
       "blank": "blanc",
       "paperSize": "Format de papier",
@@ -4096,6 +4097,23 @@
         "blockedTitle": "Enregistrez d'abord les modifications de la visionneuse",
         "blockedBody": "{{name}} a des modifications non enregistrées dans la visionneuse. Remplacer le fichier les ferait perdre ; enregistrez-les ou abandonnez-les d'abord dans la visionneuse.",
         "goToViewer": "Aller à la visionneuse"
+      },
+      "export": {
+        "menu": "Exporter"
+      },
+      "exportImages": {
+        "menu": "Enregistrer en images…",
+        "title": "Enregistrer les pages en images",
+        "scope_one": "{{count}} page, telle qu'elle apparaît ici.",
+        "scope_other": "{{count}} pages, dans l'ordre et l'orientation affichés ici.",
+        "submit": "Enregistrer les images",
+        "replace": "Les remplacer",
+        "exists": "Des images portant ces noms existent déjà dans le dossier.",
+        "done_one": "{{count}} image enregistrée.",
+        "done_other": "{{count}} images enregistrées."
+      },
+      "print": {
+        "menu": "Imprimer…"
       }
     },
     "dropHint": "Déposez le PDF ici ou cliquez pour le choisir",

@@ -3857,7 +3857,8 @@
         "nudge": "Move the selected pages one step, a row, or to the start / end",
         "move": "Move the selected pages to a page number",
         "previewSelect": "In the preview: select the page / extend the selection",
-        "invertSelection": "Invert selection"
+        "invertSelection": "Invert selection",
+        "print": "Print the selected pages, or all of them"
       },
       "blank": "blank",
       "paperSize": "Paper size",
@@ -4096,6 +4097,23 @@
         "blockedTitle": "Save the viewer changes first",
         "blockedBody": "{{name}} has changes in the viewer that are not saved. Overwriting the file would lose them, so save or discard them in the viewer first.",
         "goToViewer": "Go to viewer"
+      },
+      "export": {
+        "menu": "Export"
+      },
+      "exportImages": {
+        "menu": "Save as pictures…",
+        "title": "Save pages as pictures",
+        "scope_one": "{{count}} page, as it looks here.",
+        "scope_other": "{{count}} pages, in the order and turn shown here.",
+        "submit": "Save pictures",
+        "replace": "Replace them",
+        "exists": "Pictures with these names are already in the folder.",
+        "done_one": "{{count}} picture saved.",
+        "done_other": "{{count}} pictures saved."
+      },
+      "print": {
+        "menu": "Print…"
       }
     },
     "dropHint": "Drop the PDF here or click to choose it",

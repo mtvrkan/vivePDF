@@ -16,7 +16,10 @@ vi.mock("@/shared/rpc/operations", () => ({
   runPrint: vi.fn(async () => ({ printer: "Office", pages: 3, copies: 1, sheets: 1 })),
 }));
 
+vi.mock("@/shared/rpc/files", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/shared/rpc/files")>()), deleteFile: vi.fn(async () => undefined) }));
+
 const { PrintDialog } = await import("./PrintDialog");
+const { deleteFile } = await import("@/shared/rpc/files");
 
 async function choose(combobox: string, option: string) {
   await act(async () => {
@@ -77,6 +80,31 @@ describe("PrintDialog", () => {
       fireEvent.click(screen.getByRole("button", { name: "Print" }));
     });
     expect(vi.mocked(runPrint).mock.calls[0][0]).toMatchObject({ subset: "even", reverse: true, annotations: false, autoRotate: false, pagesPerSheet: 4 });
+  });
+
+  it("prints a prepared copy of arranged pages and deletes it afterwards", async () => {
+    usePrintDialogStore.getState().openFile({ path: "C:/tmp/vivepdf-pages-1.pdf", password: "pw", pageCount: 4, temporary: true });
+    await renderDialog();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Print" }));
+    });
+
+    expect(screen.queryByRole("button", { name: "Browser preview" })).toBeNull();
+    expect(vi.mocked(runPrint).mock.calls[0][0]).toMatchObject({ path: "C:/tmp/vivepdf-pages-1.pdf", password: "pw" });
+    expect(deleteFile).toHaveBeenCalledWith("C:/tmp/vivepdf-pages-1.pdf");
+    expect(usePrintDialogStore.getState().file).toBeNull();
+  });
+
+  it("keeps the original file when printing chosen pages of it", async () => {
+    vi.mocked(deleteFile).mockClear();
+    usePrintDialogStore.getState().openFile({ path: "C:/plans/site.pdf", password: null, pageCount: 6, temporary: false });
+    await renderDialog();
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Close" }).at(-1) as HTMLElement);
+
+    expect(deleteFile).not.toHaveBeenCalled();
+    expect(usePrintDialogStore.getState().open).toBe(false);
   });
 
   it("does not print while no printer is known", async () => {

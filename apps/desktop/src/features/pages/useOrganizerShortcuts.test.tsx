@@ -104,6 +104,17 @@ describe("organizer preview keys", () => {
     expect(event.defaultPrevented).toBe(true);
   });
 
+  it("prints the chosen pages with Ctrl+P", () => {
+    const printPages = vi.fn();
+    const edits = { focusTileKey: () => "p2" } as unknown as OrganizerEdits;
+    renderHook(() => useOrganizerShortcuts({ enabled: true, layout: { columns: () => 4, clientBoxOf: () => null }, edits, commands: { printPages } as unknown as ShortcutCommands }));
+
+    const event = press("p", document.body, { ctrlKey: true });
+
+    expect(printPages).toHaveBeenCalledTimes(1);
+    expect(event.defaultPrevented).toBe(true);
+  });
+
   it("ignores a key another handler already took", () => {
     mount('<ol role="listbox" tabindex="0" id="grid"></ol>');
     renderShortcuts();

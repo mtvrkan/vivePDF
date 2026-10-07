@@ -207,6 +207,7 @@ const SHORTCUTS = [
   ["Shift+S", "clearCuts"],
   ["B", "insertBlank"],
   ["Ctrl+E", "extract"],
+  ["Ctrl+P", "print"],
   ["Ctrl+A / Esc", "selectAllNone"],
   ["Ctrl+I", "invertSelection"],
   ["Ctrl+G", "range"],

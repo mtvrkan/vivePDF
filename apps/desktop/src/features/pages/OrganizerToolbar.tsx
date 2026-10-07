@@ -19,6 +19,7 @@ import {
   FilePlus2,
   FileText,
   FileX2,
+  Images,
   FlipHorizontal2,
   Keyboard,
   ListChecks,
@@ -226,11 +227,13 @@ type SelectionBarProps = {
   edits: OrganizerEdits;
   busy: boolean;
   onExtract: () => void;
+  onSaveImages: () => void;
+  onPrint: () => void;
   onCopy: () => void;
   onCut: () => void;
 };
 
-export function SelectionBar({ edits, busy, onExtract, onCopy, onCut }: SelectionBarProps) {
+export function SelectionBar({ edits, busy, onExtract, onSaveImages, onPrint, onCopy, onCut }: SelectionBarProps) {
   const { t } = useTranslation();
   const tiles = useOrganizerStore((state) => state.tiles);
   const selectedCount = useOrganizerStore((state) => state.selected.size);
@@ -252,6 +255,8 @@ export function SelectionBar({ edits, busy, onExtract, onCopy, onCut }: Selectio
           <IconButton icon={ClipboardX} label={t("tools.pages.clipboard.cut")} shortcut="Ctrl+X" disabled={selectedCount === tiles.length} onClick={onCut} />
           <IconButton icon={Scissors} label={t("tools.pages.cutAtSelection")} shortcut="S" onClick={edits.toggleCutsAtSelection} />
           <IconButton icon={FileOutput} label={t("tools.pages.shortcut.extract")} shortcut="Ctrl+E" disabled={busy} onClick={onExtract} />
+          <IconButton icon={Images} label={t("tools.pages.exportImages.menu")} disabled={busy} onClick={onSaveImages} />
+          <IconButton icon={Printer} label={t("tools.pages.print.menu")} shortcut="Ctrl+P" disabled={busy} onClick={onPrint} />
           <IconButton icon={Trash2} label={t("tools.pages.delete")} shortcut="Delete" disabled={selectedCount === tiles.length} onClick={edits.deleteSelected} />
           <Divider />
           <IconButton icon={X} label={t("tools.pages.selectNone")} shortcut="Esc" onClick={() => select([])} />

@@ -3857,7 +3857,8 @@
         "preview": "Die Seite in der Vorschau anzeigen",
         "range": "Nach Seitenzahlen auswählen",
         "previewSelect": "In der Vorschau: Seite auswählen / Auswahl erweitern",
-        "invertSelection": "Auswahl umkehren"
+        "invertSelection": "Auswahl umkehren",
+        "print": "Ausgewählte oder alle Seiten drucken"
       },
       "blank": "leer",
       "paperSize": "Papiergröße",
@@ -4096,6 +4097,23 @@
         "blockedTitle": "Zuerst die Änderungen im Viewer speichern",
         "blockedBody": "{{name}} hat ungespeicherte Änderungen im Viewer. Beim Überschreiben gingen sie verloren; speichern oder verwerfen Sie sie zuerst im Viewer.",
         "goToViewer": "Zum Viewer"
+      },
+      "export": {
+        "menu": "Exportieren"
+      },
+      "exportImages": {
+        "menu": "Als Bilder speichern…",
+        "title": "Seiten als Bilder speichern",
+        "scope_one": "{{count}} Seite, so wie sie hier aussieht.",
+        "scope_other": "{{count}} Seiten, in der hier gezeigten Reihenfolge und Drehung.",
+        "submit": "Bilder speichern",
+        "replace": "Ersetzen",
+        "exists": "Bilder mit diesen Namen sind bereits im Ordner.",
+        "done_one": "{{count}} Bild gespeichert.",
+        "done_other": "{{count}} Bilder gespeichert."
+      },
+      "print": {
+        "menu": "Drucken…"
       }
     },
     "dropHint": "PDF hierher ziehen oder zum Auswählen klicken",
