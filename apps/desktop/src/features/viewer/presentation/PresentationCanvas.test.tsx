@@ -156,6 +156,19 @@ describe("PresentationCanvas", () => {
     expect(pageStrokes()).toHaveLength(1);
   });
 
+  it("blacks out everything around the document while the spotlight follows the pointer", () => {
+    act(() => usePresentationStore.getState().setTool("spotlight"));
+    render(<Stage />);
+
+    expect(document.querySelector("[data-spotlight-frame]")).toBeNull();
+    fireEvent.pointerMove(capture(), { pointerId: 1, clientX: 300, clientY: 150 });
+
+    const frame = document.querySelector<HTMLElement>("[data-spotlight-frame]") as HTMLElement;
+    expect([frame.style.left, frame.style.top, frame.style.width, frame.style.height]).toEqual(["0px", "0px", "1200px", "600px"]);
+    fireEvent.pointerLeave(capture());
+    expect(document.querySelector("[data-spotlight-frame]")).toBeNull();
+  });
+
   it("opens a placed text again for editing when the text tool clicks on it", () => {
     act(() => {
       usePresentationStore.getState().addStroke(0, { id: "note", tool: "text", color: "#000000", width: 0, points: [{ x: 0.25, y: 0.25 }], text: "Eski", fontSize: 0.04, size: { width: 0.1, height: 0.1 } });

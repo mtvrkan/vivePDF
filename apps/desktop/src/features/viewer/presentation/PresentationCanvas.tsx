@@ -349,6 +349,8 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
   const selectedRect = selectedDrawing && typeof selectedDrawing.surface === "number" ? pageRects.find((rect) => rect.pageIndex === selectedDrawing.surface) : undefined;
   const draftRect = textDraft ? pageRects.find((rect) => rect.pageIndex === textDraft.pageIndex) : undefined;
 
+  const stageBox = tool === "spotlight" && pointer ? containerRef.current?.getBoundingClientRect() : undefined;
+
   const magnifierPageRect = pointer ? (() => {
     const container = containerRef.current;
     if (!container) return null;
@@ -423,6 +425,14 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
             />
           ))
         : null}
+      {stageBox ? (
+        <div
+          aria-hidden
+          data-spotlight-frame=""
+          className="pointer-events-none fixed z-30"
+          style={{ left: stageBox.left, top: stageBox.top, width: stageBox.width, height: stageBox.height, boxShadow: "0 0 0 9999px rgb(0,0,0)" }}
+        />
+      ) : null}
       {tool === "spotlight" && pointer ? (
         <div
           aria-hidden
