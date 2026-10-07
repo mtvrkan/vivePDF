@@ -89,3 +89,54 @@ def test_image_save_writes_original_bytes_and_refuses_overwrite(image_pdf: Path,
             ),
             silent_progress(),
         )
+
+
+@pytest.fixture
+def backdrop_pdf(tmp_path: Path) -> Path:
+    document = pymupdf.open()
+    slide = document.new_page(width=400, height=300)
+    slide.insert_image(slide.rect, stream=_jpeg_bytes(), keep_proportion=False)
+    slide.insert_image(
+        pymupdf.Rect(250, 150, 350, 250), stream=_jpeg_bytes(), keep_proportion=False
+    )
+    slide.insert_text((30, 60), "Bilgisayar tarihi", fontsize=20)
+    scan = document.new_page(width=400, height=300)
+    scan.insert_image(scan.rect, stream=_jpeg_bytes(), keep_proportion=False)
+    scan.insert_text((30, 60), "Bilgisayar tarihi", fontsize=20, render_mode=3)
+    photo = document.new_page(width=400, height=300)
+    photo.insert_image(photo.rect, stream=_jpeg_bytes(), keep_proportion=False)
+    path = tmp_path / "backdrop.pdf"
+    document.save(path)
+    document.close()
+    return path
+
+
+def test_image_at_skips_a_page_backdrop_under_visible_text(backdrop_pdf: Path):
+    on_text = image_at(ImageAtParams(path=str(backdrop_pdf), page=1, x=60, y=55), silent_progress())
+    on_picture = image_at(
+        ImageAtParams(path=str(backdrop_pdf), page=1, x=300, y=200), silent_progress()
+    )
+
+    assert on_text.found is False
+    assert on_picture.found is True
+    assert on_picture.rect == [250.0, 150.0, 350.0, 250.0]
+
+
+def test_image_at_keeps_a_full_page_scan_or_photo(backdrop_pdf: Path):
+    scan = image_at(ImageAtParams(path=str(backdrop_pdf), page=2, x=60, y=55), silent_progress())
+    photo = image_at(ImageAtParams(path=str(backdrop_pdf), page=3, x=60, y=55), silent_progress())
+
+    assert scan.found is True
+    assert photo.found is True
+
+
+def test_image_save_refuses_a_page_backdrop(backdrop_pdf: Path, tmp_path: Path):
+    with pytest.raises(OpError) as raised:
+        image_save(
+            ImageSaveParams(
+                path=str(backdrop_pdf), page=1, x=60, y=55, output=str(tmp_path / "bg.jpg")
+            ),
+            silent_progress(),
+        )
+
+    assert raised.value.data == {"reason": "noImage"}

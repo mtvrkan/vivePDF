@@ -14,6 +14,9 @@ from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
+BACKDROP_COVERAGE = 0.9
+INVISIBLE_TEXT_MODE = 3
+
 
 class ImageAtParams(RpcModel):
     path: str
@@ -62,9 +65,29 @@ def _image_under_point(page: pymupdf.Page, x: float, y: float) -> dict | None:
         for info in page.get_image_info(xrefs=True)
         if info.get("xref") and pymupdf.Rect(info["bbox"]).contains(point)
     ]
+    if any(_covers_page(page, pymupdf.Rect(info["bbox"])) for info in hits) and _has_visible_text(
+        page
+    ):
+        hits = [info for info in hits if not _covers_page(page, pymupdf.Rect(info["bbox"]))]
     if not hits:
         return None
     return min(hits, key=lambda info: pymupdf.Rect(info["bbox"]).get_area())
+
+
+def _covers_page(page: pymupdf.Page, bbox: pymupdf.Rect) -> bool:
+    bounds = page.rect * page.derotation_matrix if page.rotation else pymupdf.Rect(page.rect)
+    bounds.normalize()
+    shown = bbox & bounds
+    return not shown.is_empty and shown.get_area() >= BACKDROP_COVERAGE * bounds.get_area()
+
+
+def _has_visible_text(page: pymupdf.Page) -> bool:
+    for span in page.get_texttrace():
+        if span["type"] == INVISIBLE_TEXT_MODE or not span.get("opacity", 1):
+            continue
+        if any(chr(char[0]).strip() for char in span["chars"]):
+            return True
+    return False
 
 
 def _smask(document: pymupdf.Document, xref: int) -> int:
