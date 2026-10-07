@@ -200,6 +200,10 @@ export async function clickButton(label: string) {
   await target.click();
 }
 
+export function dialogButton(label: string) {
+  return $(`//*[@role="dialog"]//button[normalize-space(.)="${label}" or @aria-label="${label}"]`);
+}
+
 export async function chooseFromToolbarMenu(group: string, id: string) {
   await clickButton(group);
   const item = $(`[role="menuitem"][data-menu-id="${id}"]`);

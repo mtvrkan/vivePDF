@@ -1,5 +1,6 @@
 import { cleanup, renderHook } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { installBrowserKeyGuard } from "@/shared/lib/browserKeys";
 import { useOrganizerStore } from "./organizerStore";
 import type { OrganizerEdits } from "./useOrganizerEdits";
 import { useOrganizerShortcuts, type ShortcutCommands } from "./useOrganizerShortcuts";
@@ -124,5 +125,23 @@ describe("organizer preview keys", () => {
     press(" ", grid);
 
     expect(openPreview).not.toHaveBeenCalled();
+  });
+
+  it("still runs its own shortcuts that the app keeps away from the browser", () => {
+    const removeGuard = installBrowserKeyGuard(false);
+    const openRange = vi.fn();
+    const printPages = vi.fn();
+    const nudgeSelected = vi.fn();
+    const edits = { focusTileKey: () => "p2", nudgeSelected } as unknown as OrganizerEdits;
+    renderHook(() => useOrganizerShortcuts({ enabled: true, layout: { columns: () => 4, clientBoxOf: () => null }, edits, commands: { openRange, printPages } as unknown as ShortcutCommands }));
+
+    press("g", document.body, { ctrlKey: true });
+    press("p", document.body, { ctrlKey: true });
+    press("ArrowRight", document.body, { altKey: true });
+    removeGuard();
+
+    expect(openRange).toHaveBeenCalledTimes(1);
+    expect(printPages).toHaveBeenCalledTimes(1);
+    expect(nudgeSelected).toHaveBeenCalledWith(1);
   });
 });

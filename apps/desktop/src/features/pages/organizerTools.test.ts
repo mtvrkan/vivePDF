@@ -65,6 +65,11 @@ describe("duplicateTiles", () => {
   it("keeps pages the engine left ungrouped", () => {
     expect(duplicateTiles([page(1), page(2), page(3)], { main: [null, null, null] })).toEqual([]);
   });
+
+  it("marks a second copy of the same page even when the engine found no look-alike", () => {
+    const tiles = [page(1), page(1, "main", "copy"), page(2), page(1, "other")];
+    expect(duplicateTiles(tiles, { main: [null, null], other: [null] })).toEqual(["copy"]);
+  });
 });
 
 describe("duplexOrder", () => {

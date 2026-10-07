@@ -25,7 +25,7 @@ export function imageGroupKey(path: string): string {
 function tileSignature(tile: OrganizerTile, groups: DuplicateGroups): string | null {
   if (tile.kind === "page") {
     const group = groups[tile.sourceId]?.[tile.index - 1];
-    return group === null || group === undefined ? null : `group:${group}`;
+    return group === null || group === undefined ? `page:${tile.sourceId}:${tile.index}` : `group:${group}`;
   }
   if (tile.kind === "image") {
     const group = groups[imageGroupKey(tile.path)]?.[0];

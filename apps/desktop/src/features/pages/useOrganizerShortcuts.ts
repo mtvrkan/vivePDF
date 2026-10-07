@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
+import { isBrowserShortcut } from "@/shared/lib/browserKeys";
 import type { GridBox } from "./gridGeometry";
 import { useOrganizerStore } from "./organizerStore";
 import type { OrganizerEdits } from "./useOrganizerEdits";
@@ -53,7 +54,7 @@ export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseO
   useEffect(() => {
     if (!enabled) return;
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.defaultPrevented || isEditableTarget(event.target) || isMenuTarget(event.target)) return;
+      if ((event.defaultPrevented && !isBrowserShortcut(event)) || isEditableTarget(event.target) || isMenuTarget(event.target)) return;
       const { edits: current, commands: run, layout: grid } = latest.current;
       const { undo, redo, select } = useOrganizerStore.getState();
       const key = event.key.toLowerCase();

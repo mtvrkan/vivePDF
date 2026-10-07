@@ -64,6 +64,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Page organizer: Ctrl+G, Ctrl+P and Alt+arrow page moves work again; the app's browser-key guard had been swallowing them [2026-10-07]
+- Page organizer: Find duplicates also marks a page that appears twice in the arrangement, not only pages with a look-alike elsewhere [2026-10-07]
 - Page organizer: applied and split files keep the original's password protection, document properties (title, author, keywords) and attached files instead of coming out unprotected and bare [2026-10-07]
 - Page organizer: links inside the document that point to another page, including named links from LaTeX, keep working after pages are rearranged, inserted or split into parts, and still land on the same spot and zoom; links to pages that were removed are dropped [2026-10-07]
 - Page organizer: bookmarks keep their colour, bold and italic style, open or closed state and exact target spot and zoom after applying [2026-10-07]

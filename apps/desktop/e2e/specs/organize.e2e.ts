@@ -10,6 +10,7 @@ import {
   chooseSource,
   chooseFromToolbarMenu,
   clickButton,
+  dialogButton,
   clickDropArea,
   copyFixture,
   ENTER_KEY,
@@ -246,7 +247,7 @@ describe("organize", () => {
     await browser.keys(["b"]);
     await chooseOption(t("tools.pages.paper.label"), t("tools.pages.paper.lined"));
     await expect($(`//*[@role="dialog"]//*[local-name()="svg"]`)).toBeDisplayed();
-    await clickButton(t("tools.pages.insert"));
+    await dialogButton(t("tools.pages.insert")).click();
     await expect(tiles).toBeElementsArrayOfSize(4);
     await expect($('li[data-tile-index="1"]')).toHaveText(expect.stringContaining(t("tools.pages.paper.lined")));
 
@@ -271,7 +272,7 @@ describe("organize", () => {
     await selectOnly(0);
     await expect(button(t("tools.pages.rotateRight"))).toHaveAttribute("aria-keyshortcuts", "R");
     await browser.keys(["b"]);
-    const insert = button(t("tools.pages.insert"));
+    const insert = dialogButton(t("tools.pages.insert"));
     await insert.waitForClickable();
     await insert.click();
     await expect(tiles).toBeElementsArrayOfSize(4);
@@ -370,6 +371,7 @@ describe("organize", () => {
     await expect($('[data-testid="page-preview"]')).not.toBeDisplayed();
     await expect(tile(5)).toHaveAttribute("aria-selected", "false");
 
+    await selectOnly(0);
     await tile(0).click({ button: "right" });
     await menuItem("duplicate").click();
     await expect($$("li[data-tile-index]")).toBeElementsArrayOfSize(7);
