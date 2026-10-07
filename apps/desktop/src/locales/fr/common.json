@@ -5773,6 +5773,7 @@
     "eraser": "Gomme (efface une partie des tracés au stylo)",
     "eraserSize": "Taille de la gomme",
     "eraserHint": "Passez sur un tracé au stylo pour en effacer cette partie",
+    "styleHint": "Choisissez un outil ou une annotation pour en changer la couleur et l'épaisseur",
     "textPlaceholder": "Écrivez ici"
   },
   "recovery": {

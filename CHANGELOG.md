@@ -38,6 +38,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ### Fixed
 - Viewer annotations: a new text box no longer vanishes the moment it is placed, and clicking a line, arrow or other mark selects it instead of letting go of it straight away; the click-beside-to-deselect fix from the day before also undid the selection the same click had just made [2026-10-07]
+- Viewer annotations: a text box you have just written can be dragged to a new place like any other mark; it used to stay in typing mode after you clicked away, so dragging it only selected its text. Selecting a mark also no longer pushes the page down by a row, because the style row under the annotation bar now stays in place and shows a short hint when nothing is selected [2026-10-07]
 - Viewer right-click menu: on slides and documents whose pages sit on a full-page background picture (a paper texture or slide template), right-clicking text no longer offers an Image section for that background; real pictures on the page still get it, and full-page scans and photos without visible text are still treated as pictures [2026-10-07]
 - Viewer: one click beside a selected mark deselects it again; the page forgot where the click started whenever the screen updated in between, so it often took a second click [2026-10-06]
 - Viewer: the pen draws in the colour you pick; it always drew in red because the colour went to a field the pen ignores [2026-10-06]

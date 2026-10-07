@@ -5773,6 +5773,7 @@
     "eraser": "Radierer (Teile von Stiftzeichnungen entfernen)",
     "eraserSize": "Radierergröße",
     "eraserHint": "Über eine Stiftzeichnung fahren, um diesen Teil zu entfernen",
+    "styleHint": "Werkzeug oder Markierung wählen, um Farbe und Stärke zu ändern",
     "textPlaceholder": "Hier schreiben"
   },
   "recovery": {

@@ -1,0 +1,18 @@
+diff --git a/dist/react/index.js b/dist/react/index.js
+--- a/dist/react/index.js
++++ b/dist/react/index.js
+@@ -3453,6 +3453,14 @@ function Annotations(annotationsProps) {
+       }
+     });
+   }, [annotationProvides]);
++  const previousSelectedIdsRef = useRef(allSelectedIds);
++  useEffect(() => {
++    const previous = previousSelectedIdsRef.current;
++    previousSelectedIdsRef.current = allSelectedIds;
++    if (editingId && previous.includes(editingId) && !allSelectedIds.includes(editingId)) {
++      setEditingId(null);
++    }
++  }, [allSelectedIds, editingId]);
+   useEffect(() => {
+     if (!annotationProvides) return;
+     if (prevScaleRef.current !== scale) {

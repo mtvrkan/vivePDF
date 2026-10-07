@@ -600,7 +600,11 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
             <span className="w-9 text-end font-mono tabular-nums">{Math.round(opacity * 100)}%</span>
           </div>
         </div>
-      ) : null}
+      ) : (
+        <div className="flex min-h-9 flex-wrap items-center gap-x-4 gap-y-1.5 border-t px-2 py-1 text-xs">
+          <span className="glass-chip inline-flex h-7 items-center rounded-xl px-2.5 text-muted-foreground">{t("annotate.styleHint")}</span>
+        </div>
+      )}
       {overwriteDialog}
       {deleteAllDialog}
     </div>

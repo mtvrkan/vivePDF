@@ -5773,6 +5773,7 @@
     "eraser": "Silgi (kalem çizimlerinin bir kısmını siler)",
     "eraserSize": "Silgi boyutu",
     "eraserHint": "Silmek istediğiniz kalem çizgisinin üzerinden geçin",
+    "styleHint": "Rengini ve kalınlığını değiştirmek için bir araç ya da işaret seçin",
     "textPlaceholder": "Buraya yazın"
   },
   "recovery": {

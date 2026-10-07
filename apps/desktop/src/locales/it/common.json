@@ -5773,6 +5773,7 @@
     "eraser": "Gomma (cancella parti dei tratti a penna)",
     "eraserSize": "Dimensione gomma",
     "eraserHint": "Passa sopra un tratto a penna per cancellarne quella parte",
+    "styleHint": "Scegli uno strumento o un contrassegno per cambiarne colore e spessore",
     "textPlaceholder": "Scrivi qui"
   },
   "recovery": {

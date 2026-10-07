@@ -116,6 +116,7 @@
     },
     "patchedDependencies": {
       "@embedpdf/engines@2.15.1": "patches/@embedpdf__engines@2.15.1.patch",
+      "@embedpdf/plugin-annotation@2.15.1": "patches/@embedpdf__plugin-annotation@2.15.1.patch",
       "@embedpdf/plugin-document-manager@2.15.1": "patches/@embedpdf__plugin-document-manager@2.15.1.patch"
     }
   }

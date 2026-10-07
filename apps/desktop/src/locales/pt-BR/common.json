@@ -5773,6 +5773,7 @@
     "eraser": "Borracha (apaga partes dos traços de caneta)",
     "eraserSize": "Tamanho da borracha",
     "eraserHint": "Passe sobre um traço de caneta para apagar essa parte",
+    "styleHint": "Escolha uma ferramenta ou uma marca para mudar a cor e a espessura",
     "textPlaceholder": "Digite aqui"
   },
   "recovery": {

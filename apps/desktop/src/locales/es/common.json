@@ -5773,6 +5773,7 @@
     "eraser": "Borrador (borra partes de los trazos de lápiz)",
     "eraserSize": "Tamaño del borrador",
     "eraserHint": "Pase sobre un trazo de lápiz para borrar esa parte",
+    "styleHint": "Elija una herramienta o una marca para cambiar su color y grosor",
     "textPlaceholder": "Escriba aquí"
   },
   "recovery": {

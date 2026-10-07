@@ -220,6 +220,28 @@ describe("viewer", () => {
     await $('[data-page-index="0"] [data-epdf-handle]').waitForExist({ reverse: true, timeoutMsg: "one click beside the text box did not deselect it" });
     expect(await pressed(t("annotate.freeText"))).toBe(false);
     expect((await layerText()).includes(t("annotate.textPlaceholder"))).toBe(false);
+    const typedBox = () =>
+      browser.execute(() => {
+        const span = Array.from(document.querySelectorAll<HTMLElement>('[data-page-index="0"] [data-annotation-layer] span')).find((node) => node.textContent === "deneme") as HTMLElement;
+        const rect = span.getBoundingClientRect();
+        return { x: Math.round(rect.left + rect.width / 2), y: Math.round(rect.top + rect.height / 2), editable: span.isContentEditable };
+      });
+    const typed = await typedBox();
+    expect(typed.editable).toBe(false);
+    await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move({ origin: "viewport", x: typed.x, y: typed.y }).down().up().perform();
+    await $('[data-page-index="0"] [data-epdf-handle]').waitForExist({ timeoutMsg: "a click on the new text box did not select it" });
+    await browser.pause(SELECTION_SETTLE_MS);
+    await browser
+      .action("pointer", { parameters: { pointerType: "mouse" } })
+      .move({ origin: "viewport", x: typed.x, y: typed.y })
+      .down()
+      .move({ origin: "viewport", x: typed.x, y: typed.y - 20, duration: 120 })
+      .move({ origin: "viewport", x: typed.x, y: typed.y - 40, duration: 120 })
+      .up()
+      .perform();
+    await browser.waitUntil(async () => typed.y - (await typedBox()).y > 20, { timeoutMsg: "the new text box could not be dragged" });
+    await clickAt(350, 330);
+    await $('[data-page-index="0"] [data-epdf-handle]').waitForExist({ reverse: true });
 
     await clickButton(t("annotate.freeText"));
     await clickAt(150, 300);
