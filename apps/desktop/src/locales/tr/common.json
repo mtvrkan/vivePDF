@@ -516,7 +516,7 @@
       "cropPage": "Bu sayfayı kırp",
       "cropAll": "Tüm sayfaları kırp",
       "cropped": "Kırpıldı: {{name}}",
-      "measureHint": "Sayfada iki noktaya tıklayın.",
+      "measureHint": "Sayfada iki noktaya tıklayın. İstediğiniz kadar ölçüm ekleyebilirsiniz.",
       "scale": "Ölçek 1:",
       "unit": "Birim",
       "reset": "Sıfırla",
@@ -584,7 +584,13 @@
       "insert": "Ekle",
       "insertText": "Metin kutusu",
       "imagesHint": "Taşımak, boyutlandırmak, değiştirmek ya da silmek için bir görsele tıklayın; yenisini Ekle'den ekleyin.",
-      "moreTools": "Sayfa araçları"
+      "moreTools": "Sayfa araçları",
+      "measureNext": "İkinci noktaya tıklayın.",
+      "measureTotal_one": "{{count}} ölçüm · toplam {{total}}",
+      "measureTotal_other": "{{count}} ölçüm · toplam {{total}}",
+      "measureUndo": "Son ölçümü geri al",
+      "measureClear": "Tüm ölçümleri temizle",
+      "measureRemove": "Ölçümü sil"
     },
     "signature": {
       "title": "İmzalar",

@@ -516,7 +516,7 @@
       "cropPage": "Recortar esta página",
       "cropAll": "Recortar todas las páginas",
       "cropped": "Recortado: {{name}}",
-      "measureHint": "Haga clic en dos puntos de la página.",
+      "measureHint": "Haga clic en dos puntos de la página. Puede añadir tantas mediciones como quiera.",
       "scale": "Escala 1:",
       "unit": "Unidad",
       "reset": "Restablecer",
@@ -584,7 +584,13 @@
       "insert": "Añadir",
       "insertText": "Cuadro de texto",
       "imagesHint": "Haga clic en una imagen para moverla, redimensionarla, reemplazarla o eliminarla; añada nuevas desde Añadir.",
-      "moreTools": "Herramientas de página"
+      "moreTools": "Herramientas de página",
+      "measureNext": "Haga clic en el segundo punto.",
+      "measureTotal_one": "{{count}} medición · total {{total}}",
+      "measureTotal_other": "{{count}} mediciones · total {{total}}",
+      "measureUndo": "Deshacer la última medición",
+      "measureClear": "Borrar todas las mediciones",
+      "measureRemove": "Quitar medición"
     },
     "signature": {
       "title": "Firmas",

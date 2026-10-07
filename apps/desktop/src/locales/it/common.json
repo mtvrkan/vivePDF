@@ -516,7 +516,7 @@
       "cropPage": "Ritaglia questa pagina",
       "cropAll": "Ritaglia tutte le pagine",
       "cropped": "Ritagliato: {{name}}",
-      "measureHint": "Fai clic su due punti della pagina.",
+      "measureHint": "Fai clic su due punti della pagina. Puoi aggiungere tutte le misure che vuoi.",
       "scale": "Scala 1:",
       "unit": "Unità",
       "reset": "Azzera",
@@ -584,7 +584,13 @@
       "insert": "Aggiungi",
       "insertText": "Casella di testo",
       "imagesHint": "Fai clic su un'immagine per spostarla, ridimensionarla, sostituirla o eliminarla; aggiungine di nuove da Aggiungi.",
-      "moreTools": "Strumenti pagina"
+      "moreTools": "Strumenti pagina",
+      "measureNext": "Fai clic sul secondo punto.",
+      "measureTotal_one": "{{count}} misura · totale {{total}}",
+      "measureTotal_other": "{{count}} misure · totale {{total}}",
+      "measureUndo": "Annulla l'ultima misura",
+      "measureClear": "Cancella tutte le misure",
+      "measureRemove": "Rimuovi misura"
     },
     "signature": {
       "title": "Firme",

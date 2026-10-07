@@ -10,6 +10,7 @@ export type PagePoint = { x: number; y: number };
 export type PageSelection = { pageIndex: number; x0: number; y0: number; x1: number; y1: number };
 export type AreaTextRequest = PageSelection & { token: number };
 export type MeasureState = { pageIndex: number; points: PagePoint[] };
+export type MeasureLine = { id: string; pageIndex: number; a: PagePoint; b: PagePoint };
 export type SignaturePlacement = { pageIndex: number; x: number; y: number };
 export type MeasureUnit = "mm" | "cm" | "m";
 export type TextAlign = "left" | "center" | "right";
@@ -59,6 +60,7 @@ type OverlayState = {
   mode: OverlayMode | null;
   selection: PageSelection | null;
   measure: MeasureState | null;
+  measurements: MeasureLine[];
   scaleDenominator: number;
   unit: MeasureUnit;
   signatureId: string | null;
@@ -108,6 +110,8 @@ type OverlayState = {
   setSelection: (selection: PageSelection | null) => void;
   addMeasurePoint: (pageIndex: number, point: PagePoint) => void;
   resetMeasure: () => void;
+  undoMeasure: () => void;
+  removeMeasurement: (id: string) => void;
   setScaleDenominator: (value: number) => void;
   setUnit: (unit: MeasureUnit) => void;
   setSignatureId: (id: string | null) => void;
@@ -155,6 +159,7 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
   mode: null,
   selection: null,
   measure: null,
+  measurements: [],
   scaleDenominator: 1,
   unit: "mm",
   signatureId: null,
@@ -224,19 +229,24 @@ export const useViewerOverlayStore = create<OverlayState>((set, get) => ({
   },
   setMode: (mode) => {
     const keepObjects = mode !== null && EDITOR_MODES.includes(mode) && get().mode !== null && EDITOR_MODES.includes(get().mode as OverlayMode);
-    set({ mode, selection: null, measure: null, placement: null, areaTextRequest: null, editingObjectId: null, selectedObjectId: keepObjects ? get().selectedObjectId : null, objects: keepObjects || mode === null ? get().objects : [] });
+    set({ mode, selection: null, measure: null, measurements: [], placement: null, areaTextRequest: null, editingObjectId: null, selectedObjectId: keepObjects ? get().selectedObjectId : null, objects: keepObjects || mode === null ? get().objects : [] });
     if (mode === null) set({ objects: [], pendingImage: null, drawingEditor: null, spansByPage: {}, blocksByPage: {}, hiddenLayerKeys: {}, lockedLayerKeys: {}, fontFamilies: {}, imagePreviews: {}, warnings: [], fontResolutions: {}, focusRequest: null, past: [], future: [], clipboard: null });
   },
   setSelection: (selection) => set({ selection }),
   addMeasurePoint: (pageIndex, point) => {
     const current = get().measure;
-    if (!current || current.pageIndex !== pageIndex || current.points.length >= 2) {
+    if (!current || current.pageIndex !== pageIndex) {
       set({ measure: { pageIndex, points: [point] } });
       return;
     }
-    set({ measure: { pageIndex, points: [...current.points, point] } });
+    set({ measure: null, measurements: [...get().measurements, { id: crypto.randomUUID(), pageIndex, a: current.points[0], b: point }] });
   },
-  resetMeasure: () => set({ measure: null }),
+  resetMeasure: () => set({ measure: null, measurements: [] }),
+  undoMeasure: () => {
+    if (get().measure) set({ measure: null });
+    else set({ measurements: get().measurements.slice(0, -1) });
+  },
+  removeMeasurement: (id) => set({ measurements: get().measurements.filter((line) => line.id !== id) }),
   setScaleDenominator: (value) => set({ scaleDenominator: Number.isFinite(value) && value > 0 ? value : 1 }),
   setUnit: (unit) => set({ unit }),
   setSignatureId: (id) => set({ signatureId: id }),

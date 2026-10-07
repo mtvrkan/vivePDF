@@ -516,7 +516,7 @@
       "cropPage": "Crop this page",
       "cropAll": "Crop all pages",
       "cropped": "Cropped: {{name}}",
-      "measureHint": "Click two points on the page.",
+      "measureHint": "Click two points on the page. Add as many measurements as you like.",
       "scale": "Scale 1:",
       "unit": "Unit",
       "reset": "Reset",
@@ -584,7 +584,13 @@
       "insert": "Add",
       "insertText": "Text box",
       "imagesHint": "Click a picture to move, resize, replace or delete it; add new ones from Add.",
-      "moreTools": "Page tools"
+      "moreTools": "Page tools",
+      "measureNext": "Click the second point.",
+      "measureTotal_one": "{{count}} measurement · total {{total}}",
+      "measureTotal_other": "{{count}} measurements · total {{total}}",
+      "measureUndo": "Undo last measurement",
+      "measureClear": "Clear all measurements",
+      "measureRemove": "Remove measurement"
     },
     "signature": {
       "title": "Signatures",

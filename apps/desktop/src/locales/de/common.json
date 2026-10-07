@@ -516,7 +516,7 @@
       "cropPage": "Diese Seite zuschneiden",
       "cropAll": "Alle Seiten zuschneiden",
       "cropped": "Zugeschnitten: {{name}}",
-      "measureHint": "Zwei Punkte auf der Seite anklicken.",
+      "measureHint": "Klicken Sie auf zwei Punkte der Seite. Beliebig viele Messungen sind möglich.",
       "scale": "Maßstab 1:",
       "unit": "Einheit",
       "reset": "Zurücksetzen",
@@ -584,7 +584,13 @@
       "insert": "Hinzufügen",
       "insertText": "Textfeld",
       "imagesHint": "Bild anklicken, um es zu verschieben, zu skalieren, zu ersetzen oder zu löschen; neue über Hinzufügen einfügen.",
-      "moreTools": "Seitenwerkzeuge"
+      "moreTools": "Seitenwerkzeuge",
+      "measureNext": "Klicken Sie auf den zweiten Punkt.",
+      "measureTotal_one": "{{count}} Messung · gesamt {{total}}",
+      "measureTotal_other": "{{count}} Messungen · gesamt {{total}}",
+      "measureUndo": "Letzte Messung rückgängig",
+      "measureClear": "Alle Messungen löschen",
+      "measureRemove": "Messung entfernen"
     },
     "signature": {
       "title": "Unterschriften",

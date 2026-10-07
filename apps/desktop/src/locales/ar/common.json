@@ -564,7 +564,7 @@
       "cropPage": "قص هذه الصفحة",
       "cropAll": "قص كل الصفحات",
       "cropped": "تم القص: {{name}}",
-      "measureHint": "انقر نقطتين على الصفحة.",
+      "measureHint": "انقر على نقطتين في الصفحة. يمكنك إضافة أي عدد من القياسات.",
       "scale": "المقياس 1:",
       "unit": "الوحدة",
       "reset": "إعادة تعيين",
@@ -644,7 +644,17 @@
       "insert": "إضافة",
       "insertText": "مربع نص",
       "imagesHint": "انقر على صورة لنقلها أو تغيير حجمها أو استبدالها أو حذفها؛ أضف صورًا جديدة من إضافة.",
-      "moreTools": "أدوات الصفحة"
+      "moreTools": "أدوات الصفحة",
+      "measureNext": "انقر على النقطة الثانية.",
+      "measureTotal_zero": "لا قياسات · الإجمالي {{total}}",
+      "measureTotal_one": "قياس واحد · الإجمالي {{total}}",
+      "measureTotal_two": "قياسان · الإجمالي {{total}}",
+      "measureTotal_few": "{{count}} قياسات · الإجمالي {{total}}",
+      "measureTotal_many": "{{count}} قياسًا · الإجمالي {{total}}",
+      "measureTotal_other": "{{count}} قياس · الإجمالي {{total}}",
+      "measureUndo": "تراجع عن آخر قياس",
+      "measureClear": "مسح كل القياسات",
+      "measureRemove": "إزالة القياس"
     },
     "signature": {
       "title": "التوقيعات",

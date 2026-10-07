@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Camera, Crop, Eraser, FilePenLine, ImagePlus, Images, Link2, PenTool, Plus, RotateCcw, Ruler, Save, SaveAll, ScanText, SquareDashed, Trash2, Type, Wrench, X } from "lucide-react";
+import { Camera, Crop, Eraser, FilePenLine, ImagePlus, Images, Link2, PenTool, Plus, RotateCcw, Ruler, Save, SaveAll, ScanText, SquareDashed, Trash2, Type, Undo2, Wrench, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
@@ -14,6 +14,7 @@ import { TextInput } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
 import { basenameOf, suggestOutputPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
+import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { toRpcError } from "@/shared/rpc/client";
 import { normalizeLinkUri } from "../linkUri";
 import { applyEditor, cropPages, imagePreview, placeSignature, redactPdf } from "@/shared/rpc/operations";
@@ -56,6 +57,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
   const mode = useViewerOverlayStore((state) => state.mode);
   const selection = useViewerOverlayStore((state) => state.selection);
   const measure = useViewerOverlayStore((state) => state.measure);
+  const measurements = useViewerOverlayStore((state) => state.measurements);
   const scaleDenominator = useViewerOverlayStore((state) => state.scaleDenominator);
   const unit = useViewerOverlayStore((state) => state.unit);
   const signatureId = useViewerOverlayStore((state) => state.signatureId);
@@ -82,6 +84,21 @@ export function OverlayBar({ documentId }: { documentId: string }) {
   }, [documentId]);
 
   const actionsRef = useRef<{ save: (inPlace: boolean) => void }>({ save: () => undefined });
+
+  useEffect(() => {
+    if (mode !== "measure") return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (isTypingTarget(event.target) || window.document.querySelector("[role=menu], [role=dialog], [role=listbox]")) return;
+      const state = useViewerOverlayStore.getState();
+      const undo = event.key === "Backspace" || event.key === "Delete" || ((event.ctrlKey || event.metaKey) && !event.shiftKey && event.key.toLowerCase() === "z");
+      if (event.key === "Escape" ? !state.measure : !undo || (!state.measure && state.measurements.length === 0)) return;
+      event.preventDefault();
+      event.stopPropagation();
+      state.undoMeasure();
+    };
+    window.addEventListener("keydown", onKeyDown, true);
+    return () => window.removeEventListener("keydown", onKeyDown, true);
+  }, [mode]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -423,7 +440,9 @@ export function OverlayBar({ documentId }: { documentId: string }) {
 
   const selectionSize = selection ? { width: selection.x1 - selection.x0, height: selection.y1 - selection.y0 } : null;
   const hasSelection = !!selectionSize && selectionSize.width > 2 && selectionSize.height > 2;
-  const distance = measure && measure.points.length === 2 ? measureDistance(measure.points[0], measure.points[1]) * scaleDenominator : null;
+  const lengths = measurements.map((line) => measureDistance(line.a, line.b) * scaleDenominator);
+  const distance = lengths.length > 0 ? lengths[lengths.length - 1] : null;
+  const measureStatus = measure ? t("viewer.overlay.measureNext") : distance !== null ? formatLength(distance, unit, locale) : t("viewer.overlay.measureHint");
   const pendingCount = objects.filter(isPendingChange).length;
 
   const insertItems: ContextMenuItem[] = [
@@ -508,15 +527,19 @@ export function OverlayBar({ documentId }: { documentId: string }) {
         {mode === "measure" ? (
           <>
             <Ruler className="size-4 text-primary" aria-hidden />
-            <span className="font-mono tabular-nums">{distance !== null ? formatLength(distance, unit, locale) : t("viewer.overlay.measureHint")}</span>
+            <span className={cn("min-w-0 truncate", !measure && distance !== null && "font-mono tabular-nums")}>{measureStatus}</span>
+            {lengths.length > 1 ? (
+              <span className="truncate text-muted-foreground">{t("viewer.overlay.measureTotal", { count: lengths.length, total: formatLength(lengths.reduce((sum, value) => sum + value, 0), unit, locale) })}</span>
+            ) : null}
             {selection ? <span className="text-muted-foreground">{formatArea(rectAreaMm2(selection.x1 - selection.x0, selection.y1 - selection.y0) * scaleDenominator ** 2, unit, locale)}</span> : null}
             <span className="flex-1" />
             <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
               {t("viewer.overlay.scale")}
               <TextInput type="number" min={1} value={scaleDenominator} onChange={(event) => store.setScaleDenominator(Number(event.target.value))} className="h-8 w-20 font-mono" aria-label={t("viewer.overlay.scale")} />
             </label>
-            <Select value={unit} options={UNITS.map((value) => ({ value, label: value }))} onChange={(value) => store.setUnit(value as MeasureUnit)} ariaLabel={t("viewer.overlay.unit")} size="sm" />
-            <IconButton icon={RotateCcw} label={t("viewer.overlay.reset")} onClick={() => store.resetMeasure()} disabled={!measure} />
+            <Select value={unit} options={UNITS.map((value) => ({ value, label: value }))} onChange={(value) => store.setUnit(value as MeasureUnit)} ariaLabel={t("viewer.overlay.unit")} size="sm" className="w-20" />
+            <IconButton icon={Undo2} label={t("viewer.overlay.measureUndo")} onClick={() => store.undoMeasure()} disabled={!measure && measurements.length === 0} />
+            <IconButton icon={RotateCcw} label={t("viewer.overlay.measureClear")} onClick={() => store.resetMeasure()} disabled={!measure && measurements.length === 0} />
           </>
         ) : null}
         {mode === "signature" ? (

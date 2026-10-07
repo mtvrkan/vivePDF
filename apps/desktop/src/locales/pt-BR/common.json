@@ -516,7 +516,7 @@
       "cropPage": "Recortar esta página",
       "cropAll": "Recortar todas as páginas",
       "cropped": "Recortado: {{name}}",
-      "measureHint": "Clique em dois pontos da página.",
+      "measureHint": "Clique em dois pontos da página. Adicione quantas medições quiser.",
       "scale": "Escala 1:",
       "unit": "Unidade",
       "reset": "Redefinir",
@@ -584,7 +584,13 @@
       "insert": "Adicionar",
       "insertText": "Caixa de texto",
       "imagesHint": "Clique em uma imagem para movê-la, redimensioná-la, substituí-la ou excluí-la; adicione novas em Adicionar.",
-      "moreTools": "Ferramentas de página"
+      "moreTools": "Ferramentas de página",
+      "measureNext": "Clique no segundo ponto.",
+      "measureTotal_one": "{{count}} medição · total {{total}}",
+      "measureTotal_other": "{{count}} medições · total {{total}}",
+      "measureUndo": "Desfazer a última medição",
+      "measureClear": "Limpar todas as medições",
+      "measureRemove": "Remover medição"
     },
     "signature": {
       "title": "Assinaturas",

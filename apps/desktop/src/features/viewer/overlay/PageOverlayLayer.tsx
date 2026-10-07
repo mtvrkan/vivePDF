@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
-import { Move } from "lucide-react";
+import { Move, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { editorBlocks, imageAt, imagePreview } from "@/shared/rpc/operations";
 import { describeError } from "@/shared/lib/errorMessage";
@@ -71,12 +71,15 @@ function backgroundKey(item: BlockPending): string {
   return `${item.id}|${rect.x}|${rect.y}|${rect.width}|${rect.height}`;
 }
 
+type DrawnMeasure = { id: string | null; a: PagePoint; b: PagePoint };
+
 export function PageOverlayLayer({ documentId, pageIndex, width, height }: LayerProps) {
   const { t } = useTranslation();
   const toast = useToastStore((state) => state.push);
   const mode = useViewerOverlayStore((state) => state.mode);
   const selection = useViewerOverlayStore((state) => state.selection);
   const measure = useViewerOverlayStore((state) => state.measure);
+  const measurements = useViewerOverlayStore((state) => state.measurements);
   const placement = useViewerOverlayStore((state) => state.placement);
   const signatureId = useViewerOverlayStore((state) => state.signatureId);
   const signatureWidthMm = useViewerOverlayStore((state) => state.signatureWidthMm);
@@ -394,7 +397,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   const onMouseDown = (event: ReactMouseEvent) => {
     if (event.button !== 0) return;
     const target = event.target as HTMLElement;
-    if (target.closest("[data-editor-input]")) return;
+    if (target.closest("[data-editor-input]") || target.closest("[data-measure-remove]")) return;
     event.preventDefault();
     event.stopPropagation();
     const point = toPage(event);
@@ -589,7 +592,9 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
 
   const activeSelection = selection && selection.pageIndex === pageIndex ? selection : null;
   const activeMeasure = measure && measure.pageIndex === pageIndex ? measure : null;
-  const measurePreview = activeMeasure && activeMeasure.points.length === 1 && hover ? [activeMeasure.points[0], hover] : activeMeasure && activeMeasure.points.length === 2 ? activeMeasure.points : null;
+  const measureLines: DrawnMeasure[] = mode === "measure" ? measurements.filter((line) => line.pageIndex === pageIndex) : [];
+  if (mode === "measure" && activeMeasure && hover) measureLines.push({ id: null, a: activeMeasure.points[0], b: hover });
+  else if (mode === "measure" && activeMeasure) measureLines.push({ id: null, a: activeMeasure.points[0], b: activeMeasure.points[0] });
   const selectionTone = mode === "redact" ? "border-destructive bg-destructive/25" : mode === "link" ? "border-success bg-success/15" : mode === "areaText" || mode === "snapshot" ? "border-primary bg-primary/10 border-dashed" : "border-primary bg-primary/15";
   const hoverObject = hover && isEditor && !dragRef.current ? objectAt(hover) : null;
   const cursor = isEditor
@@ -688,22 +693,42 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
           style={{ clipPath: `polygon(0 0, 100% 0, 100% 100%, 0 100%, 0 0, ${px(activeSelection.x0)}px ${px(activeSelection.y0)}px, ${px(activeSelection.x0)}px ${px(activeSelection.y1)}px, ${px(activeSelection.x1)}px ${px(activeSelection.y1)}px, ${px(activeSelection.x1)}px ${px(activeSelection.y0)}px, ${px(activeSelection.x0)}px ${px(activeSelection.y0)}px)` }}
         />
       ) : null}
-      {measurePreview ? (
+      {measureLines.length > 0 ? (
         <svg className="pointer-events-none absolute inset-0 h-full w-full overflow-visible" aria-hidden>
-          <line x1={px(measurePreview[0].x)} y1={px(measurePreview[0].y)} x2={px(measurePreview[1].x)} y2={px(measurePreview[1].y)} stroke="var(--primary)" strokeWidth={2} strokeDasharray="6 4" />
-          {measurePreview.map((point, index) => (
-            <circle key={index} cx={px(point.x)} cy={px(point.y)} r={5} fill="var(--primary)" stroke="white" strokeWidth={2} />
+          {measureLines.map((line) => (
+            <g key={line.id ?? "draft"} data-measure-line="">
+              <line x1={px(line.a.x)} y1={px(line.a.y)} x2={px(line.b.x)} y2={px(line.b.y)} stroke="var(--primary)" strokeWidth={2} strokeDasharray={line.id ? undefined : "6 4"} />
+              {[line.a, line.b].map((point, index) => (
+                <circle key={index} cx={px(point.x)} cy={px(point.y)} r={5} fill="var(--primary)" stroke="white" strokeWidth={2} />
+              ))}
+            </g>
           ))}
         </svg>
       ) : null}
-      {measurePreview ? (
-        <span
-          className="pointer-events-none absolute -translate-x-1/2 rounded-md border border-(--glass-border) bg-card/95 px-2 py-0.5 font-mono text-xs tabular-nums shadow-(--shadow-float)"
-          style={{ left: px((measurePreview[0].x + measurePreview[1].x) / 2), top: px((measurePreview[0].y + measurePreview[1].y) / 2) - 28 }}
-        >
-          {formatLength(measureDistance(measurePreview[0], measurePreview[1]) * scaleDenominator, unit, locale)}
-        </span>
-      ) : null}
+      {measureLines.map(({ id, a, b }) =>
+        a.x === b.x && a.y === b.y ? null : (
+          <span
+            key={id ?? "draft"}
+            data-measure-label=""
+            className={`absolute flex -translate-x-1/2 items-center gap-1 rounded-md border border-(--glass-border) bg-card/95 py-0.5 font-mono text-xs tabular-nums shadow-(--shadow-float) ${id ? "pl-2 pr-0.5" : "pointer-events-none px-2"}`}
+            style={{ left: px((a.x + b.x) / 2), top: px((a.y + b.y) / 2) - 28, cursor: "default" }}
+          >
+            {formatLength(measureDistance(a, b) * scaleDenominator, unit, locale)}
+            {id ? (
+              <button
+                type="button"
+                data-measure-remove=""
+                aria-label={t("viewer.overlay.measureRemove")}
+                title={t("viewer.overlay.measureRemove")}
+                onClick={() => store.removeMeasurement(id)}
+                className="flex size-4 items-center justify-center rounded-sm text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+              >
+                <X className="size-3" aria-hidden />
+              </button>
+            ) : null}
+          </span>
+        ),
+      )}
       {placementRect && signature ? (
         <img
           src={signature.dataUrl}

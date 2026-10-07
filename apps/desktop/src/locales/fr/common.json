@@ -516,7 +516,7 @@
       "cropPage": "Rogner cette page",
       "cropAll": "Rogner toutes les pages",
       "cropped": "Rogné : {{name}}",
-      "measureHint": "Cliquez deux points sur la page.",
+      "measureHint": "Cliquez sur deux points de la page. Ajoutez autant de mesures que vous voulez.",
       "scale": "Échelle 1:",
       "unit": "Unité",
       "reset": "Réinitialiser",
@@ -584,7 +584,13 @@
       "insert": "Ajouter",
       "insertText": "Zone de texte",
       "imagesHint": "Cliquez sur une image pour la déplacer, la redimensionner, la remplacer ou la supprimer ; ajoutez-en depuis Ajouter.",
-      "moreTools": "Outils de page"
+      "moreTools": "Outils de page",
+      "measureNext": "Cliquez sur le second point.",
+      "measureTotal_one": "{{count}} mesure · total {{total}}",
+      "measureTotal_other": "{{count}} mesures · total {{total}}",
+      "measureUndo": "Annuler la dernière mesure",
+      "measureClear": "Effacer toutes les mesures",
+      "measureRemove": "Supprimer la mesure"
     },
     "signature": {
       "title": "Signatures",

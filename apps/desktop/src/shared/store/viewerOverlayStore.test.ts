@@ -96,3 +96,60 @@ describe("styleUnchanged", () => {
     expect(styleUnchanged(block({ text: "Normal çok kalın", runs: [{ ...PLAIN, text: "Normal çok " }, { ...BOLD, text: "kalın" }] }))).toBe(true);
   });
 });
+
+describe("viewerOverlayStore measurements", () => {
+  beforeEach(() => {
+    useViewerOverlayStore.setState({ mode: "measure", measure: null, measurements: [] });
+  });
+
+  it("keeps every finished measurement instead of replacing the last one", () => {
+    const store = useViewerOverlayStore.getState();
+    store.addMeasurePoint(0, { x: 0, y: 0 });
+    store.addMeasurePoint(0, { x: 10, y: 0 });
+    store.addMeasurePoint(0, { x: 0, y: 5 });
+    store.addMeasurePoint(0, { x: 0, y: 25 });
+    const state = useViewerOverlayStore.getState();
+    expect(state.measure).toBeNull();
+    expect(state.measurements.map(({ a, b }) => [a, b])).toEqual([
+      [{ x: 0, y: 0 }, { x: 10, y: 0 }],
+      [{ x: 0, y: 5 }, { x: 0, y: 25 }],
+    ]);
+  });
+
+  it("restarts an unfinished measurement when the second click lands on another page", () => {
+    const store = useViewerOverlayStore.getState();
+    store.addMeasurePoint(0, { x: 0, y: 0 });
+    store.addMeasurePoint(1, { x: 4, y: 4 });
+    const state = useViewerOverlayStore.getState();
+    expect(state.measure).toEqual({ pageIndex: 1, points: [{ x: 4, y: 4 }] });
+    expect(state.measurements).toEqual([]);
+  });
+
+  it("undoes the open point first, then finished measurements, and removes or clears them on request", () => {
+    const store = useViewerOverlayStore.getState();
+    store.addMeasurePoint(0, { x: 0, y: 0 });
+    store.addMeasurePoint(0, { x: 1, y: 0 });
+    store.addMeasurePoint(0, { x: 2, y: 0 });
+    store.addMeasurePoint(0, { x: 3, y: 0 });
+    store.addMeasurePoint(0, { x: 9, y: 9 });
+    store.undoMeasure();
+    expect(useViewerOverlayStore.getState().measure).toBeNull();
+    expect(useViewerOverlayStore.getState().measurements).toHaveLength(2);
+    store.undoMeasure();
+    expect(useViewerOverlayStore.getState().measurements.map(({ b }) => b.x)).toEqual([1]);
+    store.addMeasurePoint(0, { x: 5, y: 5 });
+    store.addMeasurePoint(0, { x: 6, y: 6 });
+    store.removeMeasurement(useViewerOverlayStore.getState().measurements[0].id);
+    expect(useViewerOverlayStore.getState().measurements.map(({ b }) => b.x)).toEqual([6]);
+    store.resetMeasure();
+    expect(useViewerOverlayStore.getState().measurements).toEqual([]);
+  });
+
+  it("drops measurements when the tool closes", () => {
+    const store = useViewerOverlayStore.getState();
+    store.addMeasurePoint(0, { x: 0, y: 0 });
+    store.addMeasurePoint(0, { x: 1, y: 1 });
+    store.setMode(null);
+    expect(useViewerOverlayStore.getState().measurements).toEqual([]);
+  });
+});
