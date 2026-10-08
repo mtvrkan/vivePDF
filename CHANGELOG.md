@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.2.0] - 2026-10-09
 ### Added
 - Studio: 60 more templates (174 in all, at least 11 per category) — among them a foil excellence certificate, botanical and art deco invitations, a prestige letterhead and modern invoice, foil business cards, a retro festival line-up, an Apple-style product launch, open house and pasta night flyers, a terminal-style tech meetup, quote and countdown posts, ebook, portfolio and thesis covers, fine dining, cocktail and kids menus, a lesson plan and timetable, a habit tracker, travel itinerary and seating chart, and jar, candle and shipping labels plus name badges [2026-10-09]
 - Studio CV: four new layouts — Executive (navy band with a gold rule), Academic (serif, dates in the margin), Designer (two-tone sidebar) and Infographic (dark sidebar with banded headings) — also listed in the template gallery [2026-10-08]
