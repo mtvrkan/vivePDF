@@ -33,6 +33,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- CV builder: the preview updates in place while you type — only the lines that changed are redrawn and text that was already measured is not measured again — and the layout cards on the Design tab are drawn as pictures in the background, keeping the previous picture until the new accent or font is ready. Template thumbnails measure their text in short slices so scrolling the gallery stays smooth [2026-10-08]
 - Studio: dragging, resizing and turning elements is smoother — moving a text box no longer re-measures its text, the side panels, page thumbnails and closed dialogs stop redrawing on every pointer move (thumbnails and the style sections catch up when you let go), fonts that finish loading together refresh the page once, and the draft is saved when the app is idle. On a heavy menu template the work per pointer move dropped by about half for text and a third for shapes [2026-10-08]
 - Page organizer: the toolbar groups its actions into four labelled menus (Select, Insert, Edit pages, Split) instead of a row of 29 icons; a running page check shows a cancel button next to them [2026-10-07]
 - Page organizer: clicking a page selects it and double-clicking opens its preview (a click used to open the preview) [2026-10-07]

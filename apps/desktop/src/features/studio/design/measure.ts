@@ -196,6 +196,19 @@ export function fitTextBox(element: StudioTextElement, language: string): Pick<S
   return { x: centreX - width / 2, y: centreY - height / 2, width, height };
 }
 
+const MEASURE_SLICE_MS = 12;
+
+function nextTask(): Promise<void> {
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = () => {
+      channel.port1.close();
+      resolve();
+    };
+    channel.port2.postMessage(null);
+  });
+}
+
 export async function measureTexts(elements: StudioElement[], language: string): Promise<Map<string, StudioMeasuredText>> {
   const texts = elements.filter((element): element is StudioTextElement => element.kind === "text" && !element.hidden && textOf(element.runs).trim() !== "" && !hasPlaceholders(textOf(element.runs)));
   const measured = new Map<string, StudioMeasuredText>();
@@ -204,7 +217,12 @@ export async function measureTexts(elements: StudioElement[], language: string):
   await document.fonts.ready;
   const host = offscreenHost();
   try {
+    let sliceStart = performance.now();
     for (const element of texts) {
+      if (performance.now() - sliceStart > MEASURE_SLICE_MS) {
+        await nextTask();
+        sliceStart = performance.now();
+      }
       const { frame, body } = buildTextNode(element, language);
       host.append(frame);
       const size = fitTextSize(body, element);

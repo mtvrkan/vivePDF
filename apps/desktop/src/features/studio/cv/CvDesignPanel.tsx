@@ -1,4 +1,4 @@
-import { memo, useMemo } from "react";
+import { memo, useCallback, useMemo, useRef } from "react";
 import { ArrowDown, ArrowUp, Eye, EyeOff, RotateCcw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LOCALES } from "@/app/locales";
@@ -10,6 +10,8 @@ import { cn } from "@/shared/lib/cn";
 import type { Locale } from "@/types";
 import type { StudioDesign } from "@/types/studio";
 import { PageView } from "../design/ElementView";
+import { STUDIO_PAGE_SIZES } from "../model/design";
+import { useTemplateThumbnail } from "../templates/thumbnails";
 import { specOf } from "./cvDesigns";
 import { CV_DENSITIES, CV_LAYOUT_IDS, CV_PAPERS, CV_PHOTO_SHAPES, CV_SKILL_STYLES, sampleProfile, type CvLayoutId, type CvProfile, type CvTheme } from "./cvModel";
 import { sampleCv } from "./cvSample";
@@ -17,13 +19,19 @@ import { useCvStore } from "./cvStore";
 
 const THUMB_WIDTH = 132;
 const ACCENTS = ["#38bdf8", "#2563eb", "#1f3a5f", "#0f766e", "#16a34a", "#ca8a04", "#ea580c", "#e11d48", "#9333ea", "#111827"];
+const THUMBNAIL_CACHE_LIMIT = 80;
 const thumbnails = new Map<string, StudioDesign>();
 
+function thumbnailKey(layout: CvLayoutId, theme: CvTheme): string {
+  return [layout, theme.accent, theme.headingFont, theme.bodyFont, theme.photoShape, theme.skillStyle, theme.paper, theme.density, theme.language].join("|");
+}
+
 function thumbnailOf(layout: CvLayoutId, theme: CvTheme, profile: CvProfile, t: (key: string) => string): StudioDesign {
-  const key = [layout, theme.accent, theme.headingFont, theme.bodyFont, theme.photoShape, theme.skillStyle, theme.paper, theme.density, theme.language].join("|");
+  const key = thumbnailKey(layout, theme);
   let design = thumbnails.get(key);
   if (!design) {
     design = sampleCv(profile, { ...theme, layout }, t, "");
+    if (thumbnails.size >= THUMBNAIL_CACHE_LIMIT) thumbnails.clear();
     thumbnails.set(key, design);
   }
   return design;
@@ -31,9 +39,15 @@ function thumbnailOf(layout: CvLayoutId, theme: CvTheme, profile: CvProfile, t: 
 
 const LayoutCard = memo(function LayoutCard({ layout, theme, profile, active, onPick }: { layout: CvLayoutId; theme: CvTheme; profile: CvProfile; active: boolean; onPick: (layout: CvLayoutId) => void }) {
   const { t } = useTranslation();
-  const page = thumbnailOf(layout, theme, profile, t).pages[0];
-  const scale = THUMB_WIDTH / page.width;
+  const paper = STUDIO_PAGE_SIZES[theme.paper];
+  const scale = THUMB_WIDTH / paper.width;
+  const height = paper.height * scale;
   const name = t(`studio.cv.layouts.${layout}`);
+  const pageOf = useCallback(() => thumbnailOf(layout, theme, profile, t).pages[0], [layout, theme, profile, t]);
+  const thumbnail = useTemplateThumbnail(`cv:${thumbnailKey(layout, theme)}`, pageOf, theme.language, Math.ceil(height));
+  const shown = useRef<string | null>(null);
+  if (thumbnail.status === "ready") shown.current = thumbnail.url;
+  const fallback = thumbnail.status === "error" ? pageOf() : null;
   return (
     <button
       type="button"
@@ -43,10 +57,16 @@ const LayoutCard = memo(function LayoutCard({ layout, theme, profile, active, on
       title={name}
       className={cn("card flex flex-col items-center gap-2 rounded-xl p-2.5 text-center outline-none focus-visible:ring-2 focus-visible:ring-ring", active ? "ring-2 ring-primary" : "hover:ring-2 hover:ring-primary/40")}
     >
-      <span className="paper-surface relative block overflow-hidden rounded-sm border border-border bg-white shadow-sm" style={{ width: `${THUMB_WIDTH}px`, height: `${page.height * scale}px` }} aria-hidden>
-        <span className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
-          <PageView page={page} language={theme.language} />
-        </span>
+      <span className="paper-surface relative block overflow-hidden rounded-sm border border-border bg-white shadow-sm" style={{ width: `${THUMB_WIDTH}px`, height: `${height}px` }} aria-hidden>
+        {fallback ? (
+          <span className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
+            <PageView page={fallback} language={theme.language} />
+          </span>
+        ) : shown.current ? (
+          <img src={shown.current} alt="" draggable={false} decoding="async" data-thumbnail-state={thumbnail.status} className="block size-full" />
+        ) : (
+          <span data-thumbnail-state="loading" className="block size-full animate-pulse bg-muted" />
+        )}
       </span>
       <span className="w-full truncate text-xs font-medium">{name}</span>
     </button>
@@ -92,6 +112,7 @@ export function CvDesignPanel() {
   const sample = useMemo(() => sampleProfile(t), [t]);
   const spec = specOf(theme.layout);
   const accent = theme.accent ?? spec.accent;
+  const pickLayout = useCallback((layout: CvLayoutId) => updateTheme({ layout, accent: null, headingFont: null, bodyFont: null }), [updateTheme]);
 
   return (
     <div className="space-y-5">
@@ -101,7 +122,7 @@ export function CvDesignPanel() {
         </h3>
         <div className="grid grid-cols-2 gap-2.5">
           {CV_LAYOUT_IDS.map((layout) => (
-            <LayoutCard key={layout} layout={layout} theme={theme} profile={sample} active={theme.layout === layout} onPick={(next) => updateTheme({ layout: next, accent: null, headingFont: null, bodyFont: null })} />
+            <LayoutCard key={layout} layout={layout} theme={theme} profile={sample} active={theme.layout === layout} onPick={pickLayout} />
           ))}
         </div>
       </section>

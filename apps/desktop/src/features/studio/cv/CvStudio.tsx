@@ -14,7 +14,7 @@ import { CvDesignPanel } from "./CvDesignPanel";
 import { CvExportDialog } from "./CvExportDialog";
 import { CvForm } from "./CvForm";
 import { emptyProfile, sampleProfile } from "./cvModel";
-import { renderCv } from "./cvRender";
+import { keepUnchanged, renderCv } from "./cvRender";
 import { useCvStore } from "./cvStore";
 
 const RENDER_DELAY_MS = 180;
@@ -59,7 +59,7 @@ export default function CvStudio() {
           const translate = await translatorFor(theme.language);
           const next = await renderCv(profile, theme, translate, profile.name.trim() || untitled);
           if (!live) return;
-          setDesign(next);
+          setDesign((previous) => keepUnchanged(next, previous));
           setFailed(false);
         } catch {
           if (live) setFailed(true);
