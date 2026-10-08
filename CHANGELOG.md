@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio: 16 new ornaments — a Patterns group (halftone dots, diagonal lines, contour lines, triangle tiles, honeycomb, marble veins, sunburst), art nouveau, corner-gem and guilloche frames, a wax seal, and art deco fan, botanical sprig, brush stroke, page curl and corner ribbon accents; all pure vectors so PDFs match the canvas [2026-10-08]
 - Studio CV: Import from PDF… reads an existing CV or LinkedIn PDF, lists the sections it found with counts and lets you replace or add them (undoable); Save/Open CV file keeps the whole CV in a `.json` file; the photo is copied into Studio's picture store and can be cropped [2026-10-08]
 - Studio CV: undo and redo (Ctrl+Z, Ctrl+Y) with toolbar buttons, an Undo toast after removing an entry or clearing the CV, and a warning when the draft can't be saved [2026-10-08]
 - Studio CV: every section has a + button, entries can be duplicated, collapsed and dragged into order, contacts get their type when added, dates have a month and year picker (free text still works), education has "still studying", and pasting a list into skills, languages or interests makes one item per entry [2026-10-08]

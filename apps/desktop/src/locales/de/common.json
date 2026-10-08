@@ -7057,7 +7057,8 @@
         "frames": "Rahmen",
         "seals": "Abzeichen und Embleme",
         "dividers": "Banner und Trenner",
-        "accents": "Akzente"
+        "accents": "Akzente",
+        "patterns": "Muster"
       },
       "items": {
         "guillocheFrame": "Guilloche-Rahmen",
@@ -7078,7 +7079,23 @@
         "waves": "Wellen",
         "confetti": "Konfetti",
         "blob": "Organische Form",
-        "arcRings": "Bogenringe"
+        "arcRings": "Bogenringe",
+        "nouveauFrame": "Jugendstilrahmen",
+        "gemFrame": "Rahmen mit Eckjuwelen",
+        "guillocheBorder": "Guilloche-Bordüre",
+        "waxSeal": "Wachssiegel",
+        "decoFan": "Art-déco-Fächer",
+        "botanicalSprig": "Botanischer Zweig",
+        "brushStroke": "Pinselstrich",
+        "paperCurl": "Eselsohr",
+        "ribbonCorner": "Eckband",
+        "halftone": "Rasterpunkte",
+        "diagonalHatch": "Diagonale Linien",
+        "topographic": "Höhenlinien",
+        "triangleTiles": "Dreieckskacheln",
+        "honeycomb": "Wabenmuster",
+        "marble": "Marmoradern",
+        "sunburst": "Strahlenkranz"
       }
     },
     "templates": {

@@ -7888,7 +7888,8 @@
         "frames": "إطارات",
         "seals": "شارات وشعارات",
         "dividers": "شرائط وفواصل",
-        "accents": "لمسات"
+        "accents": "لمسات",
+        "patterns": "أنماط"
       },
       "items": {
         "guillocheFrame": "إطار غيوش",
@@ -7909,7 +7910,23 @@
         "waves": "أمواج",
         "confetti": "كونفيتي",
         "blob": "شكل عضوي",
-        "arcRings": "حلقات قوسية"
+        "arcRings": "حلقات قوسية",
+        "nouveauFrame": "إطار آرت نوفو",
+        "gemFrame": "إطار بأحجار في الزوايا",
+        "guillocheBorder": "حافة غيلوش",
+        "waxSeal": "ختم شمعي",
+        "decoFan": "مروحة آرت ديكو",
+        "botanicalSprig": "غصن نباتي",
+        "brushStroke": "ضربة فرشاة",
+        "paperCurl": "زاوية صفحة مطوية",
+        "ribbonCorner": "شريط زاوية",
+        "halftone": "نقاط شبكية",
+        "diagonalHatch": "خطوط مائلة",
+        "topographic": "خطوط كنتورية",
+        "triangleTiles": "بلاطات مثلثة",
+        "honeycomb": "خلية نحل",
+        "marble": "عروق رخام",
+        "sunburst": "أشعة شمس"
       }
     },
     "templates": {

@@ -7057,7 +7057,8 @@
         "frames": "Molduras",
         "seals": "Emblemas e insígnias",
         "dividers": "Faixas e divisores",
-        "accents": "Acentos"
+        "accents": "Acentos",
+        "patterns": "Padrões"
       },
       "items": {
         "guillocheFrame": "Moldura guilloché",
@@ -7078,7 +7079,23 @@
         "waves": "Ondas",
         "confetti": "Confete",
         "blob": "Forma orgânica",
-        "arcRings": "Anéis em arco"
+        "arcRings": "Anéis em arco",
+        "nouveauFrame": "Moldura art nouveau",
+        "gemFrame": "Moldura com gemas nos cantos",
+        "guillocheBorder": "Borda guilhochê",
+        "waxSeal": "Selo de cera",
+        "decoFan": "Leque art déco",
+        "botanicalSprig": "Raminho botânico",
+        "brushStroke": "Pincelada",
+        "paperCurl": "Canto dobrado",
+        "ribbonCorner": "Fita de canto",
+        "halftone": "Pontos de retícula",
+        "diagonalHatch": "Linhas diagonais",
+        "topographic": "Curvas de nível",
+        "triangleTiles": "Mosaico de triângulos",
+        "honeycomb": "Favo de mel",
+        "marble": "Veios de mármore",
+        "sunburst": "Raios de sol"
       }
     },
     "templates": {

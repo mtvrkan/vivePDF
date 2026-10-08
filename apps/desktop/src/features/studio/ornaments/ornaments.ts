@@ -1,11 +1,11 @@
-import type { StudioDash, StudioFill, StudioStroke, StudioVectorPath } from "@/types/studio";
-import { arc, circle, mapPoints, perimeter, polar, polyline, rotateAround, roundedRectangleAt, sampled, seeded, smooth, toD, type Point, type Segment } from "./geometry";
+import type { StudioVectorPath } from "@/types/studio";
+import { arc, circle, mapPoints, perimeter, polar, polyline, rotateAround, roundedRectangleAt, sampled, seeded, smooth, type Point, type Segment } from "./geometry";
+import { darker, fourCorners, lighter, line, mirrored, NONE, rectangle, shape, solid, TAU, type OrnamentColors, type VectorArt } from "./paint";
+import { PREMIUM_ORNAMENTS } from "./premiumOrnaments";
 
-export type OrnamentColors = { primary: string; secondary: string };
+export type { OrnamentColors, VectorArt } from "./paint";
 
-export type VectorArt = { viewWidth: number; viewHeight: number; paths: StudioVectorPath[] };
-
-export type OrnamentCategory = "frames" | "seals" | "dividers" | "accents";
+export type OrnamentCategory = "frames" | "seals" | "dividers" | "accents" | "patterns";
 
 export type Ornament = {
   id: string;
@@ -15,49 +15,10 @@ export type Ornament = {
   build: (colors: OrnamentColors, size: { width: number; height: number }) => VectorArt;
 };
 
-const TAU = Math.PI * 2;
-
 export const DEFAULT_COLOURS: OrnamentColors = { primary: "#1f4e8c", secondary: "#c9a227" };
 
 export function paletteColours(palette: string[] | undefined): OrnamentColors {
   return { primary: palette?.[0] ?? DEFAULT_COLOURS.primary, secondary: palette?.[1] ?? DEFAULT_COLOURS.secondary };
-}
-
-export function mix(from: string, to: string, amount: number): string {
-  const parse = (hex: string) => [1, 3, 5].map((index) => Number.parseInt(hex.slice(index, index + 2), 16));
-  const a = parse(from);
-  const b = parse(to);
-  return `#${a.map((value, index) => Math.round(value + (b[index] - value) * amount).toString(16).padStart(2, "0")).join("")}`;
-}
-
-const darker = (color: string, amount = 0.28) => mix(color, "#000000", amount);
-const lighter = (color: string, amount = 0.35) => mix(color, "#ffffff", amount);
-const solid = (color: string): StudioFill => ({ type: "solid", color });
-const NONE: StudioFill = { type: "none" };
-const line = (color: string, width: number, dash: StudioDash = "solid"): StudioStroke => ({ color, width, dash });
-
-function shape(segments: Segment[], fill: StudioFill, stroke: StudioStroke | null = null, options: { evenOdd?: boolean; opacity?: number } = {}): StudioVectorPath {
-  return { d: toD(segments), fill, stroke, evenOdd: options.evenOdd ?? false, opacity: options.opacity ?? 1 };
-}
-
-function rectangle(x: number, y: number, width: number, height: number): Segment[] {
-  return polyline(
-    [
-      [x, y],
-      [x + width, y],
-      [x + width, y + height],
-      [x, y + height],
-    ],
-    true,
-  );
-}
-
-function mirrored(segments: Segment[], width: number, height: number, horizontal: boolean, vertical: boolean): Segment[] {
-  return mapPoints(segments, ([x, y]) => [horizontal ? width - x : x, vertical ? height - y : y]);
-}
-
-function fourCorners(piece: Segment[], width: number, height: number): Segment[] {
-  return [piece, mirrored(piece, width, height, true, false), mirrored(piece, width, height, false, true), mirrored(piece, width, height, true, true)].flat();
 }
 
 function guillocheRosette(colors: OrnamentColors): VectorArt {
@@ -520,6 +481,7 @@ export const ORNAMENTS: Ornament[] = [
   { id: "confetti", category: "accents", fitsPage: false, size: { width: 300, height: 200 }, build: confetti },
   { id: "blob", category: "accents", fitsPage: false, size: { width: 200, height: 200 }, build: blob },
   { id: "arcRings", category: "accents", fitsPage: false, size: { width: 200, height: 200 }, build: arcRings },
+  ...PREMIUM_ORNAMENTS,
 ];
 
 export function ornament(id: string): Ornament | undefined {

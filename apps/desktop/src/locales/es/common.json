@@ -7057,7 +7057,8 @@
         "frames": "Marcos",
         "seals": "Insignias y emblemas",
         "dividers": "Banderines y separadores",
-        "accents": "Acentos"
+        "accents": "Acentos",
+        "patterns": "Patrones"
       },
       "items": {
         "guillocheFrame": "Marco de guilloche",
@@ -7078,7 +7079,23 @@
         "waves": "Olas",
         "confetti": "Confeti",
         "blob": "Forma orgánica",
-        "arcRings": "Anillos en arco"
+        "arcRings": "Anillos en arco",
+        "nouveauFrame": "Marco art nouveau",
+        "gemFrame": "Marco con gemas en las esquinas",
+        "guillocheBorder": "Borde guilloché",
+        "waxSeal": "Sello de lacre",
+        "decoFan": "Abanico art déco",
+        "botanicalSprig": "Ramita botánica",
+        "brushStroke": "Pincelada",
+        "paperCurl": "Esquina doblada",
+        "ribbonCorner": "Cinta de esquina",
+        "halftone": "Puntos de trama",
+        "diagonalHatch": "Líneas diagonales",
+        "topographic": "Curvas de nivel",
+        "triangleTiles": "Mosaico de triángulos",
+        "honeycomb": "Panal",
+        "marble": "Vetas de mármol",
+        "sunburst": "Rayos de sol"
       }
     },
     "templates": {

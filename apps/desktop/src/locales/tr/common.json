@@ -7059,7 +7059,8 @@
         "frames": "Çerçeveler",
         "seals": "Rozetler ve amblemler",
         "dividers": "Bantlar ve ayırıcılar",
-        "accents": "Vurgular"
+        "accents": "Vurgular",
+        "patterns": "Desenler"
       },
       "items": {
         "guillocheFrame": "Gilyoşe çerçeve",
@@ -7080,7 +7081,23 @@
         "waves": "Dalgalar",
         "confetti": "Konfeti",
         "blob": "Organik şekil",
-        "arcRings": "Yay halkaları"
+        "arcRings": "Yay halkaları",
+        "nouveauFrame": "Art nouveau çerçeve",
+        "gemFrame": "Köşe taşlı çerçeve",
+        "guillocheBorder": "Gilyoş bordür",
+        "waxSeal": "Mühür mumu",
+        "decoFan": "Art deco yelpaze",
+        "botanicalSprig": "Botanik dal",
+        "brushStroke": "Fırça darbesi",
+        "paperCurl": "Kıvrık sayfa köşesi",
+        "ribbonCorner": "Köşe kurdelesi",
+        "halftone": "Raster noktalar",
+        "diagonalHatch": "Çapraz çizgiler",
+        "topographic": "Eş yükselti çizgileri",
+        "triangleTiles": "Üçgen karolar",
+        "honeycomb": "Petek",
+        "marble": "Mermer damarları",
+        "sunburst": "Güneş ışınları"
       }
     },
     "templates": {

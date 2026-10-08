@@ -1,4 +1,4 @@
-import type { StudioDesign, StudioElement, StudioFill, StudioPage, StudioShapeKind, StudioStroke, StudioTextAlign, StudioTextElement, StudioTextRun, StudioVerticalAlign } from "@/types/studio";
+import type { StudioDesign, StudioDropShadow, StudioElement, StudioFill, StudioPage, StudioShapeKind, StudioStroke, StudioTextAlign, StudioTextElement, StudioTextRun, StudioTextShadow, StudioVerticalAlign } from "@/types/studio";
 import { STUDIO_DESIGN_VERSION } from "@/types/studio";
 import { createImage, createPage, createQr, createShape, createText, createVector, newId, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
 import { ornament, type OrnamentColors } from "../ornaments/ornaments";
@@ -73,6 +73,8 @@ export type TextOptions = {
   runs?: StudioTextRun[];
   name?: string;
   rotation?: number;
+  shadow?: TextShadowPreset | StudioTextShadow;
+  opacity?: number;
 };
 
 export function text(x: number, y: number, width: number, height: number, value: string, options: TextOptions = {}): StudioTextElement {
@@ -92,6 +94,8 @@ export function text(x: number, y: number, width: number, height: number, value:
     lineHeight: options.lineHeight ?? 1.3,
     autoSize: options.shrink ? "shrink" : "fixed",
     rotation: options.rotation ?? 0,
+    shadow: options.shadow === undefined ? null : typeof options.shadow === "string" ? { ...TEXT_SHADOWS[options.shadow] } : options.shadow,
+    opacity: options.opacity ?? 1,
   });
 }
 
@@ -106,6 +110,73 @@ export function solid(color: string): StudioFill {
 
 export function linear(angle: number, from: string, to: string): StudioFill {
   return { type: "linear", angle, stops: [{ offset: 0, color: from }, { offset: 1, color: to }] };
+}
+
+export function gradient(angle: number, colors: string[]): StudioFill {
+  const last = Math.max(1, colors.length - 1);
+  return { type: "linear", angle, stops: colors.map((color, index) => ({ offset: Math.round((index / last) * 1000) / 1000, color })) };
+}
+
+export function radial(inner: string, outer: string, options: { cx?: number; cy?: number; radius?: number; middle?: string } = {}): StudioFill {
+  const stops = options.middle
+    ? [
+        { offset: 0, color: inner },
+        { offset: 0.55, color: options.middle },
+        { offset: 1, color: outer },
+      ]
+    : [
+        { offset: 0, color: inner },
+        { offset: 1, color: outer },
+      ];
+  return { type: "radial", stops, cx: options.cx ?? 0.5, cy: options.cy ?? 0.5, radius: options.radius ?? 1 };
+}
+
+export const FOILS = {
+  gold: ["#7a5a1c", "#c9a24a", "#f6e3a1", "#d4af5a", "#8a6a24"],
+  silver: ["#6b7280", "#c7ccd4", "#f4f6f8", "#b6bcc6", "#737b88"],
+  rose: ["#8c4a4a", "#d39a8e", "#f7d9cf", "#c98576", "#8a4d47"],
+  copper: ["#6e3b1f", "#b8683a", "#efb28a", "#c27445", "#74401f"],
+  bronze: ["#5b4320", "#9c7a3c", "#d8bd7a", "#a3813f", "#5f4722"],
+} as const;
+
+export type FoilKind = keyof typeof FOILS;
+
+export function foil(kind: FoilKind, angle = 120): StudioFill {
+  return gradient(angle, [...FOILS[kind]]);
+}
+
+export const SHADOWS = {
+  soft: { color: "#0f172a", opacity: 0.12, x: 0, y: 6, blur: 14 },
+  lifted: { color: "#0f172a", opacity: 0.2, x: 0, y: 12, blur: 26 },
+  long: { color: "#0f172a", opacity: 0.22, x: 10, y: 14, blur: 6 },
+  glow: { color: "#ffffff", opacity: 0.55, x: 0, y: 0, blur: 18 },
+} satisfies Record<string, StudioDropShadow>;
+
+export type ShadowPreset = keyof typeof SHADOWS;
+
+export function shadowed<T extends StudioElement & { dropShadow: StudioDropShadow | null }>(element: T, preset: ShadowPreset, color?: string): T {
+  return { ...element, dropShadow: { ...SHADOWS[preset], ...(color ? { color } : {}) } };
+}
+
+export const TEXT_SHADOWS = {
+  subtle: { color: "#000000", x: 0, y: 1, opacity: 0.22 },
+  deep: { color: "#000000", x: 1.5, y: 2, opacity: 0.35 },
+  emboss: { color: "#ffffff", x: 0, y: 1, opacity: 0.6 },
+} satisfies Record<string, StudioTextShadow>;
+
+export type TextShadowPreset = keyof typeof TEXT_SHADOWS;
+
+export type TypeScale = { overline: number; caption: number; body: number; subtitle: number; title: number; display: number };
+
+export function typeScale(body: number, ratio = 1.333): TypeScale {
+  const round = (value: number) => Math.round(value * 2) / 2;
+  return { overline: round(body / ratio), caption: round(body / ratio), body: round(body), subtitle: round(body * ratio), title: round(body * ratio * ratio), display: round(body * ratio * ratio * ratio) };
+}
+
+export const space = (units: number) => units * 8;
+
+export function layers(...groups: StudioElement[][]): StudioElement[] {
+  return groups.flat();
 }
 
 export function stroke(color: string, width = 1, dash: StudioStroke["dash"] = "solid"): StudioStroke {

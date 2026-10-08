@@ -6,12 +6,15 @@ import { BUILTIN_PLACEHOLDERS, normalizeDesign, placeholdersIn } from "../model/
 import { buildTemplate, STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog";
 import { insertTemplate } from "./apply";
 import { sizeOf } from "./kit";
+import { qualityIssues } from "./quality";
 
 function lookup(key: string): string {
   const value = key.split(".").reduce<unknown>((node, part) => (node && typeof node === "object" ? (node as Record<string, unknown>)[part] : undefined), en);
   if (typeof value !== "string") throw new Error(`missing English string ${key}`);
   return value;
 }
+
+const REDESIGNED = new Set<string>([]);
 
 const designs = STUDIO_TEMPLATES.map((template) => ({ template, design: buildTemplate(template, lookup, "en") }));
 const libraryCatalog = readFileSync(new URL("../../../../../../sidecar/vivepdf/ops/font_library_catalog.py", import.meta.url), "utf8");
@@ -68,6 +71,12 @@ describe("studio templates", () => {
     for (const { template, design } of designs) {
       for (const name of placeholdersIn(design)) expect(BUILTIN_PLACEHOLDERS as readonly string[], `${template.id} {${name}}`).toContain(name);
     }
+  });
+
+  it("keeps text readable, apart from other text and in at most three font families", () => {
+    const problems = designs.filter(({ template }) => REDESIGNED.has(template.category)).flatMap(({ template, design }) => qualityIssues(design).map((issue) => `${template.id} p${issue.page + 1} ${issue.kind}: ${issue.detail}`));
+
+    expect(problems).toEqual([]);
   });
 
   it("gives every element a fresh id each time a template is built", () => {

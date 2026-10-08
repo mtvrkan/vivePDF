@@ -29,7 +29,7 @@ const TABS: Tab[] = ["templates", "elements", "data", "layers"];
 const TAB_ICONS: Record<Tab, LucideIcon> = { templates: LayoutTemplate, elements: Shapes, data: Table2, layers: Layers };
 
 
-const ORNAMENT_CATEGORIES: OrnamentCategory[] = ["frames", "seals", "dividers", "accents"];
+const ORNAMENT_CATEGORIES: OrnamentCategory[] = ["frames", "seals", "dividers", "accents", "patterns"];
 const previews = new Map<string, ReturnType<Ornament["build"]>>();
 
 function ornamentPreview(item: Ornament) {

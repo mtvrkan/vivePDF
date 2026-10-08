@@ -7059,7 +7059,8 @@
         "frames": "Frames",
         "seals": "Badges and emblems",
         "dividers": "Banners and dividers",
-        "accents": "Accents"
+        "accents": "Accents",
+        "patterns": "Patterns"
       },
       "items": {
         "guillocheFrame": "Guilloche frame",
@@ -7080,7 +7081,23 @@
         "waves": "Waves",
         "confetti": "Confetti",
         "blob": "Organic shape",
-        "arcRings": "Arc rings"
+        "arcRings": "Arc rings",
+        "nouveauFrame": "Art nouveau frame",
+        "gemFrame": "Frame with corner gems",
+        "guillocheBorder": "Guilloche border",
+        "waxSeal": "Wax seal",
+        "decoFan": "Art deco fan",
+        "botanicalSprig": "Botanical sprig",
+        "brushStroke": "Brush stroke",
+        "paperCurl": "Page curl",
+        "ribbonCorner": "Corner ribbon",
+        "halftone": "Halftone dots",
+        "diagonalHatch": "Diagonal lines",
+        "topographic": "Contour lines",
+        "triangleTiles": "Triangle tiles",
+        "honeycomb": "Honeycomb",
+        "marble": "Marble veins",
+        "sunburst": "Sunburst"
       }
     },
     "templates": {

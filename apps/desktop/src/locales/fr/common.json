@@ -7057,7 +7057,8 @@
         "frames": "Cadres",
         "seals": "Badges et emblèmes",
         "dividers": "Banderoles et séparateurs",
-        "accents": "Accents"
+        "accents": "Accents",
+        "patterns": "Motifs"
       },
       "items": {
         "guillocheFrame": "Cadre guilloché",
@@ -7078,7 +7079,23 @@
         "waves": "Vagues",
         "confetti": "Confettis",
         "blob": "Forme organique",
-        "arcRings": "Anneaux arqués"
+        "arcRings": "Anneaux arqués",
+        "nouveauFrame": "Cadre Art nouveau",
+        "gemFrame": "Cadre à gemmes d’angle",
+        "guillocheBorder": "Bordure guillochée",
+        "waxSeal": "Sceau de cire",
+        "decoFan": "Éventail Art déco",
+        "botanicalSprig": "Brin botanique",
+        "brushStroke": "Coup de pinceau",
+        "paperCurl": "Coin corné",
+        "ribbonCorner": "Ruban d’angle",
+        "halftone": "Points de trame",
+        "diagonalHatch": "Lignes diagonales",
+        "topographic": "Courbes de niveau",
+        "triangleTiles": "Pavage de triangles",
+        "honeycomb": "Nid d’abeille",
+        "marble": "Veines de marbre",
+        "sunburst": "Rayons de soleil"
       }
     },
     "templates": {

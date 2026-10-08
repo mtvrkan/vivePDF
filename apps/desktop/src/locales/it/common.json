@@ -7057,7 +7057,8 @@
         "frames": "Cornici",
         "seals": "Distintivi ed emblemi",
         "dividers": "Banner e separatori",
-        "accents": "Accenti"
+        "accents": "Accenti",
+        "patterns": "Motivi"
       },
       "items": {
         "guillocheFrame": "Cornice guilloche",
@@ -7078,7 +7079,23 @@
         "waves": "Onde",
         "confetti": "Coriandoli",
         "blob": "Forma organica",
-        "arcRings": "Anelli ad arco"
+        "arcRings": "Anelli ad arco",
+        "nouveauFrame": "Cornice liberty",
+        "gemFrame": "Cornice con gemme agli angoli",
+        "guillocheBorder": "Bordo guilloché",
+        "waxSeal": "Sigillo di ceralacca",
+        "decoFan": "Ventaglio art déco",
+        "botanicalSprig": "Rametto botanico",
+        "brushStroke": "Pennellata",
+        "paperCurl": "Angolo piegato",
+        "ribbonCorner": "Nastro d’angolo",
+        "halftone": "Punti a retino",
+        "diagonalHatch": "Linee diagonali",
+        "topographic": "Curve di livello",
+        "triangleTiles": "Tassellatura a triangoli",
+        "honeycomb": "Nido d’ape",
+        "marble": "Venature di marmo",
+        "sunburst": "Raggiera"
       }
     },
     "templates": {
