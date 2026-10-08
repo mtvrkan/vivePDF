@@ -44,7 +44,7 @@ async function layoutProblems(): Promise<Problem[]> {
       const name = (node.textContent ?? "").trim().slice(0, 30) || node.dataset.elementId || "";
       if (left >= width || top >= height || left + node.offsetWidth <= 0 || top + node.offsetHeight <= 0) found.push({ element: name, issue: "off the page" });
       const body = node.querySelector<HTMLElement>("[data-text-body]");
-      if (body && body.scrollHeight > node.offsetHeight + 2) found.push({ element: name, issue: `text ${body.scrollHeight} > box ${node.offsetHeight}` });
+      if (body && (body.offsetHeight > node.offsetHeight + 2 || body.scrollWidth > node.offsetWidth + 2)) found.push({ element: name, issue: `text ${body.offsetWidth}×${body.offsetHeight} > box ${node.offsetWidth}×${node.offsetHeight}` });
     }
     return found;
   });

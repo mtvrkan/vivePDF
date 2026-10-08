@@ -3,7 +3,7 @@ import { createText } from "../model/design";
 
 vi.mock("@/shared/rpc/operations", () => ({ fontFile: async () => ({ ext: "pfb", base64: "", italic: false }) }));
 
-const { measureTexts } = await import("./measure");
+const { fitTextSize, measureTexts } = await import("./measure");
 
 const texts = (count: number) => Array.from({ length: count }, (_, index) => createText(0, index * 20, 200, 20, `Line ${index}`));
 
@@ -54,5 +54,21 @@ describe("measuring texts for rendering", () => {
     const measured = await measureTexts([shown, { ...hidden, hidden: true }, createText(0, 0, 10, 10, "  ")], "en");
 
     expect([...measured.keys()]).toEqual([shown.id]);
+  });
+});
+
+describe("shrinking text to its box", () => {
+  it("keeps shrinking while the wrapped layout is still too tall", () => {
+    const body = document.createElement("div");
+    body.style.overflowWrap = "break-word";
+    const size = () => Number.parseFloat(body.style.fontSize);
+    Object.defineProperty(body, "scrollWidth", { get: () => size() * 2 });
+    Object.defineProperty(body, "offsetHeight", { get: () => (body.style.overflowWrap === "break-word" && size() > 50 ? size() * 2 : size()) });
+
+    const fitted = fitTextSize(body, createText(0, 0, 120, 70, "MAISON", { fontSize: 60, autoSize: "shrink" }));
+
+    expect(fitted).toBe(50);
+    expect(body.style.overflowWrap).toBe("break-word");
+    expect(body.style.fontSize).toBe("50px");
   });
 });

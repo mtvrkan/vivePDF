@@ -14,12 +14,14 @@ const ANCHOR = { left: 0, center: 0.5, right: 1, justify: 0 } as const;
 export function fitTextSize(body: HTMLElement, element: StudioTextElement): number {
   if (element.autoSize !== "shrink") return element.fontSize;
   const wrap = body.style.overflowWrap;
-  body.style.overflowWrap = "normal";
   const floor = Math.min(MIN_FIT_SIZE, element.fontSize);
   const sizeAt = (step: number) => Math.max(floor, element.fontSize - step * FIT_STEP);
   const fits = (step: number) => {
     body.style.fontSize = `${sizeAt(step)}px`;
-    return body.offsetHeight <= element.height + 0.01 && body.scrollWidth <= Math.ceil(element.width) + 0.5;
+    body.style.overflowWrap = "normal";
+    const narrow = body.scrollWidth <= Math.ceil(element.width) + 0.5;
+    body.style.overflowWrap = wrap;
+    return narrow && body.offsetHeight <= element.height + 0.01;
   };
   let low = 0;
   let high = Math.max(0, Math.ceil((element.fontSize - MIN_FIT_SIZE) / FIT_STEP));
@@ -32,7 +34,6 @@ export function fitTextSize(body: HTMLElement, element: StudioTextElement): numb
     }
   }
   const size = sizeAt(low);
-  body.style.overflowWrap = wrap;
   body.style.fontSize = `${size}px`;
   return size;
 }

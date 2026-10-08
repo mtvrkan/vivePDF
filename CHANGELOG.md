@@ -90,6 +90,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Studio: text set to shrink no longer pushes its last letter onto a new line when it only just fits, and a few template numbers and quote marks now shrink to their box instead of wrapping [2026-10-09]
 - Studio: template text boxes now grow to hold every line they are given, so titles no longer get clipped at the top or bottom of their box, and a template check flags any text that still does not fit [2026-10-09]
 - Viewer: the floating toolbar of a selected text box or picture no longer covers dialogs, so Save, Discard and Cancel in the unsaved-changes dialog can be clicked again [2026-10-08]
 - Home: a collection card's Open all skips files that no longer exist (and says so when none are left) instead of failing on each one [2026-10-08]

@@ -381,7 +381,7 @@ function recipeIndexCard({ t }: TemplateContext) {
       ...Array.from({ length: 3 }, (_, index) => {
         const top = lineY(1 + index * 2) - 21;
         return [
-          text(rightX, top, 16, 20, `${index + 1}.`, { font: FONTS.caveat, size: 16, bold: true, color: red, valign: "bottom" }),
+          text(rightX, top, 16, 20, `${index + 1}.`, { font: FONTS.caveat, size: 16, bold: true, color: red, valign: "bottom", shrink: true }),
           text(rightX + 18, top + 3, rightWidth - 18, step * 2, t("studio.tpl.methodStep"), { font: FONTS.caveat, size: 15, color: ink, lineHeight: step / 15, shrink: true }),
         ];
       }).flat(),
@@ -410,7 +410,7 @@ function habitChallenge({ t }: TemplateContext) {
       art("arcRings", { primary: "#f0a487", secondary: "#c4a5d6" }, W - 200, -60, 250, 250, { opacity: 0.45 }),
       art("blob", { primary: "#fbd5c5", secondary: "#e7d5f3" }, -110, 360, 230, 260, { opacity: 0.55, rotation: 60 }),
       art("confetti", { primary: "#e4572e", secondary: plum }, 260, 24, 260, 130, { opacity: 0.35 }),
-      text(MA4, 34, 150, 132, "30", { font: FONTS.oswald, size: 124, bold: true, color: plum, lineHeight: 1.05, valign: "middle" }),
+      text(MA4, 34, 150, 132, "30", { font: FONTS.oswald, size: 124, bold: true, color: plum, lineHeight: 1.05, valign: "middle", shrink: true }),
       text(MA4 + 158, 64, INNER_A4 - 170, 48, t("studio.tpl.habitChallengeTitle"), { font: FONTS.oswald, size: 32, bold: true, color: coral, upper: true, spacing: 1, lineHeight: 1.05, valign: "middle", shrink: true }),
       text(MA4 + 160, 116, INNER_A4 - 172, 22, t("studio.tpl.habitChallengeLead"), { font: FONTS.nunito, size: 12.5, color: muted, valign: "middle", shrink: true }),
       shadowed(box("rect", MA4, 182, INNER_A4, 92, solid("#ffffff"), { radius: 16 }), "soft", plum),

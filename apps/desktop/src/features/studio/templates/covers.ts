@@ -575,7 +575,7 @@ function impactReport({ t }: TemplateContext) {
       ...tiles.slice(5).flatMap((tile) => tileShapes(tile, side)),
       text(margin, 486, inner - 210, 14, copy(t, "impactKicker"), { font: FONTS.montserrat, size: 10, bold: true, color: green, upper: true, spacing: 3, shrink: true }),
       text(margin, 508, inner - 210, 116, t("studio.tpl.reportTitle"), { font: FONTS.montserrat, size: 46, bold: true, color: forest, lineHeight: 1.04, shrink: true }),
-      text(W - margin - 200, 500, 200, 110, "2027", { font: FONTS.bebas, size: 104, color: green, align: "right", lineHeight: 1, valign: "middle" }),
+      text(W - margin - 200, 500, 200, 110, "2027", { font: FONTS.bebas, size: 104, color: green, align: "right", lineHeight: 1, valign: "middle", shrink: true }),
       box("rect", margin, 640, 64, 6, gradient(0, [orange, sand]), { radius: 3 }),
       text(margin, 660, inner - 40, 50, copy(t, "impactSubtitle"), { font: FONTS.inter, size: 15, color: "#374151", lineHeight: 1.4, shrink: true }),
       box("rect", 0, H - 72, W, 72, solid(forest)),
