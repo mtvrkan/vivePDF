@@ -39,6 +39,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Studio templates: the 11 social posts and stories are redesigned — glass quote cards, glowing gradients with pattern overlays, shadowed photo slots, countdown tiles and bolder thumbnails and banners [2026-10-08]
 - Studio templates: the 6 menus are redesigned — a wine-and-gold restaurant menu with a wax seal, a café menu on cards, an arched wedding menu, a sunburst cocktail list, and refreshed burger and dessert menus [2026-10-08]
 - Studio templates: the 8 invitations are redesigned — a marble and botanical wedding card, a gold-foil arched gala, a laurel graduation, neon party and confetti birthday designs, each with at most two typefaces and readable contrast [2026-10-08]
 - Studio templates: the 10 covers and decks are redesigned — a guilloche thesis cover, a foil-ringed book cover, a full-bleed magazine cover, a leather-look planner, a Swiss-style portfolio, and business and editorial decks with a different layout on every slide [2026-10-08]
