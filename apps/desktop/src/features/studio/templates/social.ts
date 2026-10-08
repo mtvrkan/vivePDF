@@ -1,5 +1,5 @@
 import type { StudioElement, StudioFill } from "@/types/studio";
-import { art, box, centredText, design, FONTS, gradient, pageOf, photo, radial, rule, shadowed, sizeOf, solid, stroke, text, type ShadowPreset, type StudioTemplate, type TemplateContext, type TextOptions } from "./kit";
+import { art, box, centredText, design, foil, FONTS, gradient, pageOf, photo, radial, rule, shadowed, sizeOf, solid, stroke, text, type ShadowPreset, type StudioTemplate, type TemplateContext, type TextOptions } from "./kit";
 
 const SQUARE = "square" as const;
 const STORY = "story" as const;
@@ -352,6 +352,157 @@ function pinterestPin({ t }: TemplateContext) {
   ]);
 }
 
+function editorialQuote({ t }: TemplateContext) {
+  const page = sizeOf(SQUARE);
+  const wine = "#6d1a2d";
+  const ink = "#2b1a14";
+  const muted = "#6b5a4e";
+  const cream = "#f8f3ea";
+  const left = 120;
+  return design(t("studio.templates.items.editorialQuote"), [wine, ink, "#b8893b", cream], [
+    pageOf(SQUARE, gradient(160, [cream, "#efe4d3"]), [
+      art("marble", { primary: "#e4d6c1", secondary: "#d9c3a5" }, 0, 0, page.width, page.height, { opacity: 0.35 }),
+      art("guillocheRosette", { primary: wine, secondary: "#b8893b" }, 470, -150, 480, 480, { opacity: 0.08 }),
+      box("rect", 0, 0, 64, page.height, gradient(180, [wine, "#3f0d19"])),
+      box("rect", 64, 0, 3, page.height, foil("gold", 90)),
+      art("botanicalSprig", { primary: wine, secondary: "#b8893b" }, 680, 56, 72, 144, { rotation: 18, opacity: 0.45 }),
+      text(left, 88, 420, 24, t("studio.tpl.editorialQuoteKicker"), { font: FONTS.josefin, size: 14, bold: true, color: wine, spacing: 5, upper: true, valign: "middle", shrink: true }),
+      box("rect", left, 124, 48, 2, foil("gold", 0)),
+      text(left - 14, 120, 220, 220, "“", { font: FONTS.cormorant, size: 300, bold: true, color: wine, lineHeight: 1 }),
+      text(left, 258, 600, 284, t("studio.tpl.editorialQuoteText"), { font: FONTS.cormorant, size: 56, bold: true, italic: true, color: ink, lineHeight: 1.08, valign: "middle", shrink: true }),
+      box("rect", left, 572, 80, 2, foil("gold", 0)),
+      shadowed(box("ellipse", 596, 560, 140, 140, foil("gold", 135)), "lifted", "#3f0d19"),
+      ...slot(604, 568, 124, 124, "#d9c3a5", { circle: true }),
+      text(left, 596, 440, 32, t("studio.tpl.editorialQuoteAuthor"), { font: FONTS.josefin, size: 20, bold: true, color: ink, spacing: 3, upper: true, valign: "middle", shrink: true }),
+      text(left, 632, 440, 26, t("studio.tpl.editorialQuoteRole"), { font: FONTS.josefin, size: 15, color: muted, valign: "middle", shrink: true }),
+      rule(left, 728, 610, "#cdb9a0", 1),
+      text(left, 742, 360, 32, t("studio.tpl.social.handle"), { font: FONTS.josefin, size: 15, bold: true, color: wine, spacing: 2, valign: "middle", shrink: true }),
+      art("diamondDivider", { primary: "#b8893b", secondary: wine }, 610, 752, 120, 12),
+    ]),
+  ]);
+}
+
+function carouselCover({ t }: TemplateContext) {
+  const page = PORTRAIT;
+  const night = "#101114";
+  const lime = "#d4ff3f";
+  const grey = "#a1a7b3";
+  return design(t("studio.templates.items.carouselCover"), [night, lime, "#2b2f37", "#ffffff"], [
+    pageOf(PORTRAIT, gradient(165, ["#1a1c22", "#0b0c0f"]), [
+      art("topographic", { primary: "#2a2f38", secondary: "#3a4150" }, 0, 0, page.width, page.height, { opacity: 0.5 }),
+      orb(-260, 520, 640, "#3d4a12", night, 0.35),
+      box("rect", 776, 196, 120, 620, solid("#2b2f37"), { radius: 24 }),
+      shadowed(box("rect", 748, 168, 140, 676, gradient(160, [lime, "#a3e635"]), { radius: 28 }), "lifted", "#000000"),
+      text(330, 96, 380, 300, "07", { font: FONTS.oswald, size: 290, bold: true, color: "#ffffff", align: "right", valign: "middle", lineHeight: 1, opacity: 0.06 }),
+      box("ellipse", 60, 60, 72, 72, solid(lime)),
+      ...slot(64, 64, 64, 64, "#2b2f37", { circle: true }),
+      text(148, 66, 340, 28, t("studio.tpl.personName"), { font: FONTS.inter, size: 18, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+      text(148, 96, 340, 24, t("studio.tpl.social.handle"), { font: FONTS.inter, size: 15, color: grey, valign: "middle", shrink: true }),
+      box("rect", 572, 74, 112, 44, { type: "none" }, { radius: 22, stroke: stroke(lime, 1.5) }),
+      text(572, 74, 112, 44, "01 / 07", { font: FONTS.inter, size: 15, bold: true, color: lime, align: "center", valign: "middle", spacing: 1 }),
+      ...pill(64, 296, 280, 48, solid(lime), t("studio.tpl.carouselCoverKicker"), { font: FONTS.inter, size: 15, bold: true, color: night, spacing: 2, upper: true }),
+      text(64, 372, 640, 384, t("studio.tpl.carouselCoverTitle"), { font: FONTS.oswald, size: 88, bold: true, color: "#ffffff", upper: true, lineHeight: 1.02, valign: "bottom", shrink: true }),
+      box("rect", 64, 780, 136, 10, gradient(0, [lime, "#a3e635"]), { radius: 5 }),
+      text(64, 808, 620, 56, t("studio.tpl.carouselCoverLead"), { font: FONTS.inter, size: 28, color: "#e5e7eb", valign: "middle", shrink: true }),
+      rule(64, 900, 620, "#2e333c", 1),
+      text(64, 920, 300, 48, t("studio.tpl.carouselCoverSave"), { font: FONTS.inter, size: 15, bold: true, color: grey, spacing: 2, upper: true, valign: "middle", shrink: true }),
+      text(380, 920, 220, 48, t("studio.tpl.social.swipe"), { font: FONTS.inter, size: 17, bold: true, color: lime, align: "right", spacing: 3, upper: true, valign: "middle", shrink: true }),
+      shadowed(box("arrow", 616, 926, 68, 36, solid(lime)), "glow", lime),
+    ]),
+  ]);
+}
+
+function productShowcase({ t }: TemplateContext) {
+  const page = sizeOf(SQUARE);
+  const ink = "#2b1a12";
+  const clay = "#8a4b2f";
+  const sand = "#e6cbb8";
+  const specs = ["studio.tpl.productShowcaseSpec1", "studio.tpl.productShowcaseSpec2", "studio.tpl.productShowcaseSpec3"];
+  return design(t("studio.templates.items.productShowcase"), [ink, clay, sand, "#fbf3ec"], [
+    pageOf(SQUARE, radial("#fdf7f1", "#efdccd", { cy: 0.4, radius: 1 }), [
+      art("arcRings", { primary: "#e7c9b4", secondary: "#d9a98a" }, 165, 70, 480, 480, { opacity: 0.55 }),
+      box("ellipse", 215, 120, 380, 380, gradient(160, ["#f3dccb", "#e2b99e"])),
+      art("botanicalSprig", { primary: "#7d8b5c", secondary: "#c9a27e" }, 150, 300, 96, 192, { rotation: -20, opacity: 0.9 }),
+      art("botanicalSprig", { primary: "#7d8b5c", secondary: "#c9a27e" }, 580, 330, 70, 140, { rotation: 24, opacity: 0.75 }),
+      shadowed(box("rect", 255, 474, 300, 72, gradient(90, ["#d2a98e", "#efd6c4", "#d2a98e"])), "lifted", "#5b3a29"),
+      box("ellipse", 255, 456, 300, 36, solid("#f7e7da")),
+      ...slot(305, 150, 200, 320, "#e9cdb9", { radius: 100, shadow: "lifted", tint: "#5b3a29" }),
+      shadowed(box("ellipse", 530, 126, 128, 128, gradient(135, [ink, "#4a2c1e"]), { stroke: stroke("#f7e7da", 4) }), "lifted", "#5b3a29"),
+      text(540, 160, 108, 60, t("studio.tpl.productShowcasePrice"), { font: FONTS.playfair, size: 32, bold: true, color: "#ffffff", align: "center", valign: "middle", shrink: true }),
+      centredText(page, 44, 28, t("studio.tpl.productShowcaseKicker"), { font: FONTS.raleway, size: 14, bold: true, color: clay, spacing: 5, upper: true, valign: "middle", shrink: true }),
+      centredText(page, 560, 64, t("studio.tpl.productShowcaseName"), { font: FONTS.playfair, size: 46, bold: true, color: ink, valign: "middle", shrink: true, inset: 64 }),
+      centredText(page, 624, 30, t("studio.tpl.productShowcaseLead"), { font: FONTS.raleway, size: 18, color: "#6b4f42", valign: "middle", shrink: true, inset: 80 }),
+      ...specs.flatMap((key, index) => {
+        const x = 89 + index * 216;
+        return [box("rect", x, 674, 200, 40, solid("#ffffff"), { radius: 20, stroke: stroke(sand, 1.2) }), text(x + 16, 674, 168, 40, t(key), { font: FONTS.raleway, size: 14, bold: true, color: "#5b3a29", align: "center", valign: "middle", shrink: true })];
+      }),
+      ...pill(285, 736, 240, 50, gradient(90, [ink, "#4a2c1e"]), t("studio.tpl.shopNow"), { font: FONTS.raleway, size: 15, bold: true, color: "#ffffff", spacing: 3, upper: true }, { preset: "lifted", tint: "#5b3a29" }),
+    ]),
+  ]);
+}
+
+function eventCountdown({ t }: TemplateContext) {
+  const page = sizeOf(STORY);
+  const cobalt = "#1238c9";
+  const navy = "#0a1f7a";
+  const flame = gradient(135, ["#ea580c", "#be123c"]);
+  return design(t("studio.templates.items.eventCountdown"), [cobalt, navy, "#ea580c", "#be123c", "#ffffff"], [
+    pageOf(STORY, gradient(170, [cobalt, navy]), [
+      art("sunburst", { primary: "#ffffff", secondary: "#93c5fd" }, -315, -110, 1440, 1440, { opacity: 0.08 }),
+      art("halftone", { primary: "#ffffff", secondary: "#ffffff" }, 0, 1160, page.width, 280, { opacity: 0.08 }),
+      orb(-200, -200, 560, "#3b82f6", cobalt, 0.4),
+      box("rect", 185, 108, 440, 56, { type: "none" }, { radius: 28, stroke: stroke("#ffffff", 1.5) }),
+      text(205, 108, 400, 56, t("studio.tpl.eventCountdownKicker"), { font: FONTS.inter, size: 17, bold: true, color: "#ffffff", align: "center", valign: "middle", spacing: 3, upper: true, shrink: true }),
+      art("arcRings", { primary: "#ffffff", secondary: "#fdba74" }, 95, 200, 620, 620, { opacity: 0.55 }),
+      box("ellipse", 155, 260, 500, 500, { type: "none" }, { stroke: stroke("#ffffff", 2, "dashed"), opacity: 0.4 }),
+      shadowed(box("ellipse", 205, 310, 400, 400, flame), "glow", "#f97316"),
+      text(205, 310, 400, 400, "3", { font: FONTS.poppins, size: 300, bold: true, color: "#ffffff", align: "center", valign: "middle", lineHeight: 1 }),
+      centredText(page, 790, 72, t("studio.tpl.eventCountdownDays"), { font: FONTS.poppins, size: 54, bold: true, color: "#ffffff", spacing: 4, upper: true, valign: "middle", shrink: true, inset: 64 }),
+      art("dotsDivider", { primary: "#ffffff", secondary: "#fdba74" }, page.width / 2 - 60, 878, 120, 10),
+      centredText(page, 904, 140, t("studio.tpl.eventName"), { font: FONTS.poppins, size: 60, bold: true, color: "#ffffff", lineHeight: 1.05, valign: "middle", shrink: true, inset: 72 }),
+      shadowed(box("rect", 96, 1066, 618, 172, solid("#ffffff"), { radius: 28 }), "lifted", "#020617"),
+      box("ellipse", 136, 1102, 16, 16, flame),
+      text(166, 1088, 520, 44, t("studio.tpl.eventCountdownDate"), { font: FONTS.inter, size: 24, bold: true, color: navy, valign: "middle", shrink: true }),
+      rule(136, 1152, 538, "#dbe3ff", 1.2),
+      box("ellipse", 136, 1184, 16, 16, flame),
+      text(166, 1170, 520, 44, t("studio.tpl.eventCountdownPlace"), { font: FONTS.inter, size: 21, color: "#334155", valign: "middle", shrink: true }),
+      ...pill(175, 1272, 460, 80, flame, t("studio.tpl.eventCountdownCta"), { font: FONTS.poppins, size: 22, bold: true, color: "#ffffff", spacing: 1, upper: true }, { preset: "glow", tint: "#f97316" }),
+      centredText(page, 1376, 32, t("studio.tpl.social.handle"), { font: FONTS.inter, size: 17, bold: true, color: "#dbe3ff", valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
+function testimonialCard({ t }: TemplateContext) {
+  const page = sizeOf(SQUARE);
+  const forest = "#2f4f3a";
+  const deep = "#1b2a1f";
+  const gold = "#d9a441";
+  const paper = "#fbf8ef";
+  const muted = "#5a6a5e";
+  const left = 404;
+  const column = 342;
+  return design(t("studio.templates.items.testimonialCard"), [forest, gold, deep, paper], [
+    pageOf(SQUARE, gradient(180, [paper, "#f1ecdc"]), [
+      art("halftone", { primary: forest, secondary: gold }, 560, 520, 250, 290, { opacity: 0.12 }),
+      art("botanicalSprig", { primary: forest, secondary: gold }, 690, 40, 80, 160, { rotation: 20, opacity: 0.35 }),
+      ...slot(0, 0, 340, page.height, "#c9d3c3"),
+      box("rect", 24, 24, 292, page.height - 48, { type: "none" }, { stroke: stroke("#ffffff", 1.5), opacity: 0.7 }),
+      box("rect", 340, 0, 4, page.height, foil("gold", 90)),
+      shadowed(box("ellipse", 290, 88, 104, 104, gradient(135, [forest, deep]), { stroke: stroke(paper, 6) }), "lifted", deep),
+      text(290, 88, 104, 104, "“", { font: FONTS.merriweather, size: 80, bold: true, color: gold, align: "center", valign: "middle", lineHeight: 1 }),
+      text(left, 220, column, 24, t("studio.tpl.testimonialCardKicker"), { font: FONTS.inter, size: 13, bold: true, color: forest, spacing: 4, upper: true, valign: "middle", shrink: true }),
+      ...Array.from({ length: 5 }, (_, index) => box("star", left + index * 36, 258, 28, 28, gradient(160, ["#f1c25b", gold]))),
+      text(left, 308, column, 264, t("studio.tpl.testimonialCardText"), { font: FONTS.merriweather, size: 28, italic: true, color: deep, lineHeight: 1.5, shrink: true }),
+      box("rect", left, 594, 56, 3, foil("gold", 0)),
+      text(left, 614, column, 32, t("studio.tpl.testimonialCardName"), { font: FONTS.inter, size: 21, bold: true, color: forest, valign: "middle", shrink: true }),
+      text(left, 648, column, 26, t("studio.tpl.testimonialCardRole"), { font: FONTS.inter, size: 15, color: muted, valign: "middle", shrink: true }),
+      rule(left, 712, column, "#d9d2bc", 1),
+      text(left, 728, 120, 44, "5.0", { font: FONTS.merriweather, size: 28, bold: true, color: forest, valign: "middle" }),
+      text(left + 130, 728, column - 130, 44, t("studio.tpl.social.handle"), { font: FONTS.inter, size: 15, bold: true, color: muted, align: "right", valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
 export const SOCIAL_TEMPLATES: StudioTemplate[] = [
   { id: "quotePost", category: "social", size: SQUARE, build: quotePost },
   { id: "productSpotlight", category: "social", size: SQUARE, build: productSpotlight },
@@ -364,4 +515,9 @@ export const SOCIAL_TEMPLATES: StudioTemplate[] = [
   { id: "youtubeThumbnail", category: "social", size: THUMBNAIL, build: youtubeThumbnail },
   { id: "linkedinBanner", category: "social", size: BANNER, build: linkedinBanner },
   { id: "pinterestPin", category: "social", size: PIN, build: pinterestPin },
+  { id: "editorialQuote", category: "social", size: SQUARE, build: editorialQuote },
+  { id: "carouselCover", category: "social", size: PORTRAIT, build: carouselCover },
+  { id: "productShowcase", category: "social", size: SQUARE, build: productShowcase },
+  { id: "eventCountdown", category: "social", size: STORY, build: eventCountdown },
+  { id: "testimonialCard", category: "social", size: SQUARE, build: testimonialCard },
 ];

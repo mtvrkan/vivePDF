@@ -1,6 +1,6 @@
-import type { StudioElement } from "@/types/studio";
+import type { StudioElement, StudioFill } from "@/types/studio";
 import { darker, lighter } from "../ornaments/paint";
-import { art, box, centredText, design, FONTS, foil, frame, gradient, pageOf, photoSlot, qr, radial, rule, shadowed, sizeOf, solid, stroke, text, type ShadowPreset, type StudioTemplate, type TemplateContext } from "./kit";
+import { art, box, centredText, design, FONTS, foil, frame, gradient, pageOf, photoSlot, qr, radial, rule, shadowed, sizeOf, solid, stroke, text, vrule, type ShadowPreset, type StudioTemplate, type TemplateContext } from "./kit";
 import { PALETTES, paletteList } from "./palettes";
 
 const A4 = "a4" as const;
@@ -232,6 +232,241 @@ function fitness({ t }: TemplateContext) {
   ]);
 }
 
+function semicircle(x: number, y: number, width: number, fill: StudioFill): StudioElement {
+  return { ...box("rect", x, y, width, width / 2, fill), corners: [width / 2, width / 2, 0, 0] as [number, number, number, number] };
+}
+
+function festivalLineup({ t }: TemplateContext) {
+  const cream = "#f7ecd8";
+  const brown = "#3b1d12";
+  const teal = "#1f6f6b";
+  const pink = "#d9435b";
+  const orange = "#ee7a2f";
+  const mustard = "#f2b443";
+  const display = FONTS.abril;
+  const body = FONTS.montserrat;
+  const key = (name: string) => t(`studio.tpl.festivalLineup${name}`);
+  const base = 356;
+  const bands = [teal, pink, orange, mustard];
+  const sparkles: [number, number, number][] = [
+    [54, 168, 18],
+    [86, 132, 10],
+    [W - 74, 300, 14],
+  ];
+  return design(t("studio.templates.items.festivalLineup"), [brown, teal, pink, orange, mustard, cream], [
+    pageOf(A4, solid(cream), [
+      art("halftone", { primary: mustard, secondary: orange }, 0, 0, W, H, { opacity: 0.14 }),
+      ...bands.map((colour, index) => {
+        const radius = 262 - index * 46;
+        return semicircle(W / 2 - radius, base - radius, radius * 2, solid(colour));
+      }),
+      shadowed(semicircle(W / 2 - 78, base - 78, 156, gradient(180, ["#fff6dc", "#ffd27a"])), "glow", "#ffffff"),
+      art("sunburst", { primary: "#fff6dc", secondary: mustard }, W / 2 - 78, base - 78, 156, 78, { opacity: 0.35 }),
+      box("rect", 40, base, W - 80, 3, solid(brown)),
+      ...sparkles.map(([x, y, side]) => box("star", x, y, side, side, solid(brown), { points: 4, inner: 0.32 })),
+      text(40, 36, 260, 18, t("studio.tpl.orgName"), { font: body, size: 10, bold: true, color: brown, spacing: 3, upper: true, valign: "middle", shrink: true }),
+      text(W - 240, 36, 200, 18, key("Edition"), { font: body, size: 10, bold: true, color: brown, spacing: 3, upper: true, align: "right", valign: "middle", shrink: true }),
+      shadowed(box("burst", W - 158, 108, 118, 118, solid("#b8324a"), { points: 18, inner: 0.84, rotation: 12 }), "lifted", brown),
+      text(W - 148, 136, 98, 62, key("Badge"), { font: body, size: 13, bold: true, color: "#ffffff", align: "center", valign: "middle", upper: true, lineHeight: 1.05, rotation: 12, shrink: true }),
+      centredText(page, 376, 136, key("Title"), { font: display, size: 62, color: brown, lineHeight: 1.0, valign: "middle", inset: 40, shrink: true }),
+      centredText(page, 520, 22, key("Dates"), { font: body, size: 12, bold: true, color: teal, spacing: 2.5, upper: true, valign: "middle", inset: 48, shrink: true }),
+      art("dotsDivider", { primary: pink, secondary: orange }, W / 2 - 60, 556, 120, 10),
+      centredText(page, 580, 68, key("Headliners"), { font: body, size: 21, bold: true, color: brown, upper: true, lineHeight: 1.2, valign: "middle", inset: 36, shrink: true }),
+      centredText(page, 656, 40, key("Acts"), { font: body, size: 13, bold: true, color: "#a92f45", lineHeight: 1.35, valign: "middle", inset: 64, shrink: true }),
+      centredText(page, 702, 18, key("More"), { font: body, size: 11, color: "#6b4a3a", valign: "middle", inset: 64, shrink: true }),
+      box("rect", 0, H - 112, W, 112, gradient(90, [brown, "#5a2a18"])),
+      art("halftone", { primary: orange, secondary: mustard }, W / 2, H - 112, W / 2, 112, { opacity: 0.25 }),
+      box("rect", 0, H - 112, W, 4, gradient(0, [teal, pink, orange, mustard])),
+      text(40, H - 92, 330, 30, key("Cta"), { font: display, size: 24, color: cream, valign: "middle", shrink: true }),
+      text(40, H - 58, 330, 18, t("studio.tpl.website"), { font: body, size: 12, bold: true, color: mustard, spacing: 1, valign: "middle", shrink: true }),
+      text(40, H - 36, 330, 16, key("EarlyBird"), { font: body, size: 10, color: "#f3dcc4", valign: "middle", shrink: true }),
+      shadowed(box("rect", W - 124, H - 100, 84, 84, solid("#ffffff"), { radius: 10 }), "lifted", "#000000"),
+      qr("https://example.com/festival", W - 116, H - 92, 68, brown),
+    ]),
+  ]);
+}
+
+function exhibitionPoster({ t }: TemplateContext) {
+  const paper = "#f2efe9";
+  const ink = "#151515";
+  const red = "#cf3f27";
+  const grey = "#5a5a5a";
+  const display = FONTS.cormorant;
+  const body = FONTS.inter;
+  const key = (name: string) => t(`studio.tpl.exhibitionPoster${name}`);
+  const column = (W - 80) / 3;
+  const facts = [
+    ["DatesLabel", "Dates"],
+    ["VenueLabel", "Venue"],
+    ["HoursLabel", "Hours"],
+  ];
+  return design(t("studio.templates.items.exhibitionPoster"), [ink, red, paper, grey], [
+    pageOf(A4, solid(paper), [
+      box("ellipse", 232, 104, 420, 420, gradient(160, ["#db5236", "#b8321d"])),
+      box("ellipse", 292, 112, 56, 56, solid(ink)),
+      text(40, 40, 200, 20, t("studio.tpl.orgName"), { font: body, size: 9.5, bold: true, color: ink, spacing: 2, upper: true, valign: "middle", shrink: true }),
+      text(W / 2 - 90, 40, 180, 20, key("Kicker"), { font: body, size: 9.5, bold: true, color: ink, spacing: 4, upper: true, align: "center", valign: "middle", shrink: true }),
+      text(W - 200, 40, 160, 20, "2027", { font: body, size: 9.5, bold: true, color: ink, spacing: 2, align: "right", valign: "middle" }),
+      rule(40, 72, W - 80, ink, 0.8),
+      ...liftedSlot(photoSlot(72, 140, 250, 330, "#d8d2c6"), "lifted"),
+      rule(72, 492, 24, ink, 1),
+      text(104, 482, 230, 20, key("Caption"), { font: display, size: 13, italic: true, color: grey, valign: "middle", shrink: true }),
+      text(40, 540, W - 80, 160, key("Title"), { font: display, size: 96, bold: true, color: ink, lineHeight: 0.92, valign: "bottom", shrink: true }),
+      text(40, 708, W - 80, 24, key("Subtitle"), { font: display, size: 18, italic: true, color: ink, valign: "middle", shrink: true }),
+      rule(40, 748, W - 80, ink, 0.8),
+      ...facts.flatMap(([label, value], index) => {
+        const x = 40 + index * column;
+        return [
+          ...(index ? [vrule(x, 760, 52, "#c9c3b8", 0.8)] : []),
+          text(x + (index ? 14 : 0), 762, column - 20, 14, key(label), { font: body, size: 8.5, bold: true, color: grey, spacing: 1.5, upper: true, valign: "middle", shrink: true }),
+          text(x + (index ? 14 : 0), 780, column - 20, 32, key(value), { font: body, size: 10.5, bold: true, color: ink, lineHeight: 1.3, shrink: true }),
+        ];
+      }),
+    ]),
+  ]);
+}
+
+function productLaunch({ t }: TemplateContext) {
+  const ink = "#0f172a";
+  const muted = "#475569";
+  const coral = "#ff5a36";
+  const coralInk = "#b93a1e";
+  const display = FONTS.poppins;
+  const body = FONTS.inter;
+  const key = (name: string) => t(`studio.tpl.productLaunch${name}`);
+  const column = (W - 80) / 3;
+  const specs = [1, 2, 3];
+  return design(t("studio.templates.items.productLaunch"), [ink, coral, "#f1f5f9", "#ffffff"], [
+    pageOf(A4, radial("#ffffff", "#e3e8ef", { cy: 0.48, radius: 0.95 }), [
+      art("arcRings", { primary: "#cbd5e1", secondary: coral }, W / 2 - 236, 230, 472, 472, { opacity: 0.55 }),
+      box("ellipse", W / 2 - 200, 266, 400, 400, radial("#ffd9cc", "#e9edf3"), { opacity: 0.9 }),
+      box("ellipse", W / 2 - 130, 606, 260, 22, solid(ink), { opacity: 0.1 }),
+      ...liftedSlot(photoSlot(W / 2 - 140, 312, 280, 280, "#f1f5f9", "circle"), "lifted"),
+      shadowed(box("ellipse", W / 2 + 92, 318, 56, 56, solid(coral)), "soft", coralInk),
+      box("star", W / 2 + 106, 332, 28, 28, solid("#ffffff"), { points: 4, inner: 0.32 }),
+      text(40, 40, 260, 24, t("studio.tpl.companyName"), { font: display, size: 13, bold: true, color: ink, valign: "middle", shrink: true }),
+      box("rect", W - 132, 40, 92, 24, solid(ink), { radius: 12 }),
+      text(W - 128, 40, 84, 24, key("Badge"), { font: body, size: 9.5, bold: true, color: "#ffffff", align: "center", valign: "middle", upper: true, spacing: 2, shrink: true }),
+      centredText(page, 100, 20, key("Kicker"), { font: body, size: 12, bold: true, color: coralInk, spacing: 5, upper: true, valign: "middle", shrink: true }),
+      centredText(page, 124, 92, key("Name"), { font: display, size: 78, bold: true, color: ink, lineHeight: 1, valign: "middle", inset: 40, shrink: true }),
+      centredText(page, 220, 44, key("Tagline"), { font: body, size: 13, color: muted, lineHeight: 1.45, inset: 84, shrink: true }),
+      ...specs.flatMap((spec, index) => {
+        const x = 40 + index * column;
+        return [
+          ...(index ? [vrule(x, 664, 60, "#cbd5e1", 1)] : []),
+          box("diamond", x + column / 2 - 5, 650, 10, 10, solid(coral)),
+          text(x + 8, 668, column - 16, 36, key(`Spec${spec}Value`), { font: display, size: 28, bold: true, color: ink, align: "center", valign: "middle", shrink: true }),
+          text(x + 8, 706, column - 16, 16, key(`Spec${spec}Label`), { font: body, size: 9.5, bold: true, color: muted, align: "center", upper: true, spacing: 1.2, valign: "middle", shrink: true }),
+        ];
+      }),
+      box("rect", 0, H - 96, W, 96, gradient(90, [ink, "#1e293b"])),
+      box("rect", 0, H - 96, W, 3, solid(coral)),
+      text(40, H - 80, 260, 16, key("AvailableLabel"), { font: body, size: 9.5, bold: true, color: "#ffb4a2", upper: true, spacing: 2, valign: "middle", shrink: true }),
+      text(40, H - 62, 260, 30, key("LaunchDate"), { font: display, size: 22, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+      text(40, H - 30, 260, 16, t("studio.tpl.website"), { font: body, size: 10, color: "#cbd5e1", valign: "middle", shrink: true }),
+      shadowed(box("rect", W - 236, H - 72, 196, 48, solid(coral), { radius: 24 }), "lifted", "#000000"),
+      text(W - 226, H - 72, 176, 48, key("Cta"), { font: display, size: 13, bold: true, color: ink, align: "center", valign: "middle", upper: true, spacing: 1.5, shrink: true }),
+    ]),
+  ]);
+}
+
+function summitPoster({ t }: TemplateContext) {
+  const navy = "#0a1931";
+  const navy2 = "#132c57";
+  const amber = "#fbbf24";
+  const sky = "#7dd3fc";
+  const card = "#16346a";
+  const display = FONTS.oswald;
+  const body = FONTS.raleway;
+  const key = (name: string) => t(`studio.tpl.summitPoster${name}`);
+  const column = (W - 80) / 3;
+  const half = (W - 80 - 12) / 2;
+  const stats = [1, 2, 3];
+  const tracks = [1, 2, 3, 4];
+  const cardX = W - 196;
+  return design(t("studio.templates.items.summitPoster"), [navy, navy2, amber, sky, "#ffffff"], [
+    pageOf(A4, gradient(165, [navy, navy2]), [
+      art("honeycomb", { primary: "#24447e", secondary: sky }, 0, 0, W, 380, { opacity: 0.3 }),
+      box("ellipse", W - 280, -140, 400, 400, radial("#1d4ed8", navy2), { opacity: 0.45 }),
+      box("rect", 40, 52, 208, 26, solid(amber), { radius: 13 }),
+      text(48, 52, 192, 26, key("Kicker"), { font: body, size: 9.5, bold: true, color: navy, spacing: 2, upper: true, align: "center", valign: "middle", shrink: true }),
+      text(40, 96, cardX - 64, 214, key("Title"), { font: display, size: 66, bold: true, color: "#ffffff", lineHeight: 1.0, upper: true, valign: "bottom", shrink: true }),
+      shadowed(box("rect", cardX, 96, 156, 214, foil("gold", 150), { radius: 16 }), "lifted", "#000000"),
+      text(cardX + 8, 114, 140, 24, key("Month"), { font: display, size: 17, bold: true, color: navy, align: "center", upper: true, spacing: 3, valign: "middle", shrink: true }),
+      text(cardX + 8, 142, 140, 112, "14\n15", { font: display, size: 50, bold: true, color: navy, align: "center", valign: "middle", lineHeight: 1.0 }),
+      rule(cardX + 48, 264, 60, navy, 1.2),
+      text(cardX + 8, 274, 140, 24, "2027", { font: display, size: 17, bold: true, color: navy, align: "center", spacing: 4, valign: "middle" }),
+      text(40, 334, W - 80, 48, key("Lead"), { font: body, size: 13, color: "#cbd5e1", lineHeight: 1.5, shrink: true }),
+      ...stats.flatMap((stat, index) => {
+        const x = 40 + index * column;
+        return [
+          ...(index ? [vrule(x, 432, 56, "#2d4a80", 1)] : []),
+          text(x + (index ? 16 : 0), 402, column - 24, 50, key(`Stat${stat}Value`), { font: display, size: 42, bold: true, color: amber, valign: "middle", shrink: true }),
+          text(x + (index ? 16 : 0), 454, column - 24, 18, key(`Stat${stat}Label`), { font: body, size: 10, bold: true, color: "#bfdbfe", upper: true, spacing: 1.5, valign: "middle", shrink: true }),
+        ];
+      }),
+      text(40, 502, 220, 18, key("TracksHeading"), { font: body, size: 10.5, bold: true, color: amber, spacing: 3, upper: true, valign: "middle", shrink: true }),
+      rule(252, 511, W - 292, "#2d4a80", 0.8),
+      ...tracks.flatMap((track, index) => {
+        const x = 40 + (index % 2) * (half + 12);
+        const y = 532 + Math.floor(index / 2) * 64;
+        return [
+          box("rect", x, y, half, 52, solid(card), { radius: 12, stroke: stroke("#2b4c8a", 1) }),
+          box("rect", x, y + 14, 3, 24, solid(sky), { radius: 1.5 }),
+          text(x + 16, y, 40, 52, String(track).padStart(2, "0"), { font: display, size: 18, bold: true, color: sky, valign: "middle" }),
+          text(x + 56, y, half - 70, 52, key(`Track${track}`), { font: body, size: 13, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+        ];
+      }),
+      shadowed(box("rect", 40, H - 180, W - 80, 136, solid("#ffffff"), { radius: 18 }), "lifted", "#000000"),
+      box("rect", 40, H - 180, 8, 136, gradient(90, [amber, "#f59e0b"]), { radius: 4 }),
+      text(72, H - 160, 300, 32, t("studio.tpl.conferenceDate"), { font: display, size: 24, bold: true, color: navy, upper: true, valign: "middle", shrink: true }),
+      text(72, H - 122, 300, 40, t("studio.tpl.conferencePlace"), { font: body, size: 12, color: "#475569", lineHeight: 1.4, shrink: true }),
+      text(72, H - 78, 300, 18, t("studio.tpl.website"), { font: body, size: 11, bold: true, color: "#1d4ed8", valign: "middle", shrink: true }),
+      qr("https://example.com/summit", W - 150, H - 166, 90, navy),
+      text(W - 170, H - 72, 130, 16, t("studio.tpl.registerNow"), { font: body, size: 8.5, bold: true, color: navy, align: "center", upper: true, spacing: 1, valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
+function mantraPoster({ t }: TemplateContext) {
+  const night = "#12163a";
+  const indigo = "#2b2a6e";
+  const violet = "#5b3f8f";
+  const gold = "#f6c66b";
+  const coral = "#f07167";
+  const display = FONTS.playfair;
+  const body = FONTS.raleway;
+  const key = (name: string) => t(`studio.tpl.mantraPoster${name}`);
+  const stars: [number, number, number][] = [
+    [64, 84, 12],
+    [132, 210, 7],
+    [W - 96, 128, 14],
+    [W - 150, 260, 8],
+    [96, 430, 9],
+    [W - 80, 404, 10],
+    [W / 2 + 160, 60, 6],
+  ];
+  return design(t("studio.templates.items.mantraPoster"), [night, indigo, violet, gold, coral], [
+    pageOf(A4, gradient(180, [night, indigo, violet]), [
+      ...stars.map(([x, y, side]) => box("star", x, y, side, side, solid("#ffffff"), { points: 4, inner: 0.3, opacity: 0.85 })),
+      box("rect", 24, 24, W - 48, H - 48, { type: "none" }, { stroke: stroke("#ffffff", 0.8), opacity: 0.35 }),
+      shadowed(box("ellipse", W / 2 - 120, 452, 240, 240, gradient(180, [gold, coral])), "glow", "#ffb38a"),
+      box("triangle", -140, 520, 540, 340, gradient(180, ["#4a3d8f", indigo])),
+      box("triangle", 200, 486, 540, 370, gradient(180, ["#3d3480", "#231f5c"])),
+      box("triangle", -80, 616, 440, 240, solid("#1d1b4f")),
+      box("triangle", 250, 640, 460, 220, solid("#16153f")),
+      box("rect", 0, 790, W, H - 790, solid("#121138")),
+      art("waves", { primary: "#2b2a6e", secondary: "#1d1b4f" }, 0, 760, W, 50, { opacity: 0.5 }),
+      centredText(page, 76, 18, key("Kicker"), { font: body, size: 11, bold: true, color: gold, spacing: 6, upper: true, valign: "middle", shrink: true }),
+      box("rect", W / 2 - 20, 104, 40, 2, solid(gold)),
+      centredText(page, 118, 90, "“", { font: display, size: 130, color: gold, valign: "top", opacity: 0.9 }),
+      centredText(page, 196, 196, key("Quote"), { font: display, size: 42, italic: true, color: "#ffffff", lineHeight: 1.2, valign: "middle", inset: 60, shrink: true }),
+      centredText(page, 404, 20, key("Author"), { font: body, size: 12, bold: true, color: "#e9d5ff", spacing: 4, upper: true, valign: "middle", shrink: true }),
+      centredText(page, H - 48, 18, t("studio.tpl.website"), { font: body, size: 11, color: "#c7c2f0", spacing: 2, valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
 export const POSTER_TEMPLATES: StudioTemplate[] = [
   { id: "eventPoster", category: "posters", size: A4, build: eventPoster },
   { id: "salePost", category: "social", size: SQUARE, build: salePost },
@@ -241,4 +476,9 @@ export const POSTER_TEMPLATES: StudioTemplate[] = [
   { id: "comingSoon", category: "social", size: SQUARE, build: comingSoon },
   { id: "conference", category: "posters", size: A4, build: conference },
   { id: "fitness", category: "posters", size: A4, build: fitness },
+  { id: "festivalLineup", category: "posters", size: A4, build: festivalLineup },
+  { id: "exhibitionPoster", category: "posters", size: A4, build: exhibitionPoster },
+  { id: "productLaunch", category: "posters", size: A4, build: productLaunch },
+  { id: "summitPoster", category: "posters", size: A4, build: summitPoster },
+  { id: "mantraPoster", category: "posters", size: A4, build: mantraPoster },
 ];

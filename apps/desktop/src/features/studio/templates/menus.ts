@@ -290,6 +290,281 @@ function dessertMenu({ t }: TemplateContext) {
   ]);
 }
 
+const ROMAN = ["I", "II", "III", "IV", "V", "VI"];
+
+function fineDining({ t }: TemplateContext) {
+  const page = sizeOf(A4);
+  const { width: W, height: H } = page;
+  const ink = "#1c1b1a";
+  const muted = "#5f5a52";
+  const gold = "#b8893b";
+  const goldInk = darker(gold, 0.42);
+  const paper = "#fbf9f4";
+  const numeralX = 80;
+  const lineX = 160;
+  const textX = 182;
+  const textWidth = W - textX - 84;
+  const top = 240;
+  const gap = 76;
+  return design(t("studio.templates.items.fineDiningMenu"), [ink, gold, paper, muted], [
+    pageOf(A4, radial(paper, "#eee7da", { cy: 0.3, radius: 1.1 }), [
+      art("guillocheRosette", { primary: "#e6d9bd", secondary: "#eee4cf" }, W / 2 - 160, -160, 320, 320, { opacity: 0.7 }),
+      box("rect", 28, 28, W - 56, H - 56, { type: "none" }, { stroke: stroke(gold, 0.7) }),
+      box("rect", 34, 34, W - 68, H - 68, { type: "none" }, { stroke: stroke(gold, 0.3) }),
+      ...[
+        [28, 28],
+        [W - 28, 28],
+        [28, H - 28],
+        [W - 28, H - 28],
+      ].map(([x = 0, y = 0]) => box("diamond", x - 6, y - 6, 12, 12, foil("gold", 135))),
+      centredText(page, 72, 20, t("studio.tpl.restaurantName"), { font: FONTS.cormorant, size: 13, bold: true, color: ink, spacing: 8, upper: true, valign: "middle", shrink: true, inset: 120 }),
+      art("diamondDivider", { primary: gold, secondary: gold }, W / 2 - 50, 98, 100, 8),
+      centredText(page, 112, 72, t("studio.tpl.fineDiningMenuTitle"), { font: FONTS.cormorant, size: 54, italic: true, color: ink, valign: "middle", shrink: true, inset: 80 }),
+      centredText(page, 186, 16, t("studio.tpl.fineDiningMenuLead"), { font: FONTS.montserrat, size: 8.5, bold: true, color: muted, spacing: 3, upper: true, valign: "middle", shrink: true, inset: 90 }),
+      vrule(lineX, top - 6, gap * 5 + 40, lighter(gold, 0.15), 0.6),
+      ...ROMAN.flatMap((numeral, index) => {
+        const y = top + index * gap;
+        return [
+          text(numeralX, y - 8, 60, 40, numeral, { font: FONTS.cormorant, size: 30, italic: true, color: goldInk, align: "right", valign: "middle" }),
+          shadowed(box("diamond", lineX - 4, y + 8, 8, 8, foil("gold", 135)), "soft"),
+          text(textX, y, textWidth, 18, t(`studio.tpl.fineDiningMenuCourse${index + 1}`), { font: FONTS.montserrat, size: 11, bold: true, color: ink, spacing: 2.2, upper: true, valign: "middle", shrink: true }),
+          text(textX, y + 22, textWidth, 38, t(`studio.tpl.fineDiningMenuNote${index + 1}`), { font: FONTS.cormorant, size: 15.5, italic: true, color: muted, lineHeight: 1.25, shrink: true }),
+        ];
+      }),
+      box("rect", W / 2 - 60, 712, 120, 1.2, foil("gold", 0)),
+      centredText(page, 724, 26, t("studio.tpl.fineDiningMenuPrice"), { font: FONTS.cormorant, size: 17, bold: true, color: ink, valign: "middle", shrink: true, inset: 80 }),
+      centredText(page, 754, 18, t("studio.tpl.menuFooter"), { font: FONTS.cormorant, size: 12, italic: true, color: muted, valign: "middle", shrink: true, inset: 90 }),
+      art("diamondDivider", { primary: gold, secondary: gold }, W / 2 - 40, 784, 80, 8),
+    ]),
+  ]);
+}
+
+function chalkboard({ t }: TemplateContext) {
+  const page = sizeOf(A4);
+  const { width: W, height: H } = page;
+  const slate = "#262c2b";
+  const chalk = "#f4f1e8";
+  const yellow = "#fde68a";
+  const pink = "#f9a8d4";
+  const mint = "#99f6e4";
+  const dust = "#6b7371";
+  const inset = 22;
+  const left = 62;
+  const column = 220;
+  const right = W - left - column;
+  const item = (x: number, y: number, key: string, price: number): StudioElement[] => [
+    text(x, y, column - 44, 26, t(key), { font: FONTS.caveat, size: 21, bold: true, color: chalk, valign: "middle", shrink: true }),
+    text(x + column - 40, y, 40, 26, String(price), { font: FONTS.caveat, size: 22, bold: true, color: yellow, align: "right", valign: "middle" }),
+    rule(x, y + 30, column, dust, 0.8, "dotted"),
+  ];
+  const heading = (x: number, y: number, key: string, color: string): StudioElement[] => [
+    text(x, y, column, 42, t(key), { font: FONTS.caveat, size: 34, bold: true, color, valign: "middle", shrink: true }),
+    art("brushStroke", { primary: color, secondary: color }, x - 4, y + 40, 110, 9, { opacity: 0.5 }),
+  ];
+  const coffees = [3, 3, 4, 4, 4, 5, 5];
+  return design(t("studio.templates.items.chalkboardMenu"), [slate, chalk, yellow, pink, mint], [
+    pageOf(A4, gradient(135, ["#9a6a3a", "#6b4423", "#8a5a2e"]), [
+      art("diagonalHatch", { primary: "#4a2e16", secondary: "#4a2e16" }, 0, 0, W, H, { opacity: 0.25 }),
+      shadowed(box("rect", inset, inset, W - inset * 2, H - inset * 2, radial("#363e3c", "#1c2120", { cy: 0.4, radius: 1.1 }), { radius: 4 }), "lifted", "#000000"),
+      art("marble", { primary: "#4b5452", secondary: "#3d4543" }, inset, inset, W - inset * 2, H - inset * 2, { opacity: 0.45 }),
+      box("rect", inset + 12, inset + 12, W - inset * 2 - 24, H - inset * 2 - 24, { type: "none" }, { radius: 2, stroke: stroke("#5d6563", 0.8, "dashed") }),
+      ...[0, 10, 20].map((offset) => box("rect", 76 + offset, 58, 3, 16, solid(chalk), { radius: 1.5, opacity: 0.7, rotation: offset === 10 ? -10 : 10 })),
+      box("rect", 70, 80, 40, 30, { type: "none" }, { stroke: stroke(chalk, 2) }),
+      box("ellipse", 104, 84, 18, 18, { type: "none" }, { stroke: stroke(chalk, 2) }),
+      box("ellipse", 62, 108, 56, 8, { type: "none" }, { stroke: stroke(chalk, 2) }),
+      box("star", W - 120, 58, 34, 34, { type: "none" }, { stroke: stroke(yellow, 1.8), opacity: 0.9 }),
+      box("star", W - 82, 92, 20, 20, { type: "none" }, { stroke: stroke(pink, 1.6), opacity: 0.9 }),
+      box("star", W - 136, 100, 14, 14, { type: "none" }, { stroke: stroke(mint, 1.4), opacity: 0.9 }),
+      centredText(page, 50, 72, t("studio.tpl.cafeName"), { font: FONTS.caveat, size: 62, bold: true, color: chalk, valign: "middle", shrink: true, inset: 140 }),
+      centredText(page, 124, 18, t("studio.tpl.chalkboardMenuKicker"), { font: FONTS.josefin, size: 10, bold: true, color: yellow, spacing: 3, upper: true, valign: "middle", shrink: true, inset: 130 }),
+      art("dotsDivider", { primary: chalk, secondary: chalk }, W / 2 - 60, 152, 120, 8),
+      ...heading(left, 178, "studio.tpl.coffee", pink),
+      ...coffees.flatMap((price, index) => item(left, 236 + index * 44, `studio.tpl.chalkboardMenuCoffee${index + 1}`, price)),
+      ...heading(right, 178, "studio.tpl.tea", mint),
+      ...[3, 3, 4].flatMap((price, index) => item(right, 236 + index * 44, `studio.tpl.chalkboardMenuTea${index + 1}`, price)),
+      ...heading(right, 384, "studio.tpl.pastries", yellow),
+      ...[3, 4, 3].flatMap((price, index) => item(right, 442 + index * 44, `studio.tpl.chalkboardMenuTreat${index + 1}`, price)),
+      box("rect", left, 600, W - left * 2, 140, { type: "none" }, { radius: 18, stroke: stroke(chalk, 1.6, "dashed") }),
+      text(left + 24, 616, W - left * 2 - 180, 44, t("studio.tpl.chalkboardMenuSpecialLabel"), { font: FONTS.caveat, size: 34, bold: true, color: pink, valign: "middle", shrink: true }),
+      text(left + 24, 664, W - left * 2 - 180, 56, t("studio.tpl.chalkboardMenuSpecial"), { font: FONTS.josefin, size: 13, color: chalk, lineHeight: 1.4, shrink: true }),
+      box("burst", W - left - 132, 614, 112, 112, { type: "none" }, { points: 16, inner: 0.82, stroke: stroke(yellow, 2) }),
+      text(W - left - 132, 614, 112, 112, "6", { font: FONTS.caveat, size: 48, bold: true, color: yellow, align: "center", valign: "middle" }),
+      centredText(page, 764, 20, t("studio.tpl.website"), { font: FONTS.josefin, size: 9.5, bold: true, color: chalk, spacing: 3, valign: "middle", shrink: true, inset: 90 }),
+    ]),
+  ]);
+}
+
+function citrus(cx: number, cy: number, radius: number, rind: string, flesh: string): StudioElement[] {
+  const pith = "#fff7ed";
+  const inner = radius * 0.8;
+  return [
+    shadowed(box("ellipse", cx - radius, cy - radius, radius * 2, radius * 2, solid(rind)), "soft", darker(rind, 0.3)),
+    box("ellipse", cx - radius * 0.9, cy - radius * 0.9, radius * 1.8, radius * 1.8, solid(pith)),
+    box("ellipse", cx - inner, cy - inner, inner * 2, inner * 2, radial(lighter(flesh, 0.3), flesh)),
+    ...Array.from({ length: 5 }, (_, index) => box("line", cx - inner, cy - 4, inner * 2, 8, { type: "none" }, { stroke: stroke(pith, 1.8), rotation: index * 36 })),
+    box("ellipse", cx - radius * 0.1, cy - radius * 0.1, radius * 0.2, radius * 0.2, solid(pith)),
+  ];
+}
+
+function glass(x: number, y: number, kind: number, color: string): StudioElement[] {
+  if (kind % 2 === 0) {
+    return [
+      box("triangle", x, y + 4, 26, 13, solid(color), { rotation: 180 }),
+      box("rect", x + 12, y + 16, 2, 11, solid(darker(color, 0.2))),
+      box("ellipse", x + 5, y + 26, 16, 3.5, solid(darker(color, 0.2))),
+    ];
+  }
+  return [
+    box("line", x + 12, y - 1, 12, 8, { type: "none" }, { stroke: stroke(darker(color, 0.25), 1.6), rotation: -60 }),
+    box("rect", x + 5, y + 4, 16, 25, solid(lighter(color, 0.2)), { radius: 2.5 }),
+    box("rect", x + 5, y + 14, 16, 15, solid(color), { radius: 2.5 }),
+  ];
+}
+
+function cocktailList({ t }: TemplateContext) {
+  const page = sizeOf(A5);
+  const { width: W, height: H } = page;
+  const rust = "#7c2d12";
+  const coral = "#ea580c";
+  const deep = "#431407";
+  const muted = "#7a4a3a";
+  const prices = [12, 13, 11, 12, 14, 10];
+  const cardX = 28;
+  const cardY = 180;
+  const cardW = W - cardX * 2;
+  return design(t("studio.templates.items.cocktailListMenu"), [rust, coral, deep, "#ffd1c1", "#fff7ed"], [
+    pageOf(A5, gradient(165, ["#ffe8db", "#ffd3c2", "#ffc4a8"]), [
+      art("diagonalHatch", { primary: "#f6b39a", secondary: "#f6b39a" }, 0, 0, W, H, { opacity: 0.25 }),
+      ...citrus(W - 36, 58, 88, "#f59e0b", "#fb923c"),
+      ...citrus(26, H - 34, 70, "#f472b6", "#fb7185"),
+      text(36, 46, 230, 14, t("studio.tpl.cocktailListMenuKicker"), { font: FONTS.josefin, size: 9, bold: true, color: "#9a3412", spacing: 3, upper: true, valign: "middle", shrink: true }),
+      text(36, 64, 240, 92, t("studio.tpl.cocktailListMenuTitle"), { font: FONTS.abril, size: 42, color: rust, lineHeight: 1, valign: "middle", shrink: true }),
+      art("dotsDivider", { primary: coral, secondary: rust }, 36, 160, 84, 8),
+      shadowed(box("rect", cardX, cardY, cardW, 350, solid("#ffffff"), { radius: 22 }), "lifted", rust),
+      ...prices.flatMap((price, index) => {
+        const y = cardY + 18 + index * 55;
+        return [
+          ...glass(cardX + 18, y + 6, index, coral),
+          text(cardX + 58, y, cardW - 136, 22, t(`studio.tpl.cocktailListMenuName${index + 1}`), { font: FONTS.abril, size: 15, color: deep, valign: "middle", shrink: true }),
+          text(cardX + 58, y + 23, cardW - 136, 16, t(`studio.tpl.cocktailListMenuMix${index + 1}`), { font: FONTS.josefin, size: 9, color: muted, valign: "middle", shrink: true }),
+          box("rect", cardX + cardW - 66, y + 8, 46, 22, gradient(90, ["#c2410c", "#9a3412"]), { radius: 11 }),
+          text(cardX + cardW - 66, y + 8, 46, 22, String(price), { font: FONTS.josefin, size: 11, bold: true, color: "#ffffff", align: "center", valign: "middle" }),
+          ...(index < prices.length - 1 ? [rule(cardX + 58, y + 48, cardW - 78, "#f3c6b3", 0.8, "dotted")] : []),
+        ];
+      }),
+      centredText(page, 546, 20, t("studio.tpl.cocktailListMenuNote"), { font: FONTS.josefin, size: 9.5, bold: true, color: rust, spacing: 1, valign: "middle", shrink: true, inset: 96 }),
+    ]),
+  ]);
+}
+
+function bakery({ t }: TemplateContext) {
+  const page = sizeOf(A4);
+  const { width: W, height: H } = page;
+  const red = "#b4472f";
+  const cream = "#fbf3e4";
+  const brown = "#4a2c1a";
+  const muted = "#6e5444";
+  const wheat = "#c9a24a";
+  const stripes = 10;
+  const stripe = W / stripes;
+  const awning = 70;
+  const cardW = 155;
+  const cardH = 196;
+  const gapX = 20;
+  const left = (W - cardW * 3 - gapX * 2) / 2;
+  const rows = [362, 576];
+  const prices = [4, 3, 5, 6, 4, 5];
+  return design(t("studio.templates.items.bakeryMenu"), [red, cream, brown, wheat, muted], [
+    pageOf(A4, radial("#f8eedd", "#ead9bd", { cy: 0.45, radius: 1.1 }), [
+      art("halftone", { primary: "#d6bf9a", secondary: "#d6bf9a" }, 0, awning, W, H - awning, { opacity: 0.35 }),
+      ...Array.from({ length: stripes }, (_, index) => box("rect", index * stripe, 0, stripe, awning, solid(index % 2 ? cream : red))),
+      ...Array.from({ length: stripes }, (_, index) => shadowed(box("ellipse", index * stripe, awning - stripe * 0.3, stripe, stripe * 0.6, solid(index % 2 ? cream : red)), "soft", brown)),
+      box("rect", 0, 0, W, 8, solid(brown)),
+      shadowed(box("ellipse", W / 2 - 80, 92, 160, 160, solid("#fffaf1")), "lifted", brown),
+      box("ellipse", W / 2 - 71, 101, 142, 142, { type: "none" }, { stroke: stroke(red, 1, "dashed") }),
+      art("botanicalSprig", { primary: wheat, secondary: darker(wheat, 0.2) }, W / 2 - 12, 110, 24, 44),
+      centredText(page, 156, 54, t("studio.tpl.bakeryMenuName"), { font: FONTS.playfair, size: 24, bold: true, color: brown, lineHeight: 1.05, valign: "middle", shrink: true, inset: W / 2 - 62 }),
+      box("rect", W / 2 - 18, 216, 36, 1.5, foil("copper", 0)),
+      ...[-14, 0, 14].map((offset) => box("star", W / 2 + offset - 4, 222, 8, 8, solid(red))),
+      centredText(page, 266, 18, t("studio.tpl.bakeryMenuTagline"), { font: FONTS.josefin, size: 10, bold: true, color: darker(red, 0.25), spacing: 3, upper: true, valign: "middle", shrink: true, inset: 90 }),
+      centredText(page, 292, 42, t("studio.tpl.bakeryMenuSection"), { font: FONTS.playfair, size: 28, italic: true, color: brown, valign: "middle", shrink: true, inset: 90 }),
+      art("flourishDivider", { primary: red, secondary: wheat }, W / 2 - 70, 336, 140, 16),
+      ...prices.flatMap((price, index) => {
+        const x = left + (index % 3) * (cardW + gapX);
+        const y = rows[Math.floor(index / 3)] ?? 0;
+        const [backing, image] = photoSlot(x + cardW / 2 - 46, y + 14, 92, 92, "#f1e2c8", "circle");
+        return [
+          shadowed(box("rect", x, y, cardW, cardH, solid("#ffffff"), { radius: 14 }), "soft", brown),
+          box("ellipse", x + cardW / 2 - 51, y + 9, 102, 102, { type: "none" }, { stroke: stroke(red, 0.9, "dashed") }),
+          backing,
+          image,
+          text(x + 10, y + 116, cardW - 20, 22, t(`studio.tpl.bakeryMenuItem${index + 1}`), { font: FONTS.playfair, size: 13.5, bold: true, color: brown, align: "center", valign: "middle", shrink: true }),
+          text(x + 12, y + 139, cardW - 24, 26, t(`studio.tpl.bakeryMenuDesc${index + 1}`), { font: FONTS.josefin, size: 8.5, color: muted, align: "center", lineHeight: 1.35, shrink: true }),
+          box("rect", x + cardW / 2 - 26, y + 170, 52, 18, solid(red), { radius: 9 }),
+          text(x + cardW / 2 - 26, y + 170, 52, 18, String(price), { font: FONTS.josefin, size: 10, bold: true, color: "#ffffff", align: "center", valign: "middle" }),
+        ];
+      }),
+      box("rect", 0, H - 54, W, 54, gradient(0, [darker(red, 0.2), red, darker(red, 0.2)])),
+      box("rect", 0, H - 56, W, 2, foil("copper", 0)),
+      centredText(page, H - 54, 54, t("studio.tpl.bakeryMenuFooter"), { font: FONTS.josefin, size: 10.5, bold: true, color: cream, spacing: 2, upper: true, valign: "middle", shrink: true, inset: 50 }),
+    ]),
+  ]);
+}
+
+function kidsMenu({ t }: TemplateContext) {
+  const page = sizeOf(A5);
+  const { width: W } = page;
+  const blue = "#1d4ed8";
+  const navy = "#1e293b";
+  const orange = "#9a3412";
+  const sun = "#facc15";
+  const tiles = ["#fde68a", "#bbf7d0", "#fbcfe8", "#bfdbfe", "#fed7aa", "#ddd6fe"];
+  const icons = ["star", "heart", "burst", "hexagon", "cloud", "diamond"] as const;
+  const prices = [6, 6, 7, 6, 7, 5];
+  const tileW = 168;
+  const tileH = 80;
+  const gapX = 16;
+  const left = (W - tileW * 2 - gapX) / 2;
+  const gridX = W - left - 104;
+  const gridY = 448;
+  const cell = 28;
+  return design(t("studio.templates.items.kidsMenu"), [blue, navy, sun, "#f472b6", "#ffffff"], [
+    pageOf(A5, gradient(180, ["#dbeafe", "#fefce8"]), [
+      art("confetti", { primary: "#60a5fa", secondary: "#f472b6" }, 16, 16, W - 32, 130, { opacity: 0.4 }),
+      box("cloud", 18, 34, 92, 50, solid("#ffffff"), { opacity: 0.9 }),
+      box("cloud", 96, 118, 60, 32, solid("#ffffff"), { opacity: 0.8 }),
+      shadowed(box("burst", W - 104, 20, 84, 84, solid(sun), { points: 12, inner: 0.78 }), "soft", "#f59e0b"),
+      box("ellipse", W - 90, 34, 56, 56, radial("#fde047", "#f59e0b")),
+      centredText(page, 50, 64, t("studio.tpl.kidsMenuTitle"), { font: FONTS.pacifico, size: 38, color: blue, valign: "middle", shrink: true, inset: 118 }),
+      centredText(page, 118, 18, t("studio.tpl.kidsMenuKicker"), { font: FONTS.nunito, size: 10.5, bold: true, color: orange, spacing: 2.5, upper: true, valign: "middle", shrink: true, inset: 110 }),
+      ...prices.flatMap((price, index) => {
+        const x = left + (index % 2) * (tileW + gapX);
+        const y = 156 + Math.floor(index / 2) * 92;
+        const tile = tiles[index] ?? "#ffffff";
+        return [
+          shadowed(box("rect", x, y, tileW, tileH, solid(tile), { radius: 18 }), "soft", navy),
+          box("ellipse", x + 10, y + 14, 52, 52, solid("#ffffff")),
+          box(icons[index] ?? "star", x + 22, y + 26, 28, 28, solid(darker(tile, 0.35)), icons[index] === "star" ? { points: 5, inner: 0.45 } : icons[index] === "burst" ? { points: 10, inner: 0.7 } : {}),
+          text(x + 70, y + 10, tileW - 80, 20, t(`studio.tpl.kidsMenuItem${index + 1}`), { font: FONTS.nunito, size: 12.5, bold: true, color: navy, valign: "middle", shrink: true }),
+          text(x + 70, y + 31, tileW - 80, 24, t(`studio.tpl.kidsMenuDesc${index + 1}`), { font: FONTS.nunito, size: 8.5, color: "#334155", lineHeight: 1.25, shrink: true }),
+          box("rect", x + 70, y + 57, 34, 16, solid(navy), { radius: 8 }),
+          text(x + 70, y + 57, 34, 16, String(price), { font: FONTS.nunito, size: 9.5, bold: true, color: "#ffffff", align: "center", valign: "middle" }),
+        ];
+      }),
+      shadowed(box("rect", left, 436, W - left * 2, 108, solid("#ffffff"), { radius: 18, stroke: stroke(blue, 1.4, "dashed") }), "soft", navy),
+      text(left + 20, 448, gridX - left - 36, 84, t("studio.tpl.kidsMenuGame"), { font: FONTS.pacifico, size: 18, color: blue, lineHeight: 1.3, valign: "middle", shrink: true }),
+      ...[1, 2].flatMap((step) => [vrule(gridX + 10 + cell * step, gridY, cell * 3, navy, 2.5), rule(gridX + 10, gridY + cell * step, cell * 3, navy, 2.5)]),
+      box("line", gridX + 14, gridY + cell / 2 - 4, cell - 8, 8, { type: "none" }, { stroke: stroke("#db2777", 3), rotation: 45 }),
+      box("line", gridX + 14, gridY + cell / 2 - 4, cell - 8, 8, { type: "none" }, { stroke: stroke("#db2777", 3), rotation: -45 }),
+      box("line", gridX + 14 + cell * 2, gridY + cell * 2.5 - 4, cell - 8, 8, { type: "none" }, { stroke: stroke("#db2777", 3), rotation: 45 }),
+      box("line", gridX + 14 + cell * 2, gridY + cell * 2.5 - 4, cell - 8, 8, { type: "none" }, { stroke: stroke("#db2777", 3), rotation: -45 }),
+      box("ellipse", gridX + 16 + cell, gridY + cell + 6, cell - 12, cell - 12, { type: "none" }, { stroke: stroke("#ea580c", 3) }),
+      box("ellipse", gridX + 16 + cell * 2, gridY + 6, cell - 12, cell - 12, { type: "none" }, { stroke: stroke("#ea580c", 3) }),
+      centredText(page, 554, 28, t("studio.tpl.kidsMenuNote"), { font: FONTS.nunito, size: 9.5, bold: true, color: navy, lineHeight: 1.3, valign: "middle", shrink: true, inset: 40 }),
+    ]),
+  ]);
+}
+
 export const MENU_TEMPLATES: StudioTemplate[] = [
   { id: "restaurantMenu", category: "menus", size: A4, build: restaurant },
   { id: "cafeMenu", category: "menus", size: A4, build: cafe },
@@ -297,4 +572,9 @@ export const MENU_TEMPLATES: StudioTemplate[] = [
   { id: "burgerMenu", category: "menus", size: A4, build: burgerMenu },
   { id: "cocktailMenu", category: "menus", size: TALL, build: cocktailMenu },
   { id: "dessertMenu", category: "menus", size: A5, build: dessertMenu },
+  { id: "fineDiningMenu", category: "menus", size: A4, build: fineDining },
+  { id: "chalkboardMenu", category: "menus", size: A4, build: chalkboard },
+  { id: "cocktailListMenu", category: "menus", size: A5, build: cocktailList },
+  { id: "bakeryMenu", category: "menus", size: A4, build: bakery },
+  { id: "kidsMenu", category: "menus", size: A5, build: kidsMenu },
 ];

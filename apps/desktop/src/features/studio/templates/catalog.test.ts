@@ -27,11 +27,20 @@ function outside(element: StudioElement, page: StudioPage): boolean {
   return element.x >= page.width || element.y >= page.height || element.x + element.width <= 0 || element.y + element.height <= 0;
 }
 
+function turnedBox(element: StudioElement): { left: number; top: number; right: number; bottom: number } {
+  const angle = (element.rotation * Math.PI) / 180;
+  const halfWidth = (Math.abs(Math.cos(angle)) * element.width + Math.abs(Math.sin(angle)) * element.height) / 2;
+  const halfHeight = (Math.abs(Math.sin(angle)) * element.width + Math.abs(Math.cos(angle)) * element.height) / 2;
+  const centreX = element.x + element.width / 2;
+  const centreY = element.y + element.height / 2;
+  return { left: centreX - halfWidth, top: centreY - halfHeight, right: centreX + halfWidth, bottom: centreY + halfHeight };
+}
+
 describe("studio templates", () => {
-  it("ships about sixty templates with unique ids in every category", () => {
-    expect(STUDIO_TEMPLATES.length).toBeGreaterThanOrEqual(60);
+  it("ships at least eleven templates with unique ids in every category", () => {
+    expect(STUDIO_TEMPLATES.length).toBeGreaterThanOrEqual(170);
     expect(new Set(STUDIO_TEMPLATES.map((template) => template.id)).size).toBe(STUDIO_TEMPLATES.length);
-    for (const category of TEMPLATE_CATEGORIES) expect(STUDIO_TEMPLATES.some((template) => template.category === category), category).toBe(true);
+    for (const category of TEMPLATE_CATEGORIES) expect(STUDIO_TEMPLATES.filter((template) => template.category === category).length, category).toBeGreaterThanOrEqual(11);
   });
 
   it("builds valid designs that survive normalisation unchanged", () => {
@@ -49,7 +58,8 @@ describe("studio templates", () => {
         for (const element of page.elements) {
           expect(outside(element, page), `${template.id} ${element.kind} ${element.x},${element.y}`).toBe(false);
           if (element.kind === "text") {
-            expect(element.x >= -0.5 && element.y >= -0.5 && element.x + element.width <= page.width + 0.5 && element.y + element.height <= page.height + 0.5, `${template.id} text "${element.runs.map((run) => run.text).join("")}"`).toBe(true);
+            const box = turnedBox(element);
+            expect(box.left >= -0.5 && box.top >= -0.5 && box.right <= page.width + 0.5 && box.bottom <= page.height + 0.5, `${template.id} text "${element.runs.map((run) => run.text).join("")}"`).toBe(true);
           }
         }
       }

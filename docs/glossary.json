@@ -2734,6 +2734,21 @@
       ],
       "studio.doc.table.headerRow": [
         "header"
+      ],
+      "studio.tpl.exhibitionPosterTitle": [
+        "form"
+      ],
+      "studio.cv.import.noText": [
+        "ocr"
+      ],
+      "studio.templates.items.letterheadPrestige": [
+        "letterhead"
+      ],
+      "studio.tpl.bakeryMenuDesc1": [
+        "layer"
+      ],
+      "studio.templates.items.giftTagsHanging": [
+        "tag"
       ]
     },
     "pt-BR": {
@@ -2754,15 +2769,83 @@
       ],
       "tools.sign.certificate.usageHint": [
         "seal"
+      ],
+      "studio.tpl.exhibitionPosterTitle": [
+        "form"
+      ],
+      "studio.tpl.bakeryMenuDesc1": [
+        "layer"
       ]
     },
-    "it": {},
+    "it": {
+      "studio.tpl.exhibitionPosterTitle": [
+        "form"
+      ],
+      "studio.tpl.jarLabelsApothecaryBatch": [
+        "batch"
+      ],
+      "studio.tpl.bakeryMenuDesc1": [
+        "layer"
+      ],
+      "studio.templates.items.giftTagsHanging": [
+        "tag"
+      ]
+    },
     "de": {
       "studio.doc.starters.descriptions.petition": [
         "attachment"
       ],
       "studio.doc.starters.petition.attachments": [
         "attachment"
+      ],
+      "studio.tpl.exhibitionPosterTitle": [
+        "form"
+      ],
+      "studio.cv.placeholders.certificate": [
+        "certificate"
+      ],
+      "studio.tpl.jarLabelsApothecaryBatch": [
+        "batch"
+      ],
+      "studio.templates.items.letterheadPrestige": [
+        "letterhead"
+      ],
+      "studio.tpl.bakeryMenuDesc1": [
+        "layer"
+      ],
+      "studio.templates.items.giftTagsHanging": [
+        "tag"
+      ]
+    },
+    "es": {
+      "studio.tpl.exhibitionPosterTitle": [
+        "form"
+      ],
+      "studio.tpl.bakeryMenuDesc1": [
+        "layer"
+      ]
+    },
+    "fr": {
+      "studio.tpl.exhibitionPosterTitle": [
+        "form"
+      ],
+      "studio.ornaments.items.waxSeal": [
+        "seal"
+      ],
+      "studio.cv.crop.open": [
+        "crop"
+      ],
+      "studio.cv.crop.title": [
+        "crop"
+      ],
+      "studio.cv.crop.area": [
+        "crop"
+      ],
+      "studio.tpl.bakeryMenuDesc1": [
+        "layer"
+      ],
+      "studio.templates.items.giftTagsHanging": [
+        "tag"
       ]
     }
   }

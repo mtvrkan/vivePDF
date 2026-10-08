@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio: 60 more templates (174 in all, at least 11 per category) — among them a foil excellence certificate, botanical and art deco invitations, a prestige letterhead and modern invoice, foil business cards, a retro festival line-up, an Apple-style product launch, open house and pasta night flyers, a terminal-style tech meetup, quote and countdown posts, ebook, portfolio and thesis covers, fine dining, cocktail and kids menus, a lesson plan and timetable, a habit tracker, travel itinerary and seating chart, and jar, candle and shipping labels plus name badges [2026-10-09]
 - Studio CV: four new layouts — Executive (navy band with a gold rule), Academic (serif, dates in the margin), Designer (two-tone sidebar) and Infographic (dark sidebar with banded headings) — also listed in the template gallery [2026-10-08]
 - Studio: 16 new ornaments — a Patterns group (halftone dots, diagonal lines, contour lines, triangle tiles, honeycomb, marble veins, sunburst), art nouveau, corner-gem and guilloche frames, a wax seal, and art deco fan, botanical sprig, brush stroke, page curl and corner ribbon accents; all pure vectors so PDFs match the canvas [2026-10-08]
 - Studio CV: Import from PDF… reads an existing CV or LinkedIn PDF, lists the sections it found with counts and lets you replace or add them (undoable); Save/Open CV file keeps the whole CV in a `.json` file; the photo is copied into Studio's picture store and can be cropped [2026-10-08]
@@ -89,6 +90,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Studio: template text boxes now grow to hold every line they are given, so titles no longer get clipped at the top or bottom of their box, and a template check flags any text that still does not fit [2026-10-09]
 - Viewer: the floating toolbar of a selected text box or picture no longer covers dialogs, so Save, Discard and Cancel in the unsaved-changes dialog can be clicked again [2026-10-08]
 - Home: a collection card's Open all skips files that no longer exist (and says so when none are left) instead of failing on each one [2026-10-08]
 - Home: files of a collection that open after a password prompt now join the collection's tab group instead of staying outside it [2026-10-08]

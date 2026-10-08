@@ -1,6 +1,6 @@
 import type { StudioElement, StudioFill } from "@/types/studio";
 import { darker, lighter } from "../ornaments/paint";
-import { art, box, centredText, design, foil, FONTS, frame, gradient, pageOf, qr, radial, rule, shadowed, sizeOf, solid, stroke, text, type StudioTemplate, type TemplateContext } from "./kit";
+import { art, box, centredText, design, foil, FONTS, frame, gradient, pageOf, qr, radial, rule, shadowed, sizeOf, solid, stroke, text, vrule, type StudioTemplate, type TemplateContext } from "./kit";
 import { PALETTES, paletteList } from "./palettes";
 
 const SIZE = "a5" as const;
@@ -244,6 +244,183 @@ function opening({ t }: TemplateContext) {
   ]);
 }
 
+function botanicalWedding({ t }: TemplateContext) {
+  const terra = "#b4654a";
+  const terraInk = "#8a4630";
+  const sage = "#7d9a7e";
+  const ink = "#3a2a24";
+  const muted = "#6f5a50";
+  const cream = "#fffaf5";
+  const x = 44;
+  const y = 64;
+  const width = W - x * 2;
+  const height = H - y - 44;
+  const radius = width / 2;
+  const cx = W / 2;
+  const cy = y + radius;
+  const leaves = { primary: sage, secondary: terra };
+  const blooms = { primary: "#c98a6f", secondary: sage };
+  const crown = [192, 207, 222, 237, 252, 288, 303, 318, 333, 348].map((angle, index) => {
+    const radians = (angle * Math.PI) / 180;
+    const left = angle < 270;
+    return art("botanicalSprig", index % 3 === 1 ? blooms : leaves, cx + Math.cos(radians) * (radius + 2) - 18, cy + Math.sin(radians) * (radius + 2) - 36, 36, 72, { rotation: left ? angle + 180 : angle });
+  });
+  return design(t("studio.templates.items.botanicalWedding"), [terra, sage, cream, ink], [
+    pageOf(SIZE, radial("#f9eee6", "#ecd5c7", { cy: 0.35, radius: 1 }), [
+      art("blob", { primary: "#e9b9a4", secondary: "#f6ddd1" }, -90, -70, 250, 250, { opacity: 0.45 }),
+      art("blob", { primary: "#c3d3bf", secondary: "#e6eee2" }, W - 150, H - 190, 260, 260, { opacity: 0.5, rotation: 120 }),
+      shadowed(arch(x, y, width, height, solid(cream), { stroke: stroke(terra, 0.8) }), "lifted", terraInk),
+      arch(x + 9, y + 9, width - 18, height - 18, { type: "none" }, { stroke: stroke(lighter(terra, 0.35), 0.5) }),
+      ...crown,
+      box("ellipse", cx - 5, y - 5, 10, 10, foil("rose", 135)),
+      art("botanicalSprig", leaves, x - 12, y + height - 92, 44, 88, { rotation: -26 }),
+      art("botanicalSprig", blooms, x + width - 32, y + height - 92, 44, 88, { rotation: 26 }),
+      centredText(page, 170, 18, t("studio.tpl.togetherWithFamilies"), { font: FONTS.montserrat, size: 9, bold: true, color: muted, spacing: 2.5, upper: true, shrink: true, inset: 80 }),
+      centredText(page, 194, 104, t("studio.tpl.coupleNames"), { font: FONTS.alexBrush, size: 52, color: terraInk, lineHeight: 1, shrink: true, valign: "middle", inset: 70 }),
+      centredText(page, 302, 34, t("studio.tpl.botanicalWeddingLead"), { font: FONTS.montserrat, size: 11, color: muted, lineHeight: 1.4, shrink: true, inset: 84 }),
+      rule(cx - 74, 352, 52, terra, 0.6),
+      art("botanicalSprig", leaves, cx - 8, 336, 16, 32, { rotation: 90 }),
+      rule(cx + 22, 352, 52, terra, 0.6),
+      text(80, 368, cx - 94, 40, t("studio.tpl.weddingDate"), { font: FONTS.montserrat, size: 10.5, bold: true, color: ink, spacing: 0.5, upper: true, align: "right", valign: "middle", lineHeight: 1.3, shrink: true }),
+      vrule(cx, 368, 40, terra, 0.8),
+      text(cx + 14, 368, cx - 94, 40, t("studio.tpl.weddingTime"), { font: FONTS.montserrat, size: 10.5, italic: true, color: ink, valign: "middle", lineHeight: 1.3, shrink: true }),
+      centredText(page, 424, 40, t("studio.tpl.venue"), { font: FONTS.montserrat, size: 10.5, color: ink, lineHeight: 1.4, shrink: true, inset: 84 }),
+      centredText(page, 482, 16, t("studio.tpl.rsvp"), { font: FONTS.montserrat, size: 8.5, bold: true, color: terraInk, spacing: 2, upper: true, shrink: true, inset: 96 }),
+    ]),
+  ]);
+}
+
+function goldGala({ t }: TemplateContext) {
+  const night = "#0b0a08";
+  const gold = "#d4af5a";
+  const goldText = "#e9d08f";
+  const cream = "#f2e8d0";
+  const mist = "#bdb6a6";
+  const onFoil = "#1a1306";
+  const band = 250;
+  const teeth = Array.from({ length: 21 }, (_, index) => box("triangle", index * 20, band - 1, 20, 12, solid("#a8843e"), { rotation: 180 }));
+  return design(t("studio.templates.items.goldGala"), [night, gold, cream, mist], [
+    pageOf(SIZE, radial("#1f1c17", night, { cy: 0.7, radius: 1 }), [
+      art("halftone", { primary: "#3a3226", secondary: gold }, 0, band, W, H - band, { opacity: 0.3 }),
+      box("rect", 0, 0, W, band, foil("gold", 160)),
+      art("guillocheRosette", { primary: "#8a6a24", secondary: "#fff1c4" }, W / 2 - 140, -16, 280, 280, { opacity: 0.3 }),
+      ...teeth,
+      text(32, 52, W - 64, 16, t("studio.tpl.youAreInvited"), { font: FONTS.josefin, size: 10, bold: true, color: onFoil, spacing: 4, upper: true, align: "center", shrink: true }),
+      text(28, 74, W - 56, 124, t("studio.tpl.goldGalaTitle"), { font: FONTS.abril, size: 54, color: onFoil, lineHeight: 1.05, align: "center", valign: "middle", shrink: true }),
+      text(32, 200, W - 64, 18, "2027", { font: FONTS.josefin, size: 12, bold: true, color: onFoil, spacing: 8, align: "center" }),
+      box("rect", 27, band + 30, 1.6, H - band - 72, foil("gold", 90)),
+      box("rect", W - 28.6, band + 30, 1.6, H - band - 72, foil("gold", 90)),
+      art("diamondDivider", { primary: gold, secondary: gold }, W / 2 - 90, 290, 180, 12),
+      centredText(page, 314, 40, t("studio.tpl.goldGalaLine"), { font: FONTS.josefin, size: 12.5, color: mist, lineHeight: 1.45, shrink: true, inset: 56 }),
+      centredText(page, 366, 30, t("studio.tpl.dinnerDate"), { font: FONTS.abril, size: 20, color: goldText, lineHeight: 1.2, shrink: true, valign: "middle", inset: 40 }),
+      centredText(page, 402, 40, t("studio.tpl.dinnerPlace"), { font: FONTS.josefin, size: 11.5, color: cream, lineHeight: 1.4, shrink: true, inset: 56 }),
+      box("rect", W / 2 - 84, 462, 168, 30, { type: "none" }, { stroke: stroke(gold, 1), radius: 15 }),
+      centredText(page, 462, 30, t("studio.tpl.goldGalaDress"), { font: FONTS.josefin, size: 10, bold: true, color: goldText, spacing: 3, upper: true, valign: "middle", shrink: true, inset: W / 2 - 76 }),
+      centredText(page, 520, 16, t("studio.tpl.orgName"), { font: FONTS.josefin, size: 9, bold: true, color: mist, spacing: 3, upper: true, shrink: true, inset: 64 }),
+      box("rect", 0, H - 8, W, 8, foil("gold", 0)),
+    ]),
+  ]);
+}
+
+function confettiBirthday({ t }: TemplateContext) {
+  const coral = "#ff6f61";
+  const coralDeep = "#e23c4b";
+  const sun = "#ffc93c";
+  const teal = "#1fb5a9";
+  const navy = "#1d1a4b";
+  const ink = "#24123a";
+  const red = "#b4183a";
+  const cream = "#fff8ef";
+  const paper = lighter(cream, 0.25);
+  const panel = 352;
+  return design(t("studio.templates.items.confettiBirthday"), [coralDeep, sun, teal, navy], [
+    pageOf(SIZE, solid(paper), [
+      box("rect", 0, 0, W, panel, gradient(160, [coral, coralDeep])),
+      art("sunburst", { primary: "#ff8577", secondary: sun }, -W * 0.3, -120, W * 1.6, 520, { opacity: 0.22 }),
+      art("confetti", { primary: sun, secondary: "#ffffff" }, 8, 8, W - 16, 300, { opacity: 0.9 }),
+      art("confetti", { primary: teal, secondary: navy }, 24, 40, W - 48, 260, { opacity: 0.55, rotation: 180 }),
+      art("waves", { primary: cream, secondary: "#ffc2b4" }, 0, panel - 72, W, 96),
+      box("rect", 0, panel - 14, W, 40, solid(paper)),
+      text(24, 36, W - 48, 44, t("studio.tpl.letsCelebrate"), { font: FONTS.pacifico, size: 26, color: "#ffffff", align: "center", valign: "middle", lineHeight: 1.4, shrink: true, shadow: "subtle" }),
+      text(0, 82, W, 216, "30", { font: FONTS.bebas, size: 230, color: "#ffffff", align: "center", valign: "middle", lineHeight: 0.92, shadow: { color: "#7f1028", x: 5, y: 6, opacity: 0.45 } }),
+      text(32, 360, W - 64, 40, t("studio.tpl.confettiBirthdayName"), { font: FONTS.poppins, size: 22, bold: true, color: ink, align: "center", valign: "middle", lineHeight: 1.3, shrink: true }),
+      shadowed(box("rect", 44, 414, W - 88, 116, solid("#ffffff"), { radius: 20, stroke: stroke("#ffd3c9", 1.2, "dashed") }), "lifted", coralDeep),
+      box("rect", W / 2 - 36, 410, 20, 8, solid(sun), { radius: 4 }),
+      box("rect", W / 2 - 10, 410, 20, 8, solid(coral), { radius: 4 }),
+      box("rect", W / 2 + 16, 410, 20, 8, solid(teal), { radius: 4 }),
+      text(64, 432, W - 128, 28, t("studio.tpl.confettiBirthdayDate"), { font: FONTS.poppins, size: 15, bold: true, color: red, align: "center", valign: "middle", lineHeight: 1.3, shrink: true }),
+      text(64, 466, W - 128, 44, t("studio.tpl.confettiBirthdayPlace"), { font: FONTS.poppins, size: 11.5, color: "#4b5563", align: "center", lineHeight: 1.35, shrink: true }),
+      text(48, 548, W - 96, 16, t("studio.tpl.rsvp"), { font: FONTS.poppins, size: 9.5, bold: true, color: navy, spacing: 2, upper: true, align: "center", shrink: true }),
+      box("ellipse", W - 58, H - 72, 22, 22, solid(sun), { opacity: 0.85 }),
+      box("ellipse", 28, H - 52, 14, 14, solid(teal), { opacity: 0.85 }),
+      box("ellipse", W - 36, 376, 10, 10, solid(coral)),
+      box("ellipse", 36, 384, 8, 8, solid(navy), { opacity: 0.8 }),
+    ]),
+  ]);
+}
+
+function watercolourShower({ t }: TemplateContext) {
+  const washes = ["#f4b393", "#bba8e6", "#a3cb98", "#9fcbea"];
+  const rose = "#a8566e";
+  const ink = "#3d3a4b";
+  const muted = "#5e5a6b";
+  const sage = "#7f9c84";
+  const cx = W / 2;
+  const cy = 184;
+  const wreath = Array.from({ length: 9 }, (_, index) => {
+    const angle = (index / 9) * Math.PI * 2 - Math.PI / 2;
+    const size = 104 + (index % 3) * 16;
+    return art("blob", { primary: washes[index % 4], secondary: lighter(washes[(index + 1) % 4], 0.4) }, cx + Math.cos(angle) * 104 - size / 2, cy + Math.sin(angle) * 104 - size / 2, size, size, { opacity: 0.5, rotation: index * 40 });
+  });
+  const sprigs = [-140, -40, 30, 150].map((angle) => {
+    const radians = (angle * Math.PI) / 180;
+    return art("botanicalSprig", { primary: sage, secondary: "#c9a2b4" }, cx + Math.cos(radians) * 122 - 18, cy + Math.sin(radians) * 122 - 36, 36, 72, { rotation: angle + 90, opacity: 0.9 });
+  });
+  return design(t("studio.templates.items.watercolourShower"), [rose, ...washes, ink], [
+    pageOf(SIZE, radial("#ffffff", "#fbf4ef", { cy: 0.35, radius: 1 }), [
+      art("blob", { primary: "#f6c6a8", secondary: "#fde9dc" }, -80, H - 150, 200, 200, { opacity: 0.3 }),
+      art("blob", { primary: "#cdbfe8", secondary: "#efe9fa" }, W - 110, H - 130, 180, 180, { opacity: 0.3, rotation: 70 }),
+      ...wreath,
+      ...sprigs,
+      box("ellipse", cx - 84, cy - 84, 168, 168, solid("#fffdfb"), { opacity: 0.92 }),
+      box("ellipse", cx - 74, cy - 74, 148, 148, { type: "none" }, { stroke: stroke("#cdbfe8", 1, "dotted") }),
+      text(cx - 70, cy - 50, 140, 100, t("studio.tpl.watercolourShowerTitle"), { font: FONTS.parisienne, size: 42, color: rose, align: "center", valign: "middle", lineHeight: 1.1, shrink: true }),
+      centredText(page, 344, 22, t("studio.tpl.watercolourShowerLine"), { font: FONTS.raleway, size: 12, italic: true, color: muted, lineHeight: 1.3, shrink: true, inset: 60 }),
+      centredText(page, 372, 34, t("studio.tpl.babyShowerFor"), { font: FONTS.raleway, size: 11, color: muted, lineHeight: 1.35, shrink: true, inset: 64 }),
+      centredText(page, 408, 50, t("studio.tpl.parentName"), { font: FONTS.parisienne, size: 38, color: ink, lineHeight: 1.2, valign: "middle", shrink: true, inset: 48 }),
+      art("brushStroke", { primary: "#f6c6a8", secondary: "#fbe0cf" }, cx - 120, 466, 240, 36, { opacity: 0.75 }),
+      centredText(page, 470, 28, t("studio.tpl.showerDate"), { font: FONTS.raleway, size: 12.5, bold: true, color: ink, lineHeight: 1.3, valign: "middle", shrink: true, inset: 90 }),
+      centredText(page, 506, 36, t("studio.tpl.showerPlace"), { font: FONTS.raleway, size: 10.5, color: muted, lineHeight: 1.35, shrink: true, inset: 72 }),
+      centredText(page, 556, 14, t("studio.tpl.rsvp"), { font: FONTS.raleway, size: 8.5, bold: true, color: rose, spacing: 2, upper: true, lineHeight: 1.3, shrink: true, inset: 96 }),
+    ]),
+  ]);
+}
+
+function decoParty({ t }: TemplateContext) {
+  const black = "#0e0608";
+  const oxblood = "#4a1220";
+  const gold = "#cfa85a";
+  const champagne = "#ecd5a3";
+  const blush = "#f0d9c8";
+  const mist = "#d8c2b4";
+  const onFoil = "#2a0a10";
+  return design(t("studio.templates.items.decoParty"), [oxblood, gold, black, champagne], [
+    pageOf(SIZE, gradient(180, [oxblood, "#14070a"]), [
+      art("sunburst", { primary: "#6a1a2c", secondary: gold }, -W * 0.35, H - 300, W * 1.7, 600, { opacity: 0.4 }),
+      frame("decoFrame", { primary: gold, secondary: gold }, page),
+      centredText(page, 58, 16, t("studio.tpl.youAreInvited"), { font: FONTS.raleway, size: 10, bold: true, color: champagne, spacing: 5, upper: true, shrink: true, inset: 60 }),
+      art("diamondDivider", { primary: gold, secondary: gold }, W / 2 - 70, 82, 140, 10),
+      centredText(page, 96, 156, t("studio.tpl.decoPartyTitle"), { font: FONTS.bebas, size: 88, color: champagne, spacing: 3, lineHeight: 0.88, valign: "middle", shrink: true, inset: 44, shadow: "deep" }),
+      centredText(page, 256, 36, t("studio.tpl.decoPartyLine"), { font: FONTS.raleway, size: 13, italic: true, color: blush, lineHeight: 1.4, shrink: true, inset: 64 }),
+      shadowed(box("rect", W / 2 - 128, 302, 256, 34, foil("gold", 0), { radius: 17 }), "soft", "#000000"),
+      centredText(page, 302, 34, t("studio.tpl.decoPartyDate"), { font: FONTS.raleway, size: 12, bold: true, color: onFoil, lineHeight: 1.3, valign: "middle", shrink: true, inset: W / 2 - 120 }),
+      centredText(page, 346, 40, t("studio.tpl.decoPartyPlace"), { font: FONTS.raleway, size: 11.5, color: mist, lineHeight: 1.4, shrink: true, inset: 64 }),
+      centredText(page, 392, 16, t("studio.tpl.decoPartyDress"), { font: FONTS.raleway, size: 9.5, bold: true, color: champagne, spacing: 2, upper: true, lineHeight: 1.3, shrink: true, inset: 64 }),
+      shadowed(art("decoFan", { primary: black, secondary: gold }, W / 2 - 150, H - 200, 300, 162), "glow", gold),
+    ]),
+  ]);
+}
+
 export const INVITATION_TEMPLATES: StudioTemplate[] = [
   { id: "wedding", category: "invitations", size: SIZE, build: wedding },
   { id: "birthday", category: "invitations", size: SIZE, build: birthday },
@@ -253,4 +430,9 @@ export const INVITATION_TEMPLATES: StudioTemplate[] = [
   { id: "corporateEvent", category: "invitations", size: SIZE, build: corporate },
   { id: "dinner", category: "invitations", size: SIZE, build: dinner },
   { id: "opening", category: "invitations", size: SIZE, build: opening },
+  { id: "botanicalWedding", category: "invitations", size: SIZE, build: botanicalWedding },
+  { id: "goldGala", category: "invitations", size: SIZE, build: goldGala },
+  { id: "confettiBirthday", category: "invitations", size: SIZE, build: confettiBirthday },
+  { id: "watercolourShower", category: "invitations", size: SIZE, build: watercolourShower },
+  { id: "decoParty", category: "invitations", size: SIZE, build: decoParty },
 ];

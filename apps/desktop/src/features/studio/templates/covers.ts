@@ -586,6 +586,196 @@ function impactReport({ t }: TemplateContext) {
   ]);
 }
 
+function annualReport({ t }: TemplateContext) {
+  const palette = PALETTES.cobaltSun;
+  const { ink, accent, accent2, muted, soft, paper } = palette;
+  const margin = 48;
+  const inner = W - margin * 2;
+  const base = 690;
+  const heights = [70, 104, 92, 150, 196, 252];
+  const bar = 62;
+  const gap = 22;
+  const column = inner / 3;
+  return design(t("studio.templates.items.annualReport"), paletteList(palette), [
+    pageOf(A4, solid(paper), [
+      box("ellipse", W - 250, -150, 420, 420, solid(soft)),
+      art("diagonalHatch", { primary: "#c7d3f5", secondary: "#c7d3f5" }, W - 170, 0, 170, 230, { opacity: 0.5 }),
+      text(margin, 40, 300, 20, t("studio.tpl.companyName"), { font: FONTS.poppins, size: 11, bold: true, color: ink, upper: true, spacing: 2, valign: "middle", shrink: true }),
+      text(W - margin - 200, 40, 200, 20, t("studio.tpl.website"), { font: FONTS.inter, size: 10, color: muted, align: "right", valign: "middle", shrink: true }),
+      rule(margin, 72, inner, ink, 1),
+      text(margin, 100, 320, 20, t("studio.tpl.reportTitle"), { font: FONTS.poppins, size: 13, bold: true, color: accent, upper: true, spacing: 4, valign: "middle", shrink: true }),
+      text(margin - 4, 122, 420, 136, "2027", { font: FONTS.poppins, size: 124, bold: true, color: accent, lineHeight: 1, valign: "middle" }),
+      text(margin, 270, 420, 112, t("studio.tpl.annualReportTitle"), { font: FONTS.poppins, size: 40, bold: true, color: ink, lineHeight: 1.08, shrink: true }),
+      text(margin, 392, 340, 44, t("studio.tpl.reportSubtitle"), { font: FONTS.inter, size: 13, color: muted, lineHeight: 1.45, shrink: true }),
+      ...[1, 2, 3, 4].map((step) => rule(margin, base - step * 60, bar * 6 + gap * 5, "#cfd6ea", 0.8, "dotted")),
+      ...heights.flatMap((height, index) => {
+        const x = margin + index * (bar + gap);
+        const last = index === heights.length - 1;
+        return [
+          shadowed(box("rect", x, base - height, bar, height, last ? gradient(180, [accent2, "#e08e00"]) : gradient(180, [index % 2 ? "#3b6cf0" : accent, "#1e3a8a"]), { radius: 6 }), last ? "lifted" : "soft"),
+          text(x, base + 8, bar, 16, String(2022 + index), { font: FONTS.inter, size: 9, bold: last, color: last ? ink : muted, align: "center", valign: "middle" }),
+        ];
+      }),
+      shadowed(box("rect", margin + 5 * (bar + gap) - 12, base - 252 - 42, bar + 24, 30, solid(ink), { radius: 15 }), "soft"),
+      text(margin + 5 * (bar + gap) - 12, base - 252 - 42, bar + 24, 30, copy(t, "stat1Value"), { font: FONTS.poppins, size: 13, bold: true, color: "#ffffff", align: "center", valign: "middle", shrink: true }),
+      rule(margin, base, bar * 6 + gap * 5, ink, 1.4),
+      box("rect", 0, 732, W, H - 732, gradient(160, [ink, "#13265a"])),
+      art("topographic", { primary: "#2b3f78", secondary: accent }, 0, 732, W, H - 732, { opacity: 0.35 }),
+      box("rect", 0, 732, W, 4, gradient(0, [accent, accent2])),
+      ...[1, 2, 3].flatMap((number, index) => {
+        const x = margin + index * column;
+        return [
+          ...(index ? [vrule(x - 14, 756, 52, "#33457a", 1)] : []),
+          text(x, 752, column - 28, 36, copy(t, `stat${number}Value`), { font: FONTS.poppins, size: 26, bold: true, color: index === 0 ? accent2 : "#ffffff", valign: "middle", shrink: true }),
+          text(x, 790, column - 28, 18, copy(t, `stat${number}Label`), { font: FONTS.inter, size: 10.5, color: "#c7d0e8", valign: "middle", shrink: true }),
+        ];
+      }),
+    ]),
+  ]);
+}
+
+function guideEbook({ t }: TemplateContext) {
+  const { width, height } = EBOOK;
+  const page = { width, height };
+  const paper = "#f4ece0";
+  const clay = "#b85c38";
+  const rust = "#8a3f22";
+  const olive = "#5f6b3a";
+  const ink = "#2e1d16";
+  return design(t("studio.templates.items.guideEbook"), [clay, olive, ink, paper], [
+    pageOf(EBOOK, solid(paper), [
+      art("halftone", { primary: clay, secondary: olive }, 0, 0, width, height, { opacity: 0.06 }),
+      box("ellipse", 78, 54, 344, 344, solid(olive)),
+      box("rect", 78, 226, 344, 260, solid(olive)),
+      box("ellipse", 92, 68, 316, 316, solid(clay)),
+      box("rect", 92, 226, 316, 246, solid(clay)),
+      art("sunburst", { primary: "#f2c48d", secondary: "#f2c48d" }, 92, 68, 316, 404, { opacity: 0.16 }),
+      shadowed(box("ellipse", 190, 150, 120, 120, gradient(180, ["#f7d6a6", "#efb878"])), "glow", "#f7d6a6"),
+      box("ellipse", 92, 372, 240, 160, solid("#7b8549")),
+      box("ellipse", 236, 396, 172, 140, solid("#4f5a2e")),
+      box("rect", 60, 486, 380, 60, solid(paper)),
+      box("rect", 78, 472, 344, 14, solid(olive)),
+      art("botanicalSprig", { primary: olive, secondary: clay }, 36, 340, 84, 168, { rotation: -16 }),
+      art("botanicalSprig", { primary: olive, secondary: clay }, 392, 360, 64, 128, { rotation: 18, opacity: 0.85 }),
+      shadowed(box("ellipse", 372, 34, 104, 104, solid(ink)), "lifted", "#2e1d16"),
+      box("ellipse", 380, 42, 88, 88, { type: "none" }, { stroke: stroke("#f2c48d", 1, "dashed") }),
+      text(388, 62, 72, 48, t("studio.tpl.guideEbookBadge"), { font: FONTS.josefin, size: 12, bold: true, color: paper, align: "center", valign: "middle", upper: true, spacing: 1, shrink: true }),
+      centredText(page, 504, 20, t("studio.tpl.guideEbookKicker"), { font: FONTS.josefin, size: 12, bold: true, color: rust, upper: true, spacing: 4, valign: "middle", shrink: true, inset: 40 }),
+      centredText(page, 528, 116, t("studio.tpl.guideEbookTitle"), { font: FONTS.abril, size: 44, color: ink, lineHeight: 1.08, valign: "middle", shrink: true, inset: 36 }),
+      centredText(page, 650, 42, t("studio.tpl.guideEbookSubtitle"), { font: FONTS.josefin, size: 14, color: "#5c4a3e", lineHeight: 1.35, shrink: true, inset: 56 }),
+      art("diamondDivider", { primary: clay, secondary: olive }, width / 2 - 60, 702, 120, 10),
+      centredText(page, 722, 22, t("studio.tpl.personName"), { font: FONTS.josefin, size: 14, bold: true, color: ink, upper: true, spacing: 3, valign: "middle", shrink: true }),
+      centredText(page, 752, 18, t("studio.tpl.guideEbookFooter"), { font: FONTS.josefin, size: 10, bold: true, color: rust, upper: true, spacing: 2, valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
+function fashionMagazine({ t }: TemplateContext) {
+  const gold = "#e3c58d";
+  const lines = [1, 2, 3];
+  return design(t("studio.templates.items.fashionMagazine"), ["#1c1916", gold, "#f5efe6"], [
+    pageOf(A4, solid("#2a2622"), [
+      ...framedPhoto(0, 0, W, H, "#3a3530", "soft"),
+      ...Array.from({ length: 10 }, (_, index) => box("rect", 0, index * 22, W, 22, solid("#000000"), { opacity: Math.round(((10 - index) / 10) * 0.55 * 100) / 100 })),
+      ...Array.from({ length: 8 }, (_, index) => box("rect", index * 34, 262, 34, 300, solid("#000000"), { opacity: Math.round(((8 - index) / 8) * 0.4 * 100) / 100 })),
+      ...fade(0, H - 372, W, 12, 9, "#000000", 0.72),
+      box("rect", 0, H - 264, W, 264, solid("#000000"), { opacity: 0.72 }),
+      box("rect", 18, 18, W - 36, H - 36, NONE, { stroke: stroke(gold, 0.8) }),
+      centredText(PAGE, 34, 132, t("studio.tpl.fashionMagazineName"), { font: FONTS.cormorant, size: 116, bold: true, color: "#ffffff", spacing: 10, upper: true, lineHeight: 1, valign: "middle", shrink: true, inset: 32 }),
+      box("rect", W / 2 - 110, 174, 220, 1.2, foil("gold", 0)),
+      centredText(PAGE, 184, 18, t("studio.tpl.fashionMagazineIssue"), { font: FONTS.josefin, size: 9.5, bold: true, color: "#ffffff", upper: true, spacing: 4, valign: "middle", shrink: true }),
+      ...lines.flatMap((number, index) => {
+        const y = 284 + index * 86;
+        return [
+          text(40, y, 60, 24, `0${number}`, { font: FONTS.cormorant, size: 22, italic: true, bold: true, color: gold, valign: "middle" }),
+          text(40, y + 26, 226, 54, t(`studio.tpl.fashionMagazineLine${number}`), { font: FONTS.cormorant, size: 23, bold: true, color: "#ffffff", lineHeight: 1.1, shrink: true }),
+          ...(index < lines.length - 1 ? [rule(40, y + 80, 28, gold, 1)] : []),
+        ];
+      }),
+      text(W - 184, 412, 300, 16, t("studio.tpl.fashionMagazineTagline"), { font: FONTS.josefin, size: 9, bold: true, color: "#ffffff", align: "center", valign: "middle", upper: true, spacing: 5, rotation: 90, shrink: true }),
+      text(40, H - 294, 200, 18, copy(t, "coverStory"), { font: FONTS.josefin, size: 10, bold: true, color: gold, upper: true, spacing: 4, valign: "middle", shrink: true }),
+      text(40, H - 276, W - 80, 156, t("studio.tpl.fashionMagazineHeadline"), { font: FONTS.cormorant, size: 76, bold: true, italic: true, color: "#ffffff", lineHeight: 1, valign: "bottom", shrink: true }),
+      box("rect", 40, H - 112, 64, 1.6, foil("gold", 0)),
+      text(40, H - 100, W - 180, 48, t("studio.tpl.fashionMagazineDeck"), { font: FONTS.josefin, size: 11.5, color: "#ede6dc", lineHeight: 1.45, shrink: true }),
+      text(40, H - 44, 300, 16, t("studio.tpl.website"), { font: FONTS.josefin, size: 9, bold: true, color: gold, upper: true, spacing: 2, valign: "middle", shrink: true }),
+      art("diamondDivider", { primary: gold, secondary: gold }, W - 160, H - 40, 120, 8),
+    ]),
+  ]);
+}
+
+function studioPortfolio({ t }: TemplateContext) {
+  const palette = PALETTES.mochaCream;
+  const { ink, accent2 } = palette;
+  const margin = 48;
+  const inner = W - margin * 2;
+  const top = 420;
+  const tags = [1, 2, 3];
+  return design(t("studio.templates.items.studioPortfolio"), paletteList(palette), [
+    pageOf(A4, solid("#f3eee7"), [
+      art("halftone", { primary: accent2, secondary: accent2 }, 0, 0, W, top, { opacity: 0.12 }),
+      ...framedPhoto(40, 40, 248, 352, "#d9cbbd", "soft", "rounded"),
+      ...framedPhoto(304, 40, W - 344, 168, "#e4d8cb", "soft", "rounded"),
+      ...framedPhoto(304, 224, (W - 360) / 2, 168, "#cfbfae", "soft", "rounded"),
+      ...framedPhoto(320 + (W - 360) / 2, 224, (W - 360) / 2, 168, "#e0d2c3", "soft", "rounded"),
+      box("rect", 0, top, W, H - top, gradient(160, ["#3a2a20", ink])),
+      art("arcRings", { primary: accent2, secondary: "#8a6a50" }, W - 240, 500, 280, 280, { opacity: 0.3 }),
+      shadowed(box("ellipse", W - 148, top - 48, 96, 96, solid(accent2), { stroke: stroke("#f3eee7", 4) }), "lifted", "#000000"),
+      text(W - 140, top - 22, 80, 44, "2027", { font: FONTS.raleway, size: 17, bold: true, color: ink, align: "center", valign: "middle", spacing: 1 }),
+      text(margin, 452, 320, 16, copy(t, "selectedWorks"), { font: FONTS.raleway, size: 10, bold: true, color: accent2, upper: true, spacing: 3, valign: "middle", shrink: true }),
+      text(margin - 4, 474, 400, 100, copy(t, "portfolio"), { font: FONTS.playfair, size: 80, italic: true, color: "#f3e3cf", lineHeight: 1.1, valign: "middle", shrink: true }),
+      box("rect", margin, 590, 80, 2, foil("gold", 0)),
+      text(margin, 608, 400, 36, t("studio.tpl.personName"), { font: FONTS.raleway, size: 24, bold: true, color: "#ffffff", upper: true, spacing: 3, valign: "middle", shrink: true }),
+      text(margin, 648, 400, 20, t("studio.tpl.jobTitle"), { font: FONTS.raleway, size: 13, color: "#d9c7b5", valign: "middle", shrink: true }),
+      text(margin, 676, 330, 40, t("studio.tpl.studioPortfolioLead"), { font: FONTS.raleway, size: 11, color: "#bfae9d", lineHeight: 1.45, shrink: true }),
+      ...tags.flatMap((number, index) => {
+        const x = margin + index * 114;
+        return [box("rect", x, 734, 104, 28, NONE, { radius: 14, stroke: stroke(accent2, 1) }), text(x + 8, 734, 88, 28, t(`studio.tpl.studioPortfolioTag${number}`), { font: FONTS.raleway, size: 9.5, bold: true, color: accent2, align: "center", valign: "middle", upper: true, spacing: 1.5, shrink: true })];
+      }),
+      rule(margin, 790, inner, "#5a4537", 0.8),
+      text(margin, 802, inner / 2, 18, t("studio.tpl.email"), { font: FONTS.raleway, size: 9.5, color: "#d9c7b5", valign: "middle", shrink: true }),
+      text(margin + inner / 2, 802, inner / 2, 18, t("studio.tpl.website"), { font: FONTS.raleway, size: 9.5, color: "#d9c7b5", align: "right", valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
+function researchThesis({ t }: TemplateContext) {
+  const palette = PALETTES.emeraldBrass;
+  const { ink, accent, accent2, muted, paper } = palette;
+  const brass = "#d9bf8c";
+  const goldInk = darker(accent2, 0.5);
+  const band = 196;
+  const left = band + 40;
+  const column = W - left - 48;
+  const person = (y: number, label: string, name: string, detail: string): StudioElement[] => [
+    text(left, y, column, 14, label, { font: FONTS.montserrat, size: 9, bold: true, color: goldInk, upper: true, spacing: 2, valign: "middle", shrink: true }),
+    text(left, y + 18, column, 24, name, { font: FONTS.sourceSerif, size: 16, bold: true, color: ink, valign: "middle", shrink: true }),
+    text(left, y + 44, column, 16, detail, { font: FONTS.montserrat, size: 10, color: muted, valign: "middle", shrink: true }),
+  ];
+  return design(t("studio.templates.items.researchThesis"), paletteList(palette), [
+    pageOf(A4, radial(paper, "#ebe6d8", { cx: 0.7, cy: 0.4, radius: 1 }), [
+      art("guillocheRosette", { primary: accent, secondary: accent2 }, W - 300, H - 320, 400, 400, { opacity: 0.07 }),
+      box("rect", 0, 0, band, H, gradient(170, [accent, "#082a20"])),
+      art("topographic", { primary: "#2f7a62", secondary: accent2 }, 0, 0, band, H, { opacity: 0.25 }),
+      box("rect", band, 0, 4, H, foil("gold", 90)),
+      art("laurel", { primary: brass, secondary: brass }, band / 2 - 62, 64, 124, 118),
+      shadowed(art("shield", { primary: brass, secondary: accent }, band / 2 - 22, 92, 44, 56), "soft"),
+      text(20, 200, band - 40, 56, copy(t, "universityName"), { font: FONTS.sourceSerif, size: 16, bold: true, color: paper, align: "center", lineHeight: 1.25, valign: "middle", shrink: true }),
+      rule(band / 2 - 20, 270, 40, brass, 1.2),
+      art("guillocheRosette", { primary: brass, secondary: brass }, band / 2 - 64, H - 200, 128, 128, { opacity: 0.45 }),
+      text(left, 70, column, 40, copy(t, "facultyName"), { font: FONTS.montserrat, size: 9.5, color: muted, lineHeight: 1.45, shrink: true }),
+      rule(left, 124, 40, accent2, 1.4),
+      text(left, 194, column, 22, t("studio.tpl.researchThesisType"), { font: FONTS.montserrat, size: 11, bold: true, color: goldInk, upper: true, spacing: 3, valign: "middle", shrink: true }),
+      text(left, 224, column, 160, t("studio.tpl.researchThesisTitle"), { font: FONTS.sourceSerif, size: 30, bold: true, color: ink, lineHeight: 1.18, shrink: true }),
+      text(left, 400, column, 72, t("studio.tpl.researchThesisDegree"), { font: FONTS.sourceSerif, size: 12, italic: true, color: muted, lineHeight: 1.45, shrink: true }),
+      art("diamondDivider", { primary: accent2, secondary: accent }, left, 500, 140, 10),
+      ...person(560, copy(t, "preparedByLabel"), t("studio.tpl.personName"), `${t("studio.tpl.studentNumber")}: 210204012`),
+      ...person(644, copy(t, "advisor"), copy(t, "advisorName"), copy(t, "advisorDept")),
+      rule(left, H - 84, column, "#d3ccb8", 0.8),
+      text(left, H - 72, column, 20, t("studio.tpl.researchThesisPlace"), { font: FONTS.montserrat, size: 10, bold: true, color: accent, upper: true, spacing: 2, valign: "middle", shrink: true }),
+    ]),
+  ]);
+}
+
 export const COVER_TEMPLATES: StudioTemplate[] = [
   { id: "assignmentCover", category: "covers", size: A4, build: assignmentCover },
   { id: "thesisCover", category: "covers", size: A4, build: thesisCover },
@@ -597,4 +787,9 @@ export const COVER_TEMPLATES: StudioTemplate[] = [
   { id: "plannerCover", category: "covers", size: A5, build: plannerCover },
   { id: "portfolioCover", category: "covers", size: A4, build: portfolioCover },
   { id: "impactReport", category: "covers", size: A4, build: impactReport },
+  { id: "annualReport", category: "covers", size: A4, build: annualReport },
+  { id: "guideEbook", category: "covers", size: EBOOK, build: guideEbook },
+  { id: "fashionMagazine", category: "covers", size: A4, build: fashionMagazine },
+  { id: "studioPortfolio", category: "covers", size: A4, build: studioPortfolio },
+  { id: "researchThesis", category: "covers", size: A4, build: researchThesis },
 ];

@@ -157,7 +157,7 @@ function lostPetFlyer({ t }: TemplateContext) {
     pageOf(A4, solid("#fffdf7"), [
       box("rect", 0, 0, W, 132, gradient(135, ["#ef4444", crimson])),
       art("diagonalHatch", { primary: "#ffffff", secondary: "#fecaca" }, 0, 0, W, 132, { opacity: 0.22 }),
-      centredText(PAGE, 14, 104, t(key("lostTitle")), { font: display, size: 104, color: "#ffffff", valign: "middle", upper: true, spacing: 6, shrink: true, inset: 30, shadow: "deep" }),
+      centredText(PAGE, 14, 104, t(key("lostTitle")), { font: display, size: 104, color: "#ffffff", lineHeight: 1, valign: "middle", upper: true, spacing: 6, shrink: true, inset: 30, shadow: "deep" }),
       shadowed(box("rect", 60, 158, W - 120, 300, solid("#ffffff"), { radius: 6 }), "lifted"),
       ...photoCard(74, 172, W - 148, 248, "#e5e7eb", "none", "soft"),
       shadowed(box("burst", W - 186, 104, 156, 156, solid(yellow), { points: 20, inner: 0.84, rotation: 12 }), "lifted"),
@@ -593,6 +593,287 @@ function triFoldBrochure({ t }: TemplateContext) {
   return design(t("studio.templates.items.triFoldBrochure"), [blue, coral, deep, tint], [outside, inside]);
 }
 
+function openHouseFlyer({ t }: TemplateContext) {
+  const charcoal = "#1b1d22";
+  const ivory = "#f6f1e7";
+  const gold = "#c9a45c";
+  const display = FONTS.cormorant;
+  const body = FONTS.raleway;
+  const own = (name: string) => t(`studio.tpl.openHouseFlyer${name}`);
+  const split = 330;
+  const panel = 600;
+  const x = split + 28;
+  const column = W - split - 56;
+  const strip = (W - 64 - 24) / 3;
+  const features = [1, 2, 3, 4];
+  return design(t("studio.templates.items.openHouseFlyer"), [charcoal, gold, ivory, "#ffffff"], [
+    pageOf(A4, solid(ivory), [
+      ...photoCard(0, 0, split, 520, "#cfc8bb", "none", "soft"),
+      box("rect", split, 0, W - split, panel, gradient(170, ["#272a31", charcoal])),
+      art("diagonalHatch", { primary: gold, secondary: gold }, split, 0, W - split, panel, { opacity: 0.06 }),
+      box("rect", split, 0, 3, panel, foil("gold", 90)),
+      text(x, 48, column, 16, own("Kicker"), { font: body, size: 9.5, bold: true, color: gold, upper: true, spacing: 3, valign: "middle", shrink: true }),
+      text(x, 70, column, 118, own("Title"), { font: display, size: 56, bold: true, italic: true, color: ivory, lineHeight: 0.92, valign: "middle", shrink: true }),
+      box("rect", x, 198, 40, 2, foil("gold", 0)),
+      text(x, 214, column, 14, t(key("whenLabel")), { font: body, size: 8.5, bold: true, color: gold, upper: true, spacing: 2, valign: "middle", shrink: true }),
+      text(x, 232, column, 46, own("When"), { font: display, size: 19, bold: true, color: ivory, lineHeight: 1.15, valign: "middle", shrink: true }),
+      text(x, 292, column, 14, t(key("whereLabel")), { font: body, size: 8.5, bold: true, color: gold, upper: true, spacing: 2, valign: "middle", shrink: true }),
+      text(x, 310, column, 34, t(key("homeAddress")), { font: body, size: 11, color: "#e7e1d6", lineHeight: 1.35, valign: "middle", shrink: true }),
+      ...features.flatMap((feature, index) => {
+        const y = 364 + index * 28;
+        return [box("diamond", x, y + 6, 9, 9, foil("gold", 135)), text(x + 18, y, column - 18, 22, own(`Feature${feature}`), { font: body, size: 11, color: "#ffffff", valign: "middle", shrink: true })];
+      }),
+      rule(x, 494, column, "#4a4d55", 1),
+      text(x, 506, column, 14, t(key("askingPrice")), { font: body, size: 8.5, bold: true, color: gold, upper: true, spacing: 2, valign: "middle", shrink: true }),
+      text(x, 524, column, 48, own("Price"), { font: display, size: 36, bold: true, color: ivory, valign: "middle", shrink: true }),
+      box("rect", 32, 538, 40, 2, foil("gold", 0)),
+      text(32, 548, split - 64, 56, own("Headline"), { font: display, size: 22, bold: true, color: charcoal, lineHeight: 1.12, valign: "middle", shrink: true }),
+      ...[0, 1, 2].flatMap((index) => photoCard(32 + index * (strip + 12), 620, strip, 110, "#ddd6c8", "rounded", "soft")),
+      box("rect", 0, H - 92, W, 92, solid(charcoal)),
+      box("rect", 0, H - 92, W, 3, foil("gold", 0)),
+      box("ellipse", 30, H - 78, 64, 64, foil("gold", 135)),
+      ...photoCard(33, H - 75, 58, 58, "#3a3d44", "circle", "soft"),
+      text(108, H - 78, 210, 22, t(key("agentName")), { font: display, size: 18, bold: true, color: ivory, valign: "middle", shrink: true }),
+      text(108, H - 56, 210, 14, t(key("agentRole")), { font: body, size: 8.5, color: gold, valign: "middle", shrink: true }),
+      text(108, H - 38, 210, 16, t("studio.tpl.phone"), { font: body, size: 11, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+      text(108, H - 22, 210, 14, t("studio.tpl.email"), { font: body, size: 9, color: "#d6d0c4", valign: "middle", shrink: true }),
+      text(W - 226, H - 70, 120, 44, t(key("scanTour")), { font: body, size: 9, color: "#ffffff", align: "right", valign: "middle", lineHeight: 1.3, shrink: true }),
+      ...qrCard("https://example.com/open-house", W - 98, H - 82, 70, charcoal),
+    ]),
+  ]);
+}
+
+function restaurantPromoFlyer({ t }: TemplateContext) {
+  const tomato = "#b8321f";
+  const deep = "#7f1d12";
+  const cream = "#fbf3e4";
+  const olive = "#4d5d2a";
+  const ink = "#2a1a12";
+  const mustard = "#f2b84b";
+  const display = FONTS.pacifico;
+  const body = FONTS.montserrat;
+  const own = (name: string) => t(`studio.tpl.restaurantPromoFlyer${name}`);
+  const band = 300;
+  const dishes = [1, 2, 3];
+  return design(t("studio.templates.items.restaurantPromoFlyer"), [tomato, olive, mustard, cream, ink], [
+    pageOf(A4, solid(cream), [
+      box("rect", 0, 0, W, band, gradient(160, [tomato, deep])),
+      art("diagonalHatch", { primary: "#ffffff", secondary: mustard }, 0, 0, W, band, { opacity: 0.08 }),
+      art("halftone", { primary: mustard, secondary: "#ffffff" }, 0, band, W, H - band, { opacity: 0.08 }),
+      centredText(PAGE, 40, 18, t("studio.tpl.restaurantName"), { font: body, size: 11, bold: true, color: "#fde4d0", upper: true, spacing: 5, valign: "middle", shrink: true }),
+      centredText(PAGE, 62, 94, own("Title"), { font: display, size: 60, color: cream, valign: "middle", inset: 50, shrink: true, shadow: "subtle" }),
+      centredText(PAGE, 160, 22, own("When"), { font: body, size: 12.5, bold: true, color: "#ffd98a", upper: true, spacing: 2, valign: "middle", inset: 60, shrink: true }),
+      art("botanicalSprig", { primary: olive, secondary: mustard }, W / 2 - 214, 300, 74, 148, { rotation: -32 }),
+      art("botanicalSprig", { primary: olive, secondary: mustard }, W / 2 + 140, 300, 74, 148, { rotation: 32 }),
+      shadowed(box("ellipse", W / 2 - 132, 198, 264, 264, solid("#ffffff")), "lifted", deep),
+      box("ellipse", W / 2 - 122, 208, 244, 244, NONE, { stroke: stroke("#ead9bd", 1.5) }),
+      ...photoCard(W / 2 - 112, 218, 224, 224, "#f1d3b3", "circle", "soft"),
+      shadowed(box("burst", W - 186, 214, 130, 130, solid(mustard), { points: 20, inner: 0.86, rotation: -10 }), "lifted", deep),
+      text(W - 172, 248, 102, 62, own("Offer"), { font: body, size: 17, bold: true, color: ink, align: "center", valign: "middle", lineHeight: 1.05, upper: true, rotation: -10, shrink: true }),
+      centredText(PAGE, 480, 36, own("SpecialsHeading"), { font: display, size: 25, color: tomato, valign: "middle", inset: 60, shrink: true }),
+      art("flourishDivider", { primary: olive, secondary: olive }, W / 2 - 90, 520, 180, 26),
+      ...dishes.flatMap((dish, index) => {
+        const y = 560 + index * 58;
+        return [
+          text(64, y, W - 230, 22, own(`Dish${dish}`), { font: body, size: 14, bold: true, color: ink, valign: "middle", shrink: true }),
+          text(64, y + 22, W - 230, 18, own(`Desc${dish}`), { font: body, size: 10.5, color: "#6b5444", valign: "middle", shrink: true }),
+          text(W - 160, y, 96, 40, own(`Price${dish}`), { font: display, size: 20, color: tomato, align: "right", valign: "middle", shrink: true }),
+          ...(index < dishes.length - 1 ? [rule(64, y + 49, W - 128, "#dcc6a6", 0.8, "dotted")] : []),
+        ];
+      }),
+      box("rect", 0, H - 92, W, 92, gradient(90, [olive, "#36431c"])),
+      box("rect", 0, H - 92, W, 3, solid(mustard)),
+      text(40, H - 76, 300, 26, own("Cta"), { font: display, size: 19, color: cream, valign: "middle", shrink: true }),
+      text(40, H - 46, 300, 16, t("studio.tpl.phone"), { font: body, size: 11, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+      text(40, H - 28, 300, 14, t("studio.tpl.address"), { font: body, size: 9.5, color: "#e6ead9", valign: "middle", shrink: true }),
+      text(W - 230, H - 66, 124, 40, t(key("scanBook")), { font: body, size: 9.5, color: "#ffffff", align: "right", valign: "middle", lineHeight: 1.3, shrink: true }),
+      ...qrCard("https://example.com/table", W - 98, H - 80, 68, olive),
+    ]),
+  ]);
+}
+
+function fitnessClassFlyer({ t }: TemplateContext) {
+  const sand = "#f4ece1";
+  const terracotta = "#a9472e";
+  const clay = "#dc9e82";
+  const sage = "#7d8f69";
+  const ink = "#2f2420";
+  const muted = "#6b5a52";
+  const display = FONTS.josefin;
+  const body = FONTS.nunito;
+  const own = (name: string) => t(`studio.tpl.fitnessClassFlyer${name}`);
+  const x = 300;
+  const column = W - x - 40;
+  const card = { x: 36, y: 480, width: W - 72, height: 236 };
+  const rows: [string, number, string, number][] = [
+    ["mondayShort", 1, "07:00", 1],
+    ["tuesdayShort", 2, "18:30", 2],
+    ["wednesdayShort", 3, "07:00", 3],
+    ["thursdayShort", 2, "18:30", 2],
+    ["saturdayShort", 1, "09:30", 2],
+  ];
+  return design(t("studio.templates.items.fitnessClassFlyer"), [terracotta, clay, sage, sand, ink], [
+    pageOf(A4, solid(sand), [
+      art("blob", { primary: clay, secondary: sage }, W - 250, -90, 340, 340, { opacity: 0.35 }),
+      art("blob", { primary: sage, secondary: clay }, -110, 360, 260, 260, { opacity: 0.3, rotation: 120 }),
+      { ...box("rect", 52, 58, 236, 396, NONE, { stroke: stroke(terracotta, 1.5) }), corners: [118, 118, 0, 0] as [number, number, number, number] },
+      shadowed(box("rect", 36, 42, 236, 396, solid(clay), { radius: 118 }), "lifted", ink),
+      { ...photo(36, 42, 236, 396, "rounded"), cornerRadius: 118 },
+      text(x, 64, column, 18, own("Studio"), { font: body, size: 11, bold: true, color: terracotta, upper: true, spacing: 3, valign: "middle", shrink: true }),
+      text(x, 90, column, 156, own("Title"), { font: display, size: 50, bold: true, color: ink, upper: true, lineHeight: 1.0, valign: "middle", shrink: true }),
+      box("rect", x, 256, 48, 3, solid(terracotta), { radius: 1.5 }),
+      text(x, 272, column, 66, own("Lead"), { font: body, size: 12.5, color: muted, lineHeight: 1.5, shrink: true }),
+      shadowed(box("ellipse", W - 158, 344, 112, 112, solid(terracotta)), "lifted", ink),
+      box("ellipse", W - 150, 352, 96, 96, NONE, { stroke: stroke("#f4d3c4", 1, "dashed") }),
+      text(W - 146, 366, 88, 68, own("Badge"), { font: display, size: 14, bold: true, color: "#ffffff", align: "center", valign: "middle", upper: true, lineHeight: 1.1, shrink: true }),
+      shadowed(box("rect", card.x, card.y, card.width, card.height, solid("#ffffff"), { radius: 18 }), "soft", ink),
+      text(card.x + 24, card.y + 16, 240, 24, own("ScheduleHeading"), { font: display, size: 15, bold: true, color: ink, upper: true, spacing: 2, valign: "middle", shrink: true }),
+      text(card.x + card.width - 244, card.y + 16, 220, 24, own("ScheduleNote"), { font: body, size: 10, color: muted, align: "right", valign: "middle", shrink: true }),
+      ...rows.flatMap(([day, kind, time, level], index) => {
+        const y = card.y + 52 + index * 36;
+        return [
+          ...(index ? [rule(card.x + 24, y, card.width - 48, "#efe6da", 1)] : []),
+          text(card.x + 24, y + 4, 56, 28, t(`studio.tpl.${day}`), { font: display, size: 13, bold: true, color: terracotta, upper: true, valign: "middle", shrink: true }),
+          text(card.x + 88, y + 4, 210, 28, own(`Class${kind}`), { font: body, size: 12.5, bold: true, color: ink, valign: "middle", shrink: true }),
+          text(card.x + 304, y + 4, 60, 28, time, { font: body, size: 12, color: muted, valign: "middle" }),
+          box("rect", card.x + card.width - 134, y + 8, 110, 20, solid("#e3eadb"), { radius: 10 }),
+          text(card.x + card.width - 130, y + 8, 102, 20, own(`Level${level}`), { font: body, size: 9, bold: true, color: "#3f5233", align: "center", valign: "middle", shrink: true }),
+        ];
+      }),
+      box("ellipse", 34, H - 96, 70, 70, solid(clay)),
+      ...photoCard(38, H - 92, 62, 62, "#e8cbb9", "circle", "soft"),
+      text(118, H - 94, 260, 22, own("Coach"), { font: display, size: 14, bold: true, color: ink, valign: "middle", shrink: true }),
+      text(118, H - 70, 260, 18, t("studio.tpl.phone"), { font: body, size: 11.5, bold: true, color: terracotta, valign: "middle", shrink: true }),
+      text(118, H - 50, 260, 16, t("studio.tpl.website"), { font: body, size: 10, color: muted, valign: "middle", shrink: true }),
+      text(W - 238, H - 82, 120, 40, t(key("scanBook")), { font: body, size: 9.5, color: ink, align: "right", valign: "middle", lineHeight: 1.3, shrink: true }),
+      ...qrCard("https://example.com/classes", W - 110, H - 98, 72, ink),
+    ]),
+  ]);
+}
+
+function techMeetupFlyer({ t }: TemplateContext) {
+  const night = "#0b1020";
+  const panel = "#131b34";
+  const green = "#4ade80";
+  const violet = "#a78bfa";
+  const muted = "#94a3b8";
+  const line = "#25305a";
+  const display = FONTS.poppins;
+  const body = FONTS.inter;
+  const own = (name: string) => t(`studio.tpl.techMeetupFlyer${name}`);
+  const talks = [
+    [1, "19:00"],
+    [2, "19:30"],
+    [3, "20:00"],
+  ] as const;
+  const perks = [1, 2, 3];
+  const chip = (W - 72 - 24) / 3;
+  return design(t("studio.templates.items.techMeetupFlyer"), [night, green, violet, panel, "#ffffff"], [
+    pageOf(A4, solid(night), [
+      art("triangleTiles", { primary: "#1b2547", secondary: violet }, 0, 0, W, H, { opacity: 0.22 }),
+      box("ellipse", -180, -180, 440, 440, radial("#3b2a8a", night), { opacity: 0.6 }),
+      box("ellipse", W - 220, 380, 380, 380, radial("#0f5c3a", night), { opacity: 0.45 }),
+      shadowed(box("rect", 36, 52, W - 72, 236, solid(panel), { radius: 16, stroke: stroke(line, 1) }), "lifted", "#000000"),
+      ...["#f87171", "#fbbf24", green].map((colour, index) => box("ellipse", 56 + index * 18, 68, 10, 10, solid(colour))),
+      text(W - 236, 64, 180, 18, "meetup.sh", { font: body, size: 9, color: muted, align: "right", valign: "middle" }),
+      rule(36, 96, W - 72, line, 1),
+      text(60, 112, W - 120, 20, `> ${own("Kicker")}`, { runs: [{ text: "> ", color: green }, { text: own("Kicker") }], font: body, size: 11, bold: true, color: "#cbd5e1", valign: "middle", shrink: true }),
+      text(60, 138, W - 120, 96, own("Title"), { font: display, size: 46, bold: true, color: "#ffffff", lineHeight: 1.05, valign: "middle", shrink: true }),
+      box("rect", 60, 244, 36, 3, solid(green), { radius: 1.5 }),
+      text(60, 254, W - 120, 22, own("Date"), { font: body, size: 13, bold: true, color: green, valign: "middle", shrink: true }),
+      text(36, 318, 220, 18, own("TalksHeading"), { font: body, size: 10.5, bold: true, color: violet, spacing: 3, upper: true, valign: "middle", shrink: true }),
+      rule(232, 327, W - 268, line, 1),
+      ...talks.flatMap(([talk, time], index) => {
+        const y = 348 + index * 80;
+        return [
+          box("rect", 36, y, W - 72, 68, solid(panel), { radius: 14, stroke: stroke(line, 1) }),
+          box("rect", 52, y + 20, 60, 28, solid(violet), { radius: 8 }),
+          text(52, y + 20, 60, 28, time, { font: body, size: 11, bold: true, color: night, align: "center", valign: "middle" }),
+          box("ellipse", 126, y + 12, 44, 44, NONE, { stroke: stroke(green, 1.2) }),
+          ...photoCard(129, y + 15, 38, 38, "#25305a", "circle", "soft"),
+          text(184, y + 12, W - 244, 24, own(`Talk${talk}`), { font: display, size: 13.5, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+          text(184, y + 36, W - 244, 18, own(`Speaker${talk}`), { font: body, size: 10.5, color: muted, valign: "middle", shrink: true }),
+        ];
+      }),
+      ...perks.flatMap((perk, index) => {
+        const x = 36 + index * (chip + 12);
+        return [
+          box("rect", x, 600, chip, 34, solid("#16213f"), { radius: 17, stroke: stroke(line, 1) }),
+          box("ellipse", x + 14, 613, 8, 8, solid(green)),
+          text(x + 28, 600, chip - 40, 34, own(`Perk${perk}`), { font: body, size: 10.5, bold: true, color: "#e2e8f0", valign: "middle", shrink: true }),
+        ];
+      }),
+      text(36, 650, W - 72, 20, t("studio.tpl.address"), { font: body, size: 11, color: "#cbd5e1", valign: "middle", shrink: true }),
+      box("rect", 0, H - 132, W, 132, gradient(0, [green, "#22c55e"])),
+      art("diagonalHatch", { primary: "#ffffff", secondary: night }, W / 2, H - 132, W / 2, 132, { opacity: 0.12 }),
+      text(36, H - 110, 330, 52, own("Cta"), { font: display, size: 22, bold: true, color: night, lineHeight: 1.15, valign: "middle", shrink: true }),
+      text(36, H - 52, 330, 18, t("studio.tpl.website"), { font: body, size: 12, bold: true, color: night, valign: "middle", shrink: true }),
+      text(36, H - 32, 330, 16, t("studio.tpl.orgName"), { font: body, size: 10, color: "#0f2a1a", valign: "middle", shrink: true }),
+      ...qrCard("https://example.com/meetup", W - 128, H - 116, 92, night, "lifted"),
+    ]),
+  ]);
+}
+
+function foodDriveFlyer({ t }: TemplateContext) {
+  const blue = "#1d3fa6";
+  const deep = "#0f2466";
+  const yellow = "#facc15";
+  const sky = "#e8f0ff";
+  const ink = "#0f1e46";
+  const muted = "#4a5578";
+  const display = FONTS.merriweather;
+  const body = FONTS.nunito;
+  const own = (name: string) => t(`studio.tpl.foodDriveFlyer${name}`);
+  const hero = 356;
+  const items = [1, 2, 3, 4, 5, 6];
+  const half = (W - 80) / 2;
+  const third = (W - 80) / 3;
+  const facts = [
+    [key("whenLabel"), own("When")],
+    [key("whereLabel"), own("Where")],
+    [`studio.tpl.foodDriveFlyerGoalLabel`, own("Goal")],
+  ];
+  return design(t("studio.templates.items.foodDriveFlyer"), [blue, deep, yellow, sky, "#ffffff"], [
+    pageOf(A4, solid("#ffffff"), [
+      box("rect", 0, 0, W, hero, gradient(150, [blue, deep])),
+      art("halftone", { primary: "#3b5fd1", secondary: yellow }, 0, 0, W, hero, { opacity: 0.3 }),
+      box("rect", -40, hero - 34, W + 80, 72, solid("#ffffff"), { rotation: -4 }),
+      text(40, 52, 300, 20, own("Kicker"), { font: body, size: 12, bold: true, color: yellow, upper: true, spacing: 2.5, valign: "middle", shrink: true }),
+      text(40, 80, 300, 150, own("Title"), { font: display, size: 40, bold: true, color: "#ffffff", lineHeight: 1.12, valign: "middle", shrink: true }),
+      box("rect", 40, 240, 56, 4, solid(yellow), { radius: 2 }),
+      text(40, 254, 280, 52, own("Lead"), { font: body, size: 13, color: "#dbe5ff", lineHeight: 1.45, shrink: true }),
+      shadowed(box("rect", W - 244, 64, 200, 240, solid("#ffffff"), { radius: 6, rotation: 4 }), "lifted", "#000000"),
+      box("rect", W - 232, 76, 176, 180, solid("#dbe5ff"), { rotation: 4 }),
+      { ...photo(W - 232, 76, 176, 180), rotation: 4 },
+      text(W - 232, 262, 176, 30, own("Caption"), { font: FONTS.caveat, size: 17, bold: true, color: ink, align: "center", valign: "middle", rotation: 4, shrink: true }),
+      shadowed(box("heart", W - 80, 40, 52, 46, solid(yellow), { rotation: 14 }), "lifted", deep),
+      text(40, 394, 300, 28, own("BringHeading"), { font: display, size: 20, bold: true, color: ink, valign: "middle", shrink: true }),
+      box("rect", 40, 426, 44, 4, solid(yellow), { radius: 2 }),
+      ...items.flatMap((item, index) => {
+        const x = 40 + (index % 2) * half;
+        const y = 446 + Math.floor(index / 2) * 34;
+        return [box("ellipse", x, y + 4, 20, 20, solid(yellow)), box("ellipse", x + 7, y + 11, 6, 6, solid(ink)), text(x + 30, y, half - 40, 28, own(`Item${item}`), { font: body, size: 12.5, color: ink, valign: "middle", shrink: true })];
+      }),
+      shadowed(box("rect", 40, 566, W - 80, 96, solid(sky), { radius: 16 }), "soft", deep),
+      ...facts.flatMap(([label, value], index) => {
+        const x = 40 + index * third;
+        return [
+          ...(index ? [vrule(x, 582, 64, "#c3d2f5", 1)] : []),
+          text(x + 18, 580, third - 32, 16, t(label), { font: body, size: 9, bold: true, color: blue, upper: true, spacing: 1.5, valign: "middle", shrink: true }),
+          text(x + 18, 600, third - 32, 50, value, { font: display, size: 12, bold: true, color: ink, lineHeight: 1.3, valign: "middle", shrink: true }),
+        ];
+      }),
+      centredText(PAGE, 676, 36, own("Note"), { font: body, size: 11, color: muted, lineHeight: 1.45, inset: 56, valign: "middle", shrink: true }),
+      box("rect", 0, H - 112, W, 112, solid(yellow)),
+      art("diagonalHatch", { primary: "#eab308", secondary: "#ffffff" }, 0, H - 112, W, 112, { opacity: 0.25 }),
+      text(40, H - 94, 400, 44, own("Cta"), { font: display, size: 15, bold: true, color: ink, lineHeight: 1.25, valign: "middle", shrink: true }),
+      text(40, H - 46, 330, 18, t("studio.tpl.phone"), { font: body, size: 12.5, bold: true, color: ink, valign: "middle", shrink: true }),
+      text(40, H - 28, 330, 16, t("studio.tpl.website"), { font: body, size: 10.5, color: "#3b3209", valign: "middle", shrink: true }),
+      ...qrCard("https://example.com/food-drive", W - 128, H - 100, 88, deep, "lifted"),
+    ]),
+  ]);
+}
+
 export const FLYER_TEMPLATES: StudioTemplate[] = [
   { id: "realEstateFlyer", category: "flyers", size: A4, build: realEstateFlyer },
   { id: "hiringFlyer", category: "flyers", size: A4, build: hiringFlyer },
@@ -604,4 +885,9 @@ export const FLYER_TEMPLATES: StudioTemplate[] = [
   { id: "campaignFlyer", category: "flyers", size: A5, build: campaignFlyer },
   { id: "programmeFlyer", category: "flyers", size: A4, build: programmeFlyer },
   { id: "triFoldBrochure", category: "flyers", size: LANDSCAPE, build: triFoldBrochure },
+  { id: "openHouseFlyer", category: "flyers", size: A4, build: openHouseFlyer },
+  { id: "restaurantPromoFlyer", category: "flyers", size: A4, build: restaurantPromoFlyer },
+  { id: "fitnessClassFlyer", category: "flyers", size: A4, build: fitnessClassFlyer },
+  { id: "techMeetupFlyer", category: "flyers", size: A4, build: techMeetupFlyer },
+  { id: "foodDriveFlyer", category: "flyers", size: A4, build: foodDriveFlyer },
 ];
