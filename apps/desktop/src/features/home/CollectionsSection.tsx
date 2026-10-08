@@ -167,7 +167,7 @@ function CollectionCard({ collection, onEdit, onView, preview, placement, drag }
   const open = async () => {
     setOpening(true);
     try {
-      await openCollection(collection);
+      if (!(await openCollection(collection))) toast("error", t("home.collections.nothingToOpen"));
     } finally {
       setOpening(false);
     }

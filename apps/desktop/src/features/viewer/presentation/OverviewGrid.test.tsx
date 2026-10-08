@@ -1,8 +1,15 @@
-import { cleanup, render } from "@testing-library/react";
+import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OverviewGrid } from "./OverviewGrid";
 
-const renderThumb = vi.fn(() => ({ toPromise: () => Promise.resolve(new Blob(["x"])) }));
+const abort = vi.fn();
+let finishes = true;
+const renderThumb = vi.fn(() => ({
+  wait: (resolve: (blob: Blob) => void) => {
+    if (finishes) queueMicrotask(() => resolve(new Blob(["x"])));
+  },
+  abort,
+}));
 let observers: Array<{ callback: IntersectionObserverCallback; target: Element | null }> = [];
 
 vi.mock("@embedpdf/plugin-scroll/react", () => ({
@@ -16,6 +23,8 @@ vi.mock("@embedpdf/plugin-thumbnail/react", () => ({
 
 beforeEach(() => {
   renderThumb.mockClear();
+  abort.mockClear();
+  finishes = true;
   observers = [];
   URL.createObjectURL = vi.fn(() => "blob:x");
   URL.revokeObjectURL = vi.fn();
@@ -65,5 +74,30 @@ describe("OverviewGrid", () => {
     view.unmount();
 
     expect(URL.revokeObjectURL).toHaveBeenCalledWith("blob:x");
+  });
+
+  it("aborts a thumbnail that scrolls out of view before it finishes", async () => {
+    finishes = false;
+    render(<OverviewGrid documentId="d" onClose={() => {}} />);
+    const intersect = (isIntersecting: boolean) => act(() => observers[2].callback([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver));
+
+    intersect(true);
+    await vi.waitFor(() => expect(renderThumb).toHaveBeenCalledTimes(1));
+    intersect(false);
+
+    expect(abort).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps a finished thumbnail when its cell leaves the view", async () => {
+    render(<OverviewGrid documentId="d" onClose={() => {}} />);
+    const intersect = (isIntersecting: boolean) => act(() => observers[0].callback([{ isIntersecting } as IntersectionObserverEntry], {} as IntersectionObserver));
+    intersect(true);
+    await vi.waitFor(() => expect(URL.createObjectURL).toHaveBeenCalled());
+
+    intersect(false);
+    intersect(true);
+
+    expect(renderThumb).toHaveBeenCalledTimes(1);
+    expect(URL.revokeObjectURL).not.toHaveBeenCalled();
   });
 });

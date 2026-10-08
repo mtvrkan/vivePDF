@@ -64,6 +64,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Home: a collection card's Open all skips files that no longer exist (and says so when none are left) instead of failing on each one [2026-10-08]
+- Home: files of a collection that open after a password prompt now join the collection's tab group instead of staying outside it [2026-10-08]
+- Viewer: the position, size, aspect-lock and opacity controls of the PDF editing panel are read-only for a locked layer, as dragging and the keyboard already were [2026-10-08]
+- Presentation mode: the page overview stops rendering thumbnails that scroll out of view before they finish, so fast scrolling through long documents no longer queues every page [2026-10-08]
 - Page organizer: Ctrl+G, Ctrl+P and Alt+arrow page moves work again; the app's browser-key guard had been swallowing them [2026-10-07]
 - Page organizer: Find duplicates also marks a page that appears twice in the arrangement, not only pages with a look-alike elsewhere [2026-10-07]
 - Page organizer: applied and split files keep the original's password protection, document properties (title, author, keywords) and attached files instead of coming out unprotected and bare [2026-10-07]

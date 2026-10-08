@@ -16,6 +16,7 @@ import type { EditorWarningCode } from "@/types";
 import { applyStyleToRuns, restoreOriginalRunStyles, styleOf, textOf } from "./runs";
 import { applyGeometryPatch, formatGeometryValue, parseGeometryValue } from "./geometry";
 import { replaceImageWithDialog, type ImageChangePending } from "./imageReplace";
+import { isLayerLocked } from "./layers";
 import { LayersPanel } from "./LayersPanel";
 import { DRAWING_SPECS } from "./drawing/drawingKinds";
 import { isDrawingImage, isDrawingKind } from "./drawing/drawingSource";
@@ -56,9 +57,11 @@ export function EditPanel({ documentId }: { documentId: string }) {
   const future = useViewerOverlayStore((state) => state.future);
   const warnings = useViewerOverlayStore((state) => state.warnings);
   const fontResolutions = useViewerOverlayStore((state) => state.fontResolutions);
+  const lockedLayerKeys = useViewerOverlayStore((state) => state.lockedLayerKeys);
   const document = useDocumentStore((state) => state.documents[documentId] ?? null);
   const store = useViewerOverlayStore.getState();
   const selected = objects.find((item) => item.id === selectedObjectId) ?? null;
+  const selectedLocked = selected ? isLayerLocked(lockedLayerKeys, selected.pageIndex, selected.id) : false;
   const pending = objects.filter(isPendingChange);
   const textLike = selected && (selected.kind === "text" || selected.kind === "block") ? selected : null;
   const block = textLike?.kind === "block" ? textLike : null;
@@ -138,7 +141,7 @@ export function EditPanel({ documentId }: { documentId: string }) {
   };
 
   const commitGeometry = (field: GeometryField, raw: string) => {
-    if (!selected) return;
+    if (!selected || selectedLocked) return;
     const value = parseGeometryValue(raw);
     if (value === null) return;
     const rect = { x: selected.x, y: selected.y, width: selected.width, height: selected.height };
@@ -217,6 +220,7 @@ export function EditPanel({ documentId }: { documentId: string }) {
                   icon={selected.aspectLocked ? Lock : Unlock}
                   label={t("viewer.editPanel.aspectLock")}
                   active={selected.aspectLocked}
+                  disabled={selectedLocked}
                   onClick={() => {
                     store.snapshot();
                     store.updateObject(selected.id, { aspectLocked: !selected.aspectLocked });
@@ -235,8 +239,9 @@ export function EditPanel({ documentId }: { documentId: string }) {
                     key={`${selected.id}-${field}-${formatGeometryValue(selected[field])}`}
                     type="text"
                     inputMode="decimal"
+                    disabled={selectedLocked}
                     defaultValue={formatGeometryValue(selected[field])}
-                    className="h-7 w-full rounded-md border bg-background px-1.5 font-mono text-xs"
+                    className="h-7 w-full rounded-md border bg-background px-1.5 font-mono text-xs disabled:opacity-50"
                     aria-label={fullLabel}
                     onBlur={(event) => commitGeometry(field, event.target.value)}
                     onKeyDown={(event) => {
@@ -257,9 +262,10 @@ export function EditPanel({ documentId }: { documentId: string }) {
                 min={0}
                 max={100}
                 value={Math.round(selected.opacity * 100)}
+                disabled={selectedLocked}
                 onPointerDown={() => store.snapshot()}
                 onChange={(event) => store.updateObject(selected.id, { opacity: Number(event.target.value) / 100 })}
-                className="flex-1 accent-primary"
+                className="flex-1 accent-primary disabled:opacity-50"
                 aria-label={t("viewer.editPanel.opacity")}
               />
               <span className="w-9 text-end font-mono tabular-nums">{Math.round(selected.opacity * 100)}%</span>

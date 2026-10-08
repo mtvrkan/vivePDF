@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { PdfErrorCode } from "@embedpdf/models";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { useThumbnailCapability } from "@embedpdf/plugin-thumbnail/react";
 import { IconButton } from "@/components/shared/IconButton";
@@ -17,40 +18,42 @@ function GridThumb({ documentId, pageIndex, active, onSelect }: { documentId: st
 
   useEffect(() => {
     const node = cellRef.current;
-    if (!node || visible) return;
+    if (!node) return;
     if (typeof IntersectionObserver === "undefined") {
       setVisible(true);
       return;
     }
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry?.isIntersecting) setVisible(true);
-      },
-      { rootMargin: VISIBLE_MARGIN },
-    );
+    const observer = new IntersectionObserver(([entry]) => setVisible(Boolean(entry?.isIntersecting)), { rootMargin: VISIBLE_MARGIN });
     observer.observe(node);
     return () => observer.disconnect();
-  }, [visible]);
+  }, []);
+
+  useEffect(
+    () => () => {
+      if (src) URL.revokeObjectURL(src);
+    },
+    [src],
+  );
 
   useEffect(() => {
-    if (!thumbnailCapability || !visible) return;
+    if (!thumbnailCapability || !visible || src) return;
     let cancelled = false;
-    let objectUrl: string | null = null;
-    const scope = thumbnailCapability.forDocument(documentId);
-    void scope
-      .renderThumb(pageIndex, window.devicePixelRatio || 1)
-      .toPromise()
-      .then((blob) => {
-        if (cancelled) return;
-        objectUrl = URL.createObjectURL(blob);
-        setSrc(objectUrl);
-      })
-      .catch(() => void 0);
+    const task = thumbnailCapability.forDocument(documentId).renderThumb(pageIndex, window.devicePixelRatio || 1);
+    task.wait(
+      (blob) => {
+        if (!cancelled) setSrc(URL.createObjectURL(blob));
+      },
+      () => undefined,
+    );
     return () => {
       cancelled = true;
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      try {
+        task.abort({ code: PdfErrorCode.Cancelled, message: "thumbnail left the view" });
+      } catch {
+        return;
+      }
     };
-  }, [thumbnailCapability, documentId, pageIndex, visible]);
+  }, [thumbnailCapability, documentId, pageIndex, visible, src]);
 
   return (
     <button

@@ -27,6 +27,7 @@ beforeAll(async () => {
 beforeEach(() => {
   openDialog.mockReset();
   openCollection.mockReset();
+  openCollection.mockResolvedValue(true);
   openPath.mockReset();
   invoke.mockReset();
   invoke.mockResolvedValue([]);
@@ -61,6 +62,16 @@ describe("CollectionsSection", () => {
 
     expect(screen.getByText("open.pdf")).toBeTruthy();
     expect((screen.getByRole("button", { name: "Save" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("warns when none of the collection's files exist any more", async () => {
+    openCollection.mockResolvedValue(false);
+    useCollectionsStore.getState().create("Invoices", ["C:/Gone/1.pdf"]);
+    render(<CollectionsSection />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open all" }));
+
+    await waitFor(() => expect(useToastStore.getState().toasts).toMatchObject([{ kind: "error", message: "None of these files exist any more." }]));
   });
 
   it("opens every file of a collection and deletes it with an undo", () => {

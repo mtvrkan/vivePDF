@@ -398,7 +398,15 @@ export function useOpenPdf(documentRoute = "/viewer") {
     const store = useOpenStore.getState();
     if (store.passwordRequest) return;
     const waiting = store.takeWaiting();
-    if (waiting.length > 0) void openPaths(waiting);
+    if (waiting.length === 0) return;
+    const after = store.afterWaiting;
+    store.setAfterWaiting(null);
+    void openPaths(waiting).finally(() => {
+      if (!after) return;
+      after();
+      const next = useOpenStore.getState();
+      if (next.waitingPaths.length > 0 && !next.afterWaiting) next.setAfterWaiting(after);
+    });
   }, [openPaths]);
 
   return { openPath, openPaths, openClipboard, resumeWaiting, pickAndOpen, submitPassword, cancelPassword, closeDocument, replaceDocument, activate };
