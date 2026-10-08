@@ -39,6 +39,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Studio templates: the 6 label sheets are redesigned — notched event and raffle tickets with foil seals, a bold shipping label, gradient stickers, twin-ring jar labels and refined address labels; every template now passes the contrast, overlap and typeface checks [2026-10-08]
 - Studio templates: the business documents and the report and proposal covers are redesigned — monogram brand blocks, cleaner tables with zebra rows and total bands, a timeline meeting agenda and a card-style price list [2026-10-08]
 - Studio templates: the 6 personal planners are redesigned — card-based weekly planner, photo calendar, recipe card over a photo, to-do list, habit tracker and budget planner, with fewer typefaces and refined tables [2026-10-08]
 - Studio templates: the 8 posters (with the sale and coming-soon posts) are redesigned — sunset and neon gig posters, an art deco teaser, a workshop with a framed photo and numbered points, and a conference poster with speaker rings [2026-10-08]
