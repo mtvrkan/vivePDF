@@ -39,6 +39,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Studio templates: the 10 flyers are redesigned — shadowed photo cards, gradient and pattern headers, foil accents, ticket-style coupons and clearer price and call-to-action blocks, each with at most three typefaces and readable contrast [2026-10-08]
 - Studio CV: the ten layouts are refined — contact details carry small icons, skill levels use thin or segmented bars where they suit the layout, photos get a ring, sidebars and header bands use gradients and subtle patterns, and the elegant layout has a double hairline frame and a flourish under the name [2026-10-08]
 - Studio templates: the 12 certificates are redesigned — guilloche, art nouveau, gem and art deco frames, foil rules and wax seals, gradient bands with pattern overlays, soft shadows, curated palettes and at most two typefaces each; every text passes a contrast check against what sits behind it [2026-10-08]
 - Studio CV: long entries continue on the next page instead of running off it, up to 20 pages; anything that still doesn't fit is reported with a jump to its section, the page count shows in the toolbar, and switching layout keeps your accent colour and fonts [2026-10-08]
