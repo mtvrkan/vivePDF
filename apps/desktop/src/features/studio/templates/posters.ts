@@ -1,149 +1,212 @@
-import { art, box, centredText, design, FONTS, linear, pageOf, photoSlot, qr, rule, sizeOf, solid, text, type StudioTemplate, type TemplateContext } from "./kit";
+import type { StudioElement } from "@/types/studio";
+import { darker, lighter } from "../ornaments/paint";
+import { art, box, centredText, design, FONTS, foil, frame, gradient, pageOf, photoSlot, qr, radial, rule, shadowed, sizeOf, solid, stroke, text, type ShadowPreset, type StudioTemplate, type TemplateContext } from "./kit";
+import { PALETTES, paletteList } from "./palettes";
 
 const A4 = "a4" as const;
 const SQUARE = "square" as const;
 const page = sizeOf(A4);
 const W = page.width;
 const H = page.height;
+const square = sizeOf(SQUARE);
+const S = square.width;
+
+function liftedSlot(elements: StudioElement[], preset: ShadowPreset, color?: string): StudioElement[] {
+  const [backing, ...rest] = elements;
+  return [shadowed(backing, preset, color), ...rest];
+}
 
 function eventPoster({ t }: TemplateContext) {
-  const coral = "#f97316";
-  const ink = "#111827";
-  return design(t("studio.templates.items.eventPoster"), [coral, ink], [
-    pageOf(A4, solid("#fff7ed"), [
-      art("blob", { primary: coral, secondary: "#fb7185" }, W - 340, -120, 460, 460, { opacity: 0.9 }),
-      art("dotsDivider", { primary: coral, secondary: ink }, 48, H - 60, 160, 12),
-      text(48, 70, 300, 22, t("studio.tpl.orgName"), { font: FONTS.montserrat, size: 12, bold: true, color: ink, spacing: 3, upper: true, shrink: true }),
-      text(48, 250, W - 96, 230, t("studio.tpl.eventTitle"), { font: FONTS.bebas, size: 118, color: ink, lineHeight: 0.9, shrink: true, valign: "bottom" }),
-      box("rect", 48, 500, 120, 8, solid(coral)),
-      text(48, 530, W - 140, 70, t("studio.tpl.eventLead"), { font: FONTS.inter, size: 16, color: "#374151", lineHeight: 1.45, shrink: true }),
-      text(48, 640, 260, 26, t("studio.tpl.eventDate"), { font: FONTS.montserrat, size: 18, bold: true, color: coral, shrink: true }),
-      text(48, 670, 260, 44, t("studio.tpl.eventPlace"), { font: FONTS.inter, size: 13, color: ink, lineHeight: 1.35, shrink: true }),
-      qr("https://example.com/event", W - 150, H - 190, 100, ink),
-      text(W - 230, H - 82, 180, 18, t("studio.tpl.scanForTickets"), { font: FONTS.inter, size: 10, color: "#4b5563", align: "right", shrink: true }),
+  const plum = "#2a0b33";
+  const wine = "#5b1748";
+  const cream = "#fff4e6";
+  const peach = "#ffd9a8";
+  return design(t("studio.templates.items.eventPoster"), [plum, wine, "#ff7a3d", "#ffd36e", cream], [
+    pageOf(A4, gradient(180, [plum, "#3d0f3d", wine]), [
+      art("sunburst", { primary: "#ff9a5a", secondary: "#ffd36e" }, 0, 0, W, 560, { opacity: 0.14 }),
+      shadowed(box("ellipse", W / 2 - 170, 118, 340, 340, gradient(180, ["#ffe08a", "#ff9a3d", "#e8455a"])), "glow", "#ff9a5a"),
+      art("waves", { primary: wine, secondary: wine }, 0, 330, W, 150),
+      box("rect", 0, 478, W, H - 478, solid(darker(wine, 0.25))),
+      art("halftone", { primary: "#ff7a3d", secondary: "#ffd36e" }, 0, 478, W, H - 478, { opacity: 0.22 }),
+      text(40, 44, 300, 18, t("studio.tpl.orgName"), { font: FONTS.montserrat, size: 11, bold: true, color: peach, spacing: 3, upper: true, shrink: true }),
+      art("dotsDivider", { primary: peach, secondary: peach }, W - 200, 48, 160, 10),
+      centredText(page, 470, 196, t("studio.tpl.eventTitle"), { font: FONTS.bebas, size: 118, color: cream, lineHeight: 0.88, valign: "middle", inset: 36, shrink: true, shadow: "deep" }),
+      box("rect", W / 2 - 56, 676, 112, 4, foil("gold", 0)),
+      centredText(page, 688, 44, t("studio.tpl.eventLead"), { font: FONTS.montserrat, size: 12, color: "#f6dfe8", lineHeight: 1.45, inset: 64, shrink: true }),
+      box("rect", 0, H - 96, W, 96, solid(cream)),
+      box("rect", 0, H - 96, W, 4, foil("gold", 0)),
+      text(40, H - 80, 230, 32, t("studio.tpl.eventDate"), { font: FONTS.bebas, size: 30, color: wine, valign: "middle", shrink: true }),
+      text(40, H - 46, 230, 36, t("studio.tpl.eventPlace"), { font: FONTS.montserrat, size: 11, color: "#5b3a4f", lineHeight: 1.3, shrink: true }),
+      text(W - 270, H - 76, 150, 56, t("studio.tpl.scanForTickets"), { font: FONTS.montserrat, size: 11, bold: true, color: wine, align: "right", valign: "middle", upper: true, spacing: 1.5, shrink: true }),
+      qr("https://example.com/event", W - 108, H - 82, 68, wine),
     ]),
   ]);
 }
 
 function salePost({ t }: TemplateContext) {
-  const page = sizeOf(SQUARE);
   const red = "#dc2626";
+  const deep = "#7f1d1d";
   const yellow = "#facc15";
-  return design(t("studio.templates.items.salePost"), [red, yellow], [
-    pageOf(SQUARE, solid(red), [
-      art("confetti", { primary: yellow, secondary: "#ffffff" }, 0, 0, page.width, page.height, { opacity: 0.45 }),
-      art("starSeal", { primary: yellow, secondary: red }, page.width - 300, 60, 240, 240, { rotation: 12 }),
-      text(page.width - 260, 130, 160, 100, t("studio.tpl.discount"), { font: FONTS.abril, size: 48, color: red, align: "center", valign: "middle", rotation: 12, shrink: true }),
-      text(70, 300, page.width - 140, 260, t("studio.tpl.bigSale"), { font: FONTS.bebas, size: 210, color: "#ffffff", lineHeight: 0.85, shrink: true, valign: "middle" }),
-      text(70, 570, page.width - 140, 40, t("studio.tpl.saleLead"), { font: FONTS.montserrat, size: 26, bold: true, color: yellow, upper: true, spacing: 2, shrink: true }),
-      box("rect", 70, 650, 330, 66, solid("#ffffff"), { radius: 33 }),
-      text(70, 650, 330, 66, t("studio.tpl.shopNow"), { font: FONTS.montserrat, size: 24, bold: true, color: red, align: "center", valign: "middle", upper: true, spacing: 2, shrink: true }),
-      text(430, 660, page.width - 500, 46, t("studio.tpl.website"), { font: FONTS.montserrat, size: 20, color: "#ffffff", valign: "middle", shrink: true }),
+  return design(t("studio.templates.items.salePost"), [red, deep, yellow, "#ffffff"], [
+    pageOf(SQUARE, radial("#ef4444", "#991b1b", { cy: 0.42, radius: 1 }), [
+      art("diagonalHatch", { primary: "#ffffff", secondary: yellow }, 0, 0, S, S, { opacity: 0.16 }),
+      art("confetti", { primary: yellow, secondary: "#ffffff" }, 60, 176, 440, 150, { opacity: 0.55 }),
+      box("rect", 32, 32, S - 64, S - 64, { type: "none" }, { stroke: stroke("#fecaca", 1.5) }),
+      shadowed(box("burst", S - 300, 62, 236, 236, solid(yellow), { rotation: 12, points: 18, inner: 0.84 }), "lifted", deep),
+      box("ellipse", S - 266, 96, 168, 168, { type: "none" }, { stroke: stroke(deep, 1.5, "dashed"), rotation: 12 }),
+      text(S - 262, 128, 160, 104, t("studio.tpl.discount"), { font: FONTS.bebas, size: 62, color: deep, align: "center", valign: "middle", lineHeight: 0.9, rotation: 12, shrink: true }),
+      text(72, 116, 400, 26, t("studio.tpl.saleLead"), { font: FONTS.montserrat, size: 20, bold: true, color: yellow, upper: true, spacing: 4, shrink: true }),
+      box("rect", 72, 156, 72, 5, solid(yellow)),
+      text(64, 300, S - 128, 300, t("studio.tpl.bigSale"), { font: FONTS.bebas, size: 236, color: "#ffffff", lineHeight: 0.84, valign: "middle", upper: true, shrink: true, shadow: "deep" }),
+      shadowed(box("rect", 72, 646, 300, 72, solid(yellow), { radius: 36 }), "lifted", deep),
+      text(72, 646, 300, 72, t("studio.tpl.shopNow"), { font: FONTS.montserrat, size: 22, bold: true, color: deep, align: "center", valign: "middle", upper: true, spacing: 3, shrink: true }),
+      text(400, 656, S - 472, 52, t("studio.tpl.website"), { font: FONTS.montserrat, size: 20, bold: true, color: "#ffffff", align: "right", valign: "middle", shrink: true }),
     ]),
   ]);
 }
 
 function concert({ t }: TemplateContext) {
-  const magenta = "#e11d48";
-  const cyan = "#06b6d4";
-  return design(t("studio.templates.items.concert"), [magenta, cyan], [
-    pageOf(A4, linear(180, "#0f0a1e", "#2e1065"), [
-      art("waves", { primary: magenta, secondary: cyan }, 0, H - 160, W, 160, { opacity: 0.9 }),
-      art("arcRings", { primary: cyan, secondary: magenta }, W / 2 - 190, 90, 380, 380, { opacity: 0.6 }),
-      ...photoSlot(W / 2 - 130, 150, 260, 260, "#3b1d6e", "circle"),
-      centredText(page, 450, 30, t("studio.tpl.liveInConcert"), { font: FONTS.montserrat, size: 16, bold: true, color: cyan, spacing: 8, upper: true, shrink: true }),
-      centredText(page, 486, 120, t("studio.tpl.bandName"), { font: FONTS.bebas, size: 96, color: "#ffffff", lineHeight: 0.9, shrink: true, valign: "middle" }),
-      centredText(page, 616, 28, t("studio.tpl.concertDate"), { font: FONTS.montserrat, size: 18, bold: true, color: "#ffffff", spacing: 2, upper: true, shrink: true }),
-      centredText(page, 648, 24, t("studio.tpl.concertPlace"), { font: FONTS.montserrat, size: 14, color: "#e5e7eb", shrink: true }),
-      centredText(page, H - 80, 24, t("studio.tpl.ticketsAt"), { font: FONTS.montserrat, size: 12, bold: true, color: "#ffffff", spacing: 2, upper: true, shrink: true }),
+  const magenta = "#f0216b";
+  const cyan = "#22d3ee";
+  const night = "#07051a";
+  return design(t("studio.templates.items.concert"), [magenta, cyan, night, "#ffffff"], [
+    pageOf(A4, gradient(180, [night, "#160a35", "#2a0f4a"]), [
+      art("halftone", { primary: magenta, secondary: cyan }, 0, 0, W, H, { opacity: 0.32 }),
+      art("arcRings", { primary: magenta, secondary: cyan }, W / 2 - 210, 64, 420, 420),
+      art("arcRings", { primary: cyan, secondary: magenta }, W / 2 - 176, 98, 352, 352, { rotation: 180, opacity: 0.7 }),
+      ...liftedSlot(photoSlot(W / 2 - 132, 142, 264, 264, "#2a1450", "circle"), "glow", magenta),
+      rule(64, 494, 96, cyan, 1.2),
+      rule(W - 160, 494, 96, cyan, 1.2),
+      centredText(page, 482, 24, t("studio.tpl.liveInConcert"), { font: FONTS.montserrat, size: 13, bold: true, color: cyan, spacing: 7, upper: true, inset: 172, shrink: true }),
+      centredText(page, 514, 150, t("studio.tpl.bandName"), { font: FONTS.bebas, size: 108, color: "#ffffff", lineHeight: 0.86, valign: "middle", inset: 40, shrink: true, shadow: "deep" }),
+      box("rect", W / 2 - 80, 676, 160, 3, gradient(0, [magenta, cyan])),
+      centredText(page, 694, 26, t("studio.tpl.concertDate"), { font: FONTS.montserrat, size: 17, bold: true, color: "#ffffff", spacing: 2, upper: true, shrink: true }),
+      centredText(page, 722, 22, t("studio.tpl.concertPlace"), { font: FONTS.montserrat, size: 13, color: "#d8ccff", shrink: true }),
+      art("waves", { primary: magenta, secondary: cyan }, 0, H - 76, W, 76, { opacity: 0.9 }),
+      box("rect", W / 2 - 150, 760, 300, 34, solid(night), { radius: 17, stroke: stroke(cyan, 1.2) }),
+      text(W / 2 - 140, 760, 280, 34, t("studio.tpl.ticketsAt"), { font: FONTS.montserrat, size: 11, bold: true, color: "#ffffff", spacing: 1.5, upper: true, align: "center", valign: "middle", shrink: true }),
     ]),
   ]);
 }
 
 function workshop({ t }: TemplateContext) {
-  const green = "#15803d";
-  const cream = "#fefce8";
+  const palette = PALETTES.forestCream;
+  const forest = palette.accent;
+  const gold = palette.accent2;
   const items = ["studio.tpl.workshopPoint1", "studio.tpl.workshopPoint2", "studio.tpl.workshopPoint3"];
-  return design(t("studio.templates.items.workshop"), [green, "#ca8a04"], [
-    pageOf(A4, solid(cream), [
-      box("rect", 0, 0, W, 330, solid(green)),
-      art("blob", { primary: "#22c55e", secondary: "#86efac" }, W - 260, -80, 340, 320, { opacity: 0.5 }),
-      text(48, 60, 300, 22, t("studio.tpl.freeWorkshop"), { font: FONTS.poppins, size: 12, bold: true, color: "#bbf7d0", spacing: 3, upper: true, shrink: true }),
-      text(48, 96, W - 140, 200, t("studio.tpl.workshopTitle"), { font: FONTS.poppins, size: 46, bold: true, color: "#ffffff", lineHeight: 1.08, shrink: true, valign: "middle" }),
-      text(48, 370, W - 96, 60, t("studio.tpl.workshopLead"), { font: FONTS.poppins, size: 15, color: "#374151", lineHeight: 1.5, shrink: true }),
-      ...items.flatMap((key, index) => [
-        box("ellipse", 48, 458 + index * 54, 30, 30, solid(green)),
-        text(48, 458 + index * 54, 30, 30, String(index + 1), { font: FONTS.poppins, size: 14, bold: true, color: "#ffffff", align: "center", valign: "middle" }),
-        text(92, 456 + index * 54, W - 140, 34, t(key), { font: FONTS.poppins, size: 15, color: "#1f2937", valign: "middle", shrink: true }),
-      ]),
-      rule(48, 650, W - 96, "#d9f99d", 2),
-      text(48, 672, 300, 26, t("studio.tpl.workshopDate"), { font: FONTS.poppins, size: 17, bold: true, color: green, shrink: true }),
-      text(48, 702, 300, 44, t("studio.tpl.workshopPlace"), { font: FONTS.poppins, size: 13, color: "#374151", lineHeight: 1.35, shrink: true }),
-      qr("https://example.com/register", W - 148, 660, 100, green),
-      text(W - 248, 768, 200, 18, t("studio.tpl.registerNow"), { font: FONTS.poppins, size: 11, bold: true, color: green, align: "right", shrink: true }),
+  const photoX = 360;
+  const bandY = 628;
+  return design(t("studio.templates.items.workshop"), paletteList(palette), [
+    pageOf(A4, solid(palette.paper), [
+      art("topographic", { primary: lighter(forest, 0.55), secondary: gold }, 0, 0, W, bandY, { opacity: 0.32 }),
+      box("rect", photoX + 14, 70, W - photoX - 34, 300, { type: "none" }, { radius: 14, stroke: stroke(gold, 1.5) }),
+      ...liftedSlot(photoSlot(photoX, 56, W - photoX - 34, 300, palette.soft, "rounded"), "lifted"),
+      box("rect", 48, 56, 156, 28, solid(forest), { radius: 14 }),
+      text(48, 56, 156, 28, t("studio.tpl.freeWorkshop"), { font: FONTS.inter, size: 10, bold: true, color: "#ffffff", align: "center", valign: "middle", upper: true, spacing: 2, shrink: true }),
+      text(48, 108, photoX - 72, 186, t("studio.tpl.workshopTitle"), { font: FONTS.playfair, size: 46, bold: true, color: palette.ink, lineHeight: 1.04, valign: "middle", shrink: true }),
+      box("rect", 48, 310, 64, 4, foil("gold", 0)),
+      text(48, 330, photoX - 72, 72, t("studio.tpl.workshopLead"), { font: FONTS.inter, size: 13, color: palette.muted, lineHeight: 1.5, shrink: true }),
+      ...items.flatMap((key, index) => {
+        const y = 430 + index * 60;
+        return [
+          box("ellipse", 48, y, 40, 40, solid(gold)),
+          text(48, y, 40, 40, String(index + 1).padStart(2, "0"), { font: FONTS.playfair, size: 15, bold: true, color: palette.ink, align: "center", valign: "middle" }),
+          text(104, y, W - 152, 40, t(key), { font: FONTS.inter, size: 14, bold: true, color: palette.ink, valign: "middle", shrink: true }),
+          ...(index < items.length - 1 ? [rule(104, y + 50, W - 152, "#e4dcc4", 0.8)] : []),
+        ];
+      }),
+      box("rect", 0, bandY, W, H - bandY, gradient(135, [forest, darker(forest, 0.4)])),
+      art("diagonalHatch", { primary: gold, secondary: "#ffffff" }, 0, bandY, W, H - bandY, { opacity: 0.12 }),
+      box("rect", 0, bandY, W, 4, foil("gold", 0)),
+      text(48, bandY + 48, 320, 34, t("studio.tpl.workshopDate"), { font: FONTS.playfair, size: 22, bold: true, color: "#ffffff", valign: "middle", shrink: true }),
+      text(48, bandY + 92, 320, 44, t("studio.tpl.workshopPlace"), { font: FONTS.inter, size: 12, color: "#e7efe2", lineHeight: 1.45, shrink: true }),
+      shadowed(box("rect", W - 172, bandY + 36, 124, 124, solid("#ffffff"), { radius: 14 }), "lifted"),
+      qr("https://example.com/register", W - 160, bandY + 48, 100, forest),
+      text(W - 212, bandY + 168, 164, 18, t("studio.tpl.registerNow"), { font: FONTS.inter, size: 10, bold: true, color: "#f3e3b8", align: "right", upper: true, spacing: 1.2, shrink: true }),
     ]),
   ]);
 }
 
 function announcement({ t }: TemplateContext) {
-  const navy = "#1e3a8a";
-  const sky = "#38bdf8";
-  return design(t("studio.templates.items.announcement"), [navy, sky], [
-    pageOf(A4, solid("#ffffff"), [
-      box("rect", 0, 0, W, 16, solid(navy)),
-      box("rect", 0, H - 16, W, 16, solid(navy)),
-      art("cornerTriangles", { primary: navy, secondary: sky }, W - 180, 16, 180, 180, { rotation: 90 }),
-      text(56, 90, W - 260, 22, t("studio.tpl.orgName"), { font: FONTS.sourceSerif, size: 13, bold: true, color: navy, spacing: 2, upper: true, shrink: true }),
-      text(56, 160, W - 112, 90, t("studio.tpl.announcementTitle"), { font: FONTS.merriweather, size: 48, bold: true, color: "#0f172a", lineHeight: 1.1, shrink: true }),
-      box("rect", 56, 266, 80, 6, solid(sky)),
-      text(56, 300, W - 112, 330, t("studio.tpl.announcementBody"), { font: FONTS.sourceSerif, size: 15, color: "#1f2937", lineHeight: 1.6, shrink: true }),
-      box("rect", 56, 660, W - 112, 90, solid("#eff6ff"), { radius: 10 }),
-      text(76, 674, W - 152, 62, t("studio.tpl.announcementNote"), { font: FONTS.sourceSerif, size: 13, italic: true, color: navy, lineHeight: 1.45, valign: "middle", shrink: true }),
-      text(56, 770, W - 112, 20, t("studio.tpl.management"), { font: FONTS.sourceSerif, size: 12, bold: true, color: "#374151", align: "right", shrink: true }),
+  const palette = PALETTES.ivoryNavy;
+  const navy = palette.accent;
+  const gold = palette.accent2;
+  const header = 300;
+  return design(t("studio.templates.items.announcement"), paletteList(palette), [
+    pageOf(A4, solid(palette.paper), [
+      box("rect", 0, 0, W, header, gradient(160, [navy, darker(navy, 0.45)])),
+      art("diagonalHatch", { primary: "#ffffff", secondary: gold }, 0, 0, W, header, { opacity: 0.1 }),
+      art("cornerTriangles", { primary: gold, secondary: lighter(navy, 0.4) }, W - 150, 0, 150, 150, { rotation: 90, opacity: 0.9 }),
+      art("halftone", { primary: lighter(navy, 0.55), secondary: gold }, 0, header, W, H - header, { opacity: 0.22 }),
+      box("rect", 0, header, W, 5, foil("gold", 0)),
+      text(56, 64, 360, 20, t("studio.tpl.orgName"), { font: FONTS.sourceSerif, size: 12, bold: true, color: "#e9d38a", spacing: 3, upper: true, shrink: true }),
+      rule(56, 96, 48, gold, 1.5),
+      text(56, 116, W - 200, 150, t("studio.tpl.announcementTitle"), { font: FONTS.merriweather, size: 44, bold: true, color: "#ffffff", lineHeight: 1.12, valign: "middle", shrink: true }),
+      shadowed(box("ellipse", W - 138, 196, 84, 84, foil("gold", 135)), "lifted"),
+      text(W - 138, 196, 84, 84, "!", { font: FONTS.merriweather, size: 44, bold: true, color: palette.ink, align: "center", valign: "middle" }),
+      text(56, 348, W - 112, 250, t("studio.tpl.announcementBody"), { font: FONTS.sourceSerif, size: 16, color: palette.ink, lineHeight: 1.6, shrink: true }),
+      shadowed(box("rect", 56, 628, W - 112, 84, solid(palette.soft), { radius: 12 }), "soft"),
+      box("rect", 56, 628, 6, 84, solid(gold), { radius: 3 }),
+      text(84, 640, W - 164, 60, t("studio.tpl.announcementNote"), { font: FONTS.sourceSerif, size: 13, italic: true, color: navy, lineHeight: 1.45, valign: "middle", shrink: true }),
+      rule(W - 256, 764, 200, gold, 1),
+      text(W - 296, 772, 240, 20, t("studio.tpl.management"), { font: FONTS.sourceSerif, size: 12, bold: true, color: palette.ink, align: "right", spacing: 1, shrink: true }),
+      box("rect", 0, H - 14, W, 14, solid(navy)),
     ]),
   ]);
 }
 
 function comingSoon({ t }: TemplateContext) {
-  const page = sizeOf(SQUARE);
-  const ink = "#0b0b0f";
-  const gold = "#eab308";
-  return design(t("studio.templates.items.comingSoon"), [ink, gold], [
-    pageOf(SQUARE, solid(ink), [
-      art("arcRings", { primary: gold, secondary: "#a16207" }, page.width / 2 - 330, page.height / 2 - 330, 660, 660, { opacity: 0.35 }),
-      centredText(page, 230, 30, t("studio.tpl.companyName"), { font: FONTS.josefin, size: 20, color: gold, spacing: 10, upper: true, shrink: true }),
-      centredText(page, 290, 220, t("studio.tpl.comingSoon"), { font: FONTS.josefin, size: 118, bold: true, color: "#ffffff", lineHeight: 0.95, upper: true, shrink: true, valign: "middle" }),
-      rule(page.width / 2 - 60, 540, 120, gold, 3),
-      centredText(page, 566, 60, t("studio.tpl.comingSoonLead"), { font: FONTS.josefin, size: 24, color: "#d4d4d8", lineHeight: 1.35, shrink: true }),
-      centredText(page, 700, 30, t("studio.tpl.website"), { font: FONTS.josefin, size: 20, color: gold, spacing: 3, shrink: true }),
+  const gold = "#d6b25e";
+  const night = "#08080c";
+  const colours = { primary: gold, secondary: gold };
+  return design(t("studio.templates.items.comingSoon"), [gold, night, "#ffffff"], [
+    pageOf(SQUARE, radial("#22222e", night, { cy: 0.45, radius: 0.9 }), [
+      art("sunburst", { primary: "#3b3b52", secondary: gold }, 0, 0, S, S, { opacity: 0.16 }),
+      frame("decoFrame", colours, square),
+      art("decoFan", { primary: night, secondary: gold }, S / 2 - 80, 120, 160, 87),
+      centredText(square, 236, 28, t("studio.tpl.companyName"), { font: FONTS.josefin, size: 18, bold: true, color: gold, spacing: 10, upper: true, inset: 120, shrink: true }),
+      centredText(square, 282, 236, t("studio.tpl.comingSoon"), { font: FONTS.cinzel, size: 104, bold: true, color: "#ffffff", lineHeight: 1.02, upper: true, valign: "middle", inset: 90, shrink: true, shadow: "deep" }),
+      art("diamondDivider", colours, S / 2 - 150, 538, 300, 20),
+      centredText(square, 576, 66, t("studio.tpl.comingSoonLead"), { font: FONTS.josefin, size: 24, color: "#d9d6cc", lineHeight: 1.35, inset: 150, shrink: true }),
+      box("rect", S / 2 - 170, 672, 340, 52, { type: "none" }, { radius: 26, stroke: stroke(gold, 1.5) }),
+      text(S / 2 - 160, 672, 320, 52, t("studio.tpl.website"), { font: FONTS.josefin, size: 19, bold: true, color: gold, spacing: 3, align: "center", valign: "middle", shrink: true }),
     ]),
   ]);
 }
 
 function conference({ t }: TemplateContext) {
-  const violet = "#5b21b6";
-  const pink = "#db2777";
+  const indigo = "#1e1b4b";
+  const violet = "#4c1d95";
+  const pink = "#f472b6";
+  const amber = "#fbbf24";
   const speakers = [0, 1, 2];
-  return design(t("studio.templates.items.conference"), [violet, pink], [
-    pageOf(A4, linear(160, "#1e1b4b", violet), [
-      art("blob", { primary: pink, secondary: violet }, W - 280, -60, 360, 360, { opacity: 0.6 }),
-      art("dotsDivider", { primary: "#ffffff", secondary: pink }, 48, 56, 160, 12),
-      text(48, 90, W - 96, 22, t("studio.tpl.conferenceYear"), { font: FONTS.montserrat, size: 13, bold: true, color: "#f9a8d4", spacing: 3, upper: true, shrink: true }),
-      text(48, 120, W - 96, 170, t("studio.tpl.conferenceTitle"), { font: FONTS.montserrat, size: 56, bold: true, color: "#ffffff", lineHeight: 1.0, shrink: true, valign: "middle" }),
-      text(48, 300, W - 140, 60, t("studio.tpl.conferenceLead"), { font: FONTS.inter, size: 15, color: "#ddd6fe", lineHeight: 1.45, shrink: true }),
-      text(48, 392, W - 96, 22, t("studio.tpl.speakers"), { font: FONTS.montserrat, size: 12, bold: true, color: "#ffffff", spacing: 3, upper: true }),
+  const column = (W - 96) / 3;
+  return design(t("studio.templates.items.conference"), [indigo, violet, pink, amber, "#ffffff"], [
+    pageOf(A4, gradient(160, ["#0d0b2a", indigo, violet]), [
+      art("triangleTiles", { primary: "#ffffff", secondary: pink }, 0, 0, W, H, { opacity: 0.05 }),
+      art("blob", { primary: pink, secondary: violet }, W - 250, -90, 340, 340, { opacity: 0.55 }),
+      text(30, 36, W - 40, 200, "2027", { font: FONTS.montserrat, size: 196, bold: true, color: "#ffffff", opacity: 0.07, valign: "middle" }),
+      box("rect", 48, 72, 220, 28, solid(pink), { radius: 14 }),
+      text(48, 72, 220, 28, t("studio.tpl.conferenceYear"), { font: FONTS.montserrat, size: 10, bold: true, color: indigo, spacing: 2, upper: true, align: "center", valign: "middle", shrink: true }),
+      text(48, 132, W - 96, 200, t("studio.tpl.conferenceTitle"), { font: FONTS.montserrat, size: 58, bold: true, color: "#ffffff", lineHeight: 1.0, valign: "bottom", shrink: true }),
+      box("rect", 48, 352, 96, 5, gradient(0, [pink, amber])),
+      text(48, 376, W - 150, 64, t("studio.tpl.conferenceLead"), { font: FONTS.inter, size: 14, color: "#ddd6fe", lineHeight: 1.5, shrink: true }),
+      text(48, 466, 160, 18, t("studio.tpl.speakers"), { font: FONTS.montserrat, size: 11, bold: true, color: amber, spacing: 3, upper: true, shrink: true }),
+      rule(208, 475, W - 256, "#6d5bd0", 0.8),
       ...speakers.flatMap((index) => {
-        const x = 48 + index * 170;
+        const centre = 48 + column * index + column / 2;
         return [
-          ...photoSlot(x, 426, 120, 120, "#4c1d95", "circle"),
-          text(x - 10, 556, 140, 20, t("studio.tpl.speakerName"), { font: FONTS.montserrat, size: 12, bold: true, color: "#ffffff", align: "center", shrink: true }),
-          text(x - 10, 576, 140, 18, t("studio.tpl.jobTitle"), { font: FONTS.inter, size: 10, color: "#c4b5fd", align: "center", shrink: true }),
+          box("ellipse", centre - 62, 498, 124, 124, { type: "none" }, { stroke: stroke(pink, 1.5) }),
+          ...liftedSlot(photoSlot(centre - 54, 506, 108, 108, "#3b2a7a", "circle"), "lifted"),
+          text(centre - column / 2 + 6, 632, column - 12, 20, t("studio.tpl.speakerName"), { font: FONTS.montserrat, size: 12, bold: true, color: "#ffffff", align: "center", shrink: true }),
+          text(centre - column / 2 + 6, 652, column - 12, 18, t("studio.tpl.jobTitle"), { font: FONTS.inter, size: 10, color: "#c4b5fd", align: "center", shrink: true }),
         ];
       }),
-      box("rect", 48, 640, W - 96, 120, solid("#ffffff"), { radius: 16, opacity: 0.08 }),
-      text(72, 662, 300, 26, t("studio.tpl.conferenceDate"), { font: FONTS.montserrat, size: 17, bold: true, color: "#ffffff", shrink: true }),
-      text(72, 694, 300, 44, t("studio.tpl.conferencePlace"), { font: FONTS.inter, size: 13, color: "#ddd6fe", lineHeight: 1.35, shrink: true }),
-      qr("https://example.com/conference", W - 158, 652, 96, "#ffffff"),
+      shadowed(box("rect", 48, 694, W - 96, 116, solid("#ffffff"), { radius: 18 }), "lifted", "#000000"),
+      box("rect", 48, 694, 8, 116, gradient(90, [pink, amber]), { radius: 4 }),
+      text(76, 714, 300, 30, t("studio.tpl.conferenceDate"), { font: FONTS.montserrat, size: 20, bold: true, color: indigo, valign: "middle", shrink: true }),
+      text(76, 750, 300, 44, t("studio.tpl.conferencePlace"), { font: FONTS.inter, size: 12, color: "#4b4a6b", lineHeight: 1.4, shrink: true }),
+      qr("https://example.com/conference", W - 150, 708, 88, indigo),
     ]),
   ]);
 }
@@ -151,17 +214,20 @@ function conference({ t }: TemplateContext) {
 function fitness({ t }: TemplateContext) {
   const lime = "#a3e635";
   const ink = "#0a0a0a";
-  return design(t("studio.templates.items.fitness"), [lime, ink], [
+  return design(t("studio.templates.items.fitness"), [lime, ink, "#ffffff"], [
     pageOf(A4, solid(ink), [
-      ...photoSlot(0, 0, W, 470, "#262626"),
-      box("rect", 0, 470, W, H - 470, solid(ink)),
-      box("parallelogram", 36, 440, 260, 56, solid(lime)),
-      text(56, 440, 220, 56, t("studio.tpl.joinToday"), { font: FONTS.oswald, size: 22, bold: true, color: ink, align: "center", valign: "middle", upper: true, spacing: 2, shrink: true }),
-      text(40, 520, W - 80, 160, t("studio.tpl.fitnessTitle"), { font: FONTS.oswald, size: 72, bold: true, color: "#ffffff", lineHeight: 0.95, upper: true, shrink: true, valign: "middle" }),
-      text(40, 690, W - 80, 50, t("studio.tpl.fitnessLead"), { font: FONTS.inter, size: 15, color: "#d4d4d4", lineHeight: 1.45, shrink: true }),
-      rule(40, 760, W - 80, lime, 2),
-      text(40, 774, W / 2 - 40, 30, t("studio.tpl.phone"), { font: FONTS.oswald, size: 16, color: lime, valign: "middle", shrink: true }),
-      text(W / 2, 774, W / 2 - 40, 30, t("studio.tpl.website"), { font: FONTS.oswald, size: 16, color: "#ffffff", align: "right", valign: "middle", shrink: true }),
+      ...photoSlot(0, 0, W, 540, "#262626"),
+      box("rect", -80, 486, W + 160, 160, solid(ink), { rotation: -6 }),
+      art("diagonalHatch", { primary: lime, secondary: "#ffffff" }, 0, 560, W, H - 616, { opacity: 0.1 }),
+      box("rect", -80, 478, W + 160, 6, solid(lime), { rotation: -6 }),
+      shadowed(box("parallelogram", 36, 450, 236, 54, solid(lime), { rotation: -6 }), "long", "#000000"),
+      text(56, 450, 196, 54, t("studio.tpl.joinToday"), { font: FONTS.oswald, size: 22, bold: true, color: ink, align: "center", valign: "middle", upper: true, spacing: 2, rotation: -6, shrink: true }),
+      text(40, 560, W - 80, 160, t("studio.tpl.fitnessTitle"), { font: FONTS.oswald, size: 76, bold: true, color: "#ffffff", lineHeight: 0.94, upper: true, valign: "middle", shrink: true }),
+      box("rect", 40, 728, 72, 5, solid(lime)),
+      text(40, 742, W - 80, 40, t("studio.tpl.fitnessLead"), { font: FONTS.inter, size: 14, color: "#d4d4d4", lineHeight: 1.45, shrink: true }),
+      box("rect", 0, H - 56, W, 56, solid(lime)),
+      text(40, H - 56, W / 2 - 50, 56, t("studio.tpl.phone"), { font: FONTS.oswald, size: 17, bold: true, color: ink, valign: "middle", spacing: 1, shrink: true }),
+      text(W / 2 + 10, H - 56, W / 2 - 50, 56, t("studio.tpl.website"), { font: FONTS.oswald, size: 17, bold: true, color: ink, align: "right", valign: "middle", spacing: 1, shrink: true }),
     ]),
   ]);
 }
