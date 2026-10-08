@@ -1,20 +1,38 @@
-import { AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignStartHorizontal, AlignStartVertical, FlipHorizontal2, FlipVertical2, Lock, LockOpen, PaintBucket, Paintbrush, StretchHorizontal, StretchVertical } from "lucide-react";
+import { AlignCenterHorizontal, AlignCenterVertical, AlignEndHorizontal, AlignEndVertical, AlignStartHorizontal, AlignStartVertical, FlipHorizontal2, FlipVertical2, Link2, Lock, LockOpen, PaintBucket, Paintbrush, StretchHorizontal, StretchVertical, Unlink2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useShallow } from "zustand/react/shallow";
 import { IconButton } from "@/components/shared/IconButton";
 import type { StudioElement, StudioPage } from "@/types/studio";
 import { distributableCount } from "../model/edit";
 import { align, distribute, flipSelection, patchSelected, toggleLock } from "./commands";
 import { NumberField, OpacityField, PanelSection } from "./controls";
-import { moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue } from "./multiEdit";
+import { moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue, sizeElementTo } from "./multiEdit";
 import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, useStudioStore } from "./studioStore";
+import { MIN_SIDE, normalizeAngle, ratioLocked } from "./transform";
 import { fromMm, toMm } from "./units";
+
+type Limits = { x: [number, number]; y: [number, number]; width: [number, number]; height: [number, number] };
+
+function usePageLimits(): Limits {
+  const [width, height] = useStudioStore(
+    useShallow((state) => {
+      const page = currentPage(state);
+      return page ? [page.width, page.height] : [0, 0];
+    }),
+  );
+  const side = (extent: number): [number, number] => [toMm(MIN_SIDE), toMm(Math.max(extent, MIN_SIDE) * 4)];
+  return { x: [-toMm(width), toMm(width * 2)], y: [-toMm(height), toMm(height * 2)], width: side(width), height: side(height) };
+}
+
+const shownAngle = (degrees: number) => Math.round(normalizeAngle(degrees) * 10) / 10;
 
 export function ArrangeSection({ elements }: { elements: StudioElement[] }) {
   const { t } = useTranslation();
   const single = elements.length === 1 ? elements[0] : null;
   const locked = elements.every((element) => element.locked);
   const opacity = sharedValue(elements.map((element) => element.opacity));
+  const limits = usePageLimits();
   const distributable = useStudioStore((state) => {
     const page = currentPage(state);
     return page ? distributableCount(page, state.selection) : 0;
@@ -44,15 +62,9 @@ export function ArrangeSection({ elements }: { elements: StudioElement[] }) {
         <IconButton icon={FlipVertical2} active={elements.every((element) => element.flipY)} disabled={locked} label={t("studio.flip.vertical")} shortcut="Shift+V" onClick={() => flipSelection("vertical")} />
       </div>
       {single ? (
-        <div className="grid grid-cols-2 gap-2">
-          <NumberField label="X" suffix="mm" value={toMm(single.x)} step={1} onChange={(value) => patchSelected({ x: fromMm(value) })} disabled={single.locked} />
-          <NumberField label="Y" suffix="mm" value={toMm(single.y)} step={1} onChange={(value) => patchSelected({ y: fromMm(value) })} disabled={single.locked} />
-          <NumberField label={t("studio.props.width")} suffix="mm" value={toMm(single.width)} min={0.5} step={1} onChange={(value) => patchSelected({ width: fromMm(value) })} disabled={single.locked} />
-          <NumberField label={t("studio.props.height")} suffix="mm" value={toMm(single.height)} min={0.5} step={1} onChange={(value) => patchSelected({ height: fromMm(value) })} disabled={single.locked} />
-          <NumberField label={t("studio.props.rotation")} suffix="°" value={Math.round(single.rotation * 10) / 10} min={-360} max={360} onChange={(value) => patchSelected({ rotation: value })} disabled={single.locked} />
-        </div>
+        <SingleGeometry element={single} limits={limits} />
       ) : (
-        <GroupGeometry elements={elements} />
+        <GroupGeometry elements={elements} limits={limits} />
       )}
       <OpacityField label={t("studio.props.opacity")} value={opacity.value} mixed={opacity.mixed} onChange={(value, merge) => patchSelected({ opacity: value }, merge)} />
       <StyleClipboardButtons />
@@ -60,23 +72,44 @@ export function ArrangeSection({ elements }: { elements: StudioElement[] }) {
   );
 }
 
-function GroupGeometry({ elements }: { elements: StudioElement[] }) {
+function SingleGeometry({ element, limits }: { element: StudioElement; limits: Limits }) {
+  const { t } = useTranslation();
+  const disabled = element.locked;
+  const resize = (size: { width?: number; height?: number }, merge?: string) => patchSelected((current) => sizeElementTo(current, size), merge);
+  const ratio = ratioLocked(element);
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <NumberField label="X" suffix="mm" value={toMm(element.x)} step={1} min={limits.x[0]} max={limits.x[1]} mergeKey="x" onChange={(value, merge) => patchSelected({ x: fromMm(value) }, merge)} disabled={disabled} />
+      <NumberField label="Y" suffix="mm" value={toMm(element.y)} step={1} min={limits.y[0]} max={limits.y[1]} mergeKey="y" onChange={(value, merge) => patchSelected({ y: fromMm(value) }, merge)} disabled={disabled} />
+      <NumberField label={t("studio.props.width")} suffix="mm" value={toMm(element.width)} step={1} min={limits.width[0]} max={limits.width[1]} mergeKey="width" onChange={(value, merge) => resize({ width: fromMm(value) }, merge)} disabled={disabled} />
+      <NumberField label={t("studio.props.height")} suffix="mm" value={toMm(element.height)} step={1} min={limits.height[0]} max={limits.height[1]} mergeKey="height" onChange={(value, merge) => resize({ height: fromMm(value) }, merge)} disabled={disabled || element.kind === "qr"} />
+      <NumberField label={t("studio.props.rotation")} suffix="°" value={shownAngle(element.rotation)} min={-360} max={360} mergeKey="rotation" onChange={(value, merge) => patchSelected({ rotation: normalizeAngle(value) }, merge)} disabled={disabled} />
+      {element.kind === "text" ? null : (
+        <div className="flex items-end">
+          <IconButton icon={ratio ? Link2 : Unlink2} active={ratio} disabled={disabled || element.kind === "qr"} label={ratio ? t("studio.props.unlockRatio") : t("studio.props.lockRatio")} onClick={() => patchSelected({ lockRatio: !ratio })} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GroupGeometry({ elements, limits }: { elements: StudioElement[]; limits: Limits }) {
   const { t } = useTranslation();
   const frame = selectionFrame(elements);
-  const rotation = sharedValue(elements.map((element) => Math.round(element.rotation * 10) / 10));
+  const rotation = sharedValue(elements.map((element) => shownAngle(element.rotation)));
   if (!frame) return null;
   const locked = elements.some((element) => element.locked);
-  const onPage = (change: (page: StudioPage, ids: string[]) => StudioPage) => {
+  const onPage = (change: (page: StudioPage, ids: string[]) => StudioPage, merge?: string) => {
     const state = useStudioStore.getState();
-    state.applyToPage((page) => change(page, state.selection));
+    state.applyToPage((page) => change(page, state.selection), merge ? { merge } : undefined);
   };
   return (
     <div className="grid grid-cols-2 gap-2">
-      <NumberField label="X" suffix="mm" value={toMm(frame.x)} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => moveSelectionTo(page, ids, fromMm(value), frame.y))} />
-      <NumberField label="Y" suffix="mm" value={toMm(frame.y)} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => moveSelectionTo(page, ids, frame.x, fromMm(value)))} />
-      <NumberField label={t("studio.props.width")} suffix="mm" value={toMm(frame.width)} min={0.5} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => resizeSelectionTo(page, ids, fromMm(value), frame.height))} />
-      <NumberField label={t("studio.props.height")} suffix="mm" value={toMm(frame.height)} min={0.5} step={1} disabled={locked} onChange={(value) => onPage((page, ids) => resizeSelectionTo(page, ids, frame.width, fromMm(value)))} />
-      <NumberField label={t("studio.props.rotation")} suffix="°" value={rotation.value} mixed={rotation.mixed} min={-360} max={360} disabled={locked} onChange={(value) => patchSelected({ rotation: value })} />
+      <NumberField label="X" suffix="mm" value={toMm(frame.x)} step={1} min={limits.x[0]} max={limits.x[1]} mergeKey="x" disabled={locked} onChange={(value, merge) => onPage((page, ids) => moveSelectionTo(page, ids, fromMm(value), frame.y), merge)} />
+      <NumberField label="Y" suffix="mm" value={toMm(frame.y)} step={1} min={limits.y[0]} max={limits.y[1]} mergeKey="y" disabled={locked} onChange={(value, merge) => onPage((page, ids) => moveSelectionTo(page, ids, frame.x, fromMm(value)), merge)} />
+      <NumberField label={t("studio.props.width")} suffix="mm" value={toMm(frame.width)} step={1} min={limits.width[0]} max={limits.width[1]} mergeKey="width" disabled={locked} onChange={(value, merge) => onPage((page, ids) => resizeSelectionTo(page, ids, fromMm(value), frame.height), merge)} />
+      <NumberField label={t("studio.props.height")} suffix="mm" value={toMm(frame.height)} step={1} min={limits.height[0]} max={limits.height[1]} mergeKey="height" disabled={locked} onChange={(value, merge) => onPage((page, ids) => resizeSelectionTo(page, ids, frame.width, fromMm(value)), merge)} />
+      <NumberField label={t("studio.props.rotation")} suffix="°" value={rotation.value} mixed={rotation.mixed} min={-360} max={360} mergeKey="rotation" disabled={locked} onChange={(value, merge) => patchSelected({ rotation: normalizeAngle(value) }, merge)} />
     </div>
   );
 }

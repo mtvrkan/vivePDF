@@ -81,6 +81,24 @@ describe("properties of several elements", () => {
     expect(first.x).toBeCloseTo(10 / (25.4 / 72));
   });
 
+  it("locks the ratio of one shape so its height follows a typed width, and limits the field to the page", () => {
+    const [first] = shapes();
+    useStudioStore.getState().select([first.id]);
+    render(<PropertiesPanel />);
+    const width = screen.getByRole("textbox", { name: /^Width/ });
+
+    fireEvent.click(screen.getByRole("button", { name: "Lock aspect ratio" }));
+    fireEvent.change(width, { target: { value: "28,222" } });
+    fireEvent.blur(width);
+    fireEvent.change(width, { target: { value: "99999" } });
+    fireEvent.blur(width);
+
+    const [sized] = shapes();
+    expect(sized.lockRatio).toBe(true);
+    expect(sized.height).toBeCloseTo(sized.width);
+    expect(sized.width).toBeCloseTo(400 * 4, 0);
+  });
+
   it("shows nothing to edit for an empty selection beyond the page", () => {
     useStudioStore.getState().select([]);
     render(<PropertiesPanel />);

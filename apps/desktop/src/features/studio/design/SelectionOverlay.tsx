@@ -1,8 +1,22 @@
 import { cn } from "@/shared/lib/cn";
 import type { StudioElement } from "@/types/studio";
 import { elementBounds, type Bounds } from "../model/edit";
-import { CURSORS, handlePosition, handlesFor, isLine } from "./canvasGeometry";
-import { boundsOf } from "./transform";
+import { cursorFor, handlePosition, handlesFor, isLine } from "./canvasGeometry";
+import { boundsOf, handleSigns, type Handle } from "./transform";
+
+export const TINY_FRAME = 36;
+const OUTSIDE_OFFSET = 7;
+
+function placedHandles(handles: Handle[], width: number, height: number) {
+  const tiny = Math.min(width, height) < TINY_FRAME;
+  const corners = handles.filter((handle) => handle.length === 2);
+  const shown = tiny && corners.length ? corners : handles;
+  return shown.map((handle) => {
+    const spot = handlePosition(handle, width, height);
+    const signs = handleSigns(handle);
+    return { handle, x: tiny ? spot.x + signs.x * OUTSIDE_OFFSET : spot.x, y: tiny ? spot.y + signs.y * OUTSIDE_OFFSET : spot.y };
+  });
+}
 
 function RotateGrip() {
   return (
@@ -32,18 +46,15 @@ export function SelectionOverlay({ selected, zoom, turn, showHandles, cropping }
         >
           {showHandles ? (
             <>
-              {handlesFor([frame]).map((handle) => {
-                const spot = handlePosition(handle, frame.width * zoom, frame.height * zoom);
-                return (
-                  <span
-                    key={handle}
-                    data-handle={handle}
-                    aria-hidden
-                    className="pointer-events-auto absolute size-3 rounded-full border-2 border-primary bg-background"
-                    style={{ left: spot.x - 6, top: spot.y - 6, cursor: CURSORS[handle] }}
-                  />
-                );
-              })}
+              {placedHandles(handlesFor([frame]), frame.width * zoom, frame.height * zoom).map((spot) => (
+                <span
+                  key={spot.handle}
+                  data-handle={spot.handle}
+                  aria-hidden
+                  className="pointer-events-auto absolute size-3 rounded-full border-2 border-primary bg-background"
+                  style={{ left: spot.x - 6, top: spot.y - 6, cursor: cursorFor(spot.handle, frame.rotation) }}
+                />
+              ))}
               {isLine(frame)
                 ? (["start", "end"] as const).map((end) => (
                     <span
@@ -69,10 +80,9 @@ export function SelectionOverlay({ selected, zoom, turn, showHandles, cropping }
         >
           {showHandles && !turn ? (
             <>
-              {handlesFor(selected).map((handle) => {
-                const spot = handlePosition(handle, groupBox.width * zoom, groupBox.height * zoom);
-                return <span key={handle} data-handle={handle} aria-hidden className="pointer-events-auto absolute size-3 rounded-full border-2 border-primary bg-background" style={{ left: spot.x - 6, top: spot.y - 6, cursor: CURSORS[handle] }} />;
-              })}
+              {placedHandles(handlesFor(selected), groupBox.width * zoom, groupBox.height * zoom).map((spot) => (
+                <span key={spot.handle} data-handle={spot.handle} aria-hidden className="pointer-events-auto absolute size-3 rounded-full border-2 border-primary bg-background" style={{ left: spot.x - 6, top: spot.y - 6, cursor: cursorFor(spot.handle, 0) }} />
+              ))}
               <RotateGrip />
             </>
           ) : null}

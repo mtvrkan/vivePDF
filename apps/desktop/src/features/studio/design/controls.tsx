@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { TFunction } from "i18next";
 import { ColorSwatch, type ColorSwatchRow } from "@/components/shared/ColorSwatch";
@@ -27,7 +27,8 @@ export function PanelSection({ title, children, className }: { title: string; ch
 
 type NumberInputProps = {
   value: number;
-  onChange: (value: number) => void;
+  onChange: (value: number, merge?: string) => void;
+  mergeKey?: string;
   min?: number;
   max?: number;
   step?: number;
@@ -39,20 +40,42 @@ type NumberInputProps = {
   className?: string;
 };
 
-export function NumberInput({ value, onChange, min = -100000, max = 100000, step = 1, suffix, disabled, mixed = false, id, ariaLabel, className }: NumberInputProps) {
+function parseNumber(text: string): number | null {
+  const trimmed = text.trim().replace(",", ".");
+  if (!trimmed) return null;
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+export function NumberInput({ value, onChange, mergeKey, min = -100000, max = 100000, step = 1, suffix, disabled, mixed = false, id, ariaLabel, className }: NumberInputProps) {
   const { t } = useTranslation();
   const [draft, setDraft] = useState(mixed ? "" : String(value));
+  const reverting = useRef(false);
   useEffect(() => setDraft(mixed ? "" : String(value)), [value, mixed]);
+  const shown = mixed ? "" : String(value);
+  const clamp = (next: number) => Math.min(max, Math.max(min, Math.round(next * 1000) / 1000));
   const commit = () => {
-    if (mixed && !draft.trim()) return;
-    const parsed = Number(draft.replace(",", "."));
-    if (!draft.trim() || !Number.isFinite(parsed)) {
-      setDraft(mixed ? "" : String(value));
+    if (reverting.current) {
+      reverting.current = false;
       return;
     }
-    const clamped = Math.min(max, Math.max(min, parsed));
+    if (mixed && !draft.trim()) return;
+    const parsed = parseNumber(draft);
+    if (parsed === null) {
+      setDraft(shown);
+      return;
+    }
+    const clamped = clamp(parsed);
     if (mixed || clamped !== value) onChange(clamped);
     setDraft(String(clamped));
+  };
+  const stepBy = (direction: 1 | -1, far: boolean) => {
+    const typed = parseNumber(draft);
+    const base = typed ?? (mixed ? null : value);
+    if (base === null) return;
+    const next = clamp(base + direction * step * (far ? 10 : 1));
+    setDraft(String(next));
+    onChange(next, mergeKey);
   };
   return (
     <span className={cn("field flex h-8 items-center rounded-lg pr-2", className)}>
@@ -68,11 +91,16 @@ export function NumberInput({ value, onChange, min = -100000, max = 100000, step
         onBlur={commit}
         onKeyDown={(event) => {
           if (event.key === "Enter") commit();
-          if ((event.key === "ArrowUp" || event.key === "ArrowDown") && !mixed) {
+          if (event.key === "Escape") {
             event.preventDefault();
-            const delta = (event.key === "ArrowUp" ? 1 : -1) * step * (event.shiftKey ? 10 : 1);
-            const next = Math.min(max, Math.max(min, Math.round((value + delta) * 1000) / 1000));
-            onChange(next);
+            event.stopPropagation();
+            setDraft(shown);
+            reverting.current = true;
+            event.currentTarget.blur();
+          }
+          if (event.key === "ArrowUp" || event.key === "ArrowDown") {
+            event.preventDefault();
+            stepBy(event.key === "ArrowUp" ? 1 : -1, event.shiftKey);
           }
         }}
         className="min-w-0 flex-1 bg-transparent px-2 text-sm tabular-nums outline-none placeholder:text-muted-foreground"

@@ -18,12 +18,13 @@ import { copyStyle, pasteStyle } from "./styleClipboard";
 import { boldPatch, toggleList, updateParagraphs, withElementStyle } from "./richText";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { textEditorBridge } from "./textEditorBridge";
+import { fromMm } from "./units";
 import { useViewPrefs, type StudioViewOption } from "./viewPrefs";
 import { isGraphic } from "../graphics/graphicData";
 import { openGraphic } from "../graphics/graphicEditor";
 
-const NUDGE = 1;
-const NUDGE_FAR = 10;
+const NUDGE = fromMm(0.5);
+const NUDGE_FAR = fromMm(5);
 const ZOOM_STEP = 1.25;
 const MIN_FONT_SIZE = 1;
 const MAX_FONT_SIZE = 1000;

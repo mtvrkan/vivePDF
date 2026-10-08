@@ -38,6 +38,7 @@ export type StudioElementBase = {
   groupId: string | null;
   flipX?: boolean;
   flipY?: boolean;
+  lockRatio?: boolean;
 };
 
 export type StudioTextRun = {

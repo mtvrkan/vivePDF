@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createShape, createText } from "../model/design";
-import { normalizeAngle, resizeBox, rotateElements, rotationFromPointer, scaleBoundsByHandle, scaleElements, turnFromPointer } from "./transform";
+import { createImage, createQr, createShape, createText } from "../model/design";
+import { normalizeAngle, ratioLocked, resizeBox, rotateElements, rotationFromPointer, scaleBoundsByHandle, scaleElements, turnFromPointer } from "./transform";
 
 const box = { x: 100, y: 100, width: 100, height: 50, rotation: 0 };
 
@@ -87,5 +87,34 @@ describe("studio transforms", () => {
 
     expect(scaleBoundsByHandle(start, "se", 10, 0, false, true)).toEqual({ x: -10, y: 0, width: 120, height: 50 });
     expect(scaleBoundsByHandle(start, "se", 10, 0, false)).toEqual({ x: 0, y: 0, width: 110, height: 50 });
+  });
+
+  it("keeps a turned member undistorted when a group is stretched one way", () => {
+    const turned = { ...createShape("rect", 0, 0, 40, 20), rotation: 30 };
+    const straight = createShape("rect", 60, 0, 40, 20);
+
+    const [scaledTurned, scaledStraight] = scaleElements([turned, straight], { x: 0, y: 0, width: 100, height: 20 }, { x: 0, y: 0, width: 200, height: 20 });
+
+    expect(scaledTurned.width / scaledTurned.height).toBeCloseTo(2);
+    expect(scaledTurned.x + scaledTurned.width / 2).toBeCloseTo(40);
+    expect(scaledStraight.width).toBeCloseTo(80);
+    expect(scaledStraight.height).toBeCloseTo(20);
+  });
+
+  it("swaps the axes for a member turned a quarter", () => {
+    const quarter = { ...createShape("rect", 0, 0, 40, 20), rotation: 90 };
+
+    const [scaled] = scaleElements([quarter], { x: 10, y: -10, width: 20, height: 40 }, { x: 10, y: -10, width: 40, height: 40 });
+
+    expect(scaled.width).toBeCloseTo(40);
+    expect(scaled.height).toBeCloseTo(40);
+  });
+
+  it("locks the ratio of pictures by default, lets the element choose and always keeps QR codes square", () => {
+    expect(ratioLocked(createImage("a.png", 0, 0, 10, 10))).toBe(true);
+    expect(ratioLocked(createShape("rect", 0, 0, 10, 10))).toBe(false);
+    expect(ratioLocked({ ...createShape("rect", 0, 0, 10, 10), lockRatio: true })).toBe(true);
+    expect(ratioLocked({ ...createImage("a.png", 0, 0, 10, 10), lockRatio: false })).toBe(false);
+    expect(ratioLocked({ ...createQr("x", 0, 0, 10), lockRatio: false })).toBe(true);
   });
 });

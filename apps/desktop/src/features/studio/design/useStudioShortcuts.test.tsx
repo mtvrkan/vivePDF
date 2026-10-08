@@ -5,6 +5,7 @@ import { addElements } from "../model/edit";
 import { createDesign, createShape, createText } from "../model/design";
 import { useStudioStore } from "./studioStore";
 import { useStyleClipboard } from "./styleClipboard";
+import { fromMm } from "./units";
 import { useStudioShortcuts } from "./useStudioShortcuts";
 import { DEFAULT_VIEW_PREFS, useViewPrefs } from "./viewPrefs";
 
@@ -241,5 +242,19 @@ describe("studio shortcuts", () => {
     window.dispatchEvent(event);
 
     expect(event.defaultPrevented).toBe(false);
+  });
+
+  it("nudges the selection by half a millimetre, or five with Shift, as one undo step", () => {
+    renderHook(() => useStudioShortcuts(vi.fn(), vi.fn()));
+    const [first] = useStudioStore.getState().design?.pages[0].elements ?? [];
+    useStudioStore.getState().select([first.id]);
+    const before = useStudioStore.getState().past.length;
+
+    press("ArrowRight", { ctrlKey: false });
+    press("ArrowRight", { ctrlKey: false, shiftKey: true });
+
+    const moved = useStudioStore.getState().design?.pages[0].elements[0];
+    expect(moved?.x).toBeCloseTo(fromMm(5.5));
+    expect(useStudioStore.getState().past.length).toBe(before + 1);
   });
 });

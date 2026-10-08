@@ -12,7 +12,13 @@ export const PAD = 48;
 
 export type Point = Vector;
 
-export const CURSORS: Record<Handle, string> = { n: "ns-resize", s: "ns-resize", e: "ew-resize", w: "ew-resize", ne: "nesw-resize", sw: "nesw-resize", nw: "nwse-resize", se: "nwse-resize" };
+const COMPASS: Handle[] = ["n", "ne", "e", "se", "s", "sw", "w", "nw"];
+const CURSOR_TURNS = ["ns-resize", "nesw-resize", "ew-resize", "nwse-resize"];
+
+export function cursorFor(handle: Handle, rotation: number): string {
+  const step = COMPASS.indexOf(handle) + Math.round(rotation / 45);
+  return CURSOR_TURNS[((step % 4) + 4) % 4];
+}
 
 export function intersects(a: Bounds, b: Bounds): boolean {
   return a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height;

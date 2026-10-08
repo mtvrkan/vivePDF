@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { StudioFill, StudioStroke } from "@/types/studio";
-import { createDesign, createImage, createShape, createText } from "../model/design";
-import { cornersOf, isCornerable, isFillable, isLineElement, isRoundable, isShadowable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, shadowDifferences, sharedValue, withCorner } from "./multiEdit";
+import { createDesign, createImage, createQr, createShape, createText } from "../model/design";
+import { cornersOf, isCornerable, isFillable, isLineElement, isRoundable, isShadowable, isStrokable, maxCornerRadius, mergeEdit, moveSelectionTo, resizeSelectionTo, selectionFrame, shadowDifferences, sharedValue, sizeElementTo, withCorner } from "./multiEdit";
 
 const stroke = (color: string, width: number): StudioStroke => ({ color, width, dash: "solid" });
 
@@ -87,5 +87,25 @@ describe("editing shadows, corners and line ends together", () => {
     expect(isLineElement(createShape("arrowLine", 0, 0, 1, 1))).toBe(true);
     expect(isShadowable(createImage("a.png", 0, 0, 1, 1))).toBe(true);
     expect(isShadowable(createText(0, 0, 1, 1, "a"))).toBe(false);
+  });
+
+  it("sizes one element from a field, following its ratio lock", () => {
+    const picture = createImage("a.png", 10, 10, 40, 20);
+    const box = createShape("rect", 10, 10, 40, 20);
+
+    expect(sizeElementTo(picture, { width: 80 })).toEqual({ width: 80, height: 40 });
+    expect(sizeElementTo(box, { width: 80 })).toEqual({ width: 80, height: 20 });
+    expect(sizeElementTo({ ...box, lockRatio: true }, { height: 40 })).toEqual({ width: 80, height: 40 });
+    expect(sizeElementTo(createQr("x", 0, 0, 30), { width: 50 })).toEqual({ width: 50, height: 50 });
+  });
+
+  it("keeps a turned element's centre and never shrinks below the smallest side", () => {
+    const turned = { ...createShape("rect", 0, 0, 40, 20), rotation: 45 };
+
+    const sized = sizeElementTo(turned, { width: 80 });
+    const tiny = sizeElementTo(createShape("rect", 0, 0, 40, 20), { width: 0 });
+
+    expect(sized).toEqual({ x: -20, y: 0, width: 80, height: 20 });
+    expect(tiny.width).toBe(2);
   });
 });

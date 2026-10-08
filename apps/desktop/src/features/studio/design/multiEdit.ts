@@ -1,7 +1,7 @@
 import type { StudioCornerRadii, StudioDropShadow, StudioElement, StudioImageElement, StudioPage, StudioShapeElement, StudioStroke, StudioTextElement } from "@/types/studio";
 import { moveElements, type Bounds } from "../model/edit";
 import { isLineShape, strokeCap, strokeJoin } from "../model/shapes";
-import { boundsOf, MIN_SIDE, scaleElements } from "./transform";
+import { boundsOf, MIN_SIDE, normalizeAngle, ratioLocked, scaleElements } from "./transform";
 
 export type Shared<T> = { value: T; mixed: boolean };
 
@@ -102,6 +102,20 @@ export function isRoundable(element: StudioElement): element is RoundableElement
 
 export function maxCornerRadius(elements: readonly StudioElement[]): number {
   return Math.max(0, Math.round(Math.min(...elements.map((element) => Math.min(element.width, element.height) / 2))));
+}
+
+export function sizeElementTo(element: StudioElement, size: { width?: number; height?: number }): Partial<StudioElement> {
+  const coupled = element.kind !== "text" && ratioLocked(element) && element.width > 0 && element.height > 0;
+  let width = size.width ?? element.width;
+  let height = size.height ?? element.height;
+  if (coupled && size.width !== undefined && size.height === undefined) height = (width * element.height) / element.width;
+  if (coupled && size.height !== undefined && size.width === undefined) width = (height * element.width) / element.height;
+  width = Math.max(MIN_SIDE, width);
+  height = element.kind === "qr" ? width : Math.max(MIN_SIDE, height);
+  if (normalizeAngle(element.rotation) === 0) return { width, height };
+  const centreX = element.x + element.width / 2;
+  const centreY = element.y + element.height / 2;
+  return { x: centreX - width / 2, y: centreY - height / 2, width, height };
 }
 
 export function selectionFrame(elements: StudioElement[]): Bounds | null {

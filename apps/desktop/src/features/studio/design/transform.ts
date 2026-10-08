@@ -1,4 +1,5 @@
 import type { StudioElement } from "@/types/studio";
+import { keepsRatio } from "../graphics/graphicData";
 import { elementBounds, type Bounds } from "../model/edit";
 
 export type Box = { x: number; y: number; width: number; height: number; rotation: number };
@@ -47,6 +48,14 @@ export function resizeBox(start: Box, handle: Handle, dx: number, dy: number, op
   return { ...start, x: nextCentre.x - width / 2, y: nextCentre.y - height / 2, width, height };
 }
 
+export function ratioLockedByDefault(element: StudioElement): boolean {
+  return element.kind === "text" || element.kind === "image" || element.kind === "qr" || keepsRatio(element);
+}
+
+export function ratioLocked(element: StudioElement): boolean {
+  return element.kind === "qr" || (element.lockRatio ?? ratioLockedByDefault(element));
+}
+
 export function normalizeAngle(degrees: number): number {
   const turned = ((degrees % 360) + 360) % 360;
   return turned > 180 ? turned - 360 : turned;
@@ -59,19 +68,28 @@ export function rotationFromPointer(centre: Vector, pointer: Vector, options: { 
   return normalizeAngle(Math.abs(raw - nearest) <= ROTATION_MAGNET ? nearest : Math.round(raw * 10) / 10);
 }
 
+function memberScale(rotation: number, scaleX: number, scaleY: number): Vector {
+  const quarters = Math.round(rotation / 90);
+  if (Math.abs(rotation - quarters * 90) > 1e-6) {
+    const uniform = Math.min(scaleX, scaleY);
+    return { x: uniform, y: uniform };
+  }
+  return Math.abs(quarters) % 2 === 1 ? { x: scaleY, y: scaleX } : { x: scaleX, y: scaleY };
+}
+
 export function scaleElements<T extends StudioElement>(elements: T[], from: Bounds, to: Bounds): T[] {
   const scaleX = to.width / Math.max(from.width, 0.001);
   const scaleY = to.height / Math.max(from.height, 0.001);
-  const uniform = Math.abs(scaleX - scaleY) < 1e-6;
   return elements.map((element) => {
     const cx = element.x + element.width / 2;
     const cy = element.y + element.height / 2;
     const nextCx = to.x + (cx - from.x) * scaleX;
     const nextCy = to.y + (cy - from.y) * scaleY;
-    const width = Math.max(MIN_SIDE, element.width * scaleX);
-    const height = Math.max(MIN_SIDE, element.height * scaleY);
+    const own = memberScale(element.rotation, scaleX, scaleY);
+    const width = Math.max(MIN_SIDE, element.width * own.x);
+    const height = Math.max(MIN_SIDE, element.height * own.y);
     const scaled = { ...element, x: nextCx - width / 2, y: nextCy - height / 2, width, height };
-    if (element.kind === "text" && uniform) return { ...scaled, fontSize: Math.max(1, Math.min(1000, element.fontSize * scaleX)) };
+    if (element.kind === "text" && Math.abs(own.x - own.y) < 1e-6) return { ...scaled, fontSize: Math.max(1, Math.min(1000, element.fontSize * own.x)) };
     return scaled;
   });
 }

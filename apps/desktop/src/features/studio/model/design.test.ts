@@ -247,4 +247,11 @@ describe("shape effects in saved designs", () => {
     expect(shape).toMatchObject({ startArrow: "none", corners: null, dropShadow: null });
     expect(image).toMatchObject({ dropShadow: { color: "#000000", opacity: 0.35, x: 4, y: 6, blur: 12 } });
   });
+
+  it("keeps an element's ratio lock and drops a broken one", () => {
+    const shape = createShape("rect", 0, 0, 10, 10);
+
+    expect(normalizeElement({ ...shape, lockRatio: true })?.lockRatio).toBe(true);
+    expect(normalizeElement({ ...shape, lockRatio: "yes" })).not.toHaveProperty("lockRatio");
+  });
 });

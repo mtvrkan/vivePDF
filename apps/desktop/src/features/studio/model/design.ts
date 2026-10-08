@@ -394,6 +394,7 @@ export function normalizeElement(value: unknown): StudioElement | null {
     groupId: typeof raw.groupId === "string" && raw.groupId ? raw.groupId.slice(0, 100) : null,
     ...(raw.flipX === true ? { flipX: true } : {}),
     ...(raw.flipY === true ? { flipY: true } : {}),
+    ...(typeof raw.lockRatio === "boolean" ? { lockRatio: raw.lockRatio } : {}),
   };
   switch (raw.kind) {
     case "text": {

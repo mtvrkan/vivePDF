@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
 import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
 import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
-import { keepsRatio } from "../graphics/graphicData";
 import { openGraphic } from "../graphics/graphicEditor";
 import { addGuide, guidesOf, moveGuide, removeGuide } from "../model/guides";
 import { duplicateElements, elementBounds, selectionBounds, updateElement, updatePage, moveElements, withoutGroupOf, type Bounds } from "../model/edit";
@@ -12,7 +11,7 @@ import type { RulerHandlers } from "./Rulers";
 import { lineEndpoints, moveLineEnd, type LineEnd } from "./lineGeometry";
 import { measureAround, snapMove, snapPoint, snapPosition, snapResize, type Axis, type SnapIndex, type SnapLine, type Span } from "./snapping";
 import { textEditorEntry } from "./textEditorBridge";
-import { boundsOf, resizeBox, rotateElements, rotationFromPointer, scaleElements, turnFromPointer, type Handle } from "./transform";
+import { boundsOf, ratioLocked, resizeBox, rotateElements, rotationFromPointer, scaleElements, turnFromPointer, type Handle } from "./transform";
 import { currentPage, useStudioStore } from "./studioStore";
 import { useViewPrefs } from "./viewPrefs";
 
@@ -324,7 +323,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
     const snap = snapping(event);
     if (current.elements.length === 1) {
       const element = current.elements[0];
-      const keepRatio = corner && (element.kind === "text" || element.kind === "image" || element.kind === "qr" || keepsRatio(element) ? !event.shiftKey : event.shiftKey);
+      const keepRatio = corner && (ratioLocked(element) ? !event.shiftKey : event.shiftKey);
       const options = { keepRatio, fromCenter: event.altKey };
       const result = snap ? snapResize(element, current.handle, dx, dy, options, current.index, tolerance) : { box: resizeBox(element, current.handle, dx, dy, options), lines: [] };
       const box = result.box;
