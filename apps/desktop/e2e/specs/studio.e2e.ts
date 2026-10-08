@@ -255,4 +255,30 @@ describe("studio", () => {
     }
     await expect($(`//*[@role="dialog"]//*[normalize-space(.)="${t("studio.export.doneFiles", { count: 3 })}"]`)).toExist();
   });
+
+  it("shrinks a template title into its box while motion is reduced", async () => {
+    while (await $('[role="dialog"]').isExisting()) {
+      await browser.keys(ESCAPE);
+      await browser.pause(200);
+    }
+    const leave = $(`button[aria-label="${t("studio.toolbar.leave")}"]`);
+    if (await leave.isExisting()) await leave.click();
+    else await openTool("nav.studio");
+    const card = $('[data-template="concert"]');
+    await card.waitForExist({ timeout: 15000 });
+    await card.scrollIntoView({ block: "center" });
+    await card.click();
+    const title = $(`//*[@data-testid="studio-viewport"]//*[@data-element-id][contains(., "${t("studio.tpl.bandName")}")]`);
+    await title.waitForExist({ timeout: 30000 });
+    await browser.waitUntil(
+      () =>
+        browser.execute((wanted: string) => {
+          const node = Array.from(document.querySelectorAll<HTMLElement>('[data-testid="studio-viewport"] [data-element-id]')).find((item) => item.textContent?.includes(wanted)) as HTMLElement;
+          const body = node.querySelector<HTMLElement>("[data-text-body]") as HTMLElement;
+          const size = Number.parseFloat(body.style.fontSize);
+          return size > 20 && size < 96 && body.offsetHeight <= node.offsetHeight + 1;
+        }, t("studio.tpl.bandName")),
+      { timeout: 15000, timeoutMsg: "the shrink-to-fit title did not settle inside its box" },
+    );
+  });
 });
