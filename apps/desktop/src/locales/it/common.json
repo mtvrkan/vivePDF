@@ -7233,7 +7233,11 @@
         "resumeCompact": "CV compatto",
         "resumeElegant": "CV elegante",
         "resumeTech": "CV tech",
-        "resumeAts": "CV compatibile ATS"
+        "resumeAts": "CV compatibile ATS",
+        "resumeExecutive": "CV executive",
+        "resumeAcademic": "CV accademico",
+        "resumeDesigner": "CV designer",
+        "resumeInfographic": "CV infografico"
       },
       "seeAll": "Vedi tutti ({{total}})",
       "seeAllIn": "Vedi tutti i {{total}} modelli di {{category}}"
@@ -8541,7 +8545,11 @@
         "compact": "Compatto",
         "elegant": "Elegante",
         "tech": "Tech",
-        "ats": "Compatibile ATS"
+        "ats": "Compatibile ATS",
+        "executive": "Executive",
+        "academic": "Accademico",
+        "designer": "Designer",
+        "infographic": "Infografica"
       },
       "sample": {
         "name": "Giulia Ferrari",

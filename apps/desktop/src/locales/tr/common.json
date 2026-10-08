@@ -7235,7 +7235,11 @@
         "resumeCompact": "Kompakt özgeçmiş",
         "resumeElegant": "Zarif özgeçmiş",
         "resumeTech": "Teknoloji özgeçmişi",
-        "resumeAts": "ATS uyumlu özgeçmiş"
+        "resumeAts": "ATS uyumlu özgeçmiş",
+        "resumeExecutive": "Yönetici CV",
+        "resumeAcademic": "Akademik CV",
+        "resumeDesigner": "Tasarımcı CV",
+        "resumeInfographic": "İnfografik CV"
       },
       "seeAll": "Tümünü gör ({{total}})",
       "seeAllIn": "{{category}} kategorisindeki {{total}} şablonun tümünü gör"
@@ -8543,7 +8547,11 @@
         "compact": "Kompakt",
         "elegant": "Zarif",
         "tech": "Teknoloji",
-        "ats": "ATS uyumlu"
+        "ats": "ATS uyumlu",
+        "executive": "Yönetici",
+        "academic": "Akademik",
+        "designer": "Tasarımcı",
+        "infographic": "İnfografik"
       },
       "sample": {
         "name": "Elif Yılmaz",

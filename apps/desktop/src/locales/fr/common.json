@@ -7233,7 +7233,11 @@
         "resumeCompact": "CV compact",
         "resumeElegant": "CV élégant",
         "resumeTech": "CV tech",
-        "resumeAts": "CV compatible ATS"
+        "resumeAts": "CV compatible ATS",
+        "resumeExecutive": "CV dirigeant",
+        "resumeAcademic": "CV académique",
+        "resumeDesigner": "CV designer",
+        "resumeInfographic": "CV infographique"
       },
       "seeAll": "Voir les {{total}}",
       "seeAllIn": "Voir les {{total}} modèles de la catégorie {{category}}"
@@ -8541,7 +8545,11 @@
         "compact": "Compact",
         "elegant": "Élégant",
         "tech": "Tech",
-        "ats": "Compatible ATS"
+        "ats": "Compatible ATS",
+        "executive": "Dirigeant",
+        "academic": "Académique",
+        "designer": "Designer",
+        "infographic": "Infographie"
       },
       "sample": {
         "name": "Camille Rousseau",

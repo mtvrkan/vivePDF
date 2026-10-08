@@ -7233,7 +7233,11 @@
         "resumeCompact": "CV compacto",
         "resumeElegant": "CV elegante",
         "resumeTech": "CV tecnológico",
-        "resumeAts": "CV compatible con ATS"
+        "resumeAts": "CV compatible con ATS",
+        "resumeExecutive": "CV ejecutivo",
+        "resumeAcademic": "CV académico",
+        "resumeDesigner": "CV de diseñador",
+        "resumeInfographic": "CV infográfico"
       },
       "seeAll": "Ver las {{total}}",
       "seeAllIn": "Ver las {{total}} plantillas de {{category}}"
@@ -8541,7 +8545,11 @@
         "compact": "Compacto",
         "elegant": "Elegante",
         "tech": "Tecnológico",
-        "ats": "Compatible con ATS"
+        "ats": "Compatible con ATS",
+        "executive": "Ejecutivo",
+        "academic": "Académico",
+        "designer": "Diseñador",
+        "infographic": "Infografía"
       },
       "sample": {
         "name": "Lucía Fernández",

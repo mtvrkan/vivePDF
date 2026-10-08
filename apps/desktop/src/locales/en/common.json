@@ -7235,7 +7235,11 @@
         "resumeCompact": "Compact CV",
         "resumeElegant": "Elegant CV",
         "resumeTech": "Tech CV",
-        "resumeAts": "ATS-friendly CV"
+        "resumeAts": "ATS-friendly CV",
+        "resumeExecutive": "Executive CV",
+        "resumeAcademic": "Academic CV",
+        "resumeDesigner": "Designer CV",
+        "resumeInfographic": "Infographic CV"
       },
       "seeAll": "See all {{total}}",
       "seeAllIn": "See all {{total}} {{category}} templates"
@@ -8543,7 +8547,11 @@
         "compact": "Compact",
         "elegant": "Elegant",
         "tech": "Tech",
-        "ats": "ATS-friendly"
+        "ats": "ATS-friendly",
+        "executive": "Executive",
+        "academic": "Academic",
+        "designer": "Designer",
+        "infographic": "Infographic"
       },
       "sample": {
         "name": "Alex Morgan",

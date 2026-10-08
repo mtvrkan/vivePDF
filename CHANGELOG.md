@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio CV: four new layouts — Executive (navy band with a gold rule), Academic (serif, dates in the margin), Designer (two-tone sidebar) and Infographic (dark sidebar with banded headings) — also listed in the template gallery [2026-10-08]
 - Studio: 16 new ornaments — a Patterns group (halftone dots, diagonal lines, contour lines, triangle tiles, honeycomb, marble veins, sunburst), art nouveau, corner-gem and guilloche frames, a wax seal, and art deco fan, botanical sprig, brush stroke, page curl and corner ribbon accents; all pure vectors so PDFs match the canvas [2026-10-08]
 - Studio CV: Import from PDF… reads an existing CV or LinkedIn PDF, lists the sections it found with counts and lets you replace or add them (undoable); Save/Open CV file keeps the whole CV in a `.json` file; the photo is copied into Studio's picture store and can be cropped [2026-10-08]
 - Studio CV: undo and redo (Ctrl+Z, Ctrl+Y) with toolbar buttons, an Undo toast after removing an entry or clearing the CV, and a warning when the draft can't be saved [2026-10-08]
@@ -38,6 +39,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Studio CV: the ten layouts are refined — contact details carry small icons, skill levels use thin or segmented bars where they suit the layout, photos get a ring, sidebars and header bands use gradients and subtle patterns, and the elegant layout has a double hairline frame and a flourish under the name [2026-10-08]
 - Studio templates: the 12 certificates are redesigned — guilloche, art nouveau, gem and art deco frames, foil rules and wax seals, gradient bands with pattern overlays, soft shadows, curated palettes and at most two typefaces each; every text passes a contrast check against what sits behind it [2026-10-08]
 - Studio CV: long entries continue on the next page instead of running off it, up to 20 pages; anything that still doesn't fit is reported with a jump to its section, the page count shows in the toolbar, and switching layout keeps your accent colour and fonts [2026-10-08]
 - Studio: the position, size and angle fields are steadier — Esc puts back the stored value, the arrow keys step from what you typed (Shift for ×10) and a burst of steps or edits in one field is a single undo step; positions stay within a page-width of the page, sizes between the smallest side and four pages, and angles read from −180° to 180°. A new chain button locks the aspect ratio of a shape, picture or graphic, so its height follows a typed width and corner drags keep the ratio (Shift still switches it for one drag); QR codes stay square. The arrow keys move the selection by 0.5 mm (5 mm with Shift). Tiny elements show only their corner handles, just outside the box, so the element itself can still be dragged; resize cursors turn with the element; and stretching a group no longer squashes the turned elements inside it [2026-10-08]

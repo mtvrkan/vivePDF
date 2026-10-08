@@ -7233,7 +7233,11 @@
         "resumeCompact": "Kompakter Lebenslauf",
         "resumeElegant": "Eleganter Lebenslauf",
         "resumeTech": "Tech-Lebenslauf",
-        "resumeAts": "ATS-freundlicher Lebenslauf"
+        "resumeAts": "ATS-freundlicher Lebenslauf",
+        "resumeExecutive": "Lebenslauf Führungskraft",
+        "resumeAcademic": "Akademischer Lebenslauf",
+        "resumeDesigner": "Designer-Lebenslauf",
+        "resumeInfographic": "Infografik-Lebenslauf"
       },
       "seeAll": "Alle {{total}} anzeigen",
       "seeAllIn": "Alle {{total}} Vorlagen in {{category}} anzeigen"
@@ -8541,7 +8545,11 @@
         "compact": "Kompakt",
         "elegant": "Elegant",
         "tech": "Tech",
-        "ats": "ATS-freundlich"
+        "ats": "ATS-freundlich",
+        "executive": "Führungskraft",
+        "academic": "Akademisch",
+        "designer": "Designer",
+        "infographic": "Infografik"
       },
       "sample": {
         "name": "Jonas Keller",

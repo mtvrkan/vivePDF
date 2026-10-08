@@ -8,7 +8,7 @@ export type CvSectionKey = (typeof CV_SECTION_KEYS)[number];
 export const CV_CONTACT_KINDS = ["email", "phone", "website", "location", "linkedin", "github", "other"] as const;
 export type CvContactKind = (typeof CV_CONTACT_KINDS)[number];
 
-export const CV_LAYOUT_IDS = ["modern", "classic", "corporate", "minimal", "creative", "timeline", "compact", "elegant", "tech", "ats"] as const;
+export const CV_LAYOUT_IDS = ["modern", "classic", "corporate", "minimal", "creative", "timeline", "compact", "elegant", "tech", "ats", "executive", "academic", "designer", "infographic"] as const;
 export type CvLayoutId = (typeof CV_LAYOUT_IDS)[number];
 
 export const CV_PHOTO_SHAPES = ["circle", "rounded", "square", "none"] as const;

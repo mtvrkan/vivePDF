@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { textOf } from "../model/design";
 import { composeCvReport, MAX_CV_PAGES } from "./cvLayout";
 import { specOf } from "./cvDesigns";
-import { cvId, defaultTheme, emptyExperience, emptyProfile, type CvLayoutId, type CvProfile } from "./cvModel";
+import { CV_LAYOUT_IDS, cvId, defaultTheme, emptyExperience, emptyProfile, type CvLayoutId, type CvProfile } from "./cvModel";
 import { cvLabels, estimateMeasure } from "./cvSample";
 
 const t = (key: string) => key.split(".").pop() ?? key;
@@ -58,5 +58,49 @@ describe("cv pagination", () => {
     expect(design.pages).toHaveLength(MAX_CV_PAGES);
     expect(overflow.items).toBeGreaterThan(0);
     expect(overflow.sections).toContain("experience");
+  });
+});
+
+describe("cv designs", () => {
+  const sample = (): CvProfile => ({
+    ...withExperience([bullets(3, "Sample"), bullets(2, "Earlier")]),
+    headline: "Designer",
+    contacts: [
+      { id: cvId(), kind: "email", value: "alex@example.com" },
+      { id: cvId(), kind: "phone", value: "+44 20 7946 0958" },
+      { id: cvId(), kind: "linkedin", value: "linkedin.com/in/alex" },
+    ],
+    skills: [1, 2, 3, 4, 5].map((level) => ({ id: cvId(), name: `Skill ${level}`, level })),
+  });
+
+  it("lays out a sample profile on every layout without leaving anything out or leaving the page", () => {
+    for (const layout of CV_LAYOUT_IDS) {
+      const { design, overflow } = compose(sample(), layout);
+
+      expect(overflow, layout).toEqual({ items: 0, sections: [] });
+      expect(design.pages.length, layout).toBeLessThanOrEqual(2);
+      for (const page of design.pages) {
+        for (const element of page.elements) {
+          expect(element.x + element.width, `${layout} ${element.kind}`).toBeLessThanOrEqual(page.width + 0.5);
+          expect(element.y, `${layout} ${element.kind}`).toBeLessThan(page.height);
+        }
+      }
+    }
+  });
+
+  it("draws an icon before each contact on layouts that use contact icons", () => {
+    const { design } = compose(sample(), "executive");
+
+    const icons = design.pages[0].elements.filter((element) => element.kind === "vector" && ["email", "phone", "linkedin"].includes(element.name));
+    expect(icons).toHaveLength(3);
+  });
+
+  it("splits a skill level into five segments and keeps plain contact text on the ATS layout", () => {
+    const segmented = compose({ ...sample(), skills: [{ id: cvId(), name: "Research", level: 3 }] }, "infographic").design.pages[0].elements;
+    const ats = compose(sample(), "ats").design.pages[0].elements;
+
+    const segments = segmented.filter((element) => element.kind === "shape" && element.width < 40 && Math.abs(element.height - 4.5) < 0.01);
+    expect(segments).toHaveLength(5);
+    expect(ats.some((element) => element.kind === "vector")).toBe(false);
   });
 });

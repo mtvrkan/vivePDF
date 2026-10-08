@@ -7233,7 +7233,11 @@
         "resumeCompact": "Currículo compacto",
         "resumeElegant": "Currículo elegante",
         "resumeTech": "Currículo tech",
-        "resumeAts": "Currículo compatível com ATS"
+        "resumeAts": "Currículo compatível com ATS",
+        "resumeExecutive": "Currículo executivo",
+        "resumeAcademic": "Currículo acadêmico",
+        "resumeDesigner": "Currículo de designer",
+        "resumeInfographic": "Currículo infográfico"
       },
       "seeAll": "Ver todos ({{total}})",
       "seeAllIn": "Ver todos os {{total}} modelos de {{category}}"
@@ -8541,7 +8545,11 @@
         "compact": "Compacto",
         "elegant": "Elegante",
         "tech": "Tech",
-        "ats": "Compatível com ATS"
+        "ats": "Compatível com ATS",
+        "executive": "Executivo",
+        "academic": "Acadêmico",
+        "designer": "Designer",
+        "infographic": "Infográfico"
       },
       "sample": {
         "name": "Beatriz Souza",

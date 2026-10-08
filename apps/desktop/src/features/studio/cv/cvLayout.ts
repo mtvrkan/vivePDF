@@ -1,6 +1,7 @@
 import type { StudioDesign, StudioElement, StudioTextAlign, StudioTextElement } from "@/types/studio";
 import { createImage, STUDIO_PAGE_SIZES } from "../model/design";
 import { box, design, pageOf, photoSlot, rule, solid, text } from "../templates/kit";
+import { contactIcon } from "./cvIcons";
 import { sectionVisible, type CvContactKind, type CvDensity, type CvLayoutId, type CvPhotoShape, type CvProfile, type CvSectionKey, type CvSkillStyle, type CvTheme } from "./cvModel";
 
 export type CvMeasure = (element: StudioTextElement) => number;
@@ -36,6 +37,7 @@ export type Frame = { decor: StudioElement[]; main: Column; side: Column | null 
 export type HeaderResult = { elements: StudioElement[]; mainTop: number; sideTop: number };
 
 export type CvFonts = { heading: string; body: string };
+export type LevelBar = "line" | "thin" | "segmented";
 
 export type CvSpec = {
   id: CvLayoutId;
@@ -49,6 +51,10 @@ export type CvSpec = {
   sideTitle?: TitleStyle;
   entry: EntryStyle;
   photo: boolean;
+  contactIcons?: boolean;
+  levelBar?: LevelBar;
+  photoRing?: boolean;
+  skillStyle?: CvSkillStyle;
 };
 
 export type CvInput = { profile: CvProfile; theme: CvTheme; labels: CvLabels; measure: CvMeasure; emptyPhoto: boolean; name: string };
@@ -70,6 +76,9 @@ const TIMELINE_GUTTER = 18;
 const BAR_HEIGHT = 4.5;
 const DOT_SIZE = 6;
 const DOT_GAP = 3.5;
+const THIN_BAR = 2.5;
+const SEGMENT_GAP = 2.5;
+const RING_GAP = 3;
 
 export function mix(from: string, to: string, amount: number): string {
   const parse = (hex: string) => [1, 3, 5].map((index) => Number.parseInt(hex.slice(index, index + 2), 16));
@@ -88,6 +97,9 @@ export class CvContext {
   readonly emptyPhoto: boolean;
   readonly scale: number;
   readonly gap: number;
+  readonly contactIcons: boolean;
+  readonly levelBar: LevelBar;
+  private readonly photoRing: boolean;
   private readonly measure: CvMeasure;
   private readonly allowPhoto: boolean;
 
@@ -98,6 +110,9 @@ export class CvContext {
     this.measure = input.measure;
     this.emptyPhoto = input.emptyPhoto;
     this.allowPhoto = spec.photo;
+    this.contactIcons = spec.contactIcons ?? false;
+    this.levelBar = spec.levelBar ?? "line";
+    this.photoRing = spec.photoRing ?? false;
     this.palette = spec.palette(input.theme.accent ?? spec.accent);
     this.fonts = { heading: input.theme.headingFont ?? spec.fonts.heading, body: input.theme.bodyFont ?? spec.fonts.body };
     const size = STUDIO_PAGE_SIZES[input.theme.paper];
@@ -135,15 +150,22 @@ export class CvContext {
     return value.trim() ? this.text(0, 0, width, value, style).height : 0;
   }
 
-  photo(x: number, y: number, side: number, backing: string): StudioElement[] {
+  photo(x: number, y: number, side: number, backing: string, ring = this.palette.accent): StudioElement[] {
     const shape: CvPhotoShape = this.theme.photoShape;
     if (!this.hasPhoto()) return [];
     const mask = shape === "circle" ? "circle" : shape === "rounded" ? "rounded" : "none";
+    const frame = this.photoRing ? [this.ring(x, y, side, mask, ring)] : [];
     if (this.profile.photo) {
       const image = createImage(this.profile.photo, x, y, side, side);
-      return [{ ...image, crop: this.profile.photoCrop ?? image.crop, mask, cornerRadius: mask === "rounded" ? side * 0.12 : 0 }];
+      return [...frame, { ...image, crop: this.profile.photoCrop ?? image.crop, mask, cornerRadius: mask === "rounded" ? side * 0.12 : 0 }];
     }
-    return this.emptyPhoto ? photoSlot(x, y, side, side, backing, mask) : [];
+    return this.emptyPhoto ? [...frame, ...photoSlot(x, y, side, side, backing, mask)] : frame;
+  }
+
+  private ring(x: number, y: number, side: number, mask: "circle" | "rounded" | "none", color: string): StudioElement {
+    const outer = side + RING_GAP * 2;
+    const stroke = { color, width: 1.6, dash: "solid" as const };
+    return mask === "circle" ? box("ellipse", x - RING_GAP, y - RING_GAP, outer, outer, { type: "none" }, { stroke }) : box("rect", x - RING_GAP, y - RING_GAP, outer, outer, { type: "none" }, { stroke, radius: mask === "rounded" ? side * 0.12 + RING_GAP : 0 });
   }
 
   hasPhoto(): boolean {
@@ -357,14 +379,19 @@ function levelBlock(context: CvContext, tone: Tone, style: CvSkillStyle, width: 
     };
   }
   const nameHeight = context.textHeight(width, name, nameStyle);
+  const bar = context.levelBar === "thin" ? THIN_BAR : BAR_HEIGHT;
   return {
-    height: nameHeight + 3 + BAR_HEIGHT,
-    draw: (x, y, columnWidth) => [
-      context.text(x, y, columnWidth, name, nameStyle),
-      box("rect", x, y + nameHeight + 3, columnWidth, BAR_HEIGHT, solid(colors.soft), { radius: BAR_HEIGHT / 2 }),
-      box("rect", x, y + nameHeight + 3, (columnWidth * level) / 5, BAR_HEIGHT, solid(colors.accent), { radius: BAR_HEIGHT / 2 }),
-    ],
+    height: nameHeight + 3 + bar,
+    draw: (x, y, columnWidth) => [context.text(x, y, columnWidth, name, nameStyle), ...levelTrack(context.levelBar, x, y + nameHeight + 3, columnWidth, bar, level, colors)],
   };
+}
+
+function levelTrack(style: LevelBar, x: number, y: number, width: number, height: number, level: number, colors: { accent: string; soft: string }): StudioElement[] {
+  if (style === "segmented") {
+    const segment = (width - SEGMENT_GAP * 4) / 5;
+    return Array.from({ length: 5 }, (_, index) => box("rect", x + index * (segment + SEGMENT_GAP), y, segment, height, solid(index < level ? colors.accent : colors.soft), { radius: 1 }));
+  }
+  return [box("rect", x, y, width, height, solid(colors.soft), { radius: height / 2 }), box("rect", x, y, (width * level) / 5, height, solid(colors.accent), { radius: height / 2 })];
 }
 
 function chipsBlock(context: CvContext, tone: Tone, width: number, items: string[]): Block | null {
@@ -395,8 +422,37 @@ function chipsBlock(context: CvContext, tone: Tone, width: number, items: string
   };
 }
 
+function iconRow(context: CvContext, width: number, kind: CvContactKind, value: string, color: string, iconColor: string): Block | null {
+  const size = context.size(8.8);
+  const icon = Math.round(size * 1.15 * 10) / 10;
+  const indent = icon + 7;
+  const style: TextStyle = { size, color };
+  const textHeight = context.textHeight(width - indent, value, style);
+  if (!textHeight) return null;
+  const offset = Math.max(0, (Math.min(textHeight, size * 1.35) - icon) / 2);
+  return { height: Math.max(textHeight, icon), draw: (x, y, columnWidth) => [contactIcon(kind, iconColor, x, y + offset, icon), context.text(x + indent, y, columnWidth - indent, value, style)] };
+}
+
+export function contactGrid(context: CvContext, x: number, y: number, width: number, columns: number, color: string, iconColor: string): { elements: StudioElement[]; bottom: number } {
+  const items = context.contacts();
+  if (!items.length) return { elements: [], bottom: y };
+  const count = Math.max(1, Math.min(columns, items.length));
+  const gutter = 14;
+  const cell = (width - gutter * (count - 1)) / count;
+  const elements: StudioElement[] = [];
+  let top = y;
+  for (let start = 0; start < items.length; start += count) {
+    const rows = items.slice(start, start + count).map((item) => iconRow(context, cell, item.kind, item.value, color, iconColor));
+    const height = Math.max(0, ...rows.map((row) => row?.height ?? 0));
+    rows.forEach((row, index) => row && elements.push(...row.draw(x + index * (cell + gutter), top, cell)));
+    top += height + 6;
+  }
+  return { elements, bottom: top - 6 };
+}
+
 function contactBlocks(context: CvContext, tone: Tone, width: number): Block[] {
   const colors = context.colors(tone);
+  if (context.contactIcons) return context.contacts().flatMap(({ kind, value }) => iconRow(context, width, kind, value, colors.text, colors.accent) ?? []);
   return context.contacts().map(({ kind, value }) =>
     stack([textBlock(context, width, context.labels.contacts[kind], { size: context.size(7), color: colors.accent, bold: true, upper: true, spacing: 1.2 }), textBlock(context, width, value, { size: context.size(8.8), color: colors.text })], 1),
   );

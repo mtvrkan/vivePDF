@@ -8064,7 +8064,11 @@
         "resumeCompact": "سيرة ذاتية مضغوطة",
         "resumeElegant": "سيرة ذاتية أنيقة",
         "resumeTech": "سيرة ذاتية تقنية",
-        "resumeAts": "سيرة ذاتية متوافقة مع ATS"
+        "resumeAts": "سيرة ذاتية متوافقة مع ATS",
+        "resumeExecutive": "سيرة ذاتية تنفيذية",
+        "resumeAcademic": "سيرة ذاتية أكاديمية",
+        "resumeDesigner": "سيرة ذاتية لمصمم",
+        "resumeInfographic": "سيرة ذاتية إنفوجرافيك"
       },
       "seeAll": "عرض الكل ({{total}})",
       "seeAllIn": "عرض كل قوالب {{category}} ({{total}})"
@@ -9388,7 +9392,11 @@
         "compact": "مضغوط",
         "elegant": "أنيق",
         "tech": "تقني",
-        "ats": "متوافق مع ATS"
+        "ats": "متوافق مع ATS",
+        "executive": "تنفيذي",
+        "academic": "أكاديمي",
+        "designer": "مصمم",
+        "infographic": "إنفوجرافيك"
       },
       "sample": {
         "name": "سارة المنصوري",
