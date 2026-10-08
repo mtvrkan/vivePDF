@@ -40,10 +40,10 @@ export function PageNavigator({ documentId }: { documentId: string }) {
           onBlur={goToPage}
           aria-label={t("viewer.pageNumber")}
           inputMode={labels ? "text" : "numeric"}
-          className="field-inline h-7 w-10 rounded-md text-center text-xs"
+          className="field-inline h-8 w-9 rounded-md px-0.5 text-center text-xs"
         />
-        <span className="max-w-12 truncate text-[11px] text-muted-foreground" title={`${scrollState.currentPage} / ${scrollState.totalPages}`}>
-          {labels ? `(${scrollState.currentPage} / ${scrollState.totalPages})` : `/ ${scrollState.totalPages}`}
+        <span data-testid="page-count" className="max-w-12 truncate text-xs text-muted-foreground" title={`${scrollState.currentPage} / ${scrollState.totalPages}`}>
+          {labels ? `(${scrollState.currentPage} / ${scrollState.totalPages})` : String(scrollState.totalPages)}
         </span>
       </form>
       <IconButton icon={ChevronUp} label={t("viewer.previousPage")} disabled={scrollState.currentPage <= 1} onClick={() => scroll?.scrollToPreviousPage()} />

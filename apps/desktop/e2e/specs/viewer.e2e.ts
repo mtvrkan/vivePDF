@@ -49,7 +49,7 @@ describe("viewer", () => {
     const path = copyFixture(fixtures().sample);
     await openInViewer(path);
     const pageInput = $(`input[aria-label="${t("viewer.pageNumber")}"]`);
-    await expect($(`//span[normalize-space(.)="/ 3"]`)).toBeDisplayed();
+    await expect($(`[data-testid="page-count"]`)).toHaveText("3");
     await expect(pageInput).toHaveValue("1");
 
     await clickButton(t("viewer.nextPage"));
@@ -357,7 +357,7 @@ describe("viewer", () => {
     await openInViewer(second);
     await browser.refresh();
     await $(`input[aria-label="${t("viewer.pageNumber")}"]`).waitForDisplayed({ timeout: 60000 });
-    await expect($(`//span[normalize-space(.)="/ 3"]`)).toBeDisplayed();
+    await expect($(`[data-testid="page-count"]`)).toHaveText("3");
     await expect($(`//*[@role="tab"][contains(normalize-space(.), "reload-a.pdf")]`)).toBeDisplayed();
     await expect($(`//*[contains(text(), "${t("crash.detectedToast")}")]`)).not.toBeDisplayed();
   });

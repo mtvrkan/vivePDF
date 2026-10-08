@@ -122,7 +122,7 @@ suite("large documents", () => {
       await renderedPage(0, document.firstPageBudget);
       const firstPageMs = Date.now() - opening;
 
-      await expect($(`//span[normalize-space(.)="/ ${document.pages}"]`)).toBeDisplayed();
+      await expect($(`[data-testid="page-count"]`)).toHaveText(String(document.pages));
       const jumping = Date.now();
       await typeInto($(`input[aria-label="${t("viewer.pageNumber")}"]`), String(document.pages));
       await browser.keys(ENTER_KEY);
@@ -150,7 +150,7 @@ suite("large documents", () => {
     await typePassword("wrong");
     await $('input[type="password"][aria-invalid="true"]').waitForDisplayed({ timeout: 30000 });
     await typePassword("secret");
-    await expect($(`//span[normalize-space(.)="/ 240"]`)).toBeDisplayed({ wait: 60000 });
+    await expect($(`[data-testid="page-count"]`)).toHaveText("240", { wait: 60000 });
 
     expect(viewCopies()).toBe(1);
     expect(await pageWidthOverHeight(0)).toBeGreaterThan(1);
