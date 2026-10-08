@@ -6,7 +6,11 @@ const SIZES = [
   { width: 842, height: 595 },
   { width: 595, height: 842 },
   { width: 1080, height: 1080 },
+  { width: 220, height: 842 },
+  { width: 1684, height: 120 },
 ];
+
+const MAX_PATH_DATA = 400_000;
 
 function numbersOf(d: string): number[] {
   return (d.match(/-?\d*\.?\d+(?:e-?\d+)?/gi) ?? []).map(Number);
@@ -53,10 +57,12 @@ describe("ornaments", () => {
     }
   });
 
-  it("keeps a full-page pattern small enough for drafts and thumbnails", () => {
+  it("keeps every path under the renderer's limit at any page shape", () => {
     for (const item of ORNAMENTS.filter((entry) => entry.fitsPage)) {
-      const bytes = built(item.id, { width: 1191, height: 1684 }).paths.reduce((sum, path) => sum + path.d.length, 0);
-      expect(bytes, item.id).toBeLessThan(400_000);
+      for (const size of [...SIZES, { width: 1191, height: 1684 }]) {
+        const longest = Math.max(...built(item.id, size).paths.map((path) => path.d.length));
+        expect(longest, `${item.id} ${size.width}x${size.height}`).toBeLessThan(MAX_PATH_DATA / 2);
+      }
     }
   });
 });

@@ -154,7 +154,8 @@ export const SHADOWS = {
 
 export type ShadowPreset = keyof typeof SHADOWS;
 
-export function shadowed<T extends StudioElement & { dropShadow: StudioDropShadow | null }>(element: T, preset: ShadowPreset, color?: string): T {
+export function shadowed<T extends StudioElement>(element: T, preset: ShadowPreset, color?: string): T {
+  if (element.kind === "text") return element;
   return { ...element, dropShadow: { ...SHADOWS[preset], ...(color ? { color } : {}) } };
 }
 

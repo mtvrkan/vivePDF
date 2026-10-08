@@ -65,7 +65,7 @@ function leaf(base: Point, angle: number, length: number, width: number): Segmen
 
 function halftone(colors: OrnamentColors, size: Size): VectorArt {
   const { width, height } = size;
-  const step = Math.min(width, height) / 34;
+  const step = Math.max(Math.min(width, height) / 34, Math.sqrt((width * height) / 1100));
   const main: Segment[] = [];
   const echo: Segment[] = [];
   const far = Math.hypot(width, height);
@@ -525,7 +525,7 @@ function gemFrame(colors: OrnamentColors, size: Size): VectorArt {
   const margin = Math.min(width, height) * 0.04;
   const gap = 6;
   const corner = margin + gap / 2;
-  const radius = 9;
+  const radius = Math.min(9, corner);
   const facet = (a: Point, b: Point) =>
     fourCorners(
       polyline(
@@ -568,12 +568,12 @@ function guillocheBorder(colors: OrnamentColors, size: Size): VectorArt {
   };
   const along = roundedRectangleAt(middle.x, middle.y, middle.width, middle.height, band * 0.6);
   const length = perimeter(middle.width, middle.height, band * 0.6);
-  const waves = Math.max(12, Math.round(length / (band * 0.7)));
+  const waves = Math.min(700, Math.max(12, Math.round(length / (band * 0.7))));
   const paths: StudioVectorPath[] = [];
   for (let layer = 0; layer < 6; layer += 1) {
     const shift = (TAU * layer) / 6;
     const depth = layer % 2 ? 0.62 : 0.9;
-    const curve = sampled(waves * 16, (t) => {
+    const curve = sampled(Math.min(waves * 16, 7000), (t) => {
       const { point, normal } = along(t);
       const offset = (band / 2) * depth * Math.sin(waves * TAU * t + shift);
       return [point[0] + normal[0] * offset, point[1] + normal[1] * offset];
