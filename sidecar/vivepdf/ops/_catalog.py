@@ -291,6 +291,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.qr",
         "studio.render",
     ),
+    "studio_cv": ("studio.cv_import_pdf",),
     "studio_document": (
         "studio.document_image",
         "studio.import_document",

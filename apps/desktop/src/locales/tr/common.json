@@ -8397,12 +8397,14 @@
         "referenceRole": "Unvan ve şirket",
         "referenceContact": "Telefon veya e-posta",
         "heading": "Başlık",
-        "body": "Metin"
+        "body": "Metin",
+        "studying": "Hâlâ burada okuyorum"
       },
       "hints": {
         "summary": "Kim olduğunuzu ve neler kattığınızı anlatan iki üç cümle.",
         "bullets": "Satırı - ile başlatırsanız madde işareti olur.",
-        "interests": "Virgülle ayırın."
+        "interests": "Virgülle ayırın.",
+        "pasteList": "İpucu: virgülle ya da satır satır ayrılmış bir listeyi yapıştırırsanız hepsi birden eklenir."
       },
       "add": {
         "experience": "Deneyim ekle",
@@ -8555,7 +8557,98 @@
         "certificate": "Sertifikalı Kullanılabilirlik Analisti",
         "issuer": "Human Factors International",
         "interests": "Fotoğrafçılık, bisiklet, seramik"
-      }
+      },
+      "checks": {
+        "email": "Bu bir e-posta adresine benzemiyor",
+        "url": "Bu bir web adresine benzemiyor",
+        "phone": "Bu bir telefon numarasına benzemiyor"
+      },
+      "dates": {
+        "pick": "Ay ve yıl seç",
+        "type": "Tarihi serbest yaz",
+        "month": "{{name}} ayı",
+        "year": "{{name}} yılı",
+        "noMonth": "Ay (isteğe bağlı)"
+      },
+      "placeholders": {
+        "name": "ör. Ayşe Yılmaz",
+        "headline": "ör. Kıdemli Ürün Tasarımcısı",
+        "role": "ör. Pazarlama Müdürü",
+        "organisation": "ör. Kuzey Yazılım A.Ş.",
+        "location": "ör. İstanbul, Türkiye",
+        "details": "- 5 kişilik tasarım ekibini yönettim\n- İşe alışma süresini %30 kısalttım",
+        "degree": "ör. Bilgisayar Mühendisliği Lisans",
+        "school": "ör. Boğaziçi Üniversitesi",
+        "educationDetails": "ör. Onur derecesiyle mezun, not ortalaması 3,6/4",
+        "certificate": "ör. Google UX Tasarım Sertifikası",
+        "issuer": "ör. Coursera",
+        "project": "ör. Portfolyo sitesi",
+        "link": "ör. github.com/siz/proje",
+        "projectDetails": "- Ne yaptığınız ve sonucu",
+        "referenceName": "ör. Zeynep Kaya",
+        "referenceRole": "ör. Tasarım Direktörü, Kuzey Yazılım",
+        "referenceContact": "ör. zeynep@ornek.com",
+        "heading": "ör. Gönüllülük",
+        "body": "Eklemek istediğiniz her şeyi yazın",
+        "skill": "ör. Figma",
+        "language": "ör. İngilizce",
+        "summary": "Kim olduğunuz, nelerde iyi olduğunuz ve ne aradığınız.",
+        "interests": "ör. Fotoğrafçılık, doğa yürüyüşü, satranç",
+        "email": "ad@ornek.com",
+        "phone": "+90 555 123 45 67",
+        "website": "adiniz.com",
+        "linkedin": "linkedin.com/in/adiniz",
+        "github": "github.com/adiniz",
+        "other": "Başka bir şey"
+      },
+      "emptySection": "Henüz bir şey yok — eklemek için + düğmesini kullanın.",
+      "removed": "{{name}} kaldırıldı",
+      "duplicate": "{{name}} öğesini çoğalt",
+      "drag": "Sıralamak için {{name}} öğesini sürükleyin",
+      "photoReady": "Fotoğraf eklendi",
+      "crop": {
+        "open": "Kırp",
+        "title": "Fotoğrafı kırp",
+        "area": "Fotoğraf kırpma alanı",
+        "hint": "Fotoğrafı sürükleyin ya da ok tuşlarıyla kaydırın.",
+        "zoom": "Yakınlaştırma",
+        "apply": "Uygula",
+        "reset": "Fotoğrafın tamamını göster"
+      },
+      "import": {
+        "fromPdf": "PDF'ten içe aktar…",
+        "pickPdf": "Bir CV ya da LinkedIn PDF'i seçin",
+        "title": "CV içe aktar",
+        "reading": "PDF okunuyor…",
+        "password": "Parola",
+        "wrongPassword": "Bu parola PDF'i açmadı.",
+        "unlock": "Aç",
+        "failed": "CV okunamadı",
+        "noText": "Bu PDF'te okunacak metin yok — taranmış olabilir. Önce OCR uygulayın, sonra yeniden içe aktarın.",
+        "found": "Şu bölümler bulundu. Neleri almak istediğinizi seçin:",
+        "foundLinkedin": "Bir LinkedIn profili tanındı. Neleri almak istediğinizi seçin:",
+        "sections": "Bulunan bölümler",
+        "unsure": "Kontrol edin",
+        "reviewHint": "Değiştir, seçilen bölümleri içe aktarılanlarla değiştirir; Ekle, mevcut bilgilerinizi korur ve gerisini ekler. İkisi de geri alınabilir.",
+        "nothing": "CV bölümü bulunamadı",
+        "nothingHint": "Başka bir PDF deneyin ya da formu elle doldurun.",
+        "add": "CV'me ekle",
+        "replace": "Değiştir",
+        "done": "CV içe aktarıldı"
+      },
+      "file": {
+        "menu": "CV dosyası",
+        "open": "CV dosyası aç (.json)…",
+        "save": "CV dosyası kaydet (.json)…",
+        "filter": "vivePDF CV",
+        "unreadable": "Bu dosya vivePDF'in okuyabildiği bir CV dosyası değil.",
+        "opened": "CV dosyası açıldı",
+        "saved": "CV dosyası kaydedildi"
+      },
+      "saveFailed": "CV'niz bu bilgisayara kaydedilemedi; uygulamayı açık tutun ya da bir CV dosyası kaydedin.",
+      "previewStale": "Önizleme yeniden çizilemediği için güncel değil.",
+      "overflow": "İçerik sığmadı — dışarıda kalan öğe: {{count}}",
+      "pagesHint": "CV'lerin çoğu bir ya da iki sayfadır."
     },
     "shortcuts": {
       "title": "Klavye kısayolları",

@@ -2,7 +2,7 @@ import type { StudioDesign, StudioElement, StudioPage } from "@/types/studio";
 import { ensureFace, useStudioFontsStore } from "../design/fonts";
 import { buildTextNode } from "../design/measure";
 import { textOf } from "../model/design";
-import { composeCv, type CvMeasure } from "./cvLayout";
+import { composeCvReport, type CvComposed, type CvMeasure } from "./cvLayout";
 import { specOf } from "./cvDesigns";
 import type { CvProfile, CvTheme } from "./cvModel";
 import { cvLabels, type Translate } from "./cvSample";
@@ -61,11 +61,11 @@ export function cvFonts(theme: CvTheme): string[] {
   return [theme.headingFont ?? spec.fonts.heading, theme.bodyFont ?? spec.fonts.body];
 }
 
-export async function renderCv(profile: CvProfile, theme: CvTheme, t: Translate, name: string): Promise<StudioDesign> {
+export async function renderCv(profile: CvProfile, theme: CvTheme, t: Translate, name: string): Promise<CvComposed> {
   await loadCvFonts(cvFonts(theme));
   const measurer = domMeasure(theme.language);
   try {
-    return composeCv(specOf(theme.layout), { profile, theme, labels: cvLabels(t), measure: measurer.measure, emptyPhoto: false, name });
+    return composeCvReport(specOf(theme.layout), { profile, theme, labels: cvLabels(t), measure: measurer.measure, emptyPhoto: false, name });
   } finally {
     measurer.dispose();
   }

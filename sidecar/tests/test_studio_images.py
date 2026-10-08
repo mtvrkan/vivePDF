@@ -11,7 +11,7 @@ from pydantic import ValidationError
 from vivepdf.ops._studio_models import StudioRenderParams, StudioSaveImageParams
 from vivepdf.ops.studio import render
 from vivepdf.ops.studio_images import save_image
-from vivepdf.rpc.errors import OpError
+from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
 ARABIC = "".join(map(chr, (0x0633, 0x0627, 0x0631, 0x0629)))
@@ -280,3 +280,39 @@ def test_pasted_data_that_is_not_a_supported_image_is_refused(data: str, reason:
         save_image(StudioSaveImageParams(data=data), silent_progress())
 
     assert raised.value.data["reason"] == reason
+
+
+def test_an_image_file_is_saved_under_the_same_name_as_its_pasted_data(tmp_path: Path):
+    data = _encoded(Image.new("RGB", (24, 12), (30, 60, 220)), "PNG")
+    source = tmp_path / "picture.png"
+    source.write_bytes(base64.b64decode(data))
+
+    copied = save_image(StudioSaveImageParams(path=str(source)), silent_progress())
+    pasted = save_image(StudioSaveImageParams(data=data), silent_progress())
+
+    assert copied.path == pasted.path
+    assert copied.path.endswith(".png")
+    assert (copied.width, copied.height) == (24, 12)
+
+
+def test_a_missing_image_file_is_reported(tmp_path: Path):
+    with pytest.raises(OpError) as raised:
+        save_image(StudioSaveImageParams(path=str(tmp_path / "gone.png")), silent_progress())
+
+    assert raised.value.code == ErrorCode.FILE_NOT_FOUND
+
+
+def test_a_file_that_is_not_an_image_is_refused(tmp_path: Path):
+    source = tmp_path / "notes.png"
+    source.write_text("plain text, not a picture", encoding="utf-8")
+
+    with pytest.raises(OpError) as raised:
+        save_image(StudioSaveImageParams(path=str(source)), silent_progress())
+
+    assert raised.value.data["reason"] == "imageUnreadable"
+
+
+@pytest.mark.parametrize("payload", [{}, {"data": "aGVsbG8=", "path": "picture.png"}])
+def test_save_image_needs_exactly_one_source(payload: dict):
+    with pytest.raises(ValidationError):
+        StudioSaveImageParams.model_validate(payload)

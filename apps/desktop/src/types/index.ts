@@ -1724,3 +1724,22 @@ export type ViewPrepareResult = { viewPath: string | null; renamed: number; font
 export type ViewRestoreResult = { restored: number };
 export type PageLabelsParams = { path: string; password?: string };
 export type PageLabelsResult = { labels: string[] | null; pageCount: number };
+export type CvContactKind = "email" | "phone" | "website" | "location" | "linkedin" | "github" | "other";
+export type CvImportedProfile = {
+  name: string;
+  headline: string;
+  contacts: Array<{ kind: CvContactKind; value: string }>;
+  summary: string;
+  experience: Array<{ role: string; organisation: string; location: string; start: string; end: string; current: boolean; details: string }>;
+  education: Array<{ degree: string; school: string; location: string; start: string; end: string; details: string }>;
+  skills: Array<{ name: string; level: number }>;
+  languages: Array<{ name: string; level: number }>;
+  certificates: Array<{ name: string; issuer: string; date: string }>;
+  projects: Array<{ name: string; link: string; details: string }>;
+  references: Array<{ name: string; role: string; contact: string }>;
+  interests: string;
+  custom: Array<{ heading: string; body: string }>;
+};
+export type CvImportSectionKey = "personal" | "contact" | "summary" | "experience" | "education" | "skills" | "languages" | "certificates" | "projects" | "references" | "interests" | "custom";
+export type CvImportSection = { key: CvImportSectionKey; count: number; confidence: number };
+export type StudioCvImportResult = { profile: CvImportedProfile; sections: CvImportSection[]; source: "linkedin" | "generic"; pages: number };

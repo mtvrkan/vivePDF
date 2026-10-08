@@ -354,6 +354,34 @@ def banner(target: Path) -> None:
     save(document, target)
 
 
+def resume(target: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    lines = [
+        (70, "Jordan Rivera", 24),
+        (94, "Product Designer", 12),
+        (112, "jordan.rivera@example.com | +1 555 010 2233", 10),
+        (146, "Experience", 15),
+        (166, "Lead Designer, Northwind Studio", 11),
+        (182, "Mar 2021 - Present", 10),
+        (198, "- Shipped a design system used by six teams", 10),
+        (232, "Education", 15),
+        (252, "BA Visual Communication", 11),
+        (268, "Riverside University", 10),
+        (284, "2014 - 2018", 10),
+        (318, "Skills", 15),
+        (338, "Figma, Prototyping, User research", 10),
+    ]
+    for y, line, size in lines:
+        if FONT_FILE.is_file():
+            page.insert_text(
+                (72, y), line, fontsize=size, fontname="arial", fontfile=str(FONT_FILE)
+            )
+        else:
+            page.insert_text((72, y), line, fontsize=size)
+    save(document, target)
+
+
 def main() -> None:
     directory = Path(sys.argv[1])
     directory.mkdir(parents=True, exist_ok=True)
@@ -362,6 +390,7 @@ def main() -> None:
         "japanese": directory / "japanese.pdf",
         "memo": directory / "memo.pdf",
         "banner": directory / "banner.pdf",
+        "resume": directory / "resume.pdf",
         "second": directory / "ikinci belge şğü.pdf",
         "six": directory / "six-pages.pdf",
         "chapters": directory / "chapters.pdf",
@@ -391,6 +420,7 @@ def main() -> None:
     japanese(files["japanese"])
     memo(files["memo"])
     banner(files["banner"])
+    resume(files["resume"])
     six_pages(files["six"])
     chapters(files["chapters"])
     scanned(files["scanned"])

@@ -112,7 +112,7 @@ export function CvDesignPanel() {
   const sample = useMemo(() => sampleProfile(t), [t]);
   const spec = specOf(theme.layout);
   const accent = theme.accent ?? spec.accent;
-  const pickLayout = useCallback((layout: CvLayoutId) => updateTheme({ layout, accent: null, headingFont: null, bodyFont: null }), [updateTheme]);
+  const pickLayout = useCallback((layout: CvLayoutId) => updateTheme({ layout }), [updateTheme]);
 
   return (
     <div className="space-y-5">

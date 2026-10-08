@@ -1,5 +1,6 @@
 import { isLocale } from "@/app/locales";
 import type { Locale } from "@/types";
+import type { StudioCrop } from "@/types/studio";
 
 export const CV_SECTION_KEYS = ["summary", "experience", "education", "skills", "languages", "certificates", "projects", "references", "interests", "custom"] as const;
 export type CvSectionKey = (typeof CV_SECTION_KEYS)[number];
@@ -27,10 +28,12 @@ export const CV_LIMITS = { contacts: 10, experience: 30, education: 20, skills: 
 export const CV_TEXT_LIMIT = 4000;
 export const CV_STORAGE_KEY = "vivepdf.cvStudio";
 export const LEGACY_DRAFT_KEY = "vivepdf.cvDraft";
+export const CV_FILE_FORMAT = "vivepdf-cv";
+export const CV_FILE_VERSION = 1;
 
 export type CvContact = { id: string; kind: CvContactKind; value: string };
 export type CvExperience = { id: string; role: string; organisation: string; location: string; start: string; end: string; current: boolean; details: string };
-export type CvEducation = { id: string; degree: string; school: string; location: string; start: string; end: string; details: string };
+export type CvEducation = { id: string; degree: string; school: string; location: string; start: string; end: string; current: boolean; details: string };
 export type CvLeveled = { id: string; name: string; level: number };
 export type CvCertificate = { id: string; name: string; issuer: string; date: string };
 export type CvProject = { id: string; name: string; link: string; details: string };
@@ -41,6 +44,7 @@ export type CvProfile = {
   name: string;
   headline: string;
   photo: string | null;
+  photoCrop: StudioCrop | null;
   contacts: CvContact[];
   summary: string;
   experience: CvExperience[];
@@ -82,7 +86,7 @@ export function emptyExperience(): CvExperience {
 }
 
 export function emptyEducation(): CvEducation {
-  return { id: cvId(), degree: "", school: "", location: "", start: "", end: "", details: "" };
+  return { id: cvId(), degree: "", school: "", location: "", start: "", end: "", current: false, details: "" };
 }
 
 export function emptyLeveled(level = 3): CvLeveled {
@@ -114,6 +118,7 @@ export function emptyProfile(): CvProfile {
     name: "",
     headline: "",
     photo: null,
+    photoCrop: null,
     contacts: [emptyContact("email"), emptyContact("phone"), emptyContact("location")],
     summary: "",
     experience: [emptyExperience()],
@@ -142,6 +147,7 @@ export function sampleProfile(t: Translate): CvProfile {
     name: line("name"),
     headline: line("headline"),
     photo: null,
+    photoCrop: null,
     contacts: [
       { id: cvId(), kind: "email", value: line("email") },
       { id: cvId(), kind: "phone", value: line("phone") },
@@ -153,7 +159,7 @@ export function sampleProfile(t: Translate): CvProfile {
       { id: cvId(), role: line("role1"), organisation: line("company1"), location: line("city1"), start: "2021", end: "", current: true, details: line("details1") },
       { id: cvId(), role: line("role2"), organisation: line("company2"), location: line("city2"), start: "2018", end: "2021", current: false, details: line("details2") },
     ],
-    education: [{ id: cvId(), degree: line("degree"), school: line("school"), location: line("city2"), start: "2014", end: "2018", details: line("educationDetails") }],
+    education: [{ id: cvId(), degree: line("degree"), school: line("school"), location: line("city2"), start: "2014", end: "2018", current: false, details: line("educationDetails") }],
     skills: [line("skill1"), line("skill2"), line("skill3"), line("skill4"), line("skill5")].map((name, index) => ({ id: cvId(), name, level: [5, 4, 4, 3, 4][index] ?? 3 })),
     languages: [
       { id: cvId(), name: line("language1"), level: 5 },
@@ -189,6 +195,19 @@ function oneOf<T extends string>(value: unknown, options: readonly T[], fallback
   return options.includes(value as T) ? (value as T) : fallback;
 }
 
+function fraction(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 1 ? value : null;
+}
+
+function photoCrop(value: unknown): StudioCrop | null {
+  if (typeof value !== "object" || value === null) return null;
+  const raw = value as Record<string, unknown>;
+  const [x, y, width, height] = [fraction(raw.x), fraction(raw.y), fraction(raw.width), fraction(raw.height)];
+  if (x === null || y === null || width === null || height === null || width <= 0 || height <= 0) return null;
+  if (x + width > 1.0001 || y + height > 1.0001) return null;
+  return { x, y, width, height };
+}
+
 function sectionKeys(value: unknown): CvSectionKey[] {
   if (!Array.isArray(value)) return [];
   return [...new Set(value.filter((item): item is CvSectionKey => CV_SECTION_KEYS.includes(item as CvSectionKey)))];
@@ -211,6 +230,7 @@ export function normalizeProfile(value: unknown): CvProfile {
     name: str(raw.name, 200),
     headline: str(raw.headline, 200),
     photo: typeof raw.photo === "string" && raw.photo ? raw.photo : null,
+    photoCrop: photoCrop(raw.photoCrop),
     contacts: list(raw.contacts, CV_LIMITS.contacts, (item) => ({ id: cvId(), kind: oneOf(item.kind, CV_CONTACT_KINDS, "other"), value: str(item.value, 300) })),
     summary: str(raw.summary),
     experience: list(raw.experience, CV_LIMITS.experience, (item) => ({
@@ -230,6 +250,7 @@ export function normalizeProfile(value: unknown): CvProfile {
       location: str(item.location, 200),
       start: str(item.start, 40),
       end: str(item.end, 40),
+      current: item.current === true,
       details: str(item.details),
     })),
     skills: list(raw.skills, CV_LIMITS.skills, (item) => ({ id: cvId(), name: str(item.name, 120), level: level(item.level, 3) })),
@@ -309,6 +330,7 @@ export function fromLegacyDraft(raw: string, language: Locale): CvState | null {
       school: entry.organisation,
       location: entry.location,
       ...splitPeriod(entry.period),
+      current: false,
       details: entry.details,
     }));
     profile.skills = str(stored.skills)
@@ -349,12 +371,67 @@ export function readStoredCv(language: Locale): CvState | null {
   }
 }
 
-export function writeStoredCv(state: CvState): void {
+export function writeStoredCv(state: CvState): boolean {
   try {
     localStorage.setItem(CV_STORAGE_KEY, JSON.stringify(state));
+    return true;
   } catch {
-    return;
+    return false;
   }
+}
+
+function portable(profile: CvProfile) {
+  const strip = <T extends { id: string }>(items: T[]) =>
+    items.map((item) => {
+      const copy: Record<string, unknown> = { ...item };
+      delete copy.id;
+      return copy;
+    });
+  return {
+    ...profile,
+    contacts: strip(profile.contacts),
+    experience: strip(profile.experience),
+    education: strip(profile.education),
+    skills: strip(profile.skills),
+    languages: strip(profile.languages),
+    certificates: strip(profile.certificates),
+    projects: strip(profile.projects),
+    references: strip(profile.references),
+    custom: strip(profile.custom),
+  };
+}
+
+export function cvToJson(state: CvState): string {
+  return `${JSON.stringify({ format: CV_FILE_FORMAT, version: CV_FILE_VERSION, profile: portable(state.profile), theme: state.theme }, null, 2)}\n`;
+}
+
+export function cvFromJson(text: string, language: Locale): CvState | null {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) return null;
+  const raw = parsed as Record<string, unknown>;
+  if (raw.format === CV_FILE_FORMAT) {
+    if (typeof raw.version !== "number" || raw.version > CV_FILE_VERSION) return null;
+    return { profile: normalizeProfile(raw.profile), theme: normalizeTheme(raw.theme, language) };
+  }
+  if (typeof raw.profile === "object" && raw.profile !== null) return { profile: normalizeProfile(raw.profile), theme: normalizeTheme(raw.theme, language) };
+  if (typeof raw.name === "string" || Array.isArray(raw.experience)) return { profile: normalizeProfile(raw), theme: defaultTheme(language) };
+  return null;
+}
+
+export function splitListText(text: string): string[] {
+  return text
+    .split(/\r?\n|[,;•|]/)
+    .map((item) => item.replace(/^\s*[-*–]\s+/, "").trim())
+    .filter(Boolean);
+}
+
+export function profileHasContent(profile: CvProfile): boolean {
+  return Boolean(profile.name.trim() || profile.headline.trim() || profile.photo) || CV_SECTION_KEYS.some((key) => sectionVisible({ ...profile, hidden: [] }, key)) || profile.contacts.some((contact) => contact.value.trim());
 }
 
 export function sectionVisible(profile: CvProfile, key: CvSectionKey): boolean {

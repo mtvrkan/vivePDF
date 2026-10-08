@@ -8395,12 +8395,14 @@
         "referenceRole": "Qualifica e azienda",
         "referenceContact": "Telefono o email",
         "heading": "Titolo",
-        "body": "Testo"
+        "body": "Testo",
+        "studying": "Studio ancora qui"
       },
       "hints": {
         "summary": "Due o tre frasi su chi sei e cosa puoi offrire.",
         "bullets": "Inizia una riga con - per creare un elenco puntato.",
-        "interests": "Separa con virgole."
+        "interests": "Separa con virgole.",
+        "pasteList": "Suggerimento: incolla un elenco separato da virgole o da a capo per aggiungere tutto in una volta."
       },
       "add": {
         "experience": "Aggiungi esperienza",
@@ -8553,7 +8555,98 @@
         "certificate": "Analista di usabilità certificata",
         "issuer": "Human Factors International",
         "interests": "Fotografia, ciclismo, ceramica"
-      }
+      },
+      "checks": {
+        "email": "Non sembra un indirizzo email",
+        "url": "Non sembra un indirizzo web",
+        "phone": "Non sembra un numero di telefono"
+      },
+      "dates": {
+        "pick": "Scegli mese e anno",
+        "type": "Scrivi la data liberamente",
+        "month": "Mese di {{name}}",
+        "year": "Anno di {{name}}",
+        "noMonth": "Mese (facoltativo)"
+      },
+      "placeholders": {
+        "name": "es. Alex Morgan",
+        "headline": "es. Product designer senior",
+        "role": "es. Responsabile marketing",
+        "organisation": "es. Northwind S.r.l.",
+        "location": "es. Milano, Italia",
+        "details": "- Guidato un team di 5 designer\n- Ridotto del 30% il tempo di inserimento",
+        "degree": "es. Laurea in Informatica",
+        "school": "es. Politecnico di Milano",
+        "educationDetails": "es. Laureato con lode",
+        "certificate": "es. Certificato Google UX Design",
+        "issuer": "es. Coursera",
+        "project": "es. Sito portfolio",
+        "link": "es. github.com/tu/progetto",
+        "projectDetails": "- Cosa hai realizzato e il risultato",
+        "referenceName": "es. Giulia Rossi",
+        "referenceRole": "es. Head of Design, Northwind",
+        "referenceContact": "es. giulia@example.com",
+        "heading": "es. Volontariato",
+        "body": "Scrivi ciò che vuoi aggiungere",
+        "skill": "es. Figma",
+        "language": "es. Inglese",
+        "summary": "Chi sei, in cosa sei bravo e cosa cerchi.",
+        "interests": "es. Fotografia, escursionismo, scacchi",
+        "email": "nome@example.com",
+        "phone": "+39 312 345 6789",
+        "website": "tuonome.it",
+        "linkedin": "linkedin.com/in/tuonome",
+        "github": "github.com/tuonome",
+        "other": "Altro"
+      },
+      "emptySection": "Ancora niente: usa + per aggiungere.",
+      "removed": "{{name}} rimosso",
+      "duplicate": "Duplica {{name}}",
+      "drag": "Trascina {{name}} per riordinare",
+      "photoReady": "Foto aggiunta",
+      "crop": {
+        "open": "Ritaglia",
+        "title": "Ritaglia foto",
+        "area": "Area di ritaglio",
+        "hint": "Trascina la foto o spostala con i tasti freccia.",
+        "zoom": "Zoom",
+        "apply": "Applica",
+        "reset": "Mostra tutta la foto"
+      },
+      "import": {
+        "fromPdf": "Importa da PDF…",
+        "pickPdf": "Scegli un CV o un PDF di LinkedIn",
+        "title": "Importa un CV",
+        "reading": "Lettura del PDF…",
+        "password": "Password",
+        "wrongPassword": "Questa password non ha aperto il PDF.",
+        "unlock": "Apri",
+        "failed": "Impossibile leggere il CV",
+        "noText": "Questo PDF non contiene testo leggibile: potrebbe essere una scansione. Esegui prima l’OCR e poi importalo di nuovo.",
+        "found": "Sono state trovate queste sezioni. Scegli cosa importare:",
+        "foundLinkedin": "È stato riconosciuto un profilo LinkedIn. Scegli cosa importare:",
+        "sections": "Sezioni trovate",
+        "unsure": "Da verificare",
+        "reviewHint": "Sostituisci cambia le sezioni scelte con quelle importate; Aggiungi mantiene i tuoi dati e aggiunge il resto. Entrambe si possono annullare.",
+        "nothing": "Nessuna sezione di CV trovata",
+        "nothingHint": "Prova un altro PDF o compila il modulo a mano.",
+        "add": "Aggiungi al mio CV",
+        "replace": "Sostituisci",
+        "done": "CV importato"
+      },
+      "file": {
+        "menu": "File CV",
+        "open": "Apri file CV (.json)…",
+        "save": "Salva file CV (.json)…",
+        "filter": "CV vivePDF",
+        "unreadable": "Questo file non è un file CV che vivePDF può leggere.",
+        "opened": "File CV aperto",
+        "saved": "File CV salvato"
+      },
+      "saveFailed": "Non è stato possibile salvare il CV su questo computer; tieni aperta l’app o salva un file CV.",
+      "previewStale": "L’anteprima non è aggiornata perché non è stato possibile ridisegnarla.",
+      "overflow": "Il contenuto non ci sta: elementi esclusi: {{count}}",
+      "pagesHint": "La maggior parte dei CV è lunga una o due pagine."
     },
     "shortcuts": {
       "title": "Scorciatoie da tastiera",

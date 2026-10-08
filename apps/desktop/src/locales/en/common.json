@@ -8397,12 +8397,14 @@
         "referenceRole": "Title and company",
         "referenceContact": "Phone or email",
         "heading": "Heading",
-        "body": "Text"
+        "body": "Text",
+        "studying": "I'm still studying here"
       },
       "hints": {
         "summary": "Two or three sentences about who you are and what you bring.",
         "bullets": "Start a line with - to make it a bullet point.",
-        "interests": "Separate with commas."
+        "interests": "Separate with commas.",
+        "pasteList": "Tip: paste a list separated by commas or new lines to add them all at once."
       },
       "add": {
         "experience": "Add experience",
@@ -8555,7 +8557,98 @@
         "certificate": "Certified Usability Analyst",
         "issuer": "Human Factors International",
         "interests": "Photography, cycling, ceramics"
-      }
+      },
+      "checks": {
+        "email": "This doesn't look like an email address",
+        "url": "This doesn't look like a web address",
+        "phone": "This doesn't look like a phone number"
+      },
+      "dates": {
+        "pick": "Pick month and year",
+        "type": "Type the date freely",
+        "month": "{{name}} month",
+        "year": "{{name}} year",
+        "noMonth": "Month (optional)"
+      },
+      "placeholders": {
+        "name": "e.g. Alex Morgan",
+        "headline": "e.g. Senior Product Designer",
+        "role": "e.g. Marketing Manager",
+        "organisation": "e.g. Northwind Ltd.",
+        "location": "e.g. Istanbul, Türkiye",
+        "details": "- Led a team of 5 designers\n- Cut onboarding time by 30%",
+        "degree": "e.g. BSc Computer Science",
+        "school": "e.g. Boğaziçi University",
+        "educationDetails": "e.g. Graduated with honours, GPA 3.6/4",
+        "certificate": "e.g. Google UX Design Certificate",
+        "issuer": "e.g. Coursera",
+        "project": "e.g. Portfolio website",
+        "link": "e.g. github.com/you/project",
+        "projectDetails": "- What you built and the result",
+        "referenceName": "e.g. Jane Smith",
+        "referenceRole": "e.g. Head of Design, Northwind",
+        "referenceContact": "e.g. jane@example.com",
+        "heading": "e.g. Volunteering",
+        "body": "Write anything you want to add",
+        "skill": "e.g. Figma",
+        "language": "e.g. English",
+        "summary": "Who you are, what you are good at and what you are looking for.",
+        "interests": "e.g. Photography, hiking, chess",
+        "email": "name@example.com",
+        "phone": "+90 555 123 45 67",
+        "website": "yourname.com",
+        "linkedin": "linkedin.com/in/yourname",
+        "github": "github.com/yourname",
+        "other": "Anything else"
+      },
+      "emptySection": "Nothing here yet — use + to add one.",
+      "removed": "{{name}} removed",
+      "duplicate": "Duplicate {{name}}",
+      "drag": "Drag {{name}} to reorder",
+      "photoReady": "Photo added",
+      "crop": {
+        "open": "Crop",
+        "title": "Crop photo",
+        "area": "Photo crop area",
+        "hint": "Drag the photo or use the arrow keys to move it.",
+        "zoom": "Zoom",
+        "apply": "Apply",
+        "reset": "Show whole photo"
+      },
+      "import": {
+        "fromPdf": "Import from PDF…",
+        "pickPdf": "Choose a CV or LinkedIn PDF",
+        "title": "Import a CV",
+        "reading": "Reading the PDF…",
+        "password": "Password",
+        "wrongPassword": "That password didn't open the PDF.",
+        "unlock": "Open",
+        "failed": "The CV couldn't be read",
+        "noText": "This PDF has no text to read — it may be a scan. Run OCR on it first, then import it again.",
+        "found": "These sections were found. Choose what to bring in:",
+        "foundLinkedin": "A LinkedIn profile was recognised. Choose what to bring in:",
+        "sections": "Sections found",
+        "unsure": "Check this",
+        "reviewHint": "Replace swaps the chosen sections for the imported ones; Add keeps what you have and adds the rest. You can undo either.",
+        "nothing": "No CV sections were found",
+        "nothingHint": "Try another PDF, or fill the form by hand.",
+        "add": "Add to my CV",
+        "replace": "Replace",
+        "done": "CV imported"
+      },
+      "file": {
+        "menu": "CV file",
+        "open": "Open CV file (.json)…",
+        "save": "Save CV file (.json)…",
+        "filter": "vivePDF CV",
+        "unreadable": "That file isn't a CV file vivePDF can read.",
+        "opened": "CV file opened",
+        "saved": "CV file saved"
+      },
+      "saveFailed": "Your CV couldn't be saved on this computer; keep the app open or save a CV file.",
+      "previewStale": "The preview is out of date because it couldn't be redrawn.",
+      "overflow": "Content didn't fit — items left out: {{count}}",
+      "pagesHint": "Most CVs are one or two pages long."
     },
     "shortcuts": {
       "title": "Keyboard shortcuts",

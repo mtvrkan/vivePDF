@@ -1,11 +1,15 @@
-import { useEffect, useRef, useState } from "react";
-import { ArrowLeft, Download, Eraser, FileText, Palette, PenLine, Sparkles } from "lucide-react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { AlertTriangle, ArrowLeft, Download, Eraser, FileJson, FileText, FileUp, FolderOpen, Palette, PenLine, Redo2, RefreshCw, Save, Sparkles, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { translatorFor } from "@/app/i18n";
 import { Button } from "@/components/shared/Button";
 import { ErrorState } from "@/components/shared/ErrorState";
+import { IconButton } from "@/components/shared/IconButton";
+import { MenuButton } from "@/components/shared/MenuButton";
+import { describeError } from "@/shared/lib/errorMessage";
 import { cn } from "@/shared/lib/cn";
 import { shortcutLetter } from "@/shared/lib/shortcutKeys";
+import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { StudioDesign } from "@/types/studio";
 import { PageView } from "../design/ElementView";
@@ -13,13 +17,17 @@ import { useStudioStore } from "../design/studioStore";
 import { CvDesignPanel } from "./CvDesignPanel";
 import { CvExportDialog } from "./CvExportDialog";
 import { CvForm } from "./CvForm";
-import { emptyProfile, sampleProfile } from "./cvModel";
+import { CvImportDialog } from "./CvImportDialog";
+import { pickCvPdf, saveCvFile } from "./cvFiles";
+import type { CvOverflow } from "./cvLayout";
+import { cvFromJson, emptyProfile, sampleProfile, type CvProfile, type CvSectionKey } from "./cvModel";
 import { keepUnchanged, renderCv } from "./cvRender";
 import { useCvStore } from "./cvStore";
 
 const RENDER_DELAY_MS = 180;
 const PREVIEW_PADDING = 48;
 const MAX_PREVIEW_SCALE = 1.25;
+const LONG_CV_PAGES = 2;
 
 type Tab = "content" | "design";
 
@@ -36,18 +44,27 @@ function usePreviewWidth() {
   return { ref, width };
 }
 
+function redoKey(event: KeyboardEvent, letter: string | null): boolean {
+  return letter === "y" || (letter === "z" && event.shiftKey);
+}
+
 export default function CvStudio() {
   const { t } = useTranslation();
   const profile = useCvStore((state) => state.profile);
   const theme = useCvStore((state) => state.theme);
+  const canUndo = useCvStore((state) => state.past.length > 0);
+  const canRedo = useCvStore((state) => state.future.length > 0);
+  const saveFailed = useCvStore((state) => state.saveFailed);
   const close = useCvStore((state) => state.close);
-  const replace = useCvStore((state) => state.replace);
   const pushToast = useToastStore((state) => state.push);
   const [tab, setTab] = useState<Tab>("content");
   const [design, setDesign] = useState<StudioDesign | null>(null);
+  const [overflow, setOverflow] = useState<CvOverflow>({ items: 0, sections: [] });
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [exporting, setExporting] = useState(false);
+  const [importing, setImporting] = useState<string | null>(null);
+  const jsonInput = useRef<HTMLInputElement>(null);
   const preview = usePreviewWidth();
   const untitled = t("studio.cv.untitled");
 
@@ -59,7 +76,8 @@ export default function CvStudio() {
           const translate = await translatorFor(theme.language);
           const next = await renderCv(profile, theme, translate, profile.name.trim() || untitled);
           if (!live) return;
-          setDesign((previous) => keepUnchanged(next, previous));
+          setDesign((previous) => keepUnchanged(next.design, previous));
+          setOverflow((previous) => (previous.items === next.overflow.items && previous.sections.join() === next.overflow.sections.join() ? previous : next.overflow));
           setFailed(false);
         } catch {
           if (live) setFailed(true);
@@ -72,24 +90,39 @@ export default function CvStudio() {
     };
   }, [profile, theme, untitled, attempt]);
 
+  useEffect(() => {
+    if (saveFailed) pushToast("error", t("studio.cv.saveFailed"));
+  }, [saveFailed, pushToast, t]);
+
   const designRef = useRef(design);
   designRef.current = design;
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey || event.shiftKey || document.querySelector('[role="dialog"]')) return;
-      if (shortcutLetter(event) !== "e" || !designRef.current) return;
-      event.preventDefault();
-      event.stopPropagation();
-      setExporting(true);
+      if (!(event.ctrlKey || event.metaKey) || event.altKey || document.querySelector('[role="dialog"]')) return;
+      const letter = shortcutLetter(event);
+      const store = useCvStore.getState();
+      if (letter === "e" && !event.shiftKey && designRef.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        setExporting(true);
+      } else if (letter === "z" && !event.shiftKey) {
+        event.preventDefault();
+        event.stopPropagation();
+        store.undo();
+      } else if (redoKey(event, letter)) {
+        event.preventDefault();
+        event.stopPropagation();
+        store.redo();
+      }
     };
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
   }, []);
 
-  const swap = (next: typeof profile, message: string) => {
-    const previous = useCvStore.getState().snapshot();
-    replace({ profile: next, theme });
-    pushToast("info", message, { label: t("common.undo"), onClick: () => replace(previous) });
+  const swap = (next: CvProfile, message: string) => {
+    const store = useCvStore.getState();
+    store.replace({ profile: next, theme: store.theme });
+    pushToast("info", message, { label: t("common.undo"), onClick: () => useCvStore.getState().undo() });
   };
 
   const editInStudio = () => {
@@ -98,8 +131,42 @@ export default function CvStudio() {
     close();
   };
 
+  const importPdf = async () => {
+    const path = await pickCvPdf(t("studio.cv.import.pickPdf"));
+    if (path) setImporting(path);
+  };
+
+  const openJson = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    const text = await file.text().catch(() => null);
+    const state = text === null ? null : cvFromJson(text, theme.language);
+    if (!state) {
+      pushToast("error", t("studio.cv.file.unreadable"));
+      return;
+    }
+    useCvStore.getState().replace(state);
+    pushToast("info", t("studio.cv.file.opened"), { label: t("common.undo"), onClick: () => useCvStore.getState().undo() });
+  };
+
+  const saveJson = async () => {
+    try {
+      const path = await saveCvFile(useCvStore.getState().snapshot(), profile.name.trim() || untitled, t("studio.cv.file.filter"));
+      if (path) pushToast("success", t("studio.cv.file.saved"));
+    } catch (error) {
+      pushToast("error", describeError(t, toRpcError(error)));
+    }
+  };
+
+  const showSection = (section: CvSectionKey) => {
+    setTab("content");
+    window.setTimeout(() => document.querySelector(`[data-cv-section="${section}"]`)?.scrollIntoView({ block: "start", behavior: "smooth" }), 0);
+  };
+
   const page = design?.pages[0];
   const scale = page && preview.width > 0 ? Math.min(MAX_PREVIEW_SCALE, (preview.width - PREVIEW_PADDING) / page.width) : 0;
+  const pages = design?.pages.length ?? 0;
   const tabs: Array<{ id: Tab; icon: typeof FileText; label: string }> = [
     { id: "content", icon: FileText, label: t("studio.cv.tabs.content") },
     { id: "design", icon: Palette, label: t("studio.cv.tabs.design") },
@@ -112,7 +179,24 @@ export default function CvStudio() {
           {t("studio.title")}
         </Button>
         <h1 className="min-w-0 flex-1 truncate text-sm font-semibold">{t("studio.cv.title")}</h1>
-        {design ? <span className="text-xs tabular-nums text-muted-foreground">{t("studio.start.pages", { count: design.pages.length })}</span> : null}
+        {design ? (
+          <span data-testid="cv-page-count" title={pages > LONG_CV_PAGES ? t("studio.cv.pagesHint") : undefined} className={cn("rounded-full px-2 py-0.5 text-xs tabular-nums", pages > LONG_CV_PAGES ? "bg-warning/15 text-warning" : "text-muted-foreground")}>
+            {t("studio.start.pages", { count: pages })}
+          </span>
+        ) : null}
+        <IconButton icon={Undo2} label={t("studio.toolbar.undo")} shortcut="Ctrl+Z" disabled={!canUndo} onClick={() => useCvStore.getState().undo()} />
+        <IconButton icon={Redo2} label={t("studio.toolbar.redo")} shortcut="Ctrl+Y" disabled={!canRedo} onClick={() => useCvStore.getState().redo()} />
+        <MenuButton
+          icon={FileJson}
+          label={t("studio.cv.file.menu")}
+          items={[
+            { type: "item", id: "pdf", label: t("studio.cv.import.fromPdf"), icon: FileUp, onSelect: () => void importPdf() },
+            { type: "item", id: "open", label: t("studio.cv.file.open"), icon: FolderOpen, onSelect: () => jsonInput.current?.click() },
+            { type: "separator", id: "split" },
+            { type: "item", id: "save", label: t("studio.cv.file.save"), icon: Save, onSelect: () => void saveJson() },
+          ]}
+        />
+        <input ref={jsonInput} type="file" accept=".json,application/json" className="hidden" aria-hidden tabIndex={-1} onChange={(event) => void openJson(event)} data-testid="cv-json-input" />
         <Button size="sm" variant="ghost" icon={<Sparkles className="size-4" aria-hidden />} onClick={() => swap(sampleProfile(t), t("studio.cv.sampleFilled"))}>
           {t("studio.cv.fillSample")}
         </Button>
@@ -151,6 +235,26 @@ export default function CvStudio() {
           </div>
         </aside>
         <div ref={preview.ref} className="min-w-0 flex-1 overflow-auto bg-muted/40" aria-label={t("studio.cv.preview")} aria-busy={!design && !failed}>
+          {failed && design ? (
+            <div role="alert" className="sticky top-0 z-10 m-3 flex items-center gap-2 rounded-lg border border-destructive/40 bg-card px-3 py-2 text-sm shadow-sm">
+              <AlertTriangle className="size-4 shrink-0 text-destructive" aria-hidden />
+              <span className="min-w-0 flex-1">{t("studio.cv.previewStale")}</span>
+              <Button size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => setAttempt((value) => value + 1)}>
+                {t("common.retry")}
+              </Button>
+            </div>
+          ) : null}
+          {overflow.items > 0 && design ? (
+            <div role="status" data-testid="cv-overflow" className="sticky top-0 z-10 m-3 flex flex-wrap items-center gap-2 rounded-lg border border-warning/40 bg-card px-3 py-2 text-sm shadow-sm">
+              <AlertTriangle className="size-4 shrink-0 text-warning" aria-hidden />
+              <span className="min-w-0 flex-1">{t("studio.cv.overflow", { count: overflow.items })}</span>
+              {overflow.sections.slice(0, 3).map((section) => (
+                <Button key={section} size="sm" variant="ghost" onClick={() => showSection(section)}>
+                  {t(`studio.cv.sections.${section}`)}
+                </Button>
+              ))}
+            </div>
+          ) : null}
           {failed && !design ? (
             <div className="p-8">
               <ErrorState title={t("studio.cv.previewFailed")} message={t("studio.cv.previewFailedHint")} onRetry={() => setAttempt((value) => value + 1)} />
@@ -173,6 +277,15 @@ export default function CvStudio() {
         </div>
       </div>
       <CvExportDialog open={exporting} onClose={() => setExporting(false)} design={design} language={theme.language} />
+      <CvImportDialog
+        path={importing}
+        onClose={() => setImporting(null)}
+        onApply={(change) => {
+          useCvStore.getState().updateProfile(change);
+          setImporting(null);
+          pushToast("success", t("studio.cv.import.done"), { label: t("common.undo"), onClick: () => useCvStore.getState().undo() });
+        }}
+      />
     </div>
   );
 }

@@ -8395,12 +8395,14 @@
         "referenceRole": "Titel und Unternehmen",
         "referenceContact": "Telefon oder E-Mail",
         "heading": "Überschrift",
-        "body": "Text"
+        "body": "Text",
+        "studying": "Ich studiere hier noch"
       },
       "hints": {
         "summary": "Zwei oder drei Sätze darüber, wer Sie sind und was Sie mitbringen.",
         "bullets": "Beginnen Sie eine Zeile mit - für einen Aufzählungspunkt.",
-        "interests": "Mit Kommas trennen."
+        "interests": "Mit Kommas trennen.",
+        "pasteList": "Tipp: Füge eine durch Kommas oder Zeilen getrennte Liste ein, um alles auf einmal hinzuzufügen."
       },
       "add": {
         "experience": "Berufserfahrung hinzufügen",
@@ -8553,7 +8555,98 @@
         "certificate": "Zertifizierter Usability-Analyst",
         "issuer": "Human Factors International",
         "interests": "Fotografie, Radfahren, Keramik"
-      }
+      },
+      "checks": {
+        "email": "Das sieht nicht wie eine E-Mail-Adresse aus",
+        "url": "Das sieht nicht wie eine Webadresse aus",
+        "phone": "Das sieht nicht wie eine Telefonnummer aus"
+      },
+      "dates": {
+        "pick": "Monat und Jahr wählen",
+        "type": "Datum frei eingeben",
+        "month": "{{name}} – Monat",
+        "year": "{{name}} – Jahr",
+        "noMonth": "Monat (optional)"
+      },
+      "placeholders": {
+        "name": "z. B. Alex Morgan",
+        "headline": "z. B. Senior Product Designer",
+        "role": "z. B. Marketingleiterin",
+        "organisation": "z. B. Northwind GmbH",
+        "location": "z. B. Berlin, Deutschland",
+        "details": "- Team mit 5 Designern geleitet\n- Einarbeitungszeit um 30 % verkürzt",
+        "degree": "z. B. B.Sc. Informatik",
+        "school": "z. B. Universität Hamburg",
+        "educationDetails": "z. B. Abschluss mit Auszeichnung, Note 1,4",
+        "certificate": "z. B. Google UX Design Certificate",
+        "issuer": "z. B. Coursera",
+        "project": "z. B. Portfolio-Website",
+        "link": "z. B. github.com/du/projekt",
+        "projectDetails": "- Was du gebaut hast und das Ergebnis",
+        "referenceName": "z. B. Jana Schmidt",
+        "referenceRole": "z. B. Head of Design, Northwind",
+        "referenceContact": "z. B. jana@example.com",
+        "heading": "z. B. Ehrenamt",
+        "body": "Schreib, was du ergänzen möchtest",
+        "skill": "z. B. Figma",
+        "language": "z. B. Englisch",
+        "summary": "Wer du bist, was du gut kannst und was du suchst.",
+        "interests": "z. B. Fotografie, Wandern, Schach",
+        "email": "name@example.com",
+        "phone": "+49 30 1234567",
+        "website": "deinname.de",
+        "linkedin": "linkedin.com/in/deinname",
+        "github": "github.com/deinname",
+        "other": "Sonstiges"
+      },
+      "emptySection": "Noch nichts hier – mit + hinzufügen.",
+      "removed": "{{name}} entfernt",
+      "duplicate": "{{name}} duplizieren",
+      "drag": "{{name}} ziehen, um die Reihenfolge zu ändern",
+      "photoReady": "Foto hinzugefügt",
+      "crop": {
+        "open": "Zuschneiden",
+        "title": "Foto zuschneiden",
+        "area": "Zuschneidebereich",
+        "hint": "Ziehe das Foto oder verschiebe es mit den Pfeiltasten.",
+        "zoom": "Zoom",
+        "apply": "Übernehmen",
+        "reset": "Ganzes Foto zeigen"
+      },
+      "import": {
+        "fromPdf": "Aus PDF importieren…",
+        "pickPdf": "Lebenslauf- oder LinkedIn-PDF wählen",
+        "title": "Lebenslauf importieren",
+        "reading": "PDF wird gelesen…",
+        "password": "Passwort",
+        "wrongPassword": "Mit diesem Passwort ließ sich die PDF nicht öffnen.",
+        "unlock": "Öffnen",
+        "failed": "Der Lebenslauf konnte nicht gelesen werden",
+        "noText": "Diese PDF enthält keinen lesbaren Text – vielleicht ein Scan. Führe zuerst OCR aus und importiere sie dann erneut.",
+        "found": "Diese Abschnitte wurden gefunden. Wähle, was übernommen wird:",
+        "foundLinkedin": "Ein LinkedIn-Profil wurde erkannt. Wähle, was übernommen wird:",
+        "sections": "Gefundene Abschnitte",
+        "unsure": "Bitte prüfen",
+        "reviewHint": "Ersetzen tauscht die gewählten Abschnitte gegen die importierten; Hinzufügen behält deine Angaben und ergänzt den Rest. Beides lässt sich rückgängig machen.",
+        "nothing": "Keine Lebenslauf-Abschnitte gefunden",
+        "nothingHint": "Versuche eine andere PDF oder fülle das Formular von Hand aus.",
+        "add": "Zu meinem Lebenslauf hinzufügen",
+        "replace": "Ersetzen",
+        "done": "Lebenslauf importiert"
+      },
+      "file": {
+        "menu": "Lebenslauf-Datei",
+        "open": "Lebenslauf-Datei öffnen (.json)…",
+        "save": "Lebenslauf-Datei speichern (.json)…",
+        "filter": "vivePDF-Lebenslauf",
+        "unreadable": "Diese Datei ist keine Lebenslauf-Datei, die vivePDF lesen kann.",
+        "opened": "Lebenslauf-Datei geöffnet",
+        "saved": "Lebenslauf-Datei gespeichert"
+      },
+      "saveFailed": "Dein Lebenslauf konnte auf diesem Computer nicht gespeichert werden; lass die App geöffnet oder speichere eine Lebenslauf-Datei.",
+      "previewStale": "Die Vorschau ist veraltet, weil sie nicht neu gezeichnet werden konnte.",
+      "overflow": "Inhalt passte nicht – ausgelassene Einträge: {{count}}",
+      "pagesHint": "Die meisten Lebensläufe sind ein bis zwei Seiten lang."
     },
     "shortcuts": {
       "title": "Tastenkombinationen",

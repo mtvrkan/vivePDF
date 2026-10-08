@@ -8395,12 +8395,14 @@
         "referenceRole": "Cargo y empresa",
         "referenceContact": "Teléfono o correo",
         "heading": "Título",
-        "body": "Texto"
+        "body": "Texto",
+        "studying": "Todavía estudio aquí"
       },
       "hints": {
         "summary": "Dos o tres frases sobre quién es usted y qué puede aportar.",
         "bullets": "Empiece una línea con - para crear una viñeta.",
-        "interests": "Separe con comas."
+        "interests": "Separe con comas.",
+        "pasteList": "Consejo: pega una lista separada por comas o saltos de línea para añadirlo todo a la vez."
       },
       "add": {
         "experience": "Agregar experiencia",
@@ -8553,7 +8555,98 @@
         "certificate": "Analista de Usabilidad Certificada",
         "issuer": "Human Factors International",
         "interests": "Fotografía, ciclismo, cerámica"
-      }
+      },
+      "checks": {
+        "email": "Esto no parece una dirección de correo",
+        "url": "Esto no parece una dirección web",
+        "phone": "Esto no parece un número de teléfono"
+      },
+      "dates": {
+        "pick": "Elegir mes y año",
+        "type": "Escribir la fecha libremente",
+        "month": "Mes de {{name}}",
+        "year": "Año de {{name}}",
+        "noMonth": "Mes (opcional)"
+      },
+      "placeholders": {
+        "name": "p. ej. Alex Morgan",
+        "headline": "p. ej. Diseñador de producto sénior",
+        "role": "p. ej. Responsable de marketing",
+        "organisation": "p. ej. Northwind S.L.",
+        "location": "p. ej. Madrid, España",
+        "details": "- Dirigí un equipo de 5 diseñadores\n- Reduje el tiempo de incorporación un 30 %",
+        "degree": "p. ej. Grado en Informática",
+        "school": "p. ej. Universidad de Granada",
+        "educationDetails": "p. ej. Graduado con matrícula de honor",
+        "certificate": "p. ej. Certificado de Diseño UX de Google",
+        "issuer": "p. ej. Coursera",
+        "project": "p. ej. Sitio de portafolio",
+        "link": "p. ej. github.com/tu/proyecto",
+        "projectDetails": "- Qué construiste y el resultado",
+        "referenceName": "p. ej. Juana García",
+        "referenceRole": "p. ej. Directora de diseño, Northwind",
+        "referenceContact": "p. ej. juana@example.com",
+        "heading": "p. ej. Voluntariado",
+        "body": "Escribe lo que quieras añadir",
+        "skill": "p. ej. Figma",
+        "language": "p. ej. Inglés",
+        "summary": "Quién eres, en qué destacas y qué buscas.",
+        "interests": "p. ej. Fotografía, senderismo, ajedrez",
+        "email": "nombre@example.com",
+        "phone": "+34 612 34 56 78",
+        "website": "tunombre.es",
+        "linkedin": "linkedin.com/in/tunombre",
+        "github": "github.com/tunombre",
+        "other": "Otra cosa"
+      },
+      "emptySection": "Aún no hay nada: usa + para añadir.",
+      "removed": "{{name}} eliminado",
+      "duplicate": "Duplicar {{name}}",
+      "drag": "Arrastra {{name}} para reordenar",
+      "photoReady": "Foto añadida",
+      "crop": {
+        "open": "Recortar",
+        "title": "Recortar foto",
+        "area": "Área de recorte",
+        "hint": "Arrastra la foto o muévela con las flechas.",
+        "zoom": "Zoom",
+        "apply": "Aplicar",
+        "reset": "Mostrar la foto entera"
+      },
+      "import": {
+        "fromPdf": "Importar desde PDF…",
+        "pickPdf": "Elige un CV o un PDF de LinkedIn",
+        "title": "Importar un CV",
+        "reading": "Leyendo el PDF…",
+        "password": "Contraseña",
+        "wrongPassword": "Esa contraseña no abrió el PDF.",
+        "unlock": "Abrir",
+        "failed": "No se pudo leer el CV",
+        "noText": "Este PDF no tiene texto que leer; puede ser un escaneo. Aplica OCR primero y vuelve a importarlo.",
+        "found": "Se encontraron estas secciones. Elige qué traer:",
+        "foundLinkedin": "Se reconoció un perfil de LinkedIn. Elige qué traer:",
+        "sections": "Secciones encontradas",
+        "unsure": "Revísalo",
+        "reviewHint": "Reemplazar cambia las secciones elegidas por las importadas; Añadir conserva lo que tienes y añade el resto. Ambas se pueden deshacer.",
+        "nothing": "No se encontraron secciones de CV",
+        "nothingHint": "Prueba con otro PDF o rellena el formulario a mano.",
+        "add": "Añadir a mi CV",
+        "replace": "Reemplazar",
+        "done": "CV importado"
+      },
+      "file": {
+        "menu": "Archivo de CV",
+        "open": "Abrir archivo de CV (.json)…",
+        "save": "Guardar archivo de CV (.json)…",
+        "filter": "CV de vivePDF",
+        "unreadable": "Ese archivo no es un archivo de CV que vivePDF pueda leer.",
+        "opened": "Archivo de CV abierto",
+        "saved": "Archivo de CV guardado"
+      },
+      "saveFailed": "Tu CV no se pudo guardar en este equipo; deja la aplicación abierta o guarda un archivo de CV.",
+      "previewStale": "La vista previa no está al día porque no se pudo volver a dibujar.",
+      "overflow": "El contenido no cabe: elementos omitidos: {{count}}",
+      "pagesHint": "La mayoría de los CV ocupan una o dos páginas."
     },
     "shortcuts": {
       "title": "Atajos de teclado",

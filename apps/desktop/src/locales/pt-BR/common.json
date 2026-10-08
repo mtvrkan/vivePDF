@@ -8395,12 +8395,14 @@
         "referenceRole": "Cargo e empresa",
         "referenceContact": "Telefone ou e-mail",
         "heading": "Título",
-        "body": "Texto"
+        "body": "Texto",
+        "studying": "Ainda estudo aqui"
       },
       "hints": {
         "summary": "Duas ou três frases sobre quem você é e o que você oferece.",
         "bullets": "Comece uma linha com - para criar um marcador.",
-        "interests": "Separe com vírgulas."
+        "interests": "Separe com vírgulas.",
+        "pasteList": "Dica: cole uma lista separada por vírgulas ou quebras de linha para adicionar tudo de uma vez."
       },
       "add": {
         "experience": "Adicionar experiência",
@@ -8553,7 +8555,98 @@
         "certificate": "Analista de Usabilidade Certificada",
         "issuer": "Human Factors International",
         "interests": "Fotografia, ciclismo, cerâmica"
-      }
+      },
+      "checks": {
+        "email": "Isso não parece um endereço de e-mail",
+        "url": "Isso não parece um endereço da web",
+        "phone": "Isso não parece um número de telefone"
+      },
+      "dates": {
+        "pick": "Escolher mês e ano",
+        "type": "Digitar a data livremente",
+        "month": "Mês de {{name}}",
+        "year": "Ano de {{name}}",
+        "noMonth": "Mês (opcional)"
+      },
+      "placeholders": {
+        "name": "ex.: Alex Morgan",
+        "headline": "ex.: Designer de produto sênior",
+        "role": "ex.: Gerente de marketing",
+        "organisation": "ex.: Northwind Ltda.",
+        "location": "ex.: São Paulo, Brasil",
+        "details": "- Liderei uma equipe de 5 designers\n- Reduzi o tempo de integração em 30%",
+        "degree": "ex.: Bacharelado em Ciência da Computação",
+        "school": "ex.: Universidade de São Paulo",
+        "educationDetails": "ex.: Formado com honras",
+        "certificate": "ex.: Certificado Google UX Design",
+        "issuer": "ex.: Coursera",
+        "project": "ex.: Site de portfólio",
+        "link": "ex.: github.com/voce/projeto",
+        "projectDetails": "- O que você construiu e o resultado",
+        "referenceName": "ex.: Joana Souza",
+        "referenceRole": "ex.: Diretora de design, Northwind",
+        "referenceContact": "ex.: joana@example.com",
+        "heading": "ex.: Voluntariado",
+        "body": "Escreva o que quiser acrescentar",
+        "skill": "ex.: Figma",
+        "language": "ex.: Inglês",
+        "summary": "Quem você é, no que é bom e o que procura.",
+        "interests": "ex.: Fotografia, trilhas, xadrez",
+        "email": "nome@example.com",
+        "phone": "+55 11 91234-5678",
+        "website": "seunome.com.br",
+        "linkedin": "linkedin.com/in/seunome",
+        "github": "github.com/seunome",
+        "other": "Outra coisa"
+      },
+      "emptySection": "Nada aqui ainda — use + para adicionar.",
+      "removed": "{{name}} removido",
+      "duplicate": "Duplicar {{name}}",
+      "drag": "Arraste {{name}} para reordenar",
+      "photoReady": "Foto adicionada",
+      "crop": {
+        "open": "Recortar",
+        "title": "Recortar foto",
+        "area": "Área de recorte",
+        "hint": "Arraste a foto ou mova-a com as setas.",
+        "zoom": "Zoom",
+        "apply": "Aplicar",
+        "reset": "Mostrar a foto inteira"
+      },
+      "import": {
+        "fromPdf": "Importar de PDF…",
+        "pickPdf": "Escolha um currículo ou PDF do LinkedIn",
+        "title": "Importar um currículo",
+        "reading": "Lendo o PDF…",
+        "password": "Senha",
+        "wrongPassword": "Essa senha não abriu o PDF.",
+        "unlock": "Abrir",
+        "failed": "Não foi possível ler o currículo",
+        "noText": "Este PDF não tem texto para ler — pode ser uma digitalização. Aplique OCR primeiro e importe de novo.",
+        "found": "Estas seções foram encontradas. Escolha o que trazer:",
+        "foundLinkedin": "Um perfil do LinkedIn foi reconhecido. Escolha o que trazer:",
+        "sections": "Seções encontradas",
+        "unsure": "Confira",
+        "reviewHint": "Substituir troca as seções escolhidas pelas importadas; Adicionar mantém o que você tem e acrescenta o resto. Ambos podem ser desfeitos.",
+        "nothing": "Nenhuma seção de currículo encontrada",
+        "nothingHint": "Tente outro PDF ou preencha o formulário à mão.",
+        "add": "Adicionar ao meu currículo",
+        "replace": "Substituir",
+        "done": "Currículo importado"
+      },
+      "file": {
+        "menu": "Arquivo de currículo",
+        "open": "Abrir arquivo de currículo (.json)…",
+        "save": "Salvar arquivo de currículo (.json)…",
+        "filter": "Currículo vivePDF",
+        "unreadable": "Esse arquivo não é um arquivo de currículo que o vivePDF consiga ler.",
+        "opened": "Arquivo de currículo aberto",
+        "saved": "Arquivo de currículo salvo"
+      },
+      "saveFailed": "Não foi possível salvar seu currículo neste computador; mantenha o app aberto ou salve um arquivo de currículo.",
+      "previewStale": "A prévia está desatualizada porque não pôde ser redesenhada.",
+      "overflow": "O conteúdo não coube — itens deixados de fora: {{count}}",
+      "pagesHint": "A maioria dos currículos tem uma ou duas páginas."
     },
     "shortcuts": {
       "title": "Atalhos de teclado",

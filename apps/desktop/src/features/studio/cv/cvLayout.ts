@@ -53,11 +53,15 @@ export type CvSpec = {
 
 export type CvInput = { profile: CvProfile; theme: CvTheme; labels: CvLabels; measure: CvMeasure; emptyPhoto: boolean; name: string };
 
-type Block = { height: number; draw: (x: number, y: number, width: number) => StudioElement[] };
+type Block = { height: number; draw: (x: number, y: number, width: number) => StudioElement[]; split?: (available: number) => [Block, Block] | null };
+
+export type CvOverflow = { items: number; sections: CvSectionKey[] };
+export type CvComposed = { design: StudioDesign; overflow: CvOverflow };
 
 export type TextStyle = { font?: string; size: number; color: string; bold?: boolean; italic?: boolean; upper?: boolean; spacing?: number; lineHeight?: number; align?: StudioTextAlign };
 
-const MAX_CV_PAGES = 10;
+export const MAX_CV_PAGES = 20;
+const MIN_SPLIT_SPACE = 48;
 const DENSITY: Record<CvDensity, { type: number; gap: number }> = { compact: { type: 0.92, gap: 0.72 }, normal: { type: 1, gap: 1 }, roomy: { type: 1.06, gap: 1.3 } };
 const BULLET = /^\s*[-*•–]\s+/;
 const DATE_WIDTH = 92;
@@ -135,7 +139,10 @@ export class CvContext {
     const shape: CvPhotoShape = this.theme.photoShape;
     if (!this.hasPhoto()) return [];
     const mask = shape === "circle" ? "circle" : shape === "rounded" ? "rounded" : "none";
-    if (this.profile.photo) return [{ ...createImage(this.profile.photo, x, y, side, side), mask, cornerRadius: mask === "rounded" ? side * 0.12 : 0 }];
+    if (this.profile.photo) {
+      const image = createImage(this.profile.photo, x, y, side, side);
+      return [{ ...image, crop: this.profile.photoCrop ?? image.crop, mask, cornerRadius: mask === "rounded" ? side * 0.12 : 0 }];
+    }
     return this.emptyPhoto ? photoSlot(x, y, side, side, backing, mask) : [];
   }
 
@@ -263,11 +270,49 @@ function headlineRow(context: CvContext, tone: Tone, width: number, title: strin
 
 type EntryParts = { title: string; subtitle: string; date: string; body: string };
 
+function bodyLines(body: string): string[] {
+  return body.split("\n");
+}
+
+function trimmedLines(lines: string[]): string[] {
+  let start = 0;
+  while (start < lines.length && !lines[start].trim()) start += 1;
+  return lines.slice(start);
+}
+
+function splittable(build: (body: string, first: boolean) => Block | null, lines: string[], first: boolean): Block | null {
+  const whole = build(lines.join("\n"), first);
+  if (!whole || lines.length < 2) return whole;
+  return {
+    ...whole,
+    split: (available) => {
+      for (let count = lines.length - 1; count >= 1; count -= 1) {
+        if (!lines[count - 1].trim()) continue;
+        const head = build(lines.slice(0, count).join("\n"), first);
+        if (!head || head.height > available) continue;
+        const rest = splittable(build, trimmedLines(lines.slice(count)), false);
+        return rest ? [head, rest] : null;
+      }
+      return null;
+    },
+  };
+}
+
 function entryBlock(context: CvContext, tone: Tone, style: EntryStyle, width: number, parts: EntryParts): Block | null {
+  const lines = bodyLines(parts.body);
+  return splittable((body, first) => entryPart(context, tone, style, width, first ? { ...parts, body } : { title: "", subtitle: "", date: "", body }, first), lines, true);
+}
+
+function entryPart(context: CvContext, tone: Tone, style: EntryStyle, width: number, parts: EntryParts, first: boolean): Block | null {
   const colors = context.colors(tone);
   const bodyStyle: TextStyle = { size: context.size(9), color: colors.muted, lineHeight: 1.45 };
   const subtitleStyle: TextStyle = { size: context.size(9), color: colors.accent, italic: style !== "dateLeft", bold: style === "dateLeft" };
   const titleSize = context.size(10.5);
+  if (style === "dateLeft" && width >= 260 && !first) {
+    const inner = width - DATE_COLUMN;
+    const right = textBlock(context, inner, parts.body, bodyStyle);
+    return right ? { height: right.height, draw: (x, y, columnWidth) => right.draw(x + DATE_COLUMN, y, columnWidth - DATE_COLUMN) } : null;
+  }
   if (style === "dateLeft" && width >= 260 && parts.date.trim()) {
     const inner = width - DATE_COLUMN;
     const right = stack([textBlock(context, inner, parts.title, { font: context.fonts.heading, size: titleSize, bold: true, color: colors.text }), textBlock(context, inner, parts.subtitle, subtitleStyle), textBlock(context, inner, parts.body, bodyStyle)], 2);
@@ -284,8 +329,8 @@ function entryBlock(context: CvContext, tone: Tone, style: EntryStyle, width: nu
   return {
     height: content.height,
     draw: (x, y, columnWidth) => [
-      box("rect", x + 3.4, y + 9, 1.2, Math.max(0, content.height - 4), solid(colors.soft)),
-      box("ellipse", x, y + 2.5, 8, 8, solid(colors.accent)),
+      box("rect", x + 3.4, first ? y + 9 : y, 1.2, Math.max(0, first ? content.height - 4 : content.height + 5), solid(colors.soft)),
+      ...(first ? [box("ellipse", x, y + 2.5, 8, 8, solid(colors.accent))] : []),
       ...content.draw(x + TIMELINE_GUTTER, y, columnWidth - TIMELINE_GUTTER),
     ],
   };
@@ -386,7 +431,7 @@ function sectionsFor(context: CvContext, spec: CvSpec, tone: Tone, width: number
         profile.experience.map((item) => entryBlock(context, tone, entry, width, { title: item.role, subtitle: join([item.organisation, item.location]), date: period(item.start, item.end, item.current, labels.present), body: details(item.details) })),
       );
     else if (key === "education")
-      add(key, profile.education.map((item) => entryBlock(context, tone, entry, width, { title: item.degree, subtitle: join([item.school, item.location]), date: period(item.start, item.end, false, labels.present), body: details(item.details) })));
+      add(key, profile.education.map((item) => entryBlock(context, tone, entry, width, { title: item.degree, subtitle: join([item.school, item.location]), date: period(item.start, item.end, item.current, labels.present), body: details(item.details) })));
     else if (key === "skills") {
       const skills = profile.skills.filter((item) => item.name.trim());
       if (style === "chips") add(key, [chipsBlock(context, tone, width, skills.map((item) => item.name))]);
@@ -464,17 +509,34 @@ class Flow {
 
   place(tone: Tone, block: Block, keep = 0): boolean {
     const cursor = this.cursor[tone];
-    let column = this.column(tone, cursor.page);
+    const column = this.column(tone, cursor.page);
     if (!column) return false;
-    if (cursor.y + block.height + keep > column.bottom && cursor.y > column.top + 1) {
-      if (cursor.page + 1 >= MAX_CV_PAGES) return false;
-      cursor.page += 1;
-      column = this.column(tone, cursor.page);
-      if (!column) return false;
-      cursor.y = column.top;
+    if (cursor.y + block.height + keep > column.bottom) {
+      const available = column.bottom - cursor.y;
+      const parts = available >= MIN_SPLIT_SPACE || cursor.y <= column.top + 1 ? block.split?.(available) : null;
+      if (parts) {
+        this.pages[cursor.page].push(...parts[0].draw(column.x, cursor.y, column.width));
+        cursor.y += parts[0].height;
+        if (!this.nextPage(tone)) return false;
+        return this.place(tone, parts[1], keep);
+      }
+      if (cursor.y > column.top + 1) {
+        if (!this.nextPage(tone)) return false;
+        return this.place(tone, block, keep);
+      }
     }
     this.pages[cursor.page].push(...block.draw(column.x, cursor.y, column.width));
     cursor.y += block.height;
+    return true;
+  }
+
+  private nextPage(tone: Tone): boolean {
+    const cursor = this.cursor[tone];
+    if (cursor.page + 1 >= MAX_CV_PAGES) return false;
+    const column = this.column(tone, cursor.page + 1);
+    if (!column) return false;
+    cursor.page += 1;
+    cursor.y = column.top;
     return true;
   }
 
@@ -487,28 +549,57 @@ class Flow {
   }
 }
 
-export function composeCv(spec: CvSpec, input: CvInput): StudioDesign {
+function keepWithTitle(block: Block | undefined, column: number): number {
+  if (!block) return 0;
+  return Math.min(block.height, column / 3);
+}
+
+export function composeCvReport(spec: CvSpec, input: CvInput): CvComposed {
   const context = new CvContext(spec, input);
   const flow = new Flow(context, spec);
+  const overflow: CvOverflow = { items: 0, sections: [] };
+  const drop = (section: Section, count: number) => {
+    if (count <= 0) return;
+    overflow.items += count;
+    if (section.key !== "contact" && !overflow.sections.includes(section.key)) overflow.sections.push(section.key);
+  };
   for (const tone of ["main", "side"] as const) {
     const width = flow.width(tone);
     if (width <= 0) continue;
     const titleStyle = tone === "side" ? (spec.sideTitle ?? spec.title) : spec.title;
     const sectionGap = context.space(tone === "side" ? 16 : 18);
-    for (const section of sectionsFor(context, spec, tone, width)) {
+    const column = flow.column(tone, 0);
+    const columnHeight = column ? column.bottom - column.top : 0;
+    const sections = sectionsFor(context, spec, tone, width);
+    for (const [sectionIndex, section] of sections.entries()) {
       const title = titleBlock(context, tone, titleStyle, section.title, width);
-      const first = section.items[0];
-      if (!flow.place(tone, title, (first?.height ?? 0) + context.space(8))) break;
+      if (!flow.place(tone, title, keepWithTitle(section.items[0], columnHeight) + context.space(8))) {
+        for (const rest of sections.slice(sectionIndex)) drop(rest, rest.items.length);
+        break;
+      }
       flow.advance(tone, context.space(8));
+      let placed = section.items.length;
       for (const [index, item] of section.items.entries()) {
-        if (!flow.place(tone, item)) break;
+        if (!flow.place(tone, item)) {
+          placed = index;
+          break;
+        }
         if (index < section.items.length - 1) flow.advance(tone, section.gap);
+      }
+      if (placed < section.items.length) {
+        drop(section, section.items.length - placed);
+        for (const rest of sections.slice(sectionIndex + 1)) drop(rest, rest.items.length);
+        break;
       }
       flow.advance(tone, sectionGap);
     }
   }
   const pages = flow.pages.map((elements) => pageOf({ width: context.width, height: context.height }, solid(context.palette.page), elements));
-  return design(input.name, [context.palette.accent, context.palette.text], pages);
+  return { design: design(input.name, [context.palette.accent, context.palette.text], pages), overflow };
+}
+
+export function composeCv(spec: CvSpec, input: CvInput): StudioDesign {
+  return composeCvReport(spec, input).design;
 }
 
 export function textLine(context: CvContext, x: number, y: number, width: number, value: string, style: TextStyle): { element: StudioTextElement | null; bottom: number } {

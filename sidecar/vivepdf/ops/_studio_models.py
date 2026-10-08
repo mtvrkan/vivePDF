@@ -1,6 +1,6 @@
 from typing import Annotated, Any, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from vivepdf.ops._studio_graphics import StudioGraphic
 from vivepdf.rpc.protocol import RpcModel
@@ -305,7 +305,14 @@ class StudioImageInfoResult(RpcModel):
 
 
 class StudioSaveImageParams(RpcModel):
-    data: str = Field(min_length=4, max_length=MAX_IMAGE_DATA)
+    data: str | None = Field(default=None, min_length=4, max_length=MAX_IMAGE_DATA)
+    path: FilePath | None = None
+
+    @model_validator(mode="after")
+    def _one_source(self) -> "StudioSaveImageParams":
+        if (self.data is None) == (self.path is None):
+            raise ValueError("give either data or path")
+        return self
 
 
 class StudioSaveImageResult(RpcModel):

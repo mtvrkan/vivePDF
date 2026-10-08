@@ -258,6 +258,7 @@ import type {
   StampParams,
   StampPreviewParams,
   StampResult,
+  StudioCvImportResult,
   TablesResult,
   TextFileResult,
   TextParams,
@@ -660,8 +661,11 @@ export const studioRender = (params: StudioRenderParams, options?: RpcCallOption
 export const studioImageInfo = (params: { path: string; maxSide?: number }, options?: RpcCallOptions) =>
   rpc<StudioImageInfo>("studio.image_info", params, options);
 
-export const studioSaveImage = (params: { data: string }, options?: RpcCallOptions) =>
+export const studioSaveImage = (params: { data: string } | { path: string }, options?: RpcCallOptions) =>
   rpc<StudioSavedImage>("studio.save_image", params, options);
+
+export const studioCvImportPdf = (params: { path: string; password?: string | null }, options?: RpcCallOptions) =>
+  rpc<StudioCvImportResult>("studio.cv_import_pdf", params, options);
 
 export const studioImportSvg = (params: { path: string }, options?: RpcCallOptions) =>
   rpc<StudioImportedSvg>("studio.import_svg", params, options);

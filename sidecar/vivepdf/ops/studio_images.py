@@ -9,7 +9,11 @@ from PIL import Image, ImageOps
 
 from vivepdf.ops._appdata import user_data_dir
 from vivepdf.ops._output import write_atomically
-from vivepdf.ops._studio_models import StudioSaveImageParams, StudioSaveImageResult
+from vivepdf.ops._studio_models import (
+    MAX_IMAGE_DATA,
+    StudioSaveImageParams,
+    StudioSaveImageResult,
+)
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.registry import op
@@ -24,6 +28,7 @@ EXTENSIONS = {
     "TIFF": "tif",
 }
 NAME_LENGTH = 32
+MAX_IMAGE_BYTES = MAX_IMAGE_DATA * 3 // 4
 
 
 def images_folder() -> Path:
@@ -62,9 +67,23 @@ def _inspected(payload: bytes) -> tuple[str, int, int]:
     return extension, width, height
 
 
+def _file_bytes(path: str) -> bytes:
+    source = Path(path)
+    if not source.is_file():
+        raise OpError(ErrorCode.FILE_NOT_FOUND, f"file not found: {source.name}", {"path": path})
+    try:
+        if source.stat().st_size > MAX_IMAGE_BYTES:
+            raise _unreadable("pictureTooLarge")
+        return source.read_bytes()
+    except PermissionError as error:
+        raise OpError(ErrorCode.PERMISSION_DENIED, f"cannot read: {source.name}") from error
+    except OSError as error:
+        raise _unreadable() from error
+
+
 @op("studio.save_image", StudioSaveImageParams)
 def save_image(params: StudioSaveImageParams, _progress: Progress) -> StudioSaveImageResult:
-    payload = _decoded(params.data)
+    payload = _file_bytes(params.path) if params.path is not None else _decoded(params.data or "")
     extension, width, height = _inspected(payload)
     digest = hashlib.sha256(payload).hexdigest()[:NAME_LENGTH]
     target = images_folder() / f"{digest}.{extension}"
