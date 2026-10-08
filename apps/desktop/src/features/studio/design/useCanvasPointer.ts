@@ -72,6 +72,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
         const state = useStudioStore.getState();
         if (current.kind === "marquee") state.select(current.base);
         else if (current.kind !== "pan") state.preview(() => current.before);
+        state.setInteracting(false);
         if (current.kind === "move" && current.ids !== current.original) state.select(current.original);
         return;
       }
@@ -253,6 +254,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
       state.select([...new Set([...current.base, ...hits])]);
       return;
     }
+    if (current.kind !== "move") state.setInteracting(true);
     if (current.kind === "guide") {
       const raw = current.axis === "x" ? point.x : point.y;
       const position = snapping(event) ? snapPosition(current.snap, current.axis, raw, tolerance) : raw;
@@ -270,6 +272,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
       if (!current.moved && Math.hypot(dx, dy) * zoom < DRAG_THRESHOLD) return;
       if (!current.moved) {
         current.moved = true;
+        state.setInteracting(true);
         if (current.duplicate) startDuplicate(current);
       }
       if (event.shiftKey) {
@@ -355,6 +358,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
       store().preview(() => (current.created ? current.before : updatePage(current.before, current.pageId, (item) => removeGuide(item, current.index))));
     }
     store().settle(current.before);
+    store().setInteracting(false);
   };
 
   const onRulerPointerDown: RulerHandlers["onPointerDown"] = (axis, event) => {

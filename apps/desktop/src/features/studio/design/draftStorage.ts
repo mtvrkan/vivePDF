@@ -9,11 +9,13 @@ import { normalizeDesign } from "../model/design";
 export const LEGACY_DRAFT_KEY = "vivepdf.studioDraft";
 export const DRAFT_DELAY_MS = 600;
 export const DRAFT_MAX_BYTES = 7 * 1024 * 1024;
+const IDLE_TIMEOUT_MS = 1500;
 
 export type StudioDraft = { design: StudioDesign; filePath: string | null };
 
 let latest: StudioDraft | null = null;
 let timer: ReturnType<typeof setTimeout> | null = null;
+let idle: number | null = null;
 let chain: Promise<void> = Promise.resolve();
 let reported: string | null = null;
 
@@ -58,18 +60,34 @@ function enqueue(draft: StudioDraft): Promise<void> {
   return chain;
 }
 
+function cancelIdle() {
+  if (idle !== null) cancelIdleCallback(idle);
+  idle = null;
+}
+
+function saveWhenIdle() {
+  const save = () => {
+    idle = null;
+    if (latest) void enqueue(latest);
+  };
+  if (typeof requestIdleCallback !== "function") return save();
+  cancelIdle();
+  idle = requestIdleCallback(save, { timeout: IDLE_TIMEOUT_MS });
+}
+
 export function scheduleDraft(design: StudioDesign, filePath: string | null): void {
   latest = { design, filePath };
   if (timer) clearTimeout(timer);
   timer = setTimeout(() => {
     timer = null;
-    if (latest) void enqueue(latest);
+    saveWhenIdle();
   }, DRAFT_DELAY_MS);
 }
 
 export function flushDraft(): Promise<void> {
   if (timer) clearTimeout(timer);
   timer = null;
+  if (typeof cancelIdleCallback === "function") cancelIdle();
   return latest ? enqueue(latest) : chain;
 }
 

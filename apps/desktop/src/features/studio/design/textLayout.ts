@@ -1,6 +1,6 @@
 import { useLayoutEffect, useState, type RefObject } from "react";
 import type { StudioRenderBand, StudioTextElement } from "@/types/studio";
-import { updateElement } from "../model/edit";
+import { onlyPositionDiffers, updateElement } from "../model/edit";
 import { buildTextNode, fitTextBox, fitTextSize, measureLayout } from "./measure";
 import { useStudioStore } from "./studioStore";
 
@@ -55,10 +55,12 @@ export function useAutoFit(element: StudioTextElement, language: string, editing
     if (editing || (element.autoSize !== "height" && element.autoSize !== "width")) return;
     const state = useStudioStore.getState();
     if (state.editingId === element.id || !state.design) return;
-    const page = state.design.pages.find((item) => item.elements.includes(element));
-    if (!page) return;
-    const patch = fitTextBox(element, language);
-    if (!patch) return;
-    state.preview((design) => ({ ...design, pages: design.pages.map((item) => (item.id === page.id ? updateElement<StudioTextElement>(item, element.id, patch) : item)) }));
+    for (const page of state.design.pages) {
+      const live = page.elements.find((other) => onlyPositionDiffers(other, element));
+      if (!live) continue;
+      const patch = fitTextBox(live as StudioTextElement, language);
+      if (patch) state.preview((design) => ({ ...design, pages: design.pages.map((item) => (item.id === page.id ? updateElement<StudioTextElement>(item, element.id, patch) : item)) }));
+      return;
+    }
   }, [element, language, editing, signature]);
 }

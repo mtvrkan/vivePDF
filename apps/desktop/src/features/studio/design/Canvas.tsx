@@ -102,7 +102,7 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
 
   return (
     <div className="relative min-h-0 flex-1">
-      {showRulers ? <CanvasRulers viewportRef={viewportRef} pageRef={pageRef} zoom={zoom} extent={extent} language={language} handlers={rulerHandlers} /> : null}
+      {showRulers ? <CanvasRulers viewportRef={viewportRef} pageRef={pageRef} zoom={zoom} pageWidth={page.width} pageHeight={page.height} extent={extent} language={language} handlers={rulerHandlers} /> : null}
       <div
         ref={viewportRef}
         data-testid="studio-viewport"

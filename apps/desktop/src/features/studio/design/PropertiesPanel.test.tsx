@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createDesign, createShape, DEFAULT_DROP_SHADOW } from "../model/design";
 import { PropertiesPanel } from "./PropertiesPanel";
@@ -23,6 +23,21 @@ describe("properties of several elements", () => {
   afterEach(() => {
     cleanup();
     useStudioStore.getState().close();
+  });
+
+  it("follows a drag in the position fields and refreshes the other sections on release", () => {
+    const [first] = shapes();
+    useStudioStore.getState().select([first.id]);
+    render(<PropertiesPanel />);
+    const change = () => useStudioStore.getState().preview((design) => ({ ...design, pages: design.pages.map((page) => ({ ...page, elements: page.elements.map((element) => (element.id === first.id ? { ...element, x: element.x + 72, fill: { type: "solid" as const, color: "#0000ff" } } : element)) })) }));
+
+    act(() => useStudioStore.getState().setInteracting(true));
+    act(change);
+
+    expect(screen.getByRole("button", { name: "Colour: #ff0000" })).toBeTruthy();
+    expect((screen.getByRole("textbox", { name: /^X/ }) as HTMLInputElement).value).toBe("25.4");
+    act(() => useStudioStore.getState().setInteracting(false));
+    expect(screen.getByRole("button", { name: "Colour: #0000ff" })).toBeTruthy();
   });
 
   it("marks values that differ as mixed and keeps shared ones", () => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 import { Image as ImageIcon, Layers, LayoutTemplate, QrCode, Shapes, Table2, Type, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
@@ -41,7 +41,7 @@ function ornamentPreview(item: Ornament) {
   return art;
 }
 
-function OrnamentPreview({ item }: { item: Ornament }) {
+const OrnamentPreview = memo(function OrnamentPreview({ item }: { item: Ornament }) {
   const art = ornamentPreview(item);
   const wide = art.viewWidth >= art.viewHeight;
   return (
@@ -49,9 +49,9 @@ function OrnamentPreview({ item }: { item: Ornament }) {
       <PathsSvg paths={art.paths.map((path) => ({ d: path.d, fill: renderFill(path.fill, art.viewWidth, art.viewHeight), stroke: renderStroke(path.stroke), evenOdd: path.evenOdd, opacity: path.opacity }))} width={art.viewWidth} height={art.viewHeight} />
     </span>
   );
-}
+});
 
-function ShapePreview({ preset }: { preset: ShapePreset }) {
+const ShapePreview = memo(function ShapePreview({ preset }: { preset: ShapePreset }) {
   const line = isLineShape(preset.shape);
   const element = presetShape(preset, 0, 0, 40, line ? 12 : 40, { fill: { type: "solid", color: "currentColor" } });
   const paths = shapePaths(line ? { ...element, stroke: { color: "currentColor", width: 3, dash: "solid" } } : element);
@@ -60,21 +60,29 @@ function ShapePreview({ preset }: { preset: ShapePreset }) {
       <PathsSvg paths={paths} width={40} height={element.height} />
     </span>
   );
-}
+});
 
 function ElementsTab() {
   const { t } = useTranslation();
   const toast = useToastStore((state) => state.push);
-  const page = useStudioStore((state) => currentPage(state));
-  if (!page) return null;
+  const hasPage = useStudioStore((state) => Boolean(currentPage(state)));
+  if (!hasPage) return null;
+  const livePage = () => currentPage(useStudioStore.getState());
 
-  const addText = (preset: TextPreset) => insertText(page, preset, t(`studio.elements.${preset.key}Text`));
+  const addText = (preset: TextPreset) => {
+    const page = livePage();
+    if (page) insertText(page, preset, t(`studio.elements.${preset.key}Text`));
+  };
 
-  const addShape = (preset: ShapePreset) => insertShape(page, preset);
+  const addShape = (preset: ShapePreset) => {
+    const page = livePage();
+    if (page) insertShape(page, preset);
+  };
 
   const addImage = async () => {
     const src = await pickImage(t("studio.elements.image"), { drawings: true });
-    if (!src) return;
+    const page = livePage();
+    if (!src || !page) return;
     if (src.toLowerCase().endsWith(".svg")) {
       try {
         const drawing = await studioImportSvg({ path: src });
@@ -96,6 +104,8 @@ function ElementsTab() {
   };
 
   const addOrnament = (item: Ornament) => {
+    const page = livePage();
+    if (!page) return;
     const colours = paletteColours(useStudioStore.getState().design?.palette);
     const name = t(`studio.ornaments.items.${item.id}`);
     if (item.fitsPage) {
@@ -110,6 +120,8 @@ function ElementsTab() {
   };
 
   const addQr = () => {
+    const page = livePage();
+    if (!page) return;
     const side = Math.min(page.width, page.height) * 0.2;
     const at = centred(page, side, side);
     insert(createQr("https://", at.x, at.y, side));
@@ -144,7 +156,7 @@ function ElementsTab() {
         </div>
       </section>
       <IconsSection />
-      <GraphicsElements page={page} />
+      <GraphicsElements />
       <section className="space-y-3">
         <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("studio.elements.ornaments")}</h3>
         {ORNAMENT_CATEGORIES.map((category) => (

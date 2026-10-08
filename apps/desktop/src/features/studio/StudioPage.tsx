@@ -269,7 +269,7 @@ function StudioEditor({ language }: { language: string }) {
 }
 
 export function StudioPage() {
-  const design = useStudioStore((state) => state.design);
+  const editing = useStudioStore((state) => state.design !== null);
   const document = useDocumentStore((state) => state.document);
   const open = useStudioStore((state) => state.open);
   const locale = useUiStore((state) => state.locale);
@@ -279,7 +279,6 @@ export function StudioPage() {
   const navigate = useNavigate();
   const { openDesign } = useOpenDesign();
   const handledLocation = useRef<string | null>(null);
-  const editing = design !== null;
   useEffect(() => {
     const designPath = (location.state as Partial<StudioRouteState> | null)?.designPath;
     if (typeof designPath !== "string" || handledLocation.current === location.key) return;
@@ -306,7 +305,7 @@ export function StudioPage() {
         <Suspense fallback={<div className="h-full animate-pulse bg-muted/40" aria-busy />}>
           <CvStudio />
         </Suspense>
-      ) : design ? (
+      ) : editing ? (
         <StudioEditor language={locale} />
       ) : document ? (
         <Suspense fallback={<div className="h-full animate-pulse bg-muted/40" aria-busy />}>

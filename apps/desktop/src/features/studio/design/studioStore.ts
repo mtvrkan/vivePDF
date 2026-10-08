@@ -27,12 +27,14 @@ type StudioState = {
   zoom: number;
   fit: boolean;
   clipboard: StudioElement[] | null;
+  interacting: boolean;
   open: (design: StudioDesign, filePath?: string | null) => void;
   close: () => void;
   apply: (change: (design: StudioDesign) => StudioDesign, options?: ChangeOptions) => void;
   applyToPage: (change: (page: StudioPage) => StudioPage, options?: ChangeOptions) => void;
   preview: (change: (design: StudioDesign) => StudioDesign) => void;
   settle: (before: StudioDesign) => void;
+  setInteracting: (interacting: boolean) => void;
   undo: () => void;
   redo: () => void;
   select: (ids: string[]) => void;
@@ -125,15 +127,16 @@ export const useStudioStore = create<StudioState>((set, get) => {
     zoom: 1,
     fit: true,
     clipboard: null,
+    interacting: false,
     open: (design, filePath = null) => {
-      set({ design, filePath, dirty: false, pageId: design.pages[0].id, selection: [], groupScope: null, editingId: null, past: [], future: [], mergeKey: null, fit: true });
+      set({ design, filePath, dirty: false, pageId: design.pages[0].id, selection: [], groupScope: null, editingId: null, past: [], future: [], mergeKey: null, fit: true, interacting: false });
       scheduleDraft(design, filePath);
     },
     close: () => {
       const state = get();
       if (state.design) scheduleDraft(state.design, state.filePath);
       void flushDraft();
-      set({ design: null, filePath: null, dirty: false, pageId: null, selection: [], groupScope: null, editingId: null, past: [], future: [] });
+      set({ design: null, filePath: null, dirty: false, pageId: null, selection: [], groupScope: null, editingId: null, past: [], future: [], interacting: false });
     },
     apply: (change, options) => {
       const design = get().design;
@@ -155,6 +158,9 @@ export const useStudioStore = create<StudioState>((set, get) => {
       if (!state.design || state.design === before) return;
       set({ past: [...state.past, before].slice(-HISTORY_LIMIT), future: [], dirty: true, mergeKey: null });
       scheduleDraft(state.design, state.filePath);
+    },
+    setInteracting: (interacting) => {
+      if (get().interacting !== interacting) set({ interacting });
     },
     undo: () => {
       const state = get();

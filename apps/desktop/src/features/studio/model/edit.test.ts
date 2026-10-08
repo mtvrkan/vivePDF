@@ -9,6 +9,7 @@ import {
   elementBounds,
   expandToGroups,
   moveElements,
+  onlyPositionDiffers,
   removeElements,
   selectionBounds,
   withoutGroupOf,
@@ -273,5 +274,28 @@ describe("page size changes", () => {
     expect(resized.pages.map((page) => [page.width, page.height])).toEqual([[300, 300], [300, 300]]);
     expect(resized.pages[1]).toBe(design.pages[1]);
     expect(resizeAllPages(resized, 300, 300, "scale")).toBe(resized);
+  });
+});
+
+describe("element content identity", () => {
+  it("treats a moved copy as the same content", () => {
+    const text = createText(10, 10, 100, 40, "Hi");
+    const page = moveElements({ ...createPage(300, 200), elements: [text] }, [text.id], 25, -5);
+
+    expect(onlyPositionDiffers(text, page.elements[0])).toBe(true);
+  });
+
+  it("sees a resize or a new text as changed content", () => {
+    const text = createText(10, 10, 100, 40, "Hi");
+
+    expect(onlyPositionDiffers(text, { ...text, width: 120 })).toBe(false);
+    expect(onlyPositionDiffers(text, { ...text, runs: [{ text: "Hello" }] })).toBe(false);
+  });
+
+  it("never matches two different elements", () => {
+    const first = createShape("rect", 0, 0, 10, 10);
+    const second = { ...first, id: "other" };
+
+    expect(onlyPositionDiffers(first, second)).toBe(false);
   });
 });

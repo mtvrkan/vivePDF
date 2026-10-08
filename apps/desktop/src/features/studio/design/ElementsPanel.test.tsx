@@ -1,13 +1,23 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
-import { createDesign } from "../model/design";
+import { createDesign, createShape } from "../model/design";
+import { addElements } from "../model/edit";
 import { ElementsPanel } from "./ElementsPanel";
 import { useStudioStore } from "./studioStore";
 
 vi.mock("../templates/TemplateGallery", () => ({ TemplateGallery: () => <p>gallery</p> }));
 vi.mock("../merge/DataTab", () => ({ DataTab: () => <p>data</p> }));
 vi.mock("./LayersTab", () => ({ LayersTab: () => <p>layers</p> }));
+
+const iconRenders = vi.hoisted(() => ({ count: 0 }));
+
+vi.mock("../icons/IconsSection", () => ({
+  IconsSection: () => {
+    iconRenders.count += 1;
+    return null;
+  },
+}));
 
 const panel = () => screen.getByRole("tabpanel");
 
@@ -54,5 +64,15 @@ describe("elements panel", () => {
 
     expect(panel().scrollTop).toBe(0);
     expect(screen.getByRole("tab", { name: "Elements" }).getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("leaves the elements tab alone while the page is being edited", () => {
+    render(<ElementsPanel />);
+    const renders = iconRenders.count;
+
+    act(() => useStudioStore.getState().applyToPage((page) => addElements(page, [createShape("rect", 10, 10, 50, 50)])));
+    act(() => useStudioStore.getState().preview((design) => ({ ...design, pages: design.pages.map((page) => ({ ...page, elements: page.elements.map((element) => ({ ...element, x: element.x + 5 })) })) })));
+
+    expect(iconRenders.count).toBe(renders);
   });
 });

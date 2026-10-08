@@ -17,7 +17,20 @@ type FontsState = { faces: Record<string, LoadedFace | null> };
 export const useStudioFontsStore = create<FontsState>(() => ({ faces: {} }));
 
 const pending = new Map<string, Promise<LoadedFace | null>>();
+const settled = new Map<string, LoadedFace | null>();
 let generation = 0;
+
+function publishSettled() {
+  if (!settled.size) return;
+  const batch = Object.fromEntries(settled);
+  settled.clear();
+  useStudioFontsStore.setState((state) => ({ faces: { ...state.faces, ...batch } }));
+}
+
+function settleFace(key: string, face: LoadedFace | null) {
+  if (!settled.size) queueMicrotask(publishSettled);
+  settled.set(key, face);
+}
 
 export function faceKey(fontId: string | null, weight: number, italic: boolean): string {
   return `${fontId ?? DEFAULT_FONT_ID}|${weight}|${italic ? 1 : 0}`;
@@ -56,6 +69,7 @@ export function ensureFace(fontId: string | null, weight: number, italic: boolea
   const key = faceKey(id, weight, italic);
   const known = useStudioFontsStore.getState().faces;
   if (key in known) return Promise.resolve(known[key]);
+  if (settled.has(key)) return Promise.resolve(settled.get(key) ?? null);
   const running = pending.get(key);
   if (running) return running;
   const task: Promise<LoadedFace | null> = loadFace(id, weight, italic)
@@ -63,7 +77,7 @@ export function ensureFace(fontId: string | null, weight: number, italic: boolea
     .then((face) => {
       if (pending.get(key) !== task) return face;
       pending.delete(key);
-      useStudioFontsStore.setState((state) => ({ faces: { ...state.faces, [key]: face } }));
+      settleFace(key, face);
       return face;
     });
   pending.set(key, task);
@@ -77,6 +91,7 @@ function fontIdOf(key: string): string {
 export function forgetFonts(matches: (fontId: string) => boolean) {
   generation += 1;
   for (const key of [...pending.keys()]) if (matches(fontIdOf(key))) pending.delete(key);
+  for (const key of [...settled.keys()]) if (matches(fontIdOf(key))) settled.delete(key);
   useStudioFontsStore.setState((state) => ({ faces: Object.fromEntries(Object.entries(state.faces).filter(([key]) => !matches(fontIdOf(key)))) }));
 }
 

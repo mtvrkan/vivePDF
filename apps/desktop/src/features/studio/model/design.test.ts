@@ -124,6 +124,19 @@ describe("studio design model", () => {
   });
 });
 
+describe("library font ids", () => {
+  it("reuses the answer for unchanged pages and notices a new font", () => {
+    const design = createDesign("Card", 300, 200);
+    const page = { ...design.pages[0], elements: [createText(0, 0, 10, 10, "", { runs: [{ text: "a", fontId: "library:abc" }] })] };
+    const first = { ...design, pages: [page] };
+    const added = { ...page, elements: [...page.elements, createText(0, 0, 10, 10, "", { runs: [{ text: "b", fontId: "library:xyz" }] })] };
+
+    expect(libraryFontIds({ ...first })).toBe(libraryFontIds(first));
+    expect(libraryFontIds({ ...first, pages: [added] })).toEqual(["library:abc", "library:xyz"]);
+    expect(libraryFontIds({ ...first, pages: [] })).toEqual([]);
+  });
+});
+
 describe("studio text direction", () => {
   const arabic = String.fromCodePoint(0x633, 0x627, 0x631, 0x629);
 

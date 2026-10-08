@@ -3,6 +3,7 @@ import { memo, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, typ
 import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, StudioRenderPath, StudioSvgElement, StudioTextElement } from "@/types/studio";
 import { usePreviewValues } from "../merge/mergeStore";
 import { fillPlaceholders, textDirection } from "../model/design";
+import { onlyPositionDiffers } from "../model/edit";
 import { elementItems } from "../model/render";
 import { flipTransform } from "../model/flip";
 import { renderFill, roundedRect } from "../model/shapes";
@@ -171,7 +172,7 @@ function SvgContent({ element }: { element: StudioSvgElement }) {
   return <img src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(markup)}`} alt="" draggable={false} style={{ display: "block", width: "100%", height: "100%" }} />;
 }
 
-function ElementContent({ element, language }: { element: StudioElement; language: string }) {
+const ElementContent = memo(function ElementContent({ element, language }: { element: StudioElement; language: string }) {
   switch (element.kind) {
     case "text":
       return <TextContent element={element} language={language} />;
@@ -187,6 +188,12 @@ function ElementContent({ element, language }: { element: StudioElement; languag
       return <PathsSvg paths={item.paths} width={item.viewWidth ?? element.width} height={item.viewHeight ?? element.height} />;
     }
   }
+});
+
+function useContentElement(element: StudioElement): StudioElement {
+  const held = useRef(element);
+  if (!onlyPositionDiffers(held.current, element)) held.current = element;
+  return held.current;
 }
 
 function elementFrameStyle(element: StudioElement): React.CSSProperties {
@@ -203,9 +210,10 @@ function elementFrameStyle(element: StudioElement): React.CSSProperties {
 }
 
 export const ElementView = memo(function ElementView({ element, language, children }: { element: StudioElement; language: string; children?: ReactNode }) {
+  const content = useContentElement(element);
   return (
     <div data-element-id={element.id} style={elementFrameStyle(element)}>
-      {children ?? <ElementContent element={element} language={language} />}
+      {children ?? <ElementContent element={content} language={language} />}
     </div>
   );
 });

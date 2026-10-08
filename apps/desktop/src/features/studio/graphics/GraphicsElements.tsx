@@ -6,7 +6,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { ChartType } from "@/types";
-import type { StudioPage } from "@/types/studio";
+import { currentPage, useStudioStore } from "../design/studioStore";
 import { insertTable, useGraphicEditor } from "./graphicEditor";
 
 const PICKER_ROWS = 8;
@@ -77,13 +77,15 @@ function TablePicker({ busy, onPick }: { busy: boolean; onPick: (rows: number, c
   );
 }
 
-export function GraphicsElements({ page }: { page: StudioPage }) {
+export function GraphicsElements() {
   const { t } = useTranslation();
   const [picking, setPicking] = useState(false);
   const [busy, setBusy] = useState(false);
   const open = useGraphicEditor((state) => state.open);
 
   const addTable = async (rows: number, columns: number) => {
+    const page = currentPage(useStudioStore.getState());
+    if (!page) return;
     setBusy(true);
     try {
       await insertTable(page, rows, columns);

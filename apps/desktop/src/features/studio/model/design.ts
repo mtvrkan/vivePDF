@@ -543,14 +543,27 @@ export function normalizeDesign(value: unknown): StudioDesign | null {
   return { version: STUDIO_DESIGN_VERSION, kind: "design", name: text(raw.name, "", 200), palette, pages, margins: finite(raw.margins, 0, 0, MAX_MARGIN_MM) };
 }
 
+const designLibraryFonts = new WeakMap<StudioPage[], string[]>();
+const pageLibraryFonts = new WeakMap<StudioElement[], string[]>();
+
+function pageFontIds(elements: StudioElement[]): string[] {
+  const known = pageLibraryFonts.get(elements);
+  if (known) return known;
+  const ids = new Set<string>();
+  for (const element of elements) {
+    if (element.kind !== "text") continue;
+    for (const fontId of [element.fontId, ...element.runs.map((run) => run.fontId)]) if (fontId?.startsWith("library:")) ids.add(fontId);
+  }
+  const result = [...ids];
+  pageLibraryFonts.set(elements, result);
+  return result;
+}
+
 export function libraryFontIds(design: StudioDesign | null): string[] {
   if (!design) return [];
-  const ids = new Set<string>();
-  for (const page of design.pages) {
-    for (const element of page.elements) {
-      if (element.kind !== "text") continue;
-      for (const fontId of [element.fontId, ...element.runs.map((run) => run.fontId)]) if (fontId?.startsWith("library:")) ids.add(fontId);
-    }
-  }
-  return [...ids].sort();
+  const known = designLibraryFonts.get(design.pages);
+  if (known) return known;
+  const result = [...new Set(design.pages.flatMap((page) => pageFontIds(page.elements)))].sort();
+  designLibraryFonts.set(design.pages, result);
+  return result;
 }

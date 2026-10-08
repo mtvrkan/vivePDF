@@ -84,6 +84,26 @@ describe("studio canvas", () => {
     expect(useStudioStore.getState().past).toHaveLength(0);
   });
 
+  it("flags the drag as an interaction until the pointer is released or the drag is cancelled", () => {
+    render(<Canvas language="en" />);
+    const [first] = page().elements;
+    const viewport = screen.getByTestId("studio-viewport");
+
+    pointer(elementNode(first.id), "pointerdown", 20, 20);
+    expect(useStudioStore.getState().interacting).toBe(false);
+    pointer(viewport, "pointermove", 60, 30);
+    expect(useStudioStore.getState().interacting).toBe(true);
+    pointer(viewport, "pointerup", 60, 30);
+    expect(useStudioStore.getState().interacting).toBe(false);
+    expect(page().elements[0].x).toBe(50);
+
+    pointer(elementNode(first.id), "pointerdown", 60, 30);
+    pointer(viewport, "pointermove", 90, 30);
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(useStudioStore.getState().interacting).toBe(false);
+    expect(page().elements[0].x).toBe(50);
+  });
+
   it("outlines the element under the pointer unless it is selected", () => {
     render(<Canvas language="en" />);
     const [first, second] = page().elements;

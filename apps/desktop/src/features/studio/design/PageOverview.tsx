@@ -60,7 +60,7 @@ const OverviewTile = memo(function OverviewTile({ page, number, count, current, 
 
 export function PageOverview({ open, onClose, language }: { open: boolean; onClose: () => void; language: string }) {
   const { t } = useTranslation();
-  const pages = useStudioStore((state) => state.design?.pages ?? null);
+  const pages = useStudioStore((state) => (open ? (state.design?.pages ?? null) : null));
   const pageId = useStudioStore((state) => state.pageId);
   const listRef = useRef<HTMLOListElement>(null);
   const { drag, delegate } = usePageDrag(listRef);

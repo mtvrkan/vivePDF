@@ -56,7 +56,7 @@ describe("graphics in the studio panels", () => {
   it("adds a table of the picked size and starts editing its first cell", async () => {
     openWith();
     tablePreview.mockResolvedValue({ svg: SVG, width: 270, height: 60, missingGlyphs: "", rowHeights: [30, 30], columnWidths: [90, 90, 90] });
-    render(<GraphicsElements page={useStudioStore.getState().design!.pages[0]} />);
+    render(<GraphicsElements />);
 
     fireEvent.click(screen.getByRole("button", { name: "Add a table" }));
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Add a table with 2 rows and 3 columns" })));
@@ -72,7 +72,7 @@ describe("graphics in the studio panels", () => {
 
   it("moves through the size picker with the arrow keys", () => {
     openWith();
-    render(<GraphicsElements page={useStudioStore.getState().design!.pages[0]} />);
+    render(<GraphicsElements />);
     fireEvent.click(screen.getByRole("button", { name: "Add a table" }));
     const start = screen.getByRole("button", { name: "Add a table with 3 rows and 3 columns" });
 
@@ -86,7 +86,7 @@ describe("graphics in the studio panels", () => {
     openWith();
     tablePreview.mockRejectedValue({ code: "INVALID_PARAMS", message: "font", data: { reason: "fontUnreadable" } });
     const push = vi.spyOn(useToastStore.getState(), "push");
-    render(<GraphicsElements page={useStudioStore.getState().design!.pages[0]} />);
+    render(<GraphicsElements />);
 
     fireEvent.click(screen.getByRole("button", { name: "Add a table" }));
     await act(async () => fireEvent.click(screen.getByRole("button", { name: "Add a table with 1 rows and 1 columns" })));
@@ -97,7 +97,7 @@ describe("graphics in the studio panels", () => {
 
   it("opens the chart editor with the chosen chart type", () => {
     openWith();
-    render(<GraphicsElements page={useStudioStore.getState().design!.pages[0]} />);
+    render(<GraphicsElements />);
 
     fireEvent.click(screen.getByRole("button", { name: "Pie" }));
 

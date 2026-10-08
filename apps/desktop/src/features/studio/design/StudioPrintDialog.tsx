@@ -28,7 +28,7 @@ export function StudioPrintDialog({ open, onClose, language }: { open: boolean; 
   const { t } = useTranslation();
   const toast = useToastStore((state) => state.push);
   const name = useStudioStore((state) => state.design?.name ?? "");
-  const designPages = useStudioStore((state) => state.design?.pages);
+  const designPages = useStudioStore((state) => (open ? state.design?.pages : undefined));
   const pageId = useStudioStore((state) => state.pageId);
   const dataPath = useMergeStore((state) => state.dataPath);
   const sheet = useMergeStore((state) => state.sheet);

@@ -70,7 +70,7 @@ function Ruler({ axis, origin, length, zoom, extent, language, handlers }: { axi
   );
 }
 
-export function CanvasRulers({ viewportRef, pageRef, zoom, extent, language, handlers }: { viewportRef: RefObject<HTMLDivElement | null>; pageRef: RefObject<HTMLDivElement | null>; zoom: number; extent: RulerExtent; language: string; handlers: RulerHandlers }) {
+export function CanvasRulers({ viewportRef, pageRef, zoom, pageWidth, pageHeight, extent, language, handlers }: { viewportRef: RefObject<HTMLDivElement | null>; pageRef: RefObject<HTMLDivElement | null>; zoom: number; pageWidth: number; pageHeight: number; extent: RulerExtent; language: string; handlers: RulerHandlers }) {
   const [frame, setFrame] = useState<Frame>({ x: 0, y: 0, width: 0, height: 0 });
   const sync = useCallback(() => {
     const viewport = viewportRef.current;
@@ -84,7 +84,7 @@ export function CanvasRulers({ viewportRef, pageRef, zoom, extent, language, han
 
   useLayoutEffect(() => {
     sync();
-  });
+  }, [sync, zoom, pageWidth, pageHeight]);
 
   useEffect(() => {
     const viewport = viewportRef.current;

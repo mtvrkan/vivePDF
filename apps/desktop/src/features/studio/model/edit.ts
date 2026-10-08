@@ -77,6 +77,15 @@ function shifted(page: StudioPage, offsets: Map<string, { dx: number; dy: number
   };
 }
 
+export function onlyPositionDiffers(previous: StudioElement, next: StudioElement): boolean {
+  if (previous === next) return true;
+  if (previous.id !== next.id || previous.kind !== next.kind) return false;
+  const before = previous as unknown as Record<string, unknown>;
+  const after = next as unknown as Record<string, unknown>;
+  const keys = Object.keys(after);
+  return keys.length === Object.keys(before).length && keys.every((key) => key === "x" || key === "y" || before[key] === after[key]);
+}
+
 export function updateElement<T extends StudioElement>(page: StudioPage, id: string, patch: Partial<T>): StudioPage {
   return { ...page, elements: page.elements.map((element) => (element.id === id ? ({ ...element, ...patch } as StudioElement) : element)) };
 }
