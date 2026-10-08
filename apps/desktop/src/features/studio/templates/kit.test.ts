@@ -58,4 +58,15 @@ describe("contrast helpers", () => {
     expect(readableOn("#fef3c7")).toBe("#111827");
     expect(averageColor(solid("rgba(0,0,0,0.5)"))).toBeNull();
   });
+  it("grows a text box to hold its lines and keeps the text where it was drawn", () => {
+    const top = text(0, 100, 200, 20, "One\nTwo", { size: 20, lineHeight: 1 });
+    const middle = text(0, 100, 200, 20, "Big", { size: 40, lineHeight: 1, valign: "middle" });
+    const bottom = text(0, 100, 200, 20, "Big", { size: 40, lineHeight: 1, valign: "bottom" });
+    const turned = text(0, 100, 200, 20, "Big", { size: 40, lineHeight: 1, rotation: 10 });
+
+    expect([top.y, top.height]).toEqual([100, 40]);
+    expect([middle.y + middle.height / 2, middle.height]).toEqual([110, 40]);
+    expect(bottom.y + bottom.height).toBe(120);
+    expect([turned.y, turned.height]).toEqual([100, 20]);
+  });
 });

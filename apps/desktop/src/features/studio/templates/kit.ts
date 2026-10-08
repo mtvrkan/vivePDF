@@ -77,11 +77,21 @@ export type TextOptions = {
   opacity?: number;
 };
 
+function lineBox(y: number, height: number, lines: number, fontSize: number, lineHeight: number, options: TextOptions): { y: number; height: number } {
+  const extra = Math.ceil(lines * fontSize * lineHeight) - height;
+  const valign = options.valign ?? "top";
+  if (extra <= 0 || (valign === "top" && (options.rotation ?? 0) !== 0)) return { y, height };
+  return { y: valign === "middle" ? y - extra / 2 : valign === "bottom" ? y - extra : y, height: height + extra };
+}
+
 export function text(x: number, y: number, width: number, height: number, value: string, options: TextOptions = {}): StudioTextElement {
   const fontSize = options.size ?? 14;
-  return createText(x, y, width, height, value, {
+  const lineHeight = options.lineHeight ?? 1.3;
+  const runs = options.runs ?? [{ text: value }];
+  const fitted = lineBox(y, height, runs.map((run) => run.text).join("").split("\n").length, fontSize, lineHeight, options);
+  return createText(x, fitted.y, width, fitted.height, value, {
     name: options.name ?? "",
-    runs: options.runs ?? [{ text: value }],
+    runs,
     fontId: options.font ?? FONTS.inter,
     fontSize,
     color: options.color ?? "#1f2937",
@@ -91,7 +101,7 @@ export function text(x: number, y: number, width: number, height: number, value:
     verticalAlign: options.valign ?? "top",
     letterSpacing: Math.round(((options.spacing ?? 0) / fontSize) * 1000) / 1000,
     textCase: options.upper ? "upper" : "none",
-    lineHeight: options.lineHeight ?? 1.3,
+    lineHeight,
     autoSize: options.shrink ? "shrink" : "fixed",
     rotation: options.rotation ?? 0,
     shadow: options.shadow === undefined ? null : typeof options.shadow === "string" ? { ...TEXT_SHADOWS[options.shadow] } : options.shadow,

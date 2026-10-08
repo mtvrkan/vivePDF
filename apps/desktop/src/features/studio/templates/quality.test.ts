@@ -47,4 +47,11 @@ describe("template quality gate", () => {
     expect(right.x + right.width).toBeCloseTo(400);
     expect(right.width).toBeLessThan(40);
   });
+  it("flags a turned text box too short for its line", () => {
+    const short = design("Short", [], [pageOf("a4", solid("#ffffff"), [text(40, 40, 300, 20, "Headline", { size: 40, color: "#111827", rotation: 5 })])]);
+    const roomy = design("Roomy", [], [pageOf("a4", solid("#ffffff"), [text(40, 40, 300, 60, "Headline", { size: 40, color: "#111827", rotation: 5 })])]);
+
+    expect(kinds(short)).toEqual(["fit"]);
+    expect(kinds(roomy)).toEqual([]);
+  });
 });

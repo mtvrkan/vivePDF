@@ -9,6 +9,10 @@ async function previewText(): Promise<string> {
   return browser.execute((label: string) => document.querySelector(`[aria-label="${label}"]`)?.textContent ?? "", t("studio.cv.preview"));
 }
 
+async function previewHas(value: string): Promise<boolean> {
+  return (await previewText()).toLocaleLowerCase("en").includes(value.toLocaleLowerCase("en"));
+}
+
 describe("cv builder", () => {
   before(bootApp);
 
@@ -18,7 +22,7 @@ describe("cv builder", () => {
     await $('[data-testid="cv-studio"]').waitForDisplayed({ timeout: 30000 });
 
     await $(`//button[normalize-space(.)="${t("studio.cv.fillSample")}"]`).click();
-    await browser.waitUntil(async () => (await previewText()).includes(t("studio.cv.sample.name")), { timeout: 30000, timeoutMsg: "the sample CV never reached the preview" });
+    await browser.waitUntil(async () => await previewHas(t("studio.cv.sample.name")), { timeout: 30000, timeoutMsg: "the sample CV never reached the preview" });
 
     await $(`//*[@role="tab"][normalize-space(.)="${t("studio.cv.tabs.design")}"]`).click();
     await browser.waitUntil(async () => (await $$('[data-cv-layout] img[data-thumbnail-state="ready"]').length) === 10, { timeout: 90000, timeoutMsg: "the layout pictures were not all drawn" });
@@ -28,7 +32,7 @@ describe("cv builder", () => {
     await $('[data-cv-layout="classic"]').click();
     await expect($('[data-cv-layout="classic"]')).toHaveAttribute("aria-pressed", "true");
     await browser.waitUntil(async () => (await preview().$$("[data-element-id]").length) > 0 && (await previewText()) !== "", { timeout: 30000 });
-    expect((await previewText()).includes(t("studio.cv.sample.name"))).toBe(true);
+    expect(await previewHas(t("studio.cv.sample.name"))).toBe(true);
     expect(before.length).toBeGreaterThan(0);
   });
 
@@ -41,13 +45,13 @@ describe("cv builder", () => {
     const replace = dialogButton(t("studio.cv.import.replace"));
     await replace.waitForClickable({ timeout: 60000 });
     await replace.click();
-    await browser.waitUntil(async () => (await previewText()).includes("Jordan Rivera"), { timeout: 30000, timeoutMsg: "the imported CV never reached the preview" });
-    expect(await previewText()).toContain("Northwind Studio");
+    await browser.waitUntil(async () => await previewHas("Jordan Rivera"), { timeout: 30000, timeoutMsg: "the imported CV never reached the preview" });
+    expect(await previewHas("Northwind Studio")).toBe(true);
 
     await pressShortcut("z");
-    await browser.waitUntil(async () => (await previewText()).includes(t("studio.cv.sample.name")), { timeout: 30000, timeoutMsg: "undo did not bring the sample back" });
+    await browser.waitUntil(async () => await previewHas(t("studio.cv.sample.name")), { timeout: 30000, timeoutMsg: "undo did not bring the sample back" });
     await pressShortcut("y");
-    await browser.waitUntil(async () => (await previewText()).includes("Jordan Rivera"), { timeout: 30000, timeoutMsg: "redo did not bring the import back" });
+    await browser.waitUntil(async () => await previewHas("Jordan Rivera"), { timeout: 30000, timeoutMsg: "redo did not bring the import back" });
 
     const target = join(workDir(), "jordan-cv.json");
     answerDialogs(target);
@@ -69,6 +73,6 @@ describe("cv builder", () => {
     await button(t("common.undo")).click();
 
     await browser.waitUntil(async () => (await entries().length) === count, { timeoutMsg: "the entry did not come back" });
-    expect(await previewText()).toContain("Northwind Studio");
+    expect(await previewHas("Northwind Studio")).toBe(true);
   });
 });

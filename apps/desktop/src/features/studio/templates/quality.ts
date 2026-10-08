@@ -1,7 +1,7 @@
 import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
 import { averageColor, blend, contrastRatio } from "./contrast";
 
-export type QualityIssue = { page: number; kind: "contrast" | "overlap" | "fonts"; detail: string };
+export type QualityIssue = { page: number; kind: "contrast" | "overlap" | "fonts" | "fit"; detail: string };
 
 export const MAX_FONT_FAMILIES = 3;
 export const BODY_CONTRAST = 4.5;
@@ -81,7 +81,7 @@ export function inkBox(element: StudioTextElement): Box {
   const longest = Math.max(...lines.map((value) => value.length)) * average;
   const width = Math.min(element.width, longest);
   const wrapped = lines.reduce((sum, value) => sum + Math.max(1, Math.ceil((value.length * average) / Math.max(1, element.width))), 0);
-  const height = Math.min(element.height, wrapped * element.fontSize * element.lineHeight);
+  const height = Math.min(element.height, (wrapped - 1) * element.fontSize * element.lineHeight + element.fontSize);
   const x = element.align === "center" ? element.x + (element.width - width) / 2 : element.align === "right" ? element.x + element.width - width : element.x;
   const y = element.verticalAlign === "middle" ? element.y + (element.height - height) / 2 : element.verticalAlign === "bottom" ? element.y + element.height - height : element.y;
   return { x, y, width, height };
@@ -107,6 +107,14 @@ function overlapIssues(page: StudioPage, pageIndex: number): QualityIssue[] {
   return issues;
 }
 
+function fitIssues(page: StudioPage, pageIndex: number): QualityIssue[] {
+  return page.elements.flatMap((element) => {
+    if (element.kind !== "text" || element.hidden || !textOf(element).trim()) return [];
+    const needed = textOf(element).split("\n").length * element.fontSize * element.lineHeight;
+    return element.height + 2 < needed ? [{ page: pageIndex, kind: "fit" as const, detail: `"${textOf(element).slice(0, 30)}" needs ${Math.ceil(needed)} > box ${Math.round(element.height)}` }] : [];
+  });
+}
+
 export function fontFamilies(design: StudioDesign): string[] {
   const families = new Set<string>();
   for (const element of design.pages.flatMap((page) => page.elements)) {
@@ -118,7 +126,7 @@ export function fontFamilies(design: StudioDesign): string[] {
 }
 
 export function qualityIssues(design: StudioDesign): QualityIssue[] {
-  const issues = design.pages.flatMap((page, index) => [...contrastIssues(page, index), ...overlapIssues(page, index)]);
+  const issues = design.pages.flatMap((page, index) => [...contrastIssues(page, index), ...overlapIssues(page, index), ...fitIssues(page, index)]);
   const families = fontFamilies(design);
   if (families.length > MAX_FONT_FAMILIES) issues.push({ page: 0, kind: "fonts", detail: families.join(", ") });
   return issues;
