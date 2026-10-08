@@ -58,6 +58,7 @@ import { ThumbnailSidebar } from "./ThumbnailSidebar";
 import { ViewerDefaults } from "./ViewerDefaults";
 import { ViewerShortcuts } from "./ViewerShortcuts";
 import { ViewerToolbar } from "./ViewerToolbar";
+import { PageNavigator } from "./PageNavigator";
 import { NavigationRail, ToolsRail } from "./ViewerRails";
 import { useOpenPdf } from "./useOpenPdf";
 import { hasOpenModal } from "./viewerKeyTarget";
@@ -241,6 +242,7 @@ export function ViewerPage() {
                       <div className="h-full" data-page-colors={pageColors}>
                         <SplitStage documentId={activeDocumentId} pageColors={pageColors} />
                       </div>
+                      <PageNavigator documentId={activeDocumentId} />
                       <AutoScroller documentId={activeDocumentId} hostRef={stageRef} />
                       <SnapshotTaker documentId={activeDocumentId} />
                       {panels.present ? <PresentationCanvas containerRef={stageRef} /> : null}

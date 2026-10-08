@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import {
-  ChevronLeft,
-  ChevronRight,
   Camera,
   Copy,
   Hand,
@@ -18,7 +16,6 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { ZoomMode, useZoom } from "@embedpdf/plugin-zoom/react";
 import { useRotate } from "@embedpdf/plugin-rotate/react";
 import { usePan } from "@embedpdf/plugin-pan/react";
@@ -36,10 +33,6 @@ import { setImmersiveFullscreen } from "./immersive";
 import { copySelection } from "./copySelection";
 import { ZoomInput } from "./ZoomInput";
 import { PageDisplayMenu } from "./PageDisplayMenu";
-import { cn } from "@/shared/lib/cn";
-import { pageFromInput, pageLabelOf } from "@/shared/lib/pageLabels";
-import { usePageLabels } from "@/shared/store/pageLabelsStore";
-import { usePageNavigation } from "./usePageNavigation";
 
 type ViewerToolbarProps = {
   documentId: string;
@@ -54,7 +47,6 @@ const PRIMARY_BUTTON = 0;
 export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolbarProps) {
   const { t } = useTranslation();
   const overlayMode = useViewerOverlayStore((state) => state.mode);
-  const { state: scrollState, provides: scroll } = useScroll(documentId);
   const { state: zoomState, provides: zoom } = useZoom(documentId);
   const { provides: rotate } = useRotate(documentId);
   const openPrintDialog = usePrintDialogStore((state) => state.setOpen);
@@ -64,7 +56,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
   const { save, discard } = useDocumentSave(documentId);
   const hasMarkChanges = useUnsavedMarks(documentId);
   const [savingDocument, setSavingDocument] = useState(false);
-  const { jumpTo } = usePageNavigation(documentId);
 
   const unsavedCount = (hasMarkChanges ? 1 : 0) + queuedChanges.length;
 
@@ -80,14 +71,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
   const runDiscard = () => {
     discard();
   };
-  const labels = usePageLabels(documentId);
-  const currentLabel = pageLabelOf(labels, scrollState.currentPage);
-  const [pageInput, setPageInput] = useState(currentLabel);
   const [fullscreen, setFullscreen] = useState(false);
-
-  useEffect(() => {
-    setPageInput(currentLabel);
-  }, [currentLabel]);
 
   useEffect(() => {
     void getCurrentWindow().isFullscreen().then(setFullscreen);
@@ -122,12 +106,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
     };
   }, [zoomState.isMarqueeZoomActive, zoom]);
 
-  const goToPage = () => {
-    const page = pageFromInput(pageInput, labels, scrollState.totalPages);
-    if (page !== null && page !== scrollState.currentPage) jumpTo(page);
-    else setPageInput(currentLabel);
-  };
-
   const toggleFullscreen = async () => {
     const next = !(await getCurrentWindow().isFullscreen());
     await setImmersiveFullscreen(next);
@@ -139,37 +117,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
   return (
     <div className="relative z-40 flex h-topbar flex-nowrap items-center gap-1 glass-flat border-b px-2">
       <IconButton icon={Search} label={t("viewer.search")} active={panels.search} onClick={() => onTogglePanel("search")} />
-      <span className="mx-1 h-4 w-px bg-border" aria-hidden />
-
-      <IconButton
-        icon={ChevronLeft}
-        label={t("viewer.previousPage")}
-        disabled={scrollState.currentPage <= 1}
-        onClick={() => scroll?.scrollToPreviousPage()}
-      />
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          goToPage();
-        }}
-        className="flex shrink-0 items-center gap-1 whitespace-nowrap font-mono text-sm tabular-nums"
-      >
-        <input
-          value={pageInput}
-          onChange={(event) => setPageInput(event.target.value)}
-          onBlur={goToPage}
-          aria-label={t("viewer.pageNumber")}
-          inputMode={labels ? "text" : "numeric"}
-          className={cn("field-inline h-7 rounded-md text-center", labels ? "w-14" : "w-12")}
-        />
-        <span className="text-muted-foreground">{labels ? `(${scrollState.currentPage} / ${scrollState.totalPages})` : `/ ${scrollState.totalPages}`}</span>
-      </form>
-      <IconButton
-        icon={ChevronRight}
-        label={t("viewer.nextPage")}
-        disabled={scrollState.currentPage >= scrollState.totalPages}
-        onClick={() => scroll?.scrollToNextPage()}
-      />
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />
 
       {unsavedCount > 0 ? (
