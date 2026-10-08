@@ -281,4 +281,25 @@ describe("studio", () => {
       { timeout: 15000, timeoutMsg: "the shrink-to-fit title did not settle inside its box" },
     );
   });
+
+  it("keeps the missing-fonts download visible under the find bar and shortcut labels on one line", async () => {
+    const banner = $('[data-testid="studio-missing-fonts"]');
+    await banner.waitForDisplayed({ timeout: 15000 });
+    await $('[data-testid="studio-viewport"]').click({ x: 5, y: 5 });
+    await pressShortcut("f");
+    const find = $('[data-testid="studio-find"]');
+    await find.waitForDisplayed();
+    const bannerBottom = (await banner.getLocation("y")) + (await banner.getSize("height"));
+    expect(await find.getLocation("y")).toBeGreaterThanOrEqual(bannerBottom);
+    await browser.keys(ESCAPE);
+    await find.waitForDisplayed({ reverse: true });
+
+    await $('[data-testid="studio-viewport"]').click({ x: 5, y: 5 });
+    await browser.keys("?");
+    const label = $(`//*[@data-testid="studio-shortcuts"]//dt[normalize-space(.)="${t("studio.shortcuts.items.undoRedo")}"]`);
+    await label.waitForDisplayed();
+    const lineHeight = Number.parseFloat(await label.getCSSProperty("line-height").then((property) => String(property.value)));
+    expect(await label.getSize("height")).toBeLessThan(lineHeight * 1.5);
+    await browser.keys(ESCAPE);
+  });
 });

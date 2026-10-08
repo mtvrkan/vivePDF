@@ -232,7 +232,7 @@ export function ElementsPanel() {
           );
         })}
       </div>
-      <div id="studio-panel-body" role="tabpanel" aria-labelledby={`studio-panel-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto">
+      <div key={tab} id="studio-panel-body" role="tabpanel" aria-labelledby={`studio-panel-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto">
         {body}
       </div>
     </aside>

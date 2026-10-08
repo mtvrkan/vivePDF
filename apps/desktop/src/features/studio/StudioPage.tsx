@@ -252,8 +252,10 @@ function StudioEditor({ language }: { language: string }) {
         <ElementsPanel />
         <div className="relative flex min-w-0 flex-1 flex-col">
           <MissingFontsBar />
-          <Canvas language={language} />
-          {finding ? <FindReplacePanel mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            <Canvas language={language} />
+            {finding ? <FindReplacePanel mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
+          </div>
           <PagesStrip language={language} />
         </div>
         <PropertiesPanel />

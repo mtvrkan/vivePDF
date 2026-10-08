@@ -21,10 +21,10 @@ export function StudioShortcutsDialog({ open, onClose }: { open: boolean; onClos
             <dl>
               {group.items.map((entry) => (
                 <div key={entry.keys} className="flex min-h-8 items-center justify-between gap-3 border-b py-1 text-sm last:border-b-0">
-                  <dt className="min-w-0 text-start">{t(entry.labelKey)}</dt>
-                  <dd className="flex shrink-0 flex-wrap justify-end gap-1">
+                  <dt className="min-w-28 flex-1 text-start">{t(entry.labelKey)}</dt>
+                  <dd className="flex min-w-0 flex-wrap justify-end gap-1">
                     {splitKeys(entry.keys).map((combo) => (
-                      <kbd key={combo} className="rounded-sm border bg-background px-1.5 font-mono text-xs text-muted-foreground">
+                      <kbd key={combo} className="whitespace-nowrap rounded-sm border bg-background px-1.5 font-mono text-xs text-muted-foreground">
                         {combo}
                       </kbd>
                     ))}
