@@ -39,6 +39,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Merge: Add folder lists every PDF in a folder in natural order (optionally with its subfolders), and folders dropped on the list expand the same way [2026-10-04]
 
 ### Changed
+- Studio templates: the 6 education sheets are redesigned — card-based lesson plans and worksheets, a framed exam cover with a score table, and timetables, attendance and reward charts in shadowed cards with zebra rows [2026-10-08]
 - Studio templates: the 9 cards are redesigned — art nouveau, deco and gem frames, botanical sprigs, wax seals, foil lines, patterned business-card backs and stitched gift tags, each with at most three typefaces and readable contrast [2026-10-08]
 - Studio templates: the 10 flyers are redesigned — shadowed photo cards, gradient and pattern headers, foil accents, ticket-style coupons and clearer price and call-to-action blocks, each with at most three typefaces and readable contrast [2026-10-08]
 - Studio CV: the ten layouts are refined — contact details carry small icons, skill levels use thin or segmented bars where they suit the layout, photos get a ring, sidebars and header bands use gradients and subtle patterns, and the elegant layout has a double hairline frame and a flourish under the name [2026-10-08]
