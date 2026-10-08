@@ -60,6 +60,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Internal: the Studio canvas, properties panel and edit model are split into smaller files — pointer handling, zoom and scrolling, the selection frame, guides and the right-click menu; one file per properties section; layer order and page changes — and the engine's Studio text code into its model, paragraphs, layout and drawing; nothing changes on screen or in exports [2026-10-06]
 - Internal: the Studio end-to-end flow goes to the viewer before opening the exported PDF (Ctrl+O in Studio opens a design since 2026-10-04) and selects the heading's text before retyping it, since a double-click now puts the caret where it was clicked [2026-10-06]
 - Viewer: as in Acrobat, the square page number box with the page count under it, the previous/next arrows, Rotate, Page display and Zoom in/out moved from the top toolbar to the bottom of the right-hand rail; the Page display menu opens to the left of it [2026-10-08]
+- Viewer: the zoom percentage box is no longer in the top toolbar; zoom with the rail's Zoom in/out, the zoom menu or Ctrl+wheel [2026-10-08]
 
 ### Removed
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]

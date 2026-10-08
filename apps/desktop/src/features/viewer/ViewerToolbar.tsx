@@ -27,7 +27,6 @@ import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { setImmersiveFullscreen } from "./immersive";
 import { copySelection } from "./copySelection";
-import { ZoomInput } from "./ZoomInput";
 
 type ViewerToolbarProps = {
   documentId: string;
@@ -106,8 +105,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
     setFullscreen(next);
   };
 
-  const zoomPercent = Math.round(zoomState.currentZoomLevel * 100);
-
   return (
     <div className="relative z-40 flex h-topbar flex-nowrap items-center gap-1 glass-flat border-b px-2">
       <IconButton icon={Search} label={t("viewer.search")} active={panels.search} onClick={() => onTogglePanel("search")} />
@@ -167,7 +164,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       <IconButton icon={Printer} label={t("viewer.print")} onClick={() => openPrintDialog(true)} />
 
       <span className="flex-1" />
-      <ZoomInput percent={zoomPercent} label={t("viewer.zoomInput")} onApply={(percent) => zoom?.requestZoom(percent / 100)} />
       <Select
         size="sm"
         ariaLabel={t("viewer.zoom")}
