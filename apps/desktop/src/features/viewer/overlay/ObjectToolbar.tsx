@@ -192,7 +192,7 @@ export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { 
   };
 
   return createPortal(
-    <div ref={toolbarRef} role="toolbar" aria-label={t("viewer.overlay.toolbar")} onMouseDown={(event) => event.stopPropagation()} onDoubleClick={(event) => event.stopPropagation()} className="glass-menu fixed z-50 flex items-center gap-1 rounded-xl p-1" style={{ top: placement.top, left: placement.left, visibility: measured.width ? "visible" : "hidden" }}>
+    <div ref={toolbarRef} role="toolbar" aria-label={t("viewer.overlay.toolbar")} onMouseDown={(event) => event.stopPropagation()} onDoubleClick={(event) => event.stopPropagation()} className="glass-menu fixed z-30 flex items-center gap-1 rounded-xl p-1" style={{ top: placement.top, left: placement.left, visibility: measured.width ? "visible" : "hidden" }}>
       {item.kind === "imageChange" ? renderImageChange(item) : item.kind === "image" ? renderImage() : renderTextLike(item)}
     </div>,
     document.body,

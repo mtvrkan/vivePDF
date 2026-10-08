@@ -389,6 +389,31 @@ describe("page editor", () => {
     expect(saved.pages?.[1].imageBoxes).toEqual(before.pages?.[1].imageBoxes);
   });
 
+  it("keeps the unsaved-changes dialog clickable while a text box toolbar is showing", async () => {
+    await openInViewer(copyFixture(fixtures().sample, "editor-toolbar-dialog.pdf"));
+    await enterEditor("viewer.overlay.editTexts");
+    await clickPage(0, 300, 420);
+    await typeText("Pencere testi");
+    await waitForPending(1);
+    await $(`[role="toolbar"][aria-label="${t("viewer.overlay.toolbar")}"]`).waitForDisplayed({ timeout: 10000, timeoutMsg: "the text box toolbar never showed" });
+
+    await $(`//*[@role="tab"][@aria-selected="true"]`).click({ button: "right" });
+    await $(`//*[@role="menuitem"][normalize-space(.)="${t("viewer.context.closeAll")}"]`).click();
+    const discard = $(`//*[@role="dialog"]//button[normalize-space(.)="${t("viewer.overlay.confirmDiscardDiscard")}" or normalize-space(.)="${t("viewer.unsavedClose.discard")}"]`);
+    await discard.waitForDisplayed({ timeout: 10000 });
+    const toolbarCovered = await browser.execute((label: string) => {
+      const toolbar = document.querySelector(`[role="toolbar"][aria-label="${label}"]`);
+      if (!toolbar) return true;
+      const rect = toolbar.getBoundingClientRect();
+      const top = document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+      return !!top && !toolbar.contains(top);
+    }, t("viewer.overlay.toolbar"));
+    expect(toolbarCovered).toBe(true);
+    await discard.click();
+
+    await browser.waitUntil(async () => (await $$('[role="tab"]').length) === 0, { timeout: 15000, timeoutMsg: "Discard in the unsaved-changes dialog could not be clicked" });
+  });
+
   it("filters, locks, hides and removes objects from the Layers list", async () => {
     const source = copyFixture(fixtures().sample, "editor-layers.pdf");
     await openInViewer(source);

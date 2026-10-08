@@ -64,6 +64,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Interface languages: Russian, Simplified Chinese, Japanese and Korean are no longer offered for the interface or the CV builder; the app now comes in Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic, and a saved choice of a removed language falls back to the system language or English. Reading, OCR, fonts, read-aloud voices and translation for those languages are unchanged [2026-10-06]
 
 ### Fixed
+- Viewer: the floating toolbar of a selected text box or picture no longer covers dialogs, so Save, Discard and Cancel in the unsaved-changes dialog can be clicked again [2026-10-08]
 - Home: a collection card's Open all skips files that no longer exist (and says so when none are left) instead of failing on each one [2026-10-08]
 - Home: files of a collection that open after a password prompt now join the collection's tab group instead of staying outside it [2026-10-08]
 - Viewer: the position, size, aspect-lock and opacity controls of the PDF editing panel are read-only for a locked layer, as dragging and the keyboard already were [2026-10-08]
