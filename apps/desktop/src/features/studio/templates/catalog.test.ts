@@ -14,7 +14,7 @@ function lookup(key: string): string {
   return value;
 }
 
-const REDESIGNED = new Set<string>(["certificates", "flyers", "cards", "education"]);
+const REDESIGNED = new Set<string>(["certificates", "flyers", "cards", "education", "invitations"]);
 
 const designs = STUDIO_TEMPLATES.map((template) => ({ template, design: buildTemplate(template, lookup, "en") }));
 const libraryCatalog = readFileSync(new URL("../../../../../../sidecar/vivepdf/ops/font_library_catalog.py", import.meta.url), "utf8");
