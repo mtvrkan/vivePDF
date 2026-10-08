@@ -63,15 +63,13 @@ describe("viewer", () => {
     await clickButton(t("viewer.previousPage"));
     await expect(pageInput).toHaveValue("2");
 
-    const gaps = await browser.execute((label: string) => {
-      const navigator = document.querySelector('[data-testid="page-navigator"]') as HTMLElement;
-      const box = navigator.getBoundingClientRect();
-      const stage = (navigator.parentElement as HTMLElement).getBoundingClientRect();
-      return { right: stage.right - box.right, bottom: stage.bottom - box.bottom, inToolbar: !!document.querySelector(`.h-topbar input[aria-label="${label}"]`) };
+    const placement = await browser.execute((label: string) => {
+      const rail = document.querySelector('[data-viewer-rail="end"]') as HTMLElement;
+      const input = rail.querySelector(`input[aria-label="${label}"]`) as HTMLElement | null;
+      const controls = Array.from(rail.querySelectorAll("button, input"));
+      return { inRail: !!input, fromBottom: input ? controls.length - controls.indexOf(input) : -1, inToolbar: !!document.querySelector(`.h-topbar input[aria-label="${label}"]`) };
     }, t("viewer.pageNumber"));
-    expect(gaps.right).toBeLessThan(40);
-    expect(gaps.bottom).toBeLessThan(40);
-    expect(gaps.inToolbar).toBe(false);
+    expect(placement).toEqual({ inRail: true, fromBottom: 7, inToolbar: false });
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "viewer-page-navigator.png"));
   });
 

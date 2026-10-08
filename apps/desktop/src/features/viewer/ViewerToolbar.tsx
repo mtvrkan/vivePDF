@@ -6,18 +6,14 @@ import {
   Maximize,
   Minimize,
   Printer,
-  RotateCw,
   Search,
   ScanText,
   SquareDashedMousePointer,
   X,
-  ZoomIn,
-  ZoomOut,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { ZoomMode, useZoom } from "@embedpdf/plugin-zoom/react";
-import { useRotate } from "@embedpdf/plugin-rotate/react";
 import { usePan } from "@embedpdf/plugin-pan/react";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
 import { pendingChangesFor, usePendingChangesStore } from "@/shared/store/pendingChangesStore";
@@ -32,7 +28,6 @@ import { Select } from "@/components/shared/Select";
 import { setImmersiveFullscreen } from "./immersive";
 import { copySelection } from "./copySelection";
 import { ZoomInput } from "./ZoomInput";
-import { PageDisplayMenu } from "./PageDisplayMenu";
 
 type ViewerToolbarProps = {
   documentId: string;
@@ -48,7 +43,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
   const { t } = useTranslation();
   const overlayMode = useViewerOverlayStore((state) => state.mode);
   const { state: zoomState, provides: zoom } = useZoom(documentId);
-  const { provides: rotate } = useRotate(documentId);
   const openPrintDialog = usePrintDialogStore((state) => state.setOpen);
   const { provides: pan, isPanning } = usePan(documentId);
   const { provides: selection } = useSelectionCapability();
@@ -164,8 +158,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       />
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />
 
-      <IconButton icon={RotateCw} label={t("viewer.rotate")} onClick={() => rotate?.rotateForward()} />
-      <PageDisplayMenu documentId={documentId} />
       <IconButton icon={Hand} label={t("viewer.pan")} active={isPanning} onClick={() => pan?.togglePan()} />
       <IconButton
         icon={Copy}
@@ -175,9 +167,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       <IconButton icon={Printer} label={t("viewer.print")} onClick={() => openPrintDialog(true)} />
 
       <span className="flex-1" />
-      <IconButton icon={ZoomOut} label={t("viewer.zoomOut")} onClick={() => zoom?.zoomOut()} />
       <ZoomInput percent={zoomPercent} label={t("viewer.zoomInput")} onApply={(percent) => zoom?.requestZoom(percent / 100)} />
-      <IconButton icon={ZoomIn} label={t("viewer.zoomIn")} onClick={() => zoom?.zoomIn()} />
       <Select
         size="sm"
         ariaLabel={t("viewer.zoom")}

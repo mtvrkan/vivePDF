@@ -3,7 +3,6 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { IconButton } from "@/components/shared/IconButton";
-import { cn } from "@/shared/lib/cn";
 import { pageFromInput, pageLabelOf } from "@/shared/lib/pageLabels";
 import { usePageLabels } from "@/shared/store/pageLabelsStore";
 import { usePageNavigation } from "./usePageNavigation";
@@ -27,18 +26,13 @@ export function PageNavigator({ documentId }: { documentId: string }) {
   };
 
   return (
-    <nav
-      aria-label={t("viewer.pageNavigation")}
-      data-testid="page-navigator"
-      className="glass-menu absolute end-4 bottom-4 z-30 flex flex-col items-center gap-1 rounded-xl p-1"
-    >
-      <IconButton icon={ChevronUp} label={t("viewer.previousPage")} disabled={scrollState.currentPage <= 1} onClick={() => scroll?.scrollToPreviousPage()} />
+    <div role="group" aria-label={t("viewer.pageNavigation")} data-testid="page-navigator" className="flex flex-col items-center gap-1">
       <form
         onSubmit={(event) => {
           event.preventDefault();
           goToPage();
         }}
-        className="flex flex-col items-center gap-0.5 font-mono text-sm tabular-nums"
+        className="flex flex-col items-center gap-0.5 font-mono tabular-nums"
       >
         <input
           value={pageInput}
@@ -46,13 +40,14 @@ export function PageNavigator({ documentId }: { documentId: string }) {
           onBlur={goToPage}
           aria-label={t("viewer.pageNumber")}
           inputMode={labels ? "text" : "numeric"}
-          className={cn("field-inline h-7 rounded-md text-center", labels ? "w-14" : "w-12")}
+          className="field-inline h-7 w-10 rounded-md text-center text-xs"
         />
-        <span className="max-w-14 truncate text-xs text-muted-foreground" title={labels ? `${scrollState.currentPage} / ${scrollState.totalPages}` : undefined}>
+        <span className="max-w-12 truncate text-[11px] text-muted-foreground" title={`${scrollState.currentPage} / ${scrollState.totalPages}`}>
           {labels ? `(${scrollState.currentPage} / ${scrollState.totalPages})` : `/ ${scrollState.totalPages}`}
         </span>
       </form>
+      <IconButton icon={ChevronUp} label={t("viewer.previousPage")} disabled={scrollState.currentPage <= 1} onClick={() => scroll?.scrollToPreviousPage()} />
       <IconButton icon={ChevronDown} label={t("viewer.nextPage")} disabled={scrollState.currentPage >= scrollState.totalPages} onClick={() => scroll?.scrollToNextPage()} />
-    </nav>
+    </div>
   );
 }

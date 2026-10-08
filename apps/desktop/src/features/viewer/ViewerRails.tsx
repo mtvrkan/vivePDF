@@ -1,11 +1,15 @@
 import type { KeyboardEvent, ReactNode } from "react";
-import { BookOpenText, Contrast, FileSignature, Info, Layers, ListTree, MessageSquareText, PanelLeft, Paperclip, PenLine, Sparkles, Volume2 } from "lucide-react";
+import { BookOpenText, Contrast, FileSignature, Info, Layers, ListTree, MessageSquareText, PanelLeft, Paperclip, PenLine, RotateCw, Sparkles, Volume2, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useRotate } from "@embedpdf/plugin-rotate/react";
+import { useZoom } from "@embedpdf/plugin-zoom/react";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import type { ViewerPanels } from "@/shared/store/viewerPanelsStore";
 import { EditorMenu } from "./overlay/EditorMenu";
+import { PageDisplayMenu } from "./PageDisplayMenu";
+import { PageNavigator } from "./PageNavigator";
 
 const RAIL_KEYS = new Set(["ArrowDown", "ArrowUp", "Home", "End"]);
 
@@ -54,8 +58,10 @@ export function NavigationRail({ panels, onTogglePanel, showSignatures = false, 
   );
 }
 
-export function ToolsRail({ panels, onTogglePanel, pageColorsOn, onTogglePageColors }: RailProps & { pageColorsOn: boolean; onTogglePageColors: () => void }) {
+export function ToolsRail({ documentId, panels, onTogglePanel, pageColorsOn, onTogglePageColors }: RailProps & { documentId: string; pageColorsOn: boolean; onTogglePageColors: () => void }) {
   const { t } = useTranslation();
+  const { provides: rotate } = useRotate(documentId);
+  const { provides: zoom } = useZoom(documentId);
   return (
     <Rail label={t("viewer.rails.tools")} side="end">
       <IconButton icon={MessageSquareText} label={t("viewer.comments.title")} active={panels.comments} onClick={() => onTogglePanel("comments")} />
@@ -76,6 +82,12 @@ export function ToolsRail({ panels, onTogglePanel, pageColorsOn, onTogglePageCol
       <IconButton icon={Contrast} label={t("viewer.pageDisplay.pageColors")} active={pageColorsOn} onClick={onTogglePageColors} />
       <RailDivider />
       <IconButton icon={Info} label={t("viewer.inspector")} active={panels.inspector} onClick={() => onTogglePanel("inspector")} />
+      <span className="min-h-2 flex-1" aria-hidden />
+      <PageNavigator documentId={documentId} />
+      <IconButton icon={RotateCw} label={t("viewer.rotate")} onClick={() => rotate?.rotateForward()} />
+      <PageDisplayMenu documentId={documentId} />
+      <IconButton icon={ZoomIn} label={t("viewer.zoomIn")} onClick={() => zoom?.zoomIn()} />
+      <IconButton icon={ZoomOut} label={t("viewer.zoomOut")} onClick={() => zoom?.zoomOut()} />
     </Rail>
   );
 }

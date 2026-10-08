@@ -39,7 +39,7 @@ describe("PageNavigator", () => {
     fireEvent.submit(pageInput().form as HTMLFormElement);
 
     expect(jumpTo).toHaveBeenCalledWith(120);
-    expect(screen.getByRole("navigation", { name: "Page navigation" }).textContent).toContain("278");
+    expect(screen.getByRole("group", { name: "Page navigation" }).textContent).toContain("278");
   });
 
   it("disables the previous-page arrow on the first page and the next-page arrow on the last", () => {

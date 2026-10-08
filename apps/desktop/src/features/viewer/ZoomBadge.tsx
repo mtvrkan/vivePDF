@@ -21,7 +21,7 @@ export function ZoomBadge({ documentId }: { documentId: string }) {
   return (
     <div
       aria-live="polite"
-      className="pointer-events-none absolute end-20 bottom-4 z-30 rounded-md border border-(--glass-border) bg-card/95 px-2.5 py-1 font-mono text-xs tabular-nums shadow-(--shadow-float)"
+      className="pointer-events-none absolute end-4 bottom-4 z-30 rounded-md border border-(--glass-border) bg-card/95 px-2.5 py-1 font-mono text-xs tabular-nums shadow-(--shadow-float)"
     >
       {Math.round(level * 100)}%
     </div>

@@ -123,7 +123,7 @@ export function PageDisplayMenu({ documentId }: { documentId: string }) {
             return;
           }
           const rect = event.currentTarget.getBoundingClientRect();
-          setAnchor({ x: rect.left, y: rect.bottom + 4 });
+          setAnchor({ x: rect.left - 4, y: rect.top, alignEnd: true });
         }}
       />
       {anchor ? <ContextMenu anchor={anchor} items={items} label={t("viewer.pageDisplay.title")} onClose={() => setAnchor(null)} /> : null}

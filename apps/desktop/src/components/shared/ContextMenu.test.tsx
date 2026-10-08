@@ -71,4 +71,13 @@ describe("ContextMenu", () => {
     fireEvent.keyDown(screen.getByRole("button", { name: "Outside" }), { key: "a" });
     expect(onClose).not.toHaveBeenCalled();
   });
+
+  it("ends at the anchor instead of starting there when it is aligned to the end", () => {
+    const measure = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ width: 200, height: 100, top: 0, left: 0, right: 200, bottom: 100, x: 0, y: 0, toJSON: () => ({}) });
+
+    render(<ContextMenu anchor={{ x: 900, y: 50, alignEnd: true }} items={[{ type: "item", id: "copy", label: "Copy", onSelect: vi.fn() }]} label="Page" onClose={vi.fn()} />);
+
+    expect((screen.getByRole("menu", { name: "Page" }).closest("[data-context-menu-layer]") as HTMLElement).style.left).toBe("700px");
+    measure.mockRestore();
+  });
 });

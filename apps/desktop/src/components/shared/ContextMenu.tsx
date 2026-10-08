@@ -6,7 +6,7 @@ import { cn } from "@/shared/lib/cn";
 
 export const MENU_LAYER = "data-context-menu-layer";
 
-export type ContextMenuAnchor = { x: number; y: number };
+export type ContextMenuAnchor = { x: number; y: number; alignEnd?: boolean };
 
 export type ContextMenuItem =
   | { type: "separator"; id: string }
@@ -24,7 +24,8 @@ function useClampedPosition(anchor: ContextMenuAnchor, ref: React.RefObject<HTML
     if (!node) return;
     const rect = node.getBoundingClientRect();
     const margin = 8;
-    const left = Math.min(Math.max(margin, anchor.x), window.innerWidth - rect.width - margin);
+    const x = anchor.alignEnd ? anchor.x - rect.width : anchor.x;
+    const left = Math.min(Math.max(margin, x), window.innerWidth - rect.width - margin);
     const top = Math.min(Math.max(margin, anchor.y), window.innerHeight - rect.height - margin);
     setStyle({ left: Math.max(margin, left), top: Math.max(margin, top) });
   }, [anchor, ref]);

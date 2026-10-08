@@ -7,6 +7,15 @@ import type { ViewerPanels } from "@/shared/store/viewerPanelsStore";
 import { axeViolations } from "@/test/axe";
 import { NavigationRail, ToolsRail } from "./ViewerRails";
 
+const rotateForward = vi.fn();
+const zoomIn = vi.fn();
+const zoomOut = vi.fn();
+
+vi.mock("@embedpdf/plugin-rotate/react", () => ({ useRotate: () => ({ provides: { rotateForward } }) }));
+vi.mock("@embedpdf/plugin-zoom/react", () => ({ useZoom: () => ({ provides: { zoomIn, zoomOut } }) }));
+vi.mock("./PageNavigator", () => ({ PageNavigator: () => <input aria-label="Page number" /> }));
+vi.mock("./PageDisplayMenu", () => ({ PageDisplayMenu: () => <button type="button">Page display</button> }));
+
 const closedPanels: ViewerPanels = { thumbnails: false, outline: false, search: false, inspector: false, annotate: false, comments: false, attachments: false, readAloud: false, reading: false, present: false, translate: false, signatures: false, layers: false };
 
 beforeAll(async () => {
@@ -61,14 +70,14 @@ describe("ToolsRail", () => {
   it("resets the presentation pointer tool when presentation tools close", () => {
     const onTogglePanel = vi.fn();
     usePresentationStore.getState().setTool("laser");
-    render(<ToolsRail panels={{ ...closedPanels, present: true }} onTogglePanel={onTogglePanel} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
+    render(<ToolsRail documentId="doc" panels={{ ...closedPanels, present: true }} onTogglePanel={onTogglePanel} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: "Presentation tools" }));
     expect(onTogglePanel).toHaveBeenCalledWith("present");
     expect(usePresentationStore.getState().tool).toBe("pointer");
   });
 
   it("enters PDF editing with one click and leaves it with the next", () => {
-    render(<ToolsRail panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn onTogglePageColors={vi.fn()} />);
+    render(<ToolsRail documentId="doc" panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn onTogglePageColors={vi.fn()} />);
     const trigger = screen.getByRole("button", { name: "Edit" });
 
     fireEvent.click(trigger);
@@ -84,7 +93,7 @@ describe("ToolsRail", () => {
   it("asks before leaving editing that has unsaved changes", () => {
     useViewerOverlayStore.getState().setMode("text");
     useViewerOverlayStore.getState().addObject({ id: "note", kind: "text", pageIndex: 0, x: 10, y: 10, width: 100, height: 20, text: "Hi", style: { fontSize: 12, color: "#000000", bold: false, align: "left" }, opacity: 1 });
-    render(<ToolsRail panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
+    render(<ToolsRail documentId="doc" panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
 
     fireEvent.click(screen.getByRole("button", { name: "Edit" }));
 
@@ -95,12 +104,26 @@ describe("ToolsRail", () => {
 
   it("shows a page tool as part of editing and closes it from the rail", () => {
     useViewerOverlayStore.getState().setMode("signature");
-    render(<ToolsRail panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
+    render(<ToolsRail documentId="doc" panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
     const trigger = screen.getByRole("button", { name: "Edit" });
 
     expect(trigger.getAttribute("aria-pressed")).toBe("true");
     fireEvent.click(trigger);
 
     expect(useViewerOverlayStore.getState().mode).toBeNull();
+  });
+
+  it("keeps page navigation, rotation, page display and zoom at the bottom of the rail", () => {
+    render(<ToolsRail documentId="doc" panels={closedPanels} onTogglePanel={vi.fn()} pageColorsOn={false} onTogglePageColors={vi.fn()} />);
+    const controls = Array.from(screen.getByRole("toolbar", { name: "Tools" }).querySelectorAll("button, input")).map((node) => node.getAttribute("aria-label") ?? node.textContent);
+
+    fireEvent.click(screen.getByRole("button", { name: "Rotate" }));
+    fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
+    fireEvent.click(screen.getByRole("button", { name: "Zoom out" }));
+
+    expect(controls.slice(-5)).toEqual(["Page number", "Rotate", "Page display", "Zoom in", "Zoom out"]);
+    expect(rotateForward).toHaveBeenCalledTimes(1);
+    expect(zoomIn).toHaveBeenCalledTimes(1);
+    expect(zoomOut).toHaveBeenCalledTimes(1);
   });
 });
