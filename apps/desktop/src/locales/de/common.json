@@ -7051,7 +7051,14 @@
           "spot": "Jede Veredelung wird eine überdruckende Sonderfarbe auf eigener Ebene (Foil, Emboss, SpotUV…); die Simulation entfällt.",
           "pages": "Jede Veredelung erhält nach dem Motiv eine eigene Schwarzweißseite; die Simulation entfällt."
         },
-        "dieCut": "Eine Stanzlinie für die abgerundeten Ecken mit {{value}} mm wird hinzugefügt."
+        "dieCut": "Eine Stanzlinie für die abgerundeten Ecken mit {{value}} mm wird hinzugefügt.",
+        "sheet": "Bogen",
+        "sheets": {
+          "card": "Kartengröße",
+          "a4": "A4",
+          "sra3": "SRA3"
+        },
+        "sheetHint": "Auf jeden Bogen kommen so viele Karten, wie passen. Ohne Datendatei füllt die Karte alle Nutzen; mit Datei erhält jede Zeile einen eigenen. Rückseiten werden gespiegelt, damit sie beim beidseitigen Druck passen."
       }
     },
     "project": {

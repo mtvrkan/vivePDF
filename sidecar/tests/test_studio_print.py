@@ -6,7 +6,8 @@ import pytest
 from PIL import Image
 from pydantic import ValidationError
 
-from vivepdf.ops._studio_models import StudioRenderParams
+from vivepdf.ops._studio_models import StudioPrintOptions, StudioRenderParams
+from vivepdf.ops._studio_print import sheet_layout
 from vivepdf.ops.studio import render
 from vivepdf.rpc.progress import silent_progress
 
@@ -172,3 +173,83 @@ def test_print_options_are_ignored_for_pictures_and_bounded(tmp_path: Path):
     assert size == (240, 150)
     with pytest.raises(ValidationError):
         StudioRenderParams.model_validate({**payload, "printReady": {"bleed": 100}})
+
+
+def _named(colour: str) -> list[dict]:
+    return [
+        _rect(0, 0, 240, 150, colour),
+        {
+            "kind": "text",
+            "x": 10,
+            "y": 10,
+            "width": 100,
+            "height": 30,
+            "runs": [{"text": "{Name}", "color": "#000000"}],
+            "fontSize": 14,
+        },
+    ]
+
+
+def _impose(folder: Path, pages: list[list[dict]], rows: list[dict], sheet: str = "a4") -> Path:
+    payload = {
+        "pages": [{"width": 240, "height": 150, "items": items} for items in pages],
+        "rows": rows,
+        "output": str(folder / "sheet.pdf"),
+        "overwrite": True,
+        "printReady": {"bleed": BLEED, "marks": True, "plates": "spot", "sheet": sheet},
+    }
+    return Path(render(StudioRenderParams.model_validate(payload), silent_progress()).output)
+
+
+def _word_at(page: pymupdf.Page, word: str) -> tuple[float, float]:
+    found = next(item for item in page.get_text("words") if item[4] == word)
+    return found[0], found[1]
+
+
+def test_an_a4_sheet_repeats_one_card_in_every_slot_with_marks_on_the_outside(tmp_path: Path):
+    size, trims, columns = sheet_layout(StudioPrintOptions(bleed=BLEED, sheet="a4"), 240, 150)
+    path = _impose(tmp_path, [_named("#ff0000")], [])
+    with pymupdf.open(path) as document:
+        count = document.page_count
+        words = [item[4] for item in document[0].get_text("words")]
+
+    assert size == (841.89, 595.28)
+    assert (len(trims), columns) == (9, 3)
+    assert trims[1].x0 - trims[0].x1 == pytest.approx(2 * BLEED)
+    assert count == 1
+    assert words.count("{Name}") == 9
+
+
+def test_data_rows_fill_the_slots_and_backs_are_mirrored_for_duplex(tmp_path: Path):
+    rows = [{"Name": name} for name in ("Ada", "Bob", "Cy")]
+    path = _impose(tmp_path, [_named("#ffffff"), _named("#eeeeee")], rows)
+    with pymupdf.open(path) as document:
+        front, back = document[0], document[1]
+        count = document.page_count
+        ada_front, bob_front = _word_at(front, "Ada"), _word_at(front, "Bob")
+        ada_back, bob_back = _word_at(back, "Ada"), _word_at(back, "Bob")
+
+    assert count == 2
+    assert bob_front[0] > ada_front[0]
+    assert ada_back[0] > bob_back[0]
+    assert ada_back[1] == pytest.approx(ada_front[1])
+    assert ada_back[0] + ada_front[0] == pytest.approx(bob_back[0] + bob_front[0], abs=1)
+
+
+def test_more_rows_than_slots_start_a_new_sheet(tmp_path: Path):
+    rows = [{"Name": f"N{index}"} for index in range(10)]
+    with pymupdf.open(_impose(tmp_path, [_named("#ffffff")], rows)) as document:
+        count = document.page_count
+        last = [item[4] for item in document[1].get_text("words")]
+
+    assert count == 2
+    assert last == ["N9"]
+
+
+def test_a_card_too_big_for_the_sheet_keeps_its_own_page():
+    options = StudioPrintOptions(bleed=BLEED, sheet="a4")
+
+    size, trims, columns = sheet_layout(options, 800, 700)
+
+    assert (len(trims), columns) == (1, 1)
+    assert size == (800 + 2 * AREA, 700 + 2 * AREA)

@@ -7053,7 +7053,14 @@
           "spot": "Her efekt kendi katmanında üst baskılı bir spot renk olur (Foil, Emboss, SpotUV…); canlandırılmış görünüm çıkarılır.",
           "pages": "Her efekt, tasarımdan sonra kendi siyah-beyaz sayfasını alır; canlandırılmış görünüm çıkarılır."
         },
-        "dieCut": "{{value}} mm yuvarlak köşeler için bir kesim (die-cut) çizgisi eklenir."
+        "dieCut": "{{value}} mm yuvarlak köşeler için bir kesim (die-cut) çizgisi eklenir.",
+        "sheet": "Tabaka",
+        "sheets": {
+          "card": "Kart boyutu",
+          "a4": "A4",
+          "sra3": "SRA3"
+        },
+        "sheetHint": "Her tabakaya sığdığı kadar kart yerleştirilir. Veri dosyası yoksa kart tüm yuvaları doldurur; varsa her satır kendi yuvasını alır. Arka yüzler çift taraflı baskıda üst üste gelsin diye aynalanır."
       }
     },
     "project": {

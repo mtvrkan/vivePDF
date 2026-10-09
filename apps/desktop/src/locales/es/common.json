@@ -7051,7 +7051,14 @@
           "spot": "Cada acabado pasa a ser una tinta plana sobreimpresa en su propia capa (Foil, Emboss, SpotUV…); se omite la simulación.",
           "pages": "Cada acabado recibe su propia página en blanco y negro tras el diseño; se omite la simulación."
         },
-        "dieCut": "Se añade una línea de troquel para las esquinas redondeadas de {{value}} mm."
+        "dieCut": "Se añade una línea de troquel para las esquinas redondeadas de {{value}} mm.",
+        "sheet": "Pliego",
+        "sheets": {
+          "card": "Tamaño tarjeta",
+          "a4": "A4",
+          "sra3": "SRA3"
+        },
+        "sheetHint": "Se colocan en cada pliego tantas tarjetas como quepan. Sin archivo de datos la tarjeta llena todos los huecos; con él, cada fila ocupa su propio hueco. Los reversos se reflejan para que coincidan al imprimir a doble cara."
       }
     },
     "project": {

@@ -12,6 +12,8 @@ LABEL_SIZE = 6.0
 KAPPA = 0.5523
 DIE_CUT = "DieCut"
 REGISTRATION = "All"
+SHEET_MARGIN = 28.35
+SHEETS: dict[str, tuple[float, float]] = {"a4": (595.28, 841.89), "sra3": (907.09, 1275.59)}
 
 PLATE_NAMES: dict[StudioPlate, str] = {
     "emboss": "Emboss",
@@ -82,15 +84,23 @@ def _paint(
         stamp.close()
 
 
-def _crop_marks(trim: pymupdf.Rect, height: float, offset: float) -> str:
+def _crop_marks(trims: list[pymupdf.Rect], height: float, offset: float) -> str:
     n = _number
+    left = min(trim.x0 for trim in trims)
+    right = max(trim.x1 for trim in trims)
+    top = min(trim.y0 for trim in trims)
+    bottom = max(trim.y1 for trim in trims)
+    xs = sorted({round(x, 3) for trim in trims for x in (trim.x0, trim.x1)})
+    ys = sorted({round(y, 3) for trim in trims for y in (trim.y0, trim.y1)})
     lines: list[str] = []
-    for x, sign_x in ((trim.x0, -1), (trim.x1, 1)):
-        for y, sign_y in ((trim.y0, -1), (trim.y1, 1)):
-            near_x, far_x = x + sign_x * offset, x + sign_x * (offset + MARK_LENGTH)
-            near_y, far_y = y + sign_y * offset, y + sign_y * (offset + MARK_LENGTH)
-            lines.append(f"{n(near_x)} {n(height - y)} m {n(far_x)} {n(height - y)} l")
-            lines.append(f"{n(x)} {n(height - near_y)} m {n(x)} {n(height - far_y)} l")
+    for x in xs:
+        for edge, sign in ((top, -1), (bottom, 1)):
+            near, far = edge + sign * offset, edge + sign * (offset + MARK_LENGTH)
+            lines.append(f"{n(x)} {n(height - near)} m {n(x)} {n(height - far)} l")
+    for y in ys:
+        for edge, sign in ((left, -1), (right, 1)):
+            near, far = edge + sign * offset, edge + sign * (offset + MARK_LENGTH)
+            lines.append(f"{n(near)} {n(height - y)} m {n(far)} {n(height - y)} l")
     return f"{n(MARK_WIDTH)} w\n" + "\n".join(lines) + "\nS"
 
 
@@ -138,46 +148,90 @@ def plate_document(shape: pymupdf.Document, colour: str | None) -> pymupdf.Docum
     return shape
 
 
+def card_layout(
+    options: StudioPrintOptions, width: float, height: float
+) -> tuple[tuple[float, float], list[pymupdf.Rect]]:
+    area = sheet_margin(options)
+    trim = pymupdf.Rect(area, area, area + width, area + height)
+    return (width + 2 * area, height + 2 * area), [trim]
+
+
+def _grid(sheet: tuple[float, float], cell: tuple[float, float], margin: float) -> tuple[int, int]:
+    columns = int((sheet[0] - 2 * margin + 1e-6) // cell[0])
+    rows = int((sheet[1] - 2 * margin + 1e-6) // cell[1])
+    return max(columns, 0), max(rows, 0)
+
+
+def sheet_layout(
+    options: StudioPrintOptions, width: float, height: float
+) -> tuple[tuple[float, float], list[pymupdf.Rect], int]:
+    portrait = SHEETS[options.sheet]
+    margin = max(sheet_margin(options), SHEET_MARGIN)
+    bleed = options.bleed
+    cell = (width + 2 * bleed, height + 2 * bleed)
+    choices = [portrait, (portrait[1], portrait[0])]
+    size = max(
+        choices, key=lambda choice: _grid(choice, cell, margin)[0] * _grid(choice, cell, margin)[1]
+    )
+    columns, rows = _grid(size, cell, margin)
+    if columns * rows == 0:
+        return (*card_layout(options, width, height), 1)
+    left = (size[0] - columns * cell[0]) / 2 + bleed
+    top = (size[1] - rows * cell[1]) / 2 + bleed
+    trims = [
+        pymupdf.Rect(
+            left + column * cell[0],
+            top + row * cell[1],
+            left + column * cell[0] + width,
+            top + row * cell[1] + height,
+        )
+        for row in range(rows)
+        for column in range(columns)
+    ]
+    return size, trims, columns
+
+
 class PrintSheet:
     def __init__(
         self,
         document: pymupdf.Document,
         options: StudioPrintOptions,
-        width: float,
-        height: float,
+        size: tuple[float, float],
+        trims: list[pymupdf.Rect],
         number: int,
     ) -> None:
         self.document = document
         self.options = options
         self.number = number
-        self.area = sheet_margin(options)
-        self.size = (width + 2 * self.area, height + 2 * self.area)
-        self.trim = pymupdf.Rect(self.area, self.area, self.area + width, self.area + height)
-        bleed = options.bleed
-        self.bleed = pymupdf.Rect(
-            self.trim.x0 - bleed, self.trim.y0 - bleed, self.trim.x1 + bleed, self.trim.y1 + bleed
-        )
+        self.size = size
+        self.trims = trims
         self.page = self._sheet()
         self.plate_pages: dict[str, pymupdf.Page] = {}
 
+    def _bleed(self, trim: pymupdf.Rect) -> pymupdf.Rect:
+        bleed = self.options.bleed
+        return pymupdf.Rect(trim.x0 - bleed, trim.y0 - bleed, trim.x1 + bleed, trim.y1 + bleed)
+
     def _sheet(self, label: str = "") -> pymupdf.Page:
         page = self.document.new_page(width=self.size[0], height=self.size[1])
-        page.set_bleedbox(self.bleed)
-        page.set_trimbox(self.trim)
+        if len(self.trims) == 1:
+            page.set_bleedbox(self._bleed(self.trims[0]))
+            page.set_trimbox(self.trims[0])
         if self.options.marks:
             offset = max(self.options.bleed, MARK_GAP)
-            _paint(page, _crop_marks(self.trim, self.size[1], offset), REGISTRATION, False)
+            _paint(page, _crop_marks(self.trims, self.size[1], offset), REGISTRATION, False)
             if label:
                 page.insert_text(
-                    (self.trim.x0, self.size[1] - MARK_SLUG / 2),
+                    (min(trim.x0 for trim in self.trims), self.size[1] - MARK_SLUG / 2),
                     label,
                     fontsize=LABEL_SIZE,
                     fontname="helv",
                 )
         return page
 
-    def add_art(self, art: pymupdf.Document) -> None:
-        self.page.show_pdf_page(self.bleed, art, 0, keep_proportion=False, overlay=True)
+    def add_art(self, slot: int, art: pymupdf.Document) -> None:
+        target = self._bleed(self.trims[slot])
+        self.page.show_pdf_page(target, art, 0, keep_proportion=False, overlay=True)
 
     def _target(self, name: str) -> tuple[pymupdf.Page, str | None, int]:
         if self.options.plates == "spot":
@@ -188,6 +242,7 @@ class PrintSheet:
 
     def add_plate(
         self,
+        slot: int,
         plate: StudioPlate,
         box: StudioBox,
         shape: pymupdf.Document,
@@ -195,12 +250,13 @@ class PrintSheet:
     ) -> None:
         page, colour, oc = self._target(PLATE_NAMES[plate])
         drawn = mirror(plate_document(shape, colour), box.flip_x, box.flip_y)
-        moved = box.model_copy(update={"x": box.x + self.area, "y": box.y + self.area})
+        trim = self.trims[slot]
+        moved = box.model_copy(update={"x": box.x + trim.x0, "y": box.y + trim.y0})
         place(page, drawn, moved, margin, oc)
 
-    def add_die_cut(self) -> None:
+    def add_die_cut(self, slot: int) -> None:
         if self.options.corner <= 0:
             return
         page, colour, oc = self._target(DIE_CUT)
-        line = _die_line(self.trim, self.size[1], self.options.corner)
+        line = _die_line(self.trims[slot], self.size[1], self.options.corner)
         _paint(page, line, colour, colour is not None, oc)

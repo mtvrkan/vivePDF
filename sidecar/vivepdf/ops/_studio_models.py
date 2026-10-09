@@ -310,6 +310,7 @@ class StudioPrintOptions(RpcModel):
     marks: bool = True
     plates: Literal["none", "spot", "pages"] = "spot"
     corner: float = Field(default=0.0, ge=0, le=72)
+    sheet: Literal["card", "a4", "sra3"] = "card"
 
 
 class StudioRenderParams(RpcModel):

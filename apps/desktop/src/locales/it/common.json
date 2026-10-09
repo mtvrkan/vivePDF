@@ -7051,7 +7051,14 @@
           "spot": "Ogni finitura diventa un colore spot in sovrastampa sul proprio livello (Foil, Emboss, SpotUV…); la simulazione viene tolta.",
           "pages": "Ogni finitura ha una propria pagina in bianco e nero dopo la grafica; la simulazione viene tolta."
         },
-        "dieCut": "Viene aggiunta una linea di fustella per gli angoli arrotondati da {{value}} mm."
+        "dieCut": "Viene aggiunta una linea di fustella per gli angoli arrotondati da {{value}} mm.",
+        "sheet": "Foglio",
+        "sheets": {
+          "card": "Formato biglietto",
+          "a4": "A4",
+          "sra3": "SRA3"
+        },
+        "sheetHint": "Su ogni foglio vanno tutti i biglietti che ci stanno. Senza file dati il biglietto riempie ogni posizione; con un file, ogni riga ha la sua. I retri sono specchiati per combaciare nella stampa fronte-retro."
       }
     },
     "project": {

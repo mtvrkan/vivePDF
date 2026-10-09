@@ -7053,7 +7053,14 @@
           "spot": "Each finish becomes an overprinting spot colour on its own layer (Foil, Emboss, SpotUV…); the simulated look is left out.",
           "pages": "Each finish gets its own black-and-white page after the artwork; the simulated look is left out."
         },
-        "dieCut": "A die-cut line for the {{value}} mm rounded corners is added."
+        "dieCut": "A die-cut line for the {{value}} mm rounded corners is added.",
+        "sheet": "Sheet",
+        "sheets": {
+          "card": "Card size",
+          "a4": "A4",
+          "sra3": "SRA3"
+        },
+        "sheetHint": "As many cards as fit are placed on each sheet. Without a data file the card fills every slot; with one, each row gets its own slot. Backs are mirrored so they line up when printed double-sided."
       }
     },
     "project": {

@@ -1,4 +1,4 @@
-import { STUDIO_PLATE_MODES, type StudioExportFormat, type StudioPlateMode } from "@/types/studio";
+import { STUDIO_PLATE_MODES, STUDIO_PRINT_SHEETS, type StudioExportFormat, type StudioPlateMode, type StudioPrintSheet } from "@/types/studio";
 import { DEFAULT_BLEED_MM, MAX_BLEED_MM } from "../model/print";
 
 export const EXPORT_SETTINGS_KEY = "vivepdf.studioExport";
@@ -60,9 +60,9 @@ export function writeExportSettings(settings: ExportSettings): void {
   writeStored(EXPORT_SETTINGS_KEY, normalizeExportSettings(settings));
 }
 
-export type PrintSettings = { enabled: boolean; bleedMm: number; marks: boolean; plates: StudioPlateMode };
+export type PrintSettings = { enabled: boolean; bleedMm: number; marks: boolean; plates: StudioPlateMode; sheet: StudioPrintSheet };
 
-export const DEFAULT_PRINT_SETTINGS: PrintSettings = { enabled: false, bleedMm: DEFAULT_BLEED_MM, marks: true, plates: "spot" };
+export const DEFAULT_PRINT_SETTINGS: PrintSettings = { enabled: false, bleedMm: DEFAULT_BLEED_MM, marks: true, plates: "spot", sheet: "card" };
 
 export function normalizePrintSettings(value: unknown): PrintSettings {
   const raw = typeof value === "object" && value !== null ? (value as Record<string, unknown>) : {};
@@ -73,6 +73,7 @@ export function normalizePrintSettings(value: unknown): PrintSettings {
     bleedMm: Math.min(MAX_BLEED_MM, Math.max(0, bleed)),
     marks: typeof raw.marks === "boolean" ? raw.marks : defaults.marks,
     plates: STUDIO_PLATE_MODES.find((mode) => mode === raw.plates) ?? defaults.plates,
+    sheet: STUDIO_PRINT_SHEETS.find((sheet) => sheet === raw.sheet) ?? defaults.sheet,
   };
 }
 

@@ -105,16 +105,17 @@ describe("ExportDialog", () => {
     fireEvent.click(screen.getByRole("switch", { name: "Print-ready PDF" }));
     fireEvent.click(choice("Finish plates", "Separate pages"));
     fireEvent.click(screen.getByRole("switch", { name: /Trim marks/ }));
+    fireEvent.click(choice("Sheet", "A4"));
     expect(screen.getByText("A die-cut line for the 3 mm rounded corners is added.")).toBeTruthy();
     await act(async () => {
       fireEvent.click(runButton());
     });
 
     const press = vi.mocked(exportDesign).mock.calls[0][0].printReady;
-    expect(press).toMatchObject({ marks: false, plates: "pages" });
+    expect(press).toMatchObject({ marks: false, plates: "pages", sheet: "a4" });
     expect(press?.bleed).toBeCloseTo(8.504, 2);
     expect(press?.corner).toBeCloseTo(8.504, 2);
-    expect(JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY) ?? "{}")).toEqual({ enabled: true, bleedMm: 3, marks: false, plates: "pages" });
+    expect(JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY) ?? "{}")).toEqual({ enabled: true, bleedMm: 3, marks: false, plates: "pages", sheet: "a4" });
   });
 
   it("hides print options for pictures and sends none", async () => {

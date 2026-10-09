@@ -384,7 +384,11 @@ export const STUDIO_PLATE_MODES = ["none", "spot", "pages"] as const;
 
 export type StudioPlateMode = (typeof STUDIO_PLATE_MODES)[number];
 
-export type StudioPrintOptions = { bleed: number; marks: boolean; plates: StudioPlateMode; corner: number };
+export const STUDIO_PRINT_SHEETS = ["card", "a4", "sra3"] as const;
+
+export type StudioPrintSheet = (typeof STUDIO_PRINT_SHEETS)[number];
+
+export type StudioPrintOptions = { bleed: number; marks: boolean; plates: StudioPlateMode; corner: number; sheet: StudioPrintSheet };
 
 export type StudioSignOptions = { certificatePath: string; certificatePassword: string; reason?: string; location?: string };
 

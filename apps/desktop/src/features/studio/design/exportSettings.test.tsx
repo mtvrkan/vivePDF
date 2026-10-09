@@ -38,10 +38,10 @@ describe("export settings", () => {
   });
 
   it("remembers print settings and repairs bleed and plate choices", () => {
-    writePrintSettings({ enabled: true, bleedMm: 5, marks: false, plates: "pages" });
+    writePrintSettings({ enabled: true, bleedMm: 5, marks: false, plates: "pages", sheet: "sra3" });
 
-    expect(readPrintSettings()).toEqual({ enabled: true, bleedMm: 5, marks: false, plates: "pages" });
-    expect(normalizePrintSettings({ bleedMm: 42, plates: "glitter", marks: "yes" })).toEqual({ ...DEFAULT_PRINT_SETTINGS, bleedMm: 10 });
+    expect(readPrintSettings()).toEqual({ enabled: true, bleedMm: 5, marks: false, plates: "pages", sheet: "sra3" });
+    expect(normalizePrintSettings({ bleedMm: 42, plates: "glitter", marks: "yes", sheet: "a0" })).toEqual({ ...DEFAULT_PRINT_SETTINGS, bleedMm: 10 });
     expect(normalizePrintSettings({ bleedMm: 2.3 }).bleedMm).toBe(2.5);
   });
 });

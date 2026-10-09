@@ -7051,7 +7051,14 @@
           "spot": "Cada acabamento vira uma cor especial em sobreposição na própria camada (Foil, Emboss, SpotUV…); a simulação é removida.",
           "pages": "Cada acabamento ganha sua própria página em preto e branco após a arte; a simulação é removida."
         },
-        "dieCut": "Uma linha de faca para os cantos arredondados de {{value}} mm é adicionada."
+        "dieCut": "Uma linha de faca para os cantos arredondados de {{value}} mm é adicionada.",
+        "sheet": "Folha",
+        "sheets": {
+          "card": "Tamanho do cartão",
+          "a4": "A4",
+          "sra3": "SRA3"
+        },
+        "sheetHint": "Cada folha recebe quantos cartões couberem. Sem arquivo de dados o cartão preenche todas as posições; com um arquivo, cada linha ganha a sua. Os versos são espelhados para coincidir na impressão frente e verso."
       }
     },
     "project": {

@@ -10,7 +10,7 @@ import { ResultPanel } from "@/components/tool/ResultPanel";
 import { useOperation } from "@/shared/hooks/useOperation";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { basenameOf, defaultOutputDirectory, joinPath } from "@/shared/lib/paths";
-import { STUDIO_PLATE_MODES, type StudioExportFormat } from "@/types/studio";
+import { STUDIO_PLATE_MODES, STUDIO_PRINT_SHEETS, type StudioExportFormat } from "@/types/studio";
 import { useMergeStore } from "../merge/mergeStore";
 import { MAX_BLEED_MM, millimetresToPoints } from "../model/print";
 import { hasSeeThroughBackground } from "../model/render";
@@ -139,7 +139,7 @@ export function ExportDialog({ open, onClose, language }: { open: boolean; onClo
     outputDir,
     pattern: pattern.trim(),
     sign: pdf && signing ? { certificatePath, certificatePassword, reason: reason.trim(), location: location.trim() } : null,
-    printReady: pdf && press.enabled ? { bleed: millimetresToPoints(press.bleedMm), marks: press.marks, plates: press.plates, corner: millimetresToPoints(cornerMm) } : null,
+    printReady: pdf && press.enabled ? { bleed: millimetresToPoints(press.bleedMm), marks: press.marks, plates: press.plates, corner: millimetresToPoints(cornerMm), sheet: split ? "card" : press.sheet } : null,
   });
 
   const run = () => {
@@ -253,6 +253,13 @@ export function ExportDialog({ open, onClose, language }: { open: boolean; onClo
                   format={(value) => t("studio.export.print.millimetres", { value })}
                 />
                 <Checkbox label={t("studio.export.print.marks")} hint={t("studio.export.print.marksHint")} checked={press.marks} onChange={(marks) => changePress({ marks })} />
+                {split ? null : (
+                  <div className="space-y-2">
+                    <span className="block text-sm font-medium text-foreground/80">{t("studio.export.print.sheet")}</span>
+                    <Segmented size="sm" value={press.sheet} options={STUDIO_PRINT_SHEETS} labelOf={(value) => t(`studio.export.print.sheets.${value}`)} onChange={(sheet) => changePress({ sheet })} ariaLabel={t("studio.export.print.sheet")} />
+                    {press.sheet === "card" ? null : <p className="text-xs text-muted-foreground">{t("studio.export.print.sheetHint")}</p>}
+                  </div>
+                )}
                 <div className="space-y-2">
                   <span className="block text-sm font-medium text-foreground/80">{t("studio.export.print.plates")}</span>
                   <Segmented size="sm" value={press.plates} options={STUDIO_PLATE_MODES} labelOf={(value) => t(`studio.export.print.plateModes.${value}`)} onChange={(plates) => changePress({ plates })} ariaLabel={t("studio.export.print.plates")} />

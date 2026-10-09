@@ -35,7 +35,7 @@ from vivepdf.ops._studio_models import (
     StudioTextItem,
     StudioVectorItem,
 )
-from vivepdf.ops._studio_print import PrintSheet
+from vivepdf.ops._studio_print import PrintSheet, card_layout, sheet_layout
 from vivepdf.ops._studio_project import build_archive, embed_archive, missing_asset
 from vivepdf.ops._studio_shadow import shadow_document
 from vivepdf.ops._studio_shaped import draw_shaped, needs_shaping, run_texts
@@ -418,6 +418,59 @@ def draw_page(
     return "".join(missing)
 
 
+def _bled(spec: StudioPage, bleed: float) -> StudioPage:
+    return spec.model_copy(
+        update={
+            "width": spec.width + 2 * bleed,
+            "height": spec.height + 2 * bleed,
+            "items": [
+                item.model_copy(update={"x": item.x + bleed, "y": item.y + bleed})
+                for item in spec.items
+            ],
+        }
+    )
+
+
+def _print_face(
+    sheet: PrintSheet,
+    slot: int,
+    spec: StudioPage,
+    page_index: int,
+    values: dict[str, str],
+    params: StudioRenderParams,
+    cache: Cache,
+    faces: dict[str | None, TextFaces],
+) -> str:
+    options = sheet.options
+    plates = options.plates != "none"
+    art = pymupdf.open()
+    try:
+        missing = draw_page(
+            art,
+            _bled(spec, options.bleed),
+            page_index,
+            values,
+            params.language,
+            cache,
+            faces,
+            finishes=not plates,
+        )
+        sheet.add_art(slot, art)
+    finally:
+        art.close()
+    if plates:
+        for item in spec.items:
+            if not isinstance(item, StudioFinishItem) or item.plate is None or item.opacity <= 0:
+                continue
+            shape, margin = _plate_shape(item, values, params.language, faces)
+            try:
+                sheet.add_plate(slot, item.plate, item, shape, margin)
+            finally:
+                shape.close()
+        sheet.add_die_cut(slot)
+    return missing
+
+
 def _print_page(
     document: pymupdf.Document,
     spec: StudioPage,
@@ -429,38 +482,48 @@ def _print_page(
     options: StudioPrintOptions,
     number: int,
 ) -> str:
-    plates = options.plates != "none"
-    bleed = options.bleed
-    bled = spec.model_copy(
-        update={
-            "width": spec.width + 2 * bleed,
-            "height": spec.height + 2 * bleed,
-            "items": [
-                item.model_copy(update={"x": item.x + bleed, "y": item.y + bleed})
-                for item in spec.items
-            ],
-        }
-    )
-    art = pymupdf.open()
-    try:
-        missing = draw_page(
-            art, bled, page_index, values, params.language, cache, faces, finishes=not plates
-        )
-        sheet = PrintSheet(document, options, spec.width, spec.height, number)
-        sheet.add_art(art)
-    finally:
-        art.close()
-    if plates:
-        for item in spec.items:
-            if not isinstance(item, StudioFinishItem) or item.plate is None or item.opacity <= 0:
-                continue
-            shape, margin = _plate_shape(item, values, params.language, faces)
-            try:
-                sheet.add_plate(item.plate, item, shape, margin)
-            finally:
-                shape.close()
-        sheet.add_die_cut()
-    return missing
+    size, trims = card_layout(options, spec.width, spec.height)
+    sheet = PrintSheet(document, options, size, trims, number)
+    return _print_face(sheet, 0, spec, page_index, values, params, cache, faces)
+
+
+def _mirrored(slot: int, columns: int) -> int:
+    row, column = divmod(slot, columns)
+    return row * columns + columns - 1 - column
+
+
+def _impose(
+    document: pymupdf.Document,
+    params: StudioRenderParams,
+    rows: list[dict[str, str]],
+    options: StudioPrintOptions,
+    cache: Cache,
+    faces: dict[str | None, TextFaces],
+    progress: Progress,
+) -> str:
+    layouts = [sheet_layout(options, spec.width, spec.height) for spec in params.pages]
+    slots = min(len(trims) for _, trims, _ in layouts)
+    cards = list(enumerate(rows)) if len(rows) > 1 else [(0, rows[0])] * slots
+    chunks = [cards[start : start + slots] for start in range(0, len(cards), slots)]
+    total = len(cards) * len(params.pages)
+    missing: list[str] = []
+    done = 0
+    for chunk in chunks:
+        for page_index, spec in enumerate(params.pages):
+            size, trims, columns = layouts[page_index]
+            sheet = PrintSheet(document, options, size, trims, document.page_count + 1)
+            for slot, (row_index, row) in enumerate(chunk):
+                progress.check_cancelled()
+                target = _mirrored(slot, columns) if page_index % 2 else slot
+                values = row_values(row, row_index, params.date)
+                missing.append(
+                    _print_face(sheet, target, spec, page_index, values, params, cache, faces)
+                )
+                done += 1
+                progress.report(
+                    0.9 * done / total, "progress.rendering", {"current": done, "total": total}
+                )
+    return "".join(missing)
 
 
 def _draw_output(
@@ -630,9 +693,13 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
     faces: dict[str | None, TextFaces] = {}
     missing: list[str] = []
     document = pymupdf.open()
+    options = params.print_ready
+    imposed = options is not None and options.sheet != "card" and params.format == "pdf"
     try:
         done = 0
-        for row_index, row in enumerate(rows):
+        if imposed:
+            missing.append(_impose(document, params, rows, options, cache, faces, progress))
+        for row_index, row in enumerate([] if imposed else rows):
             values = row_values(row, row_index, params.date)
             for page_index, spec in enumerate(params.pages):
                 progress.check_cancelled()

@@ -68,7 +68,7 @@ describe("exportDesign", () => {
 
   it("draws print-ready pages with bleed and drops print options for pictures", async () => {
     const design = threePages();
-    const printReady = { bleed: 8.5, marks: true, plates: "spot" as const, corner: 0 };
+    const printReady = { bleed: 8.5, marks: true, plates: "spot" as const, corner: 0, sheet: "card" as const };
 
     await exportDesign({ ...base, format: "pdf", output: "C:/out/cards.pdf", printReady }, undefined, design);
     expect(sent().printReady).toEqual(printReady);

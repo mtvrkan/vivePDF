@@ -7051,7 +7051,14 @@
           "spot": "Chaque finition devient un ton direct en surimpression sur son propre calque (Foil, Emboss, SpotUV…) ; la simulation est retirée.",
           "pages": "Chaque finition reçoit sa propre page noir et blanc après le visuel ; la simulation est retirée."
         },
-        "dieCut": "Un tracé de découpe pour les coins arrondis de {{value}} mm est ajouté."
+        "dieCut": "Un tracé de découpe pour les coins arrondis de {{value}} mm est ajouté.",
+        "sheet": "Feuille",
+        "sheets": {
+          "card": "Taille carte",
+          "a4": "A4",
+          "sra3": "SRA3"
+        },
+        "sheetHint": "Chaque feuille reçoit autant de cartes qu’il en tient. Sans fichier de données, la carte remplit toutes les poses ; avec un fichier, chaque ligne a sa pose. Les versos sont en miroir pour tomber en face en recto verso."
       }
     },
     "project": {
