@@ -10,6 +10,7 @@ import pymupdf
 import zxingcpp
 from PIL import Image, ImageDraw, ImageOps
 
+from vivepdf.ops._forms import show_page
 from vivepdf.ops._image_files import eight_bit, open_picture
 from vivepdf.ops._output import prepare_output, save_document, write_atomically
 from vivepdf.ops._studio_finish import DrawSources, finish_document, finish_reach
@@ -391,7 +392,7 @@ def _local_sources(
                     margin + local.width + inner,
                     margin + local.height + inner,
                 )
-                page.show_pdf_page(rect, source, 0, keep_proportion=False)
+                show_page(page, rect, source, 0, keep_proportion=False)
             finally:
                 source.close()
 

@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pymupdf
 
+from vivepdf.ops._forms import show_page
 from vivepdf.ops._studio_models import StudioTextItem
 from vivepdf.ops._studio_text import (
     LIST_INDENT,
@@ -289,7 +290,7 @@ def _place(
         if stroke is not None:
             _stroked(source[0], *stroke)
         mirror(source, item.flip_x, item.flip_y)
-        page.show_pdf_page(_target(item, page_height, *offset), source, 0, rotate=-item.rotation)
+        show_page(page, _target(item, page_height, *offset), source, 0, rotate=-item.rotation)
     finally:
         source.close()
 

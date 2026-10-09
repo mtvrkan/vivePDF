@@ -3,6 +3,7 @@ import re
 
 import pymupdf
 
+from vivepdf.ops._forms import show_page
 from vivepdf.ops._studio_models import (
     StudioBox,
     StudioLinear,
@@ -336,7 +337,8 @@ def place(
 ) -> None:
     target = rotated_bounds(box, margin)
     rotation = box.rotation % 360
-    page.show_pdf_page(
+    show_page(
+        page,
         target,
         source,
         0,

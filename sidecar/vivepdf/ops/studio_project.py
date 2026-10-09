@@ -24,6 +24,7 @@ from vivepdf.ops._studio_project import (
     refusal,
     too_large,
 )
+from vivepdf.ops._studio_shadow import shadow_dpi_limit
 from vivepdf.ops._studio_text import TextFaces
 from vivepdf.ops._studio_thumbnails import cached_thumbnail
 from vivepdf.ops.studio import Cache, draw_page
@@ -32,6 +33,7 @@ from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.registry import op
 
 THUMBNAIL_SIDE = 320
+THUMBNAIL_SHADOW_OVERSAMPLE = 2
 PDF_SIGNATURE = b"%PDF"
 
 
@@ -43,10 +45,11 @@ def _rendered_thumbnail(page_spec: StudioPage, language: str, side: int) -> tupl
     cache: Cache = {}
     faces: dict[str | None, TextFaces] = {}
     document = pymupdf.open()
+    scale = side / max(page_spec.width, page_spec.height)
     try:
-        draw_page(document, page_spec, 0, {}, language, cache, faces)
+        with shadow_dpi_limit(72 * scale * THUMBNAIL_SHADOW_OVERSAMPLE):
+            draw_page(document, page_spec, 0, {}, language, cache, faces)
         page = document[0]
-        scale = side / max(page.rect.width, page.rect.height)
         pixmap = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
         return pixmap.tobytes(output="jpg", jpg_quality=80), pixmap.width, pixmap.height
     finally:

@@ -1,5 +1,7 @@
-import io
 import math
+from collections.abc import Iterator
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 import numpy as np
 import pymupdf
@@ -14,6 +16,17 @@ MAX_SHADOW_PIXELS = 16_000_000
 BLUR_REACH = 3
 
 Source = tuple[pymupdf.Document, float]
+
+_dpi_limit: ContextVar[float | None] = ContextVar("shadow_dpi_limit", default=None)
+
+
+@contextmanager
+def shadow_dpi_limit(dpi: float) -> Iterator[None]:
+    token = _dpi_limit.set(dpi)
+    try:
+        yield
+    finally:
+        _dpi_limit.reset(token)
 
 
 def local_offset(item: StudioShadowItem) -> tuple[float, float]:
@@ -68,6 +81,9 @@ def shadow_document(item: StudioShadowItem, sources: list[Source]) -> Source:
     margin = shadow_margin(item, inner)
     width, height = item.width + 2 * margin, item.height + 2 * margin
     dpi = SHARP_DPI if sigma < SOFT_SIGMA else SOFT_DPI
+    limit = _dpi_limit.get()
+    if limit is not None:
+        dpi = min(dpi, limit)
     scale = min(dpi / 72, math.sqrt(MAX_SHADOW_PIXELS / max(width * height, 1.0)))
     alpha = blurred(_coverage(sources, item, margin, local_offset(item), scale), sigma * scale)
     alpha = alpha * item.shadow.opacity
@@ -78,9 +94,8 @@ def shadow_document(item: StudioShadowItem, sources: list[Source]) -> Source:
     pixels = np.empty((*alpha.shape, 4), dtype=np.uint8)
     pixels[:, :, 0], pixels[:, :, 1], pixels[:, :, 2] = red, green, blue
     pixels[:, :, 3] = np.clip(np.rint(alpha * 255), 0, 255).astype(np.uint8)
-    buffer = io.BytesIO()
-    Image.fromarray(pixels, mode="RGBA").save(buffer, format="PNG", optimize=True)
+    pixmap = pymupdf.Pixmap(pymupdf.csRGB, pixels.shape[1], pixels.shape[0], pixels.tobytes(), True)
     document = pymupdf.open()
     page = document.new_page(width=width, height=height)
-    page.insert_image(page.rect, stream=buffer.getvalue(), keep_proportion=False)
+    page.insert_image(page.rect, pixmap=pixmap, keep_proportion=False)
     return document, margin

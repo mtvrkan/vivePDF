@@ -53,22 +53,15 @@ const TemplateCard = memo(function TemplateCard({ template, box, language, onPic
 
   useEffect(() => {
     const node = ref.current;
-    if (!node || visible) return;
+    if (!node) return;
     if (typeof IntersectionObserver === "undefined") {
       setVisible(true);
       return;
     }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        observer.disconnect();
-        setVisible(true);
-      },
-      { rootMargin: "300px" },
-    );
+    const observer = new IntersectionObserver((entries) => setVisible(entries.at(-1)?.isIntersecting ?? false), { rootMargin: "300px" });
     observer.observe(node);
     return () => observer.disconnect();
-  }, [visible]);
+  }, []);
 
   const pageOf = useCallback(() => previewOf(template, t, language).pages[0], [template, t, language]);
   const thumbnail = useTemplateThumbnail(template.id, visible ? pageOf : null, language, box);
