@@ -6651,7 +6651,11 @@
     "loadingDiagnostics": "Diagnosedaten werden geladen…",
     "openGithub": "Auf GitHub öffnen",
     "copyToClipboard": "In die Zwischenablage kopieren",
-    "saveToFile": "Bericht als Datei speichern"
+    "saveToFile": "Bericht als Datei speichern",
+    "copied": "Bericht in die Zwischenablage kopiert",
+    "saved": "Bericht gespeichert",
+    "typeLabel": "Art des Berichts",
+    "descriptionLabel": "Beschreibung"
   },
   "dateRange": {
     "placeholder": "Beliebiges Datum",

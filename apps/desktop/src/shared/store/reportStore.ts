@@ -7,7 +7,6 @@ export type DiagnosticsInfo = {
   osVersion: string;
   arch: string;
   appVersion: string;
-  locale: string | null;
   logPath: string;
   logTail: string;
 };

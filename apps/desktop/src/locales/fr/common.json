@@ -6651,7 +6651,11 @@
     "loadingDiagnostics": "Chargement des diagnostics…",
     "openGithub": "Ouvrir sur GitHub",
     "copyToClipboard": "Copier dans le presse-papiers",
-    "saveToFile": "Enregistrer le rapport dans un fichier"
+    "saveToFile": "Enregistrer le rapport dans un fichier",
+    "copied": "Rapport copié dans le presse-papiers",
+    "saved": "Rapport enregistré",
+    "typeLabel": "Type de rapport",
+    "descriptionLabel": "Description"
   },
   "dateRange": {
     "placeholder": "Toutes les dates",

@@ -173,9 +173,71 @@ pub struct DiagnosticsInfo {
     pub os_version: String,
     pub arch: String,
     pub app_version: String,
-    pub locale: Option<String>,
     pub log_path: String,
     pub log_tail: String,
+}
+
+#[cfg(any(test, windows))]
+const FIRST_WINDOWS_11_BUILD: u32 = 22000;
+
+#[cfg(any(test, windows))]
+fn windows_label(product: &str, display: &str, build: u32, revision: Option<u32>) -> String {
+    let name = if build >= FIRST_WINDOWS_11_BUILD {
+        product.replacen("Windows 10", "Windows 11", 1)
+    } else {
+        product.to_string()
+    };
+    let build_text = match revision {
+        Some(revision) => format!("{build}.{revision}"),
+        None => build.to_string(),
+    };
+    let parts: Vec<String> = [name, display.to_string(), format!("build {build_text}")]
+        .into_iter()
+        .filter(|part| !part.trim().is_empty())
+        .collect();
+    parts.join(" ")
+}
+
+#[cfg(windows)]
+fn os_version() -> Option<String> {
+    use winreg::enums::HKEY_LOCAL_MACHINE;
+    use winreg::RegKey;
+    let key = RegKey::predef(HKEY_LOCAL_MACHINE)
+        .open_subkey("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion")
+        .ok()?;
+    let product: String = key.get_value("ProductName").unwrap_or_default();
+    let display: String = key.get_value("DisplayVersion").unwrap_or_default();
+    let build: String = key.get_value("CurrentBuild").ok()?;
+    let revision: Option<u32> = key.get_value("UBR").ok();
+    Some(windows_label(
+        &product,
+        &display,
+        build.trim().parse().ok()?,
+        revision,
+    ))
+}
+
+#[cfg(target_os = "macos")]
+fn os_version() -> Option<String> {
+    let output = std::process::Command::new("sw_vers")
+        .arg("-productVersion")
+        .output()
+        .ok()?;
+    let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    (!version.is_empty()).then(|| format!("macOS {version}"))
+}
+
+#[cfg(any(test, all(unix, not(target_os = "macos"))))]
+fn os_release_name(text: &str) -> Option<String> {
+    text.lines()
+        .find_map(|line| line.strip_prefix("PRETTY_NAME="))
+        .map(|value| value.trim().trim_matches('"').to_string())
+        .filter(|value| !value.is_empty())
+}
+
+#[cfg(all(unix, not(target_os = "macos")))]
+fn os_version() -> Option<String> {
+    os_release_name(&std::fs::read_to_string("/etc/os-release").ok()?)
 }
 
 #[tauri::command]
@@ -185,11 +247,10 @@ pub async fn diagnostics_info(app: tauri::AppHandle) -> Result<DiagnosticsInfo, 
         let os = std::env::consts::OS.to_string();
         let tail = tail_lines(&path, LOG_TAIL_LINES).unwrap_or_default();
         Ok(DiagnosticsInfo {
-            os: os.clone(),
-            os_version: os,
+            os_version: os_version().unwrap_or_else(|| os.clone()),
+            os,
             arch: std::env::consts::ARCH.to_string(),
             app_version: app.package_info().version.to_string(),
-            locale: std::env::var("LANG").ok(),
             log_path: path.to_string_lossy().to_string(),
             log_tail: redact(&tail),
         })
@@ -312,6 +373,26 @@ pub fn install_panic_hook<R: Runtime>(app: tauri::AppHandle<R>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn windows_label_names_windows_11_by_its_build() {
+        assert_eq!(
+            windows_label("Windows 10 Pro", "24H2", 26100, Some(4061)),
+            "Windows 11 Pro 24H2 build 26100.4061"
+        );
+        assert_eq!(
+            windows_label("Windows 10 Home", "22H2", 19045, None),
+            "Windows 10 Home 22H2 build 19045"
+        );
+        assert_eq!(windows_label("", "", 19045, Some(1)), "build 19045.1");
+    }
+
+    #[test]
+    fn os_release_name_reads_the_pretty_name() {
+        let text = "NAME=\"Ubuntu\"\nPRETTY_NAME=\"Ubuntu 24.04.1 LTS\"\nID=ubuntu\n";
+        assert_eq!(os_release_name(text).as_deref(), Some("Ubuntu 24.04.1 LTS"));
+        assert_eq!(os_release_name("ID=arch\n"), None);
+    }
 
     #[test]
     fn only_plain_text_targets_are_writable() {

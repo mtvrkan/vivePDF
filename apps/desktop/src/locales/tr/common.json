@@ -6652,7 +6652,11 @@
     "loadingDiagnostics": "Tanılama bilgileri yükleniyor…",
     "openGithub": "GitHub’da aç",
     "copyToClipboard": "Panoya kopyala",
-    "saveToFile": "Raporu dosyaya kaydet"
+    "saveToFile": "Raporu dosyaya kaydet",
+    "copied": "Rapor panoya kopyalandı",
+    "saved": "Rapor kaydedildi",
+    "typeLabel": "Rapor türü",
+    "descriptionLabel": "Açıklama"
   },
   "topbar": {},
   "dateRange": {

@@ -6652,7 +6652,11 @@
     "loadingDiagnostics": "Loading diagnostics…",
     "openGithub": "Open on GitHub",
     "copyToClipboard": "Copy to clipboard",
-    "saveToFile": "Save report to file"
+    "saveToFile": "Save report to file",
+    "copied": "Report copied to the clipboard",
+    "saved": "Report saved",
+    "typeLabel": "Report type",
+    "descriptionLabel": "Description"
   },
   "topbar": {},
   "dateRange": {

@@ -17,6 +17,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Report a bug / Suggest a feature: copying or saving the report now confirms it and shows an error if it fails; the diagnostics name the real OS release and build (for example Windows 11 24H2) instead of repeating "windows", and the language line shows the app and system language instead of "n/a"; the report type buttons tell screen readers which one is chosen [2026-10-09]
 - Studio: contact card QR fields accept spaces between words again, stop before the code grows past what a QR code holds (with a hint when nearly full), and merged row values with commas, semicolons or line breaks no longer break the contact card [2026-10-09]
 - Studio: print-ready PDFs no longer stretch edge pictures into the bleed — the bleed is filled from the picture beyond its crop — and leave outlined or rounded rectangles and circle or rounded pictures at the trim instead of distorting them [2026-10-09]
 - Studio: editing the finish of several selected elements changes only that setting on each instead of copying the first element's finish to all; resizing a selection that holds a table stretches its rows; a flipped or foiled table is shown straight and plain while its cells are edited [2026-10-09]

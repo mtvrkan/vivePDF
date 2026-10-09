@@ -7,7 +7,10 @@ import { Dialog } from "@/components/shared/Dialog";
 import { Button } from "@/components/shared/Button";
 import { Checkbox } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
+import { describeError } from "@/shared/lib/errorMessage";
+import { toRpcError } from "@/shared/rpc/client";
 import { useReportStore, type DiagnosticsInfo } from "@/shared/store/reportStore";
+import { useToastStore } from "@/shared/store/toastStore";
 import * as logger from "@/shared/lib/logger";
 
 const GITHUB_ISSUE_URL = "https://github.com/mtvrkan/vivePDF/issues/new";
@@ -24,16 +27,9 @@ const CATEGORY_LABELS_GITHUB: Record<(typeof CATEGORIES)[number], string> = {
   idea: "enhancement",
 };
 
-function diagnosticsBlock(diagnostics: DiagnosticsInfo, maxLogLines: number): string {
+function diagnosticsBlock(diagnostics: DiagnosticsInfo, maxLogLines: number, locale: string): string {
   const tail = diagnostics.logTail.split("\n").slice(-maxLogLines).join("\n");
-  return [
-    `OS: ${diagnostics.os} (${diagnostics.osVersion})`,
-    `Arch: ${diagnostics.arch}`,
-    `App version: ${diagnostics.appVersion}`,
-    `Locale: ${diagnostics.locale ?? "n/a"}`,
-    "Log tail:",
-    tail,
-  ].join("\n");
+  return [`OS: ${diagnostics.osVersion}`, `Arch: ${diagnostics.arch}`, `App version: ${diagnostics.appVersion}`, `Locale: ${locale}`, "Log tail:", tail].join("\n");
 }
 
 function buildBody(
@@ -43,16 +39,17 @@ function buildBody(
   diagnostics: DiagnosticsInfo | null,
   maxLogLines: number,
   limit: number | null,
+  locale: string,
 ): string {
   const parts = [`Category: ${category}`, "", description.trim() || "(no description)"];
   if (includeDiagnostics && diagnostics) {
-    parts.push("", "---", diagnosticsBlock(diagnostics, maxLogLines));
+    parts.push("", "---", diagnosticsBlock(diagnostics, maxLogLines, locale));
   }
   const full = parts.join("\n");
   if (limit === null || full.length <= limit) return full;
   const withoutLog = parts.slice(0, -1).join("\n");
   const remaining = Math.max(0, limit - withoutLog.length - 20);
-  const truncatedTail = diagnostics ? diagnosticsBlock(diagnostics, maxLogLines).slice(-remaining) : "";
+  const truncatedTail = diagnostics ? diagnosticsBlock(diagnostics, maxLogLines, locale).slice(-remaining) : "";
   return `${withoutLog}\n${truncatedTail}`.slice(0, limit);
 }
 
@@ -63,7 +60,8 @@ function buildTitle(category: string, description: string): string {
 }
 
 export function ReportDialog() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const toast = useToastStore((state) => state.push);
   const open = useReportStore((state) => state.open);
   const category = useReportStore((state) => state.category);
   const description = useReportStore((state) => state.description);
@@ -74,32 +72,49 @@ export function ReportDialog() {
   const setCategory = useReportStore((state) => state.setCategory);
   const setDescription = useReportStore((state) => state.setDescription);
   const setIncludeDiagnostics = useReportStore((state) => state.setIncludeDiagnostics);
+  const locale = `${i18n.language} (system ${navigator.language})`;
 
-  const diagnosticsPreview = useMemo(
-    () => (diagnostics ? diagnosticsBlock(diagnostics, 20) : ""),
-    [diagnostics],
-  );
+  const diagnosticsPreview = useMemo(() => (diagnostics ? diagnosticsBlock(diagnostics, 20, locale) : ""), [diagnostics, locale]);
+
+  const fullBody = () => buildBody(category, description, includeDiagnostics, diagnostics, 200, null, locale);
+
+  const failed = (action: string, error: unknown) => {
+    logger.error("report", `${action} failed: ${String(error)}`);
+    toast("error", describeError(t, toRpcError(error)));
+  };
 
   const handleOpenGithub = async () => {
     const title = buildTitle(category, description);
-    const body = buildBody(category, description, includeDiagnostics, diagnostics, 200, BODY_LIMIT);
+    const body = buildBody(category, description, includeDiagnostics, diagnostics, 200, BODY_LIMIT, locale);
     const url = `${GITHUB_ISSUE_URL}?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}&labels=${CATEGORY_LABELS_GITHUB[category]}`;
     logger.info("report", "action:openGithub");
-    await openUrl(url);
+    try {
+      await openUrl(url);
+    } catch (error) {
+      failed("openGithub", error);
+    }
   };
 
   const handleCopy = async () => {
-    const body = buildBody(category, description, includeDiagnostics, diagnostics, 200, null);
     logger.info("report", "action:copyToClipboard");
-    await navigator.clipboard.writeText(body);
+    try {
+      await navigator.clipboard.writeText(fullBody());
+      toast("success", t("report.copied"));
+    } catch (error) {
+      failed("copyToClipboard", error);
+    }
   };
 
   const handleSaveToFile = async () => {
     logger.info("report", "action:saveToFile");
-    const path = await save({ defaultPath: "vivepdf-report.txt", filters: [{ name: "Text", extensions: ["txt"] }] });
-    if (!path) return;
-    const contents = buildBody(category, description, includeDiagnostics, diagnostics, 200, null);
-    await invoke("write_text_file", { path, contents });
+    try {
+      const path = await save({ defaultPath: "vivepdf-report.txt", filters: [{ name: "Text", extensions: ["txt"] }] });
+      if (!path) return;
+      await invoke("write_text_file", { path, contents: fullBody() });
+      toast("success", t("report.saved"));
+    } catch (error) {
+      failed("saveToFile", error);
+    }
   };
 
   return (
@@ -123,11 +138,12 @@ export function ReportDialog() {
       }
     >
       <div className="flex flex-col gap-3">
-        <div className="flex gap-2">
+        <div className="flex gap-2" role="group" aria-label={t("report.typeLabel")}>
           {CATEGORIES.map((value) => (
             <button
               key={value}
               type="button"
+              aria-pressed={value === category}
               onClick={() => setCategory(value)}
               className={cn(
                 "h-8 flex-1 rounded-lg border px-3 text-sm",
@@ -144,6 +160,7 @@ export function ReportDialog() {
           value={description}
           onChange={(event) => setDescription(event.target.value)}
           rows={4}
+          aria-label={t("report.descriptionLabel")}
           placeholder={t("report.descriptionPlaceholder")}
           className="field w-full rounded-lg px-3 py-2 text-sm outline-none"
         />

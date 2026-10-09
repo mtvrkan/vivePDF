@@ -6651,7 +6651,11 @@
     "loadingDiagnostics": "Caricamento diagnostica…",
     "openGithub": "Apri su GitHub",
     "copyToClipboard": "Copia negli appunti",
-    "saveToFile": "Salva segnalazione su file"
+    "saveToFile": "Salva segnalazione su file",
+    "copied": "Segnalazione copiata negli appunti",
+    "saved": "Segnalazione salvata",
+    "typeLabel": "Tipo di segnalazione",
+    "descriptionLabel": "Descrizione"
   },
   "dateRange": {
     "placeholder": "Qualsiasi data",

@@ -6651,7 +6651,11 @@
     "loadingDiagnostics": "Carregando diagnóstico…",
     "openGithub": "Abrir no GitHub",
     "copyToClipboard": "Copiar para a área de transferência",
-    "saveToFile": "Salvar relatório em arquivo"
+    "saveToFile": "Salvar relatório em arquivo",
+    "copied": "Relatório copiado para a área de transferência",
+    "saved": "Relatório salvo",
+    "typeLabel": "Tipo de relatório",
+    "descriptionLabel": "Descrição"
   },
   "dateRange": {
     "placeholder": "Qualquer data",

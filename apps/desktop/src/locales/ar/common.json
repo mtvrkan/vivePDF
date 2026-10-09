@@ -7458,7 +7458,11 @@
     "loadingDiagnostics": "جارٍ تحميل بيانات التشخيص…",
     "openGithub": "فتح على GitHub",
     "copyToClipboard": "نسخ إلى الحافظة",
-    "saveToFile": "حفظ التقرير في ملف"
+    "saveToFile": "حفظ التقرير في ملف",
+    "copied": "تم نسخ التقرير إلى الحافظة",
+    "saved": "تم حفظ التقرير",
+    "typeLabel": "نوع التقرير",
+    "descriptionLabel": "الوصف"
   },
   "dateRange": {
     "placeholder": "أي تاريخ",

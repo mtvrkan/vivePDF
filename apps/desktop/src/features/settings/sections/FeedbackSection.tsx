@@ -27,7 +27,7 @@ export function FeedbackSection({ query, onEmptyChange, diagnosticsBusy, setDiag
       const info = await invoke<DiagnosticsInfo>("diagnostics_info");
       const lines = [
         `vivePDF ${info.appVersion}`,
-        `${info.os} ${info.osVersion} (${info.arch})`,
+        `${info.osVersion} (${info.arch})`,
         `engine ${engine?.version ?? "—"} · PyMuPDF ${engine?.pymupdf ?? "—"} · Python ${engine?.python ?? "—"}`,
         `LibreOffice ${tools?.libreoffice ?? t("settings.notFound")}`,
         `OCR ${tools?.ocrLanguages.join(", ") || "—"}`,
