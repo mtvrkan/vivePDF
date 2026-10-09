@@ -20,7 +20,7 @@ type ToolBrowserProps = {
 };
 
 const TOOL_CARD_CLASS =
-  "flex items-center gap-3 rounded-xl border border-(--glass-border) bg-card/40 p-2.5 text-start outline-none transition-colors duration-(--transition-fast) hover:border-(--tone)/50 hover:bg-(--tone-soft) focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-60";
+  "flex items-center gap-3 rounded-xl border border-(--glass-border) bg-card/40 p-2.5 text-start outline-none transition-colors duration-(--transition-fast) tone-hover focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-60";
 
 function ToolCard({ tool, onSelect, onPick, picked }: { tool: ToolShortcut; onSelect?: () => void; onPick?: (tool: ToolShortcut) => void; picked?: boolean }) {
   const { t } = useTranslation();

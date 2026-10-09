@@ -76,8 +76,16 @@
   --menubar-active-bg: color-mix(in oklab, var(--primary) 11%, transparent);
   --primary-gradient: linear-gradient(180deg, hsl(203 88% 40%), hsl(207 86% 34%));
   --primary-glow: 0 10px 24px -12px hsl(203 90% 45% / 0.65);
-  --nav-active-bar-glow: 0 0 12px color-mix(in oklab, var(--tone) 90%, transparent);
-  --tile-glow: 0 10px 20px -12px color-mix(in oklab, var(--tone) 80%, transparent);
+  --nav-bar-glow-blur: 12px;
+  --nav-bar-glow-strength: 90%;
+  --tile-light-share: 78%;
+  --tile-highlight: 0.35;
+  --tile-glow-strength: 80%;
+  --hover-highlight: 0.12;
+  --hover-lift-highlight: 0.2;
+  --hover-lift-glow: 40%;
+  --tone-hover-border: 50%;
+  --tone-hover-soft: 100%;
   --blob-strength: 26%;
   color-scheme: light;
 }
@@ -114,17 +122,17 @@
   --aurora-opacity: 0.45;
   --tint-strength: 8%;
   --tone-organize: hsl(202 62% 63%);
-  --tone-organize-soft: hsl(202 60% 18%);
+  --tone-organize-soft: hsl(202 38% 17%);
   --tone-improve: hsl(158 42% 53%);
-  --tone-improve-soft: hsl(158 40% 15%);
+  --tone-improve-soft: hsl(158 28% 15%);
   --tone-toPdf: hsl(24 70% 63%);
-  --tone-toPdf-soft: hsl(24 50% 17%);
+  --tone-toPdf-soft: hsl(24 34% 17%);
   --tone-fromPdf: hsl(262 52% 73%);
-  --tone-fromPdf-soft: hsl(262 40% 20%);
+  --tone-fromPdf-soft: hsl(262 28% 19%);
   --tone-edit: hsl(40 72% 60%);
-  --tone-edit-soft: hsl(40 50% 16%);
+  --tone-edit-soft: hsl(40 34% 16%);
   --tone-security: hsl(348 60% 67%);
-  --tone-security-soft: hsl(348 45% 18%);
+  --tone-security-soft: hsl(348 30% 18%);
   --group-teal: hsl(172 60% 48%);
   --group-cyan: hsl(190 62% 56%);
   --group-indigo: hsl(232 58% 72%);
@@ -155,8 +163,16 @@
   --menubar-active-bg: color-mix(in oklab, var(--primary) 20%, transparent);
   --primary-gradient: linear-gradient(180deg, hsl(203 70% 40%), hsl(207 68% 33%));
   --primary-glow: 0 10px 24px -12px hsl(203 70% 45% / 0.35);
-  --nav-active-bar-glow: 0 0 6px color-mix(in oklab, var(--tone) 40%, transparent);
-  --tile-glow: 0 8px 18px -12px color-mix(in oklab, var(--tone) 40%, transparent);
+  --nav-bar-glow-blur: 6px;
+  --nav-bar-glow-strength: 40%;
+  --tile-light-share: 90%;
+  --tile-highlight: 0.18;
+  --tile-glow-strength: 35%;
+  --hover-highlight: 0.05;
+  --hover-lift-highlight: 0.06;
+  --hover-lift-glow: 18%;
+  --tone-hover-border: 30%;
+  --tone-hover-soft: 70%;
   --blob-strength: 11%;
   color-scheme: dark;
 }
@@ -575,7 +591,7 @@
   }
   .nav-glass:hover {
     background: var(--hover-bg);
-    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.12), inset 0 0 0 1px hsl(0 0% 100% / 0.05);
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / var(--hover-highlight)), inset 0 0 0 1px hsl(0 0% 100% / 0.05);
   }
   .menubar-active {
     background: var(--menubar-active-bg);
@@ -609,13 +625,13 @@
     width: 3px;
     border-radius: 999px;
     background: linear-gradient(180deg, color-mix(in oklab, var(--tone) 70%, white), var(--tone));
-    box-shadow: var(--nav-active-bar-glow);
+    box-shadow: 0 0 var(--nav-bar-glow-blur) color-mix(in oklab, var(--tone) var(--nav-bar-glow-strength), transparent);
     pointer-events: none;
   }
   .tone-tile {
-    background: linear-gradient(135deg, color-mix(in oklab, var(--tone) 78%, white), var(--tone) 60%, color-mix(in oklab, var(--tone) 80%, black));
+    background: linear-gradient(135deg, color-mix(in oklab, var(--tone) var(--tile-light-share), white), var(--tone) 60%, color-mix(in oklab, var(--tone) 80%, black));
     color: white;
-    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.35), var(--tile-glow);
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / var(--tile-highlight)), 0 10px 20px -12px color-mix(in oklab, var(--tone) var(--tile-glow-strength), transparent);
   }
   .aurora {
     position: absolute;
@@ -660,6 +676,13 @@
       radial-gradient(48rem 28rem at 8% 0%, var(--ambient-a), transparent 70%),
       radial-gradient(40rem 26rem at 100% 12%, var(--ambient-b), transparent 70%);
     background-attachment: fixed;
+  }
+}
+
+@utility tone-hover {
+  &:hover:not(:disabled) {
+    border-color: color-mix(in oklab, var(--tone) var(--tone-hover-border), transparent);
+    background-color: color-mix(in oklab, var(--tone-soft) var(--tone-hover-soft), var(--card));
   }
 }
 

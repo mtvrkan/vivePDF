@@ -96,7 +96,7 @@ function NextSteps({ output }: { output: string }) {
               useLaunchStore.getState().setPending(output, step.route);
               void navigate(step.route);
             }}
-            className="flex h-7 items-center gap-1.5 rounded-full border border-(--glass-border) bg-card/60 ps-2 pe-2.5 text-xs transition-colors duration-(--transition-fast) hover:border-(--tone)/50 hover:bg-(--tone-soft)"
+            className="flex h-7 items-center gap-1.5 rounded-full border border-(--glass-border) bg-card/60 ps-2 pe-2.5 text-xs transition-colors duration-(--transition-fast) tone-hover"
           >
             <Icon className="size-3.5 text-(--tone)" aria-hidden />
             {t(step.labelKey)}

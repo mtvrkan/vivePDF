@@ -70,7 +70,7 @@ export function DocumentEmptyState({ icon: Icon, title, description, highlights,
                   <button
                     type="button"
                     onClick={item.onClick ?? onOpen}
-                    className="glass-chip flex items-center gap-2.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-start transition-[transform,box-shadow,background-color] duration-200 ease-(--ease-enter) hover:-translate-y-0.5 hover:bg-[color-mix(in_oklab,var(--tone)_7%,var(--card))] hover:shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--tone)_24%,transparent),inset_0_1px_0_hsl(0_0%_100%/0.2),0_8px_20px_-14px_color-mix(in_oklab,var(--tone)_40%,transparent),var(--shadow-card)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25"
+                    className="glass-chip flex items-center gap-2.5 whitespace-nowrap rounded-xl px-3 py-2.5 text-start transition-[transform,box-shadow,background-color] duration-200 ease-(--ease-enter) hover:-translate-y-0.5 hover:bg-[color-mix(in_oklab,var(--tone)_7%,var(--card))] hover:shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--tone)_24%,transparent),inset_0_1px_0_hsl(0_0%_100%/var(--hover-lift-highlight)),0_8px_20px_-14px_color-mix(in_oklab,var(--tone)_var(--hover-lift-glow),transparent),var(--shadow-card)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ring/25"
                   >
                     <span className="flex size-7 shrink-0 items-center justify-center rounded-lg text-(--tone)" style={{ background: "color-mix(in oklab, var(--tone) 16%, transparent)" }}>
                       <item.icon className="size-3.5" aria-hidden />

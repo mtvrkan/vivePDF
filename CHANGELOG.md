@@ -14,7 +14,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
 ### Changed
-- Dark theme is easier on the eyes: background washes, the sidebar glow, the active menu item, glass edges and the primary button glow are about half as strong, accent colours are less saturated, and text is a soft off-white on a slightly lifted background instead of bright white on near black; every text colour keeps at least 4.5:1 contrast [2026-10-09]
+- Dark theme hovers are calmer: tool cards and next-step chips light up with a muted tint and a fainter coloured border, tool icon tiles glow less, and menu rows and icon buttons no longer flash a bright top edge; the light theme is unchanged [2026-10-09]
+- Dark theme is easier on the eyes: background washes, the sidebar glow, glass edges and the primary button glow are about half as strong, accent colours are less saturated, and text is a soft off-white on a slightly lifted background instead of bright white on near black; every text colour keeps at least 4.5:1 contrast [2026-10-09]
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
