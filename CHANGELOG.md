@@ -8,6 +8,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
 ### Fixed
+- Studio CV: dates, company/school and city fields each take the full width of the form, so the month picker is no longer squeezed to a sliver and placeholders are no longer cut off; the "type the date" button has a clearer icon [2026-10-09]
 - Studio documents: code blocks and table header rows are shaded again in the PDF, and the shading no longer leaves a stray strip at the top of every later page [2026-10-09]
 
 ## [0.2.0] - 2026-10-09

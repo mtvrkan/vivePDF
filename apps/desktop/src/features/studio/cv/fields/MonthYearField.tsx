@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from "react";
-import { CalendarDays, Type } from "lucide-react";
+import { CalendarDays, TextCursorInput } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { SelectInput, TextInput } from "@/components/tool/form";
@@ -44,7 +44,7 @@ export function MonthYearField({ label, value, onChange, disabled, placeholder }
               const next = event.target.value ? Number(event.target.value) : null;
               setMonth(next);
               write(next, yearDraft);
-            }} className="min-w-0 flex-1">
+            }} className="min-w-28 flex-1">
             <option value="">{t("studio.cv.dates.noMonth")}</option>
             {months.map((name, index) => (
               <option key={name} value={String(index + 1)}>
@@ -66,7 +66,7 @@ export function MonthYearField({ label, value, onChange, disabled, placeholder }
               write(month, next);
             }}
           />
-          <IconButton icon={Type} disabled={disabled} label={t("studio.cv.dates.type")} onClick={() => setTyping(true)} />
+          <IconButton icon={TextCursorInput} disabled={disabled} label={t("studio.cv.dates.type")} onClick={() => setTyping(true)} />
         </div>
       )}
     </div>

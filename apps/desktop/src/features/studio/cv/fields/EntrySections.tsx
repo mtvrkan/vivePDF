@@ -99,11 +99,11 @@ export function ExperienceSection({ defaultOpen }: { defaultOpen: boolean }) {
         return (
           <>
             <TextField inputRef={focusRef} label={t("studio.cv.fields.role")} value={item.role} placeholder={t("studio.cv.placeholders.role")} onChange={(role) => patch({ role })} />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2.5">
               <TextField label={t("studio.cv.fields.organisation")} value={item.organisation} placeholder={t("studio.cv.placeholders.organisation")} onChange={(organisation) => patch({ organisation })} />
               <TextField label={t("studio.cv.fields.location")} value={item.location} placeholder={t("studio.cv.placeholders.location")} onChange={(location) => patch({ location })} />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2.5">
               <MonthYearField label={t("studio.cv.fields.start")} value={item.start} onChange={(start) => patch({ start })} />
               {item.current ? (
                 <Field label={t("studio.cv.fields.end")}>
@@ -136,11 +136,11 @@ export function EducationSection({ defaultOpen }: { defaultOpen: boolean }) {
         return (
           <>
             <TextField inputRef={focusRef} label={t("studio.cv.fields.degree")} value={item.degree} placeholder={t("studio.cv.placeholders.degree")} onChange={(degree) => patch({ degree })} />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2.5">
               <TextField label={t("studio.cv.fields.school")} value={item.school} placeholder={t("studio.cv.placeholders.school")} onChange={(school) => patch({ school })} />
               <TextField label={t("studio.cv.fields.location")} value={item.location} placeholder={t("studio.cv.placeholders.location")} onChange={(location) => patch({ location })} />
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2.5">
               <MonthYearField label={t("studio.cv.fields.start")} value={item.start} onChange={(start) => patch({ start })} />
               {item.current ? (
                 <Field label={t("studio.cv.fields.end")}>
@@ -172,7 +172,7 @@ export function CertificatesSection({ defaultOpen }: { defaultOpen: boolean }) {
         return (
           <>
             <TextField inputRef={focusRef} label={t("studio.cv.fields.certificate")} value={item.name} placeholder={t("studio.cv.placeholders.certificate")} onChange={(name) => patch({ name })} />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2.5">
               <TextField label={t("studio.cv.fields.issuer")} value={item.issuer} placeholder={t("studio.cv.placeholders.issuer")} onChange={(issuer) => patch({ issuer })} />
               <MonthYearField label={t("studio.cv.fields.date")} value={item.date} onChange={(date) => patch({ date })} />
             </div>
