@@ -109,6 +109,11 @@ class StudioDocumentImportResult(RpcModel):
     title: str
 
 
+class StudioBibliographyResult(RpcModel):
+    text: str
+    name: str
+
+
 class StudioDocumentImageResult(RpcModel):
     src: str
     width: int

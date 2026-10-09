@@ -705,6 +705,9 @@ export const studioOpenDocument = (params: { path: string }, options?: RpcCallOp
 export const studioImportDocument = (params: { path: string }, options?: RpcCallOptions) =>
   rpc<{ html: string; title: string }>("studio.import_document", params, options);
 
+export const studioReadBibliography = (params: { path: string }, options?: RpcCallOptions) =>
+  rpc<{ text: string; name: string }>("studio.read_bibliography", params, options);
+
 export const studioDocumentImage = (params: { path: string }, options?: RpcCallOptions) =>
   rpc<{ src: string; width: number; height: number }>("studio.document_image", params, options);
 

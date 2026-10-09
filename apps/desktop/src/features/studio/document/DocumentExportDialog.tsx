@@ -9,6 +9,7 @@ import { useOperation } from "@/shared/hooks/useOperation";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { defaultOutputDirectory, joinPath } from "@/shared/lib/paths";
 import { useDocumentStore } from "./documentStore";
+import { documentText } from "./content";
 import { exportDocument } from "./exportDocument";
 
 export function DocumentExportDialog({ open, onClose, language }: { open: boolean; onClose: () => void; language: string }) {
@@ -28,7 +29,7 @@ export function DocumentExportDialog({ open, onClose, language }: { open: boolea
     };
   }, [open, name, t]);
 
-  const run = () => void operation.run({ output, language, tocTitle: t("studio.doc.settings.tocTitleDefault") });
+  const run = () => void operation.run({ output, language, text: documentText(t) });
   const result = operation.result;
   return (
     <Dialog

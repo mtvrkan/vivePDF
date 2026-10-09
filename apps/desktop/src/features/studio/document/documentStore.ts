@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { DocumentNode, DocumentSettings, StudioDocument } from "@/types/studio";
+import type { BibEntry, DocumentNode, DocumentSettings, StudioDocument } from "@/types/studio";
 import { normalizeDocument, normalizeSettings } from "./model";
 
 export const DOCUMENT_DRAFT_KEY = "vivepdf.studioDocumentDraft";
@@ -16,6 +16,7 @@ type DocumentState = {
   setContent: (content: DocumentNode) => void;
   setSettings: (patch: Partial<DocumentSettings>) => void;
   setName: (name: string) => void;
+  setSources: (sources: BibEntry[]) => void;
   markSaved: (filePath: string) => void;
 };
 
@@ -83,6 +84,10 @@ export const useDocumentStore = create<DocumentState>((set, get) => {
     setName: (name) => {
       const document = get().document;
       if (document) change({ ...document, name: name.slice(0, 200) });
+    },
+    setSources: (sources) => {
+      const document = get().document;
+      if (document && document.sources !== sources) change({ ...document, sources });
     },
     markSaved: (filePath) => {
       set({ filePath, dirty: false });

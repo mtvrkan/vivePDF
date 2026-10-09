@@ -14,6 +14,7 @@ import { DocumentSettingsPanel } from "./DocumentSettingsPanel";
 import { DocumentToolbar } from "./DocumentToolbar";
 import { fontStack, loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
+import { citationTerms, storeCitationSource } from "./citationSource";
 import { documentExtensions } from "./extensions";
 import { pageSize, POINTS_PER_MM } from "./model";
 import { useDocumentSave } from "./useDocumentSave";
@@ -99,7 +100,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   const settings = useDocumentStore((state) => state.document?.settings);
   const [side, setSide] = useState<SideTab>("preview");
   const [exporting, setExporting] = useState(false);
-  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder")), [t]);
+  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(citationTerms(t), language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList"))), [t, language]);
   useShortcuts(() => setExporting(true));
 
   const editor = useEditor(

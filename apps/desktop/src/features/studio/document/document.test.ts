@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { TFunction } from "i18next";
 import en from "@/locales/en/common.json";
 import type { DocumentNode } from "@/types/studio";
+import { parseBibtex } from "./bibtex";
+import { documentContent, documentText } from "./content";
 import { createDocument, defaultSettings, layoutOf, normalizeDocument, normalizeSettings, pageSize } from "./model";
 import { buildStarter, DOCUMENT_STARTERS } from "./starters";
 import { documentHtml } from "./toHtml";
@@ -141,5 +143,50 @@ describe("document starters", () => {
     expect(buildStarter("report", t, "en").settings).toMatchObject({ cover: true, toc: true });
     expect(buildStarter("booklet", t, "en").settings).toMatchObject({ paper: "a5", cover: true });
     expect(buildStarter("blank", t, "en").content).toBe("");
+  });
+});
+
+describe("citations in the document", () => {
+  const lookup = (key: string) => key.split(".").reduce<unknown>((node, part) => (node && typeof node === "object" ? (node as Record<string, unknown>)[part] : undefined), en);
+  const t = ((key: string) => {
+    const value = lookup(key);
+    if (typeof value !== "string") throw new Error(`missing ${key}`);
+    return value;
+  }) as unknown as TFunction;
+  const sources = parseBibtex("@book{knuth, author={Knuth, Donald}, title={The Art}, publisher={AW}, year=1968}").entries;
+  const content = doc(
+    { type: "heading", attrs: { level: 1 }, content: [text("Intro")] },
+    { type: "paragraph", content: [text("As shown "), { type: "citation", attrs: { items: [{ key: "knuth", locator: "7" }] } }] },
+    { type: "bibliography" },
+  );
+
+  it("writes citation labels and a reference list whose heading joins the contents", () => {
+    const document = { ...createDocument("Paper", content), sources };
+
+    const written = documentContent(document, "en", documentText(t));
+    const titled = documentContent({ ...document, settings: { ...document.settings, referencesTitle: "Works cited", citationStyle: "ieee" } }, "en", documentText(t));
+
+    expect(written.html).toContain("<p>As shown (Knuth, 1968, p. 7)</p>");
+    expect(written.html).toContain('<div class="references"><h1 id="h-2">References</h1><p class="ref">Knuth, D. (1968). <em>The Art</em>. AW.</p></div>');
+    expect(titled.html).toContain("<p>As shown [1, p. 7]</p>");
+    expect(titled.html).toContain('<h1 id="h-2">Works cited</h1>');
+    expect(written.settings).not.toHaveProperty("citationStyle");
+    expect(written.settings).not.toHaveProperty("referencesTitle");
+  });
+
+  it("leaves an empty reference list out of the export", () => {
+    const document = createDocument("Paper", doc({ type: "bibliography" }));
+
+    expect(documentContent(document, "en", documentText(t)).html).toBe("");
+  });
+
+  it("keeps sources through a save and falls back to APA for an unknown style", () => {
+    const stored = JSON.parse(JSON.stringify({ ...createDocument("Paper", content), sources, settings: { ...defaultSettings(), citationStyle: "harvard" } }));
+
+    const document = normalizeDocument(stored);
+
+    expect(document?.sources).toEqual(sources);
+    expect(document?.settings.citationStyle).toBe("apa");
+    expect(createDocument("New").sources).toEqual([]);
   });
 });

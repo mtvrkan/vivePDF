@@ -459,11 +459,17 @@ export type DocumentLayout = {
   date: string;
 };
 
-export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null };
+export type CitationStyle = "apa" | "mla" | "chicago" | "ieee";
+
+export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null; citationStyle: CitationStyle; referencesTitle: string };
+
+export type BibName = { family: string; given: string; literal?: boolean; others?: boolean };
+
+export type BibEntry = { key: string; type: string; fields: Record<string, string>; authors: BibName[]; editors: BibName[] };
 
 export type DocumentNode = { type: string; attrs?: Record<string, unknown>; content?: DocumentNode[]; marks?: Array<{ type: string; attrs?: Record<string, unknown> }>; text?: string };
 
-export type StudioDocument = { version: number; kind: "document"; name: string; settings: DocumentSettings; content: DocumentNode | string };
+export type StudioDocument = { version: number; kind: "document"; name: string; settings: DocumentSettings; content: DocumentNode | string; sources: BibEntry[] };
 
 export type StudioDocumentContent = { html: string; images: string[]; fonts: string[]; settings: DocumentLayout; title: string; language: string };
 

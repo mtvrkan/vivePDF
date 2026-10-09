@@ -1,4 +1,6 @@
 import { STUDIO_DOCUMENT_VERSION, type DocumentAlign, type DocumentCoverStyle, type DocumentLayout, type DocumentNode, type DocumentPageNumbers, type DocumentPaper, type DocumentSettings, type StudioDocument } from "@/types/studio";
+import { normalizeSources } from "./bibtex";
+import { CITATION_STYLES } from "./citations";
 
 export const DOCUMENT_PAPERS: DocumentPaper[] = ["a4", "a5", "b5", "letter", "legal"];
 export const PAGE_NUMBER_PLACES: DocumentPageNumbers[] = ["none", "center", "right", "outside"];
@@ -44,11 +46,13 @@ export function defaultSettings(): DocumentSettings {
     date: "",
     fontId: DEFAULT_DOCUMENT_FONT,
     headingFontId: null,
+    citationStyle: "apa",
+    referencesTitle: "",
   };
 }
 
 export function createDocument(name: string, content: DocumentNode | string = "", settings: Partial<DocumentSettings> = {}): StudioDocument {
-  return { version: STUDIO_DOCUMENT_VERSION, kind: "document", name, settings: { ...defaultSettings(), ...settings }, content };
+  return { version: STUDIO_DOCUMENT_VERSION, kind: "document", name, settings: { ...defaultSettings(), ...settings }, content, sources: [] };
 }
 
 export function pageSize(settings: Pick<DocumentSettings, "paper" | "landscape">): { width: number; height: number } {
@@ -100,6 +104,8 @@ export function normalizeSettings(value: unknown): DocumentSettings {
     date: text(source.date, "", 80),
     fontId: fontId(source.fontId) ?? base.fontId,
     headingFontId: fontId(source.headingFontId),
+    citationStyle: pick(source.citationStyle, CITATION_STYLES, base.citationStyle),
+    referencesTitle: text(source.referencesTitle, "", 100),
   };
 }
 
@@ -113,12 +119,14 @@ export function normalizeDocument(value: unknown): StudioDocument | null {
   if (source.kind !== "document") return null;
   if (typeof source.version !== "number" || source.version > STUDIO_DOCUMENT_VERSION) return null;
   const content = typeof source.content === "string" || isNode(source.content) ? source.content : "";
-  return { version: STUDIO_DOCUMENT_VERSION, kind: "document", name: text(source.name, "", 200), settings: normalizeSettings(source.settings), content };
+  return { version: STUDIO_DOCUMENT_VERSION, kind: "document", name: text(source.name, "", 200), settings: normalizeSettings(source.settings), content, sources: normalizeSources(source.sources) };
 }
 
 export function layoutOf(settings: DocumentSettings, fallbackTocTitle: string): DocumentLayout {
   const layout: Partial<DocumentSettings> = { ...settings };
   delete layout.fontId;
   delete layout.headingFontId;
+  delete layout.citationStyle;
+  delete layout.referencesTitle;
   return { ...(layout as DocumentLayout), tocTitle: settings.tocTitle.trim() || fallbackTocTitle };
 }

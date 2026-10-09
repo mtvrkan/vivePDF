@@ -890,6 +890,27 @@
     height: 0;
     margin: 12pt 0;
   }
+  .vp-doc .vp-cite {
+    background: color-mix(in oklab, var(--doc-accent) 9%, transparent);
+    border-radius: 3px;
+    cursor: pointer;
+    padding: 0 1px;
+  }
+  .vp-doc .vp-cite[data-missing] {
+    background: color-mix(in oklab, var(--destructive) 14%, transparent);
+    color: var(--destructive);
+  }
+  .vp-doc .vp-refs {
+    cursor: default;
+  }
+  .vp-doc .vp-ref {
+    padding-left: 24pt;
+    text-indent: -24pt;
+  }
+  .vp-doc .vp-refs-empty {
+    color: var(--muted-foreground);
+    font-style: italic;
+  }
   .vp-doc .ProseMirror-selectednode {
     outline: 2px solid var(--primary);
     outline-offset: 2px;

@@ -1,5 +1,7 @@
 import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
+import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
+import type { Citations } from "./citations";
 
 export const PAGE_BREAK = "pageBreak";
 export const MAX_DOCUMENT_FONTS = 16;
@@ -16,15 +18,19 @@ const UNCHECKED = "&#9744;";
 
 export type DocumentHtml = { html: string; images: string[]; fonts: string[] };
 
+export type DocumentReferences = { citations: Citations; title: string };
+
 type Mark = NonNullable<DocumentNode["marks"]>[number];
 
 class Writer {
   images: string[] = [];
   fonts: string[];
   headings = 0;
+  references: DocumentReferences | null;
 
-  constructor(settings: Pick<DocumentSettings, "fontId" | "headingFontId">) {
+  constructor(settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null) {
     this.fonts = [settings.fontId, settings.headingFontId ?? settings.fontId];
+    this.references = references;
   }
 
   font(id: string): string | null {
@@ -155,6 +161,14 @@ function image(node: DocumentNode, writer: Writer): string {
   return `<p style="text-align:center"><img src="${token}"${size}${label}></p>`;
 }
 
+function bibliography(writer: Writer): string {
+  const references = writer.references;
+  if (!references || references.citations.references.length === 0) return "";
+  writer.headings += 1;
+  const rows = references.citations.references.map((reference) => `<p class="ref">${reference}</p>`).join("");
+  return `<div class="references"><h1 id="h-${writer.headings}">${escapeHtml(references.title)}</h1>${rows}</div>`;
+}
+
 function write(node: DocumentNode, writer: Writer): string {
   switch (node.type) {
     case "doc":
@@ -202,13 +216,17 @@ function write(node: DocumentNode, writer: Writer): string {
       return cell(node, "td", writer);
     case PAGE_BREAK:
       return '<div class="page-break"></div>';
+    case CITATION:
+      return writer.references ? escapeHtml(writer.references.citations.label(citationItems(attr(node, "items"))).text) : "";
+    case BIBLIOGRAPHY:
+      return bibliography(writer);
     default:
       return children(node, writer);
   }
 }
 
-export function documentHtml(content: DocumentNode, settings: Pick<DocumentSettings, "fontId" | "headingFontId">): DocumentHtml {
-  const writer = new Writer(settings);
+export function documentHtml(content: DocumentNode, settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null = null): DocumentHtml {
+  const writer = new Writer(settings, references);
   const html = write(content, writer);
   return { html, images: writer.images, fonts: writer.fonts };
 }

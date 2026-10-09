@@ -3,15 +3,17 @@ import { afterEach, beforeAll, describe, expect, it } from "vitest";
 import { Editor } from "@tiptap/react";
 import { CellSelection } from "@tiptap/pm/tables";
 import { ready, setLocale } from "@/app/i18n";
+import { storeCitationSource } from "./citationSource";
 import { documentExtensions } from "./extensions";
 import { DocumentToolbar } from "./DocumentToolbar";
 
+const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
 const TABLE = "<table><tbody><tr><th><p>A</p></th><th><p>B</p></th></tr><tr><td><p>C</p></td><td><p>D</p></td></tr></tbody></table>";
 
 let editor: Editor | null = null;
 
 function mount() {
-  editor = new Editor({ extensions: documentExtensions(""), content: TABLE });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(TERMS, "en", "References", "")), content: TABLE });
   render(<DocumentToolbar editor={editor} contentWidth={400} />);
   return editor;
 }

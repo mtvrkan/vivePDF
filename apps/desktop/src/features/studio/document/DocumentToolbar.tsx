@@ -5,6 +5,7 @@ import {
   AlignLeft,
   AlignRight,
   Bold,
+  BookMarked,
   Code2,
   Columns3,
   Eraser,
@@ -51,6 +52,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { pickDocumentImage } from "./documentFile";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
+import { SourcesDialog } from "./SourcesDialog";
 import { PX_TO_PT } from "./toHtml";
 
 const BLOCKS = ["paragraph", "h1", "h2", "h3", "h4"] as const;
@@ -116,6 +118,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
   const { t } = useTranslation();
   const bodyFont = useDocumentStore((state) => state.document?.settings.fontId ?? "");
   const [linking, setLinking] = useState(false);
+  const [citing, setCiting] = useState(false);
   const state = useEditorState({
     editor,
     selector: ({ editor: current }) => {
@@ -135,6 +138,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
         quote: current.isActive("blockquote"),
         code: current.isActive("codeBlock"),
         table: current.isActive("table"),
+        citation: current.isActive("citation"),
         mergeCells: current.isActive("table") && current.can().mergeCells(),
         splitCell: current.isActive("table") && current.can().splitCell(),
         align: (["left", "center", "right", "justify"] as const).find((value) => current.isActive({ textAlign: value })) ?? "left",
@@ -231,6 +235,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
       <IconButton icon={Table2} label={t("studio.doc.toolbar.table")} onClick={() => chain().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} />
       <IconButton icon={Minus} label={t("studio.doc.toolbar.rule")} onClick={() => chain().setHorizontalRule().run()} />
       <IconButton icon={SeparatorHorizontal} label={t("studio.doc.toolbar.pageBreak")} shortcut="Ctrl+Enter" onClick={() => chain().setPageBreak().run()} />
+      <IconButton icon={BookMarked} label={t("studio.doc.cite.button")} active={state.citation} onClick={() => setCiting(true)} data-testid="doc-citations" />
       {state.table ? (
         <span className="inline-flex items-center gap-1 rounded-lg border border-border/60 px-1" role="group" aria-label={t("studio.doc.table.label")}>
           <IconButton icon={Rows3} label={t("studio.doc.table.addRow")} onClick={() => chain().addRowAfter().run()} />
@@ -244,6 +249,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
         </span>
       ) : null}
       {linking ? <LinkDialog editor={editor} open={linking} onClose={() => setLinking(false)} /> : null}
+      {citing ? <SourcesDialog editor={editor} open={citing} onClose={() => setCiting(false)} /> : null}
     </div>
   );
 }

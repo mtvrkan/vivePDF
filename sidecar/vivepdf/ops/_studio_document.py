@@ -231,6 +231,7 @@ def _base_css(settings: StudioDocumentSettings, heading_font: bool) -> str:
             "img{max-width:100%;}",
             f"a{{color:{accent};}}",
             ".page-break{page-break-before:always;}",
+            ".references .ref{padding-left:24pt;text-indent:-24pt;}",
             f".toc-title{{font-size:{size * 1.7:.1f}pt;margin:0 0 {size:.1f}pt 0;}}",
             ".toc{width:100%;border:none;}",
             ".toc td{border:none;padding:2pt 0;vertical-align:bottom;}",

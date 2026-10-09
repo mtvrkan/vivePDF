@@ -30,6 +30,7 @@ from vivepdf.ops._studio_document_models import (
     DOCUMENT_EXTENSION,
     DOCUMENT_VERSION,
     MAX_DOCUMENT_BYTES,
+    StudioBibliographyResult,
     StudioDocumentImageResult,
     StudioDocumentImportResult,
     StudioDocumentOpenParams,
@@ -48,6 +49,8 @@ from vivepdf.rpc.registry import op
 
 PREVIEW_SLOTS = 4
 IMPORT_EXTENSIONS = {"md", "markdown", "txt", "text", "html", "htm"}
+BIBLIOGRAPHY_EXTENSIONS = {"bib", "bibtex"}
+MAX_BIBLIOGRAPHY_BYTES = 8 * 1024 * 1024
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp", "bmp", "tif", "tiff", "heic", "heif"}
 MAX_IMPORT_BYTES = 20 * 1024 * 1024
 MAX_IMPORTED_IMAGES = 100
@@ -274,3 +277,26 @@ def document_image(
         raise _missing(params.path)
     payload, width, height, transparent = picture_file(source)
     return StudioDocumentImageResult(src=data_url(payload, transparent), width=width, height=height)
+
+
+@op("studio.read_bibliography", StudioDocumentOpenParams)
+def read_bibliography(
+    params: StudioDocumentOpenParams, _progress: Progress
+) -> StudioBibliographyResult:
+    source = Path(params.path)
+    if not source.is_file():
+        raise _missing(params.path)
+    extension = source.suffix.lower().lstrip(".")
+    if extension not in BIBLIOGRAPHY_EXTENSIONS:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            f"unsupported file type: .{extension}",
+            {"reason": "unsupportedType", "extension": extension},
+        )
+    if source.stat().st_size > MAX_BIBLIOGRAPHY_BYTES:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "the file is too large",
+            {"reason": "sourceTooLarge", "limit": MAX_BIBLIOGRAPHY_BYTES},
+        )
+    return StudioBibliographyResult(text=decode_text(source.read_bytes()), name=source.name)

@@ -298,6 +298,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.open_document",
         "studio.preview_document",
         "studio.preview_document_page",
+        "studio.read_bibliography",
         "studio.render_document",
         "studio.save_document",
     ),

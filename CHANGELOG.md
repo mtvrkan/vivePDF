@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio documents: citations and references — import a .bib file (Zotero, Mendeley, JabRef, Google Scholar) or paste BibTeX, cite one or more sources with an optional page in the text, and insert a reference list that builds and orders itself in APA 7, MLA 9, Chicago author-date or IEEE; LaTeX accents such as `{\c{s}}` and `{\u{g}}` become real letters, and the list exports to PDF with hanging indents [2026-10-09]
 - Studio: a Print finish section gives any element an embossed, debossed, letterpress, foil (gold, silver, copper, rose gold, holographic) or spot UV gloss look with depth, softness and light direction; blind emboss and deboss show only the pressed shape in the paper colour. PDF, PNG, JPG and page thumbnails draw the same finish as the canvas, text included [2026-10-09]
 - Studio: Export can make a print-ready PDF with bleed (backgrounds and edge-to-edge pictures and rectangles run into it), trim marks, trim and bleed boxes, and finish plates either as overprinting spot colours on named layers (Foil, Emboss, SpotUV, DieCut) or as separate black pages; rounded card corners add a die-cut line [2026-10-09]
 - Studio: print-ready PDFs can be laid out on A4 or SRA3 sheets with as many cards as fit; a single card fills every slot, data rows each take a slot, and backs are mirrored for double-sided printing [2026-10-09]

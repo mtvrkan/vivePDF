@@ -7,7 +7,7 @@ import { toRpcError } from "@/shared/rpc/client";
 import { studioPreviewDocument, studioPreviewDocumentPage } from "@/shared/rpc/operations";
 import type { RpcError } from "@/types";
 import type { StudioDocumentPreview } from "@/types/studio";
-import { documentContent } from "./content";
+import { documentContent, documentText } from "./content";
 import { useDocumentStore } from "./documentStore";
 
 const PREVIEW_DELAY_MS = 700;
@@ -70,7 +70,7 @@ export function DocumentPreview({ language }: { language: string }) {
     const mine = ++ticket.current;
     setBusy(true);
     try {
-      const result = await studioPreviewDocument(documentContent(document, language, t("studio.doc.settings.tocTitleDefault")));
+      const result = await studioPreviewDocument(documentContent(document, language, documentText(t)));
       if (mine !== ticket.current) return;
       setPreview(result);
       setError(null);

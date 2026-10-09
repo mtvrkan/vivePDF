@@ -9,6 +9,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { BackgroundColor, Color, FontSize, TextStyle } from "@tiptap/extension-text-style";
 import { Placeholder } from "@tiptap/extensions";
 import StarterKit from "@tiptap/starter-kit";
+import { citationNodes, type CitationSource } from "./citationNodes";
 import { fontStack } from "./documentFonts";
 import { PAGE_BREAK } from "./toHtml";
 
@@ -64,7 +65,7 @@ export const FontId = Extension.create({
   },
 });
 
-export function documentExtensions(placeholder: string): AnyExtension[] {
+export function documentExtensions(placeholder: string, citations: CitationSource): AnyExtension[] {
   return [
     StarterKit.configure({ heading: { levels: [1, 2, 3, 4] }, link: { openOnClick: false, autolink: true, protocols: ["mailto"] } }),
     TextStyle,
@@ -81,6 +82,7 @@ export function documentExtensions(placeholder: string): AnyExtension[] {
     TableKit.configure({ table: { resizable: true } }),
     Image.configure({ inline: false, allowBase64: true, resize: { enabled: true, minWidth: 32, minHeight: 32, alwaysPreserveAspectRatio: true } }),
     PageBreak,
+    ...citationNodes(citations),
     Placeholder.configure({ placeholder }),
   ];
 }
