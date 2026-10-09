@@ -265,10 +265,14 @@ StudioFinishSource = Annotated[
 ]
 
 
+StudioPlate = Literal["emboss", "deboss", "letterpress", "foil", "spotUv"]
+
+
 class StudioFinishItem(StudioBox):
     kind: Literal["finish"]
     recipe: StudioFinishRecipe
     items: list[StudioFinishSource] = Field(min_length=1, max_length=8)
+    plate: StudioPlate | None = None
 
 
 StudioItem = Annotated[
@@ -301,6 +305,13 @@ class StudioSignOptions(RpcModel):
     location: str = Field(default="", max_length=500)
 
 
+class StudioPrintOptions(RpcModel):
+    bleed: float = Field(default=0.0, ge=0, le=72)
+    marks: bool = True
+    plates: Literal["none", "spot", "pages"] = "spot"
+    corner: float = Field(default=0.0, ge=0, le=72)
+
+
 class StudioRenderParams(RpcModel):
     pages: list[StudioPage] = Field(min_length=1, max_length=MAX_PAGES)
     rows: list[dict[str, Annotated[str, Field(max_length=5000)]]] = Field(
@@ -325,6 +336,7 @@ class StudioRenderParams(RpcModel):
     output_dir: str | None = Field(default=None, max_length=4096)
     pattern: str = Field(default="{n}", min_length=1, max_length=120)
     sign: StudioSignOptions | None = None
+    print_ready: StudioPrintOptions | None = None
 
 
 class StudioRenderResult(RpcModel):

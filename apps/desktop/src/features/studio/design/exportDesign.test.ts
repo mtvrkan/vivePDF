@@ -65,4 +65,17 @@ describe("exportDesign", () => {
   it("refuses to export without a design", async () => {
     await expect(exportDesign(base)).rejects.toThrow("no design");
   });
+
+  it("draws print-ready pages with bleed and drops print options for pictures", async () => {
+    const design = threePages();
+    const printReady = { bleed: 8.5, marks: true, plates: "spot" as const, corner: 0 };
+
+    await exportDesign({ ...base, format: "pdf", output: "C:/out/cards.pdf", printReady }, undefined, design);
+    expect(sent().printReady).toEqual(printReady);
+    expect(sent().pages[0].items[0]).toMatchObject({ kind: "vector", x: -8.5, y: -8.5 });
+
+    await exportDesign({ ...base, printReady }, undefined, design);
+    expect(sent().printReady).toBeNull();
+    expect(sent().pages[0].items[0]).toMatchObject({ x: 0, y: 0 });
+  });
 });

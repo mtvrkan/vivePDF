@@ -7033,7 +7033,28 @@
         "outOfRange": "Bu tasarımda yalnızca 1 ile {{last}} arasındaki sayfalar var."
       },
       "eachPage_one": "Her sayfa ayrı bir resim olarak kaydedilir: {{first}}",
-      "eachPage_other": "Her sayfa ayrı bir resim olarak kaydedilir: {{first}} … {{last}} ({{count}} dosya)"
+      "eachPage_other": "Her sayfa ayrı bir resim olarak kaydedilir: {{first}} … {{last}} ({{count}} dosya)",
+      "print": {
+        "enabled": "Baskıya hazır PDF",
+        "enabledHint": "Matbaa için taşma payı, kesim işaretleri ve kesim kutusu ekler. Arka plan ile kenara dayanan resim ve dikdörtgenler taşma payına uzatılır.",
+        "bleed": "Taşma payı",
+        "bleedHint": "Genellikle 3 mm kullanılır; emin değilseniz matbaanıza sorun.",
+        "millimetres": "{{value}} mm",
+        "marks": "Kesim işaretleri",
+        "marksHint": "Taşma payının dışında, nereden kesileceğini gösteren ince çizgiler.",
+        "plates": "Efekt kalıpları",
+        "plateModes": {
+          "none": "Canlandırılmış",
+          "spot": "Spot renkler",
+          "pages": "Ayrı sayfalar"
+        },
+        "plateHints": {
+          "none": "Kabartma, varak ve lak ekranda göründüğü gibi çizilir; prova için kullanın.",
+          "spot": "Her efekt kendi katmanında üst baskılı bir spot renk olur (Foil, Emboss, SpotUV…); canlandırılmış görünüm çıkarılır.",
+          "pages": "Her efekt, tasarımdan sonra kendi siyah-beyaz sayfasını alır; canlandırılmış görünüm çıkarılır."
+        },
+        "dieCut": "{{value}} mm yuvarlak köşeler için bir kesim (die-cut) çizgisi eklenir."
+      }
     },
     "project": {
       "open": "Tasarım aç…",

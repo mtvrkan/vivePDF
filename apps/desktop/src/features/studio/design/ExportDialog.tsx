@@ -10,12 +10,13 @@ import { ResultPanel } from "@/components/tool/ResultPanel";
 import { useOperation } from "@/shared/hooks/useOperation";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { basenameOf, defaultOutputDirectory, joinPath } from "@/shared/lib/paths";
-import type { StudioExportFormat } from "@/types/studio";
+import { STUDIO_PLATE_MODES, type StudioExportFormat } from "@/types/studio";
 import { useMergeStore } from "../merge/mergeStore";
+import { MAX_BLEED_MM, millimetresToPoints } from "../model/print";
 import { hasSeeThroughBackground } from "../model/render";
 import { exportDesign, type ExportParams } from "./exportDesign";
 import { pictureNames, selectPages, type PageChoice } from "./exportPages";
-import { DPI_PRESETS, MAX_DPI, MAX_QUALITY, MIN_DPI, MIN_QUALITY, readExportSettings, writeExportSettings } from "./exportSettings";
+import { DPI_PRESETS, MAX_DPI, MAX_QUALITY, MIN_DPI, MIN_QUALITY, readExportSettings, readPrintSettings, writeExportSettings, writePrintSettings, type PrintSettings } from "./exportSettings";
 import { PageRangePicker } from "./PageRangePicker";
 import { useStudioStore } from "./studioStore";
 
@@ -46,6 +47,7 @@ export function ExportDialog({ open, onClose, language }: { open: boolean; onClo
   const name = useStudioStore((state) => state.design?.name ?? "");
   const designPages = useStudioStore((state) => (open ? state.design?.pages : undefined));
   const pageId = useStudioStore((state) => state.pageId);
+  const cornerMm = useStudioStore((state) => (open ? (state.design?.print?.cornerMm ?? 0) : 0));
   const dataPath = useMergeStore((state) => state.dataPath);
   const sheet = useMergeStore((state) => state.sheet);
   const table = useMergeStore((state) => state.table);
@@ -59,6 +61,7 @@ export function ExportDialog({ open, onClose, language }: { open: boolean; onClo
   const [output, setOutput] = useState("");
   const [outputDir, setOutputDir] = useState("");
   const [embed, setEmbed] = useState(initial.embed);
+  const [press, setPress] = useState(readPrintSettings);
   const [useData, setUseData] = useState(true);
   const [mode, setMode] = useState<Mode>("combined");
   const [pattern, setPattern] = useState("{n}");
@@ -113,6 +116,8 @@ export function ExportDialog({ open, onClose, language }: { open: boolean; onClo
     if (next !== "custom") setDpiText(String(next));
   };
 
+  const changePress = (patch: Partial<PrintSettings>) => setPress((current) => ({ ...current, ...patch }));
+
   const pickCertificate = async () => {
     const selected = await openDialog({ multiple: false, directory: false, filters: [{ name: "PKCS#12", extensions: ["p12", "pfx"] }] });
     if (typeof selected === "string") setCertificatePath(selected);
@@ -134,10 +139,12 @@ export function ExportDialog({ open, onClose, language }: { open: boolean; onClo
     outputDir,
     pattern: pattern.trim(),
     sign: pdf && signing ? { certificatePath, certificatePassword, reason: reason.trim(), location: location.trim() } : null,
+    printReady: pdf && press.enabled ? { bleed: millimetresToPoints(press.bleedMm), marks: press.marks, plates: press.plates, corner: millimetresToPoints(cornerMm) } : null,
   });
 
   const run = () => {
     writeExportSettings({ format, dpi: dpi ?? initial.dpi, quality, transparent, embed });
+    writePrintSettings(press);
     void operation.run(params());
   };
 
@@ -230,6 +237,32 @@ export function ExportDialog({ open, onClose, language }: { open: boolean; onClo
           </section>
         ) : null}
         {pdf ? <Checkbox label={t("studio.export.embed")} hint={t("studio.export.embedHint")} checked={embed} onChange={setEmbed} /> : null}
+        {pdf ? (
+          <section className="space-y-3 rounded-lg border border-border/60 p-3" data-testid="studio-export-print">
+            <Checkbox label={t("studio.export.print.enabled")} hint={t("studio.export.print.enabledHint")} checked={press.enabled} onChange={(enabled) => changePress({ enabled })} />
+            {press.enabled ? (
+              <div className="space-y-3">
+                <SliderField
+                  label={t("studio.export.print.bleed")}
+                  hint={t("studio.export.print.bleedHint")}
+                  value={press.bleedMm}
+                  min={0}
+                  max={MAX_BLEED_MM}
+                  step={0.5}
+                  onChange={(bleedMm) => changePress({ bleedMm })}
+                  format={(value) => t("studio.export.print.millimetres", { value })}
+                />
+                <Checkbox label={t("studio.export.print.marks")} hint={t("studio.export.print.marksHint")} checked={press.marks} onChange={(marks) => changePress({ marks })} />
+                <div className="space-y-2">
+                  <span className="block text-sm font-medium text-foreground/80">{t("studio.export.print.plates")}</span>
+                  <Segmented size="sm" value={press.plates} options={STUDIO_PLATE_MODES} labelOf={(value) => t(`studio.export.print.plateModes.${value}`)} onChange={(plates) => changePress({ plates })} ariaLabel={t("studio.export.print.plates")} />
+                  <p className="text-xs text-muted-foreground">{t(`studio.export.print.plateHints.${press.plates}`)}</p>
+                </div>
+                {cornerMm > 0 && press.plates !== "none" ? <p className="text-xs text-muted-foreground">{t("studio.export.print.dieCut", { value: cornerMm })}</p> : null}
+              </div>
+            ) : null}
+          </section>
+        ) : null}
         {split ? (
           <>
             <OutputDirField value={outputDir} onChange={setOutputDir} disabled={operation.running} />

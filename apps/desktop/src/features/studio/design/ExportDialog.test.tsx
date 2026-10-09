@@ -4,7 +4,8 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vite
 import { ready, setLocale } from "@/app/i18n";
 import { createDesign, createPage } from "../model/design";
 import { exportDesign } from "./exportDesign";
-import { EXPORT_SETTINGS_KEY } from "./exportSettings";
+import { withCorner } from "../model/cards";
+import { EXPORT_SETTINGS_KEY, PRINT_SETTINGS_KEY } from "./exportSettings";
 import { useStudioStore } from "./studioStore";
 
 vi.mock("@tauri-apps/plugin-dialog", () => ({ open: vi.fn(), save: vi.fn() }));
@@ -94,5 +95,39 @@ describe("ExportDialog", () => {
     fireEvent.change(screen.getByTestId("studio-export-dpi"), { target: { value: "5000" } });
     expect(screen.getByText("Enter a resolution from 36 to 600 dpi.")).toBeTruthy();
     expect(runButton().disabled).toBe(true);
+  });
+
+  it("sends a print-ready PDF in points with a die-cut for rounded corners", async () => {
+    const design = useStudioStore.getState().design;
+    if (design) useStudioStore.getState().open(withCorner(design, 3));
+    await renderDialog();
+
+    fireEvent.click(screen.getByRole("switch", { name: "Print-ready PDF" }));
+    fireEvent.click(choice("Finish plates", "Separate pages"));
+    fireEvent.click(screen.getByRole("switch", { name: /Trim marks/ }));
+    expect(screen.getByText("A die-cut line for the 3 mm rounded corners is added.")).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(runButton());
+    });
+
+    const press = vi.mocked(exportDesign).mock.calls[0][0].printReady;
+    expect(press).toMatchObject({ marks: false, plates: "pages" });
+    expect(press?.bleed).toBeCloseTo(8.504, 2);
+    expect(press?.corner).toBeCloseTo(8.504, 2);
+    expect(JSON.parse(localStorage.getItem(PRINT_SETTINGS_KEY) ?? "{}")).toEqual({ enabled: true, bleedMm: 3, marks: false, plates: "pages" });
+  });
+
+  it("hides print options for pictures and sends none", async () => {
+    localStorage.setItem(PRINT_SETTINGS_KEY, JSON.stringify({ enabled: true }));
+    await renderDialog();
+    expect(screen.getByTestId("studio-export-print")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("radio", { name: "PNG" }));
+    await act(async () => {
+      fireEvent.click(runButton());
+    });
+
+    expect(screen.queryByTestId("studio-export-print")).toBeNull();
+    expect(vi.mocked(exportDesign).mock.calls[0][0].printReady).toBeNull();
   });
 });

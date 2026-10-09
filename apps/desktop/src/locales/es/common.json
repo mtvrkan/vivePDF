@@ -7031,7 +7031,28 @@
         "outOfRange": "Este diseño solo tiene las páginas 1 a {{last}}."
       },
       "eachPage_one": "Cada página se guarda como una imagen independiente: {{first}}",
-      "eachPage_other": "Cada página se guarda como una imagen independiente: {{first}} … {{last}} ({{count}} archivos)"
+      "eachPage_other": "Cada página se guarda como una imagen independiente: {{first}} … {{last}} ({{count}} archivos)",
+      "print": {
+        "enabled": "PDF listo para imprenta",
+        "enabledHint": "Añade sangrado, marcas de corte y caja de corte para la imprenta. El fondo y las imágenes y rectángulos a sangre se extienden en el sangrado.",
+        "bleed": "Sangrado",
+        "bleedHint": "Lo habitual son 3 mm; consulta a tu imprenta si dudas.",
+        "millimetres": "{{value}} mm",
+        "marks": "Marcas de corte",
+        "marksHint": "Líneas finas fuera del sangrado que indican dónde cortar.",
+        "plates": "Planchas de acabado",
+        "plateModes": {
+          "none": "Simulado",
+          "spot": "Tintas planas",
+          "pages": "Páginas aparte"
+        },
+        "plateHints": {
+          "none": "El relieve, el metalizado y el barniz se dibujan como en pantalla; úsalo para una prueba.",
+          "spot": "Cada acabado pasa a ser una tinta plana sobreimpresa en su propia capa (Foil, Emboss, SpotUV…); se omite la simulación.",
+          "pages": "Cada acabado recibe su propia página en blanco y negro tras el diseño; se omite la simulación."
+        },
+        "dieCut": "Se añade una línea de troquel para las esquinas redondeadas de {{value}} mm."
+      }
     },
     "project": {
       "open": "Abrir diseño…",

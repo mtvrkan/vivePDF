@@ -7031,7 +7031,28 @@
         "outOfRange": "Este design só tem as páginas 1 a {{last}}."
       },
       "eachPage_one": "Cada página é salva como uma imagem separada: {{first}}",
-      "eachPage_other": "Cada página é salva como uma imagem separada: {{first}} … {{last}} ({{count}} arquivos)"
+      "eachPage_other": "Cada página é salva como uma imagem separada: {{first}} … {{last}} ({{count}} arquivos)",
+      "print": {
+        "enabled": "PDF pronto para gráfica",
+        "enabledHint": "Adiciona sangria, marcas de corte e caixa de refile para a gráfica. O fundo e as imagens e retângulos que encostam na borda se estendem na sangria.",
+        "bleed": "Sangria",
+        "bleedHint": "O comum é 3 mm; pergunte à gráfica se tiver dúvida.",
+        "millimetres": "{{value}} mm",
+        "marks": "Marcas de corte",
+        "marksHint": "Linhas finas fora da sangria que mostram onde cortar.",
+        "plates": "Chapas de acabamento",
+        "plateModes": {
+          "none": "Simulado",
+          "spot": "Cores especiais",
+          "pages": "Páginas separadas"
+        },
+        "plateHints": {
+          "none": "Relevo, hot stamping e verniz são desenhados como na tela; use para uma prova.",
+          "spot": "Cada acabamento vira uma cor especial em sobreposição na própria camada (Foil, Emboss, SpotUV…); a simulação é removida.",
+          "pages": "Cada acabamento ganha sua própria página em preto e branco após a arte; a simulação é removida."
+        },
+        "dieCut": "Uma linha de faca para os cantos arredondados de {{value}} mm é adicionada."
+      }
     },
     "project": {
       "open": "Abrir design…",

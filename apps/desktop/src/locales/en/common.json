@@ -7033,7 +7033,28 @@
         "outOfRange": "This design only has pages 1 to {{last}}."
       },
       "eachPage_one": "Each page is saved as its own picture: {{first}}",
-      "eachPage_other": "Each page is saved as its own picture: {{first}} … {{last}} ({{count}} files)"
+      "eachPage_other": "Each page is saved as its own picture: {{first}} … {{last}} ({{count}} files)",
+      "print": {
+        "enabled": "Print-ready PDF",
+        "enabledHint": "Adds bleed, trim marks and a trim box for a print shop. Background and edge-to-edge pictures and rectangles run into the bleed.",
+        "bleed": "Bleed",
+        "bleedHint": "3 mm is the usual size; ask your printer if unsure.",
+        "millimetres": "{{value}} mm",
+        "marks": "Trim marks",
+        "marksHint": "Thin lines outside the bleed that show where to cut.",
+        "plates": "Finish plates",
+        "plateModes": {
+          "none": "Simulated",
+          "spot": "Spot colours",
+          "pages": "Separate pages"
+        },
+        "plateHints": {
+          "none": "Embossing, foil and gloss are drawn as they look on screen; use this for a proof.",
+          "spot": "Each finish becomes an overprinting spot colour on its own layer (Foil, Emboss, SpotUV…); the simulated look is left out.",
+          "pages": "Each finish gets its own black-and-white page after the artwork; the simulated look is left out."
+        },
+        "dieCut": "A die-cut line for the {{value}} mm rounded corners is added."
+      }
     },
     "project": {
       "open": "Open design…",

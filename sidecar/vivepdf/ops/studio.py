@@ -11,7 +11,7 @@ from PIL import Image, ImageDraw, ImageOps
 
 from vivepdf.ops._image_files import eight_bit, open_picture
 from vivepdf.ops._output import prepare_output, save_document, write_atomically
-from vivepdf.ops._studio_finish import finish_document
+from vivepdf.ops._studio_finish import DrawSources, finish_document, finish_reach
 from vivepdf.ops._studio_graphics import graphic_document, graphic_has_placeholders
 from vivepdf.ops._studio_merge import merge_rows, row_values, save_output, split_targets
 from vivepdf.ops._studio_models import (
@@ -22,6 +22,7 @@ from vivepdf.ops._studio_models import (
     StudioImageItem,
     StudioItem,
     StudioPage,
+    StudioPrintOptions,
     StudioQrItem,
     StudioQrParams,
     StudioQrResult,
@@ -34,6 +35,7 @@ from vivepdf.ops._studio_models import (
     StudioTextItem,
     StudioVectorItem,
 )
+from vivepdf.ops._studio_print import PrintSheet
 from vivepdf.ops._studio_project import build_archive, embed_archive, missing_asset
 from vivepdf.ops._studio_shadow import shadow_document
 from vivepdf.ops._studio_shaped import draw_shaped, needs_shaping, run_texts
@@ -306,14 +308,13 @@ def _draw_text(
     return draw_text(page, item, text_faces, text_layout)
 
 
-def _finish(
+def _local_sources(
     item: StudioFinishItem,
     values: dict[str, str],
     language: str,
     faces: dict[str | None, TextFaces],
-) -> tuple[pymupdf.Document, float, str]:
-    missing: list[str] = []
-
+    missing: list[str],
+) -> DrawSources:
     def draw(page: pymupdf.Page, margin: float) -> None:
         for nested in item.items:
             local = nested.model_copy(
@@ -341,8 +342,32 @@ def _finish(
             finally:
                 source.close()
 
+    return draw
+
+
+def _finish(
+    item: StudioFinishItem,
+    values: dict[str, str],
+    language: str,
+    faces: dict[str | None, TextFaces],
+) -> tuple[pymupdf.Document, float, str]:
+    missing: list[str] = []
+    draw = _local_sources(item, values, language, faces, missing)
     document, margin = finish_document(item, draw)
     return mirror(document, item.flip_x, item.flip_y), margin, "".join(missing)
+
+
+def _plate_shape(
+    item: StudioFinishItem,
+    values: dict[str, str],
+    language: str,
+    faces: dict[str | None, TextFaces],
+) -> tuple[pymupdf.Document, float]:
+    margin = finish_reach(item)
+    document = pymupdf.open()
+    page = document.new_page(width=item.width + 2 * margin, height=item.height + 2 * margin)
+    _local_sources(item, values, language, faces, [])(page, margin)
+    return document, margin
 
 
 def _finished_source(
@@ -369,11 +394,12 @@ def draw_page(
     language: str,
     cache: Cache,
     faces: dict[str | None, TextFaces],
+    finishes: bool = True,
 ) -> str:
     page = document.new_page(width=spec.width, height=spec.height)
     missing: list[str] = []
     for item_index, item in enumerate(spec.items):
-        if item.opacity <= 0:
+        if item.opacity <= 0 or (not finishes and isinstance(item, StudioFinishItem)):
             continue
         if isinstance(item, StudioTextItem):
             missing.append(_draw_text(page, item, values, language, faces))
@@ -390,6 +416,69 @@ def draw_page(
             if not _static(item):
                 source.close()
     return "".join(missing)
+
+
+def _print_page(
+    document: pymupdf.Document,
+    spec: StudioPage,
+    page_index: int,
+    values: dict[str, str],
+    params: StudioRenderParams,
+    cache: Cache,
+    faces: dict[str | None, TextFaces],
+    options: StudioPrintOptions,
+    number: int,
+) -> str:
+    plates = options.plates != "none"
+    bleed = options.bleed
+    bled = spec.model_copy(
+        update={
+            "width": spec.width + 2 * bleed,
+            "height": spec.height + 2 * bleed,
+            "items": [
+                item.model_copy(update={"x": item.x + bleed, "y": item.y + bleed})
+                for item in spec.items
+            ],
+        }
+    )
+    art = pymupdf.open()
+    try:
+        missing = draw_page(
+            art, bled, page_index, values, params.language, cache, faces, finishes=not plates
+        )
+        sheet = PrintSheet(document, options, spec.width, spec.height, number)
+        sheet.add_art(art)
+    finally:
+        art.close()
+    if plates:
+        for item in spec.items:
+            if not isinstance(item, StudioFinishItem) or item.plate is None or item.opacity <= 0:
+                continue
+            shape, margin = _plate_shape(item, values, params.language, faces)
+            try:
+                sheet.add_plate(item.plate, item, shape, margin)
+            finally:
+                shape.close()
+        sheet.add_die_cut()
+    return missing
+
+
+def _draw_output(
+    document: pymupdf.Document,
+    spec: StudioPage,
+    page_index: int,
+    values: dict[str, str],
+    params: StudioRenderParams,
+    cache: Cache,
+    faces: dict[str | None, TextFaces],
+    number: int,
+) -> str:
+    options = params.print_ready
+    if options is not None and params.format == "pdf":
+        return _print_page(
+            document, spec, page_index, values, params, cache, faces, options, number
+        )
+    return draw_page(document, spec, page_index, values, params.language, cache, faces)
 
 
 def _check_images(params: StudioRenderParams) -> list[str]:
@@ -469,7 +558,9 @@ def _render_split(
                 for page_index, spec in enumerate(params.pages):
                     progress.check_cancelled()
                     missing.append(
-                        draw_page(document, spec, page_index, values, params.language, cache, faces)
+                        _draw_output(
+                            document, spec, page_index, values, params, cache, faces, page_index + 1
+                        )
                     )
                 _describe(document, params)
                 pages += document.page_count
@@ -546,7 +637,7 @@ def render(params: StudioRenderParams, progress: Progress) -> StudioRenderResult
             for page_index, spec in enumerate(params.pages):
                 progress.check_cancelled()
                 missing.append(
-                    draw_page(document, spec, page_index, values, params.language, cache, faces)
+                    _draw_output(document, spec, page_index, values, params, cache, faces, done + 1)
                 )
                 done += 1
                 progress.report(

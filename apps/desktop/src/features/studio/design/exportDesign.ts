@@ -1,6 +1,6 @@
 import type { RpcCallOptions } from "@/shared/rpc/client";
 import { studioRender } from "@/shared/rpc/operations";
-import type { StudioDesign, StudioExportFormat, StudioSignOptions } from "@/types/studio";
+import type { StudioDesign, StudioExportFormat, StudioPrintOptions, StudioSignOptions } from "@/types/studio";
 import { designToRender } from "../model/render";
 import { isEveryPage } from "./exportPages";
 import { measureTexts } from "./measure";
@@ -24,6 +24,7 @@ export type ExportParams = {
   outputDir?: string;
   pattern?: string;
   sign?: StudioSignOptions | null;
+  printReady?: StudioPrintOptions | null;
 };
 
 export function chosenDesign(design: StudioDesign, pages: number[] | null | undefined): { design: StudioDesign; numbers: number[] | null } {
@@ -38,10 +39,11 @@ export async function exportDesign(params: ExportParams, options?: RpcCallOption
   const { design, numbers } = chosenDesign(whole, params.pages);
   const picture = params.format !== "pdf";
   const transparent = params.format === "png" && Boolean(params.transparent);
+  const press = params.format === "pdf" ? (params.printReady ?? null) : null;
   const measured = await measureTexts(design.pages.flatMap((page) => page.elements), params.language);
   return studioRender(
     {
-      pages: designToRender(design, measured, { keepWhite: transparent }),
+      pages: designToRender(design, measured, { keepWhite: transparent, bleed: press?.bleed ?? 0 }),
       output: params.split ? "" : params.output,
       overwrite: params.overwrite,
       format: params.format,
@@ -59,6 +61,7 @@ export async function exportDesign(params: ExportParams, options?: RpcCallOption
       outputDir: params.split ? params.outputDir : null,
       pattern: params.pattern,
       sign: params.format === "pdf" ? (params.sign ?? null) : null,
+      printReady: press,
     },
     options,
   );

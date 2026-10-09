@@ -353,7 +353,7 @@ export type StudioRenderItem =
   | StudioRenderShape
   | StudioRenderText
   | (StudioRenderBox & { kind: "shadow"; shadow: StudioDropShadow; items: StudioRenderShape[] })
-  | (StudioRenderBox & { kind: "finish"; recipe: StudioFinishRecipe; items: StudioFinishSource[] });
+  | (StudioRenderBox & { kind: "finish"; recipe: StudioFinishRecipe; items: StudioFinishSource[]; plate?: StudioFinishType });
 
 export type StudioRenderPage = { width: number; height: number; items: StudioRenderItem[] };
 
@@ -377,7 +377,14 @@ export type StudioRenderParams = {
   outputDir?: string | null;
   pattern?: string;
   sign?: StudioSignOptions | null;
+  printReady?: StudioPrintOptions | null;
 };
+
+export const STUDIO_PLATE_MODES = ["none", "spot", "pages"] as const;
+
+export type StudioPlateMode = (typeof STUDIO_PLATE_MODES)[number];
+
+export type StudioPrintOptions = { bleed: number; marks: boolean; plates: StudioPlateMode; corner: number };
 
 export type StudioSignOptions = { certificatePath: string; certificatePassword: string; reason?: string; location?: string };
 

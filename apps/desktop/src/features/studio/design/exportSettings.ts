@@ -1,6 +1,8 @@
-import type { StudioExportFormat } from "@/types/studio";
+import { STUDIO_PLATE_MODES, type StudioExportFormat, type StudioPlateMode } from "@/types/studio";
+import { DEFAULT_BLEED_MM, MAX_BLEED_MM } from "../model/print";
 
 export const EXPORT_SETTINGS_KEY = "vivepdf.studioExport";
+export const PRINT_SETTINGS_KEY = "vivepdf.studioPrint";
 export const DPI_PRESETS = [72, 150, 300, 600] as const;
 export const MIN_DPI = 36;
 export const MAX_DPI = 600;
@@ -33,19 +35,51 @@ export function normalizeExportSettings(value: unknown): ExportSettings {
   };
 }
 
-export function readExportSettings(): ExportSettings {
+function readStored<T>(key: string, normalize: (value: unknown) => T, fallback: T): T {
   try {
-    const stored = localStorage.getItem(EXPORT_SETTINGS_KEY);
-    return normalizeExportSettings(stored ? JSON.parse(stored) : null);
+    const stored = localStorage.getItem(key);
+    return normalize(stored ? JSON.parse(stored) : null);
   } catch {
-    return DEFAULT_EXPORT_SETTINGS;
+    return fallback;
   }
 }
 
-export function writeExportSettings(settings: ExportSettings): void {
+function writeStored(key: string, value: unknown): void {
   try {
-    localStorage.setItem(EXPORT_SETTINGS_KEY, JSON.stringify(normalizeExportSettings(settings)));
+    localStorage.setItem(key, JSON.stringify(value));
   } catch {
     return;
   }
+}
+
+export function readExportSettings(): ExportSettings {
+  return readStored(EXPORT_SETTINGS_KEY, normalizeExportSettings, DEFAULT_EXPORT_SETTINGS);
+}
+
+export function writeExportSettings(settings: ExportSettings): void {
+  writeStored(EXPORT_SETTINGS_KEY, normalizeExportSettings(settings));
+}
+
+export type PrintSettings = { enabled: boolean; bleedMm: number; marks: boolean; plates: StudioPlateMode };
+
+export const DEFAULT_PRINT_SETTINGS: PrintSettings = { enabled: false, bleedMm: DEFAULT_BLEED_MM, marks: true, plates: "spot" };
+
+export function normalizePrintSettings(value: unknown): PrintSettings {
+  const raw = typeof value === "object" && value !== null ? (value as Record<string, unknown>) : {};
+  const defaults = DEFAULT_PRINT_SETTINGS;
+  const bleed = typeof raw.bleedMm === "number" && Number.isFinite(raw.bleedMm) ? Math.round(raw.bleedMm * 2) / 2 : defaults.bleedMm;
+  return {
+    enabled: typeof raw.enabled === "boolean" ? raw.enabled : defaults.enabled,
+    bleedMm: Math.min(MAX_BLEED_MM, Math.max(0, bleed)),
+    marks: typeof raw.marks === "boolean" ? raw.marks : defaults.marks,
+    plates: STUDIO_PLATE_MODES.find((mode) => mode === raw.plates) ?? defaults.plates,
+  };
+}
+
+export function readPrintSettings(): PrintSettings {
+  return readStored(PRINT_SETTINGS_KEY, normalizePrintSettings, DEFAULT_PRINT_SETTINGS);
+}
+
+export function writePrintSettings(settings: PrintSettings): void {
+  writeStored(PRINT_SETTINGS_KEY, normalizePrintSettings(settings));
 }

@@ -7031,7 +7031,28 @@
         "outOfRange": "Cette création ne comporte que les pages 1 à {{last}}."
       },
       "eachPage_one": "Chaque page est enregistrée comme image distincte : {{first}}",
-      "eachPage_other": "Chaque page est enregistrée comme image distincte : {{first}} … {{last}} ({{count}} fichiers)"
+      "eachPage_other": "Chaque page est enregistrée comme image distincte : {{first}} … {{last}} ({{count}} fichiers)",
+      "print": {
+        "enabled": "PDF prêt à imprimer",
+        "enabledHint": "Ajoute fond perdu, traits de coupe et format fini pour l’imprimeur. Le fond ainsi que les images et rectangles à bord perdu s’étendent dans le fond perdu.",
+        "bleed": "Fond perdu",
+        "bleedHint": "3 mm est la valeur courante ; demandez à votre imprimeur en cas de doute.",
+        "millimetres": "{{value}} mm",
+        "marks": "Traits de coupe",
+        "marksHint": "Fines lignes hors du fond perdu indiquant où couper.",
+        "plates": "Formes de finition",
+        "plateModes": {
+          "none": "Simulé",
+          "spot": "Tons directs",
+          "pages": "Pages séparées"
+        },
+        "plateHints": {
+          "none": "Gaufrage, dorure et vernis sont dessinés comme à l’écran ; pour une épreuve.",
+          "spot": "Chaque finition devient un ton direct en surimpression sur son propre calque (Foil, Emboss, SpotUV…) ; la simulation est retirée.",
+          "pages": "Chaque finition reçoit sa propre page noir et blanc après le visuel ; la simulation est retirée."
+        },
+        "dieCut": "Un tracé de découpe pour les coins arrondis de {{value}} mm est ajouté."
+      }
     },
     "project": {
       "open": "Ouvrir une création…",

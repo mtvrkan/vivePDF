@@ -13,6 +13,7 @@ import { graphicRenderSpec } from "../graphics/graphicData";
 import { hasPlaceholders, textOf } from "./design";
 import { finishRecipe } from "./finish";
 import { filterMatrix } from "./imageFilters";
+import { bleedPage, shiftFill } from "./print";
 import { fitParagraphs, paragraphCount, weightOf } from "./typography";
 import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./shapes";
 import { recolorSvg } from "./svgColors";
@@ -20,7 +21,7 @@ import { recolorSvg } from "./svgColors";
 export type MeasuredText = ReadonlyMap<string, StudioMeasuredText>;
 const MAX_RUN_SIZE = 1000;
 
-export type RenderOptions = { keepWhite?: boolean };
+export type RenderOptions = { keepWhite?: boolean; bleed?: number };
 
 function box(element: StudioElement): StudioRenderBox {
   return {
@@ -137,26 +138,31 @@ export function finishedItems(element: StudioElement, items: StudioRenderItem[])
   if (!sources.length) return items;
   const recipe = finishRecipe(element.finish, element);
   const kept = recipe.ink ? items : items.filter((item) => item.kind === "shadow");
-  return [...kept, { ...box(element), kind: "finish", recipe, items: sources }];
+  return [...kept, { ...box(element), kind: "finish", recipe, items: sources, plate: element.finish.type }];
 }
 
 export function renderItems(element: StudioElement, measured: MeasuredText = new Map()): StudioRenderItem[] {
   return finishedItems(element, shadowedItems(element, elementItems(element, measured)));
 }
 
-function backgroundItems(page: StudioPage, keepWhite: boolean): StudioRenderItem[] {
-  const frame: StudioRenderBox = { x: 0, y: 0, width: page.width, height: page.height, rotation: 0, opacity: 1 };
+function backgroundItems(page: StudioPage, keepWhite: boolean, bleed: number): StudioRenderItem[] {
+  const width = page.width + 2 * bleed;
+  const height = page.height + 2 * bleed;
+  const frame: StudioRenderBox = { x: -bleed, y: -bleed, width, height, rotation: 0, opacity: 1 };
   const items: StudioRenderItem[] = [];
-  const fill = renderFill(page.background.fill, page.width, page.height);
+  const trimmed = renderFill(page.background.fill, page.width, page.height);
+  const fill = trimmed && bleed > 0 ? shiftFill(trimmed, bleed, bleed) : trimmed;
   const plainWhite = fill?.type === "solid" && fill.color.toLowerCase() === "#ffffff";
-  if (fill && (keepWhite || !plainWhite)) items.push({ ...frame, kind: "vector", paths: [{ d: roundedRect(0, 0, page.width, page.height, 0), fill, stroke: null, evenOdd: false, opacity: 1 }] });
+  if (fill && (keepWhite || !plainWhite)) items.push({ ...frame, kind: "vector", paths: [{ d: roundedRect(0, 0, width, height, 0), fill, stroke: null, evenOdd: false, opacity: 1 }] });
   const image = page.background.image;
   if (image && image.opacity > 0) items.push({ ...frame, opacity: image.opacity, kind: "image", path: image.src, fit: image.fit, crop: null, mask: "none", radius: 0 });
   return items;
 }
 
 export function pageToRender(page: StudioPage, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage {
-  return { width: page.width, height: page.height, items: [...backgroundItems(page, Boolean(options.keepWhite)), ...page.elements.flatMap((element) => renderItems(element, measured))] };
+  const bleed = Math.max(0, options.bleed ?? 0);
+  const elements = bleedPage(page, bleed).elements;
+  return { width: page.width, height: page.height, items: [...backgroundItems(page, Boolean(options.keepWhite), bleed), ...elements.flatMap((element) => renderItems(element, measured))] };
 }
 
 export function designToRender(design: StudioDesign, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage[] {

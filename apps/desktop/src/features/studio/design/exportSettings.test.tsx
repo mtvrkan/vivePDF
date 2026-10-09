@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { DEFAULT_EXPORT_SETTINGS, EXPORT_SETTINGS_KEY, normalizeExportSettings, readExportSettings, writeExportSettings } from "./exportSettings";
+import { DEFAULT_EXPORT_SETTINGS, DEFAULT_PRINT_SETTINGS, EXPORT_SETTINGS_KEY, normalizeExportSettings, normalizePrintSettings, readExportSettings, readPrintSettings, writeExportSettings, writePrintSettings } from "./exportSettings";
 
 describe("export settings", () => {
   afterEach(() => {
@@ -35,5 +35,13 @@ describe("export settings", () => {
 
     expect(() => writeExportSettings({ ...DEFAULT_EXPORT_SETTINGS, dpi: 72 })).not.toThrow();
     expect(readExportSettings()).toEqual(DEFAULT_EXPORT_SETTINGS);
+  });
+
+  it("remembers print settings and repairs bleed and plate choices", () => {
+    writePrintSettings({ enabled: true, bleedMm: 5, marks: false, plates: "pages" });
+
+    expect(readPrintSettings()).toEqual({ enabled: true, bleedMm: 5, marks: false, plates: "pages" });
+    expect(normalizePrintSettings({ bleedMm: 42, plates: "glitter", marks: "yes" })).toEqual({ ...DEFAULT_PRINT_SETTINGS, bleedMm: 10 });
+    expect(normalizePrintSettings({ bleedMm: 2.3 }).bleedMm).toBe(2.5);
   });
 });

@@ -7031,7 +7031,28 @@
         "outOfRange": "Dieses Design hat nur die Seiten 1 bis {{last}}."
       },
       "eachPage_one": "Jede Seite wird als eigenes Bild gespeichert: {{first}}",
-      "eachPage_other": "Jede Seite wird als eigenes Bild gespeichert: {{first}} … {{last}} ({{count}} Dateien)"
+      "eachPage_other": "Jede Seite wird als eigenes Bild gespeichert: {{first}} … {{last}} ({{count}} Dateien)",
+      "print": {
+        "enabled": "Druckfertiges PDF",
+        "enabledHint": "Fügt Beschnitt, Schnittmarken und Endformatrahmen für die Druckerei hinzu. Hintergrund sowie randabfallende Bilder und Rechtecke laufen in den Beschnitt.",
+        "bleed": "Beschnitt",
+        "bleedHint": "Üblich sind 3 mm; fragen Sie im Zweifel Ihre Druckerei.",
+        "millimetres": "{{value}} mm",
+        "marks": "Schnittmarken",
+        "marksHint": "Feine Linien außerhalb des Beschnitts, die zeigen, wo geschnitten wird.",
+        "plates": "Veredelungsformen",
+        "plateModes": {
+          "none": "Simuliert",
+          "spot": "Sonderfarben",
+          "pages": "Eigene Seiten"
+        },
+        "plateHints": {
+          "none": "Prägung, Folie und Lack werden wie am Bildschirm gezeichnet; für einen Proof.",
+          "spot": "Jede Veredelung wird eine überdruckende Sonderfarbe auf eigener Ebene (Foil, Emboss, SpotUV…); die Simulation entfällt.",
+          "pages": "Jede Veredelung erhält nach dem Motiv eine eigene Schwarzweißseite; die Simulation entfällt."
+        },
+        "dieCut": "Eine Stanzlinie für die abgerundeten Ecken mit {{value}} mm wird hinzugefügt."
+      }
     },
     "project": {
       "open": "Design öffnen…",

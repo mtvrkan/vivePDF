@@ -7031,7 +7031,28 @@
         "outOfRange": "Questo progetto ha solo le pagine da 1 a {{last}}."
       },
       "eachPage_one": "Ogni pagina viene salvata come immagine separata: {{first}}",
-      "eachPage_other": "Ogni pagina viene salvata come immagine separata: {{first}} … {{last}} ({{count}} file)"
+      "eachPage_other": "Ogni pagina viene salvata come immagine separata: {{first}} … {{last}} ({{count}} file)",
+      "print": {
+        "enabled": "PDF pronto per la stampa",
+        "enabledHint": "Aggiunge abbondanza, segni di taglio e formato rifilato per la tipografia. Lo sfondo e le immagini e i rettangoli al vivo si estendono nell’abbondanza.",
+        "bleed": "Abbondanza",
+        "bleedHint": "Di solito 3 mm; chiedi alla tipografia se hai dubbi.",
+        "millimetres": "{{value}} mm",
+        "marks": "Segni di taglio",
+        "marksHint": "Linee sottili fuori dall’abbondanza che indicano dove tagliare.",
+        "plates": "Lastre di finitura",
+        "plateModes": {
+          "none": "Simulato",
+          "spot": "Colori spot",
+          "pages": "Pagine separate"
+        },
+        "plateHints": {
+          "none": "Rilievo, lamina e vernice sono disegnati come a schermo; per una prova.",
+          "spot": "Ogni finitura diventa un colore spot in sovrastampa sul proprio livello (Foil, Emboss, SpotUV…); la simulazione viene tolta.",
+          "pages": "Ogni finitura ha una propria pagina in bianco e nero dopo la grafica; la simulazione viene tolta."
+        },
+        "dieCut": "Viene aggiunta una linea di fustella per gli angoli arrotondati da {{value}} mm."
+      }
     },
     "project": {
       "open": "Apri progetto…",

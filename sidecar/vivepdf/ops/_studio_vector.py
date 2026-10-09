@@ -328,7 +328,11 @@ def rotated_bounds(box: StudioBox, margin: float = 0.0) -> pymupdf.Rect:
 
 
 def place(
-    page: pymupdf.Page, source: pymupdf.Document, box: StudioBox, margin: float = 0.0
+    page: pymupdf.Page,
+    source: pymupdf.Document,
+    box: StudioBox,
+    margin: float = 0.0,
+    oc: int = 0,
 ) -> None:
     target = rotated_bounds(box, margin)
     rotation = box.rotation % 360
@@ -338,5 +342,6 @@ def place(
         0,
         keep_proportion=rotation % 90 != 0,
         overlay=True,
+        oc=oc,
         rotate=-rotation,
     )
