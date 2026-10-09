@@ -61,7 +61,7 @@ describe("openSourceLibrary", () => {
 
     const document = await openSourceLibrary("C:/refs/zotero.ris");
 
-    expect(operations.studioReadBibliography).toHaveBeenCalledWith({ path: "C:/refs/zotero.ris" });
+    expect(operations.studioReadBibliography.mock.calls[0][0]).toEqual({ path: "C:/refs/zotero.ris" });
     expect(document?.name).toBe("zotero");
     expect(document?.content).toBe('<div data-bibliography=""></div>');
     expect(document?.sources.map((entry) => [entry.key, entry.fields.title])).toEqual([["lee2019urban", "Urban heat"]]);

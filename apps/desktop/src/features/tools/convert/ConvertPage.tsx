@@ -12,6 +12,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { formatBytes, formatNumber } from "@/shared/lib/format";
 import { pathKinds } from "@/shared/lib/pathKinds";
 import { basenameOf, defaultOutputDirectory, extensionOf, joinPath, outputDirectoryFor, siblingPath, stemOf } from "@/shared/lib/paths";
+import { documentText } from "@/features/studio/document/content";
 import { sheetLabels } from "@/shared/lib/sheetLabels";
 import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useLaunchStore } from "@/shared/store/launchStore";
@@ -29,7 +30,7 @@ import { useConvertOptions } from "./useConvertOptions";
 import { fileNameFromUrl } from "./urlName";
 
 export function ConvertPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const [searchParams, setSearchParams] = useSearchParams();
   const initialMode = searchParams.get("mode");
@@ -189,6 +190,7 @@ export function ConvertPage() {
       outputDir,
       pages: pages.trim() || undefined,
       sheetLabels: sheetLabels((key) => t(key)),
+      libraryText: { language: i18n.language, text: documentText(t) },
       options: {
         format,
         dpi,

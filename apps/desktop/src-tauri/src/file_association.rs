@@ -3,6 +3,7 @@ use crate::rpc::RpcError;
 pub const PROG_ID: &str = "vivePDF.Document";
 pub const CAPABILITIES_PATH: &str = "Software\\vivePDF\\Capabilities";
 pub const DOCUMENT_ICON_NAME: &str = "pdf-document.ico";
+pub const SUPPORTED_TYPES: [&str; 4] = [".pdf", ".bib", ".bibtex", ".ris"];
 #[cfg(windows)]
 const DOCUMENT_ICON: &[u8] = include_bytes!("../icons/pdf-document.ico");
 
@@ -50,7 +51,7 @@ mod registry {
 
     use super::{
         application_key, current_document_icon, document_icon_path, icon_value,
-        install_document_icon, open_command_line, CAPABILITIES_PATH, PROG_ID,
+        install_document_icon, open_command_line, CAPABILITIES_PATH, PROG_ID, SUPPORTED_TYPES,
     };
 
     fn root() -> RegKey {
@@ -105,6 +106,20 @@ mod registry {
         {
             return true;
         }
+        let types_missing = root()
+            .open_subkey(format!(
+                "Software\\Classes\\{}\\SupportedTypes",
+                application_key(&executable.to_string_lossy())
+            ))
+            .map(|key| {
+                SUPPORTED_TYPES
+                    .iter()
+                    .any(|extension| key.get_raw_value(extension).is_err())
+            })
+            .unwrap_or(true);
+        if types_missing {
+            return true;
+        }
         let icon = root()
             .open_subkey(format!("Software\\Classes\\{PROG_ID}\\DefaultIcon"))
             .and_then(|key| key.get_value::<String, _>(""))
@@ -137,7 +152,9 @@ mod registry {
         let (application_command, _) = application.create_subkey("shell\\open\\command")?;
         application_command.set_value("", &open_command_line(&executable))?;
         let (supported, _) = application.create_subkey("SupportedTypes")?;
-        supported.set_value(".pdf", &"")?;
+        for extension in SUPPORTED_TYPES {
+            supported.set_value(extension, &"")?;
+        }
         let (capabilities, _) = root().create_subkey(CAPABILITIES_PATH)?;
         capabilities.set_value("ApplicationName", &name)?;
         capabilities.set_value("ApplicationDescription", &description)?;

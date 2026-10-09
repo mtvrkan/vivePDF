@@ -1,9 +1,10 @@
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { sanitizeFileName } from "@/shared/lib/naming";
+import type { RpcCallOptions } from "@/shared/rpc/client";
 import { defaultOutputDirectory, dirnameOf, joinPath, stemOf } from "@/shared/lib/paths";
 import { studioDocumentImage, studioImportDocument, studioOpenDocument, studioReadBibliography, studioSaveDocument } from "@/shared/rpc/operations";
 import type { RpcError } from "@/types";
-import { STUDIO_DOCUMENT_EXTENSION, type StudioDocument, type StudioDocumentImport } from "@/types/studio";
+import { STUDIO_DOCUMENT_EXTENSION, type BibEntry, type StudioDocument, type StudioDocumentImport } from "@/types/studio";
 import { useRecentDesignsStore } from "../design/recentDesigns";
 import { IMAGE_EXTENSIONS } from "../design/pickImage";
 import { parseBibtex } from "./bibtex";
@@ -65,9 +66,13 @@ export async function importAsDocument(path: string): Promise<StudioDocument> {
   return importedDocument(await studioImportDocument({ path }));
 }
 
+export async function readSourceLibrary(path: string, options?: RpcCallOptions): Promise<BibEntry[]> {
+  const result = await studioReadBibliography({ path }, options);
+  return parseSources(result.text, formatOfPath(path)).entries;
+}
+
 export async function openSourceLibrary(path: string): Promise<StudioDocument | null> {
-  const result = await studioReadBibliography({ path });
-  const { entries } = parseSources(result.text, formatOfPath(path));
+  const entries = await readSourceLibrary(path);
   if (entries.length === 0) return null;
   return { ...createDocument(stemOf(path), '<div data-bibliography=""></div>'), sources: entries };
 }

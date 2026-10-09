@@ -6265,7 +6265,8 @@
       "outputRequired": "Sonucun kaydedileceği yer belirtilmedi.",
       "outputAndInPlace": "Sonuç yeni bir dosyaya ya da özgün dosyanın üzerine kaydedilebilir, ikisine birden değil.",
       "allPagesDeleted": "Tüm sayfalar silinmek üzere işaretlendi; bir PDF'te en az bir sayfa olmalı.",
-      "emptyQuery": "Aranacak metni yazın."
+      "emptyQuery": "Aranacak metni yazın.",
+      "noSources": "Bu dosyada okunabilen bir kaynak yok."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -6583,7 +6584,8 @@
     "merge": "Tek PDF’te birleştir",
     "privacy": "Gizlilik kontrolü",
     "rename": "İçeriğe göre adlandır",
-    "batch": "Toplu işlem"
+    "batch": "Toplu işlem",
+    "open": "vivePDF'te aç"
   },
   "search": {
     "description": "İndekslenen klasörlerdeki tüm PDF’lerin metninde arayın ve doğrudan sayfaya gidin.",

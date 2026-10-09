@@ -6264,7 +6264,8 @@
       "outputRequired": "Es wurde kein Speicherort für das Ergebnis angegeben.",
       "outputAndInPlace": "Das Ergebnis kann in einer neuen Datei oder über dem Original gespeichert werden, nicht beides.",
       "allPagesDeleted": "Alle Seiten wurden zum Löschen markiert; ein PDF braucht mindestens eine Seite.",
-      "emptyQuery": "Geben Sie den gesuchten Text ein."
+      "emptyQuery": "Geben Sie den gesuchten Text ein.",
+      "noSources": "Diese Datei enthält keine lesbaren Quellen."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -6582,7 +6583,8 @@
     "merge": "Zu einer PDF zusammenführen",
     "privacy": "Datenschutzprüfung",
     "rename": "Nach Inhalt umbenennen",
-    "batch": "Stapelverarbeitung"
+    "batch": "Stapelverarbeitung",
+    "open": "In vivePDF öffnen"
   },
   "search": {
     "description": "Den Text aller PDFs in den indizierten Ordnern durchsuchen und direkt zur Seite springen.",

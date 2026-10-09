@@ -6264,7 +6264,8 @@
       "outputRequired": "Non è stato indicato dove salvare il risultato.",
       "outputAndInPlace": "Il risultato può essere salvato in un nuovo file o sull'originale, non in entrambi.",
       "allPagesDeleted": "Tutte le pagine sono state contrassegnate per l’eliminazione; un PDF deve avere almeno una pagina.",
-      "emptyQuery": "Digita il testo da cercare."
+      "emptyQuery": "Digita il testo da cercare.",
+      "noSources": "Questo file non contiene fonti leggibili."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -6582,7 +6583,8 @@
     "merge": "Unisci in un PDF",
     "privacy": "Controllo privacy",
     "rename": "Rinomina in base al contenuto",
-    "batch": "Elaborazione in blocco"
+    "batch": "Elaborazione in blocco",
+    "open": "Apri in vivePDF"
   },
   "search": {
     "description": "Cerca nel testo di tutti i PDF delle cartelle indicizzate e vai direttamente alla pagina.",

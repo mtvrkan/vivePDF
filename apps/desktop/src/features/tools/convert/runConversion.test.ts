@@ -11,6 +11,8 @@ const convertToImages = vi.fn();
 const convertToText = vi.fn();
 const convertToMarkdown = vi.fn();
 const extractImages = vi.fn();
+const studioReadBibliography = vi.fn();
+const studioRenderDocument = vi.fn();
 vi.mock("@/shared/rpc/operations", () => ({
   fileToPdf: (...args: unknown[]) => fileToPdf(...args),
   svgToPdf: (...args: unknown[]) => svgToPdf(...args),
@@ -20,6 +22,8 @@ vi.mock("@/shared/rpc/operations", () => ({
   convertToText: (...args: unknown[]) => convertToText(...args),
   convertToMarkdown: (...args: unknown[]) => convertToMarkdown(...args),
   extractImages: (...args: unknown[]) => extractImages(...args),
+  studioReadBibliography: (...args: unknown[]) => studioReadBibliography(...args),
+  studioRenderDocument: (...args: unknown[]) => studioRenderDocument(...args),
 }));
 
 import { runConversion, type ConvertRun } from "./runConversion";
@@ -228,5 +232,41 @@ describe("runConversion picture and text results", () => {
     expect(convertToMarkdown.mock.calls[0][0]).toMatchObject({ pictures: "files" });
     convertToMarkdown.mockResolvedValue({ output: "C:/out/a.md", bytes: 3, textlessPages: [], ocrPages: [], pictureCount: 0, pictureFolder: null });
     expect((await runConversion(markdown, {})).pictures).toBeUndefined();
+  });
+});
+
+describe("runConversion source libraries", () => {
+  const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
+  const libraryText = { language: "en", text: { tocTitle: "Contents", referencesTitle: "References", terms: TERMS } };
+
+  beforeEach(() => {
+    fileToPdf.mockReset();
+    studioReadBibliography.mockReset();
+    studioRenderDocument.mockReset();
+  });
+
+  it("turns a .bib file into a PDF reference list and sends other files to the converter", async () => {
+    studioReadBibliography.mockResolvedValue({ text: "@book{knuth, author={Knuth, Donald}, title={The Art}, publisher={AW}, year=1968}", name: "refs.bib" });
+    studioRenderDocument.mockImplementation(converted);
+    fileToPdf.mockImplementation(converted);
+
+    const outcome = await runConversion({ ...batch(["C:\\in\\refs.bib", "C:\\in\\a.docx"]), libraryText }, {});
+
+    expect(outcome.outputs).toEqual(["C:\\out\\refs.pdf", "C:\\out\\a.pdf"]);
+    expect(fileToPdf).toHaveBeenCalledTimes(1);
+    const rendered = studioRenderDocument.mock.calls[0][0] as { html: string; title: string; output: string; settings: { paper: string } };
+    expect(rendered).toMatchObject({ title: "refs", output: "C:\\out\\refs.pdf", settings: { paper: "a4" } });
+    expect(rendered.html).toContain("Knuth, D. (1968). <em>The Art</em>. AW.");
+  });
+
+  it("reports a library without sources as a failed file and still converts the rest", async () => {
+    studioReadBibliography.mockResolvedValueOnce({ text: "% nothing here", name: "empty.ris" }).mockResolvedValueOnce({ text: "TY  - BOOK\nTI  - Kept\nER  - ", name: "b.ris" });
+    studioRenderDocument.mockImplementation(converted);
+
+    const outcome = await runConversion({ ...batch(["C:\\in\\empty.ris", "C:\\in\\b.ris"]), libraryText }, {});
+
+    expect(outcome.outputs).toEqual(["C:\\out\\b.pdf"]);
+    expect(outcome.failed?.[0]).toEqual({ path: "C:\\in\\empty.ris", error: { code: "INVALID_PARAMS", message: "the file holds no sources", data: { reason: "noSources" } } });
+    expect(studioRenderDocument).toHaveBeenCalledTimes(1);
   });
 });

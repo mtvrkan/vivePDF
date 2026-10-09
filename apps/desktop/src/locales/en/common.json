@@ -6265,7 +6265,8 @@
       "outputRequired": "No place to save the result was given.",
       "outputAndInPlace": "The result can be saved to a new file or over the original, not both.",
       "allPagesDeleted": "Every page was marked for deletion; a PDF needs at least one page.",
-      "emptyQuery": "Type the text to search for."
+      "emptyQuery": "Type the text to search for.",
+      "noSources": "This file holds no sources that could be read."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -6583,7 +6584,8 @@
     "merge": "Merge into one PDF",
     "privacy": "Privacy check",
     "rename": "Rename by content",
-    "batch": "Batch processing"
+    "batch": "Batch processing",
+    "open": "Open in vivePDF"
   },
   "search": {
     "description": "Search the text of every PDF in your indexed folders and jump straight to the page.",

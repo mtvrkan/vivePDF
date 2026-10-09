@@ -6264,7 +6264,8 @@
       "outputRequired": "Aucun emplacement d'enregistrement du résultat n'a été indiqué.",
       "outputAndInPlace": "Le résultat peut être enregistré dans un nouveau fichier ou sur l'original, pas les deux.",
       "allPagesDeleted": "Toutes les pages ont été marquées pour suppression ; un PDF doit garder au moins une page.",
-      "emptyQuery": "Saisissez le texte à rechercher."
+      "emptyQuery": "Saisissez le texte à rechercher.",
+      "noSources": "Ce fichier ne contient aucune source lisible."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -6582,7 +6583,8 @@
     "merge": "Fusionner en un PDF",
     "privacy": "Contrôle de confidentialité",
     "rename": "Renommer d’après le contenu",
-    "batch": "Traitement par lot"
+    "batch": "Traitement par lot",
+    "open": "Ouvrir dans vivePDF"
   },
   "search": {
     "description": "Rechercher dans le texte de tous les PDF des dossiers indexés et aller directement à la page.",

@@ -2,6 +2,7 @@ import type { ShellMenuEntry } from "@/types";
 
 const OFFICE_EXTENSIONS = ["docx", "doc", "xlsx", "xls", "pptx", "ppt", "odt", "ods", "odp", "rtf", "txt", "md", "html", "htm"];
 const IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "webp", "bmp", "gif", "tif", "tiff"];
+const SOURCE_EXTENSIONS = ["bib", "bibtex", "ris"];
 
 export function shellMenuEntries(t: (key: string) => string): ShellMenuEntry[] {
   return [
@@ -13,6 +14,7 @@ export function shellMenuEntries(t: (key: string) => string): ShellMenuEntry[] {
     { id: "privacy", label: t("shell.privacy"), tool: "privacy", extensions: ["pdf"] },
     { id: "rename", label: t("shell.rename"), tool: "rename", extensions: ["pdf"] },
     { id: "batch", label: t("shell.batch"), tool: "batch", extensions: ["pdf"] },
-    { id: "topdf", label: t("shell.toPdf"), tool: "topdf", extensions: [...OFFICE_EXTENSIONS, ...IMAGE_EXTENSIONS] },
+    { id: "open", label: t("shell.open"), tool: "open", extensions: SOURCE_EXTENSIONS },
+    { id: "topdf", label: t("shell.toPdf"), tool: "topdf", extensions: [...OFFICE_EXTENSIONS, ...IMAGE_EXTENSIONS, ...SOURCE_EXTENSIONS] },
   ];
 }

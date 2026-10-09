@@ -1,5 +1,8 @@
 import { invoke } from "@tauri-apps/api/core";
+import type { DocumentText } from "@/features/studio/document/content";
+import { sourceLibraryToPdf } from "@/features/studio/document/sourceLibraryPdf";
 import type { SheetLabels } from "@/shared/lib/sheetLabels";
+import { isSourceLibraryPath } from "@/shared/store/studioLaunchStore";
 import { toRpcError, type RpcCallOptions } from "@/shared/rpc/client";
 import {
   convertToDocx,
@@ -26,6 +29,7 @@ export type ConvertRun = {
   outputDir?: string;
   pages?: string;
   sheetLabels?: SheetLabels;
+  libraryText?: { language: string; text: DocumentText };
   options: {
     format: ImageFormat;
     dpi: number;
@@ -105,9 +109,14 @@ function stopsTheBatch(error: RpcError, signal?: AbortSignal): boolean {
   return error.code === "CANCELLED" || signal?.aborted === true || (error.code === "INVALID_PARAMS" && error.data?.exists === true);
 }
 
+function oneFileToPdf(run: ConvertRun, path: string, output: string, callOptions: RpcCallOptions) {
+  if (run.libraryText && isSourceLibraryPath(path)) return sourceLibraryToPdf(path, { output, overwrite: run.overwrite, paper: run.options.paper, ...run.libraryText }, callOptions);
+  return fileToPdf({ path, output, overwrite: run.overwrite, paper: run.options.paper }, callOptions);
+}
+
 async function filesToPdf(run: ConvertRun, callOptions: RpcCallOptions, files = run.options.files): Promise<ConvertOutcome> {
   if (files.length === 1) {
-    const result = await fileToPdf({ path: files[0], output: run.output, overwrite: run.overwrite, paper: run.options.paper }, callOptions);
+    const result = await oneFileToPdf(run, files[0], run.output, callOptions);
     return { outputs: [result.output], bytes: result.bytes, count: result.pageCount, label: "pages" };
   }
   const targets = batchOutputPaths(files, run.outputDir);
@@ -125,10 +134,7 @@ async function filesToPdf(run: ConvertRun, callOptions: RpcCallOptions, files = 
       callOptions.onProgress?.({ id: "", progress: (index + Math.min(Math.max(fraction, 0), 1)) / files.length, message: "progress.converting", detail });
     report(0);
     try {
-      const result = await fileToPdf(
-        { path: file, output: targets[index], overwrite: run.overwrite, paper: run.options.paper },
-        { ...callOptions, onProgress: (update) => report(update.progress) },
-      );
+      const result = await oneFileToPdf(run, file, targets[index], { ...callOptions, onProgress: (update) => report(update.progress) });
       outputs.push(result.output);
       bytes += result.bytes;
       pages += result.pageCount;
