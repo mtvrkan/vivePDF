@@ -13,6 +13,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio: tables can be made taller than their text — the top, bottom and corner handles and the height field stretch the rows, inner row borders can be dragged while editing cells, the cells panel has a row height field, a "fit height to the text" button and top/middle/bottom alignment for the text in taller rows [2026-10-09]
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
+### Changed
+- Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
+
 ### Fixed
 - Studio CV: dates, company/school and city fields each take the full width of the form, so the month picker is no longer squeezed to a sliver and placeholders are no longer cut off; the "type the date" button has a clearer icon [2026-10-09]
 - Studio documents: code blocks and table header rows are shaded again in the PDF, and the shading no longer leaves a stray strip at the top of every later page [2026-10-09]
