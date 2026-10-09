@@ -136,6 +136,16 @@ export type StudioFoil = (typeof STUDIO_FOILS)[number];
 
 export type StudioFinish = { type: StudioFinishType; depth: number; softness: number; angle: number; blind: boolean; foil: StudioFoil };
 
+export type StudioFinishRegion = "light" | "away" | "outerLight" | "outerAway";
+
+export type StudioFinishLayer = { region: StudioFinishRegion; color: string; opacity: number; blur: number };
+
+export type StudioFinishStop = { offset: number; color: string; opacity: number };
+
+export type StudioFinishTexture = { x1: number; y1: number; x2: number; y2: number; stops: StudioFinishStop[]; replace: boolean };
+
+export type StudioFinishRecipe = { dx: number; dy: number; ink: boolean; layers: StudioFinishLayer[]; texture: StudioFinishTexture | null };
+
 export type StudioShadowable = { dropShadow: StudioDropShadow | null };
 
 export const STUDIO_ARROWHEADS = ["none", "arrow", "openArrow", "triangle", "circle", "square", "bar"] as const;
@@ -314,31 +324,36 @@ export type StudioRenderShape =
   | (StudioRenderBox & { kind: "image"; path: string; fit: StudioImageFit; crop: StudioCrop | null; mask: StudioImageMask; radius: number; filter?: number[] })
   | (StudioRenderBox & { kind: "qr"; value: string; color: string; background: string | null; errorLevel: StudioQrLevel });
 
+export type StudioRenderText = StudioRenderBox & {
+  kind: "text";
+  runs: StudioRenderRun[];
+  fontId: string | null;
+  fontSize: number;
+  color: string;
+  weight: number;
+  align: StudioTextAlign;
+  verticalAlign: StudioVerticalAlign;
+  lineHeight: number;
+  letterSpacing: number;
+  textCase: StudioTextCase;
+  shrinkToFit: boolean;
+  autoWidth: boolean;
+  paragraphs: StudioParagraph[];
+  outline: StudioTextOutline | null;
+  shadow: StudioTextShadow | null;
+  highlight: StudioTextHighlight | null;
+  language?: string;
+  segments?: StudioRenderSegment[];
+  bands?: StudioRenderBand[];
+};
+
+export type StudioFinishSource = StudioRenderShape | StudioRenderText;
+
 export type StudioRenderItem =
   | StudioRenderShape
+  | StudioRenderText
   | (StudioRenderBox & { kind: "shadow"; shadow: StudioDropShadow; items: StudioRenderShape[] })
-  | (StudioRenderBox & {
-      kind: "text";
-      runs: StudioRenderRun[];
-      fontId: string | null;
-      fontSize: number;
-      color: string;
-      weight: number;
-      align: StudioTextAlign;
-      verticalAlign: StudioVerticalAlign;
-      lineHeight: number;
-      letterSpacing: number;
-      textCase: StudioTextCase;
-      shrinkToFit: boolean;
-      autoWidth: boolean;
-      paragraphs: StudioParagraph[];
-      outline: StudioTextOutline | null;
-      shadow: StudioTextShadow | null;
-      highlight: StudioTextHighlight | null;
-      language?: string;
-      segments?: StudioRenderSegment[];
-      bands?: StudioRenderBand[];
-    });
+  | (StudioRenderBox & { kind: "finish"; recipe: StudioFinishRecipe; items: StudioFinishSource[] });
 
 export type StudioRenderPage = { width: number; height: number; items: StudioRenderItem[] };
 

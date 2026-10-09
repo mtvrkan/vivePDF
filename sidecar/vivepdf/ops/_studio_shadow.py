@@ -55,7 +55,7 @@ def _coverage(
         document.close()
 
 
-def _blurred(coverage: np.ndarray, sigma: float) -> np.ndarray:
+def blurred(coverage: np.ndarray, sigma: float) -> np.ndarray:
     if sigma <= 0:
         return coverage
     image = Image.fromarray(np.clip(coverage * 255, 0, 255).astype(np.uint8), mode="L")
@@ -69,7 +69,7 @@ def shadow_document(item: StudioShadowItem, sources: list[Source]) -> Source:
     width, height = item.width + 2 * margin, item.height + 2 * margin
     dpi = SHARP_DPI if sigma < SOFT_SIGMA else SOFT_DPI
     scale = min(dpi / 72, math.sqrt(MAX_SHADOW_PIXELS / max(width * height, 1.0)))
-    alpha = _blurred(_coverage(sources, item, margin, local_offset(item), scale), sigma * scale)
+    alpha = blurred(_coverage(sources, item, margin, local_offset(item), scale), sigma * scale)
     alpha = alpha * item.shadow.opacity
     if item.opacity < 1:
         content = _coverage(sources, item, margin, (0.0, 0.0), scale)

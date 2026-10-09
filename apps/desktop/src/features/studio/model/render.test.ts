@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { STUDIO_SHAPES } from "@/types/studio";
 import { createDesign, createImage, createQr, createShape, createText } from "./design";
+import { defaultFinish } from "./finish";
 import { designToRender, elementItems, hasSeeThroughBackground, imagePaths, pageToRender, renderItems } from "./render";
 import { linearGradientLine, renderFill, renderStroke, shapeD, shapePaths } from "./shapes";
 
@@ -183,5 +184,31 @@ describe("element drop shadows", () => {
 
   it("casts no shadow from an element that draws nothing", () => {
     expect(renderItems({ ...createShape("rect", 0, 0, 10, 10), fill: { type: "none" }, dropShadow: shadow })).toEqual([]);
+  });
+});
+
+describe("element print finishes", () => {
+  it("lays the finish over the ink and hands it the element's own items as its shape", () => {
+    const text = { ...createText(10, 20, 120, 30, "Gloss"), rotation: 30, opacity: 0.8, finish: defaultFinish("spotUv") };
+
+    const items = renderItems(text);
+
+    expect(items.map((item) => item.kind)).toEqual(["text", "finish"]);
+    expect(items[1]).toMatchObject({ kind: "finish", x: 10, y: 20, width: 120, height: 30, rotation: 30, opacity: 0.8 });
+    expect(items[1].kind === "finish" && items[1].items.map((item) => [item.kind, item.opacity])).toEqual([["text", 1]]);
+    expect(items[1].kind === "finish" && items[1].recipe.texture?.replace).toBe(false);
+  });
+
+  it("drops the ink for blind embossing and foil but keeps the drop shadow", () => {
+    const shadow = { color: "#000000", opacity: 0.4, x: 3, y: 5, blur: 8 };
+    const shape = { ...createShape("rect", 0, 0, 40, 40), dropShadow: shadow };
+
+    expect(renderItems({ ...shape, finish: defaultFinish("emboss") }).map((item) => item.kind)).toEqual(["shadow", "finish"]);
+    expect(renderItems({ ...shape, finish: defaultFinish("foil") }).map((item) => item.kind)).toEqual(["shadow", "finish"]);
+    expect(renderItems({ ...shape, finish: { ...defaultFinish("emboss"), blind: false } }).map((item) => item.kind)).toEqual(["shadow", "vector", "finish"]);
+  });
+
+  it("adds no finish to an element that draws nothing", () => {
+    expect(renderItems({ ...createShape("rect", 0, 0, 10, 10), fill: { type: "none" }, finish: defaultFinish("emboss") })).toEqual([]);
   });
 });

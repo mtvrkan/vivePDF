@@ -11,6 +11,7 @@ import type {
 } from "@/types/studio";
 import { graphicRenderSpec } from "../graphics/graphicData";
 import { hasPlaceholders, textOf } from "./design";
+import { finishRecipe } from "./finish";
 import { filterMatrix } from "./imageFilters";
 import { fitParagraphs, paragraphCount, weightOf } from "./typography";
 import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./shapes";
@@ -126,12 +127,21 @@ export function elementItems(element: StudioElement, measured: MeasuredText = ne
 export function shadowedItems(element: StudioElement, items: StudioRenderItem[]): StudioRenderItem[] {
   const shadow = element.kind === "text" ? null : element.dropShadow;
   if (!shadow || shadow.opacity <= 0 || !items.length) return items;
-  const shapes = items.flatMap((item) => (item.kind === "text" || item.kind === "shadow" ? [] : [{ ...item, opacity: 1 }]));
+  const shapes = items.flatMap((item) => (item.kind === "text" || item.kind === "shadow" || item.kind === "finish" ? [] : [{ ...item, opacity: 1 }]));
   return shapes.length ? [{ ...box(element), kind: "shadow", shadow, items: shapes }, ...items] : items;
 }
 
+export function finishedItems(element: StudioElement, items: StudioRenderItem[]): StudioRenderItem[] {
+  if (!element.finish) return items;
+  const sources = items.flatMap((item) => (item.kind === "shadow" || item.kind === "finish" ? [] : [{ ...item, opacity: 1 }]));
+  if (!sources.length) return items;
+  const recipe = finishRecipe(element.finish, element);
+  const kept = recipe.ink ? items : items.filter((item) => item.kind === "shadow");
+  return [...kept, { ...box(element), kind: "finish", recipe, items: sources }];
+}
+
 export function renderItems(element: StudioElement, measured: MeasuredText = new Map()): StudioRenderItem[] {
-  return shadowedItems(element, elementItems(element, measured));
+  return finishedItems(element, shadowedItems(element, elementItems(element, measured)));
 }
 
 function backgroundItems(page: StudioPage, keepWhite: boolean): StudioRenderItem[] {

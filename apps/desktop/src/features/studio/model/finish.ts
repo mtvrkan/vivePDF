@@ -1,19 +1,20 @@
-import { STUDIO_FINISHES, STUDIO_FOILS, type StudioElement, type StudioFinish, type StudioFinishType, type StudioFoil } from "@/types/studio";
+import {
+  STUDIO_FINISHES,
+  STUDIO_FOILS,
+  type StudioElement,
+  type StudioFinish,
+  type StudioFinishLayer,
+  type StudioFinishRecipe,
+  type StudioFinishStop,
+  type StudioFinishTexture,
+  type StudioFinishType,
+  type StudioFoil,
+} from "@/types/studio";
 import { linearGradientLine } from "./shapes";
 
 export const FINISH_DEPTH = { min: 0.2, max: 3 } as const;
 export const FINISH_SOFTNESS = { min: 0, max: 3 } as const;
 export const DEFAULT_LIGHT_ANGLE = 315;
-
-export type FinishRegion = "light" | "away" | "outerLight" | "outerAway";
-
-export type FinishLayer = { region: FinishRegion; color: string; opacity: number; blur: number };
-
-export type FinishStop = { offset: number; color: string; opacity: number };
-
-export type FinishTexture = { x1: number; y1: number; x2: number; y2: number; stops: FinishStop[]; replace: boolean };
-
-export type FinishRecipe = { dx: number; dy: number; ink: boolean; layers: FinishLayer[]; texture: FinishTexture | null };
 
 const DEFAULTS: Record<StudioFinishType, Omit<StudioFinish, "type" | "foil" | "angle">> = {
   emboss: { depth: 1.2, softness: 0.8, blind: true },
@@ -32,7 +33,7 @@ const FOIL_STOPS: Record<StudioFoil, string[]> = {
 };
 
 const FOIL_OFFSETS = [0, 0.25, 0.45, 0.6, 0.8, 1];
-const GLOSS_STOPS: FinishStop[] = [
+const GLOSS_STOPS: StudioFinishStop[] = [
   { offset: 0, color: "#ffffff", opacity: 0.04 },
   { offset: 0.3, color: "#ffffff", opacity: 0.6 },
   { offset: 0.42, color: "#ffffff", opacity: 0.12 },
@@ -81,7 +82,7 @@ function localAngle(angle: number, element: Pick<StudioElement, "rotation" | "fl
   return ((turned % 360) + 360) % 360;
 }
 
-function layersOf(finish: StudioFinish): FinishLayer[] {
+function layersOf(finish: StudioFinish): StudioFinishLayer[] {
   const blur = finish.softness;
   switch (finish.type) {
     case "emboss":
@@ -114,14 +115,14 @@ function layersOf(finish: StudioFinish): FinishLayer[] {
   }
 }
 
-function textureOf(finish: StudioFinish, angle: number, width: number, height: number): FinishTexture | null {
+function textureOf(finish: StudioFinish, angle: number, width: number, height: number): StudioFinishTexture | null {
   if (finish.type !== "foil" && finish.type !== "spotUv") return null;
   const line = linearGradientLine((angle + 45) % 360, width, height);
   if (finish.type === "spotUv") return { ...line, stops: GLOSS_STOPS, replace: false };
   return { ...line, stops: FOIL_STOPS[finish.foil].map((color, index) => ({ offset: FOIL_OFFSETS[index], color, opacity: 1 })), replace: true };
 }
 
-export function finishRecipe(finish: StudioFinish, element: Pick<StudioElement, "rotation" | "flipX" | "flipY" | "width" | "height">): FinishRecipe {
+export function finishRecipe(finish: StudioFinish, element: Pick<StudioElement, "rotation" | "flipX" | "flipY" | "width" | "height">): StudioFinishRecipe {
   const angle = localAngle(finish.angle, element);
   const radians = (angle * Math.PI) / 180;
   const texture = textureOf(finish, angle, element.width, element.height);
@@ -134,7 +135,7 @@ export function finishRecipe(finish: StudioFinish, element: Pick<StudioElement, 
   };
 }
 
-export function finishReach(recipe: FinishRecipe): number {
+export function finishReach(recipe: StudioFinishRecipe): number {
   const blur = Math.max(0, ...recipe.layers.map((layer) => layer.blur));
   return Math.hypot(recipe.dx, recipe.dy) + 3 * blur + 2;
 }

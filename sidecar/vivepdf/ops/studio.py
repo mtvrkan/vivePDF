@@ -11,10 +11,12 @@ from PIL import Image, ImageDraw, ImageOps
 
 from vivepdf.ops._image_files import eight_bit, open_picture
 from vivepdf.ops._output import prepare_output, save_document, write_atomically
+from vivepdf.ops._studio_finish import finish_document
 from vivepdf.ops._studio_graphics import graphic_document, graphic_has_placeholders
 from vivepdf.ops._studio_merge import merge_rows, row_values, save_output, split_targets
 from vivepdf.ops._studio_models import (
     MAX_OUTPUT_PAGES,
+    StudioFinishItem,
     StudioImageInfoParams,
     StudioImageInfoResult,
     StudioImageItem,
@@ -226,7 +228,7 @@ def _rgb(colour: str) -> tuple[float, float, float]:
 def _static(item: StudioItem) -> bool:
     if isinstance(item, StudioQrItem):
         return not PLACEHOLDER.search(item.value)
-    if isinstance(item, StudioShadowItem):
+    if isinstance(item, StudioShadowItem | StudioFinishItem):
         return all(_static(nested) for nested in item.items)
     if isinstance(item, StudioSvgItem) and item.graphic is not None:
         return not graphic_has_placeholders(item.graphic)
@@ -284,6 +286,81 @@ def _faces(font_id: str | None, faces: dict[str | None, TextFaces]) -> TextFaces
     return faces[font_id]
 
 
+def _draw_text(
+    page: pymupdf.Page,
+    item: StudioTextItem,
+    values: dict[str, str],
+    language: str,
+    faces: dict[str | None, TextFaces],
+) -> str:
+    text_faces = _faces(item.font_id, faces)
+    texts = run_texts(item, values, language)
+    if needs_shaping(item, text_faces, texts):
+        draw_shaped(page, item, text_faces, values, language)
+        return ""
+    text_layout = (
+        from_segments(item)
+        if item.segments is not None and not has_placeholders(item)
+        else layout(item, text_faces, values, language)
+    )
+    return draw_text(page, item, text_faces, text_layout)
+
+
+def _finish(
+    item: StudioFinishItem,
+    values: dict[str, str],
+    language: str,
+    faces: dict[str | None, TextFaces],
+) -> tuple[pymupdf.Document, float, str]:
+    missing: list[str] = []
+
+    def draw(page: pymupdf.Page, margin: float) -> None:
+        for nested in item.items:
+            local = nested.model_copy(
+                update={
+                    "x": margin,
+                    "y": margin,
+                    "rotation": 0.0,
+                    "opacity": 1.0,
+                    "flip_x": False,
+                    "flip_y": False,
+                }
+            )
+            if isinstance(local, StudioTextItem):
+                missing.append(_draw_text(page, local, values, language, faces))
+                continue
+            source, inner = _drawn(local, values)
+            try:
+                rect = pymupdf.Rect(
+                    margin - inner,
+                    margin - inner,
+                    margin + local.width + inner,
+                    margin + local.height + inner,
+                )
+                page.show_pdf_page(rect, source, 0, keep_proportion=False)
+            finally:
+                source.close()
+
+    document, margin = finish_document(item, draw)
+    return mirror(document, item.flip_x, item.flip_y), margin, "".join(missing)
+
+
+def _finished_source(
+    item: StudioFinishItem,
+    key: tuple[int, int],
+    cache: Cache,
+    values: dict[str, str],
+    language: str,
+    faces: dict[str | None, TextFaces],
+) -> tuple[pymupdf.Document, float, str]:
+    if key in cache:
+        return (*cache[key], "")
+    document, margin, missing = _finish(item, values, language, faces)
+    if _static(item):
+        cache[key] = (document, margin)
+    return document, margin, missing
+
+
 def draw_page(
     document: pymupdf.Document,
     spec: StudioPage,
@@ -299,19 +376,14 @@ def draw_page(
         if item.opacity <= 0:
             continue
         if isinstance(item, StudioTextItem):
-            text_faces = _faces(item.font_id, faces)
-            texts = run_texts(item, values, language)
-            if needs_shaping(item, text_faces, texts):
-                draw_shaped(page, item, text_faces, values, language)
-                continue
-            text_layout = (
-                from_segments(item)
-                if item.segments is not None and not has_placeholders(item)
-                else layout(item, text_faces, values, language)
-            )
-            missing.append(draw_text(page, item, text_faces, text_layout))
+            missing.append(_draw_text(page, item, values, language, faces))
             continue
-        source, margin = _source(item, (page_index, item_index), cache, values)
+        key = (page_index, item_index)
+        if isinstance(item, StudioFinishItem):
+            source, margin, lost = _finished_source(item, key, cache, values, language, faces)
+            missing.append(lost)
+        else:
+            source, margin = _source(item, key, cache, values)
         try:
             place(page, source, item, margin)
         finally:

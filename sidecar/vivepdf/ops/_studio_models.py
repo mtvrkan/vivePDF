@@ -229,13 +229,56 @@ class StudioShadowItem(StudioBox):
     items: list[StudioShadowSource] = Field(min_length=1, max_length=8)
 
 
+class StudioFinishLayer(RpcModel):
+    region: Literal["light", "away", "outerLight", "outerAway"]
+    color: Colour
+    opacity: Unit = 1.0
+    blur: float = Field(default=0.0, ge=0, le=20)
+
+
+class StudioFinishStop(RpcModel):
+    offset: Unit
+    color: Colour
+    opacity: Unit = 1.0
+
+
+class StudioFinishTexture(RpcModel):
+    x1: Coordinate
+    y1: Coordinate
+    x2: Coordinate
+    y2: Coordinate
+    stops: list[StudioFinishStop] = Field(min_length=1, max_length=32)
+    replace: bool = False
+
+
+class StudioFinishRecipe(RpcModel):
+    dx: float = Field(ge=-20, le=20)
+    dy: float = Field(ge=-20, le=20)
+    ink: bool = True
+    layers: list[StudioFinishLayer] = Field(default_factory=list, max_length=8)
+    texture: StudioFinishTexture | None = None
+
+
+StudioFinishSource = Annotated[
+    StudioVectorItem | StudioSvgItem | StudioImageItem | StudioQrItem | StudioTextItem,
+    Field(discriminator="kind"),
+]
+
+
+class StudioFinishItem(StudioBox):
+    kind: Literal["finish"]
+    recipe: StudioFinishRecipe
+    items: list[StudioFinishSource] = Field(min_length=1, max_length=8)
+
+
 StudioItem = Annotated[
     StudioVectorItem
     | StudioSvgItem
     | StudioImageItem
     | StudioQrItem
     | StudioTextItem
-    | StudioShadowItem,
+    | StudioShadowItem
+    | StudioFinishItem,
     Field(discriminator="kind"),
 ]
 

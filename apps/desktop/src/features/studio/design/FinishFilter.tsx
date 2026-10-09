@@ -1,10 +1,11 @@
 import { Fragment, memo } from "react";
+import type { StudioFinishRecipe, StudioFinishRegion, StudioFinishTexture } from "@/types/studio";
+import { finishReach } from "../model/finish";
 import { num } from "../model/shapes";
-import { finishReach, type FinishRecipe, type FinishRegion, type FinishTexture } from "../model/finish";
 
-const INNER: Record<FinishRegion, boolean> = { light: true, away: true, outerLight: false, outerAway: false };
+const INNER: Record<StudioFinishRegion, boolean> = { light: true, away: true, outerLight: false, outerAway: false };
 
-function textureUrl(texture: FinishTexture, width: number, height: number): string {
+function textureUrl(texture: StudioFinishTexture, width: number, height: number): string {
   const stops = texture.stops.map((stop) => `<stop offset="${num(stop.offset)}" stop-color="${stop.color}" stop-opacity="${num(stop.opacity)}"/>`).join("");
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" width="${num(width)}" height="${num(height)}" viewBox="0 0 ${num(width)} ${num(height)}">` +
@@ -13,7 +14,7 @@ function textureUrl(texture: FinishTexture, width: number, height: number): stri
   return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
-export const FinishFilter = memo(function FinishFilter({ id, recipe, width, height }: { id: string; recipe: FinishRecipe; width: number; height: number }) {
+export const FinishFilter = memo(function FinishFilter({ id, recipe, width, height }: { id: string; recipe: StudioFinishRecipe; width: number; height: number }) {
   const reach = finishReach(recipe);
   const merged: string[] = [];
   if (recipe.ink) merged.push("SourceGraphic");
