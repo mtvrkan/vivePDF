@@ -8584,6 +8584,8 @@
         "addColumn": "Spalte rechts einfügen",
         "deleteRow": "Zeile löschen",
         "deleteColumn": "Spalte löschen",
+        "mergeCells": "Zellen zusammenführen",
+        "splitCell": "Zelle teilen",
         "headerRow": "Kopfzeile ein- oder ausschalten",
         "delete": "Tabelle löschen"
       },

@@ -9423,6 +9423,8 @@
         "addColumn": "إضافة عمود إلى اليمين",
         "deleteRow": "حذف الصف",
         "deleteColumn": "حذف العمود",
+        "mergeCells": "دمج الخلايا",
+        "splitCell": "تقسيم الخلية",
         "headerRow": "تبديل صف العنوان",
         "delete": "حذف الجدول"
       },

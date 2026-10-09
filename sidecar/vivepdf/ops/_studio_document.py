@@ -26,6 +26,7 @@ from vivepdf.rpc.errors import ErrorCode, OpError
 IMAGE_PREFIX = "vpimg-"
 IMAGE_MAX_SIDE = 2400
 JPEG_QUALITY = 88
+SHADE = "#f3f4f6"
 DATA_URL = re.compile(r"^data:image/(?:png|jpe?g|gif|webp|bmp);base64,", re.IGNORECASE)
 IMAGE_TAG = re.compile(r"<img\b[^>]*>", re.IGNORECASE)
 SOURCE = re.compile(r"""\ssrc\s*=\s*(["'])(.*?)\1""", re.IGNORECASE | re.DOTALL)
@@ -216,12 +217,16 @@ def _base_css(settings: StudioDocumentSettings, heading_font: bool) -> str:
             "blockquote{margin:0 0 8pt 0;padding-left:10pt;border-left:2pt solid #cccccc;"
             "color:#444444;}",
             f"pre{{font-family:monospace;font-size:{size * 0.88:.1f}pt;"
-            "border-left:2pt solid #d1d5db;padding:2pt 0 2pt 8pt;white-space:pre-wrap;"
-            "margin:0 0 8pt 0;}",
+            f"background-color:{SHADE};border-left:2pt solid #d1d5db;"
+            f"border-top:3pt solid {SHADE};border-bottom:3pt solid {SHADE};"
+            "padding:0 8pt;white-space:pre-wrap;margin:0 0 8pt 0;}",
             "code{font-family:monospace;}",
             "table{border-collapse:collapse;width:100%;margin:0 0 8pt 0;}",
             "td,th{border:0.5pt solid #999999;padding:3pt 5pt;vertical-align:top;}",
-            "th{font-weight:bold;border-bottom:1pt solid #666666;}",
+            f"th{{font-weight:bold;text-align:left;border-bottom:1pt solid #666666;"
+            f"background-color:{SHADE};"
+            "padding:0 5pt;}",
+            "th p{margin:3pt 0;}",
             "hr{border:none;border-top:0.75pt solid #bbbbbb;margin:8pt 0;}",
             "img{max-width:100%;}",
             f"a{{color:{accent};}}",

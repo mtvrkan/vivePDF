@@ -8586,6 +8586,8 @@
         "addColumn": "Sağa sütun ekle",
         "deleteRow": "Satırı sil",
         "deleteColumn": "Sütunu sil",
+        "mergeCells": "Hücreleri birleştir",
+        "splitCell": "Hücreyi böl",
         "headerRow": "Başlık satırını aç veya kapat",
         "delete": "Tabloyu sil"
       },

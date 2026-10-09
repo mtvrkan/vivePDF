@@ -3,6 +3,11 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
+
+### Fixed
+- Studio documents: code blocks and table header rows are shaded again in the PDF, and the shading no longer leaves a stray strip at the top of every later page [2026-10-09]
 
 ## [0.2.0] - 2026-10-09
 ### Added

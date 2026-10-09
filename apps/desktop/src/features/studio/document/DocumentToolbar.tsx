@@ -28,6 +28,8 @@ import {
   Subscript,
   Superscript,
   Table2,
+  TableCellsMerge,
+  TableCellsSplit,
   TableColumnsSplit,
   TableRowsSplit,
   Underline,
@@ -133,6 +135,8 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
         quote: current.isActive("blockquote"),
         code: current.isActive("codeBlock"),
         table: current.isActive("table"),
+        mergeCells: current.isActive("table") && current.can().mergeCells(),
+        splitCell: current.isActive("table") && current.can().splitCell(),
         align: (["left", "center", "right", "justify"] as const).find((value) => current.isActive({ textAlign: value })) ?? "left",
         fontId: typeof style.fontId === "string" ? style.fontId : "",
         fontSize: typeof style.fontSize === "string" ? style.fontSize.replace(/pt$/, "") : "",
@@ -233,6 +237,8 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
           <IconButton icon={Columns3} label={t("studio.doc.table.addColumn")} onClick={() => chain().addColumnAfter().run()} />
           <IconButton icon={TableRowsSplit} label={t("studio.doc.table.deleteRow")} onClick={() => chain().deleteRow().run()} />
           <IconButton icon={TableColumnsSplit} label={t("studio.doc.table.deleteColumn")} onClick={() => chain().deleteColumn().run()} />
+          <IconButton icon={TableCellsMerge} label={t("studio.doc.table.mergeCells")} disabled={!state.mergeCells} onClick={() => chain().mergeCells().run()} data-testid="doc-merge-cells" />
+          <IconButton icon={TableCellsSplit} label={t("studio.doc.table.splitCell")} disabled={!state.splitCell} onClick={() => chain().splitCell().run()} data-testid="doc-split-cell" />
           <IconButton icon={PanelTop} label={t("studio.doc.table.headerRow")} onClick={() => chain().toggleHeaderRow().run()} />
           <IconButton icon={FileX2} label={t("studio.doc.table.delete")} onClick={() => chain().deleteTable().run()} />
         </span>

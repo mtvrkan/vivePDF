@@ -8584,6 +8584,8 @@
         "addColumn": "Añadir columna a la derecha",
         "deleteRow": "Eliminar fila",
         "deleteColumn": "Eliminar columna",
+        "mergeCells": "Combinar celdas",
+        "splitCell": "Dividir celda",
         "headerRow": "Activar o desactivar la fila de encabezado",
         "delete": "Eliminar tabla"
       },

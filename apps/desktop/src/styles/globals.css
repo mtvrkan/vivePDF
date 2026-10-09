@@ -779,11 +779,12 @@
     padding-left: 10pt;
   }
   .vp-doc pre {
+    background: var(--muted);
     border-left: 2pt solid var(--border);
     font-family: ui-monospace, monospace;
     font-size: 0.88em;
     margin: 0 0 0.6em;
-    padding: 2pt 0 2pt 8pt;
+    padding: 3pt 8pt;
     white-space: pre-wrap;
   }
   .vp-doc code {
@@ -818,6 +819,7 @@
     vertical-align: top;
   }
   .vp-doc th {
+    background: var(--muted);
     border-bottom-width: 1pt;
     font-weight: 700;
     text-align: left;

@@ -8584,6 +8584,8 @@
         "addColumn": "Ajouter une colonne à droite",
         "deleteRow": "Supprimer la ligne",
         "deleteColumn": "Supprimer la colonne",
+        "mergeCells": "Fusionner les cellules",
+        "splitCell": "Diviser la cellule",
         "headerRow": "Activer ou désactiver la ligne d'en-tête",
         "delete": "Supprimer le tableau"
       },

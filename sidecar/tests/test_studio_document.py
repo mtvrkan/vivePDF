@@ -137,6 +137,57 @@ def test_landscape_paper_and_margins_set_the_page_size(tmp_path: Path):
     assert rect.width > rect.height
 
 
+def _shaded(page: pymupdf.Page) -> list[pymupdf.Rect]:
+    return [
+        drawing["rect"]
+        for drawing in page.get_drawings()
+        if drawing.get("fill")
+        and tuple(round(part, 2) for part in drawing["fill"]) == (0.95, 0.96, 0.96)
+        and drawing["rect"].width > 100
+    ]
+
+
+def test_code_and_header_shading_stays_on_the_pages_that_hold_them(tmp_path: Path):
+    rows = "".join(f"<tr><td><p>r{index}</p></td><td><p>x</p></td></tr>" for index in range(8))
+    code = chr(10).join(f"line {index}" for index in range(80))
+    body = (
+        "<p>intro</p>" * 20
+        + f"<table><tr><th><p>Name</p></th><th><p>Score</p></th></tr>{rows}</table>"
+        + f"<pre><code>{code}</code></pre>"
+        + "<p>after</p>" * 120
+    )
+
+    with _render(tmp_path, body=body) as document:
+        shaded = [_shaded(page) for page in document]
+        code_pages = [
+            page.number
+            for page in document
+            if "line 40" in page.get_text() or "line 79" in page.get_text()
+        ]
+
+    assert len(shaded[0]) >= 2
+    assert all(any(rect.height > 50 for rect in shaded[number]) for number in code_pages)
+    last_code_page = max(code_pages)
+    assert len(shaded) > last_code_page + 1
+    assert all(not rects for rects in shaded[last_code_page + 1 :])
+
+
+def test_merged_table_cells_span_their_columns_and_rows(tmp_path: Path):
+    body = (
+        '<table><tr><th colspan="2"><p>Wide</p></th><th><p>C</p></th></tr>'
+        '<tr><td rowspan="2"><p>Tall</p></td><td><p>E</p></td><td><p>F</p></td></tr>'
+        "<tr><td><p>G</p></td><td><p>H</p></td></tr></table>"
+    )
+
+    with _render(tmp_path, body=body) as document:
+        words = {word[4]: pymupdf.Rect(word[:4]) for word in document[0].get_text("words")}
+
+    assert words["G"].x0 == pytest.approx(words["E"].x0, abs=1)
+    assert words["H"].x0 == pytest.approx(words["F"].x0, abs=1)
+    assert words["C"].x0 == pytest.approx(words["F"].x0, abs=1)
+    assert words["Tall"].x0 < words["E"].x0
+
+
 def test_scripts_outside_pictures_and_unsafe_links_are_dropped(tmp_path: Path):
     body = (
         "<p>Safe</p><script>alert(1)</script>"

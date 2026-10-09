@@ -8586,6 +8586,8 @@
         "addColumn": "Add column to the right",
         "deleteRow": "Delete row",
         "deleteColumn": "Delete column",
+        "mergeCells": "Merge cells",
+        "splitCell": "Split cell",
         "headerRow": "Header row on or off",
         "delete": "Delete table"
       },

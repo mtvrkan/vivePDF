@@ -8584,6 +8584,8 @@
         "addColumn": "Aggiungi colonna a destra",
         "deleteRow": "Elimina riga",
         "deleteColumn": "Elimina colonna",
+        "mergeCells": "Unisci celle",
+        "splitCell": "Dividi cella",
         "headerRow": "Attiva o disattiva la riga di intestazione",
         "delete": "Elimina tabella"
       },
