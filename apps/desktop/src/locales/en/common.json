@@ -7353,7 +7353,19 @@
         "restaurantPromoFlyer": "Restaurant Promo",
         "fitnessClassFlyer": "Fitness Class",
         "techMeetupFlyer": "Tech Meetup",
-        "foodDriveFlyer": "Food Drive"
+        "foodDriveFlyer": "Food Drive",
+        "ivoryEmbossCard": "Business card – ivory emboss",
+        "goldFoilNoirCard": "Business card – gold foil noir",
+        "letterpressCottonCard": "Business card – letterpress cotton",
+        "spotUvCharcoalCard": "Business card – spot UV charcoal",
+        "roseGoldPlumCard": "Business card – rose gold script",
+        "copperKraftCard": "Business card – copper on kraft",
+        "holographicSquareCard": "Square card – holographic",
+        "silverSlateCard": "Business card – silver slate",
+        "debossMinimalCard": "Business card – minimal deboss",
+        "miniFoilCard": "Mini card – gold foil",
+        "verticalCrestCard": "Vertical card – foil crest",
+        "vcardQrCard": "Business card – contact QR"
       },
       "seeAll": "See all {{total}}",
       "seeAllIn": "See all {{total}} {{category}} templates"
@@ -8544,7 +8556,8 @@
       "foodDriveFlyerGoalLabel": "Our goal",
       "foodDriveFlyerGoal": "5,000 meals",
       "foodDriveFlyerNote": "Drop-off daily from 9 am to 7 pm. Please check expiry dates before donating.",
-      "foodDriveFlyerCta": "Can't bring food? Volunteer or donate online."
+      "foodDriveFlyerCta": "Can't bring food? Volunteer or donate online.",
+      "scanToSaveContact": "Scan to save contact"
     },
     "data": {
       "pick": "Connect a table",

@@ -7351,7 +7351,19 @@
         "restaurantPromoFlyer": "Promozione ristorante",
         "fitnessClassFlyer": "Corso fitness",
         "techMeetupFlyer": "Meetup tech",
-        "foodDriveFlyer": "Raccolta alimentare"
+        "foodDriveFlyer": "Raccolta alimentare",
+        "ivoryEmbossCard": "Biglietto da visita – avorio in rilievo",
+        "goldFoilNoirCard": "Biglietto da visita – lamina oro su nero",
+        "letterpressCottonCard": "Biglietto da visita – letterpress su cotone",
+        "spotUvCharcoalCard": "Biglietto da visita – antracite con vernice UV",
+        "roseGoldPlumCard": "Biglietto da visita – corsivo oro rosa",
+        "copperKraftCard": "Biglietto da visita – rame su kraft",
+        "holographicSquareCard": "Biglietto quadrato – olografico",
+        "silverSlateCard": "Biglietto da visita – argento su ardesia",
+        "debossMinimalCard": "Biglietto da visita – incisione minimal",
+        "miniFoilCard": "Mini biglietto – lamina oro",
+        "verticalCrestCard": "Biglietto verticale – stemma in lamina",
+        "vcardQrCard": "Biglietto da visita – QR contatto"
       },
       "seeAll": "Vedi tutti ({{total}})",
       "seeAllIn": "Vedi tutti i {{total}} modelli di {{category}}"
@@ -8542,7 +8554,8 @@
       "foodDriveFlyerGoalLabel": "Il nostro obiettivo",
       "foodDriveFlyerGoal": "5.000 pasti",
       "foodDriveFlyerNote": "Consegna ogni giorno dalle 9 alle 19. Controlla la scadenza prima di donare.",
-      "foodDriveFlyerCta": "Non puoi portare cibo? Fai volontariato o dona online."
+      "foodDriveFlyerCta": "Non puoi portare cibo? Fai volontariato o dona online.",
+      "scanToSaveContact": "Scansiona per salvare il contatto"
     },
     "data": {
       "pick": "Collega una tabella",

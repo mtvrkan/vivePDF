@@ -1,6 +1,7 @@
-import type { StudioDesign, StudioDropShadow, StudioElement, StudioFill, StudioPage, StudioShapeKind, StudioStroke, StudioTextAlign, StudioTextElement, StudioTextRun, StudioTextShadow, StudioVerticalAlign } from "@/types/studio";
+import type { StudioDesign, StudioDropShadow, StudioElement, StudioFill, StudioFinish, StudioFinishType, StudioFoil, StudioPage, StudioShapeKind, StudioStroke, StudioTextAlign, StudioTextElement, StudioTextRun, StudioTextShadow, StudioVerticalAlign } from "@/types/studio";
 import { STUDIO_DESIGN_VERSION } from "@/types/studio";
 import { createImage, createPage, createQr, createShape, createText, createVector, newId, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
+import { defaultFinish } from "../model/finish";
 import { ornament, type OrnamentColors } from "../ornaments/ornaments";
 
 export type Translate = (key: string, values?: Record<string, string | number>) => string;
@@ -167,6 +168,27 @@ export type ShadowPreset = keyof typeof SHADOWS;
 export function shadowed<T extends StudioElement>(element: T, preset: ShadowPreset, color?: string): T {
   if (element.kind === "text") return element;
   return { ...element, dropShadow: { ...SHADOWS[preset], ...(color ? { color } : {}) } };
+}
+
+export function finished<T extends StudioElement>(element: T, type: StudioFinishType, options: Partial<Omit<StudioFinish, "type">> = {}): T {
+  return { ...element, finish: { ...defaultFinish(type, options.foil), ...options } };
+}
+
+export function gilded<T extends StudioElement>(element: T, kind: StudioFoil = "gold"): T {
+  return finished(element, "foil", { foil: kind });
+}
+
+export function glossed<T extends StudioElement>(element: T): T {
+  return finished(element, "spotUv");
+}
+
+export function initials(name: string): string {
+  return name
+    .split(/\s+/u)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => [...word][0].toLocaleUpperCase())
+    .join("");
 }
 
 export const TEXT_SHADOWS = {

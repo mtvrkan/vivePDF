@@ -8182,7 +8182,19 @@
         "restaurantPromoFlyer": "عرض مطعم",
         "fitnessClassFlyer": "حصة لياقة",
         "techMeetupFlyer": "لقاء تقني",
-        "foodDriveFlyer": "حملة جمع الطعام"
+        "foodDriveFlyer": "حملة جمع الطعام",
+        "ivoryEmbossCard": "بطاقة أعمال – عاجية بنقش بارز",
+        "goldFoilNoirCard": "بطاقة أعمال – ورق ذهبي على أسود",
+        "letterpressCottonCard": "بطاقة أعمال – طباعة بارزة على ورق قطني",
+        "spotUvCharcoalCard": "بطاقة أعمال – فحمية بورنيش موضعي",
+        "roseGoldPlumCard": "بطاقة أعمال – خط ذهبي وردي",
+        "copperKraftCard": "بطاقة أعمال – نحاسي على ورق كرافت",
+        "holographicSquareCard": "بطاقة مربعة – هولوغرافية",
+        "silverSlateCard": "بطاقة أعمال – فضي على أردوازي",
+        "debossMinimalCard": "بطاقة أعمال – نقش غائر بسيط",
+        "miniFoilCard": "بطاقة صغيرة – ورق ذهبي",
+        "verticalCrestCard": "بطاقة عمودية – شعار بورق معدني",
+        "vcardQrCard": "بطاقة أعمال – رمز QR لجهة الاتصال"
       },
       "seeAll": "عرض الكل ({{total}})",
       "seeAllIn": "عرض كل قوالب {{category}} ({{total}})"
@@ -9373,7 +9385,8 @@
       "foodDriveFlyerGoalLabel": "هدفنا",
       "foodDriveFlyerGoal": "5000 وجبة",
       "foodDriveFlyerNote": "التسليم يوميًا من 9 صباحًا حتى 7 مساءً. يُرجى التحقق من تاريخ الصلاحية قبل التبرع.",
-      "foodDriveFlyerCta": "لا تستطيع إحضار طعام؟ تطوّع أو تبرّع عبر الإنترنت."
+      "foodDriveFlyerCta": "لا تستطيع إحضار طعام؟ تطوّع أو تبرّع عبر الإنترنت.",
+      "scanToSaveContact": "امسح لحفظ جهة الاتصال"
     },
     "data": {
       "pick": "ربط جدول",

@@ -1,4 +1,5 @@
 import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
+import { foilTone, hasInkChoice } from "../model/finish";
 import { averageColor, blend, contrastRatio } from "./contrast";
 
 export type QualityIssue = { page: number; kind: "contrast" | "overlap" | "fonts" | "fit"; detail: string };
@@ -54,6 +55,13 @@ function textColors(element: StudioTextElement): string[] {
   return [...colors];
 }
 
+function visibleColors(element: StudioTextElement): string[] {
+  const finish = element.finish;
+  if (!finish) return textColors(element);
+  if (hasInkChoice(finish.type) && finish.blind) return [];
+  return finish.type === "foil" ? [foilTone(finish.foil)] : textColors(element);
+}
+
 function contrastIssues(page: StudioPage, pageIndex: number): QualityIssue[] {
   const issues: QualityIssue[] = [];
   page.elements.forEach((element, index) => {
@@ -62,7 +70,7 @@ function contrastIssues(page: StudioPage, pageIndex: number): QualityIssue[] {
     const backdrop = backdropAt(page, index, centre);
     if (!backdrop) return;
     const needed = isLarge(element) ? LARGE_CONTRAST : BODY_CONTRAST;
-    for (const color of textColors(element)) {
+    for (const color of visibleColors(element)) {
       const ratio = contrastRatio(blend(color, backdrop, element.opacity), backdrop);
       if (ratio < needed) issues.push({ page: pageIndex, kind: "contrast", detail: `"${textOf(element).slice(0, 30)}" ${color} on ${backdrop} = ${ratio.toFixed(2)}` });
     }

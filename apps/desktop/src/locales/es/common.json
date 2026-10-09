@@ -7351,7 +7351,19 @@
         "restaurantPromoFlyer": "Promoción de restaurante",
         "fitnessClassFlyer": "Clase de fitness",
         "techMeetupFlyer": "Meetup tecnológico",
-        "foodDriveFlyer": "Colecta de alimentos"
+        "foodDriveFlyer": "Colecta de alimentos",
+        "ivoryEmbossCard": "Tarjeta de visita – marfil con relieve",
+        "goldFoilNoirCard": "Tarjeta de visita – lámina dorada sobre negro",
+        "letterpressCottonCard": "Tarjeta de visita – letterpress en algodón",
+        "spotUvCharcoalCard": "Tarjeta de visita – carbón con barniz UV",
+        "roseGoldPlumCard": "Tarjeta de visita – caligrafía oro rosa",
+        "copperKraftCard": "Tarjeta de visita – cobre sobre kraft",
+        "holographicSquareCard": "Tarjeta cuadrada – holográfica",
+        "silverSlateCard": "Tarjeta de visita – plata sobre pizarra",
+        "debossMinimalCard": "Tarjeta de visita – bajorrelieve minimalista",
+        "miniFoilCard": "Minitarjeta – lámina dorada",
+        "verticalCrestCard": "Tarjeta vertical – escudo con lámina",
+        "vcardQrCard": "Tarjeta de visita – QR de contacto"
       },
       "seeAll": "Ver las {{total}}",
       "seeAllIn": "Ver las {{total}} plantillas de {{category}}"
@@ -8542,7 +8554,8 @@
       "foodDriveFlyerGoalLabel": "Nuestra meta",
       "foodDriveFlyerGoal": "5000 comidas",
       "foodDriveFlyerNote": "Entrega diaria de 9:00 a 19:00. Revisa la fecha de caducidad antes de donar.",
-      "foodDriveFlyerCta": "¿No puedes traer comida? Hazte voluntario o dona online."
+      "foodDriveFlyerCta": "¿No puedes traer comida? Hazte voluntario o dona online.",
+      "scanToSaveContact": "Escanee para guardar el contacto"
     },
     "data": {
       "pick": "Conectar una tabla",

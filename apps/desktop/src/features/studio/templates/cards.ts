@@ -1,6 +1,6 @@
 import type { StudioElement } from "@/types/studio";
 import { darker, lighter } from "../ornaments/paint";
-import { art, box, centredText, design, FONTS, foil, frame, gradient, pageOf, photoSlot, qr, radial, rule, shadowed, sizeOf, solid, stroke, text, vrule, type StudioTemplate, type TemplateContext, type TemplateSize } from "./kit";
+import { art, box, centredText, design, FONTS, foil, frame, gilded, glossed, gradient, pageOf, photoSlot, qr, radial, rule, shadowed, sizeOf, solid, stroke, text, vrule, type StudioTemplate, type TemplateContext, type TemplateSize } from "./kit";
 import { PALETTES, paletteList } from "./palettes";
 
 const CARD = "a5" as const;
@@ -70,17 +70,17 @@ function businessClassic({ t }: TemplateContext) {
     pageOf(BUSINESS, radial("#fffdf8", "#f2eadb", { cy: 0.4, radius: 1 }), [
       box("rect", 9, 9, page.width - 18, page.height - 18, { type: "none" }, { stroke: stroke(gold, 0.8) }),
       box("rect", 12.5, 12.5, page.width - 25, page.height - 25, { type: "none" }, { stroke: stroke(gold, 0.35) }),
-      art("laurel", { primary: gold, secondary: gold }, page.width / 2 - 15, 20, 30, 28),
+      gilded(art("laurel", { primary: gold, secondary: gold }, page.width / 2 - 15, 20, 30, 28)),
       centredText(page, 52, 24, t("studio.tpl.personName"), { font: FONTS.cormorant, size: 18, bold: true, color: navy, shrink: true, valign: "middle", inset: 20 }),
-      box("rect", page.width / 2 - 18, 81, 36, 1.2, foil("gold", 0)),
+      gilded(box("rect", page.width / 2 - 18, 81, 36, 1.2, foil("gold", 0))),
       centredText(page, 88, 12, t("studio.tpl.jobTitle"), { font: FONTS.cormorant, size: 8, bold: true, color: goldInk, spacing: 2.2, upper: true, shrink: true, inset: 22 }),
       centredText(page, 104, 14, t("studio.tpl.companyName"), { font: FONTS.cormorant, size: 9.5, italic: true, color: "#4b5563", shrink: true, inset: 22 }),
     ]),
     pageOf(BUSINESS, radial("#1d2a48", navy, { cx: 0.3, cy: 0.4, radius: 1.1 }), [
       art("topographic", { primary: "#33457a", secondary: gold }, 0, 0, page.width, page.height, { opacity: 0.3 }),
-      box("rect", 0, 0, page.width, 3, foil("gold", 0)),
+      gilded(box("rect", 0, 0, page.width, 3, foil("gold", 0))),
       text(20, 18, 140, 22, t("studio.tpl.companyName"), { font: FONTS.cormorant, size: 14, bold: true, color: ivory, valign: "middle", shrink: true }),
-      box("rect", 20, 46, 28, 1.2, foil("gold", 0)),
+      gilded(box("rect", 20, 46, 28, 1.2, foil("gold", 0))),
       ...contactLines(t, 20, 58, 146, "#e5e7eb", FONTS.inter, gold),
       shadowed(box("rect", page.width - 88, 34, 70, 70, solid("#ffffff"), { radius: 8 }), "soft", "#000000"),
       qr("https://example.com", page.width - 82, 40, 58, navy),
@@ -100,7 +100,7 @@ function businessModern({ t }: TemplateContext) {
     pageOf(BUSINESS, gradient(160, ["#ffffff", "#f1f7f6"]), [
       box("rect", 0, 0, panel, page.height, gradient(160, [teal, deep])),
       art("honeycomb", { primary: "#ffffff", secondary: mint }, 0, 0, panel, page.height, { opacity: 0.22 }),
-      art("arcRings", { primary: lime, secondary: mint }, panel / 2 - 28, page.height / 2 - 28, 56, 56),
+      glossed(art("arcRings", { primary: lime, secondary: mint }, panel / 2 - 28, page.height / 2 - 28, 56, 56)),
       box("rect", panel, 0, 3, page.height, gradient(180, [lime, mint])),
       text(left, 20, page.width - left - 14, 22, t("studio.tpl.personName"), { font: FONTS.montserrat, size: 15, bold: true, color: "#0f172a", valign: "middle", shrink: true }),
       text(left, 44, page.width - left - 14, 12, t("studio.tpl.jobTitle"), { font: FONTS.montserrat, size: 7, bold: true, color: teal, spacing: 1.6, upper: true, shrink: true }),
@@ -300,24 +300,24 @@ function foilBusiness({ t }: TemplateContext) {
       art("marble", veins, 0, 0, w, h, { opacity: 0.5 }),
       box("rect", 10, 10, w - 20, h - 20, { type: "none" }, { stroke: stroke(gold, 0.6) }),
       box("rect", 13, 13, w - 26, h - 26, { type: "none" }, { stroke: stroke(gold, 0.3) }),
-      box("rect", 0, 0, w, 3, foil("gold", 0)),
-      box("rect", 0, h - 3, w, 3, foil("gold", 0)),
+      gilded(box("rect", 0, 0, w, 3, foil("gold", 0))),
+      gilded(box("rect", 0, h - 3, w, 3, foil("gold", 0))),
       art("decoFan", { primary: onyx, secondary: gold }, w / 2 - 24, 22, 48, 26),
       centredText(page, 52, 30, t("studio.tpl.companyName"), { font: FONTS.cinzel, size: 16, bold: true, color: champagne, spacing: 2.5, upper: true, valign: "middle", shrink: true, inset: 22 }),
-      box("rect", w / 2 - 20, 88, 40, 1.2, foil("gold", 0)),
+      gilded(box("rect", w / 2 - 20, 88, 40, 1.2, foil("gold", 0))),
       centredText(page, 96, 14, t("studio.tpl.companyTagline"), { font: FONTS.montserrat, size: 6.5, bold: true, color: "#c9b27a", spacing: 2.2, upper: true, valign: "middle", shrink: true, inset: 26 }),
     ]),
     pageOf(BUSINESS, radial(ivory, "#efe5cf", { cx: 0.3, cy: 0.35, radius: 1.1 }), [
       art("guillocheRosette", { primary: "#e6d7b2", secondary: "#efe3c6" }, w - strip - 92, 34, 124, 124, { opacity: 0.55 }),
       box("rect", w - strip, 0, strip, h, radial("#2a2a31", onyx, { radius: 1 })),
       art("marble", veins, w - strip, 0, strip, h, { opacity: 0.5 }),
-      box("rect", w - strip - 2.5, 0, 2.5, h, foil("gold", 90)),
-      shadowed(art("guillocheRosette", { primary: gold, secondary: "#f6e3a1" }, w - strip / 2 - 22, h / 2 - 22, 44, 44), "glow", gold),
+      gilded(box("rect", w - strip - 2.5, 0, 2.5, h, foil("gold", 90))),
+      gilded(shadowed(art("guillocheRosette", { primary: gold, secondary: "#f6e3a1" }, w - strip / 2 - 22, h / 2 - 22, 44, 44), "glow", gold)),
       text(left, 18, column, 22, t("studio.tpl.personName"), { font: FONTS.cinzel, size: 14, bold: true, color: onyx, valign: "middle", shrink: true }),
       text(left, 42, column, 12, t("studio.tpl.jobTitle"), { font: FONTS.montserrat, size: 6.5, bold: true, color: goldInk, spacing: 1.8, upper: true, valign: "middle", shrink: true }),
-      box("rect", left, 60, 28, 1.2, foil("gold", 0)),
+      gilded(box("rect", left, 60, 28, 1.2, foil("gold", 0))),
       ...CONTACT_KEYS.flatMap((key, index) => [
-        box("diamond", left, 70 + index * 15 + 3.5, 5, 5, foil("gold", 135)),
+        gilded(box("diamond", left, 70 + index * 15 + 3.5, 5, 5, foil("gold", 135))),
         text(left + 11, 70 + index * 15, column - 11, 12, t(key), { font: FONTS.montserrat, size: 7, color: "#2a2a30", valign: "middle", shrink: true }),
       ]),
     ]),
@@ -340,8 +340,8 @@ function gradientDuo({ t }: TemplateContext) {
       art("blob", { primary: indigo, secondary: violet }, -62, h - 76, 160, 150, { opacity: 0.6, rotation: 120 }),
       art("halftone", { primary: "#ffffff", secondary: "#ffffff" }, 0, 0, w, h, { opacity: 0.1 }),
       art("arcRings", { primary: "#ffffff", secondary: "#ffffff" }, -40, -40, 110, 110, { opacity: 0.25 }),
-      box("ellipse", w / 2 - 24, 26, 30, 30, solid("#ffffff"), { opacity: 0.95 }),
-      box("ellipse", w / 2 - 6, 26, 30, 30, { type: "none" }, { stroke: stroke("#ffffff", 2) }),
+      glossed(box("ellipse", w / 2 - 24, 26, 30, 30, solid("#ffffff"), { opacity: 0.95 })),
+      glossed(box("ellipse", w / 2 - 6, 26, 30, 30, { type: "none" }, { stroke: stroke("#ffffff", 2) })),
       centredText(page, 66, 28, t("studio.tpl.companyName"), { font: FONTS.poppins, size: 17, bold: true, color: "#ffffff", valign: "middle", shrink: true, inset: 20 }),
       centredText(page, 96, 14, t("studio.tpl.website"), { font: FONTS.inter, size: 7.5, bold: true, color: "#ffffff", spacing: 1.5, valign: "middle", shrink: true, inset: 30 }),
     ]),
@@ -490,18 +490,18 @@ function loyalty({ t }: TemplateContext) {
       ...coffeeCup(42, h / 2 - 22, coffee, caramel),
       text(116, 36, w - 132, 12, t("studio.tpl.loyaltyCardKicker"), { font: FONTS.josefin, size: 7, bold: true, color: "#f3c99a", spacing: 2.4, upper: true, valign: "middle", shrink: true }),
       text(116, 50, w - 132, 36, t("studio.tpl.cafeName"), { font: FONTS.playfair, size: 21, bold: true, italic: true, color: cream, lineHeight: 1, valign: "middle", shrink: true }),
-      box("rect", 116, 92, 30, 2, foil("copper", 0), { radius: 1 }),
+      gilded(box("rect", 116, 92, 30, 2, foil("copper", 0), { radius: 1 }), "copper"),
       text(116, 100, w - 132, 12, t("studio.tpl.cafeTagline"), { font: FONTS.josefin, size: 6.5, color: "#ead7c3", spacing: 1, valign: "middle", shrink: true }),
     ]),
     pageOf(BUSINESS, radial(palette.paper, palette.soft, { cy: 0.4, radius: 1.1 }), [
-      box("rect", 0, 0, w, 4, foil("copper", 0)),
+      gilded(box("rect", 0, 0, w, 4, foil("copper", 0)), "copper"),
       text(18, 12, w - 36, 16, t("studio.tpl.loyaltyCardOffer"), { font: FONTS.josefin, size: 7.5, bold: true, color: palette.ink, align: "center", valign: "middle", shrink: true }),
       ...Array.from({ length: 10 }, (_, index) => {
         const x = startX + (index % 5) * (stamp + gap);
         const y = 36 + Math.floor(index / 5) * (stamp + 10);
         if (index === 9) {
           return [
-            shadowed(box("ellipse", x - 2, y - 2, stamp + 4, stamp + 4, foil("copper", 135)), "soft", coffee),
+            gilded(shadowed(box("ellipse", x - 2, y - 2, stamp + 4, stamp + 4, foil("copper", 135)), "soft", coffee), "copper"),
             box("ellipse", x + 1.5, y + 1.5, stamp - 3, stamp - 3, solid(espresso)),
             text(x + 2, y + 2, stamp - 4, stamp - 4, t("studio.tpl.loyaltyCardFree"), { font: FONTS.josefin, size: 6.5, bold: true, color: cream, align: "center", valign: "middle", upper: true, shrink: true }),
           ];

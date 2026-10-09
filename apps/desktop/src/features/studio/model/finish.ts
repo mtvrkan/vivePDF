@@ -54,6 +54,10 @@ function finiteOr(value: unknown, fallback: number): number {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
+export function foilTone(foil: StudioFoil): string {
+  return FOIL_STOPS[foil][2];
+}
+
 export function normalizeFinish(value: unknown): StudioFinish | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   const raw = value as Record<string, unknown>;

@@ -7351,7 +7351,19 @@
         "restaurantPromoFlyer": "Promo restaurant",
         "fitnessClassFlyer": "Cours de fitness",
         "techMeetupFlyer": "Meetup tech",
-        "foodDriveFlyer": "Collecte alimentaire"
+        "foodDriveFlyer": "Collecte alimentaire",
+        "ivoryEmbossCard": "Carte de visite – ivoire gaufrée",
+        "goldFoilNoirCard": "Carte de visite – dorure sur noir",
+        "letterpressCottonCard": "Carte de visite – letterpress sur coton",
+        "spotUvCharcoalCard": "Carte de visite – anthracite vernis sélectif",
+        "roseGoldPlumCard": "Carte de visite – calligraphie or rose",
+        "copperKraftCard": "Carte de visite – cuivre sur kraft",
+        "holographicSquareCard": "Carte carrée – holographique",
+        "silverSlateCard": "Carte de visite – argent sur ardoise",
+        "debossMinimalCard": "Carte de visite – débossage minimaliste",
+        "miniFoilCard": "Mini-carte – dorure",
+        "verticalCrestCard": "Carte verticale – blason doré",
+        "vcardQrCard": "Carte de visite – QR contact"
       },
       "seeAll": "Voir les {{total}}",
       "seeAllIn": "Voir les {{total}} modèles de la catégorie {{category}}"
@@ -8542,7 +8554,8 @@
       "foodDriveFlyerGoalLabel": "Notre objectif",
       "foodDriveFlyerGoal": "5 000 repas",
       "foodDriveFlyerNote": "Dépôt tous les jours de 9 h à 19 h. Vérifiez les dates de péremption avant de donner.",
-      "foodDriveFlyerCta": "Pas de denrées ? Devenez bénévole ou faites un don en ligne."
+      "foodDriveFlyerCta": "Pas de denrées ? Devenez bénévole ou faites un don en ligne.",
+      "scanToSaveContact": "Scannez pour enregistrer le contact"
     },
     "data": {
       "pick": "Connecter un tableau",

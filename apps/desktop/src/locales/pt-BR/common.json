@@ -7351,7 +7351,19 @@
         "restaurantPromoFlyer": "Promoção de restaurante",
         "fitnessClassFlyer": "Aula de fitness",
         "techMeetupFlyer": "Meetup de tecnologia",
-        "foodDriveFlyer": "Campanha de alimentos"
+        "foodDriveFlyer": "Campanha de alimentos",
+        "ivoryEmbossCard": "Cartão de visita – marfim em relevo",
+        "goldFoilNoirCard": "Cartão de visita – hot stamping dourado no preto",
+        "letterpressCottonCard": "Cartão de visita – letterpress em algodão",
+        "spotUvCharcoalCard": "Cartão de visita – grafite com verniz localizado",
+        "roseGoldPlumCard": "Cartão de visita – caligrafia rosé",
+        "copperKraftCard": "Cartão de visita – cobre no kraft",
+        "holographicSquareCard": "Cartão quadrado – holográfico",
+        "silverSlateCard": "Cartão de visita – prata na ardósia",
+        "debossMinimalCard": "Cartão de visita – baixo-relevo minimalista",
+        "miniFoilCard": "Minicartão – hot stamping dourado",
+        "verticalCrestCard": "Cartão vertical – brasão metalizado",
+        "vcardQrCard": "Cartão de visita – QR de contato"
       },
       "seeAll": "Ver todos ({{total}})",
       "seeAllIn": "Ver todos os {{total}} modelos de {{category}}"
@@ -8542,7 +8554,8 @@
       "foodDriveFlyerGoalLabel": "Nossa meta",
       "foodDriveFlyerGoal": "5.000 refeições",
       "foodDriveFlyerNote": "Entregas todos os dias, das 9h às 19h. Confira a validade antes de doar.",
-      "foodDriveFlyerCta": "Não pode levar alimentos? Seja voluntário ou doe on-line."
+      "foodDriveFlyerCta": "Não pode levar alimentos? Seja voluntário ou doe on-line.",
+      "scanToSaveContact": "Escaneie para salvar o contato"
     },
     "data": {
       "pick": "Conectar uma tabela",

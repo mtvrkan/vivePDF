@@ -7353,7 +7353,19 @@
         "restaurantPromoFlyer": "Restoran Kampanyası",
         "fitnessClassFlyer": "Fitness Dersi",
         "techMeetupFlyer": "Teknoloji Buluşması",
-        "foodDriveFlyer": "Gıda Yardımı Kampanyası"
+        "foodDriveFlyer": "Gıda Yardımı Kampanyası",
+        "ivoryEmbossCard": "Kartvizit – fildişi kabartma",
+        "goldFoilNoirCard": "Kartvizit – siyah üzerine altın varak",
+        "letterpressCottonCard": "Kartvizit – pamuk kâğıt letterpress",
+        "spotUvCharcoalCard": "Kartvizit – antrasit lokal lak",
+        "roseGoldPlumCard": "Kartvizit – rose gold el yazısı",
+        "copperKraftCard": "Kartvizit – kraft üzerine bakır",
+        "holographicSquareCard": "Kare kart – hologram",
+        "silverSlateCard": "Kartvizit – arduvaz gümüş",
+        "debossMinimalCard": "Kartvizit – sade gömme baskı",
+        "miniFoilCard": "Mini kart – altın varak",
+        "verticalCrestCard": "Dikey kart – varak arma",
+        "vcardQrCard": "Kartvizit – kişi QR kodu"
       },
       "seeAll": "Tümünü gör ({{total}})",
       "seeAllIn": "{{category}} kategorisindeki {{total}} şablonun tümünü gör"
@@ -8544,7 +8556,8 @@
       "foodDriveFlyerGoalLabel": "Hedefimiz",
       "foodDriveFlyerGoal": "5.000 öğün",
       "foodDriveFlyerNote": "Bağışlar her gün 09:00–19:00 arası teslim alınır. Lütfen son kullanma tarihlerini kontrol edin.",
-      "foodDriveFlyerCta": "Yiyecek getiremiyor musunuz? Gönüllü olun ya da online bağış yapın."
+      "foodDriveFlyerCta": "Yiyecek getiremiyor musunuz? Gönüllü olun ya da online bağış yapın.",
+      "scanToSaveContact": "Kişiyi kaydetmek için okutun"
     },
     "data": {
       "pick": "Tablo bağla",

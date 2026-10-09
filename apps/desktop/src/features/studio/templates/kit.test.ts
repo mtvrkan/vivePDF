@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { normalizeDesign } from "../model/design";
 import { averageColor, blend, contrastRatio, readableOn } from "./contrast";
-import { box, design, foil, gradient, pageOf, radial, shadowed, solid, text, typeScale } from "./kit";
+import { box, design, finished, foil, gilded, glossed, gradient, initials, pageOf, radial, shadowed, solid, text, typeScale } from "./kit";
 import { PALETTES, paletteList } from "./palettes";
 
 describe("premium kit", () => {
@@ -38,6 +38,24 @@ describe("premium kit", () => {
       expect(contrastRatio(palette.muted, palette.paper), name).toBeGreaterThanOrEqual(4.5);
       expect(new Set(paletteList(palette)).size, name).toBe(paletteList(palette).length);
     }
+  });
+});
+
+describe("print finish helpers", () => {
+  it("adds a finish with its defaults and keeps it through normalisation", () => {
+    const page = pageOf("businessCard", solid("#0e0e11"), [gilded(box("rect", 10, 10, 40, 2, solid("#d4af5a")), "copper"), glossed(box("ellipse", 60, 10, 20, 20, solid("#ffffff"))), finished(text(10, 40, 200, 30, "AM"), "deboss", { depth: 2 })]);
+    const built = design("Finishes", [], [page]);
+
+    expect(page.elements.map((element) => element.finish?.type)).toEqual(["foil", "spotUv", "deboss"]);
+    expect(page.elements[0].finish).toMatchObject({ foil: "copper", blind: false });
+    expect(page.elements[2].finish).toMatchObject({ depth: 2, blind: true });
+    expect(normalizeDesign(JSON.parse(JSON.stringify(built)))).toEqual(built);
+  });
+
+  it("takes the first letters of up to two words for a monogram", () => {
+    expect(initials("Alex Morgan")).toBe("AM");
+    expect(initials("  ahmet  yılmaz  kaya ")).toBe("AY");
+    expect(initials("")).toBe("");
   });
 });
 

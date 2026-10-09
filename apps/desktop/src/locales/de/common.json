@@ -7351,7 +7351,19 @@
         "restaurantPromoFlyer": "Restaurant-Aktion",
         "fitnessClassFlyer": "Fitnesskurs",
         "techMeetupFlyer": "Tech-Meetup",
-        "foodDriveFlyer": "Lebensmittelsammlung"
+        "foodDriveFlyer": "Lebensmittelsammlung",
+        "ivoryEmbossCard": "Visitenkarte – Elfenbein mit Prägung",
+        "goldFoilNoirCard": "Visitenkarte – Goldfolie auf Schwarz",
+        "letterpressCottonCard": "Visitenkarte – Letterpress auf Baumwolle",
+        "spotUvCharcoalCard": "Visitenkarte – Anthrazit mit Teillack",
+        "roseGoldPlumCard": "Visitenkarte – Roségold-Schrift",
+        "copperKraftCard": "Visitenkarte – Kupfer auf Kraftpapier",
+        "holographicSquareCard": "Quadratische Karte – holografisch",
+        "silverSlateCard": "Visitenkarte – Silber auf Schiefer",
+        "debossMinimalCard": "Visitenkarte – minimal mit Blindprägung",
+        "miniFoilCard": "Minikarte – Goldfolie",
+        "verticalCrestCard": "Hochformatkarte – Folienwappen",
+        "vcardQrCard": "Visitenkarte – Kontakt-QR"
       },
       "seeAll": "Alle {{total}} anzeigen",
       "seeAllIn": "Alle {{total}} Vorlagen in {{category}} anzeigen"
@@ -8542,7 +8554,8 @@
       "foodDriveFlyerGoalLabel": "Unser Ziel",
       "foodDriveFlyerGoal": "5.000 Mahlzeiten",
       "foodDriveFlyerNote": "Abgabe täglich von 9 bis 19 Uhr. Bitte prüfe vor der Spende das Haltbarkeitsdatum.",
-      "foodDriveFlyerCta": "Kein Essen dabei? Hilf mit oder spende online."
+      "foodDriveFlyerCta": "Kein Essen dabei? Hilf mit oder spende online.",
+      "scanToSaveContact": "Scannen, um den Kontakt zu speichern"
     },
     "data": {
       "pick": "Tabelle verbinden",

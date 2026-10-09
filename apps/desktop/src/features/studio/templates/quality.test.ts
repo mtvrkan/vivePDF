@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { box, design, FONTS, pageOf, solid, text } from "./kit";
+import { box, design, finished, FONTS, gilded, pageOf, solid, text } from "./kit";
 import { inkBox, qualityIssues } from "./quality";
 
 const kinds = (built: ReturnType<typeof design>) => qualityIssues(built).map((issue) => issue.kind);
@@ -53,5 +53,16 @@ describe("template quality gate", () => {
 
     expect(kinds(short)).toEqual(["fit"]);
     expect(kinds(roomy)).toEqual([]);
+  });
+
+  it("judges foil text by its metal and skips blind embossing", () => {
+    const foil = (paper: string) => design("Foil", [], [pageOf("a4", solid(paper), [gilded(text(40, 40, 300, 30, "Gold name", { color: "#111827" }))])]);
+    const blind = design("Blind", [], [pageOf("a4", solid("#f3f2ee"), [finished(text(40, 40, 300, 30, "Pressed", { color: "#f3f2ee" }), "emboss")])]);
+    const inked = design("Inked", [], [pageOf("a4", solid("#f3f2ee"), [finished(text(40, 40, 300, 30, "Pressed", { color: "#f3f2ee" }), "emboss", { blind: false })])]);
+
+    expect(kinds(foil("#0e0e11"))).toEqual([]);
+    expect(kinds(foil("#fbf7ee"))).toEqual(["contrast"]);
+    expect(kinds(blind)).toEqual([]);
+    expect(kinds(inked)).toEqual(["contrast"]);
   });
 });

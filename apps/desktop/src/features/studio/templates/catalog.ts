@@ -4,6 +4,7 @@ import { CARD_TEMPLATES } from "./cards";
 import { CERTIFICATE_TEMPLATES } from "./certificates";
 import { COVER_TEMPLATES } from "./covers";
 import { EDUCATION_TEMPLATES } from "./education";
+import { FINISH_CARD_TEMPLATES } from "./finishCards";
 import { FLYER_TEMPLATES } from "./flyers";
 import { INVITATION_TEMPLATES } from "./invitations";
 import type { StudioTemplate, TemplateCategory, Translate } from "./kit";
@@ -21,6 +22,7 @@ export const STUDIO_TEMPLATES: StudioTemplate[] = [
   ...CERTIFICATE_TEMPLATES,
   ...INVITATION_TEMPLATES,
   ...CARD_TEMPLATES,
+  ...FINISH_CARD_TEMPLATES,
   ...POSTER_TEMPLATES,
   ...SOCIAL_TEMPLATES,
   ...FLYER_TEMPLATES,
