@@ -6888,7 +6888,23 @@
       "qrLevel": "Fehlerkorrektur",
       "mixed": "Gemischt",
       "mixedHint": "Die ausgewählten Elemente unterscheiden sich hier. Eine Änderung gilt für alle.",
-      "shape": "Form"
+      "shape": "Form",
+      "qrContent": "QR-Inhalt",
+      "qrContents": {
+        "text": "Text oder Link",
+        "contact": "Kontaktkarte"
+      },
+      "vcard": {
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "organization": "Firma",
+        "title": "Position",
+        "phone": "Telefon",
+        "mobile": "Mobil",
+        "email": "E-Mail",
+        "website": "Website",
+        "address": "Adresse"
+      }
     },
     "align": {
       "left": "Links ausrichten",

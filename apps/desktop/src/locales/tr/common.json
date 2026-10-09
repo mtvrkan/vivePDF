@@ -6890,7 +6890,23 @@
       "qrLevel": "Hata düzeltme",
       "mixed": "Karışık",
       "mixedHint": "Seçili öğelerde bu değer farklı. Yaptığınız değişiklik hepsine uygulanır.",
-      "shape": "Şekil"
+      "shape": "Şekil",
+      "qrContent": "QR içeriği",
+      "qrContents": {
+        "text": "Metin veya bağlantı",
+        "contact": "Kişi kartı"
+      },
+      "vcard": {
+        "firstName": "Ad",
+        "lastName": "Soyad",
+        "organization": "Şirket",
+        "title": "Unvan",
+        "phone": "Telefon",
+        "mobile": "Cep telefonu",
+        "email": "E-posta",
+        "website": "Web sitesi",
+        "address": "Adres"
+      }
     },
     "align": {
       "left": "Sola hizala",

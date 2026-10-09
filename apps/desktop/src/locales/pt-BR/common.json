@@ -6888,7 +6888,23 @@
       "qrLevel": "Correção de erros",
       "mixed": "Misto",
       "mixedHint": "Os itens selecionados têm valores diferentes aqui. A alteração vale para todos.",
-      "shape": "Forma"
+      "shape": "Forma",
+      "qrContent": "Conteúdo do QR",
+      "qrContents": {
+        "text": "Texto ou link",
+        "contact": "Cartão de contato"
+      },
+      "vcard": {
+        "firstName": "Nome",
+        "lastName": "Sobrenome",
+        "organization": "Empresa",
+        "title": "Cargo",
+        "phone": "Telefone",
+        "mobile": "Celular",
+        "email": "E-mail",
+        "website": "Site",
+        "address": "Endereço"
+      }
     },
     "align": {
       "left": "Alinhar à esquerda",

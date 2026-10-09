@@ -6890,7 +6890,23 @@
       "qrLevel": "Error correction",
       "mixed": "Mixed",
       "mixedHint": "The selected items differ here. A change applies to all of them.",
-      "shape": "Shape"
+      "shape": "Shape",
+      "qrContent": "QR content",
+      "qrContents": {
+        "text": "Text or link",
+        "contact": "Contact card"
+      },
+      "vcard": {
+        "firstName": "First name",
+        "lastName": "Last name",
+        "organization": "Company",
+        "title": "Job title",
+        "phone": "Phone",
+        "mobile": "Mobile",
+        "email": "Email",
+        "website": "Website",
+        "address": "Address"
+      }
     },
     "align": {
       "left": "Align left",
