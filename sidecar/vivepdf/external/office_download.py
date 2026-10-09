@@ -1,4 +1,5 @@
 import hashlib
+import os
 import platform
 import re
 import sys
@@ -25,6 +26,8 @@ MIRRORS = (
     STABLE_INDEX_URL,
 )
 PINNED_VERSION = "26.2.6"
+BUNDLED_INSTALLER_SHA256 = "f9877032fd908beb9c0ddf06df4af5c2e85f419c42e14876c4cce5aae5fb2660"
+BUNDLED_INSTALLER_DIR = "offline"
 NEWEST_VERSIONS = 3
 INDEX_TIMEOUT = 8.0
 INDEX_MAX_BYTES = 512 * 1024
@@ -277,5 +280,22 @@ def verify_checksum(url: str, installer: Path) -> None:
         raise OpError(
             ErrorCode.EXTERNAL_TOOL_FAILED,
             "installer does not match the published checksum",
+            {"reason": "officeChecksum", "phase": "verify", "tool": "sha256"},
+        )
+
+
+def bundled_installer() -> Path | None:
+    resources = os.environ.get("VIVEPDF_RESOURCES_DIR")
+    if not resources or current_package() is not WINDOWS_PACKAGE:
+        return None
+    candidate = Path(resources) / BUNDLED_INSTALLER_DIR / WINDOWS_PACKAGE.file_name(PINNED_VERSION)
+    return candidate if candidate.is_file() else None
+
+
+def verify_bundled_checksum(installer: Path) -> None:
+    if _file_checksum(installer) != BUNDLED_INSTALLER_SHA256:
+        raise OpError(
+            ErrorCode.EXTERNAL_TOOL_FAILED,
+            "the bundled installer does not match its pinned checksum",
             {"reason": "officeChecksum", "phase": "verify", "tool": "sha256"},
         )

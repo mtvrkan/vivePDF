@@ -22,6 +22,7 @@ import { shareOpenDocuments } from "@/shared/session/documentClaims";
 import { releaseClosedDocuments } from "@/shared/session/engineRelease";
 import { releaseClosedViewSources } from "@/shared/session/viewSources";
 import { listenForMissingFonts } from "@/shared/session/fallbackFonts";
+import { prepareBundledOffice } from "@/shared/session/bundledOffice";
 import { isMainWindow } from "@/shared/lib/windowRole";
 import { TaskbarProgress } from "@/shared/session/TaskbarProgress";
 import * as logger from "@/shared/lib/logger";
@@ -94,6 +95,7 @@ export default function App() {
     void fileAssociationStale().then((stale) => {
       if (stale) void setFileAssociation(true, t("app.name"), t("settings.system.associationType")).catch(() => undefined);
     });
+    void prepareBundledOffice();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

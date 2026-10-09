@@ -63,10 +63,18 @@ Where the CLI ends up after installation:
 The Windows installer deletes `engine\` before installing and after uninstalling, so an update
 never leaves files of an older engine behind.
 
-LibreOffice is not bundled. Windows downloads it on request (Settings › Tools, `system.office_install`)
-and only extracts an MSI whose Authenticode signature is valid and issued to The Document
-Foundation. macOS and Linux use a LibreOffice installed on the system. `scripts/fetch-libreoffice.*`
-only prepare a development copy under `apps/desktop/src-tauri/resources/libreoffice/`.
+The Windows installer carries the LibreOffice installer itself: `LibreOffice_26.2.6_Win_x86-64.msi`,
+unmodified and signed by The Document Foundation, at `<install dir>\offline\`
+(`src-tauri/tauri.office.conf.json`). `scripts/fetch-office-msi.ps1` downloads it into
+`apps/desktop/src-tauri/resources/offline/` and checks the pinned SHA-256 and the TDF signature;
+the build fails while the file is missing. On first start the app runs `system.office_install`
+once in the background. That op takes this file instead of downloading, checks it against
+`office_download.BUNDLED_INSTALLER_SHA256` (no network needed) and extracts it into
+`%LOCALAPPDATA%\vivePDF\libreoffice`. No uninstaller tracks that folder, so updates keep it, and a
+real uninstall removes it (`installer-hooks.nsh`). A new LibreOffice version changes
+`PINNED_VERSION`, `BUNDLED_INSTALLER_SHA256`, the fetch script and `tauri.office.conf.json`
+together. macOS and Linux use a LibreOffice installed on the system. `scripts/fetch-libreoffice.*`
+only prepare an extracted development copy under `apps/desktop/src-tauri/resources/libreoffice/`.
 
 The fallback fonts for the viewer ship inside the app: Noto Sans (Latin, Greek, Cyrillic,
 Vietnamese) and Noto Sans JP, KR, SC and TC for Japanese, Korean and Simplified/Traditional Chinese.
@@ -109,7 +117,8 @@ exist.
    without the updater signature:
    ```
    cd apps/desktop
-   pnpm tauri build --config src-tauri/tauri.release.conf.json --config '{"bundle":{"createUpdaterArtifacts":false}}'
+   ../../scripts/fetch-office-msi.ps1
+   pnpm tauri build --config src-tauri/tauri.release.conf.json --config src-tauri/tauri.office.conf.json --config '{"bundle":{"createUpdaterArtifacts":false}}'
    ```
    then run `scripts/smoke-engine.sh apps/desktop/src-tauri/target/release/engine`.
 3. Sign the installer for the updater (prompts for the key's password, writes a `.sig` next to it):

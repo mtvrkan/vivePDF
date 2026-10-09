@@ -43,5 +43,9 @@
   DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Run" "vivePDF"
   DeleteRegValue HKCU "Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run" "vivePDF"
   Delete "$SENDTO\vivePDF.lnk"
+  ${If} $UpdateMode <> 1
+    RMDir /r "$LOCALAPPDATA\vivePDF\libreoffice"
+    RMDir /r "$LOCALAPPDATA\vivePDF\fallback-fonts"
+  ${EndIf}
   RMDir /r "$INSTDIR\engine"
 !macroend

@@ -1992,7 +1992,11 @@
       "downloadHint": "Etwa 350 MB werden geladen und rund 900 MB belegt.",
       "installed": "LibreOffice ist bereit.",
       "removed": "LibreOffice wurde entfernt.",
-      "unsupported": "Für dieses System oder diesen Prozessor gibt es keinen LibreOffice-Download; installieren Sie LibreOffice selbst."
+      "unsupported": "Für dieses System oder diesen Prozessor gibt es keinen LibreOffice-Download; installieren Sie LibreOffice selbst.",
+      "installBundled": "Aus dem App-Paket installieren",
+      "bundledHint": "LibreOffice wird mit vivePDF geliefert und ohne Internet installiert; es belegt etwa 900 MB auf dem Datenträger.",
+      "bundledReady": "LibreOffice ist für Office-Konvertierungen bereit.",
+      "bundledFailed": "LibreOffice konnte nicht aus dem App-Paket eingerichtet werden. Unter Einstellungen › Werkzeuge können Sie es erneut versuchen."
     },
     "fallbackFonts": {
       "title": "Ersatzschriftarten",

@@ -1993,7 +1993,11 @@
       "downloadHint": "About 350 MB is downloaded and roughly 900 MB is used on disk.",
       "installed": "LibreOffice is ready.",
       "removed": "LibreOffice was removed.",
-      "unsupported": "LibreOffice has no download for this system or processor; install it yourself."
+      "unsupported": "LibreOffice has no download for this system or processor; install it yourself.",
+      "installBundled": "Install from the app package",
+      "bundledHint": "LibreOffice came with vivePDF and installs without internet; about 900 MB is used on disk.",
+      "bundledReady": "LibreOffice is ready for Office conversions.",
+      "bundledFailed": "LibreOffice could not be set up from the app package. You can try again under Settings › Tools."
     },
     "fallbackFonts": {
       "title": "Fallback fonts",

@@ -19,5 +19,7 @@ Thumbs.db
 apps/desktop/public/pdfium.wasm
 apps/desktop/src-tauri/resources/libreoffice/*
 !apps/desktop/src-tauri/resources/libreoffice/.gitkeep
+apps/desktop/src-tauri/resources/offline/*
+!apps/desktop/src-tauri/resources/offline/.gitkeep
 apps/desktop/public/fonts/fallback/
 .corpus/

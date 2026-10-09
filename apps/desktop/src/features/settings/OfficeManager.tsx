@@ -7,6 +7,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { formatBytes } from "@/shared/lib/format";
 import { toRpcError } from "@/shared/rpc/client";
 import { officeInstall, officeRemove, officeStatus, type OfficeStatusResult } from "@/shared/rpc/office";
+import { useBundledOfficeStore } from "@/shared/session/bundledOffice";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { useUiStore } from "@/shared/store/uiStore";
@@ -31,9 +32,11 @@ export function OfficeManager() {
     }
   }, [t]);
 
+  const preparing = useBundledOfficeStore((state) => state.running);
+
   useEffect(() => {
     void load();
-  }, [load]);
+  }, [load, preparing]);
 
   const install = async () => {
     setBusy("install");
@@ -69,6 +72,8 @@ export function OfficeManager() {
   const total = progress?.detail?.total;
   const percent = typeof received === "number" && typeof total === "number" && total > 0 ? Math.round((received / total) * 100) : null;
   const managed = status?.source === "managed";
+  const installing = busy === "install" || preparing;
+  const installLabel = status?.bundled ? t("progress.installing") : `${t("progress.downloading")}${percent !== null ? ` ${percent}%` : ""}`;
   const stateLabel = !status
     ? "…"
     : status.source === "managed"
@@ -80,15 +85,15 @@ export function OfficeManager() {
   return (
     <div className="w-full space-y-3">
       <div className="glass-flat flex flex-wrap items-center gap-3 rounded-xl border p-3">
-        <span className={cn("size-2 shrink-0 rounded-full", status?.installed ? "bg-success" : "bg-muted-foreground", busy === "install" && "animate-pulse bg-warning")} aria-hidden />
+        <span className={cn("size-2 shrink-0 rounded-full", status?.installed ? "bg-success" : "bg-muted-foreground", installing && "animate-pulse bg-warning")} aria-hidden />
         <span className="min-w-0 flex-1">
           <span className="block text-sm text-foreground">{stateLabel}</span>
           <span className="block break-all text-xs leading-4 text-muted-foreground">
-            {busy === "install"
-              ? `${t("progress.downloading")}${percent !== null ? ` ${percent}%` : ""}`
+            {installing
+              ? installLabel
               : managed
                 ? `${status?.path ?? ""} · ${formatBytes(status?.sizeBytes ?? 0, locale)}`
-                : (status?.path ?? t("settings.office.downloadHint"))}
+                : (status?.path ?? (status?.bundled ? t("settings.office.bundledHint") : t("settings.office.downloadHint")))}
           </span>
         </span>
         {status?.supported === false ? null : status?.source === "system" ? null : managed ? (
@@ -96,12 +101,12 @@ export function OfficeManager() {
             {t("settings.office.remove")}
           </Button>
         ) : (
-          <Button size="sm" icon={busy === "install" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void install()} disabled={busy !== null}>
-            {busy === "install" ? t("progress.installing") : t("settings.office.install")}
+          <Button size="sm" icon={installing ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void install()} disabled={busy !== null || preparing}>
+            {installing ? t("progress.installing") : status?.bundled ? t("settings.office.installBundled") : t("settings.office.install")}
           </Button>
         )}
       </div>
-      {busy === "install" ? (
+      {installing ? (
         <div className="h-1 w-full overflow-hidden rounded-sm bg-muted" role="progressbar" aria-valuenow={percent ?? undefined} aria-valuemin={0} aria-valuemax={100}>
           <div className="h-full bg-primary transition-[width] duration-(--transition-fast)" style={{ width: `${percent ?? 8}%` }} />
         </div>

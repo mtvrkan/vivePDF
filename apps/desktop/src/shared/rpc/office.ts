@@ -7,6 +7,7 @@ export type OfficeStatusResult = {
   directory: string;
   sizeBytes: number;
   supported: boolean;
+  bundled: boolean;
 };
 
 export const officeStatus = (options?: RpcCallOptions) => rpc<OfficeStatusResult>("system.office_status", {}, options);

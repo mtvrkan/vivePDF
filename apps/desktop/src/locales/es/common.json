@@ -1992,7 +1992,11 @@
       "downloadHint": "Se descargan unos 350 MB y ocupa cerca de 900 MB en el disco.",
       "installed": "LibreOffice está listo.",
       "removed": "Se quitó LibreOffice.",
-      "unsupported": "No hay descarga de LibreOffice para este sistema o procesador; instálelo usted mismo."
+      "unsupported": "No hay descarga de LibreOffice para este sistema o procesador; instálelo usted mismo.",
+      "installBundled": "Instalar desde el paquete de la aplicación",
+      "bundledHint": "LibreOffice viene con vivePDF y se instala sin internet; ocupa unos 900 MB en disco.",
+      "bundledReady": "LibreOffice está listo para las conversiones de Office.",
+      "bundledFailed": "No se pudo instalar LibreOffice desde el paquete de la aplicación. Puede volver a intentarlo en Ajustes › Herramientas."
     },
     "fallbackFonts": {
       "title": "Fuentes de respaldo",

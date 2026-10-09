@@ -1,5 +1,6 @@
 import shutil
 import tempfile
+import threading
 from pathlib import Path
 
 from vivepdf.external import libreoffice, office_download, office_packages
@@ -18,6 +19,8 @@ EXTRACT_TOOLS: dict[PackageKind, str] = {"msi": "msiexec", "deb": "deb", "dmg": 
 FRESH_SUFFIX = ".new"
 RETIRED_SUFFIX = ".old"
 STAGING_PREFIX = ".vivepdf-office-"
+LOCK_POLL_SECONDS = 0.5
+_INSTALL_LOCK = threading.Lock()
 
 
 def _directory_size(directory: Path) -> int:
@@ -51,6 +54,7 @@ class OfficeStatusResult(RpcModel):
     directory: str
     size_bytes: int
     supported: bool
+    bundled: bool
 
 
 def _status() -> OfficeStatusResult:
@@ -64,6 +68,7 @@ def _status() -> OfficeStatusResult:
         directory=str(directory),
         size_bytes=_directory_size(directory) if directory.is_dir() else 0,
         supported=office_download.current_package() is not None,
+        bundled=office_download.bundled_installer() is not None,
     )
 
 
@@ -164,8 +169,27 @@ def _drop_stale_staging(parent: Path) -> None:
         shutil.rmtree(leftover, ignore_errors=True)
 
 
+def _copy_bundled(bundled: Path, installer: Path, progress: Progress) -> None:
+    progress.report(0.0, "progress.installing", {})
+    shutil.copyfile(bundled, installer)
+    progress.check_cancelled()
+    office_download.verify_bundled_checksum(installer)
+
+
 @op("system.office_install", OfficeInstallParams)
 def office_install(_params: OfficeInstallParams, progress: Progress) -> OfficeStatusResult:
+    waited = not _INSTALL_LOCK.acquire(blocking=False)
+    while waited and not _INSTALL_LOCK.acquire(timeout=LOCK_POLL_SECONDS):
+        progress.check_cancelled()
+    try:
+        if waited and libreoffice.find_managed_soffice() is not None:
+            return _status()
+        return _install(progress)
+    finally:
+        _INSTALL_LOCK.release()
+
+
+def _install(progress: Progress) -> OfficeStatusResult:
     package = office_download.current_package()
     if package is None:
         raise OpError(ErrorCode.UNSUPPORTED, "LibreOffice download is not available here")
@@ -177,7 +201,11 @@ def office_install(_params: OfficeInstallParams, progress: Progress) -> OfficeSt
     staging = Path(tempfile.mkdtemp(prefix=STAGING_PREFIX, dir=directory.parent))
     installer = staging / f"libreoffice.{package.kind}"
     try:
-        _fetch_verified(package, installer, progress)
+        bundled = office_download.bundled_installer()
+        if bundled is not None:
+            _copy_bundled(bundled, installer, progress)
+        else:
+            _fetch_verified(package, installer, progress)
         _unpack(package, installer, fresh, staging, progress)
         _prune(fresh)
         if not libreoffice.office_candidates(fresh):

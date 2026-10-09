@@ -1,4 +1,6 @@
+import hashlib
 import sys
+import threading
 from pathlib import Path
 
 import pytest
@@ -335,3 +337,121 @@ def test_a_windows_catalog_signature_is_not_a_foundation_signature():
     assert signature.status == "Valid"
     assert signature.kind == "Catalog"
     assert not signature.trusted()
+
+
+def bundled_install(monkeypatch, tmp_path, payload: bytes) -> Path:
+    downloads: list[str] = []
+    windows_install(monkeypatch, tmp_path, signed(status="NotSigned"), downloads)
+    resources = tmp_path / "resources"
+    bundled = resources / "offline" / "LibreOffice_26.2.6_Win_x86-64.msi"
+    bundled.parent.mkdir(parents=True)
+    bundled.write_bytes(payload)
+    monkeypatch.setenv("VIVEPDF_RESOURCES_DIR", str(resources))
+
+    def no_download(*_args):
+        raise AssertionError("the bundled installer needs no download")
+
+    monkeypatch.setattr(office_download, "download", no_download)
+    return bundled
+
+
+def test_install_extracts_the_bundled_installer_without_a_download(monkeypatch, tmp_path):
+    bundled = bundled_install(monkeypatch, tmp_path, b"bundled msi")
+    monkeypatch.setattr(
+        office_download, "BUNDLED_INSTALLER_SHA256", hashlib.sha256(b"bundled msi").hexdigest()
+    )
+    extracted: list[bytes] = []
+
+    def extract(installer, directory):
+        extracted.append(installer.read_bytes())
+        (directory / "program").mkdir()
+        (directory / "program" / "soffice.exe").write_bytes(b"stub")
+
+    monkeypatch.setattr(office_packages, "extract_msi", extract)
+    before = office.office_status(office.OfficeStatusParams(), silent_progress())
+
+    status = office.office_install(office.OfficeInstallParams(), silent_progress())
+
+    assert before.bundled is True
+    assert status.installed is True
+    assert status.source == "managed"
+    assert extracted == [b"bundled msi"]
+    assert bundled.read_bytes() == b"bundled msi"
+
+
+def test_a_bundled_installer_with_another_checksum_is_refused(monkeypatch, tmp_path):
+    bundled_install(monkeypatch, tmp_path, b"tampered msi")
+    extracted: list[Path] = []
+    monkeypatch.setattr(
+        office_packages, "extract_msi", lambda installer, *_args: extracted.append(installer)
+    )
+
+    with pytest.raises(OpError) as caught:
+        office.office_install(office.OfficeInstallParams(), silent_progress())
+
+    assert caught.value.data["reason"] == "officeChecksum"
+    assert extracted == []
+    assert not (tmp_path / "office").exists()
+
+
+def test_status_reports_no_bundled_installer_without_resources(monkeypatch, tmp_path):
+    windows_install(monkeypatch, tmp_path, signed(), [])
+    monkeypatch.setenv("VIVEPDF_RESOURCES_DIR", str(tmp_path / "empty"))
+
+    status = office.office_status(office.OfficeStatusParams(), silent_progress())
+
+    assert status.bundled is False
+
+
+def test_a_second_install_waits_for_the_first_and_does_not_extract_again(monkeypatch, tmp_path):
+    bundled_install(monkeypatch, tmp_path, b"bundled msi")
+    monkeypatch.setattr(
+        office_download, "BUNDLED_INSTALLER_SHA256", hashlib.sha256(b"bundled msi").hexdigest()
+    )
+    started = threading.Event()
+    release = threading.Event()
+    extracted: list[Path] = []
+
+    def extract(installer, directory):
+        extracted.append(installer)
+        started.set()
+        release.wait(5)
+        (directory / "program").mkdir()
+        (directory / "program" / "soffice.exe").write_bytes(b"stub")
+
+    monkeypatch.setattr(office_packages, "extract_msi", extract)
+    lock = threading.Lock()
+    blocked = threading.Event()
+
+    class WatchedLock:
+        def acquire(self, blocking=True, timeout=-1):
+            taken = lock.acquire(blocking, timeout)
+            if not taken and not blocking:
+                blocked.set()
+            return taken
+
+        def release(self):
+            lock.release()
+
+    monkeypatch.setattr(office, "_INSTALL_LOCK", WatchedLock())
+    results: list[office.OfficeStatusResult] = []
+    first = threading.Thread(
+        target=lambda: results.append(
+            office.office_install(office.OfficeInstallParams(), silent_progress())
+        )
+    )
+    first.start()
+    started.wait(5)
+    second = threading.Thread(
+        target=lambda: results.append(
+            office.office_install(office.OfficeInstallParams(), silent_progress())
+        )
+    )
+    second.start()
+    blocked.wait(5)
+    release.set()
+    first.join(10)
+    second.join(10)
+
+    assert len(extracted) == 1
+    assert [result.installed for result in results] == [True, True]

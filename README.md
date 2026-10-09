@@ -18,7 +18,7 @@ Website: https://vivepdf.com · Downloads: [Releases](https://github.com/mtvrkan
 ## Install
 Windows 10 or 11 (64-bit): download `vivePDF_<version>_x64-setup.exe` from [Releases](https://github.com/mtvrkan/vivePDF/releases/latest) and run it. The app checks for updates itself (Settings › Updates) and installs nothing without asking.
 
-The installer is not code-signed yet, so Windows SmartScreen shows "Windows protected your PC" the first time: click **More info** → **Run anyway**. Office conversions use LibreOffice, which the app can download for you on request (Settings › Tools).
+The installer is not code-signed yet, so Windows SmartScreen shows "Windows protected your PC" the first time: click **More info** → **Run anyway**. Office conversions use LibreOffice, which comes with the Windows installer and is set up without internet on first start (about 900 MB on disk; Settings › Tools can remove or reinstall it).
 
 macOS and Linux builds are not published yet; build them from source (below).
 

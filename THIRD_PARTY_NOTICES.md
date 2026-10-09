@@ -17,7 +17,8 @@
 | fontTools | MIT | Font subsetting during compression |
 | SecLists `xato-net-10-million-passwords-100000.txt` (bundled as truncated SHA-1 digests in `sidecar/vivepdf/assets/passwords`; data by Mark Burnett, public domain) | MIT | Offline breached-password warning |
 | Have I Been Pwned — Pwned Passwords range API by Troy Hunt (queried only when the user turns the online check on; only a 5-character hash prefix is sent) | CC BY 4.0 | Online breached-password count |
-| LibreOffice (detected, not bundled) | MPL-2.0 | Office ⇄ PDF |
+| LibreOffice (The Document Foundation; the Windows installer carries the unmodified, TDF-signed `LibreOffice_26.2.6_Win_x86-64.msi`, set up on first start; its `LICENSE.html`, `NOTICE` and `CREDITS.fodt` are installed beside it. macOS and Linux use a system copy) | MPL-2.0 | Office ⇄ PDF |
+| Noto Sans, Noto Sans JP, KR, SC and TC (Google; from the @embedpdf/fonts-* packages, bundled) | OFL-1.1 | Viewer fallback fonts for PDFs without embedded fonts |
 | CTranslate2 (OpenNMT) | MIT | Offline translation inference |
 | SentencePiece (Google) | Apache-2.0 | Tokenizer for translation models |
 | Argos Translate language models (downloaded on demand, not bundled) | per package; OPUS-MT based models CC-BY-4.0, credits in each model's `README.md` kept beside it | Offline translation |

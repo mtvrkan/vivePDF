@@ -1992,7 +1992,11 @@
       "downloadHint": "Vengono scaricati circa 350 MB e occupa circa 900 MB su disco.",
       "installed": "LibreOffice è pronto.",
       "removed": "LibreOffice è stato rimosso.",
-      "unsupported": "Non esiste un download di LibreOffice per questo sistema o processore; installalo manualmente."
+      "unsupported": "Non esiste un download di LibreOffice per questo sistema o processore; installalo manualmente.",
+      "installBundled": "Installa dal pacchetto dell'app",
+      "bundledHint": "LibreOffice è incluso in vivePDF e si installa senza internet; occupa circa 900 MB su disco.",
+      "bundledReady": "LibreOffice è pronto per le conversioni Office.",
+      "bundledFailed": "Impossibile installare LibreOffice dal pacchetto dell'app. Riprova in Impostazioni › Strumenti."
     },
     "fallbackFonts": {
       "title": "Caratteri di riserva",

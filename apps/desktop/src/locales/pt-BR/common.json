@@ -1992,7 +1992,11 @@
       "downloadHint": "Cerca de 350 MB são baixados e aproximadamente 900 MB são usados em disco.",
       "installed": "O LibreOffice está pronto.",
       "removed": "O LibreOffice foi removido.",
-      "unsupported": "Não há download do LibreOffice para este sistema ou processador; instale-o manualmente."
+      "unsupported": "Não há download do LibreOffice para este sistema ou processador; instale-o manualmente.",
+      "installBundled": "Instalar a partir do pacote do app",
+      "bundledHint": "O LibreOffice vem com o vivePDF e é instalado sem internet; ocupa cerca de 900 MB no disco.",
+      "bundledReady": "O LibreOffice está pronto para conversões do Office.",
+      "bundledFailed": "Não foi possível instalar o LibreOffice a partir do pacote do app. Tente novamente em Configurações › Ferramentas."
     },
     "fallbackFonts": {
       "title": "Fontes de reserva",

@@ -1992,7 +1992,11 @@
       "downloadHint": "Environ 350 Mo sont téléchargés et près de 900 Mo occupés sur le disque.",
       "installed": "LibreOffice est prêt.",
       "removed": "LibreOffice a été supprimé.",
-      "unsupported": "Aucun téléchargement de LibreOffice n’existe pour ce système ou ce processeur ; installez-le vous-même."
+      "unsupported": "Aucun téléchargement de LibreOffice n’existe pour ce système ou ce processeur ; installez-le vous-même.",
+      "installBundled": "Installer depuis le paquet de l'application",
+      "bundledHint": "LibreOffice est fourni avec vivePDF et s'installe sans internet ; il occupe environ 900 Mo sur le disque.",
+      "bundledReady": "LibreOffice est prêt pour les conversions Office.",
+      "bundledFailed": "LibreOffice n'a pas pu être installé depuis le paquet de l'application. Réessayez dans Paramètres › Outils."
     },
     "fallbackFonts": {
       "title": "Polices de secours",

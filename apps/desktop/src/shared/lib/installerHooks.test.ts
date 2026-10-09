@@ -29,6 +29,13 @@ describe("installer hooks", () => {
     expect(registeredExtensions()).toEqual(expect.arrayContaining(["pdf", "docx", "png"]));
   });
 
+  it("removes the LibreOffice the app set up and old font downloads, but not on update", () => {
+    const guarded = /\$\{If\} \$UpdateMode <> 1([\s\S]*?)\$\{EndIf\}/.exec(uninstallSection())?.[1] ?? "";
+
+    expect(guarded).toContain(String.raw`RMDir /r "$LOCALAPPDATA\vivePDF\libreoffice"`);
+    expect(guarded).toContain(String.raw`RMDir /r "$LOCALAPPDATA\vivePDF\fallback-fonts"`);
+  });
+
   it("removes the start-with-system entry the app may have written", () => {
     const section = uninstallSection();
 

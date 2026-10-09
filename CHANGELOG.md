@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Windows installer: LibreOffice now comes inside the installer and is set up in the background on first start without internet, so Word, Excel and PowerPoint conversions work offline; Settings › Tools shows the setup and can remove or reinstall it from the package, and uninstalling removes it [2026-10-09]
 - Viewer: the Japanese, Korean and Chinese fallback fonts now come with the app, so PDFs without embedded CJK fonts show their text right away without a download; copies downloaded by earlier versions are cleaned up [2026-10-09]
 - Tools: new cards for Design in Studio, Write a document, Business card, Bibliography (opens a document with the sources dialog) and Extract images from a PDF; the Convert to PDF card is also found by searching bib, BibTeX or RIS [2026-10-09]
 - Source libraries: the Convert tool turns .bib, .bibtex and .ris files into a PDF reference list (alone or in a batch with other files), Explorer's right-click menu offers "Open in vivePDF" and "Convert to PDF" for them, and "Open with" lists vivePDF for these files once it is the default PDF app [2026-10-09]

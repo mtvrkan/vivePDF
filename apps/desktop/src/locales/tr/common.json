@@ -1993,7 +1993,11 @@
       "downloadHint": "Yaklaşık 350 MB indirilir, diskte yaklaşık 900 MB yer kaplar.",
       "installed": "LibreOffice hazır.",
       "removed": "LibreOffice kaldırıldı.",
-      "unsupported": "Bu sistem veya işlemci için LibreOffice indirmesi yok; LibreOffice’i kendiniz kurun."
+      "unsupported": "Bu sistem veya işlemci için LibreOffice indirmesi yok; LibreOffice’i kendiniz kurun.",
+      "installBundled": "Uygulama paketinden kur",
+      "bundledHint": "LibreOffice vivePDF ile birlikte geldi, internetsiz kurulur; diskte yaklaşık 900 MB yer kaplar.",
+      "bundledReady": "LibreOffice, Office dönüştürmeleri için hazır.",
+      "bundledFailed": "LibreOffice uygulama paketinden kurulamadı. Ayarlar › Araçlar'dan yeniden deneyebilirsiniz."
     },
     "fallbackFonts": {
       "title": "Yedek fontlar",

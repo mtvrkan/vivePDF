@@ -2096,7 +2096,11 @@
       "downloadHint": "يُنزَّل نحو 350 ميغابايت ويشغل نحو 900 ميغابايت على القرص.",
       "installed": "LibreOffice جاهز.",
       "removed": "تمت إزالة LibreOffice.",
-      "unsupported": "لا يتوفر تنزيل LibreOffice لهذا النظام أو المعالج؛ ثبّته بنفسك."
+      "unsupported": "لا يتوفر تنزيل LibreOffice لهذا النظام أو المعالج؛ ثبّته بنفسك.",
+      "installBundled": "التثبيت من حزمة التطبيق",
+      "bundledHint": "يأتي LibreOffice مع vivePDF ويُثبَّت دون إنترنت؛ ويشغل نحو 900 ميغابايت على القرص.",
+      "bundledReady": "LibreOffice جاهز لتحويلات Office.",
+      "bundledFailed": "تعذّر إعداد LibreOffice من حزمة التطبيق. يمكنك المحاولة مجددًا من الإعدادات › الأدوات."
     },
     "fallbackFonts": {
       "title": "الخطوط الاحتياطية",

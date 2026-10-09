@@ -1,0 +1,8 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "resources": {
+      "resources/offline/LibreOffice_26.2.6_Win_x86-64.msi": "offline/LibreOffice_26.2.6_Win_x86-64.msi"
+    }
+  }
+}
