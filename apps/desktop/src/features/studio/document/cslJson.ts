@@ -1,0 +1,200 @@
+import type { BibEntry, BibName } from "@/types/studio";
+import { MAX_SOURCES, type BibParseResult } from "./bibtex";
+import { claimKey, clip, keyBase, monthNumber, setField } from "./sourceKeys";
+
+const MAX_NAMES = 200;
+
+const TYPES_IN: Record<string, string> = {
+  "article-journal": "article",
+  article: "article",
+  "article-magazine": "article",
+  "article-newspaper": "article",
+  periodical: "article",
+  book: "book",
+  classic: "book",
+  chapter: "incollection",
+  "entry-encyclopedia": "incollection",
+  "entry-dictionary": "incollection",
+  "paper-conference": "inproceedings",
+  thesis: "phdthesis",
+  report: "techreport",
+  webpage: "online",
+  post: "online",
+  "post-weblog": "online",
+  manuscript: "unpublished",
+  pamphlet: "booklet",
+};
+
+const TYPES_OUT: Record<string, string> = {
+  article: "article-journal",
+  periodical: "article-journal",
+  book: "book",
+  mvbook: "book",
+  manual: "book",
+  collection: "book",
+  proceedings: "book",
+  booklet: "pamphlet",
+  inbook: "chapter",
+  incollection: "chapter",
+  inproceedings: "paper-conference",
+  conference: "paper-conference",
+  phdthesis: "thesis",
+  mastersthesis: "thesis",
+  thesis: "thesis",
+  techreport: "report",
+  report: "report",
+  online: "webpage",
+  electronic: "webpage",
+  www: "webpage",
+  unpublished: "manuscript",
+};
+
+const CHAPTER_TYPES = new Set(["incollection", "inproceedings", "inbook"]);
+
+type CslName = { family?: string; given?: string; literal?: string };
+type CslItem = Record<string, unknown>;
+
+function text(value: unknown): string {
+  return clip(value);
+}
+
+function namesOf(value: unknown): BibName[] {
+  if (!Array.isArray(value)) return [];
+  const names: BibName[] = [];
+  for (const item of value.slice(0, MAX_NAMES)) {
+    if (!item || typeof item !== "object") continue;
+    const source = item as Record<string, unknown>;
+    const literal = text(source.literal);
+    if (literal) {
+      names.push({ family: literal, given: "", literal: true });
+      continue;
+    }
+    const family = [text(source["dropping-particle"]), text(source["non-dropping-particle"]), text(source.family)].filter(Boolean).join(" ");
+    const given = text(source.given);
+    if (family || given) names.push({ family: family || given, given: family ? given : "" });
+  }
+  return names;
+}
+
+function dateOf(value: unknown): { year: string; month: number | null; full: string } {
+  if (!value || typeof value !== "object") return { year: "", month: null, full: "" };
+  const source = value as Record<string, unknown>;
+  const parts = Array.isArray(source["date-parts"]) && Array.isArray(source["date-parts"][0]) ? (source["date-parts"][0] as unknown[]) : [];
+  if (parts.length > 0) {
+    const [year, month, day] = parts.map((part) => text(part));
+    const monthValue = month ? monthNumber(month) : null;
+    const full = [year, monthValue ? String(monthValue).padStart(2, "0") : "", monthValue && day ? day.padStart(2, "0") : ""].filter(Boolean).join("-");
+    return { year: /^-?\d+$/.test(year) ? year : "", month: monthValue, full };
+  }
+  const raw = text(source.raw) || text(source.literal);
+  const match = /(\d{4})(?:[-/](\d{1,2}))?/.exec(raw);
+  return { year: match?.[1] ?? raw, month: match?.[2] ? monthNumber(match[2]) : null, full: raw };
+}
+
+function entryOf(item: CslItem, taken: Set<string>): BibEntry {
+  const cslType = text(item.type);
+  const genre = text(item.genre);
+  const type = cslType === "thesis" && /master|yüksek lisans/i.test(genre) ? "mastersthesis" : (TYPES_IN[cslType] ?? "misc");
+  const authors = namesOf(item.author);
+  const editors = namesOf(item.editor);
+  const issued = dateOf(item.issued);
+  const title = text(item.title);
+  const entry: BibEntry = { key: "", type, fields: {}, authors, editors };
+  setField(entry, "title", title);
+  setField(entry, "year", issued.year);
+  if (issued.month) setField(entry, "month", String(issued.month));
+  const container = text(item["container-title"]);
+  if (type === "article") setField(entry, "journal", container);
+  else if (CHAPTER_TYPES.has(type)) setField(entry, "booktitle", container);
+  else setField(entry, "series", container);
+  setField(entry, "series", item["collection-title"]);
+  setField(entry, "volume", item.volume);
+  setField(entry, "number", item.issue ?? item.number);
+  setField(entry, "pages", item.page);
+  setField(entry, type.endsWith("thesis") ? "school" : type === "techreport" ? "institution" : "publisher", item.publisher);
+  setField(entry, "address", item["publisher-place"]);
+  setField(entry, "edition", item.edition);
+  setField(entry, "doi", item.DOI);
+  setField(entry, "url", item.URL);
+  setField(entry, "isbn", item.ISBN);
+  setField(entry, "issn", item.ISSN);
+  setField(entry, "abstract", item.abstract);
+  setField(entry, "keywords", item.keyword);
+  setField(entry, "note", item.note);
+  setField(entry, "language", item.language);
+  setField(entry, "urldate", dateOf(item.accessed).full);
+  if (genre && type === "phdthesis" && !/ph\.?\s?d|doctor|doktora/i.test(genre)) setField(entry, "type", genre);
+  entry.key = claimKey(text(item.id) || text(item["citation-key"]), keyBase(authors, issued.year, title), taken);
+  return entry;
+}
+
+export function parseCslJson(raw: string): BibParseResult {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw.replace(/^\uFEFF/, ""));
+  } catch {
+    return { entries: [], skipped: 1, duplicates: 0 };
+  }
+  const items = Array.isArray(parsed) ? parsed : parsed && typeof parsed === "object" && Array.isArray((parsed as { items?: unknown }).items) ? (parsed as { items: unknown[] }).items : [parsed];
+  const taken = new Set<string>();
+  const entries: BibEntry[] = [];
+  let skipped = 0;
+  for (const item of items) {
+    if (entries.length >= MAX_SOURCES) break;
+    if (!item || typeof item !== "object" || Array.isArray(item)) skipped += 1;
+    else entries.push(entryOf(item as CslItem, taken));
+  }
+  return { entries, skipped, duplicates: 0 };
+}
+
+function cslNames(names: BibName[]): CslName[] {
+  return names.filter((name) => !name.others).map((name) => (name.literal ? { literal: name.family } : name.given ? { family: name.family, given: name.given } : { family: name.family }));
+}
+
+function issuedOf(entry: BibEntry): { "date-parts": number[][] } | { literal: string } | undefined {
+  const year = entry.fields.year || /^\d{4}/.exec(entry.fields.date ?? "")?.[0] || "";
+  if (!year) return undefined;
+  if (!/^-?\d+$/.test(year)) return { literal: year };
+  const month = monthNumber(entry.fields.month ?? "");
+  return { "date-parts": [month ? [Number(year), month] : [Number(year)]] };
+}
+
+function accessedOf(value: string): { "date-parts": number[][] } | undefined {
+  const match = /^(\d{4})(?:-(\d{1,2})(?:-(\d{1,2}))?)?/.exec(value);
+  if (!match) return undefined;
+  return { "date-parts": [match.slice(1).filter(Boolean).map(Number)] };
+}
+
+export function writeCslJson(entries: BibEntry[]): string {
+  const items = entries.map((entry) => {
+    const field = (name: string) => entry.fields[name] || undefined;
+    const item: CslItem = {
+      id: entry.key,
+      type: TYPES_OUT[entry.type] ?? "document",
+      title: field("title"),
+      author: entry.authors.length > 0 ? cslNames(entry.authors) : undefined,
+      editor: entry.editors.length > 0 ? cslNames(entry.editors) : undefined,
+      issued: issuedOf(entry),
+      "container-title": field("journal") ?? field("journaltitle") ?? field("booktitle"),
+      "collection-title": field("series"),
+      volume: field("volume"),
+      issue: field("number") ?? field("issue"),
+      page: field("pages"),
+      publisher: field("publisher") ?? field("school") ?? field("institution") ?? field("organization"),
+      "publisher-place": field("address") ?? field("location"),
+      edition: field("edition"),
+      genre: field("type") ?? (entry.type === "mastersthesis" ? "Master's thesis" : entry.type === "phdthesis" ? "PhD thesis" : undefined),
+      DOI: field("doi"),
+      URL: field("url"),
+      ISBN: field("isbn"),
+      ISSN: field("issn"),
+      abstract: field("abstract"),
+      keyword: field("keywords"),
+      note: field("note"),
+      language: field("language"),
+      accessed: accessedOf(entry.fields.urldate ?? ""),
+    };
+    return Object.fromEntries(Object.entries(item).filter(([, value]) => value !== undefined));
+  });
+  return `${JSON.stringify(items, null, 2)}\n`;
+}

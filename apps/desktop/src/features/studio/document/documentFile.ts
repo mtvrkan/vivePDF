@@ -1,7 +1,7 @@
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { defaultOutputDirectory, dirnameOf, joinPath, stemOf } from "@/shared/lib/paths";
-import { studioDocumentImage, studioImportDocument, studioOpenDocument, studioSaveDocument } from "@/shared/rpc/operations";
+import { studioDocumentImage, studioImportDocument, studioOpenDocument, studioReadBibliography, studioSaveDocument } from "@/shared/rpc/operations";
 import type { RpcError } from "@/types";
 import { STUDIO_DOCUMENT_EXTENSION, type StudioDocument, type StudioDocumentImport } from "@/types/studio";
 import { useRecentDesignsStore } from "../design/recentDesigns";
@@ -9,6 +9,7 @@ import { IMAGE_EXTENSIONS } from "../design/pickImage";
 import { parseBibtex } from "./bibtex";
 import { createDocument, normalizeDocument, pageSize } from "./model";
 import { useDocumentStore } from "./documentStore";
+import { formatOfPath, parseSources } from "./sourceFormats";
 
 export const IMPORT_EXTENSIONS = ["md", "markdown", "txt", "html", "htm"];
 
@@ -62,6 +63,13 @@ export function importedDocument(result: StudioDocumentImport): StudioDocument {
 
 export async function importAsDocument(path: string): Promise<StudioDocument> {
   return importedDocument(await studioImportDocument({ path }));
+}
+
+export async function openSourceLibrary(path: string): Promise<StudioDocument | null> {
+  const result = await studioReadBibliography({ path });
+  const { entries } = parseSources(result.text, formatOfPath(path));
+  if (entries.length === 0) return null;
+  return { ...createDocument(stemOf(path), '<div data-bibliography=""></div>'), sources: entries };
 }
 
 export async function pickDocumentImage(title: string): Promise<{ src: string; width: number; height: number } | null> {

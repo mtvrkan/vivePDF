@@ -11,12 +11,14 @@ type DocumentState = {
   dirty: boolean;
   revision: number;
   session: number;
+  sourcesRequested: boolean;
   open: (document: StudioDocument, filePath?: string | null) => void;
   close: () => void;
   setContent: (content: DocumentNode) => void;
   setSettings: (patch: Partial<DocumentSettings>) => void;
   setName: (name: string) => void;
   setSources: (sources: BibEntry[]) => void;
+  requestSources: (requested: boolean) => void;
   markSaved: (filePath: string) => void;
 };
 
@@ -62,6 +64,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => {
     dirty: false,
     revision: 0,
     session: 0,
+    sourcesRequested: false,
     open: (document, filePath = null) => {
       set({ document, filePath, dirty: false, revision: get().revision + 1, session: get().session + 1 });
       writeDraft(document, filePath);
@@ -71,7 +74,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => {
       if (draftTimer) clearTimeout(draftTimer);
       draftTimer = null;
       if (document) storeDraft(document, filePath);
-      set({ document: null, filePath: null, dirty: false });
+      set({ document: null, filePath: null, dirty: false, sourcesRequested: false });
     },
     setContent: (content) => {
       const document = get().document;
@@ -89,6 +92,7 @@ export const useDocumentStore = create<DocumentState>((set, get) => {
       const document = get().document;
       if (document && document.sources !== sources) change({ ...document, sources });
     },
+    requestSources: (sourcesRequested) => set({ sourcesRequested }),
     markSaved: (filePath) => {
       set({ filePath, dirty: false });
       const document = get().document;

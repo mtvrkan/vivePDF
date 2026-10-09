@@ -35,6 +35,16 @@ def test_a_bib_file_is_read_as_text_in_its_own_encoding(tmp_path: Path):
     assert "Müller, Jörg" in older.text
 
 
+def test_ris_and_csl_json_libraries_are_read_too(tmp_path: Path):
+    ris = tmp_path / "zotero.ris"
+    ris.write_text("TY  - JOUR\nAU  - Yılmaz, Ayşe\nER  - \n", encoding="utf-8", newline="\n")
+    csl = tmp_path / "library.json"
+    csl.write_text('[{"id": "yilmaz2020", "type": "book"}]', encoding="utf-8")
+
+    assert _read(ris).text.startswith("TY  - JOUR")
+    assert _read(csl).name == "library.json"
+
+
 def test_other_files_missing_files_and_huge_files_are_refused(tmp_path: Path, monkeypatch):
     text = tmp_path / "notes.txt"
     text.write_text(ENTRY, encoding="utf-8", newline="\n")

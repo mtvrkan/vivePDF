@@ -9,10 +9,12 @@ import { documentExtensions } from "./extensions";
 import { createDocument } from "./model";
 import { SourcesDialog } from "./SourcesDialog";
 
-const dialog = vi.hoisted(() => ({ open: vi.fn() }));
+const dialog = vi.hoisted(() => ({ open: vi.fn(), save: vi.fn() }));
 const operations = vi.hoisted(() => ({ studioReadBibliography: vi.fn() }));
 vi.mock("@tauri-apps/plugin-dialog", () => dialog);
 vi.mock("@/shared/rpc/operations", () => operations);
+const core = vi.hoisted(() => ({ invoke: vi.fn() }));
+vi.mock("@tauri-apps/api/core", async (importOriginal) => ({ ...(await importOriginal<typeof import("@tauri-apps/api/core")>()), invoke: (...args: unknown[]) => core.invoke(...args) }));
 
 const KNUTH = "@book{knuth, author={Knuth, Donald}, title={The Art of Computer Programming}, publisher={AW}, year=1968}";
 
@@ -63,7 +65,7 @@ describe("SourcesDialog", () => {
     const { current, onClose } = mount();
 
     fireEvent.click(screen.getByTestId("cite-paste"));
-    fireEvent.change(screen.getByLabelText("BibTeX text"), { target: { value: KNUTH } });
+    fireEvent.change(screen.getByLabelText("BibTeX, RIS or CSL JSON text"), { target: { value: KNUTH } });
     fireEvent.click(screen.getByRole("button", { name: "Add" }));
     fireEvent.click(screen.getByRole("button", { name: /The Art of Computer Programming/ }));
     fireEvent.change(screen.getByLabelText("Page (optional)"), { target: { value: "12" } });
@@ -103,5 +105,65 @@ describe("SourcesDialog", () => {
     fireEvent.click(screen.getByRole("button", { name: "Update citation" }));
 
     expect(citations(editor)).toEqual([[{ key: "knuth", locator: "9" }]]);
+  });
+
+  it("edits a source and carries a renamed key into the citations already in the text", () => {
+    act(() => useDocumentStore.getState().setSources([{ key: "knuth", type: "book", fields: { title: "The Art", year: "1968", abstract: "Kept" }, authors: [{ family: "Knuth", given: "Donald" }], editors: [] }]));
+    const { current } = mount('<p>See <span data-citation=\'[{"key":"knuth","locator":"3"}]\'></span></p>');
+
+    fireEvent.click(screen.getByRole("button", { name: "Edit knuth" }));
+    fireEvent.change(screen.getByLabelText("Citation key"), { target: { value: "knuth1968" } });
+    fireEvent.change(screen.getByLabelText("Title"), { target: { value: "The Art of Computer Programming" } });
+    fireEvent.change(screen.getByLabelText("Publisher"), { target: { value: "Addison-Wesley" } });
+    fireEvent.click(screen.getByTestId("cite-save"));
+
+    expect(useDocumentStore.getState().document?.sources).toEqual([
+      { key: "knuth1968", type: "book", fields: { title: "The Art of Computer Programming", year: "1968", abstract: "Kept", publisher: "Addison-Wesley" }, authors: [{ family: "Knuth", given: "Donald" }], editors: [] },
+    ]);
+    expect(citations(current)).toEqual([[{ key: "knuth1968", locator: "3" }]]);
+    expect(current.view.dom.querySelector(".vp-cite")?.textContent).toBe("(Knuth, 1968, p. 3)");
+  });
+
+  it("adds a source by hand, refuses a key that is already used and makes one up when left empty", () => {
+    act(() => useDocumentStore.getState().setSources([{ key: "knuth", type: "book", fields: { title: "The Art" }, authors: [], editors: [] }]));
+    mount();
+
+    fireEvent.click(screen.getByTestId("cite-new"));
+    fireEvent.change(screen.getByLabelText("Citation key"), { target: { value: "KNUTH" } });
+
+    expect(screen.getByRole("alert").textContent).toBe("Another source already uses this key");
+    expect((screen.getByTestId("cite-save") as HTMLButtonElement).disabled).toBe(true);
+
+    fireEvent.change(screen.getByLabelText("Citation key"), { target: { value: "" } });
+    fireEvent.change(screen.getByLabelText("Title"), { target: { value: "Kentsel ısı adaları" } });
+    fireEvent.change(screen.getByLabelText("Authors"), { target: { value: "Yılmaz, Ayşe\n{TÜBİTAK}" } });
+    fireEvent.change(screen.getByLabelText("Year"), { target: { value: "2020" } });
+    fireEvent.click(screen.getByTestId("cite-save"));
+
+    const added = useDocumentStore.getState().document?.sources[1];
+    expect(added).toMatchObject({ key: "yilmaz2020kentsel", type: "article", fields: { title: "Kentsel ısı adaları", year: "2020" } });
+    expect(added?.authors).toEqual([
+      { family: "Yılmaz", given: "Ayşe" },
+      { family: "TÜBİTAK", given: "", literal: true },
+    ]);
+    expect(screen.getByRole("button", { name: /Kentsel ısı adaları/ }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("reads RIS and CSL JSON libraries and exports in the format the file name asks for", async () => {
+    core.invoke.mockResolvedValue(undefined);
+    dialog.open.mockResolvedValue("C:/refs/zotero.ris");
+    dialog.save.mockResolvedValue("C:/refs/out.json");
+    operations.studioReadBibliography.mockResolvedValueOnce({ text: "TY  - BOOK\nID  - knuth\nAU  - Knuth, Donald\nTI  - The Art\nPY  - 1968\nER  - \n", name: "zotero.ris" });
+    mount();
+
+    fireEvent.click(screen.getByTestId("cite-import"));
+    await waitFor(() => expect(useDocumentStore.getState().document?.sources.map((entry) => entry.key)).toEqual(["knuth"]));
+    fireEvent.click(screen.getByTestId("cite-export"));
+    await waitFor(() => expect(core.invoke).toHaveBeenCalled());
+
+    const [command, args] = core.invoke.mock.calls[0] as [string, { path: string; contents: string }];
+    expect(command).toBe("write_text_file");
+    expect(args.path).toBe("C:/refs/out.json");
+    expect(JSON.parse(args.contents)).toEqual([{ id: "knuth", type: "book", title: "The Art", author: [{ family: "Knuth", given: "Donald" }], issued: { "date-parts": [[1968]] } }]);
   });
 });

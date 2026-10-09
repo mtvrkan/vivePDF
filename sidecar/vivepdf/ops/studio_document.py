@@ -51,6 +51,7 @@ from vivepdf.rpc.registry import op
 PREVIEW_SLOTS = 4
 IMPORT_EXTENSIONS = {"md", "markdown", "txt", "text", "html", "htm"}
 BIBLIOGRAPHY_EXTENSIONS = {"bib", "bibtex"}
+SOURCE_LIBRARY_EXTENSIONS = BIBLIOGRAPHY_EXTENSIONS | {"ris", "json"}
 MAX_BIBLIOGRAPHY_BYTES = 8 * 1024 * 1024
 MAX_LINKED_BIBLIOGRAPHIES = 10
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp", "bmp", "tif", "tiff", "heic", "heif"}
@@ -321,7 +322,7 @@ def read_bibliography(
     if not source.is_file():
         raise _missing(params.path)
     extension = source.suffix.lower().lstrip(".")
-    if extension not in BIBLIOGRAPHY_EXTENSIONS:
+    if extension not in SOURCE_LIBRARY_EXTENSIONS:
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             f"unsupported file type: .{extension}",

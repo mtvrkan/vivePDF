@@ -1,8 +1,8 @@
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { Editor } from "@tiptap/react";
 import i18n, { ready, setLocale } from "@/app/i18n";
 import { citationTerms, storeCitationSource } from "./citationSource";
-import { importedDocument } from "./documentFile";
+import { importedDocument, openSourceLibrary } from "./documentFile";
 import { useDocumentStore } from "./documentStore";
 import { documentExtensions } from "./extensions";
 
@@ -14,6 +14,9 @@ const IMPORTED = {
   referencesTitle: "Kaynakça",
   bibliography: "@article{yilmaz2020, author={Y{\\i}lmaz, Ay{\\c{s}}e}, title={Kentsel ısı}, journal={Kent}, year=2020}",
 };
+
+const operations = vi.hoisted(() => ({ studioReadBibliography: vi.fn() }));
+vi.mock("@/shared/rpc/operations", () => operations);
 
 let editor: Editor | null = null;
 
@@ -49,5 +52,24 @@ describe("importedDocument", () => {
 
   it("leaves sources empty when the file came without a bibliography", () => {
     expect(importedDocument({ ...IMPORTED, bibliography: "" }).sources).toEqual([]);
+  });
+});
+
+describe("openSourceLibrary", () => {
+  it("turns a RIS file into a new document that lists every source", async () => {
+    operations.studioReadBibliography.mockResolvedValueOnce({ text: "TY  - JOUR\nAU  - Lee, Min\nTI  - Urban heat\nPY  - 2019\nER  - \n", name: "zotero.ris" });
+
+    const document = await openSourceLibrary("C:/refs/zotero.ris");
+
+    expect(operations.studioReadBibliography).toHaveBeenCalledWith({ path: "C:/refs/zotero.ris" });
+    expect(document?.name).toBe("zotero");
+    expect(document?.content).toBe('<div data-bibliography=""></div>');
+    expect(document?.sources.map((entry) => [entry.key, entry.fields.title])).toEqual([["lee2019urban", "Urban heat"]]);
+  });
+
+  it("gives nothing back for a library without entries", async () => {
+    operations.studioReadBibliography.mockResolvedValueOnce({ text: "% empty", name: "empty.bib" });
+
+    expect(await openSourceLibrary("C:/refs/empty.bib")).toBeNull();
   });
 });

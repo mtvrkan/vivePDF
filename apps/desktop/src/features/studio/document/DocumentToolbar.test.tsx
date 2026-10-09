@@ -5,7 +5,9 @@ import { CellSelection } from "@tiptap/pm/tables";
 import { ready, setLocale } from "@/app/i18n";
 import { storeCitationSource } from "./citationSource";
 import { documentExtensions } from "./extensions";
+import { useDocumentStore } from "./documentStore";
 import { DocumentToolbar } from "./DocumentToolbar";
+import { createDocument } from "./model";
 
 const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
 const TABLE = "<table><tbody><tr><th><p>A</p></th><th><p>B</p></th></tr><tr><td><p>C</p></td><td><p>D</p></td></tr></tbody></table>";
@@ -84,5 +86,19 @@ describe("DocumentToolbar table cells", () => {
     fireEvent.click(screen.getByTestId("doc-split-cell"));
 
     expect(headerSpans(current)).toEqual([1, 1]);
+  });
+});
+
+describe("DocumentToolbar sources", () => {
+  it("opens the Sources window when a source library was just loaded and clears the request on close", () => {
+    useDocumentStore.getState().open(createDocument("Library"));
+    act(() => useDocumentStore.getState().requestSources(true));
+    mount();
+
+    expect(screen.getByRole("dialog", { name: "Sources" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Close" }));
+
+    expect(useDocumentStore.getState().sourcesRequested).toBe(false);
+    expect(screen.queryByRole("dialog", { name: "Sources" })).toBeNull();
   });
 });

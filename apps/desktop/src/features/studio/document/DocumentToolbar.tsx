@@ -119,6 +119,12 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
   const bodyFont = useDocumentStore((state) => state.document?.settings.fontId ?? "");
   const [linking, setLinking] = useState(false);
   const [citing, setCiting] = useState(false);
+  const sourcesRequested = useDocumentStore((state) => state.sourcesRequested);
+  const showSources = citing || sourcesRequested;
+  const closeSources = () => {
+    setCiting(false);
+    useDocumentStore.getState().requestSources(false);
+  };
   const state = useEditorState({
     editor,
     selector: ({ editor: current }) => {
@@ -249,7 +255,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
         </span>
       ) : null}
       {linking ? <LinkDialog editor={editor} open={linking} onClose={() => setLinking(false)} /> : null}
-      {citing ? <SourcesDialog editor={editor} open={citing} onClose={() => setCiting(false)} /> : null}
+      {showSources ? <SourcesDialog editor={editor} open={showSources} onClose={closeSources} /> : null}
     </div>
   );
 }

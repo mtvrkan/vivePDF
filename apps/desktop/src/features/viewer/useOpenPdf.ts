@@ -29,13 +29,13 @@ import { clipboardToPdf, fileToPdf } from "@/shared/rpc/operations";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { defaultOutputDirectory, joinPath, pathKey, stemOf } from "@/shared/lib/paths";
 import { useLaunchStore } from "@/shared/store/launchStore";
-import { isDesignPath, useStudioLaunchStore } from "@/shared/store/studioLaunchStore";
+import { isStudioPath, useStudioLaunchStore } from "@/shared/store/studioLaunchStore";
 import { convertedCopyOf, isConvertibleOnOpen, isOpenablePath, isUnsavedCopy, OPEN_CONVERTIBLE_EXTENSIONS, originalOf, useConvertedStore } from "./convertedDocuments";
 import { closeViewable, openViewable, type ViewableSource } from "@/shared/session/viewSources";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { isPendingChange } from "./overlay/pending";
 import { neighbourAfterClose, restoreTabPlace, tabPlaceOf } from "./tabPlace";
-import { STUDIO_PROJECT_EXTENSION } from "@/types/studio";
+import { SOURCE_LIBRARY_EXTENSIONS, STUDIO_PROJECT_EXTENSION } from "@/types/studio";
 
 const openingPaths = new Set<string>();
 let openQueue: Promise<void> = Promise.resolve();
@@ -101,7 +101,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
 
   const openPath = useCallback(
     async (path: string): Promise<boolean> => {
-      if (isDesignPath(path)) {
+      if (isStudioPath(path)) {
         useStudioLaunchStore.getState().request({ path, password: null });
         void navigate("/studio");
         return true;
@@ -335,7 +335,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
       multiple: true,
       directory: false,
       filters: [
-        { name: t("viewer.converted.allSupported"), extensions: ["pdf", ...OPEN_CONVERTIBLE_EXTENSIONS, STUDIO_PROJECT_EXTENSION] },
+        { name: t("viewer.converted.allSupported"), extensions: ["pdf", ...OPEN_CONVERTIBLE_EXTENSIONS, STUDIO_PROJECT_EXTENSION, ...SOURCE_LIBRARY_EXTENSIONS] },
         { name: "PDF", extensions: ["pdf"] },
       ],
     });

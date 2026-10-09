@@ -14,6 +14,14 @@ describe("openable files", () => {
     }
   });
 
+  it("sends source libraries to Studio but leaves plain JSON alone", () => {
+    for (const name of ["refs.bib", "old.BIBTEX", "zotero.ris"]) {
+      expect(isOpenablePath(`C:/Docs/${name}`)).toBe(true);
+      expect(isConvertibleOnOpen(`C:/Docs/${name}`)).toBe(false);
+    }
+    expect(isOpenablePath("C:/Docs/library.json")).toBe(false);
+  });
+
   it("refuses files without a known type", () => {
     expect(isOpenablePath("C:/Docs/archive.zip")).toBe(false);
     expect(isOpenablePath("C:/Docs/README")).toBe(false);

@@ -12,6 +12,14 @@ export function isDesignPath(path: string): boolean {
   return /\.(vivedesign|vivedoc)$/i.test(path);
 }
 
+export function isSourceLibraryPath(path: string): boolean {
+  return /\.(bib|bibtex|ris)$/i.test(path);
+}
+
+export function isStudioPath(path: string): boolean {
+  return isDesignPath(path) || isSourceLibraryPath(path);
+}
+
 export const useStudioLaunchStore = create<StudioLaunchState>((set, get) => ({
   pending: null,
   request: (pending) => set({ pending }),

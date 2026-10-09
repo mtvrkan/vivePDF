@@ -58,10 +58,16 @@ const SYMBOLS: Record<string, string> = {
   pounds: "£",
   LaTeX: "LaTeX",
   TeX: "TeX",
+  textbackslash: "\\",
+  textasciitilde: "~",
 };
 const ESCAPED = new Set(["&", "%", "$", "#", "_", "{", "}"]);
 const SPACING = new Set([" ", ",", ";", ":"]);
 const DOTLESS: Record<string, string> = { ı: "i", ȷ: "j" };
+
+export function isValidKey(key: string): boolean {
+  return KEY.test(key);
+}
 
 export type BibParseResult = { entries: BibEntry[]; skipped: number; duplicates: number };
 
