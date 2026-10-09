@@ -36,12 +36,12 @@ export function DocumentEmptyState({ icon: Icon, title, description, highlights,
           <span
             aria-hidden
             className="pointer-events-none absolute -right-24 -top-28 size-80 rounded-full blur-3xl"
-            style={{ background: "color-mix(in oklab, var(--tone) 26%, transparent)" }}
+            style={{ background: "color-mix(in oklab, var(--tone) var(--blob-strength), transparent)" }}
           />
           <span
             aria-hidden
             className="pointer-events-none absolute -bottom-32 -left-16 size-72 rounded-full blur-3xl"
-            style={{ background: "color-mix(in oklab, var(--primary) 14%, transparent)" }}
+            style={{ background: "color-mix(in oklab, var(--primary) calc(var(--blob-strength) * 0.55), transparent)" }}
           />
           <div
             className="relative flex h-full flex-col justify-between gap-8 rounded-[1.25rem] border border-dashed p-7"
