@@ -9517,7 +9517,15 @@
       "distribute": "Make all columns the same width",
       "editChart": "Edit chart data",
       "editFlowchart": "Edit flowchart",
-      "editFormula": "Edit formula"
+      "editFormula": "Edit formula",
+      "rowHeight": "Height of row {{row}}",
+      "verticalAlign": "Vertical alignment",
+      "verticalAligns": {
+        "top": "Top",
+        "middle": "Middle",
+        "bottom": "Bottom"
+      },
+      "fitHeight": "Fit height to the text"
     }
   }
 }

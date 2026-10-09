@@ -9,20 +9,27 @@ import {
   columnCount,
   createTableData,
   distributeColumns,
+  fitRowsToContent,
+  hasRowHeights,
   insertColumn,
   insertRow,
   matchingTableStyle,
   moveColumnBorder,
+  moveRowBorder,
   neighbour,
   normalizeTableData,
   pasteGrid,
   rangeSize,
   removeColumn,
   removeRow,
+  renderedRowHeights,
   setCellText,
   setColumnWidth,
+  setRowHeight,
   styleRange,
+  stretchRows,
   tableGeometry,
+  MIN_ROW_HEIGHT,
 } from "./tableModel";
 
 const total = (values: number[]) => values.reduce((sum, value) => sum + value, 0);
@@ -177,6 +184,69 @@ describe("studio table model", () => {
     expect(normalizeTableData({ kind: "chart", cells: [["a"]] })).toBeNull();
     expect(normalizeTableData({ kind: "table", cells: [] })).toBeNull();
     expect(normalizeTableData(null)).toBeNull();
+  });
+
+  it("starts with rows that follow their text and middle aligned cells", () => {
+    const data = createTableData(3, 2);
+
+    expect(data.rowHeights).toEqual([0, 0, 0]);
+    expect(data.verticalAlign).toBe("middle");
+    expect(hasRowHeights(data)).toBe(false);
+  });
+
+  it("reads tables saved before row heights existed as content sized and middle aligned", () => {
+    const data = normalizeTableData({ kind: "table", cells: [["a"], ["b"]], rowHeights: [12, "x", 5], verticalAlign: "baseline" });
+    const old = normalizeTableData({ kind: "table", cells: [["a"], ["b"]] });
+
+    expect(data?.rowHeights).toEqual([12, 0]);
+    expect(data?.verticalAlign).toBe("middle");
+    expect(old?.rowHeights).toEqual([0, 0]);
+    expect(normalizeTableData({ kind: "table", cells: [["a"]], verticalAlign: "bottom", rowHeights: [-4] })).toMatchObject({ verticalAlign: "bottom", rowHeights: [0] });
+  });
+
+  it("stretches every row in proportion to its rendered height", () => {
+    const data = { ...createTableData(2, 2), layout: { width: 100, height: 40, rows: [10, 30], columns: [50, 50] } };
+
+    const taller = stretchRows(data, 100, 40, 80);
+
+    expect(taller.rowHeights).toEqual([20, 60]);
+    expect(stretchRows(data, 100, 40, 40)).toBe(data);
+    expect(stretchRows(data, 100, 0, 40)).toBe(data);
+    expect(renderedRowHeights(data, 100, 80)).toEqual([20, 60]);
+  });
+
+  it("keeps one row height per row when rows are added, removed or pasted", () => {
+    let data = setRowHeight(setRowHeight(filled(), 1, 30), 2, 40);
+
+    data = insertRow(data, 2);
+    expect(data.rowHeights).toEqual([0, 30, 30, 40]);
+    data = insertRow(data, 0);
+    expect(data.rowHeights).toEqual([30, 0, 30, 30, 40]);
+    data = removeRow(data, 1);
+    expect(data.rowHeights).toEqual([30, 30, 30, 40]);
+    data = pasteGrid(data, { row: 3, column: 0 }, [["x"], ["y"]]);
+    expect(data.rowHeights).toEqual([30, 30, 30, 40, 40]);
+  });
+
+  it("sets one row height within the engine limits and fits the table back to its text", () => {
+    const data = setRowHeight(filled(), 0, 1);
+
+    expect(data.rowHeights).toEqual([MIN_ROW_HEIGHT, 0, 0]);
+    expect(setRowHeight(filled(), 9, 30)).toEqual(filled());
+    expect(setRowHeight(filled(), 0, Number.NaN)).toEqual(filled());
+    expect(fitRowsToContent(data).rowHeights).toEqual([0, 0, 0]);
+  });
+
+  it("drags a row border to grow that row and the table with it", () => {
+    const data = { ...createTableData(2, 2), layout: { width: 100, height: 40, rows: [10, 30], columns: [50, 50] } };
+
+    const moved = moveRowBorder(data, 0, 10, 200, 80);
+
+    expect(moved.height).toBe(90);
+    expect(moved.data.rowHeights).toEqual([30, 0]);
+    expect(moved.data.layout?.rows).toEqual([15, 30]);
+    expect(tableGeometry(moved.data, 200, moved.height).rows).toEqual([0, 30, 90]);
+    expect(moveRowBorder(data, 0, -100, 200, 80).data.rowHeights[0]).toBe(MIN_ROW_HEIGHT);
   });
 
   it("recognises a preset look and loses it after a change", () => {

@@ -257,3 +257,75 @@ def test_a_table_taller_than_any_page_is_refused():
     with pytest.raises(OpError) as caught:
         table_pdf(spec)
     assert caught.value.data["reason"] == "tableTooTall"
+
+
+def _rows(**change) -> list[float]:
+    return table_preview(TableSpec.model_validate(_spec(**change)), silent_progress()).row_heights
+
+
+def test_row_heights_raise_rows_to_their_minimum_and_the_page_follows():
+    natural = _rows()
+    preview = table_preview(
+        TableSpec.model_validate(_spec(row_heights=[0, 60, natural[2] + 10])), silent_progress()
+    )
+    assert preview.row_heights[0] == pytest.approx(natural[0])
+    assert preview.row_heights[1] == pytest.approx(60)
+    assert preview.row_heights[2] == pytest.approx(natural[2] + 10)
+    assert preview.height == pytest.approx(sum(preview.row_heights))
+
+
+def test_row_heights_never_squeeze_rows_below_their_text():
+    long_cells = [row[:] for row in CELLS]
+    long_cells[1][0] = "Çok uzun bir ürün adı ki tek satıra sığmaz ve alta geçmesi gerekir"
+    natural = _rows(cells=long_cells)
+    squeezed = _rows(cells=long_cells, row_heights=[1, 1, 1])
+    assert squeezed == pytest.approx(natural)
+
+
+def test_a_table_without_row_heights_keeps_its_old_size():
+    assert _rows(row_heights=[0, 0, 0]) == pytest.approx(_rows())
+
+
+def _first_word_top(document: pymupdf.Document, text: str) -> float:
+    return next(word[1] for word in document[0].get_text("words") if word[4] == text)
+
+
+@pytest.mark.parametrize(("align", "expected"), [("top", 0.0), ("middle", 0.5), ("bottom", 1.0)])
+def test_cell_text_sits_at_the_top_middle_or_bottom_of_a_tall_row(align: str, expected: float):
+    natural = _rows()
+    extra = 80.0
+    spec = TableSpec.model_validate(
+        _spec(row_heights=[0, natural[1] + extra, 0], vertical_align=align)
+    )
+    reference, _ = table_pdf(TableSpec.model_validate(_spec()))
+    stretched, _ = table_pdf(spec)
+    try:
+        moved = _first_word_top(stretched, "Çay") - _first_word_top(reference, "Çay")
+        assert moved == pytest.approx(extra * expected, abs=0.5)
+        assert _first_word_top(stretched, "Ürün") == pytest.approx(
+            _first_word_top(reference, "Ürün"), abs=0.5
+        )
+    finally:
+        reference.close()
+        stretched.close()
+
+
+@pytest.mark.parametrize(
+    "change",
+    [
+        {"row_heights": [10, 10]},
+        {"row_heights": [10, -1, 10]},
+        {"row_heights": [10, 20_000, 10]},
+        {"vertical_align": "baseline"},
+    ],
+)
+def test_malformed_row_heights_and_alignment_are_refused(change: dict):
+    with pytest.raises(ValidationError):
+        TableSpec.model_validate(_spec(**change))
+
+
+def test_row_heights_that_add_up_past_any_page_are_refused():
+    spec = TableSpec.model_validate(_spec(row_heights=[5000, 5000, 5000]))
+    with pytest.raises(OpError) as caught:
+        table_pdf(spec)
+    assert caught.value.data["reason"] == "tableTooTall"

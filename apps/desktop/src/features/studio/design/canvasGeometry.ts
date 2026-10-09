@@ -1,4 +1,3 @@
-import { graphicOf } from "../graphics/graphicData";
 import { guidesOf, marginsOf } from "../model/guides";
 import { isLineShape } from "../model/shapes";
 import { elementBounds, type Bounds } from "../model/edit";
@@ -33,7 +32,6 @@ export function handlesFor(elements: StudioElement[]): Handle[] {
   const [element] = elements;
   if (isLine(element)) return [];
   if (element.kind === "text") return ["nw", "ne", "se", "sw", "e", "w"];
-  if (graphicOf(element)?.kind === "table") return ["e", "w"];
   return HANDLES;
 }
 

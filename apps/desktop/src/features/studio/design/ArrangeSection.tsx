@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useShallow } from "zustand/react/shallow";
 import { IconButton } from "@/components/shared/IconButton";
 import type { StudioElement, StudioPage } from "@/types/studio";
+import { heightPatch } from "../graphics/graphicData";
 import { distributableCount } from "../model/edit";
 import { align, distribute, flipSelection, patchSelected, toggleLock } from "./commands";
 import { NumberField, OpacityField, PanelSection } from "./controls";
@@ -75,7 +76,11 @@ export function ArrangeSection({ elements }: { elements: StudioElement[] }) {
 function SingleGeometry({ element, limits }: { element: StudioElement; limits: Limits }) {
   const { t } = useTranslation();
   const disabled = element.locked;
-  const resize = (size: { width?: number; height?: number }, merge?: string) => patchSelected((current) => sizeElementTo(current, size), merge);
+  const resize = (size: { width?: number; height?: number }, merge?: string) =>
+    patchSelected((current) => {
+      const sized = sizeElementTo(current, size);
+      return sized.height === undefined ? sized : { ...sized, ...heightPatch(current, sized.height) };
+    }, merge);
   const ratio = ratioLocked(element);
   return (
     <div className="grid grid-cols-2 gap-2">

@@ -9515,7 +9515,15 @@
       "distribute": "Alle Spalten gleich breit machen",
       "editChart": "Diagrammdaten bearbeiten",
       "editFlowchart": "Flussdiagramm bearbeiten",
-      "editFormula": "Formel bearbeiten"
+      "editFormula": "Formel bearbeiten",
+      "rowHeight": "Höhe von Zeile {{row}}",
+      "verticalAlign": "Vertikale Ausrichtung",
+      "verticalAligns": {
+        "top": "Oben",
+        "middle": "Mitte",
+        "bottom": "Unten"
+      },
+      "fitHeight": "Höhe an den Text anpassen"
     }
   }
 }

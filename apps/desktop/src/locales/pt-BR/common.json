@@ -9516,7 +9516,15 @@
       "distribute": "Deixar todas as colunas com a mesma largura",
       "editChart": "Editar dados do gráfico",
       "editFlowchart": "Editar fluxograma",
-      "editFormula": "Editar fórmula"
+      "editFormula": "Editar fórmula",
+      "rowHeight": "Altura da linha {{row}}",
+      "verticalAlign": "Alinhamento vertical",
+      "verticalAligns": {
+        "top": "Superior",
+        "middle": "Centro",
+        "bottom": "Inferior"
+      },
+      "fitHeight": "Ajustar a altura ao texto"
     }
   }
 }

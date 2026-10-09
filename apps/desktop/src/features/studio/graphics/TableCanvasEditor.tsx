@@ -16,6 +16,7 @@ import {
   clearRange,
   insertRow,
   moveColumnBorder,
+  moveRowBorder,
   neighbour,
   pasteGrid,
   rangeBounds,
@@ -31,7 +32,8 @@ const PADDING = 0.4;
 const LINE_HEIGHT = 1.25;
 const EMPTY_FILL = "#ffffff";
 
-type Drag = { kind: "cells" } | { kind: "border"; border: number; origin: { x: number; y: number }; before: StudioDesign; data: StudioTableData };
+type Grip = { axis: "column" | "row"; index: number };
+type Drag = { kind: "cells" } | { kind: "border"; grip: Grip; origin: { x: number; y: number }; before: StudioDesign; data: StudioTableData; height: number };
 
 function same(a: CellRef, b: CellRef): boolean {
   return a.row === b.row && a.column === b.column;
@@ -81,8 +83,9 @@ function CellEditor({ element, data, cell, box, hintId }: { element: StudioSvgEl
     area.style.height = "auto";
     const height = Math.max(area.scrollHeight, data.fontSize * LINE_HEIGHT + padding * 2);
     area.style.height = `${height}px`;
-    setTop(box.top + Math.max(0, (box.height - height) / 2));
-  }, [value, box.top, box.height, box.width, data.fontSize, padding, font.fontFamily]);
+    const spare = Math.max(0, box.height - height);
+    setTop(box.top + (data.verticalAlign === "top" ? 0 : data.verticalAlign === "bottom" ? spare : spare / 2));
+  }, [value, box.top, box.height, box.width, data.fontSize, data.verticalAlign, padding, font.fontFamily]);
 
   const go = (target: CellRef) => setRange({ anchor: target, focus: target });
 
@@ -185,7 +188,7 @@ export function TableCanvasEditor({ element }: { element: StudioSvgElement }) {
   const editingTable = useTableEdit((state) => state.elementId);
   const storedRange = useTableEdit((state) => state.range);
   const setRange = useTableEdit((state) => state.setRange);
-  const [dragging, setDragging] = useState<number | null>(null);
+  const [dragging, setDragging] = useState<Grip | null>(null);
   const graphic = graphicOf(element);
   const data = graphic?.kind === "table" ? graphic.data : null;
 
@@ -211,13 +214,14 @@ export function TableCanvasEditor({ element }: { element: StudioSvgElement }) {
     if (event.button !== 0) return;
     const target = event.target as HTMLElement;
     if (target.closest("textarea")) return;
-    const border = target.closest<HTMLElement>("[data-table-border]")?.dataset.tableBorder;
+    const handle = target.closest<HTMLElement>("[data-table-border], [data-table-row-border]");
     const state = useStudioStore.getState();
-    if (border !== undefined && state.design) {
+    if (handle && state.design) {
       event.preventDefault();
       rootRef.current?.setPointerCapture(event.pointerId);
-      drag.current = { kind: "border", border: Number(border), origin: { x: event.clientX, y: event.clientY }, before: state.design, data };
-      setDragging(Number(border));
+      const grip: Grip = handle.dataset.tableRowBorder !== undefined ? { axis: "row", index: Number(handle.dataset.tableRowBorder) } : { axis: "column", index: Number(handle.dataset.tableBorder) };
+      drag.current = { kind: "border", grip, origin: { x: event.clientX, y: event.clientY }, before: state.design, data, height: element.height };
+      setDragging(grip);
       return;
     }
     const cell = cellAt(event.clientX, event.clientY);
@@ -240,10 +244,12 @@ export function TableCanvasEditor({ element }: { element: StudioSvgElement }) {
     const dx = event.clientX - current.origin.x;
     const dy = event.clientY - current.origin.y;
     const along = (dx * Math.cos(angle) - dy * Math.sin(angle)) / zoom;
-    const next = moveColumnBorder(current.data, current.border, along, element.width);
+    const across = (dx * Math.sin(angle) + dy * Math.cos(angle)) / zoom;
+    const patch: Partial<StudioSvgElement> =
+      current.grip.axis === "column" ? { data: moveColumnBorder(current.data, current.grip.index, along, element.width) } : moveRowBorder(current.data, current.grip.index, across, element.width, current.height);
     const state = useStudioStore.getState();
     const page = currentPage(state);
-    if (page) state.preview(() => updatePage(current.before, page.id, (item) => updateElement<StudioSvgElement>(item, element.id, { data: next })));
+    if (page) state.preview(() => updatePage(current.before, page.id, (item) => updateElement<StudioSvgElement>(item, element.id, patch)));
   };
 
   const onPointerUp = () => {
@@ -275,8 +281,13 @@ export function TableCanvasEditor({ element }: { element: StudioSvgElement }) {
       <CellEditor element={element} data={data} cell={anchor} box={rectOf(anchor.row, anchor.column, anchor.row, anchor.column)} hintId={hintId} />
       <div aria-hidden className="pointer-events-none absolute border-primary" style={{ ...rectOf(anchor.row, anchor.column, anchor.row, anchor.column), borderWidth: outline }} />
       {geometry.columns.slice(1, -1).map((x, index) => (
-        <div key={index} data-table-border={index} aria-hidden className="group absolute top-0 flex h-full cursor-col-resize justify-center" style={{ left: x - grip / 2, width: grip }}>
-          <span className={dragging === index ? "h-full bg-primary" : "h-full bg-primary opacity-0 group-hover:opacity-60"} style={{ width: outline }} />
+        <div key={`column:${index}`} data-table-border={index} aria-hidden className="group absolute top-0 flex h-full cursor-col-resize justify-center" style={{ left: x - grip / 2, width: grip }}>
+          <span className={dragging?.axis === "column" && dragging.index === index ? "h-full bg-primary" : "h-full bg-primary opacity-0 group-hover:opacity-60"} style={{ width: outline }} />
+        </div>
+      ))}
+      {geometry.rows.slice(1, -1).map((y, index) => (
+        <div key={`row:${index}`} data-table-row-border={index} aria-hidden className="group absolute left-0 flex w-full cursor-row-resize flex-col justify-center" style={{ top: y - grip / 2, height: grip }}>
+          <span className={dragging?.axis === "row" && dragging.index === index ? "w-full bg-primary" : "w-full bg-primary opacity-0 group-hover:opacity-60"} style={{ height: outline }} />
         </div>
       ))}
       <span id={hintId} className="sr-only">

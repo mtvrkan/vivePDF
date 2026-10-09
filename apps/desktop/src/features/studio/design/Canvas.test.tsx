@@ -1,7 +1,9 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { addElements } from "../model/edit";
-import { createDesign, createShape } from "../model/design";
+import { createDesign, createShape, createSvg } from "../model/design";
+import { graphicOf } from "../graphics/graphicData";
+import { createTableData } from "../graphics/tableModel";
 import { Canvas } from "./Canvas";
 import { lineEndpoints } from "./lineGeometry";
 import { currentPage, useStudioStore } from "./studioStore";
@@ -166,6 +168,27 @@ describe("studio canvas", () => {
     expect(first.x + first.width / 2).toBeCloseTo(90);
     expect(first.y + first.height / 2).toBeCloseTo(-20);
     expect(second.y + second.height / 2).toBeCloseTo(90);
+  });
+
+  it("stretches a table taller from its bottom handle by giving its rows a height", () => {
+    const table = { ...createSvg('<svg xmlns="http://www.w3.org/2000/svg"/>', 20, 80, 200, 40), source: "table" as const, data: { ...createTableData(2, 2), layout: { width: 200, height: 40, rows: [15, 25], columns: [100, 100] } } };
+    act(() => useStudioStore.getState().applyToPage((current) => addElements(current, [table])));
+    act(() => useStudioStore.getState().select([table.id]));
+    render(<Canvas language="en" />);
+    const bottom = document.querySelector('[data-handle="s"]');
+    if (!bottom) throw new Error("no bottom handle");
+
+    pointer(bottom, "pointerdown", 120, 120);
+    pointer(screen.getByTestId("studio-viewport"), "pointermove", 120, 160);
+    pointer(screen.getByTestId("studio-viewport"), "pointerup", 120, 160);
+
+    const stretched = page().elements.find((element) => element.id === table.id);
+    const graphic = stretched ? graphicOf(stretched) : null;
+    expect(stretched).toMatchObject({ y: 80, height: 80, width: 200 });
+    expect(graphic?.kind === "table" && graphic.data.rowHeights).toEqual([30, 50]);
+    expect(document.querySelectorAll("[data-handle]").length).toBeGreaterThanOrEqual(8);
+    act(() => useStudioStore.getState().undo());
+    expect(page().elements.find((element) => element.id === table.id)?.height).toBe(40);
   });
 
   it("hides the rulers and the guides when the view says so", () => {

@@ -4,8 +4,8 @@ import { DEFAULT_FLOW_LOOK, newFlowchart } from "@/features/viewer/overlay/flowc
 import type { StudioSvgElement } from "@/types/studio";
 import { createDesign, createSvg, placeholdersIn } from "../model/design";
 import { elementItems } from "../model/render";
-import { chartFrame, chartSpec, formulaSvg, graphicJob, graphicOf, graphicRenderSpec, keepsRatio, renderKeyOf, stretchSvg, tableScale, tableSpec, withRendered } from "./graphicData";
-import { createTableData, setCellText, styleRange } from "./tableModel";
+import { chartFrame, chartSpec, formulaSvg, graphicJob, graphicOf, graphicRenderSpec, heightPatch, keepsRatio, renderKeyOf, stretchSvg, tableScale, tableSpec, withRendered } from "./graphicData";
+import { createTableData, setCellText, setRowHeight, styleRange } from "./tableModel";
 
 const SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"></svg>';
 
@@ -43,6 +43,34 @@ describe("studio graphic data", () => {
     expect(plain.columnWidths).toHaveLength(3);
     expect(plain.cellStyles).toBeNull();
     expect(styled.cellStyles?.[0][0]).toEqual({ fill: "#ff0000" });
+  });
+
+  it("leaves the spec of a table without row heights as it was so saved designs do not re-render", () => {
+    const spec = tableSpec(createTableData(2, 3), 300);
+
+    expect("rowHeights" in spec).toBe(false);
+    expect("verticalAlign" in spec).toBe(false);
+  });
+
+  it("sends row heights and vertical alignment in engine units once they are set", () => {
+    const data = { ...setRowHeight(createTableData(2, 1), 1, 60), verticalAlign: "bottom" as const };
+
+    expect(tableSpec(data, 300)).toMatchObject({ rowHeights: [0, 60], verticalAlign: "bottom" });
+    expect(tableSpec(data, 4000).rowHeights).toEqual([0, 30]);
+  });
+
+  it("turns a new table height into stretched rows and leaves other elements alone", () => {
+    const data = { ...createTableData(2, 2), layout: { width: 300, height: 50, rows: [20, 30], columns: [150, 150] } };
+    const table = element("table", data, 300, 50);
+
+    const patch = heightPatch(table, 100);
+    const stretched = graphicOf({ ...table, ...patch });
+
+    expect(patch.height).toBe(100);
+    expect(stretched?.kind === "table" && stretched.data.rowHeights).toEqual([40, 60]);
+    expect(graphicJob({ ...table, ...patch })?.key).not.toBe(graphicJob(table)?.key);
+    expect(heightPatch(table, 50)).toEqual({ height: 50 });
+    expect(heightPatch(element("chart", { kind: "chart", settings: chart([["", "S"], ["a", "1"]]), rendered: "" }), 90)).toEqual({ height: 90 });
   });
 
   it("scales very wide tables into the engine range and keeps the visible text size", () => {

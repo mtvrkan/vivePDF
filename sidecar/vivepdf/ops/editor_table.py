@@ -27,6 +27,7 @@ DEFAULT_STRIPE = (0.94, 0.94, 0.95)
 
 TableBorder = Literal["all", "horizontal", "outer", "none"]
 TableAlign = Literal["left", "center", "right"]
+TableVerticalAlign = Literal["top", "middle", "bottom"]
 CellText = Annotated[str, Field(max_length=MAX_CELL_CHARS)]
 
 
@@ -55,6 +56,10 @@ class TableSpec(RpcModel):
     stripe_fill: str | None = Field(default=None, pattern=HEX_COLOR)
     border_width: float | None = Field(default=None, gt=0, le=20)
     cell_styles: list[list[TableCellStyle]] | None = Field(default=None, max_length=MAX_TABLE_ROWS)
+    row_heights: list[Annotated[float, Field(ge=0, le=MAX_TABLE_HEIGHT)]] | None = Field(
+        default=None, max_length=MAX_TABLE_ROWS
+    )
+    vertical_align: TableVerticalAlign = "middle"
 
     @model_validator(mode="after")
     def _same_shape(self) -> "TableSpec":
@@ -68,7 +73,12 @@ class TableSpec(RpcModel):
             or any(len(row) != columns for row in self.cell_styles)
         ):
             raise ValueError("cell styles need one entry per cell")
+        if self.row_heights is not None and len(self.row_heights) != len(self.cells):
+            raise ValueError("row heights need one entry per row")
         return self
+
+    def min_height_of(self, row: int) -> float:
+        return self.row_heights[row] if self.row_heights is not None else 0.0
 
     def style_of(self, row: int, column: int) -> TableCellStyle | None:
         return self.cell_styles[row][column] if self.cell_styles is not None else None
@@ -166,7 +176,8 @@ def _layout(spec: TableSpec, regular: pymupdf.Font, bold: pymupdf.Font) -> _Layo
             for column, (text, width) in enumerate(zip(row, widths, strict=True))
         ]
         lines.append(wrapped)
-        heights.append(max(len(cell) for cell in wrapped) * line_step + 2 * padding)
+        content = max(len(cell) for cell in wrapped) * line_step + 2 * padding
+        heights.append(max(content, spec.min_height_of(row_index)))
     if sum(heights) > MAX_TABLE_HEIGHT:
         raise OpError(
             ErrorCode.INVALID_PARAMS,
@@ -238,6 +249,14 @@ def _draw_borders(page: pymupdf.Page, spec: TableSpec, layout: _Layout, opacity:
         line(x, 0, x, height)
 
 
+def _vertical_shift(align: TableVerticalAlign, spare: float) -> float:
+    if align == "top":
+        return 0.0
+    if align == "bottom":
+        return spare
+    return spare / 2
+
+
 def _draw_text(
     page: pymupdf.Page,
     spec: TableSpec,
@@ -259,8 +278,8 @@ def _draw_text(
             style = spec.style_of(row_index, column_index)
             colour = rgb(style.color if style is not None and style.color else spec.color)
             width = layout.widths[column_index]
-            spare = layout.heights[row_index] - 2 * layout.padding - len(cell) * line_step
-            middle = max(0.0, spare / 2)
+            spare = max(0.0, layout.heights[row_index] - 2 * layout.padding - len(cell) * line_step)
+            shift = _vertical_shift(spec.vertical_align, spare)
             for line_index, text in enumerate(cell):
                 if not text:
                     continue
@@ -272,7 +291,7 @@ def _draw_text(
                     x = left + width - layout.padding - advance
                 else:
                     x = left + layout.padding
-                y = top + layout.padding + middle + line_index * line_step + offset
+                y = top + layout.padding + shift + line_index * line_step + offset
                 page.insert_text(
                     (x, y),
                     text,

@@ -24,12 +24,15 @@ import {
   TABLE_BORDERS,
   TABLE_STYLES,
   TABLE_STYLE_IDS,
+  TABLE_VERTICAL_ALIGNS,
   cellAlign,
   cellBold,
   cellColor,
   clampRange,
   columnCount,
   distributeColumns,
+  fitRowsToContent,
+  hasRowHeights,
   insertColumn,
   insertRow,
   matchingTableStyle,
@@ -37,7 +40,9 @@ import {
   rangeStyle,
   removeColumn,
   removeRow,
+  renderedRowHeights,
   setColumnWidth,
+  setRowHeight,
   styleRange,
   type CellRange,
   type StudioTableData,
@@ -104,6 +109,7 @@ function CellsSection({ element, data, range }: { element: StudioSvgElement; dat
   const setRange = useTableEdit((state) => state.setRange);
   const column = anchor.column;
   const width = data.columns[column] * element.width;
+  const rowHeight = renderedRowHeights(data, element.width, element.height)[anchor.row] ?? 0;
   const goTo = (row: number, columnIndex: number) => setRange({ anchor: { row, column: columnIndex }, focus: { row, column: columnIndex } });
   return (
     <PanelSection title={t("studio.graphics.cells")}>
@@ -124,6 +130,14 @@ function CellsSection({ element, data, range }: { element: StudioSvgElement; dat
         min={4}
         step={1}
         onChange={(value) => updateTable(element.id, (current) => setColumnWidth(current, column, fromMm(value), element.width))}
+      />
+      <NumberField
+        label={t("studio.graphics.rowHeight", { row: anchor.row + 1 })}
+        suffix="mm"
+        value={toMm(rowHeight)}
+        min={1.5}
+        step={1}
+        onChange={(value) => updateTable(element.id, (current) => setRowHeight(current, anchor.row, fromMm(value)))}
       />
       <div className="grid grid-cols-2 gap-2">
         <button type="button" className={chip} onClick={() => updateTable(element.id, (current) => insertRow(current, box.top))}>
@@ -241,6 +255,14 @@ function TableSection({ element, data }: { element: StudioSvgElement; data: Stud
         </Labelled>
         <NumberField label={t("studio.graphics.fontSize")} suffix="pt" value={Math.round(data.fontSize * 10) / 10} min={MIN_TABLE_FONT} max={MAX_TABLE_FONT} step={1} onChange={(fontSize) => set({ fontSize })} />
         <ColorField label={t("studio.graphics.textColor")} value={data.color} onChange={(color) => set({ color }, "table-color")} />
+        <Labelled label={t("studio.graphics.verticalAlign")}>
+          <Segmented size="sm" value={data.verticalAlign} options={TABLE_VERTICAL_ALIGNS} labelOf={(align) => t(`studio.graphics.verticalAligns.${align}`)} onChange={(verticalAlign) => set({ verticalAlign })} ariaLabel={t("studio.graphics.verticalAlign")} />
+        </Labelled>
+        {hasRowHeights(data) ? (
+          <button type="button" className={chip} onClick={() => updateTable(element.id, fitRowsToContent)}>
+            {t("studio.graphics.fitHeight")}
+          </button>
+        ) : null}
       </PanelSection>
       <PanelSection title={t("studio.graphics.borders")}>
         <Labelled label={t("studio.graphics.borderStyle")}>

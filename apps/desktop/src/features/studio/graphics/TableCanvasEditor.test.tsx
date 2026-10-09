@@ -104,6 +104,23 @@ describe("table editing on the canvas", () => {
     expect(cells()).toEqual([["a", "b", "c"], ["1", "2", "3"], ["4", "5", "6"]]);
   });
 
+  it("drags a row border down to make that row and the table taller in one undo step", () => {
+    HTMLElement.prototype.setPointerCapture = vi.fn();
+    const border = document.querySelector('[data-table-row-border="0"]');
+    if (!border) throw new Error("no row border");
+
+    fireEvent.pointerDown(border, { button: 0, pointerId: 1, clientX: 50, clientY: 20 });
+    fireEvent.pointerMove(border, { pointerId: 1, clientX: 50, clientY: 35 });
+    fireEvent.pointerUp(border, { pointerId: 1, clientX: 50, clientY: 35 });
+
+    const element = useStudioStore.getState().design?.pages[0].elements[0];
+    const graphic = element ? graphicOf(element) : null;
+    expect(element?.height).toBe(55);
+    expect(graphic?.kind === "table" && graphic.data.rowHeights).toEqual([35, 0]);
+    expect(useStudioStore.getState().past).toHaveLength(1);
+    expect(document.querySelectorAll("[data-table-row-border]")).toHaveLength(1);
+  });
+
   it("finishes editing with Escape", () => {
     fireEvent.keyDown(editor(), { key: "Escape" });
 

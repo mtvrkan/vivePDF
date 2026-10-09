@@ -9516,7 +9516,15 @@
       "distribute": "Donner la même largeur à toutes les colonnes",
       "editChart": "Modifier les données du graphique",
       "editFlowchart": "Modifier l'organigramme",
-      "editFormula": "Modifier la formule"
+      "editFormula": "Modifier la formule",
+      "rowHeight": "Hauteur de la ligne {{row}}",
+      "verticalAlign": "Alignement vertical",
+      "verticalAligns": {
+        "top": "Haut",
+        "middle": "Milieu",
+        "bottom": "Bas"
+      },
+      "fitHeight": "Ajuster la hauteur au texte"
     }
   }
 }

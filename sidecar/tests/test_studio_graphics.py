@@ -271,3 +271,21 @@ def test_flowchart_steps_follow_the_layout_direction(tmp_path: Path, direction: 
         assert start[3] < end[1]
     else:
         assert start[2] < end[0]
+
+
+def test_a_table_stretched_taller_exports_at_its_new_height_with_text_at_the_bottom(
+    tmp_path: Path,
+):
+    natural = table_preview(TableSpec.model_validate(_table()), silent_progress())
+    rows = [height * 2 for height in natural.row_heights]
+    spec = _table(rowHeights=rows, verticalAlign="bottom")
+    height = _height(spec)
+    assert height == pytest.approx(natural.height * 2)
+    target = _render(tmp_path, [_item("table", spec, (20, 30, 200, height))])
+    words = {word[4]: word for word in _words(target)}
+    header_bottom = 30 + rows[0]
+    assert 30 + rows[0] / 2 < words["Ürün"][1] and words["Ürün"][3] <= header_bottom + 0.5
+    assert words["Çay"][1] > header_bottom + rows[1] / 2
+    assert words["Şeker"][3] <= 30 + height + 0.5
+    header_fill = _pixels(target)[int(30 + rows[0] * 0.25), 60]
+    assert tuple(header_fill) != (255, 255, 255)

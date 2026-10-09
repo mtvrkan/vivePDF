@@ -1,9 +1,12 @@
-import type { TableAlign, TableBorder, TableCellStyle } from "@/types";
+import type { TableAlign, TableBorder, TableCellStyle, TableVerticalAlign } from "@/types";
 
 export const TABLE_LIMITS = { rows: 60, columns: 20, cellChars: 2000 } as const;
 export const TABLE_ALIGNS: readonly TableAlign[] = ["left", "center", "right"];
 export const TABLE_BORDERS: readonly TableBorder[] = ["all", "horizontal", "outer", "none"];
+export const TABLE_VERTICAL_ALIGNS: readonly TableVerticalAlign[] = ["top", "middle", "bottom"];
 export const MIN_COLUMN_WIDTH = 12;
+export const MIN_ROW_HEIGHT = 4;
+export const MAX_ROW_HEIGHT = 14400;
 export const MIN_TABLE_FONT = 4;
 export const MAX_TABLE_FONT = 72;
 export const MAX_BORDER_WIDTH = 20;
@@ -20,6 +23,8 @@ export type StudioTableData = {
   styles: TableCellStyle[][];
   columns: number[];
   align: TableAlign[];
+  rowHeights: number[];
+  verticalAlign: TableVerticalAlign;
   header: boolean;
   stripes: boolean;
   stripeFill: string | null;
@@ -94,6 +99,8 @@ export function createTableData(rows: number, columns: number, look: TableLook =
     styles: Array.from({ length: rowCount }, () => blankStyles(columnTotal)),
     columns: evenColumns(columnTotal),
     align: Array.from({ length: columnTotal }, () => "left"),
+    rowHeights: Array.from({ length: rowCount }, () => 0),
+    verticalAlign: "middle",
     ...look,
     fontSize,
     fontId,
@@ -121,14 +128,17 @@ export function insertRow(data: StudioTableData, at: number): StudioTableData {
   const styles = [...data.styles];
   const source = index > 0 ? index - 1 : 0;
   const template = data.header && source === 0 ? null : data.styles[source];
+  const rowHeights = [...data.rowHeights];
   cells.splice(index, 0, blankRow(columns));
   styles.splice(index, 0, template ? template.map((style) => ({ ...style })) : blankStyles(columns));
-  return { ...data, cells, styles };
+  rowHeights.splice(index, 0, data.rowHeights[data.header && source === 0 ? 1 : source] ?? 0);
+  return { ...data, cells, styles, rowHeights };
 }
 
 export function removeRow(data: StudioTableData, row: number): StudioTableData {
   if (data.cells.length <= 1 || row < 0 || row >= data.cells.length) return data;
-  return { ...data, cells: data.cells.filter((_, index) => index !== row), styles: data.styles.filter((_, index) => index !== row) };
+  const keep = (_: unknown, index: number) => index !== row;
+  return { ...data, cells: data.cells.filter(keep), styles: data.styles.filter(keep), rowHeights: data.rowHeights.filter(keep) };
 }
 
 export function insertColumn(data: StudioTableData, at: number): StudioTableData {
@@ -301,6 +311,42 @@ export function tableGeometry(data: StudioTableData, width: number, height: numb
   return { columns, rows: edges(data.cells.map(() => height / data.cells.length)) };
 }
 
+export function renderedRowHeights(data: StudioTableData, width: number, height: number): number[] {
+  const rows = tableGeometry(data, width, height).rows;
+  return rows.slice(1).map((edge, index) => edge - rows[index]);
+}
+
+export function hasRowHeights(data: Pick<StudioTableData, "rowHeights">): boolean {
+  return data.rowHeights.some((value) => value > 0);
+}
+
+export function stretchRows(data: StudioTableData, width: number, fromHeight: number, toHeight: number): StudioTableData {
+  if (!(fromHeight > 0) || !(toHeight > 0) || fromHeight === toHeight) return data;
+  const ratio = toHeight / fromHeight;
+  return { ...data, rowHeights: renderedRowHeights(data, width, fromHeight).map((value) => clamp(value * ratio, 0, MAX_ROW_HEIGHT)) };
+}
+
+export function setRowHeight(data: StudioTableData, row: number, height: number): StudioTableData {
+  if (row < 0 || row >= data.cells.length || !Number.isFinite(height)) return data;
+  return { ...data, rowHeights: data.rowHeights.map((value, index) => (index === row ? clamp(height, MIN_ROW_HEIGHT, MAX_ROW_HEIGHT) : value)) };
+}
+
+export function moveRowBorder(data: StudioTableData, row: number, delta: number, width: number, height: number): { data: StudioTableData; height: number } {
+  if (row < 0 || row >= data.cells.length || height <= 0) return { data, height };
+  const current = renderedRowHeights(data, width, height);
+  const next = setRowHeight(data, row, current[row] + delta);
+  const grown = next.rowHeights[row] - current[row];
+  const layout = data.layout;
+  if (!layout || layout.rows.length !== data.cells.length) return { data: next, height: height + grown };
+  const scale = layout.height / height;
+  const rows = layout.rows.map((value, index) => (index === row ? value + grown * scale : value));
+  return { data: { ...next, layout: { ...layout, rows, height: layout.height + grown * scale } }, height: height + grown };
+}
+
+export function fitRowsToContent(data: StudioTableData): StudioTableData {
+  return hasRowHeights(data) ? { ...data, rowHeights: data.rowHeights.map(() => 0) } : data;
+}
+
 export function clearRange(data: StudioTableData, range: CellRange): StudioTableData {
   return { ...data, cells: data.cells.map((row, rowIndex) => row.map((text, column) => (inRange(range, { row: rowIndex, column }) ? "" : text))) };
 }
@@ -362,6 +408,7 @@ export function normalizeTableData(value: unknown): StudioTableData | null {
   });
   const rawColumns = Array.isArray(raw.columns) ? raw.columns : [];
   const rawAlign = Array.isArray(raw.align) ? raw.align : [];
+  const rawRowHeights = Array.isArray(raw.rowHeights) ? raw.rowHeights : [];
   const look = TABLE_STYLES.classic;
   return {
     kind: "table",
@@ -369,6 +416,8 @@ export function normalizeTableData(value: unknown): StudioTableData | null {
     styles,
     columns: normalizeColumns(Array.from({ length: columns }, (_, index) => (typeof rawColumns[index] === "number" ? (rawColumns[index] as number) : 0))),
     align: Array.from({ length: columns }, (_, index) => oneOf(rawAlign[index], TABLE_ALIGNS, "left")),
+    rowHeights: cells.map((_, index) => number(rawRowHeights[index], 0, 0, MAX_ROW_HEIGHT)),
+    verticalAlign: oneOf(raw.verticalAlign, TABLE_VERTICAL_ALIGNS, "middle"),
     header: typeof raw.header === "boolean" ? raw.header : look.header,
     stripes: typeof raw.stripes === "boolean" ? raw.stripes : look.stripes,
     stripeFill: colourOr(raw.stripeFill, null),

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
 import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
 import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
+import { heightPatch } from "../graphics/graphicData";
 import { openGraphic } from "../graphics/graphicEditor";
 import { addGuide, guidesOf, moveGuide, removeGuide } from "../model/guides";
 import { duplicateElements, elementBounds, selectionBounds, updateElement, updatePage, moveElements, withoutGroupOf, type Bounds } from "../model/edit";
@@ -327,7 +328,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
       const options = { keepRatio, fromCenter: event.altKey };
       const result = snap ? snapResize(element, current.handle, dx, dy, options, current.index, tolerance) : { box: resizeBox(element, current.handle, dx, dy, options), lines: [] };
       const box = result.box;
-      const patch: Partial<StudioElement> = { x: box.x, y: box.y, width: box.width, height: box.height };
+      const patch: Partial<StudioElement> = { x: box.x, y: box.y, width: box.width, ...heightPatch(element, box.height) };
       if (element.kind === "text" && corner && keepRatio) (patch as Partial<StudioTextElement>).fontSize = Math.max(1, Math.min(1000, element.fontSize * (box.width / element.width)));
       if (element.kind === "qr") patch.height = box.width;
       setFeedback({ ...NO_FEEDBACK, lines: result.lines, readout: { text: `${number(box.width)} × ${number(patch.height ?? box.height)} mm`, x: point.x, y: point.y } });

@@ -135,6 +135,26 @@ describe("graphics in the studio panels", () => {
     expect(tableData().cells).toHaveLength(3);
   });
 
+  it("sets a row height and the vertical alignment from the keyboard and fits the table back to its text", () => {
+    const table: StudioSvgElement = { ...createSvg(SVG, 0, 0, 200, 40), source: "table", data: createTableData(2, 2) };
+    openWith([table]);
+    useTableEdit.getState().begin(table.id, { row: 1, column: 0 });
+    useStudioStore.getState().setEditing(table.id);
+    render(<Section />);
+    expect(screen.queryByRole("button", { name: "Fit height to the text" })).toBeNull();
+
+    const rowHeight = screen.getByLabelText(/^Height of row 2/);
+    fireEvent.change(rowHeight, { target: { value: "20" } });
+    fireEvent.keyDown(rowHeight, { key: "Enter" });
+    fireEvent.click(screen.getByRole("radio", { name: "Bottom" }));
+
+    expect(tableData().rowHeights[0]).toBe(0);
+    expect(tableData().rowHeights[1]).toBeCloseTo((20 * 72) / 25.4);
+    expect(tableData().verticalAlign).toBe("bottom");
+    fireEvent.click(screen.getByRole("button", { name: "Fit height to the text" }));
+    expect(tableData().rowHeights).toEqual([0, 0]);
+  });
+
   it("shows a failed render with a way to try again", () => {
     const table: StudioSvgElement = { ...createSvg(SVG, 0, 0, 200, 40), source: "table", data: createTableData(2, 2) };
     openWith([table]);

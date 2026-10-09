@@ -9516,7 +9516,15 @@
       "distribute": "Rendi tutte le colonne della stessa larghezza",
       "editChart": "Modifica i dati del grafico",
       "editFlowchart": "Modifica il diagramma di flusso",
-      "editFormula": "Modifica la formula"
+      "editFormula": "Modifica la formula",
+      "rowHeight": "Altezza della riga {{row}}",
+      "verticalAlign": "Allineamento verticale",
+      "verticalAligns": {
+        "top": "In alto",
+        "middle": "Al centro",
+        "bottom": "In basso"
+      },
+      "fitHeight": "Adatta l’altezza al testo"
     }
   }
 }

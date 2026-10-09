@@ -3,7 +3,7 @@ import { DEFAULT_FLOW_LOOK, FLOW_DIRECTIONS, FLOW_LIMITS, FLOW_SHAPES, isBlankFl
 import { coloredFormulaSvg, type FormulaSource } from "@/features/viewer/overlay/formula/formulaSvg";
 import type { ChartSpec, FlowchartSpec, TableSpec } from "@/types";
 import type { StudioElement, StudioGraphicSpec, StudioSvgElement } from "@/types/studio";
-import { MAX_BORDER_WIDTH, MAX_TABLE_FONT, MIN_TABLE_FONT, normalizeTableData, type StudioTableData, type TableLayout } from "./tableModel";
+import { MAX_BORDER_WIDTH, MAX_TABLE_FONT, MIN_TABLE_FONT, hasRowHeights, normalizeTableData, stretchRows, type StudioTableData, type TableLayout } from "./tableModel";
 
 export type GraphicSize = { width: number; height: number };
 export type StudioChartData = { kind: "chart"; settings: ChartSettings; rendered: string };
@@ -204,7 +204,15 @@ export function tableSpec(data: StudioTableData, width: number): TableSpec {
     stripeFill: data.stripeFill,
     borderWidth: clamp(data.borderWidth / scale, MIN_BORDER, MAX_BORDER_WIDTH),
     cellStyles: styled ? data.styles : null,
+    ...(hasRowHeights(data) ? { rowHeights: data.rowHeights.map((value) => value / scale) } : {}),
+    ...(data.verticalAlign === "middle" ? {} : { verticalAlign: data.verticalAlign }),
   };
+}
+
+export function heightPatch(element: StudioElement, height: number): Partial<StudioSvgElement> {
+  const graphic = graphicOf(element);
+  if (graphic?.kind !== "table" || height === element.height) return { height };
+  return { height, data: stretchRows(graphic.data, element.width, element.height, height) };
 }
 
 export function chartSpec(settings: ChartSettings, width: number, height: number): ChartSpec | null {

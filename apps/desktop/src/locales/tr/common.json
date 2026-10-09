@@ -9517,7 +9517,15 @@
       "distribute": "Tüm sütunları eşit genişlikte yap",
       "editChart": "Grafik verilerini düzenle",
       "editFlowchart": "Akış şemasını düzenle",
-      "editFormula": "Formülü düzenle"
+      "editFormula": "Formülü düzenle",
+      "rowHeight": "{{row}}. satırın yüksekliği",
+      "verticalAlign": "Dikey hizalama",
+      "verticalAligns": {
+        "top": "Üst",
+        "middle": "Orta",
+        "bottom": "Alt"
+      },
+      "fitHeight": "Yüksekliği metne göre ayarla"
     }
   }
 }

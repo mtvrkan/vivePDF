@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio: tables can be made taller than their text — the top, bottom and corner handles and the height field stretch the rows, inner row borders can be dragged while editing cells, the cells panel has a row height field, a "fit height to the text" button and top/middle/bottom alignment for the text in taller rows [2026-10-09]
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
 ### Fixed

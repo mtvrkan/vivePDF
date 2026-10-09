@@ -9516,7 +9516,15 @@
       "distribute": "Igualar el ancho de todas las columnas",
       "editChart": "Editar datos del gráfico",
       "editFlowchart": "Editar diagrama de flujo",
-      "editFormula": "Editar fórmula"
+      "editFormula": "Editar fórmula",
+      "rowHeight": "Alto de la fila {{row}}",
+      "verticalAlign": "Alineación vertical",
+      "verticalAligns": {
+        "top": "Arriba",
+        "middle": "Centro",
+        "bottom": "Abajo"
+      },
+      "fitHeight": "Ajustar el alto al texto"
     }
   }
 }

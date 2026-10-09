@@ -10370,7 +10370,15 @@
       "distribute": "توحيد عرض كل الأعمدة",
       "editChart": "تحرير بيانات المخطط",
       "editFlowchart": "تحرير المخطط الانسيابي",
-      "editFormula": "تحرير المعادلة"
+      "editFormula": "تحرير المعادلة",
+      "rowHeight": "ارتفاع الصف {{row}}",
+      "verticalAlign": "المحاذاة العمودية",
+      "verticalAligns": {
+        "top": "أعلى",
+        "middle": "وسط",
+        "bottom": "أسفل"
+      },
+      "fitHeight": "ملاءمة الارتفاع للنص"
     }
   }
 }
