@@ -15,16 +15,18 @@ import {
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { readSavedChains } from "@/features/tools/batch/chain";
+import type { Tone } from "@/types";
 
 export const CERTIFICATE_KEY = "vivepdf.certificatePath";
 export const SEARCH_HISTORY_KEY = "vivepdf.searchHistory";
 export const SECTION_GROUPS = [
-  { id: "app", sections: ["appearance", "general", "files", "web"] },
-  { id: "viewing", sections: ["viewer", "reading", "presentation"] },
-  { id: "system", sections: ["tools", "updates", "system", "data", "feedback"] },
-] as const;
+  { id: "app", tone: "organize", sections: ["appearance", "general", "files", "web"] },
+  { id: "viewing", tone: "improve", sections: ["viewer", "reading", "presentation"] },
+  { id: "system", tone: "fromPdf", sections: ["tools", "updates", "system", "data", "feedback"] },
+] as const satisfies readonly { id: string; tone: Tone; sections: readonly string[] }[];
 export type SectionId = (typeof SECTION_GROUPS)[number]["sections"][number];
 export const SECTION_IDS: SectionId[] = SECTION_GROUPS.flatMap((group) => [...group.sections]);
+export const SECTION_TONES = Object.fromEntries(SECTION_GROUPS.flatMap((group) => group.sections.map((id) => [id, group.tone]))) as Record<SectionId, Tone>;
 export const SECTION_ICONS: Record<SectionId, LucideIcon> = {
   appearance: Palette,
   general: Rocket,

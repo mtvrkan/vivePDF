@@ -43,8 +43,8 @@ export function FeedbackSection({ query, onEmptyChange, diagnosticsBusy, setDiag
   };
 
   return (
-    <SectionCard id="feedback" query={query} onEmptyChange={onEmptyChange}>
-      <div className="grid gap-2 py-3 sm:grid-cols-2">
+    <SectionCard id="feedback" query={query} onEmptyChange={onEmptyChange} plain>
+      <div className="grid gap-3 sm:grid-cols-2">
         <ActionCard
           icon={Bug}
           title={t("settings.feedback.reportBug")}

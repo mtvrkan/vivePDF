@@ -14,11 +14,15 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
 ### Changed
+- Settings look cleaner: each section opens with a large coloured heading and its settings sit on one glass card below it, the side menu shows every section in its group colour (blue for the app, green for viewing, violet for system and data) with the chosen one tinted, and the theme pictures are drawn from the real light and dark colours [2026-10-09]
 - Dark theme hovers are calmer: tool cards and next-step chips light up with a muted tint and a fainter coloured border, tool icon tiles glow less, and menu rows and icon buttons no longer flash a bright top edge; the light theme is unchanged [2026-10-09]
 - Dark theme is easier on the eyes: background washes, the sidebar glow, glass edges and the primary button glow are about half as strong, accent colours are less saturated, and text is a soft off-white on a slightly lifted background instead of bright white on near black; every text colour keeps at least 4.5:1 contrast [2026-10-09]
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Studio: template thumbnails appear about two to three times faster — shapes are placed without rescanning the whole page each time and drop shadows are drawn at thumbnail size — and cards scrolled out of view no longer hold up the ones on screen [2026-10-09]
+- The top bar shrinks again when the language changes at a large interface scale, so the window buttons no longer run off the edge in Turkish at 120% [2026-10-09]
+- Home and About cards that combine glass with a tone wash show the wash again instead of plain glass [2026-10-09]
 - Report a bug / Suggest a feature: copying or saving the report now confirms it and shows an error if it fails; the diagnostics name the real OS release and build (for example Windows 11 24H2) instead of repeating "windows", and the language line shows the app and system language instead of "n/a"; the report type buttons tell screen readers which one is chosen [2026-10-09]
 - Studio: contact card QR fields accept spaces between words again, stop before the code grows past what a QR code holds (with a hint when nearly full), and merged row values with commas, semicolons or line breaks no longer break the contact card [2026-10-09]
 - Studio: print-ready PDFs no longer stretch edge pictures into the bleed — the bleed is filled from the picture beyond its crop — and leave outlined or rounded rectangles and circle or rounded pictures at the trim instead of distorting them [2026-10-09]

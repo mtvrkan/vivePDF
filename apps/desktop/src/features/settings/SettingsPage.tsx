@@ -189,8 +189,8 @@ export function SettingsPage() {
               const sections = group.sections.filter(sectionVisible);
               if (sections.length === 0) return null;
               return (
-                <div key={group.id} className="mb-5 last:mb-0">
-                  <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t(`settings.groups.${group.id}`)}</p>
+                <div key={group.id} data-tone={group.tone} className="mb-5 last:mb-0">
+                  <p className="mb-1.5 px-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t(`settings.groups.${group.id}`)}</p>
                   <ul className="space-y-0.5">
                     {sections.map((id) => {
                       const Icon = SECTION_ICONS[id];
@@ -203,12 +203,17 @@ export function SettingsPage() {
                             aria-current={active ? "page" : undefined}
                             onClick={() => selectSection(id)}
                             className={cn(
-                              "flex h-9 w-full items-center gap-2.5 rounded-lg px-3 text-sm transition-[color,background-color,opacity] duration-(--transition-fast)",
-                              active ? "menubar-active font-medium text-foreground" : "text-foreground/80 hover:bg-(--hover-bg) hover:text-foreground",
+                              "flex h-10 w-full items-center gap-3 rounded-xl px-1.5 text-sm transition-[color,background-color,box-shadow,opacity] duration-(--transition-fast)",
+                              active ? "tone-active font-medium text-foreground" : "nav-glass text-foreground/80 hover:text-foreground",
                               dimmed && "opacity-45",
                             )}
                           >
-                            <Icon className={cn("size-4 shrink-0", active ? "text-primary" : "text-muted-foreground")} aria-hidden />
+                            <span
+                              className={cn("flex size-7 shrink-0 items-center justify-center rounded-lg", active ? "tone-tile" : "text-(--tone)")}
+                              style={active ? undefined : { background: "color-mix(in oklab, var(--tone) 13%, transparent)" }}
+                            >
+                              <Icon className="size-3.5" aria-hidden />
+                            </span>
                             <span className="min-w-0 flex-1 truncate text-start">{t(`settings.sections.${id}.title`)}</span>
                           </button>
                         </li>
@@ -219,7 +224,7 @@ export function SettingsPage() {
               );
             })}
           </nav>
-          <div className="min-w-0 space-y-4">
+          <div className="min-w-0 space-y-10">
             {noMatch ? (
               <div className="glass flex flex-col items-center gap-3 rounded-2xl px-6 py-12 text-center">
                 <span className="tone-tile flex size-11 items-center justify-center rounded-xl">

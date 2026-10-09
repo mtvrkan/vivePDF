@@ -129,8 +129,8 @@ export function DataSection({
   };
 
   return (
-    <SectionCard id="data" query={query} onEmptyChange={onEmptyChange}>
-      <div className="grid gap-2 py-3 sm:grid-cols-2">
+    <SectionCard id="data" query={query} onEmptyChange={onEmptyChange} plain>
+      <div className="grid gap-3 sm:grid-cols-2">
         <SettingTile icon={Clock} label={t("settings.recentFiles")} value={t("settings.recentFilesCount", { count: recentCount })} actionLabel={t("settings.clearRecent")} onAction={confirmClear(t("settings.recentFiles"), t("settings.clearRecent"), clearRecent)} disabled={recentCount === 0} />
         <SettingTile icon={History} label={t("settings.history")} value={t("settings.historyCount", { count: historyCount })} actionLabel={t("settings.clearHistory")} onAction={confirmClear(t("settings.history"), t("settings.clearHistory"), clearHistory)} disabled={historyCount === 0} />
         <SettingTile icon={FolderSearch} label={t("settings.searchHistory")} value={t("settings.searchHistoryCount", { count: searchHistoryCount })} actionLabel={t("settings.clearRecent")} onAction={confirmClear(t("settings.searchHistory"), t("settings.clearRecent"), clearSearchHistory)} disabled={searchHistoryCount === 0} />

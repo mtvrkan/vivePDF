@@ -7,7 +7,7 @@ import { ControlLabelContext } from "@/components/tool/fieldDescription";
 import { cn } from "@/shared/lib/cn";
 import { useRovingRadios } from "@/shared/hooks/useRovingRadios";
 import { rowMatches } from "./settingsSearch";
-import { SECTION_ICONS, SettingsSearchContext, type SectionId } from "./settingsShared";
+import { SECTION_ICONS, SECTION_TONES, SettingsSearchContext, type SectionId } from "./settingsShared";
 import type { ThemeMode } from "@/types";
 
 const THEMES: ThemeMode[] = ["light", "dark", "system"];
@@ -30,20 +30,21 @@ export function RangeControl({ value, min, max, step = 1, display, onChange, ari
 }
 
 function ThemePreview({ dark }: { dark: boolean }) {
-  const surface = dark ? "hsl(222 20% 10%)" : "hsl(220 14% 97%)";
-  const bar = dark ? "hsl(222 16% 15%)" : "hsl(0 0% 100%)";
-  const card = dark ? "hsl(222 16% 17%)" : "hsl(0 0% 100%)";
-  const line = dark ? "hsl(0 0% 100% / 0.16)" : "hsl(222 20% 12% / 0.14)";
-  const edge = dark ? "hsl(0 0% 100% / 0.08)" : "hsl(222 20% 12% / 0.08)";
   return (
-    <span aria-hidden className="absolute inset-0" style={{ background: surface }}>
-      <span className="absolute inset-x-0 top-0 h-3.5" style={{ background: bar, boxShadow: `inset 0 -1px 0 ${edge}` }} />
-      <span className="absolute left-2 top-[5px] h-1 w-7 rounded-full" style={{ background: "hsl(202 80% 46%)" }} />
-      <span className="absolute left-11 top-[5px] h-1 w-4 rounded-full" style={{ background: line }} />
-      <span className="absolute inset-x-2 bottom-2 top-5 rounded-md" style={{ background: card, boxShadow: `inset 0 0 0 1px ${edge}` }}>
-        <span className="absolute left-2 top-2 h-1 w-10 rounded-full" style={{ background: line }} />
-        <span className="absolute left-2 top-[18px] h-1 w-14 rounded-full" style={{ background: line }} />
-        <span className="absolute left-2 top-7 h-1 w-8 rounded-full" style={{ background: line }} />
+    <span aria-hidden className={cn("absolute inset-0 bg-background", dark ? "dark" : "theme-light")}>
+      <span className="absolute inset-x-0 top-0 flex h-4 items-center gap-1 border-b border-foreground/10 bg-card px-2">
+        <span className="h-1 w-6 rounded-full bg-primary" />
+        <span className="h-1 w-4 rounded-full bg-foreground/15" />
+      </span>
+      <span className="absolute start-2 top-6 flex flex-col gap-1.5">
+        <span className="h-1 w-5 rounded-full bg-primary/60" />
+        <span className="h-1 w-5 rounded-full bg-foreground/15" />
+        <span className="h-1 w-5 rounded-full bg-foreground/15" />
+      </span>
+      <span className="absolute bottom-2 end-2 start-9 top-6 flex flex-col gap-1.5 rounded-md bg-card p-2 inset-ring inset-ring-foreground/10">
+        <span className="h-1 w-3/4 rounded-full bg-foreground/25" />
+        <span className="h-1 w-full rounded-full bg-foreground/12" />
+        <span className="h-1 w-1/2 rounded-full bg-foreground/12" />
       </span>
     </span>
   );
@@ -69,11 +70,11 @@ export function ThemeCards({ value, onChange, ariaLabel }: { value: ThemeMode; o
             onKeyDown={roving.onKeyDown}
             onClick={() => onChange(mode)}
             className={cn(
-              "w-36 rounded-xl p-1.5 text-start transition-[background-color,box-shadow,transform] duration-(--transition-fast)",
-              selected ? "option-selected" : "nav-glass shadow-[inset_0_0_0_1px_var(--color-border)] hover:-translate-y-px",
+              "w-40 rounded-xl p-1.5 text-start transition-[background-color,box-shadow,transform] duration-(--transition-fast)",
+              selected ? "option-selected" : "nav-glass inset-ring inset-ring-border hover:-translate-y-px",
             )}
           >
-            <span className="relative block h-20 overflow-hidden rounded-lg">
+            <span className="relative block h-24 overflow-hidden rounded-lg inset-ring inset-ring-foreground/10">
               {mode === "system" ? (
                 <>
                   <ThemePreview dark />
@@ -86,7 +87,7 @@ export function ThemeCards({ value, onChange, ariaLabel }: { value: ThemeMode; o
               )}
             </span>
             <span className="mt-2 flex h-5 items-center gap-1.5 px-1 text-sm">
-              <span className={cn("flex size-4 shrink-0 items-center justify-center rounded-full", selected ? "tone-tile" : "shadow-[inset_0_0_0_1.5px_color-mix(in_oklab,var(--color-foreground)_22%,transparent)]")}>
+              <span className={cn("flex size-4 shrink-0 items-center justify-center rounded-full", selected ? "tone-tile" : "inset-ring-2 inset-ring-foreground/20")}>
                 {selected ? <Check className="size-2.5" strokeWidth={3} aria-hidden /> : null}
               </span>
               <span className={cn("truncate", selected ? "font-medium text-foreground" : "text-foreground/80")}>{t(`theme.${mode}`)}</span>
@@ -113,9 +114,9 @@ export function SettingRow({ label, hint, hintTone, hintPulse, detail, children,
   const labelId = useId();
   if (!rowMatches(query, label, hint) && !rowMatches(query, label, detail)) return null;
   return (
-    <div data-setting-row className={cn("border-b py-3 text-sm last:border-b-0", block ? "space-y-3" : "flex min-h-row flex-wrap items-center justify-between gap-x-6 gap-y-2")}>
+    <div data-setting-row className={cn("border-b py-3.5 text-sm last:border-b-0", block ? "space-y-3" : "flex min-h-row flex-wrap items-center justify-between gap-x-6 gap-y-2")}>
       <span className={cn("min-w-0", block ? "block" : "max-w-[34rem] flex-1 basis-56")}>
-        <span id={labelId} className="block text-foreground">{label}</span>
+        <span id={labelId} className="block font-medium text-foreground">{label}</span>
         {hint ? (
           <span className={cn("mt-0.5 flex items-start gap-1.5 text-xs leading-4", hintTone === "destructive" ? "text-destructive" : "text-muted-foreground")}>
             {hintTone ? (
@@ -147,12 +148,12 @@ export function SettingTile({ icon: Icon, label, value, actionLabel, onAction, d
   const query = useContext(SettingsSearchContext);
   if (!rowMatches(query, label, value)) return null;
   return (
-    <div data-setting-row className={cn("glass-flat flex items-center gap-3 rounded-xl border p-3", danger && "border-destructive/40")}>
-      <span className={cn("flex size-9 shrink-0 items-center justify-center rounded-lg", danger ? "bg-destructive/10 text-destructive" : "tone-tile")}>
+    <div data-setting-row className={cn("glass-flat flex items-center gap-3 rounded-2xl border p-3.5 shadow-(--shadow-card)", danger && "border-destructive/40")}>
+      <span className={cn("flex size-10 shrink-0 items-center justify-center rounded-xl", danger ? "bg-destructive/10 text-destructive" : "tone-tile")}>
         <Icon className="size-4" aria-hidden />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm text-foreground">{label}</span>
+        <span className="block truncate text-sm font-medium text-foreground">{label}</span>
         <span className="line-clamp-2 block break-words text-xs leading-4 text-muted-foreground">{value}</span>
       </span>
       <Button size="sm" variant={danger ? "destructive" : "secondary"} onClick={onAction} disabled={disabled} aria-label={`${actionLabel}: ${label}`}>
@@ -178,13 +179,13 @@ export function ActionCard({ icon: Icon, title, description, actionLabel, onClic
       data-setting-row
       onClick={onClick}
       aria-busy={loading || undefined}
-      className="nav-glass group flex items-start gap-3 rounded-xl border p-3 text-start transition-[background-color,transform] duration-(--transition-fast) hover:-translate-y-px"
+      className="glass-flat tone-hover group flex items-start gap-3 rounded-2xl border p-3.5 text-start shadow-(--shadow-card) transition-[background-color,border-color,transform] duration-(--transition-fast) hover:-translate-y-px"
     >
-      <span className="tone-tile flex size-9 shrink-0 items-center justify-center rounded-lg">
+      <span className="tone-tile flex size-10 shrink-0 items-center justify-center rounded-xl">
         {loading ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Icon className="size-4" aria-hidden />}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-sm text-foreground">{title}</span>
+        <span className="block text-sm font-medium text-foreground">{title}</span>
         <span className="mt-0.5 block text-xs leading-4 text-muted-foreground">{description}</span>
       </span>
       <span className="mt-0.5 shrink-0 text-xs font-medium text-primary">{actionLabel}</span>
@@ -221,10 +222,11 @@ function StatusDot({ tone, pulse }: { tone: "success" | "destructive" | "warning
   );
 }
 
-export function SectionCard({ id, query, actions, onEmptyChange, children }: {
+export function SectionCard({ id, query, actions, plain, onEmptyChange, children }: {
   id: SectionId;
   query: string;
   actions?: ReactNode;
+  plain?: boolean;
   onEmptyChange: (id: SectionId, empty: boolean) => void;
   children: ReactNode;
 }) {
@@ -244,19 +246,21 @@ export function SectionCard({ id, query, actions, onEmptyChange, children }: {
 
   useEffect(() => () => onEmptyChange(id, false), [id, onEmptyChange]);
 
+  const rows = <SettingsSearchContext.Provider value={rowQuery}>{children}</SettingsSearchContext.Provider>;
+
   return (
-    <section ref={ref} id={`settings-${id}`} data-settings-section={id} hidden={empty} className="glass scroll-mt-6 rounded-2xl px-5 pb-2 pt-5">
-      <header className="mb-1 flex items-start gap-3 border-b pb-4">
-        <span className="tone-tile flex size-9 shrink-0 items-center justify-center rounded-xl">
-          <Icon className="size-4" aria-hidden />
+    <section ref={ref} id={`settings-${id}`} data-settings-section={id} data-tone={SECTION_TONES[id]} hidden={empty} className="scroll-mt-6">
+      <header className="mb-4 flex items-center gap-4 px-1">
+        <span className="tone-tile flex size-12 shrink-0 items-center justify-center rounded-2xl">
+          <Icon className="size-5" aria-hidden />
         </span>
         <span className="min-w-0 flex-1">
-          <h2 className="text-base font-semibold leading-5">{title}</h2>
+          <h2 className="text-lg font-semibold leading-6 tracking-tight">{title}</h2>
           <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>
         </span>
         {actions ? <span className="flex shrink-0 items-center gap-2">{actions}</span> : null}
       </header>
-      <SettingsSearchContext.Provider value={rowQuery}>{children}</SettingsSearchContext.Provider>
+      {plain ? rows : <div className="glass glass-tinted rounded-2xl px-5 py-1">{rows}</div>}
     </section>
   );
 }

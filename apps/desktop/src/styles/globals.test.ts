@@ -85,6 +85,20 @@ describe("globals.css", () => {
     }
   });
 
+  it("keeps the tone wash on glass cards even though .glass resets the background later in the file", () => {
+    expect(css.indexOf("  .glass {")).toBeGreaterThan(css.indexOf("  .glass-tinted"));
+    expect(css).toMatch(/\.glass\.glass-tinted\s*\{\s*background-image:/);
+  });
+
+  it("lets a light theme preview live inside the dark theme by sharing the root tokens", () => {
+    expect(css).toMatch(/\.theme-light,\s*:root \{/);
+  });
+
+  it("tints the active settings entry with its own group colour", () => {
+    expect(css).toMatch(/\.tone-active \{\s*background: color-mix\(in oklab, var\(--tone\) var\(--tone-active-strength\), transparent\);/);
+    expect(css.match(/--tone-active-[a-z]+:[^;]*var\(--tone\)/)).toBeNull();
+  });
+
   it("paints menus and toolbars that float over pages fully opaque", () => {
     const block = css.slice(css.indexOf("  .glass-menu {"));
     expect(block.slice(0, block.indexOf("}"))).toMatch(/background:\s*var\(--color-card\);/);
