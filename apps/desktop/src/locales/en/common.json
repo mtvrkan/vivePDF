@@ -9536,6 +9536,32 @@
         "bottom": "Bottom"
       },
       "fitHeight": "Fit height to the text"
+    },
+    "finish": {
+      "title": "Print finish",
+      "type": "Finish",
+      "types": {
+        "none": "None",
+        "emboss": "Embossed",
+        "deboss": "Debossed",
+        "letterpress": "Letterpress",
+        "foil": "Foil",
+        "spotUv": "Spot UV gloss"
+      },
+      "foil": "Foil colour",
+      "foils": {
+        "gold": "Gold",
+        "silver": "Silver",
+        "copper": "Copper",
+        "roseGold": "Rose gold",
+        "holographic": "Holographic"
+      },
+      "blind": "Blind (no ink)",
+      "blindHint": "Only the raised or pressed shape shows, in the paper colour.",
+      "depth": "Depth",
+      "softness": "Softness",
+      "light": "Light direction",
+      "hint": "The look is simulated on screen and in the PDF; the print export can add a separate plate for the printer."
     }
   }
 }

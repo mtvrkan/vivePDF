@@ -138,7 +138,7 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
                 corner={corner}
                 renderElement={(element) =>
                   element.id === editingId && element.kind === "text" ? (
-                    <ElementView key={element.id} element={{ ...element, flipX: false, flipY: false }} language={language}>
+                    <ElementView key={element.id} element={{ ...element, flipX: false, flipY: false, finish: undefined }} language={language}>
                       <TextEditor element={element} language={language} />
                     </ElementView>
                   ) : element.id === editingId && graphicOf(element)?.kind === "table" ? (

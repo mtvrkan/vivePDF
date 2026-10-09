@@ -9535,6 +9535,32 @@
         "bottom": "Bas"
       },
       "fitHeight": "Ajuster la hauteur au texte"
+    },
+    "finish": {
+      "title": "Finition d’impression",
+      "type": "Finition",
+      "types": {
+        "none": "Aucune",
+        "emboss": "Gaufrage",
+        "deboss": "Embossage en creux",
+        "letterpress": "Letterpress",
+        "foil": "Dorure à chaud",
+        "spotUv": "Vernis sélectif"
+      },
+      "foil": "Couleur de dorure",
+      "foils": {
+        "gold": "Or",
+        "silver": "Argent",
+        "copper": "Cuivre",
+        "roseGold": "Or rose",
+        "holographic": "Holographique"
+      },
+      "blind": "À sec (sans encre)",
+      "blindHint": "Seule la forme en relief ou en creux apparaît, couleur papier.",
+      "depth": "Profondeur",
+      "softness": "Douceur",
+      "light": "Direction de la lumière",
+      "hint": "L’effet est simulé à l’écran et dans le PDF ; l’export pour l’imprimeur peut ajouter une forme séparée."
     }
   }
 }

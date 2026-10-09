@@ -9536,6 +9536,32 @@
         "bottom": "Alt"
       },
       "fitHeight": "Yüksekliği metne göre ayarla"
+    },
+    "finish": {
+      "title": "Baskı efekti",
+      "type": "Efekt",
+      "types": {
+        "none": "Yok",
+        "emboss": "Kabartma",
+        "deboss": "Gömme",
+        "letterpress": "Letterpress",
+        "foil": "Varak",
+        "spotUv": "Lak (spot UV)"
+      },
+      "foil": "Varak rengi",
+      "foils": {
+        "gold": "Altın",
+        "silver": "Gümüş",
+        "copper": "Bakır",
+        "roseGold": "Rose gold",
+        "holographic": "Holografik"
+      },
+      "blind": "Mürekkepsiz (kör)",
+      "blindHint": "Yalnızca kabaran ya da gömülen biçim, kâğıt renginde görünür.",
+      "depth": "Derinlik",
+      "softness": "Yumuşaklık",
+      "light": "Işık yönü",
+      "hint": "Görünüm ekranda ve PDF'te canlandırılır; baskı çıktısı matbaa için ayrı bir kalıp katmanı ekleyebilir."
     }
   }
 }

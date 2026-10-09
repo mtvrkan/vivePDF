@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio: a Print finish section gives any element an embossed, debossed, letterpress, foil (gold, silver, copper, rose gold, holographic) or spot UV gloss look with depth, softness and light direction; blind emboss and deboss show only the pressed shape in the paper colour. The canvas previews it; PDF output follows in the next step [2026-10-09]
 - Studio: a Business cards section on the start page creates a card with front and back sides in 85 × 55, 90 × 50, US 3.5 × 2 in, square or mini size, and the page panel sets rounded corners that the canvas previews [2026-10-09]
 - Studio: tables can be made taller than their text — the top, bottom and corner handles and the height field stretch the rows, inner row borders can be dragged while editing cells, the cells panel has a row height field, a "fit height to the text" button and top/middle/bottom alignment for the text in taller rows [2026-10-09]
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]

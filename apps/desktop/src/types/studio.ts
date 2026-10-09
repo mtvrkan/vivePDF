@@ -39,6 +39,7 @@ export type StudioElementBase = {
   flipX?: boolean;
   flipY?: boolean;
   lockRatio?: boolean;
+  finish?: StudioFinish;
 };
 
 export type StudioTextRun = {
@@ -124,6 +125,16 @@ export const STUDIO_SHAPES = [
 export type StudioShapeKind = (typeof STUDIO_SHAPES)[number];
 
 export type StudioDropShadow = { color: string; opacity: number; x: number; y: number; blur: number };
+
+export const STUDIO_FINISHES = ["emboss", "deboss", "letterpress", "foil", "spotUv"] as const;
+
+export type StudioFinishType = (typeof STUDIO_FINISHES)[number];
+
+export const STUDIO_FOILS = ["gold", "silver", "copper", "roseGold", "holographic"] as const;
+
+export type StudioFoil = (typeof STUDIO_FOILS)[number];
+
+export type StudioFinish = { type: StudioFinishType; depth: number; softness: number; angle: number; blind: boolean; foil: StudioFoil };
 
 export type StudioShadowable = { dropShadow: StudioDropShadow | null };
 

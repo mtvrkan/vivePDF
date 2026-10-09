@@ -9535,6 +9535,32 @@
         "bottom": "Inferior"
       },
       "fitHeight": "Ajustar a altura ao texto"
+    },
+    "finish": {
+      "title": "Acabamento de impressão",
+      "type": "Acabamento",
+      "types": {
+        "none": "Nenhum",
+        "emboss": "Relevo",
+        "deboss": "Baixo-relevo",
+        "letterpress": "Letterpress",
+        "foil": "Hot stamping",
+        "spotUv": "Verniz UV localizado"
+      },
+      "foil": "Cor do hot stamping",
+      "foils": {
+        "gold": "Ouro",
+        "silver": "Prata",
+        "copper": "Cobre",
+        "roseGold": "Ouro rosé",
+        "holographic": "Holográfico"
+      },
+      "blind": "Seco (sem tinta)",
+      "blindHint": "Só a forma em relevo ou rebaixada aparece, na cor do papel.",
+      "depth": "Profundidade",
+      "softness": "Suavidade",
+      "light": "Direção da luz",
+      "hint": "O efeito é simulado na tela e no PDF; a exportação para impressão pode adicionar uma chapa separada."
     }
   }
 }

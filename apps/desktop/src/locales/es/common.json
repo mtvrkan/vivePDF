@@ -9535,6 +9535,32 @@
         "bottom": "Abajo"
       },
       "fitHeight": "Ajustar el alto al texto"
+    },
+    "finish": {
+      "title": "Acabado de impresión",
+      "type": "Acabado",
+      "types": {
+        "none": "Ninguno",
+        "emboss": "Relieve",
+        "deboss": "Bajorrelieve",
+        "letterpress": "Letterpress",
+        "foil": "Estampado metálico",
+        "spotUv": "Barniz UV selectivo"
+      },
+      "foil": "Color del metalizado",
+      "foils": {
+        "gold": "Oro",
+        "silver": "Plata",
+        "copper": "Cobre",
+        "roseGold": "Oro rosa",
+        "holographic": "Holográfico"
+      },
+      "blind": "En seco (sin tinta)",
+      "blindHint": "Solo se ve la forma en relieve o hundida, del color del papel.",
+      "depth": "Profundidad",
+      "softness": "Suavidad",
+      "light": "Dirección de la luz",
+      "hint": "El aspecto se simula en pantalla y en el PDF; la exportación para imprenta puede añadir una plancha aparte."
     }
   }
 }

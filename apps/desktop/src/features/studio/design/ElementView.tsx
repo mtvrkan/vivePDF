@@ -4,12 +4,14 @@ import type { StudioElement, StudioImageElement, StudioPage, StudioQrElement, St
 import { usePreviewValues } from "../merge/mergeStore";
 import { fillPlaceholders, textDirection } from "../model/design";
 import { onlyPositionDiffers } from "../model/edit";
+import { finishRecipe } from "../model/finish";
 import { elementItems } from "../model/render";
 import { flipTransform } from "../model/flip";
 import { renderFill, roundedRect } from "../model/shapes";
 import { recolorSvg } from "../model/svgColors";
 import { qrPath, useImagePreview, useQrModules } from "./assets";
 import { dropShadowFilter } from "./dropShadow";
+import { FinishFilter } from "./FinishFilter";
 import { elementFaceSignature, ensureElementFonts, useStudioFontsStore } from "./fonts";
 import { useImageFilter } from "./imageFilter";
 import { placeImage } from "./imageLayout";
@@ -196,7 +198,9 @@ function useContentElement(element: StudioElement): StudioElement {
   return held.current;
 }
 
-function elementFrameStyle(element: StudioElement): React.CSSProperties {
+function elementFrameStyle(element: StudioElement, finishId: string | null): React.CSSProperties {
+  const shadow = dropShadowFilter(element);
+  const finish = finishId ? `url(#${finishId})` : undefined;
   return {
     position: "absolute",
     left: `${element.x}px`,
@@ -205,14 +209,17 @@ function elementFrameStyle(element: StudioElement): React.CSSProperties {
     height: `${element.height}px`,
     transform: flipTransform(element),
     opacity: element.opacity < 1 ? element.opacity : undefined,
-    filter: dropShadowFilter(element),
+    filter: [finish, shadow].filter(Boolean).join(" ") || undefined,
   };
 }
 
 export const ElementView = memo(function ElementView({ element, language, children }: { element: StudioElement; language: string; children?: ReactNode }) {
   const content = useContentElement(element);
+  const finishId = `finish-${useId().replace(/:/g, "")}`;
+  const recipe = useMemo(() => (element.finish ? finishRecipe(element.finish, element) : null), [element]);
   return (
-    <div data-element-id={element.id} style={elementFrameStyle(element)}>
+    <div data-element-id={element.id} data-finish={element.finish?.type} style={elementFrameStyle(element, recipe ? finishId : null)}>
+      {recipe ? <FinishFilter id={finishId} recipe={recipe} width={element.width} height={element.height} /> : null}
       {children ?? <ElementContent element={content} language={language} />}
     </div>
   );

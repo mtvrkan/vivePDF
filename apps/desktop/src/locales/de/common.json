@@ -9534,6 +9534,32 @@
         "bottom": "Unten"
       },
       "fitHeight": "Höhe an den Text anpassen"
+    },
+    "finish": {
+      "title": "Druckveredelung",
+      "type": "Veredelung",
+      "types": {
+        "none": "Keine",
+        "emboss": "Prägung (erhaben)",
+        "deboss": "Prägung (vertieft)",
+        "letterpress": "Letterpress",
+        "foil": "Folie",
+        "spotUv": "Partieller UV-Lack"
+      },
+      "foil": "Folienfarbe",
+      "foils": {
+        "gold": "Gold",
+        "silver": "Silber",
+        "copper": "Kupfer",
+        "roseGold": "Roségold",
+        "holographic": "Holografisch"
+      },
+      "blind": "Blindprägung (ohne Farbe)",
+      "blindHint": "Nur die erhabene oder vertiefte Form ist sichtbar, in Papierfarbe.",
+      "depth": "Tiefe",
+      "softness": "Weichheit",
+      "light": "Lichtrichtung",
+      "hint": "Der Effekt wird am Bildschirm und im PDF nachgebildet; der Druckexport kann eine eigene Form für die Druckerei hinzufügen."
     }
   }
 }

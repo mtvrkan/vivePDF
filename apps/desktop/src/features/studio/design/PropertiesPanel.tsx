@@ -9,6 +9,7 @@ import { ImageFiltersSection } from "./ImageFiltersSection";
 import { ImageSection } from "./ImageSection";
 import { PageProperties } from "./PageSection";
 import { QrSection } from "./QrSection";
+import { FinishSection } from "./FinishSection";
 import { StyleSections } from "./StyleSections";
 import { currentPage, selectedElements, useStudioStore } from "./studioStore";
 import { TextSection } from "./TextSection";
@@ -35,6 +36,7 @@ const DetailSections = memo(function DetailSections({ elements }: { elements: St
       {single?.kind === "qr" ? <QrSection element={single} /> : null}
       {single?.kind === "svg" ? <GraphicSection element={single} /> : null}
       {elements.length ? <StyleSections elements={elements} /> : null}
+      {elements.length ? <FinishSection elements={elements} /> : null}
     </>
   );
 });

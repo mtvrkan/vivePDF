@@ -9535,6 +9535,32 @@
         "bottom": "In basso"
       },
       "fitHeight": "Adatta l’altezza al testo"
+    },
+    "finish": {
+      "title": "Finitura di stampa",
+      "type": "Finitura",
+      "types": {
+        "none": "Nessuna",
+        "emboss": "Rilievo",
+        "deboss": "Incisione",
+        "letterpress": "Letterpress",
+        "foil": "Lamina a caldo",
+        "spotUv": "Vernice UV selettiva"
+      },
+      "foil": "Colore lamina",
+      "foils": {
+        "gold": "Oro",
+        "silver": "Argento",
+        "copper": "Rame",
+        "roseGold": "Oro rosa",
+        "holographic": "Olografico"
+      },
+      "blind": "A secco (senza inchiostro)",
+      "blindHint": "Si vede solo la forma in rilievo o incisa, del colore della carta.",
+      "depth": "Profondità",
+      "softness": "Morbidezza",
+      "light": "Direzione della luce",
+      "hint": "L’effetto è simulato a schermo e nel PDF; l’esportazione per la stampa può aggiungere una lastra separata."
     }
   }
 }

@@ -36,6 +36,7 @@ import {
   type StudioVectorElement,
   type StudioVectorPath,
 } from "@/types/studio";
+import { normalizeFinish } from "./finish";
 import { normalizeFilters } from "./imageFilters";
 import { fitParagraphs, MAX_LIST_LEVEL, paragraphCount } from "./typography";
 import { graphicTexts } from "../graphics/graphicData";
@@ -401,6 +402,8 @@ export function normalizeElement(value: unknown): StudioElement | null {
     ...(raw.flipY === true ? { flipY: true } : {}),
     ...(typeof raw.lockRatio === "boolean" ? { lockRatio: raw.lockRatio } : {}),
   };
+  const finish = normalizeFinish(raw.finish);
+  if (finish) shared.finish = finish;
   switch (raw.kind) {
     case "text": {
       const runs = normalizeRuns(raw.runs);
