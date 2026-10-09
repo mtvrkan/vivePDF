@@ -1,3 +1,5 @@
+import { LOCALE_CODES } from "@/app/locales";
+
 export type MonthYear = { month: number | null; year: number };
 
 const MIN_YEAR = 1900;
@@ -44,7 +46,7 @@ export function parseMonthYear(text: string, language: string): MonthYear | null
   const year = Number(named[2]);
   if (!validYear(year)) return null;
   const word = plain(named[1]);
-  for (const candidate of [language, "en"]) {
+  for (const candidate of new Set([language, "en", ...LOCALE_CODES])) {
     for (const style of ["short", "long"] as const) {
       const index = monthNames(candidate, style).findIndex((name) => plain(name) === word);
       if (index >= 0) return { month: index + 1, year };
@@ -56,4 +58,9 @@ export function parseMonthYear(text: string, language: string): MonthYear | null
 export function formatMonthYear(value: MonthYear, language: string): string {
   if (value.month === null) return String(value.year);
   return `${monthNames(language, "short")[value.month - 1]} ${value.year}`;
+}
+
+export function localizeMonthYear(text: string, language: string): string {
+  const parsed = parseMonthYear(text, language);
+  return parsed ? formatMonthYear(parsed, language) : text.trim();
 }

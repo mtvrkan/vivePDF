@@ -1732,7 +1732,7 @@ export type CvImportedProfile = {
   contacts: Array<{ kind: CvContactKind; value: string }>;
   summary: string;
   experience: Array<{ role: string; organisation: string; location: string; start: string; end: string; current: boolean; details: string }>;
-  education: Array<{ degree: string; school: string; location: string; start: string; end: string; details: string }>;
+  education: Array<{ degree: string; school: string; location: string; start: string; end: string; current: boolean; details: string }>;
   skills: Array<{ name: string; level: number }>;
   languages: Array<{ name: string; level: number }>;
   certificates: Array<{ name: string; issuer: string; date: string }>;

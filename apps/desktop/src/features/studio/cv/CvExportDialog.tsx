@@ -24,19 +24,25 @@ export function CvExportDialog({ open, onClose, design, language }: { open: bool
   const { t } = useTranslation();
   const [format, setFormat] = useState<StudioExportFormat>("pdf");
   const [output, setOutput] = useState("");
+  const [chosen, setChosen] = useState(false);
   const operation = useOperation((params: ExportParams, options?: RpcCallOptions) => exportDesign(params, options, design ?? undefined));
   const name = design?.name ?? "";
 
+  const { reset } = operation;
   useEffect(() => {
-    if (!open) return;
+    if (open) reset();
+  }, [open, reset]);
+
+  useEffect(() => {
+    if (!open || chosen) return;
     let live = true;
     void defaultOutputDirectory().then((directory) => {
-      if (live) setOutput((current) => current || joinPath(directory, `${sanitizeFileName(name.trim()) || t("studio.cv.untitled")}.pdf`));
+      if (live) setOutput(joinPath(directory, `${sanitizeFileName(name.trim()) || t("studio.cv.untitled")}.${format}`));
     });
     return () => {
       live = false;
     };
-  }, [open, name, t]);
+  }, [open, chosen, name, format, t]);
 
   const changeFormat = (next: StudioExportFormat) => {
     setFormat(next);
@@ -65,7 +71,15 @@ export function CvExportDialog({ open, onClose, design, language }: { open: bool
     >
       <div className="space-y-4">
         <Segmented value={format} options={FORMATS} labelOf={(value) => t(`studio.export.formats.${value}`)} onChange={changeFormat} ariaLabel={t("studio.export.format")} />
-        <OutputPathField value={output} onChange={setOutput} extension={format} disabled={operation.running} />
+        <OutputPathField
+          value={output}
+          onChange={(next) => {
+            setChosen(true);
+            setOutput(next);
+          }}
+          extension={format}
+          disabled={operation.running}
+        />
         <ResultPanel
           status={operation.status}
           progress={operation.progress}

@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
+import type { StudioElement, StudioTextElement } from "@/types/studio";
+import type { Locale } from "@/types";
 import { textOf } from "../model/design";
+import { formatMonthYear } from "./cvDates";
 import { composeCvReport, MAX_CV_PAGES } from "./cvLayout";
 import { specOf } from "./cvDesigns";
 import { CV_LAYOUT_IDS, cvId, defaultTheme, emptyExperience, emptyProfile, type CvLayoutId, type CvProfile } from "./cvModel";
@@ -48,6 +51,56 @@ describe("cv pagination", () => {
 
     expect(design.pages.length).toBeGreaterThan(1);
     expect(overflow.items).toBe(0);
+  });
+
+  it("carries a long summary and custom section over to the next page word by word", () => {
+    const words = Array.from({ length: 1400 }, (_, index) => `word${index}`).join(" ");
+    const profile = { ...emptyProfile(), name: "Alex", summary: words, custom: [{ id: cvId(), heading: "Notes", body: bullets(90, "Note") }] };
+
+    const { design, overflow } = compose(profile);
+    const everything = design.pages.map((_, page) => allText(design, page)).join("\n");
+
+    expect(design.pages.length).toBeGreaterThan(1);
+    expect(overflow.items).toBe(0);
+    expect(everything).toContain("word0 ");
+    expect(everything).toContain("word1399");
+    expect(everything).toContain("Note achievement number 90 ");
+  });
+
+  it("counts a block taller than a whole page as left out instead of drawing it past the edge", () => {
+    const tall = Array.from({ length: 400 }, () => "x").join("\n");
+    const profile = { ...emptyProfile(), name: "Alex", certificates: [{ id: cvId(), name: tall, issuer: "", date: "" }] };
+
+    const { design, overflow } = compose(profile);
+
+    expect(overflow.sections).toContain("certificates");
+    for (const page of design.pages) for (const element of page.elements) expect(element.y + Math.min(element.height, 1)).toBeLessThanOrEqual(page.height);
+  });
+
+  it("writes entry dates in the CV language whichever language they were typed in", () => {
+    const profile = { ...emptyProfile(), name: "Alex", experience: [{ ...emptyExperience(), role: "Role", start: "Mart 2021", end: "October 2023" }] };
+    const theme = { ...defaultTheme("de"), layout: "minimal" as const };
+
+    const { design } = composeCvReport(specOf("minimal"), { profile, theme, labels: cvLabels(t), measure: estimateMeasure, emptyPhoto: false, name: "CV" });
+
+    expect(allText(design, 0)).toContain(`${formatMonthYear({ month: 3, year: 2021 }, "de")} – ${formatMonthYear({ month: 10, year: 2023 }, "de")}`);
+    expect(allText(design, 0)).not.toContain("Mart");
+  });
+
+  it("mirrors the page for a right-to-left CV language", () => {
+    const profile = { ...emptyProfile(), name: "Alex", experience: [{ ...emptyExperience(), role: "Role", start: "March 2021", end: "" }] };
+    const input = (language: Locale) => ({ profile, theme: { ...defaultTheme(language), layout: "minimal" as const }, labels: cvLabels(t), measure: estimateMeasure, emptyPhoto: false, name: "CV" });
+    const named = (elements: StudioElement[]) => elements.find((element): element is StudioTextElement => element.kind === "text" && textOf(element.runs) === "Alex");
+
+    const ltr = composeCvReport(specOf("minimal"), input("en")).design.pages[0];
+    const rtl = composeCvReport(specOf("minimal"), input("ar")).design.pages[0];
+    const left = named(ltr.elements);
+    const right = named(rtl.elements);
+
+    expect(left?.align).toBe("left");
+    expect(right?.align).toBe("right");
+    expect(right && left && right.x + right.width).toBeCloseTo(ltr.width - (left?.x ?? 0), 3);
+    for (const element of rtl.elements) expect(element.x + element.width).toBeLessThanOrEqual(rtl.width + 0.5);
   });
 
   it("reports what was left out past the page limit", () => {

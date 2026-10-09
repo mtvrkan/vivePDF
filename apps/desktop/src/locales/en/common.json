@@ -9186,7 +9186,10 @@
       "saveFailed": "Your CV couldn't be saved on this computer; keep the app open or save a CV file.",
       "previewStale": "The preview is out of date because it couldn't be redrawn.",
       "overflow": "Content didn't fit — items left out: {{count}}",
-      "pagesHint": "Most CVs are one or two pages long."
+      "pagesHint": "Most CVs are one or two pages long.",
+      "emptyTitle": "Your CV is empty",
+      "emptyDescription": "Fill in the form on the left, start from the sample or bring in an existing CV from a PDF.",
+      "photoMissing": "The photo file can't be found. Choose it again."
     },
     "shortcuts": {
       "title": "Keyboard shortcuts",

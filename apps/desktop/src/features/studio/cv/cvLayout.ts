@@ -1,6 +1,8 @@
+import { localeDirection } from "@/app/locales";
 import type { StudioDesign, StudioElement, StudioTextAlign, StudioTextElement } from "@/types/studio";
 import { createImage, STUDIO_PAGE_SIZES } from "../model/design";
 import { box, design, pageOf, photoSlot, rule, solid, text } from "../templates/kit";
+import { localizeMonthYear } from "./cvDates";
 import { contactIcon } from "./cvIcons";
 import { sectionVisible, type CvContactKind, type CvDensity, type CvLayoutId, type CvPhotoShape, type CvProfile, type CvSectionKey, type CvSkillStyle, type CvTheme } from "./cvModel";
 
@@ -193,9 +195,9 @@ function details(value: string): string {
     .join("\n");
 }
 
-function period(start: string, end: string, current: boolean, present: string): string {
-  const finish = current ? present : end.trim();
-  const begin = start.trim();
+function period(start: string, end: string, current: boolean, present: string, language: string): string {
+  const finish = current ? present : localizeMonthYear(end, language);
+  const begin = localizeMonthYear(start, language);
   if (begin && finish) return `${begin} – ${finish}`;
   return begin || finish;
 }
@@ -225,6 +227,32 @@ function textBlock(context: CvContext, width: number, value: string, style: Text
   if (!value.trim()) return null;
   const height = context.textHeight(width, value, style);
   return { height, draw: (x, y, columnWidth) => [context.text(x, y, columnWidth, value, style)] };
+}
+
+function flowingText(context: CvContext, width: number, value: string, style: TextStyle): Block | null {
+  const whole = textBlock(context, width, value, style);
+  if (!whole) return null;
+  const words = value.split(/(?<=\s)/u);
+  const head = (count: number) => textBlock(context, width, words.slice(0, count).join("").trimEnd(), style);
+  return {
+    ...whole,
+    split: (available) => {
+      let low = 1;
+      let high = words.length - 1;
+      let best = 0;
+      while (low <= high) {
+        const middle = (low + high) >> 1;
+        const block = head(middle);
+        if (block && block.height <= available) {
+          best = middle;
+          low = middle + 1;
+        } else high = middle - 1;
+      }
+      const first = best ? head(best) : null;
+      const rest = best ? flowingText(context, width, words.slice(best).join("").trimStart(), style) : null;
+      return first && rest ? [first, rest] : null;
+    },
+  };
 }
 
 export function titleBlock(context: CvContext, tone: Tone, style: TitleStyle, label: string, width: number): Block {
@@ -480,14 +508,14 @@ function sectionsFor(context: CvContext, spec: CvSpec, tone: Tone, width: number
   };
   for (const key of keys) {
     if (key === "contact") add(key, contactBlocks(context, tone, width));
-    else if (key === "summary") add(key, [textBlock(context, width, profile.summary, paragraph)]);
+    else if (key === "summary") add(key, [flowingText(context, width, profile.summary, paragraph)]);
     else if (key === "experience")
       add(
         key,
-        profile.experience.map((item) => entryBlock(context, tone, entry, width, { title: item.role, subtitle: join([item.organisation, item.location]), date: period(item.start, item.end, item.current, labels.present), body: details(item.details) })),
+        profile.experience.map((item) => entryBlock(context, tone, entry, width, { title: item.role, subtitle: join([item.organisation, item.location]), date: period(item.start, item.end, item.current, labels.present, context.theme.language), body: details(item.details) })),
       );
     else if (key === "education")
-      add(key, profile.education.map((item) => entryBlock(context, tone, entry, width, { title: item.degree, subtitle: join([item.school, item.location]), date: period(item.start, item.end, item.current, labels.present), body: details(item.details) })));
+      add(key, profile.education.map((item) => entryBlock(context, tone, entry, width, { title: item.degree, subtitle: join([item.school, item.location]), date: period(item.start, item.end, item.current, labels.present, context.theme.language), body: details(item.details) })));
     else if (key === "skills") {
       const skills = profile.skills.filter((item) => item.name.trim());
       if (style === "chips") add(key, [chipsBlock(context, tone, width, skills.map((item) => item.name))]);
@@ -510,7 +538,12 @@ function sectionsFor(context: CvContext, spec: CvSpec, tone: Tone, width: number
         key,
         profile.projects.map((item) =>
           item.name.trim() || item.details.trim()
-            ? stack([textBlock(context, width, item.name, { font: context.fonts.heading, size: context.size(10), bold: true, color: colors.text }), textBlock(context, width, item.link, { size: context.size(8.5), color: colors.accent }), textBlock(context, width, details(item.details), paragraph)], 2)
+            ? splittable(
+                (body, first) =>
+                  stack([first ? textBlock(context, width, item.name, { font: context.fonts.heading, size: context.size(10), bold: true, color: colors.text }) : null, first ? textBlock(context, width, item.link, { size: context.size(8.5), color: colors.accent }) : null, textBlock(context, width, body, paragraph)], 2),
+                bodyLines(details(item.details)),
+                true,
+              )
             : null,
         ),
       );
@@ -523,11 +556,11 @@ function sectionsFor(context: CvContext, spec: CvSpec, tone: Tone, width: number
       );
     else if (key === "interests") {
       const interests = profile.interests.split(/[,;\n]/).map((item) => item.trim()).filter(Boolean);
-      add(key, [style === "chips" ? chipsBlock(context, tone, width, interests) : textBlock(context, width, interests.join(", "), paragraph)]);
+      add(key, [style === "chips" ? chipsBlock(context, tone, width, interests) : flowingText(context, width, interests.join(", "), paragraph)]);
     } else if (key === "custom") {
       for (const item of profile.custom) {
         if (!item.heading.trim() && !item.body.trim()) continue;
-        add(key, [textBlock(context, width, details(item.body), paragraph)], item.heading.trim() || labels.sections.custom);
+        add(key, [flowingText(context, width, details(item.body), paragraph)], item.heading.trim() || labels.sections.custom);
       }
     }
   }
@@ -580,6 +613,7 @@ class Flow {
         if (!this.nextPage(tone)) return false;
         return this.place(tone, block, keep);
       }
+      if (block.height > column.bottom - column.top) return false;
     }
     this.pages[cursor.page].push(...block.draw(column.x, cursor.y, column.width));
     cursor.y += block.height;
@@ -603,6 +637,18 @@ class Flow {
   width(tone: Tone): number {
     return this.column(tone, 0)?.width ?? 0;
   }
+}
+
+const MIRRORED_ALIGN: Partial<Record<StudioTextAlign, StudioTextAlign>> = { left: "right", right: "left" };
+
+function mirrored(element: StudioElement, pageWidth: number): StudioElement {
+  const placed = { ...element, x: pageWidth - element.x - element.width, rotation: element.rotation ? -element.rotation : 0 };
+  if (placed.kind === "text") return { ...placed, align: MIRRORED_ALIGN[placed.align] ?? placed.align };
+  if (placed.kind === "shape" && placed.corners) {
+    const [topLeft, topRight, bottomRight, bottomLeft] = placed.corners;
+    return { ...placed, corners: [topRight, topLeft, bottomLeft, bottomRight] };
+  }
+  return placed;
 }
 
 function keepWithTitle(block: Block | undefined, column: number): number {
@@ -650,7 +696,8 @@ export function composeCvReport(spec: CvSpec, input: CvInput): CvComposed {
       flow.advance(tone, sectionGap);
     }
   }
-  const pages = flow.pages.map((elements) => pageOf({ width: context.width, height: context.height }, solid(context.palette.page), elements));
+  const rtl = localeDirection(context.theme.language) === "rtl";
+  const pages = flow.pages.map((elements) => pageOf({ width: context.width, height: context.height }, solid(context.palette.page), rtl ? elements.map((element) => mirrored(element, context.width)) : elements));
   return { design: design(input.name, [context.palette.accent, context.palette.text], pages), overflow };
 }
 

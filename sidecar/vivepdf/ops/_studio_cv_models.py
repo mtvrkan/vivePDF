@@ -47,6 +47,7 @@ class CvEducation(RpcModel):
     location: str = ""
     start: str = ""
     end: str = ""
+    current: bool = False
     details: str = ""
 
 

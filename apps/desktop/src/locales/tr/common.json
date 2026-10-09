@@ -9186,7 +9186,10 @@
       "saveFailed": "CV'niz bu bilgisayara kaydedilemedi; uygulamayı açık tutun ya da bir CV dosyası kaydedin.",
       "previewStale": "Önizleme yeniden çizilemediği için güncel değil.",
       "overflow": "İçerik sığmadı — dışarıda kalan öğe: {{count}}",
-      "pagesHint": "CV'lerin çoğu bir ya da iki sayfadır."
+      "pagesHint": "CV'lerin çoğu bir ya da iki sayfadır.",
+      "emptyTitle": "CV'niz henüz boş",
+      "emptyDescription": "Soldaki formu doldurun, örnekle başlayın ya da mevcut bir CV'yi PDF'ten içe aktarın.",
+      "photoMissing": "Fotoğraf dosyası bulunamadı. Yeniden seçin."
     },
     "shortcuts": {
       "title": "Klavye kısayolları",

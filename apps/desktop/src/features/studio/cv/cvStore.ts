@@ -87,6 +87,7 @@ export const useCvStore = create<CvStore>((set, get) => {
     },
     updateTheme: (patch, merge) => {
       const state = get();
+      if ((Object.keys(patch) as Array<keyof CvTheme>).every((key) => patch[key] === state.theme[key])) return;
       commit({ profile: state.profile, theme: { ...state.theme, ...patch } }, merge);
     },
     replace: (next) => {

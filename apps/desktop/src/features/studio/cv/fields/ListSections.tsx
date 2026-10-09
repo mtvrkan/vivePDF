@@ -41,12 +41,12 @@ function LeveledRow({ listKey, item, index, total, levels, dragging, target, onG
     event.preventDefault();
     const empty = !item.name.trim();
     const [first, ...rest] = pieces;
-    if (empty) patchItem(listKey, item.id, { name: first.slice(0, 120) }, false);
     addItems(
       listKey,
       (empty ? rest : pieces).map((piece) => ({ ...emptyLeveled(DEFAULT_LEVEL[listKey]), name: piece.slice(0, 120) })),
       item.id,
       false,
+      empty ? { name: first.slice(0, 120) } : undefined,
     );
   };
 

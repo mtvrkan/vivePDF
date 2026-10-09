@@ -9184,7 +9184,10 @@
       "saveFailed": "Dein Lebenslauf konnte auf diesem Computer nicht gespeichert werden; lass die App geöffnet oder speichere eine Lebenslauf-Datei.",
       "previewStale": "Die Vorschau ist veraltet, weil sie nicht neu gezeichnet werden konnte.",
       "overflow": "Inhalt passte nicht – ausgelassene Einträge: {{count}}",
-      "pagesHint": "Die meisten Lebensläufe sind ein bis zwei Seiten lang."
+      "pagesHint": "Die meisten Lebensläufe sind ein bis zwei Seiten lang.",
+      "emptyTitle": "Ihr Lebenslauf ist leer",
+      "emptyDescription": "Füllen Sie das Formular links aus, beginnen Sie mit dem Beispiel oder übernehmen Sie einen vorhandenen Lebenslauf aus einer PDF.",
+      "photoMissing": "Die Fotodatei wurde nicht gefunden. Wählen Sie sie erneut aus."
     },
     "shortcuts": {
       "title": "Tastenkombinationen",

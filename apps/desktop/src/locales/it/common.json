@@ -9184,7 +9184,10 @@
       "saveFailed": "Non è stato possibile salvare il CV su questo computer; tieni aperta l’app o salva un file CV.",
       "previewStale": "L’anteprima non è aggiornata perché non è stato possibile ridisegnarla.",
       "overflow": "Il contenuto non ci sta: elementi esclusi: {{count}}",
-      "pagesHint": "La maggior parte dei CV è lunga una o due pagine."
+      "pagesHint": "La maggior parte dei CV è lunga una o due pagine.",
+      "emptyTitle": "Il tuo CV è vuoto",
+      "emptyDescription": "Compila il modulo a sinistra, parti dall'esempio o importa un CV esistente da un PDF.",
+      "photoMissing": "Il file della foto non è stato trovato. Sceglilo di nuovo."
     },
     "shortcuts": {
       "title": "Scorciatoie da tastiera",

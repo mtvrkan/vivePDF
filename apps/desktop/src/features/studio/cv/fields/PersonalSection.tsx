@@ -61,7 +61,13 @@ function PhotoField() {
         {ready ? <img src={ready.url} alt="" width={64} height={64} className={shownCrop ? undefined : "size-full object-cover"} style={thumbStyle} /> : <ImagePlus className="size-5 text-muted-foreground" aria-hidden />}
       </span>
       <div className="min-w-0 flex-1 space-y-1.5">
-        <p className="truncate text-sm font-medium">{photo ? t("studio.cv.photoReady") : t("studio.cv.noPhoto")}</p>
+        {preview?.status === "error" ? (
+          <p className="text-sm font-medium text-warning" role="status">
+            {t("studio.cv.photoMissing")}
+          </p>
+        ) : (
+          <p className="truncate text-sm font-medium">{photo ? t("studio.cv.photoReady") : t("studio.cv.noPhoto")}</p>
+        )}
         <div className="flex flex-wrap gap-2">
           <Button size="sm" disabled={busy} aria-busy={busy || undefined} onClick={() => void choose()}>
             {photo ? t("studio.cv.changePhoto") : t("studio.cv.addPhoto")}

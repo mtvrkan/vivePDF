@@ -148,6 +148,7 @@ def _fill(profile: CvProfile, block: Block, linkedin: bool) -> int:
                     location=clip(entry.location),
                     start=entry.start,
                     end=entry.end,
+                    current=entry.current,
                     details=details,
                 )
             )

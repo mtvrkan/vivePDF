@@ -41,8 +41,18 @@ export function ParagraphField({ label, value, onChange, hint, placeholder, rows
 export function LevelPicker({ label, value, onChange, labels }: { label: string; value: number; onChange: (value: number) => void; labels: string[] }) {
   const { t } = useTranslation();
   const labelId = useId();
+  const focusable = value > 0 ? value : 1;
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
+    const step = { ArrowRight: rtl ? -1 : 1, ArrowLeft: rtl ? 1 : -1, ArrowUp: -1, ArrowDown: 1 }[event.key];
+    const target = event.key === "Home" ? 1 : event.key === "End" ? MAX_LEVEL : step === undefined ? null : Math.min(MAX_LEVEL, Math.max(1, (value || 0) + step));
+    if (target === null) return;
+    event.preventDefault();
+    onChange(target);
+    event.currentTarget.querySelectorAll<HTMLButtonElement>('[role="radio"]')[target - 1]?.focus();
+  };
   return (
-    <div className="flex items-center gap-1" role="radiogroup" aria-labelledby={labelId}>
+    <div className="flex items-center gap-1" role="radiogroup" aria-labelledby={labelId} onKeyDown={onKeyDown}>
       <span id={labelId} className="sr-only">
         {label}
       </span>
@@ -57,6 +67,7 @@ export function LevelPicker({ label, value, onChange, labels }: { label: string;
             aria-checked={value === level}
             title={labels[index]}
             aria-label={labels[index]}
+            tabIndex={level === focusable ? 0 : -1}
             onClick={() => onChange(value === level ? 0 : level)}
             className="flex size-6 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >

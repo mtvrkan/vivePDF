@@ -33,6 +33,14 @@ describe("cv builder history", () => {
     vi.useRealTimers();
   });
 
+  it("adds no undo step when a theme choice is picked again", () => {
+    const layout = useCvStore.getState().theme.layout;
+
+    useCvStore.getState().updateTheme({ layout });
+
+    expect(useCvStore.getState().past).toHaveLength(0);
+  });
+
   it("merges a typing burst in one field into one undo step", () => {
     type("A");
     type("Al");

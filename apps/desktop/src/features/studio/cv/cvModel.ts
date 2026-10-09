@@ -258,7 +258,7 @@ export function normalizeProfile(value: unknown): CvProfile {
     certificates: list(raw.certificates, CV_LIMITS.certificates, (item) => ({ id: cvId(), name: str(item.name, 200), issuer: str(item.issuer, 200), date: str(item.date, 40) })),
     projects: list(raw.projects, CV_LIMITS.projects, (item) => ({ id: cvId(), name: str(item.name, 200), link: str(item.link, 300), details: str(item.details) })),
     references: list(raw.references, CV_LIMITS.references, (item) => ({ id: cvId(), name: str(item.name, 200), role: str(item.role, 200), contact: str(item.contact, 300) })),
-    interests: str(raw.interests, 1000),
+    interests: str(raw.interests),
     custom: list(raw.custom, CV_LIMITS.custom, (item) => ({ id: cvId(), heading: str(item.heading, 120), body: str(item.body) })),
     order: fullOrder(raw.order),
     hidden: sectionKeys(raw.hidden),

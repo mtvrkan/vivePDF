@@ -3,6 +3,7 @@ import { AlertTriangle, ArrowLeft, Download, Eraser, FileJson, FileText, FileUp,
 import { useTranslation } from "react-i18next";
 import { translatorFor } from "@/app/i18n";
 import { Button } from "@/components/shared/Button";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { IconButton } from "@/components/shared/IconButton";
 import { MenuButton } from "@/components/shared/MenuButton";
@@ -20,7 +21,7 @@ import { CvForm } from "./CvForm";
 import { CvImportDialog } from "./CvImportDialog";
 import { pickCvPdf, saveCvFile } from "./cvFiles";
 import type { CvOverflow } from "./cvLayout";
-import { cvFromJson, emptyProfile, sampleProfile, type CvProfile, type CvSectionKey } from "./cvModel";
+import { cvFromJson, emptyProfile, profileHasContent, sampleProfile, type CvProfile, type CvSectionKey, type CvState } from "./cvModel";
 import { keepUnchanged, renderCv } from "./cvRender";
 import { useCvStore } from "./cvStore";
 
@@ -94,14 +95,16 @@ export default function CvStudio() {
     if (saveFailed) pushToast("error", t("studio.cv.saveFailed"));
   }, [saveFailed, pushToast, t]);
 
-  const designRef = useRef(design);
-  designRef.current = design;
+  const empty = !profileHasContent(profile);
+  const ready = design !== null && !failed && !empty;
+  const readyRef = useRef(ready);
+  readyRef.current = ready;
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey || document.querySelector('[role="dialog"]')) return;
       const letter = shortcutLetter(event);
       const store = useCvStore.getState();
-      if (letter === "e" && !event.shiftKey && designRef.current) {
+      if (letter === "e" && !event.shiftKey && readyRef.current) {
         event.preventDefault();
         event.stopPropagation();
         setExporting(true);
@@ -119,10 +122,13 @@ export default function CvStudio() {
     return () => window.removeEventListener("keydown", onKeyDown, true);
   }, []);
 
+  const restoring = (before: CvState) => ({ label: t("common.undo"), onClick: () => useCvStore.getState().replace(before) });
+
   const swap = (next: CvProfile, message: string) => {
     const store = useCvStore.getState();
+    const before = store.snapshot();
     store.replace({ profile: next, theme: store.theme });
-    pushToast("info", message, { label: t("common.undo"), onClick: () => useCvStore.getState().undo() });
+    pushToast("info", message, restoring(before));
   };
 
   const editInStudio = () => {
@@ -146,8 +152,9 @@ export default function CvStudio() {
       pushToast("error", t("studio.cv.file.unreadable"));
       return;
     }
+    const before = useCvStore.getState().snapshot();
     useCvStore.getState().replace(state);
-    pushToast("info", t("studio.cv.file.opened"), { label: t("common.undo"), onClick: () => useCvStore.getState().undo() });
+    pushToast("info", t("studio.cv.file.opened"), restoring(before));
   };
 
   const saveJson = async () => {
@@ -203,24 +210,39 @@ export default function CvStudio() {
         <Button size="sm" variant="ghost" icon={<Eraser className="size-4" aria-hidden />} onClick={() => swap(emptyProfile(), t("studio.cv.cleared"))}>
           {t("studio.cv.clear")}
         </Button>
-        <Button size="sm" icon={<PenLine className="size-4" aria-hidden />} disabled={!design} onClick={editInStudio}>
+        <Button size="sm" icon={<PenLine className="size-4" aria-hidden />} disabled={!ready} onClick={editInStudio}>
           {t("studio.cv.editInStudio")}
         </Button>
-        <Button size="sm" variant="primary" icon={<Download className="size-4" aria-hidden />} disabled={!design} onClick={() => setExporting(true)}>
+        <Button size="sm" variant="primary" icon={<Download className="size-4" aria-hidden />} disabled={!ready} onClick={() => setExporting(true)}>
           {t("studio.cv.export.open")}
         </Button>
       </div>
       <div className="flex min-h-0 flex-1">
         <aside className="flex w-96 shrink-0 flex-col border-e border-border/60" aria-label={t("studio.cv.panel")}>
-          <div className="flex gap-1 p-2" role="tablist" aria-label={t("studio.cv.panel")}>
+          <div
+            className="flex gap-1 p-2"
+            role="tablist"
+            aria-label={t("studio.cv.panel")}
+            onKeyDown={(event) => {
+              const step = { ArrowRight: 1, ArrowLeft: -1, Home: -tabs.length, End: tabs.length }[event.key];
+              if (step === undefined) return;
+              event.preventDefault();
+              const index = Math.min(tabs.length - 1, Math.max(0, tabs.findIndex((item) => item.id === tab) + (document.dir === "rtl" && Math.abs(step) === 1 ? -step : step)));
+              setTab(tabs[index].id);
+              document.getElementById(`cv-tab-${tabs[index].id}`)?.focus();
+            }}
+          >
             {tabs.map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.id}
+                  id={`cv-tab-${item.id}`}
                   type="button"
                   role="tab"
                   aria-selected={tab === item.id}
+                  aria-controls="cv-tab-panel"
+                  tabIndex={tab === item.id ? 0 : -1}
                   onClick={() => setTab(item.id)}
                   className={cn("flex h-8 flex-1 items-center justify-center gap-2 rounded-lg text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring", tab === item.id ? "menubar-active font-medium" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground")}
                 >
@@ -230,7 +252,7 @@ export default function CvStudio() {
               );
             })}
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" role="tabpanel">
+          <div id="cv-tab-panel" className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" role="tabpanel" aria-labelledby={`cv-tab-${tab}`}>
             {tab === "content" ? <CvForm /> : <CvDesignPanel />}
           </div>
         </aside>
@@ -244,7 +266,7 @@ export default function CvStudio() {
               </Button>
             </div>
           ) : null}
-          {overflow.items > 0 && design ? (
+          {overflow.items > 0 && design && !empty ? (
             <div role="status" data-testid="cv-overflow" className="sticky top-0 z-10 m-3 flex flex-wrap items-center gap-2 rounded-lg border border-warning/40 bg-card px-3 py-2 text-sm shadow-sm">
               <AlertTriangle className="size-4 shrink-0 text-warning" aria-hidden />
               <span className="min-w-0 flex-1">{t("studio.cv.overflow", { count: overflow.items })}</span>
@@ -255,14 +277,30 @@ export default function CvStudio() {
               ))}
             </div>
           ) : null}
-          {failed && !design ? (
+          {empty ? (
+            <EmptyState
+              icon={FileText}
+              title={t("studio.cv.emptyTitle")}
+              description={t("studio.cv.emptyDescription")}
+              action={
+                <div className="flex flex-wrap justify-center gap-2">
+                  <Button variant="primary" icon={<Sparkles className="size-4" aria-hidden />} onClick={() => swap(sampleProfile(t), t("studio.cv.sampleFilled"))}>
+                    {t("studio.cv.fillSample")}
+                  </Button>
+                  <Button icon={<FileUp className="size-4" aria-hidden />} onClick={() => void importPdf()}>
+                    {t("studio.cv.import.fromPdf")}
+                  </Button>
+                </div>
+              }
+            />
+          ) : failed && !design ? (
             <div className="p-8">
               <ErrorState title={t("studio.cv.previewFailed")} message={t("studio.cv.previewFailedHint")} onRetry={() => setAttempt((value) => value + 1)} />
             </div>
           ) : design && page && scale > 0 ? (
             <div className="flex flex-col items-center gap-6 py-6">
               {design.pages.map((item, index) => (
-                <div key={item.id} className="paper-surface relative overflow-hidden rounded-sm bg-white shadow-lg" style={{ width: `${item.width * scale}px`, height: `${item.height * scale}px` }} aria-label={t("studio.cv.pageLabel", { page: index + 1, total: design.pages.length })}>
+                <div key={item.id} className="paper-surface relative overflow-hidden rounded-sm bg-white shadow-lg" style={{ width: `${item.width * scale}px`, height: `${item.height * scale}px` }} role="img" aria-label={t("studio.cv.pageLabel", { page: index + 1, total: design.pages.length })}>
                   <div className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
                     <PageView page={item} language={theme.language} />
                   </div>
@@ -281,9 +319,10 @@ export default function CvStudio() {
         path={importing}
         onClose={() => setImporting(null)}
         onApply={(change) => {
+          const before = useCvStore.getState().snapshot();
           useCvStore.getState().updateProfile(change);
           setImporting(null);
-          pushToast("success", t("studio.cv.import.done"), { label: t("common.undo"), onClick: () => useCvStore.getState().undo() });
+          pushToast("success", t("studio.cv.import.done"), restoring(before));
         }}
       />
     </div>

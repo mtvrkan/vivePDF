@@ -172,6 +172,8 @@ def find_range(text: str) -> DateSpan | None:
         start = text[match.start("start") : match.end("start")]
         end = text[match.start("end") : match.end("end")]
         current = PRESENT_ONLY.match(folded[match.start("end") : match.end("end")]) is not None
+        if current:
+            end = ""
     else:
         match = SINCE.search(folded)
         if match is None:

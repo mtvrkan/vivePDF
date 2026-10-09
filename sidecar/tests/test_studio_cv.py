@@ -155,7 +155,7 @@ def test_english_cv(tmp_path: Path) -> None:
     assert "ten years" in profile.summary and "fast pipelines" in profile.summary
     first, second = profile.experience
     assert (first.role, first.organisation) == ("Senior Software Engineer", "Acme Corp")
-    assert (first.start, first.end, first.current) == ("Jan 2020", "Present", True)
+    assert (first.start, first.end, first.current) == ("Jan 2020", "", True)
     assert first.location == "Istanbul, Turkey"
     assert first.details.splitlines() == [
         "- Built a PDF rendering pipeline",
@@ -188,6 +188,18 @@ def test_english_cv(tmp_path: Path) -> None:
     assert "references" not in sections
 
 
+def test_ongoing_education_is_current_without_an_end(tmp_path: Path) -> None:
+    lines = [
+        (60, "Ayşe Demir", 22, True),
+        (100, "EĞİTİM", 13, True),
+        (118, "Yüksek Lisans, Bilgisayar Bilimi", 11, True),
+        (132, "Boğaziçi Üniversitesi", 10, False),
+        (146, "2023 - Halen", 10, False),
+    ]
+    education = _run(_single(tmp_path / "ongoing.pdf", lines)).profile.education
+    assert [(item.start, item.end, item.current) for item in education] == [("2023", "", True)]
+
+
 def test_turkish_cv(tmp_path: Path) -> None:
     profile = _run(_single(tmp_path / "turkish.pdf", TURKISH)).profile
     assert profile.name == "Ahmet Yılmaz"
@@ -197,7 +209,7 @@ def test_turkish_cv(tmp_path: Path) -> None:
     assert contacts["location"] == "İstanbul, Türkiye"
     first, second = profile.experience
     assert (first.role, first.organisation) == ("Kıdemli Yazılım Mühendisi", "Örnek A.Ş.")
-    assert (first.start, first.end, first.current) == ("2020", "Halen", True)
+    assert (first.start, first.end, first.current) == ("2020", "", True)
     assert (second.start, second.end, second.current) == ("Ocak 2016", "Aralık 2019", False)
     assert second.organisation == "Deneme Ltd. Şti."
     assert profile.education[0].school == "Orta Doğu Teknik Üniversitesi"
@@ -223,7 +235,7 @@ def test_linkedin_export(tmp_path: Path) -> None:
     assert profile.summary == "I build reliable platforms for large teams."
     first, second = profile.experience
     assert (first.role, first.organisation) == ("Staff Engineer", "Cloudy GmbH")
-    assert (first.start, first.end, first.current) == ("January 2021", "Present", True)
+    assert (first.start, first.end, first.current) == ("January 2021", "", True)
     assert first.location == "Berlin, Germany"
     assert first.details == "Led the platform team."
     assert (second.role, second.organisation, second.location) == (

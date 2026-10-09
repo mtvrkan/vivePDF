@@ -19,14 +19,17 @@ export function MonthYearField({ label, value, onChange, disabled, placeholder }
   useEffect(() => setYearDraft(shownYear), [shownYear]);
   const shownMonth = parsed?.month ?? null;
   const [month, setMonth] = useState<number | null>(shownMonth);
-  useEffect(() => setMonth(shownMonth), [shownMonth]);
+  useEffect(() => {
+    if (shownYear) setMonth(shownMonth);
+  }, [shownMonth, shownYear]);
   const months = monthNames(language, "long");
 
   const write = (nextMonth: number | null, yearText: string) => {
     const year = Number(yearText);
     if (/^\d{4}$/.test(yearText) && year >= 1900 && year <= 2100) onChange(formatMonthYear({ month: nextMonth, year }, language));
-    else if (!yearText.trim() && nextMonth === null) onChange("");
+    else if (value) onChange("");
   };
+  const incomplete = (month !== null || yearDraft !== "") && !shownYear;
 
   return (
     <div role="group" aria-labelledby={labelId} className="min-w-0">
@@ -59,6 +62,7 @@ export function MonthYearField({ label, value, onChange, disabled, placeholder }
             maxLength={4}
             disabled={disabled}
             placeholder={placeholder ?? "2024"}
+            aria-invalid={incomplete || undefined}
             className="w-20 shrink-0 tabular-nums"
             onChange={(event) => {
               const next = event.target.value.replace(/\D/g, "").slice(0, 4);

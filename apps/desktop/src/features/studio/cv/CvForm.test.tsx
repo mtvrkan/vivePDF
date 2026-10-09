@@ -2,6 +2,7 @@ import { act, cleanup, fireEvent, render, within } from "@testing-library/react"
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { useToastStore } from "@/shared/store/toastStore";
+import { useStudioAssetsStore } from "../design/assets";
 import { CvForm } from "./CvForm";
 import { emptyExperience, emptyProfile } from "./cvModel";
 import { useCvStore } from "./cvStore";
@@ -61,6 +62,47 @@ describe("cv form", () => {
     fireEvent.paste(input, { clipboardData: { getData: () => "Figma, Sketch\nExcel" } });
 
     expect(profile().skills.map((item) => item.name)).toEqual(["Figma", "Sketch", "Excel"]);
+  });
+
+  it("takes a pasted list back in a single undo step", () => {
+    render(<CvForm />);
+    fireEvent.click(within(section("skills")).getByRole("button", { name: /^Skills/ }));
+    fireEvent.click(within(section("skills")).getByRole("button", { name: "Add skill" }));
+    fireEvent.paste(within(section("skills")).getByLabelText("Skill"), { clipboardData: { getData: () => "Figma, Sketch" } });
+
+    act(() => useCvStore.getState().undo());
+
+    expect(profile().skills.map((item) => item.name)).toEqual([""]);
+  });
+
+  it("moves the skill level with the arrow keys and keeps one level in the tab order", () => {
+    render(<CvForm />);
+    fireEvent.click(within(section("skills")).getByRole("button", { name: /^Skills/ }));
+    fireEvent.click(within(section("skills")).getByRole("button", { name: "Add skill" }));
+    const group = within(section("skills")).getByRole("radiogroup");
+    const start = profile().skills[0].level;
+
+    fireEvent.keyDown(group, { key: "ArrowRight" });
+    fireEvent.keyDown(group, { key: "ArrowRight" });
+    fireEvent.keyDown(group, { key: "Home" });
+    fireEvent.keyDown(group, { key: "End" });
+    fireEvent.keyDown(group, { key: "ArrowLeft" });
+
+    const radios = within(group).getAllByRole("radio");
+    expect(start).toBeGreaterThan(0);
+    expect(profile().skills[0].level).toBe(radios.length - 1);
+    expect(radios.filter((radio) => radio.tabIndex === 0)).toHaveLength(1);
+    expect(document.activeElement).toBe(radios[radios.length - 2]);
+  });
+
+  it("says so when the saved photo file is gone instead of calling it ready", () => {
+    useStudioAssetsStore.setState({ images: { "C:/gone/photo.png": { status: "error" } } });
+    act(() => useCvStore.getState().updateProfile((current) => ({ ...current, photo: "C:/gone/photo.png" })));
+
+    render(<CvForm />);
+
+    expect(within(section("personal")).getByRole("status").textContent).toBe("The photo file can't be found. Choose it again.");
+    expect(within(section("personal")).queryByText("Photo added")).toBeNull();
   });
 
   it("writes a picked month and year in the CV language", () => {

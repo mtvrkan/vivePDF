@@ -6,8 +6,9 @@ import { cvToJson, type CvState } from "./cvModel";
 export const CV_FILE_EXTENSION = "json";
 
 export function safeFileName(name: string): string {
-  const cleaned = name.replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim();
-  return cleaned.slice(0, 80) || "CV";
+  const cleaned = name.replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g, " ").trim().slice(0, 80).replace(/[\s.]+$/, "");
+  if (/^(con|prn|aux|nul|com\d|lpt\d)$/i.test(cleaned)) return `CV ${cleaned}`;
+  return cleaned || "CV";
 }
 
 export async function saveCvFile(state: CvState, name: string, filterName: string): Promise<string | null> {

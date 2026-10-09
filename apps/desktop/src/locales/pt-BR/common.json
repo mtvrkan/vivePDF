@@ -9184,7 +9184,10 @@
       "saveFailed": "Não foi possível salvar seu currículo neste computador; mantenha o app aberto ou salve um arquivo de currículo.",
       "previewStale": "A prévia está desatualizada porque não pôde ser redesenhada.",
       "overflow": "O conteúdo não coube — itens deixados de fora: {{count}}",
-      "pagesHint": "A maioria dos currículos tem uma ou duas páginas."
+      "pagesHint": "A maioria dos currículos tem uma ou duas páginas.",
+      "emptyTitle": "Seu currículo está vazio",
+      "emptyDescription": "Preencha o formulário à esquerda, comece pelo exemplo ou importe um currículo existente de um PDF.",
+      "photoMissing": "O arquivo da foto não foi encontrado. Escolha-o novamente."
     },
     "shortcuts": {
       "title": "Atalhos de teclado",

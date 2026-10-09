@@ -9184,7 +9184,10 @@
       "saveFailed": "Tu CV no se pudo guardar en este equipo; deja la aplicación abierta o guarda un archivo de CV.",
       "previewStale": "La vista previa no está al día porque no se pudo volver a dibujar.",
       "overflow": "El contenido no cabe: elementos omitidos: {{count}}",
-      "pagesHint": "La mayoría de los CV ocupan una o dos páginas."
+      "pagesHint": "La mayoría de los CV ocupan una o dos páginas.",
+      "emptyTitle": "Tu CV está vacío",
+      "emptyDescription": "Rellena el formulario de la izquierda, empieza con el ejemplo o importa un CV existente desde un PDF.",
+      "photoMissing": "No se encuentra el archivo de la foto. Vuelve a elegirlo."
     },
     "shortcuts": {
       "title": "Atajos de teclado",

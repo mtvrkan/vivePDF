@@ -9184,7 +9184,10 @@
       "saveFailed": "Votre CV n’a pas pu être enregistré sur cet ordinateur ; gardez l’application ouverte ou enregistrez un fichier CV.",
       "previewStale": "L’aperçu n’est plus à jour car il n’a pas pu être redessiné.",
       "overflow": "Le contenu ne tient pas — éléments laissés de côté : {{count}}",
-      "pagesHint": "La plupart des CV font une ou deux pages."
+      "pagesHint": "La plupart des CV font une ou deux pages.",
+      "emptyTitle": "Votre CV est vide",
+      "emptyDescription": "Remplissez le formulaire à gauche, partez de l'exemple ou importez un CV existant depuis un PDF.",
+      "photoMissing": "Le fichier de la photo est introuvable. Choisissez-le à nouveau."
     },
     "shortcuts": {
       "title": "Raccourcis clavier",

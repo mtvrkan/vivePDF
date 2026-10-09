@@ -34,17 +34,18 @@ export function canAdd(profile: CvProfile, key: ListKey, count = 1): boolean {
   return itemsOf(profile, key).length + count <= CV_LIMITS[key];
 }
 
-export function addItems<K extends ListKey>(key: K, items: ItemOf<K>[], after?: string, focus = true): string | null {
+export function addItems<K extends ListKey>(key: K, items: ItemOf<K>[], after?: string, focus = true, afterPatch?: Partial<ItemOf<K>>): string | null {
   const profile = useCvStore.getState().profile;
   const room = CV_LIMITS[key] - itemsOf(profile, key).length;
   const added = items.slice(0, Math.max(0, room));
-  if (!added.length) return null;
+  if (!added.length && !afterPatch) return null;
   update((current) => {
-    const list = [...itemsOf(current, key)];
+    const list = itemsOf(current, key).map((item) => (afterPatch && item.id === after ? { ...item, ...afterPatch } : item));
     const index = after ? list.findIndex((item) => item.id === after) : -1;
     list.splice(index < 0 ? list.length : index + 1, 0, ...(added as Identified[]));
     return { ...current, [key]: list };
   });
+  if (!added.length) return null;
   const first = (added[0] as Identified).id;
   if (focus) focusTarget = first;
   return first;

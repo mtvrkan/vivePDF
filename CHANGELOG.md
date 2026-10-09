@@ -17,6 +17,12 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Studio CV: entry dates are written in the CV language whatever language they were typed in, and Arabic CVs are laid out right to left [2026-10-09]
+- Studio CV: a long summary, interests list, project description or custom section now carries over to the next page instead of being drawn past the bottom edge; a single item taller than a page is reported as left out [2026-10-09]
+- Studio CV: Undo in the toast after filling the sample, opening a CV file or importing a PDF brings back exactly the CV from before, and picking a theme option that is already set no longer adds an undo step; pasting a list into skills or languages undoes in one step [2026-10-09]
+- Studio CV: education imported from a PDF keeps "still studying" with no end date; clearing the year clears the date; the export dialog starts fresh and follows the CV name until a path is chosen; interests accept the same length as other text fields; file names avoid reserved Windows names [2026-10-09]
+- Studio CV: an empty CV shows a start screen with Fill sample and Import from PDF, and Export / Edit in Studio wait until there is content; a photo file that can no longer be found is reported instead of shown as added [2026-10-09]
+- Studio CV: the Content/Design tabs and the skill level picker work with the arrow keys, Home and End [2026-10-09]
 - Studio CV: dates, company/school and city fields each take the full width of the form, so the month picker is no longer squeezed to a sliver and placeholders are no longer cut off; the "type the date" button has a clearer icon [2026-10-09]
 - Studio documents: code blocks and table header rows are shaded again in the PDF, and the shading no longer leaves a stray strip at the top of every later page [2026-10-09]
 
