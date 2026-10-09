@@ -268,7 +268,7 @@ function LanguageMenu({ openId, onOpenChange }: { openId: string | null; onOpenC
 }
 
 export function TopBar() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const location = useLocation();
   const { pickAndOpen } = useOpenPdf();
   const busy = useOpenStore((state) => state.busy);
@@ -279,7 +279,7 @@ export function TopBar() {
   const [level, setLevel] = useState(0);
   const uiScale = usePreferencesStore((state) => state.uiScale);
   const uiZoom = usePreferencesStore((state) => state.uiZoom);
-  const locale = useUiStore((state) => state.locale);
+  const language = i18n.language;
   const updateStatus = useUpdateStore((state) => state.status);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
@@ -293,12 +293,22 @@ export function TopBar() {
 
   useLayoutEffect(() => {
     setLevel(0);
-  }, [width, uiScale, uiZoom, locale, updateStatus]);
+  }, [width, uiScale, uiZoom, language, updateStatus]);
 
   useLayoutEffect(() => {
     const el = barRef.current;
     if (el && el.scrollWidth > el.clientWidth + 1) setLevel((current) => Math.min(current + 1, HIDE_PRIMARY_NAV_LEVEL));
-  }, [level, width, uiScale, uiZoom, locale, updateStatus]);
+  }, [level, width, uiScale, uiZoom, language, updateStatus]);
+
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => {
+      if (el.scrollWidth > el.clientWidth + 1) setLevel((current) => Math.min(current + 1, HIDE_PRIMARY_NAV_LEVEL));
+    });
+    for (const child of Array.from(el.children)) observer.observe(child);
+    return () => observer.disconnect();
+  }, [level]);
 
   useEffect(() => {
     setOpenMenu(null);
