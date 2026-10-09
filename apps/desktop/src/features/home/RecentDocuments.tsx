@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { AlertTriangle, ArrowRight, Clock, FileText, FolderOpen, FolderSearch, Pin, PinOff, Search, X } from "lucide-react";
+import { AlertTriangle, Clock, FileText, FolderOpen, FolderSearch, Pin, PinOff, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { Select } from "@/components/shared/Select";
@@ -96,38 +96,38 @@ function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; 
   };
 
   return (
-    <div ref={ref} className={cn("group glass-flat relative flex flex-col overflow-hidden rounded-xl border border-(--glass-border)", isMissing && "opacity-60", className)}>
-      <button type="button" disabled={isMissing} onClick={() => void openPath(item.path)} title={isMissing ? t("home.collections.missing") : item.path} aria-label={item.fileName} className="flex aspect-[4/3] w-full items-center justify-center overflow-hidden bg-secondary/40 disabled:cursor-not-allowed">
+    <div ref={ref} className={cn("group glass-flat relative flex items-center overflow-hidden rounded-xl border border-(--glass-border) transition-colors duration-(--transition-fast) hover:border-primary/40 @sm:flex-col @sm:items-stretch", isMissing && "opacity-60", className)}>
+      <button type="button" disabled={isMissing} onClick={() => void openPath(item.path)} title={isMissing ? t("home.collections.missing") : item.path} aria-label={item.fileName} className="flex aspect-[3/4] w-14 shrink-0 items-end justify-center self-stretch overflow-hidden bg-secondary/40 px-2 pt-2 outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-ring disabled:cursor-not-allowed @sm:aspect-[4/3] @sm:w-full @sm:self-auto @sm:px-4 @sm:pt-3">
         {isMissing ? (
-          <AlertTriangle className="size-9 text-warning" aria-hidden />
+          <AlertTriangle className="size-6 self-center text-warning @sm:size-9" aria-hidden />
         ) : thumbnail ? (
-          <img src={thumbnail} alt="" className="size-full object-cover object-top" />
+          <img src={thumbnail} alt="" className="size-full rounded-t-sm object-cover object-top shadow-sm ring-1 ring-border/60" />
         ) : failed ? (
-          <FileText className="size-9 text-muted-foreground" aria-hidden />
+          <FileText className="size-6 self-center text-muted-foreground @sm:size-9" aria-hidden />
         ) : (
-          <div className="size-full animate-pulse bg-secondary/70" />
+          <div className="size-full animate-pulse rounded-t-sm bg-secondary/70" />
         )}
-        {isMissing ? null : <ArrowRight className="absolute end-2 top-2 size-4 rounded-full bg-background/70 p-0.5 text-foreground opacity-0 transition-opacity duration-(--transition-fast) group-hover:opacity-100" aria-hidden />}
       </button>
-      <div className="flex items-center gap-1 p-2.5">
-        <div className="min-w-0 flex-1">
-          <p title={item.fileName} className="flex items-center gap-1 text-sm font-medium">
-            <PinnedMarker item={item} />
-            <span className="min-w-0 truncate">{item.fileName}</span>
-          </p>
-          <p className={cn("mt-0.5 truncate text-[11px]", isMissing ? "text-warning" : "font-mono text-muted-foreground")}>{isMissing ? t("home.collections.missing") : formatRelativeMoment(item.openedAt, locale, Date.now(), t("home.justNow"))}</p>
-        </div>
-        <div className={cn("flex shrink-0 items-center transition-opacity duration-(--transition-fast) focus-within:opacity-100 group-hover:opacity-100", isMissing ? "opacity-100" : "opacity-0")}>
-          {isMissing ? null : (
-            <button type="button" onClick={() => void handleReveal()} aria-label={t("tools.reveal")} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
-              <FolderSearch className="size-3.5" aria-hidden />
-            </button>
-          )}
-          <PinButton item={item} />
-          <button type="button" onClick={() => removeRecent(item.path)} aria-label={t("home.removeRecent", { name: item.fileName })} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
-            <X className="size-3.5" aria-hidden />
+      <div className={cn("min-w-0 flex-1 px-3 py-2.5", isMissing && "pe-20 @sm:pe-3")}>
+        <p title={item.fileName} className="flex items-start gap-1 text-sm leading-snug font-medium">
+          <PinnedMarker item={item} />
+          <span className="line-clamp-2 min-w-0 break-words">{item.fileName}</span>
+        </p>
+        <p className={cn("mt-1 flex items-center gap-1 text-[11px]", isMissing ? "text-warning" : "text-muted-foreground")}>
+          {isMissing ? null : <Clock className="size-3 shrink-0" aria-hidden />}
+          <span className="min-w-0 break-words">{isMissing ? t("home.collections.missing") : formatRelativeMoment(item.openedAt, locale, Date.now(), t("home.justNow"))}</span>
+        </p>
+      </div>
+      <div className={cn("absolute end-1.5 top-1.5 z-10 flex items-center rounded-full bg-background/85 shadow-sm backdrop-blur-sm transition-opacity duration-(--transition-fast) focus-within:opacity-100 group-hover:opacity-100", isMissing ? "opacity-100" : "opacity-0")}>
+        {isMissing ? null : (
+          <button type="button" onClick={() => void handleReveal()} aria-label={t("tools.reveal")} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
+            <FolderSearch className="size-3.5" aria-hidden />
           </button>
-        </div>
+        )}
+        <PinButton item={item} />
+        <button type="button" onClick={() => removeRecent(item.path)} aria-label={t("home.removeRecent", { name: item.fileName })} className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground">
+          <X className="size-3.5" aria-hidden />
+        </button>
       </div>
     </div>
   );
@@ -260,7 +260,7 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
                 ))}
               </ul>
             ) : (
-              <div className={cn("grid gap-3", size === "large" ? "grid-cols-1 @md:grid-cols-2 @3xl:grid-cols-3" : "grid-cols-2 @md:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-6")}>
+              <div className={cn("grid gap-3", size === "large" ? "grid-cols-1 @lg:grid-cols-2 @3xl:grid-cols-3" : "grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-6")}>
                 {group.items.map((item) => (
                   <RecentDocumentCard key={item.path} item={item} isMissing={missing.has(item.path)} />
                 ))}
