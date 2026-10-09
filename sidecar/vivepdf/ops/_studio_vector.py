@@ -1,5 +1,6 @@
 import math
 import re
+from functools import lru_cache
 
 import pymupdf
 
@@ -27,6 +28,9 @@ TRANSPARENCY_GROUP = "/Group<</Type/Group/S/Transparency>>"
 
 
 def _number(value: float) -> str:
+    rounded = round(value, 4)
+    if rounded.is_integer():
+        return str(int(rounded))
     text = f"{value:.4f}".rstrip("0").rstrip(".")
     return "0" if text in {"", "-0"} else text
 
@@ -35,6 +39,7 @@ def _bad_path(message: str) -> OpError:
     return OpError(ErrorCode.INVALID_PARAMS, message, {"reason": "badPath"})
 
 
+@lru_cache(maxsize=4096)
 def path_operators(data: str) -> str:
     tokens = TOKEN.findall(data)
     if len(tokens) > MAX_COMMANDS * 7:
@@ -263,7 +268,8 @@ def _new_object(document: pymupdf.Document, body: str) -> int:
 
 def _new_stream(document: pymupdf.Document, body: str, content: str | bytes) -> int:
     xref = _new_object(document, body)
-    document.update_stream(xref, content.encode("latin-1") if isinstance(content, str) else content)
+    data = content.encode("latin-1") if isinstance(content, str) else content
+    document.update_stream(xref, data, compress=0)
     return xref
 
 

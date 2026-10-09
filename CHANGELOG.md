@@ -20,7 +20,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
-- Studio: template thumbnails appear about two to three times faster — shapes are placed without rescanning the whole page each time and drop shadows are drawn at thumbnail size — and cards scrolled out of view no longer hold up the ones on screen [2026-10-09]
+- Studio: template thumbnails appear about three times faster — shapes are placed without rescanning the whole page each time, drop shadows are drawn at thumbnail size and shape outlines are converted once and reused — and cards scrolled out of view no longer hold up the ones on screen [2026-10-09]
 - The top bar shrinks again when the language changes at a large interface scale, so the window buttons no longer run off the edge in Turkish at 120% [2026-10-09]
 - Home and About cards that combine glass with a tone wash show the wash again instead of plain glass [2026-10-09]
 - Report a bug / Suggest a feature: copying or saving the report now confirms it and shows an error if it fails; the diagnostics name the real OS release and build (for example Windows 11 24H2) instead of repeating "windows", and the language line shows the app and system language instead of "n/a"; the report type buttons tell screen readers which one is chosen [2026-10-09]
