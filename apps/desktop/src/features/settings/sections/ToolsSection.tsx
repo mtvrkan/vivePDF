@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/tool/form";
 import { COMPRESS_PROFILES, usePreferencesStore } from "@/shared/store/preferencesStore";
 import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import type { CompressPreset } from "@/types";
+import { downloadableFontSets } from "@/features/viewer/pdf/fontFallback";
 import { FallbackFontsManager } from "../FallbackFontsManager";
 import { OfficeManager } from "../OfficeManager";
 import { TessdataManager } from "../TessdataManager";
@@ -52,9 +53,11 @@ export function ToolsSection({ query, onEmptyChange }: SettingsSectionProps) {
       <SettingRow label={t("settings.tessdata.title")} hint={t("settings.tessdata.description")} block>
         <TessdataManager />
       </SettingRow>
-      <SettingRow label={t("settings.fallbackFonts.title")} hint={t("settings.fallbackFonts.description")} block>
-        <FallbackFontsManager />
-      </SettingRow>
+      {downloadableFontSets().length > 0 ? (
+        <SettingRow label={t("settings.fallbackFonts.title")} hint={t("settings.fallbackFonts.description")} block>
+          <FallbackFontsManager />
+        </SettingRow>
+      ) : null}
       <SettingRow label={t("settings.office.title")} hint={t("settings.office.description")} block>
         <OfficeManager />
       </SettingRow>

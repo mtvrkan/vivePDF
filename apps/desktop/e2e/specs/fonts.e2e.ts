@@ -1,4 +1,3 @@
-import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { $, browser, expect } from "@wdio/globals";
 import { bootApp, copyFixture, fixtures, openInViewer, openTool, t } from "../support/app.ts";
@@ -32,33 +31,25 @@ async function darkPixels(): Promise<number> {
 describe("fallback fonts", () => {
   before(bootApp);
 
-  it("asks for the Japanese font, downloads it from the mirror and draws the text", async () => {
+  it("draws the Japanese text with the bundled font and never asks for a download", async () => {
     const path = copyFixture(fixtures().japanese);
     await openInViewer(path);
-    const message = fontMessage();
-    await message.waitForDisplayed({ timeout: 60000, timeoutMsg: "the missing-font message never appeared" });
-    await browser.pause(1500);
-    const before = await darkPixels();
 
-    await message.$(`.//button[normalize-space(.)="${t("viewer.messages.fonts.download")}"]`).click();
-    await message.waitForDisplayed({ reverse: true, timeout: 120000, timeoutMsg: "the document was not reloaded after the download" });
-    const fontsDir = join(process.env.VIVEPDF_DATA_DIR as string, "fallback-fonts");
-    expect(existsSync(join(fontsDir, "NotoSansJP-Regular.otf"))).toBe(true);
-
-    await browser.waitUntil(async () => (await darkPixels()) > Math.max(before * 3, 2000), {
+    await browser.waitUntil(async () => (await darkPixels()) > 2000, {
       timeout: 60000,
       interval: 1000,
-      timeoutMsg: `the Japanese text was not drawn after the download (before ${before})`,
+      timeoutMsg: "the Japanese text was not drawn with the bundled font",
     });
+    await expect(fontMessage()).not.toBeDisplayed();
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_WORK_DIR as string, "fonts-japanese.png"));
   });
 
-  it("lists the installed set in the settings and keeps the others downloadable", async () => {
+  it("has no font downloads left in the settings", async () => {
     await openTool("nav.settings");
     const tools = $(`//nav[@aria-label="${t("nav.settings")}"]//button[.//span[normalize-space(.)="${t("settings.sections.tools.title")}"]]`);
     await tools.waitForClickable();
     await tools.click();
-    await $(`button[aria-label="${t("settings.fallbackFonts.remove")}: ${JAPANESE}"]`).waitForDisplayed({ timeout: 30000 });
-    await expect($(`button[aria-label="${t("settings.fallbackFonts.download")}: ${t("settings.fallbackFonts.sets.ko")}"]`)).toBeDisplayed();
+    await $(`//*[normalize-space(.)="${t("settings.office.title")}"]`).waitForDisplayed({ timeout: 30000 });
+    await expect($(`//*[normalize-space(.)="${t("settings.fallbackFonts.title")}"]`)).not.toBeDisplayed();
   });
 });

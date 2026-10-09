@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Viewer: the Japanese, Korean and Chinese fallback fonts now come with the app, so PDFs without embedded CJK fonts show their text right away without a download; copies downloaded by earlier versions are cleaned up [2026-10-09]
 - Tools: new cards for Design in Studio, Write a document, Business card, Bibliography (opens a document with the sources dialog) and Extract images from a PDF; the Convert to PDF card is also found by searching bib, BibTeX or RIS [2026-10-09]
 - Source libraries: the Convert tool turns .bib, .bibtex and .ris files into a PDF reference list (alone or in a batch with other files), Explorer's right-click menu offers "Open in vivePDF" and "Convert to PDF" for them, and "Open with" lists vivePDF for these files once it is the default PDF app [2026-10-09]
 - Studio sources: edit any source in a form (type, key, authors, title, journal, pages, DOI and more) or add one by hand, with a renamed key following every citation already in the text; import and export .bib, RIS (.ris) and CSL JSON (.json) so libraries move between Zotero, Mendeley, EndNote and JabRef; and open a .bib or .ris file straight from the home page, which starts a document with its formatted reference list [2026-10-09]

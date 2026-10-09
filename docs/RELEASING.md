@@ -68,19 +68,16 @@ and only extracts an MSI whose Authenticode signature is valid and issued to The
 Foundation. macOS and Linux use a LibreOffice installed on the system. `scripts/fetch-libreoffice.*`
 only prepare a development copy under `apps/desktop/src-tauri/resources/libreoffice/`.
 
-Only the Latin fallback font (Noto Sans, Latin/Greek/Cyrillic/Vietnamese) ships in the installer.
-The Japanese, Korean and Simplified/Traditional Chinese fonts are downloaded on request by
-`system.fallback_fonts_download` from the `fonts-1` release of this repository into
-`<user data dir>/fallback-fonts`, and must match the sizes and SHA-256 values in
-`apps/desktop/src/features/viewer/pdf/fallbackFonts.json` (mirrored in
-`sidecar/vivepdf/ops/fallback_fonts.py`). The app serves both through the `vivepdf-font` scheme
-(`src-tauri/src/font_source.rs`). Publish that release once, not marked as latest so the updater
-never looks at it, with the four OTF files from the `@embedpdf/fonts-jp`, `-kr`, `-sc` and `-tc`
-packages and their licence:
-
-```
-gh release create fonts-1 NotoSansJP-Regular.otf NotoSansKR-Regular.otf NotoSansHans-Regular.otf NotoSansHant-Regular.otf OFL.txt --title "Fallback fonts 1" --notes "Noto Sans CJK fallback fonts for vivePDF (SIL Open Font License 1.1)" --latest=false
-```
+The fallback fonts for the viewer ship inside the app: Noto Sans (Latin, Greek, Cyrillic,
+Vietnamese) and Noto Sans JP, KR, SC and TC for Japanese, Korean and Simplified/Traditional Chinese.
+`scripts/copy-wasm.mjs` copies every set marked `bundled` in
+`apps/desktop/src/features/viewer/pdf/fallbackFonts.json` from the `@embedpdf/fonts-*` packages into
+`public/fonts/fallback/`, and the app serves them through the `vivepdf-font` scheme
+(`src-tauri/src/font_source.rs`). On start the app removes copies of bundled fonts that older versions
+downloaded into `<user data dir>/fallback-fonts`. The `fonts-1` release stays published for those
+older versions. The download path (`system.fallback_fonts_download`, mirrored by
+`sidecar/vivepdf/ops/fallback_fonts.py`) only serves sets marked `"bundled": false`, and today there
+are none.
 
 The Studio font library (24 OFL families from Google Fonts, static Regular/Bold/Italic/Bold Italic
 cuts, each checked for Turkish letters) is downloaded on request by `fonts.library_download` from the

@@ -16,6 +16,11 @@ vi.mock("@embedpdf/plugin-history/react", () => ({
   useHistoryCapability: () => ({ provides: { forDocument: () => ({ canUndo: () => hooks.unsaved }) } }),
 }));
 vi.mock("./useUnsavedMarks", () => ({ useUnsavedMarks: () => hooks.unsaved }));
+vi.mock("./pdf/fontFallback", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./pdf/fontFallback")>();
+  const { default: manifest } = await import("./pdf/fallbackFonts.json");
+  return { ...actual, downloadableFontSets: () => manifest.sets.filter((set) => set.id !== "latin").map((set) => ({ ...set, bundled: false })) };
+});
 
 const { FallbackFontMessages } = await import("./FallbackFontMessages");
 

@@ -87,8 +87,7 @@ def test_a_downloaded_set_is_verified_installed_listed_and_removed(
 
     assert (result.set, result.bytes) == ("small", len(payload))
     assert listed.directory == str(data_dir)
-    assert {item.id: item.installed for item in listed.sets}["small"] is True
-    assert {item.id: item.installed for item in listed.sets}["ja"] is False
+    assert {item.id: item.installed for item in listed.sets} == {"small": True}
     assert removed.removed is True
     assert not (data_dir / "Small.otf").exists()
     assert list(data_dir.iterdir()) == []
@@ -127,15 +126,16 @@ def test_a_file_larger_than_expected_stops_the_download(
 
 
 def test_an_unreachable_mirror_is_a_network_error(
-    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+    monkeypatch: pytest.MonkeyPatch, mirror: Path, tmp_path: Path
 ) -> None:
+    _small_set(monkeypatch, mirror, b"abc")
     monkeypatch.setenv("VIVEPDF_FONTS_URL", (tmp_path / "missing").as_uri())
 
     with pytest.raises(OpError) as caught:
-        _download("ja")
+        _download("small")
 
     assert caught.value.code == ErrorCode.NETWORK
-    assert caught.value.data == {"set": "ja"}
+    assert caught.value.data == {"set": "small"}
 
 
 def test_an_unknown_set_is_invalid() -> None:

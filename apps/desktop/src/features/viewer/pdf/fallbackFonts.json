@@ -6,28 +6,28 @@
       "id": "ja",
       "package": "@embedpdf/fonts-jp",
       "charsets": ["SHIFTJIS"],
-      "bundled": false,
+      "bundled": true,
       "files": [{ "file": "NotoSansJP-Regular.otf", "weight": 400, "bytes": 4538888, "sha256": "dcc75e20d91d09c793fa5a97c9c7678e8b580d0fc255314cbc45c08b075f46f1" }]
     },
     {
       "id": "ko",
       "package": "@embedpdf/fonts-kr",
       "charsets": ["HANGEUL"],
-      "bundled": false,
+      "bundled": true,
       "files": [{ "file": "NotoSansKR-Regular.otf", "weight": 400, "bytes": 4579008, "sha256": "ff59f91fe8d6e6246f548bb67bf371810af3d5cc53b65e8680461fabd043b506" }]
     },
     {
       "id": "zh-Hans",
       "package": "@embedpdf/fonts-sc",
       "charsets": ["GB2312"],
-      "bundled": false,
+      "bundled": true,
       "files": [{ "file": "NotoSansHans-Regular.otf", "weight": 400, "bytes": 8364644, "sha256": "7db3c634bbd0301b3082a80ffcac2f422e8ef9ce0730f8b279c3e8f756598f68" }]
     },
     {
       "id": "zh-Hant",
       "package": "@embedpdf/fonts-tc",
       "charsets": ["CHINESEBIG5"],
-      "bundled": false,
+      "bundled": true,
       "files": [{ "file": "NotoSansHant-Regular.otf", "weight": 400, "bytes": 5663120, "sha256": "81f39cffba8b45367a21249720782603b852bee71aad710f8f66fec3d3776af3" }]
     },
     {

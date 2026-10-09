@@ -41,31 +41,32 @@ struct Catalogue {
     fonts: HashMap<String, Font>,
 }
 
+fn parse_catalogue(text: &str) -> Catalogue {
+    let manifest: Manifest = serde_json::from_str(text).expect("fallbackFonts.json is valid");
+    let fonts = manifest
+        .sets
+        .iter()
+        .flat_map(|set| {
+            set.files.iter().map(|entry| {
+                (
+                    entry.file.clone(),
+                    Font {
+                        set: set.id.clone(),
+                        bundled: set.bundled,
+                    },
+                )
+            })
+        })
+        .collect();
+    Catalogue {
+        directory: manifest.directory,
+        fonts,
+    }
+}
+
 fn catalogue() -> &'static Catalogue {
     static CATALOGUE: OnceLock<Catalogue> = OnceLock::new();
-    CATALOGUE.get_or_init(|| {
-        let manifest: Manifest =
-            serde_json::from_str(MANIFEST).expect("fallbackFonts.json is valid");
-        let fonts = manifest
-            .sets
-            .iter()
-            .flat_map(|set| {
-                set.files.iter().map(|entry| {
-                    (
-                        entry.file.clone(),
-                        Font {
-                            set: set.id.clone(),
-                            bundled: set.bundled,
-                        },
-                    )
-                })
-            })
-            .collect();
-        Catalogue {
-            directory: manifest.directory,
-            fonts,
-        }
-    })
+    CATALOGUE.get_or_init(|| parse_catalogue(MANIFEST))
 }
 
 fn present(value: Option<String>) -> Option<String> {
@@ -118,6 +119,15 @@ pub fn bundled_font<R: Runtime>(app: &AppHandle<R>, name: &str) -> Option<Vec<u8
     None
 }
 
+pub fn drop_bundled_copies(dir: &Path) -> usize {
+    catalogue()
+        .fonts
+        .iter()
+        .filter(|(_, font)| font.bundled)
+        .filter(|(name, _)| std::fs::remove_file(dir.join(name)).is_ok())
+        .count()
+}
+
 fn content_type(name: &str) -> &'static str {
     if name.ends_with(".ttf") {
         "font/ttf"
@@ -144,6 +154,16 @@ pub fn respond(
     fonts_dir: Option<&Path>,
     bundled: impl Fn(&str) -> Option<Vec<u8>>,
 ) -> Outcome {
+    respond_from(catalogue(), request, dev, fonts_dir, bundled)
+}
+
+fn respond_from(
+    catalogue: &Catalogue,
+    request: &Request<Vec<u8>>,
+    dev: bool,
+    fonts_dir: Option<&Path>,
+    bundled: impl Fn(&str) -> Option<Vec<u8>>,
+) -> Outcome {
     let Some(origin) = allowed_origin(request, dev) else {
         return answer(empty(reply(StatusCode::FORBIDDEN, None)));
     };
@@ -161,7 +181,7 @@ pub fn respond(
         ));
     }
     let name = request.uri().path().trim_start_matches('/');
-    let Some(font) = catalogue().fonts.get(name) else {
+    let Some(font) = catalogue.fonts.get(name) else {
         return answer(empty(reply(StatusCode::NOT_FOUND, origin)));
     };
     let bytes = if font.bundled {
@@ -209,6 +229,19 @@ mod tests {
         }
     }
 
+    #[test]
+    fn copies_of_bundled_fonts_left_from_downloads_are_dropped() {
+        let scratch = Scratch::new();
+        std::fs::write(scratch.0.join(JAPANESE), b"old download").unwrap();
+        std::fs::write(scratch.0.join("Unrelated.otf"), b"keep").unwrap();
+
+        let dropped = drop_bundled_copies(&scratch.0);
+
+        assert_eq!(dropped, 1);
+        assert!(!scratch.0.join(JAPANESE).exists());
+        assert!(scratch.0.join("Unrelated.otf").exists());
+    }
+
     fn request(method: Method, name: &str, origin: Option<&str>) -> Request<Vec<u8>> {
         let mut builder = Request::builder()
             .method(method)
@@ -225,6 +258,18 @@ mod tests {
             false,
             dir,
             |file| (file == LATIN).then(|| b"latin".to_vec()),
+        )
+    }
+
+    const DOWNLOADABLE_MANIFEST: &str = r#"{"directory":"fonts/fallback","sets":[{"id":"ja","bundled":false,"files":[{"file":"NotoSansJP-Regular.otf"}]},{"id":"zh-Hans","bundled":false,"files":[{"file":"NotoSansHans-Regular.otf"}]}]}"#;
+
+    fn get_downloadable(name: &str, dir: Option<&Path>) -> Outcome {
+        respond_from(
+            &parse_catalogue(DOWNLOADABLE_MANIFEST),
+            &request(Method::GET, name, Some(APP_ORIGIN)),
+            false,
+            dir,
+            |_| None,
         )
     }
 
@@ -258,7 +303,7 @@ mod tests {
         let scratch = Scratch::new();
         std::fs::write(scratch.0.join(JAPANESE), b"japanese").unwrap();
 
-        let outcome = get(JAPANESE, Some(&scratch.0));
+        let outcome = get_downloadable(JAPANESE, Some(&scratch.0));
 
         assert_eq!(outcome.response.status(), StatusCode::OK);
         assert_eq!(outcome.response.body(), b"japanese");
@@ -277,8 +322,8 @@ mod tests {
     fn a_font_not_downloaded_yet_names_its_set() {
         let scratch = Scratch::new();
 
-        let outcome = get(JAPANESE, Some(&scratch.0));
-        let without_folder = get("NotoSansHans-Regular.otf", None);
+        let outcome = get_downloadable(JAPANESE, Some(&scratch.0));
+        let without_folder = get_downloadable("NotoSansHans-Regular.otf", None);
 
         assert_eq!(outcome.response.status(), StatusCode::NOT_FOUND);
         assert_eq!(outcome.missing.as_deref(), Some("ja"));
@@ -383,6 +428,6 @@ mod tests {
         assert_eq!(fonts.len(), 6);
         assert!(fonts[LATIN].bundled);
         assert_eq!(fonts[JAPANESE].set, "ja");
-        assert!(!fonts[JAPANESE].bundled);
+        assert!(fonts.values().all(|font| font.bundled));
     }
 }

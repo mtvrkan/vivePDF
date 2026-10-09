@@ -38,51 +38,7 @@ class FontSet:
         return sum(entry.size for entry in self.files)
 
 
-FONT_SETS: dict[str, FontSet] = {
-    font_set.id: font_set
-    for font_set in (
-        FontSet(
-            "ja",
-            (
-                FontFile(
-                    "NotoSansJP-Regular.otf",
-                    4538888,
-                    "dcc75e20d91d09c793fa5a97c9c7678e8b580d0fc255314cbc45c08b075f46f1",
-                ),
-            ),
-        ),
-        FontSet(
-            "ko",
-            (
-                FontFile(
-                    "NotoSansKR-Regular.otf",
-                    4579008,
-                    "ff59f91fe8d6e6246f548bb67bf371810af3d5cc53b65e8680461fabd043b506",
-                ),
-            ),
-        ),
-        FontSet(
-            "zh-Hans",
-            (
-                FontFile(
-                    "NotoSansHans-Regular.otf",
-                    8364644,
-                    "7db3c634bbd0301b3082a80ffcac2f422e8ef9ce0730f8b279c3e8f756598f68",
-                ),
-            ),
-        ),
-        FontSet(
-            "zh-Hant",
-            (
-                FontFile(
-                    "NotoSansHant-Regular.otf",
-                    5663120,
-                    "81f39cffba8b45367a21249720782603b852bee71aad710f8f66fec3d3776af3",
-                ),
-            ),
-        ),
-    )
-}
+FONT_SETS: dict[str, FontSet] = {}
 
 
 def fonts_dir() -> Path:
