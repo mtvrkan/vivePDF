@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Tools: new cards for Design in Studio, Write a document, Business card, Bibliography (opens a document with the sources dialog) and Extract images from a PDF; the Convert to PDF card is also found by searching bib, BibTeX or RIS [2026-10-09]
 - Source libraries: the Convert tool turns .bib, .bibtex and .ris files into a PDF reference list (alone or in a batch with other files), Explorer's right-click menu offers "Open in vivePDF" and "Convert to PDF" for them, and "Open with" lists vivePDF for these files once it is the default PDF app [2026-10-09]
 - Studio sources: edit any source in a form (type, key, authors, title, journal, pages, DOI and more) or add one by hand, with a renamed key following every citation already in the text; import and export .bib, RIS (.ris) and CSL JSON (.json) so libraries move between Zotero, Mendeley, EndNote and JabRef; and open a .bib or .ris file straight from the home page, which starts a document with its formatted reference list [2026-10-09]
 - Studio documents: importing a Pandoc-style Markdown article keeps its citations — `[@key]`, `[@key, p. 4]` and `[@a; @b]` become live citations, the title, authors and date come from the front matter, the `bibliography:` .bib file (or one named like the article) is loaded as sources, and the reference list takes the place of a trailing References heading [2026-10-09]

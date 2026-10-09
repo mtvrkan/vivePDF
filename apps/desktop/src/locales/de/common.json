@@ -2694,8 +2694,17 @@
         "create-paper": "Blanko-, Linien-, Karo-, Punkt- oder Notenpapier als druckfertiges PDF",
         "cover": "Ein gestaltetes Deckblatt vor ein PDF setzen: Titel, Autor, Institution, Logo oder Foto",
         "create-book": "Markdown- oder Textkapitel als Buch mit Titelseite, verlinktem Inhaltsverzeichnis und Seitenzahlen",
-        "create-cv": "Lebenslauf mit klassischer, moderner oder kompakter Vorlage, Foto und klickbaren Kontakten"
-      }
+        "create-cv": "Lebenslauf mit klassischer, moderner oder kompakter Vorlage, Foto und klickbaren Kontakten",
+        "studio-design": "Plakate, Flyer, Einladungen und Social-Media-Beiträge auf freier Fläche mit über 170 Vorlagen.",
+        "studio-document": "Bericht, Artikel oder Abschlussarbeit mit Überschriften, Tabellen, Zitaten und Inhaltsverzeichnis schreiben.",
+        "business-card": "Zweiseitige Karten mit Folie, Prägung und Spot-UV, druckfertig mit Beschnitt und Ausschießen.",
+        "bibliography": ".bib, RIS oder CSL JSON importieren, Quellen bearbeiten und ein Verzeichnis nach APA, MLA, Chicago oder IEEE exportieren.",
+        "extract-images": "Alle eingebetteten Bilder einer PDF in Originalqualität herausholen."
+      },
+      "studioDesign": "In Studio gestalten",
+      "studioDocument": "Dokument schreiben",
+      "businessCard": "Visitenkarte",
+      "bibliography": "Literaturverzeichnis"
     },
     "convert": {
       "description": "PDF in Word, Excel, PowerPoint, Bilder, Text, Markdown oder HTML konvertieren; Bilder und Office-/Textdateien in PDF.",

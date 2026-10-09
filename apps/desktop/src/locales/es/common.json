@@ -2694,8 +2694,17 @@
         "create-paper": "Papel en blanco, rayado, cuadriculado, punteado o pautado como PDF listo para imprimir",
         "cover": "Añada una portada diseñada al principio de un PDF: título, autor, institución, logotipo o foto",
         "create-book": "Capítulos Markdown o de texto como libro con portada, índice enlazado y números de página",
-        "create-cv": "Currículum con plantilla clásica, moderna o compacta, foto y contactos con enlace"
-      }
+        "create-cv": "Currículum con plantilla clásica, moderna o compacta, foto y contactos con enlace",
+        "studio-design": "Carteles, folletos, invitaciones y publicaciones sociales en un lienzo libre con más de 170 plantillas.",
+        "studio-document": "Escribe un informe, artículo o tesis con títulos, tablas, citas e índice.",
+        "business-card": "Tarjetas a dos caras con foil, relieve y UV selectivo, listas para imprenta con sangrado e imposición.",
+        "bibliography": "Importa .bib, RIS o CSL JSON, edita las fuentes y exporta una bibliografía APA, MLA, Chicago o IEEE.",
+        "extract-images": "Extrae todas las imágenes incrustadas de un PDF con su calidad original."
+      },
+      "studioDesign": "Diseñar en Studio",
+      "studioDocument": "Escribir un documento",
+      "businessCard": "Tarjeta de visita",
+      "bibliography": "Bibliografía"
     },
     "convert": {
       "description": "Convierta PDF a Word, Excel, PowerPoint, imágenes, texto, Markdown o HTML; imágenes y archivos de Office/texto a PDF.",

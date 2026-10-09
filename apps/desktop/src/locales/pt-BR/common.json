@@ -2694,8 +2694,17 @@
         "create-paper": "Papel em branco, pautado, quadriculado, pontilhado ou de partitura em PDF pronto para imprimir",
         "cover": "Coloque uma capa com design no início de um PDF: título, autor, instituição, logotipo ou foto",
         "create-book": "Capítulos em Markdown ou texto como livro com capa, sumário com links e números de página",
-        "create-cv": "Currículo com modelo clássico, moderno ou compacto, foto e contatos clicáveis"
-      }
+        "create-cv": "Currículo com modelo clássico, moderno ou compacto, foto e contatos clicáveis",
+        "studio-design": "Cartazes, folhetos, convites e posts para redes sociais em uma tela livre com mais de 170 modelos.",
+        "studio-document": "Escreva um relatório, artigo ou tese com títulos, tabelas, citações e sumário.",
+        "business-card": "Cartões frente e verso com hot stamping, relevo e verniz localizado, prontos para gráfica com sangria e imposição.",
+        "bibliography": "Importe .bib, RIS ou CSL JSON, edite as fontes e exporte referências em APA, MLA, Chicago ou IEEE.",
+        "extract-images": "Extraia todas as imagens incorporadas de um PDF na qualidade original."
+      },
+      "studioDesign": "Criar no Studio",
+      "studioDocument": "Escrever um documento",
+      "businessCard": "Cartão de visita",
+      "bibliography": "Bibliografia"
     },
     "convert": {
       "description": "Converta PDF para Word, Excel, PowerPoint, imagens, texto, Markdown ou HTML; imagens e arquivos do Office/texto para PDF.",

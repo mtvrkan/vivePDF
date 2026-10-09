@@ -32,6 +32,7 @@ import { useStudioStore } from "./design/studioStore";
 import { useStudioDraft } from "./design/useStudioDraft";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
 import { useCvStore } from "./cv/cvStore";
+import { launchStudioStart, studioStartOf, withoutStudioStart } from "./startLink";
 import { DocumentStart } from "./document/DocumentStart";
 import { useDocumentStore } from "./document/documentStore";
 import { useMergeStore } from "./merge/mergeStore";
@@ -283,6 +284,7 @@ function StudioEditor({ language }: { language: string }) {
 }
 
 export function StudioPage() {
+  const { t } = useTranslation();
   const editing = useStudioStore((state) => state.design !== null);
   const document = useDocumentStore((state) => state.document);
   const open = useStudioStore((state) => state.open);
@@ -305,14 +307,11 @@ export function StudioPage() {
     if (!editing) useMergeStore.getState().clear();
   }, [editing]);
   useEffect(() => {
-    if (params.get("cv") !== "1") return;
-    useCvStore.getState().open(locale);
-    setParams((current) => {
-      const next = new URLSearchParams(current);
-      next.delete("cv");
-      return next;
-    }, { replace: true });
-  }, [params, setParams, locale]);
+    const start = studioStartOf(params);
+    if (!start) return;
+    launchStudioStart(start, t, locale);
+    setParams((current) => withoutStudioStart(current), { replace: true });
+  }, [params, setParams, locale, t]);
   return (
     <>
       {cvActive ? (

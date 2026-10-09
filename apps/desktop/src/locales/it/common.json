@@ -2694,8 +2694,17 @@
         "create-paper": "Carta bianca, a righe, a quadretti, a puntini o da musica in PDF pronto da stampare",
         "cover": "Aggiungi una copertina curata all'inizio di un PDF: titolo, autore, istituto, logo o foto",
         "create-book": "Capitoli Markdown o di testo come libro con copertina, indice collegato e numeri di pagina",
-        "create-cv": "Curriculum con modello classico, moderno o compatto, foto e contatti cliccabili"
-      }
+        "create-cv": "Curriculum con modello classico, moderno o compatto, foto e contatti cliccabili",
+        "studio-design": "Poster, volantini, inviti e post social su una tela libera con oltre 170 modelli.",
+        "studio-document": "Scrivi una relazione, un articolo o una tesi con titoli, tabelle, citazioni e indice.",
+        "business-card": "Biglietti fronte-retro con lamina, rilievo e UV selettivo, pronti per la stampa con abbondanza e imposizione.",
+        "bibliography": "Importa .bib, RIS o CSL JSON, modifica le fonti ed esporta una bibliografia APA, MLA, Chicago o IEEE.",
+        "extract-images": "Estrai tutte le immagini incorporate in un PDF nella qualità originale."
+      },
+      "studioDesign": "Progetta in Studio",
+      "studioDocument": "Scrivi un documento",
+      "businessCard": "Biglietto da visita",
+      "bibliography": "Bibliografia"
     },
     "convert": {
       "description": "Converti PDF in Word, Excel, PowerPoint, immagini, testo, Markdown o HTML; immagini e file Office/testo in PDF.",

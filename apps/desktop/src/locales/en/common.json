@@ -2695,8 +2695,17 @@
         "create-paper": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF",
         "cover": "Put a designed cover page in front of a PDF: title, author, institution, logo or photo",
         "create-book": "Markdown or text chapters as a book with a cover, linked contents and page numbers",
-        "create-cv": "A CV with a classic, modern or compact template, photo and clickable contacts"
-      }
+        "create-cv": "A CV with a classic, modern or compact template, photo and clickable contacts",
+        "studio-design": "Posters, flyers, invitations and social posts on a free canvas with 170+ templates.",
+        "studio-document": "Write a report, article or thesis with headings, tables, citations and a contents list.",
+        "business-card": "Two-sided cards with foil, emboss and spot UV, print-ready with bleed and imposition.",
+        "bibliography": "Import .bib, RIS or CSL JSON, edit sources and export an APA, MLA, Chicago or IEEE reference list.",
+        "extract-images": "Pull every embedded picture out of a PDF in its original quality."
+      },
+      "studioDesign": "Design in Studio",
+      "studioDocument": "Write a document",
+      "businessCard": "Business card",
+      "bibliography": "Bibliography"
     },
     "convert": {
       "description": "Convert PDF to Word, Excel, PowerPoint, images, text, Markdown or HTML; images and Office/text files to PDF.",

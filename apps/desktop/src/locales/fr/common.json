@@ -2694,8 +2694,17 @@
         "create-paper": "Papier blanc, ligné, quadrillé, pointillé ou à musique en PDF prêt à imprimer",
         "cover": "Placer une page de couverture soignée devant un PDF : titre, auteur, établissement, logo ou photo",
         "create-book": "Des chapitres Markdown ou texte en livre avec couverture, table des matières cliquable et numéros de page",
-        "create-cv": "CV avec modèle classique, moderne ou compact, photo et coordonnées cliquables"
-      }
+        "create-cv": "CV avec modèle classique, moderne ou compact, photo et coordonnées cliquables",
+        "studio-design": "Affiches, flyers, invitations et publications sociales sur un canevas libre avec plus de 170 modèles.",
+        "studio-document": "Rédigez un rapport, un article ou une thèse avec titres, tableaux, citations et table des matières.",
+        "business-card": "Cartes recto verso avec dorure, gaufrage et vernis sélectif, prêtes à imprimer avec fond perdu et imposition.",
+        "bibliography": "Importez .bib, RIS ou CSL JSON, modifiez les sources et exportez une bibliographie APA, MLA, Chicago ou IEEE.",
+        "extract-images": "Récupérez toutes les images intégrées d'un PDF dans leur qualité d'origine."
+      },
+      "studioDesign": "Créer dans Studio",
+      "studioDocument": "Rédiger un document",
+      "businessCard": "Carte de visite",
+      "bibliography": "Bibliographie"
     },
     "convert": {
       "description": "Convertissez un PDF en Word, Excel, PowerPoint, images, texte, Markdown ou HTML ; des images et fichiers Office/texte en PDF.",
