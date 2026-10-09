@@ -292,6 +292,7 @@ import type {
 import type {
   StudioDocument,
   StudioDocumentContent,
+  StudioDocumentImport,
   StudioDocumentPage,
   StudioDocumentPreview,
   StudioDraftLoadResult,
@@ -703,7 +704,7 @@ export const studioOpenDocument = (params: { path: string }, options?: RpcCallOp
   rpc<{ document: unknown }>("studio.open_document", params, options);
 
 export const studioImportDocument = (params: { path: string }, options?: RpcCallOptions) =>
-  rpc<{ html: string; title: string }>("studio.import_document", params, options);
+  rpc<StudioDocumentImport>("studio.import_document", params, options);
 
 export const studioReadBibliography = (params: { path: string }, options?: RpcCallOptions) =>
   rpc<{ text: string; name: string }>("studio.read_bibliography", params, options);

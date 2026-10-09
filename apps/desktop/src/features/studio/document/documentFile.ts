@@ -3,9 +3,10 @@ import { sanitizeFileName } from "@/shared/lib/naming";
 import { defaultOutputDirectory, dirnameOf, joinPath, stemOf } from "@/shared/lib/paths";
 import { studioDocumentImage, studioImportDocument, studioOpenDocument, studioSaveDocument } from "@/shared/rpc/operations";
 import type { RpcError } from "@/types";
-import { STUDIO_DOCUMENT_EXTENSION, type StudioDocument } from "@/types/studio";
+import { STUDIO_DOCUMENT_EXTENSION, type StudioDocument, type StudioDocumentImport } from "@/types/studio";
 import { useRecentDesignsStore } from "../design/recentDesigns";
 import { IMAGE_EXTENSIONS } from "../design/pickImage";
+import { parseBibtex } from "./bibtex";
 import { createDocument, normalizeDocument, pageSize } from "./model";
 import { useDocumentStore } from "./documentStore";
 
@@ -54,9 +55,13 @@ export async function pickImportFile(filterName: string): Promise<string | null>
   return typeof selected === "string" ? selected : null;
 }
 
+export function importedDocument(result: StudioDocumentImport): StudioDocument {
+  const document = createDocument(result.title, result.html, { author: result.author, date: result.date, referencesTitle: result.referencesTitle });
+  return result.bibliography ? { ...document, sources: parseBibtex(result.bibliography).entries } : document;
+}
+
 export async function importAsDocument(path: string): Promise<StudioDocument> {
-  const result = await studioImportDocument({ path });
-  return createDocument(result.title, result.html);
+  return importedDocument(await studioImportDocument({ path }));
 }
 
 export async function pickDocumentImage(title: string): Promise<{ src: string; width: number; height: number } | null> {

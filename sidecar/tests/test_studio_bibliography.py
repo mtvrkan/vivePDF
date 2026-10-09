@@ -8,7 +8,7 @@ from vivepdf.ops._studio_document_models import (
     StudioDocumentOpenParams,
     StudioDocumentRenderParams,
 )
-from vivepdf.ops.studio_document import read_bibliography, render_document
+from vivepdf.ops.studio_document import import_document, read_bibliography, render_document
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
@@ -37,7 +37,7 @@ def test_a_bib_file_is_read_as_text_in_its_own_encoding(tmp_path: Path):
 
 def test_other_files_missing_files_and_huge_files_are_refused(tmp_path: Path, monkeypatch):
     text = tmp_path / "notes.txt"
-    text.write_text(ENTRY, encoding="utf-8")
+    text.write_text(ENTRY, encoding="utf-8", newline="\n")
     huge = tmp_path / "huge.bib"
     huge.write_text(ENTRY * 10, encoding="utf-8")
     monkeypatch.setattr(studio_document, "MAX_BIBLIOGRAPHY_BYTES", 32)
@@ -76,3 +76,50 @@ def test_reference_entries_hang_under_their_first_line(tmp_path: Path):
         first = next(line for line in lines if line["spans"][0]["text"].startswith("Yılmaz"))
         second = lines[lines.index(first) + 1]
     assert second["bbox"][0] - first["bbox"][0] == pytest.approx(24, abs=1)
+
+
+def _import(path: Path):
+    return import_document(
+        StudioDocumentOpenParams.model_validate({"path": str(path)}), silent_progress()
+    )
+
+
+def test_a_pandoc_article_imports_with_its_metadata_citations_and_bibliography(tmp_path: Path):
+    paper = tmp_path / "paper" / "article.md"
+    paper.parent.mkdir()
+    (paper.parent / "refs.bib").write_text(ENTRY, encoding="utf-8", newline="\n")
+    (tmp_path / "outside.bib").write_text("@book{secret, title={No}}", encoding="utf-8")
+    paper.write_text(
+        "---\ntitle: Kent Isısı\nauthor: [Ayşe Yılmaz, Mehmet Doğan]\ndate: 2026\n"
+        "bibliography: [refs.bib, ../outside.bib, missing.bib]\n---\n"
+        "# Giriş\n\nIsı artıyor [@yilmaz2020, s. 4].\n\n# Kaynakça\n",
+        encoding="utf-8",
+    )
+
+    result = _import(paper)
+
+    assert result.title == "Kent Isısı"
+    assert result.author == "Ayşe Yılmaz, Mehmet Doğan"
+    assert result.date == "2026"
+    assert result.references_title == "Kaynakça"
+    assert result.bibliography == ENTRY
+    assert "data-citation=" in result.html
+    assert result.html.endswith('<div data-bibliography=""></div>')
+    assert "title: Kent" not in result.html
+
+
+def test_a_cited_markdown_file_picks_up_a_bib_file_with_its_own_name(tmp_path: Path):
+    paper = tmp_path / "thesis.md"
+    paper.write_text("Text [@yilmaz2020].\n", encoding="utf-8")
+    (tmp_path / "thesis.bib").write_text(ENTRY, encoding="utf-8", newline="\n")
+    plain = tmp_path / "notes.md"
+    plain.write_text("No citations here.\n", encoding="utf-8")
+    (tmp_path / "notes.bib").write_text(ENTRY, encoding="utf-8", newline="\n")
+
+    cited = _import(paper)
+    uncited = _import(plain)
+
+    assert cited.bibliography == ENTRY
+    assert cited.title == "thesis"
+    assert uncited.bibliography == ""
+    assert "data-bibliography" not in uncited.html

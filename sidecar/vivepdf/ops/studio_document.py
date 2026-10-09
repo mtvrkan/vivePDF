@@ -10,6 +10,7 @@ from pathlib import Path
 import pymupdf
 
 from vivepdf.ops._html_clean import body_fragment, visible_text, without_remote_pictures
+from vivepdf.ops._markdown_citations import FrontMatter, split_front_matter, with_citations
 from vivepdf.ops._output import (
     OutputResult,
     prepare_data_output,
@@ -51,6 +52,7 @@ PREVIEW_SLOTS = 4
 IMPORT_EXTENSIONS = {"md", "markdown", "txt", "text", "html", "htm"}
 BIBLIOGRAPHY_EXTENSIONS = {"bib", "bibtex"}
 MAX_BIBLIOGRAPHY_BYTES = 8 * 1024 * 1024
+MAX_LINKED_BIBLIOGRAPHIES = 10
 IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "webp", "bmp", "tif", "tiff", "heic", "heif"}
 MAX_IMPORT_BYTES = 20 * 1024 * 1024
 MAX_IMPORTED_IMAGES = 100
@@ -254,18 +256,50 @@ def import_document(
             {"reason": "sourceTooLarge", "limit": MAX_IMPORT_BYTES},
         )
     payload = source.read_bytes()
+    meta = FrontMatter()
+    cited = False
+    references_title = ""
     if extension in ("html", "htm"):
         body = without_remote_pictures(
             body_fragment(decode_text(payload, declared_charset(payload)))
         )
     elif extension in ("md", "markdown"):
-        body = markdown_to_html(decode_text(payload))
+        meta, text = split_front_matter(decode_text(payload))
+        body, cited, references_title = with_citations(markdown_to_html(text))
     else:
         body = _text_html(decode_text(payload))
-    body = _with_pictures(body, source.parent.resolve())
+    folder = source.parent.resolve()
+    body = _with_pictures(body, folder)
     heading = LEADING_H1.search(body)
-    title = visible_text(heading.group(1)) if heading else ""
-    return StudioDocumentImportResult(html=body, title=html.unescape(title) or source.stem)
+    leading = html.unescape(visible_text(heading.group(1))) if heading else ""
+    return StudioDocumentImportResult(
+        html=body,
+        title=meta.first("title", 300) or leading or source.stem,
+        author=meta.joined("author", 300),
+        date=meta.first("date", 80),
+        references_title=references_title,
+        bibliography=_linked_bibliography(source, folder, meta, cited),
+    )
+
+
+def _linked_bibliography(source: Path, folder: Path, meta: FrontMatter, cited: bool) -> str:
+    names = meta.values.get("bibliography", [])[:MAX_LINKED_BIBLIOGRAPHIES]
+    if not names and cited:
+        names = [f"{source.stem}.{extension}" for extension in sorted(BIBLIOGRAPHY_EXTENSIONS)]
+    texts: list[str] = []
+    budget = MAX_BIBLIOGRAPHY_BYTES
+    for name in names:
+        candidate = (folder / name).resolve()
+        if not candidate.is_relative_to(folder) or not candidate.is_file():
+            continue
+        if candidate.suffix.lower().lstrip(".") not in BIBLIOGRAPHY_EXTENSIONS:
+            continue
+        size = candidate.stat().st_size
+        if size > budget:
+            continue
+        budget -= size
+        texts.append(decode_text(candidate.read_bytes()))
+    return "\n".join(texts)
 
 
 @op("studio.document_image", StudioDocumentOpenParams)

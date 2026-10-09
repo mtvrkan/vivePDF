@@ -107,6 +107,10 @@ class StudioDocumentOpenResult(RpcModel):
 class StudioDocumentImportResult(RpcModel):
     html: str
     title: str
+    author: str = ""
+    date: str = ""
+    references_title: str = ""
+    bibliography: str = ""
 
 
 class StudioBibliographyResult(RpcModel):

@@ -473,6 +473,8 @@ export type StudioDocument = { version: number; kind: "document"; name: string; 
 
 export type StudioDocumentContent = { html: string; images: string[]; fonts: string[]; settings: DocumentLayout; title: string; language: string };
 
+export type StudioDocumentImport = { html: string; title: string; author: string; date: string; referencesTitle: string; bibliography: string };
+
 export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number };
 
 export type StudioDocumentPage = { image: string; width: number; height: number };
