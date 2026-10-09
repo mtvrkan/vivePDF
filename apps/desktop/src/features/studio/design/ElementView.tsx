@@ -236,9 +236,9 @@ function BackgroundView({ page }: { page: StudioPage }) {
   );
 }
 
-export function PageView({ page, language, renderElement }: { page: StudioPage; language: string; renderElement?: (element: StudioElement) => ReactNode }) {
+export function PageView({ page, language, renderElement, corner = 0 }: { page: StudioPage; language: string; renderElement?: (element: StudioElement) => ReactNode; corner?: number }) {
   return (
-    <div style={{ position: "relative", width: `${page.width}px`, height: `${page.height}px`, overflow: "hidden" }}>
+    <div style={{ position: "relative", width: `${page.width}px`, height: `${page.height}px`, overflow: "hidden", borderRadius: corner > 0 ? `${corner}px` : undefined }}>
       <BackgroundView page={page} />
       {page.elements.map((element) => (element.hidden ? null : renderElement ? renderElement(element) : <ElementView key={element.id} element={element} language={language} />))}
     </div>

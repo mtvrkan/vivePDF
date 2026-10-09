@@ -22,6 +22,7 @@ import {
   type StudioLineJoin,
   type StudioPage,
   type StudioParagraph,
+  type StudioPrintSettings,
   type StudioQrElement,
   type StudioShapeElement,
   type StudioShapeKind,
@@ -45,7 +46,11 @@ export const STUDIO_PAGE_SIZES = {
   a5: { width: 419.53, height: 595.28 },
   letter: { width: 612, height: 792 },
   letterLandscape: { width: 792, height: 612 },
+  businessCardEu: { width: 240.94, height: 155.91 },
+  businessCardWide: { width: 255.12, height: 141.73 },
   businessCard: { width: 252, height: 144 },
+  businessCardSquare: { width: 184.25, height: 184.25 },
+  businessCardMini: { width: 198.43, height: 79.37 },
   square: { width: 810, height: 810 },
   story: { width: 810, height: 1440 },
   presentation: { width: 960, height: 540 },
@@ -541,7 +546,17 @@ export function normalizeDesign(value: unknown): StudioDesign | null {
   const pages = (Array.isArray(raw.pages) ? raw.pages.slice(0, MAX_PAGES) : []).map(normalizePage).filter((page): page is StudioPage => page !== null);
   if (!pages.length) return null;
   const palette = (Array.isArray(raw.palette) ? raw.palette : []).filter((item): item is string => typeof item === "string" && COLOUR.test(item)).slice(0, 24);
-  return { version: STUDIO_DESIGN_VERSION, kind: "design", name: text(raw.name, "", 200), palette, pages, margins: finite(raw.margins, 0, 0, MAX_MARGIN_MM) };
+  const print = normalizePrint(raw.print);
+  return { version: STUDIO_DESIGN_VERSION, kind: "design", name: text(raw.name, "", 200), palette, pages, margins: finite(raw.margins, 0, 0, MAX_MARGIN_MM), ...(print ? { print } : {}) };
+}
+
+export const MAX_CORNER_MM = 10;
+
+function normalizePrint(value: unknown): StudioPrintSettings | null {
+  const raw = record(value);
+  if (!raw) return null;
+  const cornerMm = finite(raw.cornerMm, 0, 0, MAX_CORNER_MM);
+  return cornerMm > 0 ? { cornerMm } : null;
 }
 
 const designLibraryFonts = new WeakMap<StudioPage[], string[]>();

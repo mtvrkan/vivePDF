@@ -227,6 +227,8 @@ export type StudioPage = {
   guides?: StudioGuide[];
 };
 
+export type StudioPrintSettings = { cornerMm?: number };
+
 export type StudioDesign = {
   version: number;
   kind: "design";
@@ -234,6 +236,7 @@ export type StudioDesign = {
   palette: string[];
   pages: StudioPage[];
   margins?: number;
+  print?: StudioPrintSettings;
 };
 
 export type StudioRenderStop = { offset: number; color: string };

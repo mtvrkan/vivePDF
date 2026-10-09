@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Select } from "@/components/shared/Select";
 import { Segmented, SliderField, TextInput } from "@/components/tool/form";
 import type { StudioPage } from "@/types/studio";
-import { MAX_PAGE_NAME, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
+import { cornerOf, withCorner } from "../model/cards";
+import { MAX_CORNER_MM, MAX_PAGE_NAME, STUDIO_PAGE_SIZES, type StudioPageSize } from "../model/design";
 import { resizeAllPages, resizePage, type PageResizeMode } from "../model/pages";
 import { FillEditor, NumberField, PanelSection } from "./controls";
 import { pickImage } from "./pickImage";
@@ -23,6 +24,7 @@ export function PageProperties({ page }: { page: StudioPage }) {
   const applyToPage = useStudioStore((state) => state.applyToPage);
   const apply = useStudioStore((state) => state.apply);
   const sameSize = useStudioStore((state) => state.design?.pages.every((other) => other.width === page.width && other.height === page.height) ?? true);
+  const corner = useStudioStore((state) => (state.design ? cornerOf(state.design) : 0));
   const [mode, setMode] = useState<PageResizeMode>(resizeChoice.mode);
   const setPage = (patch: Partial<StudioPage>, merge?: string) => applyToPage((current) => ({ ...current, ...patch }), merge ? { merge } : undefined);
   const resize = (width: number, height: number) => applyToPage((current) => resizePage(current, width, height, mode));
@@ -74,6 +76,17 @@ export function PageProperties({ page }: { page: StudioPage }) {
             ariaLabel={t("studio.page.resizeContent")}
           />
         </div>
+        <NumberField
+          label={t("studio.page.corner")}
+          suffix="mm"
+          value={corner}
+          min={0}
+          max={MAX_CORNER_MM}
+          step={0.5}
+          mergeKey="page-corner"
+          onChange={(value, merge) => apply((design) => withCorner(design, value), merge ? { merge } : undefined)}
+        />
+        {corner > 0 ? <p className="text-xs text-muted-foreground">{t("studio.page.cornerHint")}</p> : null}
         <button
           type="button"
           className="glass-chip h-8 w-full rounded-lg px-3 text-sm font-medium disabled:opacity-50"

@@ -6700,7 +6700,9 @@
       "resume": "Devam et",
       "blank": "Boş sayfayla başlayın",
       "custom": "Özel boyut",
-      "create": "Oluştur"
+      "create": "Oluştur",
+      "cards": "Kartvizitler",
+      "cardsHint": "Ön ve arka yüzüyle, baskıya hazır"
     },
     "sizes": {
       "a4": "A4 dikey",
@@ -6708,12 +6710,16 @@
       "a5": "A5",
       "letter": "Letter",
       "letterLandscape": "Letter yatay",
-      "businessCard": "Kartvizit",
+      "businessCard": "Kartvizit (ABD, 3,5 × 2 inç)",
       "square": "Kare gönderi",
       "story": "Hikâye",
       "presentation": "Sunum (16:9)",
       "poster": "A3 afiş",
-      "custom": "Özel"
+      "custom": "Özel",
+      "businessCardEu": "Kartvizit (85 × 55)",
+      "businessCardWide": "Kartvizit (90 × 50)",
+      "businessCardSquare": "Kare kartvizit",
+      "businessCardMini": "Mini kartvizit"
     },
     "toolbar": {
       "label": "Tasarım araçları",
@@ -6840,7 +6846,11 @@
         "scale": "Sayfaya göre ölçekle"
       },
       "applyToAll": "Bu boyutu tüm sayfalara uygula",
-      "noBackgroundHint": "Arka plan yok: PNG resimlerde sayfa saydam kalır; PDF'te ve baskıda beyaz kâğıt görünür."
+      "noBackgroundHint": "Arka plan yok: PNG resimlerde sayfa saydam kalır; PDF'te ve baskıda beyaz kâğıt görünür.",
+      "front": "Ön yüz",
+      "back": "Arka yüz",
+      "corner": "Köşe yuvarlatma",
+      "cornerHint": "Matbaa köşeleri bu yarıçapla keser; dışa aktarılan sayfanın köşeleri düz kalır."
     },
     "props": {
       "label": "Özellikler",

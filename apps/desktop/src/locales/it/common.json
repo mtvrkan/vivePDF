@@ -6698,7 +6698,9 @@
       "resume": "Continua",
       "blank": "Inizia con una pagina vuota",
       "custom": "Dimensioni personalizzate",
-      "create": "Crea"
+      "create": "Crea",
+      "cards": "Biglietti da visita",
+      "cardsHint": "Fronte e retro, pronti per la stampa"
     },
     "sizes": {
       "a4": "A4 verticale",
@@ -6706,12 +6708,16 @@
       "a5": "A5",
       "letter": "Lettera USA",
       "letterLandscape": "Lettera USA orizzontale",
-      "businessCard": "Biglietto da visita",
+      "businessCard": "Biglietto da visita (USA, 3,5 × 2 in)",
       "square": "Post quadrato",
       "story": "Storia",
       "presentation": "Presentazione (16:9)",
       "poster": "Poster A3",
-      "custom": "Personalizzato"
+      "custom": "Personalizzato",
+      "businessCardEu": "Biglietto da visita (85 × 55)",
+      "businessCardWide": "Biglietto da visita (90 × 50)",
+      "businessCardSquare": "Biglietto quadrato",
+      "businessCardMini": "Mini biglietto"
     },
     "toolbar": {
       "label": "Strumenti di progettazione",
@@ -6838,7 +6844,11 @@
         "scale": "Ridimensiona per adattare"
       },
       "applyToAll": "Applica queste dimensioni a tutte le pagine",
-      "noBackgroundHint": "Nessuno sfondo: le immagini PNG lasciano la pagina trasparente, mentre il PDF e la stampa mostrano carta bianca."
+      "noBackgroundHint": "Nessuno sfondo: le immagini PNG lasciano la pagina trasparente, mentre il PDF e la stampa mostrano carta bianca.",
+      "front": "Fronte",
+      "back": "Retro",
+      "corner": "Angoli arrotondati",
+      "cornerHint": "La tipografia taglia gli angoli con questo raggio; la pagina esportata mantiene gli angoli retti."
     },
     "props": {
       "label": "Proprietà",

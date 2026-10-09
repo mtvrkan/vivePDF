@@ -6698,7 +6698,9 @@
       "resume": "Continuer",
       "blank": "Commencer avec une page vierge",
       "custom": "Taille personnalisée",
-      "create": "Créer"
+      "create": "Créer",
+      "cards": "Cartes de visite",
+      "cardsHint": "Recto et verso, prêtes à imprimer"
     },
     "sizes": {
       "a4": "A4 portrait",
@@ -6706,12 +6708,16 @@
       "a5": "A5",
       "letter": "Lettre US",
       "letterLandscape": "Lettre US paysage",
-      "businessCard": "Carte de visite",
+      "businessCard": "Carte de visite (US, 3,5 × 2 po)",
       "square": "Publication carrée",
       "story": "Story",
       "presentation": "Présentation (16:9)",
       "poster": "Affiche A3",
-      "custom": "Personnalisée"
+      "custom": "Personnalisée",
+      "businessCardEu": "Carte de visite (85 × 55)",
+      "businessCardWide": "Carte de visite (90 × 50)",
+      "businessCardSquare": "Carte carrée",
+      "businessCardMini": "Mini-carte"
     },
     "toolbar": {
       "label": "Outils de création",
@@ -6838,7 +6844,11 @@
         "scale": "Mettre à l’échelle"
       },
       "applyToAll": "Appliquer ce format à toutes les pages",
-      "noBackgroundHint": "Sans arrière-plan : les images PNG gardent la page transparente, tandis que le PDF et l’impression affichent du papier blanc."
+      "noBackgroundHint": "Sans arrière-plan : les images PNG gardent la page transparente, tandis que le PDF et l’impression affichent du papier blanc.",
+      "front": "Recto",
+      "back": "Verso",
+      "corner": "Coins arrondis",
+      "cornerHint": "L’imprimeur découpe les coins avec ce rayon ; la page exportée garde des coins droits."
     },
     "props": {
       "label": "Propriétés",

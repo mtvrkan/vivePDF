@@ -6698,7 +6698,9 @@
       "resume": "Continuar",
       "blank": "Começar com uma página em branco",
       "custom": "Tamanho personalizado",
-      "create": "Criar"
+      "create": "Criar",
+      "cards": "Cartões de visita",
+      "cardsHint": "Frente e verso, prontos para impressão"
     },
     "sizes": {
       "a4": "A4 retrato",
@@ -6706,12 +6708,16 @@
       "a5": "A5",
       "letter": "Carta (EUA)",
       "letterLandscape": "Carta (EUA) paisagem",
-      "businessCard": "Cartão de visita",
+      "businessCard": "Cartão de visita (EUA, 3,5 × 2 pol)",
       "square": "Post quadrado",
       "story": "Story",
       "presentation": "Apresentação (16:9)",
       "poster": "Cartaz A3",
-      "custom": "Personalizado"
+      "custom": "Personalizado",
+      "businessCardEu": "Cartão de visita (85 × 55)",
+      "businessCardWide": "Cartão de visita (90 × 50)",
+      "businessCardSquare": "Cartão quadrado",
+      "businessCardMini": "Minicartão"
     },
     "toolbar": {
       "label": "Ferramentas de design",
@@ -6838,7 +6844,11 @@
         "scale": "Ajustar à escala"
       },
       "applyToAll": "Aplicar este tamanho a todas as páginas",
-      "noBackgroundHint": "Sem plano de fundo: as imagens PNG mantêm a página transparente, enquanto o PDF e a impressão mostram papel branco."
+      "noBackgroundHint": "Sem plano de fundo: as imagens PNG mantêm a página transparente, enquanto o PDF e a impressão mostram papel branco.",
+      "front": "Frente",
+      "back": "Verso",
+      "corner": "Cantos arredondados",
+      "cornerHint": "A gráfica corta os cantos com este raio; a página exportada mantém os cantos retos."
     },
     "props": {
       "label": "Propriedades",

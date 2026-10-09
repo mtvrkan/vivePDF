@@ -6698,7 +6698,9 @@
       "resume": "Weiter",
       "blank": "Mit einer leeren Seite beginnen",
       "custom": "Eigene Größe",
-      "create": "Erstellen"
+      "create": "Erstellen",
+      "cards": "Visitenkarten",
+      "cardsHint": "Vorder- und Rückseite, druckfertig"
     },
     "sizes": {
       "a4": "A4 Hochformat",
@@ -6706,12 +6708,16 @@
       "a5": "A5",
       "letter": "US Letter",
       "letterLandscape": "US Letter Querformat",
-      "businessCard": "Visitenkarte",
+      "businessCard": "Visitenkarte (US, 3,5 × 2 in)",
       "square": "Quadratischer Beitrag",
       "story": "Story",
       "presentation": "Präsentation (16:9)",
       "poster": "A3-Poster",
-      "custom": "Eigene"
+      "custom": "Eigene",
+      "businessCardEu": "Visitenkarte (85 × 55)",
+      "businessCardWide": "Visitenkarte (90 × 50)",
+      "businessCardSquare": "Quadratische Karte",
+      "businessCardMini": "Minikarte"
     },
     "toolbar": {
       "label": "Designwerkzeuge",
@@ -6838,7 +6844,11 @@
         "scale": "Mitskalieren"
       },
       "applyToAll": "Diese Größe auf alle Seiten anwenden",
-      "noBackgroundHint": "Kein Hintergrund: In PNG-Bildern bleibt die Seite transparent, im PDF und beim Drucken erscheint weißes Papier."
+      "noBackgroundHint": "Kein Hintergrund: In PNG-Bildern bleibt die Seite transparent, im PDF und beim Drucken erscheint weißes Papier.",
+      "front": "Vorderseite",
+      "back": "Rückseite",
+      "corner": "Abgerundete Ecken",
+      "cornerHint": "Die Druckerei schneidet die Ecken mit diesem Radius; die exportierte Seite behält eckige Ecken."
     },
     "props": {
       "label": "Eigenschaften",

@@ -6698,7 +6698,9 @@
       "resume": "Continuar",
       "blank": "Empezar con una página en blanco",
       "custom": "Tamaño personalizado",
-      "create": "Crear"
+      "create": "Crear",
+      "cards": "Tarjetas de visita",
+      "cardsHint": "Anverso y reverso, listas para imprimir"
     },
     "sizes": {
       "a4": "A4 vertical",
@@ -6706,12 +6708,16 @@
       "a5": "A5",
       "letter": "Carta (EE. UU.)",
       "letterLandscape": "Carta (EE. UU.) horizontal",
-      "businessCard": "Tarjeta de visita",
+      "businessCard": "Tarjeta de visita (EE. UU., 3,5 × 2 in)",
       "square": "Publicación cuadrada",
       "story": "Historia",
       "presentation": "Presentación (16:9)",
       "poster": "Cartel A3",
-      "custom": "Personalizado"
+      "custom": "Personalizado",
+      "businessCardEu": "Tarjeta de visita (85 × 55)",
+      "businessCardWide": "Tarjeta de visita (90 × 50)",
+      "businessCardSquare": "Tarjeta cuadrada",
+      "businessCardMini": "Minitarjeta"
     },
     "toolbar": {
       "label": "Herramientas de diseño",
@@ -6838,7 +6844,11 @@
         "scale": "Escalar para ajustar"
       },
       "applyToAll": "Aplicar este tamaño a todas las páginas",
-      "noBackgroundHint": "Sin fondo: las imágenes PNG mantienen la página transparente, mientras que el PDF y la impresión muestran papel blanco."
+      "noBackgroundHint": "Sin fondo: las imágenes PNG mantienen la página transparente, mientras que el PDF y la impresión muestran papel blanco.",
+      "front": "Anverso",
+      "back": "Reverso",
+      "corner": "Esquinas redondeadas",
+      "cornerHint": "La imprenta corta las esquinas con este radio; la página exportada conserva las esquinas rectas."
     },
     "props": {
       "label": "Propiedades",

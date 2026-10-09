@@ -6700,7 +6700,9 @@
       "resume": "Continue",
       "blank": "Start with a blank page",
       "custom": "Custom size",
-      "create": "Create"
+      "create": "Create",
+      "cards": "Business cards",
+      "cardsHint": "Front and back sides, ready for print"
     },
     "sizes": {
       "a4": "A4 portrait",
@@ -6708,12 +6710,16 @@
       "a5": "A5",
       "letter": "US Letter",
       "letterLandscape": "US Letter landscape",
-      "businessCard": "Business card",
+      "businessCard": "Business card (US, 3.5 × 2 in)",
       "square": "Square post",
       "story": "Story",
       "presentation": "Presentation (16:9)",
       "poster": "A3 poster",
-      "custom": "Custom"
+      "custom": "Custom",
+      "businessCardEu": "Business card (85 × 55)",
+      "businessCardWide": "Business card (90 × 50)",
+      "businessCardSquare": "Square card",
+      "businessCardMini": "Mini card"
     },
     "toolbar": {
       "label": "Design tools",
@@ -6840,7 +6846,11 @@
         "scale": "Scale to fit"
       },
       "applyToAll": "Apply this size to all pages",
-      "noBackgroundHint": "No background: PNG pictures keep the page see-through, while PDF and printing show white paper."
+      "noBackgroundHint": "No background: PNG pictures keep the page see-through, while PDF and printing show white paper.",
+      "front": "Front",
+      "back": "Back",
+      "corner": "Rounded corners",
+      "cornerHint": "The printer cuts the corners to this radius; the exported page keeps square corners."
     },
     "props": {
       "label": "Properties",

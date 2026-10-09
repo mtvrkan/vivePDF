@@ -10,6 +10,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import type { StudioDesign, StudioPage, StudioSvgElement } from "@/types/studio";
 import { graphicOf } from "../graphics/graphicData";
 import { TableCanvasEditor } from "../graphics/TableCanvasEditor";
+import { cornerOf } from "../model/cards";
 import { guidesOf, marginsOf } from "../model/guides";
 import { elementBounds, unionBounds } from "../model/edit";
 import { PAD, type Point } from "./canvasGeometry";
@@ -75,6 +76,7 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
   const showGuides = useViewPrefs((state) => state.guides);
   const showMargins = useViewPrefs((state) => state.margins);
   const showBleed = useViewPrefs((state) => state.bleed);
+  const corner = fromMm(cornerOf(design));
   const menu = useContextMenu();
   const cropSession = useCropStore((state) => state.session);
 
@@ -127,12 +129,13 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
             role="region"
             aria-label={t("studio.canvas.label")}
             className="absolute shadow-lg"
-            style={{ left: pageLeft, top: `${PAD}px`, width: `${page.width * zoom}px`, height: `${page.height * zoom}px` }}
+            style={{ left: pageLeft, top: `${PAD}px`, width: `${page.width * zoom}px`, height: `${page.height * zoom}px`, borderRadius: corner > 0 ? `${corner * zoom}px` : undefined }}
           >
             <div style={{ transform: `scale(${zoom})`, transformOrigin: "0 0", width: `${page.width}px`, height: `${page.height}px` }}>
               <PageView
                 page={page}
                 language={language}
+                corner={corner}
                 renderElement={(element) =>
                   element.id === editingId && element.kind === "text" ? (
                     <ElementView key={element.id} element={{ ...element, flipX: false, flipY: false }} language={language}>

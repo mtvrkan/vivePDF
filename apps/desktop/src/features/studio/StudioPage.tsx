@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { useUiStore } from "@/shared/store/uiStore";
 import { describeError } from "@/shared/lib/errorMessage";
 import type { StudioDesign } from "@/types/studio";
+import { CARD_SIZES, createCardDesign } from "./model/cards";
 import { STUDIO_PAGE_SIZES, createDesign, type StudioPageSize } from "./model/design";
 import { Canvas } from "./design/Canvas";
 import { NumberField } from "./design/controls";
@@ -42,7 +43,7 @@ import { TemplateGallery } from "./templates/TemplateGallery";
 const DocumentEditor = lazy(() => import("./document/DocumentEditor"));
 const CvStudio = lazy(() => import("./cv/CvStudio"));
 
-const START_SIZES: StudioPageSize[] = ["a4", "a4Landscape", "a5", "letter", "square", "story", "presentation", "businessCard", "poster"];
+const START_SIZES: StudioPageSize[] = ["a4", "a4Landscape", "a5", "letter", "square", "story", "presentation", "poster"];
 const PREVIEW_BOX = 96;
 
 function SizeCard({ size, onPick }: { size: StudioPageSize; onPick: () => void }) {
@@ -196,6 +197,19 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {START_SIZES.map((size) => (
               <SizeCard key={size} size={size} onPick={() => create(STUDIO_PAGE_SIZES[size].width, STUDIO_PAGE_SIZES[size].height)} />
+            ))}
+          </div>
+        </section>
+        <section className="space-y-3" aria-labelledby="studio-cards">
+          <div>
+            <h2 id="studio-cards" className="text-base font-semibold">
+              {t("studio.start.cards")}
+            </h2>
+            <p className="text-sm text-muted-foreground">{t("studio.start.cardsHint")}</p>
+          </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {CARD_SIZES.map((size) => (
+              <SizeCard key={size} size={size} onPick={() => onOpen(createCardDesign(size, { front: t("studio.page.front"), back: t("studio.page.back") }))} />
             ))}
           </div>
         </section>

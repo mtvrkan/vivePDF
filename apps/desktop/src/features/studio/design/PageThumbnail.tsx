@@ -1,9 +1,11 @@
 import { memo, useDeferredValue, useMemo, useRef, type RefObject } from "react";
 import { cn } from "@/shared/lib/cn";
 import type { StudioPage } from "@/types/studio";
+import { cornerOf } from "../model/cards";
 import type { DropSide } from "./dragSort";
 import { PageView } from "./ElementView";
 import { useStudioStore } from "./studioStore";
+import { fromMm } from "./units";
 import { useInView } from "./useInView";
 
 export const PageThumbnail = memo(function PageThumbnail({ page, language, scale, root, margin }: { page: StudioPage; language: string; scale: number; root: RefObject<Element | null> | null; margin?: string }) {
@@ -13,7 +15,8 @@ export const PageThumbnail = memo(function PageThumbnail({ page, language, scale
   const held = useRef(page);
   if (!interacting) held.current = page;
   const shown = useDeferredValue(held.current);
-  const view = useMemo(() => <PageView page={shown} language={language} />, [shown, language]);
+  const corner = useStudioStore((state) => (state.design ? fromMm(cornerOf(state.design)) : 0));
+  const view = useMemo(() => <PageView page={shown} language={language} corner={corner} />, [shown, language, corner]);
   return (
     <span ref={ref} className="relative block overflow-hidden" style={{ width: `${page.width * scale}px`, height: `${page.height * scale}px` }} aria-hidden>
       {visible ? (
