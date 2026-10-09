@@ -1,11 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { Segmented, SwitchField, TextArea, TextInput } from "@/components/tool/form";
 import type { StudioQrElement } from "@/types/studio";
-import { buildVCard, EMPTY_VCARD, isVCard, parseVCard, VCARD_FIELDS, type VCard, type VCardField } from "../model/vcard";
+import { buildVCard, EMPTY_VCARD, isVCard, parseVCard, QR_VALUE_LIMIT, VCARD_FIELDS, type VCard, type VCardField } from "../model/vcard";
 import { patchSelected } from "./commands";
 import { ColorField, PanelSection } from "./controls";
 
 const CONTENTS = ["text", "contact"] as const;
+const FULL_MARGIN = 200;
 const WIDE_FIELDS: ReadonlySet<VCardField> = new Set(["organization", "title", "email", "website", "address"]);
 const INPUT_TYPES: Partial<Record<VCardField, string>> = { phone: "tel", mobile: "tel", email: "email", website: "url" };
 
@@ -39,11 +40,24 @@ export function QrSection({ element }: { element: StudioQrElement }) {
     <PanelSection title={t("studio.props.qr")}>
       <Segmented size="sm" value={content} options={CONTENTS} labelOf={(value) => t(`studio.props.qrContents.${value}`)} onChange={switchContent} ariaLabel={t("studio.props.qrContent")} />
       {card ? (
-        <ContactFields card={card} onChange={(field, value) => set({ value: buildVCard({ ...card, [field]: value }) }, `qr-vcard-${field}`)} />
+        <>
+          <ContactFields
+            card={card}
+            onChange={(field, value) => {
+              const next = buildVCard({ ...card, [field]: value });
+              if (next.length <= QR_VALUE_LIMIT) set({ value: next }, `qr-vcard-${field}`);
+            }}
+          />
+          {element.value.length > QR_VALUE_LIMIT - FULL_MARGIN ? (
+            <p className="text-xs text-warning" role="status">
+              {t("studio.props.vcard.full")}
+            </p>
+          ) : null}
+        </>
       ) : (
         <label className="block">
           <span className="mb-1 block text-xs font-medium text-muted-foreground">{t("studio.props.qrValue")}</span>
-          <TextArea rows={3} value={element.value} maxLength={2000} onChange={(event) => set({ value: event.target.value }, "qr-value")} />
+          <TextArea rows={3} value={element.value} maxLength={QR_VALUE_LIMIT} onChange={(event) => set({ value: event.target.value }, "qr-value")} />
         </label>
       )}
       <ColorField label={t("studio.props.color")} value={element.color} onChange={(color) => set({ color })} />

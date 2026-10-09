@@ -17,6 +17,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Studio: contact card QR fields accept spaces between words again, stop before the code grows past what a QR code holds (with a hint when nearly full), and merged row values with commas, semicolons or line breaks no longer break the contact card [2026-10-09]
+- Studio: print-ready PDFs no longer stretch edge pictures into the bleed — the bleed is filled from the picture beyond its crop — and leave outlined or rounded rectangles and circle or rounded pictures at the trim instead of distorting them [2026-10-09]
+- Studio: editing the finish of several selected elements changes only that setting on each instead of copying the first element's finish to all; resizing a selection that holds a table stretches its rows; a flipped or foiled table is shown straight and plain while its cells are edited [2026-10-09]
 - Studio CV: entry dates are written in the CV language whatever language they were typed in, and Arabic CVs are laid out right to left [2026-10-09]
 - Studio CV: a long summary, interests list, project description or custom section now carries over to the next page instead of being drawn past the bottom edge; a single item taller than a page is reported as left out [2026-10-09]
 - Studio CV: Undo in the toast after filling the sample, opening a CV file or importing a PDF brings back exactly the CV from before, and picking a theme option that is already set no longer adds an undo step; pasting a list into skills or languages undoes in one step [2026-10-09]

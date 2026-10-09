@@ -5,6 +5,7 @@ import { createDesign, createShape, createSvg } from "../model/design";
 import { graphicOf } from "../graphics/graphicData";
 import { createTableData } from "../graphics/tableModel";
 import { Canvas } from "./Canvas";
+import { defaultFinish } from "../model/finish";
 import { lineEndpoints } from "./lineGeometry";
 import { currentPage, useStudioStore } from "./studioStore";
 import { DEFAULT_VIEW_PREFS, useViewPrefs } from "./viewPrefs";
@@ -189,6 +190,19 @@ describe("studio canvas", () => {
     expect(document.querySelectorAll("[data-handle]").length).toBeGreaterThanOrEqual(8);
     act(() => useStudioStore.getState().undo());
     expect(page().elements.find((element) => element.id === table.id)?.height).toBe(40);
+  });
+
+  it("shows a flipped, foiled table straight and plain while its cells are edited", () => {
+    const table = { ...createSvg('<svg xmlns="http://www.w3.org/2000/svg"/>', 20, 80, 200, 40), source: "table" as const, data: createTableData(2, 2), flipX: true, finish: defaultFinish("foil") };
+    act(() => useStudioStore.getState().applyToPage((current) => addElements(current, [table])));
+    act(() => useStudioStore.getState().select([table.id]));
+    act(() => useStudioStore.getState().setEditing(table.id));
+
+    render(<Canvas language="en" />);
+
+    const node = elementNode(table.id) as HTMLElement;
+    expect(node.getAttribute("data-finish")).toBeNull();
+    expect(node.style.transform).not.toContain("-1");
   });
 
   it("hides the rulers and the guides when the view says so", () => {

@@ -52,6 +52,21 @@ describe("print finish section", () => {
     expect(screen.queryByTestId("studio-finish-fields")).toBeNull();
   });
 
+  it("changes only the edited setting on every selected element and keeps their own finishes", () => {
+    const design = createDesign("Card", 240, 155);
+    const gold = { ...createText(20, 20, 160, 40, "Gold"), finish: defaultFinish("foil", "gold") };
+    const silver = { ...createText(20, 80, 160, 40, "Silver"), finish: { ...defaultFinish("foil", "silver"), depth: 2 } };
+    useStudioStore.getState().open({ ...design, pages: [{ ...design.pages[0], elements: [gold, silver] }] });
+    useStudioStore.getState().select([gold.id, silver.id]);
+    render(<PropertiesPanel />);
+
+    pick("Foil colour", "Copper");
+
+    const [first, second] = useStudioStore.getState().design?.pages[0].elements ?? [];
+    expect(first.finish).toEqual({ ...gold.finish, foil: "copper" });
+    expect(second.finish).toEqual({ ...silver.finish, foil: "copper" });
+  });
+
   it("draws a finished element through its own SVG filter", () => {
     const finished = { ...createText(0, 0, 100, 30, "Foil"), finish: defaultFinish("foil") };
 

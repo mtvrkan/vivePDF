@@ -6905,7 +6905,8 @@
         "mobile": "Cep telefonu",
         "email": "E-posta",
         "website": "Web sitesi",
-        "address": "Adres"
+        "address": "Adres",
+        "full": "QR kod neredeyse dolu. Daha fazla eklemek için bir alanı kısaltın."
       }
     },
     "align": {

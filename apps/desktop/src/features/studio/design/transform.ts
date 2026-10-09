@@ -1,5 +1,5 @@
 import type { StudioElement } from "@/types/studio";
-import { keepsRatio } from "../graphics/graphicData";
+import { heightPatch, keepsRatio } from "../graphics/graphicData";
 import { elementBounds, type Bounds } from "../model/edit";
 
 export type Box = { x: number; y: number; width: number; height: number; rotation: number };
@@ -88,7 +88,7 @@ export function scaleElements<T extends StudioElement>(elements: T[], from: Boun
     const own = memberScale(element.rotation, scaleX, scaleY);
     const width = Math.max(MIN_SIDE, element.width * own.x);
     const height = Math.max(MIN_SIDE, element.height * own.y);
-    const scaled = { ...element, x: nextCx - width / 2, y: nextCy - height / 2, width, height };
+    const scaled = { ...element, ...heightPatch(element, height), x: nextCx - width / 2, y: nextCy - height / 2, width };
     if (element.kind === "text" && Math.abs(own.x - own.y) < 1e-6) return { ...scaled, fontSize: Math.max(1, Math.min(1000, element.fontSize * own.x)) };
     return scaled;
   });

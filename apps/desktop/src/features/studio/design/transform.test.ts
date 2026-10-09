@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { createImage, createQr, createShape, createText } from "../model/design";
+import { graphicOf } from "../graphics/graphicData";
+import { createTableData } from "../graphics/tableModel";
+import { createImage, createQr, createShape, createSvg, createText } from "../model/design";
 import { normalizeAngle, ratioLocked, resizeBox, rotateElements, rotationFromPointer, scaleBoundsByHandle, scaleElements, turnFromPointer } from "./transform";
 
 const box = { x: 100, y: 100, width: 100, height: 50, rotation: 0 };
@@ -99,6 +101,16 @@ describe("studio transforms", () => {
     expect(scaledTurned.x + scaledTurned.width / 2).toBeCloseTo(40);
     expect(scaledStraight.width).toBeCloseTo(80);
     expect(scaledStraight.height).toBeCloseTo(20);
+  });
+
+  it("stretches the rows of a table scaled taller with the rest of a selection", () => {
+    const table = { ...createSvg('<svg xmlns="http://www.w3.org/2000/svg"/>', 0, 0, 200, 40), source: "table" as const, data: { ...createTableData(2, 2), layout: { width: 200, height: 40, rows: [15, 25], columns: [100, 100] } } };
+
+    const [scaled] = scaleElements([table], { x: 0, y: 0, width: 200, height: 40 }, { x: 0, y: 0, width: 200, height: 80 });
+
+    const graphic = graphicOf(scaled);
+    expect(scaled.height).toBeCloseTo(80);
+    expect(graphic?.kind === "table" && graphic.data.rowHeights).toEqual([30, 50]);
   });
 
   it("swaps the axes for a member turned a quarter", () => {

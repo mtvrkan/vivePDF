@@ -433,6 +433,32 @@ def test_qr_codes_are_vector_and_take_row_values(tmp_path: Path):
     assert decoded == ["https://x.test/a1", "https://x.test/b2"]
 
 
+def test_row_values_in_a_contact_card_qr_are_escaped(tmp_path: Path):
+    card = "BEGIN:VCARD\r\nVERSION:3.0\r\nN:{last};{first};;;\r\nORG:{company}\r\nEND:VCARD"
+    item = {"kind": "qr", "x": 50, "y": 50, "width": 200, "height": 200, "value": card}
+    row = {"last": "Doe;Smith", "first": "Jo", "company": "Acme, Inc.\nLabs"}
+
+    output = _render(tmp_path, [item], rows=[row])
+
+    with pymupdf.open(output) as document:
+        pixmap = document[0].get_pixmap(dpi=150)
+        image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
+        decoded = zxingcpp.read_barcodes(image)[0].text
+    assert "N:Doe\\;Smith;Jo;;;" in decoded
+    assert "ORG:Acme\\, Inc.\\nLabs" in decoded
+
+
+def test_row_values_in_a_plain_qr_stay_as_typed(tmp_path: Path):
+    item = {"kind": "qr", "x": 50, "y": 50, "width": 200, "height": 200, "value": "Note: {text}"}
+
+    output = _render(tmp_path, [item], rows=[{"text": "a, b; c"}])
+
+    with pymupdf.open(output) as document:
+        pixmap = document[0].get_pixmap(dpi=150)
+        image = Image.frombytes("RGB", (pixmap.width, pixmap.height), pixmap.samples)
+        assert zxingcpp.read_barcodes(image)[0].text == "Note: a, b; c"
+
+
 def test_svg_items_are_drawn(tmp_path: Path):
     svg = (
         '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50">'

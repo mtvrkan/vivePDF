@@ -142,7 +142,7 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
                       <TextEditor element={element} language={language} />
                     </ElementView>
                   ) : element.id === editingId && graphicOf(element)?.kind === "table" ? (
-                    <ElementView key={element.id} element={element} language={language}>
+                    <ElementView key={element.id} element={{ ...element, flipX: false, flipY: false, finish: undefined }} language={language}>
                       <TableCanvasEditor element={element as StudioSvgElement} />
                     </ElementView>
                   ) : (

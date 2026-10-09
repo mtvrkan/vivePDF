@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { createDesign, createQr } from "../model/design";
-import { parseVCard } from "../model/vcard";
+import { parseVCard, QR_VALUE_LIMIT } from "../model/vcard";
 import { QrSection } from "./QrSection";
 import { useStudioStore } from "./studioStore";
 import type { StudioQrElement } from "@/types/studio";
@@ -58,5 +58,30 @@ describe("QR contact card builder", () => {
     content("Text or link");
 
     expect(qr().value).toBe("https://navy.example");
+  });
+
+  it("keeps a space typed at the end of a contact field so a second word can follow", () => {
+    show();
+    content("Contact card");
+
+    fireEvent.change(screen.getByRole("textbox", { name: "Company" }), { target: { value: "Acme " } });
+    show();
+
+    expect((screen.getByRole("textbox", { name: "Company" }) as HTMLInputElement).value).toBe("Acme ");
+  });
+
+  it("stops a contact card from growing past what a QR code can hold", () => {
+    show();
+    content("Contact card");
+    const long = "x".repeat(200);
+
+    for (const name of ["First name", "Last name", "Company", "Job title", "Phone", "Mobile", "Email", "Website", "Address"]) {
+      fireEvent.change(screen.getByRole("textbox", { name }), { target: { value: long } });
+      show();
+    }
+
+    expect(qr().value.length).toBeLessThanOrEqual(QR_VALUE_LIMIT);
+    expect(qr().value.endsWith("END:VCARD")).toBe(true);
+    expect(screen.getByRole("status").textContent).toBe("The QR code is nearly full. Shorten a field to add more.");
   });
 });

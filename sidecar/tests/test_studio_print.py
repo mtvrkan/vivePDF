@@ -253,3 +253,25 @@ def test_a_card_too_big_for_the_sheet_keeps_its_own_page():
 
     assert (len(trims), columns) == (1, 1)
     assert size == (800 + 2 * AREA, 700 + 2 * AREA)
+
+
+def test_pictures_at_the_trim_edge_take_their_bleed_from_beyond_the_shown_area(tmp_path: Path):
+    stripes = np.zeros((100, 300, 3), dtype=np.uint8)
+    stripes[:, :100] = (0, 255, 0)
+    stripes[:, 100:200] = (255, 0, 0)
+    stripes[:, 200:] = (0, 0, 255)
+    source = tmp_path / "stripes.png"
+    Image.fromarray(stripes).save(source)
+    edges = {"left": BLEED, "top": 0, "right": 0, "bottom": 0}
+    common = {"kind": "image", "path": str(source), "x": -BLEED, "height": 50, "bleed": edges}
+    cropped = {**common, "y": 10, "width": 60 + BLEED, "fit": "stretch"}
+    cropped["crop"] = {"x": 1 / 3, "y": 0, "width": 1 / 3, "height": 1}
+    covered = {**common, "y": 80, "width": 50 + BLEED, "fit": "cover"}
+
+    with pymupdf.open(_render(tmp_path, [cropped, covered])) as document:
+        pixels = _pixels(document[0])
+
+    assert _at(pixels, AREA + 4, AREA + 35)[0] > 200
+    assert _at(pixels, AREA - BLEED + 2, AREA + 35)[1] > 200
+    assert _at(pixels, AREA + 4, AREA + 105)[0] > 200
+    assert _at(pixels, AREA - BLEED + 2, AREA + 105)[1] > 200

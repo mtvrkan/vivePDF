@@ -13,7 +13,7 @@ import { graphicRenderSpec } from "../graphics/graphicData";
 import { hasPlaceholders, textOf } from "./design";
 import { finishRecipe } from "./finish";
 import { filterMatrix } from "./imageFilters";
-import { bleedPage, shiftFill } from "./print";
+import { bleedEdges, bleedElement, shiftFill } from "./print";
 import { fitParagraphs, paragraphCount, weightOf } from "./typography";
 import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./shapes";
 import { recolorSvg } from "./svgColors";
@@ -155,14 +155,19 @@ function backgroundItems(page: StudioPage, keepWhite: boolean, bleed: number): S
   const plainWhite = fill?.type === "solid" && fill.color.toLowerCase() === "#ffffff";
   if (fill && (keepWhite || !plainWhite)) items.push({ ...frame, kind: "vector", paths: [{ d: roundedRect(0, 0, width, height, 0), fill, stroke: null, evenOdd: false, opacity: 1 }] });
   const image = page.background.image;
-  if (image && image.opacity > 0) items.push({ ...frame, opacity: image.opacity, kind: "image", path: image.src, fit: image.fit, crop: null, mask: "none", radius: 0 });
+  if (image && image.opacity > 0) items.push({ ...frame, opacity: image.opacity, kind: "image", path: image.src, fit: image.fit, crop: null, mask: "none", radius: 0, ...(bleed > 0 && image.fit !== "contain" ? { bleed: { left: bleed, top: bleed, right: bleed, bottom: bleed } } : {}) });
   return items;
 }
 
 export function pageToRender(page: StudioPage, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage {
   const bleed = Math.max(0, options.bleed ?? 0);
-  const elements = bleedPage(page, bleed).elements;
-  return { width: page.width, height: page.height, items: [...backgroundItems(page, Boolean(options.keepWhite), bleed), ...elements.flatMap((element) => renderItems(element, measured))] };
+  const items = page.elements.flatMap((element) => {
+    const bled = bleedElement(element, page, bleed);
+    const rendered = renderItems(bled, measured);
+    if (bled === element || bled.kind !== "image") return rendered;
+    return rendered.map((item) => (item.kind === "image" ? { ...item, bleed: bleedEdges(element, bled) } : item));
+  });
+  return { width: page.width, height: page.height, items: [...backgroundItems(page, Boolean(options.keepWhite), bleed), ...items] };
 }
 
 export function designToRender(design: StudioDesign, measured: MeasuredText = new Map(), options: RenderOptions = {}): StudioRenderPage[] {

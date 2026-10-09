@@ -6905,7 +6905,8 @@
         "mobile": "Mobile",
         "email": "Email",
         "website": "Website",
-        "address": "Address"
+        "address": "Address",
+        "full": "The QR code is nearly full. Shorten a field to add more."
       }
     },
     "align": {

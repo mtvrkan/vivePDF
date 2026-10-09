@@ -2,6 +2,7 @@ import base64
 import contextlib
 import io
 import math
+import re
 from pathlib import Path
 
 import numpy as np
@@ -158,10 +159,51 @@ def _picture(path: str) -> Image.Image:
         ) from error
 
 
-def image_document(item: StudioImageItem) -> pymupdf.Document:
-    image = _crop(_picture(item.path), item)
+def _shown_area(
+    size: tuple[int, int], item: StudioImageItem, width: float, height: float
+) -> tuple[float, float, float, float]:
+    full_width, full_height = size
+    crop = item.crop
+    left = crop.x * full_width if crop else 0.0
+    top = crop.y * full_height if crop else 0.0
+    right = min(full_width, (crop.x + crop.width) * full_width) if crop else full_width
+    bottom = min(full_height, (crop.y + crop.height) * full_height) if crop else full_height
     if item.fit == "cover":
-        image = _cover(image, item.width / item.height)
+        aspect = width / height
+        if (right - left) / (bottom - top) > aspect:
+            kept = (bottom - top) * aspect
+            left += (right - left - kept) / 2
+            right = left + kept
+        else:
+            kept = (right - left) / aspect
+            top += (bottom - top - kept) / 2
+            bottom = top + kept
+    return left, top, right, bottom
+
+
+def _with_bleed(image: Image.Image, item: StudioImageItem) -> Image.Image:
+    edges = item.bleed
+    width = max(1.0, item.width - edges.left - edges.right)
+    height = max(1.0, item.height - edges.top - edges.bottom)
+    left, top, right, bottom = _shown_area(image.size, item, width, height)
+    across = (right - left) / width
+    down = (bottom - top) / height
+    box = (
+        max(0, math.floor(left - edges.left * across)),
+        max(0, math.floor(top - edges.top * down)),
+        min(image.width, math.ceil(right + edges.right * across)),
+        min(image.height, math.ceil(bottom + edges.bottom * down)),
+    )
+    return image.crop(box)
+
+
+def image_document(item: StudioImageItem) -> pymupdf.Document:
+    if item.bleed is not None and item.fit != "contain":
+        image = _with_bleed(_picture(item.path), item)
+    else:
+        image = _crop(_picture(item.path), item)
+        if item.fit == "cover":
+            image = _cover(image, item.width / item.height)
     rect = _placed_rect(image, item)
     image = _masked(_filtered(_resampled(image, rect), item.filter), item, rect)
     document = pymupdf.open()
@@ -248,6 +290,17 @@ def _shadow(item: StudioShadowItem, values: dict[str, str]) -> tuple[pymupdf.Doc
             source.close()
 
 
+def _vcard_escaped(value: str) -> str:
+    single = re.sub(r"\r\n|\r|\n", "\n", value.replace("\\", "\\\\"))
+    return single.replace("\n", "\\n").replace(",", "\\,").replace(";", "\\;")
+
+
+def _qr_value(value: str, values: dict[str, str]) -> str:
+    if value.lstrip().upper().startswith("BEGIN:VCARD"):
+        values = {key: _vcard_escaped(text) for key, text in values.items()}
+    return fill_placeholders(value, values)
+
+
 def _drawn(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, float]:
     if isinstance(item, StudioVectorItem):
         return vector_document(item)
@@ -259,7 +312,7 @@ def _drawn(item: StudioItem, values: dict[str, str]) -> tuple[pymupdf.Document, 
     if isinstance(item, StudioImageItem):
         return image_document(item), 0.0
     if isinstance(item, StudioQrItem):
-        return qr_document(item, fill_placeholders(item.value, values)), 0.0
+        return qr_document(item, _qr_value(item.value, values)), 0.0
     raise TypeError(item.kind)
 
 

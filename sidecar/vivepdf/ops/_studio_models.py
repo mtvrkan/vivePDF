@@ -105,6 +105,13 @@ class StudioCrop(RpcModel):
     height: Annotated[float, Field(gt=0, le=1)] = 1.0
 
 
+class StudioBleedEdges(RpcModel):
+    left: float = Field(default=0.0, ge=0, le=1000)
+    top: float = Field(default=0.0, ge=0, le=1000)
+    right: float = Field(default=0.0, ge=0, le=1000)
+    bottom: float = Field(default=0.0, ge=0, le=1000)
+
+
 class StudioImageItem(StudioBox):
     kind: Literal["image"]
     path: str = Field(min_length=1, max_length=4096)
@@ -115,6 +122,7 @@ class StudioImageItem(StudioBox):
     filter: list[Annotated[float, Field(ge=-10, le=10)]] | None = Field(
         default=None, min_length=12, max_length=12
     )
+    bleed: StudioBleedEdges | None = None
 
 
 class StudioQrItem(StudioBox):

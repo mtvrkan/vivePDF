@@ -1,4 +1,4 @@
-import type { StudioElement, StudioPage, StudioRenderFill } from "@/types/studio";
+import type { StudioBleedEdges, StudioElement, StudioPage, StudioRenderBox, StudioRenderFill, StudioStroke } from "@/types/studio";
 
 export const POINTS_PER_MM = 72 / 25.4;
 export const DEFAULT_BLEED_MM = 3;
@@ -9,9 +9,19 @@ export function millimetresToPoints(millimetres: number): number {
   return millimetres * POINTS_PER_MM;
 }
 
+function unstroked(stroke: StudioStroke | null): boolean {
+  return stroke === null || stroke.width <= 0;
+}
+
 function reachesEdges(element: StudioElement): boolean {
   if (element.rotation % 360 !== 0) return false;
-  return element.kind === "image" || (element.kind === "shape" && element.shape === "rect");
+  if (element.kind === "image") return element.mask === "none" && element.fit !== "contain" && unstroked(element.stroke);
+  if (element.kind !== "shape" || element.shape !== "rect") return false;
+  return unstroked(element.stroke) && element.cornerRadius <= 0 && (element.corners ?? []).every((radius) => radius <= 0);
+}
+
+export function bleedEdges(before: StudioRenderBox, after: StudioRenderBox): StudioBleedEdges {
+  return { left: before.x - after.x, top: before.y - after.y, right: after.x + after.width - (before.x + before.width), bottom: after.y + after.height - (before.y + before.height) };
 }
 
 export function bleedElement(element: StudioElement, page: Pick<StudioPage, "width" | "height">, bleed: number): StudioElement {
@@ -24,11 +34,6 @@ export function bleedElement(element: StudioElement, page: Pick<StudioPage, "wid
   const farBottom = bottom >= page.height - EDGE_TOLERANCE ? Math.max(bottom, page.height + bleed) : bottom;
   if (left === element.x && top === element.y && farRight === right && farBottom === bottom) return element;
   return { ...element, x: left, y: top, width: farRight - left, height: farBottom - top };
-}
-
-export function bleedPage(page: StudioPage, bleed: number): StudioPage {
-  if (bleed <= 0) return page;
-  return { ...page, elements: page.elements.map((element) => bleedElement(element, page, bleed)) };
 }
 
 export function shiftFill(fill: StudioRenderFill, dx: number, dy: number): StudioRenderFill {

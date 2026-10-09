@@ -8,8 +8,10 @@ export const EMPTY_VCARD: VCard = { firstName: "", lastName: "", organization: "
 
 const LINE_BREAK = "\r\n";
 
+export const QR_VALUE_LIMIT = 2000;
+
 function escaped(value: string): string {
-  return value.trim().replace(/\\/g, "\\\\").replace(/\r\n|\r|\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
+  return value.replace(/\\/g, "\\\\").replace(/\r\n|\r|\n/g, "\\n").replace(/,/g, "\\,").replace(/;/g, "\\;");
 }
 
 function unescaped(value: string): string {

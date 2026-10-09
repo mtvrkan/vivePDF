@@ -13,7 +13,7 @@ export function FinishSection({ elements }: { elements: StudioElement[] }) {
   const finishes = elements.map((element) => element.finish ?? null);
   const { value: shown, mixed } = sharedValue(finishes);
   const set = (next: StudioFinish | null, merge?: string) => patchSelected(() => ({ finish: next ?? undefined }), merge);
-  const change = (patch: Partial<StudioFinish>, merge?: string) => (shown ? set({ ...shown, ...patch }, merge) : undefined);
+  const change = (patch: Partial<StudioFinish>, merge?: string) => patchSelected((element) => (element.finish ? { finish: { ...element.finish, ...patch } } : {}), merge);
   return (
     <PanelSection title={t("studio.finish.title")}>
       <SelectField

@@ -6903,7 +6903,8 @@
         "mobile": "Celular",
         "email": "E-mail",
         "website": "Site",
-        "address": "Endereço"
+        "address": "Endereço",
+        "full": "O código QR está quase cheio. Encurte um campo para adicionar mais."
       }
     },
     "align": {
