@@ -91,6 +91,7 @@ to a driver path to skip the download (offline machines).
 | Command | What it does |
 |---|---|
 | `pnpm e2e` | builds the test binary, then runs every flow |
+| `pnpm e2e:smoke` | builds the test binary, then runs the core flows only: home, viewer, edit, convert, organize and a Studio document; the check to run before every release |
 | `pnpm e2e:build` | builds only the test binary |
 | `pnpm e2e:run` | runs the flows against the last build |
 | `pnpm e2e:run --spec e2e/specs/security.e2e.ts` | runs one spec file |

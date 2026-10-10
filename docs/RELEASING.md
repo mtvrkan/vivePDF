@@ -71,7 +71,9 @@ the build fails while the file is missing. On first start the app runs `system.o
 once in the background. That op takes this file instead of downloading, checks it against
 `office_download.BUNDLED_INSTALLER_SHA256` (no network needed) and extracts it into
 `%LOCALAPPDATA%\vivePDF\libreoffice`. No uninstaller tracks that folder, so updates keep it, and a
-real uninstall removes it (`installer-hooks.nsh`). A new LibreOffice version changes
+real uninstall removes it (`installer-hooks.nsh`). Only the installer for new users carries the
+MSI; the update installer leaves it out, so updates stay small, and an app that never set
+LibreOffice up falls back to downloading it from Settings. A new LibreOffice version changes
 `PINNED_VERSION`, `BUNDLED_INSTALLER_SHA256`, the fetch script and `tauri.office.conf.json`
 together. macOS and Linux use a LibreOffice installed on the system. `scripts/fetch-libreoffice.*`
 only prepare an extracted development copy under `apps/desktop/src-tauri/resources/libreoffice/`.
@@ -112,21 +114,26 @@ exist.
 
 1. Bump the version in `apps/desktop/src-tauri/tauri.conf.json`, `apps/desktop/src-tauri/Cargo.toml`
    and `apps/desktop/package.json` (same value everywhere) and add a `## [X.Y.Z] - YYYY-MM-DD`
-   heading under `## [Unreleased]` in `CHANGELOG.md`; commit.
-2. Build the engine (`scripts/build-sidecar.ps1`, which runs its self-checks) and the installer
-   without the updater signature:
+   heading under `## [Unreleased]` in `CHANGELOG.md`; commit. Run `pnpm e2e:smoke` in
+   `apps/desktop` (`docs/TESTING.md`); release only when it passes.
+2. Run `scripts/build-windows-release.ps1` (add `-SkipEngine` when the engine is already built).
+   It builds and self-checks the engine, fetches the LibreOffice installer, then builds two
+   installers into `apps/desktop/src-tauri/target/release/windows-release/X.Y.Z/`:
+   - `vivePDF_X.Y.Z_x64-setup.exe`, the download for new users, with LibreOffice inside (~500 MB);
+   - `vivePDF_X.Y.Z_x64-update.exe`, the same app without LibreOffice, which the in-app updater
+     downloads. Installed apps already have LibreOffice in `%LOCALAPPDATA%\vivePDF\libreoffice`,
+     which updates keep, so they only download the small installer.
+
+   The script stops before building if either file or `bundle/nsis/vivePDF_X.Y.Z_x64-setup.exe`
+   already exists, so an earlier signed installer is never overwritten. Then run
+   `scripts/smoke-engine.sh apps/desktop/src-tauri/target/release/engine`.
+3. Sign the update installer for the updater (prompts for the key's password, writes a `.sig` next to it):
    ```
-   cd apps/desktop
-   ../../scripts/fetch-office-msi.ps1
-   pnpm tauri build --config src-tauri/tauri.release.conf.json --config src-tauri/tauri.office.conf.json --config '{"bundle":{"createUpdaterArtifacts":false}}'
+   pnpm tauri signer sign -f ~/.tauri/vivepdf.key src-tauri/target/release/windows-release/X.Y.Z/vivePDF_X.Y.Z_x64-update.exe
    ```
-   then run `scripts/smoke-engine.sh apps/desktop/src-tauri/target/release/engine`.
-3. Sign the installer for the updater (prompts for the key's password, writes a `.sig` next to it):
-   ```
-   pnpm tauri signer sign -f ~/.tauri/vivepdf.key src-tauri/target/release/bundle/nsis/vivePDF_X.Y.Z_x64-setup.exe
-   ```
-4. Write `latest.json` (shape below, `windows-x86_64` only), tag `vX.Y.Z`, push the tag and run
-   `gh release create vX.Y.Z <installer> <installer>.sig latest.json --title "vivePDF X.Y.Z" --notes-file <notes>`.
+4. Write `latest.json` (shape below, `windows-x86_64` only) with the `.sig` contents and the URL of
+   `vivePDF_X.Y.Z_x64-update.exe`, tag `vX.Y.Z`, push the tag and run
+   `gh release create vX.Y.Z <setup.exe> <update.exe> <update.exe>.sig latest.json --title "vivePDF X.Y.Z" --notes-file <notes>`.
 5. Check that `https://github.com/mtvrkan/vivePDF/releases/latest/download/latest.json` answers
    without signing in; installed apps pick the new version up on their next start or manual check.
 

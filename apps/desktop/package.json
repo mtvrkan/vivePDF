@@ -15,6 +15,7 @@
     "e2e:build": "node e2e/scripts/build.mjs",
     "e2e:run": "wdio run e2e/wdio.conf.ts",
     "e2e": "pnpm e2e:build && pnpm e2e:run",
+    "e2e:smoke": "pnpm e2e:build && wdio run e2e/wdio.conf.ts --spec e2e/specs/home.e2e.ts --spec e2e/specs/viewer.e2e.ts --spec e2e/specs/edit.e2e.ts --spec e2e/specs/convert.e2e.ts --spec e2e/specs/organize.e2e.ts --spec e2e/specs/studiodoc.e2e.ts",
     "e2e:typecheck": "tsc -p e2e/tsconfig.json"
   },
   "dependencies": {

@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Releases: `scripts/build-windows-release.ps1` builds two Windows installers, the full one with LibreOffice for new users and a small one without it for the in-app updater, so updates no longer download LibreOffice again; it refuses to overwrite an existing installer. `pnpm e2e:smoke` runs the core end-to-end flows before a release. [2026-10-10]
 - Windows installer: LibreOffice now comes inside the installer and is set up in the background on first start without internet, so Word, Excel and PowerPoint conversions work offline; Settings › Tools shows the setup and can remove or reinstall it from the package, and uninstalling removes it [2026-10-09]
 - Viewer: the Japanese, Korean and Chinese fallback fonts now come with the app, so PDFs without embedded CJK fonts show their text right away without a download; copies downloaded by earlier versions are cleaned up [2026-10-09]
 - Tools: new cards for Design in Studio, Write a document, Business card, Bibliography (opens a document with the sources dialog) and Extract images from a PDF; the Convert to PDF card is also found by searching bib, BibTeX or RIS [2026-10-09]
