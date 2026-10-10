@@ -10,6 +10,7 @@ import { useContextMenu } from "@/components/shared/useContextMenu";
 import { OPEN_CONVERTIBLE_EXTENSIONS, sessionPathOf } from "@/features/viewer/convertedDocuments";
 import { GROUP_COLORS, GROUP_TONES } from "@/features/viewer/tabGroups";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
+import { useDragState } from "@/shared/hooks/useDragState";
 import { cn } from "@/shared/lib/cn";
 import { basenameOf, pathKey } from "@/shared/lib/paths";
 import { inTabOrder, useDocumentStore } from "@/shared/store/documentStore";
@@ -280,7 +281,7 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
   const collections = useCollectionsStore((state) => state.collections);
   const [draft, setDraft] = useState<Draft | null>(null);
   const [viewing, setViewing] = useState<string | null>(null);
-  const [drag, setDrag] = useState<{ id: string; index: number } | null>(null);
+  const [drag, setDrag, latestDrag] = useDragState<{ id: string; index: number }>();
   const listRef = useRef<HTMLUListElement>(null);
   const move = useCollectionsStore((state) => state.move);
   const ordered = useMemo(() => pinnedFirst(collections), [collections]);
@@ -294,15 +295,17 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
       setDrag({ id: collection.id, index: ordered.indexOf(collection) });
     },
     onDragMove: (event) => {
-      if (!drag) return;
+      const current = latestDrag.current;
+      if (!current) return;
       const over = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-collection-id]");
       if (!over || !listRef.current?.contains(over)) return;
-      const index = shown.findIndex((item) => item.id === over.dataset.collectionId);
-      if (index >= 0 && index !== drag.index) setDrag({ ...drag, index });
+      const index = moveCollection(collections, current.id, current.index).findIndex((item) => item.id === over.dataset.collectionId);
+      if (index >= 0 && index !== current.index) setDrag({ ...current, index });
     },
     onDragEnd: () => {
-      if (!drag) return;
-      move(drag.id, drag.index);
+      const current = latestDrag.current;
+      if (!current) return;
+      move(current.id, current.index);
       setDrag(null);
     },
     onDragCancel: () => setDrag(null),

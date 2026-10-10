@@ -89,7 +89,7 @@ type FrameProps = {
   dragging: boolean;
   onDragStart: (event: ReactPointerEvent<HTMLButtonElement>) => void;
   onDragMove: (event: ReactPointerEvent<HTMLButtonElement>) => void;
-  onDragEnd: () => void;
+  onDragEnd: (event: ReactPointerEvent<HTMLButtonElement>) => void;
   onDragCancel: () => void;
   interactive: boolean;
   children: ReactNode;

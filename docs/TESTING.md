@@ -88,6 +88,10 @@ to a driver path to skip the download (offline machines).
 
 ### Running
 
+Close `pnpm tauri dev` and any other running vivePDF first. With a second copy busy on the same
+machine, the viewer flow that types a page number right after opening a file fails every time
+(the view lands on page 1); with the machine otherwise idle it passes.
+
 | Command | What it does |
 |---|---|
 | `pnpm e2e` | builds the test binary, then runs every flow |

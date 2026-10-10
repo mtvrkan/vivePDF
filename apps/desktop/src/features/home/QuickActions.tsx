@@ -1,4 +1,5 @@
 import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useDragState } from "@/shared/hooks/useDragState";
 import { Link } from "react-router";
 import { Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -27,7 +28,7 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
   const ids = layout.quickActions;
   const change = useHomeLayoutStore((state) => state.change);
   const [picking, setPicking] = useState(false);
-  const [drag, setDrag] = useState<{ id: string; index: number } | null>(null);
+  const [drag, setDrag, latestDrag] = useDragState<{ id: string; index: number }>();
   const listRef = useRef<HTMLUListElement>(null);
   const shown = drag ? moveQuickAction(layout, drag.id, drag.index).quickActions : ids;
   const actions = shown.map((id) => toolShortcuts.find((tool) => tool.id === id)).filter((tool): tool is ToolShortcut => tool !== undefined);
@@ -40,16 +41,18 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
   };
 
   const moveDrag = (event: ReactPointerEvent<HTMLLIElement>) => {
-    if (!drag) return;
+    const current = latestDrag.current;
+    if (!current) return;
     const over = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-quick-action]");
     if (!over || !listRef.current?.contains(over)) return;
-    const index = shown.indexOf(over.dataset.quickAction ?? "");
-    if (index >= 0 && index !== drag.index) setDrag({ ...drag, index });
+    const index = moveQuickAction(layout, current.id, current.index).quickActions.indexOf(over.dataset.quickAction ?? "");
+    if (index >= 0 && index !== current.index) setDrag({ ...current, index });
   };
 
   const endDrag = () => {
-    if (!drag) return;
-    const { id, index } = drag;
+    const current = latestDrag.current;
+    if (!current) return;
+    const { id, index } = current;
     change((current) => moveQuickAction(current, id, index));
     setDrag(null);
   };

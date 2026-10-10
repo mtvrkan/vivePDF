@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as R
 import { LayoutDashboard } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
+import { useDragState } from "@/shared/hooks/useDragState";
 import { cn } from "@/shared/lib/cn";
 import { CollectionsSection } from "./CollectionsSection";
 import { ContinueStrip } from "./ContinueStrip";
@@ -22,7 +23,7 @@ const SCROLL_STEP = 18;
 
 let mountedHomes = 0;
 
-type Drag = { id: HomeSectionId; region: HomeRegion; index: number } | null;
+type Drag = { id: HomeSectionId; region: HomeRegion; index: number };
 
 function SectionContent({ id, size, editing }: { id: HomeSectionId; size: HomeSize; editing: boolean }) {
   if (id === "hero") return <HeroSection size={size} />;
@@ -45,7 +46,7 @@ export function HomePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const editBarRef = useRef<HTMLDivElement>(null);
   const [editBarHeight, setEditBarHeight] = useState(0);
-  const [drag, setDrag] = useState<Drag>(null);
+  const [drag, setDrag, latestDrag] = useDragState<Drag>();
 
   useEffect(() => {
     mountedHomes += 1;
@@ -81,7 +82,8 @@ export function HomePage() {
   };
 
   const moveDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (!drag) return;
+    const current = latestDrag.current;
+    if (!current) return;
     const scroller = scrollRef.current;
     if (scroller) {
       const bounds = scroller.getBoundingClientRect();
@@ -89,12 +91,14 @@ export function HomePage() {
       else if (event.clientY > bounds.bottom - EDGE_SCROLL) scroller.scrollBy(0, SCROLL_STEP);
     }
     const target = targetAt(event.clientX, event.clientY);
-    if (target && (target.region !== drag.region || target.index !== drag.index)) setDrag({ ...drag, ...target });
+    if (target && (target.region !== current.region || target.index !== current.index)) setDrag({ ...current, ...target });
   };
 
-  const endDrag = () => {
-    if (!drag) return;
-    change((current) => moveSection(current, drag.id, drag.region, drag.index));
+  const endDrag = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const current = latestDrag.current;
+    if (!current) return;
+    const { id, region, index } = { ...current, ...targetAt(event.clientX, event.clientY) };
+    change((layoutNow) => moveSection(layoutNow, id, region, index));
     setDrag(null);
   };
 

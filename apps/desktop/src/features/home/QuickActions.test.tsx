@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
@@ -36,6 +36,19 @@ describe("QuickActions", () => {
     expect(useHomeLayoutStore.getState().layout.quickActions[0]).toBe("merge");
 
     fireEvent.pointerUp(tile("merge"), { pointerId: 1 });
+    expect(useHomeLayoutStore.getState().layout.quickActions).toEqual(["split", "compress", "images-to-pdf", "merge", "docx", "pages"]);
+  });
+
+  it("saves the last place when the tile is released before the page redraws", () => {
+    render(<QuickActions editing />, { wrapper: MemoryRouter });
+    fireEvent.pointerDown(tile("merge"), { button: 0, pointerId: 1, clientX: 10, clientY: 10 });
+    pointAt("images-to-pdf");
+
+    act(() => {
+      fireEvent.pointerMove(tile("merge"), { pointerId: 1, clientX: 300, clientY: 10 });
+      fireEvent.pointerUp(tile("merge"), { pointerId: 1 });
+    });
+
     expect(useHomeLayoutStore.getState().layout.quickActions).toEqual(["split", "compress", "images-to-pdf", "merge", "docx", "pages"]);
   });
 

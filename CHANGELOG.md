@@ -28,6 +28,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Home: a section, quick access tile or collection dragged and let go right after the last move now lands where it was dropped; a fast release used to leave it in its old place. [2026-10-10]
 - Home recent documents no longer cut names and times to a few letters in a narrow panel: hover actions float over the card, names wrap to two lines, narrow panels show one compact row per file and thumbnails look like page sheets [2026-10-09]
 - Studio: template thumbnails appear about three times faster — shapes are placed without rescanning the whole page each time, drop shadows are drawn at thumbnail size and shape outlines are converted once and reused — and cards scrolled out of view no longer hold up the ones on screen [2026-10-09]
 - The top bar shrinks again when the language changes at a large interface scale, so the window buttons no longer run off the edge in Turkish at 120% [2026-10-09]
