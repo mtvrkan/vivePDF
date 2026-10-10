@@ -2,6 +2,7 @@ import i18n, { type TFunction } from "i18next";
 import { initReactI18next } from "react-i18next";
 import en from "@/locales/en/common.json";
 import { DEFAULT_LOCALE, LOCALE_CODES, detectLocale, isLocale, localeDirection } from "@/app/locales";
+import { isMac, shortcutLabel } from "@/shared/lib/platform";
 import type { Locale } from "@/types";
 
 export const LOCALE_STORAGE_KEY = "vivepdf.locale";
@@ -39,9 +40,14 @@ export function preferredLocale(): Locale {
 
 const initialLocale = preferredLocale();
 
+const MAC_SHORTCUTS_PROCESSOR = "macShortcuts";
+
+if (isMac) i18n.use({ type: "postProcessor", name: MAC_SHORTCUTS_PROCESSOR, process: (value: string) => (typeof value === "string" ? shortcutLabel(value, true) : value) });
+
 const initPromise = i18n
   .use(initReactI18next)
   .init({
+    ...(isMac ? { postProcess: [MAC_SHORTCUTS_PROCESSOR] } : {}),
     resources: { en: { common: en } },
     lng: initialLocale,
     fallbackLng: DEFAULT_LOCALE,

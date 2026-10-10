@@ -8,6 +8,7 @@ import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useOpenStore } from "@/shared/store/openStore";
 import type { HomeSize } from "./homeLayout";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 function greetingKey(hour: number): "morning" | "afternoon" | "evening" {
   if (hour < 12) return "morning";
@@ -16,7 +17,7 @@ function greetingKey(hour: number): "morning" | "afternoon" | "evening" {
 }
 
 function Kbd({ children }: { children: string }) {
-  return <kbd className="rounded-md border bg-card/70 px-1.5 py-0.5 font-mono text-[11px] leading-none text-muted-foreground">{children}</kbd>;
+  return <kbd className="rounded-md border bg-card/70 px-1.5 py-0.5 font-mono text-[11px] leading-none text-muted-foreground">{shortcutLabel(children)}</kbd>;
 }
 
 export function HeroSection({ size = "medium" }: { size?: HomeSize }) {
@@ -45,7 +46,7 @@ export function HeroSection({ size = "medium" }: { size?: HomeSize }) {
           >
             {t("common.openPdf")}
           </Button>
-          <Button icon={<ClipboardPaste className="size-4" aria-hidden />} onClick={() => void openClipboard()} disabled={busy} title={`${t("clipboard.hint")} (Ctrl+Shift+V)`} className="h-11 rounded-full px-5 text-base">
+          <Button icon={<ClipboardPaste className="size-4" aria-hidden />} onClick={() => void openClipboard()} disabled={busy} title={`${t("clipboard.hint")} (${shortcutLabel("Ctrl+Shift+V")})`} className="h-11 rounded-full px-5 text-base">
             {t("clipboard.action")}
           </Button>
           <Button icon={<SearchIcon className="size-4" aria-hidden />} onClick={() => void navigate("/search")} className="h-11 rounded-full px-5 text-base">

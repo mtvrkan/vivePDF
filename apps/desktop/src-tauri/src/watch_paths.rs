@@ -73,13 +73,14 @@ pub(crate) fn is_protected_root(path: &Path) -> bool {
         Path::new("C:\\Program Files"),
         Path::new("C:\\Program Files (x86)"),
         Path::new("C:\\ProgramData"),
-        Path::new("/"),
         Path::new("/System"),
         Path::new("/Library"),
         Path::new("/usr"),
         Path::new("/etc"),
         Path::new("/bin"),
         Path::new("/sbin"),
+        Path::new("/Applications"),
+        Path::new("/private/etc"),
     ];
     system_roots.iter().any(|root| {
         let root = comparable(root);
@@ -138,11 +139,13 @@ mod tests {
         )));
     }
 
+    #[cfg(windows)]
     #[test]
     fn rejects_filesystem_root() {
         assert!(is_protected_root(Path::new("C:\\")));
     }
 
+    #[cfg(windows)]
     #[test]
     fn rejects_program_files() {
         assert!(is_protected_root(Path::new("C:\\Program Files\\vivePDF")));
@@ -283,6 +286,23 @@ mod tests {
         assert!(!is_excluded(&dir.join("in").join("new.pdf"), Some(&out)));
         assert!(!is_excluded(&dir.join("out").join("done.pdf"), None));
         let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn rejects_unix_system_folders() {
+        assert!(is_protected_root(Path::new("/")));
+        assert!(is_protected_root(Path::new("/System/Library")));
+        assert!(is_protected_root(Path::new("/usr/local/bin")));
+        assert!(is_protected_root(Path::new("/Applications/vivePDF.app")));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn accepts_unix_home_folders() {
+        assert!(!is_protected_root(Path::new("/Users/me/Documents/pdfs")));
+        assert!(!is_protected_root(Path::new("/home/me/pdfs")));
+        assert!(!is_protected_root(&std::env::temp_dir()));
     }
 
     #[test]

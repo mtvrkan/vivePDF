@@ -6,6 +6,7 @@ use serde::Serialize;
 
 use crate::rpc::RpcError;
 
+#[cfg(not(target_os = "macos"))]
 pub const ENTRY_NAME: &str = "vivePDF";
 pub const BACKGROUND_FLAG: &str = "--background";
 
@@ -27,11 +28,12 @@ where
         .any(|argument| argument.as_ref() == BACKGROUND_FLAG)
 }
 
+#[cfg(any(windows, test))]
 pub fn windows_command(executable: &str) -> String {
     format!("\"{executable}\" {BACKGROUND_FLAG}")
 }
 
-#[cfg(any(unix, test))]
+#[cfg(any(all(unix, not(target_os = "macos")), test))]
 fn desktop_exec_argument(value: &str) -> String {
     let mut quoted = String::from("\"");
     for character in value.chars() {
@@ -49,7 +51,7 @@ fn desktop_exec_argument(value: &str) -> String {
     quoted
 }
 
-#[cfg(any(unix, test))]
+#[cfg(any(all(unix, not(target_os = "macos")), test))]
 fn single_line(value: &str) -> String {
     value
         .chars()
@@ -57,7 +59,7 @@ fn single_line(value: &str) -> String {
         .collect()
 }
 
-#[cfg(any(unix, test))]
+#[cfg(any(all(unix, not(target_os = "macos")), test))]
 pub fn desktop_entry(executable: &str, name: &str) -> String {
     format!(
         "[Desktop Entry]\nType=Application\nName={}\nExec={} {BACKGROUND_FLAG}\nTerminal=false\nX-GNOME-Autostart-enabled=true\n",

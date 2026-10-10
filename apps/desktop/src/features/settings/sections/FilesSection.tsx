@@ -7,6 +7,7 @@ import { Segmented, TextInput } from "@/components/tool/form";
 import { AFTER_OPERATIONS, usePreferencesStore, type AfterOperation } from "@/shared/store/preferencesStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { DEFAULT_OUTPUT_PATTERN, OUTPUT_PATTERN_TOKENS, outputFileName, patternIsValid } from "@/shared/lib/naming";
+import { isMac } from "@/shared/lib/platform";
 import { SectionCard, SettingRow } from "../settingsControls";
 import type { SettingsSectionProps } from "../settingsShared";
 
@@ -53,7 +54,7 @@ export function FilesSection({ query, onEmptyChange }: SettingsSectionProps) {
       <SettingRow label={t("settings.files.afterOperation")} hint={t("settings.files.afterOperationHint")}>
         <Select
           value={afterOperation}
-          options={AFTER_OPERATIONS.map((item) => ({ value: item, label: t(`settings.files.afterOperations.${item}`) }))}
+          options={AFTER_OPERATIONS.map((item) => ({ value: item, label: t(`settings.files.afterOperations.${isMac && item === "reveal" ? "revealMac" : item}`) }))}
           onChange={(value) => updatePreferences({ afterOperation: value as AfterOperation })}
           ariaLabel={t("settings.files.afterOperation")}
           className="w-52"

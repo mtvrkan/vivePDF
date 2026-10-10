@@ -8,6 +8,7 @@ import { clearGuides, guidesOf, marginsOf, withMargins } from "../model/guides";
 import { NumberField } from "./controls";
 import { currentPage, useStudioStore } from "./studioStore";
 import { useViewPrefs, type StudioViewOption } from "./viewPrefs";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 const GAP = 6;
 const EDGE = 8;
@@ -96,7 +97,7 @@ export function ViewMenu() {
                 <button key={option} type="button" role="switch" aria-checked={prefs[option]} aria-keyshortcuts={shortcut} onClick={() => prefs.toggle(option)} className={ROW}>
                   <Icon className="size-4 text-muted-foreground" aria-hidden />
                   <span className="flex-1 text-left">{t(`studio.view.${option}`)}</span>
-                  {shortcut ? <span className="text-xs text-muted-foreground">{shortcut}</span> : null}
+                  {shortcut ? <span className="text-xs text-muted-foreground">{shortcutLabel(shortcut)}</span> : null}
                   <Check className={cn("size-3.5 text-primary", !prefs[option] && "invisible")} aria-hidden />
                 </button>
               ))}

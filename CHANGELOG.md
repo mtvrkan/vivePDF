@@ -4,6 +4,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- macOS (Apple silicon, macOS 14 or later): a `.dmg` build with the native title bar and traffic lights, an app menu (About, Settings ⌘,, Hide, Quit ⌘Q, Edit, Window) in all eight languages, a monochrome menu bar icon, ⌘ ⇧ ⌥ shortcut labels throughout the interface and ⌃⌘F for full screen [2026-10-10]
+- macOS: PDFs opened from Finder while vivePDF is closed open on start, clicking the Dock icon brings a hidden window back, and Quit (⌘Q) asks about unsaved changes like closing the window does [2026-10-10]
+- macOS: settings texts name the menu bar, Finder, the macOS appearance and the macOS voice settings instead of their Windows counterparts [2026-10-10]
 - Releases: `scripts/build-windows-release.ps1` builds two Windows installers, the full one with LibreOffice for new users and a small one without it for the in-app updater, so updates no longer download LibreOffice again; it refuses to overwrite an existing installer. `pnpm e2e:smoke` runs the core end-to-end flows before a release. [2026-10-10]
 - Windows installer: LibreOffice now comes inside the installer and is set up in the background on first start without internet, so Word, Excel and PowerPoint conversions work offline; Settings › Tools shows the setup and can remove or reinstall it from the package, and uninstalling removes it [2026-10-09]
 - Viewer: the Japanese, Korean and Chinese fallback fonts now come with the app, so PDFs without embedded CJK fonts show their text right away without a download; copies downloaded by earlier versions are cleaned up [2026-10-09]
@@ -28,6 +31,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- macOS/Linux: watched folders were refused as system folders because every absolute path counted as inside `/` [2026-10-10]
+- macOS: renaming a file to the same name in another case (report.pdf → Report.pdf) reported that the name was taken [2026-10-10]
+- macOS/Linux: an unknown date directive in the rename pattern (for example `%Q`) is refused instead of being written literally, and error messages hide Windows paths as well [2026-10-10]
+- macOS: downloaded OCR languages and the managed LibreOffice live under `~/Library/Application Support/vivePDF`, LibreOffice in `~/Applications` is found, and Homebrew tools are found when the app starts from Finder [2026-10-10]
 - Viewer editing: a justified (book-style) paragraph stays justified after it is edited; text made of several paragraphs, or whose paragraphs start with an indent, was taken for left-aligned, and the last short line of each paragraph is no longer stretched to the full width [2026-10-12]
 - Presentation: on the black or white board the bottom toolbar stays on screen above the board, so pens, colours and the other tools can be picked while drawing; the board hint moved to the top [2026-10-12]
 - Home: a section, quick access tile or collection dragged and let go right after the last move now lands where it was dropped; a fast release used to leave it in its old place. [2026-10-10]

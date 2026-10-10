@@ -82,6 +82,9 @@ fn handle_menu<R: Runtime>(app: &AppHandle<R>, event: MenuEvent) {
 }
 
 fn handle_icon<R: Runtime>(tray: &TrayIcon<R>, event: TrayIconEvent) {
+    if cfg!(target_os = "macos") {
+        return;
+    }
     if let TrayIconEvent::Click {
         button: MouseButton::Left,
         button_state: MouseButtonState::Up,
@@ -123,9 +126,18 @@ fn install<R: Runtime>(app: &AppHandle<R>, labels: &TrayLabels, paused: bool) ->
     let mut builder = TrayIconBuilder::with_id(TRAY_ID)
         .tooltip(&labels.tooltip)
         .menu(&menu)
-        .show_menu_on_left_click(false)
+        .show_menu_on_left_click(cfg!(target_os = "macos"))
         .on_menu_event(handle_menu)
         .on_tray_icon_event(handle_icon);
+    #[cfg(target_os = "macos")]
+    {
+        builder = builder
+            .icon(tauri::image::Image::from_bytes(include_bytes!(
+                "../icons/tray-template.png"
+            ))?)
+            .icon_as_template(true);
+    }
+    #[cfg(not(target_os = "macos"))]
     if let Some(icon) = app.default_window_icon() {
         builder = builder.icon(icon.clone());
     }

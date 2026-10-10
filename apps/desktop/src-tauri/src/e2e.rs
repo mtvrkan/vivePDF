@@ -2,11 +2,13 @@ use tauri::plugin::TauriPlugin;
 use tauri::Runtime;
 
 #[cfg(not(feature = "e2e"))]
+#[cfg_attr(not(windows), allow(dead_code))]
 pub fn active() -> bool {
     false
 }
 
 #[cfg(feature = "e2e")]
+#[cfg_attr(not(windows), allow(dead_code))]
 pub fn active() -> bool {
     scripted::enabled(std::env::var(scripted::ENABLE_VAR).ok().as_deref())
 }

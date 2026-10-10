@@ -10,6 +10,7 @@ import { useOrganizerStore } from "./organizerStore";
 import { PaperPreview } from "./PaperPreview";
 import { DEFAULT_PAPER_COLOR, DEFAULT_SPACING, PAPER_SPACING, PAPER_STYLES } from "./paperPattern";
 import { parseRanges, useInsertSources, type PdfSourceLoad } from "./useInsertSources";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 const PAPER_POINTS: Record<Exclude<PaperPreset, "match">, [number, number]> = {
   a4: [595, 842],
@@ -233,7 +234,7 @@ export function ShortcutsDialog({ open, onClose }: { open: boolean; onClose: () 
         {SHORTCUTS.map(([keys, labelKey]) => (
           <div key={keys} className="flex h-row items-center justify-between gap-4 border-b text-sm last:border-b-0">
             <dt className="text-muted-foreground">{t(`tools.pages.shortcut.${labelKey}`)}</dt>
-            <dd className="font-mono text-xs">{keys.replace(/\{(\w+)\}/g, (_, gesture: string) => t(`tools.pages.gesture.${gesture}`))}</dd>
+            <dd className="font-mono text-xs">{shortcutLabel(keys).replace(/\{(\w+)\}/g, (_, gesture: string) => t(`tools.pages.gesture.${gesture}`))}</dd>
           </div>
         ))}
       </dl>

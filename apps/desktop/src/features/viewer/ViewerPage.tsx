@@ -64,6 +64,7 @@ import { hasOpenModal } from "./viewerKeyTarget";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useLiveActiveDocument } from "./useLiveActiveDocument";
 import { useDocumentFileWatch } from "./useDocumentFileWatch";
+import { isFullscreenKey } from "@/shared/lib/platform";
 
 export function ViewerPage() {
   const { t } = useTranslation();
@@ -87,12 +88,14 @@ export function ViewerPage() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (hasOpenModal() && !usePresentationStore.getState().codeBlockOpen) return;
-      if (event.key === "F11" && activeDocumentId && !isTypingTarget(event.target)) {
+      const fullscreenKey = isFullscreenKey(event);
+      if (fullscreenKey && activeDocumentId && !isTypingTarget(event.target)) {
         event.preventDefault();
         if (useUiStore.getState().immersive) void exitImmersive();
         else void setImmersiveFullscreen(true);
         return;
       }
+      if (fullscreenKey) return;
       if (event.key === "F5" && activeDocumentId && !isTypingTarget(event.target)) {
         event.preventDefault();
         if (!useUiStore.getState().immersive) void setImmersiveFullscreen(true, event.shiftKey ? null : 1);

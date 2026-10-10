@@ -25,7 +25,7 @@ MAX_LINE_BYTES = 8 * 1024 * 1024
 
 
 def _redact_message(text: str) -> str:
-    return _PATH_PATTERN.sub(lambda match: os.path.basename(match.group(0)), text)
+    return _PATH_PATTERN.sub(lambda match: re.split(r"[\\/]", match.group(0))[-1], text)
 
 
 def _extract_id(raw: str) -> str | None:

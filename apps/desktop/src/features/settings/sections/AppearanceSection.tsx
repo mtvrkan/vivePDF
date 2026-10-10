@@ -5,6 +5,7 @@ import { LOCALES } from "@/app/locales";
 import { UI_SCALES, usePreferencesStore, type UiScale } from "@/shared/store/preferencesStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { UI_ZOOMS, type UiZoom } from "@/shared/lib/uiZoom";
+import { isMac } from "@/shared/lib/platform";
 import type { Locale } from "@/types";
 import { SectionCard, SettingRow, ThemeCards } from "../settingsControls";
 import type { SettingsSectionProps } from "../settingsShared";
@@ -25,7 +26,7 @@ export function AppearanceSection({ query, onEmptyChange }: SettingsSectionProps
       <SettingRow label={t("common.language")}>
         <Select value={locale} options={LOCALES.map((item) => ({ value: item.code, label: item.nativeName }))} onChange={(value) => setLocale(value as Locale)} ariaLabel={t("common.language")} className="w-52" />
       </SettingRow>
-      <SettingRow label={t("common.theme")} hint={t("settings.appearance.themeHint")} block>
+      <SettingRow label={t("common.theme")} hint={t(isMac ? "settings.appearance.themeMacHint" : "settings.appearance.themeHint")} block>
         <ThemeCards value={theme} onChange={setTheme} ariaLabel={t("common.theme")} />
       </SettingRow>
       <SettingRow label={t("settings.appearance.uiScale")} hint={t("settings.appearance.uiScaleHint")}>

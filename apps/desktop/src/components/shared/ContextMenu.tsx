@@ -3,6 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import { Check, ChevronRight } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 export const MENU_LAYER = "data-context-menu-layer";
 
@@ -174,7 +175,7 @@ function ContextMenuItems({
             {Icon ? <Icon className="size-4" aria-hidden /> : null}
             {item.swatch ? <span aria-hidden className="size-3.5 shrink-0 rounded-full ring-1 ring-foreground/15" style={{ background: item.swatch }} /> : null}
             <span className="flex-1 text-left">{item.label}</span>
-            {item.shortcut ? <span className="text-xs text-muted-foreground">{item.shortcut}</span> : null}
+            {item.shortcut ? <span className="text-xs text-muted-foreground">{shortcutLabel(item.shortcut)}</span> : null}
             {item.checked ? <Check className="size-3.5 text-primary" aria-hidden /> : null}
           </button>
         );

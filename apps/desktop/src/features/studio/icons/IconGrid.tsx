@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { StudioVectorPath } from "@/types/studio";
 import type { IconEntry } from "./iconSearch";
+import { hasModKey, isMac } from "@/shared/lib/platform";
 
 const OVERSCAN = 3;
 
@@ -89,10 +90,10 @@ export function IconGrid({ entries, preview, onPick, labelOf, ariaLabel, tile, c
     const moves: Record<string, number> = {
       ArrowRight: index + (rtl ? -1 : 1),
       ArrowLeft: index + (rtl ? 1 : -1),
-      ArrowDown: index + columns,
-      ArrowUp: index - columns,
-      Home: event.ctrlKey ? 0 : rowStart,
-      End: event.ctrlKey ? entries.length - 1 : rowStart + columns - 1,
+      ArrowDown: isMac && event.metaKey ? entries.length - 1 : index + columns,
+      ArrowUp: isMac && event.metaKey ? 0 : index - columns,
+      Home: hasModKey(event) ? 0 : rowStart,
+      End: hasModKey(event) ? entries.length - 1 : rowStart + columns - 1,
       PageDown: index + columns * pageRows,
       PageUp: index - columns * pageRows,
     };

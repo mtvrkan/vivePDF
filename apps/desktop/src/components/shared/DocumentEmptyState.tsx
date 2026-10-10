@@ -6,6 +6,7 @@ import { Button } from "@/components/shared/Button";
 import { usePaletteStore } from "@/shared/store/paletteStore";
 import { useRecentStore } from "@/shared/store/recentStore";
 import { useUiStore } from "@/shared/store/uiStore";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 type Highlight = { icon: LucideIcon; label: string; onClick?: () => void };
 
@@ -133,11 +134,11 @@ export function DocumentEmptyState({ icon: Icon, title, description, highlights,
             <div className="mt-1.5 space-y-0.5 text-sm">
               <button type="button" onClick={onOpen} className="nav-glass -mx-2 flex w-[calc(100%+1rem)] items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-start text-muted-foreground hover:text-foreground">
                 <span>{t("common.openPdf")}</span>
-                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">Ctrl O</kbd>
+                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{shortcutLabel("Ctrl O")}</kbd>
               </button>
               <button type="button" onClick={openPalette} className="nav-glass -mx-2 flex w-[calc(100%+1rem)] items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-start text-muted-foreground hover:text-foreground">
                 <span>{t("emptyDoc.palette")}</span>
-                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">Ctrl K</kbd>
+                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{shortcutLabel("Ctrl K")}</kbd>
               </button>
             </div>
           </section>

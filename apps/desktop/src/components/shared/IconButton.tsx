@@ -1,6 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
 import { Loader2, type LucideIcon } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
+import { isMac, shortcutLabel } from "@/shared/lib/platform";
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   icon: LucideIcon;
@@ -10,7 +11,7 @@ type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   active?: boolean;
 };
 
-const ARIA_KEY_NAMES: Record<string, string> = { Ctrl: "Control", Esc: "Escape", Del: "Delete" };
+const ARIA_KEY_NAMES: Record<string, string> = { Ctrl: isMac ? "Meta" : "Control", Esc: "Escape", Del: "Delete" };
 
 function ariaShortcut(shortcut: string): string {
   return shortcut
@@ -31,7 +32,7 @@ export function IconButton({ icon: Icon, label, shortcut, busy = false, active =
     <button
       type={type}
       aria-label={label}
-      title={shortcut ? `${label} (${shortcut})` : label}
+      title={shortcut ? `${label} (${shortcutLabel(shortcut)})` : label}
       aria-keyshortcuts={shortcut ? ariaShortcut(shortcut) : undefined}
       aria-busy={busy || undefined}
       aria-pressed={active || undefined}

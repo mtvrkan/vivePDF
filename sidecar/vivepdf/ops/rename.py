@@ -171,8 +171,21 @@ def largest_text_line(page: pymupdf.Page, textpage: pymupdf.TextPage | None = No
     return best_text[:TITLE_MAX_CHARS]
 
 
+_POSIX_DATE_DIRECTIVE = re.compile(r"%-?(.)")
+_POSIX_DATE_CODES = frozenset("aAbBcCdDeFgGhHIjmMnprRStTuUVwWxXyYzZf%")
+
+
 def formatted_date(value: datetime.date, date_format: str) -> str:
     try:
+        if os.name != "nt" and (
+            date_format.endswith("%")
+            and not date_format.endswith("%%")
+            or any(
+                code not in _POSIX_DATE_CODES
+                for code in _POSIX_DATE_DIRECTIVE.findall(date_format.replace("%%", ""))
+            )
+        ):
+            raise ValueError(date_format)
         return value.strftime(date_format)
     except ValueError as error:
         raise OpError(
@@ -551,7 +564,7 @@ def preview(params: RenamePreviewParams, progress: Progress) -> RenamePreviewRes
         occupied = (
             target.exists()
             and os.path.normcase(str(target)) not in vacating
-            and target.resolve() != source.resolve()
+            and not _same_entry(target, source)
         )
         item.conflict = key in claimed or occupied
         claimed.add(key)
@@ -593,6 +606,17 @@ class _PlannedRename:
     target: Path
     same_file: bool
     parked: Path | None = None
+
+
+def _same_entry(target: Path, source: Path) -> bool:
+    if target.resolve() == source.resolve():
+        return True
+    return (
+        os.name != "nt"
+        and target.name.casefold() == source.name.casefold()
+        and target.parent.resolve() == source.parent.resolve()
+        and os.path.samefile(target, source)
+    )
 
 
 def _normalized(path: Path) -> str:
@@ -689,7 +713,7 @@ def apply(params: RenameApplyParams, progress: Progress) -> RenameApplyResult:
             continue
         target_dir, name = targets[position]
         target = target_dir / f"{name}{source.suffix}"
-        same_file = target.exists() and target.resolve() == source.resolve()
+        same_file = target.exists() and _same_entry(target, source)
         taken = taken_stems(target_dir, source.suffix)
         claim = _normalized(target)
         if same_file:

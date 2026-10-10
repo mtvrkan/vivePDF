@@ -1,3 +1,4 @@
+mod app_menu;
 mod autostart;
 mod chain_secrets;
 mod desktop_links;
@@ -51,6 +52,7 @@ pub fn run() {
         .manage(doc_watch::DocumentWatch::default())
         .manage(tray::TrayState::default())
         .manage(document_windows::DocumentWindows::default())
+        .manage(launch::OpenedFiles::default())
         .manage(chain_secrets::ChainSecrets::default())
         .manage(watch_tickets::WatchTickets::default())
         .manage(view_source::ViewSources::default())
@@ -110,10 +112,13 @@ pub fn run() {
                 std::thread::spawn(move || font_source::drop_bundled_copies(&dir));
             }
             tray::prepare_startup(app.handle());
+            #[cfg(target_os = "macos")]
+            app_menu::install(app.handle())?;
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             rpc::rpc,
+            app_menu::app_menu_configure,
             rpc::rpc_cancel,
             files::read_document,
             files::write_document,
@@ -186,12 +191,20 @@ pub fn run() {
                 .filter_map(|url| url.to_file_path().ok())
                 .map(|path| path.to_string_lossy().to_string())
                 .collect();
-            document_windows::deliver_launch(
-                handle,
-                launch::LaunchRequest { tool: None, paths },
-                true,
-            );
+            use tauri::Manager;
+            if let Some(paths) = handle.state::<launch::OpenedFiles>().hold(paths) {
+                document_windows::deliver_launch(
+                    handle,
+                    launch::LaunchRequest { tool: None, paths },
+                    true,
+                );
+            }
         }
+        #[cfg(target_os = "macos")]
+        tauri::RunEvent::Reopen {
+            has_visible_windows: false,
+            ..
+        } => tray::show_main_window(handle),
         _ => {}
     });
 }

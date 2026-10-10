@@ -3,6 +3,7 @@ import { selectionBounds } from "../model/edit";
 import { canvasBridge } from "./canvasBridge";
 import { PAD, type Point } from "./canvasGeometry";
 import { currentPage, useStudioStore } from "./studioStore";
+import { hasModKey } from "@/shared/lib/platform";
 
 const ZOOM_STEP = 1.1;
 const SELECTION_ZOOM_MARGIN = 0.8;
@@ -89,7 +90,7 @@ export function useCanvasViewport({ viewportRef, pageRef, zoom, fit, pageWidth, 
     const viewport = viewportRef.current;
     if (!viewport) return;
     const onWheel = (event: WheelEvent) => {
-      if (!event.ctrlKey) return;
+      if (!hasModKey(event)) return;
       event.preventDefault();
       const host = pageRef.current;
       if (!host) return;
