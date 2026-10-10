@@ -15,6 +15,7 @@ import { REPO_URL, THIRD_PARTY, WEBSITE_URL } from "@/features/about/credits";
 import { DOCUMENT_SHORTCUTS, STUDIO_SHORTCUT_GROUPS } from "@/features/studio/design/shortcutList";
 import { useReportStore } from "@/shared/store/reportStore";
 import type { LucideIcon } from "lucide-react";
+import { FULLSCREEN_SHORTCUT, shortcutLabel } from "@/shared/lib/platform";
 
 type LinkedPanel = "credits" | "privacy" | "shortcuts";
 type Panel = LinkedPanel | "licences";
@@ -40,7 +41,7 @@ const SHORTCUTS: ShortcutGroup[] = [
     items: [
       { keys: "Ctrl F", labelKey: "about.shortcuts.items.search" },
       { keys: "Ctrl P", labelKey: "about.shortcuts.items.print" },
-      { keys: "F11", labelKey: "about.shortcuts.items.fullscreen" },
+      { keys: FULLSCREEN_SHORTCUT, labelKey: "about.shortcuts.items.fullscreen" },
       { keys: "Ctrl +  /  Ctrl −  /  Ctrl Wheel", labelKey: "about.shortcuts.items.zoom" },
       { keys: "Ctrl 0  /  Ctrl 1  /  Ctrl 2", labelKey: "about.shortcuts.items.zoomModes" },
       { keys: "Space + Drag  ·  Middle Drag", labelKey: "about.shortcuts.items.panDrag" },
@@ -69,7 +70,7 @@ const SHORTCUTS: ShortcutGroup[] = [
   {
     id: "presentation",
     items: [
-      { keys: "F11", labelKey: "about.shortcuts.items.presentationEnter" },
+      { keys: FULLSCREEN_SHORTCUT, labelKey: "about.shortcuts.items.presentationEnter" },
       { keys: "F5  /  Shift F5", labelKey: "about.shortcuts.items.presentationStart" },
       { keys: "L", labelKey: "about.shortcuts.items.presentationLaser" },
       { keys: "P", labelKey: "about.shortcuts.items.presentationPen" },
@@ -274,7 +275,7 @@ function ShortcutsContent() {
                       {t(item.labelKey)}
                     </span>
                     <span className="flex shrink-0 items-center gap-1">
-                      {splitKeys(item.keys).map((combo, index) => (
+                      {splitKeys(shortcutLabel(item.keys)).map((combo, index) => (
                         <kbd key={index} className="rounded-sm border bg-background px-1.5 font-mono text-xs text-muted-foreground">
                           {combo}
                         </kbd>

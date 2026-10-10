@@ -34,6 +34,7 @@ import { useUpdateStore } from "@/shared/store/updateStore";
 import { useViewerJumpStore } from "@/shared/store/viewerJumpStore";
 import { readSession } from "@/shared/session/sessionStore";
 import { useRestoreSession } from "@/shared/session/useRestoreSession";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 const MAX_RESULTS = 40;
 const PAGE_STEP = 5;
@@ -49,7 +50,7 @@ function stripPrefix(label: string): string {
 }
 
 function Kbd({ children }: { children: string }) {
-  return <kbd className="rounded-md border bg-background px-1.5 py-0.5 font-mono text-[11px] leading-none text-muted-foreground">{children}</kbd>;
+  return <kbd className="rounded-md border bg-background px-1.5 py-0.5 font-mono text-[11px] leading-none text-muted-foreground">{shortcutLabel(children)}</kbd>;
 }
 
 type Group = { key: string; label: string; entries: PaletteEntry[] };

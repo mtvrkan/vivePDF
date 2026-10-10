@@ -101,9 +101,9 @@ them against the old digests.
 ## Cutting a release
 
 Releases are built and published locally; GitHub Actions is switched off for the repository
-(Settings › Actions) and stays off unless the owner decides otherwise. Only Windows is built
-locally, so `latest.json` carries a `windows-x86_64` entry alone until macOS and Linux builds
-exist.
+(Settings › Actions) and stays off unless the owner decides otherwise. Windows and macOS (Apple
+silicon) are built locally, so `latest.json` carries `windows-x86_64` and `darwin-aarch64` entries
+until Linux and Intel Mac builds exist.
 
 1. Bump the version in `apps/desktop/src-tauri/tauri.conf.json`, `apps/desktop/src-tauri/Cargo.toml`
    and `apps/desktop/package.json` (same value everywhere) and add a `## [X.Y.Z] - YYYY-MM-DD`
@@ -119,9 +119,23 @@ exist.
    ```
    pnpm tauri signer sign -f ~/.tauri/vivepdf.key src-tauri/target/release/bundle/nsis/vivePDF_X.Y.Z_x64-setup.exe
    ```
-4. Write `latest.json` (shape below, `windows-x86_64` only), tag `vX.Y.Z`, push the tag and run
-   `gh release create vX.Y.Z <installer> <installer>.sig latest.json --title "vivePDF X.Y.Z" --notes-file <notes>`.
-5. Check that `https://github.com/mtvrkan/vivePDF/releases/latest/download/latest.json` answers
+4. On the Mac (macOS 14 or later, Xcode command line tools, Rust, Node 22 + pnpm 10, uv), build
+   the engine with `scripts/build-sidecar.sh` (same self-checks), then the app from `apps/desktop`
+   with the same `pnpm tauri build …` command as in step 2. The macOS-only settings (native title
+   bar with traffic lights, `minimumSystemVersion` 14.0, which is the oldest system the bundled
+   numpy/onnxruntime/qpdf libraries load on) live in `src-tauri/tauri.macos.conf.json`, which Tauri
+   merges on macOS only. Run `scripts/smoke-engine.sh src-tauri/target/release/bundle/macos/vivePDF.app/Contents/Resources/engine`,
+   then sign the updater archive:
+   ```
+   pnpm tauri signer sign -f ~/.tauri/vivepdf.key src-tauri/target/release/bundle/macos/vivePDF.app.tar.gz
+   ```
+   Upload `vivePDF_X.Y.Z_aarch64.dmg` for people installing by hand and
+   `vivePDF_X.Y.Z_aarch64.app.tar.gz` + `.sig` for the updater (`darwin-aarch64` entry). Without the
+   updater key on the Mac, skip `createUpdaterArtifacts` and upload only the `.dmg`; installed Mac
+   apps then simply see no update.
+5. Write `latest.json` (shape below, the platforms built above), tag `vX.Y.Z`, push the tag and run
+   `gh release create vX.Y.Z <installers> <signatures> latest.json --title "vivePDF X.Y.Z" --notes-file <notes>`.
+6. Check that `https://github.com/mtvrkan/vivePDF/releases/latest/download/latest.json` answers
    without signing in; installed apps pick the new version up on their next start or manual check.
 
 The rest of this section describes the four-platform workflow kept in the repository for when
@@ -202,8 +216,9 @@ Until the code-signing certificates below exist, installers are unsigned and the
 system warns once:
 
 - **Windows** — SmartScreen shows "Windows protected your PC". Click *More info* → *Run anyway*.
-- **macOS** — the app is only ad-hoc signed, so Gatekeeper refuses a double-click. Right-click
-  the app → *Open* → *Open*, or remove the quarantine flag:
+- **macOS** — the app is only ad-hoc signed, so Gatekeeper refuses the first start. Open
+  *System Settings › Privacy & Security* and click *Open Anyway* next to the vivePDF message, or
+  remove the quarantine flag:
   `xattr -dr com.apple.quarantine /Applications/vivePDF.app`.
 - **Linux** — no warning; make the AppImage executable (`chmod +x`) before starting it.
 

@@ -29,6 +29,7 @@ import { copySelection } from "./copySelection";
 import { normalizeLinkUri } from "./linkUri";
 import { markSelectionWithTool, type MarkupToolId } from "./markupSelection";
 import type { CodeBlock } from "@/types";
+import { hasModKey } from "@/shared/lib/platform";
 
 type PdfRect = { origin: { x: number; y: number }; size: { width: number; height: number } };
 type Anchor = { x: number; y: number };
@@ -202,7 +203,7 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!anchor || !text || isTypingTarget(event.target)) return;
-      if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "c") {
+      if (hasModKey(event) && event.shiftKey && event.key.toLowerCase() === "c") {
         event.preventDefault();
         void copyAsCodeRef.current?.();
       }

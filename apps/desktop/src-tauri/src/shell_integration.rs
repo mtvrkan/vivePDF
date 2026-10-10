@@ -11,12 +11,14 @@ pub struct ShellEntry {
     pub extensions: Vec<String>,
 }
 
+#[cfg(any(windows, test))]
 pub const MENU_KEY: &str = "vivePDF";
 
 pub fn normalize_extension(value: &str) -> String {
     value.trim().trim_start_matches('.').to_ascii_lowercase()
 }
 
+#[cfg(any(windows, test))]
 pub fn menu_path(extension: &str) -> String {
     format!(
         "SystemFileAssociations\\.{}\\shell\\{}",
@@ -25,6 +27,7 @@ pub fn menu_path(extension: &str) -> String {
     )
 }
 
+#[cfg(any(windows, test))]
 pub fn command_line(executable: &str, tool: &str) -> String {
     format!("\"{executable}\" --tool \"{tool}\" \"%1\"")
 }

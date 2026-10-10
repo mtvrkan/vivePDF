@@ -28,7 +28,7 @@ vi.mock("@/shared/store/presentationStore", () => ({
   usePresentationStore: { getState: () => ({ resetSession: () => {} }) },
 }));
 
-const key = (value: string, extra: Partial<{ ctrlKey: boolean; shiftKey: boolean }> = {}) => ({
+const key = (value: string, extra: Partial<{ ctrlKey: boolean; shiftKey: boolean; metaKey: boolean }> = {}) => ({
   key: value,
   ctrlKey: false,
   shiftKey: false,
@@ -54,6 +54,15 @@ describe("shouldExitOnKey", () => {
   it("exits on Ctrl+Shift+F while immersive but not on Ctrl+F alone", () => {
     expect(shouldExitOnKey(key("f", { ctrlKey: true, shiftKey: true }), { immersive: true, mounted: true })).toBe(true);
     expect(shouldExitOnKey(key("f", { ctrlKey: true }), { immersive: true, mounted: true })).toBe(false);
+  });
+
+  it("takes Command and Control+Command+F on macOS only", () => {
+    const context = { immersive: true, mounted: true };
+    expect(shouldExitOnKey(key("f", { metaKey: true, shiftKey: true }), context, true)).toBe(true);
+    expect(shouldExitOnKey(key("f", { metaKey: true, ctrlKey: true }), context, true)).toBe(true);
+    expect(shouldExitOnKey(key("f", { metaKey: true, shiftKey: true }), context, false)).toBe(false);
+    expect(shouldExitOnKey(key("f", { metaKey: true, ctrlKey: true }), context, false)).toBe(false);
+    expect(shouldExitOnKey(key("f", { metaKey: true }), context, true)).toBe(false);
   });
 });
 

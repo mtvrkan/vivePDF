@@ -3,6 +3,16 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- macOS (Apple silicon, macOS 14 or later): a `.dmg` build with the native title bar and traffic lights, an app menu (About, Settings ⌘,, Hide, Quit ⌘Q, Edit, Window) in all eight languages, a monochrome menu bar icon, ⌘ ⇧ ⌥ shortcut labels throughout the interface and ⌃⌘F for full screen [2026-10-10]
+- macOS: PDFs opened from Finder while vivePDF is closed open on start, clicking the Dock icon brings a hidden window back, and Quit (⌘Q) asks about unsaved changes like closing the window does [2026-10-10]
+- macOS: settings texts name the menu bar, Finder, the macOS appearance and the macOS voice settings instead of their Windows counterparts [2026-10-10]
+
+### Fixed
+- macOS/Linux: watched folders were refused as system folders because every absolute path counted as inside `/` [2026-10-10]
+- macOS: renaming a file to the same name in another case (report.pdf → Report.pdf) reported that the name was taken [2026-10-10]
+- macOS/Linux: an unknown date directive in the rename pattern (for example `%Q`) is refused instead of being written literally, and error messages hide Windows paths as well [2026-10-10]
+- macOS: downloaded OCR languages and the managed LibreOffice live under `~/Library/Application Support/vivePDF`, LibreOffice in `~/Applications` is found, and Homebrew tools are found when the app starts from Finder [2026-10-10]
 
 ## [0.2.0] - 2026-10-09
 ### Added

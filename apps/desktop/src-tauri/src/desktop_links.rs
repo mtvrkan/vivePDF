@@ -1,7 +1,9 @@
 use crate::rpc::RpcError;
 
+#[cfg(windows)]
 pub const APP_USER_MODEL_ID: &str = "com.vivepdf.desktop";
 
+#[cfg(any(windows, test))]
 pub fn shortcut_file_name(name: &str) -> String {
     let cleaned: String = name
         .chars()

@@ -1,19 +1,25 @@
 use crate::rpc::RpcError;
 
+#[cfg(windows)]
 pub const PROG_ID: &str = "vivePDF.Document";
+#[cfg(windows)]
 pub const CAPABILITIES_PATH: &str = "Software\\vivePDF\\Capabilities";
+#[cfg(any(windows, test))]
 pub const DOCUMENT_ICON_NAME: &str = "pdf-document.ico";
 #[cfg(windows)]
 const DOCUMENT_ICON: &[u8] = include_bytes!("../icons/pdf-document.ico");
 
+#[cfg(any(windows, test))]
 pub fn open_command_line(executable: &str) -> String {
     format!("\"{executable}\" \"%1\"")
 }
 
+#[cfg(any(windows, test))]
 pub fn icon_value(path: &str) -> String {
     format!("\"{path}\",0")
 }
 
+#[cfg(any(windows, test))]
 pub fn document_icon_path(data_dir: Option<std::path::PathBuf>) -> Option<std::path::PathBuf> {
     data_dir.map(|dir| dir.join(DOCUMENT_ICON_NAME))
 }
@@ -33,6 +39,7 @@ pub fn current_document_icon(path: &std::path::Path) -> Option<String> {
         .then(|| icon_value(&path.to_string_lossy()))
 }
 
+#[cfg(any(windows, test))]
 pub fn application_key(executable: &str) -> String {
     let file_name = executable
         .rsplit(['\\', '/'])

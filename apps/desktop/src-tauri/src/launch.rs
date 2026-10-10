@@ -1,4 +1,5 @@
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 
 use serde::Serialize;
 use tauri::{Runtime, State, WebviewWindow};
@@ -43,13 +44,48 @@ where
     LaunchRequest { tool, paths }
 }
 
+#[derive(Default)]
+pub struct OpenedFiles {
+    state: Mutex<(bool, Vec<String>)>,
+}
+
+impl OpenedFiles {
+    pub fn hold(&self, paths: Vec<String>) -> Option<Vec<String>> {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        if state.0 {
+            return Some(paths);
+        }
+        state.1.extend(paths);
+        None
+    }
+
+    pub fn release(&self) -> Vec<String> {
+        let mut state = self
+            .state
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        state.0 = true;
+        std::mem::take(&mut state.1)
+    }
+}
+
 #[tauri::command]
 pub fn launch_request<R: Runtime>(
     window: WebviewWindow<R>,
     windows: State<'_, DocumentWindows>,
+    opened: State<'_, OpenedFiles>,
 ) -> LaunchRequest {
     if window.label() == MAIN_WINDOW {
-        return parse(std::env::args().skip(1), None);
+        let mut request = parse(std::env::args().skip(1), None);
+        for path in opened.release() {
+            if !request.paths.contains(&path) {
+                request.paths.push(path);
+            }
+        }
+        return request;
     }
     windows.request_for(window.label())
 }
@@ -76,6 +112,22 @@ mod tests {
         );
         assert_eq!(request.tool.as_deref(), Some("compress"));
         assert_eq!(request.paths, vec![file.to_string_lossy().to_string()]);
+    }
+
+    #[test]
+    fn files_opened_before_the_main_window_asks_are_held_for_it() {
+        let opened = OpenedFiles::default();
+        assert_eq!(opened.hold(vec!["/a.pdf".into()]), None);
+        assert_eq!(opened.hold(vec!["/b.pdf".into()]), None);
+        assert_eq!(
+            opened.release(),
+            vec!["/a.pdf".to_string(), "/b.pdf".to_string()]
+        );
+        assert_eq!(
+            opened.hold(vec!["/c.pdf".into()]),
+            Some(vec!["/c.pdf".to_string()])
+        );
+        assert!(opened.release().is_empty());
     }
 
     #[test]

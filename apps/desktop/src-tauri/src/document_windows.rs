@@ -140,10 +140,17 @@ pub fn open_window<R: Runtime>(
         .title("vivePDF")
         .inner_size(1280.0, 800.0)
         .min_inner_size(900.0, 600.0)
-        .decorations(false)
         .center()
-        .focused(true)
-        .build();
+        .focused(true);
+    #[cfg(target_os = "macos")]
+    let built = built
+        .decorations(true)
+        .title_bar_style(tauri::TitleBarStyle::Overlay)
+        .hidden_title(true)
+        .traffic_light_position(tauri::LogicalPosition::new(16.0, 26.0));
+    #[cfg(not(target_os = "macos"))]
+    let built = built.decorations(false);
+    let built = built.build();
     match built {
         Ok(window) => {
             let handle = app.clone();

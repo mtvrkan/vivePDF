@@ -11,6 +11,7 @@ import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, useStudioStore } from "./studioStore";
 import { MIN_SIDE, normalizeAngle, ratioLocked } from "./transform";
 import { fromMm, toMm } from "./units";
+import { ariaShortcut, shortcutLabel } from "@/shared/lib/platform";
 
 type Limits = { x: [number, number]; y: [number, number]; width: [number, number]; height: [number, number] };
 
@@ -120,11 +121,11 @@ function StyleClipboardButtons() {
   const chip = "glass-chip inline-flex h-8 items-center gap-1.5 rounded-lg px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-40";
   return (
     <div className="flex flex-wrap gap-2">
-      <button type="button" className={chip} title={`${t("studio.style.copy")} (Ctrl+Alt+C)`} aria-keyshortcuts="Control+Alt+C" onClick={copyStyle}>
+      <button type="button" className={chip} title={`${t("studio.style.copy")} (${shortcutLabel("Ctrl+Alt+C")})`} aria-keyshortcuts={ariaShortcut("Control+Alt+C")} onClick={copyStyle}>
         <Paintbrush className="size-4" aria-hidden />
         {t("studio.style.copy")}
       </button>
-      <button type="button" className={chip} title={`${t("studio.style.paste")} (Ctrl+Alt+V)`} aria-keyshortcuts="Control+Alt+V" disabled={!hasStyle} onClick={pasteStyle}>
+      <button type="button" className={chip} title={`${t("studio.style.paste")} (${shortcutLabel("Ctrl+Alt+V")})`} aria-keyshortcuts={ariaShortcut("Control+Alt+V")} disabled={!hasStyle} onClick={pasteStyle}>
         <PaintBucket className="size-4" aria-hidden />
         {t("studio.style.paste")}
       </button>

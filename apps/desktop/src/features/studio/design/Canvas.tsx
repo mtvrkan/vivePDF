@@ -28,6 +28,7 @@ import { formatMm, fromMm } from "./units";
 import { useCanvasPointer } from "./useCanvasPointer";
 import { useCanvasViewport } from "./useCanvasViewport";
 import { BLEED_MM, useViewPrefs } from "./viewPrefs";
+import { hasModKey } from "@/shared/lib/platform";
 
 export function Canvas({ language }: { language: string }) {
   const { t } = useTranslation();
@@ -118,7 +119,7 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
         onDoubleClick={onDoubleClick}
         onContextMenu={onContextMenu}
         onWheelCapture={(event: ReactWheelEvent) => {
-          if (event.ctrlKey) event.stopPropagation();
+          if (hasModKey(event)) event.stopPropagation();
         }}
       >
         <div style={{ position: "relative", width: `${page.width * zoom + PAD * 2}px`, height: `${page.height * zoom + PAD * 2}px`, minWidth: "100%", minHeight: "100%" }}>

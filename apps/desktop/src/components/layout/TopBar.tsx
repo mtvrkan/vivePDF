@@ -23,6 +23,7 @@ import { useUiStore } from "@/shared/store/uiStore";
 import { useUpdateStore } from "@/shared/store/updateStore";
 import type { Locale } from "@/types";
 import { HeaderMenu, MenuLink, MenuSeparator } from "./HeaderMenu";
+import { isMac, shortcutLabel } from "@/shared/lib/platform";
 
 const COMPACT_SEARCH_LEVEL = 1;
 const COMPACT_NAV_LEVEL = 2;
@@ -79,6 +80,23 @@ function WindowControls() {
       </button>
     </div>
   );
+}
+
+function useMacFullscreen(): boolean {
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    if (!isMac) return;
+    const appWindow = getCurrentWindow();
+    const sync = () => void appWindow.isFullscreen().then(setFullscreen).catch(() => undefined);
+    sync();
+    const unlisten = appWindow.onResized(sync);
+    return () => {
+      void unlisten.then((stop) => stop()).catch(() => undefined);
+    };
+  }, []);
+
+  return fullscreen;
 }
 
 function UpdateBadge({ compact }: { compact: boolean }) {
@@ -282,6 +300,7 @@ export function TopBar() {
   const locale = useUiStore((state) => state.locale);
   const updateStatus = useUpdateStore((state) => state.status);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const macFullscreen = useMacFullscreen();
 
   useEffect(() => {
     const el = barRef.current;
@@ -318,7 +337,11 @@ export function TopBar() {
   const settingsActive = location.pathname.startsWith("/settings");
 
   return (
-    <header ref={barRef} data-tauri-drag-region className="glass-flat flex h-topbar select-none items-center gap-1.5 overflow-hidden border-b ps-3 pe-0">
+    <header
+      ref={barRef}
+      data-tauri-drag-region
+      className={cn("glass-flat flex h-topbar select-none items-center gap-1.5 overflow-hidden border-b", isMac ? cn("pr-3", macFullscreen ? "pl-3" : "pl-[80px]") : "ps-3 pe-0")}
+    >
       <Link to="/" aria-label={t("app.name")} className="me-2 flex h-8 shrink-0 items-center gap-2 rounded-lg px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-ring">
         <Logo size={22} />
         {compactNav ? null : (
@@ -343,7 +366,7 @@ export function TopBar() {
         {compactSearch ? null : (
           <>
             <span className="min-w-0 flex-1 truncate text-start">{t("palette.placeholder")}</span>
-            <kbd className="shrink-0 rounded-md border bg-card/70 px-1.5 font-mono text-[11px]">Ctrl K</kbd>
+            <kbd className="shrink-0 rounded-md border bg-card/70 px-1.5 font-mono text-[11px]">{shortcutLabel("Ctrl K")}</kbd>
           </>
         )}
       </button>
@@ -376,7 +399,7 @@ export function TopBar() {
       >
         {compactActions ? null : t("common.openPdf")}
       </Button>
-      <WindowControls />
+      {isMac ? null : <WindowControls />}
     </header>
   );
 }

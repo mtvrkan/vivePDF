@@ -2,6 +2,7 @@ import { PhysicalPosition, PhysicalSize, currentMonitor, getCurrentWindow } from
 import * as logger from "@/shared/lib/logger";
 import { useUiStore } from "@/shared/store/uiStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { hasModKey, isFullscreenKey, isMac } from "@/shared/lib/platform";
 
 const SETTLE_MS = 160;
 
@@ -68,7 +69,7 @@ export async function setImmersiveFullscreen(next: boolean, startPage: number | 
     if (entry.maximized) await appWindow.unmaximize();
     await appWindow.setFullscreen(true);
     await settle();
-    if (!(await coversMonitor())) {
+    if (!isMac && !(await coversMonitor())) {
       await forceCover();
       entry.forced = true;
     }
@@ -81,10 +82,10 @@ export async function setImmersiveFullscreen(next: boolean, startPage: number | 
 
 export type ImmersiveKeyContext = { immersive: boolean; mounted: boolean };
 
-export function shouldExitOnKey(event: Pick<KeyboardEvent, "key" | "ctrlKey" | "shiftKey">, context: ImmersiveKeyContext): boolean {
+export function shouldExitOnKey(event: Pick<KeyboardEvent, "key" | "ctrlKey" | "shiftKey"> & Partial<Pick<KeyboardEvent, "metaKey" | "altKey" | "code">>, context: ImmersiveKeyContext, mac = isMac): boolean {
   if (!context.immersive) return false;
-  if (event.key === "F11") return true;
-  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "f") return true;
+  if (isFullscreenKey({ ...event, metaKey: event.metaKey ?? false }, mac)) return true;
+  if (hasModKey({ ctrlKey: event.ctrlKey, metaKey: event.metaKey ?? false }, mac) && event.shiftKey && event.key.toLowerCase() === "f") return true;
   if (event.key === "Escape" && !context.mounted) return true;
   return false;
 }
