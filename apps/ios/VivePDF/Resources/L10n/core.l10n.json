@@ -1,0 +1,42 @@
+{
+  "en": { "ios": { "common": {
+    "share": "Share", "shareAll": "Share all", "saveToFiles": "Save to Files", "preview": "Preview",
+    "chooseFile": "Choose file", "browseFiles": "Browse Files", "openDocuments": "Open documents",
+    "addFiles": "Add files", "addPhotos": "Add photos", "moveUp": "Move up", "moveDown": "Move down"
+  } } },
+  "tr": { "ios": { "common": {
+    "share": "Paylaş", "shareAll": "Tümünü paylaş", "saveToFiles": "Dosyalar'a kaydet", "preview": "Önizle",
+    "chooseFile": "Dosya seç", "browseFiles": "Dosyalar'da gezin", "openDocuments": "Açık belgeler",
+    "addFiles": "Dosya ekle", "addPhotos": "Fotoğraf ekle", "moveUp": "Yukarı taşı", "moveDown": "Aşağı taşı"
+  } } },
+  "de": { "ios": { "common": {
+    "share": "Teilen", "shareAll": "Alle teilen", "saveToFiles": "In Dateien sichern", "preview": "Vorschau",
+    "chooseFile": "Datei wählen", "browseFiles": "Dateien durchsuchen", "openDocuments": "Geöffnete Dokumente",
+    "addFiles": "Dateien hinzufügen", "addPhotos": "Fotos hinzufügen", "moveUp": "Nach oben", "moveDown": "Nach unten"
+  } } },
+  "fr": { "ios": { "common": {
+    "share": "Partager", "shareAll": "Tout partager", "saveToFiles": "Enregistrer dans Fichiers", "preview": "Aperçu",
+    "chooseFile": "Choisir un fichier", "browseFiles": "Parcourir Fichiers", "openDocuments": "Documents ouverts",
+    "addFiles": "Ajouter des fichiers", "addPhotos": "Ajouter des photos", "moveUp": "Monter", "moveDown": "Descendre"
+  } } },
+  "es": { "ios": { "common": {
+    "share": "Compartir", "shareAll": "Compartir todo", "saveToFiles": "Guardar en Archivos", "preview": "Vista previa",
+    "chooseFile": "Elegir archivo", "browseFiles": "Explorar Archivos", "openDocuments": "Documentos abiertos",
+    "addFiles": "Añadir archivos", "addPhotos": "Añadir fotos", "moveUp": "Subir", "moveDown": "Bajar"
+  } } },
+  "it": { "ios": { "common": {
+    "share": "Condividi", "shareAll": "Condividi tutto", "saveToFiles": "Salva su File", "preview": "Anteprima",
+    "chooseFile": "Scegli file", "browseFiles": "Sfoglia File", "openDocuments": "Documenti aperti",
+    "addFiles": "Aggiungi file", "addPhotos": "Aggiungi foto", "moveUp": "Sposta su", "moveDown": "Sposta giù"
+  } } },
+  "pt-BR": { "ios": { "common": {
+    "share": "Compartilhar", "shareAll": "Compartilhar tudo", "saveToFiles": "Salvar em Arquivos", "preview": "Visualizar",
+    "chooseFile": "Escolher arquivo", "browseFiles": "Procurar em Arquivos", "openDocuments": "Documentos abertos",
+    "addFiles": "Adicionar arquivos", "addPhotos": "Adicionar fotos", "moveUp": "Mover para cima", "moveDown": "Mover para baixo"
+  } } },
+  "ar": { "ios": { "common": {
+    "share": "مشاركة", "shareAll": "مشاركة الكل", "saveToFiles": "حفظ في الملفات", "preview": "معاينة",
+    "chooseFile": "اختيار ملف", "browseFiles": "تصفح الملفات", "openDocuments": "المستندات المفتوحة",
+    "addFiles": "إضافة ملفات", "addPhotos": "إضافة صور", "moveUp": "نقل لأعلى", "moveDown": "نقل لأسفل"
+  } } }
+}

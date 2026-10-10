@@ -1,0 +1,30 @@
+vivePDF for iPhone and iPad
+Copyright (c) vivePDF contributors
+
+vivePDF is free software: you can redistribute it and/or modify it under the terms of the
+GNU Affero General Public License version 3 (AGPL-3.0) as published by the Free Software
+Foundation. The full licence text is included with the app (LICENSE.txt) and the source code
+is available at https://github.com/mtvrkan/vivePDF.
+
+THIRD-PARTY NOTICES
+
+The iOS app is a native port of the vivePDF desktop app. Every PDF operation is reimplemented
+on the frameworks built into iOS and iPadOS; no third-party engine is bundled.
+
+Component                                   Licence                         Role
+------------------------------------------  ------------------------------  ------------------------------------------
+Apple PDFKit, Core Graphics, Core Text,     Apple SDK agreement (system)    PDF rendering, editing and page assembly
+Core Image
+Apple Vision and VisionKit                  Apple SDK agreement (system)    Text recognition (OCR), document camera,
+                                                                            barcode and QR reading
+Apple Security, CryptoKit, Compression      Apple SDK agreement (system)    Encryption, signatures, archives
+Apple WebKit, Quick Look, AVFoundation      Apple SDK agreement (system)    HTML and Office rendering, previews,
+                                                                            read aloud voices
+SF Symbols                                  Apple SF Symbols licence        Interface icons
+vivePDF desktop translation catalogues      AGPL-3.0 (part of vivePDF)      Interface text in eight languages
+Have I Been Pwned: Pwned Passwords API      CC BY 4.0                       Optional online breached-password check;
+(Troy Hunt)                                                                 only a 5-character hash prefix is sent,
+                                                                            and only when the setting is turned on
+
+The desktop app's own third-party components (MuPDF/PyMuPDF, Tesseract, LibreOffice, Piper,
+Argos Translate and others) are not part of the iOS app.

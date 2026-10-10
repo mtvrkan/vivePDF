@@ -1,0 +1,68 @@
+name: VivePDF
+options:
+  bundleIdPrefix: com.vivepdf
+  deploymentTarget:
+    iOS: "17.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+settings:
+  base:
+    MARKETING_VERSION: "0.2.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.0"
+    SWIFT_STRICT_CONCURRENCY: minimal
+    TARGETED_DEVICE_FAMILY: "1,2"
+    DEVELOPMENT_TEAM: ""
+targets:
+  VivePDF:
+    type: application
+    platform: iOS
+    sources:
+      - path: VivePDF
+        excludes:
+          - "Resources/L10n/README.md"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.vivepdf.ios
+        PRODUCT_NAME: vivePDF
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        INFOPLIST_FILE: VivePDF/Info.plist
+        CODE_SIGN_STYLE: Automatic
+        SUPPORTS_MACCATALYST: NO
+        ENABLE_PREVIEWS: YES
+        ENABLE_USER_SCRIPT_SANDBOXING: NO
+    postCompileScripts:
+      # The desktop app's translation catalogs are the single source of truth for every UI string.
+      - name: Copy desktop locales
+        basedOnDependencyAnalysis: false
+        showEnvVars: false
+        script: |
+          for dir in "$SRCROOT"/../desktop/src/locales/*/; do
+            code=$(basename "$dir")
+            mkdir -p "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/locales/$code"
+            cp "$dir/common.json" "$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/locales/$code/common.json"
+          done
+    entitlements:
+      path: VivePDF/VivePDF.entitlements
+      properties: {}
+  VivePDFTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: VivePDFTests
+    dependencies:
+      - target: VivePDF
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.vivepdf.ios.tests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  VivePDF:
+    build:
+      targets:
+        VivePDF: all
+        VivePDFTests: [test]
+    test:
+      targets:
+        - VivePDFTests

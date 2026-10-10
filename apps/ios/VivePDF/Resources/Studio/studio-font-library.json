@@ -1,0 +1,720 @@
+{
+ "release": "fonts-2",
+ "base": "https://github.com/mtvrkan/vivePDF/releases/download/fonts-2",
+ "families": [
+  {
+   "id": "inter",
+   "name": "Inter",
+   "category": "sans",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Inter-Regular.ttf",
+     "size": 340928,
+     "sha256": "895288583b68592c61e8a33ab9d8df1616574e973f6bf9a66b8668d9f18f02ab"
+    },
+    {
+     "style": "bold",
+     "name": "Inter-Bold.ttf",
+     "size": 342660,
+     "sha256": "f5e672833dee98ab0e5fc65f93b97fce8a30a5d8193717a884c7a838f1fbf362"
+    },
+    {
+     "style": "italic",
+     "name": "Inter-Italic.ttf",
+     "size": 344284,
+     "sha256": "ecf511989938561f249652297d8075867e8e80ac90071968098b05a2a8d45d79"
+    },
+    {
+     "style": "boldItalic",
+     "name": "Inter-BoldItalic.ttf",
+     "size": 346308,
+     "sha256": "c084bdd8d59ef71521e94b66fec16eaebfed66543656215720d040c624cb420b"
+    },
+    {
+     "style": "license",
+     "name": "Inter-OFL.txt",
+     "size": 4377,
+     "sha256": "5b9321a4298cfeb6b34354164a1c3afc3db114569984c502b9b35d988fd58c57"
+    }
+   ]
+  },
+  {
+   "id": "montserrat",
+   "name": "Montserrat",
+   "category": "sans",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Montserrat-Regular.ttf",
+     "size": 371864,
+     "sha256": "fd77fedfa064cacdd9d510548fb6d2c05dd6a89e651659da53e305c0a3cdb90e"
+    },
+    {
+     "style": "bold",
+     "name": "Montserrat-Bold.ttf",
+     "size": 372020,
+     "sha256": "f2a278cbcbe5fb3ae739d1922b0a34634166df4a413f74485d214ef9d56ab81e"
+    },
+    {
+     "style": "italic",
+     "name": "Montserrat-Italic.ttf",
+     "size": 381076,
+     "sha256": "a84e458f13dde7e6bc258a051b294a59a694883a533c0ed50af810b46a3eb658"
+    },
+    {
+     "style": "boldItalic",
+     "name": "Montserrat-BoldItalic.ttf",
+     "size": 381308,
+     "sha256": "82ede58fa37bf97990f621aa8038975de4f9c91c6d6f1acbca8b020b3f08753e"
+    },
+    {
+     "style": "license",
+     "name": "Montserrat-OFL.txt",
+     "size": 4400,
+     "sha256": "8b7141c03fa4f8d44e6345d5d4931709290f0f67875e452e95ac1fd3a027802e"
+    }
+   ]
+  },
+  {
+   "id": "poppins",
+   "name": "Poppins",
+   "category": "sans",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Poppins-Regular.ttf",
+     "size": 160396,
+     "sha256": "eb5c3e86870b5eeaf5570272d7dec7db4b687efa3250fc1731c720adc0a5f7c5"
+    },
+    {
+     "style": "bold",
+     "name": "Poppins-Bold.ttf",
+     "size": 156064,
+     "sha256": "e19a5379737e324514697aecac19f638fdf0c15e84dd0190df1189a826f9f4d5"
+    },
+    {
+     "style": "italic",
+     "name": "Poppins-Italic.ttf",
+     "size": 184620,
+     "sha256": "351f1ede876b918b58dd8faf7cc4e7c10ca451bc64d494fe9f31de94b92472d7"
+    },
+    {
+     "style": "boldItalic",
+     "name": "Poppins-BoldItalic.ttf",
+     "size": 179196,
+     "sha256": "b1b2aef1692105e0462a7a7ef4904c8f51b8dea46f401584092601ba2e6ca59f"
+    },
+    {
+     "style": "license",
+     "name": "Poppins-OFL.txt",
+     "size": 4385,
+     "sha256": "6be04893d770899a015649c7aa3b582f871b272f8747a92b78b17c3e5c8b2573"
+    }
+   ]
+  },
+  {
+   "id": "raleway",
+   "name": "Raleway",
+   "category": "sans",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Raleway-Regular.ttf",
+     "size": 164616,
+     "sha256": "635cd9757bea3d2b5da893f0e404128ee3a830c7e61255f451bf72e9ff6c97a7"
+    },
+    {
+     "style": "bold",
+     "name": "Raleway-Bold.ttf",
+     "size": 164468,
+     "sha256": "22b415ebe4008317eebaf21dcd7755700720b857988b154d22ea926bb70a8a42"
+    },
+    {
+     "style": "italic",
+     "name": "Raleway-Italic.ttf",
+     "size": 165476,
+     "sha256": "70851d17c97df43126ad152cb4401957da05de9ca4a38f80252e04f05456bdf8"
+    },
+    {
+     "style": "boldItalic",
+     "name": "Raleway-BoldItalic.ttf",
+     "size": 165688,
+     "sha256": "94982dfc5e4df0c2dd5c60f561d42227504e8d944cd33d38306b6996c089dc19"
+    },
+    {
+     "style": "license",
+     "name": "Raleway-OFL.txt",
+     "size": 4497,
+     "sha256": "7e946cf1171784d1015279e7dc35f827957a6b5d1f1f659ae0c98e5f5e37ed9b"
+    }
+   ]
+  },
+  {
+   "id": "nunito",
+   "name": "Nunito",
+   "category": "sans",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Nunito-Regular.ttf",
+     "size": 132408,
+     "sha256": "bf7ab101598915b4cb28cc9e6c192b13f3b5c5426258999e61ba68dc285df86e"
+    },
+    {
+     "style": "bold",
+     "name": "Nunito-Bold.ttf",
+     "size": 132336,
+     "sha256": "dff32b72aaf0ee017411c3a02e4a4707339b7671e435f52792c915b956f0366b"
+    },
+    {
+     "style": "italic",
+     "name": "Nunito-Italic.ttf",
+     "size": 135304,
+     "sha256": "b0f091c8d3c942a2c18fd78eb065fe0fb463c3a06e56979a0375d8ff37197b5e"
+    },
+    {
+     "style": "boldItalic",
+     "name": "Nunito-BoldItalic.ttf",
+     "size": 135204,
+     "sha256": "7943ec5e372d454d2ed01e80f5431a9452a8be6062a32ca809941aa40889398a"
+    },
+    {
+     "style": "license",
+     "name": "Nunito-OFL.txt",
+     "size": 4385,
+     "sha256": "580df76c95a1ec5ab878ceb25bb3d85c6a076804e9c970c8c6972aea775fdf65"
+    }
+   ]
+  },
+  {
+   "id": "josefin-sans",
+   "name": "Josefin Sans",
+   "category": "sans",
+   "files": [
+    {
+     "style": "regular",
+     "name": "JosefinSans-Regular.ttf",
+     "size": 59676,
+     "sha256": "2838feac24dab970eac060927fabb9b3bad4853fd5c0f94125dae33e4893ca99"
+    },
+    {
+     "style": "bold",
+     "name": "JosefinSans-Bold.ttf",
+     "size": 59528,
+     "sha256": "e184fcbd1dfb64b7fe3c9740b569d874e8a1a6ce5ec39e6b2fd373cd33abbb01"
+    },
+    {
+     "style": "italic",
+     "name": "JosefinSans-Italic.ttf",
+     "size": 65640,
+     "sha256": "7d75a8a324f2f7f34a573c001ff0307f17184defd68ed0e131eafa9672116433"
+    },
+    {
+     "style": "boldItalic",
+     "name": "JosefinSans-BoldItalic.ttf",
+     "size": 65560,
+     "sha256": "0859a6e7063ec1228d7b766a7be91f98068dcaf2e935d61b6697fd64697a6f7d"
+    },
+    {
+     "style": "license",
+     "name": "JosefinSans-OFL.txt",
+     "size": 4449,
+     "sha256": "aee5a4081e8a52f80428b30f178b719d115f18dad3e1fa15a986163e1078a85b"
+    }
+   ]
+  },
+  {
+   "id": "oswald",
+   "name": "Oswald",
+   "category": "display",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Oswald-Regular.ttf",
+     "size": 88652,
+     "sha256": "7d6f5d4db6bcca2e9fd2229774db6deff2d453af035c74828a4e00c12f34be51"
+    },
+    {
+     "style": "bold",
+     "name": "Oswald-Bold.ttf",
+     "size": 88996,
+     "sha256": "214827cb15337ce5346f330f3b90b53deb7977c1c5dde9e9bfb0bb538d2e8156"
+    },
+    {
+     "style": "license",
+     "name": "Oswald-OFL.txt",
+     "size": 4483,
+     "sha256": "0fd731a904b729a4e02eaf5e8ebd06783edd9abe400e8882760160230675b652"
+    }
+   ]
+  },
+  {
+   "id": "bebas-neue",
+   "name": "Bebas Neue",
+   "category": "display",
+   "files": [
+    {
+     "style": "regular",
+     "name": "BebasNeue-Regular.ttf",
+     "size": 61276,
+     "sha256": "248eca5866ec60cbb2d921c9cb5f06a4624f1bf6aeee680f18e0c868967aa21a"
+    },
+    {
+     "style": "license",
+     "name": "BebasNeue-OFL.txt",
+     "size": 4337,
+     "sha256": "72082f6cb4d04be2ecf7cc7d9e1e7d73787f0af8a5a278a47cade70c16b78341"
+    }
+   ]
+  },
+  {
+   "id": "abril-fatface",
+   "name": "Abril Fatface",
+   "category": "display",
+   "files": [
+    {
+     "style": "regular",
+     "name": "AbrilFatface-Regular.ttf",
+     "size": 67288,
+     "sha256": "125f0ffd3cbb58ac03571a46256a6748af5186ed522ab8056a6c95c36fc8d91b"
+    },
+    {
+     "style": "license",
+     "name": "AbrilFatface-OFL.txt",
+     "size": 4415,
+     "sha256": "aba8997e16b1e3888c6e855ba883c70d96bd4375bff8cb9c7ce0f097200f74b8"
+    }
+   ]
+  },
+  {
+   "id": "cinzel",
+   "name": "Cinzel",
+   "category": "display",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Cinzel-Regular.ttf",
+     "size": 76924,
+     "sha256": "4026118237408e94c969e100f638f8d6f9da709f2094abc5477eba71ed7aa088"
+    },
+    {
+     "style": "bold",
+     "name": "Cinzel-Bold.ttf",
+     "size": 77300,
+     "sha256": "d13ba2aabb1d7e15d80b2ade58db45705f3a526ec5f731aa36b4d3d3d7d08d14"
+    },
+    {
+     "style": "license",
+     "name": "Cinzel-OFL.txt",
+     "size": 4383,
+     "sha256": "f2b3029aba64c378bf0963b62945eee15e564fe4330b934c8f2eb058282b5e83"
+    }
+   ]
+  },
+  {
+   "id": "playfair-display",
+   "name": "Playfair Display",
+   "category": "serif",
+   "files": [
+    {
+     "style": "regular",
+     "name": "PlayfairDisplay-Regular.ttf",
+     "size": 193764,
+     "sha256": "0a2e17dda303c7bcf20fbfa1026db1ea81a03843508365c959e0778a3a9f0513"
+    },
+    {
+     "style": "bold",
+     "name": "PlayfairDisplay-Bold.ttf",
+     "size": 194080,
+     "sha256": "9de67ea69fb738067a521c4d98f3402d2df48ee95df4eba32206f3b1d6d89009"
+    },
+    {
+     "style": "italic",
+     "name": "PlayfairDisplay-Italic.ttf",
+     "size": 177908,
+     "sha256": "3aef1647644dd56f7e9728bb4681b6e5528d743a732b6ff60940f9d48661a827"
+    },
+    {
+     "style": "boldItalic",
+     "name": "PlayfairDisplay-BoldItalic.ttf",
+     "size": 178364,
+     "sha256": "4203f53fd86111ee5575219a275e4447e884a742d3f8e70f8f2fbfbd6a4ca8c9"
+    },
+    {
+     "style": "license",
+     "name": "PlayfairDisplay-OFL.txt",
+     "size": 4449,
+     "sha256": "566be814f8e96e93dfa16101331557eb6b5467e9e03f627c0910fe93ca12300e"
+    }
+   ]
+  },
+  {
+   "id": "lora",
+   "name": "Lora",
+   "category": "serif",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Lora-Regular.ttf",
+     "size": 135352,
+     "sha256": "8f9eeafc232c33fe3f385892fe2b8de453c48ec91c98c88962c440efd4157321"
+    },
+    {
+     "style": "bold",
+     "name": "Lora-Bold.ttf",
+     "size": 134992,
+     "sha256": "3e2c9cf5034c1087364eabb037061713f12d10f881d5c41757b987bf2f8ac005"
+    },
+    {
+     "style": "italic",
+     "name": "Lora-Italic.ttf",
+     "size": 140928,
+     "sha256": "335b49c7937e75c8209e67b66dc988ee846159182451ba9128c8fd53ba8c6f19"
+    },
+    {
+     "style": "boldItalic",
+     "name": "Lora-BoldItalic.ttf",
+     "size": 141640,
+     "sha256": "34123856de526542ca7d3c1b68ba7ea58fb92a1a5981d212f95884771653eae9"
+    },
+    {
+     "style": "license",
+     "name": "Lora-OFL.txt",
+     "size": 4423,
+     "sha256": "1d9a970809ac804b582a6ce7f0ebc4e7fefcbfd7ff6299cad35ee656a21be716"
+    }
+   ]
+  },
+  {
+   "id": "merriweather",
+   "name": "Merriweather",
+   "category": "serif",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Merriweather-Regular.ttf",
+     "size": 1072560,
+     "sha256": "5b41c9ed9892eefdbe004f77af8cbcf5c1c6a5ca193851547c38d560f99b19f0"
+    },
+    {
+     "style": "bold",
+     "name": "Merriweather-Bold.ttf",
+     "size": 1072820,
+     "sha256": "9a20cb1a1ba161f52344cf773a9b70aa615a74903cf81ce29f87365d25cf5624"
+    },
+    {
+     "style": "italic",
+     "name": "Merriweather-Italic.ttf",
+     "size": 1074740,
+     "sha256": "02aba6a6ee283fb6eb8fdaa6e0b82211763a55b033fd62dc65d9797de1627ae3"
+    },
+    {
+     "style": "boldItalic",
+     "name": "Merriweather-BoldItalic.ttf",
+     "size": 1074928,
+     "sha256": "6ee0d1b15445507e9257f657014b38d8949e947fab078c2f58c6e0b89a66b93b"
+    },
+    {
+     "style": "license",
+     "name": "Merriweather-OFL.txt",
+     "size": 4438,
+     "sha256": "715bd349bfa6116f99e351e1548321dcfa25b91df65502d22ca8d624557697d2"
+    }
+   ]
+  },
+  {
+   "id": "libre-baskerville",
+   "name": "Libre Baskerville",
+   "category": "serif",
+   "files": [
+    {
+     "style": "regular",
+     "name": "LibreBaskerville-Regular.ttf",
+     "size": 111688,
+     "sha256": "83df6fa8729d0a9d407157fe5079756553712dad1e45869a6860466c4931b0ac"
+    },
+    {
+     "style": "bold",
+     "name": "LibreBaskerville-Bold.ttf",
+     "size": 111680,
+     "sha256": "6828e31cc83e8fd5ac04693cc37cee103503c4ce99c308cbc13cd48f80d64e82"
+    },
+    {
+     "style": "italic",
+     "name": "LibreBaskerville-Italic.ttf",
+     "size": 121308,
+     "sha256": "c5797e2afcd65376b274934ec8f8aa715b292416f16fe1beb5ad4fef29438487"
+    },
+    {
+     "style": "boldItalic",
+     "name": "LibreBaskerville-BoldItalic.ttf",
+     "size": 121612,
+     "sha256": "99cf119bdb4ec77acb1dd302dac7b90f4c10166014319c511d2132f6adcc7af4"
+    },
+    {
+     "style": "license",
+     "name": "LibreBaskerville-OFL.txt",
+     "size": 4542,
+     "sha256": "3624eddd4c8f8a908130a417ae7cd089c9da69899c4e0ca1a5217d0a6fae16fd"
+    }
+   ]
+  },
+  {
+   "id": "cormorant-garamond",
+   "name": "Cormorant Garamond",
+   "category": "serif",
+   "files": [
+    {
+     "style": "regular",
+     "name": "CormorantGaramond-Regular.ttf",
+     "size": 774104,
+     "sha256": "a51ee02c44665f0fffd1535cdffc3a48a4924767cb942b41b752bbc39a0f7edd"
+    },
+    {
+     "style": "bold",
+     "name": "CormorantGaramond-Bold.ttf",
+     "size": 773212,
+     "sha256": "078d68b1dfc827e89fa806c2eeaa793c4f816e75917f08649fb29e4f288a055d"
+    },
+    {
+     "style": "italic",
+     "name": "CormorantGaramond-Italic.ttf",
+     "size": 454360,
+     "sha256": "0b2eef451fb9263ab5aee83e99dcb9626f386a11b01e4968a89e00d13124e3d4"
+    },
+    {
+     "style": "boldItalic",
+     "name": "CormorantGaramond-BoldItalic.ttf",
+     "size": 454236,
+     "sha256": "780320545c1d2de8321542bf44d739af7c92330e28203017301f98e9f134a558"
+    },
+    {
+     "style": "license",
+     "name": "CormorantGaramond-OFL.txt",
+     "size": 4387,
+     "sha256": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956"
+    }
+   ]
+  },
+  {
+   "id": "eb-garamond",
+   "name": "EB Garamond",
+   "category": "serif",
+   "files": [
+    {
+     "style": "regular",
+     "name": "EBGaramond-Regular.ttf",
+     "size": 518208,
+     "sha256": "5305d45a309d425550946a2e537e89a5e8646f121c74a4aa7a0bae57bcbcf211"
+    },
+    {
+     "style": "bold",
+     "name": "EBGaramond-Bold.ttf",
+     "size": 520872,
+     "sha256": "fbf78c2734c265eac43a679a88a385010d66a84d1b7de07bc0ee06f60f3aab82"
+    },
+    {
+     "style": "italic",
+     "name": "EBGaramond-Italic.ttf",
+     "size": 463580,
+     "sha256": "0fc20abcc55e47ac64f7ec9894a7b64093d1fa3fdad9dde4b10343a779cfa1fa"
+    },
+    {
+     "style": "boldItalic",
+     "name": "EBGaramond-BoldItalic.ttf",
+     "size": 466952,
+     "sha256": "f8266c08cd9ea5b6f718871cec0fbcebd9fe8947333a0cbaee8c312ecc40512e"
+    },
+    {
+     "style": "license",
+     "name": "EBGaramond-OFL.txt",
+     "size": 4398,
+     "sha256": "0985066662eb755ed3683ae5482a81a9195b49ce3f7e165cc2388b3dbece7dd7"
+    }
+   ]
+  },
+  {
+   "id": "source-serif-4",
+   "name": "Source Serif 4",
+   "category": "serif",
+   "files": [
+    {
+     "style": "regular",
+     "name": "SourceSerif4-Regular.ttf",
+     "size": 327040,
+     "sha256": "9300e0b48b5f437a38286c5e60813fb50f562598b0ec16c694f6ec369538f4e8"
+    },
+    {
+     "style": "bold",
+     "name": "SourceSerif4-Bold.ttf",
+     "size": 327136,
+     "sha256": "e252f245d231ddd0c65e7168824a1efd826e6a34b021e7e2635e15cc1d5e3bfc"
+    },
+    {
+     "style": "italic",
+     "name": "SourceSerif4-Italic.ttf",
+     "size": 206756,
+     "sha256": "17acafbc5fc7d44fd77549bf1056d4c4aef564533a39cfb902d0f42b711593f0"
+    },
+    {
+     "style": "boldItalic",
+     "name": "SourceSerif4-BoldItalic.ttf",
+     "size": 206856,
+     "sha256": "d383ad761685dece9d2d739a40aa2897a5a7ac94db356d1a56c9c585c1409087"
+    },
+    {
+     "style": "license",
+     "name": "SourceSerif4-OFL.txt",
+     "size": 4400,
+     "sha256": "5f94c3fd3a23131a417ab5a0c8452de57e70c3cfb9f604d88241f7065ebf9fd9"
+    }
+   ]
+  },
+  {
+   "id": "great-vibes",
+   "name": "Great Vibes",
+   "category": "script",
+   "files": [
+    {
+     "style": "regular",
+     "name": "GreatVibes-Regular.ttf",
+     "size": 457724,
+     "sha256": "73e35cbbb8ed589f7b4388125425eac103f1b5878124da5f5574bb53e770a391"
+    },
+    {
+     "style": "license",
+     "name": "GreatVibes-OFL.txt",
+     "size": 4399,
+     "sha256": "61093a21f5e63dedf54222b3c09997e54c0fe43e3851d21386e02ddcbc246d49"
+    }
+   ]
+  },
+  {
+   "id": "dancing-script",
+   "name": "Dancing Script",
+   "category": "script",
+   "files": [
+    {
+     "style": "regular",
+     "name": "DancingScript-Regular.ttf",
+     "size": 82984,
+     "sha256": "3bf5a2e5d2d7124b1f4e33b349a08e0e8663952442218c7be7248983e370fdf8"
+    },
+    {
+     "style": "bold",
+     "name": "DancingScript-Bold.ttf",
+     "size": 83240,
+     "sha256": "3c65768a16a89c10d519eb32f258b10aabe7fcbf8c5e1e491e8e3e1dcf2cb977"
+    },
+    {
+     "style": "license",
+     "name": "DancingScript-OFL.txt",
+     "size": 4443,
+     "sha256": "6f090277c00af96651ce6dbcc38ff1591047a3bffef486e80b6a32e8276a8201"
+    }
+   ]
+  },
+  {
+   "id": "parisienne",
+   "name": "Parisienne",
+   "category": "script",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Parisienne-Regular.ttf",
+     "size": 61228,
+     "sha256": "f3503a9361713b544d5bc4e66d749c3877b04ec4a19d8fe542c3e63e9096b238"
+    },
+    {
+     "style": "license",
+     "name": "Parisienne-OFL.txt",
+     "size": 4433,
+     "sha256": "1dd84b611f4bed7f9ff9089e76a96337b187e6f283a4ab33bcb987f844f2c4db"
+    }
+   ]
+  },
+  {
+   "id": "allura",
+   "name": "Allura",
+   "category": "script",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Allura-Regular.ttf",
+     "size": 246752,
+     "sha256": "8c7b0129d67bde93a9a53f250aefe4cb9e0529e5ef341ca8c0375b9a0e4f2116"
+    },
+    {
+     "style": "license",
+     "name": "Allura-OFL.txt",
+     "size": 4478,
+     "sha256": "c8cb4c94a558b6cb82ac5dc981a73a0b8aee35a5c52c8a7832fc0280c289ad49"
+    }
+   ]
+  },
+  {
+   "id": "alex-brush",
+   "name": "Alex Brush",
+   "category": "script",
+   "files": [
+    {
+     "style": "regular",
+     "name": "AlexBrush-Regular.ttf",
+     "size": 116308,
+     "sha256": "258e0fc5569f7906dff43cf616cc0c1562bb2590052cb881c9471d0d2e3661d0"
+    },
+    {
+     "style": "license",
+     "name": "AlexBrush-OFL.txt",
+     "size": 4489,
+     "sha256": "0ee34ce7c99b0deb7f7332bca0a4950d3796c23c00de77ada8aa29a4b55ff2c2"
+    }
+   ]
+  },
+  {
+   "id": "caveat",
+   "name": "Caveat",
+   "category": "handwriting",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Caveat-Regular.ttf",
+     "size": 266132,
+     "sha256": "e80a85a2b4efe03aba99fbf68bae4259e4708e65460523ed326b8eb067dca474"
+    },
+    {
+     "style": "bold",
+     "name": "Caveat-Bold.ttf",
+     "size": 266480,
+     "sha256": "22979c2526dac0882a910f0c1fbbed84334cac78ca54503a436bcaf9e268c938"
+    },
+    {
+     "style": "license",
+     "name": "Caveat-OFL.txt",
+     "size": 4385,
+     "sha256": "1f9d81d094273d82f3898a1ee8b598a717d050ecbf5ff7bede105b704880157b"
+    }
+   ]
+  },
+  {
+   "id": "pacifico",
+   "name": "Pacifico",
+   "category": "handwriting",
+   "files": [
+    {
+     "style": "regular",
+     "name": "Pacifico-Regular.ttf",
+     "size": 329244,
+     "sha256": "b5e1ee097fa54f27f8612445f41ebb69189795336ccb7058158f2cdd32524cfe"
+    },
+    {
+     "style": "license",
+     "name": "Pacifico-OFL.txt",
+     "size": 4389,
+     "sha256": "a47e5daeda73568969395c656823102678f2eefb0d7d7ecb47aac4cc17e42204"
+    }
+   ]
+  }
+ ]
+}
