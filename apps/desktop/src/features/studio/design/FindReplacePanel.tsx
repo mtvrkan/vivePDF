@@ -6,6 +6,7 @@ import { TextInput } from "@/components/tool/form";
 import { findMatches, replaceMatches, type TextMatch } from "./findReplace";
 import { useStudioStore } from "./studioStore";
 import { textEditorBridge } from "./textEditorBridge";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 export type FindMode = { replace: boolean; nonce: number };
 
@@ -135,7 +136,7 @@ export function FindReplacePanel({ mode, language, onClose }: { mode: FindMode; 
           <button type="button" className="glass-chip h-8 rounded-lg px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-40" disabled={!matches.length} onClick={replaceOne}>
             {t("studio.find.replace")}
           </button>
-          <button type="button" className="glass-chip h-8 rounded-lg px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-40" disabled={!matches.length} onClick={replaceAll} title={`${t("studio.find.replaceAll")} (Ctrl+Enter)`}>
+          <button type="button" className="glass-chip h-8 rounded-lg px-3 text-sm font-medium disabled:pointer-events-none disabled:opacity-40" disabled={!matches.length} onClick={replaceAll} title={`${t("studio.find.replaceAll")} (${shortcutLabel("Ctrl+Enter")})`}>
             {t("studio.find.replaceAll")}
           </button>
         </div>

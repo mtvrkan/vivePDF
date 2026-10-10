@@ -477,7 +477,8 @@
       "installVoice": "Télécharger une voix",
       "selection": "Texte sélectionné",
       "otherVoice": "Aucune voix système pour cette langue — lecture avec {{voice}}.",
-      "noVoiceHelp": "Cet ordinateur n’a aucune voix capable de lire ceci. Téléchargez une voix vivePDF dans Paramètres › Lecture › Voix ou ajoutez-en une dans Paramètres Windows › Heure et langue › Voix."
+      "noVoiceHelp": "Cet ordinateur n’a aucune voix capable de lire ceci. Téléchargez une voix vivePDF dans Paramètres › Lecture › Voix ou ajoutez-en une dans Paramètres Windows › Heure et langue › Voix.",
+      "noVoiceHelpMac": "Cet ordinateur n’a aucune voix capable de lire ceci. Téléchargez une voix vivePDF dans Paramètres › Lecture › Voix ou ajoutez-en une dans Réglages Système › Accessibilité › Contenu énoncé › Voix du système."
     },
     "reading": {
       "title": "Mode lecture",
@@ -1623,6 +1624,7 @@
     "description": "Apparence, démarrage, lecture, présentation, outils, mises à jour et données.",
     "appearance": {
       "themeHint": "Système suit le thème de Windows.",
+      "themeMacHint": "Système suit l’apparence de macOS.",
       "uiScale": "Échelle de l’interface",
       "uiScaleHint": "Agrandit le texte et les commandes dans toute l’application.",
       "reduceMotion": "Réduire les animations",
@@ -1941,6 +1943,7 @@
       "keepBackupsHint": "Lorsqu’un document ouvert est écrasé, la version précédente est conservée dans le dossier de données de l’application (les 20 dernières), pas à côté de votre fichier.",
       "keepInTray": "Continuer dans la zone de notification",
       "keepInTrayHint": "Quand vous fermez la fenêtre, vivePDF reste dans la zone de notification pour que les dossiers surveillés continuent de fonctionner.",
+      "keepInTrayMacHint": "Quand vous fermez la fenêtre, vivePDF reste dans la barre des menus pour que les dossiers surveillés continuent de fonctionner.",
       "keepInTrayLinuxHint": "Certains bureaux Linux n'affichent pas d'icônes dans la zone de notification. Choisissez Toujours seulement si le vôtre le fait ; sinon, fermer la fenêtre quitte vivePDF.",
       "keepInTrayModes": {
         "auto": "Tant qu'un dossier surveillé est actif",
@@ -1949,6 +1952,7 @@
       },
       "autostart": "Démarrer avec le système",
       "autostartHint": "Démarre dans la zone de notification à l'ouverture de session. Si aucun dossier surveillé n'est actif, la fenêtre s'ouvre à la place.",
+      "autostartMacHint": "Démarre dans la barre des menus à l'ouverture de session. Si aucun dossier surveillé n'est actif, la fenêtre s'ouvre à la place.",
       "autostartOn": "vivePDF démarrera à l'ouverture de session.",
       "autostartOff": "vivePDF ne démarrera plus à l'ouverture de session."
     },
@@ -1969,6 +1973,7 @@
       "afterOperations": {
         "none": "Ne rien faire",
         "reveal": "Afficher dans l’Explorateur",
+        "revealMac": "Afficher dans le Finder",
         "open": "Ouvrir le fichier"
       }
     },
@@ -6671,6 +6676,26 @@
     "pause": "Mettre la surveillance en pause",
     "resume": "Reprendre la surveillance",
     "quit": "Quitter vivePDF"
+  },
+  "appMenu": {
+    "about": "À propos de vivePDF",
+    "settings": "Réglages…",
+    "services": "Services",
+    "hide": "Masquer vivePDF",
+    "hideOthers": "Masquer les autres",
+    "showAll": "Tout afficher",
+    "quit": "Quitter vivePDF",
+    "edit": "Édition",
+    "undo": "Annuler",
+    "redo": "Rétablir",
+    "cut": "Couper",
+    "copy": "Copier",
+    "paste": "Coller",
+    "selectAll": "Tout sélectionner",
+    "window": "Fenêtre",
+    "minimize": "Placer dans le Dock",
+    "zoom": "Réduire/agrandir",
+    "close": "Fermer la fenêtre"
   },
   "mail": {
     "sender": "De",

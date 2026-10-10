@@ -10,6 +10,7 @@ import { TrayBridge } from "@/features/tools/watch/TrayBridge";
 import { isMainWindow } from "@/shared/lib/windowRole";
 import { WindowQuitBridge } from "@/shared/session/WindowQuitBridge";
 import { CommandPalette } from "./CommandPalette";
+import { AppMenuBridge } from "./AppMenuBridge";
 import { EngineBanner } from "./EngineBanner";
 import { TopBar } from "./TopBar";
 
@@ -82,6 +83,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <>
           <WatchRunner />
           <TrayBridge />
+          <AppMenuBridge />
         </>
       ) : (
         <WindowQuitBridge />

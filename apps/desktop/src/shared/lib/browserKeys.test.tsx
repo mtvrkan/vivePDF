@@ -51,6 +51,15 @@ describe("isBrowserShortcut", () => {
   });
 });
 
+describe("isBrowserShortcut on macOS", () => {
+  it("lets Command+H reach the system Hide command", () => {
+    expect(isBrowserShortcut(key({ key: "h", metaKey: true }), false, true)).toBe(false);
+    expect(isBrowserShortcut(key({ key: "h", metaKey: true }), false, false)).toBe(true);
+    expect(isBrowserShortcut(key({ key: "h", ctrlKey: true }), false, true)).toBe(true);
+    expect(isBrowserShortcut(key({ key: "H", metaKey: true, shiftKey: true }), false, true)).toBe(true);
+  });
+});
+
 describe("installBrowserKeyGuard", () => {
   afterEach(() => vi.restoreAllMocks());
 

@@ -477,7 +477,8 @@
       "installVoice": "Baixar uma voz",
       "selection": "Texto selecionado",
       "otherVoice": "Não há voz do sistema para este idioma — lendo com {{voice}}.",
-      "noVoiceHelp": "Este computador não tem uma voz capaz de ler isto. Baixe uma voz do vivePDF em Configurações › Leitura › Vozes ou adicione uma em Configurações do Windows › Hora e idioma › Fala."
+      "noVoiceHelp": "Este computador não tem uma voz capaz de ler isto. Baixe uma voz do vivePDF em Configurações › Leitura › Vozes ou adicione uma em Configurações do Windows › Hora e idioma › Fala.",
+      "noVoiceHelpMac": "Este computador não tem uma voz capaz de ler isto. Baixe uma voz do vivePDF em Configurações › Leitura › Vozes ou adicione uma em Ajustes do Sistema › Acessibilidade › Conteúdo Falado › Voz do Sistema."
     },
     "reading": {
       "title": "Modo de leitura",
@@ -1623,6 +1624,7 @@
     "description": "Aparência, inicialização, leitura, apresentação, ferramentas, atualizações e dados.",
     "appearance": {
       "themeHint": "Sistema segue o tema do Windows.",
+      "themeMacHint": "Sistema segue a aparência do macOS.",
       "uiScale": "Escala da interface",
       "uiScaleHint": "Redimensiona textos e controles em todo o aplicativo.",
       "reduceMotion": "Reduzir movimento",
@@ -1941,6 +1943,7 @@
       "keepBackupsHint": "Ao sobrescrever um documento aberto, a versão anterior fica na pasta de dados do aplicativo (as últimas 20), não ao lado do seu arquivo.",
       "keepInTray": "Continuar na bandeja do sistema",
       "keepInTrayHint": "Ao fechar a janela, o vivePDF fica na área de notificação para que as pastas monitoradas continuem funcionando.",
+      "keepInTrayMacHint": "Ao fechar a janela, o vivePDF fica na barra de menus para que as pastas monitoradas continuem funcionando.",
       "keepInTrayLinuxHint": "Alguns ambientes Linux não mostram ícones na bandeja. Escolha Sempre só se o seu mostrar; caso contrário, fechar a janela encerra o vivePDF.",
       "keepInTrayModes": {
         "auto": "Enquanto uma pasta monitorada estiver ativa",
@@ -1949,6 +1952,7 @@
       },
       "autostart": "Iniciar com o sistema",
       "autostartHint": "Inicia na bandeja quando você entra na sessão. Se nenhuma pasta monitorada estiver ativa, a janela abre.",
+      "autostartMacHint": "Inicia na barra de menus quando você entra na sessão. Se nenhuma pasta monitorada estiver ativa, a janela abre.",
       "autostartOn": "O vivePDF vai iniciar quando você entrar na sessão.",
       "autostartOff": "O vivePDF não vai mais iniciar quando você entrar na sessão."
     },
@@ -1969,6 +1973,7 @@
       "afterOperations": {
         "none": "Não fazer nada",
         "reveal": "Mostrar no Explorador",
+        "revealMac": "Mostrar no Finder",
         "open": "Abrir o arquivo"
       }
     },
@@ -6671,6 +6676,26 @@
     "pause": "Pausar o monitoramento",
     "resume": "Retomar o monitoramento",
     "quit": "Sair do vivePDF"
+  },
+  "appMenu": {
+    "about": "Sobre o vivePDF",
+    "settings": "Ajustes…",
+    "services": "Serviços",
+    "hide": "Ocultar vivePDF",
+    "hideOthers": "Ocultar Outros",
+    "showAll": "Mostrar Tudo",
+    "quit": "Encerrar vivePDF",
+    "edit": "Editar",
+    "undo": "Desfazer",
+    "redo": "Refazer",
+    "cut": "Recortar",
+    "copy": "Copiar",
+    "paste": "Colar",
+    "selectAll": "Selecionar Tudo",
+    "window": "Janela",
+    "minimize": "Minimizar",
+    "zoom": "Zoom",
+    "close": "Fechar Janela"
   },
   "mail": {
     "sender": "De",

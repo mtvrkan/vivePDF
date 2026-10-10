@@ -477,7 +477,8 @@
       "installVoice": "Stimme herunterladen",
       "selection": "Ausgewählter Text",
       "otherVoice": "Keine Systemstimme für diese Sprache — es wird mit {{voice}} vorgelesen.",
-      "noVoiceHelp": "Auf diesem Computer gibt es keine Stimme, die dies vorlesen kann. Laden Sie unter Einstellungen › Lesen › Stimmen eine vivePDF-Stimme herunter oder fügen Sie in den Windows-Einstellungen › Zeit und Sprache › Spracherkennung eine hinzu."
+      "noVoiceHelp": "Auf diesem Computer gibt es keine Stimme, die dies vorlesen kann. Laden Sie unter Einstellungen › Lesen › Stimmen eine vivePDF-Stimme herunter oder fügen Sie in den Windows-Einstellungen › Zeit und Sprache › Spracherkennung eine hinzu.",
+      "noVoiceHelpMac": "Auf diesem Computer gibt es keine Stimme, die dies vorlesen kann. Laden Sie unter Einstellungen › Lesen › Stimmen eine vivePDF-Stimme herunter oder fügen Sie in den Systemeinstellungen › Bedienungshilfen › Gesprochene Inhalte › Systemstimme eine hinzu."
     },
     "reading": {
       "title": "Lesemodus",
@@ -1623,6 +1624,7 @@
     "description": "Erscheinungsbild, Start, Lesen, Präsentation, Werkzeuge, Updates und Daten.",
     "appearance": {
       "themeHint": "System folgt dem Windows-Design.",
+      "themeMacHint": "System folgt dem macOS-Erscheinungsbild.",
       "uiScale": "Oberflächengröße",
       "uiScaleHint": "Skaliert Text und Bedienelemente in der gesamten App.",
       "reduceMotion": "Bewegung reduzieren",
@@ -1941,6 +1943,7 @@
       "keepBackupsHint": "Beim Überschreiben eines geöffneten Dokuments wird die vorherige Fassung im App-Datenordner abgelegt (die letzten 20) statt neben der Datei.",
       "keepInTray": "Im Infobereich weiterlaufen",
       "keepInTrayHint": "Wenn Sie das Fenster schließen, bleibt vivePDF im Infobereich, damit überwachte Ordner weiterarbeiten.",
+      "keepInTrayMacHint": "Wenn Sie das Fenster schließen, bleibt vivePDF in der Menüleiste, damit überwachte Ordner weiterarbeiten.",
       "keepInTrayLinuxHint": "Manche Linux-Desktops zeigen keine Symbole im Infobereich. Wählen Sie „Immer“ nur, wenn Ihrer das tut; sonst beendet das Schließen des Fensters vivePDF.",
       "keepInTrayModes": {
         "auto": "Solange ein überwachter Ordner aktiv ist",
@@ -1949,6 +1952,7 @@
       },
       "autostart": "Mit dem System starten",
       "autostartHint": "Startet beim Anmelden im Infobereich. Ist kein überwachter Ordner aktiv, öffnet sich stattdessen das Fenster.",
+      "autostartMacHint": "Startet beim Anmelden in der Menüleiste. Ist kein überwachter Ordner aktiv, öffnet sich stattdessen das Fenster.",
       "autostartOn": "vivePDF startet beim Anmelden.",
       "autostartOff": "vivePDF startet nicht mehr beim Anmelden."
     },
@@ -1969,6 +1973,7 @@
       "afterOperations": {
         "none": "Nichts tun",
         "reveal": "Im Explorer zeigen",
+        "revealMac": "Im Finder zeigen",
         "open": "Datei öffnen"
       }
     },
@@ -6671,6 +6676,26 @@
     "pause": "Überwachung pausieren",
     "resume": "Überwachung fortsetzen",
     "quit": "vivePDF beenden"
+  },
+  "appMenu": {
+    "about": "Über vivePDF",
+    "settings": "Einstellungen …",
+    "services": "Dienste",
+    "hide": "vivePDF ausblenden",
+    "hideOthers": "Andere ausblenden",
+    "showAll": "Alle einblenden",
+    "quit": "vivePDF beenden",
+    "edit": "Bearbeiten",
+    "undo": "Widerrufen",
+    "redo": "Wiederholen",
+    "cut": "Ausschneiden",
+    "copy": "Kopieren",
+    "paste": "Einsetzen",
+    "selectAll": "Alles auswählen",
+    "window": "Fenster",
+    "minimize": "Im Dock ablegen",
+    "zoom": "Zoomen",
+    "close": "Fenster schließen"
   },
   "mail": {
     "sender": "Von",

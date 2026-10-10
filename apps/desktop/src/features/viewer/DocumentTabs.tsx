@@ -24,6 +24,7 @@ import { isPendingChange } from "./overlay/pending";
 import { useCollectionsStore } from "@/features/home/collectionsStore";
 import { sessionPathOf } from "./convertedDocuments";
 import { GROUP_COLORS, GROUP_TONES, groupAfterMove, groupNeighbour, groupedOrder, movedGroupOrder, tabOutsideGroup, useTabGroupStore, type TabGroup } from "./tabGroups";
+import { ariaShortcut, hasModKey } from "@/shared/lib/platform";
 
 type GroupDrag = { groupId: string; startX: number; moved: boolean; targetId: string | null; after: boolean; markX: number };
 
@@ -242,7 +243,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                 type="button"
                 data-tab-id={doc.id}
                 aria-expanded={!group.collapsed}
-                aria-keyshortcuts="Control+Shift+ArrowLeft Control+Shift+ArrowRight"
+                aria-keyshortcuts={ariaShortcut("Control+Shift+ArrowLeft Control+Shift+ArrowRight")}
                 title={t("viewer.tabGroups.toggle")}
                 {...groupDragHandlers(group)}
                 onClick={() => {
@@ -253,7 +254,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                   toggleGroup(group);
                 }}
                 onKeyDown={(event) => {
-                  if (!event.ctrlKey || !event.shiftKey || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+                  if (!hasModKey(event) || !event.shiftKey || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
                   event.preventDefault();
                   const forward = event.key === "ArrowRight" !== (getComputedStyle(event.currentTarget).direction === "rtl");
                   moveGroupBy(group.id, forward ? 1 : -1);
@@ -285,7 +286,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
             data-tab-id={doc.id}
             aria-selected={active}
             tabIndex={active ? 0 : -1}
-            aria-keyshortcuts="Delete Control+Shift+ArrowLeft Control+Shift+ArrowRight"
+            aria-keyshortcuts={ariaShortcut("Delete Control+Shift+ArrowLeft Control+Shift+ArrowRight")}
             onPointerDown={(event) => {
               if (event.target instanceof Element && event.target.closest("[data-tab-close]")) return;
               tearOff.onPointerDown(doc.id, event);
@@ -294,7 +295,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               if (!tearOff.consumeDrag()) guardedActivate(doc.id);
             }}
             onKeyDown={(event) => {
-              if (event.ctrlKey && event.shiftKey && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
+              if (hasModKey(event) && event.shiftKey && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
                 event.preventDefault();
                 const index = documents.findIndex((entry) => entry.id === doc.id);
                 const step = event.key === "ArrowRight" ? 1 : -1;

@@ -477,7 +477,8 @@
       "installVoice": "Descargar una voz",
       "selection": "Texto seleccionado",
       "otherVoice": "No hay voz del sistema para este idioma; se lee con {{voice}}.",
-      "noVoiceHelp": "Este equipo no tiene ninguna voz que pueda leer esto. Descargue una voz de vivePDF en Ajustes › Lectura › Voces o añada una en Configuración de Windows › Hora e idioma › Voz."
+      "noVoiceHelp": "Este equipo no tiene ninguna voz que pueda leer esto. Descargue una voz de vivePDF en Ajustes › Lectura › Voces o añada una en Configuración de Windows › Hora e idioma › Voz.",
+      "noVoiceHelpMac": "Este equipo no tiene ninguna voz que pueda leer esto. Descargue una voz de vivePDF en Ajustes › Lectura › Voces o añada una en Ajustes del Sistema › Accesibilidad › Contenido leído › Voz del sistema."
     },
     "reading": {
       "title": "Modo lectura",
@@ -1623,6 +1624,7 @@
     "description": "Apariencia, inicio, lectura, presentación, herramientas, actualizaciones y datos.",
     "appearance": {
       "themeHint": "Sistema sigue el tema de Windows.",
+      "themeMacHint": "Sistema sigue la apariencia de macOS.",
       "uiScale": "Escala de la interfaz",
       "uiScaleHint": "Escala el texto y los controles en toda la aplicación.",
       "reduceMotion": "Reducir movimiento",
@@ -1941,6 +1943,7 @@
       "keepBackupsHint": "Al sobrescribir un documento abierto, la versión anterior se guarda en la carpeta de datos de la aplicación (las últimas 20) en vez de junto a su archivo.",
       "keepInTray": "Seguir en la bandeja del sistema",
       "keepInTrayHint": "Al cerrar la ventana, vivePDF sigue en el área de notificación para que las carpetas vigiladas continúen funcionando.",
+      "keepInTrayMacHint": "Al cerrar la ventana, vivePDF sigue en la barra de menús para que las carpetas vigiladas continúen funcionando.",
       "keepInTrayLinuxHint": "Algunos escritorios Linux no muestran iconos en la bandeja. Elige Siempre solo si el tuyo los muestra; si no, cerrar la ventana cierra vivePDF.",
       "keepInTrayModes": {
         "auto": "Mientras haya una carpeta vigilada activa",
@@ -1949,6 +1952,7 @@
       },
       "autostart": "Iniciar con el sistema",
       "autostartHint": "Se inicia en la bandeja al iniciar sesión. Si no hay ninguna carpeta vigilada activa, se abre la ventana.",
+      "autostartMacHint": "Se inicia en la barra de menús al iniciar sesión. Si no hay ninguna carpeta vigilada activa, se abre la ventana.",
       "autostartOn": "vivePDF se iniciará al iniciar sesión.",
       "autostartOff": "vivePDF ya no se iniciará al iniciar sesión."
     },
@@ -1969,6 +1973,7 @@
       "afterOperations": {
         "none": "No hacer nada",
         "reveal": "Mostrar en el Explorador",
+        "revealMac": "Mostrar en el Finder",
         "open": "Abrir el archivo"
       }
     },
@@ -6671,6 +6676,26 @@
     "pause": "Pausar la vigilancia",
     "resume": "Reanudar la vigilancia",
     "quit": "Salir de vivePDF"
+  },
+  "appMenu": {
+    "about": "Acerca de vivePDF",
+    "settings": "Ajustes…",
+    "services": "Servicios",
+    "hide": "Ocultar vivePDF",
+    "hideOthers": "Ocultar otros",
+    "showAll": "Mostrar todo",
+    "quit": "Salir de vivePDF",
+    "edit": "Edición",
+    "undo": "Deshacer",
+    "redo": "Rehacer",
+    "cut": "Cortar",
+    "copy": "Copiar",
+    "paste": "Pegar",
+    "selectAll": "Seleccionar todo",
+    "window": "Ventana",
+    "minimize": "Minimizar",
+    "zoom": "Zoom",
+    "close": "Cerrar ventana"
   },
   "mail": {
     "sender": "De",

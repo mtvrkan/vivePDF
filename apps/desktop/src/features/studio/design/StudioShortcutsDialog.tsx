@@ -2,6 +2,7 @@ import { Keyboard } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Dialog } from "@/components/shared/Dialog";
 import { STUDIO_SHORTCUT_GROUPS } from "./shortcutList";
+import { shortcutLabel } from "@/shared/lib/platform";
 
 function splitKeys(keys: string): string[] {
   return keys.split(/\s*(?:\/|·)\s*/).filter(Boolean);
@@ -23,7 +24,7 @@ export function StudioShortcutsDialog({ open, onClose }: { open: boolean; onClos
                 <div key={entry.keys} className="flex min-h-8 items-center justify-between gap-3 border-b py-1 text-sm last:border-b-0">
                   <dt className="min-w-28 flex-1 text-start">{t(entry.labelKey)}</dt>
                   <dd className="flex min-w-0 flex-wrap justify-end gap-1">
-                    {splitKeys(entry.keys).map((combo) => (
+                    {splitKeys(shortcutLabel(entry.keys)).map((combo) => (
                       <kbd key={combo} className="whitespace-nowrap rounded-sm border bg-background px-1.5 font-mono text-xs text-muted-foreground">
                         {combo}
                       </kbd>

@@ -54,6 +54,7 @@ import { copyPagesInto, directMainPages, discardExportCopy, dragFileName, export
 import { DragBadge, MarqueeRect } from "./LiveOverlays";
 import { usePageClipboardActions } from "./usePageClipboardActions";
 import { usePageClipboard } from "./pageClipboard";
+import { hasModKey, shortcutLabel } from "@/shared/lib/platform";
 
 type TileMenu = { x: number; y: number; key: string };
 
@@ -497,7 +498,7 @@ export function PagesPage() {
     const container = scrollRef.current;
     if (!container) return;
     const onWheel = (event: WheelEvent) => {
-      if (!event.ctrlKey) return;
+      if (!hasModKey(event)) return;
       event.preventDefault();
       const { pagesZoom, setPagesZoom } = useUiStore.getState();
       setPagesZoom(pagesZoom - Math.sign(event.deltaY) * 20);
@@ -560,7 +561,7 @@ export function PagesPage() {
         actions={
           <>
             <IconButton icon={History} label={t("tools.pages.reset")} disabled={!unsaved} onClick={reset} />
-            <Button size="sm" icon={<FileOutput className="size-4" aria-hidden />} title={`${t("tools.pages.shortcut.extract")} (Ctrl+E)`} disabled={selectedCount === 0 || busy} onClick={() => apply(true)}>
+            <Button size="sm" icon={<FileOutput className="size-4" aria-hidden />} title={`${t("tools.pages.shortcut.extract")} (${shortcutLabel("Ctrl+E")})`} disabled={selectedCount === 0 || busy} onClick={() => apply(true)}>
               {t("tools.pages.extract")}
             </Button>
             <MenuButton
@@ -577,7 +578,7 @@ export function PagesPage() {
                 {t("tools.pages.splitParts", { count: partStarts.length + 1 })}
               </Button>
             ) : null}
-            <Button size="sm" variant="primary" title={`${t("tools.pages.shortcut.apply")} (Ctrl+Enter)`} disabled={!dirty || tiles.length === 0 || busy} loading={operation.running} onClick={() => apply(false)}>
+            <Button size="sm" variant="primary" title={`${t("tools.pages.shortcut.apply")} (${shortcutLabel("Ctrl+Enter")})`} disabled={!dirty || tiles.length === 0 || busy} loading={operation.running} onClick={() => apply(false)}>
               {t(applyInPlace ? "tools.pages.inPlace.apply" : "tools.pages.apply")}
             </Button>
           </>

@@ -6,6 +6,7 @@ import { setAutostart } from "@/shared/rpc/tray";
 import { KEEP_IN_TRAY_MODES, RECENT_LIMITS, usePreferencesStore, type KeepInTray, type RecentLimit } from "@/shared/store/preferencesStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { describeError } from "@/shared/lib/errorMessage";
+import { isMac } from "@/shared/lib/platform";
 import type { AutostartStatus } from "@/types";
 import { SectionCard, SettingRow } from "../settingsControls";
 import type { SettingsSectionProps } from "../settingsShared";
@@ -63,7 +64,7 @@ export function GeneralSection({ query, onEmptyChange, autostart, setAutostartSt
       <SettingRow label={t("settings.general.confirmClose")} hint={t("settings.general.confirmCloseHint")}>
         <Checkbox label="" checked={confirmClose} onChange={(value) => updatePreferences({ confirmClose: value })} />
       </SettingRow>
-      <SettingRow label={t("settings.general.keepInTray")} hint={autostart && !autostart.trayByDefault ? t("settings.general.keepInTrayLinuxHint") : t("settings.general.keepInTrayHint")}>
+      <SettingRow label={t("settings.general.keepInTray")} hint={autostart && !autostart.trayByDefault ? t("settings.general.keepInTrayLinuxHint") : t(isMac ? "settings.general.keepInTrayMacHint" : "settings.general.keepInTrayHint")}>
         <Select
           value={keepInTray}
           options={KEEP_IN_TRAY_MODES.map((item) => ({ value: item, label: t(`settings.general.keepInTrayModes.${item}`) }))}
@@ -73,7 +74,7 @@ export function GeneralSection({ query, onEmptyChange, autostart, setAutostartSt
         />
       </SettingRow>
       {autostart?.supported ? (
-        <SettingRow label={t("settings.general.autostart")} hint={t("settings.general.autostartHint")}>
+        <SettingRow label={t("settings.general.autostart")} hint={t(isMac ? "settings.general.autostartMacHint" : "settings.general.autostartHint")}>
           <Checkbox label="" checked={autostart.enabled} disabled={autostartBusy || (keepInTray === "off" && !autostart.enabled)} onChange={(checked) => void toggleAutostart(checked)} />
         </SettingRow>
       ) : null}

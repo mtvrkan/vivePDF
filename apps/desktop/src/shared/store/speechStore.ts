@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { splitSentences } from "@/shared/lib/sentences";
+import { isMac } from "@/shared/lib/platform";
 import { useReadingStore } from "@/shared/store/readingStore";
 
 const STORAGE_KEY = "vivepdf.speech";
@@ -40,7 +41,7 @@ export function chooseVoice(available: SpeechSynthesisVoice[], voiceUri: string 
 
 export function speechFailureKey(error: string): string | null {
   if (error === "interrupted" || error === "canceled") return null;
-  return MISSING_VOICE_ERRORS.has(error) ? "viewer.readAloud.noVoiceHelp" : "viewer.readAloud.failed";
+  return MISSING_VOICE_ERRORS.has(error) ? (isMac ? "viewer.readAloud.noVoiceHelpMac" : "viewer.readAloud.noVoiceHelp") : "viewer.readAloud.failed";
 }
 
 let announcedFallback = "";

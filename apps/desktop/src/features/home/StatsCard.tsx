@@ -10,6 +10,7 @@ import { useWatchStore } from "@/shared/store/watchStore";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { cn } from "@/shared/lib/cn";
 import { listPadding, type HomeSize } from "./homeLayout";
+import { FULLSCREEN_SHORTCUT, shortcutLabel } from "@/shared/lib/platform";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -41,7 +42,7 @@ function ShortcutRow({ label, keys, onClick }: { label: string; keys: string; on
   const content = (
     <>
       <span className="min-w-0 truncate">{label}</span>
-      <kbd className="glass-chip shrink-0 rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{keys}</kbd>
+      <kbd className="glass-chip shrink-0 rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{shortcutLabel(keys)}</kbd>
     </>
   );
   if (!onClick) return <div className="flex h-8 items-center justify-between gap-3 px-2 text-sm text-muted-foreground">{content}</div>;
@@ -143,7 +144,7 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
           {size === "large" ? (
             <>
               <ShortcutRow label={t("about.shortcuts.items.closeDocument")} keys="Ctrl W" />
-              <ShortcutRow label={t("about.shortcuts.items.fullscreen")} keys="F11" />
+              <ShortcutRow label={t("about.shortcuts.items.fullscreen")} keys={FULLSCREEN_SHORTCUT} />
             </>
           ) : null}
         </div>

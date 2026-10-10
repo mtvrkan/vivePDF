@@ -2622,6 +2622,7 @@
   ],
   "exceptions": {
     "*": {
+      "viewer.readAloud.noVoiceHelpMac": ["accessibility"],
       "tools.forms.tabs.merge": [
         "merge"
       ],

@@ -478,7 +478,8 @@
       "installVoice": "Ses indir",
       "selection": "Seçili metin",
       "otherVoice": "Bu dil için sistem sesi yok — {{voice}} sesiyle okunuyor.",
-      "noVoiceHelp": "Bu bilgisayarda bunu okuyabilecek bir ses yok. Ayarlar › Okuma › Sesler'den bir vivePDF sesi indirin ya da Windows Ayarları › Saat ve dil › Konuşma'dan ses ekleyin."
+      "noVoiceHelp": "Bu bilgisayarda bunu okuyabilecek bir ses yok. Ayarlar › Okuma › Sesler'den bir vivePDF sesi indirin ya da Windows Ayarları › Saat ve dil › Konuşma'dan ses ekleyin.",
+      "noVoiceHelpMac": "Bu bilgisayarda bunu okuyabilecek bir ses yok. Ayarlar › Okuma › Sesler'den bir vivePDF sesi indirin ya da Sistem Ayarları › Erişilebilirlik › Seslendirilen İçerik › Sistem Sesi'nden ses ekleyin."
     },
     "reading": {
       "title": "Okuma modu",
@@ -1624,6 +1625,7 @@
     "description": "Görünüm, başlangıç, okuma, sunum, araçlar, güncellemeler ve veriler.",
     "appearance": {
       "themeHint": "Sistem seçeneği Windows temasını izler.",
+      "themeMacHint": "Sistem seçeneği macOS görünümünü izler.",
       "uiScale": "Arayüz ölçeği",
       "uiScaleHint": "Tüm uygulamadaki yazıları ve denetimleri ölçekler.",
       "reduceMotion": "Hareketi azalt",
@@ -1942,6 +1944,7 @@
       "keepBackupsHint": "Açık bir belgenin üzerine yazıldığında önceki sürüm dosyanızın yanına değil, uygulama veri klasörüne kaydedilir (son 20 tanesi).",
       "keepInTray": "Tepside çalışmaya devam et",
       "keepInTrayHint": "Pencereyi kapattığınızda vivePDF bildirim alanında kalır, izlenen klasörler çalışmayı sürdürür.",
+      "keepInTrayMacHint": "Pencereyi kapattığınızda vivePDF menü çubuğunda kalır, izlenen klasörler çalışmayı sürdürür.",
       "keepInTrayLinuxHint": "Bazı Linux masaüstleri tepsi simgelerini göstermez. Yalnızca sizinki gösteriyorsa Her zaman'ı seçin; aksi halde pencereyi kapatmak vivePDF'i kapatır.",
       "keepInTrayModes": {
         "auto": "İzlenen bir klasör açıkken",
@@ -1950,6 +1953,7 @@
       },
       "autostart": "Sistemle birlikte başlat",
       "autostartHint": "Oturum açtığınızda tepside başlar. Açık bir izlenen klasör yoksa bunun yerine pencere açılır.",
+      "autostartMacHint": "Oturum açtığınızda menü çubuğunda başlar. Açık bir izlenen klasör yoksa bunun yerine pencere açılır.",
       "autostartOn": "vivePDF oturum açtığınızda başlayacak.",
       "autostartOff": "vivePDF artık oturum açtığınızda başlamayacak."
     },
@@ -1970,6 +1974,7 @@
       "afterOperations": {
         "none": "Bir şey yapma",
         "reveal": "Gezgin’de göster",
+        "revealMac": "Finder’da göster",
         "open": "Dosyayı aç"
       }
     },
@@ -6673,6 +6678,26 @@
     "pause": "İzlemeyi duraklat",
     "resume": "İzlemeyi sürdür",
     "quit": "vivePDF'ten çık"
+  },
+  "appMenu": {
+    "about": "vivePDF Hakkında",
+    "settings": "Ayarlar…",
+    "services": "Servisler",
+    "hide": "vivePDF'i Gizle",
+    "hideOthers": "Diğerlerini Gizle",
+    "showAll": "Tümünü Göster",
+    "quit": "vivePDF'ten Çık",
+    "edit": "Düzen",
+    "undo": "Geri Al",
+    "redo": "Yinele",
+    "cut": "Kes",
+    "copy": "Kopyala",
+    "paste": "Yapıştır",
+    "selectAll": "Tümünü Seç",
+    "window": "Pencere",
+    "minimize": "Küçült",
+    "zoom": "Büyüt",
+    "close": "Pencereyi Kapat"
   },
   "mail": {
     "sender": "Kimden",

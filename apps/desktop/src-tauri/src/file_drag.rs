@@ -1,5 +1,7 @@
 use crate::rpc::RpcError;
-use std::path::{Path, PathBuf};
+#[cfg(any(windows, test))]
+use std::path::Path;
+use std::path::PathBuf;
 
 fn validate_source(path: &str) -> Result<PathBuf, RpcError> {
     let target = PathBuf::from(path);
@@ -63,7 +65,10 @@ pub async fn start_file_drag(window: tauri::WebviewWindow, path: String) -> Resu
 
 #[cfg(not(windows))]
 #[tauri::command]
-pub async fn start_file_drag(_window: tauri::WebviewWindow, path: String) -> Result<bool, RpcError> {
+pub async fn start_file_drag(
+    _window: tauri::WebviewWindow,
+    path: String,
+) -> Result<bool, RpcError> {
     validate_source(&path)?;
     Err(RpcError::new("UNSUPPORTED", "unsupported"))
 }

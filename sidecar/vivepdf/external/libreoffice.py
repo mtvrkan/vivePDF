@@ -53,6 +53,8 @@ def managed_office_dir() -> Path:
     if sys.platform == "win32":
         base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
         return Path(base) / "vivePDF" / "libreoffice"
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "Application Support" / "vivePDF" / "libreoffice"
     return unix_data_home() / "vivepdf" / "libreoffice"
 
 
@@ -108,6 +110,9 @@ def _candidates() -> list[Path]:
                 candidates.append(Path(root) / "LibreOffice" / "program" / "soffice.exe")
     elif sys.platform == "darwin":
         candidates.append(Path("/Applications/LibreOffice.app/Contents/MacOS/soffice"))
+        candidates.append(
+            Path.home() / "Applications" / "LibreOffice.app" / "Contents" / "MacOS" / "soffice"
+        )
     else:
         candidates.extend(
             Path(item)

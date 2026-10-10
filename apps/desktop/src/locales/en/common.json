@@ -478,7 +478,8 @@
       "installVoice": "Download a voice",
       "selection": "Selected text",
       "otherVoice": "No system voice for this language — reading with {{voice}}.",
-      "noVoiceHelp": "This computer has no speech voice that can read this. Download a vivePDF voice under Settings › Reading › Voices, or add one in Windows Settings › Time & language › Speech."
+      "noVoiceHelp": "This computer has no speech voice that can read this. Download a vivePDF voice under Settings › Reading › Voices, or add one in Windows Settings › Time & language › Speech.",
+      "noVoiceHelpMac": "This computer has no speech voice that can read this. Download a vivePDF voice under Settings › Reading › Voices, or add one in System Settings › Accessibility › Spoken Content › System Voice."
     },
     "reading": {
       "title": "Reading mode",
@@ -1624,6 +1625,7 @@
     "description": "Appearance, startup, reading, presentation, tools, updates and data.",
     "appearance": {
       "themeHint": "System follows the Windows theme.",
+      "themeMacHint": "System follows the macOS appearance.",
       "uiScale": "Interface scale",
       "uiScaleHint": "Scales text and controls across the whole app.",
       "reduceMotion": "Reduce motion",
@@ -1942,6 +1944,7 @@
       "keepBackupsHint": "When an open document is overwritten, the previous version is kept in the app data folder (the last 20) instead of beside your file.",
       "keepInTray": "Keep running in the tray",
       "keepInTrayHint": "When you close the window, vivePDF stays in the notification area so watched folders keep working.",
+      "keepInTrayMacHint": "When you close the window, vivePDF stays in the menu bar so watched folders keep working.",
       "keepInTrayLinuxHint": "Some Linux desktops don't show tray icons. Choose Always only if yours does; otherwise closing the window quits vivePDF.",
       "keepInTrayModes": {
         "auto": "While a watched folder is on",
@@ -1950,6 +1953,7 @@
       },
       "autostart": "Start with the system",
       "autostartHint": "Starts in the tray when you sign in. If no watched folder is on, the window opens instead.",
+      "autostartMacHint": "Starts in the menu bar when you log in. If no watched folder is on, the window opens instead.",
       "autostartOn": "vivePDF will start when you sign in.",
       "autostartOff": "vivePDF will no longer start when you sign in."
     },
@@ -1970,6 +1974,7 @@
       "afterOperations": {
         "none": "Do nothing",
         "reveal": "Show in Explorer",
+        "revealMac": "Show in Finder",
         "open": "Open the file"
       }
     },
@@ -6673,6 +6678,26 @@
     "pause": "Pause watching",
     "resume": "Resume watching",
     "quit": "Quit vivePDF"
+  },
+  "appMenu": {
+    "about": "About vivePDF",
+    "settings": "Settings…",
+    "services": "Services",
+    "hide": "Hide vivePDF",
+    "hideOthers": "Hide Others",
+    "showAll": "Show All",
+    "quit": "Quit vivePDF",
+    "edit": "Edit",
+    "undo": "Undo",
+    "redo": "Redo",
+    "cut": "Cut",
+    "copy": "Copy",
+    "paste": "Paste",
+    "selectAll": "Select All",
+    "window": "Window",
+    "minimize": "Minimize",
+    "zoom": "Zoom",
+    "close": "Close Window"
   },
   "mail": {
     "sender": "From",

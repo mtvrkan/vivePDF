@@ -20,7 +20,9 @@ Windows 10 or 11 (64-bit): download `vivePDF_<version>_x64-setup.exe` from [Rele
 
 The installer is not code-signed yet, so Windows SmartScreen shows "Windows protected your PC" the first time: click **More info** → **Run anyway**. Office conversions use LibreOffice, which the app can download for you on request (Settings › Tools).
 
-macOS and Linux builds are not published yet; build them from source (below).
+macOS 14 Sonoma or later (Apple silicon): download `vivePDF_<version>_aarch64.dmg` from [Releases](https://github.com/mtvrkan/vivePDF/releases/latest), open it and drag vivePDF to Applications. The app is not notarised yet, so Gatekeeper refuses the first start: open **System Settings › Privacy & Security** and click **Open Anyway** next to the vivePDF message, or run `xattr -dr com.apple.quarantine /Applications/vivePDF.app`. Office conversions use a LibreOffice installed in Applications (or downloaded by the app on request); scanning uses SANE (`brew install sane-backends`).
+
+Linux builds are not published yet; build them from source (below).
 
 ## Development
 Stack: Tauri 2 (Rust) shell · React 19 + TypeScript + Tailwind v4 UI with the EmbedPDF viewer · Python engine on PyMuPDF (+ pdf2docx, OCRmyPDF, pyHanko, Tesseract) running as a sidecar.

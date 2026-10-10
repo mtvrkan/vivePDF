@@ -116,6 +116,8 @@ def writable_tessdata_dir() -> Path:
     elif sys.platform == "win32":
         base = os.environ.get("LOCALAPPDATA") or str(Path.home() / "AppData" / "Local")
         directory = Path(base) / "vivePDF" / "tessdata"
+    elif sys.platform == "darwin":
+        directory = Path.home() / "Library" / "Application Support" / "vivePDF" / "tessdata"
     else:
         directory = unix_data_home() / "vivepdf" / "tessdata"
     directory.mkdir(parents=True, exist_ok=True)
