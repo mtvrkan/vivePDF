@@ -83,11 +83,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <>
           <WatchRunner />
           <TrayBridge />
-          <AppMenuBridge />
         </>
       ) : (
         <WindowQuitBridge />
       )}
+      <AppMenuBridge />
     </>
   );
 }

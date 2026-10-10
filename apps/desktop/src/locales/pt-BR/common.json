@@ -6714,7 +6714,16 @@
     "window": "Janela",
     "minimize": "Minimizar",
     "zoom": "Zoom",
-    "close": "Fechar Janela"
+    "close": "Fechar Janela",
+    "file": "Arquivo",
+    "view": "Visualizar",
+    "go": "Ir",
+    "save": "Salvar",
+    "saveAs": "Salvar Como…",
+    "find": "Buscar…",
+    "actualSize": "Tamanho Real",
+    "enterFullScreen": "Usar Tela Cheia",
+    "print": "Imprimir…"
   },
   "mail": {
     "sender": "De",
