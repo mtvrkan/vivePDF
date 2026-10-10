@@ -21,6 +21,11 @@ function log(level: LogLevel, source: string, message: string): void {
   void invoke("log_line", { level, source, message }).catch(() => {});
 }
 
+export function describeError(value: unknown, fallback?: string): string {
+  if (value instanceof Error) return value.stack ?? `${value.name}: ${value.message}`;
+  return fallback ?? String(value);
+}
+
 export function info(source: string, message: string): void {
   log("info", source, message);
 }

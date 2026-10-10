@@ -32,6 +32,7 @@ import { useWheelZoom } from "./useWheelZoom";
 import { ViewerContextMenu, type ReadOnlySource } from "./ViewerContextMenu";
 import { ZoomBadge } from "./ZoomBadge";
 import { shouldDeselectAfterClick } from "./clickDeselect";
+import { annotationStateOf } from "./annotationState";
 
 const CLICK_MOVE_LIMIT_PX = 4;
 const INK_CURSOR_COLOR = "#1f2937";
@@ -53,7 +54,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
     const host = hostRef.current;
     if (!host || !annotation) return;
     const onPointerDown = (event: PointerEvent) => {
-      clickOrigin.current = { x: event.clientX, y: event.clientY, selected: [...(annotation.getState().selectedUids ?? [])] };
+      clickOrigin.current = { x: event.clientX, y: event.clientY, selected: [...(annotationStateOf(annotation)?.selectedUids ?? [])] };
     };
     const onClick = (event: MouseEvent) => {
       const start = clickOrigin.current;
@@ -64,7 +65,8 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
       if (!target || target.closest("[data-annotation-menu]")) return;
       const layer = target.closest("[data-annotation-layer]");
       if (layer && layer !== target) return;
-      if (!shouldDeselectAfterClick(start.selected, annotation.getState().selectedUids ?? [])) return;
+      const state = annotationStateOf(annotation);
+      if (!state || !shouldDeselectAfterClick(start.selected, state.selectedUids ?? [])) return;
       annotation.deselectAnnotation();
     };
     host.addEventListener("pointerdown", onPointerDown, true);

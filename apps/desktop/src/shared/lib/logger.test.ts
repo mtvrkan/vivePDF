@@ -38,4 +38,23 @@ describe("logger", () => {
     error("report", "boom");
     expect(invokeMock).toHaveBeenCalledTimes(2);
   });
+
+  it("describes an error by its stack so the failing call can be found", async () => {
+    const { describeError } = await import("./logger");
+    const failure = new Error("state not found");
+    expect(describeError(failure, "fallback")).toBe(failure.stack);
+  });
+
+  it("describes an error without a stack by its name and message", async () => {
+    const { describeError } = await import("./logger");
+    const failure = new TypeError("bad value");
+    failure.stack = undefined;
+    expect(describeError(failure)).toBe("TypeError: bad value");
+  });
+
+  it("describes anything else by the fallback or as text", async () => {
+    const { describeError } = await import("./logger");
+    expect(describeError(undefined, "Script error.")).toBe("Script error.");
+    expect(describeError("cancelled")).toBe("cancelled");
+  });
 });

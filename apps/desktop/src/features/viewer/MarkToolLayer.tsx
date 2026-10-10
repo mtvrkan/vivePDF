@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { PdfAnnotationSubtype, type PdfInkAnnoObject } from "@embedpdf/models";
 import { useAnnotation } from "@embedpdf/plugin-annotation/react";
 import { useZoom } from "@embedpdf/plugin-zoom/react";
+import { annotationStateOf } from "./annotationState";
 import { eraseAlong, inkBounds, sameStrokes } from "./inkErase";
 import { areaBetween, marksInArea, useMarkToolMode, useMarkToolStore, type MarkToolMode } from "./markArea";
 
@@ -24,7 +25,8 @@ export function MarkToolLayer({ documentId, pageIndex }: { documentId: string; p
 
   finishRef.current = (current) => {
     if (!annotation) return;
-    const state = annotation.getState();
+    const state = annotationStateOf(annotation);
+    if (!state) return;
     const objects = (state.pages[pageIndex] ?? []).flatMap((uid) => (state.byUid[uid] ? [state.byUid[uid].object] : []));
     if (current.mode === "erase") {
       const path = current.path.map((point) => ({ x: point.x / scale, y: point.y / scale }));

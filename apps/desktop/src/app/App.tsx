@@ -116,10 +116,10 @@ export default function App() {
 
   useEffect(() => {
     const onError = (event: ErrorEvent) => {
-      logger.error("window", event.message);
+      logger.error("window", logger.describeError(event.error, event.message));
     };
     const onRejection = (event: PromiseRejectionEvent) => {
-      logger.error("window", String(event.reason));
+      logger.error("window", logger.describeError(event.reason));
     };
     window.addEventListener("error", onError);
     window.addEventListener("unhandledrejection", onRejection);

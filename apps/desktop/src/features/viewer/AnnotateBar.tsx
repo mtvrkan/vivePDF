@@ -28,6 +28,7 @@ import { useAnnotation, useAnnotationCapability } from "@embedpdf/plugin-annotat
 import { useExport } from "@embedpdf/plugin-export/react";
 import { useHistoryCapability } from "@embedpdf/plugin-history/react";
 import { useDocumentSave } from "./useDocumentSave";
+import { annotationStateOf } from "./annotationState";
 import { useRedaction } from "@embedpdf/plugin-redaction/react";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
 import { PdfAnnotationSubtype, type LineEndings, type PdfLineAnnoObject, type PdfPolylineAnnoObject, type Rect } from "@embedpdf/models";
@@ -224,7 +225,8 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
     previousSelection.current = selectionKey ? selectionKey.split("|") : [];
     if (!annotation || previous.length === 0) return;
     window.setTimeout(() => {
-      const state = annotation.getState();
+      const state = annotationStateOf(annotation);
+      if (!state) return;
       const dropped = droppedUntouchedTexts(previous, state.selectedUids ?? [], state.byUid, [ENGINE_TEXT_PLACEHOLDER, textPlaceholder]);
       if (dropped.length > 0) annotation.deleteAnnotations(dropped);
     }, UNTOUCHED_TEXT_DELAY_MS);
