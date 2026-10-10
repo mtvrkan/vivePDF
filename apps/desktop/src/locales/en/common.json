@@ -6697,7 +6697,16 @@
     "window": "Window",
     "minimize": "Minimize",
     "zoom": "Zoom",
-    "close": "Close Window"
+    "close": "Close Window",
+    "file": "File",
+    "view": "View",
+    "go": "Go",
+    "save": "Save",
+    "saveAs": "Save As…",
+    "find": "Find…",
+    "actualSize": "Actual Size",
+    "enterFullScreen": "Enter Full Screen",
+    "print": "Print…"
   },
   "mail": {
     "sender": "From",

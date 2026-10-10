@@ -6695,7 +6695,16 @@
     "window": "Ventana",
     "minimize": "Minimizar",
     "zoom": "Zoom",
-    "close": "Cerrar ventana"
+    "close": "Cerrar ventana",
+    "file": "Archivo",
+    "view": "Visualización",
+    "go": "Ir",
+    "save": "Guardar",
+    "saveAs": "Guardar como…",
+    "find": "Buscar…",
+    "actualSize": "Tamaño real",
+    "enterFullScreen": "Entrar en pantalla completa",
+    "print": "Imprimir…"
   },
   "mail": {
     "sender": "De",

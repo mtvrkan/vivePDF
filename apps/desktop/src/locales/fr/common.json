@@ -6695,7 +6695,16 @@
     "window": "Fenêtre",
     "minimize": "Placer dans le Dock",
     "zoom": "Réduire/agrandir",
-    "close": "Fermer la fenêtre"
+    "close": "Fermer la fenêtre",
+    "file": "Fichier",
+    "view": "Présentation",
+    "go": "Aller",
+    "save": "Enregistrer",
+    "saveAs": "Enregistrer sous…",
+    "find": "Rechercher…",
+    "actualSize": "Taille réelle",
+    "enterFullScreen": "Passer en mode plein écran",
+    "print": "Imprimer…"
   },
   "mail": {
     "sender": "De",

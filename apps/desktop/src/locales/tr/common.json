@@ -6697,7 +6697,16 @@
     "window": "Pencere",
     "minimize": "Küçült",
     "zoom": "Büyüt",
-    "close": "Pencereyi Kapat"
+    "close": "Pencereyi Kapat",
+    "file": "Dosya",
+    "view": "Görüntü",
+    "go": "Git",
+    "save": "Kaydet",
+    "saveAs": "Farklı Kaydet…",
+    "find": "Bul…",
+    "actualSize": "Gerçek Boyut",
+    "enterFullScreen": "Tam Ekrana Geç",
+    "print": "Yazdır…"
   },
   "mail": {
     "sender": "Kimden",

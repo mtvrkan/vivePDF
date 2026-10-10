@@ -6695,7 +6695,16 @@
     "window": "Finestra",
     "minimize": "Contrai",
     "zoom": "Zoom",
-    "close": "Chiudi finestra"
+    "close": "Chiudi finestra",
+    "file": "File",
+    "view": "Vista",
+    "go": "Vai",
+    "save": "Salva",
+    "saveAs": "Salva con nome…",
+    "find": "Trova…",
+    "actualSize": "Dimensioni reali",
+    "enterFullScreen": "Entra in modalità a tutto schermo",
+    "print": "Stampa…"
   },
   "mail": {
     "sender": "Da",

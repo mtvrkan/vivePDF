@@ -6695,7 +6695,16 @@
     "window": "Fenster",
     "minimize": "Im Dock ablegen",
     "zoom": "Zoomen",
-    "close": "Fenster schließen"
+    "close": "Fenster schließen",
+    "file": "Ablage",
+    "view": "Darstellung",
+    "go": "Gehe zu",
+    "save": "Sichern",
+    "saveAs": "Sichern unter …",
+    "find": "Suchen …",
+    "actualSize": "Originalgröße",
+    "enterFullScreen": "Vollbildmodus aktivieren",
+    "print": "Drucken …"
   },
   "mail": {
     "sender": "Von",
