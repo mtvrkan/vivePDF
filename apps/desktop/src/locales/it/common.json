@@ -5928,7 +5928,8 @@
     "searching": "Ricerca…",
     "replacing": "Sostituzione…",
     "creating": "Creazione del documento {{current}}/{{total}}…",
-    "creatingPages": "Creazione della pagina {{current}}/{{total}}…"
+    "creatingPages": "Creazione della pagina {{current}}/{{total}}…",
+    "checkingSources": "Controllo delle fonti ({{current}}/{{total}})…"
   },
   "annotate": {
     "select": "Seleziona / sposta",
@@ -6283,7 +6284,16 @@
       "outputAndInPlace": "Il risultato può essere salvato in un nuovo file o sull'originale, non in entrambi.",
       "allPagesDeleted": "Tutte le pagine sono state contrassegnate per l’eliminazione; un PDF deve avere almeno una pagina.",
       "emptyQuery": "Digita il testo da cercare.",
-      "noSources": "Questo file non contiene fonti leggibili."
+      "noSources": "Questo file non contiene fonti leggibili.",
+      "badDoi": "Questo non è un DOI. Un DOI inizia con 10. e contiene una barra, ad esempio 10.1038/nature12373.",
+      "doiNotFound": "Nessun record trovato per questo DOI.",
+      "doiNoMetadata": "Il DOI esiste ma non ha dati utilizzabili.",
+      "doiOffline": "Impossibile raggiungere doi.org o Crossref; controlla la connessione Internet.",
+      "doiTimeout": "doi.org o Crossref non ha risposto in tempo; riprova.",
+      "doiHttpStatus": "Il servizio bibliografico ha risposto con un errore ({{status}}); riprova più tardi.",
+      "doiTooLarge": "Il servizio bibliografico ha inviato una risposta insolitamente grande, ignorata.",
+      "doiBadResponse": "La risposta del servizio bibliografico non è leggibile.",
+      "doiUntrustedHost": "Il servizio bibliografico ha reindirizzato a un indirizzo non affidabile, bloccato."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -9048,6 +9058,49 @@
           "doi": "DOI",
           "url": "Indirizzo web",
           "note": "Nota"
+        },
+        "addByDoi": "Aggiungi da DOI",
+        "addFromPdf": "Aggiungi da PDF",
+        "doiLabel": "DOI o indirizzo doi.org",
+        "doiHint": "I dati arrivano da doi.org (Crossref, DataCite); viene inviato solo il DOI.",
+        "fetch": "Recupera dati",
+        "fillFromDoi": "Compila dal DOI",
+        "pdfFilter": "Documenti PDF",
+        "noDoiFound": "Nessun DOI trovato in questo PDF; compila la fonte a mano.",
+        "alreadyAdded": "Questo DOI è già tra le fonti come @{{key}}.",
+        "check": "Controlla fonti",
+        "checking": "Interrompi controllo ({{current}}/{{total}})",
+        "checkedClean": "Fonti controllate: {{total}} — nessun avviso di ritrattazione o correzione.",
+        "checkedFlagged": "Fonti controllate: {{total}} — con avvisi: {{flagged}}.",
+        "updateDetails": "Aggiorna dati di {{key}}",
+        "upToDate": "@{{key}} corrisponde già al record pubblicato.",
+        "updated": "@{{key}} aggiornata.",
+        "reviewTitle": "Aggiorna dati della fonte",
+        "reviewBody": "Il record pubblicato di @{{key}} differisce in questi campi. Applicare i nuovi valori?",
+        "applyUpdate": "Applica modifiche",
+        "before": "Attuale:",
+        "after": "Nuovo:",
+        "publishedVersion": "Versione pubblicata disponibile",
+        "status": {
+          "ok": "Nessun avviso",
+          "retracted": "Ritrattato",
+          "withdrawn": "Ritirato",
+          "expressionOfConcern": "Espressione di preoccupazione",
+          "corrected": "Correzione pubblicata",
+          "notFound": "Non presente in Crossref",
+          "failed": "Impossibile controllare"
+        },
+        "notices": {
+          "retraction": "Ritrattazione",
+          "partial_retraction": "Ritrattazione parziale",
+          "removal": "Rimozione",
+          "withdrawal": "Ritiro",
+          "expression_of_concern": "Espressione di preoccupazione",
+          "correction": "Correzione",
+          "erratum": "Errata corrige",
+          "corrigendum": "Corrigendum",
+          "addendum": "Addendum",
+          "clarification": "Chiarimento"
         }
       }
     },

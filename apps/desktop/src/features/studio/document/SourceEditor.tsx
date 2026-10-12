@@ -1,10 +1,24 @@
+import { DownloadCloud } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { Field, TextArea, TextInput } from "@/components/tool/form";
 import { MAX_FIELD_CHARS } from "./bibtex";
 import { EDITABLE_TYPES, shownFields, type KeyProblem, type SourceDraft } from "./sourceDraft";
 
-export function SourceEditor({ draft, problem, onChange }: { draft: SourceDraft; problem: KeyProblem | null; onChange: (draft: SourceDraft) => void }) {
+export function SourceEditor({
+  draft,
+  problem,
+  onChange,
+  onFillFromDoi,
+  filling = false,
+}: {
+  draft: SourceDraft;
+  problem: KeyProblem | null;
+  onChange: (draft: SourceDraft) => void;
+  onFillFromDoi?: () => void;
+  filling?: boolean;
+}) {
   const { t } = useTranslation();
   const types = EDITABLE_TYPES.includes(draft.type) ? EDITABLE_TYPES : [...EDITABLE_TYPES, draft.type];
   const setField = (name: string, value: string) => onChange({ ...draft, fields: { ...draft.fields, [name]: value } });
@@ -46,11 +60,21 @@ export function SourceEditor({ draft, problem, onChange }: { draft: SourceDraft;
         </Field>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        {shownFields(draft.type, draft.fields).map((name) => (
-          <Field key={name} label={t(`studio.doc.cite.fields.${name}`)}>
-            <TextInput value={draft.fields[name] ?? ""} maxLength={MAX_FIELD_CHARS} spellCheck={name !== "doi" && name !== "url"} onChange={(event) => setField(name, event.target.value)} />
-          </Field>
-        ))}
+        {shownFields(draft.type, draft.fields).map((name) => {
+          const fillable = name === "doi" && onFillFromDoi !== undefined;
+          const field = (
+            <Field key={name} label={t(`studio.doc.cite.fields.${name}`)} className={fillable ? "min-w-0 flex-1" : undefined}>
+              <TextInput value={draft.fields[name] ?? ""} maxLength={MAX_FIELD_CHARS} spellCheck={name !== "doi" && name !== "url"} onChange={(event) => setField(name, event.target.value)} />
+            </Field>
+          );
+          if (!fillable) return field;
+          return (
+            <div key={name} className="flex items-end gap-2">
+              {field}
+              <IconButton icon={DownloadCloud} label={t("studio.doc.cite.fillFromDoi")} busy={filling} disabled={filling || !draft.fields.doi?.trim()} onClick={onFillFromDoi} className="size-row" data-testid="cite-fill-doi" />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

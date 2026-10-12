@@ -5928,7 +5928,8 @@
     "searching": "Recherche…",
     "replacing": "Remplacement…",
     "creating": "Création du document {{current}}/{{total}}…",
-    "creatingPages": "Création de la page {{current}}/{{total}}…"
+    "creatingPages": "Création de la page {{current}}/{{total}}…",
+    "checkingSources": "Vérification des sources ({{current}}/{{total}})…"
   },
   "annotate": {
     "select": "Sélectionner / déplacer",
@@ -6283,7 +6284,16 @@
       "outputAndInPlace": "Le résultat peut être enregistré dans un nouveau fichier ou sur l'original, pas les deux.",
       "allPagesDeleted": "Toutes les pages ont été marquées pour suppression ; un PDF doit garder au moins une page.",
       "emptyQuery": "Saisissez le texte à rechercher.",
-      "noSources": "Ce fichier ne contient aucune source lisible."
+      "noSources": "Ce fichier ne contient aucune source lisible.",
+      "badDoi": "Ce n'est pas un DOI. Un DOI commence par 10. et contient une barre oblique, par exemple 10.1038/nature12373.",
+      "doiNotFound": "Aucune notice trouvée pour ce DOI.",
+      "doiNoMetadata": "Le DOI existe mais n'a pas d'informations exploitables.",
+      "doiOffline": "Impossible de joindre doi.org ou Crossref ; vérifiez la connexion Internet.",
+      "doiTimeout": "doi.org ou Crossref n'a pas répondu à temps ; réessayez.",
+      "doiHttpStatus": "Le service bibliographique a répondu par une erreur ({{status}}) ; réessayez plus tard.",
+      "doiTooLarge": "Le service bibliographique a envoyé une réponse anormalement volumineuse ; elle a été ignorée.",
+      "doiBadResponse": "La réponse du service bibliographique est illisible.",
+      "doiUntrustedHost": "Le service bibliographique a redirigé vers une adresse non fiable ; elle a été bloquée."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -9048,6 +9058,49 @@
           "doi": "DOI",
           "url": "Adresse web",
           "note": "Note"
+        },
+        "addByDoi": "Ajouter par DOI",
+        "addFromPdf": "Ajouter depuis un PDF",
+        "doiLabel": "DOI ou adresse doi.org",
+        "doiHint": "Les informations viennent de doi.org (Crossref, DataCite) ; seul le DOI est envoyé.",
+        "fetch": "Récupérer les informations",
+        "fillFromDoi": "Remplir à partir du DOI",
+        "pdfFilter": "Documents PDF",
+        "noDoiFound": "Aucun DOI trouvé dans ce PDF ; complétez la source à la main.",
+        "alreadyAdded": "Ce DOI figure déjà dans vos sources sous @{{key}}.",
+        "check": "Vérifier les sources",
+        "checking": "Arrêter la vérification ({{current}}/{{total}})",
+        "checkedClean": "Sources vérifiées : {{total}} — aucun avis de rétractation ou de correction.",
+        "checkedFlagged": "Sources vérifiées : {{total}} — avec avis : {{flagged}}.",
+        "updateDetails": "Mettre à jour les informations de {{key}}",
+        "upToDate": "@{{key}} correspond déjà à la notice publiée.",
+        "updated": "@{{key}} mis à jour.",
+        "reviewTitle": "Mettre à jour la source",
+        "reviewBody": "La notice publiée de @{{key}} diffère sur ces champs. Appliquer les nouvelles valeurs ?",
+        "applyUpdate": "Appliquer les modifications",
+        "before": "Actuel :",
+        "after": "Nouveau :",
+        "publishedVersion": "Version publiée disponible",
+        "status": {
+          "ok": "Aucun avis",
+          "retracted": "Rétracté",
+          "withdrawn": "Retiré",
+          "expressionOfConcern": "Avis de préoccupation",
+          "corrected": "Correction publiée",
+          "notFound": "Absent de Crossref",
+          "failed": "Vérification impossible"
+        },
+        "notices": {
+          "retraction": "Rétractation",
+          "partial_retraction": "Rétractation partielle",
+          "removal": "Suppression",
+          "withdrawal": "Retrait",
+          "expression_of_concern": "Avis de préoccupation",
+          "correction": "Correction",
+          "erratum": "Erratum",
+          "corrigendum": "Corrigendum",
+          "addendum": "Addendum",
+          "clarification": "Clarification"
         }
       }
     },

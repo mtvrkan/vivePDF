@@ -5928,7 +5928,8 @@
     "searching": "Buscando…",
     "replacing": "Reemplazando…",
     "creating": "Creando documento {{current}}/{{total}}…",
-    "creatingPages": "Creando página {{current}}/{{total}}…"
+    "creatingPages": "Creando página {{current}}/{{total}}…",
+    "checkingSources": "Revisando fuentes ({{current}}/{{total}})…"
   },
   "annotate": {
     "select": "Seleccionar / mover",
@@ -6283,7 +6284,16 @@
       "outputAndInPlace": "El resultado se puede guardar en un archivo nuevo o sobre el original, pero no en ambos.",
       "allPagesDeleted": "Todas las páginas se marcaron para eliminar; un PDF necesita al menos una página.",
       "emptyQuery": "Escribe el texto que quieres buscar.",
-      "noSources": "Este archivo no contiene fuentes legibles."
+      "noSources": "Este archivo no contiene fuentes legibles.",
+      "badDoi": "Esto no es un DOI. Un DOI empieza por 10. y contiene una barra, por ejemplo 10.1038/nature12373.",
+      "doiNotFound": "No se encontró ningún registro para este DOI.",
+      "doiNoMetadata": "El DOI existe pero no tiene datos utilizables.",
+      "doiOffline": "No se pudo conectar con doi.org ni Crossref; compruebe la conexión a Internet.",
+      "doiTimeout": "doi.org o Crossref no respondió a tiempo; inténtelo de nuevo.",
+      "doiHttpStatus": "El servicio bibliográfico respondió con un error ({{status}}); inténtelo más tarde.",
+      "doiTooLarge": "El servicio bibliográfico envió una respuesta inesperadamente grande y se ignoró.",
+      "doiBadResponse": "No se pudo leer la respuesta del servicio bibliográfico.",
+      "doiUntrustedHost": "El servicio bibliográfico redirigió a una dirección no fiable y se bloqueó."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",
@@ -9048,6 +9058,49 @@
           "doi": "DOI",
           "url": "Dirección web",
           "note": "Nota"
+        },
+        "addByDoi": "Añadir por DOI",
+        "addFromPdf": "Añadir desde PDF",
+        "doiLabel": "DOI o dirección doi.org",
+        "doiHint": "Los datos vienen de doi.org (Crossref, DataCite); solo se envía el DOI.",
+        "fetch": "Obtener datos",
+        "fillFromDoi": "Rellenar desde el DOI",
+        "pdfFilter": "Documentos PDF",
+        "noDoiFound": "No se encontró ningún DOI en este PDF; rellene la fuente a mano.",
+        "alreadyAdded": "Este DOI ya está en sus fuentes como @{{key}}.",
+        "check": "Revisar fuentes",
+        "checking": "Detener revisión ({{current}}/{{total}})",
+        "checkedClean": "Fuentes revisadas: {{total}} — sin avisos de retractación ni corrección.",
+        "checkedFlagged": "Fuentes revisadas: {{total}} — con avisos: {{flagged}}.",
+        "updateDetails": "Actualizar datos de {{key}}",
+        "upToDate": "@{{key}} ya coincide con el registro publicado.",
+        "updated": "@{{key}} actualizada.",
+        "reviewTitle": "Actualizar datos de la fuente",
+        "reviewBody": "El registro publicado de @{{key}} difiere en estos campos. ¿Aplicar los valores nuevos?",
+        "applyUpdate": "Aplicar cambios",
+        "before": "Actual:",
+        "after": "Nuevo:",
+        "publishedVersion": "Versión publicada disponible",
+        "status": {
+          "ok": "Sin avisos",
+          "retracted": "Retractado",
+          "withdrawn": "Retirado",
+          "expressionOfConcern": "Expresión de preocupación",
+          "corrected": "Corrección publicada",
+          "notFound": "No está en Crossref",
+          "failed": "No se pudo revisar"
+        },
+        "notices": {
+          "retraction": "Retractación",
+          "partial_retraction": "Retractación parcial",
+          "removal": "Eliminación",
+          "withdrawal": "Retirada",
+          "expression_of_concern": "Expresión de preocupación",
+          "correction": "Corrección",
+          "erratum": "Fe de erratas",
+          "corrigendum": "Corrigendum",
+          "addendum": "Adenda",
+          "clarification": "Aclaración"
         }
       }
     },

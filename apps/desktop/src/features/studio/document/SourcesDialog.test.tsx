@@ -15,8 +15,15 @@ vi.mock("@tauri-apps/plugin-dialog", () => dialog);
 vi.mock("@/shared/rpc/operations", () => operations);
 const core = vi.hoisted(() => ({ invoke: vi.fn() }));
 vi.mock("@tauri-apps/api/core", async (importOriginal) => ({ ...(await importOriginal<typeof import("@tauri-apps/api/core")>()), invoke: (...args: unknown[]) => core.invoke(...args) }));
+const sourcesRpc = vi.hoisted(() => ({ lookupDoi: vi.fn(), detectDoi: vi.fn(), checkSources: vi.fn() }));
+vi.mock("@/shared/rpc/sources", () => sourcesRpc);
+const opener = vi.hoisted(() => ({ openUrl: vi.fn() }));
+vi.mock("@tauri-apps/plugin-opener", () => opener);
 
 const KNUTH = "@book{knuth, author={Knuth, Donald}, title={The Art of Computer Programming}, publisher={AW}, year=1968}";
+const NATURE_DOI = "10.1038/nature12373";
+const NATURE_CSL = JSON.stringify({ type: "article-journal", DOI: NATURE_DOI, title: "Nanometre-scale thermometry in a living cell", "container-title": "Nature", volume: "500", page: "54-58", issued: { "date-parts": [[2013, 7, 31]] }, author: [{ family: "Kucsko", given: "G." }] });
+const NATURE_SOURCE = { key: "kucsko2013", type: "article", fields: { title: "Nanometre-scale thermometry", year: "2013", doi: NATURE_DOI }, authors: [{ family: "Kucsko", given: "G." }], editors: [] };
 
 let editor: Editor | null = null;
 
@@ -165,5 +172,97 @@ describe("SourcesDialog", () => {
     expect(command).toBe("write_text_file");
     expect(args.path).toBe("C:/refs/out.json");
     expect(JSON.parse(args.contents)).toEqual([{ id: "knuth", type: "book", title: "The Art", author: [{ family: "Knuth", given: "Donald" }], issued: { "date-parts": [[1968]] } }]);
+  });
+
+  it("fetches a source by DOI into the editor for review before it is saved", async () => {
+    sourcesRpc.lookupDoi.mockResolvedValue({ doi: NATURE_DOI, csl: NATURE_CSL });
+    mount();
+
+    fireEvent.click(screen.getByTestId("cite-doi"));
+    fireEvent.change(screen.getByTestId("cite-doi-input"), { target: { value: `https://doi.org/${NATURE_DOI}` } });
+    fireEvent.click(screen.getByTestId("cite-doi-fetch"));
+    await screen.findByTestId("cite-editor");
+
+    expect(sourcesRpc.lookupDoi).toHaveBeenCalledWith({ doi: `https://doi.org/${NATURE_DOI}` });
+    expect((screen.getByLabelText("Title") as HTMLInputElement).value).toBe("Nanometre-scale thermometry in a living cell");
+    fireEvent.click(screen.getByTestId("cite-save"));
+    expect(useDocumentStore.getState().document?.sources[0]).toMatchObject({ key: "kucsko2013nanometresca", fields: { journal: "Nature", volume: "500", doi: NATURE_DOI } });
+  });
+
+  it("opens the existing source instead of fetching a DOI that is already there", () => {
+    act(() => useDocumentStore.getState().setSources([NATURE_SOURCE]));
+    mount();
+
+    fireEvent.click(screen.getByTestId("cite-doi"));
+    fireEvent.change(screen.getByTestId("cite-doi-input"), { target: { value: "doi:10.1038/NATURE12373" } });
+    fireEvent.click(screen.getByTestId("cite-doi-fetch"));
+
+    expect(sourcesRpc.lookupDoi).not.toHaveBeenCalled();
+    expect((screen.getByLabelText("Citation key") as HTMLInputElement).value).toBe("kucsko2013");
+  });
+
+  it("starts a source from the PDF title when the PDF has no DOI, and explains a lookup that fails", async () => {
+    dialog.open.mockResolvedValue("C:/papers/paper.pdf");
+    sourcesRpc.detectDoi.mockResolvedValueOnce({ doi: null, title: "Urban heat islands" }).mockResolvedValueOnce({ doi: "10.5555/x", title: null });
+    sourcesRpc.lookupDoi.mockRejectedValue({ code: "NETWORK", message: "offline", data: { reason: "doiOffline" } });
+    mount();
+
+    fireEvent.click(screen.getByTestId("cite-pdf"));
+    await screen.findByTestId("cite-editor");
+    expect((screen.getByLabelText("Title") as HTMLInputElement).value).toBe("Urban heat islands");
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    fireEvent.click(screen.getByTestId("cite-pdf"));
+    await waitFor(() => expect(useToastStore.getState().toasts.some((toast) => toast.kind === "error")).toBe(true));
+
+    expect(sourcesRpc.detectDoi).toHaveBeenCalledWith({ path: "C:/papers/paper.pdf" });
+    expect(useToastStore.getState().toasts.find((toast) => toast.kind === "error")?.message).toBe("Could not reach doi.org or Crossref; check your internet connection.");
+    expect((screen.getByLabelText("DOI") as HTMLInputElement).value).toBe("10.5555/x");
+  });
+
+  it("fills an open source from its DOI", async () => {
+    sourcesRpc.lookupDoi.mockResolvedValue({ doi: NATURE_DOI, csl: NATURE_CSL });
+    mount();
+
+    fireEvent.click(screen.getByTestId("cite-new"));
+    fireEvent.change(screen.getByLabelText("Citation key"), { target: { value: "mine" } });
+    fireEvent.change(screen.getByLabelText("DOI"), { target: { value: NATURE_DOI } });
+    fireEvent.click(screen.getByTestId("cite-fill-doi"));
+
+    await waitFor(() => expect((screen.getByLabelText("Title") as HTMLInputElement).value).toBe("Nanometre-scale thermometry in a living cell"));
+    expect((screen.getByLabelText("Citation key") as HTMLInputElement).value).toBe("mine");
+    expect((screen.getByLabelText("Journal") as HTMLInputElement).value).toBe("Nature");
+  });
+
+  it("checks sources and marks a retracted one with a link to its notice", async () => {
+    act(() => useDocumentStore.getState().setSources([NATURE_SOURCE, { key: "wakefield", type: "article", fields: { title: "Ileal-lymphoid-nodular hyperplasia", doi: "10.1016/S0140-6736(97)11096-0" }, authors: [], editors: [] }]));
+    sourcesRpc.checkSources.mockResolvedValue({
+      items: [
+        { doi: NATURE_DOI, status: "ok", notices: [], publishedVersion: null },
+        { doi: "10.1016/S0140-6736(97)11096-0", status: "retracted", notices: [{ type: "retraction", doi: "10.1016/s0140-6736(10)60175-4", date: "2010-02-06", source: "retraction-watch" }], publishedVersion: null },
+      ],
+    });
+    mount();
+
+    fireEvent.click(screen.getByTestId("cite-check"));
+    const retracted = await screen.findByRole("button", { name: "Retracted" });
+    fireEvent.click(retracted);
+
+    expect(sourcesRpc.checkSources).toHaveBeenCalledWith({ dois: [NATURE_DOI, "10.1016/S0140-6736(97)11096-0"] }, expect.objectContaining({ signal: expect.any(AbortSignal) }));
+    expect(screen.getByText("No notices")).toBeTruthy();
+    expect(opener.openUrl).toHaveBeenCalledWith("https://doi.org/10.1016/s0140-6736(10)60175-4");
+    expect(useToastStore.getState().toasts.at(-1)?.message).toBe("Checked sources: 2 — with notices: 1.");
+  });
+
+  it("shows what the published record would change and applies it on confirm", async () => {
+    act(() => useDocumentStore.getState().setSources([NATURE_SOURCE]));
+    sourcesRpc.lookupDoi.mockResolvedValue({ doi: NATURE_DOI, csl: NATURE_CSL });
+    mount();
+
+    fireEvent.click(screen.getByRole("button", { name: "Update details of kucsko2013" }));
+    const review = await screen.findByTestId("cite-review");
+
+    expect(review.textContent).toContain("Nanometre-scale thermometry in a living cell");
+    fireEvent.click(screen.getByTestId("cite-apply-update"));
+    expect(useDocumentStore.getState().document?.sources[0]).toMatchObject({ key: "kucsko2013", fields: { title: "Nanometre-scale thermometry in a living cell", journal: "Nature", pages: "54-58", doi: NATURE_DOI } });
   });
 });

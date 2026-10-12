@@ -5929,7 +5929,8 @@
     "searching": "Searching…",
     "replacing": "Replacing…",
     "creating": "Creating document {{current}}/{{total}}…",
-    "creatingPages": "Creating page {{current}}/{{total}}…"
+    "creatingPages": "Creating page {{current}}/{{total}}…",
+    "checkingSources": "Checking sources ({{current}}/{{total}})…"
   },
   "annotate": {
     "select": "Select / move",
@@ -6284,7 +6285,16 @@
       "outputAndInPlace": "The result can be saved to a new file or over the original, not both.",
       "allPagesDeleted": "Every page was marked for deletion; a PDF needs at least one page.",
       "emptyQuery": "Type the text to search for.",
-      "noSources": "This file holds no sources that could be read."
+      "noSources": "This file holds no sources that could be read.",
+      "badDoi": "This is not a DOI. A DOI starts with 10. and contains a slash, for example 10.1038/nature12373.",
+      "doiNotFound": "No record was found for this DOI.",
+      "doiNoMetadata": "The DOI was found but has no usable details.",
+      "doiOffline": "Could not reach doi.org or Crossref; check your internet connection.",
+      "doiTimeout": "doi.org or Crossref did not answer in time; try again.",
+      "doiHttpStatus": "The reference service answered with an error ({{status}}); try again later.",
+      "doiTooLarge": "The reference service sent an unexpectedly large answer, so it was ignored.",
+      "doiBadResponse": "The reference service sent an answer that could not be read.",
+      "doiUntrustedHost": "The reference service redirected to an untrusted address, so it was blocked."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -9050,6 +9060,49 @@
           "doi": "DOI",
           "url": "Web address",
           "note": "Note"
+        },
+        "addByDoi": "Add by DOI",
+        "addFromPdf": "Add from PDF",
+        "doiLabel": "DOI or doi.org address",
+        "doiHint": "Details come from doi.org (Crossref, DataCite); only the DOI is sent.",
+        "fetch": "Fetch details",
+        "fillFromDoi": "Fill in from the DOI",
+        "pdfFilter": "PDF documents",
+        "noDoiFound": "No DOI was found in this PDF; fill in the source by hand.",
+        "alreadyAdded": "This DOI is already in your sources as @{{key}}.",
+        "check": "Check sources",
+        "checking": "Stop checking ({{current}}/{{total}})",
+        "checkedClean": "Checked sources: {{total}} — no retraction or correction notices.",
+        "checkedFlagged": "Checked sources: {{total}} — with notices: {{flagged}}.",
+        "updateDetails": "Update details of {{key}}",
+        "upToDate": "@{{key}} already matches the published record.",
+        "updated": "@{{key}} updated.",
+        "reviewTitle": "Update source details",
+        "reviewBody": "The published record of @{{key}} differs in these fields. Apply the new values?",
+        "applyUpdate": "Apply changes",
+        "before": "Current:",
+        "after": "New:",
+        "publishedVersion": "Published version available",
+        "status": {
+          "ok": "No notices",
+          "retracted": "Retracted",
+          "withdrawn": "Withdrawn",
+          "expressionOfConcern": "Expression of concern",
+          "corrected": "Correction published",
+          "notFound": "Not in Crossref",
+          "failed": "Could not be checked"
+        },
+        "notices": {
+          "retraction": "Retraction",
+          "partial_retraction": "Partial retraction",
+          "removal": "Removal",
+          "withdrawal": "Withdrawal",
+          "expression_of_concern": "Expression of concern",
+          "correction": "Correction",
+          "erratum": "Erratum",
+          "corrigendum": "Corrigendum",
+          "addendum": "Addendum",
+          "clarification": "Clarification"
         }
       }
     },

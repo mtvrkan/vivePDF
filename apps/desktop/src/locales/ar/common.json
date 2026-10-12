@@ -6707,7 +6707,8 @@
     "searching": "جارٍ البحث…",
     "replacing": "جارٍ الاستبدال…",
     "creating": "جارٍ إنشاء المستند {{current}}/{{total}}…",
-    "creatingPages": "جارٍ إنشاء الصفحة {{current}}/{{total}}…"
+    "creatingPages": "جارٍ إنشاء الصفحة {{current}}/{{total}}…",
+    "checkingSources": "جارٍ فحص المصادر ({{current}}/{{total}})…"
   },
   "annotate": {
     "select": "تحديد / نقل",
@@ -7082,7 +7083,16 @@
       "outputAndInPlace": "يمكن حفظ النتيجة في ملف جديد أو فوق الملف الأصلي، وليس في كليهما.",
       "allPagesDeleted": "حُدِّدت كل الصفحات للحذف؛ يحتاج ملف PDF إلى صفحة واحدة على الأقل.",
       "emptyQuery": "اكتب النص المطلوب البحث عنه.",
-      "noSources": "لا يحتوي هذا الملف على مصادر يمكن قراءتها."
+      "noSources": "لا يحتوي هذا الملف على مصادر يمكن قراءتها.",
+      "badDoi": "هذا ليس DOI. يبدأ الـ DOI بـ 10. ويحتوي على شرطة مائلة، مثل 10.1038/nature12373.",
+      "doiNotFound": "لم يُعثر على سجل لهذا الـ DOI.",
+      "doiNoMetadata": "عُثر على الـ DOI لكن بلا بيانات قابلة للاستخدام.",
+      "doiOffline": "تعذّر الوصول إلى doi.org أو Crossref؛ تحقّق من اتصال الإنترنت.",
+      "doiTimeout": "لم يستجب doi.org أو Crossref في الوقت المحدد؛ حاول مرة أخرى.",
+      "doiHttpStatus": "ردّت خدمة المراجع بخطأ ({{status}})؛ حاول لاحقًا.",
+      "doiTooLarge": "أرسلت خدمة المراجع ردًّا كبيرًا على نحو غير متوقع فتم تجاهله.",
+      "doiBadResponse": "تعذّرت قراءة ردّ خدمة المراجع.",
+      "doiUntrustedHost": "أعادت خدمة المراجع التوجيه إلى عنوان غير موثوق فتم حظره."
     },
     "revealEmptyPath": "المسار فارغ.",
     "revealFailed": "تعذّر فتح هذا الموقع.",
@@ -9895,6 +9905,49 @@
           "doi": "DOI",
           "url": "عنوان الويب",
           "note": "ملاحظة"
+        },
+        "addByDoi": "إضافة عبر DOI",
+        "addFromPdf": "إضافة من PDF",
+        "doiLabel": "‏DOI أو عنوان doi.org",
+        "doiHint": "تأتي البيانات من doi.org ‏(Crossref وDataCite)؛ يُرسَل الـ DOI فقط.",
+        "fetch": "جلب البيانات",
+        "fillFromDoi": "التعبئة من الـ DOI",
+        "pdfFilter": "مستندات PDF",
+        "noDoiFound": "لم يُعثر على DOI في ملف PDF هذا؛ املأ المصدر يدويًا.",
+        "alreadyAdded": "هذا الـ DOI موجود بالفعل في مصادرك باسم ‎@{{key}}.",
+        "check": "فحص المصادر",
+        "checking": "إيقاف الفحص ({{current}}/{{total}})",
+        "checkedClean": "المصادر المفحوصة: {{total}} — لا توجد إشعارات سحب أو تصحيح.",
+        "checkedFlagged": "المصادر المفحوصة: {{total}} — ذات الإشعارات: {{flagged}}.",
+        "updateDetails": "تحديث بيانات {{key}}",
+        "upToDate": "‎@{{key}} مطابق بالفعل للسجل المنشور.",
+        "updated": "تم تحديث ‎@{{key}}.",
+        "reviewTitle": "تحديث بيانات المصدر",
+        "reviewBody": "يختلف السجل المنشور لـ ‎@{{key}} في هذه الحقول. هل تريد تطبيق القيم الجديدة؟",
+        "applyUpdate": "تطبيق التغييرات",
+        "before": "الحالي:",
+        "after": "الجديد:",
+        "publishedVersion": "تتوفر نسخة منشورة",
+        "status": {
+          "ok": "لا إشعارات",
+          "retracted": "مسحوب",
+          "withdrawn": "مُزال",
+          "expressionOfConcern": "إبداء قلق",
+          "corrected": "نُشر تصحيح",
+          "notFound": "غير موجود في Crossref",
+          "failed": "تعذّر الفحص"
+        },
+        "notices": {
+          "retraction": "سحب",
+          "partial_retraction": "سحب جزئي",
+          "removal": "إزالة",
+          "withdrawal": "سحب من النشر",
+          "expression_of_concern": "إبداء قلق",
+          "correction": "تصحيح",
+          "erratum": "تصويب (Erratum)",
+          "corrigendum": "تصويب (Corrigendum)",
+          "addendum": "ملحق",
+          "clarification": "توضيح"
         }
       }
     },

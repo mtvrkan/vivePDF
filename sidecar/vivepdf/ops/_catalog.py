@@ -280,6 +280,11 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "signature.clean",
         "signature.place",
     ),
+    "sources": (
+        "sources.check",
+        "sources.detect_doi",
+        "sources.lookup_doi",
+    ),
     "space": ("compress.space",),
     "stamp": (
         "security.stamp",

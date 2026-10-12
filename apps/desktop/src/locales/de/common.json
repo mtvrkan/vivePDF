@@ -5928,7 +5928,8 @@
     "searching": "Wird gesucht…",
     "replacing": "Wird ersetzt…",
     "creating": "Dokument {{current}}/{{total}} wird erstellt…",
-    "creatingPages": "Seite {{current}}/{{total}} wird erstellt…"
+    "creatingPages": "Seite {{current}}/{{total}} wird erstellt…",
+    "checkingSources": "Quellen werden geprüft ({{current}}/{{total}})…"
   },
   "annotate": {
     "select": "Auswählen / verschieben",
@@ -6283,7 +6284,16 @@
       "outputAndInPlace": "Das Ergebnis kann in einer neuen Datei oder über dem Original gespeichert werden, nicht beides.",
       "allPagesDeleted": "Alle Seiten wurden zum Löschen markiert; ein PDF braucht mindestens eine Seite.",
       "emptyQuery": "Geben Sie den gesuchten Text ein.",
-      "noSources": "Diese Datei enthält keine lesbaren Quellen."
+      "noSources": "Diese Datei enthält keine lesbaren Quellen.",
+      "badDoi": "Das ist keine DOI. Eine DOI beginnt mit 10. und enthält einen Schrägstrich, zum Beispiel 10.1038/nature12373.",
+      "doiNotFound": "Für diese DOI wurde kein Eintrag gefunden.",
+      "doiNoMetadata": "Die DOI wurde gefunden, hat aber keine verwendbaren Angaben.",
+      "doiOffline": "doi.org oder Crossref ist nicht erreichbar; prüfen Sie die Internetverbindung.",
+      "doiTimeout": "doi.org oder Crossref hat nicht rechtzeitig geantwortet; versuchen Sie es erneut.",
+      "doiHttpStatus": "Der Literaturdienst hat mit einem Fehler geantwortet ({{status}}); versuchen Sie es später erneut.",
+      "doiTooLarge": "Der Literaturdienst hat eine unerwartet große Antwort gesendet; sie wurde ignoriert.",
+      "doiBadResponse": "Die Antwort des Literaturdienstes war nicht lesbar.",
+      "doiUntrustedHost": "Der Literaturdienst hat auf eine nicht vertrauenswürdige Adresse umgeleitet; das wurde blockiert."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -9048,6 +9058,49 @@
           "doi": "DOI",
           "url": "Webadresse",
           "note": "Anmerkung"
+        },
+        "addByDoi": "Per DOI hinzufügen",
+        "addFromPdf": "Aus PDF hinzufügen",
+        "doiLabel": "DOI oder doi.org-Adresse",
+        "doiHint": "Die Angaben kommen von doi.org (Crossref, DataCite); nur die DOI wird gesendet.",
+        "fetch": "Angaben abrufen",
+        "fillFromDoi": "Aus der DOI ausfüllen",
+        "pdfFilter": "PDF-Dokumente",
+        "noDoiFound": "In diesem PDF wurde keine DOI gefunden; füllen Sie die Quelle von Hand aus.",
+        "alreadyAdded": "Diese DOI ist bereits als @{{key}} in Ihren Quellen.",
+        "check": "Quellen prüfen",
+        "checking": "Prüfung stoppen ({{current}}/{{total}})",
+        "checkedClean": "Geprüfte Quellen: {{total}} — keine Rückzugs- oder Korrekturhinweise.",
+        "checkedFlagged": "Geprüfte Quellen: {{total}} — mit Hinweisen: {{flagged}}.",
+        "updateDetails": "Angaben von {{key}} aktualisieren",
+        "upToDate": "@{{key}} entspricht bereits dem veröffentlichten Eintrag.",
+        "updated": "@{{key}} aktualisiert.",
+        "reviewTitle": "Quellenangaben aktualisieren",
+        "reviewBody": "Der veröffentlichte Eintrag von @{{key}} weicht in diesen Feldern ab. Neue Werte übernehmen?",
+        "applyUpdate": "Änderungen übernehmen",
+        "before": "Aktuell:",
+        "after": "Neu:",
+        "publishedVersion": "Veröffentlichte Fassung verfügbar",
+        "status": {
+          "ok": "Keine Hinweise",
+          "retracted": "Zurückgezogen",
+          "withdrawn": "Entfernt",
+          "expressionOfConcern": "Bedenken geäußert",
+          "corrected": "Korrektur veröffentlicht",
+          "notFound": "Nicht in Crossref",
+          "failed": "Nicht prüfbar"
+        },
+        "notices": {
+          "retraction": "Rückzug",
+          "partial_retraction": "Teilweiser Rückzug",
+          "removal": "Entfernung",
+          "withdrawal": "Zurücknahme",
+          "expression_of_concern": "Äußerung von Bedenken",
+          "correction": "Korrektur",
+          "erratum": "Erratum",
+          "corrigendum": "Corrigendum",
+          "addendum": "Nachtrag",
+          "clarification": "Klarstellung"
         }
       }
     },

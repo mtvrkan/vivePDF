@@ -5929,7 +5929,8 @@
     "searching": "Aranıyor…",
     "replacing": "Değiştiriliyor…",
     "creating": "Belge oluşturuluyor {{current}}/{{total}}…",
-    "creatingPages": "Sayfa oluşturuluyor {{current}}/{{total}}…"
+    "creatingPages": "Sayfa oluşturuluyor {{current}}/{{total}}…",
+    "checkingSources": "Kaynaklar denetleniyor ({{current}}/{{total}})…"
   },
   "annotate": {
     "select": "Seç / taşı",
@@ -6284,7 +6285,16 @@
       "outputAndInPlace": "Sonuç yeni bir dosyaya ya da özgün dosyanın üzerine kaydedilebilir, ikisine birden değil.",
       "allPagesDeleted": "Tüm sayfalar silinmek üzere işaretlendi; bir PDF'te en az bir sayfa olmalı.",
       "emptyQuery": "Aranacak metni yazın.",
-      "noSources": "Bu dosyada okunabilen bir kaynak yok."
+      "noSources": "Bu dosyada okunabilen bir kaynak yok.",
+      "badDoi": "Bu bir DOI değil. DOI 10. ile başlar ve eğik çizgi içerir; örneğin 10.1038/nature12373.",
+      "doiNotFound": "Bu DOI için kayıt bulunamadı.",
+      "doiNoMetadata": "DOI bulundu ama kullanılabilir künye bilgisi yok.",
+      "doiOffline": "doi.org veya Crossref'e ulaşılamadı; internet bağlantınızı denetleyin.",
+      "doiTimeout": "doi.org veya Crossref zamanında yanıt vermedi; yeniden deneyin.",
+      "doiHttpStatus": "Kaynak hizmeti bir hatayla yanıt verdi ({{status}}); daha sonra yeniden deneyin.",
+      "doiTooLarge": "Kaynak hizmeti beklenmedik büyüklükte bir yanıt gönderdi, yok sayıldı.",
+      "doiBadResponse": "Kaynak hizmetinin yanıtı okunamadı.",
+      "doiUntrustedHost": "Kaynak hizmeti güvenilmeyen bir adrese yönlendirdi, engellendi."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -9050,6 +9060,49 @@
           "doi": "DOI",
           "url": "Web adresi",
           "note": "Not"
+        },
+        "addByDoi": "DOI ile ekle",
+        "addFromPdf": "PDF'ten ekle",
+        "doiLabel": "DOI veya doi.org adresi",
+        "doiHint": "Künye doi.org üzerinden (Crossref, DataCite) alınır; yalnızca DOI gönderilir.",
+        "fetch": "Künyeyi getir",
+        "fillFromDoi": "DOI'den doldur",
+        "pdfFilter": "PDF belgeleri",
+        "noDoiFound": "Bu PDF'te DOI bulunamadı; kaynağı elle doldurun.",
+        "alreadyAdded": "Bu DOI kaynaklarınızda zaten var: @{{key}}.",
+        "check": "Kaynakları denetle",
+        "checking": "Denetimi durdur ({{current}}/{{total}})",
+        "checkedClean": "Denetlenen kaynak: {{total}} — geri çekme veya düzeltme bildirimi yok.",
+        "checkedFlagged": "Denetlenen kaynak: {{total}} — bildirimi olan: {{flagged}}.",
+        "updateDetails": "{{key}} künyesini güncelle",
+        "upToDate": "@{{key}} yayımlanmış kayıtla zaten aynı.",
+        "updated": "@{{key}} güncellendi.",
+        "reviewTitle": "Künyeyi güncelle",
+        "reviewBody": "@{{key}} kaynağının yayımlanmış kaydı şu alanlarda farklı. Yeni değerler uygulansın mı?",
+        "applyUpdate": "Değişiklikleri uygula",
+        "before": "Şu an:",
+        "after": "Yeni:",
+        "publishedVersion": "Yayımlanmış sürümü var",
+        "status": {
+          "ok": "Bildirim yok",
+          "retracted": "Geri çekildi",
+          "withdrawn": "Yayından kaldırıldı",
+          "expressionOfConcern": "Kuşku bildirimi",
+          "corrected": "Düzeltme yayımlandı",
+          "notFound": "Crossref'te yok",
+          "failed": "Denetlenemedi"
+        },
+        "notices": {
+          "retraction": "Geri çekme",
+          "partial_retraction": "Kısmi geri çekme",
+          "removal": "Kaldırma",
+          "withdrawal": "Yayından kaldırma",
+          "expression_of_concern": "Kuşku bildirimi",
+          "correction": "Düzeltme",
+          "erratum": "Erratum",
+          "corrigendum": "Corrigendum",
+          "addendum": "Ek (addendum)",
+          "clarification": "Açıklama"
         }
       }
     },
