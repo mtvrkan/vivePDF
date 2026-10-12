@@ -1,10 +1,12 @@
 import hashlib
+import json
 import sys
 import threading
 from pathlib import Path
 
 import pytest
 
+from vivepdf import cli
 from vivepdf.external import libreoffice, office_download, office_packages
 from vivepdf.ops import office
 from vivepdf.rpc.errors import ErrorCode, OpError
@@ -455,3 +457,63 @@ def test_a_second_install_waits_for_the_first_and_does_not_extract_again(monkeyp
 
     assert len(extracted) == 1
     assert [result.installed for result in results] == [True, True]
+
+
+def cli_bundle(monkeypatch, tmp_path) -> Path:
+    resources = bundled_install(monkeypatch, tmp_path, b"bundled msi").parent.parent
+    monkeypatch.delenv("VIVEPDF_RESOURCES_DIR")
+    monkeypatch.setattr(
+        office_download, "BUNDLED_INSTALLER_SHA256", hashlib.sha256(b"bundled msi").hexdigest()
+    )
+    monkeypatch.setattr(libreoffice, "find_soffice", libreoffice.find_managed_soffice)
+    return resources
+
+
+def stub_extract(extracted: list[Path]):
+    def extract(installer, directory):
+        extracted.append(installer)
+        (directory / "program").mkdir()
+        (directory / "program" / "soffice.exe").write_bytes(b"stub")
+
+    return extract
+
+
+def test_cli_office_install_sets_up_the_bundled_installer(monkeypatch, tmp_path, capsys):
+    resources = cli_bundle(monkeypatch, tmp_path)
+    extracted: list[Path] = []
+    monkeypatch.setattr(office_packages, "extract_msi", stub_extract(extracted))
+
+    cli.main(["office-install", "--resources", str(resources)])
+
+    result = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
+    assert result["installed"] is True
+    assert result["source"] == "managed"
+    assert len(extracted) == 1
+
+
+def test_cli_office_install_leaves_an_installed_office_alone(monkeypatch, tmp_path, capsys):
+    resources = cli_bundle(monkeypatch, tmp_path)
+    extracted: list[Path] = []
+    monkeypatch.setattr(office_packages, "extract_msi", stub_extract(extracted))
+    cli.main(["office-install", "--resources", str(resources)])
+    capsys.readouterr()
+
+    cli.main(["office-install", "--resources", str(resources)])
+
+    result = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
+    assert result["installed"] is True
+    assert len(extracted) == 1
+
+
+def test_cli_office_install_never_downloads_without_a_bundle(monkeypatch, tmp_path, capsys):
+    downloads: list[str] = []
+    windows_install(monkeypatch, tmp_path, signed(), downloads)
+    monkeypatch.setattr(libreoffice, "find_soffice", libreoffice.find_managed_soffice)
+
+    with pytest.raises(SystemExit) as caught:
+        cli.main(["office-install", "--resources", str(tmp_path / "empty")])
+
+    payload = json.loads(capsys.readouterr().out.strip().splitlines()[-1])
+    assert caught.value.code == 1
+    assert payload["data"]["reason"] == "notBundled"
+    assert downloads == []

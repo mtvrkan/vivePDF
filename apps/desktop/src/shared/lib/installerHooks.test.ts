@@ -52,6 +52,13 @@ describe("installer hooks", () => {
     expect(section).toMatch(/\$\{If\} \$UpdateMode <> 1[\s\S]*ExecWait[\s\S]*\$\{EndIf\}/);
   });
 
+  it("sets up the bundled LibreOffice during setup only when the installer carries it", () => {
+    const section = /!macro NSIS_HOOK_POSTINSTALL([\s\S]*?)!macroend/.exec(installerHooks)?.[1] ?? "";
+
+    expect(section).toMatch(/\$\{If\} \$\{FileExists\} "\$INSTDIR\\offline\\LibreOffice_\*\.msi"[\s\S]*nsExec::ExecToLog[\s\S]*\$\{EndIf\}/);
+    expect(section).toContain(String.raw`'"$INSTDIR\engine\vivepdf-sidecar.exe" --cli office-install --resources "$INSTDIR"'`);
+  });
+
   it("clears the engine folder before install and after uninstall", () => {
     const engineRemoval = String.raw`RMDir /r "$INSTDIR\engine"`;
 

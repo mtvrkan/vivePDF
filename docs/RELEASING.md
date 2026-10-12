@@ -67,8 +67,10 @@ The Windows installer carries the LibreOffice installer itself: `LibreOffice_26.
 unmodified and signed by The Document Foundation, at `<install dir>\offline\`
 (`src-tauri/tauri.office.conf.json`). `scripts/fetch-office-msi.ps1` downloads it into
 `apps/desktop/src-tauri/resources/offline/` and checks the pinned SHA-256 and the TDF signature;
-the build fails while the file is missing. On first start the app runs `system.office_install`
-once in the background. That op takes this file instead of downloading, checks it against
+the build fails while the file is missing. Setup unpacks it right after copying the app files:
+`installer-hooks.nsh` runs `engine\vivepdf-sidecar.exe --cli office-install --resources <install dir>`,
+which calls `system.office_install`. If that fails, the app tries once more in the background on
+first start. That op takes this file instead of downloading, checks it against
 `office_download.BUNDLED_INSTALLER_SHA256` (no network needed) and extracts it into
 `%LOCALAPPDATA%\vivePDF\libreoffice`. No uninstaller tracks that folder, so updates keep it, and a
 real uninstall removes it (`installer-hooks.nsh`). Only the installer for new users carries the

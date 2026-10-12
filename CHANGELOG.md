@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Windows installer: the full installer now sets up LibreOffice itself while it installs vivePDF ("Setting up LibreOffice for Office conversions..."), so Office conversions work from the very first start; the background setup on first start remains as a fallback, and the update installer is unchanged [2026-10-12]
 - macOS (Apple silicon, macOS 14 or later): a `.dmg` build with the native title bar and traffic lights, an app menu (About, Settings ⌘,, Hide, Quit ⌘Q, Edit, Window) in all eight languages, a monochrome menu bar icon, ⌘ ⇧ ⌥ shortcut labels throughout the interface and ⌃⌘F for full screen [2026-10-10]
 - macOS: PDFs opened from Finder while vivePDF is closed open on start, clicking the Dock icon brings a hidden window back, and Quit (⌘Q) asks about unsaved changes like closing the window does [2026-10-10]
 - macOS: settings texts name the menu bar, Finder, the macOS appearance and the macOS voice settings instead of their Windows counterparts [2026-10-10]

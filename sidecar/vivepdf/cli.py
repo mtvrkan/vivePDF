@@ -2,6 +2,7 @@ import argparse
 import io
 import json
 import multiprocessing
+import os
 import sys
 import threading
 from collections.abc import Callable
@@ -18,6 +19,7 @@ from vivepdf.ops.convert_to_pdf import FileToPdfParams
 from vivepdf.ops.info import InfoGetParams
 from vivepdf.ops.merge_split import MergeInput, MergeParams, SplitParams
 from vivepdf.ops.ocr import OcrParams, OcrTextParams
+from vivepdf.ops.office import OfficeInstallParams, OfficeStatusParams
 from vivepdf.ops.pages import InsertBlankParams, PagesParams, RotateParams, SourceParams
 from vivepdf.ops.security import DecryptParams, EncryptParams
 from vivepdf.ops.sign import SignaturesPresentParams
@@ -314,6 +316,24 @@ SELFTEST_CHECKS: dict[str, Callable[[], str]] = {
 }
 
 
+def cmd_office_install(args: argparse.Namespace) -> None:
+    os.environ["VIVEPDF_RESOURCES_DIR"] = str(Path(args.resources).resolve())
+    status_op = load_operation("system.office_status")
+    if status_op is None:
+        raise SystemExit("unknown operation: system.office_status")
+    status = status_op.handler(OfficeStatusParams(), _console_progress())
+    if status.installed:
+        print(json.dumps(status.model_dump(by_alias=True, mode="json"), ensure_ascii=False))
+        return
+    if not status.bundled:
+        missing = OpError(
+            ErrorCode.UNSUPPORTED, "no bundled LibreOffice installer", {"reason": "notBundled"}
+        )
+        print(json.dumps(missing.to_payload(), ensure_ascii=False))
+        raise SystemExit(1)
+    _run_op("system.office_install", OfficeInstallParams(), True)
+
+
 def cmd_selftest(_args: argparse.Namespace) -> None:
     versions: dict[str, str] = {}
     failures: dict[str, str] = {}
@@ -443,6 +463,10 @@ def _build_parser() -> argparse.ArgumentParser:
     insert_blank.add_argument("--at", type=int, required=True)
     insert_blank.add_argument("--count", type=int, default=1)
     insert_blank.set_defaults(func=cmd_insert_blank)
+
+    office_install = subparsers.add_parser("office-install")
+    office_install.add_argument("--resources", required=True)
+    office_install.set_defaults(func=cmd_office_install)
 
     selftest = subparsers.add_parser("selftest")
     selftest.set_defaults(func=cmd_selftest)

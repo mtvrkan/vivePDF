@@ -2,6 +2,14 @@
   RMDir /r "$INSTDIR\engine"
 !macroend
 
+!macro NSIS_HOOK_POSTINSTALL
+  ${If} ${FileExists} "$INSTDIR\offline\LibreOffice_*.msi"
+    DetailPrint "Setting up LibreOffice for Office conversions..."
+    nsExec::ExecToLog '"$INSTDIR\engine\vivepdf-sidecar.exe" --cli office-install --resources "$INSTDIR"'
+    Pop $0
+  ${EndIf}
+!macroend
+
 !macro NSIS_HOOK_PREUNINSTALL
   ${If} $UpdateMode <> 1
     ExecWait '"$INSTDIR\${MAINBINARYNAME}.exe" --forget-chain-secrets'
