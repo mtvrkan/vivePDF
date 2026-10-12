@@ -100,7 +100,7 @@ function Board({ board }: { board: BoardMode }) {
       <p
         role="status"
         className={cn(
-          "pointer-events-none absolute inset-x-0 bottom-6 mx-auto w-fit rounded-full px-4 py-1.5 text-sm transition-opacity duration-(--transition-slow)",
+          "pointer-events-none absolute inset-x-0 top-6 mx-auto w-fit rounded-full px-4 py-1.5 text-sm transition-opacity duration-(--transition-slow)",
           board === "black" ? "bg-white/10 text-white/80" : "bg-black/5 text-black/70",
           hintVisible ? "opacity-100" : "opacity-0",
         )}

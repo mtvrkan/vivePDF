@@ -24,6 +24,7 @@ from vivepdf.rpc.registry import op
 
 Align = Literal["left", "center", "right", "justify"]
 EDGE_TOLERANCE = 1.5
+JUSTIFY_FLUSH_SHARE = 0.8
 MIN_LINE_HEIGHT = 0.9
 MAX_LINE_HEIGHT = 2.5
 DEFAULT_LINE_HEIGHT = 1.2
@@ -143,9 +144,38 @@ def join_lines(lines: list[str], hard_breaks: list[bool] | None = None) -> str:
     return " ".join(parts).replace(" \n", "\n")
 
 
-def detect_align(block_box: pymupdf.Rect, line_boxes: list[pymupdf.Rect]) -> Align:
+def _paragraph_justified(
+    block_box: pymupdf.Rect, line_boxes: list[pymupdf.Rect], hard_breaks: list[bool]
+) -> bool:
+    last = len(line_boxes) - 1
+    running = [
+        box
+        for index, box in enumerate(line_boxes)
+        if index < last and not (index < len(hard_breaks) and hard_breaks[index])
+    ]
+    if len(running) < 2:
+        return False
+    continuing = [
+        box
+        for index, box in enumerate(line_boxes)
+        if index > 0 and not (index - 1 < len(hard_breaks) and hard_breaks[index - 1])
+    ]
+    left_edge = min((box.x0 for box in continuing), default=block_box.x0)
+    if any(box.x0 - left_edge > EDGE_TOLERANCE for box in continuing):
+        return False
+    flush = sum(1 for box in running if block_box.x1 - box.x1 <= EDGE_TOLERANCE)
+    return flush >= len(running) * JUSTIFY_FLUSH_SHARE
+
+
+def detect_align(
+    block_box: pymupdf.Rect,
+    line_boxes: list[pymupdf.Rect],
+    hard_breaks: list[bool] | None = None,
+) -> Align:
     if len(line_boxes) <= 1:
         return "left"
+    if hard_breaks is not None and _paragraph_justified(block_box, line_boxes, hard_breaks):
+        return "justify"
     measured = line_boxes[:-1] if len(line_boxes) > 2 else line_boxes
     left_gaps = [box.x0 - block_box.x0 for box in measured]
     right_gaps = [block_box.x1 - box.x1 for box in measured]
@@ -346,7 +376,7 @@ def paragraph_to_block(
         color=_color_to_hex(int(dominant["color"])),
         bold=bool(dominant["flags"] & 16),
         italic=bool(dominant["flags"] & 2),
-        align=detect_align(paragraph.box, line_boxes),
+        align=detect_align(paragraph.box, line_boxes, hard_breaks),
         line_height=detect_line_height(line_boxes, float(dominant["size"])),
         line_count=len(line_boxes),
         font_xref=xref,

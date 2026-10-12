@@ -696,6 +696,7 @@ def _wrap_lines(
 
     for atom in atoms:
         if atom.is_break:
+            current.append(atom)
             lines.append(current)
             current = []
             continue
@@ -778,7 +779,8 @@ def _write_lines(
     writers: dict[str, pymupdf.TextWriter] = {}
     baseline = rect.y0 + line_height * 0.82
     for line_index, line in enumerate(lines):
-        trimmed = list(line)
+        ends_paragraph = bool(line) and line[-1].is_break
+        trimmed = [atom for atom in line if not atom.is_break]
         while trimmed and trimmed[-1].is_space:
             trimmed.pop()
         natural_width = _line_width(trimmed, resolved, delta)
@@ -786,6 +788,7 @@ def _write_lines(
         justify = (
             item.align == "justify"
             and line_index < len(lines) - 1
+            and not ends_paragraph
             and any(a.is_space for a in trimmed)
         )
         if item.align == "center":

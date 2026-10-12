@@ -1085,3 +1085,122 @@ def test_image_move_on_rotated_page_keeps_visible_orientation(
     )
     _after_rect, after_corner = _visible_image_rect(output)
     assert after_corner == before_corner
+
+
+JUSTIFIED_PARAGRAPHS = (
+    "Bu veri seti ile yeni bir model kurduk ve her adim icin ayri test yaptik, sonra tum "
+    "puanlari tek bir tabloya yazdik ve ekip ile birlikte uzun uzun ele aldik.\n"
+    "Ikinci adimda eksik alanlar dolduruldu, her sinif icin ayri bir esik secildi ve "
+    "sonuc yine ayni tabloya eklendi.\n"
+    "Son olarak tum model ciktilari ayni olcut ile karsilastirildi ve en iyi sonuc veren "
+    "yapi rapora alindi."
+)
+
+
+def _justified_lines(paragraph: str, width: float, size: float) -> list[list[str]]:
+    lines: list[list[str]] = [[]]
+    for word in paragraph.split():
+        candidate = " ".join([*lines[-1], word])
+        if lines[-1] and pymupdf.get_text_length(candidate, fontsize=size) > width:
+            lines.append([])
+        lines[-1].append(word)
+    return lines
+
+
+@pytest.fixture
+def justified_paragraphs_pdf(tmp_path: Path) -> Path:
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=400)
+    left, width, size, baseline = 40.0, 260.0, 10.0, 60.0
+    for paragraph in JUSTIFIED_PARAGRAPHS.split("\n"):
+        lines = _justified_lines(paragraph, width, size)
+        for index, words in enumerate(lines):
+            used = sum(pymupdf.get_text_length(word, fontsize=size) for word in words)
+            gap = pymupdf.get_text_length(" ", fontsize=size)
+            if index < len(lines) - 1 and len(words) > 1:
+                gap = (width - used) / (len(words) - 1)
+            x = left
+            for word in words:
+                page.insert_text((x, baseline), word, fontsize=size, fontname="helv")
+                x += pymupdf.get_text_length(word, fontsize=size) + gap
+            baseline += size * 1.3
+    path = tmp_path / "justified.pdf"
+    document.save(path)
+    document.close()
+    return path
+
+
+def test_justified_block_of_several_paragraphs_stays_justified(justified_paragraphs_pdf: Path):
+    result = blocks(BlocksParams(path=str(justified_paragraphs_pdf), page=0), silent_progress())
+
+    paragraph = next(
+        item for item in result.blocks if item.kind == "text" and "veri seti" in item.text
+    )
+
+    assert paragraph.text.count("\n") == 2
+    assert paragraph.align == "justify"
+
+
+def test_paragraph_ends_and_indented_first_lines_do_not_hide_justification():
+    block = pymupdf.Rect(0, 0, 100, 100)
+    lines = [
+        pymupdf.Rect(8, 0, 100, 10),
+        pymupdf.Rect(0, 12, 100, 22),
+        pymupdf.Rect(0, 24, 55, 34),
+        pymupdf.Rect(8, 36, 100, 46),
+        pymupdf.Rect(0, 48, 100, 58),
+        pymupdf.Rect(0, 60, 40, 70),
+    ]
+
+    aligned = detect_align(block, lines, [False, False, True, False, False, False])
+
+    assert aligned == "justify"
+    assert detect_align(block, lines) == "left"
+
+
+def test_ragged_right_paragraphs_stay_left_aligned():
+    block = pymupdf.Rect(0, 0, 100, 100)
+    lines = [
+        pymupdf.Rect(0, 0, 100, 10),
+        pymupdf.Rect(0, 12, 86, 22),
+        pymupdf.Rect(0, 24, 93, 34),
+        pymupdf.Rect(0, 36, 50, 46),
+        pymupdf.Rect(0, 48, 91, 58),
+        pymupdf.Rect(0, 60, 40, 70),
+    ]
+
+    assert detect_align(block, lines, [False, False, False, True, False, False]) == "left"
+
+
+def test_justified_rewrite_leaves_paragraph_final_lines_short(runs_pdf: Path, tmp_path: Path):
+    output = tmp_path / "justify-paragraphs.pdf"
+    text = "alpha beta end\n" + " ".join(["more"] * 14)
+
+    apply(
+        EditorApplyParams(
+            path=str(runs_pdf),
+            output=str(output),
+            objects=[
+                {
+                    "kind": "block",
+                    "page": 1,
+                    "x0": 40,
+                    "y0": 240,
+                    "x1": 200,
+                    "y1": 380,
+                    "original": [40, 240, 200, 340],
+                    "text": text,
+                    "fontSize": 11,
+                    "align": "justify",
+                    "runs": [{"text": text, "font": "helv", "size": 11}],
+                }
+            ],
+        ),
+        silent_progress(),
+    )
+
+    document = pymupdf.open(output)
+    words = document[0].get_text("words")
+    document.close()
+    end_word = next(word for word in words if word[4] == "end")
+    assert end_word[2] < 140

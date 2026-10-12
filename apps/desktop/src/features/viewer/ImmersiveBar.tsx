@@ -88,6 +88,8 @@ export function PresenterBar({
   };
 
   const showStylePopover = hasStyleOptions(tool);
+  const onBoard = blackout !== "none";
+  const layer = onBoard ? "z-50" : "z-30";
 
   return (
     <>
@@ -98,8 +100,9 @@ export function PresenterBar({
         }}
         onMouseLeave={scheduleHide}
         className={cn(
-          "pointer-events-none fixed inset-x-0 bottom-4 z-30 flex justify-center transition-[opacity,transform] duration-200",
-          visible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
+          "pointer-events-none fixed inset-x-0 bottom-4 flex justify-center transition-[opacity,transform] duration-200",
+          layer,
+          visible || onBoard ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
         )}
       >
         <div className="glass pointer-events-auto flex h-12 items-center gap-1 rounded-full px-2">
@@ -170,18 +173,18 @@ export function PresenterBar({
         </div>
       </div>
 
-      <div className="pointer-events-none fixed bottom-20 right-4 z-30 flex justify-end">
+      <div className={cn("pointer-events-none fixed bottom-20 right-4 flex justify-end", layer)}>
         <TimerClockChip />
       </div>
 
       {showStylePopover && stylePopoverOpen ? (
-        <div className="glass select-pop origin-bottom pointer-events-auto fixed bottom-20 left-1/2 z-30 -translate-x-1/2 rounded-2xl p-3">
+        <div className={cn("glass select-pop origin-bottom pointer-events-auto fixed bottom-20 left-1/2 -translate-x-1/2 rounded-2xl p-3", layer)}>
           <PresentationStyleControls />
         </div>
       ) : null}
 
       {settingsOpen ? (
-        <div className="glass select-pop origin-bottom pointer-events-auto fixed bottom-20 right-4 z-30 w-64 rounded-2xl p-3">
+        <div className={cn("glass select-pop origin-bottom pointer-events-auto fixed bottom-20 right-4 w-64 rounded-2xl p-3", layer)}>
           <label className="flex items-center justify-between gap-2 py-1.5 text-sm">
             {t("presentation.cursorAutoHide")}
             <input type="checkbox" checked={cursorAutoHide} onChange={toggleCursorAutoHide} />

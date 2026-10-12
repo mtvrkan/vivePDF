@@ -28,6 +28,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Viewer editing: a justified (book-style) paragraph stays justified after it is edited; text made of several paragraphs, or whose paragraphs start with an indent, was taken for left-aligned, and the last short line of each paragraph is no longer stretched to the full width [2026-10-12]
+- Presentation: on the black or white board the bottom toolbar stays on screen above the board, so pens, colours and the other tools can be picked while drawing; the board hint moved to the top [2026-10-12]
 - Home: a section, quick access tile or collection dragged and let go right after the last move now lands where it was dropped; a fast release used to leave it in its old place. [2026-10-10]
 - Viewer: closing a document right after selecting or clicking a mark no longer raises an error in the background; the clean-up of empty text boxes, the click that clears a selection and the area and eraser tools now skip a document that is already closed. The log now records where an unexpected error came from. [2026-10-10]
 - Home recent documents no longer cut names and times to a few letters in a narrow panel: hover actions float over the card, names wrap to two lines, narrow panels show one compact row per file and thumbnails look like page sheets [2026-10-09]
