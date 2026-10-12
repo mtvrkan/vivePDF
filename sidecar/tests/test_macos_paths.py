@@ -26,6 +26,7 @@ def test_mac_data_lives_in_application_support(monkeypatch, tmp_path):
 
 def test_mac_path_gains_homebrew_folders_once(monkeypatch):
     monkeypatch.setattr(sys, "platform", "darwin")
+    monkeypatch.setattr(_data_home.os, "pathsep", ":")
     monkeypatch.setenv("PATH", "/usr/bin:/bin:/usr/local/bin")
     _data_home.extend_macos_path()
     _data_home.extend_macos_path()

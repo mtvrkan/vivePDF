@@ -31,6 +31,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- macOS support merged with the newer Windows work: the Windows-only file type list and the Finder open-files queue no longer break the macOS and Windows builds, the macOS title bar keeps a plain transparent background when theme colours are missing, and the unused "Close Window" menu text is removed from all languages [2026-10-12]
 - macOS/Linux: watched folders were refused as system folders because every absolute path counted as inside `/` [2026-10-10]
 - macOS: renaming a file to the same name in another case (report.pdf → Report.pdf) reported that the name was taken [2026-10-10]
 - macOS/Linux: an unknown date directive in the rename pattern (for example `%Q`) is refused instead of being written literally, and error messages hide Windows paths as well [2026-10-10]

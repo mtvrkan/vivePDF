@@ -23,12 +23,14 @@ function opaqueTopBarColor(): [number, number, number, number] | null {
   const styles = getComputedStyle(document.documentElement);
   const canvas = document.createElement("canvas");
   canvas.width = canvas.height = 1;
+  const background = styles.getPropertyValue("--background").trim();
+  const card = styles.getPropertyValue("--card").trim();
   const context = canvas.getContext("2d");
-  if (!context) return null;
-  context.fillStyle = styles.getPropertyValue("--background").trim() || "#000";
+  if (!context || !background || !card) return null;
+  context.fillStyle = background;
   context.fillRect(0, 0, 1, 1);
   context.globalAlpha = 0.55;
-  context.fillStyle = styles.getPropertyValue("--card").trim() || "#000";
+  context.fillStyle = card;
   context.fillRect(0, 0, 1, 1);
   const [r, g, b] = context.getImageData(0, 0, 1, 1).data;
   return [r, g, b, 255];

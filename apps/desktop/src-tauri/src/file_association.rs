@@ -6,6 +6,7 @@ pub const PROG_ID: &str = "vivePDF.Document";
 pub const CAPABILITIES_PATH: &str = "Software\\vivePDF\\Capabilities";
 #[cfg(any(windows, test))]
 pub const DOCUMENT_ICON_NAME: &str = "pdf-document.ico";
+#[cfg(any(windows, test))]
 pub const SUPPORTED_TYPES: [&str; 4] = [".pdf", ".bib", ".bibtex", ".ris"];
 #[cfg(windows)]
 const DOCUMENT_ICON: &[u8] = include_bytes!("../icons/pdf-document.ico");

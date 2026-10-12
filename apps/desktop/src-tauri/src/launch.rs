@@ -50,6 +50,7 @@ pub struct OpenedFiles {
 }
 
 impl OpenedFiles {
+    #[cfg(any(target_os = "macos", test))]
     pub fn hold(&self, paths: Vec<String>) -> Option<Vec<String>> {
         let mut state = self
             .state
