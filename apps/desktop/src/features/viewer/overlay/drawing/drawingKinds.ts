@@ -1,17 +1,19 @@
 import type { ComponentType } from "react";
 import type { TFunction } from "i18next";
-import { Atom, ChartColumn, ChartSpline, KeyRound, ListChecks, Shapes, Sigma, Table2, Workflow, type LucideIcon } from "lucide-react";
+import { Atom, ChartColumn, ChartSpline, KeyRound, ListChecks, Network, Shapes, Sigma, Table2, Workflow, type LucideIcon } from "lucide-react";
 import { ChartEditorHost } from "../chart/ChartEditorHost";
 import { FlowchartEditorHost } from "../flowchart/FlowchartEditorHost";
 import { FormulaEditorHost } from "../formula/FormulaEditorHost";
 import { GraphEditorHost } from "../graph/GraphEditorHost";
+import { MermaidEditorHost } from "../mermaid/MermaidEditorHost";
+import { mermaidTitle } from "../mermaid/mermaidModel";
 import { MoleculeEditorHost } from "../molecule/MoleculeEditorHost";
 import { AnswerKeyEditorHost } from "../question/AnswerKeyEditorHost";
 import { filledRows } from "../question/answerKeyModel";
 import { QuestionEditorHost } from "../question/QuestionEditorHost";
 import { ShapeEditorHost } from "../shapes/ShapeEditorHost";
 import { TableEditorHost } from "../table/TableEditorHost";
-import { answerKeyAlt, chartAlt, flowchartAlt, formulaAlt, graphAlt, moleculeAlt, questionAlt, shapeAlt, tableAlt, tidyAlt } from "./drawingAltText";
+import { answerKeyAlt, chartAlt, flowchartAlt, formulaAlt, graphAlt, mermaidAlt, moleculeAlt, questionAlt, shapeAlt, tableAlt, tidyAlt } from "./drawingAltText";
 import type { DrawingKind, DrawingSource, DrawingSources } from "./drawingSource";
 
 type DrawingKindSpec<K extends DrawingKind> = {
@@ -79,6 +81,13 @@ export const DRAWING_SPECS: { [K in DrawingKind]: DrawingKindSpec<K> } = {
     altText: flowchartAlt,
     Host: FlowchartEditorHost,
   },
+  mermaid: {
+    icon: Network,
+    labels: { menu: "viewer.mermaid.menu", pick: "viewer.mermaid.pick", edit: "viewer.mermaid.edit", placeHint: "viewer.mermaid.placeHint", added: "viewer.editPanel.mermaidAdded" },
+    layerLabel: (source, t) => t("viewer.editPanel.layers.mermaid", { title: mermaidTitle(source.settings.code).slice(0, 32) }),
+    altText: mermaidAlt,
+    Host: MermaidEditorHost,
+  },
   question: {
     icon: ListChecks,
     labels: { menu: "viewer.question.menu", pick: "viewer.question.pick", edit: "viewer.question.edit", placeHint: "viewer.question.placeHint", added: "viewer.editPanel.questionAdded" },
@@ -114,6 +123,8 @@ export function drawingLayerLabel(drawing: DrawingSource, t: TFunction): string 
       return DRAWING_SPECS.chart.layerLabel(drawing.source, t);
     case "flowchart":
       return DRAWING_SPECS.flowchart.layerLabel(drawing.source, t);
+    case "mermaid":
+      return DRAWING_SPECS.mermaid.layerLabel(drawing.source, t);
     case "question":
       return DRAWING_SPECS.question.layerLabel(drawing.source, t);
     case "answerKey":
@@ -137,6 +148,8 @@ export function drawingAltText(drawing: DrawingSource, t: TFunction): string {
       return tidyAlt(DRAWING_SPECS.chart.altText(drawing.source, t));
     case "flowchart":
       return tidyAlt(DRAWING_SPECS.flowchart.altText(drawing.source, t));
+    case "mermaid":
+      return tidyAlt(DRAWING_SPECS.mermaid.altText(drawing.source, t));
     case "question":
       return tidyAlt(DRAWING_SPECS.question.altText(drawing.source, t));
     case "answerKey":

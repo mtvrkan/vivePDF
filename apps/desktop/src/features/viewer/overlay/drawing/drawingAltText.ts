@@ -5,6 +5,8 @@ import type { FlowchartSource } from "../flowchart/flowchartObject";
 import type { FormulaSource } from "../formula/formulaSvg";
 import type { GraphSource } from "../graph/graphObject";
 import { LEGEND_NAMES } from "../graph/plot";
+import { mermaidTitle } from "../mermaid/mermaidModel";
+import type { MermaidSource } from "../mermaid/mermaidObject";
 import type { MoleculeSource } from "../molecule/moleculeObject";
 import { filledRows } from "../question/answerKeyModel";
 import { optionLetter, toQuestionSpec } from "../question/questionModel";
@@ -46,6 +48,10 @@ export function graphAlt(source: GraphSource, t: TFunction): string {
     .map((entry) => `${entry.name}(x) = ${entry.expression}`)
     .join("; ");
   return t("viewer.altText.graph", { functions, xMin: settings.xMin, xMax: settings.xMax });
+}
+
+export function mermaidAlt(source: MermaidSource, t: TFunction): string {
+  return t("viewer.altText.mermaid", { title: mermaidTitle(source.settings.code) });
 }
 
 export function moleculeAlt(source: MoleculeSource, t: TFunction): string {

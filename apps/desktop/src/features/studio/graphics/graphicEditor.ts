@@ -13,7 +13,7 @@ import { graphicOf, renderKeyOf, stretchSvg, tableSpec, type RenderedGraphic } f
 import { renderGraphic } from "./graphicSync";
 import { clampRange, createTableData, type CellRange, type CellRef, type StudioTableData, type TableLook } from "./tableModel";
 
-export type GraphicRequest = { kind: "chart"; elementId: string | null; chartType?: ChartType } | { kind: "flowchart"; elementId: string | null } | { kind: "formula"; elementId: string | null };
+export type GraphicRequest = { kind: "chart"; elementId: string | null; chartType?: ChartType } | { kind: "flowchart"; elementId: string | null } | { kind: "formula"; elementId: string | null } | { kind: "mermaid"; elementId: string | null };
 
 type GraphicEditorState = { request: GraphicRequest | null; open: (request: GraphicRequest) => void; close: () => void };
 

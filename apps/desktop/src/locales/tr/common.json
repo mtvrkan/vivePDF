@@ -1156,12 +1156,14 @@
         "questionNumbered": "Soru {{number}}: {{stem}}",
         "answerKey": "Cevap anahtarı ({{count}})",
         "flowchart": "Akış şeması: {{first}}",
+        "mermaid": "Diyagram: {{title}}",
         "molecule": "Molekül: {{smiles}}"
       },
       "warningLineOverflow": "Bir satırın devamı artık yandaki sütuna ya da sayfa kenarına taşıyor: {{detail}}",
       "questionAdded": "Soru eklendi",
       "answerKeyAdded": "Cevap anahtarı eklendi",
       "flowchartAdded": "Akış şeması eklendi",
+      "mermaidAdded": "Diyagram eklendi",
       "moleculeAdded": "Molekül eklendi"
     },
     "pageMoved": "{{page}}. sayfa {{name}} belgesine eklendi.",
@@ -1443,11 +1445,52 @@
       "insert": "Ekle",
       "update": "Güncelle"
     },
+    "mermaid": {
+      "menu": "Diyagram ekle (Mermaid)",
+      "pick": "Mermaid diyagramı",
+      "title": "Mermaid diyagramı ekle",
+      "editTitle": "Mermaid diyagramını düzenle",
+      "edit": "Diyagramı düzenle",
+      "placeHint": "Diyagramı yerleştirmek için sayfaya tıklayın.",
+      "codeLabel": "Mermaid kodu",
+      "codeHint": "Diyagramı Mermaid metni olarak yazın ya da bir şablondan başlayın. Etiketler gerçek, aranabilir metin olarak kaydedilir.",
+      "templates": "Şablonlar",
+      "theme": "Tema",
+      "emptyTitle": "Henüz diyagram yok",
+      "emptyHint": "Mermaid kodu yazın ya da bir şablon seçin.",
+      "startFlowchart": "Akış şemasıyla başla",
+      "invalid": "Bu Mermaid kodu okunamıyor.",
+      "invalidAt": "Bu Mermaid kodu {{line}}. satır civarında okunamıyor.",
+      "drawFailed": "Bu diyagram çizilemedi.",
+      "engineErrorTitle": "Diyagram çizici başlamadı",
+      "engineErrorMessage": "Mermaid diyagramlarını çizen bölüm yüklenemedi.",
+      "previewAlt": "Diyagram önizlemesi: {{title}}",
+      "shortcutHint": "Ctrl+Enter ekler",
+      "insert": "Ekle",
+      "update": "Güncelle",
+      "kinds": {
+        "flowchart": "Akış şeması",
+        "sequence": "Sıralama",
+        "class": "Sınıf",
+        "er": "Varlık–ilişki",
+        "state": "Durum",
+        "gantt": "Gantt",
+        "pie": "Pasta",
+        "mindmap": "Zihin haritası"
+      },
+      "themes": {
+        "default": "Klasik",
+        "neutral": "Nötr",
+        "forest": "Orman",
+        "base": "Sade"
+      }
+    },
     "altText": {
       "formula": "Formül: {{latex}}",
       "shape": "Çizim: {{name}}",
       "graph": "{{functions}} grafiği, x {{xMin}} ile {{xMax}} arası",
       "molecule": "Kimyasal yapı, SMILES {{smiles}}",
+      "mermaid": "Diyagram: {{title}}",
       "table": "{{rows}} satır ve {{columns}} sütunlu tablo: {{content}}",
       "chart": "{{type}} grafiği: {{content}}",
       "chartTitled": "{{type}} grafiği “{{title}}”: {{content}}",
@@ -9736,7 +9779,8 @@
         "table": "Tablo",
         "chart": "Grafik",
         "flowchart": "Akış şeması",
-        "formula": "Formül"
+        "formula": "Formül",
+        "mermaid": "Diyagram (Mermaid)"
       },
       "designPalette": "Tasarım paleti",
       "updating": "Grafik güncelleniyor…",
@@ -9802,6 +9846,7 @@
       "editChart": "Grafik verilerini düzenle",
       "editFlowchart": "Akış şemasını düzenle",
       "editFormula": "Formülü düzenle",
+      "editMermaid": "Diyagramı düzenle",
       "rowHeight": "{{row}}. satırın yüksekliği",
       "verticalAlign": "Dikey hizalama",
       "verticalAligns": {

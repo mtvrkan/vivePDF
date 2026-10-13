@@ -162,4 +162,20 @@ describe("studio graphic data", () => {
     expect(svg).toContain("#ff0000");
     expect(svg).not.toContain("5ex");
   });
+
+  it("reads a Mermaid diagram with its code, theme and layout and keeps its ratio", () => {
+    const diagram = element("mermaid", { kind: "mermaid", settings: { code: " flowchart LR\r\n A --> B ", theme: "neon" }, layout: { width: 200, height: 80 } });
+
+    const graphic = graphicOf(diagram);
+
+    expect(graphic).toEqual({ kind: "mermaid", data: { kind: "mermaid", settings: { code: "flowchart LR\n A --> B", theme: "default" }, layout: { width: 200, height: 80 } } });
+    expect(keepsRatio(diagram)).toBe(true);
+    expect(graphicRenderSpec(diagram)).toBeNull();
+    expect(graphicJob(diagram)).toBeNull();
+  });
+
+  it("refuses a Mermaid diagram without code or layout", () => {
+    expect(graphicOf(element("mermaid", { settings: { code: "   ", theme: "default" }, layout: { width: 10, height: 10 } }))).toBeNull();
+    expect(graphicOf(element("mermaid", { settings: { code: "pie", theme: "default" }, layout: null }))).toBeNull();
+  });
 });

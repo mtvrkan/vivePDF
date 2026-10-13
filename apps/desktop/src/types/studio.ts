@@ -212,7 +212,7 @@ export type StudioVectorElement = StudioElementBase & StudioShadowable & {
   paths: StudioVectorPath[];
 };
 
-export type StudioSvgSource = "table" | "chart" | "formula" | "flowchart" | "import";
+export type StudioSvgSource = "table" | "chart" | "formula" | "flowchart" | "mermaid" | "import";
 
 export type StudioSvgElement = StudioElementBase & StudioShadowable & {
   kind: "svg";

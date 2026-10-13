@@ -33,6 +33,7 @@ const unnumbered: DrawingSource = { kind: "question", source: { settings: { ...q
 const answerKey: DrawingSource = { kind: "answerKey", source: { settings: { ...newAnswerKey(DEFAULT_ANSWER_KEY_LOOK, { number: "No", answer: "Key" }, [[1, "A"], [2, "C"], [3, ""]]), groups: 2 }, svg: "<svg/>", width: 10, height: 10 } };
 const flowchart: DrawingSource = { kind: "flowchart", source: { settings: newFlowchart(DEFAULT_FLOW_LOOK, { start: "  Begin\n here ", step: "Work", end: "Stop" }), svg: "<svg/>", width: 10, height: 10 } };
 const molecule: DrawingSource = { kind: "molecule", source: { settings: { ...DEFAULT_MOLECULE_LOOK, smiles: "CC(=O)Oc1ccccc1C(=O)O" }, svg: "<svg><text>O</text></svg>", width: 10, height: 10 } };
+const mermaid: DrawingSource = { kind: "mermaid", source: { settings: { code: ["%% note", "pie title  Pets  owned", '  "Dogs" : 3'].join("\n"), theme: "forest" }, svg: "<svg><text>Dogs</text></svg>", width: 10, height: 10 } };
 const titledChart: DrawingSource = { kind: "chart", source: { settings: { ...chartSettings, title: " Drinks " }, svg: "<svg/>", width: 10, height: 10 } };
 
 function imageWith(drawing?: DrawingSource): EditorPending {
@@ -46,7 +47,7 @@ beforeAll(async () => {
 
 describe("drawing kinds", () => {
   it("lists every kind once, in menu order, with its texts in each language", () => {
-    expect(DRAWING_KINDS).toEqual(["formula", "shape", "graph", "molecule", "table", "chart", "flowchart", "question", "answerKey"]);
+    expect(DRAWING_KINDS).toEqual(["formula", "shape", "graph", "molecule", "table", "chart", "flowchart", "mermaid", "question", "answerKey"]);
     for (const kind of DRAWING_KINDS) {
       for (const key of Object.values(DRAWING_SPECS[kind].labels)) {
         expect(typeof lookup(en, key), `${kind} ${key}`).toBe("string");
@@ -179,5 +180,17 @@ describe("drawing kinds", () => {
       nodes: [{ id: "n1", shape: "terminal" }, { id: "n2", shape: "process", text: "Work" }, { id: "n3", shape: "terminal", text: "Stop" }],
       edges: [{ source: "n1", target: "n2", label: "" }, { source: "n2", target: "n3", label: "" }],
     });
+  });
+
+  it("names a Mermaid diagram by its title and sends it as a plain drawing", () => {
+    const t = i18n.t.bind(i18n);
+    const item = imageWith(mermaid);
+    if (!isDrawingKind(item, "mermaid")) throw new Error("not a diagram");
+
+    const object = toDrawingObject(item);
+
+    expect(object).toMatchObject({ kind: "drawing", svg: "<svg><text>Dogs</text></svg>" });
+    expect(drawingLayerLabel(mermaid, t)).toBe("Diagram: Pets owned");
+    expect(drawingAltText(mermaid, t)).toBe("Diagram: Pets owned");
   });
 });

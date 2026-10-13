@@ -488,7 +488,7 @@ export function normalizeElement(value: unknown): StudioElement | null {
         ...shared,
         kind: "svg",
         svg: raw.svg.slice(0, 4000000),
-        source: oneOf(raw.source, ["table", "chart", "formula", "flowchart", "import"], "import"),
+        source: oneOf(raw.source, ["table", "chart", "formula", "flowchart", "mermaid", "import"], "import"),
         data: raw.data ?? null,
         dropShadow: normalizeDropShadow(raw.dropShadow),
         ...(colorMap ? { colorMap } : {}),

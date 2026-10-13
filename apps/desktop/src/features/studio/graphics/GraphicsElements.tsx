@@ -1,5 +1,5 @@
 import { useRef, useState, type KeyboardEvent } from "react";
-import { ChartArea, ChartBar, ChartColumn, ChartLine, ChartPie, Donut, Sigma, Table2, Workflow, type LucideIcon } from "lucide-react";
+import { ChartArea, ChartBar, ChartColumn, ChartLine, ChartPie, Donut, Network, Sigma, Table2, Workflow, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
@@ -123,6 +123,10 @@ export function GraphicsElements() {
         <button type="button" className={cn(tile, "text-sm")} onClick={() => open({ kind: "formula", elementId: null })}>
           <Sigma className="size-5 text-primary" aria-hidden />
           {t("studio.graphics.kinds.formula")}
+        </button>
+        <button type="button" className={cn(tile, "col-span-2 text-sm")} onClick={() => open({ kind: "mermaid", elementId: null })} data-testid="studio-add-mermaid">
+          <Network className="size-5 text-primary" aria-hidden />
+          {t("studio.graphics.kinds.mermaid")}
         </button>
       </div>
     </section>

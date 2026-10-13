@@ -14,7 +14,7 @@ import type { StudioSvgElement } from "@/types/studio";
 import { ColorField, NumberField, PanelSection } from "../design/controls";
 import { useStudioStore } from "../design/studioStore";
 import { fromMm, toMm } from "../design/units";
-import { formulaSvg, graphicOf, type StudioChartData, type StudioFlowchartData, type StudioFormulaData } from "./graphicData";
+import { formulaSvg, graphicOf, type StudioChartData, type StudioFlowchartData, type StudioFormulaData, type StudioMermaidData } from "./graphicData";
 import { openGraphic, patchGraphic, updateTable, useTableEdit } from "./graphicEditor";
 import { retryGraphic, useGraphicStatus } from "./graphicSync";
 import {
@@ -365,6 +365,15 @@ function FormulaSection({ element, data }: { element: StudioSvgElement; data: St
   );
 }
 
+function MermaidSection({ element }: { element: StudioSvgElement; data: StudioMermaidData }) {
+  const { t } = useTranslation();
+  return (
+    <PanelSection title={t("studio.graphics.kinds.mermaid")}>
+      <EditButton element={element} label={t("studio.graphics.editMermaid")} />
+    </PanelSection>
+  );
+}
+
 export function GraphicSection({ element }: { element: StudioSvgElement }) {
   const graphic = graphicOf(element);
   if (!graphic) return null;
@@ -377,5 +386,7 @@ export function GraphicSection({ element }: { element: StudioSvgElement }) {
       return <FlowchartSection element={element} data={graphic.data} />;
     case "formula":
       return <FormulaSection element={element} data={graphic.data} />;
+    case "mermaid":
+      return <MermaidSection element={element} data={graphic.data} />;
   }
 }

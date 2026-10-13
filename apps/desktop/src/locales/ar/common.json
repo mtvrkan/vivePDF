@@ -1219,12 +1219,14 @@
         "questionNumbered": "السؤال {{number}}: {{stem}}",
         "answerKey": "مفتاح الإجابات ({{count}})",
         "flowchart": "مخطط انسيابي: {{first}}",
+        "mermaid": "مخطط: {{title}}",
         "molecule": "جزيء: {{smiles}}"
       },
       "warningLineOverflow": "بقية السطر تتجاوز الآن العمود التالي أو حافة الصفحة: {{detail}}",
       "questionAdded": "تمت إضافة السؤال",
       "answerKeyAdded": "تمت إضافة مفتاح الإجابات",
       "flowchartAdded": "تمت إضافة المخطط الانسيابي",
+      "mermaidAdded": "تمت إضافة المخطط",
       "moleculeAdded": "تمت إضافة الجزيء"
     },
     "pageMoved": "أُضيفت الصفحة {{page}} إلى {{name}}.",
@@ -1514,11 +1516,52 @@
       "insert": "إدراج",
       "update": "تحديث"
     },
+    "mermaid": {
+      "menu": "إضافة مخطط (Mermaid)",
+      "pick": "مخطط Mermaid",
+      "title": "إضافة مخطط Mermaid",
+      "editTitle": "تعديل مخطط Mermaid",
+      "edit": "تعديل المخطط",
+      "placeHint": "انقر على الصفحة لوضع المخطط.",
+      "codeLabel": "رمز Mermaid",
+      "codeHint": "اكتب المخطط كنص Mermaid أو ابدأ من قالب. تُحفظ التسميات كنص حقيقي قابل للبحث.",
+      "templates": "القوالب",
+      "theme": "السمة",
+      "emptyTitle": "لا يوجد مخطط بعد",
+      "emptyHint": "اكتب رمز Mermaid أو اختر قالبًا.",
+      "startFlowchart": "ابدأ بمخطط انسيابي",
+      "invalid": "تعذّرت قراءة رمز Mermaid هذا.",
+      "invalidAt": "تعذّرت قراءة رمز Mermaid هذا قرب السطر {{line}}.",
+      "drawFailed": "تعذّر رسم هذا المخطط.",
+      "engineErrorTitle": "لم يبدأ راسم المخططات",
+      "engineErrorMessage": "تعذّر تحميل الجزء الذي يرسم مخططات Mermaid.",
+      "previewAlt": "معاينة المخطط: {{title}}",
+      "shortcutHint": "Ctrl+Enter للإدراج",
+      "insert": "إدراج",
+      "update": "تحديث",
+      "kinds": {
+        "flowchart": "مخطط انسيابي",
+        "sequence": "تسلسل",
+        "class": "فئات",
+        "er": "كيان وعلاقة",
+        "state": "حالات",
+        "gantt": "جانت",
+        "pie": "دائري",
+        "mindmap": "خريطة ذهنية"
+      },
+      "themes": {
+        "default": "كلاسيكي",
+        "neutral": "محايد",
+        "forest": "غابة",
+        "base": "بسيط"
+      }
+    },
     "altText": {
       "formula": "صيغة: {{latex}}",
       "shape": "رسم: {{name}}",
       "graph": "تمثيل بياني لـ {{functions}}، x من {{xMin}} إلى {{xMax}}",
       "molecule": "بنية كيميائية، SMILES {{smiles}}",
+      "mermaid": "مخطط: {{title}}",
       "table": "جدول من {{rows}} صفوف و{{columns}} أعمدة: {{content}}",
       "chart": "مخطط ({{type}}): {{content}}",
       "chartTitled": "مخطط ({{type}}) «{{title}}»: {{content}}",
@@ -10589,7 +10632,8 @@
         "table": "جدول",
         "chart": "مخطط",
         "flowchart": "مخطط انسيابي",
-        "formula": "معادلة"
+        "formula": "معادلة",
+        "mermaid": "مخطط (Mermaid)"
       },
       "designPalette": "لوحة ألوان التصميم",
       "updating": "جارٍ تحديث الرسم…",
@@ -10655,6 +10699,7 @@
       "editChart": "تحرير بيانات المخطط",
       "editFlowchart": "تحرير المخطط الانسيابي",
       "editFormula": "تحرير المعادلة",
+      "editMermaid": "تعديل المخطط",
       "rowHeight": "ارتفاع الصف {{row}}",
       "verticalAlign": "المحاذاة العمودية",
       "verticalAligns": {

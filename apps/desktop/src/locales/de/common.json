@@ -1155,12 +1155,14 @@
         "questionNumbered": "Frage {{number}}: {{stem}}",
         "answerKey": "Lösungsschlüssel ({{count}})",
         "flowchart": "Flussdiagramm: {{first}}",
+        "mermaid": "Diagramm: {{title}}",
         "molecule": "Molekül: {{smiles}}"
       },
       "warningLineOverflow": "Der Rest einer Zeile reicht jetzt über die nächste Spalte oder den Seitenrand hinaus: {{detail}}",
       "questionAdded": "Frage hinzugefügt",
       "answerKeyAdded": "Lösungsschlüssel hinzugefügt",
       "flowchartAdded": "Flussdiagramm hinzugefügt",
+      "mermaidAdded": "Diagramm hinzugefügt",
       "moleculeAdded": "Molekül hinzugefügt"
     },
     "pageMoved": "Seite {{page}} zu {{name}} hinzugefügt.",
@@ -1442,11 +1444,52 @@
       "insert": "Einfügen",
       "update": "Aktualisieren"
     },
+    "mermaid": {
+      "menu": "Diagramm hinzufügen (Mermaid)",
+      "pick": "Mermaid-Diagramm",
+      "title": "Mermaid-Diagramm hinzufügen",
+      "editTitle": "Mermaid-Diagramm bearbeiten",
+      "edit": "Diagramm bearbeiten",
+      "placeHint": "Klicken Sie auf die Seite, um das Diagramm zu platzieren.",
+      "codeLabel": "Mermaid-Code",
+      "codeHint": "Schreiben Sie das Diagramm als Mermaid-Text oder beginnen Sie mit einer Vorlage. Beschriftungen werden als echter, durchsuchbarer Text gespeichert.",
+      "templates": "Vorlagen",
+      "theme": "Design",
+      "emptyTitle": "Noch kein Diagramm",
+      "emptyHint": "Schreiben Sie Mermaid-Code oder wählen Sie eine Vorlage.",
+      "startFlowchart": "Mit einem Flussdiagramm beginnen",
+      "invalid": "Dieser Mermaid-Code kann nicht gelesen werden.",
+      "invalidAt": "Dieser Mermaid-Code kann bei Zeile {{line}} nicht gelesen werden.",
+      "drawFailed": "Dieses Diagramm konnte nicht gezeichnet werden.",
+      "engineErrorTitle": "Der Diagrammzeichner ist nicht gestartet",
+      "engineErrorMessage": "Der Teil, der Mermaid-Diagramme zeichnet, konnte nicht geladen werden.",
+      "previewAlt": "Diagrammvorschau: {{title}}",
+      "shortcutHint": "Mit Strg+Eingabe einfügen",
+      "insert": "Einfügen",
+      "update": "Aktualisieren",
+      "kinds": {
+        "flowchart": "Flussdiagramm",
+        "sequence": "Sequenz",
+        "class": "Klasse",
+        "er": "Entity-Relationship",
+        "state": "Zustand",
+        "gantt": "Gantt",
+        "pie": "Kreis",
+        "mindmap": "Mindmap"
+      },
+      "themes": {
+        "default": "Klassisch",
+        "neutral": "Neutral",
+        "forest": "Wald",
+        "base": "Schlicht"
+      }
+    },
     "altText": {
       "formula": "Formel: {{latex}}",
       "shape": "Zeichnung: {{name}}",
       "graph": "Graph von {{functions}}, x von {{xMin}} bis {{xMax}}",
       "molecule": "Chemische Struktur, SMILES {{smiles}}",
+      "mermaid": "Diagramm: {{title}}",
       "table": "Tabelle mit {{rows}} Zeilen und {{columns}} Spalten: {{content}}",
       "chart": "Diagramm ({{type}}): {{content}}",
       "chartTitled": "Diagramm ({{type}}) „{{title}}“: {{content}}",
@@ -9734,7 +9777,8 @@
         "table": "Tabelle",
         "chart": "Diagramm",
         "flowchart": "Flussdiagramm",
-        "formula": "Formel"
+        "formula": "Formel",
+        "mermaid": "Diagramm (Mermaid)"
       },
       "designPalette": "Design-Palette",
       "updating": "Grafik wird aktualisiert …",
@@ -9800,6 +9844,7 @@
       "editChart": "Diagrammdaten bearbeiten",
       "editFlowchart": "Flussdiagramm bearbeiten",
       "editFormula": "Formel bearbeiten",
+      "editMermaid": "Diagramm bearbeiten",
       "rowHeight": "Höhe von Zeile {{row}}",
       "verticalAlign": "Vertikale Ausrichtung",
       "verticalAligns": {

@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Viewer and Studio: Mermaid diagrams from text — flowchart, sequence, class, ER, state, Gantt, pie and mind map — with ready templates, four themes, live preview and the broken line named on errors; labels stay real, searchable text in the PDF, and placed diagrams open again for editing [2026-10-13]
 - Studio sources: add a source by its DOI or from a PDF (its DOI is found in the file and the details are fetched from doi.org), fill an open source in from its DOI, check every source with a DOI for retractions, corrections, expressions of concern and published versions of preprints (Crossref and Retraction Watch notices, shown as chips that open the notice), and update a source's details from the published record after reviewing each changed field; only the DOI is sent, and only when you ask [2026-10-12]
 - Windows installer: the full installer now sets up LibreOffice itself while it installs vivePDF ("Setting up LibreOffice for Office conversions..."), so Office conversions work from the very first start; the background setup on first start remains as a fallback, and the update installer is unchanged [2026-10-12]
 - macOS (Apple silicon, macOS 14 or later): a `.dmg` build with the native title bar and traffic lights, an app menu (About, Settings ⌘,, Hide, Quit ⌘Q, Edit, Window) in all eight languages, a monochrome menu bar icon, ⌘ ⇧ ⌥ shortcut labels throughout the interface and ⌃⌘F for full screen [2026-10-10]

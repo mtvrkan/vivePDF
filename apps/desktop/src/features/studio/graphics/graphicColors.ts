@@ -37,6 +37,8 @@ export function graphicColors(graphic: StudioGraphic): string[] {
       return flowchartColors(graphic.data.settings);
     case "formula":
       return [graphic.data.formula.color];
+    case "mermaid":
+      return [];
   }
 }
 
@@ -84,5 +86,7 @@ export function swapGraphicColors(element: StudioSvgElement, graphic: StudioGrap
       const formula = { ...graphic.data.formula, color: swap(graphic.data.formula.color) };
       return { ...element, svg: formulaSvg(formula), data: { ...graphic.data, formula } };
     }
+    case "mermaid":
+      return element;
   }
 }

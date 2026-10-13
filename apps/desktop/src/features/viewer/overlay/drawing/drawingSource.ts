@@ -6,6 +6,7 @@ import { coloredFormulaSvg, type FormulaSource } from "../formula/formulaSvg";
 import { toFlowchartSpec } from "../flowchart/flowchartModel";
 import type { FlowchartSource } from "../flowchart/flowchartObject";
 import type { GraphSource } from "../graph/graphObject";
+import type { MermaidSource } from "../mermaid/mermaidObject";
 import type { MoleculeSource } from "../molecule/moleculeObject";
 import { toAnswerKeyTable } from "../question/answerKeyModel";
 import { toQuestionSpec } from "../question/questionModel";
@@ -14,13 +15,13 @@ import type { ShapeSource } from "../shapes/shapeObject";
 import { toTableSpec } from "../table/tableModel";
 import type { TableSource } from "../table/tableObject";
 
-export type DrawingSources = { formula: FormulaSource; shape: ShapeSource; graph: GraphSource; molecule: MoleculeSource; table: TableSource; chart: ChartSource; question: QuestionSource; answerKey: AnswerKeySource; flowchart: FlowchartSource };
+export type DrawingSources = { formula: FormulaSource; shape: ShapeSource; graph: GraphSource; molecule: MoleculeSource; table: TableSource; chart: ChartSource; question: QuestionSource; answerKey: AnswerKeySource; flowchart: FlowchartSource; mermaid: MermaidSource };
 export type DrawingKind = keyof DrawingSources;
 export type DrawingOf<K extends DrawingKind> = { kind: K; source: DrawingSources[K] };
 export type DrawingSource = { [K in DrawingKind]: DrawingOf<K> }[DrawingKind];
 export type DrawingImage<K extends DrawingKind = DrawingKind> = Extract<EditorPending, { kind: "image" }> & { drawing: { [P in K]: DrawingOf<P> }[K] };
 
-export const DRAWING_KINDS: readonly DrawingKind[] = ["formula", "shape", "graph", "molecule", "table", "chart", "flowchart", "question", "answerKey"];
+export const DRAWING_KINDS: readonly DrawingKind[] = ["formula", "shape", "graph", "molecule", "table", "chart", "flowchart", "mermaid", "question", "answerKey"];
 
 export function isDrawingImage(item: EditorPending | null | undefined): item is DrawingImage {
   return !!item && item.kind === "image" && !!item.drawing;
@@ -42,6 +43,7 @@ export function drawingSvg(drawing: DrawingSource): string {
     case "question":
     case "answerKey":
     case "flowchart":
+    case "mermaid":
       return drawing.source.svg;
   }
 }

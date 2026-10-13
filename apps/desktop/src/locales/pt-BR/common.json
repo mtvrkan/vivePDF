@@ -1155,12 +1155,14 @@
         "questionNumbered": "Pergunta {{number}}: {{stem}}",
         "answerKey": "Gabarito ({{count}})",
         "flowchart": "Fluxograma: {{first}}",
+        "mermaid": "Diagrama: {{title}}",
         "molecule": "Molécula: {{smiles}}"
       },
       "warningLineOverflow": "O resto de uma linha agora passa da próxima coluna ou da borda da página: {{detail}}",
       "questionAdded": "Pergunta adicionada",
       "answerKeyAdded": "Gabarito adicionado",
       "flowchartAdded": "Fluxograma adicionado",
+      "mermaidAdded": "Diagrama adicionado",
       "moleculeAdded": "Molécula adicionada"
     },
     "pageMoved": "Página {{page}} adicionada a {{name}}.",
@@ -1442,11 +1444,52 @@
       "insert": "Inserir",
       "update": "Atualizar"
     },
+    "mermaid": {
+      "menu": "Adicionar diagrama (Mermaid)",
+      "pick": "Diagrama Mermaid",
+      "title": "Adicionar diagrama Mermaid",
+      "editTitle": "Editar diagrama Mermaid",
+      "edit": "Editar diagrama",
+      "placeHint": "Clique na página para posicionar o diagrama.",
+      "codeLabel": "Código Mermaid",
+      "codeHint": "Escreva o diagrama como texto Mermaid ou comece com um modelo. Os rótulos são salvos como texto real e pesquisável.",
+      "templates": "Modelos",
+      "theme": "Tema",
+      "emptyTitle": "Ainda não há diagrama",
+      "emptyHint": "Escreva código Mermaid ou escolha um modelo.",
+      "startFlowchart": "Começar com um fluxograma",
+      "invalid": "Este código Mermaid não pode ser lido.",
+      "invalidAt": "Este código Mermaid não pode ser lido perto da linha {{line}}.",
+      "drawFailed": "Não foi possível desenhar este diagrama.",
+      "engineErrorTitle": "O desenhista de diagramas não iniciou",
+      "engineErrorMessage": "Não foi possível carregar a parte que desenha diagramas Mermaid.",
+      "previewAlt": "Prévia do diagrama: {{title}}",
+      "shortcutHint": "Ctrl+Enter insere",
+      "insert": "Inserir",
+      "update": "Atualizar",
+      "kinds": {
+        "flowchart": "Fluxograma",
+        "sequence": "Sequência",
+        "class": "Classes",
+        "er": "Entidade-relacionamento",
+        "state": "Estados",
+        "gantt": "Gantt",
+        "pie": "Pizza",
+        "mindmap": "Mapa mental"
+      },
+      "themes": {
+        "default": "Clássico",
+        "neutral": "Neutro",
+        "forest": "Floresta",
+        "base": "Simples"
+      }
+    },
     "altText": {
       "formula": "Fórmula: {{latex}}",
       "shape": "Desenho: {{name}}",
       "graph": "Gráfico de {{functions}}, x de {{xMin}} a {{xMax}}",
       "molecule": "Estrutura química, SMILES {{smiles}}",
+      "mermaid": "Diagrama: {{title}}",
       "table": "Tabela com {{rows}} linhas e {{columns}} colunas: {{content}}",
       "chart": "Gráfico ({{type}}): {{content}}",
       "chartTitled": "Gráfico ({{type}}) “{{title}}”: {{content}}",
@@ -9735,7 +9778,8 @@
         "table": "Tabela",
         "chart": "Gráfico",
         "flowchart": "Fluxograma",
-        "formula": "Fórmula"
+        "formula": "Fórmula",
+        "mermaid": "Diagrama (Mermaid)"
       },
       "designPalette": "Paleta do design",
       "updating": "Atualizando o gráfico…",
@@ -9801,6 +9845,7 @@
       "editChart": "Editar dados do gráfico",
       "editFlowchart": "Editar fluxograma",
       "editFormula": "Editar fórmula",
+      "editMermaid": "Editar diagrama",
       "rowHeight": "Altura da linha {{row}}",
       "verticalAlign": "Alinhamento vertical",
       "verticalAligns": {

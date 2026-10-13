@@ -1155,12 +1155,14 @@
         "questionNumbered": "Question {{number}} : {{stem}}",
         "answerKey": "Corrigé ({{count}})",
         "flowchart": "Organigramme : {{first}}",
+        "mermaid": "Diagramme : {{title}}",
         "molecule": "Molécule : {{smiles}}"
       },
       "warningLineOverflow": "La suite d’une ligne dépasse maintenant sur la colonne suivante ou le bord de la page : {{detail}}",
       "questionAdded": "Question ajoutée",
       "answerKeyAdded": "Corrigé ajouté",
       "flowchartAdded": "Organigramme ajouté",
+      "mermaidAdded": "Diagramme ajouté",
       "moleculeAdded": "Molécule ajoutée"
     },
     "pageMoved": "Page {{page}} ajoutée à {{name}}.",
@@ -1442,11 +1444,52 @@
       "insert": "Insérer",
       "update": "Mettre à jour"
     },
+    "mermaid": {
+      "menu": "Ajouter un diagramme (Mermaid)",
+      "pick": "Diagramme Mermaid",
+      "title": "Ajouter un diagramme Mermaid",
+      "editTitle": "Modifier le diagramme Mermaid",
+      "edit": "Modifier le diagramme",
+      "placeHint": "Cliquez sur la page pour placer le diagramme.",
+      "codeLabel": "Code Mermaid",
+      "codeHint": "Écrivez le diagramme en texte Mermaid ou partez d’un modèle. Les libellés sont enregistrés comme du vrai texte, consultable par recherche.",
+      "templates": "Modèles",
+      "theme": "Thème",
+      "emptyTitle": "Pas encore de diagramme",
+      "emptyHint": "Écrivez du code Mermaid ou choisissez un modèle.",
+      "startFlowchart": "Commencer par un organigramme",
+      "invalid": "Ce code Mermaid est illisible.",
+      "invalidAt": "Ce code Mermaid est illisible vers la ligne {{line}}.",
+      "drawFailed": "Ce diagramme n’a pas pu être dessiné.",
+      "engineErrorTitle": "Le traceur de diagrammes n’a pas démarré",
+      "engineErrorMessage": "La partie qui dessine les diagrammes Mermaid n’a pas pu être chargée.",
+      "previewAlt": "Aperçu du diagramme : {{title}}",
+      "shortcutHint": "Ctrl+Entrée insère",
+      "insert": "Insérer",
+      "update": "Mettre à jour",
+      "kinds": {
+        "flowchart": "Organigramme",
+        "sequence": "Séquence",
+        "class": "Classe",
+        "er": "Entité-relation",
+        "state": "État",
+        "gantt": "Gantt",
+        "pie": "Secteurs",
+        "mindmap": "Carte mentale"
+      },
+      "themes": {
+        "default": "Classique",
+        "neutral": "Neutre",
+        "forest": "Forêt",
+        "base": "Sobre"
+      }
+    },
     "altText": {
       "formula": "Formule : {{latex}}",
       "shape": "Dessin : {{name}}",
       "graph": "Graphique de {{functions}}, x de {{xMin}} à {{xMax}}",
       "molecule": "Structure chimique, SMILES {{smiles}}",
+      "mermaid": "Diagramme : {{title}}",
       "table": "Tableau de {{rows}} lignes et {{columns}} colonnes : {{content}}",
       "chart": "Diagramme ({{type}}) : {{content}}",
       "chartTitled": "Diagramme ({{type}}) « {{title}} » : {{content}}",
@@ -9735,7 +9778,8 @@
         "table": "Tableau",
         "chart": "Graphique",
         "flowchart": "Organigramme",
-        "formula": "Formule"
+        "formula": "Formule",
+        "mermaid": "Diagramme (Mermaid)"
       },
       "designPalette": "Palette du design",
       "updating": "Mise à jour du graphique…",
@@ -9801,6 +9845,7 @@
       "editChart": "Modifier les données du graphique",
       "editFlowchart": "Modifier l'organigramme",
       "editFormula": "Modifier la formule",
+      "editMermaid": "Modifier le diagramme",
       "rowHeight": "Hauteur de la ligne {{row}}",
       "verticalAlign": "Alignement vertical",
       "verticalAligns": {

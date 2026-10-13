@@ -1156,12 +1156,14 @@
         "questionNumbered": "Question {{number}}: {{stem}}",
         "answerKey": "Answer key ({{count}})",
         "flowchart": "Flowchart: {{first}}",
+        "mermaid": "Diagram: {{title}}",
         "molecule": "Molecule: {{smiles}}"
       },
       "warningLineOverflow": "The rest of a line now runs past the next column or the page edge: {{detail}}",
       "questionAdded": "Question added",
       "answerKeyAdded": "Answer key added",
       "flowchartAdded": "Flowchart added",
+      "mermaidAdded": "Diagram added",
       "moleculeAdded": "Molecule added"
     },
     "pageMoved": "Page {{page}} added to {{name}}.",
@@ -1443,11 +1445,52 @@
       "insert": "Insert",
       "update": "Update"
     },
+    "mermaid": {
+      "menu": "Add diagram (Mermaid)",
+      "pick": "Mermaid diagram",
+      "title": "Add Mermaid diagram",
+      "editTitle": "Edit Mermaid diagram",
+      "edit": "Edit diagram",
+      "placeHint": "Click on the page to place the diagram.",
+      "codeLabel": "Mermaid code",
+      "codeHint": "Write the diagram as Mermaid text or start from a template. Labels are saved as real, searchable text.",
+      "templates": "Templates",
+      "theme": "Theme",
+      "emptyTitle": "No diagram yet",
+      "emptyHint": "Write Mermaid code or pick a template.",
+      "startFlowchart": "Start with a flowchart",
+      "invalid": "This Mermaid code can't be read.",
+      "invalidAt": "This Mermaid code can't be read near line {{line}}.",
+      "drawFailed": "This diagram couldn't be drawn.",
+      "engineErrorTitle": "The diagram drawer didn't start",
+      "engineErrorMessage": "The part that draws Mermaid diagrams couldn't be loaded.",
+      "previewAlt": "Diagram preview: {{title}}",
+      "shortcutHint": "Ctrl+Enter inserts",
+      "insert": "Insert",
+      "update": "Update",
+      "kinds": {
+        "flowchart": "Flowchart",
+        "sequence": "Sequence",
+        "class": "Class",
+        "er": "Entity–relationship",
+        "state": "State",
+        "gantt": "Gantt",
+        "pie": "Pie",
+        "mindmap": "Mind map"
+      },
+      "themes": {
+        "default": "Classic",
+        "neutral": "Neutral",
+        "forest": "Forest",
+        "base": "Plain"
+      }
+    },
     "altText": {
       "formula": "Formula: {{latex}}",
       "shape": "Drawing: {{name}}",
       "graph": "Graph of {{functions}}, x from {{xMin}} to {{xMax}}",
       "molecule": "Chemical structure, SMILES {{smiles}}",
+      "mermaid": "Diagram: {{title}}",
       "table": "Table with {{rows}} rows and {{columns}} columns: {{content}}",
       "chart": "{{type}} chart: {{content}}",
       "chartTitled": "{{type}} chart “{{title}}”: {{content}}",
@@ -9736,7 +9779,8 @@
         "table": "Table",
         "chart": "Chart",
         "flowchart": "Flowchart",
-        "formula": "Formula"
+        "formula": "Formula",
+        "mermaid": "Diagram (Mermaid)"
       },
       "designPalette": "Design palette",
       "updating": "Updating the graphic…",
@@ -9802,6 +9846,7 @@
       "editChart": "Edit chart data",
       "editFlowchart": "Edit flowchart",
       "editFormula": "Edit formula",
+      "editMermaid": "Edit diagram",
       "rowHeight": "Height of row {{row}}",
       "verticalAlign": "Vertical alignment",
       "verticalAligns": {

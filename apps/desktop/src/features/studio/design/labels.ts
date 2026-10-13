@@ -1,4 +1,4 @@
-import { ChartColumn, Circle, Cloud, Diamond, FileCode2, Heart, Hexagon, Image as ImageIcon, Minus, MoveRight, Octagon, PenTool, Pentagon, QrCode, Sigma, Square, Star, Table2, Triangle, Type, Workflow, type LucideIcon } from "lucide-react";
+import { ChartColumn, Circle, Cloud, Diamond, FileCode2, Heart, Hexagon, Image as ImageIcon, Minus, MoveRight, Network, Octagon, PenTool, Pentagon, QrCode, Sigma, Square, Star, Table2, Triangle, Type, Workflow, type LucideIcon } from "lucide-react";
 import type { StudioElement, StudioShapeKind, StudioSvgSource } from "@/types/studio";
 import { textOf } from "../model/design";
 
@@ -28,7 +28,7 @@ const SHAPE_ICONS: Partial<Record<StudioShapeKind, LucideIcon>> = {
   cloud: Cloud,
 };
 
-const SVG_ICONS: Record<StudioSvgSource, LucideIcon> = { table: Table2, chart: ChartColumn, formula: Sigma, flowchart: Workflow, import: FileCode2 };
+const SVG_ICONS: Record<StudioSvgSource, LucideIcon> = { table: Table2, chart: ChartColumn, formula: Sigma, flowchart: Workflow, mermaid: Network, import: FileCode2 };
 
 export function kindIcon(element: StudioElement): LucideIcon {
   switch (element.kind) {

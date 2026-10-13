@@ -1,6 +1,7 @@
 import { CHART_PALETTE_IDS, CHART_TYPES, DEFAULT_CHART_LOOK, LEGEND_POSITIONS, chartData, type ChartPaletteId, type ChartSettings } from "@/features/viewer/overlay/chart/chartModel";
 import { DEFAULT_FLOW_LOOK, FLOW_DIRECTIONS, FLOW_LIMITS, FLOW_SHAPES, isBlankFlowchart, toFlowchartSpec, type FlowchartSettings } from "@/features/viewer/overlay/flowchart/flowchartModel";
 import { coloredFormulaSvg, type FormulaSource } from "@/features/viewer/overlay/formula/formulaSvg";
+import { cleanMermaid, mermaidTheme, type MermaidSettings } from "@/features/viewer/overlay/mermaid/mermaidModel";
 import type { ChartSpec, FlowchartSpec, TableSpec } from "@/types";
 import type { StudioElement, StudioGraphicSpec, StudioSvgElement } from "@/types/studio";
 import { MAX_BORDER_WIDTH, MAX_TABLE_FONT, MIN_TABLE_FONT, hasRowHeights, normalizeTableData, stretchRows, type StudioTableData, type TableLayout } from "./tableModel";
@@ -9,12 +10,14 @@ export type GraphicSize = { width: number; height: number };
 export type StudioChartData = { kind: "chart"; settings: ChartSettings; rendered: string };
 export type StudioFlowchartData = { kind: "flowchart"; settings: FlowchartSettings; rendered: string; layout: GraphicSize | null };
 export type StudioFormulaData = { kind: "formula"; formula: FormulaSource };
+export type StudioMermaidData = { kind: "mermaid"; settings: MermaidSettings; layout: GraphicSize };
 
 export type StudioGraphic =
   | { kind: "table"; data: StudioTableData }
   | { kind: "chart"; data: StudioChartData }
   | { kind: "flowchart"; data: StudioFlowchartData }
-  | { kind: "formula"; data: StudioFormulaData };
+  | { kind: "formula"; data: StudioFormulaData }
+  | { kind: "mermaid"; data: StudioMermaidData };
 
 export type GraphicKind = StudioGraphic["kind"];
 export type RenderedGraphic = { svg: string; width: number; height: number; rowHeights?: number[]; columnWidths?: number[] };
@@ -128,6 +131,14 @@ function normalizeFormula(value: unknown): FormulaSource | null {
   return { latex: raw.latex.slice(0, 20000), svg: raw.svg, color: colour(raw.color, "#111111"), emWidth, emHeight };
 }
 
+function normalizeMermaid(raw: Record<string, unknown>): StudioMermaidData | null {
+  const settings = record(raw.settings);
+  const layout = size(raw.layout);
+  if (!settings || typeof settings.code !== "string" || !layout) return null;
+  const code = cleanMermaid(settings.code);
+  return code ? { kind: "mermaid", settings: { code, theme: mermaidTheme(settings.theme) }, layout } : null;
+}
+
 function readGraphic(element: StudioSvgElement): StudioGraphic | null {
   const raw = record(element.data);
   if (!raw) return null;
@@ -147,6 +158,10 @@ function readGraphic(element: StudioSvgElement): StudioGraphic | null {
     case "formula": {
       const formula = normalizeFormula(raw.formula);
       return formula ? { kind: "formula", data: { kind: "formula", formula } } : null;
+    }
+    case "mermaid": {
+      const data = normalizeMermaid(raw);
+      return data ? { kind: "mermaid", data } : null;
     }
     default:
       return null;
@@ -169,7 +184,7 @@ export function isGraphic(element: StudioElement): element is StudioSvgElement {
 
 export function keepsRatio(element: StudioElement): boolean {
   const kind = graphicOf(element)?.kind;
-  return kind === "flowchart" || kind === "formula";
+  return kind === "flowchart" || kind === "formula" || kind === "mermaid";
 }
 
 export function tableScale(width: number): number {
@@ -240,6 +255,7 @@ export function graphicRenderSpec(element: StudioElement): StudioGraphicSpec | n
       return spec ? { kind: "flowchart", spec } : null;
     }
     case "formula":
+    case "mermaid":
       return null;
   }
 }
@@ -262,7 +278,7 @@ export function renderKeyOf(graphic: StudioGraphicSpec): string {
 }
 
 function renderedOf(graphic: StudioGraphic): string | null {
-  return graphic.kind === "formula" ? null : graphic.data.rendered;
+  return graphic.kind === "formula" || graphic.kind === "mermaid" ? null : graphic.data.rendered;
 }
 
 export function graphicJob(element: StudioElement): GraphicJob | null {
@@ -294,7 +310,7 @@ function tableLayout(result: RenderedGraphic): TableLayout | null {
 
 export function withRendered(element: StudioSvgElement, job: GraphicJob, result: RenderedGraphic): StudioSvgElement {
   const graphic = graphicOf(element);
-  if (!graphic || graphic.kind === "formula") return element;
+  if (!graphic || graphic.kind === "formula" || graphic.kind === "mermaid") return element;
   const svg = stretchSvg(result.svg);
   switch (graphic.kind) {
     case "table": {

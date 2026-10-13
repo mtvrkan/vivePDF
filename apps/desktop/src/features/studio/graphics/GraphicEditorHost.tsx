@@ -9,6 +9,9 @@ import { DEFAULT_FLOW_LOOK, flowchartLook, newFlowchart, toFlowchartSpec, type F
 import type { FlowchartSource } from "@/features/viewer/overlay/flowchart/flowchartObject";
 import { FormulaDialog, type FormulaDraft, type FormulaSubmit } from "@/features/viewer/overlay/formula/FormulaDialog";
 import { DEFAULT_FORMULA_COLOR, DEFAULT_FORMULA_SIZE, formulaBox, formulaSizeOf } from "@/features/viewer/overlay/formula/formulaSvg";
+import { MermaidDialog } from "@/features/viewer/overlay/mermaid/MermaidDialog";
+import { DEFAULT_MERMAID_THEME, placedScale, type MermaidSettings, type MermaidTheme } from "@/features/viewer/overlay/mermaid/mermaidModel";
+import type { MermaidSource } from "@/features/viewer/overlay/mermaid/mermaidObject";
 import type { StudioPage, StudioSvgElement } from "@/types/studio";
 import { centred, insert } from "../design/insert";
 import { currentPage, useStudioStore } from "../design/studioStore";
@@ -22,6 +25,7 @@ const NEW_FLOW_SHARE = 0.8;
 let lastChartLook: ChartLook | null = null;
 let lastFlowLook: FlowchartLook = DEFAULT_FLOW_LOOK;
 let lastFormula: Pick<FormulaDraft, "color" | "size"> = { color: DEFAULT_FORMULA_COLOR, size: DEFAULT_FORMULA_SIZE };
+let lastMermaidTheme: MermaidTheme = DEFAULT_MERMAID_THEME;
 
 function useTarget(request: GraphicRequest): { page: StudioPage | null; element: StudioSvgElement | null } {
   const page = useStudioStore((state) => currentPage(state));
@@ -126,6 +130,31 @@ function FormulaHost({ request, onClose }: { request: Extract<GraphicRequest, { 
   return <FormulaDialog initial={initial} updating={!!editing} onClose={onClose} onSubmit={submit} swatchRows={() => graphicSwatchRows(t)} />;
 }
 
+function MermaidHost({ request, onClose }: { request: Extract<GraphicRequest, { kind: "mermaid" }>; onClose: () => void }) {
+  const { page, element } = useTarget(request);
+  const graphic = element ? graphicOf(element) : null;
+  const editing = element && graphic?.kind === "mermaid" ? { element, data: graphic.data } : null;
+  const [initial] = useState<MermaidSettings>(() => (editing ? editing.data.settings : { code: "", theme: lastMermaidTheme }));
+  if (!page) return null;
+
+  const submit = (source: MermaidSource) => {
+    lastMermaidTheme = source.settings.theme;
+    const data = { kind: "mermaid", settings: source.settings, layout: { width: source.width, height: source.height } };
+    if (editing) {
+      const scale = editing.element.width / editing.data.layout.width;
+      patchGraphic(editing.element.id, () => ({ svg: stretchSvg(source.svg), width: source.width * scale, height: source.height * scale, data }));
+    } else {
+      const scale = Math.min(placedScale(source.width, source.height), (page.width * NEW_FLOW_SHARE) / source.width, (page.height * NEW_FLOW_SHARE) / source.height);
+      const width = source.width * scale;
+      const height = source.height * scale;
+      insert(createGraphicElement("mermaid", source.svg, { ...centred(page, width, height), width, height }, data));
+    }
+    onClose();
+  };
+
+  return <MermaidDialog initial={initial} updating={!!editing} onClose={onClose} onSubmit={submit} />;
+}
+
 export function GraphicEditorHost() {
   const request = useGraphicEditor((state) => state.request);
   const close = useGraphicEditor((state) => state.close);
@@ -138,5 +167,7 @@ export function GraphicEditorHost() {
       return <FlowchartHost key={key} request={request} onClose={close} />;
     case "formula":
       return <FormulaHost key={key} request={request} onClose={close} />;
+    case "mermaid":
+      return <MermaidHost key={key} request={request} onClose={close} />;
   }
 }
