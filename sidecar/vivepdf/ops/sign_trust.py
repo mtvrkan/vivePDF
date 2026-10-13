@@ -62,6 +62,7 @@ DER_SEQUENCE = b"\x30"
 PEM_ARMOR = b"-----BEGIN"
 MAX_SOURCES_BYTES = 4 * 1024 * 1024
 MANUAL = "manual"
+UNVERIFIED_KEY = "unverified"
 VERIFIED = "verified"
 DIGEST_PATTERN = r"^[0-9a-f]{64}$"
 FINGERPRINT = re.compile(r"^[0-9A-F]{64}$")
@@ -596,6 +597,13 @@ class _Import:
     sequence: int | None = None
 
 
+def _list_key(listed: ListSource | None, signature: ListSignature | None) -> str | None:
+    base = listed.key if listed is not None else None
+    if base is None or signature is None or signature.status == VERIFIED:
+        return base
+    return f"{base}:{UNVERIFIED_KEY}"
+
+
 def _plan_import(path: str, progress: Progress) -> _Import:
     read = _read_checked(path, progress)
     certificates = read.certificates
@@ -625,7 +633,7 @@ def _plan_import(path: str, progress: Progress) -> _Import:
             sequence=found.sequence,
         )
     existing, _unreadable = _stored_roots(store)
-    key = listed.key if listed is not None else None
+    key = _list_key(listed, signature)
     mark = key or MANUAL
     by_fingerprint: dict[str, str] = {}
     for root in existing:
@@ -646,10 +654,11 @@ def _plan_import(path: str, progress: Progress) -> _Import:
     retired: list[str] = []
     if key is not None and source is not None:
         sources.lists[key] = source
+        superseded = {key, f"{key}:{UNVERIFIED_KEY}"} if key == listed.key else {key}
         for file_id, keys in list(sources.roots.items()):
-            if key not in keys or file_id in listed_files:
+            if superseded.isdisjoint(keys) or file_id in listed_files:
                 continue
-            rest = [other for other in keys if other != key]
+            rest = [other for other in keys if other not in superseded]
             if rest:
                 sources.roots[file_id] = rest
             else:

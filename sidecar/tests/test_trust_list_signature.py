@@ -1036,6 +1036,42 @@ def test_an_adobe_list_by_another_signer_needs_the_override(
     assert not (store / AATL_STATE_FILE).exists()
 
 
+def _stored_fingerprints() -> set[str]:
+    return {root.fingerprint for root in trust_list(TrustListParams(), silent_progress()).roots}
+
+
+def test_an_unverified_list_with_the_same_name_cannot_withdraw_verified_roots(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    verified_root = _authority("Verified AATL Root")
+    _add(_adobe_list(tmp_path, monkeypatch, verified_root))
+    first, second = _authority("Planted One"), _authority("Planted Two")
+    planted = _settings_pdf(tmp_path / "planted.pdf", _settings(first))
+    replanted = _settings_pdf(tmp_path / "replanted.pdf", _settings(second))
+
+    assert _preview(planted).withdrawn == []
+    _add(planted, accept_unverified=True)
+    preview = _preview(replanted)
+    _add(replanted, accept_unverified=True)
+
+    assert [root.fingerprint for root in preview.withdrawn] == [_fingerprint(first)]
+    assert _stored_fingerprints() == {_fingerprint(verified_root), _fingerprint(second)}
+
+
+def test_a_verified_list_also_withdraws_what_an_unverified_copy_left_behind(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    stale = _authority("Stale Root")
+    _add(_settings_pdf(tmp_path / "old.pdf", _settings(stale)), accept_unverified=True)
+    current = _authority("Current Root")
+    signed = _adobe_list(tmp_path, monkeypatch, current)
+
+    assert [root.fingerprint for root in _preview(signed).withdrawn] == [_fingerprint(stale)]
+    _add(signed)
+
+    assert _stored_fingerprints() == {_fingerprint(current)}
+
+
 def test_an_update_after_signing_a_security_settings_pdf_is_a_hard_block(
     store: Path, tmp_path: Path
 ) -> None:
