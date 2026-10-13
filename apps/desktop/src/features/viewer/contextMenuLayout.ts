@@ -1,7 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 
-export type MenuFocus = "selection" | "picture" | "page";
+export type MenuFocus = "drawing" | "selection" | "picture" | "page";
 
 export type MenuGroup = { id: MenuFocus; label: string; icon: LucideIcon; items: ContextMenuItem[] };
 
@@ -19,7 +19,8 @@ export function pointOnRects(rects: PageRect[], x: number, y: number): boolean {
   );
 }
 
-export function menuFocus({ onSelection, hasPicture }: { onSelection: boolean; hasPicture: boolean }): MenuFocus {
+export function menuFocus({ onSelection, hasPicture, hasDrawing = false }: { onSelection: boolean; hasPicture: boolean; hasDrawing?: boolean }): MenuFocus {
+  if (hasDrawing) return "drawing";
   if (onSelection) return "selection";
   return hasPicture ? "picture" : "page";
 }

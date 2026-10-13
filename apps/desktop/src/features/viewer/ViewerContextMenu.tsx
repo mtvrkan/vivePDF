@@ -19,6 +19,7 @@ import {
   Image as ImageIcon,
   ImageDown,
   Images,
+  Shapes,
   Languages,
   Link2,
   Pilcrow,
@@ -82,6 +83,8 @@ import { switchOverlayMode } from "./overlay/editorModes";
 import { useEditorClipboard } from "./overlay/editorClipboard";
 import { openEditorAndPaste, pasteEditorObject } from "./overlay/editorPaste";
 import { visiblePageSize } from "./overlay/pageSize";
+import { copyDrawingImage, DEFAULT_DRAWING_SCALE, saveDrawingImage } from "./overlay/drawing/drawingImageExport";
+import { isDrawingImage } from "./overlay/drawing/drawingSource";
 import { frameSizePx, quarterTurns, screenToFrame } from "./overlay/pageFrame";
 import type { ImageAtResult } from "@/types";
 
@@ -107,9 +110,16 @@ function rectsOverlap(a: SelectionRect, b: [number, number, number, number]): bo
   return a.x < bx + bw && a.x + a.width > bx && a.y < by + bh && a.y + a.height > by;
 }
 
-type MenuState = { x: number; y: number; page: number; pageX: number; pageY: number; selectionText: string; onSelection: boolean };
+type MenuState = { x: number; y: number; page: number; pageX: number; pageY: number; selectionText: string; onSelection: boolean; drawingId: string | null };
 
 type BookmarkRequest = { page: number; x: number; y: number; title: string };
+
+function drawingIdAt(target: HTMLElement | null): string | null {
+  const key = target?.closest<HTMLElement>("[data-layer-key]")?.dataset.layerKey;
+  if (!key) return null;
+  const id = key.slice(key.indexOf(":") + 1);
+  return isDrawingImage(useViewerOverlayStore.getState().objects.find((object) => object.id === id)) ? id : null;
+}
 
 function base64ToBlob(base64: string, type: string): Blob {
   const binary = atob(base64);
@@ -175,6 +185,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
         pageY: local.y / scale,
         selectionText: "",
         onSelection: false,
+        drawingId: drawingIdAt(target),
       };
       setMenu(state);
       setImage("loading");
@@ -370,6 +381,34 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
 
   if (!menu || !document) return dialogs;
   const found = image !== "loading" && image !== null && image.found;
+  const drawingObject = menu.drawingId ? useViewerOverlayStore.getState().objects.find((object) => object.id === menu.drawingId) : undefined;
+  const drawing = isDrawingImage(drawingObject) ? drawingObject : null;
+
+  const copyDrawing = async () => {
+    if (!drawing) return;
+    setBusy(true);
+    try {
+      await copyDrawingImage(drawing);
+      toast("success", t("viewer.context.imageCopied"));
+    } catch {
+      toast("error", t("viewer.context.copyFailed"));
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const saveDrawing = async () => {
+    if (!drawing) return;
+    setBusy(true);
+    try {
+      const output = await saveDrawingImage({ item: drawing, format: "png", scale: DEFAULT_DRAWING_SCALE, documentPath: document.path, t });
+      if (output) toast("success", t("viewer.context.imageSaved", { name: basenameOf(output) }));
+    } catch (caught) {
+      toast("error", describeError(t, toRpcError(caught)));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const copyText = async () => {
     try {
@@ -690,6 +729,13 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
       ]
     : [];
 
+  const drawingItems: ContextMenuItem[] = drawing
+    ? [
+        { type: "item", id: "copy-drawing", icon: Images, label: t("viewer.drawingImage.contextCopy"), disabled: busy, onSelect: () => void copyDrawing() },
+        { type: "item", id: "save-drawing", icon: ImageDown, label: t("viewer.drawingImage.contextSave"), disabled: busy, onSelect: () => void saveDrawing() },
+      ]
+    : [];
+
   const pageItems: ContextMenuItem[] = [
     ...(clipboardEntry ? [{ type: "item" as const, id: "paste-object", icon: ClipboardPaste, label: t("viewer.context.pasteObject"), shortcut: "Ctrl+V", onSelect: pasteHere }, { type: "separator" as const, id: "sep-paste" }] : []),
     { type: "item", id: "go-to-page", icon: Hash, label: t("viewer.context.goToPage"), onSelect: goToPage },
@@ -749,11 +795,12 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
 
   const items = arrangeMenu(
     [
+      { id: "drawing", label: t("viewer.drawingImage.group"), icon: Shapes, items: drawingItems },
       { id: "selection", label: t("viewer.context.selectionGroup"), icon: TextSelect, items: shown(selectionItems) },
       { id: "picture", label: t("viewer.context.pictureGroup"), icon: ImageIcon, items: shown(pictureItems) },
       { id: "page", label: t("viewer.context.pageGroup"), icon: FileText, items: shown(pageItems) },
     ],
-    menuFocus({ onSelection: menu.onSelection, hasPicture: found }),
+    menuFocus({ onSelection: menu.onSelection, hasPicture: found, hasDrawing: drawing !== null }),
   );
 
   return (

@@ -87,6 +87,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "editor.font_plan",
     ),
     "editor_chart": ("editor.chart_preview",),
+    "editor_export": ("editor.drawing_image",),
     "editor_flowchart": ("editor.flowchart_preview",),
     "editor_question": ("editor.question_preview",),
     "editor_table": ("editor.table_preview",),

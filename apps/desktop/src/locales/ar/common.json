@@ -1556,6 +1556,25 @@
         "base": "بسيط"
       }
     },
+    "drawingImage": {
+      "menu": "حفظ كصورة",
+      "title": "حفظ الرسم كصورة",
+      "format": "التنسيق",
+      "formats": {
+        "png": "صورة PNG",
+        "svg": "رسم متجه SVG"
+      },
+      "scale": "الحجم",
+      "scaleOption": "{{scale}}×",
+      "pixels": "{{width}} × {{height}} بكسل",
+      "vectorHint": "يبقى واضحًا بأي حجم، ويفتح في المتصفحات وتطبيقات التصميم.",
+      "copy": "نسخ",
+      "save": "حفظ…",
+      "contextCopy": "نسخ الرسم كصورة",
+      "contextSave": "حفظ الرسم كصورة…",
+      "group": "رسم",
+      "fallbackName": "رسم"
+    },
     "altText": {
       "formula": "صيغة: {{latex}}",
       "shape": "رسم: {{name}}",

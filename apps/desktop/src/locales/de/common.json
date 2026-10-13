@@ -1484,6 +1484,25 @@
         "base": "Schlicht"
       }
     },
+    "drawingImage": {
+      "menu": "Als Bild speichern",
+      "title": "Zeichnung als Bild speichern",
+      "format": "Format",
+      "formats": {
+        "png": "PNG-Bild",
+        "svg": "SVG-Vektorgrafik"
+      },
+      "scale": "Größe",
+      "scaleOption": "{{scale}}×",
+      "pixels": "{{width}} × {{height}} px",
+      "vectorHint": "Bleibt in jeder Größe scharf; öffnet sich in Browsern und Grafikprogrammen.",
+      "copy": "Kopieren",
+      "save": "Speichern…",
+      "contextCopy": "Zeichnung als Bild kopieren",
+      "contextSave": "Zeichnung als Bild speichern…",
+      "group": "Zeichnung",
+      "fallbackName": "Zeichnung"
+    },
     "altText": {
       "formula": "Formel: {{latex}}",
       "shape": "Zeichnung: {{name}}",

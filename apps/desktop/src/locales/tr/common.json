@@ -1485,6 +1485,25 @@
         "base": "Sade"
       }
     },
+    "drawingImage": {
+      "menu": "Görsel olarak kaydet",
+      "title": "Çizimi görsel olarak kaydet",
+      "format": "Biçim",
+      "formats": {
+        "png": "PNG resim",
+        "svg": "SVG vektör"
+      },
+      "scale": "Boyut",
+      "scaleOption": "{{scale}}×",
+      "pixels": "{{width}} × {{height}} px",
+      "vectorHint": "Her boyutta net kalır; tarayıcılarda ve tasarım uygulamalarında açılır.",
+      "copy": "Kopyala",
+      "save": "Kaydet…",
+      "contextCopy": "Çizimi görsel olarak kopyala",
+      "contextSave": "Çizimi görsel olarak kaydet…",
+      "group": "Çizim",
+      "fallbackName": "çizim"
+    },
     "altText": {
       "formula": "Formül: {{latex}}",
       "shape": "Çizim: {{name}}",

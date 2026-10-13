@@ -279,3 +279,20 @@ def drawing_pdf(raw: bytes, name: str, opacity: float = 1.0) -> pymupdf.Document
             return pymupdf.open("pdf", drawing.convert_to_pdf())
     except Exception as error:  # noqa: BLE001
         raise _refusal("notSvg", f"{name} could not be drawn") from error
+
+
+def placed_svg(raw: bytes, name: str, width: float, height: float) -> bytes:
+    if len(raw) > MAX_SVG_BYTES:
+        raise _too_large(name)
+    root = _parse_svg(raw, name)
+    _clean_tree(root)
+    if _view_box_size(root) is None:
+        _absolute_size(root)
+        natural = [
+            float(ABSOLUTE_NUMBER.match(root.get(key) or "")[0]) for key in ("width", "height")
+        ]
+        root.set("viewBox", f"0 0 {natural[0]:g} {natural[1]:g}")
+    root.set("width", f"{width:g}pt")
+    root.set("height", f"{height:g}pt")
+    root.set("preserveAspectRatio", "none")
+    return etree.tostring(root, xml_declaration=True, encoding="utf-8")

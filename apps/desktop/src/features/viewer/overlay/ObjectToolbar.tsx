@@ -7,8 +7,10 @@ import { ColorSwatch } from "@/components/shared/ColorSwatch";
 import { FontPicker } from "@/components/shared/FontPicker";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useViewerOverlayStore, type BlockAlign, type EditorPending, type ImageRotation } from "@/shared/store/viewerOverlayStore";
+import { DrawingImageButton } from "./drawing/DrawingImageButton";
 import { DRAWING_SPECS } from "./drawing/drawingKinds";
 import { copyEditorObject } from "./editorPaste";
 import { isDrawingImage, isDrawingKind, type DrawingImage } from "./drawing/drawingSource";
@@ -32,6 +34,7 @@ export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { 
   const { t } = useTranslation();
   const toast = useToastStore((state) => state.push);
   const store = useViewerOverlayStore.getState();
+  const documentPath = useDocumentStore((state) => state.documents[documentId]?.path ?? null);
   const toolbarRef = useRef<HTMLDivElement>(null);
   const [measured, setMeasured] = useState<ToolbarSize>({ width: 0, height: 40 });
   const [opacityOpen, setOpacityOpen] = useState(false);
@@ -135,6 +138,7 @@ export function ObjectToolbar({ documentId, item, anchorRect, viewportSize }: { 
   const renderImage = () => (
     <>
       {isDrawingImage(item) ? drawingEditButton(item) : null}
+      {isDrawingImage(item) ? <DrawingImageButton item={item} documentPath={documentPath} /> : null}
       {isDrawingKind(item, "formula") ? <ColorSwatch value={item.drawing.source.color} onChange={(color) => recolorFormula(item, color)} label={t("viewer.formula.color")} customLabel={t("viewer.overlay.customColor")} /> : null}
       {item.kind === "image" && !isDrawingImage(item) ? <ImageAltButton value={item.alt ?? ""} onBegin={() => store.snapshot()} onChange={(alt) => store.updateObject(item.id, { alt })} /> : null}
       {opacityButton}

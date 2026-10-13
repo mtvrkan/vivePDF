@@ -36,6 +36,11 @@ describe("menuFocus", () => {
     expect(menuFocus({ onSelection: false, hasPicture: true })).toBe("picture");
     expect(menuFocus({ onSelection: false, hasPicture: false })).toBe("page");
   });
+
+  it("puts a placed drawing under the pointer first", () => {
+    expect(menuFocus({ onSelection: true, hasPicture: true, hasDrawing: true })).toBe("drawing");
+    expect(menuFocus({ onSelection: false, hasPicture: false, hasDrawing: false })).toBe("page");
+  });
 });
 
 describe("arrangeMenu", () => {
