@@ -53,6 +53,22 @@ describe("reading settings", () => {
     expect(store.readStored().lastPageColors).toBe("dark");
   });
 
+  it("switches reading mode to dark and back to the light theme used before", () => {
+    store.useReadingStore.getState().update({ theme: "sepia" });
+
+    store.toggleReadingDark();
+    expect(store.useReadingStore.getState().theme).toBe("dark");
+    expect(store.readStored()).toMatchObject({ theme: "dark", lightTheme: "sepia" });
+    store.toggleReadingDark();
+
+    expect(store.useReadingStore.getState().theme).toBe("sepia");
+  });
+
+  it("goes back to paper from dark when no light theme was remembered", () => {
+    localStorage.setItem("vivepdf.reading", JSON.stringify({ theme: "dark", lightTheme: "neon" }));
+    expect(store.readStored()).toMatchObject({ theme: "dark", lightTheme: "paper" });
+  });
+
   it("stores a speaker choice with the other reading settings", () => {
     store.useReadingStore.getState().update({ voiceSpeakers: { "en_US-arctic-medium": 4 } });
     const saved = JSON.parse(localStorage.getItem("vivepdf.reading") ?? "{}") as { voiceSpeakers?: Record<string, number>; rate?: number };

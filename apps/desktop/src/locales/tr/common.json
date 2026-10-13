@@ -500,7 +500,8 @@
         "paper": "Kâğıt",
         "sepia": "Sepya",
         "dark": "Koyu"
-      }
+      },
+      "darkTheme": "Koyu okuma teması"
     },
     "translate": {
       "title": "Çevir",

@@ -499,7 +499,8 @@
         "paper": "Papier",
         "sepia": "Sepia",
         "dark": "Dunkel"
-      }
+      },
+      "darkTheme": "Dunkles Lesedesign"
     },
     "translate": {
       "title": "Übersetzen",

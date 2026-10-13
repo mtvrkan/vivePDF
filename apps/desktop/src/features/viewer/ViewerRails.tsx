@@ -6,6 +6,7 @@ import { useZoom } from "@embedpdf/plugin-zoom/react";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { toggleReadingDark, useReadingStore } from "@/shared/store/readingStore";
 import type { ViewerPanels } from "@/shared/store/viewerPanelsStore";
 import { EditorMenu } from "./overlay/EditorMenu";
 import { PageDisplayMenu } from "./PageDisplayMenu";
@@ -62,6 +63,8 @@ export function ToolsRail({ documentId, panels, onTogglePanel, pageColorsOn, onT
   const { t } = useTranslation();
   const { provides: rotate } = useRotate(documentId);
   const { provides: zoom } = useZoom(documentId);
+  const readingDark = useReadingStore((state) => state.theme === "dark");
+  const contrast = panels.reading ? { label: t("viewer.reading.darkTheme"), active: readingDark, onClick: toggleReadingDark } : { label: t("viewer.pageDisplay.pageColors"), active: pageColorsOn, onClick: onTogglePageColors };
   return (
     <Rail label={t("viewer.rails.tools")} side="end">
       <IconButton icon={MessageSquareText} label={t("viewer.comments.title")} active={panels.comments} onClick={() => onTogglePanel("comments")} />
@@ -79,7 +82,7 @@ export function ToolsRail({ documentId, panels, onTogglePanel, pageColorsOn, onT
       <RailDivider />
       <IconButton icon={BookOpenText} label={t("viewer.reading.title")} active={panels.reading} onClick={() => onTogglePanel("reading")} />
       <IconButton icon={Volume2} label={t("viewer.readAloud.title")} active={panels.readAloud} onClick={() => onTogglePanel("readAloud")} />
-      <IconButton icon={Contrast} label={t("viewer.pageDisplay.pageColors")} active={pageColorsOn} onClick={onTogglePageColors} />
+      <IconButton icon={Contrast} label={contrast.label} active={contrast.active} onClick={contrast.onClick} />
       <RailDivider />
       <IconButton icon={Info} label={t("viewer.inspector")} active={panels.inspector} onClick={() => onTogglePanel("inspector")} />
       <span className="min-h-2 flex-1" aria-hidden />

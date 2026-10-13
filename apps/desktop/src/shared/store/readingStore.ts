@@ -3,6 +3,7 @@ import type { ReadingTheme, ReadingWidth } from "@/types";
 import { isPageColorScheme, type PageColorScheme } from "@/shared/lib/pageColors";
 
 const STORAGE_KEY = "vivepdf.reading";
+type LightReadingTheme = Exclude<ReadingTheme, "dark">;
 export const READING_FONT_MIN = 14;
 export const READING_FONT_MAX = 32;
 
@@ -10,6 +11,7 @@ type ReadingSettings = {
   fontSize: number;
   width: ReadingWidth;
   theme: ReadingTheme;
+  lightTheme: LightReadingTheme;
   pageColors: PageColorScheme;
   lastPageColors: Exclude<PageColorScheme, "normal">;
   rate: number;
@@ -17,7 +19,7 @@ type ReadingSettings = {
   voiceSpeakers: Record<string, number>;
 };
 
-const DEFAULTS: ReadingSettings = { fontSize: 19, width: "medium", theme: "paper", pageColors: "normal", lastPageColors: "dark", rate: 1, voiceUri: null, voiceSpeakers: {} };
+const DEFAULTS: ReadingSettings = { fontSize: 19, width: "medium", theme: "paper", lightTheme: "paper", pageColors: "normal", lastPageColors: "dark", rate: 1, voiceUri: null, voiceSpeakers: {} };
 
 function storedSpeakers(value: unknown): Record<string, number> {
   if (!value || typeof value !== "object") return {};
@@ -40,10 +42,12 @@ export function readStored(): ReadingSettings {
     if (!raw) return DEFAULTS;
     const parsed = JSON.parse(raw) as Partial<ReadingSettings> & { invert?: unknown };
     const pageColors = storedPageColors(parsed);
+    const theme = parsed.theme === "sepia" || parsed.theme === "dark" ? parsed.theme : "paper";
     return {
       fontSize: typeof parsed.fontSize === "number" ? Math.min(READING_FONT_MAX, Math.max(READING_FONT_MIN, parsed.fontSize)) : DEFAULTS.fontSize,
       width: parsed.width === "narrow" || parsed.width === "wide" ? parsed.width : "medium",
-      theme: parsed.theme === "sepia" || parsed.theme === "dark" ? parsed.theme : "paper",
+      theme,
+      lightTheme: theme === "sepia" || (theme === "dark" && parsed.lightTheme === "sepia") ? "sepia" : "paper",
       pageColors,
       lastPageColors: storedLastPageColors(parsed.lastPageColors, pageColors),
       rate: typeof parsed.rate === "number" ? Math.min(2, Math.max(0.5, parsed.rate)) : 1,
@@ -72,13 +76,14 @@ export const useReadingStore = create<ReadingState>((set, get) => ({
   scrollRequest: null,
   update: (patch) => {
     const next = { ...get(), ...patch };
+    const lightTheme = next.theme === "dark" ? next.lightTheme : next.theme;
     const { fontSize, width, theme, pageColors, lastPageColors, rate, voiceUri, voiceSpeakers } = next;
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({ fontSize, width, theme, pageColors, lastPageColors, rate, voiceUri, voiceSpeakers }));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ fontSize, width, theme, lightTheme, pageColors, lastPageColors, rate, voiceUri, voiceSpeakers }));
     } catch {
       void 0;
     }
-    set(patch);
+    set({ ...patch, lightTheme });
   },
   setActiveSentence: (value) => set({ activeSentence: value }),
   requestPageScroll: (page) => set({ scrollRequest: page }),
@@ -92,4 +97,9 @@ export function choosePageColors(scheme: PageColorScheme) {
 export function togglePageColors() {
   const { pageColors, lastPageColors } = useReadingStore.getState();
   choosePageColors(pageColors === "normal" ? lastPageColors : "normal");
+}
+
+export function toggleReadingDark() {
+  const { theme, lightTheme } = useReadingStore.getState();
+  useReadingStore.getState().update({ theme: theme === "dark" ? lightTheme : "dark" });
 }

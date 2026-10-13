@@ -499,7 +499,8 @@
         "paper": "Carta",
         "sepia": "Seppia",
         "dark": "Scuro"
-      }
+      },
+      "darkTheme": "Tema di lettura scuro"
     },
     "translate": {
       "title": "Traduci",

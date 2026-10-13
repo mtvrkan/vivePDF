@@ -500,7 +500,8 @@
         "paper": "Paper",
         "sepia": "Sepia",
         "dark": "Dark"
-      }
+      },
+      "darkTheme": "Dark reading theme"
     },
     "translate": {
       "title": "Translate",

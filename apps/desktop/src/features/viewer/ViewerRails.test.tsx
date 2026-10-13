@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { useReadingStore } from "@/shared/store/readingStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import type { ViewerPanels } from "@/shared/store/viewerPanelsStore";
 import { axeViolations } from "@/test/axe";
@@ -74,6 +75,21 @@ describe("ToolsRail", () => {
     fireEvent.click(screen.getByRole("button", { name: "Presentation tools" }));
     expect(onTogglePanel).toHaveBeenCalledWith("present");
     expect(usePresentationStore.getState().tool).toBe("pointer");
+  });
+
+  it("turns reading mode dark from the page colours button while reading", () => {
+    const onTogglePageColors = vi.fn();
+    useReadingStore.getState().update({ theme: "paper" });
+    render(<ToolsRail documentId="doc" panels={{ ...closedPanels, reading: true }} onTogglePanel={vi.fn()} pageColorsOn onTogglePageColors={onTogglePageColors} />);
+    const button = screen.getByRole("button", { name: "Dark reading theme" });
+
+    fireEvent.click(button);
+
+    expect(useReadingStore.getState().theme).toBe("dark");
+    expect(button.getAttribute("aria-pressed")).toBe("true");
+    expect(onTogglePageColors).not.toHaveBeenCalled();
+    fireEvent.click(button);
+    expect(useReadingStore.getState().theme).toBe("paper");
   });
 
   it("enters PDF editing with one click and leaves it with the next", () => {
