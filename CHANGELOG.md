@@ -36,6 +36,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Dark theme hovers are calmer: tool cards and next-step chips light up with a muted tint and a fainter coloured border, tool icon tiles glow less, and menu rows and icon buttons no longer flash a bright top edge; the light theme is unchanged [2026-10-09]
 - Dark theme is easier on the eyes: background washes, the sidebar glow, glass edges and the primary button glow are about half as strong, accent colours are less saturated, and text is a soft off-white on a slightly lifted background instead of bright white on near black; every text colour keeps at least 4.5:1 contrast [2026-10-09]
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
+- Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
 - Viewer: turning a line into a curve is now one undo step instead of two, from the toolbar buttons and from Ctrl+Z / Ctrl+Y [2026-10-13]
@@ -70,6 +71,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Viewer: two vivePDF windows that start at the same moment no longer delete each other's private copies of large PDFs; each run keeps its copies in its own locked folder and clears only folders left behind by runs that are gone [2026-10-13]
 - Tests: end-to-end specs no longer inherit the previous spec's saved session, home layout or collections, and opening a right-click submenu retries the pointer move once before failing [2026-10-13]
 - Viewer: a page number typed right after opening a file is no longer lost when the computer is busy; the viewer keeps the page in view while the first layout settles and lets go as soon as you scroll or click [2026-10-13]
+- Tests: the Studio end-to-end template search accepts both invoice templates now that a modern invoice exists [2026-10-13]
 
 ### Removed
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]

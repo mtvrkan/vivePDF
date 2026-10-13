@@ -200,7 +200,13 @@ describe("studio", () => {
     const pages = () => $$(`[data-testid="studio-pages"] ol[aria-label="${t("studio.pages.label")}"] > li`);
     await $(`[data-studio-tab="templates"]`).click();
     await $(`input[aria-label="${t("studio.templates.search")}"]`).setValue(t("studio.templates.items.invoice"));
-    await browser.waitUntil(async () => (await $$("[data-template]").length) === 1, { timeoutMsg: "the search did not narrow the gallery to the invoice" });
+    await browser.waitUntil(
+      async () => {
+        const names = await $$("[data-template]").map((item) => item.getAttribute("data-template"));
+        return names.includes("invoice") && names.every((name) => /invoice/i.test(name ?? ""));
+      },
+      { timeoutMsg: "the search did not narrow the gallery to the invoices" },
+    );
     const before = await pages().length;
     await $('[data-template="invoice"]').click();
     await browser.waitUntil(async () => (await elements().length) > 20, { timeout: 30000, timeoutMsg: "the invoice template did not fill the canvas" });

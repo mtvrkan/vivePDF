@@ -1,37 +1,21 @@
-import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
-import { isControlTarget, isTextEntryTarget } from "@/shared/lib/typingTarget";
-import type { StudioDesign, StudioElement, StudioPage, StudioTextElement } from "@/types/studio";
-import { heightPatch } from "../graphics/graphicData";
-import { openGraphic } from "../graphics/graphicEditor";
-import { addGuide, guidesOf, moveGuide, removeGuide } from "../model/guides";
-import { duplicateElements, elementBounds, selectionBounds, updateElement, updatePage, moveElements, withoutGroupOf, type Bounds } from "../model/edit";
+import { useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
+import type { StudioPage } from "@/types/studio";
+import { addGuide, guidesOf, removeGuide } from "../model/guides";
+import { duplicateElements, elementBounds, selectionBounds, updatePage, withoutGroupOf, type Bounds } from "../model/edit";
+import { endpointStep, guideStep, moveStep, NO_FEEDBACK, resizeStep, rotateStep, turnStep, type Drag, type DragStep, type Feedback, type MoveDrag } from "./canvasDragSteps";
 import { intersects, snapIndexFor, type Point } from "./canvasGeometry";
-import type { Readout } from "./CanvasMarks";
-import { applyCrop, beginCrop, croppable, useCropStore } from "./cropMode";
+import { openOnDoubleClick } from "./canvasDoubleClick";
+import { applyCrop, useCropStore } from "./cropMode";
 import type { RulerHandlers } from "./Rulers";
-import { lineEndpoints, moveLineEnd, type LineEnd } from "./lineGeometry";
-import { measureAround, snapMove, snapPoint, snapPosition, snapResize, type Axis, type SnapIndex, type SnapLine, type Span } from "./snapping";
-import { textEditorEntry } from "./textEditorBridge";
-import { boundsOf, ratioLocked, resizeBox, rotateElements, rotationFromPointer, scaleElements, turnFromPointer, type Handle } from "./transform";
+import { lineEndpoints, type LineEnd } from "./lineGeometry";
+import type { Axis } from "./snapping";
+import { boundsOf, type Handle } from "./transform";
 import { currentPage, useStudioStore } from "./studioStore";
+import { useSpacePan } from "./useSpacePan";
 import { useViewPrefs } from "./viewPrefs";
 
 const DRAG_THRESHOLD = 3;
 const SNAP_PIXELS = 6;
-
-type Drag =
-  | { kind: "move"; before: StudioDesign; base: StudioDesign; ids: string[]; original: string[]; origin: Point; moved: boolean; duplicate: boolean; index: SnapIndex; start: Bounds; anchor: Point }
-  | { kind: "resize"; before: StudioDesign; handle: Handle; elements: StudioElement[]; origin: Point; start: Bounds; index: SnapIndex }
-  | { kind: "rotate"; before: StudioDesign; element: StudioElement }
-  | { kind: "endpoint"; before: StudioDesign; element: StudioElement; which: LineEnd; grab: Point; index: SnapIndex }
-  | { kind: "turn"; before: StudioDesign; elements: StudioElement[]; centre: Point; origin: Point; box: Bounds }
-  | { kind: "guide"; before: StudioDesign; pageId: string; index: number; axis: Axis; created: boolean; removing: boolean; snap: SnapIndex }
-  | { kind: "marquee"; origin: Point; base: string[] }
-  | { kind: "pan"; origin: Point; scroll: Point };
-
-export type Feedback = { lines: SnapLine[]; gaps: Span[]; distances: Span[]; readout: Readout | null };
-
-const NO_FEEDBACK: Feedback = { lines: [], gaps: [], distances: [], readout: null };
 
 type CanvasPointer = {
   viewportRef: RefObject<HTMLDivElement | null>;
@@ -49,53 +33,23 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
   const [hover, setHover] = useState<string | null>(null);
   const [turn, setTurn] = useState<{ box: Bounds; angle: number } | null>(null);
   const [movingGuide, setMovingGuide] = useState<{ index: number; removing: boolean } | null>(null);
-  const [panReady, setPanReady] = useState(false);
   const [panning, setPanning] = useState(false);
-  const spaceHeld = useRef(false);
-
-  useEffect(() => {
-    const release = () => {
-      spaceHeld.current = false;
-      setPanReady(false);
-    };
-    const onKeyDown = (event: KeyboardEvent) => {
-      const current = drag.current;
-      if (event.key === "Escape" && current) {
-        event.preventDefault();
-        event.stopPropagation();
-        drag.current = null;
-        setFeedback(NO_FEEDBACK);
-        setMarquee(null);
-        setTurn(null);
-        setMovingGuide(null);
-        setPanning(false);
-        const state = useStudioStore.getState();
-        if (current.kind === "marquee") state.select(current.base);
-        else if (current.kind !== "pan") state.preview(() => current.before);
-        state.setInteracting(false);
-        if (current.kind === "move" && current.ids !== current.original) state.select(current.original);
-        return;
-      }
-      if (event.code !== "Space" || event.ctrlKey || event.metaKey || event.altKey || isTextEntryTarget(event.target) || isControlTarget(event.target)) return;
-      if (document.querySelector('[role="dialog"]')) return;
-      event.preventDefault();
-      if (!spaceHeld.current) {
-        spaceHeld.current = true;
-        setPanReady(true);
-      }
-    };
-    const onKeyUp = (event: KeyboardEvent) => {
-      if (event.code === "Space") release();
-    };
-    window.addEventListener("keydown", onKeyDown, true);
-    window.addEventListener("keyup", onKeyUp, true);
-    window.addEventListener("blur", release);
-    return () => {
-      window.removeEventListener("keydown", onKeyDown, true);
-      window.removeEventListener("keyup", onKeyUp, true);
-      window.removeEventListener("blur", release);
-    };
-  }, []);
+  const { spaceHeld, panReady } = useSpacePan(() => {
+    const current = drag.current;
+    if (!current) return false;
+    drag.current = null;
+    setFeedback(NO_FEEDBACK);
+    setMarquee(null);
+    setTurn(null);
+    setMovingGuide(null);
+    setPanning(false);
+    const state = useStudioStore.getState();
+    if (current.kind === "marquee") state.select(current.base);
+    else if (current.kind !== "pan") state.preview(() => current.before);
+    state.setInteracting(false);
+    if (current.kind === "move" && current.ids !== current.original) state.select(current.original);
+    return true;
+  });
 
   const toPage = (clientX: number, clientY: number): Point => {
     const rect = pageRef.current?.getBoundingClientRect();
@@ -127,7 +81,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
     };
   };
 
-  const startDuplicate = (current: Extract<Drag, { kind: "move" }>) => {
+  const startDuplicate = (current: MoveDrag) => {
     const source = current.before.pages.find((item) => item.id === page.id);
     if (!source) return;
     const chosen = new Set(current.ids);
@@ -255,15 +209,18 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
       return;
     }
     if (current.kind !== "move") state.setInteracting(true);
+    const context = { pageId: page.id, point, shiftKey: event.shiftKey, altKey: event.altKey, snap: snapping(event), tolerance, number, degrees };
+    const apply = (step: DragStep) => {
+      if (step.turn) setTurn(step.turn);
+      setFeedback(step.feedback);
+      state.preview(step.preview);
+    };
     if (current.kind === "guide") {
-      const raw = current.axis === "x" ? point.x : point.y;
-      const position = snapping(event) ? snapPosition(current.snap, current.axis, raw, tolerance) : raw;
       const view = viewportRef.current?.getBoundingClientRect();
       const removing = view ? (current.axis === "x" ? event.clientX < view.left : event.clientY < view.top) : false;
       current.removing = removing;
-      state.preview((next) => updatePage(next, current.pageId, (item) => moveGuide(item, current.index, position)));
       setMovingGuide({ index: current.index, removing });
-      setFeedback({ ...NO_FEEDBACK, readout: removing ? null : { text: `${current.axis === "x" ? "X" : "Y"} ${number(position)} mm`, x: point.x, y: point.y } });
+      apply(guideStep(current, context, removing));
       return;
     }
     if (current.kind === "move") {
@@ -279,69 +236,10 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
         if (Math.abs(dx) > Math.abs(dy)) dy = 0;
         else dx = 0;
       }
-      let lines: SnapLine[] = [];
-      let gaps: Span[] = [];
-      if (snapping(event)) {
-        const snapped = snapMove({ ...current.start, x: current.start.x + dx, y: current.start.y + dy }, current.index, tolerance);
-        dx += snapped.dx;
-        dy += snapped.dy;
-        lines = snapped.lines;
-        gaps = snapped.spans;
-      }
-      const box = { ...current.start, x: current.start.x + dx, y: current.start.y + dy };
-      const distances = measureAround(current.index, box).filter((span) => !gaps.some((gap) => gap.axis === span.axis));
-      setFeedback({ lines, gaps, distances, readout: { text: `X ${number(current.anchor.x + dx)}  Y ${number(current.anchor.y + dy)} mm`, x: point.x, y: point.y } });
-      const ids = current.ids;
-      state.preview(() => updatePage(current.base, page.id, (item) => moveElements(item, ids, dx, dy)));
+      apply(moveStep(current, context, { x: dx, y: dy }));
       return;
     }
-    if (current.kind === "rotate") {
-      const element = current.element;
-      const rotation = rotationFromPointer({ x: element.x + element.width / 2, y: element.y + element.height / 2 }, point, { step: event.shiftKey });
-      setFeedback({ ...NO_FEEDBACK, readout: { text: degrees(rotation), x: point.x, y: point.y } });
-      state.preview(() => updatePage(current.before, page.id, (item) => updateElement(item, element.id, { rotation })));
-      return;
-    }
-    if (current.kind === "endpoint") {
-      const raw = { x: point.x + current.grab.x, y: point.y + current.grab.y };
-      const snapped = !event.shiftKey && snapping(event) ? snapPoint(current.index, raw, tolerance) : { ...raw, lines: [] };
-      const patch = moveLineEnd(current.element, current.which, snapped, { step: event.shiftKey });
-      setFeedback({ ...NO_FEEDBACK, lines: snapped.lines, readout: { text: `${number(patch.width)} mm  ${degrees(patch.rotation)}`, x: point.x, y: point.y } });
-      state.preview(() => updatePage(current.before, page.id, (item) => updateElement<StudioElement>(item, current.element.id, patch)));
-      return;
-    }
-    if (current.kind === "turn") {
-      const angle = turnFromPointer(current.centre, current.origin, point, { step: event.shiftKey });
-      const turned = rotateElements(current.elements, current.centre, angle);
-      setTurn({ box: current.box, angle });
-      setFeedback({ ...NO_FEEDBACK, readout: { text: degrees(angle), x: point.x, y: point.y } });
-      state.preview(() => updatePage(current.before, page.id, (item) => turned.reduce((acc, element) => updateElement<StudioElement>(acc, element.id, element), item)));
-      return;
-    }
-    const dx = point.x - current.origin.x;
-    const dy = point.y - current.origin.y;
-    const corner = current.handle.length === 2;
-    const snap = snapping(event);
-    if (current.elements.length === 1) {
-      const element = current.elements[0];
-      const keepRatio = corner && (ratioLocked(element) ? !event.shiftKey : event.shiftKey);
-      const options = { keepRatio, fromCenter: event.altKey };
-      const result = snap ? snapResize(element, current.handle, dx, dy, options, current.index, tolerance) : { box: resizeBox(element, current.handle, dx, dy, options), lines: [] };
-      const box = result.box;
-      const patch: Partial<StudioElement> = { x: box.x, y: box.y, width: box.width, ...heightPatch(element, box.height) };
-      if (element.kind === "text" && corner && keepRatio) (patch as Partial<StudioTextElement>).fontSize = Math.max(1, Math.min(1000, element.fontSize * (box.width / element.width)));
-      if (element.kind === "qr") patch.height = box.width;
-      setFeedback({ ...NO_FEEDBACK, lines: result.lines, readout: { text: `${number(box.width)} × ${number(patch.height ?? box.height)} mm`, x: point.x, y: point.y } });
-      state.preview(() => updatePage(current.before, page.id, (item) => updateElement(item, element.id, patch)));
-      return;
-    }
-    const options = { keepRatio: !event.shiftKey, fromCenter: event.altKey };
-    const frame = { ...current.start, rotation: 0 };
-    const result = snap ? snapResize(frame, current.handle, dx, dy, options, current.index, tolerance) : { box: resizeBox(frame, current.handle, dx, dy, options), lines: [] };
-    const target = { x: result.box.x, y: result.box.y, width: result.box.width, height: result.box.height };
-    const scaled = scaleElements(current.elements, current.start, target);
-    setFeedback({ ...NO_FEEDBACK, lines: result.lines, readout: { text: `${number(target.width)} × ${number(target.height)} mm`, x: point.x, y: point.y } });
-    state.preview(() => updatePage(current.before, page.id, (item) => scaled.reduce((acc, element) => updateElement<StudioElement>(acc, element.id, element), item)));
+    apply(current.kind === "rotate" ? rotateStep(current, context) : current.kind === "endpoint" ? endpointStep(current, context) : current.kind === "turn" ? turnStep(current, context) : resizeStep(current, context));
   };
 
   const onPointerUp = () => {
@@ -375,28 +273,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
     store().applyToPage((current) => addGuide(current, axis === "x" ? { axis: "x", position: point.x } : { axis: "y", position: point.y }));
   };
 
-  const onDoubleClick = (event: React.MouseEvent) => {
-    const guide = (event.target as HTMLElement).closest<HTMLElement>("[data-guide]");
-    if (guide) {
-      const index = Number(guide.dataset.guide);
-      store().applyToPage((current) => removeGuide(current, index));
-      return;
-    }
-    const hit = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-element-id]")?.dataset.elementId;
-    const element = page.elements.find((item) => item.id === hit);
-    const state = store();
-    if (element && element.groupId !== null && !(state.groupScope === element.groupId && state.selection.includes(element.id))) {
-      state.enterGroup(element.id);
-      return;
-    }
-    if (element && openGraphic(element, { x: event.clientX, y: event.clientY })) return;
-    if (element?.kind === "text" && !element.locked) {
-      store().select([element.id]);
-      textEditorEntry.point = { x: event.clientX, y: event.clientY };
-      store().setEditing(element.id);
-    }
-    if (croppable(element)) void beginCrop(element);
-  };
+  const onDoubleClick = (event: ReactMouseEvent) => openOnDoubleClick(event, page);
 
   return {
     feedback,
