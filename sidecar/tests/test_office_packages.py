@@ -227,6 +227,7 @@ def linux_install(monkeypatch, tmp_path, checksum: str | None):
     monkeypatch.setattr(office_download.platform, "machine", lambda: "x86_64")
     monkeypatch.setattr(office_download, "candidate_versions", lambda: ["26.2.6"])
     monkeypatch.setattr(office_download, "probe", lambda _url: office_download.Probe(True, 1))
+    monkeypatch.setattr(office_packages, "gpgv_path", lambda: None)
     urls: list[str] = []
 
     def download(url, target, _progress, _expected=None):
@@ -279,9 +280,9 @@ def test_linux_install_stages_beside_the_office_folder_and_clears_old_staging(
     seen: list[Path] = []
     real_extract = office_packages.extract_debs
 
-    def extract(tarball, destination, on_package):
+    def extract(tarball, destination, on_package, version=None):
         seen.append(tarball)
-        real_extract(tarball, destination, on_package)
+        real_extract(tarball, destination, on_package, version)
 
     monkeypatch.setattr(office_packages, "extract_debs", extract)
     office.office_install(office.OfficeInstallParams(), silent_progress())
@@ -289,6 +290,84 @@ def test_linux_install_stages_beside_the_office_folder_and_clears_old_staging(
     assert seen[0].parent.parent == tmp_path
     assert seen[0].parent.name.startswith(office.STAGING_PREFIX)
     assert sorted(path.name for path in tmp_path.iterdir()) == ["office", "source.tar.gz"]
+
+
+UNSIGNED_ERROR = {"tool": "gpgv", "reason": "officeUnsigned", "phase": "verify"}
+
+
+def signed_linux_install(monkeypatch, tmp_path, verdicts: list[str]):
+    urls, checked = linux_install(monkeypatch, tmp_path, None)
+    monkeypatch.setattr(office_packages, "gpgv_path", lambda: "gpgv")
+    fetched: list[str] = []
+    verified: list[bytes] = []
+
+    def fetch_signature(url):
+        fetched.append(url)
+        verdict = verdicts.pop(0)
+        if verdict == "missing":
+            raise OpError(ErrorCode.NETWORK, "no signature", UNSIGNED_ERROR)
+        return verdict.encode()
+
+    def verify(_installer, signature, gpgv):
+        assert gpgv == "gpgv"
+        verified.append(signature)
+        if signature != b"good":
+            raise OpError(ErrorCode.EXTERNAL_TOOL_FAILED, "bad signature", UNSIGNED_ERROR)
+
+    monkeypatch.setattr(office_download, "fetch_signature", fetch_signature)
+    monkeypatch.setattr(office_packages, "verify_deb_signature", verify)
+    return urls, checked, fetched, verified
+
+
+def mirror_url(index: int) -> str:
+    package = office_download.PACKAGES[("linux", "x86_64")]
+    return f"{office_download.MIRRORS[index]}{package.path('26.2.6')}"
+
+
+def test_a_signed_linux_download_needs_nothing_from_the_foundation_server(monkeypatch, tmp_path):
+    urls, checked, fetched, verified = signed_linux_install(monkeypatch, tmp_path, ["good"])
+
+    status = office.office_install(office.OfficeInstallParams(), silent_progress())
+
+    assert status.installed is True
+    assert fetched == urls == [mirror_url(0)]
+    assert verified == [b"good"]
+    assert checked == []
+
+
+def test_a_badly_signed_or_unsigned_mirror_is_skipped_for_the_next_one(monkeypatch, tmp_path):
+    urls, _checked, fetched, _verified = signed_linux_install(
+        monkeypatch, tmp_path, ["missing", "forged", "good"]
+    )
+
+    status = office.office_install(office.OfficeInstallParams(), silent_progress())
+
+    assert status.installed is True
+    assert fetched == [mirror_url(0), mirror_url(1), mirror_url(2)]
+    assert urls == [mirror_url(1), mirror_url(2)]
+
+
+def test_a_signed_archive_of_another_version_is_refused(monkeypatch, tmp_path):
+    signed_linux_install(monkeypatch, tmp_path, ["good"])
+    monkeypatch.setattr(office_download, "candidate_versions", lambda: ["26.8.1"])
+
+    with pytest.raises(OpError) as caught:
+        office.office_install(office.OfficeInstallParams(), silent_progress())
+
+    assert caught.value.data == {"tool": "deb", "reason": "officeUnsigned", "phase": "verify"}
+    assert not (tmp_path / "office").exists()
+
+
+def test_extract_debs_accepts_the_version_it_was_asked_for(tmp_path):
+    bundle = write_bundle(tmp_path / "bundle.tar.gz")
+    unpacked = tmp_path / "unpacked"
+    unpacked.mkdir()
+
+    office_packages.extract_debs(bundle, unpacked, lambda *_args: None, "26.2.6")
+
+    assert (unpacked / OFFICE_ROOT / "program" / "soffice").is_file()
+    with pytest.raises(OpError):
+        office_packages.extract_debs(bundle, unpacked, lambda *_args: None, "26.2.60")
 
 
 class ToolRecorder:

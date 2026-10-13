@@ -81,7 +81,9 @@ class OfficeInstallParams(RpcModel):
     pass
 
 
-def _unpack_debs(tarball: Path, directory: Path, staging: Path, progress: Progress) -> None:
+def _unpack_debs(
+    tarball: Path, directory: Path, staging: Path, progress: Progress, version: str | None
+) -> None:
     unpacked = staging / "unpacked"
     unpacked.mkdir()
 
@@ -90,13 +92,21 @@ def _unpack_debs(tarball: Path, directory: Path, staging: Path, progress: Progre
         share = (1.0 - DOWNLOAD_PHASE - DEB_PHASE) * index / total
         progress.report(DOWNLOAD_PHASE + share, "progress.installing", {})
 
-    office_packages.extract_debs(tarball, unpacked, on_package)
+    office_packages.extract_debs(tarball, unpacked, on_package, version)
     office_packages.flatten_office_tree(unpacked, directory)
 
 
-def _verify(package: OfficePackage, source: office_download.Source, installer: Path) -> None:
+def _verify(
+    package: OfficePackage,
+    source: office_download.Source,
+    installer: Path,
+    gpgv: str | None,
+    signature: bytes | None,
+) -> None:
     if package.kind == "msi":
         office_packages.verify_msi_publisher(installer)
+    elif package.kind == "deb" and gpgv is not None and signature is not None:
+        office_packages.verify_deb_signature(installer, signature, gpgv)
     elif package.kind == "deb":
         office_download.verify_checksum(
             office_download.installer_url(source.version, package), installer
@@ -104,26 +114,33 @@ def _verify(package: OfficePackage, source: office_download.Source, installer: P
 
 
 def _unpack(
-    package: OfficePackage, installer: Path, directory: Path, staging: Path, progress: Progress
+    package: OfficePackage,
+    installer: Path,
+    directory: Path,
+    staging: Path,
+    progress: Progress,
+    version: str | None,
 ) -> None:
     progress.report(DOWNLOAD_PHASE, "progress.installing", {})
     if package.kind == "msi":
         office_packages.extract_msi(installer, directory)
     elif package.kind == "deb":
-        _unpack_debs(installer, directory, staging, progress)
+        _unpack_debs(installer, directory, staging, progress, version)
     else:
         office_packages.install_app_bundle(installer, directory, staging / "mount")
 
 
-def _fetch_verified(package: OfficePackage, installer: Path, progress: Progress) -> None:
+def _fetch_verified(package: OfficePackage, installer: Path, progress: Progress) -> str:
     last_error: OpError | None = None
     attempts = 0
+    gpgv = office_packages.gpgv_path() if package.kind == "deb" else None
     for source in office_download.sources(package, office_download.candidate_versions()):
         progress.check_cancelled()
         attempts += 1
         try:
+            signature = office_download.fetch_signature(source.url) if gpgv else None
             office_download.download(source.url, installer, progress, source.size)
-            _verify(package, source, installer)
+            _verify(package, source, installer, gpgv, signature)
         except OpError as error:
             if (error.data or {}).get("phase") not in RETRIED_PHASES:
                 raise
@@ -131,7 +148,7 @@ def _fetch_verified(package: OfficePackage, installer: Path, progress: Progress)
             if attempts >= MAX_INSTALLER_DOWNLOADS:
                 raise
             continue
-        return
+        return source.version
     raise last_error or OpError(
         ErrorCode.NETWORK,
         "no download server offered the installer",
@@ -202,11 +219,12 @@ def _install(progress: Progress) -> OfficeStatusResult:
     installer = staging / f"libreoffice.{package.kind}"
     try:
         bundled = office_download.bundled_installer()
+        version: str | None = None
         if bundled is not None:
             _copy_bundled(bundled, installer, progress)
         else:
-            _fetch_verified(package, installer, progress)
-        _unpack(package, installer, fresh, staging, progress)
+            version = _fetch_verified(package, installer, progress)
+        _unpack(package, installer, fresh, staging, progress, version)
         _prune(fresh)
         if not libreoffice.office_candidates(fresh):
             raise OpError(

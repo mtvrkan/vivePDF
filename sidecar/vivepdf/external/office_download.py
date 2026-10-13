@@ -44,6 +44,8 @@ DOWNLOAD_PHASE = 0.85
 CHECKSUM_SUFFIX = ".sha256"
 CHECKSUM_PATTERN = re.compile(r"^([0-9a-fA-F]{64})\s+\*?(\S+)\s*$")
 MAX_CHECKSUM_BYTES = 4096
+SIGNATURE_SUFFIX = ".asc"
+MAX_SIGNATURE_BYTES = 16 * 1024
 
 
 PackageKind = Literal["msi", "dmg", "deb"]
@@ -268,6 +270,21 @@ def expected_checksum(url: str) -> str:
             {"reason": "officeChecksum", "phase": "verify", "tool": "sha256"},
         )
     return matched.group(1).lower()
+
+
+def _signature_error(code: ErrorCode, message: str) -> OpError:
+    return OpError(code, message, {"reason": "officeUnsigned", "phase": "verify", "tool": "gpgv"})
+
+
+def fetch_signature(url: str) -> bytes:
+    try:
+        with _open(_request(url + SIGNATURE_SUFFIX), CHECKSUM_TIMEOUT) as response:
+            body = response.read(MAX_SIGNATURE_BYTES + 1)
+    except (URLError, OSError, ValueError) as error:
+        raise _signature_error(ErrorCode.NETWORK, f"signature download failed: {error}") from error
+    if not body or len(body) > MAX_SIGNATURE_BYTES:
+        raise _signature_error(ErrorCode.EXTERNAL_TOOL_FAILED, "signature file is malformed")
+    return body
 
 
 def _file_checksum(path: Path) -> str:

@@ -1,10 +1,12 @@
 import contextlib
+import hashlib
 import io
 import json
 import os
 import shutil
 import subprocess
 import tarfile
+import tempfile
 from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
@@ -50,6 +52,13 @@ SIGNATURE_SCRIPT = (
     "kind = [string]$signature.SignatureType; name = [string]$name; "
     "subject = [string]$certificate.Subject}"
 )
+TDF_SIGNING_FINGERPRINT = "C2839ECAD9408FBE9531C3E9F434A1EFAFEEAEA3"
+TDF_KEYRING = Path(__file__).resolve().parent.parent / "assets" / "keys" / "tdf-release.gpg"
+TDF_KEYRING_SHA256 = "7b69a300f90fc9fb393f73cf08989b19388b5216bedcc6f91a958cbb21e15cf4"
+GPGV_TIMEOUT = 600.0
+REJECTED_STATUSES = frozenset({"BADSIG", "ERRSIG", "NO_PUBKEY", "EXPSIG", "EXPKEYSIG", "REVKEYSIG"})
+STRONG_HASHES = frozenset({"8", "9", "10"})
+BINARY_SIGNATURE_CLASS = "00"
 SIGNING_REQUIREMENT = (
     "=anchor apple generic"
     " and certificate 1[field.1.2.840.113635.100.6.2.6] exists"
@@ -96,12 +105,34 @@ def _inside_only(member: tarfile.TarInfo, destination: str) -> tarfile.TarInfo |
         return None
 
 
-def extract_debs(tarball: Path, destination: Path, on_package: Callable[[int, int], None]) -> None:
+def _unsigned(message: str, tool: str) -> OpError:
+    return OpError(
+        ErrorCode.EXTERNAL_TOOL_FAILED,
+        message,
+        {"tool": tool, "reason": "officeUnsigned", "phase": "verify"},
+    )
+
+
+def _released_as(name: str, version: str) -> bool:
+    parts = Path(name).parts
+    return bool(parts) and parts[0].startswith(f"LibreOffice_{version}.")
+
+
+def extract_debs(
+    tarball: Path,
+    destination: Path,
+    on_package: Callable[[int, int], None],
+    version: str | None = None,
+) -> None:
     try:
         with tarfile.open(tarball, "r:*") as outer:
             packages = [member for member in outer.getmembers() if wanted_deb(member.name)]
             if not packages:
                 raise _package_error("archive holds no LibreOffice packages", "deb")
+            if version is not None and not all(
+                _released_as(member.name, version) for member in packages
+            ):
+                raise _unsigned(f"archive does not hold LibreOffice {version}", "deb")
             for index, member in enumerate(packages):
                 on_package(index, len(packages))
                 handle = outer.extractfile(member)
@@ -273,3 +304,64 @@ def extract_msi(installer: Path, directory: Path) -> None:
             f"msiexec exited with {completed.returncode}",
             {"tool": "msiexec", "code": completed.returncode},
         )
+
+
+def gpgv_path() -> str | None:
+    return shutil.which("gpgv", path=system_environment().get("PATH"))
+
+
+def signed_by(status: str, fingerprint: str) -> bool:
+    good = 0
+    valid: list[list[str]] = []
+    for line in status.splitlines():
+        fields = line.split()
+        if len(fields) < 2 or fields[0] != "[GNUPG:]":
+            continue
+        if fields[1] in REJECTED_STATUSES:
+            return False
+        if fields[1] == "GOODSIG":
+            good += 1
+        elif fields[1] == "VALIDSIG":
+            valid.append(fields[2:])
+    if good != 1 or len(valid) != 1 or len(valid[0]) != 10:
+        return False
+    signature = valid[0]
+    return (
+        signature[9].upper() == fingerprint
+        and signature[7] in STRONG_HASHES
+        and signature[8] == BINARY_SIGNATURE_CLASS
+    )
+
+
+def _keyring_digest() -> str:
+    try:
+        return hashlib.sha256(TDF_KEYRING.read_bytes()).hexdigest()
+    except OSError:
+        return ""
+
+
+def verify_deb_signature(installer: Path, signature: bytes, gpgv: str) -> None:
+    if _keyring_digest() != TDF_KEYRING_SHA256:
+        raise _unsigned("the pinned Document Foundation key is missing or damaged", "gpgv")
+    with tempfile.TemporaryDirectory(prefix=".vivepdf-gpgv-", dir=installer.parent) as scratch:
+        home = Path(scratch) / "home"
+        home.mkdir(mode=0o700)
+        detached = Path(scratch) / "installer.asc"
+        detached.write_bytes(signature)
+        arguments = [
+            gpgv,
+            "--homedir",
+            str(home),
+            "--status-fd",
+            "1",
+            "--keyring",
+            str(TDF_KEYRING),
+            str(detached),
+            str(installer),
+        ]
+        try:
+            completed = run_tool(arguments, GPGV_TIMEOUT, "gpgv", env=system_environment())
+        except OpError as error:
+            raise _unsigned(f"signature check failed: {error}", "gpgv") from error
+    if not signed_by(completed.stdout or "", TDF_SIGNING_FINGERPRINT):
+        raise _unsigned("installer is not signed by The Document Foundation", "gpgv")
