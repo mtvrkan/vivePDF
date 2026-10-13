@@ -69,6 +69,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio documents: code blocks and table header rows are shaded again in the PDF, and the shading no longer leaves a stray strip at the top of every later page [2026-10-09]
 - Viewer: two vivePDF windows that start at the same moment no longer delete each other's private copies of large PDFs; each run keeps its copies in its own locked folder and clears only folders left behind by runs that are gone [2026-10-13]
 - Tests: end-to-end specs no longer inherit the previous spec's saved session, home layout or collections, and opening a right-click submenu retries the pointer move once before failing [2026-10-13]
+- Viewer: a page number typed right after opening a file is no longer lost when the computer is busy; the viewer keeps the page in view while the first layout settles and lets go as soon as you scroll or click [2026-10-13]
 
 ### Removed
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
