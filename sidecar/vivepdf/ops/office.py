@@ -105,6 +105,7 @@ def _verify(
 ) -> None:
     if package.kind == "msi":
         office_packages.verify_msi_publisher(installer)
+        office_packages.verify_msi_version(installer, source.version)
     elif package.kind == "deb" and gpgv is not None and signature is not None:
         office_packages.verify_deb_signature(installer, signature, gpgv)
     elif package.kind == "deb":

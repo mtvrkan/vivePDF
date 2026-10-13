@@ -78,6 +78,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 
 ### Security
+- Windows LibreOffice setup: the downloaded installer must report the version vivePDF asked for, so a mirror can no longer pass off an older signed release as the current one [2026-10-13]
 - Trusted certificates: a trust list added without a confirmed signer is now kept apart from the confirmed list of the same name, so it can no longer remove the roots the confirmed list added; the next confirmed copy of that list does remove what an unconfirmed copy left behind [2026-10-13]
 - Tools and saves can no longer write into the engine's own data folder (trusted certificates, drafts, fonts), so a page script cannot plant a trusted certificate through a tool's output [2026-10-13]
 - Files: the app now only opens, views and saves files you chose in a file dialog, dragged in, opened from the system or that vivePDF itself produced (plus its own temporary and data folders); a page script can no longer read or overwrite arbitrary files through the app. Files from your recent list, session and collections are carried over once on the first start, and a file vivePDF no longer recognises shows a "Choose file…" button. The app's own settings folders can no longer be written by tools or saves [2026-10-13]

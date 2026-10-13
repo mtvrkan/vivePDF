@@ -232,7 +232,7 @@ def test_verify_publisher_rejects_untrusted_installers(monkeypatch, tmp_path, si
     }
 
 
-def windows_install(monkeypatch, tmp_path, signature, downloads: list[str]):
+def windows_install(monkeypatch, tmp_path, signature, downloads: list[str], product="26.2.6.3"):
     monkeypatch.setenv("VIVEPDF_OFFICE_DIR", str(tmp_path / "office"))
     monkeypatch.setattr(office_download.sys, "platform", "win32")
     monkeypatch.setattr(office_download.platform, "machine", lambda: "AMD64")
@@ -250,6 +250,7 @@ def windows_install(monkeypatch, tmp_path, signature, downloads: list[str]):
 
     monkeypatch.setattr(office_download, "download", download)
     monkeypatch.setattr(office_packages, "msi_signature", lambda _path: signature)
+    monkeypatch.setattr(office_packages, "msi_product_version", lambda _path: product)
 
 
 def test_install_verifies_the_signature_before_extracting(monkeypatch, tmp_path):
@@ -312,6 +313,38 @@ def test_install_moves_on_to_the_next_mirror_when_a_download_breaks(monkeypatch,
     )
 
 
+@pytest.mark.parametrize("product", ["26.2.5.2", "26.2.60.1", ""])
+def test_a_signed_installer_of_another_version_is_refused_on_every_mirror(
+    monkeypatch, tmp_path, product
+):
+    downloads: list[str] = []
+    windows_install(monkeypatch, tmp_path, signed(), downloads, product)
+    extracted: list[Path] = []
+    monkeypatch.setattr(
+        office_packages, "extract_msi", lambda installer, *_args: extracted.append(installer)
+    )
+
+    with pytest.raises(OpError) as caught:
+        office.office_install(office.OfficeInstallParams(), silent_progress())
+
+    assert caught.value.data == {
+        "tool": "msi",
+        "reason": "officeUnsigned",
+        "phase": "verify",
+        "product": product,
+    }
+    assert extracted == []
+    assert len(set(downloads)) == office.MAX_INSTALLER_DOWNLOADS
+
+
+@pytest.mark.parametrize(
+    ("product", "accepted"),
+    [("26.2.6", True), ("26.2.6.3", True), ("26.2.60.1", False), ("26.2.5.9", False), ("", False)],
+)
+def test_released_version_matches_only_the_requested_release(product, accepted):
+    assert office_packages.released_version(product, "26.2.6") is accepted
+
+
 def test_install_says_no_server_offered_the_installer(monkeypatch, tmp_path):
     windows_install(monkeypatch, tmp_path, signed(), [])
     monkeypatch.setattr(office_download, "probe", lambda _url: office_download.Probe(False, None))
@@ -320,6 +353,14 @@ def test_install_says_no_server_offered_the_installer(monkeypatch, tmp_path):
     assert caught.value.code == ErrorCode.NETWORK
     assert caught.value.data == {"reason": "officeDownload", "phase": "download"}
     assert not (tmp_path / "office").exists()
+
+
+@pytest.mark.skipif(sys.platform != "win32", reason="Windows Installer is Windows-only")
+def test_a_file_that_is_not_an_installer_has_no_version(tmp_path):
+    broken = tmp_path / "broken.msi"
+    broken.write_bytes(b"not an installer")
+
+    assert office_packages.msi_product_version(broken) == ""
 
 
 @pytest.mark.skipif(sys.platform != "win32", reason="Authenticode is Windows-only")

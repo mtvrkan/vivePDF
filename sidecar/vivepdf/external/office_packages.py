@@ -52,6 +52,15 @@ SIGNATURE_SCRIPT = (
     "kind = [string]$signature.SignatureType; name = [string]$name; "
     "subject = [string]$certificate.Subject}"
 )
+MSI_FILE_VARIABLE = "VIVEPDF_MSI_FILE"
+MSI_VERSION_SCRIPT = (
+    "$installer = New-Object -ComObject WindowsInstaller.Installer; "
+    f"$database = $installer.OpenDatabase($env:{MSI_FILE_VARIABLE}, 0); "
+    "$view = $database.OpenView("
+    "\"SELECT Value FROM Property WHERE Property = 'ProductVersion'\"); "
+    "$view.Execute(); $record = $view.Fetch(); "
+    "if ($record) { [Console]::Out.Write($record.StringData(1)) }; $view.Close()"
+)
 TDF_SIGNING_FINGERPRINT = "C2839ECAD9408FBE9531C3E9F434A1EFAFEEAEA3"
 TDF_KEYRING = Path(__file__).resolve().parent.parent / "assets" / "keys" / "tdf-release.gpg"
 TDF_KEYRING_SHA256 = "7b69a300f90fc9fb393f73cf08989b19388b5216bedcc6f91a958cbb21e15cf4"
@@ -115,7 +124,12 @@ def _unsigned(message: str, tool: str) -> OpError:
 
 def _released_as(name: str, version: str) -> bool:
     parts = Path(name).parts
-    return bool(parts) and parts[0].startswith(f"LibreOffice_{version}.")
+    prefix = "LibreOffice_"
+    return (
+        bool(parts)
+        and parts[0].startswith(prefix)
+        and released_version(parts[0].removeprefix(prefix).split("_", 1)[0], version)
+    )
 
 
 def extract_debs(
@@ -275,6 +289,42 @@ def verify_msi_publisher(installer: Path) -> None:
                 "status": signature.status,
                 "subject": signature.subject,
             },
+        )
+
+
+def released_version(product: str, version: str) -> bool:
+    return product == version or product.startswith(f"{version}.")
+
+
+def msi_product_version(installer: Path) -> str:
+    command = ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", MSI_VERSION_SCRIPT]
+    environment = {**os.environ, MSI_FILE_VARIABLE: str(installer)}
+    try:
+        completed = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            timeout=SIGNATURE_TIMEOUT,
+            check=False,
+            env=environment,
+            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+        )
+    except (OSError, subprocess.TimeoutExpired) as error:
+        raise OpError(
+            ErrorCode.EXTERNAL_TOOL_FAILED,
+            f"installer version check failed: {error}",
+            {"tool": "msi", "reason": "officeUnsigned", "phase": "verify"},
+        ) from error
+    return (completed.stdout or "").strip()
+
+
+def verify_msi_version(installer: Path, version: str) -> None:
+    product = msi_product_version(installer)
+    if not released_version(product, version):
+        raise OpError(
+            ErrorCode.EXTERNAL_TOOL_FAILED,
+            f"installer is version {product or 'unknown'}, not {version}",
+            {"tool": "msi", "reason": "officeUnsigned", "phase": "verify", "product": product},
         )
 
 
