@@ -1583,7 +1583,8 @@
       "willDelete": "This page will be deleted when you save.",
       "willRotate": "Will be rotated {{degrees}}° when you save",
       "keepOnePage": "A document needs at least one page. Restore another page first."
-    }
+    },
+    "chooseAgain": "Choose file…"
   },
   "presentation": {
     "tools": {
@@ -6372,7 +6373,8 @@
       "doiTooLarge": "The reference service sent an unexpectedly large answer, so it was ignored.",
       "doiBadResponse": "The reference service sent an answer that could not be read.",
       "doiUntrustedHost": "The reference service redirected to an untrusted address, so it was blocked.",
-      "blockedTarget": "vivePDF does not save programs, scripts or shortcuts, or into startup and SSH folders. Choose another name or folder."
+      "blockedTarget": "vivePDF does not save programs, scripts or shortcuts, or into startup and SSH folders. Choose another name or folder.",
+      "notGranted": "vivePDF only opens files you chose or dragged in yourself. Choose this file again to open it."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

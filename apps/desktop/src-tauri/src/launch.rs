@@ -86,6 +86,7 @@ pub fn launch_request<R: Runtime>(
                 request.paths.push(path);
             }
         }
+        crate::grants::allow_paths(&request.paths);
         return request;
     }
     windows.request_for(window.label())

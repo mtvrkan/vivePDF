@@ -105,7 +105,7 @@ pub fn remember_produced(path: &str) {
     write_keys(&produced.keys());
 }
 
-fn was_produced(path: &Path) -> bool {
+pub(crate) fn was_produced(path: &Path) -> bool {
     produced_files()
         .lock()
         .map(|produced| produced.contains(&path_key(path)))
@@ -124,6 +124,7 @@ pub(crate) fn io_error(error: std::io::Error) -> RpcError {
 
 #[tauri::command]
 pub async fn read_document(path: String) -> Result<Response, RpcError> {
+    crate::grants::check_read(Path::new(&path))?;
     let bytes = tauri::async_runtime::spawn_blocking(move || std::fs::read(&path))
         .await
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?
@@ -204,6 +205,7 @@ pub async fn write_document(app: tauri::AppHandle, request: Request<'_>) -> Resu
         .map_err(|error| RpcError::new("INVALID_PARAMS", error.to_string()))?
         .ok_or_else(|| RpcError::new("INVALID_PARAMS", "missing x-path header"))?;
     crate::write_guard::check_file(Path::new(&path))?;
+    crate::grants::check_write(Path::new(&path))?;
     let bytes = match request.body() {
         InvokeBody::Raw(bytes) => bytes.clone(),
         InvokeBody::Json(_) => {

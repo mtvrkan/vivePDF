@@ -189,8 +189,9 @@ export function useOpenPdf(documentRoute = "/viewer") {
         docManager.closeDocument(documentId);
         removeDocument(documentId);
         const rpcError = toRpcError(error);
+        const chooseAgain = rpcError.data?.reason === "notGranted" ? { label: t("viewer.chooseAgain"), onClick: () => void chooseAgainRef.current(path) } : undefined;
         const repair = canOfferRepair(rpcError, path, false) ? { label: t("tools.edit.repair.repairFile"), onClick: () => openInRepair(path, navigate) } : undefined;
-        toast("error", describeError(t, rpcError), repair);
+        toast("error", describeError(t, rpcError), chooseAgain ?? repair);
         return false;
       } finally {
         openingPaths.delete(key);
@@ -201,6 +202,10 @@ export function useOpenPdf(documentRoute = "/viewer") {
   );
   const openPathRef = useRef(openPath);
   openPathRef.current = openPath;
+  const chooseAgainRef = useRef(async (path: string) => {
+    const selected = await openDialog({ multiple: false, directory: false, defaultPath: path });
+    if (typeof selected === "string") await openPathRef.current(selected);
+  });
 
   const submitPassword = useCallback(
     async (documentId: string, password: string) => {

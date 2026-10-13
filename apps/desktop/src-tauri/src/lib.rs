@@ -10,6 +10,7 @@ mod file_association;
 mod file_drag;
 mod files;
 mod font_source;
+mod grants;
 mod launch;
 mod lens;
 mod navigation;
@@ -44,6 +45,7 @@ pub fn run() {
         }))
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_fs::init())
         .plugin(e2e::dialog_plugin())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_updater::Builder::new().build())
@@ -96,6 +98,11 @@ pub fn run() {
             },
         )
         .on_window_event(|window, event| {
+            if let tauri::WindowEvent::DragDrop(tauri::DragDropEvent::Drop { paths, .. }) = event {
+                for path in paths {
+                    grants::allow_path(path);
+                }
+            }
             if let tauri::WindowEvent::Destroyed = event {
                 use tauri::Manager;
                 window
@@ -107,6 +114,7 @@ pub fn run() {
             }
         })
         .setup(|app| {
+            grants::install(app.handle());
             chain_secrets::load_index(app.handle());
             view_source::prepare_snapshots(app.handle());
             if let Some(dir) = font_source::fonts_dir() {
@@ -121,6 +129,7 @@ pub fn run() {
             rpc::rpc,
             app_menu::app_menu_configure,
             rpc::rpc_cancel,
+            grants::grants_adopt,
             files::read_document,
             files::write_document,
             files::delete_file,

@@ -1582,7 +1582,8 @@
       "willDelete": "Esta página será excluída ao salvar.",
       "willRotate": "Será girada {{degrees}}° ao salvar",
       "keepOnePage": "Um documento precisa de pelo menos uma página. Restaure outra página primeiro."
-    }
+    },
+    "chooseAgain": "Escolher arquivo…"
   },
   "presentation": {
     "tools": {
@@ -6371,7 +6372,8 @@
       "doiTooLarge": "O serviço bibliográfico enviou uma resposta inesperadamente grande, que foi ignorada.",
       "doiBadResponse": "Não foi possível ler a resposta do serviço bibliográfico.",
       "doiUntrustedHost": "O serviço bibliográfico redirecionou para um endereço não confiável, que foi bloqueado.",
-      "blockedTarget": "O vivePDF não salva programas, scripts ou atalhos, nem grava em pastas de inicialização ou SSH. Escolha outro nome ou pasta."
+      "blockedTarget": "O vivePDF não salva programas, scripts ou atalhos, nem grava em pastas de inicialização ou SSH. Escolha outro nome ou pasta.",
+      "notGranted": "O vivePDF só abre arquivos que você escolheu ou arrastou. Escolha este arquivo novamente para abri-lo."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",

@@ -1583,7 +1583,8 @@
       "willDelete": "Bu sayfa kaydettiğinizde silinecek.",
       "willRotate": "Kaydettiğinizde {{degrees}}° döndürülecek",
       "keepOnePage": "Bir belgede en az bir sayfa kalmalı. Önce başka bir sayfayı geri alın."
-    }
+    },
+    "chooseAgain": "Dosyayı seç…"
   },
   "presentation": {
     "tools": {
@@ -6372,7 +6373,8 @@
       "doiTooLarge": "Kaynak hizmeti beklenmedik büyüklükte bir yanıt gönderdi, yok sayıldı.",
       "doiBadResponse": "Kaynak hizmetinin yanıtı okunamadı.",
       "doiUntrustedHost": "Kaynak hizmeti güvenilmeyen bir adrese yönlendirdi, engellendi.",
-      "blockedTarget": "vivePDF program, betik ya da kısayol kaydetmez; başlangıç ve SSH klasörlerine de yazmaz. Başka bir ad ya da klasör seçin."
+      "blockedTarget": "vivePDF program, betik ya da kısayol kaydetmez; başlangıç ve SSH klasörlerine de yazmaz. Başka bir ad ya da klasör seçin.",
+      "notGranted": "vivePDF yalnızca sizin seçtiğiniz ya da sürükleyip bıraktığınız dosyaları açar. Açmak için bu dosyayı yeniden seçin."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

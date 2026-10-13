@@ -343,6 +343,7 @@ pub async fn view_source<R: Runtime>(
     window: tauri::Window<R>,
     path: String,
 ) -> Result<Option<ViewSource>, RpcError> {
+    crate::grants::check_read(Path::new(&path))?;
     let dir = snapshot_dir(&app)?;
     let label = window.label().to_string();
     tauri::async_runtime::spawn_blocking(move || {

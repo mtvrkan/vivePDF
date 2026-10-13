@@ -11,6 +11,7 @@ import { installBlobUrlGuard } from "@/shared/lib/blobUrlGuard";
 import { installBrowserKeyGuard } from "@/shared/lib/browserKeys";
 import { installUiZoomShortcuts } from "@/shared/lib/uiZoomShortcuts";
 import { loadSessionFile } from "@/shared/session/sessionStore";
+import { adoptKnownPaths } from "@/shared/session/grantAdoption";
 import App from "@/app/App";
 
 installBlobUrlGuard();
@@ -20,7 +21,7 @@ applyStoredPreferences();
 installUiZoomShortcuts();
 installBrowserKeyGuard(import.meta.env.DEV);
 
-void Promise.all([ready(), loadSessionFile()]).then(() => {
+void Promise.all([ready(), loadSessionFile().then(adoptKnownPaths)]).then(() => {
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <App />

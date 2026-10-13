@@ -1582,7 +1582,8 @@
       "willDelete": "Diese Seite wird beim Speichern gelöscht.",
       "willRotate": "Wird beim Speichern um {{degrees}}° gedreht",
       "keepOnePage": "Ein Dokument braucht mindestens eine Seite. Stellen Sie zuerst eine andere Seite wieder her."
-    }
+    },
+    "chooseAgain": "Datei auswählen…"
   },
   "presentation": {
     "tools": {
@@ -6371,7 +6372,8 @@
       "doiTooLarge": "Der Literaturdienst hat eine unerwartet große Antwort gesendet; sie wurde ignoriert.",
       "doiBadResponse": "Die Antwort des Literaturdienstes war nicht lesbar.",
       "doiUntrustedHost": "Der Literaturdienst hat auf eine nicht vertrauenswürdige Adresse umgeleitet; das wurde blockiert.",
-      "blockedTarget": "vivePDF speichert keine Programme, Skripte oder Verknüpfungen und schreibt nicht in Autostart- oder SSH-Ordner. Wählen Sie einen anderen Namen oder Ordner."
+      "blockedTarget": "vivePDF speichert keine Programme, Skripte oder Verknüpfungen und schreibt nicht in Autostart- oder SSH-Ordner. Wählen Sie einen anderen Namen oder Ordner.",
+      "notGranted": "vivePDF öffnet nur Dateien, die Sie selbst ausgewählt oder hineingezogen haben. Wählen Sie diese Datei erneut aus, um sie zu öffnen."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

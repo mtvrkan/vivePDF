@@ -171,6 +171,7 @@ pub fn open_window<R: Runtime>(
 
 pub fn deliver_launch<R: Runtime>(app: &AppHandle<R>, request: LaunchRequest, show: bool) {
     use tauri::Emitter;
+    crate::grants::allow_paths(&request.paths);
     if app.get_webview_window(MAIN_WINDOW).is_some() {
         if show {
             crate::tray::show_main_window(app);

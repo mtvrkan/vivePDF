@@ -1,4 +1,5 @@
 use std::path::{Component, Path, PathBuf};
+use std::sync::OnceLock;
 
 use serde_json::{json, Value};
 
@@ -36,7 +37,13 @@ fn blocked(path: &Path) -> RpcError {
     }
 }
 
-fn comparable(path: &Path) -> String {
+static APP_DIRS: OnceLock<Vec<PathBuf>> = OnceLock::new();
+
+pub fn protect_app_dirs(dirs: Vec<PathBuf>) {
+    let _ = APP_DIRS.set(dirs);
+}
+
+pub fn comparable(path: &Path) -> String {
     let text = path.to_string_lossy().replace('\\', "/");
     if cfg!(any(windows, target_os = "macos")) {
         text.to_lowercase()
@@ -82,6 +89,14 @@ fn env_dir(name: &str) -> Option<PathBuf> {
     std::env::var_os(name)
         .filter(|value| !value.is_empty())
         .map(PathBuf::from)
+}
+
+fn protected_dirs() -> Vec<PathBuf> {
+    let mut dirs = autostart_dirs();
+    if let Some(app_dirs) = APP_DIRS.get() {
+        dirs.extend(app_dirs.iter().cloned());
+    }
+    dirs
 }
 
 fn autostart_dirs() -> Vec<PathBuf> {
@@ -162,7 +177,7 @@ fn check_with(path: &Path, protected: &[PathBuf], directory: bool) -> Result<(),
 }
 
 pub fn check_file(path: &Path) -> Result<(), RpcError> {
-    check_with(path, &autostart_dirs(), false)
+    check_with(path, &protected_dirs(), false)
 }
 
 fn check_value(value: &Value, protected: &[PathBuf]) -> Result<(), RpcError> {
@@ -199,7 +214,7 @@ fn check_value(value: &Value, protected: &[PathBuf]) -> Result<(), RpcError> {
 }
 
 pub fn check_params(params: &Value) -> Result<(), RpcError> {
-    check_value(params, &autostart_dirs())
+    check_value(params, &protected_dirs())
 }
 
 #[cfg(test)]

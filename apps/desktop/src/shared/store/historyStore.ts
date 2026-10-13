@@ -12,7 +12,7 @@ export type HistoryEntry = {
 const STORAGE_KEY = "vivepdf.history";
 const MAX_ENTRIES = 100;
 
-function readStored(): HistoryEntry[] {
+export function readStoredHistory(): HistoryEntry[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
@@ -49,7 +49,7 @@ type HistoryState = {
 };
 
 export const useHistoryStore = create<HistoryState>((set) => ({
-  items: readStored(),
+  items: readStoredHistory(),
   add: (entry) =>
     set((state) => {
       if (entry.outputs.length === 0 || !usePreferencesStore.getState().keepHistory) return state;
