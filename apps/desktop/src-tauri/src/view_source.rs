@@ -2,7 +2,8 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
 use std::path::{Path, PathBuf};
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{Mutex, MutexGuard, OnceLock};
+use std::time::Duration;
 
 use serde::Serialize;
 use tauri::http::{header, HeaderValue, Method, Request, Response, StatusCode};
@@ -14,6 +15,10 @@ use crate::rpc::RpcError;
 
 pub const SCHEME: &str = "vivepdf-view";
 const SNAPSHOT_DIR_NAME: &str = "view-snapshots";
+const LOCK_FILE_NAME: &str = ".instance-lock";
+const FRESH_DIR_AGE: Duration = Duration::from_secs(60);
+
+static OWN_LOCK: Mutex<Option<File>> = Mutex::new(None);
 const LARGE_VIEW_BYTES: u64 = 64 * 1024 * 1024;
 const MAX_RANGE_BYTES: u64 = 8 * 1024 * 1024;
 const MAX_SOURCES: usize = 64;
@@ -210,11 +215,92 @@ impl ViewSources {
     }
 }
 
-fn snapshot_dir<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<PathBuf, RpcError> {
+fn instance_name() -> &'static str {
+    static NAME: OnceLock<String> = OnceLock::new();
+    NAME.get_or_init(|| uuid::Uuid::new_v4().simple().to_string())
+}
+
+fn snapshot_root<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<PathBuf, RpcError> {
     app.path()
         .app_cache_dir()
         .map(|dir| dir.join(SNAPSHOT_DIR_NAME))
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
+}
+
+fn snapshot_dir<R: Runtime>(app: &tauri::AppHandle<R>) -> Result<PathBuf, RpcError> {
+    snapshot_root(app).map(|root| root.join(instance_name()))
+}
+
+fn claim_dir(dir: &Path) -> std::io::Result<File> {
+    create_private_dir(dir)?;
+    let lock = File::options()
+        .create(true)
+        .truncate(false)
+        .write(true)
+        .open(dir.join(LOCK_FILE_NAME))?;
+    lock.try_lock().map_err(|error| match error {
+        std::fs::TryLockError::Error(error) => error,
+        std::fs::TryLockError::WouldBlock => std::io::Error::from(std::io::ErrorKind::WouldBlock),
+    })?;
+    Ok(lock)
+}
+
+fn is_fresh(path: &Path, min_age: Duration) -> bool {
+    std::fs::metadata(path)
+        .and_then(|metadata| metadata.modified())
+        .ok()
+        .and_then(|modified| modified.elapsed().ok())
+        .is_some_and(|age| age < min_age)
+}
+
+fn is_abandoned(dir: &Path, min_age: Duration) -> bool {
+    match File::options().write(true).open(dir.join(LOCK_FILE_NAME)) {
+        Ok(lock) => lock.try_lock().is_ok(),
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => !is_fresh(dir, min_age),
+        Err(_) => false,
+    }
+}
+
+fn sweep_abandoned(root: &Path, own: &Path, min_age: Duration) {
+    let Ok(entries) = std::fs::read_dir(root) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        if path == own {
+            continue;
+        }
+        let removed = if path.is_dir() {
+            if !is_abandoned(&path, min_age) {
+                continue;
+            }
+            std::fs::remove_dir_all(&path)
+        } else {
+            std::fs::remove_file(&path)
+        };
+        if let Err(error) = removed {
+            if error.kind() != std::io::ErrorKind::NotFound {
+                eprintln!("[view] could not remove old view snapshots: {error}");
+            }
+        }
+    }
+}
+
+fn own_lock() -> MutexGuard<'static, Option<File>> {
+    OWN_LOCK
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
+
+pub fn prepare_snapshots<R: Runtime>(app: &tauri::AppHandle<R>) {
+    let (Ok(root), Ok(own)) = (snapshot_root(app), snapshot_dir(app)) else {
+        return;
+    };
+    match claim_dir(&own) {
+        Ok(lock) => *own_lock() = Some(lock),
+        Err(error) => eprintln!("[view] could not claim the view snapshot folder: {error}"),
+    }
+    sweep_abandoned(&root, &own, FRESH_DIR_AGE);
 }
 
 #[cfg(windows)]
@@ -241,6 +327,7 @@ fn free_space(_dir: &Path) -> Option<u64> {
 }
 
 pub fn clear_snapshots<R: Runtime>(app: &tauri::AppHandle<R>) {
+    own_lock().take();
     if let Ok(dir) = snapshot_dir(app) {
         if let Err(error) = std::fs::remove_dir_all(&dir) {
             if error.kind() != std::io::ErrorKind::NotFound {
@@ -259,7 +346,7 @@ pub async fn view_source<R: Runtime>(
     let dir = snapshot_dir(&app)?;
     let label = window.label().to_string();
     tauri::async_runtime::spawn_blocking(move || {
-        let parent = dir.parent().unwrap_or(&dir);
+        let parent = dir.parent().and_then(Path::parent).unwrap_or(&dir);
         let admission = Admission {
             threshold: LARGE_VIEW_BYTES,
             budget_bytes: BUDGET_BYTES,
@@ -452,6 +539,56 @@ mod tests {
 
     fn content() -> Vec<u8> {
         (0..=255u8).cycle().take(4096).collect()
+    }
+
+    #[test]
+    fn a_new_instance_clears_only_folders_whose_owner_has_exited() {
+        let scratch = Scratch::new();
+        let root = scratch.0.join("view-snapshots");
+        let own = root.join("own");
+        let running = root.join("running");
+        let exited = root.join("exited");
+        let unlocked = root.join("unlocked");
+        let _own_lock = claim_dir(&own).unwrap();
+        let running_lock = claim_dir(&running).unwrap();
+        drop(claim_dir(&exited).unwrap());
+        std::fs::create_dir_all(&unlocked).unwrap();
+        std::fs::write(own.join("a.pdf"), b"own").unwrap();
+        std::fs::write(running.join("b.pdf"), b"running").unwrap();
+        std::fs::write(exited.join("c.pdf"), b"exited").unwrap();
+        std::fs::write(root.join("old-layout.pdf"), b"old").unwrap();
+
+        sweep_abandoned(&root, &own, Duration::ZERO);
+
+        assert!(own.join("a.pdf").exists());
+        assert!(running.join("b.pdf").exists());
+        assert!(!exited.exists());
+        assert!(!unlocked.exists());
+        assert!(!root.join("old-layout.pdf").exists());
+        drop(running_lock);
+    }
+
+    #[test]
+    fn a_folder_still_being_set_up_is_left_alone() {
+        let scratch = Scratch::new();
+        let root = scratch.0.join("view-snapshots");
+        let starting = root.join("starting");
+        std::fs::create_dir_all(&starting).unwrap();
+
+        sweep_abandoned(&root, &root.join("own"), Duration::from_secs(60));
+
+        assert!(starting.exists());
+    }
+
+    #[test]
+    fn a_held_folder_cannot_be_claimed_twice() {
+        let scratch = Scratch::new();
+        let dir = scratch.0.join("taken");
+        let _held = claim_dir(&dir).unwrap();
+
+        let second = claim_dir(&dir);
+
+        assert_eq!(second.unwrap_err().kind(), std::io::ErrorKind::WouldBlock);
     }
 
     fn opened(sources: &ViewSources, scratch: &Scratch, window: &str) -> ViewSource {

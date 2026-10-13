@@ -114,6 +114,8 @@
     "overrides": {
       "basic-ftp": "^6.2.1",
       "serialize-javascript": "^7.1.2",
+      "mermaid>katex": "0.18.11",
+      "source-map-js": "^1.2.2",
       "extract-zip": "link:./e2e/stubs/extract-zip"
     },
     "patchedDependencies": {

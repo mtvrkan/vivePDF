@@ -6,6 +6,7 @@ import { PAGE_WIDTH, clearClipboard, pagePoint, pagePoints, waitForClipboardPict
 
 const ESCAPE_KEY = String.fromCharCode(0xe00c);
 const SETTLE_MS = 800;
+const SUBMENU_ATTEMPTS = 2;
 const FIRST_LINE = "Menu check first line";
 const SECOND_LINE = "second line of the paragraph";
 const TRAPPED_COMMANDS = ["plugin:opener|open_url", "search_picture_with_lens", "open_produced_picture"];
@@ -89,9 +90,17 @@ const PARENTS: Record<string, string[]> = {
 
 async function openSubmenu(id: string) {
   const parent = $(`[role="menu"] [data-menu-id="${id}"]`);
-  await parent.waitForClickable({ timeout: 20000, timeoutMsg: `submenu ${id} never became clickable` });
-  await parent.moveTo();
-  await expect(parent).toHaveAttribute("aria-expanded", "true");
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      await parent.waitForClickable({ timeout: 10000, timeoutMsg: `submenu ${id} never became clickable` });
+      await parent.moveTo();
+      await browser.waitUntil(async () => (await parent.getAttribute("aria-expanded")) === "true", { timeout: 5000, timeoutMsg: `submenu ${id} never opened` });
+      return;
+    } catch (error) {
+      if (attempt >= SUBMENU_ATTEMPTS) throw error;
+      await $(`[role="menu"][aria-label="${t("viewer.context.title")}"]`).moveTo({ xOffset: 4, yOffset: 4 });
+    }
+  }
 }
 
 async function topLevelItems(): Promise<string[]> {

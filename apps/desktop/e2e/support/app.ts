@@ -91,6 +91,8 @@ export async function waitForFile(path: string, timeout = 120000) {
   await browser.waitUntil(() => existsSync(path) && statSync(path).size > 0, { timeout, timeoutMsg: `output never appeared: ${path}` });
 }
 
+const SPEC_LEFTOVER_KEYS = ["vivepdf.session", "vivepdf.cleanExit", "vivepdf.reloading", "vivepdf.homeLayout", "vivepdf.collections"];
+
 export async function bootApp() {
   await browser.waitUntil(
     async () =>
@@ -104,13 +106,18 @@ export async function bootApp() {
       }),
     { timeout: 60000, timeoutMsg: "the app page never loaded" },
   );
-  await browser.execute(() => {
+  await browser.execute((leftovers: string[]) => {
+    for (const key of leftovers) localStorage.removeItem(key);
     localStorage.setItem("vivepdf.locale", "en");
     localStorage.setItem("vivepdf.autoUpdateCheck", "off");
     localStorage.setItem(
       "vivepdf.preferences",
       JSON.stringify({ reduceMotion: true, rememberRecent: false, keepHistory: false, successToasts: false, searchAutoIndex: false, restoreSession: false, confirmClose: false }),
     );
+  }, SPEC_LEFTOVER_KEYS);
+  await browser.executeAsync((done: () => void) => {
+    const bridge = (window as unknown as { __TAURI_INTERNALS__: { invoke: (command: string, args: unknown) => Promise<unknown> } }).__TAURI_INTERNALS__;
+    bridge.invoke("session_write", { contents: null }).then(done, done);
   });
   await browser.refresh();
   await $(`nav[aria-label="${t("nav.workspace")}"]`).waitForExist({ timeout: 60000 });

@@ -107,7 +107,7 @@ pub fn run() {
         })
         .setup(|app| {
             chain_secrets::load_index(app.handle());
-            view_source::clear_snapshots(app.handle());
+            view_source::prepare_snapshots(app.handle());
             if let Some(dir) = font_source::fonts_dir() {
                 std::thread::spawn(move || font_source::drop_bundled_copies(&dir));
             }
