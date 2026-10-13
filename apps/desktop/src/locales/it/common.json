@@ -1656,6 +1656,20 @@
       "page": "Cancella questa pagina ({{count}})",
       "all": "Cancella tutti i disegni ({{count}})",
       "cleared": "Disegni cancellati"
+    },
+    "shrinkDrawing": "Rimpicciolisci",
+    "growDrawing": "Ingrandisci",
+    "resizeHint": "Trascina per ridimensionare · tieni premuto Maiusc per mantenere le proporzioni",
+    "keep": {
+      "title": "Conservare i disegni della presentazione?",
+      "body": "I disegni fatti durante la presentazione sono temporanei. Salvali nel PDF come annotazioni perché restino nel documento.",
+      "bodyWithBoards": "I disegni fatti durante la presentazione sono temporanei. Salvali nel PDF come annotazioni perché restino nel documento. I disegni della lavagna vengono aggiunti come nuove pagine alla fine.",
+      "save": "Salva nel PDF",
+      "discard": "Scarta i disegni",
+      "later": "Decidi più tardi",
+      "kept": "I disegni restano come modifica non salvata. Salva il documento per scriverli nel PDF.",
+      "change": "Disegni della presentazione",
+      "finish": "Termina e salva i disegni nel PDF"
     }
   },
   "password": {

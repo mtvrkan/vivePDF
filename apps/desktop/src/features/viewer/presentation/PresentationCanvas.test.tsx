@@ -117,6 +117,34 @@ describe("PresentationCanvas", () => {
     expect(usePresentationStore.getState().selectedDrawing).toBeNull();
   });
 
+  it("resizes a selected drawing from a corner, keeps the ratio with Shift and steps it with the buttons", () => {
+    act(() => {
+      usePresentationStore.getState().addStroke(0, { id: "box", tool: "rect", color: "#000000", width: 0.005, points: [{ x: 0.25, y: 0.25 }, { x: 0.5, y: 0.5 }] });
+      usePresentationStore.getState().setTool("select");
+      usePresentationStore.getState().selectDrawing({ surface: 0, id: "box" });
+    });
+    render(<Stage />);
+    const corner = document.querySelector<HTMLElement>('[data-resize-handle="se"]') as HTMLElement;
+
+    fireEvent.pointerDown(corner, { button: 0, pointerId: 2, clientX: 500, clientY: 250 });
+    fireEvent.pointerMove(corner, { pointerId: 2, clientX: 600, clientY: 270 });
+    expect(pageStrokes()[0].points[1].x).toBeCloseTo(0.625);
+    expect(pageStrokes()[0].points[1].y).toBeCloseTo(0.55);
+    fireEvent.pointerMove(corner, { pointerId: 2, clientX: 600, clientY: 270, shiftKey: true });
+    fireEvent.pointerUp(corner, { pointerId: 2 });
+
+    const [resized] = pageStrokes();
+    expect(resized.points[0]).toEqual({ x: 0.25, y: 0.25 });
+    expect(resized.points[1].x).toBeCloseTo(0.625);
+    expect(resized.points[1].y).toBeCloseTo(0.625);
+    expect(resized.width).toBeCloseTo(0.0075);
+    expect(usePresentationStore.getState().selectedDrawing).toEqual({ surface: 0, id: "box" });
+
+    fireEvent.click(screen.getByRole("button", { name: "Make smaller" }));
+    const [smaller] = pageStrokes();
+    expect(smaller.points[1].x - smaller.points[0].x).toBeCloseTo(0.375 / 1.15);
+  });
+
   it("lets go of the selection on a click beside every drawing", () => {
     act(() => {
       usePresentationStore.getState().addStroke(0, { id: "box", tool: "rect", color: "#000000", width: 0.005, points: [{ x: 0.25, y: 0.25 }, { x: 0.5, y: 0.5 }] });

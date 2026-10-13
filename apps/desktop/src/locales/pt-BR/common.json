@@ -1656,6 +1656,20 @@
       "page": "Limpar esta página ({{count}})",
       "all": "Limpar todos os desenhos ({{count}})",
       "cleared": "Desenhos limpos"
+    },
+    "shrinkDrawing": "Diminuir",
+    "growDrawing": "Aumentar",
+    "resizeHint": "Arraste para redimensionar · segure Shift para manter as proporções",
+    "keep": {
+      "title": "Manter os desenhos da apresentação?",
+      "body": "Os desenhos feitos durante a apresentação são temporários. Salve-os no PDF como anotações para que fiquem no documento.",
+      "bodyWithBoards": "Os desenhos feitos durante a apresentação são temporários. Salve-os no PDF como anotações para que fiquem no documento. Os desenhos do quadro são adicionados como novas páginas no final.",
+      "save": "Salvar no PDF",
+      "discard": "Descartar desenhos",
+      "later": "Decidir depois",
+      "kept": "Os desenhos ficam como alteração não salva. Salve o documento para gravá-los no PDF.",
+      "change": "Desenhos da apresentação",
+      "finish": "Concluir e salvar os desenhos no PDF"
     }
   },
   "password": {

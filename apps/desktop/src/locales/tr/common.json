@@ -1657,6 +1657,20 @@
       "page": "Bu sayfayı temizle ({{count}})",
       "all": "Tüm çizimleri temizle ({{count}})",
       "cleared": "Çizimler temizlendi"
+    },
+    "shrinkDrawing": "Küçült",
+    "growDrawing": "Büyüt",
+    "resizeHint": "Boyutlandırmak için sürükleyin · oranı korumak için Shift'e basılı tutun",
+    "keep": {
+      "title": "Sunum çizimleri saklansın mı?",
+      "body": "Sunum sırasında yaptığınız çizimler geçicidir. Belgede kalmaları için PDF'e not olarak kaydedin.",
+      "bodyWithBoards": "Sunum sırasında yaptığınız çizimler geçicidir. Belgede kalmaları için PDF'e not olarak kaydedin. Tahta çizimleri sona yeni sayfa olarak eklenir.",
+      "save": "PDF'e kaydet",
+      "discard": "Çizimleri at",
+      "later": "Sonra karar ver",
+      "kept": "Çizimler kaydedilmemiş değişiklik olarak tutuluyor. PDF'e yazmak için belgeyi kaydedin.",
+      "change": "Sunum çizimleri",
+      "finish": "Bitir ve çizimleri PDF'e kaydet"
     }
   },
   "password": {

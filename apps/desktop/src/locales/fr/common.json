@@ -1656,6 +1656,20 @@
       "page": "Effacer cette page ({{count}})",
       "all": "Effacer tous les dessins ({{count}})",
       "cleared": "Dessins effacés"
+    },
+    "shrinkDrawing": "Réduire",
+    "growDrawing": "Agrandir",
+    "resizeHint": "Faites glisser pour redimensionner · maintenez Maj pour garder les proportions",
+    "keep": {
+      "title": "Conserver les dessins de la présentation ?",
+      "body": "Les dessins faits pendant la présentation sont temporaires. Enregistrez-les dans le PDF comme annotations pour qu'ils restent dans le document.",
+      "bodyWithBoards": "Les dessins faits pendant la présentation sont temporaires. Enregistrez-les dans le PDF comme annotations pour qu'ils restent dans le document. Les dessins du tableau sont ajoutés comme nouvelles pages à la fin.",
+      "save": "Enregistrer dans le PDF",
+      "discard": "Supprimer les dessins",
+      "later": "Décider plus tard",
+      "kept": "Les dessins sont conservés comme modification non enregistrée. Enregistrez le document pour les écrire dans le PDF.",
+      "change": "Dessins de la présentation",
+      "finish": "Terminer et enregistrer les dessins dans le PDF"
     }
   },
   "password": {

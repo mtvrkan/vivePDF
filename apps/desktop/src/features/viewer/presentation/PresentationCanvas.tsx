@@ -401,7 +401,7 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
         />
       ) : null}
       {tool === "select" && selectedRect && selectedStroke ? (
-        <DrawingSelectionFrame rect={selectedRect} stroke={selectedStroke} onDelete={() => usePresentationStore.getState().removeDrawing(selectedRect.pageIndex, selectedStroke.id)} />
+        <DrawingSelectionFrame rect={selectedRect} stroke={selectedStroke} onChange={(stroke) => usePresentationStore.getState().replaceDrawing(selectedRect.pageIndex, stroke)} onDelete={() => usePresentationStore.getState().removeDrawing(selectedRect.pageIndex, selectedStroke.id)} />
       ) : null}
       {textDraft && draftRect ? (
         <TextDraft

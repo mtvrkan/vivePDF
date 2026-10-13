@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Clock, Code2, Grid3x3, Minimize, Moon, Settings, Sun, ZoomIn, ZoomOut } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Clock, Code2, FileDown, Grid3x3, Minimize, Moon, Settings, Sun, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { useZoom } from "@embedpdf/plugin-zoom/react";
@@ -13,6 +13,7 @@ import { hasStyleOptions } from "./presentation/toolPresets";
 import { TimerClockChip } from "./presentation/TimerClockChip";
 import { DrawingCleanupButton, TemporaryDrawingCleanup } from "./presentation/DrawingCleanupButton";
 import type { SessionAnnotation } from "./sessionAnnotations";
+import { exitImmersiveSavingDrawings } from "./immersive";
 import { useCodeBlocksForPage } from "./presentation/useCodeBlocks";
 
 const HIDE_DELAY_MS = 2500;
@@ -51,6 +52,7 @@ export function PresenterBar({
   const cursorAutoHide = usePresentationStore((state) => state.cursorAutoHide);
   const toggleCursorAutoHide = usePresentationStore((state) => state.toggleCursorAutoHide);
   const drawingsMode = usePresentationStore((state) => state.drawingsMode);
+  const hasTemporaryDrawings = usePresentationStore((state) => state.totalStrokeCount() > 0);
   const setDrawingsMode = usePresentationStore((state) => state.setDrawingsMode);
   const codeBlocks = useCodeBlocksForPage(documentId, scrollState.currentPage - 1);
 
@@ -149,7 +151,10 @@ export function PresenterBar({
               onClearAll={() => onClearSessionAnnotations()}
             />
           ) : (
-            <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />
+            <>
+              <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />
+              {hasTemporaryDrawings ? <IconButton icon={FileDown} label={t("presentation.keep.finish")} onClick={() => void exitImmersiveSavingDrawings()} /> : null}
+            </>
           )}
           <span className="mx-1 h-5 w-px bg-border" aria-hidden />
           <IconButton icon={ZoomOut} label={t("viewer.zoomOut")} onClick={() => manualZoom(() => zoom?.zoomOut())} />

@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Presentation: temporary drawings are no longer lost when the presentation ends — on exit vivePDF offers to save them into the PDF as annotations (pens, highlights, shapes and text with your author name; board drawings become new pages at the end), discard them or keep them as an unsaved change, and the presenter bar can finish and save in one step. A selected drawing now has corner handles to resize it (Shift keeps the proportions, text always does) plus Smaller and Larger buttons [2026-10-13]
 - Reading mode: the page colours button in the right rail now switches reading mode to its dark theme and back to the light one used before (paper or sepia); outside reading mode it still recolours the pages [2026-10-13]
 - Viewer editing: a placed drawing (formula, shape, graph, molecule, table, chart, flowchart, Mermaid diagram, question, answer key) can be saved as a PNG at 1×, 2× or 4× size or as an SVG, or copied to the clipboard as a picture, from its toolbar or by right-clicking it [2026-10-13]
 - Viewer and Studio: Mermaid diagrams from text — flowchart, sequence, class, ER, state, Gantt, pie and mind map — with ready templates, four themes, live preview and the broken line named on errors; labels stay real, searchable text in the PDF, and placed diagrams open again for editing [2026-10-13]

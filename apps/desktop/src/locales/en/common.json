@@ -1657,6 +1657,20 @@
       "page": "Clear this page ({{count}})",
       "all": "Clear all drawings ({{count}})",
       "cleared": "Drawings cleared"
+    },
+    "shrinkDrawing": "Make smaller",
+    "growDrawing": "Make larger",
+    "resizeHint": "Drag to resize · hold Shift to keep the proportions",
+    "keep": {
+      "title": "Keep the presentation drawings?",
+      "body": "The drawings you made during the presentation are temporary. Save them into the PDF as annotations so they stay with the document.",
+      "bodyWithBoards": "The drawings you made during the presentation are temporary. Save them into the PDF as annotations so they stay with the document. Board drawings are added as new pages at the end.",
+      "save": "Save to the PDF",
+      "discard": "Discard drawings",
+      "later": "Decide later",
+      "kept": "The drawings are kept as an unsaved change. Save the document to write them into the PDF.",
+      "change": "Presentation drawings",
+      "finish": "Finish and save drawings to the PDF"
     }
   },
   "password": {

@@ -1656,6 +1656,20 @@
       "page": "Diese Seite leeren ({{count}})",
       "all": "Alle Zeichnungen löschen ({{count}})",
       "cleared": "Zeichnungen gelöscht"
+    },
+    "shrinkDrawing": "Verkleinern",
+    "growDrawing": "Vergrößern",
+    "resizeHint": "Zum Ändern der Größe ziehen · Umschalt halten, um die Proportionen zu behalten",
+    "keep": {
+      "title": "Präsentationszeichnungen behalten?",
+      "body": "Die Zeichnungen aus der Präsentation sind vorübergehend. Speichern Sie sie als Anmerkungen in der PDF, damit sie im Dokument bleiben.",
+      "bodyWithBoards": "Die Zeichnungen aus der Präsentation sind vorübergehend. Speichern Sie sie als Anmerkungen in der PDF, damit sie im Dokument bleiben. Tafelzeichnungen werden als neue Seiten am Ende angefügt.",
+      "save": "In der PDF speichern",
+      "discard": "Zeichnungen verwerfen",
+      "later": "Später entscheiden",
+      "kept": "Die Zeichnungen bleiben als ungespeicherte Änderung erhalten. Speichern Sie das Dokument, um sie in die PDF zu schreiben.",
+      "change": "Präsentationszeichnungen",
+      "finish": "Beenden und Zeichnungen in der PDF speichern"
     }
   },
   "password": {

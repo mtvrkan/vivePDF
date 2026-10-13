@@ -9,7 +9,7 @@ import { basenameOf, siblingPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { writeDocumentBytes } from "@/shared/rpc/files";
-import { addAttachments, addBookmark, deleteComments, editPages, fillFormFields, removeAttachments, replyToComment, setBookmarks, setCommentsResolved, setCommentsState, setMetadata } from "@/shared/rpc/operations";
+import { addAttachments, addBookmark, deleteComments, editPages, fillFormFields, removeAttachments, replyToComment, savePresentationDrawings, setBookmarks, setCommentsResolved, setCommentsState, setMetadata } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { pendingChangesFor, usePendingChangesStore, type PendingChange } from "@/shared/store/pendingChangesStore";
@@ -39,6 +39,7 @@ async function applyChange(change: PendingChange, path: string, password: string
   else if (change.kind === "outlineReplaced") await setBookmarks({ path, password, inPlace: true, items: change.items });
   else if (change.kind === "formFilled") return fillFormFields({ path, password, inPlace: true, values: change.values, flatten: false });
   else if (change.kind === "pagesEdited") await editPages({ path, password, inPlace: true, delete: change.deleted, rotations: pageTurns(change) });
+  else if (change.kind === "presentationDrawings") await savePresentationDrawings({ path, password, author, pages: change.pages, boards: change.boards });
   else await removeAttachments({ path, password, names: change.names });
   return null;
 }

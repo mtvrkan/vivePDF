@@ -1656,6 +1656,20 @@
       "page": "Borrar esta página ({{count}})",
       "all": "Borrar todos los dibujos ({{count}})",
       "cleared": "Dibujos borrados"
+    },
+    "shrinkDrawing": "Reducir",
+    "growDrawing": "Ampliar",
+    "resizeHint": "Arrastra para cambiar el tamaño · mantén Mayús para conservar las proporciones",
+    "keep": {
+      "title": "¿Conservar los dibujos de la presentación?",
+      "body": "Los dibujos que hiciste durante la presentación son temporales. Guárdalos en el PDF como anotaciones para que se queden en el documento.",
+      "bodyWithBoards": "Los dibujos que hiciste durante la presentación son temporales. Guárdalos en el PDF como anotaciones para que se queden en el documento. Los dibujos de la pizarra se añaden como páginas nuevas al final.",
+      "save": "Guardar en el PDF",
+      "discard": "Descartar dibujos",
+      "later": "Decidir más tarde",
+      "kept": "Los dibujos se conservan como un cambio sin guardar. Guarda el documento para escribirlos en el PDF.",
+      "change": "Dibujos de la presentación",
+      "finish": "Terminar y guardar los dibujos en el PDF"
     }
   },
   "password": {

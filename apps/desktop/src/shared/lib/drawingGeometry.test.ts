@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Stroke } from "@/shared/store/presentationStore";
-import { drawingBounds, hitsDrawing, topDrawingAt, translateDrawing } from "./drawingGeometry";
+import { drawingBounds, drawingExtent, hitsDrawing, scaleDrawing, topDrawingAt, translateDrawing } from "./drawingGeometry";
 
 const SCALE = { x: 1000, y: 500 };
 
@@ -67,5 +67,33 @@ describe("translateDrawing", () => {
     expect(moved.points[1].x).toBeCloseTo(0.4);
     expect(moved.points[1].y).toBeCloseTo(0.15);
     expect(original.points[0]).toEqual({ x: 0.1, y: 0.1 });
+  });
+});
+
+describe("scaleDrawing", () => {
+  it("scales a shape from an anchor and thickens its line with the area", () => {
+    const original = shape("rect", [0.2, 0.2], [0.4, 0.3]);
+
+    const scaled = scaleDrawing(original, { x: 0.2, y: 0.2 }, 2, 2);
+
+    expect(scaled.points[1].x).toBeCloseTo(0.6);
+    expect(scaled.points[1].y).toBeCloseTo(0.4);
+    expect(scaled.width).toBeCloseTo(0.008);
+    expect(original.points[1]).toEqual({ x: 0.4, y: 0.3 });
+  });
+
+  it("grows text, its box and its font together", () => {
+    const scaled = scaleDrawing(label, { x: 0.1, y: 0.1 }, 1.5, 1.5);
+
+    expect(scaled.fontSize).toBeCloseTo(0.03);
+    expect(scaled.size?.width).toBeCloseTo(0.075);
+    expect(scaled.size?.height).toBeCloseTo(0.09);
+    expect(scaled.points[0]).toEqual({ x: 0.1, y: 0.1 });
+  });
+
+  it("measures the extent without the line thickness", () => {
+    const extent = drawingExtent(shape("line", [0.1, 0.2], [0.3, 0.2]), SCALE);
+
+    expect([extent.left, extent.top, extent.right, extent.bottom].map(Math.round)).toEqual([100, 100, 300, 100]);
   });
 });

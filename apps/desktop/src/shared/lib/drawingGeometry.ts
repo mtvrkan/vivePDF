@@ -50,13 +50,12 @@ export function drawingOutline(stroke: Stroke): StrokePoint[][] {
   return [];
 }
 
-export function drawingBounds(stroke: Stroke, scale: DrawingScale = UNIT_SCALE): DrawingBounds {
+export function drawingExtent(stroke: Stroke, scale: DrawingScale = UNIT_SCALE): DrawingBounds {
   if (stroke.tool === "text") {
     const anchor = stroke.points[0] ?? { x: 0, y: 0 };
     const size = stroke.size ?? { width: 0, height: 0 };
     return { left: anchor.x * scale.x, top: anchor.y * scale.y, right: (anchor.x + size.width) * scale.x, bottom: (anchor.y + size.height) * scale.y };
   }
-  const pad = (stroke.width * scale.x) / 2;
   let left = Infinity;
   let top = Infinity;
   let right = -Infinity;
@@ -68,7 +67,27 @@ export function drawingBounds(stroke: Stroke, scale: DrawingScale = UNIT_SCALE):
     bottom = Math.max(bottom, point.y * scale.y);
   }
   if (!Number.isFinite(left)) return { left: 0, top: 0, right: 0, bottom: 0 };
-  return { left: left - pad, top: top - pad, right: right + pad, bottom: bottom + pad };
+  return { left, top, right, bottom };
+}
+
+export function drawingBounds(stroke: Stroke, scale: DrawingScale = UNIT_SCALE): DrawingBounds {
+  const extent = drawingExtent(stroke, scale);
+  if (stroke.tool === "text" || stroke.points.length === 0) return extent;
+  const pad = (stroke.width * scale.x) / 2;
+  return { left: extent.left - pad, top: extent.top - pad, right: extent.right + pad, bottom: extent.bottom + pad };
+}
+
+export function scaleDrawing(stroke: Stroke, anchor: StrokePoint, sx: number, sy: number): Stroke {
+  const points = stroke.points.map((point) => ({ x: anchor.x + (point.x - anchor.x) * sx, y: anchor.y + (point.y - anchor.y) * sy }));
+  if (stroke.tool === "text") {
+    return {
+      ...stroke,
+      points,
+      ...(stroke.fontSize ? { fontSize: stroke.fontSize * sx } : {}),
+      ...(stroke.size ? { size: { width: stroke.size.width * sx, height: stroke.size.height * sy } } : {}),
+    };
+  }
+  return { ...stroke, points, width: stroke.width * Math.sqrt(sx * sy) };
 }
 
 function insideBounds(bounds: DrawingBounds, point: StrokePoint, tolerance: number): boolean {

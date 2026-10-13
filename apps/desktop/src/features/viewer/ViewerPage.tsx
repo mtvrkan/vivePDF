@@ -33,6 +33,7 @@ import { isPendingChange } from "./overlay/pending";
 import { DocumentTabs } from "./DocumentTabs";
 import { EditPanel } from "./overlay/EditPanel";
 import { ImmersiveView } from "./ImmersiveView";
+import { PresentationDrawingsPrompt } from "./presentation/PresentationDrawingsPrompt";
 import { exitImmersive, setImmersiveFullscreen } from "./immersive";
 import { Inspector } from "./Inspector";
 import { OutlinePanel } from "./OutlinePanel";
@@ -213,6 +214,7 @@ export function ViewerPage() {
             {isLoaded && !immersive ? (
               <>
                 <ViewerToolbar documentId={activeDocumentId} panels={panels} onTogglePanel={togglePanel} />
+                <PresentationDrawingsPrompt documentId={activeDocumentId} />
                 <DocumentMessageBar documentId={activeDocumentId} onOpenSignatures={() => setPanels((state) => ({ ...state, signatures: true }))} />
                 <FileChangedMessage documentId={activeDocumentId} />
                 <ConvertedMessage documentId={activeDocumentId} />

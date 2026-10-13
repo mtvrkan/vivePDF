@@ -3,6 +3,7 @@ import * as logger from "@/shared/lib/logger";
 import { useUiStore } from "@/shared/store/uiStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { hasModKey, isFullscreenKey, isMac } from "@/shared/lib/platform";
+import { holdTemporaryDrawings } from "./presentation/leftoverDrawings";
 
 const SETTLE_MS = 160;
 
@@ -11,6 +12,7 @@ type Restore = { maximized: boolean; position: PhysicalPosition; size: PhysicalS
 let restore: Restore | null = null;
 let restoring = false;
 let entering = false;
+let savingDrawings = false;
 
 const settle = () => new Promise((resolve) => window.setTimeout(resolve, SETTLE_MS));
 
@@ -31,10 +33,17 @@ async function forceCover(): Promise<void> {
   await appWindow.setAlwaysOnTop(true);
 }
 
+export function exitImmersiveSavingDrawings(): Promise<void> {
+  savingDrawings = true;
+  return exitImmersive();
+}
+
 export async function exitImmersive(): Promise<void> {
   useUiStore.getState().setImmersive(false);
   if (restoring) return;
   restoring = true;
+  holdTemporaryDrawings(savingDrawings ? "save" : "ask");
+  savingDrawings = false;
   const appWindow = getCurrentWindow();
   const entry = restore;
   restore = null;
