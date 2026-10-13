@@ -6,6 +6,7 @@ import { useZoom } from "@embedpdf/plugin-zoom/react";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
+import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "./presentation/PresentationTools";
@@ -40,6 +41,11 @@ export function PresenterBar({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [confirmAnnotations, setConfirmAnnotations] = useState(false);
   const hideTimer = useRef<number | null>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const styleRef = useRef<HTMLDivElement>(null);
+  const settingsRef = useRef<HTMLDivElement>(null);
+  useOutsideDismiss(stylePopoverOpen, [barRef, styleRef], () => setStylePopoverOpen(false));
+  useOutsideDismiss(settingsOpen && !confirmAnnotations, [barRef, settingsRef], () => setSettingsOpen(false));
 
   const tool = usePresentationStore((state) => state.tool);
   const blackout = usePresentationStore((state) => state.blackout);
@@ -107,7 +113,7 @@ export function PresenterBar({
           visible || onBoard ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
         )}
       >
-        <div className="glass pointer-events-auto flex h-12 items-center gap-1 rounded-full px-2">
+        <div ref={barRef} className="glass pointer-events-auto flex h-12 items-center gap-1 rounded-full px-2">
           <IconButton icon={ChevronLeft} label={t("viewer.previousPage")} disabled={scrollState.currentPage <= 1} onClick={() => scroll?.scrollToPreviousPage()} />
           <form
             onSubmit={(event) => {
@@ -183,13 +189,13 @@ export function PresenterBar({
       </div>
 
       {showStylePopover && stylePopoverOpen ? (
-        <div className={cn("glass select-pop origin-bottom pointer-events-auto fixed bottom-20 left-1/2 -translate-x-1/2 rounded-2xl p-3", layer)}>
+        <div ref={styleRef} className={cn("glass select-pop origin-bottom pointer-events-auto fixed bottom-20 left-1/2 -translate-x-1/2 rounded-2xl p-3", layer)}>
           <PresentationStyleControls />
         </div>
       ) : null}
 
       {settingsOpen ? (
-        <div className={cn("glass select-pop origin-bottom pointer-events-auto fixed bottom-20 right-4 w-64 rounded-2xl p-3", layer)}>
+        <div ref={settingsRef} className={cn("glass select-pop origin-bottom pointer-events-auto fixed bottom-20 right-4 w-64 rounded-2xl p-3", layer)}>
           <label className="flex items-center justify-between gap-2 py-1.5 text-sm">
             {t("presentation.cursorAutoHide")}
             <input type="checkbox" checked={cursorAutoHide} onChange={toggleCursorAutoHide} />

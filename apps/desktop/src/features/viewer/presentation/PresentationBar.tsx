@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { IconButton } from "@/components/shared/IconButton";
+import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { TemporaryDrawingCleanup } from "./DrawingCleanupButton";
@@ -15,6 +16,8 @@ export function PresentationBar({ documentId, onClose }: { documentId: string; o
   const setTool = usePresentationStore((state) => state.setTool);
   const { state: scrollState } = useScroll(documentId);
   const [styleOpen, setStyleOpen] = useState(false);
+  const barRef = useRef<HTMLDivElement>(null);
+  useOutsideDismiss(styleOpen, [barRef], () => setStyleOpen(false));
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -30,7 +33,7 @@ export function PresentationBar({ documentId, onClose }: { documentId: string; o
   }, [setTool]);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 bottom-4 z-30 flex flex-col items-center gap-2">
+    <div ref={barRef} className="pointer-events-none absolute inset-x-0 bottom-4 z-30 flex flex-col items-center gap-2">
       {styleOpen && hasStyleOptions(tool) ? (
         <div className="glass select-pop pointer-events-auto origin-bottom rounded-2xl p-3">
           <PresentationStyleControls />

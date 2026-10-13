@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { usePresentationStore } from "@/shared/store/presentationStore";
@@ -49,5 +49,28 @@ describe("PresenterBar", () => {
     act(() => vi.advanceTimersByTime(3000));
     expect(bar().className).toContain("z-50");
     expect(bar().className).toContain("opacity-100");
+  });
+
+  it("closes the style panel on a click outside it and keeps it open for clicks inside", () => {
+    act(() => usePresentationStore.getState().setTool("pen"));
+    renderBar();
+
+    fireEvent.click(screen.getByRole("button", { name: "Drawing style" }));
+    const thickness = screen.getByRole("slider", { name: /Thickness/ });
+    fireEvent.pointerDown(thickness);
+    expect(screen.queryByRole("slider", { name: /Thickness/ })).not.toBeNull();
+
+    fireEvent.pointerDown(document.body);
+    expect(screen.queryByRole("slider", { name: /Thickness/ })).toBeNull();
+  });
+
+  it("closes the settings panel on a click outside it", () => {
+    renderBar();
+
+    fireEvent.click(screen.getByRole("button", { name: "Presentation settings" }));
+    expect(screen.getByRole("checkbox", { name: /cursor/i })).toBeTruthy();
+
+    fireEvent.pointerDown(document.body);
+    expect(screen.queryByRole("checkbox", { name: /cursor/i })).toBeNull();
   });
 });

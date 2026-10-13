@@ -140,7 +140,7 @@ function ShapeRow({ current, onPick }: { current: LensShape; onPick: (shape: Len
   );
 }
 
-function ColorRow({ colors, current, onPick, custom = false }: { colors: readonly string[]; current: string; onPick: (color: string) => void; custom?: boolean }) {
+export function ColorRow({ colors, current, onPick, custom = false }: { colors: readonly string[]; current: string; onPick: (color: string) => void; custom?: boolean }) {
   const { t } = useTranslation();
   const isPreset = colors.some((preset) => preset.toLowerCase() === current.toLowerCase());
   return (
@@ -173,7 +173,7 @@ function ColorRow({ colors, current, onPick, custom = false }: { colors: readonl
   );
 }
 
-function RangeRow({
+export function RangeRow({
   label,
   range,
   step,

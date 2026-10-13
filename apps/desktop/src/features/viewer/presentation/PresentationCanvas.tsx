@@ -5,6 +5,7 @@ import { usePresentationStore, type Stroke, type StrokePoint } from "@/shared/st
 import { LiveStrokeCanvas, PageDrawingCanvas } from "./DrawingLayer";
 import { DrawingSelectionFrame } from "./DrawingSelectionFrame";
 import { beginDrawing, extendDrawing, isDrawingKept, makeDrawingId, type DrawStyle } from "./drawingGestures";
+import { duplicateDrawing } from "./drawingRotate";
 import { LaserTrail, type LaserPoint } from "./LaserTrail";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 import { MagnifierLens } from "./MagnifierLens";
@@ -401,7 +402,17 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
         />
       ) : null}
       {tool === "select" && selectedRect && selectedStroke ? (
-        <DrawingSelectionFrame rect={selectedRect} stroke={selectedStroke} onChange={(stroke) => usePresentationStore.getState().replaceDrawing(selectedRect.pageIndex, stroke)} onDelete={() => usePresentationStore.getState().removeDrawing(selectedRect.pageIndex, selectedStroke.id)} />
+        <DrawingSelectionFrame
+          rect={selectedRect}
+          stroke={selectedStroke}
+          onChange={(stroke) => usePresentationStore.getState().replaceDrawing(selectedRect.pageIndex, stroke)}
+          onDelete={() => usePresentationStore.getState().removeDrawing(selectedRect.pageIndex, selectedStroke.id)}
+          onDuplicate={() => {
+            const copy = duplicateDrawing(selectedStroke, { x: selectedRect.width, y: selectedRect.height });
+            addStroke(selectedRect.pageIndex, copy);
+            usePresentationStore.getState().selectDrawing({ surface: selectedRect.pageIndex, id: copy.id });
+          }}
+        />
       ) : null}
       {textDraft && draftRect ? (
         <TextDraft
