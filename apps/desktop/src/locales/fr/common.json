@@ -6224,6 +6224,7 @@
       "officeDownload": "Aucun des serveurs de téléchargement de LibreOffice n'a pu fournir le programme d'installation. Vérifiez la connexion internet et réessayez dans quelques minutes.",
       "officeUnsigned": "Le programme d'installation de LibreOffice téléchargé n'est pas signé par The Document Foundation ; il n'a donc pas été installé.",
       "officeChecksum": "Le paquet LibreOffice téléchargé n'a pas pu être vérifié avec sa somme de contrôle publiée ; il n'a donc pas été installé. Réessayez plus tard.",
+      "notBundled": "Cette copie de vivePDF n'inclut pas le programme d'installation de LibreOffice ; LibreOffice n'a donc pas été installé.",
       "siteTimeout": "Le site a mis trop de temps à répondre. Réessayez plus tard.",
       "workerCrashed": "Une partie de la conversion s’est arrêtée de façon inattendue. Réessayez ; si le problème persiste, convertissez moins de pages à la fois.",
       "noText": "Les pages sélectionnées ne contiennent pas de texte. Exécutez d’abord l’OCR sur le document.",

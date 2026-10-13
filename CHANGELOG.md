@@ -40,6 +40,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Windows setup: when this copy of vivePDF has no bundled LibreOffice installer, the reason now has a readable explanation in every language [2026-10-13]
 - Files vivePDF produced are recognised again through `..` in their path and before they exist, and on Linux two names that differ only in case are no longer mixed up [2026-10-13]
 - Viewer: turning a line into a curve is now one undo step instead of two, from the toolbar buttons and from Ctrl+Z / Ctrl+Y [2026-10-13]
 - Studio: the bleed guide on the canvas shows the bleed chosen in the export dialog instead of always 3 mm [2026-10-13]

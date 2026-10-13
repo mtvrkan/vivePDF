@@ -6224,6 +6224,7 @@
       "officeDownload": "Ninguno de los servidores de descarga de LibreOffice pudo entregar el instalador. Compruebe la conexión a internet y vuelva a intentarlo en unos minutos.",
       "officeUnsigned": "El instalador de LibreOffice descargado no está firmado por The Document Foundation, así que no se instaló.",
       "officeChecksum": "No se pudo comprobar el paquete de LibreOffice descargado con su suma de verificación publicada, así que no se instaló. Inténtelo más tarde.",
+      "notBundled": "Esta copia de vivePDF no incluye el instalador de LibreOffice, así que LibreOffice no se instaló.",
       "siteTimeout": "El sitio tardó demasiado en responder. Inténtelo de nuevo más tarde.",
       "workerCrashed": "Una parte de la conversión se detuvo de forma inesperada. Vuelva a intentarlo; si sigue ocurriendo, convierta menos páginas a la vez.",
       "noText": "Las páginas seleccionadas no tienen texto. Ejecute primero el OCR en el documento.",

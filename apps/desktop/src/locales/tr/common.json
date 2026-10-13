@@ -6225,6 +6225,7 @@
       "officeDownload": "LibreOffice indirme sunucularının hiçbiri kurulum dosyasını gönderemedi. İnternet bağlantısını kontrol edip birkaç dakika sonra yeniden deneyin.",
       "officeUnsigned": "İndirilen LibreOffice kurulum dosyası The Document Foundation tarafından imzalanmamış, bu yüzden kurulmadı.",
       "officeChecksum": "İndirilen LibreOffice paketi yayımlanan sağlama toplamıyla doğrulanamadı, bu yüzden kurulmadı. Daha sonra yeniden deneyin.",
+      "notBundled": "Bu vivePDF kopyasında LibreOffice kurulum dosyası bulunmuyor, bu yüzden LibreOffice kurulmadı.",
       "siteTimeout": "Site yanıt vermekte çok gecikti. Daha sonra yeniden deneyin.",
       "workerCrashed": "Dönüştürmenin bir bölümü beklenmedik biçimde durdu. Yeniden deneyin; sürerse bir seferde daha az sayfa dönüştürün.",
       "noText": "Seçilen sayfalarda metin yok. Önce belgeye OCR uygulayın.",

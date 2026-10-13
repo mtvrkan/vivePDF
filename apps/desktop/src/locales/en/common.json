@@ -6225,6 +6225,7 @@
       "officeDownload": "None of the LibreOffice download servers could deliver the installer. Check the internet connection and try again in a few minutes.",
       "officeUnsigned": "The downloaded LibreOffice installer is not signed by The Document Foundation, so it was not installed.",
       "officeChecksum": "The downloaded LibreOffice package could not be checked against its published checksum, so it was not installed. Try again later.",
+      "notBundled": "This copy of vivePDF has no bundled LibreOffice installer, so LibreOffice was not installed.",
       "siteTimeout": "The site took too long to answer. Try again later.",
       "workerCrashed": "Part of the conversion stopped unexpectedly. Try again; if it keeps happening, convert fewer pages at a time.",
       "noText": "The selected pages have no text. Run OCR on the document first.",
