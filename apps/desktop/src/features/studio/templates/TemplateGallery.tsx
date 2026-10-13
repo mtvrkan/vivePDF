@@ -5,8 +5,8 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { cn } from "@/shared/lib/cn";
 import type { StudioDesign } from "@/types/studio";
 import { PageView } from "../design/ElementView";
-import { buildTemplate, STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog";
-import { sizeOf, type StudioTemplate, type TemplateCategory, type Translate } from "./kit";
+import { STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog";
+import { buildTemplate, sizeOf, type StudioTemplate, type TemplateCategory, type Translate } from "./kit";
 import { useTemplateThumbnail } from "./thumbnails";
 
 const previews = new Map<string, StudioDesign>();

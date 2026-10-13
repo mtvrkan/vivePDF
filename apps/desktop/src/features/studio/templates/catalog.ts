@@ -1,4 +1,3 @@
-import type { StudioDesign } from "@/types/studio";
 import { BUSINESS_TEMPLATES } from "./business";
 import { CARD_TEMPLATES } from "./cards";
 import { CERTIFICATE_TEMPLATES } from "./certificates";
@@ -7,7 +6,7 @@ import { EDUCATION_TEMPLATES } from "./education";
 import { FINISH_CARD_TEMPLATES } from "./finishCards";
 import { FLYER_TEMPLATES } from "./flyers";
 import { INVITATION_TEMPLATES } from "./invitations";
-import type { StudioTemplate, TemplateCategory, Translate } from "./kit";
+import type { StudioTemplate, TemplateCategory } from "./kit";
 import { LABEL_TEMPLATES } from "./labels";
 import { MENU_TEMPLATES } from "./menus";
 import { PERSONAL_TEMPLATES } from "./personal";
@@ -36,8 +35,4 @@ export const STUDIO_TEMPLATES: StudioTemplate[] = [
 
 export function studioTemplate(id: string): StudioTemplate | undefined {
   return STUDIO_TEMPLATES.find((template) => template.id === id);
-}
-
-export function buildTemplate(template: StudioTemplate, t: Translate, language: string): StudioDesign {
-  return template.build({ t, language });
 }

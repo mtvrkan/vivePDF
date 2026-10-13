@@ -38,8 +38,8 @@ import { useDocumentStore } from "./document/documentStore";
 import { useMergeStore } from "./merge/mergeStore";
 import { GraphicEditorHost } from "./graphics/GraphicEditorHost";
 import { startGraphicSync } from "./graphics/graphicSync";
-import { buildTemplate } from "./templates/catalog";
-import { TemplateGallery } from "./templates/TemplateGallery";
+import { buildTemplate } from "./templates/kit";
+import { LazyTemplateGallery } from "./templates/LazyTemplateGallery";
 
 const DocumentEditor = lazy(() => import("./document/DocumentEditor"));
 const CvStudio = lazy(() => import("./cv/CvStudio"));
@@ -229,7 +229,7 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
           <h2 id="studio-templates" className="text-base font-semibold">
             {t("studio.templates.title")}
           </h2>
-          <TemplateGallery language={locale} box={140} onPick={(template) => onOpen(buildTemplate(template, t, locale))} />
+          <LazyTemplateGallery language={locale} box={140} onPick={(template) => onOpen(buildTemplate(template, t, locale))} />
         </section>
       </div>
     </div>

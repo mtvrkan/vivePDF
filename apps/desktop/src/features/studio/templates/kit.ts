@@ -32,6 +32,10 @@ export type StudioTemplate = {
   build: (context: TemplateContext) => StudioDesign;
 };
 
+export function buildTemplate(template: StudioTemplate, t: Translate, language: string): StudioDesign {
+  return template.build({ t, language });
+}
+
 export const FONTS = {
   inter: "library:inter",
   montserrat: "library:montserrat",

@@ -17,9 +17,9 @@ import { isLineShape, renderFill, renderStroke, shapePaths } from "../model/shap
 import { currentPage, useStudioStore } from "./studioStore";
 import { LayersTab } from "./LayersTab";
 import { insertTemplate } from "../templates/apply";
-import { buildTemplate } from "../templates/catalog";
+import { buildTemplate } from "../templates/kit";
 import type { StudioTemplate } from "../templates/kit";
-import { TemplateGallery } from "../templates/TemplateGallery";
+import { LazyTemplateGallery } from "../templates/LazyTemplateGallery";
 import { DataTab } from "../merge/DataTab";
 import { IconsSection } from "../icons/IconsSection";
 import { GraphicsElements } from "../graphics/GraphicsElements";
@@ -209,7 +209,7 @@ function TemplatesTab() {
     store.select([]);
     store.setPage(result.pageId);
   };
-  return <TemplateGallery language={language} box={104} onPick={pick} className="p-3" />;
+  return <LazyTemplateGallery language={language} box={104} onPick={pick} className="p-3" />;
 }
 
 export function ElementsPanel() {

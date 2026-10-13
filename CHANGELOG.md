@@ -32,6 +32,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
 ### Changed
+- Studio opens faster: the template gallery now loads on its own after the page appears, halving the code Studio needs to start [2026-10-13]
 - Settings look cleaner: each section opens with a large coloured heading and its settings sit on one glass card below it, the side menu shows every section in its group colour (blue for the app, green for viewing, violet for system and data) with the chosen one tinted, and the theme pictures are drawn from the real light and dark colours [2026-10-09]
 - Dark theme hovers are calmer: tool cards and next-step chips light up with a muted tint and a fainter coloured border, tool icon tiles glow less, and menu rows and icon buttons no longer flash a bright top edge; the light theme is unchanged [2026-10-09]
 - Dark theme is easier on the eyes: background washes, the sidebar glow, glass edges and the primary button glow are about half as strong, accent colours are less saturated, and text is a soft off-white on a slightly lifted background instead of bright white on near black; every text colour keeps at least 4.5:1 contrast [2026-10-09]
