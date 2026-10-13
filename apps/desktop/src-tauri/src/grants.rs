@@ -201,12 +201,12 @@ pub fn install<R: Runtime>(app: &tauri::AppHandle<R>) {
     ]
     .into_iter()
     .filter_map(Result::ok)
+    .chain(crate::font_source::data_dir(|name| {
+        std::env::var(name).ok()
+    }))
     .collect();
     crate::write_guard::protect_app_dirs(app_dirs.clone());
     let mut read_dirs = app_dirs.clone();
-    read_dirs.extend(crate::font_source::data_dir(|name| {
-        std::env::var(name).ok()
-    }));
     read_dirs.push(std::env::temp_dir());
     read_dirs.extend(e2e_roots());
     let mut write_dirs = vec![std::env::temp_dir()];

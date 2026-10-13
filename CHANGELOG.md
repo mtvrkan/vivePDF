@@ -39,6 +39,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Files vivePDF produced are recognised again through `..` in their path and before they exist, and on Linux two names that differ only in case are no longer mixed up [2026-10-13]
 - Viewer: turning a line into a curve is now one undo step instead of two, from the toolbar buttons and from Ctrl+Z / Ctrl+Y [2026-10-13]
 - Studio: the bleed guide on the canvas shows the bleed chosen in the export dialog instead of always 3 mm [2026-10-13]
 - Studio print export: a picture with no pixels beyond its frame now fills the bleed by mirroring its edge instead of stretching the whole picture slightly [2026-10-13]
@@ -77,6 +78,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 
 ### Security
+- Tools and saves can no longer write into the engine's own data folder (trusted certificates, drafts, fonts), so a page script cannot plant a trusted certificate through a tool's output [2026-10-13]
 - Files: the app now only opens, views and saves files you chose in a file dialog, dragged in, opened from the system or that vivePDF itself produced (plus its own temporary and data folders); a page script can no longer read or overwrite arbitrary files through the app. Files from your recent list, session and collections are carried over once on the first start, and a file vivePDF no longer recognises shows a "Choose file…" button. The app's own settings folders can no longer be written by tools or saves [2026-10-13]
 - Trusted certificates: Adobe's trust list (AATL) is now confirmed against Adobe's list-signing certificate built into vivePDF, so the current list is added without the manual override; an older Adobe list than the last confirmed one is treated as unconfirmed, so a replayed list cannot bring back withdrawn roots. A national EU list whose signer certificate has expired now needs the override too [2026-10-13]
 - Linux LibreOffice setup: the download is now checked against The Document Foundation's signing key, which ships with vivePDF, so any mirror can serve it and the foundation server is no longer needed; a mirror with a missing or wrong signature is skipped, and an older signed release served as a newer one is refused. Without gpgv on the system the old checksum check is used [2026-10-13]

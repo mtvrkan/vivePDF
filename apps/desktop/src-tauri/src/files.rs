@@ -31,6 +31,9 @@ fn stored_keys() -> Vec<String> {
         .ok()
         .and_then(|text| serde_json::from_str::<Vec<String>>(&text).ok())
         .unwrap_or_default()
+        .into_iter()
+        .map(|key| key.replace('\\', "/"))
+        .collect()
 }
 
 fn write_keys(keys: &[String]) {
@@ -89,10 +92,7 @@ fn produced_files() -> &'static Mutex<ProducedFiles> {
 }
 
 fn path_key(path: &Path) -> String {
-    std::fs::canonicalize(path)
-        .unwrap_or_else(|_| path.to_path_buf())
-        .to_string_lossy()
-        .to_lowercase()
+    crate::write_guard::comparable(&crate::write_guard::resolved(path))
 }
 
 pub fn remember_produced(path: &str) {
@@ -425,6 +425,19 @@ mod tests {
         remember_produced(&path.to_string_lossy());
         assert!(was_produced(&path));
         std::fs::remove_file(&path).unwrap();
+    }
+
+    #[test]
+    fn a_produced_file_is_known_before_and_after_it_exists_and_through_dot_dot() {
+        let dir = std::env::temp_dir().join(format!("vivepdf-produced-{}", uuid::Uuid::new_v4()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("later.pdf");
+        remember_produced(&path.to_string_lossy());
+        std::fs::write(&path, b"x").unwrap();
+        assert!(was_produced(&path));
+        assert!(was_produced(&dir.join("sub").join("..").join("later.pdf")));
+        assert!(!was_produced(&dir.join("other.pdf")));
+        std::fs::remove_dir_all(&dir).unwrap();
     }
 
     #[test]
