@@ -3674,6 +3674,7 @@
             "signature": {
               "status": {
                 "verified": "İmza doğrulandı: imzacı, AB güven listeleri listesinin bu ülke için gösterdiği imzacı.",
+                "verifiedAdobe": "İmza doğrulandı: liste, vivePDF'e yerleşik Adobe güven listesi sertifikasıyla imzalanmış.",
                 "unpinned": "İmza geçerli, ancak imzacı doğrulanmadı. Aşağıdaki parmak izini yayıncının duyurduğuyla karşılaştırın.",
                 "pinMismatch": "İmza geçerli, ancak imzacı AB güven listeleri listesinin bu ülke için gösterdikleri arasında değil.",
                 "unsigned": "Bu liste imzalı değil, bu yüzden kaynağı kontrol edilemiyor.",

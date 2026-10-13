@@ -19,6 +19,7 @@ from vivepdf.ops._sign_params import SignParams
 from vivepdf.ops.sign import sign as sign_document
 from vivepdf.ops.sign_certificate import CreateCertificateParams, create_certificate
 from vivepdf.ops.sign_trust import (
+    AATL_STATE_FILE,
     PINS_FILE,
     SOURCES_FILE,
     TrustAddParams,
@@ -453,6 +454,8 @@ def test_a_version_2_pin_file_still_loads_without_a_sequence(
 
 def test_built_in_anchors_are_upper_case_sha256_fingerprints() -> None:
     assert all(sign_trust.FINGERPRINT.match(anchor) for anchor in sign_trust.LOTL_ANCHORS)
+    assert sign_trust.AATL_ANCHORS
+    assert all(sign_trust.FINGERPRINT.match(anchor) for anchor in sign_trust.AATL_ANCHORS)
 
 
 def test_the_real_list_of_lists_is_verified_by_the_official_journal_anchors(store: Path) -> None:
@@ -524,6 +527,23 @@ def test_another_countrys_signer_claiming_germany_is_a_mismatch(
     )
     assert _preview(claim).signature.status == "pinMismatch"
     assert _reason(_add, claim) == "trustListUnverified"
+
+
+def test_an_anchored_national_signer_past_its_expiry_needs_the_override(
+    store: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (store / PINS_FILE).write_text(
+        json.dumps(
+            {"version": 3, "pins": {"IS": {"anchored": True, "fingerprints": [FIXTURE_SIGNER]}}}
+        )
+    )
+    assert _preview(FIXTURE).signature.status == "verified"
+    monkeypatch.setattr(
+        sign_trust, "_now", lambda: datetime.datetime(2029, 8, 1, tzinfo=datetime.UTC)
+    )
+    signature = _preview(FIXTURE).signature
+    assert signature.signer.expired and signature.status == "unpinned"
+    assert _reason(_add, FIXTURE) == "trustListUnverified"
 
 
 def test_a_signer_missing_from_the_pins_is_a_mismatch_that_needs_the_override(
@@ -928,6 +948,92 @@ def test_a_signed_security_settings_pdf_is_unpinned(store: Path, tmp_path: Path)
     assert [item.fingerprint for item in _add(signed, accept_unverified=True).added] == [
         _fingerprint(root)
     ]
+
+
+def _adobe_list(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, root: x509.Certificate) -> Path:
+    signed = _signed_pdf(tmp_path, _settings_pdf(tmp_path / "aatl.pdf", _settings(root)))
+    monkeypatch.setattr(
+        sign_trust, "_now", lambda: datetime.datetime.now(datetime.UTC) + datetime.timedelta(1)
+    )
+    signer = _preview(signed).signature.signer.fingerprint
+    monkeypatch.setattr(sign_trust, "AATL_ANCHORS", frozenset({"0" * 64, signer}))
+    return signed
+
+
+def _stored_adobe_time(store: Path) -> str:
+    stored = json.loads((store / AATL_STATE_FILE).read_text())
+    assert stored["version"] == 1
+    return stored["signedAt"]
+
+
+def test_an_adobe_list_signed_by_an_anchor_is_verified_and_remembers_its_time(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    root = _authority("AATL Root")
+    signed = _adobe_list(tmp_path, monkeypatch, root)
+    preview = _preview(signed)
+    assert preview.signature.status == "verified"
+    assert [item.fingerprint for item in _add(signed).added] == [_fingerprint(root)]
+    assert _stored_adobe_time(store) == preview.signature.signed_at
+    assert _preview(signed).signature.status == "verified"
+    trust_clear(TrustClearParams(), silent_progress())
+    assert not (store / AATL_STATE_FILE).exists()
+
+
+def test_an_adobe_list_older_than_the_last_verified_one_is_a_rollback(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    signed = _adobe_list(tmp_path, monkeypatch, _authority("Withdrawn Root"))
+    later = (datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)).isoformat()
+    (store / AATL_STATE_FILE).write_text(json.dumps({"version": 1, "signedAt": later}))
+    assert _preview(signed).signature.status == "unpinned"
+    assert _reason(_add, signed) == "trustListUnverified"
+    assert _add(signed, accept_unverified=True).added
+    assert _stored_adobe_time(store) == later
+
+
+@pytest.mark.parametrize(
+    "state",
+    [
+        "{",
+        json.dumps({"version": 2, "signedAt": "2099-01-01T00:00:00+00:00"}),
+        json.dumps({"version": 1, "signedAt": "2099-01-01T00:00:00"}),
+        json.dumps({"version": 1, "signedAt": 5}),
+    ],
+)
+def test_an_unreadable_adobe_state_does_not_block_and_is_replaced(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, state: str
+) -> None:
+    signed = _adobe_list(tmp_path, monkeypatch, _authority("AATL Root"))
+    (store / AATL_STATE_FILE).write_text(state)
+    preview = _preview(signed)
+    assert preview.signature.status == "verified"
+    _add(signed)
+    assert _stored_adobe_time(store) == preview.signature.signed_at
+
+
+def test_an_expired_adobe_anchor_does_not_verify(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    signed = _adobe_list(tmp_path, monkeypatch, _authority("AATL Root"))
+    monkeypatch.setattr(
+        sign_trust, "_now", lambda: datetime.datetime.now(datetime.UTC) + datetime.timedelta(36500)
+    )
+    signature = _preview(signed).signature
+    assert signature.signer.expired and signature.status == "unpinned"
+    assert _reason(_add, signed) == "trustListUnverified"
+    assert not (store / AATL_STATE_FILE).exists()
+
+
+def test_an_adobe_list_by_another_signer_needs_the_override(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    signed = _adobe_list(tmp_path, monkeypatch, _authority("AATL Root"))
+    monkeypatch.setattr(sign_trust, "AATL_ANCHORS", frozenset({"0" * 64}))
+    assert _preview(signed).signature.status == "unpinned"
+    assert _reason(_add, signed) == "trustListUnverified"
+    _add(signed, accept_unverified=True)
+    assert not (store / AATL_STATE_FILE).exists()
 
 
 def test_an_update_after_signing_a_security_settings_pdf_is_a_hard_block(

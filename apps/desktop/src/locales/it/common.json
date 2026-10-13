@@ -3673,6 +3673,7 @@
             "signature": {
               "status": {
                 "verified": "Firma verificata: il firmatario è quello che l'elenco UE degli elenchi di fiducia indica per questo paese.",
+                "verifiedAdobe": "Firma verificata: l'elenco è firmato con il certificato dell'elenco attendibile di Adobe incorporato in vivePDF.",
                 "unpinned": "La firma è valida, ma il firmatario non è confermato. Confronta l'impronta qui sotto con quella pubblicata dall'editore.",
                 "pinMismatch": "La firma è valida, ma il firmatario non è tra quelli che l'elenco UE degli elenchi di fiducia indica per questo paese.",
                 "unsigned": "Questo elenco non è firmato, quindi la sua origine non può essere verificata.",

@@ -17,6 +17,7 @@ from vivepdf.ops._trust_lists import (
     MAX_LIST_BYTES,
     MAX_SOURCE_NAME,
     MAX_TERRITORY,
+    SECURITY_SETTINGS,
     EmptyTrustList,
     ListedCertificates,
     ListSource,
@@ -49,6 +50,13 @@ LOTL_ANCHORS: frozenset[str] = frozenset(
         "D2064FDD70F6982DCC516B86D9D5C56AEA939417C624B2E478C0B29DE54F8474",
     }
 )
+AATL_ANCHORS: frozenset[str] = frozenset(
+    {
+        "A271CA184B86DE77724FCBBA244AFCCF1DA42F2281DBFEF992DC1F4823603921",
+    }
+)
+AATL_STATE_FILE = "aatl-state.json"
+AATL_STATE_VERSION = 1
 UNCHECKED_ORIGINS = frozenset({"unsigned", "unverifiable"})
 DER_SEQUENCE = b"\x30"
 PEM_ARMOR = b"-----BEGIN"
@@ -394,6 +402,7 @@ def _pin_entry(value: Any, version: int) -> _PinSet | None:
 class _StoredPins:
     pins: dict[str, _PinSet]
     lotl_sequence: int | None = None
+    aatl_signed_at: datetime.datetime | None = None
 
 
 def _stored_sequence(raw: dict) -> int | None:
@@ -422,6 +431,41 @@ def _load_pin_file(store: Path) -> _StoredPins:
         if entry is not None:
             loaded[territory] = entry
     return _StoredPins(loaded, _stored_sequence(raw))
+
+
+def _load_aatl_signed_at(store: Path) -> datetime.datetime | None:
+    path = store / AATL_STATE_FILE
+    try:
+        if not path.is_file() or path.stat().st_size > MAX_SOURCES_BYTES:
+            return None
+        raw = json.loads(path.read_bytes())
+    except (OSError, ValueError):
+        return None
+    if not isinstance(raw, dict) or raw.get("version") != AATL_STATE_VERSION:
+        return None
+    value = raw.get("signedAt")
+    if not isinstance(value, str):
+        return None
+    try:
+        moment = datetime.datetime.fromisoformat(value)
+    except ValueError:
+        return None
+    return moment if moment.tzinfo is not None else None
+
+
+def _load_trust_state(store: Path) -> _StoredPins:
+    stored = _load_pin_file(store)
+    return _StoredPins(stored.pins, stored.lotl_sequence, _load_aatl_signed_at(store))
+
+
+def _save_aatl_signed_at(store: Path, signed_at: datetime.datetime) -> None:
+    current = _load_aatl_signed_at(store)
+    if current is not None and current >= signed_at:
+        return
+    data = json.dumps(
+        {"version": AATL_STATE_VERSION, "signedAt": signed_at.isoformat()}, indent=1
+    ).encode()
+    write_atomically(store / AATL_STATE_FILE, lambda partial: partial.write_bytes(data))
 
 
 def _merged_pins(
@@ -482,6 +526,16 @@ def _current_list_of_lists(
     return listed.sequence is not None and listed.sequence >= stored_sequence
 
 
+def _current_adobe_list(
+    signer: ListSigner,
+    signed_at: datetime.datetime | None,
+    stored_signed_at: datetime.datetime | None,
+) -> bool:
+    if signer.fingerprint not in AATL_ANCHORS or signer.expired or signed_at is None:
+        return False
+    return stored_signed_at is None or signed_at >= stored_signed_at
+
+
 def _pin_status(
     listed: ListedCertificates,
     signer: ListSigner,
@@ -493,13 +547,17 @@ def _pin_status(
     if listed.list_of_lists:
         current = _current_list_of_lists(listed, signer, stale, stored.lotl_sequence)
         return VERIFIED if current else "unpinned"
+    if listed.source.kind == SECURITY_SETTINGS:
+        signed_at = listed.signature.signed_at if listed.signature is not None else None
+        current = _current_adobe_list(signer, signed_at, stored.aatl_signed_at)
+        return VERIFIED if current else "unpinned"
     territory = listed.source.territory
     if listed.source.kind != EU_TRUSTED_LIST or territory is None or territory not in pins:
         return "unpinned"
     entry = pins[territory]
     if fingerprint not in entry.fingerprints:
         return "pinMismatch"
-    return VERIFIED if entry.anchored else "unpinned"
+    return VERIFIED if entry.anchored and not signer.expired else "unpinned"
 
 
 def _list_signature(listed: ListedCertificates, stored: _StoredPins) -> ListSignature:
@@ -545,7 +603,7 @@ def _plan_import(path: str, progress: Progress) -> _Import:
     files = _file_names(store)
     sources = _load_sources(store, files)
     found = read.listed
-    signature = _list_signature(found, _load_pin_file(store)) if found is not None else None
+    signature = _list_signature(found, _load_trust_state(store)) if found is not None else None
     listed: ListSource | None = found.source if found is not None else None
     source = (
         _trust_source(listed, signature.status if signature is not None else None)
@@ -681,6 +739,15 @@ def trust_add(params: TrustAddParams, progress: Progress) -> TrustAddResult:
         pins = _merged_pins(stored.pins, planned.pins, anchored)
         sequence = planned.sequence if anchored else stored.lotl_sequence
         _save_pins(planned.store, pins, sequence)
+    if (
+        planned.source is not None
+        and planned.source.kind == SECURITY_SETTINGS
+        and planned.signature is not None
+        and planned.signature.status == VERIFIED
+        and planned.signature.signed_at is not None
+    ):
+        signed_at = datetime.datetime.fromisoformat(planned.signature.signed_at)
+        _save_aatl_signed_at(planned.store, signed_at)
     for file_id in planned.retired:
         unlink_patiently(planned.store / file_id)
     for data, root in planned.fresh:
@@ -724,4 +791,5 @@ def trust_clear(params: TrustClearParams, progress: Progress) -> TrustClearResul
         removed += 1
     unlink_patiently(store / SOURCES_FILE)
     unlink_patiently(store / PINS_FILE)
+    unlink_patiently(store / AATL_STATE_FILE)
     return TrustClearResult(removed=removed)

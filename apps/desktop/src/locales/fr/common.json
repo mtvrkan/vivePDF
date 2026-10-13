@@ -3673,6 +3673,7 @@
             "signature": {
               "status": {
                 "verified": "Signature vérifiée : le signataire est celui que la liste des listes de confiance de l’UE désigne pour ce pays.",
+                "verifiedAdobe": "Signature vérifiée : la liste est signée par le certificat de liste de confiance d'Adobe intégré à vivePDF.",
                 "unpinned": "La signature est valide, mais le signataire n’est pas confirmé. Comparez l’empreinte ci-dessous avec celle que publie l’éditeur.",
                 "pinMismatch": "La signature est valide, mais le signataire ne fait pas partie de ceux que la liste des listes de confiance de l’UE désigne pour ce pays.",
                 "unsigned": "Cette liste n’est pas signée, son origine ne peut donc pas être vérifiée.",

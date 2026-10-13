@@ -3674,6 +3674,7 @@
             "signature": {
               "status": {
                 "verified": "Signature verified: the signer is the one the EU list of trusted lists names for this country.",
+                "verifiedAdobe": "Signature verified: the list is signed by Adobe's trust list certificate built into vivePDF.",
                 "unpinned": "The signature is valid, but the signer is not confirmed. Compare the fingerprint below with the one the publisher lists.",
                 "pinMismatch": "The signature is valid, but the signer is not one the EU list of trusted lists names for this country.",
                 "unsigned": "This list is not signed, so its origin cannot be checked.",

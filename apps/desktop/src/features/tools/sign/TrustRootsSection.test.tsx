@@ -157,6 +157,25 @@ describe("TrustRootsSection", () => {
     expect(screen.queryByRole("group", { name: "Review before adding" })).toBeNull();
   });
 
+  it("names Adobe's built-in certificate for a verified Adobe list and keeps the EU wording for EU lists", async () => {
+    render(<TrustRootsSection onChanged={vi.fn()} />);
+    await screen.findByText("Root A");
+    previewTrustRoots.mockResolvedValue(listPreview({ source: { kind: "securitySettings", territory: null, name: "AATL" }, added: [root("c.cer", "Root C")] }));
+    openDialog.mockResolvedValue("C:/lists/aatl.acrobatsecuritysettings");
+
+    await click("Add certificate or trust list");
+    const panel = screen.getByRole("group", { name: "Review before adding" });
+    expect(panel.textContent).toContain("Signature verified: the list is signed by Adobe's trust list certificate built into vivePDF.");
+    expect(panel.textContent).not.toContain("names for this country");
+    expect((screen.getByRole("button", { name: "Add these roots" }) as HTMLButtonElement).disabled).toBe(false);
+    await click("Cancel");
+
+    previewTrustRoots.mockResolvedValue(listPreview({ added: [root("n.cer", "Provider N")] }));
+    openDialog.mockResolvedValue("C:/lists/de.xml");
+    await click("Add certificate or trust list");
+    expect(screen.getByRole("group", { name: "Review before adding" }).textContent).toContain("the signer is the one the EU list of trusted lists names for this country.");
+  });
+
   it("adds a single certificate at once and only reports a file with nothing new", async () => {
     const onChanged = vi.fn();
     render(<TrustRootsSection onChanged={onChanged} />);

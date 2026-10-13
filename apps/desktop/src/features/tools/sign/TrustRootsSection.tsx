@@ -32,6 +32,9 @@ const isCertificateFile = (path: string) => CERTIFICATE_EXTENSIONS.some((extensi
 
 const statusTone = (status: TrustListSignature["status"]) => (status === "verified" ? "text-success" : status === "pinMismatch" ? "font-medium text-destructive" : "text-warning");
 
+const statusKey = (signature: TrustListSignature, source: TrustSource | null) =>
+  signature.status === "verified" && source?.kind === "securitySettings" ? "verifiedAdobe" : signature.status;
+
 const needsOverride = (preview: TrustPreviewResult) => preview.signature !== null && preview.signature.status !== "verified";
 
 function PreviewSubjects({ roots }: { roots: TrustRoot[] }) {
@@ -47,12 +50,12 @@ function PreviewSubjects({ roots }: { roots: TrustRoot[] }) {
   );
 }
 
-function SignatureDetails({ signature, formatDate }: { signature: TrustListSignature; formatDate: (value: string) => string }) {
+function SignatureDetails({ signature, source, formatDate }: { signature: TrustListSignature; source: TrustSource | null; formatDate: (value: string) => string }) {
   const { t } = useTranslation();
   const { signer } = signature;
   return (
     <div className="space-y-0.5 text-xs">
-      <p className={statusTone(signature.status)}>{t(`tools.sign.verify.roots.preview.signature.status.${signature.status}`)}</p>
+      <p className={statusTone(signature.status)}>{t(`tools.sign.verify.roots.preview.signature.status.${statusKey(signature, source)}`)}</p>
       {signer ? (
         <>
           <p className="break-words text-muted-foreground">{t("tools.sign.verify.roots.preview.signature.signer", { subject: signer.subject, issuer: signer.issuer })}</p>
@@ -239,7 +242,7 @@ export function TrustRootsSection({ onChanged }: { onChanged: () => void }) {
       {pending ? (
         <div role="group" aria-label={t("tools.sign.verify.roots.preview.title")} className="space-y-2 rounded-md border px-3 py-2 text-sm">
           <p className="font-medium">{pending.preview.source ? t("tools.sign.verify.roots.preview.list", { name: pending.preview.source.kind === "euListOfLists" ? t("tools.sign.verify.roots.kinds.euListOfLists") : sourceLabel(pending.preview.source) }) : t("tools.sign.verify.roots.preview.title")}</p>
-          {pending.preview.signature ? <SignatureDetails signature={pending.preview.signature} formatDate={formatDate} /> : null}
+          {pending.preview.signature ? <SignatureDetails signature={pending.preview.signature} source={pending.preview.source} formatDate={formatDate} /> : null}
           {pending.preview.source?.kind === "euListOfLists" ? (
             <p>{t("tools.sign.verify.roots.preview.pins", { count: pending.preview.pinned })}</p>
           ) : (
