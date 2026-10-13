@@ -2737,7 +2737,7 @@
         "findReplace": "Trouvez du texte et réécrivez-le à la même taille et couleur.",
         "watermark": "Appliquez un filigrane texte ou image.",
         "crop": "Rognez les marges avec une précision au millimètre.",
-        "resize": "Redimensionnez les pages au format A4, Lettre ou personnalisé.",
+        "resize": "Réduisez ou agrandissez les pages au format A6, A5, A4, A3, A2, Lettre ou personnalisé.",
         "flatten": "Intégrez les formulaires et annotations dans le contenu.",
         "forms": "Remplissez les champs de formulaire, verrouillez-les éventuellement.",
         "annotate": "Ajoutez surlignages, dessins, formes et zones de texte.",
@@ -3172,7 +3172,16 @@
         "matchLargest": "Aligner sur la plus grande page",
         "matchLargestHint": "Ramène un document de tailles mélangées à une seule taille, sans la nommer.",
         "widthMm": "Largeur (mm)",
-        "heightMm": "Hauteur (mm)"
+        "heightMm": "Hauteur (mm)",
+        "quick": "Formats rapides",
+        "quickHint": "Par rapport à la première page ; le contenu est mis à l'échelle avec la page.",
+        "quickHintNoSource": "Choisissez un fichier pour voir de combien chaque format réduit ou agrandit.",
+        "sizeMm": "{{width}} × {{height}} mm",
+        "change": {
+          "shrink": "Réduire à {{percent}}",
+          "enlarge": "Agrandir à {{percent}}",
+          "same": "À peu près la même taille"
+        }
       },
       "flatten": {
         "suffix": "aplati",

@@ -2737,7 +2737,7 @@
         "findReplace": "Encontre o texto e reescreva no mesmo tamanho e cor.",
         "watermark": "Aplique uma marca-d’água de texto ou imagem.",
         "crop": "Corte margens com precisão de milímetros.",
-        "resize": "Redimensione páginas para A4, Carta ou um tamanho personalizado.",
+        "resize": "Reduza ou amplie as páginas para A6, A5, A4, A3, A2, Carta ou um tamanho personalizado.",
         "flatten": "Incorpore formulários e anotações ao conteúdo.",
         "forms": "Preencha campos de formulário, opcionalmente bloqueando-os.",
         "annotate": "Adicione destaques, desenhos, formas e caixas de texto.",
@@ -3172,7 +3172,16 @@
         "matchLargest": "Igualar à maior página",
         "matchLargestHint": "Leva um documento de tamanhos misturados a um só tamanho, sem nomeá-lo.",
         "widthMm": "Largura (mm)",
-        "heightMm": "Altura (mm)"
+        "heightMm": "Altura (mm)",
+        "quick": "Tamanhos rápidos",
+        "quickHint": "Comparado com a primeira página; o conteúdo é redimensionado junto com a página.",
+        "quickHintNoSource": "Escolha um arquivo para ver quanto cada tamanho reduz ou amplia.",
+        "sizeMm": "{{width}} × {{height}} mm",
+        "change": {
+          "shrink": "Reduzir para {{percent}}",
+          "enlarge": "Ampliar para {{percent}}",
+          "same": "Quase o mesmo tamanho"
+        }
       },
       "flatten": {
         "suffix": "achatado",

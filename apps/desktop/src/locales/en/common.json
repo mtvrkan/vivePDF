@@ -2738,7 +2738,7 @@
         "findReplace": "Find text and rewrite it in the same size and colour.",
         "watermark": "Apply a text or image watermark.",
         "crop": "Trim margins with millimetre precision.",
-        "resize": "Scale pages to A4, Letter or a custom size.",
+        "resize": "Shrink or enlarge pages to A6, A5, A4, A3, A2, Letter or a custom size.",
         "flatten": "Bake forms and annotations into the content.",
         "forms": "Fill form fields, optionally lock them.",
         "annotate": "Add highlights, drawings, shapes and text boxes.",
@@ -3173,7 +3173,16 @@
         "matchLargest": "Match the largest page instead",
         "matchLargestHint": "Brings a document of mixed page sizes onto one size, without naming it.",
         "widthMm": "Width (mm)",
-        "heightMm": "Height (mm)"
+        "heightMm": "Height (mm)",
+        "quick": "Quick sizes",
+        "quickHint": "Compared with the first page; the content is scaled with the page.",
+        "quickHintNoSource": "Pick a file to see how much each size shrinks or enlarges it.",
+        "sizeMm": "{{width}} × {{height}} mm",
+        "change": {
+          "shrink": "Shrink to {{percent}}",
+          "enlarge": "Enlarge to {{percent}}",
+          "same": "About the same size"
+        }
       },
       "flatten": {
         "suffix": "flat",

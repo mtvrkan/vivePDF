@@ -20,9 +20,11 @@ from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 PAPER_SIZES: dict[str, tuple[float, float]] = {
+    "a2": (1191, 1684),
     "a3": (842, 1191),
     "a4": (595, 842),
     "a5": (420, 595),
+    "a6": (298, 420),
     "letter": (612, 792),
     "legal": (612, 1008),
     "tabloid": (792, 1224),

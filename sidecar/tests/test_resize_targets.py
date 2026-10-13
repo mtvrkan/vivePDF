@@ -141,3 +141,26 @@ def test_a_margin_that_swallows_the_page_names_the_reason(tmp_path: Path):
         )
 
     assert refused.value.data == {"reason": "marginTooLarge"}
+
+
+@pytest.mark.parametrize(("preset", "size"), [("a6", (298, 420)), ("A2", (1191, 1684))])
+def test_a6_and_a2_presets_shrink_and_enlarge_whole_pages(
+    tmp_path: Path, preset: str, size: tuple[float, float]
+):
+    source = tmp_path / "a4.pdf"
+    with pymupdf.open() as document:
+        page = document.new_page(width=595, height=842)
+        page.insert_text((72, 100), "Merhaba", fontsize=24)
+        document.save(source)
+    target = tmp_path / f"{preset}.pdf"
+
+    resize_pages(
+        ResizeParams(path=str(source), output=str(target), preset=preset), silent_progress()
+    )
+
+    with pymupdf.open(target) as document:
+        page = document[0]
+        assert (round(page.rect.width), round(page.rect.height)) == size
+        assert "Merhaba" in page.get_text()
+        words = page.get_text("words")
+        assert words[0][0] < page.rect.width / 2

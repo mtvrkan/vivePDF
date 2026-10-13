@@ -2737,7 +2737,7 @@
         "findReplace": "Text finden und in gleicher Größe und Farbe neu schreiben.",
         "watermark": "Ein Text- oder Bildwasserzeichen anwenden.",
         "crop": "Ränder millimetergenau zuschneiden.",
-        "resize": "Seiten auf A4, Letter oder eine benutzerdefinierte Größe skalieren.",
+        "resize": "Seiten auf A6, A5, A4, A3, A2, Letter oder eine eigene Größe verkleinern oder vergrößern.",
         "flatten": "Formulare und Anmerkungen in den Inhalt einbrennen.",
         "forms": "Formularfelder ausfüllen, optional sperren.",
         "annotate": "Markierungen, Zeichnungen, Formen und Textfelder hinzufügen.",
@@ -3172,7 +3172,16 @@
         "matchLargest": "Stattdessen an die größte Seite angleichen",
         "matchLargestHint": "Bringt ein Dokument mit gemischten Seitengrößen auf eine Größe, ohne sie zu benennen.",
         "widthMm": "Breite (mm)",
-        "heightMm": "Höhe (mm)"
+        "heightMm": "Höhe (mm)",
+        "quick": "Schnellformate",
+        "quickHint": "Verglichen mit der ersten Seite; der Inhalt wird mit der Seite skaliert.",
+        "quickHintNoSource": "Wählen Sie eine Datei, um zu sehen, wie stark jedes Format verkleinert oder vergrößert.",
+        "sizeMm": "{{width}} × {{height}} mm",
+        "change": {
+          "shrink": "Verkleinern auf {{percent}}",
+          "enlarge": "Vergrößern auf {{percent}}",
+          "same": "Etwa gleich groß"
+        }
       },
       "flatten": {
         "suffix": "flach",

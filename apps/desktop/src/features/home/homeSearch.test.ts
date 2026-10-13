@@ -13,6 +13,14 @@ describe("toolMatches", () => {
     expect(toolMatches(merge, "", "en", "Merge", "Combine PDFs", "security")).toBe(false);
   });
 
+  it("finds the page size tool by paper names and by shrink or enlarge words in Turkish", () => {
+    const resize = toolShortcuts.find((tool) => tool.id === "resize")!;
+
+    for (const query of ["A5", "a6", "küçült", "büyüt", "shrink"]) {
+      expect(toolMatches(resize, query, "tr", "Sayfa boyutu", "", "all")).toBe(true);
+    }
+  });
+
   it("returns false when the query does not match label, description, or keywords", () => {
     expect(toolMatches(merge, "xyz123", "en", "Merge", "Combine PDFs", "all")).toBe(false);
   });

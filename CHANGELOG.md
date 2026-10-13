@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Page size: quick A6, A5, A4, A3, A2 and Letter cards show how much each size shrinks or enlarges the first page (for example A4 to A5 "Shrink to 71%"), the paper list gains A6, A2 and Tabloid, and the tool is found by searching "A5", "küçült", "büyüt", "shrink" or "enlarge" [2026-10-13]
 - Presentation: temporary drawings are no longer lost when the presentation ends — on exit vivePDF offers to save them into the PDF as annotations (pens, highlights, shapes and text with your author name; board drawings become new pages at the end), discard them or keep them as an unsaved change, and the presenter bar can finish and save in one step. A selected drawing now has corner handles to resize it (Shift keeps the proportions, text always does) plus Smaller and Larger buttons [2026-10-13]
 - Reading mode: the page colours button in the right rail now switches reading mode to its dark theme and back to the light one used before (paper or sepia); outside reading mode it still recolours the pages [2026-10-13]
 - Viewer editing: a placed drawing (formula, shape, graph, molecule, table, chart, flowchart, Mermaid diagram, question, answer key) can be saved as a PNG at 1×, 2× or 4× size or as an SVG, or copied to the clipboard as a picture, from its toolbar or by right-clicking it [2026-10-13]

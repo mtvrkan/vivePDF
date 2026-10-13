@@ -383,7 +383,7 @@ export function EditPage() {
           ) : null}
 
           {tab === "resize" ? (
-            <ResizeTab state={resizeState} pages={pages} onPagesChange={setPages} />
+            <ResizeTab state={resizeState} pages={pages} onPagesChange={setPages} sourceSize={visiblePageSize(source?.info?.pageSizes[(rangePages(pages, source?.info?.pageCount ?? 0)?.[0] ?? 1) - 1])} />
           ) : null}
 
           {tab === "flatten" ? (

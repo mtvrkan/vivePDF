@@ -2738,7 +2738,7 @@
         "findReplace": "Metni bulup aynı punto ve renkte yeniden yazın.",
         "watermark": "Metin veya görsel filigran uygular.",
         "crop": "Kenar boşluklarını milimetre hassasiyetiyle kırpar.",
-        "resize": "Sayfaları A4, Letter veya özel boyuta ölçekler.",
+        "resize": "Sayfaları A6, A5, A4, A3, A2, Letter veya özel boyuta küçültün ya da büyütün.",
         "flatten": "Form alanlarını ve notları kalıcı içeriğe dönüştürür.",
         "forms": "Form alanlarını doldurur; isteğe bağlı olarak kilitler.",
         "annotate": "Vurgu, çizim, şekil ve metin kutusu ekler.",
@@ -3173,7 +3173,16 @@
         "matchLargest": "Bunun yerine en büyük sayfaya eşitle",
         "matchLargestHint": "Karışık boyutlu bir belgeyi, boyut adı vermeden tek boyuta getirir.",
         "widthMm": "Genişlik (mm)",
-        "heightMm": "Yükseklik (mm)"
+        "heightMm": "Yükseklik (mm)",
+        "quick": "Hızlı boyutlar",
+        "quickHint": "İlk sayfaya göre; içerik sayfayla birlikte ölçeklenir.",
+        "quickHintNoSource": "Her boyutun ne kadar küçülteceğini ya da büyüteceğini görmek için bir dosya seçin.",
+        "sizeMm": "{{width}} × {{height}} mm",
+        "change": {
+          "shrink": "Küçült: {{percent}}",
+          "enlarge": "Büyüt: {{percent}}",
+          "same": "Yaklaşık aynı boyut"
+        }
       },
       "flatten": {
         "suffix": "duz",
