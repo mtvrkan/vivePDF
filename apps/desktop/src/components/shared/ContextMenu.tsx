@@ -7,7 +7,7 @@ import { shortcutLabel } from "@/shared/lib/platform";
 
 export const MENU_LAYER = "data-context-menu-layer";
 
-export type ContextMenuAnchor = { x: number; y: number; alignEnd?: boolean };
+export type ContextMenuAnchor = { x: number; y: number; alignEnd?: boolean; flipX?: number };
 
 export type ContextMenuItem =
   | { type: "separator"; id: string }
@@ -18,6 +18,23 @@ function flattenSelectable(items: ContextMenuItem[]): string[] {
   return items.filter((item) => item.type !== "separator" && !item.disabled).map((item) => item.id);
 }
 
+type ViewBounds = { left: number; top: number; right: number; bottom: number };
+
+function visibleBounds(): ViewBounds {
+  const viewport = { left: 0, top: 0, right: window.innerWidth, bottom: window.innerHeight };
+  const display = window.screen as Screen & { availLeft?: number; availTop?: number };
+  if (!display.availWidth || !display.availHeight) return viewport;
+  const offsetX = (display.availLeft ?? 0) - window.screenX;
+  const offsetY = (display.availTop ?? 0) - window.screenY;
+  const bounds = {
+    left: Math.max(viewport.left, offsetX),
+    top: Math.max(viewport.top, offsetY),
+    right: Math.min(viewport.right, offsetX + display.availWidth),
+    bottom: Math.min(viewport.bottom, offsetY + display.availHeight),
+  };
+  return bounds.right - bounds.left < 200 || bounds.bottom - bounds.top < 200 ? viewport : bounds;
+}
+
 function useClampedPosition(anchor: ContextMenuAnchor, ref: React.RefObject<HTMLDivElement | null>) {
   const [style, setStyle] = useState<{ left: number; top: number }>({ left: anchor.x, top: anchor.y });
   useLayoutEffect(() => {
@@ -25,10 +42,14 @@ function useClampedPosition(anchor: ContextMenuAnchor, ref: React.RefObject<HTML
     if (!node) return;
     const rect = node.getBoundingClientRect();
     const margin = 8;
-    const x = anchor.alignEnd ? anchor.x - rect.width : anchor.x;
-    const left = Math.min(Math.max(margin, x), window.innerWidth - rect.width - margin);
-    const top = Math.min(Math.max(margin, anchor.y), window.innerHeight - rect.height - margin);
-    setStyle({ left: Math.max(margin, left), top: Math.max(margin, top) });
+    const view = visibleBounds();
+    let x = anchor.alignEnd ? anchor.x - rect.width : anchor.x;
+    if (anchor.flipX !== undefined && x + rect.width > view.right - margin && anchor.flipX - rect.width >= view.left + margin) {
+      x = anchor.flipX - rect.width;
+    }
+    const left = Math.min(Math.max(view.left + margin, x), view.right - rect.width - margin);
+    const top = Math.min(Math.max(view.top + margin, anchor.y), view.bottom - rect.height - margin);
+    setStyle({ left: Math.max(view.left + margin, left), top: Math.max(view.top + margin, top) });
   }, [anchor, ref]);
   return style;
 }
@@ -84,7 +105,7 @@ function ContextMenuItems({
       const node = containerRef.current?.querySelector<HTMLElement>(`[data-menu-id="${item.id}"]`);
       const rect = node?.getBoundingClientRect();
       if (rect) {
-        setSubmenuAnchor({ x: rect.right, y: rect.top });
+        setSubmenuAnchor({ x: rect.right, y: rect.top, flipX: rect.left });
         setOpenSubmenuId(item.id);
       }
     }

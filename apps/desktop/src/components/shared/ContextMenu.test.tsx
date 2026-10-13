@@ -80,4 +80,37 @@ describe("ContextMenu", () => {
     expect((screen.getByRole("menu", { name: "Page" }).closest("[data-context-menu-layer]") as HTMLElement).style.left).toBe("700px");
     measure.mockRestore();
   });
+
+  it("opens a submenu on the left of its parent when there is no room on the right", () => {
+    const measure = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ width: 200, height: 100, top: 50, left: 800, right: 1000, bottom: 150, x: 800, y: 50, toJSON: () => ({}) });
+    renderMenu();
+
+    fireEvent.mouseEnter(screen.getByRole("menuitem", { name: "Search the web" }));
+
+    expect((screen.getByRole("menu", { name: "Search the web" }).closest("[data-context-menu-layer]") as HTMLElement).style.left).toBe("600px");
+    measure.mockRestore();
+  });
+
+  it("keeps a submenu on the right of its parent when it fits there", () => {
+    const measure = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ width: 200, height: 100, top: 50, left: 100, right: 300, bottom: 150, x: 100, y: 50, toJSON: () => ({}) });
+    renderMenu();
+
+    fireEvent.mouseEnter(screen.getByRole("menuitem", { name: "Search the web" }));
+
+    expect((screen.getByRole("menu", { name: "Search the web" }).closest("[data-context-menu-layer]") as HTMLElement).style.left).toBe("300px");
+    measure.mockRestore();
+  });
+
+  it("moves up above the taskbar when the window reaches below the screen's free area", () => {
+    const measure = vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockReturnValue({ width: 200, height: 100, top: 0, left: 0, right: 200, bottom: 100, x: 0, y: 0, toJSON: () => ({}) });
+    Object.defineProperty(window.screen, "availWidth", { value: window.innerWidth, configurable: true });
+    Object.defineProperty(window.screen, "availHeight", { value: window.innerHeight - 40, configurable: true });
+
+    render(<ContextMenu anchor={{ x: 10, y: window.innerHeight - 60 }} items={[{ type: "item", id: "copy", label: "Copy", onSelect: vi.fn() }]} label="Page" onClose={vi.fn()} />);
+
+    expect((screen.getByRole("menu", { name: "Page" }).closest("[data-context-menu-layer]") as HTMLElement).style.top).toBe(`${window.innerHeight - 40 - 100 - 8}px`);
+    Reflect.deleteProperty(window.screen, "availWidth");
+    Reflect.deleteProperty(window.screen, "availHeight");
+    measure.mockRestore();
+  });
 });

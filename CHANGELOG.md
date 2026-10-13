@@ -33,6 +33,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Menus: a submenu with no room on the right of its menu (the view menu's split view list) now opens on the left instead of on top of the menu, and menus stay above the taskbar when the window reaches below it [2026-10-13]
 - macOS support merged with the newer Windows work: the Windows-only file type list and the Finder open-files queue no longer break the macOS and Windows builds, the macOS title bar keeps a plain transparent background when theme colours are missing, and the unused "Close Window" menu text is removed from all languages [2026-10-12]
 - macOS/Linux: watched folders were refused as system folders because every absolute path counted as inside `/` [2026-10-10]
 - macOS: renaming a file to the same name in another case (report.pdf → Report.pdf) reported that the name was taken [2026-10-10]
