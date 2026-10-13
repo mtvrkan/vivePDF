@@ -20,6 +20,7 @@ import { annotationAuthorName } from "./annotationAuthor";
 import { invalidatePageText } from "./pageTextCache";
 import { fillProblemNotes } from "@/features/tools/forms/formsResult";
 import { useReloadDocument } from "./useReloadDocument";
+import { forgetReplacements } from "./linkedHistory";
 import { orderedForSave, pageTurns } from "./pageEdits";
 import { restoreSavedView } from "./viewableBytes";
 import { originalOf, useConvertedStore } from "./convertedDocuments";
@@ -107,6 +108,7 @@ export function useDocumentSave(documentId: string) {
       if (settles) {
         usePendingChangesStore.getState().clear(documentId);
         refs.current.historyCapability?.forDocument(documentId).purgeByMetadata(() => true);
+        forgetReplacements(documentId);
       }
       if (original) {
         useConvertedStore.getState().forget(document.path);
@@ -138,6 +140,7 @@ export function useDocumentSave(documentId: string) {
       history.undo();
       steps += 1;
     }
+    forgetReplacements(documentId);
   };
 
   return { save, discard, unsavedCount, queuedChanges };

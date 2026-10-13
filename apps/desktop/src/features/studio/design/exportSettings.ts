@@ -1,3 +1,4 @@
+import { create } from "zustand";
 import { STUDIO_PLATE_MODES, STUDIO_PRINT_SHEETS, type StudioExportFormat, type StudioPlateMode, type StudioPrintSheet } from "@/types/studio";
 import { DEFAULT_BLEED_MM, MAX_BLEED_MM } from "../model/print";
 
@@ -81,6 +82,10 @@ export function readPrintSettings(): PrintSettings {
   return readStored(PRINT_SETTINGS_KEY, normalizePrintSettings, DEFAULT_PRINT_SETTINGS);
 }
 
+export const usePrintBleedStore = create<{ bleedMm: number }>(() => ({ bleedMm: readPrintSettings().bleedMm }));
+
 export function writePrintSettings(settings: PrintSettings): void {
-  writeStored(PRINT_SETTINGS_KEY, normalizePrintSettings(settings));
+  const normalized = normalizePrintSettings(settings);
+  writeStored(PRINT_SETTINGS_KEY, normalized);
+  usePrintBleedStore.setState({ bleedMm: normalized.bleedMm });
 }

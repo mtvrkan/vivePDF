@@ -645,7 +645,6 @@
     },
     "formula": {
       "menu": "Inserisci formula",
-      "pick": "Formula",
       "title": "Inserisci formula",
       "editTitle": "Modifica formula",
       "latexLabel": "Formula (LaTeX)",
@@ -700,7 +699,6 @@
     },
     "shapes": {
       "menu": "Inserisci forma",
-      "pick": "Forma",
       "title": "Inserisci forma",
       "editTitle": "Modifica forma",
       "groupsLabel": "Gruppi di forme",
@@ -790,7 +788,6 @@
     },
     "graph": {
       "menu": "Inserisci grafico di funzione",
-      "pick": "Grafico",
       "title": "Inserisci grafico di funzione",
       "editTitle": "Modifica grafico",
       "functions": "Funzioni",
@@ -826,7 +823,6 @@
     },
     "table": {
       "menu": "Inserisci tabella",
-      "pick": "Tabella",
       "title": "Inserisci tabella",
       "editTitle": "Modifica tabella",
       "edit": "Modifica tabella",
@@ -885,7 +881,6 @@
     },
     "chart": {
       "menu": "Inserisci diagramma",
-      "pick": "Diagramma",
       "title": "Inserisci diagramma",
       "editTitle": "Modifica diagramma",
       "edit": "Modifica diagramma",
@@ -1288,7 +1283,6 @@
     },
     "question": {
       "menu": "Aggiungi domanda",
-      "pick": "Domanda",
       "title": "Aggiungi domanda",
       "editTitle": "Modifica domanda",
       "edit": "Modifica domanda",
@@ -1337,7 +1331,6 @@
     },
     "answerKey": {
       "menu": "Aggiungi chiave delle risposte",
-      "pick": "Chiave delle risposte",
       "title": "Aggiungi chiave delle risposte",
       "editTitle": "Modifica chiave delle risposte",
       "edit": "Modifica chiave delle risposte",
@@ -1364,7 +1357,6 @@
     },
     "flowchart": {
       "menu": "Aggiungi diagramma di flusso",
-      "pick": "Diagramma di flusso",
       "title": "Aggiungi diagramma di flusso",
       "editTitle": "Modifica diagramma di flusso",
       "edit": "Modifica diagramma di flusso",
@@ -1413,7 +1405,6 @@
     },
     "molecule": {
       "menu": "Aggiungi molecola",
-      "pick": "Molecola",
       "title": "Aggiungi molecola",
       "editTitle": "Modifica molecola",
       "edit": "Modifica molecola",
@@ -1447,7 +1438,6 @@
     },
     "mermaid": {
       "menu": "Aggiungi diagramma (Mermaid)",
-      "pick": "Diagramma Mermaid",
       "title": "Aggiungi diagramma Mermaid",
       "editTitle": "Modifica diagramma Mermaid",
       "edit": "Modifica diagramma",

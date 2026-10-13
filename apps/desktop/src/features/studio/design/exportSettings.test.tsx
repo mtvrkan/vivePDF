@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { DEFAULT_EXPORT_SETTINGS, DEFAULT_PRINT_SETTINGS, EXPORT_SETTINGS_KEY, normalizeExportSettings, normalizePrintSettings, readExportSettings, readPrintSettings, writeExportSettings, writePrintSettings } from "./exportSettings";
+import { DEFAULT_EXPORT_SETTINGS, DEFAULT_PRINT_SETTINGS, EXPORT_SETTINGS_KEY, normalizeExportSettings, normalizePrintSettings, readExportSettings, readPrintSettings, usePrintBleedStore, writeExportSettings, writePrintSettings } from "./exportSettings";
 
 describe("export settings", () => {
   afterEach(() => {
@@ -43,5 +43,15 @@ describe("export settings", () => {
     expect(readPrintSettings()).toEqual({ enabled: true, bleedMm: 5, marks: false, plates: "pages", sheet: "sra3" });
     expect(normalizePrintSettings({ bleedMm: 42, plates: "glitter", marks: "yes", sheet: "a0" })).toEqual({ ...DEFAULT_PRINT_SETTINGS, bleedMm: 10 });
     expect(normalizePrintSettings({ bleedMm: 2.3 }).bleedMm).toBe(2.5);
+  });
+
+  it("hands the saved bleed to the canvas bleed guide", () => {
+    writePrintSettings({ ...DEFAULT_PRINT_SETTINGS, bleedMm: 42 });
+
+    expect(usePrintBleedStore.getState().bleedMm).toBe(10);
+
+    writePrintSettings({ ...DEFAULT_PRINT_SETTINGS, bleedMm: 0 });
+
+    expect(usePrintBleedStore.getState().bleedMm).toBe(0);
   });
 });

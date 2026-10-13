@@ -646,7 +646,6 @@
     },
     "formula": {
       "menu": "Formül ekle",
-      "pick": "Formül",
       "title": "Formül ekle",
       "editTitle": "Formülü düzenle",
       "latexLabel": "Formül (LaTeX)",
@@ -701,7 +700,6 @@
     },
     "shapes": {
       "menu": "Şekil ekle",
-      "pick": "Şekil",
       "title": "Şekil ekle",
       "editTitle": "Şekli düzenle",
       "groupsLabel": "Şekil grupları",
@@ -791,7 +789,6 @@
     },
     "graph": {
       "menu": "Fonksiyon grafiği ekle",
-      "pick": "Fonksiyon grafiği",
       "title": "Fonksiyon grafiği ekle",
       "editTitle": "Grafiği düzenle",
       "functions": "Fonksiyonlar",
@@ -827,7 +824,6 @@
     },
     "table": {
       "menu": "Tablo ekle",
-      "pick": "Tablo",
       "title": "Tablo ekle",
       "editTitle": "Tabloyu düzenle",
       "edit": "Tabloyu düzenle",
@@ -886,7 +882,6 @@
     },
     "chart": {
       "menu": "Grafik ekle",
-      "pick": "Grafik",
       "title": "Grafik ekle",
       "editTitle": "Grafiği düzenle",
       "edit": "Grafiği düzenle",
@@ -1289,7 +1284,6 @@
     },
     "question": {
       "menu": "Soru ekle",
-      "pick": "Soru",
       "title": "Soru ekle",
       "editTitle": "Soruyu düzenle",
       "edit": "Soruyu düzenle",
@@ -1338,7 +1332,6 @@
     },
     "answerKey": {
       "menu": "Cevap anahtarı ekle",
-      "pick": "Cevap anahtarı",
       "title": "Cevap anahtarı ekle",
       "editTitle": "Cevap anahtarını düzenle",
       "edit": "Cevap anahtarını düzenle",
@@ -1365,7 +1358,6 @@
     },
     "flowchart": {
       "menu": "Akış şeması ekle",
-      "pick": "Akış şeması",
       "title": "Akış şeması ekle",
       "editTitle": "Akış şemasını düzenle",
       "edit": "Akış şemasını düzenle",
@@ -1414,7 +1406,6 @@
     },
     "molecule": {
       "menu": "Molekül ekle",
-      "pick": "Molekül",
       "title": "Molekül ekle",
       "editTitle": "Molekülü düzenle",
       "edit": "Molekülü düzenle",
@@ -1448,7 +1439,6 @@
     },
     "mermaid": {
       "menu": "Diyagram ekle (Mermaid)",
-      "pick": "Mermaid diyagramı",
       "title": "Mermaid diyagramı ekle",
       "editTitle": "Mermaid diyagramını düzenle",
       "edit": "Diyagramı düzenle",

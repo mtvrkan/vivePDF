@@ -646,7 +646,6 @@
     },
     "formula": {
       "menu": "Add formula",
-      "pick": "Formula",
       "title": "Add formula",
       "editTitle": "Edit formula",
       "latexLabel": "Formula (LaTeX)",
@@ -701,7 +700,6 @@
     },
     "shapes": {
       "menu": "Add shape",
-      "pick": "Shape",
       "title": "Add shape",
       "editTitle": "Edit shape",
       "groupsLabel": "Shape groups",
@@ -791,7 +789,6 @@
     },
     "graph": {
       "menu": "Add function graph",
-      "pick": "Graph",
       "title": "Add function graph",
       "editTitle": "Edit graph",
       "functions": "Functions",
@@ -827,7 +824,6 @@
     },
     "table": {
       "menu": "Add table",
-      "pick": "Table",
       "title": "Add table",
       "editTitle": "Edit table",
       "edit": "Edit table",
@@ -886,7 +882,6 @@
     },
     "chart": {
       "menu": "Add chart",
-      "pick": "Chart",
       "title": "Add chart",
       "editTitle": "Edit chart",
       "edit": "Edit chart",
@@ -1289,7 +1284,6 @@
     },
     "question": {
       "menu": "Add question",
-      "pick": "Question",
       "title": "Add question",
       "editTitle": "Edit question",
       "edit": "Edit question",
@@ -1338,7 +1332,6 @@
     },
     "answerKey": {
       "menu": "Add answer key",
-      "pick": "Answer key",
       "title": "Add answer key",
       "editTitle": "Edit answer key",
       "edit": "Edit answer key",
@@ -1365,7 +1358,6 @@
     },
     "flowchart": {
       "menu": "Add flowchart",
-      "pick": "Flowchart",
       "title": "Add flowchart",
       "editTitle": "Edit flowchart",
       "edit": "Edit flowchart",
@@ -1414,7 +1406,6 @@
     },
     "molecule": {
       "menu": "Add molecule",
-      "pick": "Molecule",
       "title": "Add molecule",
       "editTitle": "Edit molecule",
       "edit": "Edit molecule",
@@ -1448,7 +1439,6 @@
     },
     "mermaid": {
       "menu": "Add diagram (Mermaid)",
-      "pick": "Mermaid diagram",
       "title": "Add Mermaid diagram",
       "editTitle": "Edit Mermaid diagram",
       "edit": "Edit diagram",
@@ -3175,7 +3165,7 @@
         "widthMm": "Width (mm)",
         "heightMm": "Height (mm)",
         "quick": "Quick sizes",
-        "quickHint": "Compared with the first page; the content is scaled with the page.",
+        "quickHint": "Measured against the first page; the content is scaled with the page.",
         "quickHintNoSource": "Pick a file to see how much each size shrinks or enlarges it.",
         "sizeMm": "{{width}} × {{height}} mm",
         "change": {

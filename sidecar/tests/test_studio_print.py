@@ -275,3 +275,31 @@ def test_pictures_at_the_trim_edge_take_their_bleed_from_beyond_the_shown_area(t
     assert _at(pixels, AREA - BLEED + 2, AREA + 35)[1] > 200
     assert _at(pixels, AREA + 4, AREA + 105)[0] > 200
     assert _at(pixels, AREA - BLEED + 2, AREA + 105)[1] > 200
+
+
+def test_a_picture_without_pixels_beyond_its_frame_mirrors_its_edge_into_the_bleed(
+    tmp_path: Path,
+):
+    halves = np.zeros((100, 200, 3), dtype=np.uint8)
+    halves[:, :20] = (0, 255, 0)
+    halves[:, 20:] = (255, 0, 0)
+    source = tmp_path / "halves.png"
+    Image.fromarray(halves).save(source)
+    edges = {"left": BLEED, "top": 0, "right": 0, "bottom": 0}
+    item = {
+        "kind": "image",
+        "path": str(source),
+        "x": -BLEED,
+        "y": 10,
+        "width": 100 + BLEED,
+        "height": 50,
+        "fit": "stretch",
+        "bleed": edges,
+    }
+
+    with pymupdf.open(_render(tmp_path, [item])) as document:
+        pixels = _pixels(document[0])
+
+    assert _at(pixels, AREA + 4, AREA + 35)[1] > 200
+    assert _at(pixels, AREA - BLEED + 2, AREA + 35)[1] > 200
+    assert _at(pixels, AREA + 14, AREA + 35)[0] > 200

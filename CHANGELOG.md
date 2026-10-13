@@ -38,6 +38,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: an end-to-end check opens a foil business card, confirms the finish on the canvas and exports an A4 imposed print-ready PDF with spot colour plates and a die-cut layer [2026-10-09]
 
 ### Fixed
+- Viewer: turning a line into a curve is now one undo step instead of two, from the toolbar buttons and from Ctrl+Z / Ctrl+Y [2026-10-13]
+- Studio: the bleed guide on the canvas shows the bleed chosen in the export dialog instead of always 3 mm [2026-10-13]
+- Studio print export: a picture with no pixels beyond its frame now fills the bleed by mirroring its edge instead of stretching the whole picture slightly [2026-10-13]
 - Menus: a submenu with no room on the right of its menu (the view menu's split view list) now opens on the left instead of on top of the menu, and menus stay above the taskbar when the window reaches below it [2026-10-13]
 - macOS support merged with the newer Windows work: the Windows-only file type list and the Finder open-files queue no longer break the macOS and Windows builds, the macOS title bar keeps a plain transparent background when theme colours are missing, and the unused "Close Window" menu text is removed from all languages [2026-10-12]
 - macOS/Linux: watched folders were refused as system folders because every absolute path counted as inside `/` [2026-10-10]
@@ -64,6 +67,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio CV: the Content/Design tabs and the skill level picker work with the arrow keys, Home and End [2026-10-09]
 - Studio CV: dates, company/school and city fields each take the full width of the form, so the month picker is no longer squeezed to a sliver and placeholders are no longer cut off; the "type the date" button has a clearer icon [2026-10-09]
 - Studio documents: code blocks and table header rows are shaded again in the PDF, and the shading no longer leaves a stray strip at the top of every later page [2026-10-09]
+
+### Removed
+- Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 
 ## [0.2.0] - 2026-10-09
 ### Added

@@ -645,7 +645,6 @@
     },
     "formula": {
       "menu": "Insertar fórmula",
-      "pick": "Fórmula",
       "title": "Insertar fórmula",
       "editTitle": "Editar fórmula",
       "latexLabel": "Fórmula (LaTeX)",
@@ -700,7 +699,6 @@
     },
     "shapes": {
       "menu": "Insertar forma",
-      "pick": "Forma",
       "title": "Insertar forma",
       "editTitle": "Editar forma",
       "groupsLabel": "Grupos de formas",
@@ -790,7 +788,6 @@
     },
     "graph": {
       "menu": "Insertar gráfica de función",
-      "pick": "Gráfica",
       "title": "Insertar gráfica de función",
       "editTitle": "Editar gráfica",
       "functions": "Funciones",
@@ -826,7 +823,6 @@
     },
     "table": {
       "menu": "Insertar tabla",
-      "pick": "Tabla",
       "title": "Insertar tabla",
       "editTitle": "Editar tabla",
       "edit": "Editar tabla",
@@ -885,7 +881,6 @@
     },
     "chart": {
       "menu": "Insertar gráfico",
-      "pick": "Gráfico",
       "title": "Insertar gráfico",
       "editTitle": "Editar gráfico",
       "edit": "Editar gráfico",
@@ -1288,7 +1283,6 @@
     },
     "question": {
       "menu": "Añadir pregunta",
-      "pick": "Pregunta",
       "title": "Añadir pregunta",
       "editTitle": "Editar pregunta",
       "edit": "Editar pregunta",
@@ -1337,7 +1331,6 @@
     },
     "answerKey": {
       "menu": "Añadir clave de respuestas",
-      "pick": "Clave de respuestas",
       "title": "Añadir clave de respuestas",
       "editTitle": "Editar clave de respuestas",
       "edit": "Editar clave de respuestas",
@@ -1364,7 +1357,6 @@
     },
     "flowchart": {
       "menu": "Añadir diagrama de flujo",
-      "pick": "Diagrama de flujo",
       "title": "Añadir diagrama de flujo",
       "editTitle": "Editar diagrama de flujo",
       "edit": "Editar diagrama de flujo",
@@ -1413,7 +1405,6 @@
     },
     "molecule": {
       "menu": "Añadir molécula",
-      "pick": "Molécula",
       "title": "Añadir molécula",
       "editTitle": "Editar molécula",
       "edit": "Editar molécula",
@@ -1447,7 +1438,6 @@
     },
     "mermaid": {
       "menu": "Añadir diagrama (Mermaid)",
-      "pick": "Diagrama Mermaid",
       "title": "Añadir diagrama Mermaid",
       "editTitle": "Editar diagrama Mermaid",
       "edit": "Editar diagrama",

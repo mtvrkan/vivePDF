@@ -645,7 +645,6 @@
     },
     "formula": {
       "menu": "Inserir fórmula",
-      "pick": "Fórmula",
       "title": "Inserir fórmula",
       "editTitle": "Editar fórmula",
       "latexLabel": "Fórmula (LaTeX)",
@@ -700,7 +699,6 @@
     },
     "shapes": {
       "menu": "Inserir forma",
-      "pick": "Forma",
       "title": "Inserir forma",
       "editTitle": "Editar forma",
       "groupsLabel": "Grupos de formas",
@@ -790,7 +788,6 @@
     },
     "graph": {
       "menu": "Inserir gráfico de função",
-      "pick": "Gráfico de função",
       "title": "Inserir gráfico de função",
       "editTitle": "Editar gráfico",
       "functions": "Funções",
@@ -826,7 +823,6 @@
     },
     "table": {
       "menu": "Inserir tabela",
-      "pick": "Tabela",
       "title": "Inserir tabela",
       "editTitle": "Editar tabela",
       "edit": "Editar tabela",
@@ -885,7 +881,6 @@
     },
     "chart": {
       "menu": "Inserir gráfico",
-      "pick": "Gráfico",
       "title": "Inserir gráfico",
       "editTitle": "Editar gráfico",
       "edit": "Editar gráfico",
@@ -1288,7 +1283,6 @@
     },
     "question": {
       "menu": "Adicionar pergunta",
-      "pick": "Pergunta",
       "title": "Adicionar pergunta",
       "editTitle": "Editar pergunta",
       "edit": "Editar pergunta",
@@ -1337,7 +1331,6 @@
     },
     "answerKey": {
       "menu": "Adicionar gabarito",
-      "pick": "Gabarito",
       "title": "Adicionar gabarito",
       "editTitle": "Editar gabarito",
       "edit": "Editar gabarito",
@@ -1364,7 +1357,6 @@
     },
     "flowchart": {
       "menu": "Adicionar fluxograma",
-      "pick": "Fluxograma",
       "title": "Adicionar fluxograma",
       "editTitle": "Editar fluxograma",
       "edit": "Editar fluxograma",
@@ -1413,7 +1405,6 @@
     },
     "molecule": {
       "menu": "Adicionar molécula",
-      "pick": "Molécula",
       "title": "Adicionar molécula",
       "editTitle": "Editar molécula",
       "edit": "Editar molécula",
@@ -1447,7 +1438,6 @@
     },
     "mermaid": {
       "menu": "Adicionar diagrama (Mermaid)",
-      "pick": "Diagrama Mermaid",
       "title": "Adicionar diagrama Mermaid",
       "editTitle": "Editar diagrama Mermaid",
       "edit": "Editar diagrama",

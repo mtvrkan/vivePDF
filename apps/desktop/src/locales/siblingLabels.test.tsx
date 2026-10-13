@@ -23,7 +23,6 @@ function duplicates(labels: string[]): string[] {
 }
 
 const SIBLING_GROUPS: Record<string, string[]> = {
-  drawingPicks: DRAWING_KINDS.map((kind) => DRAWING_SPECS[kind].labels.pick),
   drawingMenus: DRAWING_KINDS.map((kind) => DRAWING_SPECS[kind].labels.menu),
   chartTypes: CHART_TYPES.map((type) => `viewer.chart.types.${type}`),
 };

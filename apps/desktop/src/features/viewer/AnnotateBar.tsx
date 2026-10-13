@@ -46,6 +46,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import type { LucideIcon } from "lucide-react";
 import { describeError } from "@/shared/lib/errorMessage";
 import { DASH_TOOLS, DEFAULT_LINE_ENDINGS, FALLBACK_COLORS, FILL_TOOLS, LINE_ENDING_LABEL_KEYS, LINE_ENDING_OPTIONS, LINE_TOOLS, MAX_STROKE_WIDTH, MIN_STROKE_WIDTH, STROKE_TOOLS, STROKE_WIDTH_STEP, SUBTYPE_TOOLS, stylePatchFor, toolColorFrom, type StyleValues } from "./annotateStyle";
+import { linkReplacement, redoStep, undoStep } from "./linkedHistory";
 import { CURVE_STEP, MAX_CURVE, MIN_CURVE, currentCurve, curveRectPatch, curvedVertices, isCurvable, lineEndpoints, polylineFromLine } from "./lineCurve";
 import { styleValuesOf } from "./selectedStyle";
 import { hasSelectionRects } from "./selectionMarkup";
@@ -266,6 +267,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
     const polyline = polylineFromLine(selectedLine, vertices, crypto.randomUUID());
     annotation.deleteAnnotation(pageIndex, selectedLine.id);
     annotation.createAnnotation(pageIndex, polyline);
+    linkReplacement(documentId, selectedLine.id, polyline.id);
     annotation.selectAnnotation(pageIndex, polyline.id);
   };
 
@@ -417,8 +419,8 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
           </div>
         ) : null}
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />
-        <IconButton icon={Undo2} label={t("tools.pages.undo")} disabled={!historyState.canUndo} onClick={() => history?.undo()} />
-        <IconButton icon={Redo2} label={t("tools.pages.redo")} disabled={!historyState.canRedo} onClick={() => history?.redo()} />
+        <IconButton icon={Undo2} label={t("tools.pages.undo")} disabled={!historyState.canUndo} onClick={() => undoStep(documentId, history, annotation)} />
+        <IconButton icon={Redo2} label={t("tools.pages.redo")} disabled={!historyState.canRedo} onClick={() => redoStep(documentId, history, annotation)} />
         <IconButton icon={Trash2} label={t("annotate.deleteSelected")} disabled={selectedMarks.length === 0} onClick={deleteSelected} />
         <IconButton icon={BrushCleaning} label={t("annotate.deleteAll")} disabled={markCount === 0} onClick={() => setDeleteAllOpen(true)} />
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />
@@ -452,8 +454,8 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         <IconButton icon={Trash2} label={t("annotate.deleteSelected")} disabled={selectedMarks.length === 0} onClick={deleteSelected} />
         <IconButton icon={BrushCleaning} label={t("annotate.deleteAll")} disabled={markCount === 0} onClick={() => setDeleteAllOpen(true)} />
-        <IconButton icon={Undo2} label={t("tools.pages.undo")} disabled={!historyState.canUndo} onClick={() => history?.undo()} />
-        <IconButton icon={Redo2} label={t("tools.pages.redo")} disabled={!historyState.canRedo} onClick={() => history?.redo()} />
+        <IconButton icon={Undo2} label={t("tools.pages.undo")} disabled={!historyState.canUndo} onClick={() => undoStep(documentId, history, annotation)} />
+        <IconButton icon={Redo2} label={t("tools.pages.redo")} disabled={!historyState.canRedo} onClick={() => redoStep(documentId, history, annotation)} />
         <span className="flex-1" />
         <Button size="sm" icon={<SaveAll className="size-4" aria-hidden />} onClick={() => void saveAs()} loading={saving} disabled={!exporter}>
           {t("annotate.saveAs")}

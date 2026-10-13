@@ -23,6 +23,7 @@ import { hasOpenModal, hasTextSelectionOutsidePages, isActivatableTarget, isInsi
 import { isSplitViewToggle } from "./split/splitShortcut";
 import { usePageNavigation } from "./usePageNavigation";
 import { zoomShortcutFor } from "./zoomShortcuts";
+import { redoStep, undoStep } from "./linkedHistory";
 
 function editingHere(documentId: string): boolean {
   const overlay = useViewerOverlayStore.getState();
@@ -202,14 +203,14 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         if (useDrawingHistory) {
           if (event.shiftKey) presentationState.redoStroke(pageIndex);
           else presentationState.undoStroke(pageIndex);
-        } else if (event.shiftKey) history?.redo();
-        else history?.undo();
+        } else if (event.shiftKey) redoStep(documentId, history, annotation);
+        else undoStep(documentId, history, annotation);
         return;
       }
       if (modifier && key.toLowerCase() === "y") {
         event.preventDefault();
         if (useDrawingHistory) presentationState.redoStroke(scrollState.currentPage - 1);
-        else history?.redo();
+        else redoStep(documentId, history, annotation);
         return;
       }
       if (key === "Delete" || key === "Backspace") {

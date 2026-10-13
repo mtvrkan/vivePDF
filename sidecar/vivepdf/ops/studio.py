@@ -189,13 +189,29 @@ def _with_bleed(image: Image.Image, item: StudioImageItem) -> Image.Image:
     left, top, right, bottom = _shown_area(image.size, item, width, height)
     across = (right - left) / width
     down = (bottom - top) / height
-    box = (
-        max(0, math.floor(left - edges.left * across)),
-        max(0, math.floor(top - edges.top * down)),
-        min(image.width, math.ceil(right + edges.right * across)),
-        min(image.height, math.ceil(bottom + edges.bottom * down)),
+    wanted = (
+        math.floor(left - edges.left * across),
+        math.floor(top - edges.top * down),
+        math.ceil(right + edges.right * across),
+        math.ceil(bottom + edges.bottom * down),
     )
-    return image.crop(box)
+    box = (
+        max(0, wanted[0]),
+        max(0, wanted[1]),
+        min(image.width, wanted[2]),
+        min(image.height, wanted[3]),
+    )
+    missing = (box[0] - wanted[0], box[1] - wanted[1], wanted[2] - box[2], wanted[3] - box[3])
+    return _mirrored_edges(image.crop(box), missing)
+
+
+def _mirrored_edges(image: Image.Image, missing: tuple[int, int, int, int]) -> Image.Image:
+    left, top, right, bottom = missing
+    if not any(missing):
+        return image
+    pixels = np.asarray(image)
+    padded = np.pad(pixels, ((top, bottom), (left, right), (0, 0)), mode="symmetric")
+    return Image.fromarray(padded)
 
 
 def image_document(item: StudioImageItem) -> pymupdf.Document:

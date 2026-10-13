@@ -68,17 +68,9 @@
   --hover-bg: color-mix(in oklab, var(--foreground) 5%, transparent);
   --field-inline-bg: color-mix(in oklab, var(--foreground) 4%, transparent);
   --field-inline-ring: color-mix(in oklab, var(--foreground) 13%, transparent);
-  --nav-active-bg: color-mix(in oklab, var(--tone) 10%, var(--card));
-  --nav-active-ring: color-mix(in oklab, var(--tone) 30%, transparent);
-  --nav-active-glow: transparent;
-  --nav-active-gloss: linear-gradient(180deg, transparent, transparent);
-  --nav-active-shadow: 0 1px 2px hsl(222 30% 10% / 0.06);
-  --nav-active-line: 0;
   --menubar-active-bg: color-mix(in oklab, var(--primary) 11%, transparent);
   --primary-gradient: linear-gradient(180deg, hsl(203 88% 40%), hsl(207 86% 34%));
   --primary-glow: 0 10px 24px -12px hsl(203 90% 45% / 0.65);
-  --nav-bar-glow-blur: 12px;
-  --nav-bar-glow-strength: 90%;
   --tile-light-share: 78%;
   --tile-highlight: 0.35;
   --tile-glow-strength: 80%;
@@ -157,17 +149,9 @@
   --hover-bg: hsl(0 0% 100% / 0.06);
   --field-inline-bg: var(--hover-bg);
   --field-inline-ring: hsl(0 0% 100% / 0.10);
-  --nav-active-bg: color-mix(in oklab, var(--tone) 14%, var(--card));
-  --nav-active-ring: color-mix(in oklab, var(--tone) 42%, hsl(0 0% 100% / 0.06));
-  --nav-active-glow: color-mix(in oklab, var(--tone) 14%, transparent);
-  --nav-active-gloss: linear-gradient(180deg, hsl(0 0% 100% / 0.04), hsl(0 0% 100% / 0.01) 55%, hsl(0 0% 0% / 0.06));
-  --nav-active-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.08), inset 0 -8px 16px -12px color-mix(in oklab, var(--tone) 24%, transparent), 0 8px 20px -14px color-mix(in oklab, var(--tone) 35%, transparent), 0 1px 2px hsl(0 0% 0% / 0.25);
-  --nav-active-line: 0.4;
   --menubar-active-bg: color-mix(in oklab, var(--primary) 20%, transparent);
   --primary-gradient: linear-gradient(180deg, hsl(203 70% 40%), hsl(207 68% 33%));
   --primary-glow: 0 10px 24px -12px hsl(203 70% 45% / 0.35);
-  --nav-bar-glow-blur: 6px;
-  --nav-bar-glow-strength: 40%;
   --tile-light-share: 90%;
   --tile-highlight: 0.18;
   --tile-glow-strength: 35%;
@@ -348,13 +332,6 @@
       var(--tone-edit) 66.66% 83.33%,
       var(--tone-security) 83.33% 100%
     );
-  }
-  .hairline-grid {
-    background-image:
-      linear-gradient(color-mix(in oklab, var(--color-border) 55%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in oklab, var(--color-border) 55%, transparent) 1px, transparent 1px);
-    background-size: 24px 24px;
-    background-position: center;
   }
   .measure {
     max-width: 70ch;
@@ -605,38 +582,6 @@
   }
   .menubar-active {
     background: var(--menubar-active-bg);
-  }
-  .nav-active {
-    background:
-      radial-gradient(120% 140% at 0% 50%, var(--nav-active-glow), transparent 62%),
-      var(--nav-active-gloss),
-      var(--nav-active-bg);
-    box-shadow:
-      inset 0 0 0 1px var(--nav-active-ring),
-      var(--nav-active-shadow);
-    backdrop-filter: blur(18px) saturate(1.7);
-  }
-  .nav-active::before {
-    content: "";
-    position: absolute;
-    inset: 0 12% auto 12%;
-    height: 1px;
-    border-radius: inherit;
-    pointer-events: none;
-    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--tone) 40%, hsl(0 0% 100% / 0.7)), transparent);
-    opacity: var(--nav-active-line);
-  }
-  .nav-active::after {
-    content: "";
-    position: absolute;
-    inset-inline-start: 0;
-    top: 24%;
-    height: 52%;
-    width: 3px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, color-mix(in oklab, var(--tone) 70%, white), var(--tone));
-    box-shadow: 0 0 var(--nav-bar-glow-blur) color-mix(in oklab, var(--tone) var(--nav-bar-glow-strength), transparent);
-    pointer-events: none;
   }
   .tone-tile {
     background: linear-gradient(135deg, color-mix(in oklab, var(--tone) var(--tile-light-share), white), var(--tone) 60%, color-mix(in oklab, var(--tone) 80%, black));

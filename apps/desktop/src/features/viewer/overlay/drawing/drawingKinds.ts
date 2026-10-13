@@ -18,7 +18,7 @@ import type { DrawingKind, DrawingSource, DrawingSources } from "./drawingSource
 
 type DrawingKindSpec<K extends DrawingKind> = {
   icon: LucideIcon;
-  labels: { menu: string; pick: string; edit: string; placeHint: string; added: string };
+  labels: { menu: string; edit: string; placeHint: string; added: string };
   layerLabel: (source: DrawingSources[K], t: TFunction) => string;
   altText: (source: DrawingSources[K], t: TFunction) => string;
   Host: ComponentType<{ objectId: string | null }>;
@@ -27,35 +27,35 @@ type DrawingKindSpec<K extends DrawingKind> = {
 export const DRAWING_SPECS: { [K in DrawingKind]: DrawingKindSpec<K> } = {
   formula: {
     icon: Sigma,
-    labels: { menu: "viewer.formula.menu", pick: "viewer.formula.pick", edit: "viewer.formula.edit", placeHint: "viewer.formula.placeHint", added: "viewer.editPanel.formulaAdded" },
+    labels: { menu: "viewer.formula.menu", edit: "viewer.formula.edit", placeHint: "viewer.formula.placeHint", added: "viewer.editPanel.formulaAdded" },
     layerLabel: (source, t) => t("viewer.editPanel.layers.formula", { latex: source.latex.replace(/\s+/g, " ").trim().slice(0, 32) }),
     altText: formulaAlt,
     Host: FormulaEditorHost,
   },
   shape: {
     icon: Shapes,
-    labels: { menu: "viewer.shapes.menu", pick: "viewer.shapes.pick", edit: "viewer.shapes.edit", placeHint: "viewer.shapes.placeHint", added: "viewer.editPanel.shapeAdded" },
+    labels: { menu: "viewer.shapes.menu", edit: "viewer.shapes.edit", placeHint: "viewer.shapes.placeHint", added: "viewer.editPanel.shapeAdded" },
     layerLabel: (source, t) => t("viewer.editPanel.layers.shape", { name: t(`viewer.shapes.names.${source.id}`) }),
     altText: shapeAlt,
     Host: ShapeEditorHost,
   },
   graph: {
     icon: ChartSpline,
-    labels: { menu: "viewer.graph.menu", pick: "viewer.graph.pick", edit: "viewer.graph.edit", placeHint: "viewer.graph.placeHint", added: "viewer.editPanel.graphAdded" },
+    labels: { menu: "viewer.graph.menu", edit: "viewer.graph.edit", placeHint: "viewer.graph.placeHint", added: "viewer.editPanel.graphAdded" },
     layerLabel: (source, t) => t("viewer.editPanel.layers.graph", { expression: source.settings.functions.map((entry) => entry.expression.trim()).filter(Boolean).join("; ") }),
     altText: graphAlt,
     Host: GraphEditorHost,
   },
   molecule: {
     icon: Atom,
-    labels: { menu: "viewer.molecule.menu", pick: "viewer.molecule.pick", edit: "viewer.molecule.edit", placeHint: "viewer.molecule.placeHint", added: "viewer.editPanel.moleculeAdded" },
+    labels: { menu: "viewer.molecule.menu", edit: "viewer.molecule.edit", placeHint: "viewer.molecule.placeHint", added: "viewer.editPanel.moleculeAdded" },
     layerLabel: (source, t) => t("viewer.editPanel.layers.molecule", { smiles: source.settings.smiles.slice(0, 32) }),
     altText: moleculeAlt,
     Host: MoleculeEditorHost,
   },
   table: {
     icon: Table2,
-    labels: { menu: "viewer.table.menu", pick: "viewer.table.pick", edit: "viewer.table.edit", placeHint: "viewer.table.placeHint", added: "viewer.editPanel.tableAdded" },
+    labels: { menu: "viewer.table.menu", edit: "viewer.table.edit", placeHint: "viewer.table.placeHint", added: "viewer.editPanel.tableAdded" },
     layerLabel: (source, t) => {
       const first = source.settings.cells.flat().find((text) => text.trim())?.trim().slice(0, 24);
       const size = { rows: source.settings.cells.length, columns: source.settings.align.length };
@@ -66,14 +66,14 @@ export const DRAWING_SPECS: { [K in DrawingKind]: DrawingKindSpec<K> } = {
   },
   chart: {
     icon: ChartColumn,
-    labels: { menu: "viewer.chart.menu", pick: "viewer.chart.pick", edit: "viewer.chart.edit", placeHint: "viewer.chart.placeHint", added: "viewer.editPanel.chartAdded" },
+    labels: { menu: "viewer.chart.menu", edit: "viewer.chart.edit", placeHint: "viewer.chart.placeHint", added: "viewer.editPanel.chartAdded" },
     layerLabel: (source, t) => t("viewer.editPanel.layers.chart", { name: source.settings.title.trim().slice(0, 32) || t(`viewer.chart.types.${source.settings.type}`) }),
     altText: chartAlt,
     Host: ChartEditorHost,
   },
   flowchart: {
     icon: Workflow,
-    labels: { menu: "viewer.flowchart.menu", pick: "viewer.flowchart.pick", edit: "viewer.flowchart.edit", placeHint: "viewer.flowchart.placeHint", added: "viewer.editPanel.flowchartAdded" },
+    labels: { menu: "viewer.flowchart.menu", edit: "viewer.flowchart.edit", placeHint: "viewer.flowchart.placeHint", added: "viewer.editPanel.flowchartAdded" },
     layerLabel: (source, t) => {
       const first = source.settings.nodes.find((node) => node.text.trim())?.text.replace(/\s+/g, " ").trim().slice(0, 32) ?? "";
       return t("viewer.editPanel.layers.flowchart", { first });
@@ -83,14 +83,14 @@ export const DRAWING_SPECS: { [K in DrawingKind]: DrawingKindSpec<K> } = {
   },
   mermaid: {
     icon: Network,
-    labels: { menu: "viewer.mermaid.menu", pick: "viewer.mermaid.pick", edit: "viewer.mermaid.edit", placeHint: "viewer.mermaid.placeHint", added: "viewer.editPanel.mermaidAdded" },
+    labels: { menu: "viewer.mermaid.menu", edit: "viewer.mermaid.edit", placeHint: "viewer.mermaid.placeHint", added: "viewer.editPanel.mermaidAdded" },
     layerLabel: (source, t) => t("viewer.editPanel.layers.mermaid", { title: mermaidTitle(source.settings.code).slice(0, 32) }),
     altText: mermaidAlt,
     Host: MermaidEditorHost,
   },
   question: {
     icon: ListChecks,
-    labels: { menu: "viewer.question.menu", pick: "viewer.question.pick", edit: "viewer.question.edit", placeHint: "viewer.question.placeHint", added: "viewer.editPanel.questionAdded" },
+    labels: { menu: "viewer.question.menu", edit: "viewer.question.edit", placeHint: "viewer.question.placeHint", added: "viewer.editPanel.questionAdded" },
     layerLabel: (source, t) => {
       const stem = source.settings.stem.replace(/\s+/g, " ").trim().slice(0, 32);
       return source.settings.number === null ? t("viewer.editPanel.layers.question", { stem }) : t("viewer.editPanel.layers.questionNumbered", { number: source.settings.number, stem });
@@ -100,7 +100,7 @@ export const DRAWING_SPECS: { [K in DrawingKind]: DrawingKindSpec<K> } = {
   },
   answerKey: {
     icon: KeyRound,
-    labels: { menu: "viewer.answerKey.menu", pick: "viewer.answerKey.pick", edit: "viewer.answerKey.edit", placeHint: "viewer.answerKey.placeHint", added: "viewer.editPanel.answerKeyAdded" },
+    labels: { menu: "viewer.answerKey.menu", edit: "viewer.answerKey.edit", placeHint: "viewer.answerKey.placeHint", added: "viewer.editPanel.answerKeyAdded" },
     layerLabel: (source, t) => t("viewer.editPanel.layers.answerKey", { count: filledRows(source.settings).length }),
     altText: answerKeyAlt,
     Host: AnswerKeyEditorHost,

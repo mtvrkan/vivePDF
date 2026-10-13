@@ -28,7 +28,8 @@ import { currentPage, useStudioStore } from "./studioStore";
 import { formatMm, fromMm } from "./units";
 import { useCanvasPointer } from "./useCanvasPointer";
 import { useCanvasViewport } from "./useCanvasViewport";
-import { BLEED_MM, useViewPrefs } from "./viewPrefs";
+import { useViewPrefs } from "./viewPrefs";
+import { usePrintBleedStore } from "./exportSettings";
 import { hasModKey } from "@/shared/lib/platform";
 
 export function Canvas({ language }: { language: string }) {
@@ -77,6 +78,7 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
   const showGuides = useViewPrefs((state) => state.guides);
   const showMargins = useViewPrefs((state) => state.margins);
   const showBleed = useViewPrefs((state) => state.bleed);
+  const bleedMm = usePrintBleedStore((state) => state.bleedMm);
   const corner = fromMm(cornerOf(design));
   const menu = useContextMenu();
   const cropSession = useCropStore((state) => state.session);
@@ -153,7 +155,7 @@ function CanvasSurface({ design, page, zoom, language, viewportRef, pageRef }: C
               />
             </div>
             <div className="pointer-events-none absolute inset-0 z-20">
-              <PageFrames width={page.width} height={page.height} margin={showMargins ? fromMm(marginsOf(design)) : 0} bleed={showBleed ? fromMm(BLEED_MM) : 0} zoom={zoom} />
+              <PageFrames width={page.width} height={page.height} margin={showMargins ? fromMm(marginsOf(design)) : 0} bleed={showBleed ? fromMm(bleedMm) : 0} zoom={zoom} />
               {hovered ? <HoverOutline box={hoverBox ?? { x: hovered.x, y: hovered.y, width: hovered.width, height: hovered.height }} rotation={hoverBox ? 0 : hovered.rotation} zoom={zoom} /> : null}
               <SelectionOverlay selected={selected} zoom={zoom} turn={turn} showHandles={showHandles} cropping={Boolean(cropSession)} />
               <SnapLines lines={feedback.lines} zoom={zoom} />

@@ -1,7 +1,6 @@
 import { create } from "zustand";
 
 export const STUDIO_VIEW_KEY = "vivepdf.studioView";
-export const BLEED_MM = 3;
 
 export type StudioViewOption = "rulers" | "guides" | "margins" | "bleed" | "snap";
 export type StudioViewPrefs = Record<StudioViewOption, boolean>;

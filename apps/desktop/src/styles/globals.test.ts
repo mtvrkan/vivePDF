@@ -73,13 +73,13 @@ describe("globals.css", () => {
     const rootBlock = css.slice(css.indexOf(":root {"), css.indexOf("}", css.indexOf(":root {")));
     const value = (block: string, name: string) => Number(block.match(new RegExp(`--${name}:\\s*([\\d.]+)`))?.[1]);
 
-    for (const name of ["nav-bar-glow-strength", "tile-glow-strength", "tile-highlight", "hover-highlight", "hover-lift-highlight", "hover-lift-glow", "tone-hover-border", "tone-hover-soft"]) {
+    for (const name of ["tile-glow-strength", "tile-highlight", "hover-highlight", "hover-lift-highlight", "hover-lift-glow", "tone-hover-border", "tone-hover-soft"]) {
       expect(value(darkBlock(), name), name).toBeLessThan(value(rootBlock, name));
     }
   });
 
   it("mixes tone glows in the element's own rule so each tool keeps its group colour", () => {
-    for (const name of ["nav-bar-glow-strength", "tile-glow-strength", "tone-hover-border"]) {
+    for (const name of ["tile-glow-strength", "tone-hover-border"]) {
       expect(css.match(new RegExp(`--${name}:[^;]*var\\(--tone\\)`)), name).toBeNull();
       expect(css).toMatch(new RegExp(`color-mix\\(in oklab, var\\(--tone\\) var\\(--${name}\\), transparent\\)`));
     }
