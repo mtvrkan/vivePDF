@@ -77,6 +77,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 
 ### Security
+- Saving: vivePDF refuses to write programs, scripts and shortcuts (.exe, .bat, .ps1, .lnk, .sh, .desktop and similar, also when hidden behind trailing dots or Windows data streams), shell start-up files, and anything into start-up, launch agent or SSH folders, whether the save comes from the viewer, a text export or a tool's output, so a compromised page script cannot plant something that runs at the next sign-in [2026-10-13]
 - Dependencies: Mermaid now uses KaTeX 0.18.11 and the build tools use source-map-js 1.2.2, closing two known advisories [2026-10-13]
 
 ## [0.2.0] - 2026-10-09

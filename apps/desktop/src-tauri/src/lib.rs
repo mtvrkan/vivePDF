@@ -24,6 +24,7 @@ mod watch_debounce;
 mod watch_paths;
 mod watch_tickets;
 mod watcher;
+mod write_guard;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {

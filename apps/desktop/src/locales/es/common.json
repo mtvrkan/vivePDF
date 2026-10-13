@@ -6369,7 +6369,8 @@
       "doiHttpStatus": "El servicio bibliográfico respondió con un error ({{status}}); inténtelo más tarde.",
       "doiTooLarge": "El servicio bibliográfico envió una respuesta inesperadamente grande y se ignoró.",
       "doiBadResponse": "No se pudo leer la respuesta del servicio bibliográfico.",
-      "doiUntrustedHost": "El servicio bibliográfico redirigió a una dirección no fiable y se bloqueó."
+      "doiUntrustedHost": "El servicio bibliográfico redirigió a una dirección no fiable y se bloqueó.",
+      "blockedTarget": "vivePDF no guarda programas, scripts ni accesos directos, ni escribe en carpetas de inicio o SSH. Elige otro nombre o carpeta."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",

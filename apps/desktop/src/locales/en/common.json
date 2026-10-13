@@ -6370,7 +6370,8 @@
       "doiHttpStatus": "The reference service answered with an error ({{status}}); try again later.",
       "doiTooLarge": "The reference service sent an unexpectedly large answer, so it was ignored.",
       "doiBadResponse": "The reference service sent an answer that could not be read.",
-      "doiUntrustedHost": "The reference service redirected to an untrusted address, so it was blocked."
+      "doiUntrustedHost": "The reference service redirected to an untrusted address, so it was blocked.",
+      "blockedTarget": "vivePDF does not save programs, scripts or shortcuts, or into startup and SSH folders. Choose another name or folder."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

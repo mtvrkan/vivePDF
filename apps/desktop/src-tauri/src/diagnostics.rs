@@ -289,6 +289,7 @@ pub async fn write_text_file(path: String, contents: String) -> Result<(), RpcEr
             "only plain text files can be written here",
         ));
     }
+    crate::write_guard::check_file(std::path::Path::new(&path))?;
     tauri::async_runtime::spawn_blocking(move || std::fs::write(&path, contents).map_err(io_error))
         .await
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?

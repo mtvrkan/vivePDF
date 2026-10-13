@@ -203,6 +203,7 @@ pub async fn write_document(app: tauri::AppHandle, request: Request<'_>) -> Resu
         .transpose()
         .map_err(|error| RpcError::new("INVALID_PARAMS", error.to_string()))?
         .ok_or_else(|| RpcError::new("INVALID_PARAMS", "missing x-path header"))?;
+    crate::write_guard::check_file(Path::new(&path))?;
     let bytes = match request.body() {
         InvokeBody::Raw(bytes) => bytes.clone(),
         InvokeBody::Json(_) => {

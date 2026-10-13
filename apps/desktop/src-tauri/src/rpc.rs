@@ -5,6 +5,7 @@ use tauri::AppHandle;
 use crate::doc_watch;
 use crate::files;
 use crate::sidecar;
+use crate::write_guard;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RpcError {
@@ -64,6 +65,7 @@ pub async fn rpc(
     if method == "cancel" {
         return Err(RpcError::new("INVALID_PARAMS", "use rpc_cancel"));
     }
+    write_guard::check_params(&params)?;
     let watched = doc_watch::begin_call(&params);
     let result = sidecar::call(&app, id, method, params).await;
     if let Ok(value) = &result {

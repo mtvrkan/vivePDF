@@ -6369,7 +6369,8 @@
       "doiHttpStatus": "Der Literaturdienst hat mit einem Fehler geantwortet ({{status}}); versuchen Sie es später erneut.",
       "doiTooLarge": "Der Literaturdienst hat eine unerwartet große Antwort gesendet; sie wurde ignoriert.",
       "doiBadResponse": "Die Antwort des Literaturdienstes war nicht lesbar.",
-      "doiUntrustedHost": "Der Literaturdienst hat auf eine nicht vertrauenswürdige Adresse umgeleitet; das wurde blockiert."
+      "doiUntrustedHost": "Der Literaturdienst hat auf eine nicht vertrauenswürdige Adresse umgeleitet; das wurde blockiert.",
+      "blockedTarget": "vivePDF speichert keine Programme, Skripte oder Verknüpfungen und schreibt nicht in Autostart- oder SSH-Ordner. Wählen Sie einen anderen Namen oder Ordner."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

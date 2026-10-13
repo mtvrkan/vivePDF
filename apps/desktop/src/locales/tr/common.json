@@ -6370,7 +6370,8 @@
       "doiHttpStatus": "Kaynak hizmeti bir hatayla yanıt verdi ({{status}}); daha sonra yeniden deneyin.",
       "doiTooLarge": "Kaynak hizmeti beklenmedik büyüklükte bir yanıt gönderdi, yok sayıldı.",
       "doiBadResponse": "Kaynak hizmetinin yanıtı okunamadı.",
-      "doiUntrustedHost": "Kaynak hizmeti güvenilmeyen bir adrese yönlendirdi, engellendi."
+      "doiUntrustedHost": "Kaynak hizmeti güvenilmeyen bir adrese yönlendirdi, engellendi.",
+      "blockedTarget": "vivePDF program, betik ya da kısayol kaydetmez; başlangıç ve SSH klasörlerine de yazmaz. Başka bir ad ya da klasör seçin."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

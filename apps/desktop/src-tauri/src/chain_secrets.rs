@@ -500,6 +500,7 @@ pub async fn rpc_with_chain_secret(
     ticket: String,
 ) -> Result<Value, RpcError> {
     let kinds = distinct(&kinds)?;
+    crate::write_guard::check_params(&params)?;
     tickets.check(&ticket, &chain_id, std::time::Instant::now())?;
     let unlocked = secrets.unlock(&chain_id, &kinds)?;
     inject(&method, &mut params, &unlocked)?;
