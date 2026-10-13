@@ -6566,6 +6566,7 @@
         "presentationSpotlight": "Projecteur",
         "presentationMagnifier": "Loupe",
         "presentationSelectDrawing": "Sélectionner un dessin, puis le déplacer ou le supprimer",
+        "presentationDrawingEdit": "Faire pivoter le dessin sélectionné à droite / à gauche · le dupliquer",
         "presentationZoomArea": "Zoomer sur une zone tracée",
         "presentationBlackout": "Écran noir / blanc",
         "presentationOverview": "Grille de vue d’ensemble des diapositives",

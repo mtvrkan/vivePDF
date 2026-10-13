@@ -6566,6 +6566,7 @@
         "presentationSpotlight": "Riflettore",
         "presentationMagnifier": "Lente d’ingrandimento",
         "presentationSelectDrawing": "Seleziona un disegno, poi spostalo o eliminalo",
+        "presentationDrawingEdit": "Ruota il disegno selezionato a destra / sinistra · duplicalo",
         "presentationZoomArea": "Ingrandisci un’area trascinando",
         "presentationBlackout": "Schermo nero / bianco",
         "presentationOverview": "Griglia panoramica diapositive",

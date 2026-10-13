@@ -16,17 +16,17 @@ export const SHAPE_KINDS: Array<{ id: ShapeKind; icon: typeof Square; labelKey: 
   { id: "ellipse", icon: Circle, labelKey: "presentation.shapes.ellipse" },
 ];
 
-export const PRESENTATION_TOOLS: Array<{ id: PresentationTool; icon: typeof MousePointer2; labelKey: string }> = [
+export const PRESENTATION_TOOLS: Array<{ id: PresentationTool; icon: typeof MousePointer2; labelKey: string; shortcut?: string }> = [
   { id: "pointer", icon: MousePointer2, labelKey: "presentation.tools.pointer" },
-  { id: "laser", icon: Sparkles, labelKey: "presentation.tools.laser" },
-  { id: "pen", icon: PenLine, labelKey: "presentation.tools.pen" },
-  { id: "highlighter", icon: Highlighter, labelKey: "presentation.tools.highlighter" },
+  { id: "laser", icon: Sparkles, labelKey: "presentation.tools.laser", shortcut: "L" },
+  { id: "pen", icon: PenLine, labelKey: "presentation.tools.pen", shortcut: "P" },
+  { id: "highlighter", icon: Highlighter, labelKey: "presentation.tools.highlighter", shortcut: "H" },
   { id: "shape", icon: Shapes, labelKey: "presentation.tools.shape" },
   { id: "text", icon: Type, labelKey: "presentation.tools.text" },
-  { id: "select", icon: MousePointerClick, labelKey: "presentation.tools.select" },
-  { id: "eraser", icon: Eraser, labelKey: "presentation.tools.eraser" },
-  { id: "spotlight", icon: Sun, labelKey: "presentation.tools.spotlight" },
-  { id: "magnifier", icon: Search, labelKey: "presentation.tools.magnifier" },
+  { id: "select", icon: MousePointerClick, labelKey: "presentation.tools.select", shortcut: "V" },
+  { id: "eraser", icon: Eraser, labelKey: "presentation.tools.eraser", shortcut: "E" },
+  { id: "spotlight", icon: Sun, labelKey: "presentation.tools.spotlight", shortcut: "S" },
+  { id: "magnifier", icon: Search, labelKey: "presentation.tools.magnifier", shortcut: "M" },
 ];
 
 export function hasStyleOptions(tool: PresentationTool): boolean {

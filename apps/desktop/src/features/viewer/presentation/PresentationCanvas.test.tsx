@@ -172,6 +172,30 @@ describe("PresentationCanvas", () => {
     expect(turned.points[1].y).toBeCloseTo(0.75);
   });
 
+  it("rotates with R and Shift+R and duplicates with Ctrl+D, but not while typing", () => {
+    act(() => {
+      usePresentationStore.getState().addStroke(0, { id: "bar", tool: "line", color: "#000000", width: 0.005, points: [{ x: 0.25, y: 0.5 }, { x: 0.5, y: 0.5 }] });
+      usePresentationStore.getState().setTool("select");
+      usePresentationStore.getState().selectDrawing({ surface: 0, id: "bar" });
+    });
+    render(<Stage />);
+
+    fireEvent.keyDown(window, { key: "r" });
+    expect(pageStrokes()[0].points[0].x).toBeCloseTo(0.375);
+    fireEvent.keyDown(window, { key: "R", shiftKey: true });
+    expect(pageStrokes()[0].points[0].x).toBeCloseTo(0.25);
+
+    const field = document.createElement("input");
+    document.body.append(field);
+    fireEvent.keyDown(field, { key: "r" });
+    expect(pageStrokes()[0].points[0].x).toBeCloseTo(0.25);
+    field.remove();
+
+    fireEvent.keyDown(window, { key: "d", ctrlKey: true });
+    expect(pageStrokes()).toHaveLength(2);
+    expect(usePresentationStore.getState().selectedDrawing?.id).toBe(pageStrokes()[1].id);
+  });
+
   it("offers no rotation for text", () => {
     act(() => {
       usePresentationStore.getState().addStroke(0, { id: "note", tool: "text", color: "#000000", width: 0, points: [{ x: 0.25, y: 0.25 }], text: "Eski", fontSize: 0.04, size: { width: 0.1, height: 0.1 } });

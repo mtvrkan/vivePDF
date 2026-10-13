@@ -6567,6 +6567,7 @@
         "presentationSpotlight": "Spotlight",
         "presentationMagnifier": "Magnifier",
         "presentationSelectDrawing": "Select a drawing, then move or delete it",
+        "presentationDrawingEdit": "Rotate the selected drawing right / left · duplicate it",
         "presentationZoomArea": "Zoom to a dragged area",
         "presentationBlackout": "Blackout black / white",
         "presentationOverview": "Slide overview grid",

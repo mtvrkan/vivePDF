@@ -40,6 +40,7 @@ export function PresentationToolButtons({ onSelect }: { onSelect?: (tool: Presen
           key={entry.id}
           icon={entry.icon}
           label={t(entry.labelKey)}
+          shortcut={entry.shortcut}
           active={tool === entry.id}
           onClick={() => {
             const next = tool === entry.id ? "pointer" : entry.id;

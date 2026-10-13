@@ -6566,6 +6566,7 @@
         "presentationSpotlight": "Foco",
         "presentationMagnifier": "Lupa",
         "presentationSelectDrawing": "Seleccionar un dibujo y moverlo o eliminarlo",
+        "presentationDrawingEdit": "Girar el dibujo seleccionado a la derecha / izquierda · duplicarlo",
         "presentationZoomArea": "Acercar un área arrastrando",
         "presentationBlackout": "Pantalla en negro / en blanco",
         "presentationOverview": "Cuadrícula de vista general de diapositivas",

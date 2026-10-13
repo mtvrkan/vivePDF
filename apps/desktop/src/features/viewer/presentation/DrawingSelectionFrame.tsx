@@ -1,14 +1,17 @@
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Copy, Minus, Palette, Plus, RotateCcw, RotateCw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
 import { cn } from "@/shared/lib/cn";
+import { shortcutLetter } from "@/shared/lib/shortcutKeys";
+import { isTextEntryTarget } from "@/shared/lib/typingTarget";
 import { drawingBounds, drawingExtent, scaleDrawing, type DrawingBounds } from "@/shared/lib/drawingGeometry";
 import { HIGHLIGHTER_WIDTH_RANGE, OPACITY_RANGE, PEN_WIDTH_RANGE, type Stroke } from "@/shared/store/presentationStore";
 import { cornerPoint, cornerResize, RESIZE_CORNERS, RESIZE_STEP, stepResize, type DrawingResize, type ResizeCorner } from "./drawingResize";
 import { canRotate, QUARTER_TURN, rotateDrawing, snapAngle } from "./drawingRotate";
 import { ColorRow, RangeRow } from "./PresentationTools";
+import { hasOpenModal } from "../viewerKeyTarget";
 import { arrowHeadLength } from "./strokes";
 import { PEN_COLORS } from "./toolPresets";
 import type { PageRect } from "./usePageRects";
@@ -129,6 +132,27 @@ export function DrawingSelectionFrame({ rect, stroke, onChange, onDelete, onDupl
 
   const step = (factor: number) => apply(stroke, stepResize(drawingExtent(stroke, scale), factor, area));
 
+  const keys = useRef({ stroke, scale, rotatable, onChange, onDuplicate });
+  keys.current = { stroke, scale, rotatable, onChange, onDuplicate };
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.altKey || event.defaultPrevented || isTextEntryTarget(event.target) || hasOpenModal()) return;
+      const letter = shortcutLetter(event);
+      const modifier = event.ctrlKey || event.metaKey;
+      const current = keys.current;
+      if (modifier && !event.shiftKey && letter === "d") {
+        event.preventDefault();
+        current.onDuplicate();
+      } else if (!modifier && letter === "r" && current.rotatable) {
+        event.preventDefault();
+        current.onChange(rotateDrawing(current.stroke, event.shiftKey ? -QUARTER_TURN : QUARTER_TURN, current.scale));
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
   return (
     <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
       <div
@@ -172,12 +196,12 @@ export function DrawingSelectionFrame({ rect, stroke, onChange, onDelete, onDupl
         <div ref={toolbarRef} className="glass pointer-events-auto absolute -top-2 right-0 flex -translate-y-full items-center gap-0.5 rounded-xl p-0.5" onPointerDown={(event) => event.stopPropagation()}>
           {rotatable ? (
             <>
-              <IconButton icon={RotateCcw} label={t("presentation.rotateLeft")} onClick={() => onChange(rotateDrawing(stroke, -QUARTER_TURN, scale))} />
-              <IconButton icon={RotateCw} label={t("presentation.rotateRight")} onClick={() => onChange(rotateDrawing(stroke, QUARTER_TURN, scale))} />
+              <IconButton icon={RotateCcw} label={t("presentation.rotateLeft")} shortcut="Shift+R" onClick={() => onChange(rotateDrawing(stroke, -QUARTER_TURN, scale))} />
+              <IconButton icon={RotateCw} label={t("presentation.rotateRight")} shortcut="R" onClick={() => onChange(rotateDrawing(stroke, QUARTER_TURN, scale))} />
             </>
           ) : null}
           <IconButton icon={Palette} label={t("presentation.style")} active={styleOpen} onClick={() => setStyleOpen((open) => !open)} />
-          <IconButton icon={Copy} label={t("presentation.duplicateDrawing")} onClick={onDuplicate} />
+          <IconButton icon={Copy} label={t("presentation.duplicateDrawing")} shortcut="Ctrl+D" onClick={onDuplicate} />
           <IconButton icon={Minus} label={t("presentation.shrinkDrawing")} onClick={() => step(1 / RESIZE_STEP)} />
           <IconButton icon={Plus} label={t("presentation.growDrawing")} onClick={() => step(RESIZE_STEP)} />
           <IconButton icon={Trash2} label={t("presentation.deleteDrawing")} shortcut="Del" onClick={onDelete} />

@@ -6566,6 +6566,7 @@
         "presentationSpotlight": "Spotlight",
         "presentationMagnifier": "Lupe",
         "presentationSelectDrawing": "Zeichnung auswählen, dann verschieben oder löschen",
+        "presentationDrawingEdit": "Ausgewählte Zeichnung nach rechts / links drehen · duplizieren",
         "presentationZoomArea": "Auf aufgezogenen Bereich zoomen",
         "presentationBlackout": "Bildschirm schwarz / weiß",
         "presentationOverview": "Folienübersicht als Raster",

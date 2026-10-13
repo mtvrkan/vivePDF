@@ -5,6 +5,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Presentation: a selected drawing can now be rotated — drag the round handle under it (Shift turns in 15° steps) or use Rotate left / Rotate right — and, like in Annotate, it can be recoloured, made thicker or thinner, made more or less see-through and duplicated from its own toolbar [2026-10-13]
+- Presentation: the drawing toolbar shows its keys — R / Shift+R turn the selected drawing right / left and Ctrl+D duplicates it [2026-10-13]
 - Page size: quick A6, A5, A4, A3, A2 and Letter cards show how much each size shrinks or enlarges the first page (for example A4 to A5 "Shrink to 71%"), the paper list gains A6, A2 and Tabloid, and the tool is found by searching "A5", "küçült", "büyüt", "shrink" or "enlarge" [2026-10-13]
 - Presentation: temporary drawings are no longer lost when the presentation ends — on exit vivePDF offers to save them into the PDF as annotations (pens, highlights, shapes and text with your author name; board drawings become new pages at the end), discard them or keep them as an unsaved change, and the presenter bar can finish and save in one step. A selected drawing now has corner handles to resize it (Shift keeps the proportions, text always does) plus Smaller and Larger buttons [2026-10-13]
 - Reading mode: the page colours button in the right rail now switches reading mode to its dark theme and back to the light one used before (paper or sepia); outside reading mode it still recolours the pages [2026-10-13]
@@ -41,6 +42,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Presentation: the tool keys (L, P, H, E, S, M, V, Shift+E, Delete, Ctrl+Z / Ctrl+Y) now also work with the presentation tools open in the normal viewer, work on any keyboard layout, keep working after you touch a slider or colour in the style panel, and every tool button shows its key [2026-10-13]
 - Presentation: the drawing style and settings panels now close when you click anywhere outside them [2026-10-13]
 - Windows setup: when this copy of vivePDF has no bundled LibreOffice installer, the reason now has a readable explanation in every language [2026-10-13]
 - Files vivePDF produced are recognised again through `..` in their path and before they exist, and on Linux two names that differ only in case are no longer mixed up [2026-10-13]

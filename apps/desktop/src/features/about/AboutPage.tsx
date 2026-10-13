@@ -79,6 +79,7 @@ const SHORTCUTS: ShortcutGroup[] = [
       { keys: "S", labelKey: "about.shortcuts.items.presentationSpotlight" },
       { keys: "M", labelKey: "about.shortcuts.items.presentationMagnifier" },
       { keys: "V  /  Del", labelKey: "about.shortcuts.items.presentationSelectDrawing" },
+      { keys: "R  /  Shift R  ·  Ctrl D", labelKey: "about.shortcuts.items.presentationDrawingEdit" },
       { keys: "Z", labelKey: "about.shortcuts.items.presentationZoomArea" },
       { keys: "B  /  W  /  .", labelKey: "about.shortcuts.items.presentationBlackout" },
       { keys: "G", labelKey: "about.shortcuts.items.presentationOverview" },
