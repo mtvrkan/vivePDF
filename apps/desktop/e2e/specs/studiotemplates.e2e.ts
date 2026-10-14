@@ -1,8 +1,9 @@
 import { join } from "node:path";
-import { $, $$, browser, expect } from "@wdio/globals";
+import { $, browser, expect } from "@wdio/globals";
 import { bootApp, openTool, t } from "../support/app.ts";
 
 const CATEGORY = process.env.VIVEPDF_E2E_TEMPLATES ?? "";
+const CATEGORIES = ["resumes", "certificates", "invitations", "social", "posters", "flyers", "covers", "business", "cards", "menus", "education", "personal", "labels"];
 
 type Problem = { element: string; issue: string };
 
@@ -51,20 +52,27 @@ async function layoutProblems(): Promise<Problem[]> {
 }
 
 describe("studio templates", () => {
-  before(bootApp);
+  let fontsReady = false;
 
-  it("opens every template with its text inside its boxes", async () => {
+  before(async () => {
+    await bootApp();
     await openTool("nav.studio");
     await $("[data-template-category]").waitForExist({ timeout: 30000 });
-    const available = await browser.execute(() => [...new Set(Array.from(document.querySelectorAll<HTMLElement>("[data-template-category]")).map((button) => button.dataset.templateCategory as string))].filter((category) => category !== "all"));
-    const categories = CATEGORY ? available.filter((category) => CATEGORY.split(",").includes(category)) : available;
-    expect(categories.length).toBeGreaterThan(0);
+  });
 
-    const problems: string[] = [];
-    let fontsReady = false;
-    for (const category of categories) {
+  it("checks every category the gallery offers", async () => {
+    const available = await browser.execute(() => [...new Set(Array.from(document.querySelectorAll<HTMLElement>("[data-template-category]")).map((button) => button.dataset.templateCategory as string))].filter((category) => category !== "all"));
+
+    expect([...available].sort()).toEqual([...CATEGORIES].sort());
+  });
+
+  for (const category of CATEGORIES.filter((item) => !CATEGORY || CATEGORY.split(",").includes(item))) {
+    it(`opens every ${category} template with its text inside its boxes`, async () => {
       await showCategory(category);
       const ids = await browser.execute(() => [...new Set(Array.from(document.querySelectorAll<HTMLElement>("[data-template]")).map((card) => card.dataset.template as string))]);
+      expect(ids.length).toBeGreaterThan(0);
+
+      const problems: string[] = [];
       for (const id of ids) {
         await openTemplate(category, id);
         if (!fontsReady) {
@@ -76,9 +84,8 @@ describe("studio templates", () => {
         await $('[data-testid="studio-viewport"]').saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, `template-${id}.png`));
         for (const problem of await layoutProblems()) problems.push(`${id}: ${problem.element} — ${problem.issue}`);
       }
-    }
 
-    expect(problems).toEqual([]);
-    expect(await $$('[data-testid="studio-viewport"] [data-element-id]').length).toBeGreaterThan(0);
-  });
+      expect(problems).toEqual([]);
+    });
+  }
 });

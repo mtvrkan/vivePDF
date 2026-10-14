@@ -218,7 +218,7 @@ export function Segmented<T extends string | number>({ value, options, labelOf, 
   const roving = useRovingRadios(options, current, onChange);
 
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className={cn("glass inline-flex gap-0.5 rounded-lg p-0.5", className)}>
+    <div role="radiogroup" aria-label={ariaLabel} className={cn("glass inline-flex max-w-full gap-0.5 rounded-lg p-0.5", className)}>
       {options.map((option, index) => (
         <button
           key={option}
@@ -230,8 +230,8 @@ export function Segmented<T extends string | number>({ value, options, labelOf, 
           onKeyDown={roving.onKeyDown}
           onClick={() => onChange(option)}
           className={cn(
-            "rounded-md transition-[background-color,box-shadow] duration-(--transition-fast)",
-            size === "sm" ? "h-7 px-3 text-sm" : "h-8 px-4 text-sm",
+            "min-w-0 rounded-md text-center leading-tight transition-[background-color,box-shadow] duration-(--transition-fast)",
+            size === "sm" ? "min-h-7 px-3 py-1 text-sm" : "min-h-8 px-4 py-1 text-sm",
             option === value ? "glass-chip font-medium text-foreground" : "text-muted-foreground hover:text-foreground",
           )}
         >

@@ -66,6 +66,7 @@ export function PageProperties({ page }: { page: StudioPage }) {
           <span className="block text-xs font-medium text-muted-foreground">{t("studio.page.resizeContent")}</span>
           <Segmented
             size="sm"
+            className="grid w-full grid-cols-2"
             value={mode}
             options={RESIZE_MODES}
             labelOf={(value) => t(`studio.page.resize.${value}`)}
@@ -89,7 +90,7 @@ export function PageProperties({ page }: { page: StudioPage }) {
         {corner > 0 ? <p className="text-xs text-muted-foreground">{t("studio.page.cornerHint")}</p> : null}
         <button
           type="button"
-          className="glass-chip h-8 w-full rounded-lg px-3 text-sm font-medium disabled:opacity-50"
+          className="glass-chip min-h-8 w-full rounded-lg px-3 py-1.5 text-sm leading-tight font-medium disabled:opacity-50"
           disabled={sameSize}
           onClick={() => apply((design) => resizeAllPages(design, page.width, page.height, mode))}
         >

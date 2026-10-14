@@ -169,11 +169,11 @@ export function TextSection({ elements }: { elements: StudioTextElement[] }) {
         <SliderField label={t("studio.props.letterSpacing")} value={Math.round(first.letterSpacing * 1000)} min={-100} max={800} step={10} format={(value) => `${value}`} onChange={(value) => change(() => ({ letterSpacing: value / 1000 }), "letter-spacing")} />
         <div className="grid grid-cols-2 gap-2">
           <label className="block min-w-0">
-            <span className="mb-1 block text-xs font-medium text-muted-foreground">{t("studio.text.case")}</span>
+            <span className="mb-1 block break-words text-xs font-medium text-muted-foreground">{t("studio.text.case")}</span>
             <Select size="sm" value={first.textCase} ariaLabel={t("studio.text.case")} options={STUDIO_TEXT_CASES.map((value) => ({ value, label: t(`studio.text.cases.${value}`) }))} onChange={(value) => change(() => ({ textCase: value as StudioTextCase }))} />
           </label>
           <label className="block min-w-0">
-            <span className="mb-1 block text-xs font-medium text-muted-foreground">{t("studio.text.autoSize")}</span>
+            <span className="mb-1 block break-words text-xs font-medium text-muted-foreground">{t("studio.text.autoSize")}</span>
             <Select size="sm" value={first.autoSize} ariaLabel={t("studio.text.autoSize")} options={STUDIO_TEXT_AUTO_SIZES.map((value) => ({ value, label: t(`studio.text.autoSizes.${value}`) }))} onChange={(value) => change(() => ({ autoSize: value as StudioTextAutoSize }))} />
           </label>
         </div>
