@@ -517,28 +517,20 @@ mod tests {
 
     #[test]
     fn redact_replaces_home_directory() {
-        let home_var = if cfg!(windows) { "USERPROFILE" } else { "HOME" };
-        let original = std::env::var(home_var).ok();
-        std::env::set_var(home_var, "C:/Users/tester");
         let text = "log at C:/Users/tester/app.log failed";
-        assert_eq!(redact(text), "log at ~/app.log failed");
-        match original {
-            Some(value) => std::env::set_var(home_var, value),
-            None => std::env::remove_var(home_var),
-        }
+        assert_eq!(
+            redact_home(text, Some("C:/Users/tester")),
+            "log at ~/app.log failed"
+        );
     }
 
     #[test]
     fn redact_is_case_insensitive_for_drive_letter() {
-        let home_var = if cfg!(windows) { "USERPROFILE" } else { "HOME" };
-        let original = std::env::var(home_var).ok();
-        std::env::set_var(home_var, "C:/Users/tester");
         let text = "log at c:/users/tester/app.log failed";
-        assert_eq!(redact(text), "log at ~/app.log failed");
-        match original {
-            Some(value) => std::env::set_var(home_var, value),
-            None => std::env::remove_var(home_var),
-        }
+        assert_eq!(
+            redact_home(text, Some("C:/Users/tester")),
+            "log at ~/app.log failed"
+        );
     }
 
     #[test]
