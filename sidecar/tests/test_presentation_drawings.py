@@ -175,3 +175,92 @@ def test_nothing_to_save_and_bad_colours_are_refused(tmp_path: Path):
         SaveDrawingsParams(
             path=str(path), pages=[{"page": 1, "strokes": [_pen([(0, 0)], color="red")]}]
         )
+
+
+RED_BOX_SVG = (
+    '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50">'
+    '<rect width="100" height="50" fill="#ff0000"/></svg>'
+)
+
+
+def _item(anchor: tuple[float, float], size: tuple[float, float], **fields: object) -> dict:
+    return {
+        "tool": "drawing",
+        "color": "#000000",
+        "width": 0,
+        "points": [anchor],
+        "size": size,
+        "svg": RED_BOX_SVG,
+        **fields,
+    }
+
+
+@pytest.mark.parametrize(
+    ("rotation", "offset_crop"), [(0, False), (90, False), (180, True), (270, True)]
+)
+def test_inserted_items_are_drawn_into_their_box_on_turned_and_cropped_pages(
+    tmp_path: Path, rotation: int, offset_crop: bool
+):
+    path = _document(tmp_path, rotation, offset_crop)
+
+    result = _save(path, pages=[{"page": 2, "strokes": [_item((0.2, 0.3), (0.4, 0.2))]}])
+
+    assert result.annotations == 0
+    with pymupdf.open(path) as document:
+        page = document[1]
+        assert not list(page.annots())
+        assert _red_at(page, 0.4, 0.4)
+        assert not _red_at(page, 0.1, 0.1)
+        assert not _red_at(page, 0.8, 0.8)
+        assert not _red_at(document[0], 0.4, 0.4)
+
+
+def test_inserted_items_sit_beside_ink_and_on_boards(tmp_path: Path):
+    path = _document(tmp_path)
+    board = {
+        "background": "white",
+        "width": 1600,
+        "height": 900,
+        "strokes": [_item((0.4, 0.4), (0.2, 0.2))],
+    }
+
+    result = _save(
+        path,
+        pages=[
+            {"page": 1, "strokes": [_item((0.1, 0.1), (0.3, 0.1)), _pen([(0.1, 0.8), (0.3, 0.8)])]}
+        ],
+        boards=[board],
+    )
+
+    assert result.annotations == 1
+    with pymupdf.open(path) as document:
+        assert _red_at(document[0], 0.25, 0.15)
+        assert [annot.type[1] for annot in document[0].annots()] == ["Ink"]
+        assert _red_at(document[2], 0.5, 0.5)
+
+
+def test_an_item_without_a_picture_or_box_is_skipped(tmp_path: Path):
+    path = _document(tmp_path)
+    strokes = [
+        _item((0.1, 0.1), (0.3, 0.1), svg=None),
+        {**_item((0.5, 0.5), (0.3, 0.1)), "size": None},
+        _item((0.6, 0.6), (0, 0)),
+    ]
+
+    result = _save(path, pages=[{"page": 1, "strokes": strokes}])
+
+    assert result.annotations == 0
+    with pymupdf.open(path) as document:
+        assert not _red_at(document[0], 0.25, 0.15)
+        assert not _red_at(document[0], 0.65, 0.55)
+
+
+def test_an_unreadable_picture_is_refused_and_the_file_is_left_alone(tmp_path: Path):
+    path = _document(tmp_path)
+    before = path.read_bytes()
+
+    with pytest.raises(OpError) as caught:
+        _save(path, pages=[{"page": 1, "strokes": [_item((0.1, 0.1), (0.3, 0.1), svg="<svg")]}])
+
+    assert caught.value.code is ErrorCode.INVALID_PARAMS
+    assert path.read_bytes() == before

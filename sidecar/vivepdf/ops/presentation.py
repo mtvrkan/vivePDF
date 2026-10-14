@@ -7,6 +7,8 @@ from pydantic import Field
 from vivepdf.ops._document import open_document
 from vivepdf.ops._inplace import save_in_place
 from vivepdf.ops._output import OutputResult
+from vivepdf.ops._placement import insertion_matrix
+from vivepdf.ops._svg import MAX_SVG_BYTES, drawing_pdf
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.paths import ModifyPath
 from vivepdf.rpc.progress import Progress
@@ -30,7 +32,7 @@ Point = tuple[float, float]
 
 
 class PresentationStroke(RpcModel):
-    tool: Literal["pen", "highlighter", "line", "arrow", "rect", "ellipse", "text"]
+    tool: Literal["pen", "highlighter", "line", "arrow", "rect", "ellipse", "text", "drawing"]
     color: str = Field(pattern=HEX_COLOR)
     width: float = Field(ge=0, le=1)
     opacity: float = Field(default=1.0, ge=0.05, le=1.0)
@@ -38,6 +40,7 @@ class PresentationStroke(RpcModel):
     text: str | None = Field(default=None, max_length=5000)
     font_size: float | None = Field(default=None, gt=0, le=1)
     size: tuple[float, float] | None = None
+    svg: str | None = Field(default=None, max_length=MAX_SVG_BYTES)
 
 
 class PresentationPage(RpcModel):
@@ -176,6 +179,29 @@ def _add_text(
     return True
 
 
+def _add_drawing(
+    page: pymupdf.Page, stroke: PresentationStroke, points: list[Point], scale: tuple[float, float]
+) -> None:
+    if not stroke.svg or not stroke.size:
+        return
+    left, top = points[0]
+    target = pymupdf.Rect(
+        left, top, left + stroke.size[0] * scale[0], top + stroke.size[1] * scale[1]
+    )
+    target.normalize()
+    if target.is_empty:
+        return
+    target = target * insertion_matrix(page)
+    target.normalize()
+    drawing = drawing_pdf(stroke.svg.encode("utf-8"), "drawing", stroke.opacity)
+    try:
+        page.show_pdf_page(
+            target, drawing, 0, keep_proportion=True, overlay=True, rotate=page.rotation
+        )
+    finally:
+        drawing.close()
+
+
 def _draw(
     page: pymupdf.Page,
     strokes: list[PresentationStroke],
@@ -188,6 +214,9 @@ def _draw(
         points = [(x * scale[0], y * scale[1]) for x, y in stroke.points]
         if stroke.tool == "text":
             added += _add_text(page, stroke, points, scale, matrix, author)
+            continue
+        if stroke.tool == "drawing":
+            _add_drawing(page, stroke, points, scale)
             continue
         _add_ink(page, stroke, points, stroke.width * scale[0], matrix, author)
         added += 1

@@ -44,4 +44,14 @@ describe("presentationDrawings", () => {
     expect(drawings.pages[0].strokes[0].points.at(-1)).toEqual([49_999 / 50_000, 0.5]);
     expect(drawings.pages[0].strokes[0].color).toBe("#000000");
   });
+
+  it("sends an inserted item as its box and its picture, and drops one whose picture is gone", () => {
+    const drawing = { kind: "formula" as const, source: { latex: "x", svg: '<svg width="2" height="1">x</svg>', color: "#111111", emWidth: 2, emHeight: 1 } };
+    const item: Stroke = { id: "d", tool: "drawing", color: "#000000", width: 0, points: [{ x: 0.2, y: 0.3 }], size: { width: 0.4, height: 0.2 }, asset: "asset-1", opacity: 0.5 };
+    const lost: Stroke = { ...item, id: "lost", asset: "missing" };
+
+    const drawings = presentationDrawings({ ...empty, strokesByPage: { 1: [item, lost] }, drawingAssets: { "asset-1": { dataUrl: "data:x", width: 40, height: 20, drawing } } }, BOARD);
+
+    expect(drawings.pages).toEqual([{ page: 2, strokes: [{ tool: "drawing", color: "#000000", width: 0, points: [[0.2, 0.3]], size: [0.4, 0.2], svg: "<svg>x</svg>", opacity: 0.5 }] }]);
+  });
 });

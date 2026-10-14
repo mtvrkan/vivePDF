@@ -7,7 +7,7 @@ export function holdTemporaryDrawings(finish: LeftoverFinish): void {
   const presentation = usePresentationStore.getState();
   const documentId = useDocumentStore.getState().activeId;
   if (presentation.drawingsMode !== "temporary" || !documentId) return;
-  const drawings = presentationDrawings({ strokesByPage: presentation.strokesByPage, boardStrokes: presentation.boardStrokes }, { width: window.innerWidth, height: window.innerHeight });
+  const drawings = presentationDrawings({ strokesByPage: presentation.strokesByPage, boardStrokes: presentation.boardStrokes, drawingAssets: presentation.drawingAssets }, { width: window.innerWidth, height: window.innerHeight });
   if (!hasPresentationDrawings(drawings)) return;
   usePresentationLeftoverStore.getState().hold({ ...drawings, documentId, finish });
 }
