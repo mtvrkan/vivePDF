@@ -20,6 +20,7 @@ import {
   ListChecks,
   ListOrdered,
   Minus,
+  Omega,
   PanelTop,
   Quote,
   Redo2,
@@ -55,6 +56,7 @@ import { useDocumentStore } from "./documentStore";
 import { FormatPainterButton } from "./FormatPainterButton";
 import { SourcesDialog } from "./SourcesDialog";
 import { SpacingMenu } from "./SpacingMenu";
+import { SymbolDialog } from "./SymbolDialog";
 import { PX_TO_PT } from "./toHtml";
 
 const BLOCKS = ["paragraph", "h1", "h2", "h3", "h4"] as const;
@@ -121,6 +123,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
   const bodyFont = useDocumentStore((state) => state.document?.settings.fontId ?? "");
   const [linking, setLinking] = useState(false);
   const [citing, setCiting] = useState(false);
+  const [symbols, setSymbols] = useState(false);
   const sourcesRequested = useDocumentStore((state) => state.sourcesRequested);
   const showSources = citing || sourcesRequested;
   const closeSources = () => {
@@ -243,6 +246,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
       {state.link ? <IconButton icon={Unlink} label={t("studio.doc.toolbar.unlink")} onClick={() => chain().extendMarkRange("link").unsetLink().run()} /> : null}
       <IconButton icon={ImageIcon} label={t("studio.doc.toolbar.image")} onClick={() => void insertImage()} />
       <IconButton icon={Table2} label={t("studio.doc.toolbar.table")} onClick={() => chain().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()} />
+      <IconButton icon={Omega} label={t("studio.doc.symbols.button")} onClick={() => setSymbols(true)} data-testid="doc-symbols" />
       <IconButton icon={Minus} label={t("studio.doc.toolbar.rule")} onClick={() => chain().setHorizontalRule().run()} />
       <IconButton icon={SeparatorHorizontal} label={t("studio.doc.toolbar.pageBreak")} shortcut="Ctrl+Enter" onClick={() => chain().setPageBreak().run()} />
       <IconButton icon={BookMarked} label={t("studio.doc.cite.button")} active={state.citation} onClick={() => setCiting(true)} data-testid="doc-citations" />
@@ -259,6 +263,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
         </span>
       ) : null}
       {linking ? <LinkDialog editor={editor} open={linking} onClose={() => setLinking(false)} /> : null}
+      {symbols ? <SymbolDialog editor={editor} onClose={() => setSymbols(false)} /> : null}
       {showSources ? <SourcesDialog editor={editor} open={showSources} onClose={closeSources} /> : null}
     </div>
   );

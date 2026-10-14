@@ -10034,6 +10034,21 @@
         "words": "الكلمات: {{total}}",
         "selectedWords": "الكلمات: {{selected}} من {{total}}",
         "characters": "الأحرف: {{total}}"
+      },
+      "symbols": {
+        "button": "إدراج رمز",
+        "title": "الرموز",
+        "recent": "المستخدمة مؤخرًا",
+        "groups": "مجموعات الرموز",
+        "groupNames": {
+          "punctuation": "علامات الترقيم",
+          "currency": "العملات",
+          "math": "الرياضيات",
+          "arrows": "الأسهم",
+          "greek": "اليونانية",
+          "latin": "حروف بعلامات",
+          "shapes": "أشكال وعلامات"
+        }
       }
     },
     "cv": {

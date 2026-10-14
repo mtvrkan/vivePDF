@@ -9187,6 +9187,21 @@
         "words": "Palabras: {{total}}",
         "selectedWords": "Palabras: {{selected}} de {{total}}",
         "characters": "Caracteres: {{total}}"
+      },
+      "symbols": {
+        "button": "Insertar símbolo",
+        "title": "Símbolos",
+        "recent": "Usados recientemente",
+        "groups": "Grupos de símbolos",
+        "groupNames": {
+          "punctuation": "Puntuación",
+          "currency": "Monedas",
+          "math": "Matemáticas",
+          "arrows": "Flechas",
+          "greek": "Griego",
+          "latin": "Letras acentuadas",
+          "shapes": "Formas y marcas"
+        }
       }
     },
     "cv": {

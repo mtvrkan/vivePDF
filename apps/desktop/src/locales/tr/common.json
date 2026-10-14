@@ -9189,6 +9189,21 @@
         "words": "Kelime: {{total}}",
         "selectedWords": "Kelime: {{selected}} / {{total}}",
         "characters": "Karakter: {{total}}"
+      },
+      "symbols": {
+        "button": "Simge ekle",
+        "title": "Simgeler",
+        "recent": "Son kullanılanlar",
+        "groups": "Simge grupları",
+        "groupNames": {
+          "punctuation": "Noktalama",
+          "currency": "Para birimi",
+          "math": "Matematik",
+          "arrows": "Oklar",
+          "greek": "Yunanca",
+          "latin": "Aksanlı harfler",
+          "shapes": "Şekiller ve işaretler"
+        }
       }
     },
     "cv": {
