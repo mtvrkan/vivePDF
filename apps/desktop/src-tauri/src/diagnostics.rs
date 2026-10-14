@@ -290,6 +290,7 @@ pub async fn write_text_file(path: String, contents: String) -> Result<(), RpcEr
         ));
     }
     crate::write_guard::check_file(std::path::Path::new(&path))?;
+    crate::grants::check_write(std::path::Path::new(&path))?;
     tauri::async_runtime::spawn_blocking(move || std::fs::write(&path, contents).map_err(io_error))
         .await
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?
@@ -338,14 +339,26 @@ pub async fn path_exists(paths: Vec<String>) -> Result<Vec<bool>, RpcError> {
     tauri::async_runtime::spawn_blocking(move || {
         paths
             .into_iter()
-            .map(|path| std::path::Path::new(&path).exists())
+            .map(|path| path_exists_for_page(std::path::Path::new(&path)))
             .collect::<Vec<bool>>()
     })
     .await
     .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
 }
 
+fn path_exists_for_page(path: &std::path::Path) -> bool {
+    !crate::grants::is_known(path) || path.exists()
+}
+
 fn path_kind(path: &std::path::Path) -> &'static str {
+    if crate::grants::is_known(path) {
+        disk_kind(path)
+    } else {
+        "file"
+    }
+}
+
+fn disk_kind(path: &std::path::Path) -> &'static str {
     match std::fs::metadata(path) {
         Ok(metadata) if metadata.is_dir() => "directory",
         Ok(_) => "file",
@@ -374,6 +387,19 @@ pub fn install_panic_hook<R: Runtime>(app: tauri::AppHandle<R>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn a_path_outside_every_grant_always_answers_present_as_a_file() {
+        let base = std::path::PathBuf::from("C:/vivepdf-unknown-test");
+        let unknown = base.join("nothing-here.pdf");
+        let produced = base.join("result.pdf");
+        crate::files::remember_produced(&produced.to_string_lossy());
+
+        assert!(path_exists_for_page(&unknown));
+        assert_eq!(path_kind(&unknown), "file");
+        assert!(!path_exists_for_page(&produced));
+        assert_eq!(path_kind(&produced), "missing");
+    }
 
     #[test]
     fn windows_label_names_windows_11_by_its_build() {
@@ -522,9 +548,9 @@ mod tests {
         std::fs::create_dir_all(&folder).unwrap();
         let file = dir.join("notes");
         std::fs::write(&file, b"x").unwrap();
-        assert_eq!(path_kind(&folder), "directory");
-        assert_eq!(path_kind(&file), "file");
-        assert_eq!(path_kind(&dir.join("gone")), "missing");
+        assert_eq!(disk_kind(&folder), "directory");
+        assert_eq!(disk_kind(&file), "file");
+        assert_eq!(disk_kind(&dir.join("gone")), "missing");
         let _ = std::fs::remove_dir_all(&dir);
     }
 }

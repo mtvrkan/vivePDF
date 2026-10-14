@@ -10,6 +10,7 @@ use crate::sidecar;
 use crate::write_guard;
 
 const SEARCH_FOLDER_METHODS: [&str; 3] = ["search.folders", "search.add_folder", "search.index"];
+const CLIPBOARD_METHOD: &str = "create.clipboard";
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RpcError {
@@ -73,11 +74,15 @@ pub async fn rpc(
     let scope = path_gate::check_op(&method, &params)?;
     let watched = doc_watch::begin_call(&params);
     let lists_search_folders = SEARCH_FOLDER_METHODS.contains(&method.as_str());
+    let reads_clipboard = method == CLIPBOARD_METHOD;
     let result = sidecar::call(&app, id, method, params).await;
     if let Ok(value) = &result {
         remember_outputs(value, &scope);
         if lists_search_folders {
             grants::adopt_engine_folders(&search_folders(value));
+        }
+        if reads_clipboard {
+            grants::allow_paths(&clipboard_files(value));
         }
     }
     doc_watch::end_call(watched);
@@ -91,6 +96,23 @@ fn search_folders(value: &Value) -> Vec<&str> {
         .into_iter()
         .flatten()
         .filter_map(|folder| folder.get("path").and_then(Value::as_str))
+        .collect()
+}
+
+fn clipboard_files(value: &Value) -> Vec<&str> {
+    if value.get("kind").and_then(Value::as_str) != Some("files") {
+        return Vec::new();
+    }
+    value
+        .get("files")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(Value::as_str)
+        .filter(|path| {
+            let target = std::path::Path::new(path);
+            target.is_file() && files::is_openable_output(target)
+        })
         .collect()
 }
 
@@ -172,6 +194,31 @@ mod tests {
 
         assert_eq!(search_folders(&value), vec!["C:/Docs"]);
         assert!(search_folders(&serde_json::json!({ "stats": {} })).is_empty());
+    }
+
+    #[test]
+    fn only_openable_files_a_clipboard_answer_lists_are_granted() {
+        let base = std::env::temp_dir().join(format!("vivepdf-clip-{}", std::process::id()));
+        std::fs::create_dir_all(&base).unwrap();
+        let pdf = base.join("a.pdf");
+        let script = base.join("run.bat");
+        std::fs::write(&pdf, b"%PDF").unwrap();
+        std::fs::write(&script, b"x").unwrap();
+        let listed = |kind: &str| {
+            serde_json::json!({
+                "kind": kind,
+                "files": [pdf, script, base, base.join("gone.pdf"), 7]
+            })
+        };
+
+        let files = listed("files");
+        let granted = clipboard_files(&files);
+        let picture = listed("image");
+        let ignored = clipboard_files(&picture);
+
+        assert_eq!(granted, vec![pdf.to_str().unwrap()]);
+        assert!(ignored.is_empty());
+        std::fs::remove_dir_all(&base).unwrap();
     }
 
     #[test]

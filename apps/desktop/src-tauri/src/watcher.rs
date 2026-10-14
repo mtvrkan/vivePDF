@@ -72,6 +72,7 @@ pub fn watch_folder_start(
     chain_id: Option<String>,
 ) -> Result<(), RpcError> {
     let target = PathBuf::from(&path);
+    crate::grants::check_read(&target)?;
     if !target.is_dir() {
         return Err(RpcError::new(
             "FILE_NOT_FOUND",

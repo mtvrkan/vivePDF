@@ -434,6 +434,14 @@ pub fn check_write_folder(path: &Path) -> Result<(), RpcError> {
     Err(not_granted(path))
 }
 
+pub fn is_known(path: &Path) -> bool {
+    if crate::files::was_produced(path) {
+        return true;
+    }
+    let mut registry = registry();
+    registry.may_read(path) || registry.may_write(path)
+}
+
 pub fn inside_roots(path: &Path) -> bool {
     let key = key_of(path);
     let registry = registry();

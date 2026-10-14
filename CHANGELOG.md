@@ -43,6 +43,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Paste: files copied in your file manager and pasted into vivePDF now open directly instead of asking you to choose them again; only documents and pictures are opened this way [2026-10-14]
 - Engine tests: the Windows LibreOffice install tests no longer break `shutil.which` on Linux, and the real-gpg signature round trip (good signature, tampered file, foreign key) has now run on Debian 13 with GnuPG 2.4.7 [2026-10-14]
 - Presentation: the tool keys (L, P, H, E, S, M, V, Shift+E, Delete, Ctrl+Z / Ctrl+Y) now also work with the presentation tools open in the normal viewer, work on any keyboard layout, keep working after you touch a slider or colour in the style panel, and every tool button shows its key [2026-10-13]
 - Presentation: the drawing style and settings panels now close when you click anywhere outside them [2026-10-13]
@@ -87,6 +88,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 
 ### Security
+- Files: saving a report, CV, source list, bookmark list or batch chains now writes only to the place you picked; checking whether a file exists or is a folder only answers for files and folders vivePDF may use; a watched folder must be one you chose to read from [2026-10-14]
 - Tools: a tool that changes a file in place unless told otherwise (link and metadata changes, edits saved without a new file name, hidden-text scrubbing) now needs write access to that file, and only results a tool was allowed to write are remembered as its own, so a tool's answer can no longer make another file readable or writable [2026-10-14]
 - Tools: every file and folder a tool reads, writes, changes in place or moves is now checked against the files and folders you chose, so a page script can no longer make a tool read, overwrite or move a file you never picked. A folder picked as an output folder only takes new results; folders picked to read from (Search, Batch, Merge, Convert, Watch) open their documents and pictures but never hidden folders or other files. New results may still land in Documents when you did not choose a folder, without replacing anything there. Watched folders, output folders, Studio files, signing certificates and search folders from before are carried over once [2026-10-14]
 - Windows LibreOffice setup: the downloaded installer must report the version vivePDF asked for, so a mirror can no longer pass off an older signed release as the current one [2026-10-13]
