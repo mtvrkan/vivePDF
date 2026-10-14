@@ -2,6 +2,7 @@ import contextlib
 import itertools
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import zipfile
@@ -10,6 +11,7 @@ from pathlib import Path
 from typing import IO
 
 from vivepdf._data_home import unix_data_home
+from vivepdf.external import _landlock
 from vivepdf.external._process import run_tool, system_environment
 from vivepdf.rpc.errors import ErrorCode, OpError
 
@@ -44,7 +46,7 @@ def clean_environment() -> dict[str, str]:
 
 
 def conversion_environment() -> dict[str, str]:
-    return {**clean_environment(), "SAL_DISABLE_OPENCL": "1"}
+    return {**clean_environment(), "SAL_DISABLE_OPENCL": "1", "GSETTINGS_BACKEND": "memory"}
 
 
 def managed_office_dir() -> Path:
@@ -328,6 +330,94 @@ def _unreadable(source: Path) -> OpError:
     )
 
 
+CONTAIN_FAILED_EXIT = 126
+CONTAIN_FAILED_MARKER = "[contain]"
+
+
+def install_root(soffice: Path) -> Path:
+    resolved = soffice.resolve()
+    for parent in resolved.parents:
+        if parent.name == "program":
+            return parent.parent
+    return resolved.parent
+
+
+def isolation_blocker(soffice: Path) -> str | None:
+    if not sys.platform.startswith("linux"):
+        return "unsupported"
+    if any(path.as_posix().startswith("/snap/") for path in (soffice, soffice.resolve())):
+        return "snap"
+    if _landlock.abi_version() < 1:
+        return "kernelTooOld"
+    return None
+
+
+def isolation() -> str | None:
+    if not sys.platform.startswith("linux"):
+        return None
+    soffice = find_soffice()
+    if soffice is not None and isolation_blocker(soffice) is not None:
+        return "none"
+    return "landlock" if _landlock.abi_version() >= 1 else "none"
+
+
+def _contained(arguments: list[str], soffice: Path, private: list[Path]) -> list[str] | None:
+    reason = isolation_blocker(soffice)
+    if reason is not None:
+        if reason != "unsupported":
+            print(f"[LibreOffice] running without isolation: {reason}", file=sys.stderr)
+        return None
+    containment = _landlock.office_containment(install_root(soffice), private, Path.home())
+    return _landlock.contained_arguments(containment, arguments)
+
+
+def _isolation_failed(error: OpError) -> bool:
+    data = error.data or {}
+    return data.get("exitCode") == CONTAIN_FAILED_EXIT and CONTAIN_FAILED_MARKER in str(
+        data.get("detail") or ""
+    )
+
+
+def _run_soffice(
+    arguments: list[str],
+    soffice: Path,
+    private: list[Path],
+    environment: dict[str, str],
+    check_cancelled: Callable[[], None] | None,
+) -> subprocess.CompletedProcess[str]:
+    contained = _contained(arguments, soffice, private)
+    if contained is not None:
+        try:
+            return run_tool(
+                contained,
+                timeout=CONVERT_TIMEOUT,
+                tool="LibreOffice",
+                env=environment,
+                check_cancelled=check_cancelled,
+            )
+        except OpError as error:
+            if not _isolation_failed(error):
+                raise
+            print("[LibreOffice] running without isolation: setupFailed", file=sys.stderr)
+    return run_tool(
+        arguments,
+        timeout=CONVERT_TIMEOUT,
+        tool="LibreOffice",
+        env=environment,
+        check_cancelled=check_cancelled,
+    )
+
+
+def _no_output(completed_output: str, source: Path) -> OpError:
+    if UNREADABLE_MARKER in completed_output:
+        return _unreadable(source)
+    return OpError(
+        ErrorCode.EXTERNAL_TOOL_FAILED,
+        "LibreOffice produced no output",
+        {"tool": "LibreOffice"},
+    )
+
+
 def convert_to_pdf(
     source: Path,
     output_dir: Path,
@@ -344,38 +434,46 @@ def convert_to_pdf(
             {"reason": "officeEncrypted"},
         )
     output_dir.mkdir(parents=True, exist_ok=True)
+    working = Path(tempfile.mkdtemp(prefix=".vivepdf-office-", dir=output_dir))
     try:
-        with profile_slot() as profile:
-            lock_down_profile(profile)
-            arguments = [
-                str(soffice),
-                "--headless",
-                "--norestore",
-                "--nolockcheck",
-                *profile_arguments(profile),
-            ]
-            if infilter:
-                arguments.append(f"--infilter={infilter}")
-            arguments.extend(["--convert-to", "pdf", "--outdir", str(output_dir), str(source)])
-            completed = run_tool(
-                arguments,
-                timeout=CONVERT_TIMEOUT,
-                tool="LibreOffice",
-                env=conversion_environment(),
-                check_cancelled=check_cancelled,
-            )
-    except OpError as error:
-        detail = str((error.data or {}).get("detail") or "")
-        if UNREADABLE_MARKER in detail:
-            raise _unreadable(source) from error
-        raise
-    produced = output_dir / f"{source.stem}.pdf"
-    if not produced.is_file():
-        if UNREADABLE_MARKER in f"{completed.stdout or ''}{completed.stderr or ''}":
-            raise _unreadable(source)
-        raise OpError(
-            ErrorCode.EXTERNAL_TOOL_FAILED,
-            "LibreOffice produced no output",
-            {"tool": "LibreOffice"},
-        )
-    return produced
+        staged = working / "input" / source.name
+        converted = working / "out"
+        temporary = working / "tmp"
+        for folder in (staged.parent, converted, temporary):
+            folder.mkdir()
+        shutil.copyfile(source, staged)
+        environment = {
+            **conversion_environment(),
+            "TMPDIR": str(temporary),
+            "TMP": str(temporary),
+            "TEMP": str(temporary),
+        }
+        try:
+            with profile_slot() as profile:
+                lock_down_profile(profile)
+                arguments = [
+                    str(soffice),
+                    "--headless",
+                    "--norestore",
+                    "--nolockcheck",
+                    *profile_arguments(profile),
+                ]
+                if infilter:
+                    arguments.append(f"--infilter={infilter}")
+                arguments.extend(["--convert-to", "pdf", "--outdir", str(converted), str(staged)])
+                completed = _run_soffice(
+                    arguments, soffice, [profile, working], environment, check_cancelled
+                )
+        except OpError as error:
+            detail = str((error.data or {}).get("detail") or "")
+            if UNREADABLE_MARKER in detail:
+                raise _unreadable(source) from error
+            raise
+        result = converted / f"{staged.stem}.pdf"
+        if not result.is_file():
+            raise _no_output(f"{completed.stdout or ''}{completed.stderr or ''}", source)
+        produced = output_dir / f"{source.stem}.pdf"
+        os.replace(result, produced)
+        return produced
+    finally:
+        shutil.rmtree(working, ignore_errors=True)
