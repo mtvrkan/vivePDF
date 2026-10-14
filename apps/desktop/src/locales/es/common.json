@@ -1693,6 +1693,12 @@
       "presentAnyway": "Presentar de todos modos",
       "tools": "Herramientas de presentación",
       "console": "Consola del presentador"
+    },
+    "insert": {
+      "menu": "Insertar",
+      "placeHint": "Haz clic en la página para colocarlo; Esc cancela",
+      "edit": "Editar",
+      "tooLarge": "Este elemento es demasiado grande para mostrarlo en la presentación."
     }
   },
   "password": {

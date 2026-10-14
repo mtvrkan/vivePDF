@@ -11,6 +11,10 @@ export function isFreehand(stroke: Stroke): boolean {
   return stroke.tool === "pen" || stroke.tool === "highlighter";
 }
 
+export function isBoxed(stroke: Stroke): boolean {
+  return stroke.tool === "text" || stroke.tool === "drawing";
+}
+
 export function distanceToSegment(p: StrokePoint, a: StrokePoint, b: StrokePoint): number {
   const dx = b.x - a.x;
   const dy = b.y - a.y;
@@ -51,7 +55,7 @@ export function drawingOutline(stroke: Stroke): StrokePoint[][] {
 }
 
 export function drawingExtent(stroke: Stroke, scale: DrawingScale = UNIT_SCALE): DrawingBounds {
-  if (stroke.tool === "text") {
+  if (isBoxed(stroke)) {
     const anchor = stroke.points[0] ?? { x: 0, y: 0 };
     const size = stroke.size ?? { width: 0, height: 0 };
     return { left: anchor.x * scale.x, top: anchor.y * scale.y, right: (anchor.x + size.width) * scale.x, bottom: (anchor.y + size.height) * scale.y };
@@ -72,14 +76,14 @@ export function drawingExtent(stroke: Stroke, scale: DrawingScale = UNIT_SCALE):
 
 export function drawingBounds(stroke: Stroke, scale: DrawingScale = UNIT_SCALE): DrawingBounds {
   const extent = drawingExtent(stroke, scale);
-  if (stroke.tool === "text" || stroke.points.length === 0) return extent;
+  if (isBoxed(stroke) || stroke.points.length === 0) return extent;
   const pad = (stroke.width * scale.x) / 2;
   return { left: extent.left - pad, top: extent.top - pad, right: extent.right + pad, bottom: extent.bottom + pad };
 }
 
 export function scaleDrawing(stroke: Stroke, anchor: StrokePoint, sx: number, sy: number): Stroke {
   const points = stroke.points.map((point) => ({ x: anchor.x + (point.x - anchor.x) * sx, y: anchor.y + (point.y - anchor.y) * sy }));
-  if (stroke.tool === "text") {
+  if (isBoxed(stroke)) {
     return {
       ...stroke,
       points,
@@ -106,7 +110,7 @@ function insideEllipse(stroke: Stroke, point: StrokePoint, scale: DrawingScale):
 
 export function hitsDrawing(stroke: Stroke, point: StrokePoint, tolerance: number, { scale = UNIT_SCALE, filled = false }: { scale?: DrawingScale; filled?: boolean } = {}): boolean {
   const scaledPoint = { x: point.x * scale.x, y: point.y * scale.y };
-  if (stroke.tool === "text") return insideBounds(drawingBounds(stroke, scale), scaledPoint, tolerance);
+  if (isBoxed(stroke)) return insideBounds(drawingBounds(stroke, scale), scaledPoint, tolerance);
   if (filled && stroke.tool === "rect" && insideBounds(drawingBounds(stroke, scale), scaledPoint, 0)) return true;
   if (filled && stroke.tool === "ellipse" && insideEllipse(stroke, scaledPoint, scale)) return true;
   const threshold = tolerance + (stroke.width * scale.x) / 2;

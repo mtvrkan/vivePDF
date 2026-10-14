@@ -1694,6 +1694,12 @@
       "presentAnyway": "Present anyway",
       "tools": "Presentation tools",
       "console": "Presenter console"
+    },
+    "insert": {
+      "menu": "Insert",
+      "placeHint": "Click the page to place it — Esc cancels",
+      "edit": "Edit",
+      "tooLarge": "This item is too large to show in the presentation."
     }
   },
   "password": {

@@ -9,7 +9,7 @@ export const DUPLICATE_OFFSET_PX = 16;
 const TURN_EPSILON = 1e-6;
 
 export function canRotate(stroke: Stroke): boolean {
-  return stroke.tool !== "text" && stroke.points.length > 0;
+  return stroke.tool !== "text" && stroke.tool !== "drawing" && stroke.points.length > 0;
 }
 
 export function snapAngle(angle: number, step = ROTATE_SNAP): number {

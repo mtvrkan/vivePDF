@@ -27,6 +27,7 @@ import { LayersPanel } from "./LayersPanel";
 import { useLayerCheck } from "./useLayerCheck";
 import { CommentsPanel } from "./CommentsPanel";
 import { TranslatePanel } from "./TranslatePanel";
+import { DrawingEditorHost } from "./overlay/drawing/DrawingEditorHost";
 import { OverlayBar } from "./overlay/OverlayBar";
 import { isPendingChange } from "./overlay/pending";
 import { DocumentTabs } from "./DocumentTabs";
@@ -219,6 +220,7 @@ export function ViewerPage() {
             {isLoaded ? <ReadingPositionTracker key={activeDocumentId} documentId={activeDocumentId} /> : null}
             {isLoaded ? <PrintDialog documentId={activeDocumentId} /> : null}
             {isLoaded ? <PresenterStartGate documentId={activeDocumentId} /> : null}
+            {isLoaded && overlayMode === null ? <DrawingEditorHost /> : null}
             {isLoaded && immersive && presenterDocumentId === activeDocumentId ? <PresenterConsole documentId={activeDocumentId} onExit={exitImmersive} /> : null}
             {isLoaded && immersive && presenterDocumentId !== activeDocumentId ? <ImmersiveView documentId={activeDocumentId} onExit={exitImmersive} /> : null}
             {isLoaded && !immersive ? (

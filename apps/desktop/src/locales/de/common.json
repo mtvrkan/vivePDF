@@ -1693,6 +1693,12 @@
       "presentAnyway": "Trotzdem präsentieren",
       "tools": "Präsentationswerkzeuge",
       "console": "Referentenkonsole"
+    },
+    "insert": {
+      "menu": "Einfügen",
+      "placeHint": "Zum Platzieren auf die Seite klicken – Esc bricht ab",
+      "edit": "Bearbeiten",
+      "tooLarge": "Dieses Element ist zu groß für die Präsentation."
     }
   },
   "password": {

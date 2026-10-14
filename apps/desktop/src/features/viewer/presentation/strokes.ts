@@ -67,7 +67,7 @@ function drawText(ctx: CanvasRenderingContext2D, stroke: Stroke, width: number, 
 }
 
 export function drawStroke(ctx: CanvasRenderingContext2D, stroke: Stroke, width: number, height: number, blend: StrokeBlend = "multiply", color = stroke.color) {
-  if (stroke.points.length === 0) return;
+  if (stroke.points.length === 0 || stroke.tool === "drawing") return;
   ctx.save();
   ctx.lineJoin = "round";
   ctx.lineCap = "round";

@@ -9,6 +9,7 @@ import { IconButton } from "@/components/shared/IconButton";
 import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { PresentationInsertMenu } from "./presentation/PresentationInsertMenu";
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "./presentation/PresentationTools";
 import { hasStyleOptions } from "./presentation/toolPresets";
 import { TimerClockChip } from "./presentation/TimerClockChip";
@@ -40,6 +41,7 @@ export function PresenterBar({
   const [visible, setVisible] = useState(true);
   const [stylePopoverOpen, setStylePopoverOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [insertOpen, setInsertOpen] = useState(false);
   const [confirmAnnotations, setConfirmAnnotations] = useState(false);
   const hideTimer = useRef<number | null>(null);
   const barRef = useRef<HTMLDivElement>(null);
@@ -112,7 +114,7 @@ export function PresenterBar({
         className={cn(
           "pointer-events-none fixed inset-x-0 bottom-4 flex justify-center transition-[opacity,transform] duration-200",
           layer,
-          visible || onBoard || stylePopoverOpen || settingsOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
+          visible || onBoard || stylePopoverOpen || settingsOpen || insertOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
         )}
       >
         <div ref={barRef} className="glass pointer-events-auto flex h-12 items-center gap-1 rounded-full px-2">
@@ -151,6 +153,7 @@ export function PresenterBar({
             }}
           />
           <PresentationStyleTrigger open={stylePopoverOpen} onToggle={() => setStylePopoverOpen((current) => !current)} />
+          <PresentationInsertMenu opensUp onOpenChange={setInsertOpen} />
           {drawingsMode === "annotations" ? (
             <DrawingCleanupButton
               pageCount={sessionAnnotations.filter((item) => item.pageIndex === scrollState.currentPage - 1).length}

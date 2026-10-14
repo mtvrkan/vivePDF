@@ -32,10 +32,44 @@ function StrokeCanvas({ rect, strokes, redrawKey }: { rect: PageRect; strokes: S
   );
 }
 
+function DrawingItems({ rect, items }: { rect: PageRect; items: Stroke[] }) {
+  const assets = usePresentationStore((state) => state.drawingAssets);
+  return items.map((stroke) => {
+    const asset = stroke.asset ? assets[stroke.asset] : undefined;
+    const anchor = stroke.points[0];
+    if (!asset || !stroke.size || !anchor) return null;
+    return (
+      <img
+        key={stroke.id}
+        src={asset.dataUrl}
+        alt=""
+        aria-hidden
+        draggable={false}
+        data-presentation-item={stroke.id}
+        className="pointer-events-none absolute max-w-none select-none"
+        style={{
+          left: rect.left + anchor.x * rect.width,
+          top: rect.top + anchor.y * rect.height,
+          width: stroke.size.width * rect.width,
+          height: stroke.size.height * rect.height,
+          ...(stroke.opacity !== undefined ? { opacity: stroke.opacity } : {}),
+        }}
+      />
+    );
+  });
+}
+
 export function PageDrawingCanvas({ rect }: { rect: PageRect }) {
   const strokes = usePresentationStore((state) => state.strokesByPage[rect.pageIndex] ?? NO_STROKES);
   if (strokes.length === 0) return null;
-  return <StrokeCanvas rect={rect} strokes={strokes} redrawKey={strokes.length} />;
+  const items = strokes.filter((stroke) => stroke.tool === "drawing");
+  const ink = items.length === 0 ? strokes : strokes.filter((stroke) => stroke.tool !== "drawing");
+  return (
+    <>
+      {items.length > 0 ? <DrawingItems rect={rect} items={items} /> : null}
+      {ink.length > 0 ? <StrokeCanvas rect={rect} strokes={ink} redrawKey={ink.length} /> : null}
+    </>
+  );
 }
 
 export function LiveStrokeCanvas({ rect, stroke }: { rect: PageRect; stroke: Stroke }) {

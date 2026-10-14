@@ -8,6 +8,7 @@ import { ImmersiveView } from "@/features/viewer/ImmersiveView";
 import { exitImmersiveSavingDrawings } from "@/features/viewer/immersive";
 import { TemporaryDrawingCleanup } from "@/features/viewer/presentation/DrawingCleanupButton";
 import { formatElapsed } from "@/features/viewer/presentation/elapsed";
+import { PresentationInsertMenu } from "@/features/viewer/presentation/PresentationInsertMenu";
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "@/features/viewer/presentation/PresentationTools";
 import { hasStyleOptions } from "@/features/viewer/presentation/toolPresets";
 import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
@@ -126,6 +127,7 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
           }}
         />
         <PresentationStyleTrigger open={styleOpen} onToggle={() => setStyleOpen((current) => !current)} />
+        <PresentationInsertMenu />
         <TemporaryDrawingCleanup pageIndex={currentPage - 1} />
         {hasTemporaryDrawings ? <IconButton icon={FileDown} label={t("presentation.keep.finish")} onClick={() => void exitImmersiveSavingDrawings()} /> : null}
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />

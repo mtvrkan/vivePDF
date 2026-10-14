@@ -1694,6 +1694,12 @@
       "presentAnyway": "Yine de sun",
       "tools": "Sunum araçları",
       "console": "Sunucu konsolu"
+    },
+    "insert": {
+      "menu": "Ekle",
+      "placeHint": "Yerleştirmek için sayfaya tıklayın — Esc iptal eder",
+      "edit": "Düzenle",
+      "tooLarge": "Bu öğe sunumda gösterilemeyecek kadar büyük."
     }
   },
   "password": {

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { CodeBlock } from "@/types";
+import type { DrawingSource } from "@/features/viewer/overlay/drawing/drawingSource";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { distanceToSegment, hitsDrawing, isFreehand } from "@/shared/lib/drawingGeometry";
 
@@ -12,7 +13,7 @@ export type LensShape = "circle" | "rect";
 export type StrokePoint = { x: number; y: number };
 export type Stroke = {
   id: string;
-  tool: "pen" | "highlighter" | ShapeKind | "text";
+  tool: "pen" | "highlighter" | ShapeKind | "text" | "drawing";
   color: string;
   width: number;
   points: StrokePoint[];
@@ -20,8 +21,11 @@ export type Stroke = {
   text?: string;
   fontSize?: number;
   size?: { width: number; height: number };
+  asset?: string;
 };
-export type DrawingSnapshot = { strokesByPage: Record<number, Stroke[]>; boardStrokes: Record<BoardMode, Stroke[]> };
+export type DrawingAsset = { dataUrl: string; width: number; height: number; drawing?: DrawingSource };
+export type DrawingPlacement = { asset: string };
+export type DrawingSnapshot = { strokesByPage: Record<number, Stroke[]>; boardStrokes: Record<BoardMode, Stroke[]>; drawingAssets?: Record<string, DrawingAsset> };
 export type DrawingSurface = number | BoardMode;
 export type DrawingSelection = { surface: DrawingSurface; id: string };
 export type CodeBlockCache = { width: number; height: number; blocks: CodeBlock[] };
@@ -132,6 +136,11 @@ type PresentationState = {
   codeBlockOpen: { pageIndex: number; blockId: string } | null;
   overviewOpen: boolean;
   selectedDrawing: DrawingSelection | null;
+  drawingAssets: Record<string, DrawingAsset>;
+  placing: DrawingPlacement | null;
+  addDrawingAsset: (asset: DrawingAsset) => string;
+  armPlacement: (asset: string) => void;
+  cancelPlacement: () => void;
   setOverviewOpen: (open: boolean) => void;
   toggleOverview: () => void;
   setTool: (tool: PresentationTool) => void;
@@ -296,10 +305,19 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   codeBlockOpen: null,
   overviewOpen: false,
   selectedDrawing: null,
+  drawingAssets: {},
+  placing: null,
 
+  addDrawingAsset: (asset) => {
+    const id = `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    set((state) => ({ drawingAssets: { ...state.drawingAssets, [id]: asset } }));
+    return id;
+  },
+  armPlacement: (asset) => set({ placing: { asset }, tool: "select", selectedDrawing: null }),
+  cancelPlacement: () => set({ placing: null }),
   setOverviewOpen: (open) => set({ overviewOpen: open }),
   toggleOverview: () => set((state) => ({ overviewOpen: !state.overviewOpen })),
-  setTool: (tool) => set((state) => ({ tool, selectedDrawing: tool === "select" ? state.selectedDrawing : null })),
+  setTool: (tool) => set((state) => ({ tool, placing: null, selectedDrawing: tool === "select" ? state.selectedDrawing : null })),
 
   setPenColor: (color) => {
     persistPrefs({ ...readPrefs(), penColor: color });
@@ -511,6 +529,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       codeBlocksByPage: {},
       codeBlockOpen: null,
       selectedDrawing: null,
+      placing: null,
     }),
 
   resetSession: () =>
@@ -527,6 +546,8 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       codeBlockOpen: null,
       overviewOpen: false,
       selectedDrawing: null,
+      drawingAssets: {},
+      placing: null,
     }),
 }));
 

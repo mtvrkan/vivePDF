@@ -5,8 +5,10 @@ import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { IconButton } from "@/components/shared/IconButton";
 import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
+import { hasOpenModal } from "../viewerKeyTarget";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { TemporaryDrawingCleanup } from "./DrawingCleanupButton";
+import { PresentationInsertMenu } from "./PresentationInsertMenu";
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "./PresentationTools";
 import { hasStyleOptions } from "./toolPresets";
 
@@ -21,7 +23,7 @@ export function PresentationBar({ documentId, onClose }: { documentId: string; o
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || isTypingTarget(event.target)) return;
+      if (event.key !== "Escape" || isTypingTarget(event.target) || hasOpenModal()) return;
       if (usePresentationStore.getState().tool === "pointer") return;
       event.preventDefault();
       event.stopPropagation();
@@ -46,6 +48,7 @@ export function PresentationBar({ documentId, onClose }: { documentId: string; o
           }}
         />
         <PresentationStyleTrigger open={styleOpen} onToggle={() => setStyleOpen((current) => !current)} />
+        <PresentationInsertMenu opensUp />
         <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />
         <span className="mx-1 h-5 w-px bg-border" aria-hidden />
         <IconButton icon={X} label={t("common.close")} onClick={onClose} />

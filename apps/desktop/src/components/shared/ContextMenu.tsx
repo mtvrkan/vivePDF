@@ -7,7 +7,7 @@ import { shortcutLabel } from "@/shared/lib/platform";
 
 export const MENU_LAYER = "data-context-menu-layer";
 
-export type ContextMenuAnchor = { x: number; y: number; alignEnd?: boolean; flipX?: number };
+export type ContextMenuAnchor = { x: number; y: number; alignEnd?: boolean; flipX?: number; above?: boolean };
 
 export type ContextMenuItem =
   | { type: "separator"; id: string }
@@ -48,7 +48,7 @@ function useClampedPosition(anchor: ContextMenuAnchor, ref: React.RefObject<HTML
       x = anchor.flipX - rect.width;
     }
     const left = Math.min(Math.max(view.left + margin, x), view.right - rect.width - margin);
-    const top = Math.min(Math.max(view.top + margin, anchor.y), view.bottom - rect.height - margin);
+    const top = Math.min(Math.max(view.top + margin, anchor.above ? anchor.y - rect.height : anchor.y), view.bottom - rect.height - margin);
     setStyle({ left: Math.max(view.left + margin, left), top: Math.max(view.top + margin, top) });
   }, [anchor, ref]);
   return style;

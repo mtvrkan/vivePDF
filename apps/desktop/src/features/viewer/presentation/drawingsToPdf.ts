@@ -18,7 +18,7 @@ function thinned(points: Stroke["points"]): [number, number][] {
 }
 
 function strokeSpec(stroke: Stroke, color: string): PresentationStrokeSpec | null {
-  if (stroke.points.length === 0) return null;
+  if (stroke.points.length === 0 || stroke.tool === "drawing") return null;
   const base: PresentationStrokeSpec = {
     tool: stroke.tool,
     color: HEX_COLOR.test(color) ? color : FALLBACK_COLOR,

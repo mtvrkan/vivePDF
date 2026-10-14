@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { Copy, Minus, Palette, Plus, RotateCcw, RotateCw, Trash2 } from "lucide-react";
+import { Copy, Minus, Palette, Pencil, Plus, RotateCcw, RotateCw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
 import { cn } from "@/shared/lib/cn";
 import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import { isTextEntryTarget } from "@/shared/lib/typingTarget";
-import { drawingBounds, drawingExtent, scaleDrawing, type DrawingBounds } from "@/shared/lib/drawingGeometry";
+import { drawingBounds, drawingExtent, isBoxed, scaleDrawing, type DrawingBounds } from "@/shared/lib/drawingGeometry";
 import { HIGHLIGHTER_WIDTH_RANGE, OPACITY_RANGE, PEN_WIDTH_RANGE, type Stroke } from "@/shared/store/presentationStore";
 import { cornerPoint, cornerResize, RESIZE_CORNERS, RESIZE_STEP, stepResize, type DrawingResize, type ResizeCorner } from "./drawingResize";
 import { canRotate, QUARTER_TURN, rotateDrawing, snapAngle } from "./drawingRotate";
@@ -30,7 +30,7 @@ const HANDLE_PLACEMENT: Record<ResizeCorner, string> = {
 type Drag = { pointerId: number; corner: ResizeCorner; original: Stroke; extent: DrawingBounds; startX: number; startY: number };
 type Spin = { pointerId: number; original: Stroke; centreX: number; centreY: number; startAngle: number };
 
-type FrameProps = { rect: PageRect; stroke: Stroke; onChange: (stroke: Stroke) => void; onDelete: () => void; onDuplicate: () => void };
+type FrameProps = { rect: PageRect; stroke: Stroke; onChange: (stroke: Stroke) => void; onDelete: () => void; onDuplicate: () => void; onEdit?: () => void };
 
 const clampTo = ([min, max]: readonly [number, number], value: number) => Math.min(max, Math.max(min, value));
 
@@ -60,7 +60,7 @@ function DrawingStylePanel({ rect, stroke, onChange }: { rect: PageRect; stroke:
   );
 }
 
-export function DrawingSelectionFrame({ rect, stroke, onChange, onDelete, onDuplicate }: FrameProps) {
+export function DrawingSelectionFrame({ rect, stroke, onChange, onDelete, onDuplicate, onEdit }: FrameProps) {
   const { t } = useTranslation();
   const dragRef = useRef<Drag | null>(null);
   const spinRef = useRef<Spin | null>(null);
@@ -74,7 +74,7 @@ export function DrawingSelectionFrame({ rect, stroke, onChange, onDelete, onDupl
   const gap = FRAME_GAP_PX + (stroke.tool === "arrow" ? arrowHeadLength(stroke.width * rect.width) / 2 : 0);
   const left = rect.left + bounds.left - gap;
   const top = rect.top + bounds.top - gap;
-  const keepsRatio = stroke.tool === "text";
+  const keepsRatio = isBoxed(stroke);
   const rotatable = canRotate(stroke);
   const panelAbove = top > STYLE_PANEL_ROOM_PX;
 
@@ -200,7 +200,11 @@ export function DrawingSelectionFrame({ rect, stroke, onChange, onDelete, onDupl
               <IconButton icon={RotateCw} label={t("presentation.rotateRight")} shortcut="R" onClick={() => onChange(rotateDrawing(stroke, QUARTER_TURN, scale))} />
             </>
           ) : null}
-          <IconButton icon={Palette} label={t("presentation.style")} active={styleOpen} onClick={() => setStyleOpen((open) => !open)} />
+          {stroke.tool === "drawing" ? (
+            onEdit ? <IconButton icon={Pencil} label={t("presentation.insert.edit")} onClick={onEdit} /> : null
+          ) : (
+            <IconButton icon={Palette} label={t("presentation.style")} active={styleOpen} onClick={() => setStyleOpen((open) => !open)} />
+          )}
           <IconButton icon={Copy} label={t("presentation.duplicateDrawing")} shortcut="Ctrl+D" onClick={onDuplicate} />
           <IconButton icon={Minus} label={t("presentation.shrinkDrawing")} onClick={() => step(1 / RESIZE_STEP)} />
           <IconButton icon={Plus} label={t("presentation.growDrawing")} onClick={() => step(RESIZE_STEP)} />
