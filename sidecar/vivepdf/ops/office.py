@@ -2,6 +2,7 @@ import shutil
 import tempfile
 import threading
 from pathlib import Path
+from typing import Literal
 
 from vivepdf.external import libreoffice, office_download, office_packages
 from vivepdf.external.office_download import DOWNLOAD_PHASE, OfficePackage, PackageKind
@@ -55,6 +56,7 @@ class OfficeStatusResult(RpcModel):
     size_bytes: int
     supported: bool
     bundled: bool
+    isolation: Literal["landlock", "none"] | None
 
 
 def _status() -> OfficeStatusResult:
@@ -69,6 +71,7 @@ def _status() -> OfficeStatusResult:
         size_bytes=_directory_size(directory) if directory.is_dir() else 0,
         supported=office_download.current_package() is not None,
         bundled=office_download.bundled_installer() is not None,
+        isolation=libreoffice.isolation(),
     )
 
 

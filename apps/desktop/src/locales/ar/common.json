@@ -2165,6 +2165,7 @@
       "installed": "LibreOffice جاهز.",
       "removed": "تمت إزالة LibreOffice.",
       "unsupported": "لا يتوفر تنزيل LibreOffice لهذا النظام أو المعالج؛ ثبّته بنفسك.",
+      "notIsolated": "يعمل LibreOffice على هذا الحاسوب دون العزل الذي يوفّره النظام (يتطلب نواة Linux تدعم Landlock، الإصدار 5.13 أو أحدث، وتثبيتًا من غير Snap)؛ ومع ذلك تُحوَّل ملفات Office مع تعطيل وحدات الماكرو والروابط.",
       "installBundled": "التثبيت من حزمة التطبيق",
       "bundledHint": "يأتي LibreOffice مع vivePDF ويُثبَّت دون إنترنت؛ ويشغل نحو 900 ميغابايت على القرص.",
       "bundledReady": "LibreOffice جاهز لتحويلات Office.",

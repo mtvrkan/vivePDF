@@ -2061,6 +2061,7 @@
       "installed": "O LibreOffice está pronto.",
       "removed": "O LibreOffice foi removido.",
       "unsupported": "Não há download do LibreOffice para este sistema ou processador; instale-o manualmente.",
+      "notIsolated": "O LibreOffice é executado neste computador sem o isolamento do sistema (é preciso um kernel Linux com Landlock, 5.13 ou mais recente, e uma instalação que não seja Snap); os arquivos do Office continuam sendo convertidos com macros e links desativados.",
       "installBundled": "Instalar a partir do pacote do app",
       "bundledHint": "O LibreOffice vem com o vivePDF e é instalado sem internet; ocupa cerca de 900 MB no disco.",
       "bundledReady": "O LibreOffice está pronto para conversões do Office.",

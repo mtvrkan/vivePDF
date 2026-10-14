@@ -8,6 +8,7 @@ export type OfficeStatusResult = {
   sizeBytes: number;
   supported: boolean;
   bundled: boolean;
+  isolation: "landlock" | "none" | null;
 };
 
 export const officeStatus = (options?: RpcCallOptions) => rpc<OfficeStatusResult>("system.office_status", {}, options);

@@ -94,6 +94,14 @@ def test_status_reports_the_managed_install(monkeypatch, tmp_path):
     assert status.size_bytes == 10
 
 
+def test_status_names_the_isolation_libreoffice_runs_in(monkeypatch, tmp_path):
+    monkeypatch.setenv("VIVEPDF_OFFICE_DIR", str(tmp_path / "office"))
+    monkeypatch.setattr(office.libreoffice, "isolation", lambda: "none")
+    status = office.office_status(office.OfficeStatusParams(), silent_progress())
+    assert status.isolation == "none"
+    assert status.model_dump(by_alias=True)["isolation"] == "none"
+
+
 def test_remove_clears_the_managed_directory(monkeypatch, tmp_path):
     managed = tmp_path / "office"
     (managed / "program").mkdir(parents=True)

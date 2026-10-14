@@ -9,7 +9,7 @@ vi.mock("@/shared/store/toolsStatusStore", () => ({ useToolsStatusStore: { getSt
 
 const { prepareBundledOffice, useBundledOfficeStore } = await import("./bundledOffice");
 
-const STATUS = { installed: false, source: null, path: null, directory: "C:/vivePDF/libreoffice", sizeBytes: 0, supported: true, bundled: true };
+const STATUS = { installed: false, source: null, path: null, directory: "C:/vivePDF/libreoffice", sizeBytes: 0, supported: true, bundled: true, isolation: null };
 
 beforeAll(async () => {
   await ready();

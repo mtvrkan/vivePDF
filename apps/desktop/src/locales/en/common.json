@@ -2062,6 +2062,7 @@
       "installed": "LibreOffice is ready.",
       "removed": "LibreOffice was removed.",
       "unsupported": "LibreOffice has no download for this system or processor; install it yourself.",
+      "notIsolated": "LibreOffice runs without the system sandbox on this computer (it needs a Linux kernel with Landlock, 5.13 or later, and an installation outside Snap); office files are still converted with macros and links turned off.",
       "installBundled": "Install from the app package",
       "bundledHint": "LibreOffice came with vivePDF and installs without internet; about 900 MB is used on disk.",
       "bundledReady": "LibreOffice is ready for Office conversions.",

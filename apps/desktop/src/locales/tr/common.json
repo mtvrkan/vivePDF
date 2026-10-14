@@ -2062,6 +2062,7 @@
       "installed": "LibreOffice hazır.",
       "removed": "LibreOffice kaldırıldı.",
       "unsupported": "Bu sistem veya işlemci için LibreOffice indirmesi yok; LibreOffice’i kendiniz kurun.",
+      "notIsolated": "LibreOffice bu bilgisayarda sistemin korumalı alanı olmadan çalışıyor (Landlock destekli bir Linux çekirdeği, 5.13 veya üstü, ve Snap dışında bir kurulum gerekir); ofis dosyaları yine makrolar ve bağlantılar kapalı olarak dönüştürülür.",
       "installBundled": "Uygulama paketinden kur",
       "bundledHint": "LibreOffice vivePDF ile birlikte geldi, internetsiz kurulur; diskte yaklaşık 900 MB yer kaplar.",
       "bundledReady": "LibreOffice, Office dönüştürmeleri için hazır.",

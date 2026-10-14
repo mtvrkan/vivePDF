@@ -10,7 +10,7 @@ vi.mock("@/shared/rpc/office", () => rpc);
 
 const { OfficeManager } = await import("./OfficeManager");
 
-const STATUS = { installed: false, source: null, path: null, directory: "C:/vivePDF/libreoffice", sizeBytes: 0, supported: true, bundled: true };
+const STATUS = { installed: false, source: null, path: null, directory: "C:/vivePDF/libreoffice", sizeBytes: 0, supported: true, bundled: true, isolation: null };
 
 beforeAll(async () => {
   await ready();
@@ -53,5 +53,20 @@ describe("OfficeManager", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Download and install" }));
 
     expect(await screen.findByText(/internet|network|connection/i)).toBeTruthy();
+  });
+
+  it("says when an installed LibreOffice runs without the system sandbox", async () => {
+    rpc.officeStatus.mockResolvedValue({ ...STATUS, installed: true, source: "system", path: "/usr/bin/soffice", isolation: "none" });
+    render(<OfficeManager />);
+
+    expect(await screen.findByText(/runs without the system sandbox/)).toBeTruthy();
+  });
+
+  it("stays quiet about the sandbox where the system offers none or it is in use", async () => {
+    rpc.officeStatus.mockResolvedValue({ ...STATUS, installed: true, source: "system", path: "/usr/bin/soffice", isolation: "landlock" });
+    render(<OfficeManager />);
+
+    expect(await screen.findByText("/usr/bin/soffice")).toBeTruthy();
+    expect(screen.queryByText(/system sandbox/)).toBeNull();
   });
 });

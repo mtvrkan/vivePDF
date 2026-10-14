@@ -113,6 +113,7 @@ export function OfficeManager() {
       ) : null}
       {error ? <p className="text-xs text-destructive">{error}</p> : null}
       {status?.supported === false ? <p className="text-xs text-muted-foreground">{t("settings.office.unsupported")}</p> : null}
+      {status?.installed && status.isolation === "none" ? <p className="text-xs text-muted-foreground">{t("settings.office.notIsolated")}</p> : null}
     </div>
   );
 }
