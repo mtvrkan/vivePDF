@@ -18,6 +18,7 @@ import { exitImmersiveSavingDrawings } from "./immersive";
 import { useCodeBlocksForPage } from "./presentation/useCodeBlocks";
 
 const HIDE_DELAY_MS = 2500;
+export const REVEAL_EDGE_PX = 96;
 
 export function PresenterBar({
   documentId,
@@ -72,7 +73,8 @@ export function PresenterBar({
   };
 
   useEffect(() => {
-    const onMove = () => {
+    const onMove = (event: MouseEvent) => {
+      if (event.clientY < window.innerHeight - REVEAL_EDGE_PX) return;
       setVisible(true);
       scheduleHide();
     };
@@ -110,7 +112,7 @@ export function PresenterBar({
         className={cn(
           "pointer-events-none fixed inset-x-0 bottom-4 flex justify-center transition-[opacity,transform] duration-200",
           layer,
-          visible || onBoard ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
+          visible || onBoard || stylePopoverOpen || settingsOpen ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
         )}
       >
         <div ref={barRef} className="glass pointer-events-auto flex h-12 items-center gap-1 rounded-full px-2">

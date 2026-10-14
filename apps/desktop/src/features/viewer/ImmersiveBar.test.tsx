@@ -42,6 +42,21 @@ describe("PresenterBar", () => {
     expect(bar().className).toContain("opacity-0");
   });
 
+  it("comes back only when the pointer reaches the bottom edge", () => {
+    vi.useFakeTimers();
+    renderBar();
+    act(() => vi.advanceTimersByTime(3000));
+
+    fireEvent.mouseMove(window, { clientY: window.innerHeight / 2 });
+    const afterMiddle = bar().className;
+    fireEvent.mouseMove(window, { clientY: window.innerHeight - 10 });
+
+    expect(afterMiddle).toContain("opacity-0");
+    expect(bar().className).toContain("opacity-100");
+    act(() => vi.advanceTimersByTime(3000));
+    expect(bar().className).toContain("opacity-0");
+  });
+
   it.each(["black", "white"] as const)("stays visible above the %s board", (board) => {
     vi.useFakeTimers();
     act(() => usePresentationStore.getState().setBlackout(board));
