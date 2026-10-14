@@ -19,7 +19,7 @@ import { basenameOf, dirnameOf, joinPath } from "@/shared/lib/paths";
 import { readOutputPattern } from "@/shared/lib/naming";
 import { toRpcError } from "@/shared/rpc/client";
 import { deleteChainSecret, storeChainSecret } from "@/shared/rpc/chainSecrets";
-import { isPdfPath, readDocumentBytes } from "@/shared/rpc/files";
+import { isPdfPath, pickReadableFolder, readDocumentBytes } from "@/shared/rpc/files";
 import { getDocumentInfo } from "@/shared/rpc/documents";
 import { listPdfs, mergePdfs } from "@/shared/rpc/operations";
 import { useHistoryStore } from "@/shared/store/historyStore";
@@ -177,8 +177,8 @@ export function BatchPage() {
   };
 
   const pickFolder = async () => {
-    const selected = await openDialog({ multiple: false, directory: true });
-    if (typeof selected !== "string") return;
+    const selected = await pickReadableFolder();
+    if (!selected) return;
     const name = basenameOf(selected) || selected;
     setScanningFolder(true);
     try {

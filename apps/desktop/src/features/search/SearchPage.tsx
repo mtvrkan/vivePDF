@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { AlertTriangle, CalendarDays, Clock, FileSearch, FileText, FolderOpen, FolderPlus, FolderSearch, Hash, HelpCircle, Lightbulb, Loader2, RefreshCw, Search, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/shared/Button";
 import { DateRangePicker } from "@/components/shared/DateRangePicker";
 import { cn } from "@/shared/lib/cn";
@@ -17,6 +16,7 @@ import { formatNumber } from "@/shared/lib/format";
 import { basenameOf } from "@/shared/lib/paths";
 import { RevealError, revealPath } from "@/shared/lib/reveal";
 import { toRpcError } from "@/shared/rpc/client";
+import { pickReadableFolder } from "@/shared/rpc/files";
 import { searchAddFolder, searchFolders, searchIndex, searchQuery, searchRemoveFolder } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useSearchRequestStore } from "@/shared/store/searchRequestStore";
@@ -277,8 +277,8 @@ export function SearchPage() {
   }, [requestNonce]);
 
   const addFolder = async () => {
-    const selected = await openDialog({ directory: true, multiple: false });
-    if (typeof selected !== "string") return;
+    const selected = await pickReadableFolder();
+    if (!selected) return;
     setIndexing(true);
     setError(null);
     try {

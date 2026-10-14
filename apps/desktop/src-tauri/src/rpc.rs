@@ -4,8 +4,12 @@ use tauri::AppHandle;
 
 use crate::doc_watch;
 use crate::files;
+use crate::grants;
+use crate::path_gate;
 use crate::sidecar;
 use crate::write_guard;
+
+const SEARCH_FOLDER_METHODS: [&str; 3] = ["search.folders", "search.add_folder", "search.index"];
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RpcError {
@@ -66,13 +70,28 @@ pub async fn rpc(
         return Err(RpcError::new("INVALID_PARAMS", "use rpc_cancel"));
     }
     write_guard::check_params(&params)?;
+    path_gate::check_op(&method, &params)?;
     let watched = doc_watch::begin_call(&params);
+    let lists_search_folders = SEARCH_FOLDER_METHODS.contains(&method.as_str());
     let result = sidecar::call(&app, id, method, params).await;
     if let Ok(value) = &result {
         remember_outputs(value);
+        if lists_search_folders {
+            grants::adopt_engine_folders(&search_folders(value));
+        }
     }
     doc_watch::end_call(watched);
     result
+}
+
+fn search_folders(value: &Value) -> Vec<&str> {
+    value
+        .get("folders")
+        .and_then(Value::as_array)
+        .into_iter()
+        .flatten()
+        .filter_map(|folder| folder.get("path").and_then(Value::as_str))
+        .collect()
 }
 
 fn remember_output(path: &str) {
@@ -128,6 +147,17 @@ mod tests {
             "outputs": ["C:/out/b.pdf", "C:/out/c.pdf"]
         });
         remember_outputs(&value);
+    }
+
+    #[test]
+    fn reads_the_folders_a_search_answer_lists() {
+        let value = serde_json::json!({
+            "folders": [{ "path": "C:/Docs", "files": 3 }, { "files": 1 }, { "path": 4 }],
+            "database": "C:/data/search.db"
+        });
+
+        assert_eq!(search_folders(&value), vec!["C:/Docs"]);
+        assert!(search_folders(&serde_json::json!({ "stats": {} })).is_empty());
     }
 
     #[test]

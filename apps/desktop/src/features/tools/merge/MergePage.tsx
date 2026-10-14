@@ -14,7 +14,7 @@ import { useOperation } from "@/shared/hooks/useOperation";
 import { cn } from "@/shared/lib/cn";
 import { formatNumber } from "@/shared/lib/format";
 import { basenameOf, suggestOutputPath, extensionOf } from "@/shared/lib/paths";
-import { isPdfPath } from "@/shared/rpc/files";
+import { isPdfPath, pickReadableFolder } from "@/shared/rpc/files";
 import { getDocumentInfo } from "@/shared/rpc/documents";
 import { toRpcError } from "@/shared/rpc/client";
 import { listPdfs, mergePdfs } from "@/shared/rpc/operations";
@@ -206,8 +206,8 @@ export function MergePage() {
   };
 
   const addFolder = async () => {
-    const selected = await openDialog({ multiple: false, directory: true });
-    if (typeof selected !== "string") return;
+    const selected = await pickReadableFolder();
+    if (!selected) return;
     setScanningFolder(true);
     try {
       addPaths(await folderContents(selected));

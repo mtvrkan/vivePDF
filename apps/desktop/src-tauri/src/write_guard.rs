@@ -180,6 +180,10 @@ pub fn check_file(path: &Path) -> Result<(), RpcError> {
     check_with(path, &protected_dirs(), false)
 }
 
+pub fn check_folder(path: &Path) -> Result<(), RpcError> {
+    check_with(path, &protected_dirs(), true)
+}
+
 fn check_value(value: &Value, protected: &[PathBuf]) -> Result<(), RpcError> {
     match value {
         Value::Object(map) => {

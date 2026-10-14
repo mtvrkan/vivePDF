@@ -8,8 +8,13 @@ import { useToastStore } from "@/shared/store/toastStore";
 
 const openDialog = vi.fn();
 const listPdfs = vi.fn();
+const pickFolder = vi.fn();
 
 vi.mock("@tauri-apps/plugin-dialog", () => ({ open: (...args: unknown[]) => openDialog(...args) }));
+vi.mock("@/shared/rpc/files", async (original) => ({
+  ...(await original<typeof import("@/shared/rpc/files")>()),
+  pickReadableFolder: (...args: unknown[]) => pickFolder(...args),
+}));
 vi.mock("@/shared/rpc/documents", () => ({ getDocumentInfo: () => Promise.resolve({ pageCount: 2, encrypted: false }) }));
 vi.mock("@/shared/rpc/operations", () => ({
   listPdfs: (...args: unknown[]) => listPdfs(...args),
@@ -43,6 +48,7 @@ beforeAll(async () => {
 beforeEach(() => {
   openDialog.mockReset();
   listPdfs.mockReset();
+  pickFolder.mockReset();
   useDocumentStore.setState({ documents: {}, order: [], activeId: null });
   useToastStore.setState({ toasts: [] });
 });
@@ -51,19 +57,19 @@ afterEach(cleanup);
 
 describe("MergePage adding files", () => {
   it("adds every PDF of a picked folder in the order the engine lists them", async () => {
-    openDialog.mockResolvedValue("C:\\Scans");
+    pickFolder.mockResolvedValue("C:\\Scans");
     listPdfs.mockResolvedValue({ files: ["C:\\Scans\\page2.pdf", "C:\\Scans\\page10.pdf"], entries: [], truncated: false });
     renderPage();
 
     fireEvent.click(screen.getByRole("button", { name: "Add folder" }));
 
     await waitFor(() => expect(listedNames()).toEqual(["Remove page2.pdf from the list", "Remove page10.pdf from the list"]));
-    expect(openDialog).toHaveBeenCalledWith({ multiple: false, directory: true });
+    expect(pickFolder).toHaveBeenCalledWith();
     expect(listPdfs).toHaveBeenCalledWith({ folder: "C:\\Scans", recursive: false });
   });
 
   it("lists subfolders too when asked", async () => {
-    openDialog.mockResolvedValue("C:\\Scans");
+    pickFolder.mockResolvedValue("C:\\Scans");
     listPdfs.mockResolvedValue({ files: ["C:\\Scans\\a.pdf"], entries: [], truncated: false });
     renderPage();
 
@@ -110,7 +116,7 @@ describe("MergePage adding files", () => {
   });
 
   it("reports an empty folder", async () => {
-    openDialog.mockResolvedValue("C:\\Empty");
+    pickFolder.mockResolvedValue("C:\\Empty");
     listPdfs.mockResolvedValue({ files: [], entries: [], truncated: false });
     renderPage();
 

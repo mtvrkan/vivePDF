@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Ban, CheckCircle2, CircleDashed, FolderOpen, FolderSync, Loader2, Pause, Pencil, Play, Plus, Save, Trash2, X, XCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router";
-import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { Button } from "@/components/shared/Button";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { IconButton } from "@/components/shared/IconButton";
@@ -12,7 +11,7 @@ import { OutputDirField } from "@/components/tool/OutputPathField";
 import { ToolLayout } from "@/components/tool/ToolLayout";
 import { useDropHandler } from "@/shared/hooks/useDropHandler";
 import { dirnameOf } from "@/shared/lib/paths";
-import { isPdfPath } from "@/shared/rpc/files";
+import { isPdfPath, pickReadableFolder } from "@/shared/rpc/files";
 import { basenameOf } from "@/shared/lib/paths";
 import { revealPath, RevealError } from "@/shared/lib/reveal";
 import { chainProblem, readSavedChains, storedSecretsOf, type ChainProblem } from "@/features/tools/batch/chain";
@@ -137,8 +136,8 @@ export function WatchPage() {
   );
 
   const browseFolder = async () => {
-    const selected = await openDialog({ directory: true, multiple: false, defaultPath: folder || undefined });
-    if (typeof selected === "string") setFolder(selected);
+    const selected = await pickReadableFolder(folder);
+    if (selected) setFolder(selected);
   };
 
   const resetForm = () => {

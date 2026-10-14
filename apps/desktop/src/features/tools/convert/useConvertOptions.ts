@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
+import { pickReadableFolders } from "@/shared/rpc/files";
 import type { ImageFit, ImageFormat, MarkdownPictures, PptxMode, XlsxFormat, XlsxSheets } from "@/types";
 import { SOURCE_LIBRARY_EXTENSIONS } from "@/types/studio";
 import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, MAIL_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, SVG_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "./conversions";
@@ -49,9 +50,9 @@ export function useConvertOptions() {
   };
 
   const addFolder = async () => {
-    const selected = await openDialog({ directory: true, multiple: true });
-    if (!selected) return;
-    setFolders((state) => [...state, ...(Array.isArray(selected) ? selected : [selected]).filter((item) => !state.includes(item))]);
+    const selected = await pickReadableFolders(true);
+    if (selected.length === 0) return;
+    setFolders((state) => [...state, ...selected.filter((item) => !state.includes(item))]);
   };
 
   const addFiles = async () => {

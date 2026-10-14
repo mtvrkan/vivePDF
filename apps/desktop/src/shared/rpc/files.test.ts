@@ -4,7 +4,7 @@ const invoke = vi.fn();
 vi.mock("@tauri-apps/api/core", () => ({ invoke: (...args: unknown[]) => invoke(...args) }));
 vi.mock("@/shared/store/preferencesStore", () => ({ readPreferences: () => ({ keepBackups: false }) }));
 
-import { openFolder, openProducedFile, openProducedPicture } from "./files";
+import { openFolder, openProducedFile, openProducedPicture, pickReadableFolder, pickReadableFolders } from "./files";
 import { RpcCallError } from "./client";
 
 describe("openProducedPicture", () => {
@@ -59,5 +59,35 @@ describe("openProducedFile", () => {
     await openFolder("C:/out");
 
     expect(invoke).toHaveBeenCalledWith("open_folder", { path: "C:/out" });
+  });
+});
+
+describe("pickReadableFolders", () => {
+  beforeEach(() => {
+    invoke.mockReset();
+  });
+
+  it("asks the shell for folders the engine may read and returns them", async () => {
+    invoke.mockResolvedValue(["C:/Scans", "D:/Inbox"]);
+
+    const folders = await pickReadableFolders(true, "C:/Scans");
+
+    expect(folders).toEqual(["C:/Scans", "D:/Inbox"]);
+    expect(invoke).toHaveBeenCalledWith("grants_pick_folder", { multiple: true, defaultPath: "C:/Scans" });
+  });
+
+  it("returns no folder when the picker is cancelled and sends no empty start folder", async () => {
+    invoke.mockResolvedValue([]);
+
+    const folder = await pickReadableFolder("");
+
+    expect(folder).toBeNull();
+    expect(invoke).toHaveBeenCalledWith("grants_pick_folder", { multiple: false, defaultPath: null });
+  });
+
+  it("turns a failed picker into an RpcCallError", async () => {
+    invoke.mockRejectedValue(Object.assign(new Error("no window"), { code: "INTERNAL" }));
+
+    await expect(pickReadableFolder()).rejects.toBeInstanceOf(RpcCallError);
   });
 });

@@ -42,7 +42,7 @@ def run_operation(
     operation: Operation, raw_params: dict[str, Any], progress: Progress, method: str
 ) -> BaseModel:
     try:
-        params = operation.params_model.model_validate(raw_params)
+        params = operation.params_model.model_validate(raw_params, by_alias=True, by_name=False)
     except ValidationError as error:
         raise OpError(
             ErrorCode.INVALID_PARAMS,

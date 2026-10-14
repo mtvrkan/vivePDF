@@ -61,6 +61,21 @@ def test_invalid_params(server: tuple[Server, io.BytesIO]) -> None:
     assert line["error"]["data"]["errors"]
 
 
+def test_params_are_read_by_their_wire_names_only(
+    server: tuple[Server, io.BytesIO], sample_pdf: Path, tmp_path: Path
+) -> None:
+    srv, out = server
+    target = tmp_path / "pages"
+    params = {"path": str(sample_pdf), "mode": "single", "output_dir": str(target)}
+    _send(srv, {"id": "5", "method": "pages.split", "params": params})
+
+    [line] = _lines(out)
+    assert line["error"]["code"] == "INVALID_PARAMS"
+    names = {error["loc"][-1] for error in line["error"]["data"]["errors"]}
+    assert names == {"outputDir", "output_dir"}
+    assert not target.exists()
+
+
 def test_invalid_params_do_not_echo_a_password(server: tuple[Server, io.BytesIO]) -> None:
     srv, out = server
     source = {"path": "a.pdf", "password": "hunter2-secret"}

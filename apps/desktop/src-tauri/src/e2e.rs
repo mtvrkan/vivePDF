@@ -89,12 +89,25 @@ pub mod scripted {
         answer
     }
 
-    fn answer(state: &Answers, command: &str, options: &Value) -> Value {
+    fn take(state: &Answers, command: &str, options: &Value) -> Value {
         let _held = state
             .guard
             .lock()
             .unwrap_or_else(|poisoned| poisoned.into_inner());
-        let answer = take_answer(&state.file, command, options);
+        take_answer(&state.file, command, options)
+    }
+
+    pub fn take_from<R: Runtime, M: Manager<R>>(
+        manager: &M,
+        command: &str,
+        options: &Value,
+    ) -> Option<Value> {
+        let state = manager.try_state::<Answers>()?;
+        Some(take(&state, command, options))
+    }
+
+    fn answer(state: &Answers, command: &str, options: &Value) -> Value {
+        let answer = take(state, command, options);
         crate::grants::allow_answer(&answer);
         answer
     }

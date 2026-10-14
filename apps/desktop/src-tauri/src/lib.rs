@@ -14,6 +14,7 @@ mod grants;
 mod launch;
 mod lens;
 mod navigation;
+mod path_gate;
 mod rpc;
 mod secret_injection;
 mod session_file;
@@ -122,6 +123,7 @@ pub fn run() {
             app_menu::app_menu_configure,
             rpc::rpc_cancel,
             grants::grants_adopt,
+            grants::grants_pick_folder,
             files::read_document,
             files::write_document,
             files::delete_file,

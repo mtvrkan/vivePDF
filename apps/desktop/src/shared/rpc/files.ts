@@ -37,6 +37,19 @@ export async function writeDocumentBytes(path: string, bytes: ArrayBuffer | Uint
   }
 }
 
+export async function pickReadableFolders(multiple: boolean, defaultPath?: string): Promise<string[]> {
+  try {
+    return await invoke<string[]>("grants_pick_folder", { multiple, defaultPath: defaultPath || null });
+  } catch (error) {
+    throw new RpcCallError(toRpcError(error));
+  }
+}
+
+export async function pickReadableFolder(defaultPath?: string): Promise<string | null> {
+  const [folder] = await pickReadableFolders(false, defaultPath);
+  return folder ?? null;
+}
+
 export async function deleteFile(path: string): Promise<void> {
   try {
     await invoke("delete_file", { path });

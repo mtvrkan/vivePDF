@@ -282,7 +282,7 @@ fn is_openable_picture(path: &Path) -> bool {
     extension_of(path).is_some_and(|ext| OPENABLE_PICTURE_EXTENSIONS.contains(&ext.as_str()))
 }
 
-fn is_openable_output(path: &Path) -> bool {
+pub(crate) fn is_openable_output(path: &Path) -> bool {
     is_openable_picture(path)
         || extension_of(path)
             .is_some_and(|ext| OPENABLE_DOCUMENT_EXTENSIONS.contains(&ext.as_str()))

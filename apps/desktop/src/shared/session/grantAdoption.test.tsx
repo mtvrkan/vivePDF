@@ -7,7 +7,7 @@ const mainWindow = vi.fn(() => true);
 vi.mock("@tauri-apps/api/core", () => ({ invoke: (...args: unknown[]) => invoke(...args) }));
 vi.mock("@/shared/lib/windowRole", () => ({ isMainWindow: () => mainWindow() }));
 
-const { adoptKnownPaths, knownPaths } = await import("./grantAdoption");
+const { adoptKnownPaths, knownFolders, knownPaths } = await import("./grantAdoption");
 
 const snapshot: SessionSnapshot = {
   savedAt: 1,
@@ -54,6 +54,28 @@ describe("grantAdoption", () => {
     await adoptKnownPaths();
 
     expect(invoke).toHaveBeenCalledTimes(1);
-    expect(invoke).toHaveBeenCalledWith("grants_adopt", { paths: ["C:/docs/recent.pdf"] });
+    expect(invoke).toHaveBeenCalledWith("grants_adopt", { paths: ["C:/docs/recent.pdf"], readFolders: [], writeFolders: [] });
+  });
+
+  it("adds Studio designs, the document draft and every remembered signing certificate", () => {
+    localStorage.setItem("vivepdf.studioRecent", JSON.stringify([{ path: "C:/studio/poster.vivedesign", name: "Poster", savedAt: 1, width: 10, height: 10, thumbnail: "" }]));
+    localStorage.setItem("vivepdf.studioDocumentDraft", JSON.stringify({ document: {}, filePath: "C:/studio/thesis.vivedoc" }));
+    localStorage.setItem("vivepdf.certificatePath", "C:/keys/me.p12");
+    localStorage.setItem("vivepdf.batchChains", JSON.stringify([{ id: "c", steps: [{ operation: "sign", settings: { certificatePath: "C:/keys/team.p12" } }] }]));
+
+    expect(knownPaths(null).sort()).toEqual(["C:/keys/me.p12", "C:/keys/team.p12", "C:/studio/poster.vivedesign", "C:/studio/thesis.vivedoc"]);
+  });
+
+  it("reads watched folders and output folders apart and skips empty ones", () => {
+    localStorage.setItem("vivepdf.watchRules", JSON.stringify([{ id: "a", folder: "C:/inbox", outputDir: "C:/done" }, { id: "b", folder: "C:/scans", outputDir: "" }]));
+    localStorage.setItem("vivepdf.preferences", JSON.stringify({ outputFolder: "D:/exports" }));
+
+    expect(knownFolders()).toEqual({ readFolders: ["C:/inbox", "C:/scans"], writeFolders: ["C:/done", "D:/exports"] });
+  });
+
+  it("finds no folders in broken stored rules", () => {
+    localStorage.setItem("vivepdf.watchRules", "[");
+
+    expect(knownFolders()).toEqual({ readFolders: [], writeFolders: [] });
   });
 });
