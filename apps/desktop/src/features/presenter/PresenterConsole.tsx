@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowLeftRight, ChevronLeft, ChevronRight, FileDown, Moon, Pause, Play, RotateCcw, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
@@ -8,7 +8,6 @@ import { ImmersiveView } from "@/features/viewer/ImmersiveView";
 import { exitImmersiveSavingDrawings } from "@/features/viewer/immersive";
 import { TemporaryDrawingCleanup } from "@/features/viewer/presentation/DrawingCleanupButton";
 import { formatElapsed } from "@/features/viewer/presentation/elapsed";
-import { PageThumb } from "@/features/viewer/presentation/OverviewGrid";
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "@/features/viewer/presentation/PresentationTools";
 import { hasStyleOptions } from "@/features/viewer/presentation/toolPresets";
 import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
@@ -16,10 +15,12 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { useToastStore } from "@/shared/store/toastStore";
-import { fitBox, type BoxSize } from "./fitBox";
+import { fitBox } from "./fitBox";
+import { NextPagePreview } from "./NextPagePreview";
 import { NotesEditor } from "./NotesEditor";
 import type { PresenterTransport } from "./presenterChannel";
 import { reopenAudience, swapScreens, usePresenterStore } from "./presenterSession";
+import { useBoxSize } from "./useBoxSize";
 import { usePresenterConsole } from "./usePresenterConsole";
 
 const TIMER_TICK_MS = 500;
@@ -34,21 +35,6 @@ function useNow(intervalMs: number, active = true): number {
     return () => window.clearInterval(interval);
   }, [intervalMs, active]);
   return now;
-}
-
-function useBoxSize(ref: RefObject<HTMLElement | null>): BoxSize {
-  const [size, setSize] = useState<BoxSize>({ width: 0, height: 0 });
-  useLayoutEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const measure = () => setSize({ width: node.clientWidth, height: node.clientHeight });
-    measure();
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(measure);
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, [ref]);
-  return size;
 }
 
 function PresenterTimer() {
@@ -158,7 +144,7 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
             <ImmersiveView documentId={documentId} onExit={onExit} variant="console" onSignal={onSignal} />
           </div>
         </section>
-        <aside className="flex w-80 shrink-0 flex-col gap-3">
+        <aside className="flex w-md shrink-0 flex-col gap-3 2xl:w-lg">
           <p className="flex items-baseline justify-between gap-2">
             <span className="text-sm font-medium">{t("presentation.presenter.next")}</span>
             <span className="font-mono text-2xl tabular-nums" data-testid="presenter-counter">
@@ -168,23 +154,15 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
               </span>
             </span>
           </p>
-          {nextIndex !== null ? (
-            <div className="grid rounded-lg border bg-card">
-              <PageThumb
-                key={nextIndex}
-                documentId={documentId}
-                pageIndex={nextIndex}
-                active={false}
-                frameClassName="h-40 w-full"
-                label={t("presentation.presenter.nextPage", { page: nextIndex + 1 })}
-                onSelect={() => scroll?.scrollToNextPage()}
-              />
-            </div>
-          ) : (
-            <p className="flex items-center justify-center rounded-lg border bg-card py-12 text-sm text-muted-foreground">{t("presentation.presenter.endOfShow")}</p>
-          )}
+          <div className="flex min-h-40 flex-3 flex-col">
+            {nextIndex !== null ? (
+              <NextPagePreview documentId={documentId} pageIndex={nextIndex} label={t("presentation.presenter.nextPage", { page: nextIndex + 1 })} onSelect={() => scroll?.scrollToNextPage()} />
+            ) : (
+              <p className="flex flex-1 items-center justify-center rounded-lg border bg-card text-sm text-muted-foreground">{t("presentation.presenter.endOfShow")}</p>
+            )}
+          </div>
           <PresenterTimer />
-          {session ? <NotesEditor path={session.path} pageIndex={currentPage - 1} pageCount={totalPages} /> : null}
+          <div className="flex min-h-40 flex-2 flex-col">{session ? <NotesEditor path={session.path} pageIndex={currentPage - 1} pageCount={totalPages} /> : null}</div>
         </aside>
       </div>
     </div>

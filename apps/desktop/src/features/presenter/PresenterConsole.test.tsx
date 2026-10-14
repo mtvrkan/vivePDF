@@ -10,7 +10,7 @@ const scroll = vi.hoisted(() => ({ state: { currentPage: 2, totalPages: 5 }, pro
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke, convertFileSrc: (path: string) => path }));
 vi.mock("@embedpdf/plugin-scroll/react", () => ({ useScroll: () => scroll }));
-vi.mock("@embedpdf/plugin-thumbnail/react", () => ({ useThumbnailCapability: () => ({ provides: null }) }));
+vi.mock("@embedpdf/core/react", () => ({ useRegistry: () => ({ registry: null, documents: {} }) }));
 vi.mock("@/features/viewer/ImmersiveView", () => ({ ImmersiveView: () => <div data-testid="console-stage" /> }));
 vi.mock("./usePresenterConsole", () => ({ usePresenterConsole: () => () => undefined }));
 

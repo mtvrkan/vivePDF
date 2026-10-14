@@ -21,6 +21,7 @@ import { createAudienceLink, tauriTransport, type PresenterCommand } from "./pre
 import { commandForKey } from "./presenterCommands";
 import { applyPatch, presentationFields, type SharedSlice, type StateMessage } from "./presenterSync";
 import { RemotePointerLayer } from "./RemotePointerLayer";
+import { SelectionMarksLayer } from "./SelectionMarksLayer";
 
 const AUDIENCE_DOCUMENT_ID = "presenter-audience";
 
@@ -77,6 +78,7 @@ function AudienceStage({ session, slice, live, onCommand }: { session: AudienceS
   const { provides: scroll, state: scrollState } = useScroll(AUDIENCE_DOCUMENT_ID);
   const wheel = useRef({ total: 0, last: 0 });
   const page = slice?.page ?? null;
+  const selection = slice?.selection ?? null;
 
   useEffect(() => {
     if (!settled || page === null || !scroll || page === scrollState.currentPage) return;
@@ -113,7 +115,7 @@ function AudienceStage({ session, slice, live, onCommand }: { session: AudienceS
       }}
     >
       <div className={cn("h-full transition-opacity duration-150", settled ? "opacity-100" : "opacity-0")}>
-        <PageView documentId={AUDIENCE_DOCUMENT_ID} readOnly />
+        <PageView documentId={AUDIENCE_DOCUMENT_ID} readOnly decoratePage={(pageIndex) => <SelectionMarksLayer marks={selection} pageIndex={pageIndex} />} />
       </div>
       <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
         {rects.map((rect) => (

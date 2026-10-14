@@ -54,6 +54,7 @@ function LeftoverStep({ documentId, leftover }: { documentId: string; leftover: 
   return (
     <Dialog
       open
+      size="lg"
       title={t("presentation.keep.title")}
       onClose={keepUnsaved}
       footer={
@@ -64,7 +65,7 @@ function LeftoverStep({ documentId, leftover }: { documentId: string; leftover: 
           <Button variant="ghost" disabled={saving} onClick={keepUnsaved}>
             {t("presentation.keep.later")}
           </Button>
-          <Button variant="primary" loading={saving} onClick={() => void saveNow()}>
+          <Button variant="primary" autoFocus loading={saving} onClick={() => void saveNow()}>
             {t("presentation.keep.save")}
           </Button>
         </>

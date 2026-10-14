@@ -109,4 +109,12 @@ describe("holdTemporaryDrawings", () => {
     expect(usePresentationLeftoverStore.getState().leftover).toBeNull();
     usePresentationStore.setState({ drawingsMode: "temporary" });
   });
+
+  it("opens with the save button focused instead of the discard button", () => {
+    usePresentationLeftoverStore.getState().hold(leftover());
+
+    render(<PresentationDrawingsPrompt documentId={DOCUMENT_ID} />);
+
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Save to the PDF" }));
+  });
 });

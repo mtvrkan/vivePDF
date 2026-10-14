@@ -52,4 +52,18 @@ describe("presenterSync", () => {
     expect(applyPatch(before, { kind: "full", slice: snapshot })).toEqual(snapshot);
     expect(diffSlice(before, snapshot)).toMatchObject({ blackout: "white", boardStrokes: snapshot.boardStrokes, strokesByPage: { 0: [] } });
   });
+
+  it("sends a changed text selection and clears it when the selection goes away", () => {
+    const marks = { color: "#FFD400", pages: { 0: [{ x: 0.1, y: 0.2, width: 0.3, height: 0.04 }] } };
+    const before = slice();
+    const selected = slice({ selection: marks });
+
+    const added = diffSlice(before, selected);
+    const removed = diffSlice(selected, slice({ selection: null }));
+
+    expect(added).toEqual({ selection: marks });
+    expect(applyPatch(before, { kind: "patch", patch: added! }).selection).toBe(marks);
+    expect(removed).toEqual({ selection: null });
+    expect(diffSlice(slice({ selection: null }), slice())).toBeNull();
+  });
 });

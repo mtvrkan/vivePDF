@@ -1,4 +1,5 @@
 import type { BlackoutMode, BoardMode, LensShape, Stroke, usePresentationStore } from "@/shared/store/presentationStore";
+import type { SelectionMarks } from "./selectionMarks";
 
 type PresentationState = ReturnType<typeof usePresentationStore.getState>;
 
@@ -15,6 +16,7 @@ export type SharedSlice = {
   magnifierSize: number;
   magnifierZoom: number;
   magnifierShape: LensShape;
+  selection?: SelectionMarks | null;
 };
 
 export type SlicePatch = Partial<SharedSlice>;
@@ -25,9 +27,10 @@ const SCALAR_KEYS = ["page", "blackout", "laserColor", "laserSize", "spotlightRa
 
 const NO_STROKES: Stroke[] = [];
 
-export function sharedSlice(state: PresentationState, page: number): SharedSlice {
+export function sharedSlice(state: PresentationState, page: number, selection: SelectionMarks | null = null): SharedSlice {
   return {
     page,
+    selection,
     blackout: state.blackout,
     strokesByPage: state.strokesByPage,
     boardStrokes: state.boardStrokes,
@@ -73,6 +76,10 @@ export function diffSlice(previous: SharedSlice, next: SharedSlice): SlicePatch 
     patch.strokesByPage = pages;
     changed = true;
   }
+  if ((previous.selection ?? null) !== (next.selection ?? null)) {
+    patch.selection = next.selection ?? null;
+    changed = true;
+  }
   if (boardChanged(previous.boardStrokes.black, next.boardStrokes.black) || boardChanged(previous.boardStrokes.white, next.boardStrokes.white)) {
     patch.boardStrokes = next.boardStrokes;
     changed = true;
@@ -86,7 +93,7 @@ export function applyPatch(slice: SharedSlice, message: StateMessage): SharedSli
   return { ...slice, ...rest, strokesByPage: strokesByPage ? { ...slice.strokesByPage, ...strokesByPage } : slice.strokesByPage };
 }
 
-export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page"> {
+export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page" | "selection"> {
   return {
     blackout: slice.blackout,
     strokesByPage: slice.strokesByPage,
