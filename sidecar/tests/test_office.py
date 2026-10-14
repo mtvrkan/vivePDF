@@ -162,6 +162,23 @@ def test_conversion_profile_never_updates_links_or_recalculates(tmp_path: Path) 
     assert "ODFRecalcMode" in text
 
 
+def test_conversion_profile_turns_off_embedded_objects_and_dde_links(tmp_path: Path) -> None:
+    text = libreoffice.lock_down_profile(tmp_path / "profile").read_text(encoding="utf-8")
+
+    scripting = '<item oor:path="/org.openoffice.Office.Common/Security/Scripting">'
+    assert (
+        f'{scripting}<prop oor:name="DisableActiveContent" oor:op="fuse"><value>true</value>'
+        in (text)
+    )
+
+
+def test_a_profile_without_the_active_content_switch_is_not_locked() -> None:
+    settings = [s for s in libreoffice.LOCKED_SETTINGS if s[1] != "DisableActiveContent"]
+    older = "".join(libreoffice._registry_item(*setting) for setting in settings)
+
+    assert not libreoffice.registry_locked(older)
+
+
 def test_a_profile_locked_by_an_older_version_gets_the_new_settings(tmp_path: Path) -> None:
     profile = tmp_path / "profile"
     registry = profile / "user" / "registrymodifications.xcu"

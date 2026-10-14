@@ -139,6 +139,7 @@ LOCKED_SETTINGS = (
     ("/org.openoffice.Office.Common/Security/Scripting", "MacroSecurityLevel", "3"),
     ("/org.openoffice.Office.Common/Security/Scripting", "DisableMacrosExecution", "true"),
     ("/org.openoffice.Office.Common/Security/Scripting", "BlockUntrustedRefererLinks", "true"),
+    ("/org.openoffice.Office.Common/Security/Scripting", "DisableActiveContent", "true"),
     ("/org.openoffice.Office.Writer/Content/Update", "Link", "2"),
     ("/org.openoffice.Office.Calc/Content/Update", "Link", "1"),
     ("/org.openoffice.Office.Calc/Formula/Load", "OOXMLRecalcMode", "1"),
