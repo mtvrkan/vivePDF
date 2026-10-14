@@ -52,6 +52,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { pickDocumentImage } from "./documentFile";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
+import { FormatPainterButton } from "./FormatPainterButton";
 import { SourcesDialog } from "./SourcesDialog";
 import { SpacingMenu } from "./SpacingMenu";
 import { PX_TO_PT } from "./toHtml";
@@ -222,6 +223,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
         <ColorSwatch value={state.highlight} presets={HIGHLIGHTS} onChange={(color) => chain().setHighlight({ color }).run()} label={t("studio.doc.toolbar.highlightColor")} customLabel={t("colorPicker.custom")} />
       </span>
       <IconButton icon={Eraser} label={t("studio.doc.toolbar.clear")} onClick={() => chain().unsetAllMarks().run()} />
+      <FormatPainterButton editor={editor} />
       <Divider />
       <IconButton icon={AlignLeft} label={t("studio.textAlign.left")} active={state.align === "left"} onClick={() => chain().setTextAlign("left").run()} />
       <IconButton icon={AlignCenter} label={t("studio.textAlign.center")} active={state.align === "center"} onClick={() => chain().setTextAlign("center").run()} />

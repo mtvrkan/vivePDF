@@ -8754,7 +8754,9 @@
         "image": "Insertar imagen",
         "table": "Insertar tabla",
         "rule": "Línea horizontal",
-        "pageBreak": "Salto de página"
+        "pageBreak": "Salto de página",
+        "painter": "Copiar formato",
+        "painterHint": "Copiar formato: haga clic para copiar el formato una vez, doble clic para seguir aplicándolo hasta pulsar Esc"
       },
       "blocks": {
         "paragraph": "Texto normal",
@@ -9180,6 +9182,11 @@
           "spaceAfter": "Espacio después",
           "firstLineIndent": "Sangría de primera línea"
         }
+      },
+      "count": {
+        "words": "Palabras: {{total}}",
+        "selectedWords": "Palabras: {{selected}} de {{total}}",
+        "characters": "Caracteres: {{total}}"
       }
     },
     "cv": {

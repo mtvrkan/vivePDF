@@ -19,6 +19,7 @@ import { citationTerms, storeCitationSource } from "./citationSource";
 import { documentExtensions } from "./extensions";
 import { pageSize, POINTS_PER_MM } from "./model";
 import { useDocumentSave } from "./useDocumentSave";
+import { WordCount } from "./WordCount";
 
 const SIDE_TABS = ["preview", "settings"] as const;
 const PAPER_GUTTER = 64;
@@ -153,12 +154,13 @@ export default function DocumentEditor({ language }: { language: string }) {
       <DocumentTopBar onExport={() => setExporting(true)} onFind={() => openFind(false)} />
       {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - margin * 2} /> : null}
       <div className="flex min-h-0 flex-1">
-        <div className="relative flex min-w-0 flex-1">
-          <div ref={host} className="min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
+        <div className="relative flex min-w-0 flex-1 flex-col">
+          <div ref={host} className="min-h-0 flex-1 overflow-auto bg-muted/40 py-8">
             <div className="paper-surface vp-doc mx-auto bg-white shadow-md" style={paperStyle}>
               <EditorContent editor={editor} />
             </div>
           </div>
+          {editor ? <WordCount editor={editor} language={language} /> : null}
           {finding && editor ? <DocumentFindBar editor={editor} mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
         </div>
         <aside className="glass flex w-80 shrink-0 flex-col border-l border-border/60" aria-label={t("studio.doc.side")}>

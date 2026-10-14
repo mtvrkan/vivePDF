@@ -8756,7 +8756,9 @@
         "image": "Insert picture",
         "table": "Insert table",
         "rule": "Horizontal line",
-        "pageBreak": "Page break"
+        "pageBreak": "Page break",
+        "painter": "Format painter",
+        "painterHint": "Format painter: click to copy the formatting once, double-click to keep painting until Esc"
       },
       "blocks": {
         "paragraph": "Normal text",
@@ -9182,6 +9184,11 @@
           "spaceAfter": "Space after",
           "firstLineIndent": "First line indent"
         }
+      },
+      "count": {
+        "words": "Words: {{total}}",
+        "selectedWords": "Words: {{selected}} of {{total}}",
+        "characters": "Characters: {{total}}"
       }
     },
     "cv": {

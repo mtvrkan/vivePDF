@@ -8754,7 +8754,9 @@
         "image": "Inserisci immagine",
         "table": "Inserisci tabella",
         "rule": "Linea orizzontale",
-        "pageBreak": "Interruzione di pagina"
+        "pageBreak": "Interruzione di pagina",
+        "painter": "Copia formato",
+        "painterHint": "Copia formato: fai clic per copiare la formattazione una volta, doppio clic per continuare fino a Esc"
       },
       "blocks": {
         "paragraph": "Testo normale",
@@ -9180,6 +9182,11 @@
           "spaceAfter": "Spazio dopo",
           "firstLineIndent": "Rientro prima riga"
         }
+      },
+      "count": {
+        "words": "Parole: {{total}}",
+        "selectedWords": "Parole: {{selected}} di {{total}}",
+        "characters": "Caratteri: {{total}}"
       }
     },
     "cv": {

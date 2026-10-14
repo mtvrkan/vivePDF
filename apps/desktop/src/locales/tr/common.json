@@ -8756,7 +8756,9 @@
         "image": "Resim ekle",
         "table": "Tablo ekle",
         "rule": "Yatay çizgi",
-        "pageBreak": "Sayfa sonu"
+        "pageBreak": "Sayfa sonu",
+        "painter": "Biçim boyacısı",
+        "painterHint": "Biçim boyacısı: biçimi bir kez kopyalamak için tıklayın, Esc'ye kadar sürdürmek için çift tıklayın"
       },
       "blocks": {
         "paragraph": "Normal metin",
@@ -9182,6 +9184,11 @@
           "spaceAfter": "Sonra boşluk",
           "firstLineIndent": "İlk satır girintisi"
         }
+      },
+      "count": {
+        "words": "Kelime: {{total}}",
+        "selectedWords": "Kelime: {{selected}} / {{total}}",
+        "characters": "Karakter: {{total}}"
       }
     },
     "cv": {

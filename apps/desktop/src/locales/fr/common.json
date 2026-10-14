@@ -8754,7 +8754,9 @@
         "image": "Insérer une image",
         "table": "Insérer un tableau",
         "rule": "Ligne horizontale",
-        "pageBreak": "Saut de page"
+        "pageBreak": "Saut de page",
+        "painter": "Reproduire la mise en forme",
+        "painterHint": "Reproduire la mise en forme : cliquez pour la copier une fois, double-cliquez pour continuer jusqu’à Échap"
       },
       "blocks": {
         "paragraph": "Texte normal",
@@ -9180,6 +9182,11 @@
           "spaceAfter": "Espace après",
           "firstLineIndent": "Retrait de première ligne"
         }
+      },
+      "count": {
+        "words": "Mots : {{total}}",
+        "selectedWords": "Mots : {{selected}} sur {{total}}",
+        "characters": "Caractères : {{total}}"
       }
     },
     "cv": {

@@ -856,6 +856,9 @@
     color: var(--muted-foreground);
     font-style: italic;
   }
+  .vp-doc .vp-painting {
+    cursor: copy;
+  }
   .vp-doc .vp-find-match {
     background-color: color-mix(in oklab, var(--color-warning) 35%, transparent);
     border-radius: 2px;

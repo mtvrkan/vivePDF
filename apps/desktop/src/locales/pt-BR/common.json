@@ -8754,7 +8754,9 @@
         "image": "Inserir imagem",
         "table": "Inserir tabela",
         "rule": "Linha horizontal",
-        "pageBreak": "Quebra de página"
+        "pageBreak": "Quebra de página",
+        "painter": "Pincel de formatação",
+        "painterHint": "Pincel de formatação: clique para copiar a formatação uma vez, clique duas vezes para continuar até apertar Esc"
       },
       "blocks": {
         "paragraph": "Texto normal",
@@ -9180,6 +9182,11 @@
           "spaceAfter": "Espaço depois",
           "firstLineIndent": "Recuo da primeira linha"
         }
+      },
+      "count": {
+        "words": "Palavras: {{total}}",
+        "selectedWords": "Palavras: {{selected}} de {{total}}",
+        "characters": "Caracteres: {{total}}"
       }
     },
     "cv": {

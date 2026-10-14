@@ -8754,7 +8754,9 @@
         "image": "Bild einfügen",
         "table": "Tabelle einfügen",
         "rule": "Horizontale Linie",
-        "pageBreak": "Seitenumbruch"
+        "pageBreak": "Seitenumbruch",
+        "painter": "Format übertragen",
+        "painterHint": "Format übertragen: einmal klicken, um die Formatierung einmal zu übertragen, doppelklicken, um bis Esc weiter zu übertragen"
       },
       "blocks": {
         "paragraph": "Normaler Text",
@@ -9180,6 +9182,11 @@
           "spaceAfter": "Abstand nach",
           "firstLineIndent": "Einzug erste Zeile"
         }
+      },
+      "count": {
+        "words": "Wörter: {{total}}",
+        "selectedWords": "Wörter: {{selected}} von {{total}}",
+        "characters": "Zeichen: {{total}}"
       }
     },
     "cv": {

@@ -9593,7 +9593,9 @@
         "image": "إدراج صورة",
         "table": "إدراج جدول",
         "rule": "خط أفقي",
-        "pageBreak": "فاصل صفحة"
+        "pageBreak": "فاصل صفحة",
+        "painter": "نسخ التنسيق",
+        "painterHint": "نسخ التنسيق: انقر لنسخ التنسيق مرة واحدة، أو انقر نقرًا مزدوجًا للاستمرار حتى الضغط على Esc"
       },
       "blocks": {
         "paragraph": "نص عادي",
@@ -10027,6 +10029,11 @@
           "spaceAfter": "مسافة بعد",
           "firstLineIndent": "إزاحة السطر الأول"
         }
+      },
+      "count": {
+        "words": "الكلمات: {{total}}",
+        "selectedWords": "الكلمات: {{selected}} من {{total}}",
+        "characters": "الأحرف: {{total}}"
       }
     },
     "cv": {
