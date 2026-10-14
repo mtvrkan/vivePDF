@@ -1,4 +1,4 @@
-import type { BlackoutMode, BoardMode, LensShape, Stroke, usePresentationStore } from "@/shared/store/presentationStore";
+import type { BlackoutMode, BoardMode, DrawingAsset, LensShape, Stroke, usePresentationStore } from "@/shared/store/presentationStore";
 import type { SelectionMarks } from "./selectionMarks";
 
 type PresentationState = ReturnType<typeof usePresentationStore.getState>;
@@ -17,6 +17,7 @@ export type SharedSlice = {
   magnifierZoom: number;
   magnifierShape: LensShape;
   selection?: SelectionMarks | null;
+  drawingAssets?: Record<string, DrawingAsset>;
 };
 
 export type SlicePatch = Partial<SharedSlice>;
@@ -27,10 +28,20 @@ const SCALAR_KEYS = ["page", "blackout", "laserColor", "laserSize", "spotlightRa
 
 const NO_STROKES: Stroke[] = [];
 
+function shownAssets(assets: Record<string, DrawingAsset>): Record<string, DrawingAsset> {
+  return Object.fromEntries(Object.entries(assets).map(([id, asset]) => [id, { dataUrl: asset.dataUrl, width: asset.width, height: asset.height }]));
+}
+
+function addedAssets(previous: Record<string, DrawingAsset> = {}, next: Record<string, DrawingAsset> = {}): Record<string, DrawingAsset> | null {
+  const added = Object.entries(next).filter(([id]) => !(id in previous));
+  return added.length > 0 ? Object.fromEntries(added) : null;
+}
+
 export function sharedSlice(state: PresentationState, page: number, selection: SelectionMarks | null = null): SharedSlice {
   return {
     page,
     selection,
+    drawingAssets: shownAssets(state.drawingAssets),
     blackout: state.blackout,
     strokesByPage: state.strokesByPage,
     boardStrokes: state.boardStrokes,
@@ -71,6 +82,11 @@ export function diffSlice(previous: SharedSlice, next: SharedSlice): SlicePatch 
     Object.assign(patch, { [key]: next[key] });
     changed = true;
   }
+  const assets = addedAssets(previous.drawingAssets, next.drawingAssets);
+  if (assets) {
+    patch.drawingAssets = assets;
+    changed = true;
+  }
   const pages = changedPages(previous.strokesByPage, next.strokesByPage);
   if (pages) {
     patch.strokesByPage = pages;
@@ -89,12 +105,18 @@ export function diffSlice(previous: SharedSlice, next: SharedSlice): SlicePatch 
 
 export function applyPatch(slice: SharedSlice, message: StateMessage): SharedSlice {
   if (message.kind === "full") return message.slice;
-  const { strokesByPage, ...rest } = message.patch;
-  return { ...slice, ...rest, strokesByPage: strokesByPage ? { ...slice.strokesByPage, ...strokesByPage } : slice.strokesByPage };
+  const { strokesByPage, drawingAssets, ...rest } = message.patch;
+  return {
+    ...slice,
+    ...rest,
+    strokesByPage: strokesByPage ? { ...slice.strokesByPage, ...strokesByPage } : slice.strokesByPage,
+    ...(drawingAssets ? { drawingAssets: { ...slice.drawingAssets, ...drawingAssets } } : {}),
+  };
 }
 
-export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page" | "selection"> {
+export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page" | "selection" | "drawingAssets"> & { drawingAssets: Record<string, DrawingAsset> } {
   return {
+    drawingAssets: slice.drawingAssets ?? {},
     blackout: slice.blackout,
     strokesByPage: slice.strokesByPage,
     boardStrokes: slice.boardStrokes,

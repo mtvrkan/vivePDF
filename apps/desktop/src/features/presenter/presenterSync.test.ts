@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Stroke } from "@/shared/store/presentationStore";
-import { applyPatch, diffSlice, type SharedSlice } from "./presenterSync";
+import { usePresentationStore } from "@/shared/store/presentationStore";
+import { applyPatch, diffSlice, presentationFields, sharedSlice, type SharedSlice } from "./presenterSync";
 
 const stroke = (id: string): Stroke => ({ id, tool: "pen", color: "#000000", width: 0.01, points: [{ x: 0.1, y: 0.1 }, { x: 0.2, y: 0.2 }] });
 
@@ -65,5 +66,28 @@ describe("presenterSync", () => {
     expect(applyPatch(before, { kind: "patch", patch: added! }).selection).toBe(marks);
     expect(removed).toEqual({ selection: null });
     expect(diffSlice(slice({ selection: null }), slice())).toBeNull();
+  });
+
+  it("sends an inserted picture once, then only the item's box when it moves", () => {
+    const picture = { dataUrl: "data:image/svg+xml,a", width: 40, height: 20 };
+    const item: Stroke = { id: "d", tool: "drawing", color: "#000000", width: 0, points: [{ x: 0.1, y: 0.1 }], size: { width: 0.2, height: 0.1 }, asset: "asset-1" };
+    const before = slice();
+    const placed = slice({ drawingAssets: { "asset-1": picture }, strokesByPage: { 0: [item] } });
+    const moved = slice({ drawingAssets: { "asset-1": picture }, strokesByPage: { 0: [{ ...item, points: [{ x: 0.3, y: 0.3 }] }] } });
+
+    const first = diffSlice(before, placed);
+    const second = diffSlice(placed, moved);
+
+    expect(first).toEqual({ drawingAssets: { "asset-1": picture }, strokesByPage: { 0: [item] } });
+    expect(second).toEqual({ strokesByPage: moved.strokesByPage });
+    expect(applyPatch(applyPatch(before, { kind: "patch", patch: first! }), { kind: "patch", patch: second! })).toEqual(moved);
+  });
+
+  it("shares inserted pictures without their editable source and gives the audience an empty set by default", () => {
+    usePresentationStore.getState().resetSession();
+    const id = usePresentationStore.getState().addDrawingAsset({ dataUrl: "data:x", width: 10, height: 5, drawing: { kind: "formula", source: { latex: "x", svg: "<svg/>", color: "#111111", emWidth: 1, emHeight: 1 } } });
+
+    expect(sharedSlice(usePresentationStore.getState(), 1).drawingAssets).toEqual({ [id]: { dataUrl: "data:x", width: 10, height: 5 } });
+    expect(presentationFields(slice()).drawingAssets).toEqual({});
   });
 });
