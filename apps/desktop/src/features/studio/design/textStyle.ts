@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { StudioParagraph, StudioTextElement } from "@/types/studio";
-import { caseTexts, LIST_INDENT_EM, splitParagraphs, visibleParagraphs, weightOf } from "../model/typography";
+import { caseTexts, LIST_INDENT_EM, SCRIPT_SCALE, SCRIPT_SHIFT, splitParagraphs, visibleParagraphs, weightOf } from "../model/typography";
 import { faceCss, faceKey, markerFace, type LoadedFace } from "./fonts";
 import { runStyle, type RunStyle } from "./richText";
 
@@ -70,10 +70,13 @@ function decoration(style: RunStyle): string {
 
 export function runCss(style: RunStyle, faces: Faces): CSSProperties {
   const weight = weightOf(style.bold, style.weight);
+  const size = style.scale * (style.baseline ? SCRIPT_SCALE : 1);
   return {
     ...faceCss(faces[faceKey(style.fontId, weight, style.italic)], weight, style.italic),
     color: style.color,
-    fontSize: style.scale !== 1 ? `${style.scale}em` : undefined,
+    fontSize: size !== 1 ? `${size}em` : undefined,
+    verticalAlign: style.baseline ? `${SCRIPT_SHIFT[style.baseline]}em` : undefined,
+    backgroundColor: style.highlight ?? undefined,
     textDecorationLine: decoration(style),
     textDecorationSkipInk: "none",
     textUnderlinePosition: "from-font",
@@ -90,11 +93,18 @@ export function runData(style: RunStyle): Record<string, string> {
     "data-f": style.fontId,
     "data-z": String(style.scale),
     "data-w": style.weight === null ? "" : String(style.weight),
+    "data-v": style.baseline ?? "",
+    "data-h": style.highlight ?? "",
   };
 }
 
-export function paragraphCss(paragraph: StudioParagraph): CSSProperties {
-  return paragraph.list === "none" ? {} : { paddingInlineStart: `${(paragraph.level + 1) * LIST_INDENT_EM}em` };
+export type BlockSpacing = { paragraphSpacing: number; firstLineIndent: number };
+
+export function paragraphCss(paragraph: StudioParagraph, spacing?: BlockSpacing, last = true): CSSProperties {
+  const style: CSSProperties = paragraph.list === "none" ? {} : { paddingInlineStart: `${(paragraph.level + 1) * LIST_INDENT_EM}em` };
+  if (spacing && !last && spacing.paragraphSpacing > 0) style.marginBlockEnd = `${spacing.paragraphSpacing}em`;
+  if (spacing && paragraph.list === "none" && spacing.firstLineIndent > 0) style.textIndent = `${spacing.firstLineIndent}em`;
+  return style;
 }
 
 export function paragraphData(paragraph: StudioParagraph): Record<string, string> {
@@ -132,7 +142,7 @@ export function textBlocks(element: StudioTextElement, options: { language: stri
     const first = runStyle(element, entry.runs[0] ?? { text: "" });
     const face = markerFace(entry.paragraph.list, { fontId: first.fontId, weight: weightOf(first.bold, first.weight) });
     const marker = entry.marker
-      ? { text: entry.marker, style: { ...first, fontId: face.fontId, weight: face.weight, bold: face.weight >= 600, italic: false, underline: false, strike: false, scale: 1 } }
+      ? { text: entry.marker, style: { ...first, fontId: face.fontId, weight: face.weight, bold: face.weight >= 600, italic: false, underline: false, strike: false, scale: 1, baseline: null, highlight: null } }
       : null;
     return { paragraph: entry.paragraph, marker, spans };
   });
@@ -157,11 +167,11 @@ export function ensureMarkerRule() {
   document.head.append(style);
 }
 
-export function blockNodes(blocks: TextBlockView[], faces: Faces, editing: boolean): HTMLElement[] {
-  return blocks.map((block) => {
+export function blockNodes(blocks: TextBlockView[], faces: Faces, editing: boolean, spacing?: BlockSpacing): HTMLElement[] {
+  return blocks.map((block, index) => {
     const div = document.createElement("div");
     setData(div, paragraphData(block.paragraph));
-    applyCss(div, paragraphCss(block.paragraph));
+    applyCss(div, paragraphCss(block.paragraph, spacing, index === blocks.length - 1));
     if (block.marker && editing) {
       div.setAttribute("data-vp-marker", block.marker.text);
       applyCss(div, markerVars(block.marker.style, faces));
@@ -184,6 +194,6 @@ export function blockNodes(blocks: TextBlockView[], faces: Faces, editing: boole
   });
 }
 
-export function blocksSignature(blocks: TextBlockView[], faces: Faces): string {
-  return JSON.stringify([blocks, blocks.flatMap((block) => [block.marker, ...block.spans]).map((span) => (span ? runCss(span.style, faces).fontFamily : ""))]);
+export function blocksSignature(blocks: TextBlockView[], faces: Faces, spacing?: BlockSpacing): string {
+  return JSON.stringify([blocks, blocks.flatMap((block) => [block.marker, ...block.spans]).map((span) => (span ? runCss(span.style, faces).fontFamily : "")), spacing?.paragraphSpacing ?? 0, spacing?.firstLineIndent ?? 0]);
 }

@@ -42,6 +42,9 @@ export type StudioElementBase = {
   finish?: StudioFinish;
 };
 
+export const STUDIO_BASELINES = ["sub", "super"] as const;
+export type StudioBaseline = (typeof STUDIO_BASELINES)[number];
+
 export type StudioTextRun = {
   text: string;
   bold?: boolean;
@@ -52,6 +55,8 @@ export type StudioTextRun = {
   fontId?: string;
   scale?: number;
   weight?: number | null;
+  baseline?: StudioBaseline;
+  highlight?: string;
 };
 
 export const STUDIO_TEXT_CASES = ["none", "upper", "lower", "title"] as const;
@@ -90,6 +95,8 @@ export type StudioTextElement = StudioElementBase & {
   verticalAlign: StudioVerticalAlign;
   lineHeight: number;
   letterSpacing: number;
+  paragraphSpacing: number;
+  firstLineIndent: number;
   textCase: StudioTextCase;
   autoSize: StudioTextAutoSize;
   paragraphs: StudioParagraph[];
@@ -314,9 +321,11 @@ export type StudioRenderRun = {
   fontId: string | null;
   size: number;
   weight: number;
+  baseline?: StudioBaseline;
+  highlight?: string;
 };
 
-export type StudioRenderBand = { x: number; y: number; width: number; height: number };
+export type StudioRenderBand = { x: number; y: number; width: number; height: number; color?: string };
 
 export type StudioMeasuredText = { segments: StudioRenderSegment[]; bands: StudioRenderBand[] };
 
@@ -337,6 +346,8 @@ export type StudioRenderText = StudioRenderBox & {
   verticalAlign: StudioVerticalAlign;
   lineHeight: number;
   letterSpacing: number;
+  paragraphSpacing: number;
+  firstLineIndent: number;
   textCase: StudioTextCase;
   shrinkToFit: boolean;
   autoWidth: boolean;

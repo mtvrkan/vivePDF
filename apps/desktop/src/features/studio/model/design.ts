@@ -38,7 +38,7 @@ import {
 } from "@/types/studio";
 import { normalizeFinish } from "./finish";
 import { normalizeFilters } from "./imageFilters";
-import { fitParagraphs, MAX_LIST_LEVEL, paragraphCount } from "./typography";
+import { fitParagraphs, MAX_FIRST_LINE_INDENT, MAX_LIST_LEVEL, MAX_PARAGRAPH_SPACING, paragraphCount } from "./typography";
 import { graphicTexts } from "../graphics/graphicData";
 
 export const STUDIO_PAGE_SIZES = {
@@ -125,6 +125,8 @@ export function createText(x: number, y: number, width: number, height: number, 
     verticalAlign: "top",
     lineHeight: 1.25,
     letterSpacing: 0,
+    paragraphSpacing: 0,
+    firstLineIndent: 0,
     textCase: "none",
     autoSize: "fixed",
     paragraphs: [{ list: "none", level: 0 }],
@@ -303,6 +305,8 @@ function normalizeRuns(value: unknown): StudioTextRun[] {
       if (typeof run.scale === "number" && Number.isFinite(run.scale) && run.scale !== 1) result.scale = finite(run.scale, 1, MIN_RUN_SCALE, MAX_RUN_SCALE);
       if (run.weight === null) result.weight = null;
       else if (typeof run.weight === "number") result.weight = normalizeWeight(run.weight);
+      if (run.baseline === "sub" || run.baseline === "super") result.baseline = run.baseline;
+      if (typeof run.highlight === "string" && COLOUR.test(run.highlight)) result.highlight = run.highlight.toLowerCase();
       return result;
     });
   return runs.length ? runs : [{ text: "" }];
@@ -423,6 +427,8 @@ export function normalizeElement(value: unknown): StudioElement | null {
         verticalAlign: oneOf(raw.verticalAlign, ["top", "middle", "bottom"], "top"),
         lineHeight: finite(raw.lineHeight, 1.25, 0.5, 5),
         letterSpacing: finite(raw.letterSpacing, 0, -0.5, 2),
+        paragraphSpacing: finite(raw.paragraphSpacing, 0, 0, MAX_PARAGRAPH_SPACING),
+        firstLineIndent: finite(raw.firstLineIndent, 0, 0, MAX_FIRST_LINE_INDENT),
         textCase: oneOf(raw.textCase, STUDIO_TEXT_CASES, raw.uppercase === true ? "upper" : "none"),
         autoSize: oneOf(raw.autoSize, STUDIO_TEXT_AUTO_SIZES, raw.shrinkToFit === true ? "shrink" : "fixed"),
         paragraphs: normalizeParagraphs(raw.paragraphs, runs),

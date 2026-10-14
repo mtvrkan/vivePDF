@@ -143,6 +143,22 @@ describe("studio render payload", () => {
     expect(elementItems({ ...text, highlight: null }, measured)[0]).not.toHaveProperty("bands");
   });
 
+  it("shrinks script runs, sends their shift and highlight, and keeps word bands without a box highlight", () => {
+    const text = createText(0, 0, 100, 40, "", { fontSize: 20, paragraphSpacing: 0.5, firstLineIndent: 1 });
+    text.runs = [{ text: "m" }, { text: "2", baseline: "super", highlight: "#00ff00" }];
+    const bands = [
+      { x: 0, y: 0, width: 10, height: 5 },
+      { x: 10, y: 0, width: 4, height: 5, color: "#00ff00" },
+    ];
+    const measured = new Map([[text.id, { segments: [], bands }]]);
+
+    const [item] = elementItems(text, measured);
+
+    expect(item.kind === "text" && item.runs[1]).toMatchObject({ size: 13, baseline: "super", highlight: "#00ff00" });
+    expect(item.kind === "text" && item.runs[0]).not.toHaveProperty("baseline");
+    expect(item).toMatchObject({ paragraphSpacing: 0.5, firstLineIndent: 1, bands: [bands[1]] });
+  });
+
   it("adds a frame stroke that follows the image mask", () => {
     const image = { ...createImage("C:/photo.png", 0, 0, 80, 80), mask: "circle" as const, stroke: { color: "#ffffff", width: 4, dash: "solid" as const } };
 

@@ -140,11 +140,10 @@ def _draw_lines(
     shape.commit(overlay=True)
 
 
-def draw_bands(page: pymupdf.Page, item: StudioTextItem, bands: list[Band]) -> None:
-    if item.highlight is None or not bands:
-        return
+def _fill_bands(
+    page: pymupdf.Page, item: StudioTextItem, bands: list[Band], colour: str, padding: float
+) -> None:
     rotation = _transform(item, 0.0, False)
-    padding = item.highlight.padding
     shape = page.new_shape()
     for band in bands:
         rect = pymupdf.Rect(
@@ -154,8 +153,20 @@ def draw_bands(page: pymupdf.Page, item: StudioTextItem, bands: list[Band]) -> N
             item.y + band.y + band.height + padding,
         )
         shape.draw_quad(rect.quad * rotation)
-    shape.finish(color=None, fill=_rgb(item.highlight.color), fill_opacity=item.opacity)
+    shape.finish(color=None, fill=_rgb(colour), fill_opacity=item.opacity)
     shape.commit(overlay=True)
+
+
+def draw_bands(page: pymupdf.Page, item: StudioTextItem, bands: list[Band]) -> None:
+    lines = [band for band in bands if band.color is None]
+    if item.highlight is not None and lines:
+        _fill_bands(page, item, lines, item.highlight.color, item.highlight.padding)
+    tinted: dict[str, list[Band]] = {}
+    for band in bands:
+        if band.color is not None:
+            tinted.setdefault(band.color, []).append(band)
+    for colour, group in tinted.items():
+        _fill_bands(page, item, group, colour, 0.0)
 
 
 def draw_text(

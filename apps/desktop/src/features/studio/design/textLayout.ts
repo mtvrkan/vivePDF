@@ -8,6 +8,10 @@ function sameBands(left: StudioRenderBand[], right: StudioRenderBand[]): boolean
   return left.length === right.length && left.every((band, index) => Math.abs(band.x - right[index].x) < 0.01 && Math.abs(band.y - right[index].y) < 0.01 && Math.abs(band.width - right[index].width) < 0.01 && Math.abs(band.height - right[index].height) < 0.01);
 }
 
+function lineBands(bands: StudioRenderBand[]): StudioRenderBand[] {
+  return bands.filter((band) => !band.color);
+}
+
 export function elementBands(element: StudioTextElement, language: string): StudioRenderBand[] {
   const host = document.createElement("div");
   host.style.cssText = "position:fixed;left:-100000px;top:0;visibility:hidden;pointer-events:none;contain:layout style";
@@ -15,7 +19,7 @@ export function elementBands(element: StudioTextElement, language: string): Stud
   try {
     const { frame, body } = buildTextNode(element, language);
     host.append(frame);
-    return measureLayout(frame, element, fitTextSize(body, element)).bands;
+    return lineBands(measureLayout(frame, element, fitTextSize(body, element)).bands);
   } finally {
     host.remove();
   }
@@ -25,7 +29,7 @@ function liveBands(frame: HTMLElement, element: StudioTextElement): StudioRender
   const body = frame.querySelector<HTMLElement>("[data-text-body]");
   if (!body || !frame.offsetWidth) return [];
   const scale = frame.getBoundingClientRect().width / frame.offsetWidth || 1;
-  return measureLayout(frame, element, parseFloat(body.style.fontSize) || element.fontSize, scale).bands;
+  return lineBands(measureLayout(frame, element, parseFloat(body.style.fontSize) || element.fontSize, scale).bands);
 }
 
 export function useTextBands(frameRef: RefObject<HTMLDivElement | null>, element: StudioTextElement, language: string, editing: boolean, signature: string): StudioRenderBand[] {

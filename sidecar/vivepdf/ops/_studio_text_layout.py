@@ -19,6 +19,7 @@ from vivepdf.ops._studio_text import (
 from vivepdf.ops._studio_text_paragraphs import text_paragraphs
 
 FIT_TOLERANCE = 0.01
+TINT_TOUCHING = 0.5
 UNBOUNDED = 1e9
 
 
@@ -70,8 +71,15 @@ def _words(atoms: list[Atom]) -> list[tuple[bool, list[Atom]]]:
 
 
 def wrap(
-    faces: TextFaces, atoms: list[Atom], scale: float, spacing: float, width: float
+    faces: TextFaces,
+    atoms: list[Atom],
+    scale: float,
+    spacing: float,
+    width: float,
+    first_indent: float = 0.0,
 ) -> tuple[list[list[Atom]], list[bool], bool]:
+    full_width = width
+    width = max(1.0, full_width - first_indent)
     lines: list[list[Atom]] = []
     wrapped: list[bool] = []
     broke = False
@@ -89,6 +97,7 @@ def wrap(
             lines.append(current + pending)
             wrapped.append(True)
             current, used = [], 0.0
+            width = full_width
         elif current or pending:
             current.extend(pending)
             used += pending_width
@@ -100,6 +109,7 @@ def wrap(
                 lines.append(current + chunk)
                 wrapped.append(True)
                 current, used = [], 0.0
+                width = full_width
             token = chunks[-1]
             token_width = sum(_width(faces, atom, scale, spacing) for atom in token)
         current.extend(token)
@@ -123,17 +133,21 @@ def _lines(
     spacing = item.letter_spacing * scale
     lines: list[Line] = []
     broke = False
-    for paragraph in paragraphs:
+    gap = item.paragraph_spacing * body
+    for number, paragraph in enumerate(paragraphs):
         listed = paragraph.kind != "none"
         indent = (paragraph.level + 1) * LIST_INDENT * body if listed else 0.0
+        first = 0.0 if listed else item.first_line_indent * body
         width = UNBOUNDED if item.auto_width else max(1.0, item.width - indent)
-        rows, wrapped, split = wrap(faces, _atoms(paragraph.pieces), scale, spacing, width)
+        rows, wrapped, split = wrap(faces, _atoms(paragraph.pieces), scale, spacing, width, first)
         broke = broke or split
+        last = len(rows) - 1
         for index, (row, flag) in enumerate(zip(rows, wrapped, strict=True)):
             marker = None
             if index == 0 and paragraph.marker:
                 marker = Atom(paragraph.marker, paragraph.marker_style, False)
-            lines.append(Line(row, flag, indent, marker))
+            after = gap if index == last and number < len(paragraphs) - 1 else 0.0
+            lines.append(Line(row, flag, indent + (first if index == 0 else 0.0), marker, after))
     return lines, broke
 
 
@@ -151,10 +165,38 @@ def _line_metrics(
     boxes = [(faces.of(atom.style), atom.style.size * scale) for atom in line.atoms]
     if line.marker:
         boxes.append((faces.of(line.marker.style), body))
-    for face, size in boxes:
+    rises = [atom.style.rise * scale for atom in line.atoms]
+    if line.marker:
+        rises.append(0.0)
+    for (face, size), rise in zip(boxes, rises, strict=True):
         top, bottom = _half_leading(face, size, item.line_height)
-        above, below = max(above, top), max(below, bottom)
+        above, below = max(above, top + rise), max(below, bottom - rise)
     return above, below
+
+
+def _tints(
+    faces: TextFaces, pieces: list[tuple[float, float, Atom]], baseline: float, scale: float
+) -> list[Band]:
+    tints: list[Band] = []
+    for start, end, atom in pieces:
+        colour = atom.style.highlight
+        if colour is None or end <= start:
+            continue
+        face = faces.of(atom.style)
+        size = atom.style.size * scale
+        top = baseline - atom.style.rise * scale - face.ascender * size
+        height = (face.ascender - face.descender) * size
+        last = tints[-1] if tints else None
+        if (
+            last
+            and last.color == colour
+            and abs(last.y - top) < FIT_TOLERANCE
+            and abs(last.x + last.width - start) < TINT_TOUCHING
+        ):
+            last.width = end - last.x
+            continue
+        tints.append(Band(start, top, end - start, height, colour))
+    return tints
 
 
 def _band(
@@ -179,7 +221,7 @@ def layout(
         scale = size / item.font_size
         lines, broke = _lines(item, faces, paragraphs, scale)
         metrics = [_line_metrics(item, faces, line, scale) for line in lines]
-        total = sum(above + below for above, below in metrics)
+        total = sum(above + below for above, below in metrics) + sum(line.gap for line in lines)
         fits = not broke and total <= item.height + FIT_TOLERANCE
         if not item.shrink_to_fit or fits or size <= MIN_SHRINK_SIZE:
             break
@@ -192,6 +234,7 @@ def layout(
     ]
     placed: list[Placed] = []
     bands: list[Band] = []
+    tints: list[Band] = []
     for line, (above, below) in zip(lines, metrics, strict=True):
         baseline = top + above
         visible = _trimmed(line.atoms)
@@ -207,6 +250,7 @@ def layout(
         elif item.align == "justify" and line.wrapped and spaces:
             extra = max(0.0, (room - natural) / spaces)
         drawn: list[tuple[float, float, Atom]] = []
+        spans: list[tuple[float, float, Atom]] = []
         if line.marker:
             start = x - hang
             marker_width = faces.of(line.marker.style).font.text_length(
@@ -219,18 +263,23 @@ def layout(
         for atom in visible:
             advance = _width(faces, atom, scale, spacing)
             if atom.space:
-                x += advance + extra * len(atom.text)
+                stretched = advance + extra * len(atom.text)
+                spans.append((x, x + stretched, atom))
+                x += stretched
                 continue
+            raised = baseline - atom.style.rise * scale
             placed.append(
-                Placed(atom.text, x, baseline, atom.style.size * scale, atom.style, spacing)
+                Placed(atom.text, x, raised, atom.style.size * scale, atom.style, spacing)
             )
             drawn.append((x, x + advance, atom))
+            spans.append((x, x + advance, atom))
             x += advance
         band = _band(faces, drawn, baseline, scale) if item.highlight else None
         if band:
             bands.append(band)
-        top += above + below
-    return TextLayout(placed, bands)
+        tints.extend(_tints(faces, spans, baseline, scale))
+        top += above + below + line.gap
+    return TextLayout(placed, bands + tints)
 
 
 def from_segments(item: StudioTextItem) -> TextLayout:
@@ -245,5 +294,5 @@ def from_segments(item: StudioTextItem) -> TextLayout:
         )
         for segment in item.segments or []
     ]
-    bands = [Band(band.x, band.y, band.width, band.height) for band in item.bands or []]
+    bands = [Band(band.x, band.y, band.width, band.height, band.color) for band in item.bands or []]
     return TextLayout(placed, bands)

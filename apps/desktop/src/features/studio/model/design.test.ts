@@ -167,6 +167,17 @@ describe("studio text typography fields", () => {
     expect(normalizeElement(plain)).toMatchObject({ textCase: "none", autoSize: "fixed" });
   });
 
+  it("gives old texts no paragraph spacing and clamps new spacing, shifts and word highlights", () => {
+    const old = stored({});
+    delete old.paragraphSpacing;
+    delete old.firstLineIndent;
+
+    const element = normalizeElement(stored({ paragraphSpacing: 9, firstLineIndent: -2, runs: [{ text: "x", baseline: "super", highlight: "#FDE047" }, { text: "y", baseline: "up", highlight: "gold" }] }));
+
+    expect(normalizeElement(old)).toMatchObject({ paragraphSpacing: 0, firstLineIndent: 0 });
+    expect(element).toMatchObject({ paragraphSpacing: 3, firstLineIndent: 0, runs: [{ text: "x", baseline: "super", highlight: "#fde047" }, { text: "y" }] });
+  });
+
   it("keeps runs, paragraphs and effects that are valid", () => {
     const element = normalizeElement(
       stored({

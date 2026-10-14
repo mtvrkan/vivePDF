@@ -2,6 +2,10 @@ import type { StudioListKind, StudioParagraph, StudioTextCase, StudioTextRun } f
 
 export const DEFAULT_TEXT_FONT_ID = "bundled:dejavu-sans";
 export const LIST_INDENT_EM = 1.6;
+export const SCRIPT_SCALE = 0.65;
+export const SCRIPT_SHIFT = { super: 0.54, sub: -0.23 } as const;
+export const MAX_PARAGRAPH_SPACING = 3;
+export const MAX_FIRST_LINE_INDENT = 5;
 export const MAX_LIST_LEVEL = 8;
 export const REGULAR_WEIGHT = 400;
 export const BOLD_WEIGHT = 700;

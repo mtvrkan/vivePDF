@@ -94,7 +94,7 @@ export function TextContent({ element, language, bodyRef, editable }: { element:
       {editable ?? (
         <div ref={ref} data-text-body="" style={textBodyStyle(element, size)}>
           {blocks.map((block, index) => (
-            <div key={index} {...paragraphData(block.paragraph)} style={paragraphCss(block.paragraph)}>
+            <div key={index} {...paragraphData(block.paragraph)} style={paragraphCss(block.paragraph, element, index === blocks.length - 1)}>
               {block.marker ? (
                 <span {...runData(block.marker.style)} data-marker="" style={markerCss(block.marker.style, faces)}>
                   {block.marker.text}

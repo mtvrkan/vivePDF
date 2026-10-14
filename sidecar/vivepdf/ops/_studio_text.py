@@ -15,6 +15,7 @@ LIST_INDENT = 1.6
 REGULAR_WEIGHT = 400
 BOLD_WEIGHT = 700
 BOLD_FROM = 600
+SCRIPT_SHIFT = {"super": 0.54, "sub": -0.23}
 
 
 @dataclass(frozen=True)
@@ -26,6 +27,8 @@ class Style:
     strike: bool
     color: str
     size: float
+    rise: float = 0.0
+    highlight: str | None = None
 
 
 @dataclass
@@ -61,6 +64,7 @@ class Line:
     wrapped: bool
     indent: float
     marker: Atom | None
+    gap: float = 0.0
 
 
 @dataclass
@@ -79,6 +83,7 @@ class Band:
     y: float
     width: float
     height: float
+    color: str | None = None
 
 
 @dataclass
@@ -146,7 +151,10 @@ def run_style(item: StudioTextItem, run: StudioRun) -> Style:
     font_id = run.font_id if "font_id" in run.model_fields_set else item.font_id
     weight = run.weight if run.weight is not None else (BOLD_WEIGHT if run.bold else REGULAR_WEIGHT)
     size = run.size if run.size is not None else item.font_size
-    return Style(font_id, weight, run.italic, run.underline, run.strike, run.color, size)
+    rise = SCRIPT_SHIFT[run.baseline] * size if run.baseline else 0.0
+    return Style(
+        font_id, weight, run.italic, run.underline, run.strike, run.color, size, rise, run.highlight
+    )
 
 
 def segment_style(item: StudioTextItem, segment: StudioSegment) -> Style:

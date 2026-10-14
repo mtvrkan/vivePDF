@@ -145,6 +145,8 @@ class StudioRun(RpcModel):
     font_id: FontId | None = None
     size: float | None = Field(default=None, gt=0, le=1000)
     weight: Weight | None = None
+    baseline: Literal["sub", "super"] | None = None
+    highlight: Colour | None = None
 
 
 class StudioSegment(RpcModel):
@@ -189,6 +191,7 @@ class StudioBand(RpcModel):
     y: Coordinate
     width: float = Field(ge=0, le=100_000)
     height: float = Field(ge=0, le=100_000)
+    color: Colour | None = None
 
 
 class StudioTextItem(StudioBox):
@@ -202,6 +205,8 @@ class StudioTextItem(StudioBox):
     vertical_align: VerticalAlign = "top"
     line_height: float = Field(default=1.2, ge=0.5, le=5)
     letter_spacing: float = Field(default=0.0, ge=-100, le=1000)
+    paragraph_spacing: float = Field(default=0.0, ge=0, le=3)
+    first_line_indent: float = Field(default=0.0, ge=0, le=5)
     uppercase: bool = False
     text_case: TextCase = "none"
     shrink_to_fit: bool = False

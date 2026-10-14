@@ -10,6 +10,7 @@ const SAME_LINE = 0.5;
 const TOUCHING = 0.75;
 const FIT_TOLERANCE = 0.25;
 const ANCHOR = { left: 0, center: 0.5, right: 1, justify: 0 } as const;
+const COLOUR = /^#[0-9a-f]{6}$/i;
 
 export function fitTextSize(body: HTMLElement, element: StudioTextElement): number {
   if (element.autoSize !== "shrink") return element.fontSize;
@@ -69,12 +70,22 @@ function spanSize(span: HTMLElement, fallback: number): number {
 
 type Open = { segment: StudioRenderSegment; right: number; top: number; span: number };
 type LineBox = { baseline: number; left: number; right: number; top: number; bottom: number };
+type TintBox = { color: string; left: number; right: number; top: number; bottom: number };
 
 export function measureLayout(frame: HTMLElement, element: StudioTextElement, size: number, scale = 1): StudioMeasuredText {
   const origin = frame.getBoundingClientRect();
   const segments: StudioRenderSegment[] = [];
   const lines: LineBox[] = [];
+  const tints: TintBox[] = [];
   let open: Open | null = null;
+  const addTint = (color: string, left: number, right: number, top: number, bottom: number) => {
+    const last = tints[tints.length - 1];
+    if (last && last.color === color && Math.abs(last.top - top) < SAME_LINE && Math.abs(last.bottom - bottom) < SAME_LINE && Math.abs(left - last.right) < TOUCHING) {
+      last.right = Math.max(last.right, right);
+      return;
+    }
+    tints.push({ color, left, right, top, bottom });
+  };
   const close = () => {
     if (open) segments.push(open.segment);
     open = null;
@@ -99,20 +110,30 @@ export function measureLayout(frame: HTMLElement, element: StudioTextElement, si
     const pointSize = spanSize(span, size);
     const ascent = ascentOf(span, pointSize);
     const text = node.data;
+    const tint = data.h && COLOUR.test(data.h) ? data.h.toLowerCase() : null;
     const range = document.createRange();
     for (let index = 0; index < text.length; index += 1) {
       const char = text[index];
-      if (/\s/.test(char)) {
+      const space = /\s/.test(char);
+      if (space && !tint) {
         close();
         continue;
       }
       range.setStart(node, index);
       range.setEnd(node, index + 1);
       const rect = range.getClientRects()[0];
-      if (!rect) continue;
+      if (!rect) {
+        if (space) close();
+        continue;
+      }
       const left = (rect.left - origin.left) / scale;
       const right = (rect.right - origin.left) / scale;
       const top = (rect.top - origin.top) / scale;
+      if (tint) addTint(tint, left, right, top, (rect.bottom - origin.top) / scale);
+      if (space) {
+        close();
+        continue;
+      }
       const baseline = top + ascent;
       if (element.highlight) addToLine(baseline, left, right, top, (rect.bottom - origin.top) / scale);
       const current = open as Open | null;
@@ -145,7 +166,10 @@ export function measureLayout(frame: HTMLElement, element: StudioTextElement, si
     close();
   });
   close();
-  const bands: StudioRenderBand[] = lines.map((line) => ({ x: line.left, y: line.top, width: line.right - line.left, height: line.bottom - line.top }));
+  const bands: StudioRenderBand[] = [
+    ...lines.map((line) => ({ x: line.left, y: line.top, width: line.right - line.left, height: line.bottom - line.top })),
+    ...tints.filter((tint) => tint.right > tint.left).map((tint) => ({ x: tint.left, y: tint.top, width: tint.right - tint.left, height: tint.bottom - tint.top, color: tint.color })),
+  ];
   return { segments, bands };
 }
 
@@ -158,7 +182,7 @@ export function buildTextNode(element: StudioTextElement, language: string): { f
   const body = document.createElement("div");
   body.dataset.textBody = "";
   applyCss(body, textBodyStyle(element, element.fontSize));
-  body.append(...blockNodes(blocks, useStudioFontsStore.getState().faces, false));
+  body.append(...blockNodes(blocks, useStudioFontsStore.getState().faces, false, element));
   frame.append(body);
   return { frame, body };
 }

@@ -111,4 +111,35 @@ describe("studio rich text", () => {
     expect(paragraphs).toEqual([{ list: "none", level: 8 }]);
     expect(runs).toEqual([{ text: "x", scale: 40 }]);
   });
+
+  it("raises, lowers and highlights a part of the text and clears it again", () => {
+    const element = base();
+
+    const raised = applyRunStyle(element, 6, 11, { baseline: "super", highlight: "#fde047" });
+    const cleared = applyRunStyle({ ...element, runs: raised }, 6, 11, { baseline: null, highlight: null });
+
+    expect(raised).toEqual([{ text: "Hello " }, { text: "brave", baseline: "super", highlight: "#fde047" }, { text: " world" }]);
+    expect(styleSummary({ ...element, runs: raised }, 6, 11)).toMatchObject({ baseline: "super", highlight: "#fde047" });
+    expect(styleSummary({ ...element, runs: raised }, 0, 11)).toMatchObject({ baseline: null, highlight: null });
+    expect(cleared).toEqual([{ text: "Hello brave world" }]);
+  });
+
+  it("puts the whole text in subscript and drops the old run shifts", () => {
+    const element = { ...base(), runs: [{ text: "H" }, { text: "2", baseline: "super" as const }, { text: "O" }] };
+
+    const next = withElementStyle(element, { baseline: "sub" });
+    const plain = withElementStyle(next, { baseline: null });
+
+    expect(next.runs).toEqual([{ text: "H2O", baseline: "sub" }]);
+    expect(plain.runs).toEqual([{ text: "H2O" }]);
+  });
+
+  it("reads shifted and highlighted spans back and ignores bad values", () => {
+    const root = document.createElement("div");
+    root.innerHTML = '<span data-v="super" data-h="#FDE047">2</span><span data-v="middle" data-h="red">x</span>';
+
+    const { runs } = textFromDom(root, base());
+
+    expect(runs).toEqual([{ text: "2", baseline: "super", highlight: "#fde047" }, { text: "x" }]);
+  });
 });

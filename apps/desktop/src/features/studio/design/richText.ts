@@ -1,12 +1,12 @@
-import type { StudioListKind, StudioParagraph, StudioTextElement, StudioTextRun } from "@/types/studio";
+import type { StudioBaseline, StudioListKind, StudioParagraph, StudioTextElement, StudioTextRun } from "@/types/studio";
 import { MAX_RUN_SCALE, MIN_RUN_SCALE, normalizeWeight } from "../model/design";
 import { DEFAULT_PARAGRAPH, DEFAULT_TEXT_FONT_ID, fitParagraphs, MAX_LIST_LEVEL, paragraphAt, paragraphCount } from "../model/typography";
 
-export type RunStyle = { bold: boolean; italic: boolean; underline: boolean; strike: boolean; color: string; fontId: string; scale: number; weight: number | null };
+export type RunStyle = { bold: boolean; italic: boolean; underline: boolean; strike: boolean; color: string; fontId: string; scale: number; weight: number | null; baseline: StudioBaseline | null; highlight: string | null };
 export type StylePatch = Partial<RunStyle>;
 type ElementStyle = Pick<StudioTextElement, "bold" | "italic" | "underline" | "strike" | "color" | "fontId" | "weight">;
 
-const STYLE_KEYS = ["bold", "italic", "underline", "strike", "color", "fontId", "scale", "weight"] as const;
+const STYLE_KEYS = ["bold", "italic", "underline", "strike", "color", "fontId", "scale", "weight", "baseline", "highlight"] as const;
 const FLAG_KEYS = ["bold", "italic", "underline", "strike"] as const;
 const COLOUR = /^#[0-9a-f]{6}$/i;
 const LIST_KINDS = new Set<string>(["none", "bullet", "dash", "check", "decimal", "alpha", "roman"]);
@@ -21,6 +21,8 @@ export function runStyle(element: ElementStyle, run: StudioTextRun): RunStyle {
     fontId: run.fontId ?? element.fontId ?? DEFAULT_TEXT_FONT_ID,
     scale: run.scale ?? 1,
     weight: run.weight !== undefined ? run.weight : element.weight,
+    baseline: run.baseline ?? null,
+    highlight: run.highlight ?? null,
   };
 }
 
@@ -36,6 +38,8 @@ function runOf(element: ElementStyle, text: string, style: RunStyle): StudioText
   if (style.fontId !== base.fontId) run.fontId = style.fontId;
   if (style.scale !== 1) run.scale = style.scale;
   if (style.weight !== base.weight) run.weight = style.weight;
+  if (style.baseline) run.baseline = style.baseline;
+  if (style.highlight) run.highlight = style.highlight;
   return run;
 }
 
@@ -106,6 +110,8 @@ export function styleSummary(element: StudioTextElement, start: number, end: num
     italic: styles.every((style) => style.italic),
     underline: styles.every((style) => style.underline),
     strike: styles.every((style) => style.strike),
+    baseline: styles.every((style) => style.baseline === styles[0].baseline) ? styles[0].baseline : null,
+    highlight: styles.every((style) => style.highlight === styles[0].highlight) ? styles[0].highlight : null,
   };
 }
 
@@ -121,6 +127,8 @@ export function withElementStyle(element: StudioTextElement, patch: StylePatch):
   const runs = element.runs.map((run) => {
     const copy = { ...run };
     for (const key of STYLE_KEYS) if (key in patch) delete copy[key];
+    if (patch.baseline) copy.baseline = patch.baseline;
+    if (patch.highlight) copy.highlight = patch.highlight;
     return copy;
   });
   return { ...next, runs: compactRuns(next, runs) };
@@ -304,6 +312,8 @@ function inherited(node: Node, root: HTMLElement): StudioTextRun {
         if (Number.isFinite(scale)) style.scale = Math.min(MAX_RUN_SCALE, Math.max(MIN_RUN_SCALE, scale));
       }
       if (style.weight === undefined && data.w !== undefined) style.weight = data.w === "" ? null : normalizeWeight(Number(data.w));
+      if (style.baseline === undefined && (data.v === "sub" || data.v === "super")) style.baseline = data.v;
+      if (style.highlight === undefined && data.h && COLOUR.test(data.h)) style.highlight = data.h.toLowerCase();
     }
     current = current.parentNode;
   }

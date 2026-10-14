@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, IndentDecrease, IndentIncrease, Italic, List, ListOrdered, Strikethrough, Underline } from "lucide-react";
+import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Highlighter, IndentDecrease, IndentIncrease, Italic, List, ListOrdered, Strikethrough, Subscript, Superscript, Underline } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FontPicker } from "@/components/shared/FontPicker";
 import { IconButton } from "@/components/shared/IconButton";
@@ -9,6 +9,7 @@ import {
   STUDIO_LIST_KINDS,
   STUDIO_TEXT_AUTO_SIZES,
   STUDIO_TEXT_CASES,
+  type StudioBaseline,
   type StudioListKind,
   type StudioParagraph,
   type StudioTextAlign,
@@ -18,7 +19,7 @@ import {
   type StudioVerticalAlign,
 } from "@/types/studio";
 import { MAX_RUN_SCALE, MIN_RUN_SCALE } from "../model/design";
-import { fitParagraphs, paragraphCount, weightOf } from "../model/typography";
+import { fitParagraphs, MAX_FIRST_LINE_INDENT, MAX_PARAGRAPH_SPACING, paragraphCount, weightOf } from "../model/typography";
 import { patchSelected } from "./commands";
 import { ColorField, NumberField, PanelSection } from "./controls";
 import { hasExtraWeights, nearestWeight, useFontWeights } from "./fontWeights";
@@ -36,6 +37,7 @@ const MAX_SIZE = 1000;
 const DEFAULT_OUTLINE = { color: "#000000", width: 1 };
 const DEFAULT_SHADOW = { color: "#000000", x: 2, y: 2, opacity: 0.35 };
 const DEFAULT_HIGHLIGHT = { color: "#fde047", padding: 2 };
+const DEFAULT_MARK = "#fde047";
 
 type Flag = "bold" | "italic" | "underline" | "strike";
 type Live = { style: RunStyle | null; paragraphs: StudioParagraph[] };
@@ -63,6 +65,14 @@ function useLiveSelection(editing: boolean): Live | null {
   return live;
 }
 
+function sharedRunStyle(elements: StudioTextElement[], base: RunStyle): RunStyle {
+  const styles = elements.flatMap((element) => element.runs.filter((run) => run.text.trim()).map((run) => runStyle(element, run)));
+  if (!styles.length) return base;
+  const baseline = styles.every((style) => style.baseline === styles[0].baseline) ? styles[0].baseline : null;
+  const highlight = styles.every((style) => style.highlight === styles[0].highlight) ? styles[0].highlight : null;
+  return { ...base, baseline, highlight };
+}
+
 function allParagraphs(element: StudioTextElement): StudioParagraph[] {
   return fitParagraphs(element.paragraphs, paragraphCount(element.runs));
 }
@@ -74,7 +84,7 @@ export function TextSection({ elements }: { elements: StudioTextElement[] }) {
   const editing = elements.length === 1 && editingId === first.id;
   const live = useLiveSelection(editing);
   const base = runStyle(first, { text: "" });
-  const style = live?.style ?? base;
+  const style = live?.style ?? sharedRunStyle(elements, base);
   const weights = useFontWeights(style.fontId);
   const spellCheck = useTextPrefsStore((state) => state.spellCheck);
   const setSpellCheck = useTextPrefsStore((state) => state.setSpellCheck);
@@ -115,6 +125,7 @@ export function TextSection({ elements }: { elements: StudioTextElement[] }) {
     }
     change((element) => ({ ...withElementStyle(element, { scale: 1 }), fontSize: size }));
   };
+  const toggleBaseline = (baseline: StudioBaseline) => applyStyle({ baseline: style.baseline === baseline ? null : baseline });
   const setListKind = (kind: StudioListKind) => applyParagraphs(() => (paragraph) => ({ list: kind, level: kind === "none" ? 0 : paragraph.level }));
   const keep = (event: React.MouseEvent) => event.preventDefault();
 
@@ -148,8 +159,12 @@ export function TextSection({ elements }: { elements: StudioTextElement[] }) {
           <IconButton icon={Italic} label={t("studio.props.italic")} shortcut="Ctrl+I" active={style.italic} onClick={() => toggle("italic")} />
           <IconButton icon={Underline} label={t("studio.props.underline")} shortcut="Ctrl+U" active={style.underline} onClick={() => toggle("underline")} />
           <IconButton icon={Strikethrough} label={t("studio.text.strike")} shortcut="Ctrl+Shift+X" active={style.strike} onClick={() => toggle("strike")} />
+          <IconButton icon={Superscript} label={t("studio.text.superscript")} shortcut="Ctrl+Shift+=" active={style.baseline === "super"} onClick={() => toggleBaseline("super")} />
+          <IconButton icon={Subscript} label={t("studio.text.subscript")} shortcut="Ctrl+=" active={style.baseline === "sub"} onClick={() => toggleBaseline("sub")} />
+          <IconButton icon={Highlighter} label={t("studio.text.markText")} active={style.highlight !== null} onClick={() => applyStyle({ highlight: style.highlight ? null : DEFAULT_MARK })} />
         </div>
         <ColorField label={t("studio.props.color")} value={style.color} onChange={(color) => applyStyle({ color })} />
+        {style.highlight ? <ColorField label={t("studio.text.markTextColor")} value={style.highlight} onChange={(highlight) => applyStyle({ highlight })} /> : null}
         <div className="flex flex-wrap items-center gap-1" role="group" aria-label={t("studio.props.align")} onMouseDown={keep}>
           {TEXT_ALIGNS.map((value) => (
             <IconButton key={value} icon={ALIGN_ICONS[value]} active={first.align === value} label={t(`studio.textAlign.${value}`)} onClick={() => change(() => ({ align: value }))} />
@@ -167,6 +182,8 @@ export function TextSection({ elements }: { elements: StudioTextElement[] }) {
         </div>
         <SliderField label={t("studio.props.lineHeight")} value={first.lineHeight} min={0.6} max={3} step={0.05} format={(value) => value.toFixed(2)} onChange={(lineHeight) => change(() => ({ lineHeight }), "line-height")} />
         <SliderField label={t("studio.props.letterSpacing")} value={Math.round(first.letterSpacing * 1000)} min={-100} max={800} step={10} format={(value) => `${value}`} onChange={(value) => change(() => ({ letterSpacing: value / 1000 }), "letter-spacing")} />
+        <SliderField label={t("studio.text.paragraphSpacing")} value={first.paragraphSpacing} min={0} max={MAX_PARAGRAPH_SPACING} step={0.1} format={(value) => `${value.toFixed(1)} em`} onChange={(paragraphSpacing) => change(() => ({ paragraphSpacing }), "paragraph-spacing")} />
+        <SliderField label={t("studio.text.firstLineIndent")} value={first.firstLineIndent} min={0} max={MAX_FIRST_LINE_INDENT} step={0.25} format={(value) => `${value.toFixed(2)} em`} onChange={(firstLineIndent) => change(() => ({ firstLineIndent }), "first-line-indent")} />
         <div className="grid grid-cols-2 gap-2">
           <label className="block min-w-0">
             <span className="mb-1 block break-words text-xs font-medium text-muted-foreground">{t("studio.text.case")}</span>

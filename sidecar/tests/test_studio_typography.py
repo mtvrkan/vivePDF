@@ -372,3 +372,90 @@ def test_imported_families_offer_their_real_weights(weighted_family: str, tmp_pa
 def test_unknown_weights_fall_back_to_the_bold_flag():
     assert resolve_face("library:missing", False, False, 300)[0].name == REGULAR.name
     assert resolve_face("library:missing", True, False, 800)[0].name == BOLD.name
+
+
+def test_superscript_and_subscript_runs_sit_above_and_below_the_line():
+    faces = TextFaces()
+    runs = [
+        {"text": "m"},
+        {"text": "2", "size": 13, "baseline": "super"},
+        {"text": " H"},
+        {"text": "2", "size": 13, "baseline": "sub"},
+        {"text": "O"},
+    ]
+
+    placed = layout(_item(runs), faces, {}, "en").placed
+
+    base, raised, _, lowered, _ = (piece.baseline for piece in placed)
+    assert raised == pytest.approx(base - 13 * 0.54)
+    assert lowered == pytest.approx(base + 13 * 0.23)
+    assert placed[1].size == 13
+
+
+def test_paragraph_spacing_and_first_line_indent_move_the_lines():
+    faces = TextFaces()
+    text = [{"text": "one\ntwo"}]
+
+    plain = layout(_item(text), faces, {}, "en").placed
+    spaced = layout(_item(text, paragraphSpacing=1, firstLineIndent=2), faces, {}, "en").placed
+
+    assert spaced[1].baseline - spaced[0].baseline == pytest.approx(
+        plain[1].baseline - plain[0].baseline + 20
+    )
+    assert spaced[0].x == pytest.approx(plain[0].x + 40)
+    assert spaced[1].x == pytest.approx(plain[1].x + 40)
+
+
+def test_first_line_indent_leaves_lists_and_wrapped_lines_alone():
+    faces = TextFaces()
+    words = "word " * 30
+
+    wrapped = layout(_item([{"text": words}], firstLineIndent=2), faces, {}, "en").placed
+    listed = layout(
+        _item([{"text": "item"}], firstLineIndent=2, paragraphs=[{"list": "bullet"}]),
+        faces,
+        {},
+        "en",
+    ).placed
+    plain_list = layout(
+        _item([{"text": "item"}], paragraphs=[{"list": "bullet"}]), faces, {}, "en"
+    ).placed
+
+    lines = sorted({round(piece.baseline) for piece in wrapped})
+    starts = {
+        line: min(piece.x for piece in wrapped if round(piece.baseline) == line) for line in lines
+    }
+    assert starts[lines[0]] == pytest.approx(40)
+    assert starts[lines[1]] == pytest.approx(0)
+    assert [piece.x for piece in listed] == [piece.x for piece in plain_list]
+
+
+def test_word_highlights_fill_only_their_words(tmp_path: Path):
+    runs = [{"text": "plain "}, {"text": "marked words", "highlight": "#00ff00"}, {"text": " end"}]
+
+    green = _colour_mask(_pixels(_render(tmp_path, [_text(runs)])), (0, 255, 0))
+    measured = _text(
+        [{"text": "x"}],
+        segments=[{"text": "x", "x": 0, "y": 20, "size": 20}],
+        bands=[
+            {"x": 100, "y": 100, "width": 50, "height": 20, "color": "#00ff00"},
+            {"x": 10, "y": 150, "width": 30, "height": 20},
+        ],
+    )
+    measured_green = _colour_mask(_pixels(_render(tmp_path, [measured])), (0, 255, 0))
+    measured_any = _colour_mask(_pixels(_render(tmp_path, [measured])), (255, 255, 0))
+
+    columns = np.where(green.any(axis=0))[0]
+    assert 70 < columns.min() < 100
+    assert columns.max() < 230
+    assert measured_green[125, 145]
+    assert not measured_any[160, 40]
+
+
+def test_new_run_fields_are_validated():
+    with pytest.raises(ValidationError):
+        _item([{"text": "x", "baseline": "middle"}])
+    with pytest.raises(ValidationError):
+        _item([{"text": "x", "highlight": "yellow"}])
+    with pytest.raises(ValidationError):
+        _item([{"text": "x"}], paragraphSpacing=4)

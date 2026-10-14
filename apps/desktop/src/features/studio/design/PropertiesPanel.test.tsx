@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { createDesign, createShape, DEFAULT_DROP_SHADOW } from "../model/design";
+import { createDesign, createShape, createText, DEFAULT_DROP_SHADOW } from "../model/design";
 import { PropertiesPanel } from "./PropertiesPanel";
 import { useStudioStore } from "./studioStore";
 
@@ -147,5 +147,54 @@ describe("shape effects in the properties panel", () => {
 
     expect(shapes()[0]).toMatchObject({ startArrow: "arrow", endArrow: "none" });
     expect(screen.queryByText("Fill")).toBeNull();
+  });
+});
+
+describe("text styling in the properties panel", () => {
+  const texts = () => (useStudioStore.getState().design?.pages[0].elements ?? []).flatMap((element) => (element.kind === "text" ? [element] : []));
+
+  beforeEach(() => {
+    const elements = [createText(0, 0, 200, 40, "m2"), createText(0, 60, 200, 40, "H2O")];
+    const design = createDesign("Texts", 400, 400);
+    useStudioStore.getState().open({ ...design, pages: [{ ...design.pages[0], elements }] });
+    useStudioStore.getState().select(elements.map((element) => element.id));
+  });
+
+  afterEach(() => {
+    cleanup();
+    useStudioStore.getState().close();
+  });
+
+  it("raises every selected text to superscript and back", () => {
+    render(<PropertiesPanel />);
+
+    fireEvent.click(screen.getByRole("button", { name: /^Superscript/ }));
+    const raised = texts().map((element) => element.runs);
+    fireEvent.click(screen.getByRole("button", { name: /^Superscript/ }));
+
+    expect(raised).toEqual([[{ text: "m2", baseline: "super" }], [{ text: "H2O", baseline: "super" }]]);
+    expect(texts().map((element) => element.runs)).toEqual([[{ text: "m2" }], [{ text: "H2O" }]]);
+  });
+
+  it("highlights the words and offers their colour only while it is on", () => {
+    render(<PropertiesPanel />);
+
+    expect(screen.queryByText("Text highlight colour")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Highlight text" }));
+
+    expect(texts().every((element) => element.runs.every((run) => run.highlight === "#fde047"))).toBe(true);
+    expect(screen.getByText("Text highlight colour")).toBeTruthy();
+  });
+
+  it("sets the space between paragraphs and the first line indent on every text", () => {
+    render(<PropertiesPanel />);
+
+    fireEvent.change(screen.getByRole("slider", { name: /Space between paragraphs/ }), { target: { value: "1.5" } });
+    fireEvent.change(screen.getByRole("slider", { name: /First line indent/ }), { target: { value: "2" } });
+
+    expect(texts().map((element) => [element.paragraphSpacing, element.firstLineIndent])).toEqual([
+      [1.5, 2],
+      [1.5, 2],
+    ]);
   });
 });

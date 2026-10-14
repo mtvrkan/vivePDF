@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio designs: text boxes get superscript and subscript (buttons in Text, or Ctrl+Shift+= and Ctrl+= while typing) for m² or H₂O, a highlight colour for selected words, space between paragraphs and a first line indent; the PDF export draws them where the canvas shows them [2026-10-14]
 - Studio documents: footnotes. Insert one with the toolbar button or Ctrl+Alt+F, write it in the panel that opens, and it is numbered and printed at the bottom of the page its marker lands on, above a short rule, with the marker linked to it in the PDF; a note too long for a third of the page turns all notes into numbered endnotes under "Notes" at the end. Documents with footnotes save as file version 2 so older vivePDF versions refuse them instead of dropping the notes [2026-10-14]
 - Studio documents: lay the text out in two or three columns with a chosen gap (Settings › Page). The contents page stays full width, and a page break still starts a new page instead of the next column [2026-10-14]
 - Studio documents: an Insert symbol dialog (Ω in the toolbar) with punctuation, currency, maths, arrows, Greek, accented letters and shapes, a recently used row, and arrow-key navigation; every symbol is in the default document font [2026-10-14]

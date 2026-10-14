@@ -131,11 +131,16 @@ def _span_css(
         kind for kind, on in (("underline", style.underline), ("line-through", style.strike)) if on
     ]
     decoration = " ".join(lines) if decorate and lines else "none"
+    script = ""
+    if style.rise:
+        script = f" vertical-align: {'super' if style.rise > 0 else 'sub'};"
+    painted = style.highlight and colour is None and item.bands is None
+    tint = f" background-color: {style.highlight};" if painted else ""
     return (
         f"font-family: {fonts.use(style)}; font-weight: {style.weight}; "
         f"font-style: {'italic' if style.italic else 'normal'}; "
         f"font-size: {style.size / item.font_size:.4f}em; "
-        f"text-decoration: {decoration}; color: {colour or style.color};"
+        f"text-decoration: {decoration}; color: {colour or style.color};{script}{tint}"
     )
 
 
@@ -170,13 +175,19 @@ def _markup(
 ) -> str:
     start = "right" if flow == "rtl" else "left"
     blocks = []
-    for paragraph in paragraphs:
-        attributes = ""
+    last = len(paragraphs) - 1
+    for number, paragraph in enumerate(paragraphs):
+        rules = []
         if paragraph.kind != "none":
-            attributes = (
-                f' style="padding-{start}: {(paragraph.level + 1) * LIST_INDENT:.4f}em; '
-                f'text-indent: -{LIST_INDENT:.4f}em;"'
+            rules.append(
+                f"padding-{start}: {(paragraph.level + 1) * LIST_INDENT:.4f}em; "
+                f"text-indent: -{LIST_INDENT:.4f}em;"
             )
+        elif item.first_line_indent:
+            rules.append(f"text-indent: {item.first_line_indent:.4f}em;")
+        if item.paragraph_spacing and number < last:
+            rules.append(f"margin-bottom: {item.paragraph_spacing:.4f}em;")
+        attributes = f' style="{" ".join(rules)}"' if rules else ""
         spans = [_marker(item, paragraph, faces, fonts, colour)] if paragraph.marker else []
         for text, style in paragraph.pieces:
             css = _span_css(item, style, fonts, colour, decorate)
@@ -317,7 +328,9 @@ def draw_shaped(
     main = prepared()
     size, height = _fitted(main)
     draw_bands(
-        page, item, [Band(band.x, band.y, band.width, band.height) for band in item.bands or []]
+        page,
+        item,
+        [Band(band.x, band.y, band.width, band.height, band.color) for band in item.bands or []],
     )
     shadow = item.shadow
     if shadow is not None and shadow.opacity > 0:

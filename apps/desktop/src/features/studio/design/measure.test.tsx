@@ -3,7 +3,7 @@ import { createText } from "../model/design";
 
 vi.mock("@/shared/rpc/operations", () => ({ fontFile: async () => ({ ext: "pfb", base64: "", italic: false }) }));
 
-const { fitTextSize, measureTexts } = await import("./measure");
+const { buildTextNode, fitTextSize, measureLayout, measureTexts } = await import("./measure");
 
 const texts = (count: number) => Array.from({ length: count }, (_, index) => createText(0, index * 20, 200, 20, `Line ${index}`));
 
@@ -70,5 +70,27 @@ describe("shrinking text to its box", () => {
     expect(fitted).toBe(50);
     expect(body.style.overflowWrap).toBe("break-word");
     expect(body.style.fontSize).toBe("50px");
+  });
+});
+
+describe("measured word highlights", () => {
+  it("joins each highlighted run into one coloured band, spaces included, apart from the box bands", () => {
+    Object.defineProperty(Range.prototype, "getClientRects", {
+      configurable: true,
+      value(this: Range) {
+        const span = this.startContainer.parentElement;
+        const left = this.startOffset * 10 + (span?.dataset.h ? 100 : 0);
+        return [{ left, right: left + 10, top: 0, bottom: 12, width: 10, height: 12 }];
+      },
+    });
+    const element = createText(0, 0, 400, 40, "", { runs: [{ text: "ab " }, { text: "cd e", highlight: "#00ff00" }] });
+    const { frame } = buildTextNode(element, "en");
+    document.body.append(frame);
+
+    const { segments, bands } = measureLayout(frame, element, element.fontSize);
+    frame.remove();
+
+    expect(bands).toEqual([{ x: 100, y: 0, width: 40, height: 12, color: "#00ff00" }]);
+    expect(segments.map((segment) => segment.text)).toEqual(["ab", "cd", "e"]);
   });
 });

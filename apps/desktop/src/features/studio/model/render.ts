@@ -14,7 +14,7 @@ import { hasPlaceholders, textOf } from "./design";
 import { finishRecipe } from "./finish";
 import { filterMatrix } from "./imageFilters";
 import { bleedEdges, bleedElement, shiftFill } from "./print";
-import { fitParagraphs, paragraphCount, weightOf } from "./typography";
+import { fitParagraphs, paragraphCount, SCRIPT_SCALE, weightOf } from "./typography";
 import { ellipse, renderFill, renderStroke, roundedRect, shapePaths } from "./shapes";
 import { recolorSvg } from "./svgColors";
 
@@ -38,6 +38,7 @@ function box(element: StudioElement): StudioRenderBox {
 
 function textItem(element: StudioTextElement, measured: MeasuredText): StudioRenderItem {
   const layout = hasPlaceholders(textOf(element.runs)) ? undefined : measured.get(element.id);
+  const bands = layout ? layout.bands.filter((band) => element.highlight || band.color) : [];
   return {
     ...box(element),
     kind: "text",
@@ -51,8 +52,10 @@ function textItem(element: StudioTextElement, measured: MeasuredText): StudioRen
         strike: run.strike ?? element.strike,
         color: run.color ?? element.color,
         fontId: run.fontId ?? element.fontId,
-        size: Math.min(MAX_RUN_SIZE, (run.scale ?? 1) * element.fontSize),
+        size: Math.min(MAX_RUN_SIZE, (run.scale ?? 1) * (run.baseline ? SCRIPT_SCALE : 1) * element.fontSize),
         weight: weightOf(bold, run.weight !== undefined ? run.weight : element.weight),
+        ...(run.baseline ? { baseline: run.baseline } : {}),
+        ...(run.highlight ? { highlight: run.highlight } : {}),
       };
     }),
     fontId: element.fontId,
@@ -63,6 +66,8 @@ function textItem(element: StudioTextElement, measured: MeasuredText): StudioRen
     verticalAlign: element.verticalAlign,
     lineHeight: element.lineHeight,
     letterSpacing: element.letterSpacing * element.fontSize,
+    paragraphSpacing: element.paragraphSpacing,
+    firstLineIndent: element.firstLineIndent,
     textCase: element.textCase,
     shrinkToFit: element.autoSize === "shrink",
     autoWidth: element.autoSize === "width",
@@ -71,7 +76,7 @@ function textItem(element: StudioTextElement, measured: MeasuredText): StudioRen
     shadow: element.shadow,
     highlight: element.highlight,
     ...(element.language ? { language: element.language } : {}),
-    ...(layout ? { segments: layout.segments, ...(element.highlight ? { bands: layout.bands } : {}) } : {}),
+    ...(layout ? { segments: layout.segments, ...(bands.length ? { bands } : {}) } : {}),
   };
 }
 

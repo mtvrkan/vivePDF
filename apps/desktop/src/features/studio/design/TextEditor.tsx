@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, type ClipboardEvent, type KeyboardEvent } from "react";
-import type { StudioListKind, StudioTextAlign, StudioTextElement } from "@/types/studio";
+import type { StudioBaseline, StudioListKind, StudioTextAlign, StudioTextElement } from "@/types/studio";
 import { digitKey, shortcutLetter } from "@/shared/lib/shortcutKeys";
 import { updateElement } from "../model/edit";
 import { listMarkers, paragraphAt } from "../model/typography";
@@ -97,7 +97,7 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
     const body = bodyRef.current;
     if (!body) return;
     ensureMarkerRule();
-    body.replaceChildren(...blockNodes(editorBlocks(latest.current, appLanguage.current), useStudioFontsStore.getState().faces, true));
+    body.replaceChildren(...blockNodes(editorBlocks(latest.current, appLanguage.current), useStudioFontsStore.getState().faces, true, latest.current));
     body.focus();
     const point = textEditorEntry.point;
     textEditorEntry.point = null;
@@ -118,7 +118,7 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
     const body = bodyRef.current;
     if (!body) return;
     const blocks = editorBlocks(element, language);
-    const signature = blocksSignature(blocks, faces);
+    const signature = blocksSignature(blocks, faces, element);
     if (body.dataset.rendered === signature) return;
     const first = body.dataset.rendered === undefined;
     if (!first && rendered.current === element) {
@@ -132,7 +132,7 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
     rendered.current = element;
     if (first) return;
     const saved = document.activeElement === body ? selectionOffsets(body) : null;
-    body.replaceChildren(...blockNodes(blocks, faces, true));
+    body.replaceChildren(...blockNodes(blocks, faces, true, element));
     if (saved) restoreSelection(body, saved.start, saved.end);
   }, [element, faces, language]);
 
@@ -202,6 +202,12 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
     };
   }, []);
 
+  const toggleBaseline = (baseline: StudioBaseline) => {
+    const bridge = textEditorBridge.current;
+    const summary = bridge?.summary();
+    bridge?.applyStyle({ baseline: summary?.baseline === baseline ? null : baseline });
+  };
+
   const toggleStyle = (key: "bold" | "italic" | "underline" | "strike") => {
     const bridge = textEditorBridge.current;
     const summary = bridge?.summary();
@@ -236,6 +242,11 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
     if (!event.shiftKey && style) {
       event.preventDefault();
       toggleStyle(style);
+      return;
+    }
+    if (event.code === "Equal" || event.key === "=" || event.key === "+") {
+      event.preventDefault();
+      toggleBaseline(event.shiftKey ? "super" : "sub");
       return;
     }
     if (!event.shiftKey) return;
