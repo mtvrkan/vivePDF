@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { exitImmersive, setImmersiveFullscreen, shouldExitOnKey } from "./immersive";
+import { exitImmersive, onImmersiveExit, setImmersiveFullscreen, shouldExitOnKey } from "./immersive";
 
 const appWindow = vi.hoisted(() => ({
   isMaximized: vi.fn(async () => false),
@@ -86,5 +86,18 @@ describe("setImmersiveFullscreen", () => {
     expect(appWindow.isMaximized).toHaveBeenCalledTimes(1);
     expect(appWindow.setFullscreen).toHaveBeenCalledTimes(1);
     await exitImmersive();
+  });
+});
+
+describe("onImmersiveExit", () => {
+  it("tells listeners when the presentation ends until they unsubscribe", async () => {
+    const listener = vi.fn();
+    const stop = onImmersiveExit(listener);
+
+    await exitImmersive();
+    stop();
+    await exitImmersive();
+
+    expect(listener).toHaveBeenCalledTimes(1);
   });
 });

@@ -13,6 +13,12 @@ let restore: Restore | null = null;
 let restoring = false;
 let entering = false;
 let savingDrawings = false;
+const exitListeners = new Set<() => void>();
+
+export function onImmersiveExit(listener: () => void): () => void {
+  exitListeners.add(listener);
+  return () => exitListeners.delete(listener);
+}
 
 const settle = () => new Promise((resolve) => window.setTimeout(resolve, SETTLE_MS));
 
@@ -44,6 +50,7 @@ export async function exitImmersive(): Promise<void> {
   restoring = true;
   holdTemporaryDrawings(savingDrawings ? "save" : "ask");
   savingDrawings = false;
+  exitListeners.forEach((listener) => listener());
   const appWindow = getCurrentWindow();
   const entry = restore;
   restore = null;
