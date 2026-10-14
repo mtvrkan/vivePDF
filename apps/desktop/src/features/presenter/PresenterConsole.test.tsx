@@ -6,7 +6,7 @@ import { usePresentationStore } from "@/shared/store/presentationStore";
 import { usePresenterStore, type PresenterSession } from "./presenterSession";
 
 const invoke = vi.hoisted(() => vi.fn());
-const scroll = vi.hoisted(() => ({ state: { currentPage: 2, totalPages: 5 }, provides: { scrollToNextPage: vi.fn(), scrollToPreviousPage: vi.fn() } }));
+const scroll = vi.hoisted(() => ({ state: { currentPage: 2, totalPages: 5 }, provides: { scrollToNextPage: vi.fn(), scrollToPreviousPage: vi.fn(), scrollToPage: vi.fn() } }));
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke, convertFileSrc: (path: string) => path }));
 vi.mock("@embedpdf/plugin-scroll/react", () => ({ useScroll: () => scroll }));
@@ -35,6 +35,7 @@ describe("PresenterConsole", () => {
     invoke.mockResolvedValue(null);
     scroll.state = { currentPage: 2, totalPages: 5 };
     scroll.provides.scrollToNextPage.mockReset();
+    scroll.provides.scrollToPage.mockReset();
     usePresentationStore.getState().resetSession();
     useDocumentStore.getState().register("doc-a", "C:/talks/deck.pdf", null);
     usePresenterStore.setState({ session: session() });
@@ -84,5 +85,31 @@ describe("PresenterConsole", () => {
     expect(invoke).toHaveBeenCalledWith("presenter_open", { path: "C:/talks/deck.pdf", password: null, startPage: 1 });
     expect(usePresenterStore.getState().session).toMatchObject({ audience: "present-b", problem: null });
     expect(screen.queryByText("The audience screen was closed.")).toBeNull();
+  });
+
+  it("lets the presenter look a few pages ahead without moving the presentation", () => {
+    renderConsole();
+
+    fireEvent.click(screen.getByRole("button", { name: "Preview the page after" }));
+    fireEvent.click(screen.getByRole("button", { name: "Preview the page after" }));
+
+    expect(screen.getByTestId("presenter-preview-heading").textContent).toBe("Preview: page 5 (only you)");
+    expect(scroll.provides.scrollToPage).not.toHaveBeenCalled();
+    expect(scroll.provides.scrollToNextPage).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Go to page 5" }));
+    expect(scroll.provides.scrollToPage).toHaveBeenCalledWith({ pageNumber: 5 });
+    fireEvent.click(screen.getByRole("button", { name: "Back to the next page" }));
+    expect(screen.getByTestId("presenter-preview-heading").textContent).toBe("Next page");
+  });
+
+  it("stops looking ahead at the last page but can look back from the end", () => {
+    scroll.state = { currentPage: 5, totalPages: 5 };
+    renderConsole();
+
+    expect((screen.getByRole("button", { name: "Preview the page after" }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByRole("button", { name: "Preview the page before" }));
+    fireEvent.click(screen.getByRole("button", { name: "Preview the page before" }));
+
+    expect(screen.getByTestId("presenter-preview-heading").textContent).toBe("Preview: page 4 (only you)");
   });
 });

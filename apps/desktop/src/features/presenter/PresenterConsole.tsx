@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowLeftRight, ChevronLeft, ChevronRight, FileDown, Moon, Pause, Play, RotateCcw, Sun } from "lucide-react";
+import { ArrowLeftRight, ChevronLeft, ChevronRight, CornerUpLeft, FileDown, Moon, Pause, Play, RotateCcw, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { Button } from "@/components/shared/Button";
@@ -25,6 +25,7 @@ import { usePresenterConsole } from "./usePresenterConsole";
 
 const TIMER_TICK_MS = 500;
 const CLOCK_TICK_MS = 15000;
+const PEEK_WHEEL_STEP = 40;
 
 function useNow(intervalMs: number, active = true): number {
   const [now, setNow] = useState(() => Date.now());
@@ -90,6 +91,18 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
   const currentPage = scrollState.currentPage;
   const totalPages = scrollState.totalPages;
   const nextIndex = currentPage < totalPages ? currentPage : null;
+  const [peek, setPeek] = useState<{ from: number; index: number } | null>(null);
+  const peekWheel = useRef(0);
+  useEffect(() => setPeek(null), [currentPage]);
+  const peekIndex = peek && peek.from === currentPage ? peek.index : null;
+  const shownIndex = peekIndex ?? nextIndex;
+  const peeking = peekIndex !== null && peekIndex !== nextIndex;
+  const stepPeek = (delta: number) => {
+    const target = Math.min(totalPages - 1, Math.max(0, (shownIndex ?? totalPages) + delta));
+    setPeek({ from: currentPage, index: target });
+  };
+  const canPeekBack = (shownIndex ?? totalPages) > 0;
+  const canPeekForward = shownIndex !== null && shownIndex < totalPages - 1;
 
   const fail = (error: unknown) => useToastStore.getState().push("error", describeError(t, toRpcError(error)));
 
@@ -145,18 +158,36 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
           </div>
         </section>
         <aside className="flex w-md shrink-0 flex-col gap-3 2xl:w-lg">
-          <p className="flex items-baseline justify-between gap-2">
-            <span className="text-sm font-medium">{t("presentation.presenter.next")}</span>
-            <span className="font-mono text-2xl tabular-nums" data-testid="presenter-counter">
+          <div className="flex items-center gap-1">
+            <span className="min-w-0 flex-1 truncate text-sm font-medium" data-testid="presenter-preview-heading">
+              {peeking && shownIndex !== null ? t("presentation.presenter.peekHeading", { page: shownIndex + 1 }) : t("presentation.presenter.next")}
+            </span>
+            {peeking ? <IconButton icon={CornerUpLeft} label={t("presentation.presenter.peekReset")} onClick={() => setPeek(null)} /> : null}
+            <IconButton icon={ChevronLeft} label={t("presentation.presenter.peekPrevious")} disabled={!canPeekBack} onClick={() => stepPeek(-1)} />
+            <IconButton icon={ChevronRight} label={t("presentation.presenter.peekNext")} disabled={!canPeekForward} onClick={() => stepPeek(1)} />
+            <span className="ms-2 font-mono text-2xl tabular-nums" data-testid="presenter-counter">
               <span className="sr-only">{t("presentation.presenter.pageOf", { current: currentPage, total: totalPages })}</span>
               <span aria-hidden>
                 {currentPage} / {totalPages}
               </span>
             </span>
-          </p>
-          <div className="flex min-h-40 flex-3 flex-col">
-            {nextIndex !== null ? (
-              <NextPagePreview documentId={documentId} pageIndex={nextIndex} label={t("presentation.presenter.nextPage", { page: nextIndex + 1 })} onSelect={() => scroll?.scrollToNextPage()} />
+          </div>
+          <div
+            className="flex min-h-40 flex-3 flex-col"
+            onWheel={(event) => {
+              peekWheel.current += event.deltaY;
+              if (Math.abs(peekWheel.current) < PEEK_WHEEL_STEP) return;
+              stepPeek(peekWheel.current > 0 ? 1 : -1);
+              peekWheel.current = 0;
+            }}
+          >
+            {shownIndex !== null ? (
+              <NextPagePreview
+                documentId={documentId}
+                pageIndex={shownIndex}
+                label={peeking ? t("presentation.presenter.peekGoTo", { page: shownIndex + 1 }) : t("presentation.presenter.nextPage", { page: shownIndex + 1 })}
+                onSelect={() => (peeking ? scroll?.scrollToPage({ pageNumber: shownIndex + 1 }) : scroll?.scrollToNextPage())}
+              />
             ) : (
               <p className="flex flex-1 items-center justify-center rounded-lg border bg-card text-sm text-muted-foreground">{t("presentation.presenter.endOfShow")}</p>
             )}
