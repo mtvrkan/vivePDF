@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio documents: find and replace with Ctrl+F and Ctrl+H (or the search button), with match case, whole words, a running "3 of 12" count, every match marked on the page, and Replace all undone in one step [2026-10-14]
 - Studio documents: a line and paragraph spacing menu in the toolbar, as in Word. Pick line spacing 1.0, 1.15, 1.5 or 2.0, add space before or after a paragraph, indent its first line, or set exact values under Custom spacing; the preview and the PDF follow each paragraph's own spacing [2026-10-14]
 - Presentation: a selected drawing can now be rotated — drag the round handle under it (Shift turns in 15° steps) or use Rotate left / Rotate right — and, like in Annotate, it can be recoloured, made thicker or thinner, made more or less see-through and duplicated from its own toolbar [2026-10-13]
 - Presentation: the drawing toolbar shows its keys — R / Shift+R turn the selected drawing right / left and Ctrl+D duplicates it [2026-10-13]

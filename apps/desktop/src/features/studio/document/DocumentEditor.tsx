@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ArrowLeft, Download, FilePlus2, Save } from "lucide-react";
+import { ArrowLeft, Download, FilePlus2, Save, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { Button } from "@/components/shared/Button";
@@ -9,6 +9,7 @@ import { basenameOf } from "@/shared/lib/paths";
 import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import type { DocumentNode } from "@/types/studio";
 import { DocumentExportDialog } from "./DocumentExportDialog";
+import { DocumentFindBar, type DocumentFindMode } from "./DocumentFindBar";
 import { DocumentPreview } from "./DocumentPreview";
 import { DocumentSettingsPanel } from "./DocumentSettingsPanel";
 import { DocumentToolbar } from "./DocumentToolbar";
@@ -26,7 +27,7 @@ const PX_PER_PT = 4 / 3;
 
 type SideTab = (typeof SIDE_TABS)[number];
 
-function DocumentTopBar({ onExport }: { onExport: () => void }) {
+function DocumentTopBar({ onExport, onFind }: { onExport: () => void; onFind: () => void }) {
   const { t } = useTranslation();
   const name = useDocumentStore((state) => state.document?.name ?? "");
   const filePath = useDocumentStore((state) => state.filePath);
@@ -49,6 +50,7 @@ function DocumentTopBar({ onExport }: { onExport: () => void }) {
       </span>
       <IconButton icon={Save} label={t("studio.project.save")} shortcut="Ctrl+S" disabled={saving} onClick={() => void save(false)} />
       <IconButton icon={FilePlus2} label={t("studio.project.saveAs")} shortcut="Ctrl+Shift+S" disabled={saving} onClick={() => void save(true)} />
+      <IconButton icon={Search} label={t("studio.find.title")} shortcut="Ctrl+F" onClick={onFind} data-testid="document-find-open" />
       <Button variant="primary" icon={<Download className="size-4" aria-hidden />} onClick={onExport} className="ml-auto">
         {t("studio.toolbar.export")}
       </Button>
@@ -56,10 +58,10 @@ function DocumentTopBar({ onExport }: { onExport: () => void }) {
   );
 }
 
-function useShortcuts(onExport: () => void) {
+function useShortcuts(onExport: () => void, onFind: (replace: boolean) => void) {
   const { save } = useDocumentSave();
-  const latest = useRef({ onExport, save });
-  latest.current = { onExport, save };
+  const latest = useRef({ onExport, onFind, save });
+  latest.current = { onExport, onFind, save };
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
@@ -72,6 +74,10 @@ function useShortcuts(onExport: () => void) {
         event.preventDefault();
         event.stopPropagation();
         latest.current.onExport();
+      } else if ((letter === "f" || letter === "h") && !event.shiftKey) {
+        event.preventDefault();
+        event.stopPropagation();
+        latest.current.onFind(letter === "h");
       }
     };
     window.addEventListener("keydown", onKeyDown, true);
@@ -100,8 +106,10 @@ export default function DocumentEditor({ language }: { language: string }) {
   const settings = useDocumentStore((state) => state.document?.settings);
   const [side, setSide] = useState<SideTab>("preview");
   const [exporting, setExporting] = useState(false);
+  const [finding, setFinding] = useState<DocumentFindMode | null>(null);
+  const openFind = (replace: boolean) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 }));
   const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(citationTerms(t), language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList"))), [t, language]);
-  useShortcuts(() => setExporting(true));
+  useShortcuts(() => setExporting(true), openFind);
 
   const editor = useEditor(
     {
@@ -142,13 +150,16 @@ export default function DocumentEditor({ language }: { language: string }) {
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="document-editor">
-      <DocumentTopBar onExport={() => setExporting(true)} />
+      <DocumentTopBar onExport={() => setExporting(true)} onFind={() => openFind(false)} />
       {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - margin * 2} /> : null}
       <div className="flex min-h-0 flex-1">
-        <div ref={host} className="min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
-          <div className="paper-surface vp-doc mx-auto bg-white shadow-md" style={paperStyle}>
-            <EditorContent editor={editor} />
+        <div className="relative flex min-w-0 flex-1">
+          <div ref={host} className="min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
+            <div className="paper-surface vp-doc mx-auto bg-white shadow-md" style={paperStyle}>
+              <EditorContent editor={editor} />
+            </div>
           </div>
+          {finding && editor ? <DocumentFindBar editor={editor} mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
         </div>
         <aside className="glass flex w-80 shrink-0 flex-col border-l border-border/60" aria-label={t("studio.doc.side")}>
           <div className="border-b border-border/60 p-3">

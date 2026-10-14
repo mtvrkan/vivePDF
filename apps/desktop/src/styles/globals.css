@@ -856,6 +856,14 @@
     color: var(--muted-foreground);
     font-style: italic;
   }
+  .vp-doc .vp-find-match {
+    background-color: color-mix(in oklab, var(--color-warning) 35%, transparent);
+    border-radius: 2px;
+  }
+  .vp-doc .vp-find-current {
+    background-color: color-mix(in oklab, var(--color-warning) 75%, transparent);
+    outline: 1px solid var(--color-warning);
+  }
   .vp-doc .ProseMirror-selectednode {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
