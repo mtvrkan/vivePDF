@@ -9165,6 +9165,23 @@
           "addendum": "Ek (addendum)",
           "clarification": "Açıklama"
         }
+      },
+      "spacing": {
+        "label": "Satır ve paragraf aralığı",
+        "lineDefault": "Belgenin satır aralığı",
+        "before": "Paragraftan önce boşluk ekle",
+        "after": "Paragraftan sonra boşluk ekle",
+        "firstLine": "İlk satırı içeri al",
+        "customItem": "Özel aralık…",
+        "custom": "Satır ve paragraf aralığı",
+        "reset": "Belgenin aralığını kullan",
+        "apply": "Uygula",
+        "fields": {
+          "lineHeight": "Satır aralığı",
+          "spaceBefore": "Önce boşluk",
+          "spaceAfter": "Sonra boşluk",
+          "firstLineIndent": "İlk satır girintisi"
+        }
       }
     },
     "cv": {

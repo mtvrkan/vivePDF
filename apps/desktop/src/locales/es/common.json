@@ -9163,6 +9163,23 @@
           "addendum": "Adenda",
           "clarification": "Aclaración"
         }
+      },
+      "spacing": {
+        "label": "Interlineado y espaciado de párrafo",
+        "lineDefault": "Interlineado del documento",
+        "before": "Agregar espacio antes del párrafo",
+        "after": "Agregar espacio después del párrafo",
+        "firstLine": "Sangrar la primera línea",
+        "customItem": "Espaciado personalizado…",
+        "custom": "Interlineado y espaciado de párrafo",
+        "reset": "Usar el espaciado del documento",
+        "apply": "Aplicar",
+        "fields": {
+          "lineHeight": "Interlineado",
+          "spaceBefore": "Espacio antes",
+          "spaceAfter": "Espacio después",
+          "firstLineIndent": "Sangría de primera línea"
+        }
       }
     },
     "cv": {

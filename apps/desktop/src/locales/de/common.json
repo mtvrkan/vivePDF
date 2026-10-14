@@ -9163,6 +9163,23 @@
           "addendum": "Nachtrag",
           "clarification": "Klarstellung"
         }
+      },
+      "spacing": {
+        "label": "Zeilen- und Absatzabstand",
+        "lineDefault": "Zeilenabstand des Dokuments",
+        "before": "Abstand vor Absatz hinzufügen",
+        "after": "Abstand nach Absatz hinzufügen",
+        "firstLine": "Erste Zeile einziehen",
+        "customItem": "Benutzerdefinierter Abstand…",
+        "custom": "Zeilen- und Absatzabstand",
+        "reset": "Abstand des Dokuments verwenden",
+        "apply": "Anwenden",
+        "fields": {
+          "lineHeight": "Zeilenabstand",
+          "spaceBefore": "Abstand vor",
+          "spaceAfter": "Abstand nach",
+          "firstLineIndent": "Einzug erste Zeile"
+        }
       }
     },
     "cv": {

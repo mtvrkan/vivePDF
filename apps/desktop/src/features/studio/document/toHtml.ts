@@ -2,6 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
+import { SPACING_KEYS, spacingCss } from "./spacing";
 
 export const PAGE_BREAK = "pageBreak";
 export const MAX_DOCUMENT_FONTS = 16;
@@ -120,7 +121,12 @@ function wrap(text: string, mark: Mark, writer: Writer): string {
 
 function blockStyle(node: DocumentNode): string {
   const align = attr(node, "textAlign");
-  return typeof align === "string" && ALIGNS.has(align) && align !== "left" ? ` style="text-align:${align}"` : "";
+  const styles = typeof align === "string" && ALIGNS.has(align) && align !== "left" ? [`text-align:${align}`] : [];
+  for (const key of SPACING_KEYS) {
+    const css = spacingCss(key, attr(node, key));
+    if (css) styles.push(css);
+  }
+  return styles.length ? ` style="${styles.join(";")}"` : "";
 }
 
 function direction(node: DocumentNode): string {

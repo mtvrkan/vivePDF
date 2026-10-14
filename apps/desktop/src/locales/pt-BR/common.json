@@ -9163,6 +9163,23 @@
           "addendum": "Adendo",
           "clarification": "Esclarecimento"
         }
+      },
+      "spacing": {
+        "label": "Espaçamento entre linhas e parágrafos",
+        "lineDefault": "Espaçamento do documento",
+        "before": "Adicionar espaço antes do parágrafo",
+        "after": "Adicionar espaço depois do parágrafo",
+        "firstLine": "Recuar a primeira linha",
+        "customItem": "Espaçamento personalizado…",
+        "custom": "Espaçamento entre linhas e parágrafos",
+        "reset": "Usar o espaçamento do documento",
+        "apply": "Aplicar",
+        "fields": {
+          "lineHeight": "Espaçamento entre linhas",
+          "spaceBefore": "Espaço antes",
+          "spaceAfter": "Espaço depois",
+          "firstLineIndent": "Recuo da primeira linha"
+        }
       }
     },
     "cv": {

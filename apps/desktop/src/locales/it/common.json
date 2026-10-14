@@ -9163,6 +9163,23 @@
           "addendum": "Addendum",
           "clarification": "Chiarimento"
         }
+      },
+      "spacing": {
+        "label": "Interlinea e spaziatura paragrafo",
+        "lineDefault": "Interlinea del documento",
+        "before": "Aggiungi spazio prima del paragrafo",
+        "after": "Aggiungi spazio dopo il paragrafo",
+        "firstLine": "Rientra la prima riga",
+        "customItem": "Spaziatura personalizzata…",
+        "custom": "Interlinea e spaziatura paragrafo",
+        "reset": "Usa la spaziatura del documento",
+        "apply": "Applica",
+        "fields": {
+          "lineHeight": "Interlinea",
+          "spaceBefore": "Spazio prima",
+          "spaceAfter": "Spazio dopo",
+          "firstLineIndent": "Rientro prima riga"
+        }
       }
     },
     "cv": {

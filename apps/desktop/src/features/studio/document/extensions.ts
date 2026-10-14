@@ -11,6 +11,7 @@ import { Placeholder } from "@tiptap/extensions";
 import StarterKit from "@tiptap/starter-kit";
 import { citationNodes, type CitationSource } from "./citationNodes";
 import { fontStack } from "./documentFonts";
+import { ParagraphSpacing } from "./paragraphSpacing";
 import { PAGE_BREAK } from "./toHtml";
 
 declare module "@tiptap/core" {
@@ -74,6 +75,7 @@ export function documentExtensions(placeholder: string, citations: CitationSourc
     FontSize,
     FontId,
     TextAlign.configure({ types: ["heading", "paragraph"] }),
+    ParagraphSpacing,
     Highlight.configure({ multicolor: true }),
     Subscript,
     Superscript,

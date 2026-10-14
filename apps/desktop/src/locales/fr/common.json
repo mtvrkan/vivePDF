@@ -9163,6 +9163,23 @@
           "addendum": "Addendum",
           "clarification": "Clarification"
         }
+      },
+      "spacing": {
+        "label": "Interligne et espacement des paragraphes",
+        "lineDefault": "Interligne du document",
+        "before": "Ajouter un espace avant le paragraphe",
+        "after": "Ajouter un espace après le paragraphe",
+        "firstLine": "Retrait de première ligne",
+        "customItem": "Espacement personnalisé…",
+        "custom": "Interligne et espacement des paragraphes",
+        "reset": "Utiliser l’espacement du document",
+        "apply": "Appliquer",
+        "fields": {
+          "lineHeight": "Interligne",
+          "spaceBefore": "Espace avant",
+          "spaceAfter": "Espace après",
+          "firstLineIndent": "Retrait de première ligne"
+        }
       }
     },
     "cv": {

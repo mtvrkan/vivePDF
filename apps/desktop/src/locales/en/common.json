@@ -9165,6 +9165,23 @@
           "addendum": "Addendum",
           "clarification": "Clarification"
         }
+      },
+      "spacing": {
+        "label": "Line and paragraph spacing",
+        "lineDefault": "Document line spacing",
+        "before": "Add space before paragraph",
+        "after": "Add space after paragraph",
+        "firstLine": "Indent the first line",
+        "customItem": "Custom spacing…",
+        "custom": "Line and paragraph spacing",
+        "reset": "Use document spacing",
+        "apply": "Apply",
+        "fields": {
+          "lineHeight": "Line spacing",
+          "spaceBefore": "Space before",
+          "spaceAfter": "Space after",
+          "firstLineIndent": "First line indent"
+        }
       }
     },
     "cv": {

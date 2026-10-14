@@ -137,6 +137,39 @@ def test_landscape_paper_and_margins_set_the_page_size(tmp_path: Path):
     assert rect.width > rect.height
 
 
+def _line_box(document: pymupdf.Document, text: str) -> pymupdf.Rect:
+    return document[0].search_for(text)[0]
+
+
+def test_paragraph_spacing_moves_and_indents_the_lines_it_belongs_to(tmp_path: Path):
+    plain = "<p>Alpha line</p><p>Beta line</p><p>Gamma words</p>"
+    spaced = (
+        "<p>Alpha line</p>"
+        '<p style="margin-top:36pt;text-indent:36pt">Beta line</p>'
+        "<p>Gamma words</p>"
+    )
+
+    with _render(tmp_path / "plain", plain) as document:
+        before = _line_box(document, "Beta"), _line_box(document, "Gamma")
+    with _render(tmp_path / "spaced", spaced) as document:
+        after = _line_box(document, "Beta"), _line_box(document, "Gamma")
+
+    assert after[0].y0 - before[0].y0 == pytest.approx(36 - 11 * 0.6, abs=1)
+    assert after[0].x0 - before[0].x0 == pytest.approx(36, abs=1)
+    assert after[1].x0 == pytest.approx(before[1].x0, abs=1)
+
+
+def test_a_paragraph_line_height_spreads_only_its_own_lines(tmp_path: Path):
+    words = " ".join(["word"] * 120)
+    body = f'<p style="line-height:2">{words}</p><p>{words}</p>'
+
+    with _render(tmp_path, body) as document:
+        lines = sorted({round(block[1]) for block in document[0].get_text("words")})
+
+    gaps = [low - high for high, low in zip(lines, lines[1:], strict=False)]
+    assert max(gaps) > min(gaps) * 1.6
+
+
 def _shaded(page: pymupdf.Page) -> list[pymupdf.Rect]:
     return [
         drawing["rect"]

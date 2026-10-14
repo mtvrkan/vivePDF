@@ -53,6 +53,7 @@ import { pickDocumentImage } from "./documentFile";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
 import { SourcesDialog } from "./SourcesDialog";
+import { SpacingMenu } from "./SpacingMenu";
 import { PX_TO_PT } from "./toHtml";
 
 const BLOCKS = ["paragraph", "h1", "h2", "h3", "h4"] as const;
@@ -226,6 +227,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
       <IconButton icon={AlignCenter} label={t("studio.textAlign.center")} active={state.align === "center"} onClick={() => chain().setTextAlign("center").run()} />
       <IconButton icon={AlignRight} label={t("studio.textAlign.right")} active={state.align === "right"} onClick={() => chain().setTextAlign("right").run()} />
       <IconButton icon={AlignJustify} label={t("studio.textAlign.justify")} active={state.align === "justify"} onClick={() => chain().setTextAlign("justify").run()} />
+      <SpacingMenu editor={editor} />
       <Divider />
       <IconButton icon={List} label={t("studio.doc.toolbar.bulletList")} active={state.bullet} onClick={() => chain().toggleBulletList().run()} />
       <IconButton icon={ListOrdered} label={t("studio.doc.toolbar.orderedList")} active={state.ordered} onClick={() => chain().toggleOrderedList().run()} />
