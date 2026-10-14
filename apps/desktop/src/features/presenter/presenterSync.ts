@@ -85,3 +85,19 @@ export function applyPatch(slice: SharedSlice, message: StateMessage): SharedSli
   const { strokesByPage, ...rest } = message.patch;
   return { ...slice, ...rest, strokesByPage: strokesByPage ? { ...slice.strokesByPage, ...strokesByPage } : slice.strokesByPage };
 }
+
+export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page"> {
+  return {
+    blackout: slice.blackout,
+    strokesByPage: slice.strokesByPage,
+    boardStrokes: slice.boardStrokes,
+    laserColor: slice.laserColor,
+    laserSize: slice.laserSize,
+    spotlightRadius: slice.spotlightRadius,
+    spotlightShape: slice.spotlightShape,
+    spotlightDim: slice.spotlightDim,
+    magnifierSize: slice.magnifierSize,
+    magnifierZoom: slice.magnifierZoom,
+    magnifierShape: slice.magnifierShape,
+  };
+}

@@ -12,19 +12,21 @@ import { installBrowserKeyGuard } from "@/shared/lib/browserKeys";
 import { installUiZoomShortcuts } from "@/shared/lib/uiZoomShortcuts";
 import { loadSessionFile } from "@/shared/session/sessionStore";
 import { adoptKnownPaths } from "@/shared/session/grantAdoption";
+import { isAudienceWindow } from "@/shared/lib/windowRole";
 import App from "@/app/App";
 
+const mount = (app: React.ReactNode) => ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(<React.StrictMode>{app}</React.StrictMode>);
+
+const audience = isAudienceWindow();
+
 installBlobUrlGuard();
-removeRetiredSettings();
+if (!audience) removeRetiredSettings();
 applyStoredTheme();
-applyStoredPreferences();
-installUiZoomShortcuts();
+if (!audience) {
+  applyStoredPreferences();
+  installUiZoomShortcuts();
+}
 installBrowserKeyGuard(import.meta.env.DEV);
 
-void Promise.all([ready(), loadSessionFile().then(adoptKnownPaths)]).then(() => {
-  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-    <React.StrictMode>
-      <App />
-    </React.StrictMode>,
-  );
-});
+if (audience) void Promise.all([ready(), import("@/features/presenter/AudienceApp")]).then(([, { AudienceApp }]) => mount(<AudienceApp />));
+else void Promise.all([ready(), loadSessionFile().then(adoptKnownPaths)]).then(() => mount(<App />));

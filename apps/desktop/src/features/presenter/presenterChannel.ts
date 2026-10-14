@@ -8,6 +8,7 @@ export const PRESENTER_EVENTS = {
   live: "presenter:live",
   ready: "presenter:ready",
   command: "presenter:command",
+  failed: "presenter:failed",
   closed: "presenter-closed",
 } as const;
 
@@ -61,10 +62,11 @@ type ConsoleLinkOptions = {
   read: () => SharedSlice;
   onCommand: (command: PresenterCommand) => void;
   onClosed?: () => void;
+  onFailed?: () => void;
   schedule?: FrameScheduler;
 };
 
-export function createConsoleLink({ transport, audience, read, onCommand, onClosed, schedule = animationFrame }: ConsoleLinkOptions) {
+export function createConsoleLink({ transport, audience, read, onCommand, onClosed, onFailed, schedule = animationFrame }: ConsoleLinkOptions) {
   let sent: SharedSlice | null = null;
   let live: LiveSignal | null | undefined;
   let cancelFrame: (() => void) | null = null;
@@ -114,6 +116,9 @@ export function createConsoleLink({ transport, audience, read, onCommand, onClos
   listen(PRESENTER_EVENTS.command, (payload) => {
     if (!disposed && isPresenterCommand(payload)) onCommand(payload);
   });
+  listen(PRESENTER_EVENTS.failed, () => {
+    if (!disposed) onFailed?.();
+  });
   listen(PRESENTER_EVENTS.closed, (payload) => {
     if (!disposed && payload === audience) onClosed?.();
   });
@@ -158,6 +163,7 @@ export async function createAudienceLink({ transport, console: consoleLabel, onS
   return {
     ready: () => post(PRESENTER_EVENTS.ready, null),
     command: (command: PresenterCommand) => post(PRESENTER_EVENTS.command, command),
+    failed: () => post(PRESENTER_EVENTS.failed, null),
     dispose: () => stops.forEach((stop) => stop()),
   };
 }

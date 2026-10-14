@@ -97,4 +97,18 @@ describe("presenterChannel", () => {
     expect(closed).toHaveBeenCalledTimes(1);
     expect(states).toEqual([]);
   });
+
+  it("tells the console when the audience could not show the file", async () => {
+    const bus = memoryBus();
+    const failed = vi.fn();
+    const link = createConsoleLink({ transport: bus("main"), audience: "present-a", read: () => slice(1), onCommand: vi.fn(), onFailed: failed, schedule: manualFrames().schedule });
+    await tick();
+    const audience = await createAudienceLink({ transport: bus("present-a"), console: "main", onState: vi.fn(), onLive: vi.fn() });
+
+    await audience.failed();
+    link.dispose();
+    await audience.failed();
+
+    expect(failed).toHaveBeenCalledTimes(1);
+  });
 });
