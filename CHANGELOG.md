@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio documents: in two or three columns, each footnote now sits at the bottom of the column its marker is in, as wide as that column, instead of across the whole page; a note too tall for a narrow column turns the notes into endnotes [2026-10-14]
 - Studio documents: importing a Markdown file turns `[^1]` footnote references and their `[^1]: …` definitions (including indented follow-on paragraphs) into real footnotes; references inside code stay as written, a reference without a definition stays as text and unused definitions are left out [2026-10-14]
 - Studio designs: text boxes get superscript and subscript (buttons in Text, or Ctrl+Shift+= and Ctrl+= while typing) for m² or H₂O, a highlight colour for selected words, space between paragraphs and a first line indent; the PDF export draws them where the canvas shows them [2026-10-14]
 - Studio documents: footnotes. Insert one with the toolbar button or Ctrl+Alt+F, write it in the panel that opens, and it is numbered and printed at the bottom of the page its marker lands on, above a short rule, with the marker linked to it in the PDF; a note too long for a third of the page turns all notes into numbered endnotes under "Notes" at the end. Documents with footnotes save as file version 2 so older vivePDF versions refuse them instead of dropping the notes [2026-10-14]

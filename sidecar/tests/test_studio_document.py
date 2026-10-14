@@ -543,3 +543,78 @@ def test_pictures_are_embedded_as_jpeg_or_png_and_shrunk(tmp_path: Path):
     assert big.src.startswith("data:image/jpeg;base64,")
     assert (big.width, big.height) == (2400, 1200)
     assert clear.src.startswith("data:image/png;base64,")
+
+
+def _side(rect: pymupdf.Rect, middle: float) -> str:
+    return "left" if rect.x1 < middle else "right" if rect.x0 > middle else "both"
+
+
+def test_footnotes_sit_under_the_column_their_marker_is_in(tmp_path: Path):
+    body = "".join(
+        f"<p>{' '.join(['text'] * 40)} Anchor{index:02d}x{_marker(index)}</p>"
+        for index in range(1, 21)
+    )
+    notes = [f"Note{index:02d}x detail" for index in range(1, 21)]
+
+    with _render(tmp_path, body, footnotes=notes, settings={"columns": 2}) as document:
+        middle = document[0].rect.width / 2
+        sides = set()
+        for index in range(1, 21):
+            anchor_page = _page_with(document, f"Anchor{index:02d}x")
+            note_page = _page_with(document, f"Note{index:02d}x")
+            anchor = document[anchor_page].search_for(f"Anchor{index:02d}x")[0]
+            note = document[note_page].search_for(f"Note{index:02d}x")[0]
+            assert note_page == anchor_page
+            assert _side(note, middle) == _side(anchor, middle) != "both"
+            sides.add(_side(note, middle))
+            column = [
+                word
+                for word in document[note_page].get_text("words")
+                if word[4] == "text"
+                and _side(pymupdf.Rect(word[:4]), middle) == _side(note, middle)
+            ]
+            assert max(word[3] for word in column) < note.y0
+        links = [
+            link
+            for page in document
+            for link in page.get_links()
+            if link["kind"] == pymupdf.LINK_GOTO
+        ]
+
+    assert sides == {"left", "right"}
+    assert len(links) == 20
+    assert {link["to"].x > middle for link in links} == {True, False}
+
+
+def test_notes_in_one_column_stack_in_order(tmp_path: Path):
+    body = f"<p>Start{_marker(1)} and{_marker(2)}</p>{_filler(60)}"
+    notes = ["Earlier note", "Later note"]
+
+    with _render(tmp_path, body, footnotes=notes, settings={"columns": 3}) as document:
+        page = document[0]
+        earlier = page.search_for("Earlier note")[0]
+        later = page.search_for("Later note")[0]
+        column_right = page.rect.width / 3
+
+    assert earlier.y0 < later.y0
+    assert earlier.x1 < column_right and later.x1 < column_right
+
+
+def test_a_note_too_tall_for_a_narrow_column_becomes_an_endnote(tmp_path: Path):
+    body = f"<p>Claim{_marker(1)}</p>{_filler(100)}"
+    notes = ["explanation " * 85]
+
+    with _render(tmp_path, body, footnotes=notes, notesTitle="Endnotes") as wide:
+        wide_text = "".join(page.get_text() for page in wide)
+    with _render(
+        tmp_path,
+        body,
+        footnotes=notes,
+        notesTitle="Endnotes",
+        settings={"columns": 3},
+        output=str(tmp_path / "narrow.pdf"),
+    ) as narrow:
+        narrow_text = "".join(page.get_text() for page in narrow)
+
+    assert "Endnotes" not in wide_text
+    assert "Endnotes" in narrow_text

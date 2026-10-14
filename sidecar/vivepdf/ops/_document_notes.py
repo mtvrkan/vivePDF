@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import pymupdf
 
-from vivepdf.ops._document_flow import NOTE_PREFIX, Flowed, Frame, note_pages
+from vivepdf.ops._document_flow import NOTE_PREFIX, Flowed, Frame, note_slots
 
 NOTE_SCALE = 0.8
 RULE_GAP = 8.0
@@ -66,33 +66,35 @@ class Footnotes:
     archive: pymupdf.Archive
     frame: Frame
     inset: float = 0.0
-    heights: dict[tuple[int, ...], float] = field(default_factory=dict)
+    heights: dict[tuple[tuple[int, ...], float], float] = field(default_factory=dict)
     overflow: bool = False
 
     def _html(self, numbers: tuple[int, ...]) -> str:
         return "".join(_note_html(number, self.texts[number - 1], False) for number in numbers)
 
-    def measure(self, numbers: tuple[int, ...]) -> float:
+    def measure(self, numbers: tuple[int, ...], width: float) -> float:
         if not numbers:
             return 0.0
-        if numbers not in self.heights:
+        key = (numbers, round(width, 1))
+        if key not in self.heights:
             story = pymupdf.Story(self._html(numbers), user_css=self.css, archive=self.archive)
-            more, filled = story.place(pymupdf.Rect(0, 0, self.frame.where.width, MEASURE_HEIGHT))
-            self.heights[numbers] = MEASURE_HEIGHT if more else pymupdf.Rect(filled).y1
-        return self.heights[numbers]
+            more, filled = story.place(pymupdf.Rect(0, 0, width, MEASURE_HEIGHT))
+            self.heights[key] = MEASURE_HEIGHT if more else pymupdf.Rect(filled).y1
+        return self.heights[key]
 
     def _valid(self, numbers: tuple[int, ...]) -> tuple[int, ...]:
         return tuple(number for number in numbers if 1 <= number <= len(self.texts))
 
     def fit(self, numbers: list[int]) -> bool:
         limit = self.frame.where.height * NOTE_LIMIT_SHARE
-        return all(self.measure((number,)) + RULE_GAP <= limit for number in numbers)
+        width = self.frame.narrowest()
+        return all(self.measure((number,), width) + RULE_GAP <= limit for number in numbers)
 
-    def reserve(self, numbers: tuple[int, ...]) -> float:
+    def reserve(self, numbers: tuple[int, ...], width: float) -> float:
         valid = self._valid(numbers)
         if not valid:
             return 0.0
-        needed = self.measure(valid) + RULE_GAP
+        needed = self.measure(valid, width) + RULE_GAP
         limit = self.frame.where.height * PAGE_LIMIT_SHARE
         if needed > limit:
             self.overflow = True
@@ -101,24 +103,25 @@ class Footnotes:
 
     def draw(self, flowed: Flowed) -> None:
         markers = _marker_rects(flowed.positions)
-        by_page: dict[int, list[int]] = {}
-        for number, page in note_pages(flowed.positions).items():
+        groups: dict[tuple[int, int], list[int]] = {}
+        for number, slot in note_slots(flowed.positions, flowed.slots).items():
             if 1 <= number <= len(self.texts):
-                by_page.setdefault(page, []).append(number)
-        where = self.frame.where
-        for page_number, found in by_page.items():
+                groups.setdefault(slot, []).append(number)
+        areas = {(page, column): area for page, column, area in flowed.slots}
+        for (page_number, column), found in groups.items():
+            area = areas[(page_number, column)]
             numbers = tuple(sorted(found))
             page = flowed.document[page_number - 1]
-            height = self.measure(numbers)
-            top = where.y1 - height - RULE_GAP
+            height = self.measure(numbers, area.width)
+            top = area.y1 - height - RULE_GAP
             rule = top + RULE_OFFSET
             page.draw_line(
-                pymupdf.Point(where.x0 + self.inset, rule),
-                pymupdf.Point(where.x0 + self.inset + where.width * RULE_SHARE, rule),
+                pymupdf.Point(area.x0 + self.inset, rule),
+                pymupdf.Point(area.x0 + self.inset + area.width * RULE_SHARE, rule),
                 color=RULE_COLOUR,
                 width=0.5,
             )
-            box = pymupdf.Rect(where.x0, top + RULE_GAP, where.x1, top + RULE_GAP + height + 1)
+            box = pymupdf.Rect(area.x0, top + RULE_GAP, area.x1, top + RULE_GAP + height + 1)
             page.insert_htmlbox(
                 box, self._html(numbers), css=self.css, archive=self.archive, scale_low=1
             )
@@ -126,8 +129,8 @@ class Footnotes:
                 marker = markers.get(number)
                 if marker is None or marker.is_empty:
                     continue
-                above = self.measure(numbers[:index])
-                target = pymupdf.Point(where.x0 + self.inset, box.y0 + above)
+                above = self.measure(numbers[:index], area.width)
+                target = pymupdf.Point(area.x0 + self.inset, box.y0 + above)
                 page.insert_link(
                     {
                         "kind": pymupdf.LINK_GOTO,

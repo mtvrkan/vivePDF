@@ -15,17 +15,18 @@ BREAK_PREFIX = "vp-break-"
 NOTE_PREFIX = "fnref-"
 PAGE_BREAK = re.compile(r"""<div\s+class\s*=\s*(["'])page-break\1\s*>""", re.IGNORECASE)
 
-Reserve = Callable[[tuple[int, ...]], float]
+Reserve = Callable[[tuple[int, ...], float], float]
+Slot = tuple[int, int, pymupdf.Rect]
 
 
 @dataclass(frozen=True)
 class Plan:
     full_width: int = 0
     page_starts: frozenset[int] = field(default_factory=frozenset)
-    notes: frozenset[tuple[int, int]] = field(default_factory=frozenset)
+    notes: frozenset[tuple[int, int, int]] = field(default_factory=frozenset)
 
-    def notes_on(self, page: int) -> tuple[int, ...]:
-        return tuple(sorted(number for on, number in self.notes if on == page))
+    def notes_in(self, page: int, column: int) -> tuple[int, ...]:
+        return tuple(sorted(number for on, at, number in self.notes if on == page and at == column))
 
 
 @dataclass(frozen=True)
@@ -43,6 +44,9 @@ class Frame:
         left = self.where.x0 + index * (width + self.gap)
         return pymupdf.Rect(left, self.where.y0, left + width, bottom)
 
+    def narrowest(self) -> float:
+        return self.area(0).width
+
 
 @dataclass
 class Flowed:
@@ -50,6 +54,7 @@ class Flowed:
     positions: list
     plan: Plan
     settled: bool
+    slots: list[Slot] = field(default_factory=list)
 
 
 def numbered_breaks(body: str) -> str:
@@ -67,24 +72,29 @@ def _opened(positions: list, prefix: str) -> list:
     ]
 
 
-def note_pages(positions: list) -> dict[int, int]:
-    pages: dict[int, int] = {}
+def note_slots(positions: list, slots: list[Slot]) -> dict[int, tuple[int, int]]:
+    found: dict[int, tuple[int, int]] = {}
     for position in _opened(positions, NOTE_PREFIX):
         number = position.id[len(NOTE_PREFIX) :]
-        if number.isdigit():
-            pages.setdefault(int(number), position.page_num)
-    return pages
+        index = position.rect_num - 1
+        if number.isdigit() and 0 <= index < len(slots):
+            page, column, _ = slots[index]
+            found.setdefault(int(number), (page, column))
+    return found
 
 
-def plan_from(positions: list, frame: Frame, previous: Plan, with_notes: bool) -> Plan:
+def plan_from(positions: list, frame: Frame, previous: Plan, slots: list[Slot] | None) -> Plan:
     toc = _opened(positions, TOC_END)
     full_width = toc[0].rect_num - 1 if toc else 0
     starts: frozenset[int] = frozenset()
     if frame.columns > 1:
         starts = frozenset(position.rect_num - 1 for position in _opened(positions, BREAK_PREFIX))
-    notes: frozenset[tuple[int, int]] = frozenset()
-    if with_notes:
-        found = frozenset((page, number) for number, page in note_pages(positions).items())
+    notes: frozenset[tuple[int, int, int]] = frozenset()
+    if slots is not None:
+        found = frozenset(
+            (page, column, number)
+            for number, (page, column) in note_slots(positions, slots).items()
+        )
         notes = previous.notes | found
     return Plan(full_width, starts, notes)
 
@@ -103,7 +113,15 @@ class _Rects:
         self.check_cancelled = check_cancelled
         self.column = -1
         self.pages = 0
-        self.cut = 0.0
+        self.slots: list[Slot] = []
+
+    def _place(self, column: int) -> pymupdf.Rect:
+        area = self.frame.area(column)
+        notes = self.plan.notes_in(self.pages, column)
+        cut = self.reserve(notes, area.width) if self.reserve and notes else 0.0
+        self.column = column
+        self.slots.append((self.pages, column, area))
+        return self.frame.area(column, cut)
 
     def _page(self, column: int):
         self.pages += 1
@@ -113,10 +131,7 @@ class _Rects:
                 f"the document would have more than {MAX_STORY_PAGES} pages",
                 {"reason": "tooManyPages", "limit": MAX_STORY_PAGES},
             )
-        notes = self.plan.notes_on(self.pages)
-        self.cut = self.reserve(notes) if self.reserve and notes else 0.0
-        self.column = column
-        return self.frame.mediabox, self.frame.area(column, self.cut), None
+        return self.frame.mediabox, self._place(column), None
 
     def __call__(self, number: int, _filled: pymupdf.Rect):
         self.check_cancelled()
@@ -126,8 +141,7 @@ class _Rects:
         fresh = number == self.plan.full_width or number in self.plan.page_starts
         if fresh or self.column < 0 or self.column >= frame.columns - 1:
             return self._page(0)
-        self.column += 1
-        return None, frame.area(self.column, self.cut), None
+        return None, self._place(self.column + 1), None
 
 
 def flow(
@@ -143,9 +157,10 @@ def flow(
     settled = False
     for _ in range(MAX_LAYOUT_PASSES):
         positions: list = []
-        story(text).write(None, _Rects(plan, frame, reserve, check_cancelled), positions.append)
+        rects = _Rects(plan, frame, reserve, check_cancelled)
+        story(text).write(None, rects, positions.append)
         following = content(positions)
-        next_plan = plan_from(positions, frame, plan, reserve is not None)
+        next_plan = plan_from(positions, frame, plan, rects.slots if reserve else None)
         if following == text and next_plan == plan:
             settled = True
             break
@@ -153,7 +168,9 @@ def flow(
     stream = io.BytesIO()
     writer = pymupdf.DocumentWriter(stream)
     positions = []
-    story(text).write(writer, _Rects(plan, frame, reserve, check_cancelled), positions.append)
+    rects = _Rects(plan, frame, reserve, check_cancelled)
+    story(text).write(writer, rects, positions.append)
     writer.close()
     stream.seek(0)
-    return Flowed(pymupdf.Story.add_pdf_links(stream, positions), positions, plan, settled)
+    document = pymupdf.Story.add_pdf_links(stream, positions)
+    return Flowed(document, positions, plan, settled, rects.slots)
