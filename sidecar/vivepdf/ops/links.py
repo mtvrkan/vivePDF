@@ -11,6 +11,7 @@ from vivepdf.ops._output import OutputResult
 from vivepdf.ops._placement import insertion_matrix, unrotated_insertion_matrix
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import InPlacePath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -28,7 +29,7 @@ class LinkItem(RpcModel):
 
 
 class LinksListParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int | None = Field(default=None, ge=1)
 
@@ -103,9 +104,9 @@ class NewLink(RpcModel):
 
 
 class LinksAddParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = True
     overwrite: bool = False
     links: list[NewLink] = Field(min_length=1)
@@ -168,9 +169,9 @@ class LinkRef(RpcModel):
 
 
 class LinksRemoveParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = True
     overwrite: bool = False
     items: list[LinkRef] = Field(min_length=1)
@@ -218,9 +219,9 @@ WordBox = tuple[float, float, float, float, str, int, int, int]
 
 
 class AutoLinkParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = False
     overwrite: bool = False
     urls: bool = True

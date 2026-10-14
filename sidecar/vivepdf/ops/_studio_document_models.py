@@ -2,7 +2,8 @@ from typing import Annotated, Any, Literal
 
 from pydantic import Field
 
-from vivepdf.ops._studio_models import Colour, FilePath
+from vivepdf.ops._studio_models import Colour, ReadFile, WriteFile
+from vivepdf.rpc.paths import NotAPath
 from vivepdf.rpc.protocol import RpcModel
 
 MAX_HTML_CHARS = 20_000_000
@@ -17,7 +18,7 @@ DocumentPaper = Literal["a4", "a5", "b5", "letter", "legal"]
 PageNumbers = Literal["none", "center", "right", "outside"]
 FurnitureAlign = Literal["left", "center", "right"]
 CoverLook = Literal["classic", "band", "frame", "minimal"]
-FontId = Annotated[str, Field(min_length=1, max_length=300)]
+FontId = Annotated[NotAPath, Field(min_length=1, max_length=300)]
 ShortText = Annotated[str, Field(max_length=300)]
 
 
@@ -48,7 +49,7 @@ class StudioDocumentSettings(RpcModel):
 
 class StudioDocumentContent(RpcModel):
     html: str = Field(max_length=MAX_HTML_CHARS)
-    images: list[Annotated[str, Field(max_length=MAX_IMAGE_CHARS)]] = Field(
+    images: list[Annotated[NotAPath, Field(max_length=MAX_IMAGE_CHARS)]] = Field(
         default_factory=list, max_length=MAX_IMAGES
     )
     fonts: list[FontId] = Field(default_factory=list, max_length=MAX_FONTS)
@@ -58,7 +59,7 @@ class StudioDocumentContent(RpcModel):
 
 
 class StudioDocumentRenderParams(StudioDocumentContent):
-    output: FilePath
+    output: WriteFile
     overwrite: bool = False
 
 
@@ -87,7 +88,7 @@ class StudioDocumentPageResult(RpcModel):
 
 class StudioDocumentSaveParams(RpcModel):
     document: dict[str, Any]
-    output: FilePath
+    output: WriteFile
     overwrite: bool = False
 
 
@@ -97,7 +98,7 @@ class StudioDocumentSaveResult(RpcModel):
 
 
 class StudioDocumentOpenParams(RpcModel):
-    path: FilePath
+    path: ReadFile
 
 
 class StudioDocumentOpenResult(RpcModel):

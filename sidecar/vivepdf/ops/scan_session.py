@@ -11,6 +11,7 @@ from vivepdf.ops._document import open_document
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops.ocr import OcrParams, run_ocr
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ModifyPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -38,14 +39,14 @@ def session_file(path: str) -> Path | None:
 
 
 class SessionPage(RpcModel):
-    path: str
+    path: ModifyPath
     page: int = Field(ge=0)
     rotation: Literal[0, 90, 180, 270] = 0
 
 
 class ScannerAssembleParams(RpcModel):
     pages: list[SessionPage] = Field(min_length=1, max_length=MAX_SESSION_PAGES)
-    output: str
+    output: WritePath
     overwrite: bool = False
     ocr: bool = False
     languages: list[str] = Field(default_factory=lambda: ["tur", "eng"])
@@ -57,7 +58,7 @@ class ScannerAssembleResult(OutputResult):
 
 
 class ScannerDiscardParams(RpcModel):
-    paths: list[str] = Field(max_length=MAX_DISCARD)
+    paths: list[ModifyPath] = Field(max_length=MAX_DISCARD)
 
 
 class ScannerDiscardResult(RpcModel):

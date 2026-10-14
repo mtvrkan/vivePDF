@@ -13,6 +13,7 @@ from vivepdf.ops._output import DEDUPLICATE_OBJECT_LIMIT, prepare_output
 from vivepdf.ops._passwords import authenticate_password
 from vivepdf.ops._protection import is_protected, open_seal, protection_of
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -40,9 +41,9 @@ LARGE_SAVE_ATTEMPTS = (
 
 
 class RepairParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

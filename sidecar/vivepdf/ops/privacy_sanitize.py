@@ -28,15 +28,16 @@ from vivepdf.ops.privacy import (
     build_report,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class SanitizeParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = Field(default=None, repr=False)
-    output: str
+    output: WritePath
     overwrite: bool = False
     metadata: bool = True
     xmp_metadata: bool = True

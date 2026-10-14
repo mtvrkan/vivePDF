@@ -17,6 +17,7 @@ from vivepdf.ops._naming import FALLBACK_NAME, TOKEN, sanitize_file_name, unique
 from vivepdf.ops.ocr import _language_string
 from vivepdf.ops.tessdata import writable_tessdata_dir
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ModifyPath, ReadPath, WriteDir, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -353,7 +354,7 @@ class RenameReplacement(RpcModel):
 
 
 class RenamePreviewParams(RpcModel):
-    paths: list[str]
+    paths: list[ReadPath]
     password: str | None = None
     passwords: dict[str, str] = Field(default_factory=dict)
     pattern: str = "{date} {title}"
@@ -572,14 +573,14 @@ def preview(params: RenamePreviewParams, progress: Progress) -> RenamePreviewRes
 
 
 class RenameApplyItem(RpcModel):
-    path: str
+    path: ModifyPath
     new_name: str
 
 
 class RenameApplyParams(RpcModel):
     items: list[RenameApplyItem]
     mode: Literal["rename", "copy"] = "rename"
-    output_dir: str | None = None
+    output_dir: WriteDir | None = None
     overwrite: bool = False
     auto_unique: bool = True
 
@@ -798,13 +799,13 @@ def apply(params: RenameApplyParams, progress: Progress) -> RenameApplyResult:
 
 
 class RenameUndoItem(RpcModel):
-    path: str
-    original: str
+    path: ModifyPath
+    original: WritePath
 
 
 class RenameUndoParams(RpcModel):
     items: list[RenameUndoItem]
-    remove_dirs: list[str] = Field(default_factory=list)
+    remove_dirs: list[WriteDir] = Field(default_factory=list)
 
 
 class RenameUndoResult(RpcModel):

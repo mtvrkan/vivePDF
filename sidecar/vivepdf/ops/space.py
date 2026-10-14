@@ -7,6 +7,7 @@ from typing import Literal
 import pymupdf
 
 from vivepdf.ops._document import open_document, unwrap_document
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -57,7 +58,7 @@ class LargeFont(RpcModel):
 
 
 class SpaceParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 

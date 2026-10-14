@@ -9,6 +9,7 @@ from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops.analyze import _analyze_page
 from vivepdf.ops.ocr import _language_string
 from vivepdf.ops.scan import best_rotation
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -41,7 +42,7 @@ def text_rotation(page: pymupdf.Page) -> int | None:
 
 
 class DetectRotationParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
     ocr: bool = True
@@ -102,7 +103,7 @@ def detect_rotation(params: DetectRotationParams, progress: Progress) -> DetectR
 
 
 class AutoRotateParams(DetectRotationParams):
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

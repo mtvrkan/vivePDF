@@ -1,6 +1,7 @@
 from vivepdf.ops._document import open_document
 from vivepdf.ops._inplace import finish
 from vivepdf.ops._output import OutputResult
+from vivepdf.rpc.paths import InPlacePath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -9,9 +10,9 @@ EDITABLE = ("title", "author", "subject", "keywords", "creator", "producer")
 
 
 class SetMetadataParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = True
     overwrite: bool = False
     title: str | None = None

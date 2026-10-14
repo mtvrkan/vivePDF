@@ -7,6 +7,7 @@ from vivepdf.ops._document import open_document
 from vivepdf.ops._form_appearance import UnicodeAppearance, is_signed_field
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops._visibility import drop_unseen
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -15,9 +16,9 @@ RasterFormat = Literal["auto", "jpeg", "png"]
 
 
 class FlattenParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     annotations: bool = True
     forms: bool = True

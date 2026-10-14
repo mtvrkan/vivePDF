@@ -18,6 +18,7 @@ from vivepdf.ops._text_fit import MAX_REPORTED_GLYPHS, fit_line
 from vivepdf.ops._watermark_style import WATERMARK_FONT, GridPosition, grid_cell
 from vivepdf.ops.fonts import uncovered_glyphs
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -48,7 +49,7 @@ FORMULA_PREFIXES = {"=", "+", "-", "@", "\t", "\r"}
 
 
 class CodesReadParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
     dpi: int = Field(default=150, ge=72, le=300)
@@ -388,9 +389,9 @@ CAPTION_EDGE = 4.0
 
 
 class QrAddParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     text: str = ""
@@ -616,7 +617,7 @@ def add_qr(params: QrAddParams, progress: Progress) -> QrAddResult:
 
 class CodesExportParams(RpcModel):
     codes: list[CodeHit]
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

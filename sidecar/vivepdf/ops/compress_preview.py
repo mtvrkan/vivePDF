@@ -12,6 +12,7 @@ from vivepdf.ops.compress import (
     rewrite_options,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -21,7 +22,7 @@ MEASURE_OPTIONS = {"garbage": 3, "deflate": True, "deflate_images": True, "use_o
 
 
 class CompressPreviewParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(default=0, ge=0)
     profile: Profile = "balanced"

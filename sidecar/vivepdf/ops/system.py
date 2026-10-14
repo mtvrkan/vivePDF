@@ -5,6 +5,7 @@ import pymupdf
 
 from vivepdf import VERSION
 from vivepdf.ops._document import forget_all_documents, forget_document
+from vivepdf.rpc.paths import NotAPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -28,7 +29,7 @@ def ping(_params: PingParams, _progress: Progress) -> PingResult:
 
 
 class ReleaseParams(RpcModel):
-    path: str | None = None
+    path: NotAPath | None = None
 
 
 class ReleaseResult(RpcModel):

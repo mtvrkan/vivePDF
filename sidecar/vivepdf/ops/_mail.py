@@ -12,6 +12,7 @@ from pathlib import Path
 from vivepdf.ops._html_clean import body_fragment, without_remote_pictures
 from vivepdf.ops._story import declared_charset, decode_text
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import NotAPath
 from vivepdf.rpc.protocol import RpcModel
 
 MAIL_EXTENSIONS = {"eml", "msg"}
@@ -55,7 +56,7 @@ class MailLabels(RpcModel):
     to: str = "To"
     cc: str = "Cc"
     date: str = "Date"
-    attachments: str = "Attachments"
+    attachments: NotAPath = "Attachments"
 
 
 @dataclass

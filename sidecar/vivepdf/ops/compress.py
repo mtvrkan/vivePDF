@@ -19,6 +19,7 @@ from vivepdf.ops._output import DEDUPLICATE_OBJECT_LIMIT, prepare_output
 from vivepdf.ops._pool_watch import WorkerLost
 from vivepdf.ops._scrub import ScrubOptions, clean_page_contents, load_pages, scrub_document
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -121,9 +122,9 @@ METADATA_SCRUB = ScrubOptions(
 
 
 class CompressParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     profile: Profile = "balanced"
     grayscale: bool = False

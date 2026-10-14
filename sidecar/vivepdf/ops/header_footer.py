@@ -14,15 +14,16 @@ from vivepdf.ops.fonts import resolve_choice, uncovered_glyphs
 from vivepdf.ops.furniture import artifact_opening, remove_furniture, role_names
 from vivepdf.ops.page_numbers import StampedResult, render_furniture_text
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class HeaderFooterParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     header_left: str = ""

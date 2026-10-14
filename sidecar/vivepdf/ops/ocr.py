@@ -16,6 +16,7 @@ from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._toc import normalized_toc
 from vivepdf.ops.tessdata import accurate_tessdata_dir, installed_languages, writable_tessdata_dir
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ModifyPath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -82,9 +83,9 @@ def _language_string(languages: list[str]) -> str:
 
 
 class OcrParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     languages: list[str] = Field(default_factory=lambda: ["tur", "eng"])
     dpi: int = Field(default=200, ge=100, le=400)
@@ -92,7 +93,7 @@ class OcrParams(RpcModel):
     orientation: bool = False
     pages: str | None = None
     clean: bool = False
-    text_output: str | None = None
+    text_output: WritePath | None = None
 
 
 class OcrResult(RpcModel):
@@ -285,7 +286,7 @@ def run_ocr(params: OcrParams, progress: Progress) -> OcrResult:
 
 
 class OcrTextParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     languages: list[str] = Field(default_factory=lambda: ["tur", "eng"])
     dpi: int = Field(default=200, ge=100, le=400)
@@ -323,7 +324,7 @@ def ocr_text(params: OcrTextParams, progress: Progress) -> OcrTextResult:
 
 
 class OcrAreaParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(ge=0)
     rect: list[float] = Field(min_length=4, max_length=4)
@@ -450,7 +451,7 @@ def ocr_area(params: OcrAreaParams, progress: Progress) -> OcrAreaResult:
 
 
 class OcrSearchableParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     pages: str | None = None
     languages: list[str] = Field(default_factory=lambda: ["tur", "eng"])

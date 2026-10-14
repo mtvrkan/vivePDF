@@ -20,15 +20,16 @@ from vivepdf.ops.watermark_detection import (
     WATERMARK_ANNOT_TYPES,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class RemoveWatermarkParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     text: str | None = None
     texts: list[str] = Field(default_factory=list)

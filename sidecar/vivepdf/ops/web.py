@@ -33,6 +33,7 @@ from pydantic import Field
 from vivepdf.ops._output import OutputResult, prepare_output
 from vivepdf.ops._story import decode_text, known_codec, render_html_to_pdf, text_to_html
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -163,7 +164,7 @@ class _Candidate:
 
 class WebPageParams(RpcModel):
     url: str = Field(min_length=1, max_length=2000)
-    output: str
+    output: WritePath
     overwrite: bool = False
     paper: str = Field(default="a4", pattern="^(a4|letter)$")
     reader_mode: bool = True

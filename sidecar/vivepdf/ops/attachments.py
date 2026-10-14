@@ -13,6 +13,7 @@ from vivepdf.ops._inplace import (
 )
 from vivepdf.ops._naming import sanitize_file_name
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ModifyPath, ReadPath, WriteDir
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -64,7 +65,7 @@ class AttachmentItem(RpcModel):
 
 
 class AttachmentsListParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 
@@ -105,9 +106,9 @@ def _save_in_place(document: pymupdf.Document, path: str) -> None:
 
 
 class AttachmentsAddParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
-    files: list[str] = Field(min_length=1)
+    files: list[ReadPath] = Field(min_length=1)
     description: str = ""
 
 
@@ -159,7 +160,7 @@ def add_attachments(params: AttachmentsAddParams, progress: Progress) -> Attachm
 
 
 class AttachmentsNamesParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     names: list[str] = Field(min_length=1)
 
@@ -183,7 +184,8 @@ def remove_attachments(
 
 
 class AttachmentsExtractParams(AttachmentsNamesParams):
-    output_dir: str
+    path: ReadPath
+    output_dir: WriteDir
 
 
 class AttachmentsExtractResult(RpcModel):

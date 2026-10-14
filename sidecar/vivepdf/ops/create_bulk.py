@@ -20,6 +20,7 @@ from vivepdf.ops._page_html import (
 )
 from vivepdf.ops.create import COLOUR, DEFAULT_ACCENT, FAMILIES, LOGO_EXTENSIONS, FontChoice
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WriteDir, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -46,7 +47,7 @@ class Signer(RpcModel):
 
 
 class BulkParams(RpcModel):
-    data_path: str
+    data_path: ReadPath
     sheet: str | None = None
     delimiter: Delimiter = "auto"
     kind: BulkKind = "certificate"
@@ -57,10 +58,10 @@ class BulkParams(RpcModel):
     signers: list[Signer] = Field(default_factory=list, max_length=MAX_SIGNERS)
     font: FontChoice = "serif"
     accent: str = DEFAULT_ACCENT
-    logo: str | None = None
+    logo: ReadPath | None = None
     split: bool = False
-    output: str | None = None
-    output_dir: str | None = None
+    output: WritePath | None = None
+    output_dir: WriteDir | None = None
     pattern: str = Field(default="{n}", max_length=120)
     overwrite: bool = False
 

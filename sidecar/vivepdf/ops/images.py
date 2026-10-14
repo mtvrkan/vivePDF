@@ -10,6 +10,7 @@ from vivepdf.ops._document import open_document, unwrap_document
 from vivepdf.ops._pixmaps import png_ready
 from vivepdf.ops.convert import _image_bytes
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -19,7 +20,7 @@ INVISIBLE_TEXT_MODE = 3
 
 
 class ImageAtParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(ge=1)
     x: float
@@ -38,7 +39,7 @@ class ImageAtResult(RpcModel):
 
 
 class ImageSaveParams(ImageAtParams):
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

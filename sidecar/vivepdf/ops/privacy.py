@@ -16,6 +16,7 @@ from vivepdf.ops._scrub import (
     CANCEL_STRIDE,
     LoadedPages,
 )
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -41,7 +42,7 @@ STANDARD_INFO_KEYS = frozenset(
 
 
 class InspectParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = Field(default=None, repr=False)
 
 

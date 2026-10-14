@@ -2,6 +2,7 @@ import pymupdf
 
 from vivepdf.ops._document import open_document
 from vivepdf.ops._ranges import parse_page_ranges
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -15,7 +16,7 @@ MAX_PICTURES = 32
 
 
 class PageTonesParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
 

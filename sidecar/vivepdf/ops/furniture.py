@@ -17,6 +17,7 @@ from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._watermark_style import GridPosition, grid_cell
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -336,9 +337,9 @@ def role_names(roles: list[FurnitureRole]) -> set[bytes]:
 
 
 class RemoveFurnitureParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     scope: FurnitureScope = "vivepdf"

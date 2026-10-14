@@ -25,6 +25,7 @@ from vivepdf.ops.forms import (
     save_form,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -35,9 +36,9 @@ FILLABLE = ("text", "checkbox", "radio", "combobox", "listbox")
 
 
 class FormDataExportParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     format: Literal["xfdf", "fdf"] = "xfdf"
     overwrite: bool = False
     values: dict[str, str | bool | list[str]] | None = None
@@ -49,10 +50,10 @@ class FormDataExportResult(RpcModel):
 
 
 class FormDataImportParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    data_path: str
-    output: str
+    data_path: ReadPath
+    output: WritePath
     overwrite: bool = False
     flatten: bool = False
     language: str | None = Field(default=None, max_length=16)

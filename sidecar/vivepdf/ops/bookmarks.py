@@ -25,13 +25,14 @@ from vivepdf.ops._output import (
     save_document,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import InPlacePath, ModifyPath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class BookmarksParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 
@@ -87,9 +88,9 @@ def _validate_items(
 
 
 class BookmarksSetParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = False
     overwrite: bool = False
     items: list[BookmarkItem]
@@ -158,7 +159,7 @@ def generate_bookmarks(
 
 
 class BookmarkAddParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     title: str = Field(min_length=1, max_length=500)
     page: int = Field(ge=1)

@@ -10,6 +10,7 @@ from vivepdf.ops._page_html import html_lines
 from vivepdf.ops._story import render_html_to_pdf
 from vivepdf.ops.convert_images import ImagesToPdfParams, images_to_pdf
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -19,7 +20,7 @@ PARAGRAPH_BREAK = re.compile(r"\n\s*\n")
 
 
 class ClipboardParams(RpcModel):
-    output: str
+    output: WritePath
     overwrite: bool = False
     paper: Literal["a4", "letter"] = "a4"
 

@@ -8,6 +8,7 @@ from vivepdf.ops._colour_use import ColourUse
 from vivepdf.ops._document import open_document
 from vivepdf.ops._print_facts import ink_coverage, pdf_version, pdfx_facts, text_facts
 from vivepdf.ops.a11y import _font_facts, require_pages
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -81,7 +82,7 @@ class PreflightReport(RpcModel):
 
 
 class PreflightParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     profile: Profile = "digital"
 

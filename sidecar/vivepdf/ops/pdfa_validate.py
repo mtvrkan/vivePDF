@@ -3,6 +3,7 @@ from pathlib import Path
 from vivepdf.external import verapdf
 from vivepdf.ops._pdfa_levels import DEFAULT_LEVEL, Level
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -20,7 +21,7 @@ class PdfaValidatorResult(RpcModel):
 
 
 class PdfaValidateParams(RpcModel):
-    path: str
+    path: ReadPath
     level: Level = DEFAULT_LEVEL
 
 

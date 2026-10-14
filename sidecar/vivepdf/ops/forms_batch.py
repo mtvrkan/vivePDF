@@ -27,6 +27,7 @@ from vivepdf.ops.forms import (
     form_widgets,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WriteDir
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -52,7 +53,7 @@ TRUE_WORDS = {
 
 
 class DataPreviewParams(RpcModel):
-    path: str
+    path: ReadPath
     sheet: str | None = None
     delimiter: Delimiter = "auto"
     limit: int = Field(default=5, ge=1, le=MAX_PREVIEW_ROWS)
@@ -85,12 +86,12 @@ def coerce_value(widget: pymupdf.Widget, raw: str) -> Any:
 
 
 class MergeParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    data_path: str
+    data_path: ReadPath
     sheet: str | None = None
     delimiter: Delimiter = "auto"
-    output_dir: str
+    output_dir: WriteDir
     pattern: str = "{file}-{n}"
     mapping: dict[str, str | None] = Field(default_factory=dict)
     flatten: bool = False

@@ -29,15 +29,16 @@ from vivepdf.ops._page_images import (
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops.convert import IMAGE_EXTENSIONS
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadDir, ReadPath, WriteDir, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class ImagesParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output_dir: str
+    output_dir: WriteDir
     format: Literal["png", "jpg", "webp", "tiff"] = "png"
     dpi: int = Field(default=150, ge=36, le=600)
     quality: int = Field(default=88, ge=10, le=100)
@@ -346,15 +347,15 @@ def collect_images(images: list[str], folders: list[str], recursive: bool, sort:
 
 
 class ImagesToPdfParams(RpcModel):
-    images: list[str] = Field(default_factory=list)
-    folders: list[str] = Field(default_factory=list)
+    images: list[ReadPath] = Field(default_factory=list)
+    folders: list[ReadDir] = Field(default_factory=list)
     recursive: bool = False
     sort: Literal["name", "date"] = "name"
     page_size: Literal["image", "a4", "letter"] = "a4"
     orientation: Literal["auto", "portrait", "landscape"] = "auto"
     margin: float = Field(default=0, ge=0, le=200)
     fit: Literal["fit", "fill"] = "fit"
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

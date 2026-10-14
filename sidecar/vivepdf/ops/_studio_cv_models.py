@@ -2,6 +2,7 @@ from typing import Literal
 
 from pydantic import Field
 
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.protocol import RpcModel
 
 ContactKind = Literal["email", "phone", "website", "location", "linkedin", "github", "other"]
@@ -22,7 +23,7 @@ SectionKey = Literal[
 
 
 class StudioCvImportParams(RpcModel):
-    path: str = Field(min_length=1, max_length=4096)
+    path: ReadPath = Field(min_length=1, max_length=4096)
     password: str | None = Field(default=None, max_length=1024)
 
 

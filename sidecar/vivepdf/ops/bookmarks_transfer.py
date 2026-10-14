@@ -15,15 +15,16 @@ from vivepdf.ops._output import (
 )
 from vivepdf.ops.bookmarks import BookmarksResult, _validate_items
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class BookmarksExportParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 
@@ -33,18 +34,18 @@ class BookmarksExportResult(RpcModel):
 
 
 class BookmarksImportParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
-    data_path: str
+    data_path: ReadPath
     replace: bool = True
 
 
 class BookmarksParseParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    data_path: str
+    data_path: ReadPath
     replace: bool = True
 
 

@@ -20,6 +20,7 @@ from vivepdf.ops.scan import (
     whiten,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -58,8 +59,8 @@ PREVIEW_QUALITY = 80
 
 
 class PhotoParams(RpcModel):
-    images: list[str] = Field(min_length=1)
-    output: str
+    images: list[ReadPath] = Field(min_length=1)
+    output: WritePath
     overwrite: bool = False
     auto_crop: bool = True
     whiten: bool = True
@@ -73,7 +74,7 @@ class PhotoParams(RpcModel):
 
 
 class PhotoDetectParams(RpcModel):
-    image: str
+    image: ReadPath
     frame: int = Field(default=0, ge=0)
     preview_side: int = Field(default=900, ge=200, le=2000)
 

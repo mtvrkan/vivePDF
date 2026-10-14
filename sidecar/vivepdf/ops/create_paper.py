@@ -5,6 +5,7 @@ from pydantic import Field
 
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops._paper import PaperPattern, draw_paper
+from vivepdf.rpc.paths import WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -18,7 +19,7 @@ class CreatePaperParams(RpcModel):
     landscape: bool = False
     pages: int = Field(default=10, ge=1, le=MAX_PAPER_PAGES)
     pattern: PaperPattern | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

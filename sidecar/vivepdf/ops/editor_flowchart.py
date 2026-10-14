@@ -14,6 +14,7 @@ from vivepdf.ops._scratch import (
 )
 from vivepdf.ops.editor_table import wrap_cell
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import NotAPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -38,7 +39,7 @@ MARGIN = 0.8
 
 FlowShape = Literal["process", "terminal", "decision", "io", "connector"]
 FlowDirection = Literal["down", "right"]
-NodeId = Annotated[str, Field(min_length=1, max_length=40)]
+NodeId = Annotated[NotAPath, Field(min_length=1, max_length=40)]
 Point = tuple[float, float]
 
 

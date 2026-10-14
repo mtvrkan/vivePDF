@@ -26,6 +26,7 @@ from vivepdf.ops._pixmaps import png_ready
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._spreadsheet import clean_text
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -60,9 +61,9 @@ COVER_QUALITY = 85
 
 
 class EpubParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     split: Literal["auto", "chapter", "page"] = "auto"

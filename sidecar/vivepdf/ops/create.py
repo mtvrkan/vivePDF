@@ -14,6 +14,7 @@ from vivepdf.ops._document_structure import plain_text_html
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops._story import decode_text, markdown_to_html, story_pdf_bytes
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -40,7 +41,7 @@ DEFAULT_ACCENT = "#1f4e79"
 
 
 class CreateDocumentParams(RpcModel):
-    path: str | None = None
+    path: ReadPath | None = None
     text: str | None = Field(default=None, max_length=MAX_SOURCE_BYTES)
     format: SourceFormat = "auto"
     template: Template = "report"
@@ -51,13 +52,13 @@ class CreateDocumentParams(RpcModel):
     font_size: float = Field(default=11, ge=8, le=18)
     margin_mm: float = Field(default=20, ge=10, le=45)
     accent: str = DEFAULT_ACCENT
-    logo: str | None = None
+    logo: ReadPath | None = None
     header: str = Field(default="", max_length=200)
     footer: str = Field(default="", max_length=200)
     page_numbers: bool = True
     page_number_format: str = Field(default="{page} / {total}", max_length=60)
     paper: Literal["a4", "letter", "a5"] = "a4"
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

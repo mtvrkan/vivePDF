@@ -8,13 +8,14 @@ from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._reading_text import reading_text
 from vivepdf.ops.pages import page_label_parts
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class InfoGetParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 
@@ -79,7 +80,7 @@ def get_info(params: InfoGetParams, progress: Progress) -> DocumentInfo:
 
 
 class PageTextParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
 
@@ -103,7 +104,7 @@ def page_text(params: PageTextParams, progress: Progress) -> PageTextResult:
 
 
 class ThumbnailParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = 0
     width: int = 320
@@ -132,7 +133,7 @@ def thumbnail(params: ThumbnailParams, progress: Progress) -> ThumbnailResult:
 
 
 class PageLabelsParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 

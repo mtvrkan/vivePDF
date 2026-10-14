@@ -25,14 +25,15 @@ from vivepdf.ops._svg import svg_pdf_bytes
 from vivepdf.ops.convert import IMAGE_EXTENSIONS, MUPDF_DOCUMENT_EXTENSIONS, TEXT_EXTENSIONS
 from vivepdf.ops.convert_images import ImagesToPdfParams, images_to_pdf
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class FileToPdfParams(RpcModel):
-    path: str
-    output: str
+    path: ReadPath
+    output: WritePath
     overwrite: bool = False
     paper: Literal["a4", "letter"] = "a4"
     mail_labels: MailLabels = MailLabels()
@@ -179,8 +180,8 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
 
 
 class SvgToPdfParams(RpcModel):
-    paths: list[str] = Field(min_length=1, max_length=500)
-    output: str
+    paths: list[ReadPath] = Field(min_length=1, max_length=500)
+    output: WritePath
     overwrite: bool = False
 
 

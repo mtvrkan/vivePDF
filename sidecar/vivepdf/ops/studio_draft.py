@@ -8,6 +8,7 @@ from pydantic import Field
 from vivepdf.ops._appdata import user_data_dir
 from vivepdf.ops._output import write_atomically
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import NotAPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -21,7 +22,7 @@ MAX_DRAFT_BYTES = 7 * 1024 * 1024
 
 class StudioDraftSaveParams(RpcModel):
     design: dict[str, Any]
-    file_path: str | None = Field(default=None, max_length=4096)
+    file_path: NotAPath | None = Field(default=None, max_length=4096)
 
 
 class StudioDraftSaveResult(RpcModel):

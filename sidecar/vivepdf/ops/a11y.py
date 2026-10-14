@@ -22,6 +22,7 @@ from vivepdf.ops._access_structure import (
 from vivepdf.ops._document import open_document
 from vivepdf.ops.analyze import _analyze_page
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -451,7 +452,7 @@ def build_report(document: pymupdf.Document, progress: Progress | None = None) -
 
 
 class CheckParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 

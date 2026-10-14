@@ -12,6 +12,7 @@ from vivepdf.ops.fonts import (
     font_name_for,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.protocol import RpcModel
 
 FONT_DIR = Path(__file__).resolve().parent.parent / "assets" / "fonts"
@@ -47,8 +48,8 @@ def grid_cell(position: GridPosition) -> tuple[str, str]:
 class WatermarkStyle(RpcModel):
     kind: Literal["text", "image", "pdf"] = "text"
     text: str | None = None
-    image_path: str | None = None
-    template_path: str | None = None
+    image_path: ReadPath | None = None
+    template_path: ReadPath | None = None
     template_page: int = Field(default=1, ge=1)
     font_size: float = Field(default=48, ge=4, le=400)
     bold: bool = False
@@ -65,9 +66,9 @@ class WatermarkStyle(RpcModel):
 
 
 class WatermarkParams(WatermarkStyle):
-    path: str
+    path: ReadPath
     password: str | None = Field(default=None, repr=False)
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     side: PageSide = "all"
@@ -87,7 +88,7 @@ class MarkPreviewResult(RpcModel):
 
 
 class WatermarkPreviewParams(WatermarkStyle):
-    path: str
+    path: ReadPath
     password: str | None = Field(default=None, repr=False)
     pages: str | None = None
     side: PageSide = "all"

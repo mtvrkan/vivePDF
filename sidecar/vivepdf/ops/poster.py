@@ -9,6 +9,7 @@ from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops.analyze import _into_protected, _printable_copy
 from vivepdf.ops.page_geometry import PAPER_SIZES
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -23,9 +24,9 @@ WHITE = (1, 1, 1)
 
 
 class PosterParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     paper: PosterPaper = "a4"
     orientation: PosterOrientation = "auto"

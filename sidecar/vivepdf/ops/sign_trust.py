@@ -27,6 +27,7 @@ from vivepdf.ops._trust_lists import (
 from vivepdf.ops._xml_signature import SignatureInvalid
 from vivepdf.ops.sign import _subject_label
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -117,7 +118,7 @@ class TrustListResult(RpcModel):
 
 
 class TrustAddParams(RpcModel):
-    path: str
+    path: ReadPath
     expected_digest: str | None = Field(default=None, pattern=DIGEST_PATTERN)
     accept_unverified: bool = False
 
@@ -130,7 +131,7 @@ class TrustAddResult(RpcModel):
 
 
 class TrustPreviewParams(RpcModel):
-    path: str
+    path: ReadPath
 
 
 class TrustPreviewResult(RpcModel):

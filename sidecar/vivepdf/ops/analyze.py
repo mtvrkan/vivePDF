@@ -20,6 +20,7 @@ from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._visibility import drop_unseen
 from vivepdf.ops.page_geometry import PAPER_SIZES, visible_box
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -65,7 +66,7 @@ _GRID: dict[str, tuple[int, int]] = {
 
 
 class AnalyzeParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
 
@@ -142,7 +143,7 @@ def _analyze_page(document: pymupdf.Document, index: int) -> PageAnalysis:
 
 
 class DuplicateSource(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 
@@ -225,9 +226,9 @@ def analyze(params: AnalyzeParams, progress: Progress) -> AnalyzeResult:
 
 
 class ImposeParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     layout: Layout
     columns: int = Field(default=2, ge=1, le=12)

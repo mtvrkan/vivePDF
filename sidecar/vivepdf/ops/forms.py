@@ -23,6 +23,7 @@ from vivepdf.ops._inplace import INCREMENTAL_SAVE_ERRORS
 from vivepdf.ops._name_syntax import pdf_name
 from vivepdf.ops._output import OutputResult, prepare_output, replace_patiently, save_document
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import InPlacePath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -67,7 +68,7 @@ class FormField(RpcModel):
 
 
 class FieldsParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 
@@ -278,9 +279,9 @@ def list_fields(params: FieldsParams, progress: Progress) -> FieldsResult:
 
 
 class FillParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = False
     overwrite: bool = False
     values: dict[str, Any] = Field(default_factory=dict)
@@ -593,9 +594,9 @@ def fill_fields(params: FillParams, progress: Progress) -> FillResult:
 
 
 class ResetParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     language: str | None = Field(default=None, max_length=16)
 

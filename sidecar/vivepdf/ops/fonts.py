@@ -14,6 +14,7 @@ from vivepdf.ops._appdata import user_data_dir
 from vivepdf.ops.font_library import LIBRARY, family_info, library_dir, library_face
 from vivepdf.ops.font_library_catalog import FAMILIES
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -902,7 +903,7 @@ def catalogue(_params: FontCatalogueParams, _progress: Progress) -> FontCatalogu
 
 
 class FontAddParams(RpcModel):
-    path: str
+    path: ReadPath
 
 
 @op("fonts.add", FontAddParams)

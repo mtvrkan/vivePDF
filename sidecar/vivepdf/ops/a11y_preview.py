@@ -15,6 +15,7 @@ from vivepdf.ops._content_objects import (
 )
 from vivepdf.ops._document import open_document, unwrap_document
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -26,7 +27,7 @@ MIN_SIDE_PT = 2.0
 
 
 class FigurePreviewParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     xref: int = Field(gt=0)
     max_size: int = Field(default=240, ge=64, le=480)

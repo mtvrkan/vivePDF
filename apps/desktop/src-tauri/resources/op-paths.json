@@ -1,0 +1,1758 @@
+{
+ "operations": {
+  "a11y.check": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "a11y.figurePreview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "a11y.fix": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "attachments.add": [
+   [
+    "files",
+    "*",
+    "read"
+   ],
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "attachments.extract": [
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "attachments.list": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "attachments.remove": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "bookmarks.add": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "bookmarks.export": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "bookmarks.generate": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "bookmarks.get": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "bookmarks.import": [
+   [
+    "dataPath",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "bookmarks.parse": [
+   [
+    "dataPath",
+    "read"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "bookmarks.set": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "bookmarks.suggest": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "codes.add_qr": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "codes.export_csv": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "codes.read": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "comments.delete": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "comments.export": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "comments.import": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ],
+   [
+    "source",
+    "read"
+   ]
+  ],
+  "comments.list": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "comments.reply": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "comments.set_resolved": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "comments.set_state": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "compare.pageImages": [
+   [
+    "pathA",
+    "read"
+   ],
+   [
+    "pathB",
+    "read"
+   ]
+  ],
+  "compare.run": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "pathA",
+    "read"
+   ],
+   [
+    "pathB",
+    "read"
+   ]
+  ],
+  "compress.preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "compress.run": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "compress.space": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.extract_images": [
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.file_to_pdf": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.from_url": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "convert.images_to_pdf": [
+   [
+    "folders",
+    "*",
+    "readDir"
+   ],
+   [
+    "images",
+    "*",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "convert.svg_to_pdf": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "paths",
+    "*",
+    "read"
+   ]
+  ],
+  "convert.to_docx": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.to_epub": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.to_html": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.to_images": [
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.to_markdown": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.to_pptx": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.to_text": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.to_xlsx": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "convert.tools": [],
+  "create.book": [
+   [
+    "chapters",
+    "*",
+    "read"
+   ],
+   [
+    "coverImage",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "create.bulk": [
+   [
+    "dataPath",
+    "read"
+   ],
+   [
+    "logo",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "outputDir",
+    "writeDir"
+   ]
+  ],
+  "create.clipboard": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "create.document": [
+   [
+    "logo",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "create.paper": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "editor.apply": [
+   [
+    "objects",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "objects",
+    "*",
+    "replacementPath",
+    "read"
+   ],
+   [
+    "objects",
+    "*",
+    "runs",
+    "*",
+    "fontSource",
+    "path",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "editor.blocks": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "editor.chart_preview": [],
+  "editor.drawing_image": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "editor.flowchart_preview": [],
+  "editor.font": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "editor.font_plan": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "editor.image_preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "editor.question_preview": [],
+  "editor.system_fonts": [],
+  "editor.table_preview": [],
+  "files.list_pdfs": [
+   [
+    "folder",
+    "readDir"
+   ]
+  ],
+  "files.move_to_folder": [
+   [
+    "folder",
+    "writeDir"
+   ],
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "fonts.add": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "fonts.catalogue": [],
+  "fonts.file": [],
+  "fonts.library": [],
+  "fonts.library_download": [],
+  "fonts.library_remove": [],
+  "fonts.remove": [],
+  "forms.data_preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "forms.detect": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "forms.export": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "paths",
+    "*",
+    "read"
+   ]
+  ],
+  "forms.export_data": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "forms.fields": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "forms.fill": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "forms.import_data": [
+   [
+    "dataPath",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "forms.merge": [
+   [
+    "dataPath",
+    "read"
+   ],
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "forms.reset": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "images.at": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "images.save": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "info.get": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "info.page_labels": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "info.set_metadata": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "info.text": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "info.thumbnail": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "layers.list": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "links.add": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "links.autolink": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "links.list": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "links.remove": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "ocr.area": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "ocr.run": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ],
+   [
+    "textOutput",
+    "write"
+   ]
+  ],
+  "ocr.searchable": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "ocr.text": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "omr.export": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "omr.read": [
+   [
+    "paths",
+    "*",
+    "read"
+   ]
+  ],
+  "omr.review": [
+   [
+    "items",
+    "*",
+    "source",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "omr.sheet": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "pages.analyze": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.assemble": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "pages",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "sources",
+    "*",
+    "path",
+    "inPlace"
+   ]
+  ],
+  "pages.assemble_parts": [
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "pages",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "sources",
+    "*",
+    "path",
+    "inPlace"
+   ]
+  ],
+  "pages.auto_rotate": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.cover": [
+   [
+    "image",
+    "read"
+   ],
+   [
+    "logo",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.crop": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.delete": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.detect_rotation": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.duplicates": [
+   [
+    "sources",
+    "*",
+    "path",
+    "read"
+   ]
+  ],
+  "pages.edit": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "inPlace"
+   ]
+  ],
+  "pages.extract": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.find_text": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.header_footer": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.impose": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.insert_blank": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.insert_from": [
+   [
+    "path",
+    "modify"
+   ],
+   [
+    "sourcePath",
+    "read"
+   ]
+  ],
+  "pages.letterhead": [
+   [
+    "firstPageTemplatePath",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ],
+   [
+    "templatePath",
+    "read"
+   ]
+  ],
+  "pages.merge": [
+   [
+    "inputs",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "pages.number": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.poster": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.remove_header_footer": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.resize": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.reverse": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.rotate": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pages.split": [
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pdfa.check": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pdfa.convert": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pdfa.validate": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "pdfa.validator": [],
+  "preflight.check": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "presentation.save_drawings": [
+   [
+    "path",
+    "modify"
+   ]
+  ],
+  "print.printers": [],
+  "print.run": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "rename.apply": [
+   [
+    "items",
+    "*",
+    "path",
+    "modify"
+   ],
+   [
+    "outputDir",
+    "writeDir"
+   ]
+  ],
+  "rename.preview": [
+   [
+    "paths",
+    "*",
+    "read"
+   ]
+  ],
+  "rename.undo": [
+   [
+    "items",
+    "*",
+    "original",
+    "write"
+   ],
+   [
+    "items",
+    "*",
+    "path",
+    "modify"
+   ],
+   [
+    "removeDirs",
+    "*",
+    "writeDir"
+   ]
+  ],
+  "repair.run": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "scan.enhance": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "scan.enhancePreview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "scan.from_photo": [
+   [
+    "images",
+    "*",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "scan.photo_detect": [
+   [
+    "image",
+    "read"
+   ]
+  ],
+  "scan.separatorSheet": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "scan.split": [
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "scan.splitPreview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "scanner.acquire": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "scanner.assemble": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "pages",
+    "*",
+    "path",
+    "modify"
+   ]
+  ],
+  "scanner.devices": [],
+  "scanner.discard": [
+   [
+    "paths",
+    "*",
+    "modify"
+   ]
+  ],
+  "search.add_folder": [
+   [
+    "path",
+    "readDir"
+   ]
+  ],
+  "search.clear_all": [],
+  "search.folders": [],
+  "search.index": [],
+  "search.query": [],
+  "search.remove_folder": [],
+  "search.stats": [],
+  "security.decrypt": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.decrypt_certificate": [
+   [
+    "certificatePath",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.detect_watermark": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.encrypt": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.encrypt_certificate": [
+   [
+    "certificates",
+    "*",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.flatten": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.inspect": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.password_breach": [],
+  "security.redact": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.redact_preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.redacted_text": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.remove_watermark": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.sanitize": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.scan_presets": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.scrub_hidden": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.stamp": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.stamp_preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "security.watermark": [
+   [
+    "imagePath",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ],
+   [
+    "templatePath",
+    "read"
+   ]
+  ],
+  "security.watermark_preview": [
+   [
+    "imagePath",
+    "read"
+   ],
+   [
+    "path",
+    "read"
+   ],
+   [
+    "templatePath",
+    "read"
+   ]
+  ],
+  "sign.count": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sign.create_certificate": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "sign.export_certificate": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sign.fields": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sign.run": [
+   [
+    "certificatePath",
+    "read"
+   ],
+   [
+    "imagePath",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sign.trust_add": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sign.trust_clear": [],
+  "sign.trust_list": [],
+  "sign.trust_preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sign.trust_remove": [],
+  "sign.verify": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "signature.clean": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "signature.place": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sources.check": [],
+  "sources.detect_doi": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "sources.lookup_doi": [],
+  "studio.cv_import_pdf": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.design_of": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.document_image": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.image_info": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.import_document": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.import_svg": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.load_draft": [],
+  "studio.open_document": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.open_project": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.preview_document": [],
+  "studio.preview_document_page": [],
+  "studio.qr": [],
+  "studio.read_bibliography": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.render": [
+   [
+    "dataPath",
+    "read"
+   ],
+   [
+    "embed",
+    "assets",
+    "*",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "pages",
+    "*",
+    "items",
+    "*",
+    "items",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "pages",
+    "*",
+    "items",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "sign",
+    "certificatePath",
+    "read"
+   ]
+  ],
+  "studio.render_document": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "studio.save_document": [
+   [
+    "output",
+    "write"
+   ]
+  ],
+  "studio.save_draft": [],
+  "studio.save_image": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "studio.save_project": [
+   [
+    "assets",
+    "*",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ],
+   [
+    "preview",
+    "items",
+    "*",
+    "items",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "preview",
+    "items",
+    "*",
+    "path",
+    "read"
+   ]
+  ],
+  "studio.thumbnail": [
+   [
+    "page",
+    "items",
+    "*",
+    "items",
+    "*",
+    "path",
+    "read"
+   ],
+   [
+    "page",
+    "items",
+    "*",
+    "path",
+    "read"
+   ]
+  ],
+  "system.office_install": [],
+  "system.office_remove": [],
+  "system.office_status": [],
+  "system.ping": [],
+  "system.release": [],
+  "system.tessdata_download": [],
+  "system.tessdata_languages": [],
+  "system.tessdata_remove": [],
+  "textedit.code_blocks": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "textedit.find_preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "textedit.find_replace": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "textedit.replace": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "textedit.spans": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "translate.download": [],
+  "translate.import": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "translate.models": [],
+  "translate.remove": [],
+  "translate.text": [],
+  "tts.download": [],
+  "tts.import": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "tts.remove": [],
+  "tts.synthesize": [],
+  "tts.voices": [],
+  "viewer.pageTones": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "viewer.prepare": [
+   [
+    "path",
+    "read"
+   ]
+  ],
+  "viewer.restore": [
+   [
+    "path",
+    "modify"
+   ]
+  ]
+ },
+ "version": 1
+}

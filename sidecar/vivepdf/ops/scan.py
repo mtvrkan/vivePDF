@@ -28,6 +28,7 @@ from vivepdf.ops.merge_split import _write_part
 from vivepdf.ops.ocr import HIDDEN_TEXT_FONT, HiddenFonts, _language_string, write_hidden_words
 from vivepdf.ops.pages import page_label_parts
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WriteDir, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -193,9 +194,9 @@ class EnhanceSettings(RpcModel):
 
 
 class EnhanceParams(EnhanceSettings):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     only_scanned: bool = True
@@ -380,7 +381,7 @@ def enhance(params: EnhanceParams, progress: Progress) -> EnhanceResult:
 
 
 class EnhancePreviewParams(EnhanceSettings):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(default=0, ge=0)
     dpi: int = Field(default=110, ge=50, le=200)
@@ -433,7 +434,7 @@ SplitMode = Literal["blank", "qr", "barcode", "text"]
 
 
 class ScanSplitRules(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     mode: SplitMode = "blank"
     drop_separators: bool = True
@@ -450,7 +451,7 @@ class ScanSplitPart(RpcModel):
 
 
 class ScanSplitParams(ScanSplitRules):
-    output_dir: str
+    output_dir: WriteDir
     pattern: str = "{name}-{n}"
     overwrite: bool = False
     parts: list[ScanSplitPart] | None = Field(default=None, max_length=5000)
@@ -727,7 +728,7 @@ SEPARATOR_FONT = "VpSeparator"
 
 
 class SeparatorSheetParams(RpcModel):
-    output: str
+    output: WritePath
     overwrite: bool = False
     labels: list[str] = Field(default_factory=lambda: [""], min_length=1, max_length=500)
     prefix: str = Field(default="VIVE:", max_length=40)

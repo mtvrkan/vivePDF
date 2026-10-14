@@ -19,6 +19,7 @@ from pydantic import Field
 from vivepdf.ops._appdata import user_data_dir
 from vivepdf.ops.tts_catalog import CATALOG, CATALOG_BY_ID
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -504,7 +505,7 @@ def download(params: VoiceIdParams, progress: Progress) -> VoiceChangedResult:
 
 
 class ImportParams(RpcModel):
-    path: str = Field(min_length=1)
+    path: ReadPath = Field(min_length=1)
 
 
 def _copy_voice_file(source: Path, target: Path) -> None:

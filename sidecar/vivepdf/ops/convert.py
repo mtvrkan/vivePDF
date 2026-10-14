@@ -18,6 +18,7 @@ from vivepdf.ops._placement import turn_text_upright
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.failures import document_failure
+from vivepdf.rpc.paths import ReadPath, WriteDir, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -109,9 +110,9 @@ def _write_text_file(
 
 
 class PdfSourceParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
 
@@ -259,9 +260,9 @@ def tools_status(_params: EmptyParams, _progress: Progress) -> ToolsStatus:
 
 
 class ExtractImagesParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output_dir: str
+    output_dir: WriteDir
     pages: str | None = None
     min_size: int = Field(default=64, ge=1)
     dedupe: bool = True

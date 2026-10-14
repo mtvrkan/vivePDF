@@ -38,6 +38,7 @@ from vivepdf.ops.pages import (
     page_label_parts,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WriteDir, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -48,7 +49,7 @@ BookmarkStyle = Literal["nested", "files", "originals", "none"]
 
 
 class MergeInput(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     ranges: str | None = None
     reverse: bool = False
@@ -56,7 +57,7 @@ class MergeInput(RpcModel):
 
 class MergeParams(RpcModel):
     inputs: list[MergeInput] = Field(min_length=1)
-    output: str
+    output: WritePath
     overwrite: bool = False
     add_bookmarks: bool = True
     bookmarks: BookmarkStyle | None = None
@@ -376,7 +377,7 @@ class SplitResult(RpcModel):
 
 
 class SplitParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     mode: Literal["ranges", "every", "count", "single", "size", "bookmarks", "odd_even", "text"]
     ranges: str | None = None
@@ -385,7 +386,7 @@ class SplitParams(RpcModel):
     bookmark_level: int = Field(default=1, ge=1, le=9)
     max_bytes: int | None = Field(default=None, ge=1024)
     text_pattern: str | None = Field(default=None, max_length=500)
-    output_dir: str
+    output_dir: WriteDir
     base_name: str | None = None
     pattern: str | None = None
     overwrite: bool = False

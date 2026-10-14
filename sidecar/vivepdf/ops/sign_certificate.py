@@ -8,6 +8,7 @@ from pydantic import Field
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pkcs12 import unlock_pkcs12
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -18,7 +19,7 @@ DOCUMENT_SIGNING_OID = "1.3.6.1.5.5.7.3.36"
 
 
 class CreateCertificateParams(RpcModel):
-    output: str
+    output: WritePath
     overwrite: bool = False
     replace_key: bool = False
     password: str = Field(min_length=1, repr=False)
@@ -202,9 +203,9 @@ def create_certificate(
 
 
 class ExportCertificateParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str = Field(default="", repr=False)
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

@@ -3,6 +3,7 @@ from typing import Annotated, Any, Literal
 from pydantic import Field, model_validator
 
 from vivepdf.ops._studio_graphics import StudioGraphic
+from vivepdf.rpc.paths import NotAPath, ReadPath, WriteDir, WritePath
 from vivepdf.rpc.protocol import RpcModel
 
 MAX_PAGES = 500
@@ -24,8 +25,9 @@ ErrorLevel = Literal["L", "M", "Q", "H"]
 TextCase = Literal["none", "upper", "lower", "title"]
 ListKind = Literal["none", "bullet", "dash", "check", "decimal", "alpha", "roman"]
 Weight = Annotated[int, Field(ge=1, le=1000)]
-FontId = Annotated[str, Field(max_length=1024)]
-FilePath = Annotated[str, Field(min_length=1, max_length=4096)]
+FontId = Annotated[NotAPath, Field(max_length=1024)]
+ReadFile = Annotated[ReadPath, Field(min_length=1, max_length=4096)]
+WriteFile = Annotated[WritePath, Field(min_length=1, max_length=4096)]
 
 
 class StudioStop(RpcModel):
@@ -114,7 +116,7 @@ class StudioBleedEdges(RpcModel):
 
 class StudioImageItem(StudioBox):
     kind: Literal["image"]
-    path: str = Field(min_length=1, max_length=4096)
+    path: ReadPath = Field(min_length=1, max_length=4096)
     fit: Literal["cover", "contain", "stretch"] = "cover"
     crop: StudioCrop | None = None
     mask: Literal["none", "rounded", "circle"] = "none"
@@ -303,11 +305,11 @@ class StudioPage(RpcModel):
 
 class StudioEmbed(RpcModel):
     design: dict[str, Any]
-    assets: list[FilePath] = Field(default_factory=list, max_length=MAX_ASSETS)
+    assets: list[ReadFile] = Field(default_factory=list, max_length=MAX_ASSETS)
 
 
 class StudioSignOptions(RpcModel):
-    certificate_path: str = Field(min_length=1, max_length=4096)
+    certificate_path: ReadPath = Field(min_length=1, max_length=4096)
     certificate_password: str = Field(default="", max_length=1024, repr=False)
     reason: str = Field(default="", max_length=500)
     location: str = Field(default="", max_length=500)
@@ -337,12 +339,12 @@ class StudioRenderParams(RpcModel):
         default=None, max_length=MAX_PAGES
     )
     embed: StudioEmbed | None = None
-    output: str = Field(default="", max_length=4096)
+    output: WritePath = Field(default="", max_length=4096)
     overwrite: bool = False
-    data_path: str | None = Field(default=None, max_length=4096)
+    data_path: ReadPath | None = Field(default=None, max_length=4096)
     sheet: str | None = Field(default=None, max_length=200)
     split: bool = False
-    output_dir: str | None = Field(default=None, max_length=4096)
+    output_dir: WriteDir | None = Field(default=None, max_length=4096)
     pattern: str = Field(default="{n}", min_length=1, max_length=120)
     sign: StudioSignOptions | None = None
     print_ready: StudioPrintOptions | None = None
@@ -357,7 +359,7 @@ class StudioRenderResult(RpcModel):
 
 
 class StudioImageInfoParams(RpcModel):
-    path: str = Field(min_length=1, max_length=4096)
+    path: ReadPath = Field(min_length=1, max_length=4096)
     max_side: int = Field(default=1600, ge=16, le=4096)
 
 
@@ -370,7 +372,7 @@ class StudioImageInfoResult(RpcModel):
 
 class StudioSaveImageParams(RpcModel):
     data: str | None = Field(default=None, min_length=4, max_length=MAX_IMAGE_DATA)
-    path: FilePath | None = None
+    path: ReadFile | None = None
 
     @model_validator(mode="after")
     def _one_source(self) -> "StudioSaveImageParams":
@@ -396,7 +398,7 @@ class StudioQrResult(RpcModel):
 
 
 class StudioSvgParams(RpcModel):
-    path: str = Field(min_length=1, max_length=4096)
+    path: ReadPath = Field(min_length=1, max_length=4096)
 
 
 class StudioSvgResult(RpcModel):
@@ -407,10 +409,10 @@ class StudioSvgResult(RpcModel):
 
 class StudioProjectSaveParams(RpcModel):
     design: dict[str, Any]
-    assets: list[FilePath] = Field(default_factory=list, max_length=MAX_ASSETS)
+    assets: list[ReadFile] = Field(default_factory=list, max_length=MAX_ASSETS)
     preview: StudioPage | None = None
     language: str = Field(default="en", max_length=20)
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 
@@ -433,7 +435,7 @@ class StudioThumbnailResult(RpcModel):
 
 
 class StudioProjectOpenParams(RpcModel):
-    path: FilePath
+    path: ReadFile
     password: str | None = None
 
 

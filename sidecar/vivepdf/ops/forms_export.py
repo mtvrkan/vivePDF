@@ -18,6 +18,7 @@ from vivepdf.ops.forms import (
     form_widgets,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -30,9 +31,9 @@ FILE_HEADER = "file"
 
 
 class ExportParams(RpcModel):
-    paths: list[str] = Field(min_length=1)
+    paths: list[ReadPath] = Field(min_length=1)
     password: str | None = None
-    output: str
+    output: WritePath
     format: Literal["csv", "xlsx"] = "xlsx"
     delimiter: Literal[",", ";", "\t"] = ";"
     overwrite: bool = False

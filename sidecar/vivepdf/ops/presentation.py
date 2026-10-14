@@ -8,6 +8,7 @@ from vivepdf.ops._document import open_document
 from vivepdf.ops._inplace import save_in_place
 from vivepdf.ops._output import OutputResult
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ModifyPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -52,7 +53,7 @@ class PresentationBoard(RpcModel):
 
 
 class SaveDrawingsParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     author: str | None = Field(default=None, max_length=200)
     pages: list[PresentationPage] = Field(default_factory=list, max_length=5000)

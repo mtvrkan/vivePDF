@@ -35,6 +35,7 @@ from vivepdf.ops.omr_layout import (
     sheet_layout,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -97,7 +98,7 @@ class OmrLabels(RpcModel):
 
 
 class OmrSheetParams(RpcModel):
-    output: str
+    output: WritePath
     overwrite: bool = False
     paper: Paper = "a4"
     questions: int = Field(ge=1, le=MAX_QUESTIONS)
@@ -147,7 +148,7 @@ class OmrFailure(RpcModel):
 
 
 class OmrReadParams(RpcModel):
-    paths: list[str] = Field(min_length=1, max_length=500)
+    paths: list[ReadPath] = Field(min_length=1, max_length=500)
     password: str | None = None
     threshold: float = Field(default=DEFAULT_THRESHOLD, ge=0.15, le=0.85)
 
@@ -164,7 +165,7 @@ class OmrReviewQuestion(RpcModel):
 
 
 class OmrReviewItem(RpcModel):
-    source: str
+    source: ReadPath
     page: int | None
     layout: str
     transform: list[float] = Field(min_length=9, max_length=9)
@@ -174,7 +175,7 @@ class OmrReviewItem(RpcModel):
 
 
 class OmrReviewParams(RpcModel):
-    output: str
+    output: WritePath
     overwrite: bool = False
     password: str | None = None
     items: list[OmrReviewItem] = Field(min_length=1, max_length=2000)
@@ -187,7 +188,7 @@ class OmrTable(RpcModel):
 
 
 class OmrExportParams(RpcModel):
-    output: str
+    output: WritePath
     overwrite: bool = False
     format: Literal["csv", "xlsx"] = "xlsx"
     delimiter: Literal[",", ";", "\t"] = ";"

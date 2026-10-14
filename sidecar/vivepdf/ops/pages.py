@@ -41,6 +41,7 @@ from vivepdf.ops._ranges import (
 )
 from vivepdf.ops._toc import normalized_toc
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import InPlacePath, ModifyPath, NotAPath, ReadPath, WriteDir, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -52,26 +53,26 @@ MAX_IMAGE_PIXELS = 100_000_000
 
 
 class SourceParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 
 class AssembleSource(RpcModel):
     id: str
-    path: str
+    path: InPlacePath
     password: str | None = None
 
 
 class AssemblePage(RpcModel):
     kind: Literal["page", "blank", "image"] = "page"
-    source: str | None = None
+    source: NotAPath | None = None
     index: int | None = Field(default=None, ge=1)
     rotate: Rotation = 0
     width: float | None = Field(default=None, gt=0, le=MAX_PAGE_SIDE, allow_inf_nan=False)
     height: float | None = Field(default=None, gt=0, le=MAX_PAGE_SIDE, allow_inf_nan=False)
-    path: str | None = None
+    path: ReadPath | None = None
     paper: PaperPattern | None = None
 
 
@@ -91,7 +92,7 @@ def _unique_source_ids(sources: list[AssembleSource]) -> None:
 class AssembleParams(RpcModel):
     sources: list[AssembleSource] = Field(min_length=1)
     pages: list[AssemblePage] = Field(min_length=1)
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = False
     overwrite: bool = False
     labels: list[PageLabelRule] | None = None
@@ -505,7 +506,7 @@ class AssemblePartsParams(RpcModel):
     sources: list[AssembleSource] = Field(min_length=1)
     pages: list[AssemblePage] = Field(min_length=1)
     cuts: list[int] = Field(min_length=1)
-    output_dir: str
+    output_dir: WriteDir
     base_name: str | None = None
     overwrite: bool = False
     labels: list[PageLabelRule] | None = None
@@ -765,9 +766,9 @@ class PageTurn(RpcModel):
 
 
 class EditPagesParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = False
     overwrite: bool = False
     delete: list[int] = Field(default_factory=list)
@@ -1072,9 +1073,9 @@ def insert_blank(params: InsertBlankParams, progress: Progress) -> OutputResult:
 
 
 class InsertFromParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
-    source_path: str
+    source_path: ReadPath
     source_password: str | None = None
     source_pages: list[int] = Field(min_length=1)
     at: int = Field(default=0, ge=0)
@@ -1121,7 +1122,7 @@ def insert_from(params: InsertFromParams, progress: Progress) -> InsertFromResul
 
 
 class FindTextParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     query: str = Field(min_length=1, max_length=500)
     match_case: bool = False

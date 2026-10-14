@@ -44,6 +44,7 @@ from vivepdf.ops.fonts import (
 )
 from vivepdf.ops.textedit import TextEdit, _insert_edit
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import InPlacePath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -79,7 +80,7 @@ class EditorBox(RpcModel):
 
 
 class EditorFontSource(RpcModel):
-    path: str = Field(min_length=1, max_length=4096)
+    path: ReadPath = Field(min_length=1, max_length=4096)
     password: str | None = None
 
 
@@ -113,7 +114,7 @@ class EditorFigure(EditorBox):
 class EditorImage(EditorFigure):
     kind: Literal["image"] = "image"
     png_base64: str | None = None
-    path: str | None = None
+    path: ReadPath | None = None
 
 
 class EditorDrawing(EditorFigure):
@@ -174,7 +175,7 @@ class EditorImageChange(EditorBox):
     new_x1: float | None = None
     new_y1: float | None = None
     replacement_png_base64: str | None = None
-    replacement_path: str | None = None
+    replacement_path: ReadPath | None = None
     rotate: Literal[0, 90, 180, 270] = 0
     flip_h: bool = False
     flip_v: bool = False
@@ -197,9 +198,9 @@ EditorObject = Annotated[
 
 
 class EditorApplyParams(RpcModel):
-    path: str
+    path: InPlacePath
     password: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     in_place: bool = False
     overwrite: bool = False
     objects: list[EditorObject] = Field(min_length=1)
@@ -1153,7 +1154,7 @@ PREVIEW_MAX_SIDE = 1200
 
 
 class ImagePreviewParams(RpcModel):
-    path: str
+    path: ReadPath
 
 
 class ImagePreviewResult(RpcModel):

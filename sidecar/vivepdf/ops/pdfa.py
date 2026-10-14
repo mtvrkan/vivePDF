@@ -31,6 +31,7 @@ from vivepdf.ops._pdfa_levels import (
 )
 from vivepdf.ops.a11y import _font_facts, require_pages
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -119,15 +120,15 @@ class PdfaReport(RpcModel):
 
 
 class PdfaCheckParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     level: Level = DEFAULT_LEVEL
 
 
 class PdfaConvertParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     level: Level = DEFAULT_LEVEL
 

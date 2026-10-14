@@ -14,6 +14,7 @@ from vivepdf.ops._text_fit import MAX_REPORTED_GLYPHS
 from vivepdf.ops.fonts import resolve_choice, uncovered_glyphs
 from vivepdf.ops.furniture import artifact_opening, remove_furniture, role_names
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import NotAPath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -46,15 +47,15 @@ PAGE_LABEL_STYLES: dict[str, str] = {
 
 
 class PageNumberParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     side: PageSide = "all"
     position: Position = "bottom-center"
     mirror_margins: bool = False
-    template: str = "{n}"
+    template: NotAPath = "{n}"
     style: NumberStyle = "arabic"
     start: int = Field(default=1, ge=0)
     font_size: float = Field(default=11, ge=4, le=72)

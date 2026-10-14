@@ -25,6 +25,7 @@ from vivepdf.ops._watermark_style import (
 from vivepdf.ops.fonts import font_name_for, resolve_choice, uncovered_glyphs
 from vivepdf.ops.security_watermark import draw_as_watermark, first_selected_index, render_preview
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -57,16 +58,16 @@ class StampStyle(RpcModel):
 
 
 class StampParams(StampStyle):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     side: PageSide = "all"
 
 
 class StampPreviewParams(StampStyle):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
     side: PageSide = "all"

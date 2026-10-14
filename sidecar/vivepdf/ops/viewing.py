@@ -15,6 +15,7 @@ from vivepdf.ops._view_fonts import (
     scan_display_fonts,
     substitute_display_fonts,
 )
+from vivepdf.rpc.paths import ModifyPath, ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -23,7 +24,7 @@ VIEW_COPY_LIFETIME = 24 * 60 * 60
 
 
 class ViewSourceParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
 
 
@@ -33,6 +34,7 @@ class LayerChoice(RpcModel):
 
 
 class ViewPrepareParams(ViewSourceParams):
+    path: ReadPath
     layers: list[LayerChoice] | None = Field(default=None, max_length=10000)
 
 

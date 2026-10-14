@@ -8,6 +8,7 @@ from vivepdf.ops._output import prepare_data_output, write_atomically
 from vivepdf.ops._pixmaps import png_ready
 from vivepdf.ops._svg import drawing_pdf, placed_svg
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -25,7 +26,7 @@ class DrawingImageParams(RpcModel):
     height: float = Field(gt=0, le=MAX_SIDE_POINTS)
     format: Literal["png", "svg"] = "png"
     scale: float = Field(default=2.0, ge=0.25, le=8.0)
-    output: str | None = None
+    output: WritePath | None = None
     overwrite: bool = False
 
     @model_validator(mode="after")

@@ -18,6 +18,7 @@ from vivepdf.ops.fonts import (
 )
 from vivepdf.ops.textedit import _color_to_hex
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -31,7 +32,7 @@ DEFAULT_LINE_HEIGHT = 1.2
 
 
 class BlocksParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(ge=0)
 
@@ -480,7 +481,7 @@ def blocks(params: BlocksParams, _progress: Progress) -> BlocksResult:
 
 
 class FontParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     xref: int = Field(ge=1)
 
@@ -503,7 +504,7 @@ def font(params: FontParams, _progress: Progress) -> FontResult:
 
 
 class FontPlanParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(ge=0)
     font_xref: int | None = Field(default=None, ge=0)

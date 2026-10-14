@@ -19,6 +19,7 @@ from vivepdf.ops._appdata import user_data_dir
 from vivepdf.ops.translate_catalog import CATALOG, CATALOG_BY_ID, CatalogEntry
 from vivepdf.ops.tts import split_sentences
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import NotAPath, ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -363,7 +364,7 @@ def _install(staging: Path, final: Path) -> None:
 
 
 class ImportParams(RpcModel):
-    path: str = Field(min_length=1)
+    path: ReadPath = Field(min_length=1)
 
 
 @op("translate.import", ImportParams)
@@ -584,8 +585,8 @@ def _translate_batch(model: _LoadedModel, sentences: list[str], language: str) -
 
 class TranslateTextParams(RpcModel):
     text: str = Field(min_length=1, max_length=MAX_TEXT_CHARS)
-    source: str = Field(pattern=LANGUAGE_RE)
-    target: str = Field(pattern=LANGUAGE_RE)
+    source: NotAPath = Field(pattern=LANGUAGE_RE)
+    target: NotAPath = Field(pattern=LANGUAGE_RE)
 
 
 class TranslateTextResult(RpcModel):

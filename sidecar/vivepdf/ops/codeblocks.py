@@ -6,6 +6,7 @@ from pydantic import Field
 
 from vivepdf.ops._document import open_document
 from vivepdf.ops.textedit import _page_at
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -86,7 +87,7 @@ LINE_NUMBER = re.compile(r"^\s*(\d{1,4})[.:)|]?(\s+|$)")
 
 
 class CodeBlocksParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(ge=0)
     rect: list[float] | None = None

@@ -22,6 +22,7 @@ from vivepdf.ops.scan import (
 )
 from vivepdf.ops.scan_session import session_part
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -81,7 +82,7 @@ class ScannerDevicesResult(RpcModel):
 
 class ScannerAcquireParams(RpcModel):
     device_id: str | None = None
-    output: str = ""
+    output: WritePath = ""
     session: bool = False
     overwrite: bool = False
     source: Literal["auto", "flatbed", "feeder"] = "auto"

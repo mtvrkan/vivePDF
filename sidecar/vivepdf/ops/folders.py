@@ -6,6 +6,7 @@ from pathlib import Path
 from pydantic import Field
 
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ModifyPath, NotAPath, ReadDir, WriteDir
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -17,10 +18,10 @@ WORKING_FILE_MARKER = ".tmp-vivepdf."
 
 
 class ListPdfsParams(RpcModel):
-    folder: str
+    folder: ReadDir
     recursive: bool = False
     limit: int = Field(default=MAX_LISTED_FILES, ge=1, le=MAX_LISTED_FILES)
-    exclude: list[str] = Field(default_factory=list, max_length=32)
+    exclude: list[NotAPath] = Field(default_factory=list, max_length=32)
 
 
 class PdfEntry(RpcModel):
@@ -36,8 +37,8 @@ class ListPdfsResult(RpcModel):
 
 
 class MoveToFolderParams(RpcModel):
-    path: str
-    folder: str
+    path: ModifyPath
+    folder: WriteDir
 
 
 class MoveToFolderResult(RpcModel):

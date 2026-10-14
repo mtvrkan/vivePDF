@@ -35,15 +35,16 @@ from vivepdf.ops._redaction import (
 from vivepdf.ops._redaction_document import scrub_document
 from vivepdf.ops._safe_pattern import MAX_PATTERNS, MatchClock, compile_safe_patterns
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
 
 class RedactParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     areas: list[RedactArea] = Field(default_factory=list, max_length=MAX_AREAS)
@@ -177,7 +178,7 @@ def redact(params: RedactParams, progress: Progress) -> RedactResult:
 
 
 class SearchParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     search_text: list[str] = Field(default_factory=list, max_length=MAX_TEXTS)
     patterns: list[str] = Field(default_factory=list, max_length=MAX_PATTERNS)
@@ -188,7 +189,7 @@ class SearchParams(RpcModel):
 
 
 class ScanPresetsParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
 

@@ -18,6 +18,7 @@ from vivepdf.ops._sign_writer import (
     _unique_field_name,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -218,7 +219,7 @@ def sign(params: SignParams, progress: Progress) -> SignResult:
 
 
 class SignaturesPresentParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 
@@ -242,7 +243,7 @@ def count_signatures(
 
 
 class SignatureFieldsParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 

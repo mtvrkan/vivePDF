@@ -17,6 +17,7 @@ from vivepdf.ops.security import (
     _write_with_handler,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -83,11 +84,11 @@ def load_recipients(paths: list[str]) -> list:
 
 
 class EncryptCertificateParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = Field(default=None, repr=False)
-    output: str
+    output: WritePath
     overwrite: bool = False
-    certificates: list[str] = Field(min_length=1)
+    certificates: list[ReadPath] = Field(min_length=1)
     algorithm: Algorithm = "aes256"
     permissions: Permissions = Field(default_factory=Permissions)
     encrypt_metadata: bool = True
@@ -192,10 +193,10 @@ def _refuse_unsealed(source: Path) -> None:
 
 
 class DecryptCertificateParams(RpcModel):
-    path: str
-    output: str
+    path: ReadPath
+    output: WritePath
     overwrite: bool = False
-    certificate_path: str
+    certificate_path: ReadPath
     certificate_password: str = Field(default="", repr=False)
 
 

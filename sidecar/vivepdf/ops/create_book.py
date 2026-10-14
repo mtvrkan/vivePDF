@@ -25,6 +25,7 @@ from vivepdf.ops.create import (
     read_text_file,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -42,14 +43,14 @@ NUMBER_PREFIX = re.compile(r"^\d+[\s._-]+")
 
 
 class CreateBookParams(RpcModel):
-    chapters: list[str] = Field(min_length=1, max_length=MAX_CHAPTERS)
+    chapters: list[ReadPath] = Field(min_length=1, max_length=MAX_CHAPTERS)
     title: str = Field(default="", max_length=300)
     subtitle: str = Field(default="", max_length=300)
     author: str = Field(default="", max_length=300)
     date: str = Field(default="", max_length=80)
     cover: bool = True
     cover_style: CoverStyle = "classic"
-    cover_image: str | None = None
+    cover_image: ReadPath | None = None
     toc: bool = True
     toc_title: str = Field(default="Contents", max_length=100)
     toc_depth: Literal[1, 2] = 2
@@ -61,7 +62,7 @@ class CreateBookParams(RpcModel):
     margin_mm: float = Field(default=20, ge=10, le=40)
     accent: str = DEFAULT_ACCENT
     paper: BookPaper = "a5"
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

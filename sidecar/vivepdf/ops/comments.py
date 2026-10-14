@@ -35,6 +35,7 @@ from vivepdf.ops._spreadsheet import inert_cell
 from vivepdf.ops._story import BASE_CSS, FONT_DIR, render_html_to_pdf
 from vivepdf.ops.info import printed_page_labels
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ModifyPath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -90,7 +91,7 @@ class CommentItem(RpcModel):
 
 
 class CommentsListParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
 
 
@@ -233,7 +234,7 @@ def _modify_in_place(path: str, password: str | None, xrefs: list[int], mutate: 
 
 
 class CommentsUpdateParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     xrefs: list[int] = Field(min_length=1)
     resolved: bool = True
@@ -274,7 +275,7 @@ ReviewState = Literal["Accepted", "Rejected", "Cancelled", "Completed", "None"]
 
 
 class CommentsStateParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     xrefs: list[int] = Field(min_length=1)
     state: ReviewState
@@ -302,7 +303,7 @@ def set_state(params: CommentsStateParams, progress: Progress) -> CommentsChange
 
 
 class CommentsReplyParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     xref: int
     content: str = Field(min_length=1, max_length=5000)
@@ -339,7 +340,7 @@ def reply(params: CommentsReplyParams, progress: Progress) -> CommentsReplyResul
 
 
 class CommentsDeleteParams(RpcModel):
-    path: str
+    path: ModifyPath
     password: str | None = None
     xrefs: list[int] = Field(min_length=1)
 
@@ -361,9 +362,9 @@ def delete_comments(params: CommentsDeleteParams, progress: Progress) -> Comment
 
 
 class CommentsExportParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     format: Literal["csv", "pdf", "xfdf", "fdf", "md"] = "csv"
     include_resolved: bool = True
     overwrite: bool = False

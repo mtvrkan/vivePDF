@@ -14,6 +14,7 @@ from vivepdf.ops._document import open_document, unwrap_document
 from vivepdf.ops._output import garbage_level, prepare_output
 from vivepdf.ops._page_batch import SharedFonts, page_object_number
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -45,11 +46,11 @@ RUN_GAP = 2
 
 
 class CompareParams(RpcModel):
-    path_a: str
+    path_a: ReadPath
     password_a: str | None = None
-    path_b: str
+    path_b: ReadPath
     password_b: str | None = None
-    output: str | None = None
+    output: WritePath | None = None
     overwrite: bool = False
     visual: bool = True
     text: bool = True
@@ -829,9 +830,9 @@ def compare(params: CompareParams, progress: Progress) -> CompareResult:
 
 
 class PageImagesParams(RpcModel):
-    path_a: str
+    path_a: ReadPath
     password_a: str | None = None
-    path_b: str
+    path_b: ReadPath
     password_b: str | None = None
     page_a: int | None = Field(default=None, ge=1)
     page_b: int | None = Field(default=None, ge=1)

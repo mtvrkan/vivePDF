@@ -3,6 +3,7 @@ from pathlib import Path
 
 from vivepdf.ops.sign import PERMISSION_NAMES, _subject_label
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -103,7 +104,7 @@ def _signing_key_usage():
 
 
 class VerifyParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     online: bool = False
 

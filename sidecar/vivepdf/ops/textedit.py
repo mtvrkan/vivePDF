@@ -22,6 +22,7 @@ from vivepdf.ops.fonts import (
     resolve_font,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -47,7 +48,7 @@ def _hex_to_color(value: str) -> tuple[float, float, float]:
 
 
 class TextSpansParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     page: int = Field(ge=0)
     visible: bool = False
@@ -149,9 +150,9 @@ class TextEditWarning(RpcModel):
 
 
 class TextEditParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     page: int = Field(ge=0)
     edits: list[TextEdit]
@@ -340,9 +341,9 @@ def replace_text(params: TextEditParams, progress: Progress) -> TextEditResult:
 
 
 class FindReplaceParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     find: str = Field(min_length=1, max_length=500)
     replace: str = Field(max_length=2000)
@@ -359,7 +360,7 @@ class FindReplaceResult(OutputResult):
 
 
 class FindPreviewParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     find: str = Field(min_length=1, max_length=500)
     case_sensitive: bool = False

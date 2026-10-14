@@ -22,6 +22,7 @@ from vivepdf.ops._page_html import (
 from vivepdf.ops._story import FONT_DIR
 from vivepdf.ops.create import DEFAULT_ACCENT, FAMILIES, LOGO_EXTENSIONS, FontChoice
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -36,9 +37,9 @@ WHITE = (1.0, 1.0, 1.0)
 
 
 class CoverParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     style: CoverStyle = "classic"
     title: str = Field(default="", max_length=300)
@@ -47,8 +48,8 @@ class CoverParams(RpcModel):
     organisation: str = Field(default="", max_length=500)
     date: str = Field(default="", max_length=80)
     details: str = Field(default="", max_length=1000)
-    logo: str | None = None
-    image: str | None = None
+    logo: ReadPath | None = None
+    image: ReadPath | None = None
     accent: str = DEFAULT_ACCENT
     font: FontChoice = "sans"
     replace_first: bool = False

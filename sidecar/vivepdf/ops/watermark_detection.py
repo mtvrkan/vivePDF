@@ -28,6 +28,7 @@ from vivepdf.ops._raster import (
     screened_part,
     working_size,
 )
+from vivepdf.rpc.paths import ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -77,7 +78,7 @@ class WatermarkCandidate(RpcModel):
 
 
 class DetectWatermarkParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     pages: str | None = None
 

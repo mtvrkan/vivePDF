@@ -17,6 +17,7 @@ from vivepdf.ops._output import (
 )
 from vivepdf.ops._passwords import saslprepped
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -66,9 +67,9 @@ class Permissions(RpcModel):
 
 
 class EncryptParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = Field(default=None, repr=False)
-    output: str
+    output: WritePath
     overwrite: bool = False
     user_password: str = Field(default="", repr=False)
     owner_password: str = Field(default="", repr=False)
@@ -248,9 +249,9 @@ def _standard_handler(writer, params: "EncryptParams", user_password: str, owner
 
 
 class DecryptParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str = Field(default="", repr=False)
-    output: str
+    output: WritePath
     overwrite: bool = False
 
 

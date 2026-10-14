@@ -3,13 +3,14 @@ from typing import Literal
 
 from pydantic import Field
 
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.protocol import RpcModel
 
 
 class DetectParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     pages: str | None = None
     min_line_width: float = Field(default=50, ge=10, le=600)

@@ -11,6 +11,7 @@ from pydantic import Field
 
 from vivepdf.ops._appdata import user_data_dir
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import NotAPath, ReadDir
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -280,7 +281,7 @@ def list_folders(params: EmptyParams, progress: Progress) -> FoldersResult:
 
 
 class AddFolderParams(RpcModel):
-    path: str
+    path: ReadDir
     recursive: bool = True
 
 
@@ -315,7 +316,7 @@ def add_folder(params: AddFolderParams, progress: Progress) -> AddFolderResult:
 
 
 class RemoveFolderParams(RpcModel):
-    path: str
+    path: NotAPath
 
 
 @op("search.remove_folder", RemoveFolderParams)
@@ -334,7 +335,7 @@ def remove_folder(params: RemoveFolderParams, progress: Progress) -> FoldersResu
 
 
 class IndexParams(RpcModel):
-    path: str | None = None
+    path: NotAPath | None = None
     force: bool = False
 
 
@@ -517,8 +518,8 @@ def build_snippet(text: str, folded_text: str, terms: list[str]) -> str:
 class QueryParams(RpcModel):
     query: str
     limit: int = Field(default=40, ge=1, le=200)
-    folder: str | None = None
-    path: str | None = None
+    folder: NotAPath | None = None
+    path: NotAPath | None = None
     modified_after: float | None = None
     modified_before: float | None = None
     min_pages: int | None = None

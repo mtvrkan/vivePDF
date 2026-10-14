@@ -15,6 +15,7 @@ from vivepdf.ops.furniture import (
     role_names,
 )
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -25,14 +26,14 @@ WHITE = 255
 
 
 class LetterheadParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
-    template_path: str
+    template_path: ReadPath
     template_password: str | None = None
     template_page: int = Field(default=1, ge=1)
-    first_page_template_path: str | None = None
+    first_page_template_path: ReadPath | None = None
     first_page_template_password: str | None = None
     first_page_template_page: int = Field(default=1, ge=1)
     position: Literal["under", "over"] = "under"

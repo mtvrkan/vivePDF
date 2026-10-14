@@ -12,6 +12,7 @@ from vivepdf.ops._output import prepare_output, save_document
 from vivepdf.ops._placement import insertion_matrix
 from vivepdf.ops.photo import otsu_threshold
 from vivepdf.rpc.errors import ErrorCode, OpError
+from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -21,7 +22,7 @@ PADDING = 12
 
 
 class SignatureCleanParams(RpcModel):
-    path: str
+    path: ReadPath
     ink_color: str | None = None
 
 
@@ -102,9 +103,9 @@ class SignaturePlacement(RpcModel):
 
 
 class SignaturePlaceParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     placements: list[SignaturePlacement] = Field(min_length=1)
 

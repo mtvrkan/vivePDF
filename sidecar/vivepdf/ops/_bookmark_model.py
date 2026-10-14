@@ -7,6 +7,7 @@ from pydantic import Field, model_validator
 from vivepdf.ops._output import (
     OutputResult,
 )
+from vivepdf.rpc.paths import NotAPath, ReadPath, WritePath
 from vivepdf.rpc.protocol import RpcModel
 
 OPEN_ALL_LEVELS = 99
@@ -31,7 +32,7 @@ class BookmarkItem(RpcModel):
     collapsed: bool = False
     target: BookmarkTarget = "page"
     uri: str | None = Field(default=None, max_length=MAX_LINK_LENGTH)
-    file: str | None = Field(default=None, max_length=MAX_LINK_LENGTH)
+    file: NotAPath | None = Field(default=None, max_length=MAX_LINK_LENGTH)
     fit: FitMode | None = None
     fit_args: list[float | None] | None = Field(default=None, max_length=4)
     color: str | None = Field(default=None, pattern=r"^#[0-9a-fA-F]{6}$")
@@ -55,9 +56,9 @@ class BookmarkItem(RpcModel):
 
 
 class BookmarksGenerateParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
-    output: str
+    output: WritePath
     overwrite: bool = False
     mode: Literal["headings", "everyPage"] = "headings"
     max_levels: int = Field(default=3, ge=1, le=6)
@@ -71,7 +72,7 @@ class BookmarksGenerateResult(OutputResult):
 
 
 class BookmarksSuggestParams(RpcModel):
-    path: str
+    path: ReadPath
     password: str | None = None
     mode: Literal["headings", "everyPage"] = "headings"
     max_levels: int = Field(default=3, ge=1, le=6)
