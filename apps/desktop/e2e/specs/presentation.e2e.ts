@@ -1,6 +1,6 @@
 import { $, browser, expect } from "@wdio/globals";
 import { join } from "node:path";
-import { bootApp, clickButton, copyFixture, fixtures, openInViewer, t, workDir } from "../support/app.ts";
+import { bootApp, clickButton, copyFixture, dialogButton, fixtures, openInViewer, pressShortcut, probe, t, typeInto, workDir } from "../support/app.ts";
 
 type Point = { x: number; y: number };
 type Colour = "red" | "blue";
@@ -325,5 +325,62 @@ describe("presentation", () => {
     await clickButton(t("presentation.presenter.end"));
     await browser.waitUntil(async () => (await browser.getWindowHandles()).length === 1, { timeout: 20000, timeoutMsg: "ending the presentation left the audience window open" });
     await $(".immersive-view").waitForExist({ reverse: true, timeoutMsg: "the console did not leave presenter view" });
+  });
+
+  it("inserts a formula on a slide, moves it and saves it into the PDF at the end", async () => {
+    for (let attempt = 0; attempt < 4 && (await $(".immersive-view").isExisting()); attempt += 1) await browser.keys(ESCAPE_KEY);
+    await $(".immersive-view").waitForExist({ reverse: true, timeoutMsg: "the earlier presentation did not end" });
+    const source = copyFixture(fixtures().sample, "presentation-formula.pdf");
+    const before = probe(source);
+    await openInViewer(source);
+    const page = $('[data-page-index="0"]');
+    await page.waitForDisplayed();
+    await page.click();
+    await browser.keys("F11");
+    const insert = $("[data-presentation-insert]");
+    await insert.waitForExist({ timeout: 20000, timeoutMsg: "the presentation toolbar has no Insert button" });
+    await waitForStableLayout();
+    const middle = await browser.execute(() => {
+      const middle = window.innerHeight / 2;
+      const node = Array.from(document.querySelectorAll<HTMLElement>(".immersive-view [data-page-index]")).find((entry) => {
+        const rect = entry.getBoundingClientRect();
+        return rect.top <= middle && rect.bottom >= middle;
+      }) as HTMLElement;
+      const rect = node.getBoundingClientRect();
+      return { x: Math.round(rect.left + rect.width / 2), y: Math.round(rect.top + rect.height / 2), bottom: window.innerHeight };
+    });
+
+    await hover({ x: middle.x, y: middle.bottom - 20 });
+    await insert.waitForClickable();
+    await insert.click();
+    const item = $(`//*[@role="menu"]//button[normalize-space(.)="${t("viewer.formula.menu")}"]`);
+    await item.waitForClickable();
+    await item.click();
+    const area = $('[role="dialog"] textarea');
+    await area.waitForDisplayed();
+    const latex = String.raw`\int_0^1 x^2\,dx = \frac{1}{3}`;
+    await typeInto(area, latex);
+    await $(`//div[@role="dialog"]//img[@alt='${latex}']`).waitForDisplayed({ timeout: 30000 });
+    await dialogButton(t("viewer.formula.insert")).click();
+    await area.waitForExist({ reverse: true });
+    await $(`//p[@role="status"][normalize-space(.)="${t("presentation.insert.placeHint")}"]`).waitForDisplayed({ timeoutMsg: "the inserted formula is not waiting to be placed" });
+
+    await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move({ origin: "viewport", x: middle.x, y: middle.y }).down().up().perform();
+    const placed = $("[data-presentation-item]");
+    await placed.waitForExist({ timeoutMsg: "a click did not place the formula" });
+    await $("[data-presentation-selection]").waitForExist({ timeoutMsg: "the placed formula is not selected" });
+    const start = await placed.getLocation();
+    await drawLine({ x: middle.x, y: middle.y }, { x: middle.x + 80, y: middle.y });
+    await browser.waitUntil(async () => (await placed.getLocation()).x - start.x > 50, { timeoutMsg: "dragging the formula did not move it" });
+    await browser.saveScreenshot(join(workDir(), "presentation-formula.png"));
+
+    for (let attempt = 0; attempt < 3 && (await $(".immersive-view").isExisting()); attempt += 1) await browser.keys(ESCAPE_KEY);
+    await clickButton(t("presentation.keep.save"));
+    await pressShortcut("s");
+    await browser.waitUntil(() => (probe(source).pages?.[0].drawings ?? 0) > (before.pages?.[0].drawings ?? 0) + 5, {
+      timeout: 30000,
+      timeoutMsg: "the saved file has no formula drawing on page 1",
+    });
+    expect(probe(source).pages?.[1].drawings).toBe(before.pages?.[1].drawings);
   });
 });
