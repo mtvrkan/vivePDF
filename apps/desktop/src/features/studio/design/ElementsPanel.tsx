@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { lazy, memo, Suspense, useState } from "react";
 import { Image as ImageIcon, Layers, LayoutTemplate, QrCode, Shapes, Table2, Type, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
@@ -15,14 +15,15 @@ import { centred, insert, insertShape, insertText, presetShape, SHAPE_PRESETS, T
 import { pickImage } from "./pickImage";
 import { isLineShape, renderFill, renderStroke, shapePaths } from "../model/shapes";
 import { currentPage, useStudioStore } from "./studioStore";
-import { LayersTab } from "./LayersTab";
 import { insertTemplate } from "../templates/apply";
 import { buildTemplate } from "../templates/kit";
 import type { StudioTemplate } from "../templates/kit";
 import { LazyTemplateGallery } from "../templates/LazyTemplateGallery";
-import { DataTab } from "../merge/DataTab";
 import { IconsSection } from "../icons/IconsSection";
 import { GraphicsElements } from "../graphics/GraphicsElements";
+
+const LayersTab = lazy(() => import("./LayersTab").then((module) => ({ default: module.LayersTab })));
+const DataTab = lazy(() => import("../merge/DataTab").then((module) => ({ default: module.DataTab })));
 
 type Tab = "templates" | "elements" | "layers" | "data";
 const TABS: Tab[] = ["templates", "elements", "data", "layers"];
@@ -194,6 +195,16 @@ function ElementsTab() {
   );
 }
 
+function TabSkeleton() {
+  return (
+    <div aria-busy className="flex animate-pulse flex-col gap-2 p-3">
+      <div className="h-4 w-full rounded bg-muted" />
+      <div className="h-4 w-4/5 rounded bg-muted" />
+      <div className="h-4 w-3/5 rounded bg-muted" />
+    </div>
+  );
+}
+
 function TemplatesTab() {
   const { t } = useTranslation();
   const language = useUiStore((state) => state.locale);
@@ -245,7 +256,7 @@ export function ElementsPanel() {
         })}
       </div>
       <div key={tab} id="studio-panel-body" role="tabpanel" aria-labelledby={`studio-panel-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto">
-        {body}
+        <Suspense fallback={<TabSkeleton />}>{body}</Suspense>
       </div>
     </aside>
   );

@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { createDesign, createShape } from "../model/design";
@@ -36,14 +36,14 @@ describe("elements panel", () => {
     useStudioStore.getState().close();
   });
 
-  it("opens another tab at the top instead of where the last one was scrolled", () => {
+  it("opens another tab at the top instead of where the last one was scrolled", async () => {
     render(<ElementsPanel />);
     panel().scrollTop = 600;
 
     fireEvent.click(screen.getByRole("tab", { name: "Layers" }));
 
     expect(panel().scrollTop).toBe(0);
-    expect(panel().textContent).toBe("layers");
+    await waitFor(() => expect(panel().textContent).toBe("layers"));
   });
 
   it("keeps the scroll position while the same tab is clicked again", () => {

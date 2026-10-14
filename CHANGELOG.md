@@ -34,6 +34,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
 ### Changed
+- Studio opens with less code: the Export, Print, keyboard shortcuts and Find and replace dialogs and the Data and Layers tabs load the first time they are opened, bringing the Studio page to 98 KB gzip (was 109 KB) [2026-10-14]
 - Studio opens faster: the template gallery now loads on its own after the page appears, halving the code Studio needs to start [2026-10-13]
 - Settings look cleaner: each section opens with a large coloured heading and its settings sit on one glass card below it, the side menu shows every section in its group colour (blue for the app, green for viewing, violet for system and data) with the chosen one tinted, and the theme pictures are drawn from the real light and dark colours [2026-10-09]
 - Dark theme hovers are calmer: tool cards and next-step chips light up with a muted tint and a fainter coloured border, tool icon tiles glow less, and menu rows and icon buttons no longer flash a bright top edge; the light theme is unchanged [2026-10-09]

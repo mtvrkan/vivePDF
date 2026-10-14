@@ -21,12 +21,9 @@ import { useOpenDesign } from "./design/useOpenDesign";
 import { fromMm, toMm } from "./design/units";
 import { ElementsPanel } from "./design/ElementsPanel";
 import { PageView } from "./design/ElementView";
-import { FindReplacePanel, type FindMode } from "./design/FindReplacePanel";
-import { ExportDialog } from "./design/ExportDialog";
+import type { FindMode } from "./design/FindReplacePanel";
 import { PagesStrip } from "./design/PagesStrip";
 import { PropertiesPanel } from "./design/PropertiesPanel";
-import { StudioPrintDialog } from "./design/StudioPrintDialog";
-import { StudioShortcutsDialog } from "./design/StudioShortcutsDialog";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { useStudioStore } from "./design/studioStore";
 import { useStudioDraft } from "./design/useStudioDraft";
@@ -43,6 +40,10 @@ import { LazyTemplateGallery } from "./templates/LazyTemplateGallery";
 
 const DocumentEditor = lazy(() => import("./document/DocumentEditor"));
 const CvStudio = lazy(() => import("./cv/CvStudio"));
+const ExportDialog = lazy(() => import("./design/ExportDialog").then((module) => ({ default: module.ExportDialog })));
+const StudioPrintDialog = lazy(() => import("./design/StudioPrintDialog").then((module) => ({ default: module.StudioPrintDialog })));
+const StudioShortcutsDialog = lazy(() => import("./design/StudioShortcutsDialog").then((module) => ({ default: module.StudioShortcutsDialog })));
+const FindReplacePanel = lazy(() => import("./design/FindReplacePanel").then((module) => ({ default: module.FindReplacePanel })));
 
 const START_SIZES: StudioPageSize[] = ["a4", "a4Landscape", "a5", "letter", "square", "story", "presentation", "poster"];
 const PREVIEW_BOX = 96;
@@ -236,12 +237,21 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
   );
 }
 
+function useOpenedOnce(open: boolean): boolean {
+  const [opened, setOpened] = useState(open);
+  if (open && !opened) setOpened(true);
+  return open || opened;
+}
+
 function StudioEditor({ language }: { language: string }) {
   const { t } = useTranslation();
   const [exporting, setExporting] = useState(false);
   const [printing, setPrinting] = useState(false);
   const [helping, setHelping] = useState(false);
   const [finding, setFinding] = useState<FindMode | null>(null);
+  const exportLoaded = useOpenedOnce(exporting);
+  const printLoaded = useOpenedOnce(printing);
+  const helpLoaded = useOpenedOnce(helping);
   const close = useStudioStore((state) => state.close);
   useEffect(() => startGraphicSync(), []);
   const { save } = useDesignSave();
@@ -269,15 +279,21 @@ function StudioEditor({ language }: { language: string }) {
           <MissingFontsBar />
           <div className="relative flex min-h-0 flex-1 flex-col">
             <Canvas language={language} />
-            {finding ? <FindReplacePanel mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
+            {finding ? (
+              <Suspense fallback={null}>
+                <FindReplacePanel mode={finding} language={language} onClose={() => setFinding(null)} />
+              </Suspense>
+            ) : null}
           </div>
           <PagesStrip language={language} />
         </div>
         <PropertiesPanel />
       </div>
-      <ExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />
-      <StudioPrintDialog open={printing} onClose={() => setPrinting(false)} language={language} />
-      <StudioShortcutsDialog open={helping} onClose={() => setHelping(false)} />
+      <Suspense fallback={null}>
+        {exportLoaded ? <ExportDialog open={exporting} onClose={() => setExporting(false)} language={language} /> : null}
+        {printLoaded ? <StudioPrintDialog open={printing} onClose={() => setPrinting(false)} language={language} /> : null}
+        {helpLoaded ? <StudioShortcutsDialog open={helping} onClose={() => setHelping(false)} /> : null}
+      </Suspense>
       <GraphicEditorHost />
     </div>
   );
