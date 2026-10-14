@@ -15,6 +15,7 @@ mod launch;
 mod lens;
 mod navigation;
 mod path_gate;
+mod presenter;
 mod rpc;
 mod secret_injection;
 mod session_file;
@@ -60,6 +61,7 @@ pub fn run() {
         .manage(chain_secrets::ChainSecrets::default())
         .manage(watch_tickets::WatchTickets::default())
         .manage(view_source::ViewSources::default())
+        .manage(presenter::Presenters::default())
         .register_asynchronous_uri_scheme_protocol(
             view_source::SCHEME,
             |context, request, responder| {
@@ -104,6 +106,7 @@ pub fn run() {
                 window
                     .state::<view_source::ViewSources>()
                     .release_window(window.label());
+                presenter::end_for_console(window.app_handle(), window.label());
             }
         })
         .setup(|app| {
@@ -175,7 +178,13 @@ pub fn run() {
             watch_tickets::watch_ticket,
             watch_tickets::watch_ticket_release,
             view_source::view_source,
-            view_source::view_source_release
+            view_source::view_source_release,
+            presenter::presenter_open,
+            presenter::presenter_session,
+            presenter::presenter_close,
+            presenter::presenter_swap,
+            presenter::presenter_notes_read,
+            presenter::presenter_notes_write
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application");

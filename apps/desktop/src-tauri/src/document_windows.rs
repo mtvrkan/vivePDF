@@ -54,6 +54,9 @@ impl DocumentWindows {
     }
 
     fn claim(&self, label: &str, path: &str, is_open: impl Fn(&str) -> bool) -> Option<String> {
+        if crate::presenter::is_audience(label) {
+            return None;
+        }
         let mut claims = self.claim_entries();
         let key = claim_key(path);
         if let Some(owner) = claims.get(&key) {
@@ -66,6 +69,9 @@ impl DocumentWindows {
     }
 
     fn sync(&self, label: &str, paths: &[String], is_open: impl Fn(&str) -> bool) {
+        if crate::presenter::is_audience(label) {
+            return;
+        }
         let mut claims = self.claim_entries();
         let wanted: HashSet<String> = paths.iter().map(|path| claim_key(path)).collect();
         claims.retain(|key, owner| owner != label || wanted.contains(key));
@@ -94,7 +100,7 @@ impl DocumentWindows {
     }
 }
 
-fn claim_key(path: &str) -> String {
+pub(crate) fn claim_key(path: &str) -> String {
     let resolved = std::fs::canonicalize(path)
         .map(|resolved| resolved.to_string_lossy().to_string())
         .unwrap_or_else(|_| path.to_string());
@@ -392,6 +398,21 @@ mod tests {
         assert_eq!(
             windows.claim("doc-2", "a.pdf", all_open),
             Some("doc-1".into())
+        );
+    }
+
+    #[test]
+    fn audience_windows_never_claim_documents() {
+        let windows = DocumentWindows::default();
+        assert_eq!(windows.claim("present-1", "a.pdf", all_open), None);
+        windows.sync("present-1", &paths(&["b.pdf"]), all_open);
+        assert_eq!(windows.claim("main", "a.pdf", all_open), None);
+        assert_eq!(windows.claim("main", "b.pdf", all_open), None);
+        windows.claim("main", "c.pdf", all_open);
+        assert_eq!(windows.claim("present-1", "c.pdf", all_open), None);
+        assert_eq!(
+            windows.claim("doc-1", "c.pdf", all_open),
+            Some("main".into())
         );
     }
 
