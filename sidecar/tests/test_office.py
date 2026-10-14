@@ -236,6 +236,7 @@ def windows_install(monkeypatch, tmp_path, signature, downloads: list[str], prod
     monkeypatch.setenv("VIVEPDF_OFFICE_DIR", str(tmp_path / "office"))
     monkeypatch.setattr(office_download.sys, "platform", "win32")
     monkeypatch.setattr(office_download.platform, "machine", lambda: "AMD64")
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: None)
     monkeypatch.setattr(office_download, "candidate_versions", lambda: ["26.2.6"])
     monkeypatch.setattr(
         office_download,

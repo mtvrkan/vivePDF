@@ -42,6 +42,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Engine tests: the Windows LibreOffice install tests no longer break `shutil.which` on Linux, and the real-gpg signature round trip (good signature, tampered file, foreign key) has now run on Debian 13 with GnuPG 2.4.7 [2026-10-14]
 - Presentation: the tool keys (L, P, H, E, S, M, V, Shift+E, Delete, Ctrl+Z / Ctrl+Y) now also work with the presentation tools open in the normal viewer, work on any keyboard layout, keep working after you touch a slider or colour in the style panel, and every tool button shows its key [2026-10-13]
 - Presentation: the drawing style and settings panels now close when you click anywhere outside them [2026-10-13]
 - Windows setup: when this copy of vivePDF has no bundled LibreOffice installer, the reason now has a readable explanation in every language [2026-10-13]
