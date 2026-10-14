@@ -9,6 +9,7 @@ from vivepdf.rpc.schema import operation_schemas
 MANIFEST_VERSION = 1
 ANY_ITEM = "*"
 ANY_DEPTH = "**"
+IN_PLACE_KEY = "inPlace"
 COMBINATORS = ("anyOf", "oneOf", "allOf")
 
 Pattern = tuple[str, ...]
@@ -95,14 +96,25 @@ class _Collector:
         return [[*pattern, self.kinds[pattern]] for pattern in sorted(self.kinds)]
 
 
+def _in_place_by_default(params: dict[str, Any]) -> bool:
+    return params.get("properties", {}).get(IN_PLACE_KEY, {}).get("default") is True
+
+
 def build_manifest() -> dict[str, Any]:
     operations: dict[str, list[list[str]]] = {}
+    in_place_by_default: list[str] = []
     for method, schema in sorted(operation_schemas().items()):
         params = schema["params"]
         collector = _Collector(method, params.get("$defs", {}))
         collector.walk(params, (), {})
         operations[method] = collector.patterns()
-    return {"version": MANIFEST_VERSION, "operations": operations}
+        if _in_place_by_default(params):
+            in_place_by_default.append(method)
+    return {
+        "version": MANIFEST_VERSION,
+        "operations": operations,
+        "inPlaceByDefault": in_place_by_default,
+    }
 
 
 def render(manifest: dict[str, Any]) -> str:

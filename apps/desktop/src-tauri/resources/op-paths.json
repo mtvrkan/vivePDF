@@ -1,4 +1,9 @@
 {
+ "inPlaceByDefault": [
+  "info.set_metadata",
+  "links.add",
+  "links.remove"
+ ],
  "operations": {
   "a11y.check": [
    [
@@ -1362,7 +1367,7 @@
    ],
    [
     "path",
-    "read"
+    "inPlace"
    ]
   ],
   "security.stamp": [

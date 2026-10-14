@@ -501,13 +501,13 @@ pub async fn rpc_with_chain_secret(
 ) -> Result<Value, RpcError> {
     let kinds = distinct(&kinds)?;
     crate::write_guard::check_params(&params)?;
-    crate::path_gate::check_op(&method, &params)?;
+    let scope = crate::path_gate::check_op(&method, &params)?;
     tickets.check(&ticket, &chain_id, std::time::Instant::now())?;
     let unlocked = secrets.unlock(&chain_id, &kinds)?;
     inject(&method, &mut params, &unlocked)?;
     drop(unlocked);
     let result = sidecar::call(&app, id, method, params).await?;
-    remember_outputs(&result);
+    remember_outputs(&result, &scope);
     Ok(result)
 }
 

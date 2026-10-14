@@ -17,7 +17,7 @@ from vivepdf.ops._redaction import (
 )
 from vivepdf.ops._redaction_document import scrub_document
 from vivepdf.rpc.errors import ErrorCode, OpError
-from vivepdf.rpc.paths import ReadPath, WritePath
+from vivepdf.rpc.paths import InPlacePath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -42,7 +42,7 @@ class RedactedTextResult(RpcModel):
 
 
 class ScrubHiddenParams(RpcModel):
-    path: ReadPath
+    path: InPlacePath
     password: str | None = None
     texts: list[str] = Field(default_factory=list, max_length=MAX_TEXTS)
     areas: list[ScrubArea] = Field(default_factory=list, max_length=MAX_AREAS)

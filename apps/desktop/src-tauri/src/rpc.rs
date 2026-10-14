@@ -70,12 +70,12 @@ pub async fn rpc(
         return Err(RpcError::new("INVALID_PARAMS", "use rpc_cancel"));
     }
     write_guard::check_params(&params)?;
-    path_gate::check_op(&method, &params)?;
+    let scope = path_gate::check_op(&method, &params)?;
     let watched = doc_watch::begin_call(&params);
     let lists_search_folders = SEARCH_FOLDER_METHODS.contains(&method.as_str());
     let result = sidecar::call(&app, id, method, params).await;
     if let Ok(value) = &result {
-        remember_outputs(value);
+        remember_outputs(value, &scope);
         if lists_search_folders {
             grants::adopt_engine_folders(&search_folders(value));
         }
@@ -94,31 +94,36 @@ fn search_folders(value: &Value) -> Vec<&str> {
         .collect()
 }
 
-fn remember_output(path: &str) {
+fn remember_output(path: &str, scope: &path_gate::WriteScope) {
+    let target = std::path::Path::new(path);
+    if !scope.covers(target) && !grants::inside_roots(target) {
+        eprintln!("[gate] an output outside the call's write scope was not remembered");
+        return;
+    }
     files::remember_produced(path);
-    doc_watch::refresh_stamp(std::path::Path::new(path));
+    doc_watch::refresh_stamp(target);
 }
 
-pub(crate) fn remember_outputs(value: &Value) {
+pub(crate) fn remember_outputs(value: &Value, scope: &path_gate::WriteScope) {
     match value {
         Value::Object(map) => {
             for (key, child) in map {
                 match (key.as_str(), child) {
-                    ("output", Value::String(path)) => remember_output(path),
+                    ("output", Value::String(path)) => remember_output(path, scope),
                     ("outputs", Value::Array(items)) => {
                         for item in items {
                             if let Value::String(path) = item {
-                                remember_output(path);
+                                remember_output(path, scope);
                             }
                         }
                     }
-                    _ => remember_outputs(child),
+                    _ => remember_outputs(child, scope),
                 }
             }
         }
         Value::Array(items) => {
             for item in items {
-                remember_outputs(item);
+                remember_outputs(item, scope);
             }
         }
         _ => {}
@@ -141,12 +146,21 @@ mod tests {
     use super::*;
 
     #[test]
-    fn remembers_nested_outputs() {
+    fn remembers_nested_outputs_inside_the_write_scope_only() {
+        let base = std::path::PathBuf::from("C:/vivepdf-scope-test/out");
+        let stray = std::path::PathBuf::from("C:/vivepdf-scope-test/elsewhere/d.pdf");
+        let mut scope = path_gate::WriteScope::default();
+        scope.add(&base.join("a.pdf"), false);
         let value = serde_json::json!({
-            "steps": [{ "output": "C:/out/a.pdf" }],
-            "outputs": ["C:/out/b.pdf", "C:/out/c.pdf"]
+            "steps": [{ "output": base.join("a.pdf") }],
+            "outputs": [base.join("b.pdf"), stray]
         });
-        remember_outputs(&value);
+
+        remember_outputs(&value, &scope);
+
+        assert!(files::was_produced(&base.join("a.pdf")));
+        assert!(files::was_produced(&base.join("b.pdf")));
+        assert!(!files::was_produced(&stray));
     }
 
     #[test]

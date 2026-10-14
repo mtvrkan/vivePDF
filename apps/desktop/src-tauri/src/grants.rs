@@ -104,20 +104,20 @@ struct Registry {
     store: Option<PathBuf>,
 }
 
-fn key_of(path: &Path) -> String {
+pub(crate) fn key_of(path: &Path) -> String {
     comparable(&resolved(path))
         .trim_end_matches('/')
         .to_string()
 }
 
-fn inside(key: &str, base: &str) -> bool {
+pub(crate) fn inside(key: &str, base: &str) -> bool {
     key == base
         || key
             .strip_prefix(base)
             .is_some_and(|rest| rest.starts_with('/'))
 }
 
-fn parent_key(key: &str) -> Option<&str> {
+pub(crate) fn parent_key(key: &str) -> Option<&str> {
     key.rsplit_once('/').map(|(parent, _)| parent)
 }
 
@@ -432,6 +432,16 @@ pub fn check_write_folder(path: &Path) -> Result<(), RpcError> {
         return Ok(());
     }
     Err(not_granted(path))
+}
+
+pub fn inside_roots(path: &Path) -> bool {
+    let key = key_of(path);
+    let registry = registry();
+    registry
+        .read_roots
+        .iter()
+        .chain(registry.write_roots.iter())
+        .any(|root| inside(&key, root))
 }
 
 fn home_dir() -> Option<PathBuf> {

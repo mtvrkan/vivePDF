@@ -63,6 +63,22 @@ def test_every_operation_is_listed() -> None:
     assert set(build_manifest()["operations"]) == set(operation_schemas())
 
 
+def test_operations_that_write_in_place_unless_told_otherwise_are_named() -> None:
+    manifest = build_manifest()
+
+    named = set(manifest["inPlaceByDefault"])
+
+    assert {"links.add", "info.set_metadata"} <= named
+    assert "forms.fill" not in named
+    assert named <= set(manifest["operations"])
+    for method in named:
+        assert ["path", "inPlace"] in manifest["operations"][method]
+
+
+def test_scrubbing_hidden_text_marks_its_source_as_written_in_place() -> None:
+    assert ["path", "inPlace"] in build_manifest()["operations"]["security.scrub_hidden"]
+
+
 def test_every_path_like_field_says_what_it_is() -> None:
     missing = []
     for method, schema in operation_schemas().items():

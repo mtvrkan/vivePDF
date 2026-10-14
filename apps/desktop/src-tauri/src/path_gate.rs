@@ -14,9 +14,12 @@ const ANY_DEPTH: &str = "**";
 const IN_PLACE_KEY: &str = "inPlace";
 
 #[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
 struct Manifest {
     version: u32,
     operations: HashMap<String, Vec<Vec<String>>>,
+    #[serde(default)]
+    in_place_by_default: Vec<String>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -48,7 +51,12 @@ struct Rule {
     kind: Kind,
 }
 
-type Operations = HashMap<String, Vec<Rule>>;
+struct Operation {
+    rules: Vec<Rule>,
+    in_place_by_default: bool,
+}
+
+type Operations = HashMap<String, Operation>;
 
 fn parse(text: &str) -> Result<Operations, String> {
     let manifest: Manifest = serde_json::from_str(text).map_err(|error| error.to_string())?;
@@ -70,7 +78,21 @@ fn parse(text: &str) -> Result<Operations, String> {
                 kind,
             });
         }
-        operations.insert(method, rules);
+        let in_place_by_default = manifest.in_place_by_default.contains(&method);
+        operations.insert(
+            method,
+            Operation {
+                rules,
+                in_place_by_default,
+            },
+        );
+    }
+    if let Some(stray) = manifest
+        .in_place_by_default
+        .iter()
+        .find(|method| !operations.contains_key(*method))
+    {
+        return Err(format!("{stray}: in place by default but not listed"));
     }
     Ok(operations)
 }
@@ -143,8 +165,62 @@ impl Access for Granted {
     }
 }
 
+#[derive(Debug, Default)]
+pub struct WriteScope {
+    files: Vec<String>,
+    folders: Vec<String>,
+}
+
+impl WriteScope {
+    pub(crate) fn add(&mut self, path: &Path, directory: bool) {
+        let key = crate::grants::key_of(path);
+        if key.is_empty() {
+            return;
+        }
+        if directory {
+            self.folders.push(key);
+        } else {
+            self.files.push(key);
+        }
+    }
+
+    fn holds(&self, key: &str) -> bool {
+        let parent = crate::grants::parent_key(key);
+        self.files.iter().any(|file| {
+            file == key || (parent.is_some() && crate::grants::parent_key(file) == parent)
+        }) || self
+            .folders
+            .iter()
+            .any(|folder| crate::grants::inside(key, folder))
+    }
+
+    pub fn covers(&self, path: &Path) -> bool {
+        self.holds(&crate::grants::key_of(path))
+    }
+}
+
 fn unknown_method(method: &str) -> RpcError {
     RpcError::new("UNKNOWN_METHOD", format!("unknown method: {method}"))
+}
+
+fn names_an_output(operation: &Operation, params: &Value) -> bool {
+    operation
+        .rules
+        .iter()
+        .filter(|rule| matches!(rule.kind, Kind::Write | Kind::WriteDir))
+        .any(|rule| {
+            let mut found = Vec::new();
+            collect(params, &rule.pattern, &mut found);
+            !found.is_empty()
+        })
+}
+
+fn writes_in_place(operation: &Operation, params: &Value) -> bool {
+    let asked = params
+        .get(IN_PLACE_KEY)
+        .and_then(Value::as_bool)
+        .unwrap_or(operation.in_place_by_default);
+    asked || !names_an_output(operation, params)
 }
 
 fn check_with(
@@ -152,37 +228,46 @@ fn check_with(
     access: &dyn Access,
     method: &str,
     params: &Value,
-) -> Result<(), RpcError> {
-    let rules = operations
+) -> Result<WriteScope, RpcError> {
+    let operation = operations
         .get(method)
         .ok_or_else(|| unknown_method(method))?;
-    let in_place = params.get(IN_PLACE_KEY).and_then(Value::as_bool) == Some(true);
-    for rule in rules {
+    let in_place = writes_in_place(operation, params);
+    let mut scope = WriteScope::default();
+    for rule in &operation.rules {
         let mut found = Vec::new();
         collect(params, &rule.pattern, &mut found);
         for text in found {
             let path = Path::new(text);
             match rule.kind {
                 Kind::Read | Kind::ReadDir => access.read(path)?,
-                Kind::Write => access.write(path, false)?,
-                Kind::WriteDir => access.write(path, true)?,
+                Kind::Write => {
+                    access.write(path, false)?;
+                    scope.add(path, false);
+                }
+                Kind::WriteDir => {
+                    access.write(path, true)?;
+                    scope.add(path, true);
+                }
                 Kind::Modify => {
                     access.read(path)?;
                     access.write(path, false)?;
+                    scope.add(path, false);
                 }
                 Kind::InPlace => {
                     access.read(path)?;
                     if in_place {
                         access.write(path, false)?;
+                        scope.add(path, false);
                     }
                 }
             }
         }
     }
-    Ok(())
+    Ok(scope)
 }
 
-pub fn check_op(method: &str, params: &Value) -> Result<(), RpcError> {
+pub fn check_op(method: &str, params: &Value) -> Result<WriteScope, RpcError> {
     check_with(operations()?, &Granted, method, params)
 }
 
@@ -237,8 +322,11 @@ mod tests {
                     "doc.apply": [["path", "inPlace"], ["output", "write"]],
                     "doc.move": [["path", "modify"], ["folder", "writeDir"]],
                     "doc.scan": [["folder", "readDir"], ["names", "*", "read"]],
+                    "doc.stamp": [["path", "inPlace"], ["output", "write"]],
+                    "doc.parts": [["sources", "*", "path", "inPlace"], ["outputDir", "writeDir"]],
                     "system.ping": []
-                }
+                },
+                "inPlaceByDefault": ["doc.stamp"]
             })
             .to_string(),
         )
@@ -254,13 +342,24 @@ mod tests {
         (outcome, access.calls())
     }
 
+    fn scope_of(method: &str, params: Value) -> WriteScope {
+        let access = Recorded {
+            allowed: vec!["a.pdf", "o.pdf", "Out"],
+            ..Recorded::default()
+        };
+        check_with(&sample(), &access, method, &params).unwrap()
+    }
+
     #[test]
     fn the_shipped_manifest_lists_every_operation_with_known_kinds() {
         let operations = parse(MANIFEST).unwrap();
 
         assert!(operations.len() > 200);
-        assert!(operations["system.ping"].is_empty());
+        assert!(operations["system.ping"].rules.is_empty());
+        assert!(operations["links.add"].in_place_by_default);
+        assert!(!operations["forms.fill"].in_place_by_default);
         assert!(operations["viewer.restore"]
+            .rules
             .iter()
             .any(|rule| rule.kind == Kind::Modify));
     }
@@ -290,20 +389,90 @@ mod tests {
     }
 
     #[test]
-    fn an_in_place_path_is_written_only_when_the_call_asks_for_it() {
+    fn an_in_place_path_is_written_unless_the_call_names_an_output_instead() {
+        let allowed = vec!["a.pdf", "o.pdf"];
         let (_, copy) = run(
-            vec!["a.pdf", "o.pdf"],
+            allowed.clone(),
             "doc.apply",
             json!({ "path": "a.pdf", "output": "o.pdf" }),
         );
-        let (_, in_place) = run(
-            vec!["a.pdf"],
+        let (_, asked) = run(
+            allowed.clone(),
             "doc.apply",
             json!({ "path": "a.pdf", "inPlace": true }),
         );
+        let (_, no_output) = run(allowed.clone(), "doc.apply", json!({ "path": "a.pdf" }));
+        let (_, empty_output) = run(
+            allowed,
+            "doc.apply",
+            json!({ "path": "a.pdf", "output": "", "inPlace": false }),
+        );
 
         assert_eq!(copy, vec!["read a.pdf", "write o.pdf"]);
-        assert_eq!(in_place, vec!["read a.pdf", "write a.pdf"]);
+        assert_eq!(asked, vec!["read a.pdf", "write a.pdf"]);
+        assert_eq!(no_output, vec!["read a.pdf", "write a.pdf"]);
+        assert_eq!(empty_output, vec!["read a.pdf", "write a.pdf"]);
+    }
+
+    #[test]
+    fn an_operation_that_works_in_place_by_default_needs_an_explicit_no() {
+        let allowed = vec!["a.pdf", "o.pdf"];
+        let (_, silent) = run(
+            allowed.clone(),
+            "doc.stamp",
+            json!({ "path": "a.pdf", "output": "o.pdf" }),
+        );
+        let (_, declined) = run(
+            allowed,
+            "doc.stamp",
+            json!({ "path": "a.pdf", "output": "o.pdf", "inPlace": false }),
+        );
+
+        assert_eq!(silent, vec!["read a.pdf", "write a.pdf", "write o.pdf"]);
+        assert_eq!(declined, vec!["read a.pdf", "write o.pdf"]);
+    }
+
+    #[test]
+    fn an_output_folder_counts_as_an_output_for_in_place_sources() {
+        let (_, calls) = run(
+            vec!["a.pdf", "Out"],
+            "doc.parts",
+            json!({ "sources": [{ "path": "a.pdf" }], "outputDir": "Out" }),
+        );
+
+        assert_eq!(calls, vec!["read a.pdf", "writeDir Out"]);
+    }
+
+    #[test]
+    fn the_write_scope_holds_written_files_their_siblings_and_folders_below_outputs() {
+        let base = std::env::temp_dir().join("vivepdf-scope");
+        let output = base.join("o.pdf");
+        let folder = base.join("Out");
+        let mut scope = WriteScope::default();
+        scope.add(&output, false);
+        scope.add(&folder, true);
+
+        assert!(scope.covers(&output));
+        assert!(scope.covers(&base.join("o-2.png")));
+        assert!(scope.covers(&folder.join("deep").join("p.pdf")));
+        assert!(!scope.covers(&std::env::temp_dir().join("elsewhere.pdf")));
+        assert!(!scope.covers(&base.join("Other").join("x.pdf")));
+    }
+
+    #[test]
+    fn a_path_only_read_never_enters_the_write_scope() {
+        let scope = scope_of("doc.apply", json!({ "path": "a.pdf", "output": "o.pdf" }));
+        let in_place = scope_of("doc.apply", json!({ "path": "a.pdf", "inPlace": true }));
+        let parts = scope_of(
+            "doc.parts",
+            json!({ "sources": [{ "path": "a.pdf" }], "outputDir": "Out" }),
+        );
+
+        assert_eq!(scope.files.len(), 1);
+        assert!(scope.files[0].ends_with("o.pdf"));
+        assert!(in_place.files[0].ends_with("a.pdf"));
+        assert!(parts.files.is_empty());
+        assert_eq!(parts.folders.len(), 1);
     }
 
     #[test]
@@ -350,5 +519,6 @@ mod tests {
         assert!(parse(r#"{"version":2,"operations":{}}"#).is_err());
         assert!(parse(r#"{"version":1,"operations":{"a.b":[["path","delete"]]}}"#).is_err());
         assert!(parse(r#"{"version":1,"operations":{"a.b":[["read"]]}}"#).is_err());
+        assert!(parse(r#"{"version":1,"operations":{},"inPlaceByDefault":["a.b"]}"#).is_err());
     }
 }
