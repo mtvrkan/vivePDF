@@ -8819,7 +8819,10 @@
         "title": "Titre",
         "subtitle": "Sous-titre",
         "author": "Auteur",
-        "date": "Date"
+        "date": "Date",
+        "columns": "Colonnes",
+        "columnGap": "Espace entre colonnes",
+        "columnsHint": "Les colonnes apparaissent dans l’aperçu et le PDF ; l’éditeur garde une seule colonne pendant la saisie. Un saut de page commence la page suivante."
       },
       "papers": {
         "a4": "A4",

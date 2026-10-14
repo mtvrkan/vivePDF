@@ -1,4 +1,4 @@
-import { STUDIO_DOCUMENT_VERSION, type DocumentAlign, type DocumentCoverStyle, type DocumentLayout, type DocumentNode, type DocumentPageNumbers, type DocumentPaper, type DocumentSettings, type StudioDocument } from "@/types/studio";
+import { STUDIO_DOCUMENT_VERSION, type DocumentAlign, type DocumentColumns, type DocumentCoverStyle, type DocumentLayout, type DocumentNode, type DocumentPageNumbers, type DocumentPaper, type DocumentSettings, type StudioDocument } from "@/types/studio";
 import { normalizeSources } from "./bibtex";
 import { CITATION_STYLES } from "./citations";
 
@@ -18,13 +18,16 @@ export const PAPER_POINTS: Record<DocumentPaper, { width: number; height: number
 
 export const POINTS_PER_MM = 72 / 25.4;
 const COLOUR = /^#[0-9a-f]{6}$/i;
-const LIMITS = { marginMm: [5, 50], fontSize: [6, 28], lineHeight: [1, 3] } as const;
+const LIMITS = { marginMm: [5, 50], columnGapMm: [4, 20], fontSize: [6, 28], lineHeight: [1, 3] } as const;
+export const DOCUMENT_COLUMNS: DocumentColumns[] = [1, 2, 3];
 
 export function defaultSettings(): DocumentSettings {
   return {
     paper: "a4",
     landscape: false,
     marginMm: 20,
+    columns: 1,
+    columnGapMm: 8,
     fontSize: 11,
     lineHeight: 1.4,
     accent: "#1f4e79",
@@ -83,6 +86,8 @@ export function normalizeSettings(value: unknown): DocumentSettings {
     paper: pick(source.paper, DOCUMENT_PAPERS, base.paper),
     landscape: source.landscape === true,
     marginMm: clamp(source.marginMm, LIMITS.marginMm, base.marginMm),
+    columns: pick(source.columns, DOCUMENT_COLUMNS, base.columns),
+    columnGapMm: clamp(source.columnGapMm, LIMITS.columnGapMm, base.columnGapMm),
     fontSize: clamp(source.fontSize, LIMITS.fontSize, base.fontSize),
     lineHeight: clamp(source.lineHeight, LIMITS.lineHeight, base.lineHeight),
     accent: typeof source.accent === "string" && COLOUR.test(source.accent) ? source.accent : base.accent,

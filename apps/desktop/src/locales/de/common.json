@@ -8819,7 +8819,10 @@
         "title": "Titel",
         "subtitle": "Untertitel",
         "author": "Autor",
-        "date": "Datum"
+        "date": "Datum",
+        "columns": "Spalten",
+        "columnGap": "Spaltenabstand",
+        "columnsHint": "Spalten erscheinen in der Vorschau und im PDF; beim Schreiben bleibt der Editor einspaltig. Ein Seitenumbruch beginnt die nächste Seite."
       },
       "papers": {
         "a4": "A4",

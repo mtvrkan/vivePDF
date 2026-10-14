@@ -170,6 +170,80 @@ def test_a_paragraph_line_height_spreads_only_its_own_lines(tmp_path: Path):
     assert max(gaps) > min(gaps) * 1.6
 
 
+def _filler(words: int) -> str:
+    return "<p>" + " ".join(f"word{index}" for index in range(words)) + "</p>"
+
+
+def _body_words(page: pymupdf.Page) -> list:
+    bottom = page.rect.height - 20 * 72 / 25.4
+    return [word for word in page.get_text("words") if word[3] <= bottom]
+
+
+def test_two_columns_fill_the_left_column_before_the_right(tmp_path: Path):
+    with _render(tmp_path, _filler(900), settings={"columns": 2, "columnGapMm": 10}) as document:
+        page = document[0]
+        middle = page.rect.width / 2
+        words = _body_words(page)
+        left = [word for word in words if word[2] < middle]
+        right = [word for word in words if word[0] > middle]
+
+    assert left and right
+    assert not [word for word in words if word[0] < middle < word[2]]
+    assert int(left[-1][4][4:]) < int(right[0][4][4:])
+
+
+def test_three_columns_start_where_the_gap_leaves_them(tmp_path: Path):
+    settings = {"columns": 3, "columnGapMm": 8, "marginMm": 20}
+
+    with _render(tmp_path, _filler(1500), settings=settings) as document:
+        starts = sorted({round(word[0]) for word in _body_words(document[0])})
+
+    margin = 20 * 72 / 25.4
+    gap = 8 * 72 / 25.4
+    column = (pymupdf.paper_rect("a4").width - 2 * margin - 2 * gap) / 3
+    first = starts[0]
+    for index in (1, 2):
+        expected = first + index * (column + gap)
+        assert min(abs(start - expected) for start in starts) < 1.5
+
+
+def test_a_page_break_in_columns_starts_a_new_page(tmp_path: Path):
+    body = '<p>First page</p><div class="page-break"></div><p>Second page</p>'
+
+    with _render(tmp_path, body, settings={"columns": 2}) as document:
+        pages = [page.get_text() for page in document]
+
+    assert len(pages) == 2
+    assert "First page" in pages[0]
+    assert "Second page" in pages[1]
+
+
+def test_the_contents_stay_full_width_above_a_two_column_body(tmp_path: Path):
+    body = "".join(f'<h1 id="h-{index}">Chapter {index}</h1>{_filler(80)}' for index in range(1, 4))
+    settings = {"columns": 2, "toc": True, "tocTitle": "Contents"}
+
+    with _render(tmp_path, body, settings=settings) as document:
+        contents = document[0]
+        number = contents.search_for("Chapter 1")[0]
+        rows = [word for word in _body_words(contents) if word[1] >= number.y0 - 1]
+        body_page = document[1]
+        middle = body_page.rect.width / 2
+        right = [word for word in _body_words(body_page) if word[0] > middle]
+        width = contents.rect.width
+        body_text = body_page.get_text()
+
+    assert max(word[2] for word in rows) > width * 0.75
+    assert "Chapter 1" in body_text
+    assert right
+
+
+def test_more_than_three_columns_are_refused():
+    with pytest.raises(ValueError):
+        StudioDocumentRenderParams.model_validate(
+            {"html": "<p>x</p>", "output": "out.pdf", "settings": {"columns": 4}}
+        )
+
+
 def _shaded(page: pymupdf.Page) -> list[pymupdf.Rect]:
     return [
         drawing["rect"]

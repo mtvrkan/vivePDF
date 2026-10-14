@@ -439,6 +439,8 @@ export type DocumentLayout = {
   paper: DocumentPaper;
   landscape: boolean;
   marginMm: number;
+  columns: DocumentColumns;
+  columnGapMm: number;
   fontSize: number;
   lineHeight: number;
   accent: string;
@@ -459,6 +461,8 @@ export type DocumentLayout = {
   author: string;
   date: string;
 };
+
+export type DocumentColumns = 1 | 2 | 3;
 
 export type CitationStyle = "apa" | "mla" | "chicago" | "ieee";
 

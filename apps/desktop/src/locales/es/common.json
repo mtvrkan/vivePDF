@@ -8819,7 +8819,10 @@
         "title": "Título",
         "subtitle": "Subtítulo",
         "author": "Autor",
-        "date": "Fecha"
+        "date": "Fecha",
+        "columns": "Columnas",
+        "columnGap": "Espacio entre columnas",
+        "columnsHint": "Las columnas aparecen en la vista previa y en el PDF; el editor mantiene una columna mientras escribe. Un salto de página empieza la página siguiente."
       },
       "papers": {
         "a4": "A4",

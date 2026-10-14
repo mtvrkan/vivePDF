@@ -8821,7 +8821,10 @@
         "title": "Title",
         "subtitle": "Subtitle",
         "author": "Author",
-        "date": "Date"
+        "date": "Date",
+        "columns": "Columns",
+        "columnGap": "Column gap",
+        "columnsHint": "Columns appear in the preview and the PDF; the editor keeps one column while you write. A page break starts the next page."
       },
       "papers": {
         "a4": "A4",

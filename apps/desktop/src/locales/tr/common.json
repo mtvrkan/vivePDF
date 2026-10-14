@@ -8821,7 +8821,10 @@
         "title": "Başlık",
         "subtitle": "Alt başlık",
         "author": "Yazar",
-        "date": "Tarih"
+        "date": "Tarih",
+        "columns": "Sütunlar",
+        "columnGap": "Sütun aralığı",
+        "columnsHint": "Sütunlar önizlemede ve PDF'te görünür; yazarken düzenleyici tek sütun kalır. Sayfa sonu bir sonraki sayfaya geçer."
       },
       "papers": {
         "a4": "A4",

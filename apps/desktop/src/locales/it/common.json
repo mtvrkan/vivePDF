@@ -8819,7 +8819,10 @@
         "title": "Titolo",
         "subtitle": "Sottotitolo",
         "author": "Autore",
-        "date": "Data"
+        "date": "Data",
+        "columns": "Colonne",
+        "columnGap": "Spazio tra colonne",
+        "columnsHint": "Le colonne compaiono nell’anteprima e nel PDF; l’editor resta a una colonna mentre scrivi. Un’interruzione di pagina inizia la pagina successiva."
       },
       "papers": {
         "a4": "A4",

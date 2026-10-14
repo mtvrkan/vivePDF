@@ -13,9 +13,10 @@ from pathlib import Path
 import pymupdf
 from PIL import Image, ImageOps
 
+from vivepdf.ops._document_flow import TOC_END, Frame, Plan, flow, numbered_breaks
 from vivepdf.ops._html_clean import body_fragment
 from vivepdf.ops._image_files import eight_bit, open_picture
-from vivepdf.ops._story import FONT_DIR, MAX_STORY_PAGES
+from vivepdf.ops._story import FONT_DIR
 from vivepdf.ops._studio_document_models import StudioDocumentContent, StudioDocumentSettings
 from vivepdf.ops.cover import CoverParams, draw_cover
 from vivepdf.ops.create import POINTS_PER_MM
@@ -257,7 +258,9 @@ def _toc_html(
     )
     title = html.escape(settings.toc_title.strip())
     heading = f'<p class="toc-title">{title}</p>' if title else ""
-    return f'{heading}<table class="toc">{rows}</table><div class="page-break"></div>'
+    return (
+        f'{heading}<table class="toc">{rows}</table><div class="page-break" id="{TOC_END}"></div>'
+    )
 
 
 def _bookmarks(entries: list[Heading], anchors: dict[str, int], offset: int) -> list[list]:
@@ -366,7 +369,7 @@ def layout_document(
     for index, source in enumerate(content.images):
         check_cancelled()
         archive.add(_decoded(source, index), f"{IMAGE_PREFIX}{index}")
-    body = clean_html(content.html, len(content.images))
+    body = numbered_breaks(clean_html(content.html, len(content.images)))
     if not body.strip():
         body = "<p></p>"
     entries = headings(body, settings.toc_depth)
@@ -377,10 +380,14 @@ def layout_document(
     css = font_css + _base_css(settings, len(fonts) > 1)
     mediabox = _paper(settings)
     margin = settings.margin_mm * POINTS_PER_MM
-    where = mediabox + (margin, margin, -margin, -margin)
-    anchors: dict[str, int] = {}
+    frame = Frame(
+        mediabox,
+        mediabox + (margin, margin, -margin, -margin),
+        settings.columns,
+        settings.column_gap_mm * POINTS_PER_MM,
+    )
 
-    def story(positions: list) -> str:
+    def story_html(positions: list) -> str:
         pages = {
             position.id: position.page_num
             for position in positions
@@ -388,28 +395,17 @@ def layout_document(
         }
         return _toc_html(settings, entries, pages, offset) + body
 
-    def rectangle(number: int, _filled: pymupdf.Rect):
-        check_cancelled()
-        if number >= MAX_STORY_PAGES:
-            raise OpError(
-                ErrorCode.INVALID_PARAMS,
-                f"the document would have more than {MAX_STORY_PAGES} pages",
-                {"reason": "tooManyPages", "limit": MAX_STORY_PAGES},
-            )
-        return mediabox, where, None
-
-    def remember(position) -> None:
+    document, positions = flow(
+        story_html,
+        frame,
+        Plan(1 if settings.toc and entries else 0),
+        lambda text: pymupdf.Story(text, user_css=css, archive=archive),
+        check_cancelled,
+    )
+    anchors: dict[str, int] = {}
+    for position in positions:
         if position.id and position.open_close & 1 and position.id not in anchors:
             anchors[position.id] = position.page_num
-
-    document = pymupdf.Story.write_stabilized_with_links(
-        story,
-        rectangle,
-        user_css=css,
-        positionfn=remember,
-        archive=archive,
-        add_header_ids=False,
-    )
     try:
         if cover:
             _add_cover(document, settings, title)

@@ -105,6 +105,14 @@ describe("document model", () => {
     expect(settings).not.toHaveProperty("extra");
   });
 
+  it("keeps one to three columns and a gap within its limits", () => {
+    const two = normalizeSettings({ columns: 2, columnGapMm: 99 });
+    const odd = normalizeSettings({ columns: 5, columnGapMm: "wide" });
+
+    expect(two).toMatchObject({ columns: 2, columnGapMm: 20 });
+    expect(odd).toMatchObject({ columns: 1, columnGapMm: 8 });
+  });
+
   it("refuses files that are not documents or come from a newer version", () => {
     expect(normalizeDocument({ kind: "design", version: 1 })).toBeNull();
     expect(normalizeDocument({ kind: "document", version: 99 })).toBeNull();

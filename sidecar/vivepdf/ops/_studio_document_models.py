@@ -26,6 +26,8 @@ class StudioDocumentSettings(RpcModel):
     paper: DocumentPaper = "a4"
     landscape: bool = False
     margin_mm: float = Field(default=20, ge=5, le=50)
+    columns: int = Field(default=1, ge=1, le=3)
+    column_gap_mm: float = Field(default=8, ge=4, le=20)
     font_size: float = Field(default=11, ge=6, le=28)
     line_height: float = Field(default=1.4, ge=1, le=3)
     accent: Colour = "#1f4e79"

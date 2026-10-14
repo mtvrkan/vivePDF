@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio documents: lay the text out in two or three columns with a chosen gap (Settings › Page). The contents page stays full width, and a page break still starts a new page instead of the next column [2026-10-14]
 - Studio documents: an Insert symbol dialog (Ω in the toolbar) with punctuation, currency, maths, arrows, Greek, accented letters and shapes, a recently used row, and arrow-key navigation; every symbol is in the default document font [2026-10-14]
 - Studio documents: a word and character count under the page (with the selection's count while text is selected) and a format painter that copies text and paragraph formatting to the next selection; double-click it to keep painting until Esc [2026-10-14]
 - Studio documents: find and replace with Ctrl+F and Ctrl+H (or the search button), with match case, whole words, a running "3 of 12" count, every match marked on the page, and Replace all undone in one step [2026-10-14]

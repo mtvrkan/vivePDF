@@ -6,7 +6,7 @@ import type { DocumentSettings } from "@/types/studio";
 import { ColorField, NumberField, PanelSection } from "../design/controls";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
-import { COVER_STYLES, DOCUMENT_ALIGNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES } from "./model";
+import { COVER_STYLES, DOCUMENT_ALIGNS, DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES } from "./model";
 
 const ORIENTATIONS = ["portrait", "landscape"] as const;
 const DEPTHS = [1, 2, 3] as const;
@@ -31,6 +31,10 @@ export function DocumentSettingsPanel() {
         </Field>
         <Segmented size="sm" value={settings.landscape ? "landscape" : "portrait"} options={ORIENTATIONS} labelOf={(value) => t(`studio.doc.settings.${value}`)} onChange={(value) => update({ landscape: value === "landscape" })} ariaLabel={t("studio.doc.settings.orientation")} className="w-full" />
         <NumberField label={t("studio.doc.settings.margin")} suffix="mm" value={settings.marginMm} min={5} max={50} onChange={(marginMm) => update({ marginMm })} />
+        <Field label={t("studio.doc.settings.columns")} hint={settings.columns > 1 ? t("studio.doc.settings.columnsHint") : undefined}>
+          <Segmented size="sm" value={settings.columns} options={DOCUMENT_COLUMNS} labelOf={String} onChange={(columns) => update({ columns })} ariaLabel={t("studio.doc.settings.columns")} className="grid w-full grid-cols-3" />
+        </Field>
+        {settings.columns > 1 ? <NumberField label={t("studio.doc.settings.columnGap")} suffix="mm" value={settings.columnGapMm} min={4} max={20} onChange={(columnGapMm) => update({ columnGapMm })} /> : null}
       </PanelSection>
       <PanelSection title={t("studio.doc.settings.text")}>
         <Field label={t("studio.doc.settings.font")}>
