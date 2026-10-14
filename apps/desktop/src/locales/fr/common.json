@@ -6353,7 +6353,8 @@
       "doiBadResponse": "La réponse du service bibliographique est illisible.",
       "doiUntrustedHost": "Le service bibliographique a redirigé vers une adresse non fiable ; elle a été bloquée.",
       "blockedTarget": "vivePDF n'enregistre ni programmes, ni scripts, ni raccourcis, et n'écrit pas dans les dossiers de démarrage ou SSH. Choisissez un autre nom ou dossier.",
-      "notGranted": "vivePDF n'ouvre que les fichiers que vous avez choisis ou glissés vous-même. Choisissez à nouveau ce fichier pour l'ouvrir."
+      "notGranted": "vivePDF n'ouvre que les fichiers que vous avez choisis ou glissés vous-même. Choisissez à nouveau ce fichier pour l'ouvrir.",
+      "badSectionColumns": "Un saut de section doit avoir 1, 2 ou 3 colonnes."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -8822,7 +8823,7 @@
         "date": "Date",
         "columns": "Colonnes",
         "columnGap": "Espace entre colonnes",
-        "columnsHint": "Les colonnes apparaissent dans l’aperçu et le PDF ; l’éditeur garde une seule colonne pendant la saisie. Un saut de page commence la page suivante."
+        "columnsHint": "Les colonnes apparaissent dans l’aperçu et le PDF ; l’éditeur garde une seule colonne pendant la saisie. Un saut de page commence la page suivante. Ce nombre vaut jusqu’au premier saut de section, qui peut le changer pour les pages suivantes."
       },
       "papers": {
         "a4": "A4",
@@ -9214,6 +9215,13 @@
         "remove": "Supprimer la note",
         "done": "Retour au texte",
         "endTitle": "Notes"
+      },
+      "section": {
+        "button": "Saut de section (page suivante)",
+        "columns1": "Saut de section : 1 colonne",
+        "columns2": "Saut de section : 2 colonnes",
+        "columns3": "Saut de section : 3 colonnes",
+        "label": "Saut de section · colonnes : {{columns}}"
       }
     },
     "cv": {

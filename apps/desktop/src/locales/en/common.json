@@ -6354,7 +6354,8 @@
       "doiBadResponse": "The reference service sent an answer that could not be read.",
       "doiUntrustedHost": "The reference service redirected to an untrusted address, so it was blocked.",
       "blockedTarget": "vivePDF does not save programs, scripts or shortcuts, or into startup and SSH folders. Choose another name or folder.",
-      "notGranted": "vivePDF only opens files you chose or dragged in yourself. Choose this file again to open it."
+      "notGranted": "vivePDF only opens files you chose or dragged in yourself. Choose this file again to open it.",
+      "badSectionColumns": "A section break must have 1, 2 or 3 columns."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -8824,7 +8825,7 @@
         "date": "Date",
         "columns": "Columns",
         "columnGap": "Column gap",
-        "columnsHint": "Columns appear in the preview and the PDF; the editor keeps one column while you write. A page break starts the next page."
+        "columnsHint": "Columns appear in the preview and the PDF; the editor keeps one column while you write. A page break starts the next page. This count applies until the first section break, which can change it for the pages after it."
       },
       "papers": {
         "a4": "A4",
@@ -9216,6 +9217,13 @@
         "remove": "Remove footnote",
         "done": "Back to the text",
         "endTitle": "Notes"
+      },
+      "section": {
+        "button": "Section break (next page)",
+        "columns1": "Section break: 1 column",
+        "columns2": "Section break: 2 columns",
+        "columns3": "Section break: 3 columns",
+        "label": "Section break · columns: {{columns}}"
       }
     },
     "cv": {

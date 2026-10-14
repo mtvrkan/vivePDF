@@ -1,4 +1,5 @@
 import type { DocumentNode } from "@/types/studio";
+import { hasSectionBreaks } from "./sections";
 
 export const FOOTNOTE = "footnote";
 export const MAX_FOOTNOTE = 2000;
@@ -16,5 +17,5 @@ export function hasFootnotes(node: DocumentNode | string): boolean {
 }
 
 export function fileVersion(content: DocumentNode | string): number {
-  return hasFootnotes(content) ? FOOTNOTE_VERSION : BASE_VERSION;
+  return hasFootnotes(content) || hasSectionBreaks(content) ? FOOTNOTE_VERSION : BASE_VERSION;
 }

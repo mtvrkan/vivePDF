@@ -835,6 +835,18 @@
     height: 0;
     margin: 12pt 0;
   }
+  .vp-doc .section-break {
+    border-top: 1px dashed var(--doc-accent);
+    margin: 12pt 0;
+  }
+  .vp-doc .section-break::after {
+    color: var(--muted-foreground);
+    content: attr(data-label);
+    display: block;
+    font-size: 0.75rem;
+    padding-top: 0.25rem;
+    text-align: center;
+  }
   .vp-doc .vp-cite {
     background: color-mix(in oklab, var(--doc-accent) 9%, transparent);
     border-radius: 3px;

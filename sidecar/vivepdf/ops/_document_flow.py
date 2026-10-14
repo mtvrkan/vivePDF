@@ -13,7 +13,19 @@ MAX_LAYOUT_PASSES = 6
 TOC_END = "vp-toc-end"
 BREAK_PREFIX = "vp-break-"
 NOTE_PREFIX = "fnref-"
+SECTION_PREFIX = "vp-section-"
 PAGE_BREAK = re.compile(r"""<div\s+class\s*=\s*(["'])page-break\1\s*>""", re.IGNORECASE)
+PLAIN_BREAK = re.compile(
+    r"""<div\s+class\s*=\s*(["'])page-break\1\s*>\s*</div\s*>""", re.IGNORECASE
+)
+SECTION_BREAK = re.compile(
+    r"""<div\s+class\s*=\s*(["'])section-break\1\s+data-columns\s*=\s*(["'])([^"']{0,8})\2\s*>"""
+    r"""\s*</div\s*>""",
+    re.IGNORECASE,
+)
+TAG = re.compile(r"<[^>]*>")
+SOLID = re.compile(r"<(img|table|hr|li|svg)\b", re.IGNORECASE)
+SECTION_COLUMNS = (1, 2, 3)
 
 Reserve = Callable[[tuple[int, ...], float], float]
 Slot = tuple[int, int, pymupdf.Rect]
@@ -24,6 +36,15 @@ class Plan:
     full_width: int = 0
     page_starts: frozenset[int] = field(default_factory=frozenset)
     notes: frozenset[tuple[int, int, int]] = field(default_factory=frozenset)
+    sections: tuple[tuple[int, int], ...] = ()
+
+    def columns_at(self, number: int, first: int) -> int:
+        columns = first
+        for start, count in self.sections:
+            if start > number:
+                break
+            columns = count
+        return columns
 
     def notes_in(self, page: int, column: int) -> tuple[int, ...]:
         return tuple(sorted(number for on, at, number in self.notes if on == page and at == column))
@@ -35,17 +56,23 @@ class Frame:
     where: pymupdf.Rect
     columns: int = 1
     gap: float = 0.0
+    sections: tuple[int, ...] = ()
 
-    def area(self, index: int, cut: float = 0.0) -> pymupdf.Rect:
+    def area(self, index: int, cut: float = 0.0, columns: int | None = None) -> pymupdf.Rect:
+        count = columns or self.columns
         bottom = self.where.y1 - cut
-        if self.columns == 1 or index < 0:
+        if count == 1 or index < 0:
             return pymupdf.Rect(self.where.x0, self.where.y0, self.where.x1, bottom)
-        width = (self.where.width - self.gap * (self.columns - 1)) / self.columns
+        width = (self.where.width - self.gap * (count - 1)) / count
         left = self.where.x0 + index * (width + self.gap)
         return pymupdf.Rect(left, self.where.y0, left + width, bottom)
 
     def narrowest(self) -> float:
-        return self.area(0).width
+        return min(self.area(0, columns=count).width for count in {self.columns, *self.sections})
+
+    @property
+    def sectioned(self) -> bool:
+        return self.columns > 1 or any(count > 1 for count in self.sections)
 
 
 @dataclass
@@ -62,6 +89,53 @@ def numbered_breaks(body: str) -> str:
     return PAGE_BREAK.sub(
         lambda _: f'<div class="page-break" id="{BREAK_PREFIX}{next(counter)}">', body
     )
+
+
+def _has_content(fragment: str) -> bool:
+    return bool(TAG.sub("", fragment).replace("&nbsp;", " ").strip()) or bool(
+        SOLID.search(fragment)
+    )
+
+
+def _section_columns(raw: str) -> int:
+    count = int(raw) if raw.strip().isdigit() else 0
+    if count not in SECTION_COLUMNS:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "a section break must have 1, 2 or 3 columns",
+            {"reason": "badSectionColumns"},
+        )
+    return count
+
+
+def sectioned(body: str, first: int) -> tuple[str, int, tuple[int, ...]]:
+    pieces: list[str] = []
+    columns: list[int] = []
+    cursor = 0
+    started = False
+    pending: int | None = None
+    for match in SECTION_BREAK.finditer(body):
+        count = _section_columns(match.group(3))
+        segment = body[cursor : match.start()]
+        cursor = match.end()
+        if _has_content(segment):
+            if pending is not None:
+                pieces.append(f'<div class="page-break" id="{SECTION_PREFIX}{len(columns)}"></div>')
+                columns.append(pending)
+            pieces.append(segment)
+            started = True
+        else:
+            pieces.append(PLAIN_BREAK.sub("", segment))
+        if started:
+            pending = count
+        else:
+            first = count
+    tail = body[cursor:]
+    if pending is not None and _has_content(tail):
+        pieces.append(f'<div class="page-break" id="{SECTION_PREFIX}{len(columns)}"></div>')
+        columns.append(pending)
+    pieces.append(tail)
+    return "".join(pieces), first, tuple(columns)
 
 
 def _opened(positions: list, prefix: str) -> list:
@@ -87,8 +161,13 @@ def plan_from(positions: list, frame: Frame, previous: Plan, slots: list[Slot] |
     toc = _opened(positions, TOC_END)
     full_width = toc[0].rect_num - 1 if toc else 0
     starts: frozenset[int] = frozenset()
-    if frame.columns > 1:
+    sections: list[tuple[int, int]] = []
+    if frame.sectioned:
         starts = frozenset(position.rect_num - 1 for position in _opened(positions, BREAK_PREFIX))
+        for position in _opened(positions, SECTION_PREFIX):
+            index = position.id[len(SECTION_PREFIX) :]
+            if index.isdigit() and int(index) < len(frame.sections):
+                sections.append((position.rect_num - 1, frame.sections[int(index)]))
     notes: frozenset[tuple[int, int, int]] = frozenset()
     if slots is not None:
         found = frozenset(
@@ -96,7 +175,7 @@ def plan_from(positions: list, frame: Frame, previous: Plan, slots: list[Slot] |
             for number, (page, column) in note_slots(positions, slots).items()
         )
         notes = previous.notes | found
-    return Plan(full_width, starts, notes)
+    return Plan(full_width, starts, notes, tuple(sorted(sections)))
 
 
 class _Rects:
@@ -115,15 +194,15 @@ class _Rects:
         self.pages = 0
         self.slots: list[Slot] = []
 
-    def _place(self, column: int) -> pymupdf.Rect:
-        area = self.frame.area(column)
+    def _place(self, column: int, columns: int) -> pymupdf.Rect:
+        area = self.frame.area(column, columns=columns)
         notes = self.plan.notes_in(self.pages, column)
         cut = self.reserve(notes, area.width) if self.reserve and notes else 0.0
         self.column = column
         self.slots.append((self.pages, column, area))
-        return self.frame.area(column, cut)
+        return self.frame.area(column, cut, columns)
 
-    def _page(self, column: int):
+    def _page(self, column: int, columns: int):
         self.pages += 1
         if self.pages > MAX_STORY_PAGES:
             raise OpError(
@@ -131,17 +210,20 @@ class _Rects:
                 f"the document would have more than {MAX_STORY_PAGES} pages",
                 {"reason": "tooManyPages", "limit": MAX_STORY_PAGES},
             )
-        return self.frame.mediabox, self._place(column), None
+        return self.frame.mediabox, self._place(column, columns), None
 
     def __call__(self, number: int, _filled: pymupdf.Rect):
         self.check_cancelled()
-        frame = self.frame
-        if frame.columns == 1 or number < self.plan.full_width:
-            return self._page(-1)
-        fresh = number == self.plan.full_width or number in self.plan.page_starts
-        if fresh or self.column < 0 or self.column >= frame.columns - 1:
-            return self._page(0)
-        return None, self._place(self.column + 1), None
+        columns = self.plan.columns_at(number, self.frame.columns)
+        if columns == 1 or number < self.plan.full_width:
+            return self._page(-1, 1)
+        starts = {start for start, _ in self.plan.sections}
+        fresh = (
+            number == self.plan.full_width or number in self.plan.page_starts or number in starts
+        )
+        if fresh or self.column < 0 or self.column >= columns - 1:
+            return self._page(0, columns)
+        return None, self._place(self.column + 1, columns), None
 
 
 def flow(

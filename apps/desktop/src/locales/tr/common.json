@@ -6354,7 +6354,8 @@
       "doiBadResponse": "Kaynak hizmetinin yanıtı okunamadı.",
       "doiUntrustedHost": "Kaynak hizmeti güvenilmeyen bir adrese yönlendirdi, engellendi.",
       "blockedTarget": "vivePDF program, betik ya da kısayol kaydetmez; başlangıç ve SSH klasörlerine de yazmaz. Başka bir ad ya da klasör seçin.",
-      "notGranted": "vivePDF yalnızca sizin seçtiğiniz ya da sürükleyip bıraktığınız dosyaları açar. Açmak için bu dosyayı yeniden seçin."
+      "notGranted": "vivePDF yalnızca sizin seçtiğiniz ya da sürükleyip bıraktığınız dosyaları açar. Açmak için bu dosyayı yeniden seçin.",
+      "badSectionColumns": "Bölüm sonu 1, 2 ya da 3 sütunlu olmalı."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -8824,7 +8825,7 @@
         "date": "Tarih",
         "columns": "Sütunlar",
         "columnGap": "Sütun aralığı",
-        "columnsHint": "Sütunlar önizlemede ve PDF'te görünür; yazarken düzenleyici tek sütun kalır. Sayfa sonu bir sonraki sayfaya geçer."
+        "columnsHint": "Sütunlar önizlemede ve PDF'te görünür; yazarken düzenleyici tek sütun kalır. Sayfa sonu bir sonraki sayfaya geçer. Bu sayı ilk bölüm sonuna kadar geçerlidir; bölüm sonu sonraki sayfalar için sütun sayısını değiştirebilir."
       },
       "papers": {
         "a4": "A4",
@@ -9216,6 +9217,13 @@
         "remove": "Dipnotu kaldır",
         "done": "Metne dön",
         "endTitle": "Notlar"
+      },
+      "section": {
+        "button": "Bölüm sonu (sonraki sayfa)",
+        "columns1": "Bölüm sonu: 1 sütun",
+        "columns2": "Bölüm sonu: 2 sütun",
+        "columns3": "Bölüm sonu: 3 sütun",
+        "label": "Bölüm sonu · sütun: {{columns}}"
       }
     },
     "cv": {

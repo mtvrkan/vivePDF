@@ -6353,7 +6353,8 @@
       "doiBadResponse": "No se pudo leer la respuesta del servicio bibliográfico.",
       "doiUntrustedHost": "El servicio bibliográfico redirigió a una dirección no fiable y se bloqueó.",
       "blockedTarget": "vivePDF no guarda programas, scripts ni accesos directos, ni escribe en carpetas de inicio o SSH. Elige otro nombre o carpeta.",
-      "notGranted": "vivePDF solo abre archivos que usted eligió o arrastró. Vuelva a elegir este archivo para abrirlo."
+      "notGranted": "vivePDF solo abre archivos que usted eligió o arrastró. Vuelva a elegir este archivo para abrirlo.",
+      "badSectionColumns": "Un salto de sección debe tener 1, 2 o 3 columnas."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",
@@ -8822,7 +8823,7 @@
         "date": "Fecha",
         "columns": "Columnas",
         "columnGap": "Espacio entre columnas",
-        "columnsHint": "Las columnas aparecen en la vista previa y en el PDF; el editor mantiene una columna mientras escribe. Un salto de página empieza la página siguiente."
+        "columnsHint": "Las columnas aparecen en la vista previa y en el PDF; el editor mantiene una columna mientras escribes. Un salto de página empieza la página siguiente. Este número se aplica hasta el primer salto de sección, que puede cambiarlo para las páginas siguientes."
       },
       "papers": {
         "a4": "A4",
@@ -9214,6 +9215,13 @@
         "remove": "Quitar nota al pie",
         "done": "Volver al texto",
         "endTitle": "Notas"
+      },
+      "section": {
+        "button": "Salto de sección (página siguiente)",
+        "columns1": "Salto de sección: 1 columna",
+        "columns2": "Salto de sección: 2 columnas",
+        "columns3": "Salto de sección: 3 columnas",
+        "label": "Salto de sección · columnas: {{columns}}"
       }
     },
     "cv": {

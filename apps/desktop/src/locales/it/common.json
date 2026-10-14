@@ -6353,7 +6353,8 @@
       "doiBadResponse": "La risposta del servizio bibliografico non è leggibile.",
       "doiUntrustedHost": "Il servizio bibliografico ha reindirizzato a un indirizzo non affidabile, bloccato.",
       "blockedTarget": "vivePDF non salva programmi, script o collegamenti e non scrive nelle cartelle di avvio o SSH. Scegli un altro nome o cartella.",
-      "notGranted": "vivePDF apre solo i file che hai scelto o trascinato tu. Scegli di nuovo questo file per aprirlo."
+      "notGranted": "vivePDF apre solo i file che hai scelto o trascinato tu. Scegli di nuovo questo file per aprirlo.",
+      "badSectionColumns": "Un’interruzione di sezione deve avere 1, 2 o 3 colonne."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -8822,7 +8823,7 @@
         "date": "Data",
         "columns": "Colonne",
         "columnGap": "Spazio tra colonne",
-        "columnsHint": "Le colonne compaiono nell’anteprima e nel PDF; l’editor resta a una colonna mentre scrivi. Un’interruzione di pagina inizia la pagina successiva."
+        "columnsHint": "Le colonne compaiono nell’anteprima e nel PDF; mentre scrivi l’editor resta a una colonna. Un’interruzione di pagina inizia la pagina successiva. Questo numero vale fino alla prima interruzione di sezione, che può cambiarlo per le pagine seguenti."
       },
       "papers": {
         "a4": "A4",
@@ -9214,6 +9215,13 @@
         "remove": "Rimuovi nota",
         "done": "Torna al testo",
         "endTitle": "Note"
+      },
+      "section": {
+        "button": "Interruzione di sezione (pagina successiva)",
+        "columns1": "Interruzione di sezione: 1 colonna",
+        "columns2": "Interruzione di sezione: 2 colonne",
+        "columns3": "Interruzione di sezione: 3 colonne",
+        "label": "Interruzione di sezione · colonne: {{columns}}"
       }
     },
     "cv": {

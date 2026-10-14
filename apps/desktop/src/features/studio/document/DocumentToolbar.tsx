@@ -55,6 +55,7 @@ import { pickDocumentImage } from "./documentFile";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
 import { FormatPainterButton } from "./FormatPainterButton";
+import { SectionBreakMenu } from "./SectionBreakMenu";
 import { SourcesDialog } from "./SourcesDialog";
 import { SpacingMenu } from "./SpacingMenu";
 import { SymbolDialog } from "./SymbolDialog";
@@ -250,6 +251,7 @@ export function DocumentToolbar({ editor, contentWidth }: { editor: Editor; cont
       <IconButton icon={Omega} label={t("studio.doc.symbols.button")} onClick={() => setSymbols(true)} data-testid="doc-symbols" />
       <IconButton icon={Minus} label={t("studio.doc.toolbar.rule")} onClick={() => chain().setHorizontalRule().run()} />
       <IconButton icon={SeparatorHorizontal} label={t("studio.doc.toolbar.pageBreak")} shortcut="Ctrl+Enter" onClick={() => chain().setPageBreak().run()} />
+      <SectionBreakMenu editor={editor} />
       <IconButton icon={Asterisk} label={t("studio.doc.footnotes.insert")} shortcut="Ctrl+Alt+F" onClick={() => chain().insertFootnote().run()} data-testid="doc-footnote" />
       <IconButton icon={BookMarked} label={t("studio.doc.cite.button")} active={state.citation} onClick={() => setCiting(true)} data-testid="doc-citations" />
       {state.table ? (

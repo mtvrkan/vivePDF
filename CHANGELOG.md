@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio documents: a Section break menu in the toolbar starts the next page with 1, 2 or 3 columns, so one document can mix a full-width introduction with two-column chapters; the editor marks each break with its column count, and the preview, the PDF, the contents page numbers and the footnotes follow the sections [2026-10-14]
 - Studio documents: in two or three columns, each footnote now sits at the bottom of the column its marker is in, as wide as that column, instead of across the whole page; a note too tall for a narrow column turns the notes into endnotes [2026-10-14]
 - Studio documents: importing a Markdown file turns `[^1]` footnote references and their `[^1]: …` definitions (including indented follow-on paragraphs) into real footnotes; references inside code stay as written, a reference without a definition stays as text and unused definitions are left out [2026-10-14]
 - Studio designs: text boxes get superscript and subscript (buttons in Text, or Ctrl+Shift+= and Ctrl+= while typing) for m² or H₂O, a highlight colour for selected words, space between paragraphs and a first line indent; the PDF export draws them where the canvas shows them [2026-10-14]

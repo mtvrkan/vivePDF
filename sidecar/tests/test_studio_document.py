@@ -618,3 +618,113 @@ def test_a_note_too_tall_for_a_narrow_column_becomes_an_endnote(tmp_path: Path):
 
     assert "Endnotes" not in wide_text
     assert "Endnotes" in narrow_text
+
+
+def _section(columns: int | str) -> str:
+    return f'<div class="section-break" data-columns="{columns}"></div>'
+
+
+def _columns_used(page: pymupdf.Page) -> int:
+    middle = page.rect.width / 2
+    words = _body_words(page)
+    left = any(word[2] < middle for word in words)
+    right = any(word[0] > middle for word in words)
+    across = any(word[0] < middle < word[2] for word in words)
+    return 1 if across or not (left and right) else 2
+
+
+def test_a_section_break_switches_one_column_to_two_on_a_new_page(tmp_path: Path):
+    body = f"<p>Opening</p>{_filler(60)}{_section(2)}<p>Columned</p>{_filler(900)}"
+
+    with _render(tmp_path, body) as document:
+        first, second = document[0], document[1]
+        first_words = _body_words(first)
+        opening_width = max(word[2] for word in first_words) - min(word[0] for word in first_words)
+        page_width = first.rect.width
+        first_text, second_text = first.get_text(), second.get_text()
+        second_columns = _columns_used(second)
+
+    assert opening_width > page_width * 0.6
+    assert "Columned" in second_text and "Columned" not in first_text
+    assert second_columns == 2
+
+
+def test_a_section_break_returns_two_columns_to_one(tmp_path: Path):
+    body = f"{_filler(900)}{_section(1)}<p>{' '.join(['wide'] * 60)}</p>"
+
+    with _render(tmp_path, body, settings={"columns": 2}) as document:
+        page = _page_with(document, "wide")
+        wide = [word for word in document[page].get_text("words") if word[4] == "wide"]
+        first_page = _columns_used(document[0])
+
+    assert first_page == 2
+    assert max(word[2] for word in wide) - min(word[0] for word in wide) > 300
+
+
+def test_breaks_at_the_edges_leave_no_blank_pages(tmp_path: Path):
+    body = f"{_section(3)}<p>Only page</p>{_filler(200)}{_section(1)}<p></p>"
+
+    with _render(tmp_path, body) as document:
+        count = document.page_count
+        starts = sorted({round(word[0]) for word in _body_words(document[0])})
+
+    assert count == 1
+    assert len(starts) >= 3
+
+
+def test_a_page_break_beside_a_section_break_makes_one_new_page(tmp_path: Path):
+    body = f'<p>First</p><div class="page-break"></div>{_section(2)}{_section(2)}<p>Second</p>'
+
+    with _render(tmp_path, body) as document:
+        pages = [page.get_text() for page in document]
+
+    assert len(pages) == 2
+    assert "First" in pages[0] and "Second" in pages[1]
+
+
+def test_contents_numbers_follow_section_pages(tmp_path: Path):
+    body = (
+        f'<h1 id="h-1">Alpha</h1>{_filler(120)}{_section(2)}'
+        f'<h1 id="h-2">Beta</h1>{_filler(1400)}{_section(1)}<h1 id="h-3">Gamma</h1><p>end</p>'
+    )
+    settings = {"toc": True, "tocTitle": "Contents"}
+
+    with _render(tmp_path, body, settings=settings) as document:
+        toc = {title: page for _, title, page in document.get_toc()}
+        gamma_page = next(
+            page.number for page in document if page.number > 0 and page.search_for("Gamma")
+        )
+
+    assert toc["Gamma"] == gamma_page + 1
+
+
+def test_a_footnote_in_a_columned_section_sits_in_its_column(tmp_path: Path):
+    body = f"<p>Wide</p>{_section(2)}<p>Claim{_marker(1)}</p>{_filler(100)}"
+
+    with _render(tmp_path, body, footnotes=["Column note"]) as document:
+        page = _page_with(document, "Column note")
+        note = document[page].search_for("Column note")[0]
+        middle = document[page].rect.width / 2
+
+    assert page == 1
+    assert note.x1 < middle
+
+
+def test_the_preview_counts_section_pages_like_the_pdf(tmp_path: Path):
+    body = f"{_filler(100)}{_section(3)}{_filler(400)}{_section(1)}{_filler(50)}"
+    params = StudioDocumentPreviewParams.model_validate({"html": body})
+
+    preview = preview_document(params, silent_progress())
+    with _render(tmp_path, body) as document:
+        rendered = document.page_count
+
+    assert preview.page_count == rendered
+    assert rendered >= 3
+
+
+@pytest.mark.parametrize("columns", ["4", "0", "x", ""])
+def test_a_section_break_with_a_bad_column_count_is_refused(tmp_path: Path, columns: str):
+    with pytest.raises(OpError) as caught:
+        _render(tmp_path, f"<p>a</p>{_section(columns)}<p>b</p>")
+
+    assert caught.value.data["reason"] == "badSectionColumns"

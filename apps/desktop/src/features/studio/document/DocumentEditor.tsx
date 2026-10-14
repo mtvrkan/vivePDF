@@ -110,7 +110,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   const [exporting, setExporting] = useState(false);
   const [finding, setFinding] = useState<DocumentFindMode | null>(null);
   const openFind = (replace: boolean) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 }));
-  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(citationTerms(t), language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList"))), [t, language]);
+  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(citationTerms(t), language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns) => t("studio.doc.section.label", { columns })), [t, language]);
   useShortcuts(() => setExporting(true), openFind);
 
   const editor = useEditor(

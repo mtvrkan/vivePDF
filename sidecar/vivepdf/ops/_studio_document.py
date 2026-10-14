@@ -13,7 +13,15 @@ from pathlib import Path
 import pymupdf
 from PIL import Image, ImageOps
 
-from vivepdf.ops._document_flow import TOC_END, Flowed, Frame, Plan, flow, numbered_breaks
+from vivepdf.ops._document_flow import (
+    TOC_END,
+    Flowed,
+    Frame,
+    Plan,
+    flow,
+    numbered_breaks,
+    sectioned,
+)
 from vivepdf.ops._document_notes import (
     MARKER,
     Footnotes,
@@ -378,7 +386,10 @@ def layout_document(
     for index, source in enumerate(content.images):
         check_cancelled()
         archive.add(_decoded(source, index), f"{IMAGE_PREFIX}{index}")
-    body = numbered_breaks(clean_html(content.html, len(content.images)))
+    body, first_columns, sections = sectioned(
+        clean_html(content.html, len(content.images)), settings.columns
+    )
+    body = numbered_breaks(body)
     if not body.strip():
         body = "<p></p>"
     entries = headings(body, settings.toc_depth)
@@ -392,8 +403,9 @@ def layout_document(
     frame = Frame(
         mediabox,
         mediabox + (margin, margin, -margin, -margin),
-        settings.columns,
+        first_columns,
         settings.column_gap_mm * POINTS_PER_MM,
+        sections,
     )
 
     initial = Plan(1 if settings.toc and entries else 0)
