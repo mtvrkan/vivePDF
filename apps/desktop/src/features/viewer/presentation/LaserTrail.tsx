@@ -16,11 +16,11 @@ function toPath(points: LaserPoint[]): string {
   return `${path} L ${last.x} ${last.y}`;
 }
 
-export function LaserTrail({ points, color, size, fading }: { points: LaserPoint[]; color: string; size: number; fading?: boolean }) {
+export function LaserTrail({ points, color, size, fading, contained }: { points: LaserPoint[]; color: string; size: number; fading?: boolean; contained?: boolean }) {
   const path = toPath(points);
   if (!path) return null;
   return (
-    <svg className={cn("pointer-events-none fixed inset-0 z-40 h-full w-full", fading && "laser-fade")} aria-hidden>
+    <svg className={cn("pointer-events-none inset-0 z-40 h-full w-full", contained ? "absolute" : "fixed", fading && "laser-fade")} aria-hidden>
       <path d={path} fill="none" stroke={color} strokeWidth={size * 1.8} strokeLinecap="round" strokeLinejoin="round" opacity={0.4} style={{ filter: `blur(${Math.max(3, size * 0.7)}px)` }} />
       <path d={path} fill="none" stroke={color} strokeWidth={size * 0.55} strokeLinecap="round" strokeLinejoin="round" opacity={0.95} />
       <path d={path} fill="none" stroke="white" strokeWidth={Math.max(1.2, size * 0.2)} strokeLinecap="round" strokeLinejoin="round" opacity={0.85} />

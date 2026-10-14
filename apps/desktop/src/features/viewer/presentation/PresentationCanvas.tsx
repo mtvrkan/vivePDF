@@ -7,6 +7,7 @@ import { DrawingSelectionFrame } from "./DrawingSelectionFrame";
 import { beginDrawing, extendDrawing, isDrawingKept, makeDrawingId, type DrawStyle } from "./drawingGestures";
 import { duplicateDrawing } from "./drawingRotate";
 import { LaserTrail, type LaserPoint } from "./LaserTrail";
+import { toLivePoint, type LivePoint, type LiveSignal } from "./liveSignal";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 import { MagnifierLens } from "./MagnifierLens";
 import { clampStrokePoint, measureTextBlock } from "./strokes";
@@ -39,7 +40,9 @@ function rectSize(rect: PageRect) {
   return { width: rect.width, height: rect.height };
 }
 
-export function PresentationCanvas({ containerRef }: { containerRef: RefObject<HTMLDivElement | null> }) {
+type PresentationCanvasProps = { containerRef: RefObject<HTMLDivElement | null>; contained?: boolean; onSignal?: (signal: LiveSignal) => void };
+
+export function PresentationCanvas({ containerRef, contained = false, onSignal }: PresentationCanvasProps) {
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
   const penWidth = usePresentationStore((state) => state.penWidth);
@@ -77,6 +80,8 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
   const [hoverMovable, setHoverMovable] = useState(false);
 
   const captureActive = tool !== "pointer";
+  const onSignalRef = useRef(onSignal);
+  onSignalRef.current = onSignal;
 
   const toContainerPoint = (event: React.PointerEvent) => {
     const container = containerRef.current;
@@ -315,6 +320,22 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
   }, [tool]);
 
   useEffect(() => {
+    const emit = onSignalRef.current;
+    if (!emit) return;
+    const box = containerRef.current?.getBoundingClientRect();
+    const toPage = (point: { x: number; y: number }) => toLivePoint(pageRects, point.x - (box?.left ?? 0), point.y - (box?.top ?? 0));
+    const livePointer = pointer ? toPage(pointer) : null;
+    const reference = pageRects.find((rect) => rect.pageIndex === livePointer?.pageIndex) ?? pageRects[0];
+    emit({
+      tool,
+      pageWidth: reference?.width ?? 0,
+      pointer: livePointer,
+      laserPath: laserStroke ? laserStroke.map(toPage).filter((point): point is LivePoint => point !== null) : null,
+      activeStroke,
+    });
+  }, [tool, pointer, laserStroke, activeStroke, pageRects, containerRef]);
+
+  useEffect(() => {
     const timers = fadeTimers.current;
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, []);
@@ -363,7 +384,13 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
   const selectedRect = selectedDrawing && typeof selectedDrawing.surface === "number" ? pageRects.find((rect) => rect.pageIndex === selectedDrawing.surface) : undefined;
   const draftRect = textDraft ? pageRects.find((rect) => rect.pageIndex === textDraft.pageIndex) : undefined;
 
-  const stageBox = tool === "spotlight" && pointer ? containerRef.current?.getBoundingClientRect() : undefined;
+  const containerBox = contained ? containerRef.current?.getBoundingClientRect() : undefined;
+  const offsetX = containerBox?.left ?? 0;
+  const offsetY = containerBox?.top ?? 0;
+  const placement = contained ? "absolute" : "fixed";
+  const toLocal = (points: LaserPoint[]) => (contained ? points.map((point) => ({ x: point.x - offsetX, y: point.y - offsetY })) : points);
+  const stageRect = tool === "spotlight" && pointer ? containerRef.current?.getBoundingClientRect() : undefined;
+  const stageBox = stageRect && contained ? { left: 0, top: 0, width: stageRect.width, height: stageRect.height } : stageRect;
 
   const magnifierPageRect = pointer ? (() => {
     const container = containerRef.current;
@@ -427,19 +454,19 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
           onCancel={() => cancelText(textDraft)}
         />
       ) : null}
-      {laserStroke ? <LaserTrail points={laserStroke} color={laserColor} size={laserSize} /> : null}
+      {laserStroke ? <LaserTrail points={toLocal(laserStroke)} color={laserColor} size={laserSize} contained={contained} /> : null}
       {fadingLasers.map((entry) => (
-        <LaserTrail key={entry.id} points={entry.points} color={laserColor} size={laserSize} fading />
+        <LaserTrail key={entry.id} points={toLocal(entry.points)} color={laserColor} size={laserSize} contained={contained} fading />
       ))}
       {tool === "laser" && pointer
         ? laserTrail.map((point, index) => (
             <span
               key={index}
               aria-hidden
-              className="laser-dot pointer-events-none fixed z-40 -translate-x-1/2 -translate-y-1/2 rounded-full"
+              className={cn("laser-dot pointer-events-none z-40 -translate-x-1/2 -translate-y-1/2 rounded-full", placement)}
               style={{
-                left: point.x,
-                top: point.y,
+                left: point.x - offsetX,
+                top: point.y - offsetY,
                 width: laserSize * (index === laserTrail.length - 1 ? 1 : 0.5),
                 height: laserSize * (index === laserTrail.length - 1 ? 1 : 0.5),
                 opacity: (index + 1) / laserTrail.length,
@@ -453,17 +480,17 @@ export function PresentationCanvas({ containerRef }: { containerRef: RefObject<H
         <div
           aria-hidden
           data-spotlight-frame=""
-          className="pointer-events-none fixed z-30"
+          className={cn("pointer-events-none z-30", placement)}
           style={{ left: stageBox.left, top: stageBox.top, width: stageBox.width, height: stageBox.height, boxShadow: "0 0 0 9999px rgb(0,0,0)" }}
         />
       ) : null}
       {tool === "spotlight" && pointer ? (
         <div
           aria-hidden
-          className={cn("pointer-events-none fixed z-30", spotlightShape === "circle" ? "rounded-full" : "rounded-xl")}
+          className={cn("pointer-events-none z-30", placement, spotlightShape === "circle" ? "rounded-full" : "rounded-xl")}
           style={{
-            left: pointer.x - spotlightRadius,
-            top: pointer.y - (spotlightShape === "circle" ? spotlightRadius : spotlightRadius * SPOTLIGHT_RECT_RATIO),
+            left: pointer.x - offsetX - spotlightRadius,
+            top: pointer.y - offsetY - (spotlightShape === "circle" ? spotlightRadius : spotlightRadius * SPOTLIGHT_RECT_RATIO),
             width: spotlightRadius * 2,
             height: spotlightShape === "circle" ? spotlightRadius * 2 : spotlightRadius * SPOTLIGHT_RECT_RATIO * 2,
             boxShadow: `0 0 0 9999px rgba(0,0,0,${spotlightDim})`,

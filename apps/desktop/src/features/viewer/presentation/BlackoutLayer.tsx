@@ -14,9 +14,13 @@ function strokeColor(board: BoardMode, color: string) {
   return board === "black" ? readableOnDark(color) : color;
 }
 
-function BoardCanvas({ board, strokes, live }: { board: BoardMode; strokes: Stroke[]; live: Stroke | null }) {
-  const width = window.innerWidth;
-  const height = window.innerHeight;
+type Box = { left: number; top: number; width: number; height: number };
+
+function windowBox(): Box {
+  return { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+}
+
+function BoardCanvas({ board, strokes, live, width, height }: { board: BoardMode; strokes: Stroke[]; live: Stroke | null; width: number; height: number }) {
   const dpr = window.devicePixelRatio || 1;
 
   const setCanvasRef = (node: HTMLCanvasElement | null) => {
@@ -33,7 +37,7 @@ function BoardCanvas({ board, strokes, live }: { board: BoardMode; strokes: Stro
   return <canvas ref={setCanvasRef} aria-hidden className="pointer-events-none absolute inset-0 size-full" key={`${strokes.length}-${live?.points.length ?? 0}-${width}-${height}`} />;
 }
 
-function Board({ board }: { board: BoardMode }) {
+function Board({ board, contained, hint }: { board: BoardMode; contained: boolean; hint: boolean }) {
   const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
@@ -45,15 +49,39 @@ function Board({ board }: { board: BoardMode }) {
   const [live, setLive] = useState<Stroke | null>(null);
   const [hintVisible, setHintVisible] = useState(true);
   const erasingRef = useRef(false);
+  const boardRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState(() => ({ width: window.innerWidth, height: window.innerHeight }));
   const drawing = BOARD_TOOLS.has(tool);
+
+  useEffect(() => {
+    const node = boardRef.current;
+    if (!node || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      const rect = node.getBoundingClientRect();
+      if (rect.width <= 0 || rect.height <= 0) return;
+      setSize((current) => (current.width === rect.width && current.height === rect.height ? current : { width: rect.width, height: rect.height }));
+    });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setHintVisible(false), HINT_VISIBLE_MS);
     return () => window.clearTimeout(timer);
   }, []);
 
-  const pointOf = (event: PointerEvent) => ({ x: event.clientX / window.innerWidth, y: event.clientY / window.innerHeight });
-  const surface = () => ({ width: window.innerWidth, height: window.innerHeight });
+  const frame = (): Box => {
+    const rect = boardRef.current?.getBoundingClientRect();
+    return rect && rect.width > 0 && rect.height > 0 ? rect : windowBox();
+  };
+  const pointOf = (event: PointerEvent) => {
+    const box = frame();
+    return { x: (event.clientX - box.left) / box.width, y: (event.clientY - box.top) / box.height };
+  };
+  const surface = () => {
+    const box = frame();
+    return { width: box.width, height: box.height };
+  };
 
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!drawing || event.button !== 0) return;
@@ -88,31 +116,34 @@ function Board({ board }: { board: BoardMode }) {
 
   return (
     <div
+      ref={boardRef}
       data-presentation-board={board}
-      className={cn("presentation-blackout fixed inset-0 z-50", board === "black" ? "bg-black" : "bg-white")}
+      className={cn("presentation-blackout inset-0 z-50", contained ? "absolute" : "fixed", board === "black" ? "bg-black" : "bg-white")}
       style={{ cursor, touchAction: drawing ? "none" : undefined }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      <BoardCanvas board={board} strokes={strokes} live={live} />
-      <p
-        role="status"
-        className={cn(
-          "pointer-events-none absolute inset-x-0 top-6 mx-auto w-fit rounded-full px-4 py-1.5 text-sm transition-opacity duration-(--transition-slow)",
-          board === "black" ? "bg-white/10 text-white/80" : "bg-black/5 text-black/70",
-          hintVisible ? "opacity-100" : "opacity-0",
-        )}
-      >
-        {t("presentation.boardHint")}
-      </p>
+      <BoardCanvas board={board} strokes={strokes} live={live} width={size.width} height={size.height} />
+      {hint ? (
+        <p
+          role="status"
+          className={cn(
+            "pointer-events-none absolute inset-x-0 top-6 mx-auto w-fit rounded-full px-4 py-1.5 text-sm transition-opacity duration-(--transition-slow)",
+            board === "black" ? "bg-white/10 text-white/80" : "bg-black/5 text-black/70",
+            hintVisible ? "opacity-100" : "opacity-0",
+          )}
+        >
+          {t("presentation.boardHint")}
+        </p>
+      ) : null}
     </div>
   );
 }
 
-export function BlackoutLayer() {
+export function BlackoutLayer({ contained = false, hint = true }: { contained?: boolean; hint?: boolean }) {
   const blackout = usePresentationStore((state) => state.blackout);
   if (blackout === "none") return null;
-  return <Board key={blackout} board={blackout} />;
+  return <Board key={blackout} board={blackout} contained={contained} hint={hint} />;
 }

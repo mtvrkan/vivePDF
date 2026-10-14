@@ -10,7 +10,7 @@ import { appendDigit, emptyJumpState, isJumpDigit, jumpResetDelayMs, resolveJump
 
 const VISIBLE_MARGIN = "240px";
 
-function GridThumb({ documentId, pageIndex, active, onSelect }: { documentId: string; pageIndex: number; active: boolean; onSelect: () => void }) {
+export function PageThumb({ documentId, pageIndex, active, onSelect }: { documentId: string; pageIndex: number; active: boolean; onSelect: () => void }) {
   const { provides: thumbnailCapability } = useThumbnailCapability();
   const [src, setSrc] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
@@ -128,7 +128,7 @@ export function OverviewGrid({ documentId, onClose }: { documentId: string; onCl
       <div className="min-h-0 flex-1 overflow-auto px-8 pb-8" onMouseDown={(event) => event.stopPropagation()}>
         <div className="grid grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-3">
           {pageIndexes.map((pageIndex) => (
-            <GridThumb key={pageIndex} documentId={documentId} pageIndex={pageIndex} active={pageIndex + 1 === scrollState.currentPage} onSelect={() => goToPage(pageIndex + 1)} />
+            <PageThumb key={pageIndex} documentId={documentId} pageIndex={pageIndex} active={pageIndex + 1 === scrollState.currentPage} onSelect={() => goToPage(pageIndex + 1)} />
           ))}
         </div>
       </div>

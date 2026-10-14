@@ -119,3 +119,37 @@ describe("BlackoutLayer", () => {
     expect(pieces.every((piece) => piece.points.every((point) => Math.abs(point.x - 0.255) > 0.015))).toBe(true);
   });
 });
+
+describe("BlackoutLayer inside the presenter console", () => {
+  it("draws relative to its own box instead of the whole window", () => {
+    act(() => {
+      usePresentationStore.getState().setBlackout("white");
+      usePresentationStore.getState().setTool("pen");
+    });
+    render(<BlackoutLayer contained />);
+    const target = board();
+    target.getBoundingClientRect = () => ({ left: 100, top: 50, width: 400, height: 200, x: 100, y: 50, right: 500, bottom: 250, toJSON: () => null }) as DOMRect;
+
+    drag(target, [
+      [100, 50],
+      [300, 150],
+      [500, 250],
+    ]);
+
+    expect(target.className).toContain("absolute");
+    expect(usePresentationStore.getState().boardStrokes.white[0].points).toEqual([
+      { x: 0, y: 0 },
+      { x: 0.5, y: 0.5 },
+      { x: 1, y: 1 },
+    ]);
+  });
+
+  it("leaves out the shortcut hint on the audience screen", () => {
+    act(() => usePresentationStore.getState().setBlackout("black"));
+
+    render(<BlackoutLayer hint={false} />);
+
+    expect(screen.queryByRole("status")).toBeNull();
+    expect(board()).not.toBeNull();
+  });
+});

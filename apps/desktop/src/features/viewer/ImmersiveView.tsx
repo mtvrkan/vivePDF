@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useAnnotation } from "@embedpdf/plugin-annotation/react";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
-import { ZoomMode, useZoom, type ZoomLevel } from "@embedpdf/plugin-zoom/react";
 import { Button } from "@/components/shared/Button";
 import { ErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { cn } from "@/shared/lib/cn";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { useUiStore } from "@/shared/store/uiStore";
+import type { LiveSignal } from "./presentation/liveSignal";
 import { AnnotateBar } from "./AnnotateBar";
 import { PageView } from "./PageView";
 import { BlackoutLayer } from "./presentation/BlackoutLayer";
@@ -18,16 +18,13 @@ import { OverviewGrid } from "./presentation/OverviewGrid";
 import { PresentationCanvas } from "./presentation/PresentationCanvas";
 import { usePageRects } from "./presentation/usePageRects";
 import { usePinchSignal } from "./presentation/pinchSignal";
+import { usePresentationFit } from "./presentation/usePresentationFit";
 import { PresenterBar } from "./ImmersiveBar";
 import { trackSessionAnnotation, type SessionAnnotation } from "./sessionAnnotations";
 import { outsideRender } from "@/shared/lib/outsideRender";
 
 const WHEEL_FLIP_THRESHOLD = 40;
 const WHEEL_FLIP_COOLDOWN_MS = 320;
-const REFIT_DEBOUNCE_MS = 120;
-const FIT_CAPTURE_DELAY_MS = 220;
-const ENTRY_SETTLE_MS = 80;
-const ENTRY_TIMEOUT_MS = 700;
 const CURSOR_IDLE_MS = 2000;
 
 function PresentationErrorBoundary({ onExit, children }: { onExit: () => void; children: ReactNode }) {
@@ -53,32 +50,22 @@ function PresentationErrorBoundary({ onExit, children }: { onExit: () => void; c
   );
 }
 
-export function ImmersiveView({ documentId, onExit }: { documentId: string; onExit: () => void }) {
+type ImmersiveViewProps = { documentId: string; onExit: () => void; variant?: "solo" | "console"; onSignal?: (signal: LiveSignal) => void };
+
+export function ImmersiveView({ documentId, onExit, variant = "solo", onSignal }: ImmersiveViewProps) {
   const { provides: annotation } = useAnnotation(documentId);
   const annotationRef = useRef(annotation);
   annotationRef.current = annotation;
   const sessionAnnotations = useRef<SessionAnnotation[]>([]);
   const [sessionItems, setSessionItems] = useState<SessionAnnotation[]>([]);
-  const { provides: zoom, state: zoomState } = useZoom(documentId);
   const { state: scrollState, provides: scroll } = useScroll(documentId);
   const containerRef = useRef<HTMLDivElement>(null);
-  const zoomBeforeEntering = useRef<ZoomLevel>(zoomState.zoomLevel);
-  const zoomRef = useRef(zoom);
-  zoomRef.current = zoom;
-  const zoomReady = Boolean(zoom);
-  const zoomStateRef = useRef(zoomState);
-  zoomStateRef.current = zoomState;
-  const fitLevelRef = useRef<number | null>(null);
-  const manualZoomRef = useRef(false);
-  const fitTimer = useRef<number | null>(null);
-  const captureTimer = useRef<number | null>(null);
-  const pendingPageRestore = useRef<number | null>(null);
-  const settleTimer = useRef<number | null>(null);
-  const [settled, setSettled] = useState(false);
+  const { settled, fitLevelRef, manualZoomRef, zoomStateRef } = usePresentationFit(documentId, containerRef);
   const wheelAccumulator = useRef(0);
   const lastFlip = useRef(0);
   const scrollRef = useRef({ scroll, scrollState });
   scrollRef.current = { scroll, scrollState };
+  const asConsole = variant === "console";
   const pageRects = usePageRects(containerRef);
 
   const tool = usePresentationStore((state) => state.tool);
@@ -92,69 +79,8 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
 
   useEffect(() => {
     useUiStore.getState().setImmersiveMounted(true);
-    const cap = window.setTimeout(() => setSettled(true), ENTRY_TIMEOUT_MS);
-    return () => {
-      window.clearTimeout(cap);
-      useUiStore.getState().setImmersiveMounted(false);
-    };
+    return () => useUiStore.getState().setImmersiveMounted(false);
   }, []);
-
-  const finishEntry = useCallback(() => {
-    const pageNumber = pendingPageRestore.current;
-    if (pageNumber === null) return;
-    pendingPageRestore.current = null;
-    fitLevelRef.current = zoomStateRef.current.currentZoomLevel;
-    scrollRef.current.scroll?.scrollToPage({ pageNumber, behavior: "instant" });
-    window.requestAnimationFrame(() => setSettled(true));
-  }, []);
-
-  const armSettle = useCallback(() => {
-    if (pendingPageRestore.current === null) return;
-    if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
-    settleTimer.current = window.setTimeout(finishEntry, ENTRY_SETTLE_MS);
-  }, [finishEntry]);
-
-  const scheduleFit = useCallback(() => {
-    const entering = pendingPageRestore.current !== null;
-    if (fitTimer.current !== null) window.clearTimeout(fitTimer.current);
-    fitTimer.current = window.setTimeout(() => {
-      if (!entering && manualZoomRef.current) return;
-      zoomRef.current?.requestZoom(ZoomMode.FitPage);
-      if (captureTimer.current !== null) window.clearTimeout(captureTimer.current);
-      captureTimer.current = window.setTimeout(() => {
-        fitLevelRef.current = zoomStateRef.current.currentZoomLevel;
-      }, FIT_CAPTURE_DELAY_MS);
-    }, entering ? 0 : REFIT_DEBOUNCE_MS);
-    armSettle();
-  }, [armSettle]);
-
-  useEffect(() => {
-    if (!zoomReady) return;
-    const previous = zoomBeforeEntering.current;
-    const { scroll: current, scrollState: state } = scrollRef.current;
-    pendingPageRestore.current = useUiStore.getState().immersiveStartPage ?? current?.getCurrentPage() ?? state.currentPage;
-    scheduleFit();
-    return () => {
-      if (fitTimer.current !== null) window.clearTimeout(fitTimer.current);
-      if (captureTimer.current !== null) window.clearTimeout(captureTimer.current);
-      if (settleTimer.current !== null) window.clearTimeout(settleTimer.current);
-      pendingPageRestore.current = null;
-      setSettled(false);
-      zoomRef.current?.requestZoom(previous);
-    };
-  }, [zoomReady, scheduleFit]);
-
-  useEffect(() => {
-    armSettle();
-  }, [zoomState.currentZoomLevel, armSettle]);
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !zoomReady) return;
-    const observer = new ResizeObserver(() => scheduleFit());
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, [zoomReady, scheduleFit]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -178,7 +104,7 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
     };
     container.addEventListener("wheel", onWheel, { passive: false, capture: true });
     return () => container.removeEventListener("wheel", onWheel, { capture: true });
-  }, []);
+  }, [fitLevelRef, manualZoomRef, zoomStateRef]);
 
   useEffect(() => {
     const scope = annotationRef.current;
@@ -242,7 +168,7 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
     <div
       ref={containerRef}
       onMouseMove={onMouseMove}
-      className={cn("immersive-view relative min-h-0 flex-1 bg-black", cursorHidden && tool === "pointer" && cursorAutoHide && "cursor-none")}
+      className={cn("immersive-view relative min-h-0 flex-1 bg-black", asConsole && "overflow-hidden", cursorHidden && tool === "pointer" && cursorAutoHide && "cursor-none")}
     >
       <div className="absolute inset-0 bg-muted" aria-hidden />
       <div className={cn("h-full transition-opacity duration-150", settled ? "opacity-100" : "opacity-0")}>
@@ -253,21 +179,23 @@ export function ImmersiveView({ documentId, onExit }: { documentId: string; onEx
           <CodeBlockMarkers key={rect.pageIndex} documentId={documentId} rect={rect} />
         ))}
       </div>
-      <BlackoutLayer />
-      {drawingsMode === "annotations" ? (
+      <BlackoutLayer contained={asConsole} />
+      {drawingsMode === "annotations" && !asConsole ? (
         <div className="fixed left-3 top-1/2 z-30 -translate-y-1/2">
           <AnnotateBar documentId={documentId} layout="dock" />
         </div>
       ) : null}
       <PresentationErrorBoundary onExit={onExit}>
-        <PresentationCanvas containerRef={containerRef} />
-        <PresenterBar
-          documentId={documentId}
-          onExit={onExit}
-          onManualZoom={onManualZoom}
-          sessionAnnotations={sessionItems}
-          onClearSessionAnnotations={clearSessionAnnotations}
-        />
+        <PresentationCanvas containerRef={containerRef} contained={asConsole} onSignal={onSignal} />
+        {asConsole ? null : (
+          <PresenterBar
+            documentId={documentId}
+            onExit={onExit}
+            onManualZoom={onManualZoom}
+            sessionAnnotations={sessionItems}
+            onClearSessionAnnotations={clearSessionAnnotations}
+          />
+        )}
         {overviewOpen ? <OverviewGrid documentId={documentId} onClose={() => setOverviewOpen(false)} /> : null}
         {codeBlockOpen ? <CodeBlockOverlay pageIndex={codeBlockOpen.pageIndex} blockId={codeBlockOpen.blockId} /> : null}
       </PresentationErrorBoundary>
