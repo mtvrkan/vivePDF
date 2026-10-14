@@ -9205,6 +9205,15 @@
           "latin": "Letras acentuadas",
           "shapes": "Formas y marcas"
         }
+      },
+      "footnotes": {
+        "insert": "Insertar nota al pie",
+        "panel": "Nota al pie {{number}}",
+        "text": "Texto de la nota al pie",
+        "placeholder": "Escriba la nota que aparece al final de la página",
+        "remove": "Quitar nota al pie",
+        "done": "Volver al texto",
+        "endTitle": "Notas"
       }
     },
     "cv": {

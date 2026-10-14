@@ -12,13 +12,15 @@ MAX_IMAGE_CHARS = 30_000_000
 MAX_FONTS = 16
 MAX_DOCUMENT_BYTES = 120 * 1024 * 1024
 DOCUMENT_EXTENSION = "vivedoc"
-DOCUMENT_VERSION = 1
+DOCUMENT_VERSION = 2
 
 DocumentPaper = Literal["a4", "a5", "b5", "letter", "legal"]
 PageNumbers = Literal["none", "center", "right", "outside"]
 FurnitureAlign = Literal["left", "center", "right"]
 CoverLook = Literal["classic", "band", "frame", "minimal"]
 FontId = Annotated[NotAPath, Field(min_length=1, max_length=300)]
+MAX_FOOTNOTES = 500
+MAX_FOOTNOTE_CHARS = 2000
 ShortText = Annotated[str, Field(max_length=300)]
 
 
@@ -58,6 +60,10 @@ class StudioDocumentContent(RpcModel):
     settings: StudioDocumentSettings = Field(default_factory=StudioDocumentSettings)
     title: ShortText = ""
     language: str = Field(default="", max_length=35)
+    footnotes: list[Annotated[NotAPath, Field(max_length=MAX_FOOTNOTE_CHARS)]] = Field(
+        default_factory=list, max_length=MAX_FOOTNOTES
+    )
+    notes_title: ShortText = "Notes"
 
 
 class StudioDocumentRenderParams(StudioDocumentContent):

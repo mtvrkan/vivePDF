@@ -244,6 +244,127 @@ def test_more_than_three_columns_are_refused():
         )
 
 
+def _marker(number: int) -> str:
+    return f'<sup class="fn-ref" id="fnref-{number}">{number}</sup>'
+
+
+def _page_with(document: pymupdf.Document, text: str) -> int:
+    return next(page.number for page in document if page.search_for(text))
+
+
+def test_a_footnote_sits_at_the_bottom_of_the_page_its_marker_is_on(tmp_path: Path):
+    body = f"<p>Opening words{_marker(1)}</p>{_filler(500)}<p>Late words{_marker(2)}</p>"
+    notes = ["First explanation", "Second explanation"]
+
+    with _render(tmp_path, body, footnotes=notes) as document:
+        first_page, second_page, late_page = (
+            _page_with(document, text) for text in (*notes, "Late words")
+        )
+        note = document[first_page].search_for("First explanation")[0]
+        height = document[first_page].rect.height
+        body_bottom = max(
+            word[3] for word in document[first_page].get_text("words") if word[4].startswith("word")
+        )
+
+    assert first_page == 0
+    assert second_page == late_page
+    assert note.y1 > height * 0.8
+    assert body_bottom < note.y0
+
+
+def test_the_body_never_runs_into_the_notes(tmp_path: Path):
+    body = "".join(f"<p>{' '.join(['text'] * 40)}{_marker(index)}</p>" for index in range(1, 9))
+    notes = [f"Note number {index} " + "detail " * 20 for index in range(1, 9)]
+
+    with _render(tmp_path, body + _filler(1200), footnotes=notes) as document:
+        for page in document:
+            numbers = page.search_for("Note number")
+            if not numbers:
+                continue
+            top = min(rect.y0 for rect in numbers)
+            body_words = [
+                word for word in page.get_text("words") if word[4].startswith(("text", "word"))
+            ]
+            assert body_words
+            assert max(word[3] for word in body_words) < top
+        text = "".join(page.get_text() for page in document)
+
+    assert all(f"Note number {index}" in text for index in range(1, 9))
+    assert "Notes" not in text
+
+
+def test_a_marker_links_to_its_note(tmp_path: Path):
+    body = f"<p>Linked{_marker(1)} words</p>"
+
+    with _render(tmp_path, body, footnotes=["Target note"]) as document:
+        links = [link for link in document[0].get_links() if link["kind"] == pymupdf.LINK_GOTO]
+        note = document[0].search_for("Target note")[0]
+
+    assert len(links) == 1
+    assert links[0]["page"] == 0
+    assert links[0]["to"].y == pytest.approx(note.y0, abs=6)
+
+
+def test_a_note_taller_than_a_third_of_the_page_becomes_an_endnote(tmp_path: Path):
+    body = f"<p>Short text{_marker(1)} and more{_marker(2)}</p>{_filler(300)}"
+    notes = ["Long " + "explanation " * 160, "Small note"]
+    settings = {"fontSize": 20}
+
+    with _render(
+        tmp_path, body, footnotes=notes, notesTitle="Endnotes", settings=settings
+    ) as document:
+        title, small, body_end = (
+            _page_with(document, text) for text in ("Endnotes", "Small note", "word299")
+        )
+        links = [
+            link
+            for page in document
+            for link in page.get_links()
+            if link["kind"] == pymupdf.LINK_GOTO
+        ]
+
+    assert body_end <= title <= small
+    assert len(links) == 2
+
+
+def test_contents_and_columns_keep_their_notes(tmp_path: Path):
+    body = "".join(
+        f'<h1 id="h-{index}">Chapter {index}{_marker(index)}</h1>{_filler(200)}'
+        for index in range(1, 4)
+    )
+    settings = {"columns": 2, "toc": True, "tocTitle": "Contents"}
+    notes = [f"Chapter note {index}" for index in range(1, 4)]
+
+    with _render(tmp_path, body, footnotes=notes, settings=settings) as document:
+        contents = document[0].get_text()
+        placed = {
+            index: next(
+                page.number for page in document if page.search_for(f"Chapter note {index}")
+            )
+            for index in range(1, 4)
+        }
+        headings = {
+            index: next(
+                page.number
+                for page in document
+                if page.number > 0 and page.search_for(f"Chapter {index}")
+            )
+            for index in range(1, 4)
+        }
+        bookmarks = [title for _, title, _ in document.get_toc()]
+
+    assert "Chapter 11" not in contents
+    assert placed == headings
+    assert bookmarks == ["Chapter 1", "Chapter 2", "Chapter 3"]
+
+
+def test_notes_without_a_marker_are_left_out(tmp_path: Path):
+    with _render(tmp_path, "<p>No markers</p>", footnotes=["Orphan note"]) as document:
+        text = document[0].get_text()
+
+    assert "Orphan note" not in text
+
+
 def _shaded(page: pymupdf.Page) -> list[pymupdf.Rect]:
     return [
         drawing["rect"]

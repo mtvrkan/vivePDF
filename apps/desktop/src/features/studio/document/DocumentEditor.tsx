@@ -10,6 +10,7 @@ import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import type { DocumentNode } from "@/types/studio";
 import { DocumentExportDialog } from "./DocumentExportDialog";
 import { DocumentFindBar, type DocumentFindMode } from "./DocumentFindBar";
+import { FootnotePanel } from "./FootnotePanel";
 import { DocumentPreview } from "./DocumentPreview";
 import { DocumentSettingsPanel } from "./DocumentSettingsPanel";
 import { DocumentToolbar } from "./DocumentToolbar";
@@ -160,6 +161,7 @@ export default function DocumentEditor({ language }: { language: string }) {
               <EditorContent editor={editor} />
             </div>
           </div>
+          {editor ? <FootnotePanel editor={editor} /> : null}
           {editor ? <WordCount editor={editor} language={language} /> : null}
           {finding && editor ? <DocumentFindBar editor={editor} mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
         </div>

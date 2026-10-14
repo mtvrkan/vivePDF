@@ -237,7 +237,7 @@ describe("runConversion picture and text results", () => {
 
 describe("runConversion source libraries", () => {
   const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
-  const libraryText = { language: "en", text: { tocTitle: "Contents", referencesTitle: "References", terms: TERMS } };
+  const libraryText = { language: "en", text: { tocTitle: "Contents", referencesTitle: "References", notesTitle: "Notes", terms: TERMS } };
 
   beforeEach(() => {
     fileToPdf.mockReset();

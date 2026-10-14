@@ -2,6 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
+import { FOOTNOTE, footnoteText, MAX_FOOTNOTES } from "./footnotes";
 import { SPACING_KEYS, spacingCss } from "./spacing";
 
 export const PAGE_BREAK = "pageBreak";
@@ -17,7 +18,7 @@ const DEFAULT_HIGHLIGHT = "#fef08a";
 const CHECKED = "&#9745;";
 const UNCHECKED = "&#9744;";
 
-export type DocumentHtml = { html: string; images: string[]; fonts: string[] };
+export type DocumentHtml = { html: string; images: string[]; fonts: string[]; footnotes: string[] };
 
 export type DocumentReferences = { citations: Citations; title: string };
 
@@ -25,6 +26,7 @@ type Mark = NonNullable<DocumentNode["marks"]>[number];
 
 class Writer {
   images: string[] = [];
+  footnotes: string[] = [];
   fonts: string[];
   headings = 0;
   references: DocumentReferences | null;
@@ -222,6 +224,11 @@ function write(node: DocumentNode, writer: Writer): string {
       return cell(node, "td", writer);
     case PAGE_BREAK:
       return '<div class="page-break"></div>';
+    case FOOTNOTE: {
+      if (writer.footnotes.length >= MAX_FOOTNOTES) return "";
+      const number = writer.footnotes.push(footnoteText(attr(node, "text")));
+      return `<sup class="fn-ref" id="fnref-${number}">${number}</sup>`;
+    }
     case CITATION:
       return writer.references ? escapeHtml(writer.references.citations.label(citationItems(attr(node, "items"))).text) : "";
     case BIBLIOGRAPHY:
@@ -234,5 +241,5 @@ function write(node: DocumentNode, writer: Writer): string {
 export function documentHtml(content: DocumentNode, settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null = null): DocumentHtml {
   const writer = new Writer(settings, references);
   const html = write(content, writer);
-  return { html, images: writer.images, fonts: writer.fonts };
+  return { html, images: writer.images, fonts: writer.fonts, footnotes: writer.footnotes };
 }

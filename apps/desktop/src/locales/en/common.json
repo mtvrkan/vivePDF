@@ -9207,6 +9207,15 @@
           "latin": "Accented letters",
           "shapes": "Shapes and marks"
         }
+      },
+      "footnotes": {
+        "insert": "Insert footnote",
+        "panel": "Footnote {{number}}",
+        "text": "Footnote text",
+        "placeholder": "Write the note shown at the bottom of the page",
+        "remove": "Remove footnote",
+        "done": "Back to the text",
+        "endTitle": "Notes"
       }
     },
     "cv": {

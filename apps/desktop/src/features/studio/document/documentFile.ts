@@ -11,6 +11,7 @@ import { parseBibtex } from "./bibtex";
 import { createDocument, normalizeDocument, pageSize } from "./model";
 import { useDocumentStore } from "./documentStore";
 import { formatOfPath, parseSources } from "./sourceFormats";
+import { fileVersion } from "./footnotes";
 
 export const IMPORT_EXTENSIONS = ["md", "markdown", "txt", "html", "htm"];
 
@@ -45,7 +46,7 @@ export async function saveStudioDocument(options: { saveAs: boolean; fallbackNam
     target = (await saveDialog({ defaultPath: joinPath(directory, name), filters: [{ name: options.filterName, extensions: [STUDIO_DOCUMENT_EXTENSION] }] })) ?? null;
   }
   if (!target) return null;
-  const result = await studioSaveDocument({ document, output: target, overwrite: true });
+  const result = await studioSaveDocument({ document: { ...document, version: fileVersion(document.content) }, output: target, overwrite: true });
   if (useDocumentStore.getState().document === document) useDocumentStore.getState().markSaved(result.output);
   else useDocumentStore.setState({ filePath: result.output });
   remember(document, result.output);

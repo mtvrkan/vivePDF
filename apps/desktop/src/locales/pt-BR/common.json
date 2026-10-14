@@ -9205,6 +9205,15 @@
           "latin": "Letras acentuadas",
           "shapes": "Formas e sinais"
         }
+      },
+      "footnotes": {
+        "insert": "Inserir nota de rodapé",
+        "panel": "Nota de rodapé {{number}}",
+        "text": "Texto da nota de rodapé",
+        "placeholder": "Escreva a nota que aparece no pé da página",
+        "remove": "Remover nota de rodapé",
+        "done": "Voltar ao texto",
+        "endTitle": "Notas"
       }
     },
     "cv": {

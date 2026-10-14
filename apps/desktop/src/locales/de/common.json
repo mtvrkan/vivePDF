@@ -9205,6 +9205,15 @@
           "latin": "Buchstaben mit Akzent",
           "shapes": "Formen und Zeichen"
         }
+      },
+      "footnotes": {
+        "insert": "Fußnote einfügen",
+        "panel": "Fußnote {{number}}",
+        "text": "Fußnotentext",
+        "placeholder": "Notiz schreiben, die unten auf der Seite erscheint",
+        "remove": "Fußnote entfernen",
+        "done": "Zurück zum Text",
+        "endTitle": "Anmerkungen"
       }
     },
     "cv": {

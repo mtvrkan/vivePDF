@@ -9207,6 +9207,15 @@
           "latin": "Aksanlı harfler",
           "shapes": "Şekiller ve işaretler"
         }
+      },
+      "footnotes": {
+        "insert": "Dipnot ekle",
+        "panel": "Dipnot {{number}}",
+        "text": "Dipnot metni",
+        "placeholder": "Sayfanın altında görünecek notu yazın",
+        "remove": "Dipnotu kaldır",
+        "done": "Metne dön",
+        "endTitle": "Notlar"
       }
     },
     "cv": {

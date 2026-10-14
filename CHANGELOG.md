@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio documents: footnotes. Insert one with the toolbar button or Ctrl+Alt+F, write it in the panel that opens, and it is numbered and printed at the bottom of the page its marker lands on, above a short rule, with the marker linked to it in the PDF; a note too long for a third of the page turns all notes into numbered endnotes under "Notes" at the end. Documents with footnotes save as file version 2 so older vivePDF versions refuse them instead of dropping the notes [2026-10-14]
 - Studio documents: lay the text out in two or three columns with a chosen gap (Settings › Page). The contents page stays full width, and a page break still starts a new page instead of the next column [2026-10-14]
 - Studio documents: an Insert symbol dialog (Ω in the toolbar) with punctuation, currency, maths, arrows, Greek, accented letters and shapes, a recently used row, and arrow-key navigation; every symbol is in the default document font [2026-10-14]
 - Studio documents: a word and character count under the page (with the selection's count while text is selected) and a format painter that copies text and paragraph formatting to the next selection; double-click it to keep painting until Esc [2026-10-14]
@@ -48,6 +49,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Studio documents: the first page's text and the first column no longer start a line lower than the following pages and columns [2026-10-14]
 - Studio: segmented options and buttons in the side panels (Page › resize, apply to all pages, Text › case and auto size) now wrap a long label onto a second line instead of spilling it outside the pill, e.g. in German and Turkish; the template e2e check now runs one test per category so it no longer times out [2026-10-14]
 - Paste: files copied in your file manager and pasted into vivePDF now open directly instead of asking you to choose them again; only documents and pictures are opened this way [2026-10-14]
 - Engine tests: the Windows LibreOffice install tests no longer break `shutil.which` on Linux, and the real-gpg signature round trip (good signature, tampered file, foreign key) has now run on Debian 13 with GnuPG 2.4.7 [2026-10-14]

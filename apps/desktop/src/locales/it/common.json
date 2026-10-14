@@ -9205,6 +9205,15 @@
           "latin": "Lettere accentate",
           "shapes": "Forme e segni"
         }
+      },
+      "footnotes": {
+        "insert": "Inserisci nota a piè di pagina",
+        "panel": "Nota a piè di pagina {{number}}",
+        "text": "Testo della nota",
+        "placeholder": "Scrivi la nota mostrata in fondo alla pagina",
+        "remove": "Rimuovi nota",
+        "done": "Torna al testo",
+        "endTitle": "Note"
       }
     },
     "cv": {

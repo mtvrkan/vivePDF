@@ -6,6 +6,7 @@ import { parseBibtex } from "./bibtex";
 import { documentContent, documentText } from "./content";
 import { createDocument, defaultSettings, layoutOf, normalizeDocument, normalizeSettings, pageSize } from "./model";
 import { buildStarter, DOCUMENT_STARTERS } from "./starters";
+import { fileVersion } from "./footnotes";
 import { documentHtml } from "./toHtml";
 
 const PNG = "data:image/png;base64,iVBORw0KGgo=";
@@ -88,6 +89,41 @@ describe("documentHtml", () => {
     expect(html).toContain("<pre><code>if a &lt; b:\n  pass</code></pre>");
     expect(html).toContain('<div class="page-break"></div>');
     expect(html).toContain('<p dir="rtl">مرحبا</p>');
+  });
+});
+
+describe("footnotes", () => {
+  const footnote = (value: string): DocumentNode => ({ type: "footnote", attrs: { text: value } });
+
+  it("numbers the markers in reading order and collects their tidied text", () => {
+    const content = doc(
+      { type: "paragraph", content: [text("One"), footnote("  First\n note "), text(" two")] },
+      { type: "table", content: [{ type: "tableRow", content: [{ type: "tableCell", content: [{ type: "paragraph", content: [text("Cell"), footnote("Second")] }] }] }] },
+    );
+
+    const { html, footnotes } = documentHtml(content, settings);
+
+    expect(html).toContain('<p>One<sup class="fn-ref" id="fnref-1">1</sup> two</p>');
+    expect(html).toContain('Cell<sup class="fn-ref" id="fnref-2">2</sup>');
+    expect(footnotes).toEqual(["First note", "Second"]);
+  });
+
+  it("leaves note text raw for the sidecar to escape and still numbers an empty note", () => {
+    const { html, footnotes } = documentHtml(doc({ type: "paragraph", content: [footnote("<b>x</b>"), footnote("")] }), settings);
+
+    expect(html).toBe('<p><sup class="fn-ref" id="fnref-1">1</sup><sup class="fn-ref" id="fnref-2">2</sup></p>');
+    expect(footnotes).toEqual(["<b>x</b>", ""]);
+  });
+
+  it("saves a document with notes as version 2 and one without as version 1", () => {
+    const plain = doc({ type: "paragraph", content: [text("x")] });
+    const noted = doc({ type: "paragraph", content: [text("x"), footnote("n")] });
+
+    expect(fileVersion(plain)).toBe(1);
+    expect(fileVersion(noted)).toBe(2);
+    expect(fileVersion("")).toBe(1);
+    expect(normalizeDocument({ kind: "document", version: 2, content: noted })?.content).toEqual(noted);
+    expect(normalizeDocument({ kind: "document", version: 3, content: noted })).toBeNull();
   });
 });
 

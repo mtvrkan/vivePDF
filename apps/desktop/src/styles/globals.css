@@ -856,6 +856,18 @@
     color: var(--muted-foreground);
     font-style: italic;
   }
+  .vp-doc .ProseMirror {
+    counter-reset: vp-footnote;
+  }
+  .vp-doc .vp-footnote {
+    counter-increment: vp-footnote;
+    color: var(--doc-accent);
+    cursor: pointer;
+    padding: 0 0.1em;
+  }
+  .vp-doc .vp-footnote::after {
+    content: counter(vp-footnote);
+  }
   .vp-doc .vp-painting {
     cursor: copy;
   }

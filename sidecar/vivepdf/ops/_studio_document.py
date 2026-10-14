@@ -13,7 +13,14 @@ from pathlib import Path
 import pymupdf
 from PIL import Image, ImageOps
 
-from vivepdf.ops._document_flow import TOC_END, Frame, Plan, flow, numbered_breaks
+from vivepdf.ops._document_flow import TOC_END, Flowed, Frame, Plan, flow, numbered_breaks
+from vivepdf.ops._document_notes import (
+    MARKER,
+    Footnotes,
+    marked_numbers,
+    note_css,
+    with_endnotes,
+)
 from vivepdf.ops._html_clean import body_fragment
 from vivepdf.ops._image_files import eight_bit, open_picture
 from vivepdf.ops._story import FONT_DIR
@@ -190,7 +197,8 @@ def headings(body: str, depth: int) -> list[Heading]:
     found = []
     for match in HEADING.finditer(body):
         level = int(match.group(1))
-        title = SPACES.sub(" ", html.unescape(TAG.sub("", match.group(3)))).strip()
+        text = TAG.sub("", MARKER.sub("", match.group(3)))
+        title = SPACES.sub(" ", html.unescape(text)).strip()
         if level <= depth and title:
             found.append(Heading(level, match.group(2), title))
     return found
@@ -203,6 +211,7 @@ def _base_css(settings: StudioDocumentSettings, heading_font: bool) -> str:
     return "".join(
         [
             f"body{{font-family:f0;font-size:{size}pt;line-height:{settings.line_height};"
+            f"margin:0 {size}pt;"
             "color:#1a1a1a;}",
             f"p{{margin:0 0 {size * 0.6:.1f}pt 0;}}",
             f"h1,h2,h3,h4,h5,h6{{{heading_family}color:{accent};line-height:1.2;}}",
@@ -377,7 +386,7 @@ def layout_document(
     title = content.title.strip() or (outline[0].title if outline else "")
     cover = settings.cover
     offset = 1 if cover else 0
-    css = font_css + _base_css(settings, len(fonts) > 1)
+    css = font_css + _base_css(settings, len(fonts) > 1) + note_css(settings.font_size)
     mediabox = _paper(settings)
     margin = settings.margin_mm * POINTS_PER_MM
     frame = Frame(
@@ -387,26 +396,46 @@ def layout_document(
         settings.column_gap_mm * POINTS_PER_MM,
     )
 
-    def story_html(positions: list) -> str:
-        pages = {
-            position.id: position.page_num
-            for position in positions
-            if position.id and position.open_close & 1
-        }
-        return _toc_html(settings, entries, pages, offset) + body
+    initial = Plan(1 if settings.toc and entries else 0)
 
-    document, positions = flow(
-        story_html,
-        frame,
-        Plan(1 if settings.toc and entries else 0),
-        lambda text: pymupdf.Story(text, user_css=css, archive=archive),
-        check_cancelled,
-    )
+    def story(text: str) -> pymupdf.Story:
+        return pymupdf.Story(text, user_css=css, archive=archive)
+
+    def story_html(main: str) -> Callable[[list], str]:
+        def written(positions: list) -> str:
+            pages = {
+                position.id: position.page_num
+                for position in positions
+                if position.id and position.open_close & 1
+            }
+            return _toc_html(settings, entries, pages, offset) + main
+
+        return written
+
+    flowed: Flowed | None = None
+    footnotes: Footnotes | None = None
+    numbers = marked_numbers(body, len(content.footnotes))
+    if numbers:
+        notes = Footnotes(content.footnotes, css, archive, frame, settings.font_size)
+        if notes.fit(numbers):
+            flowed = flow(story_html(body), frame, initial, story, check_cancelled, notes.reserve)
+            if flowed.settled and not notes.overflow:
+                footnotes = notes
+            else:
+                flowed.document.close()
+                flowed = None
+        if flowed is None:
+            body = with_endnotes(body, content.footnotes, content.notes_title)
+    if flowed is None:
+        flowed = flow(story_html(body), frame, initial, story, check_cancelled)
+    document, positions = flowed.document, flowed.positions
     anchors: dict[str, int] = {}
     for position in positions:
         if position.id and position.open_close & 1 and position.id not in anchors:
             anchors[position.id] = position.page_num
     try:
+        if footnotes:
+            footnotes.draw(flowed)
         if cover:
             _add_cover(document, settings, title)
         furniture_archive = pymupdf.Archive()
