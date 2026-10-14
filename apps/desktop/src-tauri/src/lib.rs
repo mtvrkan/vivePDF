@@ -80,20 +80,12 @@ pub fn run() {
             font_source::SCHEME,
             |context, request, responder| {
                 let app = context.app_handle().clone();
-                let window = context.webview_label().to_string();
                 tauri::async_runtime::spawn_blocking(move || {
-                    use tauri::Emitter;
-                    let fonts_dir = font_source::fonts_dir();
-                    let outcome = font_source::respond(
+                    responder.respond(font_source::respond(
                         &request,
                         cfg!(debug_assertions),
-                        fonts_dir.as_deref(),
                         |name| font_source::bundled_font(&app, name),
-                    );
-                    if let Some(set) = &outcome.missing {
-                        let _ = app.emit_to(window.as_str(), font_source::MISSING_EVENT, set);
-                    }
-                    responder.respond(outcome.response);
+                    ));
                 });
             },
         )

@@ -21,7 +21,6 @@ import { AttachmentsPanel } from "./AttachmentsPanel";
 import { ConvertedMessage } from "./ConvertedMessage";
 import { DocumentMessageBar } from "./DocumentMessageBar";
 import { StudioDesignMessage } from "./StudioDesignMessage";
-import { FallbackFontMessages } from "./FallbackFontMessages";
 import { FileChangedMessage } from "./FileChangedBanner";
 import { SignaturesPanel } from "./SignaturesPanel";
 import { LayersPanel } from "./LayersPanel";
@@ -219,7 +218,6 @@ export function ViewerPage() {
                 <FileChangedMessage documentId={activeDocumentId} />
                 <ConvertedMessage documentId={activeDocumentId} />
                 <StudioDesignMessage documentId={activeDocumentId} />
-                <FallbackFontMessages documentId={activeDocumentId} />
                 {panels.search ? (
                   <SearchBar documentId={activeDocumentId} onClose={() => setPanels((state) => ({ ...state, search: false }))} />
                 ) : null}

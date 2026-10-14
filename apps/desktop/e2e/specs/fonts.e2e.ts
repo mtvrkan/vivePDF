@@ -1,10 +1,6 @@
 import { join } from "node:path";
-import { $, browser, expect } from "@wdio/globals";
-import { bootApp, copyFixture, fixtures, openInViewer, openTool, t } from "../support/app.ts";
-
-const JAPANESE = t("settings.fallbackFonts.sets.ja");
-const missingPrefix = t("viewer.messages.fonts.missing", { language: JAPANESE, size: "" }).replace(/\s*\(\)\.?$/, "");
-const fontMessage = () => $(`//div[@role="status"][contains(normalize-space(.), "${missingPrefix}")]`);
+import { $, browser } from "@wdio/globals";
+import { bootApp, copyFixture, fixtures, openInViewer } from "../support/app.ts";
 
 async function darkPixels(): Promise<number> {
   const page = $('[data-page-index="0"]');
@@ -31,7 +27,7 @@ async function darkPixels(): Promise<number> {
 describe("fallback fonts", () => {
   before(bootApp);
 
-  it("draws the Japanese text with the bundled font and never asks for a download", async () => {
+  it("draws the Japanese text with the bundled font", async () => {
     const path = copyFixture(fixtures().japanese);
     await openInViewer(path);
 
@@ -40,16 +36,6 @@ describe("fallback fonts", () => {
       interval: 1000,
       timeoutMsg: "the Japanese text was not drawn with the bundled font",
     });
-    await expect(fontMessage()).not.toBeDisplayed();
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_WORK_DIR as string, "fonts-japanese.png"));
-  });
-
-  it("has no font downloads left in the settings", async () => {
-    await openTool("nav.settings");
-    const tools = $(`//nav[@aria-label="${t("nav.settings")}"]//button[.//span[normalize-space(.)="${t("settings.sections.tools.title")}"]]`);
-    await tools.waitForClickable();
-    await tools.click();
-    await $(`//*[normalize-space(.)="${t("settings.office.title")}"]`).waitForDisplayed({ timeout: 30000 });
-    await expect($(`//*[normalize-space(.)="${t("settings.fallbackFonts.title")}"]`)).not.toBeDisplayed();
   });
 });

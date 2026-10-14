@@ -10,7 +10,6 @@ import { preparedViewSource, readViewableSource } from "@/features/viewer/viewab
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useNavHistoryStore } from "@/shared/store/navHistoryStore";
 import { useDocumentMessagesStore } from "@/shared/store/documentMessagesStore";
-import { useFallbackFontsStore } from "@/shared/store/fallbackFontsStore";
 import { useLayerViewStore } from "@/shared/store/layerViewStore";
 import { usePageDisplayStore } from "@/shared/store/pageDisplayStore";
 import { usePageLabelsStore } from "@/shared/store/pageLabelsStore";
@@ -55,7 +54,6 @@ function forgetDocumentState(documentId: string) {
   usePageLabelsStore.getState().forget(documentId);
   usePageDisplayStore.getState().forget(documentId);
   useDocumentMessagesStore.getState().forget(documentId);
-  useFallbackFontsStore.getState().forget(documentId);
   useLayerViewStore.getState().forgetList(documentId);
 }
 

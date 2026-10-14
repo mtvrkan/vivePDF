@@ -81,6 +81,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: the Studio end-to-end template search accepts both invoice templates now that a modern invoice exists [2026-10-13]
 
 ### Removed
+- Fallback font downloads: every viewer fallback font ships with the app, so the "font missing — download" message, the font download list in Settings › Tools and the three `system.fallback_fonts*` engine calls are gone; copies left by older versions are still cleaned up on start, and the Studio font library keeps downloading on request [2026-10-14]
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 
 ### Security

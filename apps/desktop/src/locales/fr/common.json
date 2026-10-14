@@ -1216,15 +1216,6 @@
         "highlight": "Mettre les champs en évidence",
         "failed": "Impossible de lire les champs"
       },
-      "fonts": {
-        "missing": "Ce document a besoin d’une police supplémentaire : {{language}} ({{size}}).",
-        "download": "Télécharger",
-        "downloading": "Téléchargement… {{percent}} %",
-        "retry": "Réessayer",
-        "ready": "Police prête : {{language}}. Rechargez le document pour afficher le texte.",
-        "readyUnsaved": "Police prête : {{language}}. Enregistrez le document puis rouvrez-le pour afficher le texte.",
-        "reload": "Recharger"
-      },
       "dismiss": "Fermer le message",
       "studio": {
         "present": "Ce PDF a été conçu dans Studio et peut y être modifié.",
@@ -2074,23 +2065,6 @@
       "bundledHint": "LibreOffice est fourni avec vivePDF et s'installe sans internet ; il occupe environ 900 Mo sur le disque.",
       "bundledReady": "LibreOffice est prêt pour les conversions Office.",
       "bundledFailed": "LibreOffice n'a pas pu être installé depuis le paquet de l'application. Réessayez dans Paramètres › Outils."
-    },
-    "fallbackFonts": {
-      "title": "Polices de secours",
-      "description": "Le texte japonais, coréen et chinois qu’un document n’incorpore pas est affiché avec ces polices ; chaque jeu n’est téléchargé que si vous le demandez.",
-      "download": "Télécharger",
-      "remove": "Supprimer",
-      "cancel": "Annuler le téléchargement",
-      "downloaded": "Police téléchargée : {{language}}.",
-      "removed": "Police supprimée : {{language}}.",
-      "cancelled": "Téléchargement de la police annulé : {{language}}.",
-      "progressLabel": "Téléchargement de la police : {{language}}",
-      "sets": {
-        "ja": "Japonais",
-        "ko": "Coréen",
-        "zh-Hans": "Chinois (simplifié)",
-        "zh-Hant": "Chinois (traditionnel)"
-      }
     },
     "backToViewer": "Retour",
     "resetAllUserData": "Supprimer aussi les signatures enregistrées, les chaînes, les règles de dossiers et les préréglages",

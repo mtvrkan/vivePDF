@@ -2,8 +2,8 @@ import os
 from pathlib import Path
 
 from vivepdf.ops._appdata import user_data_dir
+from vivepdf.ops._font_download import fetch_font_file
 from vivepdf.ops._output import unlink_patiently
-from vivepdf.ops.fallback_fonts import fetch_font_file
 from vivepdf.ops.font_library_catalog import FAMILIES, LIBRARY_RELEASE, LibraryFamily
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress

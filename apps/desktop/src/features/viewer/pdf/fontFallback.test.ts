@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { FontCharset } from "@embedpdf/models";
-import { buildFontFallbackConfig, downloadableFontSets, fallbackFontBaseUrl, fontSetBytes } from "./fontFallback";
+import { buildFontFallbackConfig, fallbackFontBaseUrl } from "./fontFallback";
 import fallbackFonts from "./fallbackFonts.json";
 
 describe("buildFontFallbackConfig", () => {
@@ -36,10 +36,9 @@ describe("buildFontFallbackConfig", () => {
     expect(fallbackFontBaseUrl("vivepdf-font://localhost/")).toBe("vivepdf-font://localhost");
   });
 
-  it("ships the CJK and Latin sets with the app so nothing is left to download", () => {
-    expect(downloadableFontSets()).toEqual([]);
-    expect(fallbackFonts.sets.filter((set) => set.bundled).map((set) => set.id)).toEqual(["ja", "ko", "zh-Hans", "zh-Hant", "latin"]);
-    expect(fontSetBytes(fallbackFonts.sets[0])).toBe(4538888);
+  it("ships the CJK and Latin sets with the app", () => {
+    expect(fallbackFonts.sets.map((set) => set.id)).toEqual(["ja", "ko", "zh-Hans", "zh-Hant", "latin"]);
+    expect(fallbackFonts.sets[0].files[0].bytes).toBe(4538888);
     for (const set of fallbackFonts.sets) {
       for (const entry of set.files) expect(entry.sha256).toMatch(/^[0-9a-f]{64}$/);
     }

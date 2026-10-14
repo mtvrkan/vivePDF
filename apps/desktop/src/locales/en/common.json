@@ -1217,15 +1217,6 @@
         "highlight": "Highlight fields",
         "failed": "Fields could not be read"
       },
-      "fonts": {
-        "missing": "{{language}} text in this document needs a font ({{size}}).",
-        "download": "Download",
-        "downloading": "Downloading… {{percent}}%",
-        "retry": "Try again",
-        "ready": "The {{language}} font is ready. Reload the document to show the text.",
-        "readyUnsaved": "The {{language}} font is ready. Save the document and open it again to show the text.",
-        "reload": "Reload"
-      },
       "dismiss": "Close message",
       "studio": {
         "present": "This PDF was made in Studio and can be edited there.",
@@ -2075,23 +2066,6 @@
       "bundledHint": "LibreOffice came with vivePDF and installs without internet; about 900 MB is used on disk.",
       "bundledReady": "LibreOffice is ready for Office conversions.",
       "bundledFailed": "LibreOffice could not be set up from the app package. You can try again under Settings › Tools."
-    },
-    "fallbackFonts": {
-      "title": "Fallback fonts",
-      "description": "Japanese, Korean and Chinese text that a document does not embed is drawn with these fonts; each set is downloaded only when you ask for it.",
-      "download": "Download",
-      "remove": "Remove",
-      "cancel": "Cancel download",
-      "downloaded": "The {{language}} font was downloaded.",
-      "removed": "The {{language}} font was removed.",
-      "cancelled": "The {{language}} font download was cancelled.",
-      "progressLabel": "{{language}} font download",
-      "sets": {
-        "ja": "Japanese",
-        "ko": "Korean",
-        "zh-Hans": "Chinese (Simplified)",
-        "zh-Hant": "Chinese (Traditional)"
-      }
     },
     "backToViewer": "Back",
     "resetAllUserData": "Also delete saved signatures, chains, watch rules and presets",

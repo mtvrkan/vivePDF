@@ -1216,15 +1216,6 @@
         "highlight": "Felder hervorheben",
         "failed": "Felder konnten nicht gelesen werden"
       },
-      "fonts": {
-        "missing": "Für Text auf {{language}} in diesem Dokument wird eine Schriftart benötigt ({{size}}).",
-        "download": "Herunterladen",
-        "downloading": "Wird heruntergeladen… {{percent}} %",
-        "retry": "Erneut versuchen",
-        "ready": "Die Schriftart für {{language}} ist bereit. Laden Sie das Dokument neu, um den Text anzuzeigen.",
-        "readyUnsaved": "Die Schriftart für {{language}} ist bereit. Speichern Sie das Dokument und öffnen Sie es erneut, um den Text anzuzeigen.",
-        "reload": "Neu laden"
-      },
       "dismiss": "Meldung schließen",
       "studio": {
         "present": "Dieses PDF wurde im Studio erstellt und kann dort bearbeitet werden.",
@@ -2074,23 +2065,6 @@
       "bundledHint": "LibreOffice wird mit vivePDF geliefert und ohne Internet installiert; es belegt etwa 900 MB auf dem Datenträger.",
       "bundledReady": "LibreOffice ist für Office-Konvertierungen bereit.",
       "bundledFailed": "LibreOffice konnte nicht aus dem App-Paket eingerichtet werden. Unter Einstellungen › Werkzeuge können Sie es erneut versuchen."
-    },
-    "fallbackFonts": {
-      "title": "Ersatzschriftarten",
-      "description": "Japanischer, koreanischer und chinesischer Text, den ein Dokument nicht einbettet, wird mit diesen Schriftarten dargestellt; jedes Paket wird nur auf Wunsch heruntergeladen.",
-      "download": "Herunterladen",
-      "remove": "Entfernen",
-      "cancel": "Download abbrechen",
-      "downloaded": "Die Schriftart für {{language}} wurde heruntergeladen.",
-      "removed": "Die Schriftart für {{language}} wurde entfernt.",
-      "cancelled": "Der Download der Schriftart für {{language}} wurde abgebrochen.",
-      "progressLabel": "Download der Schriftart für {{language}}",
-      "sets": {
-        "ja": "Japanisch",
-        "ko": "Koreanisch",
-        "zh-Hans": "Chinesisch (vereinfacht)",
-        "zh-Hant": "Chinesisch (traditionell)"
-      }
     },
     "backToViewer": "Zurück",
     "resetAllUserData": "Auch gespeicherte Signaturen, Ketten, Ordnerregeln und Voreinstellungen löschen",

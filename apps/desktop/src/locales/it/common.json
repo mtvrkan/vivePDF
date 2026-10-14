@@ -1216,15 +1216,6 @@
         "highlight": "Evidenzia campi",
         "failed": "Impossibile leggere i campi"
       },
-      "fonts": {
-        "missing": "Questo documento richiede un carattere aggiuntivo: {{language}} ({{size}}).",
-        "download": "Scarica",
-        "downloading": "Download… {{percent}}%",
-        "retry": "Riprova",
-        "ready": "Carattere pronto: {{language}}. Ricarica il documento per mostrare il testo.",
-        "readyUnsaved": "Carattere pronto: {{language}}. Salva il documento e riaprilo per mostrare il testo.",
-        "reload": "Ricarica"
-      },
       "dismiss": "Chiudi messaggio",
       "studio": {
         "present": "Questo PDF è stato creato in Studio e può essere modificato lì.",
@@ -2074,23 +2065,6 @@
       "bundledHint": "LibreOffice è incluso in vivePDF e si installa senza internet; occupa circa 900 MB su disco.",
       "bundledReady": "LibreOffice è pronto per le conversioni Office.",
       "bundledFailed": "Impossibile installare LibreOffice dal pacchetto dell'app. Riprova in Impostazioni › Strumenti."
-    },
-    "fallbackFonts": {
-      "title": "Caratteri di riserva",
-      "description": "Il testo giapponese, coreano e cinese che un documento non incorpora viene disegnato con questi caratteri; ogni set viene scaricato solo su tua richiesta.",
-      "download": "Scarica",
-      "remove": "Rimuovi",
-      "cancel": "Annulla download",
-      "downloaded": "Carattere scaricato: {{language}}.",
-      "removed": "Carattere rimosso: {{language}}.",
-      "cancelled": "Download del carattere annullato: {{language}}.",
-      "progressLabel": "Download del carattere: {{language}}",
-      "sets": {
-        "ja": "Giapponese",
-        "ko": "Coreano",
-        "zh-Hans": "Cinese (semplificato)",
-        "zh-Hant": "Cinese (tradizionale)"
-      }
     },
     "backToViewer": "Indietro",
     "resetAllUserData": "Elimina anche firme salvate, catene, regole delle cartelle e preimpostazioni",

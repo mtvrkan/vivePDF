@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
 
@@ -9,7 +9,6 @@ use tauri::{AppHandle, Runtime};
 use crate::view_source::{allowed_origin, empty, reply};
 
 pub const SCHEME: &str = "vivepdf-font";
-pub const MISSING_EVENT: &str = "fallback-font-missing";
 const MANIFEST: &str = include_str!("../../src/features/viewer/pdf/fallbackFonts.json");
 const FONTS_DIR_NAME: &str = "fallback-fonts";
 
@@ -21,8 +20,6 @@ struct Manifest {
 
 #[derive(Deserialize)]
 struct ManifestSet {
-    id: String,
-    bundled: bool,
     files: Vec<ManifestFile>,
 }
 
@@ -31,14 +28,9 @@ struct ManifestFile {
     file: String,
 }
 
-struct Font {
-    set: String,
-    bundled: bool,
-}
-
 struct Catalogue {
     directory: String,
-    fonts: HashMap<String, Font>,
+    fonts: HashSet<String>,
 }
 
 fn parse_catalogue(text: &str) -> Catalogue {
@@ -46,17 +38,7 @@ fn parse_catalogue(text: &str) -> Catalogue {
     let fonts = manifest
         .sets
         .iter()
-        .flat_map(|set| {
-            set.files.iter().map(|entry| {
-                (
-                    entry.file.clone(),
-                    Font {
-                        set: set.id.clone(),
-                        bundled: set.bundled,
-                    },
-                )
-            })
-        })
+        .flat_map(|set| set.files.iter().map(|entry| entry.file.clone()))
         .collect();
     Catalogue {
         directory: manifest.directory,
@@ -123,8 +105,7 @@ pub fn drop_bundled_copies(dir: &Path) -> usize {
     catalogue()
         .fonts
         .iter()
-        .filter(|(_, font)| font.bundled)
-        .filter(|(name, _)| std::fs::remove_file(dir.join(name)).is_ok())
+        .filter(|name| std::fs::remove_file(dir.join(name)).is_ok())
         .count()
 }
 
@@ -136,71 +117,36 @@ fn content_type(name: &str) -> &'static str {
     }
 }
 
-pub struct Outcome {
-    pub response: Response<Vec<u8>>,
-    pub missing: Option<String>,
-}
-
-fn answer(response: Response<Vec<u8>>) -> Outcome {
-    Outcome {
-        response,
-        missing: None,
-    }
-}
-
 pub fn respond(
     request: &Request<Vec<u8>>,
     dev: bool,
-    fonts_dir: Option<&Path>,
     bundled: impl Fn(&str) -> Option<Vec<u8>>,
-) -> Outcome {
-    respond_from(catalogue(), request, dev, fonts_dir, bundled)
-}
-
-fn respond_from(
-    catalogue: &Catalogue,
-    request: &Request<Vec<u8>>,
-    dev: bool,
-    fonts_dir: Option<&Path>,
-    bundled: impl Fn(&str) -> Option<Vec<u8>>,
-) -> Outcome {
+) -> Response<Vec<u8>> {
     let Some(origin) = allowed_origin(request, dev) else {
-        return answer(empty(reply(StatusCode::FORBIDDEN, None)));
+        return empty(reply(StatusCode::FORBIDDEN, None));
     };
     let origin = Some(&origin);
     if request.method() == Method::OPTIONS {
-        return answer(empty(
+        return empty(
             reply(StatusCode::NO_CONTENT, origin)
                 .header(header::ACCESS_CONTROL_ALLOW_METHODS, "GET")
                 .header(header::ACCESS_CONTROL_MAX_AGE, "600"),
-        ));
+        );
     }
     if request.method() != Method::GET {
-        return answer(empty(
-            reply(StatusCode::METHOD_NOT_ALLOWED, origin).header(header::ALLOW, "GET"),
-        ));
+        return empty(reply(StatusCode::METHOD_NOT_ALLOWED, origin).header(header::ALLOW, "GET"));
     }
     let name = request.uri().path().trim_start_matches('/');
-    let Some(font) = catalogue.fonts.get(name) else {
-        return answer(empty(reply(StatusCode::NOT_FOUND, origin)));
-    };
-    let bytes = if font.bundled {
-        bundled(name)
-    } else {
-        fonts_dir.and_then(|dir| std::fs::read(dir.join(name)).ok())
-    };
-    match bytes {
-        Some(bytes) => answer(
-            reply(StatusCode::OK, origin)
-                .header(header::CONTENT_TYPE, content_type(name))
-                .header(header::CONTENT_LENGTH, bytes.len())
-                .body(bytes)
-                .unwrap_or_default(),
-        ),
-        None => Outcome {
-            response: empty(reply(StatusCode::NOT_FOUND, origin)),
-            missing: (!font.bundled).then(|| font.set.clone()),
-        },
+    if !catalogue().fonts.contains(name) {
+        return empty(reply(StatusCode::NOT_FOUND, origin));
+    }
+    match bundled(name) {
+        Some(bytes) => reply(StatusCode::OK, origin)
+            .header(header::CONTENT_TYPE, content_type(name))
+            .header(header::CONTENT_LENGTH, bytes.len())
+            .body(bytes)
+            .unwrap_or_default(),
+        None => empty(reply(StatusCode::NOT_FOUND, origin)),
     }
 }
 
@@ -252,88 +198,44 @@ mod tests {
         builder.body(Vec::new()).unwrap()
     }
 
-    fn get(name: &str, dir: Option<&Path>) -> Outcome {
+    fn get(name: &str) -> Response<Vec<u8>> {
         respond(
             &request(Method::GET, name, Some(APP_ORIGIN)),
             false,
-            dir,
             |file| (file == LATIN).then(|| b"latin".to_vec()),
-        )
-    }
-
-    const DOWNLOADABLE_MANIFEST: &str = r#"{"directory":"fonts/fallback","sets":[{"id":"ja","bundled":false,"files":[{"file":"NotoSansJP-Regular.otf"}]},{"id":"zh-Hans","bundled":false,"files":[{"file":"NotoSansHans-Regular.otf"}]}]}"#;
-
-    fn get_downloadable(name: &str, dir: Option<&Path>) -> Outcome {
-        respond_from(
-            &parse_catalogue(DOWNLOADABLE_MANIFEST),
-            &request(Method::GET, name, Some(APP_ORIGIN)),
-            false,
-            dir,
-            |_| None,
         )
     }
 
     #[test]
     fn a_bundled_font_is_served_from_the_app_assets() {
-        let outcome = get(LATIN, None);
+        let response = get(LATIN);
 
-        assert_eq!(outcome.response.status(), StatusCode::OK);
-        assert_eq!(outcome.response.body(), b"latin");
+        assert_eq!(response.status(), StatusCode::OK);
+        assert_eq!(response.body(), b"latin");
         assert_eq!(
-            outcome
-                .response
-                .headers()
-                .get(header::CONTENT_TYPE)
-                .unwrap(),
+            response.headers().get(header::CONTENT_TYPE).unwrap(),
             "font/ttf"
         );
         assert_eq!(
-            outcome
-                .response
+            response
                 .headers()
                 .get(header::ACCESS_CONTROL_ALLOW_ORIGIN)
                 .unwrap(),
             APP_ORIGIN
         );
-        assert!(outcome.missing.is_none());
     }
 
     #[test]
-    fn a_downloaded_font_is_served_from_the_fonts_folder() {
-        let scratch = Scratch::new();
-        std::fs::write(scratch.0.join(JAPANESE), b"japanese").unwrap();
+    fn a_catalogue_font_missing_from_the_assets_is_not_found() {
+        let response = get(JAPANESE);
 
-        let outcome = get_downloadable(JAPANESE, Some(&scratch.0));
-
-        assert_eq!(outcome.response.status(), StatusCode::OK);
-        assert_eq!(outcome.response.body(), b"japanese");
-        assert_eq!(
-            outcome
-                .response
-                .headers()
-                .get(header::CONTENT_TYPE)
-                .unwrap(),
-            "font/otf"
-        );
-        assert!(outcome.missing.is_none());
+        assert_eq!(response.status(), StatusCode::NOT_FOUND);
+        assert!(response.body().is_empty());
     }
 
     #[test]
-    fn a_font_not_downloaded_yet_names_its_set() {
-        let scratch = Scratch::new();
-
-        let outcome = get_downloadable(JAPANESE, Some(&scratch.0));
-        let without_folder = get_downloadable("NotoSansHans-Regular.otf", None);
-
-        assert_eq!(outcome.response.status(), StatusCode::NOT_FOUND);
-        assert_eq!(outcome.missing.as_deref(), Some("ja"));
-        assert_eq!(without_folder.missing.as_deref(), Some("zh-Hans"));
-    }
-
-    #[test]
-    fn only_catalogue_names_are_read_and_nothing_else_is_reported() {
-        let scratch = Scratch::new();
-        std::fs::write(scratch.0.join("secret.txt"), b"secret").unwrap();
+    fn only_catalogue_names_are_read() {
+        let asked = std::cell::RefCell::new(Vec::new());
 
         for name in [
             "secret.txt",
@@ -342,29 +244,34 @@ mod tests {
             "sub/NotoSansJP-Regular.otf",
             "",
         ] {
-            let outcome = get(name, Some(&scratch.0));
-            assert_eq!(outcome.response.status(), StatusCode::NOT_FOUND, "{name}");
-            assert!(outcome.response.body().is_empty());
-            assert!(outcome.missing.is_none(), "{name}");
+            let response = respond(
+                &request(Method::GET, name, Some(APP_ORIGIN)),
+                false,
+                |file| {
+                    asked.borrow_mut().push(file.to_string());
+                    Some(b"font".to_vec())
+                },
+            );
+            assert_eq!(response.status(), StatusCode::NOT_FOUND, "{name}");
+            assert!(response.body().is_empty());
         }
+        assert!(asked.borrow().is_empty());
     }
 
     #[test]
     fn other_origins_and_methods_get_nothing() {
         for origin in [None, Some("https://example.com"), Some("null")] {
-            let outcome = respond(&request(Method::GET, LATIN, origin), false, None, |_| {
+            let response = respond(&request(Method::GET, LATIN, origin), false, |_| {
                 Some(b"latin".to_vec())
             });
-            assert_eq!(outcome.response.status(), StatusCode::FORBIDDEN);
-            assert!(outcome.missing.is_none());
+            assert_eq!(response.status(), StatusCode::FORBIDDEN);
         }
         let post = respond(
             &request(Method::POST, LATIN, Some(APP_ORIGIN)),
             false,
-            None,
             |_| Some(b"latin".to_vec()),
         );
-        assert_eq!(post.response.status(), StatusCode::METHOD_NOT_ALLOWED);
+        assert_eq!(post.status(), StatusCode::METHOD_NOT_ALLOWED);
     }
 
     #[test]
@@ -426,8 +333,7 @@ mod tests {
     fn the_catalogue_knows_every_fallback_file() {
         let fonts = &catalogue().fonts;
         assert_eq!(fonts.len(), 6);
-        assert!(fonts[LATIN].bundled);
-        assert_eq!(fonts[JAPANESE].set, "ja");
-        assert!(fonts.values().all(|font| font.bundled));
+        assert!(fonts.contains(LATIN));
+        assert!(fonts.contains(JAPANESE));
     }
 }

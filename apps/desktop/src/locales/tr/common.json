@@ -1217,15 +1217,6 @@
         "highlight": "Alanları vurgula",
         "failed": "Alanlar okunamadı"
       },
-      "fonts": {
-        "missing": "Bu belgedeki {{language}} metin için font gerekiyor ({{size}}).",
-        "download": "İndir",
-        "downloading": "İndiriliyor… %{{percent}}",
-        "retry": "Yeniden dene",
-        "ready": "{{language}} font hazır. Metni göstermek için belgeyi yeniden yükleyin.",
-        "readyUnsaved": "{{language}} font hazır. Metni göstermek için belgeyi kaydedip yeniden açın.",
-        "reload": "Yeniden yükle"
-      },
       "dismiss": "Mesajı kapat",
       "studio": {
         "present": "Bu PDF Stüdyo'da hazırlandı ve orada düzenlenebilir.",
@@ -2075,23 +2066,6 @@
       "bundledHint": "LibreOffice vivePDF ile birlikte geldi, internetsiz kurulur; diskte yaklaşık 900 MB yer kaplar.",
       "bundledReady": "LibreOffice, Office dönüştürmeleri için hazır.",
       "bundledFailed": "LibreOffice uygulama paketinden kurulamadı. Ayarlar › Araçlar'dan yeniden deneyebilirsiniz."
-    },
-    "fallbackFonts": {
-      "title": "Yedek fontlar",
-      "description": "Belgeye gömülü olmayan Japonca, Korece ve Çince metinler bu fontlarla çizilir; her set yalnızca siz istediğinizde indirilir.",
-      "download": "İndir",
-      "remove": "Kaldır",
-      "cancel": "İndirmeyi iptal et",
-      "downloaded": "{{language}} font indirildi.",
-      "removed": "{{language}} font kaldırıldı.",
-      "cancelled": "{{language}} font indirmesi iptal edildi.",
-      "progressLabel": "{{language}} font indirmesi",
-      "sets": {
-        "ja": "Japonca",
-        "ko": "Korece",
-        "zh-Hans": "Çince (Basitleştirilmiş)",
-        "zh-Hant": "Çince (Geleneksel)"
-      }
     },
     "backToViewer": "Geri",
     "resetAllUserData": "Kayıtlı imzaları, zincirleri, klasör kurallarını ve hazır ayarları da sil",

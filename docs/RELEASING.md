@@ -82,14 +82,11 @@ only prepare an extracted development copy under `apps/desktop/src-tauri/resourc
 
 The fallback fonts for the viewer ship inside the app: Noto Sans (Latin, Greek, Cyrillic,
 Vietnamese) and Noto Sans JP, KR, SC and TC for Japanese, Korean and Simplified/Traditional Chinese.
-`scripts/copy-wasm.mjs` copies every set marked `bundled` in
-`apps/desktop/src/features/viewer/pdf/fallbackFonts.json` from the `@embedpdf/fonts-*` packages into
-`public/fonts/fallback/`, and the app serves them through the `vivepdf-font` scheme
-(`src-tauri/src/font_source.rs`). On start the app removes copies of bundled fonts that older versions
-downloaded into `<user data dir>/fallback-fonts`. The `fonts-1` release stays published for those
-older versions. The download path (`system.fallback_fonts_download`, mirrored by
-`sidecar/vivepdf/ops/fallback_fonts.py`) only serves sets marked `"bundled": false`, and today there
-are none.
+`scripts/copy-wasm.mjs` copies every set in `apps/desktop/src/features/viewer/pdf/fallbackFonts.json`
+from the `@embedpdf/fonts-*` packages into `public/fonts/fallback/`, and the app serves them through
+the `vivepdf-font` scheme (`src-tauri/src/font_source.rs`). On start the app removes copies of these
+fonts that older versions downloaded into `<user data dir>/fallback-fonts`. Nothing downloads fallback
+fonts any more; the `fonts-1` release stays published for 0.2.0 and earlier, which still download them.
 
 The Studio font library (24 OFL families from Google Fonts, static Regular/Bold/Italic/Bold Italic
 cuts, each checked for Turkish letters) is downloaded on request by `fonts.library_download` from the
