@@ -35,7 +35,8 @@ export function usePresenterConsole(documentId: string, transport?: PresenterTra
           end: () => void exitImmersive(),
         });
       },
-      onClosed: () => usePresenterStore.getState().markLost(),
+      onClosed: () => usePresenterStore.getState().markProblem("closed"),
+      onFailed: () => usePresenterStore.getState().markProblem("failed"),
     });
     linkRef.current = link;
     const unsubscribe = usePresentationStore.subscribe(() => link.stateChanged());

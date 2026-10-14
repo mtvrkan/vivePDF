@@ -12,6 +12,7 @@ import { HomePage } from "@/features/home/HomePage";
 import { FileOpenListener } from "@/features/viewer/FileOpenListener";
 import { OrganizerSourceCleanup } from "@/features/pages/OrganizerSourceCleanup";
 import { PasswordDialog } from "@/features/viewer/PasswordDialog";
+import { closeStaleAudience } from "@/features/presenter/presenterSession";
 import { exitImmersive, shouldExitOnKey } from "@/features/viewer/immersive";
 import { PdfProvider } from "@/features/viewer/pdf/PdfProvider";
 import { CloseGuard } from "@/shared/session/CloseGuard";
@@ -83,6 +84,8 @@ export default function App() {
   useEffect(() => releaseClosedDocuments(), []);
 
   useEffect(() => releaseClosedViewSources(), []);
+
+  useEffect(() => closeStaleAudience(), []);
 
   useEffect(() => {
     if (!isMainWindow()) return;

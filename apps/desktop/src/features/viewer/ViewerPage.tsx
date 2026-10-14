@@ -65,6 +65,9 @@ import { useCloseDocuments } from "./useCloseDocuments";
 import { useLiveActiveDocument } from "./useLiveActiveDocument";
 import { useDocumentFileWatch } from "./useDocumentFileWatch";
 import { isFullscreenKey } from "@/shared/lib/platform";
+import { PresenterConsole } from "@/features/presenter/PresenterConsole";
+import { PresenterStartGate } from "@/features/presenter/PresenterStartGate";
+import { usePresenterStore } from "@/features/presenter/presenterSession";
 
 export function ViewerPage() {
   const { t } = useTranslation();
@@ -78,6 +81,7 @@ export function ViewerPage() {
   const setPanels = useViewerPanelsStore((state) => state.setPanels);
   const togglePanel = useViewerPanelsStore((state) => state.toggle);
   const immersive = useUiStore((state) => state.immersive);
+  const presenterDocumentId = usePresenterStore((state) => state.session?.documentId ?? null);
   const pageColors = useReadingStore((state) => state.pageColors);
   const overlayMode = useViewerOverlayStore((state) => state.mode);
   const signed = useDocumentMessagesStore((state) => (activeDocumentId ? state.signatures[activeDocumentId]?.state === "checked" : false));
@@ -96,6 +100,11 @@ export function ViewerPage() {
         return;
       }
       if (fullscreenKey) return;
+      if (event.key === "F5" && event.altKey && activeDocumentId && !isTypingTarget(event.target)) {
+        event.preventDefault();
+        if (!useUiStore.getState().immersive) usePresenterStore.getState().requestPresenter(activeDocumentId, event.shiftKey ? null : 1);
+        return;
+      }
       if (event.key === "F5" && activeDocumentId && !isTypingTarget(event.target)) {
         event.preventDefault();
         if (!useUiStore.getState().immersive) void setImmersiveFullscreen(true, event.shiftKey ? null : 1);
@@ -209,7 +218,9 @@ export function ViewerPage() {
             {isLoaded ? <PendingJump documentId={activeDocumentId} /> : null}
             {isLoaded ? <ReadingPositionTracker key={activeDocumentId} documentId={activeDocumentId} /> : null}
             {isLoaded ? <PrintDialog documentId={activeDocumentId} /> : null}
-            {isLoaded && immersive ? <ImmersiveView documentId={activeDocumentId} onExit={exitImmersive} /> : null}
+            {isLoaded ? <PresenterStartGate documentId={activeDocumentId} /> : null}
+            {isLoaded && immersive && presenterDocumentId === activeDocumentId ? <PresenterConsole documentId={activeDocumentId} onExit={exitImmersive} /> : null}
+            {isLoaded && immersive && presenterDocumentId !== activeDocumentId ? <ImmersiveView documentId={activeDocumentId} onExit={exitImmersive} /> : null}
             {isLoaded && !immersive ? (
               <>
                 <ViewerToolbar documentId={activeDocumentId} panels={panels} onTogglePanel={togglePanel} />

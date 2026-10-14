@@ -8,16 +8,18 @@ import { useUiStore } from "@/shared/store/uiStore";
 
 export type PresenterOpened = { label: string; external: boolean; width: number; height: number };
 
-export type PresenterSession = { documentId: string; path: string; audience: string; external: boolean; aspect: number; lost: boolean };
+export type AudienceProblem = "closed" | "failed";
 
-type PresenterRequest = { documentId: string; startPage: number };
+export type PresenterSession = { documentId: string; path: string; audience: string; external: boolean; aspect: number; problem: AudienceProblem | null };
+
+type PresenterRequest = { documentId: string; startPage: number | null };
 
 type PresenterState = {
   session: PresenterSession | null;
   request: PresenterRequest | null;
-  requestPresenter: (documentId: string, startPage: number) => void;
+  requestPresenter: (documentId: string, startPage: number | null) => void;
   clearRequest: () => void;
-  markLost: () => void;
+  markProblem: (problem: AudienceProblem) => void;
   setOpened: (opened: PresenterOpened) => void;
 };
 
@@ -32,8 +34,8 @@ export const usePresenterStore = create<PresenterState>((set) => ({
   request: null,
   requestPresenter: (documentId, startPage) => set({ request: { documentId, startPage } }),
   clearRequest: () => set({ request: null }),
-  markLost: () => set((state) => (state.session ? { session: { ...state.session, lost: true } } : state)),
-  setOpened: (opened) => set((state) => (state.session ? { session: { ...state.session, audience: opened.label, external: opened.external, aspect: aspectOf(opened), lost: false } } : state)),
+  markProblem: (problem) => set((state) => (state.session ? { session: { ...state.session, problem } } : state)),
+  setOpened: (opened) => set((state) => (state.session ? { session: { ...state.session, audience: opened.label, external: opened.external, aspect: aspectOf(opened), problem: null } } : state)),
 }));
 
 async function openAudience(path: string, password: string | null, startPage: number): Promise<PresenterOpened> {
@@ -48,7 +50,7 @@ export async function startPresenter(documentId: string, startPage: number): Pro
   const document = useDocumentStore.getState().documents[documentId];
   if (!document) return;
   const opened = await openAudience(document.path, document.password ?? null, startPage);
-  usePresenterStore.setState({ session: { documentId, path: document.path, audience: opened.label, external: opened.external, aspect: aspectOf(opened), lost: false } });
+  usePresenterStore.setState({ session: { documentId, path: document.path, audience: opened.label, external: opened.external, aspect: aspectOf(opened), problem: null } });
   usePresentationStore.setState({ drawingsMode: "temporary" });
   if (opened.external) await setImmersiveFullscreen(true, startPage);
   else useUiStore.getState().setImmersive(true, startPage);

@@ -5,6 +5,7 @@ import {
   Hand,
   Maximize,
   Minimize,
+  Presentation,
   Printer,
   Search,
   ScanText,
@@ -26,6 +27,7 @@ import { switchOverlayMode } from "./overlay/editorModes";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { setImmersiveFullscreen } from "./immersive";
+import { usePresenterStore } from "@/features/presenter/presenterSession";
 import { copySelection } from "./copySelection";
 
 type ViewerToolbarProps = {
@@ -185,6 +187,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       />
       <IconButton icon={SquareDashedMousePointer} label={t("viewer.areaZoom")} active={zoomState.isMarqueeZoomActive} onClick={() => zoom?.toggleMarqueeZoom()} />
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />
+      <IconButton icon={Presentation} label={t("presentation.presenter.open")} onClick={() => usePresenterStore.getState().requestPresenter(documentId, null)} />
       <IconButton
         icon={fullscreen ? Minimize : Maximize}
         label={t("viewer.fullscreen")}

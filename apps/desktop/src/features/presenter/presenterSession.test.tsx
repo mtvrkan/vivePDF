@@ -46,7 +46,7 @@ describe("presenterSession", () => {
     await startPresenter("doc-a", 7);
 
     expect(invoke).toHaveBeenCalledWith("presenter_open", { path: "C:/talks/deck.pdf", password: null, startPage: 6 });
-    expect(usePresenterStore.getState().session).toMatchObject({ documentId: "doc-a", audience: "present-a", external: false, lost: false });
+    expect(usePresenterStore.getState().session).toMatchObject({ documentId: "doc-a", audience: "present-a", external: false, problem: null });
     expect(usePresenterStore.getState().session?.aspect).toBeCloseTo(16 / 9);
     expect(usePresentationStore.getState().drawingsMode).toBe("temporary");
     expect(useUiStore.getState()).toMatchObject({ immersive: true, immersiveStartPage: 7 });

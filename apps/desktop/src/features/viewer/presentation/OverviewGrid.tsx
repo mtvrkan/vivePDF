@@ -10,7 +10,21 @@ import { appendDigit, emptyJumpState, isJumpDigit, jumpResetDelayMs, resolveJump
 
 const VISIBLE_MARGIN = "240px";
 
-export function PageThumb({ documentId, pageIndex, active, onSelect }: { documentId: string; pageIndex: number; active: boolean; onSelect: () => void }) {
+export function PageThumb({
+  documentId,
+  pageIndex,
+  active,
+  onSelect,
+  label,
+  frameClassName = "aspect-[3/4] w-full",
+}: {
+  documentId: string;
+  pageIndex: number;
+  active: boolean;
+  onSelect: () => void;
+  label?: string;
+  frameClassName?: string;
+}) {
   const { provides: thumbnailCapability } = useThumbnailCapability();
   const [src, setSrc] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
@@ -59,13 +73,14 @@ export function PageThumb({ documentId, pageIndex, active, onSelect }: { documen
     <button
       ref={cellRef}
       type="button"
+      aria-label={label}
       onClick={onSelect}
       className={cn(
         "group flex flex-col items-center gap-1.5 rounded-xl p-2 transition-[box-shadow] duration-(--transition-fast)",
         active ? "glass-chip" : "hover:bg-white/5",
       )}
     >
-      <span className={cn("flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-lg border-2 bg-black/40", active ? "border-primary" : "border-transparent group-hover:border-primary/40")}>
+      <span className={cn("flex items-center justify-center overflow-hidden rounded-lg border-2 bg-black/40", frameClassName, active ? "border-primary" : "border-transparent group-hover:border-primary/40")}>
         {src ? <img src={src} alt="" className="h-full w-full object-contain" /> : null}
       </span>
       <span className={cn("font-mono text-xs tabular-nums", active ? "text-primary" : "text-muted-foreground")}>{pageIndex + 1}</span>

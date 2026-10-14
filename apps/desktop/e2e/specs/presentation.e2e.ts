@@ -15,6 +15,8 @@ async function pagePoint(pdfX: number, pdfY: number): Promise<Point> {
 }
 
 const ESCAPE_KEY = String.fromCharCode(0xe00c);
+const ALT_KEY = String.fromCharCode(0xe00a);
+const F5_KEY = String.fromCharCode(0xe035);
 
 async function drawLine(from: Point, to: Point) {
   await browser
@@ -264,5 +266,64 @@ describe("presentation", () => {
 
     await clickAt(await pagePoint(110, 428));
     await selection.waitForExist({ timeoutMsg: "the placed text could not be selected" });
+  });
+
+  it("mirrors pages and ink to the audience window and closes it at the end", async () => {
+    for (let attempt = 0; attempt < 4 && (await $(".immersive-view").isExisting()); attempt += 1) await browser.keys(ESCAPE_KEY);
+    await $(".immersive-view").waitForExist({ reverse: true, timeoutMsg: "the solo presentation did not end" });
+    const consoleWindow = await browser.getWindowHandle();
+    await openInViewer(copyFixture(fixtures().six, "presenter-six.pdf"));
+    await $('[data-page-index="0"]').waitForDisplayed();
+
+    await browser.keys([ALT_KEY, F5_KEY]);
+    await browser.keys([ALT_KEY]);
+    const presentAnyway = $(`button=${t("presentation.presenter.presentAnyway")}`);
+    if (await presentAnyway.isExisting()) await presentAnyway.click();
+    await browser.waitUntil(async () => (await browser.getWindowHandles()).length === 2, { timeout: 30000, timeoutMsg: "Alt+F5 did not open the audience window" });
+    const audience = (await browser.getWindowHandles()).find((handle) => handle !== consoleWindow) as string;
+    await $(`[role="region"][aria-label="${t("presentation.presenter.console")}"]`).waitForDisplayed({ timeout: 20000 });
+
+    const audiencePage = () =>
+      browser.execute(() => {
+        const middle = window.innerHeight / 2;
+        const page = Array.from(document.querySelectorAll<HTMLElement>("[data-page-index]")).find((node) => {
+          const rect = node.getBoundingClientRect();
+          return rect.top <= middle && rect.bottom >= middle;
+        });
+        return page ? Number(page.dataset.pageIndex) : -1;
+      });
+    await browser.switchToWindow(audience);
+    await browser.waitUntil(async () => (await audiencePage()) === 0, { timeout: 30000, timeoutMsg: "the audience window never showed page 1" });
+
+    await browser.switchToWindow(consoleWindow);
+    await clickButton(t("presentation.presenter.nextPage", { page: 2 }));
+    await browser.switchToWindow(audience);
+    await browser.waitUntil(async () => (await audiencePage()) === 1, { timeout: 10000, timeoutMsg: "the audience window did not follow to page 2" });
+    const blank = await redPixels(null);
+
+    await browser.switchToWindow(consoleWindow);
+    await browser.keys("p");
+    const stage = await browser.execute(() => {
+      const middle = window.innerHeight / 2;
+      const page = Array.from(document.querySelectorAll<HTMLElement>(".immersive-view [data-page-index]")).find((node) => {
+        const rect = node.getBoundingClientRect();
+        return rect.top <= middle && rect.bottom >= middle;
+      }) as HTMLElement;
+      const rect = page.getBoundingClientRect();
+      return { left: rect.left, top: rect.top, width: rect.width, height: rect.height };
+    });
+    await drawLine(
+      { x: Math.round(stage.left + stage.width * 0.2), y: Math.round(stage.top + stage.height * 0.4) },
+      { x: Math.round(stage.left + stage.width * 0.7), y: Math.round(stage.top + stage.height * 0.5) },
+    );
+    await browser.switchToWindow(audience);
+    await browser.waitUntil(async () => (await redPixels(null)) > blank + 200, { timeout: 10000, timeoutMsg: "the stroke did not reach the audience window" });
+    await browser.saveScreenshot(join(workDir(), "presenter-audience.png"));
+
+    await browser.switchToWindow(consoleWindow);
+    await browser.saveScreenshot(join(workDir(), "presenter-console.png"));
+    await clickButton(t("presentation.presenter.end"));
+    await browser.waitUntil(async () => (await browser.getWindowHandles()).length === 1, { timeout: 20000, timeoutMsg: "ending the presentation left the audience window open" });
+    await $(".immersive-view").waitForExist({ reverse: true, timeoutMsg: "the console did not leave presenter view" });
   });
 });

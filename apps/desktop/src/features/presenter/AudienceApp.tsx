@@ -105,7 +105,7 @@ function AudienceStage({ session, slice, live, onCommand }: { session: AudienceS
       ref={containerRef}
       role="region"
       aria-label={t("presentation.presenter.audienceRegion")}
-      className="relative h-full cursor-none overflow-hidden bg-black"
+      className="immersive-view relative h-full cursor-none overflow-hidden bg-black"
       onClick={() => onCommand("next")}
       onContextMenu={(event) => {
         event.preventDefault();
