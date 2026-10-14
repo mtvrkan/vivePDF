@@ -125,6 +125,11 @@ describe("footnotes", () => {
     expect(normalizeDocument({ kind: "document", version: 2, content: noted })?.content).toEqual(noted);
     expect(normalizeDocument({ kind: "document", version: 3, content: noted })).toBeNull();
   });
+
+  it("saves imported html that carries notes as version 2", () => {
+    expect(fileVersion('<p>Claim<sup data-footnote="Source"></sup></p>')).toBe(2);
+    expect(fileVersion("<p>No notes [^1]</p>")).toBe(1);
+  });
 });
 
 describe("document model", () => {

@@ -11,7 +11,7 @@ export function footnoteText(value: unknown): string {
 }
 
 export function hasFootnotes(node: DocumentNode | string): boolean {
-  if (typeof node === "string") return false;
+  if (typeof node === "string") return node.includes("data-footnote");
   return node.type === FOOTNOTE || (node.content ?? []).some(hasFootnotes);
 }
 
