@@ -342,13 +342,102 @@ def test_tagged_content_without_a_structure_tree_is_reopened_under_a_fresh_mcid(
     document.close()
 
 
-def test_a_word_stays_out_of_order_when_its_tag_has_no_element_to_continue() -> None:
+def test_a_tag_whose_element_does_not_list_its_mcid_is_continued_at_the_element_end() -> None:
     document, page, data = _page_with(TAGGED_INSIDE_CLIP)
-    element, _root = _tag_page(document, page)
+    element, root = _tag_page(document, page)
     document.xref_set_key(element, "K", "5")
     chunk, own = _chunk(page, "Once", (40, 50))
-    assert place_in_order(page, data, chunk, None, own) is None
-    assert document.xref_get_key(element, "K") == ("int", "5")
+
+    placed = place_in_order(page, data, chunk, None, own)
+
+    assert placed is not None
+    assert placed.index(b"(Once)") < placed.index(b"/P <</MCID 3>> BDC") < placed.index(b"(Tek)")
+    kind, kids = document.xref_get_key(element, "K")
+    assert kind == "array" and kids.startswith("[5<<")
+    assert "/MCID 3" in kids and f"/Pg {page.xref} 0 R" in kids
+    assert _parent_array(document, root) == f"[null null {element} 0 R {element} 0 R]"
+    assert _shown(page, placed) == ["Once"]
+    document.close()
+
+
+def _inherit_resources(document: pymupdf.Document, page: pymupdf.Page) -> None:
+    kind, value = document.xref_get_key(page.xref, "Resources")
+    assert kind == "xref"
+    parent = int(document.xref_get_key(page.xref, "Parent")[1].split()[0])
+    document.xref_set_key(parent, "Resources", value)
+    document.xref_set_key(page.xref, "Resources", "null")
+
+
+def test_a_named_tag_from_inherited_resources_is_continued() -> None:
+    document, page, data = _page_with(TAGGED_INSIDE_CLIP.replace(b"<</MCID 2>>", b"/MC0"))
+    resources = int(document.xref_get_key(page.xref, "Resources")[1].split()[0])
+    document.xref_set_key(resources, "Properties", "<</MC0<</MCID 2/Lang(tr)>>>>")
+    _inherit_resources(document, page)
+    element, _root = _tag_page(document, page)
+    chunk, own = _chunk(page, "Once", (40, 50))
+
+    placed = place_in_order(page, data, chunk, None, own)
+
+    assert placed is not None
+    reopened = placed[placed.index(b"(Once)") : placed.index(b"(Tek)")]
+    assert b"/P <</MCID 3/Lang(tr)>> BDC" in reopened
+    assert document.xref_get_key(element, "K") == ("array", "[2 3]")
+    assert _shown(page, placed) == ["Once"]
+    document.close()
+
+
+@pytest.mark.parametrize("properties_object", [False, True])
+def test_a_tag_holding_indirect_objects_is_reopened_under_a_new_named_property(
+    properties_object: bool,
+) -> None:
+    document, page, data = _page_with(TAGGED_INSIDE_CLIP.replace(b"<</MCID 2>>", b"/MC0"))
+    alternate = document.get_new_xref()
+    document.update_object(alternate, "(Bir)")
+    named = f"<</MC0<</MCID 2/Alt {alternate} 0 R>>>>"
+    resources = int(document.xref_get_key(page.xref, "Resources")[1].split()[0])
+    if properties_object:
+        holder = document.get_new_xref()
+        document.update_object(holder, named)
+        document.xref_set_key(resources, "Properties", f"{holder} 0 R")
+    else:
+        document.xref_set_key(resources, "Properties", named)
+    element, _root = _tag_page(document, page)
+    chunk, own = _chunk(page, "Once", (40, 50))
+
+    placed = place_in_order(page, data, chunk, None, own)
+
+    assert placed is not None
+    reopened = placed[placed.index(b"(Once)") : placed.index(b"(Tek)")]
+    assert b"/P /vpMC0 BDC" in reopened
+    kind, value = document.xref_get_key(page.xref, "Resources/Properties/vpMC0")
+    assert kind == "xref"
+    registered = document.xref_object(int(value.split()[0]), compressed=True)
+    assert "/MCID 3" in registered and f"/Alt {alternate} 0 R" in registered
+    assert document.xref_get_key(page.xref, "Resources/Properties/MC0")[0] in ("dict", "xref")
+    assert document.xref_get_key(element, "K") == ("array", "[2 3]")
+    assert _shown(page, placed) == ["Once"]
+    document.close()
+
+
+def test_a_tag_missing_from_the_parent_tree_is_reopened_without_an_mcid() -> None:
+    document, page, data = _page_with(
+        TAGGED_INSIDE_CLIP.replace(b"<</MCID 2>>", b"<</MCID 2/Lang(tr)>>")
+    )
+    element, root = _tag_page(document, page)
+    array = int(document.xref_get_key(root, "ParentTree/Nums")[1].strip("[]").split()[1])
+    document.update_object(array, "[null]")
+    chunk, own = _chunk(page, "Once", (40, 50))
+
+    placed = place_in_order(page, data, chunk, None, own)
+
+    assert placed is not None
+    reopened = placed[placed.index(b"(Once)") : placed.index(b"(Tek)")]
+    assert b"/P <</Lang(tr)>> BDC" in reopened
+    assert placed.count(b"/MCID") == 1
+    assert document.xref_get_key(element, "K") == ("int", "2")
+    assert document.xref_object(array, compressed=True) == "[null]"
+    assert placed.count(b"BDC") == placed.count(b"EMC")
+    assert _shown(page, placed) == ["Once"]
     document.close()
 
 

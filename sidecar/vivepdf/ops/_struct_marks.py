@@ -10,6 +10,8 @@ REFERENCE = re.compile(rb"^(\d+)\s+(\d+)\s+R$")
 INDIRECT = re.compile(rb"\d+\s+\d+\s+R\b")
 PAGE = re.compile(rb"/Pg\s+(\d+)\s+\d+\s+R")
 MAX_TREE_NODES = 4096
+MAX_PAGE_TREE_DEPTH = 64
+PROPERTY_PREFIX = "vpMC"
 
 Span = tuple[int, int]
 
@@ -157,12 +159,11 @@ def _continued_kids(
             return None
         return continuation
 
-    if kind == "int":
-        added = follows(value)
-        return b"[" + value + b" " + added + b"]" if added else None
-    if kind in ("dict", "xref"):
-        added = follows(value)
-        return b"[" + value + b" " + added + b"]" if added else None
+    if kind in ("int", "dict", "xref"):
+        added = follows(value) or continuation
+        return b"[" + value + b" " + added + b"]"
+    if kind == "null":
+        return b"[" + continuation + b"]"
     if kind != "array":
         return None
     spans = _elements(value)
@@ -172,7 +173,8 @@ def _continued_kids(
         added = follows(value[start:end])
         if added:
             return value[:end] + b" " + added + value[end:]
-    return None
+    closing = value.rindex(b"]")
+    return value[:closing].rstrip() + b" " + continuation + value[closing:]
 
 
 class MarkReopener:
@@ -180,6 +182,8 @@ class MarkReopener:
         self.document = page.parent
         self.page = page.xref
         self.pairs: list[tuple[int, int, int]] = []
+        self.named: list[tuple[str, bytes]] = []
+        self.resources = self._resources()
         kind, key = _key(self.document, self.page, "StructParents")
         self.slot = _parent_slot(self.document, int(key)) if kind == "int" else None
         self.parents = self._parents() if self.slot else None
@@ -193,17 +197,55 @@ class MarkReopener:
             value = self.document.xref_object(xref, compressed=True).encode("utf-8")
         return _items(value)
 
+    def _resources(self) -> tuple[int, str] | None:
+        node: int | None = self.page
+        for _ in range(MAX_PAGE_TREE_DEPTH):
+            if node is None:
+                return None
+            kind, value = _key(self.document, node, "Resources")
+            if kind == "xref":
+                holder = _reference(value)
+                return (holder, "") if holder is not None else None
+            if kind == "dict":
+                return node, "Resources/"
+            kind, value = _key(self.document, node, "Parent")
+            node = _reference(value) if kind == "xref" else None
+        return None
+
+    def _property(self, name: str) -> tuple[str, bytes]:
+        if self.resources is None:
+            return "null", b""
+        holder, prefix = self.resources
+        return _key(self.document, holder, f"{prefix}Properties/{name}")
+
     def _resolved(self, properties: bytes) -> bytes | None:
         if properties.startswith(b"<<"):
             return properties
         if not properties.startswith(b"/"):
             return None
-        path = "Resources/Properties/" + properties[1:].decode("latin-1")
-        kind, value = _key(self.document, self.page, path)
+        kind, value = self._property(properties[1:].decode("latin-1"))
         if kind == "xref":
             xref = _reference(value)
             return self.document.xref_object(xref, compressed=True).encode("utf-8")
         return value if kind == "dict" else None
+
+    def _free_name(self) -> str:
+        taken = {name for name, _ in self.named}
+        number = len(self.named)
+        while True:
+            name = f"{PROPERTY_PREFIX}{number}"
+            if name not in taken and self._property(name)[0] == "null":
+                return name
+            number += 1
+
+    def _written(self, tag: bytes, properties: bytes) -> bytes | None:
+        if not INDIRECT.search(properties):
+            return tag + b" " + properties + b" BDC"
+        if self.resources is None:
+            return None
+        name = self._free_name()
+        self.named.append((name, properties))
+        return tag + b" /" + name.encode("ascii") + b" BDC"
 
     def _element(self, old: int) -> int | None:
         if self.parents is None or old >= len(self.parents):
@@ -217,22 +259,40 @@ class MarkReopener:
         old = _mcr_mcid(source)
         if old is None:
             return mark.tag + b" " + mark.properties + b" BDC"
-        if INDIRECT.search(source):
-            return None
         new = self.next_id
-        if self.slot is not None:
-            element = self._element(old)
-            if (
-                element is None
-                or _continued_kids(self.document, element, self.page, old, new) is None
-            ):
-                return None
+        element = self._element(old) if self.slot is not None else None
+        if self.slot is not None and (
+            element is None or _continued_kids(self.document, element, self.page, old, new) is None
+        ):
+            return self._written(mark.tag, MCID.sub(b"", source, count=1))
+        written = self._written(mark.tag, MCID.sub(f"/MCID {new}".encode(), source, count=1))
+        if written is None:
+            return None
+        if element is not None:
             self.pairs.append((element, old, new))
         self.next_id += 1
-        inline = MCID.sub(f"/MCID {new}".encode(), source, count=1)
-        return mark.tag + b" " + inline + b" BDC"
+        return written
+
+    def _register_names(self) -> None:
+        if not self.named or self.resources is None:
+            return
+        holder, prefix = self.resources
+        entries = ""
+        for name, properties in self.named:
+            xref = self.document.get_new_xref()
+            self.document.update_object(xref, properties.decode("utf-8"))
+            entries += f"/{name} {xref} 0 R"
+        kind, value = _key(self.document, holder, f"{prefix}Properties")
+        if kind == "xref":
+            target = _reference(value)
+            text = self.document.xref_object(target, compressed=True)
+            self.document.update_object(target, "<<" + entries + text.strip()[2:])
+            return
+        existing = value.decode("utf-8").strip()[2:] if kind == "dict" else ">>"
+        self.document.xref_set_key(holder, f"{prefix}Properties", "<<" + entries + existing)
 
     def commit(self) -> None:
+        self._register_names()
         if not self.pairs or self.slot is None or self.parents is None:
             return
         parents = list(self.parents)

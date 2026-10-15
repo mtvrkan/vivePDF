@@ -59,6 +59,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Watermark removal: words restored inside tagged content keep their reading order in more files: when the structure element does not list the content, when the tag's properties come from inherited page resources or hold references, and when the page's structure entry is missing (the tag is then reopened without a content ID) [2026-10-15]
 - End-to-end tests: the presentation flows close the keep-drawings dialog after leaving a presentation with drawings, so the next flow no longer fails on it [2026-10-15]
 - Presenter view: speaker notes stay with a PDF that is renamed, moved or copied without being changed, instead of starting empty under the new name [2026-10-15]
 - Presenter view: pen strokes drawn on a black or white screen now appear on the projector while they are being drawn instead of only when the pen lifts [2026-10-15]
