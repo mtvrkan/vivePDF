@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- What's new: after an update vivePDF opens once with the highlights of the installed version, and Help › What's new, About › What's new and the command palette show the notes of every version up to the installed one (a first install stays quiet) [2026-10-15]
 - Keyboard shortcuts: Save as PDF in the shortcut list (F1) and in About › Shortcuts writes the shown shortcuts as a printable PDF, one table per screen in the app's language, with each key combination kept on one line; a "Show in folder" button follows the save [2026-10-15]
 - Keyboard shortcuts: F1 or Ctrl+/ on any screen opens the shortcuts for that screen — the viewer, a presentation, the page organizer, the Studio design or document editor — with a search box and a link to the full list; Help › Keyboard shortcuts and the command palette open it too, and the Studio design editor keeps its own F1 list [2026-10-15]
 - Translation: language packages in the Argos Translate format that use Moses and BPE tokenizers instead of SentencePiece (for example Argos's own Polish and Czech packages) can now be imported in Settings › Reading and translate like the others [2026-10-15]

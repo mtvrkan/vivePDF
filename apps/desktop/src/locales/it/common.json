@@ -6445,7 +6445,8 @@
       "revealInFolder": "Mostra nella cartella",
       "clipboard": "PDF dagli appunti",
       "editHome": "Personalizza la pagina iniziale",
-      "shortcuts": "Scorciatoie da tastiera di questa schermata"
+      "shortcuts": "Scorciatoie da tastiera di questa schermata",
+      "whatsNew": "Novità di vivePDF"
     },
     "group": {
       "tools": "Strumenti",
@@ -6476,7 +6477,8 @@
     "tabs": {
       "privacy": "Privacy",
       "shortcuts": "Scorciatoie",
-      "credits": "Riconoscimenti"
+      "credits": "Riconoscimenti",
+      "whatsNew": "Novità"
     },
     "statement": "vivePDF riunisce tutto ciò che puoi fare con un PDF — unire, dividere, comprimere, convertire, OCR, oscurare, firmare digitalmente, compilare moduli — in un’unica applicazione desktop che funziona allo stesso modo su Windows, macOS e Linux.",
     "statementSecondary": "I tuoi documenti non vengono mai caricati online; ogni operazione viene eseguita nel motore locale su questo computer.",
@@ -10032,6 +10034,38 @@
       "fileName": "Scorciatoie da tastiera di vivePDF",
       "action": "Azione",
       "keys": "Tasti"
+    }
+  },
+  "whatsNew": {
+    "intro": "Le modifiche principali di ogni versione. L’elenco completo è in CHANGELOG.md, accanto al codice sorgente.",
+    "version": "Versione {{version}}",
+    "current": "Installata",
+    "updatedTitle": "vivePDF {{version}} è installato",
+    "done": "Ho capito",
+    "emptyTitle": "Ancora nessuna nota per questa versione",
+    "emptyDescription": "vivePDF {{version}} non ha note di rilascio nell’app. Cerca gli aggiornamenti per vedere cosa porta la versione più recente.",
+    "releases": {
+      "v0_3_0": {
+        "helpAndSupport": "Una guida che funziona offline: F1 mostra le scorciatoie della schermata in cui ti trovi (e le salva in PDF), Aiuto › Argomenti della guida spiega passo passo le attività principali, e le segnalazioni di bug possono includere immagini e file di esempio in un pacchetto di supporto che salvi tu.",
+        "offlineMode": "Modalità offline: un solo interruttore in Impostazioni › Web disattiva tutte le funzioni che userebbero Internet: aggiornamenti, download, ricerca web, ricerca delle fonti e controllo delle password trapelate.",
+        "presenterView": "Visualizzazione relatore: il proiettore mostra solo le diapositive mentre il portatile mostra la pagina successiva, un timer e le note del relatore.",
+        "studioWriting": "I documenti di Studio hanno strumenti di scrittura come in Word: note a piè di pagina, colonne e interruzioni di sezione, trova e sostituisci, interlinea, simboli, conteggio parole ed esportazione in Markdown.",
+        "presentationInsert": "Durante una presentazione si possono inserire al volo formule, forme, grafici, tabelle e diagrammi, anche sulle lavagne nera e bianca."
+      },
+      "v0_2_0": {
+        "templates": "Studio offre 174 modelli, con nuovi layout di CV, ornamenti e documenti aziendali, planner ed etichette rinnovati.",
+        "cvImport": "Il generatore di CV importa un CV esistente o un PDF di LinkedIn e aggiunge annulla, riordino e selettore del mese.",
+        "organizer": "L’organizzatore di pagine seleziona le pagine per orientamento, formato o testo, trascina le pagine sul desktop o su un’altra scheda e salva le pagine come immagini.",
+        "viewerEditing": "Il visualizzatore compila i moduli direttamente sulla pagina, copia blocchi di testo e immagini tra documenti, evidenzia il testo selezionato e modifica i segnalibri.",
+        "collections": "Le raccolte della Home si possono riordinare, cercare e ricolorare, e i file recenti si possono fissare."
+      },
+      "v0_1_1": {
+        "studio": "Studio: un editor di design per creare un PDF da zero, con modelli pronti per certificati, inviti, biglietti, poster e altro.",
+        "cvBuilder": "Il generatore di CV: compili un modulo a sinistra e vedi il CV finito a destra.",
+        "studioTools": "Le immagini di Studio si possono ritagliare e regolare, e i design si arricchiscono di tabelle, grafici, diagrammi di flusso, formule, ombre e righelli.",
+        "fontLibrary": "Una libreria di 24 font con licenza aperta, tutti con le lettere turche, si scarica quando serve.",
+        "iconLibrary": "Oltre 1.600 icone si cercano per nome nella tua lingua e si aggiungono come disegni nitidi e ricolorabili."
+      }
     }
   }
 }

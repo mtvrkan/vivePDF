@@ -13,14 +13,15 @@ import { CreditsTab } from "@/features/about/CreditsTab";
 import { REPO_URL, THIRD_PARTY, WEBSITE_URL } from "@/features/about/credits";
 import { SaveShortcutsPdfButton } from "@/features/about/SaveShortcutsPdfButton";
 import { ShortcutList } from "@/features/about/ShortcutList";
+import { WhatsNewContent } from "@/features/about/WhatsNewContent";
 import { SHORTCUT_GROUPS } from "@/features/about/shortcutGroups";
 import { useReportStore } from "@/shared/store/reportStore";
 import type { LucideIcon } from "lucide-react";
 
-type LinkedPanel = "credits" | "privacy" | "shortcuts";
+type LinkedPanel = "whatsNew" | "credits" | "privacy" | "shortcuts";
 type Panel = LinkedPanel | "licences";
-const LINKED_PANELS: LinkedPanel[] = ["credits", "privacy", "shortcuts"];
-const PANEL_ICONS: Record<LinkedPanel, LucideIcon> = { credits: Users, privacy: ShieldCheck, shortcuts: Keyboard };
+const LINKED_PANELS: LinkedPanel[] = ["whatsNew", "credits", "privacy", "shortcuts"];
+const PANEL_ICONS: Record<LinkedPanel, LucideIcon> = { whatsNew: Sparkles, credits: Users, privacy: ShieldCheck, shortcuts: Keyboard };
 
 type StoredTarget = "data" | "general" | "tools" | "logs";
 
@@ -300,6 +301,7 @@ export function AboutPage() {
         </div>
       </div>
       <Dialog open={panel !== null} title={panelTitle} onClose={closePanel} size={panel === "licences" ? "md" : "xl"} footer={panel === "shortcuts" ? <SaveShortcutsPdfButton groups={SHORTCUT_GROUPS} /> : undefined}>
+        {panel === "whatsNew" ? <WhatsNewContent version={version} onNavigate={closePanel} /> : null}
         {panel === "credits" ? <CreditsTab /> : null}
         {panel === "privacy" ? <PrivacyContent onOpenSettings={openSettingsSection} /> : null}
         {panel === "shortcuts" ? <ShortcutList groups={SHORTCUT_GROUPS} /> : null}

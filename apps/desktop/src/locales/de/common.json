@@ -6445,7 +6445,8 @@
       "revealInFolder": "Im Ordner anzeigen",
       "clipboard": "PDF aus der Zwischenablage",
       "editHome": "Startseite anpassen",
-      "shortcuts": "Tastenkürzel für diesen Bildschirm"
+      "shortcuts": "Tastenkürzel für diesen Bildschirm",
+      "whatsNew": "Neuigkeiten in vivePDF"
     },
     "group": {
       "tools": "Werkzeuge",
@@ -6476,7 +6477,8 @@
     "tabs": {
       "privacy": "Datenschutz",
       "shortcuts": "Tastenkombinationen",
-      "credits": "Danksagungen"
+      "credits": "Danksagungen",
+      "whatsNew": "Neuigkeiten"
     },
     "statement": "vivePDF vereint alles, was Sie mit einem PDF tun können — zusammenführen, teilen, komprimieren, konvertieren, OCR, schwärzen, digital signieren, Formulare ausfüllen — in einer einzigen Desktop-Anwendung, die unter Windows, macOS und Linux gleich funktioniert.",
     "statementSecondary": "Ihre Dokumente werden nie hochgeladen; jeder Vorgang läuft in der lokalen Engine auf diesem Computer.",
@@ -10031,6 +10033,38 @@
       "fileName": "vivePDF Tastenkürzel",
       "action": "Aktion",
       "keys": "Tasten"
+    }
+  },
+  "whatsNew": {
+    "intro": "Die wichtigsten Änderungen jeder Version. Die vollständige Liste steht in CHANGELOG.md beim Quellcode.",
+    "version": "Version {{version}}",
+    "current": "Installiert",
+    "updatedTitle": "vivePDF {{version}} ist installiert",
+    "done": "Verstanden",
+    "emptyTitle": "Noch keine Hinweise zu dieser Version",
+    "emptyDescription": "Zu vivePDF {{version}} gibt es in der App keine Versionshinweise. Suchen Sie nach Updates, um zu sehen, was die neueste Version bringt.",
+    "releases": {
+      "v0_3_0": {
+        "helpAndSupport": "Hilfe, die offline funktioniert: F1 zeigt die Tastenkürzel des aktuellen Bildschirms (und speichert sie als PDF), Hilfe › Hilfethemen erklärt die wichtigsten Aufgaben Schritt für Schritt, und Fehlerberichte können Bilder und Beispieldateien in einem selbst gespeicherten Supportpaket mitnehmen.",
+        "offlineMode": "Offlinemodus: Ein Schalter unter Einstellungen › Web schaltet jede Funktion ab, die das Internet nutzen würde – Updates, Downloads, Websuche, Quellenabfragen und die Prüfung auf geleakte Passwörter.",
+        "presenterView": "Referentenansicht: Der Projektor zeigt nur die Folien, Ihr Laptop die nächste Seite, einen Timer und Sprechernotizen.",
+        "studioWriting": "Studio-Dokumente haben Schreibwerkzeuge wie in Word: Fußnoten, Spalten und Abschnittsumbrüche, Suchen und Ersetzen, Zeilenabstand, Symbole, Wortzählung und Markdown-Export.",
+        "presentationInsert": "In Präsentationen lassen sich Formeln, Formen, Diagramme, Tabellen und Schaubilder spontan einfügen, auch auf der schwarzen und weißen Tafel."
+      },
+      "v0_2_0": {
+        "templates": "Studio bietet 174 Vorlagen, mit neuen Lebenslauf-Layouts, Ornamenten und überarbeiteten Geschäftsdokumenten, Planern und Etiketten.",
+        "cvImport": "Der Lebenslauf-Editor importiert einen vorhandenen Lebenslauf oder ein LinkedIn-PDF und erhält Rückgängig, Sortieren und Monatsauswahl.",
+        "organizer": "Die Seitenverwaltung wählt Seiten nach Ausrichtung, Größe oder Text aus, zieht Seiten auf den Desktop oder einen anderen Tab und speichert Seiten als Bilder.",
+        "viewerEditing": "Der Viewer füllt Formulare direkt auf der Seite aus, kopiert Textblöcke und Bilder zwischen Dokumenten, markiert ausgewählten Text und bearbeitet Lesezeichen.",
+        "collections": "Sammlungen auf der Startseite lassen sich umsortieren, durchsuchen und umfärben, und zuletzt geöffnete Dateien können angeheftet werden."
+      },
+      "v0_1_1": {
+        "studio": "Studio: ein Designeditor, mit dem Sie ein PDF von Grund auf gestalten, mit fertigen Vorlagen für Zertifikate, Einladungen, Karten, Plakate und mehr.",
+        "cvBuilder": "Der Lebenslauf-Editor: links ein Formular, rechts der fertige Lebenslauf.",
+        "studioTools": "Bilder in Studio lassen sich zuschneiden und anpassen, und Designs erhalten Tabellen, Diagramme, Flussdiagramme, Formeln, Schatten und Lineale.",
+        "fontLibrary": "Eine Bibliothek mit 24 frei lizenzierten Schriften, alle mit türkischen Buchstaben, wird bei Bedarf heruntergeladen.",
+        "iconLibrary": "Über 1.600 Symbole lassen sich in Ihrer Sprache nach Namen suchen und als scharfe, umfärbbare Zeichnungen einfügen."
+      }
     }
   }
 }

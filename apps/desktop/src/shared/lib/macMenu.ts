@@ -116,6 +116,7 @@ export function buildMacMenu(t: TFunction): MenuNode[] {
       label: t("nav.help"),
       items: [
         link("/about?tab=shortcuts", t("about.tabs.shortcuts")),
+        link("/about?tab=whatsNew", t("about.tabs.whatsNew")),
         link("/about?tab=privacy", t("about.tabs.privacy")),
         separator,
         { kind: "item", id: "action:reportBug", label: t("palette.action.reportBug") },

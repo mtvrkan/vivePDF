@@ -6445,7 +6445,8 @@
       "revealInFolder": "Afficher dans le dossier",
       "clipboard": "PDF depuis le presse-papiers",
       "editHome": "Personnaliser la page d'accueil",
-      "shortcuts": "Raccourcis clavier de cet écran"
+      "shortcuts": "Raccourcis clavier de cet écran",
+      "whatsNew": "Nouveautés de vivePDF"
     },
     "group": {
       "tools": "Outils",
@@ -6476,7 +6477,8 @@
     "tabs": {
       "privacy": "Confidentialité",
       "shortcuts": "Raccourcis",
-      "credits": "Crédits"
+      "credits": "Crédits",
+      "whatsNew": "Nouveautés"
     },
     "statement": "vivePDF réunit tout ce que vous pouvez faire avec un PDF — fusionner, diviser, compresser, convertir, OCR, caviarder, signer numériquement, remplir des formulaires — dans une seule application de bureau qui fonctionne de la même façon sur Windows, macOS et Linux.",
     "statementSecondary": "Vos documents ne sont jamais téléversés ; chaque opération s’exécute dans le moteur local sur cet ordinateur.",
@@ -10032,6 +10034,38 @@
       "fileName": "Raccourcis clavier vivePDF",
       "action": "Action",
       "keys": "Touches"
+    }
+  },
+  "whatsNew": {
+    "intro": "Les principaux changements de chaque version. La liste complète se trouve dans CHANGELOG.md, à côté du code source.",
+    "version": "Version {{version}}",
+    "current": "Installée",
+    "updatedTitle": "vivePDF {{version}} est installé",
+    "done": "Compris",
+    "emptyTitle": "Pas encore de notes pour cette version",
+    "emptyDescription": "vivePDF {{version}} n’a pas de notes de version dans l’application. Recherchez les mises à jour pour voir ce qu’apporte la dernière version.",
+    "releases": {
+      "v0_3_0": {
+        "helpAndSupport": "Une aide qui fonctionne hors ligne : F1 affiche les raccourcis de l’écran où vous êtes (et les enregistre en PDF), Aide › Rubriques d’aide explique les tâches principales pas à pas, et les signalements de bug peuvent joindre des images et des fichiers d’exemple dans un paquet d’assistance que vous enregistrez vous-même.",
+        "offlineMode": "Mode hors ligne : un seul interrupteur dans Paramètres › Web coupe toutes les fonctions qui utiliseraient Internet — mises à jour, téléchargements, recherche web, recherche de références et vérification des mots de passe divulgués.",
+        "presenterView": "Mode présentateur : le projecteur n’affiche que les diapositives, tandis que votre ordinateur portable montre la page suivante, un minuteur et les notes de l’orateur.",
+        "studioWriting": "Les documents Studio ont des outils d’écriture comme dans Word : notes de bas de page, colonnes et sauts de section, rechercher et remplacer, interligne, symboles, nombre de mots et export Markdown.",
+        "presentationInsert": "Pendant une présentation, on peut insérer des formules, formes, graphiques, tableaux et diagrammes à la volée, y compris sur les tableaux noir et blanc."
+      },
+      "v0_2_0": {
+        "templates": "Studio propose 174 modèles, avec de nouvelles mises en page de CV, des ornements et des documents commerciaux, agendas et étiquettes repensés.",
+        "cvImport": "Le créateur de CV importe un CV existant ou un PDF LinkedIn et gagne l’annulation, le réordonnancement et un sélecteur de mois.",
+        "organizer": "L’organiseur de pages sélectionne les pages par orientation, format ou texte, fait glisser des pages vers le bureau ou un autre onglet et enregistre des pages en images.",
+        "viewerEditing": "La visionneuse remplit les formulaires sur la page, copie des blocs de texte et des images entre documents, surligne le texte sélectionné et modifie les signets.",
+        "collections": "Les collections de l’accueil peuvent être réorganisées, recherchées et recolorées, et les fichiers récents épinglés."
+      },
+      "v0_1_1": {
+        "studio": "Studio : un éditeur de design pour créer un PDF de zéro, avec des modèles prêts à l’emploi pour certificats, invitations, cartes, affiches et plus encore.",
+        "cvBuilder": "Le créateur de CV : vous remplissez un formulaire à gauche et le CV terminé s’affiche à droite.",
+        "studioTools": "Les images de Studio peuvent être rognées et ajustées, et les designs gagnent tableaux, graphiques, organigrammes, formules, ombres et règles.",
+        "fontLibrary": "Une bibliothèque de 24 polices sous licence libre, toutes avec les lettres turques, se télécharge à la demande.",
+        "iconLibrary": "Plus de 1 600 icônes se recherchent par leur nom dans votre langue et s’ajoutent comme dessins nets et recolorables."
+      }
     }
   }
 }

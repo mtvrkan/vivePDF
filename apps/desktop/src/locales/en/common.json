@@ -6446,7 +6446,8 @@
       "revealInFolder": "Show in folder",
       "clipboard": "PDF from clipboard",
       "editHome": "Customize home page",
-      "shortcuts": "Keyboard shortcuts for this screen"
+      "shortcuts": "Keyboard shortcuts for this screen",
+      "whatsNew": "What's new in vivePDF"
     },
     "group": {
       "tools": "Tools",
@@ -6477,7 +6478,8 @@
     "tabs": {
       "privacy": "Privacy",
       "shortcuts": "Shortcuts",
-      "credits": "Credits"
+      "credits": "Credits",
+      "whatsNew": "What's new"
     },
     "statement": "vivePDF brings everything you can do with a PDF — merge, split, compress, convert, OCR, redact, sign digitally, fill forms — into one desktop application that works the same on Windows, macOS and Linux.",
     "statementSecondary": "Your documents are never uploaded; every operation runs in the local engine on this computer.",
@@ -10033,6 +10035,38 @@
       "fileName": "vivePDF keyboard shortcuts",
       "action": "Action",
       "keys": "Keys"
+    }
+  },
+  "whatsNew": {
+    "intro": "The main changes in each version. The full list is in CHANGELOG.md next to the source code.",
+    "version": "Version {{version}}",
+    "current": "Installed",
+    "updatedTitle": "vivePDF {{version}} is installed",
+    "done": "Got it",
+    "emptyTitle": "No notes for this version yet",
+    "emptyDescription": "vivePDF {{version}} has no release notes in the app. Check for updates to see what the newest version brings.",
+    "releases": {
+      "v0_3_0": {
+        "helpAndSupport": "Help that works offline: F1 shows the shortcuts of the screen you are on (and saves them as a PDF), Help › Help topics explains the main tasks step by step, and bug reports can carry pictures and sample files in a support package you save yourself.",
+        "offlineMode": "Offline mode: one switch in Settings › Web turns off every feature that would use the internet — updates, downloads, web search, citation lookups and the leaked-password check.",
+        "presenterView": "Presenter view: the projector shows only the slides while your laptop shows the next page, a timer and speaker notes.",
+        "studioWriting": "Studio documents learned Word-style writing tools: footnotes, columns and section breaks, find and replace, line spacing, symbols, word count and Markdown export.",
+        "presentationInsert": "Presentations can insert formulas, shapes, charts, tables and diagrams on the fly, also on the black and white boards."
+      },
+      "v0_2_0": {
+        "templates": "Studio has 174 templates, with new CV layouts, ornaments and redesigned business documents, planners and labels.",
+        "cvImport": "The CV builder imports an existing CV or LinkedIn PDF and gains undo, reordering and month pickers.",
+        "organizer": "The page organizer selects pages by shape, size or text, drags pages out to the desktop or onto another tab, and saves pages as pictures.",
+        "viewerEditing": "The viewer fills in forms on the page, copies text blocks and pictures between documents, highlights selected text and edits bookmarks.",
+        "collections": "Home collections can be rearranged, searched and recoloured, and recent files can be pinned."
+      },
+      "v0_1_1": {
+        "studio": "Studio: a design editor for making a PDF from scratch, with ready-made templates for certificates, invitations, cards, posters and more.",
+        "cvBuilder": "The CV builder fills a form on the left and shows the finished CV on the right.",
+        "studioTools": "Studio pictures can be cropped and adjusted, and designs gain tables, charts, flowcharts, formulas, shadows and rulers.",
+        "fontLibrary": "A library of 24 open-licence fonts, all with Turkish letters, downloads on request.",
+        "iconLibrary": "More than 1,600 icons can be searched by name in your language and added as sharp, recolourable drawings."
+      }
     }
   }
 }

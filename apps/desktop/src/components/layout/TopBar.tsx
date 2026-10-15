@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowDownToLine, Bug, Check, CircleHelp, Copy, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Minus, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Square, Sun, Wrench, X } from "lucide-react";
+import { ArrowDownToLine, Bug, Check, CircleHelp, Copy, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Minus, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Sparkles, Square, Sun, Wrench, X } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTranslation } from "react-i18next";
@@ -240,6 +240,7 @@ function HelpMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; o
   return (
     <HeaderMenu id="help" label={t("nav.help")} icon={iconOnly ? CircleHelp : undefined} iconOnly={iconOnly} active={location.pathname.startsWith("/about")} openId={openId} onOpenChange={onOpenChange} panelClassName="w-64">
       <MenuLink icon={Keyboard} label={t("shortcutSheet.menu")} onClick={() => useShortcutSheetStore.getState().show()} onSelect={close} />
+      <MenuLink icon={Sparkles} label={t("about.tabs.whatsNew")} route="/about?tab=whatsNew" onSelect={close} />
       <MenuLink icon={ShieldCheck} label={t("about.tabs.privacy")} route="/about?tab=privacy" onSelect={close} />
       <MenuSeparator />
       <MenuLink icon={Bug} label={t("about.reportBug")} onClick={() => useReportStore.getState().openDialog({ category: "bug" })} onSelect={close} />

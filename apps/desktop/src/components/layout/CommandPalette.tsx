@@ -199,6 +199,7 @@ export function CommandPalette() {
         openSuggestFeature: () => useReportStore.getState().openDialog({ category: "idea" }),
         openLogDir: () => void openLogFolder(),
         openShortcuts: () => useShortcutSheetStore.getState().show(),
+        openWhatsNew: () => void navigate("/about?tab=whatsNew"),
         hasActiveDocument: activeDocument !== null,
         openPrint: () => {
           void navigate("/viewer");

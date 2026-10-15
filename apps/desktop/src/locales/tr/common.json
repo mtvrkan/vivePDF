@@ -6446,7 +6446,8 @@
       "revealInFolder": "Klasörde göster",
       "clipboard": "Panodan PDF",
       "editHome": "Ana sayfayı düzenle",
-      "shortcuts": "Bu ekranın klavye kısayolları"
+      "shortcuts": "Bu ekranın klavye kısayolları",
+      "whatsNew": "vivePDF'teki yenilikler"
     },
     "group": {
       "tools": "Araçlar",
@@ -6477,7 +6478,8 @@
     "tabs": {
       "privacy": "Gizlilik",
       "shortcuts": "Kısayollar",
-      "credits": "Emeği geçenler"
+      "credits": "Emeği geçenler",
+      "whatsNew": "Yenilikler"
     },
     "statement": "vivePDF; birleştirme, bölme, sıkıştırma, dönüştürme, OCR, karartma, dijital imza ve form doldurma dahil olmak üzere PDF belgeleriyle ilgili tüm işlemleri tek bir masaüstü uygulamasında sunar. Windows, macOS ve Linux üzerinde aynı deneyimi sağlar.",
     "statementSecondary": "Belgeler hiçbir sunucuya iletilmez; tüm işlemler bu cihazdaki yerel motorda gerçekleştirilir.",
@@ -10033,6 +10035,38 @@
       "fileName": "vivePDF klavye kısayolları",
       "action": "İşlem",
       "keys": "Tuşlar"
+    }
+  },
+  "whatsNew": {
+    "intro": "Her sürümdeki başlıca değişiklikler. Tam liste, kaynak kodun yanındaki CHANGELOG.md dosyasındadır.",
+    "version": "Sürüm {{version}}",
+    "current": "Yüklü",
+    "updatedTitle": "vivePDF {{version}} yüklendi",
+    "done": "Tamam",
+    "emptyTitle": "Bu sürüm için henüz not yok",
+    "emptyDescription": "vivePDF {{version}} için uygulamada sürüm notu yok. En yeni sürümün getirdiklerini görmek için güncellemeleri denetleyin.",
+    "releases": {
+      "v0_3_0": {
+        "helpAndSupport": "İnternetsiz çalışan yardım: F1 bulunduğunuz ekranın kısayollarını gösterir (PDF olarak da kaydeder), Yardım › Yardım konuları başlıca işleri adım adım anlatır ve hata bildirimleri, kendi kaydettiğiniz bir destek paketiyle resim ve örnek dosya taşıyabilir.",
+        "offlineMode": "Çevrimdışı mod: Ayarlar › Web'deki tek bir anahtar, internet kullanacak her özelliği kapatır; güncellemeler, indirmeler, web araması, kaynak sorguları ve sızdırılmış parola denetimi de buna dahildir.",
+        "presenterView": "Sunucu görünümü: projeksiyon yalnızca slaytları gösterirken dizüstü bilgisayarınız sonraki sayfayı, süreölçeri ve konuşmacı notlarını gösterir.",
+        "studioWriting": "Studio belgeleri Word tarzı yazım araçları kazandı: dipnotlar, sütunlar ve bölüm sonları, bul ve değiştir, satır aralığı, simgeler, sözcük sayısı ve Markdown olarak dışa aktarma.",
+        "presentationInsert": "Sunum sırasında formül, şekil, grafik, tablo ve diyagram eklenebilir; siyah ve beyaz tahtada da."
+      },
+      "v0_2_0": {
+        "templates": "Studio'da yeni CV düzenleri, süsler ve yenilenen iş belgeleri, planlayıcılar ve etiketlerle 174 şablon var.",
+        "cvImport": "CV oluşturucu mevcut bir CV'yi ya da LinkedIn PDF'ini içe aktarır; geri alma, sıralama ve ay seçici de eklendi.",
+        "organizer": "Sayfa düzenleyici sayfaları yönüne, boyutuna ya da içerdiği metne göre seçer, sayfaları masaüstüne ya da başka bir sekmeye sürükler ve sayfaları resim olarak kaydeder.",
+        "viewerEditing": "Görüntüleyici formları sayfanın üzerinde doldurur, metin bloklarını ve resimleri belgeler arasında kopyalar, seçili metni vurgular ve yer imlerini düzenler.",
+        "collections": "Ana sayfa koleksiyonları yeniden sıralanabilir, aranabilir ve yeniden renklendirilebilir; son dosyalar sabitlenebilir."
+      },
+      "v0_1_1": {
+        "studio": "Studio: sertifika, davetiye, kart, afiş ve daha fazlası için hazır şablonlarla sıfırdan PDF hazırlayan bir tasarım düzenleyici.",
+        "cvBuilder": "CV oluşturucu: soldaki formu doldurursunuz, sağda bitmiş CV görünür.",
+        "studioTools": "Studio'da resimler kırpılıp ayarlanabilir; tasarımlara tablo, grafik, akış şeması, formül, gölge ve cetvel eklendi.",
+        "fontLibrary": "Tümü Türkçe harfleri içeren 24 açık lisanslı yazı tipinden oluşan bir kitaplık, istendiğinde indirilir.",
+        "iconLibrary": "1.600'den fazla simge kendi dilinizde adıyla aranabilir ve keskin, yeniden renklendirilebilir çizimler olarak eklenebilir."
+      }
     }
   }
 }

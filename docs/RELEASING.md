@@ -113,7 +113,10 @@ until Linux and Intel Mac builds exist.
 
 1. Bump the version in `apps/desktop/src-tauri/tauri.conf.json`, `apps/desktop/src-tauri/Cargo.toml`
    and `apps/desktop/package.json` (same value everywhere) and add a `## [X.Y.Z] - YYYY-MM-DD`
-   heading under `## [Unreleased]` in `CHANGELOG.md`; commit. Run `pnpm e2e:smoke` in
+   heading under `## [Unreleased]` in `CHANGELOG.md`. Make sure `RELEASE_NOTES` in
+   `apps/desktop/src/features/about/releaseNotes.ts` has an entry for X.Y.Z (its highlights live
+   under `whatsNew.releases.vX_Y_Z` in all eight locales); the app shows it once after the update
+   and under Help › What's new. Commit. Run `pnpm e2e:smoke` in
    `apps/desktop` (`docs/TESTING.md`); release only when it passes.
 2. Run `scripts/build-windows-release.ps1` (add `-SkipEngine` when the engine is already built).
    It builds and self-checks the engine, fetches the LibreOffice installer, then builds two
@@ -183,6 +186,7 @@ cannot run.
 
 1. Bump the version in `apps/desktop/src-tauri/tauri.conf.json`, `apps/desktop/src-tauri/Cargo.toml` and `apps/desktop/package.json` (same value everywhere).
 2. Move the `[Unreleased]` entries in `CHANGELOG.md` under the new version heading.
+   Check the `releaseNotes.ts` entry for the new version (see step 1 of the Windows release above).
 3. Build the engine and the app with the release configuration:
    ```
    scripts/build-sidecar.ps1        (or build-sidecar.sh)

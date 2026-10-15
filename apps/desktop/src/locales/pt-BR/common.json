@@ -6445,7 +6445,8 @@
       "revealInFolder": "Mostrar na pasta",
       "clipboard": "PDF da área de transferência",
       "editHome": "Personalizar a página inicial",
-      "shortcuts": "Atalhos de teclado desta tela"
+      "shortcuts": "Atalhos de teclado desta tela",
+      "whatsNew": "Novidades do vivePDF"
     },
     "group": {
       "tools": "Ferramentas",
@@ -6476,7 +6477,8 @@
     "tabs": {
       "privacy": "Privacidade",
       "shortcuts": "Atalhos",
-      "credits": "Créditos"
+      "credits": "Créditos",
+      "whatsNew": "Novidades"
     },
     "statement": "O vivePDF reúne tudo o que você pode fazer com um PDF — mesclar, dividir, comprimir, converter, OCR, censurar, assinar digitalmente, preencher formulários — em um único aplicativo de desktop que funciona da mesma forma no Windows, macOS e Linux.",
     "statementSecondary": "Seus documentos nunca são enviados; todas as operações são executadas no motor local deste computador.",
@@ -10032,6 +10034,38 @@
       "fileName": "Atalhos de teclado do vivePDF",
       "action": "Ação",
       "keys": "Teclas"
+    }
+  },
+  "whatsNew": {
+    "intro": "As principais mudanças de cada versão. A lista completa está em CHANGELOG.md, junto ao código-fonte.",
+    "version": "Versão {{version}}",
+    "current": "Instalada",
+    "updatedTitle": "vivePDF {{version}} está instalado",
+    "done": "Entendi",
+    "emptyTitle": "Ainda não há notas para esta versão",
+    "emptyDescription": "O vivePDF {{version}} não tem notas de versão no app. Procure atualizações para ver o que a versão mais recente traz.",
+    "releases": {
+      "v0_3_0": {
+        "helpAndSupport": "Ajuda que funciona offline: F1 mostra os atalhos da tela em que você está (e os salva em PDF), Ajuda › Tópicos de ajuda explica as principais tarefas passo a passo, e os relatórios de erro podem levar imagens e arquivos de exemplo em um pacote de suporte que você mesmo salva.",
+        "offlineMode": "Modo offline: um único botão em Configurações › Web desliga todos os recursos que usariam a internet — atualizações, downloads, pesquisa na web, consultas de referências e a verificação de senhas vazadas.",
+        "presenterView": "Modo apresentador: o projetor mostra só os slides enquanto o notebook mostra a próxima página, um cronômetro e as anotações do apresentador.",
+        "studioWriting": "Os documentos do Studio ganharam ferramentas de escrita como as do Word: notas de rodapé, colunas e quebras de seção, localizar e substituir, espaçamento entre linhas, símbolos, contagem de palavras e exportação em Markdown.",
+        "presentationInsert": "Durante a apresentação é possível inserir fórmulas, formas, gráficos, tabelas e diagramas na hora, também nos quadros preto e branco."
+      },
+      "v0_2_0": {
+        "templates": "O Studio tem 174 modelos, com novos layouts de currículo, ornamentos e documentos comerciais, agendas e etiquetas renovados.",
+        "cvImport": "O criador de currículo importa um currículo existente ou um PDF do LinkedIn e ganha desfazer, reordenação e seletor de mês.",
+        "organizer": "O organizador de páginas seleciona páginas por orientação, tamanho ou texto, arrasta páginas para a área de trabalho ou outra aba e salva páginas como imagens.",
+        "viewerEditing": "O visualizador preenche formulários na própria página, copia blocos de texto e imagens entre documentos, destaca o texto selecionado e edita marcadores.",
+        "collections": "As coleções do Início podem ser reorganizadas, pesquisadas e recoloridas, e os arquivos recentes podem ser fixados."
+      },
+      "v0_1_1": {
+        "studio": "Studio: um editor de design para criar um PDF do zero, com modelos prontos para certificados, convites, cartões, cartazes e mais.",
+        "cvBuilder": "O criador de currículo: você preenche um formulário à esquerda e vê o currículo pronto à direita.",
+        "studioTools": "As imagens do Studio podem ser cortadas e ajustadas, e os designs ganham tabelas, gráficos, fluxogramas, fórmulas, sombras e réguas.",
+        "fontLibrary": "Uma biblioteca de 24 fontes de licença aberta, todas com letras turcas, é baixada quando você pede.",
+        "iconLibrary": "Mais de 1.600 ícones podem ser pesquisados pelo nome no seu idioma e adicionados como desenhos nítidos e recoloríveis."
+      }
     }
   }
 }
