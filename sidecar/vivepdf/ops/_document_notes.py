@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 import pymupdf
 
 from vivepdf.ops._document_flow import NOTE_PREFIX, Flowed, Frame, note_slots
+from vivepdf.ops._note_markup import note_body
 
 NOTE_SCALE = 0.8
 RULE_GAP = 8.0
@@ -34,13 +35,20 @@ def marked_numbers(body: str, count: int) -> list[int]:
     return sorted(number for number in found if 1 <= number <= count)
 
 
-def _note_html(number: int, text: str, anchor: bool) -> str:
+def note_bodies(texts: list[str], markups: list[str]) -> list[str]:
+    return [
+        note_body(text, markups[index] if index < len(markups) else "")
+        for index, text in enumerate(texts)
+    ]
+
+
+def _note_html(number: int, body: str, anchor: bool) -> str:
     target = f' id="fn-{number}"' if anchor else ""
-    return f'<p class="fn"{target}><span class="fn-number">{number}.</span> {html.escape(text)}</p>'
+    return f'<p class="fn"{target}><span class="fn-number">{number}.</span> {body}</p>'
 
 
-def with_endnotes(body: str, texts: list[str], title: str) -> str:
-    numbers = marked_numbers(body, len(texts))
+def with_endnotes(body: str, notes: list[str], title: str) -> str:
+    numbers = marked_numbers(body, len(notes))
     if not numbers:
         return body
     valid = set(numbers)
@@ -55,13 +63,13 @@ def with_endnotes(body: str, texts: list[str], title: str) -> str:
         )
 
     heading = f'<p class="endnotes-title">{html.escape(title.strip())}</p>' if title.strip() else ""
-    notes = "".join(_note_html(number, texts[number - 1], True) for number in numbers)
-    return f'{MARKER.sub(linked, body)}<div class="endnotes">{heading}{notes}</div>'
+    written = "".join(_note_html(number, notes[number - 1], True) for number in numbers)
+    return f'{MARKER.sub(linked, body)}<div class="endnotes">{heading}{written}</div>'
 
 
 @dataclass
 class Footnotes:
-    texts: list[str]
+    bodies: list[str]
     css: str
     archive: pymupdf.Archive
     frame: Frame
@@ -70,7 +78,7 @@ class Footnotes:
     overflow: bool = False
 
     def _html(self, numbers: tuple[int, ...]) -> str:
-        return "".join(_note_html(number, self.texts[number - 1], False) for number in numbers)
+        return "".join(_note_html(number, self.bodies[number - 1], False) for number in numbers)
 
     def measure(self, numbers: tuple[int, ...], width: float) -> float:
         if not numbers:
@@ -83,7 +91,7 @@ class Footnotes:
         return self.heights[key]
 
     def _valid(self, numbers: tuple[int, ...]) -> tuple[int, ...]:
-        return tuple(number for number in numbers if 1 <= number <= len(self.texts))
+        return tuple(number for number in numbers if 1 <= number <= len(self.bodies))
 
     def fit(self, numbers: list[int]) -> bool:
         limit = self.frame.where.height * NOTE_LIMIT_SHARE
@@ -105,7 +113,7 @@ class Footnotes:
         markers = _marker_rects(flowed.positions)
         groups: dict[tuple[int, int], list[int]] = {}
         for number, slot in note_slots(flowed.positions, flowed.slots).items():
-            if 1 <= number <= len(self.texts):
+            if 1 <= number <= len(self.bodies):
                 groups.setdefault(slot, []).append(number)
         areas = {(page, column): area for page, column, area in flowed.slots}
         for (page_number, column), found in groups.items():

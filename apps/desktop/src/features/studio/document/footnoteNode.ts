@@ -1,6 +1,6 @@
 import { Node, mergeAttributes } from "@tiptap/core";
 import { NodeSelection } from "@tiptap/pm/state";
-import { FOOTNOTE, footnoteText } from "./footnotes";
+import { FOOTNOTE, footnoteMarkup, footnoteText } from "./footnotes";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -21,6 +21,14 @@ export const Footnote = Node.create({
         parseHTML: (element) => footnoteText(element.getAttribute("data-footnote")),
         renderHTML: (attributes) => ({ "data-footnote": footnoteText(attributes.text) }),
       },
+      html: {
+        default: "",
+        parseHTML: (element) => footnoteMarkup(element.getAttribute("data-footnote-html")),
+        renderHTML: (attributes) => {
+          const markup = footnoteMarkup(attributes.html);
+          return markup ? { "data-footnote-html": markup } : {};
+        },
+      },
     };
   },
   parseHTML: () => [{ tag: "sup[data-footnote]", priority: 100 }],
@@ -35,7 +43,7 @@ export const Footnote = Node.create({
           if (!type) return false;
           if (dispatch) {
             const at = tr.selection.to;
-            tr.insert(at, type.create({ text: "" }));
+            tr.insert(at, type.create({ text: "", html: "" }));
             tr.setSelection(NodeSelection.create(tr.doc, at)).scrollIntoView();
           }
           return true;

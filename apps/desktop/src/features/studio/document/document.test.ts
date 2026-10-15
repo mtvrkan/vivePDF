@@ -6,7 +6,7 @@ import { parseBibtex } from "./bibtex";
 import { documentContent, documentText } from "./content";
 import { createDocument, defaultSettings, layoutOf, normalizeDocument, normalizeSettings, pageSize } from "./model";
 import { buildStarter, DOCUMENT_STARTERS } from "./starters";
-import { fileVersion } from "./footnotes";
+import { fileVersion, MAX_FOOTNOTE_HTML } from "./footnotes";
 import { documentHtml } from "./toHtml";
 
 const PNG = "data:image/png;base64,iVBORw0KGgo=";
@@ -113,6 +113,16 @@ describe("footnotes", () => {
 
     expect(html).toBe('<p><sup class="fn-ref" id="fnref-1">1</sup><sup class="fn-ref" id="fnref-2">2</sup></p>');
     expect(footnotes).toEqual(["<b>x</b>", ""]);
+  });
+
+  it("sends each note's formatting beside its plain text, empty for plain notes", () => {
+    const formatted: DocumentNode = { type: "footnote", attrs: { text: "x2", html: " x<sub>2</sub> " } };
+    const oversized: DocumentNode = { type: "footnote", attrs: { text: "long", html: "b".repeat(MAX_FOOTNOTE_HTML + 1) } };
+
+    const { footnotes, footnoteHtml } = documentHtml(doc({ type: "paragraph", content: [formatted, footnote("plain"), oversized] }), settings);
+
+    expect(footnotes).toEqual(["x2", "plain", "long"]);
+    expect(footnoteHtml).toEqual(["x<sub>2</sub>", "", ""]);
   });
 
   it("saves a document with notes as version 2 and one without as version 1", () => {

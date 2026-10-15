@@ -1,13 +1,14 @@
-import { useEffect, useRef } from "react";
-import { Trash2, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Bold, Italic, Link2, Strikethrough, Subscript, Superscript, Trash2, Underline, Unlink, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { NodeSelection, TextSelection } from "@tiptap/pm/state";
-import { useEditorState, type Editor } from "@tiptap/react";
+import { EditorContent, useEditor, useEditorState, type Editor } from "@tiptap/react";
 import { IconButton } from "@/components/shared/IconButton";
-import { TextArea } from "@/components/tool/form";
-import { FOOTNOTE, MAX_FOOTNOTE } from "./footnotes";
+import { LinkDialog } from "./DocumentToolbar";
+import { noteContent, noteExtensions, noteValue } from "./footnoteEditor";
+import { FOOTNOTE } from "./footnotes";
 
-type SelectedNote = { position: number; text: string; number: number };
+type SelectedNote = { position: number; text: string; html: string; number: number };
 
 function selectedNote(editor: Editor): SelectedNote | null {
   const { selection, doc } = editor.state;
@@ -16,19 +17,74 @@ function selectedNote(editor: Editor): SelectedNote | null {
   doc.nodesBetween(0, selection.from, (node, position) => {
     if (node.type.name === FOOTNOTE && position < selection.from) number += 1;
   });
-  return { position: selection.from, text: String(selection.node.attrs.text ?? ""), number };
+  return { position: selection.from, text: String(selection.node.attrs.text ?? ""), html: String(selection.node.attrs.html ?? ""), number };
+}
+
+function NoteMarks({ note }: { note: Editor }) {
+  const { t } = useTranslation();
+  const [linking, setLinking] = useState(false);
+  const state = useEditorState({
+    editor: note,
+    selector: ({ editor: current }) => ({
+      bold: current.isActive("bold"),
+      italic: current.isActive("italic"),
+      underline: current.isActive("underline"),
+      strike: current.isActive("strike"),
+      superscript: current.isActive("superscript"),
+      subscript: current.isActive("subscript"),
+      link: current.isActive("link"),
+    }),
+  });
+  const chain = () => note.chain().focus();
+  return (
+    <div role="toolbar" aria-label={t("studio.doc.toolbar.label")} className="flex flex-wrap items-center gap-0.5">
+      <IconButton icon={Bold} label={t("studio.doc.toolbar.bold")} shortcut="Ctrl+B" active={state.bold} onClick={() => chain().toggleBold().run()} />
+      <IconButton icon={Italic} label={t("studio.doc.toolbar.italic")} shortcut="Ctrl+I" active={state.italic} onClick={() => chain().toggleItalic().run()} />
+      <IconButton icon={Underline} label={t("studio.doc.toolbar.underline")} shortcut="Ctrl+U" active={state.underline} onClick={() => chain().toggleUnderline().run()} />
+      <IconButton icon={Strikethrough} label={t("studio.doc.toolbar.strike")} active={state.strike} onClick={() => chain().toggleStrike().run()} />
+      <IconButton icon={Superscript} label={t("studio.doc.toolbar.superscript")} active={state.superscript} onClick={() => chain().toggleSuperscript().run()} />
+      <IconButton icon={Subscript} label={t("studio.doc.toolbar.subscript")} active={state.subscript} onClick={() => chain().toggleSubscript().run()} />
+      <IconButton icon={Link2} label={t("studio.doc.toolbar.link")} active={state.link} onClick={() => setLinking(true)} />
+      {state.link ? <IconButton icon={Unlink} label={t("studio.doc.toolbar.unlink")} onClick={() => chain().extendMarkRange("link").unsetLink().run()} /> : null}
+      {linking ? <LinkDialog editor={note} open={linking} onClose={() => setLinking(false)} /> : null}
+    </div>
+  );
+}
+
+function NoteEditor({ editor, note }: { editor: Editor; note: SelectedNote }) {
+  const { t } = useTranslation();
+  const noteEditor = useEditor({
+    extensions: noteExtensions(t("studio.doc.footnotes.placeholder")),
+    content: noteContent(note.text, note.html),
+    editorProps: {
+      attributes: {
+        role: "textbox",
+        "aria-label": t("studio.doc.footnotes.text"),
+        "aria-multiline": "false",
+        class: "field min-h-9 w-full rounded-lg px-2 py-1.5 text-sm",
+      },
+    },
+    onUpdate: ({ editor: current }) => {
+      const { text, html } = noteValue(current);
+      editor.view.dispatch(editor.state.tr.setNodeAttribute(note.position, "text", text).setNodeAttribute(note.position, "html", html));
+    },
+  });
+  const fresh = note.text === "";
+  useEffect(() => {
+    if (fresh) noteEditor?.view.focus();
+  }, [noteEditor, fresh]);
+  if (!noteEditor) return null;
+  return (
+    <>
+      <NoteMarks note={noteEditor} />
+      <EditorContent editor={noteEditor} />
+    </>
+  );
 }
 
 export function FootnotePanel({ editor }: { editor: Editor }) {
   const { t } = useTranslation();
   const note = useEditorState({ editor, selector: ({ editor: current }) => selectedNote(current) });
-  const field = useRef<HTMLTextAreaElement>(null);
-  const position = note?.position ?? null;
-  const fresh = note !== null && note.text === "";
-
-  useEffect(() => {
-    if (position !== null && fresh) field.current?.focus();
-  }, [position, fresh]);
 
   if (!note) return null;
 
@@ -49,7 +105,7 @@ export function FootnotePanel({ editor }: { editor: Editor }) {
       className="glass absolute inset-x-4 bottom-12 z-20 mx-auto max-w-xl space-y-2 rounded-xl border border-border/60 p-3 shadow-lg"
       data-testid="footnote-panel"
       onKeyDown={(event) => {
-        if (event.key !== "Escape") return;
+        if (event.key !== "Escape" || !event.currentTarget.contains(event.target as HTMLElement)) return;
         event.preventDefault();
         backToText();
       }}
@@ -59,16 +115,7 @@ export function FootnotePanel({ editor }: { editor: Editor }) {
         <IconButton icon={Trash2} label={t("studio.doc.footnotes.remove")} onClick={remove} />
         <IconButton icon={X} label={t("studio.doc.footnotes.done")} shortcut="Esc" onClick={backToText} />
       </div>
-      <TextArea
-        ref={field}
-        value={note.text}
-        rows={3}
-        maxLength={MAX_FOOTNOTE}
-        aria-label={t("studio.doc.footnotes.text")}
-        placeholder={t("studio.doc.footnotes.placeholder")}
-        onChange={(event) => editor.view.dispatch(editor.state.tr.setNodeAttribute(note.position, "text", event.target.value.replace(/\s*\n\s*/g, " ")))}
-        className="w-full resize-none text-sm"
-      />
+      <NoteEditor key={note.position} editor={editor} note={note} />
     </section>
   );
 }

@@ -2,7 +2,12 @@ import html
 import re
 
 from vivepdf.ops._html_clean import visible_text
-from vivepdf.ops._studio_document_models import MAX_FOOTNOTE_CHARS, MAX_FOOTNOTES
+from vivepdf.ops._note_markup import inline_html
+from vivepdf.ops._studio_document_models import (
+    MAX_FOOTNOTE_CHARS,
+    MAX_FOOTNOTE_HTML_CHARS,
+    MAX_FOOTNOTES,
+)
 
 DEFINITION = re.compile(r"^ {0,3}\[\^(?P<label>[^\]\s]{1,100})\]:[ \t]?(?P<text>.*)$")
 FENCE = re.compile(r"^ {0,3}(?P<fence>`{3,}|~{3,})")
@@ -19,12 +24,20 @@ def _key(label: str) -> str:
     return SPACES.sub(" ", label).strip().casefold()
 
 
-def _plain(raw: str) -> str:
+def _rendered(raw: str) -> str:
     from markdown_it import MarkdownIt
 
-    rendered = MarkdownIt("commonmark").renderInline(raw)
-    text = html.unescape(visible_text(rendered))
+    return MarkdownIt("commonmark").renderInline(raw)
+
+
+def _plain(raw: str) -> str:
+    text = html.unescape(visible_text(_rendered(raw)))
     return SPACES.sub(" ", text).strip()[:MAX_FOOTNOTE_CHARS]
+
+
+def _markup(raw: str) -> str:
+    cleaned = inline_html(_rendered(raw))
+    return cleaned if "<" in cleaned and len(cleaned) <= MAX_FOOTNOTE_HTML_CHARS else ""
 
 
 def _fence_closes(line: str, fence: str) -> bool:
@@ -36,7 +49,7 @@ def _fence_closes(line: str, fence: str) -> bool:
     return found[0] == fence[0] and len(found) >= len(fence) and not rest
 
 
-def split_definitions(text: str) -> tuple[str, dict[str, str]]:
+def _split(text: str) -> tuple[str, dict[str, str]]:
     lines = text.replace("\r\n", "\n").split("\n")
     kept: list[str] = []
     raw: dict[str, list[list[str]]] = {}
@@ -80,14 +93,26 @@ def split_definitions(text: str) -> tuple[str, dict[str, str]]:
         if opening is not None:
             fence = opening.group("fence")
         kept.append(line)
-    notes = {
-        key: _plain(" ".join(" ".join(part for part in block if part) for block in paragraphs))
+    joined = {
+        key: " ".join(" ".join(part for part in block if part) for block in paragraphs)
         for key, paragraphs in raw.items()
     }
-    return "\n".join(kept), notes
+    return "\n".join(kept), joined
 
 
-def with_footnotes(body: str, notes: dict[str, str]) -> str:
+def split_definitions(text: str) -> tuple[str, dict[str, str]]:
+    kept, raw = _split(text)
+    return kept, {key: _plain(value) for key, value in raw.items()}
+
+
+def split_notes(text: str) -> tuple[str, dict[str, str], dict[str, str]]:
+    kept, raw = _split(text)
+    notes = {key: _plain(value) for key, value in raw.items()}
+    markup = {key: _markup(value) for key, value in raw.items()}
+    return kept, notes, {key: value for key, value in markup.items() if value}
+
+
+def with_footnotes(body: str, notes: dict[str, str], markup: dict[str, str] | None = None) -> str:
     if not notes:
         return body
     parts = TAG.split(body)
@@ -96,11 +121,14 @@ def with_footnotes(body: str, notes: dict[str, str]) -> str:
 
     def replace(match: re.Match) -> str:
         nonlocal used
-        note = notes.get(_key(html.unescape(match.group("label"))))
+        key = _key(html.unescape(match.group("label")))
+        note = notes.get(key)
         if note is None or used >= MAX_FOOTNOTES:
             return match.group(0)
         used += 1
-        return f'<sup data-footnote="{html.escape(note, quote=True)}"></sup>'
+        formatted = (markup or {}).get(key, "")
+        extra = f' data-footnote-html="{html.escape(formatted, quote=True)}"' if formatted else ""
+        return f'<sup data-footnote="{html.escape(note, quote=True)}"{extra}></sup>'
 
     for index, part in enumerate(parts):
         if index % 2 == 1:

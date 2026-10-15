@@ -17,6 +17,18 @@ function mount(content = "<p>ab</p>") {
   return editor;
 }
 
+function noteEditor(field: HTMLElement): Editor {
+  return (field as HTMLElement & { editor: Editor }).editor;
+}
+
+function markups(current: Editor): string[] {
+  const found: string[] = [];
+  current.state.doc.descendants((node) => {
+    if (node.type.name === FOOTNOTE) found.push(String(node.attrs.html));
+  });
+  return found;
+}
+
 function notes(current: Editor): string[] {
   const found: string[] = [];
   current.state.doc.descendants((node) => {
@@ -45,7 +57,9 @@ describe("FootnotePanel", () => {
       current.commands.insertFootnote();
     });
     const field = screen.getByRole("textbox", { name: "Footnote text" });
-    fireEvent.change(field, { target: { value: "Source\nline" } });
+    act(() => {
+      noteEditor(field).commands.insertContent("Source\nline");
+    });
 
     expect(screen.getByRole("region", { name: "Footnote 1" })).toBeTruthy();
     expect(document.activeElement).toBe(field);
@@ -61,7 +75,7 @@ describe("FootnotePanel", () => {
     });
 
     expect(screen.getByRole("region", { name: "Footnote 2" })).toBeTruthy();
-    expect(screen.getByRole<HTMLTextAreaElement>("textbox", { name: "Footnote text" }).value).toBe("two");
+    expect(screen.getByRole("textbox", { name: "Footnote text" }).textContent).toBe("two");
   });
 
   it("removes the note or returns to the text with Escape", () => {
@@ -79,5 +93,52 @@ describe("FootnotePanel", () => {
     expect(notes(current)).toEqual(["two"]);
     expect(screen.queryByTestId("footnote-panel")).toBeNull();
     expect(current.state.selection.from).toBe(4);
+  });
+
+  it("writes formatting into the note while keeping a plain copy", () => {
+    const current = mount('<p>a<sup data-footnote="Plain words"></sup>b</p>');
+    act(() => {
+      current.commands.setNodeSelection(2);
+    });
+    const field = screen.getByRole("textbox", { name: "Footnote text" });
+
+    act(() => {
+      noteEditor(field).commands.setTextSelection({ from: 1, to: 6 });
+    });
+    fireEvent.click(screen.getByRole("button", { name: /^Bold/ }));
+
+    expect(notes(current)).toEqual(["Plain words"]);
+    expect(markups(current)).toEqual(["<strong>Plain</strong> words"]);
+    expect(current.getHTML()).toContain('data-footnote-html="<strong>Plain</strong> words"');
+  });
+
+  it("opens a formatted note with its marks and drops the markup when they are cleared", () => {
+    const current = mount('<p>a<sup data-footnote="x2 site" data-footnote-html="x<sub>2</sub> <a href=&quot;https://example.org&quot;>site</a>"></sup></p>');
+    act(() => {
+      current.commands.setNodeSelection(2);
+    });
+    const field = screen.getByRole("textbox", { name: "Footnote text" });
+
+    expect(field.querySelector("sub")?.textContent).toBe("2");
+    expect(field.querySelector("a")?.getAttribute("href")).toBe("https://example.org");
+    act(() => {
+      noteEditor(field).chain().selectAll().unsetAllMarks().run();
+    });
+
+    expect(notes(current)).toEqual(["x2 site"]);
+    expect(markups(current)).toEqual([""]);
+    expect(current.getHTML()).not.toContain("data-footnote-html");
+  });
+
+  it("keeps the panel open when Escape closes the link dialog", () => {
+    const current = mount('<p>a<sup data-footnote="note"></sup></p>');
+    act(() => {
+      current.commands.setNodeSelection(2);
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Link" }));
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+
+    expect(screen.getByTestId("footnote-panel")).toBeTruthy();
   });
 });

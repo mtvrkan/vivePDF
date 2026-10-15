@@ -14,6 +14,6 @@ export function documentText(t: TFunction): DocumentText {
 export function documentContent(document: StudioDocument, language: string, text: DocumentText): StudioDocumentContent {
   const node = typeof document.content === "string" ? { type: "doc", content: [] } : document.content;
   const citations = buildCitations(node, document.sources, document.settings.citationStyle, text.terms, language);
-  const { html, images, fonts, footnotes } = documentHtml(node, document.settings, { citations, title: document.settings.referencesTitle.trim() || text.referencesTitle });
-  return { html, images, fonts, footnotes, notesTitle: text.notesTitle, settings: layoutOf(document.settings, text.tocTitle), title: document.name, language };
+  const { html, images, fonts, footnotes, footnoteHtml } = documentHtml(node, document.settings, { citations, title: document.settings.referencesTitle.trim() || text.referencesTitle });
+  return { html, images, fonts, footnotes, footnoteHtml, notesTitle: text.notesTitle, settings: layoutOf(document.settings, text.tocTitle), title: document.name, language };
 }

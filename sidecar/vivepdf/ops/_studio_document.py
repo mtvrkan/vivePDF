@@ -26,6 +26,7 @@ from vivepdf.ops._document_notes import (
     MARKER,
     Footnotes,
     marked_numbers,
+    note_bodies,
     note_css,
     with_endnotes,
 )
@@ -428,7 +429,8 @@ def layout_document(
     footnotes: Footnotes | None = None
     numbers = marked_numbers(body, len(content.footnotes))
     if numbers:
-        notes = Footnotes(content.footnotes, css, archive, frame, settings.font_size)
+        bodies = note_bodies(content.footnotes, content.footnote_html)
+        notes = Footnotes(bodies, css, archive, frame, settings.font_size)
         if notes.fit(numbers):
             flowed = flow(story_html(body), frame, initial, story, check_cancelled, notes.reserve)
             if flowed.settled and not notes.overflow:
@@ -437,7 +439,7 @@ def layout_document(
                 flowed.document.close()
                 flowed = None
         if flowed is None:
-            body = with_endnotes(body, content.footnotes, content.notes_title)
+            body = with_endnotes(body, bodies, content.notes_title)
     if flowed is None:
         flowed = flow(story_html(body), frame, initial, story, check_cancelled)
     document, positions = flowed.document, flowed.positions

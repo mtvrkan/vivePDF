@@ -10,7 +10,7 @@ from vivepdf.ops.studio_document import StudioDocumentOpenParams, import_documen
 from vivepdf.rpc.errors import OpError
 from vivepdf.rpc.progress import silent_progress
 
-NOTE = re.compile(r'<sup data-footnote="([^"]*)"></sup>')
+NOTE = re.compile(r'<sup data-footnote="([^"]*)"(?: data-footnote-html="[^"]*")?></sup>')
 
 
 def _import(tmp_path: Path, text: str, name: str = "talk.md"):
@@ -98,3 +98,27 @@ def test_unsupported_imports_are_still_refused(tmp_path: Path):
         import_document(StudioDocumentOpenParams(path=str(source)), silent_progress())
 
     assert caught.value.data["reason"] == "unsupportedType"
+
+
+FORMATTED = re.compile(r'<sup data-footnote="([^"]*)" data-footnote-html="([^"]*)"></sup>')
+
+
+def test_note_markdown_is_kept_as_safe_inline_formatting(tmp_path: Path):
+    result = _import(
+        tmp_path,
+        "Claim[^a] and plain[^b].\n\n"
+        "[^a]: A **bold** [site](https://example.org) and <script>x()</script>`code`.\n"
+        "[^b]: Nothing special.\n",
+    )
+
+    formatted = [
+        (html.unescape(text), html.unescape(markup))
+        for text, markup in FORMATTED.findall(result.html)
+    ]
+    assert formatted == [
+        (
+            "A bold site and x() code .",
+            'A <strong>bold</strong> <a href="https://example.org">site</a> and <code>code</code>.',
+        )
+    ]
+    assert _notes(result.html) == ["A bold site and x() code .", "Nothing special."]

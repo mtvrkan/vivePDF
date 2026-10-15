@@ -11,7 +11,7 @@ import pymupdf
 
 from vivepdf.ops._html_clean import body_fragment, visible_text, without_remote_pictures
 from vivepdf.ops._markdown_citations import FrontMatter, split_front_matter, with_citations
-from vivepdf.ops._markdown_footnotes import split_definitions, with_footnotes
+from vivepdf.ops._markdown_footnotes import split_notes, with_footnotes
 from vivepdf.ops._output import (
     OutputResult,
     prepare_data_output,
@@ -267,9 +267,9 @@ def import_document(
         )
     elif extension in ("md", "markdown"):
         meta, text = split_front_matter(decode_text(payload))
-        text, notes = split_definitions(text)
+        text, notes, markup = split_notes(text)
         body, cited, references_title = with_citations(
-            with_footnotes(markdown_to_html(text), notes)
+            with_footnotes(markdown_to_html(text), notes, markup)
         )
     else:
         body = _text_html(decode_text(payload))

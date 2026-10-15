@@ -487,7 +487,7 @@ export type DocumentNode = { type: string; attrs?: Record<string, unknown>; cont
 
 export type StudioDocument = { version: number; kind: "document"; name: string; settings: DocumentSettings; content: DocumentNode | string; sources: BibEntry[] };
 
-export type StudioDocumentContent = { html: string; images: string[]; fonts: string[]; footnotes: string[]; notesTitle: string; settings: DocumentLayout; title: string; language: string };
+export type StudioDocumentContent = { html: string; images: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; notesTitle: string; settings: DocumentLayout; title: string; language: string };
 
 export type StudioDocumentImport = { html: string; title: string; author: string; date: string; referencesTitle: string; bibliography: string };
 

@@ -78,7 +78,7 @@ function blockOf(editor: Editor): Block {
   return "paragraph";
 }
 
-function LinkDialog({ editor, open, onClose }: { editor: Editor; open: boolean; onClose: () => void }) {
+export function LinkDialog({ editor, open, onClose }: { editor: Editor; open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
   const current = editor.getAttributes("link").href;
   const [href, setHref] = useState(typeof current === "string" ? current : "https://");

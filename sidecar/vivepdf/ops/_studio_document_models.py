@@ -21,6 +21,7 @@ CoverLook = Literal["classic", "band", "frame", "minimal"]
 FontId = Annotated[NotAPath, Field(min_length=1, max_length=300)]
 MAX_FOOTNOTES = 500
 MAX_FOOTNOTE_CHARS = 2000
+MAX_FOOTNOTE_HTML_CHARS = 20000
 ShortText = Annotated[str, Field(max_length=300)]
 
 
@@ -61,6 +62,9 @@ class StudioDocumentContent(RpcModel):
     title: ShortText = ""
     language: str = Field(default="", max_length=35)
     footnotes: list[Annotated[NotAPath, Field(max_length=MAX_FOOTNOTE_CHARS)]] = Field(
+        default_factory=list, max_length=MAX_FOOTNOTES
+    )
+    footnote_html: list[Annotated[NotAPath, Field(max_length=MAX_FOOTNOTE_HTML_CHARS)]] = Field(
         default_factory=list, max_length=MAX_FOOTNOTES
     )
     notes_title: ShortText = "Notes"

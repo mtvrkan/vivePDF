@@ -2,7 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
-import { FOOTNOTE, footnoteText, MAX_FOOTNOTES } from "./footnotes";
+import { FOOTNOTE, footnoteMarkup, footnoteText, MAX_FOOTNOTES } from "./footnotes";
 import { SECTION_BREAK, sectionColumns } from "./sections";
 import { SPACING_KEYS, spacingCss } from "./spacing";
 
@@ -19,7 +19,7 @@ const DEFAULT_HIGHLIGHT = "#fef08a";
 const CHECKED = "&#9745;";
 const UNCHECKED = "&#9744;";
 
-export type DocumentHtml = { html: string; images: string[]; fonts: string[]; footnotes: string[] };
+export type DocumentHtml = { html: string; images: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[] };
 
 export type DocumentReferences = { citations: Citations; title: string };
 
@@ -28,6 +28,7 @@ type Mark = NonNullable<DocumentNode["marks"]>[number];
 class Writer {
   images: string[] = [];
   footnotes: string[] = [];
+  footnoteHtml: string[] = [];
   fonts: string[];
   headings = 0;
   references: DocumentReferences | null;
@@ -230,6 +231,7 @@ function write(node: DocumentNode, writer: Writer): string {
     case FOOTNOTE: {
       if (writer.footnotes.length >= MAX_FOOTNOTES) return "";
       const number = writer.footnotes.push(footnoteText(attr(node, "text")));
+      writer.footnoteHtml.push(footnoteMarkup(attr(node, "html")));
       return `<sup class="fn-ref" id="fnref-${number}">${number}</sup>`;
     }
     case CITATION:
@@ -244,5 +246,5 @@ function write(node: DocumentNode, writer: Writer): string {
 export function documentHtml(content: DocumentNode, settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null = null): DocumentHtml {
   const writer = new Writer(settings, references);
   const html = write(content, writer);
-  return { html, images: writer.images, fonts: writer.fonts, footnotes: writer.footnotes };
+  return { html, images: writer.images, fonts: writer.fonts, footnotes: writer.footnotes, footnoteHtml: writer.footnoteHtml };
 }
