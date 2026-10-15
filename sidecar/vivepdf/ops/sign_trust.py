@@ -4,7 +4,7 @@ import hashlib
 import json
 import re
 import threading
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import Any, Literal
 
@@ -39,8 +39,8 @@ SOURCES_FILE = "sources.json"
 SOURCES_VERSION = 2
 READABLE_SOURCES_VERSIONS = frozenset({1, SOURCES_VERSION})
 PINS_FILE = "lotl-pins.json"
-PINS_VERSION = 3
-READABLE_PINS_VERSIONS = frozenset({1, 2, PINS_VERSION})
+PINS_VERSION = 4
+READABLE_PINS_VERSIONS = frozenset({1, 2, 3, PINS_VERSION})
 LOTL_ANCHORS: frozenset[str] = frozenset(
     {
         "C0641C4F7D56C431B1C924742DB7FCE9C1EEF7D7FD212113A2768486B3ABCDC5",
@@ -405,11 +405,33 @@ class _StoredPins:
     pins: dict[str, _PinSet]
     lotl_sequence: int | None = None
     aatl_signed_at: datetime.datetime | None = None
+    lotl_signers: frozenset[str] = frozenset()
+    lotl_digest: str | None = None
 
 
 def _stored_sequence(raw: dict) -> int | None:
     value = raw.get("lotlSequence")
     return value if isinstance(value, int) and not isinstance(value, bool) and value >= 0 else None
+
+
+def _stored_signers(raw: dict) -> frozenset[str]:
+    values = raw.get("lotlSigners")
+    if not isinstance(values, list):
+        return frozenset()
+    return frozenset(item for item in values if isinstance(item, str) and FINGERPRINT.match(item))
+
+
+def _stored_digest(raw: dict) -> str | None:
+    value = raw.get("lotlDigest")
+    return value if isinstance(value, str) and re.match(DIGEST_PATTERN, value) else None
+
+
+def _lotl_digest(pins: dict[str, frozenset[str]], signers: frozenset[str]) -> str:
+    content = {
+        "pins": {territory: sorted(values) for territory, values in sorted(pins.items())},
+        "signers": sorted(signers),
+    }
+    return hashlib.sha256(json.dumps(content, sort_keys=True).encode()).hexdigest()
 
 
 def _load_pin_file(store: Path) -> _StoredPins:
@@ -432,7 +454,12 @@ def _load_pin_file(store: Path) -> _StoredPins:
         entry = _pin_entry(value, raw["version"])
         if entry is not None:
             loaded[territory] = entry
-    return _StoredPins(loaded, _stored_sequence(raw))
+    return _StoredPins(
+        loaded,
+        _stored_sequence(raw),
+        lotl_signers=_stored_signers(raw),
+        lotl_digest=_stored_digest(raw),
+    )
 
 
 def _load_aatl_signed_at(store: Path) -> datetime.datetime | None:
@@ -457,7 +484,7 @@ def _load_aatl_signed_at(store: Path) -> datetime.datetime | None:
 
 def _load_trust_state(store: Path) -> _StoredPins:
     stored = _load_pin_file(store)
-    return _StoredPins(stored.pins, stored.lotl_sequence, _load_aatl_signed_at(store))
+    return replace(stored, aatl_signed_at=_load_aatl_signed_at(store))
 
 
 def _save_aatl_signed_at(store: Path, signed_at: datetime.datetime) -> None:
@@ -486,11 +513,19 @@ def _merged_pins(
     return merged
 
 
-def _save_pins(store: Path, pins: dict[str, _PinSet], lotl_sequence: int | None) -> None:
+def _save_pins(
+    store: Path,
+    pins: dict[str, _PinSet],
+    lotl_sequence: int | None,
+    lotl_signers: frozenset[str],
+    lotl_digest: str | None,
+) -> None:
     data = json.dumps(
         {
             "version": PINS_VERSION,
             "lotlSequence": lotl_sequence,
+            "lotlSigners": sorted(lotl_signers),
+            "lotlDigest": lotl_digest,
             "pins": {
                 territory: {"anchored": entry.anchored, "fingerprints": sorted(entry.fingerprints)}
                 for territory, entry in sorted(pins.items())
@@ -519,13 +554,23 @@ def _signer(certificate, now: datetime.datetime) -> ListSigner:
 
 
 def _current_list_of_lists(
-    listed: ListedCertificates, signer: ListSigner, stale: bool, stored_sequence: int | None
+    listed: ListedCertificates, signer: ListSigner, stale: bool, stored: _StoredPins
 ) -> bool:
-    if signer.fingerprint not in LOTL_ANCHORS or signer.expired or stale:
+    stored_sequence = stored.lotl_sequence
+    pivot = (
+        signer.fingerprint in stored.lotl_signers
+        and stored_sequence is not None
+        and listed.sequence is not None
+    )
+    if not (signer.fingerprint in LOTL_ANCHORS or pivot) or signer.expired or stale:
         return False
     if stored_sequence is None:
         return True
-    return listed.sequence is not None and listed.sequence >= stored_sequence
+    if listed.sequence is None or listed.sequence < stored_sequence:
+        return False
+    if listed.sequence > stored_sequence or stored.lotl_digest is None:
+        return True
+    return _lotl_digest(listed.pins, listed.lotl_signers) == stored.lotl_digest
 
 
 def _current_adobe_list(
@@ -547,7 +592,7 @@ def _pin_status(
     fingerprint = signer.fingerprint
     pins = stored.pins
     if listed.list_of_lists:
-        current = _current_list_of_lists(listed, signer, stale, stored.lotl_sequence)
+        current = _current_list_of_lists(listed, signer, stale, stored)
         return VERIFIED if current else "unpinned"
     if listed.source.kind == SECURITY_SETTINGS:
         signed_at = listed.signature.signed_at if listed.signature is not None else None
@@ -596,6 +641,7 @@ class _Import:
     signature: ListSignature | None = None
     pins: dict[str, frozenset[str]] | None = None
     sequence: int | None = None
+    lotl_signers: frozenset[str] = frozenset()
 
 
 def _list_key(listed: ListSource | None, signature: ListSignature | None) -> str | None:
@@ -632,6 +678,7 @@ def _plan_import(path: str, progress: Progress) -> _Import:
             signature=signature,
             pins=found.pins,
             sequence=found.sequence,
+            lotl_signers=found.lotl_signers,
         )
     existing, _unreadable = _stored_roots(store)
     key = _list_key(listed, signature)
@@ -747,8 +794,14 @@ def trust_add(params: TrustAddParams, progress: Progress) -> TrustAddResult:
         stored = _load_pin_file(planned.store)
         anchored = status == VERIFIED
         pins = _merged_pins(stored.pins, planned.pins, anchored)
-        sequence = planned.sequence if anchored else stored.lotl_sequence
-        _save_pins(planned.store, pins, sequence)
+        if anchored:
+            signers = planned.lotl_signers
+            sequence = planned.sequence
+            digest = _lotl_digest(planned.pins, signers)
+        else:
+            signers, sequence = stored.lotl_signers, stored.lotl_sequence
+            digest = stored.lotl_digest
+        _save_pins(planned.store, pins, sequence, signers, digest)
     if (
         planned.source is not None
         and planned.source.kind == SECURITY_SETTINGS

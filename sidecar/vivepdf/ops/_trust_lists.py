@@ -53,6 +53,7 @@ POINTER_CERTIFICATES = (
     f"{TSL}ServiceDigitalIdentities/{TSL}ServiceDigitalIdentity/{TSL}DigitalId/{TSL}X509Certificate"
 )
 POINTER_TERRITORY = f"{TSL}AdditionalInformation/{TSL}OtherInformation/{TSL}SchemeTerritory"
+POINTER_TYPE = f"{TSL}AdditionalInformation/{TSL}OtherInformation/{TSL}TSLType"
 
 
 class EmptyTrustList(ValueError):
@@ -81,6 +82,7 @@ class ListedCertificates:
     pins: dict[str, frozenset[str]] = field(default_factory=dict)
     file_digest: str = ""
     sequence: int | None = None
+    lotl_signers: frozenset[str] = frozenset()
 
     @property
     def list_of_lists(self) -> bool:
@@ -94,6 +96,7 @@ class _Found:
     next_update: datetime.datetime | None = None
     pins: dict[str, frozenset[str]] = field(default_factory=dict)
     sequence: int | None = None
+    lotl_signers: frozenset[str] = frozenset()
 
 
 @dataclass(frozen=True)
@@ -186,6 +189,20 @@ def _lotl_pins(root: ElementTree.Element) -> dict[str, frozenset[str]]:
     return {territory: frozenset(values) for territory, values in pins.items()}
 
 
+def _lotl_signers(root: ElementTree.Element) -> frozenset[str]:
+    signers: set[str] = set()
+    for pointer in root.iter(f"{TSL}OtherTSLPointer"):
+        if not (pointer.findtext(POINTER_TYPE) or "").strip().endswith(LIST_OF_LISTS):
+            continue
+        for element in pointer.iterfind(POINTER_CERTIFICATES):
+            fingerprint = _certificate_fingerprint(element.text or "")
+            if fingerprint is not None:
+                signers.add(fingerprint)
+        if len(signers) > MAX_LIST_CERTIFICATES:
+            raise ValueError("too many signers in the list of trusted lists")
+    return frozenset(signers)
+
+
 def _is_list_of_lists(root: ElementTree.Element, services: list) -> bool:
     kind = (root.findtext(f"{TSL}SchemeInformation/{TSL}TSLType") or "").strip()
     return kind.endswith(LIST_OF_LISTS) or (
@@ -244,6 +261,7 @@ def _etsi_found(root: ElementTree.Element) -> _Found:
             _next_update(root),
             _lotl_pins(root),
             _sequence(root),
+            _lotl_signers(root),
         )
     return _Found(
         _etsi_entries(root),
@@ -510,4 +528,5 @@ def trust_list_certificates(
         pins=found.pins,
         file_digest=hashlib.sha256(data).hexdigest(),
         sequence=found.sequence,
+        lotl_signers=found.lotl_signers,
     )

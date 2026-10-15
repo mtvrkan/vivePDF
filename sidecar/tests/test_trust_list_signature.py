@@ -110,6 +110,7 @@ def _tsl(
     next_update: str = "2027-03-01T00:00:00Z",
     pointers: list[tuple[str, list[x509.Certificate]]] | None = None,
     sequence: int | None = None,
+    signers: list[x509.Certificate] | None = None,
 ) -> bytes:
     kind = "EUlistofthelists" if pointers is not None else "EUgeneric"
     services = "".join(
@@ -132,6 +133,19 @@ def _tsl(
         "</AdditionalInformation></OtherTSLPointer>"
         for place, certificates in (pointers or [])
     )
+    if signers:
+        links += (
+            "<OtherTSLPointer><ServiceDigitalIdentities>"
+            + "".join(
+                "<ServiceDigitalIdentity><DigitalId><X509Certificate>"
+                f"{_base64(certificate)}</X509Certificate></DigitalId></ServiceDigitalIdentity>"
+                for certificate in signers
+            )
+            + "</ServiceDigitalIdentities><AdditionalInformation><OtherInformation>"
+            f"<TSLType>{TSL_TYPE}EUlistofthelists</TSLType></OtherInformation><OtherInformation>"
+            "<SchemeTerritory>EU</SchemeTerritory></OtherInformation>"
+            "</AdditionalInformation></OtherTSLPointer>"
+        )
     pointer_block = f"<PointersToOtherTSL>{links}</PointersToOtherTSL>" if links else ""
     providers = (
         "<TrustServiceProviderList><TrustServiceProvider><TSPInformation><TSPName>"
@@ -283,8 +297,9 @@ def _lotl(
     name: str = "lotl.xml",
     sequence: int | None = None,
     next_update: str = "2027-03-01T00:00:00Z",
+    signers: list[x509.Certificate] | None = None,
 ) -> Path:
-    document = _tsl([], "EU", next_update, pointers=pointers, sequence=sequence)
+    document = _tsl([], "EU", next_update, pointers=pointers, sequence=sequence, signers=signers)
     data = _sign(document, key, signer, family="ecdsa")
     return _write(folder, name, data)
 
@@ -303,7 +318,7 @@ def test_an_unanchored_list_of_lists_never_makes_a_list_verified(
     assert _reason(_add, lotl) == "trustListUnverified"
     assert _add(lotl, accept_unverified=True).pinned == 2
     stored = json.loads((store / PINS_FILE).read_text())
-    assert stored["version"] == 3
+    assert stored["version"] == 4
     assert stored["pins"]["IS"] == {"anchored": False, "fingerprints": [FIXTURE_SIGNER]}
     assert trust_list(TrustListParams(), silent_progress()).roots == []
     assert _preview(FIXTURE).signature.status == "unpinned"
@@ -337,7 +352,7 @@ def test_an_anchored_list_of_lists_stores_its_pins_and_sequence(
     _anchor(monkeypatch, signer)
     _add(_lotl(tmp_path, ec_key, signer, [("IS", [_fixture_signer()])], sequence=340))
     stored = json.loads((store / PINS_FILE).read_text())
-    assert stored["version"] == 3 and stored["lotlSequence"] == 340
+    assert stored["version"] == 4 and stored["lotlSequence"] == 340
     assert stored["pins"]["IS"] == {"anchored": True, "fingerprints": [FIXTURE_SIGNER]}
 
 
@@ -450,6 +465,174 @@ def test_a_version_2_pin_file_still_loads_without_a_sequence(
         _preview(_lotl(tmp_path, ec_key, signer, [("IS", [_fixture_signer()])])).signature.status
         == "verified"
     )
+
+
+def _keyed(name: str, days: int = 365):
+    key = ec.generate_private_key(ec.SECP256R1())
+    return key, _certificate(key, name, days=days)
+
+
+def _stored_pins(store: Path) -> dict:
+    return json.loads((store / PINS_FILE).read_text())
+
+
+def test_a_signer_named_by_a_verified_list_of_lists_verifies_the_next_one(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first_key, first = _keyed("Commission 2026")
+    next_key, following = _keyed("Commission 2027")
+    _anchor(monkeypatch, first)
+    iceland = [("IS", [_fixture_signer()])]
+    _add(_lotl(tmp_path, first_key, first, iceland, "a.xml", 340, signers=[first, following]))
+
+    rotated = _lotl(tmp_path, next_key, following, iceland, "b.xml", 341, signers=[following])
+
+    assert _preview(rotated).signature.status == "verified"
+    _add(rotated)
+    stored = _stored_pins(store)
+    assert stored["lotlSequence"] == 341
+    assert stored["lotlSigners"] == [_fingerprint(following)]
+    assert _preview(FIXTURE).signature.status == "verified"
+
+
+def test_a_signer_learned_from_an_unverified_list_of_lists_is_never_trusted(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _anchor(monkeypatch, _keyed("Commission")[1])
+    stranger_key, stranger = _keyed("Stranger")
+    learned_key, learned = _keyed("Learned")
+    iceland = [("IS", [_fixture_signer()])]
+    _add(
+        _lotl(tmp_path, stranger_key, stranger, iceland, "a.xml", 340, signers=[learned]),
+        accept_unverified=True,
+    )
+
+    follow_up = _lotl(tmp_path, learned_key, learned, iceland, "b.xml", 341, signers=[learned])
+
+    assert _stored_pins(store)["lotlSigners"] == []
+    assert _preview(follow_up).signature.status == "unpinned"
+
+
+def test_a_pivot_cannot_roll_back_or_replay_its_sequence_with_other_content(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first_key, first = _keyed("Commission 2026")
+    next_key, following = _keyed("Commission 2027")
+    _anchor(monkeypatch, first)
+    iceland = [("IS", [_fixture_signer()])]
+    other = [("IS", [_authority("Swapped Iceland Signer")])]
+    both = [first, following]
+    _add(_lotl(tmp_path, first_key, first, iceland, "a.xml", 340, signers=both))
+
+    older = _lotl(tmp_path, next_key, following, iceland, "older.xml", 339, signers=[following])
+    swapped = _lotl(tmp_path, next_key, following, other, "swapped.xml", 340, signers=both)
+    by_anchor = _lotl(tmp_path, first_key, first, other, "anchor.xml", 340, signers=both)
+    resigned = _lotl(tmp_path, first_key, first, iceland, "resigned.xml", 340, signers=both)
+
+    assert _preview(older).signature.status == "unpinned"
+    assert _preview(swapped).signature.status == "unpinned"
+    assert _preview(by_anchor).signature.status == "unpinned"
+    assert _preview(resigned).signature.status == "verified"
+
+
+def test_an_expired_or_stale_pivot_does_not_verify(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first_key, first = _keyed("Commission 2026")
+    expired_key, expired = _keyed("Commission expired", days=-1)
+    next_key, following = _keyed("Commission 2027")
+    _anchor(monkeypatch, first)
+    iceland = [("IS", [_fixture_signer()])]
+    signers = [first, expired, following]
+    _add(_lotl(tmp_path, first_key, first, iceland, "a.xml", 340, signers=signers))
+
+    by_expired = _lotl(tmp_path, expired_key, expired, iceland, "b.xml", 341, signers=[expired])
+    stale = _lotl(
+        tmp_path,
+        next_key,
+        following,
+        iceland,
+        "c.xml",
+        341,
+        next_update="2026-09-01T00:00:00Z",
+        signers=[following],
+    )
+
+    assert _preview(by_expired).signature.status == "unpinned"
+    assert _preview(stale).signature.status == "unpinned"
+
+
+def test_pivots_chain_forward_and_a_dropped_signer_loses_its_trust(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first_key, first = _keyed("Commission 2026")
+    second_key, second = _keyed("Commission 2027")
+    third_key, third = _keyed("Commission 2028")
+    _anchor(monkeypatch, first)
+    iceland = [("IS", [_fixture_signer()])]
+    _add(_lotl(tmp_path, first_key, first, iceland, "a.xml", 340, signers=[second]))
+    _add(_lotl(tmp_path, second_key, second, iceland, "b.xml", 341, signers=[third]))
+
+    _add(_lotl(tmp_path, third_key, third, iceland, "c.xml", 342, signers=[third]))
+    by_second = _lotl(tmp_path, second_key, second, iceland, "d.xml", 343, signers=[second])
+
+    assert _stored_pins(store)["lotlSigners"] == [_fingerprint(third)]
+    assert _preview(by_second).signature.status == "unpinned"
+
+
+def test_only_the_list_of_lists_pointer_teaches_a_signer(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first_key, first = _keyed("Commission 2026")
+    claimed_key, claimed = _keyed("Claims to be the Commission")
+    _anchor(monkeypatch, first)
+    _add(_lotl(tmp_path, first_key, first, [("EU", [claimed])], "a.xml", 340))
+
+    iceland = [("IS", [_fixture_signer()])]
+    follow_up = _lotl(tmp_path, claimed_key, claimed, iceland, "b.xml", 341)
+
+    assert _stored_pins(store)["lotlSigners"] == []
+    assert _preview(follow_up).signature.status == "unpinned"
+
+
+def test_a_pivot_needs_a_stored_sequence(
+    store: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    first_key, first = _keyed("Commission 2026")
+    next_key, following = _keyed("Commission 2027")
+    _anchor(monkeypatch, first)
+    iceland = [("IS", [_fixture_signer()])]
+    _add(_lotl(tmp_path, first_key, first, iceland, "a.xml", signers=[following]))
+
+    follow_up = _lotl(tmp_path, next_key, following, iceland, "b.xml", 341, signers=[following])
+
+    assert _stored_pins(store)["lotlSequence"] is None
+    assert _preview(follow_up).signature.status == "unpinned"
+
+
+def test_a_version_3_pin_file_still_loads_without_learned_signers(store: Path) -> None:
+    (store / PINS_FILE).write_text(
+        json.dumps(
+            {
+                "version": 3,
+                "lotlSequence": 340,
+                "pins": {"IS": {"anchored": True, "fingerprints": [FIXTURE_SIGNER]}},
+            }
+        )
+    )
+
+    stored = sign_trust._load_pin_file(store)
+
+    assert stored.lotl_sequence == 340 and stored.lotl_signers == frozenset()
+    assert stored.lotl_digest is None
+    assert _preview(FIXTURE).signature.status == "verified"
+
+
+def test_the_real_list_of_lists_names_its_own_signer_in_its_own_pointer() -> None:
+    listed = sign_trust.trust_list_certificates(LOTL_FIXTURE.read_bytes())
+
+    assert listed is not None and LOTL_SIGNER in listed.lotl_signers
+    assert listed.lotl_signers <= listed.pins["EU"]
 
 
 def test_built_in_anchors_are_upper_case_sha256_fingerprints() -> None:
