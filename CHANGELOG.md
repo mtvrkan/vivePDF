@@ -72,6 +72,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Presentations: a measure line drawn on the black or white board shows its length, in the size of the page the board is saved as [2026-10-15]
 - The page box beside the viewer shows only the page total under a labelled page, since the panel already shows the current page [2026-10-15]
 - Presenter view: speaker notes of a PowerPoint or other converted file are kept with the original file, so they come back after closing and reopening, and notes are saved when the window closes [2026-10-15]
 - Presentations: the edge of the next page no longer shows below the current slide on the console or the projector [2026-10-15]

@@ -13,6 +13,7 @@ import { activePageWidth, movedDrawing, PICK_TOLERANCE_PX, type DrawingMove } fr
 import { placedDrawing } from "./drawingPlacement";
 import { duplicateDrawing } from "./drawingRotate";
 import { PlacementHint } from "./PlacementHint";
+import { boardPageSize } from "./measure";
 import { drawStroke, readableOnDark } from "./strokes";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 
@@ -160,7 +161,9 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
       return;
     }
     const style = { tool: tool === "highlighter" ? "highlighter" : tool === "shape" ? "shape" : "pen", color: penColor, penWidth, highlighterWidth, penOpacity, shapeKind } as const;
-    setLive(beginDrawing(style, pointOf(event), surface(), makeDrawingId("board")));
+    const begun = beginDrawing(style, pointOf(event), surface(), makeDrawingId("board"));
+    const pageSize = begun.tool === "measure" ? boardPageSize(surface()) : undefined;
+    setLive(pageSize ? { ...begun, pageSize } : begun);
   };
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {

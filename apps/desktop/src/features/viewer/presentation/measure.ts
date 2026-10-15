@@ -1,4 +1,5 @@
 import { useDocumentStore } from "@/shared/store/documentStore";
+import { activePageWidth } from "./drawingMove";
 import type { Stroke, StrokePoint } from "@/shared/store/presentationStore";
 
 const CM_PER_PT = 2.54 / 72;
@@ -8,6 +9,7 @@ const TICK_PER_WIDTH = 3;
 const LABEL_FONT_RATIO = 0.016;
 const LABEL_FONT_MIN_PX = 11;
 const LABEL_GAP_RATIO = 0.4;
+const A4_WIDTH_PT = 595.28;
 
 export type Segment = [StrokePoint, StrokePoint];
 
@@ -66,4 +68,10 @@ export function visiblePageSize(pageIndex: number, surface: { width: number; hei
   if (!size) return undefined;
   const turned = surface.width > surface.height !== size.width > size.height && size.width !== size.height;
   return turned ? { width: size.height, height: size.width } : { width: size.width, height: size.height };
+}
+
+export function boardPageSize(surface: { width: number; height: number }): { width: number; height: number } | undefined {
+  if (surface.width <= 0 || surface.height <= 0) return undefined;
+  const width = activePageWidth(-1) ?? A4_WIDTH_PT;
+  return { width, height: (width * surface.height) / surface.width };
 }

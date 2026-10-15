@@ -1,7 +1,9 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { measureLabel } from "./measure";
 import { BlackoutLayer } from "./BlackoutLayer";
 
 beforeAll(async () => {
@@ -151,5 +153,35 @@ describe("BlackoutLayer inside the presenter console", () => {
 
     expect(screen.queryByRole("status")).toBeNull();
     expect(board()).not.toBeNull();
+  });
+
+  it("labels a measure line on the board in the size of the page the board is saved as", () => {
+    useDocumentStore.setState({ activeId: "d", documents: { d: { info: { pageSizes: [{ width: 200, height: 200 }, { width: 600, height: 900 }] } } } as never });
+    act(() => {
+      usePresentationStore.getState().setBlackout("black");
+      usePresentationStore.getState().setShapeKind("measure");
+      usePresentationStore.getState().setTool("shape");
+    });
+    render(<BlackoutLayer />);
+
+    drag(board(), [[100, 250], [600, 250]]);
+
+    const [line] = usePresentationStore.getState().boardStrokes.black;
+    expect(line.pageSize).toEqual({ width: 600, height: 300 });
+    expect(measureLabel(line, "en")).toBe("10.6 cm");
+    useDocumentStore.setState({ documents: {}, activeId: null });
+  });
+
+  it("falls back to an A4-wide board when no document is open", () => {
+    act(() => {
+      usePresentationStore.getState().setBlackout("white");
+      usePresentationStore.getState().setShapeKind("measure");
+      usePresentationStore.getState().setTool("shape");
+    });
+    render(<BlackoutLayer />);
+
+    drag(board(), [[0, 100], [1000, 100]]);
+
+    expect(measureLabel(usePresentationStore.getState().boardStrokes.white[0], "en")).toBe("21 cm");
   });
 });
