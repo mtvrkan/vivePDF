@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::{Mutex, MutexGuard};
+use std::sync::{Mutex, MutexGuard, OnceLock};
+use std::time::SystemTime;
 
 use sha2::{Digest, Sha256};
 use tauri::{
@@ -13,6 +14,9 @@ use crate::rpc::RpcError;
 pub const LABEL_PREFIX: &str = "present-";
 const CLOSED_EVENT: &str = "presenter-closed";
 const NOTES_DIR: &str = "presenter-notes";
+const CONTENT_DIR: &str = "by-content";
+const MAX_HASHED_BYTES: u64 = 1024 * 1024 * 1024;
+const MAX_REMEMBERED_DIGESTS: usize = 64;
 const MAX_PASSWORD_CHARS: usize = 1024;
 const MAX_NOTES_BYTES: usize = 1024 * 1024;
 const MAX_NOTE_PAGES: usize = 5000;
@@ -372,10 +376,92 @@ pub async fn presenter_swap<R: Runtime>(
     })
 }
 
+fn hex(digest: &[u8]) -> String {
+    digest.iter().map(|byte| format!("{byte:02x}")).collect()
+}
+
 pub fn notes_file_name(path: &str) -> String {
     let digest = Sha256::digest(crate::document_windows::claim_key(path).as_bytes());
-    let hex: String = digest.iter().map(|byte| format!("{byte:02x}")).collect();
-    format!("{hex}.json")
+    format!("{}.json", hex(&digest))
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+struct Stamp {
+    len: u64,
+    modified: Option<SystemTime>,
+}
+
+impl Stamp {
+    fn of(file: &Path) -> Option<Self> {
+        let metadata = std::fs::metadata(file).ok()?;
+        metadata.is_file().then(|| Self {
+            len: metadata.len(),
+            modified: metadata.modified().ok(),
+        })
+    }
+}
+
+type Digests = HashMap<PathBuf, (Stamp, String)>;
+
+fn remembered_digests() -> MutexGuard<'static, Digests> {
+    static DIGESTS: OnceLock<Mutex<Digests>> = OnceLock::new();
+    DIGESTS
+        .get_or_init(Default::default)
+        .lock()
+        .unwrap_or_else(|poisoned| poisoned.into_inner())
+}
+
+fn content_digest(file: &Path, limit: u64) -> Option<String> {
+    let stamp = Stamp::of(file).filter(|stamp| stamp.len <= limit)?;
+    if let Some((known, digest)) = remembered_digests().get(file) {
+        if *known == stamp {
+            return Some(digest.clone());
+        }
+    }
+    let mut reader = std::fs::File::open(file).ok()?;
+    let mut hasher = Sha256::new();
+    std::io::copy(&mut reader, &mut hasher).ok()?;
+    let digest = hex(&hasher.finalize());
+    if Stamp::of(file) != Some(stamp) {
+        return None;
+    }
+    let mut digests = remembered_digests();
+    if digests.len() >= MAX_REMEMBERED_DIGESTS {
+        digests.clear();
+    }
+    digests.insert(file.to_path_buf(), (stamp, digest.clone()));
+    Some(digest)
+}
+
+struct NotesFiles {
+    document: PathBuf,
+    by_path: PathBuf,
+    by_content: PathBuf,
+}
+
+impl NotesFiles {
+    fn content_file(&self, limit: u64) -> Option<PathBuf> {
+        content_digest(&self.document, limit)
+            .map(|digest| self.by_content.join(format!("{digest}.json")))
+    }
+
+    fn read(&self, limit: u64) -> Result<Option<String>, RpcError> {
+        if let Some(text) = read_notes(&self.by_path)? {
+            return Ok(Some(text));
+        }
+        match self.content_file(limit) {
+            Some(file) => read_notes(&file),
+            None => Ok(None),
+        }
+    }
+
+    fn write(&self, contents: Option<&str>, limit: u64) -> Result<(), RpcError> {
+        write_notes(&self.by_path, contents)?;
+        match self.content_file(limit) {
+            Some(file) => write_notes(&file, contents),
+            None => Ok(()),
+        }
+    }
 }
 
 fn invalid(message: &str) -> RpcError {
@@ -441,12 +527,14 @@ fn write_notes(file: &Path, contents: Option<&str>) -> Result<(), RpcError> {
     })
 }
 
-fn notes_file<R: Runtime>(app: &AppHandle<R>, path: &str) -> Result<PathBuf, RpcError> {
-    granted_file(path)?;
-    app.path()
-        .app_data_dir()
-        .map(|dir| dir.join(NOTES_DIR).join(notes_file_name(path)))
-        .map_err(internal)
+fn notes_files<R: Runtime>(app: &AppHandle<R>, path: &str) -> Result<NotesFiles, RpcError> {
+    let document = granted_file(path)?;
+    let dir = app.path().app_data_dir().map_err(internal)?.join(NOTES_DIR);
+    Ok(NotesFiles {
+        document,
+        by_path: dir.join(notes_file_name(path)),
+        by_content: dir.join(CONTENT_DIR),
+    })
 }
 
 #[tauri::command]
@@ -454,8 +542,8 @@ pub async fn presenter_notes_read<R: Runtime>(
     app: AppHandle<R>,
     path: String,
 ) -> Result<Option<String>, RpcError> {
-    let file = notes_file(&app, &path)?;
-    tauri::async_runtime::spawn_blocking(move || read_notes(&file))
+    let files = notes_files(&app, &path)?;
+    tauri::async_runtime::spawn_blocking(move || files.read(MAX_HASHED_BYTES))
         .await
         .map_err(internal)?
 }
@@ -466,8 +554,8 @@ pub async fn presenter_notes_write<R: Runtime>(
     path: String,
     contents: Option<String>,
 ) -> Result<(), RpcError> {
-    let file = notes_file(&app, &path)?;
-    tauri::async_runtime::spawn_blocking(move || write_notes(&file, contents.as_deref()))
+    let files = notes_files(&app, &path)?;
+    tauri::async_runtime::spawn_blocking(move || files.write(contents.as_deref(), MAX_HASHED_BYTES))
         .await
         .map_err(internal)?
 }
@@ -655,6 +743,127 @@ mod tests {
         );
         assert_eq!(read_notes(&file).unwrap().as_deref(), Some(good));
         let _ = std::fs::remove_dir_all(file.parent().unwrap().parent().unwrap());
+    }
+
+    fn library(label: &str) -> (PathBuf, PathBuf) {
+        let root =
+            std::env::temp_dir().join(format!("vivepdf-notes-{label}-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        let documents = root.join("documents");
+        std::fs::create_dir_all(&documents).unwrap();
+        (root, documents)
+    }
+
+    fn files_for(root: &Path, document: &Path) -> NotesFiles {
+        let dir = root.join(NOTES_DIR);
+        NotesFiles {
+            document: document.to_path_buf(),
+            by_path: dir.join(notes_file_name(&document.to_string_lossy())),
+            by_content: dir.join(CONTENT_DIR),
+        }
+    }
+
+    const NOTES: &str = r#"{"version":1,"notes":{"0":"Giriş"}}"#;
+
+    #[test]
+    fn notes_follow_a_renamed_moved_or_copied_file() {
+        let (root, documents) = library("follow");
+        let original = documents.join("Talk.pdf");
+        std::fs::write(&original, b"%PDF-1.7 talk").unwrap();
+        files_for(&root, &original)
+            .write(Some(NOTES), 1024)
+            .unwrap();
+        let renamed = documents.join("Renamed.pdf");
+        std::fs::rename(&original, &renamed).unwrap();
+        let copied = root.join("Copied.pdf");
+        std::fs::copy(&renamed, &copied).unwrap();
+
+        let after_rename = files_for(&root, &renamed).read(1024).unwrap();
+        let after_copy = files_for(&root, &copied).read(1024).unwrap();
+
+        assert_eq!(after_rename.as_deref(), Some(NOTES));
+        assert_eq!(after_copy.as_deref(), Some(NOTES));
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn an_edited_and_moved_file_starts_empty_but_keeps_notes_in_place() {
+        let (root, documents) = library("edited");
+        let talk = documents.join("Talk.pdf");
+        std::fs::write(&talk, b"%PDF-1.7 first").unwrap();
+        files_for(&root, &talk).write(Some(NOTES), 1024).unwrap();
+        std::fs::write(&talk, b"%PDF-1.7 second edition").unwrap();
+        let moved = root.join("Moved.pdf");
+        std::fs::copy(&talk, &moved).unwrap();
+
+        let in_place = files_for(&root, &talk).read(1024).unwrap();
+        let elsewhere = files_for(&root, &moved).read(1024).unwrap();
+
+        assert_eq!(in_place.as_deref(), Some(NOTES));
+        assert_eq!(elsewhere, None);
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn the_path_notes_win_over_the_content_notes_and_clearing_removes_both() {
+        let (root, documents) = library("order");
+        let first = documents.join("A.pdf");
+        let copy = documents.join("B.pdf");
+        std::fs::write(&first, b"%PDF-1.7 same").unwrap();
+        std::fs::write(&copy, b"%PDF-1.7 same").unwrap();
+        let own = r#"{"version":1,"notes":{"1":"B only"}}"#;
+        files_for(&root, &first).write(Some(NOTES), 1024).unwrap();
+        files_for(&root, &copy).write(Some(own), 1024).unwrap();
+
+        let first_reads = files_for(&root, &first).read(1024).unwrap();
+        files_for(&root, &copy).write(None, 1024).unwrap();
+        let cleared = files_for(&root, &copy).read(1024).unwrap();
+
+        assert_eq!(first_reads.as_deref(), Some(NOTES));
+        assert_eq!(cleared, None);
+        assert_eq!(
+            files_for(&root, &first).read(1024).unwrap().as_deref(),
+            Some(NOTES)
+        );
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn content_digests_track_the_bytes_and_skip_large_or_missing_files() {
+        let (root, documents) = library("digest");
+        let file = documents.join("Talk.pdf");
+        std::fs::write(&file, b"%PDF-1.7 one").unwrap();
+        let twin = documents.join("Twin.pdf");
+        std::fs::write(&twin, b"%PDF-1.7 one").unwrap();
+
+        let before = content_digest(&file, 1024).unwrap();
+        std::fs::write(&file, b"%PDF-1.7 a longer second version").unwrap();
+        let after = content_digest(&file, 1024).unwrap();
+
+        assert_eq!(
+            content_digest(&twin, 1024).as_deref(),
+            Some(before.as_str())
+        );
+        assert_ne!(before, after);
+        assert_eq!(before.len(), 64);
+        assert_eq!(content_digest(&file, 8), None);
+        assert_eq!(content_digest(&documents.join("missing.pdf"), 1024), None);
+        assert_eq!(content_digest(&documents, 1024), None);
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn a_file_over_the_hash_limit_keeps_its_path_notes_only() {
+        let (root, documents) = library("limit");
+        let talk = documents.join("Talk.pdf");
+        std::fs::write(&talk, b"%PDF-1.7 big").unwrap();
+        let files = files_for(&root, &talk);
+
+        files.write(Some(NOTES), 4).unwrap();
+
+        assert_eq!(files.read(4).unwrap().as_deref(), Some(NOTES));
+        assert!(!files.by_content.exists());
+        let _ = std::fs::remove_dir_all(&root);
     }
 
     #[test]
