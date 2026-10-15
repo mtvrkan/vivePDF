@@ -133,6 +133,27 @@ describe("holdTemporaryDrawings", () => {
     usePresentationStore.setState({ boardStrokes: { black: [], white: [] } });
   });
 
+  it("keeps only the inserted items of an annotation session, on pages and boards", () => {
+    useDocumentStore.getState().register(DOCUMENT_ID, "C:/docs/Talk.pdf", null);
+    useDocumentStore.setState({ activeId: DOCUMENT_ID } as never);
+    const asset = usePresentationStore.getState().addDrawingAsset({ dataUrl: "data:x", width: 40, height: 20, drawing: { kind: "formula", source: { latex: "x", svg: "<svg/>", color: "#111111", emWidth: 1, emHeight: 1 } } });
+    const item = { id: "item", tool: "drawing" as const, color: "#000000", width: 0, points: [{ x: 0.1, y: 0.1 }], size: { width: 0.2, height: 0.1 }, asset };
+    const pen = { id: "pen", tool: "pen" as const, color: "#ff0000", width: 0.01, points: [{ x: 0.5, y: 0.5 }, { x: 0.6, y: 0.6 }] };
+    usePresentationStore.setState({ drawingsMode: "annotations", strokesByPage: { 0: [pen, item], 2: [pen] }, boardStrokes: { black: [{ ...item, id: "board-item" }, { ...pen, id: "board-pen" }], white: [] }, boardSize: { width: 800, height: 450 } });
+
+    holdTemporaryDrawings("ask");
+
+    const held = usePresentationLeftoverStore.getState().leftover;
+    expect(held?.pages).toEqual([{ page: 1, strokes: [expect.objectContaining({ tool: "drawing" })] }]);
+    expect(held?.boards).toEqual([expect.objectContaining({ background: "black", strokes: [expect.objectContaining({ tool: "drawing" })] })]);
+
+    usePresentationLeftoverStore.getState().clear();
+    usePresentationStore.setState({ strokesByPage: { 0: [pen] }, boardStrokes: { black: [], white: [] } });
+    holdTemporaryDrawings("ask");
+    expect(usePresentationLeftoverStore.getState().leftover).toBeNull();
+    usePresentationStore.setState({ drawingsMode: "temporary", strokesByPage: {}, boardSize: null });
+  });
+
   it("opens with the save button focused instead of the discard button", () => {
     usePresentationLeftoverStore.getState().hold(leftover());
 

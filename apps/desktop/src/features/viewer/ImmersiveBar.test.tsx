@@ -88,4 +88,13 @@ describe("PresenterBar", () => {
     fireEvent.pointerDown(document.body);
     expect(screen.queryByRole("checkbox", { name: /cursor/i })).toBeNull();
   });
+
+  it.each(["temporary", "annotations"] as const)("offers Insert while drawings are %s", (mode) => {
+    usePresentationStore.setState({ drawingsMode: mode });
+
+    renderBar();
+
+    expect(screen.getByRole("button", { name: "Insert" })).toBeTruthy();
+    usePresentationStore.setState({ drawingsMode: "temporary" });
+  });
 });

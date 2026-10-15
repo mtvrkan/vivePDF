@@ -153,6 +153,7 @@ export function PresenterBar({
             }}
           />
           <PresentationStyleTrigger open={stylePopoverOpen} onToggle={() => setStylePopoverOpen((current) => !current)} />
+          <PresentationInsertMenu opensUp onOpenChange={setInsertOpen} />
           {drawingsMode === "annotations" ? (
             <DrawingCleanupButton
               pageCount={sessionAnnotations.filter((item) => item.pageIndex === scrollState.currentPage - 1).length}
@@ -162,7 +163,6 @@ export function PresenterBar({
             />
           ) : (
             <>
-              <PresentationInsertMenu opensUp onOpenChange={setInsertOpen} />
               <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />
               {hasTemporaryDrawings ? <IconButton icon={FileDown} label={t("presentation.keep.finish")} onClick={() => void exitImmersiveSavingDrawings()} /> : null}
             </>
