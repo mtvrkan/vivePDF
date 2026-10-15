@@ -6812,7 +6812,14 @@
     "copied": "Informe copiado al portapapeles",
     "saved": "Informe guardado",
     "typeLabel": "Tipo de informe",
-    "descriptionLabel": "Descripción"
+    "descriptionLabel": "Descripción",
+    "savePackage": "Guardar como paquete (.zip)",
+    "attachments": {
+      "title": "Adjuntos",
+      "add": "Añadir archivo…",
+      "hint": "Pega una captura de pantalla con {{keys}}. Los adjuntos solo van en el paquete guardado; copiar y GitHub nunca los incluyen.",
+      "remove": "Quitar {{name}}"
+    }
   },
   "dateRange": {
     "placeholder": "Cualquier fecha",

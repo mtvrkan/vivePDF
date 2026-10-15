@@ -1,4 +1,5 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useId, useMemo, type ClipboardEvent } from "react";
+import { FileText, Paperclip, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { openExternal } from "@/shared/lib/openExternal";
 import { useOfflineHint } from "@/shared/lib/offline";
@@ -6,6 +7,11 @@ import { save } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { Dialog } from "@/components/shared/Dialog";
 import { Button } from "@/components/shared/Button";
+import { IconButton } from "@/components/shared/IconButton";
+import { basenameOf } from "@/shared/lib/paths";
+import { isMac } from "@/shared/lib/platform";
+import { saveSupportBundle } from "@/shared/lib/supportBundle";
+import { clipboardImages, pickAttachments, reportImageFrom } from "./reportAttachments";
 import { Checkbox } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
@@ -73,6 +79,14 @@ export function ReportDialog() {
   const setCategory = useReportStore((state) => state.setCategory);
   const setDescription = useReportStore((state) => state.setDescription);
   const setIncludeDiagnostics = useReportStore((state) => state.setIncludeDiagnostics);
+  const attachments = useReportStore((state) => state.attachments);
+  const images = useReportStore((state) => state.images);
+  const addAttachments = useReportStore((state) => state.addAttachments);
+  const removeAttachment = useReportStore((state) => state.removeAttachment);
+  const addImage = useReportStore((state) => state.addImage);
+  const removeImage = useReportStore((state) => state.removeImage);
+  const attachmentsTitleId = useId();
+  const hasAttachments = attachments.length > 0 || images.length > 0;
   const locale = `${i18n.language} (system ${navigator.language})`;
 
   const environment = useMemo(() => environmentLines(engine, tools), [engine, tools]);
@@ -126,6 +140,32 @@ export function ReportDialog() {
     }
   };
 
+  const handleAddFiles = async () => {
+    try {
+      addAttachments(await pickAttachments(t("report.attachments.add")));
+    } catch (error) {
+      failed("addFiles", error);
+    }
+  };
+
+  const handlePaste = (event: ClipboardEvent<HTMLDivElement>) => {
+    const files = clipboardImages(event.clipboardData);
+    if (files.length === 0) return;
+    event.preventDefault();
+    void (async () => {
+      for (const file of files) {
+        const image = await reportImageFrom(file, useReportStore.getState().images.length + 1);
+        if (image) addImage(image);
+        else toast("error", t("support.badImage"));
+      }
+    })();
+  };
+
+  const handleSavePackage = async () => {
+    logger.info("report", "action:savePackage");
+    await saveSupportBundle({ report: buildBody(category, description, null), attachments, images: images.map(({ name, base64 }) => ({ name, base64 })) });
+  };
+
   return (
     <Dialog
       open={open}
@@ -140,13 +180,18 @@ export function ReportDialog() {
           <Button variant="secondary" onClick={() => void handleSaveToFile()}>
             {t("report.saveToFile")}
           </Button>
+          {hasAttachments ? (
+            <Button variant="secondary" onClick={() => void handleSavePackage()}>
+              {t("report.savePackage")}
+            </Button>
+          ) : null}
           <Button variant="primary" onClick={() => void handleOpenGithub()} disabled={offlineHint !== undefined} title={offlineHint}>
             {t("report.openGithub")}
           </Button>
         </>
       }
     >
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3" onPaste={handlePaste}>
         <div className="flex gap-2" role="group" aria-label={t("report.typeLabel")}>
           {CATEGORIES.map((value) => (
             <button
@@ -193,6 +238,37 @@ export function ReportDialog() {
             )}
           </details>
         ) : null}
+        <section aria-labelledby={attachmentsTitleId} className="flex flex-col gap-2 rounded-md border px-3 py-2">
+          <div className="flex items-center justify-between gap-3">
+            <p id={attachmentsTitleId} className="text-sm font-medium">
+              {t("report.attachments.title")}
+            </p>
+            <Button size="sm" variant="secondary" icon={<Paperclip className="size-4" aria-hidden />} onClick={() => void handleAddFiles()}>
+              {t("report.attachments.add")}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">{t("report.attachments.hint", { keys: isMac ? "⌘V" : "Ctrl+V" })}</p>
+          {hasAttachments ? (
+            <ul className="flex flex-col gap-1" data-testid="report-attachments">
+              {images.map((image) => (
+                <li key={image.id} className="flex items-center gap-2 text-sm">
+                  <img src={`data:${image.mime};base64,${image.base64}`} alt="" className="size-8 shrink-0 rounded border object-cover" />
+                  <span className="min-w-0 flex-1 truncate">{image.name}</span>
+                  <IconButton icon={X} label={t("report.attachments.remove", { name: image.name })} onClick={() => removeImage(image.id)} />
+                </li>
+              ))}
+              {attachments.map((path) => (
+                <li key={path} className="flex items-center gap-2 text-sm">
+                  <FileText className="size-4 shrink-0 text-muted-foreground" aria-hidden />
+                  <span className="min-w-0 flex-1 truncate" title={path}>
+                    {basenameOf(path)}
+                  </span>
+                  <IconButton icon={X} label={t("report.attachments.remove", { name: basenameOf(path) })} onClick={() => removeAttachment(path)} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </section>
       </div>
     </Dialog>
   );

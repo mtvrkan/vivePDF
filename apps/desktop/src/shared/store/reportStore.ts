@@ -13,6 +13,8 @@ export type DiagnosticsInfo = {
 
 type ReportCategory = "crash" | "bug" | "idea";
 
+export type ReportImage = { id: string; name: string; base64: string; mime: string };
+
 type ReportState = {
   open: boolean;
   category: ReportCategory;
@@ -21,6 +23,12 @@ type ReportState = {
   diagnostics: DiagnosticsInfo | null;
   loadingDiagnostics: boolean;
   diagnosticsFailed: boolean;
+  attachments: string[];
+  images: ReportImage[];
+  addAttachments: (paths: string[]) => void;
+  removeAttachment: (path: string) => void;
+  addImage: (image: ReportImage) => void;
+  removeImage: (id: string) => void;
   openDialog: (prefill?: { category?: ReportCategory; description?: string }) => void;
   close: () => void;
   setCategory: (category: ReportCategory) => void;
@@ -37,13 +45,19 @@ export const useReportStore = create<ReportState>((set, get) => ({
   diagnostics: null,
   loadingDiagnostics: false,
   diagnosticsFailed: false,
+  attachments: [],
+  images: [],
+  addAttachments: (paths) => set((state) => ({ attachments: [...state.attachments, ...paths.filter((path, index) => !state.attachments.includes(path) && paths.indexOf(path) === index)] })),
+  removeAttachment: (path) => set((state) => ({ attachments: state.attachments.filter((entry) => entry !== path) })),
+  addImage: (image) => set((state) => ({ images: [...state.images, image] })),
+  removeImage: (id) => set((state) => ({ images: state.images.filter((image) => image.id !== id) })),
   openDialog: (prefill) =>
     set({
       open: true,
       category: prefill?.category ?? "bug",
       description: prefill?.description ?? "",
     }),
-  close: () => set({ open: false }),
+  close: () => set({ open: false, attachments: [], images: [] }),
   setCategory: (category) => set({ category }),
   setDescription: (description) => set({ description }),
   setIncludeDiagnostics: (value) => set({ includeDiagnostics: value }),

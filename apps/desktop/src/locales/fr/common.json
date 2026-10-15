@@ -6812,7 +6812,14 @@
     "copied": "Rapport copié dans le presse-papiers",
     "saved": "Rapport enregistré",
     "typeLabel": "Type de rapport",
-    "descriptionLabel": "Description"
+    "descriptionLabel": "Description",
+    "savePackage": "Enregistrer en paquet (.zip)",
+    "attachments": {
+      "title": "Pièces jointes",
+      "add": "Ajouter un fichier…",
+      "hint": "Collez une capture d’écran avec {{keys}}. Les pièces jointes vont seulement dans le paquet enregistré ; la copie et GitHub ne les incluent jamais.",
+      "remove": "Retirer {{name}}"
+    }
   },
   "dateRange": {
     "placeholder": "Toutes les dates",

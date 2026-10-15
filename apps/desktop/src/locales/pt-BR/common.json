@@ -6812,7 +6812,14 @@
     "copied": "Relatório copiado para a área de transferência",
     "saved": "Relatório salvo",
     "typeLabel": "Tipo de relatório",
-    "descriptionLabel": "Descrição"
+    "descriptionLabel": "Descrição",
+    "savePackage": "Salvar como pacote (.zip)",
+    "attachments": {
+      "title": "Anexos",
+      "add": "Adicionar arquivo…",
+      "hint": "Cole uma captura de tela com {{keys}}. Os anexos só vão para o pacote salvo; copiar e o GitHub nunca os incluem.",
+      "remove": "Remover {{name}}"
+    }
   },
   "dateRange": {
     "placeholder": "Qualquer data",

@@ -6813,7 +6813,14 @@
     "copied": "Report copied to the clipboard",
     "saved": "Report saved",
     "typeLabel": "Report type",
-    "descriptionLabel": "Description"
+    "descriptionLabel": "Description",
+    "savePackage": "Save as package (.zip)",
+    "attachments": {
+      "title": "Attachments",
+      "add": "Add file…",
+      "hint": "Paste a screenshot with {{keys}}. Attachments only go into the saved package; copying and GitHub never include them.",
+      "remove": "Remove {{name}}"
+    }
   },
   "topbar": {},
   "dateRange": {

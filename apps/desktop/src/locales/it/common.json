@@ -6812,7 +6812,14 @@
     "copied": "Segnalazione copiata negli appunti",
     "saved": "Segnalazione salvata",
     "typeLabel": "Tipo di segnalazione",
-    "descriptionLabel": "Descrizione"
+    "descriptionLabel": "Descrizione",
+    "savePackage": "Salva come pacchetto (.zip)",
+    "attachments": {
+      "title": "Allegati",
+      "add": "Aggiungi file…",
+      "hint": "Incolla uno screenshot con {{keys}}. Gli allegati finiscono solo nel pacchetto salvato; la copia e GitHub non li includono mai.",
+      "remove": "Rimuovi {{name}}"
+    }
   },
   "dateRange": {
     "placeholder": "Qualsiasi data",

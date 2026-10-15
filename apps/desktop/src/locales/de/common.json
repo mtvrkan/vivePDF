@@ -6812,7 +6812,14 @@
     "copied": "Bericht in die Zwischenablage kopiert",
     "saved": "Bericht gespeichert",
     "typeLabel": "Art des Berichts",
-    "descriptionLabel": "Beschreibung"
+    "descriptionLabel": "Beschreibung",
+    "savePackage": "Als Paket speichern (.zip)",
+    "attachments": {
+      "title": "Anhänge",
+      "add": "Datei hinzufügen…",
+      "hint": "Einen Screenshot mit {{keys}} einfügen. Anhänge kommen nur in das gespeicherte Paket; Kopieren und GitHub enthalten sie nie.",
+      "remove": "{{name}} entfernen"
+    }
   },
   "dateRange": {
     "placeholder": "Beliebiges Datum",

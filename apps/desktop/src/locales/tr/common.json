@@ -6813,7 +6813,14 @@
     "copied": "Rapor panoya kopyalandı",
     "saved": "Rapor kaydedildi",
     "typeLabel": "Rapor türü",
-    "descriptionLabel": "Açıklama"
+    "descriptionLabel": "Açıklama",
+    "savePackage": "Paket olarak kaydet (.zip)",
+    "attachments": {
+      "title": "Ekler",
+      "add": "Dosya ekle…",
+      "hint": "Ekran görüntüsünü {{keys}} ile yapıştırın. Ekler yalnızca kaydedilen pakete girer; kopyalama ve GitHub bunları hiç içermez.",
+      "remove": "{{name}} kaldır"
+    }
   },
   "topbar": {},
   "dateRange": {

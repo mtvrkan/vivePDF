@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Bug reports take attached files and pasted screenshots, saved only into a package (.zip) you choose; copying and GitHub never carry them [2026-10-15]
 - Help › Save support bundle… puts a short report, the system details and the recent log files into one zip you can attach to an issue or an e-mail; it is also in the command palette and the Mac Help menu. [2026-10-15]
 - Presentations get an on-screen ruler (U) in real centimetres that you can move and turn, pen and line strokes drawn along its edge come out straight, and a new measure shape shows a line's real length; the audience screen sees both. [2026-10-15]
 - Presenter view: the presenter's cursor is shown on the projector while it is over the slide [2026-10-15]
@@ -70,6 +71,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- The page box beside the viewer shows only the page total under a labelled page, since the panel already shows the current page [2026-10-15]
 - Presenter view: speaker notes of a PowerPoint or other converted file are kept with the original file, so they come back after closing and reopening, and notes are saved when the window closes [2026-10-15]
 - Presentations: the edge of the next page no longer shows below the current slide on the console or the projector [2026-10-15]
 - Viewer: with page labels the page position under the page box is shown in full instead of being cut off, with more room around the box [2026-10-15]

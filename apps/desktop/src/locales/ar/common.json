@@ -7619,7 +7619,14 @@
     "copied": "تم نسخ التقرير إلى الحافظة",
     "saved": "تم حفظ التقرير",
     "typeLabel": "نوع التقرير",
-    "descriptionLabel": "الوصف"
+    "descriptionLabel": "الوصف",
+    "savePackage": "حفظ كحزمة (.zip)",
+    "attachments": {
+      "title": "المرفقات",
+      "add": "إضافة ملف…",
+      "hint": "الصق لقطة شاشة باستخدام {{keys}}. تُضاف المرفقات إلى الحزمة المحفوظة فقط؛ النسخ وGitHub لا يتضمنانها أبدًا.",
+      "remove": "إزالة {{name}}"
+    }
   },
   "dateRange": {
     "placeholder": "أي تاريخ",
