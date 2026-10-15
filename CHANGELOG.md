@@ -132,6 +132,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Privacy: the About privacy page now lists the leaked-password check, DOI lookups, web page conversion and every download (translation packs, fonts, LibreOffice), says log error lines can hold file paths, and each stored item links to where it can actually be removed [2026-10-15]
 
 ### Removed
+- Home page: the Studio card is gone; Studio stays one click away in the sidebar, and a home layout saved with the card loads without it [2026-10-15]
 - Fallback font downloads: every viewer fallback font ships with the app, so the "font missing — download" message, the font download list in Settings › Tools and the three `system.fallback_fonts*` engine calls are gone; copies left by older versions are still cleaned up on start, and the Studio font library keeps downloading on request [2026-10-14]
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 

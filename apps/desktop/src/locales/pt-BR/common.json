@@ -140,11 +140,6 @@
     },
     "recentCleared": "Lista de documentos recentes apagada.",
     "removeRecent": "Remover {{name}} dos recentes",
-    "studio": {
-      "title": "Estúdio",
-      "open": "Abrir o Estúdio",
-      "empty": "Os designs e documentos que você salvar no Estúdio aparecem aqui."
-    },
     "collections": {
       "title": "Coleções",
       "new": "Nova coleção",

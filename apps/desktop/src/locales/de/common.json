@@ -140,11 +140,6 @@
     },
     "recentCleared": "Liste der zuletzt verwendeten Dokumente gelöscht.",
     "removeRecent": "{{name}} aus Zuletzt geöffnet entfernen",
-    "studio": {
-      "title": "Studio",
-      "open": "Studio öffnen",
-      "empty": "Hier erscheinen die Entwürfe und Dokumente, die Sie in Studio speichern."
-    },
     "collections": {
       "title": "Sammlungen",
       "new": "Neue Sammlung",

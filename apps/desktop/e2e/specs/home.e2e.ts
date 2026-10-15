@@ -93,8 +93,7 @@ describe("home layout", () => {
     expect(await quickTiles()).toContain("merge");
   });
 
-  it("drags a quick access tile onto another one and shows Studio on the home page", async () => {
-    await expect($('[data-testid="home-studio"]')).toBeDisplayed();
+  it("drags a quick access tile onto another one", async () => {
     await startEditing();
     const merge = $(`[data-testid="home-region-main"] [data-quick-action="merge"] > div`);
     const compress = $(`[data-testid="home-region-main"] [data-quick-action="compress"] > div`);

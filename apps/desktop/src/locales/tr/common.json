@@ -140,11 +140,6 @@
     },
     "recentCleared": "Son belgeler listesi temizlendi.",
     "removeRecent": "{{name}} son açılanlardan kaldır",
-    "studio": {
-      "title": "Stüdyo",
-      "open": "Stüdyo'yu aç",
-      "empty": "Stüdyo'da kaydettiğiniz tasarımlar ve belgeler burada görünür."
-    },
     "collections": {
       "title": "Koleksiyonlar",
       "new": "Yeni koleksiyon",

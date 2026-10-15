@@ -140,11 +140,6 @@
     },
     "recentCleared": "Liste des documents récents effacée.",
     "removeRecent": "Retirer {{name}} des récents",
-    "studio": {
-      "title": "Studio",
-      "open": "Ouvrir Studio",
-      "empty": "Les créations et documents enregistrés dans Studio apparaissent ici."
-    },
     "collections": {
       "title": "Collections",
       "new": "Nouvelle collection",

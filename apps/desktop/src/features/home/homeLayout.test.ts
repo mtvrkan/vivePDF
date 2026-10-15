@@ -35,7 +35,7 @@ describe("normalizeHomeLayout", () => {
       { id: "stats", region: "top", size: "large", hidden: false },
       { id: "hero", region: "bottom", size: "small", hidden: true },
     ]);
-    expect(layout.sections).toHaveLength(9);
+    expect(layout.sections).toHaveLength(8);
     expect(layout.sidebar).toEqual({ side: "start", width: "wide" });
     expect(layout.quickActions).toEqual(["ocr", "sign"]);
   });
@@ -55,13 +55,22 @@ describe("normalizeHomeLayout", () => {
     expect(layout.quickActions).toEqual(["merge"]);
     expect(normalizeHomeLayout("nonsense", tools)).toEqual(defaultHomeLayout());
   });
+
+  it("drops the retired Studio card from a layout saved before it was removed", () => {
+    const stored = { ...defaultHomeLayout(), sections: [{ id: "studio", region: "main", size: "large", hidden: false }, ...defaultHomeLayout().sections] };
+
+    const layout = normalizeHomeLayout(stored, tools);
+
+    expect(layout.sections.map((section) => section.id)).not.toContain("studio");
+    expect(layout.sections).toEqual(defaultHomeLayout().sections);
+  });
 });
 
 describe("moveSection", () => {
   it("moves a section into another region at the given position", () => {
     const layout = moveSection(defaultHomeLayout(), "stats", "main", 1);
 
-    expect(ids(layout, "main")).toEqual(["hero", "stats", "quickActions", "recent", "studio", "collections", "tools"]);
+    expect(ids(layout, "main")).toEqual(["hero", "stats", "quickActions", "recent", "collections", "tools"]);
     expect(ids(layout, "side")).toEqual(["continue", "history"]);
   });
 
@@ -86,7 +95,7 @@ describe("shiftSection", () => {
   it("swaps a section with its visible neighbour in the same region only", () => {
     const layout = shiftSection(defaultHomeLayout(), "recent", -1);
 
-    expect(ids(layout, "main")).toEqual(["hero", "recent", "quickActions", "studio", "collections", "tools"]);
+    expect(ids(layout, "main")).toEqual(["hero", "recent", "quickActions", "collections", "tools"]);
     expect(ids(shiftSection(layout, "tools", 1), "main")).toEqual(ids(layout, "main"));
     expect(ids(shiftSection(defaultHomeLayout(), "history", 1), "side")).toEqual(["continue", "stats", "history"]);
   });

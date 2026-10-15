@@ -140,11 +140,6 @@
     },
     "recentCleared": "Elenco dei documenti recenti cancellato.",
     "removeRecent": "Rimuovi {{name}} dai recenti",
-    "studio": {
-      "title": "Studio",
-      "open": "Apri Studio",
-      "empty": "Qui compaiono i progetti e i documenti che salvi in Studio."
-    },
     "collections": {
       "title": "Raccolte",
       "new": "Nuova raccolta",
