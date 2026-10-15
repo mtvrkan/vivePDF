@@ -37,6 +37,7 @@ import { GraphicEditorHost } from "./graphics/GraphicEditorHost";
 import { startGraphicSync } from "./graphics/graphicSync";
 import { buildTemplate } from "./templates/kit";
 import { LazyTemplateGallery } from "./templates/LazyTemplateGallery";
+import { useShortcutSheetStore } from "@/features/about/shortcutSheetStore";
 
 const DocumentEditor = lazy(() => import("./document/DocumentEditor"));
 const CvStudio = lazy(() => import("./cv/CvStudio"));
@@ -322,6 +323,10 @@ export function StudioPage() {
   useEffect(() => {
     if (!editing) useMergeStore.getState().clear();
   }, [editing]);
+  useEffect(() => {
+    useShortcutSheetStore.getState().setStudioScreen(cvActive ? null : editing ? "design" : document ? "document" : null);
+  }, [cvActive, editing, document]);
+  useEffect(() => () => useShortcutSheetStore.getState().setStudioScreen(null), []);
   useEffect(() => {
     const start = studioStartOf(params);
     if (!start) return;

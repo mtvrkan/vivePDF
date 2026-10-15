@@ -6444,7 +6444,8 @@
       "closeDocument": "Fechar documento",
       "revealInFolder": "Mostrar na pasta",
       "clipboard": "PDF da área de transferência",
-      "editHome": "Personalizar a página inicial"
+      "editHome": "Personalizar a página inicial",
+      "shortcuts": "Atalhos de teclado desta tela"
     },
     "group": {
       "tools": "Ferramentas",
@@ -10011,6 +10012,19 @@
       "softness": "Suavidade",
       "light": "Direção da luz",
       "hint": "O efeito é simulado na tela e no PDF; a exportação para impressão pode adicionar uma chapa separada."
+    }
+  },
+  "shortcutSheet": {
+    "menu": "Atalhos de teclado (F1)",
+    "showAll": "Todos os atalhos",
+    "intro": "Atalhos para {{screen}}. Pressione F1 ou Ctrl+/ em qualquer tela para abrir esta lista.",
+    "screens": {
+      "viewer": "o visualizador",
+      "presentation": "a apresentação",
+      "pages": "o organizador de páginas",
+      "studioDesign": "o editor de design do Studio",
+      "studioDocument": "o editor de documentos do Studio",
+      "general": "todas as telas"
     }
   }
 }

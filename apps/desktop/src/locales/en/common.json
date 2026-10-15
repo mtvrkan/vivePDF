@@ -6445,7 +6445,8 @@
       "closeDocument": "Close document",
       "revealInFolder": "Show in folder",
       "clipboard": "PDF from clipboard",
-      "editHome": "Customize home page"
+      "editHome": "Customize home page",
+      "shortcuts": "Keyboard shortcuts for this screen"
     },
     "group": {
       "tools": "Tools",
@@ -10012,6 +10013,19 @@
       "softness": "Softness",
       "light": "Light direction",
       "hint": "The look is simulated on screen and in the PDF; the print export can add a separate plate for the printer."
+    }
+  },
+  "shortcutSheet": {
+    "menu": "Keyboard shortcuts (F1)",
+    "showAll": "All shortcuts",
+    "intro": "Shortcuts for {{screen}}. Press F1 or Ctrl+/ on any screen to open this list.",
+    "screens": {
+      "viewer": "the viewer",
+      "presentation": "the presentation",
+      "pages": "the page organizer",
+      "studioDesign": "the Studio design editor",
+      "studioDocument": "the Studio document editor",
+      "general": "every screen"
     }
   }
 }

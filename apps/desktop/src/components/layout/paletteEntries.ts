@@ -1,4 +1,4 @@
-import { AppWindow, Bug, ClipboardPaste, LayoutDashboard, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sun, Wrench, X } from "lucide-react";
+import { AppWindow, Bug, Keyboard, ClipboardPaste, LayoutDashboard, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sun, Wrench, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { TFunction } from "i18next";
 import { primaryNavigation, secondaryNavigation, toolShortcuts } from "@/app/navigation";
@@ -108,6 +108,7 @@ export type ActionContext = {
   openReportBug: () => void;
   openSuggestFeature: () => void;
   openLogDir: () => void;
+  openShortcuts: () => void;
   hasActiveDocument: boolean;
   openPrint: () => void;
   editHome: () => void;
@@ -222,6 +223,15 @@ export function buildActionEntries(t: TFunction, ctx: ActionContext): PaletteEnt
       keywords: "log klasor",
       icon: FolderOpen,
       run: ctx.openLogDir,
+    },
+    {
+      id: "action:shortcuts",
+      kind: "action",
+      title: t("palette.action.shortcuts"),
+      subtitle: t("palette.actionLabel"),
+      keywords: "keyboard shortcuts keys f1 klavye kisayol tus",
+      icon: Keyboard,
+      run: ctx.openShortcuts,
     },
   ];
   if (ctx.hasSession) {

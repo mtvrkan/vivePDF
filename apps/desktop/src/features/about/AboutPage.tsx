@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { BookOpen, Bug, ChevronRight, Code2, Download, FolderOpen, Globe, HardDrive, Info, KeyRound, Keyboard, Lightbulb, Lock, RefreshCw, Scale, Search, ShieldCheck, Sparkles, Users, WifiOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -7,16 +7,14 @@ import { Logo } from "@/components/shared/Logo";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
-import { cn } from "@/shared/lib/cn";
 import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
 import { useAppVersion } from "@/shared/hooks/useAppVersion";
 import { CreditsTab } from "@/features/about/CreditsTab";
-import { ORGANIZER_SHORTCUTS } from "@/features/pages/organizerShortcuts";
 import { REPO_URL, THIRD_PARTY, WEBSITE_URL } from "@/features/about/credits";
-import { DOCUMENT_SHORTCUTS, STUDIO_SHORTCUT_GROUPS } from "@/features/studio/design/shortcutList";
+import { ShortcutList } from "@/features/about/ShortcutList";
+import { SHORTCUT_GROUPS } from "@/features/about/shortcutGroups";
 import { useReportStore } from "@/shared/store/reportStore";
 import type { LucideIcon } from "lucide-react";
-import { FULLSCREEN_SHORTCUT, shortcutLabel } from "@/shared/lib/platform";
 
 type LinkedPanel = "credits" | "privacy" | "shortcuts";
 type Panel = LinkedPanel | "licences";
@@ -58,83 +56,6 @@ const STORED_LINK_LABELS: Record<StoredTarget, string> = {
   tools: "about.privacy.openTools",
   logs: "app.openLogDir",
 };
-
-type ShortcutGroup = { id: string; items: Array<{ keys: string; labelKey: string }> };
-
-const SHORTCUTS: ShortcutGroup[] = [
-  {
-    id: "global",
-    items: [
-      { keys: "Ctrl O", labelKey: "about.shortcuts.items.open" },
-      { keys: "Ctrl Shift N", labelKey: "about.shortcuts.items.newWindow" },
-      { keys: "Ctrl Shift V", labelKey: "about.shortcuts.items.clipboard" },
-      { keys: "Ctrl K", labelKey: "about.shortcuts.items.palette" },
-      { keys: "Ctrl W", labelKey: "about.shortcuts.items.closeDocument" },
-      { keys: "Esc", labelKey: "about.shortcuts.items.closeDialog" },
-    ],
-  },
-  {
-    id: "viewer",
-    items: [
-      { keys: "Ctrl F", labelKey: "about.shortcuts.items.search" },
-      { keys: "F3  /  Shift F3", labelKey: "about.shortcuts.items.searchNext" },
-      { keys: "Ctrl Shift C", labelKey: "about.shortcuts.items.copyAsCode" },
-      { keys: "Ctrl P", labelKey: "about.shortcuts.items.print" },
-      { keys: FULLSCREEN_SHORTCUT, labelKey: "about.shortcuts.items.fullscreen" },
-      { keys: "Ctrl +  /  Ctrl −  /  Ctrl Wheel", labelKey: "about.shortcuts.items.zoom" },
-      { keys: "Ctrl 0  /  Ctrl 1  /  Ctrl 2", labelKey: "about.shortcuts.items.zoomModes" },
-      { keys: "Space + Drag  ·  Middle Drag", labelKey: "about.shortcuts.items.panDrag" },
-      { keys: "PgUp / PgDn  ·  ← →", labelKey: "about.shortcuts.items.pages" },
-      { keys: "Home / End", labelKey: "about.shortcuts.items.firstLast" },
-      { keys: "Alt ←  /  Alt →", labelKey: "about.shortcuts.items.navigateHistory" },
-      { keys: "Delete", labelKey: "about.shortcuts.items.deleteAnnotation" },
-      { keys: "Ctrl Z  /  Ctrl Y", labelKey: "about.shortcuts.items.undoRedoViewer" },
-      { keys: "Ctrl Shift H", labelKey: "about.shortcuts.items.autoScroll" },
-      { keys: "Ctrl Shift E", labelKey: "about.shortcuts.items.splitView" },
-      { keys: "↑ ↓  ·  −  ·  Esc", labelKey: "about.shortcuts.items.autoScrollControl" },
-    ],
-  },
-  {
-    id: "editor",
-    items: [
-      { keys: "Delete / Backspace", labelKey: "about.shortcuts.items.editDelete" },
-      { keys: "Enter", labelKey: "about.shortcuts.items.editEnter" },
-      { keys: "Esc", labelKey: "about.shortcuts.items.editEscape" },
-      { keys: "Ctrl S  /  Ctrl Shift S", labelKey: "about.shortcuts.items.editSave" },
-      { keys: "Ctrl B  /  Ctrl I", labelKey: "about.shortcuts.items.editStyle" },
-      { keys: "Ctrl D", labelKey: "about.shortcuts.items.editDuplicate" },
-      { keys: "Ctrl C  /  Ctrl X  /  Ctrl V", labelKey: "about.shortcuts.items.editClipboard" },
-      { keys: "Tab  /  Shift Tab", labelKey: "about.shortcuts.items.editCycle" },
-      { keys: "← → ↑ ↓  ·  Shift", labelKey: "about.shortcuts.items.editNudge" },
-    ],
-  },
-  {
-    id: "presentation",
-    items: [
-      { keys: FULLSCREEN_SHORTCUT, labelKey: "about.shortcuts.items.presentationEnter" },
-      { keys: "F5  /  Shift F5", labelKey: "about.shortcuts.items.presentationStart" },
-      { keys: "Alt F5  /  Alt Shift F5", labelKey: "about.shortcuts.items.presenterView" },
-      { keys: "L", labelKey: "about.shortcuts.items.presentationLaser" },
-      { keys: "P", labelKey: "about.shortcuts.items.presentationPen" },
-      { keys: "H", labelKey: "about.shortcuts.items.presentationHighlighter" },
-      { keys: "E", labelKey: "about.shortcuts.items.presentationEraser" },
-      { keys: "S", labelKey: "about.shortcuts.items.presentationSpotlight" },
-      { keys: "M", labelKey: "about.shortcuts.items.presentationMagnifier" },
-      { keys: "V  /  Del", labelKey: "about.shortcuts.items.presentationSelectDrawing" },
-      { keys: "R  /  Shift R  ·  Ctrl D", labelKey: "about.shortcuts.items.presentationDrawingEdit" },
-      { keys: "Z", labelKey: "about.shortcuts.items.presentationZoomArea" },
-      { keys: "B  /  W  /  .", labelKey: "about.shortcuts.items.presentationBlackout" },
-      { keys: "G", labelKey: "about.shortcuts.items.presentationOverview" },
-      { keys: "K", labelKey: "about.shortcuts.items.presentationCodeBlocks" },
-      { keys: "T  /  C", labelKey: "about.shortcuts.items.presentationTimerClock" },
-      { keys: "Ctrl Z  /  Ctrl Y", labelKey: "about.shortcuts.items.presentationUndoRedo" },
-      { keys: "Esc", labelKey: "about.shortcuts.items.presentationEscape" },
-    ],
-  },
-  { id: "organizer", items: ORGANIZER_SHORTCUTS },
-  { id: "studio", items: STUDIO_SHORTCUT_GROUPS.flatMap((group) => group.items) },
-  { id: "studioDocument", items: DOCUMENT_SHORTCUTS },
-];
 
 function Eyebrow({ children }: { children: string }) {
   return <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{children}</p>;
@@ -250,70 +171,6 @@ function PrivacyContent({ onOpenSettings }: { onOpenSettings: (section: Exclude<
         </ul>
         <p className="mt-3 text-sm text-muted-foreground">{t("about.privacy.clear")}</p>
       </div>
-    </div>
-  );
-}
-
-function splitKeys(keys: string): string[] {
-  return keys.split(/\s*(?:\/|·)\s*/).filter(Boolean);
-}
-
-function ShortcutsContent() {
-  const { t, i18n } = useTranslation();
-  const [query, setQuery] = useState("");
-  const groups = useMemo(() => {
-    const language = i18n.language;
-    const needle = query.trim().toLocaleLowerCase(language);
-    if (!needle) return SHORTCUTS;
-    return SHORTCUTS.map((group) => ({
-      ...group,
-      items: group.items.filter((item) => t(item.labelKey).toLocaleLowerCase(language).includes(needle) || item.keys.toLocaleLowerCase(language).includes(needle)),
-    })).filter((group) => group.items.length > 0);
-  }, [query, t, i18n.language]);
-
-  return (
-    <div className="space-y-4">
-      <div className="glass-flat relative flex h-9 items-center rounded-lg border ps-9">
-        <Search className="pointer-events-none absolute start-3 size-4 text-muted-foreground" aria-hidden />
-        <input
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t("about.shortcuts.search")}
-          aria-label={t("about.shortcuts.search")}
-          className="h-full w-full bg-transparent pe-3 text-sm text-start outline-none placeholder:text-muted-foreground"
-        />
-      </div>
-      {groups.length === 0 ? (
-        <p className="py-12 text-center text-sm text-muted-foreground">{t("about.shortcuts.noMatch")}</p>
-      ) : (
-        <div className="grid grid-cols-2 gap-4">
-          {groups.map((group) => (
-            <div key={group.id} className={cn("rounded-xl border p-4", (group.id === "organizer" || group.id === "presentation" || group.id === "studio") && "col-span-2")}>
-              <p className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                <Keyboard className="size-3.5" aria-hidden />
-                {t(`about.shortcuts.groups.${group.id}`)}
-              </p>
-              <ul>
-                {group.items.map((item) => (
-                  <li key={item.keys} className="flex h-row items-center justify-between gap-4 border-b text-sm last:border-b-0">
-                    <span className="truncate text-start" title={t(item.labelKey)}>
-                      {t(item.labelKey)}
-                    </span>
-                    <span className="flex shrink-0 items-center gap-1">
-                      {splitKeys(shortcutLabel(item.keys).replace(/\{(\w+)\}/g, (_, gesture: string) => t(`tools.pages.gesture.${gesture}`))).map((combo, index) => (
-                        <kbd key={index} className="rounded-sm border bg-background px-1.5 font-mono text-xs text-muted-foreground">
-                          {combo}
-                        </kbd>
-                      ))}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
@@ -444,7 +301,7 @@ export function AboutPage() {
       <Dialog open={panel !== null} title={panelTitle} onClose={closePanel} size={panel === "licences" ? "md" : "xl"}>
         {panel === "credits" ? <CreditsTab /> : null}
         {panel === "privacy" ? <PrivacyContent onOpenSettings={openSettingsSection} /> : null}
-        {panel === "shortcuts" ? <ShortcutsContent /> : null}
+        {panel === "shortcuts" ? <ShortcutList groups={SHORTCUT_GROUPS} /> : null}
         {panel === "licences" ? (
           <>
             <p className="text-sm text-muted-foreground">{t("about.licences.intro")}</p>

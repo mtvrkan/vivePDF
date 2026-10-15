@@ -6445,7 +6445,8 @@
       "closeDocument": "Belgeyi kapat",
       "revealInFolder": "Klasörde göster",
       "clipboard": "Panodan PDF",
-      "editHome": "Ana sayfayı düzenle"
+      "editHome": "Ana sayfayı düzenle",
+      "shortcuts": "Bu ekranın klavye kısayolları"
     },
     "group": {
       "tools": "Araçlar",
@@ -10012,6 +10013,19 @@
       "softness": "Yumuşaklık",
       "light": "Işık yönü",
       "hint": "Görünüm ekranda ve PDF'te canlandırılır; baskı çıktısı matbaa için ayrı bir kalıp katmanı ekleyebilir."
+    }
+  },
+  "shortcutSheet": {
+    "menu": "Klavye kısayolları (F1)",
+    "showAll": "Tüm kısayollar",
+    "intro": "{{screen}} kısayolları. Bu listeyi her ekranda F1 ya da Ctrl+/ ile açabilirsiniz.",
+    "screens": {
+      "viewer": "Görüntüleyici",
+      "presentation": "Sunum",
+      "pages": "Sayfa düzenleyici",
+      "studioDesign": "Studio tasarım düzenleyici",
+      "studioDocument": "Studio belge düzenleyici",
+      "general": "Tüm ekranların ortak"
     }
   }
 }

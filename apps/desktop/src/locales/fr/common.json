@@ -6444,7 +6444,8 @@
       "closeDocument": "Fermer le document",
       "revealInFolder": "Afficher dans le dossier",
       "clipboard": "PDF depuis le presse-papiers",
-      "editHome": "Personnaliser la page d'accueil"
+      "editHome": "Personnaliser la page d'accueil",
+      "shortcuts": "Raccourcis clavier de cet écran"
     },
     "group": {
       "tools": "Outils",
@@ -10011,6 +10012,19 @@
       "softness": "Douceur",
       "light": "Direction de la lumière",
       "hint": "L’effet est simulé à l’écran et dans le PDF ; l’export pour l’imprimeur peut ajouter une forme séparée."
+    }
+  },
+  "shortcutSheet": {
+    "menu": "Raccourcis clavier (F1)",
+    "showAll": "Tous les raccourcis",
+    "intro": "Raccourcis pour {{screen}}. Appuyez sur F1 ou Ctrl+/ sur n’importe quel écran pour ouvrir cette liste.",
+    "screens": {
+      "viewer": "la visionneuse",
+      "presentation": "la présentation",
+      "pages": "l’organiseur de pages",
+      "studioDesign": "l’éditeur de design Studio",
+      "studioDocument": "l’éditeur de documents Studio",
+      "general": "tous les écrans"
     }
   }
 }

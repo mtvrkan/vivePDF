@@ -6444,7 +6444,8 @@
       "closeDocument": "Chiudi documento",
       "revealInFolder": "Mostra nella cartella",
       "clipboard": "PDF dagli appunti",
-      "editHome": "Personalizza la pagina iniziale"
+      "editHome": "Personalizza la pagina iniziale",
+      "shortcuts": "Scorciatoie da tastiera di questa schermata"
     },
     "group": {
       "tools": "Strumenti",
@@ -10011,6 +10012,19 @@
       "softness": "Morbidezza",
       "light": "Direzione della luce",
       "hint": "L’effetto è simulato a schermo e nel PDF; l’esportazione per la stampa può aggiungere una lastra separata."
+    }
+  },
+  "shortcutSheet": {
+    "menu": "Scorciatoie da tastiera (F1)",
+    "showAll": "Tutte le scorciatoie",
+    "intro": "Scorciatoie per {{screen}}. Premi F1 o Ctrl+/ in qualsiasi schermata per aprire questo elenco.",
+    "screens": {
+      "viewer": "il visualizzatore",
+      "presentation": "la presentazione",
+      "pages": "l’organizzatore di pagine",
+      "studioDesign": "l’editor di design di Studio",
+      "studioDocument": "l’editor di documenti di Studio",
+      "general": "tutte le schermate"
     }
   }
 }

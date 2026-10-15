@@ -8,6 +8,7 @@ import { SkeletonCard } from "@/components/shared/SkeletonCard";
 import { Toaster } from "@/components/shared/Toaster";
 import { TooltipLayer } from "@/components/shared/Tooltip";
 import { ReportDialog } from "@/features/report/ReportDialog";
+import { ShortcutSheet } from "@/features/about/ShortcutSheet";
 import { HomePage } from "@/features/home/HomePage";
 import { FileOpenListener } from "@/features/viewer/FileOpenListener";
 import { OrganizerSourceCleanup } from "@/features/pages/OrganizerSourceCleanup";
@@ -208,6 +209,7 @@ export default function App() {
       <Toaster />
       <TooltipLayer />
       <ReportDialog />
+      <ShortcutSheet />
     </MemoryRouter>
   );
 }

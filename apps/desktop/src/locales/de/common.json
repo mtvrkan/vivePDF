@@ -6444,7 +6444,8 @@
       "closeDocument": "Dokument schließen",
       "revealInFolder": "Im Ordner anzeigen",
       "clipboard": "PDF aus der Zwischenablage",
-      "editHome": "Startseite anpassen"
+      "editHome": "Startseite anpassen",
+      "shortcuts": "Tastenkürzel für diesen Bildschirm"
     },
     "group": {
       "tools": "Werkzeuge",
@@ -10010,6 +10011,19 @@
       "softness": "Weichheit",
       "light": "Lichtrichtung",
       "hint": "Der Effekt wird am Bildschirm und im PDF nachgebildet; der Druckexport kann eine eigene Form für die Druckerei hinzufügen."
+    }
+  },
+  "shortcutSheet": {
+    "menu": "Tastenkürzel (F1)",
+    "showAll": "Alle Tastenkürzel",
+    "intro": "Tastenkürzel für {{screen}}. Mit F1 oder Strg+/ öffnen Sie diese Liste auf jedem Bildschirm.",
+    "screens": {
+      "viewer": "den Viewer",
+      "presentation": "die Präsentation",
+      "pages": "die Seitenverwaltung",
+      "studioDesign": "den Studio-Designeditor",
+      "studioDocument": "den Studio-Dokumenteditor",
+      "general": "alle Bildschirme"
     }
   }
 }

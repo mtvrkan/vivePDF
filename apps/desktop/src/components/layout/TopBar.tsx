@@ -22,6 +22,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { useUpdateStore } from "@/shared/store/updateStore";
 import type { Locale } from "@/types";
+import { useShortcutSheetStore } from "@/features/about/shortcutSheetStore";
 import { HeaderMenu, MenuLink, MenuSeparator } from "./HeaderMenu";
 import { isMac, shortcutLabel } from "@/shared/lib/platform";
 
@@ -238,7 +239,7 @@ function HelpMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; o
 
   return (
     <HeaderMenu id="help" label={t("nav.help")} icon={iconOnly ? CircleHelp : undefined} iconOnly={iconOnly} active={location.pathname.startsWith("/about")} openId={openId} onOpenChange={onOpenChange} panelClassName="w-64">
-      <MenuLink icon={Keyboard} label={t("about.tabs.shortcuts")} route="/about?tab=shortcuts" onSelect={close} />
+      <MenuLink icon={Keyboard} label={t("shortcutSheet.menu")} onClick={() => useShortcutSheetStore.getState().show()} onSelect={close} />
       <MenuLink icon={ShieldCheck} label={t("about.tabs.privacy")} route="/about?tab=privacy" onSelect={close} />
       <MenuSeparator />
       <MenuLink icon={Bug} label={t("about.reportBug")} onClick={() => useReportStore.getState().openDialog({ category: "bug" })} onSelect={close} />
