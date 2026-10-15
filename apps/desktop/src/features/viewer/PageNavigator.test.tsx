@@ -67,15 +67,15 @@ describe("PageNavigator", () => {
     expect(pageInput().value).toBe("1");
   });
 
-  it("shows the label in the box and the full physical position below it when the document has page labels", () => {
+  it("shows the label in the box and only the page total below it when the document has page labels", () => {
     labels = Array.from({ length: 278 }, (_, index) => (index < 15 ? `p${index + 1}` : String(index - 14)));
     currentPage = 164;
 
     render(<PageNavigator documentId="doc" />);
 
     expect(pageInput().value).toBe("149");
-    const position = screen.getByTestId("page-position");
-    expect(position.textContent).toBe("164/278");
+    const position = screen.getByTestId("page-count");
+    expect(position.textContent).toBe("278");
     expect(position.className).not.toContain("truncate");
     expect(position.getAttribute("title")).toBe("164 / 278");
   });

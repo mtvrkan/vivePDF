@@ -42,16 +42,9 @@ export function PageNavigator({ documentId }: { documentId: string }) {
           inputMode={labels ? "text" : "numeric"}
           className="field-inline h-8 w-9 rounded-md px-0.5 text-center text-xs"
         />
-        {labels ? (
-          <span data-testid="page-position" className="flex flex-col items-center text-[10px] leading-3 whitespace-nowrap text-muted-foreground" title={`${scrollState.currentPage} / ${scrollState.totalPages}`}>
-            <span>{scrollState.currentPage}</span>
-            <span>/{scrollState.totalPages}</span>
-          </span>
-        ) : (
-          <span data-testid="page-count" className="text-xs whitespace-nowrap text-muted-foreground" title={`${scrollState.currentPage} / ${scrollState.totalPages}`}>
-            {scrollState.totalPages}
-          </span>
-        )}
+        <span data-testid="page-count" className="text-xs whitespace-nowrap text-muted-foreground" title={`${scrollState.currentPage} / ${scrollState.totalPages}`}>
+          {scrollState.totalPages}
+        </span>
       </form>
       <IconButton icon={ChevronUp} label={t("viewer.previousPage")} disabled={scrollState.currentPage <= 1} onClick={() => scroll?.scrollToPreviousPage()} />
       <IconButton icon={ChevronDown} label={t("viewer.nextPage")} disabled={scrollState.currentPage >= scrollState.totalPages} onClick={() => scroll?.scrollToNextPage()} />
