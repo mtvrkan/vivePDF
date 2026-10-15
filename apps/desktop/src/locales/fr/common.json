@@ -1753,7 +1753,9 @@
       },
       "lens": "Google Lens",
       "breachCheck": "Vérifier les nouveaux mots de passe en ligne (Have I Been Pwned)",
-      "breachCheckHint": "Seuls les 5 premiers caractères du hachage SHA-1 du mot de passe sont envoyés ; le mot de passe lui-même ne quitte jamais cet ordinateur. Si l’option est désactivée, les nouveaux mots de passe sont uniquement comparés à la liste intégrée des mots de passe divulgués courants."
+      "breachCheckHint": "Seuls les 5 premiers caractères du hachage SHA-1 du mot de passe sont envoyés ; le mot de passe lui-même ne quitte jamais cet ordinateur. Si l’option est désactivée, les nouveaux mots de passe sont uniquement comparés à la liste intégrée des mots de passe divulgués courants.",
+      "offline": "Mode hors ligne",
+      "offlineHint": "Coupe toute connexion à Internet : recherche de mises à jour, téléchargements, recherches et requêtes web, ouverture de pages web et contrôles en ligne. Tout le reste continue de fonctionner sur cet ordinateur."
     },
     "ocrLanguages": "Langues OCR",
     "notFound": "introuvable",
@@ -6399,7 +6401,8 @@
     "KEYCHAIN_UNAVAILABLE": "Le trousseau du système n’est pas disponible, les mots de passe ne peuvent donc pas être mémorisés.",
     "SECRET_NOT_FOUND": "Le mot de passe mémorisé n’est plus dans le trousseau du système. Enregistrez de nouveau la chaîne avec le mot de passe.",
     "SECRET_BINDING_CHANGED": "Le fichier de certificat a changé depuis la mémorisation de son mot de passe. Enregistrez de nouveau la chaîne avec le mot de passe.",
-    "TICKET_INVALID": "Ce fichier n’est pas traité par un dossier surveillé, les mots de passe mémorisés ne peuvent donc pas être utilisés."
+    "TICKET_INVALID": "Ce fichier n’est pas traité par un dossier surveillé, les mots de passe mémorisés ne peuvent donc pas être utilisés.",
+    "OFFLINE": "Cette action nécessite Internet, mais le mode hors ligne est activé. Désactivez-le dans Paramètres › Web."
   },
   "palette": {
     "title": "Palette de commandes",
@@ -6566,7 +6569,13 @@
       "openData": "Paramètres › Données",
       "openTools": "Paramètres › Outils",
       "openGeneral": "Paramètres › Démarrage et confidentialité",
-      "clear": "L’essentiel peut être supprimé dans Paramètres › Données ; les packs téléchargés dans leur propre section des paramètres, les sauvegardes et le fichier journal depuis leurs dossiers."
+      "clear": "L’essentiel peut être supprimé dans Paramètres › Données ; les packs téléchargés dans leur propre section des paramètres, les sauvegardes et le fichier journal depuis leurs dossiers.",
+      "offline": {
+        "on": "Le mode hors ligne est activé",
+        "off": "Le mode hors ligne est désactivé",
+        "description": "Un seul interrupteur coupe toutes les connexions listées ci-dessous. Vos documents ne quittent jamais cet ordinateur, dans tous les cas.",
+        "open": "Ouvrir le réglage"
+      }
     },
     "shortcuts": {
       "groups": {
@@ -6691,7 +6700,8 @@
       "downloading": "Téléchargement… {{percent}} %",
       "ready": "Téléchargée ; s’installe au redémarrage",
       "error": "Impossible de vérifier",
-      "unconfigured": "Canal de mise à jour inaccessible ou pas encore configuré"
+      "unconfigured": "Canal de mise à jour inaccessible ou pas encore configuré",
+      "offline": "Non vérifié : le mode hors ligne est activé"
     }
   },
   "window": {
@@ -10067,5 +10077,10 @@
         "iconLibrary": "Plus de 1 600 icônes se recherchent par leur nom dans votre langue et s’ajoutent comme dessins nets et recolorables."
       }
     }
+  },
+  "offline": {
+    "hint": "Désactivé en mode hors ligne (Paramètres › Web)",
+    "notice": "Le mode hors ligne est activé : rien n’est téléchargé ni consulté sur Internet.",
+    "openSettings": "Modifier"
   }
 }

@@ -1680,6 +1680,7 @@
     "read"
    ]
   ],
+  "system.network_mode": [],
   "system.office_install": [],
   "system.office_remove": [],
   "system.office_status": [],

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
 import { BookOpen, Bug, ChevronRight, Code2, Download, FolderOpen, Globe, HardDrive, Info, KeyRound, Keyboard, Lightbulb, Lock, RefreshCw, Scale, Search, ShieldCheck, Sparkles, Users, WifiOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { openExternal } from "@/shared/lib/openExternal";
+import { useOffline } from "@/shared/lib/offline";
 import { Logo } from "@/components/shared/Logo";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/shared/Button";
@@ -145,11 +146,24 @@ function StoredItem({ titleText, description, linkLabel, onOpen }: { titleText: 
   );
 }
 
-function PrivacyContent({ onOpenSettings }: { onOpenSettings: (section: Exclude<StoredTarget, "logs">) => void }) {
+function PrivacyContent({ onOpenSettings }: { onOpenSettings: (section: string) => void }) {
   const { t } = useTranslation();
+  const offline = useOffline();
   return (
     <div className="space-y-6">
       <p className="text-sm leading-6">{t("about.privacy.intro")}</p>
+      <div data-testid="privacy-offline" className="flex flex-wrap items-center gap-3 rounded-xl border p-4">
+        <span className="tone-tile flex size-9 shrink-0 items-center justify-center rounded-lg">
+          {offline ? <WifiOff className="size-4" aria-hidden /> : <Globe className="size-4" aria-hidden />}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-semibold">{t(offline ? "about.privacy.offline.on" : "about.privacy.offline.off")}</span>
+          <span className="block text-xs leading-5 text-muted-foreground">{t("about.privacy.offline.description")}</span>
+        </span>
+        <Button size="sm" variant="secondary" onClick={() => onOpenSettings("web")}>
+          {t("about.privacy.offline.open")}
+        </Button>
+      </div>
       <div>
         <Eyebrow>{t("about.privacy.networkTitle")}</Eyebrow>
         <ul className="rounded-xl border px-4">
@@ -229,7 +243,7 @@ export function AboutPage() {
               <Chip>Windows · macOS · Linux</Chip>
             </div>
             <div className="mt-6 flex flex-wrap justify-center gap-2">
-              <Button variant="primary" size="sm" icon={<Globe className="size-4" aria-hidden />} onClick={() => void openUrl(WEBSITE_URL)}>
+              <Button variant="primary" size="sm" icon={<Globe className="size-4" aria-hidden />} onClick={() => void openExternal(WEBSITE_URL)}>
                 vivepdf.com
               </Button>
               <Button variant="secondary" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => checkUpdatesNow((to) => navigate(`${to}${backParam}`))}>
@@ -288,9 +302,9 @@ export function AboutPage() {
                 </div>
               </div>
               <nav className="flex flex-wrap items-center gap-1">
-                <FooterLink icon={Globe} label="vivepdf.com" onClick={() => void openUrl(WEBSITE_URL)} />
+                <FooterLink icon={Globe} label="vivepdf.com" onClick={() => void openExternal(WEBSITE_URL)} />
                 <FooterLink icon={Scale} label={t("about.footer.licences")} onClick={() => openPanel("licences")} />
-                <FooterLink icon={Code2} label={t("about.footer.source")} onClick={() => void openUrl(REPO_URL)} />
+                <FooterLink icon={Code2} label={t("about.footer.source")} onClick={() => void openExternal(REPO_URL)} />
               </nav>
             </div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
@@ -311,7 +325,7 @@ export function AboutPage() {
             <ul className="mt-3 max-h-80 overflow-auto rounded-xl border">
               {THIRD_PARTY.map((entry) => (
                 <li key={entry.name} className="flex items-center justify-between gap-4 border-b px-3 py-2 text-sm last:border-b-0">
-                  <button type="button" onClick={() => void openUrl(entry.url)} className="min-w-0 truncate text-start outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring" title={entry.url}>
+                  <button type="button" onClick={() => void openExternal(entry.url)} className="min-w-0 truncate text-start outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring" title={entry.url}>
                     {entry.name}
                   </button>
                   <span className="shrink-0 font-mono text-[11px] text-muted-foreground">{entry.licence}</span>

@@ -3,7 +3,8 @@ import { BookMarked, ClipboardPaste, Download, FileSearch, FileUp, Link2, Pencil
 import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { openExternal } from "@/shared/lib/openExternal";
+import { isOffline, useOfflineHint } from "@/shared/lib/offline";
 import type { Editor } from "@tiptap/react";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
@@ -62,14 +63,14 @@ function SourceBadges({ check }: { check: SourceCheck }) {
   return (
     <div className="flex flex-wrap gap-1.5 ps-3 pb-1.5" data-testid="cite-status">
       {notice ? (
-        <button type="button" onClick={() => void openUrl(doiLink(notice))} title={dates.join(" · ")} className={cn(CHIP, tone, CHIP_LINK)}>
+        <button type="button" onClick={() => void openExternal(doiLink(notice))} title={dates.join(" · ")} className={cn(CHIP, tone, CHIP_LINK)}>
           {label}
         </button>
       ) : (
         <span className={cn(CHIP, tone)}>{label}</span>
       )}
       {check.publishedVersion ? (
-        <button type="button" onClick={() => void openUrl(doiLink(check.publishedVersion ?? ""))} className={cn(CHIP, "bg-primary/10 text-primary", CHIP_LINK)}>
+        <button type="button" onClick={() => void openExternal(doiLink(check.publishedVersion ?? ""))} className={cn(CHIP, "bg-primary/10 text-primary", CHIP_LINK)}>
           {t("studio.doc.cite.publishedVersion")}
         </button>
       ) : null}
@@ -79,6 +80,7 @@ function SourceBadges({ check }: { check: SourceCheck }) {
 
 export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open: boolean; onClose: () => void }) {
   const { t, i18n } = useTranslation();
+  const offlineHint = useOfflineHint();
   const sources = useDocumentStore((state) => state.document?.sources ?? EMPTY_SOURCES);
   const style = useDocumentStore((state) => state.document?.settings.citationStyle ?? "apa");
   const referencesTitle = useDocumentStore((state) => state.document?.settings.referencesTitle ?? "");
@@ -212,6 +214,10 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
         return;
       }
       if (knownSource(found.doi)) return;
+      if (isOffline()) {
+        openDraft({ ...draftOf(null), fields: partial });
+        return;
+      }
       try {
         if (!openFetched((await lookupDoi({ doi: found.doi })).csl)) openDraft({ ...draftOf(null), fields: partial });
       } catch (error) {
@@ -417,6 +423,8 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
           setPasting(false);
         }}
         aria-expanded={doiOpen}
+        disabled={offlineHint !== undefined}
+        title={offlineHint}
         data-testid="cite-doi"
       >
         {t("studio.doc.cite.addByDoi")}
@@ -433,7 +441,7 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
             {t("studio.doc.cite.checking", { current: checking.current, total: checking.total })}
           </Button>
         ) : (
-          <Button variant="ghost" size="sm" icon={<ShieldCheck className="size-4" aria-hidden />} onClick={() => void runCheck()} data-testid="cite-check">
+          <Button variant="ghost" size="sm" icon={<ShieldCheck className="size-4" aria-hidden />} onClick={() => void runCheck()} disabled={offlineHint !== undefined} title={offlineHint} data-testid="cite-check">
             {t("studio.doc.cite.check")}
           </Button>
         )
@@ -522,7 +530,7 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
                       </span>
                     </button>
                     {entry.fields.doi?.trim() ? (
-                      <IconButton icon={RefreshCw} label={t("studio.doc.cite.updateDetails", { key: entry.key })} busy={updating === entry.key} disabled={updating !== null} onClick={() => void startUpdate(entry)} />
+                      <IconButton icon={RefreshCw} label={t("studio.doc.cite.updateDetails", { key: entry.key })} busy={updating === entry.key} disabled={updating !== null || offlineHint !== undefined} onClick={() => void startUpdate(entry)} />
                     ) : null}
                     <IconButton icon={Pencil} label={t("studio.doc.cite.edit", { key: entry.key })} onClick={() => startEditing(entry.key)} />
                     <IconButton icon={Trash2} label={t("studio.doc.cite.remove", { key: entry.key })} onClick={() => remove(entry.key)} />

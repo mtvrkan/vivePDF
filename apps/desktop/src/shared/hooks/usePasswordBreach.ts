@@ -16,7 +16,7 @@ const IDLE: PasswordBreachState = { checking: false, breached: false, variant: f
 const CHECKING: PasswordBreachState = { ...IDLE, checking: true };
 
 export function usePasswordBreach(password: string, enabled = true): PasswordBreachState {
-  const online = usePreferencesStore((state) => state.breachCheckOnline);
+  const online = usePreferencesStore((state) => state.breachCheckOnline && !state.offlineMode);
   const active = enabled && password.length > 0;
   const [settled, setSettled] = useState<PasswordBreachState | null>(null);
 

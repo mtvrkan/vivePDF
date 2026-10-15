@@ -7,6 +7,7 @@ import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
 import { describeError } from "@/shared/lib/errorMessage";
 import { openExternal } from "@/shared/lib/openExternal";
+import { useOfflineHint } from "@/shared/lib/offline";
 import { languageName, languagePacks, localeOfLanguage, PIVOT_LANGUAGE, packsForMissing } from "@/shared/lib/translateLanguage";
 import { translateUrl } from "@/shared/lib/webSearch";
 import { toRpcError } from "@/shared/rpc/client";
@@ -36,6 +37,7 @@ function MissingLanguages({ ids }: { ids: string[] }) {
   const downloadLanguage = useTranslateModelsStore((state) => state.downloadLanguage);
   const cancelDownload = useTranslateModelsStore((state) => state.cancelDownload);
   const run = useTranslationStore((state) => state.run);
+  const offlineHint = useOfflineHint();
   const wanted = packsForMissing(ids);
   const packs = languagePacks(models).filter((pack) => wanted.includes(pack.code) && pack.state !== "full");
 
@@ -69,7 +71,7 @@ function MissingLanguages({ ids }: { ids: string[] }) {
                 <IconButton icon={X} label={`${t("settings.translate.cancelDownload")}: ${name}`} onClick={cancelDownload} />
               </>
             ) : (
-              <Button size="sm" icon={<ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void download(pack.code)} disabled={downloadingLanguage !== null}>
+              <Button size="sm" icon={<ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void download(pack.code)} disabled={downloadingLanguage !== null || offlineHint !== undefined} title={offlineHint}>
                 {t("viewer.translate.downloadSize", { size: pack.missingSizeMb })}
               </Button>
             )}
@@ -134,6 +136,8 @@ export function TranslatePanel() {
       toast("error", t("viewer.context.copyFailed"));
     }
   };
+
+  const offlineHint = useOfflineHint();
 
   const openWeb = async () => {
     try {
@@ -251,7 +255,7 @@ export function TranslatePanel() {
       <div className="min-h-0 flex-1 overflow-auto p-3">{body()}</div>
       {text ? (
         <div className="flex items-center gap-2 border-t p-3">
-          <Button size="sm" variant="ghost" icon={<ExternalLink className="size-4" aria-hidden />} onClick={() => void openWeb()}>
+          <Button size="sm" variant="ghost" icon={<ExternalLink className="size-4" aria-hidden />} onClick={() => void openWeb()} disabled={offlineHint !== undefined} title={offlineHint}>
             {t("viewer.translate.openWeb")}
           </Button>
         </div>

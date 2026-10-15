@@ -8,6 +8,7 @@ from pathlib import Path
 from urllib.error import URLError
 
 from vivepdf._data_home import unix_data_home
+from vivepdf.net import require_online
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
@@ -169,6 +170,7 @@ def installed_languages() -> list[str]:
 
 
 def _fetch(code: str, directory: Path, progress: Progress) -> Path:
+    require_online("tessdata.download")
     target = directory / f"{code}.traineddata"
     temp_fd, temp_name = tempfile.mkstemp(dir=directory, prefix=f".{code}-", suffix=".part")
     temp_path = Path(temp_name)

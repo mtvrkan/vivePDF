@@ -317,6 +317,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.thumbnail",
     ),
     "system": (
+        "system.network_mode",
         "system.ping",
         "system.release",
     ),

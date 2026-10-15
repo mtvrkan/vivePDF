@@ -1753,7 +1753,9 @@
       },
       "lens": "Google Lens",
       "breachCheck": "Controlla le nuove password online (Have I Been Pwned)",
-      "breachCheckHint": "Vengono inviati solo i primi 5 caratteri dell’hash SHA-1 della password; la password non lascia mai questo computer. Se disattivato, le nuove password vengono controllate solo con l’elenco integrato delle password violate più comuni."
+      "breachCheckHint": "Vengono inviati solo i primi 5 caratteri dell’hash SHA-1 della password; la password non lascia mai questo computer. Se disattivato, le nuove password vengono controllate solo con l’elenco integrato delle password violate più comuni.",
+      "offline": "Modalità offline",
+      "offlineHint": "Blocca ogni connessione a internet: controllo aggiornamenti, download, ricerche e interrogazioni web, apertura di pagine web e controlli online. Tutto il resto continua a funzionare su questo computer."
     },
     "ocrLanguages": "Lingue OCR",
     "notFound": "non trovato",
@@ -6399,7 +6401,8 @@
     "KEYCHAIN_UNAVAILABLE": "Il portachiavi di sistema non è disponibile, quindi le password non possono essere ricordate.",
     "SECRET_NOT_FOUND": "La password ricordata non è più nel portachiavi di sistema. Salva di nuovo la catena con la password.",
     "SECRET_BINDING_CHANGED": "Il file del certificato è cambiato da quando la sua password è stata ricordata. Salva di nuovo la catena con la password.",
-    "TICKET_INVALID": "Questo file non è gestito da una cartella monitorata, quindi le password ricordate non possono essere usate."
+    "TICKET_INVALID": "Questo file non è gestito da una cartella monitorata, quindi le password ricordate non possono essere usate.",
+    "OFFLINE": "Serve internet, ma la modalità offline è attiva. Puoi disattivarla in Impostazioni › Web."
   },
   "palette": {
     "title": "Barra comandi",
@@ -6566,7 +6569,13 @@
       "openData": "Impostazioni › Dati",
       "openTools": "Impostazioni › Strumenti",
       "openGeneral": "Impostazioni › Avvio e privacy",
-      "clear": "Quasi tutto si può rimuovere in Impostazioni › Dati; i pacchetti scaricati nella loro sezione delle impostazioni, i backup e il file di log dalle loro cartelle."
+      "clear": "Quasi tutto si può rimuovere in Impostazioni › Dati; i pacchetti scaricati nella loro sezione delle impostazioni, i backup e il file di log dalle loro cartelle.",
+      "offline": {
+        "on": "La modalità offline è attiva",
+        "off": "La modalità offline è disattivata",
+        "description": "Un solo interruttore blocca tutte le connessioni elencate sotto. I tuoi documenti non lasciano mai questo computer, in ogni caso.",
+        "open": "Apri impostazione"
+      }
     },
     "shortcuts": {
       "groups": {
@@ -6691,7 +6700,8 @@
       "downloading": "Download in corso… {{percent}}%",
       "ready": "Scaricato; si installa al riavvio",
       "error": "Impossibile controllare",
-      "unconfigured": "Canale di aggiornamento non raggiungibile o non ancora configurato"
+      "unconfigured": "Canale di aggiornamento non raggiungibile o non ancora configurato",
+      "offline": "Non controllato: la modalità offline è attiva"
     }
   },
   "window": {
@@ -10067,5 +10077,10 @@
         "iconLibrary": "Oltre 1.600 icone si cercano per nome nella tua lingua e si aggiungono come disegni nitidi e ricolorabili."
       }
     }
+  },
+  "offline": {
+    "hint": "Disattivato in modalità offline (Impostazioni › Web)",
+    "notice": "La modalità offline è attiva: nulla viene scaricato o cercato su internet.",
+    "openSettings": "Cambia"
   }
 }

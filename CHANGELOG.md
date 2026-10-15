@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Offline mode: one switch in Settings › Web stops every internet connection (update checks, downloads, web searches, DOI lookups, web pages, picture search, online signature checks and timestamps); the buttons stay visible with a hint and the engine refuses too [2026-10-15]
 - What's new: after an update vivePDF opens once with the highlights of the installed version, and Help › What's new, About › What's new and the command palette show the notes of every version up to the installed one (a first install stays quiet) [2026-10-15]
 - Keyboard shortcuts: Save as PDF in the shortcut list (F1) and in About › Shortcuts writes the shown shortcuts as a printable PDF, one table per screen in the app's language, with each key combination kept on one line; a "Show in folder" button follows the save [2026-10-15]
 - Keyboard shortcuts: F1 or Ctrl+/ on any screen opens the shortcuts for that screen — the viewer, a presentation, the page organizer, the Studio design or document editor — with a search box and a link to the full list; Help › Keyboard shortcuts and the command palette open it too, and the Studio design editor keeps its own F1 list [2026-10-15]

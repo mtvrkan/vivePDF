@@ -12,10 +12,13 @@ import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import type { RpcProgress } from "@/types";
 import { describeError } from "@/shared/lib/errorMessage";
 import { tesseractLanguageName } from "@/app/locales";
+import { OfflineNotice } from "@/components/shared/OfflineNotice";
+import { useOffline } from "@/shared/lib/offline";
 
 const PROTECTED_CODES = new Set(["eng", "tur"]);
 
 export function TessdataManager() {
+  const offline = useOffline();
   const { t, i18n } = useTranslation();
   const toast = useToastStore((state) => state.push);
   const refreshTools = useToolsStatusStore((state) => state.refresh);
@@ -90,6 +93,7 @@ export function TessdataManager() {
 
   return (
     <div className="w-full py-2">
+      <OfflineNotice className="mb-2" />
       <div className="flex items-center gap-3">
         <span className="relative flex-1">
           <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
@@ -129,7 +133,7 @@ export function TessdataManager() {
               ) : isInstalled ? (
                 <IconButton icon={Trash2} label={`${t("settings.tessdata.remove")}: ${item.name}`} disabled={busy !== null || PROTECTED_CODES.has(item.code)} onClick={() => void remove(item.code)} />
               ) : (
-                <IconButton icon={ArrowDownToLine} label={`${t("settings.tessdata.download")}: ${item.name}`} disabled={busy !== null} onClick={() => void download(item.code)} />
+                <IconButton icon={ArrowDownToLine} label={`${t("settings.tessdata.download")}: ${item.name}`} disabled={busy !== null || offline} onClick={() => void download(item.code)} />
               )}
             </li>
           );

@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex, MutexGuard};
 
 use serde_json::Value;
@@ -29,6 +30,7 @@ pub struct Sidecar {
     pending: Pending,
     spawn_attempts: Mutex<u32>,
     shutdown_requested: Mutex<bool>,
+    offline: AtomicBool,
 }
 
 fn lock<T>(mutex: &Mutex<T>) -> MutexGuard<'_, T> {
@@ -89,6 +91,25 @@ pub fn shutdown<R: Runtime>(app: &AppHandle<R>) {
     }
 }
 
+impl Sidecar {
+    pub fn is_offline(&self) -> bool {
+        self.offline.load(Ordering::SeqCst)
+    }
+}
+
+#[tauri::command]
+pub fn set_offline_mode(state: tauri::State<'_, Sidecar>, offline: bool) {
+    state.offline.store(offline, Ordering::SeqCst);
+}
+
+fn offline_env(offline: bool) -> &'static str {
+    if offline {
+        "1"
+    } else {
+        "0"
+    }
+}
+
 fn ensure_running<R: Runtime>(app: &AppHandle<R>) -> Result<(), RpcError> {
     let state = app.state::<Sidecar>();
     let mut slot = lock(&state.child);
@@ -106,10 +127,14 @@ fn ensure_running<R: Runtime>(app: &AppHandle<R>) -> Result<(), RpcError> {
         *attempts += 1;
     }
 
-    let (mut events, child) = build_command(app)?.spawn().map_err(|error| {
-        crate::diagnostics::log_sidecar(app, "error", &format!("spawn failed: {error}"));
-        RpcError::new("SIDECAR_SPAWN_FAILED", error.to_string())
-    })?;
+    let offline = offline_env(state.is_offline());
+    let (mut events, child) = build_command(app)?
+        .env("VIVEPDF_OFFLINE", offline)
+        .spawn()
+        .map_err(|error| {
+            crate::diagnostics::log_sidecar(app, "error", &format!("spawn failed: {error}"));
+            RpcError::new("SIDECAR_SPAWN_FAILED", error.to_string())
+        })?;
     let pid = child.pid();
     crate::diagnostics::log_sidecar(app, "info", &format!("started (pid {pid})"));
     *slot = Some(child);
@@ -270,6 +295,14 @@ fn dev_command<R: Runtime>(app: &AppHandle<R>, dir: &str) -> Command {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn engine_starts_online_until_offline_mode_is_switched_on() {
+        let state = Sidecar::default();
+        assert_eq!(offline_env(state.is_offline()), "0");
+        state.offline.store(true, Ordering::SeqCst);
+        assert_eq!(offline_env(state.is_offline()), "1");
+    }
 
     #[test]
     fn stderr_lines_keep_their_text_and_drop_blank_output() {

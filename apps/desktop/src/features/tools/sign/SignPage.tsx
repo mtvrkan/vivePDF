@@ -26,6 +26,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { certificateReason, insecureTimestamp, MIN_KEY_PASSWORD, nameTooLong, stampTextForInput, stampTextFromInput } from "./signHelpers";
 import { TrustRootsSection } from "./TrustRootsSection";
 import { SignatureItem } from "@/components/document/SignatureItem";
+import { isOffline, useOfflineHint } from "@/shared/lib/offline";
 
 type Tab = "sign" | "verify" | "certificate" | "export";
 const TABS: Tab[] = ["sign", "verify", "certificate", "export"];
@@ -76,6 +77,7 @@ function readStoredCertificate(): string {
 
 export function SignPage() {
   const { t } = useTranslation();
+  const offlineHint = useOfflineHint();
   const locale = useUiStore((state) => state.locale);
   const [tab, setTab] = useTabParam<Tab>(TABS, "sign");
   const sourceState = useSourceDocument();
@@ -184,7 +186,7 @@ export function SignPage() {
     if (!source) return;
     setVerification({ status: "loading", result: null, error: null });
     try {
-      const result = await verifySignatures({ path: source.path, password: source.password ?? undefined, online: onlineCheck });
+      const result = await verifySignatures({ path: source.path, password: source.password ?? undefined, online: onlineCheck && !isOffline() });
       setVerification({ status: "success", result, error: null });
     } catch (error) {
       setVerification({ status: "error", result: null, error: toRpcError(error) });
@@ -338,7 +340,7 @@ export function SignPage() {
                 </div>
                 <Field
                   label={t("tools.sign.sign.timestamp")}
-                  hint={t("tools.sign.sign.timestampHint")}
+                  hint={offlineHint ?? t("tools.sign.sign.timestampHint")}
                   note={insecureTimestamp(timestampUrl) ? (
                     <span className="flex items-start gap-1.5 text-foreground/80">
                       <TriangleAlert className="mt-0.5 size-3.5 shrink-0 text-warning" aria-hidden />
@@ -346,7 +348,7 @@ export function SignPage() {
                     </span>
                   ) : null}
                 >
-                  <TextInput value={timestampUrl} onChange={(event) => setTimestampUrl(event.target.value)} placeholder="https://freetsa.org/tsr" className="font-mono text-sm" />
+                  <TextInput value={timestampUrl} onChange={(event) => setTimestampUrl(event.target.value)} disabled={offlineHint !== undefined} placeholder="https://freetsa.org/tsr" className="font-mono text-sm" />
                 </Field>
                 <Checkbox label={t("tools.sign.sign.certify")} hint={hasSignatures ? t("tools.sign.sign.certifyFirstOnly") : undefined} checked={certify && !hasSignatures} onChange={setCertify} disabled={hasSignatures} />
                 {certify && !hasSignatures ? (
@@ -370,7 +372,7 @@ export function SignPage() {
             <>
               <Section title={t("tools.sign.verify.title")}>
                 <p className="text-sm text-muted-foreground">{t("tools.sign.verify.hint")}</p>
-                <SwitchField label={t("tools.sign.verify.online")} hint={t("tools.sign.verify.onlineHint")} checked={onlineCheck} onChange={setOnlineCheck} />
+                <SwitchField label={t("tools.sign.verify.online")} hint={offlineHint ?? t("tools.sign.verify.onlineHint")} checked={onlineCheck && offlineHint === undefined} onChange={setOnlineCheck} disabled={offlineHint !== undefined} />
               </Section>
               <TrustRootsSection
                 onChanged={() => {

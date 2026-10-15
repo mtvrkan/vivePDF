@@ -12,6 +12,7 @@ from typing import Literal
 
 from pydantic import SecretStr
 
+from vivepdf.net import is_offline, require_online
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
@@ -130,6 +131,7 @@ def breached_offline(password: str) -> bool:
 
 
 def range_payload(prefix: str) -> bytes:
+    require_online("security.password_breach")
     request = urllib.request.Request(
         RANGE_URL + prefix,
         headers={"User-Agent": USER_AGENT, "Add-Padding": "true", "Accept": "text/plain"},
@@ -166,7 +168,7 @@ def password_breach(params: PasswordBreachParams, progress: Progress) -> Passwor
     if not password:
         return PasswordBreachResult(breached=False, source="offline")
     offline = offline_match(password)
-    if not params.online:
+    if not params.online or is_offline():
         return PasswordBreachResult(breached=offline is not None, source="offline", match=offline)
     progress.check_cancelled()
     count = breach_count_online(password)

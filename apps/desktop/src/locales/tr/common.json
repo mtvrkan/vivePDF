@@ -1754,7 +1754,9 @@
       },
       "lens": "Google Lens",
       "breachCheck": "Yeni parolaları çevrimiçi denetle (Have I Been Pwned)",
-      "breachCheckHint": "Yalnızca parolanın SHA-1 özetinin ilk 5 karakteri gönderilir; parolanın kendisi bu bilgisayardan hiçbir zaman çıkmaz. Kapalıyken yeni parolalar yalnızca yaygın ihlal edilmiş parolaların yerleşik listesiyle karşılaştırılır."
+      "breachCheckHint": "Yalnızca parolanın SHA-1 özetinin ilk 5 karakteri gönderilir; parolanın kendisi bu bilgisayardan hiçbir zaman çıkmaz. Kapalıyken yeni parolalar yalnızca yaygın ihlal edilmiş parolaların yerleşik listesiyle karşılaştırılır.",
+      "offline": "Çevrimdışı mod",
+      "offlineHint": "Tüm internet bağlantılarını durdurur: güncelleme denetimi, indirmeler, web aramaları ve sorgular, web sayfası açma ve çevrimiçi denetimler. Geri kalan her şey bu bilgisayarda çalışmaya devam eder."
     },
     "ocrLanguages": "OCR dilleri",
     "notFound": "bulunamadı",
@@ -6400,7 +6402,8 @@
     "KEYCHAIN_UNAVAILABLE": "Sistem anahtarlığı kullanılamıyor, bu yüzden şifreler hatırlanamaz.",
     "SECRET_NOT_FOUND": "Hatırlanan şifre artık sistem anahtarlığında yok. Zinciri şifresiyle yeniden kaydedin.",
     "SECRET_BINDING_CHANGED": "Sertifika dosyası, şifresi hatırlandıktan sonra değişti. Zinciri şifresiyle yeniden kaydedin.",
-    "TICKET_INVALID": "Bu dosya bir izlenen klasör tarafından işlenmiyor, bu yüzden hatırlanan şifreler kullanılamaz."
+    "TICKET_INVALID": "Bu dosya bir izlenen klasör tarafından işlenmiyor, bu yüzden hatırlanan şifreler kullanılamaz.",
+    "OFFLINE": "Bunun için internet gerekiyor ama çevrimdışı mod açık. Ayarlar › Web bölümünden kapatabilirsiniz."
   },
   "palette": {
     "title": "Komut paleti",
@@ -6567,7 +6570,13 @@
       "openData": "Ayarlar › Veriler",
       "openTools": "Ayarlar › Araçlar",
       "openGeneral": "Ayarlar › Başlangıç ve gizlilik",
-      "clear": "Çoğu Ayarlar › Veriler bölümünden silinebilir; indirilen paketler kendi ayar bölümlerinden, yedekler ve günlük dosyası ise kendi klasörlerinden silinir."
+      "clear": "Çoğu Ayarlar › Veriler bölümünden silinebilir; indirilen paketler kendi ayar bölümlerinden, yedekler ve günlük dosyası ise kendi klasörlerinden silinir.",
+      "offline": {
+        "on": "Çevrimdışı mod açık",
+        "off": "Çevrimdışı mod kapalı",
+        "description": "Tek bir anahtar aşağıdaki tüm bağlantıları durdurur. Belgeleriniz her durumda bu bilgisayardan çıkmaz.",
+        "open": "Ayarı aç"
+      }
     },
     "shortcuts": {
       "groups": {
@@ -6692,7 +6701,8 @@
       "downloading": "İndiriliyor… %{{percent}}",
       "ready": "İndirildi; yeniden başlatınca kurulacak",
       "error": "Denetlenemedi",
-      "unconfigured": "Güncelleme kanalına ulaşılamadı ya da kanal henüz yapılandırılmadı"
+      "unconfigured": "Güncelleme kanalına ulaşılamadı ya da kanal henüz yapılandırılmadı",
+      "offline": "Denetlenmedi: çevrimdışı mod açık"
     }
   },
   "window": {
@@ -10068,5 +10078,10 @@
         "iconLibrary": "1.600'den fazla simge kendi dilinizde adıyla aranabilir ve keskin, yeniden renklendirilebilir çizimler olarak eklenebilir."
       }
     }
+  },
+  "offline": {
+    "hint": "Çevrimdışı mod açıkken kapalı (Ayarlar › Web)",
+    "notice": "Çevrimdışı mod açık; internetten hiçbir şey indirilmiyor veya sorgulanmıyor.",
+    "openSettings": "Değiştir"
   }
 }

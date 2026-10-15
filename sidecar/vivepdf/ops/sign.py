@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pymupdf
 
+from vivepdf.net import require_online
 from vivepdf.ops._document import forget_document, open_document
 from vivepdf.ops._output import prepare_output, write_atomically
 from vivepdf.ops._pkcs12 import unlock_pkcs12
@@ -87,6 +88,8 @@ def sign(params: SignParams, progress: Progress) -> SignResult:
 
     target = prepare_output(params.output, [params.path], params.overwrite)
     timestamp_url = _check_timestamp_url(params.timestamp_url)
+    if timestamp_url:
+        require_online("sign.timestamp")
     signer = _load_signer(params.certificate_path, params.certificate_password)
     signer_name = _signer_name(signer)
     image = _stamp_image(params) if params.visible else None

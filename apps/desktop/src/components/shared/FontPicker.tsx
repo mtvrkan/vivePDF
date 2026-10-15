@@ -12,6 +12,7 @@ import { useFontLibraryStore } from "@/shared/store/fontLibraryStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import type { FontChoice } from "@/types";
+import { refuseWhenOffline } from "@/shared/lib/offline";
 
 const DEFAULT_FONT = "bundled:dejavu-sans";
 const SEPARATOR = "__group__";
@@ -78,6 +79,7 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
       onChange(next);
       return;
     }
+    if (refuseWhenOffline()) return;
     setBusy(true);
     try {
       await downloadLibraryFont({ id: font.id });

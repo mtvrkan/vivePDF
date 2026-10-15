@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { openExternal } from "@/shared/lib/openExternal";
+import { useOffline, useOfflineHint } from "@/shared/lib/offline";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/shared/Button";
 import { ErrorState } from "@/components/shared/ErrorState";
@@ -15,8 +16,9 @@ function SectionTitle({ children }: { children: string }) {
 
 function ContributorAvatar({ contributor }: { contributor: Contributor }) {
   const [failed, setFailed] = useState(false);
+  const offline = useOffline();
   const initials = contributor.name.slice(0, 2).toUpperCase();
-  if (!contributor.avatarUrl || failed) {
+  if (!contributor.avatarUrl || failed || offline) {
     return (
       <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
         {initials}
@@ -40,7 +42,7 @@ function ContributorCard({ contributor }: { contributor: Contributor }) {
   return (
     <button
       type="button"
-      onClick={() => void openUrl(contributor.htmlUrl)}
+      onClick={() => void openExternal(contributor.htmlUrl)}
       className="glass flex flex-col items-center gap-2 rounded-2xl p-5 text-center outline-none transition-[background-color,box-shadow] duration-(--transition-fast) hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
     >
       <ContributorAvatar contributor={contributor} />
@@ -62,6 +64,7 @@ function ContributorsGrid() {
   const { t } = useTranslation();
   const [state, setState] = useState<ContributorsState>("idle");
   const [contributors, setContributors] = useState<Contributor[]>(CONTRIBUTORS);
+  const offlineHint = useOfflineHint();
 
   const refresh = async () => {
     setState("loading");
@@ -80,7 +83,7 @@ function ContributorsGrid() {
     <div>
       <div className="mb-3 flex items-center justify-between gap-4">
         <SectionTitle>{t("about.credits.contributors.title")}</SectionTitle>
-        <Button variant="ghost" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} loading={state === "loading"} onClick={() => void refresh()}>
+        <Button variant="ghost" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} loading={state === "loading"} onClick={() => void refresh()} disabled={offlineHint !== undefined} title={offlineHint}>
           {t("about.credits.contributors.refresh")}
         </Button>
       </div>

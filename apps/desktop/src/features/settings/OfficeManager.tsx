@@ -12,8 +12,11 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import type { RpcProgress } from "@/types";
+import { OfflineNotice } from "@/components/shared/OfflineNotice";
+import { useOffline } from "@/shared/lib/offline";
 
 export function OfficeManager() {
+  const offline = useOffline();
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const toast = useToastStore((state) => state.push);
@@ -84,6 +87,7 @@ export function OfficeManager() {
 
   return (
     <div className="w-full space-y-3">
+      {status?.bundled ? null : <OfflineNotice />}
       <div className="glass-flat flex flex-wrap items-center gap-3 rounded-xl border p-3">
         <span className={cn("size-2 shrink-0 rounded-full", status?.installed ? "bg-success" : "bg-muted-foreground", installing && "animate-pulse bg-warning")} aria-hidden />
         <span className="min-w-0 flex-1">
@@ -101,7 +105,7 @@ export function OfficeManager() {
             {t("settings.office.remove")}
           </Button>
         ) : (
-          <Button size="sm" icon={installing ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void install()} disabled={busy !== null || preparing}>
+          <Button size="sm" icon={installing ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void install()} disabled={busy !== null || preparing || (offline && !status?.bundled)}>
             {installing ? t("progress.installing") : status?.bundled ? t("settings.office.installBundled") : t("settings.office.install")}
           </Button>
         )}

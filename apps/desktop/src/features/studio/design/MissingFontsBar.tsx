@@ -13,8 +13,10 @@ import { useUiStore } from "@/shared/store/uiStore";
 import type { FontLibraryFamily } from "@/types";
 import { libraryFontIds } from "../model/design";
 import { useStudioStore } from "./studioStore";
+import { useOfflineHint } from "@/shared/lib/offline";
 
 export function MissingFontsBar() {
+  const offlineHint = useOfflineHint();
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const fontIds = useStudioStore(useShallow((state) => libraryFontIds(state.design)));
@@ -60,7 +62,7 @@ export function MissingFontsBar() {
     <div role="status" data-testid="studio-missing-fonts" className="glass-flat flex h-9 shrink-0 items-center gap-2 border-b px-3 text-xs">
       <Download className="size-4 shrink-0 text-primary" aria-hidden />
       <span className="min-w-0 flex-1 truncate">{t("studio.fonts.missing", { names: missing.map((family) => family.name).join(", ") })}</span>
-      <Button size="sm" variant="ghost" loading={downloading} onClick={() => void download()}>
+      <Button size="sm" variant="ghost" loading={downloading} onClick={() => void download()} disabled={offlineHint !== undefined} title={offlineHint}>
         {t("studio.fonts.download", { size: formatBytes(size, locale) })}
       </Button>
     </div>

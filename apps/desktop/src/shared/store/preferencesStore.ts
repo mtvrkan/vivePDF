@@ -46,6 +46,7 @@ export type Preferences = {
   selectionToolbar: boolean;
   keepBackups: boolean;
   breachCheckOnline: boolean;
+  offlineMode: boolean;
   keepInTray: KeepInTray;
   annotationAuthor: string;
   reloadOnFileChange: boolean;
@@ -74,6 +75,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   selectionToolbar: false,
   keepBackups: true,
   breachCheckOnline: false,
+  offlineMode: false,
   keepInTray: "auto",
   annotationAuthor: "",
   reloadOnFileChange: true,
@@ -113,6 +115,7 @@ const VALIDATORS: { [Key in keyof Preferences]: Validator<Preferences[Key]> } = 
   selectionToolbar: isBoolean,
   keepBackups: isBoolean,
   breachCheckOnline: isBoolean,
+  offlineMode: isBoolean,
   keepInTray: oneOf(KEEP_IN_TRAY_MODES),
   annotationAuthor: isAuthorName,
   reloadOnFileChange: isBoolean,

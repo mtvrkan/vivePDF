@@ -92,11 +92,18 @@ fn write_upload_page(
 #[tauri::command]
 pub async fn search_picture_with_lens(
     app: tauri::AppHandle,
+    state: tauri::State<'_, crate::sidecar::Sidecar>,
     png_base64: String,
     width: u32,
     height: u32,
 ) -> Result<(), RpcError> {
     use tauri_plugin_opener::OpenerExt;
+    if state.is_offline() {
+        return Err(RpcError::new(
+            "OFFLINE",
+            "picture search needs the internet and offline mode is on",
+        ));
+    }
     let page = tauri::async_runtime::spawn_blocking(move || {
         write_upload_page(
             &std::env::temp_dir().join(LENS_FOLDER),

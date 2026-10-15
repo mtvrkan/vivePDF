@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Literal
 from urllib.error import HTTPError, URLError
 
+from vivepdf.net import require_online
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 
@@ -101,6 +102,7 @@ _OPENER = urllib.request.build_opener(_HttpsOnlyRedirects)
 
 
 def _open(request: urllib.request.Request, timeout: float) -> HTTPResponse:
+    require_online("office.download")
     return _OPENER.open(request, timeout=timeout)
 
 

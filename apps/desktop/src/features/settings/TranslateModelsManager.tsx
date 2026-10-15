@@ -14,6 +14,8 @@ import { useToastStore } from "@/shared/store/toastStore";
 import { useTranslateModelsStore } from "@/shared/store/translateModelsStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import type { TranslateModel } from "@/types";
+import { OfflineNotice } from "@/components/shared/OfflineNotice";
+import { useOffline } from "@/shared/lib/offline";
 
 type Filter = "all" | "installed";
 
@@ -49,6 +51,7 @@ function LanguageRow({ pack, locale, working, percent, busy, onDownload, onRemov
   onCancel: () => void;
 }) {
   const { t } = useTranslation();
+  const offline = useOffline();
   const name = languageName(pack.code, locale);
   const size = pack.state === "partial" ? pack.missingSizeMb : pack.sizeMb;
   return (
@@ -63,14 +66,14 @@ function LanguageRow({ pack, locale, working, percent, busy, onDownload, onRemov
       <span className="w-16 text-end font-mono text-xs tabular-nums text-muted-foreground">{working ? `${percent}%` : `${size} MB`}</span>
       <span className="flex items-center justify-end gap-1">
         {pack.state === "partial" && !working ? (
-          <Button size="sm" variant="secondary" aria-label={`${t("settings.translate.complete")}: ${name}`} onClick={onDownload} disabled={busy}>
+          <Button size="sm" variant="secondary" aria-label={`${t("settings.translate.complete")}: ${name}`} onClick={onDownload} disabled={busy || offline}>
             {t("settings.translate.complete")}
           </Button>
         ) : null}
         {working ? (
           <IconButton icon={X} label={`${t("settings.translate.cancelDownload")}: ${name}`} onClick={onCancel} />
         ) : pack.state === "none" ? (
-          <IconButton icon={ArrowDownToLine} label={`${t("settings.translate.downloadLanguage")}: ${name}`} onClick={onDownload} disabled={busy} />
+          <IconButton icon={ArrowDownToLine} label={`${t("settings.translate.downloadLanguage")}: ${name}`} onClick={onDownload} disabled={busy || offline} />
         ) : (
           <IconButton icon={Trash2} label={`${t("settings.translate.removeLanguage")}: ${name}`} onClick={onRemove} disabled={busy} />
         )}
@@ -197,6 +200,7 @@ export function TranslateModelsManager() {
 
   return (
     <div className="w-full space-y-3">
+      <OfflineNotice />
       <div className="flex flex-wrap items-center gap-2">
         <span className="min-w-0 flex-1 text-sm text-muted-foreground">{t("settings.translate.description")}</span>
         <span className="font-mono text-xs text-muted-foreground">{t("settings.translate.installed", { count: installedCount })}</span>

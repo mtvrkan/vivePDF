@@ -16,6 +16,7 @@ export type RpcErrorCode =
   | "EXTERNAL_TOOL_FAILED"
   | "TESSDATA_MISSING"
   | "NETWORK"
+  | "OFFLINE"
   | "CANCELLED"
   | "PERMISSION_DENIED"
   | "INVALID_PARAMS"

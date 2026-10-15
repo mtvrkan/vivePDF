@@ -30,6 +30,7 @@ from urllib.parse import (
 import pymupdf
 from pydantic import Field
 
+from vivepdf.net import require_online
 from vivepdf.ops._output import OutputResult, prepare_output
 from vivepdf.ops._story import decode_text, known_codec, render_html_to_pdf, text_to_html
 from vivepdf.rpc.errors import ErrorCode, OpError
@@ -456,6 +457,7 @@ def fetch(
     check_cancelled: Callable[[], None] | None = None,
     deadline: float = PAGE_DEADLINE,
 ) -> tuple[bytes, str, str]:
+    require_online("convert.from_url")
     current = url
     ends = time.monotonic() + deadline
     for _ in range(MAX_REDIRECTS + 1):

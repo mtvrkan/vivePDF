@@ -1753,7 +1753,9 @@
       },
       "lens": "Google Lens",
       "breachCheck": "Comprobar contraseñas nuevas en línea (Have I Been Pwned)",
-      "breachCheckHint": "Solo se envían los primeros 5 caracteres del hash SHA-1 de la contraseña; la contraseña nunca sale de este equipo. Si está desactivado, las contraseñas nuevas solo se comprueban con la lista integrada de contraseñas filtradas habituales."
+      "breachCheckHint": "Solo se envían los primeros 5 caracteres del hash SHA-1 de la contraseña; la contraseña nunca sale de este equipo. Si está desactivado, las contraseñas nuevas solo se comprueban con la lista integrada de contraseñas filtradas habituales.",
+      "offline": "Modo sin conexión",
+      "offlineHint": "Detiene toda conexión a internet: búsqueda de actualizaciones, descargas, búsquedas y consultas web, apertura de páginas web y comprobaciones en línea. Todo lo demás sigue funcionando en este equipo."
     },
     "ocrLanguages": "Idiomas de OCR",
     "notFound": "no encontrado",
@@ -6399,7 +6401,8 @@
     "KEYCHAIN_UNAVAILABLE": "El llavero del sistema no está disponible, así que no se pueden recordar contraseñas.",
     "SECRET_NOT_FOUND": "La contraseña recordada ya no está en el llavero del sistema. Vuelve a guardar la cadena con la contraseña.",
     "SECRET_BINDING_CHANGED": "El archivo del certificado cambió después de recordar su contraseña. Vuelve a guardar la cadena con la contraseña.",
-    "TICKET_INVALID": "Este archivo no lo está procesando una carpeta vigilada, así que no se pueden usar las contraseñas recordadas."
+    "TICKET_INVALID": "Este archivo no lo está procesando una carpeta vigilada, así que no se pueden usar las contraseñas recordadas.",
+    "OFFLINE": "Esto necesita internet, pero el modo sin conexión está activado. Desactívelo en Ajustes › Web."
   },
   "palette": {
     "title": "Paleta de comandos",
@@ -6566,7 +6569,13 @@
       "openData": "Ajustes › Datos",
       "openTools": "Ajustes › Herramientas",
       "openGeneral": "Ajustes › Inicio y privacidad",
-      "clear": "Casi todo se puede eliminar en Ajustes › Datos; los paquetes descargados, en su propia sección de ajustes, y las copias de seguridad y el archivo de registro, desde sus carpetas."
+      "clear": "Casi todo se puede eliminar en Ajustes › Datos; los paquetes descargados, en su propia sección de ajustes, y las copias de seguridad y el archivo de registro, desde sus carpetas.",
+      "offline": {
+        "on": "El modo sin conexión está activado",
+        "off": "El modo sin conexión está desactivado",
+        "description": "Un solo interruptor detiene todas las conexiones de la lista. Sus documentos nunca salen de este equipo en ningún caso.",
+        "open": "Abrir ajuste"
+      }
     },
     "shortcuts": {
       "groups": {
@@ -6691,7 +6700,8 @@
       "downloading": "Descargando… {{percent}}%",
       "ready": "Descargada; se instalará al reiniciar",
       "error": "No se pudo comprobar",
-      "unconfigured": "Canal de actualización inaccesible o aún no configurado"
+      "unconfigured": "Canal de actualización inaccesible o aún no configurado",
+      "offline": "Sin comprobar: el modo sin conexión está activado"
     }
   },
   "window": {
@@ -10067,5 +10077,10 @@
         "iconLibrary": "Más de 1600 iconos se pueden buscar por nombre en tu idioma y añadir como dibujos nítidos y recoloreables."
       }
     }
+  },
+  "offline": {
+    "hint": "Desactivado mientras el modo sin conexión está activo (Ajustes › Web)",
+    "notice": "El modo sin conexión está activado; no se descarga ni se consulta nada en internet.",
+    "openSettings": "Cambiar"
   }
 }

@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Protocol
 from urllib.error import URLError
 
+from vivepdf.net import require_online
 from vivepdf.ops._output import replace_patiently, unlink_patiently
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
@@ -37,6 +38,7 @@ def fetch_font_file(
     total: int,
     base: str,
 ) -> None:
+    require_online("fonts.download")
     request = urllib.request.Request(f"{base}/{entry.name}", headers={"User-Agent": USER_AGENT})
     temp_fd, temp_name = tempfile.mkstemp(dir=directory, prefix=f".{entry.name}-", suffix=".part")
     temp_path = Path(temp_name)

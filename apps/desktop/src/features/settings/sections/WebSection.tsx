@@ -12,6 +12,7 @@ const WEB_SEARCH_ENGINES: WebSearchEngine[] = ["google", "bing", "duckduckgo", "
 export function WebSection({ query, onEmptyChange }: SettingsSectionProps) {
   const { t } = useTranslation();
   const breachCheckOnline = usePreferencesStore((state) => state.breachCheckOnline);
+  const offlineMode = usePreferencesStore((state) => state.offlineMode);
   const updatePreferences = usePreferencesStore((state) => state.update);
   const webSearchEngine = useWebSearchStore((state) => state.engine);
   const webSearchCustomUrl = useWebSearchStore((state) => state.customUrl);
@@ -19,6 +20,9 @@ export function WebSection({ query, onEmptyChange }: SettingsSectionProps) {
 
   return (
     <SectionCard id="web" query={query} onEmptyChange={onEmptyChange}>
+      <SettingRow label={t("settings.web.offline")} hint={t("settings.web.offlineHint")} hintTone={offlineMode ? "warning" : undefined}>
+        <Checkbox label="" ariaLabel={t("settings.web.offline")} checked={offlineMode} onChange={(value) => updatePreferences({ offlineMode: value })} />
+      </SettingRow>
       <SettingRow label={t("settings.web.engine")}>
         <Select
           value={webSearchEngine}
@@ -36,8 +40,8 @@ export function WebSection({ query, onEmptyChange }: SettingsSectionProps) {
       <Note>
         <span className="font-medium text-foreground/80">{t("settings.web.lens")}</span> · {t("settings.web.lensHint")}
       </Note>
-      <SettingRow label={t("settings.web.breachCheck")} hint={t("settings.web.breachCheckHint")}>
-        <Checkbox label="" checked={breachCheckOnline} onChange={(value) => updatePreferences({ breachCheckOnline: value })} />
+      <SettingRow label={t("settings.web.breachCheck")} hint={offlineMode ? t("offline.hint") : t("settings.web.breachCheckHint")}>
+        <Checkbox label="" checked={breachCheckOnline && !offlineMode} disabled={offlineMode} onChange={(value) => updatePreferences({ breachCheckOnline: value })} />
       </SettingRow>
     </SectionCard>
   );

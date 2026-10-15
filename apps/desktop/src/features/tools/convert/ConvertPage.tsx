@@ -28,9 +28,12 @@ import { SvgToPdfSection } from "./SvgToPdfSection";
 import { UrlToPdfSection } from "./UrlToPdfSection";
 import { useConvertOptions } from "./useConvertOptions";
 import { fileNameFromUrl } from "./urlName";
+import { OfflineNotice } from "@/components/shared/OfflineNotice";
+import { useOffline } from "@/shared/lib/offline";
 
 export function ConvertPage() {
   const { t, i18n } = useTranslation();
+  const offline = useOffline();
   const locale = useUiStore((state) => state.locale);
   const [searchParams, setSearchParams] = useSearchParams();
   const initialMode = searchParams.get("mode");
@@ -176,7 +179,7 @@ export function ConvertPage() {
     : mode === "images-to-pdf"
       ? images.length + folders.length > 0 && !!output
       : mode === "url-to-pdf"
-        ? !!fileNameFromUrl(url) && !!output
+        ? !!fileNameFromUrl(url) && !!output && !offline
         : mode === "svg-to-pdf"
           ? svgFiles.length > 0 && (svgWritesOneFile(svgFiles.length, combineSvg) ? !!output : !!outputDir)
           : files.length > 0 && !!output;
@@ -305,6 +308,7 @@ export function ConvertPage() {
               />
             ) : null}
 
+            {mode === "url-to-pdf" ? <OfflineNotice /> : null}
             {mode === "url-to-pdf" ? (
               <UrlToPdfSection running={operation.running} ready={ready} run={run} output={output} setOutput={editOutput} options={options} />
             ) : null}

@@ -8,6 +8,7 @@ from vivepdf.ops._sign_params import SignParams
 from vivepdf.ops.sign import SignatureFieldsParams, sign, signature_fields
 from vivepdf.ops.sign_certificate import CreateCertificateParams, create_certificate
 from vivepdf.ops.sign_verify import VerifyParams, verify
+from vivepdf.ops.system import NetworkModeParams, network_mode
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
@@ -150,6 +151,21 @@ def test_unreachable_timestamp_server_fails_as_a_network_error(
     with pytest.raises(OpError) as invalid:
         _sign(rotated_pdf, output, certificate, timestamp_url="not a server")
     assert invalid.value.data == {"reason": "timestampUrl"}
+
+
+def test_timestamp_server_is_not_contacted_in_offline_mode(
+    rotated_pdf: Path, certificate: Path, tmp_path: Path
+) -> None:
+    output = tmp_path / "offline.pdf"
+    network_mode(NetworkModeParams(offline=True), silent_progress())
+    try:
+        with pytest.raises(OpError) as raised:
+            _sign(rotated_pdf, output, certificate, timestamp_url="http://127.0.0.1:9/tsr")
+        _sign(rotated_pdf, output, certificate)
+    finally:
+        network_mode(NetworkModeParams(offline=False), silent_progress())
+    assert raised.value.code == ErrorCode.OFFLINE
+    assert output.exists()
 
 
 def test_blank_stamp_text_falls_back_to_the_default(

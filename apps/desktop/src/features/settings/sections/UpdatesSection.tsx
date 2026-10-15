@@ -2,6 +2,7 @@ import { ArrowDownToLine, RefreshCw, RotateCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { Checkbox } from "@/components/tool/form";
+import { useOfflineHint } from "@/shared/lib/offline";
 import { useUiStore } from "@/shared/store/uiStore";
 import { useUpdateStore } from "@/shared/store/updateStore";
 import { Mono, SectionCard, SettingRow } from "../settingsControls";
@@ -11,6 +12,7 @@ export function UpdatesSection({ query, onEmptyChange, appVersion }: SettingsSec
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const update = useUpdateStore();
+  const offlineHint = useOfflineHint();
 
   const updateTone =
     update.status === "upToDate"
@@ -19,7 +21,7 @@ export function UpdatesSection({ query, onEmptyChange, appVersion }: SettingsSec
         ? "primary"
         : update.status === "error"
           ? "destructive"
-          : update.status === "unconfigured"
+          : update.status === "unconfigured" || update.status === "offline"
             ? "muted"
             : "warning";
 
@@ -42,7 +44,7 @@ export function UpdatesSection({ query, onEmptyChange, appVersion }: SettingsSec
         }
       >
         {update.status === "available" ? (
-          <Button size="sm" variant="primary" icon={<ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void update.install()}>
+          <Button size="sm" variant="primary" icon={<ArrowDownToLine className="size-4" aria-hidden />} onClick={() => void update.install()} disabled={offlineHint !== undefined} title={offlineHint}>
             {t("update.install")}
           </Button>
         ) : update.status === "ready" ? (
@@ -50,7 +52,7 @@ export function UpdatesSection({ query, onEmptyChange, appVersion }: SettingsSec
             {t("update.restart")}
           </Button>
         ) : (
-          <Button size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => void update.check(true)} loading={update.status === "checking" || update.status === "downloading"}>
+          <Button size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => void update.check(true)} disabled={offlineHint !== undefined} title={offlineHint} loading={update.status === "checking" || update.status === "downloading"}>
             {t("update.check")}
           </Button>
         )}

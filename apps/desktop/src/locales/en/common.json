@@ -1754,7 +1754,9 @@
       },
       "lens": "Google Lens",
       "breachCheck": "Check new passwords online (Have I Been Pwned)",
-      "breachCheckHint": "Only the first 5 characters of the password's SHA-1 hash are sent; the password itself never leaves this computer. When off, new passwords are checked against the built-in list of common breached passwords only."
+      "breachCheckHint": "Only the first 5 characters of the password's SHA-1 hash are sent; the password itself never leaves this computer. When off, new passwords are checked against the built-in list of common breached passwords only.",
+      "offline": "Offline mode",
+      "offlineHint": "Stops every internet connection: update checks, downloads, web searches and lookups, opening web pages and online checks. Everything else keeps working on this computer."
     },
     "ocrLanguages": "OCR languages",
     "notFound": "not found",
@@ -6400,7 +6402,8 @@
     "KEYCHAIN_UNAVAILABLE": "The system keychain is not available, so passwords cannot be remembered.",
     "SECRET_NOT_FOUND": "The remembered password is no longer in the system keychain. Save the chain again with the password.",
     "SECRET_BINDING_CHANGED": "The certificate file changed since its password was remembered. Save the chain again with the password.",
-    "TICKET_INVALID": "This file is not being handled by a watched folder, so remembered passwords cannot be used."
+    "TICKET_INVALID": "This file is not being handled by a watched folder, so remembered passwords cannot be used.",
+    "OFFLINE": "This needs the internet, but offline mode is on. Turn it off in Settings › Web."
   },
   "palette": {
     "title": "Command palette",
@@ -6567,7 +6570,13 @@
       "openData": "Settings › Data",
       "openTools": "Settings › Tools",
       "openGeneral": "Settings › Startup and privacy",
-      "clear": "Most of it can be removed under Settings › Data; downloaded packs in their own settings sections, and backups and the log file from their folders."
+      "clear": "Most of it can be removed under Settings › Data; downloaded packs in their own settings sections, and backups and the log file from their folders.",
+      "offline": {
+        "on": "Offline mode is on",
+        "off": "Offline mode is off",
+        "description": "One switch stops every connection listed below. Your documents never leave this computer either way.",
+        "open": "Open setting"
+      }
     },
     "shortcuts": {
       "groups": {
@@ -6692,7 +6701,8 @@
       "downloading": "Downloading… {{percent}}%",
       "ready": "Downloaded; installs on restart",
       "error": "Could not check",
-      "unconfigured": "Update channel unreachable or not configured yet"
+      "unconfigured": "Update channel unreachable or not configured yet",
+      "offline": "Not checked: offline mode is on"
     }
   },
   "window": {
@@ -10068,5 +10078,10 @@
         "iconLibrary": "More than 1,600 icons can be searched by name in your language and added as sharp, recolourable drawings."
       }
     }
+  },
+  "offline": {
+    "hint": "Off while offline mode is on (Settings › Web)",
+    "notice": "Offline mode is on, so nothing is downloaded or looked up on the internet.",
+    "openSettings": "Change"
   }
 }

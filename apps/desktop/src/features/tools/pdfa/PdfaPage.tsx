@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AlertTriangle, Archive, CheckCircle2, Globe, RefreshCw, XCircle } from "lucide-react";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { openExternal } from "@/shared/lib/openExternal";
+import { useOfflineHint } from "@/shared/lib/offline";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { OptionCards, Section } from "@/components/tool/form";
@@ -32,6 +33,7 @@ const levelName = (level: PdfaLevel) => `PDF/A-${level}`;
 
 export function PdfaPage() {
   const { t } = useTranslation();
+  const offlineHint = useOfflineHint();
   const locale = useUiStore((state) => state.locale);
   const sourceState = useSourceDocument();
   const operation = useOperation(convertPdfa);
@@ -177,7 +179,7 @@ export function PdfaPage() {
                 <>
                   <p className="text-sm text-muted-foreground">{t("tools.pdfa.vera.missing")}</p>
                   <div className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="ghost" icon={<Globe className="size-4" aria-hidden />} onClick={() => void openUrl(VERAPDF_URL)}>
+                    <Button size="sm" variant="ghost" icon={<Globe className="size-4" aria-hidden />} onClick={() => void openExternal(VERAPDF_URL)} disabled={offlineHint !== undefined} title={offlineHint}>
                       verapdf.org
                     </Button>
                     <Button size="sm" variant="ghost" icon={<RefreshCw className="size-4" aria-hidden />} onClick={vera.refresh}>

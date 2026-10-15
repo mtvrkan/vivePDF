@@ -17,6 +17,8 @@ import { useTtsVoicesStore } from "@/shared/store/ttsVoicesStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { localeDisplayName } from "./voiceLocale";
 import type { TtsVoice } from "@/types";
+import { OfflineNotice } from "@/components/shared/OfflineNotice";
+import { useOffline } from "@/shared/lib/offline";
 
 const PREVIEW_SAMPLES: Record<string, string> = {
   tr: "Merhaba, bu bir ses önizlemesidir.",
@@ -84,6 +86,7 @@ function VoiceRow({ voice, working, percent, previewing, busy, onPreview, onDown
   onCancel: () => void;
 }) {
   const { t } = useTranslation();
+  const offline = useOffline();
   return (
     <li className={cn("flex h-11 items-center gap-3 border-b text-sm last:border-b-0", voice.installed ? "text-foreground" : "text-foreground/80")}>
       <span className={cn("flex size-5 shrink-0 items-center justify-center rounded-full border", voice.installed ? "border-primary bg-primary text-primary-foreground" : "border-border")}>
@@ -123,7 +126,7 @@ function VoiceRow({ voice, working, percent, previewing, busy, onPreview, onDown
         ) : voice.installed ? (
           <IconButton icon={Trash2} label={`${t("settings.tts.remove")}: ${voice.name}`} onClick={onRemove} disabled={busy} />
         ) : (
-          <IconButton icon={ArrowDownToLine} label={`${t("settings.tts.download")}: ${voice.name}`} onClick={onDownload} disabled={busy} />
+          <IconButton icon={ArrowDownToLine} label={`${t("settings.tts.download")}: ${voice.name}`} onClick={onDownload} disabled={busy || offline} />
         )}
       </span>
     </li>
@@ -261,6 +264,7 @@ export function TtsVoicesManager() {
 
   return (
     <div className="w-full space-y-3">
+      <OfflineNotice />
       <div className="flex flex-wrap items-center gap-2">
         <span className="min-w-0 flex-1 text-sm text-muted-foreground">{t("settings.tts.description")}</span>
         <span className="font-mono text-xs text-muted-foreground">{t("settings.tts.installed", { count: installedCount })}</span>

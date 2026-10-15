@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
+import { isOffline } from "@/shared/lib/offline";
 
-export type UpdateStatus = "idle" | "checking" | "upToDate" | "available" | "downloading" | "ready" | "error" | "unconfigured";
+export type UpdateStatus = "idle" | "checking" | "upToDate" | "available" | "downloading" | "ready" | "error" | "unconfigured" | "offline";
 
 const AUTO_CHECK_KEY = "vivepdf.autoUpdateCheck";
 const UNCONFIGURED_PATTERN = /pubkey|public key|endpoint|minisign|signature|release JSON/i;
@@ -52,6 +53,10 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
   check: async (manual) => {
     const { status } = get();
     if (status === "checking" || status === "downloading") return;
+    if (isOffline()) {
+      set({ status: "offline", error: null });
+      return;
+    }
     set({ status: "checking", error: null });
     try {
       const update = await check({ timeout: 15000 });
@@ -70,6 +75,10 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
   },
   install: async () => {
     if (!pendingUpdate) return;
+    if (isOffline()) {
+      set({ status: "offline", error: null });
+      return;
+    }
     set({ status: "downloading", progress: 0, error: null });
     let total = 0;
     let received = 0;

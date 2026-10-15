@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RpcCallError, type RpcCallOptions } from "@/shared/rpc/client";
+import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { axeViolations } from "@/test/axe";
 
@@ -51,5 +52,18 @@ describe("TessdataManager", () => {
     const toasts = useToastStore.getState().toasts;
     expect(toasts.map((toast) => toast.kind)).toEqual(["info"]);
     expect(toasts[0].message).toBe("Download of lat cancelled.");
+  });
+
+  it("explains offline mode and keeps language downloads switched off", async () => {
+    usePreferencesStore.getState().update({ offlineMode: true });
+    try {
+      render(<TessdataManager />);
+
+      expect((await screen.findByRole("button", { name: "Download: Latin" }) as HTMLButtonElement).disabled).toBe(true);
+      expect(screen.getByTestId("offline-notice").textContent).toContain("Offline mode is on");
+      expect(calls).toEqual([]);
+    } finally {
+      usePreferencesStore.getState().update({ offlineMode: false });
+    }
   });
 });

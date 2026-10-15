@@ -16,6 +16,7 @@ from typing import NamedTuple
 
 from pydantic import Field
 
+from vivepdf.net import require_online
 from vivepdf.ops._appdata import user_data_dir
 from vivepdf.ops.translate_catalog import CATALOG, CATALOG_BY_ID, CatalogEntry
 from vivepdf.ops.tts import split_sentences
@@ -209,6 +210,7 @@ def _too_large(url: str) -> OpError:
 
 
 def _fetch_archive(entry: CatalogEntry, target: Path, progress: Progress) -> None:
+    require_online("translate.download")
     _assert_trusted_url(entry.url)
     request = urllib.request.Request(entry.url, headers={"User-Agent": "vivePDF"})
     try:

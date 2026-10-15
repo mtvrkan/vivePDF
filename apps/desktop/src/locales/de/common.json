@@ -1753,7 +1753,9 @@
       },
       "lens": "Google Lens",
       "breachCheck": "Neue Passwörter online prüfen (Have I Been Pwned)",
-      "breachCheckHint": "Nur die ersten 5 Zeichen des SHA-1-Hashwerts des Passworts werden gesendet; das Passwort selbst verlässt diesen Computer nie. Ist die Option deaktiviert, werden neue Passwörter nur gegen die integrierte Liste häufiger geleakter Passwörter geprüft."
+      "breachCheckHint": "Nur die ersten 5 Zeichen des SHA-1-Hashwerts des Passworts werden gesendet; das Passwort selbst verlässt diesen Computer nie. Ist die Option deaktiviert, werden neue Passwörter nur gegen die integrierte Liste häufiger geleakter Passwörter geprüft.",
+      "offline": "Offlinemodus",
+      "offlineHint": "Unterbindet jede Internetverbindung: Updateprüfung, Downloads, Websuchen und Abfragen, das Öffnen von Webseiten und Onlineprüfungen. Alles andere funktioniert auf diesem Computer weiter."
     },
     "ocrLanguages": "OCR-Sprachen",
     "notFound": "nicht gefunden",
@@ -6399,7 +6401,8 @@
     "KEYCHAIN_UNAVAILABLE": "Der Systemschlüsselbund ist nicht verfügbar, daher können keine Passwörter gespeichert werden.",
     "SECRET_NOT_FOUND": "Das gespeicherte Passwort ist nicht mehr im Systemschlüsselbund. Speichern Sie die Kette erneut mit dem Passwort.",
     "SECRET_BINDING_CHANGED": "Die Zertifikatsdatei hat sich geändert, seit ihr Passwort gespeichert wurde. Speichern Sie die Kette erneut mit dem Passwort.",
-    "TICKET_INVALID": "Diese Datei wird nicht von einem überwachten Ordner verarbeitet, daher können gespeicherte Passwörter nicht verwendet werden."
+    "TICKET_INVALID": "Diese Datei wird nicht von einem überwachten Ordner verarbeitet, daher können gespeicherte Passwörter nicht verwendet werden.",
+    "OFFLINE": "Dafür wird das Internet benötigt, aber der Offlinemodus ist aktiv. Sie können ihn unter Einstellungen › Web ausschalten."
   },
   "palette": {
     "title": "Befehlspalette",
@@ -6566,7 +6569,13 @@
       "openData": "Einstellungen › Daten",
       "openTools": "Einstellungen › Werkzeuge",
       "openGeneral": "Einstellungen › Start und Datenschutz",
-      "clear": "Das meiste lässt sich unter Einstellungen › Daten entfernen; heruntergeladene Pakete in ihren eigenen Einstellungsbereichen, Sicherungen und die Protokolldatei in ihren Ordnern."
+      "clear": "Das meiste lässt sich unter Einstellungen › Daten entfernen; heruntergeladene Pakete in ihren eigenen Einstellungsbereichen, Sicherungen und die Protokolldatei in ihren Ordnern.",
+      "offline": {
+        "on": "Offlinemodus ist aktiv",
+        "off": "Offlinemodus ist aus",
+        "description": "Ein Schalter unterbindet alle unten aufgeführten Verbindungen. Ihre Dokumente verlassen diesen Computer ohnehin nie.",
+        "open": "Einstellung öffnen"
+      }
     },
     "shortcuts": {
       "groups": {
@@ -6691,7 +6700,8 @@
       "downloading": "Wird heruntergeladen… {{percent}} %",
       "ready": "Heruntergeladen; wird beim Neustart installiert",
       "error": "Prüfung fehlgeschlagen",
-      "unconfigured": "Update-Kanal nicht erreichbar oder noch nicht konfiguriert"
+      "unconfigured": "Update-Kanal nicht erreichbar oder noch nicht konfiguriert",
+      "offline": "Nicht geprüft: Offlinemodus ist aktiv"
     }
   },
   "window": {
@@ -10066,5 +10076,10 @@
         "iconLibrary": "Über 1.600 Symbole lassen sich in Ihrer Sprache nach Namen suchen und als scharfe, umfärbbare Zeichnungen einfügen."
       }
     }
+  },
+  "offline": {
+    "hint": "Im Offlinemodus deaktiviert (Einstellungen › Web)",
+    "notice": "Der Offlinemodus ist aktiv; es wird nichts aus dem Internet heruntergeladen oder abgefragt.",
+    "openSettings": "Ändern"
   }
 }

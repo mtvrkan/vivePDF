@@ -55,6 +55,7 @@ import { pageLabelOf } from "@/shared/lib/pageLabels";
 import { usePageLabels } from "@/shared/store/pageLabelsStore";
 import { describeError } from "@/shared/lib/errorMessage";
 import { openExternal } from "@/shared/lib/openExternal";
+import { useOffline } from "@/shared/lib/offline";
 import { basenameOf, dirnameOf, joinPath, pageFileUrl, stemOf, suggestOutputPath } from "@/shared/lib/paths";
 import { defineUrl, scholarUrl, searchUrl, translateUrl, wikipediaUrl } from "@/shared/lib/webSearch";
 import { toRpcError } from "@/shared/rpc/client";
@@ -158,6 +159,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
   const requestSearch = useSearchRequestStore((state) => state.requestSearch);
   const setPanels = useViewerPanelsStore((state) => state.setPanels);
   const webSearch = useWebSearchStore();
+  const offline = useOffline();
   const requestFocusAt = useViewerOverlayStore((state) => state.requestFocusAt);
   const setOverlayMode = useViewerOverlayStore((state) => state.setMode);
   const requestAreaText = useViewerOverlayStore((state) => state.requestAreaText);
@@ -702,7 +704,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
         ...(markupItems.length > 0 ? [{ type: "separator", id: "sep-selection-markup" } as const, ...markupItems] : []),
         { type: "separator", id: "sep-selection-copy" },
         { type: "item", id: "search-doc", icon: Search, label: t("viewer.context.searchInDocument"), onSelect: searchInDocument },
-        { type: "submenu", id: "search-web", icon: Globe, label: t("viewer.context.searchWeb"), items: webSearchItems },
+        { type: "submenu", id: "search-web", icon: Globe, label: t("viewer.context.searchWeb"), disabled: offline, items: webSearchItems },
         {
           type: "submenu",
           id: "translate-menu",
@@ -710,7 +712,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
           label: t("viewer.context.translate"),
           items: [
             { type: "item", id: "translate", icon: Languages, label: t("viewer.context.offlineTranslator"), onSelect: translateSelection },
-            { type: "item", id: "translate-google", icon: Globe, label: t("viewer.context.googleTranslate"), onSelect: () => void openWebSearch(translateUrl(menu.selectionText, locale)) },
+            { type: "item", id: "translate-google", icon: Globe, label: t("viewer.context.googleTranslate"), disabled: offline, onSelect: () => void openWebSearch(translateUrl(menu.selectionText, locale)) },
           ],
         },
         { type: "item", id: "read-aloud", icon: Volume2, label: t("viewer.selection.readAloud"), onSelect: readAloud },
@@ -723,7 +725,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
         { type: "item", id: "save-image", icon: ImageDown, label: t("viewer.context.saveImage"), disabled: busy, onSelect: () => void saveImage() },
         { type: "item", id: "open-image", icon: ExternalLink, label: t("viewer.context.openImageExternally"), disabled: busy, onSelect: () => void openPictureInDefaultApp() },
         { type: "separator", id: "sep-picture-files" },
-        { type: "item", id: "lens", icon: ImageIcon, label: t("viewer.context.searchLens"), disabled: busy, onSelect: () => void searchWithLens() },
+        { type: "item", id: "lens", icon: ImageIcon, label: t("viewer.context.searchLens"), disabled: busy || offline, onSelect: () => void searchWithLens() },
         { type: "item", id: "image-text", icon: ScanText, label: t("viewer.context.copyImageText"), onSelect: readImageText },
         { type: "item", id: "edit-image", icon: Edit3, label: t("viewer.context.editImage"), onSelect: editImage },
       ]

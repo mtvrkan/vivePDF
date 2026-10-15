@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
+import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { useReportStore } from "@/shared/store/reportStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { ReportDialog } from "./ReportDialog";
@@ -118,5 +119,19 @@ describe("report dialog", () => {
 
     await waitFor(() => expect(document.querySelector("details pre")?.textContent ?? "").toContain("line one"));
     expect(attempts).toBe(2);
+  });
+
+  it("keeps copy and save but turns off the GitHub link in offline mode", () => {
+    usePreferencesStore.getState().update({ offlineMode: true });
+    try {
+      render(<ReportDialog />);
+
+      const github = screen.getByRole("button", { name: "Open on GitHub" }) as HTMLButtonElement;
+      expect(github.disabled).toBe(true);
+      expect(github.getAttribute("title") ?? github.getAttribute("data-tip")).toBe("Off while offline mode is on (Settings › Web)");
+      expect((screen.getByRole("button", { name: "Copy to clipboard" }) as HTMLButtonElement).disabled).toBe(false);
+    } finally {
+      usePreferencesStore.getState().update({ offlineMode: false });
+    }
   });
 });

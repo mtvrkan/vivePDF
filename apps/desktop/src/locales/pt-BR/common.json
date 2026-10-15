@@ -1753,7 +1753,9 @@
       },
       "lens": "Google Lens",
       "breachCheck": "Verificar novas senhas online (Have I Been Pwned)",
-      "breachCheckHint": "Somente os primeiros 5 caracteres do hash SHA-1 da senha são enviados; a senha em si nunca sai deste computador. Quando desativado, novas senhas são verificadas somente com a lista interna de senhas vazadas comuns."
+      "breachCheckHint": "Somente os primeiros 5 caracteres do hash SHA-1 da senha são enviados; a senha em si nunca sai deste computador. Quando desativado, novas senhas são verificadas somente com a lista interna de senhas vazadas comuns.",
+      "offline": "Modo offline",
+      "offlineHint": "Interrompe toda conexão com a internet: busca de atualizações, downloads, pesquisas e consultas na web, abertura de páginas web e checagens online. Todo o resto continua funcionando neste computador."
     },
     "ocrLanguages": "Idiomas do OCR",
     "notFound": "não encontrado",
@@ -6399,7 +6401,8 @@
     "KEYCHAIN_UNAVAILABLE": "O chaveiro do sistema não está disponível, então as senhas não podem ser lembradas.",
     "SECRET_NOT_FOUND": "A senha lembrada não está mais no chaveiro do sistema. Salve a sequência novamente com a senha.",
     "SECRET_BINDING_CHANGED": "O arquivo do certificado mudou depois que a senha dele foi lembrada. Salve a sequência novamente com a senha.",
-    "TICKET_INVALID": "Este arquivo não está sendo processado por uma pasta monitorada, então as senhas lembradas não podem ser usadas."
+    "TICKET_INVALID": "Este arquivo não está sendo processado por uma pasta monitorada, então as senhas lembradas não podem ser usadas.",
+    "OFFLINE": "Isso precisa de internet, mas o modo offline está ativado. Desative-o em Configurações › Web."
   },
   "palette": {
     "title": "Paleta de comandos",
@@ -6566,7 +6569,13 @@
       "openData": "Configurações › Dados",
       "openTools": "Configurações › Ferramentas",
       "openGeneral": "Configurações › Inicialização e privacidade",
-      "clear": "Quase tudo pode ser removido em Configurações › Dados; pacotes baixados na própria seção de configurações, e backups e o arquivo de log nas suas pastas."
+      "clear": "Quase tudo pode ser removido em Configurações › Dados; pacotes baixados na própria seção de configurações, e backups e o arquivo de log nas suas pastas.",
+      "offline": {
+        "on": "O modo offline está ativado",
+        "off": "O modo offline está desativado",
+        "description": "Um único botão interrompe todas as conexões listadas abaixo. Seus documentos nunca saem deste computador, de qualquer forma.",
+        "open": "Abrir configuração"
+      }
     },
     "shortcuts": {
       "groups": {
@@ -6691,7 +6700,8 @@
       "downloading": "Baixando… {{percent}}%",
       "ready": "Baixado; instala ao reiniciar",
       "error": "Não foi possível verificar",
-      "unconfigured": "Canal de atualização inacessível ou ainda não configurado"
+      "unconfigured": "Canal de atualização inacessível ou ainda não configurado",
+      "offline": "Não verificado: o modo offline está ativado"
     }
   },
   "window": {
@@ -10067,5 +10077,10 @@
         "iconLibrary": "Mais de 1.600 ícones podem ser pesquisados pelo nome no seu idioma e adicionados como desenhos nítidos e recoloríveis."
       }
     }
+  },
+  "offline": {
+    "hint": "Desativado enquanto o modo offline está ligado (Configurações › Web)",
+    "notice": "O modo offline está ativado; nada é baixado nem consultado na internet.",
+    "openSettings": "Alterar"
   }
 }

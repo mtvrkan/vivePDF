@@ -1,6 +1,7 @@
 import hashlib
 from pathlib import Path
 
+from vivepdf.net import require_online
 from vivepdf.ops.sign import PERMISSION_NAMES, _subject_label
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.paths import ReadPath
@@ -162,6 +163,8 @@ def verify(params: VerifyParams, progress: Progress) -> VerifyResult:
         raise OpError(
             ErrorCode.FILE_NOT_FOUND, f"file not found: {source.name}", {"path": params.path}
         )
+    if params.online:
+        require_online("sign.verify_online")
     user_roots = _user_trust_roots()
     user_digests = frozenset(_certificate_digest(root) for root in user_roots)
     context = ValidationContext(trust_roots=list(user_roots), allow_fetching=params.online)

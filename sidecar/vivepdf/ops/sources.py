@@ -9,6 +9,7 @@ from typing import Any, Literal
 
 from pydantic import Field
 
+from vivepdf.net import require_online
 from vivepdf.ops._document import open_document
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.paths import ReadPath
@@ -123,6 +124,7 @@ def _retry_after(error: urllib.error.HTTPError) -> float:
 
 
 def _get(url: str, accept: str, retried: bool = False) -> bytes | None:
+    require_online("sources.lookup")
     _assert_allowed(url)
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": accept})
     try:
@@ -289,6 +291,8 @@ def _check_one(raw: str) -> SourceCheck:
     try:
         body = _get(CROSSREF_WORKS + _quoted(doi), JSON_ACCEPT)
     except OpError as error:
+        if error.code == ErrorCode.OFFLINE:
+            raise
         if error.data and error.data.get("reason") in {"doiOffline", "doiUntrustedHost"}:
             raise
         return SourceCheck(doi=doi, status="failed")

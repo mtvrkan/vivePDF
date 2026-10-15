@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { openUrl } from "@tauri-apps/plugin-opener";
+import { openExternal } from "@/shared/lib/openExternal";
+import { useOfflineHint } from "@/shared/lib/offline";
 import { save } from "@tauri-apps/plugin-dialog";
 import { invoke } from "@tauri-apps/api/core";
 import { Dialog } from "@/components/shared/Dialog";
@@ -98,13 +99,15 @@ export function ReportDialog() {
     toast("error", describeError(t, toRpcError(error)));
   };
 
+  const offlineHint = useOfflineHint();
+
   const handleOpenGithub = async () => {
     const title = buildTitle(category, description);
     const bodies = LOG_LINE_STEPS.map((lines) => buildBody(category, description, diagnosticsText(lines)));
     const url = issueUrl(title, CATEGORY_LABELS_GITHUB[category], bodies);
     logger.info("report", "action:openGithub");
     try {
-      await openUrl(url);
+      await openExternal(url);
     } catch (error) {
       failed("openGithub", error);
     }
@@ -146,7 +149,7 @@ export function ReportDialog() {
           <Button variant="secondary" onClick={() => void handleSaveToFile()}>
             {t("report.saveToFile")}
           </Button>
-          <Button variant="primary" onClick={() => void handleOpenGithub()}>
+          <Button variant="primary" onClick={() => void handleOpenGithub()} disabled={offlineHint !== undefined} title={offlineHint}>
             {t("report.openGithub")}
           </Button>
         </>

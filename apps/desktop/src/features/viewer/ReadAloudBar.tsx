@@ -17,6 +17,7 @@ import { useTtsVoicesStore } from "@/shared/store/ttsVoicesStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
 import { localeGroupOrder, localeName } from "@/app/locales";
+import { useOfflineHint } from "@/shared/lib/offline";
 
 type Status = "idle" | "loading" | "playing" | "paused";
 type Chunk = { text: string; start: number; end: number; audio?: string };
@@ -24,6 +25,7 @@ const DOWNLOAD_PREFIX = "download:";
 
 export function ReadAloudBar({ documentId, onClose }: { documentId: string; onClose: () => void }) {
   const { t } = useTranslation();
+  const offlineHint = useOfflineHint();
   const location = useLocation();
   const locale = useUiStore((state) => state.locale);
   const toast = useToastStore((state) => state.push);
@@ -369,7 +371,7 @@ export function ReadAloudBar({ documentId, onClose }: { documentId: string; onCl
       {neuralMissing ? (
         <div className="flex h-8 items-center gap-2 border-t px-3 text-xs text-warning">
           <span>{t("viewer.readAloud.missingVoice")}</span>
-          <button type="button" className="inline-flex items-center gap-1 font-medium underline" onClick={() => neuralId && void download(neuralId)}>
+          <button type="button" className="inline-flex items-center gap-1 font-medium underline disabled:opacity-60 disabled:no-underline" onClick={() => neuralId && void download(neuralId)} disabled={offlineHint !== undefined} title={offlineHint}>
             <ArrowDownToLine className="size-3" aria-hidden />
             {t("viewer.readAloud.download")}
           </button>

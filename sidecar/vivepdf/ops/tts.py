@@ -16,6 +16,7 @@ from typing import NamedTuple
 
 from pydantic import Field
 
+from vivepdf.net import require_online
 from vivepdf.ops._appdata import user_data_dir
 from vivepdf.ops.tts_catalog import CATALOG, CATALOG_BY_ID
 from vivepdf.rpc.errors import ErrorCode, OpError
@@ -308,6 +309,7 @@ def _fetch(
     expected_md5: str | None = None,
     expected_sha256: str | None = None,
 ) -> None:
+    require_online("tts.download")
     _assert_trusted_url(url)
     request = urllib.request.Request(url, headers={"User-Agent": "vivePDF"})
     try:

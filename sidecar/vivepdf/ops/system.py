@@ -4,6 +4,7 @@ import platform
 import pymupdf
 
 from vivepdf import VERSION
+from vivepdf.net import set_offline
 from vivepdf.ops._document import forget_all_documents, forget_document
 from vivepdf.rpc.paths import NotAPath
 from vivepdf.rpc.progress import Progress
@@ -44,3 +45,17 @@ def release(params: ReleaseParams, _progress: Progress) -> ReleaseResult:
     pymupdf.TOOLS.store_shrink(STORE_EMPTY_PERCENT)
     gc.collect()
     return ReleaseResult(released=released)
+
+
+class NetworkModeParams(RpcModel):
+    offline: bool
+
+
+class NetworkModeResult(RpcModel):
+    offline: bool
+
+
+@op("system.network_mode", NetworkModeParams)
+def network_mode(params: NetworkModeParams, _progress: Progress) -> NetworkModeResult:
+    set_offline(params.offline)
+    return NetworkModeResult(offline=params.offline)

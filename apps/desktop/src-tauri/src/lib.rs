@@ -125,6 +125,7 @@ pub fn run() {
             rpc::rpc,
             app_menu::app_menu_configure,
             rpc::rpc_cancel,
+            sidecar::set_offline_mode,
             grants::grants_adopt,
             grants::grants_pick_folder,
             files::read_document,

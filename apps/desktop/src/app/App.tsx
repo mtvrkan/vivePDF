@@ -28,6 +28,7 @@ import { prepareBundledOffice } from "@/shared/session/bundledOffice";
 import { isMainWindow } from "@/shared/lib/windowRole";
 import { TaskbarProgress } from "@/shared/session/TaskbarProgress";
 import * as logger from "@/shared/lib/logger";
+import { isOffline, syncNetworkMode } from "@/shared/lib/offline";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { fileAssociationStale, setFileAssociation, setShellIntegration, shellIntegrationStale } from "@/shared/rpc/files";
 import { shellMenuEntries } from "@/shared/lib/shellMenu";
@@ -89,6 +90,8 @@ export default function App() {
 
   useEffect(() => closeStaleAudience(), []);
 
+  useEffect(() => syncNetworkMode(), []);
+
   useEffect(() => {
     if (!isMainWindow()) return;
     void shellIntegrationStale().then((stale) => {
@@ -102,7 +105,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (import.meta.env.DEV || !isMainWindow() || !useUpdateStore.getState().autoCheck) return;
+    if (import.meta.env.DEV || !isMainWindow() || !useUpdateStore.getState().autoCheck || isOffline()) return;
     const timer = window.setTimeout(() => void useUpdateStore.getState().check(false), 5000);
     return () => window.clearTimeout(timer);
   }, []);
