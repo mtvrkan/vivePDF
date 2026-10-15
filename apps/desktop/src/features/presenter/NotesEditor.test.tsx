@@ -107,4 +107,17 @@ describe("NotesEditor", () => {
 
     expect(screen.getByRole("alert").textContent).toBe("Your notes could not be saved.");
   });
+
+  it("saves what was typed when the window is closed or hidden before the delay", async () => {
+    readNotes.mockResolvedValue({});
+    render(<NotesEditor path="C:/talks/deck.pdf" pageIndex={0} pageCount={2} />);
+    await settle();
+    fireEvent.change(screen.getByLabelText("Speaker notes"), { target: { value: "Closing words" } });
+
+    window.dispatchEvent(new Event("pagehide"));
+    await settle();
+
+    expect(writeNotes).toHaveBeenCalledTimes(1);
+    expect(writeNotes).toHaveBeenCalledWith("C:/talks/deck.pdf", { 0: "Closing words" }, 2);
+  });
 });

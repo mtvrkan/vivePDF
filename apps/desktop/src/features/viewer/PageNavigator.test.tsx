@@ -6,12 +6,13 @@ const jumpTo = vi.fn();
 const scrollToNextPage = vi.fn();
 const scrollToPreviousPage = vi.fn();
 let currentPage = 1;
+let labels: string[] | null = null;
 
 vi.mock("@embedpdf/plugin-scroll/react", () => ({
   useScroll: () => ({ state: { currentPage, totalPages: 278 }, provides: { scrollToNextPage, scrollToPreviousPage } }),
 }));
 vi.mock("./usePageNavigation", () => ({ usePageNavigation: () => ({ jumpTo }) }));
-vi.mock("@/shared/store/pageLabelsStore", () => ({ usePageLabels: () => null }));
+vi.mock("@/shared/store/pageLabelsStore", () => ({ usePageLabels: () => labels }));
 
 const { PageNavigator } = await import("./PageNavigator");
 
@@ -25,6 +26,7 @@ describe("PageNavigator", () => {
 
   beforeEach(() => {
     currentPage = 1;
+    labels = null;
     jumpTo.mockClear();
     scrollToNextPage.mockClear();
     scrollToPreviousPage.mockClear();
@@ -63,5 +65,18 @@ describe("PageNavigator", () => {
 
     expect(jumpTo).not.toHaveBeenCalled();
     expect(pageInput().value).toBe("1");
+  });
+
+  it("shows the label in the box and the full physical position below it when the document has page labels", () => {
+    labels = Array.from({ length: 278 }, (_, index) => (index < 15 ? `p${index + 1}` : String(index - 14)));
+    currentPage = 164;
+
+    render(<PageNavigator documentId="doc" />);
+
+    expect(pageInput().value).toBe("149");
+    const position = screen.getByTestId("page-position");
+    expect(position.textContent).toBe("164/278");
+    expect(position.className).not.toContain("truncate");
+    expect(position.getAttribute("title")).toBe("164 / 278");
   });
 });

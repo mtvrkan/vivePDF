@@ -128,4 +128,24 @@ describe("PresentationCanvas inside the presenter console", () => {
     fireEvent.pointerUp(capture(), { pointerId: 1 });
     expect((onSignal.mock.calls.at(-1)?.[0] as LiveSignal).activeStroke).toBeNull();
   });
+
+  it("mirrors the plain cursor while it is over the slide and drops it when it leaves", () => {
+    const onSignal = vi.fn();
+    render(<Stage onSignal={onSignal} />);
+    const stage = document.querySelector<HTMLElement>("[data-stage]") as HTMLElement;
+
+    fireEvent.pointerMove(stage, { pointerId: 1, clientX: 500, clientY: 212.5 });
+    const over = onSignal.mock.calls.at(-1)?.[0] as LiveSignal;
+    fireEvent.pointerMove(stage, { pointerId: 1, clientX: 250, clientY: 212.5 });
+    const beside = onSignal.mock.calls.at(-1)?.[0] as LiveSignal;
+    fireEvent.pointerMove(stage, { pointerId: 1, clientX: 500, clientY: 212.5 });
+    fireEvent.pointerLeave(stage);
+    const gone = onSignal.mock.calls.at(-1)?.[0] as LiveSignal;
+
+    expect(over.tool).toBe("pointer");
+    expect(over.pointer?.x).toBeCloseTo(0.25);
+    expect(over.pointer?.y).toBeCloseTo(0.25);
+    expect(beside.pointer).toBeNull();
+    expect(gone.pointer).toBeNull();
+  });
 });

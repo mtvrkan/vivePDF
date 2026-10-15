@@ -23,6 +23,7 @@ import type { PresenterTransport } from "./presenterChannel";
 import { reopenAudience, swapScreens, usePresenterStore } from "./presenterSession";
 import { useBoxSize } from "./useBoxSize";
 import { usePresenterConsole } from "./usePresenterConsole";
+import { sessionPathOf } from "@/features/viewer/convertedDocuments";
 
 const TIMER_TICK_MS = 500;
 const CLOCK_TICK_MS = 15000;
@@ -159,15 +160,15 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
             <ImmersiveView documentId={documentId} onExit={onExit} variant="console" onSignal={onSignal} />
           </div>
         </section>
-        <aside className="flex w-md shrink-0 flex-col gap-3 2xl:w-lg">
+        <aside className="flex w-md shrink-0 flex-col gap-4 2xl:w-lg">
           <div className="flex items-center gap-1">
-            <span className="min-w-0 flex-1 truncate text-sm font-medium" data-testid="presenter-preview-heading">
+            <span className="line-clamp-2 min-w-0 flex-1 text-sm font-medium" data-testid="presenter-preview-heading">
               {peeking && shownIndex !== null ? t("presentation.presenter.peekHeading", { page: shownIndex + 1 }) : t("presentation.presenter.next")}
             </span>
             {peeking ? <IconButton icon={CornerUpLeft} label={t("presentation.presenter.peekReset")} onClick={() => setPeek(null)} /> : null}
             <IconButton icon={ChevronLeft} label={t("presentation.presenter.peekPrevious")} disabled={!canPeekBack} onClick={() => stepPeek(-1)} />
             <IconButton icon={ChevronRight} label={t("presentation.presenter.peekNext")} disabled={!canPeekForward} onClick={() => stepPeek(1)} />
-            <span className="ms-2 font-mono text-2xl tabular-nums" data-testid="presenter-counter">
+            <span className="ms-2 shrink-0 whitespace-nowrap font-mono text-2xl tabular-nums" data-testid="presenter-counter">
               <span className="sr-only">{t("presentation.presenter.pageOf", { current: currentPage, total: totalPages })}</span>
               <span aria-hidden>
                 {currentPage} / {totalPages}
@@ -195,7 +196,7 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
             )}
           </div>
           <PresenterTimer />
-          <div className="flex min-h-40 flex-2 flex-col">{session ? <NotesEditor path={session.path} pageIndex={currentPage - 1} pageCount={totalPages} /> : null}</div>
+          <div className="flex min-h-40 flex-2 flex-col">{session ? <NotesEditor path={sessionPathOf(session.path)} pageIndex={currentPage - 1} pageCount={totalPages} /> : null}</div>
         </aside>
       </div>
     </div>

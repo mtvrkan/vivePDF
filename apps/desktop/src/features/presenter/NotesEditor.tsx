@@ -54,6 +54,21 @@ export function NotesEditor({ path, pageIndex, pageCount }: { path: string; page
   }, []);
 
   useEffect(() => {
+    const save = () => flush(path);
+    const onHidden = () => {
+      if (document.visibilityState === "hidden") save();
+    };
+    window.addEventListener("pagehide", save);
+    window.addEventListener("beforeunload", save);
+    document.addEventListener("visibilitychange", onHidden);
+    return () => {
+      window.removeEventListener("pagehide", save);
+      window.removeEventListener("beforeunload", save);
+      document.removeEventListener("visibilitychange", onHidden);
+    };
+  }, [path, flush]);
+
+  useEffect(() => {
     let cancelled = false;
     setLoad("loading");
     setSaveState("idle");

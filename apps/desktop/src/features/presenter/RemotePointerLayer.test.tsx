@@ -63,4 +63,19 @@ describe("RemotePointerLayer", () => {
     act(() => vi.advanceTimersByTime(800));
     expect(document.querySelector("svg")).toBeNull();
   });
+
+  it("mirrors the presenter's plain cursor on the same spot of the page", () => {
+    render(<RemotePointerLayer signal={signal({ tool: "pointer" })} rects={RECTS} />);
+
+    const cursor = document.querySelector<SVGElement>("[data-remote-cursor]") as SVGElement;
+    expect([cursor.style.left, cursor.style.top]).toEqual(["960px", "225px"]);
+    expect(cursor.style.width).toBe("88px");
+    expect(document.querySelector("[data-remote-laser]")).toBeNull();
+  });
+
+  it("hides the mirrored cursor when the presenter leaves the slide", () => {
+    render(<RemotePointerLayer signal={signal({ tool: "pen", pointer: null })} rects={RECTS} />);
+
+    expect(document.querySelector("[data-remote-cursor]")).toBeNull();
+  });
 });

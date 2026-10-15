@@ -71,6 +71,8 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
   const pageRects = usePageRects(containerRef);
   const activeBoardStroke = useBoardLiveStore((state) => state.live);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
+  const [hover, setHover] = useState<{ x: number; y: number } | null>(null);
+  const mirrorsPointer = onSignal !== undefined;
   const [laserTrail, setLaserTrail] = useState<Array<{ x: number; y: number }>>([]);
   const [activeStroke, setActiveStroke] = useState<{ pageIndex: number; stroke: Stroke } | null>(null);
   const [laserStroke, setLaserStroke] = useState<LaserPoint[] | null>(null);
@@ -347,11 +349,26 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
   }, [tool]);
 
   useEffect(() => {
+    const container = containerRef.current;
+    if (!mirrorsPointer || !container) return;
+    const onMove = (event: PointerEvent) => setHover({ x: event.clientX, y: event.clientY });
+    const onLeave = () => setHover(null);
+    container.addEventListener("pointermove", onMove, { capture: true, passive: true });
+    container.addEventListener("pointerleave", onLeave);
+    return () => {
+      container.removeEventListener("pointermove", onMove, { capture: true });
+      container.removeEventListener("pointerleave", onLeave);
+    };
+  }, [mirrorsPointer, containerRef]);
+
+  useEffect(() => {
     const emit = onSignalRef.current;
     if (!emit) return;
     const box = containerRef.current?.getBoundingClientRect();
     const toPage = (point: { x: number; y: number }) => toLivePoint(pageRects, point.x - (box?.left ?? 0), point.y - (box?.top ?? 0));
-    const livePointer = pointer ? toPage(pointer) : null;
+    const followsHover = tool !== "laser" && tool !== "spotlight" && tool !== "magnifier";
+    const hoverOnPage = followsHover && hover && pageRectAt(pageRects, hover.x - (box?.left ?? 0), hover.y - (box?.top ?? 0)) ? hover : null;
+    const livePointer = pointer ? toPage(pointer) : hoverOnPage ? toPage(hoverOnPage) : null;
     const reference = pageRects.find((rect) => rect.pageIndex === livePointer?.pageIndex) ?? pageRects[0];
     emit({
       tool,
@@ -361,7 +378,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
       activeStroke,
       activeBoardStroke,
     });
-  }, [tool, pointer, laserStroke, activeStroke, activeBoardStroke, pageRects, containerRef]);
+  }, [tool, pointer, hover, laserStroke, activeStroke, activeBoardStroke, pageRects, containerRef]);
 
   useEffect(() => {
     const timers = fadeTimers.current;

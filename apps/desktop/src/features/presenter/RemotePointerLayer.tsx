@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { MousePointer2 } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { LiveStrokeCanvas } from "@/features/viewer/presentation/DrawingLayer";
@@ -9,6 +10,9 @@ import { pageRectAt, type PageRect } from "@/features/viewer/presentation/usePag
 
 const SPOTLIGHT_RECT_RATIO = 0.42;
 const LASER_FADE_MS = 700;
+const CURSOR_SIZE_PX = 22;
+const MIN_CURSOR_SIZE_PX = 16;
+const LENS_TOOLS = new Set(["laser", "spotlight", "magnifier"]);
 
 function mapPath(rects: PageRect[], signal: LiveSignal | null): LaserPoint[] | null {
   if (!signal?.laserPath) return null;
@@ -93,6 +97,15 @@ export function RemotePointerLayer({ signal, rects }: { signal: LiveSignal | nul
             height: spotlightShape === "circle" ? radius * 2 : radius * SPOTLIGHT_RECT_RATIO * 2,
             boxShadow: `0 0 0 9999px rgba(0,0,0,${spotlightDim})`,
           }}
+        />
+      ) : null}
+      {tool && !LENS_TOOLS.has(tool) && pointer ? (
+        <MousePointer2
+          aria-hidden
+          data-remote-cursor=""
+          className="absolute fill-white stroke-black drop-shadow-md"
+          strokeWidth={1.5}
+          style={{ left: pointer.x, top: pointer.y, width: Math.max(MIN_CURSOR_SIZE_PX, CURSOR_SIZE_PX * scale), height: Math.max(MIN_CURSOR_SIZE_PX, CURSOR_SIZE_PX * scale) }}
         />
       ) : null}
       {tool === "magnifier" && pointer ? <MagnifierLens x={pointer.x} y={pointer.y} pageRect={pageRectAt(rects, pointer.x, pointer.y)} /> : null}

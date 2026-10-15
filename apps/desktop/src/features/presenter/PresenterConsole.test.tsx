@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
+import { useConvertedStore } from "@/features/viewer/convertedDocuments";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { usePresenterStore, type PresenterSession } from "./presenterSession";
@@ -111,5 +112,18 @@ describe("PresenterConsole", () => {
     fireEvent.click(screen.getByRole("button", { name: "Preview the page before" }));
 
     expect(screen.getByTestId("presenter-preview-heading").textContent).toBe("Preview: page 4 (only you)");
+  });
+
+  it("keeps the notes of a converted slide deck with the original file, not the temporary PDF", async () => {
+    useConvertedStore.getState().remember("C:/Temp/vivepdf-open/deck-1a2b.pdf", "C:/talks/deck.pptx");
+    usePresenterStore.setState({ session: session({ path: "C:/Temp/vivepdf-open/deck-1a2b.pdf" }) });
+    try {
+      renderConsole();
+      await act(async () => undefined);
+
+      expect(invoke).toHaveBeenCalledWith("presenter_notes_read", { path: "C:/talks/deck.pptx" });
+    } finally {
+      useConvertedStore.getState().forget("C:/Temp/vivepdf-open/deck-1a2b.pdf");
+    }
   });
 });

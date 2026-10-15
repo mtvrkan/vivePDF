@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Presenter view: the presenter's cursor is shown on the projector while it is over the slide [2026-10-15]
 - Offline mode: one switch in Settings › Web stops every internet connection (update checks, downloads, web searches, DOI lookups, web pages, picture search, online signature checks and timestamps); the buttons stay visible with a hint and the engine refuses too [2026-10-15]
 - What's new: after an update vivePDF opens once with the highlights of the installed version, and Help › What's new, About › What's new and the command palette show the notes of every version up to the installed one (a first install stays quiet) [2026-10-15]
 - Keyboard shortcuts: Save as PDF in the shortcut list (F1) and in About › Shortcuts writes the shown shortcuts as a printable PDF, one table per screen in the app's language, with each key combination kept on one line; a "Show in folder" button follows the save [2026-10-15]
@@ -67,6 +68,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Presenter view: speaker notes of a PowerPoint or other converted file are kept with the original file, so they come back after closing and reopening, and notes are saved when the window closes [2026-10-15]
+- Presentations: the edge of the next page no longer shows below the current slide on the console or the projector [2026-10-15]
+- Viewer: with page labels the page position under the page box is shown in full instead of being cut off, with more room around the box [2026-10-15]
 - CV builder: a saved CV file now carries the photo itself instead of the path to it on your computer, so the file no longer reveals your folder names and opens with its photo on another computer; drafts from older versions move their photo into vivePDF's own image folder the first time they open [2026-10-15]
 - CV builder: a very long skill chip or section title now wraps onto more lines instead of shrinking to tiny letters, and chips in Chinese, Japanese or Korean get the width they need [2026-10-15]
 - CV builder: the move up and down buttons keep keyboard focus on the moved item (and hand it to the other arrow at the top or bottom), switching between the Content and Design tabs keeps open cards and the scroll position, a duplicated entry opens with the cursor in it even in a long list, and pasting a list into a full section says that the rest was left out [2026-10-15]

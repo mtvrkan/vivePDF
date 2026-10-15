@@ -14,6 +14,7 @@ import { PageView } from "./PageView";
 import { BlackoutLayer } from "./presentation/BlackoutLayer";
 import { CodeBlockMarkers } from "./presentation/CodeBlockMarkers";
 import { CodeBlockOverlay } from "./presentation/CodeBlockOverlay";
+import { CurrentPageMask } from "./presentation/CurrentPageMask";
 import { OverviewGrid } from "./presentation/OverviewGrid";
 import { PresentationCanvas } from "./presentation/PresentationCanvas";
 import { usePageRects } from "./presentation/usePageRects";
@@ -174,6 +175,7 @@ export function ImmersiveView({ documentId, onExit, variant = "solo", onSignal }
       <div className={cn("h-full transition-opacity duration-150", settled ? "opacity-100" : "opacity-0")}>
         <PageView documentId={documentId} />
       </div>
+      {settled ? <CurrentPageMask rects={pageRects} pageIndex={scrollState.currentPage - 1} tone="muted" /> : null}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {pageRects.map((rect) => (
           <CodeBlockMarkers key={rect.pageIndex} documentId={documentId} rect={rect} />
