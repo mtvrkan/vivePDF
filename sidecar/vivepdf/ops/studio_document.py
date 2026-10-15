@@ -9,6 +9,7 @@ from pathlib import Path
 
 import pymupdf
 
+from vivepdf.ops._document_markdown import document_markdown
 from vivepdf.ops._html_clean import body_fragment, visible_text, without_remote_pictures
 from vivepdf.ops._markdown_citations import FrontMatter, split_front_matter, with_citations
 from vivepdf.ops._markdown_footnotes import split_notes, with_footnotes
@@ -35,6 +36,7 @@ from vivepdf.ops._studio_document_models import (
     StudioBibliographyResult,
     StudioDocumentImageResult,
     StudioDocumentImportResult,
+    StudioDocumentMarkdownParams,
     StudioDocumentOpenParams,
     StudioDocumentOpenResult,
     StudioDocumentPageParams,
@@ -50,6 +52,7 @@ from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.registry import op
 
 PREVIEW_SLOTS = 4
+MARKDOWN_EXTENSION = "md"
 IMPORT_EXTENSIONS = {"md", "markdown", "txt", "text", "html", "htm"}
 BIBLIOGRAPHY_EXTENSIONS = {"bib", "bibtex"}
 SOURCE_LIBRARY_EXTENSIONS = BIBLIOGRAPHY_EXTENSIONS | {"ris", "json"}
@@ -101,6 +104,18 @@ def render_document(params: StudioDocumentRenderParams, progress: Progress) -> O
         progress.report(0.85, "progress.saving")
         subset(document)
         return save_document(document, target)
+
+
+@op("studio.export_markdown", StudioDocumentMarkdownParams)
+def export_markdown(
+    params: StudioDocumentMarkdownParams, progress: Progress
+) -> StudioDocumentSaveResult:
+    target = prepare_data_output(params.output, MARKDOWN_EXTENSION, params.overwrite)
+    progress.report(0.1, "progress.rendering")
+    payload = document_markdown(params).encode("utf-8")
+    progress.report(0.85, "progress.saving")
+    write_atomically(target, lambda path: path.write_bytes(payload))
+    return StudioDocumentSaveResult(output=str(target), bytes=len(payload))
 
 
 @op("studio.preview_document", StudioDocumentPreviewParams)
@@ -269,7 +284,7 @@ def import_document(
         meta, text = split_front_matter(decode_text(payload))
         text, notes, markup = split_notes(text)
         body, cited, references_title = with_citations(
-            with_footnotes(markdown_to_html(text), notes, markup)
+            with_footnotes(markdown_to_html(text, strikethrough=True), notes, markup)
         )
     else:
         body = _text_html(decode_text(payload))

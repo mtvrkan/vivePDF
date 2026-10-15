@@ -7164,7 +7164,8 @@
       "formats": {
         "pdf": "PDF",
         "png": "PNG",
-        "jpg": "JPG"
+        "jpg": "JPG",
+        "markdown": "Markdown"
       },
       "resolution": "Resolução",
       "dpi": "{{dpi}} dpi",
@@ -8897,7 +8898,9 @@
       },
       "export": {
         "title": "Exportar documento",
-        "idleDescription": "Salva o documento como PDF com capa, sumário, números de página e marcadores."
+        "idleDescription": "Salva o documento como PDF com capa, sumário, números de página e marcadores.",
+        "idleMarkdown": "Salva o texto como arquivo Markdown com títulos, listas, tabelas, links, imagens e notas de rodapé; cores, fontes e o layout da página ficam de fora.",
+        "doneMarkdown": "Arquivo Markdown salvo"
       },
       "starters": {
         "names": {

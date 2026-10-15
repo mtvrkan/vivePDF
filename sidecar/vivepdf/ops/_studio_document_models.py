@@ -75,6 +75,11 @@ class StudioDocumentRenderParams(StudioDocumentContent):
     overwrite: bool = False
 
 
+class StudioDocumentMarkdownParams(StudioDocumentContent):
+    output: WriteFile
+    overwrite: bool = False
+
+
 class StudioDocumentPreviewParams(StudioDocumentContent):
     pass
 

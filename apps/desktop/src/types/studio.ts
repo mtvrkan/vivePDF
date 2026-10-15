@@ -489,6 +489,8 @@ export type StudioDocument = { version: number; kind: "document"; name: string; 
 
 export type StudioDocumentContent = { html: string; images: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; notesTitle: string; settings: DocumentLayout; title: string; language: string };
 
+export type StudioDocumentFileResult = { output: string; bytes: number };
+
 export type StudioDocumentImport = { html: string; title: string; author: string; date: string; referencesTitle: string; bibliography: string };
 
 export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number };

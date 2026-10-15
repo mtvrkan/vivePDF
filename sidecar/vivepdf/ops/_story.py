@@ -68,10 +68,11 @@ def text_to_html(text: str) -> str:
     return f"<pre>{escaped}</pre>"
 
 
-def markdown_to_html(text: str) -> str:
+def markdown_to_html(text: str, strikethrough: bool = False) -> str:
     from markdown_it import MarkdownIt
 
-    return MarkdownIt("commonmark", {"breaks": False}).enable("table").render(text)
+    rules = ["table", "strikethrough"] if strikethrough else ["table"]
+    return MarkdownIt("commonmark", {"breaks": False}).enable(rules).render(text)
 
 
 def story_pdf_bytes(

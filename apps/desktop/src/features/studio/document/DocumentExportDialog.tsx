@@ -3,6 +3,7 @@ import { Download } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
+import { Segmented } from "@/components/tool/form";
 import { OutputPathField } from "@/components/tool/OutputPathField";
 import { ResultPanel } from "@/components/tool/ResultPanel";
 import { useOperation } from "@/shared/hooks/useOperation";
@@ -10,27 +11,35 @@ import { sanitizeFileName } from "@/shared/lib/naming";
 import { defaultOutputDirectory, joinPath } from "@/shared/lib/paths";
 import { useDocumentStore } from "./documentStore";
 import { documentText } from "./content";
-import { exportDocument } from "./exportDocument";
+import { DOCUMENT_EXPORT_FORMATS, EXPORT_EXTENSIONS, exportDocument, withExportExtension, type DocumentExportFormat } from "./exportDocument";
 
 export function DocumentExportDialog({ open, onClose, language }: { open: boolean; onClose: () => void; language: string }) {
   const { t } = useTranslation();
   const name = useDocumentStore((state) => state.document?.name ?? "");
   const operation = useOperation(exportDocument);
   const [output, setOutput] = useState("");
+  const [format, setFormat] = useState<DocumentExportFormat>("pdf");
+  const extension = EXPORT_EXTENSIONS[format];
 
   useEffect(() => {
     if (!open) return;
     let live = true;
     void defaultOutputDirectory().then((directory) => {
-      if (live) setOutput((current) => current || joinPath(directory, `${sanitizeFileName(name.trim()) || t("studio.doc.untitled")}.pdf`));
+      if (live) setOutput((current) => current || joinPath(directory, `${sanitizeFileName(name.trim()) || t("studio.doc.untitled")}.${extension}`));
     });
     return () => {
       live = false;
     };
-  }, [open, name, t]);
+  }, [open, name, t, extension]);
 
-  const run = () => void operation.run({ output, language, text: documentText(t) });
+  const changeFormat = (next: DocumentExportFormat) => {
+    setFormat(next);
+    setOutput((current) => (current ? withExportExtension(current, next) : current));
+  };
+
+  const run = () => void operation.run({ output, language, text: documentText(t), format });
   const result = operation.result;
+  const pageCount = result?.pageCount ?? null;
   return (
     <Dialog
       open={open}
@@ -49,17 +58,18 @@ export function DocumentExportDialog({ open, onClose, language }: { open: boolea
       }
     >
       <div className="space-y-4">
-        <OutputPathField value={output} onChange={setOutput} extension="pdf" disabled={operation.running} />
+        <Segmented value={format} options={DOCUMENT_EXPORT_FORMATS} labelOf={(value) => t(`studio.export.formats.${value}`)} onChange={changeFormat} ariaLabel={t("studio.export.format")} />
+        <OutputPathField value={output} onChange={setOutput} extension={extension} disabled={operation.running} />
         <ResultPanel
           status={operation.status}
           progress={operation.progress}
           error={operation.error}
-          numeral={result ? String(result.pageCount) : undefined}
-          caption={result ? t("studio.export.done", { count: result.pageCount }) : undefined}
+          numeral={pageCount === null ? undefined : String(pageCount)}
+          caption={result ? (pageCount === null ? t("studio.doc.export.doneMarkdown") : t("studio.export.done", { count: pageCount })) : undefined}
           outputs={result ? [result.output] : []}
           idleIcon={Download}
           idleTitle={t("studio.export.idleTitle")}
-          idleDescription={t("studio.doc.export.idleDescription")}
+          idleDescription={t(format === "markdown" ? "studio.doc.export.idleMarkdown" : "studio.doc.export.idleDescription")}
           onCancel={operation.cancel}
           onRetry={run}
           overwritePrompt={operation.overwritePrompt}

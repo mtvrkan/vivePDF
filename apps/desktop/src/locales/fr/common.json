@@ -7164,7 +7164,8 @@
       "formats": {
         "pdf": "PDF",
         "png": "PNG",
-        "jpg": "JPG"
+        "jpg": "JPG",
+        "markdown": "Markdown"
       },
       "resolution": "Résolution",
       "dpi": "{{dpi}} ppp",
@@ -8897,7 +8898,9 @@
       },
       "export": {
         "title": "Exporter le document",
-        "idleDescription": "Enregistre le document en PDF avec sa couverture, sa table des matières, ses numéros de page et ses signets."
+        "idleDescription": "Enregistre le document en PDF avec sa couverture, sa table des matières, ses numéros de page et ses signets.",
+        "idleMarkdown": "Enregistre le texte dans un fichier Markdown avec les titres, listes, tableaux, liens, images et notes de bas de page ; les couleurs, les polices et la mise en page sont laissées de côté.",
+        "doneMarkdown": "Fichier Markdown enregistré"
       },
       "starters": {
         "names": {

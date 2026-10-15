@@ -7164,7 +7164,8 @@
       "formats": {
         "pdf": "PDF",
         "png": "PNG",
-        "jpg": "JPG"
+        "jpg": "JPG",
+        "markdown": "Markdown"
       },
       "resolution": "Risoluzione",
       "dpi": "{{dpi}} dpi",
@@ -8897,7 +8898,9 @@
       },
       "export": {
         "title": "Esporta documento",
-        "idleDescription": "Salva il documento come PDF con copertina, indice, numeri di pagina e segnalibri."
+        "idleDescription": "Salva il documento come PDF con copertina, indice, numeri di pagina e segnalibri.",
+        "idleMarkdown": "Salva il testo come file Markdown con titoli, elenchi, tabelle, link, immagini e note a piè di pagina; colori, caratteri e impaginazione vengono tralasciati.",
+        "doneMarkdown": "File Markdown salvato"
       },
       "starters": {
         "names": {

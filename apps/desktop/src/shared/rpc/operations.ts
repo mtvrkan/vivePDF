@@ -296,6 +296,7 @@ import type {
 import type {
   StudioDocument,
   StudioDocumentContent,
+  StudioDocumentFileResult,
   StudioDocumentImport,
   StudioDocumentPage,
   StudioDocumentPreview,
@@ -696,6 +697,9 @@ export const studioLoadDraft = (options?: RpcCallOptions) => rpc<StudioDraftLoad
 
 export const studioRenderDocument =(params: StudioDocumentContent & { output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
   rpc<OutputResult>("studio.render_document", params, options);
+
+export const studioExportMarkdown = (params: StudioDocumentContent & { output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
+  rpc<StudioDocumentFileResult>("studio.export_markdown", params, options);
 
 export const studioPreviewDocument = (params: StudioDocumentContent, options?: RpcCallOptions) =>
   rpc<StudioDocumentPreview>("studio.preview_document", params, options);

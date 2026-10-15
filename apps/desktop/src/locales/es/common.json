@@ -7164,7 +7164,8 @@
       "formats": {
         "pdf": "PDF",
         "png": "PNG",
-        "jpg": "JPG"
+        "jpg": "JPG",
+        "markdown": "Markdown"
       },
       "resolution": "Resolución",
       "dpi": "{{dpi}} ppp",
@@ -8897,7 +8898,9 @@
       },
       "export": {
         "title": "Exportar documento",
-        "idleDescription": "Guarda el documento como PDF con su portada, índice, números de página y marcadores."
+        "idleDescription": "Guarda el documento como PDF con su portada, índice, números de página y marcadores.",
+        "idleMarkdown": "Guarda el texto como archivo Markdown con títulos, listas, tablas, enlaces, imágenes y notas al pie; los colores, las fuentes y el diseño de página no se incluyen.",
+        "doneMarkdown": "Archivo Markdown guardado"
       },
       "starters": {
         "names": {

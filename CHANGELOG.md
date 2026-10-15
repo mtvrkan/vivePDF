@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Studio documents: Export can now save a Markdown file as well as a PDF — headings, bold, italics, strikethrough, lists, checklists, quotes, code, tables, links, pictures and footnotes are kept, while colours, fonts and page layout are left out — and the file opens again in Studio with its formatting and footnotes; Markdown imports also read `~~strikethrough~~` [2026-10-15]
 - Studio documents: footnotes can be formatted — bold, italic, underline, strikethrough, superscript, subscript and links (Ctrl+B, Ctrl+I, Ctrl+U or the buttons in the footnote panel) — and the PDF prints them that way at the page foot or in the endnotes; footnotes imported from Markdown keep their bold, italics, code and links, and older notes stay plain text [2026-10-15]
 - Presentation: Insert (+) is also offered when drawings are saved as annotations; the inserted items stay temporary and leaving the presentation asks whether to save them into the PDF, while the pen annotations stay as they are [2026-10-15]
 - Presentation: Insert (+) also works on the black and white screens; an item placed there can be selected, moved, resized, duplicated, edited with a double-click and deleted like on a slide, and it is saved with the board page [2026-10-15]

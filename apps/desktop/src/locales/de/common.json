@@ -7164,7 +7164,8 @@
       "formats": {
         "pdf": "PDF",
         "png": "PNG",
-        "jpg": "JPG"
+        "jpg": "JPG",
+        "markdown": "Markdown"
       },
       "resolution": "Auflösung",
       "dpi": "{{dpi}} dpi",
@@ -8897,7 +8898,9 @@
       },
       "export": {
         "title": "Dokument exportieren",
-        "idleDescription": "Speichert das Dokument als PDF mit Titelseite, Inhaltsverzeichnis, Seitenzahlen und Lesezeichen."
+        "idleDescription": "Speichert das Dokument als PDF mit Titelseite, Inhaltsverzeichnis, Seitenzahlen und Lesezeichen.",
+        "idleMarkdown": "Speichert den Text als Markdown-Datei mit Überschriften, Listen, Tabellen, Links, Bildern und Fußnoten; Farben, Schriften und das Seitenlayout bleiben weg.",
+        "doneMarkdown": "Markdown-Datei gespeichert"
       },
       "starters": {
         "names": {

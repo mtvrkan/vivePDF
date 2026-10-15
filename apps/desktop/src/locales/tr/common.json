@@ -7166,7 +7166,8 @@
       "formats": {
         "pdf": "PDF",
         "png": "PNG",
-        "jpg": "JPG"
+        "jpg": "JPG",
+        "markdown": "Markdown"
       },
       "resolution": "Çözünürlük",
       "dpi": "{{dpi}} dpi",
@@ -8899,7 +8900,9 @@
       },
       "export": {
         "title": "Belgeyi dışa aktar",
-        "idleDescription": "Belgeyi kapağı, içindekileri, sayfa numaraları ve yer imleriyle birlikte PDF olarak kaydeder."
+        "idleDescription": "Belgeyi kapağı, içindekileri, sayfa numaraları ve yer imleriyle birlikte PDF olarak kaydeder.",
+        "idleMarkdown": "Metni başlıkları, listeleri, tabloları, bağlantıları, resimleri ve dipnotlarıyla birlikte Markdown dosyası olarak kaydeder; renkler, yazı tipleri ve sayfa düzeni alınmaz.",
+        "doneMarkdown": "Markdown dosyası kaydedildi"
       },
       "starters": {
         "names": {

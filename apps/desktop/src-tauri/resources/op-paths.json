@@ -1527,6 +1527,12 @@
     "read"
    ]
   ],
+  "studio.export_markdown": [
+   [
+    "output",
+    "write"
+   ]
+  ],
   "studio.image_info": [
    [
     "path",

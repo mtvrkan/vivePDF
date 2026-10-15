@@ -7166,7 +7166,8 @@
       "formats": {
         "pdf": "PDF",
         "png": "PNG",
-        "jpg": "JPG"
+        "jpg": "JPG",
+        "markdown": "Markdown"
       },
       "resolution": "Resolution",
       "dpi": "{{dpi}} dpi",
@@ -8899,7 +8900,9 @@
       },
       "export": {
         "title": "Export document",
-        "idleDescription": "Saves the document as a PDF with its cover, contents, page numbers and bookmarks."
+        "idleDescription": "Saves the document as a PDF with its cover, contents, page numbers and bookmarks.",
+        "idleMarkdown": "Saves the text as a Markdown file with headings, lists, tables, links, pictures and footnotes; colours, fonts and the page layout are left out.",
+        "doneMarkdown": "Markdown file saved"
       },
       "starters": {
         "names": {
