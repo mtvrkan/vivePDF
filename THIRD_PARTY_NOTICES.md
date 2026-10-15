@@ -21,6 +21,8 @@
 | Noto Sans, Noto Sans JP, KR, SC and TC (Google; from the @embedpdf/fonts-* packages, bundled) | OFL-1.1 | Viewer fallback fonts for PDFs without embedded fonts |
 | CTranslate2 (OpenNMT) | MIT | Offline translation inference |
 | SentencePiece (Google) | Apache-2.0 | Tokenizer for translation models |
+| sacremoses (Moses tokenizer in Python) with regex, joblib, click and tqdm | MIT (regex Apache-2.0, joblib and click BSD-3-Clause, tqdm MPL-2.0 and MIT) | Tokenizer for imported Argos packages that use Moses and BPE |
+| subword-nmt (Rico Sennrich) | MIT | BPE segmentation for those packages |
 | Argos Translate language models (downloaded on demand, not bundled) | per package; OPUS-MT based models CC-BY-4.0, credits in each model's `README.md` kept beside it | Offline translation |
 | Piper TTS (piper-tts, Open Home Foundation) with espeak-ng | GPL-3.0-or-later | Read aloud speech synthesis |
 | ONNX Runtime (Microsoft) | MIT | Runs the Piper voice models |

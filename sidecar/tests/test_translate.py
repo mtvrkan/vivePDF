@@ -562,3 +562,104 @@ def test_indonesian_reduplication_loses_the_spaces_around_its_hyphen(
 
 def test_spaced_hyphens_stay_in_languages_without_reduplication() -> None:
     assert translate._detokenize(["▁orang", "▁-", "▁orang"], "en") == "orang - orang"
+
+
+BPE_CODES = "#version: 0.2\nc a\nca t</w>\nd o\ndo g</w>\n&a pos\n&apos ;</w>\n"
+
+
+def _bpe_members(metadata: dict | None = None) -> dict[str, bytes]:
+    members = {
+        key.replace("sentencepiece.model", "bpe.model"): value
+        for key, value in _valid_members(metadata).items()
+    }
+    members[f"{ROOT}/bpe.model"] = BPE_CODES.encode()
+    return members
+
+
+def _bpe_tokenizer(tmp_path: Path) -> "translate._BpeTokenizer":
+    codes = tmp_path / "bpe.model"
+    codes.write_text(BPE_CODES, encoding="utf-8")
+    return translate._BpeTokenizer(codes, "en", "en")
+
+
+def test_import_installs_a_moses_and_bpe_package(data_dir: Path, tmp_path: Path) -> None:
+    metadata = {"from_code": "en", "to_code": "pl", "package_version": "1.9"}
+    source = _package_file(tmp_path, _bpe_members(metadata))
+
+    result = translate.import_model(translate.ImportParams(path=str(source)), silent_progress())
+
+    folder = data_dir / "translate" / "en_pl"
+    assert result.installed == ["en_pl"]
+    assert (folder / "bpe.model").read_text(encoding="utf-8") == BPE_CODES
+    assert not (folder / "sentencepiece.model").exists()
+    assert not (folder / "stanza").exists()
+
+
+def test_import_refuses_a_package_with_both_tokenizers(data_dir: Path, tmp_path: Path) -> None:
+    source = _package_file(tmp_path, {**_valid_members(), f"{ROOT}/bpe.model": b"codes"})
+
+    with pytest.raises(OpError) as caught:
+        translate.import_model(translate.ImportParams(path=str(source)), silent_progress())
+
+    assert caught.value.data["reason"] == "translationPackageInvalid"
+    assert "both" in caught.value.message
+    assert not (data_dir / "translate").exists() or not any((data_dir / "translate").iterdir())
+
+
+def test_an_installed_folder_with_both_tokenizers_is_not_listed(data_dir: Path) -> None:
+    _install(data_dir, "en_tr", "en_de")
+    (data_dir / "translate" / "en_de" / "bpe.model").write_text(BPE_CODES, encoding="utf-8")
+
+    assert translate.installed_ids() == ["en_tr"]
+
+
+def test_the_bpe_tokenizer_splits_escapes_and_joins_back(tmp_path: Path) -> None:
+    tokenizer = _bpe_tokenizer(tmp_path)
+
+    pieces = tokenizer.encode("The cat's dogma & dog.")
+
+    words = " ".join(pieces).replace("@@ ", "").split()
+    assert pieces[:4] == ["T@@", "h@@", "e", "cat"]
+    assert pieces[11:15] == ["do@@", "g@@", "m@@", "a"]
+    assert words == ["The", "cat", "&apos;s", "dogma", "&amp;", "dog", "."]
+    assert tokenizer.decode(pieces, "en") == "The cat's dogma & dog."
+
+
+def test_the_bpe_detokenizer_drops_unknown_pieces_and_a_dangling_joiner(tmp_path: Path) -> None:
+    tokenizer = _bpe_tokenizer(tmp_path)
+
+    text = tokenizer.decode(["do@@", "g", "<unk>", "and", "ca@@", "t", ",", "ca@@"], "en")
+
+    assert text == "dog and cat, ca"
+
+
+def test_a_bpe_package_loads_and_translates_through_moses(
+    data_dir: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import ctranslate2
+
+    folder = data_dir / "translate" / "en_pl"
+    (folder / "model").mkdir(parents=True)
+    (folder / "model" / "model.bin").write_bytes(b"x")
+    (folder / "bpe.model").write_text(BPE_CODES, encoding="utf-8")
+    (folder / "metadata.json").write_text(json.dumps({"from_code": "en", "to_code": "pl"}))
+    seen: list[list[str]] = []
+
+    class EchoTranslator:
+        def __init__(self, *_args, **_kwargs) -> None:  # noqa: ANN002, ANN003
+            pass
+
+        def translate_batch(self, batch, target_prefix=None, beam_size=1):  # noqa: ANN001, ANN201
+            seen.extend(batch)
+            return [SimpleNamespace(hypotheses=[list(tokens)]) for tokens in batch]
+
+    monkeypatch.setattr(ctranslate2, "Translator", EchoTranslator)
+
+    result = translate.translate_text(
+        translate.TranslateTextParams(text="A dog & a cat (toy).", source="en", target="pl"),
+        silent_progress(),
+    )
+
+    assert isinstance(translate._load("en_pl").tokenizer, translate._BpeTokenizer)
+    assert "&amp;" in " ".join(seen[0]).replace("@@ ", "").split()
+    assert result.text == "A dog & a cat (toy)."

@@ -10,6 +10,7 @@ import urllib.parse
 import urllib.request
 import zipfile
 from collections import OrderedDict
+from collections.abc import Callable
 from pathlib import Path, PurePosixPath
 from typing import NamedTuple
 
@@ -52,9 +53,12 @@ ALLOWED_HOSTS = {
 }
 MODEL_FILE = "model/model.bin"
 TOKENIZER_FILE = "sentencepiece.model"
+BPE_FILE = "bpe.model"
+BPE_JOINER = "@@"
 METADATA_FILE = "metadata.json"
 REQUIRED_FILES = (MODEL_FILE, TOKENIZER_FILE, METADATA_FILE)
-KEPT_FILES = {TOKENIZER_FILE, METADATA_FILE, "README.md"}
+BPE_FILES = (MODEL_FILE, BPE_FILE, METADATA_FILE)
+KEPT_FILES = {TOKENIZER_FILE, BPE_FILE, METADATA_FILE, "README.md"}
 KEPT_FOLDER = "model"
 PACKAGE_SUFFIX = ".argosmodel"
 
@@ -64,6 +68,7 @@ class _LoadedModel(NamedTuple):
     tokenizer: object
     target_prefix: str | None
     source_prefix: str | None = None
+    detokenize: Callable[[list[str], str], str] | None = None
 
 
 _LOADED_MAX = 2
@@ -81,8 +86,19 @@ def _pair_id(source: str, target: str) -> str:
     return f"{source}_{target}"
 
 
+def _has_files(directory: Path, names: tuple[str, ...]) -> bool:
+    return all((directory / name).is_file() for name in names)
+
+
+def _tokenizer_file(directory: Path) -> str | None:
+    sentencepiece, bpe = _has_files(directory, REQUIRED_FILES), _has_files(directory, BPE_FILES)
+    if sentencepiece == bpe:
+        return None
+    return TOKENIZER_FILE if sentencepiece else BPE_FILE
+
+
 def _is_installed(directory: Path) -> bool:
-    return all((directory / name).is_file() for name in REQUIRED_FILES)
+    return _tokenizer_file(directory) is not None
 
 
 def installed_ids() -> list[str]:
@@ -321,6 +337,8 @@ def _extract(archive_path: Path, staging: Path, progress: Progress) -> None:
                 raise _package_invalid(f"archive entry escapes the model folder: {member.filename}")
             target.parent.mkdir(parents=True, exist_ok=True)
             remaining -= _copy_member(archive, member, target, remaining)
+    if (staging / TOKENIZER_FILE).is_file() and (staging / BPE_FILE).is_file():
+        raise _package_invalid("package holds both a SentencePiece and a BPE tokenizer")
     if not _is_installed(staging):
         raise _package_invalid("package is missing the model, tokenizer or metadata")
 
@@ -442,7 +460,6 @@ def _load(model_id: str) -> _LoadedModel:
         target_prefix = _prefix_token(metadata, "target_prefix")
         source_prefix = _prefix_token(metadata, "source_prefix")
         import ctranslate2
-        import sentencepiece
 
         try:
             translator = ctranslate2.Translator(
@@ -451,16 +468,46 @@ def _load(model_id: str) -> _LoadedModel:
                 compute_type="int8",
                 intra_threads=min(4, os.cpu_count() or 1),
             )
-            tokenizer = sentencepiece.SentencePieceProcessor(
-                model_file=str(directory / TOKENIZER_FILE)
-            )
-        except (RuntimeError, OSError, ValueError) as error:
+            if _tokenizer_file(directory) == BPE_FILE:
+                tokenizer = _BpeTokenizer(directory / BPE_FILE, source, target)
+                detokenize = tokenizer.decode
+            else:
+                tokenizer = _sentencepiece(directory / TOKENIZER_FILE)
+                detokenize = None
+        except (RuntimeError, OSError, ValueError, IndexError) as error:
             raise _package_invalid(f"model could not be loaded: {error}") from error
-        loaded = _LoadedModel(translator, tokenizer, target_prefix, source_prefix)
+        loaded = _LoadedModel(translator, tokenizer, target_prefix, source_prefix, detokenize)
         _loaded[model_id] = loaded
         while len(_loaded) > _LOADED_MAX:
             _loaded.popitem(last=False)
         return loaded
+
+
+def _sentencepiece(model_file: Path) -> object:
+    import sentencepiece
+
+    return sentencepiece.SentencePieceProcessor(model_file=str(model_file))
+
+
+class _BpeTokenizer:
+    def __init__(self, codes_file: Path, source: str, target: str) -> None:
+        from sacremoses import MosesDetokenizer, MosesPunctNormalizer, MosesTokenizer
+        from subword_nmt.apply_bpe import BPE
+
+        with open(codes_file, encoding="utf-8") as codes:
+            self.bpe = BPE(codes, separator=BPE_JOINER)
+        self.normalizer = MosesPunctNormalizer(source)
+        self.tokenizer = MosesTokenizer(source)
+        self.detokenizer = MosesDetokenizer(target)
+
+    def encode(self, sentence: str, out_type: type = str) -> list[str]:
+        words = self.tokenizer.tokenize(self.normalizer.normalize(sentence))
+        return self.bpe.segment_tokens(words)
+
+    def decode(self, pieces: list[str], language: str) -> str:
+        joined = " ".join(piece for piece in pieces if piece != UNKNOWN_PIECE)
+        words = joined.replace(f"{BPE_JOINER} ", "").removesuffix(BPE_JOINER).split()
+        return _tidied(self.detokenizer.detokenize(words), language)
 
 
 def _pair_missing(source: str, target: str, missing: list[str]) -> OpError:
@@ -549,7 +596,11 @@ def _join(parts: list[str], language: str) -> str:
 
 def _detokenize(pieces: list[str], language: str) -> str:
     text = "".join(piece for piece in pieces if piece != UNKNOWN_PIECE)
-    text = re.sub(r" {2,}", " ", text.replace(PIECE_SPACE, " ")).strip()
+    return _tidied(text.replace(PIECE_SPACE, " "), language)
+
+
+def _tidied(text: str, language: str) -> str:
+    text = re.sub(r" {2,}", " ", text).strip()
     if language in UNSPACED_LANGUAGES:
         text = re.sub(r"(?<=[^\x00-\x7f])\s+|\s+(?=[^\x00-\x7f])", "", text)
     if language in REDUPLICATING_LANGUAGES:
@@ -579,7 +630,7 @@ def _translate_batch(model: _LoadedModel, sentences: list[str], language: str) -
         hypothesis = list(result.hypotheses[0])
         if model.target_prefix and hypothesis[:1] == [model.target_prefix]:
             hypothesis = hypothesis[1:]
-        output.append(_detokenize(hypothesis, language))
+        output.append((model.detokenize or _detokenize)(hypothesis, language))
     return output
 
 

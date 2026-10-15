@@ -62,7 +62,15 @@ def wanted(name):
 
 
 datas, binaries, hiddenimports = collect_all("pymupdf")
-for package in ("piper", "onnxruntime", "pikepdf", "pi_heif", "ctranslate2", "sentencepiece"):
+for package in (
+    "piper",
+    "onnxruntime",
+    "pikepdf",
+    "pi_heif",
+    "ctranslate2",
+    "sentencepiece",
+    "sacremoses",
+):
     package_datas, package_binaries, package_hiddenimports = collect_all(package)
     datas += package_datas
     binaries += package_binaries

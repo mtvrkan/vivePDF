@@ -67,6 +67,8 @@ export const THIRD_PARTY: ThirdPartyEntry[] = [
   { name: "OPUS-MT (Helsinki-NLP)", licence: "CC BY 4.0", url: "https://github.com/Helsinki-NLP/Tatoeba-Challenge" },
   { name: "CTranslate2", licence: "MIT", url: "https://github.com/OpenNMT/CTranslate2" },
   { name: "SentencePiece", licence: "Apache-2.0", url: "https://github.com/google/sentencepiece" },
+  { name: "sacremoses", licence: "MIT", url: "https://github.com/hplt-project/sacremoses" },
+  { name: "subword-nmt", licence: "MIT", url: "https://github.com/rsennrich/subword-nmt" },
   { name: "pyHanko", licence: "MIT", url: "https://github.com/MatthiasValvekens/pyHanko" },
   { name: "zxing-cpp", licence: "Apache-2.0", url: "https://github.com/zxing-cpp/zxing-cpp" },
   { name: "olefile", licence: "BSD-2-Clause", url: "https://github.com/decalage2/olefile" },
