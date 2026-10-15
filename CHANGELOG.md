@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.3.0] - 2026-10-15
 ### Added
 - Presentations on a single screen can show the speaker notes too: N or the notes button in the bar opens a notes panel for the current page, sharing the notes of the presenter view [2026-10-15]
 - Help › Help topics: offline step-by-step guides for ten main tasks with search and an Open this screen button; Shift+F1 opens the topic for the screen you are on [2026-10-15]
