@@ -139,6 +139,7 @@ type PresentationState = {
   codeBlocksByPage: Record<number, CodeBlockCache | undefined>;
   codeBlockOpen: { pageIndex: number; blockId: string } | null;
   overviewOpen: boolean;
+  notesOpen: boolean;
   selectedDrawing: DrawingSelection | null;
   drawingAssets: Record<string, DrawingAsset>;
   placing: DrawingPlacement | null;
@@ -150,6 +151,7 @@ type PresentationState = {
   cancelPlacement: () => void;
   setOverviewOpen: (open: boolean) => void;
   toggleOverview: () => void;
+  toggleNotes: () => void;
   setTool: (tool: PresentationTool) => void;
   setPenColor: (color: string) => void;
   setPenWidth: (width: number) => void;
@@ -312,6 +314,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   codeBlocksByPage: {},
   codeBlockOpen: null,
   overviewOpen: false,
+  notesOpen: false,
   selectedDrawing: null,
   drawingAssets: {},
   placing: null,
@@ -329,6 +332,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   cancelPlacement: () => set({ placing: null }),
   setOverviewOpen: (open) => set({ overviewOpen: open }),
   toggleOverview: () => set((state) => ({ overviewOpen: !state.overviewOpen })),
+  toggleNotes: () => set((state) => ({ notesOpen: !state.notesOpen })),
   setTool: (tool) => set((state) => ({ tool, placing: null, selectedDrawing: tool === "select" ? state.selectedDrawing : null })),
 
   setPenColor: (color) => {
@@ -560,6 +564,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       codeBlocksByPage: {},
       codeBlockOpen: null,
       overviewOpen: false,
+      notesOpen: false,
       selectedDrawing: null,
       drawingAssets: {},
       placing: null,

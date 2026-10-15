@@ -97,4 +97,14 @@ describe("PresenterBar", () => {
     expect(screen.getByRole("button", { name: "Insert" })).toBeTruthy();
     usePresentationStore.setState({ drawingsMode: "temporary" });
   });
+
+  it("switches the speaker notes on and off from the bar", () => {
+    renderBar();
+    const notes = screen.getByRole("button", { name: "Speaker notes" });
+
+    fireEvent.click(notes);
+    expect(usePresentationStore.getState().notesOpen).toBe(true);
+    fireEvent.click(notes);
+    expect(usePresentationStore.getState().notesOpen).toBe(false);
+  });
 });

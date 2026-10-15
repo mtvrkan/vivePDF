@@ -6615,6 +6615,7 @@
         "presentationOverview": "Folienübersicht als Raster",
         "presentationCodeBlocks": "Erkannte Codeblöcke öffnen / durchlaufen",
         "presentationTimerClock": "Timer / Uhr ein- oder ausblenden",
+        "presentationNotes": "Sprechernotizen ein-/ausblenden",
         "presentationUndoRedo": "Zeichnung rückgängig / wiederholen",
         "presentationEscape": "Overlay schließen / Werkzeug abbrechen / beenden",
         "open": "PDF öffnen",

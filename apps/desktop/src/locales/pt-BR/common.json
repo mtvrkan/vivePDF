@@ -6615,6 +6615,7 @@
         "presentationOverview": "Grade de visão geral dos slides",
         "presentationCodeBlocks": "Abrir / alternar blocos de código detectados",
         "presentationTimerClock": "Mostrar/ocultar cronômetro / relógio",
+        "presentationNotes": "Mostrar ou ocultar as notas do apresentador",
         "presentationUndoRedo": "Desfazer / refazer desenho",
         "presentationEscape": "Fechar sobreposição / cancelar ferramenta / sair",
         "open": "Abrir PDF",

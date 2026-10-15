@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Clock, Code2, FileDown, Grid3x3, Minimize, Moon, Settings, Sun, ZoomIn, ZoomOut } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Clock, Code2, FileDown, Grid3x3, Minimize, Moon, Settings, StickyNote, Sun, ZoomIn, ZoomOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { useZoom } from "@embedpdf/plugin-zoom/react";
@@ -17,6 +17,7 @@ import { DrawingCleanupButton, TemporaryDrawingCleanup } from "./presentation/Dr
 import type { SessionAnnotation } from "./sessionAnnotations";
 import { exitImmersiveSavingDrawings } from "./immersive";
 import { useCodeBlocksForPage } from "./presentation/useCodeBlocks";
+import { SoloNotesPanel } from "./presentation/SoloNotesPanel";
 
 const HIDE_DELAY_MS = 2500;
 export const REVEAL_EDGE_PX = 96;
@@ -57,6 +58,8 @@ export function PresenterBar({
   const showClock = usePresentationStore((state) => state.showClock);
   const showTimer = usePresentationStore((state) => state.showTimer);
   const toggleClock = usePresentationStore((state) => state.toggleClock);
+  const notesOpen = usePresentationStore((state) => state.notesOpen);
+  const toggleNotes = usePresentationStore((state) => state.toggleNotes);
   const toggleTimerVisible = usePresentationStore((state) => state.toggleTimerVisible);
   const cursorAutoHide = usePresentationStore((state) => state.cursorAutoHide);
   const toggleCursorAutoHide = usePresentationStore((state) => state.toggleCursorAutoHide);
@@ -182,6 +185,7 @@ export function PresenterBar({
               {codeBlocks.blocks.length}
             </span>
           ) : null}
+          <IconButton icon={StickyNote} label={t("presentation.presenter.notes")} active={notesOpen} onClick={toggleNotes} />
           <IconButton icon={Clock} label={t("presentation.toggleTimer")} active={showTimer} onClick={toggleTimerVisible} />
           <IconButton icon={Calendar} label={t("presentation.toggleClock")} active={showClock} onClick={toggleClock} />
           <span className="mx-1 h-5 w-px bg-border" aria-hidden />
@@ -193,6 +197,8 @@ export function PresenterBar({
       <div className={cn("pointer-events-none fixed bottom-20 right-4 flex justify-end", layer)}>
         <TimerClockChip />
       </div>
+
+      <SoloNotesPanel documentId={documentId} className={layer} />
 
       {showStylePopover && stylePopoverOpen ? (
         <div ref={styleRef} className={cn("glass select-pop origin-bottom pointer-events-auto fixed bottom-20 left-1/2 -translate-x-1/2 rounded-2xl p-3", layer)}>

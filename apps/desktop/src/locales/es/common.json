@@ -6615,6 +6615,7 @@
         "presentationOverview": "Cuadrícula de vista general de diapositivas",
         "presentationCodeBlocks": "Abrir / recorrer los bloques de código detectados",
         "presentationTimerClock": "Mostrar u ocultar cronómetro / reloj",
+        "presentationNotes": "Mostrar u ocultar las notas del orador",
         "presentationUndoRedo": "Deshacer / rehacer dibujo",
         "presentationEscape": "Cerrar superposición / cancelar herramienta / salir",
         "open": "Abrir PDF",

@@ -6616,6 +6616,7 @@
         "presentationOverview": "Slayt genel görünüm ızgarası",
         "presentationCodeBlocks": "Algılanan kod bloklarını aç / gezin",
         "presentationTimerClock": "Kronometre / saati aç kapat",
+        "presentationNotes": "Konuşmacı notlarını göster/gizle",
         "presentationUndoRedo": "Çizimde geri al / yinele",
         "presentationEscape": "Katmanı kapat / aracı iptal et / çık",
         "open": "PDF aç",

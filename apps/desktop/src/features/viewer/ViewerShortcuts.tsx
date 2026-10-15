@@ -136,6 +136,9 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         } else if (immersive && letter === "c") {
           event.preventDefault();
           presentation.toggleClock();
+        } else if (immersive && letter === "n") {
+          event.preventDefault();
+          presentation.toggleNotes();
         }
       }
 

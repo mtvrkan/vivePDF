@@ -6615,6 +6615,7 @@
         "presentationOverview": "Griglia panoramica diapositive",
         "presentationCodeBlocks": "Apri / scorri i blocchi di codice rilevati",
         "presentationTimerClock": "Mostra/nascondi cronometro / orologio",
+        "presentationNotes": "Mostra o nascondi le note del relatore",
         "presentationUndoRedo": "Annulla / ripristina disegno",
         "presentationEscape": "Chiudi overlay / annulla strumento / esci",
         "open": "Apri PDF",

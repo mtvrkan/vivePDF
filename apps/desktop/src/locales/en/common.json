@@ -6616,6 +6616,7 @@
         "presentationOverview": "Slide overview grid",
         "presentationCodeBlocks": "Open / cycle detected code blocks",
         "presentationTimerClock": "Toggle timer / clock",
+        "presentationNotes": "Show or hide the speaker notes",
         "presentationUndoRedo": "Undo / redo drawing",
         "presentationEscape": "Close overlay / cancel tool / exit",
         "open": "Open PDF",

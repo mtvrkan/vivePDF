@@ -74,6 +74,7 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { keys: "G", labelKey: "about.shortcuts.items.presentationOverview" },
       { keys: "K", labelKey: "about.shortcuts.items.presentationCodeBlocks" },
       { keys: "T  /  C", labelKey: "about.shortcuts.items.presentationTimerClock" },
+      { keys: "N", labelKey: "about.shortcuts.items.presentationNotes" },
       { keys: "Ctrl Z  /  Ctrl Y", labelKey: "about.shortcuts.items.presentationUndoRedo" },
       { keys: "Esc", labelKey: "about.shortcuts.items.presentationEscape" },
     ],

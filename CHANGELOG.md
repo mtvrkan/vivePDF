@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Presentations on a single screen can show the speaker notes too: N or the notes button in the bar opens a notes panel for the current page, sharing the notes of the presenter view [2026-10-15]
 - Help › Help topics: offline step-by-step guides for ten main tasks with search and an Open this screen button; Shift+F1 opens the topic for the screen you are on [2026-10-15]
 - Bug reports take attached files and pasted screenshots, saved only into a package (.zip) you choose; copying and GitHub never carry them [2026-10-15]
 - Help › Save support bundle… puts a short report, the system details and the recent log files into one zip you can attach to an issue or an e-mail; it is also in the command palette and the Mac Help menu. [2026-10-15]
