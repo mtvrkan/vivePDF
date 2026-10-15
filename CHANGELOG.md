@@ -46,6 +46,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio documents: Merge cells and Split cell buttons in the table toolbar; merged cells keep their span in the exported PDF [2026-10-09]
 
 ### Changed
+- Presentation: items inserted during a presentation (formulas, shapes, charts and the rest) are saved into the PDF as stamp annotations that look the same but can be selected and deleted later like the pen drawings, instead of being drawn into the page itself [2026-10-15]
 - Full-screen presentation: the bottom toolbar now appears only when the pointer reaches the bottom edge of the screen (and stays while a toolbar panel is open), instead of on every mouse movement [2026-10-14]
 - Studio opens with less code: the Export, Print, keyboard shortcuts and Find and replace dialogs and the Data and Layers tabs load the first time they are opened, bringing the Studio page to 98 KB gzip (was 109 KB) [2026-10-14]
 - Studio opens faster: the template gallery now loads on its own after the page appears, halving the code Studio needs to start [2026-10-13]

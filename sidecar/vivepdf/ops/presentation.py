@@ -1,4 +1,5 @@
 import math
+import re
 from typing import Literal
 
 import pymupdf
@@ -27,6 +28,8 @@ MIN_WIDTH = 0.25
 MAX_POINTS = 20_000
 MAX_STROKES = 2_000
 BOARD_BACKGROUNDS = {"black": (0.0, 0.0, 0.0), "white": (1.0, 1.0, 1.0)}
+DRAWING_STAMP_NAME = "/Drawing"
+PLACED_FORM = re.compile(rb"/([^\s/]+)\s+Do")
 
 Point = tuple[float, float]
 
@@ -179,27 +182,79 @@ def _add_text(
     return True
 
 
+def _holder(document: pymupdf.Document, xref: int, key: str) -> tuple[int, str | None]:
+    kind, value = document.xref_get_key(xref, key)
+    if kind == "xref":
+        return int(value.split()[0]), None
+    return xref, key
+
+
+def _forget_xobject(page: pymupdf.Page, name: str) -> None:
+    document = page.parent
+    xref, key = _holder(document, page.xref, "Resources")
+    xref, _ = _holder(document, xref, f"{key}/XObject" if key else "XObject")
+    entry = re.compile(rf"/{re.escape(name)}\s+\d+\s+\d+\s+R")
+    document.update_object(xref, entry.sub("", document.xref_object(xref, compressed=True), 1))
+
+
+def _placed_form(page: pymupdf.Page, box: pymupdf.Rect, drawing: pymupdf.Document) -> int:
+    document = page.parent
+    before = page.get_contents()
+    page.show_pdf_page(box, drawing, 0, keep_proportion=True, overlay=True, rotate=page.rotation)
+    added = b"".join(
+        document.xref_stream(xref) for xref in page.get_contents() if xref not in before
+    )
+    document.xref_set_key(page.xref, "Contents", "[" + "".join(f"{x} 0 R " for x in before) + "]")
+    placed = PLACED_FORM.search(added)
+    if placed is None:
+        raise OpError(ErrorCode.INTERNAL, "the drawing could not be placed")
+    name = placed.group(1).decode("ascii")
+    kind, value = document.xref_get_key(page.xref, f"Resources/XObject/{name}")
+    if kind != "xref":
+        raise OpError(ErrorCode.INTERNAL, "the drawing could not be placed")
+    _forget_xobject(page, name)
+    return int(value.split()[0])
+
+
 def _add_drawing(
-    page: pymupdf.Page, stroke: PresentationStroke, points: list[Point], scale: tuple[float, float]
-) -> None:
+    page: pymupdf.Page,
+    stroke: PresentationStroke,
+    points: list[Point],
+    scale: tuple[float, float],
+    author: str | None,
+) -> bool:
     if not stroke.svg or not stroke.size:
-        return
+        return False
     left, top = points[0]
-    target = pymupdf.Rect(
+    visible = pymupdf.Rect(
         left, top, left + stroke.size[0] * scale[0], top + stroke.size[1] * scale[1]
     )
-    target.normalize()
-    if target.is_empty:
-        return
-    target = target * insertion_matrix(page)
-    target.normalize()
+    visible.normalize()
+    if visible.is_empty:
+        return False
+    box = visible * insertion_matrix(page)
+    box.normalize()
     drawing = drawing_pdf(stroke.svg.encode("utf-8"), "drawing", stroke.opacity)
     try:
-        page.show_pdf_page(
-            target, drawing, 0, keep_proportion=True, overlay=True, rotate=page.rotation
-        )
+        form = _placed_form(page, box, drawing)
     finally:
         drawing.close()
+    rect = (visible * page.derotation_matrix).normalize()
+    annot = page.add_stamp_annot(rect, stamp=0)
+    annot.set_rect(rect)
+    _sign(annot, author)
+    document = page.parent
+    bbox = document.xref_get_key(annot.xref, "Rect")[1]
+    appearance = document.get_new_xref()
+    document.update_object(
+        appearance,
+        f"<</Type/XObject/Subtype/Form/BBox{bbox}/Resources<</XObject<</Fm0 {form} 0 R>>>>>>",
+    )
+    document.update_stream(appearance, b"q /Fm0 Do Q")
+    document.xref_set_key(annot.xref, "AP", f"<</N {appearance} 0 R>>")
+    document.xref_set_key(annot.xref, "Contents", "null")
+    document.xref_set_key(annot.xref, "Name", DRAWING_STAMP_NAME)
+    return True
 
 
 def _draw(
@@ -216,7 +271,7 @@ def _draw(
             added += _add_text(page, stroke, points, scale, matrix, author)
             continue
         if stroke.tool == "drawing":
-            _add_drawing(page, stroke, points, scale)
+            added += _add_drawing(page, stroke, points, scale, author)
             continue
         _add_ink(page, stroke, points, stroke.width * scale[0], matrix, author)
         added += 1

@@ -205,10 +205,10 @@ def test_inserted_items_are_drawn_into_their_box_on_turned_and_cropped_pages(
 
     result = _save(path, pages=[{"page": 2, "strokes": [_item((0.2, 0.3), (0.4, 0.2))]}])
 
-    assert result.annotations == 0
+    assert result.annotations == 1
     with pymupdf.open(path) as document:
         page = document[1]
-        assert not list(page.annots())
+        assert [annot.type[1] for annot in page.annots()] == ["Stamp"]
         assert _red_at(page, 0.4, 0.4)
         assert not _red_at(page, 0.1, 0.1)
         assert not _red_at(page, 0.8, 0.8)
@@ -232,11 +232,12 @@ def test_inserted_items_sit_beside_ink_and_on_boards(tmp_path: Path):
         boards=[board],
     )
 
-    assert result.annotations == 1
+    assert result.annotations == 3
     with pymupdf.open(path) as document:
         assert _red_at(document[0], 0.25, 0.15)
-        assert [annot.type[1] for annot in document[0].annots()] == ["Ink"]
+        assert [annot.type[1] for annot in document[0].annots()] == ["Stamp", "Ink"]
         assert _red_at(document[2], 0.5, 0.5)
+        assert [annot.type[1] for annot in document[2].annots()] == ["Stamp"]
 
 
 def test_an_item_without_a_picture_or_box_is_skipped(tmp_path: Path):
@@ -264,3 +265,91 @@ def test_an_unreadable_picture_is_refused_and_the_file_is_left_alone(tmp_path: P
 
     assert caught.value.code is ErrorCode.INVALID_PARAMS
     assert path.read_bytes() == before
+
+
+def _placed_as_content(
+    tmp_path: Path,
+    rotation: int,
+    offset_crop: bool,
+    anchor: tuple[float, float],
+    size: tuple[float, float],
+) -> bytes:
+    from vivepdf.ops._placement import insertion_matrix
+    from vivepdf.ops._svg import drawing_pdf
+
+    path = _document(tmp_path / "content", rotation, offset_crop)
+    with pymupdf.open(path) as document:
+        page = document[1]
+        left, top = anchor[0] * page.rect.width, anchor[1] * page.rect.height
+        visible = pymupdf.Rect(
+            left, top, left + size[0] * page.rect.width, top + size[1] * page.rect.height
+        )
+        box = (visible * insertion_matrix(page)).normalize()
+        drawing = drawing_pdf(RED_BOX_SVG.encode("utf-8"), "drawing")
+        page.show_pdf_page(box, drawing, 0, keep_proportion=True, rotate=page.rotation)
+        drawing.close()
+        return page.get_pixmap(alpha=False).samples
+
+
+@pytest.mark.parametrize(
+    ("rotation", "offset_crop"), [(0, False), (90, False), (180, True), (270, True)]
+)
+def test_an_inserted_item_stamp_looks_exactly_like_the_item_drawn_into_the_page(
+    tmp_path: Path, rotation: int, offset_crop: bool
+):
+    (tmp_path / "content").mkdir()
+    path = _document(tmp_path, rotation, offset_crop)
+    expected = _placed_as_content(tmp_path, rotation, offset_crop, (0.2, 0.3), (0.4, 0.2))
+
+    _save(path, pages=[{"page": 2, "strokes": [_item((0.2, 0.3), (0.4, 0.2))]}])
+
+    with pymupdf.open(path) as document:
+        drawn = document[1].get_pixmap(alpha=False).samples
+        differing = sum(1 for old, new in zip(expected, drawn, strict=True) if abs(old - new) > 40)
+        assert differing == 0
+
+
+def test_an_inserted_item_leaves_the_page_content_alone_and_can_be_deleted(tmp_path: Path):
+    path = _document(tmp_path)
+    with pymupdf.open(path) as document:
+        contents_before = document[0].read_contents()
+
+    _save(path, author="Ayşe", pages=[{"page": 1, "strokes": [_item((0.2, 0.3), (0.4, 0.2))]}])
+
+    with pymupdf.open(path) as document:
+        page = document[0]
+        assert page.read_contents() == contents_before
+        assert document.xref_get_key(page.xref, "Resources/XObject") in (
+            ("null", "null"),
+            ("dict", "<<>>"),
+        )
+        stamp = next(page.annots())
+        assert stamp.info["title"] == "Ayşe"
+        assert stamp.info["content"] == ""
+        assert document.xref_get_key(stamp.xref, "Name") == ("name", "/Drawing")
+        page.delete_annot(stamp)
+        assert not _red_at(page, 0.4, 0.4)
+
+
+def test_an_inserted_item_keeps_the_page_pictures_when_resources_sit_inside_the_page(
+    tmp_path: Path,
+):
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=600)
+    blue = pymupdf.Pixmap(pymupdf.csRGB, pymupdf.IRect(0, 0, 4, 4), False)
+    blue.set_rect(blue.irect, (0, 0, 255))
+    page.insert_image(pymupdf.Rect(20, 500, 120, 580), pixmap=blue)
+    kind, value = document.xref_get_key(page.xref, "Resources")
+    assert kind == "xref"
+    document.xref_set_key(page.xref, "Resources", document.xref_object(int(value.split()[0])))
+    path = tmp_path / "inline.pdf"
+    document.save(path)
+    document.close()
+
+    _save(path, pages=[{"page": 1, "strokes": [_item((0.2, 0.3), (0.4, 0.2))]}])
+
+    with pymupdf.open(path) as saved:
+        page = saved[0]
+        assert _red_at(page, 0.4, 0.4)
+        assert len(page.get_images()) == 1
+        assert page.get_pixmap(alpha=False).pixel(70, 540) == (0, 0, 255)
