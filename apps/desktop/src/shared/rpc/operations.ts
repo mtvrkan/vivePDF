@@ -292,6 +292,8 @@ import type {
   WebPageParams,
   WebPageResult,
   XlsxParams,
+  SupportBundleParams,
+  SupportBundleResult,
 } from "@/types";
 import type {
   StudioDocument,
@@ -656,6 +658,9 @@ export const fileToPdf = (params: FileToPdfParams, options?: RpcCallOptions) =>
 
 export const createDocument = (params: CreateDocumentParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.document", params, options);
+
+export const supportBundle = (params: SupportBundleParams, options?: RpcCallOptions) =>
+  rpc<SupportBundleResult>("system.support_bundle", params, options);
 
 export const createBulk = (params: CreateBulkParams, options?: RpcCallOptions) =>
   rpc<CreateBulkResult>("create.bulk", params, options);

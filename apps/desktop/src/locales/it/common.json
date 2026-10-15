@@ -6459,7 +6459,8 @@
       "clipboard": "PDF dagli appunti",
       "editHome": "Personalizza la pagina iniziale",
       "shortcuts": "Scorciatoie da tastiera di questa schermata",
-      "whatsNew": "Novità di vivePDF"
+      "whatsNew": "Novità di vivePDF",
+      "supportBundle": "Salva pacchetto di supporto"
     },
     "group": {
       "tools": "Strumenti",
@@ -10093,5 +10094,11 @@
     "hint": "Disattivato in modalità offline (Impostazioni › Web)",
     "notice": "La modalità offline è attiva: nulla viene scaricato o cercato su internet.",
     "openSettings": "Cambia"
+  },
+  "support": {
+    "menu": "Salva pacchetto di supporto…",
+    "saved": "Pacchetto di supporto salvato",
+    "tooLarge": "Questi file sono troppo grandi per un pacchetto di supporto (limite {{limit}} MB).",
+    "badImage": "Si possono aggiungere solo immagini PNG o JPEG."
   }
 }

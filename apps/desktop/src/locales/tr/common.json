@@ -6460,7 +6460,8 @@
       "clipboard": "Panodan PDF",
       "editHome": "Ana sayfayı düzenle",
       "shortcuts": "Bu ekranın klavye kısayolları",
-      "whatsNew": "vivePDF'teki yenilikler"
+      "whatsNew": "vivePDF'teki yenilikler",
+      "supportBundle": "Destek paketi kaydet"
     },
     "group": {
       "tools": "Araçlar",
@@ -10094,5 +10095,11 @@
     "hint": "Çevrimdışı mod açıkken kapalı (Ayarlar › Web)",
     "notice": "Çevrimdışı mod açık; internetten hiçbir şey indirilmiyor veya sorgulanmıyor.",
     "openSettings": "Değiştir"
+  },
+  "support": {
+    "menu": "Destek paketi kaydet…",
+    "saved": "Destek paketi kaydedildi",
+    "tooLarge": "Bu dosyalar destek paketi için çok büyük (sınır {{limit}} MB).",
+    "badImage": "Yalnızca PNG veya JPEG resimler eklenebilir."
   }
 }

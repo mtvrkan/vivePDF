@@ -122,6 +122,7 @@ export function buildMacMenu(t: TFunction): MenuNode[] {
         { kind: "item", id: "action:reportBug", label: t("palette.action.reportBug") },
         { kind: "item", id: "action:suggestFeature", label: t("palette.action.suggestFeature") },
         { kind: "item", id: "action:openLogDir", label: t("palette.action.openLogDir") },
+        { kind: "item", id: "action:supportBundle", label: t("support.menu") },
       ],
     },
   ];

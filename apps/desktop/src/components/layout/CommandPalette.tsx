@@ -30,6 +30,7 @@ import { useSearchRequestStore } from "@/shared/store/searchRequestStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
+import { saveSupportBundle } from "@/shared/lib/supportBundle";
 import { useShortcutSheetStore } from "@/features/about/shortcutSheetStore";
 import { useViewerJumpStore } from "@/shared/store/viewerJumpStore";
 import { readSession } from "@/shared/session/sessionStore";
@@ -198,6 +199,7 @@ export function CommandPalette() {
         openReportBug: () => useReportStore.getState().openDialog({ category: "bug" }),
         openSuggestFeature: () => useReportStore.getState().openDialog({ category: "idea" }),
         openLogDir: () => void openLogFolder(),
+        saveSupportBundle: () => void saveSupportBundle(),
         openShortcuts: () => useShortcutSheetStore.getState().show(),
         openWhatsNew: () => void navigate("/about?tab=whatsNew"),
         hasActiveDocument: activeDocument !== null,

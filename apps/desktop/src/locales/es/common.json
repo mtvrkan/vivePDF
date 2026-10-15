@@ -6459,7 +6459,8 @@
       "clipboard": "PDF desde el portapapeles",
       "editHome": "Personalizar la página de inicio",
       "shortcuts": "Atajos de teclado de esta pantalla",
-      "whatsNew": "Novedades de vivePDF"
+      "whatsNew": "Novedades de vivePDF",
+      "supportBundle": "Guardar paquete de soporte"
     },
     "group": {
       "tools": "Herramientas",
@@ -10093,5 +10094,11 @@
     "hint": "Desactivado mientras el modo sin conexión está activo (Ajustes › Web)",
     "notice": "El modo sin conexión está activado; no se descarga ni se consulta nada en internet.",
     "openSettings": "Cambiar"
+  },
+  "support": {
+    "menu": "Guardar paquete de soporte…",
+    "saved": "Paquete de soporte guardado",
+    "tooLarge": "Estos archivos son demasiado grandes para un paquete de soporte (límite {{limit}} MB).",
+    "badImage": "Solo se pueden añadir imágenes PNG o JPEG."
   }
 }

@@ -11,7 +11,8 @@ import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { useEngineStore } from "@/shared/store/engineStore";
-import { useReportStore, type DiagnosticsInfo } from "@/shared/store/reportStore";
+import { useReportStore } from "@/shared/store/reportStore";
+import { diagnosticsBlock, environmentLines } from "@/shared/lib/diagnosticsText";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import * as logger from "@/shared/lib/logger";
@@ -31,13 +32,6 @@ const CATEGORY_LABELS_GITHUB: Record<(typeof CATEGORIES)[number], string> = {
   bug: "bug",
   idea: "enhancement",
 };
-
-function diagnosticsBlock(diagnostics: DiagnosticsInfo, environment: string[], maxLogLines: number, locale: string): string {
-  const lines = [`OS: ${diagnostics.osVersion}`, `Arch: ${diagnostics.arch}`, `App version: ${diagnostics.appVersion}`, ...environment, `Locale: ${locale}`];
-  if (maxLogLines === 0) return lines.join("\n");
-  const tail = diagnostics.logTail.split("\n").slice(-maxLogLines).join("\n");
-  return [...lines, "Log tail:", tail].join("\n");
-}
 
 function buildBody(category: string, description: string, diagnosticsText: string | null): string {
   const parts = [`Category: ${category}`, "", description.trim() || "(no description)"];
@@ -81,10 +75,7 @@ export function ReportDialog() {
   const setIncludeDiagnostics = useReportStore((state) => state.setIncludeDiagnostics);
   const locale = `${i18n.language} (system ${navigator.language})`;
 
-  const environment = useMemo(
-    () => [`Engine: ${engine?.version ?? "-"} (PyMuPDF ${engine?.pymupdf ?? "-"}, Python ${engine?.python ?? "-"})`, `LibreOffice: ${tools ? (tools.libreoffice ?? "not installed") : "-"}`, `OCR languages: ${tools?.ocrLanguages.join(", ") || "-"}`],
-    [engine, tools],
-  );
+  const environment = useMemo(() => environmentLines(engine, tools), [engine, tools]);
   const diagnosticsText = (logLines: number) => (includeDiagnostics && diagnostics ? diagnosticsBlock(diagnostics, environment, logLines, locale) : null);
   const diagnosticsPreview = useMemo(() => (diagnostics ? diagnosticsBlock(diagnostics, environment, LOG_LINES, locale) : ""), [diagnostics, environment, locale]);
 

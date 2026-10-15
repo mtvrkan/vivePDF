@@ -1245,6 +1245,10 @@ export type WebPageParams = {
 };
 export type WebPageResult = OutputResult & { title: string | null; sourceUrl: string; images: number };
 export type ToolsStatus = { libreoffice: string | null; ocrLanguages: string[] };
+export type SupportText = { name: string; text: string; folder?: "" | "logs" };
+export type SupportImage = { name: string; base64: string };
+export type SupportBundleParams = { output: string; texts?: SupportText[]; attachments?: string[]; images?: SupportImage[]; overwrite?: boolean };
+export type SupportBundleResult = { output: string; bytes: number; files: number };
 
 export type OcrParams = {
   path: string;

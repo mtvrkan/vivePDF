@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Help › Save support bundle… puts a short report, the system details and the recent log files into one zip you can attach to an issue or an e-mail; it is also in the command palette and the Mac Help menu. [2026-10-15]
 - Presentations get an on-screen ruler (U) in real centimetres that you can move and turn, pen and line strokes drawn along its edge come out straight, and a new measure shape shows a line's real length; the audience screen sees both. [2026-10-15]
 - Presenter view: the presenter's cursor is shown on the projector while it is over the slide [2026-10-15]
 - Offline mode: one switch in Settings › Web stops every internet connection (update checks, downloads, web searches, DOI lookups, web pages, picture search, online signature checks and timestamps); the buttons stay visible with a hint and the engine refuses too [2026-10-15]

@@ -6459,7 +6459,8 @@
       "clipboard": "PDF aus der Zwischenablage",
       "editHome": "Startseite anpassen",
       "shortcuts": "Tastenkürzel für diesen Bildschirm",
-      "whatsNew": "Neuigkeiten in vivePDF"
+      "whatsNew": "Neuigkeiten in vivePDF",
+      "supportBundle": "Supportpaket speichern"
     },
     "group": {
       "tools": "Werkzeuge",
@@ -10092,5 +10093,11 @@
     "hint": "Im Offlinemodus deaktiviert (Einstellungen › Web)",
     "notice": "Der Offlinemodus ist aktiv; es wird nichts aus dem Internet heruntergeladen oder abgefragt.",
     "openSettings": "Ändern"
+  },
+  "support": {
+    "menu": "Supportpaket speichern…",
+    "saved": "Supportpaket gespeichert",
+    "tooLarge": "Diese Dateien sind zu groß für ein Supportpaket (Grenze {{limit}} MB).",
+    "badImage": "Nur PNG- oder JPEG-Bilder können hinzugefügt werden."
   }
 }

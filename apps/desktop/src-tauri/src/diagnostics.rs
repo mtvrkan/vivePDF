@@ -1,4 +1,4 @@
-use std::io::Write;
+use std::io::{Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
 
 use tauri::{Manager, Runtime};
@@ -9,6 +9,7 @@ use crate::rpc::RpcError;
 const LOG_FILE_NAME: &str = "vivepdf.log";
 const MAX_LOG_BYTES: u64 = 2 * 1024 * 1024;
 const LOG_TAIL_LINES: usize = 200;
+const SUPPORT_LOG_CAP: u64 = 1024 * 1024;
 
 fn io_error(error: std::io::Error) -> RpcError {
     match error.kind() {
@@ -182,6 +183,38 @@ pub struct DiagnosticsInfo {
     pub log_tail: String,
 }
 
+#[derive(serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SupportLogs {
+    pub current: String,
+    pub previous: String,
+}
+
+fn capped_tail(path: &Path, cap: u64) -> std::io::Result<String> {
+    let mut file = std::fs::File::open(path)?;
+    let len = file.metadata()?.len();
+    let cut = len > cap;
+    if cut {
+        file.seek(SeekFrom::Start(len - cap))?;
+    }
+    let mut bytes = Vec::new();
+    file.take(cap).read_to_end(&mut bytes)?;
+    let text = String::from_utf8_lossy(&bytes);
+    if !cut {
+        return Ok(text.into_owned());
+    }
+    Ok(match text.find('\n') {
+        Some(index) => text[index + 1..].to_string(),
+        None => text.into_owned(),
+    })
+}
+
+fn support_log_text(path: &Path, cap: u64, home: Option<&str>) -> String {
+    capped_tail(path, cap)
+        .map(|text| redact_home(&text, home))
+        .unwrap_or_default()
+}
+
 #[cfg(any(test, windows))]
 const FIRST_WINDOWS_11_BUILD: u32 = 22000;
 
@@ -258,6 +291,20 @@ pub async fn diagnostics_info(app: tauri::AppHandle) -> Result<DiagnosticsInfo, 
             app_version: app.package_info().version.to_string(),
             log_path: redact(&path.to_string_lossy()),
             log_tail: redact(&tail),
+        })
+    })
+    .await
+    .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?
+}
+
+#[tauri::command]
+pub async fn support_logs(app: tauri::AppHandle) -> Result<SupportLogs, RpcError> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let path = resolve_log_path(&app)?;
+        let home = home_dir();
+        Ok(SupportLogs {
+            current: support_log_text(&path, SUPPORT_LOG_CAP, home.as_deref()),
+            previous: support_log_text(&rotated_path(&path), SUPPORT_LOG_CAP, home.as_deref()),
         })
     })
     .await
@@ -392,6 +439,27 @@ pub fn install_panic_hook<R: Runtime>(app: tauri::AppHandle<R>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn support_log_text_keeps_whole_lines_from_the_end_and_hides_home() {
+        let dir = std::env::temp_dir().join(format!("vivepdf-support-{}", std::process::id()));
+        std::fs::create_dir_all(&dir).unwrap();
+        let path = dir.join("vivepdf.log");
+        std::fs::write(
+            &path,
+            "first C:/Users/me/a.pdf\nsecond C:/Users/me/b.pdf\nthird\n",
+        )
+        .unwrap();
+
+        let whole = support_log_text(&path, 1024, Some("C:/Users/me"));
+        let tail = support_log_text(&path, 30, Some("C:/Users/me"));
+        let missing = support_log_text(&dir.join("vivepdf.log.1"), 1024, None);
+
+        std::fs::remove_dir_all(&dir).unwrap();
+        assert_eq!(whole, "first ~/a.pdf\nsecond ~/b.pdf\nthird\n");
+        assert_eq!(tail, "third\n");
+        assert_eq!(missing, "");
+    }
 
     #[test]
     fn a_path_outside_every_grant_always_answers_present_as_a_file() {

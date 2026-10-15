@@ -6460,7 +6460,8 @@
       "clipboard": "PDF from clipboard",
       "editHome": "Customize home page",
       "shortcuts": "Keyboard shortcuts for this screen",
-      "whatsNew": "What's new in vivePDF"
+      "whatsNew": "What's new in vivePDF",
+      "supportBundle": "Save support bundle"
     },
     "group": {
       "tools": "Tools",
@@ -10094,5 +10095,11 @@
     "hint": "Off while offline mode is on (Settings › Web)",
     "notice": "Offline mode is on, so nothing is downloaded or looked up on the internet.",
     "openSettings": "Change"
+  },
+  "support": {
+    "menu": "Save support bundle…",
+    "saved": "Support bundle saved",
+    "tooLarge": "These files are too big for a support bundle (limit {{limit}} MB).",
+    "badImage": "Only PNG or JPEG pictures can be added."
   }
 }

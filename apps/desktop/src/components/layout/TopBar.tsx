@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowDownToLine, Bug, Check, CircleHelp, Copy, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Minus, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Sparkles, Square, Sun, Wrench, X } from "lucide-react";
+import { ArrowDownToLine, Bug, Archive, Check, CircleHelp, Copy, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Minus, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Sparkles, Square, Sun, Wrench, X } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTranslation } from "react-i18next";
@@ -13,6 +13,7 @@ import { ToolBrowser } from "@/features/home/ToolBrowser";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { cn } from "@/shared/lib/cn";
 import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
+import { saveSupportBundle } from "@/shared/lib/supportBundle";
 import { useActiveOpenDocument } from "@/shared/store/documentStore";
 import { useOpenStore } from "@/shared/store/openStore";
 import { usePaletteStore } from "@/shared/store/paletteStore";
@@ -246,6 +247,7 @@ function HelpMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; o
       <MenuLink icon={Bug} label={t("about.reportBug")} onClick={() => useReportStore.getState().openDialog({ category: "bug" })} onSelect={close} />
       <MenuLink icon={Lightbulb} label={t("about.suggestFeature")} onClick={() => useReportStore.getState().openDialog({ category: "idea" })} onSelect={close} />
       <MenuLink icon={FolderOpen} label={t("app.openLogDir")} onClick={() => void openLogFolder()} onSelect={close} />
+      <MenuLink icon={Archive} label={t("support.menu")} onClick={() => void saveSupportBundle()} onSelect={close} />
       <MenuSeparator />
       <MenuLink icon={RefreshCw} label={t("about.actions.checkUpdates")} onClick={() => checkUpdatesNow(navigate)} onSelect={close} />
       <MenuLink icon={Info} label={t("nav.about")} route="/about" onSelect={close} />

@@ -1,4 +1,4 @@
-import { AppWindow, Bug, Keyboard, ClipboardPaste, LayoutDashboard, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sparkles, Sun, Wrench, X } from "lucide-react";
+import { AppWindow, Archive, Bug, Keyboard, ClipboardPaste, LayoutDashboard, Clock, Database, Download, Eye, FileInput, FileSearch, FileText, FolderOpen, FolderSync, Globe, Hash, History, Lightbulb, MessageSquare, Monitor, MonitorCog, Moon, Palette, Presentation, Printer, RefreshCw, Rocket, Search, Sparkles, Sun, Wrench, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { TFunction } from "i18next";
 import { primaryNavigation, secondaryNavigation, toolShortcuts } from "@/app/navigation";
@@ -108,6 +108,7 @@ export type ActionContext = {
   openReportBug: () => void;
   openSuggestFeature: () => void;
   openLogDir: () => void;
+  saveSupportBundle: () => void;
   openShortcuts: () => void;
   openWhatsNew: () => void;
   hasActiveDocument: boolean;
@@ -224,6 +225,15 @@ export function buildActionEntries(t: TFunction, ctx: ActionContext): PaletteEnt
       keywords: "log klasor",
       icon: FolderOpen,
       run: ctx.openLogDir,
+    },
+    {
+      id: "action:supportBundle",
+      kind: "action",
+      title: t("palette.action.supportBundle"),
+      subtitle: t("palette.actionLabel"),
+      keywords: "support bundle zip logs diagnostics destek paketi gunluk tani",
+      icon: Archive,
+      run: ctx.saveSupportBundle,
     },
     {
       id: "action:shortcuts",

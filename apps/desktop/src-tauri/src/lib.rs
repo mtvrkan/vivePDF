@@ -156,6 +156,7 @@ pub fn run() {
             session_file::session_write,
             diagnostics::log_line,
             diagnostics::diagnostics_info,
+            diagnostics::support_logs,
             diagnostics::open_log_dir,
             diagnostics::write_text_file,
             diagnostics::reveal_path,

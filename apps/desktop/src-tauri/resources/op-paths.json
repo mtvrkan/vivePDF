@@ -1686,6 +1686,17 @@
   "system.office_status": [],
   "system.ping": [],
   "system.release": [],
+  "system.support_bundle": [
+   [
+    "attachments",
+    "*",
+    "read"
+   ],
+   [
+    "output",
+    "write"
+   ]
+  ],
   "system.tessdata_download": [],
   "system.tessdata_languages": [],
   "system.tessdata_remove": [],

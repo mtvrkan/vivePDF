@@ -6459,7 +6459,8 @@
       "clipboard": "PDF depuis le presse-papiers",
       "editHome": "Personnaliser la page d'accueil",
       "shortcuts": "Raccourcis clavier de cet écran",
-      "whatsNew": "Nouveautés de vivePDF"
+      "whatsNew": "Nouveautés de vivePDF",
+      "supportBundle": "Enregistrer le paquet d’assistance"
     },
     "group": {
       "tools": "Outils",
@@ -10093,5 +10094,11 @@
     "hint": "Désactivé en mode hors ligne (Paramètres › Web)",
     "notice": "Le mode hors ligne est activé : rien n’est téléchargé ni consulté sur Internet.",
     "openSettings": "Modifier"
+  },
+  "support": {
+    "menu": "Enregistrer le paquet d’assistance…",
+    "saved": "Paquet d’assistance enregistré",
+    "tooLarge": "Ces fichiers sont trop volumineux pour un paquet d’assistance (limite {{limit}} Mo).",
+    "badImage": "Seules les images PNG ou JPEG peuvent être ajoutées."
   }
 }

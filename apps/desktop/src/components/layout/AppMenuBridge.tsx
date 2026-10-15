@@ -11,6 +11,7 @@ import { isMainWindow } from "@/shared/lib/windowRole";
 import { useReportStore } from "@/shared/store/reportStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
+import { saveSupportBundle } from "@/shared/lib/supportBundle";
 
 function pressShortcut(key: string, shiftKey: boolean): boolean {
   const target = document.activeElement ?? document.body;
@@ -70,6 +71,7 @@ export function AppMenuBridge() {
       } else if (command.name === "reportBug") useReportStore.getState().openDialog({ category: "bug" });
       else if (command.name === "suggestFeature") useReportStore.getState().openDialog({ category: "idea" });
       else if (command.name === "openLogDir") void openLogFolder();
+      else if (command.name === "supportBundle") void saveSupportBundle();
       else if (command.name === "checkUpdates") checkUpdatesNow(navigate);
     });
     return () => {
