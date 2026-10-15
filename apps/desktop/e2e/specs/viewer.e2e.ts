@@ -367,12 +367,12 @@ describe("viewer", () => {
     await openInViewer(path);
     const pageInput = $(`input[aria-label="${t("viewer.pageNumber")}"]`);
     await expect(pageInput).toHaveValue("i");
-    await expect($(`//span[normalize-space(.)="(1 / 8)"]`)).toBeDisplayed();
+    await expect($(`[data-testid="page-count"][title="1 / 8"]`)).toBeDisplayed();
     const link = await pagePoint(0, 200, 123);
     await browser.pause(800);
     await browser.action("pointer", { parameters: { pointerType: "mouse" } }).move(link).down().up().perform();
     await expect(pageInput).toHaveValue("4");
-    await expect($(`//span[normalize-space(.)="(6 / 8)"]`)).toBeDisplayed();
+    await expect($(`[data-testid="page-count"][title="6 / 8"]`)).toBeDisplayed();
     await expect($("[data-annotation-menu]")).not.toBeDisplayed();
 
     await pressAlt(LEFT_KEY);
@@ -436,10 +436,10 @@ describe("viewer", () => {
 
     await typeInto(pageInput, "ii");
     await browser.keys(ENTER_KEY);
-    await expect($(`//span[normalize-space(.)="(2 / 8)"]`)).toBeDisplayed();
+    await expect($(`[data-testid="page-count"][title="2 / 8"]`)).toBeDisplayed();
     await typeInto(pageInput, "3");
     await browser.keys(ENTER_KEY);
-    await expect($(`//span[normalize-space(.)="(5 / 8)"]`)).toBeDisplayed();
+    await expect($(`[data-testid="page-count"][title="5 / 8"]`)).toBeDisplayed();
     await clickButton(t("viewer.outline.title"));
     await tree.waitForDisplayed({ reverse: true });
   });
@@ -617,16 +617,16 @@ describe("viewer", () => {
     const tab = $(`//*[@role="tab"][contains(normalize-space(.), "resume.pdf")]`);
     await expect(tab).toHaveAttribute("aria-selected", "true", { wait: 30000 });
     const pageInput = $(`input[aria-label="${t("viewer.pageNumber")}"]`);
-    await expect($(`//span[normalize-space(.)="(1 / 8)"]`)).toBeDisplayed({ wait: 30000 });
+    await expect($(`[data-testid="page-count"][title="1 / 8"]`)).toBeDisplayed({ wait: 30000 });
     await typeInto(pageInput, "3");
     await browser.keys(ENTER_KEY);
-    await expect($(`//span[normalize-space(.)="(5 / 8)"]`)).toBeDisplayed();
+    await expect($(`[data-testid="page-count"][title="5 / 8"]`)).toBeDisplayed();
     await pressShortcut("w");
     await tab.waitForDisplayed({ reverse: true });
 
     await openInViewer(path);
     await expect(tab).toHaveAttribute("aria-selected", "true", { wait: 30000 });
-    await expect($(`//span[normalize-space(.)="(5 / 8)"]`)).toBeDisplayed({ wait: 30000 });
+    await expect($(`[data-testid="page-count"][title="5 / 8"]`)).toBeDisplayed({ wait: 30000 });
     await expect($(`//*[contains(text(), "${t("viewer.resume.toast")}")]`)).toBeDisplayed();
     await clickButton(t("viewer.resume.fromStart"));
     await expect(pageInput).toHaveValue("i");
