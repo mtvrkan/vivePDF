@@ -1591,7 +1591,8 @@
       "line": "Linha",
       "arrow": "Seta",
       "rect": "Retângulo",
-      "ellipse": "Elipse"
+      "ellipse": "Elipse",
+      "measure": "Medir comprimento"
     },
     "shapeCircle": "Círculo",
     "shapeRect": "Retângulo",
@@ -1694,6 +1695,15 @@
       "placeHint": "Clique na página para posicioná-lo — Esc cancela",
       "edit": "Editar",
       "tooLarge": "Este item é grande demais para a apresentação."
+    },
+    "ruler": {
+      "toggle": "Régua",
+      "label": "Régua na tela",
+      "moveHint": "Arraste para mover ou use as setas. Desenhe ao longo da borda superior para linhas retas.",
+      "rotateHint": "Arraste para girar (Shift: passos de 15°)",
+      "rotateLeft": "Girar 15° para a esquerda",
+      "rotateRight": "Girar 15° para a direita",
+      "hide": "Ocultar régua"
     }
   },
   "password": {
@@ -6636,7 +6646,8 @@
         "editClipboard": "Copiar, recortar ou colar a caixa selecionada",
         "editCycle": "Selecionar a caixa seguinte / anterior da página",
         "editNudge": "Mover a caixa selecionada (Shift: 10 pt)",
-        "clipboard": "PDF com o que você copiou"
+        "clipboard": "PDF com o que você copiou",
+        "presentationRuler": "Mostrar ou ocultar a régua"
       },
       "search": "Buscar atalhos",
       "noMatch": "Nenhum atalho corresponde à sua busca."

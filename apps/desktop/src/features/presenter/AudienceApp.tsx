@@ -10,6 +10,7 @@ import { BlackoutLayer } from "@/features/viewer/presentation/BlackoutLayer";
 import { PageDrawingCanvas } from "@/features/viewer/presentation/DrawingLayer";
 import type { LiveSignal } from "@/features/viewer/presentation/liveSignal";
 import { CurrentPageMask } from "@/features/viewer/presentation/CurrentPageMask";
+import { PresentationRuler } from "@/features/viewer/presentation/PresentationRuler";
 import { usePageRects } from "@/features/viewer/presentation/usePageRects";
 import { usePresentationFit } from "@/features/viewer/presentation/usePresentationFit";
 import { preparedViewSource } from "@/features/viewer/viewableBytes";
@@ -125,6 +126,7 @@ function AudienceStage({ session, slice, live, onCommand }: { session: AudienceS
         ))}
       </div>
       <div className="absolute inset-0 z-20" data-audience-capture="" />
+      <PresentationRuler rects={rects} />
       <RemotePointerLayer signal={live} rects={rects} />
       <BlackoutLayer contained hint={false} remote={live?.activeBoardStroke ?? null} />
     </div>

@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Presentations get an on-screen ruler (U) in real centimetres that you can move and turn, pen and line strokes drawn along its edge come out straight, and a new measure shape shows a line's real length; the audience screen sees both. [2026-10-15]
 - Presenter view: the presenter's cursor is shown on the projector while it is over the slide [2026-10-15]
 - Offline mode: one switch in Settings › Web stops every internet connection (update checks, downloads, web searches, DOI lookups, web pages, picture search, online signature checks and timestamps); the buttons stay visible with a hint and the engine refuses too [2026-10-15]
 - What's new: after an update vivePDF opens once with the highlights of the installed version, and Help › What's new, About › What's new and the command palette show the notes of every version up to the installed one (a first install stays quiet) [2026-10-15]

@@ -1,4 +1,4 @@
-import { Circle, Eraser, Highlighter, Minus, MousePointer2, MousePointerClick, MoveUpRight, PenLine, Search, Shapes, Sparkles, Square, Sun, Type } from "lucide-react";
+import { Circle, Eraser, Highlighter, Minus, MousePointer2, MousePointerClick, MoveHorizontal, MoveUpRight, PenLine, Search, Shapes, Sparkles, Square, Sun, Type } from "lucide-react";
 import type { PresentationTool, ShapeKind } from "@/shared/store/presentationStore";
 
 export const LASER_COLORS = ["#E5484D", "#30A46C", "#3E63DD", "#FFD400"];
@@ -8,10 +8,12 @@ export const SPOTLIGHT_SIZES = [110, 180, 260, 340];
 export const SPOTLIGHT_DIMS = [0.5, 0.65, 0.78, 0.9];
 export const MAGNIFIER_SIZES = [160, 220, 300, 380];
 export const MAGNIFIER_ZOOMS = [1.5, 2, 2.5, 3, 4];
+export const RULER_SHORTCUT = "U";
 
 export const SHAPE_KINDS: Array<{ id: ShapeKind; icon: typeof Square; labelKey: string }> = [
   { id: "line", icon: Minus, labelKey: "presentation.shapes.line" },
   { id: "arrow", icon: MoveUpRight, labelKey: "presentation.shapes.arrow" },
+  { id: "measure", icon: MoveHorizontal, labelKey: "presentation.shapes.measure" },
   { id: "rect", icon: Square, labelKey: "presentation.shapes.rect" },
   { id: "ellipse", icon: Circle, labelKey: "presentation.shapes.ellipse" },
 ];

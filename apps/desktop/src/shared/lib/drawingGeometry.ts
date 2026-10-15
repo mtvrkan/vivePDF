@@ -45,7 +45,7 @@ export function ellipsePoints(stroke: Stroke): StrokePoint[] {
 
 export function drawingOutline(stroke: Stroke): StrokePoint[][] {
   if (isFreehand(stroke)) return [stroke.points];
-  if (stroke.tool === "line" || stroke.tool === "arrow") return stroke.points.length > 1 ? [stroke.points.slice(0, 2)] : [];
+  if (stroke.tool === "line" || stroke.tool === "arrow" || stroke.tool === "measure") return stroke.points.length > 1 ? [stroke.points.slice(0, 2)] : [];
   if (stroke.tool === "rect") {
     const { x0, y0, x1, y1 } = corners(stroke);
     return [[{ x: x0, y: y0 }, { x: x1, y: y0 }, { x: x1, y: y1 }, { x: x0, y: y1 }, { x: x0, y: y0 }]];

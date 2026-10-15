@@ -90,4 +90,21 @@ describe("presenterSync", () => {
     expect(sharedSlice(usePresentationStore.getState(), 1).drawingAssets).toEqual({ [id]: { dataUrl: "data:x", width: 10, height: 5 } });
     expect(presentationFields(slice()).drawingAssets).toEqual({});
   });
+
+  it("sends the ruler as it moves and hands the audience none by default", () => {
+    const ruler = { pageIndex: 0, x: 0.1, y: 0.5, angle: 0, pageWidthPt: 600 };
+    const before = slice();
+    const shown = slice({ ruler });
+    const turned = slice({ ruler: { ...ruler, angle: 30 } });
+
+    const first = diffSlice(before, shown);
+    const second = diffSlice(shown, turned);
+    const hidden = diffSlice(turned, slice({ ruler: null }));
+
+    expect(first).toEqual({ ruler });
+    expect(second).toEqual({ ruler: { ...ruler, angle: 30 } });
+    expect(hidden).toEqual({ ruler: null });
+    expect(presentationFields(applyPatch(before, { kind: "patch", patch: second! })).ruler).toEqual({ ...ruler, angle: 30 });
+    expect(presentationFields(slice()).ruler).toBeNull();
+  });
 });

@@ -123,6 +123,7 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
         <IconButton icon={ChevronRight} label={t("viewer.nextPage")} disabled={currentPage >= totalPages} onClick={() => scroll?.scrollToNextPage()} />
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         <PresentationToolButtons
+          pageIndex={currentPage - 1}
           onSelect={(next) => {
             if (!hasStyleOptions(next)) setStyleOpen(false);
           }}

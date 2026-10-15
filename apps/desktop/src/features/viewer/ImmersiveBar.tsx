@@ -139,6 +139,7 @@ export function PresenterBar({
           <IconButton icon={ChevronRight} label={t("viewer.nextPage")} disabled={scrollState.currentPage >= scrollState.totalPages} onClick={() => scroll?.scrollToNextPage()} />
           <span className="mx-1 h-5 w-px bg-border" aria-hidden />
           <PresentationToolButtons
+            pageIndex={scrollState.currentPage - 1}
             onSelect={(next) => {
               if (!hasStyleOptions(next)) setStylePopoverOpen(false);
             }}

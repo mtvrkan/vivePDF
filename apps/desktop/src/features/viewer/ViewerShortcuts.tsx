@@ -12,7 +12,8 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { clearWithUndo } from "./presentation/drawingCleanup";
-import { PRESENTATION_TOOLS } from "./presentation/toolPresets";
+import { toggleRulerOn } from "./presentation/ruler";
+import { PRESENTATION_TOOLS, RULER_SHORTCUT } from "./presentation/toolPresets";
 import { useUiStore } from "@/shared/store/uiStore";
 import { EDITOR_MODES, useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { useSplitViewStore } from "@/shared/store/splitViewStore";
@@ -99,6 +100,9 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         } else if (toolEntry) {
           event.preventDefault();
           presentation.setTool(presentation.tool === toolEntry.id ? "pointer" : toolEntry.id);
+        } else if (letter === RULER_SHORTCUT.toLowerCase()) {
+          event.preventDefault();
+          toggleRulerOn(scrollState.currentPage - 1);
         } else if (immersive && presentation.codeBlockOpen && letter === "k") {
           event.preventDefault();
           const pageIndex = presentation.codeBlockOpen.pageIndex;

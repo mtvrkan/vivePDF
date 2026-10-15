@@ -1591,7 +1591,8 @@
       "line": "Línea",
       "arrow": "Flecha",
       "rect": "Rectángulo",
-      "ellipse": "Elipse"
+      "ellipse": "Elipse",
+      "measure": "Medir longitud"
     },
     "shapeCircle": "Círculo",
     "shapeRect": "Rectángulo",
@@ -1694,6 +1695,15 @@
       "placeHint": "Haz clic en la página para colocarlo; Esc cancela",
       "edit": "Editar",
       "tooLarge": "Este elemento es demasiado grande para mostrarlo en la presentación."
+    },
+    "ruler": {
+      "toggle": "Regla",
+      "label": "Regla en pantalla",
+      "moveHint": "Arrastra para moverla o usa las flechas. Dibuja junto al borde superior para trazar líneas rectas.",
+      "rotateHint": "Arrastra para girar (Mayús: pasos de 15°)",
+      "rotateLeft": "Girar 15° a la izquierda",
+      "rotateRight": "Girar 15° a la derecha",
+      "hide": "Ocultar regla"
     }
   },
   "password": {
@@ -6636,7 +6646,8 @@
         "editClipboard": "Copiar, cortar o pegar el cuadro seleccionado",
         "editCycle": "Seleccionar el cuadro siguiente / anterior de la página",
         "editNudge": "Mover el cuadro seleccionado (Mayús: 10 pt)",
-        "clipboard": "PDF con lo que copió"
+        "clipboard": "PDF con lo que copió",
+        "presentationRuler": "Mostrar u ocultar la regla"
       },
       "search": "Buscar atajos",
       "noMatch": "Ningún atajo coincide con su búsqueda."

@@ -38,6 +38,13 @@ describe("extendDrawing", () => {
     expect(Math.abs((end.x - start.x) * SURFACE.width)).toBeCloseTo(Math.abs((end.y - start.y) * SURFACE.height));
     expect(arrow.points[1].y).toBeCloseTo(0.5);
   });
+
+  it("keeps a held-Shift measure line on 45 degree steps like a line", () => {
+    const measure = extendDrawing(beginDrawing(style("shape", { shapeKind: "measure" }), { x: 0.5, y: 0.5 }, SURFACE), { x: 0.52, y: 0.8 }, SURFACE, true);
+
+    expect(measure.tool).toBe("measure");
+    expect(measure.points[1].x).toBeCloseTo(0.5);
+  });
 });
 
 describe("isDrawingKept", () => {

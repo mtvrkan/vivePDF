@@ -54,4 +54,20 @@ describe("presentationDrawings", () => {
 
     expect(drawings.pages).toEqual([{ page: 2, strokes: [{ tool: "drawing", color: "#000000", width: 0, points: [[0.2, 0.3]], size: [0.4, 0.2], svg: "<svg>x</svg>", opacity: 0.5 }] }]);
   });
+
+  it("saves a measure as its line, two end ticks and the length label", () => {
+    const pageSize = { width: 600, height: 300 };
+    const ruled: Stroke = { id: "m", tool: "measure", color: "#E5484D", width: 0.004, points: [{ x: 0.1, y: 0.5 }, { x: 0.6, y: 0.5 }], pageSize };
+    const bare: Stroke = { ...ruled, id: "b", pageSize: undefined };
+
+    const drawings = presentationDrawings({ ...empty, strokesByPage: { 0: [ruled, bare] } }, BOARD);
+
+    const strokes = drawings.pages[0].strokes;
+    expect(strokes.map((spec) => spec.tool)).toEqual(["line", "line", "line", "text", "line", "line", "line"]);
+    expect(strokes[0].points).toEqual([[0.1, 0.5], [0.6, 0.5]]);
+    expect(strokes[1].points[0][0]).toBeCloseTo(0.1);
+    expect(strokes[1].points[1][0]).toBeCloseTo(0.1);
+    expect(strokes[3]).toMatchObject({ text: expect.stringContaining("cm"), color: "#E5484D" });
+    expect(strokes[3].points[0][1]).toBeLessThan(0.5);
+  });
 });

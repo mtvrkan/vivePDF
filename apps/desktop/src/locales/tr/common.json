@@ -1592,7 +1592,8 @@
       "line": "Çizgi",
       "arrow": "Ok",
       "rect": "Dikdörtgen",
-      "ellipse": "Elips"
+      "ellipse": "Elips",
+      "measure": "Uzunluk ölç"
     },
     "shapeCircle": "Daire",
     "shapeRect": "Dikdörtgen",
@@ -1695,6 +1696,15 @@
       "placeHint": "Yerleştirmek için sayfaya tıklayın — Esc iptal eder",
       "edit": "Düzenle",
       "tooLarge": "Bu öğe sunumda gösterilemeyecek kadar büyük."
+    },
+    "ruler": {
+      "toggle": "Cetvel",
+      "label": "Ekran cetveli",
+      "moveHint": "Taşımak için sürükleyin ya da ok tuşlarını kullanın. Düz çizgi için üst kenar boyunca çizin.",
+      "rotateHint": "Döndürmek için sürükleyin (Shift: 15° adım)",
+      "rotateLeft": "15° sola döndür",
+      "rotateRight": "15° sağa döndür",
+      "hide": "Cetveli gizle"
     }
   },
   "password": {
@@ -6637,7 +6647,8 @@
         "editClipboard": "Seçili kutuyu kopyala, kes veya yapıştır",
         "editCycle": "Sayfadaki sonraki / önceki kutuyu seç",
         "editNudge": "Seçili kutuyu taşı (Shift: 10 pt)",
-        "clipboard": "Kopyaladığınızdan PDF"
+        "clipboard": "Kopyaladığınızdan PDF",
+        "presentationRuler": "Cetveli göster/gizle"
       },
       "search": "Kısayollarda ara",
       "noMatch": "Aramanızla eşleşen kısayol yok."

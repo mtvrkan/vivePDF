@@ -43,6 +43,7 @@ export function PresentationBar({ documentId, onClose }: { documentId: string; o
       ) : null}
       <div className="glass pointer-events-auto flex h-11 items-center gap-1 rounded-full px-2">
         <PresentationToolButtons
+          pageIndex={scrollState.currentPage - 1}
           onSelect={(next) => {
             if (!hasStyleOptions(next)) setStyleOpen(false);
           }}

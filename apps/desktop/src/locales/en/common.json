@@ -1592,7 +1592,8 @@
       "line": "Line",
       "arrow": "Arrow",
       "rect": "Rectangle",
-      "ellipse": "Ellipse"
+      "ellipse": "Ellipse",
+      "measure": "Measure length"
     },
     "shapeCircle": "Circle",
     "shapeRect": "Rectangle",
@@ -1695,6 +1696,15 @@
       "placeHint": "Click the page to place it — Esc cancels",
       "edit": "Edit",
       "tooLarge": "This item is too large to show in the presentation."
+    },
+    "ruler": {
+      "toggle": "Ruler",
+      "label": "On-screen ruler",
+      "moveHint": "Drag to move, or use the arrow keys. Draw along the top edge for straight lines.",
+      "rotateHint": "Drag to rotate (Shift: 15° steps)",
+      "rotateLeft": "Rotate 15° left",
+      "rotateRight": "Rotate 15° right",
+      "hide": "Hide ruler"
     }
   },
   "password": {
@@ -6637,7 +6647,8 @@
         "editClipboard": "Copy, cut or paste the selected box",
         "editCycle": "Select the next / previous box on the page",
         "editNudge": "Move the selected box (Shift: 10 pt)",
-        "clipboard": "PDF from what you copied"
+        "clipboard": "PDF from what you copied",
+        "presentationRuler": "Show or hide the ruler"
       },
       "search": "Search shortcuts",
       "noMatch": "No shortcuts match your search."

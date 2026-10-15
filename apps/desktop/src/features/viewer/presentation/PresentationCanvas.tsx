@@ -15,6 +15,9 @@ import { toLivePoint, type LivePoint, type LiveSignal } from "./liveSignal";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 import { MagnifierLens } from "./MagnifierLens";
 import { PlacementHint } from "./PlacementHint";
+import { visiblePageSize } from "./measure";
+import { PresentationRuler } from "./PresentationRuler";
+import { nearRulerEdge, rulerEdge, snapToRuler, type RulerEdge } from "./ruler";
 import { clampStrokePoint, measureTextBlock } from "./strokes";
 import { TextDraft } from "./TextDraft";
 import { nearestPageRect, pageRectAt, usePageRects, type PageRect } from "./usePageRects";
@@ -30,10 +33,12 @@ const LASER_FADE_MS = 700;
 
 const ERASER_RADIUS = 0.02;
 const DRAWING_TOOLS = new Set(["pen", "highlighter", "shape", "eraser"]);
+const RULER_GUIDED_KINDS = new Set(["pen", "highlighter", "line", "arrow", "measure"]);
 const NO_STROKES: Stroke[] = [];
 
 type TextDraftState = { pageIndex: number; anchor: StrokePoint; initial: string; original: Stroke | null };
 type MoveState = DrawingMove & { pageIndex: number; editOnClick: boolean };
+type RulerGuide = { edge: RulerEdge; clearance: number };
 
 function pagePoint(rect: PageRect, x: number, y: number) {
   return clampStrokePoint({ x: (x - rect.left) / rect.width, y: (y - rect.top) / rect.height });
@@ -83,6 +88,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
   const panRef = useRef<{ pointerId: number; x: number; y: number; left: number; top: number } | null>(null);
   const fadeTimers = useRef<Set<number>>(new Set());
   const moveRef = useRef<MoveState | null>(null);
+  const guideRef = useRef<RulerGuide | null>(null);
   const [textDraft, setTextDraft] = useState<TextDraftState | null>(null);
   const [hoverMovable, setHoverMovable] = useState(false);
 
@@ -176,6 +182,12 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
     if (pageRect && hit?.tool === "drawing") editPresentationDrawing(pageRect.pageIndex, hit);
   };
 
+  const guided = (rect: PageRect, point: { x: number; y: number }) => {
+    const guide = guideRef.current;
+    const target = guide ? snapToRuler(guide.edge, point, guide.clearance) : point;
+    return pagePoint(rect, target.x, target.y);
+  };
+
   const drawStyle = (): DrawStyle => ({ tool: tool === "highlighter" ? "highlighter" : tool === "shape" ? "shape" : "pen", color: penColor, penWidth, highlighterWidth, penOpacity, shapeKind });
 
   const onPointerDown = (event: React.PointerEvent) => {
@@ -234,14 +246,19 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
     const point = toContainerPoint(event);
     const pageRect = nearestPageRect(pageRects, point.x, point.y);
     if (!pageRect) return;
-    const normalized = pagePoint(pageRect, point.x, point.y);
     if (tool === "eraser") {
       erasingRef.current = true;
       event.currentTarget.setPointerCapture(event.pointerId);
       eraseEverywhere(point.x, point.y);
       return;
     }
-    const stroke = beginDrawing(drawStyle(), normalized, rectSize(pageRect));
+    const style = drawStyle();
+    const edge = rulerEdge(pageRects, usePresentationStore.getState().ruler);
+    const kind = style.tool === "shape" ? style.shapeKind : style.tool;
+    guideRef.current = edge && RULER_GUIDED_KINDS.has(kind) && nearRulerEdge(edge, point) ? { edge, clearance: (style.tool === "highlighter" ? highlighterWidth : penWidth) / 2 } : null;
+    const begun = beginDrawing(style, guided(pageRect, point), rectSize(pageRect));
+    const pageSize = begun.tool === "measure" ? visiblePageSize(pageRect.pageIndex, rectSize(pageRect)) : undefined;
+    const stroke = pageSize ? { ...begun, pageSize } : begun;
     drawingRef.current = { pageIndex: pageRect.pageIndex, stroke };
     setActiveStroke({ pageIndex: pageRect.pageIndex, stroke });
     event.currentTarget.setPointerCapture(event.pointerId);
@@ -302,8 +319,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
     if (!current) return;
     const pageRect = pageRects.find((rect) => rect.pageIndex === current.pageIndex);
     if (!pageRect) return;
-    const normalized = pagePoint(pageRect, point.x, point.y);
-    const nextStroke = extendDrawing(current.stroke, normalized, rectSize(pageRect), event.shiftKey);
+    const nextStroke = extendDrawing(current.stroke, guided(pageRect, point), rectSize(pageRect), event.shiftKey && !guideRef.current);
     drawingRef.current = { pageIndex: current.pageIndex, stroke: nextStroke };
     setActiveStroke({ pageIndex: current.pageIndex, stroke: nextStroke });
   };
@@ -333,6 +349,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
     const currentRect = current ? pageRects.find((rect) => rect.pageIndex === current.pageIndex) : undefined;
     if (current && currentRect && isDrawingKept(current.stroke, rectSize(currentRect))) addStroke(current.pageIndex, current.stroke);
     drawingRef.current = null;
+    guideRef.current = null;
     setActiveStroke(null);
   };
 
@@ -458,6 +475,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
             })()
           : null}
       </div>
+      <PresentationRuler rects={pageRects} interactive />
       {captureActive ? (
         <div
           onPointerDown={onPointerDown}

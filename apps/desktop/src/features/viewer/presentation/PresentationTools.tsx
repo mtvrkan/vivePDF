@@ -1,4 +1,4 @@
-import { Pipette } from "lucide-react";
+import { Pipette, Ruler } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
@@ -19,6 +19,7 @@ import {
   MAGNIFIER_ZOOMS,
   PEN_COLORS,
   PRESENTATION_TOOLS,
+  RULER_SHORTCUT,
   SHAPE_KINDS,
   SPOTLIGHT_DIMS,
   SPOTLIGHT_SIZES,
@@ -26,13 +27,15 @@ import {
   usesInkColor,
 } from "./toolPresets";
 import { HIGHLIGHTER_ALPHA } from "./strokes";
+import { toggleRulerOn } from "./ruler";
 
 const PERCENT = 100;
 
-export function PresentationToolButtons({ onSelect }: { onSelect?: (tool: PresentationTool) => void }) {
+export function PresentationToolButtons({ onSelect, pageIndex }: { onSelect?: (tool: PresentationTool) => void; pageIndex?: number }) {
   const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
   const setTool = usePresentationStore((state) => state.setTool);
+  const rulerShown = usePresentationStore((state) => state.ruler !== null);
   return (
     <>
       {PRESENTATION_TOOLS.map((entry) => (
@@ -49,6 +52,9 @@ export function PresentationToolButtons({ onSelect }: { onSelect?: (tool: Presen
           }}
         />
       ))}
+      {pageIndex !== undefined ? (
+        <IconButton icon={Ruler} label={t("presentation.ruler.toggle")} shortcut={RULER_SHORTCUT} active={rulerShown} onClick={() => toggleRulerOn(pageIndex)} />
+      ) : null}
     </>
   );
 }

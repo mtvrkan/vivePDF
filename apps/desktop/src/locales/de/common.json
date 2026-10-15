@@ -1591,7 +1591,8 @@
       "line": "Linie",
       "arrow": "Pfeil",
       "rect": "Rechteck",
-      "ellipse": "Ellipse"
+      "ellipse": "Ellipse",
+      "measure": "Länge messen"
     },
     "shapeCircle": "Kreis",
     "shapeRect": "Rechteck",
@@ -1694,6 +1695,15 @@
       "placeHint": "Zum Platzieren auf die Seite klicken – Esc bricht ab",
       "edit": "Bearbeiten",
       "tooLarge": "Dieses Element ist zu groß für die Präsentation."
+    },
+    "ruler": {
+      "toggle": "Lineal",
+      "label": "Bildschirmlineal",
+      "moveHint": "Zum Verschieben ziehen oder die Pfeiltasten nutzen. Für gerade Linien an der Oberkante entlang zeichnen.",
+      "rotateHint": "Zum Drehen ziehen (Umschalt: 15°-Schritte)",
+      "rotateLeft": "15° nach links drehen",
+      "rotateRight": "15° nach rechts drehen",
+      "hide": "Lineal ausblenden"
     }
   },
   "password": {
@@ -6636,7 +6646,8 @@
         "editClipboard": "Ausgewähltes Feld kopieren, ausschneiden oder einfügen",
         "editCycle": "Nächstes / vorheriges Feld auf der Seite auswählen",
         "editNudge": "Markiertes Feld verschieben (Umschalt: 10 pt)",
-        "clipboard": "PDF aus dem Kopierten"
+        "clipboard": "PDF aus dem Kopierten",
+        "presentationRuler": "Lineal ein-/ausblenden"
       },
       "search": "Tastenkombinationen durchsuchen",
       "noMatch": "Keine Tastenkombination entspricht Ihrer Suche."

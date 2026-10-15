@@ -1591,7 +1591,8 @@
       "line": "Linea",
       "arrow": "Freccia",
       "rect": "Rettangolo",
-      "ellipse": "Ellisse"
+      "ellipse": "Ellisse",
+      "measure": "Misura lunghezza"
     },
     "shapeCircle": "Cerchio",
     "shapeRect": "Rettangolo",
@@ -1694,6 +1695,15 @@
       "placeHint": "Fai clic sulla pagina per posizionarlo — Esc annulla",
       "edit": "Modifica",
       "tooLarge": "Questo elemento è troppo grande per la presentazione."
+    },
+    "ruler": {
+      "toggle": "Righello",
+      "label": "Righello sullo schermo",
+      "moveHint": "Trascina per spostarlo o usa le frecce. Disegna lungo il bordo superiore per linee dritte.",
+      "rotateHint": "Trascina per ruotare (Maiusc: passi di 15°)",
+      "rotateLeft": "Ruota di 15° a sinistra",
+      "rotateRight": "Ruota di 15° a destra",
+      "hide": "Nascondi righello"
     }
   },
   "password": {
@@ -6636,7 +6646,8 @@
         "editClipboard": "Copia, taglia o incolla il riquadro selezionato",
         "editCycle": "Seleziona il riquadro successivo / precedente della pagina",
         "editNudge": "Sposta la casella selezionata (Maiusc: 10 pt)",
-        "clipboard": "PDF da ciò che hai copiato"
+        "clipboard": "PDF da ciò che hai copiato",
+        "presentationRuler": "Mostra o nascondi il righello"
       },
       "search": "Cerca scorciatoie",
       "noMatch": "Nessuna scorciatoia corrisponde alla ricerca."

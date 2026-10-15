@@ -1,4 +1,4 @@
-import type { BlackoutMode, BoardMode, DrawingAsset, LensShape, Stroke, usePresentationStore } from "@/shared/store/presentationStore";
+import type { BlackoutMode, BoardMode, DrawingAsset, LensShape, RulerState, Stroke, usePresentationStore } from "@/shared/store/presentationStore";
 import type { SelectionMarks } from "./selectionMarks";
 
 type PresentationState = ReturnType<typeof usePresentationStore.getState>;
@@ -16,6 +16,7 @@ export type SharedSlice = {
   magnifierSize: number;
   magnifierZoom: number;
   magnifierShape: LensShape;
+  ruler?: RulerState | null;
   selection?: SelectionMarks | null;
   drawingAssets?: Record<string, DrawingAsset>;
 };
@@ -24,7 +25,7 @@ export type SlicePatch = Partial<SharedSlice>;
 
 export type StateMessage = { kind: "full"; slice: SharedSlice } | { kind: "patch"; patch: SlicePatch };
 
-const SCALAR_KEYS = ["page", "blackout", "laserColor", "laserSize", "spotlightRadius", "spotlightShape", "spotlightDim", "magnifierSize", "magnifierZoom", "magnifierShape"] as const;
+const SCALAR_KEYS = ["page", "blackout", "laserColor", "laserSize", "spotlightRadius", "spotlightShape", "spotlightDim", "magnifierSize", "magnifierZoom", "magnifierShape", "ruler"] as const;
 
 const NO_STROKES: Stroke[] = [];
 
@@ -53,6 +54,7 @@ export function sharedSlice(state: PresentationState, page: number, selection: S
     magnifierSize: state.magnifierSize,
     magnifierZoom: state.magnifierZoom,
     magnifierShape: state.magnifierShape,
+    ruler: state.ruler,
   };
 }
 
@@ -114,7 +116,7 @@ export function applyPatch(slice: SharedSlice, message: StateMessage): SharedSli
   };
 }
 
-export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page" | "selection" | "drawingAssets"> & { drawingAssets: Record<string, DrawingAsset> } {
+export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page" | "selection" | "drawingAssets" | "ruler"> & { drawingAssets: Record<string, DrawingAsset>; ruler: RulerState | null } {
   return {
     drawingAssets: slice.drawingAssets ?? {},
     blackout: slice.blackout,
@@ -128,5 +130,6 @@ export function presentationFields(slice: SharedSlice): Omit<SharedSlice, "page"
     magnifierSize: slice.magnifierSize,
     magnifierZoom: slice.magnifierZoom,
     magnifierShape: slice.magnifierShape,
+    ruler: slice.ruler ?? null,
   };
 }

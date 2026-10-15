@@ -64,6 +64,7 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { keys: "E", labelKey: "about.shortcuts.items.presentationEraser" },
       { keys: "S", labelKey: "about.shortcuts.items.presentationSpotlight" },
       { keys: "M", labelKey: "about.shortcuts.items.presentationMagnifier" },
+      { keys: "U", labelKey: "about.shortcuts.items.presentationRuler" },
       { keys: "V  /  Del", labelKey: "about.shortcuts.items.presentationSelectDrawing" },
       { keys: "R  /  Shift R  ·  Ctrl D", labelKey: "about.shortcuts.items.presentationDrawingEdit" },
       { keys: "Z", labelKey: "about.shortcuts.items.presentationZoomArea" },

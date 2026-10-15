@@ -29,7 +29,7 @@ export function beginDrawing(style: DrawStyle, point: StrokePoint, surface: Surf
 function constrainedEnd(kind: Stroke["tool"], start: StrokePoint, point: StrokePoint, surface: SurfaceSize): StrokePoint {
   const dx = (point.x - start.x) * surface.width;
   const dy = (point.y - start.y) * surface.height;
-  if (kind === "line" || kind === "arrow") {
+  if (kind === "line" || kind === "arrow" || kind === "measure") {
     const length = Math.hypot(dx, dy);
     const angle = Math.round(Math.atan2(dy, dx) / SNAP_ANGLE) * SNAP_ANGLE;
     return { x: start.x + (Math.cos(angle) * length) / surface.width, y: start.y + (Math.sin(angle) * length) / surface.height };

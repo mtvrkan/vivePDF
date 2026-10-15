@@ -5,7 +5,7 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import { distanceToSegment, hitsDrawing, isFreehand } from "@/shared/lib/drawingGeometry";
 
 export type PresentationTool = "pointer" | "laser" | "pen" | "highlighter" | "shape" | "text" | "select" | "eraser" | "spotlight" | "magnifier";
-export type ShapeKind = "line" | "arrow" | "rect" | "ellipse";
+export type ShapeKind = "line" | "arrow" | "measure" | "rect" | "ellipse";
 export type BlackoutMode = "none" | "black" | "white";
 export type BoardMode = Exclude<BlackoutMode, "none">;
 export type DrawingsMode = "temporary" | "annotations";
@@ -22,7 +22,9 @@ export type Stroke = {
   fontSize?: number;
   size?: { width: number; height: number };
   asset?: string;
+  pageSize?: { width: number; height: number };
 };
+export type RulerState = { pageIndex: number; x: number; y: number; angle: number; pageWidthPt: number };
 export type DrawingAsset = { dataUrl: string; width: number; height: number; drawing?: DrawingSource };
 export type DrawingPlacement = { asset: string };
 export type DrawingSnapshot = { strokesByPage: Record<number, Stroke[]>; boardStrokes: Record<BoardMode, Stroke[]>; drawingAssets?: Record<string, DrawingAsset> };
@@ -36,6 +38,7 @@ const SPOTLIGHT_MAX = 400;
 const MAGNIFIER_ZOOM_MIN = 1.5;
 const MAGNIFIER_ZOOM_MAX = 6;
 const MIN_PIECE_LENGTH = 0.002;
+const RULER_START = { x: 0.08, y: 0.55 };
 export const PEN_WIDTH_RANGE = [1, 24] as const;
 export const HIGHLIGHTER_WIDTH_RANGE = [4, 48] as const;
 export const OPACITY_RANGE = [0.1, 1] as const;
@@ -139,6 +142,9 @@ type PresentationState = {
   selectedDrawing: DrawingSelection | null;
   drawingAssets: Record<string, DrawingAsset>;
   placing: DrawingPlacement | null;
+  ruler: RulerState | null;
+  setRuler: (ruler: RulerState | null) => void;
+  toggleRuler: (pageIndex: number, pageWidthPt: number) => void;
   addDrawingAsset: (asset: DrawingAsset) => string;
   armPlacement: (asset: string) => void;
   cancelPlacement: () => void;
@@ -309,7 +315,11 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   selectedDrawing: null,
   drawingAssets: {},
   placing: null,
+  ruler: null,
 
+  setRuler: (ruler) => set({ ruler }),
+  toggleRuler: (pageIndex, pageWidthPt) =>
+    set((state) => ({ ruler: state.ruler ? null : { pageIndex, x: RULER_START.x, y: RULER_START.y, angle: 0, pageWidthPt } })),
   addDrawingAsset: (asset) => {
     const id = `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     set((state) => ({ drawingAssets: { ...state.drawingAssets, [id]: asset } }));
@@ -533,6 +543,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       codeBlockOpen: null,
       selectedDrawing: null,
       placing: null,
+      ruler: null,
     }),
 
   resetSession: () =>
@@ -552,6 +563,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       selectedDrawing: null,
       drawingAssets: {},
       placing: null,
+      ruler: null,
     }),
 }));
 

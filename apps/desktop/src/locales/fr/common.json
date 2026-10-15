@@ -1591,7 +1591,8 @@
       "line": "Ligne",
       "arrow": "Flèche",
       "rect": "Rectangle",
-      "ellipse": "Ellipse"
+      "ellipse": "Ellipse",
+      "measure": "Mesurer une longueur"
     },
     "shapeCircle": "Cercle",
     "shapeRect": "Rectangle",
@@ -1694,6 +1695,15 @@
       "placeHint": "Cliquez sur la page pour le placer — Échap annule",
       "edit": "Modifier",
       "tooLarge": "Cet élément est trop volumineux pour la présentation."
+    },
+    "ruler": {
+      "toggle": "Règle",
+      "label": "Règle à l'écran",
+      "moveHint": "Faites glisser pour la déplacer, ou utilisez les flèches. Dessinez le long du bord supérieur pour des traits droits.",
+      "rotateHint": "Faites glisser pour pivoter (Maj : pas de 15°)",
+      "rotateLeft": "Pivoter de 15° à gauche",
+      "rotateRight": "Pivoter de 15° à droite",
+      "hide": "Masquer la règle"
     }
   },
   "password": {
@@ -6636,7 +6646,8 @@
         "editClipboard": "Copier, couper ou coller la zone sélectionnée",
         "editCycle": "Sélectionner la zone suivante / précédente de la page",
         "editNudge": "Déplacer la boîte sélectionnée (Maj : 10 pt)",
-        "clipboard": "PDF à partir de ce que vous avez copié"
+        "clipboard": "PDF à partir de ce que vous avez copié",
+        "presentationRuler": "Afficher ou masquer la règle"
       },
       "search": "Rechercher des raccourcis",
       "noMatch": "Aucun raccourci ne correspond à votre recherche."
