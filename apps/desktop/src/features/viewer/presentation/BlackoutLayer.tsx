@@ -108,7 +108,8 @@ function Board({ board, contained, hint }: { board: BoardMode; contained: boolea
 
   const onPointerUp = () => {
     erasingRef.current = false;
-    if (live && isDrawingKept(live, surface())) usePresentationStore.getState().addBoardStroke(board, live);
+    const box = surface();
+    if (live && isDrawingKept(live, box)) usePresentationStore.getState().addBoardStroke(board, live, box);
     setLive(null);
   };
 

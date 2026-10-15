@@ -110,6 +110,29 @@ describe("holdTemporaryDrawings", () => {
     usePresentationStore.setState({ drawingsMode: "temporary" });
   });
 
+  it("saves board drawings with the size of the board they were drawn on, not the window", () => {
+    useDocumentStore.getState().register(DOCUMENT_ID, "C:/docs/Talk.pdf", null);
+    useDocumentStore.setState({ activeId: DOCUMENT_ID } as never);
+    usePresentationStore.setState({ drawingsMode: "temporary", strokesByPage: {}, boardStrokes: { black: [], white: [] }, boardSize: null });
+    usePresentationStore.getState().addBoardStroke("black", { id: "b", tool: "pen", color: "#ffffff", width: 0.01, points: [{ x: 0.1, y: 0.1 }, { x: 0.4, y: 0.4 }] }, { width: 640, height: 360 });
+
+    holdTemporaryDrawings("save");
+
+    expect(usePresentationLeftoverStore.getState().leftover?.boards).toEqual([expect.objectContaining({ background: "black", width: 640, height: 360 })]);
+    usePresentationStore.setState({ boardStrokes: { black: [], white: [] }, boardSize: null });
+  });
+
+  it("falls back to the window size for boards drawn before a size was known", () => {
+    useDocumentStore.getState().register(DOCUMENT_ID, "C:/docs/Talk.pdf", null);
+    useDocumentStore.setState({ activeId: DOCUMENT_ID } as never);
+    usePresentationStore.setState({ drawingsMode: "temporary", strokesByPage: {}, boardStrokes: { black: [], white: [{ id: "w", tool: "pen", color: "#000000", width: 0.01, points: [{ x: 0.1, y: 0.1 }] }] }, boardSize: null });
+
+    holdTemporaryDrawings("save");
+
+    expect(usePresentationLeftoverStore.getState().leftover?.boards).toEqual([expect.objectContaining({ width: window.innerWidth, height: window.innerHeight })]);
+    usePresentationStore.setState({ boardStrokes: { black: [], white: [] } });
+  });
+
   it("opens with the save button focused instead of the discard button", () => {
     usePresentationLeftoverStore.getState().hold(leftover());
 
