@@ -3,6 +3,7 @@ import hashlib
 import io
 import json
 import os
+import plistlib
 import shutil
 import subprocess
 import tarfile
@@ -184,6 +185,31 @@ def verify_app_signature(app: Path) -> None:
     )
 
 
+def app_bundle_version(app: Path) -> str:
+    try:
+        with (app / "Contents" / "Info.plist").open("rb") as handle:
+            info = plistlib.load(handle)
+    except (OSError, ValueError, plistlib.InvalidFileException):
+        return ""
+    if not isinstance(info, dict):
+        return ""
+    for key in ("CFBundleShortVersionString", "CFBundleVersion"):
+        value = info.get(key)
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+    return ""
+
+
+def verify_app_version(app: Path, version: str) -> None:
+    product = app_bundle_version(app)
+    if not released_version(product, version):
+        raise OpError(
+            ErrorCode.EXTERNAL_TOOL_FAILED,
+            f"disk image holds version {product or 'unknown'}, not {version}",
+            {"tool": "hdiutil", "reason": "officeUnsigned", "phase": "verify", "product": product},
+        )
+
+
 def _detach(mount: Path) -> None:
     with contextlib.suppress(OpError):
         run_tool(
@@ -194,7 +220,9 @@ def _detach(mount: Path) -> None:
         )
 
 
-def install_app_bundle(image: Path, directory: Path, mount: Path) -> None:
+def install_app_bundle(
+    image: Path, directory: Path, mount: Path, version: str | None = None
+) -> None:
     mount.mkdir(parents=True, exist_ok=True)
     run_tool(
         [
@@ -216,6 +244,8 @@ def install_app_bundle(image: Path, directory: Path, mount: Path) -> None:
         if not app.is_dir():
             raise _package_error("disk image holds no LibreOffice.app", "hdiutil")
         verify_app_signature(app)
+        if version is not None:
+            verify_app_version(app, version)
         run_tool(
             ["ditto", str(app), str(directory / APP_NAME)],
             COPY_TIMEOUT,

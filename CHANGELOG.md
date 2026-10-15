@@ -151,6 +151,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Unused interface leftovers: the "pick" labels of the drawing kinds in all eight languages and the unused nav highlight and hairline grid styles [2026-10-13]
 
 ### Security
+- macOS: a downloaded LibreOffice disk image is installed only when the app inside is the version that was asked for [2026-10-15]
 - Trust lists: a verified EU list of trusted lists now remembers the signers it names for its own successor, so when the Commission rotates its signing certificate the next list is still verified without an app update; an older list, or a list with the same number but different content, is refused [2026-10-15]
 - Files: paths remembered from earlier versions (recent files, sessions, collections, history, Studio files, watched and output folders) are taken over only when they are ordinary documents in ordinary folders: network shares, hidden folders, app data, system and program folders, keys and certificates are skipped, and the files are taken over read-only, so saving one in place asks once where to save (the same path is offered). A remembered signing certificate has to be picked again once. Engine operations on a network share are refused before the share is contacted unless the file or folder there was chosen in vivePDF [2026-10-15]
 - Office to PDF: the LibreOffice profile vivePDF converts with now also turns off embedded active content and DDE links, so a document cannot pull data from other programs or files while it is converted [2026-10-14]

@@ -131,7 +131,7 @@ def _unpack(
     elif package.kind == "deb":
         _unpack_debs(installer, directory, staging, progress, version)
     else:
-        office_packages.install_app_bundle(installer, directory, staging / "mount")
+        office_packages.install_app_bundle(installer, directory, staging / "mount", version)
 
 
 def _fetch_verified(package: OfficePackage, installer: Path, progress: Progress) -> str:

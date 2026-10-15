@@ -1,5 +1,6 @@
 import hashlib
 import io
+import plistlib
 import sys
 import tarfile
 from pathlib import Path
@@ -415,6 +416,65 @@ def test_an_unsigned_mac_bundle_is_never_copied_and_the_image_is_detached(monkey
     assert "ditto" not in tools
     assert recorder.calls[-1][:2] == ["hdiutil", "detach"]
     assert list(directory.iterdir()) == []
+
+
+class PlistRecorder(ToolRecorder):
+    def __init__(self, info: bytes | None) -> None:
+        super().__init__()
+        self.info = info
+
+    def __call__(self, arguments, timeout, tool, env=None):
+        super().__call__(arguments, timeout, tool, env)
+        if arguments[:2] == ["hdiutil", "attach"] and self.info is not None:
+            mount = Path(arguments[arguments.index("-mountpoint") + 1])
+            (mount / "LibreOffice.app" / "Contents" / "Info.plist").write_bytes(self.info)
+
+
+def _plist(**values: str) -> bytes:
+    return plistlib.dumps(values)
+
+
+def test_mac_bundle_of_the_downloaded_release_is_copied(monkeypatch, tmp_path):
+    recorder = PlistRecorder(_plist(CFBundleShortVersionString="26.2.6.2"))
+    monkeypatch.setattr(office_packages, "run_tool", recorder)
+    directory = tmp_path / "office"
+    directory.mkdir()
+    office_packages.install_app_bundle(tmp_path / "lo.dmg", directory, tmp_path / "mount", "26.2.6")
+    assert [call[0] for call in recorder.calls] == ["hdiutil", "codesign", "ditto", "hdiutil"]
+
+
+@pytest.mark.parametrize(
+    ("info", "product"),
+    [(_plist(CFBundleShortVersionString="25.8.4.1"), "25.8.4.1"), (b"not a plist", ""), (None, "")],
+)
+def test_mac_bundle_of_another_release_is_never_copied(monkeypatch, tmp_path, info, product):
+    recorder = PlistRecorder(info)
+    monkeypatch.setattr(office_packages, "run_tool", recorder)
+    directory = tmp_path / "office"
+    directory.mkdir()
+    with pytest.raises(OpError) as raised:
+        office_packages.install_app_bundle(
+            tmp_path / "lo.dmg", directory, tmp_path / "mount", "26.2.6"
+        )
+    assert raised.value.data == {
+        "tool": "hdiutil",
+        "reason": "officeUnsigned",
+        "phase": "verify",
+        "product": product,
+    }
+    assert "ditto" not in [call[0] for call in recorder.calls]
+    assert recorder.calls[-1][:2] == ["hdiutil", "detach"]
+    assert list(directory.iterdir()) == []
+
+
+def test_mac_bundle_version_falls_back_to_the_build_version(tmp_path):
+    app = tmp_path / "LibreOffice.app"
+    (app / "Contents").mkdir(parents=True)
+    (app / "Contents" / "Info.plist").write_bytes(
+        _plist(CFBundleShortVersionString=" ", CFBundleVersion="26.2.6.2")
+    )
+    assert office_packages.app_bundle_version(app) == "26.2.6.2"
+    assert office_packages.app_bundle_version(tmp_path / "missing.app") == ""
 
 
 def test_managed_mac_app_bundle_is_found(monkeypatch, tmp_path):
