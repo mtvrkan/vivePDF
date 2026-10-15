@@ -147,6 +147,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Linux LibreOffice setup: the download is now checked against The Document Foundation's signing key, which ships with vivePDF, so any mirror can serve it and the foundation server is no longer needed; a mirror with a missing or wrong signature is skipped, and an older signed release served as a newer one is refused. Without gpgv on the system the old checksum check is used [2026-10-13]
 - Saving: vivePDF refuses to write programs, scripts and shortcuts (.exe, .bat, .ps1, .lnk, .sh, .desktop and similar, also when hidden behind trailing dots or Windows data streams), shell start-up files, and anything into start-up, launch agent or SSH folders, whether the save comes from the viewer, a text export or a tool's output, so a compromised page script cannot plant something that runs at the next sign-in [2026-10-13]
 - Dependencies: Mermaid now uses KaTeX 0.18.11 and the build tools use source-map-js 1.2.2, closing two known advisories [2026-10-13]
+- Dependencies: the engine now uses multidict 6.9.1 (pulled in by the signing libraries), closing CVE-2026-104874 [2026-10-15]
 
 ## [0.2.0] - 2026-10-09
 ### Added
