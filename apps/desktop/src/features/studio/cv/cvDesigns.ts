@@ -1,7 +1,7 @@
 import type { StudioElement } from "@/types/studio";
 import { art, box, FONTS, foil, gradient, linear, rule, solid } from "../templates/kit";
 import type { CvLayoutId } from "./cvModel";
-import { contactGrid, contactLine, mix, textLine, type CvContext, type CvPalette, type CvSpec, type Frame } from "./cvLayout";
+import { contactGrid, contactLine, legible, mix, textLine, type CvContext, type CvPalette, type CvSpec, type Frame } from "./cvLayout";
 
 const WHITE = "#ffffff";
 const BLACK = "#000000";
@@ -66,6 +66,12 @@ function headerBlock(context: CvContext, x: number, y: number, width: number, al
     bottom = contacts.bottom;
   }
   return { elements, bottom };
+}
+
+type HeaderDraw = { elements: StudioElement[]; bottom: number };
+
+function bandHeight(minimum: number, header: HeaderDraw, padding: number): number {
+  return Math.max(minimum, Math.ceil(header.bottom + padding));
 }
 
 function sidebarFrame(context: CvContext, side: "left" | "right", sideWidth: number, fill: StudioElement[], margin: number): Frame {
@@ -139,18 +145,35 @@ const classic: CvSpec = {
   skillStyle: "dots",
 };
 
+function bandFill(context: CvContext): string {
+  return legible(context.palette.accent, WHITE, 4.5);
+}
+
+function corporateHeader(context: CvContext): HeaderDraw {
+  const elements: StudioElement[] = [];
+  let x = 40;
+  if (context.hasPhoto()) {
+    const size = 92;
+    elements.push(...context.photo(x, 22, size, mix(context.palette.accent, WHITE, 0.45), WHITE));
+    x += size + 26;
+  }
+  const header = headerBlock(context, x, 36, context.width - x - 40, "left", { nameSize: 28, nameColor: WHITE, headlineColor: mix(bandFill(context), WHITE, 0.78), contactColor: WHITE, contacts: false });
+  elements.push(...header.elements);
+  return { elements, bottom: header.bottom };
+}
+
 const corporate: CvSpec = {
   id: "corporate",
   accent: "#0f766e",
   fonts: { heading: FONTS.poppins, body: FONTS.nunito },
   palette: (accent) => lightPalette(accent, { text: "#0f172a", muted: "#475569", sideFill: mix(accent, WHITE, 0.92), sideSoft: mix(accent, WHITE, 0.7) }),
   frame: (context, pageIndex) => {
-    const band = pageIndex === 0 ? 136 : 0;
+    const band = pageIndex === 0 ? bandHeight(136, corporateHeader(context), 24) : 0;
     const sideWidth = 186;
     const decor: StudioElement[] = [box("rect", context.width - sideWidth, band, sideWidth, context.height - band, solid(context.palette.sideFill ?? WHITE))];
     if (band) {
       decor.unshift(
-        box("rect", 0, 0, context.width, band, linear(90, context.palette.accent, mix(context.palette.accent, BLACK, 0.4))),
+        box("rect", 0, 0, context.width, band, linear(90, bandFill(context), mix(bandFill(context), BLACK, 0.4))),
         art("diagonalHatch", { primary: WHITE, secondary: WHITE }, 0, 0, context.width, band, { opacity: 0.1 }),
         box("rect", 0, band - 3, context.width, 3, solid(mix(context.palette.accent, WHITE, 0.55))),
       );
@@ -161,18 +184,7 @@ const corporate: CvSpec = {
       side: { x: context.width - sideWidth + 20, width: sideWidth - 40, top: band + 30, bottom: context.height - 40 },
     };
   },
-  header: (context, frame) => {
-    const elements: StudioElement[] = [];
-    let x = 40;
-    if (context.hasPhoto()) {
-      const size = 92;
-      elements.push(...context.photo(x, 22, size, mix(context.palette.accent, WHITE, 0.45), WHITE));
-      x += size + 26;
-    }
-    const header = headerBlock(context, x, 36, context.width - x - 40, "left", { nameSize: 28, nameColor: WHITE, headlineColor: mix(context.palette.accent, WHITE, 0.78), contactColor: WHITE, contacts: false });
-    elements.push(...header.elements);
-    return { elements, mainTop: frame.main.top, sideTop: frame.side?.top ?? 0 };
-  },
+  header: (context, frame) => ({ elements: corporateHeader(context).elements, mainTop: frame.main.top, sideTop: frame.side?.top ?? 0 }),
   side: ["contact", "skills", "languages", "certificates", "interests"],
   title: "underline",
   sideTitle: "plain",
@@ -220,15 +232,16 @@ const creative: CvSpec = {
     lightPalette(accent, {
       text: "#1f2937",
       muted: "#4b5563",
-      sideFill: accent,
+      sideFill: legible(accent, WHITE, 4.5),
       sideText: WHITE,
-      sideMuted: mix(accent, WHITE, 0.8),
+      sideMuted: mix(legible(accent, WHITE, 4.5), WHITE, 0.8),
       sideAccent: WHITE,
-      sideSoft: mix(accent, BLACK, 0.25),
+      sideSoft: mix(legible(accent, WHITE, 4.5), BLACK, 0.25),
     }),
   frame: (context, pageIndex) => {
     const sideWidth = 200;
-    const fill = box("rect", context.width - sideWidth, 0, sideWidth, context.height, linear(160, context.palette.accent, mix(context.palette.accent, BLACK, 0.4)));
+    const side = context.palette.sideFill ?? context.palette.accent;
+    const fill = box("rect", context.width - sideWidth, 0, sideWidth, context.height, linear(160, side, mix(side, BLACK, 0.4)));
     const soft = mix(context.palette.accent, WHITE, 0.86);
     const decor = pageIndex === 0 ? [art("blob", { primary: soft, secondary: mix(context.palette.accent, WHITE, 0.92) }, -70, -80, 200, 200, { opacity: 0.9 })] : [];
     return sidebarFrame(context, "right", sideWidth, [...decor, fill], 40);
@@ -239,7 +252,7 @@ const creative: CvSpec = {
     if (frame.side && context.hasPhoto()) {
       const size = 120;
       const x = frame.side.x + (frame.side.width - size) / 2;
-      elements.push(...context.photo(x, frame.side.top, size, mix(context.palette.accent, WHITE, 0.4), WHITE));
+      elements.push(...context.photo(x, frame.side.top, size, mix(context.palette.sideFill ?? context.palette.accent, WHITE, 0.4), WHITE));
       sideTop = frame.side.top + size + 26;
     }
     const header = headerBlock(context, frame.main.x, frame.main.top + 14, frame.main.width, "left", { nameSize: 34, nameColor: context.palette.text, headlineColor: context.palette.accent, contactColor: context.palette.muted, contacts: false });
@@ -356,19 +369,34 @@ const elegant: CvSpec = {
   skillStyle: "dots",
 };
 
+const TECH_BAND = "#0f172a";
+
+function techHeader(context: CvContext): HeaderDraw {
+  const elements: StudioElement[] = [];
+  let x = 36;
+  if (context.hasPhoto()) {
+    const size = 82;
+    elements.push(...context.photo(x, 21, size, "#1e293b", mix(context.palette.accent, WHITE, 0.2)));
+    x += size + 24;
+  }
+  const header = headerBlock(context, x, 28, context.width - x - 36, "left", { nameSize: 30, nameColor: WHITE, headlineColor: legible(mix(context.palette.accent, WHITE, 0.35), TECH_BAND, 4.5), contactColor: "#cbd5e1", upper: true, spacing: 1 });
+  elements.push(...header.elements);
+  return { elements, bottom: header.bottom };
+}
+
 const tech: CvSpec = {
   id: "tech",
   accent: "#22c55e",
   fonts: { heading: FONTS.oswald, body: FONTS.inter },
   palette: (accent) => lightPalette(mix(accent, BLACK, 0.36), { text: "#0f172a", muted: "#475569", soft: mix(accent, WHITE, 0.78), sideFill: "#f1f5f9", sideSoft: mix(accent, WHITE, 0.72), sideAccent: mix(accent, BLACK, 0.3) }),
   frame: (context, pageIndex) => {
-    const band = pageIndex === 0 ? 124 : 0;
+    const band = pageIndex === 0 ? bandHeight(124, techHeader(context), 20) : 0;
     const sideWidth = 180;
     const decor: StudioElement[] = [box("rect", 0, band, sideWidth, context.height - band, solid("#f1f5f9"))];
     if (band) {
       const glow = mix(context.palette.accent, WHITE, 0.2);
       decor.unshift(
-        box("rect", 0, 0, context.width, band, linear(90, "#0f172a", "#1e293b")),
+        box("rect", 0, 0, context.width, band, linear(90, TECH_BAND, "#1e293b")),
         art("halftone", { primary: glow, secondary: glow }, context.width * 0.55, 0, context.width * 0.45, band, { opacity: 0.16 }),
         box("rect", 0, band - 4, context.width, 4, solid(glow)),
       );
@@ -379,18 +407,7 @@ const tech: CvSpec = {
       side: { x: 20, width: sideWidth - 40, top: band + 28, bottom: context.height - 36 },
     };
   },
-  header: (context, frame) => {
-    const elements: StudioElement[] = [];
-    let x = 36;
-    if (context.hasPhoto()) {
-      const size = 82;
-      elements.push(...context.photo(x, 21, size, "#1e293b", mix(context.palette.accent, WHITE, 0.2)));
-      x += size + 24;
-    }
-    const header = headerBlock(context, x, 28, context.width - x - 36, "left", { nameSize: 30, nameColor: WHITE, headlineColor: mix(context.palette.accent, WHITE, 0.35), contactColor: "#cbd5e1", upper: true, spacing: 1 });
-    elements.push(...header.elements);
-    return { elements, mainTop: frame.main.top, sideTop: frame.side?.top ?? 0 };
-  },
+  header: (context, frame) => ({ elements: techHeader(context).elements, mainTop: frame.main.top, sideTop: frame.side?.top ?? 0 }),
   side: ["skills", "languages", "certificates", "interests"],
   title: "rule",
   sideTitle: "plain",
@@ -419,6 +436,21 @@ const ats: CvSpec = {
   skillStyle: "text",
 };
 
+function executiveHeader(context: CvContext): HeaderDraw {
+  const elements: StudioElement[] = [];
+  let width = context.width - 88;
+  if (context.hasPhoto()) {
+    const size = 100;
+    elements.push(...context.photo(context.width - 44 - size, 25, size, mix(context.palette.accent, WHITE, 0.3), GOLD));
+    width -= size + 28;
+  }
+  const header = headerBlock(context, 44, 40, width, "left", { nameSize: 32, nameColor: WHITE, headlineColor: mix(GOLD, WHITE, 0.45), contactColor: WHITE, contacts: false });
+  elements.push(...header.elements);
+  const ruled = Boolean(context.profile.name.trim() || context.profile.headline.trim());
+  if (ruled) elements.push(box("rect", 44, header.bottom + 12, 56, 2, foil("gold", 0)));
+  return { elements, bottom: ruled ? header.bottom + 14 : header.bottom };
+}
+
 const executive: CvSpec = {
   id: "executive",
   accent: "#1d3461",
@@ -435,10 +467,10 @@ const executive: CvSpec = {
       sideSoft: mix(accent, WHITE, 0.76),
     }),
   frame: (context, pageIndex) => {
-    const band = pageIndex === 0 ? 150 : 0;
+    const band = pageIndex === 0 ? bandHeight(150, executiveHeader(context), 26) : 0;
     const sideWidth = 190;
     const decor: StudioElement[] = [box("rect", context.width - sideWidth, band, sideWidth, context.height - band, solid(context.palette.sideFill ?? WHITE))];
-    if (band) decor.unshift(box("rect", 0, 0, context.width, band, gradient(120, [context.palette.accent, mix(context.palette.accent, BLACK, 0.38)])), box("rect", 0, band, context.width, 3, foil("gold", 0)));
+    if (band) decor.unshift(box("rect", 0, 0, context.width, band, gradient(120, [bandFill(context), mix(bandFill(context), BLACK, 0.38)])), box("rect", 0, band, context.width, 3, foil("gold", 0)));
     else decor.unshift(box("rect", 0, 0, context.width, 3, foil("gold", 0)));
     const top = band + (band ? 32 : 40);
     return {
@@ -447,19 +479,7 @@ const executive: CvSpec = {
       side: { x: context.width - sideWidth + 22, width: sideWidth - 44, top, bottom: context.height - 44 },
     };
   },
-  header: (context, frame) => {
-    const elements: StudioElement[] = [];
-    let width = context.width - 88;
-    if (context.hasPhoto()) {
-      const size = 100;
-      elements.push(...context.photo(context.width - 44 - size, 25, size, mix(context.palette.accent, WHITE, 0.3), GOLD));
-      width -= size + 28;
-    }
-    const header = headerBlock(context, 44, 40, width, "left", { nameSize: 32, nameColor: WHITE, headlineColor: mix(GOLD, WHITE, 0.45), contactColor: WHITE, contacts: false });
-    elements.push(...header.elements);
-    if (context.profile.name.trim() || context.profile.headline.trim()) elements.push(box("rect", 44, header.bottom + 12, 56, 2, foil("gold", 0)));
-    return { elements, mainTop: frame.main.top, sideTop: frame.side?.top ?? 0 };
-  },
+  header: (context, frame) => ({ elements: executiveHeader(context).elements, mainTop: frame.main.top, sideTop: frame.side?.top ?? 0 }),
   side: ["contact", "skills", "languages", "certificates"],
   title: "underline",
   sideTitle: "plain",

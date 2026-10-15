@@ -14,7 +14,7 @@ vi.mock("./cvModel", async (original) => {
   };
 });
 
-const { useCvStore } = await import("./cvStore");
+const { flushCvSave, useCvStore } = await import("./cvStore");
 
 const name = () => useCvStore.getState().profile.name;
 const type = (value: string, merge = "field:name") => useCvStore.getState().updateProfile((profile) => ({ ...profile, name: value }), merge);
@@ -89,5 +89,30 @@ describe("cv builder history", () => {
     type("B", "other");
     vi.advanceTimersByTime(500);
     expect(useCvStore.getState().saveFailed).toBe(false);
+  });
+
+  it("writes a pending save at once when the window goes away", () => {
+    type("A");
+
+    flushCvSave();
+
+    expect(storage.writes).toBe(1);
+    vi.advanceTimersByTime(500);
+    expect(storage.writes).toBe(1);
+  });
+
+  it("writes nothing on a flush when no save is waiting", () => {
+    flushCvSave();
+
+    expect(storage.writes).toBe(0);
+  });
+
+  it("merges a dragged accent colour into one undo step", () => {
+    for (const accent of ["#111111", "#222222", "#333333", "#444444"]) useCvStore.getState().updateTheme({ accent }, "accent");
+
+    useCvStore.getState().undo();
+
+    expect(useCvStore.getState().theme.accent).toBeNull();
+    expect(useCvStore.getState().past).toHaveLength(0);
   });
 });

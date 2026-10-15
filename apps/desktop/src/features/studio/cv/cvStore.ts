@@ -32,6 +32,7 @@ export const useCvStore = create<CvStore>((set, get) => {
   const save = () => {
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(() => {
+      saveTimer = undefined;
       const saved = writeStoredCv(get().snapshot());
       if (saved === get().saveFailed) set({ saveFailed: !saved });
     }, SAVE_DELAY_MS);
@@ -78,6 +79,7 @@ export const useCvStore = create<CvStore>((set, get) => {
     },
     close: () => {
       window.clearTimeout(saveTimer);
+      saveTimer = undefined;
       writeStoredCv(get().snapshot());
       set({ active: false });
     },
@@ -99,3 +101,10 @@ export const useCvStore = create<CvStore>((set, get) => {
     snapshot: () => ({ profile: get().profile, theme: get().theme }),
   };
 });
+
+export function flushCvSave() {
+  if (saveTimer === undefined) return;
+  window.clearTimeout(saveTimer);
+  saveTimer = undefined;
+  writeStoredCv(useCvStore.getState().snapshot());
+}

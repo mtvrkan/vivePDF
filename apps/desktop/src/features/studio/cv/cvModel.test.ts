@@ -54,6 +54,13 @@ describe("cv month and year", () => {
     expect(parseMonthYear(formatMonthYear({ month: 5, year: 2022 }, "de"), "de")).toEqual({ month: 5, year: 2022 });
   });
 
+  it("reads Turkish month names typed in capitals or without Turkish letters", () => {
+    expect(parseMonthYear("MAYIS 2016", "tr")).toEqual({ month: 5, year: 2016 });
+    expect(parseMonthYear("ARALIK 2019", "en")).toEqual({ month: 12, year: 2019 });
+    expect(parseMonthYear("Mayis 2016", "tr")).toEqual({ month: 5, year: 2016 });
+    expect(parseMonthYear("EKİM 2020", "tr")).toEqual({ month: 10, year: 2020 });
+  });
+
   it("leaves free text and impossible dates alone", () => {
     expect(parseMonthYear("Summer 2019", "en")).toBeNull();
     expect(parseMonthYear("13/2019", "en")).toBeNull();

@@ -76,3 +76,43 @@ describe("month and year field", () => {
     expect(year().value).toBe("2021");
   });
 });
+
+describe("month and year field while the year is edited", () => {
+  beforeAll(async () => {
+    Element.prototype.scrollIntoView = () => undefined;
+    await ready();
+    await setLocale("en");
+  });
+
+  beforeEach(() => {
+    localStorage.clear();
+    useCvStore.setState({ loaded: false });
+    useCvStore.getState().open("en");
+  });
+
+  afterEach(() => {
+    cleanup();
+    useCvStore.getState().close();
+  });
+
+  it("keeps the digits being typed when a full year is edited", () => {
+    render(<Harness initial="2020" />);
+
+    fireEvent.change(year(), { target: { value: "202" } });
+    expect(year().value).toBe("202");
+    expect(stored).toBe("");
+
+    fireEvent.change(year(), { target: { value: "2021" } });
+    expect(stored).toBe("2021");
+    expect(year().value).toBe("2021");
+  });
+
+  it("follows a value replaced from outside, such as undo", () => {
+    const { rerender } = render(<MonthYearField label="Start" value="2020" onChange={() => undefined} />);
+
+    rerender(<MonthYearField label="Start" value={formatMonthYear({ month: 5, year: 2018 }, "en")} onChange={() => undefined} />);
+
+    expect(year().value).toBe("2018");
+    expect(month().textContent).toContain("May");
+  });
+});

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { AlertTriangle, ArrowLeft, Download, Eraser, FileJson, FileText, FileUp, FolderOpen, Palette, PenLine, Redo2, RefreshCw, Save, Sparkles, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { translatorFor } from "@/app/i18n";
 import { Button } from "@/components/shared/Button";
+import { Dialog } from "@/components/shared/Dialog";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { IconButton } from "@/components/shared/IconButton";
@@ -13,8 +15,10 @@ import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { StudioDesign } from "@/types/studio";
+import { useImagePreview } from "../design/assets";
 import { PageView } from "../design/ElementView";
 import { useStudioStore } from "../design/studioStore";
+import { useDesignSave } from "../design/useDesignSave";
 import { CvDesignPanel } from "./CvDesignPanel";
 import { CvExportDialog } from "./CvExportDialog";
 import { CvForm } from "./CvForm";
@@ -23,7 +27,7 @@ import { pickCvPdf, saveCvFile } from "./cvFiles";
 import type { CvOverflow } from "./cvLayout";
 import { cvFromJson, emptyProfile, profileHasContent, sampleProfile, type CvProfile, type CvSectionKey, type CvState } from "./cvModel";
 import { keepUnchanged, renderCv } from "./cvRender";
-import { useCvStore } from "./cvStore";
+import { flushCvSave, useCvStore } from "./cvStore";
 
 const RENDER_DELAY_MS = 180;
 const PREVIEW_PADDING = 48;
@@ -65,9 +69,13 @@ export default function CvStudio() {
   const [attempt, setAttempt] = useState(0);
   const [exporting, setExporting] = useState(false);
   const [importing, setImporting] = useState<string | null>(null);
+  const [replacing, setReplacing] = useState(false);
+  const openDesignName = useStudioStore((state) => state.design?.name ?? "");
+  const designSave = useDesignSave();
   const jsonInput = useRef<HTMLInputElement>(null);
   const preview = usePreviewWidth();
   const untitled = t("studio.cv.untitled");
+  const photoMissing = useImagePreview(profile.photo)?.status === "error";
 
   useEffect(() => {
     let live = true;
@@ -75,7 +83,7 @@ export default function CvStudio() {
       void (async () => {
         try {
           const translate = await translatorFor(theme.language);
-          const next = await renderCv(profile, theme, translate, profile.name.trim() || untitled);
+          const next = await renderCv(photoMissing ? { ...profile, photo: null, photoCrop: null } : profile, theme, translate, profile.name.trim() || untitled);
           if (!live) return;
           setDesign((previous) => keepUnchanged(next.design, previous));
           setOverflow((previous) => (previous.items === next.overflow.items && previous.sections.join() === next.overflow.sections.join() ? previous : next.overflow));
@@ -89,7 +97,16 @@ export default function CvStudio() {
       live = false;
       window.clearTimeout(timer);
     };
-  }, [profile, theme, untitled, attempt]);
+  }, [profile, theme, untitled, attempt, photoMissing]);
+
+  useEffect(() => {
+    window.addEventListener("pagehide", flushCvSave);
+    const unlisten = getCurrentWindow().onCloseRequested(flushCvSave);
+    return () => {
+      window.removeEventListener("pagehide", flushCvSave);
+      void unlisten.then((stop) => stop());
+    };
+  }, []);
 
   useEffect(() => {
     if (saveFailed) pushToast("error", t("studio.cv.saveFailed"));
@@ -131,10 +148,18 @@ export default function CvStudio() {
     pushToast("info", message, restoring(before));
   };
 
-  const editInStudio = () => {
+  const openInStudio = () => {
+    setReplacing(false);
     if (!design) return;
     useStudioStore.getState().open(design);
     close();
+  };
+
+  const editInStudio = () => {
+    if (!design) return;
+    const studio = useStudioStore.getState();
+    if (studio.design && studio.dirty) setReplacing(true);
+    else openInStudio();
   };
 
   const importPdf = async () => {
@@ -256,7 +281,7 @@ export default function CvStudio() {
             {tab === "content" ? <CvForm /> : <CvDesignPanel />}
           </div>
         </aside>
-        <div ref={preview.ref} className="min-w-0 flex-1 overflow-auto bg-muted/40" aria-label={t("studio.cv.preview")} aria-busy={!design && !failed}>
+        <div ref={preview.ref} role="region" className="min-w-0 flex-1 overflow-auto bg-muted/40" aria-label={t("studio.cv.preview")} aria-busy={!design && !failed}>
           {failed && design ? (
             <div role="alert" className="sticky top-0 z-10 m-3 flex items-center gap-2 rounded-lg border border-destructive/40 bg-card px-3 py-2 text-sm shadow-sm">
               <AlertTriangle className="size-4 shrink-0 text-destructive" aria-hidden />
@@ -314,6 +339,26 @@ export default function CvStudio() {
           )}
         </div>
       </div>
+      <Dialog
+        open={replacing}
+        onClose={() => setReplacing(false)}
+        title={t("studio.project.unsavedTitle")}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setReplacing(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button variant="ghost" onClick={openInStudio}>
+              {t("studio.project.discard")}
+            </Button>
+            <Button variant="primary" loading={designSave.saving} onClick={() => void designSave.save(false).then((saved) => saved && openInStudio())}>
+              {t("studio.project.save")}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground">{t("studio.project.unsavedBody", { name: openDesignName || t("studio.untitled") })}</p>
+      </Dialog>
       <CvExportDialog open={exporting} onClose={() => setExporting(false)} design={design} language={theme.language} />
       <CvImportDialog
         path={importing}

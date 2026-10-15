@@ -128,7 +128,7 @@ export function CvDesignPanel() {
       </section>
       <section className="space-y-3">
         <div className="flex items-end gap-2">
-          <ColorSwatch label={t("studio.cv.design.accent")} value={accent} customLabel={t("colorPicker.custom")} presets={ACCENTS} onChange={(value) => updateTheme({ accent: value.toLowerCase() })} />
+          <ColorSwatch label={t("studio.cv.design.accent")} value={accent} customLabel={t("colorPicker.custom")} presets={ACCENTS} onChange={(value) => updateTheme({ accent: value.toLowerCase() }, "accent")} />
           {theme.accent ? <IconButton icon={RotateCcw} label={t("studio.cv.design.resetAccent")} onClick={() => updateTheme({ accent: null })} /> : null}
         </div>
         <Field label={t("studio.cv.design.headingFont")}>

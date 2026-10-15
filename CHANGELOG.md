@@ -63,6 +63,14 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- CV builder: a long description written as one paragraph, a long chip list or a very tall item no longer drops itself and every section after it from the PDF — paragraphs carry on to the next page word by word, chips wrap row by row, an item taller than a whole page is the only thing reported as left out, and no empty trailing page is exported [2026-10-15]
+- CV builder: side panel titles, icons, level bars and band titles stay readable whatever accent colour is picked (a dark accent on the Modern and Infographic sidebars, a light accent on Creative, Corporate and Executive), and the Corporate, Tech and Executive top bands grow to fit a long name, headline or contact line instead of letting it spill onto the columns below [2026-10-15]
+- CV builder: a long Creative, Timeline or Designer section title no longer overlaps its first line, and the rest of an undated entry carried to the next page lines up with its first part on the Minimal, Elegant and Academic layouts [2026-10-15]
+- CV builder: Edit in Studio keeps the CV language on every text, so a CV in English opened from a Turkish interface (or the other way round) keeps its capitals (SKILLS, EĞİTİM) and line breaks [2026-10-15]
+- CV builder: a photo whose file is gone (a CV opened on another computer, or a deleted app-data folder) is left out of the preview and the export instead of making the whole export fail [2026-10-15]
+- CV builder: Edit in Studio asks to save or discard an unsaved Studio design instead of replacing it silently [2026-10-15]
+- CV builder: editing a year in a date field no longer wipes it when one digit is removed or retyped, and undo or an imported CV updates a date shown in the month and year pickers [2026-10-15]
+- CV builder: dragging in the custom accent colour picker is one undo step instead of filling the undo history, closing the window right after typing keeps the last change, Enter unlocks a password-protected PDF on import, and dates such as MAYIS 2016 or Aralik 2019 are read as months [2026-10-15]
 - Watermark removal: words restored inside tagged content keep their reading order in more files: when the structure element does not list the content, when the tag's properties come from inherited page resources or hold references, and when the page's structure entry is missing (the tag is then reopened without a content ID) [2026-10-15]
 - End-to-end tests: the presentation flows close the keep-drawings dialog after leaving a presentation with drawings, so the next flow no longer fails on it [2026-10-15]
 - Presenter view: speaker notes stay with a PDF that is renamed, moved or copied without being changed, instead of starting empty under the new name [2026-10-15]

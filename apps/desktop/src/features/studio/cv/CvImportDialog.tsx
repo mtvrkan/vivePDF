@@ -123,7 +123,17 @@ export function CvImportDialog({ path, onClose, onApply }: CvImportDialogProps) 
         ) : null}
         {phase.kind === "password" ? (
           <Field label={t("studio.cv.import.password")} hint={phase.wrong ? t("studio.cv.import.wrongPassword") : undefined}>
-            <PasswordInput value={password} onChange={(event) => setPassword(event.target.value)} aria-invalid={phase.wrong || undefined} autoFocus />
+            <PasswordInput
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter" || !password) return;
+                event.preventDefault();
+                setAttempt((value) => value + 1);
+              }}
+              aria-invalid={phase.wrong || undefined}
+              autoFocus
+            />
           </Field>
         ) : null}
         {phase.kind === "error" ? <ErrorState title={t("studio.cv.import.failed")} message={errorMessage(phase.error)} onRetry={() => setAttempt((value) => value + 1)} /> : null}

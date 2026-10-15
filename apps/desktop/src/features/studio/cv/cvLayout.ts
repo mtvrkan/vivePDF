@@ -81,11 +81,58 @@ const DOT_GAP = 3.5;
 const THIN_BAR = 2.5;
 const SEGMENT_GAP = 2.5;
 const RING_GAP = 3;
+const LEFT_BAR_INDENT = 12;
+const CHIP_GAP = 5;
 
 export function mix(from: string, to: string, amount: number): string {
   const parse = (hex: string) => [1, 3, 5].map((index) => Number.parseInt(hex.slice(index, index + 2), 16));
   const [a, b] = [parse(from), parse(to)];
   return `#${a.map((value, index) => Math.round(value + ((b[index] ?? value) - value) * amount).toString(16).padStart(2, "0")).join("")}`;
+}
+
+function luminance(hex: string): number {
+  const [red, green, blue] = [1, 3, 5].map((index) => {
+    const channel = Number.parseInt(hex.slice(index, index + 2), 16) / 255;
+    return channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+}
+
+export function contrast(first: string, second: string): number {
+  const [light, dark] = [luminance(first), luminance(second)].sort((a, b) => b - a);
+  return (light + 0.05) / (dark + 0.05);
+}
+
+const CONTRAST_STEPS = 20;
+
+export function legible(color: string, background: string, ratio: number): string {
+  if (contrast(color, background) >= ratio) return color;
+  const target = contrast("#ffffff", background) >= contrast("#000000", background) ? "#ffffff" : "#000000";
+  for (let step = 1; step <= CONTRAST_STEPS; step += 1) {
+    const next = mix(color, target, step / CONTRAST_STEPS);
+    if (contrast(next, background) >= ratio) return next;
+  }
+  return target;
+}
+
+export function onFill(fill: string, dark = "#0f172a"): string {
+  return contrast("#ffffff", fill) >= contrast(dark, fill) ? "#ffffff" : dark;
+}
+
+const TEXT_CONTRAST = 4.5;
+const MARK_CONTRAST = 3;
+
+function legiblePalette(palette: CvPalette): CvPalette {
+  const side = palette.sideFill ?? palette.page;
+  return {
+    ...palette,
+    text: legible(palette.text, palette.page, TEXT_CONTRAST),
+    muted: legible(palette.muted, palette.page, TEXT_CONTRAST),
+    accent: legible(palette.accent, palette.page, MARK_CONTRAST),
+    sideText: legible(palette.sideText, side, TEXT_CONTRAST),
+    sideMuted: legible(palette.sideMuted, side, TEXT_CONTRAST),
+    sideAccent: legible(palette.sideAccent, side, MARK_CONTRAST),
+  };
 }
 
 export class CvContext {
@@ -115,7 +162,7 @@ export class CvContext {
     this.contactIcons = spec.contactIcons ?? false;
     this.levelBar = spec.levelBar ?? "line";
     this.photoRing = spec.photoRing ?? false;
-    this.palette = spec.palette(input.theme.accent ?? spec.accent);
+    this.palette = legiblePalette(spec.palette(input.theme.accent ?? spec.accent));
     this.fonts = { heading: input.theme.headingFont ?? spec.fonts.heading, body: input.theme.bodyFont ?? spec.fonts.body };
     const size = STUDIO_PAGE_SIZES[input.theme.paper];
     this.width = size.width;
@@ -265,7 +312,7 @@ export function titleBlock(context: CvContext, tone: Tone, style: TitleStyle, la
       height,
       draw: (x, y, columnWidth) => [
         box("rect", x, y, columnWidth, height, solid(colors.accent), { radius: 3 }),
-        text(x + 9, y, columnWidth - 18, height, label, { font, size: context.size(10), bold: true, upper: true, spacing: 1.6, color: tone === "side" ? context.palette.sideFill ?? "#ffffff" : "#ffffff", valign: "middle", shrink: true }),
+        text(x + 9, y, columnWidth - 18, height, label, { font, size: context.size(10), bold: true, upper: true, spacing: 1.6, color: onFill(colors.accent, tone === "side" ? (context.palette.sideFill ?? undefined) : undefined), valign: "middle", shrink: true }),
       ],
     };
   }
@@ -278,11 +325,11 @@ export function titleBlock(context: CvContext, tone: Tone, style: TitleStyle, la
     spacing: style === "underline" || style === "leftBar" ? 0 : 1.8,
     align: style === "centered" ? "center" : "left",
   };
-  const labelHeight = context.textHeight(width, label, textStyle);
+  const labelHeight = context.textHeight(style === "leftBar" ? width - LEFT_BAR_INDENT : width, label, textStyle);
   if (style === "leftBar") {
     return {
       height: labelHeight,
-      draw: (x, y, columnWidth) => [box("rect", x, y + 1, 4, labelHeight - 2, solid(colors.accent), { radius: 2 }), context.text(x + 12, y, columnWidth - 12, label, textStyle)],
+      draw: (x, y, columnWidth) => [box("rect", x, y + 1, 4, labelHeight - 2, solid(colors.accent), { radius: 2 }), context.text(x + LEFT_BAR_INDENT, y, columnWidth - LEFT_BAR_INDENT, label, textStyle)],
     };
   }
   if (style === "underline") {
@@ -330,9 +377,35 @@ function trimmedLines(lines: string[]): string[] {
   return lines.slice(start);
 }
 
-function splittable(build: (body: string, first: boolean) => Block | null, lines: string[], first: boolean): Block | null {
+type BodyBuild = (body: string, first: boolean) => Block | null;
+
+function wordsOf(line: string): string[] {
+  return line.split(/(?<=\s)/u);
+}
+
+function splitFirstLine(build: BodyBuild, lines: string[], first: boolean, available: number): [Block, Block] | null {
+  const words = wordsOf(lines[0]);
+  let low = 1;
+  let high = words.length - 1;
+  let head: Block | null = null;
+  let best = 0;
+  while (low <= high) {
+    const middle = (low + high) >> 1;
+    const block = build(words.slice(0, middle).join("").trimEnd(), first);
+    if (block && block.height <= available) {
+      head = block;
+      best = middle;
+      low = middle + 1;
+    } else high = middle - 1;
+  }
+  if (!head) return null;
+  const rest = splittable(build, [words.slice(best).join("").trimStart(), ...lines.slice(1)], false);
+  return rest ? [head, rest] : null;
+}
+
+function splittable(build: BodyBuild, lines: string[], first: boolean): Block | null {
   const whole = build(lines.join("\n"), first);
-  if (!whole || lines.length < 2) return whole;
+  if (!whole || (lines.length < 2 && wordsOf(lines[0] ?? "").length < 2)) return whole;
   return {
     ...whole,
     split: (available) => {
@@ -343,22 +416,23 @@ function splittable(build: (body: string, first: boolean) => Block | null, lines
         const rest = splittable(build, trimmedLines(lines.slice(count)), false);
         return rest ? [head, rest] : null;
       }
-      return null;
+      return splitFirstLine(build, lines, first, available);
     },
   };
 }
 
 function entryBlock(context: CvContext, tone: Tone, style: EntryStyle, width: number, parts: EntryParts): Block | null {
   const lines = bodyLines(parts.body);
-  return splittable((body, first) => entryPart(context, tone, style, width, first ? { ...parts, body } : { title: "", subtitle: "", date: "", body }, first), lines, true);
+  const dated = parts.date.trim() !== "";
+  return splittable((body, first) => entryPart(context, tone, style, width, first ? { ...parts, body } : { title: "", subtitle: "", date: "", body }, first, dated), lines, true);
 }
 
-function entryPart(context: CvContext, tone: Tone, style: EntryStyle, width: number, parts: EntryParts, first: boolean): Block | null {
+function entryPart(context: CvContext, tone: Tone, style: EntryStyle, width: number, parts: EntryParts, first: boolean, dated: boolean): Block | null {
   const colors = context.colors(tone);
   const bodyStyle: TextStyle = { size: context.size(9), color: colors.muted, lineHeight: 1.45 };
   const subtitleStyle: TextStyle = { size: context.size(9), color: colors.accent, italic: style !== "dateLeft", bold: style === "dateLeft" };
   const titleSize = context.size(10.5);
-  if (style === "dateLeft" && width >= 260 && !first) {
+  if (style === "dateLeft" && width >= 260 && !first && dated) {
     const inner = width - DATE_COLUMN;
     const right = textBlock(context, inner, parts.body, bodyStyle);
     return right ? { height: right.height, draw: (x, y, columnWidth) => right.draw(x + DATE_COLUMN, y, columnWidth - DATE_COLUMN) } : null;
@@ -425,28 +499,38 @@ function levelTrack(style: LevelBar, x: number, y: number, width: number, height
 function chipsBlock(context: CvContext, tone: Tone, width: number, items: string[]): Block | null {
   const names = items.map((item) => item.trim()).filter(Boolean);
   if (!names.length) return null;
-  const colors = context.colors(tone);
   const size = context.size(8.5);
-  const height = size + 9;
-  const placed: Array<{ x: number; y: number; width: number; label: string }> = [];
+  const rows: Array<Array<{ x: number; width: number; label: string }>> = [[]];
   let left = 0;
-  let top = 0;
   for (const label of names) {
     const chipWidth = Math.min(width, label.length * size * 0.56 + 16);
     if (left > 0 && left + chipWidth > width) {
+      rows.push([]);
       left = 0;
-      top += height + 5;
     }
-    placed.push({ x: left, y: top, width: chipWidth, label });
-    left += chipWidth + 5;
+    rows[rows.length - 1].push({ x: left, width: chipWidth, label });
+    left += chipWidth + CHIP_GAP;
   }
+  return chipRows(context, tone, size, rows);
+}
+
+function chipRows(context: CvContext, tone: Tone, size: number, rows: Array<Array<{ x: number; width: number; label: string }>>): Block {
+  const colors = context.colors(tone);
+  const height = size + 9;
+  const pitch = height + CHIP_GAP;
   return {
-    height: top + height,
+    height: rows.length * pitch - CHIP_GAP,
     draw: (x, y) =>
-      placed.flatMap((chip) => [
-        box("rect", x + chip.x, y + chip.y, chip.width, height, solid(colors.soft), { radius: height / 2 }),
-        text(x + chip.x + 4, y + chip.y, chip.width - 8, height, chip.label, { font: context.fonts.body, size, color: colors.text, align: "center", valign: "middle", shrink: true }),
-      ]),
+      rows.flatMap((row, index) =>
+        row.flatMap((chip) => [
+          box("rect", x + chip.x, y + index * pitch, chip.width, height, solid(colors.soft), { radius: height / 2 }),
+          text(x + chip.x + 4, y + index * pitch, chip.width - 8, height, chip.label, { font: context.fonts.body, size, color: colors.text, align: "center", valign: "middle", shrink: true }),
+        ]),
+      ),
+    split: (available) => {
+      const fit = Math.floor((available + CHIP_GAP) / pitch);
+      return fit >= 1 && fit < rows.length ? [chipRows(context, tone, size, rows.slice(0, fit)), chipRows(context, tone, size, rows.slice(fit))] : null;
+    },
   };
 }
 
@@ -487,6 +571,7 @@ function contactBlocks(context: CvContext, tone: Tone, width: number): Block[] {
 }
 
 type Section = { key: CvSectionKey | "contact"; title: string; items: Block[]; gap: number };
+type Placement = "placed" | "skipped" | "full";
 
 function sectionsFor(context: CvContext, spec: CvSpec, tone: Tone, width: number): Section[] {
   const { profile, labels } = context;
@@ -570,6 +655,7 @@ function sectionsFor(context: CvContext, spec: CvSpec, tone: Tone, width: number
 class Flow {
   readonly pages: StudioElement[][] = [];
   private readonly frames: Frame[] = [];
+  private readonly filled = new Set<number>([0]);
   private readonly cursor: Record<Tone, { page: number; y: number }>;
 
   constructor(
@@ -596,28 +682,39 @@ class Flow {
     return tone === "side" ? frame.side : frame.main;
   }
 
-  place(tone: Tone, block: Block, keep = 0): boolean {
+  place(tone: Tone, block: Block, keep = 0): Placement {
     const cursor = this.cursor[tone];
     const column = this.column(tone, cursor.page);
-    if (!column) return false;
+    if (!column) return "full";
     if (cursor.y + block.height + keep > column.bottom) {
       const available = column.bottom - cursor.y;
       const parts = available >= MIN_SPLIT_SPACE || cursor.y <= column.top + 1 ? block.split?.(available) : null;
       if (parts) {
-        this.pages[cursor.page].push(...parts[0].draw(column.x, cursor.y, column.width));
+        this.draw(cursor.page, parts[0].draw(column.x, cursor.y, column.width));
         cursor.y += parts[0].height;
-        if (!this.nextPage(tone)) return false;
+        if (!this.nextPage(tone)) return "full";
         return this.place(tone, parts[1], keep);
       }
       if (cursor.y > column.top + 1) {
-        if (!this.nextPage(tone)) return false;
+        if (!this.nextPage(tone)) return "full";
         return this.place(tone, block, keep);
       }
-      if (block.height > column.bottom - column.top) return false;
+      if (block.height > column.bottom - column.top) return "skipped";
     }
-    this.pages[cursor.page].push(...block.draw(column.x, cursor.y, column.width));
+    this.draw(cursor.page, block.draw(column.x, cursor.y, column.width));
     cursor.y += block.height;
-    return true;
+    return "placed";
+  }
+
+  private draw(page: number, elements: StudioElement[]) {
+    this.pages[page].push(...elements);
+    if (elements.length) this.filled.add(page);
+  }
+
+  usedPages(): StudioElement[][] {
+    let count = this.pages.length;
+    while (count > 1 && !this.filled.has(count - 1)) count -= 1;
+    return this.pages.slice(0, count);
   }
 
   private nextPage(tone: Tone): boolean {
@@ -673,31 +770,42 @@ export function composeCvReport(spec: CvSpec, input: CvInput): CvComposed {
     const column = flow.column(tone, 0);
     const columnHeight = column ? column.bottom - column.top : 0;
     const sections = sectionsFor(context, spec, tone, width);
-    for (const [sectionIndex, section] of sections.entries()) {
+    let full = false;
+    for (const section of sections) {
+      if (full) {
+        drop(section, section.items.length);
+        continue;
+      }
       const title = titleBlock(context, tone, titleStyle, section.title, width);
-      if (!flow.place(tone, title, keepWithTitle(section.items[0], columnHeight) + context.space(8))) {
-        for (const rest of sections.slice(sectionIndex)) drop(rest, rest.items.length);
-        break;
+      const heading = flow.place(tone, title, keepWithTitle(section.items[0], columnHeight) + context.space(8));
+      if (heading !== "placed") {
+        drop(section, section.items.length);
+        full = heading === "full";
+        continue;
       }
       flow.advance(tone, context.space(8));
-      let placed = section.items.length;
       for (const [index, item] of section.items.entries()) {
-        if (!flow.place(tone, item)) {
-          placed = index;
-          break;
+        if (full) {
+          drop(section, 1);
+          continue;
+        }
+        const placement = flow.place(tone, item);
+        if (placement !== "placed") {
+          drop(section, 1);
+          full = placement === "full";
+          continue;
         }
         if (index < section.items.length - 1) flow.advance(tone, section.gap);
-      }
-      if (placed < section.items.length) {
-        drop(section, section.items.length - placed);
-        for (const rest of sections.slice(sectionIndex + 1)) drop(rest, rest.items.length);
-        break;
       }
       flow.advance(tone, sectionGap);
     }
   }
   const rtl = localeDirection(context.theme.language) === "rtl";
-  const pages = flow.pages.map((elements) => pageOf({ width: context.width, height: context.height }, solid(context.palette.page), rtl ? elements.map((element) => mirrored(element, context.width)) : elements));
+  const language = context.theme.language;
+  const pages = flow.usedPages().map((elements) => {
+    const tagged = elements.map((element) => (element.kind === "text" && element.language === null ? { ...element, language } : element));
+    return pageOf({ width: context.width, height: context.height }, solid(context.palette.page), rtl ? tagged.map((element) => mirrored(element, context.width)) : tagged);
+  });
   return { design: design(input.name, [context.palette.accent, context.palette.text], pages), overflow };
 }
 

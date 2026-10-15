@@ -1,4 +1,4 @@
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { CalendarDays, TextCursorInput } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
@@ -14,20 +14,30 @@ export function MonthYearField({ label, value, onChange, disabled, placeholder }
   const labelId = useId();
   const parsed = parseMonthYear(value, language);
   const [typing, setTyping] = useState(() => value.trim() !== "" && parsed === null);
-  const [yearDraft, setYearDraft] = useState(parsed ? String(parsed.year) : "");
   const shownYear = parsed ? String(parsed.year) : "";
-  useEffect(() => setYearDraft(shownYear), [shownYear]);
   const shownMonth = parsed?.month ?? null;
+  const [yearDraft, setYearDraft] = useState(shownYear);
   const [month, setMonth] = useState<number | null>(shownMonth);
+  const emitted = useRef(value);
   useEffect(() => {
-    if (shownYear) setMonth(shownMonth);
-  }, [shownMonth, shownYear]);
+    if (value === emitted.current) return;
+    emitted.current = value;
+    const next = parseMonthYear(value, language);
+    setYearDraft(next ? String(next.year) : "");
+    setMonth(next?.month ?? null);
+    setTyping(value.trim() !== "" && next === null);
+  }, [value, language]);
   const months = monthNames(language, "long");
+
+  const emit = (next: string) => {
+    emitted.current = next;
+    onChange(next);
+  };
 
   const write = (nextMonth: number | null, yearText: string) => {
     const year = Number(yearText);
-    if (/^\d{4}$/.test(yearText) && year >= 1900 && year <= 2100) onChange(formatMonthYear({ month: nextMonth, year }, language));
-    else if (value) onChange("");
+    if (/^\d{4}$/.test(yearText) && year >= 1900 && year <= 2100) emit(formatMonthYear({ month: nextMonth, year }, language));
+    else if (value) emit("");
   };
   const incomplete = (month !== null || yearDraft !== "") && !shownYear;
 
@@ -38,7 +48,7 @@ export function MonthYearField({ label, value, onChange, disabled, placeholder }
       </span>
       {typing ? (
         <div className="flex items-center gap-1">
-          <TextInput aria-label={label} value={value} maxLength={40} disabled={disabled} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} />
+          <TextInput aria-label={label} value={value} maxLength={40} disabled={disabled} placeholder={placeholder} onChange={(event) => emit(event.target.value)} />
           <IconButton icon={CalendarDays} disabled={disabled} label={t("studio.cv.dates.pick")} onClick={() => setTyping(false)} />
         </div>
       ) : (

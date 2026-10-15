@@ -22,7 +22,7 @@ export function monthNames(language: string, style: "short" | "long"): string[] 
 }
 
 function plain(value: string): string {
-  return value.normalize("NFKD").replace(/\p{M}/gu, "").replace(/\.$/, "").toLocaleLowerCase();
+  return value.normalize("NFKD").replace(/\p{M}/gu, "").replace(/\.$/, "").toLowerCase().replace(/ı/g, "i");
 }
 
 function validYear(year: number): boolean {
