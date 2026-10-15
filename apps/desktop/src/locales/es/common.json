@@ -6509,17 +6509,20 @@
       "network": {
         "documents": "Los documentos, contraseñas y certificados nunca salen del equipo.",
         "updates": "Comprobar actualizaciones solo envía metadatos de versión, y solo cuando «comprobar automáticamente» está activado o hace clic en Comprobar (Ajustes › Actualizaciones).",
-        "voices": "Los modelos de voz y los paquetes de idiomas OCR se descargan de huggingface.co o github.com solo cuando hace clic en Descargar.",
+        "downloads": "Los modelos de voz, los paquetes de idiomas OCR y de traducción, las fuentes de la biblioteca y LibreOffice se descargan de huggingface.co, github.com o los servidores espejo de The Document Foundation solo cuando hace clic en Descargar o Instalar.",
         "contributors": "La lista de colaboradores se obtiene de api.github.com solo cuando pulsa Actualizar en la pestaña Créditos.",
         "webSearch": "La búsqueda web y Google Lens abren su navegador con el texto o la imagen seleccionados.",
-        "timestamp": "La única excepción: si introduce la dirección de un servidor de sellado de tiempo al firmar, se envía un resumen de la firma a ese servidor.",
+        "webPage": "Al convertir una página web en PDF solo se carga la dirección que introduce.",
+        "citations": "Buscar o comprobar un DOI solo envía ese DOI a doi.org y api.crossref.org.",
+        "breach": "La comprobación de contraseñas filtradas se queda en este equipo salvo que active la comprobación en línea; entonces solo se envían a api.pwnedpasswords.com los 5 primeros caracteres del hash SHA-1 de la contraseña, nunca la contraseña.",
+        "timestamp": "Si introduce la dirección de un servidor de sellado de tiempo al firmar, se envía a ese servidor un resumen de la firma.",
         "reports": "Los informes de errores nunca se envían automáticamente: se copian, se guardan en un archivo que usted elige o se abren como un problema de GitHub prellenado en su navegador."
       },
       "storedTitle": "Almacenado en este equipo",
       "stored": {
         "recent": {
           "title": "Archivos recientes",
-          "description": "Rutas de los últimos 12 archivos que abrió."
+          "description": "Rutas de los archivos que abrió recientemente (tantos como elija en los ajustes) y de los que fijó."
         },
         "session": {
           "title": "Instantánea de sesión",
@@ -6535,7 +6538,7 @@
         },
         "backups": {
           "title": "Copias de seguridad",
-          "description": "Guardar desde el visor deja una copia .bak del original junto a él."
+          "description": "Al guardar desde el visor se deja una copia .bak del original a su lado mientras las copias de seguridad estén activadas."
         },
         "searchIndex": {
           "title": "Índice de búsqueda",
@@ -6553,17 +6556,19 @@
           "title": "Firmas guardadas",
           "description": "Imágenes de firmas dibujadas que guardó para reutilizar al firmar."
         },
-        "voices": {
-          "title": "Voces y paquetes OCR descargados",
-          "description": "Modelos de voz y paquetes de idiomas OCR que descargó."
+        "downloads": {
+          "title": "Paquetes descargados",
+          "description": "Modelos de voz, paquetes de idiomas OCR y de traducción, fuentes y LibreOffice que descargó."
         },
         "logs": {
           "title": "Archivo de registro local",
-          "description": "Solo eventos técnicos, nunca contenido de documentos."
+          "description": "Eventos técnicos; las líneas de error pueden incluir rutas de archivos, con su carpeta de usuario mostrada como ~. Nunca el contenido de los documentos."
         }
       },
       "openData": "Ajustes › Datos",
-      "clear": "Todo esto se puede eliminar en Ajustes › Datos."
+      "openTools": "Ajustes › Herramientas",
+      "openGeneral": "Ajustes › Inicio y privacidad",
+      "clear": "Casi todo se puede eliminar en Ajustes › Datos; los paquetes descargados, en su propia sección de ajustes, y las copias de seguridad y el archivo de registro, desde sus carpetas."
     },
     "shortcuts": {
       "groups": {
@@ -6578,6 +6583,7 @@
       "items": {
         "presentationEnter": "Entrar / salir del modo presentación",
         "presentationStart": "Presentar desde la primera página / desde la página actual",
+        "presenterView": "Iniciar la vista del presentador desde la primera página / desde la página actual",
         "presentationLaser": "Puntero láser",
         "presentationPen": "Lápiz",
         "presentationHighlighter": "Resaltador",
@@ -6599,20 +6605,13 @@
         "closeDocument": "Cerrar el documento activo",
         "closeDialog": "Cerrar diálogo",
         "search": "Buscar en el documento",
+        "searchNext": "Resultado de búsqueda siguiente / anterior",
+        "copyAsCode": "Copiar el texto seleccionado como código",
         "print": "Imprimir",
         "zoom": "Acercar / alejar",
         "zoomModes": "Tamaño real / ajustar ancho / ajustar página",
         "panDrag": "Arrastrar para desplazar la página",
         "pages": "Página anterior / siguiente",
-        "selectAll": "Seleccionar todo",
-        "selectNone": "Borrar selección",
-        "deletePages": "Eliminar páginas seleccionadas",
-        "rotate": "Girar a la derecha / izquierda",
-        "duplicate": "Duplicar páginas seleccionadas",
-        "undoRedo": "Deshacer / rehacer",
-        "apply": "Aplicar cambios",
-        "thumbnailSize": "Tamaño de miniatura",
-        "move": "Mover selección",
         "fullscreen": "Modo inmersivo (pantalla completa)",
         "firstLast": "Primera / última página",
         "navigateHistory": "Atrás / adelante entre las páginas a las que saltó",
@@ -6627,6 +6626,8 @@
         "editSave": "Guardar / guardar como",
         "editStyle": "Negrita / cursiva",
         "editDuplicate": "Duplicar el cuadro seleccionado",
+        "editClipboard": "Copiar, cortar o pegar el cuadro seleccionado",
+        "editCycle": "Seleccionar el cuadro siguiente / anterior de la página",
         "editNudge": "Mover el cuadro seleccionado (Mayús: 10 pt)",
         "clipboard": "PDF con lo que copió"
       },
@@ -6784,6 +6785,7 @@
     "includeDiagnostics": "Incluir información de diagnóstico",
     "diagnosticsPreview": "Qué se incluirá",
     "loadingDiagnostics": "Cargando diagnóstico…",
+    "diagnosticsFailed": "No se pudieron cargar los datos de diagnóstico, así que el informe no los incluirá.",
     "openGithub": "Abrir en GitHub",
     "copyToClipboard": "Copiar al portapapeles",
     "saveToFile": "Guardar informe en un archivo",

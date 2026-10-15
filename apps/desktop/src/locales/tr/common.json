@@ -6510,17 +6510,20 @@
       "network": {
         "documents": "Belgeler, parolalar ve sertifikalar bu bilgisayardan asla çıkmaz.",
         "updates": "Güncelleme denetimi yalnızca sürüm bilgisini gönderir; bu da yalnızca “otomatik denetle” açıkken ya da Denetle’ye tıkladığınızda gerçekleşir (Ayarlar › Güncellemeler).",
-        "voices": "Ses modelleri ve OCR dil paketleri yalnızca İndir’e tıkladığınızda huggingface.co veya github.com adresinden indirilir.",
+        "downloads": "Ses modelleri, OCR ve çeviri dil paketleri, kitaplık yazı tipleri ve LibreOffice yalnızca İndir’e veya Kur’a tıkladığınızda huggingface.co, github.com ya da The Document Foundation yansılarından indirilir.",
         "contributors": "Katkıda bulunanlar listesi yalnızca Emeği geçenler sekmesinde Yenile’ye bastığınızda api.github.com adresinden alınır.",
         "webSearch": "Web’de arama ve Google Lens, seçili metin veya görseli tarayıcınızda açar.",
-        "timestamp": "Tek istisna: imzalarken siz bir zaman damgası sunucusu adresi girerseniz o sunucuya imza özeti gönderilir.",
+        "webPage": "Bir web sayfasını PDF’e dönüştürürken yalnızca girdiğiniz adres yüklenir.",
+        "citations": "Bir DOI’yi ararken veya denetlerken doi.org ve api.crossref.org adreslerine yalnızca o DOI gönderilir.",
+        "breach": "Parola sızıntı denetimi, çevrimiçi denetimi açmadığınız sürece bu bilgisayarda kalır; açarsanız api.pwnedpasswords.com adresine parolanın kendisi değil, yalnızca SHA-1 özetinin ilk 5 karakteri gönderilir.",
+        "timestamp": "İmzalarken bir zaman damgası sunucusu adresi girerseniz o sunucuya imza özeti gönderilir.",
         "reports": "Hata bildirimleri asla otomatik gönderilmez — kopyalanır, seçtiğiniz bir dosyaya kaydedilir ya da tarayıcınızda önceden doldurulmuş bir GitHub sorunu olarak açılır."
       },
       "storedTitle": "Bilgisayarda saklananlar",
       "stored": {
         "recent": {
           "title": "Son dosyalar",
-          "description": "Açtığınız son 12 dosyanın yolu."
+          "description": "Son açtığınız dosyaların yolları (ayarlarda seçtiğiniz sayı kadar) ve sabitlediğiniz dosyalar."
         },
         "session": {
           "title": "Oturum anlık görüntüsü",
@@ -6536,7 +6539,7 @@
         },
         "backups": {
           "title": "Yedekler",
-          "description": "Görüntüleyiciden kaydederken orijinal dosyanın yanına .bak kopyası bırakılır."
+          "description": "Yedek tutma açıkken görüntüleyiciden kaydettiğinizde orijinal dosyanın yanına .bak kopyası bırakılır."
         },
         "searchIndex": {
           "title": "Arama dizini",
@@ -6554,17 +6557,19 @@
           "title": "Kayıtlı imzalar",
           "description": "İmzalarken yeniden kullanmak üzere kaydettiğiniz elle çizilmiş imza görselleri."
         },
-        "voices": {
-          "title": "İndirilen sesler ve OCR paketleri",
-          "description": "İndirdiğiniz ses modelleri ve OCR dil paketleri."
+        "downloads": {
+          "title": "İndirilen paketler",
+          "description": "İndirdiğiniz ses modelleri, OCR ve çeviri dil paketleri, yazı tipleri ve LibreOffice."
         },
         "logs": {
           "title": "Yerel günlük dosyası",
-          "description": "Yalnızca teknik olaylar — belge içeriği asla."
+          "description": "Teknik olaylar; hata satırlarında dosya yolları geçebilir, kullanıcı klasörünüz ~ olarak görünür. Belge içeriği asla."
         }
       },
       "openData": "Ayarlar › Veriler",
-      "clear": "Hepsi Ayarlar › Veriler bölümünden silinebilir."
+      "openTools": "Ayarlar › Araçlar",
+      "openGeneral": "Ayarlar › Başlangıç ve gizlilik",
+      "clear": "Çoğu Ayarlar › Veriler bölümünden silinebilir; indirilen paketler kendi ayar bölümlerinden, yedekler ve günlük dosyası ise kendi klasörlerinden silinir."
     },
     "shortcuts": {
       "groups": {
@@ -6579,6 +6584,7 @@
       "items": {
         "presentationEnter": "Sunum moduna gir / çık",
         "presentationStart": "Sunumu ilk sayfadan / bulunduğun sayfadan başlat",
+        "presenterView": "Sunucu görünümünü ilk sayfadan / geçerli sayfadan başlat",
         "presentationLaser": "Lazer işaretçi",
         "presentationPen": "Kalem",
         "presentationHighlighter": "Fosforlu kalem",
@@ -6600,20 +6606,13 @@
         "closeDocument": "Etkin belgeyi kapat",
         "closeDialog": "İletişim kutusunu kapat",
         "search": "Belgede ara",
+        "searchNext": "Sonraki / önceki arama sonucu",
+        "copyAsCode": "Seçili metni kod olarak kopyala",
         "print": "Yazdır",
         "zoom": "Yakınlaştır / uzaklaştır",
         "zoomModes": "Gerçek boyut / genişliğe sığdır / sayfaya sığdır",
         "panDrag": "Sayfayı sürükleyerek kaydır",
         "pages": "Önceki / sonraki sayfa",
-        "selectAll": "Tümünü seç",
-        "selectNone": "Seçimi kaldır",
-        "deletePages": "Seçili sayfaları sil",
-        "rotate": "Sağa / sola döndür",
-        "duplicate": "Seçili sayfaları çoğalt",
-        "undoRedo": "Geri al / yinele",
-        "apply": "Değişiklikleri uygula",
-        "thumbnailSize": "Küçük resim boyutu",
-        "move": "Seçimi taşı",
         "fullscreen": "Sinema modu (tam ekran)",
         "firstLast": "İlk / son sayfa",
         "navigateHistory": "Atladığınız sayfalar arasında geri / ileri",
@@ -6628,6 +6627,8 @@
         "editSave": "Kaydet / farklı kaydet",
         "editStyle": "Kalın / yatık",
         "editDuplicate": "Seçili kutuyu çoğalt",
+        "editClipboard": "Seçili kutuyu kopyala, kes veya yapıştır",
+        "editCycle": "Sayfadaki sonraki / önceki kutuyu seç",
         "editNudge": "Seçili kutuyu taşı (Shift: 10 pt)",
         "clipboard": "Kopyaladığınızdan PDF"
       },
@@ -6785,6 +6786,7 @@
     "includeDiagnostics": "Tanılama bilgilerini ekle",
     "diagnosticsPreview": "Neler dahil edilecek",
     "loadingDiagnostics": "Tanılama bilgileri yükleniyor…",
+    "diagnosticsFailed": "Tanılama bilgileri yüklenemedi; rapor bunlar olmadan hazırlanacak.",
     "openGithub": "GitHub’da aç",
     "copyToClipboard": "Panoya kopyala",
     "saveToFile": "Raporu dosyaya kaydet",

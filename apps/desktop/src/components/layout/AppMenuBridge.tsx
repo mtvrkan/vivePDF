@@ -10,7 +10,7 @@ import { isMac } from "@/shared/lib/platform";
 import { isMainWindow } from "@/shared/lib/windowRole";
 import { useReportStore } from "@/shared/store/reportStore";
 import { useUiStore } from "@/shared/store/uiStore";
-import { useUpdateStore } from "@/shared/store/updateStore";
+import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
 
 function pressShortcut(key: string, shiftKey: boolean): boolean {
   const target = document.activeElement ?? document.body;
@@ -69,11 +69,8 @@ export function AppMenuBridge() {
         if (!handled && command.key === "w" && !command.shiftKey) void getCurrentWindow().close();
       } else if (command.name === "reportBug") useReportStore.getState().openDialog({ category: "bug" });
       else if (command.name === "suggestFeature") useReportStore.getState().openDialog({ category: "idea" });
-      else if (command.name === "openLogDir") void invoke("open_log_dir");
-      else if (command.name === "checkUpdates") {
-        void navigate("/settings?section=updates");
-        void useUpdateStore.getState().check(true);
-      }
+      else if (command.name === "openLogDir") void openLogFolder();
+      else if (command.name === "checkUpdates") checkUpdatesNow(navigate);
     });
     return () => {
       void unlisten.then((stop) => stop()).catch(() => undefined);

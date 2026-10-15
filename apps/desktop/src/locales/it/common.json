@@ -6509,17 +6509,20 @@
       "network": {
         "documents": "Documenti, password e certificati non lasciano mai il computer.",
         "updates": "Il controllo degli aggiornamenti invia solo i metadati della versione, e solo quando «controlla automaticamente» è attivo oppure fai clic su Controlla (Impostazioni › Aggiornamenti).",
-        "voices": "I modelli vocali e i pacchetti lingua OCR vengono scaricati da huggingface.co o github.com solo quando fai clic su Scarica.",
+        "downloads": "Modelli vocali, pacchetti lingua OCR e di traduzione, font della libreria e LibreOffice vengono scaricati da huggingface.co, github.com o dai mirror di The Document Foundation solo quando fai clic su Scarica o Installa.",
         "contributors": "L’elenco dei contributori viene recuperato da api.github.com solo quando premi Aggiorna nella scheda Crediti.",
         "webSearch": "La ricerca sul web e Google Lens aprono il browser con il testo o l’immagine selezionati.",
-        "timestamp": "L’unica eccezione: se inserisci l’indirizzo di un server di marca temporale durante la firma, un digest della firma viene inviato a quel server.",
+        "webPage": "Convertire una pagina web in PDF carica solo l’indirizzo che inserisci.",
+        "citations": "Cercare o verificare un DOI invia solo quel DOI a doi.org e api.crossref.org.",
+        "breach": "Il controllo delle password trapelate resta su questo computer finché non attivi il controllo online; in quel caso ad api.pwnedpasswords.com vanno solo i primi 5 caratteri dell’hash SHA-1 della password, mai la password.",
+        "timestamp": "Se inserisci l’indirizzo di un server di marca temporale durante la firma, a quel server viene inviato un hash della firma.",
         "reports": "Le segnalazioni di bug non vengono mai inviate automaticamente: vengono copiate, salvate in un file a tua scelta oppure aperte come problema GitHub precompilato nel browser."
       },
       "storedTitle": "Memorizzato su questo computer",
       "stored": {
         "recent": {
           "title": "File recenti",
-          "description": "Percorsi degli ultimi 12 file aperti."
+          "description": "Percorsi dei file aperti di recente (quanti ne scegli nelle impostazioni) e di quelli fissati."
         },
         "session": {
           "title": "Istantanea sessione",
@@ -6535,7 +6538,7 @@
         },
         "backups": {
           "title": "Backup",
-          "description": "Il salvataggio dal visualizzatore lascia una copia .bak dell’originale accanto ad esso."
+          "description": "Salvando dal visualizzatore resta una copia .bak dell’originale accanto ad esso finché i backup sono attivi."
         },
         "searchIndex": {
           "title": "Indice di ricerca",
@@ -6553,17 +6556,19 @@
           "title": "Firme salvate",
           "description": "Immagini di firme disegnate salvate per essere riutilizzate durante la firma."
         },
-        "voices": {
-          "title": "Voci e pacchetti OCR scaricati",
-          "description": "Modelli vocali e pacchetti lingua OCR scaricati."
+        "downloads": {
+          "title": "Pacchetti scaricati",
+          "description": "Modelli vocali, pacchetti lingua OCR e di traduzione, font e LibreOffice che hai scaricato."
         },
         "logs": {
           "title": "File di registro locale",
-          "description": "Solo eventi tecnici, mai il contenuto dei documenti."
+          "description": "Eventi tecnici; le righe di errore possono contenere percorsi di file, con la tua cartella utente mostrata come ~. Mai il contenuto dei documenti."
         }
       },
       "openData": "Impostazioni › Dati",
-      "clear": "Tutto questo può essere rimosso in Impostazioni › Dati."
+      "openTools": "Impostazioni › Strumenti",
+      "openGeneral": "Impostazioni › Avvio e privacy",
+      "clear": "Quasi tutto si può rimuovere in Impostazioni › Dati; i pacchetti scaricati nella loro sezione delle impostazioni, i backup e il file di log dalle loro cartelle."
     },
     "shortcuts": {
       "groups": {
@@ -6578,6 +6583,7 @@
       "items": {
         "presentationEnter": "Entra / esci dalla modalità presentazione",
         "presentationStart": "Presenta dalla prima pagina / dalla pagina corrente",
+        "presenterView": "Avvia la vista relatore dalla prima pagina / dalla pagina corrente",
         "presentationLaser": "Puntatore laser",
         "presentationPen": "Penna",
         "presentationHighlighter": "Evidenziatore",
@@ -6599,20 +6605,13 @@
         "closeDocument": "Chiudi documento attivo",
         "closeDialog": "Chiudi finestra di dialogo",
         "search": "Cerca nel documento",
+        "searchNext": "Risultato di ricerca successivo / precedente",
+        "copyAsCode": "Copia il testo selezionato come codice",
         "print": "Stampa",
         "zoom": "Aumenta / riduci zoom",
         "zoomModes": "Dimensione reale / adatta larghezza / adatta pagina",
         "panDrag": "Trascina per scorrere la pagina",
         "pages": "Pagina precedente / successiva",
-        "selectAll": "Seleziona tutto",
-        "selectNone": "Deseleziona tutto",
-        "deletePages": "Elimina pagine selezionate",
-        "rotate": "Ruota a destra / sinistra",
-        "duplicate": "Duplica pagine selezionate",
-        "undoRedo": "Annulla / ripristina",
-        "apply": "Applica modifiche",
-        "thumbnailSize": "Dimensione miniature",
-        "move": "Sposta selezione",
         "fullscreen": "Modalità immersiva (schermo intero)",
         "firstLast": "Prima / ultima pagina",
         "navigateHistory": "Indietro / avanti tra le pagine raggiunte",
@@ -6627,6 +6626,8 @@
         "editSave": "Salva / salva con nome",
         "editStyle": "Grassetto / corsivo",
         "editDuplicate": "Duplica la casella selezionata",
+        "editClipboard": "Copia, taglia o incolla il riquadro selezionato",
+        "editCycle": "Seleziona il riquadro successivo / precedente della pagina",
         "editNudge": "Sposta la casella selezionata (Maiusc: 10 pt)",
         "clipboard": "PDF da ciò che hai copiato"
       },
@@ -6784,6 +6785,7 @@
     "includeDiagnostics": "Includi informazioni diagnostiche",
     "diagnosticsPreview": "Cosa verrà incluso",
     "loadingDiagnostics": "Caricamento diagnostica…",
+    "diagnosticsFailed": "Impossibile caricare le informazioni diagnostiche, quindi il rapporto non le includerà.",
     "openGithub": "Apri su GitHub",
     "copyToClipboard": "Copia negli appunti",
     "saveToFile": "Salva segnalazione su file",

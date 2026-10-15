@@ -72,4 +72,51 @@ describe("report dialog", () => {
 
     await waitFor(() => expect(lastToast()?.kind).toBe("error"));
   });
+
+  it("previews every log line the report will carry, not only the last few", async () => {
+    const logTail = Array.from({ length: 60 }, (_, index) => `entry ${index + 1}`).join("\n");
+    tauri.invoke.mockResolvedValue({ ...diagnostics, logTail });
+    useReportStore.setState({ diagnostics: { ...diagnostics, logTail } });
+    render(<ReportDialog />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Copy to clipboard" }));
+
+    await waitFor(() => expect(writeText).toHaveBeenCalled());
+    const preview = document.querySelector("details pre")?.textContent ?? "";
+    expect(preview).toContain("entry 1\n");
+    expect(writeText.mock.calls[0][0]).toContain("entry 1\n");
+  });
+
+  it("keeps the GitHub link short enough to open by dropping log lines first", async () => {
+    const logTail = Array.from({ length: 200 }, (_, index) => `ğüşıöç ${index} ${"ç".repeat(40)}`).join("\n");
+    tauri.invoke.mockResolvedValue({ ...diagnostics, logTail });
+    useReportStore.setState({ diagnostics: { ...diagnostics, logTail }, description: "Çıktı bozuk geliyor" });
+    render(<ReportDialog />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Open on GitHub" }));
+
+    await waitFor(() => expect(tauri.openUrl).toHaveBeenCalledTimes(1));
+    const url = tauri.openUrl.mock.calls[0][0] as string;
+    expect(url.length).toBeLessThanOrEqual(7500);
+    expect(decodeURIComponent(url)).toContain("Çıktı bozuk geliyor");
+    expect(decodeURIComponent(url)).toContain("App version: 0.2.0");
+  });
+
+  it("says when diagnostics could not be loaded and loads them again on retry", async () => {
+    useReportStore.setState({ diagnostics: null, diagnosticsFailed: false, loadingDiagnostics: false });
+    let attempts = 0;
+    tauri.invoke.mockImplementation((command: string) => {
+      if (command !== "diagnostics_info") return Promise.resolve(undefined);
+      attempts += 1;
+      return attempts === 1 ? Promise.reject(new Error("no log")) : Promise.resolve(diagnostics);
+    });
+    render(<ReportDialog />);
+    fireEvent.click(screen.getByText("What will be included"));
+
+    await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("Diagnostic details couldn't be loaded"));
+    fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+
+    await waitFor(() => expect(document.querySelector("details pre")?.textContent ?? "").toContain("line one"));
+    expect(attempts).toBe(2);
+  });
 });

@@ -6509,17 +6509,20 @@
       "network": {
         "documents": "Dokumente, Passwörter und Zertifikate verlassen den Computer nie.",
         "updates": "Die Suche nach Updates sendet nur Versionsmetadaten – und nur, wenn „Beim Start automatisch prüfen“ aktiviert ist oder Sie auf „Nach Updates suchen“ klicken (Einstellungen › Updates).",
-        "voices": "Sprachmodelle und OCR-Sprachpakete werden nur beim Klicken auf Herunterladen von huggingface.co oder github.com geladen.",
+        "downloads": "Sprachmodelle, OCR- und Übersetzungs-Sprachpakete, Schriften aus der Bibliothek und LibreOffice werden nur beim Klicken auf Herunterladen oder Installieren von huggingface.co, github.com oder den Spiegelservern der Document Foundation geladen.",
         "contributors": "Die Liste der Mitwirkenden wird nur abgerufen, wenn Sie im Tab „Mitwirkende“ auf Aktualisieren klicken, und zwar von api.github.com.",
         "webSearch": "Websuche und Google Lens öffnen Ihren Browser mit dem ausgewählten Text oder Bild.",
-        "timestamp": "Die eine Ausnahme: Wenn Sie beim Signieren eine Zeitstempelserver-Adresse angeben, wird ein Signatur-Hash an diesen Server gesendet.",
+        "webPage": "Beim Umwandeln einer Webseite in ein PDF wird nur die eingegebene Adresse geladen.",
+        "citations": "Beim Nachschlagen oder Prüfen einer DOI wird nur diese DOI an doi.org und api.crossref.org gesendet.",
+        "breach": "Die Prüfung auf geleakte Passwörter bleibt auf diesem Computer, solange Sie die Online-Prüfung nicht einschalten; dann gehen nur die ersten 5 Zeichen des SHA-1-Hashs an api.pwnedpasswords.com, nie das Passwort selbst.",
+        "timestamp": "Wenn Sie beim Signieren eine Zeitstempelserver-Adresse angeben, wird ein Signatur-Hash an diesen Server gesendet.",
         "reports": "Fehlerberichte werden nie automatisch gesendet — sie werden kopiert, in einer von Ihnen gewählten Datei gespeichert oder als vorausgefülltes GitHub-Issue in Ihrem Browser geöffnet."
       },
       "storedTitle": "Auf diesem Computer gespeichert",
       "stored": {
         "recent": {
           "title": "Zuletzt verwendete Dateien",
-          "description": "Pfade der letzten 12 geöffneten Dateien."
+          "description": "Pfade der zuletzt geöffneten Dateien (so viele, wie Sie in den Einstellungen festlegen) und der angehefteten."
         },
         "session": {
           "title": "Sitzungsschnappschuss",
@@ -6535,7 +6538,7 @@
         },
         "backups": {
           "title": "Sicherungen",
-          "description": "Beim Speichern aus dem Betrachter wird eine .bak-Kopie des Originals daneben abgelegt."
+          "description": "Beim Speichern aus der Ansicht bleibt neben dem Original eine .bak-Kopie, solange Sicherungen eingeschaltet sind."
         },
         "searchIndex": {
           "title": "Suchindex",
@@ -6553,17 +6556,19 @@
           "title": "Gespeicherte Signaturen",
           "description": "Handgezeichnete Signaturbilder, die Sie zur Wiederverwendung beim Unterschreiben gespeichert haben."
         },
-        "voices": {
-          "title": "Heruntergeladene Stimmen und OCR-Pakete",
-          "description": "Von Ihnen heruntergeladene Sprachmodelle und OCR-Sprachpakete."
+        "downloads": {
+          "title": "Heruntergeladene Pakete",
+          "description": "Von Ihnen geladene Sprachmodelle, OCR- und Übersetzungs-Sprachpakete, Schriften und LibreOffice."
         },
         "logs": {
           "title": "Lokale Protokolldatei",
-          "description": "Nur technische Ereignisse — niemals Dokumentinhalte."
+          "description": "Technische Ereignisse; Fehlerzeilen können Dateipfade enthalten, Ihr Benutzerordner erscheint als ~. Nie Dokumentinhalte."
         }
       },
       "openData": "Einstellungen › Daten",
-      "clear": "Alles davon kann unter Einstellungen › Daten entfernt werden."
+      "openTools": "Einstellungen › Werkzeuge",
+      "openGeneral": "Einstellungen › Start und Datenschutz",
+      "clear": "Das meiste lässt sich unter Einstellungen › Daten entfernen; heruntergeladene Pakete in ihren eigenen Einstellungsbereichen, Sicherungen und die Protokolldatei in ihren Ordnern."
     },
     "shortcuts": {
       "groups": {
@@ -6578,6 +6583,7 @@
       "items": {
         "presentationEnter": "Präsentationsmodus starten / beenden",
         "presentationStart": "Präsentation ab der ersten / ab der aktuellen Seite starten",
+        "presenterView": "Referentenansicht ab der ersten / ab der aktuellen Seite starten",
         "presentationLaser": "Laserpointer",
         "presentationPen": "Stift",
         "presentationHighlighter": "Textmarker",
@@ -6599,20 +6605,13 @@
         "closeDocument": "Aktives Dokument schließen",
         "closeDialog": "Dialog schließen",
         "search": "Im Dokument suchen",
+        "searchNext": "Nächster / vorheriger Suchtreffer",
+        "copyAsCode": "Markierten Text als Code kopieren",
         "print": "Drucken",
         "zoom": "Vergrößern / verkleinern",
         "zoomModes": "Originalgröße / Breite anpassen / Seite anpassen",
         "panDrag": "Seite durch Ziehen verschieben",
         "pages": "Vorherige / nächste Seite",
-        "selectAll": "Alle auswählen",
-        "selectNone": "Auswahl aufheben",
-        "deletePages": "Ausgewählte Seiten löschen",
-        "rotate": "Nach rechts / links drehen",
-        "duplicate": "Ausgewählte Seiten duplizieren",
-        "undoRedo": "Rückgängig / Wiederholen",
-        "apply": "Änderungen anwenden",
-        "thumbnailSize": "Miniaturansichtsgröße",
-        "move": "Auswahl verschieben",
         "fullscreen": "Immersiver Modus (Vollbild)",
         "firstLast": "Erste / letzte Seite",
         "navigateHistory": "Zurück / vor zwischen angesprungenen Seiten",
@@ -6627,6 +6626,8 @@
         "editSave": "Speichern / speichern unter",
         "editStyle": "Fett / kursiv",
         "editDuplicate": "Markiertes Feld duplizieren",
+        "editClipboard": "Ausgewähltes Feld kopieren, ausschneiden oder einfügen",
+        "editCycle": "Nächstes / vorheriges Feld auf der Seite auswählen",
         "editNudge": "Markiertes Feld verschieben (Umschalt: 10 pt)",
         "clipboard": "PDF aus dem Kopierten"
       },
@@ -6784,6 +6785,7 @@
     "includeDiagnostics": "Diagnoseinformationen beifügen",
     "diagnosticsPreview": "Was enthalten sein wird",
     "loadingDiagnostics": "Diagnosedaten werden geladen…",
+    "diagnosticsFailed": "Die Diagnosedaten konnten nicht geladen werden; der Bericht enthält sie daher nicht.",
     "openGithub": "Auf GitHub öffnen",
     "copyToClipboard": "In die Zwischenablage kopieren",
     "saveToFile": "Bericht als Datei speichern",

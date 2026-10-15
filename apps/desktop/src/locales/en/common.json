@@ -6510,17 +6510,20 @@
       "network": {
         "documents": "Documents, passwords and certificates never leave this computer.",
         "updates": "Checking for updates only sends version metadata, and only when “check automatically” is on or you click Check (Settings › Updates).",
-        "voices": "Voice models and OCR language packs download from huggingface.co or github.com only when you click Download.",
+        "downloads": "Voice models, OCR and translation language packs, library fonts and LibreOffice download from huggingface.co, github.com or The Document Foundation's mirrors only when you click Download or Install.",
         "contributors": "The contributors list is fetched from api.github.com only when you press Refresh on the Credits tab.",
         "webSearch": "Web search and Google Lens open your browser with the selected text or picture.",
-        "timestamp": "The one exception: if you enter a timestamp server address while signing, a signature digest is sent to that server.",
+        "webPage": "Turning a web page into a PDF loads only the address you enter.",
+        "citations": "Looking up or checking a DOI sends only that DOI to doi.org and api.crossref.org.",
+        "breach": "The leaked-password check stays on this computer unless you turn on the online check; then only the first 5 characters of the password's SHA-1 hash go to api.pwnedpasswords.com, never the password itself.",
+        "timestamp": "If you enter a timestamp server address while signing, a digest of the signature is sent to that server.",
         "reports": "Bug reports are never sent automatically — they are copied, saved to a file you choose, or opened as a prefilled GitHub issue in your browser."
       },
       "storedTitle": "Stored on this computer",
       "stored": {
         "recent": {
           "title": "Recent files",
-          "description": "Paths of the last 12 files you opened."
+          "description": "Paths of the files you opened recently (as many as you choose in settings) and of the ones you pinned."
         },
         "session": {
           "title": "Session snapshot",
@@ -6536,7 +6539,7 @@
         },
         "backups": {
           "title": "Backups",
-          "description": "Saving from the viewer leaves a .bak copy of the original next to it."
+          "description": "Saving from the viewer leaves a .bak copy of the original next to it while backups are turned on."
         },
         "searchIndex": {
           "title": "Search index",
@@ -6554,17 +6557,19 @@
           "title": "Saved signatures",
           "description": "Drawn signature images you saved for reuse when signing."
         },
-        "voices": {
-          "title": "Downloaded voices and OCR packs",
-          "description": "Voice models and OCR language packs you downloaded."
+        "downloads": {
+          "title": "Downloaded packs",
+          "description": "Voice models, OCR and translation language packs, fonts and LibreOffice that you downloaded."
         },
         "logs": {
           "title": "Local log file",
-          "description": "Technical events only — never document contents."
+          "description": "Technical events; error lines may include file paths, with your home folder shown as ~. Never document contents."
         }
       },
       "openData": "Settings › Data",
-      "clear": "All of it can be removed under Settings › Data."
+      "openTools": "Settings › Tools",
+      "openGeneral": "Settings › Startup and privacy",
+      "clear": "Most of it can be removed under Settings › Data; downloaded packs in their own settings sections, and backups and the log file from their folders."
     },
     "shortcuts": {
       "groups": {
@@ -6579,6 +6584,7 @@
       "items": {
         "presentationEnter": "Enter / exit presentation mode",
         "presentationStart": "Start presenting from the first page / from the current page",
+        "presenterView": "Start presenter view from the first page / from the current page",
         "presentationLaser": "Laser pointer",
         "presentationPen": "Pen",
         "presentationHighlighter": "Highlighter",
@@ -6600,20 +6606,13 @@
         "closeDocument": "Close active document",
         "closeDialog": "Close dialog",
         "search": "Search in document",
+        "searchNext": "Next / previous search result",
+        "copyAsCode": "Copy the selected text as code",
         "print": "Print",
         "zoom": "Zoom in / out",
         "zoomModes": "Actual size / fit width / fit page",
         "panDrag": "Drag to scroll the page",
         "pages": "Previous / next page",
-        "selectAll": "Select all",
-        "selectNone": "Clear selection",
-        "deletePages": "Delete selected pages",
-        "rotate": "Rotate right / left",
-        "duplicate": "Duplicate selected pages",
-        "undoRedo": "Undo / redo",
-        "apply": "Apply changes",
-        "thumbnailSize": "Thumbnail size",
-        "move": "Move selection",
         "fullscreen": "Immersive mode (full screen)",
         "firstLast": "First / last page",
         "navigateHistory": "Back / forward along pages you jumped between",
@@ -6628,6 +6627,8 @@
         "editSave": "Save in place / save as",
         "editStyle": "Bold / italic",
         "editDuplicate": "Duplicate the selected box",
+        "editClipboard": "Copy, cut or paste the selected box",
+        "editCycle": "Select the next / previous box on the page",
         "editNudge": "Move the selected box (Shift: 10 pt)",
         "clipboard": "PDF from what you copied"
       },
@@ -6785,6 +6786,7 @@
     "includeDiagnostics": "Include diagnostic information",
     "diagnosticsPreview": "What will be included",
     "loadingDiagnostics": "Loading diagnostics…",
+    "diagnosticsFailed": "Diagnostic details couldn't be loaded, so the report won't include them.",
     "openGithub": "Open on GitHub",
     "copyToClipboard": "Copy to clipboard",
     "saveToFile": "Save report to file",

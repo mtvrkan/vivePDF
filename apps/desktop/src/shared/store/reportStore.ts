@@ -20,6 +20,7 @@ type ReportState = {
   includeDiagnostics: boolean;
   diagnostics: DiagnosticsInfo | null;
   loadingDiagnostics: boolean;
+  diagnosticsFailed: boolean;
   openDialog: (prefill?: { category?: ReportCategory; description?: string }) => void;
   close: () => void;
   setCategory: (category: ReportCategory) => void;
@@ -35,6 +36,7 @@ export const useReportStore = create<ReportState>((set, get) => ({
   includeDiagnostics: false,
   diagnostics: null,
   loadingDiagnostics: false,
+  diagnosticsFailed: false,
   openDialog: (prefill) =>
     set({
       open: true,
@@ -44,18 +46,17 @@ export const useReportStore = create<ReportState>((set, get) => ({
   close: () => set({ open: false }),
   setCategory: (category) => set({ category }),
   setDescription: (description) => set({ description }),
-  setIncludeDiagnostics: (value) => {
-    set({ includeDiagnostics: value });
-    if (value && get().diagnostics === null) void get().loadDiagnostics();
-  },
+  setIncludeDiagnostics: (value) => set({ includeDiagnostics: value }),
   loadDiagnostics: async () => {
-    set({ loadingDiagnostics: true });
+    if (get().loadingDiagnostics) return;
+    set({ loadingDiagnostics: true, diagnosticsFailed: false });
     try {
-      const diagnostics = await invoke<DiagnosticsInfo>("diagnostics_info");
+      const diagnostics = await invoke<DiagnosticsInfo | null>("diagnostics_info");
+      if (!diagnostics || typeof diagnostics.logTail !== "string") throw new Error("no diagnostics");
       set({ diagnostics, loadingDiagnostics: false });
     } catch (error) {
       logger.error("report", `failed to load diagnostics: ${String(error)}`);
-      set({ loadingDiagnostics: false });
+      set({ loadingDiagnostics: false, diagnosticsFailed: true });
     }
   },
 }));

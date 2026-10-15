@@ -7,6 +7,7 @@ import { Checkbox, Field, SelectInput, SliderField, TextInput } from "@/componen
 import { basenameOf } from "@/shared/lib/paths";
 import type { OrganizerSource, PageSize, PaperPattern, PaperPreset, PaperStyle } from "@/types";
 import { useOrganizerStore } from "./organizerStore";
+import { ORGANIZER_SHORTCUTS } from "./organizerShortcuts";
 import { PaperPreview } from "./PaperPreview";
 import { DEFAULT_PAPER_COLOR, DEFAULT_SPACING, PAPER_SPACING, PAPER_STYLES } from "./paperPattern";
 import { parseRanges, useInsertSources, type PdfSourceLoad } from "./useInsertSources";
@@ -198,42 +199,14 @@ export function InsertPdfDialog({ path, replacing = false, onClose, onInsert }: 
   );
 }
 
-const SHORTCUTS = [
-  ["Ctrl+Z / Ctrl+Y", "undoRedo"],
-  ["Delete", "delete"],
-  ["R / Shift+R", "rotate"],
-  ["Ctrl+D", "duplicate"],
-  ["Ctrl+C / Ctrl+X / Ctrl+V", "clipboard"],
-  ["S", "cut"],
-  ["Shift+S", "clearCuts"],
-  ["B", "insertBlank"],
-  ["Ctrl+E", "extract"],
-  ["Ctrl+P", "print"],
-  ["Ctrl+A / Esc", "selectAllNone"],
-  ["Ctrl+I", "invertSelection"],
-  ["Ctrl+G", "range"],
-  ["{doubleClick} / Space / Enter", "preview"],
-  ["Enter / Shift+← →", "previewSelect"],
-  ["Shift+F10", "contextMenu"],
-  ["Shift+{click} / Ctrl+{click}", "multiSelect"],
-  ["{drag}", "marquee"],
-  ["← → ↑ ↓ (+Shift)", "navigate"],
-  ["Alt+← → ↑ ↓ / Alt+Home / Alt+End", "nudge"],
-  ["M", "move"],
-  ["Home / End", "firstLast"],
-  ["Ctrl+{wheel} / Ctrl +/−", "zoom"],
-  ["Ctrl+Enter", "apply"],
-  ["?", "help"],
-] as const;
-
 export function ShortcutsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { t } = useTranslation();
   return (
     <Dialog open={open} title={t("tools.pages.shortcuts")} onClose={onClose}>
       <dl>
-        {SHORTCUTS.map(([keys, labelKey]) => (
+        {ORGANIZER_SHORTCUTS.map(({ keys, labelKey }) => (
           <div key={keys} className="flex h-row items-center justify-between gap-4 border-b text-sm last:border-b-0">
-            <dt className="text-muted-foreground">{t(`tools.pages.shortcut.${labelKey}`)}</dt>
+            <dt className="text-muted-foreground">{t(labelKey)}</dt>
             <dd className="font-mono text-xs">{shortcutLabel(keys).replace(/\{(\w+)\}/g, (_, gesture: string) => t(`tools.pages.gesture.${gesture}`))}</dd>
           </div>
         ))}

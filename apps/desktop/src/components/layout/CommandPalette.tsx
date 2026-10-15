@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { invoke } from "@tauri-apps/api/core";
 import { CornerDownLeft, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
@@ -30,7 +29,7 @@ import { useReportStore } from "@/shared/store/reportStore";
 import { useSearchRequestStore } from "@/shared/store/searchRequestStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
-import { useUpdateStore } from "@/shared/store/updateStore";
+import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
 import { useViewerJumpStore } from "@/shared/store/viewerJumpStore";
 import { readSession } from "@/shared/session/sessionStore";
 import { useRestoreSession } from "@/shared/session/useRestoreSession";
@@ -194,10 +193,10 @@ export function CommandPalette() {
         },
         theme,
         setTheme,
-        checkUpdates: () => void useUpdateStore.getState().check(true),
+        checkUpdates: () => checkUpdatesNow(navigate),
         openReportBug: () => useReportStore.getState().openDialog({ category: "bug" }),
         openSuggestFeature: () => useReportStore.getState().openDialog({ category: "idea" }),
-        openLogDir: () => void invoke("open_log_dir"),
+        openLogDir: () => void openLogFolder(),
         hasActiveDocument: activeDocument !== null,
         openPrint: () => {
           void navigate("/viewer");

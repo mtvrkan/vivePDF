@@ -6509,17 +6509,20 @@
       "network": {
         "documents": "Les documents, mots de passe et certificats ne quittent jamais l’ordinateur.",
         "updates": "La recherche de mises à jour n’envoie que des métadonnées de version, et seulement lorsque « Vérifier automatiquement au démarrage » est activé ou que vous cliquez sur « Vérifier les mises à jour » (Paramètres › Mises à jour).",
-        "voices": "Les modèles de voix et les packs de langue OCR ne sont téléchargés depuis huggingface.co ou github.com que lorsque vous cliquez sur Télécharger.",
+        "downloads": "Les modèles de voix, les packs de langue OCR et de traduction, les polices de la bibliothèque et LibreOffice ne sont téléchargés depuis huggingface.co, github.com ou les miroirs de The Document Foundation que lorsque vous cliquez sur Télécharger ou Installer.",
         "contributors": "La liste des contributeurs n’est récupérée depuis api.github.com que lorsque vous appuyez sur Actualiser dans l’onglet Crédits.",
         "webSearch": "La recherche web et Google Lens ouvrent votre navigateur avec le texte ou l’image sélectionné.",
-        "timestamp": "La seule exception : si vous saisissez une adresse de serveur d’horodatage lors de la signature, un résumé de signature est envoyé à ce serveur.",
+        "webPage": "Convertir une page web en PDF ne charge que l’adresse que vous saisissez.",
+        "citations": "Rechercher ou vérifier un DOI n’envoie que ce DOI à doi.org et api.crossref.org.",
+        "breach": "La vérification des mots de passe divulgués reste sur cet ordinateur tant que vous n’activez pas la vérification en ligne ; seuls les 5 premiers caractères de l’empreinte SHA-1 du mot de passe sont alors envoyés à api.pwnedpasswords.com, jamais le mot de passe.",
+        "timestamp": "Si vous saisissez l’adresse d’un serveur d’horodatage lors de la signature, une empreinte de la signature est envoyée à ce serveur.",
         "reports": "Les rapports de bug ne sont jamais envoyés automatiquement — ils sont copiés, enregistrés dans un fichier de votre choix, ou ouverts comme un ticket GitHub prérempli dans votre navigateur."
       },
       "storedTitle": "Stocké sur cet ordinateur",
       "stored": {
         "recent": {
           "title": "Fichiers récents",
-          "description": "Chemins des 12 derniers fichiers ouverts."
+          "description": "Chemins des fichiers ouverts récemment (autant que le nombre choisi dans les paramètres) et de ceux que vous avez épinglés."
         },
         "session": {
           "title": "Instantané de session",
@@ -6535,7 +6538,7 @@
         },
         "backups": {
           "title": "Sauvegardes",
-          "description": "Enregistrer depuis la visionneuse laisse une copie .bak de l’original à côté."
+          "description": "Enregistrer depuis la visionneuse laisse une copie .bak de l’original à côté tant que les sauvegardes sont activées."
         },
         "searchIndex": {
           "title": "Index de recherche",
@@ -6553,17 +6556,19 @@
           "title": "Signatures enregistrées",
           "description": "Images de signature dessinées que vous avez enregistrées pour les réutiliser lors de la signature."
         },
-        "voices": {
-          "title": "Voix et packs OCR téléchargés",
-          "description": "Modèles de voix et packs de langue OCR que vous avez téléchargés."
+        "downloads": {
+          "title": "Packs téléchargés",
+          "description": "Modèles de voix, packs de langue OCR et de traduction, polices et LibreOffice que vous avez téléchargés."
         },
         "logs": {
           "title": "Fichier journal local",
-          "description": "Uniquement des événements techniques — jamais le contenu des documents."
+          "description": "Événements techniques ; les lignes d’erreur peuvent contenir des chemins de fichiers, votre dossier personnel apparaissant comme ~. Jamais le contenu des documents."
         }
       },
       "openData": "Paramètres › Données",
-      "clear": "Tout peut être supprimé dans Paramètres › Données."
+      "openTools": "Paramètres › Outils",
+      "openGeneral": "Paramètres › Démarrage et confidentialité",
+      "clear": "L’essentiel peut être supprimé dans Paramètres › Données ; les packs téléchargés dans leur propre section des paramètres, les sauvegardes et le fichier journal depuis leurs dossiers."
     },
     "shortcuts": {
       "groups": {
@@ -6578,6 +6583,7 @@
       "items": {
         "presentationEnter": "Entrer / quitter le mode présentation",
         "presentationStart": "Présenter depuis la première page / depuis la page actuelle",
+        "presenterView": "Lancer le mode présentateur depuis la première page / depuis la page actuelle",
         "presentationLaser": "Pointeur laser",
         "presentationPen": "Stylo",
         "presentationHighlighter": "Surligneur",
@@ -6599,20 +6605,13 @@
         "closeDocument": "Fermer le document actif",
         "closeDialog": "Fermer la boîte de dialogue",
         "search": "Rechercher dans le document",
+        "searchNext": "Résultat de recherche suivant / précédent",
+        "copyAsCode": "Copier le texte sélectionné comme code",
         "print": "Imprimer",
         "zoom": "Zoom avant / arrière",
         "zoomModes": "Taille réelle / ajuster la largeur / ajuster la page",
         "panDrag": "Faire défiler en glissant",
         "pages": "Page précédente / suivante",
-        "selectAll": "Tout sélectionner",
-        "selectNone": "Effacer la sélection",
-        "deletePages": "Supprimer les pages sélectionnées",
-        "rotate": "Pivoter à droite / gauche",
-        "duplicate": "Dupliquer les pages sélectionnées",
-        "undoRedo": "Annuler / rétablir",
-        "apply": "Appliquer les modifications",
-        "thumbnailSize": "Taille des miniatures",
-        "move": "Déplacer la sélection",
         "fullscreen": "Mode immersif (plein écran)",
         "firstLast": "Première / dernière page",
         "navigateHistory": "Retour / avance entre les pages atteintes",
@@ -6627,6 +6626,8 @@
         "editSave": "Enregistrer / enregistrer sous",
         "editStyle": "Gras / italique",
         "editDuplicate": "Dupliquer la boîte sélectionnée",
+        "editClipboard": "Copier, couper ou coller la zone sélectionnée",
+        "editCycle": "Sélectionner la zone suivante / précédente de la page",
         "editNudge": "Déplacer la boîte sélectionnée (Maj : 10 pt)",
         "clipboard": "PDF à partir de ce que vous avez copié"
       },
@@ -6784,6 +6785,7 @@
     "includeDiagnostics": "Inclure les informations de diagnostic",
     "diagnosticsPreview": "Ce qui sera inclus",
     "loadingDiagnostics": "Chargement des diagnostics…",
+    "diagnosticsFailed": "Impossible de charger les informations de diagnostic ; le rapport ne les contiendra pas.",
     "openGithub": "Ouvrir sur GitHub",
     "copyToClipboard": "Copier dans le presse-papiers",
     "saveToFile": "Enregistrer le rapport dans un fichier",

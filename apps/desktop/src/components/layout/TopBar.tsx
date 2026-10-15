@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 import { ArrowDownToLine, Bug, Check, CircleHelp, Copy, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Minus, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Square, Sun, Wrench, X } from "lucide-react";
-import { Link, NavLink, useLocation } from "react-router";
+import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTranslation } from "react-i18next";
 import { LOCALES } from "@/app/locales";
@@ -13,6 +12,7 @@ import { Logo } from "@/components/shared/Logo";
 import { ToolBrowser } from "@/features/home/ToolBrowser";
 import { useOpenPdf } from "@/features/viewer/useOpenPdf";
 import { cn } from "@/shared/lib/cn";
+import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
 import { useActiveOpenDocument } from "@/shared/store/documentStore";
 import { useOpenStore } from "@/shared/store/openStore";
 import { usePaletteStore } from "@/shared/store/paletteStore";
@@ -233,6 +233,7 @@ function ToolsMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; 
 function HelpMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; onOpenChange: (id: string | null) => void; iconOnly: boolean }) {
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
   const close = () => onOpenChange(null);
 
   return (
@@ -242,9 +243,9 @@ function HelpMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; o
       <MenuSeparator />
       <MenuLink icon={Bug} label={t("about.reportBug")} onClick={() => useReportStore.getState().openDialog({ category: "bug" })} onSelect={close} />
       <MenuLink icon={Lightbulb} label={t("about.suggestFeature")} onClick={() => useReportStore.getState().openDialog({ category: "idea" })} onSelect={close} />
-      <MenuLink icon={FolderOpen} label={t("app.openLogDir")} onClick={() => void invoke("open_log_dir")} onSelect={close} />
+      <MenuLink icon={FolderOpen} label={t("app.openLogDir")} onClick={() => void openLogFolder()} onSelect={close} />
       <MenuSeparator />
-      <MenuLink icon={RefreshCw} label={t("about.actions.checkUpdates")} route="/settings?section=updates" onSelect={close} />
+      <MenuLink icon={RefreshCw} label={t("about.actions.checkUpdates")} onClick={() => checkUpdatesNow(navigate)} onSelect={close} />
       <MenuLink icon={Info} label={t("nav.about")} route="/about" onSelect={close} />
     </HeaderMenu>
   );

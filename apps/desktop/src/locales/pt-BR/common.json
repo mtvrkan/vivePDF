@@ -6509,17 +6509,20 @@
       "network": {
         "documents": "Documentos, senhas e certificados nunca saem do computador.",
         "updates": "Verificar atualizações só envia metadados de versão, e somente quando “verificar automaticamente” estiver ativado ou você clicar em Verificar (Configurações › Atualizações).",
-        "voices": "Modelos de voz e pacotes de idioma OCR são baixados de huggingface.co ou github.com somente quando você clica em Baixar.",
+        "downloads": "Modelos de voz, pacotes de idioma OCR e de tradução, fontes da biblioteca e o LibreOffice são baixados de huggingface.co, github.com ou dos espelhos da The Document Foundation somente quando você clica em Baixar ou Instalar.",
         "contributors": "A lista de colaboradores é obtida de api.github.com somente quando você pressiona Atualizar na aba Créditos.",
         "webSearch": "A busca na web e o Google Lens abrem seu navegador com o texto ou a imagem selecionados.",
-        "timestamp": "A única exceção: se você inserir um endereço de servidor de carimbo de tempo ao assinar, um hash da assinatura é enviado a esse servidor.",
+        "webPage": "Converter uma página da web em PDF carrega apenas o endereço que você digitar.",
+        "citations": "Buscar ou verificar um DOI envia apenas esse DOI para doi.org e api.crossref.org.",
+        "breach": "A verificação de senhas vazadas fica neste computador, a menos que você ative a verificação on-line; nesse caso, só os 5 primeiros caracteres do hash SHA-1 da senha vão para api.pwnedpasswords.com, nunca a senha.",
+        "timestamp": "Se você informar o endereço de um servidor de carimbo de tempo ao assinar, um resumo da assinatura é enviado a esse servidor.",
         "reports": "Os relatórios de bugs nunca são enviados automaticamente — eles são copiados, salvos em um arquivo de sua escolha ou abertos como um problema pré-preenchido do GitHub no seu navegador."
       },
       "storedTitle": "Armazenado neste computador",
       "stored": {
         "recent": {
           "title": "Arquivos recentes",
-          "description": "Caminhos dos últimos 12 arquivos que você abriu."
+          "description": "Caminhos dos arquivos abertos recentemente (quantos você escolher nas configurações) e dos que você fixou."
         },
         "session": {
           "title": "Snapshot da sessão",
@@ -6535,7 +6538,7 @@
         },
         "backups": {
           "title": "Backups",
-          "description": "Salvar a partir do visualizador deixa uma cópia .bak do original ao lado dele."
+          "description": "Ao salvar pelo visualizador, uma cópia .bak do original fica ao lado dele enquanto os backups estiverem ativados."
         },
         "searchIndex": {
           "title": "Índice de busca",
@@ -6553,17 +6556,19 @@
           "title": "Assinaturas salvas",
           "description": "Imagens de assinaturas desenhadas que você salvou para reutilizar ao assinar."
         },
-        "voices": {
-          "title": "Vozes e pacotes OCR baixados",
-          "description": "Modelos de voz e pacotes de idioma OCR que você baixou."
+        "downloads": {
+          "title": "Pacotes baixados",
+          "description": "Modelos de voz, pacotes de idioma OCR e de tradução, fontes e o LibreOffice que você baixou."
         },
         "logs": {
           "title": "Arquivo de log local",
-          "description": "Somente eventos técnicos — nunca o conteúdo dos documentos."
+          "description": "Eventos técnicos; linhas de erro podem conter caminhos de arquivos, com sua pasta de usuário exibida como ~. Nunca o conteúdo dos documentos."
         }
       },
       "openData": "Configurações › Dados",
-      "clear": "Tudo isso pode ser removido em Configurações › Dados."
+      "openTools": "Configurações › Ferramentas",
+      "openGeneral": "Configurações › Inicialização e privacidade",
+      "clear": "Quase tudo pode ser removido em Configurações › Dados; pacotes baixados na própria seção de configurações, e backups e o arquivo de log nas suas pastas."
     },
     "shortcuts": {
       "groups": {
@@ -6578,6 +6583,7 @@
       "items": {
         "presentationEnter": "Entrar / sair do modo de apresentação",
         "presentationStart": "Apresentar a partir da primeira página / da página atual",
+        "presenterView": "Iniciar o modo do apresentador na primeira página / na página atual",
         "presentationLaser": "Apontador laser",
         "presentationPen": "Caneta",
         "presentationHighlighter": "Marca-texto",
@@ -6599,20 +6605,13 @@
         "closeDocument": "Fechar documento ativo",
         "closeDialog": "Fechar diálogo",
         "search": "Buscar no documento",
+        "searchNext": "Resultado de busca seguinte / anterior",
+        "copyAsCode": "Copiar o texto selecionado como código",
         "print": "Imprimir",
         "zoom": "Aumentar / diminuir zoom",
         "zoomModes": "Tamanho real / ajustar largura / ajustar página",
         "panDrag": "Arrastar para rolar a página",
         "pages": "Página anterior / próxima",
-        "selectAll": "Selecionar tudo",
-        "selectNone": "Limpar seleção",
-        "deletePages": "Excluir páginas selecionadas",
-        "rotate": "Girar à direita / esquerda",
-        "duplicate": "Duplicar páginas selecionadas",
-        "undoRedo": "Desfazer / refazer",
-        "apply": "Aplicar alterações",
-        "thumbnailSize": "Tamanho da miniatura",
-        "move": "Mover seleção",
         "fullscreen": "Modo imersivo (tela cheia)",
         "firstLast": "Primeira / última página",
         "navigateHistory": "Voltar / avançar entre as páginas visitadas",
@@ -6627,6 +6626,8 @@
         "editSave": "Salvar / salvar como",
         "editStyle": "Negrito / itálico",
         "editDuplicate": "Duplicar a caixa selecionada",
+        "editClipboard": "Copiar, recortar ou colar a caixa selecionada",
+        "editCycle": "Selecionar a caixa seguinte / anterior da página",
         "editNudge": "Mover a caixa selecionada (Shift: 10 pt)",
         "clipboard": "PDF com o que você copiou"
       },
@@ -6784,6 +6785,7 @@
     "includeDiagnostics": "Incluir informações de diagnóstico",
     "diagnosticsPreview": "O que será incluído",
     "loadingDiagnostics": "Carregando diagnóstico…",
+    "diagnosticsFailed": "Não foi possível carregar os dados de diagnóstico, então o relatório não os incluirá.",
     "openGithub": "Abrir no GitHub",
     "copyToClipboard": "Copiar para a área de transferência",
     "saveToFile": "Salvar relatório em arquivo",

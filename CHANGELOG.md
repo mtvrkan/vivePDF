@@ -126,6 +126,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Tests: end-to-end specs no longer inherit the previous spec's saved session, home layout or collections, and opening a right-click submenu retries the pointer move once before failing [2026-10-13]
 - Viewer: a page number typed right after opening a file is no longer lost when the computer is busy; the viewer keeps the page in view while the first layout settles and lets go as soon as you scroll or click [2026-10-13]
 - Tests: the Studio end-to-end template search accepts both invoice templates now that a modern invoice exists [2026-10-13]
+- Help menu: Check for updates in the Help menu, on the About page and in the command palette now goes to Settings › Updates and starts a check (the menu and the About button only opened the page), and Open log folder says when the folder cannot be opened instead of doing nothing [2026-10-15]
+- Shortcuts: the About list now shows all 25 page organizer shortcuts (it listed 9) plus next/previous search result, copy as code, presenter view and copying, pasting and stepping through boxes in the editor [2026-10-15]
+- Bug reports: the preview shows every log line the report carries (it showed 20 of up to 200), diagnostics reload each time the dialog opens and say so when they cannot be read, the report adds the engine, LibreOffice and OCR versions, and a long report drops log lines instead of producing a GitHub link too long to open [2026-10-15]
+- Privacy: the About privacy page now lists the leaked-password check, DOI lookups, web page conversion and every download (translation packs, fonts, LibreOffice), says log error lines can hold file paths, and each stored item links to where it can actually be removed [2026-10-15]
 
 ### Removed
 - Fallback font downloads: every viewer fallback font ships with the app, so the "font missing — download" message, the font download list in Settings › Tools and the three `system.fallback_fonts*` engine calls are gone; copies left by older versions are still cleaned up on start, and the Studio font library keeps downloading on request [2026-10-14]
@@ -148,6 +152,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Saving: vivePDF refuses to write programs, scripts and shortcuts (.exe, .bat, .ps1, .lnk, .sh, .desktop and similar, also when hidden behind trailing dots or Windows data streams), shell start-up files, and anything into start-up, launch agent or SSH folders, whether the save comes from the viewer, a text export or a tool's output, so a compromised page script cannot plant something that runs at the next sign-in [2026-10-13]
 - Dependencies: Mermaid now uses KaTeX 0.18.11 and the build tools use source-map-js 1.2.2, closing two known advisories [2026-10-13]
 - Dependencies: the engine now uses multidict 6.9.1 (pulled in by the signing libraries), closing CVE-2026-104874 [2026-10-15]
+- Logs and bug reports: the home folder is now hidden in either slash form, copied diagnostics no longer show the user name in the log path, and a user name with letters such as İ no longer breaks this masking [2026-10-15]
 
 ## [0.2.0] - 2026-10-09
 ### Added

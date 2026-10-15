@@ -57,8 +57,8 @@ fn case_insensitive_replace(haystack: &str, needle: &str, replacement: &str) -> 
     if needle.is_empty() {
         return haystack.to_string();
     }
-    let haystack_lower = haystack.to_lowercase();
-    let needle_lower = needle.to_lowercase();
+    let haystack_lower = haystack.to_ascii_lowercase();
+    let needle_lower = needle.to_ascii_lowercase();
     let mut result = String::with_capacity(haystack.len());
     let mut last_end = 0;
     let mut search_start = 0;
@@ -81,7 +81,12 @@ fn home_dir() -> Option<String> {
 
 fn redact_home(text: &str, home: Option<&str>) -> String {
     match home {
-        Some(home) if !home.is_empty() => case_insensitive_replace(text, home, "~"),
+        Some(home) if !home.is_empty() => {
+            let forward = home.replace('\\', "/");
+            let backward = home.replace('/', "\\");
+            let text = case_insensitive_replace(text, &forward, "~");
+            case_insensitive_replace(&text, &backward, "~")
+        }
         _ => text.to_string(),
     }
 }
@@ -251,7 +256,7 @@ pub async fn diagnostics_info(app: tauri::AppHandle) -> Result<DiagnosticsInfo, 
             os,
             arch: std::env::consts::ARCH.to_string(),
             app_version: app.package_info().version.to_string(),
-            log_path: path.to_string_lossy().to_string(),
+            log_path: redact(&path.to_string_lossy()),
             log_tail: redact(&tail),
         })
     })
@@ -530,6 +535,15 @@ mod tests {
         assert_eq!(
             redact_home(text, Some("C:/Users/tester")),
             "log at ~/app.log failed"
+        );
+    }
+
+    #[test]
+    fn redact_keeps_text_around_letters_that_change_length_when_lowercased() {
+        let text = r"İİİ opened C:\Users\İsmail\Belgeler\a.pdf from C:/Users/İsmail/b.pdf";
+        assert_eq!(
+            redact_home(text, Some(r"C:\Users\İsmail")),
+            r"İİİ opened ~\Belgeler\a.pdf from ~/b.pdf"
         );
     }
 

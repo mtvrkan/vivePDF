@@ -1,16 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
-import { Bug, ChevronRight, Code2, FolderOpen, Globe, HardDrive, Info, Keyboard, Lightbulb, Lock, RefreshCw, Scale, Search, ShieldCheck, Sparkles, Users, WifiOff } from "lucide-react";
+import { BookOpen, Bug, ChevronRight, Code2, Download, FolderOpen, Globe, HardDrive, Info, KeyRound, Keyboard, Lightbulb, Lock, RefreshCw, Scale, Search, ShieldCheck, Sparkles, Users, WifiOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { openUrl } from "@tauri-apps/plugin-opener";
-import { invoke } from "@tauri-apps/api/core";
 import { Logo } from "@/components/shared/Logo";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { cn } from "@/shared/lib/cn";
+import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
 import { useAppVersion } from "@/shared/hooks/useAppVersion";
 import { CreditsTab } from "@/features/about/CreditsTab";
+import { ORGANIZER_SHORTCUTS } from "@/features/pages/organizerShortcuts";
 import { REPO_URL, THIRD_PARTY, WEBSITE_URL } from "@/features/about/credits";
 import { DOCUMENT_SHORTCUTS, STUDIO_SHORTCUT_GROUPS } from "@/features/studio/design/shortcutList";
 import { useReportStore } from "@/shared/store/reportStore";
@@ -21,6 +22,42 @@ type LinkedPanel = "credits" | "privacy" | "shortcuts";
 type Panel = LinkedPanel | "licences";
 const LINKED_PANELS: LinkedPanel[] = ["credits", "privacy", "shortcuts"];
 const PANEL_ICONS: Record<LinkedPanel, LucideIcon> = { credits: Users, privacy: ShieldCheck, shortcuts: Keyboard };
+
+type StoredTarget = "data" | "general" | "tools" | "logs";
+
+const NETWORK_ITEMS: Array<{ key: string; icon: LucideIcon }> = [
+  { key: "documents", icon: HardDrive },
+  { key: "updates", icon: RefreshCw },
+  { key: "downloads", icon: Download },
+  { key: "contributors", icon: Users },
+  { key: "webSearch", icon: Search },
+  { key: "webPage", icon: Globe },
+  { key: "citations", icon: BookOpen },
+  { key: "breach", icon: KeyRound },
+  { key: "timestamp", icon: ShieldCheck },
+  { key: "reports", icon: Bug },
+];
+
+const STORED_ITEMS: Array<{ key: string; target: StoredTarget }> = [
+  { key: "recent", target: "data" },
+  { key: "session", target: "data" },
+  { key: "settings", target: "data" },
+  { key: "certificate", target: "data" },
+  { key: "backups", target: "general" },
+  { key: "searchIndex", target: "data" },
+  { key: "history", target: "data" },
+  { key: "watchFolders", target: "data" },
+  { key: "signatures", target: "data" },
+  { key: "downloads", target: "tools" },
+  { key: "logs", target: "logs" },
+];
+
+const STORED_LINK_LABELS: Record<StoredTarget, string> = {
+  data: "about.privacy.openData",
+  general: "about.privacy.openGeneral",
+  tools: "about.privacy.openTools",
+  logs: "app.openLogDir",
+};
 
 type ShortcutGroup = { id: string; items: Array<{ keys: string; labelKey: string }> };
 
@@ -40,6 +77,8 @@ const SHORTCUTS: ShortcutGroup[] = [
     id: "viewer",
     items: [
       { keys: "Ctrl F", labelKey: "about.shortcuts.items.search" },
+      { keys: "F3  /  Shift F3", labelKey: "about.shortcuts.items.searchNext" },
+      { keys: "Ctrl Shift C", labelKey: "about.shortcuts.items.copyAsCode" },
       { keys: "Ctrl P", labelKey: "about.shortcuts.items.print" },
       { keys: FULLSCREEN_SHORTCUT, labelKey: "about.shortcuts.items.fullscreen" },
       { keys: "Ctrl +  /  Ctrl −  /  Ctrl Wheel", labelKey: "about.shortcuts.items.zoom" },
@@ -64,6 +103,8 @@ const SHORTCUTS: ShortcutGroup[] = [
       { keys: "Ctrl S  /  Ctrl Shift S", labelKey: "about.shortcuts.items.editSave" },
       { keys: "Ctrl B  /  Ctrl I", labelKey: "about.shortcuts.items.editStyle" },
       { keys: "Ctrl D", labelKey: "about.shortcuts.items.editDuplicate" },
+      { keys: "Ctrl C  /  Ctrl X  /  Ctrl V", labelKey: "about.shortcuts.items.editClipboard" },
+      { keys: "Tab  /  Shift Tab", labelKey: "about.shortcuts.items.editCycle" },
       { keys: "← → ↑ ↓  ·  Shift", labelKey: "about.shortcuts.items.editNudge" },
     ],
   },
@@ -72,6 +113,7 @@ const SHORTCUTS: ShortcutGroup[] = [
     items: [
       { keys: FULLSCREEN_SHORTCUT, labelKey: "about.shortcuts.items.presentationEnter" },
       { keys: "F5  /  Shift F5", labelKey: "about.shortcuts.items.presentationStart" },
+      { keys: "Alt F5  /  Alt Shift F5", labelKey: "about.shortcuts.items.presenterView" },
       { keys: "L", labelKey: "about.shortcuts.items.presentationLaser" },
       { keys: "P", labelKey: "about.shortcuts.items.presentationPen" },
       { keys: "H", labelKey: "about.shortcuts.items.presentationHighlighter" },
@@ -89,20 +131,7 @@ const SHORTCUTS: ShortcutGroup[] = [
       { keys: "Esc", labelKey: "about.shortcuts.items.presentationEscape" },
     ],
   },
-  {
-    id: "organizer",
-    items: [
-      { keys: "Ctrl A", labelKey: "about.shortcuts.items.selectAll" },
-      { keys: "Esc", labelKey: "about.shortcuts.items.selectNone" },
-      { keys: "Delete", labelKey: "about.shortcuts.items.deletePages" },
-      { keys: "R  /  Shift R", labelKey: "about.shortcuts.items.rotate" },
-      { keys: "Ctrl D", labelKey: "about.shortcuts.items.duplicate" },
-      { keys: "Ctrl Z  /  Ctrl Y", labelKey: "about.shortcuts.items.undoRedo" },
-      { keys: "Ctrl Enter", labelKey: "about.shortcuts.items.apply" },
-      { keys: "Ctrl +  /  Ctrl −  /  Ctrl Wheel", labelKey: "about.shortcuts.items.thumbnailSize" },
-      { keys: "← → ↑ ↓", labelKey: "about.shortcuts.items.move" },
-    ],
-  },
+  { id: "organizer", items: ORGANIZER_SHORTCUTS },
   { id: "studio", items: STUDIO_SHORTCUT_GROUPS.flatMap((group) => group.items) },
   { id: "studioDocument", items: DOCUMENT_SHORTCUTS },
 ];
@@ -175,7 +204,7 @@ function PrivacyItem({ icon: Icon, text }: { icon: LucideIcon; text: string }) {
   );
 }
 
-function StoredItem({ titleText, description, dataLinkLabel, onOpenSettings }: { titleText: string; description: string; dataLinkLabel: string; onOpenSettings: () => void }) {
+function StoredItem({ titleText, description, linkLabel, onOpen }: { titleText: string; description: string; linkLabel: string; onOpen: () => void }) {
   return (
     <li className="flex items-start justify-between gap-4 border-b py-3 text-sm last:border-b-0">
       <div className="min-w-0">
@@ -184,16 +213,16 @@ function StoredItem({ titleText, description, dataLinkLabel, onOpenSettings }: {
       </div>
       <button
         type="button"
-        onClick={onOpenSettings}
+        onClick={onOpen}
         className="shrink-0 whitespace-nowrap rounded-md px-2 py-1 text-xs font-medium text-primary outline-none transition-colors hover:underline focus-visible:ring-2 focus-visible:ring-ring"
       >
-        {dataLinkLabel}
+        {linkLabel}
       </button>
     </li>
   );
 }
 
-function PrivacyContent({ onOpenSettings }: { onOpenSettings: () => void }) {
+function PrivacyContent({ onOpenSettings }: { onOpenSettings: (section: Exclude<StoredTarget, "logs">) => void }) {
   const { t } = useTranslation();
   return (
     <div className="space-y-6">
@@ -201,25 +230,21 @@ function PrivacyContent({ onOpenSettings }: { onOpenSettings: () => void }) {
       <div>
         <Eyebrow>{t("about.privacy.networkTitle")}</Eyebrow>
         <ul className="rounded-xl border px-4">
-          <PrivacyItem icon={HardDrive} text={t("about.privacy.network.documents")} />
-          <PrivacyItem icon={RefreshCw} text={t("about.privacy.network.updates")} />
-          <PrivacyItem icon={Globe} text={t("about.privacy.network.voices")} />
-          <PrivacyItem icon={Users} text={t("about.privacy.network.contributors")} />
-          <PrivacyItem icon={Search} text={t("about.privacy.network.webSearch")} />
-          <PrivacyItem icon={ShieldCheck} text={t("about.privacy.network.timestamp")} />
-          <PrivacyItem icon={Bug} text={t("about.privacy.network.reports")} />
+          {NETWORK_ITEMS.map((item) => (
+            <PrivacyItem key={item.key} icon={item.icon} text={t(`about.privacy.network.${item.key}`)} />
+          ))}
         </ul>
       </div>
       <div>
         <Eyebrow>{t("about.privacy.storedTitle")}</Eyebrow>
         <ul className="rounded-xl border px-4">
-          {(["recent", "session", "settings", "certificate", "backups", "searchIndex", "history", "watchFolders", "signatures", "voices", "logs"] as const).map((key) => (
+          {STORED_ITEMS.map(({ key, target }) => (
             <StoredItem
               key={key}
               titleText={t(`about.privacy.stored.${key}.title`)}
               description={t(`about.privacy.stored.${key}.description`)}
-              dataLinkLabel={t("about.privacy.openData")}
-              onOpenSettings={onOpenSettings}
+              linkLabel={t(STORED_LINK_LABELS[target])}
+              onOpen={() => (target === "logs" ? void openLogFolder() : onOpenSettings(target))}
             />
           ))}
         </ul>
@@ -276,7 +301,7 @@ function ShortcutsContent() {
                       {t(item.labelKey)}
                     </span>
                     <span className="flex shrink-0 items-center gap-1">
-                      {splitKeys(shortcutLabel(item.keys)).map((combo, index) => (
+                      {splitKeys(shortcutLabel(item.keys).replace(/\{(\w+)\}/g, (_, gesture: string) => t(`tools.pages.gesture.${gesture}`))).map((combo, index) => (
                         <kbd key={index} className="rounded-sm border bg-background px-1.5 font-mono text-xs text-muted-foreground">
                           {combo}
                         </kbd>
@@ -321,9 +346,9 @@ export function AboutPage() {
     if (searchParams.has("tab")) setSearchParams({}, { replace: true });
   };
 
-  const openSettingsData = () => {
+  const openSettingsSection = (section: string) => {
     closePanel();
-    navigate(`/settings?section=data${backParam}`);
+    navigate(`/settings?section=${section}${backParam}`);
   };
 
   const year = new Date().getFullYear();
@@ -348,7 +373,7 @@ export function AboutPage() {
               <Button variant="primary" size="sm" icon={<Globe className="size-4" aria-hidden />} onClick={() => void openUrl(WEBSITE_URL)}>
                 vivepdf.com
               </Button>
-              <Button variant="secondary" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => navigate(`/settings?section=updates${backParam}`)}>
+              <Button variant="secondary" size="sm" icon={<RefreshCw className="size-4" aria-hidden />} onClick={() => checkUpdatesNow((to) => navigate(`${to}${backParam}`))}>
                 {t("about.actions.checkUpdates")}
               </Button>
             </div>
@@ -386,7 +411,7 @@ export function AboutPage() {
                 <ul className="space-y-0.5">
                   <ListLink icon={Bug} label={t("about.reportBug")} onClick={() => useReportStore.getState().openDialog({ category: "bug" })} />
                   <ListLink icon={Lightbulb} label={t("about.suggestFeature")} onClick={() => useReportStore.getState().openDialog({ category: "idea" })} />
-                  <ListLink icon={FolderOpen} label={t("app.openLogDir")} onClick={() => void invoke("open_log_dir")} />
+                  <ListLink icon={FolderOpen} label={t("app.openLogDir")} onClick={() => void openLogFolder()} />
                 </ul>
               </section>
             </div>
@@ -418,7 +443,7 @@ export function AboutPage() {
       </div>
       <Dialog open={panel !== null} title={panelTitle} onClose={closePanel} size={panel === "licences" ? "md" : "xl"}>
         {panel === "credits" ? <CreditsTab /> : null}
-        {panel === "privacy" ? <PrivacyContent onOpenSettings={openSettingsData} /> : null}
+        {panel === "privacy" ? <PrivacyContent onOpenSettings={openSettingsSection} /> : null}
         {panel === "shortcuts" ? <ShortcutsContent /> : null}
         {panel === "licences" ? (
           <>
