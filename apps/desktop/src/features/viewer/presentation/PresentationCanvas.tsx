@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { topDrawingAt, translateDrawing } from "@/shared/lib/drawingGeometry";
+import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePresentationStore, type Stroke, type StrokePoint } from "@/shared/store/presentationStore";
 import { LiveStrokeCanvas, PageDrawingCanvas } from "./DrawingLayer";
 import { DrawingSelectionFrame } from "./DrawingSelectionFrame";
@@ -41,6 +42,11 @@ function pagePoint(rect: PageRect, x: number, y: number) {
 
 function rectSize(rect: PageRect) {
   return { width: rect.width, height: rect.height };
+}
+
+function activePageWidth(pageIndex: number): number | undefined {
+  const { activeId, documents } = useDocumentStore.getState();
+  return activeId ? documents[activeId]?.info?.pageSizes[pageIndex]?.width : undefined;
 }
 
 type PresentationCanvasProps = { containerRef: RefObject<HTMLDivElement | null>; contained?: boolean; onSignal?: (signal: LiveSignal) => void };
@@ -159,7 +165,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
     const pageRect = current ? nearestPageRect(pageRects, point.x, point.y) : null;
     const asset = current ? presentation.drawingAssets[current.asset] : undefined;
     if (!current || !pageRect || !asset) return;
-    const stroke = placedDrawing(asset, current.asset, pagePoint(pageRect, point.x, point.y), rectSize(pageRect));
+    const stroke = placedDrawing(asset, current.asset, pagePoint(pageRect, point.x, point.y), { ...rectSize(pageRect), widthPt: activePageWidth(pageRect.pageIndex) });
     presentation.cancelPlacement();
     if (!stroke) return;
     addStroke(pageRect.pageIndex, stroke);

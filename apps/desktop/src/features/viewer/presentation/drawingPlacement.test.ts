@@ -26,6 +26,22 @@ describe("placedDrawing", () => {
     expect(((tall?.size?.width ?? 0) * PAGE.width) / ((tall?.size?.height ?? 1) * PAGE.height)).toBeCloseTo(400 / 2000);
   });
 
+  it("gives an item the same printed size on A5, A4 and A3 pages", () => {
+    const asset = { width: 150, height: 60 };
+    const widths = [419.53, 595.28, 841.89].map((widthPt) => {
+      const stroke = placedDrawing(asset, "asset-1", { x: 0.5, y: 0.5 }, { width: 800, height: 1131, widthPt });
+      return (stroke?.size?.width ?? 0) * widthPt;
+    });
+
+    for (const printed of widths) expect(printed).toBeCloseTo(150);
+  });
+
+  it("falls back to the letter width when the page size is unknown", () => {
+    const known = placedDrawing({ width: 153, height: 50 }, "asset-1", { x: 0.5, y: 0.5 }, { ...PAGE, widthPt: 0 });
+
+    expect(known?.size?.width).toBeCloseTo(153 / PLACE_REFERENCE_PT);
+  });
+
   it("places nothing for an empty item or an unmeasured page", () => {
     expect(placedDrawing({ width: 0, height: 10 }, "asset-1", { x: 0.5, y: 0.5 }, PAGE)).toBeNull();
     expect(placedDrawing({ width: 10, height: 10 }, "asset-1", { x: 0.5, y: 0.5 }, { width: 0, height: 0 })).toBeNull();

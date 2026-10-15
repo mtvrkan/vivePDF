@@ -56,6 +56,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Presentation: an inserted formula, shape or chart now lands at the same printed size on A5, A4, A3 or Letter pages instead of being sized against a Letter-wide page [2026-10-15]
 - Presentation: the "Keep the presentation drawings?" dialog is wider so its three buttons fit on one row in every language, and it opens with Save to the PDF focused instead of Discard drawings [2026-10-14]
 - Studio documents: the first page's text and the first column no longer start a line lower than the following pages and columns [2026-10-14]
 - Studio: segmented options and buttons in the side panels (Page › resize, apply to all pages, Text › case and auto size) now wrap a long label onto a second line instead of spilling it outside the pill, e.g. in German and Turkish; the template e2e check now runs one test per category so it no longer times out [2026-10-14]

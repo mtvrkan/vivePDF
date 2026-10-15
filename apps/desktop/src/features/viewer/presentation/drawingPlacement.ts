@@ -8,11 +8,12 @@ const MAX_HEIGHT = 0.9;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-export type SurfaceBox = { width: number; height: number };
+export type SurfaceBox = { width: number; height: number; widthPt?: number };
 
 export function placedDrawing(asset: Pick<DrawingAsset, "width" | "height">, assetId: string, point: StrokePoint, surface: SurfaceBox, id = makeDrawingId("drawing")): Stroke | null {
   if (asset.width <= 0 || asset.height <= 0 || surface.width <= 0 || surface.height <= 0) return null;
-  let width = clamp(asset.width / PLACE_REFERENCE_PT, MIN_WIDTH, MAX_WIDTH);
+  const reference = surface.widthPt && surface.widthPt > 0 ? surface.widthPt : PLACE_REFERENCE_PT;
+  let width = clamp(asset.width / reference, MIN_WIDTH, MAX_WIDTH);
   let height = (width * surface.width * asset.height) / (asset.width * surface.height);
   if (height > MAX_HEIGHT) {
     width *= MAX_HEIGHT / height;
