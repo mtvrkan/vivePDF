@@ -124,7 +124,7 @@ function AudienceStage({ session, slice, live, onCommand }: { session: AudienceS
       </div>
       <div className="absolute inset-0 z-20" data-audience-capture="" />
       <RemotePointerLayer signal={live} rects={rects} />
-      <BlackoutLayer contained hint={false} />
+      <BlackoutLayer contained hint={false} remote={live?.activeBoardStroke ?? null} />
     </div>
   );
 }

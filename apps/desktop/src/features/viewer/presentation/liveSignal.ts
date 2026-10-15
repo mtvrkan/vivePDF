@@ -1,4 +1,5 @@
 import type { PresentationTool, Stroke } from "@/shared/store/presentationStore";
+import type { BoardLiveStroke } from "./boardLiveStore";
 import { nearestPageRect, type PageRect } from "./usePageRects";
 
 export type LivePoint = { pageIndex: number; x: number; y: number };
@@ -9,6 +10,7 @@ export type LiveSignal = {
   pointer: LivePoint | null;
   laserPath: LivePoint[] | null;
   activeStroke: { pageIndex: number; stroke: Stroke } | null;
+  activeBoardStroke?: BoardLiveStroke | null;
 };
 
 export function toLivePoint(rects: PageRect[], x: number, y: number): LivePoint | null {

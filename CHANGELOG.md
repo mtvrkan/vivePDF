@@ -56,6 +56,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio canvas: the code that handles dragging, resizing, turning and guides is split into smaller parts with their own tests; nothing changes in use [2026-10-13]
 
 ### Fixed
+- Presenter view: pen strokes drawn on a black or white screen now appear on the projector while they are being drawn instead of only when the pen lifts [2026-10-15]
 - Presenter view: black or white screen drawings made on the console's smaller stage are saved into the PDF with that stage's shape instead of the laptop window's, so they are no longer stretched [2026-10-15]
 - Presentation: an inserted formula, shape or chart now lands at the same printed size on A5, A4, A3 or Letter pages instead of being sized against a Letter-wide page [2026-10-15]
 - Presentation: the "Keep the presentation drawings?" dialog is wider so its three buttons fit on one row in every language, and it opens with Save to the PDF focused instead of Discard drawings [2026-10-14]

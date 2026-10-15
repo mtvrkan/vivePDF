@@ -3,6 +3,7 @@ import { act, cleanup, fireEvent, render } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { usePresentationStore } from "@/shared/store/presentationStore";
+import { useBoardLiveStore } from "./boardLiveStore";
 import type { LiveSignal } from "./liveSignal";
 import { PresentationCanvas } from "./PresentationCanvas";
 
@@ -84,6 +85,20 @@ describe("PresentationCanvas inside the presenter console", () => {
     fireEvent.pointerMove(capture(), { pointerId: 1, clientX: 600, clientY: 325 });
     const frame = document.querySelector<HTMLElement>("[data-spotlight-frame]") as HTMLElement;
     expect([frame.style.left, frame.style.top, frame.style.width, frame.style.height]).toEqual(["0px", "0px", "800px", "450px"]);
+  });
+
+  it("sends the stroke being drawn on a black screen with the live signal and clears it after", () => {
+    const onSignal = vi.fn();
+    render(<Stage onSignal={onSignal} />);
+    const stroke = { id: "board-1", tool: "pen" as const, color: "#ffffff", width: 0.01, points: [{ x: 0.1, y: 0.1 }, { x: 0.3, y: 0.2 }] };
+
+    act(() => useBoardLiveStore.getState().publish({ board: "black", stroke }));
+    const drawing = onSignal.mock.calls.at(-1)?.[0] as LiveSignal;
+    act(() => useBoardLiveStore.getState().publish(null));
+    const lifted = onSignal.mock.calls.at(-1)?.[0] as LiveSignal;
+
+    expect(drawing.activeBoardStroke).toEqual({ board: "black", stroke });
+    expect(lifted.activeBoardStroke).toBeNull();
   });
 
   it("clears the live pointer when the pointer leaves the stage", () => {

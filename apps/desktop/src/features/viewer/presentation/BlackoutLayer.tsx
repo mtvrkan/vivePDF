@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore, type BoardMode, type Stroke } from "@/shared/store/presentationStore";
+import { useBoardLiveStore, type BoardLiveStroke } from "./boardLiveStore";
 import { beginDrawing, extendDrawing, isDrawingKept, makeDrawingId } from "./drawingGestures";
 import { drawStroke, readableOnDark } from "./strokes";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
@@ -37,7 +38,7 @@ function BoardCanvas({ board, strokes, live, width, height }: { board: BoardMode
   return <canvas ref={setCanvasRef} aria-hidden className="pointer-events-none absolute inset-0 size-full" key={`${strokes.length}-${live?.points.length ?? 0}-${width}-${height}`} />;
 }
 
-function Board({ board, contained, hint }: { board: BoardMode; contained: boolean; hint: boolean }) {
+function Board({ board, contained, hint, remote }: { board: BoardMode; contained: boolean; hint: boolean; remote: BoardLiveStroke | null }) {
   const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
@@ -64,6 +65,12 @@ function Board({ board, contained, hint }: { board: BoardMode; contained: boolea
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    useBoardLiveStore.getState().publish(live ? { board, stroke: live } : null);
+  }, [board, live]);
+
+  useEffect(() => () => useBoardLiveStore.getState().publish(null), []);
 
   useEffect(() => {
     const timer = window.setTimeout(() => setHintVisible(false), HINT_VISIBLE_MS);
@@ -126,7 +133,7 @@ function Board({ board, contained, hint }: { board: BoardMode; contained: boolea
       onPointerUp={onPointerUp}
       onPointerCancel={onPointerUp}
     >
-      <BoardCanvas board={board} strokes={strokes} live={live} width={size.width} height={size.height} />
+      <BoardCanvas board={board} strokes={strokes} live={live ?? (remote?.board === board ? remote.stroke : null)} width={size.width} height={size.height} />
       {hint ? (
         <p
           role="status"
@@ -143,8 +150,8 @@ function Board({ board, contained, hint }: { board: BoardMode; contained: boolea
   );
 }
 
-export function BlackoutLayer({ contained = false, hint = true }: { contained?: boolean; hint?: boolean }) {
+export function BlackoutLayer({ contained = false, hint = true, remote = null }: { contained?: boolean; hint?: boolean; remote?: BoardLiveStroke | null }) {
   const blackout = usePresentationStore((state) => state.blackout);
   if (blackout === "none") return null;
-  return <Board key={blackout} board={blackout} contained={contained} hint={hint} />;
+  return <Board key={blackout} board={blackout} contained={contained} hint={hint} remote={remote} />;
 }

@@ -6,6 +6,7 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePresentationStore, type Stroke, type StrokePoint } from "@/shared/store/presentationStore";
 import { LiveStrokeCanvas, PageDrawingCanvas } from "./DrawingLayer";
 import { DrawingSelectionFrame } from "./DrawingSelectionFrame";
+import { useBoardLiveStore } from "./boardLiveStore";
 import { beginDrawing, extendDrawing, isDrawingKept, makeDrawingId, type DrawStyle } from "./drawingGestures";
 import { editPresentationDrawing } from "./drawingInsert";
 import { placedDrawing } from "./drawingPlacement";
@@ -76,6 +77,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
   const nudgeMagnifierZoom = usePresentationStore((state) => state.nudgeMagnifierZoom);
 
   const pageRects = usePageRects(containerRef);
+  const activeBoardStroke = useBoardLiveStore((state) => state.live);
   const [pointer, setPointer] = useState<{ x: number; y: number } | null>(null);
   const [laserTrail, setLaserTrail] = useState<Array<{ x: number; y: number }>>([]);
   const [activeStroke, setActiveStroke] = useState<{ pageIndex: number; stroke: Stroke } | null>(null);
@@ -369,8 +371,9 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
       pointer: livePointer,
       laserPath: laserStroke ? laserStroke.map(toPage).filter((point): point is LivePoint => point !== null) : null,
       activeStroke,
+      activeBoardStroke,
     });
-  }, [tool, pointer, laserStroke, activeStroke, pageRects, containerRef]);
+  }, [tool, pointer, laserStroke, activeStroke, activeBoardStroke, pageRects, containerRef]);
 
   useEffect(() => {
     const timers = fadeTimers.current;
