@@ -7,7 +7,7 @@ import { useExport } from "@embedpdf/plugin-export/react";
 import { useHistoryCapability } from "@embedpdf/plugin-history/react";
 import { basenameOf, siblingPath } from "@/shared/lib/paths";
 import { describeError } from "@/shared/lib/errorMessage";
-import { toRpcError } from "@/shared/rpc/client";
+import { isNotGranted, toRpcError } from "@/shared/rpc/client";
 import { writeDocumentBytes } from "@/shared/rpc/files";
 import { addAttachments, addBookmark, deleteComments, editPages, fillFormFields, removeAttachments, replyToComment, savePresentationDrawings, setBookmarks, setCommentsResolved, setCommentsState, setMetadata } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
@@ -126,6 +126,10 @@ export function useDocumentSave(documentId: string) {
       else if (samePath) void useDocumentStore.getState().loadInfo(documentId);
       return true;
     } catch (error) {
+      if (samePath && !targetPath && !original && isNotGranted(error)) {
+        const picked = await saveDialog({ defaultPath: document.path, filters: [{ name: "PDF", extensions: ["pdf"] }] });
+        return picked ? save(picked.toLowerCase().endsWith(".pdf") ? picked : `${picked}.pdf`, rewrite) : false;
+      }
       toast("error", describeError(t, toRpcError(error)));
       return false;
     }

@@ -6,7 +6,7 @@ const listen = vi.fn();
 vi.mock("@tauri-apps/api/core", () => ({ invoke: (...args: unknown[]) => invoke(...args) }));
 vi.mock("@tauri-apps/api/event", () => ({ listen: (...args: unknown[]) => listen(...args) }));
 
-import { RpcCallError, rpc, toRpcError } from "./client";
+import { RpcCallError, isNotGranted, rpc, toRpcError } from "./client";
 
 describe("rpc", () => {
   beforeEach(() => {
@@ -40,6 +40,15 @@ describe("rpc", () => {
     expect(error).toBeInstanceOf(RpcCallError);
     expect((error as RpcCallError).code).toBe("INTERNAL");
     expect(toRpcError("plain")).toEqual({ code: "INTERNAL", message: "plain" });
+  });
+
+  it("recognises a refused path grant from any error shape", () => {
+    const refused = { code: "PERMISSION_DENIED" as const, message: "no", data: { reason: "notGranted" } };
+
+    expect(isNotGranted(refused)).toBe(true);
+    expect(isNotGranted(new RpcCallError(refused))).toBe(true);
+    expect(isNotGranted({ ...refused, data: { reason: "blocked" } })).toBe(false);
+    expect(isNotGranted(new Error("notGranted"))).toBe(false);
   });
 
   it("subscribes to progress only when a handler is given and unsubscribes after", async () => {

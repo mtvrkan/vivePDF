@@ -41,6 +41,11 @@ export function toRpcError(error: unknown): RpcError {
   return { code: "INTERNAL", message: error instanceof Error ? error.message : String(error) };
 }
 
+export function isNotGranted(error: unknown): boolean {
+  if (!(error instanceof RpcCallError) && !isRpcError(error)) return false;
+  return toRpcError(error).data?.reason === "notGranted";
+}
+
 export async function rpc<TResult>(
   method: string,
   params: Record<string, unknown> = {},

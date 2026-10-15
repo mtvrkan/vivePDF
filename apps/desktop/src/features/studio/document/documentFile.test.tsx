@@ -2,7 +2,7 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { Editor } from "@tiptap/react";
 import i18n, { ready, setLocale } from "@/app/i18n";
 import { citationTerms, storeCitationSource } from "./citationSource";
-import { importedDocument, openSourceLibrary } from "./documentFile";
+import { importedDocument, openSourceLibrary, saveStudioDocument } from "./documentFile";
 import { useDocumentStore } from "./documentStore";
 import { documentExtensions } from "./extensions";
 
@@ -15,8 +15,10 @@ const IMPORTED = {
   bibliography: "@article{yilmaz2020, author={Y{\\i}lmaz, Ay{\\c{s}}e}, title={Kentsel ısı}, journal={Kent}, year=2020}",
 };
 
-const operations = vi.hoisted(() => ({ studioReadBibliography: vi.fn() }));
+const operations = vi.hoisted(() => ({ studioReadBibliography: vi.fn(), studioSaveDocument: vi.fn() }));
 vi.mock("@/shared/rpc/operations", () => operations);
+const saveDialog = vi.hoisted(() => vi.fn());
+vi.mock("@tauri-apps/plugin-dialog", () => ({ open: vi.fn(), save: (...args: unknown[]) => saveDialog(...args) }));
 
 let editor: Editor | null = null;
 
@@ -71,5 +73,47 @@ describe("openSourceLibrary", () => {
     operations.studioReadBibliography.mockResolvedValueOnce({ text: "% empty", name: "empty.bib" });
 
     expect(await openSourceLibrary("C:/refs/empty.bib")).toBeNull();
+  });
+});
+
+describe("saveStudioDocument", () => {
+  const options = { saveAs: false, fallbackName: "Document", filterName: "vivePDF document" };
+  const notGranted = { code: "PERMISSION_DENIED", message: "C:/docs/thesis.vivedoc was not opened through vivePDF", data: { reason: "notGranted" } };
+
+  afterEach(() => {
+    operations.studioSaveDocument.mockReset();
+    saveDialog.mockReset();
+  });
+
+  it("saves in place without asking when the file may be written", async () => {
+    useDocumentStore.getState().open(importedDocument(IMPORTED), "C:/docs/thesis.vivedoc");
+    operations.studioSaveDocument.mockResolvedValueOnce({ output: "C:/docs/thesis.vivedoc", bytes: 10 });
+
+    const saved = await saveStudioDocument(options);
+
+    expect(saved).toBe("C:/docs/thesis.vivedoc");
+    expect(saveDialog).not.toHaveBeenCalled();
+  });
+
+  it("asks for the same path when an in-place save is not granted and saves where the user confirms", async () => {
+    useDocumentStore.getState().open(importedDocument(IMPORTED), "C:/docs/thesis.vivedoc");
+    operations.studioSaveDocument.mockRejectedValueOnce(notGranted).mockResolvedValueOnce({ output: "C:/docs/thesis.vivedoc", bytes: 10 });
+    saveDialog.mockResolvedValueOnce("C:/docs/thesis.vivedoc");
+
+    const saved = await saveStudioDocument(options);
+
+    expect(saveDialog).toHaveBeenCalledWith(expect.objectContaining({ defaultPath: "C:/docs/thesis.vivedoc" }));
+    expect(operations.studioSaveDocument).toHaveBeenCalledTimes(2);
+    expect(saved).toBe("C:/docs/thesis.vivedoc");
+  });
+
+  it("gives up quietly when the user cancels, and passes other failures on", async () => {
+    useDocumentStore.getState().open(importedDocument(IMPORTED), "C:/docs/thesis.vivedoc");
+    operations.studioSaveDocument.mockRejectedValueOnce(notGranted).mockRejectedValueOnce({ code: "DISK_FULL", message: "full" });
+    saveDialog.mockResolvedValueOnce(null);
+
+    await expect(saveStudioDocument(options)).resolves.toBeNull();
+    await expect(saveStudioDocument(options)).rejects.toMatchObject({ code: "DISK_FULL" });
+    expect(saveDialog).toHaveBeenCalledTimes(1);
   });
 });

@@ -9,8 +9,6 @@ import { readStored as readWatchRules } from "@/shared/store/watchStore";
 import type { SessionSnapshot } from "@/types";
 import { readStartupSession } from "./sessionStore";
 
-const CHAINS_STORAGE_KEY = "vivepdf.batchChains";
-const CERTIFICATE_STORAGE_KEY = "vivepdf.certificatePath";
 const DOCUMENT_DRAFT_STORAGE_KEY = "vivepdf.studioDocumentDraft";
 
 export type KnownFolders = { readFolders: string[]; writeFolders: string[] };
@@ -41,20 +39,6 @@ function storedJson(key: string): unknown {
   }
 }
 
-function valuesNamed(value: unknown, name: string): string[] {
-  if (Array.isArray(value)) return value.flatMap((item) => valuesNamed(item, name));
-  if (!value || typeof value !== "object") return [];
-  return Object.entries(value).flatMap(([key, child]) => (key === name && typeof child === "string" ? [child] : valuesNamed(child, name)));
-}
-
-function storedCertificatePath(): string[] {
-  try {
-    return [localStorage.getItem(CERTIFICATE_STORAGE_KEY) ?? ""];
-  } catch {
-    return [];
-  }
-}
-
 function studioPaths(): string[] {
   const draft = storedJson(DOCUMENT_DRAFT_STORAGE_KEY) as { filePath?: unknown } | null;
   return [...readRecentDesigns().map((design) => design.path), ...(typeof draft?.filePath === "string" ? [draft.filePath] : [])];
@@ -71,8 +55,6 @@ export function knownPaths(snapshot: SessionSnapshot | null): string[] {
     ...storedCollectionPaths(),
     ...readStoredHistory().flatMap((entry) => [...(entry.source ? [entry.source] : []), ...entry.outputs]),
     ...studioPaths(),
-    ...storedCertificatePath(),
-    ...valuesNamed(storedJson(CHAINS_STORAGE_KEY), "certificatePath"),
   ]);
 }
 

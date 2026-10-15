@@ -1,6 +1,7 @@
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { defaultOutputDirectory, dirnameOf, joinPath, stemOf } from "@/shared/lib/paths";
 import { sanitizeFileName } from "@/shared/lib/naming";
+import { isNotGranted } from "@/shared/rpc/client";
 import type { RpcError } from "@/types";
 import { studioOpenProject, studioSaveProject } from "@/shared/rpc/operations";
 import { useUiStore } from "@/shared/store/uiStore";
@@ -46,10 +47,10 @@ export async function pickDesignFile(filterName: string): Promise<string | null>
   return typeof selected === "string" ? selected : null;
 }
 
-async function chooseTarget(design: StudioDesign, current: string | null, fallbackName: string, filterName: string): Promise<string | null> {
+async function chooseTarget(design: StudioDesign, current: string | null, fallbackName: string, filterName: string, defaultPath?: string): Promise<string | null> {
   const name = `${sanitizeFileName(design.name.trim()) || fallbackName}.${STUDIO_PROJECT_EXTENSION}`;
   const directory = current ? dirnameOf(current) : await defaultOutputDirectory();
-  const chosen = await saveDialog({ defaultPath: joinPath(directory, name), filters: [{ name: filterName, extensions: [STUDIO_PROJECT_EXTENSION] }] });
+  const chosen = await saveDialog({ defaultPath: defaultPath ?? joinPath(directory, name), filters: [{ name: filterName, extensions: [STUDIO_PROJECT_EXTENSION] }] });
   return chosen ?? null;
 }
 
@@ -57,12 +58,22 @@ export async function saveDesign(options: { saveAs: boolean; fallbackName: strin
   const state = useStudioStore.getState();
   const design = state.design;
   if (!design) return null;
-  const target = !options.saveAs && state.filePath ? state.filePath : await chooseTarget(design, state.filePath, options.fallbackName, options.filterName);
+  const inPlace = !options.saveAs && state.filePath ? state.filePath : null;
+  const target = inPlace ?? (await chooseTarget(design, state.filePath, options.fallbackName, options.filterName));
   if (!target) return null;
   const language = useUiStore.getState().locale;
   const first = design.pages[0];
   const measured = await measureTexts(first.elements, language);
-  const result = await studioSaveProject({ design, assets: projectAssets(design), preview: pageToRender(first, measured), language, output: target, overwrite: true });
+  const write = (output: string) => studioSaveProject({ design, assets: projectAssets(design), preview: pageToRender(first, measured), language, output, overwrite: true });
+  let result: Awaited<ReturnType<typeof write>>;
+  try {
+    result = await write(target);
+  } catch (error) {
+    if (!inPlace || !isNotGranted(error)) throw error;
+    const picked = await chooseTarget(design, state.filePath, options.fallbackName, options.filterName, inPlace);
+    if (!picked) return null;
+    result = await write(picked);
+  }
   if (useStudioStore.getState().design === design) useStudioStore.getState().markSaved(result.output);
   else useStudioStore.setState({ filePath: result.output });
   remember(design, result.output, thumbnailUrl(result.thumbnail));

@@ -57,13 +57,13 @@ describe("grantAdoption", () => {
     expect(invoke).toHaveBeenCalledWith("grants_adopt", { paths: ["C:/docs/recent.pdf"], readFolders: [], writeFolders: [] });
   });
 
-  it("adds Studio designs, the document draft and every remembered signing certificate", () => {
+  it("adds Studio designs and the document draft but never a remembered signing certificate", () => {
     localStorage.setItem("vivepdf.studioRecent", JSON.stringify([{ path: "C:/studio/poster.vivedesign", name: "Poster", savedAt: 1, width: 10, height: 10, thumbnail: "" }]));
     localStorage.setItem("vivepdf.studioDocumentDraft", JSON.stringify({ document: {}, filePath: "C:/studio/thesis.vivedoc" }));
     localStorage.setItem("vivepdf.certificatePath", "C:/keys/me.p12");
     localStorage.setItem("vivepdf.batchChains", JSON.stringify([{ id: "c", steps: [{ operation: "sign", settings: { certificatePath: "C:/keys/team.p12" } }] }]));
 
-    expect(knownPaths(null).sort()).toEqual(["C:/keys/me.p12", "C:/keys/team.p12", "C:/studio/poster.vivedesign", "C:/studio/thesis.vivedoc"]);
+    expect(knownPaths(null).sort()).toEqual(["C:/studio/poster.vivedesign", "C:/studio/thesis.vivedoc"]);
   });
 
   it("reads watched folders and output folders apart and skips empty ones", () => {

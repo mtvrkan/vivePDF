@@ -11,12 +11,39 @@ use crate::rpc::RpcError;
 use crate::write_guard::{comparable, resolved};
 
 const GRANTS_FILE_NAME: &str = "grants.json";
-const GRANTS_VERSION: u32 = 2;
+const GRANTS_VERSION: u32 = 3;
+const PREVIOUS_VERSION: u32 = 2;
 const LEGACY_VERSION: u32 = 1;
 const ADOPT_ROUND: u32 = 2;
 const FILE_KEEP: usize = 2000;
 const FOLDER_KEEP: usize = 200;
 const ADOPT_LIMIT: usize = 1000;
+const ADOPTABLE_EXTRA_EXTENSIONS: [&str; 20] = [
+    "markdown",
+    "xps",
+    "oxps",
+    "mobi",
+    "fb2",
+    "cbz",
+    "eml",
+    "msg",
+    "avif",
+    "pnm",
+    "pgm",
+    "ppm",
+    "heic",
+    "heif",
+    "hif",
+    "vivedoc",
+    "vivedesign",
+    "bib",
+    "bibtex",
+    "ris",
+];
+const LINUX_SYSTEM_DIRS: [&str; 12] = [
+    "/etc", "/usr", "/bin", "/sbin", "/boot", "/proc", "/sys", "/dev", "/run", "/var", "/root",
+    "/opt",
+];
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -37,6 +64,8 @@ struct Stored {
     version: u32,
     adopted_round: u32,
     files: Vec<String>,
+    #[serde(default)]
+    read_files: Vec<String>,
     folders: Vec<StoredFolder>,
 }
 
@@ -95,6 +124,7 @@ impl Recent {
 #[derive(Default)]
 struct Registry {
     files: Recent,
+    read_files: Recent,
     folders: Recent,
     write_folders: Recent,
     adopted_round: u32,
@@ -141,10 +171,11 @@ fn readable_below(path: &Path, rest: &str) -> bool {
 impl Registry {
     fn load(&mut self, text: &str) {
         if let Ok(stored) = serde_json::from_str::<Stored>(text) {
-            if stored.version != GRANTS_VERSION {
+            if stored.version != GRANTS_VERSION && stored.version != PREVIOUS_VERSION {
                 return;
             }
             self.files = Recent::from_keys(stored.files, FILE_KEEP);
+            self.read_files = Recent::from_keys(stored.read_files, FILE_KEEP);
             for folder in stored.folders {
                 let target = match folder.mode {
                     FolderMode::ReadWrite => &mut self.folders,
@@ -183,6 +214,7 @@ impl Registry {
             version: GRANTS_VERSION,
             adopted_round: self.adopted_round,
             files: self.files.keys(),
+            read_files: self.read_files.keys(),
             folders: write_only.chain(read_write).collect(),
         }
     }
@@ -193,7 +225,8 @@ impl Registry {
             return false;
         }
         if !path.is_dir() {
-            return self.files.touch(key, FILE_KEEP);
+            let promoted = self.read_files.remove(&key);
+            return self.files.touch(key, FILE_KEEP) || promoted;
         }
         match mode {
             FolderMode::ReadWrite => {
@@ -211,6 +244,10 @@ impl Registry {
         let key = key_of(path);
         if self.files.contains(&key) {
             self.files.touch(key, FILE_KEEP);
+            return true;
+        }
+        if self.read_files.contains(&key) {
+            self.read_files.touch(key, FILE_KEEP);
             return true;
         }
         self.read_roots.iter().any(|root| inside(&key, root))
@@ -261,13 +298,196 @@ impl Registry {
         let Some((parent, name)) = key.rsplit_once('/') else {
             return false;
         };
-        !name.starts_with('.')
-            && self
-                .files
-                .order
+        let beside = |list: &Recent| {
+            list.order
                 .iter()
                 .any(|file| parent_key(file) == Some(parent))
+        };
+        !name.starts_with('.')
+            && (beside(&self.files) || (!path.exists() && beside(&self.read_files)))
     }
+
+    fn network_keys(&self) -> impl Iterator<Item = String> + '_ {
+        self.files
+            .order
+            .iter()
+            .chain(self.read_files.order.iter())
+            .chain(self.folders.order.iter())
+            .chain(self.write_folders.order.iter())
+            .filter_map(|key| network_form(key))
+    }
+
+    fn reaches_network_unasked(&self, path: &Path) -> bool {
+        let Some(key) = network_path_key(path) else {
+            return false;
+        };
+        if key.is_empty() {
+            return true;
+        }
+        !self.network_keys().any(|grant| {
+            inside(&key, &grant)
+                || parent_key(&key).is_some_and(|parent| parent_key(&grant) == Some(parent))
+        })
+    }
+}
+
+fn network_form(key: &str) -> Option<String> {
+    if let Some(rest) = key.strip_prefix("//?/unc/") {
+        return Some(format!("//{rest}"));
+    }
+    if key.starts_with("//?/") || key.starts_with("//./") {
+        return None;
+    }
+    key.starts_with("//").then(|| key.to_string())
+}
+
+fn network_path_key(path: &Path) -> Option<String> {
+    if !cfg!(windows) {
+        return None;
+    }
+    let text = path.to_string_lossy().replace('\\', "/");
+    if !text.starts_with("//") {
+        return None;
+    }
+    if text.starts_with("//./") || text.eq_ignore_ascii_case("//.") {
+        return Some(String::new());
+    }
+    let lower = text.to_lowercase();
+    if lower.starts_with("//?/") && !lower.starts_with("//?/unc/") {
+        return None;
+    }
+    let plain = lower
+        .strip_prefix("//?/unc/")
+        .map_or(lower.clone(), |rest| format!("//{rest}"));
+    let mut parts: Vec<&str> = Vec::new();
+    for part in plain.trim_start_matches('/').split('/') {
+        match part {
+            "" | "." => {}
+            ".." => {
+                if parts.len() <= 2 {
+                    return Some(String::new());
+                }
+                parts.pop();
+            }
+            other => parts.push(other),
+        }
+    }
+    if parts.len() < 2 {
+        return Some(String::new());
+    }
+    Some(format!("//{}", parts.join("/")))
+}
+
+fn lexically_adoptable(text: &str) -> bool {
+    if text.is_empty() || text.contains('\0') {
+        return false;
+    }
+    let slashed = text.replace('\\', "/");
+    if slashed.starts_with("//") {
+        return false;
+    }
+    let path = Path::new(text);
+    if !path.is_absolute()
+        || path
+            .components()
+            .any(|part| matches!(part, std::path::Component::ParentDir))
+    {
+        return false;
+    }
+    if cfg!(windows) {
+        let bytes = slashed.as_bytes();
+        let drive = bytes.len() >= 2 && bytes[0].is_ascii_alphabetic() && bytes[1] == b':';
+        if !drive || slashed[2..].contains(':') {
+            return false;
+        }
+    }
+    true
+}
+
+fn adoptable_extension(path: &Path) -> bool {
+    if crate::files::is_openable_output(path) {
+        return true;
+    }
+    path.extension()
+        .map(|ext| ext.to_string_lossy().to_lowercase())
+        .is_some_and(|ext| ADOPTABLE_EXTRA_EXTENSIONS.contains(&ext.as_str()))
+}
+
+#[derive(Default)]
+struct AdoptLimits {
+    denied: Vec<String>,
+    allowed: Vec<String>,
+}
+
+impl AdoptLimits {
+    fn from_dirs(denied: &[PathBuf], allowed: &[PathBuf]) -> Self {
+        Self {
+            denied: root_keys(denied),
+            allowed: root_keys(allowed),
+        }
+    }
+
+    fn denies(&self, key: &str) -> bool {
+        if key
+            .split('/')
+            .skip(1)
+            .any(|segment| segment.starts_with('.'))
+        {
+            return true;
+        }
+        if self.allowed.iter().any(|base| inside(key, base)) {
+            return false;
+        }
+        self.denied.iter().any(|base| inside(key, base))
+    }
+}
+
+fn env_path(name: &str) -> Option<PathBuf> {
+    std::env::var_os(name)
+        .filter(|value| !value.is_empty())
+        .map(PathBuf::from)
+}
+
+fn adopt_limits() -> AdoptLimits {
+    let mut denied = crate::write_guard::protected_dirs();
+    let mut allowed = Vec::new();
+    if cfg!(windows) {
+        denied.extend(
+            [
+                "APPDATA",
+                "LOCALAPPDATA",
+                "PROGRAMDATA",
+                "ProgramFiles",
+                "ProgramFiles(x86)",
+                "WINDIR",
+            ]
+            .iter()
+            .filter_map(|name| env_path(name)),
+        );
+        denied.extend(env_path("USERPROFILE").map(|home| home.join("AppData")));
+    }
+    if cfg!(target_os = "macos") {
+        if let Some(home) = env_path("HOME") {
+            let library = home.join("Library");
+            allowed.push(library.join("Mobile Documents"));
+            allowed.push(library.join("CloudStorage"));
+            denied.push(library);
+        }
+    }
+    if cfg!(all(unix, not(target_os = "macos"))) {
+        denied.extend(LINUX_SYSTEM_DIRS.iter().map(PathBuf::from));
+        denied.extend(
+            [
+                "XDG_CONFIG_HOME",
+                "XDG_DATA_HOME",
+                "XDG_STATE_HOME",
+                "XDG_CACHE_HOME",
+            ]
+            .iter()
+            .filter_map(|name| env_path(name)),
+        );
+    }
+    AdoptLimits::from_dirs(&denied, &allowed)
 }
 
 fn registry() -> MutexGuard<'static, Registry> {
@@ -409,14 +629,30 @@ fn not_granted(path: &Path) -> RpcError {
 }
 
 pub fn check_read(path: &Path) -> Result<(), RpcError> {
-    if registry().may_read(path) || crate::files::was_produced(path) {
+    let mut registry = registry();
+    if registry.reaches_network_unasked(path) {
+        return Err(not_granted(path));
+    }
+    if registry.may_read(path) {
+        return Ok(());
+    }
+    drop(registry);
+    if crate::files::was_produced(path) {
         return Ok(());
     }
     Err(not_granted(path))
 }
 
 pub fn check_write(path: &Path) -> Result<(), RpcError> {
-    if registry().may_write(path) || crate::files::was_produced(path) {
+    let mut registry = registry();
+    if registry.reaches_network_unasked(path) {
+        return Err(not_granted(path));
+    }
+    if registry.may_write(path) {
+        return Ok(());
+    }
+    drop(registry);
+    if crate::files::was_produced(path) {
         return Ok(());
     }
     Err(not_granted(path))
@@ -424,6 +660,9 @@ pub fn check_write(path: &Path) -> Result<(), RpcError> {
 
 pub fn check_write_folder(path: &Path) -> Result<(), RpcError> {
     let mut registry = registry();
+    if registry.reaches_network_unasked(path) {
+        return Err(not_granted(path));
+    }
     if registry.grant_new_folder(path) {
         persist(&registry);
         return Ok(());
@@ -435,11 +674,15 @@ pub fn check_write_folder(path: &Path) -> Result<(), RpcError> {
 }
 
 pub fn is_known(path: &Path) -> bool {
-    if crate::files::was_produced(path) {
+    let mut registry = registry();
+    if registry.reaches_network_unasked(path) {
+        return false;
+    }
+    if registry.may_read(path) || registry.may_write(path) {
         return true;
     }
-    let mut registry = registry();
-    registry.may_read(path) || registry.may_write(path)
+    drop(registry);
+    crate::files::was_produced(path)
 }
 
 pub fn inside_roots(path: &Path) -> bool {
@@ -460,15 +703,32 @@ fn home_dir() -> Option<PathBuf> {
         .map(PathBuf::from)
 }
 
-fn adoptable_folder(path: &Path, home: Option<&Path>) -> bool {
-    if !path.is_dir() || path.parent().is_none() {
+fn adoptable_folder(text: &str, home: Option<&Path>, limits: &AdoptLimits) -> bool {
+    if !lexically_adoptable(text) {
+        return false;
+    }
+    let path = Path::new(text);
+    if !path.is_dir() || path.parent().is_none() || crate::watch_paths::is_protected_root(path) {
         return false;
     }
     let key = key_of(path);
-    if key.is_empty() || !key.contains('/') {
+    if key.is_empty() || !key.contains('/') || limits.denies(&key) {
         return false;
     }
     home.is_none_or(|home| !inside(&key_of(home), &key))
+}
+
+fn adoptable_file(text: &str, limits: &AdoptLimits) -> Option<String> {
+    if !lexically_adoptable(text) {
+        return None;
+    }
+    let path = Path::new(text);
+    if !adoptable_extension(path) || !path.is_file() || crate::watch_paths::is_protected_root(path)
+    {
+        return None;
+    }
+    let key = key_of(path);
+    (!key.is_empty() && !limits.denies(&key)).then_some(key)
 }
 
 impl Registry {
@@ -478,10 +738,14 @@ impl Registry {
         read_folders: &[String],
         write_folders: &[String],
         home: Option<&Path>,
+        limits: &AdoptLimits,
     ) -> usize {
         let mut adopted = 0;
-        for path in files.iter().take(ADOPT_LIMIT).map(Path::new) {
-            if path.is_file() && self.allow(path, FolderMode::ReadWrite) {
+        for text in files.iter().take(ADOPT_LIMIT) {
+            let Some(key) = adoptable_file(text, limits) else {
+                continue;
+            };
+            if !self.files.contains(&key) && self.read_files.touch(key, FILE_KEEP) {
                 adopted += 1;
             }
         }
@@ -489,8 +753,8 @@ impl Registry {
             (read_folders, FolderMode::ReadWrite),
             (write_folders, FolderMode::Write),
         ] {
-            for path in folders.iter().take(FOLDER_KEEP).map(Path::new) {
-                if adoptable_folder(path, home) && self.allow(path, mode) {
+            for text in folders.iter().take(FOLDER_KEEP) {
+                if adoptable_folder(text, home, limits) && self.allow(Path::new(text), mode) {
                     adopted += 1;
                 }
             }
@@ -502,10 +766,12 @@ impl Registry {
 
 pub fn adopt_engine_folders<S: AsRef<str>>(folders: &[S]) {
     let home = home_dir();
+    let limits = adopt_limits();
     let picked: Vec<&Path> = folders
         .iter()
-        .map(|folder| Path::new(folder.as_ref()))
-        .filter(|path| adoptable_folder(path, home.as_deref()))
+        .map(AsRef::as_ref)
+        .filter(|text| adoptable_folder(text, home.as_deref(), &limits))
+        .map(Path::new)
         .collect();
     allow_all(&picked, FolderMode::ReadWrite);
 }
@@ -529,6 +795,7 @@ pub fn grants_adopt<R: Runtime>(
         &read_folders.unwrap_or_default(),
         &write_folders.unwrap_or_default(),
         home_dir().as_deref(),
+        &adopt_limits(),
     );
     persist(&registry);
     adopted
@@ -735,7 +1002,7 @@ mod tests {
         let mut loaded = Registry::default();
         loaded.load(&text);
         let mut future = Registry::default();
-        future.load(&text.replace("\"version\":2", "\"version\":3"));
+        future.load(&text.replace("\"version\":3", "\"version\":4"));
         let mut broken = Registry::default();
         broken.load("{");
 
@@ -898,6 +1165,7 @@ mod tests {
             &[text(&watched), text(&home), text(&dir), text(&root)],
             &[text(&outputs)],
             Some(&home),
+            &AdoptLimits::default(),
         );
 
         assert_eq!(adopted, 3);
@@ -907,6 +1175,193 @@ mod tests {
         assert!(registry.may_write(&outputs.join("out.pdf")));
         assert!(!registry.may_read(&outputs.join("out.pdf")));
         assert!(!registry.may_read(&home.join("notes.pdf")));
+    }
+
+    fn text(path: &Path) -> String {
+        path.to_string_lossy().into_owned()
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn adoption_refuses_network_device_relative_and_stream_paths_by_their_spelling() {
+        for refused in [
+            r"\\attacker\share\a.pdf",
+            r"\\?\UNC\attacker\share\a.pdf",
+            r"\\.\pipe\a.pdf",
+            "//attacker/share/a.pdf",
+            r"C:\docs\..\a.pdf",
+            r"C:\docs\a.pdf:hidden",
+            r"docs\a.pdf",
+            "C:\\docs\\a\0.pdf",
+            "",
+        ] {
+            assert!(!lexically_adoptable(refused), "{refused:?}");
+        }
+        assert!(lexically_adoptable(r"C:\docs\a.pdf"));
+        assert!(lexically_adoptable(r"D:\Belgeler\çizim.pdf"));
+    }
+
+    #[test]
+    fn adoption_takes_documents_only_and_never_hidden_folders_or_key_files() {
+        let dir = scratch("adopt-filter");
+        let kept = [
+            file(&dir, "docs/REPORT.PDF"),
+            file(&dir, "docs/notes.vivedoc"),
+            file(&dir, "docs/sources.bib"),
+        ];
+        let refused = [
+            file(&dir, ".ssh/id_rsa.pdf"),
+            file(&dir, "docs/.hidden/a.pdf"),
+            file(&dir, "docs/id_rsa"),
+            file(&dir, "docs/server.pem"),
+            file(&dir, "docs/signing.pfx"),
+            file(&dir, "docs/signing.p12"),
+            file(&dir, "docs/private.key"),
+            file(&dir, "docs/tool.exe"),
+        ];
+        let escaped = format!("{}/docs/../.ssh/id_rsa.pdf", text(&dir));
+        let mut paths: Vec<String> = kept
+            .iter()
+            .chain(refused.iter())
+            .map(|path| text(path))
+            .collect();
+        paths.push(escaped);
+        let mut registry = Registry::default();
+
+        let adopted = registry.adopt(&paths, &[], &[], None, &AdoptLimits::default());
+
+        assert_eq!(adopted, kept.len());
+        for path in &kept {
+            assert!(registry.may_read(path), "{}", path.display());
+        }
+        for path in &refused {
+            assert!(!registry.may_read(path), "{}", path.display());
+        }
+    }
+
+    #[test]
+    fn adoption_refuses_hidden_and_system_folders_but_keeps_cloud_folders_inside_them() {
+        let dir = scratch("adopt-places");
+        let home = dir.join("home");
+        let config = home.join(".config").join("gcloud");
+        let library = home.join("Library");
+        let preferences = library.join("Preferences");
+        let cloud = library.join("CloudStorage").join("Drive");
+        let documents = home.join("Documents");
+        for folder in [&config, &preferences, &cloud, &documents] {
+            std::fs::create_dir_all(folder).unwrap();
+        }
+        let in_library = file(&preferences, "settings.pdf");
+        let in_cloud = file(&cloud, "shared.pdf");
+        let limits = AdoptLimits::from_dirs(
+            std::slice::from_ref(&library),
+            &[library.join("CloudStorage")],
+        );
+        let mut registry = Registry::default();
+
+        registry.adopt(
+            &[text(&in_library), text(&in_cloud)],
+            &[text(&config), text(&preferences), text(&cloud)],
+            &[text(&config), text(&preferences), text(&documents)],
+            Some(&home),
+            &limits,
+        );
+
+        assert!(!registry.may_read(&in_library));
+        assert!(registry.may_read(&in_cloud));
+        assert!(!registry.may_read(&config.join("a.pdf")));
+        assert!(!registry.may_write(&config.join("a.pdf")));
+        assert!(!registry.may_write(&preferences.join("a.pdf")));
+        assert!(registry.may_read(&cloud.join("a.pdf")));
+        assert!(registry.may_write(&documents.join("a.pdf")));
+    }
+
+    #[test]
+    fn an_adopted_file_is_read_only_until_the_user_picks_it_again() {
+        let dir = scratch("adopt-read-only");
+        let adopted = file(&dir, "report.pdf");
+        let existing = file(&dir, "other.pdf");
+        let fresh = dir.join("report-compressed.pdf");
+        let mut registry = Registry::default();
+
+        registry.adopt(&[text(&adopted)], &[], &[], None, &AdoptLimits::default());
+
+        assert!(registry.may_read(&adopted));
+        assert!(!registry.may_write(&adopted));
+        assert!(registry.may_write(&fresh));
+        assert!(!registry.may_write(&existing));
+        assert!(!registry.may_read(&existing));
+
+        registry.allow(&adopted, FolderMode::Write);
+
+        assert!(registry.may_write(&adopted));
+        assert!(registry.read_files.keys().is_empty());
+    }
+
+    #[test]
+    fn a_second_version_store_loads_and_keeps_read_only_files_apart() {
+        let dir = scratch("v2");
+        let picked = file(&dir, "picked.pdf");
+        let adopted = file(&dir, "adopted/adopted.pdf");
+        let text = json!({
+            "version": 2,
+            "adoptedRound": 2,
+            "files": [key_of(&picked)],
+            "folders": [],
+        })
+        .to_string();
+        let mut registry = Registry::default();
+
+        registry.load(&text);
+        registry.adopt(
+            &[self::text(&adopted)],
+            &[],
+            &[],
+            None,
+            &AdoptLimits::default(),
+        );
+        let mut reloaded = Registry::default();
+        reloaded.load(&serde_json::to_string(&registry.snapshot()).unwrap());
+
+        assert_eq!(registry.adopted_round, ADOPT_ROUND);
+        assert!(reloaded.may_write(&picked));
+        assert!(reloaded.may_read(&adopted) && !reloaded.may_write(&adopted));
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn op_paths_on_a_network_share_are_refused_unless_a_grant_already_reaches_it() {
+        let registry = Registry {
+            files: Recent::from_keys(vec!["//?/unc/nas/share/docs/a.pdf".into()], FILE_KEEP),
+            folders: Recent::from_keys(vec!["//office/scans".into()], FOLDER_KEEP),
+            ..Registry::default()
+        };
+
+        for allowed in [
+            r"\\nas\share\docs\a.pdf",
+            r"\\NAS\share\docs\b.pdf",
+            r"\\?\UNC\nas\share\docs\a.pdf",
+            r"\\office\scans\2026\x.pdf",
+            r"C:\docs\a.pdf",
+        ] {
+            assert!(
+                !registry.reaches_network_unasked(Path::new(allowed)),
+                "{allowed}"
+            );
+        }
+        for refused in [
+            r"\\attacker\share\a.pdf",
+            r"\\nas\share\other\a.pdf",
+            r"\\nas\share\docs\..\..\..\x\a.pdf",
+            r"\\.\pipe\a.pdf",
+            r"\\nas",
+        ] {
+            assert!(
+                registry.reaches_network_unasked(Path::new(refused)),
+                "{refused}"
+            );
+        }
+        assert!(check_read(Path::new(r"\\vivepdf-no-such-host\share\a.pdf")).is_err());
     }
 
     #[test]

@@ -1,6 +1,6 @@
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { sanitizeFileName } from "@/shared/lib/naming";
-import type { RpcCallOptions } from "@/shared/rpc/client";
+import { isNotGranted, type RpcCallOptions } from "@/shared/rpc/client";
 import { defaultOutputDirectory, dirnameOf, joinPath, stemOf } from "@/shared/lib/paths";
 import { studioDocumentImage, studioImportDocument, studioOpenDocument, studioReadBibliography, studioSaveDocument } from "@/shared/rpc/operations";
 import type { RpcError } from "@/types";
@@ -39,14 +39,24 @@ export async function saveStudioDocument(options: { saveAs: boolean; fallbackNam
   const state = useDocumentStore.getState();
   const document = state.document;
   if (!document) return null;
-  let target = !options.saveAs && state.filePath ? state.filePath : null;
-  if (!target) {
+  const inPlace = !options.saveAs && state.filePath ? state.filePath : null;
+  const choose = async (defaultPath?: string) => {
     const name = `${sanitizeFileName(document.name.trim()) || options.fallbackName}.${STUDIO_DOCUMENT_EXTENSION}`;
     const directory = state.filePath ? dirnameOf(state.filePath) : await defaultOutputDirectory();
-    target = (await saveDialog({ defaultPath: joinPath(directory, name), filters: [{ name: options.filterName, extensions: [STUDIO_DOCUMENT_EXTENSION] }] })) ?? null;
-  }
+    return (await saveDialog({ defaultPath: defaultPath ?? joinPath(directory, name), filters: [{ name: options.filterName, extensions: [STUDIO_DOCUMENT_EXTENSION] }] })) ?? null;
+  };
+  const target = inPlace ?? (await choose());
   if (!target) return null;
-  const result = await studioSaveDocument({ document: { ...document, version: fileVersion(document.content) }, output: target, overwrite: true });
+  const write = (output: string) => studioSaveDocument({ document: { ...document, version: fileVersion(document.content) }, output, overwrite: true });
+  let result: Awaited<ReturnType<typeof write>>;
+  try {
+    result = await write(target);
+  } catch (error) {
+    if (!inPlace || !isNotGranted(error)) throw error;
+    const picked = await choose(inPlace);
+    if (!picked) return null;
+    result = await write(picked);
+  }
   if (useDocumentStore.getState().document === document) useDocumentStore.getState().markSaved(result.output);
   else useDocumentStore.setState({ filePath: result.output });
   remember(document, result.output);

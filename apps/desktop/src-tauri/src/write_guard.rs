@@ -91,7 +91,7 @@ fn env_dir(name: &str) -> Option<PathBuf> {
         .map(PathBuf::from)
 }
 
-fn protected_dirs() -> Vec<PathBuf> {
+pub(crate) fn protected_dirs() -> Vec<PathBuf> {
     let mut dirs = autostart_dirs();
     if let Some(app_dirs) = APP_DIRS.get() {
         dirs.extend(app_dirs.iter().cloned());
