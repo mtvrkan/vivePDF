@@ -248,3 +248,35 @@ describe("cv overflow and colour fixes", () => {
     expect(onFill("#a5f3fc")).toBe("#0f172a");
   });
 });
+
+describe("cv labels that run long", () => {
+  const texts = (elements: StudioElement[]) => elements.filter((element): element is StudioTextElement => element.kind === "text");
+  const long = "Distributed systems observability and incident response across multi region Kubernetes platforms";
+
+  it("wraps a long chip label onto more lines instead of shrinking it", () => {
+    const profile = { ...emptyProfile(), name: "Alex", skills: [{ id: cvId(), name: "SQL", level: 3 }, { id: cvId(), name: long, level: 3 }] };
+    const theme = { ...defaultTheme("en"), layout: "modern" as const, skillStyle: "chips" as const };
+
+    const { design } = composeCvReport(specOf("modern"), { profile, theme, labels: cvLabels(t), measure: estimateMeasure, emptyPhoto: false, name: "CV" });
+    const elements = design.pages[0].elements;
+    const chip = texts(elements).find((element) => textOf(element.runs) === long);
+    const short = texts(elements).find((element) => textOf(element.runs) === "SQL");
+
+    expect(chip && short).toBeTruthy();
+    expect(chip?.height ?? 0).toBeGreaterThanOrEqual(estimateMeasure(chip as StudioTextElement));
+    expect(chip?.height ?? 0).toBeGreaterThan((short?.height ?? 0) * 1.5);
+  });
+
+  it("makes a band title taller for a long custom heading instead of shrinking it", () => {
+    const profile = { ...withExperience(["- Built things"]), custom: [{ id: cvId(), heading: long, body: "Body text" }] };
+
+    const { design } = compose(profile, "infographic");
+    const elements = design.pages.flatMap((page) => page.elements);
+    const heading = texts(elements).find((element) => textOf(element.runs) === long);
+    const normal = texts(elements).find((element) => textOf(element.runs) === "experience");
+
+    expect(heading && normal).toBeTruthy();
+    expect(heading?.height ?? 0).toBeGreaterThanOrEqual(estimateMeasure(heading as StudioTextElement));
+    expect(heading?.height ?? 0).toBeGreaterThan(normal?.height ?? 0);
+  });
+});

@@ -9525,6 +9525,7 @@
       },
       "emptySection": "Henüz bir şey yok — eklemek için + düğmesini kullanın.",
       "removed": "{{name}} kaldırıldı",
+      "listFull": "Liste dolu ({{limit}} öğe), kalanlar eklenmedi.",
       "duplicate": "{{name}} öğesini çoğalt",
       "drag": "Sıralamak için {{name}} öğesini sürükleyin",
       "photoReady": "Fotoğraf eklendi",

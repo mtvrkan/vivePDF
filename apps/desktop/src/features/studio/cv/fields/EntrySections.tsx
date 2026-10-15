@@ -1,4 +1,4 @@
-import { useRef, type ReactNode, type RefObject } from "react";
+import { memo, useRef, type PointerEvent as ReactPointerEvent, type ReactNode, type RefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { Checkbox, Field, TextInput } from "@/components/tool/form";
 import { addItems, canAdd, moveItem, patchItem, type ListKey } from "../cvEdits";
@@ -46,37 +46,63 @@ function EntryBody<K extends EntryKey>({ item, render }: { item: Item<K>; render
   return <>{render(item, focusRef)}</>;
 }
 
+type EntryRowProps<K extends EntryKey> = Omit<EntrySectionProps<K>, "defaultOpen"> & {
+  item: Item<K>;
+  index: number;
+  total: number;
+  section: string;
+  dragging: boolean;
+  target: boolean;
+  grip: (from: number, event: ReactPointerEvent<HTMLElement>) => void;
+};
+
+const EntryRow = memo(function EntryRow<K extends EntryKey>({ listKey, item, index, total, section, dragging, target, grip, titleOf, summaryOf, render }: EntryRowProps<K>) {
+  const title = titleOf(item).trim() || `${section} ${index + 1}`;
+  return (
+    <EntryCard
+      listKey={listKey}
+      id={item.id}
+      index={index}
+      total={total}
+      title={title}
+      summary={summaryOf(item)}
+      defaultOpen={!titleOf(item).trim() || total <= 2}
+      dragging={dragging}
+      target={target}
+      onGrip={(event) => grip(index, event)}
+    >
+      <EntryBody item={item} render={render} />
+    </EntryCard>
+  );
+}) as <K extends EntryKey>(props: EntryRowProps<K>) => ReactNode;
+
 function EntrySection<K extends EntryKey>({ listKey, defaultOpen, titleOf, summaryOf, render }: EntrySectionProps<K>) {
   const { t } = useTranslation();
   const items = useCvStore((state) => state.profile[listKey]) as Item<K>[];
   const room = useCvStore((state) => canAdd(state.profile, listKey));
-  const { drag, begin } = usePointerReorder((from, to) => moveItem(listKey, from, to));
+  const { drag, grip } = usePointerReorder((from, to) => moveItem(listKey, from, to));
   const section = t(`studio.cv.sections.${listKey}`);
   const add = () => addItems(listKey, [FACTORIES[listKey]()] as Item<K>[]);
   return (
     <FormSection title={section} section={listKey} count={items.length} defaultOpen={defaultOpen} addLabel={t(`studio.cv.add.${listKey}`)} addDisabled={!room} onAdd={add}>
       {items.length ? (
         <div data-reorder-list className="space-y-2.5">
-          {items.map((item, index) => {
-            const title = titleOf(item).trim() || `${section} ${index + 1}`;
-            return (
-              <EntryCard
-                key={item.id}
-                listKey={listKey}
-                id={item.id}
-                index={index}
-                total={items.length}
-                title={title}
-                summary={summaryOf(item)}
-                defaultOpen={!titleOf(item).trim() || items.length <= 2}
-                dragging={drag?.from === index}
-                target={drag !== null && drag.from !== index && drag.to === index}
-                onGrip={begin(index)}
-              >
-                <EntryBody item={item} render={render} />
-              </EntryCard>
-            );
-          })}
+          {items.map((item, index) => (
+            <EntryRow
+              key={item.id}
+              listKey={listKey}
+              item={item}
+              index={index}
+              total={items.length}
+              section={section}
+              dragging={drag?.from === index}
+              target={drag !== null && drag.from !== index && drag.to === index}
+              grip={grip}
+              titleOf={titleOf}
+              summaryOf={summaryOf}
+              render={render}
+            />
+          ))}
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">{t("studio.cv.emptySection")}</p>

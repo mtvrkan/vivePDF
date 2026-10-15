@@ -21,6 +21,7 @@ type CvStore = {
   updateProfile: (change: (profile: CvProfile) => CvProfile, merge?: string) => void;
   updateTheme: (patch: Partial<CvTheme>, merge?: string) => void;
   replace: (state: CvState) => void;
+  adoptPhoto: (from: string, to: string) => void;
   undo: () => void;
   redo: () => void;
   snapshot: () => CvState;
@@ -95,6 +96,13 @@ export const useCvStore = create<CvStore>((set, get) => {
     replace: (next) => {
       const state = get();
       commit({ profile: normalizeProfile(next.profile), theme: normalizeTheme(next.theme, state.theme.language) });
+    },
+    adoptPhoto: (from, to) => {
+      const swap = (state: CvState): CvState => (state.profile.photo === from ? { ...state, profile: { ...state.profile, photo: to } } : state);
+      const state = get();
+      if (state.profile.photo !== from) return;
+      set({ profile: swap(state.snapshot()).profile, past: state.past.map(swap), future: state.future.map(swap) });
+      save();
     },
     undo: () => travel("past"),
     redo: () => travel("future"),

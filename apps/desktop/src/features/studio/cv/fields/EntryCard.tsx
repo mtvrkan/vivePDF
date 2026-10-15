@@ -1,10 +1,11 @@
 import { useState, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import { ArrowDown, ArrowUp, ChevronDown, Copy, GripVertical, Trash2 } from "lucide-react";
+import { ChevronDown, Copy, GripVertical, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
-import { canAdd, duplicateItem, moveItem, type ListKey } from "../cvEdits";
+import { canAdd, duplicateItem, focusPending, moveItem, type ListKey } from "../cvEdits";
 import { useCvStore } from "../cvStore";
+import { MoveButtons } from "./MoveButtons";
 import { useRemoveWithUndo } from "./useRemoveWithUndo";
 
 type EntryCardProps = {
@@ -23,7 +24,7 @@ type EntryCardProps = {
 
 export function EntryCard({ listKey, id, index, total, title, summary, defaultOpen, dragging, target, onGrip, children }: EntryCardProps) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpen] = useState(() => defaultOpen || focusPending(id));
   const room = useCvStore((state) => canAdd(state.profile, listKey));
   const remove = useRemoveWithUndo(listKey);
   return (
@@ -39,8 +40,7 @@ export function EntryCard({ listKey, id, index, total, title, summary, defaultOp
             {summary ? <span className="block truncate text-xs text-muted-foreground">{summary}</span> : null}
           </span>
         </button>
-        <IconButton icon={ArrowUp} label={t("studio.cv.moveUp", { name: title })} disabled={index === 0} onClick={() => moveItem(listKey, index, index - 1)} />
-        <IconButton icon={ArrowDown} label={t("studio.cv.moveDown", { name: title })} disabled={index === total - 1} onClick={() => moveItem(listKey, index, index + 1)} />
+        <MoveButtons name={title} index={index} total={total} onMove={(from, to) => moveItem(listKey, from, to)} />
         <IconButton icon={Copy} label={t("studio.cv.duplicate", { name: title })} disabled={!room} onClick={() => duplicateItem(listKey, id)} />
         <IconButton icon={Trash2} label={t("studio.cv.remove", { name: title })} onClick={() => remove(id, title)} />
       </div>

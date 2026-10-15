@@ -51,6 +51,18 @@ describe("cv list edits", () => {
     expect(skills()).toEqual(["A", "B", "C"]);
     expect(removeItem("skills", "missing")).toBeNull();
   });
+
+  it("does not add an item twice from an old toast after the whole CV was put back", () => {
+    const target = useCvStore.getState().profile.skills[1];
+    const removed = removeItem("skills", target.id);
+    if (!removed) throw new Error("not removed");
+    useCvStore.getState().undo();
+
+    useCvStore.getState().replace(useCvStore.getState().snapshot());
+    restoreItem("skills", removed.item, removed.index);
+
+    expect(skills()).toEqual(["A", "B", "C"]);
+  });
 });
 
 describe("cv file names", () => {

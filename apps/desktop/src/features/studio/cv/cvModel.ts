@@ -26,6 +26,7 @@ export type CvDensity = (typeof CV_DENSITIES)[number];
 export const MAX_LEVEL = 5;
 export const CV_LIMITS = { contacts: 10, experience: 30, education: 20, skills: 60, languages: 20, certificates: 30, projects: 30, references: 10, custom: 10 } as const;
 export const CV_TEXT_LIMIT = 4000;
+export const CV_PHOTO_DATA_LIMIT = 8_000_000;
 export const CV_STORAGE_KEY = "vivepdf.cvStudio";
 export const LEGACY_DRAFT_KEY = "vivepdf.cvDraft";
 export const CV_FILE_FORMAT = "vivepdf-cv";
@@ -222,19 +223,26 @@ function fontId(value: unknown): string | null {
   return typeof value === "string" && value.length > 0 && value.length <= 200 ? value : null;
 }
 
+function itemId(value: unknown, seen: Set<string>): string {
+  const id = typeof value === "string" && /^[\w-]{1,64}$/.test(value) && !seen.has(value) ? value : cvId();
+  seen.add(id);
+  return id;
+}
+
 export function normalizeProfile(value: unknown): CvProfile {
   const empty = emptyProfile();
   if (typeof value !== "object" || value === null) return empty;
   const raw = value as Record<string, unknown>;
+  const seen = new Set<string>();
   return {
     name: str(raw.name, 200),
     headline: str(raw.headline, 200),
     photo: typeof raw.photo === "string" && raw.photo ? raw.photo : null,
     photoCrop: photoCrop(raw.photoCrop),
-    contacts: list(raw.contacts, CV_LIMITS.contacts, (item) => ({ id: cvId(), kind: oneOf(item.kind, CV_CONTACT_KINDS, "other"), value: str(item.value, 300) })),
+    contacts: list(raw.contacts, CV_LIMITS.contacts, (item) => ({ id: itemId(item.id, seen), kind: oneOf(item.kind, CV_CONTACT_KINDS, "other"), value: str(item.value, 300) })),
     summary: str(raw.summary),
     experience: list(raw.experience, CV_LIMITS.experience, (item) => ({
-      id: cvId(),
+      id: itemId(item.id, seen),
       role: str(item.role, 200),
       organisation: str(item.organisation, 200),
       location: str(item.location, 200),
@@ -244,7 +252,7 @@ export function normalizeProfile(value: unknown): CvProfile {
       details: str(item.details),
     })),
     education: list(raw.education, CV_LIMITS.education, (item) => ({
-      id: cvId(),
+      id: itemId(item.id, seen),
       degree: str(item.degree, 200),
       school: str(item.school, 200),
       location: str(item.location, 200),
@@ -253,13 +261,13 @@ export function normalizeProfile(value: unknown): CvProfile {
       current: item.current === true,
       details: str(item.details),
     })),
-    skills: list(raw.skills, CV_LIMITS.skills, (item) => ({ id: cvId(), name: str(item.name, 120), level: level(item.level, 3) })),
-    languages: list(raw.languages, CV_LIMITS.languages, (item) => ({ id: cvId(), name: str(item.name, 120), level: level(item.level, 3) })),
-    certificates: list(raw.certificates, CV_LIMITS.certificates, (item) => ({ id: cvId(), name: str(item.name, 200), issuer: str(item.issuer, 200), date: str(item.date, 40) })),
-    projects: list(raw.projects, CV_LIMITS.projects, (item) => ({ id: cvId(), name: str(item.name, 200), link: str(item.link, 300), details: str(item.details) })),
-    references: list(raw.references, CV_LIMITS.references, (item) => ({ id: cvId(), name: str(item.name, 200), role: str(item.role, 200), contact: str(item.contact, 300) })),
+    skills: list(raw.skills, CV_LIMITS.skills, (item) => ({ id: itemId(item.id, seen), name: str(item.name, 120), level: level(item.level, 3) })),
+    languages: list(raw.languages, CV_LIMITS.languages, (item) => ({ id: itemId(item.id, seen), name: str(item.name, 120), level: level(item.level, 3) })),
+    certificates: list(raw.certificates, CV_LIMITS.certificates, (item) => ({ id: itemId(item.id, seen), name: str(item.name, 200), issuer: str(item.issuer, 200), date: str(item.date, 40) })),
+    projects: list(raw.projects, CV_LIMITS.projects, (item) => ({ id: itemId(item.id, seen), name: str(item.name, 200), link: str(item.link, 300), details: str(item.details) })),
+    references: list(raw.references, CV_LIMITS.references, (item) => ({ id: itemId(item.id, seen), name: str(item.name, 200), role: str(item.role, 200), contact: str(item.contact, 300) })),
     interests: str(raw.interests),
-    custom: list(raw.custom, CV_LIMITS.custom, (item) => ({ id: cvId(), heading: str(item.heading, 120), body: str(item.body) })),
+    custom: list(raw.custom, CV_LIMITS.custom, (item) => ({ id: itemId(item.id, seen), heading: str(item.heading, 120), body: str(item.body) })),
     order: fullOrder(raw.order),
     hidden: sectionKeys(raw.hidden),
   };
@@ -287,7 +295,8 @@ function legacyEntries(value: unknown, limit: number): Array<Record<string, stri
 }
 
 function splitPeriod(period: string): { start: string; end: string } {
-  const [start = "", end = ""] = period.split(/\s*[–—-]\s*/);
+  const spaced = period.split(/\s+-\s+|\s*[–—]\s*/);
+  const [start = "", end = ""] = spaced.length > 1 ? spaced : (/^(.*?\d{4})-(.*)$/.exec(period)?.slice(1) ?? [period]);
   return { start: start.trim(), end: end.trim() };
 }
 
@@ -389,6 +398,8 @@ function portable(profile: CvProfile) {
     });
   return {
     ...profile,
+    photo: null,
+    photoCrop: null,
     contacts: strip(profile.contacts),
     experience: strip(profile.experience),
     education: strip(profile.education),
@@ -401,11 +412,31 @@ function portable(profile: CvProfile) {
   };
 }
 
-export function cvToJson(state: CvState): string {
-  return `${JSON.stringify({ format: CV_FILE_FORMAT, version: CV_FILE_VERSION, profile: portable(state.profile), theme: state.theme }, null, 2)}\n`;
+export type CvFile = CvState & { photoData: string | null };
+
+const PHOTO_DATA = /^[A-Za-z0-9+/]+={0,2}$/;
+
+function photoData(value: unknown): string | null {
+  return typeof value === "string" && value.length <= CV_PHOTO_DATA_LIMIT && PHOTO_DATA.test(value) ? value : null;
 }
 
-export function cvFromJson(text: string, language: Locale): CvState | null {
+export function cvToJson(state: CvState, photo: string | null = null): string {
+  const embedded = photo ? { photoData: photo, photoCrop: state.profile.photoCrop } : {};
+  return `${JSON.stringify({ format: CV_FILE_FORMAT, version: CV_FILE_VERSION, profile: { ...portable(state.profile), ...embedded }, theme: state.theme }, null, 2)}\n`;
+}
+
+export function isStoredPhoto(path: string): boolean {
+  return /[\\/]studio-images[\\/][0-9a-f]{32}\.[a-z]+$/i.test(path);
+}
+
+export function cvFromJson(text: string, language: Locale): CvFile | null {
+  const state = cvStateFromJson(text, language);
+  if (!state) return null;
+  const profile = (JSON.parse(text) as { profile?: { photoData?: unknown } }).profile;
+  return { ...state, photoData: photoData(profile?.photoData) };
+}
+
+function cvStateFromJson(text: string, language: Locale): CvState | null {
   let parsed: unknown;
   try {
     parsed = JSON.parse(text);

@@ -7,6 +7,10 @@ type ItemOf<K extends ListKey> = CvProfile[K][number];
 
 let focusTarget: string | null = null;
 
+export function focusPending(id: string): boolean {
+  return focusTarget === id;
+}
+
 export function claimFocus(id: string): boolean {
   if (focusTarget !== id) return false;
   focusTarget = null;

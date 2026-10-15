@@ -441,6 +441,36 @@ def test_a_document_title_above_the_name_is_not_taken_as_the_name(tmp_path: Path
     assert [skill.name for skill in profile.skills] == ["Excel", "SAP"]
 
 
+def test_a_location_line_under_the_name_is_not_taken_as_the_headline(tmp_path: Path) -> None:
+    rows = [
+        (60, "Elif Demir", 22, True),
+        (84, "Istanbul, Turkey", 10, False),
+        (100, "Product Designer, Mobile", 12, False),
+        (130, "EXPERIENCE", 13, True),
+        (148, "Product Designer, Acme", 11, True),
+        (162, "2020 - 2023", 10, False),
+    ]
+
+    result = _run(_single(tmp_path / "location.pdf", rows))
+
+    assert result.profile.headline == "Product Designer, Mobile"
+    assert _kinds(result).get("location") == "Istanbul, Turkey"
+
+
+def test_a_headline_with_a_comma_stays_the_headline(tmp_path: Path) -> None:
+    rows = [
+        (60, "Elif Demir", 22, True),
+        (84, "Product Designer, Mobile", 12, False),
+        (130, "EXPERIENCE", 13, True),
+        (148, "Product Designer, Acme", 11, True),
+        (162, "2020 - 2023", 10, False),
+    ]
+
+    profile = _run(_single(tmp_path / "comma.pdf", rows)).profile
+
+    assert profile.headline == "Product Designer, Mobile"
+
+
 def test_a_two_digit_academic_year_is_not_read_as_a_month() -> None:
     from vivepdf.ops._studio_cv_text import find_single
 

@@ -115,4 +115,19 @@ describe("cv builder history", () => {
     expect(useCvStore.getState().theme.accent).toBeNull();
     expect(useCvStore.getState().past).toHaveLength(0);
   });
+
+  it("swaps an old photo path for its stored copy everywhere in the history without an undo step", () => {
+    useCvStore.getState().updateProfile((profile) => ({ ...profile, photo: "C:/old.png" }));
+    type("A", "other");
+    useCvStore.getState().undo();
+    const steps = useCvStore.getState().past.length;
+
+    useCvStore.getState().adoptPhoto("C:/old.png", "C:/store/new.png");
+
+    expect(useCvStore.getState().profile.photo).toBe("C:/store/new.png");
+    expect(useCvStore.getState().past).toHaveLength(steps);
+    expect(useCvStore.getState().future[0].profile.photo).toBe("C:/store/new.png");
+    useCvStore.getState().undo();
+    expect(useCvStore.getState().profile.photo).toBeNull();
+  });
 });

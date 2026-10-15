@@ -1,5 +1,5 @@
 import { memo, useCallback, useMemo, useRef } from "react";
-import { ArrowDown, ArrowUp, Eye, EyeOff, RotateCcw } from "lucide-react";
+import { Eye, EyeOff, RotateCcw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LOCALES } from "@/app/locales";
 import { ColorSwatch } from "@/components/shared/ColorSwatch";
@@ -16,6 +16,7 @@ import { specOf } from "./cvDesigns";
 import { CV_DENSITIES, CV_LAYOUT_IDS, CV_PAPERS, CV_PHOTO_SHAPES, CV_SKILL_STYLES, sampleProfile, type CvLayoutId, type CvProfile, type CvTheme } from "./cvModel";
 import { sampleCv } from "./cvSample";
 import { useCvStore } from "./cvStore";
+import { MoveButtons } from "./fields/MoveButtons";
 
 const THUMB_WIDTH = 132;
 const ACCENTS = ["#38bdf8", "#2563eb", "#1f3a5f", "#0f766e", "#16a34a", "#ca8a04", "#ea580c", "#e11d48", "#9333ea", "#111827"];
@@ -78,10 +79,9 @@ function SectionOrder() {
   const order = useCvStore((state) => state.profile.order);
   const hidden = useCvStore((state) => state.profile.hidden);
   const update = useCvStore((state) => state.updateProfile);
-  const move = (index: number, step: -1 | 1) =>
+  const move = (index: number, target: number) =>
     update((profile) => {
       const next = [...profile.order];
-      const target = index + step;
       if (target < 0 || target >= next.length) return profile;
       [next[index], next[target]] = [next[target], next[index]];
       return { ...profile, order: next };
@@ -96,8 +96,7 @@ function SectionOrder() {
           <li key={key} className="flex items-center gap-1 rounded-lg border border-border/60 py-0.5 ps-3 pe-1">
             <span className={cn("min-w-0 flex-1 truncate text-sm", off && "text-muted-foreground line-through")}>{name}</span>
             <IconButton icon={off ? EyeOff : Eye} label={off ? t("studio.cv.showSection", { name }) : t("studio.cv.hideSection", { name })} onClick={() => toggle(key)} />
-            <IconButton icon={ArrowUp} label={t("studio.cv.moveUp", { name })} disabled={index === 0} onClick={() => move(index, -1)} />
-            <IconButton icon={ArrowDown} label={t("studio.cv.moveDown", { name })} disabled={index === order.length - 1} onClick={() => move(index, 1)} />
+            <MoveButtons name={name} index={index} total={order.length} onMove={move} />
           </li>
         );
       })}

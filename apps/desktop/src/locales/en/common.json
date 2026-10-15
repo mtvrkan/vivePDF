@@ -9525,6 +9525,7 @@
       },
       "emptySection": "Nothing here yet — use + to add one.",
       "removed": "{{name}} removed",
+      "listFull": "The list is full ({{limit}} items), so the rest weren't added.",
       "duplicate": "Duplicate {{name}}",
       "drag": "Drag {{name}} to reorder",
       "photoReady": "Photo added",

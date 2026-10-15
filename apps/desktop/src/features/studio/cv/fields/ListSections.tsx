@@ -1,12 +1,14 @@
 import { useRef, type ClipboardEvent, type KeyboardEvent } from "react";
-import { ArrowDown, ArrowUp, GripVertical, Trash2 } from "lucide-react";
+import { GripVertical, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { TextInput } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
+import { useToastStore } from "@/shared/store/toastStore";
 import { addItems, canAdd, moveItem, patchItem, setProfileField } from "../cvEdits";
-import { emptyLeveled, MAX_LEVEL, splitListText, type CvLeveled } from "../cvModel";
+import { CV_LIMITS, emptyLeveled, MAX_LEVEL, splitListText, type CvLeveled } from "../cvModel";
 import { useCvStore } from "../cvStore";
+import { MoveButtons } from "./MoveButtons";
 import { useRemoveWithUndo } from "./useRemoveWithUndo";
 import { FormSection } from "./FormSection";
 import { useClaimedFocus } from "./fieldChecks";
@@ -41,9 +43,11 @@ function LeveledRow({ listKey, item, index, total, levels, dragging, target, onG
     event.preventDefault();
     const empty = !item.name.trim();
     const [first, ...rest] = pieces;
+    const adding = empty ? rest : pieces;
+    if (adding.length > CV_LIMITS[listKey] - useCvStore.getState().profile[listKey].length) useToastStore.getState().push("info", t("studio.cv.listFull", { limit: CV_LIMITS[listKey] }));
     addItems(
       listKey,
-      (empty ? rest : pieces).map((piece) => ({ ...emptyLeveled(DEFAULT_LEVEL[listKey]), name: piece.slice(0, 120) })),
+      adding.map((piece) => ({ ...emptyLeveled(DEFAULT_LEVEL[listKey]), name: piece.slice(0, 120) })),
       item.id,
       false,
       empty ? { name: first.slice(0, 120) } : undefined,
@@ -64,8 +68,7 @@ function LeveledRow({ listKey, item, index, total, levels, dragging, target, onG
           <GripVertical className="size-4" />
         </span>
         <TextInput ref={inputRef} aria-label={field} value={item.name} maxLength={120} placeholder={t(`studio.cv.placeholders.${listKey === "skills" ? "skill" : "language"}`)} onPaste={onPaste} onKeyDown={onKeyDown} onChange={(event) => patchItem(listKey, item.id, { name: event.target.value })} />
-        <IconButton icon={ArrowUp} label={t("studio.cv.moveUp", { name })} disabled={index === 0} onClick={() => moveItem(listKey, index, index - 1)} />
-        <IconButton icon={ArrowDown} label={t("studio.cv.moveDown", { name })} disabled={index === total - 1} onClick={() => moveItem(listKey, index, index + 1)} />
+        <MoveButtons name={name} index={index} total={total} onMove={(from, to) => moveItem(listKey, from, to)} />
         <IconButton icon={Trash2} label={t("studio.cv.remove", { name })} onClick={() => remove(item.id, name)} />
       </div>
       <LevelPicker label={t("studio.cv.level", { name })} value={item.level} onChange={(level) => patchItem(listKey, item.id, { level }, false)} labels={levels} />

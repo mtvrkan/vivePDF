@@ -1,9 +1,10 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, Ref } from "react";
 import { Loader2, type LucideIcon } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { isMac, shortcutLabel } from "@/shared/lib/platform";
 
 type IconButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
+  ref?: Ref<HTMLButtonElement>;
   icon: LucideIcon;
   label: string;
   shortcut?: string;

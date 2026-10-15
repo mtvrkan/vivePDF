@@ -6,6 +6,7 @@ from vivepdf.ops._studio_cv_text import (
     BULLET,
     EMAIL,
     FOOTER,
+    certain_location,
     contacts_in,
     document_title,
     find_range,
@@ -292,6 +293,9 @@ def read_header(header: list[Line], lines: list[Line], linkedin: bool) -> Header
     headline: list[Line] = []
     for line in texts:
         place = location_value(line.text)
+        if not headline and not result.location and certain_location(line.text):
+            result.location = place
+            continue
         if not headline or not result.leftover and _continues(headline[-1], line) and not place:
             headline.append(line)
         elif place and not result.location:

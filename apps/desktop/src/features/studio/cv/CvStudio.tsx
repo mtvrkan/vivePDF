@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { memo, useEffect, useRef, useState, type ChangeEvent } from "react";
 import { AlertTriangle, ArrowLeft, Download, Eraser, FileJson, FileText, FileUp, FolderOpen, Palette, PenLine, Redo2, RefreshCw, Save, Sparkles, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -13,6 +13,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { cn } from "@/shared/lib/cn";
 import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import { toRpcError } from "@/shared/rpc/client";
+import { studioSaveImage } from "@/shared/rpc/operations";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { StudioDesign } from "@/types/studio";
 import { useImagePreview } from "../design/assets";
@@ -23,9 +24,9 @@ import { CvDesignPanel } from "./CvDesignPanel";
 import { CvExportDialog } from "./CvExportDialog";
 import { CvForm } from "./CvForm";
 import { CvImportDialog } from "./CvImportDialog";
-import { pickCvPdf, saveCvFile } from "./cvFiles";
+import { pickCvPdf, saveCvFile, withStoredPhoto } from "./cvFiles";
 import type { CvOverflow } from "./cvLayout";
-import { cvFromJson, emptyProfile, profileHasContent, sampleProfile, type CvProfile, type CvSectionKey, type CvState } from "./cvModel";
+import { cvFromJson, emptyProfile, isStoredPhoto, profileHasContent, sampleProfile, type CvProfile, type CvSectionKey, type CvState } from "./cvModel";
 import { keepUnchanged, renderCv } from "./cvRender";
 import { flushCvSave, useCvStore } from "./cvStore";
 
@@ -53,6 +54,21 @@ function redoKey(event: KeyboardEvent, letter: string | null): boolean {
   return letter === "y" || (letter === "z" && event.shiftKey);
 }
 
+const PreviewPages = memo(function PreviewPages({ design, scale, language }: { design: StudioDesign; scale: number; language: string }) {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-col items-center gap-6 py-6">
+      {design.pages.map((item, index) => (
+        <div key={item.id} className="paper-surface relative overflow-hidden rounded-sm bg-white shadow-lg" style={{ width: `${item.width * scale}px`, height: `${item.height * scale}px` }} role="img" aria-label={t("studio.cv.pageLabel", { page: index + 1, total: design.pages.length })}>
+          <div className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
+            <PageView page={item} language={language} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+});
+
 export default function CvStudio() {
   const { t } = useTranslation();
   const profile = useCvStore((state) => state.profile);
@@ -63,6 +79,8 @@ export default function CvStudio() {
   const close = useCvStore((state) => state.close);
   const pushToast = useToastStore((state) => state.push);
   const [tab, setTab] = useState<Tab>("content");
+  const [designVisited, setDesignVisited] = useState(false);
+  if (tab === "design" && !designVisited) setDesignVisited(true);
   const [design, setDesign] = useState<StudioDesign | null>(null);
   const [overflow, setOverflow] = useState<CvOverflow>({ items: 0, sections: [] });
   const [failed, setFailed] = useState(false);
@@ -98,6 +116,15 @@ export default function CvStudio() {
       window.clearTimeout(timer);
     };
   }, [profile, theme, untitled, attempt, photoMissing]);
+
+  useEffect(() => {
+    const photo = profile.photo;
+    if (!photo || isStoredPhoto(photo)) return;
+    void studioSaveImage({ path: photo }).then(
+      (saved) => useCvStore.getState().adoptPhoto(photo, saved.path),
+      () => undefined,
+    );
+  }, [profile.photo]);
 
   useEffect(() => {
     window.addEventListener("pagehide", flushCvSave);
@@ -172,11 +199,12 @@ export default function CvStudio() {
     event.target.value = "";
     if (!file) return;
     const text = await file.text().catch(() => null);
-    const state = text === null ? null : cvFromJson(text, theme.language);
-    if (!state) {
+    const opened = text === null ? null : cvFromJson(text, theme.language);
+    if (!opened) {
       pushToast("error", t("studio.cv.file.unreadable"));
       return;
     }
+    const state = await withStoredPhoto(opened);
     const before = useCvStore.getState().snapshot();
     useCvStore.getState().replace(state);
     pushToast("info", t("studio.cv.file.opened"), restoring(before));
@@ -266,7 +294,7 @@ export default function CvStudio() {
                   type="button"
                   role="tab"
                   aria-selected={tab === item.id}
-                  aria-controls="cv-tab-panel"
+                  aria-controls={`cv-panel-${item.id}`}
                   tabIndex={tab === item.id ? 0 : -1}
                   onClick={() => setTab(item.id)}
                   className={cn("flex h-8 flex-1 items-center justify-center gap-2 rounded-lg text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring", tab === item.id ? "menubar-active font-medium" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground")}
@@ -277,8 +305,11 @@ export default function CvStudio() {
               );
             })}
           </div>
-          <div id="cv-tab-panel" className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" role="tabpanel" aria-labelledby={`cv-tab-${tab}`}>
-            {tab === "content" ? <CvForm /> : <CvDesignPanel />}
+          <div id="cv-panel-content" hidden={tab !== "content"} className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" role="tabpanel" aria-labelledby="cv-tab-content">
+            <CvForm />
+          </div>
+          <div id="cv-panel-design" hidden={tab !== "design"} className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" role="tabpanel" aria-labelledby="cv-tab-design">
+            {designVisited ? <CvDesignPanel /> : null}
           </div>
         </aside>
         <div ref={preview.ref} role="region" className="min-w-0 flex-1 overflow-auto bg-muted/40" aria-label={t("studio.cv.preview")} aria-busy={!design && !failed}>
@@ -323,15 +354,7 @@ export default function CvStudio() {
               <ErrorState title={t("studio.cv.previewFailed")} message={t("studio.cv.previewFailedHint")} onRetry={() => setAttempt((value) => value + 1)} />
             </div>
           ) : design && page && scale > 0 ? (
-            <div className="flex flex-col items-center gap-6 py-6">
-              {design.pages.map((item, index) => (
-                <div key={item.id} className="paper-surface relative overflow-hidden rounded-sm bg-white shadow-lg" style={{ width: `${item.width * scale}px`, height: `${item.height * scale}px` }} role="img" aria-label={t("studio.cv.pageLabel", { page: index + 1, total: design.pages.length })}>
-                  <div className="pointer-events-none absolute left-0 top-0 origin-top-left" style={{ transform: `scale(${scale})` }}>
-                    <PageView page={item} language={theme.language} />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <PreviewPages design={design} scale={scale} language={theme.language} />
           ) : (
             <div className="flex justify-center py-6">
               <div className="aspect-[1/1.414] w-2/3 max-w-xl animate-pulse rounded-sm bg-muted" />

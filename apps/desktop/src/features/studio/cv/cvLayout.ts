@@ -83,6 +83,11 @@ const SEGMENT_GAP = 2.5;
 const RING_GAP = 3;
 const LEFT_BAR_INDENT = 12;
 const CHIP_GAP = 5;
+const CHIP_PADDING = 16;
+const CHIP_INSET = 4;
+const BAND_INSET = 9;
+const LATIN_WIDTH = 0.56;
+const WIDE_GLYPH = /[ᄀ-ᅟ⺀-꓏가-힣豈-﫿︰-﹏＀-｠￠-￦]/u;
 
 export function mix(from: string, to: string, amount: number): string {
   const parse = (hex: string) => [1, 3, 5].map((index) => Number.parseInt(hex.slice(index, index + 2), 16));
@@ -307,12 +312,13 @@ export function titleBlock(context: CvContext, tone: Tone, style: TitleStyle, la
   const font = context.fonts.heading;
   const size = context.size(style === "underline" || style === "leftBar" ? 13 : 10.5);
   if (style === "band") {
-    const height = context.size(10.5) + 12;
+    const bandStyle: TextStyle = { font, size: context.size(10), bold: true, upper: true, spacing: 1.6, color: onFill(colors.accent, tone === "side" ? (context.palette.sideFill ?? undefined) : undefined) };
+    const height = Math.max(context.size(10.5) + 12, context.textHeight(width - BAND_INSET * 2, label, bandStyle) + 8);
     return {
       height,
       draw: (x, y, columnWidth) => [
         box("rect", x, y, columnWidth, height, solid(colors.accent), { radius: 3 }),
-        text(x + 9, y, columnWidth - 18, height, label, { font, size: context.size(10), bold: true, upper: true, spacing: 1.6, color: onFill(colors.accent, tone === "side" ? (context.palette.sideFill ?? undefined) : undefined), valign: "middle", shrink: true }),
+        text(x + BAND_INSET, y, columnWidth - BAND_INSET * 2, height, label, { ...bandStyle, valign: "middle", shrink: true }),
       ],
     };
   }
@@ -496,40 +502,54 @@ function levelTrack(style: LevelBar, x: number, y: number, width: number, height
   return [box("rect", x, y, width, height, solid(colors.soft), { radius: height / 2 }), box("rect", x, y, (width * level) / 5, height, solid(colors.accent), { radius: height / 2 })];
 }
 
+type Chip = { x: number; width: number; height: number; label: string };
+type ChipRow = { chips: Chip[]; height: number };
+
+function estimatedWidth(label: string, size: number): number {
+  return [...label].reduce((sum, glyph) => sum + (WIDE_GLYPH.test(glyph) ? 1 : LATIN_WIDTH), 0) * size + CHIP_PADDING;
+}
+
 function chipsBlock(context: CvContext, tone: Tone, width: number, items: string[]): Block | null {
   const names = items.map((item) => item.trim()).filter(Boolean);
   if (!names.length) return null;
   const size = context.size(8.5);
-  const rows: Array<Array<{ x: number; width: number; label: string }>> = [[]];
+  const single = size + 9;
+  const style: TextStyle = { font: context.fonts.body, size, color: context.colors(tone).text, align: "center" };
+  const rows: ChipRow[] = [{ chips: [], height: single }];
   let left = 0;
   for (const label of names) {
-    const chipWidth = Math.min(width, label.length * size * 0.56 + 16);
+    const chipWidth = Math.min(width, estimatedWidth(label, size));
+    const height = chipWidth < width ? single : Math.max(single, context.textHeight(chipWidth - CHIP_INSET * 2, label, style) + 6);
     if (left > 0 && left + chipWidth > width) {
-      rows.push([]);
+      rows.push({ chips: [], height: single });
       left = 0;
     }
-    rows[rows.length - 1].push({ x: left, width: chipWidth, label });
+    const row = rows[rows.length - 1];
+    row.chips.push({ x: left, width: chipWidth, height, label });
+    row.height = Math.max(row.height, height);
     left += chipWidth + CHIP_GAP;
   }
-  return chipRows(context, tone, size, rows);
+  return chipRows(context, tone, style, rows);
 }
 
-function chipRows(context: CvContext, tone: Tone, size: number, rows: Array<Array<{ x: number; width: number; label: string }>>): Block {
+function chipRows(context: CvContext, tone: Tone, style: TextStyle, rows: ChipRow[]): Block {
   const colors = context.colors(tone);
-  const height = size + 9;
-  const pitch = height + CHIP_GAP;
+  const tops = rows.map((_, index) => rows.slice(0, index).reduce((sum, row) => sum + row.height + CHIP_GAP, 0));
   return {
-    height: rows.length * pitch - CHIP_GAP,
+    height: tops[tops.length - 1] + rows[rows.length - 1].height,
     draw: (x, y) =>
       rows.flatMap((row, index) =>
-        row.flatMap((chip) => [
-          box("rect", x + chip.x, y + index * pitch, chip.width, height, solid(colors.soft), { radius: height / 2 }),
-          text(x + chip.x + 4, y + index * pitch, chip.width - 8, height, chip.label, { font: context.fonts.body, size, color: colors.text, align: "center", valign: "middle", shrink: true }),
-        ]),
+        row.chips.flatMap((chip) => {
+          const top = y + tops[index] + (row.height - chip.height) / 2;
+          return [
+            box("rect", x + chip.x, top, chip.width, chip.height, solid(colors.soft), { radius: Math.min(chip.height, style.size + 9) / 2 }),
+            text(x + chip.x + CHIP_INSET, top, chip.width - CHIP_INSET * 2, chip.height, chip.label, { ...style, valign: "middle", shrink: true }),
+          ];
+        }),
       ),
     split: (available) => {
-      const fit = Math.floor((available + CHIP_GAP) / pitch);
-      return fit >= 1 && fit < rows.length ? [chipRows(context, tone, size, rows.slice(0, fit)), chipRows(context, tone, size, rows.slice(fit))] : null;
+      const fit = tops.filter((top, index) => top + rows[index].height <= available).length;
+      return fit >= 1 && fit < rows.length ? [chipRows(context, tone, style, rows.slice(0, fit)), chipRows(context, tone, style, rows.slice(fit))] : null;
     },
   };
 }

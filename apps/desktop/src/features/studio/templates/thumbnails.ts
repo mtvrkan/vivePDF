@@ -7,6 +7,7 @@ import { pageToRender } from "../model/render";
 import { thumbnailPage, thumbnailSide } from "./thumbnailPage";
 
 const CONCURRENCY = 2;
+const IDLE_LIMIT = 96;
 
 export type ThumbnailState = { status: "loading" } | { status: "ready"; url: string } | { status: "error" };
 
@@ -15,7 +16,36 @@ type Job = { key: string; page: () => StudioPage; language: string; side: number
 const ready = new Map<string, string>();
 const jobs = new Map<string, Job>();
 const queue: Job[] = [];
+const holders = new Map<string, number>();
+const idle = new Set<string>();
 let running = 0;
+
+function trimIdle() {
+  for (const key of idle) {
+    if (idle.size <= IDLE_LIMIT) return;
+    idle.delete(key);
+    const url = ready.get(key);
+    ready.delete(key);
+    if (url) URL.revokeObjectURL(url);
+  }
+}
+
+function hold(key: string) {
+  holders.set(key, (holders.get(key) ?? 0) + 1);
+  idle.delete(key);
+}
+
+function release(key: string) {
+  const left = (holders.get(key) ?? 1) - 1;
+  if (left > 0) {
+    holders.set(key, left);
+    return;
+  }
+  holders.delete(key);
+  if (!ready.has(key)) return;
+  idle.add(key);
+  trimIdle();
+}
 
 function decode(base64: string): Uint8Array<ArrayBuffer> {
   const binary = atob(base64);
@@ -43,6 +73,10 @@ function pump() {
     render(job)
       .then((url) => {
         ready.set(job.key, url);
+        if (!holders.has(job.key)) {
+          idle.add(job.key);
+          trimIdle();
+        }
         job.resolve(url);
       }, job.reject)
       .finally(() => {
@@ -77,7 +111,12 @@ export function useTemplateThumbnail(id: string, page: (() => StudioPage) | null
   const key = `${id}|${language}|${thumbnailSide(box)}|${revision}`;
   const [state, setState] = useState<{ key: string; value: ThumbnailState }>(() => ({ key, value: ready.has(key) ? { status: "ready", url: ready.get(key) ?? "" } : { status: "loading" } }));
   const cached = ready.get(key);
-  const current: ThumbnailState = cached ? { status: "ready", url: cached } : state.key === key ? state.value : { status: "loading" };
+  const current: ThumbnailState = cached ? { status: "ready", url: cached } : state.key === key && state.value.status === "error" ? state.value : { status: "loading" };
+
+  useEffect(() => {
+    hold(key);
+    return () => release(key);
+  }, [key]);
 
   useEffect(() => {
     if (!page || ready.has(key)) return;

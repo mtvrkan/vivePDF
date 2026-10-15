@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { formatMonthYear, parseMonthYear } from "./cvDates";
 import { applyImport } from "./cvImport";
-import { CV_FILE_FORMAT, CV_LIMITS, cvFromJson, cvToJson, defaultTheme, emptyExperience, emptyProfile, fromLegacyDraft, normalizeProfile, splitListText } from "./cvModel";
+import { CV_FILE_FORMAT, CV_LIMITS, cvFromJson, cvToJson, defaultTheme, emptyExperience, emptyLeveled, emptyProfile, fromLegacyDraft, isStoredPhoto, normalizeProfile, splitListText } from "./cvModel";
 
 describe("cv profile data", () => {
   it("keeps a valid photo crop and the education 'still studying' flag, and drops a broken crop", () => {
@@ -102,5 +102,50 @@ describe("importing a CV into the form", () => {
     const many = { experience: Array.from({ length: CV_LIMITS.experience + 5 }, (_, index) => ({ role: `R${index}` })) };
 
     expect(applyImport(current, many, new Set(["experience"]), "add").experience).toHaveLength(CV_LIMITS.experience);
+  });
+});
+
+describe("cv ids, periods and photos", () => {
+  it("keeps item ids through normalising and gives a duplicate or broken id a new one", () => {
+    const skill = { ...emptyLeveled(), name: "SQL" };
+
+    const profile = normalizeProfile({ skills: [skill, { ...skill, name: "Copy" }, { id: "bad id!", name: "Odd" }] });
+
+    expect(profile.skills[0].id).toBe(skill.id);
+    expect(profile.skills[1].id).not.toBe(skill.id);
+    expect(profile.skills[2].id).not.toBe("bad id!");
+  });
+
+  it("splits an old draft period only on the range dash, not inside numeric dates", () => {
+    const periods = ["03-2019 - 05-2021", "2019-2021", "03-2019-05-2021", "2020 – Present", "03-2019"];
+
+    const state = fromLegacyDraft(JSON.stringify({ name: "Kim", experience: periods.map((period) => ({ title: "Role", period })) }), "en");
+
+    expect(state?.profile.experience.map((item) => [item.start, item.end])).toEqual([
+      ["03-2019", "05-2021"],
+      ["2019", "2021"],
+      ["03-2019", "05-2021"],
+      ["2020", "Present"],
+      ["03-2019", ""],
+    ]);
+  });
+
+  it("writes the photo into the CV file instead of its path and reads it back", () => {
+    const crop = { x: 0.1, y: 0.1, width: 0.5, height: 0.5 };
+    const profile = { ...emptyProfile(), name: "Ayşe", photo: "C:/Users/someone/Pictures/me.jpg", photoCrop: crop };
+
+    const withPhoto = cvToJson({ profile, theme: defaultTheme("en") }, "aGVsbG8=");
+    const withoutPhoto = cvToJson({ profile, theme: defaultTheme("en") });
+
+    expect(withPhoto).not.toContain("Pictures");
+    expect(cvFromJson(withPhoto, "en")).toMatchObject({ photoData: "aGVsbG8=", profile: { photo: null, photoCrop: crop } });
+    expect(cvFromJson(withoutPhoto, "en")).toMatchObject({ photoData: null, profile: { photo: null, photoCrop: null } });
+    expect(cvFromJson(JSON.stringify({ profile: { name: "Kim", photoData: "<script>" } }), "en")?.photoData).toBeNull();
+  });
+
+  it("tells a photo in the app's image store from a picked file", () => {
+    expect(isStoredPhoto(["C:", "Users", "a", "AppData", "Roaming", "vivepdf", "studio-images", `${"a".repeat(32)}.jpg`].join("\\"))).toBe(true);
+    expect(isStoredPhoto("/home/a/.local/share/vivepdf/studio-images/0123456789abcdef0123456789abcdef.png")).toBe(true);
+    expect(isStoredPhoto("C:/Users/a/Pictures/me.jpg")).toBe(false);
   });
 });

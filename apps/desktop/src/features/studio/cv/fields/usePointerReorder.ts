@@ -1,4 +1,4 @@
-import { useState, type PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 
 export type ReorderDrag = { from: number; to: number };
 
@@ -13,6 +13,8 @@ function targetIndex(list: Element, clientY: number): number {
 
 export function usePointerReorder(onMove: (from: number, to: number) => void) {
   const [drag, setDrag] = useState<ReorderDrag | null>(null);
+  const moved = useRef(onMove);
+  moved.current = onMove;
 
   const begin = (from: number) => (event: ReactPointerEvent<HTMLElement>) => {
     if (event.button !== 0) return;
@@ -35,7 +37,7 @@ export function usePointerReorder(onMove: (from: number, to: number) => void) {
       handle.removeEventListener("pointerup", done);
       handle.removeEventListener("pointercancel", cancel);
       setDrag(null);
-      if (commit && to !== from) onMove(from, to);
+      if (commit && to !== from) moved.current(from, to);
     };
     const done = finish(true);
     const cancel = finish(false);
@@ -44,5 +46,7 @@ export function usePointerReorder(onMove: (from: number, to: number) => void) {
     handle.addEventListener("pointercancel", cancel);
   };
 
-  return { drag, begin };
+  const grip = useCallback((from: number, event: ReactPointerEvent<HTMLElement>) => begin(from)(event), []);
+
+  return { drag, begin, grip };
 }

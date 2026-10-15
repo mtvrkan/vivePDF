@@ -9523,6 +9523,7 @@
       },
       "emptySection": "Noch nichts hier – mit + hinzufügen.",
       "removed": "{{name}} entfernt",
+      "listFull": "Die Liste ist voll ({{limit}} Einträge), der Rest wurde nicht hinzugefügt.",
       "duplicate": "{{name}} duplizieren",
       "drag": "{{name}} ziehen, um die Reihenfolge zu ändern",
       "photoReady": "Foto hinzugefügt",

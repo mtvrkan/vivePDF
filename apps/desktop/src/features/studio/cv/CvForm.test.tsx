@@ -1,10 +1,10 @@
-import { act, cleanup, fireEvent, render, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useStudioAssetsStore } from "../design/assets";
 import { CvForm } from "./CvForm";
-import { emptyExperience, emptyProfile } from "./cvModel";
+import { CV_LIMITS, emptyExperience, emptyLeveled, emptyProfile } from "./cvModel";
 import { useCvStore } from "./cvStore";
 
 const profile = () => useCvStore.getState().profile;
@@ -121,5 +121,41 @@ describe("cv form", () => {
 
     const order = [...document.querySelectorAll("[data-cv-section]")].map((node) => node.getAttribute("data-cv-section"));
     expect(order.slice(0, 3)).toEqual(["personal", "skills", "summary"]);
+  });
+
+  it("keeps focus on a move button after the row moves and hands it to the other arrow at the end of the list", async () => {
+    act(() => useCvStore.getState().updateProfile((current) => ({ ...current, experience: ["One", "Two", "Three"].map((role) => ({ ...emptyExperience(), role })) })));
+    render(<CvForm />);
+    const card = within(section("experience"));
+    const down = card.getByRole("button", { name: "Move Two down" });
+
+    down.focus();
+    fireEvent.click(down);
+
+    expect(profile().experience.map((item) => item.role)).toEqual(["One", "Three", "Two"]);
+    await waitFor(() => expect(document.activeElement).toBe(card.getByRole("button", { name: "Move Two up" })));
+  });
+
+  it("opens a duplicated entry in a long list and puts the cursor in it", async () => {
+    act(() => useCvStore.getState().updateProfile((current) => ({ ...current, experience: ["One", "Two", "Three"].map((role) => ({ ...emptyExperience(), role })) })));
+    render(<CvForm />);
+    const card = within(section("experience"));
+
+    fireEvent.click(card.getByRole("button", { name: "Duplicate Three" }));
+
+    const copies = card.getAllByRole("button", { name: /^Three/ });
+    expect(copies[1].getAttribute("aria-expanded")).toBe("true");
+    await waitFor(() => expect(document.activeElement).toBe(card.getAllByLabelText("Position")[0]));
+  });
+
+  it("says so when a pasted list does not fit in the section", () => {
+    act(() => useCvStore.getState().updateProfile((current) => ({ ...current, skills: Array.from({ length: CV_LIMITS.skills - 1 }, (_, index) => ({ ...emptyLeveled(), name: `S${index}` })) })));
+    render(<CvForm />);
+    const input = within(section("skills")).getAllByLabelText("Skill")[0];
+
+    fireEvent.paste(input, { clipboardData: { getData: () => "Figma, Sketch, Excel" } });
+
+    expect(profile().skills).toHaveLength(CV_LIMITS.skills);
+    expect(useToastStore.getState().toasts.at(-1)?.message).toBe(`The list is full (${CV_LIMITS.skills} items), so the rest weren't added.`);
   });
 });

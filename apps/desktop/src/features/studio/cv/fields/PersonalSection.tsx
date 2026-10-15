@@ -1,5 +1,5 @@
 import { useRef, useState, type KeyboardEvent } from "react";
-import { ArrowDown, ArrowUp, Crop, GripVertical, ImagePlus, Plus, Trash2 } from "lucide-react";
+import { Crop, GripVertical, ImagePlus, Plus, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
@@ -15,6 +15,7 @@ import { pickImage } from "../../design/pickImage";
 import { addItems, canAdd, moveItem, patchItem, setProfileField } from "../cvEdits";
 import { CV_CONTACT_KINDS, emptyContact, type CvContact, type CvContactKind } from "../cvModel";
 import { useCvStore } from "../cvStore";
+import { MoveButtons } from "./MoveButtons";
 import { useRemoveWithUndo } from "./useRemoveWithUndo";
 import { FormSection } from "./FormSection";
 import { looksValid, useClaimedFocus, type ValueCheck } from "./fieldChecks";
@@ -140,8 +141,7 @@ function ContactRow({ contact, index, total, dragging, target, onGrip }: { conta
           onKeyDown={onKeyDown}
           onChange={(event) => patchItem("contacts", contact.id, { value: event.target.value })}
         />
-        <IconButton icon={ArrowUp} label={t("studio.cv.moveUp", { name: kindLabel })} disabled={index === 0} onClick={() => moveItem("contacts", index, index - 1)} />
-        <IconButton icon={ArrowDown} label={t("studio.cv.moveDown", { name: kindLabel })} disabled={index === total - 1} onClick={() => moveItem("contacts", index, index + 1)} />
+        <MoveButtons name={kindLabel} index={index} total={total} onMove={(from, to) => moveItem("contacts", from, to)} />
         <IconButton icon={Trash2} label={t("studio.cv.remove", { name: kindLabel })} onClick={() => remove(contact.id, kindLabel)} />
       </div>
       {invalid && check ? (

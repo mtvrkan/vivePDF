@@ -59,4 +59,19 @@ describe("template thumbnail queue", () => {
 
     await waitFor(() => expect(result.current.status).toBe("error"));
   });
+
+  it("frees pictures that no card shows once too many are kept", async () => {
+    const revoke = vi.fn();
+    Object.defineProperty(URL, "revokeObjectURL", { value: revoke, configurable: true });
+    rpc.studioThumbnail.mockImplementation(() => Promise.resolve({ image: btoa("jpeg") }));
+    const cards = Array.from({ length: 120 }, (_, index) => renderHook(() => useTemplateThumbnail(`many${index}`, page, "en", 140)));
+    await waitFor(() => expect(cards.every((card) => card.result.current.status === "ready")).toBe(true));
+    expect(revoke).not.toHaveBeenCalled();
+
+    for (const card of cards) card.unmount();
+
+    expect(revoke.mock.calls.length).toBeGreaterThanOrEqual(24);
+    const again = renderHook(() => useTemplateThumbnail("many0", page, "en", 140));
+    await waitFor(() => expect(again.result.current.status).toBe("ready"));
+  });
 });

@@ -262,6 +262,15 @@ def location_value(text: str) -> str:
     return ""
 
 
+def certain_location(text: str) -> str:
+    value = location_value(text)
+    folded = fold(text).strip()
+    named = LOCATION_PREFIX.match(folded) or LOCATION_WORDS.intersection(
+        folded.replace(",", " ").split()
+    )
+    return value if named else ""
+
+
 LEVELS: tuple[tuple[re.Pattern[str], int], ...] = tuple(
     (re.compile(rf"\b(?:{pattern})\b"), level)
     for pattern, level in (
