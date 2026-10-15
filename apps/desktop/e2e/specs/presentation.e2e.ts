@@ -1,6 +1,6 @@
 import { $, browser, expect } from "@wdio/globals";
 import { join } from "node:path";
-import { bootApp, clickButton, copyFixture, dialogButton, fixtures, openInViewer, pressShortcut, probe, t, typeInto, workDir } from "../support/app.ts";
+import { bootApp, clickButton, copyFixture, dialogButton, dismissKeepDrawings, fixtures, openInViewer, pressShortcut, probe, t, typeInto, workDir } from "../support/app.ts";
 
 type Point = { x: number; y: number };
 type Colour = "red" | "blue";
@@ -213,9 +213,12 @@ describe("presentation", () => {
     await browser.keys(ESCAPE_KEY);
     await board.waitForExist({ reverse: true, timeoutMsg: "Esc did not leave the black screen" });
     await browser.keys(ESCAPE_KEY);
+    await $(".immersive-view").waitForExist({ reverse: true, timeoutMsg: "Esc did not leave the presentation" });
+    expect(await dismissKeepDrawings()).toBe(true);
   });
 
   it("draws a rectangle and a text, then moves and deletes a drawing", async () => {
+    await dismissKeepDrawings(0);
     const page = $('[data-page-index="0"]');
     if (!(await $(".immersive-view").isExisting())) {
       await page.click();

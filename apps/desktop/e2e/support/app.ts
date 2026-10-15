@@ -211,6 +211,18 @@ export function dialogButton(label: string) {
   return $(`//*[@role="dialog"]//button[normalize-space(.)="${label}" or @aria-label="${label}"]`);
 }
 
+export async function dismissKeepDrawings(timeout = 5000): Promise<boolean> {
+  const discard = dialogButton(t("presentation.keep.discard"));
+  const shown = await discard.waitForDisplayed({ timeout }).then(
+    () => true,
+    () => false,
+  );
+  if (!shown) return false;
+  await discard.click();
+  await discard.waitForExist({ reverse: true, timeoutMsg: "the keep-drawings dialog did not close" });
+  return true;
+}
+
 export async function chooseFromToolbarMenu(group: string, id: string) {
   await clickButton(group);
   const item = $(`[role="menuitem"][data-menu-id="${id}"]`);
