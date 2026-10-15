@@ -32,7 +32,7 @@ function StrokeCanvas({ rect, strokes, redrawKey }: { rect: PageRect; strokes: S
   );
 }
 
-function DrawingItems({ rect, items }: { rect: PageRect; items: Stroke[] }) {
+export function DrawingItems({ rect, items }: { rect: PageRect; items: Stroke[] }) {
   const assets = usePresentationStore((state) => state.drawingAssets);
   return items.map((stroke) => {
     const asset = stroke.asset ? assets[stroke.asset] : undefined;

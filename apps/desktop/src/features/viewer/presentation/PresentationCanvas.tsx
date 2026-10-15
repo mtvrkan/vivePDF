@@ -1,20 +1,20 @@
 import { useEffect, useRef, useState, type RefObject } from "react";
-import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
-import { topDrawingAt, translateDrawing } from "@/shared/lib/drawingGeometry";
-import { useDocumentStore } from "@/shared/store/documentStore";
+import { topDrawingAt } from "@/shared/lib/drawingGeometry";
 import { usePresentationStore, type Stroke, type StrokePoint } from "@/shared/store/presentationStore";
 import { LiveStrokeCanvas, PageDrawingCanvas } from "./DrawingLayer";
 import { DrawingSelectionFrame } from "./DrawingSelectionFrame";
 import { useBoardLiveStore } from "./boardLiveStore";
 import { beginDrawing, extendDrawing, isDrawingKept, makeDrawingId, type DrawStyle } from "./drawingGestures";
 import { editPresentationDrawing } from "./drawingInsert";
+import { activePageWidth, movedDrawing, PICK_TOLERANCE_PX, type DrawingMove } from "./drawingMove";
 import { placedDrawing } from "./drawingPlacement";
 import { duplicateDrawing } from "./drawingRotate";
 import { LaserTrail, type LaserPoint } from "./LaserTrail";
 import { toLivePoint, type LivePoint, type LiveSignal } from "./liveSignal";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 import { MagnifierLens } from "./MagnifierLens";
+import { PlacementHint } from "./PlacementHint";
 import { clampStrokePoint, measureTextBlock } from "./strokes";
 import { TextDraft } from "./TextDraft";
 import { nearestPageRect, pageRectAt, usePageRects, type PageRect } from "./usePageRects";
@@ -29,13 +29,11 @@ const LASER_STROKE_MIN_STEP_PX = 2;
 const LASER_FADE_MS = 700;
 
 const ERASER_RADIUS = 0.02;
-const PICK_TOLERANCE_PX = 6;
-const DRAG_THRESHOLD_PX = 3;
 const DRAWING_TOOLS = new Set(["pen", "highlighter", "shape", "eraser"]);
 const NO_STROKES: Stroke[] = [];
 
 type TextDraftState = { pageIndex: number; anchor: StrokePoint; initial: string; original: Stroke | null };
-type MoveState = { pageIndex: number; original: Stroke; start: StrokePoint; moved: boolean; editOnClick: boolean };
+type MoveState = DrawingMove & { pageIndex: number; editOnClick: boolean };
 
 function pagePoint(rect: PageRect, x: number, y: number) {
   return clampStrokePoint({ x: (x - rect.left) / rect.width, y: (y - rect.top) / rect.height });
@@ -45,15 +43,9 @@ function rectSize(rect: PageRect) {
   return { width: rect.width, height: rect.height };
 }
 
-function activePageWidth(pageIndex: number): number | undefined {
-  const { activeId, documents } = useDocumentStore.getState();
-  return activeId ? documents[activeId]?.info?.pageSizes[pageIndex]?.width : undefined;
-}
-
 type PresentationCanvasProps = { containerRef: RefObject<HTMLDivElement | null>; contained?: boolean; onSignal?: (signal: LiveSignal) => void };
 
 export function PresentationCanvas({ containerRef, contained = false, onSignal }: PresentationCanvasProps) {
-  const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
   const penWidth = usePresentationStore((state) => state.penWidth);
@@ -268,12 +260,8 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
       const pageRect = pageRects.find((rect) => rect.pageIndex === move.pageIndex);
       if (!pageRect) return;
       const point = toContainerPoint(event);
-      const normalized = pagePoint(pageRect, point.x, point.y);
-      const dx = normalized.x - move.start.x;
-      const dy = normalized.y - move.start.y;
-      if (!move.moved && Math.hypot(dx * pageRect.width, dy * pageRect.height) < DRAG_THRESHOLD_PX) return;
-      move.moved = true;
-      usePresentationStore.getState().replaceDrawing(move.pageIndex, translateDrawing(move.original, dx, dy));
+      const moved = movedDrawing(move, pagePoint(pageRect, point.x, point.y), rectSize(pageRect));
+      if (moved) usePresentationStore.getState().replaceDrawing(move.pageIndex, moved);
       return;
     }
     if (tool === "laser") {
@@ -484,11 +472,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
           onEdit={selectedStroke.tool === "drawing" ? () => editPresentationDrawing(selectedRect.pageIndex, selectedStroke) : undefined}
         />
       ) : null}
-      {placing ? (
-        <p role="status" className="glass pointer-events-none absolute inset-x-0 top-4 z-30 mx-auto w-fit rounded-full px-4 py-1.5 text-sm">
-          {t("presentation.insert.placeHint")}
-        </p>
-      ) : null}
+      {placing ? <PlacementHint /> : null}
       {textDraft && draftRect ? (
         <TextDraft
           key={`${textDraft.pageIndex}-${textDraft.anchor.x}-${textDraft.anchor.y}`}

@@ -37,12 +37,12 @@ describe("PresentationInsertMenu", () => {
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
-  it("is unavailable on a black or white board and while the page editor is open", () => {
+  it("is available on a black or white board and unavailable while the page editor is open", () => {
     render(<PresentationInsertMenu />);
     const button = screen.getByRole("button", { name: "Insert" }) as HTMLButtonElement;
 
     act(() => usePresentationStore.getState().setBlackout("black"));
-    expect(button.disabled).toBe(true);
+    expect(button.disabled).toBe(false);
 
     act(() => {
       usePresentationStore.getState().setBlackout("none");

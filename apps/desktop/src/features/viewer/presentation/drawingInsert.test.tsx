@@ -102,6 +102,24 @@ describe("editPresentationDrawing", () => {
     expect(useViewerOverlayStore.getState().objects).toEqual([]);
   });
 
+  it("writes an edited board item back to its board", () => {
+    const asset = usePresentationStore.getState().addDrawingAsset({ dataUrl: "data:old", width: 40, height: 20, drawing: DRAWING });
+    const stroke: Stroke = { id: "board-item", tool: "drawing", color: "#000000", width: 0, points: [{ x: 0.1, y: 0.1 }], size: { width: 0.2, height: 0.1 }, asset };
+    usePresentationStore.getState().addBoardStroke("white", stroke);
+
+    editPresentationDrawing("white", stroke);
+    const request = useViewerOverlayStore.getState().drawingEditor;
+    const overlay = useViewerOverlayStore.getState();
+    overlay.snapshot();
+    overlay.updateObject(request?.objectId ?? "", { dataUrl: "data:new", width: 40, height: 40, drawing: DRAWING } as Partial<EditorPending>);
+    overlay.closeDrawingEditor();
+
+    const next = usePresentationStore.getState().boardStrokes.white[0];
+    expect(usePresentationStore.getState().drawingAssets[next.asset ?? ""].dataUrl).toBe("data:new");
+    expect(next.size?.height).toBeCloseTo(0.2);
+    expect(usePresentationStore.getState().strokesByPage).toEqual({});
+  });
+
   it("does nothing for an item whose picture is unknown", () => {
     const stroke: Stroke = { id: "drawing-2", tool: "drawing", color: "#000000", width: 0, points: [{ x: 0, y: 0 }], size: { width: 0.1, height: 0.1 }, asset: "missing" };
 

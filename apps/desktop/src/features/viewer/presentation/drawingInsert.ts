@@ -1,6 +1,6 @@
 import i18n from "@/app/i18n";
 import type { DrawingKind } from "@/features/viewer/overlay/drawing/drawingSource";
-import { usePresentationStore, type Stroke } from "@/shared/store/presentationStore";
+import { usePresentationStore, type DrawingSurface, type Stroke } from "@/shared/store/presentationStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useViewerOverlayStore, type EditorPending, type PendingImage } from "@/shared/store/viewerOverlayStore";
 import { resizedDrawing } from "./drawingPlacement";
@@ -9,7 +9,7 @@ export const MAX_DRAWING_DATA_URL = 4_000_000;
 const PROXY_PREFIX = "presentation:";
 
 type OverlayState = ReturnType<typeof useViewerOverlayStore.getState>;
-type Target = { pageIndex: number; strokeId: string; proxyId: string; past: OverlayState["past"]; future: OverlayState["future"] };
+type Target = { surface: DrawingSurface; strokeId: string; proxyId: string; past: OverlayState["past"]; future: OverlayState["future"] };
 
 let active = false;
 let target: Target | null = null;
@@ -42,10 +42,11 @@ function rewrite(current: Target, before: Extract<EditorPending, { kind: "image"
     return;
   }
   const presentation = usePresentationStore.getState();
-  const stroke = presentation.strokesByPage[current.pageIndex]?.find((entry) => entry.id === current.strokeId);
+  const strokes = typeof current.surface === "number" ? presentation.strokesByPage[current.surface] : presentation.boardStrokes[current.surface];
+  const stroke = strokes?.find((entry) => entry.id === current.strokeId);
   if (!stroke) return;
   const id = presentation.addDrawingAsset({ dataUrl: after.dataUrl, width: after.width, height: after.height, drawing: after.drawing });
-  presentation.replaceDrawing(current.pageIndex, resizedDrawing(stroke, id, after.width / before.width, after.height / before.height));
+  presentation.replaceDrawing(current.surface, resizedDrawing(stroke, id, after.width / before.width, after.height / before.height));
 }
 
 function finish(): void {
@@ -90,16 +91,16 @@ export function openPresentationDrawing(kind: DrawingKind): void {
   useViewerOverlayStore.getState().openDrawingEditor(kind, null);
 }
 
-export function editPresentationDrawing(pageIndex: number, stroke: Stroke): void {
+export function editPresentationDrawing(surface: DrawingSurface, stroke: Stroke): void {
   const overlay = useViewerOverlayStore.getState();
   const asset = stroke.asset ? usePresentationStore.getState().drawingAssets[stroke.asset] : undefined;
   if (!asset?.drawing || overlay.mode !== null || asset.width <= 0 || asset.height <= 0) return;
   if (overlay.drawingEditor) overlay.closeDrawingEditor();
   listen();
   const proxyId = `${PROXY_PREFIX}${stroke.id}`;
-  const proxy: EditorPending = { id: proxyId, kind: "image", pageIndex, x: 0, y: 0, width: asset.width, height: asset.height, dataUrl: asset.dataUrl, path: null, aspect: asset.width / asset.height, opacity: 1, drawing: asset.drawing };
+  const proxy: EditorPending = { id: proxyId, kind: "image", pageIndex: typeof surface === "number" ? surface : 0, x: 0, y: 0, width: asset.width, height: asset.height, dataUrl: asset.dataUrl, path: null, aspect: asset.width / asset.height, opacity: 1, drawing: asset.drawing };
   const current = useViewerOverlayStore.getState();
-  target = { pageIndex, strokeId: stroke.id, proxyId, past: current.past, future: current.future };
+  target = { surface, strokeId: stroke.id, proxyId, past: current.past, future: current.future };
   active = true;
   useViewerOverlayStore.setState({ objects: [...current.objects.filter((item) => item.id !== proxyId), proxy] });
   useViewerOverlayStore.getState().openDrawingEditor(asset.drawing.kind, proxyId);
