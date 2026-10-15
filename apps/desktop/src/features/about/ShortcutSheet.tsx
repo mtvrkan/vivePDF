@@ -5,6 +5,7 @@ import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { useUiStore } from "@/shared/store/uiStore";
 import { isShortcutSheetKey, shortcutGroupsFor, shortcutScreen } from "./screenShortcuts";
+import { SaveShortcutsPdfButton } from "./SaveShortcutsPdfButton";
 import { ShortcutList } from "./ShortcutList";
 import { useShortcutSheetStore } from "./shortcutSheetStore";
 
@@ -41,9 +42,12 @@ export function ShortcutSheet() {
       onClose={close}
       size="xl"
       footer={
-        <Button variant="secondary" onClick={showAll}>
-          {t("shortcutSheet.showAll")}
-        </Button>
+        <>
+          <SaveShortcutsPdfButton groups={groups} />
+          <Button variant="secondary" onClick={showAll}>
+            {t("shortcutSheet.showAll")}
+          </Button>
+        </>
       }
     >
       <p className="mb-3 text-sm text-muted-foreground">{t("shortcutSheet.intro", { screen: t(`shortcutSheet.screens.${screen}`) })}</p>

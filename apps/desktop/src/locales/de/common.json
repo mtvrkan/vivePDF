@@ -10024,6 +10024,13 @@
       "studioDesign": "den Studio-Designeditor",
       "studioDocument": "den Studio-Dokumenteditor",
       "general": "alle Bildschirme"
+    },
+    "pdf": {
+      "save": "Als PDF speichern",
+      "saved": "Tastenkürzel als PDF gespeichert",
+      "fileName": "vivePDF Tastenkürzel",
+      "action": "Aktion",
+      "keys": "Tasten"
     }
   }
 }

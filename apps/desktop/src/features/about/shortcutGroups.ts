@@ -1,6 +1,7 @@
 import { ORGANIZER_SHORTCUTS } from "@/features/pages/organizerShortcuts";
 import { DOCUMENT_SHORTCUTS, STUDIO_SHORTCUT_GROUPS } from "@/features/studio/design/shortcutList";
-import { FULLSCREEN_SHORTCUT } from "@/shared/lib/platform";
+import type { TFunction } from "i18next";
+import { FULLSCREEN_SHORTCUT, shortcutLabel } from "@/shared/lib/platform";
 
 export type ShortcutGroup = { id: string; items: Array<{ keys: string; labelKey: string }> };
 
@@ -81,4 +82,8 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
 
 export function splitKeys(keys: string): string[] {
   return keys.split(/\s*(?:\/|·)\s*/).filter(Boolean);
+}
+
+export function keyCombos(keys: string, t: TFunction): string[] {
+  return splitKeys(shortcutLabel(keys).replace(/\{(\w+)\}/g, (_, gesture: string) => t(`tools.pages.gesture.${gesture}`)));
 }

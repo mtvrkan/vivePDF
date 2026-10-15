@@ -11,6 +11,7 @@ import { checkUpdatesNow, openLogFolder } from "@/shared/lib/helpActions";
 import { useAppVersion } from "@/shared/hooks/useAppVersion";
 import { CreditsTab } from "@/features/about/CreditsTab";
 import { REPO_URL, THIRD_PARTY, WEBSITE_URL } from "@/features/about/credits";
+import { SaveShortcutsPdfButton } from "@/features/about/SaveShortcutsPdfButton";
 import { ShortcutList } from "@/features/about/ShortcutList";
 import { SHORTCUT_GROUPS } from "@/features/about/shortcutGroups";
 import { useReportStore } from "@/shared/store/reportStore";
@@ -298,7 +299,7 @@ export function AboutPage() {
           </footer>
         </div>
       </div>
-      <Dialog open={panel !== null} title={panelTitle} onClose={closePanel} size={panel === "licences" ? "md" : "xl"}>
+      <Dialog open={panel !== null} title={panelTitle} onClose={closePanel} size={panel === "licences" ? "md" : "xl"} footer={panel === "shortcuts" ? <SaveShortcutsPdfButton groups={SHORTCUT_GROUPS} /> : undefined}>
         {panel === "credits" ? <CreditsTab /> : null}
         {panel === "privacy" ? <PrivacyContent onOpenSettings={openSettingsSection} /> : null}
         {panel === "shortcuts" ? <ShortcutList groups={SHORTCUT_GROUPS} /> : null}

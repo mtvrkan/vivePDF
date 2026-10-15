@@ -10025,6 +10025,13 @@
       "studioDesign": "el editor de diseño de Studio",
       "studioDocument": "el editor de documentos de Studio",
       "general": "todas las pantallas"
+    },
+    "pdf": {
+      "save": "Guardar como PDF",
+      "saved": "Lista de atajos guardada como PDF",
+      "fileName": "Atajos de teclado de vivePDF",
+      "action": "Acción",
+      "keys": "Teclas"
     }
   }
 }

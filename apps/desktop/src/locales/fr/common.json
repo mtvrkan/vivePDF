@@ -10025,6 +10025,13 @@
       "studioDesign": "l’éditeur de design Studio",
       "studioDocument": "l’éditeur de documents Studio",
       "general": "tous les écrans"
+    },
+    "pdf": {
+      "save": "Enregistrer en PDF",
+      "saved": "Liste des raccourcis enregistrée en PDF",
+      "fileName": "Raccourcis clavier vivePDF",
+      "action": "Action",
+      "keys": "Touches"
     }
   }
 }

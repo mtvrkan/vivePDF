@@ -10879,6 +10879,13 @@
       "studioDesign": "محرر التصميم في Studio",
       "studioDocument": "محرر المستندات في Studio",
       "general": "كل الشاشات"
+    },
+    "pdf": {
+      "save": "حفظ بتنسيق PDF",
+      "saved": "حُفظت قائمة الاختصارات بتنسيق PDF",
+      "fileName": "اختصارات لوحة المفاتيح في vivePDF",
+      "action": "الإجراء",
+      "keys": "المفاتيح"
     }
   }
 }

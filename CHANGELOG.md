@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Keyboard shortcuts: Save as PDF in the shortcut list (F1) and in About › Shortcuts writes the shown shortcuts as a printable PDF, one table per screen in the app's language, with each key combination kept on one line; a "Show in folder" button follows the save [2026-10-15]
 - Keyboard shortcuts: F1 or Ctrl+/ on any screen opens the shortcuts for that screen — the viewer, a presentation, the page organizer, the Studio design or document editor — with a search box and a link to the full list; Help › Keyboard shortcuts and the command palette open it too, and the Studio design editor keeps its own F1 list [2026-10-15]
 - Translation: language packages in the Argos Translate format that use Moses and BPE tokenizers instead of SentencePiece (for example Argos's own Polish and Czech packages) can now be imported in Settings › Reading and translate like the others [2026-10-15]
 - Studio documents: the Section break menu adds continuous breaks with 1, 2 or 3 columns, which carry on below the text above on the same page instead of starting a new one, as in Word; the columns above a continuous break are balanced so they end level, a full-width title can sit over two-column text, footnotes stay full width at the page foot, a long section flows on to the next pages, and the editor shows continuous breaks with a dotted line [2026-10-15]

@@ -2,8 +2,7 @@ import { useMemo, useState } from "react";
 import { Keyboard, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
-import { shortcutLabel } from "@/shared/lib/platform";
-import { splitKeys, type ShortcutGroup } from "./shortcutGroups";
+import { keyCombos, type ShortcutGroup } from "./shortcutGroups";
 
 export function ShortcutList({ groups: source }: { groups: ShortcutGroup[] }) {
   const { t, i18n } = useTranslation();
@@ -48,7 +47,7 @@ export function ShortcutList({ groups: source }: { groups: ShortcutGroup[] }) {
                       {t(item.labelKey)}
                     </span>
                     <span className="flex shrink-0 items-center gap-1">
-                      {splitKeys(shortcutLabel(item.keys).replace(/\{(\w+)\}/g, (_, gesture: string) => t(`tools.pages.gesture.${gesture}`))).map((combo, index) => (
+                      {keyCombos(item.keys, t).map((combo, index) => (
                         <kbd key={index} className="rounded-sm border bg-background px-1.5 font-mono text-xs text-muted-foreground">
                           {combo}
                         </kbd>

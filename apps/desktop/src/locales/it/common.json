@@ -10025,6 +10025,13 @@
       "studioDesign": "l’editor di design di Studio",
       "studioDocument": "l’editor di documenti di Studio",
       "general": "tutte le schermate"
+    },
+    "pdf": {
+      "save": "Salva come PDF",
+      "saved": "Elenco delle scorciatoie salvato come PDF",
+      "fileName": "Scorciatoie da tastiera di vivePDF",
+      "action": "Azione",
+      "keys": "Tasti"
     }
   }
 }

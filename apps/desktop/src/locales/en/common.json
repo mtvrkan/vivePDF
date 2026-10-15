@@ -10026,6 +10026,13 @@
       "studioDesign": "the Studio design editor",
       "studioDocument": "the Studio document editor",
       "general": "every screen"
+    },
+    "pdf": {
+      "save": "Save as PDF",
+      "saved": "Shortcut list saved as PDF",
+      "fileName": "vivePDF keyboard shortcuts",
+      "action": "Action",
+      "keys": "Keys"
     }
   }
 }

@@ -10026,6 +10026,13 @@
       "studioDesign": "Studio tasarım düzenleyici",
       "studioDocument": "Studio belge düzenleyici",
       "general": "Tüm ekranların ortak"
+    },
+    "pdf": {
+      "save": "PDF olarak kaydet",
+      "saved": "Kısayol listesi PDF olarak kaydedildi",
+      "fileName": "vivePDF klavye kısayolları",
+      "action": "İşlem",
+      "keys": "Tuşlar"
     }
   }
 }

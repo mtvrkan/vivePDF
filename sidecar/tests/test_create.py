@@ -201,3 +201,23 @@ def test_existing_output_is_not_overwritten_without_permission(tmp_path: Path):
 
     assert taken.value.data["exists"] is True
     assert output.read_bytes() == b"old"
+
+
+def test_shortcut_table_keeps_turkish_and_arabic_labels_and_unbroken_key_combos(tmp_path: Path):
+    text = (
+        "## Sayfa düzenleyici\n\n| İşlem | Tuşlar |\n| --- | --- |\n"
+        "| Seçimi tersine çevir | Ctrl I |\n| فتح ملف | Ctrl O |\n"
+        "| Yakınlaştır | Ctrl \+ / Ctrl − |\n"
+    )
+
+    result = create_document(
+        _params(tmp_path, text=text, format="markdown", title="Klavye kısayolları"),
+        silent_progress(),
+    )
+
+    page_text = _text(Path(result.output))[0]
+    spans = _spans(Path(result.output))
+    assert "Seçimi tersine çevir" in page_text
+    assert "Ctrl +" in page_text
+    assert "Ctrl −" in page_text.splitlines()
+    assert any("Arabic" in span["font"] for span in spans)
