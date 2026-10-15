@@ -318,3 +318,132 @@ def test_missing_file(tmp_path: Path) -> None:
     with pytest.raises(OpError) as caught:
         _run(tmp_path / "absent.pdf")
     assert caught.value.code == ErrorCode.FILE_NOT_FOUND
+
+
+def _columns(
+    path: Path, left: tuple[float, list[tuple]], right: tuple[float, list[tuple]], head=()
+) -> Path:
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    _write(page, left[0], left[1])
+    _write(page, right[0], right[1])
+    for x, row in head:
+        _write(page, x, [row])
+    return _save(document, path)
+
+
+RIGHT_MAIN = [
+    (60, "Maria Rossi", 24, True),
+    (84, "Product Designer", 12, False),
+    (120, "Experience", 14, True),
+    (140, "Lead Designer, Studio Nord in Milan Italy", 11, True),
+    (154, "Jan 2019 - Present", 10, False),
+    (168, "- Designed a design system used by forty product teams", 10, False),
+    (182, "- Ran research sessions with customers across Europe", 10, False),
+    (204, "Designer, Bright Labs in Turin Italy", 11, True),
+    (218, "2015 - 2018", 10, False),
+    (232, "- Shipped the onboarding flow for the mobile banking app", 10, False),
+]
+
+RIGHT_SIDE = [
+    (120, "Skills", 13, True),
+    (138, "Figma", 9, False),
+    (152, "Prototyping", 9, False),
+    (166, "User research", 9, False),
+    (194, "Languages", 13, True),
+    (212, "Italian (Native)", 9, False),
+    (226, "English (C1)", 9, False),
+]
+
+
+def test_a_right_sidebar_is_read_as_its_own_column(tmp_path: Path) -> None:
+    path = _columns(tmp_path / "right.pdf", (40, RIGHT_MAIN), (440, RIGHT_SIDE))
+
+    profile = _run(path).profile
+
+    assert profile.name == "Maria Rossi"
+    assert [skill.name for skill in profile.skills] == ["Figma", "Prototyping", "User research"]
+    assert [(item.name, item.level) for item in profile.languages] == [
+        ("Italian", 5),
+        ("English", 4),
+    ]
+    assert [item.organisation for item in profile.experience] == [
+        "Studio Nord in Milan Italy",
+        "Bright Labs in Turin Italy",
+    ]
+
+
+def test_a_full_width_contact_line_above_two_columns_keeps_the_columns(tmp_path: Path) -> None:
+    side = [(row[0] + 40, *row[1:]) for row in RIGHT_SIDE]
+    main = [(row[0] + 40, *row[1:]) for row in RIGHT_MAIN]
+    contact = (
+        40,
+        (
+            52,
+            "maria@example.com | +39 333 123 4567 | www.mariarossi.design | Milan, Italy",
+            10,
+            False,
+        ),
+    )
+
+    profile = _run(_columns(tmp_path / "wide.pdf", (40, main), (440, side), head=[contact])).profile
+
+    assert profile.name == "Maria Rossi"
+    assert {contact.kind for contact in profile.contacts} >= {"email", "phone", "website"}
+    assert [skill.name for skill in profile.skills] == ["Figma", "Prototyping", "User research"]
+    assert len(profile.experience) == 2
+
+
+def test_ligatures_in_headings_are_read_as_letters(tmp_path: Path) -> None:
+    rows = [
+        (60, "Jane Doe", 24, True),
+        (100, "Proﬁle", 14, True),
+        (118, "Engineer who ﬁxes things.", 10, False),
+        (150, "Certiﬁcations", 14, True),
+        (168, "AWS Solutions Architect, Amazon, Mar 2022 - Present", 10, False),
+    ]
+
+    profile = _run(_single(tmp_path / "ligatures.pdf", rows)).profile
+
+    assert profile.summary == "Engineer who fixes things."
+    assert [(item.name, item.issuer, item.date) for item in profile.certificates] == [
+        ("AWS Solutions Architect", "Amazon", "Mar 2022 - Present")
+    ]
+
+
+def test_a_document_title_above_the_name_is_not_taken_as_the_name(tmp_path: Path) -> None:
+    rows = [
+        (50, "ÖZGEÇMİŞ", 26, True),
+        (90, "Mehmet Kaya", 20, True),
+        (110, "Muhasebe Uzmanı", 12, False),
+        (140, "İŞ TECRÜBELERİ", 13, True),
+        (158, "Muhasebe Uzmanı, Örnek A.Ş.", 11, True),
+        (172, "2019-03 – 2021-05", 10, False),
+        (200, "EĞİTİM DURUMU", 13, True),
+        (218, "İşletme Lisans", 11, True),
+        (232, "Ankara Üniversitesi", 10, False),
+        (246, "2012 - 2016", 10, False),
+        (274, "YABANCI DİL BİLGİSİ", 13, True),
+        (292, "İngilizce (B2)", 10, False),
+        (320, "BİLGİSAYAR BİLGİLERİ", 13, True),
+        (338, "Excel, SAP", 10, False),
+    ]
+
+    profile = _run(_single(tmp_path / "ozgecmis.pdf", rows)).profile
+
+    assert profile.name == "Mehmet Kaya"
+    assert profile.headline == "Muhasebe Uzmanı"
+    assert [(item.role, item.start, item.end) for item in profile.experience] == [
+        ("Muhasebe Uzmanı", "2019-03", "2021-05")
+    ]
+    assert [item.school for item in profile.education] == ["Ankara Üniversitesi"]
+    assert [(item.name, item.level) for item in profile.languages] == [("İngilizce", 3)]
+    assert [skill.name for skill in profile.skills] == ["Excel", "SAP"]
+
+
+def test_a_two_digit_academic_year_is_not_read_as_a_month() -> None:
+    from vivepdf.ops._studio_cv_text import find_single
+
+    span = find_single("Exchange term 2015-16")
+
+    assert span is not None and span.end == "2015"

@@ -61,6 +61,12 @@ describe("cv month and year", () => {
     expect(parseMonthYear("EKİM 2020", "tr")).toEqual({ month: 10, year: 2020 });
   });
 
+  it("reads a year and month written as 2019-03, as PDF import returns it", () => {
+    expect(parseMonthYear("2019-03", "en")).toEqual({ month: 3, year: 2019 });
+    expect(parseMonthYear("2019/12", "en")).toEqual({ month: 12, year: 2019 });
+    expect(parseMonthYear("2015-16", "en")).toBeNull();
+  });
+
   it("leaves free text and impossible dates alone", () => {
     expect(parseMonthYear("Summer 2019", "en")).toBeNull();
     expect(parseMonthYear("13/2019", "en")).toBeNull();

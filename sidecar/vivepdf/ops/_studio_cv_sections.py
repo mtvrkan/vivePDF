@@ -292,7 +292,8 @@ def certificates(lines: list[Line]) -> list[tuple[str, str, str]]:
         span = find_range(text) or find_single(text)
         date = ""
         if span is not None:
-            date = f"{span.start} - {span.end}" if span.start else span.end
+            end = span.end or span.until
+            date = f"{span.start} - {end}" if span.start else end
             text = " ".join(part for part in (span.before, span.after) if part)
         name, issuer = split_pair(text)
         if name:

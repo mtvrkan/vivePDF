@@ -2,7 +2,7 @@ import re
 import unicodedata
 from dataclasses import dataclass
 
-from vivepdf.ops._studio_cv_words import HEADINGS, MONTHS, PRESENT_WORDS
+from vivepdf.ops._studio_cv_words import DOCUMENT_TITLES, HEADINGS, MONTHS, PRESENT_WORDS
 
 NAME_LIMIT = 200
 TEXT_LIMIT = 4000
@@ -30,7 +30,7 @@ MONTH = rf"(?:{_alternation(MONTHS)})\.?"
 YEAR = r"(?:19|20)\d{2}"
 DATE = (
     rf"(?:\b{MONTH}\s*,?\s*{YEAR}|\b\d{{1,2}}\s*[./]\s*{YEAR}"
-    rf"|\b{YEAR}\s*[./]\s*\d{{1,2}}(?!\d)|\b{YEAR})(?!\d)"
+    rf"|\b{YEAR}\s*[./-]\s*(?:1[0-2]|0?[1-9])(?!\d)|\b{YEAR})(?!\d)"
 )
 PRESENT = rf"(?:{_alternation(PRESENT_WORDS)})\b"
 RANGE = re.compile(
@@ -101,8 +101,20 @@ class DateSpan:
     current: bool
     before: str
     after: str
+    until: str = ""
 
 
+LIGATURES = str.maketrans(
+    {
+        "\ufb00": "ff",
+        "\ufb01": "fi",
+        "\ufb02": "fl",
+        "\ufb03": "ffi",
+        "\ufb04": "ffl",
+        "\ufb05": "st",
+        "\ufb06": "st",
+    }
+)
 SOFT_HYPHEN = "\u00ad"
 LONE_SOFT_HYPHEN = re.compile(r"(?<!\S)\u00ad(?!\S)")
 
@@ -120,7 +132,7 @@ def fold(text: str) -> str:
 
 
 def plain_line(text: str) -> str:
-    spaced = " ".join(text.split())
+    spaced = " ".join(text.translate(LIGATURES).split())
     return LONE_SOFT_HYPHEN.sub("-", spaced).replace(SOFT_HYPHEN, "")
 
 
@@ -148,6 +160,13 @@ _HEADING_INDEX = {
 }
 
 
+_TITLE_KEYS = frozenset(heading_key(title) for title in DOCUMENT_TITLES)
+
+
+def document_title(text: str) -> bool:
+    return len(text) <= 40 and heading_key(text) in _TITLE_KEYS
+
+
 def heading_of(text: str) -> str | None:
     if len(text) > 60:
         return None
@@ -172,6 +191,7 @@ def find_range(text: str) -> DateSpan | None:
         start = text[match.start("start") : match.end("start")]
         end = text[match.start("end") : match.end("end")]
         current = PRESENT_ONLY.match(folded[match.start("end") : match.end("end")]) is not None
+        until = end if current else ""
         if current:
             end = ""
     else:
@@ -179,10 +199,10 @@ def find_range(text: str) -> DateSpan | None:
         if match is None:
             return None
         start = text[match.start("start") : match.end("start")]
-        end, current = "", True
+        end, current, until = "", True, ""
     before = trimmed(without_duration(text[: match.start()]))
     after = trimmed(without_duration(text[match.end() :]))
-    return DateSpan(clip(start), clip(end), current, before, after)
+    return DateSpan(clip(start), clip(end), current, before, after, clip(until))
 
 
 def find_single(text: str) -> DateSpan | None:

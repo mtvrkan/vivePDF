@@ -7,6 +7,7 @@ from vivepdf.ops._studio_cv_text import (
     EMAIL,
     FOOTER,
     contacts_in,
+    document_title,
     find_range,
     find_single,
     fold,
@@ -21,6 +22,8 @@ KEYWORD_CONFIDENCE = 0.9
 FONT_CONFIDENCE = 0.6
 INFERRED_CONFIDENCE = 0.4
 BOLD_FLAG = 16
+TEXT_FLAGS = pymupdf.TEXTFLAGS_DICT & ~pymupdf.TEXT_PRESERVE_LIGATURES
+COLUMN_RANGE = range(20, 82, 2)
 
 
 @dataclass
@@ -61,7 +64,7 @@ def _bold(span: dict) -> bool:
 def page_lines(page: pymupdf.Page, number: int) -> tuple[list[Line], int]:
     lines: list[Line] = []
     footers = 0
-    for block in page.get_text("dict").get("blocks", ()):
+    for block in page.get_text("dict", flags=TEXT_FLAGS).get("blocks", ()):
         if block.get("type") != 0:
             continue
         for entry in block.get("lines", ()):
@@ -82,20 +85,31 @@ def page_lines(page: pymupdf.Page, number: int) -> tuple[list[Line], int]:
     return _ordered(lines, page.rect.width), footers
 
 
+def _crosses(line: Line, split: float) -> bool:
+    return line.x0 < split - 1 and line.x1 > split + 1
+
+
+def _dated(lines: list[Line]) -> int:
+    return sum(1 for line in lines if find_range(line.text) or find_single(line.text))
+
+
 def _split(lines: list[Line], width: float) -> float | None:
     if len(lines) < 6:
         return None
-    for percent in range(20, 56, 2):
+    for percent in COLUMN_RANGE:
         split = width * percent / 100
-        if any(line.x0 < split - 1 and line.x1 > split + 1 for line in lines):
-            continue
-        left = [line for line in lines if line.x1 <= split + 1]
-        right = [line for line in lines if line.x0 >= split - 1]
+        crossing = [line for line in lines if _crosses(line, split)]
+        rest = [line for line in lines if not _crosses(line, split)]
+        left = [line for line in rest if line.x1 <= split + 1]
+        right = [line for line in rest if line.x0 >= split - 1]
         if len(left) < 3 or len(right) < 3:
             continue
-        dated = sum(1 for line in left if find_range(line.text) or find_single(line.text))
-        if dated * 2 >= len(left):
+        if crossing and max(line.y1 for line in crossing) > min(line.y0 for line in rest) + 1:
+            continue
+        if _dated(left) * 2 >= len(left):
             return None
+        if _dated(right) * 2 >= len(right):
+            continue
         overlap = min(max(line.y1 for line in left), max(line.y1 for line in right)) - max(
             min(line.y0 for line in left), min(line.y0 for line in right)
         )
@@ -141,13 +155,15 @@ def _ordered(lines: list[Line], width: float) -> list[Line]:
     split = _split(lines, width)
     if split is None:
         return _rows(lines)
-    left = _rows([line for line in lines if (line.x0 + line.x1) / 2 < split])
-    right = _rows([line for line in lines if (line.x0 + line.x1) / 2 >= split])
+    head = _rows([line for line in lines if _crosses(line, split)])
+    rest = [line for line in lines if not _crosses(line, split)]
+    left = _rows([line for line in rest if (line.x0 + line.x1) / 2 < split])
+    right = _rows([line for line in rest if (line.x0 + line.x1) / 2 >= split])
     for line in right:
         line.column = 1
     if left and right:
         right[0].starts_column = True
-    return left + right
+    return head + left + right
 
 
 def body_size(lines: list[Line]) -> float:
@@ -220,6 +236,7 @@ def _name_piece(text: str) -> str:
             and len(rest) <= 60
             and not any(character.isdigit() for character in rest)
             and heading_of(rest) is None
+            and not document_title(rest)
             and any(character.isalpha() for character in rest)
         ):
             return rest
@@ -254,7 +271,7 @@ def read_header(header: list[Line], lines: list[Line], linkedin: bool) -> Header
             result.contacts.extend(found)
             if found:
                 result.location = result.location or location_value(rest)
-            elif rest:
+            elif rest and not document_title(rest):
                 remainder.append(rest)
         after_name = name_line is None or pool.index(line) > pool.index(name_line)
         if remainder and after_name and line in header:

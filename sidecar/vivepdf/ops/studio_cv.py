@@ -87,7 +87,12 @@ def _read(params: StudioCvImportParams, progress: Progress) -> tuple[list[Line],
                     "progress.analyzing",
                     {"current": index + 1, "total": total},
                 )
-        except (RuntimeError, ValueError, pymupdf.FileDataError) as error:
+        except (
+            RuntimeError,
+            ValueError,
+            pymupdf.FileDataError,
+            pymupdf.mupdf.FzErrorBase,
+        ) as error:
             raise OpError(ErrorCode.INVALID_PDF, "cannot read the PDF text") from error
     return lines, footers, pages
 

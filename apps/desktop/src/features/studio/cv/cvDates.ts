@@ -41,6 +41,12 @@ export function parseMonthYear(text: string, language: string): MonthYear | null
     const year = Number(numeric[2]);
     return month >= 1 && month <= 12 && validYear(year) ? { month, year } : null;
   }
+  const isoLike = /^(\d{4})\s*[./-]\s*(\d{1,2})$/.exec(value);
+  if (isoLike) {
+    const year = Number(isoLike[1]);
+    const month = Number(isoLike[2]);
+    return month >= 1 && month <= 12 && validYear(year) ? { month, year } : null;
+  }
   const named = /^(\S+)\s+(\d{4})$/u.exec(value);
   if (!named) return null;
   const year = Number(named[2]);
