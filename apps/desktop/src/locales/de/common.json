@@ -6648,7 +6648,9 @@
         "editCycle": "Nächstes / vorheriges Feld auf der Seite auswählen",
         "editNudge": "Markiertes Feld verschieben (Umschalt: 10 pt)",
         "clipboard": "PDF aus dem Kopierten",
-        "presentationRuler": "Lineal ein-/ausblenden"
+        "presentationRuler": "Lineal ein-/ausblenden",
+        "shortcutSheet": "Tastenkürzel für diesen Bildschirm",
+        "helpTopic": "Hilfethema für diesen Bildschirm"
       },
       "search": "Tastenkombinationen durchsuchen",
       "noMatch": "Keine Tastenkombination entspricht Ihrer Suche."
@@ -10106,5 +10108,104 @@
     "saved": "Supportpaket gespeichert",
     "tooLarge": "Diese Dateien sind zu groß für ein Supportpaket (Grenze {{limit}} MB).",
     "badImage": "Nur PNG- oder JPEG-Bilder können hinzugefügt werden."
+  },
+  "help": {
+    "menu": "Hilfethemen",
+    "title": "Hilfethemen",
+    "description": "Schritt-für-Schritt-Anleitungen für die wichtigsten Aufgaben. Sie funktionieren ohne Internetverbindung.",
+    "search": "Hilfe durchsuchen",
+    "clearSearch": "Suche löschen",
+    "noMatchesTitle": "Keine Hilfethemen passen zu „{{query}}“",
+    "noMatchesDescription": "Versuchen Sie ein anderes Wort oder löschen Sie die Suche, um alle Themen zu sehen.",
+    "openScreen": "Diesen Bildschirm öffnen",
+    "topics": {
+      "openView": {
+        "title": "PDF öffnen und lesen",
+        "summary": "Dokumente öffnen, zwischen Seiten wechseln und Text finden.",
+        "step1": "Klicken Sie auf der Startseite auf PDF öffnen oder drücken Sie Strg+O. Sie können Dateien auch ins Fenster ziehen: Office-Dokumente, E-Books, E-Mails und Bilder werden als PDF geöffnet.",
+        "step2": "Jedes Dokument öffnet sich im Betrachter in einem eigenen Tab. Zuletzt verwendete Dokumente bleiben auf der Startseite, wo Sie häufig genutzte anheften können.",
+        "step3": "Geben Sie eine Seitenzahl in das Feld neben der Seite ein oder verwenden Sie die Pfeile darunter. Seitenbeschriftungen wie iii oder A-1 funktionieren ebenfalls.",
+        "step4": "Drücken Sie Strg+F, um das Dokument zu durchsuchen; Groß-/Kleinschreibung beachten und Ganzes Wort grenzen die Treffer ein, F3 springt zum nächsten.",
+        "step5": "Zoomen Sie mit Strg+Plus und Strg+Minus oder wählen Sie Breite anpassen oder Seite anpassen. Das Feld Miniaturansichten zeigt alle Seiten."
+      },
+      "organizePages": {
+        "title": "Seiten organisieren",
+        "summary": "Seiten neu anordnen, drehen, löschen, einfügen und teilen.",
+        "step1": "Öffnen Sie das Dokument und wählen Sie dann in der oberen Leiste Seiten, um alle Seiten als Miniaturansichten zu sehen.",
+        "step2": "Ziehen Sie Seiten, um sie neu anzuordnen. Klicken Sie zum Auswählen; mit Umschalt oder Strg wählen Sie mehrere aus.",
+        "step3": "Wenden Sie Nach links drehen, Nach rechts drehen, Duplizieren oder Auswahl löschen auf die Auswahl an. Leere Seite einfügen und Seiten aus PDF einfügen fügen neue Seiten hinzu.",
+        "step4": "Zum Teilen setzen Sie eine Trennmarke und wählen dann Als einzelne Dateien speichern.",
+        "step5": "Klicken Sie auf Anwenden und speichern. Das Ergebnis wird als neue Datei gespeichert, das Original bleibt unverändert."
+      },
+      "convert": {
+        "title": "Dateien konvertieren",
+        "summary": "Ein PDF in Word, Excel, Bilder und mehr umwandeln oder aus anderen Dateien ein PDF erstellen.",
+        "step1": "Öffnen Sie Werkzeuge › Konvertieren.",
+        "step2": "Wählen Sie Von PDF für Word, Excel, PowerPoint, Bilder, Text, Markdown, HTML oder ein E-Book, oder Zu PDF für Bilder, Office-Dateien, SVG-Zeichnungen und Webseiten.",
+        "step3": "Wählen Sie die Datei aus und prüfen Sie die Optionen; schalten Sie für gescannte Seiten das Lesen mit OCR ein.",
+        "step4": "Klicken Sie auf Konvertieren. Die neue Datei landet im Ausgabeordner aus Einstellungen › Dateien."
+      },
+      "ocr": {
+        "title": "Gescannte Seiten durchsuchbar machen (OCR)",
+        "summary": "Eine Textebene hinzufügen, damit gescannte Seiten durchsucht und kopiert werden können.",
+        "step1": "Öffnen Sie Werkzeuge › OCR und wählen Sie das gescannte PDF. vivePDF zeigt, wie viele Seiten gescannt sind und wie viele bereits Text haben.",
+        "step2": "Wählen Sie die Sprachen des Textes. Weitere Sprachen installieren Sie unter Einstellungen › Werkzeuge; jede wird einmal heruntergeladen.",
+        "step3": "Schalten Sie für schiefe oder verrauschte Scans Automatisch drehen und Vor dem Lesen bereinigen ein.",
+        "step4": "Klicken Sie auf OCR ausführen. Die Seiten sehen gleich aus, aber ihr Text lässt sich jetzt durchsuchen, markieren und kopieren."
+      },
+      "sign": {
+        "title": "Signieren und prüfen",
+        "summary": "Eine handschriftliche Unterschrift oder eine digitale Signatur mit Zertifikat hinzufügen und Signaturen prüfen.",
+        "step1": "Für eine handschriftliche Unterschrift öffnen Sie das Dokument im Betrachter, wählen Unterschrift platzieren und zeichnen dann eine oder wählen eine gespeicherte.",
+        "step2": "Klicken Sie auf die Stelle für die Unterschrift, ziehen Sie sie zurecht und wählen Sie Unterschrift anwenden.",
+        "step3": "Für eine Signatur mit Zertifikat öffnen Sie Werkzeuge › Signieren und wählen Ihre .p12- oder .pfx-Datei und das Passwort. Ohne Zertifikat kann vivePDF eines für Sie erstellen.",
+        "step4": "Schalten Sie ein sichtbares Signaturfeld ein, wenn es auf einer Seite erscheinen soll, und klicken Sie dann auf Signieren. Ein Zeitstempelserver ist optional und braucht Internet.",
+        "step5": "Um eine signierte Datei zu prüfen, öffnen Sie den Tab Prüfen. Er zeigt, ob jede Signatur gültig ist und ob das Dokument nach dem Signieren geändert wurde."
+      },
+      "studioDocument": {
+        "title": "Ein Dokument in Studio schreiben",
+        "summary": "Berichte, Artikel und Abschlussarbeiten mit Überschriften, Tabellen und Inhaltsverzeichnis schreiben.",
+        "step1": "Öffnen Sie Werkzeuge › Dokument schreiben. Beginnen Sie ein neues Dokument oder setzen Sie Ihr letztes fort.",
+        "step2": "Schreiben Sie im Editor. Die Formatierungsleiste setzt Absatzformate, Fett, Kursiv, Listen, Tabellen, Symbole und Fußnoten.",
+        "step3": "Im Tab Einstellungen rechts legen Sie Papierformat, Ränder, Schriften und Zeilenabstand fest; die Vorschau zeigt die fertigen Seiten.",
+        "step4": "Suchen und Ersetzen, Wortzählung und Abschnittsumbrüche mit Spalten finden Sie in den Menüs der Werkzeugleiste.",
+        "step5": "Exportieren Sie das Dokument als PDF oder Markdown-Datei. Ihre Arbeit bleibt als vivePDF-Dokument erhalten, das Sie wieder öffnen und bearbeiten können."
+      },
+      "studioDesign": {
+        "title": "In Studio gestalten",
+        "summary": "Plakate, Zertifikate, Einladungen und Karten auf einer freien Arbeitsfläche erstellen.",
+        "step1": "Öffnen Sie Werkzeuge › In Studio gestalten und wählen Sie Mit einer Vorlage beginnen, oder beginnen Sie mit einer leeren Seite oder einer eigenen Größe.",
+        "step2": "Fügen Sie über das Feld links Text, Bilder, Formen, Tabellen, Diagramme und Symbole hinzu.",
+        "step3": "Wählen Sie ein Element aus, um Farbe, Schrift, Größe, Schatten oder Ausrichtung zu ändern; ziehen Sie es zum Verschieben und nutzen Sie die Griffe zum Skalieren oder Drehen.",
+        "step4": "Für überlappende Elemente und mehrseitige Entwürfe gibt es die Felder Ebenen und Seiten.",
+        "step5": "Wählen Sie Exportieren, um den Entwurf als PDF oder als Bilder zu speichern. Visitenkarten lassen sich auch für den Druck anordnen."
+      },
+      "presentation": {
+        "title": "Ein PDF präsentieren",
+        "summary": "Folien im Vollbild zeigen, darauf zeichnen und einen zweiten Bildschirm für Notizen nutzen.",
+        "step1": "Öffnen Sie das PDF im Betrachter und drücken Sie F5, um ab der ersten Seite zu beginnen, oder Umschalt+F5 ab der aktuellen Seite.",
+        "step2": "Wechseln Sie mit den Pfeiltasten, Bild auf und Bild ab zwischen den Seiten. G zeigt eine Übersicht aller Folien.",
+        "step3": "Drücken Sie L für den Laserpointer, P für den Stift, H für den Textmarker, S für den Spotlight und U für das Bildschirmlineal; Esc legt das Werkzeug weg.",
+        "step4": "Ist ein Projektor angeschlossen, drücken Sie Alt+F5 für die Referentenansicht: Das Publikum sieht nur die Folie, Sie sehen die nächste Seite, einen Timer und Ihre Notizen.",
+        "step5": "Drücken Sie Esc zum Beenden. Zeichnungen sind vorübergehend, außer Sie speichern sie ins PDF."
+      },
+      "settingsPrivacy": {
+        "title": "Einstellungen und Datenschutz",
+        "summary": "Das Aussehen der App ändern und festlegen, was ins Internet geht.",
+        "step1": "Öffnen Sie die Einstellungen über die obere Leiste. Mit dem Suchfeld finden Sie eine Einstellung nach Namen.",
+        "step2": "Erscheinungsbild ändert Sprache, Design und Skalierung der Oberfläche. Dateien legt fest, wo Ergebnisse gespeichert werden und wie sie heißen.",
+        "step3": "Schalten Sie unter Einstellungen › Web den Offlinemodus ein, um jede Internetverbindung zu stoppen: Updates, Downloads, Websuchen und Online-Prüfungen.",
+        "step4": "Hilfe › Datenschutz listet alles auf, was vivePDF auf diesem Computer speichert, und Einstellungen › Daten entfernt es."
+      },
+      "troubleshooting": {
+        "title": "Fehlerbehebung",
+        "summary": "Was zu tun ist, wenn etwas nicht wie erwartet funktioniert.",
+        "step1": "Wenn ein Werkzeug fehlschlägt, lesen Sie die Meldung: Sie sagt, was schiefging, und meist auch, wie es sich beheben lässt. Versuchen Sie es mit einer Kopie der Datei erneut.",
+        "step2": "Ist eine Funktion mit einem Offline-Hinweis ausgegraut, ist der Offlinemodus aktiv. Schalten Sie ihn unter Einstellungen › Web aus.",
+        "step3": "Hilfe › Protokollordner öffnen zeigt die Protokolldateien, die festhalten, was passiert ist – ohne Ihre Dokumente.",
+        "step4": "Hilfe › Supportpaket speichern… speichert Systemangaben und aktuelle Protokolle in einer ZIP-Datei, die Sie weitergeben können.",
+        "step5": "Hilfe › Fehler melden öffnet einen Bericht. Eingefügte Screenshots und angehängte Beispieldateien kommen nur in ein Paket, das Sie selbst speichern."
+      }
+    }
   }
 }

@@ -7,6 +7,7 @@ import {
   Bookmark,
   BookImage,
   BookOpen,
+  BookOpenText,
   IdCard,
   Camera,
   ClipboardCheck,
@@ -126,7 +127,14 @@ export const aboutNavigation: NavItem = {
   icon: Info,
 };
 
-export const secondaryNavigation: NavItem[] = [settingsNavigation, aboutNavigation];
+export const helpNavigation: NavItem = {
+  id: "help",
+  labelKey: "help.menu",
+  route: "/help",
+  icon: BookOpenText,
+};
+
+export const secondaryNavigation: NavItem[] = [settingsNavigation, helpNavigation, aboutNavigation];
 
 const allNavigation = [...primaryNavigation, ...toolNavigation, ...secondaryNavigation];
 

@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
+import { helpTopicFor } from "@/features/help/helpTopics";
+import { exitImmersive } from "@/features/viewer/immersive";
 import { useUiStore } from "@/shared/store/uiStore";
 import { isShortcutSheetKey, shortcutGroupsFor, shortcutScreen } from "./screenShortcuts";
 import { SaveShortcutsPdfButton } from "./SaveShortcutsPdfButton";
@@ -35,6 +37,12 @@ export function ShortcutSheet() {
     void navigate("/about?tab=shortcuts");
   };
 
+  const showHelp = () => {
+    close();
+    if (immersive) void exitImmersive();
+    void navigate(`/help?topic=${helpTopicFor(pathname, immersive, studio)}`);
+  };
+
   return (
     <Dialog
       open={open}
@@ -46,6 +54,9 @@ export function ShortcutSheet() {
           <SaveShortcutsPdfButton groups={groups} />
           <Button variant="secondary" onClick={showAll}>
             {t("shortcutSheet.showAll")}
+          </Button>
+          <Button variant="secondary" onClick={showHelp}>
+            {t("help.menu")}
           </Button>
         </>
       }

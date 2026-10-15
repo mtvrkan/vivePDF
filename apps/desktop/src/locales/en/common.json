@@ -6649,7 +6649,9 @@
         "editCycle": "Select the next / previous box on the page",
         "editNudge": "Move the selected box (Shift: 10 pt)",
         "clipboard": "PDF from what you copied",
-        "presentationRuler": "Show or hide the ruler"
+        "presentationRuler": "Show or hide the ruler",
+        "shortcutSheet": "Shortcuts for this screen",
+        "helpTopic": "Help topic for this screen"
       },
       "search": "Search shortcuts",
       "noMatch": "No shortcuts match your search."
@@ -10108,5 +10110,104 @@
     "saved": "Support bundle saved",
     "tooLarge": "These files are too big for a support bundle (limit {{limit}} MB).",
     "badImage": "Only PNG or JPEG pictures can be added."
+  },
+  "help": {
+    "menu": "Help topics",
+    "title": "Help topics",
+    "description": "Step-by-step guides for the main tasks. They work without an internet connection.",
+    "search": "Search help",
+    "clearSearch": "Clear search",
+    "noMatchesTitle": "No help topics match “{{query}}”",
+    "noMatchesDescription": "Try a different word, or clear the search to see every topic.",
+    "openScreen": "Open this screen",
+    "topics": {
+      "openView": {
+        "title": "Open and read a PDF",
+        "summary": "Open documents, move between pages and find text.",
+        "step1": "On Home, click Open PDF or press Ctrl+O. You can also drop files onto the window: Office documents, e-books, e-mails and pictures open as a PDF.",
+        "step2": "Each document opens in its own tab in the Viewer. Recent documents stay on Home, where you can pin the ones you use often.",
+        "step3": "Type a page number in the box beside the page, or use the arrows below it. Page labels such as iii or A-1 work too.",
+        "step4": "Press Ctrl+F to search the document; Match case and Whole word narrow the results, and F3 jumps to the next one.",
+        "step5": "Zoom with Ctrl+Plus and Ctrl+Minus, or choose Fit width or Fit page. The Thumbnails panel shows every page."
+      },
+      "organizePages": {
+        "title": "Organise pages",
+        "summary": "Reorder, rotate, delete, insert and split pages.",
+        "step1": "Open the document, then choose Pages in the top bar to see every page as a thumbnail.",
+        "step2": "Drag pages to reorder them. Click to select, and use Shift or Ctrl to select several.",
+        "step3": "Use Rotate left, Rotate right, Duplicate or Delete selected on the selection. Insert blank page and Insert pages from PDF add new pages.",
+        "step4": "To split, mark a cut with Split after page, then choose Save as separate files.",
+        "step5": "Click Apply and save. The result is saved as a new file and the original stays as it was."
+      },
+      "convert": {
+        "title": "Convert files",
+        "summary": "Turn a PDF into Word, Excel, pictures and more, or make a PDF from other files.",
+        "step1": "Open Tools › Convert.",
+        "step2": "Choose From PDF to make Word, Excel, PowerPoint, pictures, text, Markdown, HTML or an e-book, or To PDF for pictures, Office files, SVG drawings and web pages.",
+        "step3": "Pick the file and check the options; for scanned pages turn on reading the pages with OCR.",
+        "step4": "Click Convert. The new file goes into the output folder set in Settings › Files."
+      },
+      "ocr": {
+        "title": "Make scanned pages searchable (OCR)",
+        "summary": "Add a text layer so scanned pages can be searched and copied.",
+        "step1": "Open Tools › OCR and pick the scanned PDF. vivePDF shows how many pages are scanned and how many already have text.",
+        "step2": "Choose the languages of the text. Install more languages in Settings › Tools; each one is downloaded once.",
+        "step3": "Turn on Auto-rotate and Clean up before reading for crooked or noisy scans.",
+        "step4": "Click Run OCR. The pages look the same, but their text can now be searched, selected and copied."
+      },
+      "sign": {
+        "title": "Sign and verify",
+        "summary": "Add a hand-drawn signature or a digital certificate signature, and check signatures.",
+        "step1": "For a handwritten signature, open the document in the Viewer, choose Place signature, then draw one or pick it from your saved signatures.",
+        "step2": "Click where the signature goes, drag it into place and choose Apply signature.",
+        "step3": "For a certificate signature, open Tools › Sign and choose your .p12 or .pfx file and its password. Without a certificate, vivePDF can create one for you.",
+        "step4": "Turn on a visible signature box if you want it shown on a page, then click Sign. A timestamp server is optional and needs internet.",
+        "step5": "To check a signed file, open the Verify tab. It shows whether each signature is valid and whether the document changed after signing."
+      },
+      "studioDocument": {
+        "title": "Write a document in Studio",
+        "summary": "Write reports, articles and theses with headings, tables and a contents list.",
+        "step1": "Open Tools › Write a document. Start a new one or continue your last document.",
+        "step2": "Type in the editor. The formatting bar sets paragraph styles, bold, italics, lists, tables, symbols and footnotes.",
+        "step3": "Use the Settings tab on the right for paper size, margins, fonts and line spacing; Preview shows the finished pages.",
+        "step4": "Find and replace, word count and section breaks with columns are in the toolbar menus.",
+        "step5": "Export the document as a PDF or a Markdown file. Your work is kept as a vivePDF document you can reopen and edit."
+      },
+      "studioDesign": {
+        "title": "Design in Studio",
+        "summary": "Make posters, certificates, invitations and cards on a free canvas.",
+        "step1": "Open Tools › Design in Studio and choose Start from a template, or start with a blank page or a custom size.",
+        "step2": "Add text, pictures, shapes, tables, charts and icons from the panel on the left.",
+        "step3": "Select an item to change its colour, font, size, shadow or alignment; drag to move it, and use the handles to resize or rotate it.",
+        "step4": "Use the Layers and Pages panels for overlapping items and designs with several pages.",
+        "step5": "Choose Export to save the design as a PDF or as pictures. Business cards can also be laid out for printing."
+      },
+      "presentation": {
+        "title": "Present a PDF",
+        "summary": "Show slides full screen, draw on them and use a second screen for notes.",
+        "step1": "Open the PDF in the Viewer and press F5 to start from the first page, or Shift+F5 to start from the current page.",
+        "step2": "Move between pages with the arrow keys, Page Up and Page Down. G shows an overview of every slide.",
+        "step3": "Press L for the laser pointer, P for the pen, H for the highlighter, S for the spotlight and U for the on-screen ruler; Esc puts the tool away.",
+        "step4": "With a projector connected, press Alt+F5 for Presenter view: the audience sees only the slide, while you see the next page, a timer and your speaker notes.",
+        "step5": "Press Esc to end. Drawings are temporary unless you choose to save them to the PDF."
+      },
+      "settingsPrivacy": {
+        "title": "Settings and privacy",
+        "summary": "Change the look of the app and control what goes online.",
+        "step1": "Open Settings from the top bar. Use the search box to find a setting by name.",
+        "step2": "Appearance changes the language, theme and interface scale. Files sets where results are saved and how they are named.",
+        "step3": "Turn on Offline mode in Settings › Web to stop every internet connection: updates, downloads, web searches and online checks.",
+        "step4": "Help › Privacy lists everything vivePDF stores on this computer, and Settings › Data removes it."
+      },
+      "troubleshooting": {
+        "title": "Troubleshooting",
+        "summary": "What to do when something does not work as expected.",
+        "step1": "If a tool fails, read the message: it says what went wrong and usually how to fix it. Try again with a copy of the file.",
+        "step2": "If a feature is greyed out with an offline note, Offline mode is on. Turn it off in Settings › Web.",
+        "step3": "Help › Open log folder shows the log files, which record what happened, without your documents.",
+        "step4": "Help › Save support bundle… saves the system details and recent logs into one zip file that you can share.",
+        "step5": "Help › Report a bug opens a report. Pasted screenshots and attached sample files go only into a package you save yourself."
+      }
+    }
   }
 }

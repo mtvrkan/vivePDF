@@ -10,6 +10,7 @@ import { TooltipLayer } from "@/components/shared/Tooltip";
 import { ReportDialog } from "@/features/report/ReportDialog";
 import { ShortcutSheet } from "@/features/about/ShortcutSheet";
 import { WhatsNewDialog } from "@/features/about/WhatsNewDialog";
+import { HelpKeyListener } from "@/features/help/HelpKeyListener";
 import { HomePage } from "@/features/home/HomePage";
 import { FileOpenListener } from "@/features/viewer/FileOpenListener";
 import { OrganizerSourceCleanup } from "@/features/pages/OrganizerSourceCleanup";
@@ -38,6 +39,7 @@ import { useUpdateStore } from "@/shared/store/updateStore";
 
 const ViewerPage = lazy(() => import("@/features/viewer/ViewerPage").then((m) => ({ default: m.ViewerPage })));
 const AboutPage = lazy(() => import("@/features/about/AboutPage").then((m) => ({ default: m.AboutPage })));
+const HelpPage = lazy(() => import("@/features/help/HelpPage").then((m) => ({ default: m.HelpPage })));
 const PagesPage = lazy(() => import("@/features/pages/PagesPage").then((m) => ({ default: m.PagesPage })));
 const SearchPage = lazy(() => import("@/features/search/SearchPage").then((m) => ({ default: m.SearchPage })));
 const SettingsPage = lazy(() => import("@/features/settings/SettingsPage").then((m) => ({ default: m.SettingsPage })));
@@ -204,6 +206,7 @@ export default function App() {
             <Route path="/studio" element={<StudioPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/help" element={<HelpPage />} />
           </Routes>
           </Suspense>
           </RouteErrorBoundary>
@@ -214,6 +217,7 @@ export default function App() {
       <TooltipLayer />
       <ReportDialog />
       <ShortcutSheet />
+      <HelpKeyListener />
       <WhatsNewDialog />
     </MemoryRouter>
   );

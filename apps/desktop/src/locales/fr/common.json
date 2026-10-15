@@ -6648,7 +6648,9 @@
         "editCycle": "Sélectionner la zone suivante / précédente de la page",
         "editNudge": "Déplacer la boîte sélectionnée (Maj : 10 pt)",
         "clipboard": "PDF à partir de ce que vous avez copié",
-        "presentationRuler": "Afficher ou masquer la règle"
+        "presentationRuler": "Afficher ou masquer la règle",
+        "shortcutSheet": "Raccourcis de cet écran",
+        "helpTopic": "Rubrique d’aide de cet écran"
       },
       "search": "Rechercher des raccourcis",
       "noMatch": "Aucun raccourci ne correspond à votre recherche."
@@ -10107,5 +10109,104 @@
     "saved": "Paquet d’assistance enregistré",
     "tooLarge": "Ces fichiers sont trop volumineux pour un paquet d’assistance (limite {{limit}} Mo).",
     "badImage": "Seules les images PNG ou JPEG peuvent être ajoutées."
+  },
+  "help": {
+    "menu": "Rubriques d’aide",
+    "title": "Rubriques d’aide",
+    "description": "Des guides pas à pas pour les tâches principales. Ils fonctionnent sans connexion internet.",
+    "search": "Rechercher dans l’aide",
+    "clearSearch": "Effacer la recherche",
+    "noMatchesTitle": "Aucune rubrique d’aide ne correspond à « {{query}} »",
+    "noMatchesDescription": "Essayez un autre mot, ou effacez la recherche pour voir toutes les rubriques.",
+    "openScreen": "Ouvrir cet écran",
+    "topics": {
+      "openView": {
+        "title": "Ouvrir et lire un PDF",
+        "summary": "Ouvrez des documents, passez d’une page à l’autre et trouvez du texte.",
+        "step1": "Dans Accueil, cliquez sur Ouvrir un PDF ou appuyez sur Ctrl+O. Vous pouvez aussi déposer des fichiers sur la fenêtre : documents Office, livres numériques, e-mails et images s’ouvrent en PDF.",
+        "step2": "Chaque document s’ouvre dans son propre onglet de la Visionneuse. Les documents récents restent dans Accueil, où vous pouvez épingler ceux que vous utilisez souvent.",
+        "step3": "Saisissez un numéro de page dans la case à côté de la page, ou utilisez les flèches en dessous. Les étiquettes de page comme iii ou A-1 fonctionnent aussi.",
+        "step4": "Appuyez sur Ctrl+F pour rechercher dans le document ; Respecter la casse et Mot entier affinent les résultats, et F3 passe au suivant.",
+        "step5": "Zoomez avec Ctrl+Plus et Ctrl+Moins, ou choisissez Ajuster à la largeur ou Ajuster à la page. Le panneau Miniatures montre toutes les pages."
+      },
+      "organizePages": {
+        "title": "Organiser les pages",
+        "summary": "Réordonnez, faites pivoter, supprimez, insérez et divisez des pages.",
+        "step1": "Ouvrez le document, puis choisissez Pages dans la barre du haut pour voir toutes les pages en miniatures.",
+        "step2": "Faites glisser les pages pour les réordonner. Cliquez pour sélectionner, avec Maj ou Ctrl pour en sélectionner plusieurs.",
+        "step3": "Appliquez Pivoter à gauche, Pivoter à droite, Dupliquer ou Supprimer la sélection. Insérer une page blanche et Insérer des pages depuis un PDF ajoutent des pages.",
+        "step4": "Pour diviser, placez une marque de coupe, puis choisissez Enregistrer en fichiers séparés.",
+        "step5": "Cliquez sur Appliquer et enregistrer. Le résultat est enregistré dans un nouveau fichier et l’original reste tel quel."
+      },
+      "convert": {
+        "title": "Convertir des fichiers",
+        "summary": "Transformez un PDF en Word, Excel, images et plus, ou créez un PDF à partir d’autres fichiers.",
+        "step1": "Ouvrez Outils › Convertir.",
+        "step2": "Choisissez Depuis PDF pour obtenir Word, Excel, PowerPoint, des images, du texte, Markdown, HTML ou un livre numérique, ou Vers PDF pour des images, des fichiers Office, des dessins SVG et des pages web.",
+        "step3": "Choisissez le fichier et vérifiez les options ; pour les pages numérisées, activez la lecture par OCR.",
+        "step4": "Cliquez sur Convertir. Le nouveau fichier va dans le dossier de sortie défini dans Paramètres › Fichiers."
+      },
+      "ocr": {
+        "title": "Rendre les pages numérisées consultables (OCR)",
+        "summary": "Ajoutez une couche de texte pour pouvoir rechercher et copier dans des pages numérisées.",
+        "step1": "Ouvrez Outils › OCR et choisissez le PDF numérisé. vivePDF indique combien de pages sont numérisées et combien ont déjà du texte.",
+        "step2": "Choisissez les langues du texte. Installez d’autres langues dans Paramètres › Outils ; chacune n’est téléchargée qu’une fois.",
+        "step3": "Activez Rotation automatique et Nettoyer avant la lecture pour les numérisations de travers ou bruitées.",
+        "step4": "Cliquez sur Lancer l’OCR. Les pages restent identiques, mais leur texte peut désormais être recherché, sélectionné et copié."
+      },
+      "sign": {
+        "title": "Signer et vérifier",
+        "summary": "Ajoutez une signature manuscrite ou une signature numérique avec certificat, et vérifiez des signatures.",
+        "step1": "Pour une signature manuscrite, ouvrez le document dans la Visionneuse, choisissez Placer une signature, puis dessinez-en une ou choisissez-la parmi vos signatures enregistrées.",
+        "step2": "Cliquez à l’endroit voulu, faites glisser la signature en place et choisissez Appliquer la signature.",
+        "step3": "Pour une signature avec certificat, ouvrez Outils › Signer et choisissez votre fichier .p12 ou .pfx et son mot de passe. Sans certificat, vivePDF peut en créer un pour vous.",
+        "step4": "Activez le cadre de signature visible si vous voulez l’afficher sur une page, puis cliquez sur Signer. Un serveur d’horodatage est facultatif et nécessite internet.",
+        "step5": "Pour contrôler un fichier signé, ouvrez l’onglet Vérifier. Il indique si chaque signature est valide et si le document a changé après la signature."
+      },
+      "studioDocument": {
+        "title": "Rédiger un document dans Studio",
+        "summary": "Rédigez rapports, articles et thèses avec titres, tableaux et table des matières.",
+        "step1": "Ouvrez Outils › Rédiger un document. Commencez-en un nouveau ou reprenez votre dernier document.",
+        "step2": "Écrivez dans l’éditeur. La barre de mise en forme règle les styles de paragraphe, le gras, l’italique, les listes, les tableaux, les symboles et les notes de bas de page.",
+        "step3": "Utilisez l’onglet Paramètres à droite pour le format du papier, les marges, les polices et l’interligne ; Aperçu montre les pages finales.",
+        "step4": "Rechercher et remplacer, le nombre de mots et les sauts de section en colonnes se trouvent dans les menus de la barre d’outils.",
+        "step5": "Exportez le document en PDF ou en fichier Markdown. Votre travail est conservé sous forme de document vivePDF que vous pouvez rouvrir et modifier."
+      },
+      "studioDesign": {
+        "title": "Créer dans Studio",
+        "summary": "Réalisez affiches, certificats, invitations et cartes sur un canevas libre.",
+        "step1": "Ouvrez Outils › Créer dans Studio et choisissez Commencer avec un modèle, ou commencez avec une page vierge ou une taille personnalisée.",
+        "step2": "Ajoutez du texte, des images, des formes, des tableaux, des graphiques et des icônes depuis le panneau de gauche.",
+        "step3": "Sélectionnez un élément pour changer sa couleur, sa police, sa taille, son ombre ou son alignement ; faites-le glisser pour le déplacer et utilisez les poignées pour le redimensionner ou le faire pivoter.",
+        "step4": "Utilisez les panneaux Calques et Pages pour les éléments superposés et les créations de plusieurs pages.",
+        "step5": "Choisissez Exporter pour enregistrer la création en PDF ou en images. Les cartes de visite peuvent aussi être disposées pour l’impression."
+      },
+      "presentation": {
+        "title": "Présenter un PDF",
+        "summary": "Affichez les diapositives en plein écran, dessinez dessus et utilisez un second écran pour les notes.",
+        "step1": "Ouvrez le PDF dans la Visionneuse et appuyez sur F5 pour commencer à la première page, ou sur Maj+F5 pour commencer à la page actuelle.",
+        "step2": "Passez d’une page à l’autre avec les flèches, Page préc. et Page suiv. G affiche une vue d’ensemble de toutes les diapositives.",
+        "step3": "Appuyez sur L pour le pointeur laser, P pour le stylo, H pour le surligneur, S pour le projecteur et U pour la règle à l’écran ; Échap range l’outil.",
+        "step4": "Avec un projecteur branché, appuyez sur Alt+F5 pour le Mode présentateur : le public ne voit que la diapositive, et vous voyez la page suivante, un minuteur et vos notes.",
+        "step5": "Appuyez sur Échap pour terminer. Les dessins sont temporaires, sauf si vous choisissez de les enregistrer dans le PDF."
+      },
+      "settingsPrivacy": {
+        "title": "Paramètres et confidentialité",
+        "summary": "Changez l’apparence de l’application et contrôlez ce qui passe par internet.",
+        "step1": "Ouvrez Paramètres depuis la barre du haut. Utilisez le champ de recherche pour trouver un paramètre par son nom.",
+        "step2": "Apparence change la langue, le thème et l’échelle de l’interface. Fichiers définit où les résultats sont enregistrés et comment ils sont nommés.",
+        "step3": "Activez le Mode hors ligne dans Paramètres › Web pour couper toute connexion internet : mises à jour, téléchargements, recherches web et vérifications en ligne.",
+        "step4": "Aide › Confidentialité liste tout ce que vivePDF conserve sur cet ordinateur, et Paramètres › Données le supprime."
+      },
+      "troubleshooting": {
+        "title": "Dépannage",
+        "summary": "Que faire quand quelque chose ne fonctionne pas comme prévu.",
+        "step1": "Si un outil échoue, lisez le message : il indique ce qui s’est mal passé et, le plus souvent, comment y remédier. Réessayez avec une copie du fichier.",
+        "step2": "Si une fonction est grisée avec une note hors ligne, le Mode hors ligne est activé. Désactivez-le dans Paramètres › Web.",
+        "step3": "Aide › Ouvrir le dossier des journaux affiche les fichiers journaux, qui consignent ce qui s’est passé, sans vos documents.",
+        "step4": "Aide › Enregistrer le paquet d’assistance… enregistre les informations système et les journaux récents dans un seul fichier zip que vous pouvez partager.",
+        "step5": "Aide › Signaler un bogue ouvre un rapport. Les captures collées et les fichiers d’exemple joints vont uniquement dans un paquet que vous enregistrez vous-même."
+      }
+    }
   }
 }

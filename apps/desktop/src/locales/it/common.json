@@ -6648,7 +6648,9 @@
         "editCycle": "Seleziona il riquadro successivo / precedente della pagina",
         "editNudge": "Sposta la casella selezionata (Maiusc: 10 pt)",
         "clipboard": "PDF da ciò che hai copiato",
-        "presentationRuler": "Mostra o nascondi il righello"
+        "presentationRuler": "Mostra o nascondi il righello",
+        "shortcutSheet": "Scorciatoie di questa schermata",
+        "helpTopic": "Argomento della guida per questa schermata"
       },
       "search": "Cerca scorciatoie",
       "noMatch": "Nessuna scorciatoia corrisponde alla ricerca."
@@ -10107,5 +10109,104 @@
     "saved": "Pacchetto di supporto salvato",
     "tooLarge": "Questi file sono troppo grandi per un pacchetto di supporto (limite {{limit}} MB).",
     "badImage": "Si possono aggiungere solo immagini PNG o JPEG."
+  },
+  "help": {
+    "menu": "Argomenti della guida",
+    "title": "Argomenti della guida",
+    "description": "Guide passo passo per le attività principali. Funzionano anche senza connessione a internet.",
+    "search": "Cerca nella guida",
+    "clearSearch": "Cancella ricerca",
+    "noMatchesTitle": "Nessun argomento della guida corrisponde a «{{query}}»",
+    "noMatchesDescription": "Prova con un’altra parola, oppure cancella la ricerca per vedere tutti gli argomenti.",
+    "openScreen": "Apri questa schermata",
+    "topics": {
+      "openView": {
+        "title": "Aprire e leggere un PDF",
+        "summary": "Apri documenti, spostati tra le pagine e trova il testo.",
+        "step1": "Nella Home fai clic su Apri PDF o premi Ctrl+O. Puoi anche trascinare i file nella finestra: documenti Office, e-book, e-mail e immagini si aprono come PDF.",
+        "step2": "Ogni documento si apre in una propria scheda del Visualizzatore. I documenti recenti restano nella Home, dove puoi fissare quelli che usi spesso.",
+        "step3": "Scrivi un numero di pagina nella casella accanto alla pagina o usa le frecce sotto. Funzionano anche etichette di pagina come iii o A-1.",
+        "step4": "Premi Ctrl+F per cercare nel documento; Maiuscole/minuscole e Parola intera restringono i risultati, e F3 passa al successivo.",
+        "step5": "Ingrandisci con Ctrl+Più e Ctrl+Meno, oppure scegli Adatta alla larghezza o Adatta alla pagina. Il pannello Miniature mostra tutte le pagine."
+      },
+      "organizePages": {
+        "title": "Organizzare le pagine",
+        "summary": "Riordina, ruota, elimina, inserisci e dividi le pagine.",
+        "step1": "Apri il documento, poi scegli Pagine nella barra in alto per vedere tutte le pagine come miniature.",
+        "step2": "Trascina le pagine per riordinarle. Fai clic per selezionare e usa Maiusc o Ctrl per selezionarne più di una.",
+        "step3": "Applica alla selezione Ruota a sinistra, Ruota a destra, Duplica o Elimina selezionate. Inserisci pagina vuota e Inserisci pagine da PDF aggiungono nuove pagine.",
+        "step4": "Per dividere, segna un taglio, poi scegli Salva come file separati.",
+        "step5": "Fai clic su Applica e salva. Il risultato viene salvato in un nuovo file e l’originale resta com’era."
+      },
+      "convert": {
+        "title": "Convertire file",
+        "summary": "Trasforma un PDF in Word, Excel, immagini e altro, oppure crea un PDF da altri file.",
+        "step1": "Apri Strumenti › Converti.",
+        "step2": "Scegli Da PDF per ottenere Word, Excel, PowerPoint, immagini, testo, Markdown, HTML o un e-book, oppure In PDF per immagini, file Office, disegni SVG e pagine web.",
+        "step3": "Scegli il file e controlla le opzioni; per le pagine scansionate attiva la lettura con OCR.",
+        "step4": "Fai clic su Converti. Il nuovo file va nella cartella di destinazione impostata in Impostazioni › File."
+      },
+      "ocr": {
+        "title": "Rendere ricercabili le pagine scansionate (OCR)",
+        "summary": "Aggiungi un livello di testo per cercare e copiare nelle pagine scansionate.",
+        "step1": "Apri Strumenti › OCR e scegli il PDF scansionato. vivePDF mostra quante pagine sono scansionate e quante hanno già il testo.",
+        "step2": "Scegli le lingue del testo. Installa altre lingue in Impostazioni › Strumenti; ognuna viene scaricata una sola volta.",
+        "step3": "Attiva Rotazione automatica e Pulisci prima della lettura per scansioni storte o disturbate.",
+        "step4": "Fai clic su Esegui OCR. Le pagine restano uguali, ma ora il loro testo si può cercare, selezionare e copiare."
+      },
+      "sign": {
+        "title": "Firmare e verificare",
+        "summary": "Aggiungi una firma autografa o una firma digitale con certificato e controlla le firme.",
+        "step1": "Per una firma autografa, apri il documento nel Visualizzatore, scegli Posiziona firma, poi disegnane una o scegline una tra quelle salvate.",
+        "step2": "Fai clic dove va la firma, trascinala in posizione e scegli Applica firma.",
+        "step3": "Per una firma con certificato, apri Strumenti › Firma e scegli il file .p12 o .pfx e la sua password. Senza certificato, vivePDF può crearne uno per te.",
+        "step4": "Attiva il riquadro di firma visibile se vuoi mostrarlo su una pagina, poi fai clic su Firma. Il server di marca temporale è facoltativo e richiede internet.",
+        "step5": "Per controllare un file firmato, apri la scheda Verifica. Mostra se ogni firma è valida e se il documento è cambiato dopo la firma."
+      },
+      "studioDocument": {
+        "title": "Scrivere un documento in Studio",
+        "summary": "Scrivi relazioni, articoli e tesi con titoli, tabelle e indice.",
+        "step1": "Apri Strumenti › Scrivi un documento. Iniziane uno nuovo o continua l’ultimo.",
+        "step2": "Scrivi nell’editor. La barra di formattazione imposta stili di paragrafo, grassetto, corsivo, elenchi, tabelle, simboli e note a piè di pagina.",
+        "step3": "Usa la scheda Impostazioni a destra per formato carta, margini, caratteri e interlinea; Anteprima mostra le pagine finite.",
+        "step4": "Trova e sostituisci, il conteggio parole e le interruzioni di sezione con colonne si trovano nei menu della barra degli strumenti.",
+        "step5": "Esporta il documento come PDF o file Markdown. Il tuo lavoro resta salvato come documento vivePDF da riaprire e modificare."
+      },
+      "studioDesign": {
+        "title": "Progettare in Studio",
+        "summary": "Crea poster, certificati, inviti e biglietti su una tela libera.",
+        "step1": "Apri Strumenti › Progetta in Studio e scegli Inizia da un modello, oppure inizia con una pagina vuota o dimensioni personalizzate.",
+        "step2": "Aggiungi testo, immagini, forme, tabelle, grafici e icone dal pannello a sinistra.",
+        "step3": "Seleziona un elemento per cambiarne colore, carattere, dimensione, ombra o allineamento; trascinalo per spostarlo e usa le maniglie per ridimensionarlo o ruotarlo.",
+        "step4": "Usa i pannelli Livelli e Pagine per elementi sovrapposti e progetti di più pagine.",
+        "step5": "Scegli Esporta per salvare il progetto come PDF o come immagini. I biglietti da visita si possono anche impaginare per la stampa."
+      },
+      "presentation": {
+        "title": "Presentare un PDF",
+        "summary": "Mostra le diapositive a schermo intero, disegnaci sopra e usa un secondo schermo per le note.",
+        "step1": "Apri il PDF nel Visualizzatore e premi F5 per iniziare dalla prima pagina, oppure Maiusc+F5 per iniziare dalla pagina corrente.",
+        "step2": "Spostati tra le pagine con le frecce, Pag su e Pag giù. G mostra una panoramica di tutte le diapositive.",
+        "step3": "Premi L per il puntatore laser, P per la penna, H per l’evidenziatore, S per il riflettore e U per il righello sullo schermo; Esc mette via lo strumento.",
+        "step4": "Con un proiettore collegato, premi Alt+F5 per la Visualizzazione relatore: il pubblico vede solo la diapositiva, tu vedi la pagina successiva, un timer e le tue note.",
+        "step5": "Premi Esc per terminare. I disegni sono temporanei, a meno che tu non scelga di salvarli nel PDF."
+      },
+      "settingsPrivacy": {
+        "title": "Impostazioni e privacy",
+        "summary": "Cambia l’aspetto dell’app e decidi cosa passa da internet.",
+        "step1": "Apri Impostazioni dalla barra in alto. Usa la casella di ricerca per trovare un’impostazione per nome.",
+        "step2": "Aspetto cambia lingua, tema e scala dell’interfaccia. File stabilisce dove vengono salvati i risultati e come si chiamano.",
+        "step3": "Attiva la Modalità offline in Impostazioni › Web per fermare ogni connessione a internet: aggiornamenti, download, ricerche web e controlli online.",
+        "step4": "Aiuto › Privacy elenca tutto ciò che vivePDF conserva su questo computer, e Impostazioni › Dati lo rimuove."
+      },
+      "troubleshooting": {
+        "title": "Risoluzione dei problemi",
+        "summary": "Cosa fare quando qualcosa non funziona come previsto.",
+        "step1": "Se uno strumento non riesce, leggi il messaggio: dice cosa è andato storto e di solito come rimediare. Riprova con una copia del file.",
+        "step2": "Se una funzione è disattivata con una nota offline, la Modalità offline è attiva. Disattivala in Impostazioni › Web.",
+        "step3": "Aiuto › Apri cartella dei registri mostra i file di registro, che annotano cosa è successo senza i tuoi documenti.",
+        "step4": "Aiuto › Salva pacchetto di supporto… salva i dati di sistema e i registri recenti in un unico file zip da condividere.",
+        "step5": "Aiuto › Segnala un bug apre una segnalazione. Gli screenshot incollati e i file di esempio allegati finiscono solo in un pacchetto che salvi tu."
+      }
+    }
   }
 }

@@ -6649,7 +6649,9 @@
         "editCycle": "Sayfadaki sonraki / önceki kutuyu seç",
         "editNudge": "Seçili kutuyu taşı (Shift: 10 pt)",
         "clipboard": "Kopyaladığınızdan PDF",
-        "presentationRuler": "Cetveli göster/gizle"
+        "presentationRuler": "Cetveli göster/gizle",
+        "shortcutSheet": "Bu ekranın kısayolları",
+        "helpTopic": "Bu ekranın yardım konusu"
       },
       "search": "Kısayollarda ara",
       "noMatch": "Aramanızla eşleşen kısayol yok."
@@ -10108,5 +10110,104 @@
     "saved": "Destek paketi kaydedildi",
     "tooLarge": "Bu dosyalar destek paketi için çok büyük (sınır {{limit}} MB).",
     "badImage": "Yalnızca PNG veya JPEG resimler eklenebilir."
+  },
+  "help": {
+    "menu": "Yardım konuları",
+    "title": "Yardım konuları",
+    "description": "Temel işler için adım adım rehberler. İnternet bağlantısı olmadan da çalışır.",
+    "search": "Yardımda ara",
+    "clearSearch": "Aramayı temizle",
+    "noMatchesTitle": "“{{query}}” ile eşleşen yardım konusu yok",
+    "noMatchesDescription": "Başka bir kelime deneyin ya da tüm konuları görmek için aramayı temizleyin.",
+    "openScreen": "Bu ekranı aç",
+    "topics": {
+      "openView": {
+        "title": "PDF açma ve okuma",
+        "summary": "Belgeleri açın, sayfalar arasında gezinin ve metin bulun.",
+        "step1": "Başlangıç'ta PDF aç'a tıklayın ya da Ctrl+O'ya basın. Dosyaları pencereye de bırakabilirsiniz: Office belgeleri, e-kitaplar, e-postalar ve resimler PDF olarak açılır.",
+        "step2": "Her belge Görüntüleyici'de kendi sekmesinde açılır. Son belgeler Başlangıç'ta kalır; sık kullandıklarınızı orada sabitleyebilirsiniz.",
+        "step3": "Sayfanın yanındaki kutuya sayfa numarası yazın ya da altındaki okları kullanın. iii veya A-1 gibi sayfa etiketleri de çalışır.",
+        "step4": "Belgede aramak için Ctrl+F'ye basın; Büyük/küçük harf duyarlı ve Tam sözcük sonuçları daraltır, F3 sonrakine geçer.",
+        "step5": "Ctrl+Artı ve Ctrl+Eksi ile yakınlaştırın ya da Genişliğe sığdır veya Sayfaya sığdır'ı seçin. Küçük resimler paneli tüm sayfaları gösterir."
+      },
+      "organizePages": {
+        "title": "Sayfaları düzenleme",
+        "summary": "Sayfaları sıralayın, döndürün, silin, ekleyin ve bölün.",
+        "step1": "Belgeyi açın, ardından tüm sayfaları küçük resim olarak görmek için üst çubukta Sayfalar'ı seçin.",
+        "step2": "Sıralamak için sayfaları sürükleyin. Seçmek için tıklayın; birden çok sayfa için Shift veya Ctrl kullanın.",
+        "step3": "Seçime Sola döndür, Sağa döndür, Çoğalt veya Seçilenleri sil uygulayın. Boş sayfa ekle ve PDF’ten sayfa ekle yeni sayfalar ekler.",
+        "step4": "Bölmek için bir kesim işareti koyun, ardından Ayrı dosyalar olarak kaydet'i seçin.",
+        "step5": "Uygula ve kaydet'e tıklayın. Sonuç yeni bir dosyaya kaydedilir, asıl dosya olduğu gibi kalır."
+      },
+      "convert": {
+        "title": "Dosya dönüştürme",
+        "summary": "PDF'i Word, Excel, resim ve daha fazlasına çevirin ya da başka dosyalardan PDF yapın.",
+        "step1": "Araçlar › Dönüştür'ü açın.",
+        "step2": "Word, Excel, PowerPoint, resim, metin, Markdown, HTML veya e-kitap için PDF’ten'i; resimler, Office dosyaları, SVG çizimleri ve web sayfaları için PDF’e'yi seçin.",
+        "step3": "Dosyayı seçin ve seçenekleri kontrol edin; taranmış sayfalar için sayfaları OCR ile okumayı açın.",
+        "step4": "Dönüştür'e tıklayın. Yeni dosya Ayarlar › Dosyalar'da belirlenen çıktı klasörüne gider."
+      },
+      "ocr": {
+        "title": "Taranmış sayfaları aranabilir yapma (OCR)",
+        "summary": "Taranmış sayfalar aranabilsin ve kopyalanabilsin diye metin katmanı ekleyin.",
+        "step1": "Araçlar › OCR'ı açın ve taranmış PDF'i seçin. vivePDF kaç sayfanın taranmış, kaçında zaten metin olduğunu gösterir.",
+        "step2": "Metnin dillerini seçin. Ayarlar › Araçlar'dan başka diller kurabilirsiniz; her biri bir kez indirilir.",
+        "step3": "Eğri veya gürültülü taramalar için Otomatik döndür ve Okumadan önce temizle'yi açın.",
+        "step4": "OCR uygula'ya tıklayın. Sayfalar aynı görünür, ama metinleri artık aranabilir, seçilebilir ve kopyalanabilir."
+      },
+      "sign": {
+        "title": "İmzalama ve doğrulama",
+        "summary": "Elle çizilmiş imza ya da sertifikalı dijital imza ekleyin ve imzaları kontrol edin.",
+        "step1": "Elle imza için belgeyi Görüntüleyici'de açın, İmza yerleştir'i seçin, ardından bir imza çizin ya da kayıtlı imzalarınızdan seçin.",
+        "step2": "İmzanın gideceği yere tıklayın, sürükleyerek yerleştirin ve İmzayı uygula'yı seçin.",
+        "step3": "Sertifikalı imza için Araçlar › İmzala'yı açın, .p12 veya .pfx dosyanızı ve parolasını seçin. Sertifikanız yoksa vivePDF sizin için bir tane oluşturabilir.",
+        "step4": "İmzanın sayfada görünmesini istiyorsanız görünür imza kutusunu açın, sonra İmzala'ya tıklayın. Zaman damgası sunucusu isteğe bağlıdır ve internet gerektirir.",
+        "step5": "İmzalı bir dosyayı kontrol etmek için Doğrula sekmesini açın. Her imzanın geçerli olup olmadığını ve belgenin imzadan sonra değişip değişmediğini gösterir."
+      },
+      "studioDocument": {
+        "title": "Studio'da belge yazma",
+        "summary": "Başlıklar, tablolar ve içindekiler ile rapor, makale ve tez yazın.",
+        "step1": "Araçlar › Belge yaz'ı açın. Yeni bir belgeye başlayın ya da son belgenize devam edin.",
+        "step2": "Düzenleyicide yazın. Biçim çubuğu paragraf stillerini, kalın, italik, listeler, tablolar, simgeler ve dipnotları ayarlar.",
+        "step3": "Kâğıt boyutu, kenar boşlukları, yazı tipleri ve satır aralığı için sağdaki Ayarlar sekmesini kullanın; Önizleme bitmiş sayfaları gösterir.",
+        "step4": "Bul ve değiştir, sözcük sayısı ve sütunlu bölüm sonları araç çubuğu menülerindedir.",
+        "step5": "Belgeyi PDF veya Markdown dosyası olarak dışa aktarın. Çalışmanız yeniden açıp düzenleyebileceğiniz bir vivePDF belgesi olarak saklanır."
+      },
+      "studioDesign": {
+        "title": "Studio'da tasarım",
+        "summary": "Serbest bir tuvalde afiş, sertifika, davetiye ve kart hazırlayın.",
+        "step1": "Araçlar › Studio'da tasarla'yı açın ve Bir şablonla başlayın'ı seçin ya da boş sayfayla veya özel boyutla başlayın.",
+        "step2": "Soldaki panelden metin, resim, şekil, tablo, grafik ve simge ekleyin.",
+        "step3": "Rengini, yazı tipini, boyutunu, gölgesini veya hizasını değiştirmek için bir öğe seçin; taşımak için sürükleyin, boyutlandırmak ya da döndürmek için tutamaçları kullanın.",
+        "step4": "Üst üste binen öğeler ve çok sayfalı tasarımlar için Katmanlar ve Sayfalar panellerini kullanın.",
+        "step5": "Tasarımı PDF veya resim olarak kaydetmek için Dışa aktar'ı seçin. Kartvizitler baskı için de dizilebilir."
+      },
+      "presentation": {
+        "title": "PDF ile sunum yapma",
+        "summary": "Slaytları tam ekran gösterin, üzerlerine çizin ve notlar için ikinci ekranı kullanın.",
+        "step1": "PDF'i Görüntüleyici'de açın; ilk sayfadan başlamak için F5'e, geçerli sayfadan başlamak için Shift+F5'e basın.",
+        "step2": "Sayfalar arasında ok tuşları, Page Up ve Page Down ile geçin. G tüm slaytların özetini gösterir.",
+        "step3": "Lazer işaretçi için L, kalem için P, vurgulayıcı için H, spot ışığı için S ve ekran cetveli için U'ya basın; Esc aracı bırakır.",
+        "step4": "Projektör bağlıyken Sunucu görünümü için Alt+F5'e basın: izleyiciler yalnızca slaytı görür, siz ise sonraki sayfayı, süreyi ve konuşmacı notlarınızı görürsünüz.",
+        "step5": "Bitirmek için Esc'ye basın. Çizimler, PDF'e kaydetmeyi seçmediğiniz sürece geçicidir."
+      },
+      "settingsPrivacy": {
+        "title": "Ayarlar ve gizlilik",
+        "summary": "Uygulamanın görünümünü değiştirin ve neyin internete çıktığını denetleyin.",
+        "step1": "Ayarlar'ı üst çubuktan açın. Bir ayarı adıyla bulmak için arama kutusunu kullanın.",
+        "step2": "Görünüm dili, temayı ve arayüz ölçeğini değiştirir. Dosyalar sonuçların nereye ve hangi adla kaydedileceğini belirler.",
+        "step3": "Tüm internet bağlantılarını durdurmak için Ayarlar › Web'de Çevrimdışı mod'u açın: güncellemeler, indirmeler, web aramaları ve çevrimiçi denetimler.",
+        "step4": "Yardım › Gizlilik vivePDF'in bu bilgisayarda sakladığı her şeyi listeler; Ayarlar › Veriler bunları siler."
+      },
+      "troubleshooting": {
+        "title": "Sorun giderme",
+        "summary": "Bir şey beklendiği gibi çalışmadığında yapılacaklar.",
+        "step1": "Bir araç başarısız olursa iletiyi okuyun: neyin ters gittiğini ve genellikle nasıl düzeltileceğini söyler. Dosyanın bir kopyasıyla yeniden deneyin.",
+        "step2": "Bir özellik çevrimdışı notuyla soluk görünüyorsa Çevrimdışı mod açıktır. Ayarlar › Web'den kapatın.",
+        "step3": "Yardım › Günlük klasörünü aç, belgeleriniz olmadan neler olduğunu kaydeden günlük dosyalarını gösterir.",
+        "step4": "Yardım › Destek paketi kaydet… sistem bilgilerini ve son günlükleri paylaşabileceğiniz tek bir zip dosyasına kaydeder.",
+        "step5": "Yardım › Hata bildir bir rapor açar. Yapıştırılan ekran görüntüleri ve eklenen örnek dosyalar yalnızca kendi kaydettiğiniz pakete girer."
+      }
+    }
   }
 }

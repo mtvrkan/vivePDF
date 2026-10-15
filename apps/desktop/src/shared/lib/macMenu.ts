@@ -115,6 +115,7 @@ export function buildMacMenu(t: TFunction): MenuNode[] {
       kind: "submenu",
       label: t("nav.help"),
       items: [
+        link("/help", t("help.menu")),
         link("/about?tab=shortcuts", t("about.tabs.shortcuts")),
         link("/about?tab=whatsNew", t("about.tabs.whatsNew")),
         link("/about?tab=privacy", t("about.tabs.privacy")),

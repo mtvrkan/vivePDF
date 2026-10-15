@@ -6648,7 +6648,9 @@
         "editCycle": "Selecionar a caixa seguinte / anterior da página",
         "editNudge": "Mover a caixa selecionada (Shift: 10 pt)",
         "clipboard": "PDF com o que você copiou",
-        "presentationRuler": "Mostrar ou ocultar a régua"
+        "presentationRuler": "Mostrar ou ocultar a régua",
+        "shortcutSheet": "Atalhos desta tela",
+        "helpTopic": "Tópico de ajuda desta tela"
       },
       "search": "Buscar atalhos",
       "noMatch": "Nenhum atalho corresponde à sua busca."
@@ -10107,5 +10109,104 @@
     "saved": "Pacote de suporte salvo",
     "tooLarge": "Esses arquivos são grandes demais para um pacote de suporte (limite {{limit}} MB).",
     "badImage": "Só é possível adicionar imagens PNG ou JPEG."
+  },
+  "help": {
+    "menu": "Tópicos de ajuda",
+    "title": "Tópicos de ajuda",
+    "description": "Guias passo a passo para as principais tarefas. Funcionam sem conexão com a internet.",
+    "search": "Pesquisar na ajuda",
+    "clearSearch": "Limpar pesquisa",
+    "noMatchesTitle": "Nenhum tópico de ajuda corresponde a “{{query}}”",
+    "noMatchesDescription": "Tente outra palavra ou limpe a pesquisa para ver todos os tópicos.",
+    "openScreen": "Abrir esta tela",
+    "topics": {
+      "openView": {
+        "title": "Abrir e ler um PDF",
+        "summary": "Abra documentos, navegue entre páginas e encontre texto.",
+        "step1": "Em Início, clique em Abrir PDF ou pressione Ctrl+O. Você também pode soltar arquivos na janela: documentos do Office, e-books, e-mails e imagens abrem como PDF.",
+        "step2": "Cada documento abre em sua própria aba no Visualizador. Os documentos recentes ficam em Início, onde você pode fixar os que usa com frequência.",
+        "step3": "Digite um número de página na caixa ao lado da página ou use as setas abaixo dela. Rótulos de página como iii ou A-1 também funcionam.",
+        "step4": "Pressione Ctrl+F para pesquisar no documento; Diferenciar maiúsculas e Palavra inteira refinam os resultados, e F3 vai para o próximo.",
+        "step5": "Aplique zoom com Ctrl+Mais e Ctrl+Menos, ou escolha Ajustar à largura ou Ajustar à página. O painel Miniaturas mostra todas as páginas."
+      },
+      "organizePages": {
+        "title": "Organizar páginas",
+        "summary": "Reordenar, girar, excluir, inserir e dividir páginas.",
+        "step1": "Abra o documento e escolha Páginas na barra superior para ver todas as páginas como miniaturas.",
+        "step2": "Arraste as páginas para reordená-las. Clique para selecionar e use Shift ou Ctrl para selecionar várias.",
+        "step3": "Aplique Girar à esquerda, Girar à direita, Duplicar ou Excluir selecionadas à seleção. Inserir página em branco e Inserir páginas de um PDF adicionam páginas novas.",
+        "step4": "Para dividir, marque um corte e escolha Salvar como arquivos separados.",
+        "step5": "Clique em Aplicar e salvar. O resultado é salvo em um novo arquivo e o original fica como estava."
+      },
+      "convert": {
+        "title": "Converter arquivos",
+        "summary": "Transforme um PDF em Word, Excel, imagens e mais, ou crie um PDF a partir de outros arquivos.",
+        "step1": "Abra Ferramentas › Converter.",
+        "step2": "Escolha De PDF para gerar Word, Excel, PowerPoint, imagens, texto, Markdown, HTML ou um e-book, ou Para PDF para imagens, arquivos do Office, desenhos SVG e páginas da web.",
+        "step3": "Escolha o arquivo e confira as opções; para páginas digitalizadas, ative a leitura com OCR.",
+        "step4": "Clique em Converter. O novo arquivo vai para a pasta de saída definida em Configurações › Arquivos."
+      },
+      "ocr": {
+        "title": "Tornar páginas digitalizadas pesquisáveis (OCR)",
+        "summary": "Adicione uma camada de texto para pesquisar e copiar em páginas digitalizadas.",
+        "step1": "Abra Ferramentas › OCR e escolha o PDF digitalizado. O vivePDF mostra quantas páginas são digitalizadas e quantas já têm texto.",
+        "step2": "Escolha os idiomas do texto. Instale mais idiomas em Configurações › Ferramentas; cada um é baixado uma única vez.",
+        "step3": "Ative Girar automaticamente e Limpar antes de ler para digitalizações tortas ou com ruído.",
+        "step4": "Clique em Executar OCR. As páginas continuam iguais, mas agora o texto delas pode ser pesquisado, selecionado e copiado."
+      },
+      "sign": {
+        "title": "Assinar e verificar",
+        "summary": "Adicione uma assinatura à mão ou uma assinatura digital com certificado e confira assinaturas.",
+        "step1": "Para uma assinatura à mão, abra o documento no Visualizador, escolha Posicionar assinatura e desenhe uma ou escolha entre as suas assinaturas salvas.",
+        "step2": "Clique onde a assinatura deve ficar, arraste-a para o lugar e escolha Aplicar assinatura.",
+        "step3": "Para uma assinatura com certificado, abra Ferramentas › Assinar e escolha seu arquivo .p12 ou .pfx e a senha. Sem certificado, o vivePDF pode criar um para você.",
+        "step4": "Ative a caixa de assinatura visível se quiser que ela apareça em uma página e clique em Assinar. O servidor de carimbo de tempo é opcional e precisa de internet.",
+        "step5": "Para conferir um arquivo assinado, abra a aba Verificar. Ela mostra se cada assinatura é válida e se o documento mudou depois de assinado."
+      },
+      "studioDocument": {
+        "title": "Escrever um documento no Studio",
+        "summary": "Escreva relatórios, artigos e teses com títulos, tabelas e sumário.",
+        "step1": "Abra Ferramentas › Escrever um documento. Comece um novo ou continue o último.",
+        "step2": "Digite no editor. A barra de formatação define estilos de parágrafo, negrito, itálico, listas, tabelas, símbolos e notas de rodapé.",
+        "step3": "Use a aba Configurações à direita para tamanho do papel, margens, fontes e espaçamento entre linhas; Pré-visualização mostra as páginas prontas.",
+        "step4": "Localizar e substituir, contagem de palavras e quebras de seção com colunas ficam nos menus da barra de ferramentas.",
+        "step5": "Exporte o documento como PDF ou arquivo Markdown. Seu trabalho fica salvo como documento do vivePDF, que você pode reabrir e editar."
+      },
+      "studioDesign": {
+        "title": "Criar no Studio",
+        "summary": "Faça pôsteres, certificados, convites e cartões em uma tela livre.",
+        "step1": "Abra Ferramentas › Criar no Studio e escolha Começar com um modelo, ou comece com uma página em branco ou um tamanho personalizado.",
+        "step2": "Adicione texto, imagens, formas, tabelas, gráficos e ícones pelo painel à esquerda.",
+        "step3": "Selecione um item para mudar a cor, a fonte, o tamanho, a sombra ou o alinhamento; arraste para mover e use as alças para redimensionar ou girar.",
+        "step4": "Use os painéis Camadas e Páginas para itens sobrepostos e criações com várias páginas.",
+        "step5": "Escolha Exportar para salvar a criação como PDF ou como imagens. Cartões de visita também podem ser montados para impressão."
+      },
+      "presentation": {
+        "title": "Apresentar um PDF",
+        "summary": "Mostre slides em tela cheia, desenhe sobre eles e use uma segunda tela para as anotações.",
+        "step1": "Abra o PDF no Visualizador e pressione F5 para começar pela primeira página, ou Shift+F5 para começar pela página atual.",
+        "step2": "Navegue entre as páginas com as setas, Page Up e Page Down. G mostra uma visão geral de todos os slides.",
+        "step3": "Pressione L para o apontador laser, P para a caneta, H para o marca-texto, S para o holofote e U para a régua na tela; Esc guarda a ferramenta.",
+        "step4": "Com um projetor conectado, pressione Alt+F5 para o Modo de apresentador: o público vê só o slide, e você vê a próxima página, um cronômetro e suas anotações.",
+        "step5": "Pressione Esc para terminar. Os desenhos são temporários, a menos que você escolha salvá-los no PDF."
+      },
+      "settingsPrivacy": {
+        "title": "Configurações e privacidade",
+        "summary": "Mude a aparência do app e controle o que vai para a internet.",
+        "step1": "Abra Configurações pela barra superior. Use a caixa de pesquisa para encontrar uma configuração pelo nome.",
+        "step2": "Aparência muda o idioma, o tema e a escala da interface. Arquivos define onde os resultados são salvos e como são nomeados.",
+        "step3": "Ative o Modo offline em Configurações › Web para interromper toda conexão com a internet: atualizações, downloads, pesquisas na web e verificações on-line.",
+        "step4": "Ajuda › Privacidade lista tudo o que o vivePDF guarda neste computador, e Configurações › Dados remove tudo."
+      },
+      "troubleshooting": {
+        "title": "Solução de problemas",
+        "summary": "O que fazer quando algo não funciona como esperado.",
+        "step1": "Se uma ferramenta falhar, leia a mensagem: ela diz o que deu errado e, em geral, como corrigir. Tente de novo com uma cópia do arquivo.",
+        "step2": "Se um recurso aparecer esmaecido com uma nota de offline, o Modo offline está ativado. Desative-o em Configurações › Web.",
+        "step3": "Ajuda › Abrir pasta de logs mostra os arquivos de log, que registram o que aconteceu, sem os seus documentos.",
+        "step4": "Ajuda › Salvar pacote de suporte… salva os dados do sistema e os logs recentes em um único arquivo zip que você pode compartilhar.",
+        "step5": "Ajuda › Relatar um erro abre um relatório. Capturas de tela coladas e arquivos de exemplo anexados vão só para um pacote que você mesmo salva."
+      }
+    }
   }
 }

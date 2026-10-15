@@ -13,6 +13,8 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { keys: "Ctrl Shift N", labelKey: "about.shortcuts.items.newWindow" },
       { keys: "Ctrl Shift V", labelKey: "about.shortcuts.items.clipboard" },
       { keys: "Ctrl K", labelKey: "about.shortcuts.items.palette" },
+      { keys: "F1  /  Ctrl /", labelKey: "about.shortcuts.items.shortcutSheet" },
+      { keys: "Shift F1", labelKey: "about.shortcuts.items.helpTopic" },
       { keys: "Ctrl W", labelKey: "about.shortcuts.items.closeDocument" },
       { keys: "Esc", labelKey: "about.shortcuts.items.closeDialog" },
     ],
