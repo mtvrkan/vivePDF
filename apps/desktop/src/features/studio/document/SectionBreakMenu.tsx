@@ -12,12 +12,21 @@ export function SectionBreakMenu({ editor }: { editor: Editor }) {
   const { t } = useTranslation();
   const [anchor, setAnchor] = useState<ContextMenuAnchor | null>(null);
   const label = t("studio.doc.section.button");
-  const items: ContextMenuItem[] = SECTION_COLUMNS.map((columns) => ({
-    type: "item",
-    id: `section-${columns}`,
-    label: t(`studio.doc.section.columns${columns}`),
-    onSelect: () => editor.chain().focus().setSectionBreak(columns).run(),
-  }));
+  const items: ContextMenuItem[] = [
+    ...SECTION_COLUMNS.map((columns): ContextMenuItem => ({
+      type: "item",
+      id: `section-${columns}`,
+      label: t(`studio.doc.section.columns${columns}`),
+      onSelect: () => editor.chain().focus().setSectionBreak(columns).run(),
+    })),
+    { type: "separator", id: "section-continuous" },
+    ...SECTION_COLUMNS.map((columns): ContextMenuItem => ({
+      type: "item",
+      id: `section-continuous-${columns}`,
+      label: t(`studio.doc.section.continuous${columns}`),
+      onSelect: () => editor.chain().focus().setSectionBreak(columns, true).run(),
+    })),
+  ];
 
   return (
     <span {...{ [MENU_LAYER]: "" }} className="inline-flex">

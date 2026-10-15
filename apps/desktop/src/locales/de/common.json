@@ -9263,11 +9263,15 @@
         "endTitle": "Anmerkungen"
       },
       "section": {
-        "button": "Abschnittsumbruch (nächste Seite)",
+        "button": "Abschnittsumbruch",
         "columns1": "Abschnittsumbruch: 1 Spalte",
         "columns2": "Abschnittsumbruch: 2 Spalten",
         "columns3": "Abschnittsumbruch: 3 Spalten",
-        "label": "Abschnittsumbruch · Spalten: {{columns}}"
+        "label": "Abschnittsumbruch · Spalten: {{columns}}",
+        "continuous1": "Fortlaufender Abschnittsumbruch: 1 Spalte",
+        "continuous2": "Fortlaufender Abschnittsumbruch: 2 Spalten",
+        "continuous3": "Fortlaufender Abschnittsumbruch: 3 Spalten",
+        "labelContinuous": "Fortlaufender Abschnittsumbruch · Spalten: {{columns}}"
       }
     },
     "cv": {

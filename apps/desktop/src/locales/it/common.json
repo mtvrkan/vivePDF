@@ -9263,11 +9263,15 @@
         "endTitle": "Note"
       },
       "section": {
-        "button": "Interruzione di sezione (pagina successiva)",
+        "button": "Interruzione di sezione",
         "columns1": "Interruzione di sezione: 1 colonna",
         "columns2": "Interruzione di sezione: 2 colonne",
         "columns3": "Interruzione di sezione: 3 colonne",
-        "label": "Interruzione di sezione · colonne: {{columns}}"
+        "label": "Interruzione di sezione · colonne: {{columns}}",
+        "continuous1": "Interruzione di sezione continua: 1 colonna",
+        "continuous2": "Interruzione di sezione continua: 2 colonne",
+        "continuous3": "Interruzione di sezione continua: 3 colonne",
+        "labelContinuous": "Interruzione di sezione continua · colonne: {{columns}}"
       }
     },
     "cv": {

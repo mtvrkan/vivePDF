@@ -3,7 +3,7 @@ import { textDirection } from "../model/design";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
 import { FOOTNOTE, footnoteMarkup, footnoteText, MAX_FOOTNOTES } from "./footnotes";
-import { SECTION_BREAK, sectionColumns } from "./sections";
+import { SECTION_BREAK, sectionColumns, sectionKind } from "./sections";
 import { SPACING_KEYS, spacingCss } from "./spacing";
 
 export const PAGE_BREAK = "pageBreak";
@@ -227,7 +227,7 @@ function write(node: DocumentNode, writer: Writer): string {
     case PAGE_BREAK:
       return '<div class="page-break"></div>';
     case SECTION_BREAK:
-      return `<div class="section-break" data-columns="${sectionColumns(attr(node, "columns"))}"></div>`;
+      return `<div class="section-break" data-columns="${sectionColumns(attr(node, "columns"))}"${sectionKind(attr(node, "kind")) ? ' data-kind="continuous"' : ""}></div>`;
     case FOOTNOTE: {
       if (writer.footnotes.length >= MAX_FOOTNOTES) return "";
       const number = writer.footnotes.push(footnoteText(attr(node, "text")));

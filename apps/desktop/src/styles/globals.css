@@ -839,6 +839,9 @@
     border-top: 1px dashed var(--doc-accent);
     margin: 12pt 0;
   }
+  .vp-doc .section-break[data-kind="continuous"] {
+    border-top-style: dotted;
+  }
   .vp-doc .section-break::after {
     color: var(--muted-foreground);
     content: attr(data-label);

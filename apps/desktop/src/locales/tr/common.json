@@ -9265,11 +9265,15 @@
         "endTitle": "Notlar"
       },
       "section": {
-        "button": "Bölüm sonu (sonraki sayfa)",
+        "button": "Bölüm sonu",
         "columns1": "Bölüm sonu: 1 sütun",
         "columns2": "Bölüm sonu: 2 sütun",
         "columns3": "Bölüm sonu: 3 sütun",
-        "label": "Bölüm sonu · sütun: {{columns}}"
+        "label": "Bölüm sonu · sütun: {{columns}}",
+        "continuous1": "Sürekli bölüm sonu: 1 sütun",
+        "continuous2": "Sürekli bölüm sonu: 2 sütun",
+        "continuous3": "Sürekli bölüm sonu: 3 sütun",
+        "labelContinuous": "Sürekli bölüm sonu · sütun: {{columns}}"
       }
     },
     "cv": {

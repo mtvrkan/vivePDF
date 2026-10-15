@@ -9265,11 +9265,15 @@
         "endTitle": "Notes"
       },
       "section": {
-        "button": "Section break (next page)",
+        "button": "Section break",
         "columns1": "Section break: 1 column",
         "columns2": "Section break: 2 columns",
         "columns3": "Section break: 3 columns",
-        "label": "Section break · columns: {{columns}}"
+        "label": "Section break · columns: {{columns}}",
+        "continuous1": "Continuous section break: 1 column",
+        "continuous2": "Continuous section break: 2 columns",
+        "continuous3": "Continuous section break: 3 columns",
+        "labelContinuous": "Continuous section break · columns: {{columns}}"
       }
     },
     "cv": {

@@ -387,7 +387,7 @@ def layout_document(
     for index, source in enumerate(content.images):
         check_cancelled()
         archive.add(_decoded(source, index), f"{IMAGE_PREFIX}{index}")
-    body, first_columns, sections = sectioned(
+    body, first_columns, sections, flowing = sectioned(
         clean_html(content.html, len(content.images)), settings.columns
     )
     body = numbered_breaks(body)
@@ -407,6 +407,7 @@ def layout_document(
         first_columns,
         settings.column_gap_mm * POINTS_PER_MM,
         sections,
+        flowing,
     )
 
     initial = Plan(1 if settings.toc and entries else 0)

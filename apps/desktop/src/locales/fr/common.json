@@ -9263,11 +9263,15 @@
         "endTitle": "Notes"
       },
       "section": {
-        "button": "Saut de section (page suivante)",
+        "button": "Saut de section",
         "columns1": "Saut de section : 1 colonne",
         "columns2": "Saut de section : 2 colonnes",
         "columns3": "Saut de section : 3 colonnes",
-        "label": "Saut de section · colonnes : {{columns}}"
+        "label": "Saut de section · colonnes : {{columns}}",
+        "continuous1": "Saut de section continu : 1 colonne",
+        "continuous2": "Saut de section continu : 2 colonnes",
+        "continuous3": "Saut de section continu : 3 colonnes",
+        "labelContinuous": "Saut de section continu · colonnes : {{columns}}"
       }
     },
     "cv": {

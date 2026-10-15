@@ -14,13 +14,13 @@ import { fontStack } from "./documentFonts";
 import { DocumentFind } from "./findInDocument";
 import { Footnote } from "./footnoteNode";
 import { ParagraphSpacing } from "./paragraphSpacing";
-import { SECTION_BREAK, sectionColumns } from "./sections";
+import { CONTINUOUS, SECTION_BREAK, sectionColumns, sectionKind } from "./sections";
 import { PAGE_BREAK } from "./toHtml";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     pageBreak: { setPageBreak: () => ReturnType };
-    sectionBreak: { setSectionBreak: (columns: number) => ReturnType };
+    sectionBreak: { setSectionBreak: (columns: number, continuous?: boolean) => ReturnType };
     fontId: { setFontId: (fontId: string) => ReturnType; unsetFontId: () => ReturnType };
   }
 }
@@ -40,7 +40,7 @@ export const PageBreak = Node.create({
   },
 });
 
-export type SectionLabel = (columns: number) => string;
+export type SectionLabel = (columns: number, continuous: boolean) => string;
 
 export const SectionBreak = Node.create<{ label: SectionLabel }>({
   name: SECTION_BREAK,
@@ -55,15 +55,25 @@ export const SectionBreak = Node.create<{ label: SectionLabel }>({
         parseHTML: (element) => sectionColumns(element.getAttribute("data-columns")),
         renderHTML: (attributes) => ({ "data-columns": String(sectionColumns(attributes.columns)) }),
       },
+      kind: {
+        default: undefined,
+        parseHTML: (element) => sectionKind(element.getAttribute("data-kind")),
+        renderHTML: (attributes) => (sectionKind(attributes.kind) ? { "data-kind": CONTINUOUS } : {}),
+      },
     };
   },
   parseHTML: () => [{ tag: "div[data-section-break]" }, { tag: "div.section-break" }],
   renderHTML({ node, HTMLAttributes }) {
-    const label = this.options.label(sectionColumns(node.attrs.columns));
+    const label = this.options.label(sectionColumns(node.attrs.columns), sectionKind(node.attrs.kind) === CONTINUOUS);
     return ["div", mergeAttributes(HTMLAttributes, { class: "section-break", "data-section-break": "", "data-label": label, role: "separator", "aria-label": label })];
   },
   addCommands() {
-    return { setSectionBreak: (columns) => ({ commands }) => commands.insertContent({ type: this.name, attrs: { columns: sectionColumns(columns) } }) };
+    return {
+      setSectionBreak:
+        (columns, continuous = false) =>
+        ({ commands }) =>
+          commands.insertContent({ type: this.name, attrs: continuous ? { columns: sectionColumns(columns), kind: CONTINUOUS } : { columns: sectionColumns(columns) } }),
+    };
   },
 });
 

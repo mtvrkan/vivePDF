@@ -9263,11 +9263,15 @@
         "endTitle": "Notas"
       },
       "section": {
-        "button": "Salto de sección (página siguiente)",
+        "button": "Salto de sección",
         "columns1": "Salto de sección: 1 columna",
         "columns2": "Salto de sección: 2 columnas",
         "columns3": "Salto de sección: 3 columnas",
-        "label": "Salto de sección · columnas: {{columns}}"
+        "label": "Salto de sección · columnas: {{columns}}",
+        "continuous1": "Salto de sección continuo: 1 columna",
+        "continuous2": "Salto de sección continuo: 2 columnas",
+        "continuous3": "Salto de sección continuo: 3 columnas",
+        "labelContinuous": "Salto de sección continuo · columnas: {{columns}}"
       }
     },
     "cv": {

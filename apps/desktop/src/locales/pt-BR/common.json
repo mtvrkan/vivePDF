@@ -9263,11 +9263,15 @@
         "endTitle": "Notas"
       },
       "section": {
-        "button": "Quebra de seção (próxima página)",
+        "button": "Quebra de seção",
         "columns1": "Quebra de seção: 1 coluna",
         "columns2": "Quebra de seção: 2 colunas",
         "columns3": "Quebra de seção: 3 colunas",
-        "label": "Quebra de seção · colunas: {{columns}}"
+        "label": "Quebra de seção · colunas: {{columns}}",
+        "continuous1": "Quebra de seção contínua: 1 coluna",
+        "continuous2": "Quebra de seção contínua: 2 colunas",
+        "continuous3": "Quebra de seção contínua: 3 colunas",
+        "labelContinuous": "Quebra de seção contínua · colunas: {{columns}}"
       }
     },
     "cv": {
