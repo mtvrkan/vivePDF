@@ -274,6 +274,7 @@ OVERRIDES: dict[str, Overrides] = {
     "signature.place": lambda f, c: {
         "placements": [{"page": 1, **_box(), "pngBase64": f.signature_png}]
     },
+    "system.support_bundle": lambda f, c: {"images": [], "attachments": c["images"]},
     "textedit.code_blocks": lambda f, c: {"page": 0},
     "textedit.find_preview": lambda f, c: {"find": "Robustness"},
     "textedit.find_replace": lambda f, c: {"find": "Robustness", "replace": "Sağlamlık"},

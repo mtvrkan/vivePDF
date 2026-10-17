@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- The engine robustness matrix feeds the support bundle its file through attachments instead of the picture list, so the fast robustness tests pass again [2026-10-17]
 
 ## [0.3.0] - 2026-10-15
 ### Added
