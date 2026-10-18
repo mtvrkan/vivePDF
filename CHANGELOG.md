@@ -31,6 +31,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 - Very small labels (badges, counters, captions) use two new type-scale steps, `text-2xs` (11 px) and `text-3xs` (10 px), instead of fixed pixel sizes; the code-language badge on a selected code block grows from 9 to 10 px [2026-10-18]
 ### Fixed
+- The CV start card counts its designs from the app (14) instead of saying 10; the Studio help topics point to Tools › Show all, where the Studio cards are; the Turkish interface calls Studio Stüdyo everywhere, as its menu does [2026-10-18]
+- README no longer suggests a macOS download exists before the macOS build is published [2026-10-18]
 - The shortcut sheet showed the second key of Shortcuts for this screen as Ctrl instead of Ctrl /: alternatives are now split only on spaced separators, so a slash that is itself the key stays [2026-10-18]
 - Check boxes that share one field name but stand for different answers (such as Yes and No) are filled, read and exported as one choice instead of all being ticked together [2026-10-18]
 - Editing a document's title, author, subject, keywords, creator or producer also updates its XMP metadata, so other viewers show the new values and PDF/A files stay valid [2026-10-18]

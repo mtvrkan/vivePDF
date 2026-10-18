@@ -28,6 +28,7 @@ import { StudioToolbar } from "./design/StudioToolbar";
 import { useStudioStore } from "./design/studioStore";
 import { useStudioDraft } from "./design/useStudioDraft";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
+import { CV_LAYOUT_IDS } from "./cv/cvModel";
 import { useCvStore } from "./cv/cvStore";
 import { launchStudioStart, studioStartOf, withoutStudioStart } from "./startLink";
 import { DocumentStart } from "./document/DocumentStart";
@@ -177,7 +178,7 @@ function StudioStart({ onOpen }: { onOpen: (design: StudioDesign, filePath?: str
             <h2 id="studio-cv" className="text-sm font-semibold">
               {t("studio.cv.startTitle")}
             </h2>
-            <p className="text-sm text-muted-foreground">{t("studio.cv.startDescription")}</p>
+            <p className="text-sm text-muted-foreground">{t("studio.cv.startDescription", { count: CV_LAYOUT_IDS.length })}</p>
           </div>
           <Button variant="primary" icon={<IdCard className="size-4" aria-hidden />} onClick={() => useCvStore.getState().open(locale)} data-testid="studio-cv-start">
             {t("studio.cv.start")}

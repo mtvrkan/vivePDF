@@ -9363,7 +9363,7 @@
       "title": "CV builder",
       "untitled": "My CV",
       "startTitle": "Build a CV",
-      "startDescription": "Fill in a form, pick one of 10 designs and export a polished CV as PDF.",
+      "startDescription": "Fill in a form, pick one of {{count}} designs and export a polished CV as PDF.",
       "start": "Open CV builder",
       "panel": "CV editor",
       "preview": "CV preview",
@@ -10219,7 +10219,7 @@
       "studioDocument": {
         "title": "Write a document in Studio",
         "summary": "Write reports, articles and theses with headings, tables and a contents list.",
-        "step1": "Open Tools › Write a document. Start a new one or continue your last document.",
+        "step1": "Open Tools › Show all › Write a document. Start a new one or continue your last document.",
         "step2": "Type in the editor. The formatting bar sets paragraph styles, bold, italics, lists, tables, symbols and footnotes.",
         "step3": "Use the Settings tab on the right for paper size, margins, fonts and line spacing; Preview shows the finished pages.",
         "step4": "Find and replace, word count and section breaks with columns are in the toolbar menus.",
@@ -10228,7 +10228,7 @@
       "studioDesign": {
         "title": "Design in Studio",
         "summary": "Make posters, certificates, invitations and cards on a free canvas.",
-        "step1": "Open Tools › Design in Studio and choose Start from a template, or start with a blank page or a custom size.",
+        "step1": "Open Tools › Show all › Design in Studio and choose Start from a template, or start with a blank page or a custom size.",
         "step2": "Add text, pictures, shapes, tables, charts and icons from the panel on the left.",
         "step3": "Select an item to change its colour, font, size, shadow or alignment; drag to move it, and use the handles to resize or rotate it.",
         "step4": "Use the Layers and Pages panels for overlapping items and designs with several pages.",

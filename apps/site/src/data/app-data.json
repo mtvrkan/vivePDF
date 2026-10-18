@@ -398,7 +398,7 @@
         "id": "studio-design",
         "group": "toPdf",
         "label": {
-          "tr": "Studio'da tasarla",
+          "tr": "Stüdyo'da tasarla",
           "en": "Design in Studio"
         },
         "description": {
@@ -2876,7 +2876,7 @@
           "en": "Presenter view: the projector shows only the slides while your laptop shows the next page, a timer and speaker notes."
         },
         {
-          "tr": "Studio belgeleri Word tarzı yazım araçları kazandı: dipnotlar, sütunlar ve bölüm sonları, bul ve değiştir, satır aralığı, simgeler, sözcük sayısı ve Markdown olarak dışa aktarma.",
+          "tr": "Stüdyo belgeleri Word tarzı yazım araçları kazandı: dipnotlar, sütunlar ve bölüm sonları, bul ve değiştir, satır aralığı, simgeler, sözcük sayısı ve Markdown olarak dışa aktarma.",
           "en": "Studio documents learned Word-style writing tools: footnotes, columns and section breaks, find and replace, line spacing, symbols, word count and Markdown export."
         },
         {
@@ -2889,7 +2889,7 @@
       "version": "0.2.0",
       "items": [
         {
-          "tr": "Studio'da yeni CV düzenleri, süsler ve yenilenen iş belgeleri, planlayıcılar ve etiketlerle 174 şablon var.",
+          "tr": "Stüdyo'da yeni CV düzenleri, süsler ve yenilenen iş belgeleri, planlayıcılar ve etiketlerle 174 şablon var.",
           "en": "Studio has 174 templates, with new CV layouts, ornaments and redesigned business documents, planners and labels."
         },
         {
@@ -2914,7 +2914,7 @@
       "version": "0.1.1",
       "items": [
         {
-          "tr": "Studio: sertifika, davetiye, kart, afiş ve daha fazlası için hazır şablonlarla sıfırdan PDF hazırlayan bir tasarım düzenleyici.",
+          "tr": "Stüdyo: sertifika, davetiye, kart, afiş ve daha fazlası için hazır şablonlarla sıfırdan PDF hazırlayan bir tasarım düzenleyici.",
           "en": "Studio: a design editor for making a PDF from scratch, with ready-made templates for certificates, invitations, cards, posters and more."
         },
         {
@@ -2922,7 +2922,7 @@
           "en": "The CV builder fills a form on the left and shows the finished CV on the right."
         },
         {
-          "tr": "Studio'da resimler kırpılıp ayarlanabilir; tasarımlara tablo, grafik, akış şeması, formül, gölge ve cetvel eklendi.",
+          "tr": "Stüdyo'da resimler kırpılıp ayarlanabilir; tasarımlara tablo, grafik, akış şeması, formül, gölge ve cetvel eklendi.",
           "en": "Studio pictures can be cropped and adjusted, and designs gain tables, charts, flowcharts, formulas, shadows and rulers."
         },
         {

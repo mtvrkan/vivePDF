@@ -9361,7 +9361,7 @@
       "title": "Criador de currículo",
       "untitled": "Meu currículo",
       "startTitle": "Criar um currículo",
-      "startDescription": "Preencha um formulário, escolha um dos 10 designs e exporte um currículo caprichado em PDF.",
+      "startDescription": "Preencha um formulário, escolha um dos {{count}} designs e exporte um currículo caprichado em PDF.",
       "start": "Abrir o criador de currículo",
       "panel": "Editor de currículo",
       "preview": "Pré-visualização do currículo",
@@ -10218,7 +10218,7 @@
       "studioDocument": {
         "title": "Escrever um documento no Studio",
         "summary": "Escreva relatórios, artigos e teses com títulos, tabelas e sumário.",
-        "step1": "Abra Ferramentas › Escrever um documento. Comece um novo ou continue o último.",
+        "step1": "Abra Ferramentas › Mostrar tudo › Escrever um documento. Comece um novo ou continue o último.",
         "step2": "Digite no editor. A barra de formatação define estilos de parágrafo, negrito, itálico, listas, tabelas, símbolos e notas de rodapé.",
         "step3": "Use a aba Configurações à direita para tamanho do papel, margens, fontes e espaçamento entre linhas; Pré-visualização mostra as páginas prontas.",
         "step4": "Localizar e substituir, contagem de palavras e quebras de seção com colunas ficam nos menus da barra de ferramentas.",
@@ -10227,7 +10227,7 @@
       "studioDesign": {
         "title": "Criar no Studio",
         "summary": "Faça pôsteres, certificados, convites e cartões em uma tela livre.",
-        "step1": "Abra Ferramentas › Criar no Studio e escolha Começar com um modelo, ou comece com uma página em branco ou um tamanho personalizado.",
+        "step1": "Abra Ferramentas › Mostrar tudo › Criar no Studio e escolha Começar com um modelo, ou comece com uma página em branco ou um tamanho personalizado.",
         "step2": "Adicione texto, imagens, formas, tabelas, gráficos e ícones pelo painel à esquerda.",
         "step3": "Selecione um item para mudar a cor, a fonte, o tamanho, a sombra ou o alinhamento; arraste para mover e use as alças para redimensionar ou girar.",
         "step4": "Use os painéis Camadas e Páginas para itens sobrepostos e criações com várias páginas.",

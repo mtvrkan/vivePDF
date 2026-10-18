@@ -9361,7 +9361,7 @@
       "title": "Creador de CV",
       "untitled": "Mi CV",
       "startTitle": "Crear un CV",
-      "startDescription": "Rellene un formulario, elija uno de los 10 diseños y exporte un CV pulido en PDF.",
+      "startDescription": "Rellene un formulario, elija uno de los {{count}} diseños y exporte un CV pulido en PDF.",
       "start": "Abrir el creador de CV",
       "panel": "Editor de CV",
       "preview": "Vista previa del CV",
@@ -10218,7 +10218,7 @@
       "studioDocument": {
         "title": "Escribir un documento en Studio",
         "summary": "Escriba informes, artículos y tesis con títulos, tablas e índice.",
-        "step1": "Abra Herramientas › Escribir un documento. Empiece uno nuevo o continúe el último.",
+        "step1": "Abra Herramientas › Mostrar todo › Escribir un documento. Empiece uno nuevo o continúe el último.",
         "step2": "Escriba en el editor. La barra de formato define estilos de párrafo, negrita, cursiva, listas, tablas, símbolos y notas al pie.",
         "step3": "Use la pestaña Configuración de la derecha para el tamaño de papel, los márgenes, las fuentes y el interlineado; Vista previa muestra las páginas terminadas.",
         "step4": "Buscar y reemplazar, el recuento de palabras y los saltos de sección con columnas están en los menús de la barra de herramientas.",
@@ -10227,7 +10227,7 @@
       "studioDesign": {
         "title": "Diseñar en Studio",
         "summary": "Cree carteles, certificados, invitaciones y tarjetas en un lienzo libre.",
-        "step1": "Abra Herramientas › Diseñar en Studio y elija Empezar con una plantilla, o empiece con una página en blanco o un tamaño personalizado.",
+        "step1": "Abra Herramientas › Mostrar todo › Diseñar en Studio y elija Empezar con una plantilla, o empiece con una página en blanco o un tamaño personalizado.",
         "step2": "Añada texto, imágenes, formas, tablas, gráficos e iconos desde el panel de la izquierda.",
         "step3": "Seleccione un elemento para cambiar su color, fuente, tamaño, sombra o alineación; arrástrelo para moverlo y use los tiradores para cambiar su tamaño o girarlo.",
         "step4": "Use los paneles Capas y Páginas para elementos superpuestos y diseños de varias páginas.",

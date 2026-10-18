@@ -9361,7 +9361,7 @@
       "title": "Lebenslauf-Generator",
       "untitled": "Mein Lebenslauf",
       "startTitle": "Lebenslauf erstellen",
-      "startDescription": "Füllen Sie ein Formular aus, wählen Sie eines von 10 Designs und exportieren Sie einen professionellen Lebenslauf als PDF.",
+      "startDescription": "Füllen Sie ein Formular aus, wählen Sie eines von {{count}} Designs und exportieren Sie einen professionellen Lebenslauf als PDF.",
       "start": "Lebenslauf-Generator öffnen",
       "panel": "Lebenslauf-Editor",
       "preview": "Lebenslauf-Vorschau",
@@ -10217,7 +10217,7 @@
       "studioDocument": {
         "title": "Ein Dokument in Studio schreiben",
         "summary": "Berichte, Artikel und Abschlussarbeiten mit Überschriften, Tabellen und Inhaltsverzeichnis schreiben.",
-        "step1": "Öffnen Sie Werkzeuge › Dokument schreiben. Beginnen Sie ein neues Dokument oder setzen Sie Ihr letztes fort.",
+        "step1": "Öffnen Sie Werkzeuge › Alle anzeigen › Dokument schreiben. Beginnen Sie ein neues Dokument oder setzen Sie Ihr letztes fort.",
         "step2": "Schreiben Sie im Editor. Die Formatierungsleiste setzt Absatzformate, Fett, Kursiv, Listen, Tabellen, Symbole und Fußnoten.",
         "step3": "Im Tab Einstellungen rechts legen Sie Papierformat, Ränder, Schriften und Zeilenabstand fest; die Vorschau zeigt die fertigen Seiten.",
         "step4": "Suchen und Ersetzen, Wortzählung und Abschnittsumbrüche mit Spalten finden Sie in den Menüs der Werkzeugleiste.",
@@ -10226,7 +10226,7 @@
       "studioDesign": {
         "title": "In Studio gestalten",
         "summary": "Plakate, Zertifikate, Einladungen und Karten auf einer freien Arbeitsfläche erstellen.",
-        "step1": "Öffnen Sie Werkzeuge › In Studio gestalten und wählen Sie Mit einer Vorlage beginnen, oder beginnen Sie mit einer leeren Seite oder einer eigenen Größe.",
+        "step1": "Öffnen Sie Werkzeuge › Alle anzeigen › In Studio gestalten und wählen Sie Mit einer Vorlage beginnen, oder beginnen Sie mit einer leeren Seite oder einer eigenen Größe.",
         "step2": "Fügen Sie über das Feld links Text, Bilder, Formen, Tabellen, Diagramme und Symbole hinzu.",
         "step3": "Wählen Sie ein Element aus, um Farbe, Schrift, Größe, Schatten oder Ausrichtung zu ändern; ziehen Sie es zum Verschieben und nutzen Sie die Griffe zum Skalieren oder Drehen.",
         "step4": "Für überlappende Elemente und mehrseitige Entwürfe gibt es die Felder Ebenen und Seiten.",

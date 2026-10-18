@@ -2848,7 +2848,7 @@
         "bibliography": ".bib, RIS veya CSL JSON içe aktarın, kaynakları düzenleyin ve APA, MLA, Chicago ya da IEEE kaynakça çıkarın.",
         "extract-images": "PDF'teki tüm gömülü resimleri özgün kalitesinde dışarı çıkarın."
       },
-      "studioDesign": "Studio'da tasarla",
+      "studioDesign": "Stüdyo'da tasarla",
       "studioDocument": "Belge yaz",
       "businessCard": "Kartvizit",
       "bibliography": "Kaynakça"
@@ -8760,7 +8760,7 @@
       "restaurantPromoFlyerDesc3": "Porçini mantarı, kekikli tereyağı ve trüf yağı",
       "restaurantPromoFlyerPrice3": "520 ₺",
       "restaurantPromoFlyerCta": "Masanızı ayırtın",
-      "fitnessClassFlyerStudio": "Bloom Pilates Stüdyosu",
+      "fitnessClassFlyerStüdyo": "Bloom Pilates Stüdyosu",
       "fitnessClassFlyerTitle": "Sabah Pilatesi",
       "fitnessClassFlyerLead": "Sertifikalı eğitmenlerle küçük gruplarda güçlenin, esneyin ve nefes alın.",
       "fitnessClassFlyerBadge": "İlk ders ücretsiz",
@@ -9363,7 +9363,7 @@
       "title": "CV oluşturucu",
       "untitled": "Özgeçmişim",
       "startTitle": "CV oluştur",
-      "startDescription": "Formu doldurun, 10 tasarımdan birini seçin ve özenli bir özgeçmişi PDF olarak alın.",
+      "startDescription": "Formu doldurun, {{count}} tasarımdan birini seçin ve özenli bir özgeçmişi PDF olarak alın.",
       "start": "CV oluşturucuyu aç",
       "panel": "CV düzenleyici",
       "preview": "CV önizlemesi",
@@ -9472,7 +9472,7 @@
       "sampleFilled": "Örnek CV dolduruldu",
       "clear": "Temizle",
       "cleared": "CV temizlendi",
-      "editInStudio": "Stüdyo'da serbest düzenle",
+      "editInStüdyo": "Stüdyo'da serbest düzenle",
       "export": {
         "open": "Dışa aktar",
         "title": "CV'yi dışa aktar",
@@ -10108,8 +10108,8 @@
       "viewer": "Görüntüleyici",
       "presentation": "Sunum",
       "pages": "Sayfa düzenleyici",
-      "studioDesign": "Studio tasarım düzenleyici",
-      "studioDocument": "Studio belge düzenleyici",
+      "studioDesign": "Stüdyo tasarım düzenleyici",
+      "studioDocument": "Stüdyo belge düzenleyici",
       "general": "Tüm ekranların ortak"
     },
     "pdf": {
@@ -10133,20 +10133,20 @@
         "helpAndSupport": "İnternetsiz çalışan yardım: F1 bulunduğunuz ekranın kısayollarını gösterir (PDF olarak da kaydeder), Yardım › Yardım konuları başlıca işleri adım adım anlatır ve hata bildirimleri, kendi kaydettiğiniz bir destek paketiyle resim ve örnek dosya taşıyabilir.",
         "offlineMode": "Çevrimdışı mod: Ayarlar › Web'deki tek bir anahtar, internet kullanacak her özelliği kapatır; güncellemeler, indirmeler, web araması, kaynak sorguları ve sızdırılmış parola denetimi de buna dahildir.",
         "presenterView": "Sunucu görünümü: projeksiyon yalnızca slaytları gösterirken dizüstü bilgisayarınız sonraki sayfayı, süreölçeri ve konuşmacı notlarını gösterir.",
-        "studioWriting": "Studio belgeleri Word tarzı yazım araçları kazandı: dipnotlar, sütunlar ve bölüm sonları, bul ve değiştir, satır aralığı, simgeler, sözcük sayısı ve Markdown olarak dışa aktarma.",
+        "studioWriting": "Stüdyo belgeleri Word tarzı yazım araçları kazandı: dipnotlar, sütunlar ve bölüm sonları, bul ve değiştir, satır aralığı, simgeler, sözcük sayısı ve Markdown olarak dışa aktarma.",
         "presentationInsert": "Sunum sırasında formül, şekil, grafik, tablo ve diyagram eklenebilir; siyah ve beyaz tahtada da."
       },
       "v0_2_0": {
-        "templates": "Studio'da yeni CV düzenleri, süsler ve yenilenen iş belgeleri, planlayıcılar ve etiketlerle 174 şablon var.",
+        "templates": "Stüdyo'da yeni CV düzenleri, süsler ve yenilenen iş belgeleri, planlayıcılar ve etiketlerle 174 şablon var.",
         "cvImport": "CV oluşturucu mevcut bir CV'yi ya da LinkedIn PDF'ini içe aktarır; geri alma, sıralama ve ay seçici de eklendi.",
         "organizer": "Sayfa düzenleyici sayfaları yönüne, boyutuna ya da içerdiği metne göre seçer, sayfaları masaüstüne ya da başka bir sekmeye sürükler ve sayfaları resim olarak kaydeder.",
         "viewerEditing": "Görüntüleyici formları sayfanın üzerinde doldurur, metin bloklarını ve resimleri belgeler arasında kopyalar, seçili metni vurgular ve yer imlerini düzenler.",
         "collections": "Ana sayfa koleksiyonları yeniden sıralanabilir, aranabilir ve yeniden renklendirilebilir; son dosyalar sabitlenebilir."
       },
       "v0_1_1": {
-        "studio": "Studio: sertifika, davetiye, kart, afiş ve daha fazlası için hazır şablonlarla sıfırdan PDF hazırlayan bir tasarım düzenleyici.",
+        "studio": "Stüdyo: sertifika, davetiye, kart, afiş ve daha fazlası için hazır şablonlarla sıfırdan PDF hazırlayan bir tasarım düzenleyici.",
         "cvBuilder": "CV oluşturucu: soldaki formu doldurursunuz, sağda bitmiş CV görünür.",
-        "studioTools": "Studio'da resimler kırpılıp ayarlanabilir; tasarımlara tablo, grafik, akış şeması, formül, gölge ve cetvel eklendi.",
+        "studioTools": "Stüdyo'da resimler kırpılıp ayarlanabilir; tasarımlara tablo, grafik, akış şeması, formül, gölge ve cetvel eklendi.",
         "fontLibrary": "Tümü Türkçe harfleri içeren 24 açık lisanslı yazı tipinden oluşan bir kitaplık, istendiğinde indirilir.",
         "iconLibrary": "1.600'den fazla simge kendi dilinizde adıyla aranabilir ve keskin, yeniden renklendirilebilir çizimler olarak eklenebilir."
       }
@@ -10217,18 +10217,18 @@
         "step5": "İmzalı bir dosyayı kontrol etmek için Doğrula sekmesini açın. Her imzanın geçerli olup olmadığını ve belgenin imzadan sonra değişip değişmediğini gösterir."
       },
       "studioDocument": {
-        "title": "Studio'da belge yazma",
+        "title": "Stüdyo'da belge yazma",
         "summary": "Başlıklar, tablolar ve içindekiler ile rapor, makale ve tez yazın.",
-        "step1": "Araçlar › Belge yaz'ı açın. Yeni bir belgeye başlayın ya da son belgenize devam edin.",
+        "step1": "Araçlar › Tümünü göster › Belge yaz'ı açın. Yeni bir belgeye başlayın ya da son belgenize devam edin.",
         "step2": "Düzenleyicide yazın. Biçim çubuğu paragraf stillerini, kalın, italik, listeler, tablolar, simgeler ve dipnotları ayarlar.",
         "step3": "Kâğıt boyutu, kenar boşlukları, yazı tipleri ve satır aralığı için sağdaki Ayarlar sekmesini kullanın; Önizleme bitmiş sayfaları gösterir.",
         "step4": "Bul ve değiştir, sözcük sayısı ve sütunlu bölüm sonları araç çubuğu menülerindedir.",
         "step5": "Belgeyi PDF veya Markdown dosyası olarak dışa aktarın. Çalışmanız yeniden açıp düzenleyebileceğiniz bir vivePDF belgesi olarak saklanır."
       },
       "studioDesign": {
-        "title": "Studio'da tasarım",
+        "title": "Stüdyo'da tasarım",
         "summary": "Serbest bir tuvalde afiş, sertifika, davetiye ve kart hazırlayın.",
-        "step1": "Araçlar › Studio'da tasarla'yı açın ve Bir şablonla başlayın'ı seçin ya da boş sayfayla veya özel boyutla başlayın.",
+        "step1": "Araçlar › Tümünü göster › Stüdyo'da tasarla'yı açın ve Bir şablonla başlayın'ı seçin ya da boş sayfayla veya özel boyutla başlayın.",
         "step2": "Soldaki panelden metin, resim, şekil, tablo, grafik ve simge ekleyin.",
         "step3": "Rengini, yazı tipini, boyutunu, gölgesini veya hizasını değiştirmek için bir öğe seçin; taşımak için sürükleyin, boyutlandırmak ya da döndürmek için tutamaçları kullanın.",
         "step4": "Üst üste binen öğeler ve çok sayfalı tasarımlar için Katmanlar ve Sayfalar panellerini kullanın.",

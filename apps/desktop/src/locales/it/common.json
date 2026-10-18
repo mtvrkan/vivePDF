@@ -9361,7 +9361,7 @@
       "title": "Creatore di CV",
       "untitled": "Il mio CV",
       "startTitle": "Crea un CV",
-      "startDescription": "Compila un modulo, scegli uno dei 10 design ed esporta un CV curato in PDF.",
+      "startDescription": "Compila un modulo, scegli uno dei {{count}} design ed esporta un CV curato in PDF.",
       "start": "Apri il creatore di CV",
       "panel": "Editor del CV",
       "preview": "Anteprima del CV",
@@ -10218,7 +10218,7 @@
       "studioDocument": {
         "title": "Scrivere un documento in Studio",
         "summary": "Scrivi relazioni, articoli e tesi con titoli, tabelle e indice.",
-        "step1": "Apri Strumenti › Scrivi un documento. Iniziane uno nuovo o continua l’ultimo.",
+        "step1": "Apri Strumenti › Mostra tutto › Scrivi un documento. Iniziane uno nuovo o continua l’ultimo.",
         "step2": "Scrivi nell’editor. La barra di formattazione imposta stili di paragrafo, grassetto, corsivo, elenchi, tabelle, simboli e note a piè di pagina.",
         "step3": "Usa la scheda Impostazioni a destra per formato carta, margini, caratteri e interlinea; Anteprima mostra le pagine finite.",
         "step4": "Trova e sostituisci, il conteggio parole e le interruzioni di sezione con colonne si trovano nei menu della barra degli strumenti.",
@@ -10227,7 +10227,7 @@
       "studioDesign": {
         "title": "Progettare in Studio",
         "summary": "Crea poster, certificati, inviti e biglietti su una tela libera.",
-        "step1": "Apri Strumenti › Progetta in Studio e scegli Inizia da un modello, oppure inizia con una pagina vuota o dimensioni personalizzate.",
+        "step1": "Apri Strumenti › Mostra tutto › Progetta in Studio e scegli Inizia da un modello, oppure inizia con una pagina vuota o dimensioni personalizzate.",
         "step2": "Aggiungi testo, immagini, forme, tabelle, grafici e icone dal pannello a sinistra.",
         "step3": "Seleziona un elemento per cambiarne colore, carattere, dimensione, ombra o allineamento; trascinalo per spostarlo e usa le maniglie per ridimensionarlo o ruotarlo.",
         "step4": "Usa i pannelli Livelli e Pagine per elementi sovrapposti e progetti di più pagine.",

@@ -9361,7 +9361,7 @@
       "title": "Créateur de CV",
       "untitled": "Mon CV",
       "startTitle": "Créer un CV",
-      "startDescription": "Remplissez un formulaire, choisissez l'un des 10 designs et exportez un CV soigné en PDF.",
+      "startDescription": "Remplissez un formulaire, choisissez l'un des {{count}} designs et exportez un CV soigné en PDF.",
       "start": "Ouvrir le créateur de CV",
       "panel": "Éditeur de CV",
       "preview": "Aperçu du CV",
@@ -10218,7 +10218,7 @@
       "studioDocument": {
         "title": "Rédiger un document dans Studio",
         "summary": "Rédigez rapports, articles et thèses avec titres, tableaux et table des matières.",
-        "step1": "Ouvrez Outils › Rédiger un document. Commencez-en un nouveau ou reprenez votre dernier document.",
+        "step1": "Ouvrez Outils › Tout afficher › Rédiger un document. Commencez-en un nouveau ou reprenez votre dernier document.",
         "step2": "Écrivez dans l’éditeur. La barre de mise en forme règle les styles de paragraphe, le gras, l’italique, les listes, les tableaux, les symboles et les notes de bas de page.",
         "step3": "Utilisez l’onglet Paramètres à droite pour le format du papier, les marges, les polices et l’interligne ; Aperçu montre les pages finales.",
         "step4": "Rechercher et remplacer, le nombre de mots et les sauts de section en colonnes se trouvent dans les menus de la barre d’outils.",
@@ -10227,7 +10227,7 @@
       "studioDesign": {
         "title": "Créer dans Studio",
         "summary": "Réalisez affiches, certificats, invitations et cartes sur un canevas libre.",
-        "step1": "Ouvrez Outils › Créer dans Studio et choisissez Commencer avec un modèle, ou commencez avec une page vierge ou une taille personnalisée.",
+        "step1": "Ouvrez Outils › Tout afficher › Créer dans Studio et choisissez Commencer avec un modèle, ou commencez avec une page vierge ou une taille personnalisée.",
         "step2": "Ajoutez du texte, des images, des formes, des tableaux, des graphiques et des icônes depuis le panneau de gauche.",
         "step3": "Sélectionnez un élément pour changer sa couleur, sa police, sa taille, son ombre ou son alignement ; faites-le glisser pour le déplacer et utilisez les poignées pour le redimensionner ou le faire pivoter.",
         "step4": "Utilisez les panneaux Calques et Pages pour les éléments superposés et les créations de plusieurs pages.",
