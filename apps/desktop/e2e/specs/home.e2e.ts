@@ -1,6 +1,7 @@
+import { copyFileSync } from "node:fs";
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
-import { answerDialogs, bootApp, chooseOption, copyFixture, fixtures, openInViewer, openTool, t, waitForDialogsAnswered, workDir } from "../support/app.ts";
+import { answerDialogs, bootApp, chooseOption, closeAllDocuments, copyFixture, fixtures, openInViewer, openTool, t, waitForDialogsAnswered, workDir } from "../support/app.ts";
 
 const region = (name: string) => $(`[data-testid="home-region-${name}"]`);
 const quickTiles = () => $$(`[data-testid="home-region-main"] [data-quick-action], [data-testid="home-region-top"] [data-quick-action]`).map((tile) => tile.getAttribute("data-quick-action"));
@@ -23,6 +24,17 @@ async function createCollection(name: string, paths: string[]) {
   await $(`//button[normalize-space(.)="${t("home.collections.save")}"]`).click();
   await $(`[data-collection="${name}"]`).waitForDisplayed();
 }
+
+async function rememberRecents(on: boolean) {
+  await browser.execute((value: boolean) => {
+    const stored = JSON.parse(localStorage.getItem("vivepdf.preferences") ?? "{}") as Record<string, unknown>;
+    localStorage.setItem("vivepdf.preferences", JSON.stringify({ ...stored, rememberRecent: value }));
+  }, on);
+  await browser.refresh();
+  await $(`nav[aria-label="${t("nav.workspace")}"]`).waitForExist({ timeout: 60000 });
+}
+
+const goHome = () => $(`//a[normalize-space(.)="${t("nav.home")}"] | //button[normalize-space(.)="${t("nav.home")}"]`).click();
 
 async function finishEditing() {
   await $(`//button[normalize-space(.)="${t("home.layout.done")}"]`).click();
@@ -205,6 +217,32 @@ describe("home layout", () => {
       .perform();
     await browser.waitUntil(async () => (await tabNames()).at(-1) === "loose.pdf", { timeoutMsg: "dragging the group name did not move the group back" });
     await expect(chip).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("draws a recent file's cover again after the file changed on disk", async () => {
+    await rememberRecents(true);
+    const path = copyFixture(fixtures().sample, "cover-swap.pdf");
+    await openInViewer(path);
+    await closeAllDocuments();
+    await goHome();
+    const cover = $('button[aria-label="cover-swap.pdf"] img');
+    await cover.waitForExist({ timeout: 60000, timeoutMsg: "the recent file never showed a cover" });
+    const before = await cover.getAttribute("src");
+
+    copyFileSync(fixtures().scanned, path);
+    await openTool("nav.settings");
+    await goHome();
+    await browser.waitUntil(async () => (await cover.isExisting()) && (await cover.getAttribute("src")) !== before, {
+      timeout: 60000,
+      timeoutMsg: "the cover kept the old page after the file changed",
+    });
+
+    await openTool("nav.settings");
+    await goHome();
+    const after = await cover.getAttribute("src");
+    await browser.pause(2000);
+    expect(await cover.getAttribute("src")).toBe(after);
+    await rememberRecents(false);
   });
 
   it("keeps every top bar control on screen at the smallest window size", async () => {

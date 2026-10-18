@@ -227,7 +227,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
         <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: groupDrag.markX }} />
       ) : null}
       {remoteLine !== null ? (
-        <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: remoteLine }} />
+        <span aria-hidden data-drop-line="remote" className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: remoteLine }} />
       ) : null}
       {tearOff.dropMark ? (
         <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: tearOff.dropMark.x }} />

@@ -141,13 +141,31 @@ in.
 | `edit` | Edit › Add function graph: type `x^3 - 3x`, wait for the preview, place it on page 1, *Save as* | many more vector drawings on page 1 and no new picture, the page text kept, page 2 and the original untouched; screenshots of the dialog and the placed graph in the run folder |
 | `edit` | Edit › Add table: type Turkish words and a decimal comma into four cells, wait for the engine's preview, place it on page 1, *Save as* | the cell text is real text on page 1 (Ürün, 15,50), more vector drawings and no new picture, the page text kept, the original untouched; screenshots of the dialog and the placed table in the run folder |
 | `edit` | Edit › Add chart: rename the first category to `Çay`, type a title, pick Bar, wait for the engine's preview, place it on page 1, *Save as* | the title, `Çay` and the series name are real text on page 1, more vector drawings and no new picture, the page text kept; screenshots of the dialog and the placed chart in the run folder |
+| `home` | open a file so it is remembered, see its cover on Home, replace the file on disk, come back to Home | the cover picture changes, then stays the same on the next visit |
 | `convert` | PDF to pictures, pictures to PDF, two SVG drawings combined into one PDF | 3 images; 2-page PDF with one image per page; 2 vector pages (no images) with the drawings' text and aspect ratios |
 | `batch` | compress then password chain on two files | both outputs encrypted, page counts kept |
 | `windows` | moving a tab into a new window from the tab menu, the theme chosen in the main window reaching the second one, closing a document window from its own title bar, an empty window from the palette's New window action, opening a file another window already holds | window handles, the held file getting no tab in the second window and staying in the first, the tab leaving the first window and loading in the second, the second window's page number, the `dark` class on the second window's root |
+| `windows` | dragging tabs with the real Windows mouse: a tab torn off into a new window, the same tab dragged back between two tabs of the main window with the drop line showing there first, a named tab group torn off and dropped back after the last tab | the new window's position under the pointer (within 12 px of the expected spot), the tab order in both windows, the drop line under the pointer, the emptied window closing, the group chip and its name in the main window |
 | `settings` | every section from the rail; dark theme, 120 % scale, reduced motion and Turkish applied live and kept after a reload; a switch saved in another section; search across sections and the no-match state; a recently opened file counted under Data and cleared through the confirmation; success messages only while that switch is on; reset all | the `dark` class, root font size, `lang`, stored preferences, rail and top-bar buttons inside the window at 120 % in Turkish, row counts, the recent-files count, the success toast appearing and closing, theme, language and preferences gone after the reset; a screenshot of each section in the run folder |
 | `readerparity` | page display menu (horizontal and vertical scrolling), automatic scrolling with speed-up and Escape, page colour schemes and the rail switch, toolbar snapshot, the signature message and signature panel on a signed fixture, form field highlighting, replying to a comment and setting its review status with the status and reply filters, switching document layers | page positions, scroll offsets over time, the applied filter, clipboard picture size and shape, signer listed in the panel, highlight box within 3 px of the field, reply and state read back from the saved file, layer colours counted in a page screenshot and the file bytes unchanged |
 | `contextmenu` | every entry of the viewer's right-click menu on selected text, a picture and a page, and which group opens for what was clicked | clipboard text and pictures (read back through Windows), the addresses the web searches and Lens would open (caught before the browser starts), saved picture, PNG and extracted page, OCR text, print range, bookmark, rotation, zoom |
 | `translate` | import an Argos en→tr model in Settings, select a line, *Translate (offline)* from the right-click menu, remove the model | Turkish result shown; the model row goes back to Download (skipped unless `VIVEPDF_E2E_ARGOS_EN_TR` names a `translate-en_tr` `.argosmodel`) |
+
+The tab-dragging flows move the real Windows pointer (`nativeMouse` in `e2e/support/desktop.ts`).
+Keep the mouse and keyboard still while `windows.e2e.ts` runs, and run it on one screen.
+
+### Checked by hand on Windows
+
+Things the suite cannot drive, to try once on a Windows machine after a change to them:
+
+- Drag a tab from a window on one screen to a window on a second screen with a different
+  scaling (for example 100 % and 150 %): the tab lands where it was dropped and the drop line
+  sits under the pointer.
+- With two document windows overlapping, drop a tab where both are under the pointer: it goes
+  to the window that was used last.
+- Drag a tab out and back in quickly several times: no empty window is left behind and no tab
+  is lost.
+- Tear a tab off near a screen edge: the new window stays fully on that screen.
 
 ### How native dialogs are answered
 
