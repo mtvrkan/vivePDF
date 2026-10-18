@@ -1,5 +1,6 @@
 use std::collections::{HashMap, HashSet};
 use std::path::Path;
+use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::{Mutex, MutexGuard};
 
 use tauri::{
@@ -14,11 +15,54 @@ pub const MAIN_WINDOW: &str = "main";
 const LABEL_PREFIX: &str = "doc-";
 const MAX_PATHS: usize = 64;
 const MAX_CLAIMS: usize = 1024;
+const MAX_GROUP_NAME: usize = 40;
 
 #[derive(Default)]
 pub struct DocumentWindows {
     pending: Mutex<HashMap<String, LaunchRequest>>,
     claims: Mutex<HashMap<String, String>>,
+    focused: Mutex<HashMap<String, u64>>,
+    focus_count: AtomicU64,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct Bounds {
+    x: f64,
+    y: f64,
+    width: f64,
+    height: f64,
+}
+
+impl Bounds {
+    fn contains(&self, x: f64, y: f64) -> bool {
+        x >= self.x && y >= self.y && x < self.x + self.width && y < self.y + self.height
+    }
+}
+
+#[derive(Clone, Debug, PartialEq)]
+struct Candidate {
+    label: String,
+    bounds: Bounds,
+    focused: u64,
+}
+
+#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DroppedGroup {
+    name: String,
+    color: String,
+    collapsed: bool,
+}
+
+#[derive(Clone, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct TabDrop {
+    paths: Vec<String>,
+    x: f64,
+    y: f64,
+    width: f64,
+    height: f64,
+    group: Option<DroppedGroup>,
 }
 
 #[derive(Clone, serde::Serialize)]
@@ -97,7 +141,65 @@ impl DocumentWindows {
 
     pub fn release_window(&self, label: &str) {
         self.claim_entries().retain(|_, owner| owner != label);
+        self.focus_entries().remove(label);
     }
+
+    fn focus_entries(&self) -> MutexGuard<'_, HashMap<String, u64>> {
+        self.focused
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner())
+    }
+
+    pub fn note_focus(&self, label: &str) {
+        let count = self.focus_count.fetch_add(1, Ordering::Relaxed) + 1;
+        self.focus_entries().insert(label.to_string(), count);
+    }
+
+    fn focused_at(&self, label: &str) -> u64 {
+        self.focus_entries().get(label).copied().unwrap_or_default()
+    }
+}
+
+fn is_document_window(label: &str) -> bool {
+    label == MAIN_WINDOW || label.starts_with(LABEL_PREFIX)
+}
+
+fn pick_target<'a>(
+    x: f64,
+    y: f64,
+    source: &str,
+    candidates: &'a [Candidate],
+) -> Option<&'a Candidate> {
+    candidates
+        .iter()
+        .filter(|candidate| candidate.label != source && is_document_window(&candidate.label))
+        .filter(|candidate| candidate.bounds.contains(x, y))
+        .max_by_key(|candidate| candidate.focused)
+}
+
+fn candidate_of<R: Runtime>(window: &WebviewWindow<R>, focused: u64) -> Option<Candidate> {
+    if !window.is_visible().unwrap_or(false) || window.is_minimized().unwrap_or(true) {
+        return None;
+    }
+    let position = window.inner_position().ok()?;
+    let size = window.inner_size().ok()?;
+    Some(Candidate {
+        label: window.label().to_string(),
+        bounds: Bounds {
+            x: f64::from(position.x),
+            y: f64::from(position.y),
+            width: f64::from(size.width),
+            height: f64::from(size.height),
+        },
+        focused,
+    })
+}
+
+fn trimmed_group(group: Option<DroppedGroup>) -> Option<DroppedGroup> {
+    group.map(|group| DroppedGroup {
+        name: group.name.chars().take(MAX_GROUP_NAME).collect(),
+        ..group
+    })
 }
 
 pub(crate) fn claim_key(path: &str) -> String {
@@ -218,6 +320,50 @@ pub async fn window_open<R: Runtime>(
     app.state::<DocumentWindows>()
         .hand_over(window.label(), opened.label(), &paths);
     Ok(opened.label().to_string())
+}
+
+#[tauri::command]
+pub fn tab_drop<R: Runtime>(
+    app: AppHandle<R>,
+    window: WebviewWindow<R>,
+    paths: Vec<String>,
+    group: Option<DroppedGroup>,
+) -> Result<Option<String>, RpcError> {
+    let paths = existing_files(paths)?;
+    if paths.is_empty() {
+        return Ok(None);
+    }
+    let cursor = app
+        .cursor_position()
+        .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?;
+    let windows = app.state::<DocumentWindows>();
+    let candidates: Vec<Candidate> = app
+        .webview_windows()
+        .values()
+        .filter_map(|entry| candidate_of(entry, windows.focused_at(entry.label())))
+        .collect();
+    let Some(target) = pick_target(cursor.x, cursor.y, window.label(), &candidates) else {
+        return Ok(None);
+    };
+    let Some(holder) = app.get_webview_window(&target.label) else {
+        return Ok(None);
+    };
+    let scale = holder.scale_factor().unwrap_or(1.0);
+    windows.hand_over(window.label(), &target.label, &paths);
+    bring_forward(&holder);
+    let _ = app.emit_to(
+        target.label.as_str(),
+        "tab-drop",
+        TabDrop {
+            paths,
+            x: (cursor.x - target.bounds.x) / scale,
+            y: (cursor.y - target.bounds.y) / scale,
+            width: target.bounds.width / scale,
+            height: target.bounds.height / scale,
+            group: trimmed_group(group),
+        },
+    );
+    Ok(Some(target.label.clone()))
 }
 
 #[tauri::command]
@@ -423,5 +569,75 @@ mod tests {
         windows.release_window("doc-1");
         assert_eq!(windows.claim("main", "a.pdf", all_open), None);
         assert_eq!(windows.claim("main", "b.pdf", all_open), None);
+    }
+
+    fn candidate(label: &str, x: f64, width: f64, focused: u64) -> Candidate {
+        Candidate {
+            label: label.to_string(),
+            bounds: Bounds {
+                x,
+                y: 0.0,
+                width,
+                height: 800.0,
+            },
+            focused,
+        }
+    }
+
+    #[test]
+    fn a_tab_lands_on_the_window_under_the_cursor() {
+        let candidates = vec![
+            candidate("main", 0.0, 1000.0, 1),
+            candidate("doc-a", 1200.0, 800.0, 2),
+        ];
+        let picked = pick_target(1300.0, 40.0, "main", &candidates);
+        assert_eq!(picked.map(|entry| entry.label.as_str()), Some("doc-a"));
+        assert_eq!(pick_target(1100.0, 40.0, "doc-a", &candidates), None);
+        assert_eq!(pick_target(1300.0, 900.0, "main", &candidates), None);
+    }
+
+    #[test]
+    fn overlapping_windows_pick_the_one_focused_last() {
+        let candidates = vec![
+            candidate("main", 0.0, 1000.0, 5),
+            candidate("doc-a", 100.0, 1000.0, 3),
+            candidate("doc-b", 200.0, 1000.0, 9),
+        ];
+        let picked = pick_target(500.0, 40.0, "doc-c", &candidates);
+        assert_eq!(picked.map(|entry| entry.label.as_str()), Some("doc-b"));
+    }
+
+    #[test]
+    fn the_source_and_non_document_windows_are_never_targets() {
+        let candidates = vec![
+            candidate("main", 0.0, 1000.0, 1),
+            candidate("present-1", 0.0, 1000.0, 7),
+            candidate("doc-a", 0.0, 1000.0, 9),
+        ];
+        let picked = pick_target(500.0, 40.0, "doc-a", &candidates);
+        assert_eq!(picked.map(|entry| entry.label.as_str()), Some("main"));
+        assert_eq!(pick_target(500.0, 40.0, "main", &candidates[..2]), None);
+    }
+
+    #[test]
+    fn focus_order_counts_up_and_a_closed_window_forgets_it() {
+        let windows = DocumentWindows::default();
+        windows.note_focus("main");
+        windows.note_focus("doc-a");
+        assert!(windows.focused_at("doc-a") > windows.focused_at("main"));
+        windows.release_window("doc-a");
+        assert_eq!(windows.focused_at("doc-a"), 0);
+    }
+
+    #[test]
+    fn a_dropped_group_name_is_cut_to_the_tab_limit() {
+        let group = trimmed_group(Some(DroppedGroup {
+            name: "ş".repeat(60),
+            color: "blue".to_string(),
+            collapsed: false,
+        }))
+        .unwrap();
+        assert_eq!(group.name.chars().count(), MAX_GROUP_NAME);
+        assert_eq!(trimmed_group(None), None);
     }
 }

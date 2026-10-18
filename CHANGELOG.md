@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- A document tab, or a whole tab group by its name chip, dragged out of a window and dropped on another vivePDF window moves into that window's tab strip where it was dropped, keeping the group's name, colour and folding; dropped anywhere else it opens in a new window as before, and a document window left without tabs closes [2026-10-18]
 - The app log (and so the support bundle) records how long start-up took once the PDF engine is ready: script loaded, first render, engine start, first paint and ready, in milliseconds [2026-10-18]
 - The black and white presentation boards each keep their own undo history (up to 100 steps, covering strokes, whole eraser drags, moved or removed items and clearing) and their own pen, highlighter and eraser settings, which the presentation style panel edits while a board is shown [2026-10-18]
 - A toolbar on the black and white presentation boards offers select, pen, highlighter, shapes and eraser, colours that suit the board (light inks on black, dark inks on white), thickness and eraser size presets with a slider and the [ ] keys, undo and redo, deleting the selection, clearing the board after a confirmation and a way back to the slides; it shows on the presenting screen and in the presenter console, never on the projector [2026-10-18]

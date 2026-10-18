@@ -15,6 +15,7 @@ import { routeForLaunch } from "./launchRoute";
 import { useDocumentWindow } from "./useDocumentWindow";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { useOpenPdf } from "./useOpenPdf";
+import { useTabDropListener } from "./tabDrop";
 
 const MULTI_FILE_TOOLS = new Set(["merge", "batch", "rename"]);
 const LAUNCH_BATCH_MS = 900;
@@ -34,6 +35,7 @@ export function FileOpenListener() {
   clipboardRef.current = openClipboard;
   navigateRef.current = navigate;
   const startedRef = useRef(false);
+  useTabDropListener(openPaths);
 
   useEffect(() => {
     let batchTool: string | null = null;

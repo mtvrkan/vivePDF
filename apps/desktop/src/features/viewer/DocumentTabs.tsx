@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useActiveDocument, useOpenDocuments } from "@embedpdf/plugin-document-manager/react";
 import { ContextMenu, type ContextMenuItem } from "@/components/shared/ContextMenu";
 import { useContextMenu } from "@/components/shared/useContextMenu";
@@ -11,12 +12,14 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { basenameOf } from "@/shared/lib/paths";
 import { revealPath, RevealError } from "@/shared/lib/reveal";
 import { toRpcError } from "@/shared/rpc/client";
+import { dropTabsOnWindow } from "@/shared/rpc/files";
+import { isMainWindow } from "@/shared/lib/windowRole";
 import { insertPagesFrom } from "@/shared/rpc/operations";
 import { PAGE_DRAG_TYPE } from "./ThumbnailSidebar";
 import { useOpenPdf } from "./useOpenPdf";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useDocumentWindow } from "./useDocumentWindow";
-import { useTabTearOff } from "./tabTearOff";
+import { isOutsideViewport, useTabTearOff } from "./tabTearOff";
 import { openBeside } from "./split/splitTargets";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { usePageDropTargetStore } from "@/shared/store/pageDropTargetStore";
@@ -25,6 +28,7 @@ import { useCollectionsStore } from "@/features/home/collectionsStore";
 import { sessionPathOf } from "./convertedDocuments";
 import { GROUP_COLORS, GROUP_TONES, groupAfterMove, groupNeighbour, groupedOrder, movedGroupOrder, tabOutsideGroup, useTabGroupStore, type TabGroup } from "./tabGroups";
 import { ariaShortcut, hasModKey } from "@/shared/lib/platform";
+import type { DroppedTabGroup } from "@/types";
 
 type GroupDrag = { groupId: string; startX: number; moved: boolean; targetId: string | null; after: boolean; markX: number };
 
@@ -58,14 +62,20 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
     requestLeave(() => (closesActive ? guard(() => closeDocuments(ids)) : closeDocuments(ids)), hasPending && closesActive);
   };
 
-  const moveToWindow = async (id: string) => {
+  const sendTabs = async (ids: string[], paths: string[], dropped: boolean, group: DroppedTabGroup | null = null) => {
+    const landed = dropped ? await dropTabsOnWindow(paths, group) : null;
+    if (!landed && !(await openWindow(paths))) return;
+    for (const id of ids) closeDocument(id);
+    if (!isMainWindow() && Object.keys(useDocumentStore.getState().documents).length === 0) void getCurrentWindow().close();
+  };
+  const moveToWindow = async (id: string, dropped = false) => {
     const doc = registered[id];
     if (!doc) return;
     if (hasUnsavedWork(id) || (hasPending && id === activeDocumentId)) {
       toast("info", t("viewer.window.saveFirst", { name: doc.fileName }));
       return;
     }
-    if (await openWindow([doc.path])) closeDocument(id);
+    await sendTabs([id], [doc.path], dropped);
   };
   const regroup = () => {
     const store = useDocumentStore.getState();
@@ -122,14 +132,15 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
     tabGroups.setCollapsed(group.id, false);
     regroup();
   };
-  const moveGroupToWindow = async (members: string[]) => {
+  const moveGroupToWindow = async (members: string[], dropped = false) => {
     const blocked = members.find((id) => hasUnsavedWork(id) || (hasPending && id === activeDocumentId));
     if (blocked) {
       toast("info", t("viewer.window.saveFirst", { name: registered[blocked]?.fileName ?? "" }));
       return;
     }
     const paths = members.map((id) => registered[id]?.path).filter((path): path is string => !!path);
-    if (await openWindow(paths)) for (const id of members) closeDocument(id);
+    const group = groups.find((entry) => entry.id === memberOf[members[0] ?? ""]);
+    await sendTabs(members, paths, dropped, group ? { name: group.name, color: group.color, collapsed: group.collapsed } : null);
   };
   const groupDragHandlers = (group: TabGroup) => ({
     onPointerDown: (event: ReactPointerEvent<HTMLButtonElement>) => {
@@ -152,11 +163,13 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
       const edge = after !== rtl ? rect.right : rect.left;
       setGroupDrag({ ...groupDrag, moved: true, targetId: over.dataset.tabId ?? null, after, markX: edge - strip.getBoundingClientRect().left });
     },
-    onPointerUp: () => {
+    onPointerUp: (event: ReactPointerEvent<HTMLButtonElement>) => {
       if (!groupDrag) return;
       if (groupDrag.moved) {
         skipChipClick.current = true;
-        if (groupDrag.targetId) moveGroup(group.id, groupDrag.targetId, groupDrag.after);
+        if (isOutsideViewport(event.clientX, event.clientY, window.innerWidth, window.innerHeight)) {
+          void moveGroupToWindow(documents.filter((doc) => memberOf[doc.id] === group.id).map((doc) => doc.id), true);
+        } else if (groupDrag.targetId) moveGroup(group.id, groupDrag.targetId, groupDrag.after);
       }
       setGroupDrag(null);
     },
@@ -172,7 +185,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
 
   const pageDropTarget = usePageDropTargetStore((state) => state.documentId);
   const chipped = new Set<string>();
-  const tearOff = useTabTearOff((id) => void moveToWindow(id), { strip: () => stripRef.current, onReorder: reorderTo });
+  const tearOff = useTabTearOff((id) => void moveToWindow(id, true), { strip: () => stripRef.current, onReorder: reorderTo });
 
   const dropPage = async (targetId: string, payload: string) => {
     let parsed: { documentId: string; page: number } | null = null;
@@ -201,7 +214,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
 
   return (
     <div className="flex h-9 items-stretch overflow-x-auto glass-flat border-b">
-      <div ref={stripRef} role="tablist" aria-label={t("viewer.tabs")} className="relative flex items-stretch">
+      <div ref={stripRef} role="tablist" data-document-tabs aria-label={t("viewer.tabs")} className="relative flex items-stretch">
       {groupDrag?.targetId ? (
         <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: groupDrag.markX }} />
       ) : null}

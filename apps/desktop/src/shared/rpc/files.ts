@@ -1,7 +1,7 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { RpcCallError, toRpcError } from "./client";
 import { readPreferences } from "@/shared/store/preferencesStore";
-import type { LaunchRequest, ShellMenuEntry, ViewSource } from "@/types";
+import type { DroppedTabGroup, LaunchRequest, ShellMenuEntry, ViewSource } from "@/types";
 
 export async function readDocumentBytes(path: string): Promise<ArrayBuffer> {
   try {
@@ -111,6 +111,14 @@ export async function openDocumentWindow(paths: string[] = []): Promise<string> 
     return await invoke<string>("window_open", { paths });
   } catch (error) {
     throw new RpcCallError(toRpcError(error));
+  }
+}
+
+export async function dropTabsOnWindow(paths: string[], group: DroppedTabGroup | null = null): Promise<string | null> {
+  try {
+    return await invoke<string | null>("tab_drop", { paths, group });
+  } catch {
+    return null;
   }
 }
 

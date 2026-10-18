@@ -398,6 +398,17 @@ export type LaunchRequest = {
   paths: string[];
 };
 
+export type DroppedTabGroup = { name: string; color: string; collapsed: boolean };
+
+export type TabDropEvent = {
+  paths: string[];
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  group: DroppedTabGroup | null;
+};
+
 export type TrayLabels = {
   tooltip: string;
   open: string;

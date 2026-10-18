@@ -98,6 +98,12 @@ pub fn run() {
                     grants::allow_path(path);
                 }
             }
+            if let tauri::WindowEvent::Focused(true) = event {
+                use tauri::Manager;
+                window
+                    .state::<document_windows::DocumentWindows>()
+                    .note_focus(window.label());
+            }
             if let tauri::WindowEvent::Destroyed = event {
                 use tauri::Manager;
                 window
@@ -133,6 +139,7 @@ pub fn run() {
             files::delete_file,
             launch::launch_request,
             document_windows::window_open,
+            document_windows::tab_drop,
             document_windows::document_claim,
             document_windows::document_claims_sync,
             desktop_links::send_to_supported,

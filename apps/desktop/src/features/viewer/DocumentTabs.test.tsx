@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { useDocumentStore } from "@/shared/store/documentStore";
@@ -7,6 +7,11 @@ import { DocumentTabs } from "./DocumentTabs";
 import { useTabGroupStore } from "./tabGroups";
 
 const activate = vi.fn();
+const closeDocument = vi.fn((id: string) => useDocumentStore.getState().remove(id));
+const openWindow = vi.fn();
+const dropTabsOnWindow = vi.fn();
+const closeWindow = vi.fn();
+let mainWindow = true;
 let activeDocumentId = "a";
 
 vi.mock("@embedpdf/plugin-document-manager/react", () => ({
@@ -14,12 +19,18 @@ vi.mock("@embedpdf/plugin-document-manager/react", () => ({
   useOpenDocuments: () => ["a", "b", "c"].map((id) => ({ id, name: `${id}.pdf` })),
 }));
 vi.mock("./useOpenPdf", () => ({
-  useOpenPdf: () => ({ activate, closeDocument: vi.fn(), pickAndOpen: vi.fn(), openPath: vi.fn() }),
+  useOpenPdf: () => ({ activate, closeDocument, pickAndOpen: vi.fn(), openPath: vi.fn() }),
 }));
 vi.mock("./useCloseDocuments", () => ({
   useCloseDocuments: () => ({ closeDocuments: vi.fn(), hasUnsavedWork: () => false }),
 }));
-vi.mock("./useDocumentWindow", () => ({ useDocumentWindow: () => vi.fn() }));
+vi.mock("./useDocumentWindow", () => ({ useDocumentWindow: () => openWindow }));
+vi.mock("@/shared/rpc/files", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/shared/rpc/files")>()),
+  dropTabsOnWindow: (...args: unknown[]) => dropTabsOnWindow(...args),
+}));
+vi.mock("@/shared/lib/windowRole", () => ({ isMainWindow: () => mainWindow }));
+vi.mock("@tauri-apps/api/window", () => ({ getCurrentWindow: () => ({ close: closeWindow }) }));
 vi.mock("./ThumbnailSidebar", () => ({ PAGE_DRAG_TYPE: "application/x-vivepdf-page" }));
 
 beforeAll(async () => {
@@ -29,6 +40,11 @@ beforeAll(async () => {
 
 beforeEach(() => {
   activate.mockReset();
+  closeDocument.mockClear();
+  openWindow.mockReset();
+  dropTabsOnWindow.mockReset();
+  closeWindow.mockReset();
+  mainWindow = true;
   activeDocumentId = "a";
   useDocumentStore.setState({ documents: {}, order: [], activeId: null });
   for (const id of ["a", "b", "c"]) useDocumentStore.getState().register(id, `/tmp/${id}.pdf`, null);
@@ -85,5 +101,88 @@ describe("DocumentTabs split entry", () => {
     fireEvent.contextMenu(screen.getAllByRole("tab")[0]);
 
     expect(screen.queryByRole("menuitem", { name: "Open beside current document" })).toBeNull();
+  });
+});
+
+function pointer(target: Element, type: string, clientX: number, clientY: number) {
+  const event = new MouseEvent(type, { bubbles: true, clientX, clientY, button: 0 });
+  Object.assign(event, { pointerId: 1, isPrimary: true });
+  act(() => {
+    target.dispatchEvent(event);
+  });
+}
+
+function dragOut(tab: Element) {
+  fireEvent.pointerDown(tab, { button: 0, isPrimary: true, pointerId: 1, clientX: 50, clientY: 10 });
+  pointer(tab, "pointermove", 60, 40);
+  pointer(tab, "pointerup", 1400, 300);
+}
+
+describe("DocumentTabs moving tabs between windows", () => {
+  beforeEach(() => {
+    let captured = false;
+    HTMLElement.prototype.setPointerCapture = vi.fn(() => {
+      captured = true;
+    });
+    HTMLElement.prototype.hasPointerCapture = vi.fn(() => captured);
+    HTMLElement.prototype.releasePointerCapture = vi.fn(() => {
+      captured = false;
+    });
+    Object.assign(window, { innerWidth: 1000, innerHeight: 700 });
+  });
+
+  it("hands a tab dropped on another window to that window instead of opening a new one", async () => {
+    dropTabsOnWindow.mockResolvedValue("doc-1");
+    render(<DocumentTabs />);
+
+    dragOut(screen.getAllByRole("tab")[1]);
+
+    await waitFor(() => expect(closeDocument).toHaveBeenCalledWith("b"));
+    expect(dropTabsOnWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], null);
+    expect(openWindow).not.toHaveBeenCalled();
+    expect(closeWindow).not.toHaveBeenCalled();
+  });
+
+  it("opens a new window when no window is under the drop, and keeps the tab if that fails", async () => {
+    dropTabsOnWindow.mockResolvedValue(null);
+    openWindow.mockResolvedValueOnce(true).mockResolvedValueOnce(false);
+    render(<DocumentTabs />);
+
+    dragOut(screen.getAllByRole("tab")[1]);
+    await waitFor(() => expect(closeDocument).toHaveBeenCalledWith("b"));
+    dragOut(screen.getAllByRole("tab")[0]);
+    await waitFor(() => expect(openWindow).toHaveBeenCalledTimes(2));
+
+    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"]);
+    expect(closeDocument).toHaveBeenCalledTimes(1);
+  });
+
+  it("closes a document window once its last tab has moved away, never the main window", async () => {
+    mainWindow = false;
+    useDocumentStore.setState({ documents: {}, order: [], activeId: null });
+    useDocumentStore.getState().register("a", "/tmp/a.pdf", null);
+    dropTabsOnWindow.mockResolvedValue("main");
+    render(<DocumentTabs />);
+
+    dragOut(screen.getByRole("tab"));
+
+    await waitFor(() => expect(closeWindow).toHaveBeenCalledOnce());
+  });
+
+  it("moves a whole group with its name and colour when its chip is dragged out", async () => {
+    const groupId = useTabGroupStore.getState().create(["b", "c"]);
+    useTabGroupStore.getState().rename(groupId, "Contracts");
+    useTabGroupStore.getState().recolor(groupId, "teal");
+    dropTabsOnWindow.mockResolvedValue("doc-1");
+    document.elementFromPoint = () => null;
+    render(<DocumentTabs />);
+    const chip = screen.getByRole("button", { name: /Contracts/ });
+
+    fireEvent.pointerDown(chip, { button: 0, pointerId: 1, clientX: 50, clientY: 10 });
+    fireEvent.pointerMove(chip, { pointerId: 1, clientX: 90, clientY: 10 });
+    fireEvent.pointerUp(chip, { pointerId: 1, clientX: 1400, clientY: 300 });
+
+    await waitFor(() => expect(closeDocument).toHaveBeenCalledTimes(2));
+    expect(dropTabsOnWindow).toHaveBeenCalledWith(["/tmp/b.pdf", "/tmp/c.pdf"], { name: "Contracts", color: "teal", collapsed: false });
   });
 });
