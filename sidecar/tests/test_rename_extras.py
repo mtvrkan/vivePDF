@@ -1,8 +1,10 @@
+import os
 from pathlib import Path
 
 import pymupdf
 import pytest
 
+from vivepdf.ops import rename as rename_module
 from vivepdf.ops.rename import (
     RenameApplyItem,
     RenameApplyParams,
@@ -108,6 +110,25 @@ def test_a_chain_of_renames_in_one_batch_gets_the_exact_names(tmp_path: Path) ->
     assert sorted(entry.name for entry in tmp_path.iterdir()) == ["b.pdf", "c.pdf"]
     with pymupdf.open(tmp_path / "b.pdf") as document:
         assert "first" in document[0].get_text()
+
+
+def test_a_rename_whose_target_never_appears_is_reported_as_failed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = _pdf(tmp_path / "a.pdf", text="first")
+    real_replace = os.replace
+
+    def lost_replace(current: str | Path, target: str | Path) -> None:
+        real_replace(current, Path(target).with_suffix(".tmp"))
+
+    monkeypatch.setattr(rename_module.os, "replace", lost_replace)
+    result = apply(
+        RenameApplyParams(items=[RenameApplyItem(path=str(source), new_name="b")]),
+        silent_progress(),
+    )
+    assert result.renamed == 0
+    assert not result.results[0].ok
+    assert "missing after the rename" in (result.results[0].error or "")
 
 
 def test_two_files_can_swap_names(tmp_path: Path) -> None:

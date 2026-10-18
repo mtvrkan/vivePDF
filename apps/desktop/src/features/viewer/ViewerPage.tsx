@@ -35,6 +35,7 @@ import { EditPanel } from "./overlay/EditPanel";
 import { ImmersiveView } from "./ImmersiveView";
 import { PresentationDrawingsPrompt } from "./presentation/PresentationDrawingsPrompt";
 import { exitImmersive, setImmersiveFullscreen } from "./immersive";
+import { escapeStep } from "./presentation/escapeStep";
 import { Inspector } from "./Inspector";
 import { OutlinePanel } from "./OutlinePanel";
 import { PendingJump } from "./PendingJump";
@@ -111,35 +112,16 @@ export function ViewerPage() {
         if (!useUiStore.getState().immersive) void setImmersiveFullscreen(true, event.shiftKey ? null : 1);
         return;
       }
-      if (event.key === "Escape" && useUiStore.getState().immersive && !isTypingTarget(event.target)) {
-        const presentation = usePresentationStore.getState();
-        if (presentation.codeBlockOpen) {
-          event.preventDefault();
-          event.stopPropagation();
-          presentation.closeCodeBlock();
-          return;
-        }
-        if (presentation.overviewOpen) {
-          event.preventDefault();
-          event.stopPropagation();
-          presentation.setOverviewOpen(false);
-          return;
-        }
-        if (presentation.tool !== "pointer") {
-          event.preventDefault();
-          event.stopPropagation();
-          presentation.setTool("pointer");
-          return;
-        }
-        if (presentation.blackout !== "none") {
-          event.preventDefault();
-          event.stopPropagation();
-          presentation.setBlackout("none");
-          return;
-        }
+      if (event.key === "Escape" && !event.defaultPrevented && useUiStore.getState().immersive && !isTypingTarget(event.target)) {
         event.preventDefault();
         event.stopPropagation();
-        void exitImmersive();
+        const presentation = usePresentationStore.getState();
+        const step = escapeStep(presentation);
+        if (step === "closeCodeBlock") presentation.closeCodeBlock();
+        else if (step === "closeOverview") presentation.setOverviewOpen(false);
+        else if (step === "pointer") presentation.setTool("pointer");
+        else if (step === "leaveBoard") presentation.setBlackout("none");
+        else void exitImmersive();
         return;
       }
       if (!(event.ctrlKey || event.metaKey)) return;

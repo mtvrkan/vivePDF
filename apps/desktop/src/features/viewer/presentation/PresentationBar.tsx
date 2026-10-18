@@ -23,7 +23,7 @@ export function PresentationBar({ documentId, onClose }: { documentId: string; o
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape" || isTypingTarget(event.target) || hasOpenModal()) return;
+      if (event.key !== "Escape" || event.defaultPrevented || isTypingTarget(event.target) || hasOpenModal()) return;
       if (usePresentationStore.getState().tool === "pointer") return;
       event.preventDefault();
       event.stopPropagation();

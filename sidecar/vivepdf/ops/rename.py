@@ -638,6 +638,12 @@ def _unpark(entry: _PlannedRename) -> None:
     entry.parked = None
 
 
+def _move(current: Path, target: Path) -> None:
+    os.replace(current, target)
+    if not target.is_file():
+        raise OSError(f"{target.name} is missing after the rename")
+
+
 def _target_of(base: Path, new_name: str) -> tuple[Path, str]:
     segments = [sanitize_file_name(segment) for segment in _segments(new_name)]
     segments = segments[-(MAX_FOLDER_DEPTH + 1) :] or [FALLBACK_NAME]
@@ -763,13 +769,13 @@ def apply(params: RenameApplyParams, progress: Progress) -> RenameApplyResult:
                 created.extend(reversed(missing))
             if entry.same_file:
                 if moving and entry.target.name != entry.source.name:
-                    os.replace(current, entry.target)
+                    _move(current, entry.target)
                     renamed += 1
             elif entry.target.exists() and not params.overwrite:
                 raise FileExistsError(entry.target)
             elif moving:
                 replaced = entry.target.exists()
-                os.replace(current, entry.target)
+                _move(current, entry.target)
                 renamed += 1
             else:
                 replaced = entry.target.exists()

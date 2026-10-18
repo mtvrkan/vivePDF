@@ -32,6 +32,7 @@ function PresentationErrorBoundary({ onExit, children }: { onExit: () => void; c
   const { t } = useTranslation();
   return (
     <ErrorBoundary
+      keepImmersive
       fallback={(_error, reset) => (
         <div className="pointer-events-none fixed inset-x-0 bottom-6 z-40 flex justify-center">
           <div className="glass pointer-events-auto flex items-center gap-3 rounded-full px-4 py-2 text-sm">

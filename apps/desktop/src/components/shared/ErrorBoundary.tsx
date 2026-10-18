@@ -10,7 +10,7 @@ import * as logger from "@/shared/lib/logger";
 import { useReportStore } from "@/shared/store/reportStore";
 import { useUiStore } from "@/shared/store/uiStore";
 
-type ErrorBoundaryProps = { children: ReactNode; fallback: (error: Error, reset: () => void) => ReactNode };
+type ErrorBoundaryProps = { children: ReactNode; fallback: (error: Error, reset: () => void) => ReactNode; keepImmersive?: boolean };
 type ErrorBoundaryState = { error: Error | null };
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
@@ -22,7 +22,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
     logger.error("react", `${error.message}\n${info.componentStack ?? ""}`);
-    if (useUiStore.getState().immersive) void exitImmersive();
+    if (!this.props.keepImmersive && useUiStore.getState().immersive) void exitImmersive();
   }
 
   reset = (): void => {
