@@ -1,4 +1,5 @@
-import { existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { $, browser, expect } from "@wdio/globals";
 import {
@@ -21,6 +22,10 @@ import {
 } from "../support/app.ts";
 
 const PASSWORD = "Gizli-Şifre-2026";
+
+function documentsFolder(): string {
+  return execFileSync("powershell", ["-NoProfile", "-Command", "[Environment]::GetFolderPath('MyDocuments')"], { encoding: "utf8" }).trim();
+}
 
 function sectionField(sectionTitle: string, label: string) {
   return $(`//section[.//*[normalize-space(text())="${sectionTitle}"]]//label[span[normalize-space(.)="${label}"]]//input`);
@@ -100,5 +105,37 @@ describe("security", () => {
     expect(result.signatures).toHaveLength(1);
     expect(result.signatures?.[0].intact).toBe(true);
     expect(result.signatures?.[0].coverage).toBe("ENTIRE_FILE");
+  });
+
+  describe("outputs outside vivePDF's own folders", () => {
+    let folder = "";
+
+    before(() => {
+      folder = join(documentsFolder(), `vivePDF e2e ${Date.now()}`);
+      mkdirSync(folder, { recursive: true });
+    });
+
+    after(() => {
+      if (folder) rmSync(folder, { recursive: true, force: true });
+    });
+
+    it("asks where to save instead of replacing another program's file next to the picked document", async () => {
+      const source = join(folder, "contract.pdf");
+      writeFileSync(source, readFileSync(fixtures().scanned));
+      await openTool("nav.compress");
+      await chooseSource(source);
+      const suggested = await outputPath();
+      writeFileSync(suggested, "kept by another program");
+      const picked = join(folder, "contract-picked.pdf");
+      answerDialogs(picked);
+
+      await runPrimary(t("tools.compress.run"));
+      await waitForDialogsAnswered();
+      const [output] = await waitForOutputs();
+
+      expect(output).toBe(picked);
+      expect(probe(picked).pageCount).toBe(1);
+      expect(readFileSync(suggested, "utf8")).toBe("kept by another program");
+    });
   });
 });

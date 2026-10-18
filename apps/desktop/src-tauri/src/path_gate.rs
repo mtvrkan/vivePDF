@@ -215,6 +215,16 @@ fn names_an_output(operation: &Operation, params: &Value) -> bool {
         })
 }
 
+fn refused_output(mut error: RpcError, output: &str, folder: bool) -> RpcError {
+    if let Some(Value::Object(data)) = error.data.as_mut() {
+        if data.get("reason").and_then(Value::as_str) == Some("notGranted") {
+            data.insert("output".to_string(), Value::String(output.to_string()));
+            data.insert("folder".to_string(), Value::Bool(folder));
+        }
+    }
+    error
+}
+
 fn writes_in_place(operation: &Operation, params: &Value) -> bool {
     let asked = params
         .get(IN_PLACE_KEY)
@@ -242,11 +252,15 @@ fn check_with(
             match rule.kind {
                 Kind::Read | Kind::ReadDir => access.read(path)?,
                 Kind::Write => {
-                    access.write(path, false)?;
+                    access
+                        .write(path, false)
+                        .map_err(|error| refused_output(error, text, false))?;
                     scope.add(path, false);
                 }
                 Kind::WriteDir => {
-                    access.write(path, true)?;
+                    access
+                        .write(path, true)
+                        .map_err(|error| refused_output(error, text, true))?;
                     scope.add(path, true);
                 }
                 Kind::Modify => {
@@ -340,6 +354,55 @@ mod tests {
         };
         let outcome = check_with(&sample(), &access, method, &params).is_ok();
         (outcome, access.calls())
+    }
+
+    struct RefusesWrites;
+
+    impl Access for RefusesWrites {
+        fn read(&self, _path: &Path) -> Result<(), RpcError> {
+            Ok(())
+        }
+
+        fn write(&self, _path: &Path, _directory: bool) -> Result<(), RpcError> {
+            Err(RpcError {
+                code: "PERMISSION_DENIED".to_string(),
+                message: "not granted".to_string(),
+                data: Some(json!({ "reason": "notGranted" })),
+            })
+        }
+    }
+
+    fn refusal(method: &str, params: Value) -> Value {
+        check_with(&sample(), &RefusesWrites, method, &params)
+            .unwrap_err()
+            .data
+            .unwrap()
+    }
+
+    #[test]
+    fn a_refused_output_names_itself_so_the_interface_can_ask_for_it() {
+        assert_eq!(
+            refusal(
+                "doc.merge",
+                json!({ "sources": [{ "path": "a.pdf" }], "output": "o.pdf" })
+            ),
+            json!({ "reason": "notGranted", "output": "o.pdf", "folder": false })
+        );
+        assert_eq!(
+            refusal(
+                "doc.parts",
+                json!({ "sources": [{ "path": "a.pdf" }], "outputDir": "Out" })
+            ),
+            json!({ "reason": "notGranted", "output": "Out", "folder": true })
+        );
+    }
+
+    #[test]
+    fn a_refused_input_written_in_place_is_not_offered_as_an_output() {
+        assert_eq!(
+            refusal("doc.move", json!({ "path": "a.pdf", "folder": "Out" })),
+            json!({ "reason": "notGranted" })
+        );
     }
 
     fn scope_of(method: &str, params: Value) -> WriteScope {

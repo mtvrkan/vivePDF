@@ -47,6 +47,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Batch rename reports a file as failed when it is not at its new name right after the rename (for example when antivirus software moves it away) instead of counting it as renamed [2026-10-18]
 - Saving an edited text block removes the original text completely, glyph by glyph, even when another text frame overlaps it or the page is turned; shadow or glow pictures on the removed letters go too, while backgrounds and nearby pictures stay [2026-10-18]
 - The engine robustness matrix feeds the support bundle its file through attachments instead of the picture list, so the fast robustness tests pass again [2026-10-17]
+### Security
+- Picking a document no longer lets vivePDF write over other files already sitting in its folder: only new files and folders beside it can be written, hidden names stay refused and a dangling link no longer counts as a new path; when a tool's output is one of those files or folders, vivePDF asks where to save instead of failing [2026-10-18]
 
 ## [0.3.0] - 2026-10-15
 ### Added

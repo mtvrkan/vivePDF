@@ -134,6 +134,7 @@ in.
 | `security` | add an open password, then remove it | encrypted, opens with the password; decrypted copy has all pages |
 | `security` | text watermark with Turkish letters | watermark text on every page |
 | `security` | create a certificate, sign with it | one signature, intact, covering the whole file |
+| `security` | compress a document picked from a new folder in Documents while another program's file already sits at the suggested output | the save dialog is asked, the output lands at the picked path and the other file is left as it was |
 | `edit` | fill a form field with Turkish text | field value round-trips exactly |
 | `edit` | find and replace | replaced on every page, rest of the line kept |
 | `edit` | Edit › Add formula: type LaTeX, wait for the preview, place it on page 1, *Save as* | more vector drawings on page 1 and no new picture, the page text kept, page 2 and the original untouched; screenshots of the dialog and the placed formula in the run folder |
@@ -167,6 +168,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Drag a tab out and back in quickly several times: no empty window is left behind and no tab
   is lost.
 - Tear a tab off near a screen edge: the new window stays fully on that screen.
+- Open a PDF from a folder outside Documents and run a tool whose output folder already exists
+  there (for example Split into a folder made by hand): vivePDF asks for a folder instead of
+  writing into it, and the folder chosen in that dialog is used.
 
 ### How native dialogs are answered
 

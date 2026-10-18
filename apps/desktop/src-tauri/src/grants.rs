@@ -163,6 +163,10 @@ fn plain_segments(rest: &str) -> bool {
         .all(|segment| segment.is_empty() || !segment.starts_with('.'))
 }
 
+fn absent(path: &Path) -> bool {
+    matches!(std::fs::symlink_metadata(path), Err(error) if error.kind() == std::io::ErrorKind::NotFound)
+}
+
 fn readable_below(path: &Path, rest: &str) -> bool {
     plain_segments(rest)
         && (rest.is_empty() || path.is_dir() || crate::files::is_openable_output(path))
@@ -260,7 +264,7 @@ impl Registry {
     }
 
     fn creates_new(&self, key: &str, path: &Path) -> bool {
-        !path.exists()
+        absent(path)
             && self
                 .create_roots
                 .iter()
@@ -268,9 +272,21 @@ impl Registry {
                 .any(|rest| !rest.is_empty() && plain_segments(rest))
     }
 
+    fn new_beside_a_file(&self, key: &str, path: &Path) -> bool {
+        let Some((parent, name)) = key.rsplit_once('/') else {
+            return false;
+        };
+        let beside = |list: &Recent| {
+            list.order
+                .iter()
+                .any(|file| parent_key(file) == Some(parent))
+        };
+        !name.starts_with('.') && absent(path) && (beside(&self.files) || beside(&self.read_files))
+    }
+
     fn grant_new_folder(&mut self, path: &Path) -> bool {
         let key = key_of(path);
-        if !self.creates_new(&key, path) {
+        if !self.creates_new(&key, path) && !self.new_beside_a_file(&key, path) {
             return false;
         }
         self.write_folders.touch(key, FOLDER_KEEP);
@@ -292,19 +308,7 @@ impl Registry {
         if in_folder {
             return true;
         }
-        if self.creates_new(&key, path) {
-            return true;
-        }
-        let Some((parent, name)) = key.rsplit_once('/') else {
-            return false;
-        };
-        let beside = |list: &Recent| {
-            list.order
-                .iter()
-                .any(|file| parent_key(file) == Some(parent))
-        };
-        !name.starts_with('.')
-            && (beside(&self.files) || (!path.exists() && beside(&self.read_files)))
+        self.creates_new(&key, path) || self.new_beside_a_file(&key, path)
     }
 
     fn network_keys(&self) -> impl Iterator<Item = String> + '_ {
@@ -960,6 +964,114 @@ mod tests {
         assert!(registry.may_write(&sibling));
         assert!(!registry.may_read(&sibling));
         assert!(!registry.may_write(&elsewhere));
+    }
+
+    #[test]
+    fn an_existing_sibling_of_a_picked_file_is_not_writable() {
+        let dir = scratch("existing-sibling");
+        let picked = file(&dir, "input.pdf");
+        let existing = file(&dir, "budget.xlsx");
+        let mut registry = Registry::default();
+        registry.allow(&picked, FolderMode::ReadWrite);
+
+        assert!(!registry.may_write(&existing));
+        assert!(registry.may_write(&picked));
+    }
+
+    #[test]
+    fn an_existing_sibling_becomes_writable_once_its_own_save_pick_lands() {
+        let dir = scratch("save-over-sibling");
+        let picked = file(&dir, "input.pdf");
+        let existing = file(&dir, "input-compressed.pdf");
+        let mut registry = Registry::default();
+        registry.allow(&picked, FolderMode::ReadWrite);
+
+        registry.allow(&existing, FolderMode::ReadWrite);
+
+        assert!(registry.may_write(&existing));
+    }
+
+    #[test]
+    fn a_hidden_new_sibling_stays_refused() {
+        let dir = scratch("hidden-new-sibling");
+        let picked = file(&dir, "input.pdf");
+        let mut registry = Registry::default();
+        registry.allow(&picked, FolderMode::ReadWrite);
+
+        assert!(!registry.may_write(&dir.join(".input-compressed.pdf")));
+        assert!(!registry.grant_new_folder(&dir.join(".input-images")));
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn a_dangling_link_beside_a_picked_file_or_in_documents_is_not_a_new_path() {
+        let dir = scratch("dangling");
+        let picked = file(&dir, "input.pdf");
+        let target = scratch("dangling-target").join("agent.plist");
+        let link = dir.join("input-compressed.pdf");
+        std::os::unix::fs::symlink(&target, &link).unwrap();
+        let documents = scratch("dangling-documents");
+        let planted = documents.join("poster.pdf");
+        std::os::unix::fs::symlink(&target, &planted).unwrap();
+        let mut registry = Registry {
+            create_roots: root_keys(std::slice::from_ref(&documents)),
+            ..Registry::default()
+        };
+        registry.allow(&picked, FolderMode::ReadWrite);
+
+        assert!(!registry.may_write(&link));
+        assert!(!registry.grant_new_folder(&link));
+        assert!(!registry.may_write(&planted));
+    }
+
+    #[test]
+    fn a_new_sibling_folder_is_granted_on_first_write_and_stays_writable_after_it_exists() {
+        let dir = scratch("sibling-folder");
+        let picked = file(&dir, "input.pdf");
+        let images = dir.join("input-images");
+        let mut registry = Registry::default();
+        registry.allow(&picked, FolderMode::ReadWrite);
+
+        assert!(registry.grant_new_folder(&images));
+        std::fs::create_dir_all(&images).unwrap();
+        let mut reloaded = Registry::default();
+        reloaded.load(&serde_json::to_string(&registry.snapshot()).unwrap());
+
+        assert!(registry.may_write(&images));
+        assert!(reloaded.may_write(&images));
+        assert!(reloaded.may_write(&images.join("page-1.png")));
+        assert!(!reloaded.may_read(&images.join("page-1.png")));
+    }
+
+    #[test]
+    fn an_existing_sibling_folder_needs_a_folder_pick() {
+        let dir = scratch("existing-sibling-folder");
+        let picked = file(&dir, "input.pdf");
+        let taxes = dir.join("Taxes");
+        std::fs::create_dir_all(&taxes).unwrap();
+        let mut registry = Registry::default();
+        registry.allow(&picked, FolderMode::ReadWrite);
+
+        assert!(!registry.grant_new_folder(&taxes));
+        assert!(!registry.may_write(&taxes));
+
+        registry.allow(&taxes, FolderMode::Write);
+
+        assert!(registry.may_write(&taxes));
+    }
+
+    #[test]
+    fn an_adopted_read_file_still_only_allows_new_siblings() {
+        let dir = scratch("adopted-sibling");
+        let adopted = file(&dir, "report.pdf");
+        let existing = file(&dir, "report-compressed.pdf");
+        let mut registry = Registry::default();
+
+        registry.adopt(&[text(&adopted)], &[], &[], None, &AdoptLimits::default());
+
+        assert!(registry.may_write(&dir.join("report-ocr.pdf")));
+        assert!(registry.grant_new_folder(&dir.join("report-images")));
+        assert!(!registry.may_write(&existing));
     }
 
     #[test]
