@@ -1,8 +1,10 @@
+import subprocess
 import sys
 from pathlib import Path
 
 import pytest
 
+from vivepdf.ops import printing
 from vivepdf.ops.printing import (
     PrintersParams,
     PrintParams,
@@ -52,6 +54,47 @@ def test_windows_printer_listing_reports_backend():
     result = printers(PrintersParams(), silent_progress())
     assert result.backend == "windows"
     assert all(isinstance(entry.name, str) for entry in result.printers)
+
+
+def test_cups_listing_reads_the_untranslated_lpstat_output(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    calls: list[tuple[list[str], dict[str, str]]] = []
+    outputs = {
+        "-a": "Office_Laser accepting requests since Sat Oct 18 10:00:00 2026\n"
+        "Label-Printer accepting requests since Sat Oct 18 10:00:00 2026\n",
+        "-d": "system default destination: Label-Printer\n",
+    }
+
+    def fake_run(args: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        environment = kwargs["env"]
+        assert isinstance(environment, dict)
+        calls.append((args, environment))
+        return subprocess.CompletedProcess(args, 0, stdout=outputs[args[1]], stderr="")
+
+    monkeypatch.setattr(printing.shutil, "which", lambda _name: "/usr/bin/lpstat")
+    monkeypatch.setattr(printing.subprocess, "run", fake_run)
+    result = printing._cups_printers()
+    assert [printer.name for printer in result.printers] == ["Office_Laser", "Label-Printer"]
+    assert result.default == "Label-Printer"
+    assert [printer.is_default for printer in result.printers] == [False, True]
+    assert all(environment["LC_ALL"] == "C" for _args, environment in calls)
+
+
+def test_cups_listing_without_printers_or_default_is_empty(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def fake_run(args: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        return subprocess.CompletedProcess(
+            args, 0, stdout="no system default destination\n" if args[1] == "-d" else ""
+        )
+
+    monkeypatch.setattr(printing.shutil, "which", lambda _name: "/usr/bin/lpstat")
+    monkeypatch.setattr(printing.subprocess, "run", fake_run)
+    result = printing._cups_printers()
+    assert result.printers == []
+    assert result.default is None
+    assert result.backend == "cups"
 
 
 def test_validate_printer_rejects_unknown_name():

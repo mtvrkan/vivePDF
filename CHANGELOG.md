@@ -6,6 +6,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ### Changed
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed
+- The printer list on macOS and Linux reads the untranslated output of the print system, so printer names and the default printer are found on a computer set to another language [2026-10-18]
 - Speaker notes stay with a presentation that was edited and then moved to another folder, found again by the PDF's permanent identifier together with its file name [2026-10-18]
 - Presenter view now reliably opens on a projector set to extend the desktop: the audience window waits until it has really moved to the projector before going full screen (Windows moves windows asynchronously, so it used to go full screen on the laptop behind the console), macOS places it in points of the projector and uses a full screen without a new Space, and if it still does not land it covers the projector borderless or reports that it could not reach it [2026-10-18]
 - With a projector that mirrors the screen (one display found), the presenter view explains how to switch to Extend (Windows key + P, or System Settings › Displays on a Mac) and offers Try again, Present on this screen or Rehearse in a window instead of silently opening a small rehearsal window; a rehearsal notices when the projector is switched to extend and offers Move to the projector [2026-10-18]

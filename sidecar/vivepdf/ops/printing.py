@@ -1,3 +1,4 @@
+import os
 import shutil
 import subprocess
 import sys
@@ -189,13 +190,20 @@ def _windows_printers() -> PrintersResult:
     return PrintersResult(printers=printers, default=default, backend="windows")
 
 
+def _lpstat(option: str) -> str:
+    environment = {**os.environ, "LC_ALL": "C", "LANG": "C"}
+    run = subprocess.run(
+        ["lpstat", option], capture_output=True, text=True, check=False, env=environment
+    )
+    return run.stdout
+
+
 def _cups_printers() -> PrintersResult:
     if not shutil.which("lpstat"):
         return PrintersResult(printers=[], default=None, backend="none")
-    listing = subprocess.run(["lpstat", "-a"], capture_output=True, text=True, check=False)
-    names = [line.split()[0] for line in listing.stdout.splitlines() if line.strip()]
-    default_run = subprocess.run(["lpstat", "-d"], capture_output=True, text=True, check=False)
-    default = default_run.stdout.split(":")[-1].strip() if ":" in default_run.stdout else None
+    names = [line.split()[0] for line in _lpstat("-a").splitlines() if line.strip()]
+    default_output = _lpstat("-d")
+    default = default_output.split(":")[-1].strip() if ":" in default_output else None
     printers = [PrinterInfo(name=name, is_default=name == default) for name in names]
     return PrintersResult(printers=printers, default=default or None, backend="cups")
 
