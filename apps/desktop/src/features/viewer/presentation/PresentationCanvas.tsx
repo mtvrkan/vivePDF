@@ -12,7 +12,7 @@ import { placedDrawing } from "./drawingPlacement";
 import { duplicateDrawing } from "./drawingRotate";
 import { LaserTrail, type LaserPoint } from "./LaserTrail";
 import { toLivePoint, type LivePoint, type LiveSignal } from "./liveSignal";
-import { ERASER_CURSOR_COLOR, eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
+import { boardInk, ERASER_CURSOR_COLOR, eraserCursor, highlighterCursor, pageInk, penCursor } from "./toolCursor";
 import { MagnifierLens } from "./MagnifierLens";
 import { PlacementHint } from "./PlacementHint";
 import { visiblePageSize } from "./measure";
@@ -53,6 +53,8 @@ type PresentationCanvasProps = { containerRef: RefObject<HTMLDivElement | null>;
 export function PresentationCanvas({ containerRef, contained = false, onSignal, onEditSavedDrawing }: PresentationCanvasProps) {
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
+  const blackout = usePresentationStore((state) => state.blackout);
+  const boardPen = usePresentationStore((state) => (state.blackout === "none" ? null : state.boardPens[state.blackout]));
   const penWidth = usePresentationStore((state) => state.penWidth);
   const highlighterWidth = usePresentationStore((state) => state.highlighterWidth);
   const penOpacity = usePresentationStore((state) => state.penOpacity);
@@ -390,6 +392,8 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal, 
     const hoverOnPage = followsHover && hover && pageRectAt(pageRects, hover.x - (box?.left ?? 0), hover.y - (box?.top ?? 0)) ? hover : null;
     const livePointer = pointer ? toPage(pointer) : hoverOnPage ? toPage(hoverOnPage) : null;
     const reference = pageRects.find((rect) => rect.pageIndex === livePointer?.pageIndex) ?? pageRects[0];
+    const board = blackout === "none" ? null : blackout;
+    const boardPointer = board && hover && box && box.width > 0 && box.height > 0 ? { x: (hover.x - box.left) / box.width, y: (hover.y - box.top) / box.height, width: box.width } : null;
     emit({
       tool,
       pageWidth: reference?.width ?? 0,
@@ -397,9 +401,10 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal, 
       laserPath: laserStroke ? laserStroke.map(toPage).filter((point): point is LivePoint => point !== null) : null,
       activeStroke,
       activeBoardStroke,
-      cursorColor: penColor,
+      cursorColor: blackout !== "none" && boardPen ? boardInk(blackout, tool, boardPen) : pageInk(tool, penColor),
+      boardPointer,
     });
-  }, [tool, pointer, hover, laserStroke, activeStroke, activeBoardStroke, penColor, pageRects, containerRef]);
+  }, [tool, pointer, hover, laserStroke, activeStroke, activeBoardStroke, penColor, blackout, boardPen, pageRects, containerRef]);
 
   useEffect(() => {
     const timers = fadeTimers.current;

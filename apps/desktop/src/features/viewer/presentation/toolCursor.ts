@@ -1,3 +1,6 @@
+import type { BoardMode, BoardPen, PresentationTool } from "@/shared/store/presentationStore";
+import { readableOnDark } from "./strokes";
+
 const PEN_PATHS = [
   "M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z",
   "m15 5 4 4",
@@ -7,6 +10,7 @@ const ERASER_PATHS = ["m7 21-4.3-4.3c-1-1-1-2.5 0-3.4l9.6-9.6c1-1 2.5-1 3.4 0l5.
 
 export const TOOL_CURSOR_SIZE = 28;
 export const ERASER_CURSOR_COLOR = "#1f2937";
+const ERASER_ON_BLACK_COLOR = "#f8fafc";
 
 export type ToolCursorArt = { src: string; hotX: number; hotY: number };
 
@@ -46,4 +50,14 @@ export function highlighterCursor(color: string): string {
 
 export function eraserCursor(color: string): string {
   return cssCursor(eraserCursorArt(color));
+}
+
+export function pageInk(tool: PresentationTool, penColor: string): string {
+  return tool === "eraser" ? ERASER_CURSOR_COLOR : penColor;
+}
+
+export function boardInk(board: BoardMode, tool: PresentationTool, pen: BoardPen): string {
+  if (tool === "eraser") return board === "black" ? ERASER_ON_BLACK_COLOR : ERASER_CURSOR_COLOR;
+  const color = tool === "highlighter" ? pen.highlighterColor : pen.penColor;
+  return board === "black" ? readableOnDark(color) : color;
 }

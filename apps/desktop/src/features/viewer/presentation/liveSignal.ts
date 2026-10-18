@@ -12,6 +12,7 @@ export type LiveSignal = {
   activeStroke: { pageIndex: number; stroke: Stroke } | null;
   activeBoardStroke?: BoardLiveStroke | null;
   cursorColor?: string;
+  boardPointer?: { x: number; y: number; width: number } | null;
 };
 
 export function toLivePoint(rects: PageRect[], x: number, y: number): LivePoint | null {

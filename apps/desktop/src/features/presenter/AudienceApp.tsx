@@ -23,7 +23,7 @@ import { usePresentationStore } from "@/shared/store/presentationStore";
 import { createAudienceLink, tauriTransport, type PresenterCommand } from "./presenterChannel";
 import { commandForKey } from "./presenterCommands";
 import { applyPatch, presentationFields, type SharedSlice, type StateMessage } from "./presenterSync";
-import { RemotePointerLayer } from "./RemotePointerLayer";
+import { RemoteBoardCursor, RemotePointerLayer } from "./RemotePointerLayer";
 import { SelectionMarksLayer } from "./SelectionMarksLayer";
 
 const AUDIENCE_DOCUMENT_ID = "presenter-audience";
@@ -52,7 +52,18 @@ function LivePointer({ rects }: { rects: PageRect[] }) {
 
 function LiveBoard() {
   const remote = useLiveSignal((state) => state.signal?.activeBoardStroke ?? null);
-  return <BlackoutLayer contained hint={false} controls={false} remote={remote} />;
+  const boardShown = usePresentationStore((state) => state.blackout !== "none");
+  return (
+    <>
+      <BlackoutLayer contained hint={false} controls={false} remote={remote} />
+      {boardShown ? <LiveBoardCursor /> : null}
+    </>
+  );
+}
+
+function LiveBoardCursor() {
+  const signal = useLiveSignal((state) => state.signal);
+  return <RemoteBoardCursor signal={signal} />;
 }
 
 let loading: Promise<Loaded> | null = null;

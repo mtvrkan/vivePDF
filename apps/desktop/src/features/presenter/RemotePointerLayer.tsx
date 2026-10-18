@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useBoxSize } from "./useBoxSize";
 import { MousePointer2, Plus, TextCursor } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore } from "@/shared/store/presentationStore";
@@ -6,7 +7,7 @@ import { LiveStrokeCanvas } from "@/features/viewer/presentation/DrawingLayer";
 import { LaserTrail, type LaserPoint } from "@/features/viewer/presentation/LaserTrail";
 import { fromLivePoint, liveScale, type LiveSignal } from "@/features/viewer/presentation/liveSignal";
 import { MagnifierLens } from "@/features/viewer/presentation/MagnifierLens";
-import { ERASER_CURSOR_COLOR, eraserCursorArt, highlighterCursorArt, penCursorArt, TOOL_CURSOR_SIZE, type ToolCursorArt } from "@/features/viewer/presentation/toolCursor";
+import { eraserCursorArt, highlighterCursorArt, penCursorArt, TOOL_CURSOR_SIZE, type ToolCursorArt } from "@/features/viewer/presentation/toolCursor";
 import { pageRectAt, type PageRect } from "@/features/viewer/presentation/usePageRects";
 import type { PresentationTool } from "@/shared/store/presentationStore";
 
@@ -20,7 +21,7 @@ const FALLBACK_INK = "#E5484D";
 function inkArt(tool: PresentationTool, color: string): ToolCursorArt | null {
   if (tool === "pen") return penCursorArt(color);
   if (tool === "highlighter") return highlighterCursorArt(color);
-  if (tool === "eraser") return eraserCursorArt(ERASER_CURSOR_COLOR);
+  if (tool === "eraser") return eraserCursorArt(color);
   return null;
 }
 
@@ -136,6 +137,19 @@ export function RemotePointerLayer({ signal, rects }: { signal: LiveSignal | nul
       ) : null}
       {tool && !LENS_TOOLS.has(tool) && pointer ? <RemoteCursor tool={tool} x={pointer.x} y={pointer.y} scale={scale} color={signal?.cursorColor ?? FALLBACK_INK} /> : null}
       {tool === "magnifier" && pointer ? <MagnifierLens x={pointer.x} y={pointer.y} pageRect={pageRectAt(rects, pointer.x, pointer.y)} /> : null}
+    </div>
+  );
+}
+
+export function RemoteBoardCursor({ signal }: { signal: LiveSignal | null }) {
+  const boxRef = useRef<HTMLDivElement>(null);
+  const { width, height } = useBoxSize(boxRef);
+  const point = signal?.boardPointer;
+  const tool = signal?.tool;
+  const shown = point && tool && !LENS_TOOLS.has(tool) && width > 0 && point.width > 0;
+  return (
+    <div ref={boxRef} className="pointer-events-none absolute inset-0 z-50 overflow-hidden" data-remote-board-pointer="">
+      {shown ? <RemoteCursor tool={tool === "text" ? "pointer" : tool} x={point.x * width} y={point.y * height} scale={width / point.width} color={signal.cursorColor ?? FALLBACK_INK} /> : null}
     </div>
   );
 }

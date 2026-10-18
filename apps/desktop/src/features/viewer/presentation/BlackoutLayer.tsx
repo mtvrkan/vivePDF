@@ -23,7 +23,7 @@ import { duplicateDrawing } from "./drawingRotate";
 import { PlacementHint } from "./PlacementHint";
 import { boardPageSize } from "./measure";
 import { drawStroke, readableOnDark } from "./strokes";
-import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
+import { boardInk, eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 
 const HINT_VISIBLE_MS = 4000;
 const BOARD_TOOLS = new Set(["pen", "highlighter", "shape", "eraser"]);
@@ -421,7 +421,7 @@ function Board({ board, contained, hint, remote, controls }: { board: BoardMode;
   const groupBounds = groupIds.length > 1 && !marquee ? selectionBounds(shown, groupIds, size) : null;
   const frameRect = { pageIndex: LAST_PAGE, left: 0, top: 0, width: size.width, height: size.height };
   const selectCursor = placing ? "copy" : hoverMovable || groupMove ? "move" : "default";
-  const cursor = selecting ? selectCursor : tool === "shape" ? "crosshair" : tool === "pen" ? penCursor(strokeColor(board, pen.penColor)) : tool === "highlighter" ? highlighterCursor(strokeColor(board, pen.highlighterColor)) : tool === "eraser" ? eraserCursor(board === "black" ? "#f8fafc" : "#1f2937") : undefined;
+  const cursor = selecting ? selectCursor : tool === "shape" ? "crosshair" : tool === "pen" ? penCursor(boardInk(board, tool, pen)) : tool === "highlighter" ? highlighterCursor(boardInk(board, tool, pen)) : tool === "eraser" ? eraserCursor(boardInk(board, tool, pen)) : undefined;
   const showToolbar = controls && !placing && !editingItem;
 
   return (

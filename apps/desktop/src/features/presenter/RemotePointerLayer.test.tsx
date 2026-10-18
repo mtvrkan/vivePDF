@@ -2,7 +2,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import type { LiveSignal } from "@/features/viewer/presentation/liveSignal";
-import { RemotePointerLayer } from "./RemotePointerLayer";
+import { RemoteBoardCursor, RemotePointerLayer } from "./RemotePointerLayer";
 
 const RECTS = [{ pageIndex: 2, left: 160, top: 0, width: 1600, height: 900 }];
 
@@ -92,6 +92,42 @@ describe("RemotePointerLayer", () => {
   it("hides the mirrored cursor when the presenter leaves the slide", () => {
     render(<RemotePointerLayer signal={signal({ tool: "pen", pointer: null })} rects={RECTS} />);
 
+    expect(document.querySelector("[data-remote-cursor]")).toBeNull();
+  });
+});
+
+describe("RemoteBoardCursor", () => {
+  function sized(width: number, height: number) {
+    Object.defineProperty(HTMLElement.prototype, "clientWidth", { configurable: true, get: () => width });
+    Object.defineProperty(HTMLElement.prototype, "clientHeight", { configurable: true, get: () => height });
+  }
+
+  afterEach(() => {
+    Reflect.deleteProperty(HTMLElement.prototype, "clientWidth");
+    Reflect.deleteProperty(HTMLElement.prototype, "clientHeight");
+  });
+
+  it("puts the board pen on the same spot of the board, scaled to the bigger screen", () => {
+    sized(1920, 1080);
+    render(<RemoteBoardCursor signal={signal({ tool: "pen", pointer: null, cursorColor: "#ffffff", boardPointer: { x: 0.5, y: 0.5, width: 960 } })} />);
+
+    const pen = document.querySelector<HTMLImageElement>("img[data-remote-cursor='pen']") as HTMLImageElement;
+    expect([pen.style.left, pen.style.top, pen.style.width]).toEqual(["952px", "492px", "56px"]);
+  });
+
+  it("shows the board arrow for the text tool, as the board itself does", () => {
+    sized(1920, 1080);
+    render(<RemoteBoardCursor signal={signal({ tool: "text", boardPointer: { x: 0.2, y: 0.2, width: 960 } })} />);
+
+    expect(document.querySelector("[data-remote-cursor]")?.getAttribute("data-remote-cursor")).toBe("pointer");
+  });
+
+  it("shows nothing when the presenter is off the board or uses the laser", () => {
+    sized(1920, 1080);
+    const { rerender } = render(<RemoteBoardCursor signal={signal({ tool: "pen", boardPointer: null })} />);
+    expect(document.querySelector("[data-remote-cursor]")).toBeNull();
+
+    rerender(<RemoteBoardCursor signal={signal({ tool: "laser", boardPointer: { x: 0.5, y: 0.5, width: 960 } })} />);
     expect(document.querySelector("[data-remote-cursor]")).toBeNull();
   });
 });
