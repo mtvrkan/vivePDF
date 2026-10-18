@@ -203,6 +203,7 @@ describe("presentation", () => {
     const board = $('[data-presentation-board="black"]');
     await board.waitForDisplayed();
     await expect(board.$('[role="status"]')).toHaveText(t("presentation.boardHint"));
+    await board.$('[data-board-swatch="#F87171"]').click();
 
     await drawLine({ x: 300, y: 300 }, { x: 700, y: 360 });
     await browser.waitUntil(async () => (await redPixels(null)) > 300, { timeout: 10000, timeoutMsg: "the pen left no ink on the black screen" });

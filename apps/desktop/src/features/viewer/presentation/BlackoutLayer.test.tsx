@@ -1,8 +1,9 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
 import { useDocumentStore } from "@/shared/store/documentStore";
-import { usePresentationStore } from "@/shared/store/presentationStore";
+import { DEFAULT_BOARD_PENS, usePresentationStore, type PresentationTool } from "@/shared/store/presentationStore";
+import { axeViolations } from "@/test/axe";
 import { measureLabel } from "./measure";
 import { BlackoutLayer } from "./BlackoutLayer";
 
@@ -43,7 +44,7 @@ describe("BlackoutLayer", () => {
       act(() => usePresentationStore.getState().setBlackout("black"));
       render(<BlackoutLayer />);
       const hint = screen.getByRole("status");
-      expect(hint.textContent).toBe("Esc returns to the slides · P pen · H highlighter · E eraser");
+      expect(hint.textContent).toBe("Esc returns to the slides · P pen · H highlighter · E eraser · V select");
       expect(hint.className).toContain("opacity-100");
       act(() => vi.advanceTimersByTime(4000));
       expect(hint.className).toContain("opacity-0");
@@ -238,5 +239,236 @@ describe("BlackoutLayer inside the presenter console", () => {
     drag(board(), [[0, 100], [1000, 100]]);
 
     expect(measureLabel(usePresentationStore.getState().boardStrokes.white[0], "en")).toBe("21 cm");
+  });
+});
+
+function openBoard(mode: "black" | "white", tool: PresentationTool, controls = true) {
+  act(() => {
+    usePresentationStore.getState().setBlackout(mode);
+    usePresentationStore.getState().setTool(tool);
+  });
+  return render(<BlackoutLayer controls={controls} />);
+}
+
+function press(key: string, init: Partial<KeyboardEventInit> = {}) {
+  const code = /^[a-z]$/i.test(key) ? `Key${key.toUpperCase()}` : key === "[" ? "BracketLeft" : key === "]" ? "BracketRight" : key;
+  act(() => {
+    fireEvent.keyDown(window, { key, code, ...init });
+  });
+}
+
+function boardIds(mode: "black" | "white") {
+  return usePresentationStore.getState().boardStrokes[mode].map((stroke) => stroke.id);
+}
+
+function drawTwoLines() {
+  drag(board(), [
+    [100, 100],
+    [300, 100],
+  ]);
+  drag(board(), [
+    [100, 300],
+    [300, 300],
+  ]);
+}
+
+function selectionStatus() {
+  return screen.getByTestId("board-selection-status").textContent;
+}
+
+describe("board pen options", () => {
+  it("offers colours that suit each board and remembers the pick per board", () => {
+    openBoard("black", "pen");
+    expect(screen.getByRole("button", { name: "White" }).getAttribute("aria-pressed")).toBe("true");
+
+    fireEvent.click(screen.getByRole("button", { name: "Cyan" }));
+    drag(board(), [
+      [100, 100],
+      [200, 200],
+    ]);
+
+    const state = usePresentationStore.getState();
+    expect(state.boardPens.black.penColor).toBe("#22D3EE");
+    expect(state.boardPens.white.penColor).toBe(DEFAULT_BOARD_PENS.white.penColor);
+    expect(state.boardStrokes.black[0].color).toBe("#22D3EE");
+    expect(state.boardStrokes.black[0].width * 1000).toBeCloseTo(DEFAULT_BOARD_PENS.black.penWidth);
+    cleanup();
+
+    openBoard("white", "pen");
+    expect(screen.queryByRole("button", { name: "Cyan" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Blue" })).toBeTruthy();
+  });
+
+  it("sets the thickness from presets, the slider and the bracket keys", () => {
+    openBoard("white", "pen");
+
+    fireEvent.click(screen.getByRole("button", { name: "Thickness" }));
+    fireEvent.click(screen.getByRole("button", { name: "Size 16" }));
+    expect(usePresentationStore.getState().boardPens.white.penWidth).toBe(16);
+    fireEvent.change(screen.getByRole("slider", { name: "Thickness" }), { target: { value: "20" } });
+    expect(usePresentationStore.getState().boardPens.white.penWidth).toBe(20);
+    press("[");
+    expect(usePresentationStore.getState().boardPens.white.penWidth).toBe(16);
+    press("]");
+    expect(usePresentationStore.getState().boardPens.white.penWidth).toBe(16);
+    expect(usePresentationStore.getState().boardPens.black.penWidth).toBe(DEFAULT_BOARD_PENS.black.penWidth);
+  });
+
+  it("sizes the eraser and the highlighter colour separately from the pen", () => {
+    openBoard("black", "highlighter");
+    fireEvent.click(screen.getByRole("button", { name: "Pink" }));
+    act(() => usePresentationStore.getState().setTool("eraser"));
+    fireEvent.click(screen.getByRole("button", { name: "Eraser size" }));
+    fireEvent.click(screen.getByRole("button", { name: "Size 96" }));
+
+    expect(usePresentationStore.getState().boardPens.black).toMatchObject({ highlighterColor: "#F472B6", penColor: DEFAULT_BOARD_PENS.black.penColor, eraserSize: 96 });
+  });
+
+  it("styles shapes with the board pen", () => {
+    openBoard("white", "shape");
+
+    fireEvent.click(screen.getByRole("button", { name: "Red" }));
+    drag(board(), [
+      [100, 100],
+      [300, 200],
+    ]);
+
+    expect(usePresentationStore.getState().boardStrokes.white[0].color).toBe("#DC2626");
+  });
+
+  it("has no axe violations with the size panel open", async () => {
+    openBoard("black", "pen");
+    fireEvent.click(screen.getByRole("button", { name: "Thickness" }));
+    expect(await axeViolations(document.body)).toEqual([]);
+  });
+});
+
+describe("board selection", () => {
+  it("selects with a dragged rectangle and deletes in one undoable step", () => {
+    openBoard("white", "pen");
+    drawTwoLines();
+    const [first, second] = boardIds("white");
+
+    act(() => usePresentationStore.getState().setTool("select"));
+    drag(board(), [
+      [50, 50],
+      [350, 150],
+    ]);
+    expect(selectionStatus()).toBe("1 drawing selected");
+    expect(usePresentationStore.getState().selectedDrawing).toEqual({ surface: "white", id: first });
+
+    press("Delete");
+    expect(boardIds("white")).toEqual([second]);
+    press("z", { ctrlKey: true });
+    expect(boardIds("white")).toEqual([first, second]);
+    press("y", { ctrlKey: true });
+    expect(boardIds("white")).toEqual([second]);
+  });
+
+  it("adds drawings with Shift+click, drags them together and nudges them with the arrows", () => {
+    openBoard("black", "pen");
+    drawTwoLines();
+    act(() => usePresentationStore.getState().setTool("select"));
+
+    drag(board(), [[200, 100]]);
+    expect(selectionStatus()).toBe("1 drawing selected");
+    fireEvent.pointerDown(board(), { button: 0, pointerId: 1, clientX: 200, clientY: 300, shiftKey: true });
+    fireEvent.pointerUp(board(), { pointerId: 1 });
+    expect(selectionStatus()).toBe("2 drawings selected");
+    expect(usePresentationStore.getState().selectedDrawing).toBeNull();
+    expect(document.querySelector('[data-board-outline="selection"]')).not.toBeNull();
+
+    drag(board(), [
+      [200, 100],
+      [250, 150],
+    ]);
+    const moved = usePresentationStore.getState().boardStrokes.black;
+    expect(moved[0].points[0].x).toBeCloseTo(0.15);
+    expect(moved[0].points[0].y).toBeCloseTo(0.3);
+    expect(moved[1].points[0].y).toBeCloseTo(0.7);
+
+    press("ArrowRight");
+    expect(usePresentationStore.getState().boardStrokes.black[1].points[0].x).toBeCloseTo(0.16);
+    press("z", { ctrlKey: true });
+    press("z", { ctrlKey: true });
+    expect(usePresentationStore.getState().boardStrokes.black[1].points[0]).toEqual({ x: 0.1, y: 0.6 });
+  });
+
+  it("selects every drawing with Ctrl+A and Backspace deletes them", () => {
+    openBoard("white", "pen");
+    drawTwoLines();
+
+    press("a", { ctrlKey: true });
+    expect(usePresentationStore.getState().tool).toBe("select");
+    expect(selectionStatus()).toBe("2 drawings selected");
+    press("Backspace");
+
+    expect(boardIds("white")).toEqual([]);
+  });
+
+  it("keeps board undo from reaching the slide shortcuts", () => {
+    const outer = vi.fn();
+    window.addEventListener("keydown", outer);
+    try {
+      usePresentationStore.getState().addStroke(0, { id: "slide", tool: "pen", color: "#000000", width: 0.01, points: [{ x: 0.1, y: 0.1 }, { x: 0.2, y: 0.2 }] });
+      openBoard("black", "pen");
+      drawTwoLines();
+
+      press("z", { ctrlKey: true });
+
+      expect(outer).not.toHaveBeenCalled();
+      expect(boardIds("black")).toHaveLength(1);
+      expect(usePresentationStore.getState().strokesByPage[0]).toHaveLength(1);
+    } finally {
+      window.removeEventListener("keydown", outer);
+    }
+  });
+
+  it("asks before clearing the board and lets Ctrl+Z bring it back", async () => {
+    openBoard("black", "pen");
+    drawTwoLines();
+
+    fireEvent.click(screen.getByRole("button", { name: "Clear board" }));
+    const dialog = screen.getByRole("alertdialog", { name: "Clear this board?" });
+    expect(dialog.textContent).toContain("2 drawings on this board will be removed.");
+    expect(await axeViolations(document.body)).toEqual([]);
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(boardIds("black")).toHaveLength(2);
+
+    fireEvent.click(screen.getByRole("button", { name: "Clear board" }));
+    fireEvent.click(within(screen.getByRole("alertdialog")).getByRole("button", { name: "Clear board" }));
+    expect(boardIds("black")).toEqual([]);
+    press("z", { ctrlKey: true });
+    expect(boardIds("black")).toHaveLength(2);
+  });
+
+  it("returns to the slides from the toolbar", () => {
+    openBoard("white", "select");
+
+    fireEvent.click(screen.getByRole("button", { name: "Back to slides" }));
+
+    expect(usePresentationStore.getState().blackout).toBe("none");
+  });
+
+  it("shows no toolbar and takes no board keys on the audience screen", () => {
+    usePresentationStore.getState().addBoardStroke("white", { id: "a", tool: "pen", color: "#000000", width: 0.01, points: [{ x: 0.1, y: 0.1 }, { x: 0.2, y: 0.2 }] });
+    openBoard("white", "pen", false);
+
+    press("z", { ctrlKey: true });
+
+    expect(document.querySelector("[data-board-toolbar]")).toBeNull();
+    expect(screen.queryByTestId("board-selection-status")).toBeNull();
+    expect(boardIds("white")).toEqual(["a"]);
+  });
+
+  it("leaves Escape and keys typed while a dialog is open to the dialog", () => {
+    openBoard("black", "pen");
+    drawTwoLines();
+    fireEvent.click(screen.getByRole("button", { name: "Clear board" }));
+
+    press("z", { ctrlKey: true });
+
+    expect(boardIds("black")).toHaveLength(2);
+    expect(screen.getByRole("alertdialog")).toBeTruthy();
   });
 });
