@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -12,7 +12,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { basenameOf } from "@/shared/lib/paths";
 import { revealPath, RevealError } from "@/shared/lib/reveal";
 import { toRpcError } from "@/shared/rpc/client";
-import { dropTabsOnWindow } from "@/shared/rpc/files";
+import { dropTabsOnWindow, reportTabDrag } from "@/shared/rpc/files";
 import { isMainWindow } from "@/shared/lib/windowRole";
 import { insertPagesFrom } from "@/shared/rpc/operations";
 import { PAGE_DRAG_TYPE } from "./ThumbnailSidebar";
@@ -20,6 +20,7 @@ import { useOpenPdf } from "./useOpenPdf";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useDocumentWindow } from "./useDocumentWindow";
 import { isOutsideViewport, useTabTearOff } from "./tabTearOff";
+import { createDragHover, useRemoteDropLine } from "./tabDrop";
 import { openBeside } from "./split/splitTargets";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { usePageDropTargetStore } from "@/shared/store/pageDropTargetStore";
@@ -38,6 +39,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
   const order = useDocumentStore((state) => state.order);
   const documents = inTabOrder(useOpenDocuments().filter((doc) => registered[doc.id]), order);
   const stripRef = useRef<HTMLDivElement>(null);
+  const tabHover = useMemo(() => createDragHover(reportTabDrag), []);
   const groups = useTabGroupStore((state) => state.groups);
   const memberOf = useTabGroupStore((state) => state.memberOf);
   const groupMenu = useContextMenu();
@@ -151,6 +153,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
     onPointerMove: (event: ReactPointerEvent<HTMLButtonElement>) => {
       if (!groupDrag || groupDrag.groupId !== group.id) return;
       if (!groupDrag.moved && Math.abs(event.clientX - groupDrag.startX) < 5) return;
+      tabHover.move(isOutsideViewport(event.clientX, event.clientY, window.innerWidth, window.innerHeight));
       const strip = stripRef.current;
       const over = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>("[data-tab-id]");
       if (!strip || !over || !strip.contains(over) || memberOf[over.dataset.tabId ?? ""] === group.id) {
@@ -165,6 +168,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
     },
     onPointerUp: (event: ReactPointerEvent<HTMLButtonElement>) => {
       if (!groupDrag) return;
+      tabHover.end();
       if (groupDrag.moved) {
         skipChipClick.current = true;
         if (isOutsideViewport(event.clientX, event.clientY, window.innerWidth, window.innerHeight)) {
@@ -173,7 +177,10 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
       }
       setGroupDrag(null);
     },
-    onPointerCancel: () => setGroupDrag(null),
+    onPointerCancel: () => {
+      tabHover.end();
+      setGroupDrag(null);
+    },
   });
 
   const toggleGroup = (group: TabGroup) => {
@@ -185,7 +192,8 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
 
   const pageDropTarget = usePageDropTargetStore((state) => state.documentId);
   const chipped = new Set<string>();
-  const tearOff = useTabTearOff((id) => void moveToWindow(id, true), { strip: () => stripRef.current, onReorder: reorderTo });
+  const tearOff = useTabTearOff((id) => void moveToWindow(id, true), { strip: () => stripRef.current, onReorder: reorderTo }, tabHover);
+  const remoteLine = useRemoteDropLine(() => stripRef.current);
 
   const dropPage = async (targetId: string, payload: string) => {
     let parsed: { documentId: string; page: number } | null = null;
@@ -217,6 +225,9 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
       <div ref={stripRef} role="tablist" data-document-tabs aria-label={t("viewer.tabs")} className="relative flex items-stretch">
       {groupDrag?.targetId ? (
         <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: groupDrag.markX }} />
+      ) : null}
+      {remoteLine !== null ? (
+        <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: remoteLine }} />
       ) : null}
       {tearOff.dropMark ? (
         <span aria-hidden className="pointer-events-none absolute inset-y-1 z-10 w-0.5 -translate-x-1/2 rounded-full bg-primary" style={{ left: tearOff.dropMark.x }} />

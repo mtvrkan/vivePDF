@@ -2,7 +2,7 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import type { TabDropEvent } from "@/types";
-import { dropPoint, placeDroppedTabs, tabBefore, useTabDropListener } from "./tabDrop";
+import { createDragHover, dropLineAt, dropPoint, placeDroppedTabs, tabBefore, useTabDropListener } from "./tabDrop";
 import { useTabGroupStore } from "./tabGroups";
 
 let dropHandler: ((event: { payload: TabDropEvent }) => void) | null = null;
@@ -110,5 +110,50 @@ describe("useTabDropListener", () => {
     expect(useTabGroupStore.getState().groups[0]).toMatchObject({ name: "Moved", color: "blue" });
     unmount();
     await waitFor(() => expect(stopListening).toHaveBeenCalledOnce());
+  });
+});
+
+describe("createDragHover", () => {
+  it("reports the drag outside at most every interval and once when it comes back", () => {
+    const send = vi.fn();
+    let time = 0;
+    const hover = createDragHover(send, () => time);
+
+    hover.move(false);
+    hover.move(true);
+    time = 10;
+    hover.move(true);
+    time = 40;
+    hover.move(true);
+    hover.move(false);
+    hover.move(false);
+
+    expect(send.mock.calls).toEqual([[true], [true], [false]]);
+  });
+
+  it("ends a drag outside with one leave and ignores an end inside", () => {
+    const send = vi.fn();
+    const hover = createDragHover(send, () => 0);
+
+    hover.end();
+    hover.move(true);
+    hover.end();
+    hover.end();
+
+    expect(send.mock.calls).toEqual([[true], [false]]);
+  });
+});
+
+describe("dropLineAt", () => {
+  it("draws the line at the left edge of the tab it lands before, or after the last tab", () => {
+    const tabs = strip([{ id: "a", left: 0 }, { id: "b", left: 100 }]);
+
+    expect(dropLineAt(tabs, 120, 18)).toBe(100);
+    expect(dropLineAt(tabs, 190, 18)).toBe(200);
+  });
+
+  it("draws nothing away from the strip", () => {
+    expect(dropLineAt(strip([{ id: "a", left: 0 }]), 10, 300)).toBeNull();
+    expect(dropLineAt(null, 10, 10)).toBeNull();
   });
 });

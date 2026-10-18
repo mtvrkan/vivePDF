@@ -27,6 +27,7 @@ pub struct DocumentWindows {
     claims: Mutex<HashMap<String, String>>,
     focused: Mutex<HashMap<String, u64>>,
     focus_count: AtomicU64,
+    hovered: Mutex<Option<String>>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -58,14 +59,20 @@ pub struct DroppedGroup {
     collapsed: bool,
 }
 
-#[derive(Clone, serde::Serialize)]
-#[serde(rename_all = "camelCase")]
-struct TabDrop {
-    paths: Vec<String>,
+#[derive(Clone, Copy, Debug, PartialEq, serde::Serialize)]
+struct DropArea {
     x: f64,
     y: f64,
     width: f64,
     height: f64,
+}
+
+#[derive(Clone, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct TabDrop {
+    paths: Vec<String>,
+    #[serde(flatten)]
+    area: DropArea,
     group: Option<DroppedGroup>,
 }
 
@@ -161,6 +168,16 @@ impl DocumentWindows {
 
     fn focused_at(&self, label: &str) -> u64 {
         self.focus_entries().get(label).copied().unwrap_or_default()
+    }
+
+    fn hover(&self, next: Option<&str>) -> Option<String> {
+        let mut hovered = self
+            .hovered
+            .lock()
+            .unwrap_or_else(|poisoned| poisoned.into_inner());
+        let previous = hovered.take();
+        *hovered = next.map(str::to_string);
+        previous.filter(|label| Some(label.as_str()) != next)
     }
 }
 
@@ -374,6 +391,55 @@ pub fn tab_drop<R: Runtime>(
     if paths.is_empty() {
         return Ok(None);
     }
+    leave_hovered(&app, None);
+    let Some((holder, area)) = window_under_cursor(&app, window.label())? else {
+        return Ok(None);
+    };
+    let label = holder.label().to_string();
+    app.state::<DocumentWindows>()
+        .hand_over(window.label(), &label, &paths);
+    bring_forward(&holder);
+    let _ = app.emit_to(
+        label.as_str(),
+        "tab-drop",
+        TabDrop {
+            paths,
+            area,
+            group: trimmed_group(group),
+        },
+    );
+    Ok(Some(label))
+}
+
+#[tauri::command]
+pub fn tab_drag_over<R: Runtime>(
+    app: AppHandle<R>,
+    window: WebviewWindow<R>,
+    active: bool,
+) -> Result<(), RpcError> {
+    if !active {
+        leave_hovered(&app, None);
+        return Ok(());
+    }
+    let hit = window_under_cursor(&app, window.label())?;
+    let label = hit.as_ref().map(|(holder, _)| holder.label().to_string());
+    leave_hovered(&app, label.as_deref());
+    if let Some((holder, area)) = hit {
+        let _ = app.emit_to(holder.label(), "tab-drag-over", area);
+    }
+    Ok(())
+}
+
+fn leave_hovered<R: Runtime>(app: &AppHandle<R>, next: Option<&str>) {
+    if let Some(previous) = app.state::<DocumentWindows>().hover(next) {
+        let _ = app.emit_to(previous.as_str(), "tab-drag-leave", ());
+    }
+}
+
+fn window_under_cursor<R: Runtime>(
+    app: &AppHandle<R>,
+    source: &str,
+) -> Result<Option<(WebviewWindow<R>, DropArea)>, RpcError> {
     let cursor = app
         .cursor_position()
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?;
@@ -383,28 +449,20 @@ pub fn tab_drop<R: Runtime>(
         .values()
         .filter_map(|entry| candidate_of(entry, windows.focused_at(entry.label())))
         .collect();
-    let Some(target) = pick_target(cursor.x, cursor.y, window.label(), &candidates) else {
+    let Some(target) = pick_target(cursor.x, cursor.y, source, &candidates) else {
         return Ok(None);
     };
     let Some(holder) = app.get_webview_window(&target.label) else {
         return Ok(None);
     };
     let scale = holder.scale_factor().unwrap_or(1.0);
-    windows.hand_over(window.label(), &target.label, &paths);
-    bring_forward(&holder);
-    let _ = app.emit_to(
-        target.label.as_str(),
-        "tab-drop",
-        TabDrop {
-            paths,
-            x: (cursor.x - target.bounds.x) / scale,
-            y: (cursor.y - target.bounds.y) / scale,
-            width: target.bounds.width / scale,
-            height: target.bounds.height / scale,
-            group: trimmed_group(group),
-        },
-    );
-    Ok(Some(target.label.clone()))
+    let area = DropArea {
+        x: (cursor.x - target.bounds.x) / scale,
+        y: (cursor.y - target.bounds.y) / scale,
+        width: target.bounds.width / scale,
+        height: target.bounds.height / scale,
+    };
+    Ok(Some((holder, area)))
 }
 
 #[tauri::command]
@@ -710,5 +768,15 @@ mod tests {
     fn a_screen_smaller_than_the_window_shrinks_it_to_fit() {
         let placed = placed_at_cursor(400.0, 300.0, work(0.0, 0.0, 1024.0, 700.0));
         assert_eq!(placed, work(0.0, 0.0, 1024.0, 700.0));
+    }
+
+    #[test]
+    fn hovering_names_the_window_to_clear_only_when_the_target_changes() {
+        let windows = DocumentWindows::default();
+        assert_eq!(windows.hover(Some("main")), None);
+        assert_eq!(windows.hover(Some("main")), None);
+        assert_eq!(windows.hover(Some("doc-a")), Some("main".to_string()));
+        assert_eq!(windows.hover(None), Some("doc-a".to_string()));
+        assert_eq!(windows.hover(None), None);
     }
 }

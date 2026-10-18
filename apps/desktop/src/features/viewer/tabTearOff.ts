@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
+import type { DragHover } from "./tabDrop";
 
 export const TEAR_OFF_DISTANCE = 8;
 
@@ -31,7 +32,7 @@ function dropMark(strip: HTMLElement, tab: HTMLElement, clientX: number): DropMa
   return { index, x: edge - origin };
 }
 
-export function useTabTearOff(onTearOff: (id: string) => void, reorder?: Reorder) {
+export function useTabTearOff(onTearOff: (id: string) => void, reorder?: Reorder, hover?: DragHover) {
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [mark, setMark] = useState<DropMark | null>(null);
   const draggedRef = useRef(false);
@@ -39,6 +40,8 @@ export function useTabTearOff(onTearOff: (id: string) => void, reorder?: Reorder
   tearOffRef.current = onTearOff;
   const reorderRef = useRef(reorder);
   reorderRef.current = reorder;
+  const hoverRef = useRef(hover);
+  hoverRef.current = hover;
 
   const onPointerDown = useCallback((id: string, event: ReactPointerEvent<HTMLElement>) => {
     if (event.button !== 0 || !event.isPrimary) return;
@@ -66,6 +69,7 @@ export function useTabTearOff(onTearOff: (id: string) => void, reorder?: Reorder
         setDraggingId(id);
       }
       setMark(markAt(move));
+      hoverRef.current?.move(isOutsideViewport(move.clientX, move.clientY, window.innerWidth, window.innerHeight));
     };
     const finish = (end: PointerEvent, cancelled: boolean) => {
       if (finished) return;
@@ -77,6 +81,7 @@ export function useTabTearOff(onTearOff: (id: string) => void, reorder?: Reorder
       if (tab.hasPointerCapture(pointerId)) tab.releasePointerCapture(pointerId);
       setDraggingId(null);
       setMark(null);
+      hoverRef.current?.end();
       if (!moved) return;
       draggedRef.current = true;
       if (cancelled) return;

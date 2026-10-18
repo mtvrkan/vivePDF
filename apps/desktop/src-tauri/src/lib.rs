@@ -140,6 +140,7 @@ pub fn run() {
             launch::launch_request,
             document_windows::window_open,
             document_windows::tab_drop,
+            document_windows::tab_drag_over,
             document_windows::document_claim,
             document_windows::document_claims_sync,
             desktop_links::send_to_supported,

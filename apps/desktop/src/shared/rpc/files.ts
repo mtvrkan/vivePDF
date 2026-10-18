@@ -122,6 +122,10 @@ export async function dropTabsOnWindow(paths: string[], group: DroppedTabGroup |
   }
 }
 
+export function reportTabDrag(active: boolean): void {
+  void invoke("tab_drag_over", { active }).catch(() => undefined);
+}
+
 export async function claimDocument(path: string): Promise<string | null> {
   try {
     return await invoke<string | null>("document_claim", { path });

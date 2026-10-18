@@ -11,6 +11,8 @@ const closeDocument = vi.fn((id: string) => useDocumentStore.getState().remove(i
 const openWindow = vi.fn();
 const dropTabsOnWindow = vi.fn();
 const closeWindow = vi.fn();
+const reportTabDrag = vi.fn();
+const remoteHandlers = new Map<string, (event: { payload: unknown }) => void>();
 let mainWindow = true;
 let activeDocumentId = "a";
 
@@ -28,6 +30,15 @@ vi.mock("./useDocumentWindow", () => ({ useDocumentWindow: () => openWindow }));
 vi.mock("@/shared/rpc/files", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@/shared/rpc/files")>()),
   dropTabsOnWindow: (...args: unknown[]) => dropTabsOnWindow(...args),
+  reportTabDrag: (...args: unknown[]) => reportTabDrag(...args),
+}));
+vi.mock("@tauri-apps/api/webviewWindow", () => ({
+  getCurrentWebviewWindow: () => ({
+    listen: (name: string, handler: (event: { payload: unknown }) => void) => {
+      remoteHandlers.set(name, handler);
+      return Promise.resolve(() => remoteHandlers.delete(name));
+    },
+  }),
 }));
 vi.mock("@/shared/lib/windowRole", () => ({ isMainWindow: () => mainWindow }));
 vi.mock("@tauri-apps/api/window", () => ({ getCurrentWindow: () => ({ close: closeWindow }) }));
@@ -44,6 +55,8 @@ beforeEach(() => {
   openWindow.mockReset();
   dropTabsOnWindow.mockReset();
   closeWindow.mockReset();
+  reportTabDrag.mockReset();
+  remoteHandlers.clear();
   mainWindow = true;
   activeDocumentId = "a";
   useDocumentStore.setState({ documents: {}, order: [], activeId: null });
@@ -155,6 +168,39 @@ describe("DocumentTabs moving tabs between windows", () => {
 
     expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], true);
     expect(closeDocument).toHaveBeenCalledTimes(1);
+  });
+
+  it("tells the shell while a tab is dragged outside the window and stops when it is dropped", async () => {
+    dropTabsOnWindow.mockResolvedValue("doc-1");
+    render(<DocumentTabs />);
+    const tab = screen.getAllByRole("tab")[1];
+
+    fireEvent.pointerDown(tab, { button: 0, isPrimary: true, pointerId: 1, clientX: 50, clientY: 10 });
+    pointer(tab, "pointermove", 60, 40);
+    const inside = reportTabDrag.mock.calls.length;
+    pointer(tab, "pointermove", 1400, 300);
+    pointer(tab, "pointerup", 1400, 300);
+
+    await waitFor(() => expect(closeDocument).toHaveBeenCalledWith("b"));
+    expect(inside).toBe(0);
+    expect(reportTabDrag.mock.calls).toEqual([[true], [false]]);
+  });
+
+  it("shows where a tab dragged from another window would land and clears it when the drag leaves", () => {
+    render(<DocumentTabs />);
+    const strip = screen.getByRole("tablist");
+    strip.getBoundingClientRect = () => ({ left: 0, top: 0, right: 600, bottom: 36, width: 600, height: 36, x: 0, y: 0, toJSON: () => ({}) }) as DOMRect;
+    screen.getAllByRole("tab").forEach((tab, index) => {
+      tab.getBoundingClientRect = () => ({ left: index * 100, top: 0, right: index * 100 + 100, bottom: 36, width: 100, height: 36, x: index * 100, y: 0, toJSON: () => ({}) }) as DOMRect;
+    });
+    Object.assign(window, { innerWidth: 1000, innerHeight: 700 });
+
+    act(() => remoteHandlers.get("tab-drag-over")?.({ payload: { x: 160, y: 18, width: 1000, height: 700 } }));
+    const shown = strip.querySelector<HTMLElement>("span[aria-hidden].bg-primary")?.style.left;
+    act(() => remoteHandlers.get("tab-drag-leave")?.({ payload: null }));
+
+    expect(shown).toBe("200px");
+    expect(strip.querySelector("span[aria-hidden].bg-primary")).toBeNull();
   });
 
   it("moves a tab from its menu into a centred new window without looking for a drop target", async () => {
