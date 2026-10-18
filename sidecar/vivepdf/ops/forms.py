@@ -134,6 +134,13 @@ def _radio_states(widgets: list[pymupdf.Widget]) -> list[str]:
     return states
 
 
+def field_kind(widgets: list[pymupdf.Widget]) -> str:
+    kind = _kind(widgets[0])
+    if kind == "checkbox" and len(_radio_states(widgets)) > 1:
+        return "radio"
+    return kind
+
+
 def _radio_labels(document: pymupdf.Document, widgets: list[pymupdf.Widget]) -> list[str]:
     from vivepdf.ops._pdf_syntax import parse_value
 
@@ -187,7 +194,7 @@ def describe_field(
     document: pymupdf.Document, name: str, widgets: list[pymupdf.Widget], page: int
 ) -> FormField:
     first = widgets[0]
-    kind = _kind(first)
+    kind = field_kind(widgets)
     options: list[str] = []
     labels: list[str] = []
     value = _field_value(first)
@@ -440,7 +447,7 @@ def fill_field(
     report: FillReport,
 ) -> bool:
     first = widgets[0]
-    kind = _kind(first)
+    kind = field_kind(widgets)
     name = str(first.field_name)
     if kind in UNFILLABLE or first.field_flags & pymupdf.PDF_FIELD_IS_READ_ONLY:
         return False

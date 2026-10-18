@@ -15,10 +15,10 @@ from vivepdf.ops._document import open_document
 from vivepdf.ops._edit_removal import EditedArea, remove_edited_text
 from vivepdf.ops._figure_tag import MAX_ALT_CHARS, is_tagged, tag_placed_figure
 from vivepdf.ops._font_unicode import subset_fonts
-from vivepdf.ops._image_files import image_file_bytes, insert_image_file
+from vivepdf.ops._image_files import image_file_bytes, insert_image_file, picture_unreadable
 from vivepdf.ops._inplace import finish
 from vivepdf.ops._output import OutputResult
-from vivepdf.ops._placement import insertion_matrix, unrotated_insertion_matrix
+from vivepdf.ops._placement import insertion_matrix, unrotated_insertion_matrix, write_text_on
 from vivepdf.ops._redaction import clip_to_own_text, inset, text_boxes
 from vivepdf.ops._scanned_text import erase_scanned_words, only_hidden_text, paper_colour
 from vivepdf.ops._scratch import place_scratch_page
@@ -43,7 +43,7 @@ from vivepdf.ops.fonts import (
     resolve_font,
     uncovered_glyphs,
 )
-from vivepdf.ops.textedit import TextEdit, _insert_edit
+from vivepdf.ops.textedit import TextEdit, _insert_edit, text_rotation
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.paths import InPlacePath, ReadPath, WritePath
 from vivepdf.rpc.progress import Progress
@@ -441,12 +441,17 @@ def _insert_tagged_image(page: pymupdf.Page, item: EditorImage, stream: bytes | 
 
 
 def _insert_image(page: pymupdf.Page, item: EditorImage) -> None:
-    stream = _image_stream(item)
-    if is_tagged(page.parent):
-        _insert_tagged_image(page, item, stream)
-        return
-    rect = _visible_rect(page, item) * unrotated_insertion_matrix(page)
-    _draw_image(page, rect, item, stream, page.rotation)
+    try:
+        stream = _image_stream(item)
+        if is_tagged(page.parent):
+            _insert_tagged_image(page, item, stream)
+            return
+        rect = _visible_rect(page, item) * unrotated_insertion_matrix(page)
+        _draw_image(page, rect, item, stream, page.rotation)
+    except FileNotFoundError:
+        raise
+    except (pymupdf.mupdf.FzErrorBase, RuntimeError, ValueError, OSError) as error:
+        raise picture_unreadable(item.path or "image") from error
 
 
 def _insert_drawing(page: pymupdf.Page, item: EditorDrawing) -> None:
@@ -818,7 +823,7 @@ def _write_lines(
             writer.append((cursor, y), atom.text, font=font_obj, fontsize=size)
             cursor += font_obj.text_length(atom.text, fontsize=size)
     for color, writer in writers.items():
-        writer.write_text(page, color=_rgb(color), opacity=item.opacity)
+        write_text_on(page, writer, color=_rgb(color), opacity=item.opacity)
 
 
 def _insert_block(
@@ -1090,7 +1095,14 @@ def _redact_edits(document: pymupdf.Document, edits: list[EditorReplace | Editor
         remove_edited_text(document[index], edited)
 
 
-def _insert_replacement(page: pymupdf.Page, item: EditorReplace) -> None:
+def _replacement_rotation(page: pymupdf.Page, item: EditorReplace) -> int:
+    rect = _visible_rect(page, item)
+    if not page.get_text("words", clip=rect):
+        return page.rotation
+    return text_rotation(page, [rect.x0, rect.y0, rect.x1, rect.y1])
+
+
+def _insert_replacement(page: pymupdf.Page, item: EditorReplace, rotation: int) -> None:
     if not item.text.strip():
         return
     rect = _visible_rect(page, item)
@@ -1106,6 +1118,7 @@ def _insert_replacement(page: pymupdf.Page, item: EditorReplace) -> None:
             font=item.font,
             opacity=item.opacity,
         ),
+        rotation,
     )
 
 
@@ -1129,6 +1142,11 @@ def apply(params: EditorApplyParams, progress: Progress) -> EditorApplyResult:
             if item.kind == "imageChange" and item.new_x0 is not None:
                 _replacement_bytes(item)
         objects, foreign = _adopt_foreign_fonts(params.path, params.objects, warnings)
+        rotations = {
+            id(item): _replacement_rotation(document[item.page - 1], item)
+            for item in objects
+            if item.kind == "edit"
+        }
         _redact_edits(document, [item for item in objects if item.kind in ("edit", "block")])
         for index, item in enumerate(objects):
             progress.check_cancelled()
@@ -1137,7 +1155,7 @@ def apply(params: EditorApplyParams, progress: Progress) -> EditorApplyResult:
             if item.kind == "text":
                 _insert_text(document, page, item, object_id, warnings, foreign)
             elif item.kind == "edit":
-                _insert_replacement(page, item)
+                _insert_replacement(page, item, rotations[id(item)])
             elif item.kind == "block":
                 _insert_block(document, page, item, object_id, warnings)
             elif item.kind == "imageChange":

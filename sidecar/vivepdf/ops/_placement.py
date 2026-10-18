@@ -15,6 +15,35 @@ def unrotated_insertion_matrix(page: pymupdf.Page) -> pymupdf.Matrix:
     return page.rotation_matrix * insertion_matrix(page)
 
 
+def text_to_pdf_matrix(page: pymupdf.Page) -> pymupdf.Matrix:
+    crop, media = page.cropbox, page.mediabox
+    return pymupdf.Matrix(1, 0, 0, -1, max(crop.x0, media.x0), min(media.y1 - crop.y0, media.y1))
+
+
+def write_text_on(
+    page: pymupdf.Page,
+    writer: pymupdf.TextWriter,
+    morph: tuple[pymupdf.Point, pymupdf.Matrix] | None = None,
+    **options: object,
+) -> None:
+    to_pdf = text_to_pdf_matrix(page)
+    start = page.cropbox_position
+    turned = page.rect.height - page.rect.width if page.rotation in (90, 270) else 0
+    shift = pymupdf.Matrix(
+        1,
+        0,
+        0,
+        1,
+        to_pdf.e - start.x,
+        to_pdf.f - page.rect.height - start.y - page.mediabox.y0 + turned,
+    )
+    if morph is not None:
+        pivot = morph[0] * writer.ictm
+        about = pymupdf.Matrix(1, 1).pretranslate(pivot.x, pivot.y)
+        shift = ~about * morph[1] * about * shift
+    writer.write_text(page, matrix=shift, **options)
+
+
 def drop_unplaceable_annotations(page: pymupdf.Page) -> int:
     doomed = [annot for annot in page.annots() if annot.rect.is_infinite or annot.rect.is_empty]
     for annot in doomed:

@@ -7,6 +7,7 @@ from vivepdf.ops._content import (
     join_streams,
 )
 from vivepdf.ops._original_fonts import FontCodes, PageFonts, pen_offsets
+from vivepdf.ops._placement import text_to_pdf_matrix, write_text_on
 from vivepdf.ops._text_order import place_in_order
 from vivepdf.ops._to_unicode import cmap_entries, cmap_stream
 from vivepdf.ops.fonts import (
@@ -97,7 +98,7 @@ def _write_span(page: pymupdf.Page, entry: dict) -> bool:
         if span["angle"]
         else None
     )
-    writer.write_text(page, color=span["color"], morph=morph)
+    write_text_on(page, writer, morph=morph, color=span["color"])
     return True
 
 
@@ -118,7 +119,7 @@ def _original_chunk(
     )
     if vertical and offsets is None:
         return None
-    to_pdf = ~page.transformation_matrix
+    to_pdf = text_to_pdf_matrix(page)
     radians = math.radians(span["angle"] + (VERTICAL_TURN if vertical else 0))
     direction = pymupdf.Point(math.cos(radians), -math.sin(radians))
     colour = " ".join(_pdf_number(value) for value in span["color"])

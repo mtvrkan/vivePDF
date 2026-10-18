@@ -147,7 +147,8 @@ class _Mark:
 
 @op("security.watermark", WatermarkParams)
 def watermark(params: WatermarkParams, progress: Progress) -> OutputResult:
-    target = prepare_output(params.output, [params.path], params.overwrite)
+    sources = [path for path in (params.path, params.template_path, params.image_path) if path]
+    target = prepare_output(params.output, sources, params.overwrite)
     _validate_mark(params)
     mark = _Mark(params)
     try:

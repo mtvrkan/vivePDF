@@ -189,6 +189,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - In Edit › Text edit change two spans on page 5 of one PDF, then pick another PDF: the edit
   list is empty and the new file opens on page 1. Start a signature check with the online check
   on and pick another file while it runs: the panel stays empty for the new file.
+- Open a form whose Yes/No boxes share one field name (many government forms): ticking Yes in
+  the viewer or in Tools › Forms leaves No empty, and the saved file shows only Yes. On a scanned
+  page turned 90° with a cropped margin, Edit › Text and Remove watermark keep the text where it
+  was and upright.
 
 ### How native dialogs are answered
 

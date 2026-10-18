@@ -1,6 +1,7 @@
 from vivepdf.ops._document import open_document
 from vivepdf.ops._inplace import finish
 from vivepdf.ops._output import OutputResult
+from vivepdf.ops._xmp_sync import sync_xmp
 from vivepdf.rpc.paths import InPlacePath, WritePath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
@@ -37,6 +38,8 @@ def set_metadata(params: SetMetadataParams, progress: Progress) -> SetMetadataRe
             if value is not None:
                 current[key] = value.strip()
         document.set_metadata(current)
+        edited = {key: current[key] for key in EDITABLE if getattr(params, key) is not None}
+        sync_xmp(document, edited)
         progress.report(0.9, "progress.saving")
         saved = finish(document, params.path, params.output, params.in_place, params.overwrite)
         return SetMetadataResult(

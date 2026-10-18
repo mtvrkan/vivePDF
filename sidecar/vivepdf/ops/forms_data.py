@@ -19,6 +19,7 @@ from vivepdf.ops.forms import (
     FIELD_TYPES,
     FillReport,
     close_form,
+    field_kind,
     fill_field,
     form_widgets,
     open_form,
@@ -69,15 +70,28 @@ class FormDataImportResult(RpcModel):
     calc_skipped: int = 0
 
 
+def _field_kinds(document: pymupdf.Document) -> dict[str, str]:
+    _pages, groups = form_widgets(document)
+    return {name: field_kind(widgets) for name, widgets in groups.items()}
+
+
+def _checked_state(document: pymupdf.Document, widget: pymupdf.Widget) -> str:
+    kind, value = document.xref_get_key(widget.xref, "AS")
+    return str(widget.on_state()) if kind == "name" and value not in ("/Off", "") else "Off"
+
+
 def _collect_values(document: pymupdf.Document) -> dict[str, str | list[str]]:
     values: dict[str, str | list[str]] = {}
+    kinds = _field_kinds(document)
     for page in document:
         for widget in page.widgets():
             name = widget.field_name
-            kind = FIELD_TYPES.get(widget.field_type, "other")
+            kind = kinds.get(name, FIELD_TYPES.get(widget.field_type, "other"))
             if not name or kind not in FILLABLE:
                 continue
             raw = widget.field_value
+            if kind == "radio" and widget.field_type == pymupdf.PDF_WIDGET_TYPE_CHECKBOX:
+                raw = _checked_state(document, widget)
             if is_multi_select(widget):
                 values[name] = selected_options(document, widget)
                 continue
@@ -156,17 +170,13 @@ def export_data(params: FormDataExportParams, progress: Progress) -> FormDataExp
             for widget in page.widgets()
             if FIELD_TYPES.get(widget.field_type) in ("checkbox", "radio")
         }
-        radios = {
-            widget.field_name
-            for page in document
-            for widget in page.widgets()
-            if FIELD_TYPES.get(widget.field_type) == "radio"
-        }
+        kinds = _field_kinds(document)
+        radios = {name for name, kind in kinds.items() if kind == "radio"}
         on_states = {
             widget.field_name: str(widget.on_state() or "Yes")
             for page in document
             for widget in page.widgets()
-            if FIELD_TYPES.get(widget.field_type) == "checkbox"
+            if kinds.get(widget.field_name) == "checkbox"
         }
     for name, value in (params.values or {}).items():
         if name not in values:
@@ -288,8 +298,9 @@ def _read_fdf(data: bytes) -> dict[str, Any]:
     return values
 
 
-def _coerce(widget: pymupdf.Widget, value: Any) -> Any:
-    kind = FIELD_TYPES.get(widget.field_type, "other")
+def _coerce(widgets: list[pymupdf.Widget], value: Any) -> Any:
+    widget = widgets[0]
+    kind = field_kind(widgets)
     if isinstance(value, list):
         if is_multi_select(widget):
             return [str(item) for item in value]
@@ -341,7 +352,7 @@ def import_data(params: FormDataImportParams, progress: Progress) -> FormDataImp
         for position, name in enumerate(matched):
             progress.check_cancelled()
             widgets = groups[name]
-            if fill_field(widgets, _coerce(widgets[0], values[name]), appearance, report):
+            if fill_field(widgets, _coerce(widgets, values[name]), appearance, report):
                 filled += 1
             progress.report((position + 1) / len(matched), "progress.filling")
         calculation = recalculate(document, appearance, params.language)

@@ -25,6 +25,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - While the black or white board is shown, the presentation bar and the presenter console leave the drawing tools, area zoom, zoom buttons and page clearing to the board's own toolbar instead of showing them twice; they come back on the slides [2026-10-18]
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed
+- Check boxes that share one field name but stand for different answers (such as Yes and No) are filled, read and exported as one choice instead of all being ticked together [2026-10-18]
+- Editing a document's title, author, subject, keywords, creator or producer also updates its XMP metadata, so other viewers show the new values and PDF/A files stay valid [2026-10-18]
+- Styled text and text blocks added in the editor, and text put back by Remove watermark, land where they belong on pages with a shifted crop box; replaced text on pages turned 90° or 270° keeps its direction instead of coming out sideways [2026-10-18]
+- A broken picture placed in the editor is reported as an unreadable image instead of a damaged document, and a watermark can no longer be saved over its own template or picture [2026-10-18]
 - Dropping a PDF on the window works again after leaving Forms › Export, Scan › Photo or OMR › Grade; those tabs no longer leave a drop handler of the closed page behind [2026-10-18]
 - Text edit forgets the changed spans and the page when another PDF is picked, so Apply can no longer write one document's edits onto another [2026-10-18]
 - A slow load, signature check, privacy scan, heading or bookmark import, presentation code-block lookup or a cancelled tool run that finishes after another file was picked no longer replaces what is shown for the new file [2026-10-18]

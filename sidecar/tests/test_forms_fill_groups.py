@@ -350,3 +350,76 @@ def test_each_radio_widget_carries_its_state(form: Path):
 
     assert [widget.state for widget in widgets] == ["S", "M", "L"]
     assert all(widget.page == 1 for widget in widgets)
+
+
+def _checkbox_pair(path: Path, chosen: str | None = None) -> Path:
+    def kid(xref: int, state: str, x: float) -> str:
+        current = state if state == chosen else "Off"
+        return (
+            f"{xref} 0 obj << /Type /Annot /Subtype /Widget /Parent 4 0 R "
+            f"/Rect [{x} 700 {x + 14} 714] /F 4 /P 3 0 R /MK << /CA (4) >> /AS /{current} "
+            f"/AP << /N << /{state} 20 0 R /Off 21 0 R >> >> >> endobj\n"
+        )
+
+    value = f"/{chosen}" if chosen else "/Off"
+    objects = [
+        "1 0 obj << /Type /Catalog /Pages 2 0 R /AcroForm << /Fields [4 0 R] >> >> endobj\n",
+        "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n",
+        "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Annots [5 0 R 6 0 R] >> "
+        "endobj\n",
+        f"4 0 obj << /FT /Btn /T (sex) /V {value} /Kids [5 0 R 6 0 R] >> endobj\n",
+        kid(5, "Male", 72),
+        kid(6, "Female", 100),
+        "20 0 obj << /Type /XObject /Subtype /Form /BBox [0 0 14 14] /Length 0 >> stream\n\n"
+        "endstream endobj\n",
+        "21 0 obj << /Type /XObject /Subtype /Form /BBox [0 0 14 14] /Length 0 >> stream\n\n"
+        "endstream endobj\n",
+    ]
+    raw = "%PDF-1.7\n" + "".join(objects) + "trailer << /Root 1 0 R /Size 22 >>\n%%EOF\n"
+    document = pymupdf.open("pdf", raw.encode("latin-1"))
+    document.save(path)
+    document.close()
+    return path
+
+
+def _pair_states(path: str | Path) -> tuple[tuple[str, str], list[str]]:
+    with pymupdf.open(path) as document:
+        kids = [widget.xref for widget in document[0].widgets()]
+        return document.xref_get_key(4, "V"), [document.xref_get_key(x, "AS")[1] for x in kids]
+
+
+def test_checkboxes_sharing_a_name_with_their_own_values_are_one_choice(tmp_path: Path):
+    source = _checkbox_pair(tmp_path / "pair.pdf", chosen="Female")
+
+    field = _fields(source)["sex"]
+
+    assert field.kind == "radio"
+    assert field.options == ["Male", "Female"]
+    assert field.value == "Female"
+
+
+def test_ticking_one_box_of_such_a_pair_leaves_the_other_off(tmp_path: Path):
+    source = _checkbox_pair(tmp_path / "pair.pdf")
+
+    result = _fill(source, tmp_path / "out.pdf", {"sex": "Male"})
+
+    assert _pair_states(result.output) == (("name", "/Male"), ["/Male", "/Off"])
+    assert _fields(result.output)["sex"].value == "Male"
+
+
+def test_such_a_pair_is_exported_with_the_ticked_value(tmp_path: Path):
+    source = _checkbox_pair(tmp_path / "pair.pdf", chosen="Female")
+    target = tmp_path / "data.xfdf"
+
+    export_data(FormDataExportParams(path=str(source), output=str(target)), silent_progress())
+
+    assert '<field name="sex"><value>Female</value></field>' in target.read_text(encoding="utf-8")
+
+
+def test_an_unknown_value_for_such_a_pair_is_refused(tmp_path: Path):
+    source = _checkbox_pair(tmp_path / "pair.pdf")
+
+    with pytest.raises(OpError) as raised:
+        _fill(source, tmp_path / "out.pdf", {"sex": "Other"})
+
+    assert raised.value.code == ErrorCode.INVALID_PARAMS

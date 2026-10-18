@@ -23,6 +23,7 @@ from vivepdf.ops._output import (
 from vivepdf.ops.forms import (
     FIELD_TYPES,
     FillReport,
+    field_kind,
     fill_field,
     form_widgets,
 )
@@ -74,8 +75,9 @@ def data_preview(params: DataPreviewParams, progress: Progress) -> DataPreviewRe
     )
 
 
-def coerce_value(widget: pymupdf.Widget, raw: str) -> Any:
-    kind = FIELD_TYPES.get(widget.field_type, "other")
+def coerce_value(widgets: list[pymupdf.Widget], raw: str) -> Any:
+    widget = widgets[0]
+    kind = field_kind(widgets)
     if kind == "checkbox":
         return raw.strip().casefold() in TRUE_WORDS
     if kind == "radio":
@@ -275,7 +277,7 @@ def _merge_row(
         for field_name, raw in values.items():
             widgets = groups.get(field_name)
             if widgets:
-                fill_field(widgets, coerce_value(widgets[0], raw), appearance, report)
+                fill_field(widgets, coerce_value(widgets, raw), appearance, report)
         calculation = recalculate(document, appearance, params.language)
         appearance.finish()
         if params.flatten:
