@@ -149,7 +149,13 @@ until Linux and Intel Mac builds exist.
    Upload `vivePDF_X.Y.Z_aarch64.dmg` for people installing by hand and
    `vivePDF_X.Y.Z_aarch64.app.tar.gz` + `.sig` for the updater (`darwin-aarch64` entry). Without the
    updater key on the Mac, skip `createUpdaterArtifacts` and upload only the `.dmg`; installed Mac
-   apps then simply see no update.
+   apps then simply see no update:
+   ```
+   pnpm tauri build --config src-tauri/tauri.release.conf.json --config '{"bundle":{"createUpdaterArtifacts":false}}'
+   ```
+   The build also copies the engine to `src-tauri/target/release/engine/`, so the bare
+   `target/release/vivepdf` binary runs with it too. Never replace that folder with a link to
+   `binaries/engine`: the copy would write every file onto itself and leave them empty.
 5. Write `latest.json` (shape below) with a `windows-x86_64` entry holding the `.sig` contents and the
    URL of `vivePDF_X.Y.Z_x64-update.exe`, plus a `darwin-aarch64` entry when the Mac archive was
    signed; tag `vX.Y.Z`, push the tag and run
