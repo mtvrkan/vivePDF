@@ -303,7 +303,7 @@ function StudioEditor({ language }: { language: string }) {
 export function StudioPage() {
   const { t } = useTranslation();
   const editing = useStudioStore((state) => state.design !== null);
-  const document = useDocumentStore((state) => state.document);
+  const hasDocument = useDocumentStore((state) => state.document !== null);
   const open = useStudioStore((state) => state.open);
   const locale = useUiStore((state) => state.locale);
   const cvActive = useCvStore((state) => state.active);
@@ -324,8 +324,8 @@ export function StudioPage() {
     if (!editing) useMergeStore.getState().clear();
   }, [editing]);
   useEffect(() => {
-    useShortcutSheetStore.getState().setStudioScreen(cvActive ? null : editing ? "design" : document ? "document" : null);
-  }, [cvActive, editing, document]);
+    useShortcutSheetStore.getState().setStudioScreen(cvActive ? null : editing ? "design" : hasDocument ? "document" : null);
+  }, [cvActive, editing, hasDocument]);
   useEffect(() => () => useShortcutSheetStore.getState().setStudioScreen(null), []);
   useEffect(() => {
     const start = studioStartOf(params);
@@ -341,7 +341,7 @@ export function StudioPage() {
         </Suspense>
       ) : editing ? (
         <StudioEditor language={locale} />
-      ) : document ? (
+      ) : hasDocument ? (
         <Suspense fallback={<div className="h-full animate-pulse bg-muted/40" aria-busy />}>
           <DocumentEditor language={locale} />
         </Suspense>

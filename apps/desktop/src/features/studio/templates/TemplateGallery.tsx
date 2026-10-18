@@ -5,6 +5,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { cn } from "@/shared/lib/cn";
 import type { StudioDesign } from "@/types/studio";
 import { PageView } from "../design/ElementView";
+import { useInView } from "../design/useInView";
 import { STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog";
 import { buildTemplate, sizeOf, type StudioTemplate, type TemplateCategory, type Translate } from "./kit";
 import { useTemplateThumbnail } from "./thumbnails";
@@ -46,22 +47,10 @@ function previewOf(template: StudioTemplate, t: Translate, language: string): St
 const TemplateCard = memo(function TemplateCard({ template, box, language, onPick }: { template: StudioTemplate; box: number; language: string; onPick: (template: StudioTemplate) => void }) {
   const { t } = useTranslation();
   const ref = useRef<HTMLButtonElement>(null);
-  const [visible, setVisible] = useState(false);
+  const visible = useInView(ref, null, "300px");
   const { width, height } = sizeOf(template.size);
   const scale = box / Math.max(width, height);
   const name = t(`studio.templates.items.${template.id}`);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    if (typeof IntersectionObserver === "undefined") {
-      setVisible(true);
-      return;
-    }
-    const observer = new IntersectionObserver((entries) => setVisible(entries.at(-1)?.isIntersecting ?? false), { rootMargin: "300px" });
-    observer.observe(node);
-    return () => observer.disconnect();
-  }, []);
 
   const pageOf = useCallback(() => previewOf(template, t, language).pages[0], [template, t, language]);
   const thumbnail = useTemplateThumbnail(template.id, visible ? pageOf : null, language, box);
