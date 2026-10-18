@@ -313,10 +313,28 @@ fn leave_fullscreen<R: Runtime>(window: &WebviewWindow<R>) -> tauri::Result<()> 
 
 fn enter_fullscreen<R: Runtime>(window: &WebviewWindow<R>, role: Role) -> tauri::Result<()> {
     if cfg!(target_os = "macos") && role == Role::Audience {
-        window.set_simple_fullscreen(true)
+        window.set_simple_fullscreen(true)?;
+        above_menu_bar(window)
     } else {
         window.set_fullscreen(true)
     }
+}
+
+#[cfg(target_os = "macos")]
+fn above_menu_bar<R: Runtime>(window: &WebviewWindow<R>) -> tauri::Result<()> {
+    let target = window.clone();
+    window.run_on_main_thread(move || {
+        if let Ok(pointer) = target.ns_window() {
+            // SAFETY: tauri hands back the live NSWindow of this window and the closure runs on the main thread AppKit requires.
+            let ns_window = unsafe { &*pointer.cast::<objc2_app_kit::NSWindow>() };
+            ns_window.setLevel(objc2_app_kit::NSMainMenuWindowLevel + 1);
+        }
+    })
+}
+
+#[cfg(not(target_os = "macos"))]
+fn above_menu_bar<R: Runtime>(_window: &WebviewWindow<R>) -> tauri::Result<()> {
+    Ok(())
 }
 
 fn move_to<R: Runtime>(window: &WebviewWindow<R>, screen: Screen) -> tauri::Result<bool> {
@@ -327,6 +345,9 @@ fn move_to<R: Runtime>(window: &WebviewWindow<R>, screen: Screen) -> tauri::Resu
 }
 
 fn cover<R: Runtime>(window: &WebviewWindow<R>, screen: Screen, role: Role) -> tauri::Result<bool> {
+    if cfg!(target_os = "macos") && role == Role::Audience {
+        window.set_visible_on_all_workspaces(true)?;
+    }
     leave_fullscreen(window)?;
     move_to(window, screen)?;
     window.show()?;
