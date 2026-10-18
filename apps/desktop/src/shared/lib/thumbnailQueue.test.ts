@@ -49,6 +49,19 @@ describe("createThumbnailQueue", () => {
     expect(queue.recall("b")).toBe("two");
   });
 
+  it("loads a fresh copy past the cache when asked and keeps it", async () => {
+    const queue = createThumbnailQueue(1, 5);
+    const seen: (string | null)[] = [];
+    queue.load("a", async () => "old", () => undefined);
+    await flush();
+
+    queue.load("a", async () => "new", (value) => seen.push(value), true);
+    await flush();
+
+    expect(seen).toEqual(["new"]);
+    expect(queue.recall("a")).toBe("new");
+  });
+
   it("skips a cancelled waiting job, aborts a running one and reports failures as null", async () => {
     const queue = createThumbnailQueue(1, 5);
     const first = deferred();

@@ -1,17 +1,27 @@
-import { memo, useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { memo, useEffect, useRef, useState, useSyncExternalStore, type MouseEvent, type ReactNode } from "react";
 import { observeVisibility } from "@/features/pages/sharedVisibility";
 import { cn } from "@/shared/lib/cn";
 import { createThumbnailQueue } from "@/shared/lib/thumbnailQueue";
 import { renderThumbnail, thumbnailDataUrl } from "@/shared/rpc/thumbnail";
+import { createThumbnailStamps } from "./thumbnailStamps";
 
 const THUMB_WIDTH = 150;
 const queue = createThumbnailQueue(2, 600);
+const stamps = createThumbnailStamps();
+
+type Shown = { key: string; path: string; url: string };
 
 export function LazyThumbnail({ path, password, page }: { path: string; password?: string; page: number }) {
-  const key = `${path}|${page}`;
-  const [url, setUrl] = useState<string | null>(() => queue.recall(key));
+  const generation = useSyncExternalStore(stamps.subscribe, () => stamps.generation(path));
+  const key = `${path}|${generation}|${page}`;
+  const [shown, setShown] = useState<Shown | null>(() => {
+    const url = queue.recall(key);
+    return url ? { key, path, url } : null;
+  });
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const current = shown?.key === key ? shown.url : null;
+  const url = current ?? (shown?.path === path ? shown.url : null);
 
   useEffect(() => {
     const element = ref.current;
@@ -20,15 +30,27 @@ export function LazyThumbnail({ path, password, page }: { path: string; password
   }, []);
 
   useEffect(() => {
-    if (!visible || url) return;
+    if (!visible) return;
+    const recalled = current ? null : queue.recall(key);
+    if (recalled) {
+      setShown({ key, path, url: recalled });
+      return;
+    }
+    if (current && !stamps.needsCheck(path)) return;
+    const loader = (signal: AbortSignal) =>
+      renderThumbnail({ path, password, page: page - 1, width: THUMB_WIDTH, format: "jpeg" }, { signal }).then((result) => {
+        stamps.note(path, result.stamp);
+        return thumbnailDataUrl(result);
+      });
     return queue.load(
       key,
-      (signal) => renderThumbnail({ path, password, page: page - 1, width: THUMB_WIDTH, format: "jpeg" }, { signal }).then(thumbnailDataUrl),
+      loader,
       (value) => {
-        if (value) setUrl(value);
+        if (value) setShown({ key, path, url: value });
       },
+      current !== null,
     );
-  }, [visible, url, key, path, password, page]);
+  }, [visible, current, key, path, password, page]);
 
   return (
     <div ref={ref} className="flex aspect-[3/4] w-full items-center justify-center overflow-hidden rounded-md bg-muted">

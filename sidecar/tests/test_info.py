@@ -102,6 +102,38 @@ def test_thumbnail_refuses_an_unknown_format(sample_pdf: Path) -> None:
         ThumbnailParams(path=str(sample_pdf), format="gif")
 
 
+def test_thumbnail_stamp_changes_when_the_file_is_rewritten(tmp_path: Path) -> None:
+    import os
+
+    import pymupdf
+
+    from vivepdf.ops.info import ThumbnailParams, thumbnail
+
+    target = tmp_path / "doc.pdf"
+    with pymupdf.open() as document:
+        document.new_page()
+        document.save(target)
+    first = thumbnail(ThumbnailParams(path=str(target)), silent_progress())
+    again = thumbnail(ThumbnailParams(path=str(target)), silent_progress())
+    with pymupdf.open() as document:
+        document.new_page()
+        document.new_page()
+        document.save(target)
+    os.utime(target, ns=(1, 1))
+    rewritten = thumbnail(ThumbnailParams(path=str(target)), silent_progress())
+
+    assert first.stamp
+    assert again.stamp == first.stamp
+    assert rewritten.stamp != first.stamp
+    assert rewritten.page_count == 2
+
+
+def test_file_stamp_is_empty_for_a_missing_file(tmp_path: Path) -> None:
+    from vivepdf.ops.info import file_stamp
+
+    assert file_stamp(str(tmp_path / "gone.pdf")) == ""
+
+
 def test_page_labels_follow_the_label_rules(tmp_path: Path) -> None:
     path = tmp_path / "labels.pdf"
     with pymupdf.open() as document:

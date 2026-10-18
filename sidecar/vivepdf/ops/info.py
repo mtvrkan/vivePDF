@@ -118,9 +118,18 @@ class ThumbnailResult(RpcModel):
     height: int
     page_count: int
     format: Literal["png", "jpeg"] = "png"
+    stamp: str = ""
 
 
 JPEG_QUALITY = 82
+
+
+def file_stamp(path: str) -> str:
+    try:
+        info = Path(path).stat()
+    except OSError:
+        return ""
+    return f"{info.st_mtime_ns}-{info.st_size}"
 
 
 @op("info.thumbnail", ThumbnailParams)
@@ -139,6 +148,7 @@ def thumbnail(params: ThumbnailParams, progress: Progress) -> ThumbnailResult:
             height=pixmap.height,
             page_count=document.page_count,
             format=params.format,
+            stamp=file_stamp(params.path),
         )
 
 

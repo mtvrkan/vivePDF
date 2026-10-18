@@ -28,8 +28,8 @@ export function createThumbnailQueue(limit: number, capacity: number) {
     return value;
   };
 
-  const load = (key: string, loader: (signal: AbortSignal) => Promise<string>, onDone: (value: string | null) => void): (() => void) => {
-    const cached = recall(key);
+  const load = (key: string, loader: (signal: AbortSignal) => Promise<string>, onDone: (value: string | null) => void, fresh = false): (() => void) => {
+    const cached = fresh ? null : recall(key);
     if (cached) {
       onDone(cached);
       return () => undefined;
