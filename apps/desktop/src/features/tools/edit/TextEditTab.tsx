@@ -2,13 +2,16 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject }
 import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import { Button } from "@/components/shared/Button";
+import { ErrorState } from "@/components/shared/ErrorState";
 import { ColorSwatch } from "@/components/shared/ColorSwatch";
 import { IconButton } from "@/components/shared/IconButton";
 import { Checkbox, Field, Section, TextInput } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
+import { describeError } from "@/shared/lib/errorMessage";
 import { withinRange } from "@/shared/lib/numberRange";
+import { toRpcError } from "@/shared/rpc/client";
 import { renderThumbnail, thumbnailDataUrl } from "@/shared/rpc/thumbnail";
-import type { TextEdit, TextSpan } from "@/types";
+import type { RpcError, TextEdit, TextSpan } from "@/types";
 import { TEXT_EDIT_SIZE } from "./textEditState";
 
 const PREVIEW_MAX_WIDTH = 720;
@@ -66,9 +69,14 @@ function useContainerWidth(): [RefObject<HTMLDivElement | null>, number] {
   return [ref, width];
 }
 
-function usePageBackground(sourcePath: string | null, password: string | null, page: number): string | null {
+type PageBackground = { background: string | null; error: RpcError | null; retry: () => void };
+
+function usePageBackground(sourcePath: string | null, password: string | null, page: number): PageBackground {
   const [background, setBackground] = useState<string | null>(null);
+  const [error, setError] = useState<RpcError | null>(null);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
+    setError(null);
     if (!sourcePath) {
       setBackground(null);
       return;
@@ -88,12 +96,14 @@ function usePageBackground(sourcePath: string | null, password: string | null, p
         rememberBackground(key, url);
         if (!cancelled) setBackground(url);
       })
-      .catch(() => undefined);
+      .catch((caught: unknown) => {
+        if (!cancelled) setError(toRpcError(caught));
+      });
     return () => {
       cancelled = true;
     };
-  }, [sourcePath, password, page]);
-  return background;
+  }, [sourcePath, password, page, attempt]);
+  return { background, error, retry: () => setAttempt((value) => value + 1) };
 }
 
 function SpanOverlay({ span, edit, active, scale, onSelect }: { span: TextSpan; edit: TextEdit | undefined; active: boolean; scale: number; onSelect: () => void }) {
@@ -152,7 +162,7 @@ export function TextEditTab({
 }: TextEditTabProps) {
   const { t } = useTranslation();
   const [containerRef, containerWidth] = useContainerWidth();
-  const background = usePageBackground(sourcePath, password, page);
+  const { background, error: backgroundError, retry: retryBackground } = usePageBackground(sourcePath, password, page);
   const scale = size && containerWidth ? containerWidth / size.width : 1;
   const canvasHeight = size ? size.height * scale : 0;
   const activeSpan = useMemo(() => spans.find((span) => span.id === activeId) ?? null, [spans, activeId]);
@@ -182,7 +192,7 @@ export function TextEditTab({
           {loading ? (
             <div className="h-64 animate-pulse rounded-lg border bg-muted/40" />
           ) : size ? (
-            <div className="overflow-hidden rounded-lg border bg-white shadow-(--shadow-card)" style={{ width: containerWidth || undefined }}>
+            <div className="paper-surface overflow-hidden rounded-lg border bg-white shadow-(--shadow-card)" style={{ width: containerWidth || undefined }}>
               <div
                 className="relative"
                 style={{
@@ -192,7 +202,13 @@ export function TextEditTab({
                   backgroundSize: "100% 100%",
                 }}
               >
-                {!background ? <div className="absolute inset-0 animate-pulse bg-muted/40" /> : null}
+                {backgroundError ? (
+                  <div className="absolute inset-0 bg-white">
+                    <ErrorState title={t("tools.edit.textedit.pageFailed")} message={describeError(t, backgroundError)} onRetry={retryBackground} />
+                  </div>
+                ) : !background ? (
+                  <div className="absolute inset-0 animate-pulse bg-muted/40" />
+                ) : null}
                 {spans.map((span) => (
                   <SpanOverlay key={span.id} span={span} edit={edits.get(span.id)} active={activeId === span.id} scale={scale} onSelect={() => onSelectSpan(span.id)} />
                 ))}

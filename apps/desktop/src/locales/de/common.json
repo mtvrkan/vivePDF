@@ -3104,7 +3104,8 @@
         },
         "replaceExisting": "Zuvor hier hinzugefügte Nummern ersetzen",
         "replaceExistingHint": "Seitenzahlen, die vivePDF zuvor auf diesen Seiten angebracht hat, werden zuerst entfernt, damit ein neu nummeriertes Dokument nicht zwei Nummernsätze zeigt.",
-        "stampedCount": "Seiten nummeriert"
+        "stampedCount": "Seiten nummeriert",
+        "prefixExample": "AKTE-"
       },
       "headerFooter": {
         "suffix": "kopfzeile",
@@ -3502,7 +3503,8 @@
         "revert": "Diesen Abschnitt zurücksetzen",
         "discardTitle": "Änderungen verwerfen?",
         "discardBody": "Die Änderungen auf dieser Seite sind noch nicht gespeichert. Beim Wechsel zu Seite {{page}} gehen sie verloren.",
-        "discard": "Verwerfen und wechseln"
+        "discard": "Verwerfen und wechseln",
+        "pageFailed": "Die Seite konnte nicht gezeichnet werden"
       },
       "poster": {
         "suffix": "poster",
@@ -4730,7 +4732,8 @@
           "pageHint": "Legen Sie dieses Blatt vor das nächste Dokument. vivePDF teilt den Scan hier.",
           "resultCaption_one": "{{count}} Trennblatt bereit; drucken und vor ein Dokument legen",
           "resultCaption_other": "{{count}} Trennblätter bereit; drucken und vor die Dokumente legen"
-        }
+        },
+        "textPatternExample": "RECHNUNG NR[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "Aus Foto",
@@ -4916,7 +4919,8 @@
         "other": "Vom System abgelehnt: {{detail}}"
       },
       "conflictCount_one": "{{count}} Datei hat einen vergebenen Namen.",
-      "conflictCount_other": "{{count}} Dateien haben einen vergebenen Namen."
+      "conflictCount_other": "{{count}} Dateien haben einen vergebenen Namen.",
+      "customRegexExample": "Kunde[:\\s]+([A-Za-zÄÖÜäöüß ]+)"
     },
     "codes": {
       "add": {
@@ -10254,5 +10258,8 @@
         "step5": "Hilfe › Fehler melden öffnet einen Bericht. Eingefügte Screenshots und angehängte Beispieldateien kommen nur in ein Paket, das Sie selbst speichern."
       }
     }
+  },
+  "fileFilters": {
+    "images": "Bilder"
   }
 }

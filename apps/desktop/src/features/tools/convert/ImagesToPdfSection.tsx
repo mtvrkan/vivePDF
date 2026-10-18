@@ -65,7 +65,7 @@ export function ImagesToPdfSection({
           <Field label={t("tools.pages.paperSize")}>
             <SelectInput value={pageSize} onChange={(event) => setPageSize(event.target.value as "image" | "a4" | "letter")} disabled={running}>
               <option value="a4">A4</option>
-              <option value="letter">Letter</option>
+              <option value="letter">{t("tools.pages.papers.letter")}</option>
               <option value="image">{t("tools.convert.imageSize")}</option>
             </SelectInput>
           </Field>

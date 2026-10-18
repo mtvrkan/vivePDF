@@ -3328,7 +3328,8 @@
         },
         "replaceExisting": "استبدال الأرقام المضافة هنا من قبل",
         "replaceExistingHint": "تُزال أولًا أرقام الصفحات التي أضافها vivePDF على هذه الصفحات سابقًا، حتى لا يظهر في المستند المعاد ترقيمه مجموعتان من الأرقام.",
-        "stampedCount": "صفحات رُقّمت"
+        "stampedCount": "صفحات رُقّمت",
+        "prefixExample": "قضية-"
       },
       "headerFooter": {
         "suffix": "header",
@@ -3774,7 +3775,8 @@
         "revert": "التراجع عن هذا المقطع",
         "discardTitle": "هل تريد تجاهل التغييرات؟",
         "discardBody": "لم تُحفظ تغييرات هذه الصفحة بعد. الانتقال إلى الصفحة {{page}} يتجاهلها.",
-        "discard": "تجاهل وانتقل"
+        "discard": "تجاهل وانتقل",
+        "pageFailed": "تعذّر رسم الصفحة"
       },
       "poster": {
         "suffix": "poster",
@@ -5178,7 +5180,8 @@
           "resultCaption_few": "{{count}} أوراق فاصلة جاهزة؛ اطبعها وضعها أمام المستندات",
           "resultCaption_many": "{{count}} ورقة فاصلة جاهزة؛ اطبعها وضعها أمام المستندات",
           "resultCaption_other": "{{count}} ورقة فاصلة جاهزة؛ اطبعها وضعها أمام المستندات"
-        }
+        },
+        "textPatternExample": "رقم الفاتورة[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "من صورة",
@@ -5388,7 +5391,8 @@
       "conflictCount_two": "ملفان اسماهما مستخدمان.",
       "conflictCount_few": "{{count}} ملفات أسماؤها مستخدمة.",
       "conflictCount_many": "{{count}} ملفًا أسماؤها مستخدمة.",
-      "conflictCount_other": "{{count}} ملف أسماؤها مستخدمة."
+      "conflictCount_other": "{{count}} ملف أسماؤها مستخدمة.",
+      "customRegexExample": "العميل[:\\s]+(\\S+)"
     },
     "codes": {
       "add": {
@@ -11117,5 +11121,8 @@
         "step5": "يفتح مساعدة › الإبلاغ عن خطأ تقريرًا. تُضاف لقطات الشاشة الملصقة وملفات العينات المرفقة فقط إلى حزمة تحفظها بنفسك."
       }
     }
+  },
+  "fileFilters": {
+    "images": "الصور"
   }
 }

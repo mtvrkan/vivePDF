@@ -321,7 +321,7 @@ export function FormsPage() {
                   {fields.signed ? <FormWarning>{t("tools.forms.signedWarning")}</FormWarning> : null}
                   {signaturesBroken ? <FormWarning>{t("tools.forms.signaturesBroken")}</FormWarning> : null}
                   {pages.map((page) => (
-                    <Section key={page} title={`${t("info.pages")} ${page}`}>
+                    <Section key={page} title={t("tools.pagePicker.page", { page })}>
                       {editable
                         .filter((field) => field.page === page)
                         .map((field, index) => {

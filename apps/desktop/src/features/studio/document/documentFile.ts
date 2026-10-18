@@ -12,6 +12,7 @@ import { createDocument, normalizeDocument, pageSize } from "./model";
 import { useDocumentStore } from "./documentStore";
 import { formatOfPath, parseSources } from "./sourceFormats";
 import { fileVersion } from "./footnotes";
+import i18n from "i18next";
 
 export const IMPORT_EXTENSIONS = ["md", "markdown", "txt", "html", "htm"];
 
@@ -90,7 +91,7 @@ export async function openSourceLibrary(path: string): Promise<StudioDocument | 
 }
 
 export async function pickDocumentImage(title: string): Promise<{ src: string; width: number; height: number } | null> {
-  const selected = await openDialog({ multiple: false, directory: false, title, filters: [{ name: "Images", extensions: IMAGE_EXTENSIONS }] });
+  const selected = await openDialog({ multiple: false, directory: false, title, filters: [{ name: i18n.t("fileFilters.images"), extensions: IMAGE_EXTENSIONS }] });
   if (typeof selected !== "string") return null;
   return studioDocumentImage({ path: selected });
 }

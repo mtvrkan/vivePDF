@@ -17,11 +17,7 @@ import { overlapsRange, placeholderHeight, readingParagraphs, type MeasuredHeigh
 
 const THEMES: ReadingTheme[] = ["paper", "sepia", "dark"];
 const WIDTHS: ReadingWidth[] = ["narrow", "medium", "wide"];
-const THEME_CLASS: Record<ReadingTheme, string> = {
-  paper: "bg-white text-neutral-900",
-  sepia: "bg-[#f4ecd8] text-[#3b2f1e]",
-  dark: "bg-neutral-950 text-neutral-200",
-};
+const THEME_CLASS: Record<ReadingTheme, string> = { paper: "reading-paper", sepia: "reading-sepia", dark: "reading-dark" };
 const WIDTH_CLASS: Record<ReadingWidth, string> = { narrow: "max-w-[34rem]", medium: "max-w-[44rem]", wide: "max-w-[60rem]" };
 const VIEWPORT_MARGIN_MULTIPLIER = 2;
 

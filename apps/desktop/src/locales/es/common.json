@@ -3104,7 +3104,8 @@
         },
         "replaceExisting": "Reemplazar los números añadidos aquí anteriormente",
         "replaceExistingHint": "Los números de página que vivePDF añadió antes a estas páginas se quitan primero, para que un documento renumerado no muestre dos series.",
-        "stampedCount": "páginas numeradas"
+        "stampedCount": "páginas numeradas",
+        "prefixExample": "CASO-"
       },
       "headerFooter": {
         "suffix": "encabezado",
@@ -3502,7 +3503,8 @@
         "revert": "Revertir este fragmento",
         "discardTitle": "¿Descartar los cambios?",
         "discardBody": "Los cambios de esta página aún no se han guardado. Si va a la página {{page}}, se perderán.",
-        "discard": "Descartar e ir"
+        "discard": "Descartar e ir",
+        "pageFailed": "No se pudo dibujar la página"
       },
       "poster": {
         "suffix": "poster",
@@ -4730,7 +4732,8 @@
           "pageHint": "Ponga esta hoja delante del siguiente documento. vivePDF divide el escaneo aquí.",
           "resultCaption_one": "{{count}} hoja separadora lista; imprímala y póngala delante de un documento",
           "resultCaption_other": "{{count}} hojas separadoras listas; imprímalas y póngalas delante de los documentos"
-        }
+        },
+        "textPatternExample": "FACTURA N.º[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "Desde foto",
@@ -4916,7 +4919,8 @@
         "other": "El sistema lo rechazó: {{detail}}"
       },
       "conflictCount_one": "{{count}} archivo tiene un nombre ocupado.",
-      "conflictCount_other": "{{count}} archivos tienen un nombre ocupado."
+      "conflictCount_other": "{{count}} archivos tienen un nombre ocupado.",
+      "customRegexExample": "Cliente[:\\s]+([A-Za-zÁÉÍÓÚÑáéíóúñ ]+)"
     },
     "codes": {
       "add": {
@@ -10255,5 +10259,8 @@
         "step5": "Ayuda › Informar de un error abre un informe. Las capturas pegadas y los archivos de ejemplo adjuntos solo van en un paquete que usted mismo guarda."
       }
     }
+  },
+  "fileFilters": {
+    "images": "Imágenes"
   }
 }

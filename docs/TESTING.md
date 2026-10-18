@@ -178,6 +178,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   pointer without zooming the whole window, and right after releasing Ctrl the wheel scrolls
   again; a fast fling through the document then logs a `[scroll]` line in the app log with
   few frames over 34 ms.
+- With Windows set to dark mode, open Edit › Text edit and Reading view in each reading
+  theme: the page stays white, its text and a failed-page message stay readable, and the
+  sentence being read aloud keeps the theme's text colour. With Narrator on, Tab into the Pages
+  grid and use the arrow keys: the focused page shows a ring and is announced, today is
+  announced in the date picker and the current slide in the presenter overview.
 
 ### How native dialogs are answered
 

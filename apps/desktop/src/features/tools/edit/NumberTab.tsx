@@ -21,7 +21,7 @@ export function NumberTab({ state, stamp, pages, onPagesChange: setPages, runnin
           <TextInput type="number" min={NUMBER_START.min} max={NUMBER_START.max} step={1} value={start} onChange={(event) => setStart(event.target.valueAsNumber)} aria-invalid={!startValid || undefined} className="font-mono" />
         </Field>
         <Field label={t("tools.edit.number.prefix")} hint={t("tools.edit.number.batesHint")}>
-          <TextInput value={numberPrefix} onChange={(event) => setNumberPrefix(event.target.value)} className="font-mono" placeholder="DAVA-" />
+          <TextInput value={numberPrefix} onChange={(event) => setNumberPrefix(event.target.value)} className="font-mono" placeholder={t("tools.edit.number.prefixExample")} />
         </Field>
         <Field label={t("tools.edit.number.style")}>
           <SelectInput value={numberStyle} aria-label={t("tools.edit.number.style")} onChange={(event) => setNumberStyle(event.target.value as NumberStyle)}>

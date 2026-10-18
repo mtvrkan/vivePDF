@@ -3104,7 +3104,8 @@
         },
         "replaceExisting": "Sostituisci i numeri aggiunti qui in precedenza",
         "replaceExistingHint": "I numeri di pagina inseriti in precedenza da vivePDF su queste pagine vengono rimossi per primi, così un documento rinumerato non mostra due serie.",
-        "stampedCount": "pagine numerate"
+        "stampedCount": "pagine numerate",
+        "prefixExample": "CAUSA-"
       },
       "headerFooter": {
         "suffix": "intestazione",
@@ -3502,7 +3503,8 @@
         "revert": "Ripristina questo frammento",
         "discardTitle": "Scartare le modifiche?",
         "discardBody": "Le modifiche di questa pagina non sono ancora salvate. Andando alla pagina {{page}} verranno perse.",
-        "discard": "Scarta e vai"
+        "discard": "Scarta e vai",
+        "pageFailed": "Impossibile disegnare la pagina"
       },
       "poster": {
         "suffix": "poster",
@@ -4730,7 +4732,8 @@
           "pageHint": "Metti questo foglio davanti al documento successivo. vivePDF divide la scansione qui.",
           "resultCaption_one": "{{count}} foglio separatore pronto; stampalo e mettilo davanti a un documento",
           "resultCaption_other": "{{count}} fogli separatori pronti; stampali e mettili davanti ai documenti"
-        }
+        },
+        "textPatternExample": "FATTURA N[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "Da foto",
@@ -4916,7 +4919,8 @@
         "other": "Rifiutato dal sistema: {{detail}}"
       },
       "conflictCount_one": "{{count}} file ha un nome già usato.",
-      "conflictCount_other": "{{count}} file hanno un nome già usato."
+      "conflictCount_other": "{{count}} file hanno un nome già usato.",
+      "customRegexExample": "Cliente[:\\s]+([A-Za-zÀ-ÿ ]+)"
     },
     "codes": {
       "add": {
@@ -10255,5 +10259,8 @@
         "step5": "Aiuto › Segnala un bug apre una segnalazione. Gli screenshot incollati e i file di esempio allegati finiscono solo in un pacchetto che salvi tu."
       }
     }
+  },
+  "fileFilters": {
+    "images": "Immagini"
   }
 }

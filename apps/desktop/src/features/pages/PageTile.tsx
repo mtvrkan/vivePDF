@@ -29,6 +29,7 @@ type PageTileProps = {
   dropBefore: boolean;
   dropAfter: boolean;
   dimmed: boolean;
+  isAnchor: boolean;
   labelText: string | null;
   labelStart: boolean;
   sources: Record<string, OrganizerSource>;
@@ -37,7 +38,7 @@ type PageTileProps = {
   actions: TileActions;
 };
 
-export const PageTile = memo(function PageTile({ tile, position, total, isLast, isSelected, isCut, dropBefore, dropAfter, dimmed, labelText, labelStart, sources, width, height, actions }: PageTileProps) {
+export const PageTile = memo(function PageTile({ tile, position, total, isLast, isSelected, isCut, dropBefore, dropAfter, dimmed, isAnchor, labelText, labelStart, sources, width, height, actions }: PageTileProps) {
   const { t } = useTranslation();
   return (
     <li
@@ -62,6 +63,7 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
         "cursor-default",
         isSelected ? "border-primary ring-4 ring-primary/20" : "hover:-translate-y-0.5 hover:border-primary/40",
         dimmed ? "opacity-40" : "",
+        isAnchor && "group-focus-visible/list:outline-2 group-focus-visible/list:outline-offset-2 group-focus-visible/list:outline-ring",
       )}
     >
       {dropBefore ? <span aria-hidden className="absolute -start-2 top-1 bottom-1 w-1 rounded-sm bg-primary" /> : null}

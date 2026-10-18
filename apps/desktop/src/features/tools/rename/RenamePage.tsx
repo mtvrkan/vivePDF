@@ -405,7 +405,7 @@ export function RenamePage() {
               ))}
             </ul>
             <Field label={t("tools.rename.customRegex")} hint={t("tools.rename.customRegexHint")}>
-              <TextInput value={customRegex} onChange={(event) => setCustomRegex(event.target.value)} placeholder="Müşteri[:\s]+([A-Za-zÇĞİÖŞÜçğıöşü ]+)" className="font-mono" />
+              <TextInput value={customRegex} onChange={(event) => setCustomRegex(event.target.value)} placeholder={t("tools.rename.customRegexExample")} className="font-mono" />
             </Field>
           </Section>
 

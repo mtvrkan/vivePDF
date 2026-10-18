@@ -60,6 +60,7 @@ export function PageThumb({ documentId, pageIndex, active, onSelect }: { documen
       ref={cellRef}
       type="button"
       onClick={onSelect}
+      aria-current={active ? "page" : undefined}
       className={cn(
         "group flex flex-col items-center gap-1.5 rounded-xl p-2 transition-[box-shadow] duration-(--transition-fast)",
         active ? "glass-chip" : "hover:bg-white/5",

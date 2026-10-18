@@ -238,6 +238,7 @@ export function AccessPage() {
                             onChange={(event) => setAltTexts((state) => ({ ...state, [figure.xref]: event.target.value }))}
                             onFocus={() => setFocusedFigure(figure.xref)}
                             placeholder={t("tools.access.altPlaceholder")}
+                            aria-label={`${t("tools.access.altPlaceholder")} · ${figure.page ? t("viewer.comments.pageShort", { page: figure.page }) : `#${figure.xref}`}`}
                           />
                         </div>
                         {focusedFigure === figure.xref && source ? (

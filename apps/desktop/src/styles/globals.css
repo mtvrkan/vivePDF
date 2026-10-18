@@ -167,8 +167,42 @@
   color-scheme: dark;
 }
 
+.reading-paper,
+.reading-sepia,
+.reading-dark {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+.reading-paper {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(0 0% 9%);
+  --card: hsl(0 0% 100%);
+  --muted: hsl(220 14% 94%);
+  --muted-foreground: hsl(220 9% 42%);
+  --border: color-mix(in oklab, hsl(0 0% 9%) 10%, transparent);
+  color-scheme: light;
+}
+.reading-sepia {
+  --background: hsl(43 59% 90%);
+  --foreground: hsl(35 33% 17%);
+  --card: hsl(43 59% 93%);
+  --muted: hsl(40 40% 84%);
+  --muted-foreground: hsl(35 20% 38%);
+  --border: color-mix(in oklab, hsl(35 33% 17%) 12%, transparent);
+  color-scheme: light;
+}
+.reading-dark {
+  --background: hsl(0 0% 4%);
+  --foreground: hsl(0 0% 90%);
+  --card: hsl(0 0% 9%);
+  --muted: hsl(0 0% 14%);
+  --muted-foreground: hsl(0 0% 64%);
+  --border: color-mix(in oklab, hsl(0 0% 90%) 12%, transparent);
+  color-scheme: dark;
+}
 .paper-surface {
   --foreground: hsl(222 20% 12%);
+  --card: hsl(0 0% 100%);
   --muted: hsl(220 14% 94%);
   --muted-foreground: hsl(220 9% 42%);
   --destructive: hsl(0 72% 45%);

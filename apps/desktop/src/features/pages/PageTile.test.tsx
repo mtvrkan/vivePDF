@@ -13,10 +13,10 @@ function actions(): TileActions {
   return { pointerDown: vi.fn(), click: vi.fn(), check: vi.fn(), preview: vi.fn(), rotate: vi.fn(), remove: vi.fn(), menu: vi.fn(), toggleCut: vi.fn() };
 }
 
-function renderTile(tileActions: TileActions, total = 3) {
+function renderTile(tileActions: TileActions, total = 3, isAnchor = false) {
   return render(
     <ol>
-      <PageTile tile={TILE} position={0} total={total} isLast={total === 1} isSelected={false} isCut={false} dropBefore={false} dropAfter={false} dimmed={false} labelText={null} labelStart={false} sources={{}} width={120} height={156} actions={tileActions} />
+      <PageTile tile={TILE} position={0} total={total} isLast={total === 1} isSelected={false} isCut={false} dropBefore={false} dropAfter={false} dimmed={false} isAnchor={isAnchor} labelText={null} labelStart={false} sources={{}} width={120} height={156} actions={tileActions} />
     </ol>,
   );
 }
@@ -29,6 +29,16 @@ beforeAll(async () => {
 afterEach(cleanup);
 
 describe("PageTile", () => {
+  it("marks only the keyboard anchor for the list's focus ring", () => {
+    renderTile(actions(), 3, true);
+    const anchored = screen.getByRole("option").className;
+    cleanup();
+    renderTile(actions(), 3, false);
+
+    expect(anchored).toContain("group-focus-visible/list:outline-2");
+    expect(screen.getByRole("option").className).not.toContain("group-focus-visible/list:outline-2");
+  });
+
   it("selects on a click and previews only on a double click", () => {
     const tileActions = actions();
     renderTile(tileActions);

@@ -209,6 +209,7 @@ export function DateRangePicker({ start, end, onChange, className, ariaLabel }: 
                       onClick={() => pick(iso)}
                       onMouseEnter={() => setHovered(iso)}
                       aria-pressed={isEdge}
+                      aria-current={iso === today ? "date" : undefined}
                       className={cn(
                         "relative mx-auto flex size-8 items-center justify-center rounded-lg text-sm tabular-nums outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
                         outside ? "text-muted-foreground/50" : "text-foreground",

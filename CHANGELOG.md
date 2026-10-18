@@ -25,6 +25,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - While the black or white board is shown, the presentation bar and the presenter console leave the drawing tools, area zoom, zoom buttons and page clearing to the board's own toolbar instead of showing them twice; they come back on the slides [2026-10-18]
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed
+- Text edit shows the page on white paper in dark mode and says so with a retry button when the page cannot be drawn, instead of an empty dark box [2026-10-18]
+- The paper, sepia and dark reading themes set their own text, muted and border colours, so labels and the sentence being read aloud stay readable on each [2026-10-18]
+- Keyboard users see which page has focus in the Pages grid; screen readers hear today's date in the date picker, the current slide in the presenter overview and which picture an alt-text box is for [2026-10-18]
+- Form pages are titled "Page 3" in every language, the Letter paper size, the image file filter and the example patterns in Scan, Number and Rename are translated instead of always English or Turkish [2026-10-18]
 - The soft light behind the home screen no longer shows visible rings on macOS: the glow fades out more gradually and carries a faint, brightness-neutral grain that breaks up the colour steps of the dark theme [2026-10-18]
 - Printing on macOS and Linux works on a computer set to another language: printer names come from the plain destination list, so a Turkish macOS no longer reads "Printer," and refuses it as unknown, and the default printer is matched against those names [2026-10-18]
 - A print job sent without comments shows the document's own name in the print queue instead of "print.pdf" [2026-10-18]

@@ -3105,7 +3105,8 @@
         },
         "replaceExisting": "Replace numbers added here before",
         "replaceExistingHint": "Page numbers vivePDF put on these pages earlier are taken off first, so a renumbered document does not show two sets.",
-        "stampedCount": "pages numbered"
+        "stampedCount": "pages numbered",
+        "prefixExample": "CASE-"
       },
       "headerFooter": {
         "suffix": "header",
@@ -3503,7 +3504,8 @@
         "revert": "Revert this run",
         "discardTitle": "Discard your changes?",
         "discardBody": "The changes on this page are not saved yet. Going to page {{page}} discards them.",
-        "discard": "Discard and go"
+        "discard": "Discard and go",
+        "pageFailed": "The page could not be drawn"
       },
       "poster": {
         "title": "Poster / tiles",
@@ -4731,7 +4733,8 @@
           "pageHint": "Put this sheet in front of the next document. vivePDF splits the scan here.",
           "resultCaption_one": "{{count}} separator sheet ready; print it and put it in front of a document",
           "resultCaption_other": "{{count}} separator sheets ready; print them and put them in front of the documents"
-        }
+        },
+        "textPatternExample": "INVOICE NO[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "From photo",
@@ -4917,7 +4920,8 @@
         "other": "The system refused: {{detail}}"
       },
       "conflictCount_one": "{{count}} file has a name that is taken.",
-      "conflictCount_other": "{{count}} files have a name that is taken."
+      "conflictCount_other": "{{count}} files have a name that is taken.",
+      "customRegexExample": "Customer[:\\s]+([A-Za-z ]+)"
     },
     "codes": {
       "add": {
@@ -10256,5 +10260,8 @@
         "step5": "Help › Report a bug opens a report. Pasted screenshots and attached sample files go only into a package you save yourself."
       }
     }
+  },
+  "fileFilters": {
+    "images": "Images"
   }
 }

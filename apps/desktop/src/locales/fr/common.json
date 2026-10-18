@@ -3104,7 +3104,8 @@
         },
         "replaceExisting": "Remplacer les numéros ajoutés ici précédemment",
         "replaceExistingHint": "Les numéros de page que vivePDF a ajoutés précédemment à ces pages sont d’abord retirés, afin qu’un document renuméroté n’affiche pas deux séries.",
-        "stampedCount": "pages numérotées"
+        "stampedCount": "pages numérotées",
+        "prefixExample": "DOSSIER-"
       },
       "headerFooter": {
         "suffix": "entete",
@@ -3502,7 +3503,8 @@
         "revert": "Rétablir ce segment",
         "discardTitle": "Abandonner les modifications ?",
         "discardBody": "Les modifications de cette page ne sont pas encore enregistrées. Aller à la page {{page}} les supprime.",
-        "discard": "Abandonner et y aller"
+        "discard": "Abandonner et y aller",
+        "pageFailed": "La page n'a pas pu être affichée"
       },
       "poster": {
         "suffix": "affiche",
@@ -4730,7 +4732,8 @@
           "pageHint": "Placez cette page devant le document suivant. vivePDF divise la numérisation ici.",
           "resultCaption_one": "{{count}} intercalaire prêt ; imprimez-le et placez-le devant un document",
           "resultCaption_other": "{{count}} intercalaires prêts ; imprimez-les et placez-les devant les documents"
-        }
+        },
+        "textPatternExample": "FACTURE N°[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "Depuis une photo",
@@ -4916,7 +4919,8 @@
         "other": "Refusé par le système : {{detail}}"
       },
       "conflictCount_one": "{{count}} fichier a un nom déjà pris.",
-      "conflictCount_other": "{{count}} fichiers ont un nom déjà pris."
+      "conflictCount_other": "{{count}} fichiers ont un nom déjà pris.",
+      "customRegexExample": "Client[:\\s]+([A-Za-zÀ-ÿ ]+)"
     },
     "codes": {
       "add": {
@@ -10255,5 +10259,8 @@
         "step5": "Aide › Signaler un bogue ouvre un rapport. Les captures collées et les fichiers d’exemple joints vont uniquement dans un paquet que vous enregistrez vous-même."
       }
     }
+  },
+  "fileFilters": {
+    "images": "Images"
   }
 }

@@ -727,7 +727,7 @@ export function ScanPage() {
                 ) : null}
                 {splitMode === "text" ? (
                   <Field label={t("tools.scan.split.textPattern")} hint={t("tools.scan.split.textPatternHint")}>
-                    <TextInput value={textPattern} onChange={(event) => setTextPattern(event.target.value)} placeholder="FATURA NO[:\s]*(\S+)" className="font-mono" />
+                    <TextInput value={textPattern} onChange={(event) => setTextPattern(event.target.value)} placeholder={t("tools.scan.split.textPatternExample")} className="font-mono" />
                   </Field>
                 ) : (
                   <Checkbox label={t("tools.scan.split.dropSeparators")} checked={dropSeparators} onChange={setDropSeparators} />

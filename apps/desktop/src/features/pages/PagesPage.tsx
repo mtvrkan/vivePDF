@@ -615,7 +615,7 @@ export function PagesPage() {
             aria-label={t("nav.pages")}
             aria-activedescendant={anchorPosition >= range.start && anchorPosition < range.end ? `page-tile-${anchor}` : undefined}
             tabIndex={0}
-            className="grid gap-3 outline-none"
+            className="group/list grid gap-3 outline-none"
             style={{ gridTemplateColumns: `repeat(${grid.metrics.columns}, minmax(${zoom}px, 1fr))`, gridAutoRows: `${grid.metrics.rowHeight}px`, paddingTop: grid.paddingTop, paddingBottom: grid.paddingBottom }}
           >
             {tiles.slice(range.start, range.end).map((tile, offset) => {
@@ -633,6 +633,7 @@ export function PagesPage() {
                   isCut={!isLast && cuts.has(tile.key)}
                   dropBefore={dropIndex === position}
                   dropAfter={dropIndex === tiles.length && isLast}
+                  isAnchor={tile.key === anchor}
                   dimmed={Boolean(drag && (drag.key === tile.key || (isSelected && selected.has(drag.key))))}
                   labelText={labelTexts ? labelTexts[position] : null}
                   labelStart={Boolean(labels[tile.key])}

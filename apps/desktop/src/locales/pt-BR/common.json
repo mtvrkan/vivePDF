@@ -3104,7 +3104,8 @@
         },
         "replaceExisting": "Substituir números adicionados aqui antes",
         "replaceExistingHint": "Os números de página que o vivePDF colocou antes nessas páginas são removidos primeiro, para que um documento renumerado não mostre dois conjuntos.",
-        "stampedCount": "páginas numeradas"
+        "stampedCount": "páginas numeradas",
+        "prefixExample": "CASO-"
       },
       "headerFooter": {
         "suffix": "cabecalho",
@@ -3502,7 +3503,8 @@
         "revert": "Reverter este trecho",
         "discardTitle": "Descartar as alterações?",
         "discardBody": "As alterações desta página ainda não foram salvas. Ir para a página {{page}} as descarta.",
-        "discard": "Descartar e ir"
+        "discard": "Descartar e ir",
+        "pageFailed": "Não foi possível desenhar a página"
       },
       "poster": {
         "suffix": "poster",
@@ -4730,7 +4732,8 @@
           "pageHint": "Coloque esta folha antes do próximo documento. O vivePDF divide a digitalização aqui.",
           "resultCaption_one": "{{count}} folha separadora pronta; imprima e coloque antes de um documento",
           "resultCaption_other": "{{count}} folhas separadoras prontas; imprima e coloque antes dos documentos"
-        }
+        },
+        "textPatternExample": "NOTA FISCAL Nº[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "De foto",
@@ -4916,7 +4919,8 @@
         "other": "O sistema recusou: {{detail}}"
       },
       "conflictCount_one": "{{count}} arquivo tem um nome em uso.",
-      "conflictCount_other": "{{count}} arquivos têm um nome em uso."
+      "conflictCount_other": "{{count}} arquivos têm um nome em uso.",
+      "customRegexExample": "Cliente[:\\s]+([A-Za-zÀ-ÿ ]+)"
     },
     "codes": {
       "add": {
@@ -10255,5 +10259,8 @@
         "step5": "Ajuda › Relatar um erro abre um relatório. Capturas de tela coladas e arquivos de exemplo anexados vão só para um pacote que você mesmo salva."
       }
     }
+  },
+  "fileFilters": {
+    "images": "Imagens"
   }
 }

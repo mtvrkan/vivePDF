@@ -3105,7 +3105,8 @@
         },
         "replaceExisting": "Daha önce eklenen numaraları değiştir",
         "replaceExistingHint": "vivePDF’in bu sayfalara önceden eklediği sayfa numaraları önce kaldırılır; böylece yeniden numaralandırılan belgede iki numara dizisi görünmez.",
-        "stampedCount": "sayfa numaralandı"
+        "stampedCount": "sayfa numaralandı",
+        "prefixExample": "DAVA-"
       },
       "headerFooter": {
         "suffix": "ustbilgi",
@@ -3503,7 +3504,8 @@
         "revert": "Bu parçayı geri al",
         "discardTitle": "Değişiklikler atılsın mı?",
         "discardBody": "Bu sayfadaki değişiklikler henüz kaydedilmedi. {{page}}. sayfaya geçerseniz silinirler.",
-        "discard": "At ve geç"
+        "discard": "At ve geç",
+        "pageFailed": "Sayfa çizilemedi"
       },
       "poster": {
         "title": "Poster / döşeme",
@@ -4731,7 +4733,8 @@
           "pageHint": "Bu sayfayı bir sonraki belgenin önüne koyun. vivePDF taramayı buradan böler.",
           "resultCaption_one": "{{count}} ayırıcı sayfa hazır; yazdırıp belgelerin önüne koyun",
           "resultCaption_other": "{{count}} ayırıcı sayfa hazır; yazdırıp belgelerin önüne koyun"
-        }
+        },
+        "textPatternExample": "FATURA NO[:\\s]*(\\S+)"
       },
       "photo": {
         "title": "Fotoğraftan",
@@ -4917,7 +4920,8 @@
         "other": "Sistem reddetti: {{detail}}"
       },
       "conflictCount_one": "{{count}} dosyanın adı dolu.",
-      "conflictCount_other": "{{count}} dosyanın adı dolu."
+      "conflictCount_other": "{{count}} dosyanın adı dolu.",
+      "customRegexExample": "Müşteri[:\\s]+([A-Za-zÇĞİÖŞÜçğıöşü ]+)"
     },
     "codes": {
       "add": {
@@ -10256,5 +10260,8 @@
         "step5": "Yardım › Hata bildir bir rapor açar. Yapıştırılan ekran görüntüleri ve eklenen örnek dosyalar yalnızca kendi kaydettiğiniz pakete girer."
       }
     }
+  },
+  "fileFilters": {
+    "images": "Görseller"
   }
 }
