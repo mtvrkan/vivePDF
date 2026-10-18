@@ -7,6 +7,7 @@ import { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/
 import { toRpcError } from "@/shared/rpc/client";
 import { claimDocument, fileNameOf, isPdfPath, releaseViewSource, rememberRecentDocument } from "@/shared/rpc/files";
 import { preparedViewSource, readViewableSource } from "@/features/viewer/viewableBytes";
+import { openTimer, sourceDetail } from "@/features/viewer/pdf/openTimings";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { useNavHistoryStore } from "@/shared/store/navHistoryStore";
 import { useDocumentMessagesStore } from "@/shared/store/documentMessagesStore";
@@ -160,6 +161,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
         return false;
       }
       openingPaths.add(key);
+      const timer = openTimer();
       if (await claimDocument(path)) {
         openingPaths.delete(key);
         return false;
@@ -167,10 +169,15 @@ export function useOpenPdf(documentRoute = "/viewer") {
       const documentId = crypto.randomUUID();
       setBusy(true);
       try {
+        timer.step("claim");
         const source = await readViewableSource(path);
+        timer.step("read");
         registerDocument(documentId, path, null);
         await openViewable(docManager, source, { name: fileNameOf(path), documentId });
+        timer.step("engine");
         finishOpen(documentId, path);
+        timer.step("show");
+        timer.log(sourceDetail(source));
         return true;
       } catch (error) {
         const sealed = await sealedOpenRoute(path, (target) => getDocumentInfo({ path: target }));

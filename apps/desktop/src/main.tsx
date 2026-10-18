@@ -15,6 +15,7 @@ import { adoptKnownPaths } from "@/shared/session/grantAdoption";
 import { isAudienceWindow } from "@/shared/lib/windowRole";
 import App from "@/app/App";
 import { STARTUP_MARKS, markOnce } from "@/features/viewer/pdf/startupTimings";
+import { watchScrollFrames } from "@/features/viewer/pdf/scrollFrames";
 
 const mount = (app: React.ReactNode) => {
   markOnce(STARTUP_MARKS.mount);
@@ -33,6 +34,7 @@ if (!audience) {
   installUiZoomShortcuts();
 }
 installBrowserKeyGuard(import.meta.env.DEV);
+watchScrollFrames();
 
 if (audience) void Promise.all([ready(), import("@/features/presenter/AudienceApp")]).then(([, { AudienceApp }]) => mount(<AudienceApp />));
 else void Promise.all([ready(), loadSessionFile().then(adoptKnownPaths)]).then(() => mount(<App />));
