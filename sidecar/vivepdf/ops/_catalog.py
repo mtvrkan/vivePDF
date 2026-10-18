@@ -199,7 +199,10 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     ),
     "poster": ("pages.poster",),
     "preflight": ("preflight.check",),
-    "presentation": ("presentation.save_drawings",),
+    "presentation": (
+        "presentation.inserted_sources",
+        "presentation.save_drawings",
+    ),
     "printing": (
         "print.printers",
         "print.run",

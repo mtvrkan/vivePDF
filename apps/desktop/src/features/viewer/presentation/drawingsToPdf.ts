@@ -1,6 +1,7 @@
 import { drawingSvg } from "@/features/viewer/overlay/drawing/drawingSource";
 import type { BoardMode, DrawingAsset, DrawingSnapshot, Stroke } from "@/shared/store/presentationStore";
 import type { PresentationBoardDrawings, PresentationPageDrawings, PresentationStrokeSpec } from "@/types";
+import { insertedSourceOf } from "./insertedSource";
 import { measureLayout } from "./measure";
 import { measureTextBlock, readableOnDark, TEXT_LINE_HEIGHT } from "./strokes";
 
@@ -25,6 +26,7 @@ function drawingSpec(stroke: Stroke, assets: Assets): PresentationStrokeSpec | n
   const asset = stroke.asset ? assets?.[stroke.asset] : undefined;
   const anchor = stroke.points[0];
   if (!asset?.drawing || !stroke.size || !anchor) return null;
+  const source = insertedSourceOf(asset.drawing);
   return {
     tool: "drawing",
     color: FALLBACK_COLOR,
@@ -33,6 +35,7 @@ function drawingSpec(stroke: Stroke, assets: Assets): PresentationStrokeSpec | n
     size: [stroke.size.width, stroke.size.height],
     svg: drawingSvg(asset.drawing),
     ...(stroke.opacity !== undefined ? { opacity: stroke.opacity } : {}),
+    ...(source ? { source } : {}),
   };
 }
 

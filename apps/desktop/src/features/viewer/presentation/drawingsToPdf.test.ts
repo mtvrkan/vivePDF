@@ -55,6 +55,16 @@ describe("presentationDrawings", () => {
     expect(drawings.pages).toEqual([{ page: 2, strokes: [{ tool: "drawing", color: "#000000", width: 0, points: [[0.2, 0.3]], size: [0.4, 0.2], svg: "<svg>x</svg>", opacity: 0.5 }] }]);
   });
 
+  it("sends an inserted table with its editable source", () => {
+    const settings = { cells: [["A"]], align: ["left"] } as never;
+    const drawing = { kind: "table" as const, source: { settings, svg: "<svg>t</svg>", width: 10, height: 5 } };
+    const item: Stroke = { id: "t", tool: "drawing", color: "#000000", width: 0, points: [{ x: 0.1, y: 0.1 }], size: { width: 0.2, height: 0.1 }, asset: "asset-t" };
+
+    const drawings = presentationDrawings({ ...empty, strokesByPage: { 0: [item] }, drawingAssets: { "asset-t": { dataUrl: "data:t", width: 10, height: 5, drawing } } }, BOARD);
+
+    expect(drawings.pages[0].strokes[0]).toMatchObject({ svg: "<svg>t</svg>", source: { kind: "table", data: { settings, width: 10, height: 5 } } });
+  });
+
   it("saves a measure as its line, two end ticks and the length label", () => {
     const pageSize = { width: 600, height: 300 };
     const ruled: Stroke = { id: "m", tool: "measure", color: "#E5484D", width: 0.004, points: [{ x: 0.1, y: 0.5 }, { x: 0.6, y: 0.5 }], pageSize };

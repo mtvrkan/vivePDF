@@ -162,6 +162,8 @@ import type {
   DrawingImageResult,
   SavePresentationDrawingsParams,
   SavePresentationDrawingsResult,
+  PresentationInsertedSourcesParams,
+  PresentationInsertedSourcesResult,
   ImagesParams,
   ImagesResult,
   ImagesToPdfParams,
@@ -508,6 +510,7 @@ export const flowchartPreview = (params: FlowchartSpec, options?: RpcCallOptions
 export const questionPreview = (params: QuestionSpec, options?: RpcCallOptions) => rpc<QuestionPreviewResult>("editor.question_preview", params, options);
 export const imagePreview = (params: { path: string }, options?: RpcCallOptions) => rpc<ImagePreviewResult>("editor.image_preview", params, options);
 export const savePresentationDrawings = (params: SavePresentationDrawingsParams, options?: RpcCallOptions) => rpc<SavePresentationDrawingsResult>("presentation.save_drawings", params, options);
+export const presentationInsertedSources = (params: PresentationInsertedSourcesParams, options?: RpcCallOptions) => rpc<PresentationInsertedSourcesResult>("presentation.inserted_sources", params, options);
 export const drawingImage = (params: DrawingImageParams, options?: RpcCallOptions) => rpc<DrawingImageResult>("editor.drawing_image", params, options);
 export const applyEditor = (params: EditorApplyParams, options?: RpcCallOptions) => rpc<EditorApplyResult>("editor.apply", params, options);
 export const editorBlocks = (params: { path: string; password?: string; page: number }, options?: RpcCallOptions) => rpc<EditorBlocksResult>("editor.blocks", params, options);

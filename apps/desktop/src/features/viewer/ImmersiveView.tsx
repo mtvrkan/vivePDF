@@ -16,7 +16,7 @@ import { CodeBlockMarkers } from "./presentation/CodeBlockMarkers";
 import { CodeBlockOverlay } from "./presentation/CodeBlockOverlay";
 import { CurrentPageMask } from "./presentation/CurrentPageMask";
 import { OverviewGrid } from "./presentation/OverviewGrid";
-import { PresentationCanvas } from "./presentation/PresentationCanvas";
+import { SavedDrawingCanvas } from "./presentation/SavedDrawingCanvas";
 import { usePageRects } from "./presentation/usePageRects";
 import { usePinchSignal } from "./presentation/pinchSignal";
 import { usePresentationFit } from "./presentation/usePresentationFit";
@@ -188,7 +188,7 @@ export function ImmersiveView({ documentId, onExit, variant = "solo", onSignal }
         </div>
       ) : null}
       <PresentationErrorBoundary onExit={onExit}>
-        <PresentationCanvas containerRef={containerRef} contained={asConsole} onSignal={onSignal} />
+        <SavedDrawingCanvas documentId={documentId} containerRef={containerRef} contained={asConsole} onSignal={onSignal} />
         {asConsole ? null : (
           <PresenterBar
             documentId={documentId}

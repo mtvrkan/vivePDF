@@ -1,6 +1,8 @@
+import json
 import math
 import re
-from typing import Literal
+import uuid
+from typing import Any, Literal
 
 import pymupdf
 from pydantic import Field
@@ -11,7 +13,7 @@ from vivepdf.ops._output import OutputResult
 from vivepdf.ops._placement import insertion_matrix
 from vivepdf.ops._svg import MAX_SVG_BYTES, drawing_pdf
 from vivepdf.rpc.errors import ErrorCode, OpError
-from vivepdf.rpc.paths import ModifyPath
+from vivepdf.rpc.paths import ModifyPath, ReadPath
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
@@ -30,8 +32,19 @@ MAX_STROKES = 2_000
 BOARD_BACKGROUNDS = {"black": (0.0, 0.0, 0.0), "white": (1.0, 1.0, 1.0)}
 DRAWING_STAMP_NAME = "/Drawing"
 PLACED_FORM = re.compile(rb"/([^\s/]+)\s+Do")
+SOURCE_KEY = "VivePDFSource"
+SOURCE_VERSION = 1
+MAX_SOURCE_BYTES = 64 * 1024
+DRAWING_NAME_PREFIX = "vivepdf-drawing-"
+
+InsertedKind = Literal["table", "chart"]
 
 Point = tuple[float, float]
+
+
+class InsertedSource(RpcModel):
+    kind: InsertedKind
+    data: dict[str, Any]
 
 
 class PresentationStroke(RpcModel):
@@ -44,6 +57,7 @@ class PresentationStroke(RpcModel):
     font_size: float | None = Field(default=None, gt=0, le=1)
     size: tuple[float, float] | None = None
     svg: str | None = Field(default=None, max_length=MAX_SVG_BYTES)
+    source: InsertedSource | None = None
 
 
 class PresentationPage(RpcModel):
@@ -69,6 +83,23 @@ class SaveDrawingsParams(RpcModel):
 class SaveDrawingsResult(OutputResult):
     annotations: int
     pages_added: int
+
+
+class InsertedSourcesParams(RpcModel):
+    path: ReadPath
+    password: str | None = None
+    page: int = Field(ge=1)
+
+
+class InsertedItem(RpcModel):
+    id: str
+    kind: InsertedKind
+    data: dict[str, Any]
+    rect: tuple[float, float, float, float]
+
+
+class InsertedSourcesResult(RpcModel):
+    items: list[InsertedItem]
 
 
 def _rgb(color: str) -> tuple[float, float, float]:
@@ -216,6 +247,38 @@ def _placed_form(page: pymupdf.Page, box: pymupdf.Rect, drawing: pymupdf.Documen
     return int(value.split()[0])
 
 
+def _source_text(source: InsertedSource | None) -> str | None:
+    if source is None:
+        return None
+    text = json.dumps(
+        {"v": SOURCE_VERSION, "kind": source.kind, "data": source.data},
+        ensure_ascii=False,
+        separators=(",", ":"),
+    )
+    if len(text.encode("utf-8")) > MAX_SOURCE_BYTES:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "the inserted item's source is too large",
+            {"reason": "sourceTooLarge", "limit": MAX_SOURCE_BYTES},
+        )
+    return text
+
+
+def _stored_source(text: str) -> tuple[InsertedKind, dict[str, Any]] | None:
+    if len(text.encode("utf-8")) > MAX_SOURCE_BYTES:
+        return None
+    try:
+        stored = json.loads(text)
+    except ValueError:
+        return None
+    if not isinstance(stored, dict) or stored.get("v") != SOURCE_VERSION:
+        return None
+    kind, data = stored.get("kind"), stored.get("data")
+    if kind not in ("table", "chart") or not isinstance(data, dict):
+        return None
+    return kind, data
+
+
 def _add_drawing(
     page: pymupdf.Page,
     stroke: PresentationStroke,
@@ -232,6 +295,7 @@ def _add_drawing(
     visible.normalize()
     if visible.is_empty:
         return False
+    source = _source_text(stroke.source)
     box = visible * insertion_matrix(page)
     box.normalize()
     drawing = drawing_pdf(stroke.svg.encode("utf-8"), "drawing", stroke.opacity)
@@ -254,6 +318,11 @@ def _add_drawing(
     document.xref_set_key(annot.xref, "AP", f"<</N {appearance} 0 R>>")
     document.xref_set_key(annot.xref, "Contents", "null")
     document.xref_set_key(annot.xref, "Name", DRAWING_STAMP_NAME)
+    document.xref_set_key(
+        annot.xref, "NM", pymupdf.get_pdf_str(f"{DRAWING_NAME_PREFIX}{uuid.uuid4().hex}")
+    )
+    if source is not None:
+        document.xref_set_key(annot.xref, SOURCE_KEY, pymupdf.get_pdf_str(source))
     return True
 
 
@@ -278,6 +347,33 @@ def _draw(
     return added
 
 
+def _page_out_of_range(page: int, count: int) -> OpError:
+    return OpError(
+        ErrorCode.INVALID_PARAMS,
+        f"page {page} is outside 1..{count}",
+        {"reason": "pageOutOfRange", "page": page, "pageCount": count},
+    )
+
+
+def _inserted_item(page: pymupdf.Page, xref: int) -> InsertedItem | None:
+    document = page.parent
+    kind, value = document.xref_get_key(xref, SOURCE_KEY)
+    if kind != "string":
+        return None
+    stored = _stored_source(value)
+    name_kind, name = document.xref_get_key(xref, "NM")
+    if stored is None or name_kind != "string" or not name:
+        return None
+    visible = (page.load_annot(xref).rect * page.rotation_matrix).normalize()
+    width, height = page.rect.width, page.rect.height
+    return InsertedItem(
+        id=name,
+        kind=stored[0],
+        data=stored[1],
+        rect=(visible.x0 / width, visible.y0 / height, visible.x1 / width, visible.y1 / height),
+    )
+
+
 def _board_page(document: pymupdf.Document, board: PresentationBoard) -> pymupdf.Page:
     reference = document[-1].rect if document.page_count else pymupdf.paper_rect("a4")
     width = reference.width
@@ -300,15 +396,7 @@ def save_drawings(params: SaveDrawingsParams, progress: Progress) -> SaveDrawing
         for index, entry in enumerate(params.pages):
             progress.check_cancelled()
             if entry.page > document.page_count:
-                raise OpError(
-                    ErrorCode.INVALID_PARAMS,
-                    f"page {entry.page} is outside 1..{document.page_count}",
-                    {
-                        "reason": "pageOutOfRange",
-                        "page": entry.page,
-                        "pageCount": document.page_count,
-                    },
-                )
+                raise _page_out_of_range(entry.page, document.page_count)
             page = document[entry.page - 1]
             scale = (page.rect.width, page.rect.height)
             added += _draw(page, entry.strokes, scale, page.derotation_matrix, author)
@@ -329,3 +417,20 @@ def save_drawings(params: SaveDrawingsParams, progress: Progress) -> SaveDrawing
     finally:
         if not document.is_closed:
             document.close()
+
+
+@op("presentation.inserted_sources", InsertedSourcesParams)
+def inserted_sources(params: InsertedSourcesParams, progress: Progress) -> InsertedSourcesResult:
+    document = open_document(params.path, params.password)
+    try:
+        if params.page > document.page_count:
+            raise _page_out_of_range(params.page, document.page_count)
+        page = document[params.page - 1]
+        items = [
+            item
+            for xref, kind, _name in page.annot_xrefs()
+            if kind == pymupdf.PDF_ANNOT_STAMP and (item := _inserted_item(page, xref)) is not None
+        ]
+        return InsertedSourcesResult(items=items)
+    finally:
+        document.close()

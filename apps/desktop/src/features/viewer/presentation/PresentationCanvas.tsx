@@ -48,9 +48,9 @@ function rectSize(rect: PageRect) {
   return { width: rect.width, height: rect.height };
 }
 
-type PresentationCanvasProps = { containerRef: RefObject<HTMLDivElement | null>; contained?: boolean; onSignal?: (signal: LiveSignal) => void };
+type PresentationCanvasProps = { containerRef: RefObject<HTMLDivElement | null>; contained?: boolean; onSignal?: (signal: LiveSignal) => void; onEditSavedDrawing?: (pageIndex: number, point: StrokePoint) => void };
 
-export function PresentationCanvas({ containerRef, contained = false, onSignal }: PresentationCanvasProps) {
+export function PresentationCanvas({ containerRef, contained = false, onSignal, onEditSavedDrawing }: PresentationCanvasProps) {
   const tool = usePresentationStore((state) => state.tool);
   const penColor = usePresentationStore((state) => state.penColor);
   const penWidth = usePresentationStore((state) => state.penWidth);
@@ -178,8 +178,11 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal }
     if (tool !== "select") return;
     const point = toContainerPoint(event);
     const pageRect = nearestPageRect(pageRects, point.x, point.y);
-    const hit = pageRect ? drawingAt(pageRect, pagePoint(pageRect, point.x, point.y)) : null;
-    if (pageRect && hit?.tool === "drawing") editPresentationDrawing(pageRect.pageIndex, hit);
+    if (!pageRect) return;
+    const target = pagePoint(pageRect, point.x, point.y);
+    const hit = drawingAt(pageRect, target);
+    if (hit?.tool === "drawing") editPresentationDrawing(pageRect.pageIndex, hit);
+    else if (!hit) onEditSavedDrawing?.(pageRect.pageIndex, target);
   };
 
   const guided = (rect: PageRect, point: { x: number; y: number }) => {

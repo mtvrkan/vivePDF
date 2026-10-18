@@ -4,7 +4,13 @@ import pymupdf
 import pytest
 from pydantic import ValidationError
 
-from vivepdf.ops.presentation import SaveDrawingsParams, save_drawings
+from vivepdf.ops.presentation import (
+    MAX_SOURCE_BYTES,
+    InsertedSourcesParams,
+    SaveDrawingsParams,
+    inserted_sources,
+    save_drawings,
+)
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
@@ -353,3 +359,75 @@ def test_an_inserted_item_keeps_the_page_pictures_when_resources_sit_inside_the_
         assert _red_at(page, 0.4, 0.4)
         assert len(page.get_images()) == 1
         assert page.get_pixmap(alpha=False).pixel(70, 540) == (0, 0, 255)
+
+
+TABLE_SOURCE = {
+    "kind": "table",
+    "data": {"settings": {"cells": [["Ad", "Şehir"]], "align": ["left", "left"]}, "width": 100},
+}
+
+
+def _listed(path: Path, page: int = 1):
+    return inserted_sources(InsertedSourcesParams(path=str(path), page=page), silent_progress())
+
+
+@pytest.mark.parametrize(
+    ("rotation", "offset_crop"), [(0, False), (90, False), (180, True), (270, True)]
+)
+def test_an_inserted_table_keeps_its_source_and_box_on_turned_and_cropped_pages(
+    tmp_path: Path, rotation: int, offset_crop: bool
+):
+    path = _document(tmp_path, rotation, offset_crop)
+    stroke = _item((0.2, 0.3), (0.4, 0.2), source=TABLE_SOURCE)
+
+    _save(path, pages=[{"page": 2, "strokes": [stroke]}])
+
+    [item] = _listed(path, 2).items
+    assert item.kind == "table"
+    assert item.data == TABLE_SOURCE["data"]
+    assert item.id.startswith("vivepdf-drawing-")
+    assert item.rect == pytest.approx((0.2, 0.3, 0.6, 0.5), abs=1e-3)
+    with pymupdf.open(path) as document:
+        assert _red_at(document[1], 0.4, 0.4)
+        assert not _red_at(document[1], 0.1, 0.1)
+    assert _listed(path, 1).items == []
+
+
+def test_old_stamps_and_unreadable_sources_are_not_listed(tmp_path: Path):
+    path = _document(tmp_path)
+    _save(path, pages=[{"page": 1, "strokes": [_item((0.1, 0.1), (0.2, 0.1))] * 3}])
+    with pymupdf.open(path) as document:
+        xrefs = [xref for xref, _kind, _name in document[0].annot_xrefs()]
+        document.xref_set_key(xrefs[1], "VivePDFSource", pymupdf.get_pdf_str("{not json"))
+        newer = '{"v":2,"kind":"table","data":{}}'
+        document.xref_set_key(xrefs[2], "VivePDFSource", pymupdf.get_pdf_str(newer))
+        document.saveIncr()
+
+    assert _listed(path).items == []
+
+
+def test_an_oversized_source_is_refused_and_the_file_is_left_alone(tmp_path: Path):
+    path = _document(tmp_path)
+    before = path.read_bytes()
+    source = {"kind": "chart", "data": {"title": "x" * MAX_SOURCE_BYTES}}
+
+    with pytest.raises(OpError) as caught:
+        _save(path, pages=[{"page": 1, "strokes": [_item((0.1, 0.1), (0.3, 0.1), source=source)]}])
+
+    assert caught.value.code is ErrorCode.INVALID_PARAMS
+    assert caught.value.data["reason"] == "sourceTooLarge"
+    assert path.read_bytes() == before
+
+
+def test_listing_a_page_outside_the_document_or_saving_an_unknown_kind_is_refused(
+    tmp_path: Path,
+):
+    path = _document(tmp_path)
+    unknown = _item((0, 0), (0.1, 0.1), source={"kind": "formula", "data": {}})
+
+    with pytest.raises(OpError) as caught:
+        _listed(path, 3)
+    with pytest.raises(ValidationError):
+        SaveDrawingsParams(path=str(path), pages=[{"page": 1, "strokes": [unknown]}])
+
+    assert caught.value.code is ErrorCode.INVALID_PARAMS

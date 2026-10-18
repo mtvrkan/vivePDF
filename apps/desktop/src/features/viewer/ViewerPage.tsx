@@ -41,7 +41,7 @@ import { OutlinePanel } from "./OutlinePanel";
 import { PendingJump } from "./PendingJump";
 import { ReadingPositionTracker } from "./ReadingPositionTracker";
 import { PresentationBar } from "./presentation/PresentationBar";
-import { PresentationCanvas } from "./presentation/PresentationCanvas";
+import { SavedDrawingCanvas } from "./presentation/SavedDrawingCanvas";
 import { PrintDialog } from "./PrintDialog";
 import { ReadAloudBar } from "./ReadAloudBar";
 import { ReadingView } from "./ReadingView";
@@ -242,7 +242,7 @@ export function ViewerPage() {
                       </div>
                       <AutoScroller documentId={activeDocumentId} hostRef={stageRef} />
                       <SnapshotTaker documentId={activeDocumentId} />
-                      {panels.present ? <PresentationCanvas containerRef={stageRef} /> : null}
+                      {panels.present ? <SavedDrawingCanvas documentId={activeDocumentId} containerRef={stageRef} /> : null}
                       {panels.present ? (
                         <PresentationBar
                           documentId={activeDocumentId}

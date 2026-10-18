@@ -1086,6 +1086,12 @@
     "read"
    ]
   ],
+  "presentation.inserted_sources": [
+   [
+    "path",
+    "read"
+   ]
+  ],
   "presentation.save_drawings": [
    [
     "path",

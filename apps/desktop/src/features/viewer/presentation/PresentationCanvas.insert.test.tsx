@@ -12,12 +12,12 @@ const { PresentationCanvas } = await import("./PresentationCanvas");
 const PAGE = { left: 100, top: 50, width: 800, height: 400 };
 const originalRect = Element.prototype.getBoundingClientRect;
 
-function Stage() {
+function Stage({ onEditSavedDrawing }: { onEditSavedDrawing?: (pageIndex: number, point: { x: number; y: number }) => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   return (
     <div ref={containerRef}>
       <div data-page-index="0" />
-      <PresentationCanvas containerRef={containerRef} />
+      <PresentationCanvas containerRef={containerRef} onEditSavedDrawing={onEditSavedDrawing} />
     </div>
   );
 }
@@ -123,5 +123,28 @@ describe("PresentationCanvas inserted items", () => {
     fireEvent.doubleClick(capture(), { clientX: 150, clientY: 80 });
 
     expect(bridge.edit).not.toHaveBeenCalled();
+  });
+
+  it("asks for a saved item under a double click beside every temporary item, with the page point", () => {
+    const editSaved = vi.fn();
+    render(<Stage onEditSavedDrawing={editSaved} />);
+    act(() => usePresentationStore.getState().setTool("select"));
+
+    fireEvent.doubleClick(capture(), { clientX: 500, clientY: 250 });
+
+    expect(editSaved).toHaveBeenCalledWith(0, { x: 0.5, y: 0.5 });
+    expect(bridge.edit).not.toHaveBeenCalled();
+  });
+
+  it("opens a temporary item instead of a saved one beneath it", () => {
+    const editSaved = vi.fn();
+    render(<Stage onEditSavedDrawing={editSaved} />);
+    armFormula();
+    fireEvent.pointerDown(capture(), { button: 0, pointerId: 1, clientX: 500, clientY: 250 });
+
+    fireEvent.doubleClick(capture(), { clientX: 500, clientY: 250 });
+
+    expect(bridge.edit).toHaveBeenCalledTimes(1);
+    expect(editSaved).not.toHaveBeenCalled();
   });
 });
