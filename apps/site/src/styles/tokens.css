@@ -52,3 +52,4 @@
   --f-ar:"Geist Variable",sans-serif;
 }
 :root[data-theme="dark"]{color-scheme:dark}
+:root{scrollbar-color:color-mix(in srgb,var(--ink-3) 50%,transparent) transparent}

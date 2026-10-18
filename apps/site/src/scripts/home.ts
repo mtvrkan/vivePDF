@@ -3,6 +3,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import type { HomeCopy } from "../i18n/home";
 import { vp } from "./hero-state";
+import { enableLite, isLite, softwareRendering } from "./perf";
 
 type HomeGuide = { t: string; d: string; s: string[]; h: string; i: string };
 export type HomeData = HomeCopy["script"] & { guides: HomeGuide[] };
@@ -62,7 +63,7 @@ function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
   x.shadowColor = dkBg ? "rgba(0,0,0,.6)" : "rgba(20,48,90,.18)";
   x.shadowBlur = s * 0.07;
   x.shadowOffsetY = s * 0.025;
-  x.fillStyle = dkBg ? "rgba(234,242,252,.93)" : "rgba(255,255,255,.96)";
+  x.fillStyle = dkBg ? "rgba(205,219,238,.92)" : "rgba(255,255,255,.96)";
   rr(x, -w / 2, -h / 2, w, h, Math.max(3, s * 0.01));
   x.fill();
   x.shadowColor = "transparent";
@@ -77,7 +78,7 @@ function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
   x.fillRect(L, T + h * 0.085, cw * 0.32, Math.max(2, h * 0.012));
   let y = T + h * 0.15;
   const line = (f: number) => {
-    x.fillStyle = "#DCE5F0";
+    x.fillStyle = dkBg ? "#AFC0D7" : "#DCE5F0";
     rr(x, L, y, cw * f, Math.max(2, h * 0.013), 2);
     x.fill();
     y += h * 0.042;
@@ -166,7 +167,7 @@ function drawBackdrop() {
   x.fillRect(0, 0, W, H);
   pool(x, m.x - s * 0.05, m.y - s * 0.1, s * 1.15, s * 0.42, -1.25, "127,208,255", dkBg ? 0.4 : 0.62);
   pool(x, m.x + s * 0.25, m.y + s * 0.05, s * 1.0, s * 0.3, 1.27, "47,143,230", dkBg ? 0.42 : 0.24);
-  pool(x, m.x + s * 0.1, m.y + s * 0.55, s * 0.55, s * 0.4, 0, "255,196,107", dkBg ? 0.3 : 0.42);
+  pool(x, m.x + s * 0.1, m.y + s * 0.55, s * 0.55, s * 0.4, 0, dkBg ? "127,208,255" : "255,196,107", dkBg ? 0.16 : 0.42);
   pool(x, W * 0.96, H * 0.9, W * 0.4, W * 0.3, 0, "47,143,230", dkBg ? 0.3 : 0.16);
   pool(x, W * 0.2, H * 0.78, W * 0.42, H * 0.4, 0, dkBg ? "18,36,70" : "255,255,255", dkBg ? 0.55 : 0.6);
   x.save();
@@ -1196,19 +1197,24 @@ if (still) {
   gsap.registerPlugin(ScrollTrigger);
   if ("scrollRestoration" in history) history.scrollRestoration = "manual";
   if (!location.hash) window.scrollTo(0, 0);
-  lenis = new Lenis({ duration: 1.15, smoothWheel: true });
-  lenis.on("scroll", ScrollTrigger.update);
+  if (!isLite()) {
+    lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    lenis.on("scroll", ScrollTrigger.update);
+  }
   gsap.ticker.add((t) => lenis?.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
   const tourEl = $(".tour");
+  const goTo = (t: HTMLElement, immediate: boolean) => {
+    const offset = t === tourEl ? window.innerHeight * 0.9 : -90;
+    if (lenis) lenis.scrollTo(t, { offset, immediate });
+    else window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY + offset, behavior: immediate ? "instant" : "smooth" });
+  };
   anchors.forEach((a) =>
     a.addEventListener("click", (e) => {
       const t = document.getElementById(decodeURIComponent(a.hash.slice(1)));
       if (!t) return;
       e.preventDefault();
-      const off = t === tourEl ? window.innerHeight * 0.9 : -90;
-      if (lenis) lenis.scrollTo(t, { offset: off });
-      else t.scrollIntoView();
+      goTo(t, false);
       history.replaceState(null, "", a.hash);
     }),
   );
@@ -1233,6 +1239,8 @@ if (still) {
     .fromTo([".lede", ".cta"], { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 0.8, ease: "expo.out", stagger: 0.06 }, 0.22)
     .fromTo(".hero-foot", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8, ease: "power2.out" }, 0.45);
   reveal.delay(0.1).play();
+  const scrubMark = () =>
+    gsap.to(".hero-mark", { yPercent: -40, scale: 0.55, rotation: -8, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.5 } });
   vp.fallback = () => {
     if (vp.started) return;
     vp.started = true;
@@ -1243,8 +1251,20 @@ if (still) {
       .fromTo(".hero-mark .gr", { xPercent: 36, yPercent: 18, rotation: 16 }, { xPercent: 0, yPercent: 0, rotation: 0, duration: 1.5, ease: "elastic.out(1,.62)" }, 0.07)
       .fromTo(".hero-mark .gf", { xPercent: 24, yPercent: -34, rotation: 30 }, { xPercent: 0, yPercent: 0, rotation: 0, duration: 1.5, ease: "elastic.out(1,.62)" }, 0.15);
     vp.intro = tl;
-    gsap.to(".hero-mark", { yPercent: -40, scale: 0.55, rotation: -8, ease: "none", scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.5 } });
+    scrubMark();
   };
+  addEventListener(
+    "vp:lite",
+    () => {
+      lenis?.destroy();
+      lenis = null;
+      if (!root.classList.contains("gl-on")) return;
+      root.classList.remove("gl-on");
+      root.classList.add("no-gl");
+      scrubMark();
+    },
+    { once: true },
+  );
   vp.timer = window.setTimeout(() => {
     if (!vp.started) vp.fallback();
   }, 4200);
@@ -1255,8 +1275,9 @@ if (still) {
   ["wheel", "touchstart", "keydown"].forEach((t) => addEventListener(t, skip, { once: true, passive: true }));
 
   const conn = navigator as Navigator & { connection?: { saveData?: boolean } };
-  const wantsGl = matchMedia("(min-width:960px)").matches && !conn.connection?.saveData;
-  if (wantsGl) {
+  const wantsGl = matchMedia("(min-width:960px)").matches && !conn.connection?.saveData && !isLite();
+  if (wantsGl && softwareRendering()) enableLite();
+  if (wantsGl && !isLite()) {
     import("./glass")
       .then((m) => m.boot())
       .catch(() => {
@@ -1384,6 +1405,6 @@ if (still) {
   });
   if (location.hash) {
     const t = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-    if (t) requestAnimationFrame(() => lenis?.scrollTo(t, { offset: t === tourEl ? window.innerHeight * 0.9 : -90, immediate: true }));
+    if (t) requestAnimationFrame(() => goTo(t, true));
   }
 }

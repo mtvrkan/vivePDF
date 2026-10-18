@@ -1,3 +1,5 @@
+import { watchPerformance } from "./perf";
+
 const root = document.documentElement;
 const still = root.classList.contains("still");
 
@@ -41,6 +43,8 @@ themeBtn?.addEventListener("click", () => {
     )
     .catch(() => {});
 });
+
+watchPerformance();
 
 const menuBtn = document.querySelector<HTMLButtonElement>(".menu-btn");
 const mnav = document.getElementById("mnav");

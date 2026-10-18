@@ -28,4 +28,23 @@ describe("inline script hashes", () => {
     swap({ pathname: "/en/missing/" }, doc, fetchStub);
     expect(classes).toEqual(["nf-swap"]);
   });
+
+  it("turns on the lite mode for weak devices, a stored verdict or the query flag", () => {
+    const run = (search: string, nav: Record<string, number>, stored: string | null) => {
+      const classes: string[] = [];
+      const doc = { documentElement: { classList: { add: (c: string) => classes.push(c) } } };
+      const storage = { getItem: () => stored };
+      const motion = new Function("document", "location", "navigator", "localStorage", "matchMedia", INLINE_SCRIPTS.motion);
+      motion(doc, { search }, nav, storage, () => ({ matches: false }));
+      return classes;
+    };
+
+    expect(run("", { hardwareConcurrency: 8, deviceMemory: 8 }, null)).toEqual(["motion"]);
+    expect(run("", { hardwareConcurrency: 4, deviceMemory: 4 }, null)).toEqual(["motion", "lite"]);
+    expect(run("", { hardwareConcurrency: 2 }, null)).toEqual(["motion", "lite"]);
+    expect(run("", { hardwareConcurrency: 8 }, String(Date.now()))).toEqual(["motion", "lite"]);
+    expect(run("", { hardwareConcurrency: 8 }, String(Date.now() - 4 * 864e5))).toEqual(["motion"]);
+    expect(run("?lite", { hardwareConcurrency: 16 }, null)).toEqual(["motion", "lite"]);
+    expect(run("?full", { hardwareConcurrency: 2 }, String(Date.now()))).toEqual(["motion"]);
+  });
 });
