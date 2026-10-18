@@ -198,12 +198,19 @@ def _lpstat(option: str) -> str:
     return run.stdout
 
 
+def _default_destination(output: str, names: list[str]) -> str | None:
+    text = output.strip()
+    named = [
+        name for name in names if text.endswith(name) and text[: -len(name)].rstrip().endswith(":")
+    ]
+    return max(named, key=len, default=None)
+
+
 def _cups_printers() -> PrintersResult:
     if not shutil.which("lpstat"):
         return PrintersResult(printers=[], default=None, backend="none")
-    names = [line.split()[0] for line in _lpstat("-a").splitlines() if line.strip()]
-    default_output = _lpstat("-d")
-    default = default_output.split(":")[-1].strip() if ":" in default_output else None
+    names = [line.strip() for line in _lpstat("-e").splitlines() if line.strip()]
+    default = _default_destination(_lpstat("-d"), names)
     printers = [PrinterInfo(name=name, is_default=name == default) for name in names]
     return PrintersResult(printers=printers, default=default or None, backend="cups")
 
@@ -338,7 +345,7 @@ def _print_cups(
     with tempfile.TemporaryDirectory() as scratch:
         source = None
         if not params.annotations:
-            source = Path(scratch) / "print.pdf"
+            source = Path(scratch) / Path(params.path).name
             document.save(source, encryption=pymupdf.PDF_ENCRYPT_NONE)
         result = subprocess.run(
             cups_arguments(params, indices, params.printer, source),

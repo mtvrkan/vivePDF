@@ -56,13 +56,12 @@ def test_windows_printer_listing_reports_backend():
     assert all(isinstance(entry.name, str) for entry in result.printers)
 
 
-def test_cups_listing_reads_the_untranslated_lpstat_output(
+def test_cups_listing_takes_printer_names_from_the_plain_destination_list(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     calls: list[tuple[list[str], dict[str, str]]] = []
     outputs = {
-        "-a": "Office_Laser accepting requests since Sat Oct 18 10:00:00 2026\n"
-        "Label-Printer accepting requests since Sat Oct 18 10:00:00 2026\n",
+        "-e": "Office_Laser\nLabel-Printer\n",
         "-d": "system default destination: Label-Printer\n",
     }
 
@@ -95,6 +94,22 @@ def test_cups_listing_without_printers_or_default_is_empty(
     assert result.printers == []
     assert result.default is None
     assert result.backend == "cups"
+
+
+@pytest.mark.parametrize(
+    ("output", "expected"),
+    [
+        ("sistemin saptanmış hedefi: Label Printer\n", "Label Printer"),
+        ("destination système par défaut : Label\n", "Label"),
+        ("sistemin saptanmış hedefi yok\n", None),
+        ("no system default destination\n", None),
+        ("system default destination: Retired\n", None),
+    ],
+)
+def test_default_printer_is_read_from_translated_lpstat_output(
+    output: str, expected: str | None
+) -> None:
+    assert printing._default_destination(output, ["Label", "Label Printer"]) == expected
 
 
 def test_validate_printer_rejects_unknown_name():
@@ -223,3 +238,31 @@ def test_an_unsupported_pages_per_sheet_is_refused():
 
     with pytest.raises(ValidationError):
         PrintParams(path="/tmp/a.pdf", pages_per_sheet=3)
+
+
+def test_a_copy_without_markup_reaches_the_queue_under_the_file_name(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import pymupdf
+
+    source = tmp_path / "Yıllık rapor.pdf"
+    document = pymupdf.open()
+    document.new_page().add_text_annot((100, 100), "note")
+    document.save(source)
+    sent: list[list[str]] = []
+
+    def fake_run(args: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
+        if args[0] == "lp":
+            sent.append(args)
+            assert Path(args[-1]).exists()
+        return subprocess.CompletedProcess(args, 0, stdout="Queue\n", stderr="")
+
+    monkeypatch.setattr(printing.shutil, "which", lambda name: f"/usr/bin/{name}")
+    monkeypatch.setattr(printing.subprocess, "run", fake_run)
+    monkeypatch.setattr(printing, "_windows", lambda: False)
+    result = printing.run(
+        PrintParams(path=str(source), printer="Queue", annotations=False), silent_progress()
+    )
+    assert result.printer == "Queue"
+    assert Path(sent[0][-1]).name == "Yıllık rapor.pdf"
+    assert Path(sent[0][-1]) != source.resolve()
