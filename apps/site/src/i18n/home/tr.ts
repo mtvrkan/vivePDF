@@ -1,3 +1,5 @@
+import { APP_VERSION } from "..";
+
 const days = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 const keyAnswers = "BDACCEABDBCAEDBACDEB";
 
@@ -219,7 +221,7 @@ export const homeTr = {
     ],
     win: {
       title: "Windows 10 / 11",
-      file: "64 bit · vivePDF_0.3.0_x64-setup.exe",
+      file: `64 bit · vivePDF_${APP_VERSION}_x64-setup.exe`,
       ready: "hazır",
       button: "Windows için indir",
       smartStrong: "İlk açılışta SmartScreen uyarısı çıkabilir.",

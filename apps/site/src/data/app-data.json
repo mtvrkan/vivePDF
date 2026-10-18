@@ -1,0 +1,2939 @@
+{
+  "version": "0.3.0",
+  "tools": {
+    "groups": [
+      {
+        "id": "organize",
+        "label": {
+          "tr": "Sayfa düzeni",
+          "en": "Page layout"
+        }
+      },
+      {
+        "id": "improve",
+        "label": {
+          "tr": "Optimizasyon",
+          "en": "Optimisation"
+        }
+      },
+      {
+        "id": "toPdf",
+        "label": {
+          "tr": "PDF’e dönüştürme",
+          "en": "To PDF"
+        }
+      },
+      {
+        "id": "fromPdf",
+        "label": {
+          "tr": "PDF’ten dönüştürme",
+          "en": "From PDF"
+        }
+      },
+      {
+        "id": "edit",
+        "label": {
+          "tr": "İçerik düzenleme",
+          "en": "Content editing"
+        }
+      },
+      {
+        "id": "security",
+        "label": {
+          "tr": "Güvenlik",
+          "en": "Security"
+        }
+      }
+    ],
+    "items": [
+      {
+        "id": "merge",
+        "group": "organize",
+        "label": {
+          "tr": "Birleştir",
+          "en": "Merge"
+        },
+        "description": {
+          "tr": "Birden çok PDF belgesini belirlenen sırada tek dosyada birleştirir.",
+          "en": "Combine several PDFs into one file, in order."
+        }
+      },
+      {
+        "id": "split",
+        "group": "organize",
+        "label": {
+          "tr": "Böl",
+          "en": "Split"
+        },
+        "description": {
+          "tr": "Belgeyi sayfa aralığına, sayfa sayısına, boyuta veya yer imlerine göre ayırır.",
+          "en": "Cut by ranges, page count, size or bookmarks."
+        }
+      },
+      {
+        "id": "pages",
+        "group": "organize",
+        "label": {
+          "tr": "Sayfa düzenleyici",
+          "en": "Page organizer"
+        },
+        "description": {
+          "tr": "Sayfaları sürükleyerek sıralar; döndürme, silme ve ekleme sağlar.",
+          "en": "Drag to reorder, rotate, delete and insert pages."
+        }
+      },
+      {
+        "id": "rotate",
+        "group": "organize",
+        "label": {
+          "tr": "PDF’i döndür",
+          "en": "Rotate PDF"
+        },
+        "description": {
+          "tr": "Seçili sayfaları kalıcı olarak döndürür.",
+          "en": "Permanently rotate selected pages."
+        }
+      },
+      {
+        "id": "delete",
+        "group": "organize",
+        "label": {
+          "tr": "Sayfaları sil",
+          "en": "Delete pages"
+        },
+        "description": {
+          "tr": "Belirli sayfaları veya bir sayfanın öncesini/sonrasını kaldırır.",
+          "en": "Delete pages, or everything before/after one."
+        }
+      },
+      {
+        "id": "extract",
+        "group": "organize",
+        "label": {
+          "tr": "Sayfaları çıkart",
+          "en": "Extract pages"
+        },
+        "description": {
+          "tr": "Seçili sayfalardan yeni bir PDF oluşturur.",
+          "en": "Create a new PDF from selected pages."
+        }
+      },
+      {
+        "id": "compress",
+        "group": "improve",
+        "label": {
+          "tr": "Sıkıştır",
+          "en": "Compress"
+        },
+        "description": {
+          "tr": "Görselleri yeniden örnekleyerek dosya boyutunu küçültür.",
+          "en": "Resample images and shrink the file."
+        }
+      },
+      {
+        "id": "repair",
+        "group": "improve",
+        "label": {
+          "tr": "Onar",
+          "en": "Repair"
+        },
+        "description": {
+          "tr": "Hasarlı veya açılamayan PDF belgelerini onarır.",
+          "en": "Repair a damaged PDF that will not open."
+        }
+      },
+      {
+        "id": "ocr",
+        "group": "improve",
+        "label": {
+          "tr": "OCR",
+          "en": "OCR"
+        },
+        "description": {
+          "tr": "Taranmış sayfalara aranabilir metin katmanı ekler.",
+          "en": "Turn scanned pages into searchable text."
+        }
+      },
+      {
+        "id": "compare",
+        "group": "improve",
+        "label": {
+          "tr": "Karşılaştır",
+          "en": "Compare"
+        },
+        "description": {
+          "tr": "İki belge arasındaki metin ve görsel farklılıkları raporlar.",
+          "en": "Find text and visual differences between two files."
+        }
+      },
+      {
+        "id": "access",
+        "group": "improve",
+        "label": {
+          "tr": "Erişilebilirlik",
+          "en": "Accessibility"
+        },
+        "description": {
+          "tr": "PDF’i erişilebilirlik temellerine göre puanlayın; başlık, dil ve alternatif metni düzeltin.",
+          "en": "Score a PDF against accessibility basics and fix title, language and alternative text."
+        }
+      },
+      {
+        "id": "preflight",
+        "group": "improve",
+        "label": {
+          "tr": "Baskı kontrolü",
+          "en": "Print check"
+        },
+        "description": {
+          "tr": "Baskı öncesi yazı tiplerini, görsel çözünürlüğünü, taşma payını ve renk uzaylarını denetler.",
+          "en": "Checks fonts, image resolution, bleed and colour spaces before printing."
+        }
+      },
+      {
+        "id": "pdfa",
+        "group": "improve",
+        "label": {
+          "tr": "PDF/A arşiv",
+          "en": "PDF/A archive"
+        },
+        "description": {
+          "tr": "PDF'yi uzun süreli arşive uygunluk için denetleyin ve PDF/A-2b kopyasını kaydedin.",
+          "en": "Check a PDF for long-term archiving and save a PDF/A-2b copy."
+        }
+      },
+      {
+        "id": "batch",
+        "group": "improve",
+        "label": {
+          "tr": "Toplu işlem",
+          "en": "Batch"
+        },
+        "description": {
+          "tr": "Birden çok belgeye aynı işlemi tek seferde uygular.",
+          "en": "Applies the same operation to several documents at once."
+        }
+      },
+      {
+        "id": "watch",
+        "group": "improve",
+        "label": {
+          "tr": "İzlenen klasörler",
+          "en": "Watched folders"
+        },
+        "description": {
+          "tr": "Klasöre düşen her yeni PDF’te kayıtlı zinciri otomatik çalıştırın.",
+          "en": "Run a saved chain automatically on every new PDF in a folder."
+        }
+      },
+      {
+        "id": "scanner",
+        "group": "improve",
+        "label": {
+          "tr": "Tarayıcıdan",
+          "en": "From scanner"
+        },
+        "description": {
+          "tr": "Bağlı bir tarayıcıdan doğrudan PDF’e tarayın.",
+          "en": "Scan straight from a connected scanner into a PDF."
+        }
+      },
+      {
+        "id": "scan-enhance",
+        "group": "improve",
+        "label": {
+          "tr": "İyileştir",
+          "en": "Enhance"
+        },
+        "description": {
+          "tr": "Taranmış sayfaları düzeltin, temizleyin ve beyazlatın.",
+          "en": "Straighten, clean and whiten scanned pages."
+        }
+      },
+      {
+        "id": "scan-split",
+        "group": "organize",
+        "label": {
+          "tr": "Toplu tarama böl",
+          "en": "Split batch"
+        },
+        "description": {
+          "tr": "Toplu taramayı boş sayfa, QR yaprağı veya metne göre belgelere ayırın.",
+          "en": "Cut a batch scan into documents at blank pages, QR sheets or text."
+        }
+      },
+      {
+        "id": "photo",
+        "group": "toPdf",
+        "label": {
+          "tr": "Fotoğraftan",
+          "en": "From photo"
+        },
+        "description": {
+          "tr": "Kâğıdın telefonla çekilmiş fotoğraflarını düzeltilmiş bir PDF’e çevirin.",
+          "en": "Turn phone photos of paper into a straightened PDF."
+        }
+      },
+      {
+        "id": "rename",
+        "group": "organize",
+        "label": {
+          "tr": "Yeniden adlandır",
+          "en": "Rename"
+        },
+        "description": {
+          "tr": "Dosyaları içeriğine göre adlandırın: tarih, fatura numarası, başlık veya tutar.",
+          "en": "Name files after their content: date, invoice number, title or amount."
+        }
+      },
+      {
+        "id": "qr-add",
+        "group": "edit",
+        "label": {
+          "tr": "QR kod ekle",
+          "en": "Add QR code"
+        },
+        "description": {
+          "tr": "Sayfalara bağlantı veya sıra numaralı QR kod basın.",
+          "en": "Stamp a QR code with a link or running number onto pages."
+        }
+      },
+      {
+        "id": "barcode-read",
+        "group": "edit",
+        "label": {
+          "tr": "Kodları oku",
+          "en": "Read codes"
+        },
+        "description": {
+          "tr": "Belgedeki tüm QR kod ve barkodları listeleyin.",
+          "en": "List every QR code and barcode found in a document."
+        }
+      },
+      {
+        "id": "omr-sheet",
+        "group": "edit",
+        "label": {
+          "tr": "Optik form oluştur",
+          "en": "Create answer sheets"
+        },
+        "description": {
+          "tr": "Taramadan geri okunabilen optik cevap kâğıtları yazdırın.",
+          "en": "Print bubble answer sheets that can be read back from a scan."
+        }
+      },
+      {
+        "id": "omr-grade",
+        "group": "edit",
+        "label": {
+          "tr": "Optik form okut",
+          "en": "Grade answer sheets"
+        },
+        "description": {
+          "tr": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın.",
+          "en": "Read filled answer sheets, grade them against a key and export the scores."
+        }
+      },
+      {
+        "id": "create-document",
+        "group": "toPdf",
+        "label": {
+          "tr": "PDF Oluştur",
+          "en": "Create PDF"
+        },
+        "description": {
+          "tr": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün",
+          "en": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet"
+        }
+      },
+      {
+        "id": "create-bulk",
+        "group": "toPdf",
+        "label": {
+          "tr": "Tablodan belgeler",
+          "en": "Documents from a table"
+        },
+        "description": {
+          "tr": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı",
+          "en": "Certificates, invitations and name badges for every row of a CSV or Excel table"
+        }
+      },
+      {
+        "id": "create-paper",
+        "group": "toPdf",
+        "label": {
+          "tr": "Kâğıt",
+          "en": "Paper"
+        },
+        "description": {
+          "tr": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF",
+          "en": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF"
+        }
+      },
+      {
+        "id": "create-book",
+        "group": "toPdf",
+        "label": {
+          "tr": "Kitap",
+          "en": "Book"
+        },
+        "description": {
+          "tr": "Markdown veya metin bölümlerinden kapaklı, bağlantılı içindekiler ve sayfa numaralı kitap",
+          "en": "Markdown or text chapters as a book with a cover, linked contents and page numbers"
+        }
+      },
+      {
+        "id": "create-cv",
+        "group": "toPdf",
+        "label": {
+          "tr": "CV oluşturucu",
+          "en": "CV builder"
+        },
+        "description": {
+          "tr": "Klasik, modern veya kompakt şablonlu, fotoğraflı ve tıklanabilir iletişimli özgeçmiş",
+          "en": "A CV with a classic, modern or compact template, photo and clickable contacts"
+        }
+      },
+      {
+        "id": "studio-design",
+        "group": "toPdf",
+        "label": {
+          "tr": "Studio'da tasarla",
+          "en": "Design in Studio"
+        },
+        "description": {
+          "tr": "Serbest tuvalde 170'ten fazla şablonla afiş, broşür, davetiye ve sosyal medya gönderisi.",
+          "en": "Posters, flyers, invitations and social posts on a free canvas with 170+ templates."
+        }
+      },
+      {
+        "id": "studio-document",
+        "group": "toPdf",
+        "label": {
+          "tr": "Belge yaz",
+          "en": "Write a document"
+        },
+        "description": {
+          "tr": "Başlıklar, tablolar, atıflar ve içindekilerle rapor, makale veya tez yazın.",
+          "en": "Write a report, article or thesis with headings, tables, citations and a contents list."
+        }
+      },
+      {
+        "id": "business-card",
+        "group": "toPdf",
+        "label": {
+          "tr": "Kartvizit",
+          "en": "Business card"
+        },
+        "description": {
+          "tr": "Yaldız, kabartma ve lokal lak ile çift yüzlü kartvizit; taşma payı ve dizimle baskıya hazır.",
+          "en": "Two-sided cards with foil, emboss and spot UV, print-ready with bleed and imposition."
+        }
+      },
+      {
+        "id": "bibliography",
+        "group": "toPdf",
+        "label": {
+          "tr": "Kaynakça",
+          "en": "Bibliography"
+        },
+        "description": {
+          "tr": ".bib, RIS veya CSL JSON içe aktarın, kaynakları düzenleyin ve APA, MLA, Chicago ya da IEEE kaynakça çıkarın.",
+          "en": "Import .bib, RIS or CSL JSON, edit sources and export an APA, MLA, Chicago or IEEE reference list."
+        }
+      },
+      {
+        "id": "images-to-pdf",
+        "group": "toPdf",
+        "label": {
+          "tr": "Görseller → PDF",
+          "en": "Images → PDF"
+        },
+        "description": {
+          "tr": "JPG, PNG ve WebP görsellerini veya bir klasörü PDF’e dönüştürür.",
+          "en": "Turn JPG, PNG, WebP files or a whole folder into a PDF."
+        }
+      },
+      {
+        "id": "file-to-pdf",
+        "group": "toPdf",
+        "label": {
+          "tr": "Office → PDF",
+          "en": "Office → PDF"
+        },
+        "description": {
+          "tr": "Word, Excel, PowerPoint, HTML ve Markdown belgelerini PDF’e dönüştürür.",
+          "en": "Word, Excel, PowerPoint, HTML, Markdown → PDF (LibreOffice is downloaded on request)."
+        }
+      },
+      {
+        "id": "svg-to-pdf",
+        "group": "toPdf",
+        "label": {
+          "tr": "SVG → PDF",
+          "en": "SVG → PDF"
+        },
+        "description": {
+          "tr": "SVG çizimlerini, logoları ve simgeleri keskin, vektör bir PDF’e dönüştürür.",
+          "en": "Turn SVG drawings, logos and icons into a sharp, vector PDF."
+        }
+      },
+      {
+        "id": "url-to-pdf",
+        "group": "toPdf",
+        "label": {
+          "tr": "Web sayfası → PDF",
+          "en": "Web page → PDF"
+        },
+        "description": {
+          "tr": "Bir web sayfasını görselleriyle veya görselsiz PDF olarak kaydedin.",
+          "en": "Save a web page as a PDF, with or without its pictures."
+        }
+      },
+      {
+        "id": "docx",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → Word",
+          "en": "PDF → Word"
+        },
+        "description": {
+          "tr": "Sayfa düzenini koruyarak Word belgesi oluşturur.",
+          "en": "Convert to a Word document, layout preserved."
+        }
+      },
+      {
+        "id": "xlsx",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → Excel",
+          "en": "PDF → Excel"
+        },
+        "description": {
+          "tr": "Tabloları algılayarak Excel çalışma kitabına aktarır.",
+          "en": "Detect tables and export them to Excel."
+        }
+      },
+      {
+        "id": "pptx",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → PowerPoint",
+          "en": "PDF → PowerPoint"
+        },
+        "description": {
+          "tr": "Her sayfayı bir PowerPoint slaydına aktarır.",
+          "en": "Export each page as a PowerPoint slide."
+        }
+      },
+      {
+        "id": "images",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → JPG / PNG",
+          "en": "PDF → JPG / PNG"
+        },
+        "description": {
+          "tr": "Sayfaları JPG, PNG veya WebP olarak dışa aktarır.",
+          "en": "Export pages as JPG, PNG or WebP."
+        }
+      },
+      {
+        "id": "extract-images",
+        "group": "fromPdf",
+        "label": {
+          "tr": "Görselleri çıkar",
+          "en": "Extract images"
+        },
+        "description": {
+          "tr": "PDF'teki tüm gömülü resimleri özgün kalitesinde dışarı çıkarın.",
+          "en": "Pull every embedded picture out of a PDF in its original quality."
+        }
+      },
+      {
+        "id": "text",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → Metin",
+          "en": "PDF → Text"
+        },
+        "description": {
+          "tr": "Belge metnini düz metin dosyası olarak dışa aktarır.",
+          "en": "Export as a plain text file."
+        }
+      },
+      {
+        "id": "markdown",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → Markdown",
+          "en": "PDF → Markdown"
+        },
+        "description": {
+          "tr": "Başlık ve tablo yapısını koruyan Markdown üretir.",
+          "en": "Produce Markdown that keeps headings and tables."
+        }
+      },
+      {
+        "id": "html",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → HTML",
+          "en": "PDF → HTML"
+        },
+        "description": {
+          "tr": "Sayfaları HTML belgesine dönüştürür.",
+          "en": "Convert pages to an HTML document."
+        }
+      },
+      {
+        "id": "epub",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → EPUB",
+          "en": "PDF → EPUB"
+        },
+        "description": {
+          "tr": "PDF’i telefon ve e-okuyucular için akışkan bir EPUB’a dönüştürün.",
+          "en": "Turn a PDF into a reflowable EPUB for phones and e-readers."
+        }
+      },
+      {
+        "id": "number",
+        "group": "edit",
+        "label": {
+          "tr": "Sayfa numarası",
+          "en": "Page numbers"
+        },
+        "description": {
+          "tr": "Sayfa numaralarını belirlenen konuma ekler.",
+          "en": "Add page numbers wherever you like."
+        }
+      },
+      {
+        "id": "headerFooter",
+        "group": "edit",
+        "label": {
+          "tr": "Üstbilgi / altbilgi",
+          "en": "Header / footer"
+        },
+        "description": {
+          "tr": "Her sayfaya üstbilgi ve altbilgi uygular.",
+          "en": "Write a header and footer on every page."
+        }
+      },
+      {
+        "id": "letterhead",
+        "group": "edit",
+        "label": {
+          "tr": "Antetli kağıt",
+          "en": "Letterhead"
+        },
+        "description": {
+          "tr": "Şablon bir PDF’i her sayfanın altına ya da üstüne yerleştirin.",
+          "en": "Lay a template PDF under or over every page."
+        }
+      },
+      {
+        "id": "cover",
+        "group": "edit",
+        "label": {
+          "tr": "Kapak sayfası",
+          "en": "Cover page"
+        },
+        "description": {
+          "tr": "PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf",
+          "en": "Put a designed cover page in front of a PDF: title, author, institution, logo or photo"
+        }
+      },
+      {
+        "id": "findReplace",
+        "group": "edit",
+        "label": {
+          "tr": "Bul ve değiştir",
+          "en": "Find and replace"
+        },
+        "description": {
+          "tr": "Metni bulup aynı punto ve renkte yeniden yazın.",
+          "en": "Find text and rewrite it in the same size and colour."
+        }
+      },
+      {
+        "id": "watermark",
+        "group": "edit",
+        "label": {
+          "tr": "Filigran ekle",
+          "en": "Add watermark"
+        },
+        "description": {
+          "tr": "Metin veya görsel filigran uygular.",
+          "en": "Apply a text or image watermark."
+        }
+      },
+      {
+        "id": "removeWatermark",
+        "group": "edit",
+        "label": {
+          "tr": "Filigran kaldır",
+          "en": "Remove watermark"
+        },
+        "description": {
+          "tr": "Metin, işaretleme veya yinelenen görsel filigranlarını kaldırın.",
+          "en": "Remove text, annotation or repeated-image watermarks."
+        }
+      },
+      {
+        "id": "stamp",
+        "group": "edit",
+        "label": {
+          "tr": "Damga",
+          "en": "Stamp"
+        },
+        "description": {
+          "tr": "Belgeyi onaylandı, taslak ya da gizli olarak damgalayın.",
+          "en": "Stamp a document as approved, draft or confidential."
+        }
+      },
+      {
+        "id": "crop",
+        "group": "edit",
+        "label": {
+          "tr": "Kırp",
+          "en": "Crop"
+        },
+        "description": {
+          "tr": "Kenar boşluklarını milimetre hassasiyetiyle kırpar.",
+          "en": "Trim margins with millimetre precision."
+        }
+      },
+      {
+        "id": "resize",
+        "group": "edit",
+        "label": {
+          "tr": "Sayfa boyutu",
+          "en": "Page size"
+        },
+        "description": {
+          "tr": "Sayfaları A6, A5, A4, A3, A2, Letter veya özel boyuta küçültün ya da büyütün.",
+          "en": "Shrink or enlarge pages to A6, A5, A4, A3, A2, Letter or a custom size."
+        }
+      },
+      {
+        "id": "flatten",
+        "group": "edit",
+        "label": {
+          "tr": "Düzleştir",
+          "en": "Flatten"
+        },
+        "description": {
+          "tr": "Form alanlarını ve notları kalıcı içeriğe dönüştürür.",
+          "en": "Bake forms and annotations into the content."
+        }
+      },
+      {
+        "id": "impose",
+        "group": "edit",
+        "label": {
+          "tr": "Kitapçık / N-up",
+          "en": "Booklet / N-up"
+        },
+        "description": {
+          "tr": "Yaprak başına 2, 4 ya da 9 sayfa yerleştirin veya kitapçık oluşturun.",
+          "en": "Lay out 2, 4 or 9 pages per sheet, or build a booklet."
+        }
+      },
+      {
+        "id": "poster",
+        "group": "edit",
+        "label": {
+          "tr": "Poster / döşeme",
+          "en": "Poster / tiles"
+        },
+        "description": {
+          "tr": "Bir sayfayı birkaç kâğıda bölerek büyük basın, kesim işaretleriyle.",
+          "en": "Print one page large across several sheets, with cut marks."
+        }
+      },
+      {
+        "id": "bookmarks",
+        "group": "edit",
+        "label": {
+          "tr": "Yer imleri",
+          "en": "Bookmarks"
+        },
+        "description": {
+          "tr": "İçindekileri düzenleyin veya başlıklardan üretin.",
+          "en": "Edit the table of contents or generate it from headings."
+        }
+      },
+      {
+        "id": "autolink",
+        "group": "edit",
+        "label": {
+          "tr": "Otomatik bağlantı",
+          "en": "Auto-link"
+        },
+        "description": {
+          "tr": "Metindeki web ve e-posta adreslerini tıklanabilir yapın.",
+          "en": "Make web addresses and e-mail addresses in the text clickable."
+        }
+      },
+      {
+        "id": "textedit",
+        "group": "edit",
+        "label": {
+          "tr": "Metin düzenle",
+          "en": "Edit text"
+        },
+        "description": {
+          "tr": "Mevcut metni yerinde değiştirin (deneysel).",
+          "en": "Change existing text in place (experimental)."
+        }
+      },
+      {
+        "id": "forms",
+        "group": "edit",
+        "label": {
+          "tr": "Doldur",
+          "en": "Fill"
+        },
+        "description": {
+          "tr": "Form alanlarını doldurur; isteğe bağlı olarak kilitler.",
+          "en": "Fill form fields, optionally lock them."
+        }
+      },
+      {
+        "id": "form-merge",
+        "group": "edit",
+        "label": {
+          "tr": "Toplu doldur",
+          "en": "Mail merge"
+        },
+        "description": {
+          "tr": "CSV veya Excel tablosunun her satırından bir form doldurun.",
+          "en": "Fill one form from every row of a CSV or Excel table."
+        }
+      },
+      {
+        "id": "form-export",
+        "group": "edit",
+        "label": {
+          "tr": "Tablo çıkar",
+          "en": "Export table"
+        },
+        "description": {
+          "tr": "Çok sayıda doldurulmuş formun değerlerini tek tabloya toplayın.",
+          "en": "Collect the values of many filled forms into one spreadsheet."
+        }
+      },
+      {
+        "id": "form-detect",
+        "group": "edit",
+        "label": {
+          "tr": "Alan algıla",
+          "en": "Detect fields"
+        },
+        "description": {
+          "tr": "Alt çizgileri ve kutuları gerçek form alanlarına dönüştürün.",
+          "en": "Turn underlines and boxes into real form fields."
+        }
+      },
+      {
+        "id": "annotate",
+        "group": "edit",
+        "label": {
+          "tr": "İşaretle / not ekle",
+          "en": "Annotate / mark up"
+        },
+        "description": {
+          "tr": "Vurgu, çizim, şekil ve metin kutusu ekler.",
+          "en": "Add highlights, drawings, shapes and text boxes."
+        }
+      },
+      {
+        "id": "encrypt",
+        "group": "security",
+        "label": {
+          "tr": "Parola ekle",
+          "en": "Add password"
+        },
+        "description": {
+          "tr": "Belgeyi parola ve izin ayarlarıyla korur.",
+          "en": "Protect with a password and permissions."
+        }
+      },
+      {
+        "id": "decrypt",
+        "group": "security",
+        "label": {
+          "tr": "Parola kaldır",
+          "en": "Remove password"
+        },
+        "description": {
+          "tr": "Parolayı kaldırarak erişime açık bir kopya oluşturur.",
+          "en": "Remove the password and save an open copy."
+        }
+      },
+      {
+        "id": "seal",
+        "group": "security",
+        "label": {
+          "tr": "Sertifikayla mühürle",
+          "en": "Seal with a certificate"
+        },
+        "description": {
+          "tr": "Dosyayı hiç parola olmadan sertifika sahiplerine mühürleyin.",
+          "en": "Seal a file for certificate holders, with no password at all."
+        }
+      },
+      {
+        "id": "unseal",
+        "group": "security",
+        "label": {
+          "tr": "Sertifikayla aç",
+          "en": "Open with a certificate"
+        },
+        "description": {
+          "tr": "Sertifikayla mühürlenmiş bir dosyayı kendi sertifikanızla açın.",
+          "en": "Open a certificate-sealed file with your own certificate."
+        }
+      },
+      {
+        "id": "redact",
+        "group": "security",
+        "label": {
+          "tr": "Karartma",
+          "en": "Redaction"
+        },
+        "description": {
+          "tr": "Metin ve alanları geri döndürülemez biçimde kaldırır.",
+          "en": "Permanently remove text and areas."
+        }
+      },
+      {
+        "id": "privacy",
+        "group": "security",
+        "label": {
+          "tr": "Gizlilik kontrolü",
+          "en": "Privacy check"
+        },
+        "description": {
+          "tr": "Dosyanın neleri açığa çıkardığını görün (üst veri, betik, ek, bağlantı, kimlik numarası) ve paylaşmadan önce temizleyin.",
+          "en": "See what a file reveals (metadata, scripts, attachments, links, ID numbers) and clean it before sharing."
+        }
+      },
+      {
+        "id": "sign",
+        "group": "security",
+        "label": {
+          "tr": "İmzala",
+          "en": "Sign"
+        },
+        "description": {
+          "tr": "PFX / P12 sertifikasıyla PAdES dijital imza uygular.",
+          "en": "Apply a PAdES signature with a PFX / P12 certificate."
+        }
+      },
+      {
+        "id": "verify",
+        "group": "security",
+        "label": {
+          "tr": "Doğrula",
+          "en": "Verify"
+        },
+        "description": {
+          "tr": "İmzaların bütünlüğünü ve kapsamını doğrular.",
+          "en": "Check signature integrity and coverage."
+        }
+      },
+      {
+        "id": "certificate",
+        "group": "security",
+        "label": {
+          "tr": "Sertifika oluştur",
+          "en": "Create certificate"
+        },
+        "description": {
+          "tr": "Kendinden imzalı sertifika oluşturur.",
+          "en": "Generate a self-signed certificate."
+        }
+      },
+      {
+        "id": "certificate-export",
+        "group": "security",
+        "label": {
+          "tr": "Açık sertifikayı dışa aktar",
+          "en": "Export public certificate"
+        },
+        "description": {
+          "tr": "Elinizdeki .p12 dosyasından açık .cer dosyasını yazar.",
+          "en": "Write the public .cer out of a .p12 you already hold."
+        }
+      }
+    ]
+  },
+  "shortcuts": {
+    "gestures": {
+      "tr": {
+        "click": "Tık",
+        "drag": "Sürükle",
+        "doubleClick": "Çift tık",
+        "wheel": "Tekerlek"
+      },
+      "en": {
+        "click": "Click",
+        "drag": "Drag",
+        "doubleClick": "Double click",
+        "wheel": "Wheel"
+      }
+    },
+    "groups": [
+      {
+        "id": "global",
+        "label": {
+          "tr": "Genel",
+          "en": "Global"
+        },
+        "items": [
+          {
+            "label": {
+              "tr": "PDF aç",
+              "en": "Open PDF"
+            },
+            "win": [
+              "Ctrl O"
+            ],
+            "mac": [
+              "⌘O"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yeni pencere",
+              "en": "New window"
+            },
+            "win": [
+              "Ctrl Shift N"
+            ],
+            "mac": [
+              "⇧⌘N"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kopyaladığınızdan PDF",
+              "en": "PDF from what you copied"
+            },
+            "win": [
+              "Ctrl Shift V"
+            ],
+            "mac": [
+              "⇧⌘V"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Komut paleti",
+              "en": "Command palette"
+            },
+            "win": [
+              "Ctrl K"
+            ],
+            "mac": [
+              "⌘K"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Bu ekranın kısayolları",
+              "en": "Shortcuts for this screen"
+            },
+            "win": [
+              "F1",
+              "Ctrl"
+            ],
+            "mac": [
+              "F1",
+              "⌘"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Bu ekranın yardım konusu",
+              "en": "Help topic for this screen"
+            },
+            "win": [
+              "Shift F1"
+            ],
+            "mac": [
+              "⇧F1"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Etkin belgeyi kapat",
+              "en": "Close active document"
+            },
+            "win": [
+              "Ctrl W"
+            ],
+            "mac": [
+              "⌘W"
+            ]
+          },
+          {
+            "label": {
+              "tr": "İletişim kutusunu kapat",
+              "en": "Close dialog"
+            },
+            "win": [
+              "Esc"
+            ],
+            "mac": [
+              "Esc"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "viewer",
+        "label": {
+          "tr": "Görüntüleyici",
+          "en": "Viewer"
+        },
+        "items": [
+          {
+            "label": {
+              "tr": "Belgede ara",
+              "en": "Search in document"
+            },
+            "win": [
+              "Ctrl F"
+            ],
+            "mac": [
+              "⌘F"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sonraki / önceki arama sonucu",
+              "en": "Next / previous search result"
+            },
+            "win": [
+              "F3",
+              "Shift F3"
+            ],
+            "mac": [
+              "F3",
+              "⇧F3"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili metni kod olarak kopyala",
+              "en": "Copy the selected text as code"
+            },
+            "win": [
+              "Ctrl Shift C"
+            ],
+            "mac": [
+              "⇧⌘C"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yazdır",
+              "en": "Print"
+            },
+            "win": [
+              "Ctrl P"
+            ],
+            "mac": [
+              "⌘P"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sinema modu (tam ekran)",
+              "en": "Immersive mode (full screen)"
+            },
+            "win": [
+              "F11"
+            ],
+            "mac": [
+              "⌃⌘F"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yakınlaştır / uzaklaştır",
+              "en": "Zoom in / out"
+            },
+            "win": [
+              "Ctrl +",
+              "Ctrl −",
+              "Ctrl Wheel"
+            ],
+            "mac": [
+              "⌘+",
+              "⌘−",
+              "⌘ Wheel"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Gerçek boyut / genişliğe sığdır / sayfaya sığdır",
+              "en": "Actual size / fit width / fit page"
+            },
+            "win": [
+              "Ctrl 0",
+              "Ctrl 1",
+              "Ctrl 2"
+            ],
+            "mac": [
+              "⌘0",
+              "⌘1",
+              "⌘2"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfayı sürükleyerek kaydır",
+              "en": "Drag to scroll the page"
+            },
+            "win": [
+              "Space + Drag",
+              "Middle Drag"
+            ],
+            "mac": [
+              "Space + Drag",
+              "Middle Drag"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Önceki / sonraki sayfa",
+              "en": "Previous / next page"
+            },
+            "win": [
+              "PgUp",
+              "PgDn",
+              "← →"
+            ],
+            "mac": [
+              "PgUp",
+              "PgDn",
+              "← →"
+            ]
+          },
+          {
+            "label": {
+              "tr": "İlk / son sayfa",
+              "en": "First / last page"
+            },
+            "win": [
+              "Home",
+              "End"
+            ],
+            "mac": [
+              "Home",
+              "End"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Atladığınız sayfalar arasında geri / ileri",
+              "en": "Back / forward along pages you jumped between"
+            },
+            "win": [
+              "Alt ←",
+              "Alt →"
+            ],
+            "mac": [
+              "⌥←",
+              "⌥→"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili işareti sil",
+              "en": "Delete selected mark"
+            },
+            "win": [
+              "Delete"
+            ],
+            "mac": [
+              "Delete"
+            ]
+          },
+          {
+            "label": {
+              "tr": "İşaretlemede geri al / yinele",
+              "en": "Undo / redo mark-up"
+            },
+            "win": [
+              "Ctrl Z",
+              "Ctrl Y"
+            ],
+            "mac": [
+              "⌘Z",
+              "⌘Y"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Otomatik kaydırmayı başlat veya durdur",
+              "en": "Start or stop automatic scrolling"
+            },
+            "win": [
+              "Ctrl Shift H"
+            ],
+            "mac": [
+              "⇧⌘H"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Pencereyi böl / bölmeyi kapat",
+              "en": "Split the window / close the split"
+            },
+            "win": [
+              "Ctrl Shift E"
+            ],
+            "mac": [
+              "⇧⌘E"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Otomatik kaydırırken: hız, yön, durdur",
+              "en": "While scrolling automatically: speed, direction, stop"
+            },
+            "win": [
+              "↑ ↓",
+              "−",
+              "Esc"
+            ],
+            "mac": [
+              "↑ ↓",
+              "−",
+              "Esc"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "editor",
+        "label": {
+          "tr": "Düzenleme",
+          "en": "Editing"
+        },
+        "items": [
+          {
+            "label": {
+              "tr": "Seçili kutuyu ya da mevcut metni sil",
+              "en": "Remove the selected box or existing text"
+            },
+            "win": [
+              "Delete",
+              "Backspace"
+            ],
+            "mac": [
+              "Delete",
+              "Backspace"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili metni düzenlemeye aç",
+              "en": "Open the selected text for editing"
+            },
+            "win": [
+              "Enter"
+            ],
+            "mac": [
+              "Enter"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Düzenleyiciyi kapat / seçimi kaldır / düzenlemeden çık",
+              "en": "Close the editor / deselect / leave editing"
+            },
+            "win": [
+              "Esc"
+            ],
+            "mac": [
+              "Esc"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kaydet / farklı kaydet",
+              "en": "Save in place / save as"
+            },
+            "win": [
+              "Ctrl S",
+              "Ctrl Shift S"
+            ],
+            "mac": [
+              "⌘S",
+              "⇧⌘S"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kalın / yatık",
+              "en": "Bold / italic"
+            },
+            "win": [
+              "Ctrl B",
+              "Ctrl I"
+            ],
+            "mac": [
+              "⌘B",
+              "⌘I"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili kutuyu çoğalt",
+              "en": "Duplicate the selected box"
+            },
+            "win": [
+              "Ctrl D"
+            ],
+            "mac": [
+              "⌘D"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili kutuyu kopyala, kes veya yapıştır",
+              "en": "Copy, cut or paste the selected box"
+            },
+            "win": [
+              "Ctrl C",
+              "Ctrl X",
+              "Ctrl V"
+            ],
+            "mac": [
+              "⌘C",
+              "⌘X",
+              "⌘V"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfadaki sonraki / önceki kutuyu seç",
+              "en": "Select the next / previous box on the page"
+            },
+            "win": [
+              "Tab",
+              "Shift Tab"
+            ],
+            "mac": [
+              "Tab",
+              "⇧ Tab"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili kutuyu taşı (Shift: 10 pt)",
+              "en": "Move the selected box (Shift: 10 pt)"
+            },
+            "win": [
+              "← → ↑ ↓",
+              "Shift"
+            ],
+            "mac": [
+              "← → ↑ ↓",
+              "Shift"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "presentation",
+        "label": {
+          "tr": "Sunum",
+          "en": "Presentation"
+        },
+        "items": [
+          {
+            "label": {
+              "tr": "Sunum moduna gir / çık",
+              "en": "Enter / exit presentation mode"
+            },
+            "win": [
+              "F11"
+            ],
+            "mac": [
+              "⌃⌘F"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sunumu ilk sayfadan / bulunduğun sayfadan başlat",
+              "en": "Start presenting from the first page / from the current page"
+            },
+            "win": [
+              "F5",
+              "Shift F5"
+            ],
+            "mac": [
+              "F5",
+              "⇧F5"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sunucu görünümünü ilk sayfadan / geçerli sayfadan başlat",
+              "en": "Start presenter view from the first page / from the current page"
+            },
+            "win": [
+              "Alt F5",
+              "Alt Shift F5"
+            ],
+            "mac": [
+              "⌥F5",
+              "⌥⇧F5"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Lazer işaretçi",
+              "en": "Laser pointer"
+            },
+            "win": [
+              "L"
+            ],
+            "mac": [
+              "L"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kalem",
+              "en": "Pen"
+            },
+            "win": [
+              "P"
+            ],
+            "mac": [
+              "P"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Fosforlu kalem",
+              "en": "Highlighter"
+            },
+            "win": [
+              "H"
+            ],
+            "mac": [
+              "H"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Silgi",
+              "en": "Eraser"
+            },
+            "win": [
+              "E"
+            ],
+            "mac": [
+              "E"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Spot ışık",
+              "en": "Spotlight"
+            },
+            "win": [
+              "S"
+            ],
+            "mac": [
+              "S"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Büyüteç",
+              "en": "Magnifier"
+            },
+            "win": [
+              "M"
+            ],
+            "mac": [
+              "M"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Cetveli göster/gizle",
+              "en": "Show or hide the ruler"
+            },
+            "win": [
+              "U"
+            ],
+            "mac": [
+              "U"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Bir çizimi seçin; taşıyın ya da silin",
+              "en": "Select a drawing, then move or delete it"
+            },
+            "win": [
+              "V",
+              "Del"
+            ],
+            "mac": [
+              "V",
+              "Del"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili çizimi sağa / sola döndür · çoğalt",
+              "en": "Rotate the selected drawing right / left · duplicate it"
+            },
+            "win": [
+              "R",
+              "Shift R",
+              "Ctrl D"
+            ],
+            "mac": [
+              "R",
+              "⇧R",
+              "⌘D"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sürüklenen alana yakınlaştır",
+              "en": "Zoom to a dragged area"
+            },
+            "win": [
+              "Z"
+            ],
+            "mac": [
+              "Z"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Siyah / beyaz karartma",
+              "en": "Blackout black / white"
+            },
+            "win": [
+              "B",
+              "W",
+              "."
+            ],
+            "mac": [
+              "B",
+              "W",
+              "."
+            ]
+          },
+          {
+            "label": {
+              "tr": "Slayt genel görünüm ızgarası",
+              "en": "Slide overview grid"
+            },
+            "win": [
+              "G"
+            ],
+            "mac": [
+              "G"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Algılanan kod bloklarını aç / gezin",
+              "en": "Open / cycle detected code blocks"
+            },
+            "win": [
+              "K"
+            ],
+            "mac": [
+              "K"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kronometre / saati aç kapat",
+              "en": "Toggle timer / clock"
+            },
+            "win": [
+              "T",
+              "C"
+            ],
+            "mac": [
+              "T",
+              "C"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Konuşmacı notlarını göster/gizle",
+              "en": "Show or hide the speaker notes"
+            },
+            "win": [
+              "N"
+            ],
+            "mac": [
+              "N"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Çizimde geri al / yinele",
+              "en": "Undo / redo drawing"
+            },
+            "win": [
+              "Ctrl Z",
+              "Ctrl Y"
+            ],
+            "mac": [
+              "⌘Z",
+              "⌘Y"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Katmanı kapat / aracı iptal et / çık",
+              "en": "Close overlay / cancel tool / exit"
+            },
+            "win": [
+              "Esc"
+            ],
+            "mac": [
+              "Esc"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "organizer",
+        "label": {
+          "tr": "Sayfa düzenleyici",
+          "en": "Page organizer"
+        },
+        "items": [
+          {
+            "label": {
+              "tr": "Geri al / yinele",
+              "en": "Undo / redo"
+            },
+            "win": [
+              "Ctrl+Z",
+              "Ctrl+Y"
+            ],
+            "mac": [
+              "⌘Z",
+              "⌘Y"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili sayfaları sil",
+              "en": "Delete selected pages"
+            },
+            "win": [
+              "Delete"
+            ],
+            "mac": [
+              "Delete"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sağa / sola döndür",
+              "en": "Rotate right / left"
+            },
+            "win": [
+              "R",
+              "Shift+R"
+            ],
+            "mac": [
+              "R",
+              "⇧R"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Çoğalt",
+              "en": "Duplicate"
+            },
+            "win": [
+              "Ctrl+D"
+            ],
+            "mac": [
+              "⌘D"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfaları kopyala / kes / yapıştır",
+              "en": "Copy / cut / paste pages"
+            },
+            "win": [
+              "Ctrl+C",
+              "Ctrl+X",
+              "Ctrl+V"
+            ],
+            "mac": [
+              "⌘C",
+              "⌘X",
+              "⌘V"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili sayfalardan sonra böl / işareti kaldır",
+              "en": "Split after selected pages / remove mark"
+            },
+            "win": [
+              "S"
+            ],
+            "mac": [
+              "S"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Tüm bölme işaretlerini kaldır",
+              "en": "Remove every split mark"
+            },
+            "win": [
+              "Shift+S"
+            ],
+            "mac": [
+              "⇧S"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Boş sayfa ekle",
+              "en": "Insert a blank page"
+            },
+            "win": [
+              "B"
+            ],
+            "mac": [
+              "B"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili sayfaları ayrı PDF olarak çıkar",
+              "en": "Extract the selected pages as a new PDF"
+            },
+            "win": [
+              "Ctrl+E"
+            ],
+            "mac": [
+              "⌘E"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili sayfaları ya da tümünü yazdır",
+              "en": "Print the selected pages, or all of them"
+            },
+            "win": [
+              "Ctrl+P"
+            ],
+            "mac": [
+              "⌘P"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Tümünü seç / seçimi kaldır",
+              "en": "Select all / clear selection"
+            },
+            "win": [
+              "Ctrl+A",
+              "Esc"
+            ],
+            "mac": [
+              "⌘A",
+              "Esc"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçimi tersine çevir",
+              "en": "Invert selection"
+            },
+            "win": [
+              "Ctrl+I"
+            ],
+            "mac": [
+              "⌘I"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfa numarasıyla seç",
+              "en": "Select by page numbers"
+            },
+            "win": [
+              "Ctrl+G"
+            ],
+            "mac": [
+              "⌘G"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfayı önizle",
+              "en": "Preview the page"
+            },
+            "win": [
+              "{doubleClick}",
+              "Space",
+              "Enter"
+            ],
+            "mac": [
+              "{doubleClick}",
+              "Space",
+              "Enter"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Önizlemede: sayfayı seç / seçimi genişlet",
+              "en": "In the preview: select the page / extend the selection"
+            },
+            "win": [
+              "Enter",
+              "Shift+← →"
+            ],
+            "mac": [
+              "Enter",
+              "⇧← →"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfa menüsü",
+              "en": "Page menu"
+            },
+            "win": [
+              "Shift+F10"
+            ],
+            "mac": [
+              "⇧F10"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Aralık / çoklu seçim",
+              "en": "Range / multi selection"
+            },
+            "win": [
+              "Shift+{click}",
+              "Ctrl+{click}"
+            ],
+            "mac": [
+              "Shift+{click}",
+              "⌘ {click}"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Boş alandan sürükleyerek seç (Ctrl ile tersine çevir, Shift ile ekle)",
+              "en": "Drag from an empty area to select (Ctrl toggles, Shift adds)"
+            },
+            "win": [
+              "{drag}"
+            ],
+            "mac": [
+              "{drag}"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçimi taşı (Shift ile genişlet)",
+              "en": "Move selection (Shift extends)"
+            },
+            "win": [
+              "← → ↑ ↓ (+Shift)"
+            ],
+            "mac": [
+              "← → ↑ ↓ (+Shift)"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili sayfaları bir adım, bir satır ya da başa / sona taşı",
+              "en": "Move the selected pages one step, a row, or to the start / end"
+            },
+            "win": [
+              "Alt+← → ↑ ↓",
+              "Alt+Home",
+              "Alt+End"
+            ],
+            "mac": [
+              "⌥← → ↑ ↓",
+              "⌥ Home",
+              "⌥ End"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili sayfaları bir sayfa numarasına taşı",
+              "en": "Move the selected pages to a page number"
+            },
+            "win": [
+              "M"
+            ],
+            "mac": [
+              "M"
+            ]
+          },
+          {
+            "label": {
+              "tr": "İlk / son sayfaya git",
+              "en": "Go to the first / last page"
+            },
+            "win": [
+              "Home",
+              "End"
+            ],
+            "mac": [
+              "Home",
+              "End"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Küçük resim boyutu",
+              "en": "Thumbnail size"
+            },
+            "win": [
+              "Ctrl+{wheel}",
+              "Ctrl +",
+              "Ctrl −"
+            ],
+            "mac": [
+              "⌘ {wheel}",
+              "⌘+",
+              "⌘−"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Uygula ve kaydet",
+              "en": "Apply and save"
+            },
+            "win": [
+              "Ctrl+Enter"
+            ],
+            "mac": [
+              "⌘↩"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kısayolları göster",
+              "en": "Show shortcuts"
+            },
+            "win": [
+              "?"
+            ],
+            "mac": [
+              "?"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "studio",
+        "label": {
+          "tr": "Stüdyo tasarım düzenleyici",
+          "en": "Studio design editor"
+        },
+        "items": [
+          {
+            "label": {
+              "tr": "Kaydet / farklı kaydet…",
+              "en": "Save / save as…"
+            },
+            "win": [
+              "Ctrl S",
+              "Ctrl Shift S"
+            ],
+            "mac": [
+              "⌘S",
+              "⇧⌘S"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Tasarım aç…",
+              "en": "Open a design…"
+            },
+            "win": [
+              "Ctrl O"
+            ],
+            "mac": [
+              "⌘O"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Dışa aktar…",
+              "en": "Export…"
+            },
+            "win": [
+              "Ctrl E"
+            ],
+            "mac": [
+              "⌘E"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yazdır…",
+              "en": "Print…"
+            },
+            "win": [
+              "Ctrl P"
+            ],
+            "mac": [
+              "⌘P"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Klavye kısayollarını göster",
+              "en": "Show keyboard shortcuts"
+            },
+            "win": [
+              "?",
+              "F1"
+            ],
+            "mac": [
+              "?",
+              "F1"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Geri al / yinele",
+              "en": "Undo / redo"
+            },
+            "win": [
+              "Ctrl Z",
+              "Ctrl Y",
+              "Ctrl Shift Z"
+            ],
+            "mac": [
+              "⌘Z",
+              "⌘Y",
+              "⇧⌘Z"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kopyala / kes / yapıştır",
+              "en": "Copy / cut / paste"
+            },
+            "win": [
+              "Ctrl C",
+              "Ctrl X",
+              "Ctrl V"
+            ],
+            "mac": [
+              "⌘C",
+              "⌘X",
+              "⌘V"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Aynı yere yapıştır",
+              "en": "Paste in the same place"
+            },
+            "win": [
+              "Ctrl Shift V"
+            ],
+            "mac": [
+              "⇧⌘V"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Stili kopyala / stili yapıştır",
+              "en": "Copy style / paste style"
+            },
+            "win": [
+              "Ctrl Alt C",
+              "Ctrl Alt V"
+            ],
+            "mac": [
+              "⌥⌘C",
+              "⌥⌘V"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Çoğalt",
+              "en": "Duplicate"
+            },
+            "win": [
+              "Ctrl D"
+            ],
+            "mac": [
+              "⌘D"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sil",
+              "en": "Delete"
+            },
+            "win": [
+              "Delete",
+              "Backspace"
+            ],
+            "mac": [
+              "Delete",
+              "Backspace"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfadaki her şeyi seç",
+              "en": "Select everything on the page"
+            },
+            "win": [
+              "Ctrl A"
+            ],
+            "mac": [
+              "⌘A"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Bul ve değiştir",
+              "en": "Find and replace"
+            },
+            "win": [
+              "Ctrl F",
+              "Ctrl H"
+            ],
+            "mac": [
+              "⌘F",
+              "⌘H"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Resmi kırp",
+              "en": "Crop picture"
+            },
+            "win": [
+              "Enter",
+              "Double-click"
+            ],
+            "mac": [
+              "Enter",
+              "Double-click"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçimi kaldır, metin düzenlemeyi bitir ya da sürüklemeyi iptal et",
+              "en": "Deselect, stop editing text or cancel a drag"
+            },
+            "win": [
+              "Esc"
+            ],
+            "mac": [
+              "Esc"
+            ]
+          },
+          {
+            "label": {
+              "tr": "0,5 mm kaydır (Shift ile 5 mm)",
+              "en": "Move by 0.5 mm (with Shift 5 mm)"
+            },
+            "win": [
+              "← → ↑ ↓",
+              "Shift"
+            ],
+            "mac": [
+              "← → ↑ ↓",
+              "Shift"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Grupla / grubu çöz",
+              "en": "Group / ungroup"
+            },
+            "win": [
+              "Ctrl G",
+              "Ctrl Shift G"
+            ],
+            "mac": [
+              "⌘G",
+              "⇧⌘G"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Bir öne getir / bir arkaya gönder",
+              "en": "Bring forward / send backward"
+            },
+            "win": [
+              "Ctrl ↑",
+              "Ctrl ↓"
+            ],
+            "mac": [
+              "⌘↑",
+              "⌘↓"
+            ]
+          },
+          {
+            "label": {
+              "tr": "En öne getir / en arkaya gönder",
+              "en": "Bring to front / send to back"
+            },
+            "win": [
+              "Ctrl Shift ↑",
+              "Ctrl Shift ↓"
+            ],
+            "mac": [
+              "⇧⌘↑",
+              "⇧⌘↓"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Odaktaki katmanı yukarı / aşağı taşı (Katmanlar paneli)",
+              "en": "Move the focused layer up / down (Layers panel)"
+            },
+            "win": [
+              "Alt ↑",
+              "Alt ↓"
+            ],
+            "mac": [
+              "⌥↑",
+              "⌥↓"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kilitle ya da kilidi aç",
+              "en": "Lock or unlock"
+            },
+            "win": [
+              "Ctrl Shift L"
+            ],
+            "mac": [
+              "⇧⌘L"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Gizle ya da göster",
+              "en": "Hide or show"
+            },
+            "win": [
+              "Ctrl Shift H"
+            ],
+            "mac": [
+              "⇧⌘H"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yatay / dikey çevir",
+              "en": "Flip horizontally / vertically"
+            },
+            "win": [
+              "Shift H",
+              "Shift V"
+            ],
+            "mac": [
+              "⇧H",
+              "⇧V"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Metin ekle",
+              "en": "Add text"
+            },
+            "win": [
+              "T"
+            ],
+            "mac": [
+              "T"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Dikdörtgen ekle",
+              "en": "Add a rectangle"
+            },
+            "win": [
+              "R"
+            ],
+            "mac": [
+              "R"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Elips ekle",
+              "en": "Add an ellipse"
+            },
+            "win": [
+              "O"
+            ],
+            "mac": [
+              "O"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Çizgi ekle",
+              "en": "Add a line"
+            },
+            "win": [
+              "L"
+            ],
+            "mac": [
+              "L"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Ok ekle",
+              "en": "Add an arrow"
+            },
+            "win": [
+              "A"
+            ],
+            "mac": [
+              "A"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçili metni düzenle",
+              "en": "Edit the selected text"
+            },
+            "win": [
+              "Enter",
+              "F2"
+            ],
+            "mac": [
+              "Enter",
+              "F2"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kalın / italik / altı çizili",
+              "en": "Bold / italic / underline"
+            },
+            "win": [
+              "Ctrl B",
+              "Ctrl I",
+              "Ctrl U"
+            ],
+            "mac": [
+              "⌘B",
+              "⌘I",
+              "⌘U"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yazıyı büyüt / küçült",
+              "en": "Larger / smaller text"
+            },
+            "win": [
+              "Ctrl Shift >",
+              "Ctrl Shift <"
+            ],
+            "mac": [
+              "⇧⌘>",
+              "⇧⌘<"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Üstü çizili",
+              "en": "Strikethrough"
+            },
+            "win": [
+              "Ctrl Shift X"
+            ],
+            "mac": [
+              "⇧⌘X"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Madde işaretli / numaralı liste",
+              "en": "Bulleted / numbered list"
+            },
+            "win": [
+              "Ctrl Shift 8",
+              "Ctrl Shift 7"
+            ],
+            "mac": [
+              "⇧⌘8",
+              "⇧⌘7"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Liste düzeyini değiştir",
+              "en": "Change list level"
+            },
+            "win": [
+              "Tab",
+              "Shift Tab"
+            ],
+            "mac": [
+              "Tab",
+              "⇧ Tab"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Metni sola, ortaya veya sağa hizala (düzenlerken)",
+              "en": "Align text left, centre or right (while editing)"
+            },
+            "win": [
+              "Ctrl Shift L",
+              "E",
+              "R"
+            ],
+            "mac": [
+              "⇧⌘L",
+              "E",
+              "R"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yakınlaştır / uzaklaştır",
+              "en": "Zoom in / out"
+            },
+            "win": [
+              "Ctrl +",
+              "Ctrl −",
+              "Ctrl Wheel"
+            ],
+            "mac": [
+              "⌘+",
+              "⌘−",
+              "⌘ Wheel"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfayı pencereye sığdır",
+              "en": "Fit the page in the window"
+            },
+            "win": [
+              "Ctrl 0",
+              "Shift 1"
+            ],
+            "mac": [
+              "⌘0",
+              "⇧1"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Gerçek boyut (%100)",
+              "en": "Actual size (100%)"
+            },
+            "win": [
+              "Ctrl 1"
+            ],
+            "mac": [
+              "⌘1"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçime yakınlaştır",
+              "en": "Zoom to the selection"
+            },
+            "win": [
+              "Shift 2"
+            ],
+            "mac": [
+              "⇧2"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sayfada gezin",
+              "en": "Move around the page"
+            },
+            "win": [
+              "Space + Drag",
+              "Middle Drag"
+            ],
+            "mac": [
+              "Space + Drag",
+              "Middle Drag"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Önceki / sonraki sayfa",
+              "en": "Previous / next page"
+            },
+            "win": [
+              "PgUp",
+              "PgDn"
+            ],
+            "mac": [
+              "PgUp",
+              "PgDn"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Cetvelleri göster ya da gizle",
+              "en": "Show or hide rulers"
+            },
+            "win": [
+              "Shift R",
+              "Ctrl R"
+            ],
+            "mac": [
+              "⇧R",
+              "⌘R"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kılavuz çizgilerini göster ya da gizle",
+              "en": "Show or hide guides"
+            },
+            "win": [
+              "Shift G"
+            ],
+            "mac": [
+              "⇧G"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kenar boşluklarını göster ya da gizle",
+              "en": "Show or hide margins"
+            },
+            "win": [
+              "Shift M"
+            ],
+            "mac": [
+              "⇧M"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Seçime ekle ya da seçimden çıkar",
+              "en": "Add to or remove from the selection"
+            },
+            "win": [
+              "Shift Click"
+            ],
+            "mac": [
+              "⇧ Click"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Grubun içindeki tek bir öğeyi seç",
+              "en": "Select one item inside a group"
+            },
+            "win": [
+              "Double-click"
+            ],
+            "mac": [
+              "Double-click"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yalnızca yatay ya da dikey taşı",
+              "en": "Move only horizontally or vertically"
+            },
+            "win": [
+              "Shift Drag"
+            ],
+            "mac": [
+              "⇧ Drag"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Hizalamaya yapışmadan taşı",
+              "en": "Move without snapping"
+            },
+            "win": [
+              "Ctrl Drag"
+            ],
+            "mac": [
+              "⌘ Drag"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Sürüklerken çoğalt",
+              "en": "Duplicate while dragging"
+            },
+            "win": [
+              "Alt Drag"
+            ],
+            "mac": [
+              "⌥ Drag"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Oranı koruyarak (ya da serbest) boyutlandır",
+              "en": "Resize keeping (or freeing) the proportions"
+            },
+            "win": [
+              "Shift Resize"
+            ],
+            "mac": [
+              "⇧ Resize"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Merkezden boyutlandır",
+              "en": "Resize from the centre"
+            },
+            "win": [
+              "Alt Resize"
+            ],
+            "mac": [
+              "⌥ Resize"
+            ]
+          },
+          {
+            "label": {
+              "tr": "15°'lik adımlarla döndür",
+              "en": "Rotate in 15° steps"
+            },
+            "win": [
+              "Shift Rotate"
+            ],
+            "mac": [
+              "⇧ Rotate"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "studioDocument",
+        "label": {
+          "tr": "Stüdyo belge düzenleyici",
+          "en": "Studio document editor"
+        },
+        "items": [
+          {
+            "label": {
+              "tr": "Kaydet / farklı kaydet…",
+              "en": "Save / save as…"
+            },
+            "win": [
+              "Ctrl S",
+              "Ctrl Shift S"
+            ],
+            "mac": [
+              "⌘S",
+              "⇧⌘S"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Dışa aktar…",
+              "en": "Export…"
+            },
+            "win": [
+              "Ctrl E"
+            ],
+            "mac": [
+              "⌘E"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Geri al / yinele",
+              "en": "Undo / redo"
+            },
+            "win": [
+              "Ctrl Z",
+              "Ctrl Y"
+            ],
+            "mac": [
+              "⌘Z",
+              "⌘Y"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Kalın / italik / altı çizili",
+              "en": "Bold / italic / underline"
+            },
+            "win": [
+              "Ctrl B",
+              "Ctrl I",
+              "Ctrl U"
+            ],
+            "mac": [
+              "⌘B",
+              "⌘I",
+              "⌘U"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Başlık 1 / 2 / 3",
+              "en": "Heading 1 / 2 / 3"
+            },
+            "win": [
+              "Ctrl Alt 1",
+              "2",
+              "3"
+            ],
+            "mac": [
+              "⌥⌘1",
+              "2",
+              "3"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Madde işaretli / numaralı liste",
+              "en": "Bulleted / numbered list"
+            },
+            "win": [
+              "Ctrl Shift 8",
+              "Ctrl Shift 7"
+            ],
+            "mac": [
+              "⇧⌘8",
+              "⇧⌘7"
+            ]
+          },
+          {
+            "label": {
+              "tr": "Yeni paragraf açmadan alt satıra geç",
+              "en": "Line break without a new paragraph"
+            },
+            "win": [
+              "Shift Enter"
+            ],
+            "mac": [
+              "⇧↩"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "releases": [
+    {
+      "version": "0.3.0",
+      "items": [
+        {
+          "tr": "İnternetsiz çalışan yardım: F1 bulunduğunuz ekranın kısayollarını gösterir (PDF olarak da kaydeder), Yardım › Yardım konuları başlıca işleri adım adım anlatır ve hata bildirimleri, kendi kaydettiğiniz bir destek paketiyle resim ve örnek dosya taşıyabilir.",
+          "en": "Help that works offline: F1 shows the shortcuts of the screen you are on (and saves them as a PDF), Help › Help topics explains the main tasks step by step, and bug reports can carry pictures and sample files in a support package you save yourself."
+        },
+        {
+          "tr": "Çevrimdışı mod: Ayarlar › Web'deki tek bir anahtar, internet kullanacak her özelliği kapatır; güncellemeler, indirmeler, web araması, kaynak sorguları ve sızdırılmış parola denetimi de buna dahildir.",
+          "en": "Offline mode: one switch in Settings › Web turns off every feature that would use the internet — updates, downloads, web search, citation lookups and the leaked-password check."
+        },
+        {
+          "tr": "Sunucu görünümü: projeksiyon yalnızca slaytları gösterirken dizüstü bilgisayarınız sonraki sayfayı, süreölçeri ve konuşmacı notlarını gösterir.",
+          "en": "Presenter view: the projector shows only the slides while your laptop shows the next page, a timer and speaker notes."
+        },
+        {
+          "tr": "Studio belgeleri Word tarzı yazım araçları kazandı: dipnotlar, sütunlar ve bölüm sonları, bul ve değiştir, satır aralığı, simgeler, sözcük sayısı ve Markdown olarak dışa aktarma.",
+          "en": "Studio documents learned Word-style writing tools: footnotes, columns and section breaks, find and replace, line spacing, symbols, word count and Markdown export."
+        },
+        {
+          "tr": "Sunum sırasında formül, şekil, grafik, tablo ve diyagram eklenebilir; siyah ve beyaz tahtada da.",
+          "en": "Presentations can insert formulas, shapes, charts, tables and diagrams on the fly, also on the black and white boards."
+        }
+      ]
+    },
+    {
+      "version": "0.2.0",
+      "items": [
+        {
+          "tr": "Studio'da yeni CV düzenleri, süsler ve yenilenen iş belgeleri, planlayıcılar ve etiketlerle 174 şablon var.",
+          "en": "Studio has 174 templates, with new CV layouts, ornaments and redesigned business documents, planners and labels."
+        },
+        {
+          "tr": "CV oluşturucu mevcut bir CV'yi ya da LinkedIn PDF'ini içe aktarır; geri alma, sıralama ve ay seçici de eklendi.",
+          "en": "The CV builder imports an existing CV or LinkedIn PDF and gains undo, reordering and month pickers."
+        },
+        {
+          "tr": "Sayfa düzenleyici sayfaları yönüne, boyutuna ya da içerdiği metne göre seçer, sayfaları masaüstüne ya da başka bir sekmeye sürükler ve sayfaları resim olarak kaydeder.",
+          "en": "The page organizer selects pages by shape, size or text, drags pages out to the desktop or onto another tab, and saves pages as pictures."
+        },
+        {
+          "tr": "Görüntüleyici formları sayfanın üzerinde doldurur, metin bloklarını ve resimleri belgeler arasında kopyalar, seçili metni vurgular ve yer imlerini düzenler.",
+          "en": "The viewer fills in forms on the page, copies text blocks and pictures between documents, highlights selected text and edits bookmarks."
+        },
+        {
+          "tr": "Ana sayfa koleksiyonları yeniden sıralanabilir, aranabilir ve yeniden renklendirilebilir; son dosyalar sabitlenebilir.",
+          "en": "Home collections can be rearranged, searched and recoloured, and recent files can be pinned."
+        }
+      ]
+    },
+    {
+      "version": "0.1.1",
+      "items": [
+        {
+          "tr": "Studio: sertifika, davetiye, kart, afiş ve daha fazlası için hazır şablonlarla sıfırdan PDF hazırlayan bir tasarım düzenleyici.",
+          "en": "Studio: a design editor for making a PDF from scratch, with ready-made templates for certificates, invitations, cards, posters and more."
+        },
+        {
+          "tr": "CV oluşturucu: soldaki formu doldurursunuz, sağda bitmiş CV görünür.",
+          "en": "The CV builder fills a form on the left and shows the finished CV on the right."
+        },
+        {
+          "tr": "Studio'da resimler kırpılıp ayarlanabilir; tasarımlara tablo, grafik, akış şeması, formül, gölge ve cetvel eklendi.",
+          "en": "Studio pictures can be cropped and adjusted, and designs gain tables, charts, flowcharts, formulas, shadows and rulers."
+        },
+        {
+          "tr": "Tümü Türkçe harfleri içeren 24 açık lisanslı yazı tipinden oluşan bir kitaplık, istendiğinde indirilir.",
+          "en": "A library of 24 open-licence fonts, all with Turkish letters, downloads on request."
+        },
+        {
+          "tr": "1.600'den fazla simge kendi dilinizde adıyla aranabilir ve keskin, yeniden renklendirilebilir çizimler olarak eklenebilir.",
+          "en": "More than 1,600 icons can be searched by name in your language and added as sharp, recolourable drawings."
+        }
+      ]
+    }
+  ]
+}

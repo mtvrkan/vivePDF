@@ -1,3 +1,4 @@
+import { APP_VERSION } from "..";
 import type { HomeCopy } from "./tr";
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -221,7 +222,7 @@ export const homeEn: HomeCopy = {
     ],
     win: {
       title: "Windows 10 / 11",
-      file: "64-bit · vivePDF_0.3.0_x64-setup.exe",
+      file: `64-bit · vivePDF_${APP_VERSION}_x64-setup.exe`,
       ready: "ready",
       button: "Download for Windows",
       smartStrong: "A SmartScreen warning may appear the first time.",

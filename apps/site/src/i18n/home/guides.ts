@@ -1,11 +1,11 @@
-import type { Locale } from "..";
+import { APP_VERSION, type Locale } from "..";
 import type { DocKey } from "../../docs/structure";
 
 export type Guide = { key: DocKey; t: string; d: string; s: [string, string, string] };
 
 export const GUIDES: Record<Locale, Guide[]> = {
   tr: [
-    { key: "install", t: "Kurulum", d: "Windows kurulumu, SmartScreen ve güncellemeler", s: ["vivePDF_0.3.0_x64-setup.exe dosyasını indir ve çalıştır.", "SmartScreen uyarısında Ek bilgi › Yine de çalıştır'ı seç.", "Sonraki sürümler uygulamanın içinden, küçük paketlerle gelir."] },
+    { key: "install", t: "Kurulum", d: "Windows kurulumu, SmartScreen ve güncellemeler", s: [`vivePDF_${APP_VERSION}_x64-setup.exe dosyasını indir ve çalıştır.`, "SmartScreen uyarısında Ek bilgi › Yine de çalıştır'ı seç.", "Sonraki sürümler uygulamanın içinden, küçük paketlerle gelir."] },
     { key: "openRead", t: "PDF açma ve okuma", d: "Sekmeler, arama, sayfa numaraları ve yakınlaştırma", s: ["Başlangıç'ta PDF aç'a tıkla ya da Ctrl+O'ya bas; dosyayı pencereye bırakmak da olur.", "Her belge Görüntüleyici'de kendi sekmesinde açılır.", "Ctrl+F ile ara; F3 sonraki eşleşmeye geçer."] },
     { key: "pages", t: "Sayfaları düzenleme", d: "Sırala, döndür, sil, ekle ve böl", s: ["Belgeyi aç ve üst çubukta Sayfalar'ı seç.", "Sayfaları sürükleyerek sırala; seçime döndür, çoğalt ya da sil uygula.", "Uygula ve kaydet'e tıkla: sonuç yeni bir dosyaya yazılır, asıl dosya olduğu gibi kalır."] },
     { key: "convert", t: "Dosya dönüştürme", d: "PDF'ten Word, Excel, PowerPoint ve daha fazlasına", s: ["Araçlar › Dönüştür'ü aç.", "PDF'ten ya da PDF'e yönünü ve hedef biçimi seç.", "Dönüştür'e tıkla; yeni dosya Ayarlar › Dosyalar'daki çıktı klasörüne gider."] },
@@ -17,7 +17,7 @@ export const GUIDES: Record<Locale, Guide[]> = {
     { key: "buildFromSource", t: "Kaynaktan derleme", d: "macOS ve Linux için derleme adımları", s: ["Node 22 + pnpm, Rust ve Python 3.12 + uv kur.", "apps/desktop'ta pnpm install, sidecar'da uv sync çalıştır.", "apps/desktop'ta pnpm tauri dev ile başlat."] },
   ],
   en: [
-    { key: "install", t: "Installation", d: "Installing on Windows, SmartScreen and updates", s: ["Download vivePDF_0.3.0_x64-setup.exe and run it.", "On the SmartScreen warning, choose More info › Run anyway.", "Later releases arrive from inside the app, in small packages."] },
+    { key: "install", t: "Installation", d: "Installing on Windows, SmartScreen and updates", s: [`Download vivePDF_${APP_VERSION}_x64-setup.exe and run it.`, "On the SmartScreen warning, choose More info › Run anyway.", "Later releases arrive from inside the app, in small packages."] },
     { key: "openRead", t: "Open and read a PDF", d: "Tabs, search, page numbers and zoom", s: ["On Home, click Open PDF or press Ctrl+O; dropping a file onto the window works too.", "Each document opens in its own tab in the Viewer.", "Search with Ctrl+F; F3 jumps to the next match."] },
     { key: "pages", t: "Organise pages", d: "Reorder, rotate, delete, insert and split", s: ["Open the document and choose Pages in the top bar.", "Drag pages into order; rotate, duplicate or delete the selection.", "Click Apply and save: the result goes to a new file and the original stays as it was."] },
     { key: "convert", t: "Convert files", d: "From PDF to Word, Excel, PowerPoint and more", s: ["Open Tools › Convert.", "Choose From PDF or To PDF, and the target format.", "Click Convert; the new file goes to the output folder in Settings › Files."] },

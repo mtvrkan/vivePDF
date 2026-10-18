@@ -1,3 +1,5 @@
+import appData from "../data/app-data.json";
+
 export const LOCALES = ["tr", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "tr";
@@ -7,7 +9,7 @@ export const REPO_URL = "https://github.com/mtvrkan/vivePDF";
 export const RELEASES_URL = `${REPO_URL}/releases`;
 export const LATEST_RELEASE_URL = `${REPO_URL}/releases/latest`;
 export const ISSUES_URL = `${REPO_URL}/issues`;
-export const APP_VERSION = "0.3.0";
+export const APP_VERSION = appData.version;
 export const APP_RELEASE_DATE = "2026-10-15";
 
 export const OG_LOCALE: Record<Locale, string> = { tr: "tr_TR", en: "en_US" };
