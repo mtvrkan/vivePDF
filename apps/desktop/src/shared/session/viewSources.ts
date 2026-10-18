@@ -1,4 +1,5 @@
 import type { useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/react";
+import * as logger from "@/shared/lib/logger";
 import { openViewSource, readDocumentBytes, releaseViewSource, viewSourceUrl } from "@/shared/rpc/files";
 import { useDocumentStore } from "@/shared/store/documentStore";
 
@@ -41,7 +42,11 @@ export async function rangeSource(path: string): Promise<ViewableSource | null> 
   const view = await openViewSource(path).catch(() => null);
   if (!view) return null;
   const url = viewSourceUrl(view.token);
-  if (await reachable(url)) return { kind: "range", url, token: view.token };
+  if (await reachable(url)) {
+    logger.info("viewer", "large file opened in ranges");
+    return { kind: "range", url, token: view.token };
+  }
+  logger.warn("viewer", "range scheme unreachable, reading the whole file");
   await releaseViewSource(view.token);
   return null;
 }
