@@ -30,6 +30,7 @@ class _CacheEntry:
 
 
 _cache: "OrderedDict[tuple[str, str | None], _CacheEntry]" = OrderedDict()
+_opening: dict[tuple[str, str | None], threading.Lock] = {}
 
 
 class CachedDocument:
@@ -154,24 +155,50 @@ def _trim_cache() -> None:
             entry.lock.release()
 
 
+_Key = tuple[str, str | None]
+
+
+def _fresh_entry(
+    key: _Key, mtime_ns: int, size: int
+) -> tuple[_CacheEntry | None, _CacheEntry | None]:
+    entry = _cache.get(key)
+    if entry is None:
+        return None, None
+    if entry.mtime_ns != mtime_ns or entry.size != size:
+        return None, _cache.pop(key)
+    _cache.move_to_end(key)
+    return entry, None
+
+
 def _acquire_cache_entry(file_path: Path, password: str | None, require_pdf: bool) -> _CacheEntry:
     resolved = str(file_path.resolve())
     key = (resolved, _password_digest(password))
     mtime_ns, size = _stat(file_path)
     with _cache_lock:
-        entry = _cache.get(key)
-        if entry is not None and (entry.mtime_ns != mtime_ns or entry.size != size):
-            _cache.pop(key)
-            entry.document.close()
-            entry = None
-        if entry is None:
+        entry, stale = _fresh_entry(key, mtime_ns, size)
+        opening = None if entry else _opening.setdefault(key, threading.Lock())
+    if stale is not None:
+        _close_entries([stale])
+    if entry is not None:
+        return entry
+    with opening:
+        with _cache_lock:
+            entry, stale = _fresh_entry(key, mtime_ns, size)
+        if stale is not None:
+            _close_entries([stale])
+        if entry is not None:
+            return entry
+        try:
             document = _open_fresh(file_path, password, require_pdf, detached=require_pdf)
+        finally:
+            with _cache_lock:
+                if _opening.get(key) is opening:
+                    _opening.pop(key)
+        with _cache_lock:
             entry = _CacheEntry(document, mtime_ns, size)
             _cache[key] = entry
             _trim_cache()
-        else:
-            _cache.move_to_end(key)
-        return entry
+            return entry
 
 
 def _close_entries(entries: list[_CacheEntry]) -> int:

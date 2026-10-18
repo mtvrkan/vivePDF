@@ -6,6 +6,7 @@ import pytest
 
 from vivepdf.ops import _document
 from vivepdf.ops._document import CachedDocument, forget_document, open_document
+from vivepdf.rpc.errors import OpError
 
 
 @pytest.fixture(autouse=True)
@@ -149,3 +150,71 @@ def test_a_document_still_in_use_is_not_closed_to_make_room(
 
     assert pages > 0
     assert len(_document._cache) == 2
+
+
+def test_a_slow_first_open_does_not_hold_up_another_cached_document(
+    sample_pdf: Path, tmp_path: Path, monkeypatch
+) -> None:
+    other = tmp_path / "other.pdf"
+    other.write_bytes(sample_pdf.read_bytes())
+    with open_document(str(sample_pdf), mutable=False):
+        pass
+    real_open = _document._open_fresh
+    opening = threading.Event()
+    release = threading.Event()
+
+    def slow_open(file_path, *args, **kwargs):
+        if Path(file_path).name == "other.pdf":
+            opening.set()
+            release.wait(5)
+        return real_open(file_path, *args, **kwargs)
+
+    monkeypatch.setattr(_document, "_open_fresh", slow_open)
+    worker = threading.Thread(target=lambda: open_document(str(other), mutable=False).close())
+    worker.start()
+    assert opening.wait(5)
+    started = time.monotonic()
+    with open_document(str(sample_pdf), mutable=False) as cached:
+        assert cached.page_count > 0
+    waited = time.monotonic() - started
+    release.set()
+    worker.join(5)
+
+    assert waited < 1
+    assert len(_document._cache) == 2
+
+
+def test_two_threads_opening_the_same_new_document_share_one_open(
+    sample_pdf: Path, monkeypatch
+) -> None:
+    real_open = _document._open_fresh
+    calls = []
+
+    def counted_open(*args, **kwargs):
+        calls.append(1)
+        time.sleep(0.05)
+        return real_open(*args, **kwargs)
+
+    monkeypatch.setattr(_document, "_open_fresh", counted_open)
+    threads = [
+        threading.Thread(target=lambda: open_document(str(sample_pdf), mutable=False).close())
+        for _ in range(3)
+    ]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(5)
+
+    assert len(calls) == 1
+    assert len(_document._cache) == 1
+
+
+def test_a_failed_open_leaves_no_entry_behind(tmp_path: Path) -> None:
+    broken = tmp_path / "broken.pdf"
+    broken.write_bytes(b"not a pdf at all")
+
+    with pytest.raises(OpError):
+        open_document(str(broken), mutable=False)
+
+    assert len(_document._cache) == 0
+    assert _document._opening == {}
