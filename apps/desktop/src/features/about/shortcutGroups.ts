@@ -85,7 +85,7 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
 ];
 
 export function splitKeys(keys: string): string[] {
-  return keys.split(/\s*(?:\/|·)\s*/).filter(Boolean);
+  return keys.split(/\s+[/·]\s+/).filter(Boolean);
 }
 
 export function keyCombos(keys: string, t: TFunction): string[] {
