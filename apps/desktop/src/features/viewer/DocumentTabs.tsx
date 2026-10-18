@@ -64,7 +64,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
 
   const sendTabs = async (ids: string[], paths: string[], dropped: boolean, group: DroppedTabGroup | null = null) => {
     const landed = dropped ? await dropTabsOnWindow(paths, group) : null;
-    if (!landed && !(await openWindow(paths))) return;
+    if (!landed && !(await openWindow(paths, dropped))) return;
     for (const id of ids) closeDocument(id);
     if (!isMainWindow() && Object.keys(useDocumentStore.getState().documents).length === 0) void getCurrentWindow().close();
   };

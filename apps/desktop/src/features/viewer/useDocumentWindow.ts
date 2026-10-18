@@ -8,9 +8,9 @@ import { useToastStore } from "@/shared/store/toastStore";
 export function useDocumentWindow() {
   const { t } = useTranslation();
   return useCallback(
-    async (paths: string[] = []): Promise<boolean> => {
+    async (paths: string[] = [], atCursor = false): Promise<boolean> => {
       try {
-        await openDocumentWindow(paths);
+        await openDocumentWindow(paths, atCursor);
         return true;
       } catch (error) {
         useToastStore.getState().push("error", describeError(t, toRpcError(error)));

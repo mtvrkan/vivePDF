@@ -153,8 +153,20 @@ describe("DocumentTabs moving tabs between windows", () => {
     dragOut(screen.getAllByRole("tab")[0]);
     await waitFor(() => expect(openWindow).toHaveBeenCalledTimes(2));
 
-    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"]);
+    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], true);
     expect(closeDocument).toHaveBeenCalledTimes(1);
+  });
+
+  it("moves a tab from its menu into a centred new window without looking for a drop target", async () => {
+    openWindow.mockResolvedValue(true);
+    render(<DocumentTabs />);
+
+    fireEvent.contextMenu(screen.getAllByRole("tab")[1]);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Move to new window" }));
+
+    await waitFor(() => expect(closeDocument).toHaveBeenCalledWith("b"));
+    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], false);
+    expect(dropTabsOnWindow).not.toHaveBeenCalled();
   });
 
   it("closes a document window once its last tab has moved away, never the main window", async () => {

@@ -16,6 +16,10 @@ const LABEL_PREFIX: &str = "doc-";
 const MAX_PATHS: usize = 64;
 const MAX_CLAIMS: usize = 1024;
 const MAX_GROUP_NAME: usize = 40;
+const WINDOW_WIDTH: f64 = 1280.0;
+const WINDOW_HEIGHT: f64 = 800.0;
+const GRAB_X: f64 = 120.0;
+const GRAB_Y: f64 = 18.0;
 
 #[derive(Default)]
 pub struct DocumentWindows {
@@ -195,6 +199,31 @@ fn candidate_of<R: Runtime>(window: &WebviewWindow<R>, focused: u64) -> Option<C
     })
 }
 
+fn placed_at_cursor(x: f64, y: f64, work: Bounds) -> Bounds {
+    let width = WINDOW_WIDTH.min(work.width);
+    let height = WINDOW_HEIGHT.min(work.height);
+    Bounds {
+        x: (x - GRAB_X).clamp(work.x, work.x + work.width - width),
+        y: (y - GRAB_Y).clamp(work.y, work.y + work.height - height),
+        width,
+        height,
+    }
+}
+
+fn cursor_placement<R: Runtime>(app: &AppHandle<R>) -> Option<Bounds> {
+    let cursor = app.cursor_position().ok()?;
+    let monitor = app.monitor_from_point(cursor.x, cursor.y).ok().flatten()?;
+    let scale = monitor.scale_factor();
+    let area = monitor.work_area();
+    let work = Bounds {
+        x: f64::from(area.position.x) / scale,
+        y: f64::from(area.position.y) / scale,
+        width: f64::from(area.size.width) / scale,
+        height: f64::from(area.size.height) / scale,
+    };
+    Some(placed_at_cursor(cursor.x / scale, cursor.y / scale, work))
+}
+
 fn trimmed_group(group: Option<DroppedGroup>) -> Option<DroppedGroup> {
     group.map(|group| DroppedGroup {
         name: group.name.chars().take(MAX_GROUP_NAME).collect(),
@@ -237,19 +266,24 @@ pub fn existing_files(paths: Vec<String>) -> Result<Vec<String>, RpcError> {
         .collect())
 }
 
-pub fn open_window<R: Runtime>(
+fn open_window<R: Runtime>(
     app: &AppHandle<R>,
     request: LaunchRequest,
+    placement: Option<Bounds>,
 ) -> tauri::Result<WebviewWindow<R>> {
     let label = new_label();
     let windows = app.state::<DocumentWindows>();
     windows.remember(&label, request);
     let built = WebviewWindowBuilder::new(app, &label, WebviewUrl::App("index.html".into()))
         .title("vivePDF")
-        .inner_size(1280.0, 800.0)
         .min_inner_size(900.0, 600.0)
-        .center()
         .focused(true);
+    let built = match placement {
+        Some(area) => built
+            .inner_size(area.width, area.height)
+            .position(area.x, area.y),
+        None => built.inner_size(WINDOW_WIDTH, WINDOW_HEIGHT).center(),
+    };
     #[cfg(target_os = "macos")]
     let built = built
         .decorations(true)
@@ -292,7 +326,7 @@ pub fn deliver_launch<R: Runtime>(app: &AppHandle<R>, request: LaunchRequest, sh
     }
     let handle = app.clone();
     tauri::async_runtime::spawn(async move {
-        if let Err(error) = open_window(&handle, request) {
+        if let Err(error) = open_window(&handle, request, None) {
             crate::diagnostics::log_sidecar(
                 &handle,
                 "error",
@@ -307,14 +341,21 @@ pub async fn window_open<R: Runtime>(
     app: AppHandle<R>,
     window: WebviewWindow<R>,
     paths: Vec<String>,
+    at_cursor: Option<bool>,
 ) -> Result<String, RpcError> {
     let paths = existing_files(paths)?;
+    let placement = if at_cursor.unwrap_or(false) {
+        cursor_placement(&app)
+    } else {
+        None
+    };
     let opened = open_window(
         &app,
         LaunchRequest {
             tool: None,
             paths: paths.clone(),
         },
+        placement,
     )
     .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?;
     app.state::<DocumentWindows>()
@@ -639,5 +680,35 @@ mod tests {
         .unwrap();
         assert_eq!(group.name.chars().count(), MAX_GROUP_NAME);
         assert_eq!(trimmed_group(None), None);
+    }
+
+    fn work(x: f64, y: f64, width: f64, height: f64) -> Bounds {
+        Bounds {
+            x,
+            y,
+            width,
+            height,
+        }
+    }
+
+    #[test]
+    fn a_torn_off_window_opens_with_its_tab_strip_under_the_cursor() {
+        let placed = placed_at_cursor(700.0, 200.0, work(0.0, 25.0, 1920.0, 1055.0));
+        assert_eq!(placed, work(580.0, 182.0, WINDOW_WIDTH, WINDOW_HEIGHT));
+    }
+
+    #[test]
+    fn a_window_dropped_near_an_edge_stays_on_that_screen() {
+        let screen = work(1920.0, 0.0, 1440.0, 875.0);
+        let placed = placed_at_cursor(3350.0, 860.0, screen);
+        assert_eq!(placed, work(2080.0, 75.0, WINDOW_WIDTH, WINDOW_HEIGHT));
+        let corner = placed_at_cursor(1925.0, 2.0, screen);
+        assert_eq!((corner.x, corner.y), (1920.0, 0.0));
+    }
+
+    #[test]
+    fn a_screen_smaller_than_the_window_shrinks_it_to_fit() {
+        let placed = placed_at_cursor(400.0, 300.0, work(0.0, 0.0, 1024.0, 700.0));
+        assert_eq!(placed, work(0.0, 0.0, 1024.0, 700.0));
     }
 }
