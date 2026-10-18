@@ -632,6 +632,13 @@ fn not_granted(path: &Path) -> RpcError {
     }
 }
 
+pub fn refuse_unasked_network(path: &Path) -> Result<(), RpcError> {
+    if registry().reaches_network_unasked(path) {
+        return Err(not_granted(path));
+    }
+    Ok(())
+}
+
 pub fn check_read(path: &Path) -> Result<(), RpcError> {
     let mut registry = registry();
     if registry.reaches_network_unasked(path) {

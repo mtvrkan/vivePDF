@@ -5,6 +5,7 @@ use std::path::PathBuf;
 
 fn validate_source(path: &str) -> Result<PathBuf, RpcError> {
     let target = PathBuf::from(path);
+    crate::grants::refuse_unasked_network(&target)?;
     if !target.is_file() {
         return Err(RpcError::new(
             "FILE_NOT_FOUND",

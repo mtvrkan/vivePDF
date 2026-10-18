@@ -66,8 +66,35 @@ fn lexical(path: &Path) -> PathBuf {
     result
 }
 
+fn followed(absolute: &Path) -> PathBuf {
+    let mut real = PathBuf::new();
+    let mut missing = false;
+    for component in absolute.components() {
+        match component {
+            Component::ParentDir => {
+                real.pop();
+            }
+            Component::CurDir => {}
+            Component::Normal(name) => {
+                real.push(name);
+                if !missing {
+                    match std::fs::canonicalize(&real) {
+                        Ok(canonical) => real = canonical,
+                        Err(_) => missing = true,
+                    }
+                }
+            }
+            other => real.push(other),
+        }
+    }
+    real
+}
+
 pub fn resolved(path: &Path) -> PathBuf {
     let absolute = std::path::absolute(path).unwrap_or_else(|_| path.to_path_buf());
+    if !cfg!(windows) {
+        return followed(&absolute);
+    }
     let normal = lexical(&absolute);
     let mut existing = normal.as_path();
     let mut rest = Vec::new();
@@ -316,6 +343,25 @@ mod tests {
         for params in [program, text, folder, listed] {
             assert!(check_value(&params, &protected).is_err(), "{params}");
         }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn a_parent_step_after_a_linked_folder_leaves_from_where_the_link_points() {
+        let dir = scratch("linked-parent");
+        let granted = dir.join("granted");
+        let elsewhere = dir.join("elsewhere").join("inner");
+        std::fs::create_dir_all(&granted).unwrap();
+        std::fs::create_dir_all(&elsewhere).unwrap();
+        std::os::unix::fs::symlink(&elsewhere, granted.join("link")).unwrap();
+
+        let target = resolved(&granted.join("link").join("..").join("evil.plist"));
+
+        assert_eq!(
+            target,
+            std::fs::canonicalize(dir.join("elsewhere")).unwrap().join("evil.plist")
+        );
+        assert!(!target.starts_with(std::fs::canonicalize(&granted).unwrap()));
     }
 
     #[test]

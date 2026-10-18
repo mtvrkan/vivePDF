@@ -308,7 +308,7 @@ function apa(work: Work, terms: CitationTerms): string {
   const title = field(entry, "title");
   const italicTitle = kind === "article" || kind === "chapter" ? e(title) : em(title);
   const names = apaNames(work.names);
-  const head = names ? `${names}${work.byEditors ? ` (${editorTerm(work.names, terms)})` : ""}` : italicTitle;
+  const head = names ? `${e(names)}${work.byEditors ? ` (${e(editorTerm(work.names, terms))})` : ""}` : italicTitle;
   const start = `${stop(head)} (${e(work.dated)}).`;
   const body = names ? italicTitle : "";
   const web = link(webOf(entry));

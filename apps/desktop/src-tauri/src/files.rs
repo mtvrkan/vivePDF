@@ -246,16 +246,17 @@ pub async fn write_document(app: tauri::AppHandle, request: Request<'_>) -> Resu
 pub async fn delete_file(path: String) -> Result<(), RpcError> {
     tauri::async_runtime::spawn_blocking(move || {
         let target = PathBuf::from(&path);
-        if !target.is_file() {
-            return Err(RpcError::new(
-                "FILE_NOT_FOUND",
-                format!("not a file: {path}"),
-            ));
-        }
+        crate::grants::refuse_unasked_network(&target)?;
         if !was_produced(&target) {
             return Err(RpcError::new(
                 "PERMISSION_DENIED",
                 format!("not written by this session: {path}"),
+            ));
+        }
+        if !target.is_file() {
+            return Err(RpcError::new(
+                "FILE_NOT_FOUND",
+                format!("not a file: {path}"),
             ));
         }
         std::fs::remove_file(&target).map_err(io_error)
@@ -292,16 +293,17 @@ pub(crate) fn is_openable_output(path: &Path) -> bool {
 pub async fn open_produced_picture(app: tauri::AppHandle, path: String) -> Result<(), RpcError> {
     use tauri_plugin_opener::OpenerExt;
     let target = PathBuf::from(&path);
-    if !target.is_file() {
-        return Err(RpcError::new(
-            "FILE_NOT_FOUND",
-            format!("not a file: {path}"),
-        ));
-    }
+    crate::grants::refuse_unasked_network(&target)?;
     if !is_openable_picture(&target) || !was_produced(&target) {
         return Err(RpcError::new(
             "PERMISSION_DENIED",
             format!("not a picture written by this session: {path}"),
+        ));
+    }
+    if !target.is_file() {
+        return Err(RpcError::new(
+            "FILE_NOT_FOUND",
+            format!("not a file: {path}"),
         ));
     }
     app.opener()
@@ -313,16 +315,17 @@ pub async fn open_produced_picture(app: tauri::AppHandle, path: String) -> Resul
 pub async fn open_produced_file(app: tauri::AppHandle, path: String) -> Result<(), RpcError> {
     use tauri_plugin_opener::OpenerExt;
     let target = PathBuf::from(&path);
-    if !target.is_file() {
-        return Err(RpcError::new(
-            "FILE_NOT_FOUND",
-            format!("not a file: {path}"),
-        ));
-    }
+    crate::grants::refuse_unasked_network(&target)?;
     if !is_openable_output(&target) || !was_produced(&target) {
         return Err(RpcError::new(
             "PERMISSION_DENIED",
             format!("not a document written by this session: {path}"),
+        ));
+    }
+    if !target.is_file() {
+        return Err(RpcError::new(
+            "FILE_NOT_FOUND",
+            format!("not a file: {path}"),
         ));
     }
     app.opener()
@@ -330,10 +333,27 @@ pub async fn open_produced_file(app: tauri::AppHandle, path: String) -> Result<(
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
 }
 
+const PROGRAM_BUNDLE_EXTENSIONS: [&str; 12] = [
+    "app", "appex", "bundle", "plugin", "prefpane", "kext", "framework", "saver", "qlgenerator",
+    "mdimporter", "workflow", "action",
+];
+
+fn opens_as_program(path: &Path) -> bool {
+    extension_of(path).is_some_and(|ext| PROGRAM_BUNDLE_EXTENSIONS.contains(&ext.as_str()))
+}
+
 #[tauri::command]
 pub async fn open_folder(app: tauri::AppHandle, path: String) -> Result<(), RpcError> {
     use tauri_plugin_opener::OpenerExt;
     let target = PathBuf::from(&path);
+    crate::grants::refuse_unasked_network(&target)?;
+    if opens_as_program(&target) {
+        return Err(RpcError {
+            code: "PERMISSION_DENIED".to_string(),
+            message: format!("{path} is a program bundle, not a folder"),
+            data: Some(serde_json::json!({ "reason": "programBundle" })),
+        });
+    }
     if !target.is_dir() {
         return Err(RpcError::new(
             "FILE_NOT_FOUND",
@@ -348,6 +368,25 @@ pub async fn open_folder(app: tauri::AppHandle, path: String) -> Result<(), RpcE
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn program_bundles_are_never_opened_as_folders() {
+        assert!(opens_as_program(Path::new("/System/Applications/Terminal.app")));
+        assert!(opens_as_program(Path::new("/Users/me/Downloads/Evil.APP")));
+        assert!(opens_as_program(Path::new("/Library/PreferencePanes/x.prefPane")));
+        assert!(!opens_as_program(Path::new("/Users/me/Documents/Raporlar")));
+        assert!(!opens_as_program(Path::new("/Users/me/Documents/v1.2")));
+    }
+
+    #[cfg(windows)]
+    #[test]
+    fn a_share_nobody_opened_is_refused_before_the_disk_is_touched() {
+        for path in [r"\\attacker.example@SSL\x", r"\\10.0.0.5\s\a.pdf"] {
+            let error = crate::grants::refuse_unasked_network(Path::new(path)).unwrap_err();
+            assert_eq!(error.code, "PERMISSION_DENIED");
+        }
+        assert!(crate::grants::refuse_unasked_network(Path::new(r"C:\docs\a.pdf")).is_ok());
+    }
 
     #[test]
     fn only_picture_extensions_are_openable() {

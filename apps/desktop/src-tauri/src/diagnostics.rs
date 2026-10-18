@@ -359,6 +359,7 @@ fn parent_dir_of(path: &str) -> String {
 #[tauri::command]
 pub async fn reveal_path(path: String) -> Result<(), RpcError> {
     tauri::async_runtime::spawn_blocking(move || -> Result<(), RpcError> {
+        crate::grants::refuse_unasked_network(std::path::Path::new(&path))?;
         #[cfg(target_os = "windows")]
         {
             std::process::Command::new("explorer.exe")

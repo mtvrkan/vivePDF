@@ -57,8 +57,8 @@ describe("buildCitations", () => {
     expect(citations.label([item("brown2018"), item("zed2019a", "5")]).text).toBe("(Brown et al., 2018; Zed, 2019a, p. 5)");
     expect(citations.label([item("zed2019b")]).text).toBe("(Zed, 2019b)");
     expect(citations.references).toEqual([
-      "Brown, A., Green, B., & White, C. (2018). <em>Designing Things</em> (2nd ed.). Acme Press.",
-      'Smith, J. A., & Lee, M. (2020). Cities and heat. <em>Urban Studies</em>, <em>12</em>(3), 45–67. <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>',
+      "Brown, A., Green, B., &amp; White, C. (2018). <em>Designing Things</em> (2nd ed.). Acme Press.",
+      'Smith, J. A., &amp; Lee, M. (2020). Cities and heat. <em>Urban Studies</em>, <em>12</em>(3), 45–67. <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>',
       "Zed, A. (2019a). First part. In I. Ed &amp; E. Tor (Eds.), <em>Big Collection</em> (pp. 1–10). Pub.",
       "Zed, A. (2019b). Second part. In <em>Big Collection</em>. Pub.",
     ]);
@@ -96,6 +96,21 @@ describe("buildCitations", () => {
     expect(citations.references).toHaveLength(SOURCES.length);
     expect(who).toBe('World Health Organization. (n.d.). <em>Report &lt;script&gt;alert(1)&lt;/script&gt;</em>. <a href="https://who.int/x">https://who.int/x</a>');
     expect(citations.label([item("undated")]).text).toBe("(World Health Organization, n.d.)");
+  });
+
+  it("escapes markup in author and editor names in every style", () => {
+    const sources = parseBibtex(String.raw`
+@book{bad, author={<b>Evil</b>, <img src=x>}, title={T}, publisher={P}, year=2020}
+@book{eds, editor={<i>Ed</i>, Al}, title={E}, publisher={P}, year=2021}
+`).entries;
+
+    const written = (["apa", "mla", "chicago", "ieee"] as const).flatMap((style) => buildCitations(doc(), sources, style, TERMS, "en").references);
+
+    expect(written).toHaveLength(8);
+    for (const reference of written) {
+      expect(reference).not.toMatch(/<(b|i|img)\b/);
+    }
+    expect(written[0]).toContain("&lt;b&gt;Evil&lt;/b&gt;");
   });
 
   it("flags citations of sources that are gone instead of dropping them", () => {
