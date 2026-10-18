@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { $, browser, expect } from "@wdio/globals";
 import { answerDialogs, bootApp, openTool, pressShortcut, probe, t, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
@@ -77,6 +78,18 @@ describe("studio documents", () => {
     await recent.click();
     await $('[data-testid="document-editor"]').waitForDisplayed({ timeout: 30000 });
     await expect(body().$("h1")).toHaveText("Quarterly report");
+    await expect($('[data-testid="document-save-state"]')).toHaveText("Quarterly.vivedoc");
+  });
+
+  it("saves the words typed right before Ctrl+S and shows the document as saved", async () => {
+    const file = join(workDir(), "Quarterly.vivedoc");
+    await body().$("h1").click();
+    await browser.keys(["End"]);
+    await browser.keys(" final words");
+    await pressShortcut("s");
+
+    await browser.waitUntil(() => readFileSync(file, "utf8").includes("Quarterly report final words"), { timeoutMsg: "the last typed words never reached the saved file" });
+    await browser.pause(500);
     await expect($('[data-testid="document-save-state"]')).toHaveText("Quarterly.vivedoc");
   });
 });

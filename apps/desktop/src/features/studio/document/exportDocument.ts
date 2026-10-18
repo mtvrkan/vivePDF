@@ -18,6 +18,7 @@ export function withExportExtension(path: string, format: DocumentExportFormat):
 }
 
 export async function exportDocument(params: DocumentExportParams, options?: RpcCallOptions): Promise<DocumentExportResult> {
+  useDocumentStore.getState().flushContent();
   const document = useDocumentStore.getState().document;
   if (!document) throw new Error("no document");
   const content = { ...documentContent(document, params.language, params.text), output: params.output, overwrite: params.overwrite };

@@ -116,13 +116,13 @@ export default function DocumentEditor({ language }: { language: string }) {
   const editor = useEditor(
     {
       extensions,
-      content: useDocumentStore.getState().document?.content ?? "",
+      content: useDocumentStore.getState().currentContent(),
       editorProps: { attributes: { class: "vp-doc-body", "aria-label": t("studio.doc.editorLabel"), spellcheck: "true", lang: language, "data-testid": "document-body" } },
       onCreate: ({ editor: created }) => {
         const content = created.getJSON() as DocumentNode;
         useDocumentStore.setState((state) => (state.document ? { document: { ...state.document, content }, revision: state.revision + 1 } : {}));
       },
-      onUpdate: ({ editor: changed }) => useDocumentStore.getState().setContent(changed.getJSON() as DocumentNode),
+      onUpdate: ({ editor: changed }) => useDocumentStore.getState().deferContent(() => changed.getJSON() as DocumentNode),
     },
     [session, extensions],
   );

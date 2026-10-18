@@ -4,6 +4,7 @@ import { normalizeDocument, normalizeSettings } from "./model";
 
 export const DOCUMENT_DRAFT_KEY = "vivepdf.studioDocumentDraft";
 const DRAFT_DELAY_MS = 800;
+export const CONTENT_DELAY_MS = 250;
 
 type DocumentState = {
   document: StudioDocument | null;
@@ -15,6 +16,9 @@ type DocumentState = {
   open: (document: StudioDocument, filePath?: string | null) => void;
   close: () => void;
   setContent: (content: DocumentNode) => void;
+  deferContent: (read: () => DocumentNode) => void;
+  flushContent: () => void;
+  currentContent: () => DocumentNode | string;
   setSettings: (patch: Partial<DocumentSettings>) => void;
   setName: (name: string) => void;
   setSources: (sources: BibEntry[]) => void;
@@ -23,6 +27,12 @@ type DocumentState = {
 };
 
 let draftTimer: ReturnType<typeof setTimeout> | null = null;
+let pendingContent: { read: () => DocumentNode; timer: ReturnType<typeof setTimeout> } | null = null;
+
+function dropPendingContent() {
+  if (pendingContent) clearTimeout(pendingContent.timer);
+  pendingContent = null;
+}
 
 function storeDraft(document: StudioDocument, filePath: string | null) {
   try {
@@ -66,10 +76,12 @@ export const useDocumentStore = create<DocumentState>((set, get) => {
     session: 0,
     sourcesRequested: false,
     open: (document, filePath = null) => {
+      dropPendingContent();
       set({ document, filePath, dirty: false, revision: get().revision + 1, session: get().session + 1 });
       writeDraft(document, filePath);
     },
     close: () => {
+      get().flushContent();
       const { document, filePath } = get();
       if (draftTimer) clearTimeout(draftTimer);
       draftTimer = null;
@@ -80,15 +92,29 @@ export const useDocumentStore = create<DocumentState>((set, get) => {
       const document = get().document;
       if (document && document.content !== content) change({ ...document, content });
     },
+    deferContent: (read) => {
+      dropPendingContent();
+      pendingContent = { read, timer: setTimeout(() => get().flushContent(), CONTENT_DELAY_MS) };
+    },
+    flushContent: () => {
+      const pending = pendingContent;
+      if (!pending) return;
+      dropPendingContent();
+      get().setContent(pending.read());
+    },
+    currentContent: () => (pendingContent ? pendingContent.read() : (get().document?.content ?? "")),
     setSettings: (patch) => {
+      get().flushContent();
       const document = get().document;
       if (document) change({ ...document, settings: normalizeSettings({ ...document.settings, ...patch }) });
     },
     setName: (name) => {
+      get().flushContent();
       const document = get().document;
       if (document) change({ ...document, name: name.slice(0, 200) });
     },
     setSources: (sources) => {
+      get().flushContent();
       const document = get().document;
       if (document && document.sources !== sources) change({ ...document, sources });
     },

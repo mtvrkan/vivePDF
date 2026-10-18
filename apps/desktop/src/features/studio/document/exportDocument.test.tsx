@@ -42,6 +42,15 @@ describe("exportDocument", () => {
     expect(studioExportMarkdown).not.toHaveBeenCalled();
   });
 
+  it("exports the words typed just before, still waiting to reach the document", async () => {
+    useDocumentStore.getState().open(createDocument("Talk", "<p>x</p>"));
+    useDocumentStore.getState().deferContent(() => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Last words" }] }] }));
+
+    await exportDocument({ output: "C:/out/Talk.md", language: "en", text: TEXT, format: "markdown" });
+
+    expect(vi.mocked(studioExportMarkdown).mock.calls[0]?.[0].html).toContain("Last words");
+  });
+
   it("refuses to export without an open document", async () => {
     await expect(exportDocument({ output: "C:/out/x.md", language: "en", text: TEXT, format: "markdown" })).rejects.toThrow("no document");
   });

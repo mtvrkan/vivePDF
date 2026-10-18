@@ -36,6 +36,7 @@ export async function loadStudioDocument(path: string): Promise<StudioDocument> 
 }
 
 export async function saveStudioDocument(options: { saveAs: boolean; fallbackName: string; filterName: string }): Promise<string | null> {
+  useDocumentStore.getState().flushContent();
   const state = useDocumentStore.getState();
   const document = state.document;
   if (!document) return null;
