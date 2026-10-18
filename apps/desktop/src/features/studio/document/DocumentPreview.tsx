@@ -58,7 +58,6 @@ function PreviewPage({ preview, index, label }: { preview: StudioDocumentPreview
 
 export function DocumentPreview({ language }: { language: string }) {
   const { t } = useTranslation();
-  const revision = useDocumentStore((state) => state.revision);
   const [preview, setPreview] = useState<StudioDocumentPreview | null>(null);
   const [error, setError] = useState<RpcError | null>(null);
   const [busy, setBusy] = useState(false);
@@ -82,9 +81,17 @@ export function DocumentPreview({ language }: { language: string }) {
   }, [language, t]);
 
   useEffect(() => {
-    const timer = setTimeout(() => void refresh(), PREVIEW_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [revision, refresh]);
+    let timer = setTimeout(() => void refresh(), PREVIEW_DELAY_MS);
+    const unsubscribe = useDocumentStore.subscribe((state, previous) => {
+      if (state.revision === previous.revision) return;
+      clearTimeout(timer);
+      timer = setTimeout(() => void refresh(), PREVIEW_DELAY_MS);
+    });
+    return () => {
+      clearTimeout(timer);
+      unsubscribe();
+    };
+  }, [refresh]);
 
   return (
     <section className="flex h-full min-h-0 flex-col" aria-label={t("studio.doc.preview.title")} data-testid="document-preview">
