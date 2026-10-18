@@ -147,15 +147,17 @@ export function PresenterBar({
               if (!hasStyleOptions(next)) setStylePopoverOpen(false);
             }}
           />
-          <IconButton
-            icon={ZoomIn}
-            label={t("presentation.areaZoom")}
-            active={zoomState.isMarqueeZoomActive}
-            onClick={() => {
-              onManualZoom();
-              zoom?.toggleMarqueeZoom();
-            }}
-          />
+          {onBoard ? null : (
+            <IconButton
+              icon={ZoomIn}
+              label={t("presentation.areaZoom")}
+              active={zoomState.isMarqueeZoomActive}
+              onClick={() => {
+                onManualZoom();
+                zoom?.toggleMarqueeZoom();
+              }}
+            />
+          )}
           <PresentationStyleTrigger open={stylePopoverOpen} onToggle={() => setStylePopoverOpen((current) => !current)} />
           <PresentationInsertMenu opensUp onOpenChange={setInsertOpen} />
           {drawingsMode === "annotations" ? (
@@ -167,14 +169,18 @@ export function PresenterBar({
             />
           ) : (
             <>
-              <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />
+              {onBoard ? null : <TemporaryDrawingCleanup pageIndex={scrollState.currentPage - 1} />}
               {hasTemporaryDrawings ? <IconButton icon={FileDown} label={t("presentation.keep.finish")} onClick={() => void exitImmersiveSavingDrawings()} /> : null}
             </>
           )}
-          <span className="mx-1 h-5 w-px bg-border" aria-hidden />
-          <IconButton icon={ZoomOut} label={t("viewer.zoomOut")} onClick={() => manualZoom(() => zoom?.zoomOut())} />
-          <span className="w-11 text-center font-mono text-xs tabular-nums text-muted-foreground">{Math.round(zoomState.currentZoomLevel * 100)}%</span>
-          <IconButton icon={ZoomIn} label={t("viewer.zoomIn")} onClick={() => manualZoom(() => zoom?.zoomIn())} />
+          {onBoard ? null : (
+            <>
+              <span className="mx-1 h-5 w-px bg-border" aria-hidden />
+              <IconButton icon={ZoomOut} label={t("viewer.zoomOut")} onClick={() => manualZoom(() => zoom?.zoomOut())} />
+              <span className="w-11 text-center font-mono text-xs tabular-nums text-muted-foreground">{Math.round(zoomState.currentZoomLevel * 100)}%</span>
+              <IconButton icon={ZoomIn} label={t("viewer.zoomIn")} onClick={() => manualZoom(() => zoom?.zoomIn())} />
+            </>
+          )}
           <span className="mx-1 h-5 w-px bg-border" aria-hidden />
           <IconButton icon={Moon} label={t("presentation.blackoutBlack")} active={blackout === "black"} onClick={() => toggleBlackout("black")} />
           <IconButton icon={Sun} label={t("presentation.blackoutWhite")} active={blackout === "white"} onClick={() => toggleBlackout("white")} />

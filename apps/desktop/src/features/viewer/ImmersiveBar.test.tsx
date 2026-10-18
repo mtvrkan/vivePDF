@@ -107,4 +107,20 @@ describe("PresenterBar", () => {
     fireEvent.click(notes);
     expect(usePresentationStore.getState().notesOpen).toBe(false);
   });
+  it("leaves drawing and zoom tools to the board toolbar while a board is shown", () => {
+    usePresentationStore.setState({ blackout: "black" });
+    renderBar();
+
+    expect(screen.queryByRole("button", { name: /^Pen/ })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Zoom in" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Speaker notes" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Blackout (black)" })).toBeTruthy();
+  });
+
+  it("shows the drawing tools again on the slides", () => {
+    renderBar();
+
+    expect(screen.getByRole("button", { name: /^Pen/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Zoom in" })).toBeTruthy();
+  });
 });

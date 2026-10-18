@@ -59,6 +59,8 @@ export function PresentationToolButtons({ onSelect, pageIndex }: { onSelect?: (t
   const tool = usePresentationStore((state) => state.tool);
   const setTool = usePresentationStore((state) => state.setTool);
   const rulerShown = usePresentationStore((state) => state.ruler !== null);
+  const onBoard = usePresentationStore((state) => state.blackout !== "none");
+  if (onBoard) return null;
   return (
     <>
       {PRESENTATION_TOOLS.map((entry) => (

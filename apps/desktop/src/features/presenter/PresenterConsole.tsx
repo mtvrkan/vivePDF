@@ -133,7 +133,7 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
         />
         <PresentationStyleTrigger open={styleOpen} onToggle={() => setStyleOpen((current) => !current)} />
         <PresentationInsertMenu />
-        <TemporaryDrawingCleanup pageIndex={currentPage - 1} />
+        {blackout === "none" ? <TemporaryDrawingCleanup pageIndex={currentPage - 1} /> : null}
         {hasTemporaryDrawings ? <IconButton icon={FileDown} label={t("presentation.keep.finish")} onClick={() => void exitImmersiveSavingDrawings()} /> : null}
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         <IconButton icon={Moon} label={t("presentation.blackoutBlack")} active={blackout === "black"} onClick={() => toggleBlackout("black")} />
