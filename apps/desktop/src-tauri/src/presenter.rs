@@ -15,6 +15,9 @@ pub const LABEL_PREFIX: &str = "present-";
 const CLOSED_EVENT: &str = "presenter-closed";
 const NOTES_DIR: &str = "presenter-notes";
 const CONTENT_DIR: &str = "by-content";
+const IDENTITY_DIR: &str = "by-identity";
+const IDENTITY_TAIL_BYTES: u64 = 64 * 1024;
+const MAX_IDENTITY_BYTES: usize = 64;
 const MAX_HASHED_BYTES: u64 = 1024 * 1024 * 1024;
 const MAX_REMEMBERED_DIGESTS: usize = 64;
 const MAX_PASSWORD_CHARS: usize = 1024;
@@ -619,10 +622,73 @@ fn content_digest(file: &Path, limit: u64) -> Option<String> {
     Some(digest)
 }
 
+fn skip_pdf_space(bytes: &[u8]) -> &[u8] {
+    let start = bytes
+        .iter()
+        .position(|byte| !byte.is_ascii_whitespace() && *byte != 0)
+        .unwrap_or(bytes.len());
+    &bytes[start..]
+}
+
+fn first_id_after(rest: &[u8]) -> Option<String> {
+    let rest = skip_pdf_space(skip_pdf_space(rest).strip_prefix(b"[")?);
+    let (open, close) = match rest.first()? {
+        b'<' => (b'<', b'>'),
+        b'(' => (b'(', b')'),
+        _ => return None,
+    };
+    let end = rest.iter().position(|byte| *byte == close)?;
+    let inner = &rest[1..end];
+    let id = if open == b'<' {
+        let digits: String = inner
+            .iter()
+            .filter(|byte| !byte.is_ascii_whitespace())
+            .map(|byte| char::from(*byte).to_ascii_lowercase())
+            .collect();
+        digits
+            .chars()
+            .all(|digit| digit.is_ascii_hexdigit())
+            .then_some(digits)?
+    } else {
+        hex(inner)
+    };
+    (!id.is_empty() && id.len() <= MAX_IDENTITY_BYTES * 2).then_some(id)
+}
+
+pub fn last_document_id(tail: &[u8]) -> Option<String> {
+    let mut found = None;
+    let mut rest = tail;
+    while let Some(offset) = rest.windows(3).position(|window| window == b"/ID") {
+        rest = &rest[offset + 3..];
+        if let Some(id) = first_id_after(rest) {
+            found = Some(id);
+        }
+    }
+    found
+}
+
+fn identity_key(file: &Path) -> Option<String> {
+    use std::io::{Read, Seek, SeekFrom};
+    let mut reader = std::fs::File::open(file).ok()?;
+    let length = reader.metadata().ok()?.len();
+    reader
+        .seek(SeekFrom::Start(length.saturating_sub(IDENTITY_TAIL_BYTES)))
+        .ok()?;
+    let mut tail = Vec::new();
+    reader
+        .take(IDENTITY_TAIL_BYTES)
+        .read_to_end(&mut tail)
+        .ok()?;
+    let id = last_document_id(&tail)?;
+    let name = file.file_name()?.to_string_lossy().to_lowercase();
+    Some(hex(&Sha256::digest(format!("{id}\n{name}").as_bytes())))
+}
+
 struct NotesFiles {
     document: PathBuf,
     by_path: PathBuf,
     by_content: PathBuf,
+    by_identity: PathBuf,
 }
 
 impl NotesFiles {
@@ -631,11 +697,23 @@ impl NotesFiles {
             .map(|digest| self.by_content.join(format!("{digest}.json")))
     }
 
+    fn identity_file(&self) -> Option<PathBuf> {
+        identity_key(&self.document).map(|key| self.by_identity.join(format!("{key}.json")))
+    }
+
     fn read(&self, limit: u64) -> Result<Option<String>, RpcError> {
         if let Some(text) = read_notes(&self.by_path)? {
             return Ok(Some(text));
         }
-        match self.content_file(limit) {
+        if let Some(text) = self
+            .content_file(limit)
+            .map(|file| read_notes(&file))
+            .transpose()?
+            .flatten()
+        {
+            return Ok(Some(text));
+        }
+        match self.identity_file() {
             Some(file) => read_notes(&file),
             None => Ok(None),
         }
@@ -643,7 +721,10 @@ impl NotesFiles {
 
     fn write(&self, contents: Option<&str>, limit: u64) -> Result<(), RpcError> {
         write_notes(&self.by_path, contents)?;
-        match self.content_file(limit) {
+        if let Some(file) = self.content_file(limit) {
+            write_notes(&file, contents)?;
+        }
+        match self.identity_file() {
             Some(file) => write_notes(&file, contents),
             None => Ok(()),
         }
@@ -720,6 +801,7 @@ fn notes_files<R: Runtime>(app: &AppHandle<R>, path: &str) -> Result<NotesFiles,
         document,
         by_path: dir.join(notes_file_name(path)),
         by_content: dir.join(CONTENT_DIR),
+        by_identity: dir.join(IDENTITY_DIR),
     })
 }
 
@@ -1035,6 +1117,7 @@ mod tests {
             document: document.to_path_buf(),
             by_path: dir.join(notes_file_name(&document.to_string_lossy())),
             by_content: dir.join(CONTENT_DIR),
+            by_identity: dir.join(IDENTITY_DIR),
         }
     }
 
@@ -1076,6 +1159,70 @@ mod tests {
 
         assert_eq!(in_place.as_deref(), Some(NOTES));
         assert_eq!(elsewhere, None);
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    fn pdf_with_id(body: &str, id: &str) -> Vec<u8> {
+        format!("%PDF-1.7 {body}\ntrailer\n<</Size 3/Root 1 0 R/ID [ <{id}>\n<{id}> ]>>\nstartxref\n9\n%%EOF\n")
+            .into_bytes()
+    }
+
+    #[test]
+    fn the_last_trailer_id_is_read_in_its_hex_and_literal_forms() {
+        assert_eq!(
+            last_document_id(b"trailer<</ID[<AB 12\ncd>  <FF>]>>"),
+            Some("ab12cd".to_string())
+        );
+        assert_eq!(
+            last_document_id(b"/ID [<0011>] ... /Type/XRef/ID\r\n[ (Az) (Bz) ]"),
+            Some("417a".to_string())
+        );
+        assert_eq!(last_document_id(b"/IDTree 4 0 R /ID [<zz>]"), None);
+        assert_eq!(last_document_id(b"no identifier here"), None);
+        assert_eq!(last_document_id(b"/ID [<>]"), None);
+        let long = format!("/ID [<{}>]", "a".repeat(MAX_IDENTITY_BYTES * 2 + 2));
+        assert_eq!(last_document_id(long.as_bytes()), None);
+    }
+
+    #[test]
+    fn notes_follow_an_edited_and_moved_file_by_its_permanent_id() {
+        let (root, documents) = library("identity");
+        let talk = documents.join("Talk.pdf");
+        std::fs::write(
+            &talk,
+            pdf_with_id("first", "C29946C3A25234503908C39669C28FC2"),
+        )
+        .unwrap();
+        files_for(&root, &talk).write(Some(NOTES), 1024).unwrap();
+        std::fs::write(
+            &talk,
+            pdf_with_id("second edition", "c29946c3a25234503908c39669c28fc2"),
+        )
+        .unwrap();
+        let moved_dir = root.join("elsewhere");
+        std::fs::create_dir_all(&moved_dir).unwrap();
+        let moved = moved_dir.join("Talk.pdf");
+        std::fs::rename(&talk, &moved).unwrap();
+
+        let found = files_for(&root, &moved).read(1024).unwrap();
+
+        assert_eq!(found.as_deref(), Some(NOTES));
+        let _ = std::fs::remove_dir_all(&root);
+    }
+
+    #[test]
+    fn a_different_file_sharing_the_id_under_another_name_stays_empty() {
+        let (root, documents) = library("identity-name");
+        let talk = documents.join("Talk.pdf");
+        std::fs::write(&talk, pdf_with_id("deck", "0a0b")).unwrap();
+        files_for(&root, &talk).write(Some(NOTES), 1024).unwrap();
+        let other = documents.join("Budget.pdf");
+        std::fs::write(&other, pdf_with_id("other deck", "0a0b")).unwrap();
+
+        assert_eq!(files_for(&root, &other).read(1024).unwrap(), None);
+        files_for(&root, &talk).write(None, 1024).unwrap();
+        std::fs::write(&talk, pdf_with_id("deck, edited", "0a0b")).unwrap();
+        assert_eq!(files_for(&root, &talk).read(1024).unwrap(), None);
         let _ = std::fs::remove_dir_all(&root);
     }
 
