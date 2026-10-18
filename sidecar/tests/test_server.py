@@ -1,9 +1,12 @@
 import io
 import json
+import threading
+import time
 from pathlib import Path
 from typing import Any
 
 import pytest
+from pydantic import BaseModel
 
 from vivepdf.rpc.registry import Operation
 from vivepdf.rpc.server import Server, _redact_message
@@ -186,3 +189,82 @@ def test_a_request_line_with_a_byte_order_mark_is_accepted(
     [line] = _lines(out)
     assert line["id"] == "bom"
     assert "result" in line
+
+
+class _Empty(BaseModel):
+    pass
+
+
+def _fake_operations(monkeypatch: pytest.MonkeyPatch, handlers: dict[str, Any]) -> None:
+    monkeypatch.setattr(
+        "vivepdf.rpc.server.load_operation",
+        lambda name: Operation(name=name, params_model=_Empty, handler=handlers[name]),
+    )
+
+
+def test_a_light_request_is_answered_while_every_heavy_worker_is_busy(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    out = io.BytesIO()
+    srv = Server(out, max_workers=1, light_workers=1)
+    release = threading.Event()
+
+    def _heavy(params: Any, progress: Any) -> _Empty:
+        release.wait(10)
+        return _Empty()
+
+    _fake_operations(monkeypatch, {"compress.run": _heavy, "info.thumbnail": lambda p, g: _Empty()})
+    srv.handle_line(json.dumps({"id": "heavy", "method": "compress.run", "params": {}}))
+    srv.handle_line(json.dumps({"id": "light", "method": "info.thumbnail", "params": {}}))
+
+    deadline = time.monotonic() + 10
+    while time.monotonic() < deadline and b'"light"' not in out.getvalue():
+        time.sleep(0.01)
+    answered_while_busy = [line["id"] for line in _lines(out)]
+    release.set()
+    srv.wait_idle(timeout=10)
+
+    assert answered_while_busy == ["light"]
+    assert [line["id"] for line in _lines(out)] == ["light", "heavy"]
+
+
+def test_lines_of_jobs_running_together_never_mix_and_keep_their_order(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    out = io.BytesIO()
+    srv = Server(out, max_workers=4)
+    blob = "x" * 200_000
+
+    def _chatty(params: Any, progress: Any) -> _Empty:
+        for step in range(50):
+            progress.report(step / 50, blob)
+        return _Empty()
+
+    _fake_operations(monkeypatch, {"compress.run": _chatty})
+    for job in range(4):
+        srv.handle_line(json.dumps({"id": f"job{job}", "method": "compress.run", "params": {}}))
+    srv.wait_idle(timeout=30)
+
+    lines = _lines(out)
+    for job in range(4):
+        own = [line for line in lines if line["id"] == f"job{job}"]
+        values = [line["progress"] for line in own[:-1]]
+        assert values == sorted(values) and len(values) == 50
+        assert "result" in own[-1]
+
+
+def test_a_closed_output_does_not_hang_the_server(monkeypatch: pytest.MonkeyPatch) -> None:
+    class _Closed(io.BytesIO):
+        def write(self, data: Any) -> int:
+            raise BrokenPipeError("reader went away")
+
+    srv = Server(_Closed())
+    _fake_operations(monkeypatch, {"system.ping": lambda p, g: _Empty()})
+
+    srv.handle_line(json.dumps({"id": "1", "method": "system.ping", "params": {}}))
+    srv.handle_line(json.dumps({"id": "2", "method": "system.ping", "params": {}}))
+    finished = threading.Thread(target=srv.finish)
+    finished.start()
+    finished.join(timeout=10)
+
+    assert not finished.is_alive()

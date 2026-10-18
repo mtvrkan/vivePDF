@@ -1,5 +1,6 @@
 import json
 import os
+import queue
 import re
 import sys
 import threading
@@ -22,6 +23,22 @@ from vivepdf.rpc.registry import Operation
 
 _PATH_PATTERN = re.compile(r'[A-Za-z]:\\[^\s"]+|/[^\s"]+')
 MAX_LINE_BYTES = 8 * 1024 * 1024
+LIGHT_METHODS = frozenset(
+    {
+        "system.ping",
+        "info.get",
+        "info.thumbnail",
+        "info.page_labels",
+        "bookmarks.get",
+        "attachments.list",
+        "comments.list",
+        "layers.list",
+        "links.list",
+        "forms.fields",
+        "studio.thumbnail",
+        "studio.image_info",
+    }
+)
 
 
 def _redact_message(text: str) -> str:
@@ -66,26 +83,57 @@ def run_operation(
         raise translated from error
 
 
-class Server:
-    def __init__(self, out: BinaryIO, max_workers: int = 4):
+class _LineWriter:
+    def __init__(self, out: BinaryIO):
         self._out = out
-        self._write_lock = threading.Lock()
-        self._pool = ThreadPoolExecutor(max_workers=max_workers)
+        self._lines: queue.Queue[bytes] = queue.Queue()
+        self._broken = False
+        threading.Thread(target=self._write_forever, name="rpc-writer", daemon=True).start()
+
+    def put(self, line: bytes) -> None:
+        self._lines.put(line)
+
+    def drain(self) -> None:
+        self._lines.join()
+
+    def _write_forever(self) -> None:
+        while True:
+            line = self._lines.get()
+            try:
+                if not self._broken:
+                    self._out.write(line)
+                    if self._lines.empty():
+                        self._out.flush()
+            except (OSError, ValueError):
+                self._broken = True
+            finally:
+                self._lines.task_done()
+
+
+class Server:
+    def __init__(self, out: BinaryIO, max_workers: int = 4, light_workers: int = 2):
+        self._writer = _LineWriter(out)
+        self._pool = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="rpc-heavy")
+        self._light_pool = ThreadPoolExecutor(
+            max_workers=light_workers, thread_name_prefix="rpc-light"
+        )
         self._jobs_lock = threading.Lock()
         self._cancel_events: dict[str, threading.Event] = {}
         self._futures: set[Future[None]] = set()
 
     def write(self, payload: dict[str, Any]) -> None:
         line = json.dumps(payload, ensure_ascii=False) + "\n"
-        with self._write_lock:
-            self._out.write(line.encode("utf-8"))
-            self._out.flush()
+        self._writer.put(line.encode("utf-8"))
+
+    def _reply_now(self, payload: dict[str, Any]) -> None:
+        self.write(payload)
+        self._writer.drain()
 
     def handle_line(self, raw: str) -> None:
         try:
             request = Request.model_validate_json(raw)
         except ValidationError as error:
-            self.write(
+            self._reply_now(
                 error_line(
                     _extract_id(raw),
                     ErrorCode.INVALID_PARAMS,
@@ -100,7 +148,8 @@ class Server:
         cancel_event = threading.Event()
         with self._jobs_lock:
             self._cancel_events[request.id] = cancel_event
-            future = self._pool.submit(self._run, request, cancel_event)
+            pool = self._light_pool if request.method in LIGHT_METHODS else self._pool
+            future = pool.submit(self._run, request, cancel_event)
             self._futures.add(future)
             future.add_done_callback(self._futures.discard)
 
@@ -152,17 +201,18 @@ class Server:
             event = self._cancel_events.get(target) if isinstance(target, str) else None
         if event is not None:
             event.set()
-        self.write({"id": request.id, "result": {"cancelled": event is not None}})
+        self._reply_now({"id": request.id, "result": {"cancelled": event is not None}})
 
     def wait_idle(self, timeout: float | None = None) -> None:
         with self._jobs_lock:
             pending = list(self._futures)
         wait(pending, timeout=timeout)
+        self._writer.drain()
 
     def serve(self, lines: Iterable[bytes]) -> None:
         for raw in lines:
             if len(raw) > MAX_LINE_BYTES:
-                self.write(
+                self._reply_now(
                     error_line(
                         None,
                         ErrorCode.INVALID_PARAMS,
@@ -175,6 +225,13 @@ class Server:
             if text:
                 self.handle_line(text)
         self._pool.shutdown(wait=False, cancel_futures=True)
+        self._light_pool.shutdown(wait=False, cancel_futures=True)
+        self._writer.drain()
+
+    def finish(self) -> None:
+        self._pool.shutdown(wait=True)
+        self._light_pool.shutdown(wait=True)
+        self._writer.drain()
 
 
 def detach_stdio() -> tuple[BinaryIO, BinaryIO]:
@@ -198,3 +255,4 @@ def main() -> None:
     server = Server(replies)
     start_warm_up()
     server.serve(requests)
+    server.finish()
