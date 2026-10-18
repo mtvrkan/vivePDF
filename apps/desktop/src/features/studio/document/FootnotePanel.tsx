@@ -1,12 +1,20 @@
-import { useEffect, useState } from "react";
-import { Bold, Italic, Link2, Strikethrough, Subscript, Superscript, Trash2, Underline, Unlink, X } from "lucide-react";
+import { useEffect, useId, useMemo, useState } from "react";
+import { Bold, BookMarked, Image as ImageIcon, Italic, Link2, Strikethrough, Subscript, Superscript, Trash2, Underline, Unlink, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { NodeSelection, TextSelection } from "@tiptap/pm/state";
 import { EditorContent, useEditor, useEditorState, type Editor } from "@tiptap/react";
 import { IconButton } from "@/components/shared/IconButton";
+import { describeError } from "@/shared/lib/errorMessage";
+import { toRpcError } from "@/shared/rpc/client";
+import { useToastStore } from "@/shared/store/toastStore";
+import { CITATION } from "./citationItems";
+import { citationTerms, storeCitationSource } from "./citationSource";
+import { pickDocumentImage } from "./documentFile";
 import { LinkDialog } from "./DocumentToolbar";
 import { noteContent, noteExtensions, noteValue } from "./footnoteEditor";
-import { FOOTNOTE } from "./footnotes";
+import { footnotePicture } from "./footnotePicture";
+import { FOOTNOTE, MAX_FOOTNOTE_PICTURES } from "./footnotes";
+import { SourcesDialog } from "./SourcesDialog";
 
 type SelectedNote = { position: number; text: string; html: string; number: number };
 
@@ -23,6 +31,7 @@ function selectedNote(editor: Editor): SelectedNote | null {
 function NoteMarks({ note }: { note: Editor }) {
   const { t } = useTranslation();
   const [linking, setLinking] = useState(false);
+  const [citing, setCiting] = useState(false);
   const state = useEditorState({
     editor: note,
     selector: ({ editor: current }) => ({
@@ -33,9 +42,32 @@ function NoteMarks({ note }: { note: Editor }) {
       superscript: current.isActive("superscript"),
       subscript: current.isActive("subscript"),
       link: current.isActive("link"),
+      citation: current.isActive(CITATION),
     }),
   });
   const chain = () => note.chain().focus();
+  const insertPicture = async () => {
+    let pictures = 0;
+    note.state.doc.descendants((node) => {
+      if (node.type.name === "image") pictures += 1;
+    });
+    if (pictures >= MAX_FOOTNOTE_PICTURES) {
+      useToastStore.getState().push("info", t("studio.doc.footnotes.pictureLimit"));
+      return;
+    }
+    try {
+      const picked = await pickDocumentImage(t("studio.doc.footnotes.picture"));
+      if (!picked) return;
+      const src = await footnotePicture(picked.src);
+      if (!src) {
+        useToastStore.getState().push("error", t("studio.doc.footnotes.pictureTooLarge"));
+        return;
+      }
+      chain().setImage({ src, alt: "" }).run();
+    } catch (error) {
+      useToastStore.getState().push("error", describeError(t, toRpcError(error)));
+    }
+  };
   return (
     <div role="toolbar" aria-label={t("studio.doc.toolbar.label")} className="flex flex-wrap items-center gap-0.5">
       <IconButton icon={Bold} label={t("studio.doc.toolbar.bold")} shortcut="Ctrl+B" active={state.bold} onClick={() => chain().toggleBold().run()} />
@@ -46,21 +78,27 @@ function NoteMarks({ note }: { note: Editor }) {
       <IconButton icon={Subscript} label={t("studio.doc.toolbar.subscript")} active={state.subscript} onClick={() => chain().toggleSubscript().run()} />
       <IconButton icon={Link2} label={t("studio.doc.toolbar.link")} active={state.link} onClick={() => setLinking(true)} />
       {state.link ? <IconButton icon={Unlink} label={t("studio.doc.toolbar.unlink")} onClick={() => chain().extendMarkRange("link").unsetLink().run()} /> : null}
+      <IconButton icon={BookMarked} label={t("studio.doc.footnotes.cite")} active={state.citation} onClick={() => setCiting(true)} data-testid="footnote-cite" />
+      <IconButton icon={ImageIcon} label={t("studio.doc.footnotes.picture")} onClick={() => void insertPicture()} data-testid="footnote-picture" />
       {linking ? <LinkDialog editor={note} open={linking} onClose={() => setLinking(false)} /> : null}
+      {citing ? <SourcesDialog editor={note} open={citing} onClose={() => setCiting(false)} /> : null}
     </div>
   );
 }
 
 function NoteEditor({ editor, note }: { editor: Editor; note: SelectedNote }) {
-  const { t } = useTranslation();
+  const hintId = useId();
+  const { t, i18n } = useTranslation();
+  const extensions = useMemo(() => noteExtensions(t("studio.doc.footnotes.placeholder"), storeCitationSource(citationTerms(t), i18n.language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList"))), [t, i18n.language]);
   const noteEditor = useEditor({
-    extensions: noteExtensions(t("studio.doc.footnotes.placeholder")),
+    extensions,
     content: noteContent(note.text, note.html),
     editorProps: {
       attributes: {
         role: "textbox",
         "aria-label": t("studio.doc.footnotes.text"),
-        "aria-multiline": "false",
+        "aria-multiline": "true",
+        "aria-describedby": hintId,
         class: "field min-h-9 w-full rounded-lg px-2 py-1.5 text-sm",
       },
     },
@@ -78,6 +116,9 @@ function NoteEditor({ editor, note }: { editor: Editor; note: SelectedNote }) {
     <>
       <NoteMarks note={noteEditor} />
       <EditorContent editor={noteEditor} />
+      <p id={hintId} className="text-xs text-muted-foreground">
+        {t("studio.doc.footnotes.hint")}
+      </p>
     </>
   );
 }

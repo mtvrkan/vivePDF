@@ -5,9 +5,10 @@ from dataclasses import dataclass, field
 import pymupdf
 
 from vivepdf.ops._document_flow import NOTE_PREFIX, Flowed, Frame, note_slots
-from vivepdf.ops._note_markup import note_body
+from vivepdf.ops._note_markup import archived_pictures, note_body
 
 NOTE_SCALE = 0.8
+NOTE_PICTURE_HEIGHT = 1.2
 RULE_GAP = 8.0
 RULE_OFFSET = 3.0
 RULE_SHARE = 0.3
@@ -25,6 +26,7 @@ def note_css(font_size: float) -> str:
     return (
         f".fn{{font-size:{size:.1f}pt;line-height:1.3;margin:0 0 2pt 0;text-indent:0;}}"
         ".fn-number{font-weight:bold;}"
+        f".fn img{{height:{NOTE_PICTURE_HEIGHT}em;}}"
         f".endnotes-title{{font-weight:bold;font-size:{font_size * 1.25:.1f}pt;"
         f"margin:{font_size:.1f}pt 0 {font_size * 0.5:.1f}pt 0;}}"
     )
@@ -35,9 +37,10 @@ def marked_numbers(body: str, count: int) -> list[int]:
     return sorted(number for number in found if 1 <= number <= count)
 
 
-def note_bodies(texts: list[str], markups: list[str]) -> list[str]:
+def note_bodies(texts: list[str], markups: list[str], images: list[str] | None = None) -> list[str]:
+    picture = archived_pictures(images or [])
     return [
-        note_body(text, markups[index] if index < len(markups) else "")
+        note_body(text, markups[index] if index < len(markups) else "", picture)
         for index, text in enumerate(texts)
     ]
 

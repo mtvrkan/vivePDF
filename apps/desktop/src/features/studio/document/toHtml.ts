@@ -2,7 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
-import { FOOTNOTE, footnoteMarkup, footnoteText, MAX_FOOTNOTES } from "./footnotes";
+import { FOOTNOTE, FOOTNOTE_PICTURE, footnoteMarkup, footnoteText, MAX_FOOTNOTE_HTML, MAX_FOOTNOTES, noteCitation, unescapeAttribute } from "./footnotes";
 import { SECTION_BREAK, sectionColumns, sectionKind } from "./sections";
 import { SPACING_KEYS, spacingCss } from "./spacing";
 
@@ -15,6 +15,10 @@ const FONT_SIZE = /^(\d{1,3}(?:\.\d+)?)(pt|px)$/;
 const SAFE_LINK = /^(https?:|mailto:|#)/i;
 const DATA_IMAGE = /^data:image\/(png|jpe?g|gif|webp|bmp);base64,/i;
 const ALIGNS = new Set(["left", "center", "right", "justify"]);
+const NOTE_CITATION = /<span\b[^>]*?\sdata-citation="([^"]*)"[^>]*>[\s\S]*?<\/span>/gi;
+const NOTE_PICTURE = /<img\b[^>]*>/gi;
+const NOTE_SOURCE = /\ssrc="([^"]*)"/i;
+const NOTE_ALT = /\salt="([^"]*)"/i;
 const DEFAULT_HIGHLIGHT = "#fef08a";
 const CHECKED = "&#9745;";
 const UNCHECKED = "&#9744;";
@@ -171,6 +175,19 @@ function image(node: DocumentNode, writer: Writer): string {
   return `<p style="text-align:center"><img src="${token}"${size}${label}></p>`;
 }
 
+function notePicture(tag: string, writer: Writer): string {
+  const src = NOTE_SOURCE.exec(tag)?.[1] ?? "";
+  const token = FOOTNOTE_PICTURE.test(src) ? writer.image(src) : null;
+  if (!token) return "";
+  const alt = unescapeAttribute(NOTE_ALT.exec(tag)?.[1] ?? "").trim();
+  return `<img src="${token}"${alt ? ` alt="${escapeHtml(alt)}"` : ""}>`;
+}
+
+function noteHtml(markup: string, writer: Writer): string {
+  const resolved = markup.replace(NOTE_CITATION, (_match, payload: string) => (writer.references ? escapeHtml(writer.references.citations.label(noteCitation(payload)).text) : "")).replace(NOTE_PICTURE, (tag) => notePicture(tag, writer));
+  return resolved.length <= MAX_FOOTNOTE_HTML ? resolved : "";
+}
+
 function bibliography(writer: Writer): string {
   const references = writer.references;
   if (!references || references.citations.references.length === 0) return "";
@@ -231,7 +248,7 @@ function write(node: DocumentNode, writer: Writer): string {
     case FOOTNOTE: {
       if (writer.footnotes.length >= MAX_FOOTNOTES) return "";
       const number = writer.footnotes.push(footnoteText(attr(node, "text")));
-      writer.footnoteHtml.push(footnoteMarkup(attr(node, "html")));
+      writer.footnoteHtml.push(noteHtml(footnoteMarkup(attr(node, "html")), writer));
       return `<sup class="fn-ref" id="fnref-${number}">${number}</sup>`;
     }
     case CITATION:

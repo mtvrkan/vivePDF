@@ -9335,7 +9335,12 @@
         "placeholder": "Sayfanın altında görünecek notu yazın",
         "remove": "Dipnotu kaldır",
         "done": "Metne dön",
-        "endTitle": "Notlar"
+        "endTitle": "Notlar",
+        "cite": "Atıf ekle",
+        "picture": "Resim ekle",
+        "hint": "Notta yeni satıra geçmek için Shift+Enter'a basın.",
+        "pictureTooLarge": "Bu resim dipnot için çok büyük. Daha küçük bir resim seçin.",
+        "pictureLimit": "Bu dipnota daha fazla resim eklenemez."
       },
       "section": {
         "button": "Bölüm sonu",

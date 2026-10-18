@@ -1,11 +1,21 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
-import { afterEach, beforeAll, describe, expect, it } from "vitest";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { Editor } from "@tiptap/react";
 import { ready, setLocale } from "@/app/i18n";
+import { useToastStore } from "@/shared/store/toastStore";
+import { parseBibtex } from "./bibtex";
 import { storeCitationSource } from "./citationSource";
+import { useDocumentStore } from "./documentStore";
+import { createDocument } from "./model";
 import { documentExtensions } from "./extensions";
 import { FootnotePanel } from "./FootnotePanel";
 import { FOOTNOTE } from "./footnotes";
+
+const pictures = vi.hoisted(() => ({ pick: vi.fn(), shrink: vi.fn() }));
+vi.mock("./documentFile", async (importOriginal) => ({ ...(await importOriginal<typeof import("./documentFile")>()), pickDocumentImage: (...args: unknown[]) => pictures.pick(...args) }));
+vi.mock("./footnotePicture", () => ({ footnotePicture: (...args: unknown[]) => pictures.shrink(...args) }));
+
+const PIXEL = "data:image/png;base64,iVBORw0KGgo=";
 
 const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
 
@@ -38,18 +48,23 @@ function notes(current: Editor): string[] {
 }
 
 beforeAll(async () => {
+  Object.defineProperty(Range.prototype, "getClientRects", { configurable: true, value: () => [] });
+  Object.defineProperty(Range.prototype, "getBoundingClientRect", { configurable: true, value: () => ({ top: 0, left: 0, right: 0, bottom: 0, width: 0, height: 0 }) });
   await ready();
   await setLocale("en");
 });
 
 afterEach(() => {
   cleanup();
+  pictures.pick.mockReset();
+  pictures.shrink.mockReset();
+  useToastStore.setState({ toasts: [] });
   editor?.destroy();
   editor = null;
 });
 
 describe("FootnotePanel", () => {
-  it("opens on a new note, focuses its text and writes what is typed into the note", () => {
+  it("opens on a new note, focuses its text and writes what is typed into the note, line breaks included", () => {
     const current = mount();
     current.commands.setTextSelection(2);
 
@@ -63,7 +78,7 @@ describe("FootnotePanel", () => {
 
     expect(screen.getByRole("region", { name: "Footnote 1" })).toBeTruthy();
     expect(document.activeElement).toBe(field);
-    expect(notes(current)).toEqual(["Source line"]);
+    expect(notes(current)).toEqual(["Source\nline"]);
     expect(current.getText()).toBe("ab");
   });
 
@@ -140,5 +155,56 @@ describe("FootnotePanel", () => {
     fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
 
     expect(screen.getByTestId("footnote-panel")).toBeTruthy();
+  });
+
+  it("puts a picked picture into the note at a footnote size", async () => {
+    const current = mount('<p>a<sup data-footnote="Logo"></sup></p>');
+    act(() => {
+      current.commands.setNodeSelection(2);
+    });
+    pictures.pick.mockResolvedValue({ src: "data:image/png;base64,big", width: 900, height: 300 });
+    pictures.shrink.mockResolvedValue(PIXEL);
+
+    fireEvent.click(screen.getByRole("button", { name: "Insert picture" }));
+
+    await waitFor(() => expect(markups(current)[0]).toContain(`src="${PIXEL}"`));
+    expect(pictures.shrink).toHaveBeenCalledWith("data:image/png;base64,big");
+    expect(screen.getByText("Shift+Enter starts a new line in the note.")).toBeTruthy();
+  });
+
+  it("says so and leaves the note alone when the picture is too large", async () => {
+    const current = mount('<p>a<sup data-footnote="Logo"></sup></p>');
+    act(() => {
+      current.commands.setNodeSelection(2);
+    });
+    pictures.pick.mockResolvedValue({ src: "data:image/png;base64,huge", width: 9000, height: 9000 });
+    pictures.shrink.mockResolvedValue(null);
+
+    fireEvent.click(screen.getByRole("button", { name: "Insert picture" }));
+
+    await waitFor(() => expect(useToastStore.getState().toasts.map((toast) => toast.message)).toContain("This picture is too large for a footnote. Choose a smaller one."));
+    expect(markups(current)).toEqual([""]);
+  });
+
+  it("cites a source inside the note through the sources dialog without offering a reference list", () => {
+    const document = createDocument("Paper");
+    useDocumentStore.getState().open({ ...document, sources: parseBibtex("@book{knuth, author={Knuth, Donald}, title={The Art of Computer Programming}, publisher={AW}, year=1968}").entries });
+    const current = mount('<p>a<sup data-footnote="See"></sup></p>');
+    act(() => {
+      current.commands.setNodeSelection(2);
+    });
+    const field = screen.getByRole("textbox", { name: "Footnote text" });
+    act(() => {
+      noteEditor(field).commands.setTextSelection(4);
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Insert citation" }));
+    expect(screen.queryByTestId("cite-insert-list")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /The Art of Computer Programming/ }));
+    fireEvent.click(screen.getByTestId("cite-insert"));
+
+    expect(markups(current)[0]).toContain("data-citation=");
+    expect(markups(current)[0]).toContain("knuth");
+    expect(field.querySelector(".vp-cite")?.textContent).toBe("(Knuth, 1968)");
   });
 });

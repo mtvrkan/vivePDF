@@ -6,7 +6,7 @@ import { parseBibtex } from "./bibtex";
 import { documentContent, documentText } from "./content";
 import { createDocument, defaultSettings, layoutOf, normalizeDocument, normalizeSettings, pageSize } from "./model";
 import { buildStarter, DOCUMENT_STARTERS } from "./starters";
-import { fileVersion, MAX_FOOTNOTE_HTML } from "./footnotes";
+import { fileVersion, MAX_FOOTNOTE_HTML, MAX_FOOTNOTE_PICTURE } from "./footnotes";
 import { documentHtml } from "./toHtml";
 
 const PNG = "data:image/png;base64,iVBORw0KGgo=";
@@ -105,7 +105,7 @@ describe("footnotes", () => {
 
     expect(html).toContain('<p>One<sup class="fn-ref" id="fnref-1">1</sup> two</p>');
     expect(html).toContain('Cell<sup class="fn-ref" id="fnref-2">2</sup>');
-    expect(footnotes).toEqual(["First note", "Second"]);
+    expect(footnotes).toEqual(["First\nnote", "Second"]);
   });
 
   it("leaves note text raw for the sidecar to escape and still numbers an empty note", () => {
@@ -133,7 +133,44 @@ describe("footnotes", () => {
     expect(fileVersion(noted)).toBe(2);
     expect(fileVersion("")).toBe(1);
     expect(normalizeDocument({ kind: "document", version: 2, content: noted })?.content).toEqual(noted);
-    expect(normalizeDocument({ kind: "document", version: 3, content: noted })).toBeNull();
+    expect(normalizeDocument({ kind: "document", version: 4, content: noted })).toBeNull();
+  });
+
+  it("saves notes with line breaks, citations or pictures as version 3 and still reads version 2", () => {
+    const rich = (attrs: Record<string, unknown>) => doc({ type: "paragraph", content: [text("x"), { type: "footnote", attrs }] });
+    const older = doc({ type: "paragraph", content: [text("x"), { type: "footnote", attrs: { text: "n", html: "<em>n</em>" } }] });
+
+    expect(fileVersion(rich({ text: "a\nb" }))).toBe(3);
+    expect(fileVersion(rich({ text: "a", html: `<img src="${PNG}">` }))).toBe(3);
+    expect(fileVersion(rich({ text: "a", html: '<span data-citation="[]">a</span>' }))).toBe(3);
+    expect(fileVersion(older)).toBe(2);
+    expect(fileVersion('<p>x<sup data-footnote="n" data-footnote-html="a&lt;br&gt;b"></sup></p>')).toBe(3);
+    expect(normalizeDocument({ kind: "document", version: 2, content: older })?.content).toEqual(older);
+  });
+
+  it("resolves footnote citations and pictures before the sidecar sees them", () => {
+    const sources = parseBibtex("@book{knuth, author={Knuth, Donald}, title={The Art}, publisher={AW}, year=1968}").entries;
+    const cited = '<span data-citation="[{&quot;key&quot;:&quot;knuth&quot;,&quot;locator&quot;:&quot;3&quot;}]" class="vp-cite">stale</span>';
+    const note: DocumentNode = { type: "footnote", attrs: { text: "See stale", html: `See ${cited} <img src="${PNG}" alt="Lo&quot;go" class="x"><br>next <img src="https://example.org/x.png"> <img src="data:image/bmp;base64,Qk0=">` } };
+    const body = { type: "image", attrs: { src: PNG } };
+    const document = { ...createDocument("Paper", doc({ type: "paragraph", content: [text("Claim"), note] }, body as DocumentNode)), sources };
+    const t = ((key: string) => key) as unknown as TFunction;
+
+    const written = documentContent(document, "en", { ...documentText(t), terms: { ...documentText(t).terms, page: "p." } });
+
+    expect(written.footnoteHtml).toEqual(['See (Knuth, 1968, p. 3) <img src="vpimg-0" alt="Lo&quot;go"><br>next  ']);
+    expect(written.images).toEqual([PNG]);
+    expect(written.footnotes).toEqual(["See stale"]);
+  });
+
+  it("sends a note whose pictures break the limits as plain text", () => {
+    const huge = `data:image/png;base64,${"A".repeat(MAX_FOOTNOTE_PICTURE)}`;
+    const note: DocumentNode = { type: "footnote", attrs: { text: "Logo", html: `<b>Logo</b> <img src="${huge}">` } };
+
+    const { footnoteHtml, images } = documentHtml(doc({ type: "paragraph", content: [note] }), settings);
+
+    expect(footnoteHtml).toEqual([""]);
+    expect(images).toEqual([]);
   });
 
   it("saves imported html that carries notes as version 2", () => {

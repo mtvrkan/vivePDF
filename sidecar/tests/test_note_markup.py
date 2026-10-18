@@ -1,9 +1,19 @@
+import base64
+import io
 from pathlib import Path
 
 import pymupdf
 import pytest
+from PIL import Image
 
-from vivepdf.ops._note_markup import inline_html, note_body
+from vivepdf.ops._note_markup import (
+    MAX_NOTE_LINES,
+    MAX_NOTE_PICTURE_CHARS,
+    MAX_NOTE_PICTURES,
+    archived_pictures,
+    inline_html,
+    note_body,
+)
 from vivepdf.ops._studio_document_models import (
     MAX_FOOTNOTE_HTML_CHARS,
     StudioDocumentRenderParams,
@@ -16,6 +26,13 @@ FORMATTED = (
     '<a href="javascript:steal()" onclick="x">trap</a> '
     '<a href="https://example.org" style="color:red">site</a>'
 )
+
+
+def _picture_url(kind: str = "PNG", size: tuple[int, int] = (40, 20)) -> str:
+    buffer = io.BytesIO()
+    Image.new("RGB", size, (220, 0, 0)).save(buffer, format=kind)
+    mime = "jpeg" if kind == "JPEG" else kind.lower()
+    return f"data:image/{mime};base64,{base64.b64encode(buffer.getvalue()).decode()}"
 
 
 def _marker(number: int) -> str:
@@ -121,3 +138,86 @@ def test_overlong_markup_is_refused() -> None:
                 "footnoteHtml": ["b" * (MAX_FOOTNOTE_HTML_CHARS + 1)],
             }
         )
+
+
+def test_line_breaks_are_kept_tidied_and_capped() -> None:
+    many = "<br>".join(str(line) for line in range(30))
+
+    assert inline_html("one <br/> two<br><br>") == "one<br>two"
+    assert inline_html(many).count("<br>") == MAX_NOTE_LINES - 1
+    assert note_body("first\n  second \n", "") == "first<br>second"
+    assert note_body("\n".join("x" * 30), "").count("<br>") == MAX_NOTE_LINES - 1
+
+
+def test_pictures_must_be_archived_raster_images_within_limits() -> None:
+    images = [
+        _picture_url(),
+        "data:image/bmp;base64,Qk0=",
+        "data:image/svg+xml;base64,PHN2Zz4=",
+        "data:image/png;base64," + "A" * MAX_NOTE_PICTURE_CHARS,
+    ]
+    picture = archived_pictures(images)
+    tags = "".join(f'<img src="vpimg-{index}" alt="P{index}" onload="x()">' for index in range(5))
+    remote = '<img src="https://example.org/logo.png">'
+    inline = f'<img src="{images[0]}">'
+
+    assert inline_html(f"a{tags}{remote}{inline}b", picture) == 'a<img src="vpimg-0" alt="P0">b'
+    assert inline_html('<img src="vpimg-0">', None) == ""
+    assert inline_html('<img src="vpimg-0">' * 9, picture).count("<img") == MAX_NOTE_PICTURES
+
+
+def test_footnote_pictures_and_breaks_are_drawn_at_the_page_foot(tmp_path: Path) -> None:
+    body = f"<p>Claim{_marker(1)}</p>"
+    markup = ['Logo <img src="vpimg-0" alt="Mark"> here<br>Second line']
+
+    with _render(
+        tmp_path, body, footnotes=["Logo here"], footnoteHtml=markup, images=[_picture_url()]
+    ) as document:
+        page = document[0]
+        pictures = [pymupdf.Rect(info["bbox"]) for info in page.get_image_info()]
+        first = _spans(document, "Logo")[0]["bbox"]
+        second = _spans(document, "Second line")[0]["bbox"]
+        pixmap = page.get_pixmap(clip=pictures[0], dpi=144) if pictures else None
+        height = page.rect.height
+
+    assert len(pictures) == 1
+    assert pictures[0].y0 > height / 2
+    assert pictures[0].height == pytest.approx(11 * 0.8 * 1.2, abs=0.6)
+    assert pictures[0].width == pytest.approx(pictures[0].height * 2, abs=1)
+    assert pixmap is not None
+    red, green, blue = pixmap.pixel(pixmap.width // 2, pixmap.height // 2)[:3]
+    assert red > 180 and green < 60 and blue < 60
+    assert second[1] > first[3] - 1
+
+
+def test_a_picture_in_a_note_moved_to_the_endnotes_is_still_drawn(tmp_path: Path) -> None:
+    body = f"<p>Short{_marker(1)}</p>"
+    markup = ['<img src="vpimg-0" alt="Mark"> ' + "explanation " * 160]
+
+    with _render(
+        tmp_path,
+        body,
+        footnotes=["explanation " * 160],
+        footnoteHtml=markup,
+        images=[_picture_url("JPEG")],
+        notesTitle="Endnotes",
+        settings={"fontSize": 20},
+    ) as document:
+        text = "".join(page.get_text() for page in document)
+        pictures = [info for page in document for info in page.get_image_info()]
+
+    assert "Endnotes" in text
+    assert len(pictures) == 1
+    assert pymupdf.Rect(pictures[0]["bbox"]).height == pytest.approx(20 * 0.8 * 1.2, abs=1)
+
+
+def test_a_footnote_picture_without_a_valid_archive_entry_is_left_out(tmp_path: Path) -> None:
+    body = f"<p>Claim{_marker(1)}</p>"
+    markup = ['Kept <img src="vpimg-3"> <img src="https://example.org/x.png">text']
+
+    with _render(tmp_path, body, footnotes=["Kept text"], footnoteHtml=markup) as document:
+        text = document[0].get_text()
+        pictures = document[0].get_image_info()
+
+    assert "Kept" in text and "text" in text
+    assert pictures == []

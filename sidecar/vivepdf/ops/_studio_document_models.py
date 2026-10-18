@@ -12,7 +12,7 @@ MAX_IMAGE_CHARS = 30_000_000
 MAX_FONTS = 16
 MAX_DOCUMENT_BYTES = 120 * 1024 * 1024
 DOCUMENT_EXTENSION = "vivedoc"
-DOCUMENT_VERSION = 2
+DOCUMENT_VERSION = 3
 
 DocumentPaper = Literal["a4", "a5", "b5", "letter", "legal"]
 PageNumbers = Literal["none", "center", "right", "outside"]

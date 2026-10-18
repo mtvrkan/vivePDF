@@ -22,7 +22,7 @@ import { useToastStore } from "@/shared/store/toastStore";
 import type { SourceCheck } from "@/types";
 import type { BibEntry, CitationStyle } from "@/types/studio";
 import { MAX_SOURCES, mergeSources } from "./bibtex";
-import { CITATION, citationItems, MAX_CITED, type CitationItem } from "./citationItems";
+import { BIBLIOGRAPHY, CITATION, citationItems, MAX_CITED, type CitationItem } from "./citationItems";
 import { CITATION_STYLES, sourceSummary } from "./citations";
 import { applyChanges, checkedDois, checksByDoi, doiKey, doiLink, entryOfCsl, filledDraftFields, leadingNotice, sourceChanges, STATUS_TONES, type SourceChange } from "./doiSources";
 import { useDocumentStore } from "./documentStore";
@@ -467,9 +467,11 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
 
   const citeFooter = (
     <>
-      <Button variant="ghost" onClick={insertList} className="me-auto" data-testid="cite-insert-list">
-        {t("studio.doc.cite.insertList")}
-      </Button>
+      {editor.schema.nodes[BIBLIOGRAPHY] ? (
+        <Button variant="ghost" onClick={insertList} className="me-auto" data-testid="cite-insert-list">
+          {t("studio.doc.cite.insertList")}
+        </Button>
+      ) : null}
       <Button variant="ghost" onClick={onClose}>
         {t("common.cancel")}
       </Button>

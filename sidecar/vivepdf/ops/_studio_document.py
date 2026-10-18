@@ -430,7 +430,7 @@ def layout_document(
     footnotes: Footnotes | None = None
     numbers = marked_numbers(body, len(content.footnotes))
     if numbers:
-        bodies = note_bodies(content.footnotes, content.footnote_html)
+        bodies = note_bodies(content.footnotes, content.footnote_html, content.images)
         notes = Footnotes(bodies, css, archive, frame, settings.font_size)
         if notes.fit(numbers):
             flowed = flow(story_html(body), frame, initial, story, check_cancelled, notes.reserve)

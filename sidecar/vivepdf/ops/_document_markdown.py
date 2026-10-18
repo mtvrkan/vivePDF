@@ -25,6 +25,7 @@ UNSAFE_DESTINATION = re.compile(r"[\s()<>]")
 CHECKED = "☑"
 UNCHECKED = "☐"
 HARD_BREAK = "\\\n"
+NOTE_BREAK = HARD_BREAK + "    "
 MAX_COLSPAN = 100
 
 
@@ -265,11 +266,11 @@ class MarkdownWriter:
 
     def note(self, body: str) -> str:
         root = lxml_html.fragment_fromstring(body, create_parent="span")
-        return _trimmed(self.inline_children(root)).replace(HARD_BREAK, " ")
+        return _trimmed(self.inline_children(root)).replace(HARD_BREAK, NOTE_BREAK)
 
 
 def document_markdown(content: StudioDocumentContent) -> str:
-    bodies = note_bodies(content.footnotes, content.footnote_html)
+    bodies = note_bodies(content.footnotes, content.footnote_html, content.images)
     writer = MarkdownWriter(content.images, len(bodies))
     try:
         root = lxml_html.fragment_fromstring(content.html, create_parent="div")

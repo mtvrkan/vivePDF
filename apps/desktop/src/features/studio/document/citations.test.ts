@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { DocumentNode } from "@/types/studio";
 import { parseBibtex } from "./bibtex";
 import type { CitationItem } from "./citationItems";
-import { buildCitations, type CitationTerms } from "./citations";
+import { buildCitations, citedKeys, type CitationTerms } from "./citations";
 
 const TERMS: CitationTerms = {
   and: "and",
@@ -41,6 +41,11 @@ function doc(...citations: DocumentNode[]): DocumentNode {
 }
 
 const item = (key: string, locator = ""): CitationItem => ({ key, locator });
+
+function noted(...items: CitationItem[]): DocumentNode {
+  const payload = JSON.stringify(items).replace(/"/g, "&quot;");
+  return { type: "footnote", attrs: { text: "See", html: `See <span data-citation="${payload}" class="vp-cite">old</span>` } };
+}
 
 describe("buildCitations", () => {
   it("writes APA 7 labels and an alphabetical reference list with year letters for same-author works", () => {
@@ -102,3 +107,23 @@ describe("buildCitations", () => {
     expect(citations.label([]).missing).toBe(true);
   });
 });
+
+describe("citations inside footnotes", () => {
+  it("counts a footnote's citations at the footnote's place in the text", () => {
+    const content = doc(cite(item("smith2020")), noted(item("brown2018"), item("smith2020")), cite(item("undated")));
+
+    const numbered = buildCitations(content, SOURCES, "ieee", TERMS, "en");
+
+    expect(citedKeys(content)).toEqual(["smith2020", "brown2018", "undated"]);
+    expect(numbered.label([item("brown2018")]).text).toBe("[2]");
+    expect(numbered.references).toHaveLength(3);
+  });
+
+  it("ignores footnotes without citations and damaged citation markup", () => {
+    const plain: DocumentNode = { type: "footnote", attrs: { text: "x", html: "<em>x</em>" } };
+    const broken: DocumentNode = { type: "footnote", attrs: { text: "x", html: '<span data-citation="[{not json">x</span>' } };
+
+    expect(citedKeys(doc(plain, broken, cite(item("zed2019a"))))).toEqual(["zed2019a"]);
+  });
+});
+

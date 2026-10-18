@@ -2,7 +2,7 @@ import html
 import re
 
 from vivepdf.ops._html_clean import visible_text
-from vivepdf.ops._note_markup import inline_html
+from vivepdf.ops._note_markup import embedded_picture, inline_html
 from vivepdf.ops._studio_document_models import (
     MAX_FOOTNOTE_CHARS,
     MAX_FOOTNOTE_HTML_CHARS,
@@ -18,6 +18,7 @@ TAG = re.compile(r"(<[^>]*>)")
 VERBATIM_OPEN = re.compile(r"^<(code|pre)\b", re.IGNORECASE)
 VERBATIM_CLOSE = re.compile(r"^</(code|pre)\s*>", re.IGNORECASE)
 SPACES = re.compile(r"\s+")
+PICTURE_SOURCE = re.compile(r'(<img\b[^>]*?\ssrc=")data:[^"]*"', re.IGNORECASE)
 
 
 def _key(label: str) -> str:
@@ -36,8 +37,9 @@ def _plain(raw: str) -> str:
 
 
 def _markup(raw: str) -> str:
-    cleaned = inline_html(_rendered(raw))
-    return cleaned if "<" in cleaned and len(cleaned) <= MAX_FOOTNOTE_HTML_CHARS else ""
+    cleaned = inline_html(_rendered(raw), embedded_picture)
+    measured = PICTURE_SOURCE.sub(r'\1"', cleaned)
+    return cleaned if "<" in cleaned and len(measured) <= MAX_FOOTNOTE_HTML_CHARS else ""
 
 
 def _fence_closes(line: str, fence: str) -> bool:
@@ -94,7 +96,7 @@ def _split(text: str) -> tuple[str, dict[str, str]]:
             fence = opening.group("fence")
         kept.append(line)
     joined = {
-        key: " ".join(" ".join(part for part in block if part) for block in paragraphs)
+        key: " ".join("\n".join(part for part in block if part) for block in paragraphs)
         for key, paragraphs in raw.items()
     }
     return "\n".join(kept), joined

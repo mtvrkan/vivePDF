@@ -9333,7 +9333,12 @@
         "placeholder": "Escriba la nota que aparece al final de la página",
         "remove": "Quitar nota al pie",
         "done": "Volver al texto",
-        "endTitle": "Notas"
+        "endTitle": "Notas",
+        "cite": "Insertar cita",
+        "picture": "Insertar imagen",
+        "hint": "Mayús+Intro empieza una nueva línea en la nota.",
+        "pictureTooLarge": "Esta imagen es demasiado grande para una nota al pie. Elija una más pequeña.",
+        "pictureLimit": "Esta nota al pie ya tiene el máximo de imágenes posible."
       },
       "section": {
         "button": "Salto de sección",

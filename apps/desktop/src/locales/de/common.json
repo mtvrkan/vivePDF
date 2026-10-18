@@ -9333,7 +9333,12 @@
         "placeholder": "Notiz schreiben, die unten auf der Seite erscheint",
         "remove": "Fußnote entfernen",
         "done": "Zurück zum Text",
-        "endTitle": "Anmerkungen"
+        "endTitle": "Anmerkungen",
+        "cite": "Zitat einfügen",
+        "picture": "Bild einfügen",
+        "hint": "Mit Umschalt+Eingabe beginnt eine neue Zeile in der Fußnote.",
+        "pictureTooLarge": "Dieses Bild ist für eine Fußnote zu groß. Wählen Sie ein kleineres.",
+        "pictureLimit": "Diese Fußnote enthält bereits so viele Bilder wie möglich."
       },
       "section": {
         "button": "Abschnittsumbruch",

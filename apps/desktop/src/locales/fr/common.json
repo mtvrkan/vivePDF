@@ -9333,7 +9333,12 @@
         "placeholder": "Écrivez la note affichée en bas de la page",
         "remove": "Supprimer la note",
         "done": "Retour au texte",
-        "endTitle": "Notes"
+        "endTitle": "Notes",
+        "cite": "Insérer une citation",
+        "picture": "Insérer une image",
+        "hint": "Maj+Entrée commence une nouvelle ligne dans la note.",
+        "pictureTooLarge": "Cette image est trop grande pour une note de bas de page. Choisissez-en une plus petite.",
+        "pictureLimit": "Cette note de bas de page contient déjà le nombre maximal d'images."
       },
       "section": {
         "button": "Saut de section",

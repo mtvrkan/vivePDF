@@ -9333,7 +9333,12 @@
         "placeholder": "Scrivi la nota mostrata in fondo alla pagina",
         "remove": "Rimuovi nota",
         "done": "Torna al testo",
-        "endTitle": "Note"
+        "endTitle": "Note",
+        "cite": "Inserisci citazione",
+        "picture": "Inserisci immagine",
+        "hint": "Maiusc+Invio inizia una nuova riga nella nota.",
+        "pictureTooLarge": "Questa immagine è troppo grande per una nota a piè di pagina. Scegline una più piccola.",
+        "pictureLimit": "Questa nota a piè di pagina contiene già il numero massimo di immagini."
       },
       "section": {
         "button": "Interruzione di sezione",

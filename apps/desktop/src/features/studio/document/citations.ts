@@ -1,5 +1,6 @@
 import type { BibEntry, BibName, CitationStyle, DocumentNode } from "@/types/studio";
 import { CITATION, citationItems, type CitationItem } from "./citationItems";
+import { FOOTNOTE, footnoteCitations, footnoteMarkup } from "./footnotes";
 import { escapeHtml } from "./toHtml";
 
 export const CITATION_STYLES: CitationStyle[] = ["apa", "mla", "chicago", "ieee"];
@@ -71,16 +72,18 @@ function kindOf(entry: BibEntry): Kind {
 export function citedKeys(content: DocumentNode | string): string[] {
   const keys: string[] = [];
   const seen = new Set<string>();
-  const visit = (node: DocumentNode) => {
-    if (node.type === CITATION) {
-      for (const item of citationItems(node.attrs?.items)) {
-        const key = item.key.toLowerCase();
-        if (!seen.has(key)) {
-          seen.add(key);
-          keys.push(key);
-        }
+  const add = (items: CitationItem[]) => {
+    for (const item of items) {
+      const key = item.key.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        keys.push(key);
       }
     }
+  };
+  const visit = (node: DocumentNode) => {
+    if (node.type === CITATION) add(citationItems(node.attrs?.items));
+    if (node.type === FOOTNOTE) footnoteCitations(footnoteMarkup(node.attrs?.html)).forEach(add);
     for (const child of node.content ?? []) visit(child);
   };
   if (typeof content !== "string") visit(content);

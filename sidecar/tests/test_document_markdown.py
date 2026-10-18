@@ -130,3 +130,38 @@ def test_export_refuses_to_overwrite_without_permission(tmp_path: Path) -> None:
 
     assert caught.value.data["exists"] is True
     assert target.read_text("utf-8") == "keep"
+
+
+def test_note_breaks_pictures_and_cited_labels_export_and_import_back(tmp_path: Path) -> None:
+    logo = "data:image/png;base64," + base64.b64encode(b"\x89PNG\r\n\x1a\nlogo").decode()
+    body = '<p>Claim<sup class="fn-ref" id="fnref-1">1</sup>.</p>'
+    params = StudioDocumentMarkdownParams.model_validate(
+        {
+            "html": body,
+            "images": [logo],
+            "footnotes": ["See (Smith, 2020)\n2. edition"],
+            "footnoteHtml": [
+                'See <b>(Smith, 2020)</b> <img src="vpimg-0" alt="Logo"><br>2. edition'
+            ],
+            "output": str(tmp_path / "notes.md"),
+        }
+    )
+
+    written = document_markdown(params)
+    result = export_markdown(params, silent_progress())
+    imported = import_document(StudioDocumentOpenParams(path=result.output), silent_progress())
+
+    assert f"[^1]: See **(Smith, 2020)** ![Logo]({logo})\\\n    2\\. edition" in written
+    assert "&lt;br&gt;" in imported.html
+    assert f"&lt;img src=&quot;{logo}&quot; alt=&quot;Logo&quot;&gt;" in imported.html
+
+
+def test_plain_note_breaks_reach_the_markdown_and_unknown_pictures_do_not() -> None:
+    written = _markdown(
+        '<p>a<sup class="fn-ref" id="fnref-1">1</sup></p>',
+        footnotes=["first\nsecond"],
+        footnoteHtml=['<img src="vpimg-4">'],
+    )
+
+    assert "[^1]: first\\\n    second" in written
+    assert "![" not in written

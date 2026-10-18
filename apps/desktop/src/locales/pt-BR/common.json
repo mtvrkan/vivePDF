@@ -9333,7 +9333,12 @@
         "placeholder": "Escreva a nota que aparece no pé da página",
         "remove": "Remover nota de rodapé",
         "done": "Voltar ao texto",
-        "endTitle": "Notas"
+        "endTitle": "Notas",
+        "cite": "Inserir citação",
+        "picture": "Inserir imagem",
+        "hint": "Shift+Enter inicia uma nova linha na nota.",
+        "pictureTooLarge": "Esta imagem é grande demais para uma nota de rodapé. Escolha uma menor.",
+        "pictureLimit": "Esta nota de rodapé já tem o número máximo de imagens."
       },
       "section": {
         "button": "Quebra de seção",
