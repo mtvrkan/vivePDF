@@ -1,12 +1,13 @@
 import { invoke } from "@tauri-apps/api/core";
 import { create } from "zustand";
 import { onImmersiveExit, setImmersiveFullscreen } from "@/features/viewer/immersive";
+import * as logger from "@/shared/lib/logger";
 import { RpcCallError, toRpcError } from "@/shared/rpc/client";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { readPrefs, usePresentationStore } from "@/shared/store/presentationStore";
 import { useUiStore } from "@/shared/store/uiStore";
 
-export type PresenterOpened = { label: string; external: boolean; width: number; height: number };
+export type PresenterOpened = { label: string; external: boolean; width: number; height: number; screens: number };
 
 export type AudienceProblem = "closed" | "failed";
 
@@ -38,11 +39,32 @@ export const usePresenterStore = create<PresenterState>((set) => ({
   setOpened: (opened) => set((state) => (state.session ? { session: { ...state.session, audience: opened.label, external: opened.external, aspect: aspectOf(opened), problem: null } } : state)),
 }));
 
-async function openAudience(path: string, password: string | null, startPage: number): Promise<PresenterOpened> {
+function logOpened(action: string, opened: PresenterOpened): void {
+  logger.info("presenter", `${action}: ${opened.screens} screen(s), ${opened.external ? "audience on the other screen" : "rehearsal window"}, ${opened.width}x${opened.height}`);
+}
+
+async function callPresenter(command: string, args?: Record<string, unknown>): Promise<PresenterOpened> {
   try {
-    return await invoke<PresenterOpened>("presenter_open", { path, password, startPage: Math.max(0, startPage - 1) });
+    const opened = await invoke<PresenterOpened>(command, args);
+    logOpened(command, opened);
+    return opened;
   } catch (error) {
-    throw new RpcCallError(toRpcError(error));
+    const rpcError = toRpcError(error);
+    logger.warn("presenter", `${command} failed: ${rpcError.code} ${rpcError.message}`);
+    throw new RpcCallError(rpcError);
+  }
+}
+
+function openAudience(path: string, password: string | null, startPage: number): Promise<PresenterOpened> {
+  return callPresenter("presenter_open", { path, password, startPage: Math.max(0, startPage - 1) });
+}
+
+export async function countScreens(): Promise<number | null> {
+  try {
+    return await invoke<number>("presenter_screens");
+  } catch (error) {
+    logger.warn("presenter", `presenter_screens failed: ${toRpcError(error).message}`);
+    return null;
   }
 }
 
@@ -65,11 +87,12 @@ export async function reopenAudience(startPage: number): Promise<void> {
 }
 
 export async function swapScreens(): Promise<void> {
-  try {
-    usePresenterStore.getState().setOpened(await invoke<PresenterOpened>("presenter_swap"));
-  } catch (error) {
-    throw new RpcCallError(toRpcError(error));
-  }
+  usePresenterStore.getState().setOpened(await callPresenter("presenter_swap"));
+}
+
+export async function moveAudienceToScreen(currentPage: number): Promise<void> {
+  usePresenterStore.getState().setOpened(await callPresenter("presenter_move"));
+  await setImmersiveFullscreen(true, currentPage);
 }
 
 export function endPresenter(): void {

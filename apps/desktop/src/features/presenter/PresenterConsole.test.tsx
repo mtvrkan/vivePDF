@@ -14,6 +14,8 @@ vi.mock("@embedpdf/plugin-scroll/react", () => ({ useScroll: () => scroll }));
 vi.mock("@embedpdf/core/react", () => ({ useRegistry: () => ({ registry: null, documents: {} }) }));
 vi.mock("@/features/viewer/ImmersiveView", () => ({ ImmersiveView: () => <div data-testid="console-stage" /> }));
 vi.mock("./usePresenterConsole", () => ({ usePresenterConsole: () => () => undefined }));
+const fullscreen = vi.hoisted(() => vi.fn());
+vi.mock("@/features/viewer/immersive", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/features/viewer/immersive")>()), setImmersiveFullscreen: fullscreen }));
 
 const { PresenterConsole } = await import("./PresenterConsole");
 
@@ -73,6 +75,34 @@ describe("PresenterConsole", () => {
 
     expect((screen.getByRole("button", { name: "Swap screens" }) as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByText(/Rehearsal:/)).toBeTruthy();
+  });
+
+  it("offers to move a rehearsal onto a projector that was switched to extend", async () => {
+    usePresenterStore.setState({ session: session({ external: false }) });
+    invoke.mockImplementation(async (command: string) => {
+      if (command === "presenter_screens") return 2;
+      return command === "presenter_move" ? { label: "present-a", external: true, width: 1920, height: 1080, screens: 2 } : null;
+    });
+    renderConsole();
+    await act(async () => undefined);
+
+    expect(screen.getByText("A second screen is connected now. Move the audience view onto it to present.")).toBeTruthy();
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Move to the projector" })));
+
+    expect(invoke).toHaveBeenCalledWith("presenter_move", undefined);
+    expect(fullscreen).toHaveBeenCalledWith(true, 2);
+    expect(usePresenterStore.getState().session).toMatchObject({ external: true, aspect: 1920 / 1080 });
+    expect(screen.queryByRole("button", { name: "Move to the projector" })).toBeNull();
+  });
+
+  it("keeps the rehearsal note while the second screen is still missing", async () => {
+    usePresenterStore.setState({ session: session({ external: false }) });
+    invoke.mockImplementation(async (command: string) => (command === "presenter_screens" ? 1 : null));
+    renderConsole();
+    await act(async () => undefined);
+
+    expect(screen.getByText(/Rehearsal:/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Move to the projector" })).toBeNull();
   });
 
   it("offers to reopen a closed audience screen on the current page", async () => {

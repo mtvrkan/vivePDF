@@ -41,9 +41,13 @@ const READ_ONLY_LAYER = { display: "contents", pointerEvents: "none" } as const;
 
 export type PageDecoration = (pageIndex: number, width: number, height: number) => ReactNode;
 
-type PageViewProps = { documentId: string; decoratePage?: PageDecoration; pageColors?: PageColorScheme; readOnly?: boolean; readOnlySource?: ReadOnlySource };
+export type PageBackdrop = "muted" | "black";
 
-export function PageView({ documentId, decoratePage, pageColors = "normal", readOnly = false, readOnlySource }: PageViewProps) {
+const BACKDROP_COLORS: Record<PageBackdrop, string> = { muted: "var(--muted)", black: "var(--color-black)" };
+
+type PageViewProps = { documentId: string; decoratePage?: PageDecoration; pageColors?: PageColorScheme; readOnly?: boolean; readOnlySource?: ReadOnlySource; backdrop?: PageBackdrop };
+
+export function PageView({ documentId, decoratePage, pageColors = "normal", readOnly = false, readOnlySource, backdrop = "muted" }: PageViewProps) {
   const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement>(null);
   const clickOrigin = useRef<{ x: number; y: number; selected: string[] } | null>(null);
@@ -103,7 +107,7 @@ export function PageView({ documentId, decoratePage, pageColors = "normal", read
   return (
     <div ref={hostRef} className="relative h-full" data-read-only={readOnly ? "" : undefined} data-draw-cursor={drawCursor ? "" : undefined} style={drawCursor ? { cursor: drawCursor } : undefined}>
       <GlobalPointerProvider documentId={documentId}>
-        <Viewport documentId={documentId} data-pan-scroller="" tabIndex={0} role="region" aria-label={t("viewer.documentPages")} className="outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring" style={{ height: "100%", backgroundColor: "var(--muted)" }}>
+        <Viewport documentId={documentId} data-pan-scroller="" tabIndex={0} role="region" aria-label={t("viewer.documentPages")} className="outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring" style={{ height: "100%", backgroundColor: BACKDROP_COLORS[backdrop] }}>
           <PanMode />
           <ZoomGestureWrapper documentId={documentId} enableWheel={false} style={{ display: "block", width: "100%", minWidth: "fit-content" }}>
             <Scroller

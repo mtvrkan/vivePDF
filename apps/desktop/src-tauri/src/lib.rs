@@ -185,6 +185,8 @@ pub fn run() {
             presenter::presenter_session,
             presenter::presenter_close,
             presenter::presenter_swap,
+            presenter::presenter_screens,
+            presenter::presenter_move,
             presenter::presenter_notes_read,
             presenter::presenter_notes_write
         ])

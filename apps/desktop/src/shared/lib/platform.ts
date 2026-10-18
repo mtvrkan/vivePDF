@@ -1,4 +1,5 @@
 export const isMac = typeof navigator !== "undefined" && (navigator.userAgent ?? "").includes("Mac");
+export const isWindows = typeof navigator !== "undefined" && (navigator.userAgent ?? "").includes("Windows");
 export const FULLSCREEN_SHORTCUT = isMac ? "⌃⌘F" : "F11";
 
 type ModifierEvent = { ctrlKey: boolean; metaKey: boolean };

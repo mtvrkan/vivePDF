@@ -117,9 +117,9 @@ function AudienceStage({ session, slice, live, onCommand }: { session: AudienceS
       }}
     >
       <div className={cn("h-full transition-opacity duration-150", settled ? "opacity-100" : "opacity-0")}>
-        <PageView documentId={AUDIENCE_DOCUMENT_ID} readOnly decoratePage={(pageIndex) => <SelectionMarksLayer marks={selection} pageIndex={pageIndex} />} />
+        <PageView documentId={AUDIENCE_DOCUMENT_ID} readOnly backdrop="black" decoratePage={(pageIndex) => <SelectionMarksLayer marks={selection} pageIndex={pageIndex} />} />
       </div>
-      {settled ? <CurrentPageMask rects={rects} pageIndex={scrollState.currentPage - 1} tone="black" /> : null}
+      {settled ? <CurrentPageMask rects={rects} pageIndex={scrollState.currentPage - 1} /> : null}
       <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
         {rects.map((rect) => (
           <PageDrawingCanvas key={rect.pageIndex} rect={rect} />

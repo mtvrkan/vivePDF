@@ -171,11 +171,10 @@ export function ImmersiveView({ documentId, onExit, variant = "solo", onSignal }
       onMouseMove={onMouseMove}
       className={cn("immersive-view relative min-h-0 flex-1 bg-black", asConsole && "overflow-hidden", cursorHidden && tool === "pointer" && cursorAutoHide && "cursor-none")}
     >
-      <div className="absolute inset-0 bg-muted" aria-hidden />
       <div className={cn("h-full transition-opacity duration-150", settled ? "opacity-100" : "opacity-0")}>
-        <PageView documentId={documentId} />
+        <PageView documentId={documentId} backdrop="black" />
       </div>
-      {settled ? <CurrentPageMask rects={pageRects} pageIndex={scrollState.currentPage - 1} tone="muted" /> : null}
+      {settled ? <CurrentPageMask rects={pageRects} pageIndex={scrollState.currentPage - 1} /> : null}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         {pageRects.map((rect) => (
           <CodeBlockMarkers key={rect.pageIndex} documentId={documentId} rect={rect} />

@@ -8,10 +8,13 @@ import { endPresenter, usePresenterStore } from "./presenterSession";
 
 const invoke = vi.hoisted(() => vi.fn());
 const saving = vi.hoisted(() => ({ unsaved: 0, save: vi.fn() }));
+const fullscreen = vi.hoisted(() => vi.fn());
+const screens = vi.hoisted(() => ({ count: 2 }));
 
 vi.mock("@tauri-apps/api/core", () => ({ invoke, convertFileSrc: (path: string) => path }));
 vi.mock("@embedpdf/plugin-scroll/react", () => ({ useScroll: () => ({ state: { currentPage: 4, totalPages: 9 }, provides: null }) }));
 vi.mock("@/features/viewer/useDocumentSave", () => ({ useDocumentSave: () => ({ save: saving.save, unsavedCount: () => saving.unsaved }) }));
+vi.mock("@/features/viewer/immersive", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/features/viewer/immersive")>()), setImmersiveFullscreen: fullscreen }));
 
 const { PresenterStartGate } = await import("./PresenterStartGate");
 
@@ -27,7 +30,12 @@ describe("PresenterStartGate", () => {
 
   beforeEach(() => {
     invoke.mockReset();
-    invoke.mockImplementation(async (command: string) => (command === "presenter_open" ? { label: "present-a", external: false, width: 1280, height: 720 } : null));
+    screens.count = 2;
+    fullscreen.mockReset();
+    invoke.mockImplementation(async (command: string) => {
+      if (command === "presenter_screens") return screens.count;
+      return command === "presenter_open" ? { label: "present-a", external: false, width: 1280, height: 720, screens: screens.count } : null;
+    });
     saving.unsaved = 0;
     saving.save.mockReset();
     useToastStore.setState({ toasts: [] });
@@ -79,5 +87,39 @@ describe("PresenterStartGate", () => {
     await request(2);
 
     expect(useToastStore.getState().toasts.at(-1)?.kind).toBe("error");
+  });
+  it("explains a mirrored projector instead of opening a window when only one screen is found", async () => {
+    screens.count = 1;
+    render(<PresenterStartGate documentId="doc-a" />);
+
+    await request(2);
+
+    expect(screen.getByRole("dialog", { name: "Only one screen is visible" })).toBeTruthy();
+    expect(invoke).not.toHaveBeenCalledWith("presenter_open", expect.anything());
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Try again" })));
+    expect(screen.getByText("Still only one screen. Check the projector setting and try again.")).toBeTruthy();
+    expect(invoke).not.toHaveBeenCalledWith("presenter_open", expect.anything());
+
+    screens.count = 2;
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Try again" })));
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(invoke).toHaveBeenCalledWith("presenter_open", { path: "C:/talks/deck.pdf", password: null, startPage: 1 });
+  });
+
+  it("presents full screen on the one screen or rehearses in a window on request", async () => {
+    screens.count = 1;
+    render(<PresenterStartGate documentId="doc-a" />);
+    await request(3);
+
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Present on this screen" })));
+
+    expect(fullscreen).toHaveBeenCalledWith(true, 3);
+    expect(invoke).not.toHaveBeenCalledWith("presenter_open", expect.anything());
+
+    await request(4);
+    await act(async () => fireEvent.click(screen.getByRole("button", { name: "Rehearse in a window" })));
+
+    expect(invoke).toHaveBeenCalledWith("presenter_open", { path: "C:/talks/deck.pdf", password: null, startPage: 3 });
   });
 });

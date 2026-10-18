@@ -20,9 +20,10 @@ import { fitBox } from "./fitBox";
 import { NextPagePreview } from "./NextPagePreview";
 import { NotesEditor } from "./NotesEditor";
 import type { PresenterTransport } from "./presenterChannel";
-import { reopenAudience, swapScreens, usePresenterStore } from "./presenterSession";
+import { moveAudienceToScreen, reopenAudience, swapScreens, usePresenterStore } from "./presenterSession";
 import { useBoxSize } from "./useBoxSize";
 import { usePresenterConsole } from "./usePresenterConsole";
+import { useSecondScreen } from "./useSecondScreen";
 import { sessionPathOf } from "@/features/viewer/convertedDocuments";
 
 const TIMER_TICK_MS = 500;
@@ -82,6 +83,8 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
   const hasTemporaryDrawings = usePresentationStore((state) => state.totalStrokeCount() > 0);
   const [styleOpen, setStyleOpen] = useState(false);
   const [busy, setBusy] = useState(false);
+  const rehearsing = session !== null && !session.external;
+  const secondScreen = useSecondScreen(rehearsing);
   const barRef = useRef<HTMLDivElement>(null);
   const styleRef = useRef<HTMLDivElement>(null);
   const stageHostRef = useRef<HTMLDivElement>(null);
@@ -146,7 +149,18 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
           </div>
         ) : null}
       </div>
-      {session && !session.external ? <p className="border-b bg-card px-4 py-2 text-sm text-muted-foreground">{t("presentation.presenter.rehearsal")}</p> : null}
+      {rehearsing ? (
+        <div className="flex items-center gap-3 border-b bg-card px-4 py-2 text-sm">
+          <p role="status" aria-live="polite" className="flex-1 text-muted-foreground">
+            {t(secondScreen ? "presentation.presenter.screenFound" : "presentation.presenter.rehearsal")}
+          </p>
+          {secondScreen ? (
+            <Button size="sm" variant="primary" loading={busy} onClick={() => runBusy(() => moveAudienceToScreen(currentPage))}>
+              {t("presentation.presenter.moveToScreen")}
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
       {session?.problem ? (
         <div role="alert" className="flex items-center gap-3 border-b bg-card px-4 py-2 text-sm">
           <span className="flex-1 text-destructive">{t(session.problem === "closed" ? "presentation.presenter.audienceClosed" : "presentation.presenter.audienceFailed")}</span>

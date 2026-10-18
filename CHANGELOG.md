@@ -3,7 +3,11 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed
+- Presenter view now reliably opens on a projector set to extend the desktop: the audience window waits until it has really moved to the projector before going full screen (Windows moves windows asynchronously, so it used to go full screen on the laptop behind the console), macOS places it in points of the projector and uses a full screen without a new Space, and if it still does not land it covers the projector borderless or reports that it could not reach it [2026-10-18]
+- With a projector that mirrors the screen (one display found), the presenter view explains how to switch to Extend (Windows key + P, or System Settings › Displays on a Mac) and offers Try again, Present on this screen or Rehearse in a window instead of silently opening a small rehearsal window; a rehearsal notices when the projector is switched to extend and offers Move to the projector [2026-10-18]
 - The engine robustness matrix feeds the support bundle its file through attachments instead of the picture list, so the fast robustness tests pass again [2026-10-17]
 
 ## [0.3.0] - 2026-10-15

@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::{Mutex, MutexGuard, OnceLock};
-use std::time::SystemTime;
+use std::time::{Duration, Instant, SystemTime};
 
 use sha2::{Digest, Sha256};
 use tauri::{
-    AppHandle, Emitter, Manager, Monitor, PhysicalPosition, PhysicalSize, Runtime, WebviewUrl,
-    WebviewWindow, WebviewWindowBuilder, WindowEvent,
+    AppHandle, Emitter, LogicalPosition, Manager, Monitor, PhysicalPosition, PhysicalSize,
+    Position, Runtime, WebviewUrl, WebviewWindow, WebviewWindowBuilder, WindowEvent,
 };
 
 use crate::rpc::RpcError;
@@ -25,6 +25,9 @@ const MAX_PAGE_INDEX: u32 = 1_000_000;
 const NOTES_VERSION: u64 = 1;
 const REHEARSAL_WIDTH: f64 = 1280.0;
 const REHEARSAL_HEIGHT: f64 = 720.0;
+const SETTLE_TIMEOUT: Duration = Duration::from_millis(1500);
+const SETTLE_STEP: Duration = Duration::from_millis(50);
+const SCREEN_MOVE_FAILED: &str = "SCREEN_MOVE_FAILED";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Area {
@@ -53,6 +56,46 @@ impl Area {
 
     fn surface(&self) -> u64 {
         u64::from(self.width) * u64::from(self.height)
+    }
+
+    fn holds_centre_of(&self, other: Area) -> bool {
+        self.contains(
+            i64::from(other.x) + i64::from(other.width / 2),
+            i64::from(other.y) + i64::from(other.height / 2),
+        )
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub struct Screen {
+    pub area: Area,
+    pub scale: f64,
+}
+
+impl Screen {
+    fn of(monitor: &Monitor) -> Self {
+        Self {
+            area: Area::of(monitor),
+            scale: monitor.scale_factor(),
+        }
+    }
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+enum Role {
+    Audience,
+    Console,
+}
+
+pub fn placement(screen: Screen, logical: bool) -> Position {
+    if logical && screen.scale > 0.0 {
+        LogicalPosition::new(
+            f64::from(screen.area.x) / screen.scale,
+            f64::from(screen.area.y) / screen.scale,
+        )
+        .into()
+    } else {
+        PhysicalPosition::new(screen.area.x, screen.area.y).into()
     }
 }
 
@@ -85,6 +128,7 @@ pub struct Opened {
     external: bool,
     width: u32,
     height: u32,
+    screens: usize,
 }
 
 impl Presenters {
@@ -146,11 +190,9 @@ fn new_label() -> String {
 }
 
 fn index_holding(console: Area, monitors: &[Area]) -> Option<usize> {
-    let centre_x = i64::from(console.x) + i64::from(console.width / 2);
-    let centre_y = i64::from(console.y) + i64::from(console.height / 2);
     monitors
         .iter()
-        .position(|monitor| monitor.contains(centre_x, centre_y))
+        .position(|monitor| monitor.holds_centre_of(console))
         .or_else(|| monitors.iter().position(|monitor| *monitor == console))
 }
 
@@ -180,34 +222,133 @@ fn internal(error: impl std::fmt::Display) -> RpcError {
     RpcError::new("INTERNAL", error.to_string())
 }
 
-fn monitor_areas<R: Runtime>(window: &WebviewWindow<R>) -> (Option<Area>, Vec<Area>, Option<Area>) {
+fn screen_move_failed() -> RpcError {
+    RpcError::new(
+        SCREEN_MOVE_FAILED,
+        "the presentation window did not reach the other screen",
+    )
+}
+
+fn no_second_screen() -> RpcError {
+    RpcError::new("INVALID_PARAMS", "no second screen")
+}
+
+fn screens_of<R: Runtime>(window: &WebviewWindow<R>) -> Vec<Screen> {
+    window
+        .available_monitors()
+        .unwrap_or_default()
+        .iter()
+        .map(Screen::of)
+        .collect()
+}
+
+fn monitor_areas<R: Runtime>(
+    window: &WebviewWindow<R>,
+) -> (Option<Area>, Vec<Screen>, Option<Area>) {
     let console = window
         .current_monitor()
         .ok()
         .flatten()
         .map(|monitor| Area::of(&monitor));
-    let monitors = window
-        .available_monitors()
-        .unwrap_or_default()
-        .iter()
-        .map(Area::of)
-        .collect();
     let primary = window
         .primary_monitor()
         .ok()
         .flatten()
         .map(|monitor| Area::of(&monitor));
-    (console, monitors, primary)
+    (console, screens_of(window), primary)
 }
 
-fn cover<R: Runtime>(window: &WebviewWindow<R>, area: Area) -> tauri::Result<()> {
+fn areas(screens: &[Screen]) -> Vec<Area> {
+    screens.iter().map(|screen| screen.area).collect()
+}
+
+fn audience_screen(
+    console: Option<Area>,
+    screens: &[Screen],
+    primary: Option<Area>,
+) -> Option<Screen> {
+    pick_audience(console?, &areas(screens), primary).map(|index| screens[index])
+}
+
+fn window_area<R: Runtime>(window: &WebviewWindow<R>) -> Option<Area> {
+    let position = window.outer_position().ok()?;
+    let size = window.outer_size().ok()?;
+    Some(Area {
+        x: position.x,
+        y: position.y,
+        width: size.width,
+        height: size.height,
+    })
+}
+
+fn settles(mut check: impl FnMut() -> bool) -> bool {
+    let started = Instant::now();
+    loop {
+        if check() {
+            return true;
+        }
+        if started.elapsed() >= SETTLE_TIMEOUT {
+            return false;
+        }
+        std::thread::sleep(SETTLE_STEP);
+    }
+}
+
+fn lands_on<R: Runtime>(window: &WebviewWindow<R>, screen: Screen) -> bool {
+    window_area(window).is_some_and(|area| screen.area.holds_centre_of(area))
+}
+
+fn leave_fullscreen<R: Runtime>(window: &WebviewWindow<R>) -> tauri::Result<()> {
+    if cfg!(target_os = "macos") {
+        window.set_simple_fullscreen(false)?;
+    }
     if window.is_fullscreen().unwrap_or(false) {
         window.set_fullscreen(false)?;
     }
-    window.set_position(PhysicalPosition::new(area.x, area.y))?;
-    window.set_size(PhysicalSize::new(area.width, area.height))?;
+    Ok(())
+}
+
+fn enter_fullscreen<R: Runtime>(window: &WebviewWindow<R>, role: Role) -> tauri::Result<()> {
+    if cfg!(target_os = "macos") && role == Role::Audience {
+        window.set_simple_fullscreen(true)
+    } else {
+        window.set_fullscreen(true)
+    }
+}
+
+fn move_to<R: Runtime>(window: &WebviewWindow<R>, screen: Screen) -> tauri::Result<bool> {
+    window.set_position(placement(screen, cfg!(target_os = "macos")))?;
+    let landed = settles(|| lands_on(window, screen));
+    window.set_size(PhysicalSize::new(screen.area.width, screen.area.height))?;
+    Ok(landed)
+}
+
+fn cover<R: Runtime>(window: &WebviewWindow<R>, screen: Screen, role: Role) -> tauri::Result<bool> {
+    leave_fullscreen(window)?;
+    move_to(window, screen)?;
     window.show()?;
-    window.set_fullscreen(true)
+    enter_fullscreen(window, role)?;
+    if settles(|| lands_on(window, screen)) {
+        return Ok(true);
+    }
+    if role == Role::Console {
+        return Ok(false);
+    }
+    leave_fullscreen(window)?;
+    let landed = move_to(window, screen)?;
+    window.set_always_on_top(true)?;
+    Ok(landed)
+}
+
+async fn cover_off_thread<R: Runtime>(
+    window: WebviewWindow<R>,
+    screen: Screen,
+    role: Role,
+) -> Result<bool, RpcError> {
+    tauri::async_runtime::spawn_blocking(move || cover(&window, screen, role))
+        .await
+        .map_err(internal)?
+        .map_err(internal)
 }
 
 fn close_audiences<R: Runtime>(app: &AppHandle<R>, console: &str) {
@@ -236,6 +377,22 @@ fn granted_file(path: &str) -> Result<PathBuf, RpcError> {
     Ok(file)
 }
 
+fn audience_of<R: Runtime>(
+    app: &AppHandle<R>,
+    console: &WebviewWindow<R>,
+) -> Result<(String, WebviewWindow<R>), RpcError> {
+    let label = app
+        .state::<Presenters>()
+        .audiences_of(console.label())
+        .into_iter()
+        .next()
+        .ok_or_else(|| RpcError::new("INVALID_PARAMS", "nothing is being presented"))?;
+    let audience = app
+        .get_webview_window(&label)
+        .ok_or_else(|| RpcError::new("INVALID_PARAMS", "the audience window is gone"))?;
+    Ok((label, audience))
+}
+
 #[tauri::command]
 pub async fn presenter_open<R: Runtime>(
     app: AppHandle<R>,
@@ -258,10 +415,8 @@ pub async fn presenter_open<R: Runtime>(
     }
     granted_file(&path)?;
     close_audiences(&app, window.label());
-    let (console, monitors, primary) = monitor_areas(&window);
-    let target = console
-        .and_then(|console| pick_audience(console, &monitors, primary))
-        .map(|index| monitors[index]);
+    let (console, screens, primary) = monitor_areas(&window);
+    let target = audience_screen(console, &screens, primary);
     let label = new_label();
     let presenters = app.state::<Presenters>();
     presenters.start(
@@ -298,16 +453,18 @@ pub async fn presenter_open<R: Runtime>(
         }
     });
     let shown = match target {
-        Some(area) => cover(&audience, area),
-        None => audience.show(),
+        Some(screen) => cover_off_thread(audience.clone(), screen, Role::Audience)
+            .await
+            .and_then(|landed| landed.then_some(()).ok_or_else(screen_move_failed)),
+        None => audience.show().map_err(internal),
     };
     if let Err(error) = shown {
-        presenters.forget(&label);
+        app.state::<Presenters>().forget(&label);
         let _ = audience.destroy();
-        return Err(internal(error));
+        return Err(error);
     }
     let size = match target {
-        Some(area) => PhysicalSize::new(area.width, area.height),
+        Some(screen) => PhysicalSize::new(screen.area.width, screen.area.height),
         None => audience.inner_size().unwrap_or(PhysicalSize::new(
             REHEARSAL_WIDTH as u32,
             REHEARSAL_HEIGHT as u32,
@@ -318,6 +475,7 @@ pub async fn presenter_open<R: Runtime>(
         external: target.is_some(),
         width: size.width,
         height: size.height,
+        screens: screens.len(),
     })
 }
 
@@ -338,41 +496,69 @@ pub fn presenter_close<R: Runtime>(app: AppHandle<R>, window: WebviewWindow<R>) 
 }
 
 #[tauri::command]
+pub async fn presenter_screens<R: Runtime>(window: WebviewWindow<R>) -> usize {
+    screens_of(&window).len()
+}
+
+#[tauri::command]
+pub async fn presenter_move<R: Runtime>(
+    app: AppHandle<R>,
+    window: WebviewWindow<R>,
+) -> Result<Opened, RpcError> {
+    let (label, audience) = audience_of(&app, &window)?;
+    let (console, screens, primary) = monitor_areas(&window);
+    let screen = audience_screen(console, &screens, primary).ok_or_else(no_second_screen)?;
+    audience.set_decorations(false).map_err(internal)?;
+    if !cover_off_thread(audience, screen, Role::Audience).await? {
+        return Err(screen_move_failed());
+    }
+    let _ = window.set_focus();
+    Ok(Opened {
+        label,
+        external: true,
+        width: screen.area.width,
+        height: screen.area.height,
+        screens: screens.len(),
+    })
+}
+
+#[tauri::command]
 pub async fn presenter_swap<R: Runtime>(
     app: AppHandle<R>,
     window: WebviewWindow<R>,
 ) -> Result<Opened, RpcError> {
-    let audience_label = app
-        .state::<Presenters>()
-        .audiences_of(window.label())
-        .into_iter()
-        .next()
-        .ok_or_else(|| RpcError::new("INVALID_PARAMS", "nothing is being presented"))?;
-    let audience = app
-        .get_webview_window(&audience_label)
-        .ok_or_else(|| RpcError::new("INVALID_PARAMS", "the audience window is gone"))?;
-    let (console, monitors, _) = monitor_areas(&window);
+    let (label, audience) = audience_of(&app, &window)?;
+    let (console, screens, _) = monitor_areas(&window);
     let screen = audience
         .current_monitor()
         .ok()
         .flatten()
         .map(|monitor| Area::of(&monitor));
     let (Some(console), Some(screen)) = (console, screen) else {
-        return Err(RpcError::new("INVALID_PARAMS", "no second screen"));
+        return Err(no_second_screen());
     };
-    let console_index = index_holding(console, &monitors);
-    let screen_index = index_holding(screen, &monitors);
+    let monitors = areas(&screens);
+    let (Some(console_index), Some(screen_index)) = (
+        index_holding(console, &monitors),
+        index_holding(screen, &monitors),
+    ) else {
+        return Err(no_second_screen());
+    };
     if monitors.len() < 2 || console_index == screen_index {
-        return Err(RpcError::new("INVALID_PARAMS", "no second screen"));
+        return Err(no_second_screen());
     }
-    cover(&audience, console).map_err(internal)?;
-    cover(&window, screen).map_err(internal)?;
+    let console_screen = screens[console_index];
+    if !cover_off_thread(audience, console_screen, Role::Audience).await? {
+        return Err(screen_move_failed());
+    }
+    cover_off_thread(window.clone(), screens[screen_index], Role::Console).await?;
     let _ = window.set_focus();
     Ok(Opened {
-        label: audience_label,
+        label,
         external: true,
-        width: console.width,
-        height: console.height,
+        width: console_screen.area.width,
+        height: console_screen.area.height,
+        screens: screens.len(),
     })
 }
 
@@ -634,6 +820,95 @@ mod tests {
             pick_audience(window, &[laptop, projector], Some(laptop)),
             Some(0)
         );
+    }
+
+    #[test]
+    fn macos_places_by_points_of_the_target_screen() {
+        let projector = Screen {
+            area: area(3024, 0, 1920, 1080),
+            scale: 1.0,
+        };
+        let retina = Screen {
+            area: area(-3024, -200, 3024, 1964),
+            scale: 2.0,
+        };
+        let mixed = Screen {
+            area: area(2880, 300, 2560, 1440),
+            scale: 1.5,
+        };
+        assert_eq!(
+            placement(projector, true),
+            Position::Logical(LogicalPosition::new(3024.0, 0.0))
+        );
+        assert_eq!(
+            placement(retina, true),
+            Position::Logical(LogicalPosition::new(-1512.0, -100.0))
+        );
+        assert_eq!(
+            placement(mixed, true),
+            Position::Logical(LogicalPosition::new(1920.0, 200.0))
+        );
+    }
+
+    #[test]
+    fn other_systems_place_by_physical_pixels() {
+        let projector = Screen {
+            area: area(2880, 0, 1920, 1080),
+            scale: 1.5,
+        };
+        assert_eq!(
+            placement(projector, false),
+            Position::Physical(PhysicalPosition::new(2880, 0))
+        );
+        let broken = Screen {
+            area: area(1920, 0, 1280, 720),
+            scale: 0.0,
+        };
+        assert_eq!(
+            placement(broken, true),
+            Position::Physical(PhysicalPosition::new(1920, 0))
+        );
+    }
+
+    #[test]
+    fn a_window_counts_as_on_a_screen_by_its_centre() {
+        let projector = area(1920, 0, 1920, 1080);
+        assert!(projector.holds_centre_of(area(1920, 0, 1920, 1080)));
+        assert!(projector.holds_centre_of(area(1800, 0, 1920, 1080)));
+        assert!(!projector.holds_centre_of(area(0, 0, 1920, 1080)));
+        assert!(!projector.holds_centre_of(area(360, 180, 1280, 720)));
+    }
+
+    #[test]
+    fn the_audience_screen_needs_a_known_console() {
+        let laptop = Screen {
+            area: area(0, 0, 1920, 1080),
+            scale: 1.25,
+        };
+        let projector = Screen {
+            area: area(1920, 0, 1280, 720),
+            scale: 1.0,
+        };
+        let screens = [laptop, projector];
+        assert_eq!(
+            audience_screen(Some(laptop.area), &screens, Some(laptop.area)),
+            Some(projector)
+        );
+        assert_eq!(audience_screen(None, &screens, Some(laptop.area)), None);
+        assert_eq!(
+            audience_screen(Some(laptop.area), &[laptop], Some(laptop.area)),
+            None
+        );
+    }
+
+    #[test]
+    fn settling_stops_as_soon_as_the_check_holds() {
+        let mut calls = 0;
+        assert!(settles(|| {
+            calls += 1;
+            calls == 3
+        }));
+        assert_eq!(calls, 3);
     }
 
     #[test]
