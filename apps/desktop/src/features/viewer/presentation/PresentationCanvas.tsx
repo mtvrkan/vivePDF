@@ -12,7 +12,7 @@ import { placedDrawing } from "./drawingPlacement";
 import { duplicateDrawing } from "./drawingRotate";
 import { LaserTrail, type LaserPoint } from "./LaserTrail";
 import { toLivePoint, type LivePoint, type LiveSignal } from "./liveSignal";
-import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
+import { ERASER_CURSOR_COLOR, eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 import { MagnifierLens } from "./MagnifierLens";
 import { PlacementHint } from "./PlacementHint";
 import { visiblePageSize } from "./measure";
@@ -397,8 +397,9 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal, 
       laserPath: laserStroke ? laserStroke.map(toPage).filter((point): point is LivePoint => point !== null) : null,
       activeStroke,
       activeBoardStroke,
+      cursorColor: penColor,
     });
-  }, [tool, pointer, hover, laserStroke, activeStroke, activeBoardStroke, pageRects, containerRef]);
+  }, [tool, pointer, hover, laserStroke, activeStroke, activeBoardStroke, penColor, pageRects, containerRef]);
 
   useEffect(() => {
     const timers = fadeTimers.current;
@@ -435,7 +436,7 @@ export function PresentationCanvas({ containerRef, contained = false, onSignal, 
         : tool === "highlighter"
           ? highlighterCursor(penColor)
           : tool === "eraser"
-            ? eraserCursor("#1f2937")
+            ? eraserCursor(ERASER_CURSOR_COLOR)
             : tool === "text"
               ? hoverMovable
                 ? "move"

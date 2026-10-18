@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent, type PointerEvent } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type MouseEvent, type PointerEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { topDrawingAt } from "@/shared/lib/drawingGeometry";
@@ -57,9 +57,13 @@ function windowBox(): Box {
 }
 
 function BoardCanvas({ board, strokes, live, width, height, selected }: { board: BoardMode; strokes: Stroke[]; live: Stroke | null; width: number; height: number; selected: string[] }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const dpr = window.devicePixelRatio || 1;
+  const shape = `${strokes.length}-${live?.points.length ?? 0}-${width}-${height}`;
+  const chosenKey = selected.join("\n");
 
-  const setCanvasRef = (node: HTMLCanvasElement | null) => {
+  useLayoutEffect(() => {
+    const node = canvasRef.current;
     if (!node) return;
     node.width = width * dpr;
     node.height = height * dpr;
@@ -67,7 +71,7 @@ function BoardCanvas({ board, strokes, live, width, height, selected }: { board:
     if (!ctx) return;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
-    const chosen = new Set(selected);
+    const chosen = new Set(chosenKey ? chosenKey.split("\n") : []);
     const halo = chosen.size > 0 ? getComputedStyle(node).getPropertyValue("--primary").trim() : "";
     for (const stroke of live ? [...strokes, live] : strokes) {
       if (halo && chosen.has(stroke.id) && stroke.tool !== "drawing") {
@@ -78,9 +82,9 @@ function BoardCanvas({ board, strokes, live, width, height, selected }: { board:
       }
       drawStroke(ctx, stroke, width, height, "normal", strokeColor(board, stroke.color));
     }
-  };
+  }, [board, strokes, live, width, height, dpr, chosenKey, shape]);
 
-  return <canvas ref={setCanvasRef} aria-hidden className="pointer-events-none absolute inset-0 size-full" key={`${strokes.length}-${live?.points.length ?? 0}-${width}-${height}`} />;
+  return <canvas ref={canvasRef} aria-hidden className="pointer-events-none absolute inset-0 size-full" key={shape} />;
 }
 
 function RectOutline({ rect, width, height, board, filled = false }: { rect: NormalRect; width: number; height: number; board: BoardMode; filled?: boolean }) {

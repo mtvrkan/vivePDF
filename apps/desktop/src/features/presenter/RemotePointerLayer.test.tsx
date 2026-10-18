@@ -73,6 +73,22 @@ describe("RemotePointerLayer", () => {
     expect(document.querySelector("[data-remote-laser]")).toBeNull();
   });
 
+  it("shows the presenter's pen in its colour with the tip on the mirrored spot", () => {
+    render(<RemotePointerLayer signal={signal({ tool: "pen", cursorColor: "#00ff00" })} rects={RECTS} />);
+
+    const pen = document.querySelector<HTMLImageElement>("img[data-remote-cursor='pen']") as HTMLImageElement;
+    expect([pen.style.left, pen.style.top, pen.style.width]).toEqual(["944px", "129px", "112px"]);
+    expect(decodeURIComponent(pen.src)).toContain('stroke="#00ff00"');
+  });
+
+  it("matches the text and shape cursors instead of showing an arrow", () => {
+    const { rerender } = render(<RemotePointerLayer signal={signal({ tool: "text" })} rects={RECTS} />);
+    expect(document.querySelector("[data-remote-cursor]")?.getAttribute("data-remote-cursor")).toBe("text");
+
+    rerender(<RemotePointerLayer signal={signal({ tool: "shape" })} rects={RECTS} />);
+    expect(document.querySelector("[data-remote-cursor]")?.getAttribute("data-remote-cursor")).toBe("shape");
+  });
+
   it("hides the mirrored cursor when the presenter leaves the slide", () => {
     render(<RemotePointerLayer signal={signal({ tool: "pen", pointer: null })} rects={RECTS} />);
 

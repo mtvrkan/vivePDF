@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { invoke } from "@tauri-apps/api/core";
+import { create } from "zustand";
 import { DocumentContent, useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/react";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
 import { Button } from "@/components/shared/Button";
@@ -11,7 +12,7 @@ import { PageDrawingCanvas } from "@/features/viewer/presentation/DrawingLayer";
 import type { LiveSignal } from "@/features/viewer/presentation/liveSignal";
 import { CurrentPageMask } from "@/features/viewer/presentation/CurrentPageMask";
 import { PresentationRuler } from "@/features/viewer/presentation/PresentationRuler";
-import { usePageRects } from "@/features/viewer/presentation/usePageRects";
+import { usePageRects, type PageRect } from "@/features/viewer/presentation/usePageRects";
 import { usePresentationFit } from "@/features/viewer/presentation/usePresentationFit";
 import { preparedViewSource } from "@/features/viewer/viewableBytes";
 import { cn } from "@/shared/lib/cn";
@@ -39,6 +40,20 @@ type Loaded = { kind: "ready"; session: AudienceSession } | { kind: "error"; con
 type DocumentManager = NonNullable<ReturnType<typeof useDocumentManagerCapability>["provides"]>;
 
 type AudienceLink = Awaited<ReturnType<typeof createAudienceLink>>;
+
+const useLiveSignal = create<{ signal: LiveSignal | null }>(() => ({ signal: null }));
+
+const showLive = (signal: LiveSignal | null) => useLiveSignal.setState({ signal });
+
+function LivePointer({ rects }: { rects: PageRect[] }) {
+  const signal = useLiveSignal((state) => state.signal);
+  return <RemotePointerLayer signal={signal} rects={rects} />;
+}
+
+function LiveBoard() {
+  const remote = useLiveSignal((state) => state.signal?.activeBoardStroke ?? null);
+  return <BlackoutLayer contained hint={false} controls={false} remote={remote} />;
+}
 
 let loading: Promise<Loaded> | null = null;
 
@@ -72,7 +87,7 @@ function Preparing() {
   );
 }
 
-function AudienceStage({ session, slice, live, onCommand }: { session: AudienceSession; slice: SharedSlice | null; live: LiveSignal | null; onCommand: (command: PresenterCommand) => void }) {
+function AudienceStage({ session, slice, onCommand }: { session: AudienceSession; slice: SharedSlice | null; onCommand: (command: PresenterCommand) => void }) {
   const { t } = useTranslation();
   const containerRef = useRef<HTMLDivElement>(null);
   const { settled } = usePresentationFit(AUDIENCE_DOCUMENT_ID, containerRef, session.startPage + 1);
@@ -127,8 +142,8 @@ function AudienceStage({ session, slice, live, onCommand }: { session: AudienceS
       </div>
       <div className="absolute inset-0 z-20" data-audience-capture="" />
       <PresentationRuler rects={rects} />
-      <RemotePointerLayer signal={live} rects={rects} />
-      <BlackoutLayer contained hint={false} controls={false} remote={live?.activeBoardStroke ?? null} />
+      <LivePointer rects={rects} />
+      <LiveBoard />
     </div>
   );
 }
@@ -139,7 +154,6 @@ function AudienceView() {
   const [loaded, setLoaded] = useState<Loaded | null>(null);
   const [link, setLink] = useState<AudienceLink | null>(null);
   const [slice, setSlice] = useState<SharedSlice | null>(null);
-  const [live, setLive] = useState<LiveSignal | null>(null);
   const consoleLabel = loaded?.kind === "ready" ? loaded.session.console : (loaded?.consoleLabel ?? null);
 
   useEffect(() => {
@@ -158,7 +172,7 @@ function AudienceView() {
     let current: AudienceLink | null = null;
     let cancelled = false;
     const onState = (message: StateMessage) => setSlice((previous) => (message.kind === "full" ? message.slice : previous ? applyPatch(previous, message) : previous));
-    void createAudienceLink({ transport: tauriTransport(), console: consoleLabel, onState, onLive: setLive }).then((created) => {
+    void createAudienceLink({ transport: tauriTransport(), console: consoleLabel, onState, onLive: showLive }).then((created) => {
       if (cancelled) created.dispose();
       else {
         current = created;
@@ -169,6 +183,7 @@ function AudienceView() {
       cancelled = true;
       current?.dispose();
       setLink(null);
+      showLive(null);
     };
   }, [consoleLabel]);
 
@@ -226,7 +241,7 @@ function AudienceView() {
 
   return (
     <DocumentContent documentId={AUDIENCE_DOCUMENT_ID}>
-      {({ isLoaded }) => (isLoaded ? <AudienceStage session={loaded.session} slice={slice} live={live} onCommand={onCommand} /> : <Preparing />)}
+      {({ isLoaded }) => (isLoaded ? <AudienceStage session={loaded.session} slice={slice} onCommand={onCommand} /> : <Preparing />)}
     </DocumentContent>
   );
 }

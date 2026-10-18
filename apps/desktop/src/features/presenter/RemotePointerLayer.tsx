@@ -1,18 +1,53 @@
 import { useEffect, useRef, useState } from "react";
-import { MousePointer2 } from "lucide-react";
+import { MousePointer2, Plus, TextCursor } from "lucide-react";
 import { cn } from "@/shared/lib/cn";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { LiveStrokeCanvas } from "@/features/viewer/presentation/DrawingLayer";
 import { LaserTrail, type LaserPoint } from "@/features/viewer/presentation/LaserTrail";
 import { fromLivePoint, liveScale, type LiveSignal } from "@/features/viewer/presentation/liveSignal";
 import { MagnifierLens } from "@/features/viewer/presentation/MagnifierLens";
+import { ERASER_CURSOR_COLOR, eraserCursorArt, highlighterCursorArt, penCursorArt, TOOL_CURSOR_SIZE, type ToolCursorArt } from "@/features/viewer/presentation/toolCursor";
 import { pageRectAt, type PageRect } from "@/features/viewer/presentation/usePageRects";
+import type { PresentationTool } from "@/shared/store/presentationStore";
 
 const SPOTLIGHT_RECT_RATIO = 0.42;
 const LASER_FADE_MS = 700;
 const CURSOR_SIZE_PX = 22;
 const MIN_CURSOR_SIZE_PX = 16;
 const LENS_TOOLS = new Set(["laser", "spotlight", "magnifier"]);
+const FALLBACK_INK = "#E5484D";
+
+function inkArt(tool: PresentationTool, color: string): ToolCursorArt | null {
+  if (tool === "pen") return penCursorArt(color);
+  if (tool === "highlighter") return highlighterCursorArt(color);
+  if (tool === "eraser") return eraserCursorArt(ERASER_CURSOR_COLOR);
+  return null;
+}
+
+function RemoteCursor({ tool, x, y, scale, color }: { tool: PresentationTool; x: number; y: number; scale: number; color: string }) {
+  const zoom = Math.max(MIN_CURSOR_SIZE_PX / CURSOR_SIZE_PX, scale);
+  const art = inkArt(tool, color);
+  if (art) {
+    const size = TOOL_CURSOR_SIZE * zoom;
+    return (
+      <img
+        aria-hidden
+        alt=""
+        src={art.src}
+        data-remote-cursor={tool}
+        draggable={false}
+        className="absolute max-w-none select-none"
+        style={{ left: x - art.hotX * zoom, top: y - art.hotY * zoom, width: size, height: size }}
+      />
+    );
+  }
+  const size = CURSOR_SIZE_PX * zoom;
+  if (tool === "text" || tool === "shape") {
+    const Icon = tool === "text" ? TextCursor : Plus;
+    return <Icon aria-hidden data-remote-cursor={tool} className="absolute -translate-x-1/2 -translate-y-1/2 fill-white stroke-black drop-shadow-md" strokeWidth={2} style={{ left: x, top: y, width: size, height: size }} />;
+  }
+  return <MousePointer2 aria-hidden data-remote-cursor={tool} className="absolute fill-white stroke-black drop-shadow-md" strokeWidth={1.5} style={{ left: x, top: y, width: size, height: size }} />;
+}
 
 function mapPath(rects: PageRect[], signal: LiveSignal | null): LaserPoint[] | null {
   if (!signal?.laserPath) return null;
@@ -99,15 +134,7 @@ export function RemotePointerLayer({ signal, rects }: { signal: LiveSignal | nul
           }}
         />
       ) : null}
-      {tool && !LENS_TOOLS.has(tool) && pointer ? (
-        <MousePointer2
-          aria-hidden
-          data-remote-cursor=""
-          className="absolute fill-white stroke-black drop-shadow-md"
-          strokeWidth={1.5}
-          style={{ left: pointer.x, top: pointer.y, width: Math.max(MIN_CURSOR_SIZE_PX, CURSOR_SIZE_PX * scale), height: Math.max(MIN_CURSOR_SIZE_PX, CURSOR_SIZE_PX * scale) }}
-        />
-      ) : null}
+      {tool && !LENS_TOOLS.has(tool) && pointer ? <RemoteCursor tool={tool} x={pointer.x} y={pointer.y} scale={scale} color={signal?.cursorColor ?? FALLBACK_INK} /> : null}
       {tool === "magnifier" && pointer ? <MagnifierLens x={pointer.x} y={pointer.y} pageRect={pageRectAt(rects, pointer.x, pointer.y)} /> : null}
     </div>
   );

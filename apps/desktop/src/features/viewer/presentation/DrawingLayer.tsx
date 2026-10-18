@@ -1,16 +1,20 @@
+import { memo, useLayoutEffect, useMemo, useRef } from "react";
 import { usePresentationStore, type Stroke } from "@/shared/store/presentationStore";
 import type { PageRect } from "./usePageRects";
 import { drawStroke, strokeCanvasBox } from "./strokes";
 
 const NO_STROKES: Stroke[] = [];
 
-function StrokeCanvas({ rect, strokes, redrawKey }: { rect: PageRect; strokes: Stroke[]; redrawKey: string | number }) {
+const StrokeCanvas = memo(function StrokeCanvas({ rect, strokes, redrawKey }: { rect: PageRect; strokes: Stroke[]; redrawKey: string | number }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const dpr = window.devicePixelRatio || 1;
   const width = Math.max(1, Math.round(rect.width));
   const height = Math.max(1, Math.round(rect.height));
-  const box = strokeCanvasBox(strokes, width, height);
+  const box = useMemo(() => strokeCanvasBox(strokes, width, height), [strokes, width, height]);
+  const shape = `${redrawKey}-${width}-${height}-${box.left}-${box.top}-${box.width}-${box.height}`;
 
-  const setCanvasRef = (node: HTMLCanvasElement | null) => {
+  useLayoutEffect(() => {
+    const node = canvasRef.current;
     if (!node) return;
     node.width = box.width * dpr;
     node.height = box.height * dpr;
@@ -19,18 +23,18 @@ function StrokeCanvas({ rect, strokes, redrawKey }: { rect: PageRect; strokes: S
     ctx.setTransform(dpr, 0, 0, dpr, -box.left * dpr, -box.top * dpr);
     ctx.clearRect(box.left, box.top, box.width, box.height);
     strokes.forEach((stroke) => drawStroke(ctx, stroke, width, height));
-  };
+  }, [strokes, box, width, height, dpr, shape]);
 
   return (
     <canvas
-      ref={setCanvasRef}
+      ref={canvasRef}
       aria-hidden
       className="pointer-events-none absolute"
       style={{ left: rect.left + box.left, top: rect.top + box.top, width: box.width, height: box.height }}
-      key={`${redrawKey}-${width}-${height}-${box.left}-${box.top}-${box.width}-${box.height}`}
+      key={shape}
     />
   );
-}
+});
 
 export function DrawingItems({ rect, items }: { rect: PageRect; items: Stroke[] }) {
   const assets = usePresentationStore((state) => state.drawingAssets);
@@ -61,9 +65,11 @@ export function DrawingItems({ rect, items }: { rect: PageRect; items: Stroke[] 
 
 export function PageDrawingCanvas({ rect }: { rect: PageRect }) {
   const strokes = usePresentationStore((state) => state.strokesByPage[rect.pageIndex] ?? NO_STROKES);
+  const { items, ink } = useMemo(() => {
+    const drawings = strokes.filter((stroke) => stroke.tool === "drawing");
+    return { items: drawings, ink: drawings.length === 0 ? strokes : strokes.filter((stroke) => stroke.tool !== "drawing") };
+  }, [strokes]);
   if (strokes.length === 0) return null;
-  const items = strokes.filter((stroke) => stroke.tool === "drawing");
-  const ink = items.length === 0 ? strokes : strokes.filter((stroke) => stroke.tool !== "drawing");
   return (
     <>
       {items.length > 0 ? <DrawingItems rect={rect} items={items} /> : null}
@@ -73,5 +79,6 @@ export function PageDrawingCanvas({ rect }: { rect: PageRect }) {
 }
 
 export function LiveStrokeCanvas({ rect, stroke }: { rect: PageRect; stroke: Stroke }) {
-  return <StrokeCanvas rect={rect} strokes={[stroke]} redrawKey={stroke.points.length} />;
+  const strokes = useMemo(() => [stroke], [stroke]);
+  return <StrokeCanvas rect={rect} strokes={strokes} redrawKey={stroke.points.length} />;
 }

@@ -11,6 +11,7 @@ export type LiveSignal = {
   laserPath: LivePoint[] | null;
   activeStroke: { pageIndex: number; stroke: Stroke } | null;
   activeBoardStroke?: BoardLiveStroke | null;
+  cursorColor?: string;
 };
 
 export function toLivePoint(rects: PageRect[], x: number, y: number): LivePoint | null {
