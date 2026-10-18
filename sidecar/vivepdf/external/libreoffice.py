@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import IO
 
 from vivepdf._data_home import unix_data_home
-from vivepdf.external import _landlock
+from vivepdf.external import _landlock, _seatbelt
 from vivepdf.external._process import run_tool, system_environment
 from vivepdf.rpc.errors import ErrorCode, OpError
 
@@ -343,6 +343,8 @@ def install_root(soffice: Path) -> Path:
 
 
 def isolation_blocker(soffice: Path) -> str | None:
+    if sys.platform == "darwin":
+        return None if _seatbelt.available() else "sandboxMissing"
     if not sys.platform.startswith("linux"):
         return "unsupported"
     if any(path.as_posix().startswith("/snap/") for path in (soffice, soffice.resolve())):
@@ -353,6 +355,8 @@ def isolation_blocker(soffice: Path) -> str | None:
 
 
 def isolation() -> str | None:
+    if sys.platform == "darwin":
+        return "sandbox" if _seatbelt.available() else None
     if not sys.platform.startswith("linux"):
         return None
     soffice = find_soffice()
@@ -367,15 +371,19 @@ def _contained(arguments: list[str], soffice: Path, private: list[Path]) -> list
         if reason != "unsupported":
             print(f"[LibreOffice] running without isolation: {reason}", file=sys.stderr)
         return None
+    if sys.platform == "darwin":
+        return _seatbelt.contained_arguments(soffice, private, Path.home(), arguments)
     containment = _landlock.office_containment(install_root(soffice), private, Path.home())
     return _landlock.contained_arguments(containment, arguments)
 
 
 def _isolation_failed(error: OpError) -> bool:
     data = error.data or {}
-    return data.get("exitCode") == CONTAIN_FAILED_EXIT and CONTAIN_FAILED_MARKER in str(
-        data.get("detail") or ""
-    )
+    exit_code = data.get("exitCode")
+    detail = str(data.get("detail") or "")
+    if _seatbelt.setup_failed(exit_code, detail):
+        return True
+    return exit_code == CONTAIN_FAILED_EXIT and CONTAIN_FAILED_MARKER in detail
 
 
 def _run_soffice(
@@ -384,6 +392,7 @@ def _run_soffice(
     private: list[Path],
     environment: dict[str, str],
     check_cancelled: Callable[[], None] | None,
+    cwd: Path,
 ) -> subprocess.CompletedProcess[str]:
     contained = _contained(arguments, soffice, private)
     if contained is not None:
@@ -394,6 +403,7 @@ def _run_soffice(
                 tool="LibreOffice",
                 env=environment,
                 check_cancelled=check_cancelled,
+                cwd=cwd,
             )
         except OpError as error:
             if not _isolation_failed(error):
@@ -405,6 +415,7 @@ def _run_soffice(
         tool="LibreOffice",
         env=environment,
         check_cancelled=check_cancelled,
+        cwd=cwd,
     )
 
 
@@ -462,7 +473,7 @@ def convert_to_pdf(
                     arguments.append(f"--infilter={infilter}")
                 arguments.extend(["--convert-to", "pdf", "--outdir", str(converted), str(staged)])
                 completed = _run_soffice(
-                    arguments, soffice, [profile, working], environment, check_cancelled
+                    arguments, soffice, [profile, working], environment, check_cancelled, working
                 )
         except OpError as error:
             detail = str((error.data or {}).get("detail") or "")

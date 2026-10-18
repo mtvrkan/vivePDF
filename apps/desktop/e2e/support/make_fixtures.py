@@ -382,6 +382,15 @@ def resume(target: Path) -> None:
     save(document, target)
 
 
+def letter(target: Path) -> None:
+    import docx
+
+    document = docx.Document()
+    document.add_heading("Şirket mektubu", level=1)
+    document.add_paragraph("Merhaba dünya, ğüşiöç İĞÜŞÖÇ")
+    document.save(str(target))
+
+
 def main() -> None:
     directory = Path(sys.argv[1])
     directory.mkdir(parents=True, exist_ok=True)
@@ -414,6 +423,7 @@ def main() -> None:
         "red": directory / "red.png",
         "blue": directory / "blue.png",
         "answers": directory / "answer-sheet.png",
+        "letter": directory / "mektup şğü.docx",
     }
     sample(files["sample"])
     second(files["second"])
@@ -443,6 +453,7 @@ def main() -> None:
     picture(files["red"], (0.8, 0.1, 0.1), "RED")
     picture(files["blue"], (0.1, 0.2, 0.8), "BLUE")
     answer_sheet(files["answers"])
+    letter(files["letter"])
     sys.stdout.write(json.dumps({key: str(value) for key, value in files.items()}))
 
 

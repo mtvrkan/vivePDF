@@ -86,6 +86,7 @@ def run_tool(
     tool: str,
     env: dict[str, str] | None = None,
     check_cancelled: Callable[[], None] | None = None,
+    cwd: Path | None = None,
 ) -> subprocess.CompletedProcess[str]:
     creation_flags = getattr(subprocess, "CREATE_NO_WINDOW", 0) if sys.platform == "win32" else 0
     try:
@@ -99,6 +100,7 @@ def run_tool(
             creationflags=creation_flags,
             start_new_session=sys.platform != "win32",
             env=env,
+            cwd=cwd,
         )
     except OSError as error:
         raise OpError(ErrorCode.EXTERNAL_TOOL_FAILED, f"{tool} could not start: {error}") from error

@@ -56,7 +56,7 @@ class OfficeStatusResult(RpcModel):
     size_bytes: int
     supported: bool
     bundled: bool
-    isolation: Literal["landlock", "none"] | None
+    isolation: Literal["landlock", "sandbox", "none"] | None
 
 
 def _status() -> OfficeStatusResult:

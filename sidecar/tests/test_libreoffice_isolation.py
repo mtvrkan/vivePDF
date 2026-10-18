@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from vivepdf.external import _landlock, libreoffice
+from vivepdf.external import _landlock, _seatbelt, libreoffice
 from vivepdf.rpc.errors import ErrorCode, OpError
 
 
@@ -39,6 +39,25 @@ def linux(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, data_dir: Path) -> Pa
     return soffice
 
 
+@pytest.fixture
+def mac(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, data_dir: Path) -> Path:
+    profile = data_dir / "office-profiles" / "p0"
+    monkeypatch.setattr(libreoffice, "profile_slot", lambda: contextlib.nullcontext(profile))
+    bundle = tmp_path / "Programlar" / "LibreOffice.app"
+    soffice = bundle / "Contents" / "MacOS" / "soffice"
+    soffice.parent.mkdir(parents=True)
+    soffice.write_text("")
+    monkeypatch.setattr(sys, "platform", "darwin")
+    monkeypatch.setattr(_seatbelt, "available", lambda: True)
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: soffice)
+    return soffice
+
+
+def _defined(arguments: list[str]) -> dict[str, str]:
+    pairs = [arguments[index + 1] for index, item in enumerate(arguments) if item == "-D"]
+    return dict(pair.split("=", 1) for pair in pairs)
+
+
 def _office(calls: list[list[str]], fail: OpError | None = None):
     def run(arguments: list[str], **_kwargs: object) -> subprocess.CompletedProcess[str]:
         calls.append(arguments)
@@ -68,12 +87,14 @@ def test_the_install_root_is_the_folder_above_program(tmp_path: Path) -> None:
         ("linux", "/snap/bin/libreoffice", 4, "snap"),
         ("linux", "/opt/lo/program/soffice", 0, "kernelTooOld"),
         ("linux", "/opt/lo/program/soffice", 1, None),
+        ("darwin", "/Applications/LibreOffice.app/Contents/MacOS/soffice", 0, None),
     ],
 )
 def test_isolation_is_blocked_only_for_a_known_reason(
     monkeypatch: pytest.MonkeyPatch, platform: str, path: str, abi: int, reason: str | None
 ) -> None:
     monkeypatch.setattr(sys, "platform", platform)
+    monkeypatch.setattr(_seatbelt, "available", lambda: True)
     monkeypatch.setattr(_landlock, "abi_version", lambda: abi)
 
     blocker = libreoffice.isolation_blocker(Path(path))
@@ -162,3 +183,66 @@ def test_status_reports_isolation_only_where_it_exists(
     assert libreoffice.isolation() == "none"
     monkeypatch.setattr(sys, "platform", "win32")
     assert libreoffice.isolation() is None
+
+
+def test_on_macos_libreoffice_runs_inside_the_system_sandbox(
+    monkeypatch: pytest.MonkeyPatch, data_dir: Path, document: Path, mac: Path, tmp_path: Path
+) -> None:
+    calls: list[list[str]] = []
+    folders: list[object] = []
+    office = _office(calls)
+
+    def run(arguments: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        folders.append(kwargs.get("cwd"))
+        return office(arguments, **kwargs)
+
+    monkeypatch.setattr(libreoffice, "run_tool", run)
+
+    libreoffice.convert_to_pdf(document, tmp_path / "out")
+
+    [arguments] = calls
+    [folder] = folders
+    assert isinstance(folder, Path)
+    assert folder.parent == tmp_path / "out"
+    assert arguments[:2] == [str(_seatbelt.SANDBOX_EXEC), "-p"]
+    assert str(tmp_path) not in arguments[2]
+    defined = _defined(arguments)
+    assert defined["INSTALL"] == str(mac.parent.parent.parent.resolve())
+    assert defined["HOME"] == str(Path.home().resolve())
+    private = [Path(value) for key, value in defined.items() if key.startswith("PRIVATE_")]
+    assert any(folder.is_relative_to(data_dir.resolve()) for folder in private)
+    assert any(folder.is_relative_to((tmp_path / "out").resolve()) for folder in private)
+    assert not any(document.parent.resolve().is_relative_to(folder) for folder in private)
+    assert arguments[arguments.index(str(mac))] == str(mac)
+
+
+def test_a_macos_sandbox_that_cannot_be_set_up_falls_back_to_a_plain_run(
+    monkeypatch: pytest.MonkeyPatch, data_dir: Path, document: Path, mac: Path, tmp_path: Path
+) -> None:
+    calls: list[list[str]] = []
+    failure = OpError(
+        ErrorCode.EXTERNAL_TOOL_FAILED,
+        "LibreOffice failed (exit 65)",
+        {"tool": "LibreOffice", "exitCode": 65, "detail": "sandbox-exec: unbound variable"},
+    )
+    monkeypatch.setattr(libreoffice, "run_tool", _office(calls, failure))
+
+    produced = libreoffice.convert_to_pdf(document, tmp_path / "out")
+
+    assert produced.is_file()
+    assert calls[0][0] == str(_seatbelt.SANDBOX_EXEC)
+    assert calls[1][0] == str(mac)
+
+
+def test_macos_reports_the_sandbox_and_runs_plainly_without_it(
+    monkeypatch: pytest.MonkeyPatch, data_dir: Path, document: Path, mac: Path, tmp_path: Path
+) -> None:
+    calls: list[list[str]] = []
+    monkeypatch.setattr(libreoffice, "run_tool", _office(calls))
+    assert libreoffice.isolation() == "sandbox"
+    monkeypatch.setattr(_seatbelt, "available", lambda: False)
+
+    libreoffice.convert_to_pdf(document, tmp_path / "out")
+
+    assert libreoffice.isolation() is None
+    assert calls[0][0] == str(mac)
