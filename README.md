@@ -37,5 +37,8 @@ cd ../apps/desktop && pnpm tauri dev
 
 Tests: `pnpm test` / `pnpm typecheck` / `pnpm lint` (UI) · `uv run pytest` (engine) · `cargo test` (Rust) · `pnpm e2e` (the real app on Windows, see [docs/TESTING.md](docs/TESTING.md)). Building and publishing a release: [docs/RELEASING.md](docs/RELEASING.md).
 
+## Website
+The site at https://vivepdf.com lives in `apps/site` (Astro, Turkish at `/`, English at `/en/`, with the documentation under `/dokumantasyon/` and `/en/docs/`). `pnpm site:dev` runs it locally and `pnpm site:build` builds it with the search index. The tool list, shortcuts and release notes on the site come from `apps/site/src/data/app-data.json`, which `apps/desktop/src/app/siteData.test.ts` keeps in step with the app (`UPDATE_SITE_DATA=1 pnpm vitest run src/app/siteData.test.ts` in `apps/desktop` rewrites it). `scripts/deploy-site.sh` builds the site into the `gh-pages` branch for GitHub Pages; add `--push` to publish it.
+
 ## License
 AGPL-3.0 — see `LICENSE`. Distributing builds of vivePDF requires offering the corresponding source under the same license. Third-party notices in `THIRD_PARTY_NOTICES.md`.

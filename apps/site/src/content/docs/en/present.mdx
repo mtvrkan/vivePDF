@@ -1,0 +1,80 @@
+---
+key: present
+title: Present a PDF
+description: How to present a PDF full screen in vivePDF, from F5 to the pen and laser, black and white boards, speaker notes and the two-screen presenter view.
+updated: 2026-10-18
+---
+
+vivePDF turns any PDF into a full-screen slide show without a separate presentation program. While you present, you can draw on the page, use a laser pointer or spotlight, switch to a black or white board, and with a projector connected see your notes on your own screen only.
+
+## Start a presentation
+
+<Steps>
+1. Open the PDF in the **Viewer**. The [Open and read a PDF](/en/docs/open-and-read/) page explains how.
+2. Press <kbd>F5</kbd> to start from the first page, or <kbd>Shift</kbd>+<kbd>F5</kbd> to start from the page you are on.
+3. Move between pages with the arrow keys, <kbd>Page Up</kbd> and <kbd>Page Down</kbd>. <kbd>G</kbd> opens the **Slide overview** with every slide; click one to jump there.
+4. Press <kbd>Esc</kbd> to finish. Each <kbd>Esc</kbd> takes exactly one step back: first it puts the tool away, then it leaves the board, and last it ends the presentation.
+</Steps>
+
+The presentation toolbar appears when you move the pointer to the bottom edge of the screen.
+
+## Drawing and pointing tools
+
+Pick a tool from the toolbar or with a single key:
+
+| Key | Tool |
+|---|---|
+| <kbd>L</kbd> | Laser pointer |
+| <kbd>P</kbd> | Pen |
+| <kbd>H</kbd> | Highlighter |
+| <kbd>E</kbd> | Eraser |
+| <kbd>S</kbd> | Spotlight |
+| <kbd>M</kbd> | Magnifier |
+| <kbd>U</kbd> | On-screen ruler |
+| <kbd>Z</kbd> | Zoom to a dragged area |
+| <kbd>V</kbd> | Select, move or delete drawings |
+
+The **Shapes** menu on the toolbar holds **Line**, **Arrow**, **Rectangle**, **Ellipse** and **Measure length**, and **Text** lets you type on the page. For a selected drawing, <kbd>R</kbd> and <kbd>Shift</kbd>+<kbd>R</kbd> rotate it right and left, <kbd>Ctrl</kbd>+<kbd>D</kbd> duplicates it and <kbd>Del</kbd> deletes it. <kbd>Ctrl</kbd>+<kbd>Z</kbd> and <kbd>Ctrl</kbd>+<kbd>Y</kbd> undo and redo drawing.
+
+The on-screen ruler shows real centimetres; drag it to move or turn it, and lines drawn along its edge come out straight.
+
+Defaults for the pen colour and width, the laser colour and the spotlight size are in **Settings › Presentation**. Every presentation shortcut is listed on the [Keyboard shortcuts](/en/docs/shortcuts/) page.
+
+## Black and white boards
+
+<kbd>B</kbd> turns the screen black and <kbd>W</kbd> turns it white. Use the empty screen to draw the audience's attention back to you, or draw on it like a whiteboard. A board has its own **Board tools** bar: select, pen, highlighter, shapes and eraser, colours that suit the board, size presets, undo and redo, **Clear board** and **Back to slides**. Each board keeps its own undo history.
+
+## Notes, timer and clock
+
+- <kbd>N</kbd> shows or hides the **Speaker notes** panel for the current page. Notes are kept page by page and shared with presenter view.
+- <kbd>T</kbd> shows or hides the timer, and <kbd>C</kbd> the clock.
+- If a page contains code, <kbd>K</kbd> opens the detected code blocks and moves between them.
+
+## Presenter view (two screens)
+
+With a projector or second screen connected, press <kbd>Alt</kbd>+<kbd>F5</kbd> or click **Presenter view** on the Viewer toolbar; <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>F5</kbd> starts from the page you are on. The projector shows only the slide. Your screen shows the **Current page**, a large **Next page** preview, the **Elapsed** time, the **Clock** and your **Speaker notes**.
+
+- The preview's arrows let you look further ahead without changing the projector; clicking a preview jumps the presentation there.
+- The pen, laser, spotlight and boards appear on the projector too.
+- **Swap screens** trades the roles of the two screens, and **End presentation** closes it.
+- Notes are saved in the app's data folder on this computer; the PDF itself is not changed.
+
+<Callout type="warn" title="If only one screen is visible">
+When the projector mirrors your screen, vivePDF shows **Only one screen is visible**. On Windows, press <kbd>Windows</kbd>+<kbd>P</kbd>, choose **Extend**, then click **Try again**. You can also carry on with **Present on this screen** or **Rehearse in a window**.
+</Callout>
+
+If the document has unsaved changes, the projector shows the file as it is saved on disk, so vivePDF first asks you to choose between **Save and present** and **Present anyway**.
+
+## Insert items while presenting
+
+The **Insert** (+) button on the presentation toolbar and in the presenter console offers **Add formula**, **Add shape**, **Add function graph**, **Add molecule**, **Add table**, **Add chart**, **Add flowchart**, **Add diagram (Mermaid)**, **Add question** and **Add answer key**. Prepare the item, then click the page to place it; <kbd>Esc</kbd> cancels. You can move and resize a placed item like a drawing and double-click it to edit it again. The Insert menu works on the black and white boards too.
+
+## Keep or discard drawings
+
+Presentation drawings and inserted items are temporary by default. When you leave the presentation, vivePDF asks **Keep the presentation drawings?**:
+
+- **Save to the PDF** writes the drawings into the PDF as annotations; board drawings are added as new pages at the end.
+- **Discard drawings** removes them all.
+- **Decide later** keeps them as an unsaved change; they are written into the PDF when you save the document.
+
+To keep permanent notes every time, set **Drawings** to **Permanent notes** in **Settings › Presentation**. For the rest of the settings, see [Settings and privacy](/en/docs/settings-privacy/).

@@ -1,0 +1,54 @@
+---
+key: convert
+title: Convert files
+description: How vivePDF turns PDFs into Word, Excel, PowerPoint, pictures, text, Markdown, HTML and EPUB, and makes PDFs from pictures, Office files, SVG and web pages.
+updated: 2026-10-18
+---
+
+vivePDF converts PDFs into Word, Excel, PowerPoint, pictures, text, Markdown, HTML and EPUB, and makes PDFs from pictures, Office documents, SVG drawings and web pages. Everything lives in one tool, **Tools › Convert**, and your files are converted on your own computer.
+
+## How to convert
+
+<Steps>
+1. Open **Tools › Convert**. In the Tools menu it sits in the **From PDF** group.
+2. Pick a conversion from the list on the left: the options under **From PDF** turn a PDF into another format, and those under **To PDF** create a PDF.
+3. Choose your file and check the options. When converting from a PDF, type a page range if you only want some of the pages.
+4. Click **Convert**. When it finishes, **Open output folder** in the result panel on the right takes you to the new file.
+</Steps>
+
+## From PDF to other formats
+
+- **PDF → Word**: makes a layout-preserving .docx with its tables and images. With **Move repeated headers and footers into Word** on, text repeated on most pages becomes the Word header and footer, and page numbers become a Word page number field.
+- **PDF → Excel**: tables on the pages go to separate worksheets; the text of pages without a table goes line by line to a sheet of its own. You can choose .xlsx or .csv as the file type, and lay out the tables **One per table**, **One per page** or **All tables on one sheet**. **Also find tables without lines** reads columns lined up by spacing alone as well.
+- **PDF → PowerPoint**: each page becomes a slide. With **Editable text**, the text goes into editable boxes over a picture of the rest of the page; **Picture only** places an exact picture of each page and puts the page text into the speaker notes.
+- **PDF → JPG / PNG**: each page becomes a picture. Choose PNG, JPG, WebP or TIFF and a resolution (DPI) from 72 to 600. There are also options to join the pages into one tall picture, make a single multi-page TIFF, pack the pictures into one ZIP file, save in greyscale or keep a transparent background.
+- **Extract images**: saves every picture embedded in the pages at its original resolution.
+- **PDF → Text**, **PDF → Markdown**, **PDF → HTML**: give you plain text, Markdown that keeps headings and tables, or a single HTML file with one section per page. For Markdown you can leave pictures out, save them in a folder next to the file or put them inside the file.
+- **PDF → EPUB**: makes a reflowable e-book for phones and e-readers. You can choose how chapters are divided, the book title, the author and whether the first page is the cover.
+
+<Callout type="note" title="Scanned PDFs">
+A scanned page holds a picture rather than text. For Text, Markdown, HTML and EPUB, turn on **Read pages without text with OCR**; the PDF itself is not changed. For Word, Excel and PowerPoint, run [OCR](/en/docs/ocr/) on the document first, then convert it.
+</Callout>
+
+## From other files to PDF
+
+- **Images → PDF**: combines pictures, or a whole folder of them, into one PDF. You can **Include subfolders**, sort by name or date, set a margin, and choose whether each picture fits on the page or fills it.
+- **Office → PDF**: Word, Excel and PowerPoint documents are converted with LibreOffice. TXT, Markdown, HTML, EPUB, XPS, CBZ and picture files convert directly.
+- **SVG → PDF**: turns drawings from Inkscape, Illustrator or Figma into vector PDF pages at their own size. With **Put every drawing in one PDF** on, each drawing becomes a page of the same file.
+- **Web page → PDF**: downloads a web address and saves it as a PDF. **Reader mode** keeps only the main article and leaves menus and sidebars out; **Include pictures** adds or drops the pictures.
+
+<Callout type="warn" title="The one conversion that needs internet">
+**Web page → PDF** goes online to download the page, so it is not available while [Offline mode](/en/docs/offline/) is on. Every other conversion runs on your computer without internet.
+</Callout>
+
+### LibreOffice
+
+Office conversions use LibreOffice. It comes with the Windows installer, and you can remove or reinstall it in **Settings › Tools**. Without LibreOffice, Office files you add to the list show a **needs LibreOffice** warning. Setup details are on the [Installation](/en/docs/installation/) page.
+
+## Where the result is saved
+
+By default the new file is written next to the source, with a suffix that names the tool. In **Settings › Files** you can switch **Where to save** to **Fixed folder** and pick an output folder, and use the name pattern to decide how files are named. Converting never changes your original file.
+
+<Callout type="tip" title="Just reading?">
+If you only want to read a Word document, an e-book or a picture, you do not need to convert it: drop it on the window and it opens as a PDF copy. See [Open and read a PDF](/en/docs/open-and-read/).
+</Callout>

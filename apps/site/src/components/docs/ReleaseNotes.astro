@@ -1,0 +1,23 @@
+---
+import appData from "../../data/app-data.json";
+import { REPO_URL, type Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { releaseId } from "../../docs/extras";
+import { UI } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const copy = UI[lang].docs.releases;
+const dates = new Map(HOME[lang].download.releases.map((r) => [r.v, r.date]));
+const format = new Intl.DateTimeFormat(lang, { dateStyle: "long", timeZone: "UTC" });
+---
+{appData.releases.map((r) => {
+  const date = dates.get(r.version);
+  return (
+    <section class="release">
+      <h2 id={releaseId(r.version)}>vivePDF {r.version}</h2>
+      {date && <p class="mini-label">{copy.released} <time datetime={date}>{format.format(new Date(`${date}T00:00:00Z`))}</time> · <a class="ul" href={`${REPO_URL}/releases/tag/v${r.version}`}>GitHub</a></p>}
+      <ul>{r.items.map((item) => <li>{item[lang]}</li>)}</ul>
+    </section>
+  );
+})}

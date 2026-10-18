@@ -91,6 +91,11 @@ const tr = {
     sidebar: "Dokümantasyon menüsü",
     openSidebar: "Dokümantasyon menüsü",
     updated: "Son güncelleme",
+    menu: "Menü",
+    searchCount: { one: "# sonuç", other: "# sonuç" },
+    tools: { filter: "Araçlarda ara", placeholder: "Ara: birleştir, OCR, filigran", tool: "Araç", what: "Ne yapar", none: "Bu aramaya uyan araç yok.", count: { one: "# araç", other: "# araç" } },
+    keys: { platform: "Kısayolların gösterileceği sistem", action: "İşlem", keys: "Tuşlar", or: "ya da" },
+    releases: { released: "Yayımlandı" },
     groups: {
       start: "Başlarken",
       documents: "Belgelerle çalışmak",
@@ -167,6 +172,11 @@ const en: Ui = {
     sidebar: "Docs menu",
     openSidebar: "Docs menu",
     updated: "Last updated",
+    menu: "Menu",
+    searchCount: { one: "# result", other: "# results" },
+    tools: { filter: "Filter the tools", placeholder: "Filter: merge, OCR, watermark", tool: "Tool", what: "What it does", none: "No tool matches this filter.", count: { one: "# tool", other: "# tools" } },
+    keys: { platform: "Show the shortcuts for", action: "Action", keys: "Keys", or: "or" },
+    releases: { released: "Released" },
     groups: {
       start: "Getting started",
       documents: "Working with documents",

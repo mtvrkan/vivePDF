@@ -1,0 +1,93 @@
+---
+import { render } from "astro:content";
+import Docs from "../../layouts/Docs.astro";
+import ToolTable from "./ToolTable.astro";
+import ShortcutTable from "./ShortcutTable.astro";
+import ReleaseNotes from "./ReleaseNotes.astro";
+import Faq from "./Faq.astro";
+import Steps from "./Steps.astro";
+import Callout from "./Callout.astro";
+import { absoluteUrl, docPath, docsIndexPath, homePath, REPO_URL, SITE_URL, type Locale } from "../../i18n";
+import { UI } from "../../i18n/ui";
+import { docAlternates, docTitles, neighbours, type DocProps } from "../../docs/pages";
+import { extraHeadings } from "../../docs/extras";
+
+type Props = DocProps & { lang: Locale };
+const { entry, doc, lang } = Astro.props;
+const ui = UI[lang];
+const { Content, headings } = await render(entry);
+const data = entry.data;
+const faq = data.faq ?? [];
+const toc = [...headings.map((h) => ({ depth: h.depth, slug: h.slug, text: h.text })), ...extraHeadings(doc.key, lang, faq)];
+const path = docPath(lang, doc.slug[lang]);
+const titles = await docTitles(lang);
+const { prev, next } = neighbours(doc);
+const prevTitle = prev && titles.get(prev.key)?.title;
+const nextTitle = next && titles.get(next.key)?.title;
+const editUrl = `${REPO_URL}/edit/main/apps/site/src/content/docs/${lang}/${doc.slug[lang]}.mdx`;
+const updatedIso = data.updated.toISOString().slice(0, 10);
+const updated = new Intl.DateTimeFormat(lang, { dateStyle: "long", timeZone: "UTC" }).format(data.updated);
+const groupName = ui.docs.groups[doc.group];
+const jsonLd: Record<string, unknown>[] = [
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: data.title,
+    description: data.description,
+    inLanguage: lang,
+    dateModified: updatedIso,
+    url: absoluteUrl(path),
+    mainEntityOfPage: absoluteUrl(path),
+    articleSection: groupName,
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+    about: { "@type": "SoftwareApplication", name: "vivePDF", operatingSystem: "Windows 10, Windows 11" },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "vivePDF", item: absoluteUrl(homePath(lang)) },
+      { "@type": "ListItem", position: 2, name: ui.docs.title, item: absoluteUrl(docsIndexPath(lang)) },
+      { "@type": "ListItem", position: 3, name: data.title, item: absoluteUrl(path) },
+    ],
+  },
+];
+if (faq.length) {
+  jsonLd.push({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    inLanguage: lang,
+    mainEntity: faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+  });
+}
+---
+<Docs lang={lang} title={`${data.title} · vivePDF`} description={data.description} path={path} alternates={docAlternates(doc)} jsonLd={jsonLd} current={doc} headings={toc}>
+  <nav class="crumbs" aria-label={ui.docs.breadcrumb}>
+    <ol>
+      <li><a class="ul" href={docsIndexPath(lang)}>{ui.docs.title}</a></li>
+      <li><span>{groupName}</span></li>
+      <li><span aria-current="page">{data.title}</span></li>
+    </ol>
+  </nav>
+  <article class="doc" data-pagefind-body>
+    <p class="eyebrow" data-pagefind-ignore>{groupName}</p>
+    <h1>{data.title}</h1>
+    <p class="doc-lead">{data.description}</p>
+    <div class="prose">
+      <Content components={{ Steps, Callout }} />
+      {doc.key === "tools" && <ToolTable lang={lang} />}
+      {doc.key === "shortcuts" && <ShortcutTable lang={lang} />}
+      {doc.key === "releaseNotes" && <ReleaseNotes lang={lang} />}
+      {faq.length > 0 && <Faq lang={lang} items={faq} />}
+    </div>
+  </article>
+  <footer class="doc-foot">
+    <p class="mini-label">{ui.docs.updated}: <time datetime={updatedIso}>{updated}</time></p>
+    <a class="text-link ul" href={editUrl}><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg>{ui.docs.edit}</a>
+  </footer>
+  <nav class="pager" aria-label={`${ui.docs.previous} / ${ui.docs.next}`}>
+    {prev && prevTitle ? <a class="pager-link prev" href={docPath(lang, prev.slug[lang])} rel="prev"><span class="mini-label">{ui.docs.previous}</span><b>{prevTitle}</b></a> : <span></span>}
+    {next && nextTitle && <a class="pager-link next" href={docPath(lang, next.slug[lang])} rel="next"><span class="mini-label">{ui.docs.next}</span><b>{nextTitle}</b></a>}
+  </nav>
+</Docs>

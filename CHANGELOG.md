@@ -4,6 +4,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Website documentation: 20 pages in Turkish and English under /dokumantasyon/ and /en/docs/ (installation, interface, reading, pages, converting, OCR, signing, security, Studio documents and designs, presenting, settings and privacy, offline use, shortcuts, tools, release notes, FAQ, troubleshooting, building from source, licence) with a sidebar, an on-this-page outline, breadcrumbs, previous and next links, Ctrl/⌘ K search over a static Pagefind index, a filterable tool table and shortcut tables with a Windows/macOS switch, all built from the app's own data [2026-10-18]
+- Website SEO: every page has its own title, description, canonical address, Turkish and English alternates in the page and the sitemap, Open Graph images, and structured data (TechArticle and breadcrumbs on docs pages, FAQPage on the FAQ, a collection page for the docs index); a bilingual 404 page and robots.txt are added [2026-10-18]
+- `scripts/deploy-site.sh` builds the website and commits it to the local gh-pages branch through a temporary worktree; it pushes only with `--push` and refuses to run while apps/site has uncommitted changes [2026-10-18]
 - Website data comes from the app: a desktop test writes apps/site/src/data/app-data.json (version, the 77 tools with their groups and descriptions, every shortcut list with Windows and macOS keys, release notes, in Turkish and English) and fails when the file is out of date; `UPDATE_SITE_DATA=1` rewrites it [2026-10-18]
 - Website: a static Astro site in apps/site with the vivePDF home page in Turkish and English (glass hero, lens demo, scroll tour, offline switch, signature, reorder, presenter and template demos, download and guide finder), self-hosted fonts, light and dark themes, reduced-motion support, hreflang alternates, Open Graph tags, structured data and a sitemap; `pnpm site:dev` and `pnpm site:build` run it from the repo root [2026-10-18]
 - A tab group torn off into a new window, by dragging its name chip out or from its menu, keeps its name, colour and folding there instead of arriving as loose tabs [2026-10-18]
@@ -28,6 +31,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 - Very small labels (badges, counters, captions) use two new type-scale steps, `text-2xs` (11 px) and `text-3xs` (10 px), instead of fixed pixel sizes; the code-language badge on a selected code block grows from 9 to 10 px [2026-10-18]
 ### Fixed
+- The shortcut sheet showed the second key of Shortcuts for this screen as Ctrl instead of Ctrl /: alternatives are now split only on spaced separators, so a slash that is itself the key stays [2026-10-18]
 - Check boxes that share one field name but stand for different answers (such as Yes and No) are filled, read and exported as one choice instead of all being ticked together [2026-10-18]
 - Editing a document's title, author, subject, keywords, creator or producer also updates its XMP metadata, so other viewers show the new values and PDF/A files stay valid [2026-10-18]
 - Styled text and text blocks added in the editor, and text put back by Remove watermark, land where they belong on pages with a shifted crop box; replaced text on pages turned 90° or 270° keeps its direction instead of coming out sideways [2026-10-18]

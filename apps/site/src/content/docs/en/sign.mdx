@@ -1,0 +1,67 @@
+---
+key: sign
+title: Sign and verify
+description: How to add a hand-drawn signature, sign a PDF digitally with a .p12 or .pfx certificate, verify signatures and create a certificate in vivePDF.
+updated: 2026-10-18
+---
+
+vivePDF offers two kinds of signature: a hand-drawn signature that you place on the page as a picture in the Viewer, and a digital signature made with a .p12 or .pfx certificate in **Tools › Sign**. From the same place you can verify a signed file, create your own certificate and export its public part. Everything runs on this computer; neither the document nor the certificate is sent anywhere.
+
+## Hand-drawn signature
+
+A hand-drawn signature goes onto the page as a picture. It is quick for signing a form or a letter, but it does not prove whether the document changed afterwards.
+
+<Steps>
+
+1. Open the document in the Viewer and click **Edit** in the toolbar.
+2. From the **Page tools** menu, choose **Place signature**.
+3. Draw a signature with **New** using a mouse, pen or your finger, or take one **From photo**. If you will use it again, click **Save signature**; next time you can pick it from **Saved signatures**.
+4. Click where the signature goes, drag it into place and choose **Apply signature**.
+
+</Steps>
+
+The result is written to a new file and opened straight away; your original stays as it was. Saved signatures can be removed in **Settings › Data**.
+
+## Digital signature with a certificate
+
+A digital signature shows who signed the document and that it has not changed since. vivePDF applies a PAdES signature.
+
+<Steps>
+
+1. Open **Tools › Sign** and choose the PDF to sign.
+2. Under **Certificate file (.p12 / .pfx)**, pick the file from your e-signature provider or one created in vivePDF, and enter the **Certificate password**.
+3. If the signature should be visible, turn on **Visible signature box on the page**, then choose the page, the **Box text** and, if you like, a saved handwritten signature or a logo as the **Picture in the signature box**.
+4. Fill in **Reason**, **Location** and **Contact** if needed, then click **Sign**.
+
+</Steps>
+
+If the document already has empty signature fields, choose one under **Signature field**; the signature then uses that field's place and size.
+
+### Extra options
+
+- **Timestamp server (optional)**: enter an RFC 3161 server address to add a trusted time to the signature. It needs the internet, and only a digest of the signature is sent to that server.
+- **Certifying signature**: the first signature of a document can set what may change afterwards (no changes, form filling and signing, or those plus comments).
+- **Lock the document after signing**: for the last signer; every field is locked and any later change shows up as a violation.
+
+<Callout type="note" title="No certificate yet?">
+The **No certificate → create my own** link takes you to **Create certificate**. A certificate made there is self-signed: it proves the document's integrity, but legal validity needs a qualified e-signature.
+</Callout>
+
+## Verify signatures
+
+When you open a signed PDF in the Viewer, a message appears at the top, such as "Signed and all signatures are valid." The **Signature panel** shows the details of each signature.
+
+For a fuller check, open **Verify** from the **Security** list above the page title, choose the PDF and click **Verify**. For each signature you see:
+
+- **Integrity**: whether the document changed after signing and, if so, whether the signature allows that change.
+- **Trust**: whether the certificate chain ends at a root in your **Trusted roots**. Self-signed certificates show as not verified, with the reason.
+
+To trust a provider's signatures, use **Add certificate or trust list** to add its root certificate (.cer, .crt, .pem or .der) or a trust list (an EU trusted list .xml or the Adobe AATL). **Check revocation online** is off by default; when on, it asks the issuer whether the certificate has been withdrawn.
+
+## Create and export a certificate
+
+On **Create certificate** in the **Security** list, enter your **Full name**, **E-mail**, **Organization** and **Country**, then choose the **Validity** and the **Key**. Under **Purpose**, choose **Signing documents**, **Receiving sealed documents** or **Both**. The certificate password needs at least 8 characters, and the result is saved as a .p12 file.
+
+If someone wants to send you a document sealed so that only you can open it, use **Export public certificate**. It takes the public half of your .p12 and writes it as a .cer file; your private key never leaves the .p12. Sealing and password protection are covered on the [Security](/en/docs/security/) page.
+
+vivePDF remembers the path of the .p12 you signed with, never its password. You can make it forget the path in **Settings › Data**; what is stored is explained on [Settings and privacy](/en/docs/settings-privacy/). Timestamps and the online revocation check are off while [Offline mode](/en/docs/offline/) is on.

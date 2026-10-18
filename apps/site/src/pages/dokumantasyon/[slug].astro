@@ -1,0 +1,8 @@
+---
+import DocPage from "../../components/docs/DocPage.astro";
+import { docStaticPaths, type DocProps } from "../../docs/pages";
+
+export const getStaticPaths = () => docStaticPaths("tr");
+const props = Astro.props as DocProps;
+---
+<DocPage lang="tr" {...props} />

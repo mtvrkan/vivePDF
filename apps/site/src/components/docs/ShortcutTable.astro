@@ -1,0 +1,35 @@
+---
+import appData from "../../data/app-data.json";
+import type { Locale } from "../../i18n";
+import { shortcutGroupId } from "../../docs/extras";
+import { UI } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const copy = UI[lang].docs.keys;
+const gestures: Record<string, string> = appData.shortcuts.gestures[lang];
+const show = (combo: string) => combo.replace(/\{(\w+)\}/g, (_, g: string) => gestures[g] ?? g);
+---
+<div class="keys-switch" role="group" aria-label={copy.platform}>
+  <button type="button" data-keys-set="win" aria-pressed="true">Windows · Linux</button>
+  <button type="button" data-keys-set="mac" aria-pressed="false">macOS</button>
+</div>
+{appData.shortcuts.groups.map((g) => (
+  <section class="keys-group">
+    <h2 id={shortcutGroupId(g.id)}>{g.label[lang]}</h2>
+    <table class="d-table keys-table">
+      <thead><tr><th scope="col">{copy.action}</th><th scope="col">{copy.keys}</th></tr></thead>
+      <tbody>
+        {g.items.map((item) => (
+          <tr>
+            <th scope="row">{item.label[lang]}</th>
+            <td>
+              <span class="k-win">{item.win.map((c, i) => <>{i > 0 && <span class="k-or">{copy.or}</span>}<kbd>{show(c)}</kbd></>)}</span>
+              <span class="k-mac">{item.mac.map((c, i) => <>{i > 0 && <span class="k-or">{copy.or}</span>}<kbd>{show(c)}</kbd></>)}</span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+))}

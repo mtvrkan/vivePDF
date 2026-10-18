@@ -1,0 +1,70 @@
+---
+import Base from "./Base.astro";
+import "../styles/docs.css";
+import DocsSearch from "../components/docs/DocsSearch.astro";
+import { docPath, docsIndexPath, type Alternates, type Locale } from "../i18n";
+import { UI } from "../i18n/ui";
+import { DOC_GROUPS, DOCS, type DocEntry } from "../docs/structure";
+import { docTitles } from "../docs/pages";
+import type { TocHeading } from "../docs/headings";
+
+type Props = {
+  lang: Locale;
+  title: string;
+  description: string;
+  path: string;
+  alternates: Alternates;
+  jsonLd?: Record<string, unknown>[];
+  current?: DocEntry;
+  headings?: TocHeading[];
+};
+
+const { lang, title, description, path, alternates, jsonLd = [], current, headings = [] } = Astro.props;
+const ui = UI[lang];
+const titles = await docTitles(lang);
+const groups = DOC_GROUPS.map((g) => ({ key: g, items: DOCS.filter((d) => d.group === g && titles.has(d.key)) })).filter((g) => g.items.length);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+<Base lang={lang} title={title} description={description} path={path} alternates={alternates} jsonLd={jsonLd} ogType={current ? "article" : "website"} navSolid>
+  <div class="docs-shell wrap">
+    <button type="button" class="docs-menu-btn btn btn-ghost" aria-expanded="false" aria-controls="docsSide" data-side-toggle>
+      <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>{ui.docs.menu}
+    </button>
+    <aside class="docs-side" id="docsSide" aria-label={ui.docs.sidebar}>
+      <button type="button" class="docs-search-btn" data-search-open>
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span>{ui.docs.search}</span><span class="kbd" aria-hidden="true">Ctrl K</span>
+      </button>
+      <nav aria-label={ui.docs.sidebar}>
+        <a class:list={["side-home", { on: !current }]} href={docsIndexPath(lang)} aria-current={!current ? "page" : undefined}>{ui.docs.title}</a>
+        {groups.map((g) => (
+          <div class="side-group">
+            <p class="side-label">{ui.docs.groups[g.key]}</p>
+            <ul>
+              {g.items.map((d) => {
+                const on = current?.key === d.key;
+                return <li><a class:list={{ on }} href={docPath(lang, d.slug[lang])} aria-current={on ? "page" : undefined}><svg class="ic" aria-hidden="true"><use href={`#${d.icon}`}/></svg>{titles.get(d.key)?.title}</a></li>;
+              })}
+            </ul>
+          </div>
+        ))}
+      </nav>
+    </aside>
+    <main id="main" class="docs-main">
+      <slot />
+    </main>
+    {current && toc.length > 0 && (
+      <aside class="docs-toc" aria-labelledby="tocTitle">
+        <p class="side-label" id="tocTitle">{ui.docs.onThisPage}</p>
+        <ul>
+          {toc.map((h) => <li class:list={[`d${h.depth}`]}><a href={`#${h.slug}`} data-toc={h.slug}>{h.text}</a></li>)}
+        </ul>
+      </aside>
+    )}
+  </div>
+  <Fragment slot="after">
+    <DocsSearch lang={lang} />
+  </Fragment>
+</Base>
+<script>
+  import "../scripts/docs";
+</script>

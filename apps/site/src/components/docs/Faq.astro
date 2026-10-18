@@ -1,0 +1,14 @@
+---
+import type { Locale } from "../../i18n";
+import { headingId } from "../../docs/headings";
+import type { Faq } from "../../docs/extras";
+
+type Props = { lang: Locale; items: Faq };
+const { lang, items } = Astro.props;
+---
+{items.map((f) => (
+  <section class="faq-item">
+    <h2 id={headingId(f.q, lang)}>{f.q}</h2>
+    <p>{f.a}</p>
+  </section>
+))}

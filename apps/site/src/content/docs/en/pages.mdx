@@ -1,0 +1,69 @@
+---
+key: pages
+title: Organise pages
+description: How to reorder, rotate, delete, insert, extract and split PDF pages with the vivePDF page organizer, and what happens to the original file.
+updated: 2026-10-18
+---
+
+The page organizer is where you reorder, rotate, delete, insert and split pages in vivePDF. Open a document, then click **Pages** in the top bar to see every page as a thumbnail. Nothing touches the file until you press **Apply and save**, and by default the result is written to a new file.
+
+## The basic flow
+
+<Steps>
+1. Open the document in the Viewer, then choose **Pages** in the top bar. The organizer always works on the document open in the Viewer.
+2. Select pages and drag them to their new place.
+3. Rotate, delete, insert or mark where to split. Every step can be undone with <kbd>Ctrl</kbd>+<kbd>Z</kbd> and redone with <kbd>Ctrl</kbd>+<kbd>Y</kbd>.
+4. Click **Apply and save** or press <kbd>Ctrl</kbd>+<kbd>Enter</kbd>. The new file goes where the save field at the bottom shows.
+</Steps>
+
+## Select pages
+
+Click a page to select it and double-click to preview it. For several pages, <kbd>Shift</kbd>- or <kbd>Ctrl</kbd>-click, tick the box in a card's corner, or drag across an empty area. <kbd>Ctrl</kbd>+<kbd>A</kbd> selects them all and <kbd>Esc</kbd> clears the selection.
+
+The **Select** menu in the toolbar goes further:
+
+- **Select by page numbers** (<kbd>Ctrl</kbd>+<kbd>G</kbd>): type ranges such as `1-5, 9, 12-`.
+- **Select odd pages**, **Select even pages**, **Invert selection**
+- **Select blank pages**, **Select scanned pages**, **Find duplicate pages**
+- **Select by text…**: selects the pages that contain a given piece of text.
+- Selection **By page size**, or portrait and landscape pages
+
+## Reorder, rotate and delete
+
+Drag pages to reorder them. To move the selected pages to a particular position, press <kbd>M</kbd> and type the page number.
+
+The **Edit pages** menu holds:
+
+- **Rotate left** and **Rotate right** (<kbd>Shift</kbd>+<kbd>R</kbd> / <kbd>R</kbd>)
+- **Duplicate** (<kbd>Ctrl</kbd>+<kbd>D</kbd>) and **Make copies…**
+- **Delete selected** (<kbd>Delete</kbd>), plus deleting every page before or after one
+- **Reverse order** and **Reverse selected pages**
+- **Fix page orientation**: finds pages lying sideways or upside down and turns them.
+- **Prepare for two-sided printing**: arranges fronts and backs for printers without automatic duplex.
+- **Page labels**: gives pages a cover label or numbers such as i, ii, iii.
+
+When you point at a card, buttons to rotate or delete that page alone appear on it too.
+
+## Insert pages
+
+From the **Insert** menu choose **Insert blank page** (<kbd>B</kbd>), **Insert pages from PDF** or **Insert pages from images**. For blank pages you can pick the paper size, the orientation and a paper pattern such as lined, graph or dot grid. You also decide whether new pages go before the selection, after it or at the end. **Replace selected pages with pages from a PDF** swaps the selection for pages from another file.
+
+<Callout type="tip" title="Moving pages between documents">
+Copy the selected pages with <kbd>Ctrl</kbd>+<kbd>C</kbd>, switch to another document's tab and paste them with <kbd>Ctrl</kbd>+<kbd>V</kbd>. Dragging pages onto another document's tab copies them to the end of that document.
+</Callout>
+
+## Split and extract
+
+- To split, select pages and press <kbd>S</kbd>, or use **Split › Split after selected pages**. **Split at chapters (bookmarks)** cuts the document at every chapter start, and **Remove split marks** (<kbd>Shift</kbd>+<kbd>S</kbd>) clears them all. When the marks are in place, click **Save as separate files**.
+- To make a new PDF from the selected pages only, choose **Extract selected** or press <kbd>Ctrl</kbd>+<kbd>E</kbd>.
+- In the **Export** menu, **Save as pictures…** saves pages as image files and **Print…** prints the selected pages, or all of them.
+
+## What happens to the original?
+
+By default **Apply and save** writes the result to a new file and the original stays as it was. To write the change straight into the original, turn on **Overwrite the original file**; the button then reads **Apply to original**. If the document has unsaved changes in the Viewer, vivePDF asks you to save or discard them first. You can choose where new files are saved by default in **Settings › Files**.
+
+## Separate page tools
+
+Use **Tools › Merge** to combine several PDFs into one file, and **Tools › Split** to break a PDF up by page ranges, a fixed page count, file size or bookmarks. There are also separate tools for rotating, deleting and extracting pages; they are all listed on the [Tools](/en/docs/tools/) page.
+
+In the organizer, the <kbd>?</kbd> key shows every shortcut; for the full list see [Keyboard shortcuts](/en/docs/shortcuts/). If you want scanned pages to be searchable once they are in order, the [OCR](/en/docs/ocr/) page explains how.

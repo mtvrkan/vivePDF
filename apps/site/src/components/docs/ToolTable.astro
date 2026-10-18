@@ -1,0 +1,32 @@
+---
+import appData from "../../data/app-data.json";
+import type { Locale } from "../../i18n";
+import { toolGroupId } from "../../docs/extras";
+import { plural } from "../../i18n/plural";
+import { UI } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const copy = UI[lang].docs.tools;
+const groups = appData.tools.groups.map((g) => ({ ...g, items: appData.tools.items.filter((t) => t.group === g.id) }));
+---
+<div class="tool-table" data-tool-table data-lang={lang} data-one={copy.count.one} data-other={copy.count.other}>
+  <div class="tt-filter">
+    <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+    <label class="sr" for="toolFilter">{copy.filter}</label>
+    <input id="toolFilter" type="search" placeholder={copy.placeholder} autocomplete="off" spellcheck="false" data-tool-filter>
+    <span class="mini-label" data-tool-count aria-live="polite">{plural(lang, copy.count, appData.tools.items.length)}</span>
+  </div>
+  <p class="tt-none" data-tool-none hidden>{copy.none}</p>
+  {groups.map((g) => (
+    <section class="tt-group" data-tool-group>
+      <h2 id={toolGroupId(g.id)}>{g.label[lang]}</h2>
+      <table class="d-table">
+        <thead><tr><th scope="col">{copy.tool}</th><th scope="col">{copy.what}</th></tr></thead>
+        <tbody>
+          {g.items.map((t) => <tr data-tool-row><th scope="row">{t.label[lang]}</th><td>{t.description[lang]}</td></tr>)}
+        </tbody>
+      </table>
+    </section>
+  ))}
+</div>

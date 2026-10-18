@@ -1,0 +1,60 @@
+---
+import Docs from "../../layouts/Docs.astro";
+import { absoluteUrl, docPath, docsIndexPath, homePath, SITE_URL, type Locale } from "../../i18n";
+import { UI } from "../../i18n/ui";
+import { DOC_GROUPS, DOCS } from "../../docs/structure";
+import { docTitles } from "../../docs/pages";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const ui = UI[lang];
+const titles = await docTitles(lang);
+const groups = DOC_GROUPS.map((g) => ({ key: g, items: DOCS.filter((d) => d.group === g && titles.has(d.key)) })).filter((g) => g.items.length);
+const path = docsIndexPath(lang);
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: ui.docs.title,
+    description: ui.docs.description,
+    inLanguage: lang,
+    url: absoluteUrl(path),
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+    hasPart: groups.flatMap((g) => g.items.map((d) => ({ "@type": "TechArticle", headline: titles.get(d.key)?.title, url: absoluteUrl(docPath(lang, d.slug[lang])) }))),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "vivePDF", item: absoluteUrl(homePath(lang)) },
+      { "@type": "ListItem", position: 2, name: ui.docs.title, item: absoluteUrl(path) },
+    ],
+  },
+];
+---
+<Docs lang={lang} title={`${ui.docs.title} · vivePDF`} description={ui.docs.description} path={path} alternates={{ tr: docsIndexPath("tr"), en: docsIndexPath("en") }} jsonLd={jsonLd}>
+  <header class="docs-hero">
+    <p class="eyebrow">vivePDF {ui.docs.title.toLocaleLowerCase(lang)}</p>
+    <h1>{ui.docs.title}</h1>
+    <p class="doc-lead">{ui.docs.lead}</p>
+    <button type="button" class="docs-hero-search" data-search-open>
+      <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span>{ui.docs.searchPlaceholder}</span><span class="kbd" aria-hidden="true">Ctrl K</span>
+    </button>
+  </header>
+  {groups.map((g) => (
+    <section class="docs-group" aria-labelledby={`g-${g.key}`}>
+      <h2 id={`g-${g.key}`}>{ui.docs.groups[g.key]}</h2>
+      <ul class="doc-cards">
+        {g.items.map((d) => (
+          <li>
+            <a class="doc-card glass" href={docPath(lang, d.slug[lang])}>
+              <span class="dc-icon"><svg class="ic" aria-hidden="true"><use href={`#${d.icon}`}/></svg></span>
+              <b>{titles.get(d.key)?.title}</b>
+              <span>{titles.get(d.key)?.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Docs>

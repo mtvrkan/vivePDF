@@ -1,0 +1,26 @@
+---
+import type { Locale } from "../../i18n";
+import { UI } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const d = UI[lang].docs;
+---
+<div class="ds" id="docsSearch" role="dialog" aria-modal="true" aria-labelledby="dsTitle" hidden data-unavailable={d.searchUnavailable} data-one={d.searchCount.one} data-other={d.searchCount.other}>
+  <div class="ds-scrim" data-ds-close></div>
+  <div class="ds-panel glass">
+    <h2 class="sr" id="dsTitle">{d.search}</h2>
+    <div class="ds-top">
+      <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg>
+      <label class="sr" for="dsInput">{d.search}</label>
+      <input id="dsInput" type="search" role="combobox" aria-expanded="false" aria-controls="dsList" aria-autocomplete="list" placeholder={d.searchPlaceholder} autocomplete="off" spellcheck="false">
+      <button type="button" class="kbd ds-esc" data-ds-close aria-label={d.close}>Esc</button>
+    </div>
+    <ul class="ds-list" id="dsList" role="listbox" aria-label={d.search}></ul>
+    <div class="ds-empty" id="dsEmpty" hidden>
+      <p class="ds-empty-title">{d.searchEmpty}</p>
+      <p>{d.searchEmptyHint}</p>
+    </div>
+    <p class="sr" id="dsStatus" role="status"></p>
+  </div>
+</div>

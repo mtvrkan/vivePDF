@@ -4,8 +4,8 @@ import { siteRoutes } from "../seo/routes";
 
 const escapeXml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 
-export const GET: APIRoute = () => {
-  const urls = siteRoutes().flatMap((route) => {
+export const GET: APIRoute = async () => {
+  const urls = (await siteRoutes()).flatMap((route) => {
     const links = hreflangLinks(route.alternates)
       .map((l) => `<xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${escapeXml(l.href)}"/>`)
       .join("");

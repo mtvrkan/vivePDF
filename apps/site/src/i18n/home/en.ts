@@ -8,7 +8,7 @@ export const homeEn: HomeCopy = {
   meta: {
     title: "vivePDF · Free, open-source offline PDF editor",
     description:
-      "vivePDF is a free, open-source PDF editor for Windows that works completely offline. View, edit, convert, OCR, sign and present PDFs; your files never leave your computer.",
+      "A free, open-source PDF editor for Windows that works fully offline. View, edit, convert, OCR, sign and present PDFs; your files never leave your computer.",
   },
   hero: {
     news: "Presenter view and offline mode are here",
