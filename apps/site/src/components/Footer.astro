@@ -1,0 +1,57 @@
+---
+import { APP_VERSION, docPath, docsIndexPath, homePath, ISSUES_URL, RELEASES_URL, REPO_URL, type Locale } from "../i18n";
+import { ANCHORS, UI } from "../i18n/ui";
+import { docByKey } from "../docs/structure";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const f = UI[lang].foot;
+const a = ANCHORS[lang];
+const home = homePath(lang);
+const product = [
+  { href: `${home}#${a.features}`, label: f.features },
+  { href: `${home}#${a.present}`, label: f.present },
+  { href: `${home}#${a.studio}`, label: f.studio },
+  { href: `${home}#${a.privacy}`, label: f.privacy },
+  { href: `${home}#${a.download}`, label: f.download },
+];
+const source = [
+  { href: REPO_URL, label: "GitHub" },
+  { href: RELEASES_URL, label: f.releases },
+  { href: docPath(lang, docByKey("license").slug[lang]), label: f.license },
+  { href: `${REPO_URL}/blob/main/THIRD_PARTY_NOTICES.md`, label: f.notices },
+];
+const help = [
+  { href: docsIndexPath(lang), label: f.docs },
+  { href: ISSUES_URL, label: f.report },
+  { href: docPath(lang, docByKey("buildFromSource").slug[lang]), label: f.build },
+];
+const uiLanguages = [
+  ["tr", "Türkçe"],
+  ["en", "English"],
+  ["de", "Deutsch"],
+  ["fr", "Français"],
+  ["es", "Español"],
+  ["it", "Italiano"],
+  ["pt-BR", "Português (Brasil)"],
+  ["ar", "العربية"],
+];
+---
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href={home} aria-label={UI[lang].homeLabel}><svg aria-hidden="true"><use href="#logo"/></svg><span>vivePDF</span></a>
+        <p>{f.blurb}</p>
+      </div>
+      <div><h2>{f.product}</h2><ul>{product.map((l) => <li><a class="ul" href={l.href}>{l.label}</a></li>)}</ul></div>
+      <div><h2>{f.source}</h2><ul>{source.map((l) => <li><a class="ul" href={l.href}>{l.label}</a></li>)}</ul></div>
+      <div><h2>{f.help}</h2><ul>{help.map((l) => <li><a class="ul" href={l.href}>{l.label}</a></li>)}</ul></div>
+    </div>
+    <div class="foot-langs" aria-label={f.uiLanguages}>
+      {uiLanguages.map(([code, name]) => <span lang={code} dir={code === "ar" ? "rtl" : undefined}>{name}</span>)}
+    </div>
+  </div>
+  <p class="wordmark" aria-hidden="true">vivePDF</p>
+  <div class="wrap foot-bottom"><span>{f.copyright}</span><ul class="foot-tags" aria-label={f.tagsLabel}><li><span class="dot-ok"></span>v{APP_VERSION} {f.stable}</li><li>AGPL-3.0</li><li>{f.noTelemetry}</li><li>{f.noAccount}</li></ul></div>
+</footer>

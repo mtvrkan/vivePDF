@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Website: a static Astro site in apps/site with the vivePDF home page in Turkish and English (glass hero, lens demo, scroll tour, offline switch, signature, reorder, presenter and template demos, download and guide finder), self-hosted fonts, light and dark themes, reduced-motion support, hreflang alternates, Open Graph tags, structured data and a sitemap; `pnpm site:dev` and `pnpm site:build` run it from the repo root [2026-10-18]
 - A tab group torn off into a new window, by dragging its name chip out or from its menu, keeps its name, colour and folding there instead of arriving as loose tabs [2026-10-18]
 - A document tab, or a whole tab group by its name chip, dragged out of a window and dropped on another vivePDF window moves into that window's tab strip where it was dropped, keeping the group's name, colour and folding; dropped anywhere else it opens in a new window as before, and a document window left without tabs closes [2026-10-18]
 - A tab or tab group torn off into a new window opens that window where it was dropped, with its tab strip under the pointer and kept inside the screen; Move to new window from the menu still opens it centred [2026-10-18]

@@ -1,0 +1,122 @@
+---
+import type { Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].tour;
+const s = HOME[lang].script;
+const p = c.page;
+const workspace = [
+  { g: "home", icon: "i-home" },
+  { g: "view", icon: "i-eye" },
+  { g: "pages", icon: "i-pages" },
+] as const;
+const tools = [
+  { g: "edit", icon: "i-edit" },
+  { g: "convert", icon: "i-convert" },
+  { g: "ocr", icon: "i-scan" },
+  { g: "secure", icon: "i-lock" },
+  { g: "forms", icon: "i-form" },
+  { g: "compare", icon: "i-compare" },
+  { g: "a11y", icon: "i-a11y" },
+] as const;
+const total = String(c.caps.length).padStart(2, "0");
+const zoom = new Intl.NumberFormat(lang, { style: "percent" }).format(1);
+---
+<section class="tour" id={ANCHORS[lang].features} aria-labelledby="tourTitle">
+  <h2 class="sr" id="tourTitle">{c.srTitle}</h2>
+  <div class="tour-sticky">
+    <div class="tour-inner">
+      <div class="win-wrap">
+        <div class="tilt">
+          <div class="win glass" data-g="view" aria-hidden="true">
+            <div class="win-bar">
+              <svg class="mark"><use href="#logo"/></svg>
+              <span class="wb-eyebrow" id="wbEyebrow">{c.side.view}</span>
+              <span class="doc-chip mono">{c.docChip}</span>
+              <span class="wb-search"><svg class="ic"><use href="#i-search"/></svg>{c.command}<kbd>Ctrl K</kbd></span>
+              <span class="wb-ctrl"><span><svg class="ic"><use href="#i-min"/></svg></span><span><svg class="ic"><use href="#i-max"/></svg></span><span><svg class="ic"><use href="#i-x"/></svg></span></span>
+            </div>
+            <div class="win-body">
+              <div class="win-side">
+                <p class="side-label">{c.workspace}</p>
+                {workspace.map((w) => <div class:list={["si", { on: w.g === "view" }]} data-g={w.g}><svg class="ic"><use href={`#${w.icon}`}/></svg><span>{c.side[w.g]}</span></div>)}
+                <p class="side-label">{c.tools}</p>
+                {tools.map((w) => <div class="si" data-g={w.g}><svg class="ic"><use href={`#${w.icon}`}/></svg><span>{c.side[w.g]}</span></div>)}
+                <i class="aurora"></i>
+              </div>
+              <div class="win-main">
+                <div class="win-tools"><i></i><i></i><i></i><span class="wt-chip" id="wtChip"><svg class="ic"><use href={`#${s.chip.view[0]}`}/></svg><span>{s.chip.view[1]}</span></span><span class="zoom mono">{zoom}</span></div>
+                <div class="win-doc">
+                  <div class="thumbs">
+                    <div class="thumb t1" style="--i:0"><b></b><b></b><b></b><em>1</em></div>
+                    <div class="thumb t2" style="--i:1"><b></b><b></b><b></b><b></b><em>2</em></div>
+                    <div class="thumb t3 cur" style="--i:2"><b></b><b></b><b></b><em>3</em></div>
+                    <div class="thumb t4" style="--i:3"><b></b><b></b><em>4</em></div>
+                  </div>
+                  <div class="page-wrap">
+                    <div class="fan f1" style="--fd:.05s"><b></b><b></b><b class="s"></b><b></b><em>2</em></div>
+                    <div class="fan f2" style="--fd:.12s"><b></b><b class="s"></b><b></b><b></b><em>4</em></div>
+                    <div class="doc-page">
+                      <div class="dp">
+                        <div class="dp-head"><span>{p.head[0]}</span><span>{p.head[1]}</span></div>
+                        <h4 class="dp-h" data-tag>{p.h}<span class="tg">H1</span></h4>
+                        <p class="dp-p ch" data-tag><Fragment set:html={p.p1} /><span class="tg">P</span></p>
+                        <figure class="dp-fig" data-tag>
+                          <svg viewBox="0 0 300 92" preserveAspectRatio="none"><line x1="8" y1="80" x2="292" y2="80" stroke="#D9E2EE"/><rect x="46" y="30" width="46" height="50" rx="2" fill="#BFE3FF"/><rect x="126" y="25" width="46" height="55" rx="2" fill="#7FD0FF"/><rect x="206" y="14" width="46" height="66" rx="2" fill="#2F8FE6"/><path d="M14 30H286" stroke="#14305A" stroke-width="1.2" stroke-dasharray="4 4"/><text x="69" y="24" font-size="9" text-anchor="middle" fill="#33435E" font-family="Geist Mono Variable,monospace">{p.bars[0]}</text><text x="149" y="19" font-size="9" text-anchor="middle" fill="#33435E" font-family="Geist Mono Variable,monospace">{p.bars[1]}</text><text x="229" y="9" font-size="9" text-anchor="middle" fill="#0A1A33" font-family="Geist Mono Variable,monospace">{p.bars[2]}</text></svg>
+                          <figcaption>{p.caption}</figcaption>
+                          <span class="tg">{p.figTag}</span>
+                        </figure>
+                        <div class="dp-tblw" data-tag>
+                          <table class="dp-tbl" set:html={p.table} />
+                          <span class="tg">Table</span>
+                        </div>
+                        <p class="dp-p" data-tag><Fragment set:html={p.p2} /><span class="tg">P</span></p>
+                        <div class="dp-foot"><span>{p.foot[0]}</span><span><span class="pn-a">{p.foot[1]}</span><span class="pn-b">{p.foot[2]}</span></span></div>
+                      </div>
+                      <div class="fx fx-formula"><small>LaTeX</small><span set:html={p.formula} /><b></b><b></b><b></b><b></b></div>
+                      <div class="fx fx-forms">
+                        <div class="ffs">
+                          <div class="ff"><label>{p.formLabels.name}</label><span class="fi"><span id="twName">{s.typeName}</span><i class="caret"></i></span></div>
+                          <div class="ff2"><div class="ff"><label>{p.formLabels.date}</label><span class="fi">{p.formLabels.dateValue}</span></div><div class="ff"><label>{p.formLabels.unit}</label><span class="fi">{p.formLabels.unitValue}</span></div></div>
+                          <div class="fc"><i><svg class="ic"><use href="#i-check"/></svg></i>{p.formLabels.confirm}</div>
+                        </div>
+                        <svg class="fqr qr-mini" viewBox="0 0 25 25"></svg>
+                      </div>
+                      <div class="fx fx-bar"><i>B</i><i class="it">I</i><i class="u">U</i><i class="dot"></i><span>Geist · 22 pt</span></div>
+                      <div class="fx fx-laser"></div>
+                      <div class="fx fx-lock"><svg class="ic"><use href="#i-lock"/></svg>{p.lock}</div>
+                      <div class="fx fx-veil"></div>
+                      <div class="fx fx-scan"></div>
+                    </div>
+                    <div class="fx fx-docx o3"><div class="dx-bar">{lang === "tr" ? "rapor" : "report"}.pptx</div><div class="dx-body"><b>{p.pptx.title}</b><i></i><div class="dx-tbl"><i></i><i></i></div><i class="s"></i></div><p class="dx-cap">{p.pptx.cap}</p></div>
+                    <div class="fx fx-docx o2"><div class="dx-bar">{lang === "tr" ? "rapor" : "report"}.xlsx</div><div class="dx-body"><b>{p.xlsx.title}</b><div class="dx-tbl"><i></i><i></i><i></i><i></i></div><i class="s"></i></div><p class="dx-cap">{p.xlsx.cap}</p></div>
+                    <div class="fx fx-docx"><div class="dx-bar">{lang === "tr" ? "rapor" : "report"}.docx</div><div class="dx-body"><b>{p.docx.title}</b><i></i><i></i><i class="s"></i><div class="dx-tbl"><i></i><i></i><i></i></div><i></i><i class="s"></i></div><p class="dx-cap">{p.docx.cap}</p></div>
+                  </div>
+                </div>
+              </div>
+              <div class="win-insp">
+                <p class="insp-label">{c.insp.label}</p>
+                <div><div class="insp-numw"><p class="insp-num" id="inspNum">{s.insp.view[0]}</p></div><p class="insp-sub" id="inspSub">{s.insp.view[1]}</p></div>
+                <div class="insp-rows">
+                  <div>{c.insp.engine}<b>{c.insp.engineValue}</b></div>
+                  <div>{c.insp.sent}<b>0 B</b></div>
+                  <div>{c.insp.status}<b><i class="dot-ok"></i>{c.insp.ready}</b></div>
+                </div>
+                <div class="insp-tool"><p>{c.insp.tool}</p><p id="inspTool">{c.side.view}</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ol class="caps">
+        {c.caps.map((cap, i) => (
+          <li class:list={["cap glass", { on: i === 0 }]} data-g={cap.g}><div class="cap-meta"><span>{String(i + 1).padStart(2, "0")} / {total}</span><span class="cap-dots"></span></div><h3>{cap.h}</h3><p>{cap.p}</p></li>
+        ))}
+      </ol>
+      <p class="tour-hint" aria-hidden="true"><i></i>{c.hint}</p>
+    </div>
+  </div>
+</section>

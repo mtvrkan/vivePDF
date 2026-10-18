@@ -1,0 +1,88 @@
+---
+import Base from "../../layouts/Base.astro";
+import "../../styles/home.css";
+import Hero from "./Hero.astro";
+import Lens from "./Lens.astro";
+import Tour from "./Tour.astro";
+import Privacy from "./Privacy.astro";
+import TryIt from "./TryIt.astro";
+import Present from "./Present.astro";
+import Studio from "./Studio.astro";
+import Download from "./Download.astro";
+import Guides from "./Guides.astro";
+import TemplateDialog from "./TemplateDialog.astro";
+import { absoluteUrl, APP_RELEASE_DATE, APP_VERSION, docPath, homePath, LATEST_RELEASE_URL, REPO_URL, SITE_URL, type Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { GUIDES } from "../../i18n/home/guides";
+import { docByKey } from "../../docs/structure";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const copy = HOME[lang];
+const path = homePath(lang);
+const guides = GUIDES[lang].map((g) => {
+  const doc = docByKey(g.key);
+  return { t: g.t, d: g.d, s: g.s, h: docPath(lang, doc.slug[lang]), i: doc.icon };
+});
+const data = JSON.stringify({ ...copy.script, guides }).replace(/</g, "\\u003c");
+const orgId = `${SITE_URL}/#organization`;
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": orgId,
+    name: "vivePDF",
+    url: SITE_URL,
+    logo: absoluteUrl("/icon-512.png"),
+    sameAs: [REPO_URL],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    name: "vivePDF",
+    url: absoluteUrl(path),
+    inLanguage: lang,
+    publisher: { "@id": orgId },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "vivePDF",
+    description: copy.meta.description,
+    url: absoluteUrl(path),
+    image: absoluteUrl("/icon-512.png"),
+    applicationCategory: "BusinessApplication",
+    applicationSubCategory: "PDF editor",
+    operatingSystem: "Windows 10, Windows 11",
+    softwareVersion: APP_VERSION,
+    datePublished: APP_RELEASE_DATE,
+    downloadUrl: LATEST_RELEASE_URL,
+    license: "https://www.gnu.org/licenses/agpl-3.0.html",
+    isAccessibleForFree: true,
+    inLanguage: ["tr", "en", "de", "fr", "es", "it", "ar", "pt-BR"],
+    offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    publisher: { "@id": orgId },
+  },
+];
+---
+<Base lang={lang} title={copy.meta.title} description={copy.meta.description} path={path} alternates={{ tr: homePath("tr"), en: homePath("en") }} jsonLd={jsonLd} hero>
+  <main id="main">
+    <Hero lang={lang} />
+    <Lens lang={lang} />
+    <Tour lang={lang} />
+    <Privacy lang={lang} />
+    <TryIt lang={lang} />
+    <Present lang={lang} />
+    <Studio lang={lang} />
+    <Download lang={lang} />
+    <Guides lang={lang} />
+  </main>
+  <Fragment slot="after">
+    <TemplateDialog lang={lang} />
+    <script type="application/json" id="homeData" set:html={data} />
+  </Fragment>
+</Base>
+<script>
+  import "../../scripts/home";
+</script>

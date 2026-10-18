@@ -1,0 +1,65 @@
+---
+import type { Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].tryIt;
+const pageLines = [
+  '<i></i><b></b><b class="s"></b>',
+  '<b></b><b></b><b class="s"></b><b></b>',
+  '<i></i><b></b><b class="s"></b>',
+  '<b></b><b class="s"></b><b></b>',
+  '<b></b><b></b><b class="s"></b>',
+];
+---
+<section class="sec" id={ANCHORS[lang].tryIt} aria-labelledby="tryTitle">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+      <h2 class="title" id="tryTitle" data-reveal set:html={c.title} />
+      <p class="lead" data-reveal>{c.lead}</p>
+    </div>
+    <div class="play">
+      <article class="card glass c-cmp" data-reveal>
+        <div><p class="eyebrow">{c.cmp.eyebrow}</p><h3>{c.cmp.h}</h3><p class="card-p">{c.cmp.p}</p></div>
+        <div class="demo cmp" id="cmp">
+          <span class="cmp-tag l"><span class="cmp-stem">{c.cmp.stem}</span>v1.pdf</span><span class="cmp-tag r"><span class="cmp-stem">{c.cmp.stem}</span>v2.pdf</span>
+          <div class="cmp-layer cmp-new" aria-hidden="true" set:html={c.cmp.newer} />
+          <div class="cmp-layer cmp-old" aria-hidden="true" set:html={c.cmp.older} />
+          <div class="cmp-handle"><svg class="ic" aria-hidden="true"><use href="#i-compare"/></svg></div>
+          <label class="sr" for="cmpRange">{c.cmp.range}</label>
+          <input id="cmpRange" type="range" min="0" max="100" value="50">
+        </div>
+      </article>
+      <article class="card glass c-sig" data-reveal>
+        <div><p class="eyebrow">{c.sig.eyebrow}</p><h3>{c.sig.h}</h3><p class="card-p">{c.sig.p}</p></div>
+        <div class="demo pad" id="pad">
+          <canvas id="sigPad" role="img" aria-label={c.sig.canvas}></canvas>
+          <span class="pad-hint">{c.sig.hint}</span>
+          <span class="pad-x" aria-hidden="true">×</span>
+          <i class="pad-line"></i>
+          <span class="stamp"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>{c.sig.stamp}</span>
+        </div>
+        <div class="sig-ctl">
+          <div class="field"><label for="sigName">{c.sig.nameLabel}</label><input id="sigName" type="text" autocomplete="off" maxlength="28" placeholder={c.sig.placeholder}></div>
+          <button class="btn btn-ghost" type="button" id="sigClear">{c.sig.clear}</button>
+          <button class="btn btn-primary btn-sm" type="button" id="sigApply"><svg class="ic" aria-hidden="true"><use href="#i-sign"/></svg>{c.sig.apply}</button>
+        </div>
+        <p class="sig-status" id="sigStatus" role="status"></p>
+      </article>
+      <article class="card glass c-ord" data-reveal>
+        <div><p class="eyebrow">{c.ord.eyebrow}</p><h3>{c.ord.h}</h3><p class="card-p">{c.ord.p}</p></div>
+        <div class="demo">
+          <div class="reorder" id="reorder" role="group" aria-label={c.ord.group} aria-describedby="ordHelp">
+            {c.ord.pages.map((pg, i) => (
+              <button class="pg" type="button" data-n={i + 1} aria-label={pg.label}><strong>{pg.t}</strong><Fragment set:html={pageLines[i]} /><span aria-hidden="true">{i + 1}</span></button>
+            ))}
+          </div>
+        </div>
+        <div class="ord-foot"><p class="mini-label" id="ordHelp" set:html={c.ord.help} /><p class="sr" role="status" id="ordLive"></p></div>
+      </article>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,41 @@
+---
+import { docsIndexPath, homePath, LATEST_RELEASE_URL, LOCALES, REPO_URL, type Alternates, type Locale } from "../i18n";
+import { ANCHORS, UI } from "../i18n/ui";
+
+type Props = { lang: Locale; alternates: Alternates; solid: boolean; hero: boolean };
+const { lang, alternates, solid, hero } = Astro.props;
+const ui = UI[lang];
+const a = ANCHORS[lang];
+const home = homePath(lang);
+const links = [
+  { href: `${home}#${a.features}`, label: ui.nav.features },
+  { href: `${home}#${a.present}`, label: ui.nav.present },
+  { href: `${home}#${a.studio}`, label: ui.nav.studio },
+  { href: docsIndexPath(lang), label: ui.nav.docs },
+  { href: `${home}#${a.download}`, label: ui.nav.download },
+];
+const langHref = (l: Locale) => alternates[l] ?? homePath(l);
+const other = LOCALES.find((l) => l !== lang) as Locale;
+---
+<header class="nav-wrap" id="top">
+  <nav class:list={["nav glass", { solid }]} aria-label={ui.mainMenu} data-hero={hero ? "" : undefined}>
+    <a class="brand" href={home} aria-label={ui.homeLabel}><svg aria-hidden="true"><use href="#logo"/></svg><span>vivePDF</span></a>
+    <ul class="nav-links">
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+    </ul>
+    <div class="nav-end">
+      <div class="seg" role="group" aria-label={ui.siteLanguage}>
+        {LOCALES.map((l) => <a href={langHref(l)} hreflang={l} lang={l} aria-current={l === lang ? "page" : undefined}>{l.toUpperCase()}</a>)}
+      </div>
+      <button class="icon-btn theme-btn" id="themeBtn" type="button" aria-pressed="false" aria-label={ui.themeDark}><svg class="ic t-moon" aria-hidden="true"><use href="#i-moon"/></svg><svg class="ic t-sun" aria-hidden="true"><use href="#i-sun"/></svg></button>
+      <a class="icon-btn" href={REPO_URL} aria-label={ui.repoLabel}><svg class="ic" aria-hidden="true"><use href="#i-gh"/></svg></a>
+      <a class="btn btn-primary btn-sm" href={LATEST_RELEASE_URL}>{ui.download}</a>
+      <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mnav" aria-label={ui.openMenu} data-open={ui.openMenu} data-close={ui.closeMenu}><svg class="ic" aria-hidden="true"><use href="#i-menu"/></svg></button>
+    </div>
+  </nav>
+  <div class="mnav glass" id="mnav" hidden>
+    {links.map((l) => <a href={l.href}>{l.label}<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>)}
+    <a href={REPO_URL}>GitHub<svg class="ic" aria-hidden="true"><use href="#i-gh"/></svg></a>
+    <a href={langHref(other)} hreflang={other} lang={other}>{ui.otherLanguage}<span class="kbd" aria-hidden="true">{other.toUpperCase()}</span></a>
+  </div>
+</header>

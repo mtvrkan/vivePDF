@@ -1,0 +1,42 @@
+---
+import type { Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].privacy;
+const m = c.monitor;
+---
+<section class="night" id={ANCHORS[lang].privacy} aria-labelledby="privTitle">
+  <div class="off-veil" aria-hidden="true"></div>
+  <div class="wrap privacy">
+    <div>
+      <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+      <h2 class="title" id="privTitle" data-reveal set:html={c.title} />
+      <p class="lead" data-reveal>{c.lead}</p>
+      <ul class="promises">
+        {c.promises.map((p) => (
+          <li data-reveal><span class="pi"><svg class="ic" aria-hidden="true"><use href={`#${p.icon}`}/></svg></span><div><h3>{p.h}</h3><p>{p.p}</p></div></li>
+        ))}
+      </ul>
+      <p class="footnote" data-reveal>{c.footnote}</p>
+    </div>
+    <div class="monitor-col" data-reveal>
+    <div class="net-row">
+      <p id="netMsg" role="status" data-off={c.netOff}>{c.netOn}</p>
+      <button class="net-sw" type="button" role="switch" aria-checked="true" id="netSw"><span class="sw-t" aria-hidden="true"><i></i></span>Wi‑Fi</button>
+    </div>
+    <div class="monitor glass dark" aria-hidden="true">
+      <div class="mon-head"><p>{m.title}</p><span class="live"><i></i><span class="on">{m.live}</span><span class="off">{m.offline}</span></span></div>
+      <div class="mon-nums">
+        <div class="mon-num"><span>{m.sent}</span><b><small>↑</small>0 B</b></div>
+        <div class="mon-num"><span>{m.received}</span><b><small>↓</small>0 B</b></div>
+      </div>
+      <div class="mon-chart"><span>{m.bandwidth}</span><em>{m.noLink}</em><i></i></div>
+      <ul class="log" id="log"></ul>
+      <p class="mon-cap">{m.cap}</p>
+    </div>
+    </div>
+  </div>
+</section>

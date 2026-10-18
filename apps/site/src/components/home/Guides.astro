@@ -1,0 +1,37 @@
+---
+import { docsIndexPath, ISSUES_URL, type Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].guides;
+---
+<section class="sec" id={ANCHORS[lang].docs} aria-labelledby="docsTitle" style="padding-block:var(--s-6)" data-guides>
+  <div class="wrap docs">
+    <div>
+      <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+      <h2 class="title" id="docsTitle" data-reveal set:html={c.title} />
+      <p class="lead" data-reveal set:html={c.lead} />
+      <ul class="in-app">
+        {c.inApp.map((it) => <li data-reveal><svg class="ic" aria-hidden="true"><use href={`#${it.icon}`}/></svg><span><strong>{it.strong}</strong> {it.text}</span></li>)}
+      </ul>
+      <a class="text-link ul docs-all" href={docsIndexPath(lang)} data-reveal>{c.all}<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+    </div>
+    <div class="pal glass" data-reveal>
+      <div class="pal-top"><svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><label class="sr" for="docSearch">{c.search}</label><input id="docSearch" type="search" role="combobox" aria-expanded="true" aria-controls="docList" aria-autocomplete="list" placeholder={c.placeholder} autocomplete="off" spellcheck="false"><span class="kbd" aria-hidden="true">Ctrl K</span></div>
+      <div class="pal-body">
+      <ul class="pal-list" id="docList" role="listbox" aria-label={c.list}></ul>
+      <div class="pal-prev" id="docPrev"></div>
+      <div class="empty" id="docEmpty" hidden>
+        <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>
+        <h3>{c.emptyTitle}</h3>
+        <p>{c.emptyText}</p>
+        <a class="text-link ul" href={ISSUES_URL}>{c.emptyLink}<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </div>
+      </div>
+      <div class="pal-foot" aria-hidden="true">{c.foot.map((f) => <span>{f}</span>)}<span id="docCount" style="margin-left:auto"></span></div>
+      <p class="sr" role="status" id="docStatus"></p>
+    </div>
+  </div>
+</section>

@@ -8,7 +8,9 @@
     "lint": "pnpm --dir apps/desktop lint",
     "typecheck": "pnpm --dir apps/desktop typecheck",
     "test": "pnpm --dir apps/desktop test",
-    "check:rpc": "pnpm --dir apps/desktop check:rpc"
+    "check:rpc": "pnpm --dir apps/desktop check:rpc",
+    "site:dev": "pnpm --dir apps/site dev",
+    "site:build": "pnpm --dir apps/site build"
   },
   "license": "AGPL-3.0-only",
   "repository": {

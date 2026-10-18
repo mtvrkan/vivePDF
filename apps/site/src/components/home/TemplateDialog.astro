@@ -1,0 +1,31 @@
+---
+import type { Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const d = HOME[lang].studio.dialog;
+const swatches = [
+  { p: "", style: "--sa:#14305A;--sb:#7FD0FF" },
+  { p: "pal-emerald", style: "--sa:#0F4D3F;--sb:#8FE3BF" },
+  { p: "pal-wine", style: "--sa:#5A1630;--sb:#F5B3C4" },
+  { p: "pal-graphite", style: "--sa:#2B313C;--sb:#C9D2DE" },
+];
+---
+<div class="tpl-dlg" id="tplDlg" role="dialog" aria-modal="true" aria-labelledby="tplTitle" hidden>
+  <div class="tpl-scrim" data-close></div>
+  <div class="tpl-panel glass">
+    <button class="tpl-x" type="button" data-close aria-label={d.close}><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    <div class="tpl-stage" aria-hidden="true"><div class="tpl-holder" id="tplHolder"></div></div>
+    <div class="tpl-ctl">
+      <div><p class="eyebrow">{d.eyebrow}</p><h3 id="tplTitle" style="margin-top:14px">CV</h3></div>
+      <div class="field"><label for="tplName" id="tplNameLabel"></label><input id="tplName" type="text" maxlength="32" autocomplete="off"></div>
+      <div><p class="ctl-label" id="swLabel">{d.color}</p><div class="swatches" role="radiogroup" aria-labelledby="swLabel">
+        {swatches.map((s, i) => <button class="swatch" type="button" role="radio" aria-checked={i === 0 ? "true" : "false"} data-p={s.p} aria-label={d.swatches[i]} style={s.style}></button>)}
+      </div></div>
+      <p class="tpl-note">{d.note}</p>
+      <div class="cta"><a class="btn btn-primary btn-sm" href={`#${ANCHORS[lang].download}`} data-close-go>{d.cta}</a><button class="btn btn-ghost" type="button" data-close>{d.dismiss}</button></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,35 @@
+---
+import type { Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].lens;
+const info = HOME[lang].script.lensInfo;
+const modes = ["ocr", "redact", "diff"] as const;
+---
+<section class="lens-sec" id={ANCHORS[lang].lens} aria-labelledby="lensTitle">
+  <div class="wrap lens-head">
+    <div>
+      <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+      <h2 class="title" id="lensTitle" data-reveal set:html={c.title} />
+    </div>
+    <div class="lens-side" data-reveal>
+      <p class="lead">{c.lead}</p>
+      <div class="lens-modes" role="group" aria-label={c.modesLabel}>
+        {modes.map((m, i) => <button type="button" data-m={m} aria-pressed={i === 0 ? "true" : "false"}>{c.modes[m]}</button>)}
+      </div>
+      <p class="lens-note" id="lensNote" role="status">{info.ocr[1]}</p>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="lens-stage" id="lensStage" data-m="ocr" data-reveal>
+      <div class="lens-raw" aria-hidden="true"><article class="ldoc" id="ldoc" set:html={c.doc} /></div>
+      <div class="lens-clean" aria-hidden="true"><div class="lens-zoom" id="lensZoom"></div></div>
+      <div class="lens-ring" aria-hidden="true"><i id="lensTag">{info.ocr[0]}</i></div>
+      <p class="lens-hint" aria-hidden="true"><i></i>{c.hint}</p>
+    </div>
+    <p class="sr">{c.sr}</p>
+  </div>
+</section>

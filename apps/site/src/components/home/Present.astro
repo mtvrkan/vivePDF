@@ -1,0 +1,46 @@
+---
+import type { Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].present;
+---
+<section class="sec pres-sec" id={ANCHORS[lang].present} aria-labelledby="presTitle" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+      <h2 class="title" id="presTitle" data-reveal set:html={c.title} />
+      <p class="lead" data-reveal>{c.lead}</p>
+    </div>
+    <div class="pres" id="pres" data-reveal>
+      <div class="screen" aria-hidden="true">
+        <div class="screen-frame"><div class="slide" id="audSlide"><div class="slide-in" data-slot></div><i class="board"></i><canvas id="audInk"></canvas><i class="aud-dot" id="audDot"></i></div></div>
+        <i class="beam"></i>
+        <p class="screen-label"><i></i>{c.screen}</p>
+      </div>
+      <div class="console glass">
+        <div class="con-bar"><span>{c.console}</span><b id="presClock" aria-label={c.clock}>00:00</b></div>
+        <div class="con-grid">
+          <div class="con-cur"><div class="slide" id="preSlide"><div class="slide-in" data-slot></div><i class="board"></i><canvas id="preInk" role="img" aria-label={c.canvas}></canvas></div></div>
+          <div class="con-side"><p class="con-label">{c.next}</p><div class="slide" id="nextSlide" aria-hidden="true"><div class="slide-in" data-slot></div></div><p class="con-label" style="margin-top:14px">{c.notes}</p><p class="con-notes" id="presNotes" style="margin-top:0"></p></div>
+        </div>
+        <div class="con-tools" role="toolbar" aria-label={c.toolbar}>
+          <button class="tool" type="button" data-tool="pen" aria-pressed="true"><svg class="ic" aria-hidden="true"><use href="#i-pen"/></svg>{c.pen}</button>
+          <button class="tool" type="button" data-tool="hl" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-hl"/></svg>{c.hl}</button>
+          <button class="tool" type="button" id="presBoard" aria-pressed="false"><svg class="ic" aria-hidden="true"><use href="#i-board"/></svg>{c.board}</button>
+          <button class="tool" type="button" id="presClear">{c.clear}</button>
+          <span class="con-pager">
+          <button class="tool ico" type="button" id="presPrev" aria-label={c.prev}><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg></button>
+          <span class="pg-ind" id="presPage" aria-live="polite">1 / 3</span>
+          <button class="tool ico" type="button" id="presNext" aria-label={c.nextPage}><svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <ul class="pres-points">
+      {c.points.map((p) => <li data-reveal><h3>{p.h}</h3><p>{p.p}</p></li>)}
+    </ul>
+  </div>
+</section>

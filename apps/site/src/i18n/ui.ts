@@ -1,0 +1,188 @@
+import type { Locale } from ".";
+import type { DocGroupKey } from "../docs/structure";
+
+export type Anchors = {
+  lens: string;
+  features: string;
+  privacy: string;
+  tryIt: string;
+  present: string;
+  studio: string;
+  download: string;
+  docs: string;
+};
+
+export const ANCHORS: Record<Locale, Anchors> = {
+  tr: {
+    lens: "mercek",
+    features: "ozellikler",
+    privacy: "gizlilik",
+    tryIt: "dene",
+    present: "sunum",
+    studio: "studio",
+    download: "indir",
+    docs: "rehberler",
+  },
+  en: {
+    lens: "lens",
+    features: "features",
+    privacy: "privacy",
+    tryIt: "try",
+    present: "presenter",
+    studio: "studio",
+    download: "download",
+    docs: "guides",
+  },
+};
+
+const tr = {
+  skip: "İçeriğe geç",
+  mainMenu: "Ana menü",
+  homeLabel: "vivePDF ana sayfa",
+  nav: { features: "Özellikler", present: "Sunum", studio: "Studio", docs: "Dokümantasyon", download: "İndir" },
+  siteLanguage: "Site dili",
+  themeDark: "Koyu tema",
+  themeLight: "Açık tema",
+  repoLabel: "vivePDF GitHub deposu",
+  download: "İndir",
+  openMenu: "Menüyü aç",
+  closeMenu: "Menüyü kapat",
+  otherLanguage: "English",
+  foot: {
+    blurb: "Açık kaynak, çevrimdışı PDF stüdyosu. Windows için hazır, macOS yakında; Linux'ta kaynaktan derlenir.",
+    product: "Ürün",
+    source: "Kaynak",
+    help: "Yardım",
+    features: "Özellikler",
+    present: "Sunum modu",
+    studio: "Studio",
+    privacy: "Gizlilik",
+    download: "İndir",
+    releases: "Sürümler",
+    license: "Lisans: AGPL-3.0",
+    notices: "Üçüncü taraf bildirimleri",
+    docs: "Dokümantasyon",
+    report: "Hata bildir",
+    build: "Kaynaktan derleme",
+    uiLanguages: "Arayüz dilleri",
+    copyright: "© 2026 vivePDF · Açık kaynak, herkes için",
+    tagsLabel: "Sürüm ve ilkeler",
+    stable: "kararlı",
+    noTelemetry: "Telemetri yok",
+    noAccount: "Hesap yok",
+  },
+  docs: {
+    title: "Dokümantasyon",
+    description:
+      "vivePDF dokümantasyonu: kurulum, PDF açma, sayfa düzenleme, dönüştürme, OCR, imza, Studio, sunum modu, kısayollar ve sorun giderme.",
+    lead: "Kurulumdan sunum moduna kadar vivePDF'in her işi adım adım. Uygulamadaki menü adlarıyla, internetsiz de çalışan aynı yardım konularından derlendi.",
+    search: "Dokümantasyonda ara",
+    searchPlaceholder: "Ara: OCR, imza, kısayol",
+    searchHint: "Aramak için Ctrl K",
+    searchEmpty: "Bu aramaya uyan sayfa yok",
+    searchEmptyHint: "Daha kısa bir kelime dene ya da sorunu GitHub'da sor.",
+    searchUnavailable: "Arama yalnızca yayımlanan sitede çalışır.",
+    close: "Kapat",
+    onThisPage: "Bu sayfada",
+    previous: "Önceki",
+    next: "Sonraki",
+    edit: "Bu sayfayı GitHub'da düzenle",
+    breadcrumb: "Konum",
+    sidebar: "Dokümantasyon menüsü",
+    openSidebar: "Dokümantasyon menüsü",
+    updated: "Son güncelleme",
+    groups: {
+      start: "Başlarken",
+      documents: "Belgelerle çalışmak",
+      studio: "Studio",
+      present: "Sunum",
+      privacy: "Gizlilik ve ayarlar",
+      reference: "Başvuru",
+      developers: "Geliştiriciler",
+    } satisfies Record<DocGroupKey, string>,
+  },
+  notFound: {
+    title: "Sayfa bulunamadı",
+    lead: "Aradığın sayfa taşınmış ya da hiç olmamış olabilir.",
+    home: "Ana sayfaya dön",
+    docs: "Dokümantasyona git",
+  },
+};
+
+export type Ui = typeof tr;
+
+const en: Ui = {
+  skip: "Skip to content",
+  mainMenu: "Main menu",
+  homeLabel: "vivePDF home",
+  nav: { features: "Features", present: "Presenter", studio: "Studio", docs: "Docs", download: "Download" },
+  siteLanguage: "Site language",
+  themeDark: "Dark theme",
+  themeLight: "Light theme",
+  repoLabel: "vivePDF on GitHub",
+  download: "Download",
+  openMenu: "Open menu",
+  closeMenu: "Close menu",
+  otherLanguage: "Türkçe",
+  foot: {
+    blurb: "An open-source, offline PDF studio. Ready for Windows, macOS coming soon; builds from source on Linux.",
+    product: "Product",
+    source: "Source",
+    help: "Help",
+    features: "Features",
+    present: "Presenter view",
+    studio: "Studio",
+    privacy: "Privacy",
+    download: "Download",
+    releases: "Releases",
+    license: "License: AGPL-3.0",
+    notices: "Third-party notices",
+    docs: "Docs",
+    report: "Report a bug",
+    build: "Build from source",
+    uiLanguages: "Interface languages",
+    copyright: "© 2026 vivePDF · Open source, for everyone",
+    tagsLabel: "Release and principles",
+    stable: "stable",
+    noTelemetry: "No telemetry",
+    noAccount: "No account",
+  },
+  docs: {
+    title: "Documentation",
+    description:
+      "vivePDF documentation: installing, opening PDFs, organising pages, converting, OCR, signing, Studio, presenter view, shortcuts and troubleshooting.",
+    lead: "Everything vivePDF does, step by step, from installing it to presenting. Written with the app's own menu names, from the same help topics that work offline in the app.",
+    search: "Search the docs",
+    searchPlaceholder: "Search: OCR, sign, shortcut",
+    searchHint: "Ctrl K to search",
+    searchEmpty: "No page matches this search",
+    searchEmptyHint: "Try a shorter word, or ask on GitHub.",
+    searchUnavailable: "Search works on the published site only.",
+    close: "Close",
+    onThisPage: "On this page",
+    previous: "Previous",
+    next: "Next",
+    edit: "Edit this page on GitHub",
+    breadcrumb: "Breadcrumb",
+    sidebar: "Docs menu",
+    openSidebar: "Docs menu",
+    updated: "Last updated",
+    groups: {
+      start: "Getting started",
+      documents: "Working with documents",
+      studio: "Studio",
+      present: "Presenting",
+      privacy: "Privacy and settings",
+      reference: "Reference",
+      developers: "Developers",
+    },
+  },
+  notFound: {
+    title: "Page not found",
+    lead: "The page you are looking for has moved, or never existed.",
+    home: "Back to the home page",
+    docs: "Go to the docs",
+  },
+};
+
+export const UI: Record<Locale, Ui> = { tr, en };

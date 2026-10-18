@@ -1,0 +1,54 @@
+@property --ocr{syntax:"<percentage>";inherits:true;initial-value:0%}
+@property --rk{syntax:"<number>";inherits:true;initial-value:1}
+:root{
+  color-scheme:light;
+  --wash:light-dark(#EAF2FB,#060B15);
+  --wash-2:light-dark(#F4F8FD,#0A1221);
+  --deep:light-dark(#0A1A33,#EEF4FC);
+  --on-deep:light-dark(#FFFFFF,#0A1A33);
+  --navy:#14305A;
+  --night:#0A1A33;
+  --ink:var(--deep);
+  --ink-2:light-dark(#34496A,#B3C2D8);
+  --ink-3:light-dark(#53678A,#8496B2);
+  --sky:#7FD0FF;
+  --blue:light-dark(#2F8FE6,#3F9DF2);
+  --blue-ink:light-dark(#1A62B0,#8ECBFF);
+  --amber:#FFC46B;
+  --paper:#FFFFFF;
+  --line:light-dark(#DCE5F0,#1D2B43);
+  --hair:light-dark(rgba(20,48,90,.10),rgba(160,192,240,.11));
+  --hair-2:light-dark(rgba(20,48,90,.16),rgba(160,192,240,.19));
+  --sh:light-dark(rgb(20,48,90),rgb(0,3,10));
+  --sh2:light-dark(rgb(10,26,51),rgb(0,2,8));
+  --tint:light-dark(rgb(10,26,51),rgb(196,216,246));
+  --surf:light-dark(#FFFFFF,rgb(26,41,68));
+  --solid:light-dark(#FFFFFF,#17263F);
+  --hl:light-dark(#FFFFFF,rgba(205,228,255,.2));
+  --glass:light-dark(rgba(255,255,255,.5),rgba(15,26,45,.58));
+  --glass-strong:light-dark(rgba(255,255,255,.74),rgba(21,35,59,.82));
+  --edge:linear-gradient(135deg,light-dark(rgba(255,255,255,1),rgba(205,228,255,.3)) 0%,light-dark(rgba(127,208,255,.8),rgba(127,208,255,.42)) 46%,light-dark(rgba(255,196,107,.75),rgba(255,196,107,.4)) 100%);
+  --edge-dark:linear-gradient(135deg,rgba(255,255,255,.55) 0%,rgba(127,208,255,.45) 50%,rgba(255,196,107,.4) 100%);
+  --shadow:inset 0 1px 0 light-dark(rgba(255,255,255,.9),rgba(205,228,255,.1)),0 40px 80px -40px light-dark(rgba(20,48,90,.38),rgba(0,0,0,.8)),0 2px 6px light-dark(rgba(20,48,90,.05),rgba(0,0,0,.35));
+  --shadow-soft:inset 0 1px 0 light-dark(rgba(255,255,255,.9),rgba(205,228,255,.1)),0 14px 34px -20px light-dark(rgba(20,48,90,.32),rgba(0,0,0,.7));
+  --ok:light-dark(#14855A,#45D99A);
+  --ok-soft:light-dark(rgba(20,133,90,.13),rgba(69,217,154,.14));
+  --bad:light-dark(#C23A52,#FF7389);
+  --bad-soft:light-dark(rgba(194,58,82,.12),rgba(255,115,137,.15));
+  --btn-top:#2179CF;
+  --btn-bot:#134C8F;
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:20px;
+  --r-xl:28px;
+  --r-2xl:40px;
+  --s-1:8px;--s-2:16px;--s-3:24px;--s-4:32px;--s-5:48px;--s-6:64px;--s-7:96px;--s-8:144px;
+  --ease:cubic-bezier(.2,0,0,1);
+  --f-display:"Geist Variable","Geist",system-ui,sans-serif;
+  --f-body:"Geist Variable","Geist",system-ui,sans-serif;
+  --f-serif:"Instrument Serif",Georgia,serif;
+  --f-mono:"Geist Mono Variable","Geist Mono",ui-monospace,monospace;
+  --f-hand:"Caveat","Geist Variable",cursive;
+  --f-ar:"Geist Variable",sans-serif;
+}
+:root[data-theme="dark"]{color-scheme:dark}
