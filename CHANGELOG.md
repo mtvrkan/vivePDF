@@ -74,6 +74,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Picking a document no longer lets vivePDF write over other files already sitting in its folder: only new files and folders beside it can be written, hidden names stay refused and a dangling link no longer counts as a new path; when a tool's output is one of those files or folders, vivePDF asks where to save instead of failing [2026-10-18]
 - A produced file only lets vivePDF remember (and so later open or reveal) other files of that call that are named after it, such as `report-2.png`, `report (2).pdf` or `report.docx`, instead of any file in the same folder [2026-10-18]
 - HTML exported from a PDF carries a content policy that blocks scripts and any network loading when it is opened in a browser; its pictures stay embedded and shown [2026-10-18]
+- The app window can no longer ask the opener plugin to reveal an arbitrary path: "Show in folder" goes only through vivePDF's own command, which refuses network shares the user did not open and falls back to opening the folder when the file is gone [2026-10-18]
 
 ## [0.3.0] - 2026-10-15
 ### Added

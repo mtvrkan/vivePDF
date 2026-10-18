@@ -201,6 +201,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   pictures, and its developer console reports no script or network request from the file.
   Convert a page range to PNG next to the PDF and choose "Show in folder" on the second
   picture: Explorer selects it.
+- After saving a support bundle choose "Show in folder" in the toast: Explorer opens with the
+  zip selected. Delete a produced PDF in Explorer, then choose "Show in folder" for it in the
+  result panel: Explorer opens its folder instead of showing an error.
 
 ### How native dialogs are answered
 

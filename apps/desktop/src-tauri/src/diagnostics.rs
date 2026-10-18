@@ -360,6 +360,12 @@ fn parent_dir_of(path: &str) -> String {
 pub async fn reveal_path(path: String) -> Result<(), RpcError> {
     tauri::async_runtime::spawn_blocking(move || -> Result<(), RpcError> {
         crate::grants::refuse_unasked_network(std::path::Path::new(&path))?;
+        if !std::path::Path::new(&path).exists() {
+            return Err(RpcError::new(
+                "FILE_NOT_FOUND",
+                format!("nothing to reveal at {path}"),
+            ));
+        }
         #[cfg(target_os = "windows")]
         {
             std::process::Command::new("explorer.exe")
@@ -471,6 +477,18 @@ pub fn install_panic_hook<R: Runtime>(app: tauri::AppHandle<R>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn revealing_a_missing_file_fails_so_the_folder_can_be_opened_instead() {
+        let missing = std::env::temp_dir()
+            .join("vivepdf-reveal-missing")
+            .join("gone.pdf");
+
+        let result =
+            tauri::async_runtime::block_on(reveal_path(missing.to_string_lossy().to_string()));
+
+        assert_eq!(result.unwrap_err().code, "FILE_NOT_FOUND");
+    }
 
     #[test]
     fn support_log_text_keeps_whole_lines_from_the_end_and_hides_home() {

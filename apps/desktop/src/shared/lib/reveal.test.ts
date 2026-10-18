@@ -1,63 +1,41 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const revealItemInDir = vi.fn();
 const invoke = vi.fn();
 
-vi.mock("@tauri-apps/plugin-opener", () => ({
-  revealItemInDir: (...args: unknown[]) => revealItemInDir(...args),
-}));
 vi.mock("@tauri-apps/api/core", () => ({ invoke: (...args: unknown[]) => invoke(...args) }));
 
 import { RevealError, revealPath, sameDirectory } from "./reveal";
 
 describe("revealPath", () => {
   beforeEach(() => {
-    revealItemInDir.mockReset();
     invoke.mockReset();
   });
 
-  it("throws immediately for an empty path without calling any plugin fn", async () => {
+  it("throws immediately for an empty path without calling the shell", async () => {
     await expect(revealPath("   ")).rejects.toMatchObject({ reasonKey: "errors.revealEmptyPath" });
-    expect(revealItemInDir).not.toHaveBeenCalled();
     expect(invoke).not.toHaveBeenCalled();
   });
 
-  it("reveals the path directly when the primary call succeeds", async () => {
-    revealItemInDir.mockResolvedValue(undefined);
-    await revealPath("C:\\Users\\PC\\Desktop\\pdf\\file.pdf");
-    expect(revealItemInDir).toHaveBeenCalledTimes(1);
-    expect(revealItemInDir).toHaveBeenCalledWith("C:\\Users\\PC\\Desktop\\pdf\\file.pdf");
-    expect(invoke).not.toHaveBeenCalled();
-  });
-
-  it("falls back to revealing the parent directory when the primary call fails", async () => {
-    revealItemInDir.mockRejectedValueOnce(new Error("not found")).mockResolvedValueOnce(undefined);
-    await revealPath("C:\\Users\\PC\\Desktop\\pdf\\missing.pdf");
-    expect(revealItemInDir).toHaveBeenCalledTimes(2);
-    expect(revealItemInDir).toHaveBeenNthCalledWith(2, "C:\\Users\\PC\\Desktop\\pdf");
-    expect(invoke).not.toHaveBeenCalled();
-  });
-
-  it("opens the parent folder through the shell when revealing fails", async () => {
-    revealItemInDir.mockRejectedValue(new Error("fail"));
+  it("reveals the path through the gated shell command", async () => {
     invoke.mockResolvedValue(undefined);
 
-    await revealPath("C:\\Users\\PC\\Desktop\\pdf\\missing.pdf");
+    await revealPath("C:\\Users\\PC\\Desktop\\pdf\\file.pdf");
 
     expect(invoke).toHaveBeenCalledTimes(1);
-    expect(invoke).toHaveBeenCalledWith("open_folder", { path: "C:\\Users\\PC\\Desktop\\pdf" });
+    expect(invoke).toHaveBeenCalledWith("reveal_path", { path: "C:\\Users\\PC\\Desktop\\pdf\\file.pdf" });
   });
 
-  it("invokes the Rust fallback when every JS attempt fails", async () => {
-    revealItemInDir.mockRejectedValue(new Error("fail"));
-    invoke.mockRejectedValueOnce(new Error("fail")).mockResolvedValueOnce(undefined);
+  it("opens the parent folder when the file itself cannot be revealed", async () => {
+    invoke.mockRejectedValueOnce(new Error("not found")).mockResolvedValueOnce(undefined);
+
     await revealPath("C:\\Users\\PC\\Desktop\\pdf\\missing.pdf");
-    expect(invoke).toHaveBeenLastCalledWith("reveal_path", { path: "C:\\Users\\PC\\Desktop\\pdf\\missing.pdf" });
+
+    expect(invoke).toHaveBeenLastCalledWith("open_folder", { path: "C:\\Users\\PC\\Desktop\\pdf" });
   });
 
-  it("throws RevealError with errors.revealFailed when every fallback fails", async () => {
-    revealItemInDir.mockRejectedValue(new Error("fail"));
+  it("throws RevealError with errors.revealFailed when the folder cannot be opened either", async () => {
     invoke.mockRejectedValue(new Error("fail"));
+
     await expect(revealPath("C:\\Users\\PC\\Desktop\\pdf\\missing.pdf")).rejects.toMatchObject({
       reasonKey: "errors.revealFailed",
     });

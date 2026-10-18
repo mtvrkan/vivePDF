@@ -7,7 +7,7 @@ import { ReportDialog } from "./ReportDialog";
 
 const tauri = vi.hoisted(() => ({ openUrl: vi.fn(), save: vi.fn(), open: vi.fn(), invoke: vi.fn() }));
 
-vi.mock("@tauri-apps/plugin-opener", () => ({ openUrl: tauri.openUrl, revealItemInDir: vi.fn() }));
+vi.mock("@tauri-apps/plugin-opener", () => ({ openUrl: tauri.openUrl }));
 vi.mock("@tauri-apps/plugin-dialog", () => ({ save: tauri.save, open: tauri.open }));
 vi.mock("@tauri-apps/api/core", () => ({ invoke: tauri.invoke }));
 

@@ -1,5 +1,4 @@
 import { invoke } from "@tauri-apps/api/core";
-import { revealItemInDir } from "@tauri-apps/plugin-opener";
 import { dirnameOf } from "./paths";
 
 export class RevealError extends Error {
@@ -13,26 +12,12 @@ export async function revealPath(path: string): Promise<void> {
   if (!trimmed) throw new RevealError("errors.revealEmptyPath");
 
   try {
-    await revealItemInDir(trimmed);
-    return;
+    await invoke("reveal_path", { path: trimmed });
   } catch {
-    const parentDir = dirnameOf(trimmed) || trimmed;
-
     try {
-      await revealItemInDir(parentDir);
-      return;
+      await invoke("open_folder", { path: dirnameOf(trimmed) || trimmed });
     } catch {
-      try {
-        await invoke("open_folder", { path: parentDir });
-        return;
-      } catch {
-        try {
-          await invoke("reveal_path", { path: trimmed });
-          return;
-        } catch {
-          throw new RevealError("errors.revealFailed");
-        }
-      }
+      throw new RevealError("errors.revealFailed");
     }
   }
 }
