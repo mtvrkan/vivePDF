@@ -107,4 +107,18 @@ describe("presenterSync", () => {
     expect(presentationFields(applyPatch(before, { kind: "patch", patch: second! })).ruler).toEqual({ ...ruler, angle: 30 });
     expect(presentationFields(slice()).ruler).toBeNull();
   });
+
+  it("mirrors a board undo as plain strokes and leaves the board history with the presenter", () => {
+    usePresentationStore.getState().resetSession();
+    usePresentationStore.getState().addBoardStroke("black", stroke("a"));
+    usePresentationStore.getState().addBoardStroke("black", stroke("b"));
+    const drawn = sharedSlice(usePresentationStore.getState(), 1);
+
+    usePresentationStore.getState().undoBoard("black");
+    const patch = diffSlice(drawn, sharedSlice(usePresentationStore.getState(), 1));
+
+    expect(patch).toEqual({ boardStrokes: { black: [stroke("a")], white: [] } });
+    expect(Object.keys(presentationFields(applyPatch(drawn, { kind: "patch", patch: patch! })))).not.toContain("boardHistory");
+    expect(diffSlice(drawn, drawn)).toBeNull();
+  });
 });

@@ -18,7 +18,6 @@ import { drawStroke, readableOnDark } from "./strokes";
 import { eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
 
 const HINT_VISIBLE_MS = 4000;
-const ERASER_RADIUS = 0.015;
 const BOARD_TOOLS = new Set(["pen", "highlighter", "shape", "eraser"]);
 const LAST_PAGE = -1;
 
@@ -52,9 +51,7 @@ function BoardCanvas({ board, strokes, live, width, height }: { board: BoardMode
 function Board({ board, contained, hint, remote }: { board: BoardMode; contained: boolean; hint: boolean; remote: BoardLiveStroke | null }) {
   const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
-  const penColor = usePresentationStore((state) => state.penColor);
-  const penWidth = usePresentationStore((state) => state.penWidth);
-  const highlighterWidth = usePresentationStore((state) => state.highlighterWidth);
+  const pen = usePresentationStore((state) => state.boardPens[board]);
   const penOpacity = usePresentationStore((state) => state.penOpacity);
   const shapeKind = usePresentationStore((state) => state.shapeKind);
   const strokes = usePresentationStore((state) => state.boardStrokes[board]);
@@ -65,7 +62,7 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
   const [hoverMovable, setHoverMovable] = useState(false);
   const moveRef = useRef<DrawingMove | null>(null);
   const [hintVisible, setHintVisible] = useState(true);
-  const erasingRef = useRef(false);
+  const erasingRef = useRef<Stroke[] | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState(() => ({ width: window.innerWidth, height: window.innerHeight }));
   const drawing = BOARD_TOOLS.has(tool);
@@ -92,6 +89,12 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
   useEffect(() => () => useBoardLiveStore.getState().publish(null), []);
 
   useEffect(() => {
+    const seal = () => usePresentationStore.getState().sealBoardHistory(board);
+    window.addEventListener("keydown", seal, true);
+    return () => window.removeEventListener("keydown", seal, true);
+  }, [board]);
+
+  useEffect(() => {
     moveRef.current = null;
     setHoverMovable(false);
   }, [tool]);
@@ -113,6 +116,7 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
     const box = frame();
     return { width: box.width, height: box.height };
   };
+  const eraserRadius = () => usePresentationStore.getState().boardPens[board].eraserSize / 2 / surface().width;
 
   const itemAt = (point: StrokePoint) => {
     const box = surface();
@@ -156,11 +160,11 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
     if (!drawing || event.button !== 0) return;
     event.currentTarget.setPointerCapture?.(event.pointerId);
     if (tool === "eraser") {
-      erasingRef.current = true;
-      usePresentationStore.getState().eraseBoardAt(board, pointOf(event), ERASER_RADIUS);
+      erasingRef.current = usePresentationStore.getState().boardStrokes[board];
+      usePresentationStore.getState().eraseBoardAt(board, pointOf(event), eraserRadius());
       return;
     }
-    const style = { tool: tool === "highlighter" ? "highlighter" : tool === "shape" ? "shape" : "pen", color: penColor, penWidth, highlighterWidth, penOpacity, shapeKind } as const;
+    const style = { tool: tool === "highlighter" ? "highlighter" : tool === "shape" ? "shape" : "pen", color: tool === "highlighter" ? pen.highlighterColor : pen.penColor, penWidth: pen.penWidth, highlighterWidth: pen.highlighterWidth, penOpacity, shapeKind } as const;
     const begun = beginDrawing(style, pointOf(event), surface(), makeDrawingId("board"));
     const pageSize = begun.tool === "measure" ? boardPageSize(surface()) : undefined;
     setLive(pageSize ? { ...begun, pageSize } : begun);
@@ -178,7 +182,7 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
       return;
     }
     if (erasingRef.current) {
-      usePresentationStore.getState().eraseBoardAt(board, pointOf(event), ERASER_RADIUS);
+      usePresentationStore.getState().eraseBoardAt(board, pointOf(event), eraserRadius());
       return;
     }
     if (!live) return;
@@ -189,7 +193,8 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
 
   const onPointerUp = () => {
     moveRef.current = null;
-    erasingRef.current = false;
+    if (erasingRef.current) usePresentationStore.getState().recordBoardHistory(board, erasingRef.current);
+    erasingRef.current = null;
     const box = surface();
     if (live && isDrawingKept(live, box)) usePresentationStore.getState().addBoardStroke(board, live, box);
     setLive(null);
@@ -211,7 +216,7 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
 
   const frameRect = { pageIndex: LAST_PAGE, left: 0, top: 0, width: size.width, height: size.height };
   const selectCursor = placing ? "copy" : hoverMovable ? "move" : "default";
-  const cursor = selecting ? selectCursor : tool === "shape" ? "crosshair" : tool === "pen" ? penCursor(strokeColor(board, penColor)) : tool === "highlighter" ? highlighterCursor(strokeColor(board, penColor)) : tool === "eraser" ? eraserCursor(board === "black" ? "#f8fafc" : "#1f2937") : undefined;
+  const cursor = selecting ? selectCursor : tool === "shape" ? "crosshair" : tool === "pen" ? penCursor(strokeColor(board, pen.penColor)) : tool === "highlighter" ? highlighterCursor(strokeColor(board, pen.highlighterColor)) : tool === "eraser" ? eraserCursor(board === "black" ? "#f8fafc" : "#1f2937") : undefined;
 
   return (
     <div
@@ -219,6 +224,7 @@ function Board({ board, contained, hint, remote }: { board: BoardMode; contained
       data-presentation-board={board}
       className={cn("presentation-blackout inset-0", editingItem ? "z-30" : "z-50", contained ? "absolute" : "fixed", board === "black" ? "bg-black" : "bg-white")}
       style={{ cursor, touchAction: drawing || selecting ? "none" : undefined }}
+      onPointerDownCapture={() => usePresentationStore.getState().sealBoardHistory(board)}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

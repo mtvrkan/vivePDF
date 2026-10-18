@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { useDocumentStore } from "./documentStore";
-import { eraseFromStroke, eraseFromStrokes, usePresentationStore, type Stroke } from "./presentationStore";
+import { DEFAULT_BOARD_PENS, eraseFromStroke, eraseFromStrokes, readBoardPens, readPrefs, usePresentationStore, type Stroke } from "./presentationStore";
 
 function line(id: string, points: Array<[number, number]>, width = 0): Stroke {
   return { id, tool: "pen", color: "#000000", width, points: points.map(([x, y]) => ({ x, y })) };
@@ -179,5 +179,151 @@ describe("document scope", () => {
     useDocumentStore.setState({ activeId: "a", order: [] });
 
     expect(usePresentationStore.getState().strokesByPage[0]).toHaveLength(1);
+  });
+});
+
+describe("board history", () => {
+  const ids = (board: "black" | "white") => usePresentationStore.getState().boardStrokes[board].map((stroke) => stroke.id);
+
+  it("undoes and redoes board strokes one change at a time and keeps each board apart", () => {
+    const store = usePresentationStore.getState();
+    store.addBoardStroke("black", line("a", [[0.1, 0.1], [0.2, 0.2]]));
+    store.addBoardStroke("black", line("b", [[0.3, 0.3], [0.4, 0.4]]));
+    store.addBoardStroke("white", line("w", [[0.1, 0.1], [0.2, 0.2]]));
+
+    usePresentationStore.getState().undoBoard("black");
+    expect(ids("black")).toEqual(["a"]);
+    expect(ids("white")).toEqual(["w"]);
+    usePresentationStore.getState().redoBoard("black");
+    expect(ids("black")).toEqual(["a", "b"]);
+    usePresentationStore.getState().undoBoard("black");
+    usePresentationStore.getState().undoBoard("black");
+    usePresentationStore.getState().undoBoard("black");
+    expect(ids("black")).toEqual([]);
+    expect(usePresentationStore.getState().boardHistory.black.redo).toHaveLength(2);
+  });
+
+  it("drops the redo branch on a new change and records a whole erase gesture as one step", () => {
+    const store = usePresentationStore.getState();
+    store.addBoardStroke("white", line("a", [[0.1, 0.5], [0.9, 0.5]]));
+    usePresentationStore.getState().undoBoard("white");
+    usePresentationStore.getState().addBoardStroke("white", line("b", [[0.1, 0.2], [0.9, 0.2]]));
+    expect(usePresentationStore.getState().boardHistory.white.redo).toEqual([]);
+
+    const before = usePresentationStore.getState().boardStrokes.white;
+    usePresentationStore.getState().eraseBoardAt("white", { x: 0.3, y: 0.2 }, 0.02);
+    usePresentationStore.getState().eraseBoardAt("white", { x: 0.6, y: 0.2 }, 0.02);
+    usePresentationStore.getState().recordBoardHistory("white", before);
+    expect(ids("white")).toHaveLength(3);
+
+    usePresentationStore.getState().undoBoard("white");
+    expect(ids("white")).toEqual(["b"]);
+  });
+
+  it("ignores an erase gesture that changed nothing and makes clearing a board undoable", () => {
+    usePresentationStore.getState().addBoardStroke("black", line("a", [[0.1, 0.1], [0.2, 0.2]]));
+    const undoDepth = usePresentationStore.getState().boardHistory.black.undo.length;
+    usePresentationStore.getState().recordBoardHistory("black", usePresentationStore.getState().boardStrokes.black);
+    expect(usePresentationStore.getState().boardHistory.black.undo).toHaveLength(undoDepth);
+
+    usePresentationStore.getState().clearBoard("black");
+    expect(ids("black")).toEqual([]);
+    usePresentationStore.getState().undoBoard("black");
+    expect(ids("black")).toEqual(["a"]);
+  });
+
+  it("keeps at most a hundred undo steps", () => {
+    for (let i = 0; i < 120; i += 1) usePresentationStore.getState().addBoardStroke("white", line(`s${i}`, [[0.1, 0.1], [0.2, 0.2]]));
+
+    expect(usePresentationStore.getState().boardHistory.white.undo).toHaveLength(100);
+  });
+
+  it("folds one drag of a board item into a single step and starts a new one after a seal", () => {
+    usePresentationStore.getState().addBoardStroke("black", line("a", [[0.1, 0.1], [0.2, 0.2]]));
+    const placed = usePresentationStore.getState().boardStrokes.black;
+
+    usePresentationStore.getState().replaceDrawing("black", line("a", [[0.2, 0.1], [0.3, 0.2]]));
+    usePresentationStore.getState().replaceDrawing("black", line("a", [[0.3, 0.1], [0.4, 0.2]]));
+    usePresentationStore.getState().sealBoardHistory("black");
+    usePresentationStore.getState().replaceDrawing("black", line("a", [[0.5, 0.1], [0.6, 0.2]]));
+
+    usePresentationStore.getState().undoBoard("black");
+    expect(usePresentationStore.getState().boardStrokes.black[0].points[0].x).toBeCloseTo(0.3);
+    usePresentationStore.getState().undoBoard("black");
+    expect(usePresentationStore.getState().boardStrokes.black).toBe(placed);
+  });
+
+  it("records removing a board item and skips removing one that is already gone", () => {
+    usePresentationStore.getState().addBoardStroke("white", line("a", [[0.1, 0.1], [0.2, 0.2]]));
+    usePresentationStore.getState().selectDrawing({ surface: "white", id: "a" });
+
+    usePresentationStore.getState().removeDrawing("white", "a");
+    const depth = usePresentationStore.getState().boardHistory.white.undo.length;
+    usePresentationStore.getState().removeDrawing("white", "a");
+
+    expect(usePresentationStore.getState().boardHistory.white.undo).toHaveLength(depth);
+    expect(usePresentationStore.getState().selectedDrawing).toBeNull();
+    usePresentationStore.getState().undoBoard("white");
+    expect(ids("white")).toEqual(["a"]);
+  });
+
+  it("does nothing when there is no step to undo or redo", () => {
+    const before = usePresentationStore.getState().boardStrokes;
+
+    usePresentationStore.getState().undoBoard("black");
+    usePresentationStore.getState().redoBoard("white");
+
+    expect(usePresentationStore.getState().boardStrokes).toBe(before);
+  });
+});
+
+function memoryStorage(): Storage {
+  const data = new Map<string, string>();
+  return {
+    get length() {
+      return data.size;
+    },
+    clear: () => data.clear(),
+    getItem: (key) => data.get(key) ?? null,
+    key: (index) => Array.from(data.keys())[index] ?? null,
+    removeItem: (key) => void data.delete(key),
+    setItem: (key, value) => void data.set(key, value),
+  };
+}
+
+describe("board pens", () => {
+  beforeEach(() => {
+    vi.stubGlobal("localStorage", memoryStorage());
+    usePresentationStore.getState().resetPrefs();
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("remembers the pen per board colour and stores it with the presentation preferences", () => {
+    usePresentationStore.getState().setBoardPen("black", { penColor: "#22D3EE", penWidth: 10 });
+    usePresentationStore.getState().setBoardPen("white", { highlighterColor: "#86EFAC" });
+
+    const { boardPens } = usePresentationStore.getState();
+    expect(boardPens.black).toMatchObject({ penColor: "#22D3EE", penWidth: 10, highlighterColor: DEFAULT_BOARD_PENS.black.highlighterColor });
+    expect(boardPens.white).toMatchObject({ penColor: DEFAULT_BOARD_PENS.white.penColor, highlighterColor: "#86EFAC" });
+    expect(readPrefs().boardPens).toEqual(boardPens);
+  });
+
+  it("keeps board pen sizes inside their ranges", () => {
+    usePresentationStore.getState().setBoardPen("white", { penWidth: 500, eraserSize: 3 });
+
+    expect(usePresentationStore.getState().boardPens.white).toMatchObject({ penWidth: 24, eraserSize: 12 });
+  });
+
+  it("falls back to defaults for missing or broken stored values", () => {
+    expect(readBoardPens(undefined)).toEqual(DEFAULT_BOARD_PENS);
+    expect(readBoardPens({ black: { penColor: 5, penWidth: -2, eraserSize: 60 }, white: "oops" })).toEqual({
+      black: { ...DEFAULT_BOARD_PENS.black, eraserSize: 60 },
+      white: DEFAULT_BOARD_PENS.white,
+    });
+    localStorage.setItem("vivepdf.presentation", JSON.stringify({ penWidth: 4, boardPens: { white: { penWidth: 16 } } }));
+    expect(readPrefs()).toMatchObject({ penWidth: 4, boardPens: { black: DEFAULT_BOARD_PENS.black, white: { ...DEFAULT_BOARD_PENS.white, penWidth: 16 } } });
   });
 });

@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- The black and white presentation boards each keep their own undo history (up to 100 steps, covering strokes, whole eraser drags, moved or removed items and clearing) and their own pen, highlighter and eraser settings, which the presentation style panel edits while a board is shown [2026-10-18]
 ### Changed
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed

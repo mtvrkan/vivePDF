@@ -31,6 +31,8 @@ export type DrawingSnapshot = { strokesByPage: Record<number, Stroke[]>; boardSt
 export type DrawingSurface = number | BoardMode;
 export type DrawingSelection = { surface: DrawingSurface; id: string };
 export type CodeBlockCache = { width: number; height: number; blocks: CodeBlock[] };
+export type BoardPen = { penColor: string; penWidth: number; highlighterColor: string; highlighterWidth: number; eraserSize: number };
+export type BoardHistory = { undo: Stroke[][]; redo: Stroke[][]; merging: string | null };
 
 const STORAGE_KEY = "vivepdf.presentation";
 const SPOTLIGHT_MIN = 80;
@@ -43,6 +45,13 @@ export const PEN_WIDTH_RANGE = [1, 24] as const;
 export const HIGHLIGHTER_WIDTH_RANGE = [4, 48] as const;
 export const OPACITY_RANGE = [0.1, 1] as const;
 export const TEXT_SIZE_RANGE = [12, 96] as const;
+export const ERASER_SIZE_RANGE = [12, 200] as const;
+const BOARD_HISTORY_LIMIT = 100;
+
+export const DEFAULT_BOARD_PENS: Record<BoardMode, BoardPen> = {
+  black: { penColor: "#FFFFFF", penWidth: 4, highlighterColor: "#FFD400", highlighterWidth: 24, eraserSize: 48 },
+  white: { penColor: "#111827", penWidth: 4, highlighterColor: "#FFD400", highlighterWidth: 24, eraserSize: 48 },
+};
 
 function clampTo([min, max]: readonly [number, number], value: number): number {
   return Math.max(min, Math.min(max, value));
@@ -67,6 +76,7 @@ type PersistedPrefs = {
   showTimer: boolean;
   cursorAutoHide: boolean;
   drawingsMode: DrawingsMode;
+  boardPens: Record<BoardMode, BoardPen>;
 };
 
 const DEFAULT_PREFS: PersistedPrefs = {
@@ -88,13 +98,36 @@ const DEFAULT_PREFS: PersistedPrefs = {
   showTimer: false,
   cursorAutoHide: true,
   drawingsMode: "temporary",
+  boardPens: DEFAULT_BOARD_PENS,
 };
+
+const BOARD_PEN_RANGES = { penWidth: PEN_WIDTH_RANGE, highlighterWidth: HIGHLIGHTER_WIDTH_RANGE, eraserSize: ERASER_SIZE_RANGE } as const;
+
+function readBoardPen(stored: unknown, fallback: BoardPen): BoardPen {
+  if (!stored || typeof stored !== "object") return fallback;
+  const source = stored as Record<string, unknown>;
+  const text = (key: "penColor" | "highlighterColor") => {
+    const value = source[key];
+    return typeof value === "string" ? value : fallback[key];
+  };
+  const number = (key: keyof typeof BOARD_PEN_RANGES) => {
+    const value = source[key];
+    return typeof value === "number" && Number.isFinite(value) && value > 0 ? Math.round(clampTo(BOARD_PEN_RANGES[key], value)) : fallback[key];
+  };
+  return { penColor: text("penColor"), penWidth: number("penWidth"), highlighterColor: text("highlighterColor"), highlighterWidth: number("highlighterWidth"), eraserSize: number("eraserSize") };
+}
+
+export function readBoardPens(stored: unknown): Record<BoardMode, BoardPen> {
+  const source = stored && typeof stored === "object" ? (stored as Record<string, unknown>) : {};
+  return { black: readBoardPen(source.black, DEFAULT_BOARD_PENS.black), white: readBoardPen(source.white, DEFAULT_BOARD_PENS.white) };
+}
 
 export function readPrefs(): PersistedPrefs {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_PREFS;
-    return { ...DEFAULT_PREFS, ...(JSON.parse(raw) as Partial<PersistedPrefs>) };
+    const stored = JSON.parse(raw) as Partial<PersistedPrefs>;
+    return { ...DEFAULT_PREFS, ...stored, boardPens: readBoardPens(stored.boardPens) };
   } catch {
     return DEFAULT_PREFS;
   }
@@ -136,6 +169,8 @@ type PresentationState = {
   redoByPage: Record<number, Stroke[]>;
   boardStrokes: Record<BoardMode, Stroke[]>;
   boardSize: { width: number; height: number } | null;
+  boardHistory: Record<BoardMode, BoardHistory>;
+  boardPens: Record<BoardMode, BoardPen>;
   codeBlocksByPage: Record<number, CodeBlockCache | undefined>;
   codeBlockOpen: { pageIndex: number; blockId: string } | null;
   overviewOpen: boolean;
@@ -188,6 +223,12 @@ type PresentationState = {
   clearAllDrawings: () => void;
   addBoardStroke: (board: BoardMode, stroke: Stroke, size?: { width: number; height: number }) => void;
   eraseBoardAt: (board: BoardMode, point: StrokePoint, radius: number) => void;
+  commitBoardStrokes: (board: BoardMode, strokes: Stroke[]) => void;
+  recordBoardHistory: (board: BoardMode, before: Stroke[]) => void;
+  sealBoardHistory: (board: BoardMode) => void;
+  undoBoard: (board: BoardMode) => void;
+  redoBoard: (board: BoardMode) => void;
+  setBoardPen: (board: BoardMode, patch: Partial<BoardPen>) => void;
   clearBoard: (board: BoardMode) => void;
   clearVisible: (pageIndex: number) => void;
   restoreDrawings: (snapshot: DrawingSnapshot) => void;
@@ -281,6 +322,22 @@ export function eraseFromStrokes(strokes: Stroke[], point: StrokePoint, radius: 
   return changed ? next : strokes;
 }
 
+function emptyBoardHistory(): Record<BoardMode, BoardHistory> {
+  return { black: { undo: [], redo: [], merging: null }, white: { undo: [], redo: [], merging: null } };
+}
+
+function pushBoardHistory(history: Record<BoardMode, BoardHistory>, board: BoardMode, before: Stroke[], merging: string | null = null): Record<BoardMode, BoardHistory> {
+  return { ...history, [board]: { undo: [...history[board].undo, before].slice(-BOARD_HISTORY_LIMIT), redo: [], merging } };
+}
+
+function changeBoards(state: Pick<PresentationState, "boardStrokes" | "boardHistory">, next: Record<BoardMode, Stroke[]>) {
+  let boardHistory = state.boardHistory;
+  for (const board of ["black", "white"] as const) {
+    if (next[board] !== state.boardStrokes[board]) boardHistory = pushBoardHistory(boardHistory, board, state.boardStrokes[board]);
+  }
+  return { boardStrokes: next, boardHistory };
+}
+
 const initialPrefs = readPrefs();
 
 export const usePresentationStore = create<PresentationState>((set, get) => ({
@@ -311,6 +368,8 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   redoByPage: {},
   boardStrokes: { black: [], white: [] },
   boardSize: null,
+  boardHistory: emptyBoardHistory(),
+  boardPens: initialPrefs.boardPens,
   codeBlocksByPage: {},
   codeBlockOpen: null,
   overviewOpen: false,
@@ -476,18 +535,58 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       redoByPage: { ...state.redoByPage, [pageIndex]: [] },
       selectedDrawing: state.selectedDrawing?.surface === pageIndex ? null : state.selectedDrawing,
     })),
-  clearAllDrawings: () => set({ strokesByPage: {}, redoByPage: {}, boardStrokes: { black: [], white: [] }, selectedDrawing: null }),
+  clearAllDrawings: () =>
+    set((state) => ({
+      strokesByPage: {},
+      redoByPage: {},
+      selectedDrawing: null,
+      ...changeBoards(state, {
+        black: state.boardStrokes.black.length > 0 ? [] : state.boardStrokes.black,
+        white: state.boardStrokes.white.length > 0 ? [] : state.boardStrokes.white,
+      }),
+    })),
   addBoardStroke: (board, stroke, size) =>
-    set((state) => ({ boardStrokes: { ...state.boardStrokes, [board]: [...state.boardStrokes[board], stroke] }, ...(size && size.width > 0 && size.height > 0 ? { boardSize: size } : {}) })),
+    set((state) => ({ ...changeBoards(state, { ...state.boardStrokes, [board]: [...state.boardStrokes[board], stroke] }), ...(size && size.width > 0 && size.height > 0 ? { boardSize: size } : {}) })),
   eraseBoardAt: (board, point, radius) =>
     set((state) => {
       const strokes = state.boardStrokes[board];
       const remaining = eraseFromStrokes(strokes, point, radius);
       return remaining === strokes ? state : { boardStrokes: { ...state.boardStrokes, [board]: remaining } };
     }),
+  commitBoardStrokes: (board, strokes) =>
+    set((state) => (strokes === state.boardStrokes[board] ? state : changeBoards(state, { ...state.boardStrokes, [board]: strokes }))),
+  recordBoardHistory: (board, before) =>
+    set((state) => (before === state.boardStrokes[board] ? state : { boardHistory: pushBoardHistory(state.boardHistory, board, before) })),
+  sealBoardHistory: (board) =>
+    set((state) => (state.boardHistory[board].merging === null ? state : { boardHistory: { ...state.boardHistory, [board]: { ...state.boardHistory[board], merging: null } } })),
+  undoBoard: (board) =>
+    set((state) => {
+      const history = state.boardHistory[board];
+      const previous = history.undo[history.undo.length - 1];
+      if (!previous) return state;
+      return {
+        boardStrokes: { ...state.boardStrokes, [board]: previous },
+        boardHistory: { ...state.boardHistory, [board]: { undo: history.undo.slice(0, -1), redo: [...history.redo, state.boardStrokes[board]], merging: null } },
+      };
+    }),
+  redoBoard: (board) =>
+    set((state) => {
+      const history = state.boardHistory[board];
+      const next = history.redo[history.redo.length - 1];
+      if (!next) return state;
+      return {
+        boardStrokes: { ...state.boardStrokes, [board]: next },
+        boardHistory: { ...state.boardHistory, [board]: { undo: [...history.undo, state.boardStrokes[board]], redo: history.redo.slice(0, -1), merging: null } },
+      };
+    }),
+  setBoardPen: (board, patch) => {
+    const boardPens = readBoardPens({ ...get().boardPens, [board]: { ...get().boardPens[board], ...patch } });
+    persistPrefs({ ...readPrefs(), boardPens });
+    set({ boardPens });
+  },
   clearBoard: (board) =>
     set((state) => ({
-      boardStrokes: { ...state.boardStrokes, [board]: [] },
+      ...(state.boardStrokes[board].length > 0 ? changeBoards(state, { ...state.boardStrokes, [board]: [] }) : {}),
       selectedDrawing: state.selectedDrawing?.surface === board ? null : state.selectedDrawing,
     })),
   clearVisible: (pageIndex) => {
@@ -506,16 +605,24 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       }
       const board = (mode: BoardMode) => {
         const ids = new Set(state.boardStrokes[mode].map((stroke) => stroke.id));
-        return [...snapshot.boardStrokes[mode].filter((stroke) => !ids.has(stroke.id)), ...state.boardStrokes[mode]];
+        const restored = snapshot.boardStrokes[mode].filter((stroke) => !ids.has(stroke.id));
+        return restored.length === 0 ? state.boardStrokes[mode] : [...restored, ...state.boardStrokes[mode]];
       };
-      return { strokesByPage, boardStrokes: { black: board("black"), white: board("white") } };
+      return { strokesByPage, ...changeBoards(state, { black: board("black"), white: board("white") }) };
     }),
   selectDrawing: (selection) => set({ selectedDrawing: selection }),
   replaceDrawing: (surface, stroke) =>
     set((state) => {
       const swap = (strokes: Stroke[]) => (strokes.some((entry) => entry.id === stroke.id) ? strokes.map((entry) => (entry.id === stroke.id ? stroke : entry)) : strokes);
       if (typeof surface === "number") return { strokesByPage: { ...state.strokesByPage, [surface]: swap(state.strokesByPage[surface] ?? []) } };
-      return { boardStrokes: { ...state.boardStrokes, [surface]: swap(state.boardStrokes[surface]) } };
+      const current = state.boardStrokes[surface];
+      const next = swap(current);
+      if (next === current) return state;
+      const history = state.boardHistory[surface];
+      return {
+        boardStrokes: { ...state.boardStrokes, [surface]: next },
+        boardHistory: history.merging === stroke.id ? state.boardHistory : pushBoardHistory(state.boardHistory, surface, current, stroke.id),
+      };
     }),
   removeDrawing: (surface, id) =>
     set((state) => {
@@ -523,7 +630,10 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       if (typeof surface === "number") {
         return { selectedDrawing, strokesByPage: { ...state.strokesByPage, [surface]: (state.strokesByPage[surface] ?? []).filter((entry) => entry.id !== id) } };
       }
-      return { selectedDrawing, boardStrokes: { ...state.boardStrokes, [surface]: state.boardStrokes[surface].filter((entry) => entry.id !== id) } };
+      const current = state.boardStrokes[surface];
+      const kept = current.filter((entry) => entry.id !== id);
+      if (kept.length === current.length) return { selectedDrawing };
+      return { selectedDrawing, ...changeBoards(state, { ...state.boardStrokes, [surface]: kept }) };
     }),
   visibleStrokeCount: (pageIndex) => {
     const { blackout, boardStrokes, strokesByPage } = get();
@@ -561,6 +671,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       redoByPage: {},
       boardStrokes: { black: [], white: [] },
       boardSize: null,
+      boardHistory: emptyBoardHistory(),
       codeBlocksByPage: {},
       codeBlockOpen: null,
       overviewOpen: false,

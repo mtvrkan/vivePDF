@@ -30,6 +30,29 @@ import { HIGHLIGHTER_ALPHA } from "./strokes";
 import { toggleRulerOn } from "./ruler";
 
 const PERCENT = 100;
+const BOARD_INK_TOOLS = new Set<PresentationTool>(["pen", "highlighter", "shape"]);
+
+function useInk(tool: PresentationTool) {
+  const board = usePresentationStore((state) => (state.blackout !== "none" && BOARD_INK_TOOLS.has(tool) ? state.blackout : null));
+  const boardPen = usePresentationStore((state) => (board ? state.boardPens[board] : null));
+  const setBoardPen = usePresentationStore((state) => state.setBoardPen);
+  const penColor = usePresentationStore((state) => state.penColor);
+  const setPenColor = usePresentationStore((state) => state.setPenColor);
+  const penWidth = usePresentationStore((state) => state.penWidth);
+  const setPenWidth = usePresentationStore((state) => state.setPenWidth);
+  const highlighterWidth = usePresentationStore((state) => state.highlighterWidth);
+  const setHighlighterWidth = usePresentationStore((state) => state.setHighlighterWidth);
+  if (!board || !boardPen) return { color: penColor, penWidth, highlighterWidth, setColor: setPenColor, setPenWidth, setHighlighterWidth };
+  const highlighter = tool === "highlighter";
+  return {
+    color: highlighter ? boardPen.highlighterColor : boardPen.penColor,
+    penWidth: boardPen.penWidth,
+    highlighterWidth: boardPen.highlighterWidth,
+    setColor: (color: string) => setBoardPen(board, highlighter ? { highlighterColor: color } : { penColor: color }),
+    setPenWidth: (width: number) => setBoardPen(board, { penWidth: width }),
+    setHighlighterWidth: (width: number) => setBoardPen(board, { highlighterWidth: width }),
+  };
+}
 
 export function PresentationToolButtons({ onSelect, pageIndex }: { onSelect?: (tool: PresentationTool) => void; pageIndex?: number }) {
   const { t } = useTranslation();
@@ -62,7 +85,7 @@ export function PresentationToolButtons({ onSelect, pageIndex }: { onSelect?: (t
 export function PresentationStyleTrigger({ open, onToggle }: { open: boolean; onToggle: () => void }) {
   const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
-  const penColor = usePresentationStore((state) => state.penColor);
+  const penColor = useInk(tool).color;
   const laserColor = usePresentationStore((state) => state.laserColor);
   const isColorTool = usesInkColor(tool) || tool === "laser";
   const Icon = PRESENTATION_TOOLS.find((entry) => entry.id === tool)?.icon;
@@ -231,12 +254,7 @@ function WidthPreview({ color, width, opacity }: { color: string; width: number;
 export function PresentationStyleControls() {
   const { t } = useTranslation();
   const tool = usePresentationStore((state) => state.tool);
-  const penColor = usePresentationStore((state) => state.penColor);
-  const setPenColor = usePresentationStore((state) => state.setPenColor);
-  const penWidth = usePresentationStore((state) => state.penWidth);
-  const setPenWidth = usePresentationStore((state) => state.setPenWidth);
-  const highlighterWidth = usePresentationStore((state) => state.highlighterWidth);
-  const setHighlighterWidth = usePresentationStore((state) => state.setHighlighterWidth);
+  const { color: penColor, setColor: setPenColor, penWidth, setPenWidth, highlighterWidth, setHighlighterWidth } = useInk(tool);
   const penOpacity = usePresentationStore((state) => state.penOpacity);
   const setPenOpacity = usePresentationStore((state) => state.setPenOpacity);
   const shapeKind = usePresentationStore((state) => state.shapeKind);

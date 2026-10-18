@@ -14,6 +14,7 @@ beforeAll(async () => {
 
 beforeEach(() => {
   usePresentationStore.getState().resetSession();
+  usePresentationStore.getState().resetPrefs();
   Object.assign(window, { innerWidth: 1000, innerHeight: 500 });
 });
 
@@ -77,7 +78,7 @@ describe("BlackoutLayer", () => {
     act(() => {
       usePresentationStore.getState().setBlackout("white");
       usePresentationStore.getState().setShapeKind("rect");
-      usePresentationStore.getState().setPenWidth(6);
+      usePresentationStore.getState().setBoardPen("white", { penWidth: 6 });
       usePresentationStore.getState().setTool("shape");
     });
     render(<BlackoutLayer />);
@@ -119,6 +120,60 @@ describe("BlackoutLayer", () => {
     expect(pieces[0].points[0]).toEqual({ x: 0.1, y: 0.2 });
     expect(pieces[1].points.at(-1)).toEqual({ x: 0.4, y: 0.2 });
     expect(pieces.every((piece) => piece.points.every((point) => Math.abs(point.x - 0.255) > 0.015))).toBe(true);
+  });
+
+  it("draws with the board's own pen instead of the slide pen", () => {
+    act(() => {
+      usePresentationStore.getState().setPenColor("#E5484D");
+      usePresentationStore.getState().setBoardPen("black", { penColor: "#22D3EE", penWidth: 10, highlighterColor: "#4ADE80", highlighterWidth: 30 });
+      usePresentationStore.getState().setBlackout("black");
+      usePresentationStore.getState().setTool("pen");
+    });
+    render(<BlackoutLayer />);
+
+    drag(board(), [[100, 100], [200, 200]]);
+    act(() => usePresentationStore.getState().setTool("highlighter"));
+    drag(board(), [[100, 300], [200, 300]]);
+
+    const [ink, marker] = usePresentationStore.getState().boardStrokes.black;
+    expect(ink).toMatchObject({ tool: "pen", color: "#22D3EE" });
+    expect(ink.width * 1000).toBeCloseTo(10);
+    expect(marker).toMatchObject({ tool: "highlighter", color: "#4ADE80" });
+    expect(marker.width * 1000).toBeCloseTo(30);
+  });
+
+  it("undoes a whole eraser drag in one step and sizes the eraser from the board pen", () => {
+    act(() => {
+      usePresentationStore.getState().setBlackout("white");
+      usePresentationStore.getState().setTool("pen");
+    });
+    render(<BlackoutLayer />);
+    drag(board(), [[100, 100], [400, 100]]);
+    const drawn = usePresentationStore.getState().boardStrokes.white;
+
+    act(() => {
+      usePresentationStore.getState().setBoardPen("white", { eraserSize: 12 });
+      usePresentationStore.getState().setTool("eraser");
+    });
+    drag(board(), [[200, 100], [210, 100], [300, 100]]);
+    const pieces = usePresentationStore.getState().boardStrokes.white;
+    act(() => usePresentationStore.getState().undoBoard("white"));
+
+    expect(pieces).toHaveLength(3);
+    expect(pieces[1].points[0].x).toBeCloseTo(0.218);
+    expect(usePresentationStore.getState().boardStrokes.white).toBe(drawn);
+  });
+
+  it("keeps an eraser drag that touched nothing out of the undo history", () => {
+    act(() => {
+      usePresentationStore.getState().setBlackout("black");
+      usePresentationStore.getState().setTool("eraser");
+    });
+    render(<BlackoutLayer />);
+
+    drag(board(), [[100, 100], [200, 100]]);
+
+    expect(usePresentationStore.getState().boardHistory.black.undo).toEqual([]);
   });
 });
 
