@@ -31,3 +31,7 @@ export async function docTitles(locale: Locale): Promise<Map<string, { title: st
   const entries = (await getCollection("docs")).filter((e) => entryLocale(e) === locale);
   return new Map(entries.map((e) => [e.data.key, { title: e.data.title, description: e.data.description }]));
 }
+
+export function docOgImage(locale: Locale, doc: DocEntry): string {
+  return `/og/docs/${locale}/${doc.slug[locale]}.png`;
+}

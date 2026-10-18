@@ -188,6 +188,15 @@ function drawBackdrop() {
   vp.onBg?.();
 }
 
+function smallViewportHeight(): number {
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:fixed;top:0;height:100svh;visibility:hidden;pointer-events:none";
+  document.body.append(probe);
+  const h = probe.getBoundingClientRect().height;
+  probe.remove();
+  return h;
+}
+
 function layout() {
   const W = hero.clientWidth;
   const H = hero.clientHeight;
@@ -200,9 +209,10 @@ function layout() {
     m.s = Math.min(Math.min(H, vh) * 0.43, W * 0.32, band / 1.12);
     m.y = 100 + band * 0.47;
   } else {
+    const svh = smallViewportHeight();
     m.x = W * 0.5;
-    m.y = Math.max(150, vh * 0.25);
-    m.s = Math.min(vh * 0.28, W * 0.62);
+    m.y = Math.max(150, svh * 0.25);
+    m.s = Math.min(svh * 0.28, window.innerWidth * 0.62);
   }
   hero.style.setProperty("--mx", m.x.toFixed(1));
   hero.style.setProperty("--my", m.y.toFixed(1));

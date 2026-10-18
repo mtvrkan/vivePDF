@@ -1,8 +1,7 @@
 import type { APIRoute } from "astro";
 import { absoluteUrl, hreflangLinks, LOCALES } from "../i18n";
 import { siteRoutes } from "../seo/routes";
-
-const escapeXml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
+import { escapeXml } from "../seo/xml";
 
 export const GET: APIRoute = async () => {
   const urls = (await siteRoutes()).flatMap((route) => {

@@ -153,12 +153,7 @@ dlg.addEventListener("keydown", (e) => {
     input.focus();
   }
 });
-const isMac = /mac/i.test(navigator.platform);
-document.querySelectorAll<HTMLElement>("[data-search-open]").forEach((b) => {
-  b.addEventListener("click", () => openSearch(b));
-  const hint = b.querySelector(".kbd");
-  if (hint && isMac) hint.textContent = "⌘K";
-});
+document.querySelectorAll<HTMLElement>("[data-search-open]").forEach((b) => b.addEventListener("click", () => openSearch(b)));
 document.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
     e.preventDefault();
@@ -216,7 +211,7 @@ if (keyButtons.length) {
       return null;
     }
   };
-  const initial = readStored() ?? (isMac ? "mac" : "win");
+  const initial = readStored() ?? root.dataset.keys ?? "win";
   setKeys(initial, false);
   keyButtons.forEach((b) => b.addEventListener("click", () => setKeys(b.dataset.keysSet ?? "win", true)));
 }

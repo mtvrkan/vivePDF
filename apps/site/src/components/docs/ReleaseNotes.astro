@@ -4,6 +4,7 @@ import { REPO_URL, type Locale } from "../../i18n";
 import { HOME } from "../../i18n/home";
 import { releaseId } from "../../docs/extras";
 import { UI } from "../../i18n/ui";
+import { releaseFeedPath } from "../../feeds/releases";
 
 type Props = { lang: Locale };
 const { lang } = Astro.props;
@@ -11,6 +12,7 @@ const copy = UI[lang].docs.releases;
 const dates = new Map(HOME[lang].download.releases.map((r) => [r.v, r.date]));
 const format = new Intl.DateTimeFormat(lang, { dateStyle: "long", timeZone: "UTC" });
 ---
+<p class="release-feed"><a class="ul" href={releaseFeedPath(lang)} type="application/rss+xml"><svg class="ic" aria-hidden="true"><use href="#i-rss"/></svg>{copy.feed}</a></p>
 {appData.releases.map((r) => {
   const date = dates.get(r.version);
   return (

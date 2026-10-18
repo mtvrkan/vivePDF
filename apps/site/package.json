@@ -23,6 +23,7 @@
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "@astrojs/mdx": "8.0.2",
+    "@resvg/resvg-js": "2.6.2",
     "@types/three": "0.186.0",
     "astro": "7.3.5",
     "pagefind": "1.5.2",

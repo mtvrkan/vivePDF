@@ -9,7 +9,7 @@ import Steps from "./Steps.astro";
 import Callout from "./Callout.astro";
 import { absoluteUrl, docPath, docsIndexPath, homePath, REPO_URL, SITE_URL, type Locale } from "../../i18n";
 import { UI } from "../../i18n/ui";
-import { docAlternates, docTitles, neighbours, type DocProps } from "../../docs/pages";
+import { docAlternates, docOgImage, docTitles, neighbours, type DocProps } from "../../docs/pages";
 import { extraHeadings } from "../../docs/extras";
 
 type Props = DocProps & { lang: Locale };
@@ -28,6 +28,7 @@ const editUrl = `${REPO_URL}/edit/main/apps/site/src/content/docs/${lang}/${doc.
 const updatedIso = data.updated.toISOString().slice(0, 10);
 const updated = new Intl.DateTimeFormat(lang, { dateStyle: "long", timeZone: "UTC" }).format(data.updated);
 const groupName = ui.docs.groups[doc.group];
+const ogImage = docOgImage(lang, doc);
 const jsonLd: Record<string, unknown>[] = [
   {
     "@context": "https://schema.org",
@@ -39,6 +40,7 @@ const jsonLd: Record<string, unknown>[] = [
     url: absoluteUrl(path),
     mainEntityOfPage: absoluteUrl(path),
     articleSection: groupName,
+    image: absoluteUrl(ogImage),
     isPartOf: { "@id": `${SITE_URL}/#website` },
     publisher: { "@id": `${SITE_URL}/#organization` },
     about: { "@type": "SoftwareApplication", name: "vivePDF", operatingSystem: "Windows 10, Windows 11" },
@@ -62,7 +64,7 @@ if (faq.length) {
   });
 }
 ---
-<Docs lang={lang} title={`${data.title} · vivePDF`} description={data.description} path={path} alternates={docAlternates(doc)} jsonLd={jsonLd} current={doc} headings={toc}>
+<Docs lang={lang} title={`${data.title} · vivePDF`} description={data.description} path={path} alternates={docAlternates(doc)} jsonLd={jsonLd} ogImage={ogImage} current={doc} headings={toc}>
   <nav class="crumbs" aria-label={ui.docs.breadcrumb}>
     <ol>
       <li><a class="ul" href={docsIndexPath(lang)}>{ui.docs.title}</a></li>

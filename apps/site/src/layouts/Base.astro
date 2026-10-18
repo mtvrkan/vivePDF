@@ -11,6 +11,7 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import { absoluteUrl, hreflangLinks, OG_LOCALE, type Alternates, type Locale } from "../i18n";
 import { UI } from "../i18n/ui";
+import { releaseFeedPath } from "../feeds/releases";
 
 type Props = {
   lang: Locale;
@@ -63,6 +64,7 @@ const ldJson = (data: Record<string, unknown>) => JSON.stringify(data).replace(/
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/icon-256.png">
 <link rel="manifest" href="/site.webmanifest">
+<link rel="alternate" type="application/rss+xml" title={ui.docs.releases.feedTitle} href={releaseFeedPath(lang)}>
 <script is:inline>(function(){var d=document.documentElement,t=new URLSearchParams(location.search).get("theme");if(t!=="dark"&&t!=="light"){try{t=localStorage.getItem("vp-theme")}catch(e){}}if(t!=="dark"&&t!=="light")t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";d.dataset.theme=t;if(t==="dark")document.querySelector('meta[name="theme-color"]').content="#060B15"})();</script>
 <script is:inline>(function(){var s=new URLSearchParams(location.search).has("still")||matchMedia("(prefers-reduced-motion: reduce)").matches;document.documentElement.classList.add(s?"still":"motion")})();</script>
 {jsonLd.map((data) => <script type="application/ld+json" set:html={ldJson(data)} />)}

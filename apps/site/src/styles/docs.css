@@ -83,6 +83,9 @@ body{background:var(--wash)}
 .k-or{font-size:.8125rem;color:var(--ink-3)}
 .k-mac,[data-keys="mac"] .k-win{display:none!important}
 [data-keys="mac"] .k-mac{display:contents!important}
+.release-feed{margin:0 0 8px}
+.release-feed a{display:inline-flex;align-items:center;gap:8px;color:var(--blue-ink);text-decoration:none}
+.release-feed .ic{width:16px;height:16px}
 .release ul{margin-top:.6em}
 .release .mini-label a{color:var(--blue-ink);text-decoration:none}
 .doc-foot{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;margin-top:var(--s-6);padding-top:var(--s-3);border-top:1px solid var(--line)}

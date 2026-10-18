@@ -62,7 +62,7 @@ const zoom = new Intl.NumberFormat(lang, { style: "percent" }).format(1);
                     <div class="doc-page">
                       <div class="dp">
                         <div class="dp-head"><span>{p.head[0]}</span><span>{p.head[1]}</span></div>
-                        <h4 class="dp-h" data-tag>{p.h}<span class="tg">H1</span></h4>
+                        <p class="dp-h" data-tag>{p.h}<span class="tg">H1</span></p>
                         <p class="dp-p ch" data-tag><Fragment set:html={p.p1} /><span class="tg">P</span></p>
                         <figure class="dp-fig" data-tag>
                           <svg viewBox="0 0 300 92" preserveAspectRatio="none"><line x1="8" y1="80" x2="292" y2="80" stroke="#D9E2EE"/><rect x="46" y="30" width="46" height="50" rx="2" fill="#BFE3FF"/><rect x="126" y="25" width="46" height="55" rx="2" fill="#7FD0FF"/><rect x="206" y="14" width="46" height="66" rx="2" fill="#2F8FE6"/><path d="M14 30H286" stroke="#14305A" stroke-width="1.2" stroke-dasharray="4 4"/><text x="69" y="24" font-size="9" text-anchor="middle" fill="#33435E" font-family="Geist Mono Variable,monospace">{p.bars[0]}</text><text x="149" y="19" font-size="9" text-anchor="middle" fill="#33435E" font-family="Geist Mono Variable,monospace">{p.bars[1]}</text><text x="229" y="9" font-size="9" text-anchor="middle" fill="#0A1A33" font-family="Geist Mono Variable,monospace">{p.bars[2]}</text></svg>

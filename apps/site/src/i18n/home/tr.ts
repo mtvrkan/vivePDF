@@ -118,8 +118,8 @@ export const homeTr = {
       h: "İki sürüm arasında ne değişti?",
       p: "Kaydırıcıyı çek: solda önceki, sağda yeni sürüm. Klavyede ok tuşları da çalışır.",
       stem: "sozlesme-",
-      newer: '<h4>Madde 7 · Teslim</h4><p>Yüklenici işi, sözleşmenin imzalanmasından itibaren <ins>45 gün</ins> içinde teslim eder. Gecikmede <ins>haftalık</ins> ceza uygulanır; ceza toplam bedelin <ins>%5</ins>\'ini geçemez.</p><h4 class="cmp-h2">Madde 8 · Ödeme</h4><p>Ödeme, teslim tutanağından sonra <ins>15 gün</ins> içinde yapılır.</p>',
-      older: '<h4>Madde 7 · Teslim</h4><p>Yüklenici işi, sözleşmenin imzalanmasından itibaren <del>30 gün</del> içinde teslim eder. Gecikmede <del>günlük</del> ceza uygulanır; ceza toplam bedelin <del>%10</del>\'unu geçemez.</p><h4 class="cmp-h2">Madde 8 · Ödeme</h4><p>Ödeme, teslim tutanağından sonra <del>30 gün</del> içinde yapılır.</p>',
+      newer: '<p class="cmp-h">Madde 7 · Teslim</p><p>Yüklenici işi, sözleşmenin imzalanmasından itibaren <ins>45 gün</ins> içinde teslim eder. Gecikmede <ins>haftalık</ins> ceza uygulanır; ceza toplam bedelin <ins>%5</ins>\'ini geçemez.</p><p class="cmp-h cmp-h2">Madde 8 · Ödeme</p><p>Ödeme, teslim tutanağından sonra <ins>15 gün</ins> içinde yapılır.</p>',
+      older: '<p class="cmp-h">Madde 7 · Teslim</p><p>Yüklenici işi, sözleşmenin imzalanmasından itibaren <del>30 gün</del> içinde teslim eder. Gecikmede <del>günlük</del> ceza uygulanır; ceza toplam bedelin <del>%10</del>\'unu geçemez.</p><p class="cmp-h cmp-h2">Madde 8 · Ödeme</p><p>Ödeme, teslim tutanağından sonra <del>30 gün</del> içinde yapılır.</p>',
       range: "Önceki ve yeni sürüm arasındaki ayırıcı",
     },
     sig: {
@@ -173,13 +173,13 @@ export const homeTr = {
     ],
   },
   studio: {
-    eyebrow: "Studio",
+    eyebrow: "Stüdyo",
     title: "Boş sayfadan değil, <em>şablondan</em> başla.",
     nums: [
       { n: 174, label: "şablon" },
       { n: 14, label: "CV düzeni" },
     ],
-    lead: "Studio, vivePDF'in tasarım ve belge editörü. CV, sınav kağıdı, sertifika, broşür, fatura: şablonu seç, metni ve renkleri değiştir. Tablo, grafik, LaTeX formül ve akış şeması gerçek PDF içeriği olarak kaydedilir.",
+    lead: "Stüdyo, vivePDF'in tasarım ve belge editörü. CV, sınav kağıdı, sertifika, broşür, fatura: şablonu seç, metni ve renkleri değiştir. Tablo, grafik, LaTeX formül ve akış şeması gerçek PDF içeriği olarak kaydedilir.",
     pick: "Bir şablona tıkla ya da seç, adını yaz, rengini değiştir:",
     chips: { cv: "CV", exam: "Sınav kağıdı", cert: "Sertifika", inv: "Fatura", bro: "Broşür", menu: "Menü" },
     teach: {
@@ -188,7 +188,7 @@ export const homeTr = {
       items: [
         { icon: "i-edit", strong: "Soru ve cevap anahtarı.", text: "Soruları formül, grafik ve molekülle birlikte yaz; cevap anahtarı aynı belgede kalır." },
         { icon: "i-form", strong: "Optik cevap kağıdı.", text: "Kendini puanlayan optik cevap kağıtları hazırla." },
-        { icon: "i-pages", strong: "Sınav şablonları.", text: "Studio'daki sınav ve cevap anahtarı şablonlarından başla." },
+        { icon: "i-pages", strong: "Sınav şablonları.", text: "Stüdyo'daki sınav ve cevap anahtarı şablonlarından başla." },
       ],
     },
     omr: {
@@ -200,11 +200,11 @@ export const homeTr = {
     },
     dialog: {
       close: "Şablonu kapat",
-      eyebrow: "Studio · canlı önizleme",
+      eyebrow: "Stüdyo · canlı önizleme",
       color: "Renk",
       swatches: ["Lacivert", "Zümrüt", "Bordo", "Grafit"],
       note: "Uygulamada metin, renk, yazı tipi ve yerleşim böyle değişir; sonuç gerçek, seçilebilir metinli bir PDF olarak kaydedilir.",
-      cta: "Studio'yu indir",
+      cta: "Stüdyo'yu indir",
       dismiss: "Kapat",
     },
   },
@@ -215,7 +215,7 @@ export const homeTr = {
     relMeta: "1 Ekim → 15 Ekim 2026 · 1.600'den fazla değişiklik",
     releases: [
       { date: "2026-10-01", day: "1 Ekim", v: "0.1.0", text: "İlk açık sürüm: görüntüleyici, araçlar, OCR, imza." },
-      { date: "2026-10-04", day: "4 Ekim", v: "0.1.1", text: "Studio: tasarım ve belge editörü." },
+      { date: "2026-10-04", day: "4 Ekim", v: "0.1.1", text: "Stüdyo: tasarım ve belge editörü." },
       { date: "2026-10-09", day: "9 Ekim", v: "0.2.0", text: "174 şablon, 14 CV düzeni, kartvizitler." },
       { date: "2026-10-15", day: "15 Ekim", v: "0.3.0", text: "Sunucu görünümü, çevrimdışı mod, kendini güncelleyen kurulum." },
     ],
@@ -329,24 +329,24 @@ export const homeTr = {
     ],
     endOfDeck: "Sunumun sonu",
     templates: {
-      cv: '<div class="tp tp-cv"><aside><i class="ph"></i><b>Beril Yılmaz</b><small>Grafik tasarımcı</small><h6>İletişim</h6><p>beril@ornek.com</p><p>İstanbul</p><h6>Beceriler</h6><span class="bar" style="--v:90%"></span><span class="bar" style="--v:74%"></span><span class="bar" style="--v:58%"></span></aside><main><h6>Profil</h6><p>Marka kimliği ve basılı işlerde deneyimli tasarımcı.</p><h6>Deneyim</h6><p><strong>Kıdemli tasarımcı</strong> · 2022–</p><span class="l"></span><span class="l s"></span><p><strong>Tasarımcı</strong> · 2018–2022</p><span class="l"></span><span class="l s"></span><h6>Eğitim</h6><p>Grafik tasarım, lisans</p><span class="l s"></span></main></div>',
-      cv2: '<div class="tp tp-cv"><aside style="background:#0A1A33"><i class="ph" style="border-radius:12px"></i><b>Batuhan Demir</b><small>Yazılım geliştirici</small><h6>Diller</h6><p>Türkçe · İngilizce</p><h6>Araçlar</h6><span class="bar" style="--v:84%"></span><span class="bar" style="--v:66%"></span></aside><main><h6>Özet</h6><p>Masaüstü ve web uygulamaları geliştiriyor.</p><h6>Projeler</h6><p><strong>Belge arşivi</strong> · 2025</p><span class="l"></span><span class="l s"></span><p><strong>Stok takibi</strong> · 2023</p><span class="l"></span><h6>Eğitim</h6><p>Bilgisayar mühendisliği</p></main></div>',
+      cv: '<div class="tp tp-cv"><aside><i class="ph"></i><b>Beril Yılmaz</b><small>Grafik tasarımcı</small><p class="tp-h">İletişim</p><p>beril@ornek.com</p><p>İstanbul</p><p class="tp-h">Beceriler</p><span class="bar" style="--v:90%"></span><span class="bar" style="--v:74%"></span><span class="bar" style="--v:58%"></span></aside><div class="tp-main"><p class="tp-h">Profil</p><p>Marka kimliği ve basılı işlerde deneyimli tasarımcı.</p><p class="tp-h">Deneyim</p><p><strong>Kıdemli tasarımcı</strong> · 2022–</p><span class="l"></span><span class="l s"></span><p><strong>Tasarımcı</strong> · 2018–2022</p><span class="l"></span><span class="l s"></span><p class="tp-h">Eğitim</p><p>Grafik tasarım, lisans</p><span class="l s"></span></div></div>',
+      cv2: '<div class="tp tp-cv"><aside style="background:#0A1A33"><i class="ph" style="border-radius:12px"></i><b>Batuhan Demir</b><small>Yazılım geliştirici</small><p class="tp-h">Diller</p><p>Türkçe · İngilizce</p><p class="tp-h">Araçlar</p><span class="bar" style="--v:84%"></span><span class="bar" style="--v:66%"></span></aside><div class="tp-main"><p class="tp-h">Özet</p><p>Masaüstü ve web uygulamaları geliştiriyor.</p><p class="tp-h">Projeler</p><p><strong>Belge arşivi</strong> · 2025</p><span class="l"></span><span class="l s"></span><p><strong>Stok takibi</strong> · 2023</p><span class="l"></span><p class="tp-h">Eğitim</p><p>Bilgisayar mühendisliği</p></div></div>',
       exam: '<div class="tp tp-exam"><header><b>Matematik · 9. sınıf</b><span>1. yazılı</span></header><div class="who"><span>Ad soyad</span><span>No</span></div><ol><li><p>3x + 5 = 20 ise x kaçtır?</p><div class="opts"><i>A</i><i class="f">B</i><i>C</i><i>D</i></div></li><li><p>2⁵ ifadesinin değeri kaçtır?</p><div class="opts"><i>A</i><i>B</i><i>C</i><i class="f">D</i></div></li><li><p>Üçgenin iç açıları toplamı kaç derecedir?</p><div class="opts"><i>A</i><i>B</i><i class="f">C</i><i>D</i></div></li><li><p>√81 kaçtır?</p><div class="opts"><i class="f">A</i><i>B</i><i>C</i><i>D</i></div></li><li><p>0,25 kesir olarak nasıl yazılır?</p><div class="opts"><i>A</i><i>B</i><i>C</i><i>D</i></div></li></ol></div>',
       cert: '<div class="tp tp-cert land"><div class="fr"><small>KATILIM BELGESİ</small><b>Nesibe Kaya</b><p>PDF ile belge hazırlama atölyesini başarıyla tamamlamıştır.</p><i class="seal"></i><div class="sg"><span>Eğitmen</span><span>Tarih</span></div></div></div>',
       inv: '<div class="tp tp-inv"><header><b>Fatura</b><span>No 2026-0412<br>30.09.2026</span></header><div class="row h"><span>Hizmet</span><span>Tutar</span></div><div class="row"><span>Danışmanlık · 2 gün</span><span>3.000,00</span></div><div class="row"><span>Eğitim materyali</span><span>450,00</span></div><div class="row"><span>Yol gideri</span><span>150,00</span></div><div class="row"><span>KDV %20</span><span>720,00</span></div><div class="tot"><span>Toplam</span><span>4.320,00 ₺</span></div></div>',
       plan:
-        '<div class="tp tp-plan"><b>Haftalık plan</b><h6>Ekim · 2. hafta</h6>' +
+        '<div class="tp tp-plan"><b>Haftalık plan</b><p class="tp-h">Ekim · 2. hafta</p>' +
         days.map((d, i) => `<div class="d"><span>${d}</span><i class="${i === 2 || i === 4 ? "on" : ""}"></i></div>`).join("") +
         "</div>",
       bro: '<div class="tp tp-bro land"><div><i class="im"></i><b>Bahar şenliği</b><small>12 Mayıs</small><span class="l"></span><span class="l s"></span></div><div><span class="l"></span><span class="l s"></span><i class="im b"></i><span class="l"></span></div><div><i class="im c"></i><span class="l"></span><span class="l"></span><span class="l s"></span><small>okul bahçesi</small></div></div>',
       key:
-        '<div class="tp tp-key"><b>Cevap anahtarı</b><h6>Fen bilimleri · 2. yazılı</h6><div class="g">' +
+        '<div class="tp tp-key"><b>Cevap anahtarı</b><p class="tp-h">Fen bilimleri · 2. yazılı</p><div class="g">' +
         keyAnswers
           .split("")
           .map((c, i) => `<span>${i + 1}<em>${c}</em></span>`)
           .join("") +
         "</div></div>",
-      rep: '<div class="tp tp-rep"><b>Faaliyet raporu</b><h6>2026 · ilk yarı</h6><span class="l"></span><span class="l"></span><span class="l s"></span><div class="ch"><i style="height:40%"></i><i style="height:62%"></i><i style="height:88%"></i><i style="height:54%"></i><i style="height:70%"></i></div><span class="l"></span><span class="l s"></span><span class="l"></span></div>',
+      rep: '<div class="tp tp-rep"><b>Faaliyet raporu</b><p class="tp-h">2026 · ilk yarı</p><span class="l"></span><span class="l"></span><span class="l s"></span><div class="ch"><i style="height:40%"></i><i style="height:62%"></i><i style="height:88%"></i><i style="height:54%"></i><i style="height:70%"></i></div><span class="l"></span><span class="l s"></span><span class="l"></span></div>',
       menu: '<div class="tp tp-menu"><small>LOKANTA</small><b>Menü</b><div class="it"><span>Mercimek çorbası</span><span>90</span></div><div class="it"><span>Izgara köfte</span><span>260</span></div><div class="it"><span>Fırın sütlaç</span><span>110</span></div><div class="it"><span>Ayran</span><span>40</span></div><div class="it"><span>Türk kahvesi</span><span>70</span></div></div>',
     },
     tplMeta: {

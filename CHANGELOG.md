@@ -4,6 +4,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Website: every docs page has its own 1200×630 share image (group, title, description and address) drawn at build time with resvg and the Geist fonts, and its structured data names it [2026-10-18]
+- Website: release notes are offered as an RSS feed in Turkish and English (/dokumantasyon/surum-notlari.xml, /en/docs/release-notes.xml), linked from every page head and from the release notes page [2026-10-18]
 - Website documentation: 20 pages in Turkish and English under /dokumantasyon/ and /en/docs/ (installation, interface, reading, pages, converting, OCR, signing, security, Studio documents and designs, presenting, settings and privacy, offline use, shortcuts, tools, release notes, FAQ, troubleshooting, building from source, licence) with a sidebar, an on-this-page outline, breadcrumbs, previous and next links, Ctrl/⌘ K search over a static Pagefind index, a filterable tool table and shortcut tables with a Windows/macOS switch, all built from the app's own data [2026-10-18]
 - Website SEO: every page has its own title, description, canonical address, Turkish and English alternates in the page and the sitemap, Open Graph images, and structured data (TechArticle and breadcrumbs on docs pages, FAQPage on the FAQ, a collection page for the docs index); a bilingual 404 page and robots.txt are added [2026-10-18]
 - `scripts/deploy-site.sh` builds the website and commits it to the local gh-pages branch through a temporary worktree; it pushes only with `--push` and refuses to run while apps/site has uncommitted changes [2026-10-18]
@@ -31,6 +33,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 - Very small labels (badges, counters, captions) use two new type-scale steps, `text-2xs` (11 px) and `text-3xs` (10 px), instead of fixed pixel sizes; the code-language badge on a selected code block grows from 9 to 10 px [2026-10-18]
 ### Fixed
+- Website: the mobile home page no longer jumps when its script starts (layout shift 0.15 → 0), because the hero offset is worked out in CSS; the shortcut key set and the search hint are chosen before the docs page is drawn; demo documents and templates no longer add extra main landmarks or skipped heading levels; the Turkish site says Stüdyo like the app; the presenting docs mention F11 and the full-stop blackout key, and the Studio docs say what Add from PDF sends [2026-10-18]
 - The CV start card counts its designs from the app (14) instead of saying 10; the Studio help topics point to Tools › Show all, where the Studio cards are; the Turkish interface calls Studio Stüdyo everywhere, as its menu does [2026-10-18]
 - README no longer suggests a macOS download exists before the macOS build is published [2026-10-18]
 - The shortcut sheet showed the second key of Shortcuts for this screen as Ctrl instead of Ctrl /: alternatives are now split only on spaced separators, so a slash that is itself the key stays [2026-10-18]
