@@ -60,4 +60,29 @@ describe("usePrivacyScan", () => {
     await act(async () => {});
     expect(calls).not.toHaveBeenCalled();
   });
+
+  it("shows the report of the file that is current when an earlier scan finishes late", async () => {
+    const pending: Record<string, (report: PrivacyReport) => void> = {};
+    answer = (params) => new Promise((resolve) => (pending[params.path] = resolve));
+    const { result, rerender } = renderHook(({ path }) => usePrivacyScan({ tab: "privacy", sourcePath: path, sourcePassword: undefined, info }), { initialProps: { path: "big.pdf" } });
+    rerender({ path: "small.pdf" });
+
+    await act(async () => pending["small.pdf"]({ findings: [] } as unknown as PrivacyReport));
+    await act(async () => pending["big.pdf"]({ findings: ["old"] } as unknown as PrivacyReport));
+
+    expect(result.current.report).toEqual({ findings: [] });
+    expect(result.current.scanning).toBe(false);
+  });
+
+  it("keeps the spinner of the current scan when an earlier one ends", async () => {
+    const pending: Record<string, (report: PrivacyReport) => void> = {};
+    answer = (params) => new Promise((resolve) => (pending[params.path] = resolve));
+    const { result, rerender } = renderHook(({ path }) => usePrivacyScan({ tab: "privacy", sourcePath: path, sourcePassword: undefined, info }), { initialProps: { path: "big.pdf" } });
+    rerender({ path: "small.pdf" });
+
+    await act(async () => pending["big.pdf"]({ findings: [] } as unknown as PrivacyReport));
+
+    expect(result.current.scanning).toBe(true);
+    expect(result.current.report).toBeNull();
+  });
 });

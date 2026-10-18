@@ -119,14 +119,17 @@ export function useOperation<TParams extends OverwriteParams, TResult>(runner: R
         setResult(null);
         setOverwritePrompt(null);
         let refused: RefusedOutput | null = null;
+        const superseded = () => controllerRef.current !== controller;
         try {
           const value = await runner(params, {
             signal: controller.signal,
             onProgress: (update) => {
+              if (superseded()) return;
               setProgress(update);
               useOperationStore.getState().report(update.progress);
             },
           });
+          if (superseded()) return null;
           setResult(value);
           setStatus("success");
           if (runOptions.quiet) return value;
@@ -137,6 +140,7 @@ export function useOperation<TParams extends OverwriteParams, TResult>(runner: R
           void runAfterOperation(outputs);
           return value;
         } catch (caught) {
+          if (superseded()) return null;
           const rpcError = toRpcError(caught);
           if (rpcError.code === "INVALID_PARAMS" && rpcError.data?.exists === true) {
             setStatus("idle");
@@ -176,6 +180,8 @@ export function useOperation<TParams extends OverwriteParams, TResult>(runner: R
   }, []);
 
   const reset = useCallback(() => {
+    controllerRef.current?.abort();
+    controllerRef.current = null;
     setStatus("idle");
     setProgress(null);
     setResult(null);

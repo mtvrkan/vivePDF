@@ -25,6 +25,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - While the black or white board is shown, the presentation bar and the presenter console leave the drawing tools, area zoom, zoom buttons and page clearing to the board's own toolbar instead of showing them twice; they come back on the slides [2026-10-18]
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed
+- Dropping a PDF on the window works again after leaving Forms › Export, Scan › Photo or OMR › Grade; those tabs no longer leave a drop handler of the closed page behind [2026-10-18]
+- Text edit forgets the changed spans and the page when another PDF is picked, so Apply can no longer write one document's edits onto another [2026-10-18]
+- A slow load, signature check, privacy scan, heading or bookmark import, presentation code-block lookup or a cancelled tool run that finishes after another file was picked no longer replaces what is shown for the new file [2026-10-18]
+- Images to PDF keeps an output name ending in ".PDF", and the Studio sources search finds Turkish capitals such as "IŞIK" or "İSTANBUL" typed in lower case [2026-10-18]
 - Text edit shows the page on white paper in dark mode and says so with a retry button when the page cannot be drawn, instead of an empty dark box [2026-10-18]
 - The paper, sepia and dark reading themes set their own text, muted and border colours, so labels and the sentence being read aloud stay readable on each [2026-10-18]
 - Keyboard users see which page has focus in the Pages grid; screen readers hear today's date in the date picker, the current slide in the presenter overview and which picture an alt-text box is for [2026-10-18]

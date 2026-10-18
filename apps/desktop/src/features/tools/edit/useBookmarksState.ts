@@ -19,6 +19,8 @@ export function useBookmarksState(source: SourceDocument | null, tab: Tab, t: TF
   const [bookmarkLevels, setBookmarkLevels] = useState(3);
   const [bookmarkEvery, setBookmarkEvery] = useState(10);
   const bookmarksRequest = useRef(0);
+  const sourcePath = useRef(source?.path);
+  sourcePath.current = source?.path;
 
   const loadBookmarks = useCallback(async () => {
     if (!source?.info) return;
@@ -45,9 +47,11 @@ export function useBookmarksState(source: SourceDocument | null, tab: Tab, t: TF
 
   const handleGenerateBookmarks = async () => {
     if (!source) return;
+    const { path } = source;
     setBookmarksGenerating(true);
     try {
       const result = await suggestBookmarks({ path: source.path, password: source.password ?? undefined, maxLevels: bookmarkLevels });
+      if (sourcePath.current !== path) return;
       setBookmarkItems(result.items);
       toast("success", t("tools.edit.bookmarks.loadedIntoList", { count: result.items.length }));
     } catch (error) {
@@ -60,6 +64,7 @@ export function useBookmarksState(source: SourceDocument | null, tab: Tab, t: TF
 
   const handleGenerateEveryPage = async () => {
     if (!source) return;
+    const { path } = source;
     setBookmarksGenerating(true);
     try {
       const result = await suggestBookmarks({
@@ -69,6 +74,7 @@ export function useBookmarksState(source: SourceDocument | null, tab: Tab, t: TF
         every: bookmarkEvery,
         label: t("tools.edit.bookmarks.everyLabel"),
       });
+      if (sourcePath.current !== path) return;
       setBookmarkItems(result.items);
       toast("success", t("tools.edit.bookmarks.loadedIntoList", { count: result.items.length }));
     } catch (error) {
@@ -96,11 +102,13 @@ export function useBookmarksState(source: SourceDocument | null, tab: Tab, t: TF
 
   const handleImportBookmarks = async () => {
     if (!source) return;
+    const { path } = source;
     const chosen = await openDialog({ multiple: false, directory: false, filters: [{ name: "JSON", extensions: ["json"] }] });
     if (typeof chosen !== "string") return;
     setBookmarksGenerating(true);
     try {
       const result = await parseBookmarks({ path: source.path, password: source.password ?? undefined, dataPath: chosen });
+      if (sourcePath.current !== path) return;
       setBookmarkItems(result.items);
       toast("success", t("tools.edit.bookmarks.loadedIntoList", { count: result.items.length }));
     } catch (error) {

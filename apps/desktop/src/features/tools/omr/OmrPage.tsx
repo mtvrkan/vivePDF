@@ -115,15 +115,12 @@ export function OmrPage() {
 
   useEffect(() => {
     if (tab !== "grade") return;
-    const store = useDropTargetStore.getState();
-    const previous = store.handler;
-    store.setHandler((dropped) => {
+    const addScans = (dropped: string[]) => {
       const usable = dropped.filter(isScanPath);
       if (usable.length > 0) setPaths((state) => [...state, ...usable.filter((path) => !state.includes(path))]);
-    });
-    return () => {
-      useDropTargetStore.getState().setHandler(previous);
     };
+    useDropTargetStore.getState().pushHandler(addScans);
+    return () => useDropTargetStore.getState().removeHandler(addScans);
   }, [tab]);
 
   const questionsValid = withinRange(questions, { min: 1, max: OMR_LIMITS.questions });

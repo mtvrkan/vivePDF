@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BadgeCheck, FileKey2, FolderOpen, PenTool, TriangleAlert } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
@@ -122,7 +122,9 @@ export function SignPage() {
     if (source) setOutput(suggestOutputPath(source.path, t("tools.sign.suffix")));
   }, [source, t]);
 
+  const verifyRun = useRef(0);
   useEffect(() => {
+    verifyRun.current += 1;
     setVerification({ status: "idle", result: null, error: null });
     setExistingField(NEW_FIELD);
     setSignatureFields(null);
@@ -184,12 +186,13 @@ export function SignPage() {
 
   const verify = async () => {
     if (!source) return;
+    const run = ++verifyRun.current;
     setVerification({ status: "loading", result: null, error: null });
     try {
       const result = await verifySignatures({ path: source.path, password: source.password ?? undefined, online: onlineCheck && !isOffline() });
-      setVerification({ status: "success", result, error: null });
+      if (run === verifyRun.current) setVerification({ status: "success", result, error: null });
     } catch (error) {
-      setVerification({ status: "error", result: null, error: toRpcError(error) });
+      if (run === verifyRun.current) setVerification({ status: "error", result: null, error: toRpcError(error) });
     }
   };
 

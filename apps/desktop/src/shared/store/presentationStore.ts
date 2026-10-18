@@ -173,6 +173,7 @@ type PresentationState = {
   boardHistory: Record<BoardMode, BoardHistory>;
   boardPens: Record<BoardMode, BoardPen>;
   codeBlocksByPage: Record<number, CodeBlockCache | undefined>;
+  codeBlocksScope: number;
   codeBlockOpen: { pageIndex: number; blockId: string } | null;
   overviewOpen: boolean;
   notesOpen: boolean;
@@ -372,6 +373,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   boardHistory: emptyBoardHistory(),
   boardPens: initialPrefs.boardPens,
   codeBlocksByPage: {},
+  codeBlocksScope: 0,
   codeBlockOpen: null,
   overviewOpen: false,
   notesOpen: false,
@@ -651,18 +653,19 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
   closeCodeBlock: () => set({ codeBlockOpen: null }),
 
   resetDocumentScope: () =>
-    set({
+    set((state) => ({
       strokesByPage: {},
       redoByPage: {},
       codeBlocksByPage: {},
+      codeBlocksScope: state.codeBlocksScope + 1,
       codeBlockOpen: null,
       selectedDrawing: null,
       placing: null,
       ruler: null,
-    }),
+    })),
 
   resetSession: () =>
-    set({
+    set((state) => ({
       tool: "pointer",
       blackout: "none",
       timerRunning: false,
@@ -674,6 +677,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       boardSize: null,
       boardHistory: emptyBoardHistory(),
       codeBlocksByPage: {},
+      codeBlocksScope: state.codeBlocksScope + 1,
       codeBlockOpen: null,
       overviewOpen: false,
       notesOpen: false,
@@ -681,7 +685,7 @@ export const usePresentationStore = create<PresentationState>((set, get) => ({
       drawingAssets: {},
       placing: null,
       ruler: null,
-    }),
+    })),
 }));
 
 useDocumentStore.subscribe((state, previous) => {

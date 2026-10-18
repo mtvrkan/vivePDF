@@ -472,6 +472,12 @@ export function buildCitations(content: DocumentNode | string, sources: BibEntry
   return { style, label, references };
 }
 
+export function sourceMatches(entry: BibEntry, query: string, locale: string): boolean {
+  if (!query) return true;
+  const summary = sourceSummary(entry);
+  return [entry.key, summary.names, summary.year, summary.title].join(" ").toLocaleLowerCase(locale).includes(query);
+}
+
 export function sourceSummary(entry: BibEntry): { names: string; year: string; title: string } {
   const names = people(entry.authors).length ? entry.authors : entry.editors;
   const family = people(names).map((name) => name.family);

@@ -84,7 +84,7 @@ export function ConvertPage() {
   useEffect(() => {
     if (mode === "images-to-pdf") {
       const first = images[0] ?? (folders[0] ? joinPath(folders[0], "x") : "");
-      if (first && !output.endsWith(".pdf")) setOutput(joinPath(outputDirectoryFor(first), `${t("tools.convert.albumName")}.pdf`));
+      if (first && !output.toLowerCase().endsWith(".pdf")) setOutput(joinPath(outputDirectoryFor(first), `${t("tools.convert.albumName")}.pdf`));
       if (first && output === "") setOutput(joinPath(outputDirectoryFor(first), `${t("tools.convert.albumName")}.pdf`));
     }
   }, [mode, images, folders, output, t]);

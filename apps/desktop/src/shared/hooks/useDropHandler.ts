@@ -7,10 +7,8 @@ type DropPositionHandler = (paths: string[], position: { x: number; y: number })
 export function useDropHandler(handler: DropHandler | null) {
   useEffect(() => {
     if (!handler) return;
-    const store = useDropTargetStore.getState();
-    const previous = store.handler;
-    store.setHandler(handler);
-    return () => useDropTargetStore.getState().setHandler(previous);
+    useDropTargetStore.getState().pushHandler(handler);
+    return () => useDropTargetStore.getState().removeHandler(handler);
   }, [handler]);
 }
 

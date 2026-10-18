@@ -183,6 +183,12 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   sentence being read aloud keeps the theme's text colour. With Narrator on, Tab into the Pages
   grid and use the arrow keys: the focused page shows a ring and is announced, today is
   announced in the date picker and the current slide in the presenter overview.
+- Open Tools › Forms › Export (and separately Scan › Photo, OMR › Grade), then go to
+  Compress and drop a PDF from Explorer onto the window: Compress takes it. Back on Forms,
+  switching from Export to another tab and dropping a PDF makes it the form source.
+- In Edit › Text edit change two spans on page 5 of one PDF, then pick another PDF: the edit
+  list is empty and the new file opens on page 1. Start a signature check with the online check
+  on and pick another file while it runs: the panel stays empty for the new file.
 
 ### How native dialogs are answered
 

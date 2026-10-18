@@ -148,22 +148,15 @@ export function FormsPage() {
     };
   }, [source, t]);
 
-  const { setPath } = sourceState;
-
   useEffect(() => {
     if (tab !== "export") return;
-    const store = useDropTargetStore.getState();
-    store.setHandler((paths) => {
+    const addExportPaths = (paths: string[]) => {
       const pdfs = paths.filter(isPdfPath);
       if (pdfs.length > 0) setExportPaths((state) => [...state, ...pdfs.filter((path) => !state.includes(path))]);
-    });
-    return () => {
-      useDropTargetStore.getState().setHandler((paths) => {
-        const pdf = paths.find(isPdfPath);
-        if (pdf) void setPath(pdf);
-      });
     };
-  }, [tab, setPath]);
+    useDropTargetStore.getState().pushHandler(addExportPaths);
+    return () => useDropTargetStore.getState().removeHandler(addExportPaths);
+  }, [tab]);
 
   useEffect(() => {
     if (exportPaths.length > 0 && !exportOutput) setExportOutput(joinPath(outputDirectoryFor(exportPaths[0]), `${t("tools.forms.export.suffix")}.${exportFormat}`));

@@ -35,6 +35,16 @@ export function useTextEditState(source: SourceDocument | null, tab: Tab, t: TFu
     }
   }, [source, teditPage, t, toast]);
 
+  const sourcePath = source?.path;
+  useEffect(() => {
+    setTeditPage(1);
+    setTeditSpans([]);
+    setTeditSize(null);
+    setTeditEdits(new Map());
+    setTeditActiveId(null);
+    setPendingTeditPage(null);
+  }, [sourcePath]);
+
   useEffect(() => {
     if (tab === "textedit" && source?.info) void loadSpans();
   }, [tab, source?.path, source?.info, teditPage, loadSpans]);

@@ -15,8 +15,11 @@ export function useCodeBlocksForPage(documentId: string, pageIndex: number) {
     if (!document || cached) return;
     if (timerRef.current !== null) window.clearTimeout(timerRef.current);
     timerRef.current = window.setTimeout(() => {
+      const scope = usePresentationStore.getState().codeBlocksScope;
       void getCodeBlocks({ path: document.path, password: document.password ?? undefined, page: pageIndex })
-        .then((result) => setCodeBlocksForPage(pageIndex, result))
+        .then((result) => {
+          if (usePresentationStore.getState().codeBlocksScope === scope) setCodeBlocksForPage(pageIndex, result);
+        })
         .catch(() => void 0);
     }, DEBOUNCE_MS);
     return () => {

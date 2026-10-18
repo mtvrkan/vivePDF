@@ -33,7 +33,9 @@ export function useSourceDocument() {
     if (sourcePath) useSourceChangeStore.getState().changed();
   }, [sourcePath]);
 
+  const loadRun = useRef(0);
   const load = useCallback(async (path: string, password: string | null) => {
+    const run = ++loadRun.current;
     chosen.current = true;
     setSource({ path, fileName: fileNameOf(path), password, info: null });
     setStatus("loading");
@@ -41,9 +43,11 @@ export function useSourceDocument() {
     setNeedsPassword(false);
     try {
       const info = await getDocumentInfo({ path, password: password ?? undefined });
+      if (run !== loadRun.current) return;
       setSource({ path, fileName: fileNameOf(path), password, info });
       setStatus("success");
     } catch (caught) {
+      if (run !== loadRun.current) return;
       const rpcError = toRpcError(caught);
       setError(rpcError);
       setStatus("error");
@@ -63,11 +67,12 @@ export function useSourceDocument() {
   useEffect(() => {
     const store = useDropTargetStore.getState();
     if (store.handler) return;
-    store.setHandler((paths) => {
+    const openDropped = (paths: string[]) => {
       const pdf = paths.find(isPdfPath);
       if (pdf) void load(pdf, null);
-    });
-    return () => useDropTargetStore.getState().setHandler(null);
+    };
+    store.pushHandler(openDropped);
+    return () => useDropTargetStore.getState().removeHandler(openDropped);
   }, [load]);
 
   const pick = useCallback(async () => {

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import type { DocumentNode } from "@/types/studio";
 import { parseBibtex } from "./bibtex";
 import type { CitationItem } from "./citationItems";
-import { buildCitations, citedKeys, type CitationTerms } from "./citations";
+import { buildCitations, citedKeys, sourceMatches, type CitationTerms } from "./citations";
 
 const TERMS: CitationTerms = {
   and: "and",
@@ -142,3 +142,20 @@ describe("citations inside footnotes", () => {
   });
 });
 
+
+describe("sourceMatches", () => {
+  const [entry] = parseBibtex("@book{isik2020, author = {IŞIK, Ayşe}, title = {İSTANBUL NOTLARI}, year = {2020}}").entries;
+
+  it("finds Turkish capitals typed in lower case under a Turkish interface", () => {
+    expect(sourceMatches(entry, "ışık", "tr")).toBe(true);
+    expect(sourceMatches(entry, "istanbul", "tr")).toBe(true);
+  });
+
+  it("matches every source when nothing is typed", () => {
+    expect(sourceMatches(entry, "", "tr")).toBe(true);
+  });
+
+  it("does not match a word the source does not contain", () => {
+    expect(sourceMatches(entry, "ankara", "tr")).toBe(false);
+  });
+});

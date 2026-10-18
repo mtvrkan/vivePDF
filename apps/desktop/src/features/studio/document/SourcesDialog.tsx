@@ -23,7 +23,7 @@ import type { SourceCheck } from "@/types";
 import type { BibEntry, CitationStyle } from "@/types/studio";
 import { MAX_SOURCES, mergeSources } from "./bibtex";
 import { BIBLIOGRAPHY, CITATION, citationItems, MAX_CITED, type CitationItem } from "./citationItems";
-import { CITATION_STYLES, sourceSummary } from "./citations";
+import { CITATION_STYLES, sourceMatches, sourceSummary } from "./citations";
 import { applyChanges, checkedDois, checksByDoi, doiKey, doiLink, entryOfCsl, filledDraftFields, leadingNotice, sourceChanges, STATUS_TONES, type SourceChange } from "./doiSources";
 import { useDocumentStore } from "./documentStore";
 import { SourceEditor } from "./SourceEditor";
@@ -31,12 +31,6 @@ import { draftOf, entryOfDraft, keyProblem, namesText, renameCitationKey, type S
 import { FORMAT_EXTENSIONS, formatOfPath, parseSources, SOURCE_FILE_EXTENSIONS, SOURCE_FORMATS, writeSources, type SourceFormat } from "./sourceFormats";
 
 const EMPTY_SOURCES: BibEntry[] = [];
-
-function matches(entry: BibEntry, query: string): boolean {
-  if (!query) return true;
-  const summary = sourceSummary(entry);
-  return [entry.key, summary.names, summary.year, summary.title].join(" ").toLocaleLowerCase().includes(query);
-}
 
 function editedCitation(editor: Editor): CitationItem[] | null {
   return editor.isActive(CITATION) ? citationItems(editor.getAttributes(CITATION).items) : null;
@@ -104,7 +98,7 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
   const checkAbort = useRef<AbortController | null>(null);
   const store = useDocumentStore.getState();
   const needle = query.trim().toLocaleLowerCase(i18n.language);
-  const shown = useMemo(() => sources.filter((entry) => matches(entry, needle)), [sources, needle]);
+  const shown = useMemo(() => sources.filter((entry) => sourceMatches(entry, needle, i18n.language)), [sources, needle, i18n.language]);
 
   useEffect(() => () => checkAbort.current?.abort(), []);
 
