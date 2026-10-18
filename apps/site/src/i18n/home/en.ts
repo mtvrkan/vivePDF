@@ -246,6 +246,7 @@ export const homeEn: HomeCopy = {
       copy: "Copy",
       copied: "Copied",
       copyFailed: "Couldn't copy, select it by hand",
+      commands: "Build commands",
       build: "Build from source",
     },
   },

@@ -1,4 +1,5 @@
 ---
+import { INLINE_SCRIPTS } from "../seo/inlineScripts";
 import Base from "./Base.astro";
 import "../styles/docs.css";
 import DocsSearch from "../components/docs/DocsSearch.astro";
@@ -27,7 +28,7 @@ const groups = DOC_GROUPS.map((g) => ({ key: g, items: DOCS.filter((d) => d.grou
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 <Base lang={lang} title={title} description={description} path={path} alternates={alternates} jsonLd={jsonLd} ogImage={ogImage} ogType={current ? "article" : "website"} navSolid>
-  <script is:inline slot="head">(function(){var k;try{k=localStorage.getItem("vp-keys")}catch(e){}if(k!=="mac"&&k!=="win")k=/mac/i.test(navigator.platform)?"mac":"win";document.documentElement.dataset.keys=k})();</script>
+  <script is:inline slot="head" set:html={INLINE_SCRIPTS.keys} />
   <div class="docs-shell wrap">
     <button type="button" class="docs-menu-btn btn btn-ghost" aria-expanded="false" aria-controls="docsSide" data-side-toggle>
       <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>{ui.docs.menu}

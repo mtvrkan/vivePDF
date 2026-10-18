@@ -51,7 +51,7 @@ const last = c.releases.length - 1;
           </div>
           <div class="term">
             <div class="term-bar"><p>Node&nbsp;22&nbsp;+&nbsp;pnpm&nbsp;· Rust&nbsp;· Python&nbsp;3.12&nbsp;+&nbsp;uv</p><button class="copy" type="button" id="copyBtn" data-copied={c.linux.copied} data-failed={c.linux.copyFailed}><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span>{c.linux.copy}</span></button></div>
-<pre id="cmds"><span>$</span> cd apps/desktop &amp;&amp; pnpm install
+<pre id="cmds" tabindex="0" role="region" aria-label={c.linux.commands}><span>$</span> cd apps/desktop &amp;&amp; pnpm install
 <span>$</span> cd ../../sidecar &amp;&amp; uv sync
 <span>$</span> cd ../apps/desktop &amp;&amp; pnpm tauri dev</pre>
           </div>

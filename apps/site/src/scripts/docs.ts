@@ -77,6 +77,16 @@ function mark() {
   } else input.removeAttribute("aria-activedescendant");
 }
 
+function excerptNodes(html: string): Node[] {
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+  return [...parsed.body.childNodes].map((n) => {
+    if (n.nodeName !== "MARK") return document.createTextNode(n.textContent ?? "");
+    const mark = document.createElement("mark");
+    mark.textContent = n.textContent;
+    return mark;
+  });
+}
+
 function render(q: string) {
   list.replaceChildren(
     ...hits.map((h, i) => {
@@ -89,7 +99,7 @@ function render(q: string) {
       const b = document.createElement("b");
       b.textContent = h.meta.title ?? h.url;
       const p = document.createElement("span");
-      p.innerHTML = h.excerpt;
+      p.append(...excerptNodes(h.excerpt));
       a.append(b, p);
       li.append(a);
       return li;

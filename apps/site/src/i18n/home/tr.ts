@@ -245,6 +245,7 @@ export const homeTr = {
       copy: "Kopyala",
       copied: "Kopyalandı",
       copyFailed: "Kopyalanamadı, elle seç",
+      commands: "Derleme komutları",
       build: "Kaynaktan derle",
     },
   },

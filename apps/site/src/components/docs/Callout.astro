@@ -3,10 +3,10 @@ type Props = { type?: "note" | "tip" | "warn"; title?: string };
 const { type = "note", title } = Astro.props;
 const icon = { note: "i-book", tip: "i-gift", warn: "i-life" }[type];
 ---
-<aside class:list={["callout", `callout-${type}`]}>
+<div class:list={["callout", `callout-${type}`]} role="note">
   <svg class="ic" aria-hidden="true"><use href={`#${icon}`}/></svg>
   <div>
     {title && <p class="callout-title">{title}</p>}
     <slot />
   </div>
-</aside>
+</div>
