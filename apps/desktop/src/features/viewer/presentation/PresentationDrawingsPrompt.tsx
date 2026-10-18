@@ -6,6 +6,7 @@ import { Dialog } from "@/components/shared/Dialog";
 import { usePendingChangesStore } from "@/shared/store/pendingChangesStore";
 import { usePresentationLeftoverStore, type LeftoverDrawings } from "@/shared/store/presentationLeftoverStore";
 import { useToastStore } from "@/shared/store/toastStore";
+import type { PresentationBoardDrawings, PresentationPageDrawings } from "@/types";
 import { useDocumentSave } from "../useDocumentSave";
 
 export function PresentationDrawingsPrompt({ documentId }: { documentId: string }) {
@@ -21,9 +22,19 @@ function LeftoverStep({ documentId, leftover }: { documentId: string; leftover: 
   const [saving, setSaving] = useState(false);
   const started = useRef(false);
 
-  const keep = () => {
-    usePendingChangesStore.getState().queue(documentId, { kind: "presentationDrawings", pages: leftover.pages, boards: leftover.boards, label: t("presentation.keep.change") });
+  const queueDrawings = (pages: PresentationPageDrawings[], boards: PresentationBoardDrawings[]) => {
+    if (pages.length === 0 && boards.length === 0) return;
+    usePendingChangesStore.getState().queue(documentId, { kind: "presentationDrawings", pages, boards, label: t("presentation.keep.change") });
+  };
+
+  const keepEdited = () => {
+    queueDrawings(leftover.edited ?? [], []);
     usePresentationLeftoverStore.getState().clear();
+  };
+
+  const keep = () => {
+    queueDrawings(leftover.pages, leftover.boards);
+    keepEdited();
   };
 
   const saveNow = async () => {
@@ -42,14 +53,17 @@ function LeftoverStep({ documentId, leftover }: { documentId: string; leftover: 
 
   const discard = () => {
     if (saving) return;
-    usePresentationLeftoverStore.getState().clear();
+    keepEdited();
   };
+
+  const onlyEdited = leftover.pages.length === 0 && leftover.boards.length === 0;
 
   useEffect(() => {
     if (leftover.finish === "save") void saveNow();
+    else if (onlyEdited) keepEdited();
   });
 
-  if (leftover.finish === "save") return null;
+  if (leftover.finish === "save" || onlyEdited) return null;
 
   return (
     <Dialog

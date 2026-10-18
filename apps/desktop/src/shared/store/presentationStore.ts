@@ -23,6 +23,7 @@ export type Stroke = {
   size?: { width: number; height: number };
   asset?: string;
   pageSize?: { width: number; height: number };
+  replaces?: string;
 };
 export type RulerState = { pageIndex: number; x: number; y: number; angle: number; pageWidthPt: number };
 export type DrawingAsset = { dataUrl: string; width: number; height: number; drawing?: DrawingSource };

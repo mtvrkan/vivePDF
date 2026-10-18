@@ -14,12 +14,18 @@ function itemsOnly(strokesByPage: Record<number, Stroke[]>, boardStrokes: Record
   };
 }
 
+function pickStrokes(strokesByPage: Record<number, Stroke[]>, replacing: boolean): Record<number, Stroke[]> {
+  return Object.fromEntries(Object.entries(strokesByPage).map(([page, strokes]) => [page, strokes.filter((stroke) => (stroke.replaces !== undefined) === replacing)]));
+}
+
 export function holdTemporaryDrawings(finish: LeftoverFinish): void {
   const presentation = usePresentationStore.getState();
   const documentId = useDocumentStore.getState().activeId;
   if (!documentId) return;
   const kept = presentation.drawingsMode === "temporary" ? { strokesByPage: presentation.strokesByPage, boardStrokes: presentation.boardStrokes } : itemsOnly(presentation.strokesByPage, presentation.boardStrokes);
-  const drawings = presentationDrawings({ ...kept, drawingAssets: presentation.drawingAssets }, presentation.boardSize ?? { width: window.innerWidth, height: window.innerHeight });
-  if (!hasPresentationDrawings(drawings)) return;
-  usePresentationLeftoverStore.getState().hold({ ...drawings, documentId, finish });
+  const board = presentation.boardSize ?? { width: window.innerWidth, height: window.innerHeight };
+  const drawings = presentationDrawings({ strokesByPage: pickStrokes(kept.strokesByPage, false), boardStrokes: kept.boardStrokes, drawingAssets: presentation.drawingAssets }, board);
+  const edited = presentationDrawings({ strokesByPage: pickStrokes(presentation.strokesByPage, true), boardStrokes: { black: [], white: [] }, drawingAssets: presentation.drawingAssets }, board).pages;
+  if (!hasPresentationDrawings(drawings) && edited.length === 0) return;
+  usePresentationLeftoverStore.getState().hold({ ...drawings, edited, documentId, finish });
 }

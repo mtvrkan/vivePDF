@@ -3,7 +3,7 @@ import type { PresentationBoardDrawings, PresentationPageDrawings } from "@/type
 
 export type LeftoverFinish = "ask" | "save";
 
-export type LeftoverDrawings = { documentId: string; finish: LeftoverFinish; pages: PresentationPageDrawings[]; boards: PresentationBoardDrawings[] };
+export type LeftoverDrawings = { documentId: string; finish: LeftoverFinish; pages: PresentationPageDrawings[]; boards: PresentationBoardDrawings[]; edited?: PresentationPageDrawings[] };
 
 type LeftoverState = {
   leftover: LeftoverDrawings | null;

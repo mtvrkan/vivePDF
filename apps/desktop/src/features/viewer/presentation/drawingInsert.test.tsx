@@ -167,6 +167,7 @@ describe("editSavedPresentationDrawing", () => {
     expect(stroke.size?.width).toBeCloseTo(0.8);
     expect(stroke.size?.height).toBeCloseTo(0.2);
     expect(usePresentationStore.getState().drawingAssets[stroke.asset ?? ""].drawing).toEqual(edited);
+    expect(stroke.replaces).toBe("vivepdf-drawing-1");
     expect(target.remove).toHaveBeenCalledWith(1, "vivepdf-drawing-1");
     expect(useViewerOverlayStore.getState().objects).toEqual([]);
   });

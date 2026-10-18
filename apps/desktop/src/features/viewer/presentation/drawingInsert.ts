@@ -68,7 +68,7 @@ function replaceStamp(current: Target, pageIndex: number, stamp: SavedStamp, bef
   const [x0, y0, x1, y1] = stamp.item.rect;
   const id = presentation.addDrawingAsset({ dataUrl: after.dataUrl, width: after.width, height: after.height, drawing: after.drawing });
   const base: Stroke = { id: makeDrawingId("drawing"), tool: "drawing", color: "#000000", width: 0, points: [{ x: x0, y: y0 }], size: { width: x1 - x0, height: y1 - y0 }, asset: id };
-  const stroke = resizedDrawing(base, id, after.width / before.width, after.height / before.height);
+  const stroke = { ...resizedDrawing(base, id, after.width / before.width, after.height / before.height), replaces: stamp.item.id };
   presentation.addStroke(pageIndex, stroke);
   stamp.remove();
   target = { ...current, strokeId: stroke.id, stamp: undefined };
