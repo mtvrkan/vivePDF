@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type CSSProperties } from "react";
+import { memo, useEffect, useMemo, useRef, type CSSProperties } from "react";
 import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { optionLabel, type FormValue } from "@/features/tools/forms/fillValues";
@@ -23,7 +23,7 @@ function fieldName(field: FormField): string {
   return field.label || field.name;
 }
 
-export function FormFieldLayer({ documentId, pageIndex, width, height }: LayerProps) {
+export const FormFieldLayer = memo(function FormFieldLayer({ documentId, pageIndex, width, height }: LayerProps) {
   const { t } = useTranslation();
   const load = useFormFields(documentId);
   const overlayMode = useViewerOverlayStore((state) => state.mode);
@@ -152,4 +152,4 @@ export function FormFieldLayer({ documentId, pageIndex, width, height }: LayerPr
       {placed.map(renderWidget)}
     </div>
   );
-}
+});

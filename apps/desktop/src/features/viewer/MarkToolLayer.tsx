@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 import { PdfAnnotationSubtype, type PdfInkAnnoObject } from "@embedpdf/models";
 import { useAnnotation } from "@embedpdf/plugin-annotation/react";
 import { useZoom } from "@embedpdf/plugin-zoom/react";
@@ -13,8 +13,12 @@ const PAGE_EVENTS = ["mousedown", "mousemove", "mouseup", "click", "dblclick"] a
 type Point = { x: number; y: number };
 type Gesture = { mode: MarkToolMode; path: Point[]; additive: boolean };
 
-export function MarkToolLayer({ documentId, pageIndex }: { documentId: string; pageIndex: number }) {
+export const MarkToolLayer = memo(function MarkToolLayer({ documentId, pageIndex }: { documentId: string; pageIndex: number }) {
   const mode = useMarkToolMode(documentId);
+  return mode ? <ActiveMarkTool documentId={documentId} pageIndex={pageIndex} mode={mode} /> : null;
+});
+
+function ActiveMarkTool({ documentId, pageIndex, mode }: { documentId: string; pageIndex: number; mode: MarkToolMode }) {
   const eraserSize = useMarkToolStore((state) => state.eraserSize);
   const { provides: annotation } = useAnnotation(documentId);
   const { state: zoomState } = useZoom(documentId);
@@ -58,7 +62,7 @@ export function MarkToolLayer({ documentId, pageIndex }: { documentId: string; p
 
   useEffect(() => {
     const layer = layerRef.current;
-    if (!mode || !layer) return;
+    if (!layer) return;
     let current: Gesture | null = null;
     const pointOf = (event: PointerEvent): Point => ({ x: event.offsetX, y: event.offsetY });
     const onPointerDown = (event: PointerEvent) => {
@@ -109,8 +113,6 @@ export function MarkToolLayer({ documentId, pageIndex }: { documentId: string; p
       for (const type of PAGE_EVENTS) layer.removeEventListener(type, keepFromPage);
     };
   }, [mode]);
-
-  if (!mode) return null;
 
   const box = gesture?.mode === "area" ? { start: gesture.path[0], end: gesture.path[gesture.path.length - 1] } : null;
   const trail = gesture?.mode === "erase" ? gesture.path : null;

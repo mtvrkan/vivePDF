@@ -1,10 +1,11 @@
+import { memo } from "react";
 import { ArchiveRestore, RotateCw, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { pendingChangesFor, usePendingChangesStore } from "@/shared/store/pendingChangesStore";
 import { isPageDeleted, NO_PAGE_EDITS, pageRotation, pendingPageEdits, storePageEdits, toggleDeleted } from "./pageEdits";
 
-export function PageEditLayer({ documentId, pageIndex }: { documentId: string; pageIndex: number }) {
+export const PageEditLayer = memo(function PageEditLayer({ documentId, pageIndex }: { documentId: string; pageIndex: number }) {
   const { t } = useTranslation();
   const deleted = usePendingChangesStore((state) => isPageDeleted(pendingPageEdits(pendingChangesFor(state.changes, documentId)) ?? NO_PAGE_EDITS, pageIndex));
   const turn = usePendingChangesStore((state) => pageRotation(pendingPageEdits(pendingChangesFor(state.changes, documentId)) ?? NO_PAGE_EDITS, pageIndex));
@@ -39,4 +40,4 @@ export function PageEditLayer({ documentId, pageIndex }: { documentId: string; p
       </span>
     </div>
   );
-}
+});

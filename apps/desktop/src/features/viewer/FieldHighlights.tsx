@@ -1,6 +1,7 @@
+import { memo } from "react";
 import { useDocumentMessagesStore } from "@/shared/store/documentMessagesStore";
 
-export function FieldHighlights({ documentId, pageIndex }: { documentId: string; pageIndex: number }) {
+export const FieldHighlights = memo(function FieldHighlights({ documentId, pageIndex }: { documentId: string; pageIndex: number }) {
   const highlight = useDocumentMessagesStore((state) => state.highlights[documentId] ?? null);
   if (highlight?.state !== "shown") return null;
   const boxes = highlight.boxes.filter((box) => box.page === pageIndex + 1);
@@ -17,4 +18,4 @@ export function FieldHighlights({ documentId, pageIndex }: { documentId: string;
       ))}
     </div>
   );
-}
+});

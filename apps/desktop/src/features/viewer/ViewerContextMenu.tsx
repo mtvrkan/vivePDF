@@ -158,7 +158,8 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
   const requestRef = useRef(0);
   const requestSearch = useSearchRequestStore((state) => state.requestSearch);
   const setPanels = useViewerPanelsStore((state) => state.setPanels);
-  const webSearch = useWebSearchStore();
+  const searchEngine = useWebSearchStore((state) => state.engine);
+  const customSearchUrl = useWebSearchStore((state) => state.customUrl);
   const offline = useOffline();
   const requestFocusAt = useViewerOverlayStore((state) => state.requestFocusAt);
   const setOverlayMode = useViewerOverlayStore((state) => state.setMode);
@@ -655,7 +656,7 @@ export function ViewerContextMenu({ documentId, hostRef, readOnlySource }: Viewe
   };
 
   const locale = i18n.language;
-  const configuredEngineUrl = searchUrl(webSearch.engine, menu.selectionText, webSearch.customUrl);
+  const configuredEngineUrl = searchUrl(searchEngine, menu.selectionText, customSearchUrl);
 
   const webSearchItems: ContextMenuItem[] = [
     { type: "item", id: "web-default", label: t("viewer.context.webSearchDefault"), onSelect: () => void openWebSearch(configuredEngineUrl) },

@@ -4,6 +4,9 @@ import { ZOOM_MAX_LEVEL, ZOOM_MIN_LEVEL, wheelZoomFactor } from "./zoomShortcuts
 
 const LINE_HEIGHT_PX = 16;
 const PAGE_HEIGHT_PX = 400;
+export const PINCH_HOLD_MS = 400;
+
+const zoomsPage = (event: WheelEvent | KeyboardEvent) => event.ctrlKey || event.metaKey;
 
 export function useWheelZoom(hostRef: RefObject<HTMLDivElement | null>, documentId: string) {
   const { provides: zoom } = useZoom(documentId);
@@ -16,6 +19,9 @@ export function useWheelZoom(hostRef: RefObject<HTMLDivElement | null>, document
     let pendingDelta = 0;
     let center = { vx: 0, vy: 0 };
     let frame = 0;
+    let modifierHeld = false;
+    let pinchTimer: ReturnType<typeof setTimeout> | null = null;
+    let blocking = false;
 
     const flush = () => {
       frame = 0;
@@ -29,10 +35,26 @@ export function useWheelZoom(hostRef: RefObject<HTMLDivElement | null>, document
       scope.requestZoom(Number(target.toFixed(3)), center);
     };
 
+    const blockPageZoom = (event: WheelEvent) => {
+      if (zoomsPage(event)) event.preventDefault();
+    };
+    const refreshBlocking = () => {
+      const wanted = modifierHeld || pinchTimer !== null;
+      if (wanted === blocking) return;
+      blocking = wanted;
+      if (wanted) host.addEventListener("wheel", blockPageZoom, { passive: false, capture: true });
+      else host.removeEventListener("wheel", blockPageZoom, { capture: true });
+    };
+
     const onWheel = (event: WheelEvent) => {
-      if (!(event.ctrlKey || event.metaKey)) return;
-      event.preventDefault();
+      if (!zoomsPage(event)) return;
       event.stopPropagation();
+      if (pinchTimer !== null) clearTimeout(pinchTimer);
+      pinchTimer = setTimeout(() => {
+        pinchTimer = null;
+        refreshBlocking();
+      }, PINCH_HOLD_MS);
+      refreshBlocking();
       const scroller = host.querySelector<HTMLElement>("[data-pan-scroller]");
       if (!scroller) return;
       const rect = scroller.getBoundingClientRect();
@@ -41,10 +63,26 @@ export function useWheelZoom(hostRef: RefObject<HTMLDivElement | null>, document
       pendingDelta += event.deltaY * unit;
       if (!frame) frame = requestAnimationFrame(flush);
     };
+    const onKey = (event: KeyboardEvent) => {
+      modifierHeld = zoomsPage(event);
+      refreshBlocking();
+    };
+    const onBlur = () => {
+      modifierHeld = false;
+      refreshBlocking();
+    };
 
-    host.addEventListener("wheel", onWheel, { passive: false, capture: true });
+    host.addEventListener("wheel", onWheel, { passive: true, capture: true });
+    window.addEventListener("keydown", onKey, true);
+    window.addEventListener("keyup", onKey, true);
+    window.addEventListener("blur", onBlur);
     return () => {
       host.removeEventListener("wheel", onWheel, { capture: true });
+      host.removeEventListener("wheel", blockPageZoom, { capture: true });
+      window.removeEventListener("keydown", onKey, true);
+      window.removeEventListener("keyup", onKey, true);
+      window.removeEventListener("blur", onBlur);
+      if (pinchTimer !== null) clearTimeout(pinchTimer);
       if (frame) cancelAnimationFrame(frame);
     };
   }, [hostRef]);

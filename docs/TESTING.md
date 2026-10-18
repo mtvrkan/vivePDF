@@ -173,6 +173,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Open a PDF from a folder outside Documents and run a tool whose output folder already exists
   there (for example Split into a folder made by hand): vivePDF asks for a folder instead of
   writing into it, and the folder chosen in that dialog is used.
+- In a long PDF, Ctrl + mouse wheel and a precision-touchpad pinch still zoom around the
+  pointer without zooming the whole window, and right after releasing Ctrl the wheel scrolls
+  again; a fast fling through the document then logs a `[scroll]` line in the app log with
+  few frames over 34 ms.
 
 ### How native dialogs are answered
 

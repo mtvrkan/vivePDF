@@ -159,7 +159,7 @@ export function LinkPreview({ documentId, hostRef }: { documentId: string; hostR
       {preview.link.kind === "page" ? (
         <>
           <div className="border-b px-3 py-1.5 font-medium">{t("viewer.link.goToPage", { page: pageLabel })}</div>
-          {preview.image ? <img src={preview.image} alt={t("viewer.linkPreview.alt", { page: pageLabel })} className="block w-full" /> : <div className="page-skeleton h-50 w-full" aria-hidden />}
+          {preview.image ? <img src={preview.image} alt={t("viewer.linkPreview.alt", { page: pageLabel })} className="block w-full" /> : <div className="page-skeleton relative h-50 w-full" aria-hidden />}
         </>
       ) : (
         <div className="max-w-80 break-all px-3 py-2 font-mono">{preview.link.uri}</div>

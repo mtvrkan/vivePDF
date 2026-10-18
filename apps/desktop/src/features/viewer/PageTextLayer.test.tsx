@@ -42,7 +42,25 @@ afterEach(() => {
   useDocumentStore.getState().remove("doc-a11y");
 });
 
+function hideAll() {
+  observers.filter((entry) => !entry.disconnected).forEach((entry) => entry.callback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver));
+}
+
 describe("PageTextLayer", () => {
+  it("asks nothing for a page that only flashes past while scrolling", async () => {
+    getPageText.mockResolvedValue({ pages: [{ page: 1, text: "Geçilen sayfa." }], pageCount: 5 });
+    render(<PageTextLayer documentId="doc-a11y" pageIndex={0} />);
+
+    await act(async () => {
+      showAll();
+      await vi.advanceTimersByTimeAsync(100);
+      hideAll();
+      await vi.advanceTimersByTimeAsync(1000);
+    });
+
+    expect(getPageText).not.toHaveBeenCalled();
+  });
+
   it("asks for nothing until the page is on screen, then reads visible pages in one call", async () => {
     getPageText.mockResolvedValue({ pages: [{ page: 2, text: "İkinci sayfa metni." }, { page: 3, text: "" }], pageCount: 5 });
     const { container } = render(

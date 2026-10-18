@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
+import { memo, useCallback, useEffect, useReducer, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
 import { Move, X } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import { useTranslation } from "react-i18next";
@@ -70,10 +70,10 @@ function backgroundKey(item: BlockPending): string {
 
 type DrawnMeasure = { id: string | null; a: PagePoint; b: PagePoint };
 
-export function PageOverlayLayer(props: LayerProps) {
+export const PageOverlayLayer = memo(function PageOverlayLayer(props: LayerProps) {
   const active = useViewerOverlayStore((state) => state.mode !== null);
   return active ? <ActivePageOverlayLayer {...props} /> : null;
-}
+});
 
 function ActivePageOverlayLayer({ documentId, pageIndex, width, height }: LayerProps) {
   const { t } = useTranslation();

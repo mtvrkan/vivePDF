@@ -7,11 +7,14 @@ export function PageSkeleton() {
   useEffect(() => {
     const host = ref.current?.parentElement;
     if (!host) return;
+    const observer = new MutationObserver(() => check());
     const check = () => {
-      if (host.querySelector("img, canvas")) setPainted(true);
+      if (!host.querySelector("img, canvas")) return false;
+      observer.disconnect();
+      setPainted(true);
+      return true;
     };
-    check();
-    const observer = new MutationObserver(check);
+    if (check()) return;
     observer.observe(host, { childList: true, subtree: true });
     return () => observer.disconnect();
   }, []);
