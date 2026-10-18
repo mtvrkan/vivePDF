@@ -107,6 +107,39 @@ describe("security", () => {
     expect(result.signatures?.[0].coverage).toBe("ENTIRE_FILE");
   });
 
+  it("refuses a network share nobody opened in every file command without reaching it", async () => {
+    const share = String.raw`\\vivepdf-e2e-unreachable.invalid\share`;
+    const calls: Array<[string, Record<string, string>]> = [
+      ["open_folder", { path: share }],
+      ["reveal_path", { path: `${share}\\a.pdf` }],
+      ["delete_file", { path: `${share}\\a.pdf` }],
+      ["open_produced_file", { path: `${share}\\a.pdf` }],
+      ["open_produced_picture", { path: `${share}\\a.png` }],
+      ["start_file_drag", { path: `${share}\\a.pdf` }],
+    ];
+
+    const answers = await browser.executeAsync(
+      (list: Array<[string, Record<string, string>]>, done: (results: Array<{ command: string; ms: number; code: string | null }>) => void) => {
+        const bridge = (window as unknown as { __TAURI_INTERNALS__: { invoke: (command: string, args: unknown) => Promise<unknown> } }).__TAURI_INTERNALS__;
+        Promise.all(
+          list.map(([command, args]) => {
+            const started = performance.now();
+            return bridge.invoke(command, args).then(
+              () => ({ command, ms: performance.now() - started, code: null }),
+              (error: { code?: string }) => ({ command, ms: performance.now() - started, code: error?.code ?? "unknown" }),
+            );
+          }),
+        ).then(done);
+      },
+      calls,
+    );
+
+    for (const answer of answers) {
+      expect({ command: answer.command, code: answer.code }).toEqual({ command: answer.command, code: "PERMISSION_DENIED" });
+      expect(answer.ms).toBeLessThan(1000);
+    }
+  });
+
   describe("outputs outside vivePDF's own folders", () => {
     let folder = "";
 

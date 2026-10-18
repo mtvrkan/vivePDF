@@ -135,6 +135,7 @@ in.
 | `security` | text watermark with Turkish letters | watermark text on every page |
 | `security` | create a certificate, sign with it | one signature, intact, covering the whole file |
 | `security` | compress a document picked from a new folder in Documents while another program's file already sits at the suggested output | the save dialog is asked, the output lands at the picked path and the other file is left as it was |
+| `security` | ask open folder, reveal, delete, open produced file/picture and drag-out for a path on a network share nobody opened | every command answers PERMISSION_DENIED in under a second, without trying to reach the server |
 | `edit` | fill a form field with Turkish text | field value round-trips exactly |
 | `edit` | find and replace | replaced on every page, rest of the line kept |
 | `edit` | Edit › Add formula: type LaTeX, wait for the preview, place it on page 1, *Save as* | more vector drawings on page 1 and no new picture, the page text kept, page 2 and the original untouched; screenshots of the dialog and the placed formula in the run folder |
