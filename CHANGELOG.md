@@ -16,6 +16,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Studio document footnotes can hold line breaks (Shift+Enter), citations from the document's sources and small pictures such as logos; they show in the preview, the PDF (at the page foot or in the endnotes) and the Markdown export, and count toward citation numbering and the reference list. Documents that use them are saved as file version 3. [2026-10-18]
 - Tables and charts inserted into a presentation stay editable after saving: the stamp keeps the editor's settings (up to 64 KB), and double-clicking it with the select tool opens the same editor prefilled; saving the edit swaps the old stamp for the updated item in the same place, and that edit stays an unsaved change of the document even when the other presentation drawings are discarded. Older stamps stay plain pictures [2026-10-18]
 ### Changed
+- The installer and app are about 4.6 MB smaller: the PDF engine's wasm file is shipped once instead of twice [2026-10-18]
+- Page thumbnails, document info and other quick reads are answered by their own workers, so they no longer wait behind OCR, compression or conversions running at the same time; replies are written by one writer so a large result no longer holds up other jobs' progress [2026-10-18]
 - While the black or white board is shown, the presentation bar and the presenter console leave the drawing tools, area zoom, zoom buttons and page clearing to the board's own toolbar instead of showing them twice; they come back on the slides [2026-10-18]
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed
