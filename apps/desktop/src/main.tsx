@@ -14,8 +14,14 @@ import { loadSessionFile } from "@/shared/session/sessionStore";
 import { adoptKnownPaths } from "@/shared/session/grantAdoption";
 import { isAudienceWindow } from "@/shared/lib/windowRole";
 import App from "@/app/App";
+import { STARTUP_MARKS, markOnce } from "@/features/viewer/pdf/startupTimings";
 
-const mount = (app: React.ReactNode) => ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(<React.StrictMode>{app}</React.StrictMode>);
+const mount = (app: React.ReactNode) => {
+  markOnce(STARTUP_MARKS.mount);
+  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(<React.StrictMode>{app}</React.StrictMode>);
+};
+
+markOnce(STARTUP_MARKS.script);
 
 const audience = isAudienceWindow();
 

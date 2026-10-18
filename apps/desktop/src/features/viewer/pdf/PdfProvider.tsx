@@ -8,21 +8,24 @@ import { ErrorState } from "@/components/shared/ErrorState";
 import { AnnotationAuthorSync } from "../AnnotationAuthorSync";
 import { viewerPlugins } from "./plugins";
 import { FALLBACK_FONT_SCHEME, buildFontFallbackConfig, fallbackFontBaseUrl } from "./fontFallback";
+import { STARTUP_MARKS, logStartupReady, markOnce } from "./startupTimings";
 
 const PDFIUM_WASM_URL = new URL("/pdfium.wasm", window.location.origin).href;
 const FONT_FALLBACK = buildFontFallbackConfig(fallbackFontBaseUrl(convertFileSrc("", FALLBACK_FONT_SCHEME)));
 
-export const READY_MARK = "vivepdf:ready";
+export const READY_MARK = STARTUP_MARKS.ready;
 
 function ReadyMark() {
   useEffect(() => {
-    if (performance.getEntriesByName(READY_MARK).length === 0) performance.mark(READY_MARK);
+    markOnce(READY_MARK);
+    logStartupReady();
   }, []);
   return null;
 }
 
 export function PdfProvider({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
+  markOnce(STARTUP_MARKS.engine);
   const { engine, isLoading, error } = usePdfiumEngine({ wasmUrl: PDFIUM_WASM_URL, fontFallback: FONT_FALLBACK });
 
   if (error) {

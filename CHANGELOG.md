@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- The app log (and so the support bundle) records how long start-up took once the PDF engine is ready: script loaded, first render, engine start, first paint and ready, in milliseconds [2026-10-18]
 - The black and white presentation boards each keep their own undo history (up to 100 steps, covering strokes, whole eraser drags, moved or removed items and clearing) and their own pen, highlighter and eraser settings, which the presentation style panel edits while a board is shown [2026-10-18]
 - A toolbar on the black and white presentation boards offers select, pen, highlighter, shapes and eraser, colours that suit the board (light inks on black, dark inks on white), thickness and eraser size presets with a slider and the [ ] keys, undo and redo, deleting the selection, clearing the board after a confirmation and a way back to the slides; it shows on the presenting screen and in the presenter console, never on the projector [2026-10-18]
 - The board select tool now picks several drawings with Shift/Ctrl+click, a dragged rectangle or Ctrl+A; the group is outlined, moves together by dragging or with the arrow keys and Delete removes it in one undoable step, and board keys never undo or flip the slides underneath [2026-10-18]
