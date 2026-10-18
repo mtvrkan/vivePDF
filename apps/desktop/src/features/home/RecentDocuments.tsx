@@ -8,6 +8,7 @@ import { bySize, emptyPadding, sectionPadding, type HomeSize } from "./homeLayou
 import { formatRelativeMoment } from "./homeSearch";
 import { matchingRecent, pinnedFirst, sortedRecent } from "./recentList";
 import { useMissingPaths } from "./useMissingPaths";
+import { usePathStamps } from "./usePathStamps";
 import { cn } from "@/shared/lib/cn";
 import { RevealError, revealPath } from "@/shared/lib/reveal";
 import { renderThumbnail, thumbnailDataUrl } from "@/shared/rpc/thumbnail";
@@ -18,19 +19,23 @@ import { useUiStore } from "@/shared/store/uiStore";
 import type { RecentFile } from "@/types";
 
 const THUMBNAIL_CACHE_LIMIT = 40;
-const thumbnailCache = new Map<string, string>();
+const NO_PATHS: string[] = [];
 
-function readThumbnail(path: string): string | null {
-  const url = thumbnailCache.get(path);
-  if (url === undefined) return null;
+type Cover = { url: string; stamp: string };
+
+const thumbnailCache = new Map<string, Cover>();
+
+function readThumbnail(path: string): Cover | null {
+  const cover = thumbnailCache.get(path);
+  if (cover === undefined) return null;
   thumbnailCache.delete(path);
-  thumbnailCache.set(path, url);
-  return url;
+  thumbnailCache.set(path, cover);
+  return cover;
 }
 
-function storeThumbnail(path: string, url: string) {
+function storeThumbnail(path: string, cover: Cover) {
   thumbnailCache.delete(path);
-  thumbnailCache.set(path, url);
+  thumbnailCache.set(path, cover);
   while (thumbnailCache.size > THUMBNAIL_CACHE_LIMIT) {
     const oldest = thumbnailCache.keys().next().value;
     if (oldest === undefined) break;
@@ -54,18 +59,26 @@ function PinnedMarker({ item }: { item: RecentFile }) {
   return item.pinned ? <Pin className="size-3 shrink-0 text-primary" aria-hidden /> : null;
 }
 
-function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; isMissing: boolean; className?: string }) {
+function RecentDocumentCard({ item, isMissing, stamp, className }: { item: RecentFile; isMissing: boolean; stamp?: string; className?: string }) {
   const { t } = useTranslation();
   const locale = useUiStore((state) => state.locale);
   const { openPath } = useOpenPdf();
   const removeRecent = useRecentStore((state) => state.remove);
   const toast = useToastStore((state) => state.push);
   const ref = useRef<HTMLDivElement | null>(null);
-  const [thumbnail, setThumbnail] = useState<string | null>(() => readThumbnail(item.path));
+  const [cover, setCover] = useState<Cover | null>(() => readThumbnail(item.path));
   const [failed, setFailed] = useState(false);
+  const stale = cover !== null && Boolean(stamp) && Boolean(cover.stamp) && cover.stamp !== stamp;
 
   useEffect(() => {
-    if (thumbnail || failed || isMissing) return;
+    if (!cover || !stamp || cover.stamp) return;
+    const adopted = { url: cover.url, stamp };
+    storeThumbnail(item.path, adopted);
+    setCover(adopted);
+  }, [cover, stamp, item.path]);
+
+  useEffect(() => {
+    if ((cover && !stale) || failed || isMissing) return;
     const node = ref.current;
     if (!node) return;
     const observer = new IntersectionObserver(
@@ -74,9 +87,9 @@ function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; 
         observer.disconnect();
         renderThumbnail({ path: item.path, width: 320, format: "jpeg" })
           .then((result) => {
-            const url = thumbnailDataUrl(result);
-            storeThumbnail(item.path, url);
-            setThumbnail(url);
+            const next = { url: thumbnailDataUrl(result), stamp: "" };
+            storeThumbnail(item.path, next);
+            setCover(next);
           })
           .catch(() => setFailed(true));
       },
@@ -84,7 +97,7 @@ function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; 
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [item.path, thumbnail, failed, isMissing]);
+  }, [item.path, cover, stale, failed, isMissing]);
 
   const handleReveal = async () => {
     try {
@@ -100,8 +113,8 @@ function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; 
       <button type="button" disabled={isMissing} onClick={() => void openPath(item.path)} title={isMissing ? t("home.collections.missing") : item.path} aria-label={item.fileName} className="flex aspect-[3/4] w-14 shrink-0 items-end justify-center self-stretch overflow-hidden bg-secondary/40 px-2 pt-2 outline-none after:absolute after:inset-0 after:rounded-xl focus-visible:after:ring-2 focus-visible:after:ring-ring disabled:cursor-not-allowed @sm:aspect-[4/3] @sm:w-full @sm:self-auto @sm:px-4 @sm:pt-3">
         {isMissing ? (
           <AlertTriangle className="size-6 self-center text-warning @sm:size-9" aria-hidden />
-        ) : thumbnail ? (
-          <img src={thumbnail} alt="" className="size-full rounded-t-sm object-cover object-top shadow-sm ring-1 ring-border/60" />
+        ) : cover ? (
+          <img src={cover.url} alt="" className="size-full rounded-t-sm object-cover object-top shadow-sm ring-1 ring-border/60" />
         ) : failed ? (
           <FileText className="size-6 self-center text-muted-foreground @sm:size-9" aria-hidden />
         ) : (
@@ -180,7 +193,9 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
     toast("info", t("home.recentCleared"), { label: t("common.undo"), onClick: () => restoreRecent(snapshot) });
   };
   const shown = useMemo(() => (showAll ? ordered : ordered.slice(0, limit)), [showAll, ordered, limit]);
-  const missing = useMissingPaths(useMemo(() => shown.map((item) => item.path), [shown]));
+  const shownPaths = useMemo(() => shown.map((item) => item.path), [shown]);
+  const missing = useMissingPaths(shownPaths);
+  const stamps = usePathStamps(size === "small" ? NO_PATHS : shownPaths);
   const shownPinned = shown.filter((item) => item.pinned === true);
   const shownOthers = shown.filter((item) => item.pinned !== true);
   const groups = [
@@ -262,7 +277,7 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
             ) : (
               <div className={cn("grid gap-3", size === "large" ? "grid-cols-1 @lg:grid-cols-2 @3xl:grid-cols-3" : "grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 @3xl:grid-cols-4 @5xl:grid-cols-6")}>
                 {group.items.map((item) => (
-                  <RecentDocumentCard key={item.path} item={item} isMissing={missing.has(item.path)} />
+                  <RecentDocumentCard key={item.path} item={item} isMissing={missing.has(item.path)} stamp={stamps.get(item.path)} />
                 ))}
               </div>
             )}

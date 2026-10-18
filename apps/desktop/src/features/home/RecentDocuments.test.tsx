@@ -8,10 +8,16 @@ import { RecentDocuments } from "./RecentDocuments";
 
 const pickAndOpen = vi.fn(() => Promise.resolve());
 const invoke = vi.fn();
+const renderThumbnail = vi.fn();
 
 vi.mock("@tauri-apps/api/core", async (importOriginal) => ({
   ...(await importOriginal<typeof import("@tauri-apps/api/core")>()),
   invoke: (...args: unknown[]) => invoke(...args),
+}));
+
+vi.mock("@/shared/rpc/thumbnail", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/shared/rpc/thumbnail")>()),
+  renderThumbnail: (...args: unknown[]) => renderThumbnail(...args),
 }));
 
 vi.mock("@/features/viewer/useOpenPdf", () => ({
@@ -28,6 +34,7 @@ beforeEach(() => {
   pickAndOpen.mockClear();
   invoke.mockReset();
   invoke.mockRejectedValue(new Error("unavailable"));
+  renderThumbnail.mockReset();
   useRecentStore.setState({ items: [], sort: "recent" });
   useOpenStore.setState({ busy: false });
 });
@@ -180,5 +187,37 @@ describe("RecentDocuments", () => {
 
     expect(limited).toBe(4);
     expect(screen.getAllByRole("listitem")).toHaveLength(6);
+  });
+
+  it("re-renders a cached cover once the file has changed on disk", async () => {
+    vi.stubGlobal("IntersectionObserver", class {
+      constructor(private readonly callback: IntersectionObserverCallback) {}
+      observe() {
+        this.callback([{ isIntersecting: true } as IntersectionObserverEntry], this as unknown as IntersectionObserver);
+      }
+      disconnect() {}
+    });
+    let stamp = "1-5";
+    invoke.mockImplementation((command: string) => Promise.resolve(command === "path_stamps" ? [stamp] : [true]));
+    renderThumbnail.mockResolvedValueOnce({ image: "OLD", width: 1, height: 1, pageCount: 1, format: "jpeg" }).mockResolvedValueOnce({ image: "NEW", width: 1, height: 1, pageCount: 1, format: "jpeg" });
+    useRecentStore.setState({ items: [{ path: "C:/Docs/cover.pdf", fileName: "cover.pdf", openedAt: 1 }] });
+
+    const first = render(<RecentDocuments />);
+    await waitFor(() => expect(document.querySelector("img")?.getAttribute("src")).toBe("data:image/jpeg;base64,OLD"));
+    await waitFor(() => expect(invoke).toHaveBeenCalledWith("path_stamps", { paths: ["C:/Docs/cover.pdf"] }));
+    first.unmount();
+
+    render(<RecentDocuments />);
+    await waitFor(() => expect(invoke).toHaveBeenCalledTimes(4));
+    const unchanged = renderThumbnail.mock.calls.length;
+    cleanup();
+
+    stamp = "2-9";
+    render(<RecentDocuments />);
+    expect(document.querySelector("img")?.getAttribute("src")).toBe("data:image/jpeg;base64,OLD");
+    await waitFor(() => expect(document.querySelector("img")?.getAttribute("src")).toBe("data:image/jpeg;base64,NEW"));
+
+    expect(unchanged).toBe(1);
+    expect(renderThumbnail).toHaveBeenCalledTimes(2);
   });
 });

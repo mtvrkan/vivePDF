@@ -162,6 +162,7 @@ pub fn run() {
             diagnostics::reveal_path,
             diagnostics::path_exists,
             diagnostics::path_kinds,
+            diagnostics::path_stamps,
             files::open_produced_picture,
             files::open_produced_file,
             files::open_folder,

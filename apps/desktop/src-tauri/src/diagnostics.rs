@@ -430,6 +430,37 @@ pub async fn path_kinds(paths: Vec<String>) -> Result<Vec<&'static str>, RpcErro
     .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
 }
 
+#[tauri::command]
+pub async fn path_stamps(paths: Vec<String>) -> Result<Vec<Option<String>>, RpcError> {
+    tauri::async_runtime::spawn_blocking(move || {
+        paths
+            .into_iter()
+            .map(|path| path_stamp(std::path::Path::new(&path)))
+            .collect::<Vec<Option<String>>>()
+    })
+    .await
+    .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
+}
+
+fn path_stamp(path: &std::path::Path) -> Option<String> {
+    if crate::grants::is_known(path) {
+        disk_stamp(path)
+    } else {
+        Some(String::new())
+    }
+}
+
+fn disk_stamp(path: &std::path::Path) -> Option<String> {
+    let metadata = std::fs::metadata(path).ok()?;
+    let modified = metadata
+        .modified()
+        .ok()
+        .and_then(|time| time.duration_since(std::time::UNIX_EPOCH).ok())
+        .map(|age| age.as_nanos())
+        .unwrap_or_default();
+    Some(format!("{modified}-{}", metadata.len()))
+}
+
 pub fn install_panic_hook<R: Runtime>(app: tauri::AppHandle<R>) {
     std::panic::set_hook(Box::new(move |info| {
         log_line_sync(&app, "panic", "rust", &info.to_string());
@@ -472,6 +503,8 @@ mod tests {
         assert_eq!(path_kind(&unknown), "file");
         assert!(!path_exists_for_page(&produced));
         assert_eq!(path_kind(&produced), "missing");
+        assert_eq!(path_stamp(&unknown), Some(String::new()));
+        assert_eq!(path_stamp(&produced), None);
     }
 
     #[test]
@@ -625,6 +658,20 @@ mod tests {
         assert_eq!(disk_kind(&folder), "directory");
         assert_eq!(disk_kind(&file), "file");
         assert_eq!(disk_kind(&dir.join("gone")), "missing");
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn disk_stamp_changes_when_a_file_is_rewritten() {
+        let dir = temp_dir("stamps");
+        let file = dir.join("report.pdf");
+        std::fs::write(&file, b"first").unwrap();
+        let before = disk_stamp(&file);
+        std::fs::write(&file, b"second version").unwrap();
+        let after = disk_stamp(&file);
+        assert!(before.as_deref().is_some_and(|stamp| stamp.ends_with("-5")));
+        assert_ne!(before, after);
+        assert_eq!(disk_stamp(&dir.join("gone")), None);
         let _ = std::fs::remove_dir_all(&dir);
     }
 }
