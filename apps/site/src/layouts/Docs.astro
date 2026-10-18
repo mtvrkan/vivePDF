@@ -33,8 +33,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
       <svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>{ui.docs.menu}
     </button>
     <aside class="docs-side" id="docsSide" aria-label={ui.docs.sidebar}>
-      <button type="button" class="docs-search-btn" data-search-open>
-        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span>{ui.docs.search}</span><span class="kbd" aria-hidden="true"><span class="k-win">Ctrl K</span><span class="k-mac">⌘K</span></span>
+      <button type="button" class="docs-search-btn" data-search-open aria-label={ui.docs.search}>
+        <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg><span>{ui.docs.searchShort}</span><span class="kbd" aria-hidden="true"><span class="k-win">Ctrl K</span><span class="k-mac">⌘K</span></span>
       </button>
       <nav aria-label={ui.docs.sidebar}>
         <a class:list={["side-home", { on: !current }]} href={docsIndexPath(lang)} aria-current={!current ? "page" : undefined}>{ui.docs.title}</a>

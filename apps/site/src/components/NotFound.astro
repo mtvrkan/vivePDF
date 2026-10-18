@@ -1,0 +1,112 @@
+---
+import Base from "../layouts/Base.astro";
+import { docPath, docsIndexPath, homePath, type Locale } from "../i18n";
+import { UI } from "../i18n/ui";
+import { docByKey, type DocKey } from "../docs/structure";
+import { docTitles } from "../docs/pages";
+
+type Props = { lang: Locale; path: string };
+const { lang, path } = Astro.props;
+const ui = UI[lang];
+const c = ui.notFound;
+const titles = await docTitles(lang);
+const popular = (["install", "openRead", "shortcuts", "faq"] as DocKey[]).map((key) => {
+  const doc = docByKey(key);
+  const meta = titles.get(key);
+  return { href: docPath(lang, doc.slug[lang]), icon: doc.icon, title: meta?.title ?? key, description: meta?.description ?? "" };
+});
+---
+<Base lang={lang} title={`${c.title} · vivePDF`} description={c.lead} path={path} alternates={{}} navSolid noindex>
+  <Fragment slot="head">
+    {lang === "tr" && <script is:inline>(function(){if(!/^\/en(\/|$)/.test(location.pathname))return;var d=document.documentElement;d.classList.add("nf-swap");fetch("/en/404/").then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(h){document.open();document.write(h);document.close()}).catch(function(){d.classList.remove("nf-swap")})})();</script>}
+    <style is:inline>.nf-swap body{visibility:hidden}</style>
+  </Fragment>
+  <main id="main" class="nf">
+    <div class="wrap nf-wrap">
+      <div class="nf-copy">
+        <p class="eyebrow">{c.eyebrow}</p>
+        <h1>{c.heading}</h1>
+        <p class="lead">{c.lead}</p>
+        <p class="nf-asked" id="nfAsked" hidden><span>{c.asked}</span><code id="nfPath"></code></p>
+        <div class="nf-links">
+          <a class="btn btn-primary" href={homePath(lang)}><svg class="ic" aria-hidden="true"><use href="#i-home"/></svg>{c.home}</a>
+          <a class="btn btn-ghost" href={docsIndexPath(lang)}><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg>{c.docs}</a>
+        </div>
+      </div>
+      <div class="nf-art" aria-hidden="true">
+        <div class="nf-sheet nf-l"><i></i><i></i><i></i><i></i><i></i><b>3</b></div>
+        <div class="nf-sheet nf-gap"><span>404</span><b>?</b></div>
+        <div class="nf-sheet nf-r"><i></i><i></i><i></i><i></i><i></i><b>5</b></div>
+      </div>
+    </div>
+    <section class="wrap nf-pop" aria-labelledby="nfPop">
+      <h2 id="nfPop">{c.popular}</h2>
+      <ul>
+        {popular.map((p) => (
+          <li>
+            <a class="glass" href={p.href}>
+              <span class="nf-ic"><svg class="ic" aria-hidden="true"><use href={`#${p.icon}`}/></svg></span>
+              <b>{p.title}</b>
+              <small>{p.description}</small>
+              <svg class="ic nf-go" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</Base>
+<script>
+  const path = decodeURI(location.pathname);
+  const asked = document.getElementById("nfAsked");
+  const code = document.getElementById("nfPath");
+  if (asked && code && !/^\/(en\/)?404(\.html|\/)?$/.test(path)) {
+    code.textContent = path;
+    asked.hidden = false;
+  }
+</script>
+<style>
+  .nf{padding:clamp(120px,16vw,170px) 0 clamp(24px,4vw,48px)}
+  .nf-wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);align-items:center;gap:clamp(32px,6vw,88px)}
+  .nf h1{font:600 clamp(2.5rem,5.6vw,4.5rem)/1 var(--f-display);letter-spacing:-.045em;color:var(--deep);margin:18px 0 20px;text-wrap:balance}
+  .nf .lead{text-wrap:pretty}
+  .nf-asked{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin-top:22px;font-size:.875rem;color:var(--ink-3)}
+  .nf-asked[hidden]{display:none}
+  .nf-asked code{max-width:100%;padding:6px 10px;border-radius:10px;font:500 .8125rem/1.4 var(--f-mono);color:var(--deep);background:color-mix(in srgb,var(--surf) 70%,transparent);box-shadow:inset 0 0 0 1px var(--hair-2);overflow-wrap:anywhere}
+  .nf-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+  .nf-links .btn-ghost{min-height:52px;padding:0 22px}
+  .nf-art{position:relative;display:flex;justify-content:center;align-items:center;height:clamp(240px,30vw,340px)}
+  .nf-sheet{--w:clamp(112px,13vw,170px);position:absolute;width:var(--w);aspect-ratio:1/1.32;border-radius:14px;padding:18px 16px;display:flex;flex-direction:column;gap:9px;background:var(--solid);box-shadow:0 30px 60px -32px color-mix(in srgb,var(--sh) 60%,transparent),inset 0 0 0 1px var(--hair)}
+  .nf-sheet i{display:block;height:6px;border-radius:3px;background:color-mix(in srgb,var(--ink-3) 22%,transparent)}
+  .nf-sheet i:first-child{width:62%;height:9px;background:color-mix(in srgb,var(--blue) 45%,transparent)}
+  .nf-sheet i:nth-child(3){width:86%}
+  .nf-sheet i:nth-child(5){width:54%}
+  .nf-sheet b{position:absolute;left:50%;bottom:-30px;translate:-50% 0;font:500 .75rem/1 var(--f-mono);color:var(--ink-3)}
+  .nf-l{translate:-92% 6%;rotate:-8deg}
+  .nf-r{translate:92% 6%;rotate:8deg}
+  .nf-gap{z-index:1;scale:1.08;align-items:center;justify-content:center;background:color-mix(in srgb,var(--solid) 72%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 30px 60px -36px color-mix(in srgb,var(--blue) 45%,transparent);outline:2px dashed color-mix(in srgb,var(--blue) 55%,transparent);outline-offset:-2px}
+  .nf-gap span{font:300 clamp(2rem,4vw,3rem)/1 var(--f-display);letter-spacing:-.05em;background:linear-gradient(100deg,var(--blue-ink),var(--blue) 50%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .nf-gap b{color:var(--blue-ink)}
+  :global(.motion) .nf-gap{animation:nf-float 5s var(--ease) infinite alternate}
+  @keyframes nf-float{to{translate:0 -8px}}
+  .nf-pop{margin-top:clamp(64px,9vw,104px)}
+  .nf-pop h2{font:600 1.125rem/1.2 var(--f-display);letter-spacing:-.02em;color:var(--deep);margin-bottom:18px}
+  .nf-pop ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;list-style:none;margin:0;padding:0}
+  .nf-pop a{height:100%;display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto 1fr;gap:6px 12px;padding:20px;border-radius:var(--r-lg);text-decoration:none;color:inherit;transition:translate .25s var(--ease)}
+  .nf-pop a:hover{translate:0 -3px}
+  .nf-ic{grid-column:1/-1;width:40px;height:40px;margin-bottom:10px;border-radius:12px;display:grid;place-items:center;color:var(--blue-ink);background:color-mix(in srgb,var(--blue) 12%,transparent)}
+  .nf-pop b{font:600 1rem/1.25 var(--f-display);color:var(--deep)}
+  .nf-pop small{grid-column:1;font-size:.875rem;line-height:1.45;color:var(--ink-2);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .nf-go{grid-column:2;grid-row:2;align-self:center;width:16px;height:16px;color:var(--blue-ink);transition:translate .25s var(--ease)}
+  .nf-pop a:hover .nf-go{translate:3px 0}
+  @media (max-width:1024px){.nf-pop ul{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:860px){
+    .nf-wrap{grid-template-columns:1fr}
+    .nf-art{order:-1;height:clamp(190px,52vw,250px)}
+    .nf-sheet{--w:clamp(96px,26vw,130px)}
+  }
+  @media (max-width:520px){
+    .nf-pop ul{grid-template-columns:1fr}
+    .nf-links .btn{flex:1 1 100%}
+  }
+</style>

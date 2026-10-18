@@ -35,7 +35,7 @@ describe("create", () => {
     await waitForDialogsAnswered();
     await chooseCard(t("tools.create.templates.petition.title"));
     await fill(t("tools.create.fields.addressee"), "KAYMAKAMLIK MAKAMINA");
-    await fill(t("tools.create.fields.signer"), "Ayse Demir");
+    await fill(t("tools.create.fields.signer"), "Beril Demir");
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "create-page.png"));
 
     await runPrimary(t("tools.create.run"));
@@ -44,7 +44,7 @@ describe("create", () => {
     const result = probe(output);
     expect(result.pageCount).toBe(1);
     const texts = (result.pages?.[0]?.spans ?? []).map((span) => span.text.trim());
-    expect(texts).toEqual(expect.arrayContaining(["KAYMAKAMLIK MAKAMINA", "KONU", "Ayse Demir"]));
+    expect(texts).toEqual(expect.arrayContaining(["KAYMAKAMLIK MAKAMINA", "KONU", "Beril Demir"]));
     const heading = result.pages?.[0]?.spans.find((span) => span.text.trim() === "KONU");
     const body = result.pages?.[0]?.spans.find((span) => span.text.includes("Dilekce metni"));
     expect(heading && body && heading.size > body.size).toBe(true);
@@ -52,7 +52,7 @@ describe("create", () => {
 
   it("makes a certificate for every row of a table and fills in the columns", async () => {
     const table = join(workDir(), "attendees.csv");
-    writeFileSync(table, ["Ad,Kurs", "Ayşe Demir,Python", "Mehmet Kaya,Veri Bilimi", ""].join("\n"));
+    writeFileSync(table, ["Ad,Kurs", "Nesibe Şahin,Python", "Mehmet Kaya,Veri Bilimi", ""].join("\n"));
     await chooseTable(table);
     await $(`//button[normalize-space(.)="{Kurs}"]`).waitForClickable({ timeout: 60000 });
     await fill(t("tools.create.bulk.fields.body"), "has completed the course");
@@ -67,7 +67,7 @@ describe("create", () => {
     expect(result.pageCount).toBe(2);
     const [first, second] = result.pages ?? [];
     expect(first.width).toBeGreaterThan(first.height);
-    expect(first.text).toContain("Ayşe Demir");
+    expect(first.text).toContain("Nesibe Şahin");
     expect(first.text).toContain("has completed the course Python");
     expect(first.text).toContain("Prof. Selin Ak");
     expect(second.text).toContain("Mehmet Kaya");
@@ -76,7 +76,7 @@ describe("create", () => {
 
   it("saves one invitation per row named after a column", async () => {
     const table = join(workDir(), "guests.csv");
-    writeFileSync(table, ["Ad,Masa", "Can Yilmaz,4", "Elif Su,7", ""].join("\n"));
+    writeFileSync(table, ["Ad,Masa", "Batuhan Yilmaz,4", "Nesibe Su,7", ""].join("\n"));
     await chooseTable(table);
     await $(`//button[normalize-space(.)="{Masa}"]`).waitForClickable({ timeout: 60000 });
     await chooseCard(t("tools.create.bulk.kinds.invitation.title"));
@@ -86,7 +86,7 @@ describe("create", () => {
     await runPrimary(t("tools.create.bulk.run", { count: 2 }));
     const outputs = await waitForOutputs();
 
-    expect(outputs.map((path) => basename(path)).sort()).toEqual(["Can Yilmaz.pdf", "Elif Su.pdf"]);
+    expect(outputs.map((path) => basename(path)).sort()).toEqual(["Batuhan Yilmaz.pdf", "Nesibe Su.pdf"]);
     const folder = readdirSync(join(outputs[0], "..")).filter((name) => name.endsWith(".pdf"));
     expect(folder).toHaveLength(2);
     const elif = probe(outputs.find((path) => path.endsWith("Elif Su.pdf")) as string);

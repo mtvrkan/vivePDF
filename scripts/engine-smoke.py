@@ -300,13 +300,13 @@ class Smoke:
             detected = self.call("forms.detect", {"path": str(short), "output": self.out("f.pdf")})
             fields = self.call("forms.fields", {"path": detected["output"]})["fields"]
             expect(bool(fields), "no fields detected")
-            values = {fields[0]["name"]: "Ayşe Öztürk"}
+            values = {fields[0]["name"]: "Esma Öztürk"}
             filled = self.call(
                 "forms.fill",
                 {"path": detected["output"], "output": self.out("ff.pdf"), "values": values},
             )
             again = self.call("forms.fields", {"path": filled["output"]})["fields"]
-            expect(any(field["value"] == "Ayşe Öztürk" for field in again), "value not kept")
+            expect(any(field["value"] == "Esma Öztürk" for field in again), "value not kept")
             return f"{len(fields)} fields"
 
         def codes() -> str:

@@ -49,7 +49,7 @@ const tr = {
   closeMenu: "Menüyü kapat",
   otherLanguage: "English",
   foot: {
-    blurb: "Açık kaynak, çevrimdışı PDF stüdyosu. Windows için hazır, macOS yakında; Linux'ta kaynaktan derlenir.",
+    blurb: "Açık kaynak, çevrimdışı PDF stüdyosu. Windows ve macOS için hazır; Linux'ta kaynaktan derlenir.",
     product: "Ürün",
     source: "Kaynak",
     help: "Yardım",
@@ -77,6 +77,7 @@ const tr = {
       "vivePDF dokümantasyonu: kurulum, PDF açma, sayfa düzenleme, dönüştürme, OCR, imza, Stüdyo, sunum modu, kısayollar ve sorun giderme.",
     lead: "Kurulumdan sunum moduna kadar vivePDF'in her işi adım adım. Uygulamadaki menü adlarıyla, internetsiz de çalışan aynı yardım konularından derlendi.",
     search: "Dokümantasyonda ara",
+    searchShort: "Ara",
     searchPlaceholder: "Ara: OCR, imza, kısayol",
     searchHint: "Aramak için Ctrl K",
     searchEmpty: "Bu aramaya uyan sayfa yok",
@@ -108,9 +109,13 @@ const tr = {
   },
   notFound: {
     title: "Sayfa bulunamadı",
-    lead: "Aradığın sayfa taşınmış ya da hiç olmamış olabilir.",
+    eyebrow: "Hata 404",
+    heading: "Bu sayfa yerinde yok.",
+    lead: "Aradığın adres taşınmış, adı değişmiş ya da hiç olmamış olabilir. Aşağıdaki sayfalardan biriyle devam edebilirsin.",
+    asked: "İstenen adres",
     home: "Ana sayfaya dön",
     docs: "Dokümantasyona git",
+    popular: "Çok okunanlar",
   },
 };
 
@@ -130,7 +135,7 @@ const en: Ui = {
   closeMenu: "Close menu",
   otherLanguage: "Türkçe",
   foot: {
-    blurb: "An open-source, offline PDF studio. Ready for Windows, macOS coming soon; builds from source on Linux.",
+    blurb: "An open-source, offline PDF studio. Ready for Windows and macOS; builds from source on Linux.",
     product: "Product",
     source: "Source",
     help: "Help",
@@ -158,6 +163,7 @@ const en: Ui = {
       "vivePDF documentation: installing, opening PDFs, organising pages, converting, OCR, signing, Studio, presenter view, shortcuts and troubleshooting.",
     lead: "Everything vivePDF does, step by step, from installing it to presenting. Written with the app's own menu names, from the same help topics that work offline in the app.",
     search: "Search the docs",
+    searchShort: "Search",
     searchPlaceholder: "Search: OCR, sign, shortcut",
     searchHint: "Ctrl K to search",
     searchEmpty: "No page matches this search",
@@ -189,9 +195,13 @@ const en: Ui = {
   },
   notFound: {
     title: "Page not found",
-    lead: "The page you are looking for has moved, or never existed.",
+    eyebrow: "Error 404",
+    heading: "This page isn't here.",
+    lead: "The address may have moved, been renamed or never existed. Pick up from one of the pages below.",
+    asked: "Requested address",
     home: "Back to the home page",
     docs: "Go to the docs",
+    popular: "Popular pages",
   },
 };
 

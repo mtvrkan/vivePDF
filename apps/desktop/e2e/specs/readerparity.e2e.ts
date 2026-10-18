@@ -224,7 +224,7 @@ describe("reader features", () => {
     await question.waitForDisplayed({ timeout: 20000, timeoutMsg: "the note never reached the comments panel" });
 
     await question.$(`button[aria-label="${t("viewer.comments.reply")}"]`).click();
-    const box = question.$(`textarea[aria-label="${t("viewer.comments.replyTo", { name: "Ayşe" })}"]`);
+    const box = question.$(`textarea[aria-label="${t("viewer.comments.replyTo", { name: "Esma" })}"]`);
     await box.waitForDisplayed();
     await typeInto(box, "Yes, checked against the table");
     await browser.keys([CONTROL_KEY, ENTER_KEY]);

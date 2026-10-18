@@ -246,7 +246,7 @@ def commented(target: Path) -> None:
     document = pymupdf.open()
     page = text_page(document, ["Review copy", "Figure 3 shows the yearly totals"])
     note = page.add_text_annot((480, 80), "Is the figure right?")
-    note.set_info(title="Ayşe")
+    note.set_info(title="Esma")
     note.update()
     marked = page.add_highlight_annot(pymupdf.Rect(72, 112, 360, 134))
     marked.set_info(title="Can", content="Check the totals")

@@ -3,7 +3,9 @@ body{background:var(--wash)}
 .docs-main{min-width:0;max-width:760px}
 .docs-shell:not(:has(.docs-toc)) .docs-main{max-width:none;grid-column:2/-1}
 .docs-menu-btn{display:none}
-.docs-side,.docs-toc{position:sticky;top:96px;max-height:calc(100vh - 112px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.docs-side,.docs-toc{position:sticky;top:96px;max-height:calc(100vh - 112px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-gutter:stable;scrollbar-color:transparent transparent;transition:scrollbar-color .3s var(--ease)}
+.docs-side:hover,.docs-side:focus-within,.docs-toc:hover{scrollbar-color:color-mix(in srgb,var(--ink-3) 45%,transparent) transparent}
+.docs-side{padding-right:14px;margin-right:-14px}
 .docs-side nav{display:grid;gap:var(--s-3);padding-bottom:var(--s-3)}
 .docs-search-btn,.docs-hero-search{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;margin-bottom:var(--s-3);padding:0 10px 0 14px;border:0;border-radius:var(--r-md);background:color-mix(in srgb,var(--surf) 70%,transparent);box-shadow:inset 0 0 0 1px var(--hair-2);font:inherit;font-size:.9375rem;color:var(--ink-3);cursor:pointer;text-align:left;transition:box-shadow .2s var(--ease),color .2s var(--ease)}
 .docs-search-btn:hover,.docs-hero-search:hover{color:var(--deep);box-shadow:inset 0 0 0 1px var(--blue)}
@@ -23,8 +25,10 @@ body{background:var(--wash)}
 .docs-toc .d3 a{padding-left:26px;font-size:.8125rem}
 .docs-toc a:hover{color:var(--deep)}
 .docs-toc a.on{color:var(--blue-ink);border-left-color:var(--blue)}
-.crumbs ol{display:flex;flex-wrap:wrap;gap:6px;list-style:none;font:400 .8125rem/1.4 var(--f-mono);color:var(--ink-3)}
+.crumbs ol{display:flex;gap:6px;min-width:0;list-style:none;font:400 .8125rem/1.4 var(--f-mono);color:var(--ink-3)}
 .crumbs li+li::before{content:"/";margin-right:6px;color:var(--hair-2)}
+.crumbs li{flex:0 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crumbs li:first-child{flex:none}
 .crumbs a{color:var(--ink-2)}
 .doc{margin-top:var(--s-3)}
 .doc h1,.docs-hero h1{font:600 clamp(2.2rem,4.2vw,3.4rem)/1.05 var(--f-display);letter-spacing:-.04em;color:var(--deep);margin:14px 0 16px}

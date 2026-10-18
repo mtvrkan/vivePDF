@@ -1,11 +1,11 @@
 ---
 key: install
 title: Installation
-description: How to install vivePDF on Windows 10 and 11, get past the SmartScreen warning, receive updates and uninstall it.
+description: How to install vivePDF on Windows 10/11 and macOS 14+, get past the SmartScreen and Gatekeeper warnings, receive updates and uninstall it.
 updated: 2026-10-18
 ---
 
-vivePDF is a free PDF editor for Windows 10 and Windows 11 (64-bit). Download the installer from the releases page on GitHub and run it; you do not need an account, and the app does not need to stay online.
+vivePDF is a free PDF editor for Windows 10 and 11 (64-bit) and for Macs with Apple silicon on macOS 14 Sonoma or later. Download the installer from the releases page on GitHub and open it; you do not need an account, and the app does not need to stay online.
 
 ## Install on Windows
 
@@ -17,7 +17,7 @@ vivePDF is a free PDF editor for Windows 10 and Windows 11 (64-bit). Download th
 
 ### The SmartScreen warning
 
-The installer is not code-signed yet, so the first time you run it Windows may show **Windows protected your PC**. Click **More info**, then **Run anyway**. The warning is only about the installer; the app itself does not ask again.
+The installer carries no code signature, so the first time you run it Windows may show **Windows protected your PC**. Click **More info**, then **Run anyway**. The warning is only about the installer; the app itself does not ask again.
 
 <Callout type="note" title="Office conversions">
 Word, Excel and PowerPoint conversions use LibreOffice. It comes with the Windows installer and is set up without internet on the first start (about 900 MB on disk). You can remove or reinstall it in **Settings › Tools**.
@@ -33,10 +33,24 @@ vivePDF checks for new versions itself. At start-up it only fetches version info
 
 What changed in each version is on the [Release notes](/en/docs/release-notes/) page.
 
-## macOS and Linux
+## Install on macOS
 
-The macOS version is being prepared, for Macs with Apple silicon on macOS 14 Sonoma or later. There is no ready-made Linux package yet. Until then you can [build vivePDF from source](/en/docs/build-from-source/) on either system.
+<Steps>
+1. Download `vivePDF_<version>_aarch64.dmg` from the [latest release page](https://github.com/mtvrkan/vivePDF/releases/latest).
+2. Open the DMG and drag vivePDF to **Applications**.
+3. Open vivePDF from Applications or Launchpad.
+</Steps>
+
+### The Gatekeeper warning
+
+The app is not notarised by Apple, so macOS may block the first start. Open **System Settings › Privacy & Security** and click **Open Anyway** next to the vivePDF message. If you prefer Terminal, `xattr -dr com.apple.quarantine /Applications/vivePDF.app` does the same. You only need this the first time.
+
+Office conversions use the LibreOffice in Applications; if it is not installed, the app downloads it when you ask. Scanning needs SANE (`brew install sane-backends`).
+
+## Linux
+
+On Linux, vivePDF is [built from source](/en/docs/build-from-source/). The same steps work for development on Windows and macOS.
 
 ## Uninstall
 
-Remove vivePDF from **Settings › Apps › Installed apps** in Windows. If you also want to delete the settings and recent-file list the app keeps on this computer, use **Settings › Data** in vivePDF before uninstalling; **Help › Privacy** shows what is stored.
+On Windows, remove vivePDF from **Settings › Apps › Installed apps**; on a Mac, drag it from Applications to the Bin. If you also want to delete the settings and recent-file list the app keeps on this computer, use **Settings › Data** in vivePDF before uninstalling; **Help › Privacy** shows what is stored.

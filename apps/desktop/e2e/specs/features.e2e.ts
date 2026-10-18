@@ -27,7 +27,7 @@ describe("features", () => {
     await chooseSource(source);
     await chooseCard(t("tools.edit.cover.styles.frame.title"));
     await fill(t("tools.edit.cover.fields.subtitle"), "Final report");
-    await fill(t("tools.edit.cover.fields.author"), "Ayşe Demir");
+    await fill(t("tools.edit.cover.fields.author"), "Nesibe Şahin");
     const expected = await outputPath();
     await runPrimary(t("tools.edit.cover.run"));
     const [output] = await waitForOutputs();
@@ -36,7 +36,7 @@ describe("features", () => {
     expect(result.pageCount).toBe((probe(source).pageCount ?? 0) + 1);
     expect(result.pages?.[0].text).toContain("E2E sample");
     expect(result.pages?.[0].text).toContain("Final report");
-    expect(result.pages?.[0].text).toContain("Ayşe Demir");
+    expect(result.pages?.[0].text).toContain("Nesibe Şahin");
     expect(result.pages?.[1].text).toContain("Sample page 1");
   });
 

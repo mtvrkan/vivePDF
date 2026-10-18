@@ -1,26 +1,4 @@
 ---
-import Base from "../layouts/Base.astro";
-import { docsIndexPath, homePath, LOCALES } from "../i18n";
-import { UI } from "../i18n/ui";
+import NotFound from "../components/NotFound.astro";
 ---
-<Base lang="tr" title={`${UI.tr.notFound.title} · vivePDF`} description={UI.tr.notFound.lead} path="/404/" alternates={{}} navSolid noindex>
-  <main id="main" class="nf wrap">
-    <p class="eyebrow">404</p>
-    {LOCALES.map((l) => (
-      <section lang={l} class="nf-block">
-        {l === "tr" ? <h1>{UI[l].notFound.title}</h1> : <h2>{UI[l].notFound.title}</h2>}
-        <p class="lead">{UI[l].notFound.lead}</p>
-        <div class="nf-links">
-          <a class="btn btn-primary btn-sm" href={homePath(l)}>{UI[l].notFound.home}</a>
-          <a class="btn btn-ghost btn-sm" href={docsIndexPath(l)}>{UI[l].notFound.docs}</a>
-        </div>
-      </section>
-    ))}
-  </main>
-</Base>
-<style>
-  .nf{min-height:70vh;padding:160px 0 96px;display:grid;align-content:start;gap:40px}
-  .nf h1,.nf h2{font:600 clamp(2rem,4vw,3rem)/1.05 var(--f-display);letter-spacing:-.035em;color:var(--deep);margin-bottom:12px}
-  .nf h2{font-size:clamp(1.5rem,3vw,2rem)}
-  .nf-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
-</style>
+<NotFound lang="tr" path="/404/" />

@@ -552,7 +552,7 @@ describe("viewer", () => {
     writeFileSync(
       source,
       [
-        "From: Ayse Demir <ayse@example.com>",
+        "From: Beril Demir <beril@example.com>",
         "To: Team <team@example.com>",
         "Subject: Kick-off meeting",
         "Date: Fri, 02 Oct 2026 10:30:00 +0300",
@@ -582,7 +582,7 @@ describe("viewer", () => {
     const copy = probe(join(converted, copies[copies.length - 1]));
     const text = (copy.pages?.[0].text ?? "").normalize("NFKC");
     expect(text).toContain("Kick-off meeting");
-    expect(text).toMatch(new RegExp(`${t("mail.sender")}\\s+Ayse Demir`));
+    expect(text).toMatch(new RegExp(`${t("mail.sender")}\\s+Beril Demir`));
     expect(text).toContain("agenda.txt");
     expect(copy.attachments).toContain("agenda.txt");
     await closeAllDocuments();

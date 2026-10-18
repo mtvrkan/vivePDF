@@ -216,7 +216,7 @@ describe("studio", () => {
   });
 
   it("fills a name from a CSV, previews each row and exports one signed PDF per row", async () => {
-    const people = ["Ayşe Yılmaz", "Can Demir", "Elif Kaya"];
+    const people = ["Beril Yılmaz", "Batuhan Demir", "Esma Kaya"];
     const table = join(workDir(), "people.csv");
     writeFileSync(table, ["Name,Course", ...people.map((name) => `${name},Design`), ""].join("\r\n"), "utf8");
     const canvasHas = (text: string) => $(`//*[@data-testid="studio-viewport"]//*[@data-element-id][normalize-space(.)="${text}"]`);

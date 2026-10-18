@@ -34,16 +34,27 @@ const last = c.releases.length - 1;
           <p>{c.win.office}</p>
         </article>
         <article class="dl-card mac-card">
-          <div class="os-row"><h3>{c.mac.title}</h3><span class="pending">{c.mac.pending}</span></div>
-          <p class="mac-note">{c.mac.note}</p>
-          <p>{c.mac.text}</p>
+          <div class="dl-top"><span class="os-mark"><svg aria-hidden="true"><use href="#i-apple"/></svg></span><span class="ready"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>{c.mac.ready}</span></div>
+          <div><h3>{c.mac.title}</h3><p class="dl-file">{c.mac.file}</p><p class="mac-note">{c.mac.note}</p></div>
+          <a class="btn btn-primary magnetic" href={LATEST_RELEASE_URL} style="align-self:flex-start"><svg class="ic" aria-hidden="true"><use href="#i-down"/></svg>{c.mac.button}</a>
+          <div class="smart">
+            <p><strong>{c.mac.gateStrong}</strong> {c.mac.gateText}</p>
+            <ol class="steps">{c.mac.steps.map((s) => <li><span>{s}</span></li>)}</ol>
+          </div>
+          <p>{c.mac.office}</p>
+        </article>
+        <article class="dl-card dl-src">
+          <div class="dl-src-text">
+            <h3>{c.linux.title}</h3>
+            <p>{c.linux.text}</p>
+            <a class="text-link ul" href={buildHref}>{c.linux.build}<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+          </div>
           <div class="term">
-            <div class="term-bar"><p>Node 22 + pnpm · Rust · Python 3.12 + uv</p><button class="copy" type="button" id="copyBtn" data-copied={c.mac.copied} data-failed={c.mac.copyFailed}><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span>{c.mac.copy}</span></button></div>
+            <div class="term-bar"><p>Node&nbsp;22&nbsp;+&nbsp;pnpm&nbsp;· Rust&nbsp;· Python&nbsp;3.12&nbsp;+&nbsp;uv</p><button class="copy" type="button" id="copyBtn" data-copied={c.linux.copied} data-failed={c.linux.copyFailed}><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span>{c.linux.copy}</span></button></div>
 <pre id="cmds"><span>$</span> cd apps/desktop &amp;&amp; pnpm install
 <span>$</span> cd ../../sidecar &amp;&amp; uv sync
 <span>$</span> cd ../apps/desktop &amp;&amp; pnpm tauri dev</pre>
           </div>
-          <a class="text-link ul" href={buildHref}>{c.mac.build}<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         </article>
       </div>
     </div>
