@@ -62,7 +62,7 @@ import { ViewerShortcuts } from "./ViewerShortcuts";
 import { ViewerToolbar } from "./ViewerToolbar";
 import { NavigationRail, ToolsRail } from "./ViewerRails";
 import { useOpenPdf } from "./useOpenPdf";
-import { hasOpenModal } from "./viewerKeyTarget";
+import { hasOpenModal, openModalCount } from "./viewerKeyTarget";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useLiveActiveDocument } from "./useLiveActiveDocument";
 import { useDocumentFileWatch } from "./useDocumentFileWatch";
@@ -113,10 +113,11 @@ export function ViewerPage() {
         return;
       }
       if (event.key === "Escape" && !event.defaultPrevented && useUiStore.getState().immersive && !isTypingTarget(event.target)) {
+        const presentation = usePresentationStore.getState();
+        const step = escapeStep({ ...presentation, openDialogs: openModalCount() });
+        if (step === "dialog") return;
         event.preventDefault();
         event.stopPropagation();
-        const presentation = usePresentationStore.getState();
-        const step = escapeStep(presentation);
         if (step === "closeCodeBlock") presentation.closeCodeBlock();
         else if (step === "closeOverview") presentation.setOverviewOpen(false);
         else if (step === "pointer") presentation.setTool("pointer");

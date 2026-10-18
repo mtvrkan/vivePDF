@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { hasOpenModal, hasTextSelectionOutsidePages, isActivatableTarget, isInsideCompositeWidget } from "./viewerKeyTarget";
+import { hasOpenModal, hasTextSelectionOutsidePages, isActivatableTarget, isInsideCompositeWidget, openModalCount } from "./viewerKeyTarget";
 
 function mount(markup: string): HTMLElement {
   const host = document.createElement("div");
@@ -33,6 +33,12 @@ describe("viewer key targets", () => {
     expect(hasOpenModal()).toBe(false);
     mount('<div role="dialog" aria-modal="true">x</div>');
     expect(hasOpenModal()).toBe(true);
+  });
+
+  it("counts stacked modal dialogs and ignores non-modal ones", () => {
+    expect(openModalCount()).toBe(0);
+    mount('<div role="dialog" aria-modal="true">a</div><div role="alertdialog" aria-modal="true">b</div><div role="dialog">c</div>');
+    expect(openModalCount()).toBe(2);
   });
 
   it("tells text selected in a side panel apart from the page view", () => {

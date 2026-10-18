@@ -17,6 +17,10 @@ export function hasOpenModal(root: ParentNode = document): boolean {
   return root.querySelector('[aria-modal="true"]') !== null;
 }
 
+export function openModalCount(root: ParentNode = document): number {
+  return root.querySelectorAll('[aria-modal="true"]').length;
+}
+
 export function hasTextSelectionOutsidePages(selection: Selection | null = window.getSelection()): boolean {
   if (!selection || selection.isCollapsed || selection.rangeCount === 0) return false;
   const anchor = selection.anchorNode;
