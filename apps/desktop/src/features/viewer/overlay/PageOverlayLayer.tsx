@@ -70,7 +70,12 @@ function backgroundKey(item: BlockPending): string {
 
 type DrawnMeasure = { id: string | null; a: PagePoint; b: PagePoint };
 
-export function PageOverlayLayer({ documentId, pageIndex, width, height }: LayerProps) {
+export function PageOverlayLayer(props: LayerProps) {
+  const active = useViewerOverlayStore((state) => state.mode !== null);
+  return active ? <ActivePageOverlayLayer {...props} /> : null;
+}
+
+function ActivePageOverlayLayer({ documentId, pageIndex, width, height }: LayerProps) {
   const { t } = useTranslation();
   const toast = useToastStore((state) => state.push);
   const mode = useViewerOverlayStore((state) => state.mode);
@@ -111,6 +116,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   const [, noteRelease] = useReducer((count: number) => count + 1, 0);
   const caretRef = useRef<{ x: number; y: number } | null>(null);
   const [hover, setHover] = useState<PagePoint | null>(null);
+  const [hoverObjectId, setHoverObjectId] = useState<string | null>(null);
   const [backgrounds, setBackgrounds] = useState<Record<string, string>>({});
   const [snapGuides, setSnapGuides] = useState<{ x: number[]; y: number[] } | null>(null);
 
@@ -509,12 +515,16 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
 
   const onMouseMove = (event: ReactMouseEvent) => {
     const point = toPage(event);
-    setHover(point);
+    if (mode === "measure") setHover(point);
     const drag = dragRef.current;
     if (drag?.kind !== "object-move" && drag?.kind !== "object-resize" && snapGuides) setSnapGuides(null);
     if (!drag && isEditor) {
-      const next = editingObjectId || objectAt(point) ? null : blockAt(point);
+      const resolved = hitAt(point, page.width * page.height, modeHitKind);
+      const overObject = resolved?.source === "object" ? resolved.item : null;
+      const next = editingObjectId || overObject || resolved?.source !== "block" ? null : resolved.block;
       if (next?.id !== hoverBlock?.id) setHoverBlock(next);
+      const overObjectId = overObject?.id ?? null;
+      if (overObjectId !== hoverObjectId) setHoverObjectId(overObjectId);
       return;
     }
     if (!drag) return;
@@ -617,7 +627,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
   if (mode === "measure" && activeMeasure && hover) measureLines.push({ id: null, a: activeMeasure.points[0], b: hover });
   else if (mode === "measure" && activeMeasure) measureLines.push({ id: null, a: activeMeasure.points[0], b: activeMeasure.points[0] });
   const selectionTone = mode === "redact" ? "border-destructive bg-destructive/25" : mode === "link" ? "border-success bg-success/15" : mode === "areaText" || mode === "snapshot" ? "border-primary bg-primary/10 border-dashed" : "border-primary bg-primary/15";
-  const hoverObject = hover && isEditor && !dragRef.current ? objectAt(hover) : null;
+  const hoverObject = hoverObjectId && isEditor && !dragRef.current ? (pageObjects.find((item) => item.id === hoverObjectId) ?? null) : null;
   const cursor = isEditor
     ? hoverBlock
       ? hoverBlock.kind === "text"
@@ -700,6 +710,7 @@ export function PageOverlayLayer({ documentId, pageIndex, width, height }: Layer
       onMouseLeave={() => {
         endDrag();
         setHover(null);
+        setHoverObjectId(null);
         setHoverBlock(null);
       }}
       className="absolute left-0 top-0 z-20 select-none"
