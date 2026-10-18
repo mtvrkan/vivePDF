@@ -7,6 +7,7 @@ import { eraseAlong, inkBounds, sameStrokes } from "./inkErase";
 import { areaBetween, marksInArea, useMarkToolMode, useMarkToolStore, type MarkToolMode } from "./markArea";
 
 const CLICK_LIMIT_PX = 4;
+const ERASE_STEP_PX = 2;
 const PAGE_EVENTS = ["mousedown", "mousemove", "mouseup", "click", "dblclick"] as const;
 
 type Point = { x: number; y: number };
@@ -73,6 +74,8 @@ export function MarkToolLayer({ documentId, pageIndex }: { documentId: string; p
       const point = pointOf(event);
       setHover(point);
       if (!current) return;
+      const last = current.path[current.path.length - 1];
+      if (current.mode === "erase" && Math.hypot(point.x - last.x, point.y - last.y) < ERASE_STEP_PX) return;
       current = { ...current, path: current.mode === "erase" ? [...current.path, point] : [current.path[0], point] };
       setGesture(current);
     };

@@ -39,6 +39,7 @@ export function preferredLocale(): Locale {
 }
 
 const initialLocale = preferredLocale();
+const initialCatalog = initialLocale === "en" ? null : catalogLoaders[initialLocale]();
 
 const MAC_SHORTCUTS_PROCESSOR = "macShortcuts";
 
@@ -56,18 +57,22 @@ const initPromise = i18n
     interpolation: { escapeValue: false },
   })
   .then(async () => {
-    if (initialLocale !== "en") {
-      await loadCatalog(initialLocale);
+    if (initialCatalog) {
+      addCatalog(initialLocale, (await initialCatalog).default);
       await i18n.changeLanguage(initialLocale);
     }
     applyDocumentLocale(initialLocale);
   });
 
+function addCatalog(locale: Locale, catalog: Record<string, unknown>) {
+  if (loadedLocales.has(locale)) return;
+  i18n.addResourceBundle(locale, "common", catalog);
+  loadedLocales.add(locale);
+}
+
 async function loadCatalog(locale: Locale): Promise<void> {
   if (loadedLocales.has(locale)) return;
-  const catalog = await catalogLoaders[locale]();
-  i18n.addResourceBundle(locale, "common", catalog.default);
-  loadedLocales.add(locale);
+  addCatalog(locale, (await catalogLoaders[locale]()).default);
 }
 
 export async function translatorFor(locale: Locale): Promise<TFunction> {
