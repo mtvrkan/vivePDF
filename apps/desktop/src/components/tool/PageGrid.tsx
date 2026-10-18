@@ -5,7 +5,7 @@ import { createThumbnailQueue } from "@/shared/lib/thumbnailQueue";
 import { renderThumbnail, thumbnailDataUrl } from "@/shared/rpc/thumbnail";
 
 const THUMB_WIDTH = 150;
-const queue = createThumbnailQueue(3, 600);
+const queue = createThumbnailQueue(2, 600);
 
 export function LazyThumbnail({ path, password, page }: { path: string; password?: string; page: number }) {
   const key = `${path}|${page}`;
@@ -23,7 +23,7 @@ export function LazyThumbnail({ path, password, page }: { path: string; password
     if (!visible || url) return;
     return queue.load(
       key,
-      (signal) => renderThumbnail({ path, password, page: page - 1, width: THUMB_WIDTH }, { signal }).then(thumbnailDataUrl),
+      (signal) => renderThumbnail({ path, password, page: page - 1, width: THUMB_WIDTH, format: "jpeg" }, { signal }).then(thumbnailDataUrl),
       (value) => {
         if (value) setUrl(value);
       },

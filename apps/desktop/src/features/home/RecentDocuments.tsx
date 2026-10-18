@@ -72,7 +72,7 @@ function RecentDocumentCard({ item, isMissing, className }: { item: RecentFile; 
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
         observer.disconnect();
-        renderThumbnail({ path: item.path, width: 320 })
+        renderThumbnail({ path: item.path, width: 320, format: "jpeg" })
           .then((result) => {
             const url = thumbnailDataUrl(result);
             storeThumbnail(item.path, url);

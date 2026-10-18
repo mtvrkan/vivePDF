@@ -1,5 +1,6 @@
 import base64
 from pathlib import Path
+from typing import Literal
 
 import pymupdf
 
@@ -108,6 +109,7 @@ class ThumbnailParams(RpcModel):
     password: str | None = None
     page: int = 0
     width: int = 320
+    format: Literal["png", "jpeg"] = "png"
 
 
 class ThumbnailResult(RpcModel):
@@ -115,6 +117,10 @@ class ThumbnailResult(RpcModel):
     width: int
     height: int
     page_count: int
+    format: Literal["png", "jpeg"] = "png"
+
+
+JPEG_QUALITY = 82
 
 
 @op("info.thumbnail", ThumbnailParams)
@@ -126,9 +132,13 @@ def thumbnail(params: ThumbnailParams, progress: Progress) -> ThumbnailResult:
         page = document[params.page]
         scale = width / max(page.rect.width, 1.0)
         pixmap = page.get_pixmap(matrix=pymupdf.Matrix(scale, scale), alpha=False)
-        image = base64.b64encode(pixmap.tobytes("png")).decode("ascii")
+        encoded = pixmap.tobytes(params.format, jpg_quality=JPEG_QUALITY)
         return ThumbnailResult(
-            image=image, width=pixmap.width, height=pixmap.height, page_count=document.page_count
+            image=base64.b64encode(encoded).decode("ascii"),
+            width=pixmap.width,
+            height=pixmap.height,
+            page_count=document.page_count,
+            format=params.format,
         )
 
 

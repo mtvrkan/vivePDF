@@ -53,7 +53,7 @@ function PreviewImage({ path, password, label }: { path: string; password?: stri
     let cancelled = false;
     setUrl(null);
     setFailed(false);
-    void renderThumbnail({ path, password, width: 360 })
+    void renderThumbnail({ path, password, width: 360, format: "jpeg" })
       .then((thumb) => {
         if (!cancelled) setUrl(thumbnailDataUrl(thumb));
       })

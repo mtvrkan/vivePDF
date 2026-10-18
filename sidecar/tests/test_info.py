@@ -80,6 +80,28 @@ def test_thumbnail_renders_requested_width(sample_pdf: Path) -> None:
         thumbnail(ThumbnailParams(path=str(sample_pdf), page=9), silent_progress())
 
 
+def test_thumbnail_can_come_as_a_smaller_jpeg(sample_pdf: Path) -> None:
+    from vivepdf.ops.info import ThumbnailParams, thumbnail
+
+    png = thumbnail(ThumbnailParams(path=str(sample_pdf), width=200), silent_progress())
+    jpeg_params = ThumbnailParams(path=str(sample_pdf), width=200, format="jpeg")
+    jpeg = thumbnail(jpeg_params, silent_progress())
+
+    assert png.format == "png"
+    assert jpeg.format == "jpeg"
+    assert jpeg.image.startswith("/9j/")
+    assert (jpeg.width, jpeg.height) == (png.width, png.height)
+
+
+def test_thumbnail_refuses_an_unknown_format(sample_pdf: Path) -> None:
+    from pydantic import ValidationError
+
+    from vivepdf.ops.info import ThumbnailParams
+
+    with pytest.raises(ValidationError):
+        ThumbnailParams(path=str(sample_pdf), format="gif")
+
+
 def test_page_labels_follow_the_label_rules(tmp_path: Path) -> None:
     path = tmp_path / "labels.pdf"
     with pymupdf.open() as document:
