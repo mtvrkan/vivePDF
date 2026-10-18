@@ -191,6 +191,21 @@ describe("editSavedPresentationDrawing", () => {
     expect(useViewerOverlayStore.getState().drawingEditor).toBeNull();
   });
 
+  it("finds a stamp moved but not saved yet at its new place and puts the edit there", async () => {
+    const target = { ...stamps(), rectOf: vi.fn(() => [0.5, 0.6, 0.9, 0.8] as [number, number, number, number]) };
+
+    const besideOld = await editSavedPresentationDrawing(1, { x: 0.3, y: 0.35 }, target);
+    const opened = await editSavedPresentationDrawing(1, { x: 0.7, y: 0.7 }, target);
+    const request = useViewerOverlayStore.getState().drawingEditor;
+    const overlay = useViewerOverlayStore.getState();
+    overlay.updateObject(request?.objectId ?? "", { dataUrl: "data:new", width: 100, height: 50, drawing: { kind: "table", source: { settings, svg: "<svg/>", width: 100, height: 50 } } } as Partial<EditorPending>);
+    overlay.closeDrawingEditor();
+
+    expect([besideOld, opened]).toEqual([false, true]);
+    expect(target.rectOf).toHaveBeenCalledWith("vivepdf-drawing-1");
+    expect(usePresentationStore.getState().strokesByPage[1][0].points[0]).toEqual({ x: 0.5, y: 0.6 });
+  });
+
   it("shows an error when the stamps cannot be read", async () => {
     rpc.sources.mockRejectedValueOnce({ code: "FILE_NOT_FOUND", message: "gone" });
 

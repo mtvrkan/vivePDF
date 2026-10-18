@@ -27,3 +27,16 @@ export function unrotatedRect(rect: PageRect, rotation: number, visible: { width
   const end = unturn(rect.x1, rect.y1);
   return { x0: Math.min(start.x, end.x), y0: Math.min(start.y, end.y), x1: Math.max(start.x, end.x), y1: Math.max(start.y, end.y) };
 }
+
+export function visibleRect(rect: PageRect, rotation: number, visible: { width: number; height: number }): PageRect {
+  const turns = quarterTurns(rotation);
+  const turn = (x: number, y: number) => {
+    if (turns === 1) return { x: visible.width - y, y: x };
+    if (turns === 2) return { x: visible.width - x, y: visible.height - y };
+    if (turns === 3) return { x: y, y: visible.height - x };
+    return { x, y };
+  };
+  const start = turn(rect.x0, rect.y0);
+  const end = turn(rect.x1, rect.y1);
+  return { x0: Math.min(start.x, end.x), y0: Math.min(start.y, end.y), x1: Math.max(start.x, end.x), y1: Math.max(start.y, end.y) };
+}

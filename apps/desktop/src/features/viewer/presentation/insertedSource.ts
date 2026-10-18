@@ -1,7 +1,8 @@
 import type { ChartSettings } from "@/features/viewer/overlay/chart/chartModel";
 import type { DrawingSource } from "@/features/viewer/overlay/drawing/drawingSource";
 import type { TableSettings } from "@/features/viewer/overlay/table/tableModel";
-import type { PresentationInsertedItem, PresentationInsertedSource } from "@/types";
+import { visibleRect } from "@/features/viewer/overlay/pageSize";
+import type { PageSize, PresentationInsertedItem, PresentationInsertedSource } from "@/types";
 
 export const MAX_SOURCE_BYTES = 64 * 1024;
 const SOURCE_VERSION = 1;
@@ -44,4 +45,12 @@ export function insertedItemAt(items: readonly PresentationInsertedItem[], point
     if (point.x >= x0 && point.x <= x1 && point.y >= y0 && point.y <= y1) return items[index];
   }
   return null;
+}
+
+type TrackedRect = { origin: { x: number; y: number }; size: { width: number; height: number } };
+
+export function insertedRectOnPage(rect: TrackedRect, page: PageSize): PresentationInsertedItem["rect"] | null {
+  if (page.width <= 0 || page.height <= 0) return null;
+  const box = visibleRect({ x0: rect.origin.x, y0: rect.origin.y, x1: rect.origin.x + rect.size.width, y1: rect.origin.y + rect.size.height }, page.rotation, page);
+  return [box.x0 / page.width, box.y0 / page.height, box.x1 / page.width, box.y1 / page.height];
 }

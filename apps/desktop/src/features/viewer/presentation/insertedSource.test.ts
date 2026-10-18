@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { TableSettings } from "@/features/viewer/overlay/table/tableModel";
 import type { PresentationInsertedItem } from "@/types";
-import { MAX_SOURCE_BYTES, drawingOfInserted, insertedItemAt, insertedSourceOf } from "./insertedSource";
+import { MAX_SOURCE_BYTES, drawingOfInserted, insertedItemAt, insertedRectOnPage, insertedSourceOf } from "./insertedSource";
 
 const settings = { cells: [["Name"]], align: ["left"] } as unknown as TableSettings;
 
@@ -40,5 +40,21 @@ describe("drawingOfInserted", () => {
     const broken = [item({ data: { settings, width: 0, height: 5 } }), item({ data: { settings: { cells: "x" }, width: 1, height: 1 } }), item({ kind: "chart", data: { settings: {}, width: 1, height: 1 } })];
 
     expect(broken.map(drawingOfInserted)).toEqual([null, null, null]);
+  });
+});
+
+describe("insertedRectOnPage", () => {
+  const box = { origin: { x: 100, y: 50 }, size: { width: 200, height: 100 } };
+
+  it("gives a viewer annotation box as fractions of an upright page", () => {
+    expect(insertedRectOnPage(box, { width: 400, height: 500, rotation: 0 })).toEqual([0.25, 0.1, 0.75, 0.3]);
+  });
+
+  it("turns the box with a page shown turned 90 degrees", () => {
+    expect(insertedRectOnPage(box, { width: 500, height: 400, rotation: 90 })).toEqual([0.7, 0.25, 0.9, 0.75]);
+  });
+
+  it("gives nothing for a page without a size", () => {
+    expect(insertedRectOnPage(box, { width: 0, height: 0, rotation: 0 })).toBeNull();
   });
 });

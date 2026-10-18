@@ -18,7 +18,7 @@ type OverlayState = ReturnType<typeof useViewerOverlayStore.getState>;
 type SavedStamp = { item: PresentationInsertedItem; remove: () => void };
 type Target = { surface: DrawingSurface; strokeId: string; proxyId: string; past: OverlayState["past"]; future: OverlayState["future"]; stamp?: SavedStamp };
 
-export type SavedStamps = { path: string; password?: string; exists: (id: string) => boolean; remove: (pageIndex: number, id: string) => void };
+export type SavedStamps = { path: string; password?: string; exists: (id: string) => boolean; rectOf?: (id: string) => PresentationInsertedItem["rect"] | null; remove: (pageIndex: number, id: string) => void };
 
 let active = false;
 let target: Target | null = null;
@@ -146,7 +146,7 @@ export async function editSavedPresentationDrawing(pageIndex: number, point: Str
     return false;
   }
   const item = insertedItemAt(
-    items.filter((entry) => stamps.exists(entry.id)),
+    items.filter((entry) => stamps.exists(entry.id)).map((entry) => ({ ...entry, rect: stamps.rectOf?.(entry.id) ?? entry.rect })),
     point,
   );
   const drawing = item ? drawingOfInserted(item) : null;

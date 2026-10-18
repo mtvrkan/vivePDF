@@ -4,6 +4,7 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import type { StrokePoint } from "@/shared/store/presentationStore";
 import { annotationStateOf } from "../annotationState";
 import { editSavedPresentationDrawing } from "./drawingInsert";
+import { insertedRectOnPage } from "./insertedSource";
 import { PresentationCanvas } from "./PresentationCanvas";
 
 function useSavedDrawingEdit(documentId: string): (pageIndex: number, point: StrokePoint) => void {
@@ -12,11 +13,17 @@ function useSavedDrawingEdit(documentId: string): (pageIndex: number, point: Str
   return (pageIndex, point) => {
     const document = useDocumentStore.getState().documents[documentId];
     if (!annotation || !document) return;
-    const exists = (id: string) => Object.values(annotationStateOf(annotation)?.byUid ?? {}).some((tracked) => tracked.object.id === id && tracked.object.pageIndex === pageIndex);
+    const tracked = (id: string) => Object.values(annotationStateOf(annotation)?.byUid ?? {}).find((entry) => entry.object.id === id && entry.object.pageIndex === pageIndex)?.object;
+    const rectOf = (id: string) => {
+      const rect = tracked(id)?.rect;
+      const size = document.info?.pageSizes[pageIndex];
+      return rect && size ? insertedRectOnPage(rect, size) : null;
+    };
     void editSavedPresentationDrawing(pageIndex, point, {
       path: document.path,
       password: document.password ?? undefined,
-      exists,
+      exists: (id) => tracked(id) !== undefined,
+      rectOf,
       remove: (page, id) => annotation.deleteAnnotation(page, id),
     });
   };
