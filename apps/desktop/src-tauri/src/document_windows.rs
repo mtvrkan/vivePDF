@@ -51,7 +51,7 @@ struct Candidate {
     focused: u64,
 }
 
-#[derive(Clone, Debug, PartialEq, serde::Serialize, serde::Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct DroppedGroup {
     name: String,
@@ -359,6 +359,7 @@ pub async fn window_open<R: Runtime>(
     window: WebviewWindow<R>,
     paths: Vec<String>,
     at_cursor: Option<bool>,
+    group: Option<DroppedGroup>,
 ) -> Result<String, RpcError> {
     let paths = existing_files(paths)?;
     let placement = if at_cursor.unwrap_or(false) {
@@ -371,6 +372,7 @@ pub async fn window_open<R: Runtime>(
         LaunchRequest {
             tool: None,
             paths: paths.clone(),
+            group: trimmed_group(group),
         },
         placement,
     )
@@ -543,12 +545,39 @@ mod tests {
         let request = LaunchRequest {
             tool: None,
             paths: vec!["a.pdf".to_string()],
+            group: None,
         };
         windows.remember("doc-1", request.clone());
         assert_eq!(windows.request_for("doc-1"), request);
         assert_eq!(windows.request_for("doc-2"), LaunchRequest::default());
         windows.forget("doc-1");
         assert_eq!(windows.request_for("doc-1"), LaunchRequest::default());
+    }
+
+    #[test]
+    fn a_new_window_request_carries_the_group_only_when_there_is_one() {
+        let grouped = LaunchRequest {
+            tool: None,
+            paths: paths(&["a.pdf"]),
+            group: trimmed_group(Some(DroppedGroup {
+                name: "Pack".to_string(),
+                color: "teal".to_string(),
+                collapsed: true,
+            })),
+        };
+        assert_eq!(
+            serde_json::to_value(&grouped).unwrap(),
+            serde_json::json!({
+                "tool": null,
+                "paths": ["a.pdf"],
+                "group": { "name": "Pack", "color": "teal", "collapsed": true }
+            })
+        );
+        let loose = LaunchRequest {
+            group: None,
+            ..grouped
+        };
+        assert!(serde_json::to_value(&loose).unwrap().get("group").is_none());
     }
 
     fn all_open(_: &str) -> bool {

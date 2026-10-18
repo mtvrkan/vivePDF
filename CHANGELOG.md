@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- A tab group torn off into a new window, by dragging its name chip out or from its menu, keeps its name, colour and folding there instead of arriving as loose tabs [2026-10-18]
 - A document tab, or a whole tab group by its name chip, dragged out of a window and dropped on another vivePDF window moves into that window's tab strip where it was dropped, keeping the group's name, colour and folding; dropped anywhere else it opens in a new window as before, and a document window left without tabs closes [2026-10-18]
 - A tab or tab group torn off into a new window opens that window where it was dropped, with its tab strip under the pointer and kept inside the screen; Move to new window from the menu still opens it centred [2026-10-18]
 - While a tab or tab group is dragged over another vivePDF window, that window's tab strip shows a line where it would land, and the line goes away when the drag leaves or ends [2026-10-18]

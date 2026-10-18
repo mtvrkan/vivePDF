@@ -106,9 +106,9 @@ export function launchRequest(): Promise<LaunchRequest> {
   return invoke<LaunchRequest>("launch_request");
 }
 
-export async function openDocumentWindow(paths: string[] = [], atCursor = false): Promise<string> {
+export async function openDocumentWindow(paths: string[] = [], atCursor = false, group: DroppedTabGroup | null = null): Promise<string> {
   try {
-    return await invoke<string>("window_open", { paths, atCursor });
+    return await invoke<string>("window_open", { paths, atCursor, group });
   } catch (error) {
     throw new RpcCallError(toRpcError(error));
   }

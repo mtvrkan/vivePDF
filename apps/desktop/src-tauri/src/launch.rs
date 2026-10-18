@@ -11,6 +11,8 @@ use crate::document_windows::{DocumentWindows, MAIN_WINDOW};
 pub struct LaunchRequest {
     pub tool: Option<String>,
     pub paths: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub group: Option<crate::document_windows::DroppedGroup>,
 }
 
 pub fn parse<I>(arguments: I, cwd: Option<&Path>) -> LaunchRequest
@@ -41,7 +43,11 @@ where
             paths.push(resolved.to_string_lossy().to_string());
         }
     }
-    LaunchRequest { tool, paths }
+    LaunchRequest {
+        tool,
+        paths,
+        group: None,
+    }
 }
 
 #[derive(Default)]
@@ -146,7 +152,8 @@ mod tests {
             request,
             LaunchRequest {
                 tool: None,
-                paths: Vec::new()
+                paths: Vec::new(),
+                group: None,
             }
         );
     }

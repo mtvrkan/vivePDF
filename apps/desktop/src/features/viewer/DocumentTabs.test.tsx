@@ -166,7 +166,7 @@ describe("DocumentTabs moving tabs between windows", () => {
     dragOut(screen.getAllByRole("tab")[0]);
     await waitFor(() => expect(openWindow).toHaveBeenCalledTimes(2));
 
-    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], true);
+    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], true, null);
     expect(closeDocument).toHaveBeenCalledTimes(1);
   });
 
@@ -211,7 +211,7 @@ describe("DocumentTabs moving tabs between windows", () => {
     fireEvent.click(screen.getByRole("menuitem", { name: "Move to new window" }));
 
     await waitFor(() => expect(closeDocument).toHaveBeenCalledWith("b"));
-    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], false);
+    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf"], false, null);
     expect(dropTabsOnWindow).not.toHaveBeenCalled();
   });
 
@@ -242,5 +242,24 @@ describe("DocumentTabs moving tabs between windows", () => {
 
     await waitFor(() => expect(closeDocument).toHaveBeenCalledTimes(2));
     expect(dropTabsOnWindow).toHaveBeenCalledWith(["/tmp/b.pdf", "/tmp/c.pdf"], { name: "Contracts", color: "teal", collapsed: false });
+  });
+
+  it("gives a group torn off into a new window its name, colour and folding", async () => {
+    const groupId = useTabGroupStore.getState().create(["b", "c"]);
+    useTabGroupStore.getState().rename(groupId, "Contracts");
+    useTabGroupStore.getState().recolor(groupId, "teal");
+    useTabGroupStore.getState().setCollapsed(groupId, true);
+    dropTabsOnWindow.mockResolvedValue(null);
+    openWindow.mockResolvedValue(true);
+    document.elementFromPoint = () => null;
+    render(<DocumentTabs />);
+    const chip = screen.getByRole("button", { name: /Contracts/ });
+
+    fireEvent.pointerDown(chip, { button: 0, pointerId: 1, clientX: 50, clientY: 10 });
+    fireEvent.pointerMove(chip, { pointerId: 1, clientX: 90, clientY: 10 });
+    fireEvent.pointerUp(chip, { pointerId: 1, clientX: 1400, clientY: 300 });
+
+    await waitFor(() => expect(closeDocument).toHaveBeenCalledTimes(2));
+    expect(openWindow).toHaveBeenCalledWith(["/tmp/b.pdf", "/tmp/c.pdf"], true, { name: "Contracts", color: "teal", collapsed: true });
   });
 });

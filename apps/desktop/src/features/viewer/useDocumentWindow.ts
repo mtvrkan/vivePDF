@@ -4,13 +4,14 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { openDocumentWindow } from "@/shared/rpc/files";
 import { useToastStore } from "@/shared/store/toastStore";
+import type { DroppedTabGroup } from "@/types";
 
 export function useDocumentWindow() {
   const { t } = useTranslation();
   return useCallback(
-    async (paths: string[] = [], atCursor = false): Promise<boolean> => {
+    async (paths: string[] = [], atCursor = false, group: DroppedTabGroup | null = null): Promise<boolean> => {
       try {
-        await openDocumentWindow(paths, atCursor);
+        await openDocumentWindow(paths, atCursor, group);
         return true;
       } catch (error) {
         useToastStore.getState().push("error", describeError(t, toRpcError(error)));

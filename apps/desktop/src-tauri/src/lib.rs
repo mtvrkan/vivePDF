@@ -221,7 +221,11 @@ pub fn run() {
             if let Some(paths) = handle.state::<launch::OpenedFiles>().hold(paths) {
                 document_windows::deliver_launch(
                     handle,
-                    launch::LaunchRequest { tool: None, paths },
+                    launch::LaunchRequest {
+                        tool: None,
+                        paths,
+                        group: None,
+                    },
                     true,
                 );
             }

@@ -15,7 +15,7 @@ import { routeForLaunch } from "./launchRoute";
 import { useDocumentWindow } from "./useDocumentWindow";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { useOpenPdf } from "./useOpenPdf";
-import { useTabDropListener } from "./tabDrop";
+import { placeDroppedTabs, useTabDropListener } from "./tabDrop";
 
 const MULTI_FILE_TOOLS = new Set(["merge", "batch", "rename"]);
 const LAUNCH_BATCH_MS = 900;
@@ -57,7 +57,12 @@ export function FileOpenListener() {
       const route = request.tool ? routeForLaunch(request.tool, request.paths[0]) : null;
       if (!route) {
         const openable = request.paths.filter(isOpenablePath);
-        if (openable.length > 0) void openPathsRef.current(openable);
+        if (openable.length === 0) return;
+        void openPathsRef.current(openable).then(() => {
+          if (!request.group) return;
+          const ids = openable.map((path) => openDocumentAt(path)?.id).filter((id): id is string => !!id);
+          placeDroppedTabs(ids, null, request.group);
+        });
         return;
       }
       if (request.tool && MULTI_FILE_TOOLS.has(request.tool)) {

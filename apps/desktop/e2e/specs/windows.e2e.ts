@@ -180,7 +180,7 @@ describe("dragging tabs between windows", () => {
     await expect(tab("drag-b.pdf")).toBeExisting();
   });
 
-  it("moves a dragged-out tab group into a new window and a named group back to the end of the main window", async () => {
+  it("carries a named tab group into a new window and back to the end of the main window", async () => {
     await nameNewGroup("drag-a.pdf", "Pack");
     const { right, drop } = await halves();
     drag(await screenPointOf(groupChip("Pack")), drop);
@@ -190,9 +190,9 @@ describe("dragging tabs between windows", () => {
     await expect(groupChip("Pack")).not.toBeExisting();
     expect(await tabNames()).toEqual(["drag-b.pdf", "drag-c.pdf"]);
     await browser.switchToWindow(second);
+    await groupChip("Pack").waitForDisplayed({ timeout: 60000 });
     await tabNamed("drag-a.pdf").waitForExist({ timeout: 60000 });
     await placeWindow(right.x, right.y, right.width, right.height);
-    if (!(await groupChip("Pack").isExisting())) await nameNewGroup("drag-a.pdf", "Pack");
 
     await browser.switchToWindow(main);
     const target = await screenEdgeOf(tabNamed("drag-c.pdf"), "right");

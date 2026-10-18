@@ -396,6 +396,7 @@ export type ViewSource = { token: string; length: number };
 export type LaunchRequest = {
   tool: string | null;
   paths: string[];
+  group?: DroppedTabGroup;
 };
 
 export type DroppedTabGroup = { name: string; color: string; collapsed: boolean };
