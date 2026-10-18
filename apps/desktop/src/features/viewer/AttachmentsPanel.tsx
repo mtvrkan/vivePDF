@@ -127,7 +127,7 @@ export function AttachmentsPanel({ documentId }: { documentId: string }) {
       <div className="flex h-row items-center gap-2 border-b px-3">
         <Paperclip className="size-4 text-primary" aria-hidden />
         <span className="flex-1 text-sm font-semibold">{t("viewer.attachments.title")}</span>
-        <span className="font-mono text-[11px] text-muted-foreground">{data ? t("viewer.attachments.count", { count: totalCount }) : ""}</span>
+        <span className="font-mono text-2xs text-muted-foreground">{data ? t("viewer.attachments.count", { count: totalCount }) : ""}</span>
         <IconButton icon={RefreshCw} label={t("viewer.comments.refresh")} onClick={() => void load()} disabled={loading} />
       </div>
       <DropZone label={t("tools.dropZone.files")} className="min-h-0 flex-1 overflow-auto rounded-none p-2">
@@ -146,8 +146,8 @@ export function AttachmentsPanel({ documentId }: { documentId: string }) {
               <li key={item.name} className={cn("nav-glass rounded-xl px-3 py-2 text-sm", removed ? "opacity-50 line-through" : "")}>
                 <div className="flex items-center gap-2">
                   <span className="min-w-0 flex-1 truncate font-medium" title={item.fileName}>{item.fileName}</span>
-                  {removed ? <span className="glass-chip shrink-0 text-[10px] text-muted-foreground">{t("viewer.pending.unsaved")}</span> : null}
-                  <span className="shrink-0 font-mono text-[11px] tabular-nums text-muted-foreground">{formatBytes(item.size, locale)}</span>
+                  {removed ? <span className="glass-chip shrink-0 text-3xs text-muted-foreground">{t("viewer.pending.unsaved")}</span> : null}
+                  <span className="shrink-0 font-mono text-2xs tabular-nums text-muted-foreground">{formatBytes(item.size, locale)}</span>
                 </div>
                 {item.description ? <p title={item.description} className="mt-0.5 truncate text-xs text-muted-foreground">{item.description}</p> : null}
                 <div className="mt-1 flex items-center justify-end gap-1">
@@ -161,7 +161,7 @@ export function AttachmentsPanel({ documentId }: { documentId: string }) {
             <li key={file} className="nav-glass rounded-xl px-3 py-2 text-sm">
               <div className="flex items-center gap-2">
                 <span className="min-w-0 flex-1 truncate font-medium" title={file}>{basename(file)}</span>
-                <span className="glass-chip shrink-0 text-[10px] text-muted-foreground">{t("viewer.pending.unsaved")}</span>
+                <span className="glass-chip shrink-0 text-3xs text-muted-foreground">{t("viewer.pending.unsaved")}</span>
               </div>
             </li>
           ))}

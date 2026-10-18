@@ -651,7 +651,7 @@ export function BatchPage() {
                     <button type="button" onClick={() => loadChain(chain)} disabled={running} className="flex items-center gap-2 py-1.5 text-sm hover:text-primary disabled:pointer-events-none disabled:opacity-50">
                       <Bookmark className="size-3.5 text-(--tone)" aria-hidden />
                       <span>{chain.name}</span>
-                      <span className="font-mono text-[11px] text-muted-foreground">{chain.steps.length}</span>
+                      <span className="font-mono text-2xs text-muted-foreground">{chain.steps.length}</span>
                       {chain.storedSecrets?.length ? (
                         <span title={t("tools.batch.secretsStoredBadge")}>
                           <KeyRound className="size-3.5 text-success" aria-label={t("tools.batch.secretsStoredBadge")} />

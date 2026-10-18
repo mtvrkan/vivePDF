@@ -27,7 +27,7 @@ export function ImposeOrderPreview({ columns, rows, arrangement, reading, label 
           key={index}
           className={cn(
             "flex aspect-[1/1.2] items-center justify-center rounded-[3px] bg-secondary/70 font-mono text-foreground/70",
-            numbered ? "text-[11px]" : "text-[0px]",
+            numbered && "text-2xs",
           )}
         >
           {numbered ? page : null}

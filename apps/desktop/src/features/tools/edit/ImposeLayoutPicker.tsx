@@ -63,7 +63,7 @@ export function ImposeLayoutPicker({ value, columns, rows, onChange, label }: {
               )}
             >
               <SheetShape columns={cells} rows={lines} spine={layout === "booklet"} />
-              <span aria-hidden className={cn("text-[11px] leading-tight", selected ? "font-semibold text-(--tone)" : "text-foreground/70")}>
+              <span aria-hidden className={cn("text-2xs leading-tight", selected ? "font-semibold text-(--tone)" : "text-foreground/70")}>
                 {tileLabel(layout) ?? t(`tools.edit.impose.layouts.${layout}`)}
               </span>
             </button>

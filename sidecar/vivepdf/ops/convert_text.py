@@ -82,6 +82,10 @@ def to_text(params: TextParams, progress: Progress) -> TextFileResult:
 
 MARKDOWN_BAND = (0.1, 0.95)
 PAGE_ID = re.compile(r'<div id="page\d+">')
+CONTENT_POLICY = (
+    '<meta http-equiv="Content-Security-Policy" '
+    "content=\"default-src 'none'; img-src data:; style-src 'unsafe-inline'\">"
+)
 HEADER_BOX_CLASSES = ("title", "section-header")
 PICTURE_BOX_CLASSES = ("picture", "formula")
 MARKDOWN_PICTURE_DPI = 150
@@ -325,7 +329,7 @@ def to_html(params: TextSourceParams, progress: Progress) -> TextFileResult:
     textless = [index + 1 for index, page in zip(indices, pages, strict=True) if not page.sizes]
     opening = f'<html lang="{html_module.escape(language)}">' if language else "<html>"
     html = (
-        f'<!doctype html>{opening}<head><meta charset="utf-8">'
+        f'<!doctype html>{opening}<head><meta charset="utf-8">{CONTENT_POLICY}'
         f"<title>{title}</title>"
         "<style>body{font-family:sans-serif;max-width:52em;margin:2em auto;padding:0 1em}"
         ".page{border-bottom:1px solid #ddd;padding:1em 0}img{max-width:100%}</style>"

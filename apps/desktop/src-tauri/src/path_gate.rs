@@ -185,18 +185,34 @@ impl WriteScope {
     }
 
     fn holds(&self, key: &str) -> bool {
-        let parent = crate::grants::parent_key(key);
-        self.files.iter().any(|file| {
-            file == key || (parent.is_some() && crate::grants::parent_key(file) == parent)
-        }) || self
-            .folders
+        self.files
             .iter()
-            .any(|folder| crate::grants::inside(key, folder))
+            .any(|file| file == key || named_after(key, file))
+            || self
+                .folders
+                .iter()
+                .any(|folder| crate::grants::inside(key, folder))
     }
 
     pub fn covers(&self, path: &Path) -> bool {
         self.holds(&crate::grants::key_of(path))
     }
+}
+
+fn named_after(key: &str, file: &str) -> bool {
+    let (Some((folder, name)), Some((file_folder, file_name))) =
+        (key.rsplit_once('/'), file.rsplit_once('/'))
+    else {
+        return false;
+    };
+    let stem = file_name
+        .rsplit_once('.')
+        .map_or(file_name, |(stem, _)| stem);
+    folder == file_folder
+        && !stem.is_empty()
+        && name
+            .strip_prefix(stem)
+            .is_some_and(|rest| rest.is_empty() || rest.starts_with(['.', '-', '_', ' ']))
 }
 
 fn unknown_method(method: &str) -> RpcError {
@@ -507,7 +523,7 @@ mod tests {
     }
 
     #[test]
-    fn the_write_scope_holds_written_files_their_siblings_and_folders_below_outputs() {
+    fn the_write_scope_holds_written_files_their_numbered_siblings_and_folders_below_outputs() {
         let base = std::env::temp_dir().join("vivepdf-scope");
         let output = base.join("o.pdf");
         let folder = base.join("Out");
@@ -520,6 +536,12 @@ mod tests {
         assert!(scope.covers(&folder.join("deep").join("p.pdf")));
         assert!(!scope.covers(&std::env::temp_dir().join("elsewhere.pdf")));
         assert!(!scope.covers(&base.join("Other").join("x.pdf")));
+        assert!(scope.covers(&base.join("o.docx")));
+        assert!(scope.covers(&base.join("o_cover.pdf")));
+        assert!(scope.covers(&base.join("o (2).pdf")));
+        assert!(!scope.covers(&base.join("secret.pdf")));
+        assert!(!scope.covers(&base.join("other.pdf")));
+        assert!(!scope.covers(&base.join("O2.pdf")));
     }
 
     #[test]

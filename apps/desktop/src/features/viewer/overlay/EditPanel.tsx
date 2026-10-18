@@ -179,7 +179,7 @@ export function EditPanel({ documentId }: { documentId: string }) {
   return (
     <aside className="glass-flat flex h-full w-72 shrink-0 flex-col border-s" aria-label={t("viewer.editPanel.title")} data-document={documentId}>
       <div className="flex h-11 items-center gap-1 border-b px-3">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("viewer.editPanel.title")}</span>
+        <span className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("viewer.editPanel.title")}</span>
         <span className="flex-1" />
         <IconButton icon={Undo2} label={t("viewer.editPanel.undo")} disabled={past.length === 0} onClick={() => store.undo()} />
         <IconButton icon={Redo2} label={t("viewer.editPanel.redo")} disabled={future.length === 0} onClick={() => store.redo()} />

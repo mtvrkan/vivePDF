@@ -32,7 +32,7 @@ function PosterPreview({ plan, columns, rows, label }: { plan: PosterPlan; colum
           <span
             key={`${row}-${column}`}
             className={cn(
-              "absolute flex items-start justify-start border border-dashed p-0.5 font-mono text-[10px] leading-none text-foreground/70",
+              "absolute flex items-start justify-start border border-dashed p-0.5 font-mono text-3xs leading-none text-foreground/70",
               tileUsed(plan, column, row) ? "border-foreground/30" : "border-foreground/10",
             )}
             style={{

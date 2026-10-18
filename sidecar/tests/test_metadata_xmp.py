@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 import pymupdf
@@ -99,3 +100,21 @@ def test_a_pdfa_file_keeps_its_claim_and_matching_title_after_an_edit(tmp_path: 
     assert "pdfaid:part" in xml
     assert '<rdf:li xml:lang="x-default">Final</rdf:li>' in xml
     assert "Draft" not in xml
+
+
+def test_an_edit_moves_the_modify_dates_in_the_info_and_the_xmp_together(tmp_path: Path):
+    descriptions = (
+        '<rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/" '
+        'xmp:ModifyDate="2001-01-01T00:00:00Z">'
+        "<xmp:MetadataDate>2001-01-01T00:00:00Z</xmp:MetadataDate></rdf:Description>"
+    )
+    source = _pdf(tmp_path / "in.pdf", XMP_TEMPLATE.format(descriptions=descriptions))
+
+    xml = _edit(source, title="Final")
+
+    with pymupdf.open(tmp_path / "edited.pdf") as document:
+        info = document.metadata["modDate"]
+    stamp = re.search(r'xmp:ModifyDate="([^"]+)"', xml).group(1)
+    assert "2001" not in xml
+    assert f"<xmp:MetadataDate>{stamp}</xmp:MetadataDate>" in xml
+    assert info.startswith("D:" + re.sub(r"\D", "", stamp))

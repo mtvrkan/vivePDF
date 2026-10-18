@@ -193,6 +193,14 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   the viewer or in Tools › Forms leaves No empty, and the saved file shows only Yes. On a scanned
   page turned 90° with a cropped margin, Edit › Text and Remove watermark keep the text where it
   was and upright.
+- On that Yes/No form the viewer shows both as square boxes with a check mark; clicking the
+  ticked box again clears it. Change the title in Document info and save: File › Properties in
+  Acrobat shows the new title and today's modify date. With the app in English, Sign › Export
+  certificate and Sign › New certificate suggest `certificate.cer` / `certificate.p12`.
+- Convert a PDF to HTML and open the result from the result panel: Edge shows the text and
+  pictures, and its developer console reports no script or network request from the file.
+  Convert a page range to PNG next to the PDF and choose "Show in folder" on the second
+  picture: Explorer selects it.
 
 ### How native dialogs are answered
 

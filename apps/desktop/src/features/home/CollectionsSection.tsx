@@ -316,7 +316,7 @@ export function CollectionsSection({ size = "medium" }: { size?: HomeSize }) {
   return (
     <section className={cn("glass @container rounded-2xl", sectionPadding(size))} aria-labelledby="home-collections-title">
       <div className="flex items-center justify-between gap-3">
-        <p id="home-collections-title" className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        <p id="home-collections-title" className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           {t("home.collections.title")}
         </p>
         {collections.length > 0 ? (

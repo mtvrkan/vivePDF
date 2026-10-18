@@ -18,7 +18,7 @@ import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useLaunchStore } from "@/shared/store/launchStore";
 import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { useUiStore } from "@/shared/store/uiStore";
-import { FROM_PDF, IMAGE_EXTENSIONS, SVG_EXTENSIONS, TO_PDF, isConvertMode, pageList, svgWritesOneFile, type ConversionEntry, type ConvertMode } from "./conversions";
+import { FROM_PDF, IMAGE_EXTENSIONS, albumOutputPath, SVG_EXTENSIONS, TO_PDF, isConvertMode, pageList, svgWritesOneFile, type ConversionEntry, type ConvertMode } from "./conversions";
 import { FileToPdfSection } from "./FileToPdfSection";
 import { FromPdfSection } from "./FromPdfSection";
 import { ImagesToPdfSection } from "./ImagesToPdfSection";
@@ -84,8 +84,8 @@ export function ConvertPage() {
   useEffect(() => {
     if (mode === "images-to-pdf") {
       const first = images[0] ?? (folders[0] ? joinPath(folders[0], "x") : "");
-      if (first && !output.toLowerCase().endsWith(".pdf")) setOutput(joinPath(outputDirectoryFor(first), `${t("tools.convert.albumName")}.pdf`));
-      if (first && output === "") setOutput(joinPath(outputDirectoryFor(first), `${t("tools.convert.albumName")}.pdf`));
+      const album = albumOutputPath(output, first, t("tools.convert.albumName"));
+      if (album) setOutput(album);
     }
   }, [mode, images, folders, output, t]);
 

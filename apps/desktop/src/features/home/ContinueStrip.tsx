@@ -38,7 +38,7 @@ export function ContinueStrip({ size = "medium" }: { size?: HomeSize }) {
 
   return (
     <section className={cn("glass glass-tinted rounded-2xl", sectionPadding(size))} data-tone="improve">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.lastSession")}</p>
+      <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.lastSession")}</p>
       <p className="mt-1 text-sm">{t("recovery.lastSessionDescription", { count: session.documents.length })}</p>
       <ul className="mt-2 flex flex-wrap gap-2">
         {shown.map((path) => (

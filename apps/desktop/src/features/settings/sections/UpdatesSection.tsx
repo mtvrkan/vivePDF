@@ -66,7 +66,7 @@ export function UpdatesSection({ query, onEmptyChange, appVersion }: SettingsSec
       ) : null}
       {update.notes && (update.status === "available" || update.status === "ready") ? (
         <div className="border-b py-3 last:border-b-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("update.notes")}</p>
+          <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("update.notes")}</p>
           <p className="mt-1 whitespace-pre-wrap text-sm">{update.notes}</p>
         </div>
       ) : null}

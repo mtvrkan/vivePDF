@@ -17,7 +17,7 @@ function greetingKey(hour: number): "morning" | "afternoon" | "evening" {
 }
 
 function Kbd({ children }: { children: string }) {
-  return <kbd className="rounded-md border bg-card/70 px-1.5 py-0.5 font-mono text-[11px] leading-none text-muted-foreground">{shortcutLabel(children)}</kbd>;
+  return <kbd className="rounded-md border bg-card/70 px-1.5 py-0.5 font-mono text-2xs leading-none text-muted-foreground">{shortcutLabel(children)}</kbd>;
 }
 
 export function HeroSection({ size = "medium" }: { size?: HomeSize }) {
@@ -32,7 +32,7 @@ export function HeroSection({ size = "medium" }: { size?: HomeSize }) {
     <section className={cn("glass glass-tinted @container rounded-2xl", size === "small" ? "p-4" : size === "large" ? "p-8" : "p-6")}>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-primary">{t("home.eyebrow")}</p>
+          <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-primary">{t("home.eyebrow")}</p>
           <h1 className={cn("mt-1 font-semibold tracking-[-0.01em]", size === "small" ? "text-xl" : size === "large" ? "text-3xl" : "text-2xl")}>{greeting}</h1>
           <p className="mt-1 text-sm text-muted-foreground">{t("home.subtitle")}</p>
         </div>

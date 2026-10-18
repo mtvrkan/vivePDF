@@ -86,7 +86,7 @@ export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
   return (
     <section className={`glass rounded-2xl ${listPadding(size)}`}>
       <div className="flex h-9 items-center justify-between px-2">
-        <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.history.title")}</span>
+        <span className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.history.title")}</span>
         <button type="button" onClick={clearHistory} className="flex min-h-6 items-center rounded-full px-2 text-xs text-muted-foreground hover:bg-secondary hover:text-foreground">
           {t("home.clearRecent")}
         </button>
@@ -114,7 +114,7 @@ export function HistoryRail({ size = "medium" }: { size?: HomeSize }) {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span title={entry.outputs.length > 1 ? t("home.history.outputs", { count: entry.outputs.length }) : basenameOf(first)} className="block truncate text-sm">{entry.outputs.length > 1 ? t("home.history.outputs", { count: entry.outputs.length }) : basenameOf(first)}</span>
-                  <span className="block truncate text-[11px] text-muted-foreground">
+                  <span className="block truncate text-2xs text-muted-foreground">
                     {isMissing ? t("home.history.missing") : item ? t(item.labelKey) : entry.tool} · {new Date(entry.at).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
                   </span>
                 </span>

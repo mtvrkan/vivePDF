@@ -109,6 +109,28 @@ describe("FormFieldLayer", () => {
     expect(pendingForms()[0]).toMatchObject({ values: { size: "L" } });
   });
 
+  it("shows a checkbox pair as boxes that pick one state and can be cleared", async () => {
+    const pair = field("pet", "radio", [50, 140, 64, 154], {
+      options: ["Cat", "Dog"],
+      value: "Cat",
+      checkboxStyle: true,
+      widgets: [
+        { page: 1, visibleRect: [50, 140, 64, 154], state: "Cat" },
+        { page: 1, visibleRect: [80, 140, 94, 154], state: "Dog" },
+      ],
+    });
+    await renderLayer([pair]);
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "pet: Dog" }));
+    const switched = [screen.getByRole("checkbox", { name: "pet: Cat" }), screen.getByRole("checkbox", { name: "pet: Dog" })].map((box) => (box as HTMLInputElement).checked);
+    fireEvent.click(screen.getByRole("checkbox", { name: "pet: Dog" }));
+
+    expect(screen.queryAllByRole("radio")).toHaveLength(0);
+    expect(switched).toEqual([false, true]);
+    expect(screen.getByRole("checkbox", { name: "pet: Dog" })).toHaveProperty("checked", false);
+    expect(pendingForms()[0]).toMatchObject({ values: { pet: "" } });
+  });
+
   it("drops the change and the typed values when the pending change is discarded", async () => {
     await renderLayer();
     const input = screen.getByRole("textbox", { name: "Full name" });

@@ -46,7 +46,7 @@ export function PrivacySection({ report, scanning, scanError, canScan, onScan, o
       ) : null}
       {report && !reportIsClean(report) ? (
         <>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("tools.security.privacy.remove")}</p>
+          <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("tools.security.privacy.remove")}</p>
           <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
             {SANITIZE_OPTIONS.map((option) => {
               const count = optionCount(report, option);

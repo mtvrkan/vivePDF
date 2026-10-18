@@ -71,7 +71,7 @@ function PreviewImage({ path, password, label }: { path: string; password?: stri
       <div className="glass flex aspect-[3/4] items-center justify-center overflow-hidden rounded-xl p-1.5">
         {url ? <img src={url} alt={label} className="max-h-full max-w-full rounded-lg object-contain shadow-(--shadow-card)" /> : <Loader2 className="size-4 animate-spin text-muted-foreground" aria-hidden />}
       </div>
-      <figcaption className="mt-1 text-center text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</figcaption>
+      <figcaption className="mt-1 text-center text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{label}</figcaption>
     </figure>
   );
 }
@@ -84,7 +84,7 @@ function NextSteps({ output }: { output: string }) {
   if (steps.length === 0) return null;
   return (
     <div className="flex flex-wrap items-center gap-1.5 border-b px-4 py-2.5">
-      <span className="me-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("tools.nextSteps")}</span>
+      <span className="me-1 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("tools.nextSteps")}</span>
       {steps.map((step) => {
         const Icon = step.icon;
         return (

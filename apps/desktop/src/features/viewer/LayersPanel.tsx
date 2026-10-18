@@ -87,7 +87,7 @@ export function LayersPanel({ documentId }: { documentId: string }) {
             const indent = INDENTS[Math.min(row.depth, INDENTS.length - 1)];
             if (row.id === null) {
               return (
-                <li key={`label-${index}`} className={cn("pt-2 pb-1 text-[11px] font-semibold text-muted-foreground", indent)}>
+                <li key={`label-${index}`} className={cn("pt-2 pb-1 text-2xs font-semibold text-muted-foreground", indent)}>
                   {row.name}
                 </li>
               );
@@ -109,7 +109,7 @@ export function LayersPanel({ documentId }: { documentId: string }) {
                 >
                   {shown ? <Eye className="size-4 shrink-0 text-primary" aria-hidden /> : <EyeOff className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
                   <span className={cn("min-w-0 flex-1 truncate", shown ? "" : "text-muted-foreground")}>{row.name}</span>
-                  {changed ? <span className="glass-chip shrink-0 text-[10px] text-muted-foreground">{t("viewer.layers.changed")}</span> : null}
+                  {changed ? <span className="glass-chip shrink-0 text-3xs text-muted-foreground">{t("viewer.layers.changed")}</span> : null}
                   {row.locked ? <Lock className="size-3.5 shrink-0 text-muted-foreground" aria-hidden /> : null}
                 </button>
               </li>

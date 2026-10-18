@@ -242,7 +242,7 @@ export function OutlinePanel({ documentId }: { documentId: string }) {
                     {row.hasChildren ? <ChevronRight className={cn("size-3.5 transition-transform duration-(--transition-fast)", open ? "rotate-90" : "")} /> : null}
                   </span>
                   <span className="min-w-0 flex-1 truncate py-1">{row.title || t("viewer.outline.untitled")}</span>
-                  {row.pageIndex !== null ? <span className="shrink-0 font-mono text-[11px] tabular-nums text-muted-foreground">{pageLabelOf(labels, row.pageIndex + 1)}</span> : null}
+                  {row.pageIndex !== null ? <span className="shrink-0 font-mono text-2xs tabular-nums text-muted-foreground">{pageLabelOf(labels, row.pageIndex + 1)}</span> : null}
                   {row.pageIndex === null && row.uri !== null ? <ExternalLink className="size-3.5 shrink-0 text-muted-foreground" aria-hidden /> : null}
                 </li>
               );

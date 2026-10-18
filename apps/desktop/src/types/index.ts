@@ -1564,6 +1564,7 @@ export type FormField = {
   optionLabels?: string[];
   maxLength?: number | null;
   editable?: boolean;
+  checkboxStyle?: boolean;
   visibleRect?: number[];
   widgets?: { page: number; visibleRect: number[]; state: string | null }[];
 };

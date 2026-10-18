@@ -21,7 +21,7 @@ export function PageHeader({ title, description, eyebrow, icon: Icon, tone, acti
           </span>
         ) : null}
         <div className="min-w-0">
-          {eyebrow ? <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-(--tone)">{eyebrow}</p> : null}
+          {eyebrow ? <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-(--tone)">{eyebrow}</p> : null}
           <h1 className="truncate text-xl font-semibold leading-7 tracking-tight">{title}</h1>
           {description ? <p className="mt-0.5 truncate text-sm text-muted-foreground">{description}</p> : null}
         </div>

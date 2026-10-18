@@ -120,7 +120,7 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
             type="button"
             onClick={() => void runSave()}
             disabled={savingDocument}
-            className="ms-0.5 flex h-6 items-center whitespace-nowrap rounded-full bg-primary px-2.5 text-[11px] font-semibold text-primary-foreground outline-none transition-colors duration-(--transition-fast) hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-40"
+            className="ms-0.5 flex h-6 items-center whitespace-nowrap rounded-full bg-primary px-2.5 text-2xs font-semibold text-primary-foreground outline-none transition-colors duration-(--transition-fast) hover:bg-primary/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:opacity-40"
           >
             {t("viewer.save.save")}
           </button>

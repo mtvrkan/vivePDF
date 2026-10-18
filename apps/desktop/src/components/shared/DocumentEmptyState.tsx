@@ -53,7 +53,7 @@ export function DocumentEmptyState({ icon: Icon, title, description, highlights,
                 <Icon className="size-6" aria-hidden />
               </span>
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-(--tone)">{t("emptyDoc.eyebrow")}</p>
+                <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-(--tone)">{t("emptyDoc.eyebrow")}</p>
                 <h1 className="mt-1.5 text-2xl font-semibold tracking-tight">{title}</h1>
                 <p className="mt-2 max-w-md text-sm leading-5 text-muted-foreground">{description}</p>
               </div>
@@ -87,8 +87,8 @@ export function DocumentEmptyState({ icon: Icon, title, description, highlights,
         <aside className="flex flex-col gap-4">
           <section className="glass flex min-h-0 flex-1 flex-col rounded-3xl p-3">
             <div className="flex h-9 items-center justify-between px-2">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.recent")}</span>
-              <span className="text-[11px] tabular-nums text-muted-foreground">{shown.length > 0 ? shown.length : ""}</span>
+              <span className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.recent")}</span>
+              <span className="text-2xs tabular-nums text-muted-foreground">{shown.length > 0 ? shown.length : ""}</span>
             </div>
             {shown.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-3 px-4 py-10 text-center">
@@ -110,7 +110,7 @@ export function DocumentEmptyState({ icon: Icon, title, description, highlights,
                       </span>
                       <span className="min-w-0 flex-1">
                         <span title={item.fileName} className="block truncate text-sm">{item.fileName}</span>
-                        <span className="block truncate text-[11px] text-muted-foreground">
+                        <span className="block truncate text-2xs text-muted-foreground">
                           {new Date(item.openedAt).toLocaleString(locale, { dateStyle: "medium", timeStyle: "short" })}
                         </span>
                       </span>
@@ -130,15 +130,15 @@ export function DocumentEmptyState({ icon: Icon, title, description, highlights,
             )}
           </section>
           <section className="glass rounded-3xl p-4">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("emptyDoc.shortcuts")}</p>
+            <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("emptyDoc.shortcuts")}</p>
             <div className="mt-1.5 space-y-0.5 text-sm">
               <button type="button" onClick={onOpen} className="nav-glass -mx-2 flex w-[calc(100%+1rem)] items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-start text-muted-foreground hover:text-foreground">
                 <span>{t("common.openPdf")}</span>
-                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{shortcutLabel("Ctrl O")}</kbd>
+                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-2xs text-foreground">{shortcutLabel("Ctrl O")}</kbd>
               </button>
               <button type="button" onClick={openPalette} className="nav-glass -mx-2 flex w-[calc(100%+1rem)] items-center justify-between gap-3 rounded-lg px-2 py-1.5 text-start text-muted-foreground hover:text-foreground">
                 <span>{t("emptyDoc.palette")}</span>
-                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{shortcutLabel("Ctrl K")}</kbd>
+                <kbd className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-2xs text-foreground">{shortcutLabel("Ctrl K")}</kbd>
               </button>
             </div>
           </section>

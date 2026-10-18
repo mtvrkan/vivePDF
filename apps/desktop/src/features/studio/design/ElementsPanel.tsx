@@ -245,7 +245,7 @@ export function ElementsPanel() {
               data-studio-tab={item}
               onClick={() => setTab(item)}
               className={cn(
-                "flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-[11px] leading-tight outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
+                "flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-2xs leading-tight outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
                 tab === item ? "menubar-active font-medium text-foreground" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground",
               )}
             >

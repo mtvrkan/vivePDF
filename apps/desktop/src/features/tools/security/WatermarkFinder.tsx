@@ -74,7 +74,7 @@ export function WatermarkFinder({ candidates, chosen, scanning, error, pagesScan
                 <span className="min-w-0 flex-1">
                   <Checkbox label={labelOf(candidate, t)} hint={meta(candidate)} checked={chosen[candidate.id] ?? false} onChange={(value) => onToggle(candidate.id, value)} />
                 </span>
-                {exact ? <span className="glass-chip shrink-0 text-[11px] font-medium">{t("tools.security.removeWatermark.finder.exact")}</span> : null}
+                {exact ? <span className="glass-chip shrink-0 text-2xs font-medium">{t("tools.security.removeWatermark.finder.exact")}</span> : null}
                 {candidate.preview ? (
                   <img
                     src={`data:image/png;base64,${candidate.preview}`}

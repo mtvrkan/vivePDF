@@ -192,7 +192,7 @@ function ToolsMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; 
                 const GroupIcon = toolGroupIcons[group];
                 return (
                   <section key={group} data-tone={group} className="min-w-0">
-                    <p className="flex h-8 items-center gap-2 px-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                    <p className="flex h-8 items-center gap-2 px-2.5 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                       <GroupIcon className="size-3.5 text-(--tone)" aria-hidden />
                       <span className="truncate">{t(`tools.grid.groups.${group}`)}</span>
                     </p>
@@ -220,7 +220,7 @@ function ToolsMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; 
           >
             <LayoutGrid className="size-4 shrink-0" aria-hidden />
             <span className="min-w-0 flex-1 truncate text-start">{t("home.showAll")}</span>
-            <span className="font-mono text-[11px]">{toolShortcuts.length}</span>
+            <span className="font-mono text-2xs">{toolShortcuts.length}</span>
           </button>
           <MenuLink icon={Search} label={t("nav.folderSearch")} route="/search" onSelect={close} />
         </div>
@@ -382,7 +382,7 @@ export function TopBar() {
         {compactSearch ? null : (
           <>
             <span className="min-w-0 flex-1 truncate text-start">{t("palette.placeholder")}</span>
-            <kbd className="shrink-0 rounded-md border bg-card/70 px-1.5 font-mono text-[11px]">{shortcutLabel("Ctrl K")}</kbd>
+            <kbd className="shrink-0 rounded-md border bg-card/70 px-1.5 font-mono text-2xs">{shortcutLabel("Ctrl K")}</kbd>
           </>
         )}
       </button>

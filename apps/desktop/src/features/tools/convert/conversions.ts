@@ -13,7 +13,7 @@ import {
   ScrollText,
   Shapes,
 } from "lucide-react";
-import { dirnameOf, joinPath, numberedPath, pathKey } from "@/shared/lib/paths";
+import { dirnameOf, joinPath, numberedPath, outputDirectoryFor, pathKey } from "@/shared/lib/paths";
 
 export type FromPdfMode = "docx" | "xlsx" | "pptx" | "images" | "extract-images" | "text" | "markdown" | "html" | "epub";
 export type ToPdfMode = "images-to-pdf" | "file-to-pdf" | "svg-to-pdf" | "url-to-pdf";
@@ -84,6 +84,11 @@ export function batchOutputPaths(files: string[], outputDir?: string): string[] 
     taken.add(pathKey(candidate));
     return candidate;
   });
+}
+
+export function albumOutputPath(output: string, firstImage: string, albumName: string): string | null {
+  if (!firstImage || output.toLowerCase().endsWith(".pdf")) return null;
+  return joinPath(outputDirectoryFor(firstImage), `${albumName}.pdf`);
 }
 
 export function moveItem<T>(items: T[], index: number, offset: number): T[] {

@@ -40,7 +40,7 @@ export function WhatsNewContent({ version, onNavigate }: { version: string; onNa
         const current = compareVersions(note.version, version) === 0;
         return (
           <section key={note.version} className={cn("rounded-xl border p-4", current && "border-ring")} aria-label={t("whatsNew.version", { version: note.version })}>
-            <p className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <p className="mb-2 flex items-center gap-2 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               <Sparkles className="size-3.5" aria-hidden />
               {t("whatsNew.version", { version: note.version })}
               {current ? <span className="rounded-full bg-secondary px-2 py-0.5 normal-case tracking-normal text-foreground">{t("whatsNew.current")}</span> : null}

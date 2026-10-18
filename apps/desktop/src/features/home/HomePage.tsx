@@ -108,7 +108,7 @@ export function HomePage() {
     const showLine = (index: number) => drag !== null && drag.region === name && drag.index === index && index !== from && index !== from + 1;
     return (
       <div data-home-drop={name} data-testid={`home-region-${name}`} className={cn("min-w-0 space-y-6", editing && "space-y-3 rounded-2xl", className)}>
-        {editing ? <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t(`home.layout.regions.${name}`)}</p> : null}
+        {editing ? <p className="px-1 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t(`home.layout.regions.${name}`)}</p> : null}
         {listed.map((section) => {
           if (section.hidden) return <HiddenSectionFrame key={section.id} section={section} />;
           const index = sections.indexOf(section);

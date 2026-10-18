@@ -51,7 +51,7 @@ function stripPrefix(label: string): string {
 }
 
 function Kbd({ children }: { children: string }) {
-  return <kbd className="rounded-md border bg-background px-1.5 py-0.5 font-mono text-[11px] leading-none text-muted-foreground">{shortcutLabel(children)}</kbd>;
+  return <kbd className="rounded-md border bg-background px-1.5 py-0.5 font-mono text-2xs leading-none text-muted-foreground">{shortcutLabel(children)}</kbd>;
 }
 
 type Group = { key: string; label: string; entries: PaletteEntry[] };
@@ -445,7 +445,7 @@ export function CommandPalette() {
           {flatResults.length === 0 ? <li role="presentation" className="px-4 py-10 text-center text-sm text-muted-foreground">{t("palette.empty")}</li> : null}
           {groups.map((group) => (
             <li key={group.key} role="presentation">
-              <div id={`${listboxId}-group-${group.key}`} className="sticky top-0 z-10 bg-card px-3 pb-1.5 pt-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{group.label}</div>
+              <div id={`${listboxId}-group-${group.key}`} className="sticky top-0 z-10 bg-card px-3 pb-1.5 pt-3 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{group.label}</div>
               <ul role="group" aria-labelledby={`${listboxId}-group-${group.key}`} className="space-y-px">
                 {group.entries.map((entry) => {
                   globalIndex += 1;
@@ -487,7 +487,7 @@ export function CommandPalette() {
                           ),
                         )}
                       </span>
-                      <span title={entry.subtitle} className={cn("max-w-[35%] truncate text-xs text-muted-foreground", entry.monoSubtitle && "font-mono text-[11px]")}>
+                      <span title={entry.subtitle} className={cn("max-w-[35%] truncate text-xs text-muted-foreground", entry.monoSubtitle && "font-mono text-2xs")}>
                         {entry.subtitle}
                       </span>
                       {entry.secondaryRun && SecondaryIcon ? (
@@ -512,7 +512,7 @@ export function CommandPalette() {
             </li>
           ))}
         </ul>
-        <div className="flex h-9 shrink-0 items-center gap-4 border-t bg-muted/40 px-4 text-[11px] text-muted-foreground">
+        <div className="flex h-9 shrink-0 items-center gap-4 border-t bg-muted/40 px-4 text-2xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <Kbd>↑↓</Kbd>
             {t("palette.navigate")}

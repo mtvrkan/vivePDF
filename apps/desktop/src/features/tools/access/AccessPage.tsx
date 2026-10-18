@@ -205,7 +205,7 @@ export function AccessPage() {
                   })}
                 </ul>
                 {report.unembeddedFonts.length > 0 ? (
-                  <p className="font-mono text-[11px] text-muted-foreground">{report.unembeddedFonts.join(", ")}</p>
+                  <p className="font-mono text-2xs text-muted-foreground">{report.unembeddedFonts.join(", ")}</p>
                 ) : null}
               </>
             ) : null}
@@ -230,7 +230,7 @@ export function AccessPage() {
                     {missingFigures.map((figure) => (
                       <li key={figure.xref} className="flex flex-col gap-2">
                         <div className="flex items-center gap-3">
-                          <span className="w-16 shrink-0 font-mono text-[11px] tabular-nums text-muted-foreground">
+                          <span className="w-16 shrink-0 font-mono text-2xs tabular-nums text-muted-foreground">
                             {figure.page ? t("viewer.comments.pageShort", { page: figure.page }) : `#${figure.xref}`}
                           </span>
                           <TextInput

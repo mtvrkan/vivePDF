@@ -61,7 +61,7 @@ function LanguageRow({ pack, locale, working, percent, busy, onDownload, onRemov
         <span className="truncate">{name}</span>
         {pack.state === "partial" && !working ? <span className="truncate text-xs text-muted-foreground">{t("settings.translate.partial")}</span> : null}
       </span>
-      {pack.version ? <span className="rounded-md border bg-background/60 px-1.5 font-mono text-[11px] text-muted-foreground">v{pack.version}</span> : null}
+      {pack.version ? <span className="rounded-md border bg-background/60 px-1.5 font-mono text-2xs text-muted-foreground">v{pack.version}</span> : null}
       {working ? <ProgressBar label={t("settings.translate.progressLabel", { name })} percent={percent} /> : null}
       <span className="w-16 text-end font-mono text-xs tabular-nums text-muted-foreground">{working ? `${percent}%` : `${size} MB`}</span>
       <span className="flex items-center justify-end gap-1">
@@ -93,8 +93,8 @@ function CustomModelRow({ model, locale, busy, onRemove }: { model: TranslateMod
         <ArrowRight className="size-3.5 shrink-0 text-muted-foreground rtl:rotate-180" aria-label={t("settings.translate.into")} />
         <span className="truncate">{languageName(model.target, locale)}</span>
       </span>
-      <span className="glass-chip rounded-full px-2 py-0.5 text-[11px] text-muted-foreground">{t("settings.translate.custom")}</span>
-      {model.version ? <span className="rounded-md border bg-background/60 px-1.5 font-mono text-[11px] text-muted-foreground">v{model.version}</span> : null}
+      <span className="glass-chip rounded-full px-2 py-0.5 text-2xs text-muted-foreground">{t("settings.translate.custom")}</span>
+      {model.version ? <span className="rounded-md border bg-background/60 px-1.5 font-mono text-2xs text-muted-foreground">v{model.version}</span> : null}
       <span className="w-16 text-end font-mono text-xs tabular-nums text-muted-foreground">{`${model.sizeMb} MB`}</span>
       <IconButton icon={Trash2} label={`${t("settings.translate.remove")}: ${name}`} onClick={onRemove} disabled={busy} />
     </li>
@@ -267,7 +267,7 @@ export function TranslateModelsManager() {
             ) : null}
             {visibleCustom.length > 0 ? (
               <div className="mb-3">
-                <p className="mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                <p className="mb-1 flex items-center gap-2 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   {t("settings.translate.customTitle")}
                   <span className="font-mono normal-case tracking-normal">{visibleCustom.length}</span>
                 </p>
@@ -282,7 +282,7 @@ export function TranslateModelsManager() {
         )}
       </div>
       {directory ? (
-        <p className="truncate font-mono text-[11px] text-muted-foreground" title={directory}>
+        <p className="truncate font-mono text-2xs text-muted-foreground" title={directory}>
           {directory}
         </p>
       ) : null}

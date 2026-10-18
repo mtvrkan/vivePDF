@@ -415,7 +415,7 @@ export function AnnotateBar({ documentId, onClose, layout = "bar" }: { documentI
               className="w-9 accent-primary"
               aria-label={t("annotate.strokeWidth")}
             />
-            <span className="font-mono text-[10px] tabular-nums text-muted-foreground">{strokeWidth}</span>
+            <span className="font-mono text-3xs tabular-nums text-muted-foreground">{strokeWidth}</span>
           </div>
         ) : null}
         <span className="my-0.5 h-px w-6 bg-border" aria-hidden />

@@ -82,7 +82,7 @@ export function AnnotationSelectionMenu({ documentId, ...props }: SelectionMenuP
         <div className="flex items-center gap-1">
           {uri ? (
             <>
-              <span className="min-w-0 flex-1 truncate px-1.5 font-mono text-[11px] text-muted-foreground" title={uri}>
+              <span className="min-w-0 flex-1 truncate px-1.5 font-mono text-2xs text-muted-foreground" title={uri}>
                 {uri}
               </span>
               <IconButton icon={ExternalLink} label={t("viewer.link.open")} onClick={open} />

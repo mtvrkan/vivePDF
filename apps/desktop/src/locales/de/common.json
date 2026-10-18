@@ -3801,7 +3801,8 @@
           "title": "Ergebnisse erscheinen hier",
           "description": "Wählen Sie eine .p12-Datei und einen Speicherort für die .cer-Datei."
         }
-      }
+      },
+      "certificateFileName": "Zertifikat"
     },
     "forms": {
       "suffix": "ausgefuellt",

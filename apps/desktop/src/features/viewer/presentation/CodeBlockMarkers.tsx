@@ -26,7 +26,7 @@ export function CodeBlockMarkers({ documentId, rect }: { documentId: string; rec
             <button
               type="button"
               onClick={() => openCodeBlock(rect.pageIndex, block.id)}
-              className="glass-chip pointer-events-auto absolute -top-3 left-2 flex h-6 items-center gap-1 rounded-full px-2 font-mono text-[11px] text-primary"
+              className="glass-chip pointer-events-auto absolute -top-3 left-2 flex h-6 items-center gap-1 rounded-full px-2 font-mono text-2xs text-primary"
               aria-label={t("presentation.openCodeBlock")}
             >
               <Code2 className="size-3" aria-hidden />

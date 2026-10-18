@@ -1,4 +1,5 @@
 import re
+from datetime import datetime
 from typing import Literal
 from xml.sax.saxutils import escape
 
@@ -17,6 +18,7 @@ PROPERTIES: dict[str, tuple[str, str, Shape]] = {
     "creator": (XMP, "CreatorTool", "simple"),
     "producer": (PDF, "Producer", "simple"),
 }
+DATES = ("ModifyDate", "MetadataDate")
 RDF_END = "</rdf:RDF>"
 
 
@@ -55,7 +57,9 @@ def _sync_property(xml: str, namespace: str, name: str, shape: Shape, value: str
     return xml.replace(RDF_END, description + RDF_END, 1)
 
 
-def sync_xmp(document: pymupdf.Document, values: dict[str, str]) -> bool:
+def sync_xmp(
+    document: pymupdf.Document, values: dict[str, str], modified: datetime | None = None
+) -> bool:
     xml = document.get_xml_metadata() or ""
     if RDF_END not in xml:
         return False
@@ -64,6 +68,10 @@ def sync_xmp(document: pymupdf.Document, values: dict[str, str]) -> bool:
         if key in PROPERTIES:
             namespace, name, shape = PROPERTIES[key]
             updated = _sync_property(updated, namespace, name, shape, value)
+    if modified is not None:
+        stamp = modified.strftime("%Y-%m-%dT%H:%M:%SZ")
+        for name in DATES:
+            updated = _sync_property(updated, XMP, name, "simple", stamp)
     if updated == xml:
         return False
     document.set_xml_metadata(updated)

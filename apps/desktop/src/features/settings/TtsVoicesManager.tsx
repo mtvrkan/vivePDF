@@ -95,11 +95,11 @@ function VoiceRow({ voice, working, percent, previewing, busy, onPreview, onDown
       <span className="min-w-0 flex-1 truncate" title={voice.id}>
         {voice.name}
       </span>
-      {voice.source === "custom" ? <span className="glass-chip rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-primary">{t("settings.tts.custom")}</span> : null}
-      {(voice.speakers ?? 1) > 1 && !voice.installed ? <span className="font-mono text-[11px] text-muted-foreground">{t("settings.tts.speakers", { count: voice.speakers })}</span> : null}
+      {voice.source === "custom" ? <span className="glass-chip rounded-full px-2 py-0.5 text-3xs font-semibold uppercase tracking-[0.08em] text-primary">{t("settings.tts.custom")}</span> : null}
+      {(voice.speakers ?? 1) > 1 && !voice.installed ? <span className="font-mono text-2xs text-muted-foreground">{t("settings.tts.speakers", { count: voice.speakers })}</span> : null}
       <SpeakerSelect voice={voice} />
-      <span className="rounded-md border bg-background/60 px-1.5 font-mono text-[11px] text-muted-foreground">{voice.locale || voice.language}</span>
-      <span className="w-14 text-end font-mono text-[11px] text-muted-foreground">{voice.quality}</span>
+      <span className="rounded-md border bg-background/60 px-1.5 font-mono text-2xs text-muted-foreground">{voice.locale || voice.language}</span>
+      <span className="w-14 text-end font-mono text-2xs text-muted-foreground">{voice.quality}</span>
       {working ? (
         <span
           className="h-1 w-16 shrink-0 overflow-hidden rounded-sm bg-muted"
@@ -311,7 +311,7 @@ export function TtsVoicesManager() {
         ) : (
           groups.map((group) => (
             <div key={group.code} className="mb-3">
-              <p className="mb-1 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              <p className="mb-1 flex items-center gap-2 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 {group.name}
                 <span className="font-mono normal-case tracking-normal">{group.voices.length}</span>
               </p>
@@ -336,7 +336,7 @@ export function TtsVoicesManager() {
         )}
       </div>
       {directory ? (
-        <p className="truncate font-mono text-[11px] text-muted-foreground" title={directory}>
+        <p className="truncate font-mono text-2xs text-muted-foreground" title={directory}>
           {directory}
         </p>
       ) : null}

@@ -11,7 +11,7 @@ import { CONTRIBUTORS, CONTRIBUTORS_API_URL, mergeContributors, parseContributor
 type ContributorsState = "idle" | "loading" | "loaded" | "error";
 
 function SectionTitle({ children }: { children: string }) {
-  return <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{children}</p>;
+  return <p className="mb-3 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{children}</p>;
 }
 
 function ContributorAvatar({ contributor }: { contributor: Contributor }) {
@@ -52,9 +52,9 @@ function ContributorCard({ contributor }: { contributor: Contributor }) {
       <span className="truncate font-mono text-xs text-muted-foreground" title={`@${contributor.login}`}>
         @{contributor.login}
       </span>
-      <span className="glass-chip rounded-full px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">{t(contributor.roleKey)}</span>
+      <span className="glass-chip rounded-full px-2.5 py-0.5 text-2xs font-medium text-muted-foreground">{t(contributor.roleKey)}</span>
       {contributor.contributions !== null ? (
-        <span className="text-[11px] text-muted-foreground">{t("about.credits.contributors.commitCount", { count: contributor.contributions })}</span>
+        <span className="text-2xs text-muted-foreground">{t("about.credits.contributors.commitCount", { count: contributor.contributions })}</span>
       ) : null}
     </button>
   );

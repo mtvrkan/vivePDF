@@ -15,7 +15,7 @@ export function StudioShortcutsDialog({ open, onClose }: { open: boolean; onClos
       <div className="grid gap-3 sm:grid-cols-2" data-testid="studio-shortcuts">
         {STUDIO_SHORTCUT_GROUPS.map((group) => (
           <section key={group.id} className="rounded-xl border p-3" aria-labelledby={`studio-shortcuts-${group.id}`}>
-            <h3 id={`studio-shortcuts-${group.id}`} className="mb-1.5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+            <h3 id={`studio-shortcuts-${group.id}`} className="mb-1.5 flex items-center gap-2 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
               <Keyboard className="size-3.5" aria-hidden />
               {t(`studio.shortcuts.groups.${group.id}`)}
             </h3>

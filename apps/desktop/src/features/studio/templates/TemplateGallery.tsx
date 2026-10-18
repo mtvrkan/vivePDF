@@ -115,7 +115,7 @@ function CategoryButton({ filter, count, active, onSelect }: { filter: Filter; c
     >
       <Icon className={cn("size-4 shrink-0", active && "text-primary")} aria-hidden />
       <span className="min-w-0 flex-1 truncate">{filter === "all" ? t("studio.templates.all") : t(`studio.templates.categories.${filter}`)}</span>
-      <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{count}</span>
+      <span className="font-mono text-2xs tabular-nums text-muted-foreground">{count}</span>
     </button>
   );
 }

@@ -42,7 +42,7 @@ function ShortcutRow({ label, keys, onClick }: { label: string; keys: string; on
   const content = (
     <>
       <span className="min-w-0 truncate">{label}</span>
-      <kbd className="glass-chip shrink-0 rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground">{shortcutLabel(keys)}</kbd>
+      <kbd className="glass-chip shrink-0 rounded-md px-1.5 py-0.5 font-mono text-2xs text-foreground">{shortcutLabel(keys)}</kbd>
     </>
   );
   if (!onClick) return <div className="flex h-8 items-center justify-between gap-3 px-2 text-sm text-muted-foreground">{content}</div>;
@@ -102,7 +102,7 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
 
   return (
     <section className={`glass rounded-2xl ${listPadding(size)}`}>
-      <p className="px-2 pb-1 pt-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.stats.title")}</p>
+      <p className="px-2 pb-1 pt-2 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.stats.title")}</p>
       <div className="space-y-px">
         <OverviewRow label={t("home.stats.week")} value={String(weekCount)} />
         {topTool ? <OverviewRow label={t("home.stats.topTool")} value={topTool.label} mono={false} onClick={() => void navigate(topTool.route)} /> : null}
@@ -135,7 +135,7 @@ export function StatsCard({ size = "medium" }: { size?: HomeSize }) {
       </div>
       {size === "small" ? null : (
       <div className="mt-3 border-t pt-3">
-        <p className="px-2 pb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("emptyDoc.shortcuts")}</p>
+        <p className="px-2 pb-1 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("emptyDoc.shortcuts")}</p>
         <div className="space-y-px">
           <ShortcutRow label={t("common.openPdf")} keys="Ctrl O" onClick={() => void pickAndOpen()} />
           <ShortcutRow label={t("emptyDoc.palette")} keys="Ctrl K" onClick={openPalette} />

@@ -191,7 +191,7 @@ export function SearchBar({ documentId, onClose }: SearchBarProps) {
         <div className="glass-flat absolute inset-x-0 top-full max-h-72 overflow-auto border-b p-2 shadow-(--shadow-float)">
           {grouped.map((group) => (
             <div key={group.pageIndex} className="mb-2 last:mb-0">
-              <p className="px-1 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              <p className="px-1 py-1 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 {t("viewer.searchPageGroup", { page: group.pageIndex + 1, count: group.indices.length })}
               </p>
               <ul className="flex flex-col gap-0.5">

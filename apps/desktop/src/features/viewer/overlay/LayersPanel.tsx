@@ -191,7 +191,7 @@ export function LayersPanel({ documentId }: { documentId: string }) {
                     <button type="button" onClick={() => { setActiveIndex(index); focusRow(row); }} className="flex min-w-0 flex-1 items-center gap-2 text-start">
                       <Icon className="size-3.5 shrink-0 text-muted-foreground" aria-hidden />
                       <span title={labelFor(row)} className="min-w-0 flex-1 truncate">{labelFor(row)}</span>
-                      {badge ? <span className="shrink-0 rounded-full bg-accent px-1.5 py-0.5 text-[10px] text-accent-foreground">{t(`viewer.editPanel.layers.${badge}`)}</span> : null}
+                      {badge ? <span className="shrink-0 rounded-full bg-accent px-1.5 py-0.5 text-3xs text-accent-foreground">{t(`viewer.editPanel.layers.${badge}`)}</span> : null}
                     </button>
                     <IconButton
                       icon={hidden ? EyeOff : Eye}

@@ -190,7 +190,7 @@ export function SettingsPage() {
               if (sections.length === 0) return null;
               return (
                 <div key={group.id} data-tone={group.tone} className="mb-5 last:mb-0">
-                  <p className="mb-1.5 px-2.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t(`settings.groups.${group.id}`)}</p>
+                  <p className="mb-1.5 px-2.5 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t(`settings.groups.${group.id}`)}</p>
                   <ul className="space-y-0.5">
                     {sections.map((id) => {
                       const Icon = SECTION_ICONS[id];

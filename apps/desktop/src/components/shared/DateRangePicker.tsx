@@ -189,7 +189,7 @@ export function DateRangePicker({ start, end, onChange, className, ariaLabel }: 
                   <ChevronRight className="size-4" aria-hidden />
                 </button>
               </div>
-              <div className="mt-2 grid grid-cols-7 text-center text-[11px] font-medium uppercase tracking-[0.04em] text-muted-foreground">
+              <div className="mt-2 grid grid-cols-7 text-center text-2xs font-medium uppercase tracking-[0.04em] text-muted-foreground">
                 {weekdays.map((day) => (
                   <span key={day} className="py-1">
                     {day}

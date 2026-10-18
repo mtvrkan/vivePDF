@@ -126,7 +126,7 @@ function RecentDocumentCard({ item, isMissing, stamp, className }: { item: Recen
           <PinnedMarker item={item} />
           <span className="line-clamp-2 min-w-0 break-words">{item.fileName}</span>
         </p>
-        <p className={cn("mt-1 flex items-center gap-1 text-[11px]", isMissing ? "text-warning" : "text-muted-foreground")}>
+        <p className={cn("mt-1 flex items-center gap-1 text-2xs", isMissing ? "text-warning" : "text-muted-foreground")}>
           {isMissing ? null : <Clock className="size-3 shrink-0" aria-hidden />}
           <span className="min-w-0 break-words">{isMissing ? t("home.collections.missing") : formatRelativeMoment(item.openedAt, locale, Date.now(), t("home.justNow"))}</span>
         </p>
@@ -158,7 +158,7 @@ function RecentDocumentRow({ item, isMissing }: { item: RecentFile; isMissing: b
         {isMissing ? <AlertTriangle className="size-4 shrink-0 text-warning" aria-hidden /> : <FileText className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
         <span className="min-w-0 flex-1 truncate text-sm">{item.fileName}</span>
         <PinnedMarker item={item} />
-        <span className={cn("shrink-0 text-[11px]", isMissing ? "text-warning" : "font-mono text-muted-foreground")}>{isMissing ? t("home.collections.missing") : formatRelativeMoment(item.openedAt, locale, Date.now(), t("home.justNow"))}</span>
+        <span className={cn("shrink-0 text-2xs", isMissing ? "text-warning" : "font-mono text-muted-foreground")}>{isMissing ? t("home.collections.missing") : formatRelativeMoment(item.openedAt, locale, Date.now(), t("home.justNow"))}</span>
       </button>
       <PinButton item={item} className={cn("transition-opacity duration-(--transition-fast) focus-visible:opacity-100 group-hover:opacity-100", isMissing ? "opacity-100" : "opacity-0")} />
       <button type="button" onClick={() => removeRecent(item.path)} aria-label={t("home.removeRecent", { name: item.fileName })} className={cn("rounded-full p-1.5 text-muted-foreground transition-opacity duration-(--transition-fast) hover:bg-secondary hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100", isMissing ? "opacity-100" : "opacity-0")}>
@@ -206,7 +206,7 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
   return (
     <section className={cn("glass @container rounded-2xl", sectionPadding(size))}>
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.recent")}</p>
+        <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.recent")}</p>
         <div className="flex flex-wrap items-center gap-2">
           {hasControls ? (
             <>
@@ -267,7 +267,7 @@ export function RecentDocuments({ size = "medium" }: { size?: HomeSize }) {
       ) : (
         groups.map((group) => (
           <div key={group.key} className={size === "small" ? "mt-3" : "mt-4"}>
-            {group.label ? <p className="mb-1.5 px-1 text-[11px] font-medium text-muted-foreground">{group.label}</p> : null}
+            {group.label ? <p className="mb-1.5 px-1 text-2xs font-medium text-muted-foreground">{group.label}</p> : null}
             {size === "small" ? (
               <ul aria-label={group.label ?? undefined} className="grid gap-x-3 gap-y-0.5 @2xl:grid-cols-2">
                 {group.items.map((item) => (

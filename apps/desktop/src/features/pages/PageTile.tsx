@@ -116,11 +116,11 @@ export const PageTile = memo(function PageTile({ tile, position, total, isLast, 
         <PageThumbnail tile={tile} sources={sources} width={width} height={height} className="rounded-sm" />
         <div className="flex items-center justify-between font-mono text-xs text-muted-foreground">
           <span className="flex min-w-0 items-center gap-1">
-            <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-foreground">{position + 1}</span>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-2xs font-medium text-foreground">{position + 1}</span>
             {labelText !== null ? (
               <span
                 title={t("tools.pages.labels.shown", { label: labelText })}
-                className={cn("truncate rounded-full border px-1.5 py-0.5 text-[11px]", labelStart ? "border-primary text-primary" : "text-muted-foreground")}
+                className={cn("truncate rounded-full border px-1.5 py-0.5 text-2xs", labelStart ? "border-primary text-primary" : "text-muted-foreground")}
               >
                 {labelText}
               </span>

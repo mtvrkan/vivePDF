@@ -61,7 +61,7 @@ const STORED_LINK_LABELS: Record<StoredTarget, string> = {
 };
 
 function Eyebrow({ children }: { children: string }) {
-  return <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{children}</p>;
+  return <p className="mb-3 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{children}</p>;
 }
 
 function Chip({ children }: { children: string }) {
@@ -309,7 +309,7 @@ export function AboutPage() {
             </div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t pt-3 text-xs text-muted-foreground">
               <span>{t("about.footer.copyright", { year })}</span>
-              <span className="font-mono text-[11px]">{`${t("about.version")} ${version}`}</span>
+              <span className="font-mono text-2xs">{`${t("about.version")} ${version}`}</span>
             </div>
           </footer>
         </div>
@@ -328,7 +328,7 @@ export function AboutPage() {
                   <button type="button" onClick={() => void openExternal(entry.url)} className="min-w-0 truncate text-start outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring" title={entry.url}>
                     {entry.name}
                   </button>
-                  <span className="shrink-0 font-mono text-[11px] text-muted-foreground">{entry.licence}</span>
+                  <span className="shrink-0 font-mono text-2xs text-muted-foreground">{entry.licence}</span>
                 </li>
               ))}
             </ul>

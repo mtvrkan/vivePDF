@@ -120,7 +120,7 @@ export function PresentationRuler({ rects, interactive = false }: { rects: PageR
               </text>
             ))}
           </svg>
-          <span className="absolute bottom-1 right-10 font-mono text-[10px] tabular-nums text-muted-foreground" data-ruler-angle="">
+          <span className="absolute bottom-1 right-10 font-mono text-3xs tabular-nums text-muted-foreground" data-ruler-angle="">
             {angleText}
           </span>
           {interactive ? (

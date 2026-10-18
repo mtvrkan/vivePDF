@@ -85,12 +85,12 @@ export const RenameRow = memo(function RenameRow({ path, position, item, overrid
         ) : item ? (
           <span className="flex min-w-0 items-center gap-2">
             {item.recognised ? (
-              <span className="flex shrink-0 items-center gap-1 rounded bg-(--tone-soft) px-1.5 py-0.5 text-[11px] text-(--tone)">
+              <span className="flex shrink-0 items-center gap-1 rounded bg-(--tone-soft) px-1.5 py-0.5 text-2xs text-(--tone)">
                 <ScanText className="size-3" aria-hidden />
                 {t("tools.rename.readWithOcr")}
               </span>
             ) : null}
-            <span className="truncate font-mono text-[11px] text-muted-foreground">
+            <span className="truncate font-mono text-2xs text-muted-foreground">
               {SHOWN_FIELDS.filter((key) => item.fields[key])
                 .map((key) => `${t(`tools.rename.tokens.${key}`)}: ${item.fields[key]}`)
                 .join(" · ") || t("tools.rename.noFields")}

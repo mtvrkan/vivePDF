@@ -4077,7 +4077,8 @@
           "title": "تظهر النتائج هنا",
           "description": "اختر ملف .p12 وحدّد مكان حفظ ملف .cer."
         }
-      }
+      },
+      "certificateFileName": "شهادة"
     },
     "forms": {
       "suffix": "filled",

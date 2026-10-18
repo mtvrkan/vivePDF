@@ -110,7 +110,7 @@ export function SplitPage() {
                       <div className="mt-2 flex flex-wrap items-center gap-1.5">
                         <span className="text-xs text-muted-foreground">{t("tools.split.partsPreview", { count: parts.length })}</span>
                         {parts.map((part, index) => (
-                          <span key={index} className="glass-chip px-2 py-0.5 font-mono text-[11px] leading-5">{part.label}</span>
+                          <span key={index} className="glass-chip px-2 py-0.5 font-mono text-2xs leading-5">{part.label}</span>
                         ))}
                       </div>
                     ) : (

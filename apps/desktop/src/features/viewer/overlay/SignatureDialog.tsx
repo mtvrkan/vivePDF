@@ -165,7 +165,7 @@ export function SignatureDialog({ open, onClose, onPick }: SignatureDialogProps)
       <div className="flex flex-col gap-3">
         {items.length > 0 ? (
           <div className="flex flex-col gap-1">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("viewer.signature.library")}</span>
+            <span className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("viewer.signature.library")}</span>
             <ul className="grid grid-cols-2 gap-2">
               {items.map((item) => (
                 <li key={item.id} className="nav-glass relative rounded-xl p-2">
@@ -187,7 +187,7 @@ export function SignatureDialog({ open, onClose, onPick }: SignatureDialogProps)
           </div>
         ) : null}
         <div className="flex flex-col gap-1">
-          <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("viewer.signature.draw")}</span>
+          <span className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("viewer.signature.draw")}</span>
           <canvas
             ref={canvasRef}
             style={{ width: CANVAS_WIDTH, height: CANVAS_HEIGHT, touchAction: "none" }}

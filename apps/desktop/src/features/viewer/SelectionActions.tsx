@@ -371,7 +371,7 @@ export function SelectionActions({ documentId, containerRef }: { documentId: str
         {codeBlock ? (
           <div className="relative">
             <IconButton icon={Braces} label={t("viewer.selection.copyAsCode")} onClick={() => void copyAsCode()} />
-            {codeBlock.language ? <span className="pointer-events-none absolute -bottom-1 -right-1 rounded-full bg-muted px-1 text-[9px] leading-none text-muted-foreground">{codeBlock.language}</span> : null}
+            {codeBlock.language ? <span className="pointer-events-none absolute -bottom-1 -right-1 rounded-full bg-muted px-1 text-3xs leading-none text-muted-foreground">{codeBlock.language}</span> : null}
           </div>
         ) : null}
         <IconButton icon={Quote} label={t("viewer.context.copyQuotation")} onClick={() => void copyAsQuotation()} />

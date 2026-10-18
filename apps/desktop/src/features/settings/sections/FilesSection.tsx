@@ -72,7 +72,7 @@ export function FilesSection({ query, onEmptyChange }: SettingsSectionProps) {
       </SettingRow>
       <SettingRow label={t("settings.outputTokens")} hint={t("settings.outputPatternHint")}>
         {OUTPUT_PATTERN_TOKENS.map((token) => (
-          <code key={token} className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-[11px] text-foreground/80">{`{${token}}`}</code>
+          <code key={token} className="glass-chip rounded-md px-1.5 py-0.5 font-mono text-2xs text-foreground/80">{`{${token}}`}</code>
         ))}
       </SettingRow>
     </SectionCard>

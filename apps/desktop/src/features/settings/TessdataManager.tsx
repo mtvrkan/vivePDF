@@ -99,7 +99,7 @@ export function TessdataManager() {
           <Search className="pointer-events-none absolute start-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
           <TextInput value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("settings.tessdata.search")} aria-label={t("settings.tessdata.search")} className="h-9 ps-9 text-sm" />
         </span>
-        <span className="font-mono text-[11px] text-muted-foreground">{t("settings.tessdata.installedCount", { count: installed.size })}</span>
+        <span className="font-mono text-2xs text-muted-foreground">{t("settings.tessdata.installedCount", { count: installed.size })}</span>
       </div>
       {error ? <p className="mt-2 text-xs text-destructive">{error}</p> : null}
       <ul className="mt-2 grid max-h-72 gap-1 overflow-auto pe-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -112,7 +112,7 @@ export function TessdataManager() {
                 {isBusy ? <Loader2 className="size-3 animate-spin" aria-hidden /> : isInstalled ? <Check className="size-3" strokeWidth={3} aria-hidden /> : null}
               </span>
               <span className="min-w-0 flex-1 truncate">{item.name}</span>
-              <span className="font-mono text-[11px] text-muted-foreground">{item.code}</span>
+              <span className="font-mono text-2xs text-muted-foreground">{item.code}</span>
               {isBusy && !isInstalled ? (
                 <span className="flex w-16 shrink-0 items-center gap-1.5">
                   <span
@@ -125,7 +125,7 @@ export function TessdataManager() {
                   >
                     <span className="block h-full bg-primary transition-[width] duration-(--transition-fast)" style={{ width: `${percent ?? 8}%` }} />
                   </span>
-                  <span className="font-mono text-[11px] tabular-nums text-muted-foreground">{percent ?? 0}%</span>
+                  <span className="font-mono text-2xs tabular-nums text-muted-foreground">{percent ?? 0}%</span>
                 </span>
               ) : null}
               {isBusy && !isInstalled ? (
@@ -140,7 +140,7 @@ export function TessdataManager() {
         })}
       </ul>
       <div className="mt-2 flex items-center justify-between gap-3">
-        <span className="truncate font-mono text-[11px] text-muted-foreground" title={data?.directory}>
+        <span className="truncate font-mono text-2xs text-muted-foreground" title={data?.directory}>
           {data?.directory ?? ""}
         </span>
         <Button size="sm" variant="ghost" onClick={() => void load()} disabled={busy !== null}>

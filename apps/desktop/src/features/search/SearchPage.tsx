@@ -489,7 +489,7 @@ export function SearchPage() {
               {history.length > 0 ? (
                 <div className="mt-6">
                   <div className="flex items-center justify-between">
-                    <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("search.recentSearches")}</p>
+                    <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("search.recentSearches")}</p>
                     <button type="button" onClick={() => setHistory(clearHistory())} className="flex min-h-6 items-center rounded-full px-2 text-xs text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground">
                       {t("search.clearHistory")}
                     </button>
@@ -505,7 +505,7 @@ export function SearchPage() {
                 </div>
               ) : null}
               <div className="mt-6 border-t pt-5">
-                <p className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                <p className="flex items-center gap-1.5 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   <Lightbulb className="size-3.5" aria-hidden />
                   {t("search.tips")}
                 </p>
@@ -518,7 +518,7 @@ export function SearchPage() {
                       className="flex items-center justify-between gap-3 rounded-xl border border-(--glass-border) bg-card/40 px-3 py-2.5 text-start text-sm outline-none transition-colors duration-(--transition-fast) hover:bg-(--hover-bg) focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <span className="min-w-0 truncate">{t(`search.${tip.key}`)}</span>
-                      <code className="shrink-0 rounded-md bg-secondary px-1.5 py-0.5 font-mono text-[11px] text-muted-foreground">{tip.example}</code>
+                      <code className="shrink-0 rounded-md bg-secondary px-1.5 py-0.5 font-mono text-2xs text-muted-foreground">{tip.example}</code>
                     </button>
                   ))}
                 </div>
@@ -556,11 +556,11 @@ export function SearchPage() {
                           </span>
                           <span className="min-w-0 flex-1">
                             <span title={file.title || basenameOf(file.path)} className="block truncate text-sm font-semibold">{file.title || basenameOf(file.path)}</span>
-                            <span className="block truncate font-mono text-[11px] text-muted-foreground" title={file.path}>{file.path}</span>
+                            <span className="block truncate font-mono text-2xs text-muted-foreground" title={file.path}>{file.path}</span>
                           </span>
                         </button>
                         <IconButton icon={FolderSearch} label={t("tools.reveal")} className="shrink-0" onClick={() => void revealHit(file.path)} />
-                        <span className="glass-chip shrink-0 rounded-full px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
+                        <span className="glass-chip shrink-0 rounded-full px-2.5 py-1 font-mono text-2xs text-muted-foreground">
                           {formatNumber(file.pages, locale)} {t("info.pages")}
                         </span>
                       </div>
@@ -572,7 +572,7 @@ export function SearchPage() {
                               onClick={() => openHit(file.path, hit.page)}
                               className="flex w-full items-start gap-3 rounded-lg px-2.5 py-2 text-start text-sm outline-none transition-colors duration-(--transition-fast) hover:bg-(--hover-bg) focus-visible:ring-2 focus-visible:ring-ring"
                             >
-                              <span className="mt-0.5 shrink-0 rounded-md bg-secondary px-1.5 py-0.5 font-mono text-[11px] tabular-nums text-muted-foreground">{t("search.page", { page: hit.page })}</span>
+                              <span className="mt-0.5 shrink-0 rounded-md bg-secondary px-1.5 py-0.5 font-mono text-2xs tabular-nums text-muted-foreground">{t("search.page", { page: hit.page })}</span>
                               <span className="min-w-0 flex-1 leading-snug text-foreground/85">{renderSnippet(hit.snippet)}</span>
                             </button>
                           </li>
@@ -591,8 +591,8 @@ export function SearchPage() {
 
         <aside className="glass flex min-h-0 flex-col gap-3 rounded-2xl p-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("search.folders")}</h2>
-            <span className="font-mono text-[11px] text-muted-foreground">{t("search.indexed", { files: formatNumber(totalFiles, locale), pages: formatNumber(totalPages, locale) })}</span>
+            <h2 className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("search.folders")}</h2>
+            <span className="font-mono text-2xs text-muted-foreground">{t("search.indexed", { files: formatNumber(totalFiles, locale), pages: formatNumber(totalPages, locale) })}</span>
           </div>
           {folders.length === 0 ? (
             <EmptyState
@@ -616,7 +616,7 @@ export function SearchPage() {
                     <span className="truncate font-medium" title={folder.path}>
                       {basenameOf(folder.path) || folder.path}
                     </span>
-                    <span className="truncate font-mono text-[11px] text-muted-foreground">
+                    <span className="truncate font-mono text-2xs text-muted-foreground">
                       {t("search.indexed", { files: formatNumber(folder.files, locale), pages: formatNumber(folder.pages, locale) })}
                     </span>
                   </span>

@@ -175,13 +175,14 @@ mod tests {
         scope.add(&base.join("a.pdf"), false);
         let value = serde_json::json!({
             "steps": [{ "output": base.join("a.pdf") }],
-            "outputs": [base.join("b.pdf"), stray]
+            "outputs": [base.join("a-2.pdf"), base.join("b.pdf"), stray]
         });
 
         remember_outputs(&value, &scope);
 
         assert!(files::was_produced(&base.join("a.pdf")));
-        assert!(files::was_produced(&base.join("b.pdf")));
+        assert!(files::was_produced(&base.join("a-2.pdf")));
+        assert!(!files::was_produced(&base.join("b.pdf")));
         assert!(!files::was_produced(&stray));
     }
 

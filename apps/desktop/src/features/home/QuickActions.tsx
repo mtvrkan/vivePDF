@@ -59,7 +59,7 @@ export function QuickActions({ size = "medium", editing = false }: { size?: Home
 
   return (
     <section className="@container">
-      <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.quickActions")}</p>
+      <p className="mb-3 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("home.quickActions")}</p>
       <ul ref={listRef} className={cn("grid gap-3", GRID[size])}>
         {actions.map((tool) => {
           const Icon = tool.icon;

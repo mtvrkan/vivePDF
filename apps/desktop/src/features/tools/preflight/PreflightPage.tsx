@@ -171,7 +171,7 @@ export function PreflightPage() {
                 })}
               </ul>
             ) : null}
-            {report && report.unembeddedFonts.length > 0 ? <p className="font-mono text-[11px] text-muted-foreground">{report.unembeddedFonts.join(", ")}</p> : null}
+            {report && report.unembeddedFonts.length > 0 ? <p className="font-mono text-2xs text-muted-foreground">{report.unembeddedFonts.join(", ")}</p> : null}
             {report ? (
               <div>
                 <Button size="sm" variant="ghost" icon={<FileDown className="size-4" aria-hidden />} onClick={() => void exportReport()} loading={exporting}>

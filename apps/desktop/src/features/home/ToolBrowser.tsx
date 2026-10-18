@@ -71,7 +71,7 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
   return (
     <div className="@container">
       <div className={cn("flex flex-wrap items-center gap-3", title ? "justify-between" : "justify-end")}>
-        {title ? <p className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{title}</p> : null}
+        {title ? <p className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{title}</p> : null}
         <label className="field flex h-9 w-72 max-w-full items-center gap-2.5 rounded-full px-3.5 text-sm">
           <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden />
           <input
@@ -134,7 +134,7 @@ export function ToolBrowser({ title, collapsible = false, grouped = false, onSel
             const GroupIcon = toolGroupIcons[section.group];
             return (
               <section key={section.group} data-tone={section.group}>
-                <p className="flex items-center gap-2 px-0.5 pb-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+                <p className="flex items-center gap-2 px-0.5 pb-2 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                   <GroupIcon className="size-3.5 text-(--tone)" aria-hidden />
                   <span className="truncate">{t(`tools.grid.groups.${section.group}`)}</span>
                   <span className="font-mono tabular-nums">{section.items.length}</span>

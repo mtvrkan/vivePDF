@@ -64,6 +64,7 @@ class FormField(RpcModel):
     option_labels: list[str] = Field(default_factory=list)
     max_length: int | None = None
     editable: bool = False
+    checkbox_style: bool = False
     widgets: list[FieldWidget] = Field(default_factory=list)
 
 
@@ -228,6 +229,7 @@ def describe_field(
         multi_select=is_multi_select(first),
         max_length=max_length or None,
         editable=kind == "combobox" and bool(first.field_flags & CHOICE_IS_EDITABLE),
+        checkbox_style=kind == "radio" and _kind(first) == "checkbox",
         widgets=[_field_widget(widget, kind) for widget in widgets],
     )
 

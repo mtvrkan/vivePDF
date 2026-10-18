@@ -253,6 +253,22 @@ def test_html_export_escapes_the_document_title(tmp_path: Path) -> None:
     assert "&lt;/title&gt;" in markup
 
 
+def test_html_export_forbids_scripts_and_remote_loads_when_opened(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    document.new_page().insert_text((72, 72), "x")
+    source = tmp_path / "t.pdf"
+    document.save(source)
+    document.close()
+
+    result = to_html(
+        TextSourceParams(path=str(source), output=str(tmp_path / "o.html")), silent_progress()
+    )
+
+    head = Path(result.output).read_text(encoding="utf-8").split("</head>")[0]
+    assert "Content-Security-Policy" in head
+    assert "default-src 'none'; img-src data:" in head
+
+
 def test_page_images_can_be_joined_into_one_tall_picture(sample_pdf: Path, tmp_path: Path) -> None:
     result = to_images(
         ImagesParams(path=str(sample_pdf), output_dir=str(tmp_path), dpi=36, single=True),

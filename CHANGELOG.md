@@ -24,6 +24,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Page thumbnails, document info and other quick reads are answered by their own workers, so they no longer wait behind OCR, compression or conversions running at the same time; replies are written by one writer so a large result no longer holds up other jobs' progress [2026-10-18]
 - While the black or white board is shown, the presentation bar and the presenter console leave the drawing tools, area zoom, zoom buttons and page clearing to the board's own toolbar instead of showing them twice; they come back on the slides [2026-10-18]
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
+- Very small labels (badges, counters, captions) use two new type-scale steps, `text-2xs` (11 px) and `text-3xs` (10 px), instead of fixed pixel sizes; the code-language badge on a selected code block grows from 9 to 10 px [2026-10-18]
 ### Fixed
 - Check boxes that share one field name but stand for different answers (such as Yes and No) are filled, read and exported as one choice instead of all being ticked together [2026-10-18]
 - Editing a document's title, author, subject, keywords, creator or producer also updates its XMP metadata, so other viewers show the new values and PDF/A files stay valid [2026-10-18]
@@ -62,12 +63,17 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Batch rename reports a file as failed when it is not at its new name right after the rename (for example when antivirus software moves it away) instead of counting it as renamed [2026-10-18]
 - Saving an edited text block removes the original text completely, glyph by glyph, even when another text frame overlaps it or the page is turned; shadow or glow pictures on the removed letters go too, while backgrounds and nearby pictures stay [2026-10-18]
 - The engine robustness matrix feeds the support bundle its file through attachments instead of the picture list, so the fast robustness tests pass again [2026-10-17]
+- A pair of checkboxes that share a name but each have their own value now shows in the viewer as boxes with a check mark, and ticking the chosen box again clears it, instead of looking and acting like a radio button [2026-10-18]
+- Editing the title, author or other document properties moves the PDF's modify date and, when the file has XMP metadata, its `xmp:ModifyDate` and `xmp:MetadataDate` to the same moment, so archive (PDF/A) checkers see matching dates [2026-10-18]
+- The suggested file name when exporting a certificate or saving a new signing certificate follows the app language instead of always being the Turkish "sertifika" [2026-10-18]
 ### Security
 - APA reference lists escape author and editor names like the other styles do, so a source whose author field holds markup (from a DOI lookup, an imported .bib/.ris file or a shared document) can no longer inject it into the Studio editor or the exported document [2026-10-18]
 - On macOS and Linux a path such as `granted/link/../file` is checked where the system really opens it (after following the link) instead of where it reads, so a linked folder inside a granted folder no longer opens a way out of it [2026-10-18]
 - Opening a folder, revealing a file, dragging a file out and deleting or opening a produced file refuse a network share nobody opened before touching it, so no connection (and on Windows no sign-in attempt) reaches that server; Open folder also refuses program bundles such as `.app` on macOS [2026-10-18]
 - On macOS, LibreOffice converts office files inside the system sandbox: it cannot reach the network, send Apple events, read files in the home folder other than its own install, fonts and the private copy of the document, or write anywhere but its own folders; if the sandbox cannot be set up it falls back to the old run with macros and links off [2026-10-18]
 - Picking a document no longer lets vivePDF write over other files already sitting in its folder: only new files and folders beside it can be written, hidden names stay refused and a dangling link no longer counts as a new path; when a tool's output is one of those files or folders, vivePDF asks where to save instead of failing [2026-10-18]
+- A produced file only lets vivePDF remember (and so later open or reveal) other files of that call that are named after it, such as `report-2.png`, `report (2).pdf` or `report.docx`, instead of any file in the same folder [2026-10-18]
+- HTML exported from a PDF carries a content policy that blocks scripts and any network loading when it is opened in a browser; its pictures stay embedded and shown [2026-10-18]
 
 ## [0.3.0] - 2026-10-15
 ### Added

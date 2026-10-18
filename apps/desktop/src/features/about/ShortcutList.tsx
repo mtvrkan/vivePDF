@@ -36,7 +36,7 @@ export function ShortcutList({ groups: source }: { groups: ShortcutGroup[] }) {
         <div className="grid grid-cols-2 gap-4">
           {groups.map((group) => (
             <div key={group.id} className={cn("rounded-xl border p-4", (group.id === "organizer" || group.id === "presentation" || group.id === "studio") && "col-span-2")}>
-              <p className="mb-2 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+              <p className="mb-2 flex items-center gap-2 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
                 <Keyboard className="size-3.5" aria-hidden />
                 {t(`about.shortcuts.groups.${group.id}`)}
               </p>

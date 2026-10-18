@@ -79,7 +79,7 @@ const PageSection = memo(function PageSection({
 
   return (
     <section ref={ref} data-page={entry.page} className="mb-10" style={!visible ? { minHeight: placeholderHeight(measured, layoutKey, entry.text, fontSize) } : undefined}>
-      <button type="button" onClick={() => onExit(entry.page)} className="mb-3 flex min-h-6 items-center text-[11px] font-semibold uppercase tracking-[0.08em] opacity-75 hover:opacity-100">
+      <button type="button" onClick={() => onExit(entry.page)} className="mb-3 flex min-h-6 items-center text-2xs font-semibold uppercase tracking-[0.08em] opacity-75 hover:opacity-100">
         {t("viewer.reading.page", { page: entry.page })}
       </button>
       {!visible ? null : entry.text ? (

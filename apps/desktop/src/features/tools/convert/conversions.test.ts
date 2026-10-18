@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { batchOutputName, batchOutputPaths, moveItem, pageList } from "./conversions";
+import { albumOutputPath, batchOutputName, batchOutputPaths, moveItem, pageList } from "./conversions";
 
 describe("batchOutputName", () => {
   it("names a file after its own stem when no other file shares it", () => {
@@ -57,5 +57,20 @@ describe("pageList", () => {
     expect(pageList([9, 4, 4])).toBe("4, 9");
     expect(pageList([12])).toBe("12");
     expect(pageList([])).toBe("");
+  });
+});
+
+describe("albumOutputPath", () => {
+  it("names the album next to the first picture when no PDF output is set", () => {
+    expect(albumOutputPath("", "/photos/a.jpg", "album")).toBe("/photos/album.pdf");
+  });
+
+  it("keeps an output the user chose even when its extension is upper case", () => {
+    expect(albumOutputPath("/out/Report.PDF", "/photos/a.jpg", "album")).toBeNull();
+  });
+
+  it("replaces a leftover non-PDF output and waits while there is no picture", () => {
+    expect(albumOutputPath("/photos/a.docx", "/photos/a.jpg", "album")).toBe("/photos/album.pdf");
+    expect(albumOutputPath("", "", "album")).toBeNull();
   });
 });

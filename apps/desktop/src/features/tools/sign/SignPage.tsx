@@ -175,12 +175,12 @@ export function SignPage() {
   };
 
   const pickExportOutput = async () => {
-    const selected = await saveDialog({ defaultPath: exportOutput || "sertifika.cer", filters: [{ name: "X.509", extensions: ["cer"] }] });
+    const selected = await saveDialog({ defaultPath: exportOutput || `${t("tools.sign.certificateFileName")}.cer`, filters: [{ name: "X.509", extensions: ["cer"] }] });
     if (selected) setExportOutput(selected.toLowerCase().endsWith(".cer") ? selected : `${selected}.cer`);
   };
 
   const pickCertificateOutput = async () => {
-    const selected = await saveDialog({ defaultPath: certOutput || `${commonName || "sertifika"}.p12`, filters: [{ name: "PKCS#12", extensions: ["p12"] }] });
+    const selected = await saveDialog({ defaultPath: certOutput || `${commonName || t("tools.sign.certificateFileName")}.p12`, filters: [{ name: "PKCS#12", extensions: ["p12"] }] });
     if (selected) setCertOutput(selected.toLowerCase().endsWith(".p12") ? selected : `${selected}.p12`);
   };
 

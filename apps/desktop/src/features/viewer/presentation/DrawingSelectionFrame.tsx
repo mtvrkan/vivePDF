@@ -41,7 +41,7 @@ function DrawingStylePanel({ rect, stroke, onChange }: { rect: PageRect; stroke:
   const widthPx = clampTo(widthRange, Math.round(stroke.width * rect.width));
   return (
     <div className="w-56">
-      <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">{t("presentation.style")}</p>
+      <p className="font-mono text-2xs uppercase tracking-[0.08em] text-muted-foreground">{t("presentation.style")}</p>
       <ColorRow colors={PEN_COLORS} current={stroke.color} onPick={(color) => onChange({ ...stroke, color })} custom />
       {stroke.tool === "text" ? null : (
         <RangeRow label={t("presentation.thickness")} range={widthRange} step={1} value={widthPx} format={(value) => `${value} px`} onChange={(value) => onChange({ ...stroke, width: value / rect.width })} />

@@ -320,7 +320,7 @@ export function OutlineEditor({ documentId, pageCount, currentPage, reloadKey, o
                 ) : (
                   <span className="min-w-0 flex-1 truncate py-1">{row.title || t("viewer.outline.untitled")}</span>
                 )}
-                {row.pageIndex !== null ? <span className="shrink-0 font-mono text-[11px] tabular-nums text-muted-foreground">{pageLabelOf(labels, row.pageIndex + 1)}</span> : null}
+                {row.pageIndex !== null ? <span className="shrink-0 font-mono text-2xs tabular-nums text-muted-foreground">{pageLabelOf(labels, row.pageIndex + 1)}</span> : null}
               </li>
             );
           })}

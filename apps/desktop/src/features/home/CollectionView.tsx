@@ -234,7 +234,7 @@ export function CollectionView({ collectionId, onClose, onEdit }: { collectionId
                       {isMissing ? <AlertTriangle className="size-4 shrink-0 text-warning" aria-hidden /> : <FileText className="size-4 shrink-0 text-muted-foreground" aria-hidden />}
                       <span className="min-w-0 flex-1">
                         <span className="block truncate text-sm">{name}</span>
-                        <span className="block truncate text-[11px] text-muted-foreground">{isMissing ? t("home.collections.missing") : dirnameOf(path)}</span>
+                        <span className="block truncate text-2xs text-muted-foreground">{isMissing ? t("home.collections.missing") : dirnameOf(path)}</span>
                       </span>
                     </button>
                     {isMissing ? null : <IconButton icon={FolderSearch} label={t("tools.reveal")} onClick={() => void reveal(path)} />}

@@ -56,7 +56,7 @@ function ShapeGrid({ group, selected, onSelect }: { group: ShapeGroup; selected:
             <span className="flex h-12 w-full items-center justify-center rounded-md bg-white p-1">
               <img src={thumbnailOf(shape)} alt="" draggable={false} className="max-h-full max-w-full object-contain" />
             </span>
-            <span className="line-clamp-2 text-[11px] leading-tight text-muted-foreground">{name}</span>
+            <span className="line-clamp-2 text-2xs leading-tight text-muted-foreground">{name}</span>
           </button>
         );
       })}

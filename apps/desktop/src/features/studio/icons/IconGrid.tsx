@@ -124,7 +124,7 @@ export function IconGrid({ entries, preview, onPick, labelOf, ariaLabel, tile, c
             className="card glass-tinted flex min-w-0 flex-col items-center justify-center gap-1 rounded-lg text-foreground outline-none hover:ring-2 hover:ring-primary/40 focus-visible:ring-2 focus-visible:ring-ring"
           >
             <IconGlyph paths={preview(entry.name)} className={showLabels ? "size-7 shrink-0" : "size-5 shrink-0"} />
-            {showLabels ? <span className="w-full truncate px-1 text-center text-[11px] leading-tight text-muted-foreground">{entry.label}</span> : null}
+            {showLabels ? <span className="w-full truncate px-1 text-center text-2xs leading-tight text-muted-foreground">{entry.label}</span> : null}
           </button>
         );
       })}

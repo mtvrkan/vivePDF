@@ -74,21 +74,22 @@ export const FormFieldLayer = memo(function FormFieldLayer({ documentId, pageInd
 
     if (field.kind === "checkbox" || field.kind === "radio") {
       const radio = field.kind === "radio";
+      const boxed = !radio || field.checkboxStyle === true;
       const checked = radio ? value === state : value === true;
       const optionName = radio && state ? optionLabel(field, state) : null;
       return (
         <span key={key} className={cn("pointer-events-auto absolute flex items-center justify-center rounded-sm", filled ? FILLED : "hover:bg-primary/10")} style={style}>
           <input
             {...common}
-            type={radio ? "radio" : "checkbox"}
-            name={radio ? `${documentId}:${field.name}` : undefined}
+            type={boxed ? "checkbox" : "radio"}
+            name={boxed ? undefined : `${documentId}:${field.name}`}
             value={state ?? undefined}
             checked={checked}
             aria-label={optionName ? t("viewer.formFill.option", { field: fieldName(field), option: optionName }) : fieldName(field)}
             className="absolute inset-0 m-0 size-full cursor-pointer appearance-none rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed"
             onChange={(event) => change(field.name, radio ? (event.currentTarget.checked && state ? state : "") : event.currentTarget.checked)}
           />
-          {filled && checked ? radio ? <span aria-hidden className="pointer-events-none size-1/2 rounded-full bg-foreground" /> : <Check aria-hidden className="pointer-events-none size-full text-foreground" /> : null}
+          {filled && checked ? !boxed ? <span aria-hidden className="pointer-events-none size-1/2 rounded-full bg-foreground" /> : <Check aria-hidden className="pointer-events-none size-full text-foreground" /> : null}
         </span>
       );
     }

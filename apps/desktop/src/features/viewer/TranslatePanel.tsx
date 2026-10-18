@@ -211,7 +211,7 @@ export function TranslatePanel() {
                 {result.text}
               </p>
               <div className="flex items-center gap-2">
-                {result.route.length > 1 ? <span className="glass-chip rounded-full px-2 py-0.5 text-[11px] text-muted-foreground">{t("viewer.translate.viaEnglish")}</span> : null}
+                {result.route.length > 1 ? <span className="glass-chip rounded-full px-2 py-0.5 text-2xs text-muted-foreground">{t("viewer.translate.viaEnglish")}</span> : null}
                 <span className="flex-1" />
                 <IconButton icon={Copy} label={t("viewer.translate.copy")} onClick={() => void copy()} />
               </div>

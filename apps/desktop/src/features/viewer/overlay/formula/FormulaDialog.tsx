@@ -61,7 +61,7 @@ function TemplateButton({ latex, engine, onPick }: { latex: string; engine: Engi
       aria-label={latex}
       className="flex h-12 min-w-12 items-center justify-center rounded-lg border bg-white px-2 transition-[box-shadow] duration-(--transition-fast) hover:ring-2 hover:ring-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      {preview ? <img src={preview.url} alt="" draggable={false} style={{ width: preview.width, height: preview.height }} /> : <span className="max-w-40 truncate font-mono text-[11px] text-muted-foreground">{latex}</span>}
+      {preview ? <img src={preview.url} alt="" draggable={false} style={{ width: preview.width, height: preview.height }} /> : <span className="max-w-40 truncate font-mono text-2xs text-muted-foreground">{latex}</span>}
     </button>
   );
 }

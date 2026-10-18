@@ -125,7 +125,7 @@ function ChipRow<T extends number>({
 }) {
   return (
     <div className="mt-2">
-      <p className="mb-1 text-[11px] text-muted-foreground">{label}</p>
+      <p className="mb-1 text-2xs text-muted-foreground">{label}</p>
       <div className="flex items-center gap-1">
         {values.map((value) => (
           <button
@@ -133,7 +133,7 @@ function ChipRow<T extends number>({
             type="button"
             onClick={() => onPick(value)}
             className={cn(
-              "h-6 min-w-9 rounded-md px-1.5 font-mono text-[10px] tabular-nums",
+              "h-6 min-w-9 rounded-md px-1.5 font-mono text-3xs tabular-nums",
               current === value ? "glass-chip text-primary" : "nav-glass text-muted-foreground",
             )}
           >
@@ -153,7 +153,7 @@ function ShapeRow({ current, onPick }: { current: LensShape; onPick: (shape: Len
   ];
   return (
     <div className="mt-2">
-      <p className="mb-1 text-[11px] text-muted-foreground">{t("presentation.shape")}</p>
+      <p className="mb-1 text-2xs text-muted-foreground">{t("presentation.shape")}</p>
       <div className="flex items-center gap-1">
         {shapes.map((shape) => (
           <button
@@ -222,7 +222,7 @@ export function RangeRow({
 }) {
   return (
     <label className="mt-2 block">
-      <span className="mb-1 flex items-center justify-between text-[11px] text-muted-foreground">
+      <span className="mb-1 flex items-center justify-between text-2xs text-muted-foreground">
         {label}
         <span className="font-mono tabular-nums text-foreground">{format(value)}</span>
       </span>
@@ -235,7 +235,7 @@ function ShapeKindRow({ current, onPick }: { current: ShapeKind; onPick: (kind: 
   const { t } = useTranslation();
   return (
     <div className="mt-2">
-      <p className="mb-1 text-[11px] text-muted-foreground">{t("presentation.shape")}</p>
+      <p className="mb-1 text-2xs text-muted-foreground">{t("presentation.shape")}</p>
       <div className="flex items-center gap-1">
         {SHAPE_KINDS.map((kind) => (
           <IconButton key={kind.id} icon={kind.icon} label={t(kind.labelKey)} active={current === kind.id} onClick={() => onPick(kind.id)} />
@@ -284,7 +284,7 @@ export function PresentationStyleControls() {
 
   return (
     <div className="w-56">
-      <p className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground">{t(heading)}</p>
+      <p className="font-mono text-2xs uppercase tracking-[0.08em] text-muted-foreground">{t(heading)}</p>
       {tool === "shape" ? <ShapeKindRow current={shapeKind} onPick={setShapeKind} /> : null}
       {usesInkColor(tool) ? <ColorRow colors={PEN_COLORS} current={penColor} onPick={setPenColor} custom /> : null}
       {tool === "pen" || tool === "shape" ? (

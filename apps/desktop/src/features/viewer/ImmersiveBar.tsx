@@ -186,7 +186,7 @@ export function PresenterBar({
           <IconButton icon={Sun} label={t("presentation.blackoutWhite")} active={blackout === "white"} onClick={() => toggleBlackout("white")} />
           <IconButton icon={Grid3x3} label={t("presentation.overview")} onClick={toggleOverview} />
           {codeBlocks && codeBlocks.blocks.length > 0 ? (
-            <span className="glass-chip flex h-7 items-center gap-1 rounded-full px-2 font-mono text-[11px] text-primary">
+            <span className="glass-chip flex h-7 items-center gap-1 rounded-full px-2 font-mono text-2xs text-primary">
               <Code2 className="size-3" aria-hidden />
               {codeBlocks.blocks.length}
             </span>

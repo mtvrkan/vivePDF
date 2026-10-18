@@ -220,7 +220,7 @@ export function TextEditTab({
         {activeSpan ? (
           <div className="glass self-start space-y-3 rounded-xl p-4">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("tools.edit.textedit.editSpan")}</span>
+              <span className="text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{t("tools.edit.textedit.editSpan")}</span>
               <IconButton icon={X} label={t("common.close")} onClick={() => onSelectSpan(null)} />
             </div>
             <Field label={t("tools.edit.textedit.text")}>

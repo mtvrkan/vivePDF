@@ -350,6 +350,7 @@ def test_each_radio_widget_carries_its_state(form: Path):
 
     assert [widget.state for widget in widgets] == ["S", "M", "L"]
     assert all(widget.page == 1 for widget in widgets)
+    assert not _fields(form)["size"].checkbox_style
 
 
 def _checkbox_pair(path: Path, chosen: str | None = None) -> Path:
@@ -396,6 +397,7 @@ def test_checkboxes_sharing_a_name_with_their_own_values_are_one_choice(tmp_path
     assert field.kind == "radio"
     assert field.options == ["Male", "Female"]
     assert field.value == "Female"
+    assert field.checkbox_style
 
 
 def test_ticking_one_box_of_such_a_pair_leaves_the_other_off(tmp_path: Path):

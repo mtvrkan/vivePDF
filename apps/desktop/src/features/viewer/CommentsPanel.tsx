@@ -290,7 +290,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
       <div className="flex h-row items-center gap-2 border-b px-3">
         <MessageSquareText className="size-4 text-primary" aria-hidden />
         <span className="flex-1 text-sm font-semibold">{t("viewer.comments.title")}</span>
-        <span className="font-mono text-[11px] text-muted-foreground">{data ? t("viewer.comments.count", { count: entries.length }) : ""}</span>
+        <span className="font-mono text-2xs text-muted-foreground">{data ? t("viewer.comments.count", { count: entries.length }) : ""}</span>
         <IconButton icon={RefreshCw} label={t("viewer.comments.refresh")} onClick={() => void load()} disabled={loading} />
       </div>
       <div className="flex flex-col gap-2 border-b p-3">
@@ -356,9 +356,9 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
                 <button type="button" onClick={() => scroll?.scrollToPage({ pageNumber: item.page })} className="flex w-full items-center gap-2 text-start">
                   {depth > 0 ? <Reply className="size-3.5 shrink-0 text-muted-foreground" aria-hidden /> : <span className="size-2.5 shrink-0 rounded-full border border-border" style={{ backgroundColor: item.color ?? "transparent" }} aria-hidden />}
                   <span title={heading} className="min-w-0 flex-1 truncate font-medium">{heading}</span>
-                  {state ? <span className="glass-chip shrink-0 text-[10px] text-foreground" data-comment-state={state}>{stateLabel(state)}</span> : null}
-                  {unsaved ? <span className="glass-chip shrink-0 text-[10px] text-muted-foreground">{t("viewer.pending.unsaved")}</span> : null}
-                  <span className="shrink-0 font-mono text-[11px] tabular-nums text-muted-foreground">{t("viewer.comments.pageShort", { page: item.page })}</span>
+                  {state ? <span className="glass-chip shrink-0 text-3xs text-foreground" data-comment-state={state}>{stateLabel(state)}</span> : null}
+                  {unsaved ? <span className="glass-chip shrink-0 text-3xs text-muted-foreground">{t("viewer.pending.unsaved")}</span> : null}
+                  <span className="shrink-0 font-mono text-2xs tabular-nums text-muted-foreground">{t("viewer.comments.pageShort", { page: item.page })}</span>
                 </button>
                 {item.quote ? (
                   <blockquote className="mt-1 line-clamp-3 border-s-2 ps-2 text-xs italic text-muted-foreground" style={{ borderColor: item.color ?? undefined }}>
@@ -366,7 +366,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
                   </blockquote>
                 ) : null}
                 {item.content ? <p className="mt-1 line-clamp-4 whitespace-pre-wrap text-foreground/85">{item.content}</p> : null}
-                <div className="mt-1 flex items-center gap-2 text-[11px] text-muted-foreground">
+                <div className="mt-1 flex items-center gap-2 text-2xs text-muted-foreground">
                   <span title={metaTitle} className="min-w-0 flex-1 truncate">{metaTitle}</span>
                   <IconButton icon={Reply} label={t("viewer.comments.reply")} disabled={!canAnswer(item)} active={replyingTo === item.xref} onClick={() => setReplyingTo(replyingTo === item.xref ? null : item.xref)} />
                   <IconButton
@@ -413,7 +413,7 @@ export function CommentsPanel({ documentId }: { documentId: string }) {
           Markdown
         </Button>
         <IconButton icon={Upload} label={t("viewer.comments.import")} onClick={() => void importFrom()} disabled={exporting || !path} />
-        <span className="ms-auto font-mono text-[11px] text-muted-foreground">{data ? formatNumber(data.items.length, locale) : ""}</span>
+        <span className="ms-auto font-mono text-2xs text-muted-foreground">{data ? formatNumber(data.items.length, locale) : ""}</span>
       </div>
       {menu.anchor && menuItem
         ? (() => {

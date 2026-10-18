@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from vivepdf.ops._document import open_document
 from vivepdf.ops._inplace import finish
 from vivepdf.ops._output import OutputResult
@@ -37,9 +39,12 @@ def set_metadata(params: SetMetadataParams, progress: Progress) -> SetMetadataRe
             value = getattr(params, key)
             if value is not None:
                 current[key] = value.strip()
-        document.set_metadata(current)
         edited = {key: current[key] for key in EDITABLE if getattr(params, key) is not None}
-        sync_xmp(document, edited)
+        modified = datetime.now(UTC).replace(microsecond=0) if edited else None
+        if modified is not None:
+            current["modDate"] = modified.strftime("D:%Y%m%d%H%M%SZ")
+        document.set_metadata(current)
+        sync_xmp(document, edited, modified)
         progress.report(0.9, "progress.saving")
         saved = finish(document, params.path, params.output, params.in_place, params.overwrite)
         return SetMetadataResult(

@@ -114,7 +114,7 @@ function SwatchGrid({ colors, current, onPick }: { colors: string[]; current: st
   );
 }
 
-const SECTION_LABEL = "mb-1.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground";
+const SECTION_LABEL = "mb-1.5 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground";
 
 export function ColorSwatch({ value, onChange, label, customLabel, disabled, presets, presetsLabel, rows, onCommit, mixed = false, mixedLabel }: ColorSwatchProps) {
   const { t } = useTranslation();
@@ -216,12 +216,12 @@ export function ColorSwatch({ value, onChange, label, customLabel, disabled, pre
             <span className="flex size-5 items-center justify-center rounded-md bg-muted text-muted-foreground ring-1 ring-inset ring-border" aria-hidden>
               <Minus className="size-3.5" />
             </span>
-            <span className="text-[11px] text-muted-foreground">{mixedLabel}</span>
+            <span className="text-2xs text-muted-foreground">{mixedLabel}</span>
           </>
         ) : (
           <>
             <span className="size-5 rounded-md shadow-[inset_0_0_0_1px_hsl(0_0%_0%/0.25)] ring-1 ring-inset ring-white/25" style={{ backgroundColor: normalized }} aria-hidden />
-            <span className="font-mono text-[11px] uppercase text-muted-foreground">{normalized.replace("#", "")}</span>
+            <span className="font-mono text-2xs uppercase text-muted-foreground">{normalized.replace("#", "")}</span>
           </>
         )}
       </button>
@@ -237,7 +237,7 @@ export function ColorSwatch({ value, onChange, label, customLabel, disabled, pre
               {presetsLabel ? <p className={SECTION_LABEL}>{presetsLabel}</p> : null}
               <SwatchGrid colors={swatches} current={current} onPick={onChange} />
 
-              <p className="mb-1.5 mt-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">{customLabel}</p>
+              <p className="mb-1.5 mt-3 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">{customLabel}</p>
               <SaturationArea hsv={hsv} label={t("colorPicker.area")} onChange={commitHsv} />
 
               <div className="mt-2.5 flex items-center gap-2">
@@ -256,7 +256,7 @@ export function ColorSwatch({ value, onChange, label, customLabel, disabled, pre
 
               <div className="mt-2.5 flex items-center gap-2">
                 <label className="flex min-w-0 flex-1 items-center gap-2">
-                  <span className="font-mono text-[11px] text-muted-foreground">HEX</span>
+                  <span className="font-mono text-2xs text-muted-foreground">HEX</span>
                   <input
                     value={draft.replace("#", "").toUpperCase()}
                     aria-label={t("colorPicker.hex")}

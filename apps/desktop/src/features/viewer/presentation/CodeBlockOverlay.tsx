@@ -73,7 +73,7 @@ export function CodeBlockOverlay({ pageIndex, blockId }: { pageIndex: number; bl
         className="glass-menu flex outline-none max-h-full w-full max-w-4xl flex-col overflow-hidden rounded-2xl"
       >
         <div className="flex h-11 items-center gap-1.5 border-b px-3">
-          <span className="glass-chip flex h-6 items-center rounded-full px-2 font-mono text-[11px] text-primary">{block.language ?? t("presentation.codeGeneric")}</span>
+          <span className="glass-chip flex h-6 items-center rounded-full px-2 font-mono text-2xs text-primary">{block.language ?? t("presentation.codeGeneric")}</span>
           <span className="flex-1" />
           <IconButton icon={Minus} label={t("presentation.zoomOutCode")} onClick={() => setFontSize((size) => Math.max(FONT_MIN, size - FONT_STEP))} />
           <span className="w-10 text-center font-mono text-xs tabular-nums text-muted-foreground">{fontSize}px</span>
