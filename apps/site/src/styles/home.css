@@ -598,7 +598,6 @@ h1 .ln>span{display:block}
 .night.offline .log b{color:var(--amber)}
 .night .title em{font-style:normal;background:linear-gradient(100deg,var(--sky),var(--solid) 60%,var(--amber));-webkit-background-clip:text;background-clip:text;color:transparent}
 .wall-stage{cursor:pointer}
-[data-theme="dark"] .wall-stage::after{content:"";position:absolute;inset:0;background:rgba(6,11,21,.16);pointer-events:none}
 .wall .tp{transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
 .wall-row:hover{animation-play-state:paused}
 .wall .tp:hover{transform:translateY(-12px) scale(1.04);box-shadow:0 0 0 2px var(--sky),0 50px 70px -30px color-mix(in srgb,var(--sh) 60%,transparent)}

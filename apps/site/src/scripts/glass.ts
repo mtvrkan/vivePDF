@@ -132,9 +132,7 @@ export function boot() {
     renderer.setClearColor(t === "dark" ? 0x060b15 : 0xeaf2fb, 1);
     mats.forEach((m) => {
       m.envMapIntensity = t === "dark" ? 1.7 : 1.3;
-      m.dispersion = mobile ? 0 : t === "dark" ? 0.6 : 3;
     });
-    amberL.intensity = t === "dark" ? 6 : 26;
     kick();
   };
   setTex();
@@ -153,7 +151,6 @@ export function boot() {
     },
     { passive: true },
   );
-  let on = true;
   let onScreen = true;
   let raf = 0;
   let lastO = -1;
@@ -180,22 +177,11 @@ export function boot() {
       lastO = o;
     }
     renderer.render(scene, camera);
-    if (on && onScreen && !document.hidden && o > 0) raf = requestAnimationFrame(frame);
+    if (onScreen && !document.hidden && o > 0) raf = requestAnimationFrame(frame);
   }
   const kick = () => {
-    if (on && !raf && onScreen && !document.hidden) raf = requestAnimationFrame(frame);
+    if (!raf && onScreen && !document.hidden) raf = requestAnimationFrame(frame);
   };
-  addEventListener(
-    "vp:lite",
-    () => {
-      on = false;
-      cancelAnimationFrame(raf);
-      raf = 0;
-      renderer.dispose();
-    },
-    { once: true },
-  );
-  vp.onTheme(root.dataset.theme ?? "light");
   new IntersectionObserver((es) => {
     onScreen = es[0].isIntersecting;
     kick();
