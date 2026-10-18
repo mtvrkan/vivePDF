@@ -30,6 +30,7 @@
   --glass-bg: color-mix(in oklab, var(--card) 62%, transparent);
   --glass-border: color-mix(in oklab, var(--foreground) 10%, transparent);
   --glass-shadow: 0 12px 40px hsl(222 40% 20% / 0.10), 0 1px 0 hsl(0 0% 100% / 0.6) inset;
+  --ambient-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0.2 0 0 0 0.4 0.2 0 0 0 0.4 0.2 0 0 0 0.4 0 0 0 0 1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
   --ambient-a: hsl(202 90% 60% / 0.14);
   --ambient-b: hsl(262 70% 65% / 0.10);
   --ambient-c: hsl(24 90% 60% / 0.08);
@@ -628,8 +629,11 @@
   .ambient {
     background-color: var(--color-background);
     background-image:
-      radial-gradient(48rem 28rem at 8% 0%, var(--ambient-a), transparent 70%),
-      radial-gradient(40rem 26rem at 100% 12%, var(--ambient-b), transparent 70%);
+      var(--ambient-grain),
+      radial-gradient(48rem 28rem at 8% 0%, var(--ambient-a), color-mix(in oklab, var(--ambient-a) 55%, transparent) 30%, color-mix(in oklab, var(--ambient-a) 20%, transparent) 52%, transparent 78%),
+      radial-gradient(40rem 26rem at 100% 12%, var(--ambient-b), color-mix(in oklab, var(--ambient-b) 55%, transparent) 30%, color-mix(in oklab, var(--ambient-b) 20%, transparent) 52%, transparent 78%);
+    background-size: 160px 160px, auto, auto;
+    background-blend-mode: soft-light, normal, normal;
     background-attachment: fixed;
   }
 }

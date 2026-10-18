@@ -12,6 +12,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ### Changed
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 ### Fixed
+- The soft light behind the home screen no longer shows visible rings on macOS: the glow fades out more gradually and carries a faint, brightness-neutral grain that breaks up the colour steps of the dark theme [2026-10-18]
 - Printing on macOS and Linux works on a computer set to another language: printer names come from the plain destination list, so a Turkish macOS no longer reads "Printer," and refuses it as unknown, and the default printer is matched against those names [2026-10-18]
 - A print job sent without comments shows the document's own name in the print queue instead of "print.pdf" [2026-10-18]
 - Speaker notes stay with a presentation that was edited and then moved to another folder, found again by the PDF's permanent identifier together with its file name [2026-10-18]
