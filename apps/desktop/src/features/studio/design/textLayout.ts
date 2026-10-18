@@ -47,9 +47,19 @@ export function useTextBands(frameRef: RefObject<HTMLDivElement | null>, element
     }
     const compute = () => update(liveBands(frame, element));
     compute();
-    const observer = new MutationObserver(compute);
+    let pending: number | null = null;
+    const observer = new MutationObserver(() => {
+      if (pending !== null) return;
+      pending = requestAnimationFrame(() => {
+        pending = null;
+        compute();
+      });
+    });
     observer.observe(frame, { subtree: true, childList: true, characterData: true });
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      if (pending !== null) cancelAnimationFrame(pending);
+    };
   }, [frameRef, element, language, editing, signature]);
   return bands;
 }

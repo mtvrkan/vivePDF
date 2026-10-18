@@ -176,7 +176,9 @@ export const useStudioStore = create<StudioState>((set, get) => {
       const state = get();
       const page = currentPage(state);
       const scoped = page ? scopedSelection(page, state.groupScope, state.selection, ids) : null;
-      set({ selection: scoped ?? (page ? expandToGroups(page, ids) : []), groupScope: scoped ? state.groupScope : null, editingId: state.editingId && ids.includes(state.editingId) ? state.editingId : null });
+      const next = scoped ?? (page ? expandToGroups(page, ids) : []);
+      const unchanged = next.length === state.selection.length && next.every((id, index) => id === state.selection[index]);
+      set({ selection: unchanged ? state.selection : next, groupScope: scoped ? state.groupScope : null, editingId: state.editingId && ids.includes(state.editingId) ? state.editingId : null });
     },
     enterGroup: (id) => {
       const state = get();

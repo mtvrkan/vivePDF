@@ -216,7 +216,7 @@ function elementFrameStyle(element: StudioElement, finishId: string | null): Rea
 export const ElementView = memo(function ElementView({ element, language, children }: { element: StudioElement; language: string; children?: ReactNode }) {
   const content = useContentElement(element);
   const finishId = `finish-${useId().replace(/:/g, "")}`;
-  const recipe = useMemo(() => (element.finish ? finishRecipe(element.finish, element) : null), [element]);
+  const recipe = useMemo(() => (content.finish ? finishRecipe(content.finish, content) : null), [content]);
   return (
     <div data-element-id={element.id} data-finish={element.finish?.type} style={elementFrameStyle(element, recipe ? finishId : null)}>
       {recipe ? <FinishFilter id={finishId} recipe={recipe} width={element.width} height={element.height} /> : null}

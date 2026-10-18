@@ -1,4 +1,4 @@
-import { useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
+import { useEffect, useRef, useState, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
 import type { StudioPage } from "@/types/studio";
 import { addGuide, guidesOf, removeGuide } from "../model/guides";
 import { duplicateElements, elementBounds, selectionBounds, updatePage, withoutGroupOf, type Bounds } from "../model/edit";
@@ -28,6 +28,8 @@ type CanvasPointer = {
 
 export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, degrees }: CanvasPointer) {
   const drag = useRef<Drag | null>(null);
+  const pendingMove = useRef<ReactPointerEvent<HTMLDivElement> | null>(null);
+  const moveFrame = useRef<number | null>(null);
   const [feedback, setFeedback] = useState<Feedback>(NO_FEEDBACK);
   const [marquee, setMarquee] = useState<Bounds | null>(null);
   const [hover, setHover] = useState<string | null>(null);
@@ -185,6 +187,21 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
     drag.current = { kind: "marquee", origin, base: event.shiftKey ? state.selection : [] };
   };
 
+  useEffect(
+    () => () => {
+      if (moveFrame.current !== null) cancelAnimationFrame(moveFrame.current);
+    },
+    [],
+  );
+
+  const flushMove = () => {
+    if (moveFrame.current !== null) cancelAnimationFrame(moveFrame.current);
+    moveFrame.current = null;
+    const latest = pendingMove.current;
+    pendingMove.current = null;
+    if (latest && drag.current) dragTo(latest, drag.current);
+  };
+
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
     const current = drag.current;
     if (!current) {
@@ -199,6 +216,16 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
       viewport.scrollTop = current.scroll.y - (event.clientY - current.origin.y);
       return;
     }
+    if (moveFrame.current !== null) {
+      pendingMove.current = event;
+      return;
+    }
+    dragTo(event, current);
+    moveFrame.current = requestAnimationFrame(flushMove);
+  };
+
+  const dragTo = (event: ReactPointerEvent<HTMLDivElement>, current: Drag) => {
+    if (current.kind === "pan") return;
     const point = toPage(event.clientX, event.clientY);
     const state = store();
     if (current.kind === "marquee") {
@@ -243,6 +270,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
   };
 
   const onPointerUp = () => {
+    flushMove();
     const current = drag.current;
     drag.current = null;
     setFeedback(NO_FEEDBACK);
