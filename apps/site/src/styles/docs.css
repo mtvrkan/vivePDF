@@ -154,3 +154,4 @@ body{background:var(--wash)}
 @media (prefers-reduced-motion:reduce){
   .docs-side,.doc-card{transition:none}
 }
+[data-theme="dark"] .prose pre{background:#0D0E12;box-shadow:inset 0 0 0 1px rgba(224,226,230,.10)}

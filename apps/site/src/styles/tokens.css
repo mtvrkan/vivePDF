@@ -11,7 +11,10 @@
   --ink:var(--deep);
   --ink-2:light-dark(#34496A,#BCC0C8);
   --ink-3:light-dark(#53678A,#9BA0AB);
-  --sky:#7FD0FF;
+  --sky:light-dark(#7FD0FF,#8BCAEE);
+  --glow-sky:127,208,255;
+  --glow-blue:47,143,230;
+  --on-night:230,239,250;
   --blue:light-dark(#2F8FE6,#45A6DE);
   --blue-ink:light-dark(#1A62B0,#8BCAEE);
   --amber:#FFC46B;
@@ -51,5 +54,5 @@
   --f-hand:"Caveat","Geist Variable",cursive;
   --f-ar:"Geist Variable",sans-serif;
 }
-:root[data-theme="dark"]{color-scheme:dark}
+:root[data-theme="dark"]{color-scheme:dark;--glow-sky:69,166,222;--glow-blue:31,119,173;--on-night:224,226,230}
 :root{scrollbar-color:color-mix(in srgb,var(--ink-3) 50%,transparent) transparent}
