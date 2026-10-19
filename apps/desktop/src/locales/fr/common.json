@@ -6762,6 +6762,7 @@
       "ready": "Téléchargée ; s’installe au redémarrage",
       "error": "Impossible de vérifier",
       "unconfigured": "Canal de mise à jour inaccessible ou pas encore configuré",
+      "unavailable": "Aucune mise à jour publiée pour ce système pour l’instant",
       "offline": "Non vérifié : le mode hors ligne est activé"
     }
   },

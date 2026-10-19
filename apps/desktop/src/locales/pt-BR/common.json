@@ -6762,6 +6762,7 @@
       "ready": "Baixado; instala ao reiniciar",
       "error": "Não foi possível verificar",
       "unconfigured": "Canal de atualização inacessível ou ainda não configurado",
+      "unavailable": "Ainda não há atualização publicada para este sistema",
       "offline": "Não verificado: o modo offline está ativado"
     }
   },

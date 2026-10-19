@@ -6762,6 +6762,7 @@
       "ready": "Heruntergeladen; wird beim Neustart installiert",
       "error": "Prüfung fehlgeschlagen",
       "unconfigured": "Update-Kanal nicht erreichbar oder noch nicht konfiguriert",
+      "unavailable": "Für dieses System ist noch kein Update veröffentlicht",
       "offline": "Nicht geprüft: Offlinemodus ist aktiv"
     }
   },

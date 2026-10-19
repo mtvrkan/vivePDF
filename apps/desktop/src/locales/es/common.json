@@ -6762,6 +6762,7 @@
       "ready": "Descargada; se instalará al reiniciar",
       "error": "No se pudo comprobar",
       "unconfigured": "Canal de actualización inaccesible o aún no configurado",
+      "unavailable": "Aún no hay actualización publicada para este sistema",
       "offline": "Sin comprobar: el modo sin conexión está activado"
     }
   },

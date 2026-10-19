@@ -3,10 +3,11 @@ import { check, type Update } from "@tauri-apps/plugin-updater";
 import { relaunch } from "@tauri-apps/plugin-process";
 import { isOffline } from "@/shared/lib/offline";
 
-export type UpdateStatus = "idle" | "checking" | "upToDate" | "available" | "downloading" | "ready" | "error" | "unconfigured" | "offline";
+export type UpdateStatus = "idle" | "checking" | "upToDate" | "available" | "downloading" | "ready" | "error" | "unconfigured" | "unavailable" | "offline";
 
 const AUTO_CHECK_KEY = "vivepdf.autoUpdateCheck";
 const UNCONFIGURED_PATTERN = /pubkey|public key|endpoint|minisign|signature|release JSON/i;
+const MISSING_PLATFORM_PATTERN = /response `platforms` object/;
 
 let pendingUpdate: Update | null = null;
 
@@ -69,6 +70,11 @@ export const useUpdateStore = create<UpdateState>((set, get) => ({
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
+      if (MISSING_PLATFORM_PATTERN.test(message)) {
+        pendingUpdate = null;
+        set({ status: "unavailable", version: null, notes: null, publishedAt: null, error: null, lastChecked: Date.now() });
+        return;
+      }
       const unconfigured = UNCONFIGURED_PATTERN.test(message);
       set({ status: unconfigured ? "unconfigured" : "error", error: manual || !unconfigured ? message : null, lastChecked: Date.now() });
     }

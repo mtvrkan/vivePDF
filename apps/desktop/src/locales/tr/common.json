@@ -6763,6 +6763,7 @@
       "ready": "İndirildi; yeniden başlatınca kurulacak",
       "error": "Denetlenemedi",
       "unconfigured": "Güncelleme kanalına ulaşılamadı ya da kanal henüz yapılandırılmadı",
+      "unavailable": "Bu sistem için henüz güncelleme yayımlanmadı",
       "offline": "Denetlenmedi: çevrimdışı mod açık"
     }
   },

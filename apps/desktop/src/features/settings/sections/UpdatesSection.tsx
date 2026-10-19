@@ -21,7 +21,7 @@ export function UpdatesSection({ query, onEmptyChange, appVersion }: SettingsSec
         ? "primary"
         : update.status === "error"
           ? "destructive"
-          : update.status === "unconfigured" || update.status === "offline"
+          : update.status === "unconfigured" || update.status === "unavailable" || update.status === "offline"
             ? "muted"
             : "warning";
 

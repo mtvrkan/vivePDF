@@ -6763,6 +6763,7 @@
       "ready": "Downloaded; installs on restart",
       "error": "Could not check",
       "unconfigured": "Update channel unreachable or not configured yet",
+      "unavailable": "No update published for this system yet",
       "offline": "Not checked: offline mode is on"
     }
   },

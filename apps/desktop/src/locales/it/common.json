@@ -6762,6 +6762,7 @@
       "ready": "Scaricato; si installa al riavvio",
       "error": "Impossibile controllare",
       "unconfigured": "Canale di aggiornamento non raggiungibile o non ancora configurato",
+      "unavailable": "Nessun aggiornamento ancora pubblicato per questo sistema",
       "offline": "Non controllato: la modalità offline è attiva"
     }
   },
