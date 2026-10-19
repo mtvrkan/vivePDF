@@ -307,7 +307,7 @@ export function TopBar() {
     <header
       ref={barRef}
       data-tauri-drag-region
-      className={cn("glass-flat flex h-topbar select-none items-center gap-1.5 overflow-hidden border-b", isMac ? cn("pr-3", macFullscreen ? "pl-3" : "pl-20") : "ps-3 pe-0")}
+      className={cn("glass-flat flex h-topbar select-none items-center gap-1.5 overflow-hidden border-b", isMac ? cn("pr-3", macFullscreen ? "pl-3" : "pl-traffic-lights") : "ps-3 pe-0")}
     >
       <Link to="/" aria-label={t("app.name")} className="me-2 flex h-8 shrink-0 items-center gap-2 rounded-lg px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-ring">
         <Logo size={22} />

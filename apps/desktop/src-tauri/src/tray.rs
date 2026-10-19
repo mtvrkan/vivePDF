@@ -51,14 +51,22 @@ pub fn validate_labels(labels: &TrayLabels) -> Result<(), RpcError> {
 }
 
 pub fn show_main_window<R: Runtime>(app: &AppHandle<R>) {
-    let window = app
-        .get_webview_window("main")
-        .or_else(|| app.webview_windows().into_values().next());
+    let window = app.get_webview_window("main").or_else(|| {
+        let windows = app.webview_windows();
+        fallback_window(windows.keys().map(String::as_str))
+            .and_then(|label| windows.get(label).cloned())
+    });
     if let Some(window) = window {
         let _ = window.show();
         let _ = window.unminimize();
         let _ = window.set_focus();
     }
+}
+
+fn fallback_window<'a>(labels: impl Iterator<Item = &'a str>) -> Option<&'a str> {
+    labels
+        .filter(|label| crate::document_windows::is_document_window(label))
+        .min()
 }
 
 fn main_window_hidden<R: Runtime>(app: &AppHandle<R>) -> bool {
@@ -212,6 +220,13 @@ mod tests {
             resume: "Resume watching".into(),
             quit: "Quit".into(),
         }
+    }
+
+    #[test]
+    fn falls_back_to_a_document_window_never_a_projector_screen() {
+        let labels = ["present-1", "doc-b", "doc-a"];
+        assert_eq!(fallback_window(labels.into_iter()), Some("doc-a"));
+        assert_eq!(fallback_window(["present-1"].into_iter()), None);
     }
 
     #[test]

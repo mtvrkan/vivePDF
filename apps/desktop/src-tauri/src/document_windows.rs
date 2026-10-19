@@ -38,6 +38,22 @@ struct Bounds {
     height: f64,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq)]
+struct Placement {
+    bounds: Bounds,
+    scale: f64,
+}
+
+impl Placement {
+    #[cfg_attr(not(any(windows, test)), allow(dead_code))]
+    fn physical_origin(self) -> (i32, i32) {
+        (
+            (self.bounds.x * self.scale).round() as i32,
+            (self.bounds.y * self.scale).round() as i32,
+        )
+    }
+}
+
 impl Bounds {
     fn contains(&self, x: f64, y: f64) -> bool {
         x >= self.x && y >= self.y && x < self.x + self.width && y < self.y + self.height
@@ -181,7 +197,7 @@ impl DocumentWindows {
     }
 }
 
-fn is_document_window(label: &str) -> bool {
+pub fn is_document_window(label: &str) -> bool {
     label == MAIN_WINDOW || label.starts_with(LABEL_PREFIX)
 }
 
@@ -227,7 +243,7 @@ fn placed_at_cursor(x: f64, y: f64, work: Bounds) -> Bounds {
     }
 }
 
-fn cursor_placement<R: Runtime>(app: &AppHandle<R>) -> Option<Bounds> {
+fn cursor_placement<R: Runtime>(app: &AppHandle<R>) -> Option<Placement> {
     let cursor = app.cursor_position().ok()?;
     let monitor = app.monitor_from_point(cursor.x, cursor.y).ok().flatten()?;
     let scale = monitor.scale_factor();
@@ -238,7 +254,22 @@ fn cursor_placement<R: Runtime>(app: &AppHandle<R>) -> Option<Bounds> {
         width: f64::from(area.size.width) / scale,
         height: f64::from(area.size.height) / scale,
     };
-    Some(placed_at_cursor(cursor.x / scale, cursor.y / scale, work))
+    Some(Placement {
+        bounds: placed_at_cursor(cursor.x / scale, cursor.y / scale, work),
+        scale,
+    })
+}
+
+#[cfg(windows)]
+fn pin_to_monitor<R: Runtime>(window: &WebviewWindow<R>, placement: Placement) {
+    let (x, y) = placement.physical_origin();
+    let _ = window.set_position(tauri::PhysicalPosition::new(x, y));
+    let _ = window.set_size(tauri::LogicalSize::new(
+        placement.bounds.width,
+        placement.bounds.height,
+    ));
+    let _ = window.show();
+    let _ = window.set_focus();
 }
 
 fn trimmed_group(group: Option<DroppedGroup>) -> Option<DroppedGroup> {
@@ -286,7 +317,7 @@ pub fn existing_files(paths: Vec<String>) -> Result<Vec<String>, RpcError> {
 fn open_window<R: Runtime>(
     app: &AppHandle<R>,
     request: LaunchRequest,
-    placement: Option<Bounds>,
+    placement: Option<Placement>,
 ) -> tauri::Result<WebviewWindow<R>> {
     let label = new_label();
     let windows = app.state::<DocumentWindows>();
@@ -296,9 +327,10 @@ fn open_window<R: Runtime>(
         .min_inner_size(900.0, 600.0)
         .focused(true);
     let built = match placement {
-        Some(area) => built
-            .inner_size(area.width, area.height)
-            .position(area.x, area.y),
+        Some(placement) => built
+            .inner_size(placement.bounds.width, placement.bounds.height)
+            .position(placement.bounds.x, placement.bounds.y)
+            .visible(!cfg!(windows)),
         None => built.inner_size(WINDOW_WIDTH, WINDOW_HEIGHT).center(),
     };
     #[cfg(target_os = "macos")]
@@ -312,6 +344,10 @@ fn open_window<R: Runtime>(
     let built = built.build();
     match built {
         Ok(window) => {
+            #[cfg(windows)]
+            if let Some(placement) = placement {
+                pin_to_monitor(&window, placement);
+            }
             let handle = app.clone();
             let closing = label.clone();
             window.on_window_event(move |event| {
@@ -791,6 +827,15 @@ mod tests {
         assert_eq!(placed, work(2080.0, 75.0, WINDOW_WIDTH, WINDOW_HEIGHT));
         let corner = placed_at_cursor(1925.0, 2.0, screen);
         assert_eq!((corner.x, corner.y), (1920.0, 0.0));
+    }
+
+    #[test]
+    fn a_window_torn_off_on_a_scaled_screen_lands_on_that_screen() {
+        let placement = Placement {
+            bounds: work(1666.5, 100.0, WINDOW_WIDTH, WINDOW_HEIGHT),
+            scale: 1.5,
+        };
+        assert_eq!(placement.physical_origin(), (2500, 150));
     }
 
     #[test]

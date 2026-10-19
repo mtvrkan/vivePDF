@@ -171,6 +171,12 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Drag a tab out and back in quickly several times: no empty window is left behind and no tab
   is lost.
 - Tear a tab off near a screen edge: the new window stays fully on that screen.
+- With the main screen at 100 % and a second screen at 150 %, tear a tab off onto the second
+  screen: the new window opens there under the pointer. Present on a screen where full screen
+  leaves a gap (the window is then pinned by hand): the page fills the screen, the window edges
+  cannot be dragged, and after End the window can be resized again. Unplug the projector during
+  a presentation that used Swap screens, then End: the window comes back centred on the laptop.
+- Open the Tools menu in the top bar and press on a page of an open PDF: the menu closes.
 - Open a PDF from a folder outside Documents and run a tool whose output folder already exists
   there (for example Split into a folder made by hand): vivePDF asks for a folder instead of
   writing into it, and the folder chosen in that dialog is used.

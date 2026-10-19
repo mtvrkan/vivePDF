@@ -12,15 +12,32 @@ const appWindow = vi.hoisted(() => ({
   setSize: vi.fn(async () => {}),
   setAlwaysOnTop: vi.fn(async () => {}),
   isFullscreen: vi.fn(async () => true),
+  setResizable: vi.fn<(resizable: boolean) => Promise<void>>(async () => {}),
+  innerPosition: vi.fn(async () => ({ x: 0, y: 0 })),
+  center: vi.fn(async () => {}),
 }));
+
+type Monitor = { position: { x: number; y: number }; size: { width: number; height: number } };
+const screen = vi.hoisted(() => ({ monitor: null as null | Monitor, all: [] as Monitor[] }));
 
 const ui = vi.hoisted(() => ({ immersive: false }));
 
 vi.mock("@tauri-apps/api/window", () => ({
   getCurrentWindow: () => appWindow,
-  currentMonitor: async () => null,
-  PhysicalPosition: class {},
-  PhysicalSize: class {},
+  currentMonitor: async () => screen.monitor,
+  availableMonitors: async () => screen.all,
+  PhysicalPosition: class {
+    constructor(
+      public x: number,
+      public y: number,
+    ) {}
+  },
+  PhysicalSize: class {
+    constructor(
+      public width: number,
+      public height: number,
+    ) {}
+  },
 }));
 
 vi.mock("@/shared/store/uiStore", () => ({
@@ -163,5 +180,44 @@ describe("followWindowFullscreen", () => {
 
     expect(ui.immersive).toBe(true);
     await exitImmersive();
+  });
+});
+
+describe("forced cover on Windows", () => {
+  it("pins the window over the whole screen, corrects the frame offset and gives resizing back at the end", async () => {
+    vi.stubGlobal("window", { setTimeout: (callback: () => void) => setTimeout(callback, 0) });
+    screen.monitor = { position: { x: 1920, y: 0 }, size: { width: 2560, height: 1440 } };
+    appWindow.innerSize.mockResolvedValueOnce({ width: 800, height: 600 }).mockResolvedValueOnce({ width: 1200, height: 900 });
+    appWindow.innerPosition.mockResolvedValueOnce({ x: 1927, y: 0 });
+    appWindow.setPosition.mockClear();
+    appWindow.setResizable.mockClear();
+
+    await setImmersiveFullscreen(true);
+    const resizableDuringShow = appWindow.setResizable.mock.calls.map(([value]) => value);
+    await exitImmersive();
+    screen.monitor = null;
+
+    expect(appWindow.setPosition).toHaveBeenCalledWith({ x: 1913, y: 0 });
+    expect(resizableDuringShow).toEqual([false]);
+    expect(appWindow.setResizable).toHaveBeenLastCalledWith(true);
+  });
+});
+
+describe("restoring after the screen is gone", () => {
+  it("centres the window instead of sending it back to a projector that was unplugged", async () => {
+    vi.stubGlobal("window", { setTimeout: (callback: () => void) => setTimeout(callback, 0) });
+    appWindow.isFullscreen.mockResolvedValue(false);
+    appWindow.outerPosition.mockResolvedValueOnce({ x: 3000, y: 100 });
+    screen.all = [{ position: { x: 0, y: 0 }, size: { width: 1920, height: 1080 } }];
+    appWindow.setPosition.mockClear();
+    appWindow.center.mockClear();
+    await setImmersiveFullscreen(true);
+    markWindowMoved();
+
+    await exitImmersive();
+    screen.all = [];
+
+    expect(appWindow.setPosition).not.toHaveBeenCalled();
+    expect(appWindow.center).toHaveBeenCalledTimes(1);
   });
 });

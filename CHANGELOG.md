@@ -47,6 +47,12 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 - Very small labels (badges, counters, captions) use two new type-scale steps, `text-2xs` (11 px) and `text-3xs` (10 px), instead of fixed pixel sizes; the code-language badge on a selected code block grows from 9 to 10 px [2026-10-18]
 ### Fixed
+- The Tools, Help and language menus in the top bar close when you press anywhere else, including on a page, and when the window loses focus or changes size, instead of staying open over the document [2026-10-19]
+- Windows: a tab torn off on a second screen with a different scaling (for example 150 %) opens its window on that screen under the pointer instead of on the main screen [2026-10-19]
+- Windows: a presentation that has to cover the screen by hand fits it exactly and cannot be resized by its edges, and the window comes back resizable; a window that presented on a screen that was unplugged comes back centred instead of off-screen [2026-10-19]
+- Tray: Open vivePDF falls back to a document window when the main window is gone, never to the projector window [2026-10-19]
+- macOS: the room for the traffic lights no longer shrinks with the interface scale, so at 80 % and 90 % they stay clear of the vivePDF logo [2026-10-19]
+- macOS: the Window menu lists the open windows and offers Minimize All, Tile and Center, and the Help menu gets the system search field [2026-10-19]
 - macOS: Quit from the Dock, a logout or a restart now goes through the same close check as Command+Q, so open documents and running jobs are asked about first instead of the app vanishing; cancelling keeps vivePDF and the logout waits [2026-10-19]
 - macOS: Command+G / Shift+Command+G step through search results and Command+[ / Command+] go back and forward in a document, as F3 and Alt+arrows do; the shortcut sheet lists the Mac keys [2026-10-19]
 - macOS: Edit › Undo and Redo in the menu bar undo canvas, page and annotation edits too, not only typing in a text field [2026-10-19]

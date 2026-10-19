@@ -43,13 +43,20 @@ export function HeaderMenu({ id, label, menuLabel, icon: Icon, active, openId, o
 
   useEffect(() => {
     if (!open) return;
-    const onPointerDown = (event: MouseEvent) => {
+    const close = () => onOpenChange(null);
+    const onPointerDown = (event: PointerEvent) => {
       const target = event.target as Node;
       if (triggerRef.current?.contains(target) || panelRef.current?.contains(target)) return;
-      onOpenChange(null);
+      close();
     };
-    document.addEventListener("mousedown", onPointerDown);
-    return () => document.removeEventListener("mousedown", onPointerDown);
+    document.addEventListener("pointerdown", onPointerDown, true);
+    window.addEventListener("resize", close);
+    window.addEventListener("blur", close);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown, true);
+      window.removeEventListener("resize", close);
+      window.removeEventListener("blur", close);
+    };
   }, [open, onOpenChange]);
 
   const focusItem = useCallback((direction: 1 | -1 | "first" | "last") => {

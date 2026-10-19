@@ -1,4 +1,4 @@
-import { PhysicalPosition, PhysicalSize, currentMonitor, getCurrentWindow } from "@tauri-apps/api/window";
+import { PhysicalPosition, PhysicalSize, availableMonitors, currentMonitor, getCurrentWindow } from "@tauri-apps/api/window";
 import * as logger from "@/shared/lib/logger";
 import { useUiStore } from "@/shared/store/uiStore";
 import { usePresentationStore } from "@/shared/store/presentationStore";
@@ -36,9 +36,20 @@ async function forceCover(): Promise<void> {
   const appWindow = getCurrentWindow();
   if (!monitor) return;
   await appWindow.setFullscreen(false);
+  await appWindow.setResizable(false);
   await appWindow.setPosition(new PhysicalPosition(monitor.position.x, monitor.position.y));
   await appWindow.setSize(new PhysicalSize(monitor.size.width, monitor.size.height));
+  const inner = await appWindow.innerPosition();
+  const offsetX = inner.x - monitor.position.x;
+  const offsetY = inner.y - monitor.position.y;
+  if (offsetX !== 0 || offsetY !== 0) await appWindow.setPosition(new PhysicalPosition(monitor.position.x - offsetX, monitor.position.y - offsetY));
   await appWindow.setAlwaysOnTop(true);
+}
+
+async function onSomeScreen(position: PhysicalPosition): Promise<boolean> {
+  const monitors = await availableMonitors();
+  if (monitors.length === 0) return true;
+  return monitors.some(({ position: origin, size }) => position.x >= origin.x && position.x < origin.x + size.width && position.y >= origin.y && position.y < origin.y + size.height);
 }
 
 async function windowedAgain(): Promise<void> {
@@ -68,13 +79,18 @@ export async function exitImmersive(): Promise<void> {
   restore = null;
   shownFullscreen = false;
   try {
-    if (entry?.forced) await appWindow.setAlwaysOnTop(false);
+    if (entry?.forced) {
+      await appWindow.setAlwaysOnTop(false);
+      await appWindow.setResizable(true);
+    }
     await appWindow.setFullscreen(false);
     if (entry) {
       if (entry.forced || entry.moved) {
         if (entry.moved) await windowedAgain();
-        await appWindow.setPosition(entry.position);
-        await appWindow.setSize(entry.size);
+        if (await onSomeScreen(entry.position)) {
+          await appWindow.setPosition(entry.position);
+          await appWindow.setSize(entry.size);
+        } else await appWindow.center();
       }
       if (entry.maximized) await appWindow.maximize();
     }

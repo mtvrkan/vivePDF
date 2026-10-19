@@ -129,7 +129,7 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
         role="toolbar"
         aria-label={t("presentation.presenter.tools")}
         data-tauri-drag-region={rehearsing || undefined}
-        className={cn("relative z-40 flex h-topbar flex-nowrap items-center gap-1 glass-flat border-b", !rehearsing ? "px-2" : isMac ? "pl-20 pr-2" : "ps-2 pe-0")}
+        className={cn("relative z-40 flex h-topbar flex-nowrap items-center gap-1 glass-flat border-b", !rehearsing ? "px-2" : isMac ? "pl-traffic-lights pr-2" : "ps-2 pe-0")}
       >
         <IconButton icon={ChevronLeft} label={t("viewer.previousPage")} disabled={currentPage <= 1} onClick={() => scroll?.scrollToPreviousPage()} />
         <IconButton icon={ChevronRight} label={t("viewer.nextPage")} disabled={currentPage >= totalPages} onClick={() => scroll?.scrollToNextPage()} />

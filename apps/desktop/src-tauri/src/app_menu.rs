@@ -4,6 +4,7 @@ use tauri::{AppHandle, Runtime};
 use crate::rpc::RpcError;
 
 pub const QUIT_ID: &str = "app:quit";
+const HELP_ID: &str = "nav:/help";
 const MAX_LABEL_CHARS: usize = 64;
 const MAX_ID_CHARS: usize = 128;
 const MAX_ACCELERATOR_CHARS: usize = 32;
@@ -226,6 +227,46 @@ fn build<R: Runtime>(
     tauri::menu::Menu::with_items(app, &references)
 }
 
+#[derive(Debug, PartialEq, Eq)]
+enum SystemMenu {
+    Windows,
+    Help,
+}
+
+#[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+fn system_menu(items: &[MenuNode]) -> Option<SystemMenu> {
+    items.iter().find_map(|node| match node {
+        MenuNode::Predefined { role, .. } if role == "minimize" => Some(SystemMenu::Windows),
+        MenuNode::Item { id, .. } if id == HELP_ID => Some(SystemMenu::Help),
+        _ => None,
+    })
+}
+
+#[cfg(target_os = "macos")]
+fn register_system_menus<R: Runtime>(menu: &tauri::menu::Menu<R>, nodes: &[MenuNode]) {
+    let Ok(items) = menu.items() else {
+        return;
+    };
+    for (item, node) in items.iter().zip(nodes) {
+        let (Some(submenu), MenuNode::Submenu { items, .. }) = (item.as_submenu(), node) else {
+            continue;
+        };
+        let _ = match system_menu(items) {
+            Some(SystemMenu::Windows) => submenu.set_as_windows_menu_for_nsapp(),
+            Some(SystemMenu::Help) => submenu.set_as_help_menu_for_nsapp(),
+            None => Ok(()),
+        };
+    }
+}
+
+#[cfg(target_os = "macos")]
+fn install_menu<R: Runtime>(app: &AppHandle<R>, nodes: &[MenuNode]) -> tauri::Result<()> {
+    let built = build(app, nodes)?;
+    app.set_menu(built.clone())?;
+    register_system_menus(&built, nodes);
+    Ok(())
+}
+
 #[cfg(target_os = "macos")]
 fn handle_menu<R: Runtime>(app: &AppHandle<R>, event: tauri::menu::MenuEvent) {
     use tauri::{Emitter, Manager};
@@ -253,7 +294,7 @@ fn handle_menu<R: Runtime>(app: &AppHandle<R>, event: tauri::menu::MenuEvent) {
 #[cfg(target_os = "macos")]
 pub fn install<R: Runtime>(app: &AppHandle<R>) -> tauri::Result<()> {
     app.on_menu_event(handle_menu);
-    app.set_menu(build(app, &default_menu())?).map(|_| ())
+    install_menu(app, &default_menu())
 }
 
 #[tauri::command]
@@ -264,10 +305,7 @@ pub fn app_menu_configure<R: Runtime>(
     validate_menu(&menu)?;
     #[cfg(target_os = "macos")]
     {
-        let built =
-            build(&app, &menu).map_err(|error| RpcError::new("INTERNAL", error.to_string()))?;
-        app.set_menu(built)
-            .map_err(|error| RpcError::new("INTERNAL", error.to_string()))?;
+        install_menu(&app, &menu).map_err(|error| RpcError::new("INTERNAL", error.to_string()))?;
     }
     #[cfg(not(target_os = "macos"))]
     let _ = app;
@@ -277,6 +315,19 @@ pub fn app_menu_configure<R: Runtime>(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn the_window_and_help_menus_are_handed_to_macos() {
+        assert_eq!(
+            system_menu(&[role("minimize"), role("zoom")]),
+            Some(SystemMenu::Windows)
+        );
+        assert_eq!(
+            system_menu(&[item(HELP_ID, "vivePDF Help", None)]),
+            Some(SystemMenu::Help)
+        );
+        assert_eq!(system_menu(&[role("undo")]), None);
+    }
 
     #[test]
     fn default_menu_is_valid() {
