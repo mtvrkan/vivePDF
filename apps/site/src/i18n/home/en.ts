@@ -22,8 +22,8 @@ export const homeEn: HomeCopy = {
     lede: "View, edit, sign and present. Open source and fully offline; your files never leave your computer.",
     windows: "Download for Windows",
     mac: "Download for macOS",
-    file: "Free\u00a0· AGPL-3.0\u00a0· Windows\u00a010/11\u00a0· macOS\u00a014+\u00a0·",
-    source: "Source code",
+    factsLabel: "Licence and system requirements",
+    facts: ["Free", "AGPL-3.0", "Windows\u00a010/11", "macOS\u00a014+"],
     scroll: "scroll",
   },
   lens: {
@@ -84,6 +84,8 @@ export const homeEn: HomeCopy = {
       { g: "a11y", h: "Accessibility", p: "Tagged PDF checks and alternative text. The interface speaks 8 languages, right to left in Arabic." },
     ],
     hint: "scroll and the tools light up in turn",
+    prev: "Previous",
+    next: "Next",
   },
   privacy: {
     eyebrow: "Privacy",

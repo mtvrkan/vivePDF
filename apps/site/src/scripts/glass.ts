@@ -15,7 +15,7 @@ export function boot() {
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1.05;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.setClearColor(root.dataset.theme === "dark" ? 0x060b15 : 0xeaf2fb, 1);
+  renderer.setClearColor(root.dataset.theme === "dark" ? 0x0f1115 : 0xeaf2fb, 1);
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
   camera.position.set(0, 0, 14);
@@ -129,7 +129,7 @@ export function boot() {
     kick();
   };
   vp.onTheme = (t) => {
-    renderer.setClearColor(t === "dark" ? 0x060b15 : 0xeaf2fb, 1);
+    renderer.setClearColor(t === "dark" ? 0x0f1115 : 0xeaf2fb, 1);
     mats.forEach((m) => {
       m.envMapIntensity = t === "dark" ? 1.7 : 1.3;
     });

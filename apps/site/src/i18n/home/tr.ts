@@ -21,8 +21,8 @@ export const homeTr = {
     lede: "Görüntüle, düzenle, imzala ve sun. Açık kaynak ve tamamen çevrimdışı; dosyaların bilgisayarından hiç çıkmaz.",
     windows: "Windows için indir",
     mac: "macOS için indir",
-    file: "Ücretsiz\u00a0· AGPL-3.0\u00a0· Windows\u00a010/11\u00a0· macOS\u00a014+\u00a0·",
-    source: "Kaynak kodu",
+    factsLabel: "Lisans ve sistem gereksinimleri",
+    facts: ["Ücretsiz", "AGPL-3.0", "Windows\u00a010/11", "macOS\u00a014+"],
     scroll: "kaydır",
   },
   lens: {
@@ -83,6 +83,8 @@ export const homeTr = {
       { g: "a11y", h: "Erişilebilirlik", p: "Etiketli PDF kontrolü ve alternatif metin. Arayüz 8 dilde; Arapçada sağdan sola." },
     ],
     hint: "kaydır, araçlar sırayla yansın",
+    prev: "Önceki",
+    next: "Sonraki",
   },
   privacy: {
     eyebrow: "Gizlilik",

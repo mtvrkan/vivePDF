@@ -114,7 +114,7 @@ mark{background:none;color:inherit}
 [data-theme="dark"] .eyebrow::before{background:linear-gradient(90deg,var(--blue),var(--sky))}
 .motion [data-hero],.motion [data-reveal]{visibility:hidden}
 .still *,.still *::before,.still *::after{animation:none!important;transition:none!important}
-:root.lite{--glass:light-dark(rgba(246,250,254,.95),rgba(14,24,42,.96));--glass-strong:light-dark(rgba(255,255,255,.97),rgba(20,33,56,.97))}
+:root.lite{--glass:light-dark(rgba(246,250,254,.95),rgba(20,22,27,.96));--glass-strong:light-dark(rgba(255,255,255,.97),rgba(27,29,35,.97))}
 .lite *,.lite *::before,.lite *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .lite .atmo i,.lite .wall-row,.lite .proof li{animation:none!important}
 .lite .atmo::after,.lite .glass::after{display:none}

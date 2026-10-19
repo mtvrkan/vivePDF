@@ -116,6 +116,10 @@ const zoom = new Intl.NumberFormat(lang, { style: "percent" }).format(1);
           <li class:list={["cap glass", { on: i === 0 }]} data-g={cap.g}><div class="cap-meta"><span>{String(i + 1).padStart(2, "0")} / {total}</span><span class="cap-dots"></span></div><h3>{cap.h}</h3><p>{cap.p}</p></li>
         ))}
       </ol>
+      <div class="tour-nav">
+        <button type="button" class="btn btn-glass" id="tourPrev"><svg class="ic" aria-hidden="true"><use href="#i-left"/></svg>{c.prev}</button>
+        <button type="button" class="btn btn-glass" id="tourNext">{c.next}<svg class="ic" aria-hidden="true"><use href="#i-right"/></svg></button>
+      </div>
       <p class="tour-hint" aria-hidden="true"><i></i>{c.hint}</p>
     </div>
   </div>

@@ -9,7 +9,7 @@ const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-colo
 function syncTheme() {
   const dark = root.dataset.theme === "dark";
   themeBtn?.setAttribute("aria-pressed", String(dark));
-  if (themeMeta) themeMeta.content = dark ? "#060B15" : "#EAF2FB";
+  if (themeMeta) themeMeta.content = dark ? "#0F1115" : "#EAF2FB";
 }
 
 function applyTheme(theme: "light" | "dark") {

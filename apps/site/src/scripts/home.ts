@@ -161,8 +161,8 @@ function drawBackdrop() {
   if (!x) return;
   x.setTransform(d, 0, 0, d, 0, 0);
   const g = x.createLinearGradient(0, 0, 0, H);
-  g.addColorStop(0, dkBg ? "#0D1830" : "#F3F8FE");
-  g.addColorStop(1, dkBg ? "#060B15" : "#EAF2FB");
+  g.addColorStop(0, dkBg ? "#16181D" : "#F3F8FE");
+  g.addColorStop(1, dkBg ? "#0F1115" : "#EAF2FB");
   x.fillStyle = g;
   x.fillRect(0, 0, W, H);
   pool(x, m.x - s * 0.05, m.y - s * 0.1, s * 1.15, s * 0.42, -1.25, "127,208,255", dkBg ? 0.4 : 0.62);
@@ -338,6 +338,32 @@ function setGroup(i: number) {
   });
 }
 setGroup(0);
+
+const stackedTour = matchMedia("(max-width:959px)");
+const stepGroup = (d: number) => setGroup((cur + d + order.length) % order.length);
+$("#tourPrev").addEventListener("click", () => stepGroup(-1));
+$("#tourNext").addEventListener("click", () => stepGroup(1));
+let swipeX = 0;
+let swipeY = 0;
+const tourInner = $(".tour-inner");
+tourInner.addEventListener(
+  "touchstart",
+  (e) => {
+    swipeX = e.touches[0].clientX;
+    swipeY = e.touches[0].clientY;
+  },
+  { passive: true },
+);
+tourInner.addEventListener(
+  "touchend",
+  (e) => {
+    if (!stackedTour.matches || still) return;
+    const dx = e.changedTouches[0].clientX - swipeX;
+    const dy = e.changedTouches[0].clientY - swipeY;
+    if (Math.abs(dx) > 48 && Math.abs(dx) > Math.abs(dy) * 1.4) stepGroup(dx < 0 ? 1 : -1);
+  },
+  { passive: true },
+);
 
 const log = $("#log");
 let opI = 0;
@@ -1205,7 +1231,7 @@ if (still) {
   gsap.ticker.lagSmoothing(0);
   const tourEl = $(".tour");
   const goTo = (t: HTMLElement, immediate: boolean) => {
-    const offset = t === tourEl ? window.innerHeight * 0.9 : -90;
+    const offset = t === tourEl && !stackedTour.matches ? window.innerHeight * 0.9 : -90;
     if (lenis) lenis.scrollTo(t, { offset, immediate });
     else window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY + offset, behavior: immediate ? "instant" : "smooth" });
   };
@@ -1295,14 +1321,16 @@ if (still) {
     onEnter: () => $(".nav").classList.add("solid"),
   });
   gsap.fromTo(".win-wrap", { rotationX: 24, y: 110, scale: 0.9 }, { rotationX: 0, y: 0, scale: 1, ease: "none", scrollTrigger: { trigger: ".tour", start: "top bottom", end: "top top", scrub: 0.6 } });
-  ScrollTrigger.create({
-    trigger: ".tour",
-    start: "top top",
-    end: "bottom bottom",
-    onUpdate: (s) => {
-      win.style.setProperty("--tp", s.progress.toFixed(3));
-      setGroup(Math.min(order.length - 1, Math.floor(s.progress * order.length)));
-    },
+  gsap.matchMedia().add("(min-width:960px)", () => {
+    ScrollTrigger.create({
+      trigger: ".tour",
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: (s) => {
+        win.style.setProperty("--tp", s.progress.toFixed(3));
+        setGroup(Math.min(order.length - 1, Math.floor(s.progress * order.length)));
+      },
+    });
   });
 
   const tilt = $(".tilt");
