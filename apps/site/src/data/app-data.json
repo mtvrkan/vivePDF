@@ -1,5 +1,5 @@
 {
-  "version": "0.3.0",
+  "version": "0.4.0",
   "tools": {
     "groups": [
       {
@@ -2860,6 +2860,31 @@
     ]
   },
   "releases": [
+    {
+      "version": "0.4.0",
+      "items": [
+        {
+          "tr": "Word, Excel ve PowerPoint dosyaları doğrudan vivePDF'te PDF olarak açılır, Finder ve Explorer'daki Birlikte Aç menüsünden de; LibreOffice yoksa vivePDF kurmayı önerir ve hazır olunca dosyayı açar.",
+          "en": "Word, Excel and PowerPoint files open straight in vivePDF as PDFs, also from Open With in Finder and Explorer; when LibreOffice is missing, vivePDF offers to set it up and opens the file once it is ready."
+        },
+        {
+          "tr": "Sekmeler tarayıcıdaki gibi çalışır: bir sekmeyi ya da bütün bir sekme grubunu dışarı sürükleyip bıraktığınız yerde kendi penceresinde açın veya başka bir vivePDF penceresine bırakıp oraya taşıyın.",
+          "en": "Tabs work like a browser's: drag a tab or a whole tab group out to open it in its own window where you drop it, or onto another vivePDF window to move it there."
+        },
+        {
+          "tr": "vivePDF Mac'te çalışıyor: tam ekranda pencere düğmeleri logonun yanında kalır, Command kısayolları ve menü çubuğu macOS'a uygun çalışır, izleme dörtgeninde iki parmakla yakınlaştırma yumuşaktır ve güncellemeler uygulamanın içinden gelir.",
+          "en": "vivePDF runs on the Mac: full screen keeps the window buttons beside the logo, Command shortcuts and the menu bar work the macOS way, trackpad pinch zooms smoothly, and updates arrive inside the app."
+        },
+        {
+          "tr": "Sunumdaki siyah ve beyaz tahtalarda kalem, vurgulayıcı, şekil ve silgili bir araç çubuğu var; birden çok çizim birlikte seçilir ve 100 adıma kadar geri alınır.",
+          "en": "The black and white presentation boards have a toolbar with pen, highlighter, shapes and eraser, pick several drawings at once and undo up to 100 steps."
+        },
+        {
+          "tr": "Daha akıcı ve hafif: PDF kaydırırken takılma olmuyor, uzun Stüdyo belgelerinde yazmak hızlı kalıyor ve sayfa önizlemeleri birbirini beklemiyor.",
+          "en": "Smoother and lighter: scrolling a PDF no longer stutters, typing stays quick in long Studio documents, and page previews no longer wait for each other."
+        }
+      ]
+    },
     {
       "version": "0.3.0",
       "items": [

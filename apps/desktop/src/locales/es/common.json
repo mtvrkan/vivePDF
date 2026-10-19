@@ -10131,6 +10131,13 @@
     "emptyTitle": "Aún no hay notas para esta versión",
     "emptyDescription": "vivePDF {{version}} no tiene notas de versión en la aplicación. Busca actualizaciones para ver qué trae la versión más reciente.",
     "releases": {
+      "v0_4_0": {
+        "officeFiles": "Los archivos de Word, Excel y PowerPoint se abren directamente en vivePDF como PDF, también desde «Abrir con» en Finder y el Explorador; si falta LibreOffice, vivePDF ofrece instalarlo y abre el archivo cuando está listo.",
+        "tabWindows": "Las pestañas funcionan como en un navegador: arrastra una pestaña o un grupo de pestañas entero para abrirlo en su propia ventana donde lo sueltes, o sobre otra ventana de vivePDF para moverlo allí.",
+        "macos": "vivePDF funciona en Mac: en pantalla completa los botones de la ventana siguen junto al logotipo, los atajos con Comando y la barra de menús funcionan como en macOS, el zoom con el trackpad es suave y las actualizaciones llegan dentro de la app.",
+        "presentationBoards": "Las pizarras negra y blanca de las presentaciones tienen una barra de herramientas con lápiz, resaltador, formas y borrador, permiten elegir varios dibujos a la vez y deshacer hasta 100 pasos.",
+        "smoother": "Más fluido y ligero: desplazarse por un PDF ya no da tirones, escribir sigue siendo rápido en documentos largos de Studio y las vistas previas de las páginas ya no se esperan entre sí."
+      },
       "v0_3_0": {
         "helpAndSupport": "Ayuda que funciona sin conexión: F1 muestra los atajos de la pantalla en la que estás (y los guarda en PDF), Ayuda › Temas de ayuda explica las tareas principales paso a paso, y los informes de errores pueden llevar imágenes y archivos de ejemplo en un paquete de soporte que guardas tú.",
         "offlineMode": "Modo sin conexión: un interruptor en Ajustes › Web desactiva todas las funciones que usarían Internet: actualizaciones, descargas, búsqueda web, consultas de citas y la comprobación de contraseñas filtradas.",

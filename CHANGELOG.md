@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.4.0] - 2026-10-19
 ### Added
 - Opening a Word, Excel or PowerPoint file while LibreOffice is missing asks to set it up, shows the download progress and opens the file once it is ready, instead of only showing an error; files opened together wait for the answer [2026-10-19]
 - Word, Excel, PowerPoint and OpenDocument files (.docx .doc .odt .rtf .xlsx .xls .ods .pptx .ppt .odp) offer vivePDF under Open With in Finder and, with "Open PDFs with vivePDF" on, in Explorer; vivePDF converts and opens them but never becomes their default app [2026-10-19]

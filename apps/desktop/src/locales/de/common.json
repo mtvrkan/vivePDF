@@ -10130,6 +10130,13 @@
     "emptyTitle": "Noch keine Hinweise zu dieser Version",
     "emptyDescription": "Zu vivePDF {{version}} gibt es in der App keine Versionshinweise. Suchen Sie nach Updates, um zu sehen, was die neueste Version bringt.",
     "releases": {
+      "v0_4_0": {
+        "officeFiles": "Word-, Excel- und PowerPoint-Dateien öffnen sich direkt in vivePDF als PDF, auch über „Öffnen mit“ im Finder und Explorer; fehlt LibreOffice, bietet vivePDF die Einrichtung an und öffnet die Datei, sobald alles bereit ist.",
+        "tabWindows": "Tabs funktionieren wie im Browser: Ziehen Sie einen Tab oder eine ganze Tab-Gruppe heraus, um sie dort in einem eigenen Fenster zu öffnen, oder auf ein anderes vivePDF-Fenster, um sie dorthin zu verschieben.",
+        "macos": "vivePDF läuft auf dem Mac: Im Vollbild bleiben die Fensterknöpfe neben dem Logo, Befehlstasten-Kurzbefehle und die Menüleiste arbeiten wie unter macOS gewohnt, Zoomen mit dem Trackpad läuft flüssig und Updates kommen direkt in der App.",
+        "presentationBoards": "Die schwarze und die weiße Präsentationstafel haben eine Werkzeugleiste mit Stift, Textmarker, Formen und Radierer, mehrere Zeichnungen lassen sich zugleich auswählen und bis zu 100 Schritte rückgängig machen.",
+        "smoother": "Flüssiger und leichter: Das Scrollen in PDFs ruckelt nicht mehr, Tippen bleibt auch in langen Studio-Dokumenten schnell und Seitenvorschauen warten nicht mehr aufeinander."
+      },
       "v0_3_0": {
         "helpAndSupport": "Hilfe, die offline funktioniert: F1 zeigt die Tastenkürzel des aktuellen Bildschirms (und speichert sie als PDF), Hilfe › Hilfethemen erklärt die wichtigsten Aufgaben Schritt für Schritt, und Fehlerberichte können Bilder und Beispieldateien in einem selbst gespeicherten Supportpaket mitnehmen.",
         "offlineMode": "Offlinemodus: Ein Schalter unter Einstellungen › Web schaltet jede Funktion ab, die das Internet nutzen würde – Updates, Downloads, Websuche, Quellenabfragen und die Prüfung auf geleakte Passwörter.",

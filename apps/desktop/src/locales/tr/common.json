@@ -10132,6 +10132,13 @@
     "emptyTitle": "Bu sürüm için henüz not yok",
     "emptyDescription": "vivePDF {{version}} için uygulamada sürüm notu yok. En yeni sürümün getirdiklerini görmek için güncellemeleri denetleyin.",
     "releases": {
+      "v0_4_0": {
+        "officeFiles": "Word, Excel ve PowerPoint dosyaları doğrudan vivePDF'te PDF olarak açılır, Finder ve Explorer'daki Birlikte Aç menüsünden de; LibreOffice yoksa vivePDF kurmayı önerir ve hazır olunca dosyayı açar.",
+        "tabWindows": "Sekmeler tarayıcıdaki gibi çalışır: bir sekmeyi ya da bütün bir sekme grubunu dışarı sürükleyip bıraktığınız yerde kendi penceresinde açın veya başka bir vivePDF penceresine bırakıp oraya taşıyın.",
+        "macos": "vivePDF Mac'te çalışıyor: tam ekranda pencere düğmeleri logonun yanında kalır, Command kısayolları ve menü çubuğu macOS'a uygun çalışır, izleme dörtgeninde iki parmakla yakınlaştırma yumuşaktır ve güncellemeler uygulamanın içinden gelir.",
+        "presentationBoards": "Sunumdaki siyah ve beyaz tahtalarda kalem, vurgulayıcı, şekil ve silgili bir araç çubuğu var; birden çok çizim birlikte seçilir ve 100 adıma kadar geri alınır.",
+        "smoother": "Daha akıcı ve hafif: PDF kaydırırken takılma olmuyor, uzun Stüdyo belgelerinde yazmak hızlı kalıyor ve sayfa önizlemeleri birbirini beklemiyor."
+      },
       "v0_3_0": {
         "helpAndSupport": "İnternetsiz çalışan yardım: F1 bulunduğunuz ekranın kısayollarını gösterir (PDF olarak da kaydeder), Yardım › Yardım konuları başlıca işleri adım adım anlatır ve hata bildirimleri, kendi kaydettiğiniz bir destek paketiyle resim ve örnek dosya taşıyabilir.",
         "offlineMode": "Çevrimdışı mod: Ayarlar › Web'deki tek bir anahtar, internet kullanacak her özelliği kapatır; güncellemeler, indirmeler, web araması, kaynak sorguları ve sızdırılmış parola denetimi de buna dahildir.",

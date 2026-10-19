@@ -10132,6 +10132,13 @@
     "emptyTitle": "No notes for this version yet",
     "emptyDescription": "vivePDF {{version}} has no release notes in the app. Check for updates to see what the newest version brings.",
     "releases": {
+      "v0_4_0": {
+        "officeFiles": "Word, Excel and PowerPoint files open straight in vivePDF as PDFs, also from Open With in Finder and Explorer; when LibreOffice is missing, vivePDF offers to set it up and opens the file once it is ready.",
+        "tabWindows": "Tabs work like a browser's: drag a tab or a whole tab group out to open it in its own window where you drop it, or onto another vivePDF window to move it there.",
+        "macos": "vivePDF runs on the Mac: full screen keeps the window buttons beside the logo, Command shortcuts and the menu bar work the macOS way, trackpad pinch zooms smoothly, and updates arrive inside the app.",
+        "presentationBoards": "The black and white presentation boards have a toolbar with pen, highlighter, shapes and eraser, pick several drawings at once and undo up to 100 steps.",
+        "smoother": "Smoother and lighter: scrolling a PDF no longer stutters, typing stays quick in long Studio documents, and page previews no longer wait for each other."
+      },
       "v0_3_0": {
         "helpAndSupport": "Help that works offline: F1 shows the shortcuts of the screen you are on (and saves them as a PDF), Help › Help topics explains the main tasks step by step, and bug reports can carry pictures and sample files in a support package you save yourself.",
         "offlineMode": "Offline mode: one switch in Settings › Web turns off every feature that would use the internet — updates, downloads, web search, citation lookups and the leaked-password check.",

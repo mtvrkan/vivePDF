@@ -10131,6 +10131,13 @@
     "emptyTitle": "Pas encore de notes pour cette version",
     "emptyDescription": "vivePDF {{version}} n’a pas de notes de version dans l’application. Recherchez les mises à jour pour voir ce qu’apporte la dernière version.",
     "releases": {
+      "v0_4_0": {
+        "officeFiles": "Les fichiers Word, Excel et PowerPoint s’ouvrent directement dans vivePDF en PDF, aussi depuis « Ouvrir avec » dans le Finder et l’Explorateur ; si LibreOffice manque, vivePDF propose de l’installer et ouvre le fichier dès qu’il est prêt.",
+        "tabWindows": "Les onglets fonctionnent comme dans un navigateur : faites glisser un onglet ou tout un groupe d’onglets pour l’ouvrir dans sa propre fenêtre là où vous le déposez, ou sur une autre fenêtre vivePDF pour l’y déplacer.",
+        "macos": "vivePDF fonctionne sur Mac : en plein écran, les boutons de fenêtre restent à côté du logo, les raccourcis Commande et la barre des menus suivent les usages de macOS, le zoom au trackpad est fluide et les mises à jour arrivent dans l’app.",
+        "presentationBoards": "Les tableaux noir et blanc des présentations ont une barre d’outils avec stylo, surligneur, formes et gomme, permettent de choisir plusieurs dessins à la fois et d’annuler jusqu’à 100 étapes.",
+        "smoother": "Plus fluide et plus léger : le défilement d’un PDF ne saccade plus, la saisie reste rapide dans les longs documents Studio et les aperçus de pages ne s’attendent plus."
+      },
       "v0_3_0": {
         "helpAndSupport": "Une aide qui fonctionne hors ligne : F1 affiche les raccourcis de l’écran où vous êtes (et les enregistre en PDF), Aide › Rubriques d’aide explique les tâches principales pas à pas, et les signalements de bug peuvent joindre des images et des fichiers d’exemple dans un paquet d’assistance que vous enregistrez vous-même.",
         "offlineMode": "Mode hors ligne : un seul interrupteur dans Paramètres › Web coupe toutes les fonctions qui utiliseraient Internet — mises à jour, téléchargements, recherche web, recherche de références et vérification des mots de passe divulgués.",
