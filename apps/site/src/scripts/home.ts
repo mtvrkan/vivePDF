@@ -53,32 +53,38 @@ function pool(x: CanvasRenderingContext2D, cx: number, cy: number, rx: number, r
 type SheetKind = keyof HomeData["sheetTitles"];
 type Sheet = { cx: number; cy: number; w: number; h: number; r: number; k: SheetKind };
 let dkBg = false;
+const sheetLight = { paper: "rgba(255,255,255,.96)", edge: "transparent", title: "#0A1A33", accent: "#7FD0FF", rule: "#DCE5F0", bar: "#BFE3FF", barHi: "#2F8FE6", bubble: "#8796AD", mark: "#14305A", frame: "#14305A", seal: "#FFC46B", sealCore: "#2F8FE6" };
+const sheetDark = { paper: "#22252C", edge: "rgba(224,226,230,.10)", title: "#E0E2E6", accent: "#45A6DE", rule: "rgba(224,226,230,.16)", bar: "rgba(69,166,222,.32)", barHi: "#45A6DE", bubble: "rgba(224,226,230,.38)", mark: "#8BCAEE", frame: "rgba(139,202,238,.45)", seal: "rgba(255,196,107,.7)", sealCore: "#45A6DE" };
 
 function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
   const w = o.w * s;
   const h = o.h * s;
+  const c = dkBg ? sheetDark : sheetLight;
   x.save();
   x.translate(o.cx, o.cy);
   x.rotate(o.r);
   x.shadowColor = dkBg ? "rgba(0,0,0,.6)" : "rgba(20,48,90,.18)";
   x.shadowBlur = s * 0.07;
   x.shadowOffsetY = s * 0.025;
-  x.fillStyle = dkBg ? "rgba(205,219,238,.92)" : "rgba(255,255,255,.96)";
+  x.fillStyle = c.paper;
   rr(x, -w / 2, -h / 2, w, h, Math.max(3, s * 0.01));
   x.fill();
   x.shadowColor = "transparent";
+  x.strokeStyle = c.edge;
+  x.lineWidth = 1;
+  x.stroke();
   const L = -w / 2 + w * 0.11;
   const T = -h / 2 + h * 0.1;
   const cw = w * 0.78;
-  x.fillStyle = "#0A1A33";
+  x.fillStyle = c.title;
   x.font = `600 ${Math.round(h * 0.06)}px "Geist Variable", sans-serif`;
   x.textBaseline = "alphabetic";
   x.fillText(data.sheetTitles[o.k], L, T + h * 0.05);
-  x.fillStyle = "#7FD0FF";
+  x.fillStyle = c.accent;
   x.fillRect(L, T + h * 0.085, cw * 0.32, Math.max(2, h * 0.012));
   let y = T + h * 0.15;
   const line = (f: number) => {
-    x.fillStyle = dkBg ? "#AFC0D7" : "#DCE5F0";
+    x.fillStyle = c.rule;
     rr(x, L, y, cw * f, Math.max(2, h * 0.013), 2);
     x.fill();
     y += h * 0.042;
@@ -90,7 +96,7 @@ function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
     const bh = h * 0.2;
     const by = y + bh;
     [0.45, 0.6, 0.52, 0.85, 0.7].forEach((v, i) => {
-      x.fillStyle = i === 3 ? "#2F8FE6" : "#BFE3FF";
+      x.fillStyle = i === 3 ? c.barHi : c.bar;
       x.fillRect(L + i * cw * 0.2, by - bh * v, cw * 0.14, bh * v);
     });
     y = by + h * 0.05;
@@ -102,17 +108,17 @@ function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
       for (let b = 0; b < 5; b++) {
         x.beginPath();
         x.arc(L + cw * 0.06 + b * cw * 0.11, y + h * 0.005, h * 0.014, 0, Math.PI * 2);
-        x.strokeStyle = "#8796AD";
+        x.strokeStyle = c.bubble;
         x.lineWidth = 1;
         if (b === (q * 2 + 1) % 5) {
-          x.fillStyle = "#14305A";
+          x.fillStyle = c.mark;
           x.fill();
         } else x.stroke();
       }
       y += h * 0.05;
     }
   } else if (o.k === "cert") {
-    x.strokeStyle = "#14305A";
+    x.strokeStyle = c.frame;
     x.lineWidth = 1.4;
     x.strokeRect(-w / 2 + w * 0.05, -h / 2 + h * 0.07, w * 0.9, h * 0.86);
     y = T + h * 0.3;
@@ -120,11 +126,11 @@ function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
     line(0.6);
     x.beginPath();
     x.arc(0, h * 0.2, h * 0.08, 0, Math.PI * 2);
-    x.fillStyle = "#FFC46B";
+    x.fillStyle = c.seal;
     x.fill();
     x.beginPath();
     x.arc(0, h * 0.2, h * 0.045, 0, Math.PI * 2);
-    x.fillStyle = "#2F8FE6";
+    x.fillStyle = c.sealCore;
     x.fill();
   } else {
     line(1);
@@ -136,7 +142,7 @@ function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
     line(0.9);
     line(0.96);
     line(0.7);
-    x.strokeStyle = "#14305A";
+    x.strokeStyle = c.mark;
     x.lineWidth = 1.6;
     x.beginPath();
     const sy = h * 0.34;
@@ -165,17 +171,17 @@ function drawBackdrop() {
   g.addColorStop(1, dkBg ? "#0F1115" : "#EAF2FB");
   x.fillStyle = g;
   x.fillRect(0, 0, W, H);
-  pool(x, m.x - s * 0.05, m.y - s * 0.1, s * 1.15, s * 0.42, -1.25, "127,208,255", dkBg ? 0.4 : 0.62);
-  pool(x, m.x + s * 0.25, m.y + s * 0.05, s * 1.0, s * 0.3, 1.27, "47,143,230", dkBg ? 0.42 : 0.24);
-  pool(x, m.x + s * 0.1, m.y + s * 0.55, s * 0.55, s * 0.4, 0, dkBg ? "127,208,255" : "255,196,107", dkBg ? 0.16 : 0.42);
-  pool(x, W * 0.96, H * 0.9, W * 0.4, W * 0.3, 0, "47,143,230", dkBg ? 0.3 : 0.16);
-  pool(x, W * 0.2, H * 0.78, W * 0.42, H * 0.4, 0, dkBg ? "18,36,70" : "255,255,255", dkBg ? 0.55 : 0.6);
+  pool(x, m.x - s * 0.05, m.y - s * 0.1, s * 1.15, s * 0.42, -1.25, dkBg ? "69,166,222" : "127,208,255", dkBg ? 0.24 : 0.62);
+  pool(x, m.x + s * 0.25, m.y + s * 0.05, s * 1.0, s * 0.3, 1.27, dkBg ? "69,166,222" : "47,143,230", dkBg ? 0.2 : 0.24);
+  pool(x, m.x + s * 0.1, m.y + s * 0.55, s * 0.55, s * 0.4, 0, dkBg ? "69,166,222" : "255,196,107", dkBg ? 0.08 : 0.42);
+  pool(x, W * 0.96, H * 0.9, W * 0.4, W * 0.3, 0, dkBg ? "69,166,222" : "47,143,230", dkBg ? 0.12 : 0.16);
+  pool(x, W * 0.2, H * 0.78, W * 0.42, H * 0.4, 0, dkBg ? "15,17,21" : "255,255,255", dkBg ? 0.5 : 0.6);
   x.save();
   x.font = `600 ${Math.round(s * 0.66)}px "Geist Variable", sans-serif`;
   x.textAlign = "center";
   x.textBaseline = "middle";
   x.lineWidth = 1.4;
-  x.strokeStyle = dkBg ? "rgba(142,203,255,.3)" : "rgba(26,98,176,.22)";
+  x.strokeStyle = dkBg ? "rgba(139,202,238,.16)" : "rgba(26,98,176,.22)";
   x.strokeText("PDF", m.x, m.y + s * 0.02);
   x.restore();
   const S: Array<{ dx: number; dy: number; w: number; h: number; r: number; k: SheetKind }> = [
@@ -185,7 +191,7 @@ function drawBackdrop() {
     { dx: -0.12, dy: 0.08, w: 0.42, h: 0.6, r: 0.06, k: "letter" },
   ];
   S.forEach((o) => sheet(x, { cx: m.x + o.dx * s, cy: m.y + o.dy * s, w: o.w, h: o.h, r: o.r, k: o.k }, s));
-  pool(x, m.x, m.y, s * 0.75, s * 0.75, 0, dkBg ? "120,180,255" : "255,255,255", dkBg ? 0.08 : 0.18);
+  pool(x, m.x, m.y, s * 0.75, s * 0.75, 0, dkBg ? "224,226,230" : "255,255,255", dkBg ? 0.04 : 0.18);
   vp.onBg?.();
 }
 
