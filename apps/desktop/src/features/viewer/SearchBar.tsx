@@ -8,6 +8,7 @@ import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { useSearchRequestStore } from "@/shared/store/searchRequestStore";
+import { findAgainKey } from "./navigationKeys";
 import { effectiveSearchQuery } from "./search/searchQuery";
 import { useSearchBarState } from "./search/useSearchBarState";
 
@@ -111,11 +112,12 @@ export function SearchBar({ documentId, onClose }: SearchBarProps) {
 
   useEffect(() => {
     const onWindowKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "F3") return;
+      const direction = findAgainKey(event);
+      if (!direction) return;
       if (event.target === inputRef.current) return;
       if (isTypingTarget(event.target)) return;
       event.preventDefault();
-      if (event.shiftKey) goPrevious();
+      if (direction === "previous") goPrevious();
       else goNext();
     };
     window.addEventListener("keydown", onWindowKeyDown);
@@ -128,7 +130,7 @@ export function SearchBar({ documentId, onClose }: SearchBarProps) {
       onClose();
       return;
     }
-    if (event.key === "Enter" || event.key === "F3") {
+    if (event.key === "Enter" || findAgainKey(event.nativeEvent)) {
       event.preventDefault();
       if (event.shiftKey) goPrevious();
       else goNext();

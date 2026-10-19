@@ -18,6 +18,7 @@ import { useUiStore } from "@/shared/store/uiStore";
 import { EDITOR_MODES, useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { useSplitViewStore } from "@/shared/store/splitViewStore";
 import { useViewerPanelsStore } from "@/shared/store/viewerPanelsStore";
+import { historyKey } from "./navigationKeys";
 import { copySelection } from "./copySelection";
 import { holdsEditorObject, useEditorClipboard } from "./overlay/editorClipboard";
 import { openEditorAndPaste } from "./overlay/editorPaste";
@@ -74,9 +75,10 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
         if (path) useSplitViewStore.getState().toggle(path);
         return;
       }
-      if (event.altKey && !modifier && !event.shiftKey && (key === "ArrowLeft" || key === "ArrowRight")) {
+      const historyStep = historyKey(event);
+      if (historyStep) {
         event.preventDefault();
-        if (key === "ArrowLeft") goBack();
+        if (historyStep === "back") goBack();
         else goForward();
         return;
       }

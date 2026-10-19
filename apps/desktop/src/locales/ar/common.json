@@ -405,7 +405,7 @@
       "highlights": {
         "search": "بحث",
         "annotate": "تعليق",
-        "present": "عرض (F11)"
+        "present": "عرض ({{keys}})"
       }
     },
     "exitFullscreen": "الخروج من ملء الشاشة",

@@ -20,6 +20,14 @@ describe("macMenu", () => {
     for (const id of all) expect(id === "app:quit" || parseMenuCommand(id) !== null).toBe(true);
   });
 
+  it("routes Undo and Redo through the app's own Command Z so canvas and page edits undo from the menu too", () => {
+    const edit = buildMacMenu(t).find((node) => node.kind === "submenu" && node.label === "appMenu.edit");
+
+    const editIds = edit && edit.kind === "submenu" ? ids(edit.items) : [];
+
+    expect(editIds.slice(0, 2)).toEqual(["key:z", "key:shift+z"]);
+  });
+
   it("parses menu commands", () => {
     expect(parseMenuCommand("nav:/about?tab=shortcuts")).toEqual({ type: "navigate", route: "/about?tab=shortcuts" });
     expect(parseMenuCommand("key:shift+n")).toEqual({ type: "key", key: "n", shiftKey: true });

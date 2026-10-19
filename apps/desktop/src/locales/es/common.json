@@ -373,7 +373,7 @@
       "highlights": {
         "search": "Buscar",
         "annotate": "Anotar",
-        "present": "Presentación (F11)"
+        "present": "Presentación ({{keys}})"
       }
     },
     "exitFullscreen": "Salir de pantalla completa",

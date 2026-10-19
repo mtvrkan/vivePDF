@@ -13,7 +13,7 @@ import {
   ScrollText,
   Shapes,
 } from "lucide-react";
-import { dirnameOf, joinPath, numberedPath, outputDirectoryFor, pathKey } from "@/shared/lib/paths";
+import { basenameOf, dirnameOf, joinPath, numberedPath, outputDirectoryFor, pathKey } from "@/shared/lib/paths";
 
 export type FromPdfMode = "docx" | "xlsx" | "pptx" | "images" | "extract-images" | "text" | "markdown" | "html" | "epub";
 export type ToPdfMode = "images-to-pdf" | "file-to-pdf" | "svg-to-pdf" | "url-to-pdf";
@@ -63,7 +63,7 @@ export function svgWritesOneFile(count: number, combine: boolean): boolean {
 }
 
 function splitName(path: string): { stem: string; extension: string } {
-  const name = path.split(/[\\/]/).pop() ?? path;
+  const name = basenameOf(path);
   const dot = name.lastIndexOf(".");
   return dot > 0 ? { stem: name.slice(0, dot), extension: name.slice(dot + 1) } : { stem: name, extension: "" };
 }

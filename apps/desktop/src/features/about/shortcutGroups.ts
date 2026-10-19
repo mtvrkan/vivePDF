@@ -1,5 +1,6 @@
 import { ORGANIZER_SHORTCUTS } from "@/features/pages/organizerShortcuts";
 import { DOCUMENT_SHORTCUTS, STUDIO_SHORTCUT_GROUPS } from "@/features/studio/design/shortcutList";
+import { FIND_AGAIN_KEYS, HISTORY_KEYS } from "@/features/viewer/navigationKeys";
 import type { TFunction } from "i18next";
 import { FULLSCREEN_SHORTCUT, shortcutLabel } from "@/shared/lib/platform";
 
@@ -23,7 +24,7 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
     id: "viewer",
     items: [
       { keys: "Ctrl F", labelKey: "about.shortcuts.items.search" },
-      { keys: "F3  /  Shift F3", labelKey: "about.shortcuts.items.searchNext" },
+      { keys: FIND_AGAIN_KEYS, labelKey: "about.shortcuts.items.searchNext" },
       { keys: "Ctrl Shift C", labelKey: "about.shortcuts.items.copyAsCode" },
       { keys: "Ctrl P", labelKey: "about.shortcuts.items.print" },
       { keys: FULLSCREEN_SHORTCUT, labelKey: "about.shortcuts.items.fullscreen" },
@@ -32,7 +33,7 @@ export const SHORTCUT_GROUPS: ShortcutGroup[] = [
       { keys: "Space + Drag  ·  Middle Drag", labelKey: "about.shortcuts.items.panDrag" },
       { keys: "PgUp / PgDn  ·  ← →", labelKey: "about.shortcuts.items.pages" },
       { keys: "Home / End", labelKey: "about.shortcuts.items.firstLast" },
-      { keys: "Alt ←  /  Alt →", labelKey: "about.shortcuts.items.navigateHistory" },
+      { keys: HISTORY_KEYS, labelKey: "about.shortcuts.items.navigateHistory" },
       { keys: "Delete", labelKey: "about.shortcuts.items.deleteAnnotation" },
       { keys: "Ctrl Z  /  Ctrl Y", labelKey: "about.shortcuts.items.undoRedoViewer" },
       { keys: "Ctrl Shift H", labelKey: "about.shortcuts.items.autoScroll" },

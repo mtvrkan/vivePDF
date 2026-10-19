@@ -374,7 +374,7 @@
       "highlights": {
         "search": "Arama",
         "annotate": "İşaretleme",
-        "present": "Sunum (F11)"
+        "present": "Sunum ({{keys}})"
       }
     },
     "exitFullscreen": "Tam ekrandan çık",

@@ -571,7 +571,7 @@ export function BatchPage() {
                     )}
                     <FileText className="size-4 shrink-0 text-(--tone)" aria-hidden />
                     <span className="min-w-0 flex-1 truncate" title={item.path}>
-                      {item.path.split(/[\\/]/).pop()}
+                      {basenameOf(item.path)}
                     </span>
                     {item.locked ? <LockedItem path={item.path} wrongPassword={item.wrongPassword} onUnlock={(path, password) => void unlockItem(path, password)} disabled={running} /> : null}
                     <span title={item.status === "running" && item.step !== undefined && steps[item.step] ? `${item.step + 1}/${steps.length} · ${operationLabel(steps[item.step].operation)}` : item.status === "done" && item.output ? item.output : item.status === "error" && item.error ? describeError(t, item.error) : undefined} className={cn("max-w-1/2 shrink-0 truncate font-mono text-xs", item.status === "error" ? "text-destructive" : "text-muted-foreground")}>

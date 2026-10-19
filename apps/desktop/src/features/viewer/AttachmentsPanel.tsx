@@ -18,10 +18,10 @@ import { addedAttachmentNames, isAttachmentRemoved, pendingChangesFor, usePendin
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import type { AttachmentItem, AttachmentsListResult } from "@/types";
+import { basenameOf } from "@/shared/lib/paths";
 
 function basename(filePath: string) {
-  const parts = filePath.split(/[\\/]/);
-  return parts[parts.length - 1] || filePath;
+  return basenameOf(filePath) || filePath;
 }
 
 export function AttachmentsPanel({ documentId }: { documentId: string }) {

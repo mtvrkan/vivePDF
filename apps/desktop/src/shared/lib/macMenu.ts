@@ -73,8 +73,8 @@ export function buildMacMenu(t: TFunction): MenuNode[] {
       kind: "submenu",
       label: t("appMenu.edit"),
       items: [
-        role("undo", t("appMenu.undo")),
-        role("redo", t("appMenu.redo")),
+        shortcut("z", t("appMenu.undo")),
+        shortcut("z", t("appMenu.redo"), true),
         separator,
         role("cut", t("appMenu.cut")),
         role("copy", t("appMenu.copy")),

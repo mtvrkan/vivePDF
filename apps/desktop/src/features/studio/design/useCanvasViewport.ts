@@ -4,6 +4,7 @@ import { canvasBridge } from "./canvasBridge";
 import { PAD, type Point } from "./canvasGeometry";
 import { currentPage, useStudioStore } from "./studioStore";
 import { hasModKey } from "@/shared/lib/platform";
+import { wheelStep } from "./wheelStep";
 
 const ZOOM_STEP = 1.1;
 const SELECTION_ZOOM_MARGIN = 0.8;
@@ -97,7 +98,7 @@ export function useCanvasViewport({ viewportRef, pageRef, zoom, fit, pageWidth, 
       const state = useStudioStore.getState();
       const rect = host.getBoundingClientRect();
       zoomAnchor.current = { page: { x: (event.clientX - rect.left) / state.zoom, y: (event.clientY - rect.top) / state.zoom }, client: { x: event.clientX, y: event.clientY } };
-      state.setZoom(state.zoom * (event.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP));
+      state.setZoom(state.zoom * wheelStep(event.deltaY, ZOOM_STEP));
     };
     viewport.addEventListener("wheel", onWheel, { passive: false });
     return () => viewport.removeEventListener("wheel", onWheel);

@@ -68,6 +68,7 @@ export function AppMenuBridge() {
       else if (command.type === "key") {
         const handled = pressShortcut(command.key, command.shiftKey);
         if (!handled && command.key === "w" && !command.shiftKey) void getCurrentWindow().close();
+        if (!handled && command.key === "z") document.execCommand(command.shiftKey ? "redo" : "undo");
       } else if (command.name === "reportBug") useReportStore.getState().openDialog({ category: "bug" });
       else if (command.name === "suggestFeature") useReportStore.getState().openDialog({ category: "idea" });
       else if (command.name === "openLogDir") void openLogFolder();

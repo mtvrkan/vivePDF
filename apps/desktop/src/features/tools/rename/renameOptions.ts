@@ -1,4 +1,5 @@
 import type { RenameApplyParams, RenameApplyResult, RenameItem, RenameUndoParams } from "@/types";
+import { basenameOf } from "@/shared/lib/paths";
 
 export const SORT_KEYS = ["added", "name", "modified", "size", "pages"] as const;
 export type SortKey = (typeof SORT_KEYS)[number];
@@ -17,7 +18,7 @@ export const PRESETS = [
 const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: "base" });
 
 function fileName(path: string): string {
-  return path.split(/[\\/]/).pop() ?? path;
+  return basenameOf(path);
 }
 
 function sortValue(item: RenameItem | undefined, key: Exclude<SortKey, "added" | "name">): number | null {

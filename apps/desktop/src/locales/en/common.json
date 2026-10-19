@@ -374,7 +374,7 @@
       "highlights": {
         "search": "Search",
         "annotate": "Annotate",
-        "present": "Present (F11)"
+        "present": "Present ({{keys}})"
       }
     },
     "exitFullscreen": "Exit full screen",

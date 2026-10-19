@@ -60,6 +60,7 @@ type TileMenu = { x: number; y: number; key: string };
 
 const TILE_CHROME_HEIGHT = 48;
 const DRAG_COPY_LIFETIME_MS = 60_000;
+const WHEEL_NOTCH = 40;
 
 export function PagesPage() {
   const { t } = useTranslation();
@@ -497,11 +498,15 @@ export function PagesPage() {
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
+    let pendingDelta = 0;
     const onWheel = (event: WheelEvent) => {
       if (!hasModKey(event)) return;
       event.preventDefault();
+      pendingDelta += event.deltaY;
+      if (Math.abs(pendingDelta) < WHEEL_NOTCH) return;
       const { pagesZoom, setPagesZoom } = useUiStore.getState();
-      setPagesZoom(pagesZoom - Math.sign(event.deltaY) * 20);
+      setPagesZoom(pagesZoom - Math.sign(pendingDelta) * 20);
+      pendingDelta = 0;
     };
     container.addEventListener("wheel", onWheel, { passive: false });
     return () => container.removeEventListener("wheel", onWheel);

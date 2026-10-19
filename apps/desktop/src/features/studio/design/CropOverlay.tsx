@@ -12,6 +12,7 @@ import { MAX_CROP_ZOOM, moveDraft, resetDraft, resizeFrame, toContent, zoomDraft
 import { useImageFilter } from "./imageFilter";
 import { currentPage, useStudioStore } from "./studioStore";
 import { HANDLES, type Handle } from "./transform";
+import { wheelStep } from "./wheelStep";
 
 const NUDGE = 1;
 const NUDGE_FAR = 10;
@@ -98,7 +99,7 @@ export function CropFrame({ zoom }: { zoom: number }) {
       if (event.ctrlKey || event.metaKey) return;
       event.preventDefault();
       event.stopPropagation();
-      updateDraft((draft) => zoomDraft(draft, zoomOf(draft) * (event.deltaY < 0 ? WHEEL_STEP : 1 / WHEEL_STEP)));
+      updateDraft((draft) => zoomDraft(draft, zoomOf(draft) * wheelStep(event.deltaY, WHEEL_STEP)));
     };
     frame.addEventListener("wheel", onWheel, { passive: false });
     return () => frame.removeEventListener("wheel", onWheel);

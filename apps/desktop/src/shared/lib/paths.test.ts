@@ -27,6 +27,15 @@ describe("paths", () => {
     expect(suggestOutputPath(path, "merged")).toBe("/home/user/docs/report.final-merged.pdf");
   });
 
+  it("keeps a backslash in a macOS or Linux file name instead of reading it as a folder", () => {
+    const path = "/Users/esma/Talks/Q1\\Q2 plan.pdf";
+
+    expect(basenameOf(path)).toBe("Q1\\Q2 plan.pdf");
+    expect(dirnameOf(path)).toBe("/Users/esma/Talks");
+    expect(suggestOutputPath(path, "compressed")).toBe("/Users/esma/Talks/Q1-Q2 plan-compressed.pdf");
+    expect(pageFileUrl(path, 2)).toBe("file:///Users/esma/Talks/Q1%5CQ2%20plan.pdf#page=2");
+  });
+
   it("joins into an empty directory as a bare name", () => {
     expect(joinPath("", "x.pdf")).toBe("x.pdf");
   });

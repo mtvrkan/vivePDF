@@ -1,17 +1,27 @@
 import { outputFileName } from "./naming";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 
+function isPosixPath(path: string): boolean {
+  return path.startsWith("/");
+}
+
+function lastSeparatorIndex(path: string): number {
+  const slash = path.lastIndexOf("/");
+  return isPosixPath(path) ? slash : Math.max(slash, path.lastIndexOf("\\"));
+}
+
 export function separatorOf(path: string): string {
+  if (isPosixPath(path)) return "/";
   return path.includes("\\") && !path.includes("/") ? "\\" : path.includes("/") ? "/" : "\\";
 }
 
 export function dirnameOf(path: string): string {
-  const cut = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
+  const cut = lastSeparatorIndex(path);
   return cut > 0 ? path.slice(0, cut) : "";
 }
 
 export function basenameOf(path: string): string {
-  const cut = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
+  const cut = lastSeparatorIndex(path);
   return cut >= 0 ? path.slice(cut + 1) : path;
 }
 
@@ -40,7 +50,7 @@ export function pathKey(path: string): string {
 export function numberedPath(path: string, index: number): string {
   if (index < 2) return path;
   const dot = path.lastIndexOf(".");
-  const cut = Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
+  const cut = lastSeparatorIndex(path);
   const hasExtension = dot > cut + 1;
   const base = hasExtension ? path.slice(0, dot) : path;
   const extension = hasExtension ? path.slice(dot) : "";
@@ -72,7 +82,7 @@ export async function defaultOutputDirectory(): Promise<string> {
 }
 
 export function pageFileUrl(path: string, page: number): string {
-  const forward = path.replace(/\\/g, "/");
+  const forward = isPosixPath(path) ? path : path.replace(/\\/g, "/");
   const rooted = forward.startsWith("/") ? forward : `/${forward}`;
   const encoded = rooted
     .split("/")

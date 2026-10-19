@@ -66,7 +66,7 @@ import { hasOpenModal, openModalCount } from "./viewerKeyTarget";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useLiveActiveDocument } from "./useLiveActiveDocument";
 import { useDocumentFileWatch } from "./useDocumentFileWatch";
-import { isFullscreenKey, commandKey } from "@/shared/lib/platform";
+import { FULLSCREEN_SHORTCUT, isFullscreenKey, commandKey } from "@/shared/lib/platform";
 import { PresenterConsole } from "@/features/presenter/PresenterConsole";
 import { PresenterStartGate } from "@/features/presenter/PresenterStartGate";
 import { usePresenterStore } from "@/features/presenter/presenterSession";
@@ -166,7 +166,7 @@ export function ViewerPage() {
         highlights={[
           { icon: Search, label: t("viewer.empty.highlights.search") },
           { icon: Highlighter, label: t("viewer.empty.highlights.annotate") },
-          { icon: Maximize, label: t("viewer.empty.highlights.present") },
+          { icon: Maximize, label: t("viewer.empty.highlights.present", { keys: FULLSCREEN_SHORTCUT }) },
         ]}
         onOpen={() => void pickAndOpen()}
         onOpenPath={(path) => void openPath(path)}

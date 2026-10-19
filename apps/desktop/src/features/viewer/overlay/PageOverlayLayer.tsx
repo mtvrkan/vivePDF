@@ -32,6 +32,7 @@ import { pickLayerHit, type HitKind, type HitSource } from "./hitTest";
 import { imagePreviewKey, isLayerLocked, layerKey } from "./layers";
 import { isDrawingImage } from "./drawing/drawingSource";
 import type { EditorBlockInfo, EditorImageBlock, EditorTextBlock } from "@/types";
+import { basenameOf } from "@/shared/lib/paths";
 
 const MM_TO_PT = 72 / 25.4;
 const MIN_OBJECT_SIZE = 12;
@@ -139,7 +140,7 @@ function ActivePageOverlayLayer({ documentId, pageIndex, width, height }: LayerP
 
   const handleImageDrop = (paths: string[], position: { x: number; y: number }): boolean => {
     if (!editorActive || !document) return false;
-    const files = paths.map((path) => ({ name: path.split(/[\\/]/).pop() ?? path }));
+    const files = paths.map((path) => ({ name: basenameOf(path) }));
     const rect = layerRef.current?.getBoundingClientRect();
     if (!rect) return false;
     const page = visiblePageSize(documentId, pageIndex, width, height);

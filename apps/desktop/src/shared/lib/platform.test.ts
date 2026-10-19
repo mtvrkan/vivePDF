@@ -27,6 +27,8 @@ describe("shortcutLabel", () => {
     expect(mac("Ctrl Shift ↑  /  Ctrl Shift ↓")).toBe("⇧⌘↑  /  ⇧⌘↓");
     expect(mac("Ctrl+{wheel} / Ctrl +/−")).toBe("⌘ {wheel} / ⌘+/−");
     expect(mac("Ctrl ↵")).toBe("⌘↵");
+    expect(mac("Ctrl [  /  Ctrl ]")).toBe("⌘[  /  ⌘]");
+    expect(mac("Ctrl G  /  Ctrl Shift G")).toBe("⌘G  /  ⇧⌘G");
   });
 
   it("maps Enter and arrow names to symbols and spaces word keys", () => {
