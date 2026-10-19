@@ -18,7 +18,10 @@ const modes = ["ocr", "redact", "diff"] as const;
     <div class="lens-side" data-reveal>
       <p class="lead">{c.lead}</p>
       <div class="lens-modes" role="group" aria-label={c.modesLabel}>
-        {modes.map((m, i) => <button type="button" data-m={m} aria-pressed={i === 0 ? "true" : "false"}>{c.modes[m]}</button>)}
+        {modes.map((m, i) => {
+          const [from, to] = c.modes[m].split(" → ");
+          return <button type="button" data-m={m} aria-pressed={i === 0 ? "true" : "false"}><span class="lm-from">{from} →</span> <span class="lm-to">{to}</span></button>;
+        })}
       </div>
       <p class="lens-note" id="lensNote" role="status">{info.ocr[1]}</p>
     </div>

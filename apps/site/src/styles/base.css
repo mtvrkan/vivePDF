@@ -135,6 +135,8 @@ mark{background:none;color:inherit}
   .foot .foot-tags{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
   .foot-tags li{justify-content:center}
   .foot-langs{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr))}
+  .foot-langs span{justify-self:start}
+  .foot-bottom{justify-content:center;text-align:center}
   .sec{padding:var(--s-7) 0}
 }
 @media (max-width:420px){
