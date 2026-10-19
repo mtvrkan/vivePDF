@@ -13,6 +13,7 @@ mod font_source;
 mod grants;
 mod launch;
 mod lens;
+mod mac_fullscreen;
 mod navigation;
 mod path_gate;
 mod presenter;
@@ -106,6 +107,7 @@ pub fn run() {
                     .note_focus(window.label());
             }
             if let tauri::WindowEvent::Destroyed = event {
+                mac_fullscreen::forget(window);
                 use tauri::Manager;
                 window
                     .state::<document_windows::DocumentWindows>()
@@ -128,12 +130,16 @@ pub fn run() {
             app_menu::install(app.handle())?;
             #[cfg(target_os = "macos")]
             quit_guard::install(app.handle());
+            if let Some(main) = tauri::Manager::get_webview_window(app, document_windows::MAIN_WINDOW) {
+                mac_fullscreen::install(&main);
+            }
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             rpc::rpc,
             app_menu::app_menu_configure,
             quit_guard::app_quit_cancelled,
+            mac_fullscreen::mac_fullscreen_state,
             rpc::rpc_cancel,
             sidecar::set_offline_mode,
             grants::grants_adopt,

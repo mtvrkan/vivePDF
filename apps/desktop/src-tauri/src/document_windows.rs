@@ -344,6 +344,7 @@ fn open_window<R: Runtime>(
     let built = built.build();
     match built {
         Ok(window) => {
+            crate::mac_fullscreen::install(&window);
             #[cfg(windows)]
             if let Some(placement) = placement {
                 pin_to_monitor(&window, placement);

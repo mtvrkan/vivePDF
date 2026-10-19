@@ -30,6 +30,10 @@ export function rootFontScale(uiScale: number, uiZoom: number): number {
   return Math.round(uiScale * (nativeZoom === true ? 1 : uiZoom)) / 100;
 }
 
+export function webviewZoomFactor(uiZoom: number): number {
+  return nativeZoom === true ? uiZoom : 1;
+}
+
 export function rootFontSize(uiScale: number, uiZoom: number): string {
   const percent = Math.round(uiScale * (nativeZoom === true ? 1 : uiZoom));
   return percent === 100 ? "" : `${percent}%`;

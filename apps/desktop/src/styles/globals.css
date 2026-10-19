@@ -83,6 +83,10 @@
   --tone-active-strength: 10%;
   --tone-active-ring: 18%;
   --blob-strength: 26%;
+  --traffic-close: hsl(3 100% 67%);
+  --traffic-zoom: hsl(129 67% 47%);
+  --traffic-idle: hsl(0 0% 82%);
+  --traffic-glyph: hsl(0 0% 0% / 0.55);
   color-scheme: light;
 }
 
@@ -164,6 +168,7 @@
   --tone-active-strength: 14%;
   --tone-active-ring: 24%;
   --blob-strength: 11%;
+  --traffic-idle: hsl(0 0% 34%);
   color-scheme: dark;
 }
 
@@ -235,6 +240,10 @@
   --color-destructive-foreground: var(--destructive-foreground);
   --color-success: var(--success);
   --color-warning: var(--warning);
+  --color-traffic-close: var(--traffic-close);
+  --color-traffic-zoom: var(--traffic-zoom);
+  --color-traffic-idle: var(--traffic-idle);
+  --color-traffic-glyph: var(--traffic-glyph);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);

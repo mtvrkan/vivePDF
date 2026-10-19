@@ -3,13 +3,7 @@ import { Copy, Minus, Square, X } from "lucide-react";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
-import { useToastStore } from "@/shared/store/toastStore";
-
-function runWindowCommand(command: () => Promise<void>) {
-  command().catch((error: unknown) => {
-    useToastStore.getState().push("error", error instanceof Error ? error.message : String(error));
-  });
-}
+import { runWindowCommand } from "@/shared/lib/windowCommand";
 
 export function WindowControls() {
   const { t } = useTranslation();

@@ -215,6 +215,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   the window and its minimise, maximise and close buttons work. With Close to tray on, close
   the window during a presentation: the audience window closes too and the tray brings the app
   back out of presentation view.
+- The top bar's minimise, maximise and close buttons still work and a failure still shows a
+  toast; F11 with a document open still presents full screen with no window buttons over it.
 - After saving a support bundle choose "Show in folder" in the toast: Explorer opens with the
   zip selected. Delete a produced PDF in Explorer, then choose "Show in folder" for it in the
   result panel: Explorer opens its folder instead of showing an error.

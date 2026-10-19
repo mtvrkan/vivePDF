@@ -24,6 +24,7 @@ import { useUpdateStore } from "@/shared/store/updateStore";
 import type { Locale } from "@/types";
 import { useShortcutSheetStore } from "@/features/about/shortcutSheetStore";
 import { HeaderMenu, MenuLink, MenuSeparator } from "./HeaderMenu";
+import { MacFullscreenLights } from "./MacFullscreenLights";
 import { WindowControls } from "./WindowControls";
 import { isMac, shortcutLabel } from "@/shared/lib/platform";
 
@@ -34,23 +35,6 @@ const HIDE_QUICK_TOGGLES_LEVEL = 4;
 const ICON_MENUS_LEVEL = 5;
 const HIDE_PRIMARY_NAV_LEVEL = 6;
 const TOOL_MENU_COLUMNS: ToolGroup[][] = [["organize", "fromPdf"], ["improve"], ["toPdf", "edit", "security"]];
-
-function useMacFullscreen(): boolean {
-  const [fullscreen, setFullscreen] = useState(false);
-
-  useEffect(() => {
-    if (!isMac) return;
-    const appWindow = getCurrentWindow();
-    const sync = () => void appWindow.isFullscreen().then(setFullscreen).catch(() => undefined);
-    sync();
-    const unlisten = appWindow.onResized(sync);
-    return () => {
-      void unlisten.then((stop) => stop()).catch(() => undefined);
-    };
-  }, []);
-
-  return fullscreen;
-}
 
 function UpdateBadge({ compact }: { compact: boolean }) {
   const { t } = useTranslation();
@@ -257,7 +241,6 @@ export function TopBar() {
   const language = i18n.language;
   const updateStatus = useUpdateStore((state) => state.status);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const macFullscreen = useMacFullscreen();
 
   useEffect(() => {
     const el = barRef.current;
@@ -307,8 +290,9 @@ export function TopBar() {
     <header
       ref={barRef}
       data-tauri-drag-region
-      className={cn("glass-flat flex h-topbar select-none items-center gap-1.5 overflow-hidden border-b", isMac ? cn("pr-3", macFullscreen ? "pl-3" : "pl-traffic-lights") : "ps-3 pe-0")}
+      className={cn("glass-flat relative flex h-topbar select-none items-center gap-1.5 overflow-hidden border-b", isMac ? "pl-traffic-lights pr-3" : "ps-3 pe-0")}
     >
+      {isMac ? <MacFullscreenLights /> : null}
       <Link to="/" aria-label={t("app.name")} className="me-2 flex h-8 shrink-0 items-center gap-2 rounded-lg px-1.5 outline-none focus-visible:ring-2 focus-visible:ring-ring">
         <Logo size={22} />
         {compactNav ? null : (

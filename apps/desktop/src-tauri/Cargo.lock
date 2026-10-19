@@ -5036,11 +5036,13 @@ checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
 name = "vivepdf"
 version = "0.3.0"
 dependencies = [
+ "block2",
  "keyring",
  "keyring-core",
  "notify",
  "objc2",
  "objc2-app-kit",
+ "objc2-foundation",
  "serde",
  "serde_json",
  "sha2 0.10.9",
