@@ -1,0 +1,26 @@
+name: Feature request
+description: Suggest something vivePDF could do.
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Open questions and early ideas fit better in [Discussions](https://github.com/mtvrkan/vivePDF/discussions).
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you are trying to do
+      description: The job or situation where vivePDF falls short today.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would help
+      description: How you would like it to work.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Other ways you tried

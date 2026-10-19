@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Question or idea
+    url: https://github.com/mtvrkan/vivePDF/discussions
+    about: Ask how something works or share an idea in Discussions.
+  - name: Security problem
+    url: https://github.com/mtvrkan/vivePDF/security/advisories/new
+    about: Report a vulnerability privately instead of opening a public issue.
+  - name: Documentation
+    url: https://vivepdf.com/en/docs/
+    about: Guides for installing, converting, OCR, signing, Studio and more.

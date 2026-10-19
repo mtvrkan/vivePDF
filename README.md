@@ -8,7 +8,9 @@
 
 An open-source, offline PDF studio for Windows and macOS. View, edit, convert, OCR, sign and present PDFs; your files never leave your machine.
 
-[Website](https://vivepdf.com/en/) · [Documentation](https://vivepdf.com/en/docs/) · [Download](https://github.com/mtvrkan/vivePDF/releases/latest) · [Release notes](https://vivepdf.com/en/docs/release-notes/) · [Türkçe](https://vivepdf.com/)
+**English** · [Türkçe](README.tr.md)
+
+[Website](https://vivepdf.com/en/) · [Documentation](https://vivepdf.com/en/docs/) · [Download](https://github.com/mtvrkan/vivePDF/releases/latest) · [Release notes](https://vivepdf.com/en/docs/release-notes/) · [Discussions](https://github.com/mtvrkan/vivePDF/discussions)
 
 [![Latest release](https://img.shields.io/github/v/release/mtvrkan/vivePDF?label=release)](https://github.com/mtvrkan/vivePDF/releases/latest)
 [![License: AGPL-3.0](https://img.shields.io/github/license/mtvrkan/vivePDF)](LICENSE)
@@ -29,7 +31,7 @@ An open-source, offline PDF studio for Windows and macOS. View, edit, convert, O
 - **Viewer** — tabs and tab groups across windows, search, outline, thumbnails, layers, comments and highlights; large files (a 244 MB scan) open in pieces instead of loading whole.
 - **Edit** — text, images, shapes, tables, charts, LaTeX formulas, function graphs, molecules, flowcharts, questions and answer keys, all saved as real PDF content.
 - **Pages** — reorder, rotate, delete, duplicate, insert blank or lined paper or pages from other PDFs, split, merge, page labels, duplex printing order.
-- **Convert** — PDF to Word, Excel, PowerPoint, Markdown and images; Office files, e-books, e-mails, images and web pages to PDF; PDF/A archiving and print preflight.
+- **Convert** — PDF to Word, Excel, PowerPoint, Markdown and images; Office files, e-books, e-mails, images and web pages to PDF; PDF/A archiving and print preflight. Word, Excel and PowerPoint files open straight from **Open With** in Finder and Explorer.
 - **OCR and scans** — searchable PDFs from scans in many languages, straightening and clean-up, scanning straight from a scanner.
 - **Security** — passwords, permissions, redaction, metadata clean-up, digital signatures and certificate checks.
 - **Forms and codes** — fill and build forms, QR and barcodes, optical answer sheets that grade themselves.
@@ -42,7 +44,7 @@ An open-source, offline PDF studio for Windows and macOS. View, edit, convert, O
 
 **Windows 10 or 11 (64-bit):** download `vivePDF_<version>_x64-setup.exe` from [Releases](https://github.com/mtvrkan/vivePDF/releases/latest) and run it. The installer carries no code signature, so Windows SmartScreen shows "Windows protected your PC" the first time: click **More info** → **Run anyway**. Office conversions use LibreOffice, which comes with the installer and is set up without internet on first start (about 900 MB on disk; **Settings › Tools** can remove or reinstall it).
 
-**macOS 14 Sonoma or later (Apple silicon):** download `vivePDF_<version>_aarch64.dmg` from [Releases](https://github.com/mtvrkan/vivePDF/releases/latest), open it and drag vivePDF to Applications. The app is not notarised by Apple, so Gatekeeper blocks the first start: open **System Settings › Privacy & Security** and click **Open Anyway** next to the vivePDF message, or run `xattr -dr com.apple.quarantine /Applications/vivePDF.app`. Office conversions use a LibreOffice installed in Applications (or downloaded by the app on request); scanning uses SANE (`brew install sane-backends`).
+**macOS 14 Sonoma or later (Apple silicon):** download `vivePDF_<version>_aarch64.dmg` from [Releases](https://github.com/mtvrkan/vivePDF/releases/latest), open it and drag vivePDF to Applications. The app is not notarised by Apple, so Gatekeeper blocks the first start: open **System Settings › Privacy & Security** and click **Open Anyway** next to the vivePDF message, or run `xattr -dr com.apple.quarantine /Applications/vivePDF.app`. Office conversions use a LibreOffice installed in Applications; without one, vivePDF offers to download and set it up on the first Office file; scanning uses SANE (`brew install sane-backends`).
 
 **Linux:** build from source (below).
 
@@ -68,7 +70,7 @@ The site at https://vivepdf.com lives in `apps/site` (Astro, Turkish at `/`, Eng
 
 ## Contributing and support
 
-Bug reports and ideas go to [Issues](https://github.com/mtvrkan/vivePDF/issues); **Help › Report a bug** in the app opens a prefilled issue and shows exactly what it includes before anything leaves your computer. Pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md). Security problems: please follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
+Bug reports go to [Issues](https://github.com/mtvrkan/vivePDF/issues), questions and ideas to [Discussions](https://github.com/mtvrkan/vivePDF/discussions); **Help › Report a bug** in the app opens a prefilled issue and shows exactly what it includes before anything leaves your computer. Pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md); the community rules are in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Security problems: please follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
 ## License
 

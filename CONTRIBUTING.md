@@ -2,9 +2,11 @@
 
 Thank you for helping. Bug reports, ideas, translations, documentation fixes and code are all welcome.
 
+Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Reporting bugs and ideas
 
-Use [Issues](https://github.com/mtvrkan/vivePDF/issues). **Help › Report a bug** in the app fills in the version, the system and, if you allow it, diagnostic details. A small sample file that shows the problem makes a fix much faster; remove anything personal from it first. Security problems go through [SECURITY.md](SECURITY.md), not public issues.
+Bugs go to [Issues](https://github.com/mtvrkan/vivePDF/issues), where the bug report form asks for what a fix needs; questions and early ideas go to [Discussions](https://github.com/mtvrkan/vivePDF/discussions). **Help › Report a bug** in the app fills in the version, the system and, if you allow it, diagnostic details. A small sample file that shows the problem makes a fix much faster; remove anything personal from it first. Security problems go through [SECURITY.md](SECURITY.md), not public issues.
 
 ## Setting up
 

@@ -1,0 +1,53 @@
+name: Bug report
+description: Something in vivePDF does not work as it should.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Help › Report a bug** in the app fills in the version and system for you and can add diagnostic details. Remove anything personal from sample files before attaching them. Security problems go through [SECURITY.md](https://github.com/mtvrkan/vivePDF/blob/main/SECURITY.md), not public issues.
+  - type: input
+    id: version
+    attributes:
+      label: vivePDF version
+      description: Shown under Help › About.
+      placeholder: "0.4.0"
+    validations:
+      required: true
+  - type: dropdown
+    id: system
+    attributes:
+      label: Operating system
+      options:
+        - Windows 11
+        - Windows 10
+        - macOS (Apple silicon)
+        - Linux (built from source)
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, including any error message.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open a PDF with ...
+        2. Choose ...
+        3. ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+  - type: textarea
+    id: files
+    attributes:
+      label: Sample file, screenshots or support bundle
+      description: Drag files here. A small file that shows the problem makes a fix much faster.
