@@ -11,6 +11,7 @@ import { clampFormulaSize, DEFAULT_FORMULA_COLOR, formulaDataUrl, MAX_FORMULA_SI
 import { MatrixBuilder } from "./MatrixBuilder";
 import { FORMULA_TEMPLATES, insertAt } from "./templates";
 import type { TypesetResult } from "./mathjaxEngine";
+import { commandKey } from "@/shared/lib/platform";
 
 export type FormulaDraft = { latex: string; color: string; size: number };
 export type FormulaSubmit = { formula: FormulaSource; size: number };
@@ -145,7 +146,7 @@ export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows
   };
 
   const onKeyDown = (event: ReactKeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+    if (event.key === "Enter" && commandKey(event)) {
       event.preventDefault();
       submit();
     }

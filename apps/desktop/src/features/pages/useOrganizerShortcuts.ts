@@ -3,6 +3,7 @@ import { isBrowserShortcut } from "@/shared/lib/browserKeys";
 import type { GridBox } from "./gridGeometry";
 import { useOrganizerStore } from "./organizerStore";
 import type { OrganizerEdits } from "./useOrganizerEdits";
+import { commandKey } from "@/shared/lib/platform";
 
 export type ShortcutCommands = {
   openRange: () => void;
@@ -58,7 +59,7 @@ export function useOrganizerShortcuts({ enabled, layout, edits, commands }: UseO
       const { edits: current, commands: run, layout: grid } = latest.current;
       const { undo, redo, select } = useOrganizerStore.getState();
       const key = event.key.toLowerCase();
-      const mod = event.ctrlKey || event.metaKey;
+      const mod = commandKey(event);
       if (mod && key === "z") {
         event.preventDefault();
         if (event.shiftKey) redo();

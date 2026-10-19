@@ -24,6 +24,7 @@ import { PlacementHint } from "./PlacementHint";
 import { boardPageSize } from "./measure";
 import { drawStroke, readableOnDark } from "./strokes";
 import { boardInk, eraserCursor, highlighterCursor, penCursor } from "./toolCursor";
+import { commandKey } from "@/shared/lib/platform";
 
 const HINT_VISIBLE_MS = 4000;
 const BOARD_TOOLS = new Set(["pen", "highlighter", "shape", "eraser"]);
@@ -239,7 +240,7 @@ function Board({ board, contained, hint, remote, controls }: { board: BoardMode;
         event.preventDefault();
         event.stopPropagation();
       };
-      if (event.ctrlKey || event.metaKey) {
+      if (commandKey(event)) {
         if (event.altKey) return;
         if (letter === "z") {
           consume();
@@ -303,7 +304,7 @@ function Board({ board, contained, hint, remote, controls }: { board: BoardMode;
       placeAt(point);
       return;
     }
-    const additive = event.shiftKey || event.ctrlKey || event.metaKey;
+    const additive = event.shiftKey || commandKey(event);
     const hit = itemAt(point);
     const current = selectionRef.current;
     if (hit && additive) {

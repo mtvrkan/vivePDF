@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ariaShortcut, hasModKey, isFullscreenKey, shortcutLabel } from "./platform";
+import { ariaShortcut, hasModKey, commandKey, isFullscreenKey, shortcutLabel } from "./platform";
 
 const mac = (text: string) => shortcutLabel(text, true);
 
@@ -74,5 +74,13 @@ describe("isFullscreenKey", () => {
     expect(isFullscreenKey({ key: "f", ctrlKey: true, metaKey: true }, false)).toBe(false);
     expect(isFullscreenKey({ key: "f", ctrlKey: true, metaKey: true }, true)).toBe(true);
     expect(isFullscreenKey({ key: "f", ctrlKey: false, metaKey: true }, true)).toBe(false);
+  });
+});
+
+describe("commandKey", () => {
+  it("takes Command alone on macOS so Control keeps its text-editing and right-click meaning", () => {
+    expect(commandKey({ ctrlKey: false, metaKey: true }, true)).toBe(true);
+    expect(commandKey({ ctrlKey: true, metaKey: false }, true)).toBe(false);
+    expect(commandKey({ ctrlKey: true, metaKey: false }, false)).toBe(true);
   });
 });

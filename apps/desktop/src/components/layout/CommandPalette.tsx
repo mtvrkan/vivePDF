@@ -35,7 +35,7 @@ import { useShortcutSheetStore } from "@/features/about/shortcutSheetStore";
 import { useViewerJumpStore } from "@/shared/store/viewerJumpStore";
 import { readSession } from "@/shared/session/sessionStore";
 import { useRestoreSession } from "@/shared/session/useRestoreSession";
-import { shortcutLabel } from "@/shared/lib/platform";
+import { shortcutLabel, commandKey } from "@/shared/lib/platform";
 
 const MAX_RESULTS = 40;
 const PAGE_STEP = 5;
@@ -136,7 +136,7 @@ export function CommandPalette() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+      if (commandKey(event) && event.key.toLowerCase() === "k") {
         event.preventDefault();
         toggle();
       }
@@ -375,7 +375,7 @@ export function CommandPalette() {
     } else if (event.key === "Enter") {
       event.preventDefault();
       if (!activeEntry) return;
-      if ((event.ctrlKey || event.metaKey) && activeEntry.secondaryRun) runSecondary(activeEntry);
+      if (commandKey(event) && activeEntry.secondaryRun) runSecondary(activeEntry);
       else runPrimary(activeEntry);
     }
   };

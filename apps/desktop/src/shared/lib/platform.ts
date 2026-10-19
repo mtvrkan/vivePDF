@@ -42,6 +42,10 @@ export function hasModKey(event: ModifierEvent, mac = isMac): boolean {
   return event.ctrlKey || (mac && event.metaKey);
 }
 
+export function commandKey(event: ModifierEvent, mac = isMac): boolean {
+  return mac ? event.metaKey : event.ctrlKey || event.metaKey;
+}
+
 export function isFullscreenKey(event: FullscreenKeyEvent, mac = isMac): boolean {
   if (event.key === "F11") return true;
   return mac && event.ctrlKey && event.metaKey && !event.altKey && (event.key.toLowerCase() === "f" || event.code === "KeyF");

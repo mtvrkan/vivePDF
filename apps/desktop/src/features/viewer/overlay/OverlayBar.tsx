@@ -45,6 +45,7 @@ import { isEditingMode, PAGE_TOOLS, switchOverlayMode } from "./editorModes";
 import { isPendingChange, keepsEditsOnLeave } from "./pending";
 import { hasMixedStyles, toEditorRun } from "./runs";
 import { isLayerLocked } from "./layers";
+import { commandKey } from "@/shared/lib/platform";
 
 const MM_TO_PT = 72 / 25.4;
 const NUDGE_BURST_MS = 600;
@@ -118,7 +119,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
     const onKeyDown = (event: KeyboardEvent) => {
       if (isTypingTarget(event.target) || window.document.querySelector("[role=menu], [role=dialog], [role=listbox]")) return;
       const state = useViewerOverlayStore.getState();
-      const undo = event.key === "Backspace" || event.key === "Delete" || ((event.ctrlKey || event.metaKey) && !event.shiftKey && event.key.toLowerCase() === "z");
+      const undo = event.key === "Backspace" || event.key === "Delete" || (commandKey(event) && !event.shiftKey && event.key.toLowerCase() === "z");
       if (event.key === "Escape" ? !state.measure : !undo || (!state.measure && state.measurements.length === 0)) return;
       event.preventDefault();
       event.stopPropagation();
@@ -134,7 +135,7 @@ export function OverlayBar({ documentId }: { documentId: string }) {
       if (!state.mode || !EDITOR_MODES.includes(state.mode) || state.drawingEditor) return;
       const target = event.target as HTMLElement | null;
       const typing = !!target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable);
-      const modifier = event.ctrlKey || event.metaKey;
+      const modifier = commandKey(event);
       const key = event.key.toLowerCase();
       if (modifier && key === "s") {
         event.preventDefault();

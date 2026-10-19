@@ -1,3 +1,5 @@
+import { commandKey } from "@/shared/lib/platform";
+
 export type ScrollAxis = { position: number; size: number; viewport: number };
 
 export function scrollDistance(pixelsPerSecond: number, elapsedMs: number): number {
@@ -16,5 +18,5 @@ export function splitWhole(distance: number): { whole: number; rest: number } {
 }
 
 export function isAutoScrollToggle(event: Pick<KeyboardEvent, "ctrlKey" | "metaKey" | "shiftKey" | "altKey" | "key">): boolean {
-  return (event.ctrlKey || event.metaKey) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "h";
+  return commandKey(event) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "h";
 }

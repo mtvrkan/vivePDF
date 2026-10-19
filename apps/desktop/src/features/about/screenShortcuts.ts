@@ -2,6 +2,7 @@ import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { SHORTCUT_GROUPS, type ShortcutGroup } from "./shortcutGroups";
 import type { StudioScreen } from "./shortcutSheetStore";
 
+import { commandKey } from "@/shared/lib/platform";
 export const SHORTCUT_SCREENS = ["viewer", "presentation", "pages", "studioDesign", "studioDocument", "general"] as const;
 export type ShortcutScreen = (typeof SHORTCUT_SCREENS)[number];
 
@@ -31,5 +32,5 @@ export function isShortcutSheetKey(event: KeyboardEvent): boolean {
   if (event.defaultPrevented || event.repeat || event.altKey) return false;
   if (event.key === "F1") return !event.ctrlKey && !event.metaKey && !event.shiftKey;
   const slash = event.key === "/" || event.code === "NumpadDivide";
-  return slash && (event.ctrlKey || event.metaKey) && !isTypingTarget(event.target);
+  return slash && commandKey(event) && !isTypingTarget(event.target);
 }

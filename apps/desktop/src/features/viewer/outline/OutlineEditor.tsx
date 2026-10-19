@@ -31,6 +31,7 @@ import {
   renameBookmark,
   rowsFromItems,
 } from "./outlineEdit";
+import { isMac } from "@/shared/lib/platform";
 
 const ISSUE_MESSAGES: Record<BookmarkIssue, string> = {
   levels: "tools.edit.bookmarks.invalidLevels",
@@ -205,6 +206,10 @@ export function OutlineEditor({ documentId, pageCount, currentPage, reloadKey, o
           startRename(current);
           return true;
         case "Delete":
+          remove(current);
+          return true;
+        case "Backspace":
+          if (!isMac) return false;
           remove(current);
           return true;
         case "Tab":

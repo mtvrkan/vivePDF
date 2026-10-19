@@ -27,6 +27,7 @@ import { commentThreads } from "./commentThreads";
 import { useDocumentSave } from "./useDocumentSave";
 import { useOpenPdf } from "./useOpenPdf";
 import { useUnsavedMarks } from "./useUnsavedMarks";
+import { commandKey } from "@/shared/lib/platform";
 
 const ALL = "__all";
 const NO_STATUS = "__none";
@@ -58,7 +59,7 @@ function ReplyBox({ label, onSubmit, onCancel }: { label: string; onSubmit: (con
           if (event.key === "Escape") {
             event.stopPropagation();
             onCancel();
-          } else if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+          } else if (event.key === "Enter" && commandKey(event)) {
             event.preventDefault();
             submit();
           }

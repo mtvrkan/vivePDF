@@ -66,7 +66,7 @@ import { hasOpenModal, openModalCount } from "./viewerKeyTarget";
 import { useCloseDocuments } from "./useCloseDocuments";
 import { useLiveActiveDocument } from "./useLiveActiveDocument";
 import { useDocumentFileWatch } from "./useDocumentFileWatch";
-import { isFullscreenKey } from "@/shared/lib/platform";
+import { isFullscreenKey, commandKey } from "@/shared/lib/platform";
 import { PresenterConsole } from "@/features/presenter/PresenterConsole";
 import { PresenterStartGate } from "@/features/presenter/PresenterStartGate";
 import { usePresenterStore } from "@/features/presenter/presenterSession";
@@ -125,7 +125,7 @@ export function ViewerPage() {
         else void exitImmersive();
         return;
       }
-      if (!(event.ctrlKey || event.metaKey)) return;
+      if (!commandKey(event)) return;
       const key = event.key.toLowerCase();
       if (key === "f") {
         event.preventDefault();

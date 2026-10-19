@@ -1,5 +1,6 @@
 import { getCurrentWebview } from "@tauri-apps/api/webview";
 import { zoomKey } from "./shortcutKeys";
+import { commandKey } from "./platform";
 
 export const UI_ZOOMS = [0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2] as const;
 export type UiZoom = (typeof UI_ZOOMS)[number];
@@ -12,16 +13,8 @@ type ScaledRoot = { style: { fontSize: string } };
 let nativeZoom: boolean | null = null;
 let sequence = 0;
 
-function alternateUiZoomShortcut(event: ShortcutKey): UiZoomShortcut | null {
-  if (event.key === "+" || event.key === "=") return "in";
-  if (event.key === "-") return "out";
-  if (event.key === "0") return "reset";
-  return null;
-}
-
 export function uiZoomShortcutFor(event: ShortcutKey): UiZoomShortcut | null {
-  if (!(event.ctrlKey || event.metaKey)) return null;
-  if (event.altKey) return alternateUiZoomShortcut(event);
+  if (!commandKey(event)) return null;
   const zoom = zoomKey(event);
   if (zoom === "zero") return "reset";
   return zoom;

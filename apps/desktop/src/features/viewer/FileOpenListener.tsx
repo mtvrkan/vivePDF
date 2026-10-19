@@ -17,6 +17,7 @@ import { isTypingTarget } from "@/shared/lib/typingTarget";
 import { useOpenPdf } from "./useOpenPdf";
 import { placeDroppedTabs, useTabDropListener } from "./tabDrop";
 
+import { commandKey } from "@/shared/lib/platform";
 const MULTI_FILE_TOOLS = new Set(["merge", "batch", "rename"]);
 const LAUNCH_BATCH_MS = 900;
 
@@ -134,13 +135,13 @@ export function FileOpenListener() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "o") {
+      if (commandKey(event) && event.key.toLowerCase() === "o") {
         event.preventDefault();
         void pickRef.current();
-      } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "v" && !isTypingTarget(event.target)) {
+      } else if (commandKey(event) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "v" && !isTypingTarget(event.target)) {
         event.preventDefault();
         void clipboardRef.current();
-      } else if ((event.ctrlKey || event.metaKey) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "n") {
+      } else if (commandKey(event) && event.shiftKey && !event.altKey && event.key.toLowerCase() === "n") {
         event.preventDefault();
         void openWindowRef.current();
       }

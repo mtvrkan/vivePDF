@@ -1,4 +1,5 @@
 import type { OrganizerTile } from "@/types";
+import { commandKey } from "@/shared/lib/platform";
 
 export type ClickMode = "replace" | "toggle" | "range" | "rangeAdd";
 
@@ -6,7 +7,7 @@ export type ClickModifiers = { shiftKey: boolean; ctrlKey: boolean; metaKey: boo
 
 export function tileClickMode(event: ClickModifiers, additive: boolean): ClickMode {
   if (event.shiftKey) return additive ? "rangeAdd" : "range";
-  if (additive || event.ctrlKey || event.metaKey) return "toggle";
+  if (additive || commandKey(event)) return "toggle";
   return "replace";
 }
 

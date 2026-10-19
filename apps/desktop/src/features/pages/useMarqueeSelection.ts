@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type RefObject } from "react";
 import { createLiveValue } from "./liveValue";
+import { commandKey } from "@/shared/lib/platform";
 
 const START_THRESHOLD = 4;
 const EDGE_ZONE = 40;
@@ -32,7 +33,7 @@ type UseMarqueeSelectionOptions = {
 };
 
 export function marqueeModeOf(event: { ctrlKey: boolean; metaKey: boolean; shiftKey: boolean }): MarqueeMode {
-  if (event.ctrlKey || event.metaKey) return "toggle";
+  if (commandKey(event)) return "toggle";
   if (event.shiftKey) return "add";
   return "replace";
 }

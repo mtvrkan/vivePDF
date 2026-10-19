@@ -1,3 +1,5 @@
+import { FIND_REPLACE_KEYS } from "@/features/studio/findShortcut";
+
 export type ShortcutItem = { keys: string; labelKey: string };
 export type ShortcutGroup = { id: string; items: ShortcutItem[] };
 
@@ -24,7 +26,7 @@ export const STUDIO_SHORTCUT_GROUPS: ShortcutGroup[] = [
       item("Ctrl D", "duplicate"),
       item("Delete  /  Backspace", "delete"),
       item("Ctrl A", "selectAll"),
-      item("Ctrl F  /  Ctrl H", "findReplace"),
+      item(FIND_REPLACE_KEYS, "findReplace"),
       item("Enter  /  Double-click", "cropImage"),
       item("Esc", "escape"),
     ],

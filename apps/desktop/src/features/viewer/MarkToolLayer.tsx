@@ -6,6 +6,7 @@ import { annotationStateOf } from "./annotationState";
 import { eraseAlong, inkBounds, sameStrokes } from "./inkErase";
 import { areaBetween, marksInArea, useMarkToolMode, useMarkToolStore, type MarkToolMode } from "./markArea";
 
+import { commandKey } from "@/shared/lib/platform";
 const CLICK_LIMIT_PX = 4;
 const ERASE_STEP_PX = 2;
 const PAGE_EVENTS = ["mousedown", "mousemove", "mouseup", "click", "dblclick"] as const;
@@ -70,7 +71,7 @@ function ActiveMarkTool({ documentId, pageIndex, mode }: { documentId: string; p
       if (event.button !== 0) return;
       event.preventDefault();
       layer.setPointerCapture(event.pointerId);
-      current = { mode, path: [pointOf(event)], additive: event.shiftKey || event.ctrlKey || event.metaKey };
+      current = { mode, path: [pointOf(event)], additive: event.shiftKey || commandKey(event) };
       setGesture(current);
     };
     const onPointerMove = (event: PointerEvent) => {

@@ -25,6 +25,7 @@ import { SplitPasswordForm } from "./SplitPasswordForm";
 import { useRestoredSplitPage } from "./useRestoredSplitPage";
 import { useSplitDocument } from "./useSplitDocument";
 import { useSyncedScroll } from "./useSyncedScroll";
+import { commandKey } from "@/shared/lib/platform";
 
 const SEARCH_DEBOUNCE_MS = 250;
 
@@ -130,7 +131,7 @@ function ReadPaneDocument({ documentId, primaryId, syncScroll, path, password, p
       inPane = event.target instanceof Node && (hostRef.current?.contains(event.target) ?? false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!inPane || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "c" || isTypingTarget(event.target)) return;
+      if (!inPane || !commandKey(event) || event.key.toLowerCase() !== "c" || isTypingTarget(event.target)) return;
       const scope = selection.forDocument(documentId);
       if (!scope.getState().selection) return;
       event.preventDefault();

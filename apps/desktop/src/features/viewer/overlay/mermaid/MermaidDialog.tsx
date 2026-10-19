@@ -6,7 +6,7 @@ import { Dialog } from "@/components/shared/Dialog";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { SelectInput, TextArea } from "@/components/tool/form";
 import { cn } from "@/shared/lib/cn";
-import { shortcutLabel } from "@/shared/lib/platform";
+import { shortcutLabel, commandKey } from "@/shared/lib/platform";
 import { shapeDataUrl } from "../shapes/render";
 import type { MermaidDrawing } from "./mermaidEngine";
 import { cleanMermaid, MAX_MERMAID_CHARS, MERMAID_TEMPLATES, MERMAID_THEMES, mermaidTitle, type MermaidSettings, type MermaidTheme } from "./mermaidModel";
@@ -83,7 +83,7 @@ export function MermaidDialog({ initial, updating, onClose, onSubmit }: { initia
   };
 
   const onKeyDown = (event: ReactKeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+    if (event.key === "Enter" && commandKey(event)) {
       event.preventDefault();
       submit();
     }

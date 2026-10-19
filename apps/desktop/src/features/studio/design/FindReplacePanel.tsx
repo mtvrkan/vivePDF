@@ -6,7 +6,7 @@ import { TextInput } from "@/components/tool/form";
 import { findMatches, replaceMatches, type TextMatch } from "./findReplace";
 import { useStudioStore } from "./studioStore";
 import { textEditorBridge } from "./textEditorBridge";
-import { shortcutLabel } from "@/shared/lib/platform";
+import { shortcutLabel, commandKey } from "@/shared/lib/platform";
 
 export type FindMode = { replace: boolean; nonce: number };
 
@@ -116,7 +116,7 @@ export function FindReplacePanel({ mode, language, onClose }: { mode: FindMode; 
             onKeyDown={(event) => {
               if (event.key !== "Enter") return;
               event.preventDefault();
-              if (event.ctrlKey || event.metaKey) replaceAll();
+              if (commandKey(event)) replaceAll();
               else replaceOne();
             }}
           />

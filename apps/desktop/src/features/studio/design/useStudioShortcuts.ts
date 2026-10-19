@@ -23,6 +23,8 @@ import { useViewPrefs, type StudioViewOption } from "./viewPrefs";
 import { isGraphic } from "../graphics/graphicData";
 import { openGraphic } from "../graphics/graphicEditor";
 
+import { commandKey } from "@/shared/lib/platform";
+import { findShortcut } from "@/features/studio/findShortcut";
 const NUDGE = fromMm(0.5);
 const NUDGE_FAR = fromMm(5);
 const ZOOM_STEP = 1.25;
@@ -38,7 +40,7 @@ const FLIP_KEYS: Record<string, FlipAxis> = { h: "horizontal", v: "vertical" };
 const LIST_DIGITS: Record<number, StudioListKind> = { 7: "decimal", 8: "bullet" };
 
 function styleKey(event: KeyboardEvent): "copy" | "paste" | null {
-  if (!(event.ctrlKey || event.metaKey) || !event.altKey || event.shiftKey) return null;
+  if (!commandKey(event) || !event.altKey || event.shiftKey) return null;
   if (event.code === "KeyC") return "copy";
   if (event.code === "KeyV") return "paste";
   return null;
@@ -72,7 +74,7 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
       const state = useStudioStore.getState();
       if (!state.design) return;
       const handlers = latest.current;
-      const mod = (event.ctrlKey || event.metaKey) && !event.altKey;
+      const mod = commandKey(event) && !event.altKey;
       const letter = shortcutLetter(event);
       const run = (action: () => void) => {
         event.preventDefault();
@@ -95,7 +97,8 @@ export function useStudioShortcuts(onExport: () => void, onSave: (saveAs: boolea
         onPrint();
       });
       const find = handlers.actions.onFind;
-      if (mod && !event.shiftKey && (letter === "f" || letter === "h") && find) return run(() => find(letter === "h"));
+      const search = findShortcut(event, letter);
+      if (search && find) return run(() => find(search === "replace"));
       if (isTextEntryTarget(event.target) || isCropping()) return;
       const style = styleKey(event);
       if (style && state.selection.length) return run(style === "copy" ? copyStyle : pasteStyle);

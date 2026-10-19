@@ -1,4 +1,5 @@
 import { zoomKey } from "@/shared/lib/shortcutKeys";
+import { commandKey } from "@/shared/lib/platform";
 
 export type ZoomShortcut = "in" | "out" | "actualSize" | "fitWidth" | "fitPage";
 
@@ -13,7 +14,7 @@ const WHEEL_SENSITIVITY = 0.0018;
 const WHEEL_MAX_STEP = 0.5;
 
 export function zoomShortcutFor(event: ShortcutKey): ZoomShortcut | null {
-  if (!(event.ctrlKey || event.metaKey) || event.altKey) return null;
+  if (!commandKey(event) || event.altKey) return null;
   const zoom = zoomKey(event);
   if (zoom === "in" || zoom === "out") return zoom;
   if (zoom === "zero") return "actualSize";

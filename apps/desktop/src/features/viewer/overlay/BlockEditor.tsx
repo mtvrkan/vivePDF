@@ -3,6 +3,7 @@ import { useViewerOverlayStore, type BlockRun, type RunStyle } from "@/shared/st
 import { caretRangeAt, placeCaretAtOffsets, selectionOffsets } from "./caret";
 import { mergeRuns, rangeIsBold, rangeIsItalic, runStyleAttr, runsFromDom, setStyleRange, styleOf, textOf } from "./runs";
 import type { RunStyler } from "./runRender";
+import { commandKey } from "@/shared/lib/platform";
 
 type BlockEditorProps = {
   id: string;
@@ -119,7 +120,7 @@ export function BlockEditor({ id, runs, fallbackStyle, runStyle, height, scale, 
       commit();
       return;
     }
-    const withModifier = event.ctrlKey || event.metaKey;
+    const withModifier = commandKey(event);
     if (!withModifier) return;
     const key = event.key.toLowerCase();
     if (key === "b") {

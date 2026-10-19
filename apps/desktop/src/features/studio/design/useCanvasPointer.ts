@@ -14,6 +14,7 @@ import { currentPage, useStudioStore } from "./studioStore";
 import { useSpacePan } from "./useSpacePan";
 import { useViewPrefs } from "./viewPrefs";
 
+import { commandKey } from "@/shared/lib/platform";
 const DRAG_THRESHOLD = 3;
 const SNAP_PIXELS = 6;
 
@@ -165,7 +166,7 @@ export function useCanvasPointer({ viewportRef, pageRef, page, zoom, number, deg
     const hit = target.closest<HTMLElement>("[data-element-id]")?.dataset.elementId;
     if (state.editingId && hit !== state.editingId) state.setEditing(null);
     if (hit) {
-      if ((event.ctrlKey || event.metaKey) && !event.shiftKey) {
+      if (commandKey(event) && !event.shiftKey) {
         const stack = [...new Set(document.elementsFromPoint(event.clientX, event.clientY).map((node) => node.closest<HTMLElement>("[data-element-id]")?.dataset.elementId).filter((id): id is string => Boolean(id)))];
         const index = stack.findIndex((id) => state.selection.includes(id));
         state.select([stack[index >= 0 ? (index + 1) % stack.length : 0] ?? hit]);

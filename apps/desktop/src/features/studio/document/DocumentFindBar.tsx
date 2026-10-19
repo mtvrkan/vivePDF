@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { IconButton } from "@/components/shared/IconButton";
 import { TextInput } from "@/components/tool/form";
-import { shortcutLabel } from "@/shared/lib/platform";
+import { shortcutLabel, commandKey } from "@/shared/lib/platform";
 import { findState, replaceAllMatches, replaceMatch, revealMatch, setFind } from "./findInDocument";
 
 export type DocumentFindMode = { replace: boolean; nonce: number };
@@ -124,7 +124,7 @@ export function DocumentFindBar({ editor, mode, language, onClose }: { editor: E
             onKeyDown={(event) => {
               if (event.key !== "Enter") return;
               event.preventDefault();
-              if (event.ctrlKey || event.metaKey) replaceAll();
+              if (commandKey(event)) replaceAll();
               else replaceOne();
             }}
           />

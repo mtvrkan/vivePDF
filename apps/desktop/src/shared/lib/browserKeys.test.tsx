@@ -55,8 +55,23 @@ describe("isBrowserShortcut on macOS", () => {
   it("lets Command+H reach the system Hide command", () => {
     expect(isBrowserShortcut(key({ key: "h", metaKey: true }), false, true)).toBe(false);
     expect(isBrowserShortcut(key({ key: "h", metaKey: true }), false, false)).toBe(true);
-    expect(isBrowserShortcut(key({ key: "h", ctrlKey: true }), false, true)).toBe(true);
+    expect(isBrowserShortcut(key({ key: "h", ctrlKey: true }), false, true)).toBe(false);
     expect(isBrowserShortcut(key({ key: "H", metaKey: true, shiftKey: true }), false, true)).toBe(true);
+  });
+
+  it("leaves Control text-editing keys and Option word jumps to text fields", () => {
+    const editing = ["f", "b", "n", "p", "h", "t"].map((letter) => key({ key: letter, ctrlKey: true }));
+    const wordJumps = [key({ key: "ArrowLeft", altKey: true }), key({ key: "ArrowRight", altKey: true, shiftKey: true })];
+
+    const caught = [...editing, ...wordJumps].filter((event) => isBrowserShortcut(event, false, true));
+
+    expect(caught).toEqual([]);
+    expect(isBrowserShortcut(key({ key: "ArrowLeft", altKey: true }), false, false)).toBe(true);
+  });
+
+  it("lets Control Command F reach the Full Screen menu item", () => {
+    expect(isBrowserShortcut(key({ key: "f", ctrlKey: true, metaKey: true }), false, true)).toBe(false);
+    expect(isBrowserShortcut(key({ key: "f", metaKey: true }), false, true)).toBe(true);
   });
 });
 

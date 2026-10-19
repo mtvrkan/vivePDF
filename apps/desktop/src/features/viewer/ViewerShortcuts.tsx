@@ -28,6 +28,7 @@ import { usePageNavigation } from "./usePageNavigation";
 import { zoomShortcutFor } from "./zoomShortcuts";
 import { redoStep, undoStep } from "./linkedHistory";
 
+import { commandKey } from "@/shared/lib/platform";
 function editingHere(documentId: string): boolean {
   const overlay = useViewerOverlayStore.getState();
   return overlay.mode !== null && EDITOR_MODES.includes(overlay.mode) && overlay.editingDocumentId === documentId;
@@ -47,7 +48,7 @@ export function ViewerShortcuts({ documentId }: { documentId: string }) {
     const onKeyDown = (event: KeyboardEvent) => {
       const typing = isTypingTarget(event.target);
       const textEntry = isTextEntryTarget(event.target);
-      const modifier = event.ctrlKey || event.metaKey;
+      const modifier = commandKey(event);
       const key = event.key;
       if (hasOpenModal()) return;
 

@@ -26,6 +26,7 @@ import { useTextPrefsStore } from "./textPrefs";
 import { useStudioStore } from "./studioStore";
 import { blockNodes, blocksSignature, editorCaseStyle, ensureMarkerRule, textBlocks, textBodyStyle } from "./textStyle";
 
+import { commandKey } from "@/shared/lib/platform";
 const STYLE_KEYS: Record<string, "bold" | "italic" | "underline"> = { b: "bold", i: "italic", u: "underline" };
 const ALIGN_KEYS: Record<string, StudioTextAlign> = { l: "left", e: "center", r: "right" };
 const LIST_DIGITS: Record<number, StudioListKind> = { 7: "decimal", 8: "bullet" };
@@ -235,7 +236,7 @@ export function TextEditor({ element, language }: { element: StudioTextElement; 
       if (bridge?.selectedParagraphs().some((paragraph) => paragraph.list !== "none")) bridge.applyParagraphs(() => shiftLevel(event.shiftKey ? -1 : 1));
       return;
     }
-    const mod = (event.ctrlKey || event.metaKey) && !event.altKey;
+    const mod = commandKey(event) && !event.altKey;
     if (!mod) return;
     const letter = shortcutLetter(event);
     const style = letter ? STYLE_KEYS[letter] : undefined;

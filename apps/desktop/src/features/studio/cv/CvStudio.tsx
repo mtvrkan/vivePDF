@@ -30,6 +30,7 @@ import { cvFromJson, emptyProfile, isStoredPhoto, profileHasContent, sampleProfi
 import { keepUnchanged, renderCv } from "./cvRender";
 import { flushCvSave, useCvStore } from "./cvStore";
 
+import { commandKey } from "@/shared/lib/platform";
 const RENDER_DELAY_MS = 180;
 const PREVIEW_PADDING = 48;
 const MAX_PREVIEW_SCALE = 1.25;
@@ -145,7 +146,7 @@ export default function CvStudio() {
   readyRef.current = ready;
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey || document.querySelector('[role="dialog"]')) return;
+      if (!commandKey(event) || event.altKey || document.querySelector('[role="dialog"]')) return;
       const letter = shortcutLetter(event);
       const store = useCvStore.getState();
       if (letter === "e" && !event.shiftKey && readyRef.current) {

@@ -22,6 +22,8 @@ import { pageSize, POINTS_PER_MM } from "./model";
 import { useDocumentSave } from "./useDocumentSave";
 import { WordCount } from "./WordCount";
 
+import { commandKey } from "@/shared/lib/platform";
+import { findShortcut } from "@/features/studio/findShortcut";
 const SIDE_TABS = ["preview", "settings"] as const;
 const PAPER_GUTTER = 64;
 const MAX_ZOOM = 1.25;
@@ -66,8 +68,15 @@ function useShortcuts(onExport: () => void, onFind: (replace: boolean) => void) 
   latest.current = { onExport, onFind, save };
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (!(event.ctrlKey || event.metaKey) || event.altKey) return;
       const letter = shortcutLetter(event);
+      const search = findShortcut(event, letter);
+      if (search) {
+        event.preventDefault();
+        event.stopPropagation();
+        latest.current.onFind(search === "replace");
+        return;
+      }
+      if (!commandKey(event) || event.altKey) return;
       if (letter === "s") {
         event.preventDefault();
         event.stopPropagation();
@@ -76,10 +85,6 @@ function useShortcuts(onExport: () => void, onFind: (replace: boolean) => void) 
         event.preventDefault();
         event.stopPropagation();
         latest.current.onExport();
-      } else if ((letter === "f" || letter === "h") && !event.shiftKey) {
-        event.preventDefault();
-        event.stopPropagation();
-        latest.current.onFind(letter === "h");
       }
     };
     window.addEventListener("keydown", onKeyDown, true);

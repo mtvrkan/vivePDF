@@ -15,6 +15,7 @@ import { hasOpenModal } from "../viewerKeyTarget";
 import { arrowHeadLength } from "./strokes";
 import { PEN_COLORS } from "./toolPresets";
 import type { PageRect } from "./usePageRects";
+import { commandKey } from "@/shared/lib/platform";
 
 const FRAME_GAP_PX = 6;
 const STYLE_PANEL_ROOM_PX = 240;
@@ -139,7 +140,7 @@ export function DrawingSelectionFrame({ rect, stroke, onChange, onDelete, onDupl
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.altKey || event.defaultPrevented || isTextEntryTarget(event.target) || hasOpenModal()) return;
       const letter = shortcutLetter(event);
-      const modifier = event.ctrlKey || event.metaKey;
+      const modifier = commandKey(event);
       const current = keys.current;
       if (modifier && !event.shiftKey && letter === "d") {
         event.preventDefault();

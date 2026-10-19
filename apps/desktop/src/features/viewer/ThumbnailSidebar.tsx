@@ -22,6 +22,7 @@ import { usePageLabels } from "@/shared/store/pageLabelsStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { isPageDeleted, pageRotation } from "./pageEdits";
 import { usePageEdits } from "./usePageEdits";
+import { isMac } from "@/shared/lib/platform";
 
 const PAGE_EXPORT_WIDTH = 1600;
 
@@ -126,7 +127,7 @@ export function ThumbnailSidebar({ documentId }: { documentId: string }) {
                 type="button"
                 onClick={() => scroll?.scrollToPage({ pageNumber: meta.pageIndex + 1, behavior: "instant" })}
                 onKeyDown={(event) => {
-                  if (event.key === "Delete") {
+                  if (event.key === "Delete" || (isMac && event.key === "Backspace")) {
                     event.preventDefault();
                     event.stopPropagation();
                     pageEdits.toggleDelete(meta.pageIndex);

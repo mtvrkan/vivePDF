@@ -61,6 +61,22 @@ describe("handleUiZoomKey", () => {
     expect(shortcuts.handleUiZoomKey(keyEvent({ key: "-", code: "Minus", ctrlKey: true, defaultPrevented: true }))).toBe(false);
     expect(shortcuts.handleUiZoomKey(keyEvent({ key: "a", code: "KeyA", ctrlKey: true }))).toBe(false);
   });
+
+  it("ignores the macOS menu's echo of a key just pressed, so one press is one step", () => {
+    const now = (run: () => void) => run();
+    vi.useFakeTimers();
+    vi.setSystemTime(10_000);
+
+    shortcuts.handleUiZoomKey(keyEvent({ key: "=", code: "Equal", ctrlKey: true, isTrusted: true }), now);
+    const echo = shortcuts.handleUiZoomKey(keyEvent({ key: "=", code: "Equal", ctrlKey: true, isTrusted: false }), now);
+    vi.setSystemTime(11_000);
+    const menuClick = shortcuts.handleUiZoomKey(keyEvent({ key: "=", code: "Equal", ctrlKey: true, isTrusted: false }), now);
+    vi.useRealTimers();
+
+    expect(echo).toBe(false);
+    expect(menuClick).toBe(true);
+    expect(preferences.usePreferencesStore.getState().uiZoom).toBe(1.25);
+  });
 });
 
 describe("preferences uiZoom", () => {

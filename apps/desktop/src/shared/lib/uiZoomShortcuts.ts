@@ -5,7 +5,10 @@ import { useToastStore } from "@/shared/store/toastStore";
 
 type Scheduler = (run: () => void) => void;
 
+const MENU_ECHO_MS = 400;
+
 let lastAnnouncement: string | null = null;
+let lastTrustedPress = 0;
 
 function announce(percent: number): void {
   const toasts = useToastStore.getState();
@@ -17,6 +20,8 @@ function announce(percent: number): void {
 export function handleUiZoomKey(event: KeyboardEvent, schedule: Scheduler = (run) => window.setTimeout(run, 0)): boolean {
   const shortcut = uiZoomShortcutFor(event);
   if (!shortcut || event.defaultPrevented) return false;
+  if (event.isTrusted) lastTrustedPress = Date.now();
+  else if (Date.now() - lastTrustedPress < MENU_ECHO_MS) return false;
   schedule(() => {
     if (event.defaultPrevented) return;
     const preferences = usePreferencesStore.getState();

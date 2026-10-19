@@ -28,7 +28,7 @@ import { isPendingChange } from "./overlay/pending";
 import { useCollectionsStore } from "@/features/home/collectionsStore";
 import { sessionPathOf } from "./convertedDocuments";
 import { GROUP_COLORS, GROUP_TONES, groupAfterMove, groupNeighbour, groupedOrder, movedGroupOrder, tabOutsideGroup, useTabGroupStore, type TabGroup } from "./tabGroups";
-import { ariaShortcut, hasModKey } from "@/shared/lib/platform";
+import { ariaShortcut, commandKey, isMac } from "@/shared/lib/platform";
 import type { DroppedTabGroup } from "@/types";
 
 type GroupDrag = { groupId: string; startX: number; moved: boolean; targetId: string | null; after: boolean; markX: number };
@@ -278,7 +278,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
                   toggleGroup(group);
                 }}
                 onKeyDown={(event) => {
-                  if (!hasModKey(event) || !event.shiftKey || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+                  if (!commandKey(event) || !event.shiftKey || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
                   event.preventDefault();
                   const forward = event.key === "ArrowRight" !== (getComputedStyle(event.currentTarget).direction === "rtl");
                   moveGroupBy(group.id, forward ? 1 : -1);
@@ -319,7 +319,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               if (!tearOff.consumeDrag()) guardedActivate(doc.id);
             }}
             onKeyDown={(event) => {
-              if (hasModKey(event) && event.shiftKey && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
+              if (commandKey(event) && event.shiftKey && (event.key === "ArrowRight" || event.key === "ArrowLeft")) {
                 event.preventDefault();
                 const index = documents.findIndex((entry) => entry.id === doc.id);
                 const step = event.key === "ArrowRight" ? 1 : -1;
@@ -329,7 +329,7 @@ export function DocumentTabs({ confirmLeave }: { confirmLeave?: (run: () => void
               } else if (event.key === "Enter" || event.key === " ") {
                 event.preventDefault();
                 guardedActivate(doc.id);
-              } else if (event.key === "Delete") {
+              } else if (event.key === "Delete" || (isMac && event.key === "Backspace")) {
                 event.preventDefault();
                 guardedClose([doc.id]);
               } else if (event.key === "ArrowRight" || event.key === "ArrowLeft" || event.key === "Home" || event.key === "End") {
