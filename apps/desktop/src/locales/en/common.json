@@ -9534,12 +9534,12 @@
         "infographic": "Infographic"
       },
       "sample": {
-        "name": "Beril Yılmaz",
+        "name": "Beril Ertuğrul",
         "headline": "Product Designer",
-        "email": "beril.yilmaz@example.com",
+        "email": "beril.ertugrul@example.com",
         "phone": "+44 20 7946 0958",
         "location": "London, UK",
-        "linkedin": "linkedin.com/in/berilyilmaz",
+        "linkedin": "linkedin.com/in/berilertugrul",
         "summary": "Product designer with seven years of experience turning complex workflows into simple, accessible interfaces. Comfortable leading research, prototyping and design systems from first sketch to launch.",
         "role1": "Senior Product Designer",
         "company1": "Northwind Labs",
@@ -9576,7 +9576,7 @@
         "noMonth": "Month (optional)"
       },
       "placeholders": {
-        "name": "e.g. Beril Yılmaz",
+        "name": "e.g. Beril Ertuğrul",
         "headline": "e.g. Senior Product Designer",
         "role": "e.g. Marketing Manager",
         "organisation": "e.g. Northwind Ltd.",

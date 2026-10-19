@@ -13,7 +13,7 @@ export const homeTr = {
     news: "Sunum modu ve çevrimdışı mod geldi",
     proofLabel: "Az önce bu bilgisayarda",
     proof: [
-      { b: "Sözleşme imzalandı", small: "sozlesme.pdf · Beril Yılmaz" },
+      { b: "Sözleşme imzalandı", small: "sozlesme.pdf · Beril Ertuğrul" },
       { b: "24 sayfa metne çevrildi", small: "OCR · yerel motor · 3,2 sn" },
       { b: "Wi‑Fi kapalı, her şey çalışıyor", small: "gönderilen veri: 0 bayt" },
     ],
@@ -61,7 +61,7 @@ export const homeTr = {
       caption: "Aylık gelir · temmuz, ağustos, eylül · milyon TL",
       figTag: "Figure · alt metin",
       table: '<thead><tr><th>Kalem</th><th>Plan</th><th>Gerçek</th></tr></thead><tbody><tr><td>Gelir</td><td>4,2</td><td><span class="chg"><del>4,4</del><ins>4,6</ins></span></td></tr><tr><td><mark class="hit cur">Bütçe</mark></td><td>3,1</td><td>2,9</td></tr><tr><td>Yatırım</td><td>0,8</td><td>0,7</td></tr></tbody>',
-      p2: 'Dördüncü çeyrekte <mark class="hit">bütçe</mark> önceliği bakım ve eğitim olacak. Sorular için <span class="red" style="--rd:.95s">Beril Yılmaz</span>, <span class="red" style="--rd:1.08s">0 212 000 00 00</span>; ödeme hesabı <span class="red" style="--rd:1.22s">TR00 0000 0000 0000</span>.',
+      p2: 'Dördüncü çeyrekte <mark class="hit">bütçe</mark> önceliği bakım ve eğitim olacak. Sorular için <span class="red" style="--rd:.95s">Beril Ertuğrul</span>, <span class="red" style="--rd:1.08s">0 212 000 00 00</span>; ödeme hesabı <span class="red" style="--rd:1.22s">TR00 0000 0000 0000</span>.',
       foot: ["Gizli · iç kullanım", "3 / 12", "2 / 12 · taşındı"],
       formula: '<span>Δ =</span><span class="frac"><span>4,6 − 4,2</span><span>4,2</span></span><span>≈ %9,5</span>',
       formLabels: { name: "Ad soyad", date: "Tarih", dateValue: "30.09.2026", unit: "Birim", unitValue: "Finans", confirm: "Bilgileri onaylıyorum" },
@@ -131,7 +131,7 @@ export const homeTr = {
       hint: "imzala",
       stamp: "imzalandı · örnek",
       nameLabel: "Ya da adını yaz",
-      placeholder: "ör. Beril Yılmaz",
+      placeholder: "ör. Beril Ertuğrul",
       clear: "Temizle",
       apply: "İmzala",
     },
@@ -292,7 +292,7 @@ export const homeTr = {
   },
   script: {
     locale: "tr",
-    typeName: "Beril Yılmaz",
+    typeName: "Beril Ertuğrul",
     sheetTitles: { report: "Çeyrek raporu", thesis: "Tez · 2. bölüm", cert: "Katılım belgesi", letter: "Hizmet sözleşmesi" },
     insp: {
       view: ["3", "eşleşme · “bütçe”"],
@@ -361,7 +361,7 @@ export const homeTr = {
     ],
     endOfDeck: "Sunumun sonu",
     templates: {
-      cv: '<div class="tp tp-cv"><aside><i class="ph"></i><b>Beril Yılmaz</b><small>Grafik tasarımcı</small><p class="tp-h">İletişim</p><p>beril@ornek.com</p><p>İstanbul</p><p class="tp-h">Beceriler</p><span class="bar" style="--v:90%"></span><span class="bar" style="--v:74%"></span><span class="bar" style="--v:58%"></span></aside><div class="tp-main"><p class="tp-h">Profil</p><p>Marka kimliği ve basılı işlerde deneyimli tasarımcı.</p><p class="tp-h">Deneyim</p><p><strong>Kıdemli tasarımcı</strong> · 2022–</p><span class="l"></span><span class="l s"></span><p><strong>Tasarımcı</strong> · 2018–2022</p><span class="l"></span><span class="l s"></span><p class="tp-h">Eğitim</p><p>Grafik tasarım, lisans</p><span class="l s"></span></div></div>',
+      cv: '<div class="tp tp-cv"><aside><i class="ph"></i><b>Beril Ertuğrul</b><small>Grafik tasarımcı</small><p class="tp-h">İletişim</p><p>beril@ornek.com</p><p>İstanbul</p><p class="tp-h">Beceriler</p><span class="bar" style="--v:90%"></span><span class="bar" style="--v:74%"></span><span class="bar" style="--v:58%"></span></aside><div class="tp-main"><p class="tp-h">Profil</p><p>Marka kimliği ve basılı işlerde deneyimli tasarımcı.</p><p class="tp-h">Deneyim</p><p><strong>Kıdemli tasarımcı</strong> · 2022–</p><span class="l"></span><span class="l s"></span><p><strong>Tasarımcı</strong> · 2018–2022</p><span class="l"></span><span class="l s"></span><p class="tp-h">Eğitim</p><p>Grafik tasarım, lisans</p><span class="l s"></span></div></div>',
       cv2: '<div class="tp tp-cv"><aside style="background:#0A1A33"><i class="ph" style="border-radius:12px"></i><b>Batuhan Demir</b><small>Yazılım geliştirici</small><p class="tp-h">Diller</p><p>Türkçe · İngilizce</p><p class="tp-h">Araçlar</p><span class="bar" style="--v:84%"></span><span class="bar" style="--v:66%"></span></aside><div class="tp-main"><p class="tp-h">Özet</p><p>Masaüstü ve web uygulamaları geliştiriyor.</p><p class="tp-h">Projeler</p><p><strong>Belge arşivi</strong> · 2025</p><span class="l"></span><span class="l s"></span><p><strong>Stok takibi</strong> · 2023</p><span class="l"></span><p class="tp-h">Eğitim</p><p>Bilgisayar mühendisliği</p></div></div>',
       exam: '<div class="tp tp-exam"><header><b>Matematik · 9. sınıf</b><span>1. yazılı</span></header><div class="who"><span>Ad soyad</span><span>No</span></div><ol><li><p>3x + 5 = 20 ise x kaçtır?</p><div class="opts"><i>A</i><i class="f">B</i><i>C</i><i>D</i></div></li><li><p>2⁵ ifadesinin değeri kaçtır?</p><div class="opts"><i>A</i><i>B</i><i>C</i><i class="f">D</i></div></li><li><p>Üçgenin iç açıları toplamı kaç derecedir?</p><div class="opts"><i>A</i><i>B</i><i class="f">C</i><i>D</i></div></li><li><p>√81 kaçtır?</p><div class="opts"><i class="f">A</i><i>B</i><i>C</i><i>D</i></div></li><li><p>0,25 kesir olarak nasıl yazılır?</p><div class="opts"><i>A</i><i>B</i><i>C</i><i>D</i></div></li></ol></div>',
       cert: '<div class="tp tp-cert land"><div class="fr"><small>KATILIM BELGESİ</small><b>Nesibe Şafak</b><p>PDF ile belge hazırlama atölyesini başarıyla tamamlamıştır.</p><i class="seal"></i><div class="sg"><span>Eğitmen</span><span>Tarih</span></div></div></div>',
@@ -382,7 +382,7 @@ export const homeTr = {
       menu: '<div class="tp tp-menu"><small>LOKANTA</small><b>Menü</b><div class="it"><span>Mercimek çorbası</span><span>90</span></div><div class="it"><span>Izgara köfte</span><span>260</span></div><div class="it"><span>Fırın sütlaç</span><span>110</span></div><div class="it"><span>Ayran</span><span>40</span></div><div class="it"><span>Türk kahvesi</span><span>70</span></div></div>',
     },
     tplMeta: {
-      cv: ["CV · Beril Yılmaz", "aside b", "Ad soyad"],
+      cv: ["CV · Beril Ertuğrul", "aside b", "Ad soyad"],
       cv2: ["CV · Batuhan Demir", "aside b", "Ad soyad"],
       exam: ["Sınav kağıdı", "header b", "Başlık"],
       cert: ["Katılım belgesi", ".fr b", "Ad soyad"],

@@ -14,7 +14,7 @@ export const homeEn: HomeCopy = {
     news: "Presenter view and offline mode are here",
     proofLabel: "Just now, on this computer",
     proof: [
-      { b: "Contract signed", small: "contract.pdf · Beril Yılmaz" },
+      { b: "Contract signed", small: "contract.pdf · Beril Ertuğrul" },
       { b: "24 pages turned into text", small: "OCR · local engine · 3.2 s" },
       { b: "Wi‑Fi off, everything still works", small: "data sent: 0 bytes" },
     ],
@@ -62,7 +62,7 @@ export const homeEn: HomeCopy = {
       caption: "Monthly revenue · July, August, September · millions",
       figTag: "Figure · alt text",
       table: '<thead><tr><th>Item</th><th>Plan</th><th>Actual</th></tr></thead><tbody><tr><td>Revenue</td><td>4.2</td><td><span class="chg"><del>4.4</del><ins>4.6</ins></span></td></tr><tr><td><mark class="hit cur">Budget</mark></td><td>3.1</td><td>2.9</td></tr><tr><td>Investment</td><td>0.8</td><td>0.7</td></tr></tbody>',
-      p2: 'In the fourth quarter the <mark class="hit">budget</mark> goes first to maintenance and training. For questions call <span class="red" style="--rd:.95s">Beril Yılmaz</span>, <span class="red" style="--rd:1.08s">+44 20 0000 0000</span>; payment account <span class="red" style="--rd:1.22s">GB00 0000 0000 0000</span>.',
+      p2: 'In the fourth quarter the <mark class="hit">budget</mark> goes first to maintenance and training. For questions call <span class="red" style="--rd:.95s">Beril Ertuğrul</span>, <span class="red" style="--rd:1.08s">+44 20 0000 0000</span>; payment account <span class="red" style="--rd:1.22s">GB00 0000 0000 0000</span>.',
       foot: ["Confidential · internal", "3 / 12", "2 / 12 · moved"],
       formula: '<span>Δ =</span><span class="frac"><span>4.6 − 4.2</span><span>4.2</span></span><span>≈ 9.5%</span>',
       formLabels: { name: "Full name", date: "Date", dateValue: "30/09/2026", unit: "Team", unitValue: "Finance", confirm: "I confirm these details" },
@@ -132,7 +132,7 @@ export const homeEn: HomeCopy = {
       hint: "sign",
       stamp: "signed · sample",
       nameLabel: "Or type your name",
-      placeholder: "e.g. Beril Yılmaz",
+      placeholder: "e.g. Beril Ertuğrul",
       clear: "Clear",
       apply: "Sign",
     },
@@ -293,7 +293,7 @@ export const homeEn: HomeCopy = {
   },
   script: {
     locale: "en",
-    typeName: "Beril Yılmaz",
+    typeName: "Beril Ertuğrul",
     sheetTitles: { report: "Quarterly report", thesis: "Thesis · chapter 2", cert: "Certificate", letter: "Service agreement" },
     insp: {
       view: ["3", "matches · “budget”"],
@@ -362,7 +362,7 @@ export const homeEn: HomeCopy = {
     ],
     endOfDeck: "End of the presentation",
     templates: {
-      cv: '<div class="tp tp-cv"><aside><i class="ph"></i><b>Beril Yılmaz</b><small>Graphic designer</small><p class="tp-h">Contact</p><p>beril@example.com</p><p>Istanbul</p><p class="tp-h">Skills</p><span class="bar" style="--v:90%"></span><span class="bar" style="--v:74%"></span><span class="bar" style="--v:58%"></span></aside><div class="tp-main"><p class="tp-h">Profile</p><p>Designer experienced in brand identity and print.</p><p class="tp-h">Experience</p><p><strong>Senior designer</strong> · 2022–</p><span class="l"></span><span class="l s"></span><p><strong>Designer</strong> · 2018–2022</p><span class="l"></span><span class="l s"></span><p class="tp-h">Education</p><p>Graphic design, BA</p><span class="l s"></span></div></div>',
+      cv: '<div class="tp tp-cv"><aside><i class="ph"></i><b>Beril Ertuğrul</b><small>Graphic designer</small><p class="tp-h">Contact</p><p>beril@example.com</p><p>Istanbul</p><p class="tp-h">Skills</p><span class="bar" style="--v:90%"></span><span class="bar" style="--v:74%"></span><span class="bar" style="--v:58%"></span></aside><div class="tp-main"><p class="tp-h">Profile</p><p>Designer experienced in brand identity and print.</p><p class="tp-h">Experience</p><p><strong>Senior designer</strong> · 2022–</p><span class="l"></span><span class="l s"></span><p><strong>Designer</strong> · 2018–2022</p><span class="l"></span><span class="l s"></span><p class="tp-h">Education</p><p>Graphic design, BA</p><span class="l s"></span></div></div>',
       cv2: '<div class="tp tp-cv"><aside style="background:#0A1A33"><i class="ph" style="border-radius:12px"></i><b>Batuhan Demir</b><small>Software developer</small><p class="tp-h">Languages</p><p>Turkish · English</p><p class="tp-h">Tools</p><span class="bar" style="--v:84%"></span><span class="bar" style="--v:66%"></span></aside><div class="tp-main"><p class="tp-h">Summary</p><p>Builds desktop and web applications.</p><p class="tp-h">Projects</p><p><strong>Document archive</strong> · 2025</p><span class="l"></span><span class="l s"></span><p><strong>Stock tracking</strong> · 2023</p><span class="l"></span><p class="tp-h">Education</p><p>Computer engineering</p></div></div>',
       exam: '<div class="tp tp-exam"><header><b>Maths · Year 9</b><span>First exam</span></header><div class="who"><span>Full name</span><span>No</span></div><ol><li><p>If 3x + 5 = 20, what is x?</p><div class="opts"><i>A</i><i class="f">B</i><i>C</i><i>D</i></div></li><li><p>What is the value of 2⁵?</p><div class="opts"><i>A</i><i>B</i><i>C</i><i class="f">D</i></div></li><li><p>What do the angles of a triangle add up to?</p><div class="opts"><i>A</i><i>B</i><i class="f">C</i><i>D</i></div></li><li><p>What is √81?</p><div class="opts"><i class="f">A</i><i>B</i><i>C</i><i>D</i></div></li><li><p>How is 0.25 written as a fraction?</p><div class="opts"><i>A</i><i>B</i><i>C</i><i>D</i></div></li></ol></div>',
       cert: '<div class="tp tp-cert land"><div class="fr"><small>CERTIFICATE OF ATTENDANCE</small><b>Nesibe Şafak</b><p>has successfully completed the PDF document workshop.</p><i class="seal"></i><div class="sg"><span>Trainer</span><span>Date</span></div></div></div>',
@@ -383,7 +383,7 @@ export const homeEn: HomeCopy = {
       menu: '<div class="tp tp-menu"><small>RESTAURANT</small><b>Menu</b><div class="it"><span>Lentil soup</span><span>9</span></div><div class="it"><span>Grilled meatballs</span><span>18</span></div><div class="it"><span>Baked rice pudding</span><span>8</span></div><div class="it"><span>Ayran</span><span>3</span></div><div class="it"><span>Turkish coffee</span><span>5</span></div></div>',
     },
     tplMeta: {
-      cv: ["CV · Beril Yılmaz", "aside b", "Full name"],
+      cv: ["CV · Beril Ertuğrul", "aside b", "Full name"],
       cv2: ["CV · Batuhan Demir", "aside b", "Full name"],
       exam: ["Exam paper", "header b", "Title"],
       cert: ["Certificate", ".fr b", "Full name"],

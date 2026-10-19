@@ -9534,12 +9534,12 @@
         "infographic": "İnfografik"
       },
       "sample": {
-        "name": "Beril Yılmaz",
+        "name": "Beril Ertuğrul",
         "headline": "Ürün Tasarımcısı",
-        "email": "beril.yilmaz@ornek.com",
+        "email": "beril.ertugrul@ornek.com",
         "phone": "+90 532 123 45 67",
         "location": "İstanbul",
-        "linkedin": "linkedin.com/in/berilyilmaz",
+        "linkedin": "linkedin.com/in/berilertugrul",
         "summary": "Karmaşık iş akışlarını sade ve erişilebilir arayüzlere dönüştüren, yedi yıllık deneyime sahip ürün tasarımcısı. Araştırma, prototipleme ve tasarım sistemlerini ilk eskizden yayına kadar yürütebilirim.",
         "role1": "Kıdemli Ürün Tasarımcısı",
         "company1": "Kuzey Teknoloji",
@@ -9576,7 +9576,7 @@
         "noMonth": "Ay (isteğe bağlı)"
       },
       "placeholders": {
-        "name": "ör. Beril Yılmaz",
+        "name": "ör. Beril Ertuğrul",
         "headline": "ör. Kıdemli Ürün Tasarımcısı",
         "role": "ör. Pazarlama Müdürü",
         "organisation": "ör. Kuzey Yazılım A.Ş.",
