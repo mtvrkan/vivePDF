@@ -72,6 +72,10 @@ The site at https://vivepdf.com lives in `apps/site` (Astro, Turkish at `/`, Eng
 
 Bug reports go to [Issues](https://github.com/mtvrkan/vivePDF/issues), questions and ideas to [Discussions](https://github.com/mtvrkan/vivePDF/discussions); **Help › Report a bug** in the app opens a prefilled issue and shows exactly what it includes before anything leaves your computer. Pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md); the community rules are in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Security problems: please follow [SECURITY.md](SECURITY.md) instead of opening a public issue.
 
+## Code signing policy
+
+Signing of the Windows releases is being set up through SignPath Foundation: free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/). Signed installers are built from this repository on GitHub Actions and every release is approved by hand. Team roles and the privacy statement: [Code signing policy](https://vivepdf.com/en/docs/license/#code-signing-policy).
+
 ## License
 
 AGPL-3.0 — see [LICENSE](LICENSE). Distributing builds of vivePDF requires offering the corresponding source under the same license. Third-party notices are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

@@ -72,6 +72,10 @@ https://vivepdf.com adresindeki site `apps/site` içinde (Astro; Türkçe `/`, �
 
 Hata bildirimleri [Issues](https://github.com/mtvrkan/vivePDF/issues)'a, sorular ve fikirler [Tartışmalar](https://github.com/mtvrkan/vivePDF/discussions)'a. Uygulamadaki **Yardım › Hata bildir**, önceden doldurulmuş bir bildirim açar ve bilgisayarından herhangi bir şey çıkmadan önce neler gönderileceğini tek tek gösterir. Pull request'ler memnuniyetle karşılanır, bkz. [CONTRIBUTING.md](CONTRIBUTING.md); topluluk kuralları [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)'de. Güvenlik sorunlarını herkese açık bildirim yerine [SECURITY.md](SECURITY.md)'deki yoldan ilet.
 
+## Kod imzalama politikası
+
+Windows sürümlerinin imzalanması SignPath Foundation ile kuruluyor: ücretsiz kod imzalama [SignPath.io](https://about.signpath.io/), sertifika [SignPath Foundation](https://signpath.org/) tarafından sağlanır. İmzalı kurulum dosyaları bu depodan GitHub Actions'ta derlenir ve her sürüm elle onaylanır. Ekip rolleri ve gizlilik açıklaması: [Kod imzalama politikası](https://vivepdf.com/dokumantasyon/lisans/#kod-imzalama-politikası).
+
 ## Lisans
 
 AGPL-3.0, bkz. [LICENSE](LICENSE). vivePDF'in derlenmiş sürümlerini dağıtan, karşılık gelen kaynak kodu aynı lisansla sunmak zorundadır. Üçüncü taraf bildirimleri [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)'de.

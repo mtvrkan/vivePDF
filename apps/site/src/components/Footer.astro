@@ -20,6 +20,7 @@ const source = [
   { href: RELEASES_URL, label: f.releases },
   { href: docPath(lang, docByKey("license").slug[lang]), label: f.license },
   { href: `${REPO_URL}/blob/main/THIRD_PARTY_NOTICES.md`, label: f.notices },
+  { href: `${docPath(lang, docByKey("license").slug[lang])}#${f.signing.toLocaleLowerCase(lang).replace(/ /g, "-")}`, label: f.signing },
 ];
 const help = [
   { href: docsIndexPath(lang), label: f.docs },
