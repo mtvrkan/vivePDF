@@ -6,23 +6,7 @@ import { ANCHORS } from "../../i18n/ui";
 type Props = { lang: Locale };
 const { lang } = Astro.props;
 const c = HOME[lang].studio;
-const o = c.omr;
 const chips = ["cv", "exam", "cert", "inv", "bro", "menu"] as const;
-const rows = [
-  { d: ".0s", marks: "k1", res: "ok" },
-  { d: ".25s", marks: "k3", res: "ok" },
-  { d: ".5s", marks: "x0k2", res: "no" },
-  { d: ".75s", marks: "k4", res: "ok" },
-  { d: "1s", marks: "k2", res: "ok" },
-];
-const bubbles = (marks: string) => {
-  const key = Number(/k(\d)/.exec(marks)?.[1] ?? -1);
-  const wrong = Number(/x(\d)/.exec(marks)?.[1] ?? -1);
-  return ["A", "B", "C", "D", "E"].map((letter, i) => {
-    const cls = ["bub", i === wrong ? "m x" : i === key ? (wrong < 0 ? "m k" : "k") : ""].filter(Boolean).join(" ");
-    return `<span class="${cls}">${letter}</span>`;
-  }).join("");
-};
 ---
 <section class="sec" id={ANCHORS[lang].studio} aria-labelledby="studioTitle" style="padding-top:0">
   <div class="wrap studio-head">
@@ -38,26 +22,6 @@ const bubbles = (marks: string) => {
     <p class="mini-label" id="pickLabel">{c.pick}</p>
     <div class="chips" role="group" aria-labelledby="pickLabel">
       {chips.map((k) => <button class="chip" type="button" data-t={k}>{c.chips[k]}</button>)}
-    </div>
-  </div>
-  <div class="wrap teach">
-    <div>
-      <p class="eyebrow" data-reveal>{c.teach.eyebrow}</p>
-      <h2 class="title" data-reveal set:html={c.teach.title} />
-      <ul class="teach-list">
-        {c.teach.items.map((it) => <li data-reveal><svg class="ic" aria-hidden="true"><use href={`#${it.icon}`}/></svg><span><strong>{it.strong}</strong> {it.text}</span></li>)}
-      </ul>
-    </div>
-    <div class="omr glass" id="omr" data-reveal>
-      <div class="omr-head" aria-hidden="true"><p>{o.title}</p><span class="omr-score"><span id="omrN">4</span> / 5<small>{o.sample}</small><span class="omr-pct">{o.pass}</span></span></div>
-      <div class="omr-sheet" aria-hidden="true"><i class="omr-scan"></i>
-      <div class="omr-rows">
-        {rows.map((r, i) => (
-          <div class="omr-row" style={`--d:${r.d}`}><span class="n">{i + 1}</span><Fragment set:html={bubbles(r.marks)} /><span class={`res ${r.res}`}><svg class="ic"><use href={r.res === "ok" ? "#i-check" : "#i-x"}/></svg></span></div>
-        ))}
-      </div>
-      </div>
-      <div class="omr-foot"><p class="omr-cap">{o.cap}</p><button class="text-link ul omr-again" type="button" id="omrAgain"><svg class="ic" aria-hidden="true"><use href="#i-redo"/></svg>{o.again}</button></div>
     </div>
   </div>
 </section>

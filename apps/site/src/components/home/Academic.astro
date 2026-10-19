@@ -1,0 +1,47 @@
+---
+import type { Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].academic;
+const m = c.merge;
+---
+<section class="sec" id={ANCHORS[lang].academic} aria-labelledby="acadTitle">
+  <div class="wrap">
+    <div class="acad-top">
+      <div>
+        <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+        <h2 class="title" id="acadTitle" data-reveal set:html={c.title} />
+        <p class="lead" data-reveal>{c.lead}</p>
+      </div>
+      <div class="acad-merge glass" aria-hidden="true" data-reveal>
+        <p class="am-label">{m.label}</p>
+        <ul class="am-files">
+          {m.files.map((f) => <li><span class:list={["am-ext", `am-${f.ext.toLowerCase()}`]}>{f.ext}</span><b>{f.name}</b><small>{f.meta}</small></li>)}
+        </ul>
+        <ol class="steps am-steps">{m.steps.map((s) => <li><span>{s}</span></li>)}</ol>
+        <div class="am-out"><span class="am-ext am-pdf">PDF</span><span><b>{m.out.name}</b><small>{m.out.meta}</small></span><em><svg class="ic"><use href="#i-check"/></svg>{m.out.ready}</em></div>
+      </div>
+    </div>
+    <div class="acad-cols">
+      {c.groups.map((g) => (
+        <div class="acad-col">
+          <h3 data-reveal>{g.h}</h3>
+          <ul class="acad-list">
+            {g.items.map((it) => (
+              <li data-reveal>
+                <span class="acad-ic"><svg class="ic" aria-hidden="true"><use href={`#${it.icon}`}/></svg></span>
+                <div>
+                  <p><strong>{it.strong}</strong> {it.text}</p>
+                  <ul class="acad-tools" aria-label={c.toolsLabel}>{it.tools.map((t) => <li>{t}</li>)}</ul>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

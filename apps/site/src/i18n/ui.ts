@@ -8,6 +8,7 @@ export type Anchors = {
   tryIt: string;
   present: string;
   studio: string;
+  academic: string;
   download: string;
   docs: string;
 };
@@ -20,6 +21,7 @@ export const ANCHORS: Record<Locale, Anchors> = {
     tryIt: "dene",
     present: "sunum",
     studio: "studio",
+    academic: "akademik",
     download: "indir",
     docs: "rehberler",
   },
@@ -30,6 +32,7 @@ export const ANCHORS: Record<Locale, Anchors> = {
     tryIt: "try",
     present: "presenter",
     studio: "studio",
+    academic: "academic",
     download: "download",
     docs: "guides",
   },

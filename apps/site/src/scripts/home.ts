@@ -53,8 +53,8 @@ function pool(x: CanvasRenderingContext2D, cx: number, cy: number, rx: number, r
 type SheetKind = keyof HomeData["sheetTitles"];
 type Sheet = { cx: number; cy: number; w: number; h: number; r: number; k: SheetKind };
 let dkBg = false;
-const sheetLight = { paper: "rgba(255,255,255,.96)", edge: "transparent", title: "#0A1A33", accent: "#7FD0FF", rule: "#DCE5F0", bar: "#BFE3FF", barHi: "#2F8FE6", bubble: "#8796AD", mark: "#14305A", frame: "#14305A", seal: "#FFC46B", sealCore: "#2F8FE6" };
-const sheetDark = { paper: "#22252C", edge: "rgba(224,226,230,.10)", title: "#E0E2E6", accent: "#45A6DE", rule: "rgba(224,226,230,.16)", bar: "rgba(69,166,222,.32)", barHi: "#45A6DE", bubble: "rgba(224,226,230,.38)", mark: "#8BCAEE", frame: "rgba(139,202,238,.45)", seal: "rgba(255,196,107,.7)", sealCore: "#45A6DE" };
+const sheetLight = { paper: "rgba(255,255,255,.96)", edge: "transparent", title: "#0A1A33", accent: "#7FD0FF", rule: "#DCE5F0", bar: "#BFE3FF", barHi: "#2F8FE6", note: "#8796AD", mark: "#14305A", frame: "#14305A", seal: "#FFC46B", sealCore: "#2F8FE6" };
+const sheetDark = { paper: "#22252C", edge: "rgba(224,226,230,.10)", title: "#E0E2E6", accent: "#45A6DE", rule: "rgba(224,226,230,.16)", bar: "rgba(69,166,222,.32)", barHi: "#45A6DE", note: "rgba(224,226,230,.38)", mark: "#8BCAEE", frame: "rgba(139,202,238,.45)", seal: "rgba(255,196,107,.7)", sealCore: "#45A6DE" };
 
 function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
   const w = o.w * s;
@@ -102,21 +102,25 @@ function sheet(x: CanvasRenderingContext2D, o: Sheet, s: number) {
     y = by + h * 0.05;
     line(1);
     line(0.7);
-  } else if (o.k === "exam") {
-    for (let q = 0; q < 4; q++) {
-      line(0.85);
-      for (let b = 0; b < 5; b++) {
-        x.beginPath();
-        x.arc(L + cw * 0.06 + b * cw * 0.11, y + h * 0.005, h * 0.014, 0, Math.PI * 2);
-        x.strokeStyle = c.bubble;
-        x.lineWidth = 1;
-        if (b === (q * 2 + 1) % 5) {
-          x.fillStyle = c.mark;
-          x.fill();
-        } else x.stroke();
-      }
-      y += h * 0.05;
-    }
+  } else if (o.k === "thesis") {
+    line(1);
+    line(0.92);
+    line(0.97);
+    x.fillStyle = c.barHi;
+    x.fillRect(L + cw * 0.99, y - h * 0.062, Math.max(2, h * 0.012), Math.max(3, h * 0.02));
+    line(0.64);
+    y += h * 0.03;
+    line(1);
+    line(0.95);
+    line(0.88);
+    line(0.98);
+    line(0.5);
+    y = h / 2 - h * 0.17;
+    x.fillStyle = c.note;
+    x.fillRect(L, y, cw * 0.3, 1);
+    y += h * 0.03;
+    line(0.82);
+    line(0.56);
   } else if (o.k === "cert") {
     x.strokeStyle = c.frame;
     x.lineWidth = 1.4;
@@ -186,7 +190,7 @@ function drawBackdrop() {
   x.restore();
   const S: Array<{ dx: number; dy: number; w: number; h: number; r: number; k: SheetKind }> = [
     { dx: -0.66, dy: -0.2, w: 0.48, h: 0.66, r: -0.16, k: "report" },
-    { dx: 0.58, dy: -0.3, w: 0.44, h: 0.6, r: 0.17, k: "exam" },
+    { dx: 0.58, dy: -0.3, w: 0.44, h: 0.6, r: 0.17, k: "thesis" },
     { dx: 0.5, dy: 0.36, w: 0.52, h: 0.37, r: -0.07, k: "cert" },
     { dx: -0.12, dy: 0.08, w: 0.42, h: 0.6, r: 0.06, k: "letter" },
   ];
@@ -1177,33 +1181,6 @@ $$<HTMLButtonElement>(".chip[data-t]").forEach((c) =>
   }),
 );
 
-const omr = $("#omr");
-const omrN = $("#omrN");
-function playOmr() {
-  omr.classList.add("reset");
-  omr.classList.remove("is-on");
-  void omr.offsetWidth;
-  omr.classList.remove("reset");
-  void omr.offsetWidth;
-  omr.classList.add("is-on");
-  if (still) {
-    omrN.textContent = "4";
-    return;
-  }
-  const o = { v: 0 };
-  omrN.textContent = "0";
-  gsap.to(o, {
-    v: 4,
-    duration: 1.3,
-    delay: 0.25,
-    ease: "power1.out",
-    onUpdate: () => {
-      omrN.textContent = String(Math.round(o.v));
-    },
-  });
-}
-$("#omrAgain").addEventListener("click", playOmr);
-
 const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
 const plat = nav.userAgentData?.platform || navigator.platform || "";
 if (/mac/i.test(plat) && !/iphone|ipad/i.test(navigator.userAgent)) $("#dlCols").classList.add("mac");
@@ -1215,7 +1192,6 @@ const anchors = $$<HTMLAnchorElement>("a[href*='#']").filter(samePageHash);
 const brands = $$<HTMLAnchorElement>("a.brand").filter((a) => a.pathname === location.pathname);
 
 if (still) {
-  omr.classList.add("is-on");
   anchors.forEach((a) =>
     a.addEventListener("click", (e) => {
       const t = document.getElementById(decodeURIComponent(a.hash.slice(1)));
@@ -1387,7 +1363,6 @@ if (still) {
       gsap.fromTo(vis, { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out", stagger: { amount: Math.min(0.16, vis.length * 0.04) }, overwrite: true });
     },
   });
-  ScrollTrigger.create({ trigger: omr, start: "top 75%", once: true, onEnter: playOmr });
   inView(lens, (on) => {
     L.on = on;
     if (on) {

@@ -78,7 +78,7 @@ export const homeTr = {
       { g: "convert", h: "Dönüştür", p: "PDF'ten Word, Excel, PowerPoint, Markdown ve görsele; Office dosyalarından, görsellerden ve web sayfalarından PDF'e. PDF/A arşivleme ve baskı ön kontrolü." },
       { g: "ocr", h: "OCR ve taramalar", p: "Taramalardan aranabilir PDF üretir; eğik sayfaları düzeltir, lekeleri temizler." },
       { g: "secure", h: "Güvenlik", p: "Karartma metni gerçekten siler, üstünü boyamakla kalmaz. Parola ve izinler, metadata temizliği, dijital imza ve sertifika kontrolü." },
-      { g: "forms", h: "Formlar ve kodlar", p: "Form doldur ve oluştur, QR ve barkod ekle, kendini puanlayan optik cevap kağıtları hazırla." },
+      { g: "forms", h: "Formlar ve kodlar", p: "Form doldur ve oluştur, alanları otomatik algıla, QR ve barkod ekle." },
       { g: "compare", h: "Karşılaştır, sıkıştır, toplu işlem", p: "Yan yana, metin ve görsel karşılaştırma; sıkıştırma; toplu işlemler, izlenen klasörler ve toplu yeniden adlandırma." },
       { g: "a11y", h: "Erişilebilirlik", p: "Etiketli PDF kontrolü ve alternatif metin. Arayüz 8 dilde; Arapçada sağdan sola." },
     ],
@@ -183,22 +183,6 @@ export const homeTr = {
     lead: "Stüdyo, vivePDF'in tasarım ve belge editörü. CV, sınav kağıdı, sertifika, broşür, fatura: şablonu seç, metni ve renkleri değiştir. Tablo, grafik, LaTeX formül ve akış şeması gerçek PDF içeriği olarak kaydedilir.",
     pick: "Bir şablona tıkla ya da seç, adını yaz, rengini değiştir:",
     chips: { cv: "CV", exam: "Sınav kağıdı", cert: "Sertifika", inv: "Fatura", bro: "Broşür", menu: "Menü" },
-    teach: {
-      eyebrow: "Öğretmenler için",
-      title: "Sınavı hazırla, cevap anahtarını çıkar, <em>optik formu bas.</em>",
-      items: [
-        { icon: "i-edit", strong: "Soru ve cevap anahtarı.", text: "Soruları formül, grafik ve molekülle birlikte yaz; cevap anahtarı aynı belgede kalır." },
-        { icon: "i-form", strong: "Optik cevap kağıdı.", text: "Kendini puanlayan optik cevap kağıtları hazırla." },
-        { icon: "i-pages", strong: "Sınav şablonları.", text: "Stüdyo'daki sınav ve cevap anahtarı şablonlarından başla." },
-      ],
-    },
-    omr: {
-      title: "Optik cevap kağıdı",
-      sample: "örnek",
-      pass: "%80 · geçti",
-      cap: "yeşil halka: cevap anahtarı · dolu: öğrencinin işareti",
-      again: "Yeniden oku",
-    },
     dialog: {
       close: "Şablonu kapat",
       eyebrow: "Stüdyo · canlı önizleme",
@@ -207,6 +191,43 @@ export const homeTr = {
       note: "Uygulamada metin, renk, yazı tipi ve yerleşim böyle değişir; sonuç gerçek, seçilebilir metinli bir PDF olarak kaydedilir.",
       cta: "Stüdyo'yu indir",
       dismiss: "Kapat",
+    },
+  },
+  academic: {
+    eyebrow: "Akademisyenler ve öğrenciler için",
+    title: "Ödevden teze, <em>dosyalar tek parça.</em>",
+    lead: "Parçaları birleştir, kalın kitabı böl, taranmış kaynağı aranabilir yap, kaynakçayı tek seferde çıkar. Hepsi çevrimdışı; tezin bilgisayarından çıkmaz.",
+    toolsLabel: "Kullanılan araçlar",
+    groups: [
+      {
+        h: "Öğrenciler",
+        items: [
+          { icon: "i-merge", strong: "Birleştir, böl.", text: "Ödevin parçalarını sıraya koyup tek PDF yap; kalın bir ders kitabını bölümlerine ayır.", tools: ["Birleştir", "Böl"] },
+          { icon: "i-shrink", strong: "Yükleme sınırına sığdır.", text: "Sistemin kabul etmediği büyük dosyayı sıkıştır; sayfaları döndür, sırala, fazlasını sil.", tools: ["Sıkıştır", "Sayfa düzenleyici"] },
+          { icon: "i-scan", strong: "Notlar aranabilir.", text: "Fotokopiyi ya da telefonla çekilmiş sayfayı düzeltilmiş, aranabilir bir PDF'e çevir.", tools: ["OCR", "Fotoğraftan"] },
+          { icon: "i-hl", strong: "Okurken işaretle.", text: "Vurgula, not düş, çiz; gerektiğinde metni Word'e ya da Markdown'a aktar.", tools: ["İşaretle", "PDF → Word"] },
+        ],
+      },
+      {
+        h: "Akademisyenler",
+        items: [
+          { icon: "i-book", strong: "Tez ve makale yaz.", text: "Başlıklar, tablolar, dipnotlar, atıflar ve içindekilerle; sınav ve ödev şablonları da hazır.", tools: ["Belge yaz", "Stüdyo"] },
+          { icon: "i-form", strong: "Kaynakça tek seferde.", text: ".bib, RIS ya da CSL JSON'u içe aktar; APA, MLA, Chicago veya IEEE biçiminde çıkar.", tools: ["Kaynakça"] },
+          { icon: "i-compare", strong: "Sürümleri karşılaştır.", text: "Hakem düzeltmelerinden önceki ve sonraki taslak arasında neyin değiştiğini gör.", tools: ["Karşılaştır"] },
+          { icon: "i-archive", strong: "Arşive uygun teslim.", text: "Kapak sayfası, sayfa numarası ve yer imleri ekle; PDF/A kopyasını kaydet.", tools: ["Kapak sayfası", "PDF/A arşiv"] },
+        ],
+      },
+    ],
+    merge: {
+      label: "Teslim dosyası",
+      files: [
+        { ext: "PDF", name: "giris.pdf", meta: "4 sayfa" },
+        { ext: "DOCX", name: "analiz.docx", meta: "11 sayfa" },
+        { ext: "PDF", name: "ekler.pdf", meta: "3 sayfa" },
+        { ext: "BIB", name: "kaynaklar.bib", meta: "42 kaynak" },
+      ],
+      steps: ["Birleştir", "Kaynakça · APA", "PDF/A"],
+      out: { name: "odev-teslim.pdf", meta: "19 sayfa · PDF/A-2b · 2,4 MB", ready: "hazır" },
     },
   },
   download: {
@@ -272,7 +293,7 @@ export const homeTr = {
   script: {
     locale: "tr",
     typeName: "Beril Yılmaz",
-    sheetTitles: { report: "Çeyrek raporu", exam: "Matematik · 1. yazılı", cert: "Katılım belgesi", letter: "Hizmet sözleşmesi" },
+    sheetTitles: { report: "Çeyrek raporu", thesis: "Tez · 2. bölüm", cert: "Katılım belgesi", letter: "Hizmet sözleşmesi" },
     insp: {
       view: ["3", "eşleşme · “bütçe”"],
       edit: ["+1", "nesne · LaTeX formül"],

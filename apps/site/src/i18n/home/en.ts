@@ -79,7 +79,7 @@ export const homeEn: HomeCopy = {
       { g: "convert", h: "Convert", p: "From PDF to Word, Excel, PowerPoint, Markdown and pictures; from Office files, pictures and web pages to PDF. PDF/A archiving and print preflight." },
       { g: "ocr", h: "OCR and scans", p: "Turns scans into searchable PDFs; straightens crooked pages and cleans up stains." },
       { g: "secure", h: "Security", p: "Redaction really removes the text instead of painting over it. Passwords and permissions, metadata clean-up, digital signatures and certificate checks." },
-      { g: "forms", h: "Forms and codes", p: "Fill in and build forms, add QR codes and barcodes, and make answer sheets that mark themselves." },
+      { g: "forms", h: "Forms and codes", p: "Fill in and build forms, detect fields automatically, and add QR codes and barcodes." },
       { g: "compare", h: "Compare, compress, batch", p: "Side-by-side, text and visual comparison; compression; batch jobs, watched folders and bulk renaming." },
       { g: "a11y", h: "Accessibility", p: "Tagged PDF checks and alternative text. The interface speaks 8 languages, right to left in Arabic." },
     ],
@@ -184,22 +184,6 @@ export const homeEn: HomeCopy = {
     lead: "Studio is vivePDF's design and document editor. CVs, exam papers, certificates, brochures, invoices: pick a template, change the text and colours. Tables, charts, LaTeX formulas and flowcharts are saved as real PDF content.",
     pick: "Click a template, or choose one, type a name and change its colour:",
     chips: { cv: "CV", exam: "Exam paper", cert: "Certificate", inv: "Invoice", bro: "Brochure", menu: "Menu" },
-    teach: {
-      eyebrow: "For teachers",
-      title: "Write the exam, print the answer key, <em>hand out the answer sheet.</em>",
-      items: [
-        { icon: "i-edit", strong: "Questions and answer key.", text: "Write questions with formulas, charts and molecules; the answer key stays in the same document." },
-        { icon: "i-form", strong: "Answer sheets.", text: "Make optical answer sheets that mark themselves." },
-        { icon: "i-pages", strong: "Exam templates.", text: "Start from Studio's exam and answer-key templates." },
-      ],
-    },
-    omr: {
-      title: "Answer sheet",
-      sample: "sample",
-      pass: "80% · passed",
-      cap: "green ring: answer key · filled: the student's mark",
-      again: "Read again",
-    },
     dialog: {
       close: "Close the template",
       eyebrow: "Studio · live preview",
@@ -208,6 +192,43 @@ export const homeEn: HomeCopy = {
       note: "This is how text, colour, font and layout change in the app; the result is saved as a real PDF with selectable text.",
       cta: "Download Studio",
       dismiss: "Close",
+    },
+  },
+  academic: {
+    eyebrow: "For academics and students",
+    title: "From homework to thesis, <em>one tidy file.</em>",
+    lead: "Merge the parts, split the thick textbook, make a scanned source searchable and build the bibliography in one go. All offline; your thesis never leaves your computer.",
+    toolsLabel: "Tools used",
+    groups: [
+      {
+        h: "Students",
+        items: [
+          { icon: "i-merge", strong: "Merge and split.", text: "Put the parts of an assignment in order and make one PDF; split a thick textbook into chapters.", tools: ["Merge", "Split"] },
+          { icon: "i-shrink", strong: "Fit the upload limit.", text: "Compress a file the portal turns away; rotate, reorder and delete pages you don't need.", tools: ["Compress", "Page editor"] },
+          { icon: "i-scan", strong: "Searchable notes.", text: "Turn a photocopy or a phone photo of a page into a straightened, searchable PDF.", tools: ["OCR", "From photo"] },
+          { icon: "i-hl", strong: "Mark up while you read.", text: "Highlight, add notes, draw; send the text to Word or Markdown when you need it.", tools: ["Annotate", "PDF → Word"] },
+        ],
+      },
+      {
+        h: "Academics",
+        items: [
+          { icon: "i-book", strong: "Write the thesis or paper.", text: "Headings, tables, footnotes, citations and a table of contents; exam and assignment templates are ready too.", tools: ["Write a document", "Studio"] },
+          { icon: "i-form", strong: "Bibliography in one go.", text: "Import .bib, RIS or CSL JSON and output APA, MLA, Chicago or IEEE.", tools: ["Bibliography"] },
+          { icon: "i-compare", strong: "Compare versions.", text: "See what changed between the draft before and after the reviewers' comments.", tools: ["Compare"] },
+          { icon: "i-archive", strong: "Ready for the archive.", text: "Add a cover page, page numbers and bookmarks; save a PDF/A copy.", tools: ["Cover page", "PDF/A archive"] },
+        ],
+      },
+    ],
+    merge: {
+      label: "Submission file",
+      files: [
+        { ext: "PDF", name: "introduction.pdf", meta: "4 pages" },
+        { ext: "DOCX", name: "analysis.docx", meta: "11 pages" },
+        { ext: "PDF", name: "appendix.pdf", meta: "3 pages" },
+        { ext: "BIB", name: "sources.bib", meta: "42 sources" },
+      ],
+      steps: ["Merge", "Bibliography · APA", "PDF/A"],
+      out: { name: "submission.pdf", meta: "19 pages · PDF/A-2b · 2.4 MB", ready: "ready" },
     },
   },
   download: {
@@ -273,7 +294,7 @@ export const homeEn: HomeCopy = {
   script: {
     locale: "en",
     typeName: "Beril Yılmaz",
-    sheetTitles: { report: "Quarterly report", exam: "Maths · first exam", cert: "Certificate", letter: "Service agreement" },
+    sheetTitles: { report: "Quarterly report", thesis: "Thesis · chapter 2", cert: "Certificate", letter: "Service agreement" },
     insp: {
       view: ["3", "matches · “budget”"],
       edit: ["+1", "object · LaTeX formula"],
