@@ -1534,6 +1534,8 @@
       "message": "{{name}} bir PDF kopyası olarak açıldı. PDF olarak kaydedene kadar değişiklikler bu geçici kopyada kalır.",
       "saveAsPdf": "PDF olarak kaydet…",
       "openTool": "Dönüştür aracında aç",
+      "officeTitle": "LibreOffice gerekli",
+      "officeNeeded": "{{name}} dosyasını açmak için vivePDF onu LibreOffice ile PDF'e dönüştürür. Ücretsizdir ve yalnızca bir kez kurulur.",
       "allSupported": "Desteklenen tüm dosyalar",
       "fromClipboard": "Panodan oluşturuldu, henüz kaydedilmedi."
     },

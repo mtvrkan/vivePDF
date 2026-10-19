@@ -1533,6 +1533,8 @@
       "message": "{{name}} foi aberto como uma cópia em PDF. As alterações ficam nesta cópia temporária até você salvá-la como PDF.",
       "saveAsPdf": "Salvar como PDF…",
       "openTool": "Abrir em Converter",
+      "officeTitle": "O LibreOffice é necessário",
+      "officeNeeded": "Para abrir {{name}}, o vivePDF o transforma em PDF com o LibreOffice. Ele é gratuito e só precisa ser instalado uma vez.",
       "allSupported": "Todos os arquivos compatíveis",
       "fromClipboard": "Criado da área de transferência, ainda não salvo."
     },

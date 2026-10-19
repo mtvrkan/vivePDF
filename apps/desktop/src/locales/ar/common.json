@@ -1605,6 +1605,8 @@
       "message": "فُتح {{name}} كنسخة PDF. تبقى التغييرات في هذه النسخة المؤقتة حتى تحفظها بصيغة PDF.",
       "saveAsPdf": "حفظ بصيغة PDF…",
       "openTool": "فتح في أداة التحويل",
+      "officeTitle": "يلزم LibreOffice",
+      "officeNeeded": "لفتح {{name}}، يحوّله vivePDF إلى PDF باستخدام LibreOffice. وهو مجاني ويُثبَّت مرة واحدة فقط.",
       "allSupported": "كل الملفات المدعومة",
       "fromClipboard": "أُنشئ من الحافظة ولم يُحفظ بعد."
     },

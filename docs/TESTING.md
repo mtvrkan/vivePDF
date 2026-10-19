@@ -225,6 +225,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   app for those types stays what it was. Turning the setting off removes vivePDF from those
   lists; updating from 0.3.0 with the setting already on adds them on first start; uninstalling
   leaves no vivePDF.Office key or OpenWithProgids value behind.
+- With LibreOffice removed under Settings › Tools, open a .pptx from Explorer: a dialog offers
+  to set LibreOffice up, shows the download progress, and opens the file as a PDF when it is
+  done. Cancel stops the download; with a bundled installer the button installs from the app
+  package without internet.
 
 ### How native dialogs are answered
 

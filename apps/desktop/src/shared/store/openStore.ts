@@ -4,10 +4,12 @@ import type { PasswordRequest } from "@/types";
 type OpenState = {
   busy: boolean;
   passwordRequest: PasswordRequest | null;
+  officeRequest: string | null;
   waitingPaths: string[];
   afterWaiting: (() => void) | null;
   setBusy: (busy: boolean) => void;
   requestPassword: (request: PasswordRequest | null) => void;
+  requestOffice: (path: string | null) => void;
   queueWaiting: (paths: string[]) => void;
   takeWaiting: () => string[];
   setAfterWaiting: (callback: (() => void) | null) => void;
@@ -16,10 +18,12 @@ type OpenState = {
 export const useOpenStore = create<OpenState>((set, get) => ({
   busy: false,
   passwordRequest: null,
+  officeRequest: null,
   waitingPaths: [],
   afterWaiting: null,
   setBusy: (busy) => set({ busy }),
   requestPassword: (passwordRequest) => set({ passwordRequest }),
+  requestOffice: (officeRequest) => set({ officeRequest }),
   queueWaiting: (paths) => set((state) => ({ waitingPaths: [...state.waitingPaths, ...paths.filter((path) => !state.waitingPaths.includes(path))] })),
   takeWaiting: () => {
     const paths = get().waitingPaths;

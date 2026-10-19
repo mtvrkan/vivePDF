@@ -16,6 +16,7 @@ import { HomePage } from "@/features/home/HomePage";
 import { FileOpenListener } from "@/features/viewer/FileOpenListener";
 import { OrganizerSourceCleanup } from "@/features/pages/OrganizerSourceCleanup";
 import { PasswordDialog } from "@/features/viewer/PasswordDialog";
+import { OfficeSetupDialog } from "@/features/viewer/OfficeSetupDialog";
 import { closeStaleAudience } from "@/features/presenter/presenterSession";
 import { exitImmersive, followWindowFullscreen, shouldExitOnKey } from "@/features/viewer/immersive";
 import { PdfProvider } from "@/features/viewer/pdf/PdfProvider";
@@ -215,6 +216,7 @@ export default function App() {
           </RouteErrorBoundary>
         </AppShell>
         <PasswordDialog />
+        <OfficeSetupDialog />
       </PdfProvider>
       <Toaster />
       <TooltipLayer />

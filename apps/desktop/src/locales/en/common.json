@@ -1534,6 +1534,8 @@
       "message": "Opened {{name}} as a PDF copy. Changes stay in this temporary copy until you save it as a PDF.",
       "saveAsPdf": "Save as PDF…",
       "openTool": "Open in Convert",
+      "officeTitle": "LibreOffice is needed",
+      "officeNeeded": "To open {{name}}, vivePDF turns it into a PDF with LibreOffice. It is free and only needs setting up once.",
       "allSupported": "All supported files",
       "fromClipboard": "Made from the clipboard and not saved yet."
     },

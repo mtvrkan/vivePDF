@@ -1533,6 +1533,8 @@
       "message": "{{name}} a été ouvert comme copie PDF. Les modifications restent dans cette copie temporaire jusqu’à ce que vous l’enregistriez en PDF.",
       "saveAsPdf": "Enregistrer en PDF…",
       "openTool": "Ouvrir dans Convertir",
+      "officeTitle": "LibreOffice est nécessaire",
+      "officeNeeded": "Pour ouvrir {{name}}, vivePDF le transforme en PDF avec LibreOffice. Il est gratuit et ne s'installe qu'une fois.",
       "allSupported": "Tous les fichiers pris en charge",
       "fromClipboard": "Créé depuis le presse-papiers, pas encore enregistré."
     },

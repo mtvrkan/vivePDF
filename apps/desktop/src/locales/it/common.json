@@ -1533,6 +1533,8 @@
       "message": "{{name}} è stato aperto come copia PDF. Le modifiche restano in questa copia temporanea finché non la salvi come PDF.",
       "saveAsPdf": "Salva come PDF…",
       "openTool": "Apri in Converti",
+      "officeTitle": "Serve LibreOffice",
+      "officeNeeded": "Per aprire {{name}}, vivePDF lo trasforma in PDF con LibreOffice. È gratuito e si installa una sola volta.",
       "allSupported": "Tutti i file supportati",
       "fromClipboard": "Creato dagli appunti, non ancora salvato."
     },

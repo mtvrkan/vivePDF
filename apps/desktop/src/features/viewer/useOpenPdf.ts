@@ -133,6 +133,10 @@ export function useOpenPdf(documentRoute = "/viewer") {
           await fileToPdf({ path, output, overwrite: true });
         } catch (error) {
           const rpcError = toRpcError(error);
+          if (rpcError.code === "LIBREOFFICE_MISSING") {
+            useOpenStore.getState().requestOffice(path);
+            return false;
+          }
           const toolRoute = "/tools/convert?mode=file-to-pdf";
           toast("error", describeError(t, rpcError), {
             label: t("viewer.converted.openTool"),
@@ -270,15 +274,16 @@ export function useOpenPdf(documentRoute = "/viewer") {
   const openPathsNow = useCallback(
     async (paths: string[]) => {
       const store = useOpenStore.getState();
-      if (store.passwordRequest) {
+      if (store.passwordRequest || store.officeRequest) {
         store.queueWaiting(paths);
         return;
       }
       for (let index = 0; index < paths.length; index += 1) {
         const opened = await openPath(paths[index]);
         if (opened) continue;
-        if (useOpenStore.getState().passwordRequest) {
-          useOpenStore.getState().queueWaiting(paths.slice(index + 1));
+        const after = useOpenStore.getState();
+        if (after.passwordRequest || after.officeRequest) {
+          after.queueWaiting(paths.slice(index + 1));
           return;
         }
         if (!docManager || documentRoomError(docManager.getDocumentCount())) return;
@@ -406,7 +411,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
 
   const resumeWaiting = useCallback(() => {
     const store = useOpenStore.getState();
-    if (store.passwordRequest) return;
+    if (store.passwordRequest || store.officeRequest) return;
     const waiting = store.takeWaiting();
     if (waiting.length === 0) return;
     const after = store.afterWaiting;
