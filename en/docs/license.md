@@ -3,7 +3,7 @@
 > What vivePDF's AGPL-3.0 licence means for users and for anyone distributing modified builds, plus the third-party components it uses.
 
 URL: https://vivepdf.com/en/docs/license/
-Last updated: 2026-10-18
+Last updated: 2026-10-19
 
 vivePDF is free software released under version 3 of the GNU Affero General Public License (AGPL-3.0-only). You can use the app at no cost, read its source code, change it and share it; if you give a modified version to other people, you must also offer them its source code under the same licence.
 
@@ -40,3 +40,18 @@ vivePDF is built on open-source components that carry their own licences. Some o
 - **Tauri** (MIT / Apache-2.0) — the desktop shell
 
 The full list, with each component's licence and role in the app, is in [THIRD_PARTY_NOTICES.md](https://github.com/mtvrkan/vivePDF/blob/main/THIRD_PARTY_NOTICES.md). Inside the app, the **Licences** link on the **Help › About** page also lists the components and their licences.
+
+## Code signing policy
+
+Signing of the Windows releases is being set up through SignPath Foundation's programme for open-source projects: free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/). Until the first signed release, the installers carry no code signature (see [Installation](https://vivepdf.com/en/docs/installation/)).
+
+- Every signed installer is built from the public source code on GitHub's own build servers (GitHub Actions); nothing is built or changed by hand before signing.
+- Every release is approved by hand before it is signed.
+- The updates the app installs itself are checked against a separate update signature in any case, so a changed file is never installed.
+
+Team roles:
+
+- Committers and reviewers: [Mehmet Türkan (mtvrkan)](https://github.com/mtvrkan)
+- Approvers: [Mehmet Türkan (mtvrkan)](https://github.com/mtvrkan)
+
+Privacy: vivePDF sends nothing about you or your documents to other networked systems. It goes online only for things you start or allow: update checks, downloads you choose (LibreOffice, fonts, language packs, voice models), web search, turning a web page into a PDF, DOI lookups, the optional leaked-password check and a timestamp while signing. [Offline mode](https://vivepdf.com/en/docs/offline/) switches all of them off; [Settings and privacy](https://vivepdf.com/en/docs/settings-privacy/) has the details.

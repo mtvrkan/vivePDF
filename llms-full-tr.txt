@@ -1502,7 +1502,7 @@ Resmî sürümlerin nasıl derlenip yayımlandığı, imzalama ve güncelleme ka
 > vivePDF'in AGPL-3.0 lisansının kullanıcılar ve değiştirilmiş sürüm dağıtanlar için ne anlama geldiği, üçüncü taraf bileşenler.
 
 URL: https://vivepdf.com/dokumantasyon/lisans/
-Son güncelleme: 2026-10-18
+Son güncelleme: 2026-10-19
 
 vivePDF, GNU Affero Genel Kamu Lisansı'nın 3. sürümüyle (AGPL-3.0-only) yayımlanan özgür bir yazılımdır. Uygulamayı ücretsiz kullanabilir, kaynak kodunu inceleyebilir, değiştirebilir ve paylaşabilirsin; değiştirilmiş bir sürümü başkalarına verdiğinde ise kaynak kodunu da aynı lisansla sunman gerekir.
 
@@ -1539,3 +1539,18 @@ vivePDF, kendi lisansları olan açık kaynak bileşenler üzerine kurulur. Bunl
 - **Tauri** (MIT / Apache-2.0) — masaüstü kabuğu
 
 Tam liste, her bileşenin lisansı ve uygulamadaki göreviyle birlikte [THIRD_PARTY_NOTICES.md](https://github.com/mtvrkan/vivePDF/blob/main/THIRD_PARTY_NOTICES.md) dosyasında. Uygulamanın içinde de bileşenleri ve lisanslarını **Yardım › Hakkında** sayfasındaki **Lisanslar** bağlantısı listeler.
+
+## Kod imzalama politikası
+
+Windows sürümlerinin imzalanması, SignPath Foundation'ın açık kaynak projelere yönelik programıyla kuruluyor: ücretsiz kod imzalama [SignPath.io](https://about.signpath.io/) tarafından, sertifika [SignPath Foundation](https://signpath.org/) tarafından sağlanır. İlk imzalı sürüme kadar kurulum dosyalarında kod imzası yoktur (bkz. [Kurulum](https://vivepdf.com/dokumantasyon/kurulum/)).
+
+- İmzalanan her kurulum dosyası, herkese açık kaynak koddan GitHub'ın kendi derleme sunucularında (GitHub Actions) derlenir; imzadan önce hiçbir şey elle derlenmez ya da değiştirilmez.
+- Her sürüm imzalanmadan önce elle onaylanır.
+- Uygulamanın kendi kurduğu güncellemeler her durumda ayrı bir güncelleme imzasıyla denetlenir; değiştirilmiş bir dosya asla kurulmaz.
+
+Ekip rolleri:
+
+- Kod yazanlar ve gözden geçirenler: [Mehmet Türkan (mtvrkan)](https://github.com/mtvrkan)
+- Onaylayanlar: [Mehmet Türkan (mtvrkan)](https://github.com/mtvrkan)
+
+Gizlilik: vivePDF senin ya da belgelerin hakkında başka ağ sistemlerine hiçbir şey göndermez. Yalnızca senin başlattığın ya da izin verdiğin işler için internete çıkar: güncelleme denetimi, seçtiğin indirmeler (LibreOffice, yazı tipleri, dil paketleri, ses modelleri), web araması, web sayfasını PDF'e çevirme, DOI sorguları, isteğe bağlı sızdırılmış parola denetimi ve imzalarken zaman damgası. [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) bunların hepsini kapatır; ayrıntılar [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/) sayfasında.
