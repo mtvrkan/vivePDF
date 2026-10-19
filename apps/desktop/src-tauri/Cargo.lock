@@ -5039,6 +5039,7 @@ dependencies = [
  "keyring",
  "keyring-core",
  "notify",
+ "objc2",
  "objc2-app-kit",
  "serde",
  "serde_json",

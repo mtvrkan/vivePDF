@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
@@ -7,6 +8,11 @@ import { exitImmersive } from "@/features/viewer/immersive";
 import { hideToTray } from "@/shared/rpc/tray";
 import { useUiStore } from "@/shared/store/uiStore";
 import { allowClose, cancelQuit, hidesOnClose, registerCloseGuard, setTrayActive, shouldConfirmClose, type CloseWarning } from "./closeGuardState";
+
+function keepRunning() {
+  cancelQuit();
+  invoke("app_quit_cancelled").catch(() => undefined);
+}
 
 export function CloseGuard() {
   const { t } = useTranslation();
@@ -43,7 +49,7 @@ export function CloseGuard() {
       open
       title={t("closeGuard.title")}
       onClose={() => {
-        cancelQuit();
+        keepRunning();
         setPending(null);
       }}
       footer={
@@ -51,7 +57,7 @@ export function CloseGuard() {
           <Button
             variant="ghost"
             onClick={() => {
-              cancelQuit();
+              keepRunning();
               setPending(null);
             }}
           >

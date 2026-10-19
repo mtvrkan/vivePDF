@@ -16,6 +16,7 @@ mod lens;
 mod navigation;
 mod path_gate;
 mod presenter;
+mod quit_guard;
 mod rpc;
 mod secret_injection;
 mod session_file;
@@ -125,11 +126,14 @@ pub fn run() {
             tray::prepare_startup(app.handle());
             #[cfg(target_os = "macos")]
             app_menu::install(app.handle())?;
+            #[cfg(target_os = "macos")]
+            quit_guard::install(app.handle());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
             rpc::rpc,
             app_menu::app_menu_configure,
+            quit_guard::app_quit_cancelled,
             rpc::rpc_cancel,
             sidecar::set_offline_mode,
             grants::grants_adopt,
@@ -206,6 +210,14 @@ pub fn run() {
     diagnostics::install_panic_hook(app.handle().clone());
 
     app.run(|handle, event| match event {
+        #[cfg(target_os = "macos")]
+        tauri::RunEvent::ExitRequested {
+            code: None, api, ..
+        } => {
+            if quit_guard::windows_closed() {
+                api.prevent_exit();
+            }
+        }
         tauri::RunEvent::Exit => {
             sidecar::shutdown(handle);
             view_source::clear_snapshots(handle);

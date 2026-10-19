@@ -47,6 +47,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 - Very small labels (badges, counters, captions) use two new type-scale steps, `text-2xs` (11 px) and `text-3xs` (10 px), instead of fixed pixel sizes; the code-language badge on a selected code block grows from 9 to 10 px [2026-10-18]
 ### Fixed
+- macOS: Quit from the Dock, a logout or a restart now goes through the same close check as Command+Q, so open documents and running jobs are asked about first instead of the app vanishing; cancelling keeps vivePDF and the logout waits [2026-10-19]
 - macOS: Command+G / Shift+Command+G step through search results and Command+[ / Command+] go back and forward in a document, as F3 and Alt+arrows do; the shortcut sheet lists the Mac keys [2026-10-19]
 - macOS: Edit › Undo and Redo in the menu bar undo canvas, page and annotation edits too, not only typing in a text field [2026-10-19]
 - Trackpad pinch zooms the Studio canvas, the crop frame and the page organizer grid smoothly instead of jumping a full step on every tiny movement; one mouse wheel notch still takes one step [2026-10-19]
