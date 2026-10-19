@@ -5,7 +5,7 @@ import { DOCS } from "../docs/structure";
 
 export type SiteRoute = { alternates: Alternates; lastmod: string };
 
-const SITE_UPDATED = "2026-10-18";
+const SITE_UPDATED = "2026-10-19";
 
 export async function siteRoutes(): Promise<SiteRoute[]> {
   const entries = await getCollection("docs");

@@ -26,9 +26,10 @@ type Props = {
   navSolid?: boolean;
   hero?: boolean;
   noindex?: boolean;
+  markdownPath?: string;
 };
 
-const { lang, title, description, path, alternates, ogImage, ogType = "website", jsonLd = [], navSolid = false, hero = false, noindex = false } = Astro.props;
+const { lang, title, description, path, alternates, ogImage, ogType = "website", jsonLd = [], navSolid = false, hero = false, noindex = false, markdownPath } = Astro.props;
 const ui = UI[lang];
 const canonical = absoluteUrl(path);
 const image = absoluteUrl(ogImage ?? `/og/${lang}.png`);
@@ -69,6 +70,7 @@ const ldJson = (data: Record<string, unknown>) => JSON.stringify(data).replace(/
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="/icon-256.png">
 <link rel="manifest" href="/site.webmanifest">
+{markdownPath && <link rel="alternate" type="text/markdown" href={markdownPath}>}
 <link rel="alternate" type="application/rss+xml" title={ui.docs.releases.feedTitle} href={releaseFeedPath(lang)}>
 <script is:inline set:html={INLINE_SCRIPTS.theme} />
 <script is:inline set:html={INLINE_SCRIPTS.motion} />

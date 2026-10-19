@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Website: /llms.txt describes vivePDF for language models (key facts, every docs page in Turkish and English with its summary, downloads, source, feeds); /llms-full.txt and /llms-full-tr.txt hold the whole documentation as plain Markdown, and every docs page has a Markdown copy beside it (/en/docs/<page>.md, /dokumantasyon/<sayfa>.md) linked from its head, with steps, notes, keys, tool and shortcut tables, release notes and FAQ answers written out; the sitemap dates the home pages to today [2026-10-19]
 - Website: a home page section for academics and students (merge and split, fitting upload limits, searchable notes, marking up, writing a thesis, bibliography, comparing versions, PDF/A submission) with a sample submission file built from four sources, in Turkish and English [2026-10-19]
 - Website: every docs page has its own 1200×630 share image (group, title, description and address) drawn at build time with resvg and the Geist fonts, and its structured data names it [2026-10-18]
 - Website: release notes are offered as an RSS feed in Turkish and English (/dokumantasyon/surum-notlari.xml, /en/docs/release-notes.xml), linked from every page head and from the release notes page [2026-10-18]

@@ -19,15 +19,16 @@ type Props = {
   current?: DocEntry;
   headings?: TocHeading[];
   ogImage?: string;
+  markdownPath?: string;
 };
 
-const { lang, title, description, path, alternates, jsonLd = [], current, headings = [], ogImage } = Astro.props;
+const { lang, title, description, path, alternates, jsonLd = [], current, headings = [], ogImage, markdownPath } = Astro.props;
 const ui = UI[lang];
 const titles = await docTitles(lang);
 const groups = DOC_GROUPS.map((g) => ({ key: g, items: DOCS.filter((d) => d.group === g && titles.has(d.key)) })).filter((g) => g.items.length);
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
-<Base lang={lang} title={title} description={description} path={path} alternates={alternates} jsonLd={jsonLd} ogImage={ogImage} ogType={current ? "article" : "website"} navSolid>
+<Base lang={lang} title={title} description={description} path={path} alternates={alternates} jsonLd={jsonLd} ogImage={ogImage} ogType={current ? "article" : "website"} markdownPath={markdownPath} navSolid>
   <script is:inline slot="head" set:html={INLINE_SCRIPTS.keys} />
   <div class="docs-shell wrap">
     <button type="button" class="docs-menu-btn btn btn-ghost" aria-expanded="false" aria-controls="docsSide" data-side-toggle>
