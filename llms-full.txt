@@ -1,0 +1,1541 @@
+# vivePDF · Documentation
+
+> vivePDF documentation: installing, opening PDFs, organising pages, converting, OCR, signing, Studio, presenter view, shortcuts and troubleshooting.
+
+URL: https://vivepdf.com/en/docs/
+
+---
+
+# Installation
+
+> How to install vivePDF on Windows 10/11 and macOS 14+, get past the SmartScreen and Gatekeeper warnings, receive updates and uninstall it.
+
+URL: https://vivepdf.com/en/docs/installation/
+Last updated: 2026-10-18
+
+vivePDF is a free PDF editor for Windows 10 and 11 (64-bit) and for Macs with Apple silicon on macOS 14 Sonoma or later. Download the installer from the releases page on GitHub and open it; you do not need an account, and the app does not need to stay online.
+
+## Install on Windows
+
+1. Download `vivePDF_<version>_x64-setup.exe` from the [latest release page](https://github.com/mtvrkan/vivePDF/releases/latest).
+2. Double-click the downloaded file and follow the installer.
+3. When it finishes, open vivePDF from the Start menu. The first screen is Home, where you can open a PDF or go to the tools.
+
+### The SmartScreen warning
+
+The installer carries no code signature, so the first time you run it Windows may show **Windows protected your PC**. Click **More info**, then **Run anyway**. The warning is only about the installer; the app itself does not ask again.
+
+> **Office conversions**
+>
+> Word, Excel and PowerPoint conversions use LibreOffice. It comes with the Windows installer and is set up without internet on the first start (about 900 MB on disk). You can remove or reinstall it in **Settings › Tools**.
+
+## Updates
+
+vivePDF checks for new versions itself. At start-up it only fetches version information; downloading and installing always ask you first. Updates are signed and arrive in small packages.
+
+- To check by hand, open **Settings › Updates** and click **Check for updates**.
+- When a new version is ready, choose **Download and install**; once the download finishes, **Restart** moves the app to the new version.
+- If you do not want automatic checks, turn off **Check automatically at startup**. While [Offline mode](https://vivepdf.com/en/docs/offline/) is on, no check is made at all.
+
+What changed in each version is on the [Release notes](https://vivepdf.com/en/docs/release-notes/) page.
+
+## Install on macOS
+
+1. Download `vivePDF_<version>_aarch64.dmg` from the [latest release page](https://github.com/mtvrkan/vivePDF/releases/latest).
+2. Open the DMG and drag vivePDF to **Applications**.
+3. Open vivePDF from Applications or Launchpad.
+
+### The Gatekeeper warning
+
+The app is not notarised by Apple, so macOS may block the first start. Open **System Settings › Privacy & Security** and click **Open Anyway** next to the vivePDF message. If you prefer Terminal, `xattr -dr com.apple.quarantine /Applications/vivePDF.app` does the same. You only need this the first time.
+
+Office conversions use the LibreOffice in Applications; if it is not installed, the app downloads it when you ask. Scanning needs SANE (`brew install sane-backends`).
+
+## Linux
+
+On Linux, vivePDF is [built from source](https://vivepdf.com/en/docs/build-from-source/). The same steps work for development on Windows and macOS.
+
+## Uninstall
+
+On Windows, remove vivePDF from **Settings › Apps › Installed apps**; on a Mac, drag it from Applications to the Bin. If you also want to delete the settings and recent-file list the app keeps on this computer, use **Settings › Data** in vivePDF before uninstalling; **Help › Privacy** shows what is stored.
+
+---
+
+# Interface
+
+> A tour of vivePDF's top bar, Tools menu, command palette, tabs, tab groups, windows and the side panels in the Viewer.
+
+URL: https://vivepdf.com/en/docs/interface/
+Last updated: 2026-10-18
+
+Everything in vivePDF starts from one bar along the top of the window. The **Home**, **Viewer**, **Pages** and **Studio** buttons on the left switch between workspaces, and the **Tools** and **Help** menus hold the rest. The documents you open sit in tabs, which you can group or move into separate windows.
+
+## The top bar
+
+The vivePDF logo and the four workspaces sit on the left of the bar:
+
+- **Home**: recent documents, collections and quick tools. **Customize home** lets you rearrange its sections.
+- **Viewer**: where you read, search and mark up documents. See [Open and read a PDF](https://vivepdf.com/en/docs/open-and-read/).
+- **Pages**: the page organizer, showing every page of the open document as a thumbnail. See [Organise pages](https://vivepdf.com/en/docs/pages/).
+- **Studio**: an editor for writing a document or making a design from a blank page.
+
+On the right you will find the search box that opens the command palette, the theme button (it switches between light and dark), the **Language** menu, **Settings** (the gear icon) and the **Open PDF** button. When a new version is ready, a green update button appears to the left of the search box.
+
+As the window gets narrower the bar compacts itself: labels go first, then the menus turn into icons, so search, settings and **Open PDF** stay visible at any width.
+
+## The Tools menu
+
+Click **Tools** and the tools open in six groups:
+
+- **Page layout**: Merge, Split, Rename
+- **Optimisation**: Compress, OCR, Scans, Compare, Accessibility, Print check, PDF/A archive, Batch, Watched folders
+- **To PDF**: Create PDF
+- **From PDF**: Convert
+- **Content editing**: Edit, QR & barcodes, Answer sheets, Forms
+- **Security**: Security, Sign
+
+**Show all** at the bottom of the menu opens the catalogue of every tool with a search box; tools that have no line of their own in the menu, such as rotating pages or adding a watermark, are listed there. **Search in folders** searches the text of every PDF in the folders you have indexed and jumps straight to the page. The full list is on the [Tools](https://vivepdf.com/en/docs/tools/) page.
+
+## The command palette
+
+Press `Ctrl+K`, or click the **Search tools, pages or documents** box in the top bar, to open the command palette. Type the name of a tool, a settings section or an open document, pick it with the arrow keys and press `Enter`.
+
+Start your search with a symbol to narrow the palette to one kind of result:
+
+- `>` shows only actions, such as **New window**, **PDF from clipboard** or **Check for updates**.
+- `/` searches pages and settings sections.
+- `@` searches open documents and recent files.
+- `#` followed by a number goes to that page of the open document.
+
+## The Help menu
+
+The **Help** menu holds **Help topics**, **Keyboard shortcuts (F1)**, **What's new** and **Privacy**. Below them come **Report a bug**, **Suggest a feature**, **Open log folder** and **Save support bundle…**, and at the bottom **Check for updates** and **About**.
+
+> **Shortcuts for this screen**
+>
+> Wherever you are, `F1` or `Ctrl+/` shows the shortcuts for that screen, and `Shift+F1` opens its help topic. The full list is on the [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/) page.
+
+## Tabs and tab groups
+
+Every document you open gets its own tab above the Viewer; the same tabs also appear in Pages. Drag a tab to change its place, or move it with `Ctrl+Shift+←`/`→`. `Ctrl+W` closes the active document.
+
+Right-click a tab for options such as **Close others**, **Close all**, **Copy path**, **Copy file name**, **Show in folder** and **Open beside current document**. **Add to new group** in the same menu groups tabs the way a web browser does:
+
+- Click the name chip in front of a group to collapse or expand it, double-click it to rename the group, and drag it to move the whole group.
+- The group menu offers **Colour** (13 colours), **Ungroup**, **Close the group's documents**, **Open a document in this group** and **Save as collection**.
+- A group saved as a collection appears under **Collections** on Home, where you can later reopen all its files as one tab group.
+
+## Windows
+
+`Ctrl+Shift+N` opens an empty new window. To give a document a window of its own, drag its tab out of the window and let go, or choose **Move to new window** from the tab menu; **Move group to new window** in the group menu moves all of the group's documents to a new window. A document with unsaved changes stays in its window until you save it. Settings, theme, language and recent files are shared by every window.
+
+## Side panels in the Viewer
+
+In the Viewer, a vertical strip of buttons runs down each side of the page.
+
+The **Navigation** strip on the left opens the **Thumbnails**, **Outline** and **Attachments** panels. A **Signatures** button appears when the document is signed, and **Layers** when it has layers.
+
+The **Tools** strip on the right starts with **Comments**, **Annotate / mark up**, **Edit** and **Presentation tools**. Then come **Reading mode**, **Read aloud**, **Page colours** and **Document info**. At the bottom of the strip are the page number box, **Rotate**, the **Page display** menu and the zoom buttons.
+
+Each button opens and closes its own panel. You can choose which panels are ready when a document opens in **Settings › Viewer**; for the other settings see [Settings and privacy](https://vivepdf.com/en/docs/settings-privacy/).
+
+---
+
+# Open and read a PDF
+
+> How to open documents in vivePDF, move between pages, search the text, zoom, change the page display, split the window and read comfortably.
+
+URL: https://vivepdf.com/en/docs/open-and-read/
+Last updated: 2026-10-18
+
+To open a PDF in vivePDF, click **Open PDF** on Home or in the top bar, or press `Ctrl+O`. The document opens in its own tab in the Viewer, where you can move between pages, search the text and zoom.
+
+## Open a document
+
+1. On Home, click **Open PDF** or press `Ctrl+O`, then choose your file.
+2. Or drag files straight onto the window. If you drop several, each one opens in its own tab.
+3. If the document is encrypted, **Password required** appears; type the password and the document opens.
+
+You are not limited to PDFs: Office documents, e-books, e-mails and pictures dropped on the window open as a PDF copy. Changes to that copy stay temporary until you keep them with **Save as PDF…**. If you have copied a picture or some text, `Ctrl+Shift+V` turns it into a PDF.
+
+Very large files open too: vivePDF reads the document in pieces instead of loading it into memory all at once.
+
+### Recent documents and sessions
+
+Documents you open stay in the **Recent documents** list on Home. Pin the ones you use often and they are kept in a group of their own at the top. The **Restore last session** action in the command palette brings back the tabs that were open when you last closed the app. When you reopen a document, vivePDF continues where you left off; to read from the start, click **Go to page 1** in the notice.
+
+## Move between pages
+
+- Type a page number in the box at the bottom of the right-hand strip, or use its arrows to go to the previous or next page. If the document has page labels such as iii or A-1, you can type those as well.
+- `Page Up`/`Page Down` and the left and right arrow keys change page, and `Home`/`End` go to the first and last page.
+- After jumping to another page through a link or the outline, `Alt+←` takes you back and `Alt+→` forward again.
+- The **Thumbnails** panel on the left shows every page, and the **Outline** panel lists the document's bookmarks.
+
+## Search the document
+
+`Ctrl+F` opens the search bar. Type the word you are looking for; the results are listed grouped by page. **Match case** and **Whole word** narrow them down. `F3` moves to the next result and `Shift+F3` to the previous one.
+
+> **Searching scanned pages**
+>
+> Search only works on pages that have a text layer. If a scanned document returns no results, make its pages searchable with [OCR](https://vivepdf.com/en/docs/ocr/) first.
+
+## Zoom and page display
+
+`Ctrl++` and `Ctrl+-`, or the mouse wheel with `Ctrl` held down, zoom in and out. `Ctrl+0` picks **Actual size**, `Ctrl+1` **Fit width** and `Ctrl+2` **Fit page**. To move the page around, hold `Space` and drag.
+
+The **Page display** menu in the right-hand strip offers:
+
+- **Single page**, **Two pages side by side** or **Two pages, cover page alone**
+- **Vertical scrolling** or **Horizontal scrolling**
+- **Automatic scrolling** (`Ctrl+Shift+H`); while it runs, the up and down arrows change the speed and `Esc` stops it
+- **Page colours**: **Sepia**, **Dark (inverted)** or easy-on-the-eyes options such as white, yellow or green text on black
+
+### Split window
+
+`Ctrl+Shift+E` splits the window in two. From **Page display › Split window** you can place the panes **Side by side** or **Stacked**, and **Compare with another document…** opens a different file in the second pane. **Sync scrolling** keeps both panes moving together.
+
+## Comfortable reading
+
+- **Reading mode** shows the text of the page in a single column. You can make the text larger or smaller and choose the column width and the **Paper**, **Sepia** or **Dark** theme.
+- **Read aloud** reads the document in the voice and at the speed you choose.
+- `F11` switches to immersive mode and shows the document full screen. If you want to present it, see [Present a PDF](https://vivepdf.com/en/docs/present/).
+- `Ctrl+P` opens the print dialog.
+
+Every Viewer shortcut is listed on the [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/) page, and the overall layout of the screen is described under [Interface](https://vivepdf.com/en/docs/interface/).
+
+---
+
+# Organise pages
+
+> How to reorder, rotate, delete, insert, extract and split PDF pages with the vivePDF page organizer, and what happens to the original file.
+
+URL: https://vivepdf.com/en/docs/pages/
+Last updated: 2026-10-18
+
+The page organizer is where you reorder, rotate, delete, insert and split pages in vivePDF. Open a document, then click **Pages** in the top bar to see every page as a thumbnail. Nothing touches the file until you press **Apply and save**, and by default the result is written to a new file.
+
+## The basic flow
+
+1. Open the document in the Viewer, then choose **Pages** in the top bar. The organizer always works on the document open in the Viewer.
+2. Select pages and drag them to their new place.
+3. Rotate, delete, insert or mark where to split. Every step can be undone with `Ctrl+Z` and redone with `Ctrl+Y`.
+4. Click **Apply and save** or press `Ctrl+Enter`. The new file goes where the save field at the bottom shows.
+
+## Select pages
+
+Click a page to select it and double-click to preview it. For several pages, `Shift`- or `Ctrl`-click, tick the box in a card's corner, or drag across an empty area. `Ctrl+A` selects them all and `Esc` clears the selection.
+
+The **Select** menu in the toolbar goes further:
+
+- **Select by page numbers** (`Ctrl+G`): type ranges such as `1-5, 9, 12-`.
+- **Select odd pages**, **Select even pages**, **Invert selection**
+- **Select blank pages**, **Select scanned pages**, **Find duplicate pages**
+- **Select by text…**: selects the pages that contain a given piece of text.
+- Selection **By page size**, or portrait and landscape pages
+
+## Reorder, rotate and delete
+
+Drag pages to reorder them. To move the selected pages to a particular position, press `M` and type the page number.
+
+The **Edit pages** menu holds:
+
+- **Rotate left** and **Rotate right** (`Shift+R` / `R`)
+- **Duplicate** (`Ctrl+D`) and **Make copies…**
+- **Delete selected** (`Delete`), plus deleting every page before or after one
+- **Reverse order** and **Reverse selected pages**
+- **Fix page orientation**: finds pages lying sideways or upside down and turns them.
+- **Prepare for two-sided printing**: arranges fronts and backs for printers without automatic duplex.
+- **Page labels**: gives pages a cover label or numbers such as i, ii, iii.
+
+When you point at a card, buttons to rotate or delete that page alone appear on it too.
+
+## Insert pages
+
+From the **Insert** menu choose **Insert blank page** (`B`), **Insert pages from PDF** or **Insert pages from images**. For blank pages you can pick the paper size, the orientation and a paper pattern such as lined, graph or dot grid. You also decide whether new pages go before the selection, after it or at the end. **Replace selected pages with pages from a PDF** swaps the selection for pages from another file.
+
+> **Moving pages between documents**
+>
+> Copy the selected pages with `Ctrl+C`, switch to another document's tab and paste them with `Ctrl+V`. Dragging pages onto another document's tab copies them to the end of that document.
+
+## Split and extract
+
+- To split, select pages and press `S`, or use **Split › Split after selected pages**. **Split at chapters (bookmarks)** cuts the document at every chapter start, and **Remove split marks** (`Shift+S`) clears them all. When the marks are in place, click **Save as separate files**.
+- To make a new PDF from the selected pages only, choose **Extract selected** or press `Ctrl+E`.
+- In the **Export** menu, **Save as pictures…** saves pages as image files and **Print…** prints the selected pages, or all of them.
+
+## What happens to the original?
+
+By default **Apply and save** writes the result to a new file and the original stays as it was. To write the change straight into the original, turn on **Overwrite the original file**; the button then reads **Apply to original**. If the document has unsaved changes in the Viewer, vivePDF asks you to save or discard them first. You can choose where new files are saved by default in **Settings › Files**.
+
+## Separate page tools
+
+Use **Tools › Merge** to combine several PDFs into one file, and **Tools › Split** to break a PDF up by page ranges, a fixed page count, file size or bookmarks. There are also separate tools for rotating, deleting and extracting pages; they are all listed on the [Tools](https://vivepdf.com/en/docs/tools/) page.
+
+In the organizer, the `?` key shows every shortcut; for the full list see [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/). If you want scanned pages to be searchable once they are in order, the [OCR](https://vivepdf.com/en/docs/ocr/) page explains how.
+
+---
+
+# Convert files
+
+> How vivePDF turns PDFs into Word, Excel, PowerPoint, pictures, text, Markdown, HTML and EPUB, and makes PDFs from pictures, Office files, SVG and web pages.
+
+URL: https://vivepdf.com/en/docs/convert/
+Last updated: 2026-10-18
+
+vivePDF converts PDFs into Word, Excel, PowerPoint, pictures, text, Markdown, HTML and EPUB, and makes PDFs from pictures, Office documents, SVG drawings and web pages. Everything lives in one tool, **Tools › Convert**, and your files are converted on your own computer.
+
+## How to convert
+
+1. Open **Tools › Convert**. In the Tools menu it sits in the **From PDF** group.
+2. Pick a conversion from the list on the left: the options under **From PDF** turn a PDF into another format, and those under **To PDF** create a PDF.
+3. Choose your file and check the options. When converting from a PDF, type a page range if you only want some of the pages.
+4. Click **Convert**. When it finishes, **Open output folder** in the result panel on the right takes you to the new file.
+
+## From PDF to other formats
+
+- **PDF → Word**: makes a layout-preserving .docx with its tables and images. With **Move repeated headers and footers into Word** on, text repeated on most pages becomes the Word header and footer, and page numbers become a Word page number field.
+- **PDF → Excel**: tables on the pages go to separate worksheets; the text of pages without a table goes line by line to a sheet of its own. You can choose .xlsx or .csv as the file type, and lay out the tables **One per table**, **One per page** or **All tables on one sheet**. **Also find tables without lines** reads columns lined up by spacing alone as well.
+- **PDF → PowerPoint**: each page becomes a slide. With **Editable text**, the text goes into editable boxes over a picture of the rest of the page; **Picture only** places an exact picture of each page and puts the page text into the speaker notes.
+- **PDF → JPG / PNG**: each page becomes a picture. Choose PNG, JPG, WebP or TIFF and a resolution (DPI) from 72 to 600. There are also options to join the pages into one tall picture, make a single multi-page TIFF, pack the pictures into one ZIP file, save in greyscale or keep a transparent background.
+- **Extract images**: saves every picture embedded in the pages at its original resolution.
+- **PDF → Text**, **PDF → Markdown**, **PDF → HTML**: give you plain text, Markdown that keeps headings and tables, or a single HTML file with one section per page. For Markdown you can leave pictures out, save them in a folder next to the file or put them inside the file.
+- **PDF → EPUB**: makes a reflowable e-book for phones and e-readers. You can choose how chapters are divided, the book title, the author and whether the first page is the cover.
+
+> **Scanned PDFs**
+>
+> A scanned page holds a picture rather than text. For Text, Markdown, HTML and EPUB, turn on **Read pages without text with OCR**; the PDF itself is not changed. For Word, Excel and PowerPoint, run [OCR](https://vivepdf.com/en/docs/ocr/) on the document first, then convert it.
+
+## From other files to PDF
+
+- **Images → PDF**: combines pictures, or a whole folder of them, into one PDF. You can **Include subfolders**, sort by name or date, set a margin, and choose whether each picture fits on the page or fills it.
+- **Office → PDF**: Word, Excel and PowerPoint documents are converted with LibreOffice. TXT, Markdown, HTML, EPUB, XPS, CBZ and picture files convert directly.
+- **SVG → PDF**: turns drawings from Inkscape, Illustrator or Figma into vector PDF pages at their own size. With **Put every drawing in one PDF** on, each drawing becomes a page of the same file.
+- **Web page → PDF**: downloads a web address and saves it as a PDF. **Reader mode** keeps only the main article and leaves menus and sidebars out; **Include pictures** adds or drops the pictures.
+
+> **The one conversion that needs internet**
+>
+> **Web page → PDF** goes online to download the page, so it is not available while [Offline mode](https://vivepdf.com/en/docs/offline/) is on. Every other conversion runs on your computer without internet.
+
+### LibreOffice
+
+Office conversions use LibreOffice. It comes with the Windows installer, and you can remove or reinstall it in **Settings › Tools**. Without LibreOffice, Office files you add to the list show a **needs LibreOffice** warning. Setup details are on the [Installation](https://vivepdf.com/en/docs/installation/) page.
+
+## Where the result is saved
+
+By default the new file is written next to the source, with a suffix that names the tool. In **Settings › Files** you can switch **Where to save** to **Fixed folder** and pick an output folder, and use the name pattern to decide how files are named. Converting never changes your original file.
+
+> **Just reading?**
+>
+> If you only want to read a Word document, an e-book or a picture, you do not need to convert it: drop it on the window and it opens as a PDF copy. See [Open and read a PDF](https://vivepdf.com/en/docs/open-and-read/).
+
+---
+
+# Make scanned pages searchable (OCR)
+
+> How to add a searchable text layer to scanned PDFs with OCR in vivePDF, manage OCR languages, scan from a scanner and clean up scans.
+
+URL: https://vivepdf.com/en/docs/ocr/
+Last updated: 2026-10-18
+
+The pages of a scanned PDF are really pictures: you cannot search them or select and copy their text. vivePDF's OCR tool reads the pages and adds an invisible text layer on top of them. The pages look the same, but their text can now be searched, selected and copied. OCR runs on your computer with the built-in Tesseract, and your document is not sent anywhere.
+
+## Run OCR
+
+1. Open **Tools › OCR** and pick the scanned PDF. vivePDF shows how many pages are scanned and how many already have a text layer.
+2. Under **Languages**, tick the languages that appear in the document.
+3. Choose the **Scope**, and turn on **Auto-rotate** and **Clean up before reading** if you need them.
+4. Click **Run OCR**. The result is written to a new file; your original stays as it was.
+
+When it finishes, the result panel shows how many pages were recognised, how many were skipped and how many were turned upright.
+
+## Languages
+
+The language list only shows installed languages, and at first the app language and English are ticked. Turkish and English come with vivePDF. Pick only the languages that really appear in the document: each extra language slows reading down and can add mistakes.
+
+If you need another language, open **Download more languages** on the OCR page, or use the **OCR language packs** list in **Settings › Tools**. Each language is downloaded once and then works without internet. The **Default OCR language** setting decides which language is ticked when the OCR page opens.
+
+> **Downloading a language needs internet**
+>
+> Language packs are downloaded from the tessdata repository. While [Offline mode](https://vivepdf.com/en/docs/offline/) is on, no new language can be downloaded; OCR with the languages you already have always works.
+
+## Options
+
+The **Scope** decides which pages are read:
+
+- **Scanned pages only**: pages that already contain text stay untouched. This is the right choice for most documents.
+- **All pages**: every page is read again and any existing text layer is replaced.
+- **Redo old OCR**: the hidden text from an earlier OCR is removed and the page is read again; pages with visible text stay as they are.
+
+The other options:
+
+- **Auto-rotate**: finds the reading direction of pages scanned sideways or upside down and puts them right; it makes the run a little slower.
+- **Clean up before reading**: fixes contrast and reduces specks. It is used only for reading, so the page looks the same.
+- **Recognition resolution**: 150, 200 or 300. 200 is enough for most documents; 300 is more accurate but slower.
+- **Pages**: type a range to read only some pages. If the document mixes scanned pages and pages with text, the **Process scanned pages only** button fills in the range for you.
+- **Also save the text**: also writes the recognised text next to the PDF as plain text (.txt) or a Word document (.docx).
+
+## Quick OCR from the Viewer
+
+You can also recognise text without opening the tool. In the Viewer, right-click an empty part of the page and choose **Make selectable › Make this page selectable** or **Make the whole document selectable**.
+
+> **This changes the file itself**
+>
+> Unlike the OCR tool, **Make selectable** does not create a new file: it writes the text layer into the open document and the file is rewritten on disk. The page looks exactly the same and pages that already have text are left alone, but the change cannot be undone.
+
+If you only need the text of a small part, use the Viewer's **Text from an area** tool and drag over that area; vivePDF reads the text there and shows it so you can copy it.
+
+## The Scans tool
+
+Jobs that take you from paper to PDF are gathered in **Tools › Scans**:
+
+- **From scanner**: scans straight from your scanner. On Windows your scanner is listed directly; on macOS and Linux SANE must be installed. It offers **Scan both sides** and **Skip blank sheets**, and with **Make the text searchable (OCR)** on, the scanned pages are read as they are saved.
+- **Enhance**: cleans up existing scans with **Straighten** (for tilted pages), **Remove speckles**, **Whiten background**, **Remove edge shadows** and **Remove blank pages**. **Show preview** shows the page before and after.
+- **Split batch**: splits a stack scanned in one go into separate files at blank pages, at QR or barcode separator sheets, or wherever a text pattern is found.
+- **From photo**: finds the corners of paper in phone photos, straightens the perspective, whitens the background and turns each photo into a page.
+
+## After OCR
+
+Once a document has been through OCR, [search in the Viewer](https://vivepdf.com/en/docs/open-and-read/) works on it. To turn a scanned document into Word or Excel, run OCR first, then follow the steps on the [Convert files](https://vivepdf.com/en/docs/convert/) page.
+
+---
+
+# Sign and verify
+
+> How to add a hand-drawn signature, sign a PDF digitally with a .p12 or .pfx certificate, verify signatures and create a certificate in vivePDF.
+
+URL: https://vivepdf.com/en/docs/sign/
+Last updated: 2026-10-18
+
+vivePDF offers two kinds of signature: a hand-drawn signature that you place on the page as a picture in the Viewer, and a digital signature made with a .p12 or .pfx certificate in **Tools › Sign**. From the same place you can verify a signed file, create your own certificate and export its public part. Everything runs on this computer; neither the document nor the certificate is sent anywhere.
+
+## Hand-drawn signature
+
+A hand-drawn signature goes onto the page as a picture. It is quick for signing a form or a letter, but it does not prove whether the document changed afterwards.
+
+1. Open the document in the Viewer and click **Edit** in the toolbar.
+2. From the **Page tools** menu, choose **Place signature**.
+3. Draw a signature with **New** using a mouse, pen or your finger, or take one **From photo**. If you will use it again, click **Save signature**; next time you can pick it from **Saved signatures**.
+4. Click where the signature goes, drag it into place and choose **Apply signature**.
+
+The result is written to a new file and opened straight away; your original stays as it was. Saved signatures can be removed in **Settings › Data**.
+
+## Digital signature with a certificate
+
+A digital signature shows who signed the document and that it has not changed since. vivePDF applies a PAdES signature.
+
+1. Open **Tools › Sign** and choose the PDF to sign.
+2. Under **Certificate file (.p12 / .pfx)**, pick the file from your e-signature provider or one created in vivePDF, and enter the **Certificate password**.
+3. If the signature should be visible, turn on **Visible signature box on the page**, then choose the page, the **Box text** and, if you like, a saved handwritten signature or a logo as the **Picture in the signature box**.
+4. Fill in **Reason**, **Location** and **Contact** if needed, then click **Sign**.
+
+If the document already has empty signature fields, choose one under **Signature field**; the signature then uses that field's place and size.
+
+### Extra options
+
+- **Timestamp server (optional)**: enter an RFC 3161 server address to add a trusted time to the signature. It needs the internet, and only a digest of the signature is sent to that server.
+- **Certifying signature**: the first signature of a document can set what may change afterwards (no changes, form filling and signing, or those plus comments).
+- **Lock the document after signing**: for the last signer; every field is locked and any later change shows up as a violation.
+
+> **No certificate yet?**
+>
+> The **No certificate → create my own** link takes you to **Create certificate**. A certificate made there is self-signed: it proves the document's integrity, but legal validity needs a qualified e-signature.
+
+## Verify signatures
+
+When you open a signed PDF in the Viewer, a message appears at the top, such as "Signed and all signatures are valid." The **Signature panel** shows the details of each signature.
+
+For a fuller check, open **Verify** from the **Security** list above the page title, choose the PDF and click **Verify**. For each signature you see:
+
+- **Integrity**: whether the document changed after signing and, if so, whether the signature allows that change.
+- **Trust**: whether the certificate chain ends at a root in your **Trusted roots**. Self-signed certificates show as not verified, with the reason.
+
+To trust a provider's signatures, use **Add certificate or trust list** to add its root certificate (.cer, .crt, .pem or .der) or a trust list (an EU trusted list .xml or the Adobe AATL). **Check revocation online** is off by default; when on, it asks the issuer whether the certificate has been withdrawn.
+
+## Create and export a certificate
+
+On **Create certificate** in the **Security** list, enter your **Full name**, **E-mail**, **Organization** and **Country**, then choose the **Validity** and the **Key**. Under **Purpose**, choose **Signing documents**, **Receiving sealed documents** or **Both**. The certificate password needs at least 8 characters, and the result is saved as a .p12 file.
+
+If someone wants to send you a document sealed so that only you can open it, use **Export public certificate**. It takes the public half of your .p12 and writes it as a .cer file; your private key never leaves the .p12. Sealing and password protection are covered on the [Security](https://vivepdf.com/en/docs/security/) page.
+
+vivePDF remembers the path of the .p12 you signed with, never its password. You can make it forget the path in **Settings › Data**; what is stored is explained on [Settings and privacy](https://vivepdf.com/en/docs/settings-privacy/). Timestamps and the online revocation check are off while [Offline mode](https://vivepdf.com/en/docs/offline/) is on.
+
+---
+
+# Security
+
+> How to password-protect a PDF in vivePDF, set permissions, seal it with a certificate, add watermarks and stamps, strip hidden data and redact.
+
+URL: https://vivepdf.com/en/docs/security/
+Last updated: 2026-10-18
+
+vivePDF's security tools let you add a password and permissions to a PDF, remove a password, seal a file so that only chosen certificate holders can open it, add watermarks and stamps, clean out hidden data before sharing and permanently redact text. Every tool writes its result to a new file; your original stays as it was.
+
+## Finding the tools
+
+Open **Tools › Security**; the page starts on **Add password**. Click **Security** above the page title to list every tool in the group: **Add password**, **Remove password**, **Seal with a certificate**, **Open with a certificate**, **Redaction**, **Privacy check** and the [signing tools](https://vivepdf.com/en/docs/sign/). **Add watermark**, **Stamp** and **Remove watermark** sit in the **Content editing** group. **Show all** in the **Tools** menu lists every tool as well.
+
+## Passwords and permissions
+
+1. On **Add password**, choose the PDF.
+2. Type an **Open password**. It is needed to open the document; leave it empty if you only want to limit what people can do.
+3. Type an **Owner password**. It is needed to change the permissions later.
+4. Under **Permissions**, choose what is allowed, or use **Quick set**: **Everything allowed**, **Read only**, **No copying** or **Most restricted**.
+5. Click **Add password**.
+
+If you leave the owner password empty, a random one is created and shown once when the file is written. Keep it somewhere safe: it is the only way to lift the limits later. For **Encryption**, use **AES-256 (recommended)**; AES-128 and RC4 are only for older readers and cannot store letters such as ş, ğ or İ in a password. **Encrypt the file information too** also protects the title, author and subject.
+
+New passwords are checked against a built-in list of common breached passwords. If you turn on the online check in **Settings › Web**, only the first 5 characters of the password's SHA-1 hash go to Have I Been Pwned, never the password itself.
+
+**Remove password** creates a copy without a password; enter the open or the owner password. If the file is protected by permissions only, it works without one.
+
+## Sealing with a certificate
+
+**Seal with a certificate** encrypts the file so that only the holders of the private keys for the certificates under **Recipients** can open it, with no password at all. Add the recipients' public certificates with **Add a certificate**, then click **Seal**. Only RSA certificates can receive a sealed document.
+
+To open a sealed file, use **Open with a certificate**: choose the **Sealed PDF**, the **Certificate (.p12 / .pfx)** that carries your private key and its password, then click **Open**. An unprotected copy is written. To give someone your own public certificate, see **Export public certificate** on [Sign and verify](https://vivepdf.com/en/docs/sign/).
+
+## Watermarks and stamps
+
+In **Add watermark**, choose a **Watermark type**: **Text**, **Image** (PNG / JPG) or a **PDF page** from another file. A live preview shows the first page while you set the size, position and pages. **Show the watermark** can limit it to the screen or to print. **Burn the watermark into the page** turns marked pages into pictures, so the watermark can no longer be removed, but the text on those pages can no longer be selected or searched either.
+
+**Stamp** puts a framed word at the chosen place on each page: pick a preset such as **APPROVED**, **DRAFT**, **CONFIDENTIAL** or **PAID**, or write your own. Placeholders such as `{date}`, `{name}`, `{page}` and `{total}` are filled in. Settings you use often can be kept under **Presets**.
+
+**Remove watermark** scans the document and lists the watermarks it finds; tick the ones to remove. Check the result in the Viewer.
+
+## Privacy check
+
+**Privacy check** shows what a file reveals beyond its visible pages. Click **Scan document** to see findings such as metadata, XMP metadata, JavaScript and automatic actions, embedded files, comments, external links, hidden text, hidden layers, and camera and location details in photos. Tick the items under **What to remove** and click **Clean and save**.
+
+> **Signed files**
+>
+> Cleaning a signed file writes a new file without a valid signature. If it has to stay signed, sign the cleaned copy again.
+
+## Redaction
+
+If sensitive text stays in the file, remove it for good with **Redaction**. Type words under **Text to find**, or pick kinds from **Sensitive data found**, such as IBANs, e-mail addresses or phone numbers, and add regular expressions if needed. Use **Count matches** to check first, then click **Redact**. Matching text is removed from the file and covered; this cannot be undone.
+
+**Also remove matches outside the page** searches comments, form fields, bookmarks and document properties too. To black out an area by hand, open the document in the Viewer, choose **Edit › Page tools › Black out area**, drag over the area and click **Black out**. The full list of tools is on the [Tools](https://vivepdf.com/en/docs/tools/) page.
+
+---
+
+# Write a document in Studio
+
+> How to write reports, assignments and theses in the Studio document editor, with headings, tables, footnotes, references, columns and PDF export.
+
+URL: https://vivepdf.com/en/docs/studio-document/
+Last updated: 2026-10-18
+
+The Studio document editor lets you write a report, article, assignment or thesis inside vivePDF and turn it into a properly paginated PDF. While you type, the preview on the right shows the finished pages, and the cover, contents, page numbers, footnotes and reference list fall into place on their own.
+
+## Start a new document
+
+1. Click **Studio** in the top bar. You can also get there from the **Write a document** card in **Tools › Show all**, or from the command palette with `Ctrl+K`.
+2. Under **Start a document**, pick a starting point: **Blank document**, **Report**, **Letter**, **Petition**, **Assignment**, **Meeting minutes**, **Lecture notes**, **Booklet**, **CV** or **Invoice**.
+3. Start typing. To return to a document you left unfinished, choose **Continue** on the **Continue your document** card.
+
+If you already have the text, **Import text…** turns a plain text, Markdown or web page file into a document.
+
+## Formatting
+
+The formatting bar above the editor keeps everything you use often in one place:
+
+- **Paragraph style** switches between **Normal text** and **Heading 1** to **Heading 4**. The table of contents is built from these headings.
+- **Bold**, **Italic**, **Underline**, **Strikethrough**, **Superscript**, **Subscript**, **Text colour** and **Highlight** format the text; **Format painter** copies formatting from one place to another, and **Clear formatting** removes it.
+- **Bulleted list**, **Numbered list** and **Checklist** add lists; **Quote**, **Code block**, **Link**, **Insert picture**, **Insert symbol**, **Horizontal line** and **Page break** sit on the same bar.
+- The **Line and paragraph spacing** menu sets line spacing, space before and after, and first-line indent for the selected paragraphs.
+
+From the keyboard, `Ctrl+Alt+1`, `2` and `3` apply heading levels, `Ctrl+Shift+8` and `Ctrl+Shift+7` start lists, and `Shift+Enter` breaks the line without starting a new paragraph. The full list is on the [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/) page.
+
+### Tables
+
+Place a table with **Insert table**. While the cursor is inside it, table buttons appear on the bar: **Add row below**, **Add column to the right**, **Delete row**, **Delete column**, **Merge cells**, **Split cell**, **Header row on or off** and **Delete table**.
+
+## Footnotes
+
+The **Insert footnote** button, or `Ctrl+Alt+F`, puts a numbered marker at the cursor and opens the note panel below. Write the note, then click **Back to the text**. Each footnote is printed at the foot of the page its marker lands on; if the notes grow too long for the page, they become endnotes under **Notes** at the end of the document. A note can hold citations and small pictures too.
+
+## Sources and references
+
+**Citations and references** on the formatting bar opens the **Sources** window:
+
+- **Import file** loads a BibTeX, RIS or CSL JSON library; **Paste** adds entries copied from Zotero, Mendeley or EndNote; **New source** lets you type one in.
+- **Add by DOI** fetches the details from doi.org and needs internet; only the DOI is sent. **Add from PDF** finds the DOI inside an article's PDF on your computer and then fetches its details the same way. With offline mode on, neither goes online.
+- Choose a **Citation style**: **APA 7**, **MLA 9**, **Chicago (author-date)** or **IEEE**. **Insert citation** places a citation in the text and **Insert reference list** adds the list.
+- **Check sources** asks Crossref whether any of your sources has been retracted or corrected.
+
+To start from a source library, the **Bibliography** card in the tool catalogue opens a document with this window already open.
+
+## Page settings and columns
+
+The **Preview** tab in the side panel shows how the PDF will look. The **Settings** tab holds:
+
+- **Page**: **Paper size** (A4, A5, B5, Letter, Legal), **Orientation**, **Margins**, **Columns** and **Column gap**.
+- **Text**: **Font**, **Size**, **Line spacing**, **Heading colour**, and a separate heading font if you want one.
+- **Header and footer**: header and footer text, plus **Page numbers**.
+- **Table of contents**: **Add a table of contents** and how many heading levels it shows.
+- **Cover**: **Add a cover page** in the **Classic**, **Colour band**, **Frame** or **Minimal** style.
+
+To set part of the document in a different number of columns, use the **Section break** menu on the formatting bar. **Section break: 2 columns** starts the next page in two columns, while **Continuous section break: 2 columns** carries on on the same page, so a full-width title can sit above two-column text.
+
+## Find and replace, word count
+
+The search button at the top, or `Ctrl+F`, opens the **Find and replace** bar; `Ctrl+H` opens it with the replace field showing. **Match case** and **Whole words only** narrow the search, and **Replace all** changes every match in one step that a single undo reverses.
+
+The word and character count is always shown below the editor. When you select text, it shows the words in the selection alongside the total.
+
+## Save and export
+
+`Ctrl+S` saves a vivePDF document (`.vivedoc`) that you can reopen and keep editing. For the finished file, click **Export** or press `Ctrl+E` and choose a **File type**:
+
+- **PDF**: with its cover, contents, page numbers and bookmarks. The text stays selectable.
+- **Markdown**: headings, lists, tables, links, pictures and footnotes are kept; colours, fonts and the page layout are left out.
+
+For free-form work such as posters, invitations or business cards, see [Design in Studio](https://vivepdf.com/en/docs/studio-design/). To change a PDF you already have, start from the [Tools](https://vivepdf.com/en/docs/tools/) list.
+
+---
+
+# Design in Studio
+
+> How to design posters, certificates and invitations from templates in Studio, build a CV, prepare print-ready business cards, use layers and export.
+
+URL: https://vivepdf.com/en/docs/studio-design/
+Last updated: 2026-10-18
+
+Studio is vivePDF's design editor for posters, certificates, invitations, social posts, business cards and similar work on a free canvas, saved as a PDF or as pictures. You can start from more than 170 templates and drag text, shapes, pictures and QR codes into place.
+
+## Start a design
+
+Click **Studio** in the top bar. The start page offers several ways in:
+
+- **Start from a template**: templates are grouped into categories such as **Certificates**, **Invitations**, **Posters**, **Menus**, **Social media** and **Flyers and brochures**; **Search templates** finds one by name.
+- **Start with a blank page**, or use **Custom size** to type the width and height yourself and click **Create**.
+- **Business cards** opens a card with a front and a back (see below).
+- **Build a CV** opens the form-based CV builder (see below).
+- **Open design…** opens a design you saved, and **Recent designs** lists the ones you worked on last. Unfinished work waits on the **Continue where you left off** card.
+
+## Add and edit items
+
+The panel on the left has four tabs: **Elements**, **Templates**, **Layers** and **Data**.
+
+1. On the **Elements** tab, add text with **Add a heading**, **Add a subheading** or **Add body text**. **Shapes**, **Icons**, **Tables and charts**, **Ornaments**, **Picture** and **QR code** are there too.
+2. Click an item to select it. Change its colour, font, size, shadow or alignment in the properties panel.
+3. Drag the item to move it, and use the handles to resize or rotate it. A right-click offers commands such as **Duplicate**, **Bring to front**, **Group**, **Lock** and **Copy style**.
+
+You can also add items from the keyboard: `T` adds text, `R` a rectangle, `O` an ellipse, `L` a line and `A` an arrow. In the design editor, `F1` or `?` shows every shortcut; the list is also on the [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/) page.
+
+### Layers and pages
+
+The **Layers** tab lists the items on this page. Drag a layer to change the order, or press `Alt+↑` or `Alt+↓` on it; you can hide and lock items from here as well. Double-click a group to pick one item inside it.
+
+In the page strip, **Add page** adds a page and **All pages** shows every page so you can drag them into a new order. The **View** menu turns **Rulers**, **Guides**, **Margins**, **Bleed area (3 mm)** and **Snapping** on and off.
+
+### Many copies from a table
+
+On the **Data** tab, choose **Connect a table** and pick a CSV or Excel file. Clicking a column adds it as a placeholder to the selected text or QR code. When you export, every row of the table becomes its own copy of the design with its values filled in, which suits certificates or name badges.
+
+## CV builder
+
+**Open CV builder** shows a form on the **Content** tab: personal details, experience, education, skills, languages and more. The CV preview updates as you type.
+
+- **Fill with sample** loads an example CV; **Import from PDF…** reads an existing CV or a LinkedIn PDF and brings its sections into the form.
+- On the **Design** tab, pick a design such as **Classic**, **Modern** or **ATS-friendly**, and set the **Accent colour**, **Photo shape**, **Spacing**, **Paper** and **CV language**.
+- **Export** saves the CV as PDF, PNG or JPG. For freer changes, choose **Edit freely in Studio**.
+
+## Business cards
+
+**Business cards** on the start page opens a card with **Front** and **Back** pages. Sizes include 85 × 55, 90 × 50, US 3.5 × 2 in, square and mini; **Rounded corners** in the page panel shows the corner the printer will cut.
+
+Select an item and, under **Print finish**, apply **Embossed**, **Debossed**, **Letterpress**, **Foil** (gold, silver, copper, rose gold or holographic) or **Spot UV gloss**. The effect is simulated on screen. If you set a QR code's content to **Contact card**, scanning it lets a phone save your contact details.
+
+> **Before you send it to the printer**
+>
+> In the export window, turn on **Print-ready PDF**. It adds **Bleed** (usually 3 mm) and **Trim marks**; **Finish plates** turns foil and gloss into separate spot colours or separate pages for the print shop. Choose A4 or SRA3 as the **Sheet** and the cards are laid out on one sheet, with the backs mirrored so they line up when printed double-sided.
+
+## Save and export
+
+`Ctrl+S` saves your work as a vivePDF design that you can open again later. For the finished file, click **Export** or press `Ctrl+E`:
+
+- Choose PDF, PNG or JPG as the **File type**. Under **Pages**, take every page, the current page or a range such as `1-3, 5`.
+- For pictures, set the **Resolution** and **JPG quality**; pages whose background is set to **None** are saved see-through with **See-through background**.
+- With **Keep it editable in Studio** on, the design is stored inside the PDF, so opening that PDF in vivePDF lets you edit it in Studio again. **Sign the PDF** adds an invisible digital signature with your .p12 or .pfx certificate; there is more about signatures on the [Sign and verify](https://vivepdf.com/en/docs/sign/) page.
+
+`Ctrl+P` sends the design straight to the printer. For long text such as a report or thesis, [Write a document in Studio](https://vivepdf.com/en/docs/studio-document/) is the better fit.
+
+---
+
+# Present a PDF
+
+> How to present a PDF full screen in vivePDF, from F5 to the pen and laser, black and white boards, speaker notes and the two-screen presenter view.
+
+URL: https://vivepdf.com/en/docs/present/
+Last updated: 2026-10-18
+
+vivePDF turns any PDF into a full-screen slide show without a separate presentation program. While you present, you can draw on the page, use a laser pointer or spotlight, switch to a black or white board, and with a projector connected see your notes on your own screen only.
+
+## Start a presentation
+
+1. Open the PDF in the **Viewer**. The [Open and read a PDF](https://vivepdf.com/en/docs/open-and-read/) page explains how.
+2. Press `F5` to start from the first page, or `Shift+F5` to start from the page you are on. `F11` (`⌃``⌘``F` on a Mac) enters and leaves presentation mode too.
+3. Move between pages with the arrow keys, `Page Up` and `Page Down`. `G` opens the **Slide overview** with every slide; click one to jump there.
+4. Press `Esc` to finish. Each `Esc` takes exactly one step back: first it puts the tool away, then it leaves the board, and last it ends the presentation.
+
+The presentation toolbar appears when you move the pointer to the bottom edge of the screen.
+
+## Drawing and pointing tools
+
+Pick a tool from the toolbar or with a single key:
+
+| Key | Tool |
+|---|---|
+| `L` | Laser pointer |
+| `P` | Pen |
+| `H` | Highlighter |
+| `E` | Eraser |
+| `S` | Spotlight |
+| `M` | Magnifier |
+| `U` | On-screen ruler |
+| `Z` | Zoom to a dragged area |
+| `V` | Select, move or delete drawings |
+
+The **Shapes** menu on the toolbar holds **Line**, **Arrow**, **Rectangle**, **Ellipse** and **Measure length**, and **Text** lets you type on the page. For a selected drawing, `R` and `Shift+R` rotate it right and left, `Ctrl+D` duplicates it and `Del` deletes it. `Ctrl+Z` and `Ctrl+Y` undo and redo drawing.
+
+The on-screen ruler shows real centimetres; drag it to move or turn it, and lines drawn along its edge come out straight.
+
+Defaults for the pen colour and width, the laser colour and the spotlight size are in **Settings › Presentation**. Every presentation shortcut is listed on the [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/) page.
+
+## Black and white boards
+
+`B` or `.` turns the screen black and `W` turns it white. Use the empty screen to draw the audience's attention back to you, or draw on it like a whiteboard. A board has its own **Board tools** bar: select, pen, highlighter, shapes and eraser, colours that suit the board, size presets, undo and redo, **Clear board** and **Back to slides**. Each board keeps its own undo history.
+
+## Notes, timer and clock
+
+- `N` shows or hides the **Speaker notes** panel for the current page. Notes are kept page by page and shared with presenter view.
+- `T` shows or hides the timer, and `C` the clock.
+- If a page contains code, `K` opens the detected code blocks and moves between them.
+
+## Presenter view (two screens)
+
+With a projector or second screen connected, press `Alt+F5` or click **Presenter view** on the Viewer toolbar; `Alt+Shift+F5` starts from the page you are on. The projector shows only the slide. Your screen shows the **Current page**, a large **Next page** preview, the **Elapsed** time, the **Clock** and your **Speaker notes**.
+
+- The preview's arrows let you look further ahead without changing the projector; clicking a preview jumps the presentation there.
+- The pen, laser, spotlight and boards appear on the projector too.
+- **Swap screens** trades the roles of the two screens, and **End presentation** closes it.
+- Notes are saved in the app's data folder on this computer; the PDF itself is not changed.
+
+> **If only one screen is visible**
+>
+> When the projector mirrors your screen, vivePDF shows **Only one screen is visible**. On Windows, press `Windows+P`, choose **Extend**, then click **Try again**. You can also carry on with **Present on this screen** or **Rehearse in a window**.
+
+If the document has unsaved changes, the projector shows the file as it is saved on disk, so vivePDF first asks you to choose between **Save and present** and **Present anyway**.
+
+## Insert items while presenting
+
+The **Insert** (+) button on the presentation toolbar and in the presenter console offers **Add formula**, **Add shape**, **Add function graph**, **Add molecule**, **Add table**, **Add chart**, **Add flowchart**, **Add diagram (Mermaid)**, **Add question** and **Add answer key**. Prepare the item, then click the page to place it; `Esc` cancels. You can move and resize a placed item like a drawing and double-click it to edit it again. The Insert menu works on the black and white boards too.
+
+## Keep or discard drawings
+
+Presentation drawings and inserted items are temporary by default. When you leave the presentation, vivePDF asks **Keep the presentation drawings?**:
+
+- **Save to the PDF** writes the drawings into the PDF as annotations; board drawings are added as new pages at the end.
+- **Discard drawings** removes them all.
+- **Decide later** keeps them as an unsaved change; they are written into the PDF when you save the document.
+
+To keep permanent notes every time, set **Drawings** to **Permanent notes** in **Settings › Presentation**. For the rest of the settings, see [Settings and privacy](https://vivepdf.com/en/docs/settings-privacy/).
+
+---
+
+# Settings and privacy
+
+> Every vivePDF settings section, what Help › Privacy says goes online, and how to remove the data kept on this computer in Settings › Data.
+
+URL: https://vivepdf.com/en/docs/settings-privacy/
+Last updated: 2026-10-18
+
+All of vivePDF's preferences live in **Settings**: appearance, startup, where results are saved, reading, presentation, tools, updates and data. vivePDF collects no personal data; **Help › Privacy** lists when the app touches the network and what it keeps on this computer, and **Settings › Data** removes it.
+
+## Opening Settings
+
+Open Settings from the top bar. The list on the left gathers the sections into three groups: **Application**, **Viewing** and **System and data**. If you do not know where a setting lives, type its name into **Search settings…** at the top. Language and theme changes apply immediately.
+
+## The sections
+
+### Application
+
+- **Appearance**: language, theme (Light, Dark, or System to follow the Windows theme), **Interface scale**, **Interface zoom** and **Reduce motion**.
+- **Startup and privacy**: **Continue where I left off**, **Remember recent files**, **Keep operation history**, **Ask before closing**, **Keep a backup before saving**, **Keep running in the tray** and **Start with the system**.
+- **Files**: whether tools write their result **Next to the source** or to a **Fixed folder**, the file **Name pattern**, and what happens **After an operation** (do nothing, show in Explorer or open the file).
+- **Web**: the **Search engine** for the Viewer's right-click menu, the online check for new passwords, and **Offline mode**.
+
+### Viewing
+
+- **Viewer**: thumbnail size, default side panels, **Opening zoom**, two-page view, text selection colour, **Author name for comments** and **Reload when the file changes**.
+- **Reading & read aloud**: reading mode defaults, speech rate, default voice, offline voice models and translation languages.
+- **Presentation**: pen, laser pointer and spotlight defaults, and whether drawings are **Temporary** or kept as **Permanent notes**. See [Present a PDF](https://vivepdf.com/en/docs/present/) for more.
+
+### System and data
+
+- **Tools**: OCR language packs, the LibreOffice-based **Office converter**, the default OCR language and the default compression.
+- **Updates**: the installed version, **Check for updates** and **Check automatically at startup**. Installing always asks you first; see [Installation](https://vivepdf.com/en/docs/installation/).
+- **System** (Windows): **Open PDF files with vivePDF**, Windows default apps, an Explorer **Context menu** and a “Send to” shortcut.
+- **Data**: everything stored on this computer, described below.
+- **Feedback**: **Report a bug**, **Suggest a feature**, the **Log folder** and **Diagnostics**, which copies version details to the clipboard.
+
+## Help › Privacy
+
+Open **Privacy** from the **Help** menu in the top bar. The page shows two lists:
+
+- **Network access**: documents, passwords and certificates never leave this computer. Only things you start go online: update checks, voice models, language packs, fonts and LibreOffice when you click **Download** or **Install**, web search, turning a web page into a PDF, DOI lookups, the optional leaked-password check and a timestamp while signing. Bug reports are never sent automatically.
+- **Stored on this computer**: recent files, the session snapshot, settings, the path of the certificate you signed with (never its password), backups, the search index, operation history, watch-folder rules, saved signatures, downloaded packs and the local log file.
+
+The top of the page also shows whether [Offline mode](https://vivepdf.com/en/docs/offline/) is on or off; **Open setting** takes you straight to the switch.
+
+## Settings › Data
+
+This section shows everything that is stored, with a count, and lets you remove each item:
+
+- **Recent files** and **Operation history**: **Clear**.
+- **Session snapshot**: **Delete**.
+- **Remembered certificate path**: **Forget**.
+- **Search index**: **Clear all**; indexed folders then have to be indexed again from the Search page.
+- **Search history**, **Saved signatures**, **Watch-folder rules** and **Saved batch chains**: **Clear**.
+- **Remembered chain passwords**: **Forget all** removes them from the system keychain.
+
+> **Removed data does not come back**
+>
+> Most clear and delete actions ask you to confirm first. What you remove cannot be restored.
+
+**Reset all settings** returns your preferences to their defaults only; recent files, history, saved signatures, chains and watch rules are kept. If you tick **Also delete saved signatures, chains, watch rules and presets** in the confirmation, those are deleted for good as well.
+
+Downloaded language packs and voice models are removed in their own sections (**Tools**, **Reading & read aloud**); backups and the log file stay in their folders. More about the log file is on [Troubleshooting](https://vivepdf.com/en/docs/troubleshooting/).
+
+---
+
+# Offline mode
+
+> How to turn on Offline mode in vivePDF, what it stops, what keeps working without the internet and how features show that they are off.
+
+URL: https://vivepdf.com/en/docs/offline/
+Last updated: 2026-10-18
+
+Offline mode stops every internet connection vivePDF makes with a single switch: update checks, downloads, web searches and lookups, opening web pages and online checks. Because the PDF tools already run on this computer, everything else keeps working without the internet. Your documents never leave this computer, whether the mode is on or off.
+
+## Turn on Offline mode
+
+1. Open **Settings** from the top bar.
+2. Go to the **Web** section in the **Application** group.
+3. Turn on **Offline mode**.
+
+The mode is off by default. You can also see its state at the top of **Help › Privacy**: "Offline mode is on" or "Offline mode is off". **Open setting** there takes you straight to the switch.
+
+## What it stops
+
+While the mode is on, every feature that needs the internet is switched off:
+
+- **Updates**: no automatic check at start-up, and **Settings › Updates** shows "Not checked: offline mode is on".
+- **Downloads**: OCR language packs, read-aloud voices, translation languages, missing fonts in Studio and the LibreOffice download.
+- **Web searches**: **Search on the web**, **Search picture with Google Lens** and **Google Translate** under **Translate** in the Viewer's right-click menu.
+- **Web pages**: the **Web page → PDF** conversion.
+- **Online checks**: the Have I Been Pwned check for new passwords, the timestamp server while signing, **Check revocation online** while verifying, and DOI lookups and checks in Studio.
+- **GitHub**: **Open on GitHub** in a bug report and **Refresh from GitHub** in About.
+
+This is not only a matter of the interface: the PDF engine also refuses requests that would go online while the mode is on.
+
+## What keeps working
+
+Everything that does not need the internet works as usual:
+
+- Opening, reading, searching, organising pages, merging, splitting, compressing, converting, signing, password protection and every other PDF tool.
+- [OCR](https://vivepdf.com/en/docs/ocr/) with installed languages, read aloud with installed voices and the **Offline translator** with installed languages.
+- Word, Excel and PowerPoint [conversions](https://vivepdf.com/en/docs/convert/) through the LibreOffice that comes with the Windows installer.
+- Studio, presentations and presenter view.
+- **Help topics**, the keyboard shortcut list, **Save support bundle…** and copying a bug report or saving it to a file.
+
+> **Download first, then switch off**
+>
+> If you will work on a computer without internet, download the OCR languages, voices and translation languages you need first, then turn on Offline mode. Downloaded packs stay on this computer and work offline.
+
+## How switched-off features look
+
+Offline mode does not hide anything. Buttons stay where they are but are greyed out and cannot be clicked; hovering over one shows "Off while offline mode is on (Settings › Web)".
+
+Sections that download things (such as the OCR language packs in **Settings › Tools**) and the **Web page → PDF** screen show a note: "Offline mode is on, so nothing is downloaded or looked up on the internet." **Change** beside the note takes you to **Settings › Web**.
+
+Offline mode only stops vivePDF's own connections; it does not cut your computer's internet connection, so your browser and other apps carry on as usual.
+
+If an action still needs the internet, you see the message "This needs the internet, but offline mode is on." Switching the mode off brings everything back straight away; you do not need to restart the app.
+
+For the full list of when vivePDF goes online and what it stores on this computer, see [Settings and privacy](https://vivepdf.com/en/docs/settings-privacy/).
+
+---
+
+# Keyboard shortcuts
+
+> vivePDF keyboard shortcuts, the per-screen list that F1 opens, saving it as a PDF, the macOS key equivalents and the full list for every screen.
+
+URL: https://vivepdf.com/en/docs/shortcuts/
+Last updated: 2026-10-18
+
+Most things you do often in vivePDF have a keyboard shortcut: opening a document, searching, zooming, presenting or formatting in Studio. This page groups the shortcuts by screen, and the same list is always one key away inside the app.
+
+## The shortcut list in the app
+
+On any screen, press `F1` or `Ctrl+/` to open the **Shortcuts** window, which shows only the shortcuts that work on that screen. In the **Viewer**, for example, you see the viewing, editing and presentation shortcuts; in the **Page organizer**, the page shortcuts; and in Studio, those of the document or design editor. The general shortcuts that work everywhere are added to each list. Press `F1` during a presentation and the list shows only the presentation shortcuts, so you can find a key without leaving the slides.
+
+You can reach the same window in other ways too:
+
+- **Help › Keyboard shortcuts (F1)** in the top bar.
+- **Keyboard shortcuts for this screen** in the command palette, which opens with `Ctrl+K`.
+
+The **Search shortcuts** box at the top narrows the list. The buttons at the bottom do the following:
+
+- **Save as PDF** turns the list on screen into a PDF you can print and keep beside the keyboard.
+- **All shortcuts** opens the complete list with every group, whichever screen you are on.
+- **Help topics** goes to the help topic for the current screen. `Shift+F1` does the same.
+
+In the Studio design editor, `F1` or `?` opens the editor's own shortcut window. See [Design in Studio](https://vivepdf.com/en/docs/studio-design/) for more.
+
+## Keys on macOS
+
+On a Mac, vivePDF shows its shortcuts with Mac keys:
+
+- `⌘` (Command) takes the place of `Ctrl`, `⌥` (Option) of `Alt`, and `⇧` of `Shift`.
+- Full screen is `⌃``⌘``F` instead of `F11`.
+- On Mac keyboards, function keys such as `F1` and `F5` may also need `fn`, depending on your keyboard settings.
+
+The **Windows · Linux** and **macOS** buttons just below change which keys the lists show. The full list of shortcuts, grouped by screen, follows below.
+
+## Global
+
+| Action | Windows · Linux | macOS |
+| --- | --- | --- |
+| Open PDF | `Ctrl O` | `⌘O` |
+| New window | `Ctrl Shift N` | `⇧⌘N` |
+| PDF from what you copied | `Ctrl Shift V` | `⇧⌘V` |
+| Command palette | `Ctrl K` | `⌘K` |
+| Shortcuts for this screen | `F1` or `Ctrl /` | `F1` or `⌘ /` |
+| Help topic for this screen | `Shift F1` | `⇧F1` |
+| Close active document | `Ctrl W` | `⌘W` |
+| Close dialog | `Esc` | `Esc` |
+
+## Viewer
+
+| Action | Windows · Linux | macOS |
+| --- | --- | --- |
+| Search in document | `Ctrl F` | `⌘F` |
+| Next / previous search result | `F3` or `Shift F3` | `F3` or `⇧F3` |
+| Copy the selected text as code | `Ctrl Shift C` | `⇧⌘C` |
+| Print | `Ctrl P` | `⌘P` |
+| Immersive mode (full screen) | `F11` | `⌃⌘F` |
+| Zoom in / out | `Ctrl +` or `Ctrl −` or `Ctrl Wheel` | `⌘+` or `⌘−` or `⌘ Wheel` |
+| Actual size / fit width / fit page | `Ctrl 0` or `Ctrl 1` or `Ctrl 2` | `⌘0` or `⌘1` or `⌘2` |
+| Drag to scroll the page | `Space + Drag` or `Middle Drag` | `Space + Drag` or `Middle Drag` |
+| Previous / next page | `PgUp` or `PgDn` or `← →` | `PgUp` or `PgDn` or `← →` |
+| First / last page | `Home` or `End` | `Home` or `End` |
+| Back / forward along pages you jumped between | `Alt ←` or `Alt →` | `⌥←` or `⌥→` |
+| Delete selected mark | `Delete` | `Delete` |
+| Undo / redo mark-up | `Ctrl Z` or `Ctrl Y` | `⌘Z` or `⌘Y` |
+| Start or stop automatic scrolling | `Ctrl Shift H` | `⇧⌘H` |
+| Split the window / close the split | `Ctrl Shift E` | `⇧⌘E` |
+| While scrolling automatically: speed, direction, stop | `↑ ↓` or `−` or `Esc` | `↑ ↓` or `−` or `Esc` |
+
+## Editing
+
+| Action | Windows · Linux | macOS |
+| --- | --- | --- |
+| Remove the selected box or existing text | `Delete` or `Backspace` | `Delete` or `Backspace` |
+| Open the selected text for editing | `Enter` | `Enter` |
+| Close the editor / deselect / leave editing | `Esc` | `Esc` |
+| Save in place / save as | `Ctrl S` or `Ctrl Shift S` | `⌘S` or `⇧⌘S` |
+| Bold / italic | `Ctrl B` or `Ctrl I` | `⌘B` or `⌘I` |
+| Duplicate the selected box | `Ctrl D` | `⌘D` |
+| Copy, cut or paste the selected box | `Ctrl C` or `Ctrl X` or `Ctrl V` | `⌘C` or `⌘X` or `⌘V` |
+| Select the next / previous box on the page | `Tab` or `Shift Tab` | `Tab` or `⇧ Tab` |
+| Move the selected box (Shift: 10 pt) | `← → ↑ ↓` or `Shift` | `← → ↑ ↓` or `Shift` |
+
+## Presentation
+
+| Action | Windows · Linux | macOS |
+| --- | --- | --- |
+| Enter / exit presentation mode | `F11` | `⌃⌘F` |
+| Start presenting from the first page / from the current page | `F5` or `Shift F5` | `F5` or `⇧F5` |
+| Start presenter view from the first page / from the current page | `Alt F5` or `Alt Shift F5` | `⌥F5` or `⌥⇧F5` |
+| Laser pointer | `L` | `L` |
+| Pen | `P` | `P` |
+| Highlighter | `H` | `H` |
+| Eraser | `E` | `E` |
+| Spotlight | `S` | `S` |
+| Magnifier | `M` | `M` |
+| Show or hide the ruler | `U` | `U` |
+| Select a drawing, then move or delete it | `V` or `Del` | `V` or `Del` |
+| Rotate the selected drawing right / left · duplicate it | `R` or `Shift R` or `Ctrl D` | `R` or `⇧R` or `⌘D` |
+| Zoom to a dragged area | `Z` | `Z` |
+| Blackout black / white | `B` or `W` or `.` | `B` or `W` or `.` |
+| Slide overview grid | `G` | `G` |
+| Open / cycle detected code blocks | `K` | `K` |
+| Toggle timer / clock | `T` or `C` | `T` or `C` |
+| Show or hide the speaker notes | `N` | `N` |
+| Undo / redo drawing | `Ctrl Z` or `Ctrl Y` | `⌘Z` or `⌘Y` |
+| Close overlay / cancel tool / exit | `Esc` | `Esc` |
+
+## Page organizer
+
+| Action | Windows · Linux | macOS |
+| --- | --- | --- |
+| Undo / redo | `Ctrl+Z` or `Ctrl+Y` | `⌘Z` or `⌘Y` |
+| Delete selected pages | `Delete` | `Delete` |
+| Rotate right / left | `R` or `Shift+R` | `R` or `⇧R` |
+| Duplicate | `Ctrl+D` | `⌘D` |
+| Copy / cut / paste pages | `Ctrl+C` or `Ctrl+X` or `Ctrl+V` | `⌘C` or `⌘X` or `⌘V` |
+| Split after selected pages / remove mark | `S` | `S` |
+| Remove every split mark | `Shift+S` | `⇧S` |
+| Insert a blank page | `B` | `B` |
+| Extract the selected pages as a new PDF | `Ctrl+E` | `⌘E` |
+| Print the selected pages, or all of them | `Ctrl+P` | `⌘P` |
+| Select all / clear selection | `Ctrl+A` or `Esc` | `⌘A` or `Esc` |
+| Invert selection | `Ctrl+I` | `⌘I` |
+| Select by page numbers | `Ctrl+G` | `⌘G` |
+| Preview the page | `Double click` or `Space` or `Enter` | `Double click` or `Space` or `Enter` |
+| In the preview: select the page / extend the selection | `Enter` or `Shift+← →` | `Enter` or `⇧← →` |
+| Page menu | `Shift+F10` | `⇧F10` |
+| Range / multi selection | `Shift+Click` or `Ctrl+Click` | `Shift+Click` or `⌘ Click` |
+| Drag from an empty area to select (Ctrl toggles, Shift adds) | `Drag` | `Drag` |
+| Move selection (Shift extends) | `← → ↑ ↓ (+Shift)` | `← → ↑ ↓ (+Shift)` |
+| Move the selected pages one step, a row, or to the start / end | `Alt+← → ↑ ↓` or `Alt+Home` or `Alt+End` | `⌥← → ↑ ↓` or `⌥ Home` or `⌥ End` |
+| Move the selected pages to a page number | `M` | `M` |
+| Go to the first / last page | `Home` or `End` | `Home` or `End` |
+| Thumbnail size | `Ctrl+Wheel` or `Ctrl +` or `Ctrl −` | `⌘ Wheel` or `⌘+` or `⌘−` |
+| Apply and save | `Ctrl+Enter` | `⌘↩` |
+| Show shortcuts | `?` | `?` |
+
+## Studio design editor
+
+| Action | Windows · Linux | macOS |
+| --- | --- | --- |
+| Save / save as… | `Ctrl S` or `Ctrl Shift S` | `⌘S` or `⇧⌘S` |
+| Open a design… | `Ctrl O` | `⌘O` |
+| Export… | `Ctrl E` | `⌘E` |
+| Print… | `Ctrl P` | `⌘P` |
+| Show keyboard shortcuts | `?` or `F1` | `?` or `F1` |
+| Undo / redo | `Ctrl Z` or `Ctrl Y` or `Ctrl Shift Z` | `⌘Z` or `⌘Y` or `⇧⌘Z` |
+| Copy / cut / paste | `Ctrl C` or `Ctrl X` or `Ctrl V` | `⌘C` or `⌘X` or `⌘V` |
+| Paste in the same place | `Ctrl Shift V` | `⇧⌘V` |
+| Copy style / paste style | `Ctrl Alt C` or `Ctrl Alt V` | `⌥⌘C` or `⌥⌘V` |
+| Duplicate | `Ctrl D` | `⌘D` |
+| Delete | `Delete` or `Backspace` | `Delete` or `Backspace` |
+| Select everything on the page | `Ctrl A` | `⌘A` |
+| Find and replace | `Ctrl F` or `Ctrl H` | `⌘F` or `⌘H` |
+| Crop picture | `Enter` or `Double-click` | `Enter` or `Double-click` |
+| Deselect, stop editing text or cancel a drag | `Esc` | `Esc` |
+| Move by 0.5 mm (with Shift 5 mm) | `← → ↑ ↓` or `Shift` | `← → ↑ ↓` or `Shift` |
+| Group / ungroup | `Ctrl G` or `Ctrl Shift G` | `⌘G` or `⇧⌘G` |
+| Bring forward / send backward | `Ctrl ↑` or `Ctrl ↓` | `⌘↑` or `⌘↓` |
+| Bring to front / send to back | `Ctrl Shift ↑` or `Ctrl Shift ↓` | `⇧⌘↑` or `⇧⌘↓` |
+| Move the focused layer up / down (Layers panel) | `Alt ↑` or `Alt ↓` | `⌥↑` or `⌥↓` |
+| Lock or unlock | `Ctrl Shift L` | `⇧⌘L` |
+| Hide or show | `Ctrl Shift H` | `⇧⌘H` |
+| Flip horizontally / vertically | `Shift H` or `Shift V` | `⇧H` or `⇧V` |
+| Add text | `T` | `T` |
+| Add a rectangle | `R` | `R` |
+| Add an ellipse | `O` | `O` |
+| Add a line | `L` | `L` |
+| Add an arrow | `A` | `A` |
+| Edit the selected text | `Enter` or `F2` | `Enter` or `F2` |
+| Bold / italic / underline | `Ctrl B` or `Ctrl I` or `Ctrl U` | `⌘B` or `⌘I` or `⌘U` |
+| Larger / smaller text | `Ctrl Shift >` or `Ctrl Shift <` | `⇧⌘>` or `⇧⌘<` |
+| Strikethrough | `Ctrl Shift X` | `⇧⌘X` |
+| Bulleted / numbered list | `Ctrl Shift 8` or `Ctrl Shift 7` | `⇧⌘8` or `⇧⌘7` |
+| Change list level | `Tab` or `Shift Tab` | `Tab` or `⇧ Tab` |
+| Align text left, centre or right (while editing) | `Ctrl Shift L` or `E` or `R` | `⇧⌘L` or `E` or `R` |
+| Zoom in / out | `Ctrl +` or `Ctrl −` or `Ctrl Wheel` | `⌘+` or `⌘−` or `⌘ Wheel` |
+| Fit the page in the window | `Ctrl 0` or `Shift 1` | `⌘0` or `⇧1` |
+| Actual size (100%) | `Ctrl 1` | `⌘1` |
+| Zoom to the selection | `Shift 2` | `⇧2` |
+| Move around the page | `Space + Drag` or `Middle Drag` | `Space + Drag` or `Middle Drag` |
+| Previous / next page | `PgUp` or `PgDn` | `PgUp` or `PgDn` |
+| Show or hide rulers | `Shift R` or `Ctrl R` | `⇧R` or `⌘R` |
+| Show or hide guides | `Shift G` | `⇧G` |
+| Show or hide margins | `Shift M` | `⇧M` |
+| Add to or remove from the selection | `Shift Click` | `⇧ Click` |
+| Select one item inside a group | `Double-click` | `Double-click` |
+| Move only horizontally or vertically | `Shift Drag` | `⇧ Drag` |
+| Move without snapping | `Ctrl Drag` | `⌘ Drag` |
+| Duplicate while dragging | `Alt Drag` | `⌥ Drag` |
+| Resize keeping (or freeing) the proportions | `Shift Resize` | `⇧ Resize` |
+| Resize from the centre | `Alt Resize` | `⌥ Resize` |
+| Rotate in 15° steps | `Shift Rotate` | `⇧ Rotate` |
+
+## Studio document editor
+
+| Action | Windows · Linux | macOS |
+| --- | --- | --- |
+| Save / save as… | `Ctrl S` or `Ctrl Shift S` | `⌘S` or `⇧⌘S` |
+| Export… | `Ctrl E` | `⌘E` |
+| Undo / redo | `Ctrl Z` or `Ctrl Y` | `⌘Z` or `⌘Y` |
+| Bold / italic / underline | `Ctrl B` or `Ctrl I` or `Ctrl U` | `⌘B` or `⌘I` or `⌘U` |
+| Heading 1 / 2 / 3 | `Ctrl Alt 1` or `2` or `3` | `⌥⌘1` or `2` or `3` |
+| Bulleted / numbered list | `Ctrl Shift 8` or `Ctrl Shift 7` | `⇧⌘8` or `⇧⌘7` |
+| Line break without a new paragraph | `Shift Enter` | `⇧↩` |
+
+---
+
+# Tools
+
+> Where to open vivePDF's 77 tools, what each of the six tool groups is for, and a searchable list with a short description of every tool.
+
+URL: https://vivepdf.com/en/docs/tools/
+Last updated: 2026-10-18
+
+vivePDF has 77 tools, from merging and OCR to conversion and digital signatures, all sorted into six groups. This page explains where to open them and what each group is for; the short description of every tool is in the list below.
+
+## Open a tool
+
+There are three ways to reach a tool:
+
+- **Tools menu**: click **Tools** in the top bar. The main tool pages open under six group headings. **Show all** at the bottom of the menu opens the **Tools** catalogue, which lists every tool with a search box, including the sub-tools the menu does not show. **Search in folders** searches inside the PDFs in a folder.
+- **Home**: the **Tools** section has a **Search tools** box and a button for each group; choose **All** or a group to narrow the list. To keep the ones you use most in **Quick access**, use **Customize home**.
+- **Command palette**: press `Ctrl+K`, or click the **Search tools, pages or documents** box in the top bar, type the tool's name and press `Enter`.
+
+The rest of the top bar and the palette are covered on the [Interface](https://vivepdf.com/en/docs/interface/) page.
+
+## The six groups
+
+- **Page layout**: tools that change the order and number of pages, such as merging, splitting, the page organiser, rotating, deleting and extracting pages. More on the [Organise pages](https://vivepdf.com/en/docs/pages/) page.
+- **Optimisation**: tools that improve or check a file, such as compressing, repairing, OCR, comparing, accessibility, print check, PDF/A archiving, batch runs and watched folders.
+- **To PDF**: tools that make a PDF from pictures, Office documents, SVG drawings and web pages. The Studio cards for documents, designs, business cards, bibliographies and CVs are here too.
+- **From PDF**: tools that turn a PDF into Word, Excel, PowerPoint, pictures, text, Markdown, HTML or EPUB, or pull out its pictures. See [Convert files](https://vivepdf.com/en/docs/convert/).
+- **Content editing**: tools that work on what is on the page, such as page numbers, headers and footers, watermarks, cropping, forms, mark-up, QR codes and answer sheets.
+- **Security**: adding and removing passwords, sealing with a certificate, redaction, the privacy check, signing and verifying. See [Security](https://vivepdf.com/en/docs/security/).
+
+Every tool follows below, grouped and with a short description; type in the box above the list to find the one you need straight away.
+
+## Page layout
+
+| Tool | What it does |
+| --- | --- |
+| Merge | Combine several PDFs into one file, in order. |
+| Split | Cut by ranges, page count, size or bookmarks. |
+| Page organizer | Drag to reorder, rotate, delete and insert pages. |
+| Rotate PDF | Permanently rotate selected pages. |
+| Delete pages | Delete pages, or everything before/after one. |
+| Extract pages | Create a new PDF from selected pages. |
+| Split batch | Cut a batch scan into documents at blank pages, QR sheets or text. |
+| Rename | Name files after their content: date, invoice number, title or amount. |
+
+## Optimisation
+
+| Tool | What it does |
+| --- | --- |
+| Compress | Resample images and shrink the file. |
+| Repair | Repair a damaged PDF that will not open. |
+| OCR | Turn scanned pages into searchable text. |
+| Compare | Find text and visual differences between two files. |
+| Accessibility | Score a PDF against accessibility basics and fix title, language and alternative text. |
+| Print check | Checks fonts, image resolution, bleed and colour spaces before printing. |
+| PDF/A archive | Check a PDF for long-term archiving and save a PDF/A-2b copy. |
+| Batch | Applies the same operation to several documents at once. |
+| Watched folders | Run a saved chain automatically on every new PDF in a folder. |
+| From scanner | Scan straight from a connected scanner into a PDF. |
+| Enhance | Straighten, clean and whiten scanned pages. |
+
+## To PDF
+
+| Tool | What it does |
+| --- | --- |
+| From photo | Turn phone photos of paper into a straightened PDF. |
+| Create PDF | Turn plain text or Markdown into a report, letter, petition, minutes or booklet |
+| Documents from a table | Certificates, invitations and name badges for every row of a CSV or Excel table |
+| Paper | Blank, lined, graph, dot grid or music paper as a ready-to-print PDF |
+| Book | Markdown or text chapters as a book with a cover, linked contents and page numbers |
+| CV builder | A CV with a classic, modern or compact template, photo and clickable contacts |
+| Design in Studio | Posters, flyers, invitations and social posts on a free canvas with 170+ templates. |
+| Write a document | Write a report, article or thesis with headings, tables, citations and a contents list. |
+| Business card | Two-sided cards with foil, emboss and spot UV, print-ready with bleed and imposition. |
+| Bibliography | Import .bib, RIS or CSL JSON, edit sources and export an APA, MLA, Chicago or IEEE reference list. |
+| Images → PDF | Turn JPG, PNG, WebP files or a whole folder into a PDF. |
+| Office → PDF | Word, Excel, PowerPoint, HTML, Markdown → PDF (LibreOffice is downloaded on request). |
+| SVG → PDF | Turn SVG drawings, logos and icons into a sharp, vector PDF. |
+| Web page → PDF | Save a web page as a PDF, with or without its pictures. |
+
+## From PDF
+
+| Tool | What it does |
+| --- | --- |
+| PDF → Word | Convert to a Word document, layout preserved. |
+| PDF → Excel | Detect tables and export them to Excel. |
+| PDF → PowerPoint | Export each page as a PowerPoint slide. |
+| PDF → JPG / PNG | Export pages as JPG, PNG or WebP. |
+| Extract images | Pull every embedded picture out of a PDF in its original quality. |
+| PDF → Text | Export as a plain text file. |
+| PDF → Markdown | Produce Markdown that keeps headings and tables. |
+| PDF → HTML | Convert pages to an HTML document. |
+| PDF → EPUB | Turn a PDF into a reflowable EPUB for phones and e-readers. |
+
+## Content editing
+
+| Tool | What it does |
+| --- | --- |
+| Add QR code | Stamp a QR code with a link or running number onto pages. |
+| Read codes | List every QR code and barcode found in a document. |
+| Create answer sheets | Print bubble answer sheets that can be read back from a scan. |
+| Grade answer sheets | Read filled answer sheets, grade them against a key and export the scores. |
+| Page numbers | Add page numbers wherever you like. |
+| Header / footer | Write a header and footer on every page. |
+| Letterhead | Lay a template PDF under or over every page. |
+| Cover page | Put a designed cover page in front of a PDF: title, author, institution, logo or photo |
+| Find and replace | Find text and rewrite it in the same size and colour. |
+| Add watermark | Apply a text or image watermark. |
+| Remove watermark | Remove text, annotation or repeated-image watermarks. |
+| Stamp | Stamp a document as approved, draft or confidential. |
+| Crop | Trim margins with millimetre precision. |
+| Page size | Shrink or enlarge pages to A6, A5, A4, A3, A2, Letter or a custom size. |
+| Flatten | Bake forms and annotations into the content. |
+| Booklet / N-up | Lay out 2, 4 or 9 pages per sheet, or build a booklet. |
+| Poster / tiles | Print one page large across several sheets, with cut marks. |
+| Bookmarks | Edit the table of contents or generate it from headings. |
+| Auto-link | Make web addresses and e-mail addresses in the text clickable. |
+| Edit text | Change existing text in place (experimental). |
+| Fill | Fill form fields, optionally lock them. |
+| Mail merge | Fill one form from every row of a CSV or Excel table. |
+| Export table | Collect the values of many filled forms into one spreadsheet. |
+| Detect fields | Turn underlines and boxes into real form fields. |
+| Annotate / mark up | Add highlights, drawings, shapes and text boxes. |
+
+## Security
+
+| Tool | What it does |
+| --- | --- |
+| Add password | Protect with a password and permissions. |
+| Remove password | Remove the password and save an open copy. |
+| Seal with a certificate | Seal a file for certificate holders, with no password at all. |
+| Open with a certificate | Open a certificate-sealed file with your own certificate. |
+| Redaction | Permanently remove text and areas. |
+| Privacy check | See what a file reveals (metadata, scripts, attachments, links, ID numbers) and clean it before sharing. |
+| Sign | Apply a PAdES signature with a PFX / P12 certificate. |
+| Verify | Check signature integrity and coverage. |
+| Create certificate | Generate a self-signed certificate. |
+| Export public certificate | Write the public .cer out of a .p12 you already hold. |
+
+---
+
+# Release notes
+
+> The main changes in each vivePDF version, how updates reach you and where to find the complete list of changes.
+
+URL: https://vivepdf.com/en/docs/release-notes/
+Last updated: 2026-10-18
+
+This page lists the main changes that came with each version of vivePDF. The notes below match the **What's new** section inside the app: the newest version comes first, each under its own heading. They cover the highlights only; for every small fix, see the complete list.
+
+## How updates arrive
+
+vivePDF checks for new versions itself and tells you when one is out. At start-up it only fetches version information; downloading and installing always ask you first.
+
+1. Open **Settings › Updates** and click **Check for updates**. The same command is also in the **Help** menu.
+2. When a new version is out, a **v… ready** label appears in the top bar. Choose **Download and install**; the update arrives signed.
+3. Once the download finishes, click **Restart** and the app opens on the new version.
+
+The **Installed version** line on the same screen shows which version you have. If you do not want automatic checks, turn off **Check automatically at startup**. While [Offline mode](https://vivepdf.com/en/docs/offline/) is on, no check is made at all. Installing and uninstalling are covered on the [Installation](https://vivepdf.com/en/docs/installation/) page.
+
+### After an update
+
+The first time you start the new version, vivePDF shows its highlights once in a window titled **vivePDF … is installed**. After you close it, the same notes are always available under **Help › What's new**.
+
+## The complete list of changes
+
+Every addition, change and fix in each version is recorded with its date in [CHANGELOG.md](https://github.com/mtvrkan/vivePDF/blob/main/CHANGELOG.md) on GitHub. The installers and a short note for each version are on the [releases page](https://github.com/mtvrkan/vivePDF/releases).
+
+## vivePDF 0.3.0
+
+Released: 2026-10-15 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.3.0)
+
+- Help that works offline: F1 shows the shortcuts of the screen you are on (and saves them as a PDF), Help › Help topics explains the main tasks step by step, and bug reports can carry pictures and sample files in a support package you save yourself.
+- Offline mode: one switch in Settings › Web turns off every feature that would use the internet — updates, downloads, web search, citation lookups and the leaked-password check.
+- Presenter view: the projector shows only the slides while your laptop shows the next page, a timer and speaker notes.
+- Studio documents learned Word-style writing tools: footnotes, columns and section breaks, find and replace, line spacing, symbols, word count and Markdown export.
+- Presentations can insert formulas, shapes, charts, tables and diagrams on the fly, also on the black and white boards.
+
+## vivePDF 0.2.0
+
+Released: 2026-10-09 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.2.0)
+
+- Studio has 174 templates, with new CV layouts, ornaments and redesigned business documents, planners and labels.
+- The CV builder imports an existing CV or LinkedIn PDF and gains undo, reordering and month pickers.
+- The page organizer selects pages by shape, size or text, drags pages out to the desktop or onto another tab, and saves pages as pictures.
+- The viewer fills in forms on the page, copies text blocks and pictures between documents, highlights selected text and edits bookmarks.
+- Home collections can be rearranged, searched and recoloured, and recent files can be pinned.
+
+## vivePDF 0.1.1
+
+Released: 2026-10-04 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.1.1)
+
+- Studio: a design editor for making a PDF from scratch, with ready-made templates for certificates, invitations, cards, posters and more.
+- The CV builder fills a form on the left and shows the finished CV on the right.
+- Studio pictures can be cropped and adjusted, and designs gain tables, charts, flowcharts, formulas, shadows and rulers.
+- A library of 24 open-licence fonts, all with Turkish letters, downloads on request.
+- More than 1,600 icons can be searched by name in your language and added as sharp, recolourable drawings.
+
+---
+
+# FAQ
+
+> Short answers about vivePDF's price, privacy, offline use, supported systems, signing, OCR languages and updates.
+
+URL: https://vivepdf.com/en/docs/faq/
+Last updated: 2026-10-18
+
+Here are the questions people ask most often about vivePDF, with short answers. If yours is not here, have a look at [Troubleshooting](https://vivepdf.com/en/docs/troubleshooting/).
+
+## Is vivePDF free?
+
+Yes, vivePDF is completely free. Every tool is included, and there are no paid tiers, accounts or usage limits.
+
+## Are my files uploaded to a server?
+
+No. Your documents, passwords and certificates never leave your computer; all the work happens on it. Help › Privacy lists every case in which the app goes online.
+
+## Does it work without an internet connection?
+
+Yes, the tools do not need an internet connection. Only things such as update checks, downloading language packs or turning a web page into a PDF go online. Offline mode in Settings › Web stops all of those connections with one switch.
+
+## Which operating systems does it run on?
+
+Ready-made installers are available for Windows 10 and Windows 11 (64-bit) and for Macs with Apple silicon on macOS 14 Sonoma or later. On Linux, vivePDF is built from source.
+
+## Is vivePDF open source?
+
+Yes. All of the source code is published on GitHub under the AGPL-3.0 licence. You can read it, build it yourself and change it.
+
+## Can I edit the existing text in a PDF?
+
+Yes. In Edit › Edit text, click a run of text on the page to change its text, size or colour. The new text is written in the document's own font at the same size; if it does not fit, it is shrunk and you are told.
+
+## Can I sign a PDF with a digital certificate?
+
+Yes. Tools › Sign applies a PAdES signature with your .p12 or .pfx certificate and also verifies signed files. If you have no certificate, vivePDF can create a self-signed one; it proves the document has not changed, but legal validity needs a qualified e-signature.
+
+## Which languages can OCR read?
+
+Turkish and English come with the app. Packs for about 40 languages can be downloaded in Settings › Tools › OCR language packs; each is downloaded once and then works offline.
+
+## How do I update vivePDF?
+
+The app checks for new versions itself and asks before downloading anything. To check by hand, click Check for updates in Settings › Updates, then choose Download and install and Restart.
+
+## Does it collect usage data or telemetry?
+
+No. vivePDF collects no usage data, identifiers or crash reports, and it does not ask you to create an account. Bug reports are never sent automatically either.
+
+## Where do I report a bug?
+
+Help › Report a bug opens a report window where you can copy the report, save it to a file or open it as a prefilled GitHub issue in your browser. Nothing is sent automatically, and you can also go straight to the Issues section of the vivePDF repository on GitHub.
+
+## Which languages is the interface available in?
+
+The interface comes in eight languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic. Arabic is shown right to left.
+
+---
+
+# Troubleshooting
+
+> What to do when a vivePDF tool fails, with the log folder, support bundle, bug reports, SmartScreen, missing LibreOffice and OCR language packs.
+
+URL: https://vivepdf.com/en/docs/troubleshooting/
+Last updated: 2026-10-18
+
+When something in vivePDF does not work as expected, start by reading the message on screen: it says what went wrong and usually how to fix it. If the problem stays, the log folder, support bundle and bug report in the **Help** menu let you see what happened and pass it on to us.
+
+## First steps
+
+- If a tool fails, try again with a copy of the file. Tools leave the original alone and write their result to a new file.
+- If you see "The file is not a valid PDF or is damaged.", try the **Repair** tool on it first. The [Tools](https://vivepdf.com/en/docs/tools/) page lists every tool.
+- If a feature is greyed out and hovering shows "Off while offline mode is on", [Offline mode](https://vivepdf.com/en/docs/offline/) is on. Turn it off in **Settings › Web**.
+- Press `Shift+F1` for the help topic of the screen you are on, or `F1` for that screen's shortcuts.
+
+## The SmartScreen warning at install
+
+The installer carries no code signature, so the first time you run it Windows may show **Windows protected your PC**. Click **More info**, then **Run anyway**. See [Installation](https://vivepdf.com/en/docs/installation/) for details.
+
+## "Cannot be opened" on a Mac
+
+If macOS blocks vivePDF the first time, open **System Settings › Privacy & Security** and click **Open Anyway** next to the vivePDF message. You only need this once; see [Installation](https://vivepdf.com/en/docs/installation/) for details.
+
+## "LibreOffice is required for this conversion."
+
+Word, Excel and PowerPoint conversions use LibreOffice. If you see this message, open the **Office converter** part of **Settings › Tools**:
+
+- On Windows, LibreOffice comes with the installer. **Install from the app package** sets it up without the internet (about 900 MB on disk).
+- Without the package, **Download and install** downloads LibreOffice (about 350 MB).
+- If LibreOffice is already on your computer, the status reads **Found on this computer** and that copy is used.
+
+If LibreOffice is "still in use", close any open LibreOffice windows and try again. A password-protected Office file needs its password removed first, in the application that created it.
+
+## "OCR language data not found."
+
+OCR needs a language pack for the language of the text. In **Settings › Tools**, find the language under **OCR language packs** and click **Download**; each language is downloaded once. **Default OCR language** in the same section sets the one chosen for you. Downloading needs Offline mode to be off. More on the [OCR](https://vivepdf.com/en/docs/ocr/) page.
+
+## If the app closes
+
+If vivePDF closes unexpectedly, the next start shows "vivePDF closed unexpectedly last time — Report the crash"; **Report** opens a report straight away. **Restore session** on Home brings your open documents back. If you see "The PDF engine could not be started.", close the app and open it again; if that does not help, save a support bundle.
+
+## The log folder
+
+**Help › Open log folder** opens the folder with the log files. The log records what happened in technical terms and never the contents of your documents. Error lines may include file paths, with your home folder shown as `~`. You can also reach it from **Settings › Feedback › Log folder**.
+
+## Support bundle
+
+**Help › Save support bundle…** gathers the system details and recent logs into one zip file you can share.
+
+1. Choose **Help › Save support bundle…**.
+2. Pick where to save it; the file name starts with `vivepdf-support-` and includes the date.
+3. Use **Show in folder** in the "Support bundle saved" notification to find the file, then attach it to an issue or an e-mail.
+
+The bundle is never sent anywhere by itself; you decide who gets it.
+
+## Report a bug
+
+**Help › Report a bug** opens the **Send a report** window. Choose the type (**Crash**, **Bug** or **Idea**) and describe what happened. If you like, tick **Include diagnostic information**; **What will be included** then shows exactly what goes into the report.
+
+- Paste a screenshot with `Ctrl+V`, or add a sample file with **Add file…**. Attachments only go into a package you save with **Save as package (.zip)**; copying and GitHub never include them.
+- **Open on GitHub** opens a prefilled issue in your browser. **Copy to clipboard** and **Save report to file** are there if you want to send the report another way.
+
+> **Reports are never sent automatically**
+>
+> vivePDF never sends a report by itself. To see open issues or file a new one, use the [GitHub issues page](https://github.com/mtvrkan/vivePDF/issues).
+
+---
+
+# Build from source
+
+> What you need to run vivePDF from its source code, how to start it in development mode, run the tests and build your own installer.
+
+URL: https://vivepdf.com/en/docs/build-from-source/
+Last updated: 2026-10-18
+
+You can build and run vivePDF from its source code. That is the way to use it on Linux, which has no ready-made package, and on a Mac until the macOS version is published; it is also where you start if you want to contribute.
+
+## Repository layout
+
+All of the source code is in the [vivePDF repository on GitHub](https://github.com/mtvrkan/vivePDF). It has three main folders:
+
+- `apps/desktop` — the desktop app: the Tauri 2 (Rust) shell and the interface, written in React 19, TypeScript and Tailwind v4. The PDF viewer is EmbedPDF.
+- `sidecar` — the Python engine, built on PyMuPDF. The app starts it as a separate process; pdf2docx, OCRmyPDF, pyHanko and Tesseract are used here too.
+- `scripts` — scripts that package the engine and prepare release builds.
+
+## Prerequisites
+
+- Node 22 and pnpm 10
+- Rust (stable) and your platform's build tools; on macOS, the Xcode command line tools
+- Python 3.12 or later and uv
+
+## Run in development mode
+
+1. Clone the repository:
+
+   ```sh
+   git clone https://github.com/mtvrkan/vivePDF.git
+   cd vivePDF
+   ```
+
+2. Install the interface dependencies:
+
+   ```sh
+   cd apps/desktop
+   pnpm install
+   ```
+
+3. Set up the Python engine's environment. In development mode the app runs the engine straight from source:
+
+   ```sh
+   cd ../../sidecar
+   uv sync
+   ```
+
+4. Start the app:
+
+   ```sh
+   cd ../apps/desktop
+   pnpm tauri dev
+   ```
+
+## Tests
+
+Each layer has its own tests. Run the commands in the folder shown:
+
+| Layer | Folder | Command |
+|---|---|---|
+| Interface unit tests | `apps/desktop` | `pnpm test` |
+| Type check and lint | `apps/desktop` | `pnpm typecheck` · `pnpm lint` |
+| RPC types between the interface and the engine | `apps/desktop` | `pnpm check:rpc` |
+| Python engine | `sidecar` | `uv run pytest -x -q` |
+| Rust shell | `apps/desktop/src-tauri` | `cargo test` |
+| End to end, with the real app | `apps/desktop` | `pnpm e2e` |
+
+The end-to-end tests drive the real app through its interface and run on Windows only; they also need `cargo install tauri-driver --locked`. Setup details and the tests with real-world and very large documents are described in [docs/TESTING.md](https://github.com/mtvrkan/vivePDF/blob/main/docs/TESTING.md).
+
+## Build an installer
+
+For an installable package, first package the Python engine as a single folder. The script builds the engine, copies it to `apps/desktop/src-tauri/binaries/engine/` and stops if the copy fails its self-checks:
+
+```sh
+scripts/build-sidecar.sh
+```
+
+On Windows, `scripts/build-sidecar.ps1` does the same. Then build the app with the release configuration. Without the update signing key, turn the updater files off:
+
+```sh
+cd apps/desktop
+pnpm tauri build --config src-tauri/tauri.release.conf.json --config '{"bundle":{"createUpdaterArtifacts":false}}'
+```
+
+The packages are written under `apps/desktop/src-tauri/target/release/bundle/`. On Linux these include a `.deb` and an AppImage; make the AppImage executable with `chmod +x` before starting it.
+
+> **Office conversions**
+>
+> Builds you make yourself on macOS and Linux use the LibreOffice installed on the system for Word, Excel and PowerPoint conversions. The Windows installer that carries LibreOffice inside is built with `scripts/build-windows-release.ps1`.
+
+How the official releases are built and published, including signing and the update channel, is in [docs/RELEASING.md](https://github.com/mtvrkan/vivePDF/blob/main/docs/RELEASING.md). For the licence that covers the code, see [License](https://vivepdf.com/en/docs/license/).
+
+---
+
+# License
+
+> What vivePDF's AGPL-3.0 licence means for users and for anyone distributing modified builds, plus the third-party components it uses.
+
+URL: https://vivepdf.com/en/docs/license/
+Last updated: 2026-10-18
+
+vivePDF is free software released under version 3 of the GNU Affero General Public License (AGPL-3.0-only). You can use the app at no cost, read its source code, change it and share it; if you give a modified version to other people, you must also offer them its source code under the same licence.
+
+> **Not legal advice**
+>
+> This page sums up the licence in plain words. The full text in the repository's [LICENSE](https://github.com/mtvrkan/vivePDF/blob/main/LICENSE) file is what counts. If you are unsure about your situation, ask a lawyer.
+
+## For users
+
+There are no conditions on using vivePDF for personal work, at school or at work. No fee, account or licence key is needed, and there is no limit on how many computers you install it on.
+
+- All of the source code is public on [GitHub](https://github.com/mtvrkan/vivePDF), so you can see for yourself what the app does.
+- You can change the code as you like on your own computer and [build it from source](https://vivepdf.com/en/docs/build-from-source/).
+- The licence also states that the software comes without any warranty.
+
+## For people distributing modified builds
+
+The licence's conditions apply once you pass a copy of vivePDF, or a version you have changed, on to others:
+
+- Offer the source code of the version you distribute, including your changes, to everyone who receives it.
+- License the modified version under AGPL-3.0 as well; you cannot add further restrictions for the people who receive it.
+- Keep the copyright and licence notices intact.
+- If you let people use your modified version over a network, the AGPL asks you to offer them its source code too. That is the main difference from the GPL.
+
+## Third-party components
+
+vivePDF is built on open-source components that carry their own licences. Some of them:
+
+- **MuPDF / PyMuPDF** (AGPL-3.0) — the PDF engine
+- **Tesseract OCR** (Apache-2.0) — the OCR engine and its language models
+- **LibreOffice** (MPL-2.0) — Office file conversions. The Windows installer carries The Document Foundation's signed LibreOffice installer unmodified.
+- **pyHanko** (MIT) — digital signatures
+- **pdf2docx** (GPL-3.0) — PDF to Word conversion
+- **Tauri** (MIT / Apache-2.0) — the desktop shell
+
+The full list, with each component's licence and role in the app, is in [THIRD_PARTY_NOTICES.md](https://github.com/mtvrkan/vivePDF/blob/main/THIRD_PARTY_NOTICES.md). Inside the app, the **Licences** link on the **Help › About** page also lists the components and their licences.

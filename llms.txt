@@ -1,0 +1,93 @@
+# vivePDF
+
+> vivePDF is a free, open-source (AGPL-3.0) PDF editor for Windows and macOS that works fully offline. It views, edits, organises, converts, OCRs, signs and presents PDFs on the user's own computer, and the files never leave it.
+
+Key facts:
+
+- Price: free. Every tool is included; there are no paid tiers, accounts or usage limits.
+- Privacy: no telemetry, no account. Documents, passwords and certificates stay on the computer. Only update checks, OCR language-pack downloads and turning a web page into a PDF go online, and offline mode stops all of them.
+- Platforms: Windows 10 and 11 (64-bit), and macOS 14 Sonoma or later on Apple silicon. On Linux it is built from source.
+- Tools: 77 PDF tools in one app, including merge, split, compress, OCR, convert to and from Office formats, digital signatures (PAdES), redaction, form filling and comparison. A presenter view shows slides on one screen and notes on the other.
+- Studio: a built-in design and document editor with templates, CVs and business cards.
+- Interface languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic.
+- Latest version: 0.3.0, released 2026-10-15.
+- Source code and downloads: https://github.com/mtvrkan/vivePDF
+- Website: Turkish at https://vivepdf.com/ (default) and English at https://vivepdf.com/en/. Every documentation page below is also available as plain Markdown.
+
+## Getting started
+
+- [Installation](https://vivepdf.com/en/docs/installation.md): How to install vivePDF on Windows 10/11 and macOS 14+, get past the SmartScreen and Gatekeeper warnings, receive updates and uninstall it.
+- [Interface](https://vivepdf.com/en/docs/interface.md): A tour of vivePDF's top bar, Tools menu, command palette, tabs, tab groups, windows and the side panels in the Viewer.
+
+## Working with documents
+
+- [Open and read a PDF](https://vivepdf.com/en/docs/open-and-read.md): How to open documents in vivePDF, move between pages, search the text, zoom, change the page display, split the window and read comfortably.
+- [Organise pages](https://vivepdf.com/en/docs/pages.md): How to reorder, rotate, delete, insert, extract and split PDF pages with the vivePDF page organizer, and what happens to the original file.
+- [Convert files](https://vivepdf.com/en/docs/convert.md): How vivePDF turns PDFs into Word, Excel, PowerPoint, pictures, text, Markdown, HTML and EPUB, and makes PDFs from pictures, Office files, SVG and web pages.
+- [Make scanned pages searchable (OCR)](https://vivepdf.com/en/docs/ocr.md): How to add a searchable text layer to scanned PDFs with OCR in vivePDF, manage OCR languages, scan from a scanner and clean up scans.
+- [Sign and verify](https://vivepdf.com/en/docs/sign.md): How to add a hand-drawn signature, sign a PDF digitally with a .p12 or .pfx certificate, verify signatures and create a certificate in vivePDF.
+- [Security](https://vivepdf.com/en/docs/security.md): How to password-protect a PDF in vivePDF, set permissions, seal it with a certificate, add watermarks and stamps, strip hidden data and redact.
+
+## Studio
+
+- [Write a document in Studio](https://vivepdf.com/en/docs/studio-document.md): How to write reports, assignments and theses in the Studio document editor, with headings, tables, footnotes, references, columns and PDF export.
+- [Design in Studio](https://vivepdf.com/en/docs/studio-design.md): How to design posters, certificates and invitations from templates in Studio, build a CV, prepare print-ready business cards, use layers and export.
+
+## Presenting
+
+- [Present a PDF](https://vivepdf.com/en/docs/present.md): How to present a PDF full screen in vivePDF, from F5 to the pen and laser, black and white boards, speaker notes and the two-screen presenter view.
+
+## Privacy and settings
+
+- [Settings and privacy](https://vivepdf.com/en/docs/settings-privacy.md): Every vivePDF settings section, what Help › Privacy says goes online, and how to remove the data kept on this computer in Settings › Data.
+- [Offline mode](https://vivepdf.com/en/docs/offline.md): How to turn on Offline mode in vivePDF, what it stops, what keeps working without the internet and how features show that they are off.
+
+## Reference
+
+- [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts.md): vivePDF keyboard shortcuts, the per-screen list that F1 opens, saving it as a PDF, the macOS key equivalents and the full list for every screen.
+- [Tools](https://vivepdf.com/en/docs/tools.md): Where to open vivePDF's 77 tools, what each of the six tool groups is for, and a searchable list with a short description of every tool.
+- [Release notes](https://vivepdf.com/en/docs/release-notes.md): The main changes in each vivePDF version, how updates reach you and where to find the complete list of changes.
+- [FAQ](https://vivepdf.com/en/docs/faq.md): Short answers about vivePDF's price, privacy, offline use, supported systems, signing, OCR languages and updates.
+- [Troubleshooting](https://vivepdf.com/en/docs/troubleshooting.md): What to do when a vivePDF tool fails, with the log folder, support bundle, bug reports, SmartScreen, missing LibreOffice and OCR language packs.
+
+## Developers
+
+- [Build from source](https://vivepdf.com/en/docs/build-from-source.md): What you need to run vivePDF from its source code, how to start it in development mode, run the tests and build your own installer.
+- [License](https://vivepdf.com/en/docs/license.md): What vivePDF's AGPL-3.0 licence means for users and for anyone distributing modified builds, plus the third-party components it uses.
+
+## Türkçe dokümantasyon
+
+- [Kurulum](https://vivepdf.com/dokumantasyon/kurulum.md): vivePDF'i Windows 10/11'e ve macOS 14+'a kurma, SmartScreen ve Gatekeeper uyarılarını geçme, güncellemeleri alma ve kaldırma adımları.
+- [Arayüz](https://vivepdf.com/dokumantasyon/arayuz.md): vivePDF'in üst çubuğu, Araçlar menüsü, komut paleti, sekmeler, sekme grupları, pencereler ve Görüntüleyici'nin yan panelleri tek sayfada.
+- [PDF açma ve okuma](https://vivepdf.com/dokumantasyon/acma-okuma.md): vivePDF'te belge açma, sayfalar arasında gezinme, metin arama, yakınlaştırma, sayfa görünümü, bölünmüş pencere ve okuma modu.
+- [Sayfaları düzenleme](https://vivepdf.com/dokumantasyon/sayfalar.md): vivePDF sayfa düzenleyicisiyle PDF sayfalarını sıralama, döndürme, silme, ekleme, çıkarma ve ayrı dosyalara bölme adımları.
+- [Dosya dönüştürme](https://vivepdf.com/dokumantasyon/donusturme.md): vivePDF ile PDF'i Word, Excel, PowerPoint, resim, metin, Markdown, HTML ve EPUB'a çevirme; resim, Office, SVG ve web sayfalarından PDF yapma.
+- [Taranmış sayfaları aranabilir yapma (OCR)](https://vivepdf.com/dokumantasyon/ocr.md): vivePDF'te OCR ile taranmış PDF'lere aranabilir metin katmanı ekleme, OCR dilleri, tarayıcıdan tarama ve taramaları iyileştirme.
+- [İmzalama ve doğrulama](https://vivepdf.com/dokumantasyon/imza.md): vivePDF'te elle çizilmiş imza ekleme, .p12 veya .pfx sertifikasıyla dijital imza atma, imzaları doğrulama ve sertifika oluşturma.
+- [Güvenlik](https://vivepdf.com/dokumantasyon/guvenlik.md): vivePDF ile PDF'e parola ve izin ekleme, parolayı kaldırma, sertifikayla mühürleme, filigran ve damga basma, gizli verileri temizleme ve karartma.
+- [Stüdyo'da belge yazma](https://vivepdf.com/dokumantasyon/studio-belge.md): Stüdyo'nun belge düzenleyicisiyle rapor, ödev ve tez yazma; başlıklar, tablolar, dipnotlar, kaynakça, sütunlar ve PDF ya da Markdown çıktısı.
+- [Stüdyo'da tasarım](https://vivepdf.com/dokumantasyon/studio-tasarim.md): Stüdyo'da şablonla afiş, sertifika ve davetiye tasarlama, CV oluşturucu, baskıya hazır kartvizit, katmanlar ve PDF ya da resim olarak dışa aktarma.
+- [PDF ile sunum yapma](https://vivepdf.com/dokumantasyon/sunum.md): vivePDF'te bir PDF'i tam ekran sunma; F5 ile başlatma, kalem ve lazer gibi araçlar, siyah ve beyaz tahta, konuşmacı notları ve iki ekranlı sunucu görünümü.
+- [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik.md): vivePDF ayarlarının her bölümü, Yardım › Gizlilik'te neyin internete çıktığı ve bu bilgisayarda saklanan verileri Ayarlar › Veriler'den silme.
+- [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi.md): vivePDF'te Çevrimdışı mod'u açma, neleri durdurduğu, internetsiz neyin çalışmaya devam ettiği ve kapalı özelliklerin nasıl görüneceği.
+- [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar.md): vivePDF klavye kısayolları; F1 ile açılan ekrana özel liste, listeyi PDF olarak kaydetme, macOS tuş karşılıkları ve ekran ekran tam liste.
+- [Araçlar](https://vivepdf.com/dokumantasyon/araclar.md): vivePDF'teki 77 aracı nereden açacağın, altı araç grubunun ne işe yaradığı ve her aracın kısa açıklamasıyla aranabilir tam liste.
+- [Sürüm notları](https://vivepdf.com/dokumantasyon/surum-notlari.md): vivePDF'in her sürümünde öne çıkan değişiklikler, güncellemelerin nasıl geldiği ve tam değişiklik listesinin nerede olduğu.
+- [Sık sorulan sorular](https://vivepdf.com/dokumantasyon/sss.md): vivePDF'in ücreti, gizliliği, çevrimdışı çalışması, desteklediği sistemler, imza, OCR ve güncellemeler hakkında kısa yanıtlar.
+- [Sorun giderme](https://vivepdf.com/dokumantasyon/sorun-giderme.md): vivePDF'te bir araç çalışmadığında yapılacaklar; günlük klasörü, destek paketi, hata bildirme, SmartScreen, LibreOffice ve OCR dil paketleri.
+- [Kaynaktan derleme](https://vivepdf.com/dokumantasyon/kaynaktan-derleme.md): vivePDF'i kaynak koddan çalıştırmak için gerekenler, geliştirme modunda açma, testleri çalıştırma ve kendi kurulum paketini derleme.
+- [Lisans](https://vivepdf.com/dokumantasyon/lisans.md): vivePDF'in AGPL-3.0 lisansının kullanıcılar ve değiştirilmiş sürüm dağıtanlar için ne anlama geldiği, üçüncü taraf bileşenler.
+
+## Download and source
+
+- [Latest release](https://github.com/mtvrkan/vivePDF/releases/latest): Windows installer and macOS disk image
+- [Source code on GitHub](https://github.com/mtvrkan/vivePDF): the desktop app, the PDF engine and this website, under AGPL-3.0
+- [Report a bug or ask a question](https://github.com/mtvrkan/vivePDF/issues)
+
+## Optional
+
+- [Full English documentation in one file](https://vivepdf.com/llms-full.txt)
+- [Full Turkish documentation in one file](https://vivepdf.com/llms-full-tr.txt)
+- [Release notes feed, English](https://vivepdf.com/en/docs/release-notes.xml)
+- [Release notes feed, Turkish](https://vivepdf.com/dokumantasyon/surum-notlari.xml)
+- [Sitemap](https://vivepdf.com/sitemap.xml)

@@ -1,0 +1,52 @@
+# Kurulum
+
+> vivePDF'i Windows 10/11'e ve macOS 14+'a kurma, SmartScreen ve Gatekeeper uyarılarını geçme, güncellemeleri alma ve kaldırma adımları.
+
+URL: https://vivepdf.com/dokumantasyon/kurulum/
+Son güncelleme: 2026-10-18
+
+vivePDF, Windows 10 ve 11'de (64 bit) ve Apple silicon işlemcili Mac'lerde macOS 14 Sonoma ya da sonrasında çalışan ücretsiz bir PDF editörüdür. Kurulum dosyasını GitHub'daki sürümler sayfasından indirip açman yeterli; hesap açman ya da internete bağlı kalman gerekmez.
+
+## Windows'a kurulum
+
+1. [Son sürüm sayfasından](https://github.com/mtvrkan/vivePDF/releases/latest) `vivePDF_<sürüm>_x64-setup.exe` dosyasını indir.
+2. İndirilen dosyayı çift tıklayarak çalıştır ve kurulum sihirbazını izle.
+3. Kurulum bitince vivePDF'i Başlat menüsünden aç. İlk açılışta Başlangıç ekranı gelir; buradan bir PDF açabilir ya da araçlara geçebilirsin.
+
+### SmartScreen uyarısı
+
+Kurulum dosyası kod imzası taşımadığı için Windows ilk çalıştırmada **Windows bilgisayarınızı korudu** uyarısını gösterebilir. **Ek bilgi**'ye, ardından **Yine de çalıştır**'a tıkla. Bu uyarı yalnızca kurulum dosyası içindir; uygulamanın kendisi her açılışta sormaz.
+
+> **Ofis dönüştürmeleri**
+>
+> Word, Excel ve PowerPoint dönüştürmeleri LibreOffice ile yapılır. LibreOffice Windows kurulumuyla birlikte gelir ve ilk açılışta internete çıkmadan hazırlanır (diskte yaklaşık 900 MB). **Ayarlar › Araçlar**'dan kaldırabilir ya da yeniden kurabilirsin.
+
+## Güncellemeler
+
+vivePDF yeni sürümleri kendisi denetler. Açılışta yalnızca sürüm bilgisi alınır; indirme ve kurulum her zaman sana sorulur. Güncellemeler imzalı olarak ve küçük paketlerle iner.
+
+- Elle denetlemek için **Ayarlar › Güncellemeler**'i aç ve **Güncellemeleri denetle**'ye tıkla.
+- Yeni sürüm hazırsa **İndir ve yükle**'yi seç; indirme bitince uygulama **Yeniden başlat** ile yeni sürüme geçer.
+- Otomatik denetimi istemiyorsan **Açılışta otomatik denetle** anahtarını kapat. [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıkken denetim hiç yapılmaz.
+
+Her sürümde nelerin değiştiğini [Sürüm notları](https://vivepdf.com/dokumantasyon/surum-notlari/) sayfasında bulabilirsin.
+
+## macOS'a kurulum
+
+1. [Son sürüm sayfasından](https://github.com/mtvrkan/vivePDF/releases/latest) `vivePDF_<sürüm>_aarch64.dmg` dosyasını indir.
+2. DMG'yi aç ve vivePDF'i **Uygulamalar** klasörüne sürükle.
+3. vivePDF'i Uygulamalar'dan ya da Launchpad'den aç.
+
+### Gatekeeper uyarısı
+
+Uygulama Apple noter onayı taşımadığı için macOS ilk açılışı engelleyebilir. **Sistem Ayarları › Gizlilik ve Güvenlik**'i aç ve vivePDF iletisinin yanındaki **Yine de Aç**'a tıkla. Terminal'i tercih edersen `xattr -dr com.apple.quarantine /Applications/vivePDF.app` komutu da aynı işi görür. Bu yalnızca ilk açılışta gerekir.
+
+Ofis dönüştürmeleri Uygulamalar klasöründeki LibreOffice'i kullanır; yüklü değilse uygulama istediğinde indirir. Belge tarayıcısıyla tarama için SANE gerekir (`brew install sane-backends`).
+
+## Linux
+
+Linux'ta vivePDF [kaynaktan derlenir](https://vivepdf.com/dokumantasyon/kaynaktan-derleme/). Aynı adımlar Windows ve macOS'ta geliştirme yapmak için de geçerlidir.
+
+## Kaldırma
+
+Windows'ta vivePDF'i **Ayarlar › Uygulamalar › Yüklü uygulamalar** listesinden, Mac'te Uygulamalar klasöründen Çöp Sepeti'ne sürükleyerek kaldırabilirsin. Uygulamanın bu bilgisayarda sakladığı ayarları ve son dosya listesini kaldırmadan önce silmek istersen **Ayarlar › Veriler**'i kullan; neyin saklandığını **Yardım › Gizlilik** gösterir.

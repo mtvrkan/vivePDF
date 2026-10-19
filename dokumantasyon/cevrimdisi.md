@@ -1,0 +1,55 @@
+# Çevrimdışı mod
+
+> vivePDF'te Çevrimdışı mod'u açma, neleri durdurduğu, internetsiz neyin çalışmaya devam ettiği ve kapalı özelliklerin nasıl görüneceği.
+
+URL: https://vivepdf.com/dokumantasyon/cevrimdisi/
+Son güncelleme: 2026-10-18
+
+Çevrimdışı mod, vivePDF'in tüm internet bağlantılarını tek bir anahtarla durdurur: güncelleme denetimi, indirmeler, web aramaları ve sorgular, web sayfası açma ve çevrimiçi denetimler. PDF araçları zaten bu bilgisayarda çalıştığı için geri kalan her şey internet olmadan da çalışmaya devam eder. Belgelerin ise mod açık olsun ya da olmasın bu bilgisayardan çıkmaz.
+
+## Çevrimdışı modu açma
+
+1. Üst çubuktan **Ayarlar**'ı aç.
+2. **Uygulama** grubundaki **Web** bölümüne geç.
+3. **Çevrimdışı mod** anahtarını aç.
+
+Mod varsayılan olarak kapalıdır. Durumu **Yardım › Gizlilik** sayfasının üstünde de görürsün: "Çevrimdışı mod açık" ya da "Çevrimdışı mod kapalı". Oradaki **Ayarı aç** seni doğrudan anahtara götürür.
+
+## Neleri durdurur
+
+Mod açıkken internete ihtiyaç duyan her özellik kapanır:
+
+- **Güncellemeler**: açılıştaki otomatik denetim yapılmaz, **Ayarlar › Güncellemeler** "Denetlenmedi: çevrimdışı mod açık" gösterir.
+- **İndirmeler**: OCR dil paketleri, sesli okuma sesleri, çeviri dilleri, Stüdyo'daki eksik yazı tipleri ve LibreOffice indirmesi.
+- **Web aramaları**: Görüntüleyici'nin sağ tık menüsündeki **Webde ara**, **Görseli Google Lens ile ara** ve **Çevir** altındaki **Google Çeviri**.
+- **Web sayfaları**: **Web sayfası → PDF** dönüştürmesi.
+- **Çevrimiçi denetimler**: yeni parolaların Have I Been Pwned denetimi, imzalarken zaman damgası sunucusu, doğrularken **İptal durumunu çevrimiçi denetle**, Stüdyo'da DOI ile kaynak arama ve denetleme.
+- **GitHub**: hata bildiriminde **GitHub’da aç** ve Hakkında'daki **GitHub’dan güncelle**.
+
+Bu kapatma yalnızca arayüzde kalmaz; PDF motoru da mod açıkken internete çıkan istekleri reddeder.
+
+## Neler çalışmaya devam eder
+
+İnternet gerektirmeyen her şey her zamanki gibi çalışır:
+
+- Açma, okuma, arama, sayfa düzenleme, birleştirme, bölme, sıkıştırma, dönüştürme, imzalama, parola koruma ve diğer tüm PDF araçları.
+- Kurulu dillerle [OCR](https://vivepdf.com/dokumantasyon/ocr/), kurulu seslerle sesli okuma ve kurulu dillerle **Çevrimdışı çevirmen**.
+- Windows kurulumuyla gelen LibreOffice ile Word, Excel ve PowerPoint [dönüştürmeleri](https://vivepdf.com/dokumantasyon/donusturme/).
+- Stüdyo, sunum ve sunucu görünümü.
+- **Yardım konuları**, klavye kısayolları listesi, **Destek paketi kaydet…** ve hata raporunu kopyalama ya da dosyaya kaydetme.
+
+> **Önce indir, sonra kapat**
+>
+> İnternetsiz bir bilgisayarda çalışacaksan ihtiyacın olan OCR dillerini, sesleri ve çeviri dillerini önce indir, sonra çevrimdışı modu aç. İndirilen paketler bu bilgisayarda kalır ve internet olmadan kullanılır.
+
+## Kapalı özellikler nasıl görünür
+
+Çevrimdışı mod açıkken özellikler gizlenmez; düğmeler yerinde kalır ama soluk görünür ve tıklanmaz. Fareyle üzerine gelince "Çevrimdışı mod açıkken kapalı (Ayarlar › Web)" yazar.
+
+İndirme yapılan bölümlerde (örneğin **Ayarlar › Araçlar**'daki OCR dil paketleri) ve **Web sayfası → PDF** ekranında şu not çıkar: "Çevrimdışı mod açık; internetten hiçbir şey indirilmiyor veya sorgulanmıyor." Notun yanındaki **Değiştir** seni **Ayarlar › Web**'e götürür.
+
+Çevrimdışı mod yalnızca vivePDF'in kendi bağlantılarını durdurur; bilgisayarının internet bağlantısını kesmez, tarayıcın ve diğer uygulamaların her zamanki gibi çalışır.
+
+Bir işlem yine de internete ihtiyaç duyarsa "Bunun için internet gerekiyor ama çevrimdışı mod açık." iletisini görürsün. Modu kapatınca her şey hemen eski haline döner; uygulamayı yeniden başlatman gerekmez.
+
+Ağa ne zaman çıkıldığının tam listesi ve bu bilgisayarda saklananlar için [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/) sayfasına bak.

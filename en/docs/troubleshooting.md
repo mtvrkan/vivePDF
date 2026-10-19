@@ -1,0 +1,66 @@
+# Troubleshooting
+
+> What to do when a vivePDF tool fails, with the log folder, support bundle, bug reports, SmartScreen, missing LibreOffice and OCR language packs.
+
+URL: https://vivepdf.com/en/docs/troubleshooting/
+Last updated: 2026-10-18
+
+When something in vivePDF does not work as expected, start by reading the message on screen: it says what went wrong and usually how to fix it. If the problem stays, the log folder, support bundle and bug report in the **Help** menu let you see what happened and pass it on to us.
+
+## First steps
+
+- If a tool fails, try again with a copy of the file. Tools leave the original alone and write their result to a new file.
+- If you see "The file is not a valid PDF or is damaged.", try the **Repair** tool on it first. The [Tools](https://vivepdf.com/en/docs/tools/) page lists every tool.
+- If a feature is greyed out and hovering shows "Off while offline mode is on", [Offline mode](https://vivepdf.com/en/docs/offline/) is on. Turn it off in **Settings › Web**.
+- Press `Shift+F1` for the help topic of the screen you are on, or `F1` for that screen's shortcuts.
+
+## The SmartScreen warning at install
+
+The installer carries no code signature, so the first time you run it Windows may show **Windows protected your PC**. Click **More info**, then **Run anyway**. See [Installation](https://vivepdf.com/en/docs/installation/) for details.
+
+## "Cannot be opened" on a Mac
+
+If macOS blocks vivePDF the first time, open **System Settings › Privacy & Security** and click **Open Anyway** next to the vivePDF message. You only need this once; see [Installation](https://vivepdf.com/en/docs/installation/) for details.
+
+## "LibreOffice is required for this conversion."
+
+Word, Excel and PowerPoint conversions use LibreOffice. If you see this message, open the **Office converter** part of **Settings › Tools**:
+
+- On Windows, LibreOffice comes with the installer. **Install from the app package** sets it up without the internet (about 900 MB on disk).
+- Without the package, **Download and install** downloads LibreOffice (about 350 MB).
+- If LibreOffice is already on your computer, the status reads **Found on this computer** and that copy is used.
+
+If LibreOffice is "still in use", close any open LibreOffice windows and try again. A password-protected Office file needs its password removed first, in the application that created it.
+
+## "OCR language data not found."
+
+OCR needs a language pack for the language of the text. In **Settings › Tools**, find the language under **OCR language packs** and click **Download**; each language is downloaded once. **Default OCR language** in the same section sets the one chosen for you. Downloading needs Offline mode to be off. More on the [OCR](https://vivepdf.com/en/docs/ocr/) page.
+
+## If the app closes
+
+If vivePDF closes unexpectedly, the next start shows "vivePDF closed unexpectedly last time — Report the crash"; **Report** opens a report straight away. **Restore session** on Home brings your open documents back. If you see "The PDF engine could not be started.", close the app and open it again; if that does not help, save a support bundle.
+
+## The log folder
+
+**Help › Open log folder** opens the folder with the log files. The log records what happened in technical terms and never the contents of your documents. Error lines may include file paths, with your home folder shown as `~`. You can also reach it from **Settings › Feedback › Log folder**.
+
+## Support bundle
+
+**Help › Save support bundle…** gathers the system details and recent logs into one zip file you can share.
+
+1. Choose **Help › Save support bundle…**.
+2. Pick where to save it; the file name starts with `vivepdf-support-` and includes the date.
+3. Use **Show in folder** in the "Support bundle saved" notification to find the file, then attach it to an issue or an e-mail.
+
+The bundle is never sent anywhere by itself; you decide who gets it.
+
+## Report a bug
+
+**Help › Report a bug** opens the **Send a report** window. Choose the type (**Crash**, **Bug** or **Idea**) and describe what happened. If you like, tick **Include diagnostic information**; **What will be included** then shows exactly what goes into the report.
+
+- Paste a screenshot with `Ctrl+V`, or add a sample file with **Add file…**. Attachments only go into a package you save with **Save as package (.zip)**; copying and GitHub never include them.
+- **Open on GitHub** opens a prefilled issue in your browser. **Copy to clipboard** and **Save report to file** are there if you want to send the report another way.
+
+> **Reports are never sent automatically**
+>
+> vivePDF never sends a report by itself. To see open issues or file a new one, use the [GitHub issues page](https://github.com/mtvrkan/vivePDF/issues).

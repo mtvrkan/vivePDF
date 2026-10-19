@@ -1,0 +1,66 @@
+# Make scanned pages searchable (OCR)
+
+> How to add a searchable text layer to scanned PDFs with OCR in vivePDF, manage OCR languages, scan from a scanner and clean up scans.
+
+URL: https://vivepdf.com/en/docs/ocr/
+Last updated: 2026-10-18
+
+The pages of a scanned PDF are really pictures: you cannot search them or select and copy their text. vivePDF's OCR tool reads the pages and adds an invisible text layer on top of them. The pages look the same, but their text can now be searched, selected and copied. OCR runs on your computer with the built-in Tesseract, and your document is not sent anywhere.
+
+## Run OCR
+
+1. Open **Tools › OCR** and pick the scanned PDF. vivePDF shows how many pages are scanned and how many already have a text layer.
+2. Under **Languages**, tick the languages that appear in the document.
+3. Choose the **Scope**, and turn on **Auto-rotate** and **Clean up before reading** if you need them.
+4. Click **Run OCR**. The result is written to a new file; your original stays as it was.
+
+When it finishes, the result panel shows how many pages were recognised, how many were skipped and how many were turned upright.
+
+## Languages
+
+The language list only shows installed languages, and at first the app language and English are ticked. Turkish and English come with vivePDF. Pick only the languages that really appear in the document: each extra language slows reading down and can add mistakes.
+
+If you need another language, open **Download more languages** on the OCR page, or use the **OCR language packs** list in **Settings › Tools**. Each language is downloaded once and then works without internet. The **Default OCR language** setting decides which language is ticked when the OCR page opens.
+
+> **Downloading a language needs internet**
+>
+> Language packs are downloaded from the tessdata repository. While [Offline mode](https://vivepdf.com/en/docs/offline/) is on, no new language can be downloaded; OCR with the languages you already have always works.
+
+## Options
+
+The **Scope** decides which pages are read:
+
+- **Scanned pages only**: pages that already contain text stay untouched. This is the right choice for most documents.
+- **All pages**: every page is read again and any existing text layer is replaced.
+- **Redo old OCR**: the hidden text from an earlier OCR is removed and the page is read again; pages with visible text stay as they are.
+
+The other options:
+
+- **Auto-rotate**: finds the reading direction of pages scanned sideways or upside down and puts them right; it makes the run a little slower.
+- **Clean up before reading**: fixes contrast and reduces specks. It is used only for reading, so the page looks the same.
+- **Recognition resolution**: 150, 200 or 300. 200 is enough for most documents; 300 is more accurate but slower.
+- **Pages**: type a range to read only some pages. If the document mixes scanned pages and pages with text, the **Process scanned pages only** button fills in the range for you.
+- **Also save the text**: also writes the recognised text next to the PDF as plain text (.txt) or a Word document (.docx).
+
+## Quick OCR from the Viewer
+
+You can also recognise text without opening the tool. In the Viewer, right-click an empty part of the page and choose **Make selectable › Make this page selectable** or **Make the whole document selectable**.
+
+> **This changes the file itself**
+>
+> Unlike the OCR tool, **Make selectable** does not create a new file: it writes the text layer into the open document and the file is rewritten on disk. The page looks exactly the same and pages that already have text are left alone, but the change cannot be undone.
+
+If you only need the text of a small part, use the Viewer's **Text from an area** tool and drag over that area; vivePDF reads the text there and shows it so you can copy it.
+
+## The Scans tool
+
+Jobs that take you from paper to PDF are gathered in **Tools › Scans**:
+
+- **From scanner**: scans straight from your scanner. On Windows your scanner is listed directly; on macOS and Linux SANE must be installed. It offers **Scan both sides** and **Skip blank sheets**, and with **Make the text searchable (OCR)** on, the scanned pages are read as they are saved.
+- **Enhance**: cleans up existing scans with **Straighten** (for tilted pages), **Remove speckles**, **Whiten background**, **Remove edge shadows** and **Remove blank pages**. **Show preview** shows the page before and after.
+- **Split batch**: splits a stack scanned in one go into separate files at blank pages, at QR or barcode separator sheets, or wherever a text pattern is found.
+- **From photo**: finds the corners of paper in phone photos, straightens the perspective, whitens the background and turns each photo into a page.
+
+## After OCR
+
+Once a document has been through OCR, [search in the Viewer](https://vivepdf.com/en/docs/open-and-read/) works on it. To turn a scanned document into Word or Excel, run OCR first, then follow the steps on the [Convert files](https://vivepdf.com/en/docs/convert/) page.

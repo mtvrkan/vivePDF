@@ -1,0 +1,73 @@
+# Stüdyo'da belge yazma
+
+> Stüdyo'nun belge düzenleyicisiyle rapor, ödev ve tez yazma; başlıklar, tablolar, dipnotlar, kaynakça, sütunlar ve PDF ya da Markdown çıktısı.
+
+URL: https://vivepdf.com/dokumantasyon/studio-belge/
+Son güncelleme: 2026-10-18
+
+Stüdyo'nun belge düzenleyicisi, rapor, makale, ödev ya da tez gibi metinleri vivePDF içinde yazıp düzgün sayfalanmış bir PDF'e dönüştürmeni sağlar. Sen yazarken sağdaki önizleme bitmiş sayfaları gösterir; kapak, içindekiler, sayfa numaraları, dipnotlar ve kaynakça kendiliğinden yerine oturur.
+
+## Yeni belge başlatma
+
+1. Üst çubukta **Stüdyo**'ya tıkla. Aynı yere **Araçlar › Tümünü göster** kataloğundaki **Belge yaz** kartıyla ya da `Ctrl+K` ile açılan komut paletinden de ulaşırsın.
+2. **Belge oluştur** bölümünden bir başlangıç seç: **Boş belge**, **Rapor**, **Mektup**, **Dilekçe**, **Ödev**, **Toplantı tutanağı**, **Ders notu**, **Kitapçık**, **Özgeçmiş** ya da **Fatura**.
+3. Yazmaya başla. Yarım kalan bir belgeye **Belgenize devam edin** kartındaki **Devam et** ile dönersin.
+
+Elinde hazır bir metin varsa **Metin içe aktar…** düğmesiyle düz metin, Markdown ya da web sayfası dosyasını belgeye çevirebilirsin.
+
+## Biçimlendirme
+
+Düzenleyicinin üstündeki biçim çubuğu sık kullanılan her şeyi bir arada tutar:
+
+- **Paragraf stili** ile **Normal metin** ve **Başlık 1**–**Başlık 4** arasında geçiş yaparsın. İçindekiler bu başlıklardan oluşur.
+- **Kalın**, **İtalik**, **Altı çizili**, **Üstü çizili**, **Üst simge**, **Alt simge**, **Yazı rengi** ve **Vurgula** metni biçimler; **Biçim boyacısı** bir yerdeki biçimi başka bir yere taşır, **Biçimlendirmeyi temizle** her şeyi sıfırlar.
+- **Madde işaretli liste**, **Numaralı liste** ve **Yapılacaklar listesi** liste ekler; **Alıntı**, **Kod bloğu**, **Bağlantı**, **Resim ekle**, **Simge ekle**, **Yatay çizgi** ve **Sayfa sonu** da aynı çubuktadır.
+- **Satır ve paragraf aralığı** menüsü seçili paragrafların satır aralığını, önce ve sonra boşluğunu ve ilk satır girintisini ayarlar.
+
+Klavyeden `Ctrl+Alt+1`, `2` ve `3` başlık düzeylerini, `Ctrl+Shift+8` ve `Ctrl+Shift+7` listeleri açar; `Shift+Enter` yeni paragraf açmadan alt satıra geçer. Tam liste [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasında.
+
+### Tablolar
+
+**Tablo ekle** ile bir tablo yerleştir. İmleç tablonun içindeyken çubukta tablo düğmeleri belirir: **Alta satır ekle**, **Sağa sütun ekle**, **Satırı sil**, **Sütunu sil**, **Hücreleri birleştir**, **Hücreyi böl**, **Başlık satırını aç veya kapat** ve **Tabloyu sil**.
+
+## Dipnotlar
+
+**Dipnot ekle** düğmesi ya da `Ctrl+Alt+F` imlecin olduğu yere numaralı bir işaret koyar ve altta not panelini açar. Notu yazıp **Metne dön**'e tıkla. Dipnot, işaretin düştüğü sayfanın altına basılır; notlar sayfaya sığmayacak kadar uzarsa belgenin sonunda **Notlar** başlığı altında son notlara dönüşür. Notun içinde de atıf ve küçük resim kullanabilirsin.
+
+## Kaynaklar ve kaynakça
+
+Biçim çubuğundaki **Atıf ve kaynakça** düğmesi **Kaynaklar** penceresini açar:
+
+- **Dosya içe aktar** ile BibTeX, RIS ya da CSL JSON kitaplığını yükle; Zotero, Mendeley veya EndNote'tan kopyaladığın kayıtları **Yapıştır** ile ekle; elle girmek için **Yeni kaynak**'ı kullan.
+- **DOI ile ekle** künyeyi doi.org üzerinden getirir ve internet gerektirir; yalnızca DOI gönderilir. **PDF'ten ekle** makale PDF'indeki DOI'yi bilgisayarında bulur, sonra künyeyi aynı yoldan getirir. Çevrimdışı mod açıkken ikisi de internete çıkmaz.
+- **Atıf stili** olarak **APA 7**, **MLA 9**, **Chicago (yazar-tarih)** ya da **IEEE** seç. **Atıf ekle** metne atıf koyar, **Kaynakça ekle** kaynakça listesini yerleştirir.
+- **Kaynakları denetle**, kaynaklarının geri çekilip çekilmediğini ya da düzeltme yayımlanıp yayımlanmadığını Crossref üzerinden kontrol eder.
+
+Kaynak kitaplığından yola çıkmak istersen araç kataloğundaki **Kaynakça** kartı, belgeyi bu pencere açık olarak başlatır.
+
+## Sayfa ayarları ve sütunlar
+
+Sağ paneldeki **Önizleme** sekmesi PDF'in nasıl görüneceğini gösterir. **Ayarlar** sekmesinde şunlar var:
+
+- **Sayfa**: **Kâğıt boyutu** (A4, A5, B5, Letter, Legal), **Yön**, **Kenar boşlukları**, **Sütunlar** ve **Sütun aralığı**.
+- **Metin**: **Yazı tipi**, **Boyut**, **Satır aralığı**, **Başlık rengi**; istersen başlıklara ayrı bir yazı tipi.
+- **Üst ve alt bilgi**: üst ve alt bilgi metni ile **Sayfa numaraları**.
+- **İçindekiler**: **İçindekiler sayfası ekle** ve kaç başlık düzeyinin gösterileceği.
+- **Kapak**: **Kapak sayfası ekle**; **Klasik**, **Renk bandı**, **Çerçeve** ya da **Sade** stil.
+
+Belgenin bir bölümünü farklı sütunla dizmek için biçim çubuğundaki **Bölüm sonu** menüsünü kullan. **Bölüm sonu: 2 sütun** sonraki sayfayı iki sütunla başlatır; **Sürekli bölüm sonu: 2 sütun** ise aynı sayfada devam eder. Böylece tam genişlikte bir başlığın altına iki sütunlu metin koyabilirsin.
+
+## Bul ve değiştir, sözcük sayısı
+
+Üstteki arama düğmesi ya da `Ctrl+F` **Bul ve değiştir** çubuğunu açar; `Ctrl+H` doğrudan değiştirme alanıyla açılır. **Büyük/küçük harf eşleştir** ve **Yalnızca tam sözcükler** aramayı daraltır, **Tümünü değiştir** hepsini tek adımda değiştirir ve tek geri almayla eski hâline döner.
+
+Düzenleyicinin altında sözcük ve karakter sayısı her zaman görünür. Metin seçtiğinde sayı, seçimdekileri ve toplamı birlikte gösterir.
+
+## Kaydetme ve dışa aktarma
+
+`Ctrl+S` belgeyi daha sonra açıp düzenleyebileceğin bir vivePDF belgesi (`.vivedoc`) olarak kaydeder. Bitmiş hâlini almak için **Dışa aktar**'a tıkla ya da `Ctrl+E`'ye bas ve **Dosya türü** seç:
+
+- **PDF**: kapak, içindekiler, sayfa numaraları ve yer imleriyle birlikte. Metin seçilebilir kalır.
+- **Markdown**: başlıklar, listeler, tablolar, bağlantılar, resimler ve dipnotlar korunur; renkler, yazı tipleri ve sayfa düzeni alınmaz.
+
+Afiş, davetiye ya da kartvizit gibi serbest yerleşimli işler için [Stüdyo'da tasarım](https://vivepdf.com/dokumantasyon/studio-tasarim/) sayfasına bak. Hazır bir PDF'i düzenlemek istiyorsan [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) listesinden başla.

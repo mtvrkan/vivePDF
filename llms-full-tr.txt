@@ -1,0 +1,1541 @@
+# vivePDF · Dokümantasyon
+
+> vivePDF dokümantasyonu: kurulum, PDF açma, sayfa düzenleme, dönüştürme, OCR, imza, Stüdyo, sunum modu, kısayollar ve sorun giderme.
+
+URL: https://vivepdf.com/dokumantasyon/
+
+---
+
+# Kurulum
+
+> vivePDF'i Windows 10/11'e ve macOS 14+'a kurma, SmartScreen ve Gatekeeper uyarılarını geçme, güncellemeleri alma ve kaldırma adımları.
+
+URL: https://vivepdf.com/dokumantasyon/kurulum/
+Son güncelleme: 2026-10-18
+
+vivePDF, Windows 10 ve 11'de (64 bit) ve Apple silicon işlemcili Mac'lerde macOS 14 Sonoma ya da sonrasında çalışan ücretsiz bir PDF editörüdür. Kurulum dosyasını GitHub'daki sürümler sayfasından indirip açman yeterli; hesap açman ya da internete bağlı kalman gerekmez.
+
+## Windows'a kurulum
+
+1. [Son sürüm sayfasından](https://github.com/mtvrkan/vivePDF/releases/latest) `vivePDF_<sürüm>_x64-setup.exe` dosyasını indir.
+2. İndirilen dosyayı çift tıklayarak çalıştır ve kurulum sihirbazını izle.
+3. Kurulum bitince vivePDF'i Başlat menüsünden aç. İlk açılışta Başlangıç ekranı gelir; buradan bir PDF açabilir ya da araçlara geçebilirsin.
+
+### SmartScreen uyarısı
+
+Kurulum dosyası kod imzası taşımadığı için Windows ilk çalıştırmada **Windows bilgisayarınızı korudu** uyarısını gösterebilir. **Ek bilgi**'ye, ardından **Yine de çalıştır**'a tıkla. Bu uyarı yalnızca kurulum dosyası içindir; uygulamanın kendisi her açılışta sormaz.
+
+> **Ofis dönüştürmeleri**
+>
+> Word, Excel ve PowerPoint dönüştürmeleri LibreOffice ile yapılır. LibreOffice Windows kurulumuyla birlikte gelir ve ilk açılışta internete çıkmadan hazırlanır (diskte yaklaşık 900 MB). **Ayarlar › Araçlar**'dan kaldırabilir ya da yeniden kurabilirsin.
+
+## Güncellemeler
+
+vivePDF yeni sürümleri kendisi denetler. Açılışta yalnızca sürüm bilgisi alınır; indirme ve kurulum her zaman sana sorulur. Güncellemeler imzalı olarak ve küçük paketlerle iner.
+
+- Elle denetlemek için **Ayarlar › Güncellemeler**'i aç ve **Güncellemeleri denetle**'ye tıkla.
+- Yeni sürüm hazırsa **İndir ve yükle**'yi seç; indirme bitince uygulama **Yeniden başlat** ile yeni sürüme geçer.
+- Otomatik denetimi istemiyorsan **Açılışta otomatik denetle** anahtarını kapat. [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıkken denetim hiç yapılmaz.
+
+Her sürümde nelerin değiştiğini [Sürüm notları](https://vivepdf.com/dokumantasyon/surum-notlari/) sayfasında bulabilirsin.
+
+## macOS'a kurulum
+
+1. [Son sürüm sayfasından](https://github.com/mtvrkan/vivePDF/releases/latest) `vivePDF_<sürüm>_aarch64.dmg` dosyasını indir.
+2. DMG'yi aç ve vivePDF'i **Uygulamalar** klasörüne sürükle.
+3. vivePDF'i Uygulamalar'dan ya da Launchpad'den aç.
+
+### Gatekeeper uyarısı
+
+Uygulama Apple noter onayı taşımadığı için macOS ilk açılışı engelleyebilir. **Sistem Ayarları › Gizlilik ve Güvenlik**'i aç ve vivePDF iletisinin yanındaki **Yine de Aç**'a tıkla. Terminal'i tercih edersen `xattr -dr com.apple.quarantine /Applications/vivePDF.app` komutu da aynı işi görür. Bu yalnızca ilk açılışta gerekir.
+
+Ofis dönüştürmeleri Uygulamalar klasöründeki LibreOffice'i kullanır; yüklü değilse uygulama istediğinde indirir. Belge tarayıcısıyla tarama için SANE gerekir (`brew install sane-backends`).
+
+## Linux
+
+Linux'ta vivePDF [kaynaktan derlenir](https://vivepdf.com/dokumantasyon/kaynaktan-derleme/). Aynı adımlar Windows ve macOS'ta geliştirme yapmak için de geçerlidir.
+
+## Kaldırma
+
+Windows'ta vivePDF'i **Ayarlar › Uygulamalar › Yüklü uygulamalar** listesinden, Mac'te Uygulamalar klasöründen Çöp Sepeti'ne sürükleyerek kaldırabilirsin. Uygulamanın bu bilgisayarda sakladığı ayarları ve son dosya listesini kaldırmadan önce silmek istersen **Ayarlar › Veriler**'i kullan; neyin saklandığını **Yardım › Gizlilik** gösterir.
+
+---
+
+# Arayüz
+
+> vivePDF'in üst çubuğu, Araçlar menüsü, komut paleti, sekmeler, sekme grupları, pencereler ve Görüntüleyici'nin yan panelleri tek sayfada.
+
+URL: https://vivepdf.com/dokumantasyon/arayuz/
+Son güncelleme: 2026-10-18
+
+vivePDF'te her şey pencerenin üstündeki tek bir çubuktan başlar: soldaki **Başlangıç**, **Görüntüleyici**, **Sayfalar** ve **Stüdyo** düğmeleri çalışma alanları arasında geçiş yapar, **Araçlar** ve **Yardım** menüleri geri kalan her şeyi toplar. Açtığın belgeler sekmelerde durur, istersen gruplanır ya da ayrı pencerelere taşınır.
+
+## Üst çubuk
+
+Çubuğun solunda vivePDF logosu ve dört çalışma alanı bulunur:
+
+- **Başlangıç**: son belgeler, koleksiyonlar ve hızlı araçlar. **Ana sayfayı düzenle** ile bölümleri istediğin gibi dizebilirsin.
+- **Görüntüleyici**: belgeleri okuduğun, aradığın ve işaretlediğin yer. Ayrıntılar [PDF açma ve okuma](https://vivepdf.com/dokumantasyon/acma-okuma/) sayfasında.
+- **Sayfalar**: açık belgenin tüm sayfalarını küçük resim olarak gösteren sayfa düzenleyici. Bkz. [Sayfaları düzenleme](https://vivepdf.com/dokumantasyon/sayfalar/).
+- **Stüdyo**: boş bir sayfadan belge yazmak ya da tasarım yapmak için düzenleyici.
+
+Sağ tarafta sırasıyla komut paletini açan arama kutusu, tema düğmesi (aydınlık ve karanlık arasında geçer), **Dil** menüsü, **Ayarlar** (dişli simgesi) ve **PDF aç** düğmesi yer alır. Yeni bir sürüm hazırsa arama kutusunun solunda yeşil bir güncelleme düğmesi belirir.
+
+Pencere daraldıkça çubuk kendini sıkıştırır: önce yazılar kısalır, sonra menüler simgeye dönüşür. Böylece arama, ayarlar ve **PDF aç** her genişlikte görünür kalır.
+
+## Araçlar menüsü
+
+**Araçlar**'a tıklayınca araçlar altı grup hâlinde açılır:
+
+- **Sayfa düzeni**: Birleştir, Böl, Yeniden adlandır
+- **Optimizasyon**: Sıkıştır, OCR, Taramalar, Karşılaştır, Erişilebilirlik, Baskı kontrolü, PDF/A arşiv, Toplu işlem, İzlenen klasörler
+- **PDF’e dönüştürme**: PDF Oluştur
+- **PDF’ten dönüştürme**: Dönüştür
+- **İçerik düzenleme**: Düzenle, QR ve barkod, Optik formlar, Formlar
+- **Güvenlik**: Güvenlik, İmzala
+
+Menünün altındaki **Tümünü göster**, her aracı arama kutusuyla birlikte listeleyen kataloğu açar; menüde ayrı satırı olmayan araçları (örneğin sayfa döndürme ya da filigran) burada bulursun. **Klasörlerde ara** ise dizine eklediğin klasörlerdeki tüm PDF'lerin metninde arar ve seni doğrudan ilgili sayfaya götürür. Araçların tam listesi [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) sayfasında.
+
+## Komut paleti
+
+`Ctrl+K` ile ya da üst çubuktaki **Araç, sayfa veya belge arayın** kutusuna tıklayarak komut paletini açarsın. Bir aracın, ayar bölümünün ya da açık belgenin adını yazman yeterli; ok tuşlarıyla seçip `Enter`'a bas.
+
+Aramayı bir işaretle başlatırsan palet tek bir türe daralır:
+
+- `>` yalnızca eylemleri gösterir (örneğin **Yeni pencere**, **Panodan PDF**, **Güncellemeleri denetle**).
+- `/` sayfalar ve ayar bölümlerinde arar.
+- `@` açık belgeler ve son dosyalar arasında arar.
+- `#` ve ardından bir sayı, açık belgede o sayfaya gider.
+
+## Yardım menüsü
+
+**Yardım** menüsünde **Yardım konuları**, **Klavye kısayolları (F1)**, **Yenilikler** ve **Gizlilik** bulunur. Altında **Hata bildir**, **Özellik öner**, **Günlük klasörünü aç** ve **Destek paketi kaydet…** gelir; en altta **Güncellemeleri denetle** ve **Hakkında** yer alır.
+
+> **Bu ekranın kısayolları**
+>
+> Hangi ekranda olursan ol `F1` ya da `Ctrl+/` o ekranın kısayollarını, `Shift+F1` o ekranın yardım konusunu açar. Tüm liste [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasında.
+
+## Sekmeler ve sekme grupları
+
+Açtığın her belge Görüntüleyici'nin üstünde kendi sekmesinde durur; aynı sekmeler Sayfalar ekranında da görünür. Bir sekmeyi sürükleyerek sırasını değiştirebilir ya da `Ctrl+Shift+←`/`→` ile kaydırabilirsin. `Ctrl+W` etkin belgeyi kapatır.
+
+Sekmeye sağ tıklayınca **Diğerlerini kapat**, **Tümünü kapat**, **Yolu kopyala**, **Dosya adını kopyala**, **Klasörde göster** ve **Geçerli belgenin yanında aç** gibi seçenekler çıkar. Aynı menüdeki **Yeni gruba ekle** ile sekmeleri tarayıcıdaki gibi gruplayabilirsin:
+
+- Grubun önündeki ad etiketine tıklamak grubu daraltır ya da genişletir, çift tıklamak adlandırır, sürüklemek bütün grubu taşır.
+- Grup menüsünde **Renk** (13 renk), **Grubu dağıt**, **Gruptaki belgeleri kapat**, **Bu grupta belge aç** ve **Koleksiyon olarak kaydet** bulunur.
+- Koleksiyon olarak kaydettiğin grup Başlangıç'taki **Koleksiyonlar** bölümüne eklenir; daha sonra tüm dosyalarını tek bir sekme grubu olarak yeniden açabilirsin.
+
+## Pencereler
+
+`Ctrl+Shift+N` boş bir yeni pencere açar. Bir belgeyi ayrı pencereye almak için sekmesini pencerenin dışına sürükleyip bırak ya da sekme menüsünden **Yeni pencereye taşı**'yı seç; grup menüsündeki **Grubu yeni pencereye taşı** bütün grubun belgelerini yeni bir pencereye taşır. Kaydedilmemiş değişikliği olan bir belge, sen kaydedene kadar bulunduğu pencerede kalır. Ayarlar, tema, dil ve son dosyalar tüm pencerelerde ortaktır.
+
+## Görüntüleyici'nin yan panelleri
+
+Görüntüleyici'de sayfanın iki yanında dikey birer araç şeridi bulunur.
+
+**Gezinme** şeridi (solda) **Küçük resimler**, **İçindekiler** ve **Ekler** panellerini açar. Belge imzalıysa **İmzalar**, katman içeriyorsa **Katmanlar** düğmesi de görünür.
+
+**Araçlar** şeridi (sağda) **Yorumlar**, **İşaretle / not ekle**, **Düzenle** ve **Sunum araçları** ile başlar. Ardından **Okuma modu**, **Sesli oku**, **Sayfa renkleri** ve **Belge bilgisi** gelir. Şeridin altında sayfa numarası kutusu, **Döndür**, **Sayfa görüntüleme** menüsü ve yakınlaştırma düğmeleri yer alır.
+
+Her düğme kendi panelini açıp kapatır. Belge açıldığında hangi panellerin hazır geleceğini **Ayarlar › Görüntüleyici**'den seçebilirsin; diğer ayarlar için [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/) sayfasına bak.
+
+---
+
+# PDF açma ve okuma
+
+> vivePDF'te belge açma, sayfalar arasında gezinme, metin arama, yakınlaştırma, sayfa görünümü, bölünmüş pencere ve okuma modu.
+
+URL: https://vivepdf.com/dokumantasyon/acma-okuma/
+Son güncelleme: 2026-10-18
+
+vivePDF'te bir PDF'i açmak için Başlangıç'taki ya da üst çubuktaki **PDF aç** düğmesine tıkla veya `Ctrl+O`'ya bas. Belge Görüntüleyici'de kendi sekmesinde açılır; buradan sayfalar arasında gezinebilir, metin arayabilir ve yakınlaştırabilirsin.
+
+## Belge açma
+
+1. Başlangıç'ta **PDF aç**'a tıkla ya da `Ctrl+O`'ya bas ve dosyanı seç.
+2. Ya da dosyaları doğrudan pencereye sürükleyip bırak. Birden çok dosya bırakırsan her biri ayrı sekmede açılır.
+3. Belge şifreliyse **Parola gerekli** penceresi gelir; parolayı yazınca belge açılır.
+
+Pencereye yalnızca PDF bırakmak zorunda değilsin: Office belgeleri, e-kitaplar, e-postalar ve resimler de bir PDF kopyası olarak açılır. Bu kopyada yaptığın değişiklikler, **PDF olarak kaydet…** ile kaydedene kadar geçici kalır. Panoya bir resim ya da metin kopyaladıysan `Ctrl+Shift+V` ondan bir PDF oluşturur.
+
+Çok büyük dosyalar da açılır: vivePDF belgeyi tek seferde belleğe yüklemek yerine parça parça okur.
+
+### Son belgeler ve oturum
+
+Açtığın belgeler Başlangıç'taki **Son belgeler** listesinde kalır. Sık kullandıklarını sabitleyebilirsin; sabitlenenler listenin başında ayrı durur. Komut paletindeki **Son oturumu geri yükle** eylemi, son kapattığında açık olan sekmeleri geri getirir. Bir belgeyi yeniden açtığında vivePDF kaldığın sayfadan devam eder; baştan okumak istersen bildirimdeki **1. sayfaya git**'e tıkla.
+
+## Sayfalar arasında gezinme
+
+- Sağdaki araç şeridinin altındaki kutuya sayfa numarasını yaz ya da oklarla bir önceki veya sonraki sayfaya geç. Belgede iii ya da A-1 gibi sayfa etiketleri varsa onları da yazabilirsin.
+- `Page Up`/`Page Down` ve sol/sağ ok tuşları sayfa değiştirir, `Home`/`End` ilk ve son sayfaya gider.
+- Bir bağlantıyla ya da içindekilerle başka sayfaya atladıysan `Alt+←` seni geri, `Alt+→` ileri götürür.
+- Soldaki **Küçük resimler** paneli tüm sayfaları gösterir, **İçindekiler** paneli belgenin yer imlerini listeler.
+
+## Belgede arama
+
+`Ctrl+F` arama çubuğunu açar. Aradığın sözcüğü yaz; sonuçlar sayfalara göre gruplanmış olarak listelenir. **Büyük/küçük harf duyarlı** ve **Tam sözcük** seçenekleri sonuçları daraltır. `F3` sonraki, `Shift+F3` önceki sonuca geçer.
+
+> **Taranmış sayfalarda arama**
+>
+> Arama yalnızca metin katmanı olan sayfalarda çalışır. Taranmış bir belgede sonuç çıkmıyorsa önce [OCR](https://vivepdf.com/dokumantasyon/ocr/) ile sayfaları aranabilir yap.
+
+## Yakınlaştırma ve sayfa görünümü
+
+`Ctrl++` ve `Ctrl+-` ya da `Ctrl` basılıyken fare tekerleği yakınlaştırır ve uzaklaştırır. `Ctrl+0` **Gerçek boyut**, `Ctrl+1` **Genişliğe sığdır**, `Ctrl+2` **Sayfaya sığdır** seçer. Sayfayı kaydırmak için `Space` basılıyken sürükleyebilirsin.
+
+Sağ şeritteki **Sayfa görüntüleme** menüsünde şu seçenekler var:
+
+- **Tek sayfa**, **Yan yana iki sayfa** ya da **İki sayfa, kapak ayrı**
+- **Dikey kaydırma** veya **Yatay kaydırma**
+- **Otomatik kaydırma** (`Ctrl+Shift+H`); kaydırırken yukarı ve aşağı oklar hızı ayarlar, `Esc` durdurur
+- **Sayfa renkleri**: **Sepya**, **Koyu (ters çevrilmiş)** ya da siyah üstüne beyaz, sarı veya yeşil yazı gibi göz yormayan renkler
+
+### Bölünmüş pencere
+
+`Ctrl+Shift+E` pencereyi ikiye böler. **Sayfa görüntüleme › Pencereyi böl** menüsünden bölmeleri **Yan yana** ya da **Alt alta** yerleştirebilir, **Başka bir belgeyle karşılaştır…** ile ikinci bölmede farklı bir dosya açabilirsin. **Kaydırmayı eşitle** iki bölmeyi birlikte kaydırır.
+
+## Rahat okuma
+
+- **Okuma modu** sayfanın metnini tek bir sütunda gösterir. Yazıyı büyütüp küçültebilir, sütun genişliğini ve **Kâğıt**, **Sepya** ya da **Koyu** temayı seçebilirsin.
+- **Sesli oku** belgeyi seçtiğin ses ve hızla okur.
+- `F11` sinema modunu açar ve belgeyi tam ekran gösterir. Belgeyi sunmak istiyorsan [PDF ile sunum yapma](https://vivepdf.com/dokumantasyon/sunum/) sayfasına bak.
+- `Ctrl+P` yazdırma penceresini açar.
+
+Görüntüleyici'nin tüm kısayolları [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasında, ekranın genel düzeni ise [Arayüz](https://vivepdf.com/dokumantasyon/arayuz/) sayfasında.
+
+---
+
+# Sayfaları düzenleme
+
+> vivePDF sayfa düzenleyicisiyle PDF sayfalarını sıralama, döndürme, silme, ekleme, çıkarma ve ayrı dosyalara bölme adımları.
+
+URL: https://vivepdf.com/dokumantasyon/sayfalar/
+Son güncelleme: 2026-10-18
+
+vivePDF'te sayfaları sıralamak, döndürmek, silmek, eklemek ve bölmek için sayfa düzenleyiciyi kullanırsın. Belgeyi açtıktan sonra üst çubuktaki **Sayfalar**'a tıkla; belgenin tüm sayfaları küçük resim olarak dizilir. Yaptığın değişiklikler **Uygula ve kaydet**'e basana kadar dosyaya dokunmaz ve sonuç varsayılan olarak yeni bir dosyaya yazılır.
+
+## Temel akış
+
+1. Belgeyi Görüntüleyici'de aç, ardından üst çubukta **Sayfalar**'ı seç. Düzenleyici her zaman Görüntüleyici'de açık olan belge üzerinde çalışır.
+2. Sayfaları seç ve sürükleyerek yeni yerlerine taşı.
+3. Döndür, sil, ekle ya da bölme işareti koy. Her adımı `Ctrl+Z` ile geri alıp `Ctrl+Y` ile yineleyebilirsin.
+4. **Uygula ve kaydet**'e tıkla ya da `Ctrl+Enter`'a bas. Yeni dosya, alttaki kayıt alanında gösterilen yere yazılır.
+
+## Sayfa seçme
+
+Bir sayfayı seçmek için üzerine tıkla, önizlemek için çift tıkla. Birden çok sayfa için `Shift` ya da `Ctrl` ile tıkla, kartın köşesindeki kutuyu işaretle ya da boş bir alandan başlayarak sürükle. `Ctrl+A` hepsini seçer, `Esc` seçimi kaldırır.
+
+Araç çubuğundaki **Seç** menüsü daha fazlasını sunar:
+
+- **Sayfa numarasıyla seç** (`Ctrl+G`): `1-5, 9, 12-` gibi aralıklar yaz.
+- **Tek sayfaları seç**, **Çift sayfaları seç**, **Seçimi tersine çevir**
+- **Boş sayfaları seç**, **Taranmış sayfaları seç**, **Yinelenen sayfaları bul**
+- **Metne göre seç…**: içinde belirli bir yazı geçen sayfaları seçer.
+- **Sayfa boyutuna göre** seçim; dikey ya da yatay sayfalar
+
+## Sıralama, döndürme ve silme
+
+Sayfaları sürükleyerek sırala. Seçili sayfaları belirli bir konuma taşımak için `M`'ye bas ve sayfa numarasını yaz.
+
+**Sayfaları düzenle** menüsünde şunlar bulunur:
+
+- **Sola döndür** ve **Sağa döndür** (`Shift+R` / `R`)
+- **Çoğalt** (`Ctrl+D`) ve **Kopya çıkar…**
+- **Seçilenleri sil** (`Delete`), bir sayfanın öncesini ya da sonrasını silme
+- **Sırayı ters çevir** ve **Seçili sayfaları ters sırala**
+- **Sayfa yönünü düzelt**: yan ya da ters duran sayfaları bulup döndürür.
+- **Çift taraflı baskıya hazırla**: otomatik çift yüz baskısı olmayan yazıcılar için ön ve arka yüzleri dizer.
+- **Sayfa etiketleri**: kapak ya da i, ii, iii gibi numaralar verir.
+
+Fareyle bir kartın üzerine geldiğinde de o sayfaya özel döndürme ve silme düğmeleri görünür.
+
+## Sayfa ekleme
+
+**Ekle** menüsünden **Boş sayfa ekle** (`B`), **PDF’ten sayfa ekle** ya da **Görsellerden sayfa ekle**'yi seç. Boş sayfa eklerken kâğıt boyutunu, yönünü ve çizgili, kareli ya da noktalı gibi bir kâğıt desenini seçebilirsin. Yeni sayfaların seçimden önce mi, sonra mı yoksa en sona mı ekleneceğini de buradan belirlersin. **Seçili sayfaları bir PDF’teki sayfalarla değiştir** ise seçimi başka bir dosyadaki sayfalarla değiştirir.
+
+> **Belgeler arasında sayfa taşıma**
+>
+> Seçili sayfaları `Ctrl+C` ile kopyala, başka bir belgenin sekmesine geç ve `Ctrl+V` ile yapıştır. Sayfaları başka bir belgenin sekmesine sürüklersen o belgenin sonuna kopyalanır.
+
+## Bölme ve çıkarma
+
+- Bölmek için sayfaları seç ve `S`'ye bas ya da **Böl › Seçili sayfalardan sonra böl**'ü kullan. **Bölümlerden böl (yer imleri)** belgeyi her bölüm başında keser, **Bölme işaretlerini kaldır** (`Shift+S`) hepsini temizler. İşaretler hazır olunca **Ayrı dosyalar olarak kaydet**'e tıkla.
+- Yalnızca seçili sayfalardan yeni bir PDF yapmak için **Seçilenleri çıkart**'ı seç ya da `Ctrl+E`'ye bas.
+- **Dışa aktar** menüsündeki **Resim olarak kaydet…** sayfaları resim dosyası olarak kaydeder, **Yazdır…** seçili sayfaları ya da tümünü yazdırır.
+
+## Asıl dosya ne olur?
+
+Varsayılan olarak **Uygula ve kaydet** sonucu yeni bir dosyaya yazar, asıl dosya olduğu gibi kalır. Değişikliği doğrudan asıl dosyaya işlemek istersen **Orijinal dosyanın üzerine yaz** anahtarını aç; düğme **Orijinale uygula** olur. Belgede Görüntüleyici'de kaydedilmemiş değişiklik varsa vivePDF önce onları kaydetmeni ya da atmanı ister. Yeni dosyaların varsayılan olarak nereye kaydedileceğini **Ayarlar › Dosyalar**'dan seçebilirsin.
+
+## Ayrı sayfa araçları
+
+Birden çok PDF'i tek dosyada toplamak için **Araçlar › Birleştir**, bir PDF'i sayfa aralığına, sabit sayfa sayısına, dosya boyutuna ya da yer imlerine göre parçalamak için **Araçlar › Böl** aracını kullan. Döndürme, sayfa silme ve sayfa çıkarma için ayrı araçlar da var; hepsi [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) sayfasında listeleniyor.
+
+Düzenleyicide `?` tuşu tüm kısayolları gösterir; tam liste için [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasına bak. Taranmış sayfaları düzenledikten sonra aranabilir yapmak istersen [OCR](https://vivepdf.com/dokumantasyon/ocr/) sayfası işini görür.
+
+---
+
+# Dosya dönüştürme
+
+> vivePDF ile PDF'i Word, Excel, PowerPoint, resim, metin, Markdown, HTML ve EPUB'a çevirme; resim, Office, SVG ve web sayfalarından PDF yapma.
+
+URL: https://vivepdf.com/dokumantasyon/donusturme/
+Son güncelleme: 2026-10-18
+
+vivePDF, PDF'leri Word, Excel, PowerPoint, resim, metin, Markdown, HTML ve EPUB biçimine çevirir; resimlerden, Office belgelerinden, SVG çizimlerinden ve web sayfalarından da PDF yapar. Hepsi tek bir araçta, **Araçlar › Dönüştür**'de toplanır ve dosyaların bilgisayarından çıkmadan dönüştürülür.
+
+## Dönüştürme adımları
+
+1. **Araçlar › Dönüştür**'ü aç. Araç, Araçlar menüsünde **PDF’ten dönüştürme** grubunda durur.
+2. Soldaki listeden bir dönüşüm seç: **PDF’ten** altında PDF'i başka biçime çeviren, **PDF’e** altında PDF oluşturan seçenekler var.
+3. Dosyanı seç ve seçenekleri kontrol et. PDF'ten dönüştürürken yalnızca bazı sayfaları istiyorsan sayfa aralığını yaz.
+4. **Dönüştür**'e tıkla. Bittiğinde sağdaki sonuç panelinden **Çıktı klasörünü aç** ile yeni dosyaya ulaşabilirsin.
+
+## PDF'ten başka biçimlere
+
+- **PDF → Word**: Düzeni koruyan bir .docx yapar; tablolar ve resimler aktarılır. **Tekrar eden üst ve alt bilgileri Word'e taşı** açıksa her sayfada tekrar eden metin Word'ün üst ve alt bilgisine, sayfa numaraları Word sayfa numarası alanına dönüşür.
+- **PDF → Excel**: Sayfalardaki tablolar ayrı çalışma sayfalarına yazılır; tablo olmayan sayfaların metni satır satır ayrı bir sayfaya gider. Dosya türü olarak .xlsx ya da .csv seçebilir, tabloları **Her tablo için bir sayfa**, **Her PDF sayfası için bir sayfa** ya da **Tüm tablolar tek sayfada** olarak dizebilirsin. **Çizgisiz tabloları da bul** yalnızca boşlukla hizalanmış sütunları da okur.
+- **PDF → PowerPoint**: Her sayfa bir slayt olur. **Düzenlenebilir metin** seçeneğinde metin, sayfanın geri kalanını gösteren resmin üstünde düzenlenebilir kutulara yazılır; **Yalnızca görsel** her sayfanın birebir resmini koyar ve sayfa metnini konuşmacı notlarına ekler.
+- **PDF → JPG / PNG**: Her sayfa bir resim olur. PNG, JPG, WebP ya da TIFF biçimini ve 72 ile 600 arasında bir çözünürlük (DPI) seçebilirsin. Sayfaları tek uzun bir resimde birleştirme, çok sayfalı tek bir TIFF yapma, resimleri tek bir ZIP dosyasında toplama, gri tonlama ve saydam arka plan seçenekleri de var.
+- **Görselleri çıkar**: Sayfalara gömülü her resmi özgün çözünürlüğünde kaydeder.
+- **PDF → Metin**, **PDF → Markdown**, **PDF → HTML**: Metni düz metin, başlık ve tabloları koruyan Markdown ya da sayfa başına bir bölümden oluşan tek HTML dosyası olarak verir. Markdown'da resimleri dışarıda bırakabilir, yanındaki bir klasöre kaydedebilir ya da dosyanın içine koyabilirsin.
+- **PDF → EPUB**: Telefon ve e-kitap okuyucular için akışkan bir e-kitap yapar. Bölümlerin nasıl ayrılacağını, kitap adını, yazarı ve ilk sayfanın kapak olup olmayacağını seçebilirsin.
+
+> **Taranmış PDF'ler**
+>
+> Taranmış bir sayfada metin değil yalnızca resim vardır. Metin, Markdown, HTML ve EPUB dönüşümlerinde **Metni olmayan sayfaları OCR ile oku** seçeneğini aç; PDF'in kendisi değişmez. Word, Excel ve PowerPoint için önce belgeye [OCR](https://vivepdf.com/dokumantasyon/ocr/) uygula, sonra dönüştür.
+
+## Başka dosyalardan PDF'e
+
+- **Görseller → PDF**: Resimleri ya da bütün bir klasörü tek PDF'te birleştirir. **Alt klasörler dahil** seçeneği, ada ya da tarihe göre sıralama, kenar boşluğu ve resmin sayfaya sığdırılması ya da sayfayı doldurması arasında seçim yapabilirsin.
+- **Office → PDF**: Word, Excel ve PowerPoint belgeleri LibreOffice ile çevrilir. TXT, Markdown, HTML, EPUB, XPS, CBZ ve resim dosyaları ise doğrudan dönüştürülür.
+- **SVG → PDF**: Inkscape, Illustrator ya da Figma çizimlerini kendi boyutunda vektör PDF sayfalarına dönüştürür. **Tüm çizimleri tek PDF'te topla** açıksa her çizim aynı dosyada bir sayfa olur.
+- **Web sayfası → PDF**: Bir web adresini indirip PDF olarak kaydeder. **Okuma kipi** yalnızca asıl yazıyı tutar, menüleri ve yan sütunları dışarıda bırakır; **Görselleri dahil et** ile resimleri ekleyip çıkarabilirsin.
+
+> **İnternet gerektiren tek dönüşüm**
+>
+> **Web sayfası → PDF** sayfayı indirmek için internete bağlanır, bu yüzden [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıkken kullanılamaz. Diğer bütün dönüşümler bilgisayarında, internet olmadan çalışır.
+
+### LibreOffice
+
+Office dönüşümleri LibreOffice ile yapılır. Windows kurulumuyla birlikte gelir; **Ayarlar › Araçlar**'dan kaldırabilir ya da yeniden kurabilirsin. LibreOffice yoksa listeye eklediğin Office dosyalarının yanında **LibreOffice gerekli** uyarısı görünür. Kurulum ayrıntıları [Kurulum](https://vivepdf.com/dokumantasyon/kurulum/) sayfasında.
+
+## Sonuç nereye kaydedilir?
+
+Varsayılan olarak yeni dosya kaynağın yanına, aracın eklediği bir ekle birlikte yazılır. **Ayarlar › Dosyalar**'da **Kayıt yeri**'ni **Sabit klasöre** çevirip bir çıktı klasörü seçebilir, dosya adlarının nasıl oluşturulacağını da ad kalıbıyla belirleyebilirsin. Dönüştürme asıl dosyana hiçbir zaman dokunmaz.
+
+> **Hızlı açma**
+>
+> Bir Word belgesini, e-kitabı ya da resmi yalnızca okumak istiyorsan dönüştürmene gerek yok: pencereye bırak, PDF kopyası olarak açılsın. Ayrıntılar [PDF açma ve okuma](https://vivepdf.com/dokumantasyon/acma-okuma/) sayfasında.
+
+---
+
+# Taranmış sayfaları aranabilir yapma (OCR)
+
+> vivePDF'te OCR ile taranmış PDF'lere aranabilir metin katmanı ekleme, OCR dilleri, tarayıcıdan tarama ve taramaları iyileştirme.
+
+URL: https://vivepdf.com/dokumantasyon/ocr/
+Son güncelleme: 2026-10-18
+
+Taranmış bir PDF'in sayfaları aslında birer resimdir; içinde arama yapamaz, metni seçip kopyalayamazsın. vivePDF'in OCR aracı sayfaları okuyup üzerlerine görünmez bir metin katmanı ekler: sayfalar aynı görünür, ama metinleri artık aranabilir, seçilebilir ve kopyalanabilir. OCR bilgisayarında, yerleşik Tesseract ile yapılır; belgen hiçbir yere gönderilmez.
+
+## OCR uygulama
+
+1. **Araçlar › OCR**'ı aç ve taranmış PDF'i seç. vivePDF kaç sayfanın taranmış, kaçında zaten metin katmanı olduğunu gösterir.
+2. **Diller** bölümünde belgede geçen dilleri işaretle.
+3. **Kapsam**'ı seç ve gerekirse **Otomatik döndür** ile **Okumadan önce temizle**'yi aç.
+4. **OCR uygula**'ya tıkla. Sonuç yeni bir dosyaya yazılır; asıl dosyan olduğu gibi kalır.
+
+Bittiğinde sonuç panelinde kaç sayfanın okunduğu, kaçının atlandığı ve kaçının döndürüldüğü görünür.
+
+## Diller
+
+Dil listesinde yalnızca kurulu diller yer alır ve başlangıçta uygulamanın dili ile İngilizce seçili gelir. Türkçe ve İngilizce vivePDF ile birlikte gelir. Yalnızca belgede gerçekten geçen dilleri seç: her fazladan dil okumayı yavaşlatır ve hata ekleyebilir.
+
+Başka bir dil gerekiyorsa OCR sayfasındaki **Başka dil indir**'i aç ya da **Ayarlar › Araçlar**'daki **OCR dil paketleri** listesini kullan. Her dil bir kez indirilir ve sonra internetsiz çalışır. OCR sayfasında hangi dilin hazır seçili geleceğini **Varsayılan OCR dili** ayarı belirler.
+
+> **Dil indirmek internet ister**
+>
+> Dil paketleri tessdata deposundan indirilir. [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıkken yeni dil indirilemez; kurulu dillerle OCR ise her zaman çalışır.
+
+## Seçenekler
+
+**Kapsam** hangi sayfaların okunacağını belirler:
+
+- **Sadece taranmış sayfalar**: zaten metin içeren sayfalar olduğu gibi kalır. Çoğu belge için doğru seçim budur.
+- **Tüm sayfalar**: her sayfa yeniden okunur, mevcut metin katmanı değiştirilir.
+- **Eski OCR'yi yenile**: daha önceki bir OCR'nin gizli metni silinir ve sayfa yeniden okunur; görünür metni olan sayfalara dokunulmaz.
+
+Diğer seçenekler:
+
+- **Otomatik döndür**: yan ya da ters taranmış sayfaların okuma yönünü bulup düzeltir; işlemi biraz yavaşlatır.
+- **Okumadan önce temizle**: kontrastı düzeltir ve lekeleri azaltır. Yalnızca okuma için kullanılır, sayfanın görünüşü değişmez.
+- **Tarama çözünürlüğü**: 150, 200 ya da 300. 200 çoğu belge için yeterli; 300 daha doğru ama daha yavaş.
+- **Sayfalar**: yalnızca belirli sayfaları okumak için bir aralık yaz. Belgede hem taranmış hem metinli sayfalar varsa **Yalnızca taranmış sayfaları işle** düğmesi aralığı senin için doldurur.
+- **Metni ayrıca kaydet**: tanınan metni PDF'in yanına düz metin (.txt) ya da Word belgesi (.docx) olarak da yazar.
+
+## Görüntüleyici'den hızlı OCR
+
+Bütün aracı açmadan da metin tanıyabilirsin. Görüntüleyici'de sayfanın boş bir yerine sağ tıkla ve **Seçilebilir yap › Bu sayfayı seçilebilir yap** ya da **Tüm belgeyi seçilebilir yap**'ı seç.
+
+> **Bu işlem dosyanın kendisini değiştirir**
+>
+> **Seçilebilir yap**, OCR aracının aksine yeni dosya oluşturmaz; metin katmanını açık belgeye yazar ve dosya diskte yeniden kaydedilir. Sayfanın görünümü değişmez ve metni olan sayfalara dokunulmaz, ama işlem geri alınamaz.
+
+Yalnızca küçük bir parçanın yazısını istiyorsan Görüntüleyici'deki **Alandan yazı al** aracıyla o alanı sürükleyerek seç; vivePDF alandaki yazıyı okuyup kopyalaman için gösterir.
+
+## Taramalar aracı
+
+Kâğıttan PDF'e giden işler **Araçlar › Taramalar**'da toplanır:
+
+- **Tarayıcıdan**: Tarayıcından doğrudan tarar. Windows'ta tarayıcın doğrudan listelenir; macOS ve Linux'ta SANE kurulu olmalıdır. **İki yüzü de tara** ve **Boş yaprakları atla** seçenekleri var; **Metni aranabilir yap (OCR)** açıksa taranan sayfalar kaydedilirken okunur.
+- **İyileştir**: Var olan taramaları **Düzelt** (eğik sayfaları doğrultur), **Lekeleri temizle**, **Arka planı beyazlat**, **Kenar gölgelerini kaldır** ve **Boş sayfaları kaldır** ile temizler. **Önizlemeyi göster** sayfanın önceki ve sonraki hâlini gösterir.
+- **Toplu tarama böl**: Tek seferde taranmış bir yığını boş sayfalardan, QR ya da barkod ayırıcı sayfalardan veya bir metin kalıbından ayrı dosyalara böler.
+- **Fotoğraftan**: Telefonla çekilmiş kâğıt fotoğraflarının köşelerini bulur, perspektifi düzeltir, arka planı beyazlatır ve her fotoğrafı bir sayfa yapar.
+
+## OCR'dan sonra
+
+OCR'lı bir belgede [Görüntüleyici'deki arama](https://vivepdf.com/dokumantasyon/acma-okuma/) artık çalışır. Taranmış bir belgeyi Word ya da Excel'e çevirmek istiyorsan önce OCR uygula, sonra [Dosya dönüştürme](https://vivepdf.com/dokumantasyon/donusturme/) sayfasındaki adımları izle.
+
+---
+
+# İmzalama ve doğrulama
+
+> vivePDF'te elle çizilmiş imza ekleme, .p12 veya .pfx sertifikasıyla dijital imza atma, imzaları doğrulama ve sertifika oluşturma.
+
+URL: https://vivepdf.com/dokumantasyon/imza/
+Son güncelleme: 2026-10-18
+
+vivePDF'te iki tür imza var: Görüntüleyici'de sayfaya resim olarak koyduğun elle çizilmiş imza ve **Araçlar › İmzala**'da bir .p12 ya da .pfx sertifikasıyla attığın dijital imza. Aynı yerden imzalı bir dosyayı doğrulayabilir, kendi sertifikanı oluşturabilir ve açık sertifikanı dışa aktarabilirsin. Hepsi bu bilgisayarda çalışır; belgen ve sertifikan hiçbir yere gönderilmez.
+
+## Elle çizilmiş imza
+
+Elle çizilmiş imza, sayfaya resim olarak eklenir. Bir formu ya da dilekçeyi hızlıca imzalamak için uygundur, ama belgenin sonradan değişip değişmediğini kanıtlamaz.
+
+1. Belgeyi Görüntüleyici'de aç ve araç çubuğunda **Düzenle**'ye tıkla.
+2. **Sayfa araçları** menüsünden **İmza yerleştir**'i seç.
+3. **Yeni** ile fare, kalem ya da parmağınla bir imza çiz; istersen **Fotoğraftan** bir imza resmi al. Sık kullanacaksan **İmzayı kaydet**'e tıkla, sonraki seferlerde **Kayıtlı imzalar** arasından seçersin.
+4. İmzanın gideceği yere tıkla, sürükleyerek yerini ayarla ve **İmzayı uygula**'yı seç.
+
+Sonuç yeni bir dosyaya yazılır ve hemen açılır; asıl dosyan olduğu gibi kalır. Kayıtlı imzaları **Ayarlar › Veriler**'den silebilirsin.
+
+## Sertifikalı dijital imza
+
+Dijital imza, belgeyi imzalayan kişinin kim olduğunu ve belgenin imzadan sonra değişmediğini gösterir. vivePDF PAdES imzası atar.
+
+1. **Araçlar › İmzala**'yı aç ve imzalanacak PDF'i seç.
+2. **Sertifika dosyası (.p12 / .pfx)** alanına e-imza sağlayıcından aldığın ya da vivePDF'te oluşturduğun dosyayı seç, **Sertifika parolası**'nı gir.
+3. İmzanın sayfada görünmesini istiyorsan **Sayfada görünür imza kutusu**'nu aç; sayfayı, **Kutu metni**'ni ve istersen **İmza kutusundaki görsel** olarak kayıtlı el yazısı imzanı ya da bir logoyu seç.
+4. Gerekirse **Neden**, **Yer** ve **İletişim** alanlarını doldur, sonra **İmzala**'ya tıkla.
+
+Belgede boş imza alanları varsa **İmza alanı** listesinden birini seçebilirsin; imza o alanın yerini ve boyutunu kullanır.
+
+### Ek seçenekler
+
+- **Zaman damgası sunucusu (isteğe bağlı)**: bir RFC 3161 sunucu adresi girersen imzaya güvenilir bir zaman eklenir. Bu seçenek internet gerektirir ve sunucuya yalnızca imzanın özeti gider.
+- **Onaylayıcı imza**: belgenin ilk imzası, sonrasında nelerin değişebileceğini belirleyebilir (değişiklik yok, form doldurma ve imzalama ya da bunlara ek olarak yorumlar).
+- **İmzaladıktan sonra belgeyi kilitle**: son imzalayan sensen tüm alanları kilitler; sonraki her değişiklik ihlal olarak görünür.
+
+> **Sertifikan yoksa**
+>
+> **Sertifikam yok → kendi sertifikamı oluştur** bağlantısı seni **Sertifika oluştur** ekranına götürür. Burada üretilen sertifika kendinden imzalıdır: belge bütünlüğünü kanıtlar, ama resmî geçerlilik için nitelikli e-imza gerekir.
+
+## İmzaları doğrulama
+
+İmzalı bir PDF'i Görüntüleyici'de açtığında üstte bir ileti çıkar; örneğin "İmzalı ve tüm imzalar geçerli." **İmza paneli** her imzanın ayrıntısını gösterir.
+
+Daha ayrıntılı bir denetim için sayfa başlığının üstündeki **Güvenlik** listesinden **Doğrula**'yı aç, PDF'i seç ve **Doğrula**'ya tıkla. Her imza için şunları görürsün:
+
+- **Bütünlük**: belge imzadan sonra değiştirildi mi, değiştirildiyse imzanın izin verdiği bir değişiklik mi?
+- **Güven**: sertifika zinciri **Güvenilir kökler** listendeki bir köke ulaşıyor mu? Kendinden imzalı sertifikalar burada "doğrulanmadı" olarak görünür ve nedeni yazılır.
+
+Bir sağlayıcının imzalarına güvenmek için **Sertifika veya güven listesi ekle** ile kök sertifikasını (.cer, .crt, .pem veya .der) ya da bir güven listesini (AB güven listesi .xml veya Adobe AATL) ekle. **İptal durumunu çevrimiçi denetle** varsayılan olarak kapalıdır; açarsan sertifikanın geri çekilip çekilmediği, sertifikayı veren kuruma sorulur.
+
+## Sertifika oluşturma ve dışa aktarma
+
+**Güvenlik** listesindeki **Sertifika oluştur** ekranında **Ad Soyad**, **E-posta**, **Kurum** ve **Ülke** bilgilerini gir, **Geçerlilik** süresini ve **Anahtar** türünü seç. **Kullanım amacı** olarak **Belge imzalama**, **Mühürlü belge alma** ya da **İkisi de** seçeneğini kullan. Sertifika parolası en az 8 karakter olmalı; sonuç bir .p12 dosyasına kaydedilir.
+
+Biri sana yalnızca senin açabileceğin, sertifikayla mühürlenmiş bir belge göndermek isterse **Açık sertifikayı dışa aktar**'ı kullan. Bu araç .p12 dosyanın açık yarısını .cer olarak yazar; özel anahtarın .p12 içinde kalır. Mühürleme ve parola korumasının ayrıntıları [Güvenlik](https://vivepdf.com/dokumantasyon/guvenlik/) sayfasında.
+
+vivePDF imzaladığın .p12 dosyasının yolunu hatırlar, parolasını hiçbir zaman saklamaz. Bu yolu **Ayarlar › Veriler**'den unutturabilirsin; nelerin saklandığını [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/) sayfası anlatır. Zaman damgası ve çevrimiçi iptal denetimi [çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıkken kapalıdır.
+
+---
+
+# Güvenlik
+
+> vivePDF ile PDF'e parola ve izin ekleme, parolayı kaldırma, sertifikayla mühürleme, filigran ve damga basma, gizli verileri temizleme ve karartma.
+
+URL: https://vivepdf.com/dokumantasyon/guvenlik/
+Son güncelleme: 2026-10-18
+
+vivePDF'in güvenlik araçlarıyla bir PDF'e parola ve izin koyabilir, parolayı kaldırabilir, dosyayı yalnızca belirli sertifika sahiplerinin açabileceği biçimde mühürleyebilir, filigran ve damga basabilir, paylaşmadan önce gizli verileri temizleyebilir ve metinleri kalıcı olarak karartabilirsin. Her araç sonucu yeni bir dosyaya yazar; asıl dosyan olduğu gibi kalır.
+
+## Araçlara ulaşma
+
+**Araçlar › Güvenlik**'i aç; sayfa **Parola ekle** ile başlar. Sayfa başlığının üstündeki **Güvenlik** yazısına tıklayınca gruptaki tüm araçlar listelenir: **Parola ekle**, **Parola kaldır**, **Sertifikayla mühürle**, **Sertifikayla aç**, **Karartma**, **Gizlilik kontrolü** ve [imza araçları](https://vivepdf.com/dokumantasyon/imza/). **Filigran ekle**, **Damga** ve **Filigran kaldır** ise **İçerik düzenleme** grubundadır. Tüm araçları **Araçlar** menüsündeki **Tümünü göster** ile de görebilirsin.
+
+## Parola ve izinler
+
+1. **Parola ekle**'de PDF'i seç.
+2. **Açma parolası**'nı yaz. Bu parola belgeyi açmak için gerekir; yalnızca izinleri kısıtlamak istiyorsan boş bırakabilirsin.
+3. **Sahip parolası**'nı yaz. İzinleri sonradan değiştirmek için bu parola gerekir.
+4. **İzinler** bölümünde neye izin verileceğini seç ya da **Hızlı ayar**'dan **Tümü serbest**, **Sadece okuma**, **Kopyalama yok** veya **En kısıtlı**'yı kullan.
+5. **Parola ekle**'ye tıkla.
+
+Sahip parolasını boş bırakırsan rastgele bir parola oluşturulur ve dosya yazılınca bir kez gösterilir; kısıtlamaları sonradan kaldırmanın tek yolu bu olduğu için onu güvenli bir yerde sakla. **Şifreleme** için **AES-256 (önerilen)** seçeneğini kullan; AES-128 ve RC4 yalnızca eski okuyucular içindir ve parolada ş, ğ, İ gibi harfleri saklayamaz. **Dosya bilgilerini de şifrele** başlık, yazar ve konuyu da korur.
+
+Yeni bir parola yaygın sızdırılmış parolaların yerleşik listesiyle karşılaştırılır. **Ayarlar › Web**'de çevrimiçi denetimi açarsan Have I Been Pwned'e parolanın kendisi değil, yalnızca SHA-1 özetinin ilk 5 karakteri gider.
+
+**Parola kaldır** parolasız bir kopya oluşturur; bunun için açma ya da sahip parolasını girmen gerekir. Dosya yalnızca izinlerle korunuyorsa parola sormadan çalışır.
+
+## Sertifikayla mühürleme
+
+**Sertifikayla mühürle**, dosyayı hiç parola kullanmadan yalnızca **Alıcılar** listesindeki sertifikaların özel anahtar sahiplerinin açabileceği biçimde şifreler. **Sertifika ekle** ile alıcıların açık sertifikalarını ekle, sonra **Mühürle**'ye tıkla. Yalnızca RSA sertifikaları mühürlü belge alabilir.
+
+Mühürlü bir dosyayı açmak için **Sertifikayla aç**'ı kullan: **Mühürlü PDF**'i, özel anahtarını taşıyan **Sertifika (.p12 / .pfx)** dosyasını ve parolasını seç, **Aç**'a tıkla. Korumasız bir kopya yazılır. Kendi açık sertifikanı başkasına vermek için [İmzalama ve doğrulama](https://vivepdf.com/dokumantasyon/imza/) sayfasındaki **Açık sertifikayı dışa aktar** aracına bak.
+
+## Filigran ve damga
+
+**Filigran ekle**'de **Filigran türü** olarak **Metin**, **Görsel** (PNG / JPG) ya da başka bir PDF'ten **PDF sayfası** seç. Boyutu, konumu ve sayfaları ayarlarken canlı önizleme ilk sayfayı gösterir. **Filigranın görüneceği yer** ile filigranı yalnızca ekranda ya da yalnızca baskıda gösterebilirsin. **Filigranı sayfaya göm** filigranlı sayfaları resme çevirir; filigran artık kaldırılamaz, ama o sayfalardaki metin de seçilemez ve aranamaz.
+
+**Damga**, her sayfanın seçilen yerine çerçeveli bir ibare basar: **ONAYLANDI**, **TASLAK**, **GİZLİ**, **ÖDENDİ** gibi hazır damgalardan birini seç ya da kendi metnini yaz. `{date}`, `{name}`, `{page}` ve `{total}` gibi yer tutucular otomatik doldurulur. Sık kullandığın ayarları **Ön ayarlar**'a kaydedebilirsin.
+
+**Filigran kaldır** belgeyi tarar ve bulduğu filigranları listeler; kaldırmak istediklerini işaretle. Sonucu Görüntüleyici'de kontrol et.
+
+## Gizlilik kontrolü
+
+**Gizlilik kontrolü**, dosyanın görünen sayfaların dışında neleri açığa çıkardığını gösterir. **Belgeyi tara**'ya tıkla; üst veri, XMP üst verisi, JavaScript ve otomatik eylemler, gömülü dosyalar, yorumlar, dış bağlantılar, gizli metin, gizli katmanlar ve fotoğraflardaki kamera ile konum bilgileri gibi bulguları gör. **Kaldırılacaklar** listesinde silinecekleri işaretle ve **Temizle ve kaydet**'e tıkla.
+
+> **İmzalı dosyalar**
+>
+> İmzalı bir dosyayı temizlemek, geçerli imzası olmayan yeni bir dosya yazar. İmzalı kalması gerekiyorsa temiz kopyayı yeniden imzala.
+
+## Karartma
+
+Hassas metin dosyada kalıyorsa onu **Karartma** ile kalıcı olarak sil. **Aranacak metinler**'e kelimeleri yaz ya da **Bulunan hassas veriler** listesinden TC kimlik no, IBAN, e-posta adresi gibi türleri seç; gerekirse düzenli ifadeler ekle. **Eşleşmeleri say** ile önce sonucu gör, sonra **Karart**'a tıkla. Eşleşen metin dosyadan silinir ve üzeri kapatılır; bu işlem geri alınamaz.
+
+**Sayfa dışındaki eşleşmeleri de sil** aynı ifadeleri yorumlarda, form alanlarında, yer imlerinde ve belge özelliklerinde de arar. Bir alanı elle karartmak için belgeyi Görüntüleyici'de aç, **Düzenle › Sayfa araçları › Alanı karart**'ı seç, alanın üstünde sürükle ve **Karart**'a tıkla. Tüm araçların listesi [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) sayfasında.
+
+---
+
+# Stüdyo'da belge yazma
+
+> Stüdyo'nun belge düzenleyicisiyle rapor, ödev ve tez yazma; başlıklar, tablolar, dipnotlar, kaynakça, sütunlar ve PDF ya da Markdown çıktısı.
+
+URL: https://vivepdf.com/dokumantasyon/studio-belge/
+Son güncelleme: 2026-10-18
+
+Stüdyo'nun belge düzenleyicisi, rapor, makale, ödev ya da tez gibi metinleri vivePDF içinde yazıp düzgün sayfalanmış bir PDF'e dönüştürmeni sağlar. Sen yazarken sağdaki önizleme bitmiş sayfaları gösterir; kapak, içindekiler, sayfa numaraları, dipnotlar ve kaynakça kendiliğinden yerine oturur.
+
+## Yeni belge başlatma
+
+1. Üst çubukta **Stüdyo**'ya tıkla. Aynı yere **Araçlar › Tümünü göster** kataloğundaki **Belge yaz** kartıyla ya da `Ctrl+K` ile açılan komut paletinden de ulaşırsın.
+2. **Belge oluştur** bölümünden bir başlangıç seç: **Boş belge**, **Rapor**, **Mektup**, **Dilekçe**, **Ödev**, **Toplantı tutanağı**, **Ders notu**, **Kitapçık**, **Özgeçmiş** ya da **Fatura**.
+3. Yazmaya başla. Yarım kalan bir belgeye **Belgenize devam edin** kartındaki **Devam et** ile dönersin.
+
+Elinde hazır bir metin varsa **Metin içe aktar…** düğmesiyle düz metin, Markdown ya da web sayfası dosyasını belgeye çevirebilirsin.
+
+## Biçimlendirme
+
+Düzenleyicinin üstündeki biçim çubuğu sık kullanılan her şeyi bir arada tutar:
+
+- **Paragraf stili** ile **Normal metin** ve **Başlık 1**–**Başlık 4** arasında geçiş yaparsın. İçindekiler bu başlıklardan oluşur.
+- **Kalın**, **İtalik**, **Altı çizili**, **Üstü çizili**, **Üst simge**, **Alt simge**, **Yazı rengi** ve **Vurgula** metni biçimler; **Biçim boyacısı** bir yerdeki biçimi başka bir yere taşır, **Biçimlendirmeyi temizle** her şeyi sıfırlar.
+- **Madde işaretli liste**, **Numaralı liste** ve **Yapılacaklar listesi** liste ekler; **Alıntı**, **Kod bloğu**, **Bağlantı**, **Resim ekle**, **Simge ekle**, **Yatay çizgi** ve **Sayfa sonu** da aynı çubuktadır.
+- **Satır ve paragraf aralığı** menüsü seçili paragrafların satır aralığını, önce ve sonra boşluğunu ve ilk satır girintisini ayarlar.
+
+Klavyeden `Ctrl+Alt+1`, `2` ve `3` başlık düzeylerini, `Ctrl+Shift+8` ve `Ctrl+Shift+7` listeleri açar; `Shift+Enter` yeni paragraf açmadan alt satıra geçer. Tam liste [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasında.
+
+### Tablolar
+
+**Tablo ekle** ile bir tablo yerleştir. İmleç tablonun içindeyken çubukta tablo düğmeleri belirir: **Alta satır ekle**, **Sağa sütun ekle**, **Satırı sil**, **Sütunu sil**, **Hücreleri birleştir**, **Hücreyi böl**, **Başlık satırını aç veya kapat** ve **Tabloyu sil**.
+
+## Dipnotlar
+
+**Dipnot ekle** düğmesi ya da `Ctrl+Alt+F` imlecin olduğu yere numaralı bir işaret koyar ve altta not panelini açar. Notu yazıp **Metne dön**'e tıkla. Dipnot, işaretin düştüğü sayfanın altına basılır; notlar sayfaya sığmayacak kadar uzarsa belgenin sonunda **Notlar** başlığı altında son notlara dönüşür. Notun içinde de atıf ve küçük resim kullanabilirsin.
+
+## Kaynaklar ve kaynakça
+
+Biçim çubuğundaki **Atıf ve kaynakça** düğmesi **Kaynaklar** penceresini açar:
+
+- **Dosya içe aktar** ile BibTeX, RIS ya da CSL JSON kitaplığını yükle; Zotero, Mendeley veya EndNote'tan kopyaladığın kayıtları **Yapıştır** ile ekle; elle girmek için **Yeni kaynak**'ı kullan.
+- **DOI ile ekle** künyeyi doi.org üzerinden getirir ve internet gerektirir; yalnızca DOI gönderilir. **PDF'ten ekle** makale PDF'indeki DOI'yi bilgisayarında bulur, sonra künyeyi aynı yoldan getirir. Çevrimdışı mod açıkken ikisi de internete çıkmaz.
+- **Atıf stili** olarak **APA 7**, **MLA 9**, **Chicago (yazar-tarih)** ya da **IEEE** seç. **Atıf ekle** metne atıf koyar, **Kaynakça ekle** kaynakça listesini yerleştirir.
+- **Kaynakları denetle**, kaynaklarının geri çekilip çekilmediğini ya da düzeltme yayımlanıp yayımlanmadığını Crossref üzerinden kontrol eder.
+
+Kaynak kitaplığından yola çıkmak istersen araç kataloğundaki **Kaynakça** kartı, belgeyi bu pencere açık olarak başlatır.
+
+## Sayfa ayarları ve sütunlar
+
+Sağ paneldeki **Önizleme** sekmesi PDF'in nasıl görüneceğini gösterir. **Ayarlar** sekmesinde şunlar var:
+
+- **Sayfa**: **Kâğıt boyutu** (A4, A5, B5, Letter, Legal), **Yön**, **Kenar boşlukları**, **Sütunlar** ve **Sütun aralığı**.
+- **Metin**: **Yazı tipi**, **Boyut**, **Satır aralığı**, **Başlık rengi**; istersen başlıklara ayrı bir yazı tipi.
+- **Üst ve alt bilgi**: üst ve alt bilgi metni ile **Sayfa numaraları**.
+- **İçindekiler**: **İçindekiler sayfası ekle** ve kaç başlık düzeyinin gösterileceği.
+- **Kapak**: **Kapak sayfası ekle**; **Klasik**, **Renk bandı**, **Çerçeve** ya da **Sade** stil.
+
+Belgenin bir bölümünü farklı sütunla dizmek için biçim çubuğundaki **Bölüm sonu** menüsünü kullan. **Bölüm sonu: 2 sütun** sonraki sayfayı iki sütunla başlatır; **Sürekli bölüm sonu: 2 sütun** ise aynı sayfada devam eder. Böylece tam genişlikte bir başlığın altına iki sütunlu metin koyabilirsin.
+
+## Bul ve değiştir, sözcük sayısı
+
+Üstteki arama düğmesi ya da `Ctrl+F` **Bul ve değiştir** çubuğunu açar; `Ctrl+H` doğrudan değiştirme alanıyla açılır. **Büyük/küçük harf eşleştir** ve **Yalnızca tam sözcükler** aramayı daraltır, **Tümünü değiştir** hepsini tek adımda değiştirir ve tek geri almayla eski hâline döner.
+
+Düzenleyicinin altında sözcük ve karakter sayısı her zaman görünür. Metin seçtiğinde sayı, seçimdekileri ve toplamı birlikte gösterir.
+
+## Kaydetme ve dışa aktarma
+
+`Ctrl+S` belgeyi daha sonra açıp düzenleyebileceğin bir vivePDF belgesi (`.vivedoc`) olarak kaydeder. Bitmiş hâlini almak için **Dışa aktar**'a tıkla ya da `Ctrl+E`'ye bas ve **Dosya türü** seç:
+
+- **PDF**: kapak, içindekiler, sayfa numaraları ve yer imleriyle birlikte. Metin seçilebilir kalır.
+- **Markdown**: başlıklar, listeler, tablolar, bağlantılar, resimler ve dipnotlar korunur; renkler, yazı tipleri ve sayfa düzeni alınmaz.
+
+Afiş, davetiye ya da kartvizit gibi serbest yerleşimli işler için [Stüdyo'da tasarım](https://vivepdf.com/dokumantasyon/studio-tasarim/) sayfasına bak. Hazır bir PDF'i düzenlemek istiyorsan [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) listesinden başla.
+
+---
+
+# Stüdyo'da tasarım
+
+> Stüdyo'da şablonla afiş, sertifika ve davetiye tasarlama, CV oluşturucu, baskıya hazır kartvizit, katmanlar ve PDF ya da resim olarak dışa aktarma.
+
+URL: https://vivepdf.com/dokumantasyon/studio-tasarim/
+Son güncelleme: 2026-10-18
+
+Stüdyo, afiş, sertifika, davetiye, sosyal medya gönderisi ve kartvizit gibi işleri serbest bir tuvalde hazırlayıp PDF ya da resim olarak kaydetmeni sağlayan tasarım düzenleyicisidir. 170'ten fazla şablonla başlayabilir, metin, şekil, resim ve QR kodu sürükleyerek yerleştirebilirsin.
+
+## Tasarıma başlama
+
+Üst çubukta **Stüdyo**'ya tıkla. Başlangıç sayfasında birkaç yol var:
+
+- **Bir şablonla başlayın**: şablonlar **Sertifikalar**, **Davetiyeler**, **Afişler**, **Menüler**, **Sosyal medya**, **El ilanları ve broşürler** gibi kategorilere ayrılır; **Şablonlarda ara** ile adına göre bulursun.
+- **Boş sayfayla başlayın** ya da **Özel boyut** ile genişliği ve yüksekliği kendin gir, sonra **Oluştur**'a tıkla.
+- **Kartvizitler**: ön ve arka yüzü hazır bir kartvizit açar (aşağıda).
+- **CV oluştur**: formla çalışan CV oluşturucuyu açar (aşağıda).
+- **Tasarım aç…** kaydettiğin bir tasarımı açar, **Son tasarımlar** listesi son çalıştıklarını gösterir. Yarım kalan iş **Kaldığınız yerden devam edin** kartında bekler.
+
+## Öğe ekleme ve düzenleme
+
+Soldaki panelin dört sekmesi var: **Öğeler**, **Şablonlar**, **Katmanlar** ve **Veri**.
+
+1. **Öğeler** sekmesinden **Başlık ekle**, **Alt başlık ekle** ya da **Gövde metni ekle** ile metin koy. Aynı yerde **Şekiller**, **Simgeler**, **Tablolar ve grafikler**, **Süslemeler**, **Resim** ve **QR kod** da var.
+2. Bir öğeye tıklayıp seç. Özellikler panelinden rengini, yazı tipini, boyutunu, gölgesini ya da hizasını değiştir.
+3. Öğeyi sürükleyerek taşı; köşelerdeki tutamaçlarla boyutlandır ya da döndür. Sağ tıkladığında **Çoğalt**, **En öne getir**, **Grupla**, **Kilitle** ve **Stili kopyala** gibi komutlar çıkar.
+
+Klavyeden de hızlı ekleyebilirsin: `T` metin, `R` dikdörtgen, `O` elips, `L` çizgi, `A` ok ekler. Tasarım düzenleyicisinde `F1` ya da `?` tüm kısayolları gösterir; liste [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasında da var.
+
+### Katmanlar ve sayfalar
+
+**Katmanlar** sekmesi bu sayfadaki öğeleri listeler. Sırayı değiştirmek için bir katmanı sürükle ya da üzerindeyken `Alt+↑` veya `Alt+↓`'ye bas; öğeleri buradan gizleyip kilitleyebilirsin. Bir grubun içindeki tek öğeyi seçmek için gruba çift tıkla.
+
+Sayfa şeridinde **Sayfa ekle** yeni sayfa açar; **Tüm sayfalar** bütün sayfaları gösterir ve sürükleyerek sıralamanı sağlar. **Görünüm** menüsü **Cetveller**, **Kılavuz çizgileri**, **Kenar boşlukları**, **Taşma payı (3 mm)** ve **Hizalamaya yapışma** seçeneklerini açıp kapatır.
+
+### Tablodan çoklu kopya
+
+**Veri** sekmesinde **Tablo bağla** ile bir CSV ya da Excel dosyası seç. Bir sütuna tıkladığında, o sütun seçili metne ya da QR koda yer tutucu olarak eklenir. Dışa aktarırken tablodaki her satır, değerleri yerine konmuş ayrı bir kopya olur; sertifika ya da yaka kartı basmak için idealdir.
+
+## CV oluşturucu
+
+**CV oluşturucuyu aç**'a tıkladığında soldaki **İçerik** sekmesinde bir form açılır: kişisel bilgiler, deneyim, eğitim, beceriler, diller ve diğer bölümler. Sağda CV'nin önizlemesi anında güncellenir.
+
+- **Örnekle doldur** hazır bir örnek CV yükler; **PDF'ten içe aktar…** var olan bir CV'yi ya da LinkedIn PDF'ini okuyup bölümleri forma taşır.
+- **Tasarım** sekmesinde **Klasik**, **Modern**, **ATS uyumlu** gibi tasarımlardan birini seç; **Vurgu rengi**, **Fotoğraf biçimi**, **Aralık**, **Kâğıt** ve **CV dili**ni ayarla.
+- **Dışa aktar** CV'yi PDF, PNG ya da JPG olarak kaydeder. Daha serbest değişiklik için **Stüdyo'da serbest düzenle**'yi seç.
+
+## Kartvizitler
+
+Başlangıç sayfasındaki **Kartvizitler**, **Ön yüz** ve **Arka yüz** sayfalarıyla bir kart açar. Boyut olarak 85 × 55, 90 × 50, ABD 3,5 × 2 inç, kare ya da mini kart seçebilirsin; sayfa panelindeki **Köşe yuvarlatma** matbaanın keseceği köşeyi gösterir.
+
+Bir öğe seçip **Baskı efekti** altından **Kabartma**, **Gömme**, **Letterpress**, **Varak** (altın, gümüş, bakır, rose gold, holografik) ya da **Lak (spot UV)** uygulayabilirsin. Görünüm ekranda canlandırılır. QR kodun içeriğini **Kişi kartı** yaparsan kod okutulduğunda kişi bilgileri telefona kaydedilebilir.
+
+> **Matbaaya göndermeden önce**
+>
+> Dışa aktarma penceresinde **Baskıya hazır PDF**'i aç. **Taşma payı** (genellikle 3 mm) ve **Kesim işaretleri** eklenir; **Efekt kalıpları** varak ve lak gibi efektleri matbaa için ayrı spot renk ya da ayrı sayfa yapar. **Tabaka** olarak A4 ya da SRA3 seçersen kartlar bir yaprağa dizilir, arka yüzler çift taraflı baskıda üst üste gelecek şekilde aynalanır.
+
+## Kaydetme ve dışa aktarma
+
+`Ctrl+S` çalışmanı daha sonra açabileceğin bir vivePDF tasarımı olarak kaydeder. Bitmiş hâlini almak için **Dışa aktar**'a tıkla ya da `Ctrl+E`'ye bas:
+
+- **Dosya türü** olarak PDF, PNG ya da JPG seç. **Sayfalar** ile tüm sayfaları, geçerli sayfayı ya da `1-3, 5` gibi bir aralığı al.
+- Resimlerde **Çözünürlük** ve **JPG kalitesi**ni ayarla; arka planı **Yok** olan sayfalar **Saydam arka plan** ile saydam kaydedilir.
+- PDF'te **Stüdyo'da düzenlenebilir kalsın** açıksa tasarım PDF'in içinde saklanır; PDF'i vivePDF'te açtığında yeniden Stüdyo'da düzenleyebilirsin. **PDF'i imzala**, .p12 ya da .pfx sertifikanla görünmez bir dijital imza ekler; imzalar hakkında daha fazlası [İmzalama](https://vivepdf.com/dokumantasyon/imza/) sayfasında.
+
+`Ctrl+P` tasarımı doğrudan yazıcıya gönderir. Rapor ya da tez gibi uzun metinler için [Stüdyo'da belge yazma](https://vivepdf.com/dokumantasyon/studio-belge/) sayfası daha uygun.
+
+---
+
+# PDF ile sunum yapma
+
+> vivePDF'te bir PDF'i tam ekran sunma; F5 ile başlatma, kalem ve lazer gibi araçlar, siyah ve beyaz tahta, konuşmacı notları ve iki ekranlı sunucu görünümü.
+
+URL: https://vivepdf.com/dokumantasyon/sunum/
+Son güncelleme: 2026-10-18
+
+vivePDF, herhangi bir PDF'i ayrı bir sunum programına gerek kalmadan tam ekran slayt gösterisine çevirir. Sunarken sayfanın üzerine çizebilir, lazer işaretçi ya da spot ışık kullanabilir, siyah veya beyaz bir tahtaya geçebilir ve projektör bağlıyken notlarını yalnızca kendi ekranında görebilirsin.
+
+## Sunumu başlatma
+
+1. PDF'i **Görüntüleyici**'de aç. Nasıl açılacağı [PDF açma ve okuma](https://vivepdf.com/dokumantasyon/acma-okuma/) sayfasında.
+2. İlk sayfadan başlamak için `F5`'e, bulunduğun sayfadan başlamak için `Shift+F5`'e bas. `F11` (Mac'te `⌃``⌘``F`) da sunum moduna girip çıkar.
+3. Sayfalar arasında ok tuşları, `Page Up` ve `Page Down` ile geç. `G` tüm slaytları **Slayt genel görünümü** olarak açar; birine tıklayıp oraya atlarsın.
+4. Bitirmek için `Esc`'ye bas. Her `Esc` tam bir adım geri gider: önce elindeki aracı bırakır, sonra tahtadan çıkar, en son sunumu bitirir.
+
+Sunum araç çubuğu, fareyi ekranın alt kenarına götürdüğünde belirir.
+
+## Çizim ve işaret araçları
+
+Araçları alttaki çubuktan ya da tek tuşla seçersin:
+
+| Tuş | Araç |
+|---|---|
+| `L` | Lazer işaretçi |
+| `P` | Kalem |
+| `H` | Fosforlu kalem |
+| `E` | Silgi |
+| `S` | Spot ışık |
+| `M` | Büyüteç |
+| `U` | Ekran cetveli |
+| `Z` | Sürüklenen alana yakınlaştır |
+| `V` | Çizimleri seç, taşı ya da sil |
+
+Çubuktaki **Şekiller** menüsünde **Çizgi**, **Ok**, **Dikdörtgen**, **Elips** ve **Uzunluk ölç** bulunur; **Metin** ile sayfaya yazı da ekleyebilirsin. Seçili bir çizimi `R` ve `Shift+R` sağa ve sola döndürür, `Ctrl+D` çoğaltır, `Del` siler. `Ctrl+Z` ve `Ctrl+Y` çizimde geri alır ve yineler.
+
+Ekran cetveli gerçek santimetre gösterir; sürükleyerek taşıyıp döndürebilirsin ve kenarı boyunca çizdiğin çizgiler düz çıkar.
+
+Kalemin rengi ve kalınlığı, lazerin rengi ve spot ışığın büyüklüğü için varsayılanlar **Ayarlar › Sunum** bölümündedir. Tüm sunum kısayolları [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasında listelenir.
+
+## Siyah ve beyaz tahta
+
+`B` ya da `.` ekranı siyaha, `W` beyaza çevirir. Boş ekranı dinleyicilerin dikkatini toplamak için kullanabilir ya da üzerine yazı tahtası gibi çizebilirsin. Tahtada kendi **Tahta araçları** çubuğu açılır: seçim, kalem, fosforlu kalem, şekiller ve silgi, tahtaya uygun renkler, boyut ayarları, geri al ve yinele, **Tahtayı temizle** ve **Slaytlara dön**. Her tahta kendi geri alma geçmişini tutar.
+
+## Notlar, süre ve saat
+
+- `N` geçerli sayfanın **Konuşmacı notları** panelini açıp kapatır. Notlar sayfa sayfa saklanır ve sunucu görünümüyle ortaktır.
+- `T` kronometreyi, `C` saati gösterir ya da gizler.
+- Sayfada kod varsa `K` algılanan kod bloklarını açar ve aralarında gezer.
+
+## Sunucu görünümü (iki ekran)
+
+Projektör ya da ikinci bir ekran bağlıysa `Alt+F5`'e bas ya da Görüntüleyici araç çubuğundaki **Sunucu görünümü** düğmesine tıkla; `Alt+Shift+F5` bulunduğun sayfadan başlatır. Projektörde yalnızca slayt görünür. Senin ekranında ise **Geçerli sayfa**, büyük bir **Sonraki sayfa** önizlemesi, **Geçen süre**, **Saat** ve **Konuşmacı notları** yer alır.
+
+- Önizlemenin oklarıyla ilerideki sayfalara projektörü değiştirmeden bakabilirsin; bir önizlemeye tıklayınca sunum oraya atlar.
+- Kalem, lazer, spot ışık ve tahtalar projektörde de görünür.
+- **Ekranları değiştir** iki ekranın rolünü takas eder, **Sunumu bitir** sunumu kapatır.
+- Notlar uygulamanın bu bilgisayardaki veri klasörüne kaydedilir; PDF dosyası değişmez.
+
+> **Yalnızca bir ekran görünüyorsa**
+>
+> Projektör ekranını çoğaltıyorsa vivePDF **Yalnızca bir ekran görünüyor** uyarısını gösterir. Windows'ta `Windows+P`'ye basıp **Genişlet**'i seç, sonra **Tekrar dene**'ye tıkla. İstersen **Bu ekranda sun** ya da **Pencerede prova yap** ile devam edebilirsin.
+
+Belgede kaydedilmemiş değişiklik varsa projektör dosyanın diskteki hâlini gösterir; bu yüzden vivePDF önce **Kaydet ve sun** ile **Yine de sun** arasında seçim yapmanı ister.
+
+## Sunumda öğe ekleme
+
+Sunum çubuğundaki ve sunucu konsolundaki **Ekle** (+) düğmesi şunları sunar: **Formül ekle**, **Şekil ekle**, **Fonksiyon grafiği ekle**, **Molekül ekle**, **Tablo ekle**, **Grafik ekle**, **Akış şeması ekle**, **Diyagram ekle (Mermaid)**, **Soru ekle** ve **Cevap anahtarı ekle**. Öğeyi hazırlayıp yerleştirmek için sayfaya tıkla; `Esc` iptal eder. Yerleşen öğeyi bir çizim gibi taşıyıp boyutlandırabilir, çift tıklayarak yeniden düzenleyebilirsin. Ekle menüsü siyah ve beyaz tahtada da çalışır.
+
+## Çizimleri saklama
+
+Sunum çizimleri ve eklenen öğeler varsayılan olarak geçicidir. Sunumdan çıkarken vivePDF **Sunum çizimleri saklansın mı?** diye sorar:
+
+- **PDF'e kaydet** çizimleri PDF'e not olarak yazar; tahta çizimleri belgenin sonuna yeni sayfa olarak eklenir.
+- **Çizimleri at** hepsini siler.
+- **Sonra karar ver** çizimleri kaydedilmemiş değişiklik olarak tutar; belgeyi kaydettiğinde PDF'e yazılır.
+
+Her seferinde kalıcı not almak istersen **Ayarlar › Sunum** bölümünde **Çizimler** seçeneğini **Kalıcı notlar** yap. Ayarların geri kalanı için [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/) sayfasına bak.
+
+---
+
+# Ayarlar ve gizlilik
+
+> vivePDF ayarlarının her bölümü, Yardım › Gizlilik'te neyin internete çıktığı ve bu bilgisayarda saklanan verileri Ayarlar › Veriler'den silme.
+
+URL: https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/
+Son güncelleme: 2026-10-18
+
+vivePDF'in tüm tercihleri **Ayarlar**'dadır: görünüm, başlangıç, dosyaların nereye kaydedileceği, okuma, sunum, araçlar, güncellemeler ve veriler. vivePDF hiçbir kişisel veri toplamaz; **Yardım › Gizlilik** uygulamanın ağa ne zaman çıktığını ve bu bilgisayarda neleri sakladığını listeler, **Ayarlar › Veriler** ise bunları siler.
+
+## Ayarları açma
+
+Ayarlar'ı üst çubuktan aç. Soldaki liste bölümleri üç grupta toplar: **Uygulama**, **Görüntüleme** ve **Sistem ve veriler**. Bir ayarın nerede olduğunu bilmiyorsan üstteki **Ayarlarda ara…** kutusuna adını yaz. Dil ve tema değişiklikleri anında uygulanır.
+
+## Bölümler
+
+### Uygulama
+
+- **Görünüm**: dil, tema (Açık, Koyu ya da Windows temasını izleyen Sistem), **Arayüz ölçeği**, **Arayüz yakınlaştırma** ve **Hareketi azalt**.
+- **Başlangıç ve gizlilik**: **Kaldığım yerden devam et**, **Son dosyaları hatırla**, **İşlem geçmişini tut**, **Kapatmadan önce sor**, **Kaydetmeden önce yedek tut**, **Tepside çalışmaya devam et** ve **Sistemle birlikte başlat**.
+- **Dosyalar**: araçların sonucu **Kaynağın yanına** mı yoksa **Sabit klasöre** mi yazacağı, dosya **Ad kalıbı** ve **İşlem bitince** ne olacağı (bir şey yapma, Gezgin'de göster ya da dosyayı aç).
+- **Web**: Görüntüleyici'nin sağ tık menüsündeki **Arama motoru**, yeni parolaların çevrimiçi denetimi ve **Çevrimdışı mod**.
+
+### Görüntüleme
+
+- **Görüntüleyici**: küçük resim boyutu, varsayılan yan paneller, **Açılış yakınlaştırması**, çift sayfa görünümü, metin seçim rengi, **Yorumlar için yazar adı** ve **Dosya değişince yeniden yükle**.
+- **Okuma ve sesli okuma**: okuma modu varsayılanları, konuşma hızı, varsayılan ses, çevrimdışı ses modelleri ve çeviri dilleri.
+- **Sunum**: kalem, lazer işaretçi ve spot ışığı varsayılanları; çizimlerin **Geçici** mi yoksa **Kalıcı notlar** olarak mı tutulacağı. Ayrıntılar [Sunum](https://vivepdf.com/dokumantasyon/sunum/) sayfasında.
+
+### Sistem ve veriler
+
+- **Araçlar**: OCR dil paketleri, LibreOffice ile çalışan **Ofis dönüştürücü**, varsayılan OCR dili ve varsayılan sıkıştırma.
+- **Güncellemeler**: yüklü sürüm, **Güncellemeleri denetle** ve **Açılışta otomatik denetle**. Kurulum her zaman sana sorulur; ayrıntılar [Kurulum](https://vivepdf.com/dokumantasyon/kurulum/) sayfasında.
+- **Sistem** (Windows): **PDF dosyalarını vivePDF ile aç**, Windows varsayılan uygulamaları, Gezgin'e **Sağ tık menüsü** ve “Gönder” menüsü kısayolu.
+- **Veriler**: bu bilgisayarda saklanan her şey; aşağıda anlatılıyor.
+- **Geri bildirim**: **Hata bildir**, **Özellik öner**, **Günlük klasörü** ve sürüm bilgilerini panoya kopyalayan **Tanılama**.
+
+## Yardım › Gizlilik
+
+Üst çubuktaki **Yardım** menüsünden **Gizlilik**'i aç. Sayfa iki liste gösterir:
+
+- **Ağ erişimi**: belgeler, parolalar ve sertifikalar bu bilgisayardan asla çıkmaz. Ağa yalnızca senin başlattığın işler çıkar: güncelleme denetimi, **İndir** ya da **Kur**'a bastığında inen ses modelleri, dil paketleri, yazı tipleri ve LibreOffice, web araması, web sayfasından PDF, DOI sorgusu, isteğe bağlı parola sızıntı denetimi ve imzadaki zaman damgası. Hata bildirimleri asla otomatik gönderilmez.
+- **Bilgisayarda saklananlar**: son dosyalar, oturum anlık görüntüsü, ayarlar, imzalarken kullandığın sertifikanın yolu (parolası değil), yedekler, arama dizini, işlem geçmişi, izlenen klasör kuralları, kayıtlı imzalar, indirilen paketler ve yerel günlük dosyası.
+
+Sayfanın üstünde [çevrimdışı modun](https://vivepdf.com/dokumantasyon/cevrimdisi/) açık mı kapalı mı olduğu da görünür; **Ayarı aç** seni doğrudan anahtara götürür.
+
+## Ayarlar › Veriler
+
+Bu bölüm saklanan her şeyi sayısıyla gösterir ve tek tek silmeni sağlar:
+
+- **Son dosyalar** ve **İşlem geçmişi**: **Temizle**.
+- **Oturum anlık görüntüsü**: **Sil**.
+- **Hatırlanan sertifika yolu**: **Unut**.
+- **Arama dizini**: **Tümünü temizle**; dizinlenmiş klasörleri Arama sayfasından yeniden dizinlemen gerekir.
+- **Arama geçmişi**, **Kayıtlı imzalar**, **İzlenen klasör kuralları** ve **Kayıtlı toplu işlem zincirleri**: **Temizle**.
+- **Hatırlanan zincir şifreleri**: **Tümünü unut** bunları sistem anahtarlığından kaldırır.
+
+> **Silinen veri geri gelmez**
+>
+> Temizleme ve silme işlemlerinin çoğu önce onay ister. Silinen veri geri alınamaz.
+
+**Tüm ayarları sıfırla** yalnızca tercihleri varsayılana döndürür; son dosyalar, geçmiş, kayıtlı imzalar, zincirler ve klasör kuralları korunur. Onay penceresinde **Kayıtlı imzaları, zincirleri, klasör kurallarını ve hazır ayarları da sil** seçeneğini işaretlersen bunlar da kalıcı olarak silinir.
+
+İndirilen dil paketleri ve ses modelleri kendi bölümlerinden (**Araçlar**, **Okuma ve sesli okuma**) kaldırılır; yedekler ve günlük dosyası kendi klasörlerinde durur. Günlük dosyası hakkında daha fazlası [Sorun giderme](https://vivepdf.com/dokumantasyon/sorun-giderme/) sayfasında.
+
+---
+
+# Çevrimdışı mod
+
+> vivePDF'te Çevrimdışı mod'u açma, neleri durdurduğu, internetsiz neyin çalışmaya devam ettiği ve kapalı özelliklerin nasıl görüneceği.
+
+URL: https://vivepdf.com/dokumantasyon/cevrimdisi/
+Son güncelleme: 2026-10-18
+
+Çevrimdışı mod, vivePDF'in tüm internet bağlantılarını tek bir anahtarla durdurur: güncelleme denetimi, indirmeler, web aramaları ve sorgular, web sayfası açma ve çevrimiçi denetimler. PDF araçları zaten bu bilgisayarda çalıştığı için geri kalan her şey internet olmadan da çalışmaya devam eder. Belgelerin ise mod açık olsun ya da olmasın bu bilgisayardan çıkmaz.
+
+## Çevrimdışı modu açma
+
+1. Üst çubuktan **Ayarlar**'ı aç.
+2. **Uygulama** grubundaki **Web** bölümüne geç.
+3. **Çevrimdışı mod** anahtarını aç.
+
+Mod varsayılan olarak kapalıdır. Durumu **Yardım › Gizlilik** sayfasının üstünde de görürsün: "Çevrimdışı mod açık" ya da "Çevrimdışı mod kapalı". Oradaki **Ayarı aç** seni doğrudan anahtara götürür.
+
+## Neleri durdurur
+
+Mod açıkken internete ihtiyaç duyan her özellik kapanır:
+
+- **Güncellemeler**: açılıştaki otomatik denetim yapılmaz, **Ayarlar › Güncellemeler** "Denetlenmedi: çevrimdışı mod açık" gösterir.
+- **İndirmeler**: OCR dil paketleri, sesli okuma sesleri, çeviri dilleri, Stüdyo'daki eksik yazı tipleri ve LibreOffice indirmesi.
+- **Web aramaları**: Görüntüleyici'nin sağ tık menüsündeki **Webde ara**, **Görseli Google Lens ile ara** ve **Çevir** altındaki **Google Çeviri**.
+- **Web sayfaları**: **Web sayfası → PDF** dönüştürmesi.
+- **Çevrimiçi denetimler**: yeni parolaların Have I Been Pwned denetimi, imzalarken zaman damgası sunucusu, doğrularken **İptal durumunu çevrimiçi denetle**, Stüdyo'da DOI ile kaynak arama ve denetleme.
+- **GitHub**: hata bildiriminde **GitHub’da aç** ve Hakkında'daki **GitHub’dan güncelle**.
+
+Bu kapatma yalnızca arayüzde kalmaz; PDF motoru da mod açıkken internete çıkan istekleri reddeder.
+
+## Neler çalışmaya devam eder
+
+İnternet gerektirmeyen her şey her zamanki gibi çalışır:
+
+- Açma, okuma, arama, sayfa düzenleme, birleştirme, bölme, sıkıştırma, dönüştürme, imzalama, parola koruma ve diğer tüm PDF araçları.
+- Kurulu dillerle [OCR](https://vivepdf.com/dokumantasyon/ocr/), kurulu seslerle sesli okuma ve kurulu dillerle **Çevrimdışı çevirmen**.
+- Windows kurulumuyla gelen LibreOffice ile Word, Excel ve PowerPoint [dönüştürmeleri](https://vivepdf.com/dokumantasyon/donusturme/).
+- Stüdyo, sunum ve sunucu görünümü.
+- **Yardım konuları**, klavye kısayolları listesi, **Destek paketi kaydet…** ve hata raporunu kopyalama ya da dosyaya kaydetme.
+
+> **Önce indir, sonra kapat**
+>
+> İnternetsiz bir bilgisayarda çalışacaksan ihtiyacın olan OCR dillerini, sesleri ve çeviri dillerini önce indir, sonra çevrimdışı modu aç. İndirilen paketler bu bilgisayarda kalır ve internet olmadan kullanılır.
+
+## Kapalı özellikler nasıl görünür
+
+Çevrimdışı mod açıkken özellikler gizlenmez; düğmeler yerinde kalır ama soluk görünür ve tıklanmaz. Fareyle üzerine gelince "Çevrimdışı mod açıkken kapalı (Ayarlar › Web)" yazar.
+
+İndirme yapılan bölümlerde (örneğin **Ayarlar › Araçlar**'daki OCR dil paketleri) ve **Web sayfası → PDF** ekranında şu not çıkar: "Çevrimdışı mod açık; internetten hiçbir şey indirilmiyor veya sorgulanmıyor." Notun yanındaki **Değiştir** seni **Ayarlar › Web**'e götürür.
+
+Çevrimdışı mod yalnızca vivePDF'in kendi bağlantılarını durdurur; bilgisayarının internet bağlantısını kesmez, tarayıcın ve diğer uygulamaların her zamanki gibi çalışır.
+
+Bir işlem yine de internete ihtiyaç duyarsa "Bunun için internet gerekiyor ama çevrimdışı mod açık." iletisini görürsün. Modu kapatınca her şey hemen eski haline döner; uygulamayı yeniden başlatman gerekmez.
+
+Ağa ne zaman çıkıldığının tam listesi ve bu bilgisayarda saklananlar için [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/) sayfasına bak.
+
+---
+
+# Klavye kısayolları
+
+> vivePDF klavye kısayolları; F1 ile açılan ekrana özel liste, listeyi PDF olarak kaydetme, macOS tuş karşılıkları ve ekran ekran tam liste.
+
+URL: https://vivepdf.com/dokumantasyon/kisayollar/
+Son güncelleme: 2026-10-18
+
+vivePDF'te sık yaptığın işlerin çoğunun bir klavye kısayolu var: belge açmak, aramak, yakınlaştırmak, sunum yapmak ya da Stüdyo'da biçimlendirmek. Bu sayfa kısayolları ekranlara göre gruplar; uygulamanın içinden de aynı listeye her an ulaşabilirsin.
+
+## Uygulamadaki kısayol listesi
+
+Hangi ekranda olursan ol `F1`'e ya da `Ctrl+/`'ye bastığında **Kısayollar** penceresi açılır ve yalnızca o ekranda işe yarayan kısayolları gösterir. Örneğin **Görüntüleyici**'deyken görüntüleme, düzenleme ve sunum kısayollarını; **Sayfa düzenleyici**'de sayfa kısayollarını; Stüdyo'da belge ya da tasarım düzenleyicisinin kısayollarını görürsün. Bunlara her ekranda geçerli olan genel kısayollar eklenir. Sunum sırasında `F1`'e basarsan liste yalnızca sunum kısayollarını gösterir; böylece aradığını slaytlardan ayrılmadan bulursun.
+
+Aynı pencereye başka yollardan da ulaşırsın:
+
+- Üst çubukta **Yardım › Klavye kısayolları (F1)**.
+- `Ctrl+K` ile açılan komut paletinde **Bu ekranın klavye kısayolları**.
+
+Pencerenin üstündeki **Kısayollarda ara** kutusu listeyi daraltır. Alttaki düğmeler şunları yapar:
+
+- **PDF olarak kaydet**: gösterilen listeyi yazdırıp masanın yanına asabileceğin bir PDF'e çevirir.
+- **Tüm kısayollar**: ekrandan bağımsız olarak bütün grupları içeren tam listeyi açar.
+- **Yardım konuları**: bulunduğun ekranın yardım konusuna gider. Aynı işi `Shift+F1` de yapar.
+
+Stüdyo'nun tasarım düzenleyicisinde `F1` ya da `?` düzenleyicinin kendi kısayol penceresini açar. Ayrıntılar için [Stüdyo'da tasarım](https://vivepdf.com/dokumantasyon/studio-tasarim/) sayfasına bak.
+
+## macOS'ta tuşlar
+
+Mac'te vivePDF kısayolları Mac tuşlarıyla gösterir:
+
+- `Ctrl` yerine `⌘` (Command), `Alt` yerine `⌥` (Option), `Shift` yerine `⇧` kullanılır.
+- Tam ekran için `F11` yerine `⌃``⌘``F` geçerlidir.
+- Mac klavyelerde `F1` ve `F5` gibi işlev tuşları için klavye ayarına göre `fn` tuşuna da basman gerekebilir.
+
+Hemen aşağıdaki **Windows · Linux** ve **macOS** düğmeleriyle listelerdeki tuş gösterimini değiştirebilirsin. Kısayolların tam listesi, ekranlara göre gruplanmış olarak aşağıda.
+
+## Genel
+
+| İşlem | Windows · Linux | macOS |
+| --- | --- | --- |
+| PDF aç | `Ctrl O` | `⌘O` |
+| Yeni pencere | `Ctrl Shift N` | `⇧⌘N` |
+| Kopyaladığınızdan PDF | `Ctrl Shift V` | `⇧⌘V` |
+| Komut paleti | `Ctrl K` | `⌘K` |
+| Bu ekranın kısayolları | `F1` ya da `Ctrl /` | `F1` ya da `⌘ /` |
+| Bu ekranın yardım konusu | `Shift F1` | `⇧F1` |
+| Etkin belgeyi kapat | `Ctrl W` | `⌘W` |
+| İletişim kutusunu kapat | `Esc` | `Esc` |
+
+## Görüntüleyici
+
+| İşlem | Windows · Linux | macOS |
+| --- | --- | --- |
+| Belgede ara | `Ctrl F` | `⌘F` |
+| Sonraki / önceki arama sonucu | `F3` ya da `Shift F3` | `F3` ya da `⇧F3` |
+| Seçili metni kod olarak kopyala | `Ctrl Shift C` | `⇧⌘C` |
+| Yazdır | `Ctrl P` | `⌘P` |
+| Sinema modu (tam ekran) | `F11` | `⌃⌘F` |
+| Yakınlaştır / uzaklaştır | `Ctrl +` ya da `Ctrl −` ya da `Ctrl Wheel` | `⌘+` ya da `⌘−` ya da `⌘ Wheel` |
+| Gerçek boyut / genişliğe sığdır / sayfaya sığdır | `Ctrl 0` ya da `Ctrl 1` ya da `Ctrl 2` | `⌘0` ya da `⌘1` ya da `⌘2` |
+| Sayfayı sürükleyerek kaydır | `Space + Drag` ya da `Middle Drag` | `Space + Drag` ya da `Middle Drag` |
+| Önceki / sonraki sayfa | `PgUp` ya da `PgDn` ya da `← →` | `PgUp` ya da `PgDn` ya da `← →` |
+| İlk / son sayfa | `Home` ya da `End` | `Home` ya da `End` |
+| Atladığınız sayfalar arasında geri / ileri | `Alt ←` ya da `Alt →` | `⌥←` ya da `⌥→` |
+| Seçili işareti sil | `Delete` | `Delete` |
+| İşaretlemede geri al / yinele | `Ctrl Z` ya da `Ctrl Y` | `⌘Z` ya da `⌘Y` |
+| Otomatik kaydırmayı başlat veya durdur | `Ctrl Shift H` | `⇧⌘H` |
+| Pencereyi böl / bölmeyi kapat | `Ctrl Shift E` | `⇧⌘E` |
+| Otomatik kaydırırken: hız, yön, durdur | `↑ ↓` ya da `−` ya da `Esc` | `↑ ↓` ya da `−` ya da `Esc` |
+
+## Düzenleme
+
+| İşlem | Windows · Linux | macOS |
+| --- | --- | --- |
+| Seçili kutuyu ya da mevcut metni sil | `Delete` ya da `Backspace` | `Delete` ya da `Backspace` |
+| Seçili metni düzenlemeye aç | `Enter` | `Enter` |
+| Düzenleyiciyi kapat / seçimi kaldır / düzenlemeden çık | `Esc` | `Esc` |
+| Kaydet / farklı kaydet | `Ctrl S` ya da `Ctrl Shift S` | `⌘S` ya da `⇧⌘S` |
+| Kalın / yatık | `Ctrl B` ya da `Ctrl I` | `⌘B` ya da `⌘I` |
+| Seçili kutuyu çoğalt | `Ctrl D` | `⌘D` |
+| Seçili kutuyu kopyala, kes veya yapıştır | `Ctrl C` ya da `Ctrl X` ya da `Ctrl V` | `⌘C` ya da `⌘X` ya da `⌘V` |
+| Sayfadaki sonraki / önceki kutuyu seç | `Tab` ya da `Shift Tab` | `Tab` ya da `⇧ Tab` |
+| Seçili kutuyu taşı (Shift: 10 pt) | `← → ↑ ↓` ya da `Shift` | `← → ↑ ↓` ya da `Shift` |
+
+## Sunum
+
+| İşlem | Windows · Linux | macOS |
+| --- | --- | --- |
+| Sunum moduna gir / çık | `F11` | `⌃⌘F` |
+| Sunumu ilk sayfadan / bulunduğun sayfadan başlat | `F5` ya da `Shift F5` | `F5` ya da `⇧F5` |
+| Sunucu görünümünü ilk sayfadan / geçerli sayfadan başlat | `Alt F5` ya da `Alt Shift F5` | `⌥F5` ya da `⌥⇧F5` |
+| Lazer işaretçi | `L` | `L` |
+| Kalem | `P` | `P` |
+| Fosforlu kalem | `H` | `H` |
+| Silgi | `E` | `E` |
+| Spot ışık | `S` | `S` |
+| Büyüteç | `M` | `M` |
+| Cetveli göster/gizle | `U` | `U` |
+| Bir çizimi seçin; taşıyın ya da silin | `V` ya da `Del` | `V` ya da `Del` |
+| Seçili çizimi sağa / sola döndür · çoğalt | `R` ya da `Shift R` ya da `Ctrl D` | `R` ya da `⇧R` ya da `⌘D` |
+| Sürüklenen alana yakınlaştır | `Z` | `Z` |
+| Siyah / beyaz karartma | `B` ya da `W` ya da `.` | `B` ya da `W` ya da `.` |
+| Slayt genel görünüm ızgarası | `G` | `G` |
+| Algılanan kod bloklarını aç / gezin | `K` | `K` |
+| Kronometre / saati aç kapat | `T` ya da `C` | `T` ya da `C` |
+| Konuşmacı notlarını göster/gizle | `N` | `N` |
+| Çizimde geri al / yinele | `Ctrl Z` ya da `Ctrl Y` | `⌘Z` ya da `⌘Y` |
+| Katmanı kapat / aracı iptal et / çık | `Esc` | `Esc` |
+
+## Sayfa düzenleyici
+
+| İşlem | Windows · Linux | macOS |
+| --- | --- | --- |
+| Geri al / yinele | `Ctrl+Z` ya da `Ctrl+Y` | `⌘Z` ya da `⌘Y` |
+| Seçili sayfaları sil | `Delete` | `Delete` |
+| Sağa / sola döndür | `R` ya da `Shift+R` | `R` ya da `⇧R` |
+| Çoğalt | `Ctrl+D` | `⌘D` |
+| Sayfaları kopyala / kes / yapıştır | `Ctrl+C` ya da `Ctrl+X` ya da `Ctrl+V` | `⌘C` ya da `⌘X` ya da `⌘V` |
+| Seçili sayfalardan sonra böl / işareti kaldır | `S` | `S` |
+| Tüm bölme işaretlerini kaldır | `Shift+S` | `⇧S` |
+| Boş sayfa ekle | `B` | `B` |
+| Seçili sayfaları ayrı PDF olarak çıkar | `Ctrl+E` | `⌘E` |
+| Seçili sayfaları ya da tümünü yazdır | `Ctrl+P` | `⌘P` |
+| Tümünü seç / seçimi kaldır | `Ctrl+A` ya da `Esc` | `⌘A` ya da `Esc` |
+| Seçimi tersine çevir | `Ctrl+I` | `⌘I` |
+| Sayfa numarasıyla seç | `Ctrl+G` | `⌘G` |
+| Sayfayı önizle | `Çift tık` ya da `Space` ya da `Enter` | `Çift tık` ya da `Space` ya da `Enter` |
+| Önizlemede: sayfayı seç / seçimi genişlet | `Enter` ya da `Shift+← →` | `Enter` ya da `⇧← →` |
+| Sayfa menüsü | `Shift+F10` | `⇧F10` |
+| Aralık / çoklu seçim | `Shift+Tık` ya da `Ctrl+Tık` | `Shift+Tık` ya da `⌘ Tık` |
+| Boş alandan sürükleyerek seç (Ctrl ile tersine çevir, Shift ile ekle) | `Sürükle` | `Sürükle` |
+| Seçimi taşı (Shift ile genişlet) | `← → ↑ ↓ (+Shift)` | `← → ↑ ↓ (+Shift)` |
+| Seçili sayfaları bir adım, bir satır ya da başa / sona taşı | `Alt+← → ↑ ↓` ya da `Alt+Home` ya da `Alt+End` | `⌥← → ↑ ↓` ya da `⌥ Home` ya da `⌥ End` |
+| Seçili sayfaları bir sayfa numarasına taşı | `M` | `M` |
+| İlk / son sayfaya git | `Home` ya da `End` | `Home` ya da `End` |
+| Küçük resim boyutu | `Ctrl+Tekerlek` ya da `Ctrl +` ya da `Ctrl −` | `⌘ Tekerlek` ya da `⌘+` ya da `⌘−` |
+| Uygula ve kaydet | `Ctrl+Enter` | `⌘↩` |
+| Kısayolları göster | `?` | `?` |
+
+## Stüdyo tasarım düzenleyici
+
+| İşlem | Windows · Linux | macOS |
+| --- | --- | --- |
+| Kaydet / farklı kaydet… | `Ctrl S` ya da `Ctrl Shift S` | `⌘S` ya da `⇧⌘S` |
+| Tasarım aç… | `Ctrl O` | `⌘O` |
+| Dışa aktar… | `Ctrl E` | `⌘E` |
+| Yazdır… | `Ctrl P` | `⌘P` |
+| Klavye kısayollarını göster | `?` ya da `F1` | `?` ya da `F1` |
+| Geri al / yinele | `Ctrl Z` ya da `Ctrl Y` ya da `Ctrl Shift Z` | `⌘Z` ya da `⌘Y` ya da `⇧⌘Z` |
+| Kopyala / kes / yapıştır | `Ctrl C` ya da `Ctrl X` ya da `Ctrl V` | `⌘C` ya da `⌘X` ya da `⌘V` |
+| Aynı yere yapıştır | `Ctrl Shift V` | `⇧⌘V` |
+| Stili kopyala / stili yapıştır | `Ctrl Alt C` ya da `Ctrl Alt V` | `⌥⌘C` ya da `⌥⌘V` |
+| Çoğalt | `Ctrl D` | `⌘D` |
+| Sil | `Delete` ya da `Backspace` | `Delete` ya da `Backspace` |
+| Sayfadaki her şeyi seç | `Ctrl A` | `⌘A` |
+| Bul ve değiştir | `Ctrl F` ya da `Ctrl H` | `⌘F` ya da `⌘H` |
+| Resmi kırp | `Enter` ya da `Double-click` | `Enter` ya da `Double-click` |
+| Seçimi kaldır, metin düzenlemeyi bitir ya da sürüklemeyi iptal et | `Esc` | `Esc` |
+| 0,5 mm kaydır (Shift ile 5 mm) | `← → ↑ ↓` ya da `Shift` | `← → ↑ ↓` ya da `Shift` |
+| Grupla / grubu çöz | `Ctrl G` ya da `Ctrl Shift G` | `⌘G` ya da `⇧⌘G` |
+| Bir öne getir / bir arkaya gönder | `Ctrl ↑` ya da `Ctrl ↓` | `⌘↑` ya da `⌘↓` |
+| En öne getir / en arkaya gönder | `Ctrl Shift ↑` ya da `Ctrl Shift ↓` | `⇧⌘↑` ya da `⇧⌘↓` |
+| Odaktaki katmanı yukarı / aşağı taşı (Katmanlar paneli) | `Alt ↑` ya da `Alt ↓` | `⌥↑` ya da `⌥↓` |
+| Kilitle ya da kilidi aç | `Ctrl Shift L` | `⇧⌘L` |
+| Gizle ya da göster | `Ctrl Shift H` | `⇧⌘H` |
+| Yatay / dikey çevir | `Shift H` ya da `Shift V` | `⇧H` ya da `⇧V` |
+| Metin ekle | `T` | `T` |
+| Dikdörtgen ekle | `R` | `R` |
+| Elips ekle | `O` | `O` |
+| Çizgi ekle | `L` | `L` |
+| Ok ekle | `A` | `A` |
+| Seçili metni düzenle | `Enter` ya da `F2` | `Enter` ya da `F2` |
+| Kalın / italik / altı çizili | `Ctrl B` ya da `Ctrl I` ya da `Ctrl U` | `⌘B` ya da `⌘I` ya da `⌘U` |
+| Yazıyı büyüt / küçült | `Ctrl Shift >` ya da `Ctrl Shift <` | `⇧⌘>` ya da `⇧⌘<` |
+| Üstü çizili | `Ctrl Shift X` | `⇧⌘X` |
+| Madde işaretli / numaralı liste | `Ctrl Shift 8` ya da `Ctrl Shift 7` | `⇧⌘8` ya da `⇧⌘7` |
+| Liste düzeyini değiştir | `Tab` ya da `Shift Tab` | `Tab` ya da `⇧ Tab` |
+| Metni sola, ortaya veya sağa hizala (düzenlerken) | `Ctrl Shift L` ya da `E` ya da `R` | `⇧⌘L` ya da `E` ya da `R` |
+| Yakınlaştır / uzaklaştır | `Ctrl +` ya da `Ctrl −` ya da `Ctrl Wheel` | `⌘+` ya da `⌘−` ya da `⌘ Wheel` |
+| Sayfayı pencereye sığdır | `Ctrl 0` ya da `Shift 1` | `⌘0` ya da `⇧1` |
+| Gerçek boyut (%100) | `Ctrl 1` | `⌘1` |
+| Seçime yakınlaştır | `Shift 2` | `⇧2` |
+| Sayfada gezin | `Space + Drag` ya da `Middle Drag` | `Space + Drag` ya da `Middle Drag` |
+| Önceki / sonraki sayfa | `PgUp` ya da `PgDn` | `PgUp` ya da `PgDn` |
+| Cetvelleri göster ya da gizle | `Shift R` ya da `Ctrl R` | `⇧R` ya da `⌘R` |
+| Kılavuz çizgilerini göster ya da gizle | `Shift G` | `⇧G` |
+| Kenar boşluklarını göster ya da gizle | `Shift M` | `⇧M` |
+| Seçime ekle ya da seçimden çıkar | `Shift Click` | `⇧ Click` |
+| Grubun içindeki tek bir öğeyi seç | `Double-click` | `Double-click` |
+| Yalnızca yatay ya da dikey taşı | `Shift Drag` | `⇧ Drag` |
+| Hizalamaya yapışmadan taşı | `Ctrl Drag` | `⌘ Drag` |
+| Sürüklerken çoğalt | `Alt Drag` | `⌥ Drag` |
+| Oranı koruyarak (ya da serbest) boyutlandır | `Shift Resize` | `⇧ Resize` |
+| Merkezden boyutlandır | `Alt Resize` | `⌥ Resize` |
+| 15°'lik adımlarla döndür | `Shift Rotate` | `⇧ Rotate` |
+
+## Stüdyo belge düzenleyici
+
+| İşlem | Windows · Linux | macOS |
+| --- | --- | --- |
+| Kaydet / farklı kaydet… | `Ctrl S` ya da `Ctrl Shift S` | `⌘S` ya da `⇧⌘S` |
+| Dışa aktar… | `Ctrl E` | `⌘E` |
+| Geri al / yinele | `Ctrl Z` ya da `Ctrl Y` | `⌘Z` ya da `⌘Y` |
+| Kalın / italik / altı çizili | `Ctrl B` ya da `Ctrl I` ya da `Ctrl U` | `⌘B` ya da `⌘I` ya da `⌘U` |
+| Başlık 1 / 2 / 3 | `Ctrl Alt 1` ya da `2` ya da `3` | `⌥⌘1` ya da `2` ya da `3` |
+| Madde işaretli / numaralı liste | `Ctrl Shift 8` ya da `Ctrl Shift 7` | `⇧⌘8` ya da `⇧⌘7` |
+| Yeni paragraf açmadan alt satıra geç | `Shift Enter` | `⇧↩` |
+
+---
+
+# Araçlar
+
+> vivePDF'teki 77 aracı nereden açacağın, altı araç grubunun ne işe yaradığı ve her aracın kısa açıklamasıyla aranabilir tam liste.
+
+URL: https://vivepdf.com/dokumantasyon/araclar/
+Son güncelleme: 2026-10-18
+
+vivePDF'te birleştirmeden OCR'a, dönüştürmeden dijital imzaya kadar 77 araç var ve hepsi altı grupta toplanır. Bu sayfa araçları nereden açacağını ve grupların ne işe yaradığını anlatır; her aracın kısa açıklaması aşağıdaki listede.
+
+## Araçları açma
+
+Bir araca üç yoldan ulaşırsın:
+
+- **Araçlar menüsü**: üst çubukta **Araçlar**'a tıkla. Ana araç sayfaları altı grup başlığı altında açılır. Menünün altındaki **Tümünü göster**, her aracı arama kutusuyla birlikte listeleyen **Araçlar** kataloğunu açar; menüde görünmeyen alt araçlar da burada. **Klasörlerde ara** ise bir klasördeki PDF'lerin içinde arama yapar.
+- **Başlangıç ekranı**: **Araçlar** bölümünde **Araç arayın** kutusu ve grup düğmeleri var; **Tümü**'nü ya da bir grubu seçerek listeyi daraltırsın. Sık kullandıklarını **Hızlı erişim**'e koymak için **Ana sayfayı düzenle**'yi kullan.
+- **Komut paleti**: `Ctrl+K`'ye bas ya da üst çubuktaki **Araç, sayfa veya belge arayın** kutusuna tıkla, aracın adını yazıp `Enter`'a bas.
+
+Üst çubuğun ve paletin geri kalanı [Arayüz](https://vivepdf.com/dokumantasyon/arayuz/) sayfasında.
+
+## Altı grup
+
+- **Sayfa düzeni**: birleştirme, bölme, sayfa düzenleyici, sayfa döndürme, silme ve çıkarma gibi sayfaların sırasını ve sayısını değiştiren araçlar. Ayrıntılar [Sayfaları düzenleme](https://vivepdf.com/dokumantasyon/sayfalar/) sayfasında.
+- **Optimizasyon**: sıkıştırma, onarma, OCR, karşılaştırma, erişilebilirlik, baskı kontrolü, PDF/A arşiv, toplu işlem ve izlenen klasörler gibi dosyayı iyileştiren ya da denetleyen araçlar.
+- **PDF’e dönüştürme**: resimlerden, Office belgelerinden, SVG çizimlerinden ve web sayfalarından PDF yapan araçlar. Stüdyo'nun belge, tasarım, kartvizit, kaynakça ve CV kartları da burada.
+- **PDF’ten dönüştürme**: PDF'i Word, Excel, PowerPoint, resim, metin, Markdown, HTML ve EPUB'a çeviren ya da içindeki resimleri çıkaran araçlar. Bkz. [Dosya dönüştürme](https://vivepdf.com/dokumantasyon/donusturme/).
+- **İçerik düzenleme**: sayfa numarası, üstbilgi ve altbilgi, filigran, kırpma, formlar, işaretleme, QR kod ve optik formlar gibi sayfanın içeriğine dokunan araçlar.
+- **Güvenlik**: parola ekleme ve kaldırma, sertifikayla mühürleme, karartma, gizlilik kontrolü, imzalama ve doğrulama. Bkz. [Güvenlik](https://vivepdf.com/dokumantasyon/guvenlik/).
+
+Araçların tamamı, gruplarına göre ve kısa açıklamalarıyla aşağıda; listenin üstündeki kutuya yazarak istediğin aracı hemen bulabilirsin.
+
+## Sayfa düzeni
+
+| Araç | Ne yapar |
+| --- | --- |
+| Birleştir | Birden çok PDF belgesini belirlenen sırada tek dosyada birleştirir. |
+| Böl | Belgeyi sayfa aralığına, sayfa sayısına, boyuta veya yer imlerine göre ayırır. |
+| Sayfa düzenleyici | Sayfaları sürükleyerek sıralar; döndürme, silme ve ekleme sağlar. |
+| PDF’i döndür | Seçili sayfaları kalıcı olarak döndürür. |
+| Sayfaları sil | Belirli sayfaları veya bir sayfanın öncesini/sonrasını kaldırır. |
+| Sayfaları çıkart | Seçili sayfalardan yeni bir PDF oluşturur. |
+| Toplu tarama böl | Toplu taramayı boş sayfa, QR yaprağı veya metne göre belgelere ayırın. |
+| Yeniden adlandır | Dosyaları içeriğine göre adlandırın: tarih, fatura numarası, başlık veya tutar. |
+
+## Optimizasyon
+
+| Araç | Ne yapar |
+| --- | --- |
+| Sıkıştır | Görselleri yeniden örnekleyerek dosya boyutunu küçültür. |
+| Onar | Hasarlı veya açılamayan PDF belgelerini onarır. |
+| OCR | Taranmış sayfalara aranabilir metin katmanı ekler. |
+| Karşılaştır | İki belge arasındaki metin ve görsel farklılıkları raporlar. |
+| Erişilebilirlik | PDF’i erişilebilirlik temellerine göre puanlayın; başlık, dil ve alternatif metni düzeltin. |
+| Baskı kontrolü | Baskı öncesi yazı tiplerini, görsel çözünürlüğünü, taşma payını ve renk uzaylarını denetler. |
+| PDF/A arşiv | PDF'yi uzun süreli arşive uygunluk için denetleyin ve PDF/A-2b kopyasını kaydedin. |
+| Toplu işlem | Birden çok belgeye aynı işlemi tek seferde uygular. |
+| İzlenen klasörler | Klasöre düşen her yeni PDF’te kayıtlı zinciri otomatik çalıştırın. |
+| Tarayıcıdan | Bağlı bir tarayıcıdan doğrudan PDF’e tarayın. |
+| İyileştir | Taranmış sayfaları düzeltin, temizleyin ve beyazlatın. |
+
+## PDF’e dönüştürme
+
+| Araç | Ne yapar |
+| --- | --- |
+| Fotoğraftan | Kâğıdın telefonla çekilmiş fotoğraflarını düzeltilmiş bir PDF’e çevirin. |
+| PDF Oluştur | Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün |
+| Tablodan belgeler | CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı |
+| Kâğıt | Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF |
+| Kitap | Markdown veya metin bölümlerinden kapaklı, bağlantılı içindekiler ve sayfa numaralı kitap |
+| CV oluşturucu | Klasik, modern veya kompakt şablonlu, fotoğraflı ve tıklanabilir iletişimli özgeçmiş |
+| Stüdyo'da tasarla | Serbest tuvalde 170'ten fazla şablonla afiş, broşür, davetiye ve sosyal medya gönderisi. |
+| Belge yaz | Başlıklar, tablolar, atıflar ve içindekilerle rapor, makale veya tez yazın. |
+| Kartvizit | Yaldız, kabartma ve lokal lak ile çift yüzlü kartvizit; taşma payı ve dizimle baskıya hazır. |
+| Kaynakça | .bib, RIS veya CSL JSON içe aktarın, kaynakları düzenleyin ve APA, MLA, Chicago ya da IEEE kaynakça çıkarın. |
+| Görseller → PDF | JPG, PNG ve WebP görsellerini veya bir klasörü PDF’e dönüştürür. |
+| Office → PDF | Word, Excel, PowerPoint, HTML ve Markdown belgelerini PDF’e dönüştürür. |
+| SVG → PDF | SVG çizimlerini, logoları ve simgeleri keskin, vektör bir PDF’e dönüştürür. |
+| Web sayfası → PDF | Bir web sayfasını görselleriyle veya görselsiz PDF olarak kaydedin. |
+
+## PDF’ten dönüştürme
+
+| Araç | Ne yapar |
+| --- | --- |
+| PDF → Word | Sayfa düzenini koruyarak Word belgesi oluşturur. |
+| PDF → Excel | Tabloları algılayarak Excel çalışma kitabına aktarır. |
+| PDF → PowerPoint | Her sayfayı bir PowerPoint slaydına aktarır. |
+| PDF → JPG / PNG | Sayfaları JPG, PNG veya WebP olarak dışa aktarır. |
+| Görselleri çıkar | PDF'teki tüm gömülü resimleri özgün kalitesinde dışarı çıkarın. |
+| PDF → Metin | Belge metnini düz metin dosyası olarak dışa aktarır. |
+| PDF → Markdown | Başlık ve tablo yapısını koruyan Markdown üretir. |
+| PDF → HTML | Sayfaları HTML belgesine dönüştürür. |
+| PDF → EPUB | PDF’i telefon ve e-okuyucular için akışkan bir EPUB’a dönüştürün. |
+
+## İçerik düzenleme
+
+| Araç | Ne yapar |
+| --- | --- |
+| QR kod ekle | Sayfalara bağlantı veya sıra numaralı QR kod basın. |
+| Kodları oku | Belgedeki tüm QR kod ve barkodları listeleyin. |
+| Optik form oluştur | Taramadan geri okunabilen optik cevap kâğıtları yazdırın. |
+| Optik form okut | Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın. |
+| Sayfa numarası | Sayfa numaralarını belirlenen konuma ekler. |
+| Üstbilgi / altbilgi | Her sayfaya üstbilgi ve altbilgi uygular. |
+| Antetli kağıt | Şablon bir PDF’i her sayfanın altına ya da üstüne yerleştirin. |
+| Kapak sayfası | PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf |
+| Bul ve değiştir | Metni bulup aynı punto ve renkte yeniden yazın. |
+| Filigran ekle | Metin veya görsel filigran uygular. |
+| Filigran kaldır | Metin, işaretleme veya yinelenen görsel filigranlarını kaldırın. |
+| Damga | Belgeyi onaylandı, taslak ya da gizli olarak damgalayın. |
+| Kırp | Kenar boşluklarını milimetre hassasiyetiyle kırpar. |
+| Sayfa boyutu | Sayfaları A6, A5, A4, A3, A2, Letter veya özel boyuta küçültün ya da büyütün. |
+| Düzleştir | Form alanlarını ve notları kalıcı içeriğe dönüştürür. |
+| Kitapçık / N-up | Yaprak başına 2, 4 ya da 9 sayfa yerleştirin veya kitapçık oluşturun. |
+| Poster / döşeme | Bir sayfayı birkaç kâğıda bölerek büyük basın, kesim işaretleriyle. |
+| Yer imleri | İçindekileri düzenleyin veya başlıklardan üretin. |
+| Otomatik bağlantı | Metindeki web ve e-posta adreslerini tıklanabilir yapın. |
+| Metin düzenle | Mevcut metni yerinde değiştirin (deneysel). |
+| Doldur | Form alanlarını doldurur; isteğe bağlı olarak kilitler. |
+| Toplu doldur | CSV veya Excel tablosunun her satırından bir form doldurun. |
+| Tablo çıkar | Çok sayıda doldurulmuş formun değerlerini tek tabloya toplayın. |
+| Alan algıla | Alt çizgileri ve kutuları gerçek form alanlarına dönüştürün. |
+| İşaretle / not ekle | Vurgu, çizim, şekil ve metin kutusu ekler. |
+
+## Güvenlik
+
+| Araç | Ne yapar |
+| --- | --- |
+| Parola ekle | Belgeyi parola ve izin ayarlarıyla korur. |
+| Parola kaldır | Parolayı kaldırarak erişime açık bir kopya oluşturur. |
+| Sertifikayla mühürle | Dosyayı hiç parola olmadan sertifika sahiplerine mühürleyin. |
+| Sertifikayla aç | Sertifikayla mühürlenmiş bir dosyayı kendi sertifikanızla açın. |
+| Karartma | Metin ve alanları geri döndürülemez biçimde kaldırır. |
+| Gizlilik kontrolü | Dosyanın neleri açığa çıkardığını görün (üst veri, betik, ek, bağlantı, kimlik numarası) ve paylaşmadan önce temizleyin. |
+| İmzala | PFX / P12 sertifikasıyla PAdES dijital imza uygular. |
+| Doğrula | İmzaların bütünlüğünü ve kapsamını doğrular. |
+| Sertifika oluştur | Kendinden imzalı sertifika oluşturur. |
+| Açık sertifikayı dışa aktar | Elinizdeki .p12 dosyasından açık .cer dosyasını yazar. |
+
+---
+
+# Sürüm notları
+
+> vivePDF'in her sürümünde öne çıkan değişiklikler, güncellemelerin nasıl geldiği ve tam değişiklik listesinin nerede olduğu.
+
+URL: https://vivepdf.com/dokumantasyon/surum-notlari/
+Son güncelleme: 2026-10-18
+
+Bu sayfada vivePDF'in her sürümüyle gelen başlıca yenilikleri bulursun. Aşağıdaki notlar uygulamanın içindeki **Yenilikler** bölümüyle aynıdır: en yeni sürüm en üstte, her sürüm kendi başlığı altında. Notlar yalnızca öne çıkan değişiklikleri anlatır; her küçük düzeltmeyi görmek istersen tam listeye bakabilirsin.
+
+## Güncellemeler nasıl gelir
+
+vivePDF yeni sürümü kendisi denetler ve sana haber verir. Açılışta yalnızca sürüm bilgisi alınır; indirme ve kurulum her zaman sana sorulur.
+
+1. **Ayarlar › Güncellemeler**'i aç ve **Güncellemeleri denetle**'ye tıkla. Aynı komut **Yardım** menüsünde de var.
+2. Yeni sürüm varsa üst çubukta **v… hazır** etiketi belirir. **İndir ve yükle**'yi seç; güncelleme imzalı olarak iner.
+3. İndirme bitince **Yeniden başlat**'a tıkla; uygulama yeni sürümle açılır.
+
+Hangi sürümün yüklü olduğunu aynı ekrandaki **Yüklü sürüm** satırında görebilirsin. Otomatik denetimi istemiyorsan **Açılışta otomatik denetle** anahtarını kapatabilirsin. [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıkken hiç denetim yapılmaz. Kurulum ve kaldırma ayrıntıları [Kurulum](https://vivepdf.com/dokumantasyon/kurulum/) sayfasında.
+
+### Güncellemeden sonra
+
+Yeni sürüme geçtikten sonraki ilk açılışta vivePDF, **vivePDF … yüklendi** başlıklı bir pencerede o sürümün yeniliklerini bir kez gösterir. Kapattıktan sonra aynı notlara istediğin zaman **Yardım › Yenilikler**'den ulaşabilirsin.
+
+## Tam değişiklik listesi
+
+Her sürümdeki bütün eklemeler, değişiklikler ve düzeltmeler GitHub'daki [CHANGELOG.md](https://github.com/mtvrkan/vivePDF/blob/main/CHANGELOG.md) dosyasında tarihleriyle birlikte tutulur. Kurulum dosyalarını ve her sürümün kısa notunu [sürümler sayfasında](https://github.com/mtvrkan/vivePDF/releases) bulabilirsin.
+
+## vivePDF 0.3.0
+
+Yayımlandı: 2026-10-15 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.3.0)
+
+- İnternetsiz çalışan yardım: F1 bulunduğunuz ekranın kısayollarını gösterir (PDF olarak da kaydeder), Yardım › Yardım konuları başlıca işleri adım adım anlatır ve hata bildirimleri, kendi kaydettiğiniz bir destek paketiyle resim ve örnek dosya taşıyabilir.
+- Çevrimdışı mod: Ayarlar › Web'deki tek bir anahtar, internet kullanacak her özelliği kapatır; güncellemeler, indirmeler, web araması, kaynak sorguları ve sızdırılmış parola denetimi de buna dahildir.
+- Sunucu görünümü: projeksiyon yalnızca slaytları gösterirken dizüstü bilgisayarınız sonraki sayfayı, süreölçeri ve konuşmacı notlarını gösterir.
+- Stüdyo belgeleri Word tarzı yazım araçları kazandı: dipnotlar, sütunlar ve bölüm sonları, bul ve değiştir, satır aralığı, simgeler, sözcük sayısı ve Markdown olarak dışa aktarma.
+- Sunum sırasında formül, şekil, grafik, tablo ve diyagram eklenebilir; siyah ve beyaz tahtada da.
+
+## vivePDF 0.2.0
+
+Yayımlandı: 2026-10-09 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.2.0)
+
+- Stüdyo'da yeni CV düzenleri, süsler ve yenilenen iş belgeleri, planlayıcılar ve etiketlerle 174 şablon var.
+- CV oluşturucu mevcut bir CV'yi ya da LinkedIn PDF'ini içe aktarır; geri alma, sıralama ve ay seçici de eklendi.
+- Sayfa düzenleyici sayfaları yönüne, boyutuna ya da içerdiği metne göre seçer, sayfaları masaüstüne ya da başka bir sekmeye sürükler ve sayfaları resim olarak kaydeder.
+- Görüntüleyici formları sayfanın üzerinde doldurur, metin bloklarını ve resimleri belgeler arasında kopyalar, seçili metni vurgular ve yer imlerini düzenler.
+- Ana sayfa koleksiyonları yeniden sıralanabilir, aranabilir ve yeniden renklendirilebilir; son dosyalar sabitlenebilir.
+
+## vivePDF 0.1.1
+
+Yayımlandı: 2026-10-04 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.1.1)
+
+- Stüdyo: sertifika, davetiye, kart, afiş ve daha fazlası için hazır şablonlarla sıfırdan PDF hazırlayan bir tasarım düzenleyici.
+- CV oluşturucu: soldaki formu doldurursunuz, sağda bitmiş CV görünür.
+- Stüdyo'da resimler kırpılıp ayarlanabilir; tasarımlara tablo, grafik, akış şeması, formül, gölge ve cetvel eklendi.
+- Tümü Türkçe harfleri içeren 24 açık lisanslı yazı tipinden oluşan bir kitaplık, istendiğinde indirilir.
+- 1.600'den fazla simge kendi dilinizde adıyla aranabilir ve keskin, yeniden renklendirilebilir çizimler olarak eklenebilir.
+
+---
+
+# Sık sorulan sorular
+
+> vivePDF'in ücreti, gizliliği, çevrimdışı çalışması, desteklediği sistemler, imza, OCR ve güncellemeler hakkında kısa yanıtlar.
+
+URL: https://vivepdf.com/dokumantasyon/sss/
+Son güncelleme: 2026-10-18
+
+vivePDF hakkında en çok sorulan soruları ve kısa yanıtlarını burada topladık. Aradığını bulamazsan [Sorun giderme](https://vivepdf.com/dokumantasyon/sorun-giderme/) sayfasına göz at.
+
+## vivePDF ücretli mi?
+
+Hayır, vivePDF tamamen ücretsizdir. Bütün araçlar dahildir; ücretli paket, hesap ya da kullanım sınırı yoktur.
+
+## Dosyalarım bir sunucuya yükleniyor mu?
+
+Hayır. Belgelerin, parolaların ve sertifikaların bilgisayarından hiç çıkmaz; bütün işlemler kendi bilgisayarında yapılır. Uygulamanın internete ne zaman çıktığını Yardım › Gizlilik tek tek listeler.
+
+## İnternet olmadan çalışır mı?
+
+Evet, araçların çalışması için internet bağlantısı gerekmez. Yalnızca güncelleme denetimi, dil paketi indirme ya da bir web sayfasını PDF'e çevirme gibi işler internete çıkar. Ayarlar › Web'deki Çevrimdışı mod bu bağlantıların hepsini tek anahtarla kapatır.
+
+## Hangi işletim sistemlerinde çalışıyor?
+
+Hazır kurulum dosyaları Windows 10 ve Windows 11 (64 bit) ile Apple silicon işlemcili Mac'lerde macOS 14 Sonoma ve sonrası için var. Linux'ta vivePDF kaynaktan derlenir.
+
+## vivePDF açık kaynak mı?
+
+Evet. Kaynak kodun tamamı GitHub'da yayımlanıyor ve AGPL-3.0 lisansıyla dağıtılıyor. Kodu inceleyebilir, kendin derleyebilir ve değiştirebilirsin.
+
+## PDF'teki mevcut metni düzenleyebilir miyim?
+
+Evet. Düzenle › Metin düzenle'de sayfadaki bir metin parçasına tıklayıp metnini, boyutunu ya da rengini değiştirebilirsin. Yeni metin belgenin kendi yazı tipiyle ve aynı boyutta yazılır; sığmazsa küçültülür ve sana bildirilir.
+
+## Sertifikayla dijital imza atabilir miyim?
+
+Evet. Araçlar › İmzala, .p12 ya da .pfx sertifikanla PAdES imzası uygular ve imzalı dosyaların doğrulamasını da yapar. Sertifikan yoksa vivePDF kendinden imzalı bir sertifika oluşturabilir; bu sertifika belge bütünlüğünü kanıtlar, ancak resmî geçerlilik için nitelikli e-imza gerekir.
+
+## OCR hangi dilleri tanıyor?
+
+Türkçe ve İngilizce kurulumla birlikte gelir. Yaklaşık 40 dilin paketini Ayarlar › Araçlar › OCR dil paketleri'nden indirebilirsin; her paket bir kez indirilir ve sonra internetsiz çalışır.
+
+## vivePDF'i nasıl güncellerim?
+
+Uygulama yeni sürümleri kendisi denetler ve indirmeden önce sana sorar. Elle denetlemek için Ayarlar › Güncellemeler'de Güncellemeleri denetle'ye tıkla, ardından İndir ve yükle ile Yeniden başlat'ı seç.
+
+## Kullanım verisi ya da telemetri topluyor mu?
+
+Hayır. vivePDF kullanım verisi, kimlik bilgisi ya da hata raporu toplamaz ve hesap açmanı istemez. Hata bildirimleri de asla kendiliğinden gönderilmez.
+
+## Bir hatayı nereye bildiririm?
+
+Yardım › Hata bildir bir bildirim penceresi açar; raporu kopyalayabilir, bir dosyaya kaydedebilir ya da tarayıcında önceden doldurulmuş bir GitHub kaydı olarak açabilirsin. Hiçbir şey kendiliğinden gönderilmez; GitHub'daki vivePDF deposunun Issues bölümünü doğrudan da kullanabilirsin.
+
+## Arayüz hangi dillerde?
+
+Arayüz sekiz dilde kullanılabilir: Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, İtalyanca, Brezilya Portekizcesi ve Arapça. Arapça sağdan sola gösterilir.
+
+---
+
+# Sorun giderme
+
+> vivePDF'te bir araç çalışmadığında yapılacaklar; günlük klasörü, destek paketi, hata bildirme, SmartScreen, LibreOffice ve OCR dil paketleri.
+
+URL: https://vivepdf.com/dokumantasyon/sorun-giderme/
+Son güncelleme: 2026-10-18
+
+vivePDF'te bir şey beklendiği gibi çalışmadığında önce ekrandaki iletiyi oku: neyin ters gittiğini ve çoğu zaman nasıl düzeltileceğini söyler. Sorun sürerse **Yardım** menüsündeki günlük klasörü, destek paketi ve hata bildirme seçenekleriyle neler olduğunu görebilir ve bize iletebilirsin.
+
+## İlk adımlar
+
+- Bir araç başarısız olursa dosyanın bir kopyasıyla yeniden dene. Araçlar asıl dosyaya dokunmaz, sonucu yeni bir dosyaya yazar.
+- "Dosya geçerli bir PDF değil ya da bozuk." iletisini görüyorsan dosyayı önce **Onar** aracıyla onarmayı dene. [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) sayfası tüm araçları listeler.
+- Bir özellik soluk görünüyor ve üzerine gelince "Çevrimdışı mod açıkken kapalı" yazıyorsa [çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıktır. **Ayarlar › Web**'den kapat.
+- Bulunduğun ekranla ilgili yardım konusunu açmak için `Shift+F1`'e, o ekranın kısayollarını görmek için `F1`'e bas.
+
+## Kurulumda SmartScreen uyarısı
+
+Kurulum dosyası kod imzası taşımadığı için Windows ilk çalıştırmada **Windows bilgisayarınızı korudu** uyarısını gösterebilir. **Ek bilgi**'ye, ardından **Yine de çalıştır**'a tıkla. Ayrıntılar [Kurulum](https://vivepdf.com/dokumantasyon/kurulum/) sayfasında.
+
+## Mac'te "açılamıyor" uyarısı
+
+macOS ilk açılışta vivePDF'i engellerse **Sistem Ayarları › Gizlilik ve Güvenlik**'i aç ve vivePDF iletisinin yanındaki **Yine de Aç**'a tıkla. Bu yalnızca ilk açılışta gerekir; ayrıntılar [Kurulum](https://vivepdf.com/dokumantasyon/kurulum/) sayfasında.
+
+## "Bu dönüştürme için LibreOffice gerekli."
+
+Word, Excel ve PowerPoint dönüştürmeleri LibreOffice ile yapılır. Bu iletiyi görüyorsan **Ayarlar › Araçlar**'daki **Ofis dönüştürücü** bölümünü aç:
+
+- Windows kurulumunda LibreOffice uygulamayla birlikte gelir. **Uygulama paketinden kur** onu internete çıkmadan kurar (diskte yaklaşık 900 MB).
+- Paket yoksa **İndir ve kur** LibreOffice'i indirir (yaklaşık 350 MB).
+- Bilgisayarında zaten LibreOffice varsa durum satırında **Bu bilgisayarda bulundu** yazar ve o kullanılır.
+
+LibreOffice "hâlâ kullanımda" diyorsa açık LibreOffice pencerelerini kapatıp yeniden dene. Parola korumalı bir Office dosyasının parolasını önce onu oluşturan uygulamada kaldırman gerekir.
+
+## "OCR dil paketi bulunamadı."
+
+OCR, metnin dili için bir dil paketine ihtiyaç duyar. **Ayarlar › Araçlar**'daki **OCR dil paketleri** listesinde dili ara ve **İndir**'e tıkla; her dil bir kez indirilir. Varsayılan dili aynı bölümdeki **Varsayılan OCR dili** ile seçebilirsin. İndirme için çevrimdışı modun kapalı olması gerekir. OCR'ın ayrıntıları [OCR](https://vivepdf.com/dokumantasyon/ocr/) sayfasında.
+
+## Uygulama kapanırsa
+
+vivePDF beklenmedik şekilde kapanırsa bir sonraki açılışta "vivePDF son oturumda beklenmedik şekilde kapandı — Çökme bildir" bildirimi çıkar; **Bildir** ile doğrudan rapor açabilirsin. Açık belgelerini Başlangıç'taki **Oturumu geri yükle** ile geri getirebilirsin. "PDF motoru başlatılamadı" iletisi alırsan uygulamayı kapatıp yeniden aç; sorun sürerse bir destek paketi kaydet.
+
+## Günlük klasörü
+
+**Yardım › Günlük klasörünü aç** günlük dosyalarının bulunduğu klasörü açar. Günlük, uygulamada neler olduğunu teknik olarak kaydeder; belge içeriği asla yazılmaz. Hata satırlarında dosya yolları geçebilir ve kullanıcı klasörün `~` olarak görünür. Aynı klasöre **Ayarlar › Geri bildirim › Günlük klasörü** üzerinden de ulaşabilirsin.
+
+## Destek paketi
+
+**Yardım › Destek paketi kaydet…** sistem bilgilerini ve son günlükleri paylaşabileceğin tek bir zip dosyasına toplar.
+
+1. **Yardım › Destek paketi kaydet…**'i seç.
+2. Dosyanın kaydedileceği yeri seç; dosya adı `vivepdf-support-` ile başlar ve tarihi içerir.
+3. "Destek paketi kaydedildi" bildirimindeki **Klasörde göster** ile dosyayı bul ve hata kaydına ya da e-postana ekle.
+
+Paket kendiliğinden hiçbir yere gönderilmez; kimle paylaşacağına sen karar verirsin.
+
+## Hata bildirme
+
+**Yardım › Hata bildir** **Rapor gönder** penceresini açar. Türü seç (**Çökme**, **Hata** ya da **Öneri**), ne olduğunu anlat. İstersen **Tanılama bilgilerini ekle** seçeneğini aç; **Neler dahil edilecek** rapora eklenecek bilgiyi tam olarak gösterir.
+
+- `Ctrl+V` ile ekran görüntüsü yapıştırabilir, **Dosya ekle…** ile örnek bir dosya ekleyebilirsin. Ekler yalnızca **Paket olarak kaydet (.zip)** ile kaydettiğin pakete girer; kopyalama ve GitHub bunları hiç içermez.
+- **GitHub’da aç** tarayıcında önceden doldurulmuş bir kayıt açar. **Panoya kopyala** ve **Raporu dosyaya kaydet** raporu başka bir yolla iletmen için.
+
+> **Raporlar otomatik gönderilmez**
+>
+> vivePDF hiçbir raporu kendiliğinden göndermez. Açık hata kayıtlarını görmek ya da yeni bir kayıt açmak için [GitHub sorunlar sayfasını](https://github.com/mtvrkan/vivePDF/issues) kullanabilirsin.
+
+---
+
+# Kaynaktan derleme
+
+> vivePDF'i kaynak koddan çalıştırmak için gerekenler, geliştirme modunda açma, testleri çalıştırma ve kendi kurulum paketini derleme.
+
+URL: https://vivepdf.com/dokumantasyon/kaynaktan-derleme/
+Son güncelleme: 2026-10-18
+
+vivePDF'i kaynak koddan derleyip çalıştırabilirsin. Hazır paketi olmayan Linux'ta ya da macOS sürümü yayımlanana kadar Mac'te uygulamayı kullanmanın yolu budur; koda katkı vermek istediğinde de buradan başlarsın.
+
+## Depo düzeni
+
+Kaynak kodun tamamı [GitHub'daki vivePDF deposunda](https://github.com/mtvrkan/vivePDF). Üç ana klasör var:
+
+- `apps/desktop` — masaüstü uygulaması: Tauri 2 (Rust) kabuğu ve React 19, TypeScript ve Tailwind v4 ile yazılmış arayüz. PDF görüntüleyici EmbedPDF'tir.
+- `sidecar` — PyMuPDF üzerine kurulu Python motoru. Uygulama onu ayrı bir süreç olarak başlatır; pdf2docx, OCRmyPDF, pyHanko ve Tesseract da burada kullanılır.
+- `scripts` — motoru paketleyen ve sürüm derlemesini hazırlayan betikler.
+
+## Gerekenler
+
+- Node 22 ve pnpm 10
+- Rust (stable) ve işletim sisteminin derleme araçları; macOS'ta Xcode komut satırı araçları
+- Python 3.12 ya da sonrası ve uv
+
+## Geliştirme modunda çalıştırma
+
+1. Depoyu klonla:
+
+   ```sh
+   git clone https://github.com/mtvrkan/vivePDF.git
+   cd vivePDF
+   ```
+
+2. Arayüzün bağımlılıklarını kur:
+
+   ```sh
+   cd apps/desktop
+   pnpm install
+   ```
+
+3. Python motorunun ortamını hazırla. Geliştirme modundaki uygulama motoru doğrudan kaynaktan çalıştırır:
+
+   ```sh
+   cd ../../sidecar
+   uv sync
+   ```
+
+4. Uygulamayı aç:
+
+   ```sh
+   cd ../apps/desktop
+   pnpm tauri dev
+   ```
+
+## Testler
+
+Her katmanın kendi testleri var. Komutları belirtilen klasörde çalıştır:
+
+| Katman | Klasör | Komut |
+|---|---|---|
+| Arayüz birim testleri | `apps/desktop` | `pnpm test` |
+| Tür denetimi ve lint | `apps/desktop` | `pnpm typecheck` · `pnpm lint` |
+| Arayüz ve motor arasındaki RPC türleri | `apps/desktop` | `pnpm check:rpc` |
+| Python motoru | `sidecar` | `uv run pytest -x -q` |
+| Rust kabuğu | `apps/desktop/src-tauri` | `cargo test` |
+| Uçtan uca, gerçek uygulamayla | `apps/desktop` | `pnpm e2e` |
+
+Uçtan uca testler gerçek uygulamayı arayüzü üzerinden kullanır ve yalnızca Windows'ta çalışır; ek kurulum için `cargo install tauri-driver --locked` gerekir. Kurulum ayrıntıları, gerçek belgelerle ve büyük dosyalarla yapılan testler [docs/TESTING.md](https://github.com/mtvrkan/vivePDF/blob/main/docs/TESTING.md) dosyasında anlatılıyor.
+
+## Kurulum paketi derleme
+
+Kurulabilir bir paket için önce Python motorunu tek bir klasör hâlinde paketlemen gerekir. Betik motoru derler, `apps/desktop/src-tauri/binaries/engine/` altına kopyalar ve kendi denetimlerinden geçmezse durur:
+
+```sh
+scripts/build-sidecar.sh
+```
+
+Windows'ta aynı işi `scripts/build-sidecar.ps1` yapar. Sonra uygulamayı sürüm yapılandırmasıyla derle. Güncelleme imzalama anahtarın yoksa güncelleme dosyalarını kapat:
+
+```sh
+cd apps/desktop
+pnpm tauri build --config src-tauri/tauri.release.conf.json --config '{"bundle":{"createUpdaterArtifacts":false}}'
+```
+
+Paketler `apps/desktop/src-tauri/target/release/bundle/` altına yazılır. Linux'ta aralarında `.deb` ve AppImage'ın da olduğu paketler çıkar; AppImage'ı başlatmadan önce `chmod +x` ile çalıştırılabilir yap.
+
+> **Ofis dönüştürmeleri**
+>
+> Kendi derlediğin macOS ve Linux sürümleri Word, Excel ve PowerPoint dönüştürmeleri için sistemde kurulu LibreOffice'i kullanır. LibreOffice'i içinde taşıyan Windows kurulumu ise `scripts/build-windows-release.ps1` ile derlenir.
+
+Resmî sürümlerin nasıl derlenip yayımlandığı, imzalama ve güncelleme kanalı [docs/RELEASING.md](https://github.com/mtvrkan/vivePDF/blob/main/docs/RELEASING.md) dosyasında. Kod lisansı için [Lisans](https://vivepdf.com/dokumantasyon/lisans/) sayfasına bak.
+
+---
+
+# Lisans
+
+> vivePDF'in AGPL-3.0 lisansının kullanıcılar ve değiştirilmiş sürüm dağıtanlar için ne anlama geldiği, üçüncü taraf bileşenler.
+
+URL: https://vivepdf.com/dokumantasyon/lisans/
+Son güncelleme: 2026-10-18
+
+vivePDF, GNU Affero Genel Kamu Lisansı'nın 3. sürümüyle (AGPL-3.0-only) yayımlanan özgür bir yazılımdır. Uygulamayı ücretsiz kullanabilir, kaynak kodunu inceleyebilir, değiştirebilir ve paylaşabilirsin; değiştirilmiş bir sürümü başkalarına verdiğinde ise kaynak kodunu da aynı lisansla sunman gerekir.
+
+> **Hukuki danışmanlık değildir**
+>
+> Bu sayfa lisansı sade bir dille özetler. Bağlayıcı olan, depodaki [LICENSE](https://github.com/mtvrkan/vivePDF/blob/main/LICENSE) dosyasındaki tam metindir. Emin olmadığın bir durumda bir hukukçuya danış.
+
+## Kullanıcılar için
+
+vivePDF'i kişisel işlerinde, okulda ya da işyerinde kullanmak için hiçbir koşul yoktur. Ücret, hesap ya da lisans anahtarı istenmez ve kaç bilgisayara kurduğun sınırlanmaz.
+
+- Kaynak kodunun tamamı [GitHub'da](https://github.com/mtvrkan/vivePDF) açıktır; uygulamanın ne yaptığını kendin görebilirsin.
+- Kodu kendi bilgisayarında istediğin gibi değiştirip [kaynaktan derleyebilirsin](https://vivepdf.com/dokumantasyon/kaynaktan-derleme/).
+- Lisans, yazılımın herhangi bir garanti olmadan sunulduğunu da söyler.
+
+## Değiştirilmiş sürüm dağıtanlar için
+
+vivePDF'in bir kopyasını ya da değiştirdiğin bir sürümünü başkalarına verdiğinde lisansın koşulları devreye girer:
+
+- Dağıttığın sürümün kaynak kodunu, değişikliklerinle birlikte, alan herkese sunmalısın.
+- Değiştirilmiş sürüm de AGPL-3.0 ile lisanslanmalı; alan kişilere ek kısıtlama koyamazsın.
+- Telif ve lisans bildirimlerini olduğu gibi korumalısın.
+- Değiştirdiğin sürümü kullanıcıların bir ağ üzerinden kullanmasına izin veriyorsan, AGPL onlara da kaynak kodunu sunmanı ister. Lisansı GPL'den ayıran asıl fark budur.
+
+## Üçüncü taraf bileşenler
+
+vivePDF, kendi lisansları olan açık kaynak bileşenler üzerine kurulur. Bunlardan bazıları:
+
+- **MuPDF / PyMuPDF** (AGPL-3.0) — PDF motoru
+- **Tesseract OCR** (Apache-2.0) — OCR motoru ve dil modelleri
+- **LibreOffice** (MPL-2.0) — ofis dosyası dönüştürmeleri. Windows kurulumu, The Document Foundation'ın imzalı LibreOffice kurulum dosyasını değiştirmeden taşır.
+- **pyHanko** (MIT) — dijital imzalar
+- **pdf2docx** (GPL-3.0) — PDF'ten Word'e dönüştürme
+- **Tauri** (MIT / Apache-2.0) — masaüstü kabuğu
+
+Tam liste, her bileşenin lisansı ve uygulamadaki göreviyle birlikte [THIRD_PARTY_NOTICES.md](https://github.com/mtvrkan/vivePDF/blob/main/THIRD_PARTY_NOTICES.md) dosyasında. Uygulamanın içinde de bileşenleri ve lisanslarını **Yardım › Hakkında** sayfasındaki **Lisanslar** bağlantısı listeler.

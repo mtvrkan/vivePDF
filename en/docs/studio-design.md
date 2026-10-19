@@ -1,0 +1,66 @@
+# Design in Studio
+
+> How to design posters, certificates and invitations from templates in Studio, build a CV, prepare print-ready business cards, use layers and export.
+
+URL: https://vivepdf.com/en/docs/studio-design/
+Last updated: 2026-10-18
+
+Studio is vivePDF's design editor for posters, certificates, invitations, social posts, business cards and similar work on a free canvas, saved as a PDF or as pictures. You can start from more than 170 templates and drag text, shapes, pictures and QR codes into place.
+
+## Start a design
+
+Click **Studio** in the top bar. The start page offers several ways in:
+
+- **Start from a template**: templates are grouped into categories such as **Certificates**, **Invitations**, **Posters**, **Menus**, **Social media** and **Flyers and brochures**; **Search templates** finds one by name.
+- **Start with a blank page**, or use **Custom size** to type the width and height yourself and click **Create**.
+- **Business cards** opens a card with a front and a back (see below).
+- **Build a CV** opens the form-based CV builder (see below).
+- **Open design…** opens a design you saved, and **Recent designs** lists the ones you worked on last. Unfinished work waits on the **Continue where you left off** card.
+
+## Add and edit items
+
+The panel on the left has four tabs: **Elements**, **Templates**, **Layers** and **Data**.
+
+1. On the **Elements** tab, add text with **Add a heading**, **Add a subheading** or **Add body text**. **Shapes**, **Icons**, **Tables and charts**, **Ornaments**, **Picture** and **QR code** are there too.
+2. Click an item to select it. Change its colour, font, size, shadow or alignment in the properties panel.
+3. Drag the item to move it, and use the handles to resize or rotate it. A right-click offers commands such as **Duplicate**, **Bring to front**, **Group**, **Lock** and **Copy style**.
+
+You can also add items from the keyboard: `T` adds text, `R` a rectangle, `O` an ellipse, `L` a line and `A` an arrow. In the design editor, `F1` or `?` shows every shortcut; the list is also on the [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/) page.
+
+### Layers and pages
+
+The **Layers** tab lists the items on this page. Drag a layer to change the order, or press `Alt+↑` or `Alt+↓` on it; you can hide and lock items from here as well. Double-click a group to pick one item inside it.
+
+In the page strip, **Add page** adds a page and **All pages** shows every page so you can drag them into a new order. The **View** menu turns **Rulers**, **Guides**, **Margins**, **Bleed area (3 mm)** and **Snapping** on and off.
+
+### Many copies from a table
+
+On the **Data** tab, choose **Connect a table** and pick a CSV or Excel file. Clicking a column adds it as a placeholder to the selected text or QR code. When you export, every row of the table becomes its own copy of the design with its values filled in, which suits certificates or name badges.
+
+## CV builder
+
+**Open CV builder** shows a form on the **Content** tab: personal details, experience, education, skills, languages and more. The CV preview updates as you type.
+
+- **Fill with sample** loads an example CV; **Import from PDF…** reads an existing CV or a LinkedIn PDF and brings its sections into the form.
+- On the **Design** tab, pick a design such as **Classic**, **Modern** or **ATS-friendly**, and set the **Accent colour**, **Photo shape**, **Spacing**, **Paper** and **CV language**.
+- **Export** saves the CV as PDF, PNG or JPG. For freer changes, choose **Edit freely in Studio**.
+
+## Business cards
+
+**Business cards** on the start page opens a card with **Front** and **Back** pages. Sizes include 85 × 55, 90 × 50, US 3.5 × 2 in, square and mini; **Rounded corners** in the page panel shows the corner the printer will cut.
+
+Select an item and, under **Print finish**, apply **Embossed**, **Debossed**, **Letterpress**, **Foil** (gold, silver, copper, rose gold or holographic) or **Spot UV gloss**. The effect is simulated on screen. If you set a QR code's content to **Contact card**, scanning it lets a phone save your contact details.
+
+> **Before you send it to the printer**
+>
+> In the export window, turn on **Print-ready PDF**. It adds **Bleed** (usually 3 mm) and **Trim marks**; **Finish plates** turns foil and gloss into separate spot colours or separate pages for the print shop. Choose A4 or SRA3 as the **Sheet** and the cards are laid out on one sheet, with the backs mirrored so they line up when printed double-sided.
+
+## Save and export
+
+`Ctrl+S` saves your work as a vivePDF design that you can open again later. For the finished file, click **Export** or press `Ctrl+E`:
+
+- Choose PDF, PNG or JPG as the **File type**. Under **Pages**, take every page, the current page or a range such as `1-3, 5`.
+- For pictures, set the **Resolution** and **JPG quality**; pages whose background is set to **None** are saved see-through with **See-through background**.
+- With **Keep it editable in Studio** on, the design is stored inside the PDF, so opening that PDF in vivePDF lets you edit it in Studio again. **Sign the PDF** adds an invisible digital signature with your .p12 or .pfx certificate; there is more about signatures on the [Sign and verify](https://vivepdf.com/en/docs/sign/) page.
+
+`Ctrl+P` sends the design straight to the printer. For long text such as a report or thesis, [Write a document in Studio](https://vivepdf.com/en/docs/studio-document/) is the better fit.

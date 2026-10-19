@@ -1,0 +1,59 @@
+# İmzalama ve doğrulama
+
+> vivePDF'te elle çizilmiş imza ekleme, .p12 veya .pfx sertifikasıyla dijital imza atma, imzaları doğrulama ve sertifika oluşturma.
+
+URL: https://vivepdf.com/dokumantasyon/imza/
+Son güncelleme: 2026-10-18
+
+vivePDF'te iki tür imza var: Görüntüleyici'de sayfaya resim olarak koyduğun elle çizilmiş imza ve **Araçlar › İmzala**'da bir .p12 ya da .pfx sertifikasıyla attığın dijital imza. Aynı yerden imzalı bir dosyayı doğrulayabilir, kendi sertifikanı oluşturabilir ve açık sertifikanı dışa aktarabilirsin. Hepsi bu bilgisayarda çalışır; belgen ve sertifikan hiçbir yere gönderilmez.
+
+## Elle çizilmiş imza
+
+Elle çizilmiş imza, sayfaya resim olarak eklenir. Bir formu ya da dilekçeyi hızlıca imzalamak için uygundur, ama belgenin sonradan değişip değişmediğini kanıtlamaz.
+
+1. Belgeyi Görüntüleyici'de aç ve araç çubuğunda **Düzenle**'ye tıkla.
+2. **Sayfa araçları** menüsünden **İmza yerleştir**'i seç.
+3. **Yeni** ile fare, kalem ya da parmağınla bir imza çiz; istersen **Fotoğraftan** bir imza resmi al. Sık kullanacaksan **İmzayı kaydet**'e tıkla, sonraki seferlerde **Kayıtlı imzalar** arasından seçersin.
+4. İmzanın gideceği yere tıkla, sürükleyerek yerini ayarla ve **İmzayı uygula**'yı seç.
+
+Sonuç yeni bir dosyaya yazılır ve hemen açılır; asıl dosyan olduğu gibi kalır. Kayıtlı imzaları **Ayarlar › Veriler**'den silebilirsin.
+
+## Sertifikalı dijital imza
+
+Dijital imza, belgeyi imzalayan kişinin kim olduğunu ve belgenin imzadan sonra değişmediğini gösterir. vivePDF PAdES imzası atar.
+
+1. **Araçlar › İmzala**'yı aç ve imzalanacak PDF'i seç.
+2. **Sertifika dosyası (.p12 / .pfx)** alanına e-imza sağlayıcından aldığın ya da vivePDF'te oluşturduğun dosyayı seç, **Sertifika parolası**'nı gir.
+3. İmzanın sayfada görünmesini istiyorsan **Sayfada görünür imza kutusu**'nu aç; sayfayı, **Kutu metni**'ni ve istersen **İmza kutusundaki görsel** olarak kayıtlı el yazısı imzanı ya da bir logoyu seç.
+4. Gerekirse **Neden**, **Yer** ve **İletişim** alanlarını doldur, sonra **İmzala**'ya tıkla.
+
+Belgede boş imza alanları varsa **İmza alanı** listesinden birini seçebilirsin; imza o alanın yerini ve boyutunu kullanır.
+
+### Ek seçenekler
+
+- **Zaman damgası sunucusu (isteğe bağlı)**: bir RFC 3161 sunucu adresi girersen imzaya güvenilir bir zaman eklenir. Bu seçenek internet gerektirir ve sunucuya yalnızca imzanın özeti gider.
+- **Onaylayıcı imza**: belgenin ilk imzası, sonrasında nelerin değişebileceğini belirleyebilir (değişiklik yok, form doldurma ve imzalama ya da bunlara ek olarak yorumlar).
+- **İmzaladıktan sonra belgeyi kilitle**: son imzalayan sensen tüm alanları kilitler; sonraki her değişiklik ihlal olarak görünür.
+
+> **Sertifikan yoksa**
+>
+> **Sertifikam yok → kendi sertifikamı oluştur** bağlantısı seni **Sertifika oluştur** ekranına götürür. Burada üretilen sertifika kendinden imzalıdır: belge bütünlüğünü kanıtlar, ama resmî geçerlilik için nitelikli e-imza gerekir.
+
+## İmzaları doğrulama
+
+İmzalı bir PDF'i Görüntüleyici'de açtığında üstte bir ileti çıkar; örneğin "İmzalı ve tüm imzalar geçerli." **İmza paneli** her imzanın ayrıntısını gösterir.
+
+Daha ayrıntılı bir denetim için sayfa başlığının üstündeki **Güvenlik** listesinden **Doğrula**'yı aç, PDF'i seç ve **Doğrula**'ya tıkla. Her imza için şunları görürsün:
+
+- **Bütünlük**: belge imzadan sonra değiştirildi mi, değiştirildiyse imzanın izin verdiği bir değişiklik mi?
+- **Güven**: sertifika zinciri **Güvenilir kökler** listendeki bir köke ulaşıyor mu? Kendinden imzalı sertifikalar burada "doğrulanmadı" olarak görünür ve nedeni yazılır.
+
+Bir sağlayıcının imzalarına güvenmek için **Sertifika veya güven listesi ekle** ile kök sertifikasını (.cer, .crt, .pem veya .der) ya da bir güven listesini (AB güven listesi .xml veya Adobe AATL) ekle. **İptal durumunu çevrimiçi denetle** varsayılan olarak kapalıdır; açarsan sertifikanın geri çekilip çekilmediği, sertifikayı veren kuruma sorulur.
+
+## Sertifika oluşturma ve dışa aktarma
+
+**Güvenlik** listesindeki **Sertifika oluştur** ekranında **Ad Soyad**, **E-posta**, **Kurum** ve **Ülke** bilgilerini gir, **Geçerlilik** süresini ve **Anahtar** türünü seç. **Kullanım amacı** olarak **Belge imzalama**, **Mühürlü belge alma** ya da **İkisi de** seçeneğini kullan. Sertifika parolası en az 8 karakter olmalı; sonuç bir .p12 dosyasına kaydedilir.
+
+Biri sana yalnızca senin açabileceğin, sertifikayla mühürlenmiş bir belge göndermek isterse **Açık sertifikayı dışa aktar**'ı kullan. Bu araç .p12 dosyanın açık yarısını .cer olarak yazar; özel anahtarın .p12 içinde kalır. Mühürleme ve parola korumasının ayrıntıları [Güvenlik](https://vivepdf.com/dokumantasyon/guvenlik/) sayfasında.
+
+vivePDF imzaladığın .p12 dosyasının yolunu hatırlar, parolasını hiçbir zaman saklamaz. Bu yolu **Ayarlar › Veriler**'den unutturabilirsin; nelerin saklandığını [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik/) sayfası anlatır. Zaman damgası ve çevrimiçi iptal denetimi [çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi/) açıkken kapalıdır.
