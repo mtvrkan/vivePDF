@@ -23,6 +23,67 @@
   "bundle": {
     "macOS": {
       "minimumSystemVersion": "14.0"
-    }
+    },
+    "fileAssociations": [
+      {
+        "ext": [
+          "pdf"
+        ],
+        "name": "PDF Document",
+        "description": "PDF Document",
+        "mimeType": "application/pdf",
+        "role": "Editor"
+      },
+      {
+        "ext": [
+          "docx",
+          "doc",
+          "odt",
+          "rtf"
+        ],
+        "contentTypes": [
+          "org.openxmlformats.wordprocessingml.document",
+          "com.microsoft.word.doc",
+          "org.oasis-open.opendocument.text",
+          "public.rtf"
+        ],
+        "name": "Word Document",
+        "description": "Word Document",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "xlsx",
+          "xls",
+          "ods"
+        ],
+        "contentTypes": [
+          "org.openxmlformats.spreadsheetml.sheet",
+          "com.microsoft.excel.xls",
+          "org.oasis-open.opendocument.spreadsheet"
+        ],
+        "name": "Spreadsheet",
+        "description": "Spreadsheet",
+        "role": "Viewer",
+        "rank": "Alternate"
+      },
+      {
+        "ext": [
+          "pptx",
+          "ppt",
+          "odp"
+        ],
+        "contentTypes": [
+          "org.openxmlformats.presentationml.presentation",
+          "com.microsoft.powerpoint.ppt",
+          "org.oasis-open.opendocument.presentation"
+        ],
+        "name": "Presentation",
+        "description": "Presentation",
+        "role": "Viewer",
+        "rank": "Alternate"
+      }
+    ]
   }
 }

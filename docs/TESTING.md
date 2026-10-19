@@ -220,6 +220,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - After saving a support bundle choose "Show in folder" in the toast: Explorer opens with the
   zip selected. Delete a produced PDF in Explorer, then choose "Show in folder" for it in the
   result panel: Explorer opens its folder instead of showing an error.
+- With "Open PDFs with vivePDF" on in Settings, right-click a .pptx, .docx and .xlsx in
+  Explorer: Open with lists vivePDF, choosing it converts and opens the file, and the default
+  app for those types stays what it was. Turning the setting off removes vivePDF from those
+  lists; updating from 0.3.0 with the setting already on adds them on first start; uninstalling
+  leaves no vivePDF.Office key or OpenWithProgids value behind.
 
 ### How native dialogs are answered
 

@@ -3,17 +3,33 @@ use crate::rpc::RpcError;
 #[cfg(windows)]
 pub const PROG_ID: &str = "vivePDF.Document";
 #[cfg(windows)]
+pub const OFFICE_PROG_ID: &str = "vivePDF.Office";
+#[cfg(windows)]
 pub const CAPABILITIES_PATH: &str = "Software\\vivePDF\\Capabilities";
 #[cfg(any(windows, test))]
 pub const DOCUMENT_ICON_NAME: &str = "pdf-document.ico";
 #[cfg(any(windows, test))]
 pub const SUPPORTED_TYPES: [&str; 4] = [".pdf", ".bib", ".bibtex", ".ris"];
+#[cfg(any(windows, test))]
+pub const OFFICE_TYPES: [&str; 10] = [
+    ".doc", ".docx", ".odt", ".rtf", ".xls", ".xlsx", ".ods", ".ppt", ".pptx", ".odp",
+];
 #[cfg(windows)]
 const DOCUMENT_ICON: &[u8] = include_bytes!("../icons/pdf-document.ico");
 
 #[cfg(any(windows, test))]
 pub fn open_command_line(executable: &str) -> String {
     format!("\"{executable}\" \"%1\"")
+}
+
+#[cfg(any(windows, test))]
+pub fn supported_types() -> impl Iterator<Item = &'static str> {
+    SUPPORTED_TYPES.into_iter().chain(OFFICE_TYPES)
+}
+
+#[cfg(any(windows, test))]
+pub fn open_with_key(extension: &str) -> String {
+    format!("{extension}\\OpenWithProgids")
 }
 
 #[cfg(any(windows, test))]
@@ -59,7 +75,8 @@ mod registry {
 
     use super::{
         application_key, current_document_icon, document_icon_path, icon_value,
-        install_document_icon, open_command_line, CAPABILITIES_PATH, PROG_ID, SUPPORTED_TYPES,
+        install_document_icon, open_command_line, open_with_key, supported_types,
+        CAPABILITIES_PATH, OFFICE_PROG_ID, OFFICE_TYPES, PROG_ID,
     };
 
     fn root() -> RegKey {
@@ -110,8 +127,26 @@ mod registry {
         else {
             return false;
         };
-        if command.to_lowercase() != open_command_line(&executable.to_string_lossy()).to_lowercase()
-        {
+        let expected = open_command_line(&executable.to_string_lossy()).to_lowercase();
+        if command.to_lowercase() != expected {
+            return true;
+        }
+        let office_command = root()
+            .open_subkey(format!(
+                "Software\\Classes\\{OFFICE_PROG_ID}\\shell\\open\\command"
+            ))
+            .and_then(|key| key.get_value::<String, _>(""))
+            .unwrap_or_default();
+        if office_command.to_lowercase() != expected {
+            return true;
+        }
+        let office_unlisted = OFFICE_TYPES.iter().any(|extension| {
+            root()
+                .open_subkey(format!("Software\\Classes\\{}", open_with_key(extension)))
+                .and_then(|key| key.get_raw_value(OFFICE_PROG_ID))
+                .is_err()
+        });
+        if office_unlisted {
             return true;
         }
         let types_missing = root()
@@ -119,11 +154,7 @@ mod registry {
                 "Software\\Classes\\{}\\SupportedTypes",
                 application_key(&executable.to_string_lossy())
             ))
-            .map(|key| {
-                SUPPORTED_TYPES
-                    .iter()
-                    .any(|extension| key.get_raw_value(extension).is_err())
-            })
+            .map(|key| supported_types().any(|extension| key.get_raw_value(extension).is_err()))
             .unwrap_or(true);
         if types_missing {
             return true;
@@ -151,8 +182,17 @@ mod registry {
         default_icon.set_value("", &document_icon)?;
         let (command, _) = prog.create_subkey("shell\\open\\command")?;
         command.set_value("", &open_command_line(&executable))?;
-        let (open_with, _) = classes.create_subkey(".pdf\\OpenWithProgids")?;
+        let (open_with, _) = classes.create_subkey(open_with_key(".pdf"))?;
         open_with.set_value(PROG_ID, &"")?;
+        let (office, _) = classes.create_subkey(OFFICE_PROG_ID)?;
+        let (office_icon, _) = office.create_subkey("DefaultIcon")?;
+        office_icon.set_value("", &icon)?;
+        let (office_command, _) = office.create_subkey("shell\\open\\command")?;
+        office_command.set_value("", &open_command_line(&executable))?;
+        for extension in OFFICE_TYPES {
+            let (open_with, _) = classes.create_subkey(open_with_key(extension))?;
+            open_with.set_value(OFFICE_PROG_ID, &"")?;
+        }
         let (application, _) = classes.create_subkey(application_key(&executable))?;
         application.set_value("FriendlyAppName", &name)?;
         let (application_icon, _) = application.create_subkey("DefaultIcon")?;
@@ -160,7 +200,7 @@ mod registry {
         let (application_command, _) = application.create_subkey("shell\\open\\command")?;
         application_command.set_value("", &open_command_line(&executable))?;
         let (supported, _) = application.create_subkey("SupportedTypes")?;
-        for extension in SUPPORTED_TYPES {
+        for extension in supported_types() {
             supported.set_value(extension, &"")?;
         }
         let (capabilities, _) = root().create_subkey(CAPABILITIES_PATH)?;
@@ -169,6 +209,9 @@ mod registry {
         capabilities.set_value("ApplicationIcon", &icon)?;
         let (associations, _) = capabilities.create_subkey("FileAssociations")?;
         associations.set_value(".pdf", &PROG_ID)?;
+        for extension in OFFICE_TYPES {
+            associations.set_value(extension, &OFFICE_PROG_ID)?;
+        }
         let (registered, _) = root().create_subkey("Software\\RegisteredApplications")?;
         registered.set_value(name, &CAPABILITIES_PATH)?;
         announce_change();
@@ -178,15 +221,23 @@ mod registry {
     pub fn remove(name: &str) -> std::io::Result<()> {
         let classes = classes()?;
         ignore_missing(classes.delete_subkey_all(PROG_ID))?;
+        ignore_missing(classes.delete_subkey_all(OFFICE_PROG_ID))?;
         if let Ok(executable) = std::env::current_exe() {
             ignore_missing(
                 classes.delete_subkey_all(application_key(&executable.to_string_lossy())),
             )?;
         }
         if let Ok(open_with) =
-            classes.open_subkey_with_flags(".pdf\\OpenWithProgids", winreg::enums::KEY_SET_VALUE)
+            classes.open_subkey_with_flags(open_with_key(".pdf"), winreg::enums::KEY_SET_VALUE)
         {
             ignore_missing(open_with.delete_value(PROG_ID))?;
+        }
+        for extension in OFFICE_TYPES {
+            if let Ok(open_with) = classes
+                .open_subkey_with_flags(open_with_key(extension), winreg::enums::KEY_SET_VALUE)
+            {
+                ignore_missing(open_with.delete_value(OFFICE_PROG_ID))?;
+            }
         }
         ignore_missing(root().delete_subkey_all(CAPABILITIES_PATH))?;
         if let Ok(registered) = root().open_subkey_with_flags(
@@ -340,6 +391,18 @@ mod tests {
             "Applications\\vivepdf"
         );
         assert_eq!(application_key(""), "Applications\\vivepdf.exe");
+    }
+
+    #[test]
+    fn office_documents_join_the_open_with_list_without_csv() {
+        let types: Vec<&str> = supported_types().collect();
+
+        assert!(types.contains(&".pdf"));
+        assert!(types.contains(&".pptx"));
+        assert!(types.contains(&".docx"));
+        assert!(types.contains(&".xlsx"));
+        assert!(!types.contains(&".csv"));
+        assert_eq!(open_with_key(".pptx"), ".pptx\\OpenWithProgids");
     }
 
     #[test]
