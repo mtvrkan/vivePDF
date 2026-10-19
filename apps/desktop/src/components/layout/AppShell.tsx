@@ -3,6 +3,7 @@ import { Minimize } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { IconButton } from "@/components/shared/IconButton";
 import { exitImmersive } from "@/features/viewer/immersive";
+import { usePresenterStore } from "@/features/presenter/presenterSession";
 import { cn } from "@/shared/lib/cn";
 import { useUiStore } from "@/shared/store/uiStore";
 import { WatchRunner } from "@/features/tools/watch/WatchRunner";
@@ -60,13 +61,14 @@ function ImmersiveExitAffordance() {
 
 export function AppShell({ children }: { children: ReactNode }) {
   const immersive = useUiStore((state) => state.immersive);
+  const presenting = usePresenterStore((state) => state.session !== null);
 
   return (
     <>
       {immersive ? (
         <div className="h-full bg-background">
           <main className="h-full overflow-auto bg-background">{children}</main>
-          <ImmersiveExitAffordance />
+          {presenting ? null : <ImmersiveExitAffordance />}
           <CommandPalette />
         </div>
       ) : (

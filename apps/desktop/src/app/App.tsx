@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { listen } from "@tauri-apps/api/event";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 import { AppShell } from "@/components/layout/AppShell";
 import { RouteErrorBoundary } from "@/components/shared/ErrorBoundary";
 import { SkeletonCard } from "@/components/shared/SkeletonCard";
@@ -16,7 +17,7 @@ import { FileOpenListener } from "@/features/viewer/FileOpenListener";
 import { OrganizerSourceCleanup } from "@/features/pages/OrganizerSourceCleanup";
 import { PasswordDialog } from "@/features/viewer/PasswordDialog";
 import { closeStaleAudience } from "@/features/presenter/presenterSession";
-import { exitImmersive, shouldExitOnKey } from "@/features/viewer/immersive";
+import { exitImmersive, followWindowFullscreen, shouldExitOnKey } from "@/features/viewer/immersive";
 import { PdfProvider } from "@/features/viewer/pdf/PdfProvider";
 import { CloseGuard } from "@/shared/session/CloseGuard";
 import { UnsavedCloseDialog } from "@/features/viewer/UnsavedCloseDialog";
@@ -159,9 +160,11 @@ export default function App() {
     };
     window.addEventListener("keydown", onKeyDown, true);
     document.addEventListener("fullscreenchange", onFullscreenChange);
+    const stopResize = getCurrentWindow().onResized(() => void followWindowFullscreen());
     return () => {
       window.removeEventListener("keydown", onKeyDown, true);
       document.removeEventListener("fullscreenchange", onFullscreenChange);
+      void stopResize.then((stop) => stop());
     };
   }, []);
 

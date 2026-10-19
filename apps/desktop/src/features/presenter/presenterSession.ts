@@ -1,6 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 import { create } from "zustand";
-import { onImmersiveExit, setImmersiveFullscreen } from "@/features/viewer/immersive";
+import { markWindowMoved, onImmersiveExit, setImmersiveFullscreen } from "@/features/viewer/immersive";
 import * as logger from "@/shared/lib/logger";
 import { RpcCallError, toRpcError } from "@/shared/rpc/client";
 import { useDocumentStore } from "@/shared/store/documentStore";
@@ -87,7 +87,9 @@ export async function reopenAudience(startPage: number): Promise<void> {
 }
 
 export async function swapScreens(): Promise<void> {
-  usePresenterStore.getState().setOpened(await callPresenter("presenter_swap"));
+  const opened = await callPresenter("presenter_swap");
+  markWindowMoved();
+  usePresenterStore.getState().setOpened(opened);
 }
 
 export async function moveAudienceToScreen(currentPage: number): Promise<void> {

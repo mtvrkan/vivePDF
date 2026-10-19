@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { exitImmersive, onImmersiveExit, setImmersiveFullscreen, shouldExitOnKey } from "./immersive";
+import { exitImmersive, followWindowFullscreen, markWindowMoved, onImmersiveExit, setImmersiveFullscreen, shouldExitOnKey } from "./immersive";
 
 const appWindow = vi.hoisted(() => ({
   isMaximized: vi.fn(async () => false),
@@ -11,7 +11,10 @@ const appWindow = vi.hoisted(() => ({
   setPosition: vi.fn(async () => {}),
   setSize: vi.fn(async () => {}),
   setAlwaysOnTop: vi.fn(async () => {}),
+  isFullscreen: vi.fn(async () => true),
 }));
+
+const ui = vi.hoisted(() => ({ immersive: false }));
 
 vi.mock("@tauri-apps/api/window", () => ({
   getCurrentWindow: () => appWindow,
@@ -21,7 +24,15 @@ vi.mock("@tauri-apps/api/window", () => ({
 }));
 
 vi.mock("@/shared/store/uiStore", () => ({
-  useUiStore: { getState: () => ({ setImmersive: () => {}, setImmersiveMounted: () => {} }) },
+  useUiStore: {
+    getState: () => ({
+      immersive: ui.immersive,
+      setImmersive: (next: boolean) => {
+        ui.immersive = next;
+      },
+      setImmersiveMounted: () => {},
+    }),
+  },
 }));
 
 vi.mock("@/shared/store/presentationStore", () => ({
@@ -77,6 +88,22 @@ describe("exitImmersive", () => {
   });
 });
 
+describe("markWindowMoved", () => {
+  it("brings a window that swapped screens back to where the presentation started", async () => {
+    vi.stubGlobal("window", { setTimeout: (callback: () => void) => setTimeout(callback, 0) });
+    appWindow.isFullscreen.mockResolvedValue(false);
+    appWindow.setPosition.mockClear();
+    appWindow.setSize.mockClear();
+    await setImmersiveFullscreen(true);
+    markWindowMoved();
+
+    await exitImmersive();
+
+    expect(appWindow.setPosition).toHaveBeenCalledWith({ x: 10, y: 20 });
+    expect(appWindow.setSize).toHaveBeenCalledWith({ width: 800, height: 600 });
+  });
+});
+
 describe("setImmersiveFullscreen", () => {
   it("ignores a second request while the window is still entering fullscreen", async () => {
     vi.stubGlobal("window", { setTimeout: (callback: () => void) => setTimeout(callback, 0) });
@@ -99,5 +126,42 @@ describe("onImmersiveExit", () => {
     await exitImmersive();
 
     expect(listener).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("followWindowFullscreen", () => {
+  it("ends the presentation when the system takes the window out of full screen, as the macOS green button does", async () => {
+    vi.stubGlobal("window", { setTimeout: (callback: () => void) => setTimeout(callback, 0) });
+    await setImmersiveFullscreen(true);
+    appWindow.isFullscreen.mockResolvedValue(true);
+    await followWindowFullscreen();
+    const stillOn = ui.immersive;
+
+    appWindow.isFullscreen.mockResolvedValue(false);
+    await followWindowFullscreen();
+
+    expect(stillOn).toBe(true);
+    expect(ui.immersive).toBe(false);
+  });
+
+  it("waits until the window has reached full screen before reading a windowed size as an exit", async () => {
+    vi.stubGlobal("window", { setTimeout: (callback: () => void) => setTimeout(callback, 0) });
+    await setImmersiveFullscreen(true);
+    appWindow.isFullscreen.mockResolvedValue(false);
+
+    await followWindowFullscreen();
+
+    expect(ui.immersive).toBe(true);
+    await exitImmersive();
+  });
+
+  it("still opens the presentation in the window when full screen is refused", async () => {
+    vi.stubGlobal("window", { setTimeout: (callback: () => void) => setTimeout(callback, 0) });
+    appWindow.setFullscreen.mockRejectedValueOnce(new Error("denied"));
+
+    await setImmersiveFullscreen(true);
+
+    expect(ui.immersive).toBe(true);
+    await exitImmersive();
   });
 });

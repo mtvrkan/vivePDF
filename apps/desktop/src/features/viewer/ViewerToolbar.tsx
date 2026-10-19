@@ -13,7 +13,6 @@ import {
   X,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { getCurrentWindow } from "@tauri-apps/api/window";
 import { ZoomMode, useZoom } from "@embedpdf/plugin-zoom/react";
 import { usePan } from "@embedpdf/plugin-pan/react";
 import { useSelectionCapability } from "@embedpdf/plugin-selection/react";
@@ -23,6 +22,7 @@ import { useUnsavedMarks } from "./useUnsavedMarks";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import type { ViewerPanels } from "@/shared/store/viewerPanelsStore";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { useUiStore } from "@/shared/store/uiStore";
 import { switchOverlayMode } from "./overlay/editorModes";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
@@ -42,6 +42,7 @@ const PRIMARY_BUTTON = 0;
 
 export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolbarProps) {
   const { t } = useTranslation();
+  const immersive = useUiStore((state) => state.immersive);
   const overlayMode = useViewerOverlayStore((state) => state.mode);
   const { state: zoomState, provides: zoom } = useZoom(documentId);
   const openPrintDialog = usePrintDialogStore((state) => state.setOpen);
@@ -66,12 +67,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
   const runDiscard = () => {
     discard();
   };
-  const [fullscreen, setFullscreen] = useState(false);
-
-  useEffect(() => {
-    void getCurrentWindow().isFullscreen().then(setFullscreen);
-  }, []);
-
   useEffect(() => {
     if (!zoomState.isMarqueeZoomActive) return;
     let origin: { x: number; y: number } | null = null;
@@ -101,11 +96,6 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
     };
   }, [zoomState.isMarqueeZoomActive, zoom]);
 
-  const toggleFullscreen = async () => {
-    const next = !(await getCurrentWindow().isFullscreen());
-    await setImmersiveFullscreen(next);
-    setFullscreen(next);
-  };
 
   return (
     <div className="relative z-40 flex h-topbar flex-nowrap items-center gap-1 glass-flat border-b px-2">
@@ -189,10 +179,10 @@ export function ViewerToolbar({ documentId, panels, onTogglePanel }: ViewerToolb
       <span className="mx-1 h-4 w-px bg-border" aria-hidden />
       <IconButton icon={Presentation} label={t("presentation.presenter.open")} onClick={() => usePresenterStore.getState().requestPresenter(documentId, null)} />
       <IconButton
-        icon={fullscreen ? Minimize : Maximize}
+        icon={immersive ? Minimize : Maximize}
         label={t("viewer.fullscreen")}
-        active={fullscreen}
-        onClick={() => void toggleFullscreen()}
+        active={immersive}
+        onClick={() => void setImmersiveFullscreen(!useUiStore.getState().immersive)}
       />
     </div>
   );

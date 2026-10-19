@@ -242,7 +242,7 @@ fn handle_menu<R: Runtime>(app: &AppHandle<R>, event: tauri::menu::MenuEvent) {
         .webview_windows()
         .into_values()
         .find(|window| window.is_focused().unwrap_or(false))
-        .map(|window| window.label().to_string())
+        .map(|window| crate::presenter::command_window(app, window.label()))
         .unwrap_or_else(|| {
             crate::tray::show_main_window(app);
             crate::document_windows::MAIN_WINDOW.to_string()

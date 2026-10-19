@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ArrowDownToLine, BookOpenText, Bug, Archive, Check, CircleHelp, Copy, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Minus, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Sparkles, Square, Sun, Wrench, X } from "lucide-react";
+import { ArrowDownToLine, BookOpenText, Bug, Archive, Check, CircleHelp, FolderOpen, Info, Keyboard, Languages, LayoutGrid, Lightbulb, Loader2, Moon, RefreshCw, RotateCw, Search, Settings, ShieldCheck, Sparkles, Sun, Wrench } from "lucide-react";
 import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTranslation } from "react-i18next";
@@ -19,12 +19,12 @@ import { useOpenStore } from "@/shared/store/openStore";
 import { usePaletteStore } from "@/shared/store/paletteStore";
 import { usePreferencesStore } from "@/shared/store/preferencesStore";
 import { useReportStore } from "@/shared/store/reportStore";
-import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { useUpdateStore } from "@/shared/store/updateStore";
 import type { Locale } from "@/types";
 import { useShortcutSheetStore } from "@/features/about/shortcutSheetStore";
 import { HeaderMenu, MenuLink, MenuSeparator } from "./HeaderMenu";
+import { WindowControls } from "./WindowControls";
 import { isMac, shortcutLabel } from "@/shared/lib/platform";
 
 const COMPACT_SEARCH_LEVEL = 1;
@@ -34,55 +34,6 @@ const HIDE_QUICK_TOGGLES_LEVEL = 4;
 const ICON_MENUS_LEVEL = 5;
 const HIDE_PRIMARY_NAV_LEVEL = 6;
 const TOOL_MENU_COLUMNS: ToolGroup[][] = [["organize", "fromPdf"], ["improve"], ["toPdf", "edit", "security"]];
-
-function runWindowCommand(command: () => Promise<void>) {
-  command().catch((error: unknown) => {
-    useToastStore.getState().push("error", error instanceof Error ? error.message : String(error));
-  });
-}
-
-function WindowControls() {
-  const { t } = useTranslation();
-  const [maximized, setMaximized] = useState(false);
-
-  useEffect(() => {
-    const appWindow = getCurrentWindow();
-    void appWindow.isMaximized().then(setMaximized).catch(() => undefined);
-    const unlisten = appWindow.onResized(() => {
-      void appWindow.isMaximized().then(setMaximized).catch(() => undefined);
-    });
-    return () => {
-      void unlisten.then((stop) => stop()).catch(() => undefined);
-    };
-  }, []);
-
-  const control =
-    "flex h-full w-11 items-center justify-center text-muted-foreground transition-colors duration-(--transition-fast) hover:bg-secondary hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset";
-
-  return (
-    <div className="ms-1 flex h-full shrink-0 items-stretch">
-      <button type="button" aria-label={t("window.minimize")} onClick={() => runWindowCommand(() => getCurrentWindow().minimize())} className={control}>
-        <Minus className="size-4" aria-hidden />
-      </button>
-      <button
-        type="button"
-        aria-label={maximized ? t("window.restore") : t("window.maximize")}
-        onClick={() => runWindowCommand(() => getCurrentWindow().toggleMaximize())}
-        className={control}
-      >
-        {maximized ? <Copy className="size-3.5" aria-hidden /> : <Square className="size-3.5" aria-hidden />}
-      </button>
-      <button
-        type="button"
-        aria-label={t("window.close")}
-        onClick={() => runWindowCommand(() => getCurrentWindow().close())}
-        className={cn(control, "hover:bg-destructive hover:text-destructive-foreground")}
-      >
-        <X className="size-4" aria-hidden />
-      </button>
-    </div>
-  );
-}
 
 function useMacFullscreen(): boolean {
   const [fullscreen, setFullscreen] = useState(false);

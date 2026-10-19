@@ -282,7 +282,8 @@ describe("presentation", () => {
     await browser.keys([ALT_KEY, F5_KEY]);
     await browser.keys([ALT_KEY]);
     const presentAnyway = $(`button=${t("presentation.presenter.presentAnyway")}`);
-    if (await presentAnyway.isExisting()) await presentAnyway.click();
+    const rehearsing = await presentAnyway.isExisting();
+    if (rehearsing) await presentAnyway.click();
     await browser.waitUntil(async () => (await browser.getWindowHandles()).length === 2, { timeout: 30000, timeoutMsg: "Alt+F5 did not open the audience window" });
     const audience = (await browser.getWindowHandles()).find((handle) => handle !== consoleWindow) as string;
     await $(`[role="region"][aria-label="${t("presentation.presenter.console")}"]`).waitForDisplayed({ timeout: 20000 });
@@ -326,6 +327,12 @@ describe("presentation", () => {
 
     await browser.switchToWindow(consoleWindow);
     await browser.saveScreenshot(join(workDir(), "presenter-console.png"));
+    const tools = $(`[role="toolbar"][aria-label="${t("presentation.presenter.tools")}"]`);
+    if (rehearsing) {
+      expect(await tools.getAttribute("data-tauri-drag-region")).not.toBeNull();
+      expect(await tools.$(`button[aria-label="${t("window.close")}"]`).isDisplayed()).toBe(true);
+    }
+    expect(await $(`button[aria-label="${t("viewer.exitFullscreen")}"]`).isExisting()).toBe(false);
     await clickButton(t("presentation.presenter.end"));
     await browser.waitUntil(async () => (await browser.getWindowHandles()).length === 1, { timeout: 20000, timeoutMsg: "ending the presentation left the audience window open" });
     await $(".immersive-view").waitForExist({ reverse: true, timeoutMsg: "the console did not leave presenter view" });

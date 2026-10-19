@@ -158,6 +158,12 @@ impl Presenters {
         })
     }
 
+    fn console_of(&self, audience: &str) -> Option<String> {
+        self.entries()
+            .get(audience)
+            .map(|session| session.console.clone())
+    }
+
     fn audiences_of(&self, console: &str) -> Vec<String> {
         let mut found: Vec<String> = self
             .entries()
@@ -186,6 +192,15 @@ impl Presenters {
 
 pub fn is_audience(label: &str) -> bool {
     label.starts_with(LABEL_PREFIX)
+}
+
+pub fn command_window<R: Runtime>(app: &AppHandle<R>, label: &str) -> String {
+    if !is_audience(label) {
+        return label.to_string();
+    }
+    app.state::<Presenters>()
+        .console_of(label)
+        .unwrap_or_else(|| crate::document_windows::MAIN_WINDOW.to_string())
 }
 
 fn new_label() -> String {
@@ -1038,6 +1053,14 @@ mod tests {
         assert_eq!(presenters.view("present-a"), None);
         assert!(presenters.view("present-b").is_some());
         assert!(presenters.take_for_console("main").is_empty());
+    }
+
+    #[test]
+    fn an_audience_screen_answers_to_its_console() {
+        let presenters = Presenters::default();
+        presenters.start("present-a", session("doc-1"));
+        assert_eq!(presenters.console_of("present-a").as_deref(), Some("doc-1"));
+        assert_eq!(presenters.console_of("present-z"), None);
     }
 
     #[test]

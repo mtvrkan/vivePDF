@@ -201,6 +201,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   pictures, and its developer console reports no script or network request from the file.
   Convert a page range to PNG next to the PDF and choose "Show in folder" on the second
   picture: Explorer selects it.
+- Present with a second screen set to Extend, press Swap screens, then End: the window comes
+  back to the first screen at its old size. Rehearse on one screen: the console's top bar drags
+  the window and its minimise, maximise and close buttons work. With Close to tray on, close
+  the window during a presentation: the audience window closes too and the tray brings the app
+  back out of presentation view.
 - After saving a support bundle choose "Show in folder" in the toast: Explorer opens with the
   zip selected. Delete a produced PDF in Explorer, then choose "Show in folder" for it in the
   result panel: Explorer opens its folder instead of showing an error.

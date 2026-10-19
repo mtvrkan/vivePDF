@@ -6,13 +6,15 @@ import { hasModKey, isFullscreenKey, isMac } from "@/shared/lib/platform";
 import { holdTemporaryDrawings } from "./presentation/leftoverDrawings";
 
 const SETTLE_MS = 160;
+const LEAVE_ATTEMPTS = 6;
 
-type Restore = { maximized: boolean; position: PhysicalPosition; size: PhysicalSize; forced: boolean };
+type Restore = { maximized: boolean; position: PhysicalPosition; size: PhysicalSize; forced: boolean; moved: boolean };
 
 let restore: Restore | null = null;
 let restoring = false;
 let entering = false;
 let savingDrawings = false;
+let shownFullscreen = false;
 const exitListeners = new Set<() => void>();
 
 export function onImmersiveExit(listener: () => void): () => void {
@@ -39,6 +41,16 @@ async function forceCover(): Promise<void> {
   await appWindow.setAlwaysOnTop(true);
 }
 
+async function windowedAgain(): Promise<void> {
+  const appWindow = getCurrentWindow();
+  for (let attempt = 0; attempt < LEAVE_ATTEMPTS && (await appWindow.isFullscreen()); attempt += 1) await settle();
+  await settle();
+}
+
+export function markWindowMoved(): void {
+  if (restore) restore.moved = true;
+}
+
 export function exitImmersiveSavingDrawings(): Promise<void> {
   savingDrawings = true;
   return exitImmersive();
@@ -54,15 +66,17 @@ export async function exitImmersive(): Promise<void> {
   const appWindow = getCurrentWindow();
   const entry = restore;
   restore = null;
+  shownFullscreen = false;
   try {
     if (entry?.forced) await appWindow.setAlwaysOnTop(false);
     await appWindow.setFullscreen(false);
     if (entry) {
-      if (entry.maximized) await appWindow.maximize();
-      else if (entry.forced) {
+      if (entry.forced || entry.moved) {
+        if (entry.moved) await windowedAgain();
         await appWindow.setPosition(entry.position);
         await appWindow.setSize(entry.size);
       }
+      if (entry.maximized) await appWindow.maximize();
     }
   } catch (error) {
     logger.error("immersive", error instanceof Error ? error.message : String(error));
@@ -81,19 +95,27 @@ export async function setImmersiveFullscreen(next: boolean, startPage: number | 
   entering = true;
   const appWindow = getCurrentWindow();
   try {
-    const entry: Restore = { maximized: await appWindow.isMaximized(), position: await appWindow.outerPosition(), size: await appWindow.innerSize(), forced: false };
+    const entry: Restore = { maximized: await appWindow.isMaximized(), position: await appWindow.outerPosition(), size: await appWindow.innerSize(), forced: false, moved: false };
+    restore = entry;
     if (entry.maximized) await appWindow.unmaximize();
     await appWindow.setFullscreen(true);
     await settle();
     if (!isMac && !(await coversMonitor())) {
-      await forceCover();
       entry.forced = true;
+      await forceCover();
     }
-    restore = entry;
-  } finally {
-    entering = false;
-    useUiStore.getState().setImmersive(true, startPage);
+  } catch (error) {
+    logger.error("immersive", error instanceof Error ? error.message : String(error));
   }
+  entering = false;
+  useUiStore.getState().setImmersive(true, startPage);
+}
+
+export async function followWindowFullscreen(): Promise<void> {
+  if (entering || restoring || !restore || restore.forced || !useUiStore.getState().immersive) return;
+  const fullscreen = await getCurrentWindow().isFullscreen();
+  if (fullscreen) shownFullscreen = true;
+  else if (shownFullscreen) await exitImmersive();
 }
 
 export type ImmersiveKeyContext = { immersive: boolean; mounted: boolean };

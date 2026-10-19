@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowLeftRight, ChevronLeft, ChevronRight, CornerUpLeft, FileDown, Moon, Pause, Play, RotateCcw, Sun } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useScroll } from "@embedpdf/plugin-scroll/react";
+import { WindowControls } from "@/components/layout/WindowControls";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
 import { ImmersiveView } from "@/features/viewer/ImmersiveView";
@@ -12,7 +13,9 @@ import { PresentationInsertMenu } from "@/features/viewer/presentation/Presentat
 import { PresentationStyleControls, PresentationStyleTrigger, PresentationToolButtons } from "@/features/viewer/presentation/PresentationTools";
 import { hasStyleOptions } from "@/features/viewer/presentation/toolPresets";
 import { useOutsideDismiss } from "@/shared/hooks/useOutsideDismiss";
+import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
+import { isMac } from "@/shared/lib/platform";
 import { toRpcError } from "@/shared/rpc/client";
 import { usePresentationStore } from "@/shared/store/presentationStore";
 import { useToastStore } from "@/shared/store/toastStore";
@@ -121,7 +124,13 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
 
   return (
     <div role="region" aria-label={t("presentation.presenter.console")} className="flex min-h-0 flex-1 flex-col bg-background">
-      <div ref={barRef} role="toolbar" aria-label={t("presentation.presenter.tools")} className="relative z-40 flex h-topbar flex-nowrap items-center gap-1 glass-flat border-b px-2">
+      <div
+        ref={barRef}
+        role="toolbar"
+        aria-label={t("presentation.presenter.tools")}
+        data-tauri-drag-region={rehearsing || undefined}
+        className={cn("relative z-40 flex h-topbar flex-nowrap items-center gap-1 glass-flat border-b", !rehearsing ? "px-2" : isMac ? "pl-20 pr-2" : "ps-2 pe-0")}
+      >
         <IconButton icon={ChevronLeft} label={t("viewer.previousPage")} disabled={currentPage <= 1} onClick={() => scroll?.scrollToPreviousPage()} />
         <IconButton icon={ChevronRight} label={t("viewer.nextPage")} disabled={currentPage >= totalPages} onClick={() => scroll?.scrollToNextPage()} />
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
@@ -138,11 +147,12 @@ export function PresenterConsole({ documentId, onExit, transport }: { documentId
         <span className="mx-1 h-4 w-px bg-border" aria-hidden />
         <IconButton icon={Moon} label={t("presentation.blackoutBlack")} active={blackout === "black"} onClick={() => toggleBlackout("black")} />
         <IconButton icon={Sun} label={t("presentation.blackoutWhite")} active={blackout === "white"} onClick={() => toggleBlackout("white")} />
-        <span className="flex-1" />
+        <span data-tauri-drag-region={rehearsing || undefined} className="h-full flex-1" />
         <IconButton icon={ArrowLeftRight} label={t("presentation.presenter.swap")} disabled={!session?.external || busy} onClick={() => runBusy(swapScreens)} />
         <Button size="sm" variant="destructive" onClick={onExit}>
           {t("presentation.presenter.end")}
         </Button>
+        {rehearsing && !isMac ? <WindowControls /> : null}
         {hasStyleOptions(tool) && styleOpen ? (
           <div ref={styleRef} className="glass select-pop origin-top pointer-events-auto absolute left-1/2 top-full mt-2 -translate-x-1/2 rounded-2xl p-3">
             <PresentationStyleControls />

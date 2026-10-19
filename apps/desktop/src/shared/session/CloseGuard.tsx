@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
+import { exitImmersive } from "@/features/viewer/immersive";
 import { hideToTray } from "@/shared/rpc/tray";
+import { useUiStore } from "@/shared/store/uiStore";
 import { allowClose, cancelQuit, hidesOnClose, registerCloseGuard, setTrayActive, shouldConfirmClose, type CloseWarning } from "./closeGuardState";
 
 export function CloseGuard() {
@@ -15,6 +17,7 @@ export function CloseGuard() {
     const unlisten = getCurrentWindow().onCloseRequested(async (event) => {
       if (hidesOnClose()) {
         event.preventDefault();
+        if (useUiStore.getState().immersive) await exitImmersive();
         if (await hideToTray()) return;
         setTrayActive(false);
         void getCurrentWindow().close();

@@ -13,6 +13,12 @@ vi.mock("@tauri-apps/api/core", () => ({ invoke, convertFileSrc: (path: string) 
 vi.mock("@embedpdf/plugin-scroll/react", () => ({ useScroll: () => scroll }));
 vi.mock("@embedpdf/core/react", () => ({ useRegistry: () => ({ registry: null, documents: {} }) }));
 vi.mock("@/features/viewer/ImmersiveView", () => ({ ImmersiveView: () => <div data-testid="console-stage" /> }));
+vi.mock("@tauri-apps/api/window", () => ({
+  getCurrentWindow: () => ({ isMaximized: async () => false, onResized: async () => () => undefined }),
+  currentMonitor: async () => null,
+  PhysicalPosition: class {},
+  PhysicalSize: class {},
+}));
 vi.mock("./usePresenterConsole", () => ({ usePresenterConsole: () => () => undefined }));
 const fullscreen = vi.hoisted(() => vi.fn());
 vi.mock("@/features/viewer/immersive", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/features/viewer/immersive")>()), setImmersiveFullscreen: fullscreen }));
@@ -75,6 +81,21 @@ describe("PresenterConsole", () => {
 
     expect((screen.getByRole("button", { name: "Swap screens" }) as HTMLButtonElement).disabled).toBe(true);
     expect(screen.getByText(/Rehearsal:/)).toBeTruthy();
+  });
+
+  it("gives a rehearsal window a drag strip and the window buttons, which a full-screen show does without", () => {
+    renderConsole();
+    const fullScreenBar = screen.getByRole("toolbar", { name: "Presentation tools" }).hasAttribute("data-tauri-drag-region");
+    const fullScreenClose = screen.queryByRole("button", { name: "Close" });
+    cleanup();
+    usePresenterStore.setState({ session: session({ external: false }) });
+
+    renderConsole();
+
+    expect(fullScreenBar).toBe(false);
+    expect(fullScreenClose).toBeNull();
+    expect(screen.getByRole("toolbar", { name: "Presentation tools" }).hasAttribute("data-tauri-drag-region")).toBe(true);
+    expect(screen.getByRole("button", { name: "Close" })).toBeTruthy();
   });
 
   it("offers to move a rehearsal onto a projector that was switched to extend", async () => {

@@ -47,6 +47,12 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Presentations show only the page on pure black: the grey border around the page in single-screen presentations and in the presenter console is gone, like on the projector [2026-10-18]
 - Very small labels (badges, counters, captions) use two new type-scale steps, `text-2xs` (11 px) and `text-3xs` (10 px), instead of fixed pixel sizes; the code-language badge on a selected code block grows from 9 to 10 px [2026-10-18]
 ### Fixed
+- Presentations: the full-screen button in the viewer toolbar starts a presentation even when the macOS window is already full screen, instead of leaving full screen [2026-10-19]
+- macOS: leaving full screen with the green button or the View menu during a presentation ends the presentation instead of leaving it running in a window; if the system refuses full screen, the presentation still opens in the window and the reason is logged [2026-10-19]
+- Presenter rehearsal on one screen: the console's top bar drags the window, keeps clear of the macOS traffic lights and has minimise, maximise and close buttons on Windows; the floating exit button no longer covers the console's End button [2026-10-19]
+- Presenter: after Swap screens, ending the presentation puts the window back on the screen and at the size it started from [2026-10-19]
+- Closing the window to the tray during a presentation ends the presentation first, so no empty full-screen space or audience window stays behind [2026-10-19]
+- macOS: menu commands chosen while the projector window has focus reach the presenter console instead of being lost [2026-10-19]
 - macOS: Control keys are no longer read as Command, so Control+F/B/N/P/H/K/O and Option+←/→ edit and move through text fields as on every Mac app instead of being swallowed or opening find, the palette or the file picker; Control-click no longer also adds to a selection, and Control+Command+F enters full screen from every page, not only with a document open [2026-10-19]
 - macOS Studio: Command+H hides vivePDF again instead of opening Replace, which moved to Option+Command+F (Ctrl+H on Windows is unchanged) [2026-10-19]
 - macOS: the delete key (Backspace) marks a page for deletion in the thumbnails, removes a bookmark in the outline editor and closes a focused document tab, as Delete already did [2026-10-19]
