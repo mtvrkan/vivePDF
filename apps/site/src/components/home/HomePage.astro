@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import { INLINE_SCRIPTS } from "../../seo/inlineScripts";
 import "../../styles/home.css";
 import Hero from "./Hero.astro";
 import Lens from "./Lens.astro";
@@ -68,6 +69,7 @@ const jsonLd = [
 ];
 ---
 <Base lang={lang} title={copy.meta.title} description={copy.meta.description} path={path} alternates={{ tr: homePath("tr"), en: homePath("en") }} jsonLd={jsonLd} hero>
+  {lang === "tr" && <script is:inline slot="head" set:html={INLINE_SCRIPTS.langRedirect} />}
   <main id="main">
     <Hero lang={lang} />
     <Lens lang={lang} />

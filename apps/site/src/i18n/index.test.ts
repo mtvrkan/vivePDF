@@ -19,11 +19,11 @@ describe("localized paths", () => {
 });
 
 describe("hreflang links", () => {
-  it("adds x-default pointing at Turkish when both languages exist", () => {
+  it("adds x-default pointing at English when both languages exist", () => {
     expect(hreflangLinks({ tr: "/", en: "/en/" })).toEqual([
       { hreflang: "tr", href: "https://vivepdf.com/" },
       { hreflang: "en", href: "https://vivepdf.com/en/" },
-      { hreflang: "x-default", href: "https://vivepdf.com/" },
+      { hreflang: "x-default", href: "https://vivepdf.com/en/" },
     ]);
   });
 

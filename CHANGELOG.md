@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- Website: a first visit to the Turkish home page from a browser that does not ask for Turkish goes to the English home page; choosing TR or EN in the menu is remembered and stops the redirect, links inside the site never redirect, and search engine crawlers are left alone. Search engines are told English is the default language (x-default) [2026-10-20]
 
 ## [0.4.0] - 2026-10-19
 ### Added

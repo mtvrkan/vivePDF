@@ -3,6 +3,7 @@ import appData from "../data/app-data.json";
 export const LOCALES = ["tr", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "tr";
+export const FALLBACK_LOCALE: Locale = "en";
 
 export const SITE_URL = "https://vivepdf.com";
 export const REPO_URL = "https://github.com/mtvrkan/vivePDF";
@@ -42,7 +43,7 @@ export function hreflangLinks(alternates: Alternates): Array<{ hreflang: string;
     hreflang: l,
     href: absoluteUrl(alternates[l] as string),
   }));
-  const fallback = alternates[DEFAULT_LOCALE];
+  const fallback = alternates[FALLBACK_LOCALE] ?? alternates[DEFAULT_LOCALE];
   if (fallback && links.length > 1) links.push({ hreflang: "x-default", href: absoluteUrl(fallback) });
   return links;
 }

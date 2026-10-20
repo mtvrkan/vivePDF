@@ -45,4 +45,27 @@ describe("inline script hashes", () => {
     expect(run("?lite", { hardwareConcurrency: 16 })).toEqual(["motion", "lite"]);
     expect(run("?full", { hardwareConcurrency: 2 })).toEqual(["motion"]);
   });
+
+  it("sends a first visit to English unless the browser asks for Turkish", () => {
+    const run = (opts: { languages?: string[]; stored?: string | null; referrer?: string; userAgent?: string }) => {
+      const targets: string[] = [];
+      const nav = { languages: opts.languages ?? ["en-US"], language: "", userAgent: opts.userAgent ?? "Mozilla/5.0 Safari" };
+      const loc = { origin: "https://vivepdf.com", search: "", replace: (u: string) => targets.push(u) };
+      const store = { getItem: () => opts.stored ?? null };
+      const redirect = new Function("navigator", "document", "location", "localStorage", INLINE_SCRIPTS.langRedirect);
+      redirect(nav, { referrer: opts.referrer ?? "" }, loc, store);
+      return targets;
+    };
+
+    expect(run({})).toEqual(["/en/"]);
+    expect(run({ languages: ["de-DE", "fr"] })).toEqual(["/en/"]);
+    expect(run({ languages: ["tr-TR"] })).toEqual([]);
+    expect(run({ languages: ["en-US", "tr"] })).toEqual([]);
+    expect(run({ languages: ["tru"] })).toEqual(["/en/"]);
+    expect(run({ stored: "tr" })).toEqual([]);
+    expect(run({ referrer: "https://vivepdf.com/en/" })).toEqual([]);
+    expect(run({ referrer: "https://vivepdf.com.evil.example/" })).toEqual(["/en/"]);
+    expect(run({ referrer: "https://www.google.com/" })).toEqual(["/en/"]);
+    expect(run({ userAgent: "Mozilla/5.0 (compatible; Googlebot/2.1)" })).toEqual([]);
+  });
 });

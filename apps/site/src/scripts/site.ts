@@ -58,6 +58,13 @@ function setMenu(open: boolean) {
 
 menuBtn?.addEventListener("click", () => setMenu(Boolean(mnav?.hidden)));
 mnav?.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => setMenu(false)));
+document.querySelectorAll<HTMLAnchorElement>(".seg a[hreflang], .mnav a[hreflang]").forEach((a) =>
+  a.addEventListener("click", () => {
+    try {
+      localStorage.setItem("vp-lang", a.hreflang);
+    } catch {}
+  }),
+);
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && mnav && !mnav.hidden) {
     setMenu(false);
