@@ -1244,6 +1244,16 @@ The first time you start the new version, vivePDF shows its highlights once in a
 
 Every addition, change and fix in each version is recorded with its date in [CHANGELOG.md](https://github.com/mtvrkan/vivePDF/blob/main/CHANGELOG.md) on GitHub. The installers and a short note for each version are on the [releases page](https://github.com/mtvrkan/vivePDF/releases).
 
+## vivePDF 0.4.0
+
+Released: 2026-10-21 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.4.0)
+
+- Word, Excel and PowerPoint files open straight in vivePDF as PDFs, also from Open With in Finder and Explorer; when LibreOffice is missing, vivePDF offers to set it up and opens the file once it is ready.
+- Tabs work like a browser's: drag a tab or a whole tab group out to open it in its own window where you drop it, or onto another vivePDF window to move it there.
+- vivePDF runs on the Mac: full screen keeps the window buttons beside the logo, Command shortcuts and the menu bar work the macOS way, trackpad pinch zooms smoothly, and updates arrive inside the app.
+- The black and white presentation boards have a toolbar with pen, highlighter, shapes and eraser, pick several drawings at once and undo up to 100 steps.
+- Smoother and lighter: scrolling a PDF no longer stutters, typing stays quick in long Studio documents, and page previews no longer wait for each other.
+
 ## vivePDF 0.3.0
 
 Released: 2026-10-15 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.3.0)

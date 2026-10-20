@@ -1244,6 +1244,16 @@ Yeni sürüme geçtikten sonraki ilk açılışta vivePDF, **vivePDF … yüklen
 
 Her sürümdeki bütün eklemeler, değişiklikler ve düzeltmeler GitHub'daki [CHANGELOG.md](https://github.com/mtvrkan/vivePDF/blob/main/CHANGELOG.md) dosyasında tarihleriyle birlikte tutulur. Kurulum dosyalarını ve her sürümün kısa notunu [sürümler sayfasında](https://github.com/mtvrkan/vivePDF/releases) bulabilirsin.
 
+## vivePDF 0.4.0
+
+Yayımlandı: 2026-10-21 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.4.0)
+
+- Word, Excel ve PowerPoint dosyaları doğrudan vivePDF'te PDF olarak açılır, Finder ve Explorer'daki Birlikte Aç menüsünden de; LibreOffice yoksa vivePDF kurmayı önerir ve hazır olunca dosyayı açar.
+- Sekmeler tarayıcıdaki gibi çalışır: bir sekmeyi ya da bütün bir sekme grubunu dışarı sürükleyip bıraktığınız yerde kendi penceresinde açın veya başka bir vivePDF penceresine bırakıp oraya taşıyın.
+- vivePDF Mac'te çalışıyor: tam ekranda pencere düğmeleri logonun yanında kalır, Command kısayolları ve menü çubuğu macOS'a uygun çalışır, izleme dörtgeninde iki parmakla yakınlaştırma yumuşaktır ve güncellemeler uygulamanın içinden gelir.
+- Sunumdaki siyah ve beyaz tahtalarda kalem, vurgulayıcı, şekil ve silgili bir araç çubuğu var; birden çok çizim birlikte seçilir ve 100 adıma kadar geri alınır.
+- Daha akıcı ve hafif: PDF kaydırırken takılma olmuyor, uzun Stüdyo belgelerinde yazmak hızlı kalıyor ve sayfa önizlemeleri birbirini beklemiyor.
+
 ## vivePDF 0.3.0
 
 Yayımlandı: 2026-10-15 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.3.0)

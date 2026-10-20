@@ -10,7 +10,7 @@ Key facts:
 - Tools: 77 PDF tools in one app, including merge, split, compress, OCR, convert to and from Office formats, digital signatures (PAdES), redaction, form filling and comparison. A presenter view shows slides on one screen and notes on the other.
 - Studio: a built-in design and document editor with templates, CVs and business cards.
 - Interface languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic.
-- Latest version: 0.3.0, released 2026-10-15.
+- Latest version: 0.4.0, released 2026-10-21.
 - Source code and downloads: https://github.com/mtvrkan/vivePDF
 - Website: Turkish at https://vivepdf.com/ (default) and English at https://vivepdf.com/en/. Every documentation page below is also available as plain Markdown.
 
