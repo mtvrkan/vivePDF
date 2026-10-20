@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { absoluteUrl, docPath, docsIndexPath, homePath, hreflangLinks } from ".";
+import { absoluteUrl, APP_VERSION, docPath, docsIndexPath, homePath, hreflangLinks, MAC_DOWNLOAD_URL, WINDOWS_DOWNLOAD_URL } from ".";
 import { plural } from "./plural";
 
 describe("localized paths", () => {
@@ -15,6 +15,14 @@ describe("localized paths", () => {
 
   it("builds absolute URLs on the production origin", () => {
     expect(absoluteUrl("/en/")).toBe("https://vivepdf.com/en/");
+  });
+});
+
+describe("download links", () => {
+  it("point straight at the installers of the current release", () => {
+    const base = `https://github.com/mtvrkan/vivePDF/releases/download/v${APP_VERSION}`;
+    expect(WINDOWS_DOWNLOAD_URL).toBe(`${base}/vivePDF_${APP_VERSION}_x64-setup.exe`);
+    expect(MAC_DOWNLOAD_URL).toBe(`${base}/vivePDF_${APP_VERSION}_aarch64.dmg`);
   });
 });
 

@@ -1,5 +1,5 @@
 ---
-import { APP_VERSION, LATEST_RELEASE_URL, type Locale } from "../../i18n";
+import { APP_VERSION, MAC_DOWNLOAD_URL, WINDOWS_DOWNLOAD_URL, type Locale } from "../../i18n";
 import { HOME } from "../../i18n/home";
 import { ANCHORS } from "../../i18n/ui";
 
@@ -36,8 +36,8 @@ const proofIcons = [
       <div class="hero-side">
         <p class="lede" data-hero>{c.lede}</p>
         <div class="cta" data-hero>
-          <a class="btn btn-primary magnetic" href={LATEST_RELEASE_URL}><svg class="ic" aria-hidden="true"><use href="#i-win"/></svg>{c.windows}</a>
-          <a class="btn btn-glass" href={LATEST_RELEASE_URL}><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>{c.mac}</a>
+          <a class="btn btn-primary magnetic" href={WINDOWS_DOWNLOAD_URL}><svg class="ic" aria-hidden="true"><use href="#i-win"/></svg>{c.windows}</a>
+          <a class="btn btn-glass" href={MAC_DOWNLOAD_URL}><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>{c.mac}</a>
           <ul class="facts" aria-label={c.factsLabel}>
             {c.facts.map((fact, i) => <li>{i === 0 && <span class="dot-ok" aria-hidden="true"></span>}{fact}</li>)}
           </ul>

@@ -234,13 +234,14 @@ export const homeEn: HomeCopy = {
   download: {
     eyebrow: "Download",
     lead: "Free and open source. The app checks for updates itself and downloads them in small packages; it never installs anything without asking.",
-    relTitle: "Four releases in two weeks.",
-    relMeta: "1 October → 15 October 2026 · more than 1,600 changes",
+    relTitle: "Five releases in three weeks.",
+    relMeta: "1 October → 21 October 2026 · more than 1,600 changes",
     releases: [
       { date: "2026-10-01", day: "1 Oct", v: "0.1.0", text: "First public release: viewer, tools, OCR, signing." },
       { date: "2026-10-04", day: "4 Oct", v: "0.1.1", text: "Studio: the design and document editor." },
       { date: "2026-10-09", day: "9 Oct", v: "0.2.0", text: "174 templates, 14 CV layouts, business cards." },
       { date: "2026-10-15", day: "15 Oct", v: "0.3.0", text: "Presenter view, offline mode, a self-updating installer." },
+      { date: "2026-10-21", day: "21 Oct", v: "0.4.0", text: "A Mac app, Office files, tabs that move into their own windows." },
     ],
     win: {
       title: "Windows 10 / 11",

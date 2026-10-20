@@ -233,13 +233,14 @@ export const homeTr = {
   download: {
     eyebrow: "İndir",
     lead: "Ücretsiz ve açık kaynak. Güncellemeleri uygulama kendisi denetler, küçük paketlerle indirir; sormadan hiçbir şey kurmaz.",
-    relTitle: "İki haftada dört sürüm.",
-    relMeta: "1 Ekim → 15 Ekim 2026 · 1.600'den fazla değişiklik",
+    relTitle: "Üç haftada beş sürüm.",
+    relMeta: "1 Ekim → 21 Ekim 2026 · 1.600'den fazla değişiklik",
     releases: [
       { date: "2026-10-01", day: "1 Ekim", v: "0.1.0", text: "İlk açık sürüm: görüntüleyici, araçlar, OCR, imza." },
       { date: "2026-10-04", day: "4 Ekim", v: "0.1.1", text: "Stüdyo: tasarım ve belge editörü." },
       { date: "2026-10-09", day: "9 Ekim", v: "0.2.0", text: "174 şablon, 14 CV düzeni, kartvizitler." },
       { date: "2026-10-15", day: "15 Ekim", v: "0.3.0", text: "Sunucu görünümü, çevrimdışı mod, kendini güncelleyen kurulum." },
+      { date: "2026-10-21", day: "21 Ekim", v: "0.4.0", text: "Mac sürümü, Office dosyaları, ayrı pencereye taşınan sekmeler." },
     ],
     win: {
       title: "Windows 10 / 11",

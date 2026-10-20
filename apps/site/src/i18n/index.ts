@@ -11,7 +11,13 @@ export const RELEASES_URL = `${REPO_URL}/releases`;
 export const LATEST_RELEASE_URL = `${REPO_URL}/releases/latest`;
 export const ISSUES_URL = `${REPO_URL}/issues`;
 export const APP_VERSION = appData.version;
-export const APP_RELEASE_DATE = "2026-10-15";
+export const APP_RELEASE_DATE = "2026-10-21";
+export const WINDOWS_DOWNLOAD_URL = releaseAssetUrl(`vivePDF_${APP_VERSION}_x64-setup.exe`);
+export const MAC_DOWNLOAD_URL = releaseAssetUrl(`vivePDF_${APP_VERSION}_aarch64.dmg`);
+
+export function releaseAssetUrl(file: string): string {
+  return `${RELEASES_URL}/download/v${APP_VERSION}/${file}`;
+}
 
 export const OG_LOCALE: Record<Locale, string> = { tr: "tr_TR", en: "en_US" };
 export const LOCALE_NAME: Record<Locale, string> = { tr: "Türkçe", en: "English" };

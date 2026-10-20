@@ -1,5 +1,5 @@
 ---
-import { APP_VERSION, docPath, LATEST_RELEASE_URL, type Locale } from "../../i18n";
+import { APP_VERSION, docPath, MAC_DOWNLOAD_URL, WINDOWS_DOWNLOAD_URL, type Locale } from "../../i18n";
 import { HOME } from "../../i18n/home";
 import { ANCHORS } from "../../i18n/ui";
 import { docByKey } from "../../docs/structure";
@@ -18,7 +18,7 @@ const last = c.releases.length - 1;
       <p class="lead">{c.lead}</p>
       <div class="rel-wrap">
         <div class="rel-h"><p>{c.relTitle}</p><span>{c.relMeta}</span></div>
-        <ol class="rel" id="rel">
+        <ol class="rel" id="rel" style={`--rel-n:${c.releases.length}`}>
           {c.releases.map((r, i) => <li class:list={{ now: i === last }}><time datetime={r.date}>{r.day}</time><b>{r.v}</b><span>{r.text}</span></li>)}
         </ol>
       </div>
@@ -26,7 +26,7 @@ const last = c.releases.length - 1;
         <article class="dl-card">
           <div class="dl-top"><span class="os-mark"><svg aria-hidden="true"><use href="#i-win"/></svg></span><span class="ready"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>{c.win.ready}</span></div>
           <div><h3>{c.win.title}</h3><p class="dl-file">{c.win.file}</p></div>
-          <a class="btn btn-primary magnetic" href={LATEST_RELEASE_URL} style="align-self:flex-start"><svg class="ic" aria-hidden="true"><use href="#i-win"/></svg>{c.win.button}</a>
+          <a class="btn btn-primary magnetic" href={WINDOWS_DOWNLOAD_URL} style="align-self:flex-start"><svg class="ic" aria-hidden="true"><use href="#i-win"/></svg>{c.win.button}</a>
           <div class="smart">
             <p><strong>{c.win.smartStrong}</strong> {c.win.smartText}</p>
             <ol class="steps">{c.win.steps.map((s) => <li><span>{s}</span></li>)}</ol>
@@ -36,7 +36,7 @@ const last = c.releases.length - 1;
         <article class="dl-card mac-card">
           <div class="dl-top"><span class="os-mark"><svg aria-hidden="true"><use href="#i-apple"/></svg></span><span class="ready"><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>{c.mac.ready}</span></div>
           <div><h3>{c.mac.title}</h3><p class="dl-file">{c.mac.file}</p><p class="mac-note">{c.mac.note}</p></div>
-          <a class="btn btn-primary magnetic" href={LATEST_RELEASE_URL} style="align-self:flex-start"><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>{c.mac.button}</a>
+          <a class="btn btn-primary magnetic" href={MAC_DOWNLOAD_URL} style="align-self:flex-start"><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>{c.mac.button}</a>
           <div class="smart">
             <p><strong>{c.mac.gateStrong}</strong> {c.mac.gateText}</p>
             <ol class="steps">{c.mac.steps.map((s) => <li><span>{s}</span></li>)}</ol>

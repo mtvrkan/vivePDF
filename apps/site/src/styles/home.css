@@ -613,7 +613,7 @@ h1 .ln>span{display:block}
 .rel-h{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 16px;margin-bottom:22px}
 .rel-h p{font:600 clamp(1.4rem,2.4vw,1.9rem)/1.1 var(--f-display);letter-spacing:-.038em;color:var(--deep)}
 .rel-h span{font:400 .75rem/1 var(--f-mono);color:var(--ink-3)}
-.rel{--relp:1;position:relative;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.rel{--relp:1;position:relative;display:grid;grid-template-columns:repeat(var(--rel-n,4),minmax(0,1fr));gap:20px}
 .rel::before,.rel::after{content:"";position:absolute;left:0;right:0;top:7px;height:2px;border-radius:2px;background:var(--hair-2)}
 .rel::after{background:linear-gradient(90deg,var(--sky),var(--blue) 70%,var(--amber));transform-origin:0 50%;transform:scaleX(var(--relp))}
 .rel li{position:relative;z-index:1;padding-top:32px;display:grid;gap:5px;align-content:start}
