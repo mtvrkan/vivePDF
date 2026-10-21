@@ -12,7 +12,7 @@ Key facts:
 - Interface languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic.
 - Latest version: 0.4.0, released 2026-10-21.
 - Source code and downloads: https://github.com/mtvrkan/vivePDF
-- Website: Turkish at https://vivepdf.com/ (default) and English at https://vivepdf.com/en/. Every documentation page below is also available as plain Markdown.
+- Website: English at https://vivepdf.com/ (default) and Turkish at https://vivepdf.com/tr/. Every documentation page below is also available as plain Markdown.
 
 ## Getting started
 
