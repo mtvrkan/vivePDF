@@ -68,4 +68,18 @@ describe("inline script hashes", () => {
     expect(run({ referrer: "https://www.google.com/" })).toEqual(["/en/"]);
     expect(run({ userAgent: "Mozilla/5.0 (compatible; Googlebot/2.1)" })).toEqual([]);
   });
+
+  it("leaves crawlers without bot in their name on the Turkish home", () => {
+    const run = (userAgent: string) => {
+      const targets: string[] = [];
+      const redirect = new Function("navigator", "document", "location", "localStorage", INLINE_SCRIPTS.langRedirect);
+      redirect({ languages: ["en-US"], language: "", userAgent }, { referrer: "" }, { origin: "https://vivepdf.com", search: "", replace: (u: string) => targets.push(u) }, { getItem: () => null });
+      return targets;
+    };
+
+    expect(run("Mozilla/5.0 (Linux; Android 6.0.1) Chrome/130 Mobile Safari/537.36 (compatible; Google-InspectionTool/1.0;)")).toEqual([]);
+    expect(run("Mozilla/5.0 (compatible; GoogleOther)")).toEqual([]);
+    expect(run("Mozilla/5.0 (X11; Linux x86_64) Chrome/49.0 Safari/537.36 Google Favicon")).toEqual([]);
+    expect(run("Mozilla/5.0 (Macintosh) AppleWebKit/605.1.15 Version/18.0 Safari/605.1.15")).toEqual(["/en/"]);
+  });
 });

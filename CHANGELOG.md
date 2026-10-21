@@ -9,6 +9,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the download buttons no longer pass the site's address to GitHub, so a download started on vivepdf.com is recorded like one started on GitHub, which should keep Windows from adding an extra warning for the young domain [2026-10-21]
 
 ### Fixed
+- Website: the Turkish home page no longer sends Google's other crawlers (URL inspection, favicon and GoogleOther fetchers) and other search engines to the English page, so the home page itself can be indexed; the site also serves /favicon.ico and a 192 px icon so search results can show the vivePDF icon [2026-10-21]
 - Windows installer: the setup file and the installer window show the vivePDF icon instead of the generic installer icon [2026-10-21]
 - PDF to Word: pictures stored directly inside the page (common for small logos and letterhead marks) no longer disappear from the Word file [2026-10-21]
 
