@@ -9,6 +9,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the download buttons no longer pass the site's address to GitHub, so a download started on vivepdf.com is recorded like one started on GitHub, which should keep Windows from adding an extra warning for the young domain [2026-10-21]
 
 ### Fixed
+- Windows installer: the setup file and the installer window show the vivePDF icon instead of the generic installer icon [2026-10-21]
 - PDF to Word: pictures stored directly inside the page (common for small logos and letterhead marks) no longer disappear from the Word file [2026-10-21]
 
 ## [0.4.0] - 2026-10-19
