@@ -7,9 +7,10 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: a first visit to the Turkish home page from a browser that does not ask for Turkish goes to the English home page; choosing TR or EN in the menu is remembered and stops the redirect, links inside the site never redirect, and search engine crawlers are left alone. Search engines are told English is the default language (x-default) [2026-10-20]
 - Website: the Windows and macOS download buttons start the installer download straight from the current GitHub release instead of opening the release page, and the release timeline lists 0.4.0, with as many columns as there are releases [2026-10-21]
 - Website: the download buttons no longer pass the site's address to GitHub, so a download started on vivepdf.com is recorded like one started on GitHub, which should keep Windows from adding an extra warning for the young domain [2026-10-21]
+- Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
-- Website: the Turkish home page no longer sends Google's other crawlers (URL inspection, favicon and GoogleOther fetchers) and other search engines to the English page, so the home page itself can be indexed; the site also serves /favicon.ico and a 192 px icon so search results can show the vivePDF icon [2026-10-21]
+- Website: the site serves /favicon.ico and a 192 px icon so search results can show the vivePDF icon [2026-10-21]
 - Windows installer: the setup file and the installer window show the vivePDF icon instead of the generic installer icon [2026-10-21]
 - PDF to Word: pictures stored directly inside the page (common for small logos and letterhead marks) no longer disappear from the Word file [2026-10-21]
 

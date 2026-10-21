@@ -10,7 +10,7 @@ An open-source, offline PDF studio for Windows and macOS. View, edit, convert, O
 
 **English** · [Türkçe](README.tr.md)
 
-[Website](https://vivepdf.com/en/) · [Documentation](https://vivepdf.com/en/docs/) · [Download](https://github.com/mtvrkan/vivePDF/releases/latest) · [Release notes](https://vivepdf.com/en/docs/release-notes/) · [Discussions](https://github.com/mtvrkan/vivePDF/discussions)
+[Website](https://vivepdf.com/) · [Documentation](https://vivepdf.com/en/docs/) · [Download](https://github.com/mtvrkan/vivePDF/releases/latest) · [Release notes](https://vivepdf.com/en/docs/release-notes/) · [Discussions](https://github.com/mtvrkan/vivePDF/discussions)
 
 [![Latest release](https://img.shields.io/github/v/release/mtvrkan/vivePDF?label=release)](https://github.com/mtvrkan/vivePDF/releases/latest)
 [![License: AGPL-3.0](https://img.shields.io/github/license/mtvrkan/vivePDF)](LICENSE)
@@ -66,7 +66,7 @@ Tests: `pnpm test` / `pnpm typecheck` / `pnpm lint` (UI) · `uv run pytest` (eng
 
 ## Website
 
-The site at https://vivepdf.com lives in `apps/site` (Astro, Turkish at `/`, English at `/en/`, with the documentation under `/dokumantasyon/` and `/en/docs/`). `pnpm site:dev` runs it locally and `pnpm site:build` builds it with the search index. The tool list, shortcuts and release notes on the site come from `apps/site/src/data/app-data.json`, which `apps/desktop/src/app/siteData.test.ts` keeps in step with the app (`UPDATE_SITE_DATA=1 pnpm vitest run src/app/siteData.test.ts` in `apps/desktop` rewrites it). `scripts/deploy-site.sh` builds the site into the `gh-pages` branch for GitHub Pages; add `--push` to publish it.
+The site at https://vivepdf.com lives in `apps/site` (Astro, English home at `/`, Turkish home at `/tr/`, with the documentation under `/en/docs/` and `/dokumantasyon/`). `pnpm site:dev` runs it locally and `pnpm site:build` builds it with the search index. The tool list, shortcuts and release notes on the site come from `apps/site/src/data/app-data.json`, which `apps/desktop/src/app/siteData.test.ts` keeps in step with the app (`UPDATE_SITE_DATA=1 pnpm vitest run src/app/siteData.test.ts` in `apps/desktop` rewrites it). `scripts/deploy-site.sh` builds the site into the `gh-pages` branch for GitHub Pages; add `--push` to publish it.
 
 ## Contributing and support
 

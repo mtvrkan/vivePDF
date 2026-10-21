@@ -69,7 +69,7 @@ const jsonLd = [
 ];
 ---
 <Base lang={lang} title={copy.meta.title} description={copy.meta.description} path={path} alternates={{ tr: homePath("tr"), en: homePath("en") }} jsonLd={jsonLd} hero>
-  {lang === "tr" && <script is:inline slot="head" set:html={INLINE_SCRIPTS.langRedirect} />}
+  {lang === "en" && <script is:inline slot="head" set:html={INLINE_SCRIPTS.langRedirect} />}
   <main id="main">
     <Hero lang={lang} />
     <Lens lang={lang} />

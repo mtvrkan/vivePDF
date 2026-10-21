@@ -135,7 +135,7 @@ export function llmsIndex(sources: Record<Locale, DocSource[]>): string {
       "- Interface languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic.",
       `- Latest version: ${APP_VERSION}, released ${APP_RELEASE_DATE}.`,
       `- Source code and downloads: ${REPO_URL}`,
-      `- Website: Turkish at ${absoluteUrl(homePath("tr"))} (default) and English at ${absoluteUrl(homePath("en"))}. Every documentation page below is also available as plain Markdown.`,
+      `- Website: English at ${absoluteUrl(homePath("en"))} (default) and Turkish at ${absoluteUrl(homePath("tr"))}. Every documentation page below is also available as plain Markdown.`,
     ].join("\n"),
     ...groups,
     `## Türkçe dokümantasyon\n\n${sources.tr.map((s) => docLink(s, "tr")).join("\n")}`,

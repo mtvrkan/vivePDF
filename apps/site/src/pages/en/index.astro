@@ -1,4 +1,17 @@
 ---
-import HomePage from "../../components/home/HomePage.astro";
+import { absoluteUrl, homePath } from "../../i18n";
+
+const target = homePath("en");
 ---
-<HomePage lang="en" />
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>vivePDF</title>
+<link rel="canonical" href={absoluteUrl(target)}>
+<meta http-equiv="refresh" content={`0; url=${target}`}>
+</head>
+<body>
+<a href={target}>vivePDF</a>
+</body>
+</html>

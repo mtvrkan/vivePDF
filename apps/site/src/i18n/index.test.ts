@@ -3,8 +3,8 @@ import { absoluteUrl, APP_VERSION, docPath, docsIndexPath, homePath, hreflangLin
 import { plural } from "./plural";
 
 describe("localized paths", () => {
-  it("keeps Turkish at the root and English under /en/", () => {
-    expect([homePath("tr"), homePath("en")]).toEqual(["/", "/en/"]);
+  it("puts the English home at the root and the Turkish one under /tr/", () => {
+    expect([homePath("tr"), homePath("en")]).toEqual(["/tr/", "/"]);
     expect([docsIndexPath("tr"), docsIndexPath("en")]).toEqual(["/dokumantasyon/", "/en/docs/"]);
   });
 

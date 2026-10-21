@@ -10,7 +10,7 @@ Windows ve macOS için açık kaynak, internetsiz çalışan bir PDF stüdyosu. 
 
 [English](README.md) · **Türkçe**
 
-[Web sitesi](https://vivepdf.com/) · [Dokümantasyon](https://vivepdf.com/dokumantasyon/) · [İndir](https://github.com/mtvrkan/vivePDF/releases/latest) · [Sürüm notları](https://vivepdf.com/dokumantasyon/surum-notlari/) · [Tartışmalar](https://github.com/mtvrkan/vivePDF/discussions)
+[Web sitesi](https://vivepdf.com/tr/) · [Dokümantasyon](https://vivepdf.com/dokumantasyon/) · [İndir](https://github.com/mtvrkan/vivePDF/releases/latest) · [Sürüm notları](https://vivepdf.com/dokumantasyon/surum-notlari/) · [Tartışmalar](https://github.com/mtvrkan/vivePDF/discussions)
 
 [![Son sürüm](https://img.shields.io/github/v/release/mtvrkan/vivePDF?label=s%C3%BCr%C3%BCm)](https://github.com/mtvrkan/vivePDF/releases/latest)
 [![Lisans: AGPL-3.0](https://img.shields.io/github/license/mtvrkan/vivePDF?label=lisans)](LICENSE)
@@ -66,7 +66,7 @@ Testler: `pnpm test` / `pnpm typecheck` / `pnpm lint` (arayüz) · `uv run pytes
 
 ## Web sitesi
 
-https://vivepdf.com adresindeki site `apps/site` içinde (Astro; Türkçe `/`, İngilizce `/en/`, dokümantasyon `/dokumantasyon/` ve `/en/docs/` altında). Ayrıntılar [İngilizce README](README.md#website)'de.
+https://vivepdf.com adresindeki site `apps/site` içinde (Astro; İngilizce ana sayfa `/`, Türkçe ana sayfa `/tr/`, dokümantasyon `/en/docs/` ve `/dokumantasyon/` altında). Ayrıntılar [İngilizce README](README.md#website)'de.
 
 ## Katkı ve destek
 

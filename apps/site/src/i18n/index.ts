@@ -27,7 +27,7 @@ export function isLocale(value: string | undefined): value is Locale {
 }
 
 export function homePath(locale: Locale): string {
-  return locale === DEFAULT_LOCALE ? "/" : `/${locale}/`;
+  return locale === FALLBACK_LOCALE ? "/" : `/${locale}/`;
 }
 
 export function docsIndexPath(locale: Locale): string {
