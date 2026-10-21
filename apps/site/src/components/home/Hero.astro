@@ -36,8 +36,8 @@ const proofIcons = [
       <div class="hero-side">
         <p class="lede" data-hero>{c.lede}</p>
         <div class="cta" data-hero>
-          <a class="btn btn-primary magnetic" href={WINDOWS_DOWNLOAD_URL}><svg class="ic" aria-hidden="true"><use href="#i-win"/></svg>{c.windows}</a>
-          <a class="btn btn-glass" href={MAC_DOWNLOAD_URL}><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>{c.mac}</a>
+          <a class="btn btn-primary magnetic" href={WINDOWS_DOWNLOAD_URL} referrerpolicy="no-referrer"><svg class="ic" aria-hidden="true"><use href="#i-win"/></svg>{c.windows}</a>
+          <a class="btn btn-glass" href={MAC_DOWNLOAD_URL} referrerpolicy="no-referrer"><svg class="ic" aria-hidden="true"><use href="#i-apple"/></svg>{c.mac}</a>
           <ul class="facts" aria-label={c.factsLabel}>
             {c.facts.map((fact, i) => <li>{i === 0 && <span class="dot-ok" aria-hidden="true"></span>}{fact}</li>)}
           </ul>

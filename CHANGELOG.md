@@ -6,6 +6,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ### Changed
 - Website: a first visit to the Turkish home page from a browser that does not ask for Turkish goes to the English home page; choosing TR or EN in the menu is remembered and stops the redirect, links inside the site never redirect, and search engine crawlers are left alone. Search engines are told English is the default language (x-default) [2026-10-20]
 - Website: the Windows and macOS download buttons start the installer download straight from the current GitHub release instead of opening the release page, and the release timeline lists 0.4.0, with as many columns as there are releases [2026-10-21]
+- Website: the download buttons no longer pass the site's address to GitHub, so a download started on vivepdf.com is recorded like one started on GitHub, which should keep Windows from adding an extra warning for the young domain [2026-10-21]
 
 ## [0.4.0] - 2026-10-19
 ### Added
