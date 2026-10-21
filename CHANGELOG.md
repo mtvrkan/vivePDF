@@ -8,6 +8,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the Windows and macOS download buttons start the installer download straight from the current GitHub release instead of opening the release page, and the release timeline lists 0.4.0, with as many columns as there are releases [2026-10-21]
 - Website: the download buttons no longer pass the site's address to GitHub, so a download started on vivepdf.com is recorded like one started on GitHub, which should keep Windows from adding an extra warning for the young domain [2026-10-21]
 
+### Fixed
+- PDF to Word: pictures stored directly inside the page (common for small logos and letterhead marks) no longer disappear from the Word file [2026-10-21]
+
 ## [0.4.0] - 2026-10-19
 ### Added
 - Opening a Word, Excel or PowerPoint file while LibreOffice is missing asks to set it up, shows the download progress and opens the file once it is ready, instead of only showing an error; files opened together wait for the answer [2026-10-19]

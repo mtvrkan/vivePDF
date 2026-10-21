@@ -29,6 +29,7 @@ HIDDEN_TEXT_SHARE = 0.9
 HIDDEN_RENDER_MODE = 3
 CLIP_PIXEL_BUDGET = 40_000_000
 MAX_CLIP_RATIO = 4.0
+MIN_IMAGE_AREA = 4
 
 
 class ConversionCancelled(BaseException):
@@ -167,11 +168,30 @@ class _PageInItsOwnFrame:
 _plain_extract_images = images_extractor.ImagesExtractor.extract_images
 
 
-def _extract_images_inside_the_page(extractor, *args, **kwargs):
+def _inline_image_areas(page: pymupdf.Page, taken: list[pymupdf.Rect]) -> list[pymupdf.Rect]:
+    areas: list[pymupdf.Rect] = []
+    for info in page.get_image_info(xrefs=True):
+        bbox = pymupdf.Rect(info["bbox"]) & page.cropbox
+        if info["xref"] or bbox.get_area() <= MIN_IMAGE_AREA:
+            continue
+        if any(bbox.intersects(other) for other in taken):
+            continue
+        for area in [area for area in areas if area.intersects(bbox)]:
+            bbox |= area
+            areas.remove(area)
+        areas.append(bbox)
+    return areas
+
+
+def _extract_images_inside_the_page(extractor, clip_image_res_ratio: float = 3.0):
     page = extractor._page
     extractor._page = _PageInItsOwnFrame(page)
     try:
-        return _plain_extract_images(extractor, *args, **kwargs)
+        images = _plain_extract_images(extractor, clip_image_res_ratio)
+        taken = [pymupdf.Rect(image["bbox"]) for image in images]
+        for area in _inline_image_areas(extractor._page, taken):
+            images.append(extractor.clip_page_to_dict(area, False, clip_image_res_ratio))
+        return images
     finally:
         extractor._page = page
 
