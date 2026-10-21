@@ -229,6 +229,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   to set LibreOffice up, shows the download progress, and opens the file as a PDF when it is
   done. Cancel stops the download; with a bundled installer the button installs from the app
   package without internet.
+- Build the installer and look at `vivePDF_<version>_x64-setup.exe` in Explorer and while it
+  runs: the file and the installer window show the vivePDF icon, not the generic installer one.
 
 ### How native dialogs are answered
 
