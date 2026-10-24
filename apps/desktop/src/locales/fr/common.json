@@ -2953,12 +2953,18 @@
       "combineSvgHint": "Une page par dessin, dans l’ordre de la liste. Désactivé : chaque dessin a son propre PDF.",
       "svgNeedsLibreOffice": "LibreOffice n’est pas installé : styles, dégradés et découpes sont simplifiés.",
       "count": {
-        "files": "fichiers",
-        "tables": "tableaux",
-        "slides": "diapositives",
-        "images": "images",
-        "pages": "pages",
-        "chapters": "chapitres"
+        "files_one": "fichier",
+        "files_other": "fichiers",
+        "tables_one": "tableau",
+        "tables_other": "tableaux",
+        "slides_one": "diapositive",
+        "slides_other": "diapositives",
+        "images_one": "image",
+        "images_other": "images",
+        "pages_one": "page",
+        "pages_other": "pages",
+        "chapters_one": "chapitre",
+        "chapters_other": "chapitres"
       },
       "idle": {
         "title": "Les résultats s’affichent ici",

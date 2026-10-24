@@ -2953,12 +2953,18 @@
       "combineSvgHint": "Una página por dibujo, en el orden de la lista. Desactivado: cada dibujo tiene su propio PDF.",
       "svgNeedsLibreOffice": "LibreOffice no está instalado: los estilos, degradados y recortes se simplifican.",
       "count": {
-        "files": "archivos",
-        "tables": "tablas",
-        "slides": "diapositivas",
-        "images": "imágenes",
-        "pages": "páginas",
-        "chapters": "capítulos"
+        "files_one": "archivo",
+        "files_other": "archivos",
+        "tables_one": "tabla",
+        "tables_other": "tablas",
+        "slides_one": "diapositiva",
+        "slides_other": "diapositivas",
+        "images_one": "imagen",
+        "images_other": "imágenes",
+        "pages_one": "página",
+        "pages_other": "páginas",
+        "chapters_one": "capítulo",
+        "chapters_other": "capítulos"
       },
       "idle": {
         "title": "Los resultados aparecerán aquí",

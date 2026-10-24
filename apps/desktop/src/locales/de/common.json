@@ -2953,12 +2953,18 @@
       "combineSvgHint": "Eine Seite pro Zeichnung in der Reihenfolge der Liste. Aus: Jede Zeichnung erhält ein eigenes PDF.",
       "svgNeedsLibreOffice": "LibreOffice ist nicht installiert: Stile, Verläufe und Beschneidungen werden vereinfacht.",
       "count": {
-        "files": "Dateien",
-        "tables": "Tabellen",
-        "slides": "Folien",
-        "images": "Bilder",
-        "pages": "Seiten",
-        "chapters": "Kapitel"
+        "files_one": "Datei",
+        "files_other": "Dateien",
+        "tables_one": "Tabelle",
+        "tables_other": "Tabellen",
+        "slides_one": "Folie",
+        "slides_other": "Folien",
+        "images_one": "Bild",
+        "images_other": "Bilder",
+        "pages_one": "Seite",
+        "pages_other": "Seiten",
+        "chapters_one": "Kapitel",
+        "chapters_other": "Kapitel"
       },
       "idle": {
         "title": "Ergebnisse erscheinen hier",

@@ -2954,12 +2954,18 @@
       "combineSvgHint": "Listedeki sırayla her çizim bir sayfa olur. Kapalıysa her çizim ayrı PDF olur.",
       "svgNeedsLibreOffice": "LibreOffice kurulu değil: stiller, geçişler ve kırpma sadeleştirilir.",
       "count": {
-        "files": "dosya",
-        "tables": "tablo",
-        "slides": "slayt",
-        "images": "görsel",
-        "pages": "sayfa",
-        "chapters": "bölüm"
+        "files_one": "dosya",
+        "files_other": "dosya",
+        "tables_one": "tablo",
+        "tables_other": "tablo",
+        "slides_one": "slayt",
+        "slides_other": "slayt",
+        "images_one": "görsel",
+        "images_other": "görsel",
+        "pages_one": "sayfa",
+        "pages_other": "sayfa",
+        "chapters_one": "bölüm",
+        "chapters_other": "bölüm"
       },
       "idle": {
         "title": "Sonuç bu alanda görüntülenir",

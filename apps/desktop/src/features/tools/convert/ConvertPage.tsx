@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router";
 import { ArrowLeftRight } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -68,9 +68,15 @@ export function ConvertPage() {
   }, [refreshTools]);
 
   const resetOperation = operation.reset;
+  const lastInitialMode = useRef(initialMode);
   useEffect(() => {
+    if (initialMode === lastInitialMode.current) return;
+    lastInitialMode.current = initialMode;
     if (!isConvertMode(initialMode) || initialMode === mode) return;
     setMode(initialMode);
+    setOutput("");
+    setOutputDir("");
+    setOutputTouched(false);
     resetOperation();
   }, [initialMode, mode, resetOperation]);
 
@@ -323,7 +329,7 @@ export function ConvertPage() {
           numeral={result ? formatNumber(result.count, locale) : undefined}
           caption={
             result
-              ? [t(`tools.convert.count.${result.label}`), formatBytes(result.bytes, locale), result.skipped ? t("tools.convert.skipped", { count: result.skipped }) : null]
+              ? [t(`tools.convert.count.${result.label}`, { count: result.count }), formatBytes(result.bytes, locale), result.skipped ? t("tools.convert.skipped", { count: result.skipped }) : null]
                   .filter(Boolean)
                   .join(" · ")
               : undefined

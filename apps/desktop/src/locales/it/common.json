@@ -2953,12 +2953,18 @@
       "combineSvgHint": "Una pagina per disegno, nell’ordine dell’elenco. Disattivato: ogni disegno ha il suo PDF.",
       "svgNeedsLibreOffice": "LibreOffice non è installato: stili, sfumature e ritagli vengono semplificati.",
       "count": {
-        "files": "file",
-        "tables": "tabelle",
-        "slides": "diapositive",
-        "images": "immagini",
-        "pages": "pagine",
-        "chapters": "capitoli"
+        "files_one": "file",
+        "files_other": "file",
+        "tables_one": "tabella",
+        "tables_other": "tabelle",
+        "slides_one": "diapositiva",
+        "slides_other": "diapositive",
+        "images_one": "immagine",
+        "images_other": "immagini",
+        "pages_one": "pagina",
+        "pages_other": "pagine",
+        "chapters_one": "capitolo",
+        "chapters_other": "capitoli"
       },
       "idle": {
         "title": "I risultati appaiono qui",

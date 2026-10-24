@@ -10,6 +10,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Convert: a single result is named in the singular ("1 file", "1 page") in every language instead of "1 files" [2026-10-24]
+- Convert: switching from one conversion to another (for example Office → PDF to Images → PDF) no longer jumps back to the previous one or keeps its output file name [2026-10-24]
 - Website: the site serves /favicon.ico and a 192 px icon so search results can show the vivePDF icon [2026-10-21]
 - Windows installer: the setup file and the installer window show the vivePDF icon instead of the generic installer icon [2026-10-21]
 - PDF to Word: pictures stored directly inside the page (common for small logos and letterhead marks) no longer disappear from the Word file [2026-10-21]

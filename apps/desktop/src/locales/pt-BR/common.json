@@ -2953,12 +2953,18 @@
       "combineSvgHint": "Uma página por desenho, na ordem da lista. Desligado: cada desenho gera o próprio PDF.",
       "svgNeedsLibreOffice": "O LibreOffice não está instalado: estilos, gradientes e recortes são simplificados.",
       "count": {
-        "files": "arquivos",
-        "tables": "tabelas",
-        "slides": "slides",
-        "images": "imagens",
-        "pages": "páginas",
-        "chapters": "capítulos"
+        "files_one": "arquivo",
+        "files_other": "arquivos",
+        "tables_one": "tabela",
+        "tables_other": "tabelas",
+        "slides_one": "slide",
+        "slides_other": "slides",
+        "images_one": "imagem",
+        "images_other": "imagens",
+        "pages_one": "página",
+        "pages_other": "páginas",
+        "chapters_one": "capítulo",
+        "chapters_other": "capítulos"
       },
       "idle": {
         "title": "Os resultados aparecem aqui",

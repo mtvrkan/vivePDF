@@ -2954,12 +2954,18 @@
       "combineSvgHint": "One page per drawing, in the order of the list. Off: each drawing gets its own PDF.",
       "svgNeedsLibreOffice": "LibreOffice is not installed: styles, gradients and clipping are simplified.",
       "count": {
-        "files": "files",
-        "tables": "tables",
-        "slides": "slides",
-        "images": "images",
-        "pages": "pages",
-        "chapters": "chapters"
+        "files_one": "file",
+        "files_other": "files",
+        "tables_one": "table",
+        "tables_other": "tables",
+        "slides_one": "slide",
+        "slides_other": "slides",
+        "images_one": "image",
+        "images_other": "images",
+        "pages_one": "page",
+        "pages_other": "pages",
+        "chapters_one": "chapter",
+        "chapters_other": "chapters"
       },
       "idle": {
         "title": "Results appear here",
