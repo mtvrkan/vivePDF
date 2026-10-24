@@ -1,12 +1,13 @@
 ---
-import { APP_VERSION, MAC_DOWNLOAD_URL, WINDOWS_DOWNLOAD_URL, type Locale } from "../../i18n";
+import { APP_VERSION, docPath, MAC_DOWNLOAD_URL, WINDOWS_DOWNLOAD_URL, type Locale } from "../../i18n";
+import { releaseId } from "../../docs/extras";
+import { docByKey } from "../../docs/structure";
 import { HOME } from "../../i18n/home";
-import { ANCHORS } from "../../i18n/ui";
 
 type Props = { lang: Locale };
 const { lang } = Astro.props;
 const c = HOME[lang].hero;
-const a = ANCHORS[lang];
+const newsHref = `${docPath(lang, docByKey("releaseNotes").slug[lang])}#${releaseId(APP_VERSION)}`;
 const proofIcons = [
   { cls: "pf-ok", icon: "i-sign" },
   { cls: undefined, icon: "i-scan" },
@@ -25,7 +26,7 @@ const proofIcons = [
   <div class="wrap">
     <div class="hero-grid">
       <div class="hero-main">
-        <a class="news" href={`#${a.present}`} data-hero><b>{APP_VERSION}</b><span>{c.news}</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="news" href={newsHref} data-hero><b>{APP_VERSION}</b><span>{c.news}</span><svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
         <ul class="proof" aria-label={c.proofLabel} data-hero>
           {c.proof.map((p, i) => (
             <li><i class={proofIcons[i].cls}><svg class="ic" aria-hidden="true"><use href={`#${proofIcons[i].icon}`}/></svg></i><span><b>{p.b}</b><small>{p.small}</small></span>{i === 1 && <em aria-hidden="true"></em>}</li>

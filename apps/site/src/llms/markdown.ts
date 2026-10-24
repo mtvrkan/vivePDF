@@ -47,6 +47,13 @@ export function mdxToMarkdown(body: string): string {
         callout = false;
         continue;
       }
+      const shot = /^<Shot\b(.*)\/>\s*$/.exec(line);
+      if (shot) {
+        const src = /src="([^"]*)"/.exec(shot[1])?.[1] ?? "";
+        const alt = /alt="([^"]*)"/.exec(shot[1])?.[1] ?? "";
+        out.push(`![${alt}](${absoluteUrl(`/shots/${src}-1600.webp`)})`);
+        continue;
+      }
     }
     const fence = /^\s*(```|~~~)/.test(line);
     const text = fenced || fence ? line : siteLinks(keys(line));

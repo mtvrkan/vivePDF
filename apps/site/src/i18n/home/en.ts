@@ -11,7 +11,7 @@ export const homeEn: HomeCopy = {
       "A free, open-source PDF editor for Windows and macOS that works fully offline. View, edit, convert, OCR, sign and present PDFs; your files never leave your computer.",
   },
   hero: {
-    news: "Presenter view and offline mode are here",
+    news: "The Mac version and Office files are here",
     proofLabel: "Just now, on this computer",
     proof: [
       { b: "Contract signed", small: "contract.pdf · Beril Ertuğrul" },

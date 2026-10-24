@@ -51,6 +51,10 @@ body{background:var(--wash)}
 .prose blockquote{padding-left:16px;border-left:3px solid var(--blue);color:var(--ink-2)}
 .prose hr{border:0;height:1px;background:var(--line);margin:2em 0}
 .prose img{max-width:100%;height:auto;border-radius:var(--r-md)}
+.d-shot{margin:1.5em 0}
+.d-shot a{display:block;border-radius:var(--r-md);box-shadow:0 0 0 1px var(--hair-2),var(--shadow-soft);overflow:hidden}
+.d-shot img{display:block;width:100%;border-radius:0}
+.d-shot figcaption{margin-top:10px;font-size:.875rem;color:var(--ink-3);text-align:center}
 .prose table:not(.d-table){width:100%;border-collapse:collapse;font-size:.9375rem}
 .prose table:not(.d-table) th,.prose table:not(.d-table) td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
 .prose table:not(.d-table) th{font-weight:600;color:var(--deep)}

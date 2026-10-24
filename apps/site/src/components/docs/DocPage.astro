@@ -7,6 +7,7 @@ import ReleaseNotes from "./ReleaseNotes.astro";
 import Faq from "./Faq.astro";
 import Steps from "./Steps.astro";
 import Callout from "./Callout.astro";
+import Shot from "./Shot.astro";
 import { absoluteUrl, docPath, docsIndexPath, homePath, REPO_URL, SITE_URL, type Locale } from "../../i18n";
 import { UI } from "../../i18n/ui";
 import { docAlternates, docOgImage, docTitles, neighbours, type DocProps } from "../../docs/pages";
@@ -78,7 +79,7 @@ if (faq.length) {
     <h1>{data.title}</h1>
     <p class="doc-lead">{data.description}</p>
     <div class="prose">
-      <Content components={{ Steps, Callout }} />
+      <Content components={{ Steps, Callout, Shot }} />
       {doc.key === "tools" && <ToolTable lang={lang} />}
       {doc.key === "shortcuts" && <ShortcutTable lang={lang} />}
       {doc.key === "releaseNotes" && <ReleaseNotes lang={lang} />}

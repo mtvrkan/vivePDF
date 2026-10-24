@@ -3,13 +3,18 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Website documentation: a "First steps" page and a new "How-to guides" group of 13 short task pages in Turkish and English (merge, compress, PDF to Word, Office to PDF, photos to PDF, fill a form, sign, edit text, highlight and annotate, delete pages, split, add a password, redact), each with 3–5 steps and real screenshots of the app; screenshots load lazily in two sizes, open full size on click and appear as images in the Markdown copies [2026-10-24]
+
 ### Changed
+- Website: the top menu calls the documentation "How to use" ("Nasıl kullanılır?"), the home page news badge announces the Mac version and Office files and links to the release notes, the reading pages describe Open With › vivePDF and the LibreOffice prompt, and the build-from-source page no longer says the Mac version is unpublished [2026-10-24]
 - Website: a first visit to the Turkish home page from a browser that does not ask for Turkish goes to the English home page; choosing TR or EN in the menu is remembered and stops the redirect, links inside the site never redirect, and search engine crawlers are left alone. Search engines are told English is the default language (x-default) [2026-10-20]
 - Website: the Windows and macOS download buttons start the installer download straight from the current GitHub release instead of opening the release page, and the release timeline lists 0.4.0, with as many columns as there are releases [2026-10-21]
 - Website: the download buttons no longer pass the site's address to GitHub, so a download started on vivepdf.com is recorded like one started on GitHub, which should keep Windows from adding an extra warning for the young domain [2026-10-21]
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Website: Safari no longer draws a stray rectangle behind the vivePDF wordmark [2026-10-24]
 - Convert: a single result is named in the singular ("1 file", "1 page") in every language instead of "1 files" [2026-10-24]
 - Convert: switching from one conversion to another (for example Office → PDF to Images → PDF) no longer jumps back to the previous one or keeps its output file name [2026-10-24]
 - Website: the site serves /favicon.ico and a 192 px icon so search results can show the vivePDF icon [2026-10-21]

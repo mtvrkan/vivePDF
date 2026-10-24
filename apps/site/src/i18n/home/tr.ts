@@ -10,7 +10,7 @@ export const homeTr = {
       "Windows ve macOS için ücretsiz, açık kaynak, tamamen çevrimdışı PDF editörü. Düzenle, dönüştür, OCR uygula, imzala ve sun; dosyaların bilgisayarından çıkmaz.",
   },
   hero: {
-    news: "Sunum modu ve çevrimdışı mod geldi",
+    news: "Mac sürümü ve Office dosyaları geldi",
     proofLabel: "Az önce bu bilgisayarda",
     proof: [
       { b: "Sözleşme imzalandı", small: "sozlesme.pdf · Beril Ertuğrul" },

@@ -22,6 +22,12 @@ describe("mdxToMarkdown", () => {
     expect(md).toBe("1. One\n2. Two\n\n> **Moving pages**\n>\n> Copy them.\n>\n> Then paste.");
   });
 
+  it("turns a screenshot into an image with an absolute address", () => {
+    const md = mdxToMarkdown('Before.\n\n<Shot src="en/merge-1" alt="The Merge tool with two files" />\n\nAfter.');
+
+    expect(md).toBe("Before.\n\n![The Merge tool with two files](https://vivepdf.com/shots/en/merge-1-1600.webp)\n\nAfter.");
+  });
+
   it("writes key runs as inline code and makes site links absolute", () => {
     const md = mdxToMarkdown("Press <kbd>Ctrl</kbd>+<kbd>Z</kbd> or <kbd>?</kbd>, see [Tools](/en/docs/tools/#merge).");
 

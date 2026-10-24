@@ -42,7 +42,7 @@ const tr = {
   skip: "İçeriğe geç",
   mainMenu: "Ana menü",
   homeLabel: "vivePDF ana sayfa",
-  nav: { features: "Özellikler", present: "Sunum", studio: "Stüdyo", docs: "Dokümantasyon", download: "İndir" },
+  nav: { features: "Özellikler", present: "Sunum", studio: "Stüdyo", docs: "Nasıl kullanılır?", download: "İndir" },
   siteLanguage: "Site dili",
   themeDark: "Koyu tema",
   themeLight: "Açık tema",
@@ -103,6 +103,7 @@ const tr = {
     releases: { released: "Yayımlandı", feed: "RSS ile takip et", feedTitle: "vivePDF sürüm notları", feedDescription: "vivePDF'in her sürümüyle gelen başlıca yenilikler." },
     groups: {
       start: "Başlarken",
+      howto: "Nasıl yapılır?",
       documents: "Belgelerle çalışmak",
       studio: "Stüdyo",
       present: "Sunum",
@@ -129,7 +130,7 @@ const en: Ui = {
   skip: "Skip to content",
   mainMenu: "Main menu",
   homeLabel: "vivePDF home",
-  nav: { features: "Features", present: "Presenter", studio: "Studio", docs: "Docs", download: "Download" },
+  nav: { features: "Features", present: "Presenter", studio: "Studio", docs: "How to use", download: "Download" },
   siteLanguage: "Site language",
   themeDark: "Dark theme",
   themeLight: "Light theme",
@@ -190,6 +191,7 @@ const en: Ui = {
     releases: { released: "Released", feed: "Follow with RSS", feedTitle: "vivePDF release notes", feedDescription: "The main changes that come with each vivePDF release." },
     groups: {
       start: "Getting started",
+      howto: "How-to guides",
       documents: "Working with documents",
       studio: "Studio",
       present: "Presenting",
