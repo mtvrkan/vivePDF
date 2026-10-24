@@ -7,6 +7,7 @@ import pymupdf
 from docx.opc.constants import RELATIONSHIP_TYPE
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
+from docx.shared import Pt
 from docx.table import Table, _Cell
 from pdf2docx import Converter
 from pdf2docx.common import docx as docx_helpers
@@ -17,11 +18,19 @@ from pdf2docx.page.Page import Page
 from pdf2docx.page.Pages import Pages
 from pdf2docx.page.RawPageFitz import RawPageFitz
 from pdf2docx.shape.Shapes import Shapes
+from pdf2docx.table.Cell import Cell
 from pdf2docx.table.TableBlock import TableBlock
+from pdf2docx.text.Line import Line
+from pdf2docx.text.Lines import Lines
 from pdf2docx.text.TextSpan import TextSpan
 
 from vivepdf.ops._docx_bidi import mark_right_to_left
 from vivepdf.ops._docx_contours import inner_contours
+from vivepdf.ops._docx_graphics import add_unused_graphics
+from vivepdf.ops._docx_lines import (
+    make_line_keeping_word_gap,
+    parse_line_break_before_list_items,
+)
 from vivepdf.ops._docx_parallel import ParallelParse, worker_count
 from vivepdf.ops._docx_running import RunningText, add_running_text
 from vivepdf.ops._docx_visible import visible_images
@@ -39,6 +48,8 @@ MAX_CLIP_RATIO = 4.0
 MIN_IMAGE_AREA = 4
 CLIPPED_MARK = "vivepdfClipped"
 COVER_TOLERANCE = 1.0
+WORD_GAP_EM = 0.2
+TILT_TOLERANCE = 0.035
 
 
 class ConversionCancelled(BaseException):
@@ -118,11 +129,64 @@ def drop_fills_drawn_in_pictures(raw: dict) -> dict:
     return raw
 
 
+def _is_blank(span: dict) -> bool:
+    chars = span.get("chars")
+    return bool(chars) and all(not char["c"].strip() for char in chars)
+
+
+def level_slight_tilts(raw: dict) -> dict:
+    for block in raw.get("blocks", []):
+        for line in block.get("lines", []):
+            x, y = line.get("dir", (1.0, 0.0))
+            if x > 0 and abs(y) <= TILT_TOLERANCE:
+                line["dir"] = (1.0, 0.0)
+            elif y < 0 and abs(x) <= TILT_TOLERANCE:
+                line["dir"] = (0.0, -1.0)
+    return raw
+
+
+def keep_word_spaces(raw: dict) -> dict:
+    for block in raw.get("blocks", []):
+        for line in block.get("lines", []):
+            spans = line.get("spans", [])
+            kept: list[dict] = []
+            for index, span in enumerate(spans):
+                words_follow = any(not _is_blank(later) for later in spans[index + 1 :])
+                if _is_blank(span) and kept and "chars" in kept[-1] and words_follow:
+                    kept[-1]["chars"].extend(span["chars"])
+                    kept[-1]["bbox"] = tuple(pymupdf.Rect(kept[-1]["bbox"]) | span["bbox"])
+                else:
+                    kept.append(span)
+            if tuple(line.get("dir", (1, 0))) == (1, 0):
+                _space_apart(kept)
+            line["spans"] = kept
+    return raw
+
+
+def _space_apart(spans: list[dict]) -> None:
+    for before, after in zip(spans, spans[1:], strict=False):
+        left, right = before.get("chars"), after.get("chars")
+        if not left or not right or left[-1]["c"].isspace() or right[0]["c"].isspace():
+            continue
+        x0, y0, x1, y1 = before["bbox"]
+        if after["bbox"][0] - x1 < WORD_GAP_EM * before.get("size", 0):
+            continue
+        left.append(
+            {
+                "c": " ",
+                "origin": (x1, left[-1]["origin"][1]),
+                "bbox": (x1, y0, after["bbox"][0], y1),
+            }
+        )
+        before["bbox"] = (x0, y0, after["bbox"][0], y1)
+
+
 def _extract_with_recognised_text(raw_page: RawPageFitz, **settings):
     engine = raw_page.page_engine
     if engine is not None and settings.get("ocr") == 0 and text_is_only_hidden(engine):
         settings = {**settings, "ocr": 2}
-    return drop_fills_drawn_in_pictures(_plain_extract_raw_dict(raw_page, **settings))
+    raw = _plain_extract_raw_dict(raw_page, **settings)
+    return drop_fills_drawn_in_pictures(keep_word_spaces(level_slight_tilts(raw)))
 
 
 def clip_ratio(largest_page_area: float) -> float:
@@ -137,6 +201,15 @@ def _make_table_with_cached_cells(block: TableBlock, table: Table) -> None:
         _plain_table_make_docx(block, table)
     finally:
         table.__class__ = Table
+
+
+_plain_cell_make_docx = Cell.make_docx
+
+
+def _make_cell_sizing_its_column(cell: Cell, table: Table, indexes: tuple[int, int]) -> None:
+    _plain_cell_make_docx(cell, table, indexes)
+    if cell and cell.merged_cells[1] == 1:
+        table.columns[indexes[1]].width = Pt(cell.bbox.width)
 
 
 def _ordered_text_style_shapes(shapes: Shapes) -> ElementCollection:
@@ -303,7 +376,22 @@ def _make_span_with_valid_link(span: TextSpan, paragraph) -> None:
     link.append(run._r)
 
 
+_plain_parse_pages = Converter.parse_pages
+
+
+def _parse_pages_keeping_graphics(converter: Converter, **settings) -> Converter:
+    _plain_parse_pages(converter, **settings)
+    for page in converter.pages:
+        if page.finalized:
+            add_unused_graphics(page, converter.fitz_doc[page.id], settings["clip_image_res_ratio"])
+    return converter
+
+
 def stabilise_pdf2docx() -> None:
+    Converter.parse_pages = _parse_pages_keeping_graphics
+    Lines.parse_line_break = parse_line_break_before_list_items
+    Cell.make_docx = _make_cell_sizing_its_column
+    Line.make_docx = make_line_keeping_word_gap
     TextSpan.make_docx = _make_span_with_valid_link
     TableBlock.make_docx = _make_table_with_cached_cells
     Shapes.text_style_shapes = property(_ordered_text_style_shapes)

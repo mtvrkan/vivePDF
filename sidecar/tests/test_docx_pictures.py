@@ -126,3 +126,29 @@ def test_a_link_is_written_as_a_word_hyperlink_with_its_text(tmp_path: Path):
     texts = {"".join(link.itertext()): link.getparent().tag for link in links}
     assert texts == {"beril@example.com": qn("w:p")}
     assert 'Target="mailto:beril@example.com"' in relations
+
+
+def _floating_pictures(target: Path) -> int:
+    return _part(target).count("<wp:anchor")
+
+
+def test_a_bar_chart_drawn_with_plain_boxes_reaches_the_word_file(tmp_path: Path):
+    source = tmp_path / "chart.pdf"
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    page.insert_text((56, 60), "Quarterly sales", fontsize=18)
+    page.draw_rect(pymupdf.Rect(0, 0, 595, 6), color=None, fill=(0.16, 0.45, 0.85))
+    for index, height in enumerate([97, 150, 203, 86, 139, 192]):
+        left = 80 + index * 72
+        page.draw_rect(
+            pymupdf.Rect(left, 470 - height, left + 50, 470), color=None, fill=(0.62, 0.78, 0.96)
+        )
+    page.draw_line((70, 470), (520, 470), color=(0.38, 0.43, 0.5), width=1)
+    document.save(source)
+    document.close()
+
+    target = _convert(source, tmp_path)
+
+    assert _floating_pictures(target) >= 2
+    widths = _picture_widths_pt(target)
+    assert any(abs(width - 450) <= 6 for width in widths)
