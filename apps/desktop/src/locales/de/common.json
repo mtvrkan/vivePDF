@@ -267,6 +267,22 @@
     "unpinRecent": "{{name}} lösen",
     "clearRecentUnpinned": "Nicht angeheftete leeren"
   },
+  "defaultApp": {
+    "title": "Standard-PDF-App",
+    "isDefault": "PDF-Dateien werden mit vivePDF geöffnet.",
+    "current": "PDF-Dateien werden derzeit mit {{name}} geöffnet.",
+    "none": "Für PDF-Dateien ist keine Standard-App festgelegt.",
+    "windowsNote": "Windows trifft diese Wahl in den eigenen Einstellungen; die Schaltfläche öffnet diese Seite.",
+    "make": "Als Standard festlegen",
+    "done": "vivePDF ist jetzt die Standard-PDF-App.",
+    "chooseInSettings": "Wählen Sie in den geöffneten Windows-Einstellungen vivePDF für PDF.",
+    "prompt": {
+      "title": "vivePDF ist nicht Ihre Standard-PDF-App",
+      "body": "Doppelt angeklickte PDF-Dateien öffnen sich derzeit mit {{name}}.",
+      "bodyNone": "Doppelt angeklickte PDF-Dateien öffnen sich nicht mit vivePDF.",
+      "dismiss": "Nicht mehr fragen"
+    }
+  },
   "viewer": {
     "engineLoading": "PDF-Betrachter wird geladen…",
     "engineError": "Der PDF-Betrachter konnte nicht gestartet werden",
@@ -1836,9 +1852,6 @@
       "associationType": "PDF-Dokument",
       "associationEnabled": "vivePDF für PDF-Dateien registriert.",
       "associationDisabled": "PDF-Registrierung entfernt.",
-      "defaultApps": "Windows-Standard-Apps",
-      "defaultAppsHint": "Öffnet die Windows-Einstellung, in der die Standard-PDF-App gewählt wird.",
-      "openDefaultApps": "Öffnen",
       "sendTo": "Zum Menü „Senden an“ hinzufügen",
       "sendToHint": "Legt eine vivePDF-Verknüpfung im Menü „Senden an“ an, sodass jede Datei per Rechtsklick hierher geschickt werden kann.",
       "sendToDescription": "Mit vivePDF öffnen",
@@ -1993,7 +2006,7 @@
       },
       "system": {
         "title": "System",
-        "description": "Integration mit dem Windows-Explorer."
+        "description": "Standard-PDF-App und Systemintegration."
       },
       "data": {
         "title": "Daten",

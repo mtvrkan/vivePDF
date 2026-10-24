@@ -299,6 +299,22 @@
     "unpinRecent": "إلغاء تثبيت {{name}}",
     "clearRecentUnpinned": "مسح غير المثبّتة"
   },
+  "defaultApp": {
+    "title": "تطبيق PDF الافتراضي",
+    "isDefault": "تُفتح ملفات PDF في vivePDF.",
+    "current": "تُفتح ملفات PDF حاليًا في {{name}}.",
+    "none": "لم يُحدَّد تطبيق افتراضي لملفات PDF.",
+    "windowsNote": "يتيح Windows هذا الاختيار في إعداداته فقط؛ يفتح الزر تلك الصفحة.",
+    "make": "تعيين كافتراضي",
+    "done": "أصبح vivePDF تطبيق PDF الافتراضي.",
+    "chooseInSettings": "اختر vivePDF لملفات PDF في إعدادات Windows التي فُتحت.",
+    "prompt": {
+      "title": "vivePDF ليس تطبيق PDF الافتراضي لديك",
+      "body": "تُفتح ملفات PDF التي تنقر عليها نقرًا مزدوجًا حاليًا في {{name}}.",
+      "bodyNone": "لا تُفتح ملفات PDF التي تنقر عليها نقرًا مزدوجًا في vivePDF.",
+      "dismiss": "لا تسألني مرة أخرى"
+    }
+  },
   "viewer": {
     "engineLoading": "جارٍ تحميل عارض PDF…",
     "engineError": "تعذّر تشغيل عارض PDF",
@@ -1924,9 +1940,6 @@
       "associationType": "مستند PDF",
       "associationEnabled": "تم تسجيل vivePDF لملفات PDF.",
       "associationDisabled": "تمت إزالة تسجيل PDF.",
-      "defaultApps": "التطبيقات الافتراضية في Windows",
-      "defaultAppsHint": "يفتح إعداد Windows الذي يُختار فيه تطبيق PDF الافتراضي.",
-      "openDefaultApps": "فتح",
       "sendTo": "أضِف إلى قائمة «إرسال إلى»",
       "sendToHint": "يضع اختصار vivePDF في قائمة «إرسال إلى»، فيمكن إرسال أي ملف إلى هنا من قائمة الزر الأيمن.",
       "sendToDescription": "افتح باستخدام vivePDF",
@@ -2093,7 +2106,7 @@
       },
       "system": {
         "title": "النظام",
-        "description": "التكامل مع مستكشف ملفات ويندوز."
+        "description": "تطبيق PDF الافتراضي والتكامل مع النظام."
       },
       "data": {
         "title": "البيانات",

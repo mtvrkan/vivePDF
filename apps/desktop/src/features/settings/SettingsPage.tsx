@@ -15,6 +15,7 @@ import { autostartStatus, setAutostart } from "@/shared/rpc/tray";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { useAppVersion } from "@/shared/hooks/useAppVersion";
+import { useDefaultPdfApp } from "@/shared/hooks/useDefaultPdfApp";
 import { readSavedChains } from "@/features/tools/batch/chain";
 import { purgeChainSecrets } from "@/shared/rpc/chainSecrets";
 import { Checkbox } from "@/components/tool/form";
@@ -57,6 +58,7 @@ export function SettingsPage() {
   const [chainCount, setChainCount] = useState(() => readSavedChains().length);
   const [secretChainCount, setSecretChainCount] = useState(() => countChainsWithSecrets());
   const [shellSupported, setShellSupported] = useState(false);
+  const defaultApp = useDefaultPdfApp();
   const [shellEnabled, setShellEnabled] = useState(false);
   const [shellBusy, setShellBusy] = useState(false);
   const [associationEnabled, setAssociationEnabled] = useState(false);
@@ -145,7 +147,7 @@ export function SettingsPage() {
     toast("success", t("settings.resetAllDone"));
   };
 
-  const sectionVisible = (id: SectionId) => id !== "system" || shellSupported;
+  const sectionVisible = (id: SectionId) => id !== "system" || shellSupported || defaultApp.status?.supported === true;
   const sectionShown = (id: SectionId) => sectionVisible(id) && (searching || id === activeSection);
   const noMatch = searching && SECTION_IDS.filter(sectionVisible).every((id) => emptySections.has(id));
 
@@ -277,6 +279,8 @@ export function SettingsPage() {
               <SystemSection
                 query={query}
                 onEmptyChange={onEmptyChange}
+                shellSupported={shellSupported}
+                defaultApp={defaultApp}
                 shellEnabled={shellEnabled}
                 setShellEnabled={setShellEnabled}
                 shellBusy={shellBusy}

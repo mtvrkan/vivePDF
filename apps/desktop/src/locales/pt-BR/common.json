@@ -267,6 +267,22 @@
     "unpinRecent": "Desafixar {{name}}",
     "clearRecentUnpinned": "Limpar não fixados"
   },
+  "defaultApp": {
+    "title": "Aplicativo PDF padrão",
+    "isDefault": "Os arquivos PDF abrem no vivePDF.",
+    "current": "Os arquivos PDF abrem atualmente no {{name}}.",
+    "none": "Nenhum aplicativo padrão está definido para arquivos PDF.",
+    "windowsNote": "O Windows faz essa escolha nas próprias configurações; o botão abre essa página.",
+    "make": "Tornar padrão",
+    "done": "O vivePDF agora é o aplicativo PDF padrão.",
+    "chooseInSettings": "Escolha o vivePDF para PDF nas configurações do Windows que foram abertas.",
+    "prompt": {
+      "title": "O vivePDF não é seu aplicativo PDF padrão",
+      "body": "Os PDFs que você abre com clique duplo abrem atualmente no {{name}}.",
+      "bodyNone": "Os PDFs que você abre com clique duplo não abrem no vivePDF.",
+      "dismiss": "Não perguntar novamente"
+    }
+  },
   "viewer": {
     "engineLoading": "Carregando o visualizador de PDF…",
     "engineError": "Não foi possível iniciar o visualizador de PDF",
@@ -1836,9 +1852,6 @@
       "associationType": "Documento PDF",
       "associationEnabled": "vivePDF registrado para arquivos PDF.",
       "associationDisabled": "Registro de PDF removido.",
-      "defaultApps": "Aplicativos padrão do Windows",
-      "defaultAppsHint": "Abre a configuração do Windows onde o aplicativo PDF padrão é escolhido.",
-      "openDefaultApps": "Abrir",
       "sendTo": "Adicionar ao menu “Enviar para”",
       "sendToHint": "Coloca um atalho do vivePDF no menu Enviar para, para mandar qualquer arquivo para cá pelo clique direito.",
       "sendToDescription": "Abrir com o vivePDF",
@@ -1993,7 +2006,7 @@
       },
       "system": {
         "title": "Sistema",
-        "description": "Integração com o Windows Explorer."
+        "description": "Aplicativo PDF padrão e integração com o sistema."
       },
       "data": {
         "title": "Dados",

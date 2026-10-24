@@ -267,6 +267,22 @@
     "unpinRecent": "Désépingler {{name}}",
     "clearRecentUnpinned": "Effacer les non épinglés"
   },
+  "defaultApp": {
+    "title": "Application PDF par défaut",
+    "isDefault": "Les fichiers PDF s’ouvrent avec vivePDF.",
+    "current": "Les fichiers PDF s’ouvrent actuellement avec {{name}}.",
+    "none": "Aucune application par défaut n’est définie pour les fichiers PDF.",
+    "windowsNote": "Windows fait ce choix dans ses propres paramètres ; le bouton ouvre cette page.",
+    "make": "Définir par défaut",
+    "done": "vivePDF est maintenant l’application PDF par défaut.",
+    "chooseInSettings": "Choisissez vivePDF pour PDF dans les paramètres Windows qui se sont ouverts.",
+    "prompt": {
+      "title": "vivePDF n’est pas votre application PDF par défaut",
+      "body": "Les PDF ouverts d’un double-clic s’ouvrent actuellement avec {{name}}.",
+      "bodyNone": "Les PDF ouverts d’un double-clic ne s’ouvrent pas avec vivePDF.",
+      "dismiss": "Ne plus demander"
+    }
+  },
   "viewer": {
     "engineLoading": "Chargement de la visionneuse PDF…",
     "engineError": "La visionneuse PDF n’a pas pu démarrer",
@@ -1836,9 +1852,6 @@
       "associationType": "Document PDF",
       "associationEnabled": "vivePDF enregistré pour les fichiers PDF.",
       "associationDisabled": "Enregistrement PDF supprimé.",
-      "defaultApps": "Applications par défaut de Windows",
-      "defaultAppsHint": "Ouvre le paramètre Windows où l’application PDF par défaut est choisie.",
-      "openDefaultApps": "Ouvrir",
       "sendTo": "Ajouter au menu « Envoyer vers »",
       "sendToHint": "Place un raccourci vivePDF dans le menu Envoyer vers, pour envoyer n’importe quel fichier ici depuis le clic droit.",
       "sendToDescription": "Ouvrir avec vivePDF",
@@ -1993,7 +2006,7 @@
       },
       "system": {
         "title": "Système",
-        "description": "Intégration avec l’Explorateur Windows."
+        "description": "Application PDF par défaut et intégration au système."
       },
       "data": {
         "title": "Données",

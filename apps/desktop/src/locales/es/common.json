@@ -267,6 +267,22 @@
     "unpinRecent": "Dejar de fijar {{name}}",
     "clearRecentUnpinned": "Borrar los no fijados"
   },
+  "defaultApp": {
+    "title": "Aplicación PDF predeterminada",
+    "isDefault": "Los archivos PDF se abren con vivePDF.",
+    "current": "Los archivos PDF se abren ahora con {{name}}.",
+    "none": "No hay una aplicación predeterminada para los archivos PDF.",
+    "windowsNote": "Windows hace esta elección en su propia configuración; el botón abre esa página.",
+    "make": "Establecer como predeterminada",
+    "done": "vivePDF es ahora la aplicación PDF predeterminada.",
+    "chooseInSettings": "Elija vivePDF para PDF en la configuración de Windows que se ha abierto.",
+    "prompt": {
+      "title": "vivePDF no es su aplicación PDF predeterminada",
+      "body": "Los PDF en los que hace doble clic se abren ahora con {{name}}.",
+      "bodyNone": "Los PDF en los que hace doble clic no se abren con vivePDF.",
+      "dismiss": "No volver a preguntar"
+    }
+  },
   "viewer": {
     "engineLoading": "Cargando el visor de PDF…",
     "engineError": "El visor de PDF no pudo iniciarse",
@@ -1836,9 +1852,6 @@
       "associationType": "Documento PDF",
       "associationEnabled": "vivePDF registrado para archivos PDF.",
       "associationDisabled": "Registro de PDF eliminado.",
-      "defaultApps": "Aplicaciones predeterminadas de Windows",
-      "defaultAppsHint": "Abre la configuración de Windows donde se elige la aplicación PDF predeterminada.",
-      "openDefaultApps": "Abrir",
       "sendTo": "Añadir al menú «Enviar a»",
       "sendToHint": "Coloca un acceso directo de vivePDF en el menú Enviar a, para mandar aquí cualquier archivo desde el clic derecho.",
       "sendToDescription": "Abrir con vivePDF",
@@ -1993,7 +2006,7 @@
       },
       "system": {
         "title": "Sistema",
-        "description": "Integración con el Explorador de Windows."
+        "description": "Aplicación PDF predeterminada e integración con el sistema."
       },
       "data": {
         "title": "Datos",

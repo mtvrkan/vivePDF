@@ -267,6 +267,22 @@
     "unpinRecent": "Unpin {{name}}",
     "clearRecentUnpinned": "Clear unpinned"
   },
+  "defaultApp": {
+    "title": "Default PDF app",
+    "isDefault": "PDF files open in vivePDF.",
+    "current": "PDF files currently open in {{name}}.",
+    "none": "No default app is set for PDF files.",
+    "windowsNote": "Windows makes this choice in its own settings; the button opens that page.",
+    "make": "Make default",
+    "done": "vivePDF is now the default PDF app.",
+    "chooseInSettings": "Choose vivePDF for PDF in the Windows settings that opened.",
+    "prompt": {
+      "title": "vivePDF is not your default PDF app",
+      "body": "PDF files you double-click open in {{name}}.",
+      "bodyNone": "PDF files you double-click don’t open in vivePDF.",
+      "dismiss": "Don’t ask again"
+    }
+  },
   "viewer": {
     "engineLoading": "Loading PDF viewer…",
     "engineError": "The PDF viewer could not start",
@@ -1837,9 +1853,6 @@
       "associationType": "PDF Document",
       "associationEnabled": "vivePDF registered for PDF files.",
       "associationDisabled": "PDF registration removed.",
-      "defaultApps": "Windows default apps",
-      "defaultAppsHint": "Opens the Windows settings page where the default PDF app is chosen.",
-      "openDefaultApps": "Open",
       "sendTo": "Add to Explorer's “Send to” menu",
       "sendToHint": "Puts a vivePDF shortcut in the Send to menu, so any file can be sent here from the right-click menu.",
       "sendToDescription": "Open with vivePDF",
@@ -1994,7 +2007,7 @@
       },
       "system": {
         "title": "System",
-        "description": "Windows Explorer integration."
+        "description": "Default PDF app and system integration."
       },
       "data": {
         "title": "Data",

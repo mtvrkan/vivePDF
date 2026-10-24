@@ -424,6 +424,14 @@ export type AutostartStatus = {
   trayByDefault: boolean;
 };
 
+export type DefaultAppStatus = {
+  supported: boolean;
+  isDefault: boolean;
+  current: string | null;
+};
+
+export type DefaultAppOutcome = "done" | "settings";
+
 export type ShellMenuEntry = {
   id: string;
   label: string;

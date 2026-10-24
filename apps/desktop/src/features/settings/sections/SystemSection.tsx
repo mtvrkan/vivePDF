@@ -1,9 +1,11 @@
+import { Check } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { Checkbox } from "@/components/tool/form";
 import { toRpcError } from "@/shared/rpc/client";
-import { openDefaultAppsSettings, setFileAssociation, setSendTo, setShellIntegration } from "@/shared/rpc/files";
+import { fileAssociationEnabled, setFileAssociation, setSendTo, setShellIntegration } from "@/shared/rpc/files";
 import { useToastStore } from "@/shared/store/toastStore";
+import type { DefaultPdfApp } from "@/shared/hooks/useDefaultPdfApp";
 import { describeError } from "@/shared/lib/errorMessage";
 import { shellMenuEntries } from "@/shared/lib/shellMenu";
 import { SectionCard, SettingRow } from "../settingsControls";
@@ -12,6 +14,8 @@ import type { SettingsSectionProps } from "../settingsShared";
 export function SystemSection({
   query,
   onEmptyChange,
+  shellSupported,
+  defaultApp,
   shellEnabled,
   setShellEnabled,
   shellBusy,
@@ -25,6 +29,8 @@ export function SystemSection({
   sendToBusy,
   setSendToBusy,
 }: SettingsSectionProps & {
+  shellSupported: boolean;
+  defaultApp: DefaultPdfApp;
   shellEnabled: boolean;
   setShellEnabled: (value: boolean) => void;
   shellBusy: boolean;
@@ -67,6 +73,18 @@ export function SystemSection({
     }
   };
 
+  const makeDefault = async () => {
+    await defaultApp.makeDefault();
+    if (shellSupported) setAssociationEnabled(await fileAssociationEnabled());
+  };
+
+  const defaultStatus = defaultApp.status;
+  const defaultHint = defaultStatus?.isDefault
+    ? t("defaultApp.isDefault")
+    : defaultStatus?.current
+      ? t("defaultApp.current", { name: defaultStatus.current })
+      : t("defaultApp.none");
+
   const toggleSendTo = async (enabled: boolean) => {
     setSendToBusy(true);
     try {
@@ -82,20 +100,30 @@ export function SystemSection({
 
   return (
     <SectionCard id="system" query={query} onEmptyChange={onEmptyChange}>
-      <SettingRow label={t("settings.system.association")} hint={t("settings.system.associationHint")}>
-        <Checkbox label="" checked={associationEnabled} disabled={associationBusy} onChange={(checked) => void toggleFileAssociation(checked)} />
-      </SettingRow>
-      <SettingRow label={t("settings.system.defaultApps")} hint={t("settings.system.defaultAppsHint")}>
-        <Button size="sm" onClick={() => void openDefaultAppsSettings()}>
-          {t("settings.system.openDefaultApps")}
-        </Button>
-      </SettingRow>
-      <SettingRow label={t("settings.shellMenu")} hint={t("settings.shellMenuHint")}>
-        <Checkbox label="" checked={shellEnabled} disabled={shellBusy} onChange={(checked) => void toggleShellIntegration(checked)} />
-      </SettingRow>
-      <SettingRow label={t("settings.system.sendTo")} hint={t("settings.system.sendToHint")}>
-        <Checkbox label="" checked={sendToEnabledState} disabled={sendToBusy} onChange={(checked) => void toggleSendTo(checked)} />
-      </SettingRow>
+      {defaultStatus?.supported ? (
+        <SettingRow label={t("defaultApp.title")} hintTone={defaultStatus.isDefault ? "success" : undefined} hint={shellSupported && !defaultStatus.isDefault ? `${defaultHint} ${t("defaultApp.windowsNote")}` : defaultHint}>
+          {defaultStatus.isDefault ? (
+            <Check className="size-4 text-success" aria-label={t("defaultApp.isDefault")} />
+          ) : (
+            <Button size="sm" loading={defaultApp.busy} disabled={defaultApp.busy} onClick={() => void makeDefault()}>
+              {t("defaultApp.make")}
+            </Button>
+          )}
+        </SettingRow>
+      ) : null}
+      {shellSupported ? (
+        <>
+          <SettingRow label={t("settings.system.association")} hint={t("settings.system.associationHint")}>
+            <Checkbox label="" checked={associationEnabled} disabled={associationBusy} onChange={(checked) => void toggleFileAssociation(checked)} />
+          </SettingRow>
+          <SettingRow label={t("settings.shellMenu")} hint={t("settings.shellMenuHint")}>
+            <Checkbox label="" checked={shellEnabled} disabled={shellBusy} onChange={(checked) => void toggleShellIntegration(checked)} />
+          </SettingRow>
+          <SettingRow label={t("settings.system.sendTo")} hint={t("settings.system.sendToHint")}>
+            <Checkbox label="" checked={sendToEnabledState} disabled={sendToBusy} onChange={(checked) => void toggleSendTo(checked)} />
+          </SettingRow>
+        </>
+      ) : null}
     </SectionCard>
   );
 }

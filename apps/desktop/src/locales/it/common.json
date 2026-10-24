@@ -267,6 +267,22 @@
     "unpinRecent": "Rimuovi {{name}} dai fissati",
     "clearRecentUnpinned": "Cancella i non fissati"
   },
+  "defaultApp": {
+    "title": "App PDF predefinita",
+    "isDefault": "I file PDF si aprono con vivePDF.",
+    "current": "I file PDF ora si aprono con {{name}}.",
+    "none": "Nessuna app predefinita impostata per i file PDF.",
+    "windowsNote": "Windows fa questa scelta nelle proprie impostazioni; il pulsante apre quella pagina.",
+    "make": "Imposta come predefinita",
+    "done": "vivePDF è ora l’app PDF predefinita.",
+    "chooseInSettings": "Scegli vivePDF per PDF nelle impostazioni di Windows che si sono aperte.",
+    "prompt": {
+      "title": "vivePDF non è la tua app PDF predefinita",
+      "body": "I PDF aperti con un doppio clic ora si aprono con {{name}}.",
+      "bodyNone": "I PDF aperti con un doppio clic non si aprono con vivePDF.",
+      "dismiss": "Non chiedere più"
+    }
+  },
   "viewer": {
     "engineLoading": "Caricamento del visualizzatore PDF…",
     "engineError": "Impossibile avviare il visualizzatore PDF",
@@ -1836,9 +1852,6 @@
       "associationType": "Documento PDF",
       "associationEnabled": "vivePDF registrato per i file PDF.",
       "associationDisabled": "Registrazione PDF rimossa.",
-      "defaultApps": "App predefinite di Windows",
-      "defaultAppsHint": "Apre l’impostazione di Windows in cui si sceglie l’app PDF predefinita.",
-      "openDefaultApps": "Apri",
       "sendTo": "Aggiungi al menu «Invia a»",
       "sendToHint": "Mette un collegamento a vivePDF nel menu Invia a, così qualsiasi file può essere mandato qui dal clic destro.",
       "sendToDescription": "Apri con vivePDF",
@@ -1993,7 +2006,7 @@
       },
       "system": {
         "title": "Sistema",
-        "description": "Integrazione con Esplora file di Windows."
+        "description": "App PDF predefinita e integrazione con il sistema."
       },
       "data": {
         "title": "Dati",

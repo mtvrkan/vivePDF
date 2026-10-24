@@ -1,7 +1,7 @@
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { RpcCallError, toRpcError } from "./client";
 import { readPreferences } from "@/shared/store/preferencesStore";
-import type { DroppedTabGroup, LaunchRequest, ShellMenuEntry, ViewSource } from "@/types";
+import type { DefaultAppOutcome, DefaultAppStatus, DroppedTabGroup, LaunchRequest, ShellMenuEntry, ViewSource } from "@/types";
 
 export async function readDocumentBytes(path: string): Promise<ArrayBuffer> {
   try {
@@ -154,8 +154,16 @@ export async function setFileAssociation(enabled: boolean, name: string, descrip
   }
 }
 
-export function openDefaultAppsSettings(): Promise<void> {
-  return invoke<void>("open_default_apps_settings");
+export function defaultPdfAppStatus(): Promise<DefaultAppStatus> {
+  return invoke<DefaultAppStatus>("default_pdf_app_status");
+}
+
+export async function makeDefaultPdfApp(name: string, description: string): Promise<DefaultAppOutcome> {
+  try {
+    return await invoke<DefaultAppOutcome>("make_default_pdf_app", { name, description });
+  } catch (error) {
+    throw new RpcCallError(toRpcError(error));
+  }
 }
 
 export function sendToSupported(): Promise<boolean> {

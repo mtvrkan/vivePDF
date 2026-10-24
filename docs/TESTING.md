@@ -231,6 +231,12 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   package without internet.
 - Build the installer and look at `vivePDF_<version>_x64-setup.exe` in Explorer and while it
   runs: the file and the installer window show the vivePDF icon, not the generic installer one.
+- With another app set for PDF, Settings › System shows "Default PDF app" with that app's name,
+  and the home page offers to make vivePDF the default. "Make default" opens Windows Settings
+  on vivePDF's default-apps page (with "Open PDFs with vivePDF" turned on if it was off); after
+  choosing vivePDF for .pdf there and coming back to the app, the row shows a check mark and the
+  home card is gone. "Don't ask again" hides the card for good. On Linux the button switches
+  `xdg-mime query default application/pdf` to vivePDF's desktop file without a dialog.
 
 ### How native dialogs are answered
 

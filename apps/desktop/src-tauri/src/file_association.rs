@@ -68,7 +68,7 @@ pub fn application_key(executable: &str) -> String {
 }
 
 #[cfg(windows)]
-mod registry {
+pub(crate) mod registry {
     use windows::Win32::UI::Shell::{SHChangeNotify, SHCNE_ASSOCCHANGED, SHCNF_IDLIST};
     use winreg::enums::HKEY_CURRENT_USER;
     use winreg::RegKey;
@@ -311,22 +311,6 @@ pub fn set_file_association(
             "UNSUPPORTED",
             "file association is only available on Windows",
         ))
-    }
-}
-
-#[tauri::command]
-pub fn open_default_apps_settings() -> Result<(), RpcError> {
-    #[cfg(windows)]
-    {
-        std::process::Command::new("explorer.exe")
-            .arg("ms-settings:defaultapps")
-            .spawn()
-            .map(|_| ())
-            .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
-    }
-    #[cfg(not(windows))]
-    {
-        Err(RpcError::new("UNSUPPORTED", "only available on Windows"))
     }
 }
 

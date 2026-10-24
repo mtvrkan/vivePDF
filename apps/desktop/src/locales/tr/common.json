@@ -267,6 +267,22 @@
     "unpinRecent": "{{name}} belgesinin sabitlemesini kaldır",
     "clearRecentUnpinned": "Sabitlenmemişleri temizle"
   },
+  "defaultApp": {
+    "title": "Varsayılan PDF uygulaması",
+    "isDefault": "PDF dosyaları vivePDF ile açılıyor.",
+    "current": "PDF dosyaları şu an {{name}} ile açılıyor.",
+    "none": "PDF dosyaları için bir varsayılan uygulama seçilmemiş.",
+    "windowsNote": "Windows bu seçimi kendi ayarlarında yaptırır; düğme o sayfayı açar.",
+    "make": "Varsayılan yap",
+    "done": "vivePDF artık varsayılan PDF uygulaması.",
+    "chooseInSettings": "Açılan Windows ayarlarında PDF için vivePDF’i seçin.",
+    "prompt": {
+      "title": "vivePDF varsayılan PDF uygulamanız değil",
+      "body": "Çift tıkladığınız PDF dosyaları şu an {{name}} ile açılıyor.",
+      "bodyNone": "Çift tıkladığınız PDF dosyaları vivePDF ile açılmıyor.",
+      "dismiss": "Bir daha sorma"
+    }
+  },
   "viewer": {
     "engineLoading": "PDF görüntüleyici yükleniyor…",
     "engineError": "PDF görüntüleyici başlatılamadı",
@@ -1837,9 +1853,6 @@
       "associationType": "PDF Belgesi",
       "associationEnabled": "vivePDF, PDF dosyaları için kaydedildi.",
       "associationDisabled": "PDF kaydı kaldırıldı.",
-      "defaultApps": "Windows varsayılan uygulamaları",
-      "defaultAppsHint": "Varsayılan PDF uygulamasının seçildiği Windows ayarını açar.",
-      "openDefaultApps": "Aç",
       "sendTo": "Gezgin’in “Gönder” menüsüne ekle",
       "sendToHint": "Gönder menüsüne bir vivePDF kısayolu koyar; böylece herhangi bir dosya sağ tık menüsünden buraya gönderilebilir.",
       "sendToDescription": "vivePDF ile aç",
@@ -1994,7 +2007,7 @@
       },
       "system": {
         "title": "Sistem",
-        "description": "Windows Gezgini ile bütünleşme."
+        "description": "Varsayılan PDF uygulaması ve sistemle bütünleşme."
       },
       "data": {
         "title": "Veriler",

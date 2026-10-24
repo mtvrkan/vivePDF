@@ -1,6 +1,7 @@
 mod app_menu;
 mod autostart;
 mod chain_secrets;
+mod default_app;
 mod desktop_links;
 mod diagnostics;
 mod doc_watch;
@@ -160,7 +161,8 @@ pub fn run() {
             file_association::file_association_enabled,
             file_association::file_association_stale,
             file_association::set_file_association,
-            file_association::open_default_apps_settings,
+            default_app::default_pdf_app_status,
+            default_app::make_default_pdf_app,
             shell_integration::shell_integration_supported,
             shell_integration::shell_integration_enabled,
             shell_integration::shell_integration_stale,

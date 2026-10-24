@@ -6,6 +6,7 @@ import { useDragState } from "@/shared/hooks/useDragState";
 import { cn } from "@/shared/lib/cn";
 import { CollectionsSection } from "./CollectionsSection";
 import { ContinueStrip } from "./ContinueStrip";
+import { DefaultAppPrompt } from "./DefaultAppPrompt";
 import { HeroSection } from "./HeroSection";
 import { HistoryRail } from "./HistoryRail";
 import { DropLine, HiddenSectionFrame, HomeEditBar, HomeSectionFrame } from "./HomeLayoutEditor";
@@ -159,6 +160,7 @@ export function HomePage() {
             </Button>
           </div>
         )}
+        {editing ? null : <DefaultAppPrompt />}
         {region("top")}
         <div className="grid gap-6 md:grid-cols-(--home-columns)" style={columns ? ({ "--home-columns": columns } as CSSProperties) : undefined}>
           {sideFirst && hasSide ? region("side", "order-2 md:order-none") : null}
