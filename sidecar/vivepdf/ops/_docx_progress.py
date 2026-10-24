@@ -26,6 +26,7 @@ from pdf2docx.text.TextSpan import TextSpan
 
 from vivepdf.ops._docx_bidi import mark_right_to_left
 from vivepdf.ops._docx_contours import inner_contours
+from vivepdf.ops._docx_fonts import embed_fonts
 from vivepdf.ops._docx_graphics import add_unused_graphics
 from vivepdf.ops._docx_lines import (
     make_line_keeping_word_gap,
@@ -532,5 +533,6 @@ class DocxRun:
             data = add_running_text(data, running)
         if right_to_left:
             data = mark_right_to_left(data)
+        data = embed_fonts(data, self.converter.fitz_doc, indices, self.progress.check_cancelled)
         write_atomically(target, lambda partial: partial.write_bytes(data))
         return [index + 1 for index in indices if index not in self.made_pages]

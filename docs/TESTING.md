@@ -239,6 +239,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   `xdg-mime query default application/pdf` to vivePDF's desktop file without a dialog.
 - Print a two-sheet selection with 2 pages per sheet on a real printer: the paper matches the
   print dialog's preview (page order, rotation, grayscale), apart from the printer's own margins.
+- Convert a PDF set in a font Windows does not have (Geist, Inter) to Word on a PC
+  without that font: Word shows the headings in the bold face and the body in the regular face
+  of that font, not Calibri or Times, and File › Info does not say the document is read-only.
+  Word for Mac only uses the regular face and thickens it for bold runs.
 
 ### How native dialogs are answered
 

@@ -14,6 +14,8 @@ PATCHED_SOURCES = {
     ("pdf2docx.common.algorithm", "inner_contours"): "74d84bb3661d0d31",
     ("pdf2docx.image.ImagesExtractor", "ImagesExtractor.detect_svg_contours"): "08b3435057261603",
     ("pdf2docx.font.Fonts", "Fonts.extract"): "02ff44f6286d4cd0",
+    ("pdf2docx.font.Fonts", "Fonts.get"): "f65a477b9f235d85",
+    ("pdf2docx.page.RawPage", "RawPage.process_font"): "73ad126c96c7b830",
     ("pdf2docx.text.TextSpan", "TextSpan.make_docx"): "19fa2691b17918e9",
     ("pdf2docx.text.Spans", "Spans.restore"): "fe1af08c14947169",
     ("pdf2docx.text.Line", "Line.text_direction"): "48b97055bcdfa6ed",
