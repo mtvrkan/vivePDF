@@ -4,20 +4,27 @@ from collections.abc import Callable
 from pathlib import Path
 
 import pymupdf
+from docx.opc.constants import RELATIONSHIP_TYPE
+from docx.oxml import OxmlElement
+from docx.oxml.ns import qn
 from docx.table import Table, _Cell
 from pdf2docx import Converter
+from pdf2docx.common import docx as docx_helpers
 from pdf2docx.common.Collection import ElementCollection
+from pdf2docx.common.share import RectType
 from pdf2docx.image import ImagesExtractor as images_extractor
 from pdf2docx.page.Page import Page
 from pdf2docx.page.Pages import Pages
 from pdf2docx.page.RawPageFitz import RawPageFitz
 from pdf2docx.shape.Shapes import Shapes
 from pdf2docx.table.TableBlock import TableBlock
+from pdf2docx.text.TextSpan import TextSpan
 
 from vivepdf.ops._docx_bidi import mark_right_to_left
 from vivepdf.ops._docx_contours import inner_contours
 from vivepdf.ops._docx_parallel import ParallelParse, worker_count
 from vivepdf.ops._docx_running import RunningText, add_running_text
+from vivepdf.ops._docx_visible import visible_images
 from vivepdf.ops._output import write_atomically
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
@@ -30,6 +37,8 @@ HIDDEN_RENDER_MODE = 3
 CLIP_PIXEL_BUDGET = 40_000_000
 MAX_CLIP_RATIO = 4.0
 MIN_IMAGE_AREA = 4
+CLIPPED_MARK = "vivepdfClipped"
+COVER_TOLERANCE = 1.0
 
 
 class ConversionCancelled(BaseException):
@@ -87,11 +96,33 @@ def text_is_only_hidden(page: pymupdf.Page) -> bool:
     return hidden > 0 and hidden >= HIDDEN_TEXT_SHARE * (hidden + shown)
 
 
+def _is_fill(shape: dict) -> bool:
+    return set(shape) == {"bbox", "color"}
+
+
+def drop_fills_drawn_in_pictures(raw: dict) -> dict:
+    clipped = [
+        _widened(pymupdf.Rect(block["bbox"]))
+        for block in raw.get("blocks", [])
+        if block.pop(CLIPPED_MARK, False)
+    ]
+    if clipped and "shapes" in raw:
+        raw["shapes"] = [
+            shape
+            for shape in raw["shapes"]
+            if not (
+                _is_fill(shape)
+                and any(area.contains(pymupdf.Rect(shape["bbox"])) for area in clipped)
+            )
+        ]
+    return raw
+
+
 def _extract_with_recognised_text(raw_page: RawPageFitz, **settings):
     engine = raw_page.page_engine
     if engine is not None and settings.get("ocr") == 0 and text_is_only_hidden(engine):
         settings = {**settings, "ocr": 2}
-    return _plain_extract_raw_dict(raw_page, **settings)
+    return drop_fills_drawn_in_pictures(_plain_extract_raw_dict(raw_page, **settings))
 
 
 def clip_ratio(largest_page_area: float) -> float:
@@ -183,16 +214,55 @@ def _inline_image_areas(page: pymupdf.Page, taken: list[pymupdf.Rect]) -> list[p
     return areas
 
 
+def _widened(area: pymupdf.Rect) -> pymupdf.Rect:
+    return area + (-COVER_TOLERANCE, -COVER_TOLERANCE, COVER_TOLERANCE, COVER_TOLERANCE)
+
+
+def shown_area(
+    bbox: pymupdf.Rect,
+    placements: list[tuple[pymupdf.Rect, pymupdf.Rect]],
+    frame: pymupdf.Rect,
+) -> pymupdf.Rect:
+    inside = [shown for placed, shown in placements if _widened(bbox).contains(placed)]
+    if not inside:
+        return pymupdf.Rect(bbox) & frame
+    area = pymupdf.Rect()
+    for shown in inside:
+        if not shown.is_empty:
+            area = pymupdf.Rect(shown) if area.is_empty else area | shown
+    return area & frame
+
+
 def _extract_images_inside_the_page(extractor, clip_image_res_ratio: float = 3.0):
     page = extractor._page
     extractor._page = _PageInItsOwnFrame(page)
+    plain_clip = extractor.clip_page_to_dict
+
+    def clip(bbox=None, rm_image=False, ratio=clip_image_res_ratio):
+        image = plain_clip(bbox, rm_image, ratio)
+        image[CLIPPED_MARK] = True
+        return image
+
+    extractor.clip_page_to_dict = clip
     try:
-        images = _plain_extract_images(extractor, clip_image_res_ratio)
+        frame = extractor._page.cropbox
+        placements = visible_images(page)
+        images = []
+        for image in _plain_extract_images(extractor, clip_image_res_ratio):
+            bbox = pymupdf.Rect(image["bbox"])
+            shown = shown_area(bbox, placements, frame)
+            if shown.is_empty or shown.get_area() <= MIN_IMAGE_AREA:
+                continue
+            if _widened(shown).contains(bbox):
+                images.append(image)
+            else:
+                images.append(clip(shown, False, clip_image_res_ratio))
         taken = [pymupdf.Rect(image["bbox"]) for image in images]
         for area in _inline_image_areas(extractor._page, taken):
-            images.append(extractor.clip_page_to_dict(area, False, clip_image_res_ratio))
+            images.append(clip(area, False, clip_image_res_ratio))
         return images
     finally:
+        del extractor.clip_page_to_dict
         extractor._page = page
 
 
@@ -207,7 +277,34 @@ def _to_raw_dict_even_when_empty(image: pymupdf.Pixmap, bbox: pymupdf.Rect) -> d
     return _plain_to_raw_dict(image, bbox)
 
 
+def _link_target(span: TextSpan) -> str | None:
+    if not span.text.strip():
+        return None
+    for style in span.style:
+        if style["type"] == RectType.HYPERLINK.value:
+            return style["uri"]
+    return None
+
+
+def _make_span_with_valid_link(span: TextSpan, paragraph) -> None:
+    run = paragraph.add_run(span.text)
+    span._set_text_format(run)
+    if span.char_spacing:
+        docx_helpers.set_char_spacing(run, span.char_spacing)
+    target = _link_target(span)
+    if target is None:
+        return
+    link = OxmlElement("w:hyperlink")
+    link.set(
+        qn("r:id"), paragraph.part.relate_to(target, RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+    )
+    link.set(qn("w:history"), "1")
+    run._r.addprevious(link)
+    link.append(run._r)
+
+
 def stabilise_pdf2docx() -> None:
+    TextSpan.make_docx = _make_span_with_valid_link
     TableBlock.make_docx = _make_table_with_cached_cells
     Shapes.text_style_shapes = property(_ordered_text_style_shapes)
     images_extractor.inner_contours = inner_contours
