@@ -1,7 +1,7 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { ready, setLocale } from "@/app/i18n";
-import { listPrinters, runPrint } from "@/shared/rpc/operations";
+import { listPrinters, printPreview, runPrint } from "@/shared/rpc/operations";
 import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { axeViolations } from "@/test/axe";
@@ -14,6 +14,7 @@ vi.mock("./useUnsavedMarks", () => ({ useUnsavedMarks: () => false }));
 vi.mock("@/shared/rpc/operations", () => ({
   listPrinters: vi.fn(async () => ({ printers: [{ name: "Office", isDefault: true }], default: "Office", backend: "windows" })),
   runPrint: vi.fn(async () => ({ printer: "Office", pages: 3, copies: 1, sheets: 1 })),
+  printPreview: vi.fn(async (params: { sheet?: number }) => ({ image: "AAAA", width: 720, height: 1018, sheet: params.sheet ?? 0, sheets: 3, pages: [(params.sheet ?? 0) + 1] })),
 }));
 
 vi.mock("@/shared/rpc/files", async (importOriginal) => ({ ...(await importOriginal<typeof import("@/shared/rpc/files")>()), deleteFile: vi.fn(async () => undefined) }));
@@ -48,6 +49,7 @@ beforeAll(async () => {
 beforeEach(() => {
   vi.mocked(runPrint).mockClear();
   vi.mocked(listPrinters).mockClear();
+  vi.mocked(printPreview).mockClear();
   useDocumentStore.getState().register("doc", "C:/plans/site.pdf", null);
   usePrintDialogStore.getState().setOpen(true);
 });
@@ -112,5 +114,40 @@ describe("PrintDialog", () => {
     render(<PrintDialog documentId="doc" />);
     expect(await screen.findByText("No printer found on this computer.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Print" }).hasAttribute("disabled")).toBe(true);
+  });
+
+  it("previews the sheet the printer will get and follows the settings", async () => {
+    await renderDialog();
+
+    expect(await screen.findByText("Sheet 1 of 3")).toBeTruthy();
+    expect(vi.mocked(printPreview).mock.calls.at(-1)?.[0]).toMatchObject({ path: "C:/plans/site.pdf", sheet: 0, pagesPerSheet: 1, annotations: true });
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Next sheet" }));
+    });
+    expect(await screen.findByText("Sheet 2 of 3")).toBeTruthy();
+    expect(screen.getByText("Pages: 2")).toBeTruthy();
+    await choose("Pages per sheet", "4");
+    await waitFor(() => expect(vi.mocked(printPreview).mock.calls.at(-1)?.[0]).toMatchObject({ pagesPerSheet: 4, sheet: 0 }));
+  });
+
+  it("explains an empty selection instead of showing a blank sheet", async () => {
+    vi.mocked(printPreview).mockRejectedValue({ code: "INVALID_PARAMS", message: "no pages selected", data: { reason: "empty" } });
+    await renderDialog();
+
+    expect(await screen.findByText("No pages to print")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Next sheet" }).hasAttribute("disabled")).toBe(true);
+    vi.mocked(printPreview).mockReset();
+  });
+
+  it("offers a retry when the preview fails", async () => {
+    vi.mocked(printPreview).mockRejectedValueOnce({ code: "INTERNAL", message: "boom" });
+    await renderDialog();
+
+    await screen.findByText("Couldn’t prepare the preview");
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "Retry" }));
+    });
+
+    expect(await screen.findByText("Sheet 1 of 3")).toBeTruthy();
   });
 });

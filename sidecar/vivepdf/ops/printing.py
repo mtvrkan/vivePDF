@@ -1,3 +1,5 @@
+import base64
+import io
 import os
 import shutil
 import subprocess
@@ -29,6 +31,11 @@ LOGPIXELSY = 90
 ScaleMode = Literal["fit", "actual"]
 PageSubset = Literal["all", "odd", "even"]
 PagesPerSheet = Literal[1, 2, 4, 6, 9]
+Paper = Literal["a4", "letter"]
+
+PAPER_SIZES_PT: dict[str, tuple[float, float]] = {"a4": (595.28, 841.89), "letter": (612.0, 792.0)}
+PREVIEW_MARGIN_PT = 12.0
+PREVIEW_QUALITY = 88
 
 SHEET_GRIDS: dict[int, tuple[int, int]] = {1: (1, 1), 2: (1, 2), 4: (2, 2), 6: (2, 3), 9: (3, 3)}
 CELL_GAP_FRACTION = 0.02
@@ -62,6 +69,21 @@ class PrintParams(RpcModel):
     annotations: bool = True
     auto_rotate: bool = True
     pages_per_sheet: PagesPerSheet = 1
+
+
+class PrintPreviewParams(PrintParams):
+    paper: Paper = "a4"
+    sheet: int = Field(default=0, ge=0)
+    width: int = Field(default=480, ge=120, le=1600)
+
+
+class PrintPreviewResult(RpcModel):
+    image: str
+    width: int
+    height: int
+    sheet: int
+    sheets: int
+    pages: list[int]
 
 
 class PrintResult(RpcModel):
@@ -385,3 +407,43 @@ def run(params: PrintParams, progress: Progress) -> PrintResult:
             printer = _print_cups(params, document, indices, progress)
     pages = sum(len(group) for group in sheets)
     return PrintResult(printer=printer, pages=pages, copies=params.copies, sheets=len(sheets))
+
+
+def preview_sheet(
+    document: pymupdf.Document, group: list[int], params: PrintPreviewParams
+) -> Image.Image:
+    paper_width, paper_height = PAPER_SIZES_PT[params.paper]
+    dpi = params.width / paper_width * POINTS_PER_INCH
+    height = round(paper_height / POINTS_PER_INCH * dpi)
+    margin = round(PREVIEW_MARGIN_PT / POINTS_PER_INCH * dpi)
+    area_width = params.width - 2 * margin
+    area_height = height - 2 * margin
+    image, box = compose_sheet(document, group, area_width, area_height, dpi, dpi, params)
+    sheet = Image.new(image.mode, (params.width, height), "white")
+    sheet.paste(image, (margin + box[0], margin + box[1]))
+    return sheet
+
+
+@op("print.preview", PrintPreviewParams)
+def preview(params: PrintPreviewParams, progress: Progress) -> PrintPreviewResult:
+    with open_document(params.path, params.password, mutable=not params.annotations) as document:
+        indices = parse_page_ranges(params.pages, document.page_count)
+        sheets = print_sheets(indices, params.subset, params.reverse, params.pages_per_sheet)
+        if not sheets:
+            raise OpError(ErrorCode.INVALID_PARAMS, "no pages selected", {"reason": "empty"})
+        position = min(params.sheet, len(sheets) - 1)
+        group = sheets[position]
+        progress.check_cancelled()
+        if not params.annotations:
+            strip_markup(document, group)
+        image = preview_sheet(document, group, params)
+    buffer = io.BytesIO()
+    image.save(buffer, "JPEG", quality=PREVIEW_QUALITY)
+    return PrintPreviewResult(
+        image=base64.b64encode(buffer.getvalue()).decode("ascii"),
+        width=image.width,
+        height=image.height,
+        sheet=position,
+        sheets=len(sheets),
+        pages=[index + 1 for index in group],
+    )

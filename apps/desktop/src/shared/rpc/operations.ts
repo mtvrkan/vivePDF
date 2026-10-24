@@ -197,6 +197,8 @@ import type {
   PreflightReport,
   PrintersResult,
   PrintRunParams,
+  PrintPreviewParams,
+  PrintPreviewResult,
   PrintRunResult,
   PrivacyReport,
   QrAddParams,
@@ -521,6 +523,7 @@ export const editorSystemFonts = (options?: RpcCallOptions) => rpc<EditorSystemF
 export const imageAt = (params: { path: string; password?: string; page: number; x: number; y: number; previewMaxSide?: number }, options?: RpcCallOptions) => rpc<ImageAtResult>("images.at", params, options);
 export const listPrinters = (options?: RpcCallOptions) => rpc<PrintersResult>("print.printers", {}, options);
 export const runPrint = (params: PrintRunParams, options?: RpcCallOptions) => rpc<PrintRunResult>("print.run", params, options);
+export const printPreview = (params: PrintPreviewParams, options?: RpcCallOptions) => rpc<PrintPreviewResult>("print.preview", params, options);
 export const imageSave = (params: { path: string; password?: string; page: number; x: number; y: number; output: string; overwrite?: boolean }, options?: RpcCallOptions) => rpc<ImageSaveResult>("images.save", params, options);
 export const insertPagesFrom = (params: InsertFromParams, options?: RpcCallOptions) => rpc<InsertFromResult>("pages.insert_from", params, options);
 export const ttsVoices = (options?: RpcCallOptions) => rpc<TtsVoicesResult>("tts.voices", {}, options);

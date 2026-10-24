@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Print: the print dialog shows a preview of each sheet next to the settings, on A4 (Letter in the Americas) with the chosen pages, odd/even choice, reverse order, pages per sheet, grayscale, scale, rotation and comments, with buttons to step through the sheets; unsaved markups appear as they will print [2026-10-24]
 - Default PDF app: Settings › System shows which app opens PDF files and a "Make default" button on Windows, macOS and Linux (macOS asks for confirmation, Windows opens its default-apps settings on vivePDF's page), and the home page shows a card with "Make default" and "Don't ask again" while vivePDF is not the default [2026-10-24]
 - Website documentation: a "First steps" page and a new "How-to guides" group of 13 short task pages in Turkish and English (merge, compress, PDF to Word, Office to PDF, photos to PDF, fill a form, sign, edit text, highlight and annotate, delete pages, split, add a password, redact), each with 3–5 steps and real screenshots of the app; screenshots load lazily in two sizes, open full size on click and appear as images in the Markdown copies [2026-10-24]
 

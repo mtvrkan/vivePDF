@@ -1075,7 +1075,16 @@
       "preview": "Aperçu du navigateur",
       "preparing": "Préparation…",
       "hint": "Les pages sont envoyées une à une à l’imprimante ; vous pouvez annuler à tout moment.",
-      "done": "{{pages}} page(s) envoyée(s) à {{printer}}."
+      "done": "{{pages}} page(s) envoyée(s) à {{printer}}.",
+      "previewTitle": "Aperçu",
+      "previewAlt": "Aperçu de la feuille {{current}} sur {{total}}",
+      "sheetOf": "Feuille {{current}} sur {{total}}",
+      "previewPages": "Pages : {{pages}}",
+      "previousSheet": "Feuille précédente",
+      "nextSheet": "Feuille suivante",
+      "previewEmpty": "Aucune page à imprimer",
+      "previewEmptyHint": "Modifiez la plage de pages ou le choix pair/impair.",
+      "previewFailed": "Impossible de préparer l’aperçu"
     },
     "editPanel": {
       "title": "Modifier",

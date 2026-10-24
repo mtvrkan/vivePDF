@@ -19,6 +19,8 @@ import { useDocumentStore } from "@/shared/store/documentStore";
 import { usePrintDialogStore } from "@/shared/store/printDialogStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { PagesPerSheet, PrinterInfo, PrintSubset, RpcProgress } from "@/types";
+import { PrintPreviewPane } from "./PrintPreviewPane";
+import { previewPaper, usePrintPreview } from "./usePrintPreview";
 import { useUnsavedMarks } from "./useUnsavedMarks";
 
 type PagesMode = "all" | "current" | "range";
@@ -38,7 +40,7 @@ export function PrintDialog({ documentId }: { documentId: string }) {
   const hasUnsavedMarks = useUnsavedMarks(documentId);
   const document = useDocumentStore((state) => state.documents[documentId] ?? null);
   const { state: scrollState } = useScroll(documentId);
-  const { provides: preview } = usePrint(documentId);
+  const { provides: browserPreview } = usePrint(documentId);
   const [printers, setPrinters] = useState<PrinterInfo[]>([]);
   const [loadingPrinters, setLoadingPrinters] = useState(false);
   const [printer, setPrinter] = useState("");
@@ -55,6 +57,8 @@ export function PrintDialog({ documentId }: { documentId: string }) {
   const [progress, setProgress] = useState<RpcProgress | null>(null);
   const [busy, setBusy] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const [previewSnapshot, setPreviewSnapshot] = useState<string | null>(null);
+  const paper = previewPaper(navigator.language);
 
   useEffect(() => {
     if (!open) return;
@@ -78,12 +82,41 @@ export function PrintDialog({ documentId }: { documentId: string }) {
     if (open && file) setPagesMode((mode) => (mode === "current" ? "all" : mode));
   }, [open, file]);
 
+  const needsSnapshot = open && !file && hasUnsavedMarks && exporter !== null;
+
+  useEffect(() => {
+    if (!needsSnapshot || !exporter) return;
+    let cancelled = false;
+    let made: string | null = null;
+    void (async () => {
+      await annotation?.commit().toPromise();
+      const bytes = await exporter.saveAsCopy().toPromise();
+      const path = await join(await tempDir(), `vivepdf-print-preview-${crypto.randomUUID()}.pdf`);
+      await writeDocumentBytes(path, bytes);
+      made = path;
+      if (cancelled) void deleteFile(path).catch(() => undefined);
+      else setPreviewSnapshot(path);
+    })().catch((caught: unknown) => logger.warn("viewer.print", `preview snapshot failed: ${String(caught)}`));
+    return () => {
+      cancelled = true;
+      if (made) void deleteFile(made).catch(() => undefined);
+      setPreviewSnapshot(null);
+    };
+  }, [needsSnapshot, exporter, annotation]);
+
+  const pagesSpec = pagesMode === "all" ? undefined : pagesMode === "current" ? String(scrollState.currentPage) : range.trim();
+  const previewPath = needsSnapshot ? previewSnapshot : (file?.path ?? document?.path ?? null);
+  const preview = usePrintPreview(
+    open && document && previewPath
+      ? { path: previewPath, password: (file ? file.password : document.password) ?? undefined, pages: pagesSpec || undefined, scale, grayscale, subset, reverse, annotations, autoRotate, pagesPerSheet, paper }
+      : null,
+  );
+
   if (!open || !document) return null;
 
   const totalPages = file ? file.pageCount : scrollState.totalPages;
 
   const copiesValue = Math.min(99, Math.max(1, Number.parseInt(copies, 10) || 1));
-  const pagesSpec = pagesMode === "all" ? undefined : pagesMode === "current" ? String(scrollState.currentPage) : range.trim();
   const canPrint = !busy && !loadingPrinters && printers.length > 0 && (pagesMode !== "range" || pagesSpec !== "");
 
   const finish = () => {
@@ -128,7 +161,7 @@ export function PrintDialog({ documentId }: { documentId: string }) {
 
   const systemPreview = () => {
     setOpen(false);
-    preview?.print();
+    browserPreview?.print();
   };
 
   const percent = Math.round((progress?.progress ?? 0) * 100);
@@ -137,6 +170,7 @@ export function PrintDialog({ documentId }: { documentId: string }) {
     <Dialog
       open
       title={t("viewer.printDialog.title")}
+      size="xl"
       onClose={close}
       footer={
         <div className="flex items-center gap-2">
@@ -161,100 +195,103 @@ export function PrintDialog({ documentId }: { documentId: string }) {
         </div>
       }
     >
-      <div className="space-y-4">
-        <Field label={t("viewer.printDialog.printer")}>
-          {printers.length === 0 && !loadingPrinters ? (
-            <p className="text-sm text-warning">{t("viewer.printDialog.noPrinters")}</p>
-          ) : (
-            <Select value={printer} options={printers.map((entry) => ({ value: entry.name, label: entry.isDefault ? `${entry.name} · ${t("viewer.printDialog.default")}` : entry.name }))} onChange={setPrinter} disabled={busy || loadingPrinters} placeholder={loadingPrinters ? t("common.loading") : undefined} ariaLabel={t("viewer.printDialog.printer")} />
-          )}
-        </Field>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={t("viewer.printDialog.pages")}>
-            <Select
-              value={pagesMode}
-              options={[
-                { value: "all", label: t("viewer.printDialog.pagesAll", { count: totalPages }) },
-                ...(file ? [] : [{ value: "current", label: t("viewer.printDialog.pagesCurrent", { page: scrollState.currentPage }) }]),
-                { value: "range", label: t("viewer.printDialog.pagesRange") },
-              ]}
-              onChange={(value) => setPagesMode(value as PagesMode)}
-              disabled={busy}
-              ariaLabel={t("viewer.printDialog.pages")}
-            />
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-4">
+          <Field label={t("viewer.printDialog.printer")}>
+            {printers.length === 0 && !loadingPrinters ? (
+              <p className="text-sm text-warning">{t("viewer.printDialog.noPrinters")}</p>
+            ) : (
+              <Select value={printer} options={printers.map((entry) => ({ value: entry.name, label: entry.isDefault ? `${entry.name} · ${t("viewer.printDialog.default")}` : entry.name }))} onChange={setPrinter} disabled={busy || loadingPrinters} placeholder={loadingPrinters ? t("common.loading") : undefined} ariaLabel={t("viewer.printDialog.printer")} />
+            )}
           </Field>
-          <Field label={t("viewer.printDialog.copies")}>
-            <TextInput value={copies} onChange={(event) => setCopies(event.target.value)} inputMode="numeric" disabled={busy} aria-label={t("viewer.printDialog.copies")} />
-          </Field>
-        </div>
-        {pagesMode === "range" ? (
-          <TextInput autoFocus value={range} onChange={(event) => setRange(event.target.value)} placeholder={t("viewer.printDialog.rangePlaceholder")} disabled={busy} className="font-mono" aria-label={t("viewer.printDialog.pagesRange")} />
-        ) : null}
-        <div className="grid grid-cols-2 items-end gap-3">
-          <Field label={t("viewer.printDialog.scale")}>
-            <Select
-              value={scale}
-              options={[
-                { value: "fit", label: t("viewer.printDialog.scaleFit") },
-                { value: "actual", label: t("viewer.printDialog.scaleActual") },
-              ]}
-              onChange={(value) => setScale(value as ScaleMode)}
-              disabled={busy || pagesPerSheet > 1}
-              ariaLabel={t("viewer.printDialog.scale")}
-            />
-          </Field>
-          <Checkbox label={t("viewer.printDialog.grayscale")} checked={grayscale} onChange={setGrayscale} disabled={busy} />
-        </div>
-        <div className="grid grid-cols-2 gap-3">
-          <Field label={t("viewer.printDialog.subset")}>
-            <Select
-              value={subset}
-              options={[
-                { value: "all", label: t("viewer.printDialog.subsetAll") },
-                { value: "odd", label: t("viewer.printDialog.subsetOdd") },
-                { value: "even", label: t("viewer.printDialog.subsetEven") },
-              ]}
-              onChange={(value) => setSubset(value as PrintSubset)}
-              disabled={busy}
-              ariaLabel={t("viewer.printDialog.subset")}
-            />
-          </Field>
-          <Field label={t("viewer.printDialog.pagesPerSheet")}>
-            <Select
-              value={String(pagesPerSheet)}
-              options={PAGES_PER_SHEET.map((value) => ({ value: String(value), label: String(value) }))}
-              onChange={(value) => setPagesPerSheet(Number(value) as PagesPerSheet)}
-              disabled={busy}
-              ariaLabel={t("viewer.printDialog.pagesPerSheet")}
-            />
-          </Field>
-        </div>
-        <Field label={t("viewer.printDialog.annotations")}>
-          <Select
-            value={annotations ? "include" : "exclude"}
-            options={[
-              { value: "include", label: t("viewer.printDialog.annotationsInclude") },
-              { value: "exclude", label: t("viewer.printDialog.annotationsExclude") },
-            ]}
-            onChange={(value) => setAnnotations(value === "include")}
-            disabled={busy}
-            ariaLabel={t("viewer.printDialog.annotations")}
-          />
-        </Field>
-        <div className="flex flex-wrap gap-x-6 gap-y-2">
-          <Checkbox label={t("viewer.printDialog.reverse")} checked={reverse} onChange={setReverse} disabled={busy} />
-          <Checkbox label={t("viewer.printDialog.autoRotate")} checked={autoRotate} onChange={setAutoRotate} disabled={busy} />
-        </div>
-        {busy ? (
-          <div className="space-y-1.5">
-            <p className="text-xs text-muted-foreground">{progress?.message ? t(progress.message, { defaultValue: t("tools.working"), ...progress.detail }) : t("viewer.printDialog.preparing")}</p>
-            <div className="h-1 w-full overflow-hidden rounded-sm bg-muted" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
-              <div className="h-full bg-primary transition-[width] duration-(--transition-fast)" style={{ width: `${percent}%` }} />
-            </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={t("viewer.printDialog.pages")}>
+              <Select
+                value={pagesMode}
+                options={[
+                  { value: "all", label: t("viewer.printDialog.pagesAll", { count: totalPages }) },
+                  ...(file ? [] : [{ value: "current", label: t("viewer.printDialog.pagesCurrent", { page: scrollState.currentPage }) }]),
+                  { value: "range", label: t("viewer.printDialog.pagesRange") },
+                ]}
+                onChange={(value) => setPagesMode(value as PagesMode)}
+                disabled={busy}
+                ariaLabel={t("viewer.printDialog.pages")}
+              />
+            </Field>
+            <Field label={t("viewer.printDialog.copies")}>
+              <TextInput value={copies} onChange={(event) => setCopies(event.target.value)} inputMode="numeric" disabled={busy} aria-label={t("viewer.printDialog.copies")} />
+            </Field>
           </div>
-        ) : (
-          <p className="text-xs text-muted-foreground">{t("viewer.printDialog.hint")}</p>
-        )}
+          {pagesMode === "range" ? (
+            <TextInput autoFocus value={range} onChange={(event) => setRange(event.target.value)} placeholder={t("viewer.printDialog.rangePlaceholder")} disabled={busy} className="font-mono" aria-label={t("viewer.printDialog.pagesRange")} />
+          ) : null}
+          <div className="grid grid-cols-2 items-end gap-3">
+            <Field label={t("viewer.printDialog.scale")}>
+              <Select
+                value={scale}
+                options={[
+                  { value: "fit", label: t("viewer.printDialog.scaleFit") },
+                  { value: "actual", label: t("viewer.printDialog.scaleActual") },
+                ]}
+                onChange={(value) => setScale(value as ScaleMode)}
+                disabled={busy || pagesPerSheet > 1}
+                ariaLabel={t("viewer.printDialog.scale")}
+              />
+            </Field>
+            <Checkbox label={t("viewer.printDialog.grayscale")} checked={grayscale} onChange={setGrayscale} disabled={busy} />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label={t("viewer.printDialog.subset")}>
+              <Select
+                value={subset}
+                options={[
+                  { value: "all", label: t("viewer.printDialog.subsetAll") },
+                  { value: "odd", label: t("viewer.printDialog.subsetOdd") },
+                  { value: "even", label: t("viewer.printDialog.subsetEven") },
+                ]}
+                onChange={(value) => setSubset(value as PrintSubset)}
+                disabled={busy}
+                ariaLabel={t("viewer.printDialog.subset")}
+              />
+            </Field>
+            <Field label={t("viewer.printDialog.pagesPerSheet")}>
+              <Select
+                value={String(pagesPerSheet)}
+                options={PAGES_PER_SHEET.map((value) => ({ value: String(value), label: String(value) }))}
+                onChange={(value) => setPagesPerSheet(Number(value) as PagesPerSheet)}
+                disabled={busy}
+                ariaLabel={t("viewer.printDialog.pagesPerSheet")}
+              />
+            </Field>
+          </div>
+          <Field label={t("viewer.printDialog.annotations")}>
+            <Select
+              value={annotations ? "include" : "exclude"}
+              options={[
+                { value: "include", label: t("viewer.printDialog.annotationsInclude") },
+                { value: "exclude", label: t("viewer.printDialog.annotationsExclude") },
+              ]}
+              onChange={(value) => setAnnotations(value === "include")}
+              disabled={busy}
+              ariaLabel={t("viewer.printDialog.annotations")}
+            />
+          </Field>
+          <div className="flex flex-wrap gap-x-6 gap-y-2">
+            <Checkbox label={t("viewer.printDialog.reverse")} checked={reverse} onChange={setReverse} disabled={busy} />
+            <Checkbox label={t("viewer.printDialog.autoRotate")} checked={autoRotate} onChange={setAutoRotate} disabled={busy} />
+          </div>
+          {busy ? (
+            <div className="space-y-1.5">
+              <p className="text-xs text-muted-foreground">{progress?.message ? t(progress.message, { defaultValue: t("tools.working"), ...progress.detail }) : t("viewer.printDialog.preparing")}</p>
+              <div className="h-1 w-full overflow-hidden rounded-sm bg-muted" role="progressbar" aria-valuenow={percent} aria-valuemin={0} aria-valuemax={100}>
+                <div className="h-full bg-primary transition-[width] duration-(--transition-fast)" style={{ width: `${percent}%` }} />
+              </div>
+            </div>
+          ) : (
+            <p className="text-xs text-muted-foreground">{t("viewer.printDialog.hint")}</p>
+          )}
+        </div>
+        <PrintPreviewPane preview={preview} paper={paper} />
       </div>
     </Dialog>
   );

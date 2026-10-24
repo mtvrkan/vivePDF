@@ -1075,7 +1075,16 @@
       "preview": "Pré-visualização do navegador",
       "preparing": "Preparando…",
       "hint": "As páginas são enviadas uma a uma à impressora; você pode cancelar a qualquer momento.",
-      "done": "{{pages}} página(s) enviada(s) para {{printer}}."
+      "done": "{{pages}} página(s) enviada(s) para {{printer}}.",
+      "previewTitle": "Pré-visualização",
+      "previewAlt": "Pré-visualização da folha {{current}} de {{total}}",
+      "sheetOf": "Folha {{current}} de {{total}}",
+      "previewPages": "Páginas: {{pages}}",
+      "previousSheet": "Folha anterior",
+      "nextSheet": "Próxima folha",
+      "previewEmpty": "Nenhuma página para imprimir",
+      "previewEmptyHint": "Altere o intervalo de páginas ou a escolha de pares/ímpares.",
+      "previewFailed": "Não foi possível preparar a pré-visualização"
     },
     "editPanel": {
       "title": "Editar",

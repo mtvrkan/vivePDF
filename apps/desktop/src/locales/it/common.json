@@ -1075,7 +1075,16 @@
       "preview": "Anteprima del browser",
       "preparing": "Preparazione…",
       "hint": "Le pagine vengono inviate alla stampante una alla volta; puoi annullare in qualsiasi momento.",
-      "done": "{{pages}} pagina/e inviate a {{printer}}."
+      "done": "{{pages}} pagina/e inviate a {{printer}}.",
+      "previewTitle": "Anteprima",
+      "previewAlt": "Anteprima del foglio {{current}} di {{total}}",
+      "sheetOf": "Foglio {{current}} di {{total}}",
+      "previewPages": "Pagine: {{pages}}",
+      "previousSheet": "Foglio precedente",
+      "nextSheet": "Foglio successivo",
+      "previewEmpty": "Nessuna pagina da stampare",
+      "previewEmptyHint": "Modifica l’intervallo di pagine o la scelta pari/dispari.",
+      "previewFailed": "Impossibile preparare l’anteprima"
     },
     "editPanel": {
       "title": "Modifica",

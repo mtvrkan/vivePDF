@@ -1075,7 +1075,16 @@
       "preview": "Browser-Vorschau",
       "preparing": "Wird vorbereitet…",
       "hint": "Die Seiten werden einzeln an den Drucker gesendet; Sie können jederzeit abbrechen.",
-      "done": "{{pages}} Seite(n) an {{printer}} gesendet."
+      "done": "{{pages}} Seite(n) an {{printer}} gesendet.",
+      "previewTitle": "Vorschau",
+      "previewAlt": "Vorschau von Blatt {{current}} von {{total}}",
+      "sheetOf": "Blatt {{current}} von {{total}}",
+      "previewPages": "Seiten: {{pages}}",
+      "previousSheet": "Vorheriges Blatt",
+      "nextSheet": "Nächstes Blatt",
+      "previewEmpty": "Keine Seiten zum Drucken",
+      "previewEmptyHint": "Ändern Sie den Seitenbereich oder die Auswahl gerade/ungerade.",
+      "previewFailed": "Vorschau konnte nicht erstellt werden"
     },
     "editPanel": {
       "title": "Bearbeiten",

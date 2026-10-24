@@ -1076,7 +1076,16 @@
       "preview": "Browser preview",
       "preparing": "Preparing…",
       "hint": "Pages are sent to the printer one by one; you can cancel at any time.",
-      "done": "{{pages}} page(s) sent to {{printer}}."
+      "done": "{{pages}} page(s) sent to {{printer}}.",
+      "previewTitle": "Preview",
+      "previewAlt": "Preview of sheet {{current}} of {{total}}",
+      "sheetOf": "Sheet {{current}} of {{total}}",
+      "previewPages": "Pages: {{pages}}",
+      "previousSheet": "Previous sheet",
+      "nextSheet": "Next sheet",
+      "previewEmpty": "No pages to print",
+      "previewEmptyHint": "Change the page range or the odd/even choice.",
+      "previewFailed": "Couldn’t prepare the preview"
     },
     "editPanel": {
       "title": "Edit",

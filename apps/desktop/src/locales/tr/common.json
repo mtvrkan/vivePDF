@@ -1076,7 +1076,16 @@
       "preview": "Tarayıcı önizlemesi",
       "preparing": "Hazırlanıyor…",
       "hint": "Sayfalar yazıcıya tek tek gönderilir; istediğiniz an iptal edebilirsiniz.",
-      "done": "{{pages}} sayfa {{printer}} yazıcısına gönderildi."
+      "done": "{{pages}} sayfa {{printer}} yazıcısına gönderildi.",
+      "previewTitle": "Önizleme",
+      "previewAlt": "{{total}} kâğıttan {{current}}. kâğıdın önizlemesi",
+      "sheetOf": "Kâğıt {{current}} / {{total}}",
+      "previewPages": "Sayfa: {{pages}}",
+      "previousSheet": "Önceki kâğıt",
+      "nextSheet": "Sonraki kâğıt",
+      "previewEmpty": "Yazdırılacak sayfa yok",
+      "previewEmptyHint": "Sayfa aralığını ya da tek/çift seçimini değiştirin.",
+      "previewFailed": "Önizleme hazırlanamadı"
     },
     "editPanel": {
       "title": "Düzenle",

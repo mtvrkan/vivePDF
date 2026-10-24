@@ -1139,7 +1139,16 @@
       "preview": "معاينة المتصفح",
       "preparing": "جارٍ التحضير…",
       "hint": "تُرسل الصفحات إلى الطابعة واحدة تلو الأخرى؛ يمكنك الإلغاء في أي وقت.",
-      "done": "أُرسلت {{pages}} صفحة إلى {{printer}}."
+      "done": "أُرسلت {{pages}} صفحة إلى {{printer}}.",
+      "previewTitle": "معاينة",
+      "previewAlt": "معاينة الورقة {{current}} من {{total}}",
+      "sheetOf": "الورقة {{current}} من {{total}}",
+      "previewPages": "الصفحات: {{pages}}",
+      "previousSheet": "الورقة السابقة",
+      "nextSheet": "الورقة التالية",
+      "previewEmpty": "لا توجد صفحات للطباعة",
+      "previewEmptyHint": "غيّر نطاق الصفحات أو اختيار الفردية/الزوجية.",
+      "previewFailed": "تعذّر إعداد المعاينة"
     },
     "editPanel": {
       "title": "تحرير",

@@ -1098,6 +1098,12 @@
     "modify"
    ]
   ],
+  "print.preview": [
+   [
+    "path",
+    "read"
+   ]
+  ],
   "print.printers": [],
   "print.run": [
    [

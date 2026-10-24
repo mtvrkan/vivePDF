@@ -204,6 +204,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "presentation.save_drawings",
     ),
     "printing": (
+        "print.preview",
         "print.printers",
         "print.run",
     ),

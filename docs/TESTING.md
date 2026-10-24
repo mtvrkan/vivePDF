@@ -237,6 +237,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   choosing vivePDF for .pdf there and coming back to the app, the row shows a check mark and the
   home card is gone. "Don't ask again" hides the card for good. On Linux the button switches
   `xdg-mime query default application/pdf` to vivePDF's desktop file without a dialog.
+- Print a two-sheet selection with 2 pages per sheet on a real printer: the paper matches the
+  print dialog's preview (page order, rotation, grayscale), apart from the printer's own margins.
 
 ### How native dialogs are answered
 
