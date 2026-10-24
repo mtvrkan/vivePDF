@@ -1,0 +1,28 @@
+# Redact a PDF
+
+> How to permanently remove names, amounts, ID numbers and other sensitive details from a PDF with vivePDF and cover them with a black box.
+
+URL: https://vivepdf.com/en/docs/redact-a-pdf/
+Last updated: 2026-10-24
+
+To remove sensitive information from a PDF for good, open **Redaction** under **Tools › Security**, choose your file, type the text to hide and click **Redact**. Matching text is deleted from the file and covered with a box; the redacted copy is saved as a new file.
+
+1. Open **Tools › Security**, click **Security** above the page title and choose **Redaction** from the list. Choose the PDF.
+2. Type a word you want to hide in **Text to find** and press `Enter`. Each one is added as a separate tag.
+3. Check the **Sensitive data found** list: if vivePDF finds ID numbers, IBANs or e-mail addresses in the document, it lists them here so you can add them with one click.
+4. If you like, type a note such as `GDPR` in **Text on the box** and pick a **Box colour**.
+5. Click **Redact**.
+
+![Redaction: a name and an amount in Text to find; black boxes in the before and after preview on the right, 3 redactions](https://vivepdf.com/shots/en/redact-2-1600.webp)
+
+The result panel shows how many places were redacted and a before-and-after preview. With **Also remove matches outside the page** on, the same text is also removed from comments, form fields, bookmarks and document properties, and vivePDF tells you how many places that was.
+
+> **Drawing a black box is not enough**
+>
+> A black rectangle drawn over text does not hide it; the text stays underneath and can be copied. Redaction really deletes it from the file. This cannot be undone, so keep your original.
+
+## Redacting an area by hand
+
+To black out a signature, a photo or any other area, open the document in the Viewer, click **Edit** in the strip on the right, choose **Page tools › Black out area**, drag over the area and click **Black out**.
+
+Regular expressions and the other options are on the [Security](https://vivepdf.com/en/docs/security/) page.

@@ -1,0 +1,28 @@
+# PDF karartma
+
+> vivePDF ile bir PDF'teki ad, tutar, kimlik numarası gibi hassas bilgileri kalıcı olarak silme ve üzerini siyah kutuyla kapatma, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-karartma/
+Son güncelleme: 2026-10-24
+
+Bir PDF'teki hassas bilgiyi kalıcı olarak silmek için **Araçlar › Güvenlik**'te **Karartma**'yı aç, dosyanı seç, gizlenecek metinleri yaz ve **Karart**'a tıkla. Eşleşen metin dosyadan silinir ve üzeri bir kutuyla kapatılır; karartılmış kopya yeni bir dosya olarak kaydedilir.
+
+1. **Araçlar › Güvenlik**'i aç, sayfa başlığının üstündeki **Güvenlik** yazısına tıkla ve listeden **Karartma**'yı seç. PDF'i seç.
+2. **Aranacak metinler** kutusuna gizlemek istediğin sözcüğü yaz ve `Enter`'a bas. Her biri ayrı bir etiket olarak eklenir.
+3. **Bulunan hassas veriler** listesine bak: vivePDF belgede kimlik numarası, IBAN ya da e-posta adresi gibi bilgiler bulursa burada listeler, tek tıkla eklersin.
+4. İstersen **Kutu üzerindeki yazı**'ya `KVKK` gibi bir not yaz ve **Kutu rengi**'ni seç.
+5. **Karart**'a tıkla.
+
+![Karartma: Esma Demir ve 73.800,00 aranacak metinlerde; sağda önce ve sonra önizlemesinde siyah kutular, 3 karartma](https://vivepdf.com/shots/tr/redact-2-1600.webp)
+
+Sonuç panelinde kaç yerin karartıldığı ve bir önce/sonra önizlemesi görünür. **Sayfa dışındaki eşleşmeleri de sil** açıksa aynı metin yorumlardan, form alanlarından, yer imlerinden ve belge özelliklerinden de silinir; vivePDF kaç yerden silindiğini ayrıca bildirir.
+
+> **Siyah kutu çizmek yetmez**
+>
+> Bir metnin üstüne siyah dikdörtgen çizmek onu gizlemez; metin altta durur ve kopyalanabilir. Karartma metni dosyadan gerçekten siler. Bu işlem geri alınamaz, bu yüzden asıl dosyayı sakla.
+
+## Bir alanı elle karartmak
+
+Bir imzayı, fotoğrafı ya da belirli bir bölgeyi karartmak için belgeyi Görüntüleyici'de aç, sağdaki şeritten **Düzenle**'ye tıkla, **Sayfa araçları › Alanı karart**'ı seç, alanın üstünde sürükle ve **Karart**'a tıkla.
+
+Düzenli ifadeler ve diğer seçenekler [Güvenlik](https://vivepdf.com/dokumantasyon/guvenlik/) sayfasında.

@@ -18,6 +18,23 @@ Key facts:
 
 - [Installation](https://vivepdf.com/en/docs/installation.md): How to install vivePDF on Windows 10/11 and macOS 14+, get past the SmartScreen and Gatekeeper warnings, receive updates and uninstall it.
 - [Interface](https://vivepdf.com/en/docs/interface.md): A tour of vivePDF's top bar, Tools menu, command palette, tabs, tab groups, windows and the side panels in the Viewer.
+- [First steps](https://vivepdf.com/en/docs/first-steps.md): How to open a PDF the first time you start vivePDF, find the tool you need and see where the result is saved, with screenshots.
+
+## How-to guides
+
+- [Merge PDFs](https://vivepdf.com/en/docs/merge-pdfs.md): How to combine several PDFs into one file with vivePDF, put them in order, take only some pages and save the result, step by step.
+- [Compress a PDF](https://vivepdf.com/en/docs/compress-a-pdf.md): How to make a PDF smaller with vivePDF, see what takes up the space, choose a compression profile and get a file small enough to e-mail.
+- [Convert a PDF to Word](https://vivepdf.com/en/docs/pdf-to-word.md): How to turn a PDF into an editable Word (.docx) file with vivePDF, keeping tables, pictures, headers and footers, step by step.
+- [Convert Word, Excel and PowerPoint to PDF](https://vivepdf.com/en/docs/office-to-pdf.md): How to turn Word, Excel, PowerPoint and other Office files into PDFs with vivePDF, convert several files at once and set up LibreOffice.
+- [Make a PDF from photos](https://vivepdf.com/en/docs/images-to-pdf.md): How to combine photos, scans or a whole folder of pictures into one PDF with vivePDF, and choose the paper size, orientation and margin.
+- [Fill in a PDF form](https://vivepdf.com/en/docs/fill-a-form.md): How to open a fillable PDF form in vivePDF, type into its fields, tick its boxes and save the filled-in form, step by step.
+- [Sign a PDF](https://vivepdf.com/en/docs/sign-a-pdf.md): How to sign a PDF by hand in vivePDF: draw your signature or take it from a photo, save it, place it on the page and set its size.
+- [Edit text in a PDF](https://vivepdf.com/en/docs/edit-pdf-text.md): How to correct the text in a PDF with vivePDF: click a paragraph and change it, add a new text box and save the change, step by step.
+- [Highlight and annotate a PDF](https://vivepdf.com/en/docs/highlight-and-annotate.md): How to highlight, underline or strike out text in a PDF with vivePDF, draw with a pen, add shapes and text boxes, write notes on marks and save.
+- [Delete pages from a PDF](https://vivepdf.com/en/docs/delete-pages.md): How to select the pages you don't want in a PDF and delete them with the vivePDF page organizer, then save the result to a new file.
+- [Split a PDF](https://vivepdf.com/en/docs/split-a-pdf.md): How to split a PDF into separate files with vivePDF by page ranges, a fixed number of pages, file size or bookmarks, step by step.
+- [Password-protect a PDF](https://vivepdf.com/en/docs/password-protect-a-pdf.md): How to protect a PDF with a password and AES-256 encryption in vivePDF, limit printing and copying, and keep the owner password safe.
+- [Redact a PDF](https://vivepdf.com/en/docs/redact-a-pdf.md): How to permanently remove names, amounts, ID numbers and other sensitive details from a PDF with vivePDF and cover them with a black box.
 
 ## Working with documents
 
@@ -59,6 +76,20 @@ Key facts:
 
 - [Kurulum](https://vivepdf.com/dokumantasyon/kurulum.md): vivePDF'i Windows 10/11'e ve macOS 14+'a kurma, SmartScreen ve Gatekeeper uyarılarını geçme, güncellemeleri alma ve kaldırma adımları.
 - [Arayüz](https://vivepdf.com/dokumantasyon/arayuz.md): vivePDF'in üst çubuğu, Araçlar menüsü, komut paleti, sekmeler, sekme grupları, pencereler ve Görüntüleyici'nin yan panelleri tek sayfada.
+- [İlk adımlar](https://vivepdf.com/dokumantasyon/ilk-adimlar.md): vivePDF'i ilk kez açtığında bir PDF'i nasıl açacağın, aradığın aracı nasıl bulacağın ve sonucun nereye kaydedildiği, ekran görüntüleriyle.
+- [PDF birleştirme](https://vivepdf.com/dokumantasyon/pdf-birlestirme.md): vivePDF ile birden çok PDF'i tek dosyada birleştirme; dosyaları sıralama, yalnızca bazı sayfaları alma ve sonucu kaydetme, adım adım.
+- [PDF küçültme (sıkıştırma)](https://vivepdf.com/dokumantasyon/pdf-kucultme.md): vivePDF ile PDF dosya boyutunu küçültme; neyin yer kapladığını görme, sıkıştırma profili seçme ve e-postaya sığacak bir dosya elde etme.
+- [PDF'i Word'e çevirme](https://vivepdf.com/dokumantasyon/pdf-word-cevirme.md): vivePDF ile PDF'i düzenlenebilir bir Word (.docx) dosyasına çevirme; tablolar, görseller ve üst ve alt bilgiler korunarak, adım adım.
+- [Word, Excel ve PowerPoint'i PDF'e çevirme](https://vivepdf.com/dokumantasyon/word-pdf-cevirme.md): vivePDF ile Word, Excel, PowerPoint ve diğer Office dosyalarını PDF'e çevirme; birden çok dosyayı aynı anda dönüştürme ve LibreOffice kurulumu.
+- [Fotoğraflardan PDF yapma](https://vivepdf.com/dokumantasyon/fotograflardan-pdf.md): vivePDF ile fotoğrafları, taramaları ya da bütün bir resim klasörünü tek bir PDF'te birleştirme; sayfa boyutu, yön ve kenar boşluğu seçme.
+- [PDF form doldurma](https://vivepdf.com/dokumantasyon/form-doldurma.md): vivePDF'te doldurulabilir bir PDF formunu açma, alanlara yazma, onay kutularını işaretleme ve doldurulmuş formu kaydetme, adım adım.
+- [PDF imzalama](https://vivepdf.com/dokumantasyon/pdf-imzalama.md): vivePDF'te bir PDF'e elle imza atma; imzayı fare, kalem ya da fotoğraftan oluşturma, kaydetme, sayfaya yerleştirme ve boyutunu ayarlama.
+- [PDF'te metin düzenleme](https://vivepdf.com/dokumantasyon/pdf-metin-duzenleme.md): vivePDF'te bir PDF'teki yazıyı düzeltme; paragrafa tıklayıp değiştirme, yeni metin kutusu ekleme ve değişikliği kaydetme, adım adım.
+- [Vurgulama ve not ekleme](https://vivepdf.com/dokumantasyon/vurgulama-not-ekleme.md): vivePDF'te PDF'teki metni vurgulama, altını ya da üstünü çizme, kalemle çizme, şekil ve metin kutusu ekleme, işaretlere not yazma ve kaydetme.
+- [PDF'ten sayfa silme](https://vivepdf.com/dokumantasyon/sayfa-silme.md): vivePDF'in sayfa düzenleyicisiyle bir PDF'ten istemediğin sayfaları seçip silme ve sonucu yeni bir dosyaya kaydetme, adım adım.
+- [PDF bölme](https://vivepdf.com/dokumantasyon/pdf-bolme.md): vivePDF ile bir PDF'i sayfa aralıklarına, sabit sayfa sayısına, dosya boyutuna ya da yer imlerine göre ayrı dosyalara bölme, adım adım.
+- [PDF'e parola koyma](https://vivepdf.com/dokumantasyon/pdf-parola-koyma.md): vivePDF ile bir PDF'i AES-256 şifrelemeyle parolayla koruma, yazdırma ve kopyalama izinlerini kısıtlama ve sahip parolasını saklama, adım adım.
+- [PDF karartma](https://vivepdf.com/dokumantasyon/pdf-karartma.md): vivePDF ile bir PDF'teki ad, tutar, kimlik numarası gibi hassas bilgileri kalıcı olarak silme ve üzerini siyah kutuyla kapatma, adım adım.
 - [PDF açma ve okuma](https://vivepdf.com/dokumantasyon/acma-okuma.md): vivePDF'te belge açma, sayfalar arasında gezinme, metin arama, yakınlaştırma, sayfa görünümü, bölünmüş pencere ve okuma modu.
 - [Sayfaları düzenleme](https://vivepdf.com/dokumantasyon/sayfalar.md): vivePDF sayfa düzenleyicisiyle PDF sayfalarını sıralama, döndürme, silme, ekleme, çıkarma ve ayrı dosyalara bölme adımları.
 - [Dosya dönüştürme](https://vivepdf.com/dokumantasyon/donusturme.md): vivePDF ile PDF'i Word, Excel, PowerPoint, resim, metin, Markdown, HTML ve EPUB'a çevirme; resim, Office, SVG ve web sayfalarından PDF yapma.

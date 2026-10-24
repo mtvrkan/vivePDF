@@ -3,9 +3,9 @@
 > vivePDF'i kaynak koddan çalıştırmak için gerekenler, geliştirme modunda açma, testleri çalıştırma ve kendi kurulum paketini derleme.
 
 URL: https://vivepdf.com/dokumantasyon/kaynaktan-derleme/
-Son güncelleme: 2026-10-18
+Son güncelleme: 2026-10-24
 
-vivePDF'i kaynak koddan derleyip çalıştırabilirsin. Hazır paketi olmayan Linux'ta ya da macOS sürümü yayımlanana kadar Mac'te uygulamayı kullanmanın yolu budur; koda katkı vermek istediğinde de buradan başlarsın.
+vivePDF'i kaynak koddan derleyip çalıştırabilirsin. Hazır paketi olmayan Linux'ta ya da Intel işlemcili Mac'lerde uygulamayı kullanmanın yolu budur; koda katkı vermek istediğinde de buradan başlarsın.
 
 ## Depo düzeni
 

@@ -141,12 +141,472 @@ Her düğme kendi panelini açıp kapatır. Belge açıldığında hangi panelle
 
 ---
 
+# İlk adımlar
+
+> vivePDF'i ilk kez açtığında bir PDF'i nasıl açacağın, aradığın aracı nasıl bulacağın ve sonucun nereye kaydedildiği, ekran görüntüleriyle.
+
+URL: https://vivepdf.com/dokumantasyon/ilk-adimlar/
+Son güncelleme: 2026-10-24
+
+vivePDF'i açtığında **Başlangıç** ekranı gelir. Bir PDF'i açmak için **PDF aç**'a tıkla ya da dosyayı pencereye sürükle; bir araca ulaşmak için üstteki **Araçlar** menüsünü ya da komut paletini kullan. Her araç sonucu yeni bir dosyaya yazar, asıl dosyan olduğu gibi kalır.
+
+## 1. Bir belge aç
+
+1. **Başlangıç**'ta **PDF aç**'a tıkla ya da `Ctrl+O`'ya bas ve dosyanı seç.
+2. Ya da dosyayı Finder'dan veya Explorer'dan pencereye sürükleyip bırak. Word, Excel, PowerPoint dosyaları ve resimler de açılır.
+3. Belge **Görüntüleyici**'de kendi sekmesinde açılır. Soldaki küçük resimlerle sayfalar arasında gezinir, sağdaki şeritten işaretleme ve düzenleme araçlarını açarsın.
+
+![vivePDF Başlangıç ekranı: PDF aç düğmesi, Hızlı erişim araçları ve Son belgeler](https://vivepdf.com/shots/tr/start-1-1600.webp)
+
+Açtığın belgeler **Son belgeler** listesinde kalır; bir dahaki sefere oradan tek tıkla açarsın. **Hızlı erişim** satırındaki **Birleştir**, **Böl**, **Sıkıştır** gibi düğmeler en sık kullanılan araçlara kestirmedir.
+
+> **Mac'te kısayollar**
+>
+> Bu rehberdeki `Ctrl` kısayolları Mac'te `⌘` ile çalışır: `⌘+O` belge açar, `⌘+K` komut paletini getirir. Tüm liste [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar/) sayfasında.
+
+## 2. Aradığın aracı bul
+
+Tüm araçlar üstteki **Araçlar** menüsünde, işlerine göre gruplanmış hâlde durur: **Sayfa düzeni**, **Optimizasyon**, **PDF'e dönüştürme**, **PDF'ten dönüştürme**, **İçerik düzenleme** ve **Güvenlik**.
+
+![Araçlar menüsü açık: Birleştir, Böl, Sıkıştır, Dönüştür, Güvenlik ve diğer araçlar gruplar hâlinde](https://vivepdf.com/shots/tr/start-2-1600.webp)
+
+Aracın nerede olduğunu bilmiyorsan komut paletini kullan: `Ctrl+K`'ya bas ve ne yapmak istediğini yaz. Örneğin "sıkış" yazınca **Sıkıştır** ilk sırada çıkar; `Enter` aracı açar.
+
+![Komut paletinde 'sıkış' araması ve ilk sonuç olarak Sıkıştır aracı](https://vivepdf.com/shots/tr/start-3-1600.webp)
+
+## 3. Sonucu bul
+
+Bir aracı çalıştırdığında sonuç sağdaki panelde görünür: sayfa sayısı ya da kazanılan yer, bir önizleme ve yeni dosyanın adı. Dosya varsayılan olarak asıl dosyanın yanına, adına kısa bir ek alarak kaydedilir (örneğin `rapor-birlesik.pdf`). Yerini **Çıktı dosyası** alanındaki **Gözat** ile değiştirebilirsin.
+
+Sonuç panelindeki **Sonraki adım** düğmeleri, yeni dosyayla devam etmeni sağlar: birleştirdiğin dosyayı hemen sıkıştırmak ya da parola koymak gibi. Kitap simgesi sonucu Görüntüleyici'de açar, klasör simgesi dosyayı Finder'da ya da Explorer'da gösterir.
+
+![Görüntüleyici'de açık bir rapor: solda sayfa küçük resimleri, sağda araç şeridi](https://vivepdf.com/shots/tr/start-4-1600.webp)
+
+## Sırada ne var?
+
+En sık yapılan işler için kısa rehberler:
+
+- [PDF birleştirme](https://vivepdf.com/dokumantasyon/pdf-birlestirme/) ve [PDF bölme](https://vivepdf.com/dokumantasyon/pdf-bolme/)
+- [PDF küçültme](https://vivepdf.com/dokumantasyon/pdf-kucultme/)
+- [PDF'i Word'e çevirme](https://vivepdf.com/dokumantasyon/pdf-word-cevirme/), [Word'ü PDF'e çevirme](https://vivepdf.com/dokumantasyon/word-pdf-cevirme/) ve [fotoğraflardan PDF yapma](https://vivepdf.com/dokumantasyon/fotograflardan-pdf/)
+- [Form doldurma](https://vivepdf.com/dokumantasyon/form-doldurma/), [PDF imzalama](https://vivepdf.com/dokumantasyon/pdf-imzalama/) ve [PDF'te metin düzenleme](https://vivepdf.com/dokumantasyon/pdf-metin-duzenleme/)
+- [Vurgulama ve not ekleme](https://vivepdf.com/dokumantasyon/vurgulama-not-ekleme/), [sayfa silme](https://vivepdf.com/dokumantasyon/sayfa-silme/)
+- [PDF'e parola koyma](https://vivepdf.com/dokumantasyon/pdf-parola-koyma/) ve [PDF karartma](https://vivepdf.com/dokumantasyon/pdf-karartma/)
+
+Arayüzün tamamı [Arayüz](https://vivepdf.com/dokumantasyon/arayuz/) sayfasında anlatılıyor.
+
+---
+
+# PDF birleştirme
+
+> vivePDF ile birden çok PDF'i tek dosyada birleştirme; dosyaları sıralama, yalnızca bazı sayfaları alma ve sonucu kaydetme, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-birlestirme/
+Son güncelleme: 2026-10-24
+
+Birden çok PDF'i tek dosyada toplamak için **Araçlar › Birleştir**'i aç, dosyaları ekle, sıralarını ayarla ve **Birleştir**'e tıkla. Asıl dosyalara dokunulmaz; sonuç yeni bir PDF olarak kaydedilir.
+
+1. **Araçlar › Birleştir**'i aç ya da Başlangıç'taki **Birleştir** kestirmesine tıkla.
+2. **Dosya ekle** ile PDF'leri seç ya da pencereye sürükle. Bir klasördeki tüm PDF'ler için **Klasör ekle**'yi kullan.
+3. Sırayı ayarla: satırı tutup sürükle ya da sağdaki yukarı ve aşağı oklarını kullan.
+4. Bir dosyanın yalnızca bazı sayfalarını almak istiyorsan **Sayfa aralığı** kutusuna `1-3, 5` gibi yaz; boş bırakırsan tüm sayfalar alınır.
+5. **Birleştir**'e tıkla.
+
+![Birleştir aracı: iki PDF listede, sayfa aralığı kutuları ve Art arda birleştirme biçimi](https://vivepdf.com/shots/tr/merge-1-1600.webp)
+
+Sonuç sağdaki panelde görünür: toplam sayfa sayısı, ilk sayfanın önizlemesi ve yeni dosyanın adı (örneğin `rapor-birlesik.pdf`). Kitap simgesiyle dosyayı açar, **Sonraki adım** düğmeleriyle hemen sıkıştırabilir ya da parola koyabilirsin.
+
+![Birleştirme bitti: sağ panelde 8 sayfa, önizleme ve rapor-birlesik.pdf](https://vivepdf.com/shots/tr/merge-2-1600.webp)
+
+## İşine yarayacak seçenekler
+
+- **Yer imleri**: her dosya için bir yer imi eklenir, dosyanın kendi yer imleri onun altında kalır.
+- **İçindekiler sayfası ekle**: ilk sayfaya her dosyanın sayfa numarasıyla bir liste koyar.
+- **Her dosyayı ön yüzden başlat**: çift taraflı baskıda iki dosyanın aynı yaprağa düşmesini önler.
+
+> **Ön ve arka yüzleri ayrı taradıysan**
+>
+> **Birleştirme biçimi**'nde **Sayfaları dönüşümlü al**'ı seç. Ön yüzler ve arka yüzler sırayla tek belgede birleşir; arka yüzleri sondan başlayarak taradıysan sıralarını ters çevirir.
+
+Daha fazla ayrıntı için [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) sayfasına bak. Tersini yapmak, yani bir PDF'i parçalara ayırmak için [PDF bölme](https://vivepdf.com/dokumantasyon/pdf-bolme/) rehberine geç.
+
+---
+
+# PDF küçültme (sıkıştırma)
+
+> vivePDF ile PDF dosya boyutunu küçültme; neyin yer kapladığını görme, sıkıştırma profili seçme ve e-postaya sığacak bir dosya elde etme.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-kucultme/
+Son güncelleme: 2026-10-24
+
+Bir PDF'in boyutunu küçültmek için **Araçlar › Sıkıştır**'ı aç, dosyanı seç, bir profil belirle ve **Sıkıştır**'a tıkla. Görseller yeniden örneklenir, kullanılmayan yazı tipi parçaları ve gereksiz yapı temizlenir; asıl dosya olduğu gibi kalır.
+
+1. **Araçlar › Sıkıştır**'ı aç ve PDF'i seç ya da pencereye sürükle.
+2. **Dosyada yeri ne kaplıyor** bölümüne bak: görseller, yazı tipleri ve sayfa içerikleri ayrı ayrı gösterilir, en büyük görseller listelenir.
+3. **Profil**'den birini seç. E-posta için **Güçlü** genellikle yeterlidir.
+4. **Sıkıştır**'a tıkla.
+
+![Sıkıştır aracı: 25 MB'lık broşürde yerin çoğunu görsellerin kapladığını gösteren çubuk ve en büyük görseller listesi](https://vivepdf.com/shots/tr/compress-1-1600.webp)
+
+Profiller şöyle ayrılır:
+
+- **Hafif**: görsellere dokunmaz, yalnızca yapıyı ve yazı tiplerini temizler.
+- **Dengeli**: 150 dpi ve %75 JPEG; ekranda fark edilmez.
+- **Güçlü**: 100 dpi ve %60 JPEG; e-posta için ideal.
+- **Aşırı**: 72 dpi ve %40 JPEG; en küçük dosya, düşük kalite.
+- **Özel**: çözünürlüğü ve kaliteyi kendin belirlersin.
+
+Sonuç panelinde kazanç yüzdesi, eski ve yeni boyut ve bir önce/sonra önizlemesi görünür. Aşağıdaki örnekte 25 MB'lık broşür 267 KB'a indi.
+
+![Sıkıştırma sonucu: −%99, 25,0 MB'tan 266,6 KB'a; önce ve sonra önizlemesi](https://vivepdf.com/shots/tr/compress-2-1600.webp)
+
+> **Belirli bir boyutun altına inmen gerekiyorsa**
+>
+> **Hedef boyuta sıkıştır**'ı aç ve sınırı yaz (örneğin 10 MB). vivePDF profilleri hafiften güçlüye doğru dener ve sınıra sığan ilk sonucu kaydeder.
+
+Metin ağırlıklı bir PDF zaten küçükse sıkıştırma çok az kazandırır; asıl kazanç büyük fotoğraf ve taramalardan gelir. Taranmış belgeler için [Taranmış sayfaları aranabilir yapma (OCR)](https://vivepdf.com/dokumantasyon/ocr/) sayfasına da bak.
+
+---
+
+# PDF'i Word'e çevirme
+
+> vivePDF ile PDF'i düzenlenebilir bir Word (.docx) dosyasına çevirme; tablolar, görseller ve üst ve alt bilgiler korunarak, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-word-cevirme/
+Son güncelleme: 2026-10-24
+
+Bir PDF'i Word'e çevirmek için **Araçlar › Dönüştür**'ü aç, soldan **PDF → Word**'ü seç, dosyanı ekle ve **Dönüştür**'e tıkla. Sonuç, Word'de ya da LibreOffice'te düzenleyebileceğin bir .docx dosyasıdır; tablolar ve görseller aktarılır.
+
+1. **Araçlar › Dönüştür**'ü aç ve soldaki listeden **PDF → Word**'ü seç.
+2. PDF'i seç ya da pencereye sürükle.
+3. Yalnızca bazı sayfalar gerekiyorsa **Sayfalar** kutusuna `1-3, 5` gibi yaz; boş bırakırsan tüm sayfalar çevrilir.
+4. **Dönüştür**'e tıkla.
+
+![Dönüştür aracında PDF → Word seçili: sozlesme.pdf, Sayfalar kutusu ve Çıktı dosyası](https://vivepdf.com/shots/tr/word-1-1600.webp)
+
+Sonuç panelinde yeni .docx dosyası görünür. Yanındaki düğmeyle dosyayı varsayılan uygulamasında açar, klasör simgesiyle Finder'da ya da Explorer'da gösterirsin.
+
+![Dönüştürme bitti: sağ panelde 1 dosya ve sozlesme.docx](https://vivepdf.com/shots/tr/word-2-1600.webp)
+
+**Tekrar eden üst ve alt bilgileri Word'e taşı** açıkken sayfaların çoğunun başında ya da sonunda tekrarlanan metin, gövde metni yerine Word'ün üst ve alt bilgisi olur; sayfa numaraları da Word'ün kendi sayfa numarası alanına dönüşür.
+
+> **Taranmış PDF'ler**
+>
+> Taranmış bir belgenin sayfaları resimdir; içinde seçilebilir metin yoksa Word'de de yalnızca resim çıkar. Önce [OCR](https://vivepdf.com/dokumantasyon/ocr/) ile metni tanıt, sonra Word'e çevir.
+
+Aynı yerden PDF'i Excel'e, PowerPoint'e, resme, metne ve HTML'e de çevirebilirsin. Tüm biçimler [Dosya dönüştürme](https://vivepdf.com/dokumantasyon/donusturme/) sayfasında.
+
+---
+
+# Word, Excel ve PowerPoint'i PDF'e çevirme
+
+> vivePDF ile Word, Excel, PowerPoint ve diğer Office dosyalarını PDF'e çevirme; birden çok dosyayı aynı anda dönüştürme ve LibreOffice kurulumu.
+
+URL: https://vivepdf.com/dokumantasyon/word-pdf-cevirme/
+Son güncelleme: 2026-10-24
+
+Bir Word, Excel ya da PowerPoint dosyasını PDF'e çevirmek için **Araçlar › Dönüştür**'ü aç, soldan **Office → PDF**'i seç, dosyayı ekle ve **Dönüştür**'e tıkla. Office dosyalarını LibreOffice çevirir; bilgisayarında yoksa vivePDF kurmayı önerir.
+
+1. **Araçlar › Dönüştür**'ü aç ve soldaki listeden **Office → PDF**'i seç.
+2. **Dosya ekle** ile .docx, .xlsx, .pptx, .odt gibi dosyaları seç ya da pencereye sürükle. Birden çok dosya ekleyebilirsin.
+3. İstersen **Çıktı dosyası**'nın adını değiştir; **Gözat** ile başka bir klasör seçebilirsin.
+4. **Dönüştür**'e tıkla.
+
+![Dönüştür aracında Office → PDF seçili: sozlesme.docx listede, Kâğıt boyutu ve Çıktı dosyası](https://vivepdf.com/shots/tr/office-1-1600.webp)
+
+Sonuç panelinde sayfa sayısı ve ilk sayfanın önizlemesi görünür. **Sonraki adım**'dan PDF'i hemen sıkıştırabilir ya da OCR'dan geçirebilirsin.
+
+![Dönüştürme bitti: 2 sayfalık PDF'in önizlemesi ve sozlesme-word.pdf](https://vivepdf.com/shots/tr/office-2-1600.webp)
+
+> **LibreOffice bir kez kurulur**
+>
+> LibreOffice ücretsizdir. Bilgisayarında yoksa vivePDF **LibreOffice gerekli** penceresiyle indirme sayfasını açar; kurulum bitince dönüştürme kaldığı yerden devam eder. TXT, Markdown, HTML, EPUB, XPS ve resimler LibreOffice olmadan da çevrilir; **Kâğıt boyutu** bu dosyalar için geçerlidir.
+
+Daha hızlı bir yol: Finder'da ya da Explorer'da Office dosyasına sağ tıklayıp **Birlikte Aç › vivePDF**'i seç. Dosya PDF kopyası olarak açılır; **PDF olarak kaydet…** ile saklarsın. Ayrıntılar [Dosya dönüştürme](https://vivepdf.com/dokumantasyon/donusturme/) sayfasında.
+
+---
+
+# Fotoğraflardan PDF yapma
+
+> vivePDF ile fotoğrafları, taramaları ya da bütün bir resim klasörünü tek bir PDF'te birleştirme; sayfa boyutu, yön ve kenar boşluğu seçme.
+
+URL: https://vivepdf.com/dokumantasyon/fotograflardan-pdf/
+Son güncelleme: 2026-10-24
+
+Fotoğraflardan PDF yapmak için **Araçlar › Dönüştür**'ü aç, soldan **Görseller → PDF**'i seç, resimleri ekle ve **Dönüştür**'e tıkla. Her resim bir sayfa olur; JPG, PNG, HEIC, WebP, TIFF ve daha birçok resim türü desteklenir.
+
+1. **Araçlar › Dönüştür**'ü aç ve soldaki listeden **Görseller → PDF**'i seç.
+2. **Görsel ekle** ile resimleri seç ya da pencereye sürükle. Bir klasörün tamamı için **Klasör ekle**'yi kullan.
+3. Sırayı yukarı ve aşağı oklarıyla ayarla.
+4. **Kâğıt boyutu**, **Yön** ve sığdırma biçimini seç: **Görselin tamamını sığdır** resmi kırpmaz, **Sayfayı doldur** sayfayı kenarına kadar kaplar.
+5. **Dönüştür**'e tıkla.
+
+![Görseller → PDF: üç fotoğraf listede, Kâğıt boyutu A4, Yön Otomatik ve Görselin tamamını sığdır seçili](https://vivepdf.com/shots/tr/images-1-1600.webp)
+
+**Yön** **Otomatik**'teyken yatay fotoğraflar yatay sayfaya, dikeyler dikey sayfaya yerleşir. **Kenar boşluğu** resmin çevresine beyaz bir pay bırakır.
+
+![Dönüştürme bitti: 3 sayfalık PDF'in önizlemesi ve fotograflar.pdf](https://vivepdf.com/shots/tr/images-2-1600.webp)
+
+> **Telefonla çektiğin belge fotoğrafları için**
+>
+> Kâğıt bir belgeyi telefonla çektiysen **Araçlar › Taramalar**'daki **Fotoğraftan** daha iyi sonuç verir: kâğıdın köşelerini bulur, perspektifi düzeltir ve arka planı beyazlatır. Bkz. [Taranmış sayfaları aranabilir yapma (OCR)](https://vivepdf.com/dokumantasyon/ocr/).
+
+Tüm dönüştürme seçenekleri [Dosya dönüştürme](https://vivepdf.com/dokumantasyon/donusturme/) sayfasında.
+
+---
+
+# PDF form doldurma
+
+> vivePDF'te doldurulabilir bir PDF formunu açma, alanlara yazma, onay kutularını işaretleme ve doldurulmuş formu kaydetme, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/form-doldurma/
+Son güncelleme: 2026-10-24
+
+Bir PDF formunu doldurmak için onu vivePDF'te aç, alanlara tıklayıp yaz ve **Kaydet**'e bas. Doldurulabilir alanı olan bir formda vivePDF bunu belgenin üstündeki çubukta haber verir; ek bir araç açmana gerek yoktur.
+
+1. Formu **PDF aç** ile ya da pencereye sürükleyerek aç. Üstte **Bu belgede doldurulabilir form alanları var.** çubuğu görünür.
+2. Alanları görmekte zorlanıyorsan **Alanları vurgula**'ya tıkla.
+3. Bir alana tıkla ve yaz. Sonraki alana geçmek için `Tab`'a, öncekine dönmek için `Shift+Tab`'a bas. Onay kutularını ve seçenekleri tıklayarak işaretle.
+4. İşin bitince araç çubuğundaki **Kaydedilmemiş değişiklik** yanında beliren **Kaydet**'e tıkla.
+
+![Görüntüleyici'de doldurulmuş Kurs Başvuru Formu: Ad soyad, E-posta, Telefon ve Kurs adı alanları dolu](https://vivepdf.com/shots/tr/form-1-1600.webp)
+
+**Kaydet** değişiklikleri formun kendisine yazar; boş hâlini de saklamak istiyorsan doldurmaya başlamadan önce dosyanın bir kopyasını al. Vazgeçersen **Kaydet**'in yanındaki çarpıyla değişiklikleri atabilirsin.
+
+## Alanı olmayan formlar
+
+Bazı formlar yalnızca çizgilerden oluşur, tıklanacak alan içermez. Bunları doldurmak için sağdaki şeritten **Düzenle**'yi aç ve yazmak istediğin boş yere tıkla; orada yeni bir metin kutusu açılır. Ayrıntılar [PDF'te metin düzenleme](https://vivepdf.com/dokumantasyon/pdf-metin-duzenleme/) rehberinde.
+
+> **Formu imzalamak**
+>
+> Doldurduğun formu imzalaman gerekiyorsa [PDF imzalama](https://vivepdf.com/dokumantasyon/pdf-imzalama/) rehberine geç. Kendi formunu hazırlamak için **Araçlar › Formlar**'ı kullanabilirsin.
+
+---
+
+# PDF imzalama
+
+> vivePDF'te bir PDF'e elle imza atma; imzayı fare, kalem ya da fotoğraftan oluşturma, kaydetme, sayfaya yerleştirme ve boyutunu ayarlama.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-imzalama/
+Son güncelleme: 2026-10-24
+
+Bir PDF'i imzalamak için belgeyi aç, sağdaki şeritten **Düzenle**'ye tıkla, **Sayfa araçları › İmza yerleştir**'i seç, imzanı çiz ve sayfaya yerleştir. İmzalı belge yeni bir dosya olarak kaydedilir; asıl dosyan olduğu gibi kalır.
+
+1. Belgeyi Görüntüleyici'de aç ve sağdaki şeritte **Düzenle**'ye tıkla.
+2. Üstteki çubukta **Sayfa araçları** menüsünden **İmza yerleştir**'i seç.
+3. **Yeni**'ye tıkla ve imzanı fareyle, kalemle ya da parmağınla çiz. Kâğıda attığın imzanın fotoğrafını kullanmak için **Fotoğraftan**'ı seç. **İmzayı kaydet**'e tıkla.
+4. İmzanın gideceği yere tıkla, sürükleyerek yerini ayarla ve boyutunu **Genişlik** sürgüsüyle değiştir.
+5. **İmzayı uygula**'ya tıkla.
+
+![İmzalar penceresi: İmza çiz alanında çizilmiş bir imza, Temizle, Fotoğraftan ve İmzayı kaydet düğmeleri](https://vivepdf.com/shots/tr/sign-1-1600.webp)
+
+Kaydettiğin imza bir sonraki sefere hazır bekler; yeniden çizmen gerekmez. İmza bu bilgisayarda saklanır, hiçbir yere gönderilmez.
+
+![İmza sözleşmenin İşveren satırına yerleştirilmiş; üst çubukta Genişlik sürgüsü ve İmzayı uygula düğmesi](https://vivepdf.com/shots/tr/sign-3-1600.webp)
+
+**İmzayı uygula**'dan sonra imzalı kopya (örneğin `sozlesme-imzali.pdf`) yeni bir sekmede açılır.
+
+![İmzalı sözleşme yeni sekmede açık; köşede İmzalandı: sozlesme-imzali.pdf bildirimi](https://vivepdf.com/shots/tr/sign-4-1600.webp)
+
+> **Elle imza ve dijital imza farklıdır**
+>
+> Elle atılan imza sayfaya konan bir resimdir; belgenin sonradan değişmediğini kanıtlamaz. Resmî işler için .p12 ya da .pfx sertifikasıyla dijital imza atabilirsin; nasıl yapılacağı [İmzalama ve doğrulama](https://vivepdf.com/dokumantasyon/imza/) sayfasında.
+
+---
+
+# PDF'te metin düzenleme
+
+> vivePDF'te bir PDF'teki yazıyı düzeltme; paragrafa tıklayıp değiştirme, yeni metin kutusu ekleme ve değişikliği kaydetme, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-metin-duzenleme/
+Son güncelleme: 2026-10-24
+
+PDF'teki bir yazıyı değiştirmek için belgeyi aç, sağdaki şeritten **Düzenle**'ye tıkla, değiştirmek istediğin paragrafa tıkla ve yaz. Yazı tipi, boyut ve renk sağdaki panelde durur; bitince **Kaydet**'e ya da **Farklı kaydet…**'e bas.
+
+1. Belgeyi Görüntüleyici'de aç ve sağdaki şeritte **Düzenle**'ye tıkla. Üstteki çubukta **Metni düzenle** seçili gelir.
+2. Değiştirmek istediğin paragrafa tıkla; çevresinde bir çerçeve belirir. Yazıyı her metin kutusunda olduğu gibi düzelt.
+3. Yeni bir yazı eklemek için sayfada boş bir yere tıkla; orada yeni bir metin kutusu açılır.
+4. Yazı tipini, boyutu ve rengi sağdaki **Düzenle** panelinden değiştir. Bir adımı geri almak için `Ctrl+Z`'ye bas.
+5. **Kaydet** (`Ctrl+S`) değişikliği dosyanın kendisine yazar; asıl dosyayı korumak için **Farklı kaydet…**'i (`Ctrl+Shift+S`) seç ve yeni dosyaya bir ad ver.
+
+![Metin düzenleme: Madde 2'deki süre 45 günden 60 güne değiştirilmiş, sağda Katmanlar paneli](https://vivepdf.com/shots/tr/edit-1-1600.webp)
+
+Sağdaki **Katmanlar** listesi sayfadaki her metni ve görseli gösterir. Göz simgesiyle bir öğeyi gizleyebilir, kilit simgesiyle yanlışlıkla değişmesini önleyebilirsin.
+
+## Görseller ve diğer öğeler
+
+Üstteki çubukta **Görselleri düzenle**'ye geçince sayfadaki resimleri taşıyabilir, boyutlandırabilir, değiştirebilir ya da silebilirsin. **Ekle** menüsü sayfaya metin kutusu, resim, şekil, tablo, grafik ve formül gibi yeni öğeler koyar.
+
+> **Taranmış sayfalarda düzenlenecek metin yoktur**
+>
+> Taranmış bir sayfa baştan sona bir resimdir. Üzerindeki yazıyı düzenleyebilmek için önce [OCR](https://vivepdf.com/dokumantasyon/ocr/) ile metni tanıt.
+
+Yalnızca bir yazıyı silmek ve yerine kimsenin okuyamayacağı bir kutu koymak istiyorsan düzenleme yerine [karartma](https://vivepdf.com/dokumantasyon/pdf-karartma/) kullan; düzenlenen metin dosyada başka biçimlerde kalabilir.
+
+---
+
+# Vurgulama ve not ekleme
+
+> vivePDF'te PDF'teki metni vurgulama, altını ya da üstünü çizme, kalemle çizme, şekil ve metin kutusu ekleme, işaretlere not yazma ve kaydetme.
+
+URL: https://vivepdf.com/dokumantasyon/vurgulama-not-ekleme/
+Son güncelleme: 2026-10-24
+
+Bir PDF'te metni vurgulamak için sağdaki şeritten **İşaretle / not ekle**'yi aç, **Vurgu**'yu seç ve fareyle metnin üstünden geç. İşaretlerin rengini ve saydamlığını üstteki çubuktan değiştirir, bitince **Kaydet**'e ya da **Farklı kaydet**'e basarsın.
+
+1. Belgeyi Görüntüleyici'de aç ve sağdaki şeritte **İşaretle / not ekle**'ye tıkla. Üstte işaretleme çubuğu açılır.
+2. **Vurgu**'yu seç ve vurgulamak istediğin metnin üstünden sürükle.
+3. Rengi ve saydamlığı çubuğun ikinci satırındaki **Renk** ve **Saydamlık** ile değiştir.
+4. Bir işarete not eklemek için ona tıkla ve beliren küçük menüden **Not**'u seç.
+5. **Kaydet** işaretleri asıl dosyaya yazar (önce onay ister); ayrı bir kopya için **Farklı kaydet**'i seç.
+
+![İşaretleme çubuğu açık; sözleşmenin ilk cümlesinin bir bölümü sarıyla vurgulanmış, altında not ve silme düğmeleri](https://vivepdf.com/shots/tr/annot-1-1600.webp)
+
+Çubuktaki diğer araçlar:
+
+- **Altı çizili**, **Üstü çizili** ve **Dalgalı alt çizgi**: metni vurgu yerine çizgiyle işaretler.
+- **Kalem**: serbest çizim; **Silgi** çizimin bir kısmını siler.
+- **Dikdörtgen**, **Elips**, **Çizgi** ve **Ok**: sayfaya şekil koyar.
+- **Metin kutusu**: sayfanın istediğin yerine yazı ekler.
+
+Metin seçtiğinde beliren küçük menüde de **Vurgu** düğmesi vardır; araç çubuğunu açmadan hızlıca vurgulamak için bunu kullanabilirsin.
+
+> **Notları bir arada görmek**
+>
+> Kaydettikten sonra sağdaki şeritteki **Yorumlar** paneli belgedeki tüm işaretleri ve notları sayfalarına göre listeler. Buradan yanıt yazabilir, bir notu çözüldü olarak işaretleyebilir ya da notları Markdown, XFDF veya FDF olarak dışa aktarabilirsin.
+
+Okurken işine yarayacak diğer özellikler [PDF açma ve okuma](https://vivepdf.com/dokumantasyon/acma-okuma/) sayfasında.
+
+---
+
+# PDF'ten sayfa silme
+
+> vivePDF'in sayfa düzenleyicisiyle bir PDF'ten istemediğin sayfaları seçip silme ve sonucu yeni bir dosyaya kaydetme, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/sayfa-silme/
+Son güncelleme: 2026-10-24
+
+Bir PDF'ten sayfa silmek için belgeyi aç, üst çubuktaki **Sayfalar**'a geç, silinecek sayfaları seç, `Delete`'e bas ve **Uygula ve kaydet**'e tıkla. Sonuç yeni bir dosyaya yazılır; asıl dosyan olduğu gibi kalır.
+
+1. Belgeyi aç ve üst çubukta **Sayfalar**'a tıkla. Tüm sayfalar küçük resim olarak dizilir.
+2. Silmek istediğin sayfaya tıkla. Birden çok sayfa için `Ctrl` ile tek tek, `Shift` ile aralık olarak seç ya da kartların köşesindeki kutuları işaretle.
+3. `Delete`'e bas ya da alttaki çubukta çöp kutusu simgesine tıkla. Seçili sayfalar hemen listeden kalkar.
+4. Sağdaki **Çıktı dosyası** adını kontrol et ve **Uygula ve kaydet**'e tıkla.
+
+![Sayfa düzenleyicide 6 sayfalık rapor; son sayfa seçili ve altta 1 sayfa seçili çubuğu](https://vivepdf.com/shots/tr/pages-2-1600.webp)
+
+Yanlış sayfayı sildiysen `Ctrl+Z` ile geri al; **Uygula ve kaydet**'e basana kadar dosyaya hiçbir şey yazılmaz.
+
+![Sayfa silindi ve kaydedildi: 5 sayfa kaldı, sağ panelde rapor-duzenlenmis.pdf ve önizleme](https://vivepdf.com/shots/tr/pages-4-1600.webp)
+
+> **Asıl dosyayı değiştirmek istersen**
+>
+> **Orijinal dosyanın üzerine yaz** anahtarını açarsan değişiklik yeni bir dosya yerine asıl dosyaya işlenir. Bu işlem geri alınamaz; emin değilsen kapalı bırak.
+
+Aynı ekranda sayfaları sürükleyerek sıralayabilir, döndürebilir, başka bir PDF'ten sayfa ekleyebilir ve seçili sayfaları ayrı bir dosyaya çıkarabilirsin. Hepsi [Sayfaları düzenleme](https://vivepdf.com/dokumantasyon/sayfalar/) sayfasında.
+
+---
+
+# PDF bölme
+
+> vivePDF ile bir PDF'i sayfa aralıklarına, sabit sayfa sayısına, dosya boyutuna ya da yer imlerine göre ayrı dosyalara bölme, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-bolme/
+Son güncelleme: 2026-10-24
+
+Bir PDF'i parçalara ayırmak için **Araçlar › Böl**'ü aç, dosyanı seç, bir bölme yöntemi belirle ve **Böl**'e tıkla. Her parça ayrı bir PDF olarak, asıl dosyanın yanındaki yeni bir klasöre kaydedilir.
+
+1. **Araçlar › Böl**'ü aç ya da Başlangıç'taki **Böl** kestirmesine tıkla ve PDF'i seç.
+2. **Bölme yöntemi**'nden birini seç. Belirli sayfa gruplarını ayırmak için **Aralıklara göre** en esnek olanıdır.
+3. **Parçalar** kutusuna aralıkları noktalı virgülle ayırarak yaz: `1-2; 3-4; 5-6` üç dosya yapar. Sayfaları görerek seçmek istersen **Sayfalarda seç**'e tıkla.
+4. **Böl**'e tıkla.
+
+![Böl aracı: Aralıklara göre seçili, Parçalar kutusunda 1-2; 3-4; 5-6 ve sağ panelde 3 parça](https://vivepdf.com/shots/tr/split-2-1600.webp)
+
+Diğer yöntemler:
+
+- **Her N sayfa**: belgeyi eşit sayfa sayılı parçalara ayırır.
+- **N dosyaya**: belgeyi istediğin sayıda eşit dosyaya böler.
+- **Tek tek sayfalar**: her sayfayı ayrı bir dosya yapar.
+- **Boyuta göre**: her parça belirlediğin MB sınırını aşmaz; e-posta ekleri için kullanışlıdır.
+- **Tek / çift**: tek ve çift sayfaları ayrı dosyalara koyar.
+- **Yer imlerine göre**: seçtiğin düzeydeki her yer imi yeni bir parça başlatır; bölümlere ayırmak için idealdir.
+- **Metne göre**: aradığın metnin bulunduğu her sayfada yeni bir parça başlar.
+
+> **Yalnızca birkaç sayfa lazımsa**
+>
+> Belgeden birkaç sayfayı tek bir dosyaya almak için bölmek yerine [sayfa düzenleyicide](https://vivepdf.com/dokumantasyon/sayfalar/) sayfaları seçip **Seçilenleri çıkart**'ı kullan.
+
+Parçaları yeniden birleştirmen gerekirse [PDF birleştirme](https://vivepdf.com/dokumantasyon/pdf-birlestirme/) rehberine bak.
+
+---
+
+# PDF'e parola koyma
+
+> vivePDF ile bir PDF'i AES-256 şifrelemeyle parolayla koruma, yazdırma ve kopyalama izinlerini kısıtlama ve sahip parolasını saklama, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-parola-koyma/
+Son güncelleme: 2026-10-24
+
+Bir PDF'e parola koymak için **Araçlar › Güvenlik**'i aç, dosyanı seç, **Açma parolası**'nı iki kez yaz ve **Parola ekle**'ye tıkla. Parolalı kopya yeni bir dosya olarak kaydedilir; asıl dosyan olduğu gibi kalır.
+
+1. **Araçlar › Güvenlik**'i aç; sayfa **Parola ekle** ile açılır. PDF'i seç ya da pencereye sürükle.
+2. **Açma parolası**'nı yaz ve **Parolayı doğrula** kutusuna bir kez daha yaz. Alttaki çubuk parolanın ne kadar güçlü olduğunu gösterir.
+3. **Şifreleme**'yi **AES-256 (önerilen)** olarak bırak.
+4. Yazdırmayı ya da kopyalamayı kısıtlamak istiyorsan **İzinler** bölümündeki **Hızlı ayar**'dan **Sadece okuma**, **Kopyalama yok** veya **En kısıtlı**'yı seç.
+5. **Parola ekle**'ye tıkla.
+
+![Parola ekle: Açma parolası ve Parolayı doğrula dolu, güç çubuğu Güçlü, AES-256 seçili](https://vivepdf.com/shots/tr/password-1-1600.webp)
+
+**Sahip parolası**'nı boş bıraktıysan vivePDF rastgele bir sahip parolası oluşturur ve sonuç panelinde bir kez gösterir. İzinleri sonradan değiştirmenin tek yolu bu parola olduğu için yanındaki düğmeyle kopyala ve güvenli bir yere kaydet.
+
+![Parola eklendi: sağ panelde 2 sayfa, önizleme ve Sahip parolası oluşturuldu kutusu](https://vivepdf.com/shots/tr/password-2-1600.webp)
+
+> **Parolayı unutma**
+>
+> Açma parolasını unutursan dosyayı kimse açamaz; vivePDF de dahil. Parolayı bir parola yöneticisinde sakla.
+
+Parolayı kaldırmak, sertifikayla mühürlemek ve filigran basmak gibi diğer güvenlik araçları [Güvenlik](https://vivepdf.com/dokumantasyon/guvenlik/) sayfasında.
+
+---
+
+# PDF karartma
+
+> vivePDF ile bir PDF'teki ad, tutar, kimlik numarası gibi hassas bilgileri kalıcı olarak silme ve üzerini siyah kutuyla kapatma, adım adım.
+
+URL: https://vivepdf.com/dokumantasyon/pdf-karartma/
+Son güncelleme: 2026-10-24
+
+Bir PDF'teki hassas bilgiyi kalıcı olarak silmek için **Araçlar › Güvenlik**'te **Karartma**'yı aç, dosyanı seç, gizlenecek metinleri yaz ve **Karart**'a tıkla. Eşleşen metin dosyadan silinir ve üzeri bir kutuyla kapatılır; karartılmış kopya yeni bir dosya olarak kaydedilir.
+
+1. **Araçlar › Güvenlik**'i aç, sayfa başlığının üstündeki **Güvenlik** yazısına tıkla ve listeden **Karartma**'yı seç. PDF'i seç.
+2. **Aranacak metinler** kutusuna gizlemek istediğin sözcüğü yaz ve `Enter`'a bas. Her biri ayrı bir etiket olarak eklenir.
+3. **Bulunan hassas veriler** listesine bak: vivePDF belgede kimlik numarası, IBAN ya da e-posta adresi gibi bilgiler bulursa burada listeler, tek tıkla eklersin.
+4. İstersen **Kutu üzerindeki yazı**'ya `KVKK` gibi bir not yaz ve **Kutu rengi**'ni seç.
+5. **Karart**'a tıkla.
+
+![Karartma: Esma Demir ve 73.800,00 aranacak metinlerde; sağda önce ve sonra önizlemesinde siyah kutular, 3 karartma](https://vivepdf.com/shots/tr/redact-2-1600.webp)
+
+Sonuç panelinde kaç yerin karartıldığı ve bir önce/sonra önizlemesi görünür. **Sayfa dışındaki eşleşmeleri de sil** açıksa aynı metin yorumlardan, form alanlarından, yer imlerinden ve belge özelliklerinden de silinir; vivePDF kaç yerden silindiğini ayrıca bildirir.
+
+> **Siyah kutu çizmek yetmez**
+>
+> Bir metnin üstüne siyah dikdörtgen çizmek onu gizlemez; metin altta durur ve kopyalanabilir. Karartma metni dosyadan gerçekten siler. Bu işlem geri alınamaz, bu yüzden asıl dosyayı sakla.
+
+## Bir alanı elle karartmak
+
+Bir imzayı, fotoğrafı ya da belirli bir bölgeyi karartmak için belgeyi Görüntüleyici'de aç, sağdaki şeritten **Düzenle**'ye tıkla, **Sayfa araçları › Alanı karart**'ı seç, alanın üstünde sürükle ve **Karart**'a tıkla.
+
+Düzenli ifadeler ve diğer seçenekler [Güvenlik](https://vivepdf.com/dokumantasyon/guvenlik/) sayfasında.
+
+---
+
 # PDF açma ve okuma
 
 > vivePDF'te belge açma, sayfalar arasında gezinme, metin arama, yakınlaştırma, sayfa görünümü, bölünmüş pencere ve okuma modu.
 
 URL: https://vivepdf.com/dokumantasyon/acma-okuma/
-Son güncelleme: 2026-10-18
+Son güncelleme: 2026-10-24
 
 vivePDF'te bir PDF'i açmak için Başlangıç'taki ya da üst çubuktaki **PDF aç** düğmesine tıkla veya `Ctrl+O`'ya bas. Belge Görüntüleyici'de kendi sekmesinde açılır; buradan sayfalar arasında gezinebilir, metin arayabilir ve yakınlaştırabilirsin.
 
@@ -157,6 +617,8 @@ vivePDF'te bir PDF'i açmak için Başlangıç'taki ya da üst çubuktaki **PDF 
 3. Belge şifreliyse **Parola gerekli** penceresi gelir; parolayı yazınca belge açılır.
 
 Pencereye yalnızca PDF bırakmak zorunda değilsin: Office belgeleri, e-kitaplar, e-postalar ve resimler de bir PDF kopyası olarak açılır. Bu kopyada yaptığın değişiklikler, **PDF olarak kaydet…** ile kaydedene kadar geçici kalır. Panoya bir resim ya da metin kopyaladıysan `Ctrl+Shift+V` ondan bir PDF oluşturur.
+
+Word, Excel ya da PowerPoint dosyasını vivePDF'e Explorer'da ya da Finder'da sağ tıklayıp **Birlikte Aç › vivePDF** ile de gönderebilirsin. Office dosyalarını PDF'e LibreOffice çevirir; bilgisayarında yoksa vivePDF **LibreOffice gerekli** penceresiyle kurmayı önerir ve kurulum bitince dosyayı açar. LibreOffice ücretsizdir ve yalnızca bir kez kurulur.
 
 Çok büyük dosyalar da açılır: vivePDF belgeyi tek seferde belleğe yüklemek yerine parça parça okur.
 
@@ -1419,9 +1881,9 @@ Paket kendiliğinden hiçbir yere gönderilmez; kimle paylaşacağına sen karar
 > vivePDF'i kaynak koddan çalıştırmak için gerekenler, geliştirme modunda açma, testleri çalıştırma ve kendi kurulum paketini derleme.
 
 URL: https://vivepdf.com/dokumantasyon/kaynaktan-derleme/
-Son güncelleme: 2026-10-18
+Son güncelleme: 2026-10-24
 
-vivePDF'i kaynak koddan derleyip çalıştırabilirsin. Hazır paketi olmayan Linux'ta ya da macOS sürümü yayımlanana kadar Mac'te uygulamayı kullanmanın yolu budur; koda katkı vermek istediğinde de buradan başlarsın.
+vivePDF'i kaynak koddan derleyip çalıştırabilirsin. Hazır paketi olmayan Linux'ta ya da Intel işlemcili Mac'lerde uygulamayı kullanmanın yolu budur; koda katkı vermek istediğinde de buradan başlarsın.
 
 ## Depo düzeni
 

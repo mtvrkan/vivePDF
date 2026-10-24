@@ -3,9 +3,9 @@
 > What you need to run vivePDF from its source code, how to start it in development mode, run the tests and build your own installer.
 
 URL: https://vivepdf.com/en/docs/build-from-source/
-Last updated: 2026-10-18
+Last updated: 2026-10-24
 
-You can build and run vivePDF from its source code. That is the way to use it on Linux, which has no ready-made package, and on a Mac until the macOS version is published; it is also where you start if you want to contribute.
+You can build and run vivePDF from its source code. That is the way to use it on Linux and on Intel Macs, which have no ready-made package; it is also where you start if you want to contribute.
 
 ## Repository layout
 

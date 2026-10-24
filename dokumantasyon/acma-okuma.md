@@ -3,7 +3,7 @@
 > vivePDF'te belge açma, sayfalar arasında gezinme, metin arama, yakınlaştırma, sayfa görünümü, bölünmüş pencere ve okuma modu.
 
 URL: https://vivepdf.com/dokumantasyon/acma-okuma/
-Son güncelleme: 2026-10-18
+Son güncelleme: 2026-10-24
 
 vivePDF'te bir PDF'i açmak için Başlangıç'taki ya da üst çubuktaki **PDF aç** düğmesine tıkla veya `Ctrl+O`'ya bas. Belge Görüntüleyici'de kendi sekmesinde açılır; buradan sayfalar arasında gezinebilir, metin arayabilir ve yakınlaştırabilirsin.
 
@@ -14,6 +14,8 @@ vivePDF'te bir PDF'i açmak için Başlangıç'taki ya da üst çubuktaki **PDF 
 3. Belge şifreliyse **Parola gerekli** penceresi gelir; parolayı yazınca belge açılır.
 
 Pencereye yalnızca PDF bırakmak zorunda değilsin: Office belgeleri, e-kitaplar, e-postalar ve resimler de bir PDF kopyası olarak açılır. Bu kopyada yaptığın değişiklikler, **PDF olarak kaydet…** ile kaydedene kadar geçici kalır. Panoya bir resim ya da metin kopyaladıysan `Ctrl+Shift+V` ondan bir PDF oluşturur.
+
+Word, Excel ya da PowerPoint dosyasını vivePDF'e Explorer'da ya da Finder'da sağ tıklayıp **Birlikte Aç › vivePDF** ile de gönderebilirsin. Office dosyalarını PDF'e LibreOffice çevirir; bilgisayarında yoksa vivePDF **LibreOffice gerekli** penceresiyle kurmayı önerir ve kurulum bitince dosyayı açar. LibreOffice ücretsizdir ve yalnızca bir kez kurulur.
 
 Çok büyük dosyalar da açılır: vivePDF belgeyi tek seferde belleğe yüklemek yerine parça parça okur.
 

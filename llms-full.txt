@@ -141,12 +141,472 @@ Each button opens and closes its own panel. You can choose which panels are read
 
 ---
 
+# First steps
+
+> How to open a PDF the first time you start vivePDF, find the tool you need and see where the result is saved, with screenshots.
+
+URL: https://vivepdf.com/en/docs/first-steps/
+Last updated: 2026-10-24
+
+When you start vivePDF, the **Home** screen opens. To open a PDF, click **Open PDF** or drag the file onto the window; to reach a tool, use the **Tools** menu at the top or the command palette. Every tool writes its result to a new file, so your original stays as it was.
+
+## 1. Open a document
+
+1. On **Home**, click **Open PDF** or press `Ctrl+O` and choose your file.
+2. Or drag the file from Finder or Explorer onto the window. Word, Excel and PowerPoint files and pictures open too.
+3. The document opens in its own tab in the **Viewer**. Move between pages with the thumbnails on the left, and open the markup and editing tools from the strip on the right.
+
+![The vivePDF Home screen: the Open PDF button, Quick access tools and Recent documents](https://vivepdf.com/shots/en/start-1-1600.webp)
+
+Documents you open stay in the **Recent documents** list, so next time they are one click away. The **Merge**, **Split**, **Compress** and other buttons in the **Quick access** row are shortcuts to the most used tools.
+
+> **Shortcuts on a Mac**
+>
+> The `Ctrl` shortcuts in this guide use `⌘` on a Mac: `⌘+O` opens a document and `⌘+K` brings up the command palette. The full list is on the [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts/) page.
+
+## 2. Find the tool you need
+
+Every tool sits in the **Tools** menu at the top, grouped by what it does: **Page layout**, **Optimisation**, **To PDF**, **From PDF**, **Content editing** and **Security**.
+
+![The Tools menu open: Merge, Split, Compress, Convert, Security and the other tools in groups](https://vivepdf.com/shots/en/start-2-1600.webp)
+
+If you don't know where a tool is, use the command palette: press `Ctrl+K` and type what you want to do. Typing "compress", for example, puts **Compress** at the top; `Enter` opens it.
+
+![The command palette searching for 'compress' with the Compress tool as the first result](https://vivepdf.com/shots/en/start-3-1600.webp)
+
+## 3. Find the result
+
+When you run a tool, the result appears in the panel on the right: the page count or the space saved, a preview and the name of the new file. By default the file is saved next to the original with a short addition to its name (for example `report-merged.pdf`). Change where it goes with **Browse** next to **Output file**.
+
+The **Next step** buttons in the result panel carry on with the new file, for example to compress or password-protect the file you just merged. The book icon opens the result in the Viewer, and the folder icon shows the file in Finder or Explorer.
+
+![A report open in the Viewer: page thumbnails on the left, the tool strip on the right](https://vivepdf.com/shots/en/start-4-1600.webp)
+
+## What next?
+
+Short guides for the most common jobs:
+
+- [Merge PDFs](https://vivepdf.com/en/docs/merge-pdfs/) and [split a PDF](https://vivepdf.com/en/docs/split-a-pdf/)
+- [Compress a PDF](https://vivepdf.com/en/docs/compress-a-pdf/)
+- [Convert a PDF to Word](https://vivepdf.com/en/docs/pdf-to-word/), [convert Word to PDF](https://vivepdf.com/en/docs/office-to-pdf/) and [make a PDF from photos](https://vivepdf.com/en/docs/images-to-pdf/)
+- [Fill in a form](https://vivepdf.com/en/docs/fill-a-form/), [sign a PDF](https://vivepdf.com/en/docs/sign-a-pdf/) and [edit text in a PDF](https://vivepdf.com/en/docs/edit-pdf-text/)
+- [Highlight and annotate](https://vivepdf.com/en/docs/highlight-and-annotate/) and [delete pages](https://vivepdf.com/en/docs/delete-pages/)
+- [Password-protect a PDF](https://vivepdf.com/en/docs/password-protect-a-pdf/) and [redact a PDF](https://vivepdf.com/en/docs/redact-a-pdf/)
+
+The whole interface is described on the [Interface](https://vivepdf.com/en/docs/interface/) page.
+
+---
+
+# Merge PDFs
+
+> How to combine several PDFs into one file with vivePDF, put them in order, take only some pages and save the result, step by step.
+
+URL: https://vivepdf.com/en/docs/merge-pdfs/
+Last updated: 2026-10-24
+
+To combine several PDFs into one file, open **Tools › Merge**, add the files, put them in order and click **Merge**. The original files are left untouched; the result is saved as a new PDF.
+
+1. Open **Tools › Merge**, or click the **Merge** shortcut on Home.
+2. Choose the PDFs with **Add files** or drag them onto the window. For every PDF in a folder, use **Add folder**.
+3. Set the order: drag a row by its handle, or use the up and down arrows on the right.
+4. To take only some pages of a file, type them in its **Page range** box, such as `1-3, 5`; leave it empty for every page.
+5. Click **Merge**.
+
+![The Merge tool: two PDFs in the list, page range boxes and the One after another option](https://vivepdf.com/shots/en/merge-1-1600.webp)
+
+The result appears in the panel on the right: the total page count, a preview of the first page and the name of the new file (for example `report-merged.pdf`). The book icon opens it, and the **Next step** buttons let you compress or protect it straight away.
+
+![Merging finished: 8 pages, a preview and report-merged.pdf in the panel on the right](https://vivepdf.com/shots/en/merge-2-1600.webp)
+
+## Useful options
+
+- **Bookmarks**: adds a bookmark for each file and keeps the file's own bookmarks under it.
+- **Add a contents page**: puts a list of the files with their page numbers on the first page.
+- **Start every file on a front side**: keeps two files from sharing a sheet when you print double-sided.
+
+> **Scanned the fronts and backs separately?**
+>
+> Under **How to combine**, choose **Alternate pages**. The fronts and backs are interleaved into one document, and if you scanned the backs starting from the last page, their order is reversed.
+
+See the [Tools](https://vivepdf.com/en/docs/tools/) page for more. To do the opposite and cut a PDF into parts, see [Split a PDF](https://vivepdf.com/en/docs/split-a-pdf/).
+
+---
+
+# Compress a PDF
+
+> How to make a PDF smaller with vivePDF, see what takes up the space, choose a compression profile and get a file small enough to e-mail.
+
+URL: https://vivepdf.com/en/docs/compress-a-pdf/
+Last updated: 2026-10-24
+
+To make a PDF smaller, open **Tools › Compress**, choose your file, pick a profile and click **Compress**. Pictures are resampled and unused font parts and leftover structure are cleaned out; the original file stays as it was.
+
+1. Open **Tools › Compress** and choose the PDF, or drag it onto the window.
+2. Look at **What the file is made of**: pictures, fonts and page content are shown separately, with the largest pictures listed.
+3. Pick a **Profile**. For e-mail, **Strong** is usually enough.
+4. Click **Compress**.
+
+![The Compress tool: a bar showing that pictures fill most of a 25 MB brochure, and a list of the largest pictures](https://vivepdf.com/shots/en/compress-1-1600.webp)
+
+The profiles differ like this:
+
+- **Light**: leaves pictures alone and only cleans the structure and fonts.
+- **Balanced**: 150 dpi and 75% JPEG; invisible on screen.
+- **Strong**: 100 dpi and 60% JPEG; ideal for e-mail.
+- **Extreme**: 72 dpi and 40% JPEG; the smallest file, at low quality.
+- **Custom**: you set the resolution and quality yourself.
+
+The result panel shows the percentage saved, the old and new size and a before-and-after preview. In the example below, a 25 MB brochure came down to 266 KB.
+
+![Compression result: −99%, from 25.0 MB to 265.8 KB, with a before and after preview](https://vivepdf.com/shots/en/compress-2-1600.webp)
+
+> **Need to get under a set size?**
+>
+> Turn on **Compress to a target size** and enter the limit (for example 10 MB). vivePDF tries the profiles from light to strong and saves the first result that fits.
+
+A text-heavy PDF that is already small gains little; the big savings come from large photos and scans. For scanned documents, also see [Make scanned pages searchable (OCR)](https://vivepdf.com/en/docs/ocr/).
+
+---
+
+# Convert a PDF to Word
+
+> How to turn a PDF into an editable Word (.docx) file with vivePDF, keeping tables, pictures, headers and footers, step by step.
+
+URL: https://vivepdf.com/en/docs/pdf-to-word/
+Last updated: 2026-10-24
+
+To convert a PDF to Word, open **Tools › Convert**, choose **PDF → Word** on the left, add your file and click **Convert**. The result is a .docx file you can edit in Word or LibreOffice, with its tables and pictures carried over.
+
+1. Open **Tools › Convert** and choose **PDF → Word** in the list on the left.
+2. Choose the PDF, or drag it onto the window.
+3. If you only need some pages, type them in the **Pages** box, such as `1-3, 5`; leave it empty to convert every page.
+4. Click **Convert**.
+
+![PDF → Word selected in the Convert tool: agreement.pdf, the Pages box and the output file](https://vivepdf.com/shots/en/word-1-1600.webp)
+
+The new .docx file appears in the result panel. The button next to it opens the file in its default app, and the folder icon shows it in Finder or Explorer.
+
+![Conversion finished: 1 file and agreement.docx in the panel on the right](https://vivepdf.com/shots/en/word-2-1600.webp)
+
+With **Move repeated headers and footers into Word** on, text repeated at the top or bottom of most pages becomes Word's own header and footer instead of body text, and page numbers turn into Word's page number field.
+
+> **Scanned PDFs**
+>
+> The pages of a scanned document are pictures; with no selectable text in them, Word gets only pictures too. Recognise the text with [OCR](https://vivepdf.com/en/docs/ocr/) first, then convert to Word.
+
+The same tool converts PDFs to Excel, PowerPoint, pictures, text and HTML. Every format is listed on the [Convert files](https://vivepdf.com/en/docs/convert/) page.
+
+---
+
+# Convert Word, Excel and PowerPoint to PDF
+
+> How to turn Word, Excel, PowerPoint and other Office files into PDFs with vivePDF, convert several files at once and set up LibreOffice.
+
+URL: https://vivepdf.com/en/docs/office-to-pdf/
+Last updated: 2026-10-24
+
+To turn a Word, Excel or PowerPoint file into a PDF, open **Tools › Convert**, choose **Office → PDF** on the left, add the file and click **Convert**. LibreOffice does the Office conversion; if it is not on your computer, vivePDF offers to set it up.
+
+1. Open **Tools › Convert** and choose **Office → PDF** in the list on the left.
+2. Choose .docx, .xlsx, .pptx, .odt and similar files with **Add files**, or drag them onto the window. You can add more than one.
+3. Rename the **Output file** if you like; **Browse** picks another folder.
+4. Click **Convert**.
+
+![Office → PDF selected in the Convert tool: agreement.docx in the list, Paper size and the output file](https://vivepdf.com/shots/en/office-1-1600.webp)
+
+The result panel shows the page count and a preview of the first page. Under **Next step** you can compress the PDF or run OCR on it straight away.
+
+![Conversion finished: a preview of the 2-page PDF and agreement-word.pdf](https://vivepdf.com/shots/en/office-2-1600.webp)
+
+> **LibreOffice is set up once**
+>
+> LibreOffice is free. If it is missing, vivePDF opens its download page from the **LibreOffice is needed** window, and the conversion carries on once it is installed. TXT, Markdown, HTML, EPUB, XPS and pictures convert without LibreOffice; **Paper size** applies to those files.
+
+A quicker way: right-click the Office file in Finder or Explorer and choose **Open With › vivePDF**. It opens as a PDF copy, which you keep with **Save as PDF…**. More on the [Convert files](https://vivepdf.com/en/docs/convert/) page.
+
+---
+
+# Make a PDF from photos
+
+> How to combine photos, scans or a whole folder of pictures into one PDF with vivePDF, and choose the paper size, orientation and margin.
+
+URL: https://vivepdf.com/en/docs/images-to-pdf/
+Last updated: 2026-10-24
+
+To make a PDF from photos, open **Tools › Convert**, choose **Images → PDF** on the left, add the pictures and click **Convert**. Each picture becomes a page; JPG, PNG, HEIC, WebP, TIFF and many other picture types are supported.
+
+1. Open **Tools › Convert** and choose **Images → PDF** in the list on the left.
+2. Choose the pictures with **Add images**, or drag them onto the window. For a whole folder, use **Add folder**.
+3. Set the order with the up and down arrows.
+4. Choose the **Paper size**, the **Orientation** and how each picture is placed: **Fit whole image** never crops, **Fill the page** covers the page edge to edge.
+5. Click **Convert**.
+
+![Images → PDF: three photos in the list, A4 paper, automatic orientation and Fit whole image selected](https://vivepdf.com/shots/en/images-1-1600.webp)
+
+With the orientation on automatic, landscape photos go on landscape pages and portrait photos on portrait pages. **Margin** leaves a white border around each picture.
+
+![Conversion finished: a preview of the 3-page PDF and photos.pdf](https://vivepdf.com/shots/en/images-2-1600.webp)
+
+> **Photos of paper documents**
+>
+> If you photographed a paper document with your phone, **From photo** in **Tools › Scans** gives a better result: it finds the corners of the sheet, straightens the perspective and whitens the background.
+
+Every conversion option is on the [Convert files](https://vivepdf.com/en/docs/convert/) page.
+
+---
+
+# Fill in a PDF form
+
+> How to open a fillable PDF form in vivePDF, type into its fields, tick its boxes and save the filled-in form, step by step.
+
+URL: https://vivepdf.com/en/docs/fill-a-form/
+Last updated: 2026-10-24
+
+To fill in a PDF form, open it in vivePDF, click a field, type and press **Save**. When a form has fillable fields, vivePDF tells you in a bar above the document; there is no separate tool to open.
+
+1. Open the form with **Open PDF** or by dragging it onto the window. The bar **This document has fillable form fields.** appears at the top.
+2. If the fields are hard to see, click **Highlight fields**.
+3. Click a field and type. Press `Tab` for the next field and `Shift+Tab` for the previous one. Click check boxes and options to tick them.
+4. When you are done, click **Save** next to **Unsaved changes** in the toolbar.
+
+![A filled-in course application form in the Viewer: name, e-mail, phone and course fields filled](https://vivepdf.com/shots/en/form-1-1600.webp)
+
+**Save** writes the changes into the form itself; to keep an empty copy too, make a copy of the file before you start. If you change your mind, the cross next to **Save** discards the changes.
+
+## Forms without fields
+
+Some forms are only lines with nothing to click. To fill those in, open **Edit** from the strip on the right and click the empty space where you want to write; a new text box opens there. See [Edit text in a PDF](https://vivepdf.com/en/docs/edit-pdf-text/).
+
+> **Signing the form**
+>
+> If the form needs your signature, see [Sign a PDF](https://vivepdf.com/en/docs/sign-a-pdf/). To build a form of your own, use **Tools › Forms**.
+
+---
+
+# Sign a PDF
+
+> How to sign a PDF by hand in vivePDF: draw your signature or take it from a photo, save it, place it on the page and set its size.
+
+URL: https://vivepdf.com/en/docs/sign-a-pdf/
+Last updated: 2026-10-24
+
+To sign a PDF, open it, click **Edit** in the strip on the right, choose **Page tools › Place signature**, draw your signature and place it on the page. The signed document is saved as a new file; your original stays as it was.
+
+1. Open the document in the Viewer and click **Edit** in the strip on the right.
+2. In the bar at the top, choose **Place signature** from the **Page tools** menu.
+3. Click **New** and draw your signature with a mouse, pen or finger. To use a photo of your signature on paper, choose **From photo**. Click **Save signature**.
+4. Click where the signature goes, drag it into place and change its size with the **Width** slider.
+5. Click **Apply signature**.
+
+![The Signatures window: a signature drawn in the Draw a signature area, with Clear, From photo and Save signature](https://vivepdf.com/shots/en/sign-1-1600.webp)
+
+A saved signature is ready next time, so you don't have to draw it again. It is kept on this computer and never sent anywhere.
+
+![The signature placed on the Client line of the agreement; the Width slider and Apply signature in the bar at the top](https://vivepdf.com/shots/en/sign-3-1600.webp)
+
+After **Apply signature**, the signed copy (for example `agreement-signed.pdf`) opens in a new tab.
+
+![The signed agreement open in a new tab, with a Signed: agreement-signed.pdf message in the corner](https://vivepdf.com/shots/en/sign-4-1600.webp)
+
+> **A drawn signature is not a digital signature**
+>
+> A drawn signature is a picture on the page; it does not prove the document was not changed afterwards. For formal documents you can sign with a .p12 or .pfx certificate; see [Sign and verify](https://vivepdf.com/en/docs/sign/).
+
+---
+
+# Edit text in a PDF
+
+> How to correct the text in a PDF with vivePDF: click a paragraph and change it, add a new text box and save the change, step by step.
+
+URL: https://vivepdf.com/en/docs/edit-pdf-text/
+Last updated: 2026-10-24
+
+To change the text in a PDF, open it, click **Edit** in the strip on the right, click the paragraph you want to change and type. The font, size and colour are in the panel on the right; when you are done, press **Save** or **Save as…**.
+
+1. Open the document in the Viewer and click **Edit** in the strip on the right. **Edit text** is selected in the bar at the top.
+2. Click the paragraph you want to change; a frame appears around it. Correct the text as in any text box.
+3. To add new text, click an empty spot on the page; a new text box opens there.
+4. Change the font, size and colour in the **Edit** panel on the right. Press `Ctrl+Z` to undo a step.
+5. **Save** (`Ctrl+S`) writes the change into the file itself; to keep the original, choose **Save as…** (`Ctrl+Shift+S`) and give the new file a name.
+
+![Editing text: the delivery time in Clause 2 changed from 45 to 60 days, with the Layers panel on the right](https://vivepdf.com/shots/en/edit-1-1600.webp)
+
+The **Layers** list on the right shows every text and picture on the page. The eye icon hides an item, and the lock icon keeps it from being changed by accident.
+
+## Pictures and other items
+
+Switch to **Edit pictures** in the bar at the top to move, resize, replace or delete the pictures on the page. The **Add** menu puts new items on the page, such as a text box, picture, shape, table, chart or formula.
+
+> **Scanned pages have no text to edit**
+>
+> A scanned page is one big picture. To edit its words, recognise the text with [OCR](https://vivepdf.com/en/docs/ocr/) first.
+
+If you only want to remove some words and cover them with a box nobody can read, use [redaction](https://vivepdf.com/en/docs/redact-a-pdf/) instead of editing; edited text can survive elsewhere in the file.
+
+---
+
+# Highlight and annotate a PDF
+
+> How to highlight, underline or strike out text in a PDF with vivePDF, draw with a pen, add shapes and text boxes, write notes on marks and save.
+
+URL: https://vivepdf.com/en/docs/highlight-and-annotate/
+Last updated: 2026-10-24
+
+To highlight text in a PDF, open **Annotate / mark up** from the strip on the right, choose **Highlight** and drag over the text. Change the colour and opacity of your marks in the bar at the top, and press **Save** or **Save as** when you are done.
+
+1. Open the document in the Viewer and click **Annotate / mark up** in the strip on the right. The markup bar opens at the top.
+2. Choose **Highlight** and drag over the text you want to highlight.
+3. Change the colour and opacity with **Colour** and **Opacity** on the second row of the bar.
+4. To add a note to a mark, click it and choose **Note** in the small menu that appears.
+5. **Save** writes the marks into the original file (it asks first); for a separate copy, choose **Save as**.
+
+![The markup bar open; part of the agreement's first sentence highlighted in yellow, with note and delete buttons under it](https://vivepdf.com/shots/en/annot-1-1600.webp)
+
+The other tools in the bar:
+
+- **Underline**, **Strikeout** and **Squiggly**: mark the text with a line instead of a highlight.
+- **Pen**: free drawing; the **Eraser** rubs out part of a drawing.
+- **Rectangle**, **Ellipse**, **Line** and **Arrow**: put shapes on the page.
+- **Text box**: adds writing anywhere on the page.
+
+When you select text, the small menu that appears also has a **Highlight** button, for a quick highlight without opening the bar.
+
+> **All your notes in one place**
+>
+> After saving, the **Comments** panel in the strip on the right lists every mark and note by page. From there you can reply, mark a note resolved, or export the notes as Markdown, XFDF or FDF.
+
+Other features that help while reading are on the [Open and read a PDF](https://vivepdf.com/en/docs/open-and-read/) page.
+
+---
+
+# Delete pages from a PDF
+
+> How to select the pages you don't want in a PDF and delete them with the vivePDF page organizer, then save the result to a new file.
+
+URL: https://vivepdf.com/en/docs/delete-pages/
+Last updated: 2026-10-24
+
+To delete pages from a PDF, open it, switch to **Pages** in the top bar, select the pages, press `Delete` and click **Apply and save**. The result is written to a new file; your original stays as it was.
+
+1. Open the document and click **Pages** in the top bar. Every page is laid out as a thumbnail.
+2. Click the page you want to delete. For several pages, `Ctrl`-click them one by one, `Shift`-click a range, or tick the boxes in the corners of the cards.
+3. Press `Delete` or click the bin icon in the bar at the bottom. The selected pages leave the list at once.
+4. Check the **Output file** name on the right and click **Apply and save**.
+
+![The page organizer with a 6-page report; the last page selected and the 1 page selected bar at the bottom](https://vivepdf.com/shots/en/pages-2-1600.webp)
+
+Deleted the wrong page? Press `Ctrl+Z`; nothing is written to the file until you press **Apply and save**.
+
+![The page deleted and saved: 5 pages left, report-edited.pdf and a preview in the panel on the right](https://vivepdf.com/shots/en/pages-4-1600.webp)
+
+> **Changing the original file instead**
+>
+> Turn on **Overwrite the original file** to apply the change to the original instead of a new file. This cannot be undone, so leave it off if you are unsure.
+
+The same screen lets you reorder pages by dragging, rotate them, add pages from another PDF and extract the selected pages to a separate file. All of it is on the [Organise pages](https://vivepdf.com/en/docs/pages/) page.
+
+---
+
+# Split a PDF
+
+> How to split a PDF into separate files with vivePDF by page ranges, a fixed number of pages, file size or bookmarks, step by step.
+
+URL: https://vivepdf.com/en/docs/split-a-pdf/
+Last updated: 2026-10-24
+
+To cut a PDF into parts, open **Tools › Split**, choose your file, pick a split method and click **Split**. Each part is saved as its own PDF in a new folder next to the original.
+
+1. Open **Tools › Split**, or click the **Split** shortcut on Home, and choose the PDF.
+2. Pick a **Split method**. To pull out particular groups of pages, **By ranges** is the most flexible.
+3. Type the ranges in the **Parts** box, separated by semicolons: `1-2; 3-4; 5-6` makes three files. To pick the pages by looking at them, click **Choose on pages**.
+4. Click **Split**.
+
+![The Split tool: By ranges selected, 1-2; 3-4; 5-6 in the Parts box and 3 parts in the panel on the right](https://vivepdf.com/shots/en/split-2-1600.webp)
+
+The other methods:
+
+- **Every N pages**: cuts the document into parts with the same number of pages.
+- **Into N files**: splits the document into as many equal files as you ask for.
+- **Single pages**: makes every page a file of its own.
+- **By size**: no part goes over the MB limit you set; handy for e-mail attachments.
+- **Odd / even**: puts the odd and even pages into separate files.
+- **By bookmarks**: every bookmark at the chosen level starts a new part; ideal for chapters.
+- **By text**: a new part starts on every page where the text you search for appears.
+
+> **Only need a few pages?**
+>
+> To take a few pages out into one file, select them in the [page organizer](https://vivepdf.com/en/docs/pages/) and use **Extract selected** instead of splitting.
+
+To put the parts back together, see [Merge PDFs](https://vivepdf.com/en/docs/merge-pdfs/).
+
+---
+
+# Password-protect a PDF
+
+> How to protect a PDF with a password and AES-256 encryption in vivePDF, limit printing and copying, and keep the owner password safe.
+
+URL: https://vivepdf.com/en/docs/password-protect-a-pdf/
+Last updated: 2026-10-24
+
+To put a password on a PDF, open **Tools › Security**, choose your file, type the **Open password** twice and click **Add password**. The protected copy is saved as a new file; your original stays as it was.
+
+1. Open **Tools › Security**; the page opens on **Add password**. Choose the PDF, or drag it onto the window.
+2. Type the **Open password** and type it again in **Confirm password**. The bar below shows how strong the password is.
+3. Leave **Encryption** on **AES-256 (recommended)**.
+4. To limit printing or copying, pick **Read only**, **No copying** or **Most restricted** under **Quick set** in the **Permissions** section.
+5. Click **Add password**.
+
+![Add password: Open password and Confirm password filled in, the strength bar at Strong and AES-256 selected](https://vivepdf.com/shots/en/password-1-1600.webp)
+
+If you left the **Owner password** empty, vivePDF makes up a random owner password and shows it once in the result panel. It is the only way to change the permissions later, so copy it with the button next to it and keep it somewhere safe.
+
+![Password added: 2 pages, a preview and the Owner password created box in the panel on the right](https://vivepdf.com/shots/en/password-2-1600.webp)
+
+> **Don't forget the password**
+>
+> If you forget the open password, nobody can open the file, vivePDF included. Keep it in a password manager.
+
+Removing a password, sealing with a certificate, watermarks and the other security tools are on the [Security](https://vivepdf.com/en/docs/security/) page.
+
+---
+
+# Redact a PDF
+
+> How to permanently remove names, amounts, ID numbers and other sensitive details from a PDF with vivePDF and cover them with a black box.
+
+URL: https://vivepdf.com/en/docs/redact-a-pdf/
+Last updated: 2026-10-24
+
+To remove sensitive information from a PDF for good, open **Redaction** under **Tools › Security**, choose your file, type the text to hide and click **Redact**. Matching text is deleted from the file and covered with a box; the redacted copy is saved as a new file.
+
+1. Open **Tools › Security**, click **Security** above the page title and choose **Redaction** from the list. Choose the PDF.
+2. Type a word you want to hide in **Text to find** and press `Enter`. Each one is added as a separate tag.
+3. Check the **Sensitive data found** list: if vivePDF finds ID numbers, IBANs or e-mail addresses in the document, it lists them here so you can add them with one click.
+4. If you like, type a note such as `GDPR` in **Text on the box** and pick a **Box colour**.
+5. Click **Redact**.
+
+![Redaction: a name and an amount in Text to find; black boxes in the before and after preview on the right, 3 redactions](https://vivepdf.com/shots/en/redact-2-1600.webp)
+
+The result panel shows how many places were redacted and a before-and-after preview. With **Also remove matches outside the page** on, the same text is also removed from comments, form fields, bookmarks and document properties, and vivePDF tells you how many places that was.
+
+> **Drawing a black box is not enough**
+>
+> A black rectangle drawn over text does not hide it; the text stays underneath and can be copied. Redaction really deletes it from the file. This cannot be undone, so keep your original.
+
+## Redacting an area by hand
+
+To black out a signature, a photo or any other area, open the document in the Viewer, click **Edit** in the strip on the right, choose **Page tools › Black out area**, drag over the area and click **Black out**.
+
+Regular expressions and the other options are on the [Security](https://vivepdf.com/en/docs/security/) page.
+
+---
+
 # Open and read a PDF
 
 > How to open documents in vivePDF, move between pages, search the text, zoom, change the page display, split the window and read comfortably.
 
 URL: https://vivepdf.com/en/docs/open-and-read/
-Last updated: 2026-10-18
+Last updated: 2026-10-24
 
 To open a PDF in vivePDF, click **Open PDF** on Home or in the top bar, or press `Ctrl+O`. The document opens in its own tab in the Viewer, where you can move between pages, search the text and zoom.
 
@@ -157,6 +617,8 @@ To open a PDF in vivePDF, click **Open PDF** on Home or in the top bar, or press
 3. If the document is encrypted, **Password required** appears; type the password and the document opens.
 
 You are not limited to PDFs: Office documents, e-books, e-mails and pictures dropped on the window open as a PDF copy. Changes to that copy stay temporary until you keep them with **Save as PDF…**. If you have copied a picture or some text, `Ctrl+Shift+V` turns it into a PDF.
+
+You can also send a Word, Excel or PowerPoint file to vivePDF by right-clicking it in Explorer or Finder and choosing **Open With › vivePDF**. LibreOffice turns Office files into PDFs; when it is not on your computer, vivePDF offers to set it up in the **LibreOffice is needed** window and opens the file once it is ready. LibreOffice is free and only needs setting up once.
 
 Very large files open too: vivePDF reads the document in pieces instead of loading it into memory all at once.
 
@@ -1419,9 +1881,9 @@ The bundle is never sent anywhere by itself; you decide who gets it.
 > What you need to run vivePDF from its source code, how to start it in development mode, run the tests and build your own installer.
 
 URL: https://vivepdf.com/en/docs/build-from-source/
-Last updated: 2026-10-18
+Last updated: 2026-10-24
 
-You can build and run vivePDF from its source code. That is the way to use it on Linux, which has no ready-made package, and on a Mac until the macOS version is published; it is also where you start if you want to contribute.
+You can build and run vivePDF from its source code. That is the way to use it on Linux and on Intel Macs, which have no ready-made package; it is also where you start if you want to contribute.
 
 ## Repository layout
 

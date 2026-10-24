@@ -3,7 +3,7 @@
 > How to open documents in vivePDF, move between pages, search the text, zoom, change the page display, split the window and read comfortably.
 
 URL: https://vivepdf.com/en/docs/open-and-read/
-Last updated: 2026-10-18
+Last updated: 2026-10-24
 
 To open a PDF in vivePDF, click **Open PDF** on Home or in the top bar, or press `Ctrl+O`. The document opens in its own tab in the Viewer, where you can move between pages, search the text and zoom.
 
@@ -14,6 +14,8 @@ To open a PDF in vivePDF, click **Open PDF** on Home or in the top bar, or press
 3. If the document is encrypted, **Password required** appears; type the password and the document opens.
 
 You are not limited to PDFs: Office documents, e-books, e-mails and pictures dropped on the window open as a PDF copy. Changes to that copy stay temporary until you keep them with **Save as PDF…**. If you have copied a picture or some text, `Ctrl+Shift+V` turns it into a PDF.
+
+You can also send a Word, Excel or PowerPoint file to vivePDF by right-clicking it in Explorer or Finder and choosing **Open With › vivePDF**. LibreOffice turns Office files into PDFs; when it is not on your computer, vivePDF offers to set it up in the **LibreOffice is needed** window and opens the file once it is ready. LibreOffice is free and only needs setting up once.
 
 Very large files open too: vivePDF reads the document in pieces instead of loading it into memory all at once.
 
