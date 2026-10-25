@@ -119,7 +119,7 @@ describe("security", () => {
     ];
 
     const answers = await browser.executeAsync(
-      (list: Array<[string, Record<string, string>]>, done: (results: Array<{ command: string; ms: number; code: string | null }>) => void) => {
+      (list: Array<[string, Record<string, string>, ...unknown[]]>, done: (results: Array<{ command: string; ms: number; code: string | null }>) => void) => {
         const bridge = (window as unknown as { __TAURI_INTERNALS__: { invoke: (command: string, args: unknown) => Promise<unknown> } }).__TAURI_INTERNALS__;
         Promise.all(
           list.map(([command, args]) => {
