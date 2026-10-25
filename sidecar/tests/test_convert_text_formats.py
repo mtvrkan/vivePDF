@@ -181,9 +181,9 @@ def test_html_drops_control_character_references(columns_pdf: Path, tmp_path: Pa
 
 
 def test_retag_keeps_the_markup_when_blocks_do_not_line_up() -> None:
-    page = PageMarkup('<div id="page0">\n<h3>a</h3>\n</div>', [(12.0, 1), (12.0, 1)], Counter())
+    page = PageMarkup('<div id="page0">\n<h3>a</h3>\n</div>', [("b", 12.0)], Counter())
     assert retag_headings(page, 12.0) == page.markup
-    single = PageMarkup("<h3>a</h3><p>bb</p>", [(12.0, 1), (24.0, 2)], Counter())
+    single = PageMarkup("<h3>a</h3><p>bb</p>", [("a", 12.0), ("bb", 24.0)], Counter())
     assert retag_headings(single, 12.0) == "<p>a</p><h1>bb</h1>"
 
 
@@ -348,3 +348,40 @@ def test_extract_images_never_overwrites_and_cleans_up_on_cancel(tmp_path: Path)
         )
     assert caught.value.code == ErrorCode.CANCELLED
     assert list(fresh.iterdir()) == []
+
+
+def test_headings_follow_the_text_even_when_a_block_splits_into_paragraphs() -> None:
+    page = PageMarkup(
+        "<p>\u2013</p><h1>Yenilik t&#xfc;remi\u015ftir.</h1><h2>Ba\u015fl\u0131k</h2>",
+        [("\u2013", 15.0), ("Yenilik", 20.0), ("türemiştir.", 20.0), ("Başlık", 30.0)],
+        Counter(),
+    )
+
+    retagged = retag_headings(page, 26.0)
+
+    assert retagged == (
+        "<p>\u2013</p><p>Yenilik t&#xfc;remi\u015ftir.</p><h3>Ba\u015fl\u0131k</h3>"
+    )
+
+
+def test_html_keeps_lines_of_a_cropped_turned_page_and_splits_ligatures(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=600, height=800)
+    for number, top in enumerate((50, 150, 550, 750)):
+        page.insert_text(
+            (120, top), f"Satir{number} \ufb01nal", fontsize=12, fontname="dejavu", fontfile=FONT
+        )
+    page.set_cropbox(pymupdf.Rect(100, 100, 500, 700))
+    page.set_rotation(90)
+    source = tmp_path / "kirpik.pdf"
+    document.save(source)
+    document.close()
+
+    result = to_html(
+        TextSourceParams(path=str(source), output=str(tmp_path / "k.html")), silent_progress()
+    )
+
+    html = Path(result.output).read_text(encoding="utf-8")
+    assert "Satir1 final" in html and "Satir2 final" in html
+    assert "Satir0" not in html and "Satir3" not in html
+    assert "\ufb01" not in html

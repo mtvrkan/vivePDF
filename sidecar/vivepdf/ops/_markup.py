@@ -1,3 +1,4 @@
+import html
 import re
 from collections import Counter
 from dataclasses import dataclass
@@ -8,6 +9,7 @@ from vivepdf.ops._spreadsheet import clean_text
 
 CHARACTER_REFERENCE = re.compile(r"&#(?:[xX]([0-9a-fA-F]{1,8})|([0-9]{1,10}));")
 MARKUP_BLOCK = re.compile(r"<(p|h[1-6])>(.*?)</\1>", re.DOTALL)
+MARKUP_TAG = re.compile(r"<[^>]*>")
 MARKDOWN_TAG = re.compile(
     r"</?(?:br|sup|u|mark)>|<!-- (?:Start|End) of picture text -->|<(?=[A-Za-z/!?])"
 )
@@ -74,34 +76,35 @@ def inert_markdown(markdown: str) -> str:
 @dataclass(slots=True)
 class PageMarkup:
     markup: str
-    blocks: list[tuple[float, int] | None]
+    spans: list[tuple[str, float]]
     sizes: Counter[float]
 
 
+def _compact(text: str) -> str:
+    return "".join(clean_text(text).split())
+
+
 def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
-    flags = pymupdf.TEXTFLAGS_XHTML
+    flags = pymupdf.TEXTFLAGS_XHTML & ~pymupdf.TEXT_PRESERVE_LIGATURES
     if not images:
         flags &= ~pymupdf.TEXT_PRESERVE_IMAGES
-    textpage = page.get_textpage(clip=page.cropbox, flags=flags)
+    visible = pymupdf.Rect(0, 0, page.cropbox.width, page.cropbox.height)
+    textpage = page.get_textpage(clip=visible, flags=flags)
     markup = xml_safe(textpage.extractXHTML())
-    blocks: list[tuple[float, int] | None] = []
+    spans: list[tuple[str, float]] = []
     sizes: Counter[float] = Counter()
     for block in textpage.extractDICT()["blocks"]:
         if block.get("type") != 0:
-            blocks.append(None)
             continue
-        largest = 0.0
-        characters = 0
         for line in block.get("lines", []):
             for span in line["spans"]:
+                compact = _compact(span["text"])
+                if compact:
+                    spans.append((compact, span["size"]))
                 length = len(span["text"].strip())
-                if not length:
-                    continue
-                largest = max(largest, span["size"])
-                characters += length
-                sizes[round(span["size"], 1)] += length
-        blocks.append((largest, characters) if characters else None)
-    return PageMarkup(markup, blocks, sizes)
+                if length:
+                    sizes[round(span["size"], 1)] += length
+    return PageMarkup(markup, spans, sizes)
 
 
 def body_size(pages: list[PageMarkup]) -> float | None:
@@ -111,8 +114,7 @@ def body_size(pages: list[PageMarkup]) -> float | None:
     return total.most_common(1)[0][0] if total else None
 
 
-def _block_tag(block: tuple[float, int], body: float) -> str:
-    size, characters = block
+def _block_tag(size: float, characters: int, body: float) -> str:
     if characters > HEADING_MAX_CHARACTERS:
         return "p"
     for ratio, tag in HEADING_LEVELS:
@@ -121,14 +123,42 @@ def _block_tag(block: tuple[float, int], body: float) -> str:
     return "p"
 
 
+def _block_text(fragment: str) -> str:
+    return _compact(html.unescape(MARKUP_TAG.sub("", fragment)))
+
+
+def _measure(
+    spans: list[tuple[str, float]], cursor: int, text: str
+) -> tuple[int, float, int] | None:
+    consumed = ""
+    weighted = 0.0
+    while len(consumed) < len(text):
+        if cursor >= len(spans):
+            return None
+        piece, size = spans[cursor]
+        consumed += piece
+        weighted += size * len(piece)
+        cursor += 1
+    if consumed != text:
+        return None
+    return cursor, weighted / len(text), len(text)
+
+
 def retag_headings(page: PageMarkup, body: float | None) -> str:
-    matches = list(MARKUP_BLOCK.finditer(page.markup))
-    if not body or len(matches) != len(page.blocks):
+    if not body:
         return page.markup
     parts = []
     last = 0
-    for match, block in zip(matches, page.blocks, strict=True):
-        tag = _block_tag(block, body) if block is not None else match.group(1)
+    cursor = 0
+    for match in MARKUP_BLOCK.finditer(page.markup):
+        tag = match.group(1)
+        text = _block_text(match.group(2))
+        if text:
+            measured = _measure(page.spans, cursor, text)
+            if measured is None:
+                return page.markup
+            cursor, size, characters = measured
+            tag = _block_tag(size, characters, body)
         parts.append(page.markup[last : match.start()])
         parts.append(f"<{tag}>{match.group(2)}</{tag}>")
         last = match.end()
