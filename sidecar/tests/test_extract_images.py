@@ -155,3 +155,23 @@ def test_an_inverted_stencil_mask_paints_the_other_side(tmp_path: Path) -> None:
     picture = pymupdf.Pixmap(str(tmp_path / "çıkan" / name))
     assert picture.pixel(40, 40)[3] == 0
     assert picture.pixel(2, 2) == (0, 0, 255, 255)
+
+
+def _merged(*shades: int) -> pymupdf.Document:
+    document = pymupdf.open()
+    for shade in shades:
+        single = pymupdf.open()
+        single.new_page().insert_image(AREA, pixmap=_picture(shade))
+        document.insert_pdf(single)
+    return document
+
+
+def test_the_same_picture_stored_twice_is_saved_once_when_deduplicating(tmp_path: Path) -> None:
+    document = _merged(90, 90, 30)
+    xrefs = {page.get_images()[0][0] for page in document}
+
+    names = _extract(document, tmp_path / "tek")
+
+    assert len(xrefs) == 3
+    assert names == ["görseller-1-01.png", "görseller-3-01.png"]
+    assert len(_extract(_merged(90, 90, 30), tmp_path / "hepsi", dedupe=False)) == 3

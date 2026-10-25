@@ -1,3 +1,4 @@
+import hashlib
 import re
 import shutil
 import tempfile
@@ -366,6 +367,7 @@ def _extract_page_images(
     skipped = 0
     total_bytes = 0
     seen: set[int] = set()
+    contents: set[bytes] = set()
     with open_document(params.path, params.password) as document:
         indices = parse_page_ranges(params.pages, document.page_count)
         stem = sanitize_file_name(Path(params.path).stem)
@@ -394,6 +396,11 @@ def _extract_page_images(
                     skipped += 1
                     continue
                 data, ext = payload
+                if params.dedupe:
+                    fingerprint = hashlib.sha1(data).digest()
+                    if fingerprint in contents:
+                        continue
+                    contents.add(fingerprint)
                 target = free_path(
                     output_dir, f"{stem}-{index + 1:0{width}d}-{image_index + 1:02d}", ext
                 )
