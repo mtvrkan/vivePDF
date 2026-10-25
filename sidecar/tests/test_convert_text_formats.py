@@ -13,10 +13,11 @@ import pytest
 from vivepdf.ops import _page_images, convert_images, epub
 from vivepdf.ops._markdown_text import inert_markdown
 from vivepdf.ops._markup import MarkupBlock, PageMarkup, page_html
-from vivepdf.ops.convert import ExtractImagesParams, TextSourceParams, extract_images
+from vivepdf.ops.convert import TextSourceParams
 from vivepdf.ops.convert_images import ImagesParams, page_dpi, to_images
 from vivepdf.ops.convert_text import MarkdownParams, TextParams, to_html, to_markdown, to_text
 from vivepdf.ops.epub import EpubParams, cover_image, limit_chapters, plan_chapters, to_epub
+from vivepdf.ops.image_extraction import ExtractImagesParams, extract_images
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress, silent_progress
 

@@ -8,7 +8,7 @@ from pydantic import Field
 
 from vivepdf.ops._document import open_document, unwrap_document
 from vivepdf.ops._pixmaps import png_ready
-from vivepdf.ops.convert import _image_bytes
+from vivepdf.ops.image_extraction import _image_bytes
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.paths import ReadPath, WritePath
 from vivepdf.rpc.progress import Progress

@@ -24,7 +24,6 @@ from vivepdf.ops._scanned_text import erase_scanned_words, only_hidden_text, pap
 from vivepdf.ops._scratch import place_scratch_page
 from vivepdf.ops._svg import drawing_pdf
 from vivepdf.ops._watermark_style import WATERMARK_FONT, WATERMARK_FONT_BOLD
-from vivepdf.ops.convert import _image_bytes
 from vivepdf.ops.editor_blocks import placement_rotation
 from vivepdf.ops.editor_chart import ChartSpec, chart_pdf
 from vivepdf.ops.editor_flowchart import FlowchartSpec, flowchart_pdf
@@ -43,6 +42,7 @@ from vivepdf.ops.fonts import (
     resolve_font,
     uncovered_glyphs,
 )
+from vivepdf.ops.image_extraction import _image_bytes
 from vivepdf.ops.textedit import TextEdit, _insert_edit, text_rotation
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.paths import InPlacePath, ReadPath, WritePath

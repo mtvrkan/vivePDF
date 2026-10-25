@@ -8,8 +8,8 @@ import pymupdf
 import pytest
 from PIL import Image
 
-from vivepdf.ops.convert import ExtractImagesParams, extract_images
 from vivepdf.ops.editor import EditorApplyParams, apply
+from vivepdf.ops.image_extraction import ExtractImagesParams, extract_images
 from vivepdf.ops.letterhead import LetterheadParams, letterhead
 from vivepdf.ops.links import (
     LinksAddParams,

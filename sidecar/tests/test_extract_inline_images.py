@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pymupdf
 
-from vivepdf.ops.convert import ExtractImagesParams, extract_images
+from vivepdf.ops.image_extraction import ExtractImagesParams, extract_images
 from vivepdf.rpc.progress import silent_progress
 
 SIDE = 80

@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pymupdf
 
-from vivepdf.ops.convert import ExtractImagesParams, ExtractImagesResult, extract_images
+from vivepdf.ops.image_extraction import ExtractImagesParams, ExtractImagesResult, extract_images
 from vivepdf.rpc.progress import silent_progress
 
 SIDECAR = Path(__file__).resolve().parent.parent

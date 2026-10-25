@@ -3,7 +3,7 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from vivepdf.ops.convert import ExtractImagesParams, extract_images
+from vivepdf.ops.image_extraction import ExtractImagesParams, extract_images
 from vivepdf.rpc.progress import silent_progress
 
 AREA = pymupdf.Rect(72, 72, 272, 272)

@@ -48,7 +48,6 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     "compress": ("compress.run",),
     "compress_preview": ("compress.preview",),
     "convert": (
-        "convert.extract_images",
         "convert.to_docx",
         "convert.tools",
     ),
@@ -127,6 +126,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     "forms_export": ("forms.export",),
     "furniture": ("pages.remove_header_footer",),
     "header_footer": ("pages.header_footer",),
+    "image_extraction": ("convert.extract_images",),
     "images": (
         "images.at",
         "images.save",

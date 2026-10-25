@@ -374,6 +374,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - In the installed build, PDF to Word on a page with a cropped photo, a table with merged cells
   and a "Arial,Bold" heading: the photo shows only its visible part, the merged cells stay
   merged and the heading is bold Arial, as before.
+- In the installed build, Extract images both ways (as stored and as shown on the page), then
+  Replace image in the editor: the same files come out and the replaced picture keeps its
+  transparency.
 
 ### How native dialogs are answered
 
