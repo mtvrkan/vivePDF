@@ -14,6 +14,7 @@ from pdf2docx.table.TableBlock import TableBlock
 
 from vivepdf.ops import _docx_progress as docx_progress
 from vivepdf.ops import _docx_tables as docx_tables
+from vivepdf.ops._markdown_text import tidy_markdown
 from vivepdf.ops._pptx_layout import slide_text
 from vivepdf.ops._pptx_runs import font_family
 from vivepdf.ops.convert import DocxParams, to_docx
@@ -87,7 +88,7 @@ def test_markdown_matches_the_whole_document_conversion(headed_pdf: Path) -> Non
         )
     with pymupdf.open(headed_pdf) as paged:
         markdown, textless = _markdown_pages(paged, [2, 0, 1, 3, 1], silent_progress())
-    assert markdown == expected
+    assert markdown == tidy_markdown(expected)
     assert textless == []
     assert "Bölüm 1" in markdown
 
