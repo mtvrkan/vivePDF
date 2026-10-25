@@ -32,6 +32,11 @@ BYTE_ORDER_MARKS = (
 )
 META_CHARSET = re.compile(rb"""charset\s*=\s*["']?([A-Za-z0-9_.:-]+)""", re.IGNORECASE)
 LAST_RESORT_ENCODING = "cp1252"
+TURKISH_ENCODING = "cp1254"
+TURKISH_BYTES = re.compile(rb"[\xd0\xdd\xde\xf0\xfd\xfe]")
+WESTERN_CODECS = frozenset(
+    {"utf-8", "cp1252", "cp1254", "iso8859-1", "iso8859-9", "iso8859-15", "ascii", "mac-roman"}
+)
 
 
 def known_codec(name: str | None) -> str | None:
@@ -52,7 +57,9 @@ def decode_text(payload: bytes, declared: str | None = None) -> str:
     for mark, codec in BYTE_ORDER_MARKS:
         if payload.startswith(mark):
             return payload.decode(codec, errors="replace")
-    candidates = [known_codec(declared), "utf-8", known_codec(locale.getpreferredencoding(False))]
+    preferred = known_codec(locale.getpreferredencoding(False))
+    western = preferred is None or preferred in WESTERN_CODECS
+    candidates = [known_codec(declared), "utf-8", None if western else preferred]
     for codec in candidates:
         if not codec:
             continue
@@ -60,7 +67,8 @@ def decode_text(payload: bytes, declared: str | None = None) -> str:
             return payload.decode(codec)
         except UnicodeDecodeError:
             continue
-    return payload.decode(LAST_RESORT_ENCODING, errors="replace")
+    fallback = TURKISH_ENCODING if TURKISH_BYTES.search(payload) else LAST_RESORT_ENCODING
+    return payload.decode(fallback, errors="replace")
 
 
 def text_to_html(text: str) -> str:

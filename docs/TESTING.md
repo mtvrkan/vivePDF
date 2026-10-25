@@ -249,6 +249,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert a CSV saved by Excel on Turkish Windows (semicolons, numbers with leading zeros, an
   IBAN, dates) to PDF on a PC without LibreOffice: no "needs LibreOffice" warning appears, the
   table shows every value as written, and no file name or "Page 1" is printed.
+- On an English-language Windows, convert a Notepad TXT saved as ANSI on Turkish Windows to
+  PDF: "Başlık, ışık, İğne" reads correctly, not "Baþlýk".
 
 ### How native dialogs are answered
 

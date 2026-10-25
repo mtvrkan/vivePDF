@@ -3,7 +3,8 @@ from pathlib import Path
 import pymupdf
 import pytest
 
-from vivepdf.ops._story import story_pdf_bytes
+from vivepdf.ops import _story
+from vivepdf.ops._story import decode_text, story_pdf_bytes
 
 PAGE = pymupdf.paper_rect("a4")
 
@@ -56,3 +57,29 @@ def test_a_picture_named_by_its_full_path_is_not_read(
     drawn = _pictures_drawn(source, document)
 
     assert drawn == 0
+
+
+@pytest.mark.parametrize("system", ["UTF-8", "cp1252"])
+def test_turkish_windows_text_reads_as_turkish_on_a_western_system(
+    monkeypatch: pytest.MonkeyPatch, system: str
+) -> None:
+    monkeypatch.setattr(_story.locale, "getpreferredencoding", lambda _do_set: system)
+    text = "Başlık: Ağaç, İğne, ışık, Şule"
+
+    assert decode_text(text.encode("cp1254")) == text
+
+
+def test_western_text_without_turkish_letters_stays_western(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(_story.locale, "getpreferredencoding", lambda _do_set: "UTF-8")
+    text = "Café crème, naïve façade"
+
+    assert decode_text(text.encode("cp1252")) == text
+
+
+def test_a_non_western_system_encoding_still_wins(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(_story.locale, "getpreferredencoding", lambda _do_set: "cp1251")
+    text = "Привет, мир"
+
+    assert decode_text(text.encode("cp1251")) == text
