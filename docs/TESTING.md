@@ -277,6 +277,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert › File to PDF: add a Word file written in a font Windows lacks (for example Aptos
   on an older Windows, or Geist): the row shows "Not on this computer: …" under the file name;
   a file in Calibri or Arial shows nothing.
+- Convert › File to PDF: convert a Word file with Heading 1/Heading 2 titles and a PowerPoint
+  file, with a system LibreOffice older than 25 if one is at hand: each PDF opens with a
+  bookmark per heading or slide, and Acrobat's Accessibility check finds tags.
 
 ### How native dialogs are answered
 

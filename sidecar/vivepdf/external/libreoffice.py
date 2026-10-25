@@ -1,5 +1,6 @@
 import contextlib
 import itertools
+import json
 import os
 import shutil
 import subprocess
@@ -39,6 +40,13 @@ OFFICE_EXTENSIONS = {
 }
 
 CONVERT_TIMEOUT = 240.0
+PDF_EXPORT_SETTINGS = {
+    "UseTaggedPDF": {"type": "boolean", "value": "true"},
+    "ExportBookmarks": {"type": "boolean", "value": "true"},
+}
+PDF_EXPORT_TARGET = (
+    f"pdf:writer_pdf_Export:{json.dumps(PDF_EXPORT_SETTINGS, separators=(',', ':'))}"
+)
 
 
 def clean_environment() -> dict[str, str]:
@@ -564,7 +572,9 @@ def convert_to_pdf(
                 ]
                 if infilter:
                     arguments.append(f"--infilter={infilter}")
-                arguments.extend(["--convert-to", "pdf", "--outdir", str(converted), str(staged)])
+                arguments.extend(
+                    ["--convert-to", PDF_EXPORT_TARGET, "--outdir", str(converted), str(staged)]
+                )
                 completed = _run_soffice(
                     arguments, soffice, [profile, working], environment, check_cancelled, working
                 )

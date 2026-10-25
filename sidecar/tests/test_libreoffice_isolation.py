@@ -1,4 +1,5 @@
 import contextlib
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -119,6 +120,24 @@ def test_libreoffice_only_ever_sees_a_private_copy_of_the_document(
     assert staged.parent != document.parent
     assert str(document.parent) not in " ".join(calls[0])
     assert sorted(item.name for item in output.iterdir()) == ["rapor.pdf"]
+
+
+def test_the_pdf_is_asked_for_with_tags_and_bookmarks(
+    monkeypatch: pytest.MonkeyPatch, data_dir: Path, document: Path, tmp_path: Path
+) -> None:
+    calls: list[list[str]] = []
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: tmp_path / "soffice.exe")
+    monkeypatch.setattr(libreoffice, "run_tool", _office(calls))
+
+    libreoffice.convert_to_pdf(document, tmp_path / "out")
+
+    target = calls[0][calls[0].index("--convert-to") + 1]
+    extension, export_filter, settings = target.split(":", 2)
+    assert (extension, export_filter) == ("pdf", "writer_pdf_Export")
+    assert json.loads(settings) == {
+        "UseTaggedPDF": {"type": "boolean", "value": "true"},
+        "ExportBookmarks": {"type": "boolean", "value": "true"},
+    }
 
 
 def test_on_linux_libreoffice_runs_inside_its_containment(
