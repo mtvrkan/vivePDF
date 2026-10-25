@@ -4,7 +4,8 @@ import numpy as np
 import pymupdf
 from PIL import Image
 
-from vivepdf.ops.convert_images import ImagesToPdfParams, images_to_pdf, lossless_webp
+from vivepdf.ops._image_frames import lossless_webp
+from vivepdf.ops.convert_images import ImagesToPdfParams, images_to_pdf
 from vivepdf.rpc.progress import silent_progress
 
 

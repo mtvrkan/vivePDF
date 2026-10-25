@@ -4,7 +4,7 @@ import pymupdf
 import pytest
 from PIL import Image
 
-from vivepdf.ops import _image_files, _story, convert_images
+from vivepdf.ops import _image_files, _image_frames, _story
 from vivepdf.ops.convert_images import ImagesToPdfParams, images_to_pdf
 from vivepdf.ops.convert_to_pdf import FileToPdfParams, file_to_pdf
 from vivepdf.rpc.errors import ErrorCode, OpError
@@ -55,7 +55,7 @@ def test_a_picture_above_the_safe_size_is_not_decoded_another_way(
 ) -> None:
     monkeypatch.setattr(_image_files, "LARGE_PICTURE_PIXELS", 10_000)
     decoded: list[Path] = []
-    monkeypatch.setattr(convert_images, "_native_frame", lambda image: decoded.append(image))
+    monkeypatch.setattr(_image_frames, "_native_frame", lambda image: decoded.append(image))
     big = tmp_path / "bomba.png"
     Image.new("1", (400, 400)).save(big)
     with pytest.raises(OpError) as caught:
