@@ -9,6 +9,7 @@ from urllib.parse import quote
 
 import pymupdf
 
+from vivepdf.ops._columns import column_order, column_side, page_columns, words_of
 from vivepdf.ops._markup_tables import filled_table, page_tables
 from vivepdf.ops._page_images import MAX_IMAGE_SIDE
 from vivepdf.ops._pixmaps import png_ready
@@ -369,7 +370,7 @@ def _shows(drawing: dict) -> bool:
 
 def _is_table(page: pymupdf.Page, area: pymupdf.Rect) -> bool:
     try:
-        tables = page.find_tables(clip=area * page.rotation_matrix).tables
+        tables = page.find_tables(clip=area * page.rotation_matrix, use_layout=False).tables
     except PICTURE_ERRORS:
         return False
     return any(
@@ -449,6 +450,32 @@ def _in_reading_order(texts, visuals) -> list[MarkupBlock]:
     return ordered
 
 
+def _text_groups(
+    page: pymupdf.Page, text_lines: list[tuple[int, pymupdf.Rect, pymupdf.Rect, _Line]]
+):
+    columns = page_columns(
+        page, [(rect, words_of(parsed.text)) for _p, _a, rect, parsed in text_lines]
+    )
+    if columns is None:
+        ordered = text_lines
+        groups = groupby(ordered, key=lambda item: item[0])
+    else:
+        ordered = column_order([(item[2], item) for item in text_lines], columns)
+        groups = groupby(ordered, key=lambda item: (item[0], column_side(item[2], columns)))
+    texts = []
+    for _key, grouped in groups:
+        members = list(grouped)
+        area = members[0][1]
+        if columns is not None:
+            area = pymupdf.Rect(members[0][2])
+            for item in members[1:]:
+                area |= item[2]
+        paragraphs = _text_blocks([item[3] for item in members])
+        if paragraphs:
+            texts.append((area, paragraphs))
+    return texts
+
+
 def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
     flags = pymupdf.TEXTFLAGS_XHTML & ~pymupdf.TEXT_PRESERVE_LIGATURES
     if not images:
@@ -478,9 +505,9 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
         if not any(area in graphic for graphic in graphics)
     ]
     covers = graphics + [area for area, _body in tables]
-    texts = []
+    text_lines: list[tuple[int, pymupdf.Rect, pymupdf.Rect, _Line]] = []
     visuals = [(area, MarkupBlock("table", body)) for area, body in tables]
-    for block, block_lines in blocks:
+    for position, (block, block_lines) in enumerate(blocks):
         area = pymupdf.Rect(block["bbox"])
         if any(area in graphic for graphic in graphics):
             continue
@@ -491,14 +518,12 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
             if picture is not None:
                 visuals.append((area & visible, picture))
             continue
-        shown = [
-            parsed
+        text_lines.extend(
+            (position, area, rect, parsed)
             for rect, parsed in block_lines
             if not any((rect.tl + rect.br) / 2 in cover for cover in covers)
-        ]
-        paragraphs = _text_blocks(shown)
-        if paragraphs:
-            texts.append((area, paragraphs))
+        )
+    texts = _text_groups(page, text_lines)
     for graphic in graphics:
         picture = _graphic_block(page, graphic)
         if picture is not None:

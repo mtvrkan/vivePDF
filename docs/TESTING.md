@@ -323,6 +323,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   table) to HTML and EPUB, open the HTML in Edge and the EPUB in a Windows reader: no page-sized
   template pictures, the logo shows on every slide, and the table has borders, a header row and
   merged cells where the PDF has them.
+- Convert a two-column article PDF to text and HTML: each column reads top to bottom before the
+  next one, the title stays first, and a ruled two-column table still reads row by row. Then
+  convert any PDF to Markdown and, without restarting, a PDF with a ruled table to HTML: the
+  table is text, not a picture.
 
 ### How native dialogs are answered
 

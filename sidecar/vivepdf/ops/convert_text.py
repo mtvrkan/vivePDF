@@ -9,6 +9,7 @@ from urllib.parse import quote
 
 import pymupdf
 
+from vivepdf.ops._columns import column_order, page_columns, words_of
 from vivepdf.ops._document import open_document
 from vivepdf.ops._docx_bidi import mostly_right_to_left
 from vivepdf.ops._docx_running import strip_running_text
@@ -117,24 +118,40 @@ def _joined(left: str, right: str) -> str:
     return f"{left.rstrip()} {right.lstrip()}"
 
 
+def _in_columns(page: pymupdf.Page, lines: list[dict]) -> list[dict]:
+    placed = [(pymupdf.Rect(line["bbox"]), line) for line in lines]
+    columns = page_columns(
+        page,
+        [
+            (rect, words_of("".join(span["text"] for span in line["spans"])))
+            for rect, line in placed
+            if _horizontal(line["dir"])
+        ],
+    )
+    return lines if columns is None else column_order(placed, columns)
+
+
 def reading_text(page: pymupdf.Page) -> str:
     rows: list[_Row] = []
-    for block in page.get_text("dict", flags=TEXT_FLAGS)["blocks"]:
-        for line in block.get("lines", []):
-            spans = line["spans"]
-            if not spans:
-                continue
-            text = "".join(span["text"] for span in spans)
-            baseline = spans[0]["origin"][1]
-            size = max(span["size"] for span in spans) or 1.0
-            horizontal = _horizontal(line["dir"])
-            if horizontal and rows and _continues(rows[-1], line, baseline, size):
-                row = rows[-1]
-                row.text = _joined(row.text, text)
-                row.right = line["bbox"][2]
-                row.size = max(row.size, size)
-                continue
-            rows.append(_Row(text, baseline, size, line["bbox"][2], horizontal))
+    lines = [
+        line
+        for block in page.get_text("dict", flags=TEXT_FLAGS)["blocks"]
+        for line in block.get("lines", [])
+        if line["spans"]
+    ]
+    for line in _in_columns(page, lines):
+        spans = line["spans"]
+        text = "".join(span["text"] for span in spans)
+        baseline = spans[0]["origin"][1]
+        size = max(span["size"] for span in spans) or 1.0
+        horizontal = _horizontal(line["dir"])
+        if horizontal and rows and _continues(rows[-1], line, baseline, size):
+            row = rows[-1]
+            row.text = _joined(row.text, text)
+            row.right = line["bbox"][2]
+            row.size = max(row.size, size)
+            continue
+        rows.append(_Row(text, baseline, size, line["bbox"][2], horizontal))
     return "".join(f"{row.text}\n" for row in rows)
 
 

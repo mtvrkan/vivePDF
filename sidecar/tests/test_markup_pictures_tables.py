@@ -134,3 +134,18 @@ def test_epub_chapter_with_a_table_is_well_formed(tmp_path: Path) -> None:
         chapter = archive.read("OEBPS/text/chapter0001.xhtml").decode("utf-8")
     ElementTree.fromstring(chapter)
     assert re.search(r"<td>Elma</td>", chapter)
+
+
+def test_html_keeps_a_turned_table_as_text_after_a_markdown_conversion(tmp_path: Path) -> None:
+    from pymupdf4llm.helpers import document_layout
+
+    assert document_layout
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    _ruled_table(page)
+    page.set_rotation(90)
+
+    html = _html(document, tmp_path)
+
+    assert "Elma" in html and "Armut" in html
+    assert "data:image/png" not in html
