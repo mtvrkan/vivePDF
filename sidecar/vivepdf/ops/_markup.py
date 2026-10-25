@@ -12,6 +12,14 @@ import pymupdf
 from vivepdf.ops._page_images import MAX_IMAGE_SIDE
 from vivepdf.ops._pixmaps import png_ready
 from vivepdf.ops._spreadsheet import clean_text
+from vivepdf.ops._words import (
+    LINE_BREAK,
+    Vocabulary,
+    breaks_word,
+    html_words,
+    join_marked_html,
+    plain_letters,
+)
 
 MARKDOWN_TAG = re.compile(
     r"</?(?:br|sup|u|mark)>|<!-- (?:Start|End) of picture text -->|<(?=[A-Za-z/!?])"
@@ -19,6 +27,7 @@ MARKDOWN_TAG = re.compile(
 CODE_SPAN = re.compile(r"(`+)(?:.*?)\1")
 EMPHASIS_GAP = re.compile(r"(?<=\S)(\*\*|\*|~~|_) +(?=[,.;:!?)])")
 FENCE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
+PICTURE_TEXT_MARK = re.compile(r"(?:<br>)?<!-- (?:Start|End) of picture text -->")
 HEADING_LEVELS = ((1.5, "h1"), (1.25, "h2"), (1.1, "h3"))
 HEADING_MAX_CHARACTERS = 200
 LANGUAGE_TAG = re.compile(r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$")
@@ -45,6 +54,9 @@ GRAPHIC_TEXT_SHARE = 0.3
 GRAPHIC_PROSE_WORDS = 8
 GRAPHIC_PANEL_SHARE = 0.8
 PAPER_WHITE = 0.98
+TURKISH_LETTERS = frozenset("ğĞıİşŞ")
+TURKISH_EVIDENCE = 3
+LANGUAGE_SAMPLE_PAGES = 5
 
 
 def _inert_line(line: str) -> str:
@@ -65,20 +77,38 @@ def _inert_text(text: str) -> str:
     return EMPHASIS_GAP.sub(r"\1", inert)
 
 
-def inert_markdown(markdown: str) -> str:
-    lines = []
+def _fenced(lines: list[str]):
     fence: str | None = None
-    for line in clean_text(markdown).split("\n"):
+    for line in lines:
         opening = FENCE.match(line)
         if fence is not None:
             if opening and opening.group(1)[0] == fence[0] and len(opening.group(1)) >= len(fence):
                 fence = None
-            lines.append(line)
+            yield line, True
         elif opening:
             fence = opening.group(1)
-            lines.append(line)
+            yield line, True
         else:
-            lines.append(_inert_line(line))
+            yield line, False
+
+
+def inert_markdown(markdown: str) -> str:
+    return "\n".join(
+        line if fenced else _inert_line(line)
+        for line, fenced in _fenced(clean_text(markdown).split("\n"))
+    )
+
+
+def tidy_markdown(markdown: str) -> str:
+    lines: list[str] = []
+    for line, fenced in _fenced(markdown.split("\n")):
+        if not fenced and PICTURE_TEXT_MARK.search(line):
+            line = PICTURE_TEXT_MARK.sub("", line)
+            if not line.strip():
+                continue
+        if not fenced and not line.strip() and lines and not lines[-1].strip():
+            continue
+        lines.append(line)
     return "\n".join(lines)
 
 
@@ -136,11 +166,11 @@ def _span_text(span: dict) -> str:
 def _span_pieces(span: dict, links: list[tuple[pymupdf.Rect, str]]):
     style = _span_style(span["flags"])
     if not links or "chars" not in span:
-        return [(clean_text(_span_text(span)), style, None)]
+        return [(plain_letters(clean_text(_span_text(span))), style, None)]
     pieces: list[tuple[str, tuple[str, ...], str | None]] = []
     for char in span["chars"]:
         url = _link_at(pymupdf.Rect(char["bbox"]), links)
-        text = clean_text(char["c"])
+        text = plain_letters(clean_text(char["c"]))
         if pieces and pieces[-1][2] == url:
             pieces[-1] = (pieces[-1][0] + text, style, url)
         else:
@@ -192,9 +222,12 @@ def _inline(pieces) -> str:
 def _paragraph(kind: str, lines: list[_Line]) -> MarkupBlock | None:
     pieces = []
     for line in lines:
-        if pieces and not pieces[-1][0].endswith((" ", "\u00a0")) and line.pieces:
+        if pieces and line.pieces:
             text, style, url = pieces[-1]
-            pieces[-1] = (text + " ", style, url)
+            if breaks_word(text, line.text):
+                pieces[-1] = (text.rstrip() + LINE_BREAK, style, url)
+            elif not text.endswith((" ", "\u00a0")):
+                pieces[-1] = (text + " ", style, url)
         pieces.extend(line.pieces)
     characters = sum(line.characters for line in lines)
     body = _inline(pieces)
@@ -488,6 +521,23 @@ def page_html(page: PageMarkup, body: float | None) -> str:
     if listing:
         parts.append("</ul>")
     return "\n".join(parts)
+
+
+def join_broken_words(pages: list[PageMarkup]) -> None:
+    blocks = [block for page in pages for block in page.blocks]
+    vocabulary = Vocabulary(html_words(block.body) for block in blocks)
+    for block in blocks:
+        if LINE_BREAK in block.body:
+            block.body = join_marked_html(block.body, vocabulary)
+
+
+def text_language(document: pymupdf.Document, indices: list[int]) -> str | None:
+    found = 0
+    for index in indices[:LANGUAGE_SAMPLE_PAGES]:
+        found += sum(1 for char in document[index].get_text() if char in TURKISH_LETTERS)
+        if found >= TURKISH_EVIDENCE:
+            return "tr"
+    return None
 
 
 def document_language(document: pymupdf.Document) -> str | None:

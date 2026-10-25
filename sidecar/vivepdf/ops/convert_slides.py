@@ -9,7 +9,7 @@ from pydantic import Field
 
 from vivepdf.ops._document import open_document
 from vivepdf.ops._hidden_text import hidden_origins, widget_origins
-from vivepdf.ops._markup import document_language
+from vivepdf.ops._markup import document_language, text_language
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pptx_embed import embed_slide_fonts
 from vivepdf.ops._pptx_fonts import slide_font_names
@@ -42,9 +42,6 @@ NOTES_LIMIT = 20000
 PHOTO_JPEG_QUALITY = 85
 PHOTO_SAVING_FACTOR = 3
 PHOTO_PNG_BYTES_PER_PIXEL = 0.25
-TURKISH_LETTERS = frozenset("ğĞıİşŞ")
-TURKISH_EVIDENCE = 3
-LANGUAGE_SAMPLE_PAGES = 5
 REGION_OF_LANGUAGE = {"tr": "tr-TR", "en": "en-US"}
 
 
@@ -70,12 +67,8 @@ def slide_language(document: pymupdf.Document, indices: list[int]) -> str | None
     declared = document_language(document)
     if declared:
         return REGION_OF_LANGUAGE.get(declared.lower(), declared)
-    found = 0
-    for index in indices[:LANGUAGE_SAMPLE_PAGES]:
-        found += sum(1 for char in document[index].get_text() if char in TURKISH_LETTERS)
-        if found >= TURKISH_EVIDENCE:
-            return REGION_OF_LANGUAGE["tr"]
-    return None
+    detected = text_language(document, indices)
+    return REGION_OF_LANGUAGE[detected] if detected else None
 
 
 def slide_size(rect: pymupdf.Rect) -> tuple[int, int]:

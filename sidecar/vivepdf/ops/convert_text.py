@@ -2,7 +2,6 @@ import html as html_module
 import io
 import shutil
 import tempfile
-import unicodedata
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
@@ -19,13 +18,24 @@ from vivepdf.ops._markup import (
     body_size,
     document_language,
     inert_markdown,
+    join_broken_words,
     page_html,
     page_markup,
     picture_dpi,
+    text_language,
+    tidy_markdown,
 )
 from vivepdf.ops._placement import drop_unplaceable_annotations, turn_text_upright
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._spreadsheet import clean_text
+from vivepdf.ops._words import (
+    LINE_BREAK,
+    Vocabulary,
+    breaks_word,
+    join_marked_markdown,
+    join_plain_lines,
+    plain_letters,
+)
 from vivepdf.ops.convert import (
     TextFileResult,
     TextSourceParams,
@@ -49,7 +59,6 @@ TEXT_FLAGS = pymupdf.TEXTFLAGS_TEXT & ~pymupdf.TEXT_PRESERVE_LIGATURES
 SAME_BASELINE = 0.3
 OVERLAP_TOLERANCE = 1.0
 LINK_CORE = 0.5
-LIGATURES = {code: unicodedata.normalize("NFKC", chr(code)) for code in range(0xFB00, 0xFB07)}
 
 
 def _horizontal(direction: tuple[float, float]) -> bool:
@@ -130,7 +139,7 @@ def reading_text(page: pymupdf.Page) -> str:
 
 def page_text(page: pymupdf.Page, layout: bool) -> str:
     text = layout_text(page) if layout else ""
-    return clean_text(text if text.strip() else reading_text(page)).translate(LIGATURES)
+    return plain_letters(clean_text(text if text.strip() else reading_text(page)))
 
 
 @op("convert.to_text", TextParams)
@@ -150,6 +159,9 @@ def to_text(params: TextParams, progress: Progress) -> TextFileResult:
             chunks.append(chunk if not chunk or chunk.endswith("\n") else chunk + "\n")
             if position % 20 == 0:
                 progress.report(position / len(indices), "progress.converting")
+    if not params.layout:
+        vocabulary = Vocabulary(chunks)
+        chunks = [join_plain_lines(chunk, vocabulary) for chunk in chunks]
     return _write_text_file(target, "\f".join(chunks), textless, recognised)
 
 
@@ -424,6 +436,15 @@ def _link_spans(page: pymupdf.Page, layout) -> None:
                 span["text"] = _linked_text(span, glyphs, links)
 
 
+def _mark_broken_words(layout) -> None:
+    for box in layout.boxes:
+        lines = [line for line in box.textlines or [] if line["spans"]]
+        for line, following in zip(lines, lines[1:], strict=False):
+            last = line["spans"][-1]
+            if breaks_word(last["text"], following["spans"][0]["text"]):
+                last["text"] = last["text"].rstrip() + LINE_BREAK
+
+
 def _cover_bare_page(page: pymupdf.Page, layout) -> None:
     from pymupdf4llm.helpers.document_layout import LayoutBox
 
@@ -504,6 +525,7 @@ def _markdown_pages(
             _clear_hidden_strikes(page, layout)
             _add_turned_text(page, layout)
             _link_spans(page, layout)
+            _mark_broken_words(layout)
             if pictures is not None and index + 1 not in recognised:
                 _cover_bare_page(page, layout)
                 pictures.take(page, layout)
@@ -520,7 +542,8 @@ def _markdown_pages(
     markdown = document_layout.ParsedDocument(pages=layouts).to_markdown(
         header=True, footer=True, write_images=False, embed_images=False
     )
-    return inert_markdown(markdown), textless
+    markdown = inert_markdown(plain_letters(markdown))
+    return tidy_markdown(join_marked_markdown(markdown, Vocabulary([markdown]))), textless
 
 
 def _picture_folder(target: Path, overwrite: bool) -> Path:
@@ -593,14 +616,15 @@ def to_html(params: TextSourceParams, progress: Progress) -> TextFileResult:
         title = html_module.escape(
             clean_text((document.metadata or {}).get("title") or Path(params.path).stem)
         )
-        language = document_language(document)
         recognised, progress = recognise_first(document, indices, params, progress)
+        language = document_language(document) or text_language(document, indices)
         strip_running_text(document, indices)
         for position, index in enumerate(indices):
             progress.check_cancelled()
             pages.append(page_markup(document[index], images=index + 1 not in recognised))
             if position % 10 == 0:
                 progress.report(position / len(indices), "progress.converting")
+    join_broken_words(pages)
     body = body_size(pages)
     parts = [
         f'<section class="page" data-page="{index + 1}">{page_html(page, body)}</section>'

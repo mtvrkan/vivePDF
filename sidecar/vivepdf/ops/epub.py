@@ -18,8 +18,10 @@ from vivepdf.ops._markup import (
     PageMarkup,
     body_size,
     document_language,
+    join_broken_words,
     page_html,
     page_markup,
+    text_language,
 )
 from vivepdf.ops._ocr_layer import recognise_textless_pages
 from vivepdf.ops._output import write_atomically
@@ -430,9 +432,6 @@ def to_epub(params: EpubParams, progress: Progress) -> EpubResult:
     with open_document(params.path, params.password) as document:
         indices = parse_page_ranges(params.pages, document.page_count)
         planned = limit_chapters(plan_chapters(document, indices, params.split))
-        language = document_language(document) or (
-            params.language if LANGUAGE.match(params.language) else "en"
-        )
         title = params.title or _metadata_value(document, "title") or Path(params.path).stem
         author = params.author or _metadata_value(document, "author")
         recognised: list[int] = []
@@ -441,10 +440,16 @@ def to_epub(params: EpubParams, progress: Progress) -> EpubResult:
                 document, indices, params.ocr_languages, progress.within(0.0, 0.5)
             )
             progress = progress.within(0.5, 1.0)
+        language = (
+            document_language(document)
+            or text_language(document, indices)
+            or (params.language if LANGUAGE.match(params.language) else "en")
+        )
         strip_running_text(document, indices)
         pages = _collect_pages(
             document, planned, images, params.include_images, recognised, progress
         )
+        join_broken_words(list(pages.values()))
         progress.check_cancelled()
         chapters = _build_chapters(planned, pages)
         textless = sorted(index + 1 for index, page in pages.items() if not page.sizes)

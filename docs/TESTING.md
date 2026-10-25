@@ -315,6 +315,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   the table comes out in rows and columns with its numbers and dates as values.
 - Run `pnpm tauri dev`, quit it, change a dependency import (or delete `node_modules/.vite`),
   run it again: the window shows the app, not a blank white page.
+- With the app in English, convert a Turkish PDF with words hyphenated at line ends to text,
+  Markdown, HTML and EPUB: split words are whole again, compounds like "sebep-sonuç" keep their
+  hyphen, the Markdown has no "picture text" comments, and the EPUB opens in Windows as a
+  Turkish book (`dc:language` tr).
 
 ### How native dialogs are answered
 
