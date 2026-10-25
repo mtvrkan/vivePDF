@@ -233,6 +233,7 @@ def text_free_pixmap(
 ) -> pymupdf.Pixmap:
     with pymupdf.open() as single:
         single.insert_pdf(document, from_page=index, to_page=index, annots=True)
+        single.bake(annots=True, widgets=False)
         page = single[0]
         for area in areas:
             page.add_redact_annot(area, fill=False, cross_out=False)
