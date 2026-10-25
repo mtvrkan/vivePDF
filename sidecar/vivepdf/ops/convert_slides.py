@@ -9,6 +9,7 @@ from pydantic import Field
 from vivepdf.ops._document import open_document
 from vivepdf.ops._hidden_text import hidden_origins, widget_origins
 from vivepdf.ops._output import write_atomically
+from vivepdf.ops._pptx_fonts import slide_font_names
 from vivepdf.ops._pptx_layout import (
     SlideFrame,
     add_line_box,
@@ -75,6 +76,7 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
         editable = params.mode == "editable"
         jumps = SlideJumps([])
         slides = {}
+        names = slide_font_names(document) if editable else None
         with tempfile.TemporaryDirectory(prefix="vivepdf-pptx-") as temp_dir:
             for position, index in enumerate(indices):
                 progress.check_cancelled()
@@ -95,7 +97,7 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 slide.shapes.add_picture(str(image_path), left, top, width=width, height=height)
                 frame = SlideFrame(left=left, top=top, ratio=width / page.rect.width)
                 for box in boxes:
-                    add_line_box(slide, box, frame, jumps)
+                    add_line_box(slide, box, frame, jumps, names)
                 linked = {span["link"] for box in boxes for span in box.spans if span.get("link")}
                 for link in links:
                     if link not in linked:

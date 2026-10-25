@@ -1,5 +1,6 @@
 import math
 import re
+from collections.abc import Callable
 from dataclasses import dataclass
 
 import pymupdf
@@ -23,7 +24,7 @@ UNSAFE_CHARACTERS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\ud800-\udfff\ufffe\
 FONT_SUFFIXES = ("PSMT", "MT", "PS")
 FONT_STYLE = re.compile(
     r"(?:(?:semi|demi|extra|ultra)?(?:bold|light|black|heavy|thin|medium|regular|roman|book"
-    r"|italic|oblique|condensed|narrow|it|bd|bi|lt|md|rg|bk))+(?:psmt|mt|ps)?",
+    r"|italic|ital|oblique|condensed|narrow|it|bd|bi|lt|md|rg|bk))+(?:psmt|mt|ps)?",
     re.IGNORECASE,
 )
 FONT_FAMILIES = {
@@ -265,7 +266,13 @@ def _outline_run(run, colour, width: float | None, ratio: float) -> None:
     FillFormat.from_fill_parent(properties).background()
 
 
-def add_line_box(slide, box: LineBox, frame: SlideFrame, jumps: SlideJumps | None = None) -> None:
+def add_line_box(
+    slide,
+    box: LineBox,
+    frame: SlideFrame,
+    jumps: SlideJumps | None = None,
+    names: Callable[[str], str] = font_family,
+) -> None:
     from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE
     from pptx.util import Emu, Pt
@@ -291,7 +298,7 @@ def add_line_box(slide, box: LineBox, frame: SlideFrame, jumps: SlideJumps | Non
         run.text = text
         font = run.font
         font.size = Pt(_font_points(span["size"], frame.ratio))
-        font.name = font_family(span["font"])
+        font.name = names(span["font"])
         strokes = span.get("char_flags", FILLED_FLAG)
         fake_bold = strokes & FILLED_FLAG and strokes & STROKED_FLAG
         font.bold = bool(span["flags"] & BOLD_FLAG or fake_bold)
