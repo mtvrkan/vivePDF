@@ -319,3 +319,64 @@ def test_split_style_suffixes_sets_missing_flags_and_leaves_other_names():
         ("Acme,Display", 0),
         ("", 0),
     ]
+
+
+def _font_table(*families: str):
+    from pdf2docx.font.Fonts import Font, Fonts
+
+    from vivepdf.ops._docx_progress import stabilise_pdf2docx
+
+    stabilise_pdf2docx()
+    return Fonts(
+        [
+            Font(descriptor=Fonts._to_descriptor(family), name=family, line_height=1.2)
+            for family in families
+        ]
+    )
+
+
+def _found(fonts, name: str) -> str | None:
+    font = fonts.get(name)
+    return font.name if font else None
+
+
+@pytest.mark.parametrize(
+    ("name", "families"),
+    [
+        ("DejaVuSans", ("DejaVu Sans Mono",)),
+        ("ArialNarrow", ("Arial",)),
+        ("", ("Courier New", "Calibri")),
+    ],
+)
+def test_a_font_name_never_borrows_a_different_embedded_font(name: str, families) -> None:
+    assert _found(_font_table(*families), name) is None
+
+
+@pytest.mark.parametrize(
+    ("name", "expected"),
+    [
+        ("ABCDEF+Calibri-Bold", "Calibri"),
+        ("Calibri-Light", "Calibri Light"),
+        ("TimesNewRomanPSMT", "Times New Roman"),
+        ("Arial,Bold", "Arial"),
+        ("ArialMT", "Arial"),
+    ],
+)
+def test_a_font_name_still_finds_its_own_embedded_family(name: str, expected: str) -> None:
+    fonts = _font_table("Arial", "Calibri", "Calibri Light", "Times New Roman")
+
+    assert _found(fonts, name) == expected
+
+
+def test_a_spaced_font_name_with_a_style_word_finds_its_family() -> None:
+    fonts = _font_table("Beril Sans", "Beril Sans Mono")
+
+    assert _found(fonts, "Beril Sans Bold Italic") == "Beril Sans"
+    assert _found(fonts, "Beril Sans Mono Regular") == "Beril Sans Mono"
+
+
+def test_a_postscript_name_prefers_the_embedded_family_over_its_bare_entry() -> None:
+    fonts = _font_table("TimesNewRomanPS", "Times New Roman", "Gill Sans")
+
+    assert _found(fonts, "TimesNewRomanPS-BoldMT") == "Times New Roman"
+    assert _found(fonts, "Gill Sans MT") is None

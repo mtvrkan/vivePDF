@@ -356,6 +356,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - PDF to text, Markdown and Word on several slide decks merged into one PDF where only the
   first deck has page numbers: the numbers of that deck are gone from the output and the rest
   of the text is unchanged.
+- PDF to Word on a PDF that uses both Arial and Arial Narrow (or Times New Roman in bold and
+  italic): in Word each run shows its own font name in the font box, and the bold and italic
+  Times New Roman runs are named Times New Roman.
 
 ### How native dialogs are answered
 

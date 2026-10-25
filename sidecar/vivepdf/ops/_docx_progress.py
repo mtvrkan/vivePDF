@@ -39,6 +39,7 @@ from vivepdf.ops._docx_running import RunningText, add_running_text
 from vivepdf.ops._docx_visible import visible_images
 from vivepdf.ops._hidden_text import text_is_only_hidden
 from vivepdf.ops._output import write_atomically
+from vivepdf.ops._pptx_layout import FONT_STYLE, FONT_SUFFIXES
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 
@@ -406,8 +407,35 @@ def _family_without_style(name: str) -> str:
     return match.group(1).strip() if match else plain
 
 
+def _without_style_words(name: str) -> str:
+    words = name.split()
+    while len(words) > 1 and FONT_STYLE.fullmatch(words[-1]):
+        words.pop()
+    return " ".join(words)
+
+
+def _font_keys(name: str) -> list[str]:
+    plain = _without_style_words(_family_without_style(name))
+    bare = [
+        plain[: -len(suffix)]
+        for suffix in FONT_SUFFIXES
+        if plain.endswith(suffix) and not plain[: -len(suffix)].endswith(" ")
+    ]
+    keys = [name.split("+")[-1], *bare[:1], plain]
+    return [Fonts._to_descriptor(key) for key in keys if key]
+
+
+def _exact_font(fonts: Fonts, font_name: str):
+    for key in _font_keys(font_name or ""):
+        for font in fonts:
+            if font.descriptor == key:
+                return font
+    return None
+
+
 def stabilise_pdf2docx() -> None:
     Fonts._normalized_font_name = staticmethod(_family_without_style)
+    Fonts.get = _exact_font
     Converter.parse_pages = _parse_pages_keeping_graphics
     Lines.parse_line_break = parse_line_break_before_list_items
     Cell.make_docx = _make_cell_sizing_its_column
