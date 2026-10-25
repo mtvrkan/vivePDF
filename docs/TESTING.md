@@ -259,6 +259,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert an SVG icon sheet that uses `<symbol>` and `<use>` (for example from an icon set's
   sprite) to PDF with the bundled LibreOffice: every icon has the size and colour it has in a
   browser.
+- Convert an SVG with a linked logo or text (`<a href="https://...">`) to PDF with the bundled
+  LibreOffice and open it in Edge: the pointer turns into a hand over the logo and clicking
+  opens the address.
 
 ### How native dialogs are answered
 

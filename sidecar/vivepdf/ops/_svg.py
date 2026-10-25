@@ -23,6 +23,11 @@ SIMPLE_SELECTOR = re.compile(r"^([A-Za-z][\w-]*|\*)?(?:#([\w-]+))?((?:\.[\w-]+)*
 USE_POSITION = frozenset({"href", "x", "y", "width", "height"})
 SYMBOL_PLACEMENT = frozenset({"id", "x", "y", "width", "height"})
 MAX_SYMBOL_PASSES = 8
+MAX_SVG_LINKS = 200
+DRAWN_ELEMENTS = frozenset(
+    {"path", "rect", "circle", "ellipse", "line", "polyline", "polygon", "text", "image", "use"}
+)
+DEFINITION_ELEMENTS = frozenset({"defs", "symbol", "clipPath", "mask", "pattern", "marker"})
 MAX_EXPANDED_ELEMENTS = 200_000
 ABSOLUTE_LENGTH = re.compile(r"^\s*\d+(\.\d+)?\s*(px|pt|pc|mm|cm|in)?\s*$")
 
@@ -184,12 +189,94 @@ def svg_pdf_bytes(
     clean = sanitized_svg(source, working / "source")
     if libreoffice.find_soffice() is not None:
         produced = libreoffice.convert_to_pdf(clean, working / "office", None, check_cancelled)
-        return produced.read_bytes()
+        return _with_links(clean, produced.read_bytes())
+    root = read_svg(clean)
+    _anchors_as_groups(root)
     try:
-        with pymupdf.open(str(clean)) as document:
-            return document.convert_to_pdf()
+        with pymupdf.open(stream=etree.tostring(root), filetype="svg") as document:
+            drawn = document.convert_to_pdf()
     except Exception as error:  # noqa: BLE001
         raise _refusal("notSvg", f"{source.name} could not be drawn") from error
+    return _with_links(clean, drawn)
+
+
+def _anchors_as_groups(root: etree._Element) -> None:
+    for element in root.iter():
+        if isinstance(element.tag, str) and _local(element.tag) == "a":
+            namespace = etree.QName(element.tag).namespace
+            element.tag = f"{{{namespace}}}g" if namespace else "g"
+            for key in list(element.attrib):
+                if _local(key) in ("href", "target"):
+                    del element.attrib[key]
+
+
+def _drawn_area(root: etree._Element) -> pymupdf.Rect | None:
+    with pymupdf.open(stream=etree.tostring(root), filetype="svg") as drawing:
+        page = drawing[0]
+        area = pymupdf.Rect()
+        for kind, box in page.get_bboxlog():
+            if "clip" not in kind:
+                area |= pymupdf.Rect(box)
+        if area.is_empty:
+            return None
+        return area * pymupdf.Matrix(1 / page.rect.width, 1 / page.rect.height)
+
+
+def _link_areas(root: etree._Element, anchors: list[etree._Element]) -> list[pymupdf.Rect | None]:
+    trimmed = copy.deepcopy(root)
+    twins = dict(zip(root.iter(), trimmed.iter(), strict=True))
+    groups = [twins[anchor] for anchor in anchors]
+    linked = {element for group in groups for element in group.iter()}
+    dropped = [
+        element
+        for element in trimmed.iter()
+        if element not in linked
+        and isinstance(element.tag, str)
+        and _local(element.tag) in DRAWN_ELEMENTS
+        and not any(_local(parent.tag) in DEFINITION_ELEMENTS for parent in element.iterancestors())
+    ]
+    for element in dropped:
+        element.getparent().remove(element)
+    _anchors_as_groups(trimmed)
+    places = [(group.getparent(), group.getparent().index(group)) for group in groups]
+    for group in groups:
+        group.getparent().remove(group)
+    areas = []
+    for group, (parent, index) in zip(groups, places, strict=True):
+        parent.insert(index, group)
+        areas.append(_drawn_area(trimmed))
+        parent.remove(group)
+    return areas
+
+
+def _with_links(clean: Path, drawn: bytes) -> bytes:
+    root = read_svg(clean)
+    anchors = [
+        element
+        for element in root.iter()
+        if isinstance(element.tag, str)
+        and _local(element.tag) == "a"
+        and LINK_TARGET.match(_href(element).strip())
+    ][:MAX_SVG_LINKS]
+    if not anchors:
+        return drawn
+    try:
+        areas = _link_areas(root, anchors)
+        with pymupdf.open("pdf", drawn) as document:
+            page = document[0]
+            scale = pymupdf.Matrix(page.rect.width, page.rect.height)
+            for anchor, area in zip(anchors, areas, strict=True):
+                if area is not None:
+                    page.insert_link(
+                        {
+                            "kind": pymupdf.LINK_URI,
+                            "uri": _href(anchor).strip(),
+                            "from": area * scale,
+                        }
+                    )
+            return document.tobytes()
+    except Exception:  # noqa: BLE001
+        return drawn
 
 
 def _view_box_size(root: etree._Element) -> tuple[float, float] | None:
@@ -341,6 +428,7 @@ def drawing_pdf(raw: bytes, name: str, opacity: float = 1.0) -> pymupdf.Document
         raise _too_large(name)
     root = _parse_svg(raw, name)
     _clean_tree(root)
+    _anchors_as_groups(root)
     _inline_stylesheets(root)
     _absolute_size(root)
     _drop_zero_width_strokes(root)
@@ -359,6 +447,7 @@ def placed_svg(raw: bytes, name: str, width: float, height: float) -> bytes:
         raise _too_large(name)
     root = _parse_svg(raw, name)
     _clean_tree(root)
+    _anchors_as_groups(root)
     if _view_box_size(root) is None:
         _absolute_size(root)
         natural = [

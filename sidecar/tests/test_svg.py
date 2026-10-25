@@ -273,3 +273,44 @@ def test_a_symbol_that_uses_itself_stops_expanding(tmp_path: Path):
     root = _clean(tmp_path, text)
 
     assert sum(1 for _ in root.iter()) < 300_000
+
+
+LINKED = (
+    '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
+    ' width="200" height="100" viewBox="0 0 400 200">'
+    '<a xlink:href="https://example.com/a"><rect x="20" y="20" width="100" height="60"'
+    ' fill="red"/></a>'
+    '<g transform="translate(200 100)"><a href="mailto:esma@example.com">'
+    '<rect width="40" height="20"/></a></g>'
+    '<a href="javascript:alert(1)"><circle cx="350" cy="50" r="20"/></a>'
+    '<a href="https://example.com/bos"></a>'
+    "</svg>"
+)
+
+
+def test_svg_links_stay_clickable_over_what_they_wrap(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: None)
+
+    result = file_to_pdf(
+        FileToPdfParams(path=str(_svg(tmp_path, text=LINKED)), output=str(tmp_path / "out.pdf")),
+        silent_progress(),
+    )
+
+    with pymupdf.open(result.output) as document:
+        links = [
+            (link["uri"], tuple(round(value) for value in link["from"]))
+            for link in document[0].get_links()
+        ]
+    assert links == [
+        ("https://example.com/a", (10, 10, 60, 40)),
+        ("mailto:esma@example.com", (100, 50, 120, 60)),
+    ]
+
+
+def test_shapes_inside_a_link_are_drawn():
+    document = drawing_pdf(LINKED.encode(), "linked.svg")
+
+    fills = [drawing["fill"] for drawing in document[0].get_drawings()]
+    assert fills == [(1.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)]
