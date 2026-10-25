@@ -339,6 +339,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   box and background, the Turkish text reads upright.
 - Without LibreOffice installed, convert an Illustrator or Inkscape SVG with a hidden layer to
   PDF and add it as a picture in Studio: the hidden layer is not drawn in either.
+- Convert the same 400 px SVG to PDF with and without LibreOffice installed: both pages are
+  300 pt wide with the same height, and the links sit over what they wrap.
 
 ### How native dialogs are answered
 

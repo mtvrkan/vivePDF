@@ -111,7 +111,7 @@ def test_without_libreoffice_the_drawing_still_converts(
     )
     with pymupdf.open(result.output) as document:
         assert document.page_count == 1
-        assert round(document[0].rect.width) == 400
+        assert round(document[0].rect.width) == 300
 
 
 def test_several_drawings_become_one_pdf_in_order(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
@@ -128,7 +128,7 @@ def test_several_drawings_become_one_pdf_in_order(tmp_path: Path, monkeypatch: p
     )
     assert result.page_count == 2
     with pymupdf.open(result.output) as document:
-        assert [round(page.rect.width) for page in document] == [200, 100]
+        assert [round(page.rect.width) for page in document] == [150, 75]
 
 
 def test_combining_refuses_files_that_are_not_drawings(tmp_path: Path):
@@ -302,12 +302,12 @@ def test_svg_links_stay_clickable_over_what_they_wrap(
 
     with pymupdf.open(result.output) as document:
         links = [
-            (link["uri"], tuple(round(value) for value in link["from"]))
+            (link["uri"], tuple(round(value, 1) for value in link["from"]))
             for link in document[0].get_links()
         ]
     assert links == [
-        ("https://example.com/a", (10, 10, 60, 40)),
-        ("mailto:esma@example.com", (100, 50, 120, 60)),
+        ("https://example.com/a", (7.5, 7.5, 45.0, 30.0)),
+        ("mailto:esma@example.com", (75.0, 37.5, 90.0, 45.0)),
     ]
 
 
@@ -399,7 +399,7 @@ def test_without_libreoffice_the_picture_next_to_the_drawing_is_drawn(
 
     with pymupdf.open(result.output) as document:
         [image] = document[0].get_image_info()
-        assert tuple(round(value) for value in image["bbox"]) == (0, 0, 40, 20)
+        assert tuple(round(value) for value in image["bbox"]) == (0, 0, 30, 15)
 
 
 HIDDEN_LAYERS = (
@@ -457,3 +457,31 @@ def test_a_hidden_element_another_one_points_to_is_kept(tmp_path: Path):
     kept = [element for element in root.iter() if element.get("id") == "kept"]
 
     assert len(kept) == 1
+
+
+def test_without_libreoffice_the_page_has_the_libreoffice_size(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: None)
+    sizes = [
+        ('width="400px" height="200px"', (300, 150)),
+        ('width="4in" height="2in"', (288, 144)),
+        ('width="100mm" height="50mm" viewBox="0 0 10 5"', (283, 142)),
+        ('viewBox="0 0 400 200"', (300, 150)),
+    ]
+    found = []
+
+    for number, (attributes, _size) in enumerate(sizes):
+        svg = _svg(
+            tmp_path,
+            f"{number}.svg",
+            f'<svg xmlns="http://www.w3.org/2000/svg" {attributes}><rect width="9"/></svg>',
+        )
+        result = file_to_pdf(
+            FileToPdfParams(path=str(svg), output=str(tmp_path / f"{number}.pdf")),
+            silent_progress(),
+        )
+        with pymupdf.open(result.output) as document:
+            found.append((round(document[0].rect.width), round(document[0].rect.height)))
+
+    assert found == [size for _attributes, size in sizes]

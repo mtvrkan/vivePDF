@@ -30,6 +30,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- SVG to PDF without LibreOffice: the page has the same size as with LibreOffice (CSS pixels at 96 per inch, so a 400 px drawing gives a 300 pt page instead of a 25 % larger one) [2026-10-25]
 - SVG to PDF and SVG pictures in Studio: hidden layers (display none, visibility hidden, opacity 0, also through a stylesheet class as Illustrator and Inkscape write them) are no longer drawn when LibreOffice is not installed, matching the LibreOffice result [2026-10-25]
 - Fill form: a field filled with Turkish or other non-Latin letters keeps its border and background colour instead of showing the text on a bare page [2026-10-25]
 - Convert › Extract images: pictures stored inside the page's drawing commands (inline images, used by some scanners and older PDF makers) are saved too, after the page's other pictures; a photo stays JPEG and a one-colour mask picture gets its paint colour on a clear background [2026-10-25]

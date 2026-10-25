@@ -39,6 +39,16 @@ MAX_LINKED_PICTURE_BYTES = 20 * 1024 * 1024
 WINDOWS_DRIVE = re.compile(r"^[A-Za-z]:[\\/]")
 HIDING_PROPERTIES = ("display", "visibility", "opacity")
 LOCAL_REFERENCE = re.compile(r"(?:url\(\s*['\"]?\s*#|^\s*#)([^)'\"\s]+)")
+CSS_PIXELS = {
+    "": 1.0,
+    "px": 1.0,
+    "pt": 4 / 3,
+    "pc": 16.0,
+    "mm": 96 / 25.4,
+    "cm": 96 / 2.54,
+    "in": 96.0,
+}
+POINTS_PER_CSS_PIXEL = 0.75
 
 
 def _refusal(reason: str, message: str, **data: object) -> OpError:
@@ -336,6 +346,7 @@ def svg_pdf_bytes(
         return _with_links(clean, produced.read_bytes())
     root = read_svg(clean)
     _anchors_as_groups(root)
+    _size_in_points(root)
     try:
         with pymupdf.open(stream=etree.tostring(root), filetype="svg") as document:
             drawn = document.convert_to_pdf()
@@ -432,6 +443,31 @@ def _view_box_size(root: etree._Element) -> tuple[float, float] | None:
     except ValueError:
         return None
     return (width, height) if width > 0 and height > 0 else None
+
+
+def _css_pixels(value: str) -> float | None:
+    match = ABSOLUTE_LENGTH.match(value)
+    if match is None:
+        return None
+    return float(ABSOLUTE_NUMBER.search(value)[0]) * CSS_PIXELS[(match.group(2) or "").lower()]
+
+
+def _size_in_points(root: etree._Element) -> None:
+    box = _view_box_size(root)
+    width, height = _css_pixels(root.get("width") or ""), _css_pixels(root.get("height") or "")
+    if box is not None:
+        if width is None and height is None:
+            width, height = box
+        elif width is None:
+            width = height * box[0] / box[1]
+        elif height is None:
+            height = width * box[1] / box[0]
+    if width is None or height is None or width <= 0 or height <= 0:
+        return
+    if box is None:
+        root.set("viewBox", f"0 0 {width:g} {height:g}")
+    root.set("width", f"{width * POINTS_PER_CSS_PIXEL:g}pt")
+    root.set("height", f"{height * POINTS_PER_CSS_PIXEL:g}pt")
 
 
 def _absolute_size(root: etree._Element) -> None:
