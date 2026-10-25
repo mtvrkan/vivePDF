@@ -30,6 +30,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Fill form: a field filled with Turkish or other non-Latin letters keeps its border and background colour instead of showing the text on a bare page [2026-10-25]
 - Convert › Extract images: pictures stored inside the page's drawing commands (inline images, used by some scanners and older PDF makers) are saved too, after the page's other pictures; a photo stays JPEG and a one-colour mask picture gets its paint colour on a clear background [2026-10-25]
 - PDF to text, HTML and EPUB: a two-column page whose lines are stored left-right-left (so each row ran on from the left column into the right one) is read one column after the other, with headings above or below the columns kept in place; ruled two-column tables still read row by row [2026-10-25]
 - PDF to HTML and EPUB: a ruled table no longer turns into a picture when a Markdown conversion ran earlier in the same session (the Markdown layout module changed how tables were looked for) [2026-10-25]

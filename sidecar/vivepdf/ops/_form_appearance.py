@@ -13,6 +13,7 @@ LINE_FACTOR = 1.16
 MAX_AUTO_SIZE = 12.0
 MIN_AUTO_SIZE = 4.0
 SELECTION_COLOR = "0.6 0.75 0.85 rg"
+MARKED_TEXT = b"/Tx BMC"
 TEXT_KINDS = (
     pymupdf.PDF_WIDGET_TYPE_TEXT,
     pymupdf.PDF_WIDGET_TYPE_COMBOBOX,
@@ -155,6 +156,22 @@ def _comb_cells(widget: pymupdf.Widget) -> int:
     return max(0, int(widget.text_maxlen or 0))
 
 
+def _decorations(original: bytes) -> bytes:
+    marker = original.find(MARKED_TEXT)
+    if marker > 0:
+        return original[:marker]
+    if marker < 0:
+        return b""
+    start = marker + len(MARKED_TEXT)
+    text = original.find(b"BT", start)
+    drawing = original[start : text if text >= 0 else len(original)].strip()
+    if not drawing:
+        return b""
+    tokens = drawing.split()
+    opened = max(0, tokens.count(b"q") - tokens.count(b"Q"))
+    return b"q\n" + drawing + b"\n" + b"Q\n" * (opened + 1)
+
+
 class UnicodeAppearance:
     def __init__(self, document: pymupdf.Document) -> None:
         self.document = document
@@ -182,10 +199,8 @@ class UnicodeAppearance:
             self.font_xref = self.document.get_new_xref()
             self.document.update_object(self.font_xref, "<< >>")
         original = self.document.xref_stream(stream_xref) or b""
-        marker = original.find(b"/Tx BMC")
-        prefix = original[:marker] if marker > 0 else b""
         body = self._body(widget, width, height)
-        self.document.update_stream(stream_xref, prefix + body.encode("latin-1"))
+        self.document.update_stream(stream_xref, _decorations(original) + body.encode("latin-1"))
         if self.document.xref_get_key(stream_xref, "Resources/Font")[0] == "dict":
             self.document.xref_set_key(
                 stream_xref, f"Resources/Font/{FONT_RESOURCE}", f"{self.font_xref} 0 R"

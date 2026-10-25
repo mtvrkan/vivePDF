@@ -334,6 +334,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Extract images ("As shown on the page" off) from a PDF with inline images (a scanner's PDF
   or an old PDF maker's file): each inline picture is saved after the page's other pictures,
   a photo as JPEG, a one-colour mask in its colour on a clear background.
+- Fill a form whose fields have a border and background colour with "Esma Yılmaz" in one
+  field and an e-mail address in another, save, open in Acrobat or Edge: both fields keep their
+  box and background, the Turkish text reads upright.
 
 ### How native dialogs are answered
 

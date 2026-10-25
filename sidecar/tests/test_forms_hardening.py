@@ -103,6 +103,41 @@ def test_latin_values_keep_the_native_appearance(form_pdf: Path, tmp_path: Path)
     assert not fonts
 
 
+def test_a_turkish_value_keeps_the_box_and_background_of_its_field(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    _add(
+        document.new_page(),
+        "ad",
+        pymupdf.PDF_WIDGET_TYPE_TEXT,
+        (72, 72, 372, 98),
+        fill_color=(0.8, 0.6, 1),
+        border_color=(0.8, 0, 0),
+        border_width=2,
+    )
+    source = tmp_path / "kutulu.pdf"
+    document.save(source)
+    document.close()
+
+    result = fill_fields(
+        FillParams(path=str(source), output=str(tmp_path / "dolu.pdf"), values={"ad": TURKISH}),
+        silent_progress(),
+    )
+
+    filled = pymupdf.open(result.output)
+    page = filled[0]
+    picture = page.get_pixmap(dpi=72)
+    assert picture.pixel(73, 85) == (204, 0, 0)
+    assert picture.pixel(360, 85) == (204, 153, 255)
+    lines = [
+        line
+        for block in page.get_text("dict")["blocks"]
+        for line in block.get("lines", [])
+        if TURKISH in "".join(span["text"] for span in line["spans"])
+    ]
+    filled.close()
+    assert [line["dir"] for line in lines] == [(1.0, 0.0)]
+
+
 def test_read_only_field_is_not_overwritten(form_pdf: Path, tmp_path: Path) -> None:
     result = fill_fields(
         FillParams(
