@@ -1,3 +1,4 @@
+import copy
 import math
 import re
 from collections.abc import Callable
@@ -19,6 +20,8 @@ STROKED_FLAG = 32
 STROKE_TRACE = 1
 TEXT_FLAGS = pymupdf.TEXTFLAGS_TEXT | pymupdf.TEXT_COLLECT_STYLES
 SLANT = 1e-3
+MIN_SPACE_EXTRA_EM = 0.02
+SPACE_RUNS = re.compile(r"( +)")
 SUBSET_PREFIX = re.compile(r"^[A-Z]{6}\+")
 UNSAFE_CHARACTERS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\ud800-\udfff\ufffe\uffff]")
 FONT_SUFFIXES = ("PSMT", "MT", "PS")
@@ -84,7 +87,25 @@ def _direction(line: dict, matrix: pymupdf.Matrix) -> tuple[float, float]:
     return moved.x - origin.x, moved.y - origin.y
 
 
-def _piece(span: dict, chars: list[dict], link: PageLink | None) -> dict:
+def _space_extras(line: dict) -> dict[tuple[float, float], float]:
+    if abs(line["dir"][1]) > SLANT or line["dir"][0] <= 0:
+        return {}
+    chars = [char for span in line["spans"] for char in span["chars"]]
+    return {
+        origin_key(space["origin"]): following["origin"][0]
+        - space["origin"][0]
+        - (space["bbox"][2] - space["bbox"][0])
+        for space, following in zip(chars, chars[1:], strict=False)
+        if space["c"] == " " and following["c"] != " "
+    }
+
+
+def _piece(
+    span: dict,
+    chars: list[dict],
+    link: PageLink | None,
+    extras: dict[tuple[float, float], float] | None = None,
+) -> dict:
     bounds = pymupdf.Rect(chars[0]["bbox"])
     for char in chars[1:]:
         bounds |= char["bbox"]
@@ -92,11 +113,22 @@ def _piece(span: dict, chars: list[dict], link: PageLink | None) -> dict:
     piece["text"] = "".join(char["c"] for char in chars)
     piece["bbox"] = tuple(bounds)
     piece["link"] = link
+    gaps = [
+        extras[key]
+        for char in chars
+        if extras and char["c"] == " " and (key := origin_key(char["origin"])) in extras
+    ]
+    extra = sum(gaps) / len(gaps) if gaps else 0.0
+    piece["space_extra"] = extra if extra > span["size"] * MIN_SPACE_EXTRA_EM else 0.0
     return piece
 
 
 def _segments(
-    line: dict, hidden: set[tuple[float, float]], links: list[PageLink], breaks: set[int]
+    line: dict,
+    hidden: set[tuple[float, float]],
+    links: list[PageLink],
+    breaks: set[int],
+    extras: dict[tuple[float, float], float] | None = None,
 ) -> list[list[dict]]:
     segments: list[list[dict]] = [[]]
     index = 0
@@ -107,7 +139,7 @@ def _segments(
             covered = origin_key(char["origin"]) in hidden
             if covered or index in breaks:
                 if run:
-                    segments[-1].append(_piece(span, run, target))
+                    segments[-1].append(_piece(span, run, target, extras))
                     run = []
                 if segments[-1]:
                     segments.append([])
@@ -116,12 +148,12 @@ def _segments(
                 continue
             link = link_at(links, char["bbox"]) if links else None
             if run and link is not target:
-                segments[-1].append(_piece(span, run, target))
+                segments[-1].append(_piece(span, run, target, extras))
                 run = []
             target = link
             run.append(char)
         if run:
-            segments[-1].append(_piece(span, run, target))
+            segments[-1].append(_piece(span, run, target, extras))
     return [segment for segment in segments if segment]
 
 
@@ -186,6 +218,7 @@ def line_boxes(
     page: pymupdf.Page,
     hidden: set[tuple[float, float]] | None = None,
     links: list[PageLink] | None = None,
+    show_hidden: bool = False,
 ) -> list[LineBox]:
     hidden = hidden or set()
     matrix = page.rotation_matrix
@@ -196,12 +229,15 @@ def line_boxes(
         for line in block.get("lines", []):
             breaks = wide_gap_starts(line)
             whole = not breaks and all(
-                _visible(span) and origin_key(char["origin"]) not in hidden
+                (show_hidden or _visible(span)) and origin_key(char["origin"]) not in hidden
                 for span in line["spans"]
                 for char in span["chars"]
             )
-            for segment in _segments(line, hidden, links or [], breaks):
-                spans = [span for span in segment if _visible(span) and span["text"]]
+            extras = _space_extras(line)
+            for segment in _segments(line, hidden, links or [], breaks, extras):
+                spans = [
+                    span for span in segment if (show_hidden or _visible(span)) and span["text"]
+                ]
                 if not any(slide_text(span["text"]).strip() for span in spans):
                     continue
                 bounds = pymupdf.Rect(line["bbox"]) if whole else _span_bounds(spans)
@@ -281,10 +317,10 @@ def add_line_box(
     frame: SlideFrame,
     jumps: SlideJumps | None = None,
     names: Callable[[str], str] = font_family,
+    language: str | None = None,
 ) -> None:
-    from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE
-    from pptx.util import Emu, Pt
+    from pptx.util import Emu
 
     shape = slide.shapes.add_textbox(
         Emu(round(frame.left + box.left * frame.ratio)),
@@ -303,21 +339,57 @@ def add_line_box(
         text = slide_text(span["text"])
         if not text:
             continue
-        run = paragraph.add_run()
-        run.text = text
-        font = run.font
-        font.size = Pt(_font_points(span["size"], frame.ratio))
-        font.name = names(span["font"])
-        strokes = span.get("char_flags", FILLED_FLAG)
-        fake_bold = strokes & FILLED_FLAG and strokes & STROKED_FLAG
-        font.bold = bool(span["flags"] & BOLD_FLAG or fake_bold)
-        font.italic = bool(span["flags"] & ITALIC_FLAG)
-        colour = RGBColor.from_string(f"{span['color'] & 0xFFFFFF:06X}")
-        if _hollow(span):
-            _outline_run(run, colour, span.get("outline"), frame.ratio)
-        else:
-            font.color.rgb = colour
-        if span.get("link") is not None and jumps is not None:
-            link_run(run, span["link"], jumps)
+        extra = span.get("space_extra", 0.0)
+        parts = SPACE_RUNS.split(text) if extra else [text]
+        spacing = str(round(extra * frame.ratio / EMU_PER_POINT * 100))
+        styled = None
+        for part in parts:
+            if not part:
+                continue
+            if styled is None:
+                styled = _span_run(paragraph, span, part, frame, jumps, names, language)._r
+                element = styled
+            else:
+                previous, element = element, copy.deepcopy(styled)
+                element.text = part
+                previous.addnext(element)
+            properties = element.get_or_add_rPr()
+            if part.startswith(" "):
+                properties.set("spc", spacing)
+            else:
+                properties.attrib.pop("spc", None)
     if box.angle:
         shape.rotation = box.angle
+
+
+def _span_run(
+    paragraph,
+    span: dict,
+    text: str,
+    frame: SlideFrame,
+    jumps: SlideJumps | None,
+    names: Callable[[str], str],
+    language: str | None,
+):
+    from pptx.dml.color import RGBColor
+    from pptx.util import Pt
+
+    run = paragraph.add_run()
+    run.text = text
+    if language:
+        run._r.get_or_add_rPr().set("lang", language)
+    font = run.font
+    font.size = Pt(_font_points(span["size"], frame.ratio))
+    font.name = names(span["font"])
+    strokes = span.get("char_flags", FILLED_FLAG)
+    fake_bold = strokes & FILLED_FLAG and strokes & STROKED_FLAG
+    font.bold = bool(span["flags"] & BOLD_FLAG or fake_bold)
+    font.italic = bool(span["flags"] & ITALIC_FLAG)
+    colour = RGBColor.from_string(f"{span['color'] & 0xFFFFFF:06X}")
+    if _hollow(span):
+        _outline_run(run, colour, span.get("outline"), frame.ratio)
+    else:
+        font.color.rgb = colour
+    if span.get("link") is not None and jumps is not None:
+        link_run(run, span["link"], jumps)
+    return run

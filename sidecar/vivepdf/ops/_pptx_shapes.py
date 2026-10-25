@@ -121,8 +121,8 @@ def _entries(drawing: dict) -> set[int]:
     return {first, first + 1} if drawing["type"] == "fs" else {first}
 
 
-def _inside(box: pymupdf.Rect, frame: pymupdf.Rect) -> bool:
-    return box.x0 >= frame.x0 and box.y0 >= frame.y0 and box.x1 <= frame.x1 and box.y1 <= frame.y1
+def _inside(box, frame) -> bool:
+    return box[0] >= frame[0] and box[1] >= frame[1] and box[2] <= frame[2] and box[3] <= frame[3]
 
 
 def _clipped(drawing: dict, scissor: pymupdf.Rect | None) -> bool:
@@ -178,21 +178,24 @@ def _scanned(page: pymupdf.Page) -> list[_Candidate]:
     return candidates
 
 
-def _overlap(first: pymupdf.Rect, second: pymupdf.Rect) -> bool:
-    common = first & second
-    return common.width > OVERLAP_TOLERANCE and common.height > OVERLAP_TOLERANCE
+def _overlap(first: tuple, second: tuple) -> bool:
+    return (
+        min(first[2], second[2]) - max(first[0], second[0]) > OVERLAP_TOLERANCE
+        and min(first[3], second[3]) - max(first[1], second[1]) > OVERLAP_TOLERANCE
+    )
 
 
-def _blocked(candidate: _Candidate, background: list[tuple[int, str, pymupdf.Rect]]) -> bool:
+def _blocked(candidate: _Candidate, background: list[tuple[int, str, tuple]]) -> bool:
     first, last = min(candidate.entries), max(candidate.entries)
+    area, own = tuple(candidate.area), tuple(candidate.box)
     for index, kind, box in background:
         if kind in TEXT_KINDS:
-            if index < first and _overlap(box, candidate.box):
+            if index < first and _overlap(box, own):
                 return True
             continue
-        if kind in PATH_KINDS and _inside(box, candidate.area):
+        if kind in PATH_KINDS and _inside(box, area):
             return True
-        if index > last and _overlap(box, candidate.area):
+        if index > last and _overlap(box, area):
             return True
     return False
 
@@ -217,7 +220,7 @@ def page_shapes(page: pymupdf.Page) -> PageShapes:
     if not candidates:
         return PageShapes()
     log = [
-        (index, kind, pymupdf.Rect(box))
+        (index, kind, tuple(box))
         for index, (kind, box) in enumerate(page.get_bboxlog())
         if kind in PAINT_KINDS or kind in TEXT_KINDS
     ]

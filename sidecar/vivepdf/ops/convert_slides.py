@@ -9,6 +9,7 @@ from pydantic import Field
 
 from vivepdf.ops._document import open_document
 from vivepdf.ops._hidden_text import hidden_origins, widget_origins
+from vivepdf.ops._markup import document_language
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pptx_embed import embed_slide_fonts
 from vivepdf.ops._pptx_fonts import slide_font_names
@@ -20,6 +21,7 @@ from vivepdf.ops._pptx_layout import (
     text_free_pixmap,
 )
 from vivepdf.ops._pptx_links import SlideJumps, add_link_area, apply_jumps, page_links
+from vivepdf.ops._pptx_scan import dress_scan_lines, erase_scan_words, recognised_scan
 from vivepdf.ops._pptx_shapes import PageShapes, add_slide_shape, page_shapes
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops.convert import PagedFileResult, PdfSourceParams, _prepare_file
@@ -37,6 +39,13 @@ MAX_SLIDE_EMU = 51206400
 MIN_SLIDE_EMU = 914400
 MAX_SLIDE_PIXELS = 50_000_000
 NOTES_LIMIT = 20000
+PHOTO_JPEG_QUALITY = 85
+PHOTO_SAVING_FACTOR = 3
+PHOTO_PNG_BYTES_PER_PIXEL = 0.25
+TURKISH_LETTERS = frozenset("ğĞıİşŞ")
+TURKISH_EVIDENCE = 3
+LANGUAGE_SAMPLE_PAGES = 5
+REGION_OF_LANGUAGE = {"tr": "tr-TR", "en": "en-US"}
 
 
 def slide_dpi(rect: pymupdf.Rect, dpi: int) -> int:
@@ -45,6 +54,28 @@ def slide_dpi(rect: pymupdf.Rect, dpi: int) -> int:
         return dpi
     ceiling = int(72 * math.sqrt(MAX_SLIDE_PIXELS / area))
     return max(1, min(dpi, ceiling))
+
+
+def background_file(pixmap: pymupdf.Pixmap, folder: Path, number: int) -> Path:
+    path, data = folder / f"page-{number}.png", pixmap.tobytes("png")
+    if len(data) >= pixmap.width * pixmap.height * PHOTO_PNG_BYTES_PER_PIXEL:
+        photo = pixmap.tobytes("jpg", jpg_quality=PHOTO_JPEG_QUALITY)
+        if len(photo) * PHOTO_SAVING_FACTOR <= len(data):
+            path, data = folder / f"page-{number}.jpg", photo
+    path.write_bytes(data)
+    return path
+
+
+def slide_language(document: pymupdf.Document, indices: list[int]) -> str | None:
+    declared = document_language(document)
+    if declared:
+        return REGION_OF_LANGUAGE.get(declared.lower(), declared)
+    found = 0
+    for index in indices[:LANGUAGE_SAMPLE_PAGES]:
+        found += sum(1 for char in document[index].get_text() if char in TURKISH_LETTERS)
+        if found >= TURKISH_EVIDENCE:
+            return REGION_OF_LANGUAGE["tr"]
+    return None
 
 
 def slide_size(rect: pymupdf.Rect) -> tuple[int, int]:
@@ -80,6 +111,7 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
         jumps = SlideJumps([])
         slides = {}
         names = slide_font_names(document) if editable else None
+        language = slide_language(document, indices) if editable else None
         with tempfile.TemporaryDirectory(prefix="vivepdf-pptx-") as temp_dir:
             for position, index in enumerate(indices):
                 progress.check_cancelled()
@@ -88,12 +120,15 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 dpi = slide_dpi(page.rect, params.dpi)
                 hidden = hidden_origins(page) | widget_origins(page)
                 links = page_links(page)
-                boxes = line_boxes(page, hidden, links) if editable else []
+                scan = editable and recognised_scan(page)
+                boxes = line_boxes(page, hidden, links, scan) if editable else []
+                words = dress_scan_lines(page, boxes) if scan else []
                 drawn = page_shapes(page) if editable else PageShapes()
                 if editable:
                     areas = [box.area for box in boxes]
                     background = text_free_pixmap(document, index, dpi, areas, drawn.passes)
-                    background.save(str(image_path))
+                    erase_scan_words(background, words, dpi)
+                    image_path = background_file(background, Path(temp_dir), index + 1)
                 else:
                     page.get_pixmap(dpi=dpi).save(str(image_path))
                 slide = presentation.slides.add_slide(blank_layout)
@@ -104,7 +139,7 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 for shape in drawn.shapes:
                     add_slide_shape(slide, shape, frame)
                 for box in boxes:
-                    add_line_box(slide, box, frame, jumps, names)
+                    add_line_box(slide, box, frame, jumps, names, language)
                 linked = {span["link"] for box in boxes for span in box.spans if span.get("link")}
                 for link in links:
                     if link not in linked:

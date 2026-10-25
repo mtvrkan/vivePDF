@@ -5,10 +5,23 @@ CORE_SHARE = 0.25
 RENDER_ZOOM = 2.0
 PIXEL_TOLERANCE = 24
 LOG_AREA_LIMIT = 1e12
+HIDDEN_TEXT_SHARE = 0.9
+HIDDEN_RENDER_MODE = 3
 
 
 def origin_key(point) -> tuple[float, float]:
     return round(point[0], 1), round(point[1], 1)
+
+
+def text_is_only_hidden(page: pymupdf.Page) -> bool:
+    hidden = shown = 0
+    for span in page.get_texttrace():
+        count = len(span.get("chars", ()))
+        if span.get("type") == HIDDEN_RENDER_MODE:
+            hidden += count
+        else:
+            shown += count
+    return hidden > 0 and hidden >= HIDDEN_TEXT_SHARE * (hidden + shown)
 
 
 def _covers(page: pymupdf.Page) -> list[tuple[int, pymupdf.Rect]]:

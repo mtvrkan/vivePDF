@@ -37,6 +37,7 @@ from vivepdf.ops._docx_lines import (
 from vivepdf.ops._docx_parallel import ParallelParse, worker_count
 from vivepdf.ops._docx_running import RunningText, add_running_text
 from vivepdf.ops._docx_visible import visible_images
+from vivepdf.ops._hidden_text import text_is_only_hidden
 from vivepdf.ops._output import write_atomically
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
@@ -44,8 +45,6 @@ from vivepdf.rpc.progress import Progress
 ANALYSIS_BAND = (0.05, 0.35)
 PARSING_BAND = (0.35, 0.8)
 MAKING_BAND = (0.82, 0.97)
-HIDDEN_TEXT_SHARE = 0.9
-HIDDEN_RENDER_MODE = 3
 CLIP_PIXEL_BUDGET = 40_000_000
 MAX_CLIP_RATIO = 4.0
 MIN_IMAGE_AREA = 4
@@ -99,17 +98,6 @@ class _CachedCellsTable(Table):
 _plain_table_make_docx = TableBlock.make_docx
 _unordered_text_style_shapes = Shapes.text_style_shapes.fget
 _plain_extract_raw_dict = RawPageFitz.extract_raw_dict
-
-
-def text_is_only_hidden(page: pymupdf.Page) -> bool:
-    hidden = shown = 0
-    for span in page.get_texttrace():
-        count = len(span.get("chars", ()))
-        if span.get("type") == HIDDEN_RENDER_MODE:
-            hidden += count
-        else:
-            shown += count
-    return hidden > 0 and hidden >= HIDDEN_TEXT_SHARE * (hidden + shown)
 
 
 def _is_fill(shape: dict) -> bool:
