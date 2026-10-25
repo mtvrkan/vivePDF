@@ -285,6 +285,8 @@ def _image_bytes(document: pymupdf.Document, xref: int, smask: int) -> tuple[byt
         pixmap = png_ready(pixmap)
         if pixmap.alpha:
             pixmap = pymupdf.Pixmap(pixmap, 0)
+        if (mask.width, mask.height) != (pixmap.width, pixmap.height):
+            mask = pymupdf.Pixmap(mask, pixmap.width, pixmap.height, None)
         try:
             combined = pymupdf.Pixmap(pixmap, mask)
         except Exception:
