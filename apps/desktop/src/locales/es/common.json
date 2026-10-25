@@ -10227,7 +10227,8 @@
         "printPreview": "El diálogo de impresión muestra una vista previa de cada hoja junto a los ajustes, con las páginas elegidas, páginas por hoja, escala de grises y escala.",
         "defaultApp": "Haz de vivePDF la aplicación que abre tus archivos PDF desde Ajustes › Sistema, en Windows, macOS y Linux.",
         "newTools": "Herramientas nuevas: PDF a SVG y un color de fondo para las páginas; Comentarios, Adjuntos, Leer en voz alta, Traducir e Imprimir ahora también están en las categorías de herramientas.",
-        "officeAndImages": "Las tablas anchas de Excel caben en el papel, las fuentes que faltan se indican antes de convertir, Imágenes → PDF puede comprimir fotos y las imágenes se pueden extraer tal como las muestra la página."
+        "officeAndImages": "Las tablas anchas de Excel caben en el papel, las fuentes que faltan se indican antes de convertir, Imágenes → PDF puede comprimir fotos y las imágenes se pueden extraer tal como las muestra la página.",
+        "sources": "Gestor de referencias renovado: un DOI se convierte en una referencia con los estilos oficiales APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver y Harvard, y los archivos .bib se leen bien, se editan y se guardan en su propio archivo."
       },
       "v0_4_0": {
         "officeFiles": "Los archivos de Word, Excel y PowerPoint se abren directamente en vivePDF como PDF, también desde «Abrir con» en Finder y el Explorador; si falta LibreOffice, vivePDF ofrece instalarlo y abre el archivo cuando está listo.",

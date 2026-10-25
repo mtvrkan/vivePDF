@@ -1,5 +1,5 @@
 {
-  "version": "0.4.0",
+  "version": "0.5.0",
   "tools": {
     "groups": [
       {
@@ -2959,6 +2959,10 @@
     {
       "version": "0.5.0",
       "items": [
+        {
+          "tr": "Kaynak yöneticisi yenilendi: DOI'den gelen künye APA 7, MLA, Chicago, IEEE, İSNAD, Vancouver ve Harvard'ın resmî stilleriyle yazılıyor; .bib dosyaları doğru okunuyor, düzenlenip kendi dosyasına kaydediliyor.",
+          "en": "A renewed reference manager: a DOI becomes a reference in the official APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver and Harvard styles, and .bib files are read correctly, edited and saved back into their own file."
+        },
         {
           "tr": "Word, PowerPoint, Excel ve HTML'e dönüşümler PDF'e çok daha sadık: yazı tipleri, bağlantılar, resimler, tablolar ve sütunlar yerinde kalıyor; taranmış tablolar da Excel'e satır satır geliyor.",
           "en": "Conversions to Word, PowerPoint, Excel and HTML are far closer to the PDF: fonts, links, pictures, tables and columns stay in place, and scanned tables reach Excel row by row."

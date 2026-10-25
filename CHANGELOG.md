@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.5.0] - 2026-10-25
 ### Added
 - Sources: a DOI can be typed as a doi.org link, a publisher page address (Wiley, Springer and others), "doi 10.…" or in brackets; Japan Link Center DOIs are looked up too, and a DOI already in the list is recognised whatever form it was typed in [2026-10-25]
 - Convert › File to PDF: macro-enabled Excel workbooks (.xlsm) can be converted, opened and merged like .xlsx; their macros are never run [2026-10-25]
