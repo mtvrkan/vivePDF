@@ -20,7 +20,7 @@ from vivepdf.ops.convert_images import ImagesParams, ImagesToPdfParams, images_t
 from vivepdf.ops.convert_slides import PptxParams, slide_size, to_pptx
 from vivepdf.ops.convert_tables import XlsxParams, to_xlsx
 from vivepdf.ops.convert_text import TextParams, to_html, to_text
-from vivepdf.ops.convert_to_pdf import FileToPdfParams, csv_filter_options, file_to_pdf
+from vivepdf.ops.convert_to_pdf import FileToPdfParams, file_to_pdf
 from vivepdf.ops.epub import EpubParams, to_epub
 from vivepdf.ops.web import WebPageParams, from_url
 from vivepdf.rpc.errors import ErrorCode, OpError
@@ -368,16 +368,6 @@ def test_decode_text_follows_byte_order_marks_and_declared_charsets() -> None:
     page = '<meta charset="windows-1254"><p>ş</p>'.encode("cp1254")
     assert "ş" in _story.decode_text(page, _story.declared_charset(page))
     assert _story.decode_text(b"abc", "no-such-codec") == "abc"
-
-
-def test_csv_separator_is_detected_and_the_copy_is_utf8(tmp_path: Path) -> None:
-    source = tmp_path / "veri.csv"
-    source.write_bytes("ad;yaş\nAyşe;30\n".encode("cp1254"))
-    staging = tmp_path / "staging"
-    staging.mkdir()
-    normalized, infilter = csv_filter_options(source, staging)
-    assert infilter.endswith(":59,34,76,1")
-    assert normalized.read_text(encoding="utf-8").startswith("ad;ya")
 
 
 def test_password_protected_office_file_is_named_as_such(

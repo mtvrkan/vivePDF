@@ -91,9 +91,6 @@ def _story_source(path: Path) -> str:
 
 CSV_DELIMITERS = ",;\t|"
 CSV_SAMPLE_CHARACTERS = 64 * 1024
-CSV_FILTER = "Text - txt - csv (StarCalc)"
-CSV_UTF8_TOKEN = 76
-CSV_QUOTE = 34
 CSV_CSS = BASE_CSS + "table{font-size:9pt;}td{vertical-align:top;}"
 WIDE_TABLE_COLUMNS = 6
 
@@ -113,18 +110,6 @@ def _csv_rows(path: Path) -> list[list[str]]:
             f"cannot read: {path.name}",
             {"reason": "fileUnreadable", "path": str(path)},
         ) from error
-
-
-def csv_filter_options(path: Path, working_dir: Path) -> tuple[Path, str]:
-    text = decode_text(path.read_bytes())
-    try:
-        dialect = csv.Sniffer().sniff(text[:CSV_SAMPLE_CHARACTERS], delimiters=CSV_DELIMITERS)
-        delimiter = dialect.delimiter
-    except csv.Error:
-        delimiter = ","
-    normalized = working_dir / path.name
-    normalized.write_text(text, encoding="utf-8")
-    return normalized, f"{CSV_FILTER}:{ord(delimiter)},{CSV_QUOTE},{CSV_UTF8_TOKEN},1"
 
 
 def _cell_html(cell: str) -> str:

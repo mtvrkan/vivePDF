@@ -63,6 +63,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Windows installer: the setup file and the installer window show the vivePDF icon instead of the generic installer icon [2026-10-21]
 - PDF to Word: pictures stored directly inside the page (common for small logos and letterhead marks) no longer disappear from the Word file [2026-10-21]
 
+### Removed
+- CSV to PDF: the unused LibreOffice CSV import settings left over from before CSV got its own table [2026-10-25]
+
 ## [0.4.0] - 2026-10-19
 ### Added
 - Opening a Word, Excel or PowerPoint file while LibreOffice is missing asks to set it up, shows the download progress and opens the file once it is ready, instead of only showing an error; files opened together wait for the answer [2026-10-19]
