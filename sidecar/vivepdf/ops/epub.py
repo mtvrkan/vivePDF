@@ -55,6 +55,8 @@ h1 { font-size: 1.5em; }
 h2 { font-size: 1.25em; }
 p { margin: 0 0 0.8em; text-indent: 0; }
 img { max-width: 100%; height: auto; }
+table { border-collapse: collapse; margin: 0 0 0.8em; }
+th, td { border: 1px solid #999; padding: 0.2em 0.4em; vertical-align: top; text-align: left; }
 .page-break { page-break-before: always; break-before: page; }
 """
 COVER_NAME = "cover.jpg"

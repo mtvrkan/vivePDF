@@ -9,6 +9,7 @@ from urllib.parse import quote
 
 import pymupdf
 
+from vivepdf.ops._markup_tables import filled_table, page_tables
 from vivepdf.ops._page_images import MAX_IMAGE_SIDE
 from vivepdf.ops._pixmaps import png_ready
 from vivepdf.ops._spreadsheet import clean_text
@@ -54,6 +55,8 @@ GRAPHIC_TEXT_SHARE = 0.3
 GRAPHIC_PROSE_WORDS = 8
 GRAPHIC_PANEL_SHARE = 0.8
 PAPER_WHITE = 0.98
+BACKDROP_SHARE = 0.9
+EMBEDDED_PICTURE = re.compile(r'<img width="(\d+)" height="(\d+)" alt="" src="(data:[^"]+)"/>')
 TURKISH_LETTERS = frozenset("ğĞıİşŞ")
 TURKISH_EVIDENCE = 3
 LANGUAGE_SAMPLE_PAGES = 5
@@ -328,6 +331,20 @@ def _image_block(block: dict, visible: pymupdf.Rect) -> MarkupBlock | None:
         return None
 
 
+def _shown_lines(block: dict) -> list[pymupdf.Rect]:
+    return [
+        pymupdf.Rect(line["bbox"])
+        for line in block.get("lines", [])
+        if any(span.get("alpha", 255) and _span_text(span).strip() for span in line["spans"])
+    ]
+
+
+def _is_backdrop(area: pymupdf.Rect, visible: pymupdf.Rect, texts: list[pymupdf.Rect]) -> bool:
+    if abs(area & visible) < abs(visible) * BACKDROP_SHARE:
+        return False
+    return any((rect.tl + rect.br) / 2 in area for rect in texts)
+
+
 def _holds_text(
     lines: list[tuple[pymupdf.Rect, _Line]], area: pymupdf.Rect, backdrop: float
 ) -> bool:
@@ -355,15 +372,9 @@ def _is_table(page: pymupdf.Page, area: pymupdf.Rect) -> bool:
         tables = page.find_tables(clip=area * page.rotation_matrix).tables
     except PICTURE_ERRORS:
         return False
-    return any(_filled(table) for table in tables if table.row_count > 1 and table.col_count > 1)
-
-
-def _filled(table) -> bool:
-    try:
-        cells = [cell for row in table.extract() for cell in row]
-    except PICTURE_ERRORS:
-        return False
-    return sum(1 for cell in cells if cell and cell.strip()) * 2 >= len(cells)
+    return any(
+        filled_table(table) for table in tables if table.row_count > 1 and table.col_count > 1
+    )
 
 
 def _graphic_areas(page, visible, lines) -> list[pymupdf.Rect]:
@@ -459,14 +470,23 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
                     sizes[round(span["size"], 1)] += length
         blocks.append((block, block_lines))
     lines = [item for _block, block_lines in blocks for item in block_lines]
+    shown_text = [rect for block, _lines in blocks for rect in _shown_lines(block)]
     graphics = _graphic_areas(page, visible, lines) if images else []
+    tables = [
+        (area, body)
+        for area, body in page_tables(page)
+        if not any(area in graphic for graphic in graphics)
+    ]
+    covers = graphics + [area for area, _body in tables]
     texts = []
-    visuals = []
+    visuals = [(area, MarkupBlock("table", body)) for area, body in tables]
     for block, block_lines in blocks:
         area = pymupdf.Rect(block["bbox"])
         if any(area in graphic for graphic in graphics):
             continue
         if block.get("type") == 1:
+            if _is_backdrop(area, visible, shown_text):
+                continue
             picture = _image_block(block, visible)
             if picture is not None:
                 visuals.append((area & visible, picture))
@@ -474,7 +494,7 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
         shown = [
             parsed
             for rect, parsed in block_lines
-            if not any((rect.tl + rect.br) / 2 in graphic for graphic in graphics)
+            if not any((rect.tl + rect.br) / 2 in cover for cover in covers)
         ]
         paragraphs = _text_blocks(shown)
         if paragraphs:
@@ -515,6 +535,8 @@ def page_html(page: PageMarkup, body: float | None) -> str:
             parts.append(f"<li>{block.body}</li>")
         elif block.kind == "figure":
             parts.append(f"<p>{block.body}</p>")
+        elif block.kind == "table":
+            parts.append(block.body)
         else:
             tag = _block_tag(block.size, block.characters, body) if body else "p"
             parts.append(f"<{tag}>{block.body}</{tag}>")
@@ -529,6 +551,38 @@ def join_broken_words(pages: list[PageMarkup]) -> None:
     for block in blocks:
         if LINE_BREAK in block.body:
             block.body = join_marked_html(block.body, vocabulary)
+
+
+def _shared_picture(match: re.Match, name: str) -> str:
+    width, height = match.group(1), match.group(2)
+    return (
+        f'<svg class="picture" width="{width}" height="{height}" viewBox="0 0 {width} {height}" '
+        f'aria-hidden="true"><use href="#{name}" width="{width}" height="{height}"/></svg>'
+    )
+
+
+def share_repeated_pictures(pages: list[PageMarkup]) -> str:
+    figures = [
+        (block, match)
+        for page in pages
+        for block in page.blocks
+        if block.kind == "figure" and (match := EMBEDDED_PICTURE.fullmatch(block.body))
+    ]
+    counts = Counter(match.group(3) for _block, match in figures)
+    repeated = [source for source, count in counts.items() if count > 1]
+    names = {source: f"picture-{number}" for number, source in enumerate(repeated, 1)}
+    if not names:
+        return ""
+    for block, match in figures:
+        name = names.get(match.group(3))
+        if name:
+            block.body = _shared_picture(match, name)
+    symbols = "".join(
+        f'<symbol id="{name}" viewBox="0 0 1 1" preserveAspectRatio="none">'
+        f'<image href="{source}" width="1" height="1" preserveAspectRatio="none"/></symbol>'
+        for source, name in names.items()
+    )
+    return f'<svg width="0" height="0" style="position:absolute" aria-hidden="true">{symbols}</svg>'
 
 
 def text_language(document: pymupdf.Document, indices: list[int]) -> str | None:

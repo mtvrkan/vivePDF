@@ -22,6 +22,7 @@ from vivepdf.ops._markup import (
     page_html,
     page_markup,
     picture_dpi,
+    share_repeated_pictures,
     text_language,
     tidy_markdown,
 )
@@ -625,6 +626,7 @@ def to_html(params: TextSourceParams, progress: Progress) -> TextFileResult:
             if position % 10 == 0:
                 progress.report(position / len(indices), "progress.converting")
     join_broken_words(pages)
+    shared = share_repeated_pictures(pages)
     body = body_size(pages)
     parts = [
         f'<section class="page" data-page="{index + 1}">{page_html(page, body)}</section>'
@@ -636,7 +638,9 @@ def to_html(params: TextSourceParams, progress: Progress) -> TextFileResult:
         f'<!doctype html>{opening}<head><meta charset="utf-8">{CONTENT_POLICY}'
         f"<title>{title}</title>"
         "<style>body{font-family:sans-serif;max-width:52em;margin:2em auto;padding:0 1em}"
-        ".page{border-bottom:1px solid #ddd;padding:1em 0}img{max-width:100%}</style>"
-        "</head><body>" + "".join(parts) + "</body></html>"
+        ".page{border-bottom:1px solid #ddd;padding:1em 0}img,svg.picture{max-width:100%}"
+        "svg.picture{height:auto}table{border-collapse:collapse;margin:1em 0}"
+        "th,td{border:1px solid #ccc;padding:.25em .5em;vertical-align:top;text-align:left}</style>"
+        "</head><body>" + shared + "".join(parts) + "</body></html>"
     )
     return _write_text_file(target, html, textless, recognised)

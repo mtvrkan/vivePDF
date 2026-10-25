@@ -319,6 +319,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   Markdown, HTML and EPUB: split words are whole again, compounds like "sebep-sonuç" keep their
   hyphen, the Markdown has no "picture text" comments, and the EPUB opens in Windows as a
   Turkish book (`dc:language` tr).
+- Convert a slide-deck PDF (template background on every page, logo on each slide, a ruled
+  table) to HTML and EPUB, open the HTML in Edge and the EPUB in a Windows reader: no page-sized
+  template pictures, the logo shows on every slide, and the table has borders, a header row and
+  merged cells where the PDF has them.
 
 ### How native dialogs are answered
 
