@@ -10,7 +10,7 @@ from vivepdf.rpc.errors import ErrorCode, OpError
 
 MAX_SVG_BYTES = 50 * 1024 * 1024
 DECLARATIONS = re.compile(rb"<!\s*(DOCTYPE|ENTITY)", re.IGNORECASE)
-PLAIN_DOCTYPE = re.compile(rb"<!DOCTYPE\s+svg\b[^\[\]<>]*>", re.IGNORECASE)
+PLAIN_DOCTYPE = re.compile(rb"<!DOCTYPE\s+svg\s+(?:PUBLIC|SYSTEM)\b[^\[\]<>]*>", re.IGNORECASE)
 EXTERNAL_URL = re.compile(r"url\(\s*(?!['\"]?\s*#)[^)]*\)", re.IGNORECASE)
 IMPORT_RULE = re.compile(r"@import[^;]*;?", re.IGNORECASE)
 EMBEDDED_PICTURE = re.compile(r"^data:image/(png|jpe?g|gif|bmp|webp);", re.IGNORECASE)
