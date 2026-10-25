@@ -4,8 +4,8 @@ import pymupdf
 
 from vivepdf.ops._cell_text import page_fragments, reads_upright, table_spans, table_texts
 from vivepdf.ops._spreadsheet import clean_text
+from vivepdf.ops._table_finding import is_page_frame
 from vivepdf.ops._words import plain_letters
-from vivepdf.ops.convert_tables import is_page_frame
 
 TABLE_ERRORS = (RuntimeError, ValueError, pymupdf.mupdf.FzErrorBase)
 

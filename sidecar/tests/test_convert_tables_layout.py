@@ -5,7 +5,8 @@ import pymupdf
 from openpyxl import load_workbook
 
 from vivepdf.ops._cell_text import page_fragments, table_texts
-from vivepdf.ops.convert_tables import XlsxParams, is_page_frame, to_xlsx
+from vivepdf.ops._table_finding import is_page_frame
+from vivepdf.ops.convert_tables import XlsxParams, to_xlsx
 from vivepdf.rpc.progress import silent_progress
 
 LINE = (0.6, 0.6, 0.6)
