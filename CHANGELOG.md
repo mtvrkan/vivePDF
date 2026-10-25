@@ -29,6 +29,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Development: `pnpm tauri dev` no longer opens a blank white window after Vite rebuilds its pre-bundled dependencies; the webview now revalidates them instead of loading stale cached copies that point at removed files [2026-10-25]
 - PDF to PowerPoint (editable): justified lines keep their wider word gaps as spacing after each space, so they end at the right margin as in the PDF instead of falling short [2026-10-25]
 - Excel to PDF: a sheet whose print setup names no paper size is laid on A4 (or, when the file is opened straight in vivePDF, the paper of the computer's region) instead of Letter [2026-10-25]
 - SVG to PDF: pictures an SVG links from its own folder (for example an Inkscape drawing with a linked photo) appear in the PDF instead of being left out; pictures elsewhere on the computer are still never read [2026-10-25]

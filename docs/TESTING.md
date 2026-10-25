@@ -313,6 +313,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   (;)" and the CSV opens in Excel with every value in its own column.
 - Convert a scanned PDF with a ruled table to Excel with "Read pages without text with OCR" ticked:
   the table comes out in rows and columns with its numbers and dates as values.
+- Run `pnpm tauri dev`, quit it, change a dependency import (or delete `node_modules/.vite`),
+  run it again: the window shows the app, not a blank white page.
 
 ### How native dialogs are answered
 

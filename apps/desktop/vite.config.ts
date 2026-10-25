@@ -3,12 +3,13 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import { pdfiumWasmOnce } from "./src/build/pdfiumWasm";
+import { revalidatedDeps } from "./src/build/revalidatedDeps";
 import { studioIcons } from "./studioIcons";
 
 const host = process.env.TAURI_DEV_HOST;
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), studioIcons(), pdfiumWasmOnce()],
+  plugins: [react(), tailwindcss(), studioIcons(), pdfiumWasmOnce(), revalidatedDeps()],
   resolve: {
     alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) },
   },
