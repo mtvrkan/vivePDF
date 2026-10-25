@@ -2818,6 +2818,7 @@
         "number": "Ajoutez des numéros de page où vous le souhaitez.",
         "headerFooter": "Écrivez un en-tête et un pied de page sur chaque page.",
         "letterhead": "Placez un PDF modèle sous ou sur chaque page.",
+        "page-background": "Place une couleur unie sous les pages, ou retire celle ajoutée auparavant.",
         "findReplace": "Trouvez du texte et réécrivez-le à la même taille et couleur.",
         "watermark": "Appliquez un filigrane texte ou image.",
         "crop": "Rognez les marges avec une précision au millimètre.",
@@ -3220,6 +3221,26 @@
         "replaceExistingHint": "Le modèle que vivePDF a dessiné précédemment sur ces pages est retiré avant l’application du nouveau.",
         "templatePage": "Page",
         "password": "Mot de passe du modèle"
+      },
+      "background": {
+        "title": "Couleur de fond",
+        "run": "Appliquer la couleur",
+        "removeRun": "Retirer le fond",
+        "suffix": "fond",
+        "mode": "Action sur le fond",
+        "modes": {
+          "add": "Ajouter une couleur",
+          "remove": "Retirer la couleur"
+        },
+        "modeHints": {
+          "add": "Place une couleur unie sous les pages choisies ; le texte et les images restent au-dessus.",
+          "remove": "Retire une couleur de fond ajoutée avec vivePDF ; le fond propre au document reste."
+        },
+        "colorHint": "Les couleurs claires gardent le texte lisible. Appliquer à nouveau remplace la couleur précédente.",
+        "appliedCount": "pages colorées",
+        "removedCount": "pages nettoyées",
+        "hiddenPages_one": "La couleur ne se voit pas sur {{count}} page ; le fond blanc ou l’image numérisée de la page la recouvre (page {{pages}}).",
+        "hiddenPages_other": "La couleur ne se voit pas sur {{count}} pages ; le fond blanc ou l’image numérisée des pages la recouvre (pages {{pages}})."
       },
       "findReplace": {
         "suffix": "remplace",
@@ -6295,6 +6316,7 @@
       "replacementGroup": "Le remplacement fait référence à un groupe que le motif ne possède pas.",
       "noHeadings": "Aucun titre n’a été trouvé ; le document est peut-être un scan ou utilise une seule taille de texte partout.",
       "noHeaderFooter": "Aucun en-tête, pied de page ou numéro de page de ce type n’a été trouvé sur ces pages.",
+      "noBackground": "Ces pages n’ont pas de couleur de fond ajoutée avec vivePDF.",
       "noMatches": "Le texte recherché est introuvable ; rien n’a été modifié et aucun fichier n’a été écrit.",
       "bookmarkFile": "Ce fichier n’est pas une liste de signets que vivePDF peut lire.",
       "templatePage": "Le modèle ne comporte aucune page portant ce numéro.",

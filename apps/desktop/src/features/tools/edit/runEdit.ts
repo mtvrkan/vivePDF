@@ -12,6 +12,7 @@ import {
   resizePages,
   setBookmarks,
   applyLetterhead,
+  pageBackground,
   findReplaceText,
   autoLinkPdf,
   posterPages,
@@ -55,6 +56,10 @@ export async function runEdit(run: EditRun, options: RpcCallOptions): Promise<Ed
     case "letterhead": {
       const result = await applyLetterhead(params, options);
       return { ...result, extra: result.applied };
+    }
+    case "background": {
+      const result = await pageBackground(params, options);
+      return { ...result, extra: result.applied, hiddenPages: result.hiddenPages };
     }
     case "findReplace": {
       const result = await findReplaceText(params, options);

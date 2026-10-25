@@ -2818,6 +2818,7 @@
         "number": "Seitenzahlen nach Wunsch hinzufügen.",
         "headerFooter": "Kopf- und Fußzeile auf jeder Seite anbringen.",
         "letterhead": "Ein Vorlagen-PDF unter oder über jede Seite legen.",
+        "page-background": "Legt eine einfarbige Fläche unter die Seiten oder entfernt eine zuvor hinzugefügte.",
         "findReplace": "Text finden und in gleicher Größe und Farbe neu schreiben.",
         "watermark": "Ein Text- oder Bildwasserzeichen anwenden.",
         "crop": "Ränder millimetergenau zuschneiden.",
@@ -3220,6 +3221,26 @@
         "replaceExistingHint": "Die Vorlage, die vivePDF zuvor auf diese Seiten gezeichnet hat, wird entfernt, bevor die neue aufgebracht wird.",
         "templatePage": "Seite",
         "password": "Passwort der Vorlage"
+      },
+      "background": {
+        "title": "Hintergrundfarbe",
+        "run": "Farbe anwenden",
+        "removeRun": "Hintergrund entfernen",
+        "suffix": "hintergrund",
+        "mode": "Hintergrund-Aktion",
+        "modes": {
+          "add": "Farbe hinzufügen",
+          "remove": "Farbe entfernen"
+        },
+        "modeHints": {
+          "add": "Legt eine einfarbige Fläche unter die gewählten Seiten; Text und Bilder bleiben darüber.",
+          "remove": "Entfernt eine mit vivePDF hinzugefügte Hintergrundfarbe; der eigene Hintergrund des Dokuments bleibt."
+        },
+        "colorHint": "Helle Farben halten den Text gut lesbar. Erneutes Anwenden ersetzt die vorherige Farbe.",
+        "appliedCount": "Seiten eingefärbt",
+        "removedCount": "Seiten bereinigt",
+        "hiddenPages_one": "Die Farbe ist auf {{count}} Seite nicht zu sehen; die eigene weiße Fläche oder das gescannte Bild der Seite verdeckt sie (Seite {{pages}}).",
+        "hiddenPages_other": "Die Farbe ist auf {{count}} Seiten nicht zu sehen; die eigene weiße Fläche oder das gescannte Bild der Seiten verdeckt sie (Seiten {{pages}})."
       },
       "findReplace": {
         "suffix": "ersetzt",
@@ -6295,6 +6316,7 @@
       "replacementGroup": "Der Ersetzungstext verweist auf eine Gruppe, die das Muster nicht hat.",
       "noHeadings": "Es wurden keine Überschriften gefunden; das Dokument ist möglicherweise ein Scan oder verwendet durchgehend eine einzige Textgröße.",
       "noHeaderFooter": "Auf diesen Seiten wurden keine Kopf-, Fußzeilen oder Seitenzahlen dieser Art gefunden.",
+      "noBackground": "Diese Seiten haben keine mit vivePDF hinzugefügte Hintergrundfarbe.",
       "noMatches": "Der Suchtext wurde nicht gefunden. Es wurde nichts geändert und keine Datei geschrieben.",
       "bookmarkFile": "Diese Datei ist keine Lesezeichenliste, die vivePDF lesen kann.",
       "templatePage": "Die Vorlage hat keine Seite mit dieser Nummer.",

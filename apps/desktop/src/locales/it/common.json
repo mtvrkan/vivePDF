@@ -2818,6 +2818,7 @@
         "number": "Aggiungi numeri di pagina dove preferisci.",
         "headerFooter": "Scrive un’intestazione e un piè di pagina su ogni pagina.",
         "letterhead": "Metti un PDF modello sotto o sopra ogni pagina.",
+        "page-background": "Mette un colore uniforme sotto le pagine o rimuove quello aggiunto in precedenza.",
         "findReplace": "Trova il testo e riscrivilo con la stessa dimensione e colore.",
         "watermark": "Applica una filigrana di testo o immagine.",
         "crop": "Taglia i margini con precisione millimetrica.",
@@ -3220,6 +3221,26 @@
         "replaceExistingHint": "Il modello disegnato in precedenza da vivePDF su queste pagine viene rimosso prima di applicare quello nuovo.",
         "templatePage": "Pagina",
         "password": "Password del modello"
+      },
+      "background": {
+        "title": "Colore di sfondo",
+        "run": "Applica colore",
+        "removeRun": "Rimuovi sfondo",
+        "suffix": "sfondo",
+        "mode": "Azione sullo sfondo",
+        "modes": {
+          "add": "Aggiungi colore",
+          "remove": "Rimuovi colore"
+        },
+        "modeHints": {
+          "add": "Mette un colore uniforme sotto le pagine scelte; testo e immagini restano sopra.",
+          "remove": "Rimuove un colore di sfondo aggiunto con vivePDF; lo sfondo proprio del documento resta."
+        },
+        "colorHint": "I colori chiari mantengono il testo leggibile. Applicarlo di nuovo sostituisce il colore precedente.",
+        "appliedCount": "pagine colorate",
+        "removedCount": "pagine ripulite",
+        "hiddenPages_one": "Il colore non si vede su {{count}} pagina; il fondo bianco o l’immagine scansionata della pagina lo copre (pagina {{pages}}).",
+        "hiddenPages_other": "Il colore non si vede su {{count}} pagine; il fondo bianco o l’immagine scansionata delle pagine lo copre (pagine {{pages}})."
       },
       "findReplace": {
         "suffix": "sostituito",
@@ -6295,6 +6316,7 @@
       "replacementGroup": "La sostituzione fa riferimento a un gruppo che il pattern non ha.",
       "noHeadings": "Non sono stati trovati titoli; il documento potrebbe essere una scansione o usare un’unica dimensione di testo in tutto il documento.",
       "noHeaderFooter": "Non sono state trovate intestazioni, piè di pagina o numeri di pagina di questo tipo su queste pagine.",
+      "noBackground": "Queste pagine non hanno un colore di sfondo aggiunto con vivePDF.",
       "noMatches": "Il testo cercato non è stato trovato, quindi non è stato modificato nulla e non è stato scritto alcun file.",
       "bookmarkFile": "Questo file non è un elenco di segnalibri leggibile da vivePDF.",
       "templatePage": "Il modello non ha una pagina con quel numero.",

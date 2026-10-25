@@ -1,4 +1,4 @@
-import { expect } from "@wdio/globals";
+import { $, expect } from "@wdio/globals";
 import { bootApp, chooseCard, chooseSource, copyFixture, fill, fixtures, openTool, outputPath, probe, runPrimary, t, waitForOutputs } from "../support/app.ts";
 
 describe("features", () => {
@@ -52,6 +52,27 @@ describe("features", () => {
     expect(links).toContain("https://vivepdf.example/docs");
     expect(links).toContain("mailto:help@vivepdf.example");
     expect(probe(source).pages?.[0].links).toEqual([]);
+  });
+
+  it("puts a background colour under the pages and takes it off again", async () => {
+    const source = copyFixture(fixtures().sample, "background.pdf");
+    await openTool("tools.edit.background.title");
+    await chooseSource(source);
+
+    await runPrimary(t("tools.edit.background.run"));
+
+    const [coloured] = await waitForOutputs();
+    const pages = probe(coloured).pages ?? [];
+    expect(pages.map((page) => page.corner)).toEqual(pages.map(() => "#fff8e1"));
+    expect(pages[0].text).toContain("Sample page 1");
+    expect(probe(source).pages?.[0].corner).toBe("#ffffff");
+
+    await chooseSource(coloured);
+    await $(`//*[@role="radio"][.//*[normalize-space(.)="${t("tools.edit.background.modes.remove")}"]]`).click();
+    await runPrimary(t("tools.edit.background.removeRun"));
+
+    const [cleared] = await waitForOutputs();
+    expect(probe(cleared).pages?.[0].corner).toBe("#ffffff");
   });
 
   it("saves a PDF/A-2b copy that keeps the text", async () => {

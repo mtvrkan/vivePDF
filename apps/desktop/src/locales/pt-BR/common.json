@@ -2818,6 +2818,7 @@
         "number": "Adicione numeração de páginas onde quiser.",
         "headerFooter": "Escreva um cabeçalho e rodapé em todas as páginas.",
         "letterhead": "Coloque um PDF de modelo sob ou sobre cada página.",
+        "page-background": "Coloca uma cor sólida sob as páginas ou remove uma adicionada antes.",
         "findReplace": "Encontre o texto e reescreva no mesmo tamanho e cor.",
         "watermark": "Aplique uma marca-d’água de texto ou imagem.",
         "crop": "Corte margens com precisão de milímetros.",
@@ -3220,6 +3221,26 @@
         "replaceExistingHint": "O modelo que o vivePDF desenhou antes nessas páginas é removido antes de aplicar o novo.",
         "templatePage": "Página",
         "password": "Senha do modelo"
+      },
+      "background": {
+        "title": "Cor de fundo",
+        "run": "Aplicar cor",
+        "removeRun": "Remover fundo",
+        "suffix": "fundo",
+        "mode": "Ação no fundo",
+        "modes": {
+          "add": "Adicionar cor",
+          "remove": "Remover cor"
+        },
+        "modeHints": {
+          "add": "Coloca uma cor sólida sob as páginas escolhidas; texto e imagens ficam por cima.",
+          "remove": "Remove uma cor de fundo adicionada com o vivePDF; o fundo próprio do documento continua."
+        },
+        "colorHint": "Cores claras deixam o texto fácil de ler. Aplicar de novo substitui a cor anterior.",
+        "appliedCount": "páginas coloridas",
+        "removedCount": "páginas limpas",
+        "hiddenPages_one": "A cor não aparece em {{count}} página; o preenchimento branco ou a imagem digitalizada da página a cobre (página {{pages}}).",
+        "hiddenPages_other": "A cor não aparece em {{count}} páginas; o preenchimento branco ou a imagem digitalizada das páginas a cobre (páginas {{pages}})."
       },
       "findReplace": {
         "suffix": "substituido",
@@ -6295,6 +6316,7 @@
       "replacementGroup": "A substituição faz referência a um grupo que o padrão não tem.",
       "noHeadings": "Nenhum título foi encontrado; o documento pode ser uma digitalização ou usar um único tamanho de texto do início ao fim.",
       "noHeaderFooter": "Nenhum cabeçalho, rodapé ou número de página desse tipo foi encontrado nessas páginas.",
+      "noBackground": "Estas páginas não têm cor de fundo adicionada com o vivePDF.",
       "noMatches": "O texto pesquisado não foi encontrado; nada foi alterado e nenhum arquivo foi gravado.",
       "bookmarkFile": "Este arquivo não é uma lista de marcadores que o vivePDF consiga ler.",
       "templatePage": "O modelo não tem uma página com esse número.",

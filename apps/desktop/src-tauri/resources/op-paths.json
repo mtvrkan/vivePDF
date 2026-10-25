@@ -855,6 +855,16 @@
     "read"
    ]
   ],
+  "pages.background": [
+   [
+    "output",
+    "write"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
   "pages.cover": [
    [
     "image",

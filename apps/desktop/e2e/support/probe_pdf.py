@@ -14,6 +14,11 @@ from vivepdf.rpc.progress import silent_progress
 NO_BREAK_SPACE = chr(0xA0)
 
 
+def corner_colour(page: pymupdf.Page) -> str:
+    red, green, blue = page.get_pixmap(dpi=18, alpha=False).pixel(0, 0)[:3]
+    return f"#{red:02x}{green:02x}{blue:02x}"
+
+
 def signatures(path: Path) -> list[dict]:
     with path.open("rb") as stream:
         reader = PdfFileReader(stream)
@@ -106,6 +111,7 @@ def describe(path: Path, password: str | None) -> dict:
                 "annotations": [annot.type[1] for annot in page.annots()],
                 "images": len(page.get_images(full=True)),
                 "drawings": len(page.get_drawings()),
+                "corner": corner_colour(page),
                 "links": [link.get("uri", "") for link in page.get_links()],
                 "linkBoxes": [
                     [round(value, 1) for value in link["from"]] for link in page.get_links()

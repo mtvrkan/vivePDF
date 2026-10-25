@@ -178,6 +178,8 @@ import type {
   InsertFromResult,
   LetterheadParams,
   LetterheadResult,
+  PageBackgroundParams,
+  PageBackgroundResult,
   LinksAddParams,
   LinksChangedResult,
   LinksListResult,
@@ -499,6 +501,8 @@ export const findTextPages = (params: FindTextParams, options?: RpcCallOptions) 
 export const detectRotation = (params: DetectRotationParams, options?: RpcCallOptions) => rpc<DetectRotationResult>("pages.detect_rotation", params, options);
 export const autoRotatePages = (params: AutoRotateParams, options?: RpcCallOptions) => rpc<AutoRotateResult>("pages.auto_rotate", params, options);
 export const applyLetterhead = (params: LetterheadParams, options?: RpcCallOptions) => rpc<LetterheadResult>("pages.letterhead", params, options);
+
+export const pageBackground = (params: PageBackgroundParams, options?: RpcCallOptions) => rpc<PageBackgroundResult>("pages.background", params, options);
 export const findPreview = (params: FindPreviewParams, options?: RpcCallOptions) => rpc<FindPreviewResult>("textedit.find_preview", params, options);
 export const findReplaceText = (params: FindReplaceParams, options?: RpcCallOptions) => rpc<FindReplaceResult>("textedit.find_replace", params, options);
 export const listLinks = (params: { path: string; password?: string; page?: number }, options?: RpcCallOptions) => rpc<LinksListResult>("links.list", params, options);

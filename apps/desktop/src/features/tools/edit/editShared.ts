@@ -1,7 +1,7 @@
 import { REDACT_PRESETS, type OutputResult, type RedactPreset, type RepairResult } from "@/types";
 
-export type Tab = "number" | "headerFooter" | "letterhead" | "findReplace" | "crop" | "resize" | "flatten" | "redact" | "repair" | "impose" | "poster" | "bookmarks" | "autolink" | "textedit" | "cover";
-export const TABS: Tab[] = ["number", "headerFooter", "letterhead", "findReplace", "crop", "resize", "flatten", "redact", "repair", "impose", "poster", "bookmarks", "autolink", "textedit", "cover"];
+export type Tab = "number" | "headerFooter" | "letterhead" | "background" | "findReplace" | "crop" | "resize" | "flatten" | "redact" | "repair" | "impose" | "poster" | "bookmarks" | "autolink" | "textedit" | "cover";
+export const TABS: Tab[] = ["number", "headerFooter", "letterhead", "background", "findReplace", "crop", "resize", "flatten", "redact", "repair", "impose", "poster", "bookmarks", "autolink", "textedit", "cover"];
 export const PRESETS: readonly RedactPreset[] = REDACT_PRESETS;
 
 export function presetsFromQuery(value: string | null): RedactPreset[] {
@@ -12,7 +12,7 @@ export const MM_TO_PT = 72 / 25.4;
 
 export type EditRun = { tab: Tab; params: Record<string, unknown>; overwrite?: boolean; variant?: "remove" };
 export type HeaderMode = "add" | "remove";
-export type EditOutcome = OutputResult & { extra?: number; repair?: RepairResult; imagesKept?: number; missingGlyphs?: string; removedFurniture?: boolean };
+export type EditOutcome = OutputResult & { extra?: number; repair?: RepairResult; imagesKept?: number; missingGlyphs?: string; removedFurniture?: boolean; hiddenPages?: number[] };
 
 export const NUMBER_FONT_SIZE = { min: 4, max: 72 };
 export const HEADER_FONT_SIZE = { min: 4, max: 48 };

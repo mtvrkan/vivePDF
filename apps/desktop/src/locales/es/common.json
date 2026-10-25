@@ -2818,6 +2818,7 @@
         "number": "Añada números de página donde lo desee.",
         "headerFooter": "Escriba un encabezado y un pie de página en todas las páginas.",
         "letterhead": "Coloque un PDF de plantilla debajo o encima de cada página.",
+        "page-background": "Coloca un color liso bajo las páginas o quita uno añadido antes.",
         "findReplace": "Busque texto y reescríbalo con el mismo tamaño y color.",
         "watermark": "Aplique una marca de agua de texto o imagen.",
         "crop": "Recorte los márgenes con precisión de milímetros.",
@@ -3220,6 +3221,26 @@
         "replaceExistingHint": "La plantilla que vivePDF dibujó antes en estas páginas se quita antes de aplicar la nueva.",
         "templatePage": "Página",
         "password": "Contraseña de la plantilla"
+      },
+      "background": {
+        "title": "Color de fondo",
+        "run": "Aplicar color",
+        "removeRun": "Quitar fondo",
+        "suffix": "fondo",
+        "mode": "Acción de fondo",
+        "modes": {
+          "add": "Añadir color",
+          "remove": "Quitar color"
+        },
+        "modeHints": {
+          "add": "Coloca un color liso bajo las páginas elegidas; el texto y las imágenes quedan encima.",
+          "remove": "Quita un color de fondo añadido con vivePDF; el fondo propio del documento se mantiene."
+        },
+        "colorHint": "Los colores claros facilitan la lectura. Aplicarlo de nuevo sustituye el color anterior.",
+        "appliedCount": "páginas coloreadas",
+        "removedCount": "páginas sin color",
+        "hiddenPages_one": "El color no se ve en {{count}} página; el relleno blanco o la imagen escaneada de la página lo tapa (página {{pages}}).",
+        "hiddenPages_other": "El color no se ve en {{count}} páginas; el relleno blanco o la imagen escaneada de las páginas lo tapa (páginas {{pages}})."
       },
       "findReplace": {
         "suffix": "reemplazado",
@@ -6295,6 +6316,7 @@
       "replacementGroup": "El reemplazo hace referencia a un grupo que el patrón no tiene.",
       "noHeadings": "No se encontraron títulos; el documento puede ser un escaneo o usar un único tamaño de texto en todo su contenido.",
       "noHeaderFooter": "No se encontraron encabezados, pies de página ni números de página de ese tipo en estas páginas.",
+      "noBackground": "Estas páginas no tienen un color de fondo añadido con vivePDF.",
       "noMatches": "No se encontró el texto buscado, así que no se cambió nada ni se escribió ningún archivo.",
       "bookmarkFile": "Este archivo no es una lista de marcadores que vivePDF pueda leer.",
       "templatePage": "La plantilla no tiene ninguna página con ese número.",

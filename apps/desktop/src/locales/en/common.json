@@ -2819,6 +2819,7 @@
         "number": "Add page numbers wherever you like.",
         "headerFooter": "Write a header and footer on every page.",
         "letterhead": "Lay a template PDF under or over every page.",
+        "page-background": "Puts a plain colour under the pages, or removes one added earlier.",
         "findReplace": "Find text and rewrite it in the same size and colour.",
         "watermark": "Apply a text or image watermark.",
         "crop": "Trim margins with millimetre precision.",
@@ -3221,6 +3222,26 @@
         "replaceExistingHint": "The template vivePDF drew on these pages earlier is taken off before the new one goes on.",
         "templatePage": "Page",
         "password": "Template password"
+      },
+      "background": {
+        "title": "Background colour",
+        "run": "Apply colour",
+        "removeRun": "Remove background",
+        "suffix": "background",
+        "mode": "Background action",
+        "modes": {
+          "add": "Add colour",
+          "remove": "Remove colour"
+        },
+        "modeHints": {
+          "add": "Puts a plain colour under the chosen pages; text and pictures stay on top.",
+          "remove": "Removes a background colour added with vivePDF; the document's own background stays."
+        },
+        "colorHint": "Light colours keep text easy to read. Applying again replaces the earlier colour.",
+        "appliedCount": "pages coloured",
+        "removedCount": "pages cleared",
+        "hiddenPages_one": "The colour does not show on {{count}} page; the page's own white fill or scanned picture covers it (page {{pages}}).",
+        "hiddenPages_other": "The colour does not show on {{count}} pages; the pages' own white fill or scanned picture covers it (pages {{pages}})."
       },
       "findReplace": {
         "suffix": "replaced",
@@ -6296,6 +6317,7 @@
       "replacementGroup": "The replacement refers to a group the pattern does not have.",
       "noHeadings": "No headings were found; the document may be a scan or use one text size throughout.",
       "noHeaderFooter": "No headers, footers or page numbers of that kind were found on these pages.",
+      "noBackground": "These pages have no background colour added with vivePDF.",
       "noMatches": "The search text was not found, so nothing was changed and no file was written.",
       "bookmarkFile": "This file is not a bookmark list vivePDF can read.",
       "templatePage": "The template has no page with that number.",

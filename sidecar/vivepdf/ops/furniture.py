@@ -22,13 +22,14 @@ from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.protocol import RpcModel
 from vivepdf.rpc.registry import op
 
-FurnitureRole = Literal["pageNumber", "headerFooter", "letterhead"]
+FurnitureRole = Literal["pageNumber", "headerFooter", "letterhead", "pageBackground"]
 FurnitureScope = Literal["vivepdf", "all"]
 
 ROLE_NAMES: dict[str, bytes] = {
     "pageNumber": b"/PageNumber",
     "headerFooter": b"/HeaderFooter",
     "letterhead": b"/Letterhead",
+    "pageBackground": b"/PageBackground",
 }
 ARTIFACT = b"/Artifact"
 PAGINATION = b"/Pagination"

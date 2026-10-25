@@ -2819,6 +2819,7 @@
         "number": "Sayfa numaralarını belirlenen konuma ekler.",
         "headerFooter": "Her sayfaya üstbilgi ve altbilgi uygular.",
         "letterhead": "Şablon bir PDF’i her sayfanın altına ya da üstüne yerleştirin.",
+        "page-background": "Sayfaların altına düz bir renk koyar ya da daha önce eklenen rengi kaldırır.",
         "findReplace": "Metni bulup aynı punto ve renkte yeniden yazın.",
         "watermark": "Metin veya görsel filigran uygular.",
         "crop": "Kenar boşluklarını milimetre hassasiyetiyle kırpar.",
@@ -3221,6 +3222,26 @@
         "replaceExistingHint": "vivePDF’in bu sayfalara önceden çizdiği şablon, yenisi eklenmeden önce kaldırılır.",
         "templatePage": "Sayfa",
         "password": "Şablon parolası"
+      },
+      "background": {
+        "title": "Arka plan rengi",
+        "run": "Rengi uygula",
+        "removeRun": "Arka planı kaldır",
+        "suffix": "arka-plan",
+        "mode": "Arka plan işlemi",
+        "modes": {
+          "add": "Renk ekle",
+          "remove": "Rengi kaldır"
+        },
+        "modeHints": {
+          "add": "Seçilen sayfaların altına düz bir renk koyar; yazı ve resimler üstte kalır.",
+          "remove": "vivePDF ile eklenmiş arka plan rengini kaldırır; belgenin kendi zemini olduğu gibi kalır."
+        },
+        "colorHint": "Açık renkler yazının okunmasını kolaylaştırır. Yeniden uygulamak eski rengin yerine geçer.",
+        "appliedCount": "sayfaya renk verildi",
+        "removedCount": "sayfadan renk kaldırıldı",
+        "hiddenPages_one": "{{count}} sayfada renk görünmüyor; sayfanın kendi beyaz zemini ya da taranmış resmi üstünü örtüyor (sayfa {{pages}}).",
+        "hiddenPages_other": "{{count}} sayfada renk görünmüyor; sayfaların kendi beyaz zemini ya da taranmış resmi üstünü örtüyor (sayfalar {{pages}})."
       },
       "findReplace": {
         "suffix": "degistirildi",
@@ -6296,6 +6317,7 @@
       "replacementGroup": "Değiştirme metni, kalıpta bulunmayan bir gruba başvuruyor.",
       "noHeadings": "Başlık bulunamadı; belge taranmış olabilir veya baştan sona tek bir yazı boyutu kullanıyor olabilir.",
       "noHeaderFooter": "Bu sayfalarda bu türden üstbilgi, altbilgi veya sayfa numarası bulunamadı.",
+      "noBackground": "Bu sayfalarda vivePDF ile eklenmiş bir arka plan rengi yok.",
       "noMatches": "Aranan metin bulunamadı; hiçbir şey değiştirilmedi ve dosya yazılmadı.",
       "bookmarkFile": "Bu dosya, vivePDF’in okuyabileceği bir yer imi listesi değil.",
       "templatePage": "Şablonda bu numaraya sahip bir sayfa yok.",

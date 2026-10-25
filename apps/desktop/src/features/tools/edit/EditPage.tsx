@@ -21,6 +21,7 @@ import { POSTER_GRID, POSTER_MARGIN_MM, POSTER_OVERLAP_MM, posterGridOf, visible
 import { NumberTab } from "./NumberTab";
 import { HeaderFooterTab } from "./HeaderFooterTab";
 import { LetterheadTab } from "./LetterheadTab";
+import { BackgroundTab, type BackgroundSettings } from "./BackgroundTab";
 import { CoverTab } from "./CoverTab";
 import { useCoverState } from "./useCoverState";
 import { FindReplaceTab } from "./FindReplaceTab";
@@ -38,6 +39,7 @@ import { repairCaption, runEdit } from "./runEdit";
 import { useOperation } from "@/shared/hooks/useOperation";
 import { useSourceDocument } from "@/shared/hooks/useSourceDocument";
 import { useTabParam } from "@/shared/hooks/useTabParam";
+import { isValidHex, normalizeHex } from "@/shared/lib/color";
 import { formatNumber } from "@/shared/lib/format";
 import { wholeWithin, withinRange } from "@/shared/lib/numberRange";
 import { rangePages } from "@/shared/lib/pageScope";
@@ -45,6 +47,7 @@ import { suggestOutputPath } from "@/shared/lib/paths";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useUiStore } from "@/shared/store/uiStore";
 import { RepairIssues } from "@/features/tools/edit/RepairIssues";
+import { pageList } from "@/features/tools/convert/conversions";
 import type { FlattenResult, LetterheadTemplateRole, TextEditWarning } from "@/types";
 
 export function EditPage() {
@@ -134,6 +137,7 @@ export function EditPage() {
     pages: "",
   });
   const [autoLink, setAutoLink] = useState<AutoLinkSettings>({ urls: true, emails: true, pages: "" });
+  const [background, setBackground] = useState<BackgroundSettings>({ mode: "add", color: "#fff8e1" });
 
   const source = sourceState.source;
   const coverState = useCoverState(source);
@@ -212,6 +216,7 @@ export function EditPage() {
     (tab !== "bookmarks" || (!bookmarksLoading && (bookmarkItems.length > 0 || bookmarksLoaded) && bookmarkIssue(bookmarkItems, bookmarkPageCount) === null)) &&
     (tab !== "textedit" || (teditEdits.size > 0 && teditSizesValid)) &&
     (tab !== "autolink" || autoLink.urls || autoLink.emails) &&
+    (tab !== "background" || background.mode === "remove" || isValidHex(background.color)) &&
     (tab !== "cover" || coverState.coverValid);
 
   const baseParams = () => ({ path: source?.path ?? "", password: source?.password ?? undefined, output, pages: pages.trim() || undefined });
@@ -267,6 +272,10 @@ export function EditPage() {
                       fit: letterheadFit,
                       replaceExisting: letterheadReplace,
                     }
+                    : tab === "background"
+                      ? background.mode === "remove"
+                        ? { ...baseParams(), remove: true }
+                        : { ...baseParams(), color: normalizeHex(background.color) }
                     : tab === "findReplace"
                       ? { ...baseParams(), find: findText, replace: replaceText, caseSensitive: findCaseSensitive, wholeWord: findWholeWord, regex: findRegex }
                   : tab === "impose"
@@ -312,7 +321,7 @@ export function EditPage() {
   const result = operation.result;
   const removedFurniture = tab === "headerFooter" && !!result?.removedFurniture;
   const numeral = result
-    ? tab === "redact" || tab === "crop" || tab === "textedit" || tab === "findReplace" || tab === "letterhead" || tab === "poster" || tab === "autolink" || tab === "number" || tab === "headerFooter"
+    ? tab === "redact" || tab === "crop" || tab === "textedit" || tab === "findReplace" || tab === "letterhead" || tab === "background" || tab === "poster" || tab === "autolink" || tab === "number" || tab === "headerFooter"
       ? formatNumber(result.extra ?? 0, locale)
       : formatNumber(result.pageCount, locale)
     : undefined;
@@ -329,6 +338,8 @@ export function EditPage() {
             ? t("tools.edit.poster.sheetsCount")
           : tab === "autolink"
             ? t("tools.edit.autolink.addedCount")
+          : tab === "background"
+            ? t(background.mode === "remove" ? "tools.edit.background.removedCount" : "tools.edit.background.appliedCount")
           : removedFurniture
             ? t("tools.edit.headerFooter.removedCount")
           : tab === "headerFooter"
@@ -345,7 +356,7 @@ export function EditPage() {
   useEffect(() => {
     resetOperation();
     setPreviewCount(null);
-  }, [tab, headerMode, resetOperation, setPreviewCount]);
+  }, [tab, headerMode, background.mode, resetOperation, setPreviewCount]);
 
   return (
     <ToolLayout
@@ -353,7 +364,7 @@ export function EditPage() {
       icon={PenLine}
       actions={
         <Button variant="primary" onClick={run} loading={operation.running} disabled={!ready}>
-          {t(tab === "headerFooter" && headerMode === "remove" ? "tools.edit.headerFooter.removeRun" : `tools.edit.${tab}.run`)}
+          {t(tab === "headerFooter" && headerMode === "remove" ? "tools.edit.headerFooter.removeRun" : tab === "background" && background.mode === "remove" ? "tools.edit.background.removeRun" : `tools.edit.${tab}.run`)}
         </Button>
       }
       form={
@@ -368,6 +379,10 @@ export function EditPage() {
 
           {tab === "letterhead" ? (
             <LetterheadTab state={letterheadState} lockedTemplate={lockedTemplate} pages={pages} onPagesChange={setPages} />
+          ) : null}
+
+          {tab === "background" ? (
+            <BackgroundTab settings={background} onChange={(patch) => setBackground((state) => ({ ...state, ...patch }))} pages={pages} onPagesChange={setPages} />
           ) : null}
 
           {tab === "findReplace" ? (
@@ -501,6 +516,12 @@ export function EditPage() {
             <p role="status" className="flex items-start gap-2 px-4 py-2.5 text-sm text-foreground/80">
               <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
               {t("tools.edit.missingGlyphs", { characters: Array.from(result.missingGlyphs).join(" ") })}
+            </p>
+          ) : null}
+          {tab === "background" && result?.hiddenPages?.length ? (
+            <p role="status" className="flex items-start gap-2 px-4 py-2.5 text-sm text-foreground/80">
+              <TriangleAlert className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden />
+              {t("tools.edit.background.hiddenPages", { count: result.hiddenPages.length, pages: pageList(result.hiddenPages) })}
             </p>
           ) : null}
           {tab === "redact" && (result?.imagesKept ?? 0) > 0 ? (

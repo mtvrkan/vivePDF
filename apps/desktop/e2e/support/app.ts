@@ -16,6 +16,7 @@ export type PageProbe = {
   annotations: string[];
   images: number;
   drawings: number;
+  corner: string;
   links: string[];
   linkBoxes: Array<[number, number, number, number]>;
   spans: Array<{ text: string; size: number; bold: boolean; color: string; font: string; box: [number, number, number, number] }>;

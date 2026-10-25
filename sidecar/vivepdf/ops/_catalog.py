@@ -168,6 +168,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "omr.review",
         "omr.sheet",
     ),
+    "page_background": ("pages.background",),
     "page_geometry": (
         "pages.crop",
         "pages.resize",

@@ -22,6 +22,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website documentation: a "First steps" page and a new "How-to guides" group of 13 short task pages in Turkish and English (merge, compress, PDF to Word, Office to PDF, photos to PDF, fill a form, sign, edit text, highlight and annotate, delete pages, split, add a password, redact), each with 3–5 steps and real screenshots of the app; screenshots load lazily in two sizes, open full size on click and appear as images in the Markdown copies [2026-10-24]
 - Tool categories: Comments, Attachments and Document info under Edit, and Read aloud, Translate and Print under Improve; each opens the viewer with that panel (or the print dialog) once a document is open [2026-10-25]
 - PDF to SVG: each chosen page becomes its own vector SVG file that opens in Inkscape, Illustrator or Figma; text is drawn as outlines so it looks the same everywhere, or kept as editable text on request; turned and cropped pages keep their visible size [2026-10-25]
+- Background colour (Edit category): puts a plain colour under the chosen pages with text and pictures kept on top, replaces an earlier colour when applied again, can remove it later, marks it as background for screen readers, and names the pages where the page's own white fill or scan hides it [2026-10-25]
 
 ### Changed
 - PDF to PowerPoint (editable): slide pictures of photo pages are stored as JPEG instead of PNG, so a 4-page brochure gives 0.5 MB instead of 5.3 MB and a 60-page course deck 4.3 MB instead of 22 MB; text-only pages stay PNG [2026-10-25]

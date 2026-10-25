@@ -683,6 +683,18 @@
         }
       },
       {
+        "id": "page-background",
+        "group": "edit",
+        "label": {
+          "tr": "Arka plan rengi",
+          "en": "Background colour"
+        },
+        "description": {
+          "tr": "Sayfaların altına düz bir renk koyar ya da daha önce eklenen rengi kaldırır.",
+          "en": "Puts a plain colour under the pages, or removes one added earlier."
+        }
+      },
+      {
         "id": "cover",
         "group": "edit",
         "label": {
