@@ -19,6 +19,7 @@ from vivepdf.ops._docx_running import (
 )
 from vivepdf.ops._image_files import HEIF_EXTENSIONS
 from vivepdf.ops._image_masks import BLACK, is_stencil, stencil_colours, stencil_png
+from vivepdf.ops._inline_images import inline_images
 from vivepdf.ops._naming import sanitize_file_name
 from vivepdf.ops._ocr_layer import Rule, recognise_textless_pages
 from vivepdf.ops._output import write_atomically
@@ -478,6 +479,20 @@ def _extract_page_images(
                     if fingerprint in contents:
                         continue
                     contents.add(fingerprint)
+                target = free_path(
+                    output_dir, f"{stem}-{index + 1:0{width}d}-{image_index + 1:02d}", ext
+                )
+                outputs.append(str(target))
+                target.write_bytes(data)
+                total_bytes += len(data)
+            for image_index, (data, ext, img_width, img_height) in enumerate(
+                inline_images(page), len(drawn)
+            ):
+                if img_width < params.min_size or img_height < params.min_size:
+                    skipped += 1
+                    continue
+                if params.dedupe and not _first_time(contents, hashlib.sha1(data).digest()):
+                    continue
                 target = free_path(
                     output_dir, f"{stem}-{index + 1:0{width}d}-{image_index + 1:02d}", ext
                 )

@@ -53,3 +53,31 @@ def stencil_png(document: pymupdf.Document, xref: int, colour: tuple[int, int, i
     paint = pymupdf.Pixmap(pymupdf.csRGB, mask.irect, False)
     paint.set_rect(paint.irect, colour)
     return pymupdf.Pixmap(paint, mask).tobytes("png")
+
+
+class _StencilPaints(mupdf.FzDevice2):
+    def __init__(self) -> None:
+        super().__init__()
+        self.use_virtual_fill_image_mask()
+        self.paints: list[tuple[pymupdf.Rect, tuple[int, int, int]]] = []
+
+    def fill_image_mask(self, ctx, image, ctm, colorspace, color, alpha, color_params):
+        converted = mupdf.ll_fz_convert_color(
+            colorspace, color, mupdf.ll_fz_device_rgb(), None, color_params
+        )
+        placed = pymupdf.Rect(0, 0, 1, 1) * pymupdf.Matrix(ctm.a, ctm.b, ctm.c, ctm.d, ctm.e, ctm.f)
+        self.paints.append((placed, tuple(round(255 * value) for value in converted[:3])))
+
+
+def stencil_paints(page: pymupdf.Page) -> list[tuple[pymupdf.Rect, tuple[int, int, int]]]:
+    device = _StencilPaints()
+    with contextlib.suppress(mupdf.FzErrorBase):
+        mupdf.fz_run_page(page.this, device, mupdf.FzMatrix(), mupdf.FzCookie())
+    return device.paints
+
+
+def painted_stencil_png(mask_png: bytes, colour: tuple[int, int, int]) -> bytes:
+    mask = pymupdf.Pixmap(mask_png)
+    paint = pymupdf.Pixmap(pymupdf.csRGB, mask.irect, False)
+    paint.set_rect(paint.irect, colour)
+    return pymupdf.Pixmap(paint, mask).tobytes("png")

@@ -331,6 +331,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   slide backgrounds, a cropped picture is only its visible part, a picture made of pieces is one
   file, a photo stays JPEG and the repeated logo is saved once; with it off, the files match the
   earlier release.
+- Extract images ("As shown on the page" off) from a PDF with inline images (a scanner's PDF
+  or an old PDF maker's file): each inline picture is saved after the page's other pictures,
+  a photo as JPEG, a one-colour mask in its colour on a clear background.
 
 ### How native dialogs are answered
 
