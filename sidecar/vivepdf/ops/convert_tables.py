@@ -7,7 +7,7 @@ from typing import Literal
 import pymupdf
 from pydantic import Field
 
-from vivepdf.ops._cell_text import page_fragments, table_spans, table_texts
+from vivepdf.ops._cell_text import page_fragments, reads_upright, table_spans, table_texts
 from vivepdf.ops._document import open_document
 from vivepdf.ops._ocr_layer import Rule
 from vivepdf.ops._output import write_atomically
@@ -89,7 +89,7 @@ def _lines_outside(page: pymupdf.Page, areas: list[pymupdf.Rect]) -> list[tuple[
     for block in page.get_text("dict")["blocks"]:
         for line in block.get("lines", []):
             text = "".join(span["text"] for span in line["spans"])
-            box = pymupdf.Rect(line["bbox"])
+            box = pymupdf.Rect(line["bbox"]) * page.rotation_matrix
             if text.strip() and not _inside_any(box, areas):
                 lines.append((box, text))
     return lines
@@ -343,7 +343,9 @@ def _rule_spans(rect: pymupdf.Rect, area: pymupdf.Rect) -> bool:
 def _ruled_bottom(page: pymupdf.Page, area: pymupdf.Rect) -> float | None:
     rules = sorted(
         rect.y1
-        for rect in (pymupdf.Rect(drawing["rect"]) for drawing in page.get_drawings())
+        for rect in (
+            pymupdf.Rect(drawing["rect"]) * page.rotation_matrix for drawing in page.get_drawings()
+        )
         if rect.y0 >= area.y1 - RULE_SLACK and _rule_spans(rect, area)
     )
     bottom = area.y1
@@ -430,6 +432,7 @@ def _page_tables(
     if unruled:
         found = borderless_tables(page)
     fragments = page_fragments(page) if found else []
+    found = [table for table in found if reads_upright(page, fragments, pymupdf.Rect(table.bbox))]
     tables: list[_Table] = []
     for number, table in enumerate(found):
         reach = (page.rect.x0, page.rect.x1) if unruled else None
@@ -465,7 +468,9 @@ def _bold_head(page: pymupdf.Page, table: object) -> bool:
         return False
     spans = [
         span
-        for block in page.get_text("dict", clip=pymupdf.Rect(table.rows[0].bbox))["blocks"]
+        for block in page.get_text(
+            "dict", clip=pymupdf.Rect(table.rows[0].bbox) * page.derotation_matrix
+        )["blocks"]
         for line in block.get("lines", [])
         for span in line["spans"]
         if span["text"].strip()

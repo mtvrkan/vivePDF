@@ -341,6 +341,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   PDF and add it as a picture in Studio: the hidden layer is not drawn in either.
 - Convert the same 400 px SVG to PDF with and without LibreOffice installed: both pages are
   300 pt wide with the same height, and the links sit over what they wrap.
+- Convert a PDF with a landscape page that holds a ruled table (a Word landscape section saved
+  as PDF) to HTML, EPUB and Excel: the table is a real table in all three, the heading above it
+  comes first, and the Excel sheet has the table's rows.
 
 ### How native dialogs are answered
 

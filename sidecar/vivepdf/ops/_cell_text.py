@@ -33,28 +33,26 @@ class Fragment:
 
 def page_fragments(page: pymupdf.Page) -> list[Fragment]:
     fragments: list[Fragment] = []
+    turn = page.rotation_matrix
+    direction = pymupdf.Matrix(turn.a, turn.b, turn.c, turn.d, 0, 0)
     raw = page.get_text("rawdict", flags=pymupdf.TEXTFLAGS_TEXT)
     for block in raw.get("blocks", []):
         for line in block.get("lines", []):
-            horizontal = abs(line["dir"][1]) < 1e-3 and line["dir"][0] > 0
+            heading = pymupdf.Point(line["dir"]) * direction
+            horizontal = abs(heading.y) < 1e-3 and heading.x > 0
             for span in line["spans"]:
+                boxes = [(char["c"], pymupdf.Rect(char["bbox"]) * turn) for char in span["chars"]]
                 glyphs = [
-                    Glyph(
-                        char["c"],
-                        char["bbox"][0],
-                        char["bbox"][2],
-                        (char["bbox"][0] + char["bbox"][2]) / 2,
-                        (char["bbox"][1] + char["bbox"][3]) / 2,
-                    )
-                    for char in span["chars"]
+                    Glyph(text, box.x0, box.x1, (box.x0 + box.x1) / 2, (box.y0 + box.y1) / 2)
+                    for text, box in boxes
                 ]
                 if glyphs:
                     fragments.append(
                         Fragment(
-                            span["origin"][1],
+                            (pymupdf.Point(span["origin"]) * turn).y,
                             span["size"] or 1.0,
                             horizontal,
-                            span["bbox"][1],
+                            (pymupdf.Rect(span["bbox"]) * turn).y0,
                             glyphs,
                             min(glyph.center_y for glyph in glyphs),
                             max(glyph.center_y for glyph in glyphs),
@@ -218,6 +216,17 @@ def _row_fragments(fragments: list[Fragment], cells: list) -> list[Fragment]:
     top = min(cell[1] for cell in present)
     bottom = max(cell[3] for cell in present)
     return [fragment for fragment in fragments if fragment.high >= top and fragment.low <= bottom]
+
+
+def reads_upright(page: pymupdf.Page, fragments: list[Fragment], area: pymupdf.Rect) -> bool:
+    if not page.rotation:
+        return True
+    inside = [
+        fragment
+        for fragment in fragments
+        if pymupdf.Point(fragment.glyphs[0].center_x, fragment.glyphs[0].center_y) in area
+    ]
+    return not inside or sum(fragment.horizontal for fragment in inside) * 2 > len(inside)
 
 
 def table_texts(

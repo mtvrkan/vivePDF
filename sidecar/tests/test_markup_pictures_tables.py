@@ -149,3 +149,48 @@ def test_html_keeps_a_turned_table_as_text_after_a_markdown_conversion(tmp_path:
 
     assert "Elma" in html and "Armut" in html
     assert "data:image/png" not in html
+
+
+def _upright_turned_table(document: pymupdf.Document, rotation: int) -> None:
+    page = document.new_page(width=595, height=842)
+    page.set_rotation(rotation)
+    turn = page.derotation_matrix
+    page.insert_text(
+        pymupdf.Point(72, 260) * turn,
+        "Fiyat listesi",
+        fontname="dejavu",
+        fontfile=FONT,
+        fontsize=16,
+        rotate=rotation,
+    )
+    rows = (("Ad", "Adet", "Fiyat"), ("Elma", "3", "12,50"), ("Armut", "5", "20,00"))
+    for row, values in enumerate(rows):
+        for column, value in enumerate(values):
+            cell = pymupdf.Rect(
+                72 + column * 120, 300 + row * 24, 192 + column * 120, 324 + row * 24
+            )
+            page.draw_rect(cell * turn, color=(0, 0, 0), width=0.8)
+            page.insert_text(
+                pymupdf.Point(cell.x0 + 6, cell.y0 + 17) * turn,
+                value,
+                fontname="dejavu",
+                fontfile=FONT,
+                rotate=rotation,
+            )
+
+
+def test_html_reads_a_table_on_a_turned_page_whose_text_is_upright(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    for rotation in (90, 180, 270):
+        _upright_turned_table(document, rotation)
+
+    html = _html(document, tmp_path)
+
+    sections = re.findall(r"<section.*?</section>", html, re.S)
+    assert len(sections) == 3
+    for section in sections:
+        assert section.count("<table>") == 1
+        assert section.index("Fiyat listesi") < section.index("<table>")
+        assert "<tr><th>Ad</th><th>Adet</th><th>Fiyat</th></tr>" in section
+        assert "<tr><td>Armut</td><td>5</td><td>20,00</td></tr>" in section
+        assert "data:image/png" not in section

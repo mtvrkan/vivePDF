@@ -206,3 +206,45 @@ def test_a_scanned_table_is_read_with_ocr(tmp_path: Path) -> None:
     assert rows[0] == HEADER
     assert rows[1][2:] == ("Kitap", 1.5)
     assert rows[4][2] == "Otel"
+
+
+def test_a_table_on_a_turned_page_whose_text_is_upright_fills_its_sheet(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    rows = [HEADER, *_body(1, 2)]
+    for rotation in (90, 180, 270):
+        page = document.new_page(width=595, height=842)
+        page.set_rotation(rotation)
+        turn = page.derotation_matrix
+        bottom = 100 + ROW * len(rows)
+        for row in range(len(rows) + 1):
+            y = 100 + row * ROW
+            page.draw_line(
+                pymupdf.Point(COLUMNS[0], y) * turn, pymupdf.Point(COLUMNS[-1], y) * turn
+            )
+        for x in COLUMNS:
+            page.draw_line(pymupdf.Point(x, 100) * turn, pymupdf.Point(x, bottom) * turn)
+        for row, values in enumerate(rows):
+            for column, value in enumerate(values):
+                page.insert_text(
+                    pymupdf.Point(COLUMNS[column] + 4, 100 + row * ROW + 15) * turn,
+                    value,
+                    fontsize=10,
+                    rotate=rotation,
+                    **TEXT,
+                )
+    source = tmp_path / "dönük.pdf"
+    document.save(source)
+    document.close()
+
+    to_xlsx(
+        XlsxParams(path=str(source), output=str(tmp_path / "dönük.xlsx"), sheets="page"),
+        silent_progress(),
+    )
+
+    book = load_workbook(tmp_path / "dönük.xlsx")
+    tables = [sheet for sheet in book.worksheets if sheet.title != "Text"]
+    assert len(tables) == 3
+    for sheet in tables:
+        assert [cell.value for cell in sheet[1]] == list(HEADER)
+        assert sheet.cell(3, 3).value == "Kalem 2"
+    assert "Text" not in book.sheetnames

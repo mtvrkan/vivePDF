@@ -383,7 +383,7 @@ def _graphic_areas(page, visible, lines) -> list[pymupdf.Rect]:
     if len(drawings) < GRAPHIC_MIN_PATHS:
         return []
     areas = []
-    for cluster in page.cluster_drawings(drawings=drawings):
+    for cluster in page.cluster_drawings(clip=visible, drawings=drawings):
         area = pymupdf.Rect(cluster) & visible
         if min(area.width, area.height) < GRAPHIC_MIN_SIDE:
             continue
@@ -528,6 +528,9 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
         picture = _graphic_block(page, graphic)
         if picture is not None:
             visuals.append((graphic, picture))
+    turn = page.rotation_matrix
+    texts = [(area * turn, paragraphs) for area, paragraphs in texts]
+    visuals = [(area * turn, block) for area, block in visuals]
     return PageMarkup(_in_reading_order(texts, visuals), sizes)
 
 

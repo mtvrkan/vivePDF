@@ -30,6 +30,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- PDF to HTML and EPUB: a ruled table on a turned page (a landscape page stored with /Rotate) becomes a real table, and the page's text, tables and pictures follow the order you see on screen; a table whose text runs sideways on screen stays text [2026-10-25]
+- PDF to Excel: a table on a turned page fills its sheet like any other table instead of an empty or scrambled sheet, and its cell text no longer repeats on the Text sheet [2026-10-25]
 - SVG to PDF without LibreOffice: the page has the same size as with LibreOffice (CSS pixels at 96 per inch, so a 400 px drawing gives a 300 pt page instead of a 25 % larger one) [2026-10-25]
 - SVG to PDF and SVG pictures in Studio: hidden layers (display none, visibility hidden, opacity 0, also through a stylesheet class as Illustrator and Inkscape write them) are no longer drawn when LibreOffice is not installed, matching the LibreOffice result [2026-10-25]
 - Fill form: a field filled with Turkish or other non-Latin letters keeps its border and background colour instead of showing the text on a bare page [2026-10-25]

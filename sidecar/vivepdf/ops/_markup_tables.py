@@ -2,7 +2,7 @@ import html
 
 import pymupdf
 
-from vivepdf.ops._cell_text import page_fragments, table_spans, table_texts
+from vivepdf.ops._cell_text import page_fragments, reads_upright, table_spans, table_texts
 from vivepdf.ops._spreadsheet import clean_text
 from vivepdf.ops._words import plain_letters
 from vivepdf.ops.convert_tables import is_page_frame
@@ -51,8 +51,6 @@ def table_html(rows: list[list[str | None]], spans: list[tuple[int, int, int, in
 
 
 def page_tables(page: pymupdf.Page) -> list[tuple[pymupdf.Rect, str]]:
-    if page.rotation:
-        return []
     try:
         found = page.find_tables(use_layout=False).tables
     except TABLE_ERRORS:
@@ -68,7 +66,11 @@ def page_tables(page: pymupdf.Page) -> list[tuple[pymupdf.Rect, str]]:
     if not tables:
         return []
     fragments = page_fragments(page)
+    tables = [table for table in tables if reads_upright(page, fragments, pymupdf.Rect(table.bbox))]
     return [
-        (pymupdf.Rect(table.bbox), table_html(table_texts(table, fragments), table_spans(table)))
+        (
+            pymupdf.Rect(table.bbox) * page.derotation_matrix,
+            table_html(table_texts(table, fragments), table_spans(table)),
+        )
         for table in tables
     ]
