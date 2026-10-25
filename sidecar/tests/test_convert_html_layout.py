@@ -8,7 +8,7 @@ from xml.etree import ElementTree
 import pymupdf
 from PIL import Image
 
-from vivepdf.ops._markup import _image_block
+from vivepdf.ops._markup_pictures import _image_block
 from vivepdf.ops.convert import TextSourceParams
 from vivepdf.ops.convert_text import to_html
 from vivepdf.ops.epub import EpubParams, to_epub

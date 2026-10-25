@@ -34,10 +34,10 @@ from vivepdf.ops._markup import (
     join_broken_words,
     page_html,
     page_markup,
-    picture_dpi,
     share_repeated_pictures,
     text_language,
 )
+from vivepdf.ops._markup_pictures import picture_dpi
 from vivepdf.ops._placement import drop_unplaceable_annotations, turn_text_upright
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._spreadsheet import clean_text

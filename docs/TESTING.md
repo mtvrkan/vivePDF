@@ -367,6 +367,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - In the installed build, PDF to Markdown on a page with a link, a rotated side label and a
   struck-through word, and a line with `a < b` and `2 * 3`: the link, the label and the
   strike-through come out as before and the `<` and `*` stay plain text.
+- In the installed build, PDF to HTML on a page with a cropped photo, a chart drawn as lines
+  and a filled table: the photo shows only its visible part, the chart is one picture and the
+  table stays a table.
 - In the installed build, Images to PDF with a turned phone photo, a lossless WebP and Compress
   photos on: the photo stands upright, the WebP stays sharp and the file is smaller.
 - In the installed build, PDF to images as separate PNGs, as one joined image, as a multi-page

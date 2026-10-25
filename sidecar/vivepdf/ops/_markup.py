@@ -1,18 +1,20 @@
-import base64
 import html
-import math
 import re
 from collections import Counter
-from dataclasses import dataclass
 from itertools import groupby
 from urllib.parse import quote
 
 import pymupdf
 
 from vivepdf.ops._columns import column_order, column_side, page_columns, words_of
-from vivepdf.ops._markup_tables import filled_table, page_tables
-from vivepdf.ops._page_images import MAX_IMAGE_SIDE
-from vivepdf.ops._pixmaps import png_ready
+from vivepdf.ops._markup_model import MarkupBlock, MarkupLine, PageMarkup
+from vivepdf.ops._markup_pictures import (
+    _image_block,
+    graphic_areas,
+    graphic_block,
+    is_backdrop,
+)
+from vivepdf.ops._markup_tables import page_tables
 from vivepdf.ops._spreadsheet import clean_text
 from vivepdf.ops._words import (
     LINE_BREAK,
@@ -28,8 +30,6 @@ HEADING_MAX_CHARACTERS = 200
 LANGUAGE_TAG = re.compile(r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$")
 LINK_SCHEMES = ("http://", "https://", "mailto:")
 LINK_SAFE_CHARACTERS = ":/?#@!$&'*+,;=%~-._"
-PICTURE_DPI = 150
-PICTURE_PIXELS = 16_000_000
 STYLE_TAGS = ((16, "b"), (2, "i"), (8, "code"), (1, "sup"))
 BULLETS = (
     "\u2022\u25cf\u25cb\u25e6\u25aa\u25ab\u25a0\u25a1\u25c6\u25c7\u27a2\u27a4\u25ba\u25b6"
@@ -37,59 +37,16 @@ BULLETS = (
 )
 BULLET_LINE = re.compile(rf"^\s*[{BULLETS}](?:\s+|$)")
 NUMBER_LINE = re.compile(r"^\s*(?:\d{1,3}[.)]|[a-z]\))(?:\s+|$)")
-PASSTHROUGH_PICTURES = ("jpeg", "png")
-CROP_TOLERANCE = 1.0
-PICTURE_ERRORS = (RuntimeError, ValueError, pymupdf.mupdf.FzErrorBase)
 ORDER_TOLERANCE = 2.0
 ORDER_MAX_BLOCKS = 300
-GRAPHIC_MIN_SIDE = 36.0
-GRAPHIC_MIN_PATHS = 3
-GRAPHIC_MAX_SHARE = 0.85
-GRAPHIC_TEXT_SHARE = 0.3
-GRAPHIC_PROSE_WORDS = 8
-GRAPHIC_PANEL_SHARE = 0.8
-PAPER_WHITE = 0.98
-BACKDROP_SHARE = 0.9
 EMBEDDED_PICTURE = re.compile(r'<img width="(\d+)" height="(\d+)" alt="" src="(data:[^"]+)"/>')
 TURKISH_LETTERS = frozenset("ğĞıİşŞ")
 TURKISH_EVIDENCE = 3
 LANGUAGE_SAMPLE_PAGES = 5
 
 
-@dataclass(slots=True)
-class MarkupBlock:
-    kind: str
-    body: str
-    size: float = 0.0
-    characters: int = 0
-
-
-@dataclass(slots=True)
-class PageMarkup:
-    blocks: list[MarkupBlock]
-    sizes: Counter[float]
-
-
-@dataclass(slots=True)
-class _Line:
-    pieces: list[tuple[str, tuple[str, ...], str | None]]
-    weighted: float
-    characters: int
-
-    @property
-    def text(self) -> str:
-        return "".join(piece[0] for piece in self.pieces)
-
-
 def _compact(text: str) -> str:
     return "".join(clean_text(text).split())
-
-
-def picture_dpi(clip: pymupdf.Rect) -> int:
-    square_inches = clip.width * clip.height / (72 * 72)
-    by_pixels = math.sqrt(PICTURE_PIXELS / square_inches)
-    by_side = (MAX_IMAGE_SIDE["png"] - 2) * 72 / max(clip.width, clip.height)
-    return max(1, math.floor(min(PICTURE_DPI, by_pixels, by_side)))
 
 
 def _span_style(flags: int) -> tuple[str, ...]:
@@ -122,7 +79,7 @@ def _span_pieces(span: dict, links: list[tuple[pymupdf.Rect, str]]):
     return pieces
 
 
-def _line(line: dict, links: list[tuple[pymupdf.Rect, str]]) -> _Line:
+def _line(line: dict, links: list[tuple[pymupdf.Rect, str]]) -> MarkupLine:
     pieces = []
     weighted = 0.0
     characters = 0
@@ -132,7 +89,7 @@ def _line(line: dict, links: list[tuple[pymupdf.Rect, str]]) -> _Line:
         weighted += span["size"] * length
         characters += length
         pieces.extend(span_pieces)
-    return _Line(pieces, weighted, characters)
+    return MarkupLine(pieces, weighted, characters)
 
 
 def _without_prefix(pieces, count: int):
@@ -163,7 +120,7 @@ def _inline(pieces) -> str:
     return "".join(parts).strip()
 
 
-def _paragraph(kind: str, lines: list[_Line]) -> MarkupBlock | None:
+def _paragraph(kind: str, lines: list[MarkupLine]) -> MarkupBlock | None:
     pieces = []
     for line in lines:
         if pieces and line.pieces:
@@ -181,16 +138,16 @@ def _paragraph(kind: str, lines: list[_Line]) -> MarkupBlock | None:
     return MarkupBlock(kind, body, size, characters)
 
 
-def _text_blocks(lines: list[_Line]) -> list[MarkupBlock]:
+def _text_blocks(lines: list[MarkupLine]) -> list[MarkupBlock]:
     numbered = sum(1 for line in lines if NUMBER_LINE.match(line.text)) >= 2
-    groups: list[tuple[str, list[_Line]]] = []
+    groups: list[tuple[str, list[MarkupLine]]] = []
     for line in lines:
         if not line.text.strip():
             continue
         bullet = BULLET_LINE.match(line.text)
         if bullet:
             rest = _without_prefix(line.pieces, bullet.end())
-            groups.append(("li", [_Line(rest, line.weighted, line.characters)]))
+            groups.append(("li", [MarkupLine(rest, line.weighted, line.characters)]))
         elif not groups or (numbered and NUMBER_LINE.match(line.text)):
             groups.append(("p", [line]))
         else:
@@ -209,142 +166,12 @@ def _page_links(page: pymupdf.Page) -> list[tuple[pymupdf.Rect, str]]:
     return links
 
 
-def _picture(data: bytes, media: str, area: pymupdf.Rect) -> MarkupBlock:
-    encoded = base64.b64encode(data).decode("ascii")
-    return MarkupBlock(
-        "figure",
-        f'<img width="{round(area.width)}" height="{round(area.height)}" alt="" '
-        f'src="data:{media};base64,{encoded}"/>',
-    )
-
-
-def _png_picture(pixmap: pymupdf.Pixmap, area: pymupdf.Rect) -> MarkupBlock:
-    return _picture(png_ready(pixmap).tobytes("png"), "image/png", area)
-
-
-def _placement(block: dict) -> pymupdf.Rect | None:
-    a, b, c, d, e, f = block["transform"]
-    if b or c or a <= 0 or d <= 0:
-        return None
-    return pymupdf.Rect(e, f, e + a, f + d)
-
-
-def _cropped(pixmap: pymupdf.Pixmap, placed: pymupdf.Rect, shown: pymupdf.Rect):
-    clip = pymupdf.IRect(
-        math.floor((shown.x0 - placed.x0) / placed.width * pixmap.width),
-        math.floor((shown.y0 - placed.y0) / placed.height * pixmap.height),
-        math.ceil((shown.x1 - placed.x0) / placed.width * pixmap.width),
-        math.ceil((shown.y1 - placed.y0) / placed.height * pixmap.height),
-    ) & pymupdf.IRect(0, 0, pixmap.width, pixmap.height)
-    if clip.is_empty:
-        return None
-    return pymupdf.Pixmap(pixmap, pixmap.width, pixmap.height, clip)
-
-
-def _image_block(block: dict, visible: pymupdf.Rect) -> MarkupBlock | None:
-    placed = _placement(block)
-    area = placed or pymupdf.Rect(block["bbox"])
-    shown = area & visible if placed else area
-    cropped = (
-        area.width - shown.width > CROP_TOLERANCE or area.height - shown.height > CROP_TOLERANCE
-    )
-    ext = block.get("ext")
-    if (
-        not cropped
-        and not block.get("mask")
-        and ext in PASSTHROUGH_PICTURES
-        and block.get("colorspace", 3) <= 3
-    ):
-        return _picture(block["image"], f"image/{ext}", area)
-    try:
-        pixmap = pymupdf.Pixmap(block["image"])
-        if block.get("mask") and not pixmap.alpha:
-            mask = pymupdf.Pixmap(block["mask"])
-            if (mask.width, mask.height) != (pixmap.width, pixmap.height):
-                mask = pymupdf.Pixmap(mask, pixmap.width, pixmap.height, None)
-            pixmap = pymupdf.Pixmap(png_ready(pixmap), mask)
-        if cropped:
-            pixmap = _cropped(pixmap, area, shown)
-        if pixmap is None or pixmap.width == 0 or pixmap.height == 0:
-            return None
-        return _png_picture(pixmap, shown if cropped else area)
-    except PICTURE_ERRORS:
-        return None
-
-
 def _shown_lines(block: dict) -> list[pymupdf.Rect]:
     return [
         pymupdf.Rect(line["bbox"])
         for line in block.get("lines", [])
         if any(span.get("alpha", 255) and _span_text(span).strip() for span in line["spans"])
     ]
-
-
-def _is_backdrop(area: pymupdf.Rect, visible: pymupdf.Rect, texts: list[pymupdf.Rect]) -> bool:
-    if abs(area & visible) < abs(visible) * BACKDROP_SHARE:
-        return False
-    return any((rect.tl + rect.br) / 2 in area for rect in texts)
-
-
-def _holds_text(
-    lines: list[tuple[pymupdf.Rect, _Line]], area: pymupdf.Rect, backdrop: float
-) -> bool:
-    inside = [(rect, line) for rect, line in lines if (rect.tl + rect.br) / 2 in area]
-    if not any(line.text.strip() for _rect, line in inside):
-        return False
-    if backdrop >= abs(area) * GRAPHIC_PANEL_SHARE:
-        return True
-    if any(len(line.text.split()) >= GRAPHIC_PROSE_WORDS for _rect, line in inside):
-        return True
-    return sum(abs(rect & area) for rect, _line in inside) > abs(area) * GRAPHIC_TEXT_SHARE
-
-
-def _shows(drawing: dict) -> bool:
-    if drawing.get("type") != "f":
-        return True
-    fill = drawing.get("fill")
-    if fill is None or not drawing.get("fill_opacity", 1):
-        return False
-    return any(channel < PAPER_WHITE for channel in fill)
-
-
-def _is_table(page: pymupdf.Page, area: pymupdf.Rect) -> bool:
-    try:
-        tables = page.find_tables(clip=area * page.rotation_matrix, use_layout=False).tables
-    except PICTURE_ERRORS:
-        return False
-    return any(
-        filled_table(table) for table in tables if table.row_count > 1 and table.col_count > 1
-    )
-
-
-def _graphic_areas(page, visible, lines) -> list[pymupdf.Rect]:
-    drawings = [drawing for drawing in page.get_drawings() if _shows(drawing)]
-    if len(drawings) < GRAPHIC_MIN_PATHS:
-        return []
-    areas = []
-    for cluster in page.cluster_drawings(clip=visible, drawings=drawings):
-        area = pymupdf.Rect(cluster) & visible
-        if min(area.width, area.height) < GRAPHIC_MIN_SIDE:
-            continue
-        if abs(area) > abs(visible) * GRAPHIC_MAX_SHARE:
-            continue
-        touching = [(item, pymupdf.Rect(item["rect"]) & area) for item in drawings]
-        touching = [(item, rect) for item, rect in touching if not rect.is_empty]
-        backdrop = sum(abs(rect) for item, rect in touching if item.get("fill") is not None)
-        if len(touching) < GRAPHIC_MIN_PATHS or _holds_text(lines, area, backdrop):
-            continue
-        if not _is_table(page, area):
-            areas.append(area)
-    return areas
-
-
-def _graphic_block(page: pymupdf.Page, area: pymupdf.Rect) -> MarkupBlock | None:
-    clip = area * page.rotation_matrix
-    pixmap = page.get_pixmap(clip=clip, dpi=picture_dpi(clip))
-    if pixmap.width == 0 or pixmap.height == 0:
-        return None
-    return _png_picture(pixmap, area)
 
 
 def _slot(texts: list[tuple[pymupdf.Rect, list[MarkupBlock]]], area: pymupdf.Rect) -> int:
@@ -391,7 +218,7 @@ def _in_reading_order(texts, visuals) -> list[MarkupBlock]:
 
 
 def _text_groups(
-    page: pymupdf.Page, text_lines: list[tuple[int, pymupdf.Rect, pymupdf.Rect, _Line]]
+    page: pymupdf.Page, text_lines: list[tuple[int, pymupdf.Rect, pymupdf.Rect, MarkupLine]]
 ):
     columns = page_columns(
         page, [(rect, words_of(parsed.text)) for _p, _a, rect, parsed in text_lines]
@@ -425,7 +252,7 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
     links = _page_links(page)
     raw = textpage.extractRAWDICT() if links else textpage.extractDICT()
     sizes: Counter[float] = Counter()
-    blocks: list[tuple[dict, list[tuple[pymupdf.Rect, _Line]]]] = []
+    blocks: list[tuple[dict, list[tuple[pymupdf.Rect, MarkupLine]]]] = []
     for block in raw["blocks"]:
         block_lines = [
             (pymupdf.Rect(line["bbox"]), _line(line, links)) for line in block.get("lines", [])
@@ -438,21 +265,21 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
         blocks.append((block, block_lines))
     lines = [item for _block, block_lines in blocks for item in block_lines]
     shown_text = [rect for block, _lines in blocks for rect in _shown_lines(block)]
-    graphics = _graphic_areas(page, visible, lines) if images else []
+    graphics = graphic_areas(page, visible, lines) if images else []
     tables = [
         (area, body)
         for area, body in page_tables(page)
         if not any(area in graphic for graphic in graphics)
     ]
     covers = graphics + [area for area, _body in tables]
-    text_lines: list[tuple[int, pymupdf.Rect, pymupdf.Rect, _Line]] = []
+    text_lines: list[tuple[int, pymupdf.Rect, pymupdf.Rect, MarkupLine]] = []
     visuals = [(area, MarkupBlock("table", body)) for area, body in tables]
     for position, (block, block_lines) in enumerate(blocks):
         area = pymupdf.Rect(block["bbox"])
         if any(area in graphic for graphic in graphics):
             continue
         if block.get("type") == 1:
-            if _is_backdrop(area, visible, shown_text):
+            if is_backdrop(area, visible, shown_text):
                 continue
             picture = _image_block(block, visible)
             if picture is not None:
@@ -465,7 +292,7 @@ def page_markup(page: pymupdf.Page, images: bool = True) -> PageMarkup:
         )
     texts = _text_groups(page, text_lines)
     for graphic in graphics:
-        picture = _graphic_block(page, graphic)
+        picture = graphic_block(page, graphic)
         if picture is not None:
             visuals.append((graphic, picture))
     turn = page.rotation_matrix
