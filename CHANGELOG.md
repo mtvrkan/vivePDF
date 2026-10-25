@@ -17,6 +17,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Office to PDF on macOS: Word, Excel and PowerPoint files keep the fonts installed on the Mac (Arial, Helvetica, Tahoma, Verdana, Georgia, Trebuchet and others) instead of turning into a serif font, and fonts the Mac lacks get a close look-alike: Aptos, Segoe UI and Calibri Light use Calibri's twin, Consolas a monospaced font, Geist, Century Gothic, Inter, Roboto and similar a sans-serif font. An empty (0-byte) Office file now reports that it cannot be read instead of giving a blank page [2026-10-25]
 - Website: Safari no longer draws a stray rectangle behind the vivePDF wordmark [2026-10-24]
 - Convert: a single result is named in the singular ("1 file", "1 page") in every language instead of "1 files" [2026-10-24]
 - Convert: switching from one conversion to another (for example Office → PDF to Images → PDF) no longer jumps back to the previous one or keeps its output file name [2026-10-24]

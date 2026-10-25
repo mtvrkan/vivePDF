@@ -9,6 +9,7 @@ import zipfile
 from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import IO
+from xml.sax.saxutils import escape
 
 from vivepdf._data_home import unix_data_home
 from vivepdf.external import _landlock, _seatbelt
@@ -270,6 +271,89 @@ def profile_arguments(slot: Path) -> list[str]:
     ]
 
 
+MAC_FONT_FOLDERS = ("/System/Library/Fonts", "/Library/Fonts")
+METRIC_TWINS = (
+    (("Aptos", "Aptos Display", "Calibri Light", "Segoe UI", "Segoe UI Light"), ("Carlito",)),
+    (("Consolas", "Lucida Console", "Cascadia Code", "Cascadia Mono"), ("monospace",)),
+    (
+        (
+            "Century Gothic",
+            "Geist",
+            "Inter",
+            "Roboto",
+            "Open Sans",
+            "Montserrat",
+            "Lato",
+            "Poppins",
+            "Source Sans Pro",
+            "Noto Sans",
+            "Franklin Gothic Book",
+            "Franklin Gothic Medium",
+            "Gill Sans MT",
+            "Corbel",
+            "Candara",
+            "Tw Cen MT",
+            "Bahnschrift",
+            "Segoe UI Semibold",
+        ),
+        ("sans-serif",),
+    ),
+)
+GENERIC_FAMILIES = (
+    ("sans-serif", ("Helvetica", "Arial", "Liberation Sans")),
+    ("serif", ("Times New Roman", "Times", "Liberation Serif")),
+    ("monospace", ("Menlo", "Courier New", "Liberation Mono")),
+)
+
+
+def _families(names: tuple[str, ...]) -> str:
+    return "".join(f"<family>{escape(name)}</family>" for name in names)
+
+
+def _alias(name: str, preferred: tuple[str, ...], binding: str) -> str:
+    return (
+        f'  <alias binding="{binding}"><family>{escape(name)}</family>'
+        f"<prefer>{_families(preferred)}</prefer></alias>\n"
+    )
+
+
+def font_configuration(profile: Path, home: Path) -> str:
+    folders = (*MAC_FONT_FOLDERS, str(home / "Library" / "Fonts"))
+    twins = "".join(
+        _alias(name, preferred, "same") for names, preferred in METRIC_TWINS for name in names
+    )
+    generic_tests = "".join(
+        f'<test qual="all" name="family" compare="not_eq"><string>{name}</string></test>'
+        for name, _ in GENERIC_FAMILIES
+    )
+    generics = "".join(_alias(name, preferred, "weak") for name, preferred in GENERIC_FAMILIES)
+    return (
+        '<?xml version="1.0"?>\n<!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">\n'
+        "<fontconfig>\n"
+        + "".join(f"  <dir>{escape(folder)}</dir>\n" for folder in folders)
+        + f"  <cachedir>{escape(str((profile / 'fonts' / 'cache').resolve()))}</cachedir>\n"
+        + twins
+        + f'  <match target="pattern">{generic_tests}'
+        '<edit name="family" mode="append_last"><string>sans-serif</string></edit></match>\n'
+        + generics
+        + "</fontconfig>\n"
+    )
+
+
+def font_environment(profile: Path) -> dict[str, str]:
+    if sys.platform != "darwin":
+        return {}
+    configuration = profile / "fonts" / "fonts.conf"
+    text = font_configuration(profile, Path.home())
+    try:
+        configuration.parent.mkdir(parents=True, exist_ok=True)
+        if not configuration.is_file() or configuration.read_text(encoding="utf-8") != text:
+            configuration.write_text(text, encoding="utf-8")
+    except OSError:
+        return {}
+    return {"FONTCONFIG_FILE": str(configuration.resolve())}
+
+
 OLE_SIGNATURE = bytes.fromhex("d0cf11e0a1b11ae1")
 OOXML_EXTENSIONS = {"docx", "dotx", "xlsx", "pptx"}
 ODF_EXTENSIONS = {"odt", "ott", "ods", "ots", "odp", "otp"}
@@ -444,6 +528,8 @@ def convert_to_pdf(
             f"the document is password protected: {source.name}",
             {"reason": "officeEncrypted"},
         )
+    if source.stat().st_size == 0:
+        raise _unreadable(source)
     output_dir.mkdir(parents=True, exist_ok=True)
     working = Path(tempfile.mkdtemp(prefix=".vivepdf-office-", dir=output_dir))
     try:
@@ -462,6 +548,7 @@ def convert_to_pdf(
         try:
             with profile_slot() as profile:
                 lock_down_profile(profile)
+                environment.update(font_environment(profile))
                 arguments = [
                     str(soffice),
                     "--headless",

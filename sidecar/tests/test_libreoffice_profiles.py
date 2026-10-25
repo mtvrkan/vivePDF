@@ -107,3 +107,68 @@ def test_no_short_root_is_a_clear_error(tmp_path: Path, monkeypatch: pytest.Monk
     with pytest.raises(OpError) as refused:
         libreoffice.profiles_root()
     assert refused.value.data["reason"] == "officeProfilePath"
+
+
+def test_the_font_configuration_points_at_mac_font_folders_and_the_profile(tmp_path: Path) -> None:
+    home = tmp_path / "Ali & Ayşe"
+
+    text = libreoffice.font_configuration(tmp_path / "p0", home)
+
+    assert "<dir>/System/Library/Fonts</dir>" in text
+    assert f"<dir>{home / 'Library' / 'Fonts'}</dir>".replace("&", "&amp;") in text
+    assert f"<cachedir>{(tmp_path / 'p0' / 'fonts' / 'cache').resolve()}</cachedir>" in text
+    assert "<family>Aptos</family><prefer><family>Carlito</family>" in text
+    assert "<family>sans-serif</family><prefer><family>Helvetica</family>" in text
+
+
+def test_only_macos_gets_its_own_font_configuration(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(libreoffice.sys, "platform", "win32")
+
+    environment = libreoffice.font_environment(tmp_path)
+
+    assert environment == {}
+    assert not (tmp_path / "fonts").exists()
+
+
+def test_an_empty_office_file_is_unreadable_without_starting_libreoffice(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "bos.docx"
+    source.write_bytes(b"")
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: tmp_path / "soffice")
+
+    def no_run(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("LibreOffice must not start for an empty file")
+
+    monkeypatch.setattr(libreoffice, "run_tool", no_run)
+
+    with pytest.raises(OpError) as refused:
+        libreoffice.convert_to_pdf(source, tmp_path / "out")
+
+    assert refused.value.data["reason"] == "officeUnreadable"
+
+
+@pytest.mark.skipif(sys.platform != "darwin", reason="macOS font folders")
+def test_mac_system_fonts_and_missing_sans_fonts_keep_their_look(
+    short_data_dir: Path, tmp_path: Path
+) -> None:
+    if libreoffice.find_soffice() is None:
+        pytest.skip("LibreOffice is not available")
+    document = Document()
+    for name in ("Tahoma", "Geist", "Aptos"):
+        document.add_paragraph().add_run(f"{name} çalışma").font.name = name
+    source = tmp_path / "fontlar.docx"
+    document.save(source)
+
+    produced = libreoffice.convert_to_pdf(source, tmp_path / "out")
+
+    with pymupdf.open(produced) as converted:
+        fonts = {
+            span["text"].split()[0]: span["font"]
+            for block in converted[0].get_text("dict")["blocks"]
+            for line in block.get("lines", [])
+            for span in line["spans"]
+        }
+    assert fonts == {"Tahoma": "Tahoma", "Geist": "Helvetica", "Aptos": "Carlito"}
