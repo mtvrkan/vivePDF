@@ -107,6 +107,16 @@ def test_a_page_whose_hidden_text_has_no_scan_under_it_keeps_it_hidden(tmp_path:
     assert _texts(presentation.slides[0]) == []
 
 
+def test_editable_slides_carry_the_page_text_in_their_notes(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=300)
+    page.insert_text((60, 100), "Sunum metni", fontsize=14)
+
+    presentation, _ = _presentation(document, tmp_path)
+
+    assert presentation.slides[0].notes_slide.notes_text_frame.text == "Sunum metni"
+
+
 def test_a_photo_page_becomes_a_jpeg_and_a_text_page_stays_a_png(tmp_path: Path) -> None:
     generator = np.random.default_rng(3)
     pixels = generator.integers(0, 60, (600, 800, 3), dtype=np.uint8)

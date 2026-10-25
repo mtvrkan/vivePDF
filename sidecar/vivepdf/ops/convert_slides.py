@@ -144,10 +144,9 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 for link in links:
                     if link not in linked:
                         add_link_area(slide, link, frame, jumps)
-                if not editable:
-                    text = page_notes(page, hidden)
-                    if text:
-                        slide.notes_slide.notes_text_frame.text = text[:NOTES_LIMIT]
+                text = page_notes(page, hidden)
+                if text:
+                    slide.notes_slide.notes_text_frame.text = text[:NOTES_LIMIT]
                 progress.report(
                     position / len(indices),
                     "progress.convertingPages",

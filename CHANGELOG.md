@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- PDF to PowerPoint (editable): each slide's notes hold the text of its page, as image mode already did, so the presenter view and the notes page show it [2026-10-25]
 - PDF to PowerPoint (editable): a scanned page with a recognised text layer (OCR) gets its words as editable text boxes in the ink colour of the scan, sized to the scanned words, and those words are wiped from the slide picture in the paper colour, also on turned pages [2026-10-25]
 - PDF to PowerPoint (editable): slide text is marked with the PDF's language, or Turkish when the text has Turkish letters, so PowerPoint checks spelling in the right language [2026-10-25]
 - PDF to PowerPoint (editable): plain filled rectangles and straight lines of the page (bar charts, rules, coloured bands, table lines) become PowerPoint shapes with their colour, transparency and line width instead of being part of the slide picture, so they can be moved and recoloured; shapes painted over text or partly covered by something drawn later stay in the picture, and on an 83-page document the conversion takes about 15 % longer [2026-10-25]

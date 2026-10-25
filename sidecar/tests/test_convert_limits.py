@@ -187,7 +187,7 @@ def test_pptx_editable_slides_carry_real_text_boxes(slide_pdf: Path, tmp_path: P
     shapes = {shape.text_frame.text: shape for shape in _text_shapes(first)}
     assert set(shapes) == {"Sunum başlığı Çağ", "Kalin satir"}
     assert any(shape.shape_type == 13 for shape in first.shapes)
-    assert not first.has_notes_slide
+    assert "Sunum başlığı" in first.notes_slide.notes_text_frame.text
     ratio = presentation.slide_width / 595
     with pymupdf.open(slide_pdf) as document:
         spans = {

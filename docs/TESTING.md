@@ -298,7 +298,7 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   copy of the bar. A black box drawn over text in the PDF stays part of the page picture.
 - Run OCR on a scanned invoice, then convert it to PowerPoint (editable) and open it in
   PowerPoint on Windows: every line is a text box you can edit, the scan behind it shows no
-  doubled words, the text sits where the scanned words were, and the notes are empty.
+  doubled words, the text sits where the scanned words were, and the notes hold the invoice text.
 - Convert a Turkish PDF to PowerPoint (editable): Review › Language shows Turkish for the slide
   text and correctly spelled Turkish words are not underlined.
 - Convert a PDF with justified paragraphs (a lecture slide deck exported from PowerPoint) to
