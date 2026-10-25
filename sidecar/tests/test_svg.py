@@ -400,3 +400,60 @@ def test_without_libreoffice_the_picture_next_to_the_drawing_is_drawn(
     with pymupdf.open(result.output) as document:
         [image] = document[0].get_image_info()
         assert tuple(round(value) for value in image["bbox"]) == (0, 0, 40, 20)
+
+
+HIDDEN_LAYERS = (
+    '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="200">'
+    "<style>.st0{display:none}</style>"
+    '<rect width="80" height="80" fill="#00a000"/>'
+    '<g style="display:none"><rect x="100" width="80" height="80" fill="red"/></g>'
+    '<rect x="200" width="80" height="80" fill="red" display="none"/>'
+    '<rect x="300" width="80" height="80" fill="red" visibility="hidden"/>'
+    '<g class="st0"><rect y="100" width="80" height="80" fill="red"/></g>'
+    '<g visibility="hidden"><rect x="100" y="100" width="80" height="80" fill="red"/>'
+    '<rect x="200" y="100" width="80" height="80" fill="blue" visibility="visible"/></g>'
+    '<defs><rect id="kept" width="80" height="80" fill="#a000a0" display="none"/></defs>'
+    '<use href="#kept" x="300" y="100" display="inline"/>'
+    "</svg>"
+)
+
+
+def _colours(page: pymupdf.Page, points: list[tuple[int, int]]) -> list[tuple[int, ...]]:
+    picture = page.get_pixmap(dpi=72)
+    scale = picture.width / 400
+    return [picture.pixel(int(x * scale), int(y * scale)) for x, y in points]
+
+
+def test_hidden_layers_are_left_out_without_libreoffice(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: None)
+
+    result = file_to_pdf(
+        FileToPdfParams(
+            path=str(_svg(tmp_path, text=HIDDEN_LAYERS)), output=str(tmp_path / "out.pdf")
+        ),
+        silent_progress(),
+    )
+
+    with pymupdf.open(result.output) as document:
+        colours = _colours(
+            document[0], [(40, 40), (140, 40), (240, 40), (340, 40), (40, 140), (140, 140)]
+        )
+    assert colours == [(0, 160, 0)] + [(255, 255, 255)] * 5
+
+
+def test_a_shape_shown_inside_a_hidden_group_is_kept():
+    document = drawing_pdf(HIDDEN_LAYERS.encode(), "katmanlar.svg")
+
+    colours = _colours(document[0], [(140, 140), (240, 140)])
+
+    assert colours == [(255, 255, 255), (0, 0, 255)]
+
+
+def test_a_hidden_element_another_one_points_to_is_kept(tmp_path: Path):
+    root = _clean(tmp_path, HIDDEN_LAYERS)
+
+    kept = [element for element in root.iter() if element.get("id") == "kept"]
+
+    assert len(kept) == 1

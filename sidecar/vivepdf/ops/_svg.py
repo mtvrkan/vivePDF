@@ -37,6 +37,8 @@ ABSOLUTE_LENGTH = re.compile(r"^\s*\d+(\.\d+)?\s*(px|pt|pc|mm|cm|in)?\s*$")
 LINKED_PICTURE_TYPES = {"PNG": "png", "JPEG": "jpeg", "GIF": "gif", "BMP": "bmp", "WEBP": "webp"}
 MAX_LINKED_PICTURE_BYTES = 20 * 1024 * 1024
 WINDOWS_DRIVE = re.compile(r"^[A-Za-z]:[\\/]")
+HIDING_PROPERTIES = ("display", "visibility", "opacity")
+LOCAL_REFERENCE = re.compile(r"(?:url\(\s*['\"]?\s*#|^\s*#)([^)'\"\s]+)")
 
 
 def _refusal(reason: str, message: str, **data: object) -> OpError:
@@ -114,6 +116,86 @@ def _clean_tree(root: etree._Element) -> None:
         if isinstance(element.tag, str):
             _clean_element(element)
     _expand_symbols(root)
+    _drop_hidden(root)
+
+
+def _declaration(body: str, name: str) -> str | None:
+    found = None
+    for declaration in body.split(";"):
+        key, colon, value = declaration.partition(":")
+        if colon and key.strip().lower() == name:
+            found = value.replace("!important", "").strip()
+    return found or None
+
+
+def _declared(element: etree._Element, name: str, rules: list[tuple[str, str]]) -> str | None:
+    value = element.get(name)
+    for selector, body in rules:
+        if _selector_matches(selector, element):
+            value = _declaration(body, name) or value
+    value = _declaration(element.get("style") or "", name) or value
+    return value.strip().lower() if value else None
+
+
+def _transparent(value: str | None) -> bool:
+    try:
+        return value is not None and float(value.removesuffix("%")) == 0
+    except ValueError:
+        return False
+
+
+def _referenced_ids(root: etree._Element) -> set[str]:
+    referenced: set[str] = set()
+    for element in root.iter():
+        if isinstance(element.tag, str):
+            for value in element.attrib.values():
+                referenced.update(LOCAL_REFERENCE.findall(value))
+    return referenced
+
+
+def _hiding_rules(root: etree._Element) -> list[tuple[str, str]]:
+    sheets = "\n".join(
+        element.text or ""
+        for element in root.iter()
+        if isinstance(element.tag, str) and _local(element.tag) == "style"
+    )
+    return [
+        (selector, body)
+        for _, _, selector, body in _stylesheet_rules(sheets)
+        if any(name in body.lower() for name in HIDING_PROPERTIES)
+    ]
+
+
+def _drop_hidden(root: etree._Element) -> None:
+    rules = _hiding_rules(root)
+    referenced = _referenced_ids(root)
+    stack = [(root, False)]
+    while stack:
+        element, hidden = stack.pop()
+        for child in list(element):
+            name = _local(child.tag)
+            if not isinstance(child.tag, str) or name in DEFINITION_ELEMENTS or name == "style":
+                continue
+            if child.get("id") in referenced:
+                continue
+            if _declared(child, "display", rules) == "none" or _transparent(
+                _declared(child, "opacity", rules)
+            ):
+                element.remove(child)
+                continue
+            visibility = _declared(child, "visibility", rules)
+            child_hidden = (
+                hidden if visibility in (None, "inherit") else visibility in ("hidden", "collapse")
+            )
+            shown_inside = any(
+                _declared(inner, "visibility", rules) == "visible"
+                for inner in child.iterdescendants()
+                if isinstance(inner.tag, str)
+            )
+            if child_hidden and name in DRAWN_ELEMENTS and not shown_inside:
+                element.remove(child)
+                continue
+            stack.append((child, child_hidden))
 
 
 def _href(element: etree._Element) -> str:

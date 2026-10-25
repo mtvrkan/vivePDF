@@ -337,6 +337,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Fill a form whose fields have a border and background colour with "Esma Yılmaz" in one
   field and an e-mail address in another, save, open in Acrobat or Edge: both fields keep their
   box and background, the Turkish text reads upright.
+- Without LibreOffice installed, convert an Illustrator or Inkscape SVG with a hidden layer to
+  PDF and add it as a picture in Studio: the hidden layer is not drawn in either.
 
 ### How native dialogs are answered
 
