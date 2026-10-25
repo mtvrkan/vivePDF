@@ -268,6 +268,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert a report whose footer reads "page 3 / 10" in a font Windows lacks (for example
   Geist) to Word on a PC without that font: the footer, page number included, shows in that
   font on every page, and the number counts up.
+- Convert a PDF with a tilted stamp (a rotated "ONAYLANDI" word inside a tilted frame) to
+  Word and open it in Word: the stamp word shows over its frame at the same angle, not behind
+  it and not missing.
 
 ### How native dialogs are answered
 

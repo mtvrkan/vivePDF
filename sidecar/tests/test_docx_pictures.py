@@ -152,3 +152,76 @@ def test_a_bar_chart_drawn_with_plain_boxes_reaches_the_word_file(tmp_path: Path
     assert _floating_pictures(target) >= 2
     widths = _picture_widths_pt(target)
     assert any(abs(width - 450) <= 6 for width in widths)
+
+
+def _stamped(tmp_path: Path, pages: int = 1, frame: bool = True) -> Path:
+    document = pymupdf.open()
+    box = pymupdf.Rect(300, 420, 500, 480)
+    pivot = (box.tl + box.br) / 2
+    turn = (pivot, pymupdf.Matrix(-15))
+    for _ in range(pages):
+        page = document.new_page()
+        for row in range(10):
+            page.insert_text((72, 100 + row * 16), f"Contract clause {row} body text.", fontsize=11)
+        if frame:
+            page.draw_rect(box, color=(0.8, 0, 0), width=3, morph=turn)
+        page.insert_text((330, 458), "APPROVED", fontsize=24, color=(0.8, 0, 0), morph=turn)
+    source = tmp_path / "stamp.pdf"
+    document.save(source)
+    return source
+
+
+def _foreground_pictures(target: Path) -> list[Image.Image]:
+    body = etree.fromstring(_part(target).encode())
+    relations = etree.fromstring(_part(target, "word/_rels/document.xml.rels").encode())
+    targets = {relation.get("Id"): relation.get("Target") for relation in relations}
+    pictures = []
+    with zipfile.ZipFile(target) as archive:
+        for anchor in body.iter(qn("wp:anchor")):
+            if anchor.get("behindDoc") != "0":
+                continue
+            blip = next(anchor.iter(qn("a:blip")))
+            data = archive.read("word/" + targets[blip.get(qn("r:embed"))])
+            pictures.append(Image.open(io.BytesIO(data)).convert("RGBA"))
+    return pictures
+
+
+def _colours(picture: Image.Image) -> set[str]:
+    kinds = set()
+    for red, green, blue, alpha in picture.getdata():
+        if alpha < 128:
+            continue
+        kinds.add("red" if red > 150 and green < 100 and blue < 100 else "other")
+    return kinds
+
+
+def test_slanted_stamp_text_stays_visible_over_its_frame(tmp_path: Path):
+    target = _convert(_stamped(tmp_path), tmp_path)
+
+    pictures = _foreground_pictures(target)
+
+    assert len(pictures) == 1
+    assert _colours(pictures[0]) == {"red"}
+    assert "Contract clause 9 body text." in _part(target)
+    assert "APPROVED" not in _part(target)
+
+
+def test_slanted_text_without_a_frame_is_kept_on_every_page_of_a_long_file(tmp_path: Path):
+    target = _convert(_stamped(tmp_path, pages=24, frame=False), tmp_path)
+
+    pictures = _foreground_pictures(target)
+
+    assert len(pictures) == 24
+    assert all(_colours(picture) == {"red"} for picture in pictures)
+
+
+def test_pages_without_slanted_text_get_no_foreground_picture(tmp_path: Path):
+    document = pymupdf.open()
+    page = document.new_page()
+    page.insert_text((72, 100), "Upright text only.", fontsize=11)
+    page.draw_rect(pymupdf.Rect(300, 400, 500, 500), color=(0, 0, 1), width=2)
+    document.save(tmp_path / "plain.pdf")
+
+    target = _convert(tmp_path / "plain.pdf", tmp_path)
+
+    assert _foreground_pictures(target) == []

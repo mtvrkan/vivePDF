@@ -29,7 +29,7 @@ from pdf2docx.text.TextSpan import TextSpan
 from vivepdf.ops._docx_bidi import mark_right_to_left
 from vivepdf.ops._docx_contours import inner_contours
 from vivepdf.ops._docx_fonts import embed_fonts
-from vivepdf.ops._docx_graphics import add_unused_graphics
+from vivepdf.ops._docx_graphics import TILT_TOLERANCE, add_slanted_text, add_unused_graphics
 from vivepdf.ops._docx_lines import (
     make_line_keeping_word_gap,
     parse_line_break_before_list_items,
@@ -52,7 +52,6 @@ MIN_IMAGE_AREA = 4
 CLIPPED_MARK = "vivepdfClipped"
 COVER_TOLERANCE = 1.0
 WORD_GAP_EM = 0.2
-TILT_TOLERANCE = 0.035
 STYLE_SUFFIX = re.compile(r"^(.+),\s*(Bold|Italic|BoldItalic|Oblique|BoldOblique)$", re.IGNORECASE)
 BOLD_FLAG = 16
 ITALIC_FLAG = 2
@@ -407,7 +406,9 @@ def _parse_pages_keeping_graphics(converter: Converter, **settings) -> Converter
     _plain_parse_pages(converter, **settings)
     for page in converter.pages:
         if page.finalized:
-            add_unused_graphics(page, converter.fitz_doc[page.id], settings["clip_image_res_ratio"])
+            engine = converter.fitz_doc[page.id]
+            add_unused_graphics(page, engine, settings["clip_image_res_ratio"])
+            add_slanted_text(page, engine, settings["clip_image_res_ratio"])
     return converter
 
 
