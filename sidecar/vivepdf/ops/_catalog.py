@@ -57,6 +57,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "convert.to_images",
     ),
     "convert_slides": ("convert.to_pptx",),
+    "office_fonts": ("convert.office_fonts",),
     "convert_tables": ("convert.to_xlsx",),
     "convert_text": (
         "convert.to_html",

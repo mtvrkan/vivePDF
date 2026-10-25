@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Convert › File to PDF: each Word, Excel, PowerPoint or OpenDocument file in the list shows the fonts it uses that this computer does not have, before converting, since LibreOffice replaces them with a similar font and the layout can shift [2026-10-25]
 - Print: the print dialog shows a preview of each sheet next to the settings, on A4 (Letter in the Americas) with the chosen pages, odd/even choice, reverse order, pages per sheet, grayscale, scale, rotation and comments, with buttons to step through the sheets; unsaved markups appear as they will print [2026-10-24]
 - Default PDF app: Settings › System shows which app opens PDF files and a "Make default" button on Windows, macOS and Linux (macOS asks for confirmation, Windows opens its default-apps settings on vivePDF's page), and the home page shows a card with "Make default" and "Don't ask again" while vivePDF is not the default [2026-10-24]
 - PDF to Word: fonts that Windows does not ship (for example Geist or Inter) are embedded in the Word file in their regular, bold and italic styles, so the text keeps its typeface on a computer without them; fonts whose licence allows only viewing are left out so the document stays editable [2026-10-25]

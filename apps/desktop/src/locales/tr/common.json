@@ -2969,6 +2969,7 @@
       "epubAuthor": "Yazar",
       "epubMetadataHint": "E-kitap okuyucularında görünür. Boş bırakılırsa belgenin kendi bilgisi kullanılır.",
       "needsLibreOffice": "LibreOffice gerekli",
+      "missingFonts": "Bu bilgisayarda yok: {{names}} — benzer bir yazı tipi kullanılır, düzen kayabilir",
       "svgFiles": "SVG çizimleri",
       "dropSvg": "SVG dosyalarını buraya bırakın ya da seçmek için tıklayın.",
       "svgFilter": "SVG çizimleri",

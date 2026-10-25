@@ -2969,6 +2969,7 @@
       "epubAuthor": "Author",
       "epubMetadataHint": "Shown in e-readers. Left empty, the document's own information is used.",
       "needsLibreOffice": "needs LibreOffice",
+      "missingFonts": "Not on this computer: {{names}} — a similar font is used, so the layout may shift",
       "svgFiles": "SVG drawings",
       "dropSvg": "Drop SVG files here or click to choose them.",
       "svgFilter": "SVG drawings",

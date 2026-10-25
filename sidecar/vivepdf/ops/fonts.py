@@ -184,7 +184,7 @@ def family_label(name: str) -> str:
     return re.sub(r"^[^\w]+|[^\w)]+$", "", cleaned).strip()
 
 
-def _font_directories() -> list[Path]:
+def font_directories() -> list[Path]:
     home = Path.home()
     if sys.platform == "win32":
         windir = Path(os.environ.get("WINDIR", r"C:\Windows"))
@@ -220,7 +220,7 @@ class SystemFont:
 @functools.lru_cache(maxsize=1)
 def system_font_index() -> dict[str, list[SystemFont]]:
     index: dict[str, list[SystemFont]] = {}
-    for directory in _font_directories():
+    for directory in font_directories():
         if not directory.is_dir():
             continue
         for path in directory.rglob("*"):

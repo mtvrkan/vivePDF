@@ -425,6 +425,13 @@ def install_root(soffice: Path) -> Path:
     return resolved.parent
 
 
+def bundled_font_folder(soffice: Path) -> Path:
+    resolved = soffice.resolve()
+    if sys.platform == "darwin":
+        return resolved.parent.parent / "Resources" / "fonts" / "truetype"
+    return install_root(soffice) / "share" / "fonts" / "truetype"
+
+
 def isolation_blocker(soffice: Path) -> str | None:
     if sys.platform == "darwin":
         return None if _seatbelt.available() else "sandboxMissing"

@@ -2968,6 +2968,7 @@
       "epubAuthor": "Autor",
       "epubMetadataHint": "Aparece nos leitores. Em branco, usa os dados do próprio documento.",
       "needsLibreOffice": "requer LibreOffice",
+      "missingFonts": "Não está neste computador: {{names}} — uma fonte parecida é usada e o layout pode mudar",
       "svgFiles": "Desenhos SVG",
       "dropSvg": "Solte arquivos SVG aqui ou clique para escolhê-los.",
       "svgFilter": "Desenhos SVG",

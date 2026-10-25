@@ -296,6 +296,12 @@
     "write"
    ]
   ],
+  "convert.office_fonts": [
+   [
+    "path",
+    "read"
+   ]
+  ],
   "convert.svg_to_pdf": [
    [
     "output",

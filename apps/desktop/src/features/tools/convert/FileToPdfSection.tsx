@@ -7,6 +7,7 @@ import { FileDropArea } from "@/components/tool/FileDropArea";
 import { OutputDirField, OutputPathField } from "@/components/tool/OutputPathField";
 import { basenameOf, extensionOf } from "@/shared/lib/paths";
 import { OFFICE_LIKE_EXTENSIONS } from "./conversions";
+import { useMissingFonts } from "./useMissingFonts";
 import type { ConvertOptions } from "./useConvertOptions";
 
 export function FileToPdfSection({
@@ -28,6 +29,7 @@ export function FileToPdfSection({
 }) {
   const { t } = useTranslation();
   const { files, setFiles, paper, setPaper, addFiles } = options;
+  const missingFonts = useMissingFonts(files, Boolean(tools?.libreoffice));
   return (
     <>
       <Section title={t("tools.convert.files")}>
@@ -36,9 +38,12 @@ export function FileToPdfSection({
         ) : (
           <ul className="divide-y rounded-md border">
             {files.map((file) => (
-              <li key={file} className="flex h-row items-center gap-2 px-2 text-sm">
+              <li key={file} className="flex min-h-row items-center gap-2 px-2 py-1 text-sm">
                 <span className="w-10 font-mono text-xs uppercase text-muted-foreground">{extensionOf(file)}</span>
-                <span className="min-w-0 flex-1 truncate" title={file}>{basenameOf(file)}</span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate" title={file}>{basenameOf(file)}</span>
+                  {missingFonts[file]?.length ? <span className="block text-xs text-warning">{t("tools.convert.missingFonts", { names: missingFonts[file].join(", ") })}</span> : null}
+                </span>
                 {OFFICE_LIKE_EXTENSIONS.includes(extensionOf(file)) && tools && !tools.libreoffice ? <span className="text-xs text-warning">{t("tools.convert.needsLibreOffice")}</span> : null}
                 <IconButton icon={X} label={t("common.removeNamed", { name: basenameOf(file) })} disabled={running} onClick={() => setFiles((state) => state.filter((item) => item !== file))} />
               </li>

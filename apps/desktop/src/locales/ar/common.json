@@ -3160,6 +3160,7 @@
       "epubAuthor": "المؤلف",
       "epubMetadataHint": "يظهر في قارئات الكتب. إذا تُرك فارغًا تُستخدم بيانات المستند.",
       "needsLibreOffice": "يتطلب LibreOffice",
+      "missingFonts": "غير موجود على هذا الحاسوب: {{names}} — يُستخدم خط مشابه وقد يتغير التخطيط",
       "svgFiles": "رسومات SVG",
       "dropSvg": "أفلت ملفات SVG هنا أو انقر لاختيارها.",
       "svgFilter": "رسومات SVG",

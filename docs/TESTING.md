@@ -274,6 +274,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert a PDF exported from LibreOffice (fonts such as Liberation Serif) to Word and to
   PowerPoint on a PC without LibreOffice's fonts: the headings show in Liberation Serif, not
   in a substitute font.
+- Convert › File to PDF: add a Word file written in a font Windows lacks (for example Aptos
+  on an older Windows, or Geist): the row shows "Not on this computer: …" under the file name;
+  a file in Calibri or Arial shows nothing.
 
 ### How native dialogs are answered
 

@@ -111,6 +111,8 @@ import type {
   ExtractImagesResult,
   FieldsResult,
   FileToPdfParams,
+  OfficeFontsParams,
+  OfficeFontsResult,
   CreateDocumentParams,
   CreateBulkParams,
   CreateBulkResult,
@@ -661,6 +663,9 @@ export const imagesToPdf = (params: ImagesToPdfParams, options?: RpcCallOptions)
 
 export const fileToPdf = (params: FileToPdfParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("convert.file_to_pdf", { mailLabels: mailLabels(), ...params }, options);
+
+export const officeFonts = (params: OfficeFontsParams, options?: RpcCallOptions) =>
+  rpc<OfficeFontsResult>("convert.office_fonts", params, options);
 
 export const createDocument = (params: CreateDocumentParams, options?: RpcCallOptions) =>
   rpc<OutputResult>("create.document", params, options);
