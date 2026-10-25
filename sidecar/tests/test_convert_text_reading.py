@@ -4,7 +4,7 @@ from pathlib import Path
 import pymupdf
 
 from vivepdf.ops._markdown_layout import _joined_lines, _turned_boxes
-from vivepdf.ops._markup import inert_markdown
+from vivepdf.ops._markdown_text import inert_markdown
 from vivepdf.ops.convert import TextSourceParams
 from vivepdf.ops.convert_text import (
     MarkdownParams,

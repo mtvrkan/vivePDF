@@ -27,17 +27,16 @@ from vivepdf.ops._markdown_layout import (
     merge_pictures,
     turned_lines,
 )
+from vivepdf.ops._markdown_text import inert_markdown, tidy_markdown
 from vivepdf.ops._markup import (
     body_size,
     document_language,
-    inert_markdown,
     join_broken_words,
     page_html,
     page_markup,
     picture_dpi,
     share_repeated_pictures,
     text_language,
-    tidy_markdown,
 )
 from vivepdf.ops._placement import drop_unplaceable_annotations, turn_text_upright
 from vivepdf.ops._ranges import parse_page_ranges

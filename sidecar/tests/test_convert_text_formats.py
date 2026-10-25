@@ -11,7 +11,8 @@ import pymupdf
 import pytest
 
 from vivepdf.ops import _page_images, convert_images, epub
-from vivepdf.ops._markup import MarkupBlock, PageMarkup, inert_markdown, page_html
+from vivepdf.ops._markdown_text import inert_markdown
+from vivepdf.ops._markup import MarkupBlock, PageMarkup, page_html
 from vivepdf.ops.convert import ExtractImagesParams, TextSourceParams, extract_images
 from vivepdf.ops.convert_images import ImagesParams, page_dpi, to_images
 from vivepdf.ops.convert_text import MarkdownParams, TextParams, to_html, to_markdown, to_text

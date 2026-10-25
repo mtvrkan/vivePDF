@@ -365,7 +365,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Presenter view on Windows with a projector, then Swap screens twice: the slide still fills
   each screen edge to edge with no black band at the top (the notch spacing is Mac only).
 - In the installed build, PDF to Markdown on a page with a link, a rotated side label and a
-  struck-through word: the link, the label and the strike-through come out as before.
+  struck-through word, and a line with `a < b` and `2 * 3`: the link, the label and the
+  strike-through come out as before and the `<` and `*` stay plain text.
 - In the installed build, Images to PDF with a turned phone photo, a lossless WebP and Compress
   photos on: the photo stands upright, the WebP stays sharp and the file is smaller.
 
