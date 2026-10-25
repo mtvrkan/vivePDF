@@ -231,3 +231,45 @@ def test_entities_and_other_document_types_are_still_refused(tmp_path: Path, tex
         sanitized_svg(_svg(tmp_path, text=text), tmp_path / "clean")
 
     assert caught.value.data["reason"] == "svgDoctype"
+
+
+SPRITE = (
+    '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"'
+    ' width="200" height="100" viewBox="0 0 200 100">'
+    '<defs><symbol id="kare" viewBox="0 0 10 10"><rect width="10" height="10"/></symbol>'
+    '<rect id="duz" width="5" height="5" fill="lime"/></defs>'
+    '<use xlink:href="#kare" x="10" y="10" width="80" height="80" fill="red"/>'
+    '<use href="#kare" x="110" y="10" width="40" height="80" fill="blue"/>'
+    '<use href="#duz" x="170" y="80"/>'
+    "</svg>"
+)
+
+
+def _boxes(document: pymupdf.Document) -> list[tuple[tuple[int, ...], tuple[float, ...]]]:
+    return [
+        (tuple(round(value) for value in drawing["rect"]), drawing["fill"])
+        for drawing in document[0].get_drawings()
+    ]
+
+
+def test_a_symbol_is_scaled_into_the_box_its_use_asks_for():
+    document = drawing_pdf(SPRITE.encode(), "sprite.svg")
+
+    assert _boxes(document) == [
+        ((10, 10, 90, 90), (1.0, 0.0, 0.0)),
+        ((110, 30, 150, 70), (0.0, 0.0, 1.0)),
+        ((170, 80, 175, 85), (0.0, 1.0, 0.0)),
+    ]
+
+
+def test_a_symbol_that_uses_itself_stops_expanding(tmp_path: Path):
+    text = (
+        '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10">'
+        '<symbol id="d" viewBox="0 0 10 10"><rect width="1" height="1"/>'
+        + '<use href="#d"/>' * 4
+        + '</symbol><use href="#d" width="10" height="10"/></svg>'
+    )
+
+    root = _clean(tmp_path, text)
+
+    assert sum(1 for _ in root.iter()) < 300_000

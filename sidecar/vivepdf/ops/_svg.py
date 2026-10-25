@@ -1,3 +1,4 @@
+import copy
 import re
 from collections.abc import Callable
 from pathlib import Path
@@ -19,6 +20,10 @@ DROPPED_ELEMENTS = frozenset({"script", "foreignObject", "iframe", "audio", "vid
 ABSOLUTE_NUMBER = re.compile(r"\d+(?:\.\d+)?")
 MAX_STYLE_RULES = 2000
 SIMPLE_SELECTOR = re.compile(r"^([A-Za-z][\w-]*|\*)?(?:#([\w-]+))?((?:\.[\w-]+)*)$")
+USE_POSITION = frozenset({"href", "x", "y", "width", "height"})
+SYMBOL_PLACEMENT = frozenset({"id", "x", "y", "width", "height"})
+MAX_SYMBOL_PASSES = 8
+MAX_EXPANDED_ELEMENTS = 200_000
 ABSOLUTE_LENGTH = re.compile(r"^\s*\d+(\.\d+)?\s*(px|pt|pc|mm|cm|in)?\s*$")
 
 
@@ -96,6 +101,72 @@ def _clean_tree(root: etree._Element) -> None:
     for element in root.iter():
         if isinstance(element.tag, str):
             _clean_element(element)
+    _expand_symbols(root)
+
+
+def _href(element: etree._Element) -> str:
+    return next((value for key, value in element.attrib.items() if _local(key) == "href"), "")
+
+
+def _plain_number(value: str) -> float | None:
+    try:
+        return float(value.strip().removesuffix("px"))
+    except ValueError:
+        return None
+
+
+def _symbol_instance(use: etree._Element, symbol: etree._Element) -> etree._Element:
+    namespace = etree.QName(symbol.tag).namespace
+    group = etree.Element(etree.QName(namespace, "g") if namespace else "g")
+    for key, value in use.attrib.items():
+        if _local(key) not in USE_POSITION:
+            group.set(key, value)
+    viewport = etree.SubElement(group, etree.QName(namespace, "svg") if namespace else "svg")
+    for key, value in symbol.attrib.items():
+        if _local(key) not in SYMBOL_PLACEMENT:
+            viewport.set(key, value)
+    offset = [_plain_number(use.get(key) or "0") for key in ("x", "y")]
+    if None in offset:
+        for key in ("x", "y"):
+            if use.get(key):
+                viewport.set(key, use.get(key))
+    elif any(offset):
+        moved = f"translate({offset[0]:g} {offset[1]:g})"
+        group.set("transform", f"{use.get('transform', '')} {moved}".strip())
+    for key in ("width", "height"):
+        viewport.set(key, use.get(key) or symbol.get(key) or "100%")
+    viewport.extend(copy.deepcopy(child) for child in symbol)
+    group.tail = use.tail
+    return group
+
+
+def _expand_symbols(root: etree._Element) -> None:
+    symbols = {
+        element.get("id"): element
+        for element in root.iter()
+        if isinstance(element.tag, str) and _local(element.tag) == "symbol" and element.get("id")
+    }
+    if not symbols:
+        return
+    budget = MAX_EXPANDED_ELEMENTS
+    for _ in range(MAX_SYMBOL_PASSES):
+        uses = [
+            (element, symbols[_href(element).strip()[1:]])
+            for element in root.iter()
+            if isinstance(element.tag, str)
+            and _local(element.tag) == "use"
+            and _href(element).strip()[1:] in symbols
+            and _href(element).strip().startswith("#")
+        ]
+        if not uses:
+            return
+        for use, symbol in uses:
+            parent = use.getparent()
+            size = sum(1 for _ in symbol.iter())
+            if parent is None or size > budget:
+                return
+            budget -= size
+            parent.replace(use, _symbol_instance(use, symbol))
 
 
 def sanitized_svg(source: Path, directory: Path) -> Path:

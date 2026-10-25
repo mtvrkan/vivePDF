@@ -256,6 +256,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   heading and web links open the browser after the viewer's usual prompt.
 - Convert an SVG exported from Illustrator (with the `<!DOCTYPE svg PUBLIC ...>` line) to PDF
   with the bundled LibreOffice: it converts and looks like the drawing in a browser.
+- Convert an SVG icon sheet that uses `<symbol>` and `<use>` (for example from an icon set's
+  sprite) to PDF with the bundled LibreOffice: every icon has the size and colour it has in a
+  browser.
 
 ### How native dialogs are answered
 

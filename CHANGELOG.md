@@ -17,6 +17,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- SVG drawings (SVG to PDF, Studio and editor pictures): icons drawn from a sprite with `<symbol viewBox>` and `<use>` are scaled to the size the drawing asks for instead of their tiny original size [2026-10-25]
 - SVG to PDF: drawings saved by Illustrator and other editors with the standard SVG 1.1 document type line are converted instead of being refused; files that declare entities or a non-SVG document type are still refused [2026-10-25]
 - HTML and Markdown to PDF: web and e-mail links stay clickable, links to a heading in the same file jump to it (Markdown headings get GitHub-style anchors, Turkish letters included), and the headings become the PDF's bookmarks; web pages, e-mails and clipboard text turned into PDF keep their web links clickable too [2026-10-25]
 - Text, Markdown and CSV to PDF: files saved in the Turkish Windows encoding show ş, ğ, ı, İ and Ş correctly on a Mac or an English Windows instead of þ, ð, ý, Ý and Þ [2026-10-25]
