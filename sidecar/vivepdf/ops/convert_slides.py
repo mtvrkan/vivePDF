@@ -7,7 +7,7 @@ import pymupdf
 from pydantic import Field
 
 from vivepdf.ops._document import open_document
-from vivepdf.ops._hidden_text import hidden_origins
+from vivepdf.ops._hidden_text import hidden_origins, widget_origins
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pptx_layout import (
     SlideFrame,
@@ -81,7 +81,7 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 page = document[index]
                 image_path = Path(temp_dir) / f"page-{index + 1}.png"
                 dpi = slide_dpi(page.rect, params.dpi)
-                hidden = hidden_origins(page)
+                hidden = hidden_origins(page) | widget_origins(page)
                 links = page_links(page)
                 boxes = line_boxes(page, hidden, links) if editable else []
                 if editable:

@@ -87,3 +87,22 @@ def hidden_origins(page: pymupdf.Page) -> set[tuple[float, float]]:
         area |= core
     shown, bare = _renders(page, area)
     return {key for key, core in candidates.items() if _unchanged(shown, bare, core)}
+
+
+def _origins(page: pymupdf.Page) -> set[tuple[float, float]]:
+    return {
+        origin_key(char["origin"])
+        for block in page.get_text("rawdict", flags=pymupdf.TEXTFLAGS_TEXT)["blocks"]
+        for line in block.get("lines", [])
+        for span in line["spans"]
+        for char in span["chars"]
+    }
+
+
+def widget_origins(page: pymupdf.Page) -> set[tuple[float, float]]:
+    if page.first_widget is None:
+        return set()
+    with pymupdf.open() as single:
+        single.insert_pdf(page.parent, from_page=page.number, to_page=page.number, widgets=False)
+        kept = _origins(single[0])
+    return _origins(page) - kept
