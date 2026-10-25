@@ -85,7 +85,7 @@ def _story_source(path: Path) -> str:
         return decode_text(payload, declared_charset(payload))
     text = decode_text(payload)
     if extension in ("md", "markdown"):
-        return markdown_to_html(text)
+        return markdown_to_html(text, anchors=True)
     return text_to_html(text)
 
 
@@ -199,6 +199,7 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
             params.paper,
             base_dir=source.parent,
             check_cancelled=progress.check_cancelled,
+            outline=True,
         )
     elif extension == "csv":
         _csv_to_pdf(source, target, params, progress)

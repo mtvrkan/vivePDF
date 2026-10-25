@@ -251,6 +251,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   table shows every value as written, and no file name or "Page 1" is printed.
 - On an English-language Windows, convert a Notepad TXT saved as ANSI on Turkish Windows to
   PDF: "Başlık, ışık, İğne" reads correctly, not "Baþlýk".
+- Convert a README.md with a table of contents (links like `#kurulum`) to PDF and open it in
+  Edge and Acrobat: the bookmarks panel lists the headings, the contents links jump to their
+  heading and web links open the browser after the viewer's usual prompt.
 
 ### How native dialogs are answered
 

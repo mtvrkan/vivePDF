@@ -2,10 +2,12 @@ import codecs
 import contextlib
 import html as html_module
 import io
+import itertools
 import locale
 import re
 from collections.abc import Callable
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 import pymupdf
 
@@ -33,6 +35,8 @@ BYTE_ORDER_MARKS = (
 META_CHARSET = re.compile(rb"""charset\s*=\s*["']?([A-Za-z0-9_.:-]+)""", re.IGNORECASE)
 LAST_RESORT_ENCODING = "cp1252"
 TURKISH_ENCODING = "cp1254"
+LINK_SCHEMES = frozenset({"http", "https", "mailto"})
+SLUG_DROPPED = re.compile(r"[^\w\- ]")
 TURKISH_BYTES = re.compile(rb"[\xd0\xdd\xde\xf0\xfd\xfe]")
 WESTERN_CODECS = frozenset(
     {"utf-8", "cp1252", "cp1254", "iso8859-1", "iso8859-9", "iso8859-15", "ascii", "mac-roman"}
@@ -76,11 +80,29 @@ def text_to_html(text: str) -> str:
     return f"<pre>{escaped}</pre>"
 
 
-def markdown_to_html(text: str, strikethrough: bool = False) -> str:
+def heading_slug(text: str, taken: set[str]) -> str:
+    base = "-".join(SLUG_DROPPED.sub("", text.strip().lower()).split(" "))
+    slug, number = base, 0
+    while slug in taken:
+        number += 1
+        slug = f"{base}-{number}"
+    taken.add(slug)
+    return slug
+
+
+def markdown_to_html(text: str, strikethrough: bool = False, anchors: bool = False) -> str:
     from markdown_it import MarkdownIt
 
     rules = ["table", "strikethrough"] if strikethrough else ["table"]
-    return MarkdownIt("commonmark", {"breaks": False}).enable(rules).render(text)
+    parser = MarkdownIt("commonmark", {"breaks": False}).enable(rules)
+    if not anchors:
+        return parser.render(text)
+    tokens = parser.parse(text)
+    taken: set[str] = set()
+    for opening, inline in itertools.pairwise(tokens):
+        if opening.type == "heading_open":
+            opening.attrSet("id", heading_slug(inline.content, taken))
+    return parser.renderer.render(tokens, parser.options, {})
 
 
 def story_pdf_bytes(
@@ -90,6 +112,7 @@ def story_pdf_bytes(
     css: str = BASE_CSS,
     archive_dirs: tuple[Path, ...] = (),
     check_cancelled: Callable[[], None] | None = None,
+    outline: bool = False,
 ) -> bytes:
     archive = pymupdf.Archive(str(FONT_DIR))
     for directory in archive_dirs:
@@ -100,6 +123,7 @@ def story_pdf_bytes(
     writer = pymupdf.DocumentWriter(buffer)
     pages = 0
     more = True
+    positions: list = []
     while more:
         if check_cancelled is not None:
             check_cancelled()
@@ -111,11 +135,66 @@ def story_pdf_bytes(
             )
         device = writer.begin_page(mediabox)
         more, _ = story.place(where)
+        story.element_positions(lambda position: positions.append(position), {"page": pages})
         story.draw(device)
         writer.end_page()
         pages += 1
     writer.close()
-    return buffer.getvalue()
+    opened = [position for position in positions if position.open_close & 1]
+    if not any(position.href for position in opened) and not (
+        outline and any(position.heading for position in opened)
+    ):
+        return buffer.getvalue()
+    with pymupdf.open("pdf", buffer.getvalue()) as document:
+        _add_links(document, opened)
+        if outline:
+            document.set_toc(_outline(opened))
+        return document.tobytes()
+
+
+def _add_links(document: pymupdf.Document, positions: list) -> None:
+    targets = {}
+    for position in positions:
+        if position.id and position.id not in targets:
+            targets[position.id] = position
+    for position in positions:
+        href = (position.href or "").strip()
+        if href.startswith("#"):
+            target = targets.get(unquote(href[1:]))
+            if target is None:
+                continue
+            link = {
+                "kind": pymupdf.LINK_GOTO,
+                "page": target.page,
+                "to": pymupdf.Point(*target.rect[:2]),
+            }
+        elif urlsplit(href).scheme.lower() in LINK_SCHEMES:
+            link = {"kind": pymupdf.LINK_URI, "uri": href}
+        else:
+            continue
+        document[position.page].insert_link({**link, "from": pymupdf.Rect(position.rect)})
+
+
+def _outline(positions: list) -> list[list]:
+    headings = [
+        position for position in positions if position.heading and (position.text or "").strip()
+    ]
+    entries = []
+    level = 0
+    for position in headings:
+        level = min(position.heading, level + 1)
+        entries.append(
+            [
+                level,
+                " ".join(position.text.split()),
+                position.page + 1,
+                {
+                    "kind": pymupdf.LINK_GOTO,
+                    "to": pymupdf.Point(position.rect[0], position.rect[1]),
+                },
+            ]
+        )
+    return entries
 
 
 def render_html_to_pdf(
@@ -124,6 +203,7 @@ def render_html_to_pdf(
     paper: str = "a4",
     base_dir: Path | None = None,
     check_cancelled: Callable[[], None] | None = None,
+    outline: bool = False,
 ) -> int:
     mediabox = pymupdf.paper_rect(paper)
     where = mediabox + (MARGIN, MARGIN, -MARGIN, -MARGIN)
@@ -133,6 +213,7 @@ def render_html_to_pdf(
         where,
         archive_dirs=(base_dir,) if base_dir is not None else (),
         check_cancelled=check_cancelled,
+        outline=outline,
     )
     with pymupdf.open("pdf", payload) as document:
         pages = document.page_count
