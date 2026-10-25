@@ -2870,7 +2870,13 @@
         "studio-document": "Write a report, article or thesis with headings, tables, citations and a contents list.",
         "business-card": "Two-sided cards with foil, emboss and spot UV, print-ready with bleed and imposition.",
         "bibliography": "Import .bib, RIS or CSL JSON, edit sources and export an APA, MLA, Chicago or IEEE reference list.",
-        "extract-images": "Pull every embedded picture out of a PDF in its original quality."
+        "extract-images": "Pull every embedded picture out of a PDF in its original quality.",
+        "comments": "Read, reply to and resolve comments, and export or import them as XFDF or FDF.",
+        "attachments": "See, add, save and remove files attached to a PDF.",
+        "properties": "Shows page count, page size, file size, PDF version and encryption, and edits title, author, subject and keywords.",
+        "read-aloud": "Reads the document aloud with voices that work without internet.",
+        "translate": "Translates selected text between installed languages without internet.",
+        "print": "Prints all, some, odd or even pages with scaling, copies and pages per sheet."
       },
       "studioDesign": "Design in Studio",
       "studioDocument": "Write a document",

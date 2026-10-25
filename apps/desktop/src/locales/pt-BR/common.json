@@ -2869,7 +2869,13 @@
         "studio-document": "Escreva um relatório, artigo ou tese com títulos, tabelas, citações e sumário.",
         "business-card": "Cartões frente e verso com hot stamping, relevo e verniz localizado, prontos para gráfica com sangria e imposição.",
         "bibliography": "Importe .bib, RIS ou CSL JSON, edite as fontes e exporte referências em APA, MLA, Chicago ou IEEE.",
-        "extract-images": "Extraia todas as imagens incorporadas de um PDF na qualidade original."
+        "extract-images": "Extraia todas as imagens incorporadas de um PDF na qualidade original.",
+        "comments": "Leia, responda e resolva comentários, e exporte ou importe-os como XFDF ou FDF.",
+        "attachments": "Veja, adicione, salve e remova arquivos anexados a um PDF.",
+        "properties": "Mostra número e tamanho das páginas, tamanho do arquivo, versão do PDF e criptografia, e edita título, autor, assunto e palavras-chave.",
+        "read-aloud": "Lê o documento em voz alta com vozes que funcionam sem internet.",
+        "translate": "Traduz o texto selecionado entre os idiomas instalados sem internet.",
+        "print": "Imprime todas as páginas, algumas, as ímpares ou as pares, com escala, cópias e páginas por folha."
       },
       "studioDesign": "Criar no Studio",
       "studioDocument": "Escrever um documento",

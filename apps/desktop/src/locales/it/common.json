@@ -2869,7 +2869,13 @@
         "studio-document": "Scrivi una relazione, un articolo o una tesi con titoli, tabelle, citazioni e indice.",
         "business-card": "Biglietti fronte-retro con lamina, rilievo e UV selettivo, pronti per la stampa con abbondanza e imposizione.",
         "bibliography": "Importa .bib, RIS o CSL JSON, modifica le fonti ed esporta una bibliografia APA, MLA, Chicago o IEEE.",
-        "extract-images": "Estrai tutte le immagini incorporate in un PDF nella qualità originale."
+        "extract-images": "Estrai tutte le immagini incorporate in un PDF nella qualità originale.",
+        "comments": "Leggi, rispondi e risolvi i commenti, ed esportali o importali come XFDF o FDF.",
+        "attachments": "Mostra, aggiungi, salva e rimuovi i file allegati a un PDF.",
+        "properties": "Mostra numero e formato delle pagine, dimensione del file, versione PDF e cifratura, e modifica titolo, autore, oggetto e parole chiave.",
+        "read-aloud": "Legge il documento ad alta voce con voci che funzionano senza internet.",
+        "translate": "Traduce il testo selezionato tra le lingue installate senza internet.",
+        "print": "Stampa tutte le pagine, alcune, le dispari o le pari, con scala, copie e pagine per foglio."
       },
       "studioDesign": "Progetta in Studio",
       "studioDocument": "Scrivi un documento",

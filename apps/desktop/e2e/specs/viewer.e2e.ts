@@ -2,7 +2,7 @@ import { readdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
-import { ENTER_KEY, answerDialogs, bootApp, button, clickButton, closeAllDocuments, copyFixture, fixtures, openInViewer, pressShortcut, probe, t, typeInto, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
+import { ENTER_KEY, answerDialogs, bootApp, button, clickButton, closeAllDocuments, copyFixture, fixtures, openInViewer, openTool, pressShortcut, probe, t, typeInto, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
 
 const ESCAPE_KEY = String.fromCharCode(0xe00c);
 const SHIFT_KEY = String.fromCharCode(0xe008);
@@ -630,5 +630,20 @@ describe("viewer", () => {
     await expect($(`//*[contains(text(), "${t("viewer.resume.toast")}")]`)).toBeDisplayed();
     await clickButton(t("viewer.resume.fromStart"));
     await expect(pageInput).toHaveValue("i");
+  });
+
+  it("opens the attachments panel and the print dialog from their tool shortcuts", async () => {
+    const path = copyFixture(fixtures().sample, "launch-shortcuts.pdf");
+    await openInViewer(path);
+
+    await openTool("viewer.attachments.title");
+    await openTool("viewer.print");
+
+    await expect($(`aside[aria-label="${t("viewer.attachments.title")}"]`)).toBeDisplayed({ wait: 30000 });
+    const printDialog = $(`//*[@role="dialog"][.//*[normalize-space(.)="${t("viewer.printDialog.title")}"]]`);
+    await expect(printDialog).toBeDisplayed({ wait: 30000 });
+    await browser.keys("Escape");
+    await printDialog.waitForDisplayed({ reverse: true });
+    await expect(browser).not.toHaveUrl(expect.stringContaining("panel="));
   });
 });

@@ -2869,7 +2869,13 @@
         "studio-document": "Rédigez un rapport, un article ou une thèse avec titres, tableaux, citations et table des matières.",
         "business-card": "Cartes recto verso avec dorure, gaufrage et vernis sélectif, prêtes à imprimer avec fond perdu et imposition.",
         "bibliography": "Importez .bib, RIS ou CSL JSON, modifiez les sources et exportez une bibliographie APA, MLA, Chicago ou IEEE.",
-        "extract-images": "Récupérez toutes les images intégrées d'un PDF dans leur qualité d'origine."
+        "extract-images": "Récupérez toutes les images intégrées d'un PDF dans leur qualité d'origine.",
+        "comments": "Lisez, répondez et résolvez les commentaires, puis exportez-les ou importez-les en XFDF ou FDF.",
+        "attachments": "Affichez, ajoutez, enregistrez et supprimez les fichiers joints à un PDF.",
+        "properties": "Affiche le nombre et le format des pages, la taille du fichier, la version PDF et le chiffrement, et modifie le titre, l’auteur, le sujet et les mots-clés.",
+        "read-aloud": "Lit le document à voix haute avec des voix qui fonctionnent sans internet.",
+        "translate": "Traduit le texte sélectionné entre les langues installées, sans internet.",
+        "print": "Imprime toutes les pages, une sélection, les pages paires ou impaires, avec mise à l’échelle, copies et pages par feuille."
       },
       "studioDesign": "Créer dans Studio",
       "studioDocument": "Rédiger un document",

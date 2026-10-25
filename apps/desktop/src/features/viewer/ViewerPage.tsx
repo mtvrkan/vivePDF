@@ -25,6 +25,7 @@ import { FileChangedMessage } from "./FileChangedBanner";
 import { SignaturesPanel } from "./SignaturesPanel";
 import { LayersPanel } from "./LayersPanel";
 import { useLayerCheck } from "./useLayerCheck";
+import { useLaunchRequest } from "./launchPanel";
 import { CommentsPanel } from "./CommentsPanel";
 import { TranslatePanel } from "./TranslatePanel";
 import { DrawingEditorHost } from "./overlay/drawing/DrawingEditorHost";
@@ -90,6 +91,7 @@ export function ViewerPage() {
   const layered = useLayerViewStore((state) => (activeDocumentId ? hasLayers(state.lists[activeDocumentId]) : false));
   useLayerCheck(activeDocumentId);
   useDocumentFileWatch();
+  useLaunchRequest(activeDocumentId);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {

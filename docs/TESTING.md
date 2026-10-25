@@ -385,6 +385,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - In the installed build, PDF to PowerPoint (editable) on a slide with outlined title text, a
   fake-bold word and Helvetica body text: the title stays outlined, the word bold and the body
   font Arial, as before.
+- From the Tools catalogue, pick Attachments, Comments, Document info, Read aloud and Translate
+  with a PDF open: the viewer comes forward with that side panel open. Pick Print: the print
+  dialog opens. With no PDF open, the viewer waits on its empty page and opens the panel once a
+  PDF is opened.
 
 ### How native dialogs are answered
 

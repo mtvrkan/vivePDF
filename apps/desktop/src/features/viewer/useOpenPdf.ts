@@ -33,6 +33,7 @@ import { isStudioPath, useStudioLaunchStore } from "@/shared/store/studioLaunchS
 import { convertedCopyOf, isConvertibleOnOpen, isOpenablePath, isUnsavedCopy, OPEN_CONVERTIBLE_EXTENSIONS, originalOf, useConvertedStore } from "./convertedDocuments";
 import { closeViewable, openViewable, type ViewableSource } from "@/shared/session/viewSources";
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
+import { leavesForDocument } from "./launchPanel";
 import { isPendingChange } from "./overlay/pending";
 import { neighbourAfterClose, restoreTabPlace, tabPlaceOf } from "./tabPlace";
 import { previewPaper } from "./usePrintPreview";
@@ -70,7 +71,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
   const location = useLocation();
   const pathname = location.pathname;
   const goToDocument = useCallback(() => {
-    if (pathname === "/pages") return;
+    if (!leavesForDocument(pathname, documentRoute)) return;
     void navigate(documentRoute);
   }, [navigate, pathname, documentRoute]);
   const { provides: docManager } = useDocumentManagerCapability();

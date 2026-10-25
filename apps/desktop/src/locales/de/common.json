@@ -2869,7 +2869,13 @@
         "studio-document": "Bericht, Artikel oder Abschlussarbeit mit Überschriften, Tabellen, Zitaten und Inhaltsverzeichnis schreiben.",
         "business-card": "Zweiseitige Karten mit Folie, Prägung und Spot-UV, druckfertig mit Beschnitt und Ausschießen.",
         "bibliography": ".bib, RIS oder CSL JSON importieren, Quellen bearbeiten und ein Verzeichnis nach APA, MLA, Chicago oder IEEE exportieren.",
-        "extract-images": "Alle eingebetteten Bilder einer PDF in Originalqualität herausholen."
+        "extract-images": "Alle eingebetteten Bilder einer PDF in Originalqualität herausholen.",
+        "comments": "Kommentare lesen, beantworten und als erledigt markieren sowie als XFDF oder FDF exportieren und importieren.",
+        "attachments": "An eine PDF angehängte Dateien anzeigen, hinzufügen, speichern und entfernen.",
+        "properties": "Seitenzahl, Seiten- und Dateigröße, PDF-Version und Verschlüsselung anzeigen sowie Titel, Autor, Betreff und Stichwörter bearbeiten.",
+        "read-aloud": "Das Dokument mit Stimmen vorlesen, die ohne Internet funktionieren.",
+        "translate": "Markierten Text ohne Internet zwischen installierten Sprachen übersetzen.",
+        "print": "Alle, ausgewählte, ungerade oder gerade Seiten mit Skalierung, Kopien und Seiten pro Blatt drucken."
       },
       "studioDesign": "In Studio gestalten",
       "studioDocument": "Dokument schreiben",

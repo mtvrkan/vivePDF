@@ -2870,7 +2870,13 @@
         "studio-document": "Başlıklar, tablolar, atıflar ve içindekilerle rapor, makale veya tez yazın.",
         "business-card": "Yaldız, kabartma ve lokal lak ile çift yüzlü kartvizit; taşma payı ve dizimle baskıya hazır.",
         "bibliography": ".bib, RIS veya CSL JSON içe aktarın, kaynakları düzenleyin ve APA, MLA, Chicago ya da IEEE kaynakça çıkarın.",
-        "extract-images": "PDF'teki tüm gömülü resimleri özgün kalitesinde dışarı çıkarın."
+        "extract-images": "PDF'teki tüm gömülü resimleri özgün kalitesinde dışarı çıkarın.",
+        "comments": "Yorumları okur, yanıtlar ve çözüldü olarak işaretler; XFDF ya da FDF olarak dışa ve içe aktarır.",
+        "attachments": "PDF'e iliştirilmiş dosyaları gösterir, ekler, kaydeder ve kaldırır.",
+        "properties": "Sayfa sayısını, sayfa ve dosya boyutunu, PDF sürümünü ve şifrelemeyi gösterir; başlık, yazar, konu ve anahtar kelimeleri düzenler.",
+        "read-aloud": "Belgeyi internetsiz çalışan seslerle yüksek sesle okur.",
+        "translate": "Seçilen metni kurulu diller arasında internetsiz çevirir.",
+        "print": "Tüm, seçili, tek ya da çift sayfaları ölçekleme, kopya sayısı ve kâğıt başına sayfa ile yazdırır."
       },
       "studioDesign": "Stüdyo'da tasarla",
       "studioDocument": "Belge yaz",

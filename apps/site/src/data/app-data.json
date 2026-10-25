@@ -227,6 +227,42 @@
         }
       },
       {
+        "id": "read-aloud",
+        "group": "improve",
+        "label": {
+          "tr": "Sesli oku",
+          "en": "Read aloud"
+        },
+        "description": {
+          "tr": "Belgeyi internetsiz çalışan seslerle yüksek sesle okur.",
+          "en": "Reads the document aloud with voices that work without internet."
+        }
+      },
+      {
+        "id": "translate",
+        "group": "improve",
+        "label": {
+          "tr": "Çevir",
+          "en": "Translate"
+        },
+        "description": {
+          "tr": "Seçilen metni kurulu diller arasında internetsiz çevirir.",
+          "en": "Translates selected text between installed languages without internet."
+        }
+      },
+      {
+        "id": "print",
+        "group": "improve",
+        "label": {
+          "tr": "Yazdır",
+          "en": "Print"
+        },
+        "description": {
+          "tr": "Tüm, seçili, tek ya da çift sayfaları ölçekleme, kopya sayısı ve kâğıt başına sayfa ile yazdırır.",
+          "en": "Prints all, some, odd or even pages with scaling, copies and pages per sheet."
+        }
+      },
+      {
         "id": "scanner",
         "group": "improve",
         "label": {
@@ -848,6 +884,42 @@
         "description": {
           "tr": "Vurgu, çizim, şekil ve metin kutusu ekler.",
           "en": "Add highlights, drawings, shapes and text boxes."
+        }
+      },
+      {
+        "id": "comments",
+        "group": "edit",
+        "label": {
+          "tr": "Yorumlar",
+          "en": "Comments"
+        },
+        "description": {
+          "tr": "Yorumları okur, yanıtlar ve çözüldü olarak işaretler; XFDF ya da FDF olarak dışa ve içe aktarır.",
+          "en": "Read, reply to and resolve comments, and export or import them as XFDF or FDF."
+        }
+      },
+      {
+        "id": "attachments",
+        "group": "edit",
+        "label": {
+          "tr": "Ekler",
+          "en": "Attachments"
+        },
+        "description": {
+          "tr": "PDF'e iliştirilmiş dosyaları gösterir, ekler, kaydeder ve kaldırır.",
+          "en": "See, add, save and remove files attached to a PDF."
+        }
+      },
+      {
+        "id": "properties",
+        "group": "edit",
+        "label": {
+          "tr": "Belge bilgisi",
+          "en": "Document info"
+        },
+        "description": {
+          "tr": "Sayfa sayısını, sayfa ve dosya boyutunu, PDF sürümünü ve şifrelemeyi gösterir; başlık, yazar, konu ve anahtar kelimeleri düzenler.",
+          "en": "Shows page count, page size, file size, PDF version and encryption, and edits title, author, subject and keywords."
         }
       },
       {
