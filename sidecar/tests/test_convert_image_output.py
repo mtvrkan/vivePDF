@@ -8,7 +8,7 @@ import pymupdf
 import pytest
 from PIL import Image
 
-from vivepdf.ops import _page_images, convert_images
+from vivepdf.ops import _page_image_files, _page_images
 from vivepdf.ops.convert_images import ImagesParams, to_images
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress, silent_progress
@@ -141,7 +141,7 @@ def test_parallel_rendering_matches_serial_output(
     serial = to_images(
         ImagesParams(path=str(colour_pdf), output_dir=str(tmp_path / "tek")), silent_progress()
     )
-    monkeypatch.setattr(convert_images, "render_workers", lambda pages: 2)
+    monkeypatch.setattr(_page_image_files, "render_workers", lambda pages: 2)
     parallel = to_images(
         ImagesParams(path=str(colour_pdf), output_dir=str(tmp_path / "çok")), silent_progress()
     )
@@ -156,7 +156,7 @@ def test_parallel_rendering_matches_serial_output(
 def test_parallel_rendering_cleans_up_on_cancel(
     colour_pdf: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    monkeypatch.setattr(convert_images, "render_workers", lambda pages: 2)
+    monkeypatch.setattr(_page_image_files, "render_workers", lambda pages: 2)
     folder = tmp_path / "paralel iptal"
     with pytest.raises(OpError) as caught:
         to_images(ImagesParams(path=str(colour_pdf), output_dir=str(folder)), _cancel_after(1))
@@ -215,7 +215,7 @@ def test_rendering_carries_on_in_process_when_workers_die(
     serial = to_images(
         ImagesParams(path=str(colour_pdf), output_dir=str(tmp_path / "tek")), silent_progress()
     )
-    monkeypatch.setattr(convert_images, "render_workers", lambda pages: 2)
+    monkeypatch.setattr(_page_image_files, "render_workers", lambda pages: 2)
     monkeypatch.setattr(_page_images, "_start_worker", sys.exit)
     fallback = to_images(
         ImagesParams(path=str(colour_pdf), output_dir=str(tmp_path / "yedek")), silent_progress()
@@ -246,7 +246,7 @@ def test_single_tiff_failing_mid_page_reports_the_real_error_and_leaves_nothing(
 ) -> None:
     import gc
 
-    rendered = convert_images.page_pixmap
+    rendered = _page_image_files.page_pixmap
     calls: list[int] = []
 
     def fail_on_second_page(*args, **kwargs):
@@ -255,7 +255,7 @@ def test_single_tiff_failing_mid_page_reports_the_real_error_and_leaves_nothing(
             raise OpError(ErrorCode.INTERNAL, "render failed")
         return rendered(*args, **kwargs)
 
-    monkeypatch.setattr(convert_images, "page_pixmap", fail_on_second_page)
+    monkeypatch.setattr(_page_image_files, "page_pixmap", fail_on_second_page)
 
     with pytest.raises(OpError, match="render failed"):
         to_images(

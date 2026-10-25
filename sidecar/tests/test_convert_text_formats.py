@@ -10,11 +10,12 @@ from xml.etree import ElementTree
 import pymupdf
 import pytest
 
-from vivepdf.ops import _page_images, convert_images, epub
+from vivepdf.ops import _page_image_files, _page_images, epub
 from vivepdf.ops._markdown_text import inert_markdown
 from vivepdf.ops._markup import MarkupBlock, PageMarkup, page_html
+from vivepdf.ops._page_images import page_dpi
 from vivepdf.ops.convert import TextSourceParams
-from vivepdf.ops.convert_images import ImagesParams, page_dpi, to_images
+from vivepdf.ops.convert_images import ImagesParams, to_images
 from vivepdf.ops.convert_text import MarkdownParams, TextParams, to_html, to_markdown, to_text
 from vivepdf.ops.epub import EpubParams, cover_image, limit_chapters, plan_chapters, to_epub
 from vivepdf.ops.image_extraction import ExtractImagesParams, extract_images
@@ -287,7 +288,7 @@ def test_epub_failed_write_leaves_nothing_behind(
 def test_page_dpi_stays_under_the_side_and_pixel_limits() -> None:
     assert page_dpi(pymupdf.Rect(0, 0, 595, 842), 300, "png") == 300
     wide = page_dpi(pymupdf.Rect(0, 0, 2400, 400), 600, "webp")
-    assert 2400 * wide / 72 <= convert_images.MAX_IMAGE_SIDE["webp"]
+    assert 2400 * wide / 72 <= _page_image_files.MAX_IMAGE_SIDE["webp"]
     huge = page_dpi(pymupdf.Rect(0, 0, 3370, 4768), 600, "png")
     assert (3370 * huge / 72) * (4768 * huge / 72) <= _page_images.MAX_PAGE_PIXELS
 
