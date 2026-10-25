@@ -27,6 +27,7 @@ import { CITATION_STYLES, sourceMatches, sourceSummary } from "./citations";
 import { applyChanges, checkedDois, checksByDoi, doiKey, doiLink, entryOfCsl, filledDraftFields, leadingNotice, sourceChanges, STATUS_TONES, type SourceChange } from "./doiSources";
 import { useDocumentStore } from "./documentStore";
 import { SourceEditor } from "./SourceEditor";
+import { reportParseNotices } from "./sourceNotices";
 import { draftOf, entryOfDraft, keyProblem, namesText, renameCitationKey, type SourceDraft } from "./sourceDraft";
 import { FORMAT_EXTENSIONS, formatOfPath, parseSources, SOURCE_FILE_EXTENSIONS, SOURCE_FORMATS, writeSources, type SourceFormat } from "./sourceFormats";
 
@@ -114,7 +115,7 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
     const merged = mergeSources(useDocumentStore.getState().document?.sources ?? [], parsed.entries);
     store.setSources(merged.sources);
     useToastStore.getState().push("success", t("studio.doc.cite.imported", { added: merged.added, updated: merged.replaced }));
-    if (parsed.skipped > 0) useToastStore.getState().push("info", t("studio.doc.cite.skipped", { skipped: parsed.skipped }));
+    reportParseNotices(t, parsed);
     return true;
   };
 
@@ -139,7 +140,7 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
     setExporting(true);
     try {
       await invoke("write_text_file", { path, contents: writeSources(sources, formatOfPath(path)) });
-      useToastStore.getState().push("success", t("studio.doc.cite.exported", { count: sources.length }));
+      useToastStore.getState().push("success", t("studio.doc.cite.exported", { total: sources.length }));
     } catch (error) {
       useToastStore.getState().push("error", describeError(t, toRpcError(error)));
     } finally {

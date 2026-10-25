@@ -1718,6 +1718,12 @@
     "read"
    ]
   ],
+  "studio.write_bibliography": [
+   [
+    "output",
+    "write"
+   ]
+  ],
   "system.network_mode": [],
   "system.office_install": [],
   "system.office_remove": [],

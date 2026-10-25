@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { BibEntry, DocumentNode, DocumentSettings, StudioDocument } from "@/types/studio";
+import type { BibEntry, DocumentNode, DocumentSettings, SourceFileOrigin, StudioDocument } from "@/types/studio";
 import { normalizeDocument, normalizeSettings } from "./model";
 
 export const DOCUMENT_DRAFT_KEY = "vivepdf.studioDocumentDraft";
@@ -9,11 +9,12 @@ export const CONTENT_DELAY_MS = 250;
 type DocumentState = {
   document: StudioDocument | null;
   filePath: string | null;
+  sourceFile: SourceFileOrigin | null;
   dirty: boolean;
   revision: number;
   session: number;
   sourcesRequested: boolean;
-  open: (document: StudioDocument, filePath?: string | null) => void;
+  open: (document: StudioDocument, filePath?: string | null, sourceFile?: SourceFileOrigin | null) => void;
   close: () => void;
   setContent: (content: DocumentNode) => void;
   deferContent: (read: () => DocumentNode) => void;
@@ -24,7 +25,10 @@ type DocumentState = {
   setSources: (sources: BibEntry[]) => void;
   requestSources: (requested: boolean) => void;
   markSaved: (filePath: string) => void;
+  markSourcesSaved: (sourceFile: SourceFileOrigin) => void;
 };
+
+type DocumentDraft = { document: StudioDocument; filePath: string | null; sourceFile: SourceFileOrigin | null };
 
 let draftTimer: ReturnType<typeof setTimeout> | null = null;
 let pendingContent: { read: () => DocumentNode; timer: ReturnType<typeof setTimeout> } | null = null;
@@ -34,29 +38,37 @@ function dropPendingContent() {
   pendingContent = null;
 }
 
-function storeDraft(document: StudioDocument, filePath: string | null) {
+function storeDraft(document: StudioDocument, filePath: string | null, sourceFile: SourceFileOrigin | null) {
   try {
-    localStorage.setItem(DOCUMENT_DRAFT_KEY, JSON.stringify({ document, filePath }));
+    localStorage.setItem(DOCUMENT_DRAFT_KEY, JSON.stringify({ document, filePath, sourceFile }));
   } catch {
     return;
   }
 }
 
-function writeDraft(document: StudioDocument, filePath: string | null) {
+function writeDraft(document: StudioDocument, filePath: string | null, sourceFile: SourceFileOrigin | null) {
   if (draftTimer) clearTimeout(draftTimer);
   draftTimer = setTimeout(() => {
     draftTimer = null;
-    storeDraft(document, filePath);
+    storeDraft(document, filePath, sourceFile);
   }, DRAFT_DELAY_MS);
 }
 
-export function readDocumentDraft(): { document: StudioDocument; filePath: string | null } | null {
+function sourceFileOf(value: unknown): SourceFileOrigin | null {
+  if (!value || typeof value !== "object") return null;
+  const { path, format, encoding, hash, unsafe } = value as Record<string, unknown>;
+  if (typeof path !== "string" || typeof encoding !== "string" || typeof hash !== "string" || typeof unsafe !== "boolean") return null;
+  return format === "bibtex" || format === "ris" || format === "csl" ? { path, format, encoding, hash, unsafe } : null;
+}
+
+export function readDocumentDraft(): DocumentDraft | null {
   try {
     const raw = localStorage.getItem(DOCUMENT_DRAFT_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as { document?: unknown; filePath?: unknown };
+    const parsed = JSON.parse(raw) as { document?: unknown; filePath?: unknown; sourceFile?: unknown };
     const document = normalizeDocument(parsed.document);
-    return document ? { document, filePath: typeof parsed.filePath === "string" ? parsed.filePath : null } : null;
+    const filePath = typeof parsed.filePath === "string" ? parsed.filePath : null;
+    return document ? { document, filePath, sourceFile: filePath ? null : sourceFileOf(parsed.sourceFile) } : null;
   } catch {
     return null;
   }
@@ -64,29 +76,30 @@ export function readDocumentDraft(): { document: StudioDocument; filePath: strin
 
 export const useDocumentStore = create<DocumentState>((set, get) => {
   const change = (document: StudioDocument) => {
-    const { filePath, revision } = get();
+    const { filePath, sourceFile, revision } = get();
     set({ document, dirty: true, revision: revision + 1 });
-    writeDraft(document, filePath);
+    writeDraft(document, filePath, sourceFile);
   };
   return {
     document: null,
     filePath: null,
+    sourceFile: null,
     dirty: false,
     revision: 0,
     session: 0,
     sourcesRequested: false,
-    open: (document, filePath = null) => {
+    open: (document, filePath = null, sourceFile = null) => {
       dropPendingContent();
-      set({ document, filePath, dirty: false, revision: get().revision + 1, session: get().session + 1 });
-      writeDraft(document, filePath);
+      set({ document, filePath, sourceFile: filePath ? null : sourceFile, dirty: false, revision: get().revision + 1, session: get().session + 1 });
+      writeDraft(document, filePath, filePath ? null : sourceFile);
     },
     close: () => {
       get().flushContent();
-      const { document, filePath } = get();
+      const { document, filePath, sourceFile } = get();
       if (draftTimer) clearTimeout(draftTimer);
       draftTimer = null;
-      if (document) storeDraft(document, filePath);
-      set({ document: null, filePath: null, dirty: false, sourcesRequested: false });
+      if (document) storeDraft(document, filePath, sourceFile);
+      set({ document: null, filePath: null, sourceFile: null, dirty: false, sourcesRequested: false });
     },
     setContent: (content) => {
       const document = get().document;
@@ -120,9 +133,14 @@ export const useDocumentStore = create<DocumentState>((set, get) => {
     },
     requestSources: (sourcesRequested) => set({ sourcesRequested }),
     markSaved: (filePath) => {
-      set({ filePath, dirty: false });
+      set({ filePath, sourceFile: null, dirty: false });
       const document = get().document;
-      if (document) writeDraft(document, filePath);
+      if (document) writeDraft(document, filePath, null);
+    },
+    markSourcesSaved: (sourceFile) => {
+      set({ sourceFile, dirty: false });
+      const document = get().document;
+      if (document) writeDraft(document, null, sourceFile);
     },
   };
 });

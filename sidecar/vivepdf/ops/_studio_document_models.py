@@ -11,6 +11,7 @@ MAX_IMAGES = 300
 MAX_IMAGE_CHARS = 30_000_000
 MAX_FONTS = 16
 MAX_DOCUMENT_BYTES = 120 * 1024 * 1024
+MAX_BIBLIOGRAPHY_CHARS = 16 * 1024 * 1024
 DOCUMENT_EXTENSION = "vivedoc"
 DOCUMENT_VERSION = 3
 
@@ -134,6 +135,23 @@ class StudioDocumentImportResult(RpcModel):
 class StudioBibliographyResult(RpcModel):
     text: str
     name: str
+    encoding: str = "utf-8"
+    hash: str = ""
+    lossy: bool = False
+
+
+class StudioBibliographyWriteParams(RpcModel):
+    text: str = Field(max_length=MAX_BIBLIOGRAPHY_CHARS)
+    output: WriteFile
+    encoding: str = Field(default="utf-8", max_length=40)
+    expected_hash: str | None = Field(default=None, max_length=64)
+    overwrite: bool = False
+
+
+class StudioBibliographyWriteResult(RpcModel):
+    output: str
+    bytes: int
+    hash: str
 
 
 class StudioDocumentImageResult(RpcModel):

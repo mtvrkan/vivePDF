@@ -259,7 +259,11 @@ def _source_text(source: InsertedSource | None) -> str | None:
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             "the inserted item's source is too large",
-            {"reason": "sourceTooLarge", "limit": MAX_SOURCE_BYTES},
+            {
+                "reason": "sourceTooLarge",
+                "limit": MAX_SOURCE_BYTES,
+                "limitMb": round(MAX_SOURCE_BYTES / (1024 * 1024), 2),
+            },
         )
     return text
 

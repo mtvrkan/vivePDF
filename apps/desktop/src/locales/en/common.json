@@ -6480,7 +6480,7 @@
       "omrLayoutUnknown": "This sheet's layout code is not recognised; read the sheets again.",
       "tooManyDocuments": "Up to {{max}} documents can be open at once. Close one to open another.",
       "noContent": "There is no text to lay out. Choose a file or type some text.",
-      "sourceTooLarge": "The text file is larger than 20 MB.",
+      "sourceTooLarge": "The file is larger than {{limitMb}} MB.",
       "unknownFields": "These fields are not columns of the table: {{names}}.",
       "tooManyRows": "The table has more than 5,000 rows. Split it into smaller tables.",
       "noOutputDir": "Choose a folder for the files.",
@@ -6521,7 +6521,10 @@
       "doiUntrustedHost": "The reference service redirected to an untrusted address, so it was blocked.",
       "blockedTarget": "vivePDF does not save programs, scripts or shortcuts, or into startup and SSH folders. Choose another name or folder.",
       "notGranted": "vivePDF only opens files you chose or dragged in yourself. Choose this file again to open it.",
-      "badSectionColumns": "A section break must have 1, 2 or 3 columns."
+      "badSectionColumns": "A section break must have 1, 2 or 3 columns.",
+      "sourceSaveUnsafe": "{{name}} can't be saved in place because part of it could not be read. Export the sources to a new file instead.",
+      "sourceChangedOnDisk": "{{name}} was changed by another program after it was opened. Open it again, or export the sources to a new file.",
+      "sourceNotEncodable": "Some characters can't be stored in this file's encoding ({{encoding}}). Export the sources to a new file instead."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -9365,7 +9368,12 @@
           "corrigendum": "Corrigendum",
           "addendum": "Addendum",
           "clarification": "Clarification"
-        }
+        },
+        "duplicates": "Entries with a key used earlier left out: {{count}}",
+        "truncated": "Only the first {{limit}} sources were loaded; {{count}} more were left out",
+        "clipped": "Very long fields shortened: {{count}}",
+        "leaveTitle": "Save the changes to the source file?",
+        "leaveBody": "“{{name}}” has changes that are not written to the file yet. Save them before leaving?"
       },
       "spacing": {
         "label": "Line and paragraph spacing",

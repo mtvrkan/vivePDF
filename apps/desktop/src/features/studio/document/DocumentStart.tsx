@@ -47,7 +47,7 @@ export function DocumentStart({ language }: { language: string }) {
             <p className="text-sm font-semibold">{t("studio.doc.continue")}</p>
             <p className="truncate text-sm text-muted-foreground">{draft.document.name || t("studio.doc.untitled")}</p>
           </div>
-          <Button variant="primary" icon={<Play className="size-4" aria-hidden />} onClick={() => open(draft.document, draft.filePath)}>
+          <Button variant="primary" icon={<Play className="size-4" aria-hidden />} onClick={() => open(draft.document, draft.filePath, draft.sourceFile)}>
             {t("studio.start.resume")}
           </Button>
         </div>

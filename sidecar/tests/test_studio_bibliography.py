@@ -5,6 +5,7 @@ import pytest
 
 from vivepdf.ops import studio_document
 from vivepdf.ops._studio_document_models import (
+    StudioBibliographyWriteParams,
     StudioDocumentOpenParams,
     StudioDocumentRenderParams,
 )
@@ -133,3 +134,75 @@ def test_a_cited_markdown_file_picks_up_a_bib_file_with_its_own_name(tmp_path: P
     assert cited.title == "thesis"
     assert uncited.bibliography == ""
     assert "data-bibliography" not in uncited.html
+
+
+def _write(path: Path, text: str, **extra):
+    return studio_document.write_bibliography(
+        StudioBibliographyWriteParams.model_validate(
+            {"text": text, "output": str(path), "overwrite": True, **extra}
+        ),
+        silent_progress(),
+    )
+
+
+def test_a_library_is_read_with_its_encoding_and_written_back_in_it(tmp_path: Path):
+    legacy = tmp_path / "eski.bib"
+    legacy.write_bytes(
+        "% Encoding: windows-1254\n@book{s, author = {Şahin, Işık}}".encode("cp1254")
+    )
+    marked = tmp_path / "bom.bib"
+    marked.write_bytes(b"\xef\xbb\xbf" + ENTRY.encode("utf-8"))
+
+    read = _read(legacy)
+    written = _write(legacy, read.text + "\n", encoding=read.encoding, expectedHash=read.hash)
+    with_mark = _read(marked)
+    _write(marked, with_mark.text, encoding=with_mark.encoding, expectedHash=with_mark.hash)
+
+    assert read.encoding == "cp1254"
+    assert "Şahin, Işık" in read.text
+    assert not read.lossy
+    assert legacy.read_bytes().decode("cp1254").endswith("Işık}}\n")
+    assert written.hash == _read(legacy).hash
+    assert with_mark.text == ENTRY
+    assert marked.read_bytes().startswith(b"\xef\xbb\xbf@article")
+
+
+def test_writing_refuses_a_file_that_changed_on_disk_or_text_the_encoding_cannot_hold(
+    tmp_path: Path,
+):
+    library = tmp_path / "library.bib"
+    library.write_bytes(ENTRY.encode("utf-8"))
+    read = _read(library)
+    library.write_bytes(ENTRY.encode("utf-8") + b"\n")
+
+    with pytest.raises(OpError) as changed:
+        _write(library, read.text, expectedHash=read.hash)
+    with pytest.raises(OpError) as narrow:
+        _write(tmp_path / "narrow.bib", "@misc{k, title = {日本}}", encoding="cp1254")
+    with pytest.raises(OpError) as wrong_type:
+        _write(tmp_path / "library.txt", ENTRY)
+
+    assert changed.value.data["reason"] == "sourceChangedOnDisk"
+    assert library.read_bytes() == ENTRY.encode("utf-8") + b"\n"
+    assert narrow.value.data == {"reason": "sourceNotEncodable", "encoding": "cp1254"}
+    assert wrong_type.value.data["reason"] == "unsupportedType"
+
+
+def test_a_new_library_file_is_written_and_an_existing_one_is_kept_without_overwrite(
+    tmp_path: Path,
+):
+    fresh = tmp_path / "sub" / "new.ris"
+    kept = tmp_path / "kept.bib"
+    kept.write_bytes(b"old")
+
+    result = _write(fresh, "TY  - JOUR\nER  - \n")
+    with pytest.raises(OpError) as exists:
+        studio_document.write_bibliography(
+            StudioBibliographyWriteParams.model_validate({"text": ENTRY, "output": str(kept)}),
+            silent_progress(),
+        )
+
+    assert fresh.read_text("utf-8") == "TY  - JOUR\nER  - \n"
+    assert result.bytes == len(fresh.read_bytes())
+    assert exists.value.data["exists"] is True
+    assert kept.read_bytes() == b"old"

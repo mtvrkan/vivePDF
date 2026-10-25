@@ -493,6 +493,10 @@ export type StudioDocumentFileResult = { output: string; bytes: number };
 
 export type StudioDocumentImport = { html: string; title: string; author: string; date: string; referencesTitle: string; bibliography: string };
 
+export type StudioBibliography = { text: string; name: string; encoding: string; hash: string; lossy: boolean };
+
+export type SourceFileOrigin = { path: string; format: "bibtex" | "ris" | "csl"; encoding: string; hash: string; unsafe: boolean };
+
 export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number };
 
 export type StudioDocumentPage = { image: string; width: number; height: number };

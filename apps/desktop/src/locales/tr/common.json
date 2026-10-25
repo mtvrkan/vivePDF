@@ -6480,7 +6480,7 @@
       "omrLayoutUnknown": "Bu formun düzen kodu tanınmadı; formları yeniden okuyun.",
       "tooManyDocuments": "Aynı anda en fazla {{max}} belge açık olabilir. Başka bir belge açmak için birini kapatın.",
       "noContent": "Yerleştirilecek metin yok. Bir dosya seçin ya da metin yazın.",
-      "sourceTooLarge": "Metin dosyası 20 MB'tan büyük.",
+      "sourceTooLarge": "Dosya {{limitMb}} MB'tan büyük.",
       "unknownFields": "Bu alanlar tabloda sütun olarak yok: {{names}}.",
       "tooManyRows": "Tabloda 5.000'den fazla satır var. Daha küçük tablolara bölün.",
       "noOutputDir": "Dosyalar için bir klasör seçin.",
@@ -6521,7 +6521,10 @@
       "doiUntrustedHost": "Kaynak hizmeti güvenilmeyen bir adrese yönlendirdi, engellendi.",
       "blockedTarget": "vivePDF program, betik ya da kısayol kaydetmez; başlangıç ve SSH klasörlerine de yazmaz. Başka bir ad ya da klasör seçin.",
       "notGranted": "vivePDF yalnızca sizin seçtiğiniz ya da sürükleyip bıraktığınız dosyaları açar. Açmak için bu dosyayı yeniden seçin.",
-      "badSectionColumns": "Bölüm sonu 1, 2 ya da 3 sütunlu olmalı."
+      "badSectionColumns": "Bölüm sonu 1, 2 ya da 3 sütunlu olmalı.",
+      "sourceSaveUnsafe": "{{name}} bir kısmı okunamadığı için yerinde kaydedilemiyor. Kaynakları yeni bir dosyaya dışa aktarın.",
+      "sourceChangedOnDisk": "{{name}} açıldıktan sonra başka bir program tarafından değiştirildi. Dosyayı yeniden açın ya da kaynakları yeni bir dosyaya dışa aktarın.",
+      "sourceNotEncodable": "Bazı karakterler bu dosyanın kodlamasında ({{encoding}}) saklanamıyor. Kaynakları yeni bir dosyaya dışa aktarın."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -9365,7 +9368,12 @@
           "corrigendum": "Corrigendum",
           "addendum": "Ek (addendum)",
           "clarification": "Açıklama"
-        }
+        },
+        "duplicates": "Daha önce kullanılmış anahtarlı kayıtlar alınmadı: {{count}}",
+        "truncated": "Yalnızca ilk {{limit}} kaynak yüklendi; {{count}} kaynak dışarıda kaldı",
+        "clipped": "Çok uzun alanlar kısaltıldı: {{count}}",
+        "leaveTitle": "Kaynak dosyasındaki değişiklikler kaydedilsin mi?",
+        "leaveBody": "“{{name}}” içinde dosyaya henüz yazılmamış değişiklikler var. Çıkmadan önce kaydedilsin mi?"
       },
       "spacing": {
         "label": "Satır ve paragraf aralığı",

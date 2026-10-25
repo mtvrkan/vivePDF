@@ -6479,7 +6479,7 @@
       "omrLayoutUnknown": "Der Layoutcode dieses Bogens ist unbekannt; lesen Sie die Bögen erneut ein.",
       "tooManyDocuments": "Es können höchstens {{max}} Dokumente gleichzeitig geöffnet sein. Schließen Sie eines, um ein weiteres zu öffnen.",
       "noContent": "Es gibt keinen Text zum Setzen. Wählen Sie eine Datei oder geben Sie Text ein.",
-      "sourceTooLarge": "Die Textdatei ist größer als 20 MB.",
+      "sourceTooLarge": "Die Datei ist größer als {{limitMb}} MB.",
       "unknownFields": "Diese Felder sind keine Spalten der Tabelle: {{names}}.",
       "tooManyRows": "Die Tabelle hat mehr als 5.000 Zeilen. Teilen Sie sie in kleinere Tabellen auf.",
       "noOutputDir": "Wählen Sie einen Ordner für die Dateien.",
@@ -6520,7 +6520,10 @@
       "doiUntrustedHost": "Der Literaturdienst hat auf eine nicht vertrauenswürdige Adresse umgeleitet; das wurde blockiert.",
       "blockedTarget": "vivePDF speichert keine Programme, Skripte oder Verknüpfungen und schreibt nicht in Autostart- oder SSH-Ordner. Wählen Sie einen anderen Namen oder Ordner.",
       "notGranted": "vivePDF öffnet nur Dateien, die Sie selbst ausgewählt oder hineingezogen haben. Wählen Sie diese Datei erneut aus, um sie zu öffnen.",
-      "badSectionColumns": "Ein Abschnittsumbruch muss 1, 2 oder 3 Spalten haben."
+      "badSectionColumns": "Ein Abschnittsumbruch muss 1, 2 oder 3 Spalten haben.",
+      "sourceSaveUnsafe": "{{name}} kann nicht direkt gespeichert werden, weil ein Teil davon nicht gelesen werden konnte. Exportieren Sie die Quellen stattdessen in eine neue Datei.",
+      "sourceChangedOnDisk": "{{name}} wurde nach dem Öffnen von einem anderen Programm geändert. Öffnen Sie die Datei erneut oder exportieren Sie die Quellen in eine neue Datei.",
+      "sourceNotEncodable": "Einige Zeichen lassen sich in der Kodierung dieser Datei ({{encoding}}) nicht speichern. Exportieren Sie die Quellen stattdessen in eine neue Datei."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -9363,7 +9366,12 @@
           "corrigendum": "Corrigendum",
           "addendum": "Nachtrag",
           "clarification": "Klarstellung"
-        }
+        },
+        "duplicates": "Einträge mit bereits verwendetem Schlüssel ausgelassen: {{count}}",
+        "truncated": "Nur die ersten {{limit}} Quellen wurden geladen; {{count}} weitere wurden ausgelassen",
+        "clipped": "Sehr lange Felder gekürzt: {{count}}",
+        "leaveTitle": "Änderungen an der Quellendatei speichern?",
+        "leaveBody": "„{{name}}“ enthält Änderungen, die noch nicht in die Datei geschrieben wurden. Vor dem Verlassen speichern?"
       },
       "spacing": {
         "label": "Zeilen- und Absatzabstand",

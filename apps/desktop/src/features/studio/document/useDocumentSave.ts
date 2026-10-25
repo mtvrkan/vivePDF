@@ -4,7 +4,8 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { basenameOf } from "@/shared/lib/paths";
 import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
-import { saveStudioDocument } from "./documentFile";
+import { saveSourceLibrary, saveStudioDocument } from "./documentFile";
+import { useDocumentStore } from "./documentStore";
 
 export function useDocumentSave() {
   const { t } = useTranslation();
@@ -13,7 +14,8 @@ export function useDocumentSave() {
     async (saveAs = false): Promise<boolean> => {
       setSaving(true);
       try {
-        const saved = await saveStudioDocument({ saveAs, fallbackName: t("studio.doc.untitled"), filterName: t("studio.doc.filter") });
+        const { filePath, sourceFile } = useDocumentStore.getState();
+        const saved = !saveAs && !filePath && sourceFile ? await saveSourceLibrary(t(`studio.doc.cite.formats.${sourceFile.format}`)) : await saveStudioDocument({ saveAs, fallbackName: t("studio.doc.untitled"), filterName: t("studio.doc.filter") });
         if (saved) useToastStore.getState().push("success", t("studio.project.saved", { name: basenameOf(saved) }));
         return saved !== null;
       } catch (error) {

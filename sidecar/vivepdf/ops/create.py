@@ -77,7 +77,11 @@ def read_text_file(path: str, source_format: SourceFormat = "auto") -> tuple[str
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             "the text file is too large",
-            {"reason": "sourceTooLarge", "limit": MAX_SOURCE_BYTES},
+            {
+                "reason": "sourceTooLarge",
+                "limit": MAX_SOURCE_BYTES,
+                "limitMb": MAX_SOURCE_BYTES // (1024 * 1024),
+            },
         )
     text = decode_text(source.read_bytes())
     markdown = source_format == "markdown" or (

@@ -6479,7 +6479,7 @@
       "omrLayoutUnknown": "No se reconoce el código de diseño de esta hoja; vuelve a leer las hojas.",
       "tooManyDocuments": "Puede haber como máximo {{max}} documentos abiertos a la vez. Cierre uno para abrir otro.",
       "noContent": "No hay texto que maquetar. Elija un archivo o escriba un texto.",
-      "sourceTooLarge": "El archivo de texto supera los 20 MB.",
+      "sourceTooLarge": "El archivo ocupa más de {{limitMb}} MB.",
       "unknownFields": "Estos campos no son columnas de la tabla: {{names}}.",
       "tooManyRows": "La tabla tiene más de 5000 filas. Puede dividirla en tablas más pequeñas.",
       "noOutputDir": "Elija una carpeta para los archivos.",
@@ -6520,7 +6520,10 @@
       "doiUntrustedHost": "El servicio bibliográfico redirigió a una dirección no fiable y se bloqueó.",
       "blockedTarget": "vivePDF no guarda programas, scripts ni accesos directos, ni escribe en carpetas de inicio o SSH. Elige otro nombre o carpeta.",
       "notGranted": "vivePDF solo abre archivos que usted eligió o arrastró. Vuelva a elegir este archivo para abrirlo.",
-      "badSectionColumns": "Un salto de sección debe tener 1, 2 o 3 columnas."
+      "badSectionColumns": "Un salto de sección debe tener 1, 2 o 3 columnas.",
+      "sourceSaveUnsafe": "{{name}} no se puede guardar en su sitio porque una parte no se pudo leer. Exporta las fuentes a un archivo nuevo.",
+      "sourceChangedOnDisk": "Otro programa modificó {{name}} después de abrirlo. Vuelve a abrirlo o exporta las fuentes a un archivo nuevo.",
+      "sourceNotEncodable": "Algunos caracteres no caben en la codificación de este archivo ({{encoding}}). Exporta las fuentes a un archivo nuevo."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",
@@ -9363,7 +9366,12 @@
           "corrigendum": "Corrigendum",
           "addendum": "Adenda",
           "clarification": "Aclaración"
-        }
+        },
+        "duplicates": "Entradas con una clave ya usada omitidas: {{count}}",
+        "truncated": "Solo se cargaron las primeras {{limit}} fuentes; {{count}} más quedaron fuera",
+        "clipped": "Campos muy largos acortados: {{count}}",
+        "leaveTitle": "¿Guardar los cambios en el archivo de fuentes?",
+        "leaveBody": "«{{name}}» tiene cambios que aún no se han escrito en el archivo. ¿Guardarlos antes de salir?"
       },
       "spacing": {
         "label": "Interlineado y espaciado de párrafo",

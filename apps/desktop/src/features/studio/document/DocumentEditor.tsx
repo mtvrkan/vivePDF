@@ -3,6 +3,7 @@ import { ArrowLeft, Download, FilePlus2, Save, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { Button } from "@/components/shared/Button";
+import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
 import { Segmented } from "@/components/tool/form";
 import { basenameOf } from "@/shared/lib/paths";
@@ -34,13 +35,47 @@ type SideTab = (typeof SIDE_TABS)[number];
 function DocumentTopBar({ onExport, onFind }: { onExport: () => void; onFind: () => void }) {
   const { t } = useTranslation();
   const name = useDocumentStore((state) => state.document?.name ?? "");
-  const filePath = useDocumentStore((state) => state.filePath);
+  const filePath = useDocumentStore((state) => state.filePath ?? state.sourceFile?.path ?? null);
   const dirty = useDocumentStore((state) => state.dirty);
   const { saving, save } = useDocumentSave();
+  const [leaving, setLeaving] = useState(false);
   const store = useDocumentStore.getState();
+  const leave = () => {
+    const state = useDocumentStore.getState();
+    if (state.sourceFile && state.dirty) setLeaving(true);
+    else state.close();
+  };
+  const closeAfter = (saved: boolean) => {
+    if (!saved) return;
+    setLeaving(false);
+    useDocumentStore.getState().close();
+  };
   return (
     <div className="glass flex h-12 shrink-0 items-center gap-2 border-b border-border/60 px-3" role="toolbar" aria-label={t("studio.doc.label")}>
-      <IconButton icon={ArrowLeft} label={t("studio.toolbar.leave")} onClick={store.close} />
+      <IconButton icon={ArrowLeft} label={t("studio.toolbar.leave")} onClick={leave} />
+      <Dialog
+        open={leaving}
+        onClose={() => setLeaving(false)}
+        title={t("studio.doc.cite.leaveTitle")}
+        footer={
+          <>
+            <Button variant="ghost" onClick={() => setLeaving(false)}>
+              {t("common.cancel")}
+            </Button>
+            <Button
+              variant="ghost"
+              onClick={() => closeAfter(true)}
+            >
+              {t("studio.project.discard")}
+            </Button>
+            <Button variant="primary" loading={saving} onClick={() => void save(false).then(closeAfter)}>
+              {t("studio.project.save")}
+            </Button>
+          </>
+        }
+      >
+        <p className="text-sm text-muted-foreground">{t("studio.doc.cite.leaveBody", { name: filePath ? basenameOf(filePath) : name })}</p>
+      </Dialog>
       <input
         value={name}
         maxLength={200}

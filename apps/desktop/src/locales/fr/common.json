@@ -6479,7 +6479,7 @@
       "omrLayoutUnknown": "Le code de mise en page de cette grille est inconnu ; relisez les grilles.",
       "tooManyDocuments": "Au plus {{max}} documents peuvent être ouverts en même temps. Fermez-en un pour en ouvrir un autre.",
       "noContent": "Il n’y a pas de texte à mettre en page. Choisissez un fichier ou saisissez du texte.",
-      "sourceTooLarge": "Le fichier texte dépasse 20 Mo.",
+      "sourceTooLarge": "Le fichier dépasse {{limitMb}} Mo.",
       "unknownFields": "Ces champs ne sont pas des colonnes du tableau : {{names}}.",
       "tooManyRows": "Le tableau compte plus de 5 000 lignes. Divisez-le en tableaux plus petits.",
       "noOutputDir": "Choisissez un dossier pour les fichiers.",
@@ -6520,7 +6520,10 @@
       "doiUntrustedHost": "Le service bibliographique a redirigé vers une adresse non fiable ; elle a été bloquée.",
       "blockedTarget": "vivePDF n'enregistre ni programmes, ni scripts, ni raccourcis, et n'écrit pas dans les dossiers de démarrage ou SSH. Choisissez un autre nom ou dossier.",
       "notGranted": "vivePDF n'ouvre que les fichiers que vous avez choisis ou glissés vous-même. Choisissez à nouveau ce fichier pour l'ouvrir.",
-      "badSectionColumns": "Un saut de section doit avoir 1, 2 ou 3 colonnes."
+      "badSectionColumns": "Un saut de section doit avoir 1, 2 ou 3 colonnes.",
+      "sourceSaveUnsafe": "{{name}} ne peut pas être enregistré sur place car une partie n'a pas pu être lue. Exportez plutôt les sources dans un nouveau fichier.",
+      "sourceChangedOnDisk": "{{name}} a été modifié par un autre programme après son ouverture. Rouvrez-le ou exportez les sources dans un nouveau fichier.",
+      "sourceNotEncodable": "Certains caractères ne peuvent pas être enregistrés dans l'encodage de ce fichier ({{encoding}}). Exportez plutôt les sources dans un nouveau fichier."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -9363,7 +9366,12 @@
           "corrigendum": "Corrigendum",
           "addendum": "Addendum",
           "clarification": "Clarification"
-        }
+        },
+        "duplicates": "Entrées dont la clé était déjà utilisée ignorées : {{count}}",
+        "truncated": "Seules les {{limit}} premières sources ont été chargées ; {{count}} autres ont été laissées de côté",
+        "clipped": "Champs très longs raccourcis : {{count}}",
+        "leaveTitle": "Enregistrer les modifications du fichier de sources ?",
+        "leaveBody": "« {{name}} » contient des modifications qui ne sont pas encore écrites dans le fichier. Les enregistrer avant de quitter ?"
       },
       "spacing": {
         "label": "Interligne et espacement des paragraphes",

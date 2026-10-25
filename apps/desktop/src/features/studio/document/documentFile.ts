@@ -1,16 +1,17 @@
 import { open as openDialog, save as saveDialog } from "@tauri-apps/plugin-dialog";
 import { sanitizeFileName } from "@/shared/lib/naming";
 import { isNotGranted, type RpcCallOptions } from "@/shared/rpc/client";
-import { defaultOutputDirectory, dirnameOf, joinPath, stemOf } from "@/shared/lib/paths";
-import { studioDocumentImage, studioImportDocument, studioOpenDocument, studioReadBibliography, studioSaveDocument } from "@/shared/rpc/operations";
+import { basenameOf, defaultOutputDirectory, dirnameOf, joinPath, stemOf } from "@/shared/lib/paths";
+import { studioDocumentImage, studioImportDocument, studioOpenDocument, studioReadBibliography, studioSaveDocument, studioWriteBibliography } from "@/shared/rpc/operations";
 import type { RpcError } from "@/types";
-import { STUDIO_DOCUMENT_EXTENSION, type BibEntry, type StudioDocument, type StudioDocumentImport } from "@/types/studio";
+import { STUDIO_DOCUMENT_EXTENSION, type BibEntry, type SourceFileOrigin, type StudioDocument, type StudioDocumentImport } from "@/types/studio";
 import { useRecentDesignsStore } from "../design/recentDesigns";
 import { IMAGE_EXTENSIONS } from "../design/pickImage";
-import { parseBibtex } from "./bibtex";
+import { parseBibtex, type BibParseResult } from "./bibtex";
+import { writeBack } from "./bibtexWriteBack";
 import { createDocument, normalizeDocument, pageSize } from "./model";
 import { useDocumentStore } from "./documentStore";
-import { formatOfPath, parseSources } from "./sourceFormats";
+import { FORMAT_EXTENSIONS, formatOfPath, parseSources, writeSources } from "./sourceFormats";
 import { fileVersion } from "./footnotes";
 import i18n from "i18next";
 
@@ -84,10 +85,47 @@ export async function readSourceLibrary(path: string, options?: RpcCallOptions):
   return parseSources(result.text, formatOfPath(path)).entries;
 }
 
+export type OpenedSourceLibrary = { document: StudioDocument; origin: SourceFileOrigin | null; parsed: BibParseResult };
+
+export async function openSourceLibraryFile(path: string): Promise<OpenedSourceLibrary | null> {
+  const read = await studioReadBibliography({ path });
+  const format = formatOfPath(path);
+  const parsed = parseSources(read.text, format);
+  if (parsed.entries.length === 0) return null;
+  const document = { ...createDocument(stemOf(path), '<div data-bibliography=""></div>'), sources: parsed.entries };
+  const origin = format === "bibtex" ? { path, format, encoding: read.encoding, hash: read.hash, unsafe: read.lossy } : null;
+  return { document, origin, parsed };
+}
+
 export async function openSourceLibrary(path: string): Promise<StudioDocument | null> {
-  const entries = await readSourceLibrary(path);
-  if (entries.length === 0) return null;
-  return { ...createDocument(stemOf(path), '<div data-bibliography=""></div>'), sources: entries };
+  return (await openSourceLibraryFile(path))?.document ?? null;
+}
+
+function refusal(reason: string, data: Record<string, unknown> = {}): RpcError {
+  return { code: "INVALID_PARAMS", message: reason, data: { reason, ...data } };
+}
+
+export async function saveSourceLibrary(filterName: string): Promise<string | null> {
+  useDocumentStore.getState().flushContent();
+  const { document, sourceFile: origin } = useDocumentStore.getState();
+  if (!document || !origin) return null;
+  if (origin.unsafe) throw refusal("sourceSaveUnsafe", { name: basenameOf(origin.path) });
+  const current = await studioReadBibliography({ path: origin.path });
+  if (current.hash !== origin.hash) throw refusal("sourceChangedOnDisk", { name: basenameOf(origin.path) });
+  const library = origin.format === "bibtex" ? parseBibtex(current.text).library : undefined;
+  const text = library ? writeBack(library, document.sources) : writeSources(document.sources, origin.format);
+  const write = (output: string, expectedHash: string | null) => studioWriteBibliography({ text, output, encoding: origin.encoding, expectedHash, overwrite: true });
+  let result: Awaited<ReturnType<typeof write>>;
+  try {
+    result = await write(origin.path, origin.hash);
+  } catch (error) {
+    if (!isNotGranted(error)) throw error;
+    const picked = await saveDialog({ defaultPath: origin.path, filters: [{ name: filterName, extensions: [FORMAT_EXTENSIONS[origin.format]] }] });
+    if (!picked) return null;
+    result = await write(picked, picked === origin.path ? origin.hash : null);
+  }
+  if (useDocumentStore.getState().document === document) useDocumentStore.getState().markSourcesSaved({ ...origin, path: result.output, hash: result.hash });
+  return result.output;
 }
 
 export async function pickDocumentImage(title: string): Promise<{ src: string; width: number; height: number } | null> {

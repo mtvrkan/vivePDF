@@ -127,7 +127,11 @@ def _read_chapters(paths: list[str]) -> list[Chapter]:
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             "the chapters are too large together",
-            {"reason": "sourceTooLarge", "limit": MAX_TOTAL_BYTES},
+            {
+                "reason": "sourceTooLarge",
+                "limit": MAX_TOTAL_BYTES,
+                "limitMb": MAX_TOTAL_BYTES // (1024 * 1024),
+            },
         )
     return [_chapter(index, path) for index, path in enumerate(paths, start=1)]
 

@@ -311,6 +311,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "studio.read_bibliography",
         "studio.render_document",
         "studio.save_document",
+        "studio.write_bibliography",
     ),
     "studio_draft": (
         "studio.load_draft",

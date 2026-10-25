@@ -310,6 +310,7 @@ import type {
   StudioDocumentContent,
   StudioDocumentFileResult,
   StudioDocumentImport,
+  StudioBibliography,
   StudioDocumentPage,
   StudioDocumentPreview,
   StudioDraftLoadResult,
@@ -742,7 +743,10 @@ export const studioImportDocument = (params: { path: string }, options?: RpcCall
   rpc<StudioDocumentImport>("studio.import_document", params, options);
 
 export const studioReadBibliography = (params: { path: string }, options?: RpcCallOptions) =>
-  rpc<{ text: string; name: string }>("studio.read_bibliography", params, options);
+  rpc<StudioBibliography>("studio.read_bibliography", params, options);
+
+export const studioWriteBibliography = (params: { text: string; output: string; encoding?: string; expectedHash?: string | null; overwrite?: boolean }, options?: RpcCallOptions) =>
+  rpc<{ output: string; bytes: number; hash: string }>("studio.write_bibliography", params, options);
 
 export const studioDocumentImage = (params: { path: string }, options?: RpcCallOptions) =>
   rpc<{ src: string; width: number; height: number }>("studio.document_image", params, options);

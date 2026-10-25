@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import html
 import json
 import re
@@ -20,7 +21,7 @@ from vivepdf.ops._output import (
     save_document,
     write_atomically,
 )
-from vivepdf.ops._story import declared_charset, decode_text, markdown_to_html
+from vivepdf.ops._story import declared_charset, decode_text, decode_text_as, markdown_to_html
 from vivepdf.ops._studio_document import (
     IMAGE_TAG,
     SOURCE,
@@ -34,6 +35,8 @@ from vivepdf.ops._studio_document_models import (
     DOCUMENT_VERSION,
     MAX_DOCUMENT_BYTES,
     StudioBibliographyResult,
+    StudioBibliographyWriteParams,
+    StudioBibliographyWriteResult,
     StudioDocumentImageResult,
     StudioDocumentImportResult,
     StudioDocumentMarkdownParams,
@@ -63,6 +66,9 @@ MAX_IMPORT_BYTES = 20 * 1024 * 1024
 MAX_IMPORTED_IMAGES = 100
 LEADING_H1 = re.compile(r"<h1\b[^>]*>(.*?)</h1\s*>", re.IGNORECASE | re.DOTALL)
 BLANK_LINES = re.compile(r"\n\s*\n")
+JABREF_ENCODING = re.compile(
+    rb"^(?:\xef\xbb\xbf)?%\s*Encoding:\s*([A-Za-z0-9_.:-]+)", re.IGNORECASE
+)
 
 _previews: OrderedDict[str, bytes] = OrderedDict()
 _previews_lock = threading.Lock()
@@ -270,7 +276,11 @@ def import_document(
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             "the file is too large",
-            {"reason": "sourceTooLarge", "limit": MAX_IMPORT_BYTES},
+            {
+                "reason": "sourceTooLarge",
+                "limit": MAX_IMPORT_BYTES,
+                "limitMb": MAX_IMPORT_BYTES // (1024 * 1024),
+            },
         )
     payload = source.read_bytes()
     meta = FrontMatter()
@@ -348,9 +358,75 @@ def read_bibliography(
             {"reason": "unsupportedType", "extension": extension},
         )
     if source.stat().st_size > MAX_BIBLIOGRAPHY_BYTES:
+        raise _bibliography_too_large()
+    payload = source.read_bytes()
+    declared = JABREF_ENCODING.match(payload)
+    text, encoding, lossy = decode_text_as(
+        payload, declared.group(1).decode("ascii") if declared else None
+    )
+    return StudioBibliographyResult(
+        text=text, name=source.name, encoding=encoding, hash=_digest(payload), lossy=lossy
+    )
+
+
+def _digest(payload: bytes) -> str:
+    return hashlib.sha256(payload).hexdigest()
+
+
+def _bibliography_too_large() -> OpError:
+    return OpError(
+        ErrorCode.INVALID_PARAMS,
+        "the file is too large",
+        {
+            "reason": "sourceTooLarge",
+            "limit": MAX_BIBLIOGRAPHY_BYTES,
+            "limitMb": MAX_BIBLIOGRAPHY_BYTES // (1024 * 1024),
+        },
+    )
+
+
+@op("studio.write_bibliography", StudioBibliographyWriteParams)
+def write_bibliography(
+    params: StudioBibliographyWriteParams, _progress: Progress
+) -> StudioBibliographyWriteResult:
+    target = Path(params.output)
+    extension = target.suffix.lower().lstrip(".")
+    if extension not in SOURCE_LIBRARY_EXTENSIONS:
         raise OpError(
             ErrorCode.INVALID_PARAMS,
-            "the file is too large",
-            {"reason": "sourceTooLarge", "limit": MAX_BIBLIOGRAPHY_BYTES},
+            f"unsupported file type: .{extension}",
+            {"reason": "unsupportedType", "extension": extension},
         )
-    return StudioBibliographyResult(text=decode_text(source.read_bytes()), name=source.name)
+    try:
+        payload = params.text.encode(params.encoding)
+    except LookupError as error:
+        raise OpError(ErrorCode.INVALID_PARAMS, f"unknown encoding: {params.encoding}") from error
+    except UnicodeEncodeError as error:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            f"the text does not fit {params.encoding}",
+            {"reason": "sourceNotEncodable", "encoding": params.encoding},
+        ) from error
+    if len(payload) > MAX_BIBLIOGRAPHY_BYTES:
+        raise _bibliography_too_large()
+    if target.exists() and not params.overwrite:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            f"output already exists: {target.name}",
+            {"exists": True, "path": str(target)},
+        )
+    if (
+        params.expected_hash is not None
+        and target.is_file()
+        and _digest(target.read_bytes()) != params.expected_hash
+    ):
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            f"{target.name} changed on disk",
+            {"reason": "sourceChangedOnDisk", "name": target.name},
+        )
+    target.parent.mkdir(parents=True, exist_ok=True)
+    write_atomically(target, lambda path: path.write_bytes(payload))
+    return StudioBibliographyWriteResult(
+        output=str(target), bytes=len(payload), hash=_digest(payload)
+    )

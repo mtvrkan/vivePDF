@@ -5,7 +5,8 @@ import { toRpcError } from "@/shared/rpc/client";
 import { isSourceLibraryPath } from "@/shared/store/studioLaunchStore";
 import { useToastStore } from "@/shared/store/toastStore";
 import { useDocumentStore } from "../document/documentStore";
-import { isDocumentPath, loadStudioDocument, openSourceLibrary } from "../document/documentFile";
+import { isDocumentPath, loadStudioDocument, openSourceLibraryFile } from "../document/documentFile";
+import { reportParseNotices } from "../document/sourceNotices";
 import { loadDesign } from "./projectFile";
 import { useRecentDesignsStore } from "./recentDesigns";
 import { useStudioStore } from "./studioStore";
@@ -18,15 +19,16 @@ export function useOpenDesign() {
       setOpening(path);
       try {
         if (isSourceLibraryPath(path)) {
-          const document = await openSourceLibrary(path);
-          if (!document) {
+          const opened = await openSourceLibraryFile(path);
+          if (!opened) {
             useToastStore.getState().push("error", t("studio.doc.cite.noEntries"));
             return false;
           }
           useStudioStore.getState().close();
-          useDocumentStore.getState().open(document);
+          useDocumentStore.getState().open(opened.document, null, opened.origin);
           useDocumentStore.getState().requestSources(true);
-          useToastStore.getState().push("success", t("studio.doc.cite.opened", { count: document.sources.length }));
+          useToastStore.getState().push("success", t("studio.doc.cite.opened", { total: opened.document.sources.length }));
+          reportParseNotices(t, opened.parsed);
           return true;
         }
         if (isDocumentPath(path)) {

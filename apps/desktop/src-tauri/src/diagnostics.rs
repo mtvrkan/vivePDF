@@ -323,7 +323,9 @@ pub async fn open_log_dir(app: tauri::AppHandle) -> Result<(), RpcError> {
         .map_err(|error| RpcError::new("INTERNAL", error.to_string()))
 }
 
-const TEXT_EXTENSIONS: [&str; 8] = ["txt", "md", "log", "json", "csv", "text", "bib", "ris"];
+const TEXT_EXTENSIONS: [&str; 9] = [
+    "txt", "md", "log", "json", "csv", "text", "bib", "bibtex", "ris",
+];
 
 fn is_text_target(path: &str) -> bool {
     std::path::Path::new(path)
@@ -552,6 +554,7 @@ mod tests {
         assert!(is_text_target("/home/user/notes.MD"));
         assert!(is_text_target("C:/Users/PC/Documents/library.bib"));
         assert!(is_text_target("/home/user/export.RIS"));
+        assert!(is_text_target("/home/user/library.bibtex"));
         assert!(!is_text_target("C:/Users/PC/Startup/evil.bat"));
         assert!(!is_text_target("C:/Users/PC/Documents/report.pdf"));
         assert!(!is_text_target("C:/Users/PC/no-extension"));

@@ -6479,7 +6479,7 @@
       "omrLayoutUnknown": "Il codice di impaginazione di questo foglio non è riconosciuto; rileggi i fogli.",
       "tooManyDocuments": "Possono essere aperti al massimo {{max}} documenti contemporaneamente. Chiudine uno per aprirne un altro.",
       "noContent": "Non c'è testo da impaginare. Scegli un file o scrivi del testo.",
-      "sourceTooLarge": "Il file di testo supera i 20 MB.",
+      "sourceTooLarge": "Il file supera {{limitMb}} MB.",
       "unknownFields": "Questi campi non sono colonne della tabella: {{names}}.",
       "tooManyRows": "La tabella ha più di 5.000 righe. Dividila in tabelle più piccole.",
       "noOutputDir": "Scegli una cartella per i file.",
@@ -6520,7 +6520,10 @@
       "doiUntrustedHost": "Il servizio bibliografico ha reindirizzato a un indirizzo non affidabile, bloccato.",
       "blockedTarget": "vivePDF non salva programmi, script o collegamenti e non scrive nelle cartelle di avvio o SSH. Scegli un altro nome o cartella.",
       "notGranted": "vivePDF apre solo i file che hai scelto o trascinato tu. Scegli di nuovo questo file per aprirlo.",
-      "badSectionColumns": "Un’interruzione di sezione deve avere 1, 2 o 3 colonne."
+      "badSectionColumns": "Un’interruzione di sezione deve avere 1, 2 o 3 colonne.",
+      "sourceSaveUnsafe": "{{name}} non può essere salvato sul posto perché una parte non è stata letta. Esporta invece le fonti in un nuovo file.",
+      "sourceChangedOnDisk": "{{name}} è stato modificato da un altro programma dopo l'apertura. Riaprilo o esporta le fonti in un nuovo file.",
+      "sourceNotEncodable": "Alcuni caratteri non possono essere salvati nella codifica di questo file ({{encoding}}). Esporta invece le fonti in un nuovo file."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",
@@ -9363,7 +9366,12 @@
           "corrigendum": "Corrigendum",
           "addendum": "Addendum",
           "clarification": "Chiarimento"
-        }
+        },
+        "duplicates": "Voci con una chiave già usata escluse: {{count}}",
+        "truncated": "Sono state caricate solo le prime {{limit}} fonti; altre {{count}} sono rimaste fuori",
+        "clipped": "Campi molto lunghi accorciati: {{count}}",
+        "leaveTitle": "Salvare le modifiche al file delle fonti?",
+        "leaveBody": "“{{name}}” contiene modifiche non ancora scritte nel file. Salvarle prima di uscire?"
       },
       "spacing": {
         "label": "Interlinea e spaziatura paragrafo",

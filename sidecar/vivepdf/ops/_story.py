@@ -57,10 +57,11 @@ def declared_charset(payload: bytes) -> str | None:
     return known_codec(match.group(1).decode("ascii", "ignore")) if match else None
 
 
-def decode_text(payload: bytes, declared: str | None = None) -> str:
+def decode_text_as(payload: bytes, declared: str | None = None) -> tuple[str, str, bool]:
     for mark, codec in BYTE_ORDER_MARKS:
         if payload.startswith(mark):
-            return payload.decode(codec, errors="replace")
+            text = payload.decode(codec, errors="replace")
+            return text, codec, "\ufffd" in text
     preferred = known_codec(locale.getpreferredencoding(False))
     western = preferred is None or preferred in WESTERN_CODECS
     candidates = [known_codec(declared), "utf-8", None if western else preferred]
@@ -68,11 +69,16 @@ def decode_text(payload: bytes, declared: str | None = None) -> str:
         if not codec:
             continue
         try:
-            return payload.decode(codec)
+            return payload.decode(codec), codec, False
         except UnicodeDecodeError:
             continue
     fallback = TURKISH_ENCODING if TURKISH_BYTES.search(payload) else LAST_RESORT_ENCODING
-    return payload.decode(fallback, errors="replace")
+    text = payload.decode(fallback, errors="replace")
+    return text, fallback, "\ufffd" in text
+
+
+def decode_text(payload: bytes, declared: str | None = None) -> str:
+    return decode_text_as(payload, declared)[0]
 
 
 def text_to_html(text: str) -> str:

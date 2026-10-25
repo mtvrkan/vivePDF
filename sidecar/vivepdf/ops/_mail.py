@@ -284,7 +284,11 @@ def read_mail(path: Path) -> MailMessage:
         raise OpError(
             ErrorCode.INVALID_PARAMS,
             "the e-mail is too large",
-            {"reason": "sourceTooLarge", "limit": MAX_MAIL_BYTES},
+            {
+                "reason": "sourceTooLarge",
+                "limit": MAX_MAIL_BYTES,
+                "limitMb": MAX_MAIL_BYTES // (1024 * 1024),
+            },
         )
     if path.suffix.lower() == ".msg":
         return read_msg(path)
