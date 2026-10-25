@@ -12,6 +12,7 @@ from vivepdf.external import libreoffice
 from vivepdf.ops._document import open_document
 from vivepdf.ops._docx_running import RunningText, cleared_copy, find_running_text
 from vivepdf.ops._image_files import HEIF_EXTENSIONS
+from vivepdf.ops._image_masks import BLACK, is_stencil, stencil_colours, stencil_png
 from vivepdf.ops._naming import sanitize_file_name
 from vivepdf.ops._ocr_layer import recognise_textless_pages
 from vivepdf.ops._output import write_atomically
@@ -373,7 +374,10 @@ def _extract_page_images(
             progress.check_cancelled()
             page = document[index]
             listed = {image[0]: image for image in page.get_images(full=True)}
-            for image_index, xref in enumerate(_drawn_xrefs(page, listed)):
+            drawn = _drawn_xrefs(page, listed)
+            stencils = [xref for xref in drawn if is_stencil(document, xref)]
+            colours = stencil_colours(page, stencils) if stencils else {}
+            for image_index, xref in enumerate(drawn):
                 smask, img_width, img_height = listed[xref][1:4]
                 if params.dedupe and xref in seen:
                     continue
@@ -381,7 +385,11 @@ def _extract_page_images(
                 if img_width < params.min_size or img_height < params.min_size:
                     skipped += 1
                     continue
-                payload = _image_bytes(document, xref, smask)
+                payload = (
+                    (stencil_png(document, xref, colours.get(xref, BLACK)), "png")
+                    if xref in stencils
+                    else _image_bytes(document, xref, smask)
+                )
                 if payload is None:
                     skipped += 1
                     continue

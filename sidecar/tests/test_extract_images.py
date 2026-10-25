@@ -104,3 +104,54 @@ def test_a_transparency_mask_of_any_size_keeps_the_image_see_through(
     assert picture.alpha
     assert picture.pixel(10, 50)[3] == 0
     assert picture.pixel(90, 50)[3] == 255
+
+
+def _stencil(paint: str, decode: str = "") -> pymupdf.Document:
+    document = pymupdf.open()
+    page = document.new_page(width=300, height=300)
+    page.insert_text((10, 20), "x")
+    del page
+    rows = bytearray()
+    for y in range(80):
+        row = bytearray(10)
+        for x in range(80):
+            if not (20 < x < 60 and 20 < y < 60):
+                row[x // 8] |= 0x80 >> (x % 8)
+        rows += row
+    mask = document.get_new_xref()
+    document.update_object(
+        mask,
+        "<</Type/XObject/Subtype/Image/Width 80/Height 80"
+        f"/ImageMask true/BitsPerComponent 1{decode}>>",
+    )
+    document.update_stream(mask, bytes(rows))
+    page_xref = document.page_xref(0)
+    kind, value = document.xref_get_key(page_xref, "Resources")
+    owner, path = (
+        (int(value.split()[0]), "XObject") if kind == "xref" else (page_xref, "Resources/XObject")
+    )
+    document.xref_set_key(owner, path, f"<</M1 {mask} 0 R>>")
+    content = document[0].get_contents()[0]
+    drawing = f"\nq {paint} 160 0 0 160 70 70 cm /M1 Do Q\n".encode()
+    document.update_stream(content, document.xref_stream(content) + drawing)
+    return document
+
+
+@pytest.mark.parametrize(("paint", "colour"), [("1 0 0 rg", (255, 0, 0)), ("0.2 g", (51, 51, 51))])
+def test_a_stencil_mask_comes_out_in_its_paint_colour_on_a_clear_background(
+    tmp_path: Path, paint: str, colour: tuple[int, int, int]
+) -> None:
+    (name,) = _extract(_stencil(paint), tmp_path)
+
+    picture = pymupdf.Pixmap(str(tmp_path / "çıkan" / name))
+    assert picture.alpha
+    assert picture.pixel(40, 40) == (*colour, 255)
+    assert picture.pixel(2, 2)[3] == 0
+
+
+def test_an_inverted_stencil_mask_paints_the_other_side(tmp_path: Path) -> None:
+    (name,) = _extract(_stencil("0 0 1 rg", "/Decode[1 0]"), tmp_path)
+
+    picture = pymupdf.Pixmap(str(tmp_path / "çıkan" / name))
+    assert picture.pixel(40, 40)[3] == 0
+    assert picture.pixel(2, 2) == (0, 0, 255, 255)
