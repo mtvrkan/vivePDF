@@ -17,8 +17,8 @@ from vivepdf.ops._markup import (
     PageMarkup,
     body_size,
     document_language,
+    page_html,
     page_markup,
-    retag_headings,
 )
 from vivepdf.ops._ocr_layer import recognise_textless_pages
 from vivepdf.ops._output import write_atomically
@@ -34,7 +34,6 @@ from vivepdf.rpc.registry import op
 DEFAULT_CHUNK = 20
 MAX_CHAPTERS = 2000
 DATA_IMAGE = re.compile(r'src="data:(image/[a-z+]+);base64,\s*([A-Za-z0-9+/=\s]+?)"', re.IGNORECASE)
-PAGE_DIV = re.compile(r'<div id="page\d+">|</div>\s*$')
 HEADING = re.compile(r"<h[12][^>]*>(.*?)</h[12]>", re.IGNORECASE | re.DOTALL)
 TAGS = re.compile(r"<[^>]+>")
 LANGUAGE = re.compile(r"^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8})*$")
@@ -230,10 +229,6 @@ def _as_png(payload: bytes) -> bytes:
         return b""
 
 
-def page_body(markup: str) -> str:
-    return PAGE_DIV.sub("", markup).strip()
-
-
 def chapter_document(title: str, language: str, bodies: list[str]) -> str:
     parts = []
     for position, body in enumerate(bodies):
@@ -356,7 +351,8 @@ def _collect_pages(
         for index in block:
             keep = keep_images and index + 1 not in recognised
             page = page_markup(document[index], images=keep)
-            page.markup = extract_images(page_body(page.markup), images, keep)
+            for item in page.blocks:
+                item.body = extract_images(item.body, images, keep)
             pages[index] = page
         progress.report(
             0.1 + 0.7 * len(pages) / total,
@@ -372,7 +368,7 @@ def _build_chapters(
     body = body_size(list(pages.values()))
     chapters: list[_Chapter] = []
     for given, block in planned:
-        bodies = [retag_headings(pages[index], body).strip() for index in block]
+        bodies = [page_html(pages[index], body) for index in block]
         bodies = [text for text in bodies if text]
         if bodies:
             name = given or chapter_title(bodies[0], block[0], block[-1])

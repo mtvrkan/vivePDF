@@ -1,7 +1,5 @@
 import html as html_module
 import io
-import math
-import re
 import shutil
 import tempfile
 from dataclasses import dataclass, field
@@ -13,14 +11,15 @@ import pymupdf
 
 from vivepdf.ops._document import open_document
 from vivepdf.ops._markup import (
-    PageMarkup,
+    LINK_SAFE_CHARACTERS,
+    LINK_SCHEMES,
     body_size,
     document_language,
     inert_markdown,
+    page_html,
     page_markup,
-    retag_headings,
+    picture_dpi,
 )
-from vivepdf.ops._page_images import MAX_IMAGE_SIDE
 from vivepdf.ops._placement import drop_unplaceable_annotations, turn_text_upright
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops._spreadsheet import clean_text
@@ -81,17 +80,12 @@ def to_text(params: TextParams, progress: Progress) -> TextFileResult:
 
 
 MARKDOWN_BAND = (0.1, 0.95)
-PAGE_ID = re.compile(r'<div id="page\d+">')
 CONTENT_POLICY = (
     '<meta http-equiv="Content-Security-Policy" '
     "content=\"default-src 'none'; img-src data:; style-src 'unsafe-inline'\">"
 )
 HEADER_BOX_CLASSES = ("title", "section-header")
 PICTURE_BOX_CLASSES = ("picture", "formula")
-MARKDOWN_PICTURE_DPI = 150
-MARKDOWN_PICTURE_PIXELS = 16_000_000
-LINK_SCHEMES = ("http://", "https://", "mailto:")
-LINK_SAFE_CHARACTERS = ":/?#@!$&'*+,;=%~-._"
 
 MarkdownPictures = Literal["none", "files", "embed"]
 
@@ -152,13 +146,6 @@ def _link_spans(page: pymupdf.Page, layout) -> None:
                 span["text"] = _linked_text(page, textpage, span, links)
 
 
-def _picture_dpi(clip: pymupdf.Rect) -> int:
-    square_inches = clip.width * clip.height / (72 * 72)
-    by_pixels = math.sqrt(MARKDOWN_PICTURE_PIXELS / square_inches)
-    by_side = (MAX_IMAGE_SIDE["png"] - 2) * 72 / max(clip.width, clip.height)
-    return max(1, math.floor(min(MARKDOWN_PICTURE_DPI, by_pixels, by_side)))
-
-
 @dataclass(slots=True)
 class _PictureSink:
     mode: MarkdownPictures
@@ -175,7 +162,7 @@ class _PictureSink:
             clip = pymupdf.Rect(box.x0, box.y0, box.x1, box.y1) & page.rect
             if clip.is_empty:
                 continue
-            pixmap = page.get_pixmap(clip=clip, dpi=_picture_dpi(clip))
+            pixmap = page.get_pixmap(clip=clip, dpi=picture_dpi(clip))
             if pixmap.width == 0 or pixmap.height == 0:
                 continue
             data = pixmap.tobytes("png")
@@ -301,10 +288,6 @@ def to_markdown(params: MarkdownParams, progress: Progress) -> MarkdownResult:
             shutil.rmtree(staging, ignore_errors=True)
 
 
-def _html_page(page: PageMarkup, body: float | None) -> str:
-    return PAGE_ID.sub("<div>", retag_headings(page, body))
-
-
 @op("convert.to_html", TextSourceParams)
 def to_html(params: TextSourceParams, progress: Progress) -> TextFileResult:
     target = _prepare_file(params.output, [params.path], params.overwrite, ".html")
@@ -323,7 +306,7 @@ def to_html(params: TextSourceParams, progress: Progress) -> TextFileResult:
                 progress.report(position / len(indices), "progress.converting")
     body = body_size(pages)
     parts = [
-        f'<section class="page" data-page="{index + 1}">{_html_page(page, body)}</section>'
+        f'<section class="page" data-page="{index + 1}">{page_html(page, body)}</section>'
         for index, page in zip(indices, pages, strict=True)
     ]
     textless = [index + 1 for index, page in zip(indices, pages, strict=True) if not page.sizes]

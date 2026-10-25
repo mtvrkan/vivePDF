@@ -11,7 +11,7 @@ import pymupdf
 import pytest
 
 from vivepdf.ops import _page_images, convert_images, epub
-from vivepdf.ops._markup import PageMarkup, inert_markdown, retag_headings, xml_safe
+from vivepdf.ops._markup import MarkupBlock, PageMarkup, inert_markdown, page_html
 from vivepdf.ops.convert import ExtractImagesParams, TextSourceParams, extract_images
 from vivepdf.ops.convert_images import ImagesParams, page_dpi, to_images
 from vivepdf.ops.convert_text import MarkdownParams, TextParams, to_html, to_markdown, to_text
@@ -100,11 +100,6 @@ def test_layout_text_puts_columns_side_by_side(columns_pdf: Path, tmp_path: Path
     assert result.textless_pages == [2]
 
 
-def test_xml_safe_drops_only_characters_xml_cannot_hold() -> None:
-    assert xml_safe("a&#x1;b&#0;c&#xFFFF;d\x02e") == "abcde"
-    assert xml_safe("&#x41;&#233;&#x1F600;&amp;") == "&#x41;&#233;&#x1F600;&amp;"
-
-
 def test_markdown_markup_from_the_page_text_is_made_inert() -> None:
     source = "\n".join(
         [
@@ -178,13 +173,6 @@ def test_html_drops_control_character_references(columns_pdf: Path, tmp_path: Pa
     html = Path(result.output).read_text(encoding="utf-8")
     assert "&#x1;" not in html and "\x01" not in html
     assert "Kontrol" in html
-
-
-def test_retag_keeps_the_markup_when_blocks_do_not_line_up() -> None:
-    page = PageMarkup('<div id="page0">\n<h3>a</h3>\n</div>', [("b", 12.0)], Counter())
-    assert retag_headings(page, 12.0) == page.markup
-    single = PageMarkup("<h3>a</h3><p>bb</p>", [("a", 12.0), ("bb", 24.0)], Counter())
-    assert retag_headings(single, 12.0) == "<p>a</p><h1>bb</h1>"
 
 
 def _read_epub(path: str) -> dict[str, bytes]:
@@ -350,17 +338,25 @@ def test_extract_images_never_overwrites_and_cleans_up_on_cancel(tmp_path: Path)
     assert list(fresh.iterdir()) == []
 
 
-def test_headings_follow_the_text_even_when_a_block_splits_into_paragraphs() -> None:
+def test_headings_follow_the_weighted_size_of_short_paragraphs_only() -> None:
     page = PageMarkup(
-        "<p>\u2013</p><h1>Yenilik t&#xfc;remi\u015ftir.</h1><h2>Ba\u015fl\u0131k</h2>",
-        [("\u2013", 15.0), ("Yenilik", 20.0), ("türemiştir.", 20.0), ("Başlık", 30.0)],
+        [
+            MarkupBlock("p", "\u2013", 15.0, 1),
+            MarkupBlock("p", "Yenilik türemiştir.", 20.0, 18),
+            MarkupBlock("p", "Başlık", 30.0, 6),
+            MarkupBlock("p", "Uzun", 40.0, 201),
+            MarkupBlock("li", "Madde", 40.0, 5),
+            MarkupBlock("figure", '<img alt="" src="x"/>'),
+            MarkupBlock("p", "", 40.0, 0),
+        ],
         Counter(),
     )
 
-    retagged = retag_headings(page, 26.0)
+    markup = page_html(page, 26.0)
 
-    assert retagged == (
-        "<p>\u2013</p><p>Yenilik t&#xfc;remi\u015ftir.</p><h3>Ba\u015fl\u0131k</h3>"
+    assert markup == (
+        "<p>\u2013</p>\n<p>Yenilik türemiştir.</p>\n<h3>Başlık</h3>\n<p>Uzun</p>\n"
+        '<ul>\n<li>Madde</li>\n</ul>\n<p><img alt="" src="x"/></p>'
     )
 
 
