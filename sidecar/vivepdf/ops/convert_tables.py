@@ -317,10 +317,69 @@ def _filled_rows(table: object) -> int:
     )
 
 
+PHRASE_GAP = 0.5
+EDGE_SLACK = 0.5
+
+
+def _row_words(page: pymupdf.Page, table: object) -> list[list[pymupdf.Rect]]:
+    area = pymupdf.Rect(table.bbox)
+    words = [
+        pymupdf.Rect(word[:4]) * page.rotation_matrix
+        for word in page.get_text("words", clip=area * page.derotation_matrix)
+    ]
+    rows = []
+    for row in table.rows:
+        box = pymupdf.Rect(row.bbox)
+        rows.append([word for word in words if box.y0 <= (word.y0 + word.y1) / 2 <= box.y1])
+    return rows
+
+
+def _splits_phrases(rows: list[list[pymupdf.Rect]], left: float, edge: float, right: float) -> bool:
+    joined = False
+    for words in rows:
+        before = [word for word in words if left <= (word.x0 + word.x1) / 2 < edge]
+        after = [word for word in words if edge <= (word.x0 + word.x1) / 2 < right]
+        if not after:
+            continue
+        if not before:
+            return False
+        last = max(before, key=lambda word: word.x1)
+        first = min(after, key=lambda word: word.x0)
+        if first.x0 - last.x1 > PHRASE_GAP * max(last.height, first.height):
+            return False
+        joined = True
+    return joined
+
+
+def _with_whole_phrases(page: pymupdf.Page, table: object) -> object:
+    edges = _column_edges(table)
+    rows = _row_words(page, table)
+    kept = [edges[0]] + [
+        edge
+        for left, edge, right in zip(edges, edges[1:], edges[2:], strict=False)
+        if not _splits_phrases(rows, left, edge, right)
+    ]
+    kept.append(edges[-1])
+    if len(kept) == len(edges):
+        return table
+    clip = pymupdf.Rect(table.bbox) + (-EDGE_SLACK, -EDGE_SLACK, EDGE_SLACK, EDGE_SLACK)
+    rebuilt = page.find_tables(
+        use_layout=False,
+        clip=clip,
+        vertical_strategy="explicit",
+        vertical_lines=kept,
+        horizontal_strategy="text",
+    ).tables
+    for candidate in rebuilt:
+        if candidate.col_count == len(kept) - 1:
+            return candidate
+    return table
+
+
 def borderless_tables(page: pymupdf.Page) -> list:
     candidates = page.find_tables(use_layout=False, strategy="text").tables
     return [
-        table
+        _with_whole_phrases(page, table)
         for table in candidates
         if table.col_count >= BORDERLESS_MIN_COLUMNS and _filled_rows(table) >= BORDERLESS_MIN_ROWS
     ]

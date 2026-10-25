@@ -347,6 +347,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert a wide spreadsheet (15+ columns) saved as .xls, .ods and .xlsm to PDF with "Fit
   columns to the page width" on: each gives one landscape page with every column, like the
   same sheet as .xlsx; with the switch off the .xls and .ods keep their own print setup.
+- PDF to Excel with "Also find tables without lines" on a PDF whose unruled table has a column
+  like "Kalem 1", "Kalem 2": each "Kalem n" stays in one cell, and a table whose columns
+  sit apart keeps every column.
 
 ### How native dialogs are answered
 

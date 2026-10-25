@@ -192,3 +192,54 @@ def test_borderless_tables_are_found_only_when_asked(tmp_path):
     assert ["Ürün", "Adet", "Fiyat"] in values
     assert ["Defter", 3, 18.0] in values
     assert sheet.cell(3, 3).number_format == "0.00"
+
+
+def _numbered_items(tmp_path: Path, spacing: float) -> Path:
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    rows = [("Ürün", "Adet", "Tutar")] + [
+        (f"Kalem {index}", str(index * 3), f"{index * 125},00") for index in range(1, 5)
+    ]
+    for index, row in enumerate(rows):
+        for column, value in enumerate(row):
+            page.insert_text((72 + column * spacing, 120 + index * 22), value, fontsize=11)
+    path = tmp_path / "kalemler.pdf"
+    document.save(path)
+    document.close()
+    return path
+
+
+def _borderless_values(source: Path, tmp_path: Path) -> list[list[object]]:
+    found = to_xlsx(
+        XlsxParams(path=str(source), output=str(tmp_path / "kalemler.xlsx"), borderless=True),
+        silent_progress(),
+    )
+    sheet = load_workbook(found.output).active
+    return [[cell for cell in row if cell is not None] for row in sheet.iter_rows(values_only=True)]
+
+
+def test_a_borderless_column_whose_cells_share_a_first_word_stays_one_column(
+    tmp_path: Path,
+) -> None:
+    values = _borderless_values(_numbered_items(tmp_path, 160), tmp_path)
+
+    assert ["Ürün", "Adet", "Tutar"] in values
+    assert ["Kalem 1", 3, 125.0] in values
+    assert ["Kalem 4", 12, 500.0] in values
+
+
+def test_borderless_columns_with_a_clear_gap_between_them_stay_apart(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=595, height=842)
+    rows = [("Ad", "Kod", "Not")] + [("Kalem", f"K{index}", "tamam") for index in range(1, 5)]
+    for index, row in enumerate(rows):
+        for column, value in enumerate(row):
+            page.insert_text((72 + column * 90, 120 + index * 22), value, fontsize=11)
+    source = tmp_path / "ayrı.pdf"
+    document.save(source)
+    document.close()
+
+    values = _borderless_values(source, tmp_path)
+
+    assert ["Ad", "Kod", "Not"] in values
+    assert ["Kalem", "K1", "tamam"] in values

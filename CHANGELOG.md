@@ -31,6 +31,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- PDF to Excel: in a table without ruling lines, a column whose cells all start with the same word ("Item 1", "Item 2") stays one column instead of splitting the word and the number into two [2026-10-25]
 - Convert › File to PDF: "Fit columns to the page width" and the paper choice now also work for older Excel (.xls) and OpenDocument (.ods) spreadsheets, which LibreOffice first saves as .xlsx, so a wide sheet comes out on one landscape page like an .xlsx does [2026-10-25]
 - PDF to HTML and EPUB: a ruled table on a turned page (a landscape page stored with /Rotate) becomes a real table, and the page's text, tables and pictures follow the order you see on screen; a table whose text runs sideways on screen stays text [2026-10-25]
 - PDF to Excel: a table on a turned page fills its sheet like any other table instead of an empty or scrambled sheet, and its cell text no longer repeats on the Text sheet [2026-10-25]
