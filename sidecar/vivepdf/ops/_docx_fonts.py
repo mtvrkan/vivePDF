@@ -379,7 +379,7 @@ def obfuscated(program: bytes, key: str) -> bytes:
     return head + program[32:]
 
 
-def _best_program(
+def best_program(
     family: str, style: tuple[bool, bool], programs: list[EmbeddedProgram]
 ) -> bytes | None:
     for candidate in sorted(programs, key=lambda entry: len(entry.glyphs), reverse=True):
@@ -493,7 +493,7 @@ def embed_fonts(
     found = collect_programs(document, indices, docx_font_names(document), wanted, stop)
     fonts = {}
     for slot, programs in found.items():
-        program = _best_program(slot[0], (slot[1], slot[2]), programs)
+        program = best_program(slot[0], (slot[1], slot[2]), programs)
         if program is not None:
             fonts[slot] = program
     if not fonts:

@@ -243,6 +243,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   without that font: Word shows the headings in the bold face and the body in the regular face
   of that font, not Calibri or Times, and File › Info does not say the document is read-only.
   Word for Mac only uses the regular face and thickens it for bold runs.
+- Convert the same PDF to PowerPoint (editable) on a PC without that font and open it in
+  PowerPoint: the titles and body text show in that font in its bold and regular faces, not
+  Calibri, and two converted files opened one after the other both keep it.
 
 ### How native dialogs are answered
 

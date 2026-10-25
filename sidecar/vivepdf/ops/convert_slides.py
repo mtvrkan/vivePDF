@@ -1,3 +1,4 @@
+import io
 import math
 import tempfile
 from pathlib import Path
@@ -9,6 +10,7 @@ from pydantic import Field
 from vivepdf.ops._document import open_document
 from vivepdf.ops._hidden_text import hidden_origins, widget_origins
 from vivepdf.ops._output import write_atomically
+from vivepdf.ops._pptx_embed import embed_slide_fonts
 from vivepdf.ops._pptx_fonts import slide_font_names
 from vivepdf.ops._pptx_layout import (
     SlideFrame,
@@ -112,7 +114,12 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                     {"current": position + 1, "total": len(indices)},
                 )
             apply_jumps(jumps, slides)
-            write_atomically(target, lambda partial: presentation.save(str(partial)))
+            buffer = io.BytesIO()
+            presentation.save(buffer)
+            data = buffer.getvalue()
+            if editable:
+                data = embed_slide_fonts(data, document, indices, names, progress.check_cancelled)
+            write_atomically(target, lambda partial: partial.write_bytes(data))
         return PagedFileResult(
             output=str(target), bytes=target.stat().st_size, page_count=len(indices)
         )
