@@ -131,7 +131,9 @@ pub fn run() {
             app_menu::install(app.handle())?;
             #[cfg(target_os = "macos")]
             quit_guard::install(app.handle());
-            if let Some(main) = tauri::Manager::get_webview_window(app, document_windows::MAIN_WINDOW) {
+            if let Some(main) =
+                tauri::Manager::get_webview_window(app, document_windows::MAIN_WINDOW)
+            {
                 mac_fullscreen::install(&main);
             }
             Ok(())

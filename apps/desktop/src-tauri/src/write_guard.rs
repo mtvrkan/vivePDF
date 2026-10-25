@@ -359,7 +359,9 @@ mod tests {
 
         assert_eq!(
             target,
-            std::fs::canonicalize(dir.join("elsewhere")).unwrap().join("evil.plist")
+            std::fs::canonicalize(dir.join("elsewhere"))
+                .unwrap()
+                .join("evil.plist")
         );
         assert!(!target.starts_with(std::fs::canonicalize(&granted).unwrap()));
     }

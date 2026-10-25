@@ -334,8 +334,18 @@ pub async fn open_produced_file(app: tauri::AppHandle, path: String) -> Result<(
 }
 
 const PROGRAM_BUNDLE_EXTENSIONS: [&str; 12] = [
-    "app", "appex", "bundle", "plugin", "prefpane", "kext", "framework", "saver", "qlgenerator",
-    "mdimporter", "workflow", "action",
+    "app",
+    "appex",
+    "bundle",
+    "plugin",
+    "prefpane",
+    "kext",
+    "framework",
+    "saver",
+    "qlgenerator",
+    "mdimporter",
+    "workflow",
+    "action",
 ];
 
 fn opens_as_program(path: &Path) -> bool {
@@ -371,9 +381,13 @@ mod tests {
 
     #[test]
     fn program_bundles_are_never_opened_as_folders() {
-        assert!(opens_as_program(Path::new("/System/Applications/Terminal.app")));
+        assert!(opens_as_program(Path::new(
+            "/System/Applications/Terminal.app"
+        )));
         assert!(opens_as_program(Path::new("/Users/me/Downloads/Evil.APP")));
-        assert!(opens_as_program(Path::new("/Library/PreferencePanes/x.prefPane")));
+        assert!(opens_as_program(Path::new(
+            "/Library/PreferencePanes/x.prefPane"
+        )));
         assert!(!opens_as_program(Path::new("/Users/me/Documents/Raporlar")));
         assert!(!opens_as_program(Path::new("/Users/me/Documents/v1.2")));
     }
