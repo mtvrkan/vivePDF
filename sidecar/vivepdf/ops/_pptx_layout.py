@@ -13,6 +13,10 @@ MIN_FONT_POINTS = 1.0
 MAX_FONT_POINTS = 4000.0
 BOLD_FLAG = 16
 ITALIC_FLAG = 2
+FILLED_FLAG = 16
+STROKED_FLAG = 32
+STROKE_TRACE = 1
+TEXT_FLAGS = pymupdf.TEXTFLAGS_TEXT | pymupdf.TEXT_COLLECT_STYLES
 SUBSET_PREFIX = re.compile(r"^[A-Z]{6}\+")
 UNSAFE_CHARACTERS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\ud800-\udfff\ufffe\uffff]")
 FONT_SUFFIXES = ("PSMT", "MT", "PS")
@@ -138,6 +142,31 @@ def _line_box(line: dict, bounds: pymupdf.Rect, spans: list[dict], matrix) -> Li
     )
 
 
+def _hollow(span: dict) -> bool:
+    flags = span.get("char_flags", FILLED_FLAG)
+    return bool(flags & STROKED_FLAG) and not flags & FILLED_FLAG
+
+
+def _mark_outlines(page: pymupdf.Page, blocks: list[dict]) -> None:
+    spans = [
+        span
+        for block in blocks
+        for line in block.get("lines", [])
+        for span in line["spans"]
+        if _hollow(span) and span["chars"]
+    ]
+    if not spans:
+        return
+    widths = {
+        origin_key(char[2]): trace["linewidth"]
+        for trace in page.get_texttrace()
+        if trace["type"] == STROKE_TRACE
+        for char in trace["chars"]
+    }
+    for span in spans:
+        span["outline"] = widths.get(origin_key(span["chars"][0]["origin"]))
+
+
 def _span_bounds(spans: list[dict]) -> pymupdf.Rect:
     bounds = pymupdf.Rect(spans[0]["bbox"])
     for span in spans[1:]:
@@ -153,7 +182,9 @@ def line_boxes(
     hidden = hidden or set()
     matrix = page.rotation_matrix
     boxes: list[LineBox] = []
-    for block in page.get_text("rawdict", flags=pymupdf.TEXTFLAGS_TEXT)["blocks"]:
+    blocks = page.get_text("rawdict", flags=TEXT_FLAGS)["blocks"]
+    _mark_outlines(page, blocks)
+    for block in blocks:
         for line in block.get("lines", []):
             breaks = wide_gap_starts(line)
             whole = not breaks and not any(
@@ -210,6 +241,22 @@ def _font_points(size: float, ratio: float) -> float:
     return min(MAX_FONT_POINTS, max(MIN_FONT_POINTS, round(size * ratio / EMU_PER_POINT, 1)))
 
 
+def _outline_run(run, colour, width: float | None, ratio: float) -> None:
+    from lxml import etree
+    from pptx.dml.fill import FillFormat
+    from pptx.oxml.ns import qn
+
+    properties = run._r.get_or_add_rPr()
+    line = etree.SubElement(properties, qn("a:ln"))
+    properties.insert(0, line)
+    if width:
+        line.set("w", str(max(1, round(width * ratio))))
+    stroke = FillFormat.from_fill_parent(line)
+    stroke.solid()
+    stroke.fore_color.rgb = colour
+    FillFormat.from_fill_parent(properties).background()
+
+
 def add_line_box(slide, box: LineBox, frame: SlideFrame, jumps: SlideJumps | None = None) -> None:
     from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE
@@ -237,9 +284,15 @@ def add_line_box(slide, box: LineBox, frame: SlideFrame, jumps: SlideJumps | Non
         font = run.font
         font.size = Pt(_font_points(span["size"], frame.ratio))
         font.name = font_family(span["font"])
-        font.bold = bool(span["flags"] & BOLD_FLAG)
+        strokes = span.get("char_flags", FILLED_FLAG)
+        fake_bold = strokes & FILLED_FLAG and strokes & STROKED_FLAG
+        font.bold = bool(span["flags"] & BOLD_FLAG or fake_bold)
         font.italic = bool(span["flags"] & ITALIC_FLAG)
-        font.color.rgb = RGBColor.from_string(f"{span['color'] & 0xFFFFFF:06X}")
+        colour = RGBColor.from_string(f"{span['color'] & 0xFFFFFF:06X}")
+        if _hollow(span):
+            _outline_run(run, colour, span.get("outline"), frame.ratio)
+        else:
+            font.color.rgb = colour
         if span.get("link") is not None and jumps is not None:
             link_run(run, span["link"], jumps)
     if box.angle:
