@@ -13,6 +13,7 @@ export function useConvertOptions() {
   const [quality, setQuality] = useState(88);
   const [layout, setLayout] = useState(false);
   const [paper, setPaper] = useState<"a4" | "letter">("a4");
+  const [fitColumns, setFitColumns] = useState(true);
   const [images, setImages] = useState<string[]>([]);
   const [folders, setFolders] = useState<string[]>([]);
   const [recursive, setRecursive] = useState(false);
@@ -91,6 +92,8 @@ export function useConvertOptions() {
     setRecursive,
     compressPhotos,
     setCompressPhotos,
+    fitColumns,
+    setFitColumns,
     sort,
     setSort,
     pageSize,

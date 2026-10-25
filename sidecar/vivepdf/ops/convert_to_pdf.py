@@ -13,6 +13,7 @@ from vivepdf.external import libreoffice
 from vivepdf.ops._mail import MAIL_CSS, MAIL_EXTENSIONS, MailLabels, mail_document_html, read_mail
 from vivepdf.ops._naming import unique_name
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
+from vivepdf.ops._sheet_print import print_ready_copy
 from vivepdf.ops._story import (
     BASE_CSS,
     FONT_DIR,
@@ -38,13 +39,19 @@ class FileToPdfParams(RpcModel):
     path: ReadPath
     output: WritePath
     overwrite: bool = False
-    paper: Literal["a4", "letter"] = "a4"
+    paper: Literal["a4", "letter"] | None = None
+    default_paper: Literal["a4", "letter"] = "a4"
+    fit_columns: bool = True
     mail_labels: MailLabels = MailLabels()
+
+    @property
+    def page_paper(self) -> str:
+        return self.paper or self.default_paper
 
 
 def _mail_to_pdf(source: Path, target: Path, params: FileToPdfParams, progress: Progress) -> None:
     message = read_mail(source)
-    mediabox = pymupdf.paper_rect(params.paper)
+    mediabox = pymupdf.paper_rect(params.page_paper)
     where = mediabox + (MARGIN, MARGIN, -MARGIN, -MARGIN)
     with tempfile.TemporaryDirectory(
         prefix="vivepdf-mail-", ignore_cleanup_errors=True
@@ -138,7 +145,7 @@ def _csv_to_pdf(source: Path, target: Path, params: FileToPdfParams, progress: P
     rows = _csv_rows(source)
     html = csv_table_html(rows)
     wide = max((len(row) for row in rows), default=0) > WIDE_TABLE_COLUMNS
-    mediabox = pymupdf.paper_rect(f"{params.paper}-l" if wide else params.paper)
+    mediabox = pymupdf.paper_rect(f"{params.page_paper}-l" if wide else params.page_paper)
     scale = _overflow_scale(html, mediabox)
     canvas = mediabox * scale
     margin = MARGIN * scale
@@ -181,7 +188,7 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
         render_html_to_pdf(
             _story_source(source),
             target,
-            params.paper,
+            params.page_paper,
             base_dir=source.parent,
             check_cancelled=progress.check_cancelled,
             outline=True,
@@ -214,7 +221,10 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
             prefix="vivepdf-office-", ignore_cleanup_errors=True
         ) as temp_dir:
             working = Path(temp_dir)
-            produced = libreoffice.convert_to_pdf(source, working, None, progress.check_cancelled)
+            prepared = print_ready_copy(
+                source, working / "sheet", params.paper, params.default_paper, params.fit_columns
+            )
+            produced = libreoffice.convert_to_pdf(prepared, working, None, progress.check_cancelled)
             progress.check_cancelled()
             with pymupdf.open(str(produced)) as document:
                 save_document(document, target)

@@ -70,4 +70,17 @@ describe("useOpenPdf with an Office file", () => {
     expect(conversion.fileToPdf).toHaveBeenCalledTimes(1);
     expect(useOpenStore.getState().waitingPaths).toEqual([SHEET]);
   });
+
+  it("lets a sheet without its own paper size fall back to the paper of the user's region", async () => {
+    conversion.fileToPdf.mockRejectedValue(new RpcCallError({ code: "INTERNAL", message: "boom" }));
+    vi.spyOn(navigator, "language", "get").mockReturnValue("en-US");
+    const { result } = renderHook(() => useOpenPdf(), { wrapper });
+
+    await act(async () => {
+      await result.current.openPath(SHEET);
+    });
+
+    expect(conversion.fileToPdf).toHaveBeenCalledWith(expect.objectContaining({ path: SHEET, defaultPaper: "letter" }));
+    expect(conversion.fileToPdf.mock.calls[0][0]).not.toHaveProperty("paper");
+  });
 });

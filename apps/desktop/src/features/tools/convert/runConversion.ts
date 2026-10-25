@@ -36,6 +36,7 @@ export type ConvertRun = {
     quality: number;
     layout: boolean;
     paper: "a4" | "letter";
+    fitColumns: boolean;
     images: string[];
     folders: string[];
     recursive: boolean;
@@ -112,7 +113,7 @@ function stopsTheBatch(error: RpcError, signal?: AbortSignal): boolean {
 
 function oneFileToPdf(run: ConvertRun, path: string, output: string, callOptions: RpcCallOptions) {
   if (run.libraryText && isSourceLibraryPath(path)) return sourceLibraryToPdf(path, { output, overwrite: run.overwrite, paper: run.options.paper, ...run.libraryText }, callOptions);
-  return fileToPdf({ path, output, overwrite: run.overwrite, paper: run.options.paper }, callOptions);
+  return fileToPdf({ path, output, overwrite: run.overwrite, paper: run.options.paper, fitColumns: run.options.fitColumns }, callOptions);
 }
 
 async function filesToPdf(run: ConvertRun, callOptions: RpcCallOptions, files = run.options.files): Promise<ConvertOutcome> {

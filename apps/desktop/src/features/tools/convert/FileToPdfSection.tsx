@@ -2,7 +2,7 @@ import { Plus, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
-import { Field, Section, SelectInput } from "@/components/tool/form";
+import { Checkbox, Field, Section, SelectInput } from "@/components/tool/form";
 import { FileDropArea } from "@/components/tool/FileDropArea";
 import { OutputDirField, OutputPathField } from "@/components/tool/OutputPathField";
 import { basenameOf, extensionOf } from "@/shared/lib/paths";
@@ -28,7 +28,8 @@ export function FileToPdfSection({
   options: ConvertOptions;
 }) {
   const { t } = useTranslation();
-  const { files, setFiles, paper, setPaper, addFiles } = options;
+  const { files, setFiles, paper, setPaper, fitColumns, setFitColumns, addFiles } = options;
+  const hasSheets = files.some((file) => extensionOf(file) === "xlsx");
   const missingFonts = useMissingFonts(files, Boolean(tools?.libreoffice));
   return (
     <>
@@ -59,6 +60,7 @@ export function FileToPdfSection({
             <option value="letter">{t("tools.pages.papers.letter")}</option>
           </SelectInput>
         </Field>
+        {hasSheets ? <Checkbox label={t("tools.convert.fitColumns")} hint={t("tools.convert.fitColumnsHint")} checked={fitColumns} onChange={setFitColumns} disabled={running} /> : null}
       </Section>
       <Section>
         {files.length > 1 ? (

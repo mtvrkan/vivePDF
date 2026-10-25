@@ -35,6 +35,7 @@ import { closeViewable, openViewable, type ViewableSource } from "@/shared/sessi
 import { useViewerOverlayStore } from "@/shared/store/viewerOverlayStore";
 import { isPendingChange } from "./overlay/pending";
 import { neighbourAfterClose, restoreTabPlace, tabPlaceOf } from "./tabPlace";
+import { previewPaper } from "./usePrintPreview";
 import { SOURCE_LIBRARY_EXTENSIONS, STUDIO_PROJECT_EXTENSION } from "@/types/studio";
 
 const openingPaths = new Set<string>();
@@ -130,7 +131,7 @@ export function useOpenPdf(documentRoute = "/viewer") {
         let output: string;
         try {
           output = await join(await tempDir(), "vivepdf-converted", crypto.randomUUID(), `${stemOf(path)}.pdf`);
-          await fileToPdf({ path, output, overwrite: true });
+          await fileToPdf({ path, output, overwrite: true, defaultPaper: previewPaper(navigator.language) });
         } catch (error) {
           const rpcError = toRpcError(error);
           if (rpcError.code === "LIBREOFFICE_MISSING") {

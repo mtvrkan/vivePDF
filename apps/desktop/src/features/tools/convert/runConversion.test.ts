@@ -55,6 +55,14 @@ describe("runConversion file-to-pdf batches", () => {
     expect(outcome.failed).toEqual([{ path: "C:\\in\\broken.docx", error: { code: "INVALID_PARAMS", message: "x", data: { reason: "officeUnreadable" } } }]);
   });
 
+  it("passes the paper and the fit columns choice to every file", async () => {
+    fileToPdf.mockImplementation(converted);
+    const run = batch(["C:\\in\\a.xlsx"]);
+    run.options.fitColumns = false;
+    await runConversion(run, {});
+    expect(fileToPdf).toHaveBeenCalledWith(expect.objectContaining({ paper: "a4", fitColumns: false }), expect.anything());
+  });
+
   it("gives files with the same name from different folders their own PDF", async () => {
     fileToPdf.mockImplementation(converted);
     const outcome = await runConversion(batch(["C:\\a\\r.docx", "C:\\b\\r.docx"]), {});

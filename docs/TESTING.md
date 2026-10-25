@@ -287,6 +287,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   blotches around the letters.
 - Convert › SVG to PDF: an Inkscape drawing that links a photo kept in the same folder (not
   embedded) shows the photo in the PDF; a photo linked from another folder is left out.
+- Convert › File to PDF: add an .xlsx with about 15 columns, choose Letter: the "Fit columns to
+  the page width" switch appears; the PDF has every column on one landscape Letter page per
+  page of rows. Turn the switch off: the columns spread over extra pages as before.
+- Open an .xlsx with no print setup straight from Explorer (Open with vivePDF) on a Windows set
+  to Turkish: the converted pages are A4; set Windows to English (United States): Letter.
 
 ### How native dialogs are answered
 

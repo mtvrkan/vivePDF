@@ -1153,7 +1153,7 @@ export type ImagesToPdfParams = {
 };
 export type ImagesToPdfResult = OutputResult & { skipped: string[] };
 export type MailLabels = { sender: string; to: string; cc: string; date: string; attachments: string };
-export type FileToPdfParams = { path: string; output: string; overwrite?: boolean; paper?: "a4" | "letter"; mailLabels?: MailLabels };
+export type FileToPdfParams = { path: string; output: string; overwrite?: boolean; paper?: "a4" | "letter"; defaultPaper?: "a4" | "letter"; fitColumns?: boolean; mailLabels?: MailLabels };
 export type OfficeFontsParams = { path: string };
 export type OfficeFontsResult = { missing: string[] };
 export type CreateTemplate = "report" | "letter" | "petition" | "assignment" | "minutes" | "lectureNotes" | "booklet";

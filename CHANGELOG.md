@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Convert › File to PDF: Excel (.xlsx) files follow the chosen paper size, and a new "Fit columns to the page width" switch (on by default) keeps every column on the page, putting wide tables on a landscape page instead of spreading columns over extra pages; a file's own fit setting is kept and the original file is never changed [2026-10-25]
 - Convert › Images to PDF: a "Compress photos" switch scales each photo to 200 dpi at its size on the page and stores it as JPEG, so a 32 MB PNG photo gives a 0.4 MB PDF page instead of 54 MB; drawings and screenshots stay lossless [2026-10-25]
 - Convert › File to PDF: each Word, Excel, PowerPoint or OpenDocument file in the list shows the fonts it uses that this computer does not have, before converting, since LibreOffice replaces them with a similar font and the layout can shift [2026-10-25]
 - Print: the print dialog shows a preview of each sheet next to the settings, on A4 (Letter in the Americas) with the chosen pages, odd/even choice, reverse order, pages per sheet, grayscale, scale, rotation and comments, with buttons to step through the sheets; unsaved markups appear as they will print [2026-10-24]
@@ -20,6 +21,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Excel to PDF: a sheet whose print setup names no paper size is laid on A4 (or, when the file is opened straight in vivePDF, the paper of the computer's region) instead of Letter [2026-10-25]
 - SVG to PDF: pictures an SVG links from its own folder (for example an Inkscape drawing with a linked photo) appear in the PDF instead of being left out; pictures elsewhere on the computer are still never read [2026-10-25]
 - Images to PDF: a lossless WebP picture (a screenshot or a scanned page) is placed losslessly instead of being turned into a JPEG with blotches around the text [2026-10-25]
 - PDF to Word and PDF to PowerPoint: fonts with no licence table, as in PDFs saved from LibreOffice (Liberation, OpenSymbol, Ubuntu, Noto), are now embedded too, so the text keeps its typeface on a computer without them [2026-10-25]
