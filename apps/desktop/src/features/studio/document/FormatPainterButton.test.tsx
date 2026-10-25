@@ -8,13 +8,12 @@ import { countText } from "./formatPainter";
 import { FormatPainterButton } from "./FormatPainterButton";
 import { WordCount } from "./WordCount";
 
-const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
 const SOURCE = '<p style="text-align: center; line-height: 2"><strong><em>Styled</em></strong> plain</p><p>first target</p><p>second target</p>';
 
 let editor: Editor | null = null;
 
 function create(content: string): Editor {
-  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(TERMS, "en", "References", "")), content });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content });
   return editor;
 }
 

@@ -9248,26 +9248,12 @@
           "apa": "APA 7",
           "mla": "MLA 9",
           "chicago": "Chicago (autor-fecha)",
-          "ieee": "IEEE"
-        },
-        "terms": {
-          "and": "y",
-          "etAl": "et al.",
-          "page": "p.",
-          "pages": "pp.",
-          "noDate": "s. f.",
-          "in": "En",
-          "editor": "Ed.",
-          "editors": "Eds.",
-          "editedBy": "editado por",
-          "edition": "{n}.ª ed.",
-          "volume": "vol.",
-          "issue": "n.º",
-          "doctoral": "Tesis doctoral",
-          "masters": "Tesis de maestría",
-          "thesis": "Tesis",
-          "report": "Informe n.º",
-          "available": "Disponible"
+          "ieee": "IEEE",
+          "chicago-notes": "Chicago (notas y bibliografía)",
+          "isnad": "ISNAD (en el texto)",
+          "isnad-notes": "ISNAD (notas al pie)",
+          "vancouver": "Vancouver",
+          "harvard": "Harvard (Cite Them Right)"
         },
         "newSource": "Nueva fuente",
         "export": "Exportar",
@@ -9371,7 +9357,24 @@
         "truncated": "Solo se cargaron las primeras {{limit}} fuentes; {{count}} más quedaron fuera",
         "clipped": "Campos muy largos acortados: {{count}}",
         "leaveTitle": "¿Guardar los cambios en el archivo de fuentes?",
-        "leaveBody": "«{{name}}» tiene cambios que aún no se han escrito en el archivo. ¿Guardarlos antes de salir?"
+        "leaveBody": "«{{name}}» tiene cambios que aún no se han escrito en el archivo. ¿Guardarlos antes de salir?",
+        "language": "Idioma de las referencias",
+        "languages": {
+          "auto": "El mismo que la aplicación",
+          "en-US": "English (US)",
+          "en-GB": "English (UK)",
+          "tr-TR": "Türkçe",
+          "de-DE": "Deutsch",
+          "es-ES": "Español",
+          "fr-FR": "Français",
+          "it-IT": "Italiano",
+          "pt-BR": "Português (Brasil)",
+          "ar": "العربية"
+        },
+        "sentenceCase": {
+          "warning": "Este título parece escrito con mayúscula en cada palabra; este estilo escribe los títulos de artículos en mayúscula inicial de oración.",
+          "convert": "Convertir a mayúscula de oración"
+        }
       },
       "spacing": {
         "label": "Interlineado y espaciado de párrafo",

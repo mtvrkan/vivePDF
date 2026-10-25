@@ -54,7 +54,7 @@ const OneParagraph = Extension.create({
 });
 
 export function noteExtensions(placeholder: string, citations: CitationSource): AnyExtension[] {
-  const [Citation] = citationNodes(citations);
+  const [Citation] = citationNodes(citations, true);
   return [
     StarterKit.configure({
       document: false,

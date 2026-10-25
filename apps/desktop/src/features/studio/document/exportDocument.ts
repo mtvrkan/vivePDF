@@ -21,7 +21,7 @@ export async function exportDocument(params: DocumentExportParams, options?: Rpc
   useDocumentStore.getState().flushContent();
   const document = useDocumentStore.getState().document;
   if (!document) throw new Error("no document");
-  const content = { ...documentContent(document, params.language, params.text), output: params.output, overwrite: params.overwrite };
+  const content = { ...(await documentContent(document, params.language, params.text)), output: params.output, overwrite: params.overwrite };
   if (params.format === "markdown") {
     const written = await studioExportMarkdown(content, options);
     return { output: written.output, pageCount: null };

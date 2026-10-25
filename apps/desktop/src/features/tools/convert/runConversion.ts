@@ -1,6 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { DocumentText } from "@/features/studio/document/content";
-import { sourceLibraryToPdf } from "@/features/studio/document/sourceLibraryPdf";
+import type { DocumentText } from "@/features/studio/document/documentText";
 import type { SheetLabels } from "@/shared/lib/sheetLabels";
 import { isSourceLibraryPath } from "@/shared/store/studioLaunchStore";
 import { toRpcError, type RpcCallOptions } from "@/shared/rpc/client";
@@ -115,8 +114,11 @@ function stopsTheBatch(error: RpcError, signal?: AbortSignal): boolean {
   return error.code === "CANCELLED" || signal?.aborted === true || (error.code === "INVALID_PARAMS" && error.data?.exists === true);
 }
 
-function oneFileToPdf(run: ConvertRun, path: string, output: string, callOptions: RpcCallOptions) {
-  if (run.libraryText && isSourceLibraryPath(path)) return sourceLibraryToPdf(path, { output, overwrite: run.overwrite, paper: run.options.paper, ...run.libraryText }, callOptions);
+async function oneFileToPdf(run: ConvertRun, path: string, output: string, callOptions: RpcCallOptions) {
+  if (run.libraryText && isSourceLibraryPath(path)) {
+    const { sourceLibraryToPdf } = await import("@/features/studio/document/sourceLibraryPdf");
+    return sourceLibraryToPdf(path, { output, overwrite: run.overwrite, paper: run.options.paper, ...run.libraryText }, callOptions);
+  }
   return fileToPdf({ path, output, overwrite: run.overwrite, paper: run.options.paper, fitColumns: run.options.fitColumns }, callOptions);
 }
 

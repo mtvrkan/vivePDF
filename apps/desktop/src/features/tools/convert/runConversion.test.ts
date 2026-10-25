@@ -301,7 +301,7 @@ describe("runConversion source libraries", () => {
     expect(fileToPdf).toHaveBeenCalledTimes(1);
     const rendered = studioRenderDocument.mock.calls[0][0] as { html: string; title: string; output: string; settings: { paper: string } };
     expect(rendered).toMatchObject({ title: "refs", output: "C:\\out\\refs.pdf", settings: { paper: "a4" } });
-    expect(rendered.html).toContain("Knuth, D. (1968). <em>The Art</em>. AW.");
+    expect(rendered.html).toContain("Knuth, D. (1968). <i>The Art</i>. AW.");
   });
 
   it("reports a library without sources as a failed file and still converts the rest", async () => {

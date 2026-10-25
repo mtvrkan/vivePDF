@@ -249,7 +249,7 @@ export function cslItemOf(entry: BibEntry): CslItem {
     "publisher-place": field("address") ?? field("location"),
     edition: field("edition"),
     version: field("version"),
-    genre: field("type") ?? (entry.type === "mastersthesis" ? "Master's thesis" : entry.type === "phdthesis" ? "PhD thesis" : undefined),
+    genre: field("type") ?? (entry.type === "mastersthesis" ? "Master's thesis" : entry.type === "phdthesis" ? "PhD thesis" : preprint ? "Preprint" : undefined),
     DOI: field("doi"),
     URL: field("url"),
     ISBN: field("isbn"),

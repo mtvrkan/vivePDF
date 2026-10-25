@@ -86,7 +86,7 @@ def test_reference_entries_hang_under_their_first_line(tmp_path: Path):
         ]
         first = next(line for line in lines if line["spans"][0]["text"].startswith("Yılmaz"))
         second = lines[lines.index(first) + 1]
-    assert second["bbox"][0] - first["bbox"][0] == pytest.approx(24, abs=1)
+    assert second["bbox"][0] - first["bbox"][0] == pytest.approx(36, abs=1)
 
 
 def _import(path: Path):

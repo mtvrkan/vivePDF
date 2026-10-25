@@ -12,7 +12,7 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { formatBytes, formatNumber } from "@/shared/lib/format";
 import { pathKinds } from "@/shared/lib/pathKinds";
 import { basenameOf, defaultOutputDirectory, extensionOf, joinPath, outputDirectoryFor, siblingPath, stemOf } from "@/shared/lib/paths";
-import { documentText } from "@/features/studio/document/content";
+import { documentText } from "@/features/studio/document/documentText";
 import { sheetLabels } from "@/shared/lib/sheetLabels";
 import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useLaunchStore } from "@/shared/store/launchStore";

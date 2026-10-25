@@ -9,13 +9,12 @@ import { useDocumentStore } from "./documentStore";
 import { DocumentToolbar } from "./DocumentToolbar";
 import { createDocument } from "./model";
 
-const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
 const TABLE = "<table><tbody><tr><th><p>A</p></th><th><p>B</p></th></tr><tr><td><p>C</p></td><td><p>D</p></td></tr></tbody></table>";
 
 let editor: Editor | null = null;
 
 function mount() {
-  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(TERMS, "en", "References", "")), content: TABLE });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content: TABLE });
   render(<DocumentToolbar editor={editor} contentWidth={400} />);
   return editor;
 }

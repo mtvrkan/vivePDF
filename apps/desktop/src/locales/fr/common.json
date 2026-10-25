@@ -9248,26 +9248,12 @@
           "apa": "APA 7",
           "mla": "MLA 9",
           "chicago": "Chicago (auteur-date)",
-          "ieee": "IEEE"
-        },
-        "terms": {
-          "and": "et",
-          "etAl": "et al.",
-          "page": "p.",
-          "pages": "p.",
-          "noDate": "s. d.",
-          "in": "Dans",
-          "editor": "dir.",
-          "editors": "dir.",
-          "editedBy": "sous la direction de",
-          "edition": "{n}e éd.",
-          "volume": "vol.",
-          "issue": "no",
-          "doctoral": "Thèse de doctorat",
-          "masters": "Mémoire de master",
-          "thesis": "Thèse",
-          "report": "Rapport no",
-          "available": "Disponible"
+          "ieee": "IEEE",
+          "chicago-notes": "Chicago (notes et bibliographie)",
+          "isnad": "ISNAD (dans le texte)",
+          "isnad-notes": "ISNAD (notes de bas de page)",
+          "vancouver": "Vancouver",
+          "harvard": "Harvard (Cite Them Right)"
         },
         "newSource": "Nouvelle source",
         "export": "Exporter",
@@ -9371,7 +9357,24 @@
         "truncated": "Seules les {{limit}} premières sources ont été chargées ; {{count}} autres ont été laissées de côté",
         "clipped": "Champs très longs raccourcis : {{count}}",
         "leaveTitle": "Enregistrer les modifications du fichier de sources ?",
-        "leaveBody": "« {{name}} » contient des modifications qui ne sont pas encore écrites dans le fichier. Les enregistrer avant de quitter ?"
+        "leaveBody": "« {{name}} » contient des modifications qui ne sont pas encore écrites dans le fichier. Les enregistrer avant de quitter ?",
+        "language": "Langue des références",
+        "languages": {
+          "auto": "Identique à l’application",
+          "en-US": "English (US)",
+          "en-GB": "English (UK)",
+          "tr-TR": "Türkçe",
+          "de-DE": "Deutsch",
+          "es-ES": "Español",
+          "fr-FR": "Français",
+          "it-IT": "Italiano",
+          "pt-BR": "Português (Brasil)",
+          "ar": "العربية"
+        },
+        "sentenceCase": {
+          "warning": "Ce titre semble avoir une majuscule à chaque mot ; ce style écrit les titres d’articles avec une majuscule initiale seulement.",
+          "convert": "Convertir en majuscule initiale"
+        }
       },
       "spacing": {
         "label": "Interligne et espacement des paragraphes",

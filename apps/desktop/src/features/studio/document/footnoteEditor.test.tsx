@@ -6,7 +6,7 @@ import { MAX_FOOTNOTE, MAX_FOOTNOTE_HTML, MAX_FOOTNOTE_LINES, MAX_FOOTNOTE_PICTU
 
 const PIXEL = "data:image/png;base64,iVBORw0KGgo=";
 const SOURCE: CitationSource = {
-  current: () => ({ style: "apa", label: (items) => ({ text: `(${items.map((item) => item.key).join("; ")})`, missing: false }), references: [] }),
+  current: () => ({ style: "apa", notes: false, ready: true, label: (items) => ({ text: `(${items.map((item) => item.key).join("; ")})`, html: `(${items.map((item) => item.key).join("; ")})`, missing: false }), references: [] }),
   title: () => "",
   emptyText: "",
   subscribe: () => () => undefined,

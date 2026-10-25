@@ -920,8 +920,8 @@
     cursor: default;
   }
   .vp-doc .vp-ref {
-    padding-left: 24pt;
-    text-indent: -24pt;
+    padding-left: 36pt;
+    text-indent: -36pt;
   }
   .vp-doc .vp-refs-empty {
     color: var(--muted-foreground);
@@ -938,6 +938,19 @@
   }
   .vp-doc .vp-footnote::after {
     content: counter(vp-footnote);
+  }
+  .vp-doc .vp-cite[data-note] {
+    background: none;
+    color: var(--doc-accent);
+    counter-increment: vp-footnote;
+    font-size: 0.75em;
+    vertical-align: super;
+  }
+  .vp-doc .vp-cite[data-note]::after {
+    content: counter(vp-footnote);
+  }
+  .vp-doc .vp-cite[data-note][data-missing] {
+    color: var(--destructive);
   }
   .vp-doc .vp-painting {
     cursor: copy;

@@ -8,11 +8,13 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import { CITATION } from "./citationItems";
-import { citationTerms, storeCitationSource } from "./citationSource";
+import { isNoteStyle } from "./citations";
+import { storeCitationSource } from "./citationSource";
 import { pickDocumentImage } from "./documentFile";
 import { LinkDialog } from "./DocumentToolbar";
 import { noteContent, noteExtensions, noteValue } from "./footnoteEditor";
 import { footnotePicture } from "./footnotePicture";
+import { useDocumentStore } from "./documentStore";
 import { FOOTNOTE, MAX_FOOTNOTE_PICTURES } from "./footnotes";
 import { SourcesDialog } from "./SourcesDialog";
 
@@ -21,9 +23,11 @@ type SelectedNote = { position: number; text: string; html: string; number: numb
 function selectedNote(editor: Editor): SelectedNote | null {
   const { selection, doc } = editor.state;
   if (!(selection instanceof NodeSelection) || selection.node.type.name !== FOOTNOTE) return null;
+  const style = useDocumentStore.getState().document?.settings.citationStyle;
+  const counted = style && isNoteStyle(style) ? new Set([FOOTNOTE, CITATION]) : new Set([FOOTNOTE]);
   let number = 1;
   doc.nodesBetween(0, selection.from, (node, position) => {
-    if (node.type.name === FOOTNOTE && position < selection.from) number += 1;
+    if (counted.has(node.type.name) && position < selection.from) number += 1;
   });
   return { position: selection.from, text: String(selection.node.attrs.text ?? ""), html: String(selection.node.attrs.html ?? ""), number };
 }
@@ -89,7 +93,7 @@ function NoteMarks({ note }: { note: Editor }) {
 function NoteEditor({ editor, note }: { editor: Editor; note: SelectedNote }) {
   const hintId = useId();
   const { t, i18n } = useTranslation();
-  const extensions = useMemo(() => noteExtensions(t("studio.doc.footnotes.placeholder"), storeCitationSource(citationTerms(t), i18n.language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList"))), [t, i18n.language]);
+  const extensions = useMemo(() => noteExtensions(t("studio.doc.footnotes.placeholder"), storeCitationSource(i18n.language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList"))), [t, i18n.language]);
   const noteEditor = useEditor({
     extensions,
     content: noteContent(note.text, note.html),

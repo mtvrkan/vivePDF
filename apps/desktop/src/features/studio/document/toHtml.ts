@@ -2,7 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
-import { FOOTNOTE, FOOTNOTE_PICTURE, footnoteMarkup, footnoteText, MAX_FOOTNOTE_HTML, MAX_FOOTNOTES, noteCitation, unescapeAttribute } from "./footnotes";
+import { FOOTNOTE, FOOTNOTE_PICTURE, footnoteCitations, footnoteMarkup, footnoteText, MAX_FOOTNOTE_HTML, MAX_FOOTNOTES, noteCitation, unescapeAttribute } from "./footnotes";
 import { SECTION_BREAK, sectionColumns, sectionKind } from "./sections";
 import { SPACING_KEYS, spacingCss } from "./spacing";
 
@@ -35,6 +35,7 @@ class Writer {
   footnoteHtml: string[] = [];
   fonts: string[];
   headings = 0;
+  cited = 0;
   references: DocumentReferences | null;
 
   constructor(settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null) {
@@ -184,8 +185,29 @@ function notePicture(tag: string, writer: Writer): string {
 }
 
 function noteHtml(markup: string, writer: Writer): string {
-  const resolved = markup.replace(NOTE_CITATION, (_match, payload: string) => (writer.references ? escapeHtml(writer.references.citations.label(noteCitation(payload)).text) : "")).replace(NOTE_PICTURE, (tag) => notePicture(tag, writer));
+  const resolved = markup
+    .replace(NOTE_CITATION, (_match, payload: string) => {
+      const ordinal = writer.cited++;
+      return writer.references ? writer.references.citations.label(noteCitation(payload), ordinal, true).html : "";
+    })
+    .replace(NOTE_PICTURE, (tag) => notePicture(tag, writer));
   return resolved.length <= MAX_FOOTNOTE_HTML ? resolved : "";
+}
+
+function footnoteMark(number: number): string {
+  return `<sup class="fn-ref" id="fnref-${number}">${number}</sup>`;
+}
+
+function citation(node: DocumentNode, writer: Writer): string {
+  const ordinal = writer.cited++;
+  if (!writer.references) return "";
+  const { citations } = writer.references;
+  const label = citations.label(citationItems(attr(node, "items")), ordinal);
+  if (!citations.notes) return label.html;
+  if (writer.footnotes.length >= MAX_FOOTNOTES) return "";
+  const number = writer.footnotes.push(label.text);
+  writer.footnoteHtml.push(label.html);
+  return footnoteMark(number);
 }
 
 function bibliography(writer: Writer): string {
@@ -246,13 +268,19 @@ function write(node: DocumentNode, writer: Writer): string {
     case SECTION_BREAK:
       return `<div class="section-break" data-columns="${sectionColumns(attr(node, "columns"))}"${sectionKind(attr(node, "kind")) ? ' data-kind="continuous"' : ""}></div>`;
     case FOOTNOTE: {
-      if (writer.footnotes.length >= MAX_FOOTNOTES) return "";
+      const markup = footnoteMarkup(attr(node, "html"));
+      const after = writer.cited + footnoteCitations(markup).length;
+      if (writer.footnotes.length >= MAX_FOOTNOTES) {
+        writer.cited = after;
+        return "";
+      }
       const number = writer.footnotes.push(footnoteText(attr(node, "text")));
-      writer.footnoteHtml.push(noteHtml(footnoteMarkup(attr(node, "html")), writer));
-      return `<sup class="fn-ref" id="fnref-${number}">${number}</sup>`;
+      writer.footnoteHtml.push(noteHtml(markup, writer));
+      writer.cited = after;
+      return footnoteMark(number);
     }
     case CITATION:
-      return writer.references ? escapeHtml(writer.references.citations.label(citationItems(attr(node, "items"))).text) : "";
+      return citation(node, writer);
     case BIBLIOGRAPHY:
       return bibliography(writer);
     default:

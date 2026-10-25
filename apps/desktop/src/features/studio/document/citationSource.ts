@@ -1,34 +1,49 @@
-import type { TFunction } from "i18next";
-import type { BibEntry, CitationStyle, DocumentNode } from "@/types/studio";
+import * as logger from "@/shared/lib/logger";
 import type { CitationSource } from "./citationNodes";
-import { buildCitations, type Citations, type CitationTerms } from "./citations";
+import { citationLanguageOf, pendingCitations } from "./citations";
+import { loadCitationEngine, readyCitationEngine } from "./cslEngine";
 import { useDocumentStore } from "./documentStore";
 
-const TERM_KEYS: (keyof CitationTerms)[] = ["and", "etAl", "page", "pages", "noDate", "in", "editor", "editors", "editedBy", "edition", "volume", "issue", "doctoral", "masters", "thesis", "report", "available"];
-
-export function citationTerms(t: TFunction): CitationTerms {
-  return Object.fromEntries(TERM_KEYS.map((key) => [key, t(`studio.doc.cite.terms.${key}`)])) as CitationTerms;
-}
-
-export function storeCitationSource(terms: CitationTerms, locale: string, fallbackTitle: string, emptyText: string): CitationSource {
-  let cache: { content: DocumentNode | string; sources: BibEntry[]; style: CitationStyle; value: Citations } | null = null;
+export function storeCitationSource(language: string, fallbackTitle: string, emptyText: string): CitationSource {
+  const listeners = new Set<() => void>();
+  const waiting = new Set<string>();
   const current = () => {
     const document = useDocumentStore.getState().document;
-    const content = document?.content ?? "";
-    const sources = document?.sources ?? [];
     const style = document?.settings.citationStyle ?? "apa";
-    if (!cache || cache.content !== content || cache.sources !== sources || cache.style !== style) {
-      cache = { content, sources, style, value: buildCitations(content, sources, style, terms, locale) };
+    const reference = citationLanguageOf(document?.settings.citationLanguage, language);
+    const engine = readyCitationEngine(style, reference);
+    if (!engine) {
+      const key = `${style}|${reference}`;
+      if (!waiting.has(key)) {
+        waiting.add(key);
+        loadCitationEngine(style, reference).then(
+          () => {
+            waiting.delete(key);
+            listeners.forEach((listener) => listener());
+          },
+          (caught: unknown) => {
+            waiting.delete(key);
+            logger.error("citations", logger.describeError(caught));
+          },
+        );
+      }
+      return pendingCitations(style);
     }
-    return cache.value;
+    return engine.citations(document?.content ?? "", document?.sources ?? []);
   };
   return {
     current,
     title: () => useDocumentStore.getState().document?.settings.referencesTitle.trim() || fallbackTitle,
     emptyText,
-    subscribe: (listener) =>
-      useDocumentStore.subscribe((state, previous) => {
+    subscribe: (listener) => {
+      listeners.add(listener);
+      const stop = useDocumentStore.subscribe((state, previous) => {
         if (state.document !== previous.document) listener();
-      }),
+      });
+      return () => {
+        listeners.delete(listener);
+        stop();
+      };
+    },
   };
 }

@@ -1,9 +1,9 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { Editor } from "@tiptap/react";
-import i18n, { ready, setLocale } from "@/app/i18n";
+import { ready, setLocale } from "@/app/i18n";
 import { useToastStore } from "@/shared/store/toastStore";
-import { citationTerms, storeCitationSource } from "./citationSource";
+import { storeCitationSource } from "./citationSource";
 import { useDocumentStore } from "./documentStore";
 import { documentExtensions } from "./extensions";
 import { createDocument } from "./model";
@@ -28,7 +28,7 @@ const NATURE_SOURCE = { key: "kucsko2013", type: "article", fields: { title: "Na
 let editor: Editor | null = null;
 
 function mount(content = "<p>Text</p>") {
-  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(citationTerms(i18n.t), "en", "References", "")), content });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content });
   const onClose = vi.fn();
   render(<SourcesDialog editor={editor} open onClose={onClose} />);
   return { current: editor, onClose };
@@ -100,7 +100,7 @@ describe("SourcesDialog", () => {
 
   it("updates the selected citation instead of adding another", () => {
     act(() => useDocumentStore.getState().setSources([{ key: "knuth", type: "book", fields: { title: "The Art", year: "1968" }, authors: [{ family: "Knuth", given: "Donald" }], editors: [] }]));
-    editor = new Editor({ extensions: documentExtensions("", storeCitationSource(citationTerms(i18n.t), "en", "References", "")), content: '<p>See <span data-citation=\'[{"key":"knuth","locator":"3"}]\'></span></p>' });
+    editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content: '<p>See <span data-citation=\'[{"key":"knuth","locator":"3"}]\'></span></p>' });
     let position = 0;
     editor.state.doc.descendants((node, pos) => {
       if (node.type.name === "citation") position = pos;

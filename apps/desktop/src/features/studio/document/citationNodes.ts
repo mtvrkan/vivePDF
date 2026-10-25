@@ -2,6 +2,7 @@ import { Node, mergeAttributes } from "@tiptap/core";
 import type { Node as ProseNode } from "@tiptap/pm/model";
 import { BIBLIOGRAPHY, CITATION, citationItems, type CitationItem } from "./citationItems";
 import type { Citations } from "./citations";
+import { FOOTNOTE, footnoteCitations, footnoteMarkup } from "./footnotes";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
@@ -25,7 +26,24 @@ function readItems(element: HTMLElement): CitationItem[] {
   }
 }
 
-export function citationNodes(source: CitationSource) {
+const ordinals = new WeakMap<ProseNode, Map<number, number>>();
+
+function ordinalAt(doc: ProseNode, position: number): number | undefined {
+  let known = ordinals.get(doc);
+  if (!known) {
+    const found = new Map<number, number>();
+    let count = 0;
+    doc.descendants((node, at) => {
+      if (node.type.name === CITATION) found.set(at, count++);
+      else if (node.type.name === FOOTNOTE) count += footnoteCitations(footnoteMarkup(node.attrs.html)).length;
+    });
+    ordinals.set(doc, found);
+    known = found;
+  }
+  return known.get(position);
+}
+
+export function citationNodes(source: CitationSource, inNote = false) {
   const Citation = Node.create({
     name: CITATION,
     group: "inline",
@@ -45,16 +63,25 @@ export function citationNodes(source: CitationSource) {
     renderHTML: ({ HTMLAttributes, node }) => ["span", mergeAttributes(HTMLAttributes, { class: "vp-cite" }), source.current().label(citationItems(node.attrs.items)).text],
     renderText: ({ node }) => source.current().label(citationItems(node.attrs.items)).text,
     addNodeView() {
-      return ({ node }) => {
+      return ({ node, editor, getPos }) => {
         const dom = document.createElement("span");
         dom.className = "vp-cite";
         dom.contentEditable = "false";
         let current: ProseNode = node;
         const paint = () => {
           const items = citationItems(current.attrs.items);
-          const label = source.current().label(items);
-          dom.textContent = label.text;
-          dom.title = items.map((item) => item.key).join(", ");
+          const citations = source.current();
+          const position = inNote ? undefined : getPos();
+          const label = citations.label(items, position === undefined ? undefined : ordinalAt(editor.state.doc, position), inNote);
+          const note = citations.notes && !inNote;
+          dom.toggleAttribute("data-note", note);
+          if (note) {
+            dom.textContent = "";
+            dom.title = label.text;
+          } else {
+            dom.innerHTML = label.html;
+            dom.title = items.map((item) => item.key).join(", ");
+          }
           dom.toggleAttribute("data-missing", label.missing);
         };
         paint();

@@ -9248,26 +9248,12 @@
           "apa": "APA 7",
           "mla": "MLA 9",
           "chicago": "Chicago (autor-data)",
-          "ieee": "IEEE"
-        },
-        "terms": {
-          "and": "e",
-          "etAl": "et al.",
-          "page": "p.",
-          "pages": "p.",
-          "noDate": "s.d.",
-          "in": "In",
-          "editor": "Ed.",
-          "editors": "Eds.",
-          "editedBy": "editado por",
-          "edition": "{n}. ed.",
-          "volume": "v.",
-          "issue": "n.",
-          "doctoral": "Tese de doutorado",
-          "masters": "Dissertação de mestrado",
-          "thesis": "Tese",
-          "report": "Relatório n.",
-          "available": "Disponível"
+          "ieee": "IEEE",
+          "chicago-notes": "Chicago (notas e bibliografia)",
+          "isnad": "ISNAD (no texto)",
+          "isnad-notes": "ISNAD (notas de rodapé)",
+          "vancouver": "Vancouver",
+          "harvard": "Harvard (Cite Them Right)"
         },
         "newSource": "Nova fonte",
         "export": "Exportar",
@@ -9371,7 +9357,24 @@
         "truncated": "Só as primeiras {{limit}} fontes foram carregadas; outras {{count}} ficaram de fora",
         "clipped": "Campos muito longos encurtados: {{count}}",
         "leaveTitle": "Salvar as alterações no arquivo de fontes?",
-        "leaveBody": "“{{name}}” tem alterações que ainda não foram gravadas no arquivo. Salvar antes de sair?"
+        "leaveBody": "“{{name}}” tem alterações que ainda não foram gravadas no arquivo. Salvar antes de sair?",
+        "language": "Idioma das referências",
+        "languages": {
+          "auto": "O mesmo do aplicativo",
+          "en-US": "English (US)",
+          "en-GB": "English (UK)",
+          "tr-TR": "Türkçe",
+          "de-DE": "Deutsch",
+          "es-ES": "Español",
+          "fr-FR": "Français",
+          "it-IT": "Italiano",
+          "pt-BR": "Português (Brasil)",
+          "ar": "العربية"
+        },
+        "sentenceCase": {
+          "warning": "Este título parece ter maiúscula em cada palavra; este estilo escreve títulos de artigos só com a inicial maiúscula.",
+          "convert": "Converter para inicial maiúscula"
+        }
       },
       "spacing": {
         "label": "Espaçamento entre linhas e parágrafos",

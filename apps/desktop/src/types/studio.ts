@@ -475,9 +475,11 @@ export type DocumentLayout = {
 
 export type DocumentColumns = 1 | 2 | 3;
 
-export type CitationStyle = "apa" | "mla" | "chicago" | "ieee";
+export type CitationStyle = "apa" | "mla" | "chicago" | "chicago-notes" | "ieee" | "isnad" | "isnad-notes" | "vancouver" | "harvard";
 
-export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null; citationStyle: CitationStyle; referencesTitle: string };
+export type CitationLanguage = "en-US" | "en-GB" | "tr-TR" | "de-DE" | "es-ES" | "fr-FR" | "it-IT" | "pt-BR" | "ar";
+
+export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null; citationStyle: CitationStyle; citationLanguage: CitationLanguage | null; referencesTitle: string };
 
 export type BibName = { family: string; given: string; suffix?: string; literal?: boolean; others?: boolean };
 

@@ -1,19 +1,15 @@
-import type { TFunction } from "i18next";
 import type { StudioDocument, StudioDocumentContent } from "@/types/studio";
-import { citationTerms } from "./citationSource";
-import { buildCitations, type CitationTerms } from "./citations";
+import { citationLanguageOf } from "./citations";
+import { buildCitations } from "./cslEngine";
 import { layoutOf } from "./model";
 import { documentHtml } from "./toHtml";
+import type { DocumentText } from "./documentText";
 
-export type DocumentText = { tocTitle: string; referencesTitle: string; notesTitle: string; terms: CitationTerms };
+export { documentText, type DocumentText } from "./documentText";
 
-export function documentText(t: TFunction): DocumentText {
-  return { tocTitle: t("studio.doc.settings.tocTitleDefault"), referencesTitle: t("studio.doc.cite.referencesDefault"), notesTitle: t("studio.doc.footnotes.endTitle"), terms: citationTerms(t) };
-}
-
-export function documentContent(document: StudioDocument, language: string, text: DocumentText): StudioDocumentContent {
+export async function documentContent(document: StudioDocument, language: string, text: DocumentText): Promise<StudioDocumentContent> {
   const node = typeof document.content === "string" ? { type: "doc", content: [] } : document.content;
-  const citations = buildCitations(node, document.sources, document.settings.citationStyle, text.terms, language);
+  const citations = await buildCitations(node, document.sources, document.settings.citationStyle, citationLanguageOf(document.settings.citationLanguage, language));
   const { html, images, fonts, footnotes, footnoteHtml } = documentHtml(node, document.settings, { citations, title: document.settings.referencesTitle.trim() || text.referencesTitle });
   return { html, images, fonts, footnotes, footnoteHtml, notesTitle: text.notesTitle, settings: layoutOf(document.settings, text.tocTitle), title: document.name, language };
 }

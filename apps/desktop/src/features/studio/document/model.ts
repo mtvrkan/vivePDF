@@ -1,6 +1,6 @@
 import { STUDIO_DOCUMENT_VERSION, type DocumentAlign, type DocumentColumns, type DocumentCoverStyle, type DocumentLayout, type DocumentNode, type DocumentPageNumbers, type DocumentPaper, type DocumentSettings, type StudioDocument } from "@/types/studio";
 import { normalizeSources } from "./bibtex";
-import { CITATION_STYLES } from "./citations";
+import { CITATION_LANGUAGES, CITATION_STYLES } from "./citations";
 
 export const DOCUMENT_PAPERS: DocumentPaper[] = ["a4", "a5", "b5", "letter", "legal"];
 export const PAGE_NUMBER_PLACES: DocumentPageNumbers[] = ["none", "center", "right", "outside"];
@@ -50,6 +50,7 @@ export function defaultSettings(): DocumentSettings {
     fontId: DEFAULT_DOCUMENT_FONT,
     headingFontId: null,
     citationStyle: "apa",
+    citationLanguage: null,
     referencesTitle: "",
   };
 }
@@ -110,6 +111,7 @@ export function normalizeSettings(value: unknown): DocumentSettings {
     fontId: fontId(source.fontId) ?? base.fontId,
     headingFontId: fontId(source.headingFontId),
     citationStyle: pick(source.citationStyle, CITATION_STYLES, base.citationStyle),
+    citationLanguage: CITATION_LANGUAGES.find((language) => language === source.citationLanguage) ?? null,
     referencesTitle: text(source.referencesTitle, "", 100),
   };
 }
@@ -132,6 +134,7 @@ export function layoutOf(settings: DocumentSettings, fallbackTocTitle: string): 
   delete layout.fontId;
   delete layout.headingFontId;
   delete layout.citationStyle;
+  delete layout.citationLanguage;
   delete layout.referencesTitle;
   return { ...(layout as DocumentLayout), tocTitle: settings.tocTitle.trim() || fallbackTocTitle };
 }

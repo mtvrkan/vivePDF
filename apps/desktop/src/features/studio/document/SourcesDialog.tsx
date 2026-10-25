@@ -20,10 +20,10 @@ import { checkSources, detectDoi, lookupDoi } from "@/shared/rpc/sources";
 import { studioReadBibliography } from "@/shared/rpc/operations";
 import { useToastStore } from "@/shared/store/toastStore";
 import type { SourceCheck } from "@/types";
-import type { BibEntry, CitationStyle } from "@/types/studio";
+import type { BibEntry, CitationLanguage, CitationStyle } from "@/types/studio";
 import { MAX_SOURCES, mergeSources } from "./bibtex";
 import { BIBLIOGRAPHY, CITATION, citationItems, MAX_CITED, type CitationItem } from "./citationItems";
-import { CITATION_STYLES, sourceMatches, sourceSummary } from "./citations";
+import { CITATION_LANGUAGES, CITATION_STYLES, citationLanguageOf, sourceMatches, sourceSummary, wantsSentenceCase } from "./citations";
 import { applyChanges, checkedDois, checksByDoi, doiKey, doiLink, entryOfCsl, filledDraftFields, leadingNotice, sourceChanges, STATUS_TONES, type SourceChange } from "./doiSources";
 import { useDocumentStore } from "./documentStore";
 import { SourceEditor } from "./SourceEditor";
@@ -32,6 +32,7 @@ import { draftOf, entryOfDraft, keyProblem, namesText, renameCitationKey, type S
 import { FORMAT_EXTENSIONS, formatOfPath, parseSources, SOURCE_FILE_EXTENSIONS, SOURCE_FORMATS, writeSources, type SourceFormat } from "./sourceFormats";
 
 const EMPTY_SOURCES: BibEntry[] = [];
+const AUTO_LANGUAGE = "auto";
 
 function editedCitation(editor: Editor): CitationItem[] | null {
   return editor.isActive(CITATION) ? citationItems(editor.getAttributes(CITATION).items) : null;
@@ -78,6 +79,7 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
   const offlineHint = useOfflineHint();
   const sources = useDocumentStore((state) => state.document?.sources ?? EMPTY_SOURCES);
   const style = useDocumentStore((state) => state.document?.settings.citationStyle ?? "apa");
+  const citationLanguage = useDocumentStore((state) => state.document?.settings.citationLanguage ?? null);
   const referencesTitle = useDocumentStore((state) => state.document?.settings.referencesTitle ?? "");
   const [editing] = useState(() => editedCitation(editor));
   const [chosen, setChosen] = useState<string[]>(() => editing?.map((item) => item.key) ?? []);
@@ -487,7 +489,15 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
             ariaLabel={t("studio.doc.cite.style")}
           />
         </Field>
-        <Field label={t("studio.doc.cite.referencesTitle")}>
+        <Field label={t("studio.doc.cite.language")}>
+          <Select
+            value={citationLanguage ?? AUTO_LANGUAGE}
+            options={[{ value: AUTO_LANGUAGE, label: t("studio.doc.cite.languages.auto") }, ...CITATION_LANGUAGES.map((value) => ({ value, label: t(`studio.doc.cite.languages.${value}`) }))]}
+            onChange={(value) => store.setSettings({ citationLanguage: value === AUTO_LANGUAGE ? null : (value as CitationLanguage) })}
+            ariaLabel={t("studio.doc.cite.language")}
+          />
+        </Field>
+        <Field label={t("studio.doc.cite.referencesTitle")} className="sm:col-span-2">
           <TextInput value={referencesTitle} maxLength={100} placeholder={t("studio.doc.cite.referencesDefault")} onChange={(event) => store.setSettings({ referencesTitle: event.target.value })} />
         </Field>
       </div>
@@ -585,7 +595,7 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
 
   return (
     <Dialog open={open} onClose={onClose} size="lg" title={title} footer={review ? reviewFooter : draft ? editFooter : citeFooter}>
-      {reviewPanel ?? (draft ? <SourceEditor draft={draft} problem={problem} onChange={setDraft} onFillFromDoi={() => void fillDraft()} filling={fetching === "fill"} /> : library)}
+      {reviewPanel ?? (draft ? <SourceEditor draft={draft} problem={problem} onChange={setDraft} onFillFromDoi={() => void fillDraft()} filling={fetching === "fill"} sentenceTitles={wantsSentenceCase(style)} language={citationLanguageOf(citationLanguage, i18n.language)} /> : library)}
     </Dialog>
   );
 }

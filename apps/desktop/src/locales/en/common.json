@@ -9250,26 +9250,12 @@
           "apa": "APA 7",
           "mla": "MLA 9",
           "chicago": "Chicago (author-date)",
-          "ieee": "IEEE"
-        },
-        "terms": {
-          "and": "and",
-          "etAl": "et al.",
-          "page": "p.",
-          "pages": "pp.",
-          "noDate": "n.d.",
-          "in": "In",
-          "editor": "Ed.",
-          "editors": "Eds.",
-          "editedBy": "edited by",
-          "edition": "{ord} ed.",
-          "volume": "vol.",
-          "issue": "no.",
-          "doctoral": "Doctoral dissertation",
-          "masters": "Master's thesis",
-          "thesis": "Thesis",
-          "report": "Report No.",
-          "available": "Available"
+          "ieee": "IEEE",
+          "chicago-notes": "Chicago (notes and bibliography)",
+          "isnad": "ISNAD (in-text)",
+          "isnad-notes": "ISNAD (footnotes)",
+          "vancouver": "Vancouver",
+          "harvard": "Harvard (Cite Them Right)"
         },
         "newSource": "New source",
         "export": "Export",
@@ -9373,7 +9359,24 @@
         "truncated": "Only the first {{limit}} sources were loaded; {{count}} more were left out",
         "clipped": "Very long fields shortened: {{count}}",
         "leaveTitle": "Save the changes to the source file?",
-        "leaveBody": "“{{name}}” has changes that are not written to the file yet. Save them before leaving?"
+        "leaveBody": "“{{name}}” has changes that are not written to the file yet. Save them before leaving?",
+        "language": "Reference language",
+        "languages": {
+          "auto": "Same as the app",
+          "en-US": "English (US)",
+          "en-GB": "English (UK)",
+          "tr-TR": "Türkçe",
+          "de-DE": "Deutsch",
+          "es-ES": "Español",
+          "fr-FR": "Français",
+          "it-IT": "Italiano",
+          "pt-BR": "Português (Brasil)",
+          "ar": "العربية"
+        },
+        "sentenceCase": {
+          "warning": "This title looks like Title Case; this style writes article titles in sentence case.",
+          "convert": "Convert to sentence case"
+        }
       },
       "spacing": {
         "label": "Line and paragraph spacing",

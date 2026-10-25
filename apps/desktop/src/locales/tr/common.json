@@ -9250,26 +9250,12 @@
           "apa": "APA 7",
           "mla": "MLA 9",
           "chicago": "Chicago (yazar-tarih)",
-          "ieee": "IEEE"
-        },
-        "terms": {
-          "and": "ve",
-          "etAl": "vd.",
-          "page": "s.",
-          "pages": "ss.",
-          "noDate": "t.y.",
-          "in": "İçinde",
-          "editor": "Ed.",
-          "editors": "Ed.",
-          "editedBy": "editör",
-          "edition": "{n}. bs.",
-          "volume": "C.",
-          "issue": "S.",
-          "doctoral": "Doktora tezi",
-          "masters": "Yüksek lisans tezi",
-          "thesis": "Tez",
-          "report": "Rapor No.",
-          "available": "Erişim"
+          "ieee": "IEEE",
+          "chicago-notes": "Chicago (dipnot ve kaynakça)",
+          "isnad": "İSNAD (metin içi)",
+          "isnad-notes": "İSNAD (dipnotlu)",
+          "vancouver": "Vancouver",
+          "harvard": "Harvard (Cite Them Right)"
         },
         "newSource": "Yeni kaynak",
         "export": "Dışa aktar",
@@ -9373,7 +9359,24 @@
         "truncated": "Yalnızca ilk {{limit}} kaynak yüklendi; {{count}} kaynak dışarıda kaldı",
         "clipped": "Çok uzun alanlar kısaltıldı: {{count}}",
         "leaveTitle": "Kaynak dosyasındaki değişiklikler kaydedilsin mi?",
-        "leaveBody": "“{{name}}” içinde dosyaya henüz yazılmamış değişiklikler var. Çıkmadan önce kaydedilsin mi?"
+        "leaveBody": "“{{name}}” içinde dosyaya henüz yazılmamış değişiklikler var. Çıkmadan önce kaydedilsin mi?",
+        "language": "Kaynakça dili",
+        "languages": {
+          "auto": "Uygulamanın diliyle aynı",
+          "en-US": "English (US)",
+          "en-GB": "English (UK)",
+          "tr-TR": "Türkçe",
+          "de-DE": "Deutsch",
+          "es-ES": "Español",
+          "fr-FR": "Français",
+          "it-IT": "Italiano",
+          "pt-BR": "Português (Brasil)",
+          "ar": "العربية"
+        },
+        "sentenceCase": {
+          "warning": "Bu başlık her kelimesi büyük harfle yazılmış görünüyor; bu stil makale başlıklarını cümle düzeninde yazar.",
+          "convert": "Cümle düzenine çevir"
+        }
       },
       "spacing": {
         "label": "Satır ve paragraf aralığı",

@@ -11,12 +11,10 @@ import { SectionBreakMenu } from "./SectionBreakMenu";
 import { sectionColumns, sectionKind } from "./sections";
 import { documentHtml } from "./toHtml";
 
-const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
-
 let editor: Editor | null = null;
 
 function mount(content: string) {
-  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(TERMS, "en", "References", ""), (columns, continuous) => `${continuous ? "Continuous" : "Section"} · ${columns}`), content });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", ""), (columns, continuous) => `${continuous ? "Continuous" : "Section"} · ${columns}`), content });
   act(() => {
     editor?.commands.setTextSelection(2);
   });

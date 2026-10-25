@@ -69,7 +69,7 @@ export function DocumentPreview({ language }: { language: string }) {
     const mine = ++ticket.current;
     setBusy(true);
     try {
-      const result = await studioPreviewDocument(documentContent(document, language, documentText(t)));
+      const result = await studioPreviewDocument(await documentContent(document, language, documentText(t)));
       if (mine !== ticket.current) return;
       setPreview(result);
       setError(null);

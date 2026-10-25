@@ -10131,26 +10131,12 @@
           "apa": "APA 7",
           "mla": "MLA 9",
           "chicago": "شيكاغو (المؤلف-التاريخ)",
-          "ieee": "IEEE"
-        },
-        "terms": {
-          "and": "و",
-          "etAl": "وآخرون",
-          "page": "ص.",
-          "pages": "ص ص.",
-          "noDate": "د.ت.",
-          "in": "في",
-          "editor": "محرر",
-          "editors": "محررون",
-          "editedBy": "تحرير",
-          "edition": "ط {n}",
-          "volume": "مج.",
-          "issue": "ع.",
-          "doctoral": "أطروحة دكتوراه",
-          "masters": "رسالة ماجستير",
-          "thesis": "أطروحة",
-          "report": "تقرير رقم",
-          "available": "متاح"
+          "ieee": "IEEE",
+          "chicago-notes": "شيكاغو (الحواشي والمراجع)",
+          "isnad": "إسناد (داخل النص)",
+          "isnad-notes": "إسناد (الحواشي)",
+          "vancouver": "فانكوفر",
+          "harvard": "هارفارد (Cite Them Right)"
         },
         "newSource": "مصدر جديد",
         "export": "تصدير",
@@ -10254,7 +10240,24 @@
         "truncated": "حُمّلت أول {{limit}} من المصادر فقط؛ وبقي {{count}} خارجها",
         "clipped": "اختُصرت حقول طويلة جدًا: {{count}}",
         "leaveTitle": "هل تريد حفظ التغييرات في ملف المصادر؟",
-        "leaveBody": "في «{{name}}» تغييرات لم تُكتب في الملف بعد. هل تريد حفظها قبل المغادرة؟"
+        "leaveBody": "في «{{name}}» تغييرات لم تُكتب في الملف بعد. هل تريد حفظها قبل المغادرة؟",
+        "language": "لغة المراجع",
+        "languages": {
+          "auto": "مثل لغة التطبيق",
+          "en-US": "English (US)",
+          "en-GB": "English (UK)",
+          "tr-TR": "Türkçe",
+          "de-DE": "Deutsch",
+          "es-ES": "Español",
+          "fr-FR": "Français",
+          "it-IT": "Italiano",
+          "pt-BR": "Português (Brasil)",
+          "ar": "العربية"
+        },
+        "sentenceCase": {
+          "warning": "يبدو أن كل كلمة في هذا العنوان تبدأ بحرف كبير؛ هذا النمط يكتب عناوين المقالات بحرف كبير في أولها فقط.",
+          "convert": "تحويل إلى حرف كبير في البداية فقط"
+        }
       },
       "spacing": {
         "label": "تباعد الأسطر والفقرات",

@@ -17,7 +17,7 @@ import { DocumentSettingsPanel } from "./DocumentSettingsPanel";
 import { DocumentToolbar } from "./DocumentToolbar";
 import { fontStack, loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
-import { citationTerms, storeCitationSource } from "./citationSource";
+import { storeCitationSource } from "./citationSource";
 import { documentExtensions } from "./extensions";
 import { pageSize, POINTS_PER_MM } from "./model";
 import { useDocumentSave } from "./useDocumentSave";
@@ -150,7 +150,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   const [exporting, setExporting] = useState(false);
   const [finding, setFinding] = useState<DocumentFindMode | null>(null);
   const openFind = (replace: boolean) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 }));
-  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(citationTerms(t), language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns, continuous) => t(continuous ? "studio.doc.section.labelContinuous" : "studio.doc.section.label", { columns })), [t, language]);
+  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns, continuous) => t(continuous ? "studio.doc.section.labelContinuous" : "studio.doc.section.label", { columns })), [t, language]);
   useShortcuts(() => setExporting(true), openFind);
 
   const editor = useEditor(

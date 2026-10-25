@@ -7,12 +7,10 @@ import { documentExtensions } from "./extensions";
 import { SymbolDialog } from "./SymbolDialog";
 import { readRecentSymbols, rememberSymbol, RECENT_LIMIT, SYMBOL_GROUP_KEYS, symbolsOf } from "./symbols";
 
-const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
-
 let editor: Editor | null = null;
 
 function mount(content = "<p>ab</p>") {
-  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(TERMS, "en", "References", "")), content });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content });
   editor.commands.setTextSelection(2);
   let closed = 0;
   render(<SymbolDialog editor={editor} onClose={() => (closed += 1)} />);

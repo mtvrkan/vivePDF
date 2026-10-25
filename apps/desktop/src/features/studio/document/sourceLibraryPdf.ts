@@ -14,5 +14,5 @@ export async function sourceLibraryToPdf(path: string, params: SourceLibraryPdfP
   const sources = await readSourceLibrary(path, options);
   if (sources.length === 0) throw { code: "INVALID_PARAMS", message: "the file holds no sources", data: { reason: "noSources" } } satisfies RpcError;
   const document = { ...createDocument(stemOf(path), { type: "doc", content: [{ type: BIBLIOGRAPHY }] }, params.paper ? { paper: params.paper } : {}), sources };
-  return studioRenderDocument({ ...documentContent(document, params.language, params.text), output: params.output, overwrite: params.overwrite }, options);
+  return studioRenderDocument({ ...(await documentContent(document, params.language, params.text)), output: params.output, overwrite: params.overwrite }, options);
 }

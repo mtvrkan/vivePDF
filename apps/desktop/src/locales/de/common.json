@@ -9248,26 +9248,12 @@
           "apa": "APA 7",
           "mla": "MLA 9",
           "chicago": "Chicago (Autor-Jahr)",
-          "ieee": "IEEE"
-        },
-        "terms": {
-          "and": "und",
-          "etAl": "u. a.",
-          "page": "S.",
-          "pages": "S.",
-          "noDate": "o. J.",
-          "in": "In",
-          "editor": "Hrsg.",
-          "editors": "Hrsg.",
-          "editedBy": "hrsg. von",
-          "edition": "{n}. Aufl.",
-          "volume": "Bd.",
-          "issue": "Nr.",
-          "doctoral": "Dissertation",
-          "masters": "Masterarbeit",
-          "thesis": "Abschlussarbeit",
-          "report": "Bericht Nr.",
-          "available": "Verfügbar"
+          "ieee": "IEEE",
+          "chicago-notes": "Chicago (Fußnoten und Bibliografie)",
+          "isnad": "ISNAD (im Text)",
+          "isnad-notes": "ISNAD (Fußnoten)",
+          "vancouver": "Vancouver",
+          "harvard": "Harvard (Cite Them Right)"
         },
         "newSource": "Neue Quelle",
         "export": "Exportieren",
@@ -9371,7 +9357,24 @@
         "truncated": "Nur die ersten {{limit}} Quellen wurden geladen; {{count}} weitere wurden ausgelassen",
         "clipped": "Sehr lange Felder gekürzt: {{count}}",
         "leaveTitle": "Änderungen an der Quellendatei speichern?",
-        "leaveBody": "„{{name}}“ enthält Änderungen, die noch nicht in die Datei geschrieben wurden. Vor dem Verlassen speichern?"
+        "leaveBody": "„{{name}}“ enthält Änderungen, die noch nicht in die Datei geschrieben wurden. Vor dem Verlassen speichern?",
+        "language": "Sprache der Quellenangaben",
+        "languages": {
+          "auto": "Wie die App",
+          "en-US": "English (US)",
+          "en-GB": "English (UK)",
+          "tr-TR": "Türkçe",
+          "de-DE": "Deutsch",
+          "es-ES": "Español",
+          "fr-FR": "Français",
+          "it-IT": "Italiano",
+          "pt-BR": "Português (Brasil)",
+          "ar": "العربية"
+        },
+        "sentenceCase": {
+          "warning": "Dieser Titel scheint in Title Case geschrieben; dieser Stil schreibt Artikeltitel in Satzschreibung.",
+          "convert": "In Satzschreibung umwandeln"
+        }
       },
       "spacing": {
         "label": "Zeilen- und Absatzabstand",

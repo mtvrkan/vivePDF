@@ -75,6 +75,8 @@ export const THIRD_PARTY: ThirdPartyEntry[] = [
   { name: "Pillow", licence: "MIT-CMU", url: "https://python-pillow.org" },
   { name: "NumPy", licence: "BSD-3-Clause", url: "https://numpy.org" },
   { name: "MathJax", licence: "Apache-2.0", url: "https://www.mathjax.org" },
+  { name: "citeproc-js", licence: "CPAL-1.0 / AGPL-3.0-or-later", url: "https://github.com/Juris-M/citeproc-js" },
+  { name: "Citation Style Language styles and locales", licence: "CC BY-SA 3.0", url: "https://citationstyles.org" },
   { name: "New Computer Modern", licence: "GUST Font License", url: "https://ctan.org/pkg/newcomputermodern" },
   { name: "pdf2docx", licence: "MIT", url: "https://github.com/ArtifexSoftware/pdf2docx" },
   { name: "python-pptx", licence: "MIT", url: "https://github.com/scanny/python-pptx" },

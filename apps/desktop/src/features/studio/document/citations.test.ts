@@ -2,27 +2,8 @@ import { describe, expect, it } from "vitest";
 import type { DocumentNode } from "@/types/studio";
 import { parseBibtex } from "./bibtex";
 import type { CitationItem } from "./citationItems";
-import { buildCitations, citedKeys, sourceMatches, type CitationTerms } from "./citations";
-
-const TERMS: CitationTerms = {
-  and: "and",
-  etAl: "et al.",
-  page: "p.",
-  pages: "pp.",
-  noDate: "n.d.",
-  in: "In",
-  editor: "Ed.",
-  editors: "Eds.",
-  editedBy: "edited by",
-  edition: "{ord} ed.",
-  volume: "vol.",
-  issue: "no.",
-  doctoral: "Doctoral dissertation",
-  masters: "Master's thesis",
-  thesis: "Thesis",
-  report: "Report No.",
-  available: "Available",
-};
+import { citedKeys, sourceMatches } from "./citations";
+import { buildCitations } from "./cslEngine";
 
 const SOURCES = parseBibtex(String.raw`
 @article{smith2020, author={Smith, John A. and Lee, Mary}, title={Cities and heat}, journal={Urban Studies}, year=2020, volume=12, number=3, pages={45--67}, doi={10.1000/xyz}}
@@ -48,86 +29,87 @@ function noted(...items: CitationItem[]): DocumentNode {
 }
 
 describe("buildCitations", () => {
-  it("writes APA 7 labels and an alphabetical reference list with year letters for same-author works", () => {
+  it("writes APA 7 labels and an alphabetical reference list with year letters for same-author works", async () => {
     const content = doc(cite(item("zed2019b")), cite(item("smith2020", "12-14")), cite(item("brown2018"), item("zed2019a", "5")));
 
-    const citations = buildCitations(content, SOURCES, "apa", TERMS, "en");
+    const citations = await buildCitations(content, SOURCES, "apa", "en-US");
 
     expect(citations.label([item("smith2020", "12-14")]).text).toBe("(Smith & Lee, 2020, pp. 12–14)");
     expect(citations.label([item("brown2018"), item("zed2019a", "5")]).text).toBe("(Brown et al., 2018; Zed, 2019a, p. 5)");
     expect(citations.label([item("zed2019b")]).text).toBe("(Zed, 2019b)");
     expect(citations.references).toEqual([
-      "Brown, A., Green, B., &amp; White, C. (2018). <em>Designing Things</em> (2nd ed.). Acme Press.",
-      'Smith, J. A., &amp; Lee, M. (2020). Cities and heat. <em>Urban Studies</em>, <em>12</em>(3), 45–67. <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>',
-      "Zed, A. (2019a). First part. In I. Ed &amp; E. Tor (Eds.), <em>Big Collection</em> (pp. 1–10). Pub.",
-      "Zed, A. (2019b). Second part. In <em>Big Collection</em>. Pub.",
+      "Brown, A., Green, B., &#38; White, C. (2018). <i>Designing Things</i> (2nd ed.). Acme Press.",
+      'Smith, J. A., &#38; Lee, M. (2020). Cities and heat. <i>Urban Studies</i>, <i>12</i>(3), 45–67. <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>',
+      "Zed, A. (2019a). First part. In I. Ed &#38; E. Tor (Eds.), <i>Big Collection</i> (pp. 1–10). Pub.",
+      "Zed, A. (2019b). Second part. In <i>Big Collection</i>. Pub.",
     ]);
   });
 
-  it("numbers IEEE sources by first citation and lists only what the text cites", () => {
+  it("numbers IEEE sources by first citation and lists only what the text cites", async () => {
     const content = doc(cite(item("brown2018")), cite(item("smith2020", "4"), item("brown2018")));
 
-    const citations = buildCitations(content, SOURCES, "ieee", TERMS, "en");
+    const citations = await buildCitations(content, SOURCES, "ieee", "en-US");
 
-    expect(citations.label([item("smith2020", "4"), item("brown2018")]).text).toBe("[2, p. 4], [1]");
+    expect(citations.label([item("smith2020", "4"), item("brown2018")]).text).toBe("[1], [2, p. 4]");
     expect(citations.references).toEqual([
-      "[1]&nbsp;A. Brown, B. Green, and C. White, <em>Designing Things</em>, 2nd ed. Boston: Acme Press, 2018.",
-      '[2]&nbsp;J. A. Smith and M. Lee, “Cities and heat,” <em>Urban Studies</em>, vol. 12, no. 3, pp. 45–67, 2020. Available: <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>',
+      "[1]&nbsp;A. Brown, B. Green, and C. White, <i>Designing Things</i>, 2nd ed. Boston: Acme Press, 2018.",
+      "[2]&nbsp;J. A. Smith and M. Lee, “Cities and heat,” <i>Urban Studies</i>, vol. 12, no. 3, pp. 45–67, 2020, doi: 10.1000/xyz.",
     ]);
   });
 
-  it("writes MLA and Chicago author-date entries in their own shapes", () => {
+  it("writes MLA and Chicago author-date entries in their own shapes", async () => {
     const content = doc(cite(item("smith2020", "50")));
 
-    const mla = buildCitations(content, SOURCES, "mla", TERMS, "en");
-    const chicago = buildCitations(content, SOURCES, "chicago", TERMS, "en");
+    const mla = await buildCitations(content, SOURCES, "mla", "en-US");
+    const chicago = await buildCitations(content, SOURCES, "chicago", "en-US");
 
     expect(mla.label([item("smith2020", "50")]).text).toBe("(Smith and Lee 50)");
-    expect(mla.references[0]).toBe('Smith, John A., and Mary Lee. “Cities and heat.” <em>Urban Studies</em>, vol. 12, no. 3, 2020, pp. 45–67. <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>.');
+    expect(mla.references[0]).toBe('Smith, John A., and Mary Lee. “Cities and Heat.” <i>Urban Studies</i>, vol. 12, no. 3, 2020, pp. 45–67, <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>.');
     expect(chicago.label([item("smith2020", "50")]).text).toBe("(Smith and Lee 2020, 50)");
-    expect(chicago.references[0]).toBe('Smith, John A., and Mary Lee. 2020. “Cities and heat.” <em>Urban Studies</em> 12 (3): 45–67. <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>');
+    expect(chicago.references[0]).toBe('Smith, John A., and Mary Lee. 2020. “Cities and Heat.” <i>Urban Studies</i> 12 (3): 45–67. <a href="https://doi.org/10.1000/xyz">https://doi.org/10.1000/xyz</a>.');
   });
 
-  it("lists every source while nothing is cited, escapes their text and marks undated works", () => {
-    const citations = buildCitations(doc(), SOURCES, "apa", TERMS, "en");
+  it("lists every source while nothing is cited, escapes their text and marks undated works", async () => {
+    const citations = await buildCitations(doc(), SOURCES, "apa", "en-US");
 
     const who = citations.references.find((reference) => reference.startsWith("World Health Organization"));
 
     expect(citations.references).toHaveLength(SOURCES.length);
-    expect(who).toBe('World Health Organization. (n.d.). <em>Report &lt;script&gt;alert(1)&lt;/script&gt;</em>. <a href="https://who.int/x">https://who.int/x</a>');
+    expect(who).toBe('World Health Organization. (n.d.). <i>Report &#60;script&#62;alert(1)&#60;/script&#62;</i>. Retrieved <a href="https://who.int/x">https://who.int/x</a>');
     expect(citations.label([item("undated")]).text).toBe("(World Health Organization, n.d.)");
   });
 
-  it("escapes markup in author and editor names in every style", () => {
+  it("escapes markup in author and editor names in every style", async () => {
     const sources = parseBibtex(String.raw`
 @book{bad, author={<b>Evil</b>, <img src=x>}, title={T}, publisher={P}, year=2020}
 @book{eds, editor={<i>Ed</i>, Al}, title={E}, publisher={P}, year=2021}
 `).entries;
 
-    const written = (["apa", "mla", "chicago", "ieee"] as const).flatMap((style) => buildCitations(doc(), sources, style, TERMS, "en").references);
+    const written = (await Promise.all((["apa", "mla", "chicago", "ieee"] as const).map((style) => buildCitations(doc(), sources, style, "en-US")))).flatMap((citations) => citations.references);
 
     expect(written).toHaveLength(8);
     for (const reference of written) {
-      expect(reference).not.toMatch(/<(b|i|img)\b/);
+      expect(reference).not.toMatch(/<b>|<img|<i>Ed/);
     }
-    expect(written[0]).toContain("&lt;b&gt;Evil&lt;/b&gt;");
+    expect(written.join("\n")).toContain("&#60;b&#62;Evil&#60;/b&#62;");
+    expect(written.join("\n")).toContain("&#60;i&#62;Ed&#60;/i&#62;");
   });
 
-  it("flags citations of sources that are gone instead of dropping them", () => {
-    const citations = buildCitations(doc(cite(item("ghost"))), SOURCES, "apa", TERMS, "en");
-    const numbered = buildCitations(doc(cite(item("ghost"))), SOURCES, "ieee", TERMS, "en");
+  it("flags citations of sources that are gone instead of dropping them", async () => {
+    const citations = await buildCitations(doc(cite(item("ghost"))), SOURCES, "apa", "en-US");
+    const numbered = await buildCitations(doc(cite(item("ghost"))), SOURCES, "ieee", "en-US");
 
-    expect(citations.label([item("ghost")])).toEqual({ text: "(ghost?)", missing: true });
-    expect(numbered.label([item("ghost")])).toEqual({ text: "[?]", missing: true });
+    expect(citations.label([item("ghost")])).toEqual({ text: "(ghost?)", html: "(ghost?)", missing: true });
+    expect(numbered.label([item("ghost")])).toEqual({ text: "[?]", html: "[?]", missing: true });
     expect(citations.label([]).missing).toBe(true);
   });
 });
 
 describe("citations inside footnotes", () => {
-  it("counts a footnote's citations at the footnote's place in the text", () => {
+  it("counts a footnote's citations at the footnote's place in the text", async () => {
     const content = doc(cite(item("smith2020")), noted(item("brown2018"), item("smith2020")), cite(item("undated")));
 
-    const numbered = buildCitations(content, SOURCES, "ieee", TERMS, "en");
+    const numbered = await buildCitations(content, SOURCES, "ieee", "en-US");
 
     expect(citedKeys(content)).toEqual(["smith2020", "brown2018", "undated"]);
     expect(numbered.label([item("brown2018")]).text).toBe("[2]");

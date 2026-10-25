@@ -31,3 +31,5 @@
 | pi-heif with libheif and libde265 | BSD-3-Clause / LGPL-3.0 | HEIF and AVIF pictures to PDF |
 | zxing-cpp | Apache-2.0 | Barcode and QR code reading |
 | olefile (Philippe Lagadec) | BSD-2-Clause | Reading Outlook .msg e-mails |
+| citeproc-js (Frank Bennett) | CPAL-1.0 or AGPL-3.0-or-later | Formats Studio citations and reference lists |
+| Citation Style Language styles (APA, MLA, Chicago, IEEE, İSNAD, NLM/Vancouver, Cite Them Right Harvard) and locales, bundled unmodified in `apps/desktop/src/features/studio/document/csl/` from citation-style-language/styles@d2cc4207 and citation-style-language/locales@8bef426f | CC BY-SA 3.0 | Citation style rules and translated citation terms |

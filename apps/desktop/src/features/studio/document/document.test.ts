@@ -148,7 +148,7 @@ describe("footnotes", () => {
     expect(normalizeDocument({ kind: "document", version: 2, content: older })?.content).toEqual(older);
   });
 
-  it("resolves footnote citations and pictures before the sidecar sees them", () => {
+  it("resolves footnote citations and pictures before the sidecar sees them", async () => {
     const sources = parseBibtex("@book{knuth, author={Knuth, Donald}, title={The Art}, publisher={AW}, year=1968}").entries;
     const cited = '<span data-citation="[{&quot;key&quot;:&quot;knuth&quot;,&quot;locator&quot;:&quot;3&quot;}]" class="vp-cite">stale</span>';
     const note: DocumentNode = { type: "footnote", attrs: { text: "See stale", html: `See ${cited} <img src="${PNG}" alt="Lo&quot;go" class="x"><br>next <img src="https://example.org/x.png"> <img src="data:image/bmp;base64,Qk0=">` } };
@@ -156,7 +156,7 @@ describe("footnotes", () => {
     const document = { ...createDocument("Paper", doc({ type: "paragraph", content: [text("Claim"), note] }, body as DocumentNode)), sources };
     const t = ((key: string) => key) as unknown as TFunction;
 
-    const written = documentContent(document, "en", { ...documentText(t), terms: { ...documentText(t).terms, page: "p." } });
+    const written = await documentContent(document, "en", documentText(t));
 
     expect(written.footnoteHtml).toEqual(['See (Knuth, 1968, p. 3) <img src="vpimg-0" alt="Lo&quot;go"><br>next  ']);
     expect(written.images).toEqual([PNG]);
@@ -256,28 +256,28 @@ describe("citations in the document", () => {
     { type: "bibliography" },
   );
 
-  it("writes citation labels and a reference list whose heading joins the contents", () => {
+  it("writes citation labels and a reference list whose heading joins the contents", async () => {
     const document = { ...createDocument("Paper", content), sources };
 
-    const written = documentContent(document, "en", documentText(t));
-    const titled = documentContent({ ...document, settings: { ...document.settings, referencesTitle: "Works cited", citationStyle: "ieee" } }, "en", documentText(t));
+    const written = await documentContent(document, "en", documentText(t));
+    const titled = await documentContent({ ...document, settings: { ...document.settings, referencesTitle: "Works cited", citationStyle: "ieee" } }, "en", documentText(t));
 
     expect(written.html).toContain("<p>As shown (Knuth, 1968, p. 7)</p>");
-    expect(written.html).toContain('<div class="references"><h1 id="h-2">References</h1><p class="ref">Knuth, D. (1968). <em>The Art</em>. AW.</p></div>');
+    expect(written.html).toContain('<div class="references"><h1 id="h-2">References</h1><p class="ref">Knuth, D. (1968). <i>The Art</i>. AW.</p></div>');
     expect(titled.html).toContain("<p>As shown [1, p. 7]</p>");
     expect(titled.html).toContain('<h1 id="h-2">Works cited</h1>');
     expect(written.settings).not.toHaveProperty("citationStyle");
     expect(written.settings).not.toHaveProperty("referencesTitle");
   });
 
-  it("leaves an empty reference list out of the export", () => {
+  it("leaves an empty reference list out of the export", async () => {
     const document = createDocument("Paper", doc({ type: "bibliography" }));
 
-    expect(documentContent(document, "en", documentText(t)).html).toBe("");
+    expect((await documentContent(document, "en", documentText(t))).html).toBe("");
   });
 
   it("keeps sources through a save and falls back to APA for an unknown style", () => {
-    const stored = JSON.parse(JSON.stringify({ ...createDocument("Paper", content), sources, settings: { ...defaultSettings(), citationStyle: "harvard" } }));
+    const stored = JSON.parse(JSON.stringify({ ...createDocument("Paper", content), sources, settings: { ...defaultSettings(), citationStyle: "oxford" } }));
 
     const document = normalizeDocument(stored);
 

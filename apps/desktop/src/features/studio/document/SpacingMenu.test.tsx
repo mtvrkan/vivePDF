@@ -8,13 +8,12 @@ import { documentExtensions } from "./extensions";
 import { SpacingMenu } from "./SpacingMenu";
 import { documentHtml } from "./toHtml";
 
-const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
 const FONTS = { fontId: "bundled:dejavu-sans", headingFontId: null };
 
 let editor: Editor | null = null;
 
 function mount(content: string) {
-  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(TERMS, "en", "References", "")), content });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content });
   act(() => {
     editor?.commands.setTextSelection(2);
   });

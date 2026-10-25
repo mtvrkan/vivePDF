@@ -17,12 +17,10 @@ vi.mock("./footnotePicture", () => ({ footnotePicture: (...args: unknown[]) => p
 
 const PIXEL = "data:image/png;base64,iVBORw0KGgo=";
 
-const TERMS = { and: "and", etAl: "et al.", page: "p.", pages: "pp.", noDate: "n.d.", in: "In", editor: "Ed.", editors: "Eds.", editedBy: "edited by", edition: "{ord} ed.", volume: "vol.", issue: "no.", doctoral: "Doctoral dissertation", masters: "Master's thesis", thesis: "Thesis", report: "Report No.", available: "Available" };
-
 let editor: Editor | null = null;
 
 function mount(content = "<p>ab</p>") {
-  editor = new Editor({ extensions: documentExtensions("", storeCitationSource(TERMS, "en", "References", "")), content });
+  editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content });
   render(<FootnotePanel editor={editor} />);
   return editor;
 }

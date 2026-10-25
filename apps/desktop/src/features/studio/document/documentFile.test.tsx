@@ -1,7 +1,7 @@
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { Editor } from "@tiptap/react";
-import i18n, { ready, setLocale } from "@/app/i18n";
-import { citationTerms, storeCitationSource } from "./citationSource";
+import { ready, setLocale } from "@/app/i18n";
+import { storeCitationSource } from "./citationSource";
 import { importedDocument, openSourceLibrary, openSourceLibraryFile, saveSourceLibrary, saveStudioDocument } from "./documentFile";
 import { useDocumentStore } from "./documentStore";
 import { documentExtensions } from "./extensions";
@@ -45,7 +45,7 @@ describe("importedDocument", () => {
   it("turns the imported citation and reference list markup into live editor nodes", () => {
     useDocumentStore.getState().open(importedDocument(IMPORTED));
 
-    editor = new Editor({ extensions: documentExtensions("", storeCitationSource(citationTerms(i18n.t), "en", "References", "")), content: IMPORTED.html });
+    editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content: IMPORTED.html });
 
     expect(editor.view.dom.querySelector(".vp-cite")?.textContent).toBe("(Yılmaz, 2020, p. 4)");
     expect(editor.view.dom.querySelector(".vp-refs h1")?.textContent).toBe("Kaynakça");
