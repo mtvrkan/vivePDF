@@ -13,6 +13,7 @@ import pymupdf
 from pydantic import Field
 
 from vivepdf.ops._document import open_document
+from vivepdf.ops._docx_running import strip_running_text
 from vivepdf.ops._markup import (
     PageMarkup,
     body_size,
@@ -440,6 +441,7 @@ def to_epub(params: EpubParams, progress: Progress) -> EpubResult:
                 document, indices, params.ocr_languages, progress.within(0.0, 0.5)
             )
             progress = progress.within(0.5, 1.0)
+        strip_running_text(document, indices)
         pages = _collect_pages(
             document, planned, images, params.include_images, recognised, progress
         )

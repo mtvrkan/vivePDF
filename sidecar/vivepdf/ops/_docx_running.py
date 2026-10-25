@@ -172,6 +172,10 @@ def clear_running_text(document: pymupdf.Document, running: RunningText) -> None
         )
 
 
+def strip_running_text(document: pymupdf.Document, indices: list[int]) -> None:
+    clear_running_text(document, find_running_text(document, indices))
+
+
 def cleared_copy(
     document: pymupdf.Document, running: RunningText, folder: Path, locked: bool
 ) -> tuple[str, str | None]:

@@ -17,6 +17,7 @@ MARKDOWN_TAG = re.compile(
     r"</?(?:br|sup|u|mark)>|<!-- (?:Start|End) of picture text -->|<(?=[A-Za-z/!?])"
 )
 CODE_SPAN = re.compile(r"(`+)(?:.*?)\1")
+EMPHASIS_GAP = re.compile(r"(?<=\S)(\*\*|\*|~~|_) +(?=[,.;:!?)])")
 FENCE = re.compile(r"^\s{0,3}(`{3,}|~{3,})")
 HEADING_LEVELS = ((1.5, "h1"), (1.25, "h2"), (1.1, "h3"))
 HEADING_MAX_CHARACTERS = 200
@@ -58,9 +59,10 @@ def _inert_line(line: str) -> str:
 
 
 def _inert_text(text: str) -> str:
-    return MARKDOWN_TAG.sub(
+    inert = MARKDOWN_TAG.sub(
         lambda match: match.group(0) if len(match.group(0)) > 1 else "&lt;", text
     )
+    return EMPHASIS_GAP.sub(r"\1", inert)
 
 
 def inert_markdown(markdown: str) -> str:
