@@ -1,5 +1,7 @@
+import re
 import shutil
 import tempfile
+from collections.abc import Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -40,6 +42,7 @@ IMAGE_EXTENSIONS = {
     "avif",
     *HEIF_EXTENSIONS,
 }
+INVOKED_XOBJECT = re.compile(rb"/([^\s/\[\]()<>{}%]+)\s+Do\b")
 MUPDF_DOCUMENT_EXTENSIONS = {"xps", "oxps", "epub", "mobi", "fb2", "cbz", "txt"}
 TEXT_EXTENSIONS = {"txt", "md", "markdown", "html", "htm"}
 REPLACED_SUFFIXES = {
@@ -299,6 +302,33 @@ def _image_bytes(document: pymupdf.Document, xref: int, smask: int) -> tuple[byt
     return data, ("jpg" if ext == "jpeg" else ext)
 
 
+def _invoked_names(stream: bytes) -> Iterator[str]:
+    return (name.decode("latin-1") for name in INVOKED_XOBJECT.findall(stream))
+
+
+def _drawn_xrefs(page: pymupdf.Page, listed: dict[int, tuple]) -> list[int]:
+    document = page.parent
+    forms = {(invoker, name): xref for xref, name, invoker, _bbox in page.get_xobjects()}
+    images = {(image[9], image[7]): xref for xref, image in listed.items()}
+    drawn: list[int] = []
+    visited: set[int] = set()
+    stack = [(0, _invoked_names(page.read_contents()))]
+    while stack:
+        owner, names = stack[-1]
+        name = next(names, None)
+        if name is None:
+            stack.pop()
+            continue
+        key = (owner, name) if (owner, name) in images or (owner, name) in forms else (0, name)
+        if key in images:
+            drawn.append(images[key])
+        form = forms.get(key)
+        if form is not None and form not in visited:
+            visited.add(form)
+            stack.append((form, _invoked_names(document.xref_stream(form) or b"")))
+    return list(dict.fromkeys(drawn))
+
+
 def free_path(folder: Path, stem: str, extension: str) -> Path:
     target = folder / f"{stem}.{extension}"
     number = 2
@@ -340,8 +370,9 @@ def _extract_page_images(
         for position, index in enumerate(indices):
             progress.check_cancelled()
             page = document[index]
-            for image_index, image in enumerate(page.get_images(full=True)):
-                xref, smask, img_width, img_height = image[0], image[1], image[2], image[3]
+            listed = {image[0]: image for image in page.get_images(full=True)}
+            for image_index, xref in enumerate(_drawn_xrefs(page, listed)):
+                smask, img_width, img_height = listed[xref][1:4]
                 if params.dedupe and xref in seen:
                     continue
                 seen.add(xref)
