@@ -271,6 +271,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert a PDF with a tilted stamp (a rotated "ONAYLANDI" word inside a tilted frame) to
   Word and open it in Word: the stamp word shows over its frame at the same angle, not behind
   it and not missing.
+- Convert a PDF exported from LibreOffice (fonts such as Liberation Serif) to Word and to
+  PowerPoint on a PC without LibreOffice's fonts: the headings show in Liberation Serif, not
+  in a substitute font.
 
 ### How native dialogs are answered
 

@@ -7,7 +7,12 @@ import pytest
 from fontTools.ttLib import TTFont
 from lxml import etree
 
-from vivepdf.ops._docx_fonts import embedding_allowed, is_system_font, obfuscated
+from vivepdf.ops._docx_fonts import (
+    embedding_allowed,
+    is_system_font,
+    obfuscated,
+    rebuilt_program,
+)
 from vivepdf.ops._docx_progress import split_style_suffixes
 from vivepdf.ops.convert import DocxParams, to_docx
 from vivepdf.rpc.progress import silent_progress
@@ -43,6 +48,15 @@ def _variant(family: str, *, bold: bool = False, fs_type: int = 0) -> bytes:
 def _without_character_map(program: bytes) -> bytes:
     font = TTFont(io.BytesIO(program))
     del font["cmap"]
+    buffer = io.BytesIO()
+    font.save(buffer)
+    return buffer.getvalue()
+
+
+def _without_tables(program: bytes, *tags: str) -> bytes:
+    font = TTFont(io.BytesIO(program))
+    for tag in tags:
+        del font[tag]
     buffer = io.BytesIO()
     font.save(buffer)
     return buffer.getvalue()
@@ -144,6 +158,40 @@ def test_fonts_licensed_for_viewing_only_are_left_out(tmp_path: Path):
     target = _convert(source, tmp_path)
 
     assert set(_embedded(target)) == {("Nesibe Sans", "embedRegular")}
+
+
+def test_a_font_without_a_licence_table_is_embedded_with_one_that_allows_editing(
+    tmp_path: Path,
+):
+    regular, bold = _variant("Nesibe Serif"), _variant("Nesibe Serif", bold=True)
+    source = _pdf(
+        tmp_path,
+        {"reg": regular, "bold": bold},
+        [("bold", "Başlık ğüşİ"), ("reg", "Gövde metni çöğ")],
+    )
+    with pymupdf.open(source) as document:
+        for xref in _font_files(document):
+            document.update_stream(xref, _without_tables(document.xref_stream(xref), "OS/2"))
+        document.save(tmp_path / "bare.pdf")
+
+    target = _convert(tmp_path / "bare.pdf", tmp_path)
+
+    embedded = _embedded(target)
+    assert set(embedded) == {("Nesibe Serif", "embedRegular"), ("Nesibe Serif", "embedBold")}
+    plain = embedded[("Nesibe Serif", "embedRegular")]["OS/2"]
+    heavy = embedded[("Nesibe Serif", "embedBold")]["OS/2"]
+    assert plain.fsType == heavy.fsType == 0
+    assert (plain.usWeightClass, heavy.usWeightClass) == (400, 700)
+    assert plain.fsSelection & 0x40 and heavy.fsSelection & 0x20
+    hhea = TTFont(FONT)["hhea"]
+    assert (plain.sTypoAscender, plain.sTypoDescender) == (hhea.ascent, hhea.descent)
+
+
+def test_a_font_missing_its_metrics_is_still_left_out():
+    program = _without_tables(_variant("Esma Serif"), "OS/2", "hmtx")
+    glyphs = {ord(character): 40 for character in "abc"}
+
+    assert rebuilt_program(program, glyphs, "Esma Serif", (False, False)) is None
 
 
 def test_system_fonts_are_not_embedded(tmp_path: Path):

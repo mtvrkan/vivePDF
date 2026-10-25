@@ -107,3 +107,31 @@ def test_standard_fonts_and_picture_slides_embed_nothing(tmp_path: Path) -> None
 
         expected = 1 if mode == "editable" else 0
         assert len(_font_parts(output)) == expected
+
+
+def test_a_font_without_a_licence_table_travels_inside_the_presentation(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=300)
+    page.insert_text(
+        (40, 60),
+        "Lisanssız yazı",
+        fontsize=14,
+        fontname="dv",
+        fontfile=str(FONTS / "DejaVuSans.ttf"),
+    )
+    for xref in range(1, document.xref_length()):
+        kind, value = document.xref_get_key(xref, "FontFile2")
+        if kind == "xref":
+            stream = int(value.split()[0])
+            font = TTFont(io.BytesIO(document.xref_stream(stream)))
+            del font["OS/2"]
+            buffer = io.BytesIO()
+            font.save(buffer)
+            document.update_stream(stream, buffer.getvalue())
+
+    output = _convert(document, tmp_path)
+
+    (data,) = _font_parts(output).values()
+    program = _program(data)
+    assert program["name"].getBestFamilyName() == "DejaVu Sans"
+    assert program["OS/2"].fsType == struct.unpack_from("<H", data, 32)[0] == 0

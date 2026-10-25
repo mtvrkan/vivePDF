@@ -111,7 +111,9 @@ SYSTEM_FONTS = frozenset(
     }
 )
 VENDOR_SUFFIXES = ("psmt", "mt", "ps")
-REQUIRED_TABLES = ("glyf", "loca", "head", "hhea", "hmtx", "maxp", "OS/2")
+REQUIRED_TABLES = ("glyf", "loca", "head", "hhea", "hmtx", "maxp")
+REGULAR_WEIGHT = 400
+BOLD_WEIGHT = 700
 MAX_FONT_BYTES = 8 * 1024 * 1024
 BOLD_FLAG = 16
 ITALIC_FLAG = 2
@@ -331,6 +333,33 @@ def _postscript_table():
     return table
 
 
+def _add_metrics_table(font, bold: bool) -> None:
+    from fontTools.fontBuilder import FontBuilder
+
+    head, hhea = font["head"], font["hhea"]
+    em = head.unitsPerEm
+    FontBuilder(font=font).setupOS2(
+        fsType=0,
+        achVendID="NONE",
+        usWeightClass=BOLD_WEIGHT if bold else REGULAR_WEIGHT,
+        ySubscriptXSize=round(em * 0.65),
+        ySubscriptYSize=round(em * 0.6),
+        ySubscriptYOffset=round(em * 0.075),
+        ySuperscriptXSize=round(em * 0.65),
+        ySuperscriptYSize=round(em * 0.6),
+        ySuperscriptYOffset=round(em * 0.35),
+        yStrikeoutSize=round(em * 0.05),
+        yStrikeoutPosition=round(em * 0.25),
+        sTypoAscender=hhea.ascent,
+        sTypoDescender=hhea.descent,
+        sTypoLineGap=hhea.lineGap,
+        usWinAscent=max(hhea.ascent, head.yMax, 0),
+        usWinDescent=max(-hhea.descent, -head.yMin, 0),
+        sxHeight=round(em * 0.5),
+        sCapHeight=round(em * 0.7),
+    )
+
+
 def _mark_style(font, style: tuple[bool, bool]) -> None:
     bold, italic = style
     font["head"].macStyle = (font["head"].macStyle & ~0x3) | int(bold) | int(italic) << 1
@@ -353,12 +382,14 @@ def rebuilt_program(
         font = TTFont(io.BytesIO(program))
         if any(tag not in font for tag in REQUIRED_TABLES):
             return None
-        if not embedding_allowed(font["OS/2"].fsType):
+        if "OS/2" in font and not embedding_allowed(font["OS/2"].fsType):
             return None
         character_map = _character_map(font, glyphs)
         if character_map is None:
             return None
         font["cmap"] = character_map
+        if "OS/2" not in font:
+            _add_metrics_table(font, style[0])
         font["name"] = _names(font, family, style)
         if "post" not in font:
             font["post"] = _postscript_table()
