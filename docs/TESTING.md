@@ -353,6 +353,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - PDF to PowerPoint on a PDF with a black bar over part of a photo: the bar cannot be selected
   or moved and the photo stays covered; a coloured banner over a full-page background photo
   is still a shape you can move.
+- PDF to text, Markdown and Word on several slide decks merged into one PDF where only the
+  first deck has page numbers: the numbers of that deck are gone from the output and the rest
+  of the text is unchanged.
 
 ### How native dialogs are answered
 

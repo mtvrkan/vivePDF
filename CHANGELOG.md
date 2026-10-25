@@ -31,6 +31,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- PDF to text, Markdown, HTML, EPUB and Word: page numbers that appear on only part of the pages, such as slide decks merged into one PDF where only one deck is numbered, are taken out like the numbers of a fully numbered document; a run needs at least five pages counting up with the page [2026-10-25]
 - PDF to PowerPoint: a solid box drawn over a picture, such as a black bar covering part of a photo, stays part of the slide picture instead of becoming a shape that can be moved aside to show what it covered; see-through boxes and boxes over a full-page background picture stay editable [2026-10-25]
 - PDF to Excel: in a table without ruling lines, a column whose cells all start with the same word ("Item 1", "Item 2") stays one column instead of splitting the word and the number into two [2026-10-25]
 - Convert › File to PDF: "Fit columns to the page width" and the paper choice now also work for older Excel (.xls) and OpenDocument (.ods) spreadsheets, which LibreOffice first saves as .xlsx, so a wide sheet comes out on one landscape page like an .xlsx does [2026-10-25]

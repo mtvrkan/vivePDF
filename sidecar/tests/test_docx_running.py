@@ -239,3 +239,52 @@ def test_a_base_font_with_a_style_suffix_is_named_plainly_in_the_footer(tmp_path
 
     header = Document(result.output).sections[0].header
     assert _run_styles(header) == [("ACME Annual Report", "Arial", True)]
+
+
+def _merged_decks(numbered: list[int | None]) -> pymupdf.Document:
+    document = pymupdf.open()
+    for position, number in enumerate(numbered):
+        _page(document, None, None if number is None else str(number), f"Slide {position}")
+    return document
+
+
+def _numbered_pages(document: pymupdf.Document) -> list[int]:
+    return sorted(find_running_text(document, list(range(len(document)))).areas)
+
+
+def test_page_numbers_on_only_the_first_pages_are_still_taken_out(tmp_path: Path) -> None:
+    document = _merged_decks([None, *range(2, 9), *[None] * 10])
+
+    running = find_running_text(document, list(range(len(document))))
+
+    assert running.lines == []
+    assert sorted(running.areas) == list(range(1, 8))
+
+
+def test_two_merged_decks_each_lose_their_own_page_numbers(tmp_path: Path) -> None:
+    document = _merged_decks([*range(1, 6), *[None] * 6, *range(1, 6), *[None] * 4])
+
+    assert _numbered_pages(document) == [0, 1, 2, 3, 4, 11, 12, 13, 14, 15]
+
+
+def test_the_page_numbers_leave_the_text_file_of_a_merged_document(tmp_path: Path) -> None:
+    from vivepdf.ops.convert_text import TextParams, to_text
+
+    source = tmp_path / "birleşik.pdf"
+    _merged_decks([*range(1, 7), *[None] * 10]).save(source)
+
+    result = to_text(
+        TextParams(path=str(source), output=str(tmp_path / "out.txt")), silent_progress()
+    )
+
+    lines = [line.strip() for line in Path(result.output).read_text(encoding="utf-8").splitlines()]
+    assert not any(line.isdigit() for line in lines)
+    assert "Slide 0" in lines
+
+
+def test_short_or_jumping_number_runs_stay_in_the_body(tmp_path: Path) -> None:
+    short = _merged_decks([*range(1, 5), *[None] * 10])
+    jumping = _merged_decks([7, 3, 9, 1, 4, 8, *[None] * 10])
+
+    assert _numbered_pages(short) == []
+    assert _numbered_pages(jumping) == []

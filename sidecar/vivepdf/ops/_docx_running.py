@@ -19,6 +19,8 @@ Slot = Literal["left", "center", "right"]
 BAND_SHARE = 0.1
 MIN_PAGES = 3
 PRESENCE_SHARE = 0.6
+RUN_PAGES = 5
+RUN_GAP = 2
 CENTRE_SHARE = 0.1
 ROW_TOLERANCE = 4.0
 MAX_LINE_CHARACTERS = 200
@@ -136,6 +138,39 @@ def _parts(pattern: str, occurrences: list[_Occurrence]) -> tuple[list[str | Non
     return parts, start
 
 
+def _follows(previous: _Occurrence, current: _Occurrence) -> bool:
+    step = current.position - previous.position
+    if step > RUN_GAP or len(current.numbers) != len(previous.numbers):
+        return False
+    return all(
+        int(now) - int(before) in (0, step)
+        for before, now in zip(previous.numbers, current.numbers, strict=True)
+    )
+
+
+def _numbered_runs(occurrences: list[_Occurrence]) -> list[list[_Occurrence]]:
+    chains: list[list[_Occurrence]] = []
+    for occurrence in occurrences:
+        if chains and _follows(chains[-1][-1], occurrence):
+            chains[-1].append(occurrence)
+        else:
+            chains.append([occurrence])
+    return [chain for chain in chains if len(chain) >= RUN_PAGES and _tracks_pages(chain)]
+
+
+def _tracks_pages(chain: list[_Occurrence]) -> bool:
+    tracked = False
+    for slot in range(len(chain[0].numbers)):
+        values = {occurrence.numbers[slot] for occurrence in chain}
+        offsets = {int(occurrence.numbers[slot]) - occurrence.position for occurrence in chain}
+        if len(values) == 1:
+            continue
+        if len(offsets) != 1:
+            return False
+        tracked = True
+    return tracked
+
+
 def find_running_text(document: pymupdf.Document, indices: list[int]) -> RunningText:
     running = RunningText()
     if len(indices) < MIN_PAGES:
@@ -154,6 +189,9 @@ def find_running_text(document: pymupdf.Document, indices: list[int]) -> Running
     needed = max(MIN_PAGES, math.ceil(len(indices) * PRESENCE_SHARE))
     for (band, pattern), occurrences in seen.items():
         if len(occurrences) < needed:
+            for run in _numbered_runs(occurrences):
+                for occurrence in run:
+                    running.areas.setdefault(occurrence.page, []).append(occurrence.rect)
             continue
         try:
             parts, start = _parts(pattern, occurrences)
