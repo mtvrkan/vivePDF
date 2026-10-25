@@ -17,6 +17,7 @@ FILLED_FLAG = 16
 STROKED_FLAG = 32
 STROKE_TRACE = 1
 TEXT_FLAGS = pymupdf.TEXTFLAGS_TEXT | pymupdf.TEXT_COLLECT_STYLES
+SLANT = 1e-3
 SUBSET_PREFIX = re.compile(r"^[A-Z]{6}\+")
 UNSAFE_CHARACTERS = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\ud800-\udfff\ufffe\uffff]")
 FONT_SUFFIXES = ("PSMT", "MT", "PS")
@@ -127,10 +128,16 @@ def _line_box(line: dict, bounds: pymupdf.Rect, spans: list[dict], matrix) -> Li
     shown = bounds * matrix
     dx, dy = _direction(line, matrix)
     angle = round(math.degrees(math.atan2(dy, dx)), 1) % 360
-    along_x = abs(line["dir"][0]) >= abs(line["dir"][1])
-    length = bounds.width if along_x else bounds.height
-    thickness = bounds.height if along_x else bounds.width
-    center = (shown.tl + shown.br) / 2
+    if min(abs(part) for part in line["dir"]) > SLANT:
+        quad = pymupdf.recover_line_quad(line, spans) * matrix
+        length = abs(quad.ur - quad.ul)
+        thickness = abs(quad.ll - quad.ul)
+        center = (quad.ul + quad.lr) / 2
+    else:
+        along_x = abs(line["dir"][0]) >= abs(line["dir"][1])
+        length = bounds.width if along_x else bounds.height
+        thickness = bounds.height if along_x else bounds.width
+        center = (shown.tl + shown.br) / 2
     return LineBox(
         left=center.x - length / 2,
         top=center.y - thickness / 2,
