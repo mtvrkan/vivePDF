@@ -195,3 +195,39 @@ def test_unsupported_selectors_and_broken_sheets_are_ignored():
         '</style><rect fill="#00ff00" width="100" height="100"/></svg>'
     )
     assert _centre(markup) == (0, 255, 0)
+
+
+ILLUSTRATOR_DOCTYPE = (
+    '<?xml version="1.0" encoding="utf-8"?>\n'
+    '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"\n'
+    '  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">\n'
+)
+
+
+def test_a_standard_svg_doctype_is_dropped_and_the_drawing_converts(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: None)
+    source = _svg(tmp_path, text=ILLUSTRATOR_DOCTYPE + STYLED.split("?>", 1)[-1])
+
+    result = file_to_pdf(
+        FileToPdfParams(path=str(source), output=str(tmp_path / "out.pdf")), silent_progress()
+    )
+
+    assert result.page_count == 1
+    assert b"DOCTYPE" not in sanitized_svg(source, tmp_path / "clean").read_bytes()
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        ILLUSTRATOR_DOCTYPE + '<!ENTITY x "y"><svg xmlns="http://www.w3.org/2000/svg"/>',
+        '<!DOCTYPE html PUBLIC "a" "b"><svg xmlns="http://www.w3.org/2000/svg"/>',
+        '<!DOCTYPE svg PUBLIC "a" "b" [<!ENTITY x "y">]><svg xmlns="http://www.w3.org/2000/svg"/>',
+    ],
+)
+def test_entities_and_other_document_types_are_still_refused(tmp_path: Path, text: str):
+    with pytest.raises(OpError) as caught:
+        sanitized_svg(_svg(tmp_path, text=text), tmp_path / "clean")
+
+    assert caught.value.data["reason"] == "svgDoctype"
