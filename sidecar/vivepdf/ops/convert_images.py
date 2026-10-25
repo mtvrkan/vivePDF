@@ -433,9 +433,11 @@ def load_frames(image: Path) -> list[ImageFrame]:
             frame_count = (
                 getattr(picture, "n_frames", 1) if source_format in MULTI_FRAME_FORMATS else 1
             )
+            animated = source_format == "GIF" and getattr(picture, "is_animated", False)
             if (
                 source_format in NATIVE_IMAGE_FORMATS
                 and frame_count == 1
+                and not animated
                 and orientation
                 in (
                     1,

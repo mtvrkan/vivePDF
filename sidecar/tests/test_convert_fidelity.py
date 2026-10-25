@@ -112,6 +112,40 @@ def test_webp_and_every_tiff_frame_become_pages(tmp_path: Path) -> None:
     assert result.page_count == 3
 
 
+def _gif(path: Path, colours: list[tuple[int, int, int]]) -> Path:
+    frames = [Image.new("RGB", (120, 80), colour) for colour in colours]
+    frames[0].save(path, save_all=True, append_images=frames[1:], duration=200, loop=0)
+    return path
+
+
+def test_an_animated_gif_becomes_one_page_of_its_first_frame(tmp_path: Path) -> None:
+    animation = _gif(tmp_path / "hareket.gif", [(255, 0, 0), (0, 160, 0), (0, 0, 255)])
+
+    result = images_to_pdf(
+        ImagesToPdfParams(
+            images=[str(animation)], output=str(tmp_path / "o.pdf"), page_size="image"
+        ),
+        silent_progress(),
+    )
+
+    pixmap = rendered(result.output)
+    assert result.page_count == 1
+    assert is_red(pixmap.pixel(pixmap.width // 2, pixmap.height // 2))
+
+
+def test_a_still_gif_is_placed_as_it_is(tmp_path: Path) -> None:
+    still = _gif(tmp_path / "durgun.gif", [(0, 0, 255)])
+
+    result = images_to_pdf(
+        ImagesToPdfParams(images=[str(still)], output=str(tmp_path / "o.pdf"), page_size="image"),
+        silent_progress(),
+    )
+
+    pixmap = rendered(result.output)
+    assert result.page_count == 1
+    assert is_blue(pixmap.pixel(pixmap.width // 2, pixmap.height // 2))
+
+
 def test_fill_covers_the_area_inside_the_margin_and_leaves_the_margin_white(
     tmp_path: Path,
 ) -> None:
