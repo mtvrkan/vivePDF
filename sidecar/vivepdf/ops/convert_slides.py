@@ -20,6 +20,7 @@ from vivepdf.ops._pptx_layout import (
     text_free_pixmap,
 )
 from vivepdf.ops._pptx_links import SlideJumps, add_link_area, apply_jumps, page_links
+from vivepdf.ops._pptx_shapes import PageShapes, add_slide_shape, page_shapes
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops.convert import PagedFileResult, PdfSourceParams, _prepare_file
 from vivepdf.rpc.progress import Progress
@@ -88,9 +89,11 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 hidden = hidden_origins(page) | widget_origins(page)
                 links = page_links(page)
                 boxes = line_boxes(page, hidden, links) if editable else []
+                drawn = page_shapes(page) if editable else PageShapes()
                 if editable:
                     areas = [box.area for box in boxes]
-                    text_free_pixmap(document, index, dpi, areas).save(str(image_path))
+                    background = text_free_pixmap(document, index, dpi, areas, drawn.passes)
+                    background.save(str(image_path))
                 else:
                     page.get_pixmap(dpi=dpi).save(str(image_path))
                 slide = presentation.slides.add_slide(blank_layout)
@@ -98,6 +101,8 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 left, top, width, height = fitted_box(page.rect, slide_width, slide_height)
                 slide.shapes.add_picture(str(image_path), left, top, width=width, height=height)
                 frame = SlideFrame(left=left, top=top, ratio=width / page.rect.width)
+                for shape in drawn.shapes:
+                    add_slide_shape(slide, shape, frame)
                 for box in boxes:
                     add_line_box(slide, box, frame, jumps, names)
                 linked = {span["link"] for box in boxes for span in box.spans if span.get("link")}

@@ -231,11 +231,20 @@ def text_free_pixmap(
     index: int,
     dpi: int,
     areas: list[pymupdf.Rect],
+    drawn: list[list[pymupdf.Rect]] | None = None,
 ) -> pymupdf.Pixmap:
     with pymupdf.open() as single:
         single.insert_pdf(document, from_page=index, to_page=index, annots=True)
         single.bake(annots=True, widgets=False)
         page = single[0]
+        for erased in drawn or []:
+            for area in erased:
+                page.add_redact_annot(area, fill=False, cross_out=False)
+            page.apply_redactions(
+                images=pymupdf.PDF_REDACT_IMAGE_NONE,
+                graphics=pymupdf.PDF_REDACT_LINE_ART_REMOVE_IF_COVERED,
+                text=pymupdf.PDF_REDACT_TEXT_NONE,
+            )
         for area in areas:
             page.add_redact_annot(area, fill=False, cross_out=False)
         page.apply_redactions(

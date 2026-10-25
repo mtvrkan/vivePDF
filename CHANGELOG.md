@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- PDF to PowerPoint (editable): plain filled rectangles and straight lines of the page (bar charts, rules, coloured bands, table lines) become PowerPoint shapes with their colour, transparency and line width instead of being part of the slide picture, so they can be moved and recoloured; shapes painted over text or partly covered by something drawn later stay in the picture, and on an 83-page document the conversion takes about 15 % longer [2026-10-25]
 - Convert › File to PDF: Excel (.xlsx) files follow the chosen paper size, and a new "Fit columns to the page width" switch (on by default) keeps every column on the page, putting wide tables on a landscape page instead of spreading columns over extra pages; a file's own fit setting is kept and the original file is never changed [2026-10-25]
 - Convert › Images to PDF: a "Compress photos" switch scales each photo to 200 dpi at its size on the page and stores it as JPEG, so a 32 MB PNG photo gives a 0.4 MB PDF page instead of 54 MB; drawings and screenshots stay lossless [2026-10-25]
 - Convert › File to PDF: each Word, Excel, PowerPoint or OpenDocument file in the list shows the fonts it uses that this computer does not have, before converting, since LibreOffice replaces them with a similar font and the layout can shift [2026-10-25]

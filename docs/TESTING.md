@@ -292,6 +292,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   page of rows. Turn the switch off: the columns spread over extra pages as before.
 - Open an .xlsx with no print setup straight from Explorer (Open with vivePDF) on a Windows set
   to Turkish: the converted pages are A4; set Windows to English (United States): Letter.
+- Convert a PDF report with a bar chart (filled bars and an axis line) to PowerPoint
+  (editable) and open it in PowerPoint on Windows: each bar and line can be clicked, moved and
+  recoloured, the chart looks as in the PDF, and moving a bar leaves white page behind it, not a
+  copy of the bar. A black box drawn over text in the PDF stays part of the page picture.
 
 ### How native dialogs are answered
 
