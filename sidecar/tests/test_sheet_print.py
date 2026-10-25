@@ -143,7 +143,7 @@ def test_libreoffice_gets_a_fitted_copy_with_the_chosen_paper(
     source = wide_book(tmp_path / "rapor.xlsx")
     received: list[bytes] = []
 
-    def fake_convert(path: Path, output_dir: Path, _infilter, _check) -> Path:
+    def fake_convert(path: Path, output_dir: Path, _check) -> Path:
         received.append(zipfile.ZipFile(path).read("xl/worksheets/sheet1.xml"))
         produced = output_dir / f"{path.stem}.pdf"
         with pymupdf.open() as document:
@@ -166,3 +166,98 @@ def test_libreoffice_gets_a_fitted_copy_with_the_chosen_paper(
         "orientation": "landscape",
     }
     assert b"fitToPage" not in zipfile.ZipFile(source).read("xl/worksheets/sheet1.xml")
+
+
+def _sheet_xml(path: Path) -> bytes | None:
+    if not zipfile.is_zipfile(path):
+        return None
+    return zipfile.ZipFile(path).read("xl/worksheets/sheet1.xml")
+
+
+def _fake_pdf(received: list[tuple[Path, bytes | None]]):
+    def fake_convert(path: Path, output_dir: Path, _check) -> Path:
+        received.append((path, _sheet_xml(path)))
+        produced = output_dir / f"{path.stem}.pdf"
+        with pymupdf.open() as document:
+            document.new_page()
+            document.save(produced)
+        return produced
+
+    return fake_convert
+
+
+def _upright_book(path: Path) -> Path:
+    book_path = wide_book(path.with_name("taban.xlsx"))
+    with zipfile.ZipFile(book_path) as original, zipfile.ZipFile(path, "w") as copy:
+        for member in original.infolist():
+            data = original.read(member)
+            if member.filename == "xl/worksheets/sheet1.xml":
+                data = data.replace(
+                    b"</worksheet>", b'<pageSetup orientation="portrait"/></worksheet>'
+                )
+            copy.writestr(member, data)
+    return path
+
+
+@pytest.mark.parametrize("name", ["rapor.xls", "rapor.ods"])
+def test_an_older_or_open_document_sheet_is_resaved_and_fitted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, name: str
+) -> None:
+    source = tmp_path / name
+    source.write_bytes(b"sheet")
+    resaved: list[Path] = []
+    received: list[tuple[Path, bytes | None]] = []
+
+    def fake_resave(path: Path, output_dir: Path, _check) -> Path:
+        resaved.append(path)
+        output_dir.mkdir(parents=True, exist_ok=True)
+        return _upright_book(output_dir / f"{path.stem}.xlsx")
+
+    monkeypatch.setattr(libreoffice, "convert_to_xlsx", fake_resave)
+    monkeypatch.setattr(libreoffice, "convert_to_pdf", _fake_pdf(received))
+
+    file_to_pdf(
+        FileToPdfParams(path=str(source), output=str(tmp_path / "out.pdf")), silent_progress()
+    )
+
+    assert resaved == [source]
+    [(_path, sheet)] = received
+    assert page_setup(sheet) == {
+        "orientation": "landscape",
+        "paperSize": "9",
+        "fitToWidth": "1",
+        "fitToHeight": "0",
+    }
+
+
+def test_an_older_sheet_is_not_resaved_when_nothing_is_asked(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = tmp_path / "rapor.xls"
+    source.write_bytes(b"sheet")
+    received: list[tuple[Path, bytes | None]] = []
+    monkeypatch.setattr(libreoffice, "convert_to_xlsx", lambda *_args: pytest.fail("resaved"))
+    monkeypatch.setattr(libreoffice, "convert_to_pdf", _fake_pdf(received))
+
+    file_to_pdf(
+        FileToPdfParams(path=str(source), output=str(tmp_path / "out.pdf"), fit_columns=False),
+        silent_progress(),
+    )
+
+    assert received == [(source, None)]
+
+
+def test_a_macro_workbook_is_converted_and_fitted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    source = wide_book(tmp_path / "makrolu.xlsx").rename(tmp_path / "makrolu.xlsm")
+    received: list[tuple[Path, bytes | None]] = []
+    monkeypatch.setattr(libreoffice, "convert_to_pdf", _fake_pdf(received))
+
+    file_to_pdf(
+        FileToPdfParams(path=str(source), output=str(tmp_path / "out.pdf")), silent_progress()
+    )
+
+    [(path, sheet)] = received
+    assert path != source
+    assert fit_flag(sheet) == {"fitToPage": "1"}

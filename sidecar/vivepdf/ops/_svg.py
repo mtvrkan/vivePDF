@@ -342,7 +342,7 @@ def svg_pdf_bytes(
 ) -> bytes:
     clean = sanitized_svg(source, working / "source")
     if libreoffice.find_soffice() is not None:
-        produced = libreoffice.convert_to_pdf(clean, working / "office", None, check_cancelled)
+        produced = libreoffice.convert_to_pdf(clean, working / "office", check_cancelled)
         return _with_links(clean, produced.read_bytes())
     root = read_svg(clean)
     _anchors_as_groups(root)

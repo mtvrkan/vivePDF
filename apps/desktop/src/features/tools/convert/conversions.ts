@@ -51,7 +51,7 @@ export function isConvertMode(value: string | null): value is ConvertMode {
   return value !== null && (ALL_MODES as string[]).includes(value);
 }
 
-export const OFFICE_LIKE_EXTENSIONS = ["doc", "docx", "odt", "rtf", "xls", "xlsx", "ods", "ppt", "pptx", "odp"];
+export const OFFICE_LIKE_EXTENSIONS = ["doc", "docx", "odt", "rtf", "xls", "xlsx", "xlsm", "ods", "ppt", "pptx", "odp"];
 export const TEXT_LIKE_EXTENSIONS = ["txt", "md", "markdown", "html", "htm", "csv"];
 export const EBOOK_EXTENSIONS = ["epub", "xps", "oxps", "mobi", "fb2", "cbz", "svg"];
 export const SVG_EXTENSIONS = ["svg"];

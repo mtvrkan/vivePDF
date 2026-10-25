@@ -7,7 +7,8 @@ from lxml import etree
 
 S = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
 WORKSHEET_PART = re.compile(r"^xl/worksheets/[^/]+\.xml$")
-SHEET_EXTENSIONS = frozenset({"xlsx"})
+SHEET_EXTENSIONS = frozenset({"xlsx", "xlsm"})
+RESAVED_SHEET_EXTENSIONS = frozenset({"xls", "ods", "ots"})
 PAPER_CODES = {"a4": "9", "letter": "1"}
 WIDE_SHEET_COLUMNS = 6
 MAX_SHEET_XML_BYTES = 64 * 1024 * 1024
@@ -88,7 +89,9 @@ def _page_setup(root: etree._Element) -> etree._Element:
     return setup
 
 
-def print_ready_sheet(raw: bytes, paper: str | None, fallback: str, fit: bool) -> bytes:
+def print_ready_sheet(
+    raw: bytes, paper: str | None, fallback: str, fit: bool, resaved: bool = False
+) -> bytes:
     root = etree.fromstring(raw, _parser())
     if _local(root) != "worksheet":
         return raw
@@ -101,13 +104,19 @@ def print_ready_sheet(raw: bytes, paper: str | None, fallback: str, fit: bool) -
             flag.set("fitToPage", "1")
             setup.set("fitToWidth", "1")
             setup.set("fitToHeight", "0")
-        if setup.get("orientation") is None and _column_count(root) > WIDE_SHEET_COLUMNS:
+        free = resaved or setup.get("orientation") is None
+        if free and _column_count(root) > WIDE_SHEET_COLUMNS:
             setup.set("orientation", "landscape")
     return etree.tostring(root, xml_declaration=True, encoding="UTF-8", standalone=True)
 
 
 def print_ready_copy(
-    source: Path, folder: Path, paper: str | None, fallback: str, fit: bool
+    source: Path,
+    folder: Path,
+    paper: str | None,
+    fallback: str,
+    fit: bool,
+    resaved: bool = False,
 ) -> Path:
     if source.suffix.lower().lstrip(".") not in SHEET_EXTENSIONS or (paper is None and not fit):
         return source
@@ -125,7 +134,8 @@ def print_ready_copy(
                         and member.file_size <= MAX_SHEET_XML_BYTES
                     ):
                         ready.writestr(
-                            member, print_ready_sheet(package.read(member), paper, fallback, fit)
+                            member,
+                            print_ready_sheet(package.read(member), paper, fallback, fit, resaved),
                         )
                         continue
                     with package.open(member) as original, ready.open(member, "w") as written:

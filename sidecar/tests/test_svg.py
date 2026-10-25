@@ -82,7 +82,7 @@ def test_an_oversized_drawing_is_refused(tmp_path: Path):
 def test_libreoffice_receives_only_the_clean_copy(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     received: list[str] = []
 
-    def fake_convert(source: Path, output_dir: Path, _infilter, _check) -> Path:
+    def fake_convert(source: Path, output_dir: Path, _check) -> Path:
         received.append(source.read_text(encoding="utf-8"))
         output_dir.mkdir(parents=True, exist_ok=True)
         produced = output_dir / f"{source.stem}.pdf"

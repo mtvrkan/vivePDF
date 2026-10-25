@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Convert › File to PDF: macro-enabled Excel workbooks (.xlsm) can be converted, opened and merged like .xlsx; their macros are never run [2026-10-25]
 - Convert › Extract images: an "As shown on the page" option saves each picture the way the page shows it: cropped pictures keep only their visible part, pictures built from tiles or pieces come out as one file, slide backgrounds are left out, photos stay JPEG and a logo repeated on every page is saved once [2026-10-25]
 - PDF to Excel: a table that runs over to the next page comes out as one table on one sheet (named like `S1-S2-T1`) with its repeated header row dropped; a header row is bold and frozen so it stays in view while scrolling; clock times and date-times become time values; text that wrapped inside a cell is joined into one line [2026-10-25]
 - PDF to Excel: CSV output has a column separator choice, set to semicolon where numbers use a decimal comma (Turkish Excel) so the file opens in columns [2026-10-25]
@@ -30,6 +31,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Convert › File to PDF: "Fit columns to the page width" and the paper choice now also work for older Excel (.xls) and OpenDocument (.ods) spreadsheets, which LibreOffice first saves as .xlsx, so a wide sheet comes out on one landscape page like an .xlsx does [2026-10-25]
 - PDF to HTML and EPUB: a ruled table on a turned page (a landscape page stored with /Rotate) becomes a real table, and the page's text, tables and pictures follow the order you see on screen; a table whose text runs sideways on screen stays text [2026-10-25]
 - PDF to Excel: a table on a turned page fills its sheet like any other table instead of an empty or scrambled sheet, and its cell text no longer repeats on the Text sheet [2026-10-25]
 - SVG to PDF without LibreOffice: the page has the same size as with LibreOffice (CSS pixels at 96 per inch, so a 400 px drawing gives a 300 pt page instead of a 25 % larger one) [2026-10-25]

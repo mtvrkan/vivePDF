@@ -3,6 +3,7 @@ import csv
 import html
 import io
 import tempfile
+from collections.abc import Callable
 from pathlib import Path
 from typing import Literal
 
@@ -13,7 +14,7 @@ from vivepdf.external import libreoffice
 from vivepdf.ops._mail import MAIL_CSS, MAIL_EXTENSIONS, MailLabels, mail_document_html, read_mail
 from vivepdf.ops._naming import unique_name
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
-from vivepdf.ops._sheet_print import print_ready_copy
+from vivepdf.ops._sheet_print import RESAVED_SHEET_EXTENSIONS, print_ready_copy
 from vivepdf.ops._story import (
     BASE_CSS,
     FONT_DIR,
@@ -167,6 +168,16 @@ def _csv_to_pdf(source: Path, target: Path, params: FileToPdfParams, progress: P
         save_document(document, target)
 
 
+def resaved_sheet(
+    source: Path, folder: Path, params: FileToPdfParams, check_cancelled: Callable[[], None]
+) -> Path:
+    if source.suffix.lower().lstrip(".") not in RESAVED_SHEET_EXTENSIONS:
+        return source
+    if params.paper is None and not params.fit_columns:
+        return source
+    return libreoffice.convert_to_xlsx(source, folder, check_cancelled)
+
+
 @op("convert.file_to_pdf", FileToPdfParams)
 def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
     source = Path(params.path)
@@ -221,10 +232,16 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
             prefix="vivepdf-office-", ignore_cleanup_errors=True
         ) as temp_dir:
             working = Path(temp_dir)
+            sheet = resaved_sheet(source, working / "resaved", params, progress.check_cancelled)
             prepared = print_ready_copy(
-                source, working / "sheet", params.paper, params.default_paper, params.fit_columns
+                sheet,
+                working / "sheet",
+                params.paper,
+                params.default_paper,
+                params.fit_columns,
+                resaved=sheet != source,
             )
-            produced = libreoffice.convert_to_pdf(prepared, working, None, progress.check_cancelled)
+            produced = libreoffice.convert_to_pdf(prepared, working, progress.check_cancelled)
             progress.check_cancelled()
             with pymupdf.open(str(produced)) as document:
                 save_document(document, target)

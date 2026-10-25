@@ -27,6 +27,7 @@ OFFICE_EXTENSIONS = {
     "rtf",
     "xls",
     "xlsx",
+    "xlsm",
     "ods",
     "ots",
     "ppt",
@@ -47,6 +48,7 @@ PDF_EXPORT_SETTINGS = {
 PDF_EXPORT_TARGET = (
     f"pdf:writer_pdf_Export:{json.dumps(PDF_EXPORT_SETTINGS, separators=(',', ':'))}"
 )
+XLSX_EXPORT_TARGET = "xlsx:Calc MS Excel 2007 XML"
 
 
 def clean_environment() -> dict[str, str]:
@@ -528,10 +530,23 @@ def _no_output(completed_output: str, source: Path) -> OpError:
 
 
 def convert_to_pdf(
+    source: Path, output_dir: Path, check_cancelled: Callable[[], None] | None = None
+) -> Path:
+    return _convert(source, output_dir, PDF_EXPORT_TARGET, "pdf", check_cancelled)
+
+
+def convert_to_xlsx(
+    source: Path, output_dir: Path, check_cancelled: Callable[[], None] | None = None
+) -> Path:
+    return _convert(source, output_dir, XLSX_EXPORT_TARGET, "xlsx", check_cancelled)
+
+
+def _convert(
     source: Path,
     output_dir: Path,
-    infilter: str | None = None,
-    check_cancelled: Callable[[], None] | None = None,
+    target: str,
+    extension: str,
+    check_cancelled: Callable[[], None] | None,
 ) -> Path:
     soffice = find_soffice()
     if soffice is None:
@@ -570,11 +585,7 @@ def convert_to_pdf(
                     "--nolockcheck",
                     *profile_arguments(profile),
                 ]
-                if infilter:
-                    arguments.append(f"--infilter={infilter}")
-                arguments.extend(
-                    ["--convert-to", PDF_EXPORT_TARGET, "--outdir", str(converted), str(staged)]
-                )
+                arguments.extend(["--convert-to", target, "--outdir", str(converted), str(staged)])
                 completed = _run_soffice(
                     arguments, soffice, [profile, working], environment, check_cancelled, working
                 )
@@ -583,10 +594,10 @@ def convert_to_pdf(
             if UNREADABLE_MARKER in detail:
                 raise _unreadable(source) from error
             raise
-        result = converted / f"{staged.stem}.pdf"
+        result = converted / f"{staged.stem}.{extension}"
         if not result.is_file():
             raise _no_output(f"{completed.stdout or ''}{completed.stderr or ''}", source)
-        produced = output_dir / f"{source.stem}.pdf"
+        produced = output_dir / f"{source.stem}.{extension}"
         os.replace(result, produced)
         return produced
     finally:

@@ -344,6 +344,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert a PDF with a landscape page that holds a ruled table (a Word landscape section saved
   as PDF) to HTML, EPUB and Excel: the table is a real table in all three, the heading above it
   comes first, and the Excel sheet has the table's rows.
+- Convert a wide spreadsheet (15+ columns) saved as .xls, .ods and .xlsm to PDF with "Fit
+  columns to the page width" on: each gives one landscape page with every column, like the
+  same sheet as .xlsx; with the switch off the .xls and .ods keep their own print setup.
 
 ### How native dialogs are answered
 
