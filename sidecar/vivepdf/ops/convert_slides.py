@@ -16,6 +16,7 @@ from vivepdf.ops._pptx_layout import (
     page_notes,
     text_free_pixmap,
 )
+from vivepdf.ops._pptx_links import SlideJumps, add_link_area, apply_jumps, page_links
 from vivepdf.ops._ranges import parse_page_ranges
 from vivepdf.ops.convert import PagedFileResult, PdfSourceParams, _prepare_file
 from vivepdf.rpc.progress import Progress
@@ -72,6 +73,8 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
         presentation.slide_width = slide_width
         presentation.slide_height = slide_height
         editable = params.mode == "editable"
+        jumps = SlideJumps([])
+        slides = {}
         with tempfile.TemporaryDirectory(prefix="vivepdf-pptx-") as temp_dir:
             for position, index in enumerate(indices):
                 progress.check_cancelled()
@@ -79,20 +82,25 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 image_path = Path(temp_dir) / f"page-{index + 1}.png"
                 dpi = slide_dpi(page.rect, params.dpi)
                 hidden = hidden_origins(page)
-                boxes = line_boxes(page, hidden) if editable else []
+                links = page_links(page)
+                boxes = line_boxes(page, hidden, links) if editable else []
                 if editable:
                     areas = [box.area for box in boxes] if hidden else None
                     text_free_pixmap(document, index, dpi, areas).save(str(image_path))
                 else:
                     page.get_pixmap(dpi=dpi).save(str(image_path))
                 slide = presentation.slides.add_slide(blank_layout)
+                slides[index] = slide
                 left, top, width, height = fitted_box(page.rect, slide_width, slide_height)
                 slide.shapes.add_picture(str(image_path), left, top, width=width, height=height)
-                if editable:
-                    frame = SlideFrame(left=left, top=top, ratio=width / page.rect.width)
-                    for box in boxes:
-                        add_line_box(slide, box, frame)
-                else:
+                frame = SlideFrame(left=left, top=top, ratio=width / page.rect.width)
+                for box in boxes:
+                    add_line_box(slide, box, frame, jumps)
+                linked = {span["link"] for box in boxes for span in box.spans if span.get("link")}
+                for link in links:
+                    if link not in linked:
+                        add_link_area(slide, link, frame, jumps)
+                if not editable:
                     text = page_notes(page, hidden)
                     if text:
                         slide.notes_slide.notes_text_frame.text = text[:NOTES_LIMIT]
@@ -101,6 +109,7 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                     "progress.convertingPages",
                     {"current": position + 1, "total": len(indices)},
                 )
+            apply_jumps(jumps, slides)
             write_atomically(target, lambda partial: presentation.save(str(partial)))
         return PagedFileResult(
             output=str(target), bytes=target.stat().st_size, page_count=len(indices)

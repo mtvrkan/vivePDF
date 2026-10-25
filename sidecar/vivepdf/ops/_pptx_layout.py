@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import pymupdf
 
 from vivepdf.ops._hidden_text import origin_key
+from vivepdf.ops._pptx_links import PageLink, SlideJumps, link_at, link_run
 
 EMU_PER_POINT = 12700
 MIN_FONT_POINTS = 1.0
@@ -76,31 +77,40 @@ def _direction(line: dict, matrix: pymupdf.Matrix) -> tuple[float, float]:
     return moved.x - origin.x, moved.y - origin.y
 
 
-def _piece(span: dict, chars: list[dict]) -> dict:
+def _piece(span: dict, chars: list[dict], link: PageLink | None) -> dict:
     bounds = pymupdf.Rect(chars[0]["bbox"])
     for char in chars[1:]:
         bounds |= char["bbox"]
     piece = {key: value for key, value in span.items() if key != "chars"}
     piece["text"] = "".join(char["c"] for char in chars)
     piece["bbox"] = tuple(bounds)
+    piece["link"] = link
     return piece
 
 
-def _segments(line: dict, hidden: set[tuple[float, float]]) -> list[list[dict]]:
+def _segments(
+    line: dict, hidden: set[tuple[float, float]], links: list[PageLink]
+) -> list[list[dict]]:
     segments: list[list[dict]] = [[]]
     for span in line["spans"]:
         run: list[dict] = []
+        target: PageLink | None = None
         for char in span["chars"]:
-            if origin_key(char["origin"]) not in hidden:
-                run.append(char)
+            if origin_key(char["origin"]) in hidden:
+                if run:
+                    segments[-1].append(_piece(span, run, target))
+                    run = []
+                if segments[-1]:
+                    segments.append([])
                 continue
-            if run:
-                segments[-1].append(_piece(span, run))
+            link = link_at(links, char["bbox"]) if links else None
+            if run and link is not target:
+                segments[-1].append(_piece(span, run, target))
                 run = []
-            if segments[-1]:
-                segments.append([])
+            target = link
+            run.append(char)
         if run:
-            segments[-1].append(_piece(span, run))
+            segments[-1].append(_piece(span, run, target))
     return [segment for segment in segments if segment]
 
 
@@ -130,7 +140,11 @@ def _span_bounds(spans: list[dict]) -> pymupdf.Rect:
     return bounds
 
 
-def line_boxes(page: pymupdf.Page, hidden: set[tuple[float, float]] | None = None) -> list[LineBox]:
+def line_boxes(
+    page: pymupdf.Page,
+    hidden: set[tuple[float, float]] | None = None,
+    links: list[PageLink] | None = None,
+) -> list[LineBox]:
     hidden = hidden or set()
     matrix = page.rotation_matrix
     boxes: list[LineBox] = []
@@ -141,7 +155,7 @@ def line_boxes(page: pymupdf.Page, hidden: set[tuple[float, float]] | None = Non
                 for span in line["spans"]
                 for char in span["chars"]
             )
-            for segment in _segments(line, hidden):
+            for segment in _segments(line, hidden, links or []):
                 spans = [span for span in segment if _visible(span) and span["text"]]
                 if not any(slide_text(span["text"]).strip() for span in spans):
                     continue
@@ -190,7 +204,7 @@ def _font_points(size: float, ratio: float) -> float:
     return min(MAX_FONT_POINTS, max(MIN_FONT_POINTS, round(size * ratio / EMU_PER_POINT, 1)))
 
 
-def add_line_box(slide, box: LineBox, frame: SlideFrame) -> None:
+def add_line_box(slide, box: LineBox, frame: SlideFrame, jumps: SlideJumps | None = None) -> None:
     from pptx.dml.color import RGBColor
     from pptx.enum.text import MSO_ANCHOR, MSO_AUTO_SIZE
     from pptx.util import Emu, Pt
@@ -220,5 +234,7 @@ def add_line_box(slide, box: LineBox, frame: SlideFrame) -> None:
         font.bold = bool(span["flags"] & BOLD_FLAG)
         font.italic = bool(span["flags"] & ITALIC_FLAG)
         font.color.rgb = RGBColor.from_string(f"{span['color'] & 0xFFFFFF:06X}")
+        if span.get("link") is not None and jumps is not None:
+            link_run(run, span["link"], jumps)
     if box.angle:
         shape.rotation = box.angle
