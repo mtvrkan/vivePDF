@@ -364,6 +364,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   is one.
 - Presenter view on Windows with a projector, then Swap screens twice: the slide still fills
   each screen edge to edge with no black band at the top (the notch spacing is Mac only).
+- In the installed build, PDF to Markdown on a page with a link, a rotated side label and a
+  struck-through word: the link, the label and the strike-through come out as before.
 
 ### How native dialogs are answered
 
