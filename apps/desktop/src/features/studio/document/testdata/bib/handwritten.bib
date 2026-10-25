@@ -1,0 +1,165 @@
+% Hand-written thesis bibliography -- contact me at beril@example.com
+% @article{commentedOut, title={Should this load?}}
+
+@preamble{ "\newcommand{\noopsort}[1]{} \providecommand{\url}[1]{#1}" }
+
+@string{ jasa = "Journal of the American Statistical Association" }
+@string{ ieeetpami = {IEEE Trans. Pattern Anal. Mach. Intell.} }
+@string{ proc = "Proceedings of the " }
+
+@comment{ This is a free comment with {braces} and an @ sign }
+
+@article{macro,
+  author = "Efron, Bradley and Tibshirani, Robert",
+  title = "Bootstrap Methods for Standard Errors",
+  journal = jasa,
+  year = 1986,
+  month = jan,
+  volume = "81",
+  pages = "54--75"
+}
+
+@inproceedings{concat,
+  author = {Doe, John},
+  title = {Concatenated venue},
+  booktitle = proc # "Twelfth Conference on " # {Things},
+  year = {2001},
+  month = "1~" # aug,
+  note = "Unknown macro: " # undefinedmacro
+}
+
+@article(parens,
+  author = {Knuth, Donald E.},
+  title = {Literate Programming},
+  journal = {The Computer Journal},
+  year = 1984
+)
+
+@article{accents,
+  author = {M{\"u}ller, J{\"o}rg and M\"{u}ller, Hans and {\c{C}}elik, {\c S}ule and Do{\u{g}}an, Ya{\u g}mur and {\.I}nce, Esma and Y{\i}lmaz, Ay{\c{s}}e and Gau{\ss}, Carl and {\O}stergaard, S{\o}ren and Ertu\u{g}rul, Beril and Erd\H{o}s, Paul and {\'E}mile, Zola and Dvo{\v r}{\'a}k, Anton\'{\i}n},
+  title = {Accents --- dashes -- and ``quotes'' in Stra{\ss}e and {\AA}ngstr{\"o}m},
+  journal = {T{\"u}rk Matematik Dergisi},
+  year = {2010}
+}
+
+@article{turkishutf8,
+  author = {Şahin, Ömer and Işıklı, İrem and Güneş, Çağrı},
+  title = {İstanbul'da Ağaçlandırma ve Şehir Planlaması},
+  journal = {Şehir ve Bölge Planlama Dergisi},
+  year = {2019}
+}
+
+@article{mathcase,
+  author = {Smith, Jane},
+  title = {The {DNA} of {$\beta$}-catenin and $\alpha$-helices with $E=mc^2$ in {NASA} {\TeX} data},
+  journal = {J. {M}ath},
+  year = {2020}
+}
+
+@misc{latexcmds,
+  author = {{World Health Organization}},
+  title = {\textit{Italic} and \emph{emphasised} and \textbf{bold} and \textsc{Small Caps}: AT\&T 50\% \$5 C\# a\_b},
+  howpublished = {\url{https://www.who.int/data/~stats?x=1&y=2_3}},
+  note = {Accessed 2024-01-10. See \href{https://example.com/a_b}{this page}},
+  year = {2021}
+}
+
+@book{names,
+  author = {von Neumann, John and Ludwig van Beethoven and {Barnes and Noble, Inc.} and Martin Luther King, Jr. and King, Jr., Martin Luther and Jean-Paul Sartre and Charles Louis Xavier Joseph de la Vall{\'e}e Poussin and D.~E. Knuth and {van der Waals}, Johannes and others},
+  editor = {Brinch Hansen, Per and AND, Mrs.},
+  title = {Names Torture Test},
+  publisher = {{Barnes and Noble}},
+  year = {1999}
+}
+
+@book{vonNeumannAlone,
+  author = {von Neumann},
+  title = {Single von name},
+  year = {1950}
+}
+
+@inproceedings{child,
+  author = {Child, Alice},
+  title = {Child paper},
+  crossref = {parent},
+  pages = {1--10}
+}
+
+@proceedings{parent,
+  editor = {Parent, Bob},
+  title = {Proceedings of the Parent Conference},
+  booktitle = {Proceedings of the Parent Conference},
+  publisher = {Springer},
+  address = {Berlin},
+  year = {2005}
+}
+
+@xdata{pubinfo,
+  publisher = {Springer},
+  location = {Cham}
+}
+
+@book{usesxdata,
+  author = {Xdata, Xavier},
+  title = {Uses xdata},
+  xdata = {pubinfo},
+  date = {2018-05/2018-06}
+}
+
+@online{biblatex,
+  author = {Ertuğrul, Beril},
+  title = {Biblatex online},
+  date = {2023-11-05},
+  urldate = {2024-02-01},
+  url = {https://example.com/path_with_underscore/%7Euser#frag},
+  eprint = {2301.00001},
+  eprinttype = {arxiv},
+  location = {İzmir},
+  journaltitle = {Online Journal},
+  langid = {turkish}
+}
+
+@article{macro,
+  author = {Duplicate, Key},
+  title = {Second entry with the same key},
+  year = {2000}
+}
+
+@article{Macro,
+  author = {Duplicate, Case},
+  title = {Same key different case},
+  year = {2001}
+}
+
+@article{commentInside,
+  author = {Comment, Inside},
+  % year = {1999},
+  title = {Entry with a percent comment line},
+  year = {2002}
+}
+
+@article{repeatedfield,
+  title = {First title},
+  title = {Second title},
+  year = {2003}
+}
+
+@ARTICLE{UpperCase,
+  AUTHOR = {Upper, Case},
+  TITLE = {Upper case field names},
+  YEAR = {2004}
+}
+
+@article{protected,
+  title = {{Quantum} {Mechanics} for {Turkish} {Students} in {İstanbul}},
+  author = {Last, First},
+  journal = {{IEEE} Trans.},
+  year = {2005}
+}
+
+@article{longabstract,
+  author = {Long, Abstract},
+  title = {Very long abstract},
+  year = {2006},
+  abstract = {Sentence number 1 of a long abstract about deep learning and statistics. Sentence number 2 of a long abstract about deep learning and statistics. Sentence number 3 of a long abstract about deep learning and statistics. Sentence number 4 of a long abstract about deep learning and statistics. Sentence number 5 of a long abstract about deep learning and statistics. Sentence number 6 of a long abstract about deep learning and statistics. Sentence number 7 of a long abstract about deep learning and statistics. Sentence number 8 of a long abstract about deep learning and statistics. Sentence number 9 of a long abstract about deep learning and statistics. Sentence number 10 of a long abstract about deep learning and statistics. Sentence number 11 of a long abstract about deep learning and statistics. Sentence number 12 of a long abstract about deep learning and statistics. Sentence number 13 of a long abstract about deep learning and statistics. Sentence number 14 of a long abstract about deep learning and statistics. Sentence number 15 of a long abstract about deep learning and statistics. Sentence number 16 of a long abstract about deep learning and statistics. Sentence number 17 of a long abstract about deep learning and statistics. Sentence number 18 of a long abstract about deep learning and statistics. Sentence number 19 of a long abstract about deep learning and statistics. Sentence number 20 of a long abstract about deep learning and statistics. Sentence number 21 of a long abstract about deep learning and statistics. Sentence number 22 of a long abstract about deep learning and statistics. Sentence number 23 of a long abstract about deep learning and statistics. Sentence number 24 of a long abstract about deep learning and statistics. Sentence number 25 of a long abstract about deep learning and statistics. Sentence number 26 of a long abstract about deep learning and statistics. Sentence number 27 of a long abstract about deep learning and statistics. Sentence number 28 of a long abstract about deep learning and statistics. Sentence number 29 of a long abstract about deep learning and statistics. Sentence number 30 of a long abstract about deep learning and statistics. Sentence number 31 of a long abstract about deep learning and statistics. Sentence number 32 of a long abstract about deep learning and statistics. Sentence number 33 of a long abstract about deep learning and statistics. Sentence number 34 of a long abstract about deep learning and statistics. Sentence number 35 of a long abstract about deep learning and statistics. Sentence number 36 of a long abstract about deep learning and statistics. Sentence number 37 of a long abstract about deep learning and statistics. Sentence number 38 of a long abstract about deep learning and statistics. Sentence number 39 of a long abstract about deep learning and statistics. Sentence number 40 of a long abstract about deep learning and statistics. Sentence number 41 of a long abstract about deep learning and statistics. Sentence number 42 of a long abstract about deep learning and statistics. Sentence number 43 of a long abstract about deep learning and statistics. Sentence number 44 of a long abstract about deep learning and statistics. Sentence number 45 of a long abstract about deep learning and statistics. Sentence number 46 of a long abstract about deep learning and statistics. Sentence number 47 of a long abstract about deep learning and statistics. Sentence number 48 of a long abstract about deep learning and statistics. Sentence number 49 of a long abstract about deep learning and statistics. Sentence number 50 of a long abstract about deep learning and statistics. Sentence number 51 of a long abstract about deep learning and statistics. Sentence number 52 of a long abstract about deep learning and statistics. Sentence number 53 of a long abstract about deep learning and statistics. Sentence number 54 of a long abstract about deep learning and statistics. Sentence number 55 of a long abstract about deep learning and statistics. Sentence number 56 of a long abstract about deep learning and statistics. Sentence number 57 of a long abstract about deep learning and statistics. Sentence number 58 of a long abstract about deep learning and statistics. Sentence number 59 of a long abstract about deep learning and statistics. Sentence number 60 of a long abstract about deep learning and statistics. Sentence number 61 of a long abstract about deep learning and statistics. Sentence number 62 of a long abstract about deep learning and statistics. Sentence number 63 of a long abstract about deep learning and statistics. Sentence number 64 of a long abstract about deep learning and statistics. Sentence number 65 of a long abstract about deep learning and statistics. Sentence number 66 of a long abstract about deep learning and statistics. Sentence number 67 of a long abstract about deep learning and statistics. Sentence number 68 of a long abstract about deep learning and statistics. Sentence number 69 of a long abstract about deep learning and statistics. Sentence number 70 of a long abstract about deep learning and statistics. Sentence number 71 of a long abstract about deep learning and statistics. Sentence number 72 of a long abstract about deep learning and statistics. Sentence number 73 of a long abstract about deep learning and statistics. Sentence number 74 of a long abstract about deep learning and statistics. Sentence number 75 of a long abstract about deep learning and statistics. Sentence number 76 of a long abstract about deep learning and statistics. Sentence number 77 of a long abstract about deep learning and statistics. Sentence number 78 of a long abstract about deep learning and statistics. Sentence number 79 of a long abstract about deep learning and statistics. Sentence number 80 of a long abstract about deep learning and statistics. Sentence number 81 of a long abstract about deep learning and statistics. Sentence number 82 of a long abstract about deep learning and statistics. Sentence number 83 of a long abstract about deep learning and statistics. Sentence number 84 of a long abstract about deep learning and statistics. Sentence number 85 of a long abstract about deep learning and statistics. Sentence number 86 of a long abstract about deep learning and statistics. Sentence number 87 of a long abstract about deep learning and statistics. Sentence number 88 of a long abstract about deep learning and statistics. Sentence number 89 of a long abstract about deep learning and statistics. END_OF_ABSTRACT}
+}

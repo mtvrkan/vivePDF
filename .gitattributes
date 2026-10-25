@@ -8,3 +8,4 @@
 *.pdf binary
 *.wasm binary
 *.bin binary
+apps/desktop/src/features/studio/document/testdata/bib/crlf_bom.bib -text

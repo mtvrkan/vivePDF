@@ -42,8 +42,10 @@ function escapeLatex(text: string): string {
 }
 
 function verbatim(text: string): string {
-  return text.replace(/[{}\s]/g, "").replace(/[%#&_$~]/g, (char) => `\\${char}`);
+  return text.replace(/\s+/g, "").replace(/[{}]/g, (char) => (char === "{" ? "%7B" : "%7D"));
 }
+
+const MONTH_MACROS = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
 
 function protect(text: string): string {
   const escaped = escapeLatex(text);
@@ -58,18 +60,29 @@ function nameText(name: BibName): string {
   return `${protect(name.family)}, ${protect(name.given)}`;
 }
 
+export function bibtexNames(names: BibName[]): string {
+  return names.map(nameText).join(" and ");
+}
+
+export function bibtexValue(name: string, value: string): string {
+  if (name === "month" && /^(?:[1-9]|1[0-2])$/.test(value)) return MONTH_MACROS[Number(value) - 1];
+  return `{${VERBATIM_FIELDS.has(name) ? verbatim(value) : escapeLatex(value)}}`;
+}
+
+export function bibtexEntry(entry: BibEntry): string {
+  const lines: string[] = [];
+  if (entry.authors.length > 0) lines.push(`  author = {${bibtexNames(entry.authors)}}`);
+  if (entry.editors.length > 0) lines.push(`  editor = {${bibtexNames(entry.editors)}}`);
+  for (const [name, value] of Object.entries(entry.fields)) {
+    if (!value || !/^[a-z][a-z0-9_\-:.+/]*$/.test(name)) continue;
+    lines.push(`  ${name} = ${bibtexValue(name, value)}`);
+  }
+  return `@${entry.type}{${[entry.key, ...lines].join(",\n")}\n}`;
+}
+
 export function writeBibtex(entries: BibEntry[]): string {
   return entries
-    .map((entry) => {
-      const lines: string[] = [];
-      if (entry.authors.length > 0) lines.push(`  author = {${entry.authors.map(nameText).join(" and ")}}`);
-      if (entry.editors.length > 0) lines.push(`  editor = {${entry.editors.map(nameText).join(" and ")}}`);
-      for (const [name, value] of Object.entries(entry.fields)) {
-        if (!value || !/^[a-z][a-z0-9_\-:.+/]*$/.test(name)) continue;
-        lines.push(`  ${name} = {${VERBATIM_FIELDS.has(name) ? verbatim(value) : escapeLatex(value)}}`);
-      }
-      return `@${entry.type}{${[entry.key, ...lines].join(",\n")}\n}`;
-    })
+    .map(bibtexEntry)
     .join("\n\n")
     .concat(entries.length > 0 ? "\n" : "");
 }

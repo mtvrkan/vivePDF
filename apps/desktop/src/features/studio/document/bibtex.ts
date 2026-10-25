@@ -1,75 +1,32 @@
 import type { BibEntry, BibName } from "@/types/studio";
+import { decodeLatex, groupEnd } from "./bibtexLatex";
 
-export const MAX_SOURCES = 2000;
-export const MAX_FIELD_CHARS = 4000;
-const MAX_FIELDS = 60;
-const KEY = /^[^\s,{}()"#%'=\\]{1,200}$/;
-const IDENTIFIER = /[A-Za-z0-9_\-:.+/]/;
+export { decodeLatex } from "./bibtexLatex";
+
+export const MAX_SOURCES = 10000;
+export const MAX_FIELD_CHARS = 20000;
+const MAX_FIELDS = 200;
+const KEY = /^[^\s,{}()"#%=\\]{1,200}$/;
+const IDENTIFIER = /[A-Za-z0-9_\-:.+/']/;
 const VERBATIM_FIELDS = new Set(["url", "doi", "eprint", "isbn", "issn"]);
 const MONTHS: Record<string, string> = { jan: "1", feb: "2", mar: "3", apr: "4", may: "5", jun: "6", jul: "7", aug: "8", sep: "9", oct: "10", nov: "11", dec: "12" };
-const ACCENTS: Record<string, string> = {
-  '"': "\u0308",
-  "'": "\u0301",
-  "`": "\u0300",
-  "^": "\u0302",
-  "~": "\u0303",
-  "=": "\u0304",
-  ".": "\u0307",
-  u: "\u0306",
-  v: "\u030c",
-  c: "\u0327",
-  H: "\u030b",
-  k: "\u0328",
-  r: "\u030a",
-  d: "\u0323",
-  b: "\u0331",
-};
-const SYMBOLS: Record<string, string> = {
-  i: "ı",
-  j: "ȷ",
-  o: "ø",
-  O: "Ø",
-  l: "ł",
-  L: "Ł",
-  ss: "ß",
-  ae: "æ",
-  AE: "Æ",
-  oe: "œ",
-  OE: "Œ",
-  aa: "å",
-  AA: "Å",
-  textendash: "–",
-  textemdash: "—",
-  textquoteleft: "‘",
-  textquoteright: "’",
-  textquotedblleft: "“",
-  textquotedblright: "”",
-  textsection: "§",
-  S: "§",
-  P: "¶",
-  dag: "†",
-  copyright: "©",
-  textregistered: "®",
-  texttrademark: "™",
-  ldots: "…",
-  dots: "…",
-  textellipsis: "…",
-  euro: "€",
-  pounds: "£",
-  LaTeX: "LaTeX",
-  TeX: "TeX",
-  textbackslash: "\\",
-  textasciitilde: "~",
-};
-const ESCAPED = new Set(["&", "%", "$", "#", "_", "{", "}"]);
-const SPACING = new Set([" ", ",", ";", ":"]);
-const DOTLESS: Record<string, string> = { ı: "i", ȷ: "j" };
+const THESIS_KINDS: Record<string, string> = { phdthesis: "phdthesis", phd: "phdthesis", mathesis: "mastersthesis", mastersthesis: "mastersthesis", masters: "mastersthesis", ma: "mastersthesis" };
+const INHERITED_AS: Record<string, string> = { title: "booktitle", subtitle: "booksubtitle", titleaddon: "booktitleaddon", shorttitle: "" };
+const NEXT_ENTRY = /^[ \t\r]*@[A-Za-z]+[ \t]*[{(]/;
+const ENTRY_INSIDE = /\n[ \t\r]*@[A-Za-z]+[ \t]*[{(]/;
+const HIDDEN_TYPES = new Set(["xdata", "set"]);
 
 export function isValidKey(key: string): boolean {
   return KEY.test(key);
 }
 
-export type BibParseResult = { entries: BibEntry[]; skipped: number; duplicates: number };
+export type BibField = { name: string; start: number; end: number };
+
+export type BibBlock = { key: string; start: number; end: number; header: number; type: string; fields: BibField[]; entry: number };
+
+export type BibLibrary = { text: string; blocks: BibBlock[]; snapshot: BibEntry[]; inherited: Record<string, string[]> };
+
+export type BibParseResult = { entries: BibEntry[]; skipped: number; duplicates: number; truncated?: number; clipped?: number; library?: BibLibrary };
 
 type Cursor = { text: string; at: number };
 
@@ -79,25 +36,32 @@ function skipSpace(cursor: Cursor) {
   while (cursor.at < cursor.text.length && /\s/.test(cursor.text[cursor.at])) cursor.at += 1;
 }
 
+function skipSpaceAndComments(cursor: Cursor) {
+  for (;;) {
+    skipSpace(cursor);
+    if (cursor.text[cursor.at] !== "%") return;
+    const lineEnd = cursor.text.indexOf("\n", cursor.at);
+    cursor.at = lineEnd < 0 ? cursor.text.length : lineEnd + 1;
+  }
+}
+
 function identifier(cursor: Cursor): string {
   const start = cursor.at;
   while (cursor.at < cursor.text.length && IDENTIFIER.test(cursor.text[cursor.at])) cursor.at += 1;
   return cursor.text.slice(start, cursor.at);
 }
 
+function entryStartsAt(text: string, index: number): boolean {
+  return NEXT_ENTRY.test(text.slice(index + 1, index + 80));
+}
+
 function braced(cursor: Cursor): string {
-  const start = cursor.at + 1;
-  let depth = 0;
-  for (let index = cursor.at; index < cursor.text.length; index += 1) {
-    const char = cursor.text[index];
-    if (char === "\\") index += 1;
-    else if (char === "{") depth += 1;
-    else if (char === "}" && --depth === 0) {
-      cursor.at = index + 1;
-      return cursor.text.slice(start, index);
-    }
-  }
-  throw new BibSyntaxError("unclosed brace");
+  const close = groupEnd(cursor.text, cursor.at);
+  if (close < 0) throw new BibSyntaxError("unclosed brace");
+  const body = cursor.text.slice(cursor.at + 1, close);
+  if (ENTRY_INSIDE.test(body)) throw new BibSyntaxError("value runs into the next entry");
+  cursor.at = close + 1;
+  return body;
 }
 
 function quoted(cursor: Cursor): string {
@@ -108,7 +72,8 @@ function quoted(cursor: Cursor): string {
     if (char === "\\") index += 1;
     else if (char === "{") depth += 1;
     else if (char === "}") depth -= 1;
-    else if (char === '"' && depth === 0) {
+    else if (char === "\n" && entryStartsAt(cursor.text, index)) throw new BibSyntaxError("value runs into the next entry");
+    else if (char === '"' && depth <= 0) {
       cursor.at = index + 1;
       return cursor.text.slice(start, index);
     }
@@ -123,24 +88,28 @@ function piece(cursor: Cursor, macros: Map<string, string>): string {
   if (char === '"') return quoted(cursor);
   const word = identifier(cursor);
   if (!word) throw new BibSyntaxError("missing value");
-  return /^\d+$/.test(word) ? word : (macros.get(word.toLowerCase()) ?? "");
+  return /^\d+$/.test(word) ? word : (macros.get(word.toLowerCase()) ?? word);
 }
 
-function value(cursor: Cursor, macros: Map<string, string>): string {
-  let result = piece(cursor, macros);
+function value(cursor: Cursor, macros: Map<string, string>): { raw: string; end: number } {
+  let raw = piece(cursor, macros);
+  let end = cursor.at;
   skipSpace(cursor);
   while (cursor.text[cursor.at] === "#") {
     cursor.at += 1;
-    result += piece(cursor, macros);
+    raw += piece(cursor, macros);
+    end = cursor.at;
     skipSpace(cursor);
   }
-  return result;
+  return { raw, end };
 }
 
-function assignments(cursor: Cursor, close: string, macros: Map<string, string>): [string, string][] {
-  const found: [string, string][] = [];
+type Assignment = { name: string; raw: string; field: BibField };
+
+function assignments(cursor: Cursor, close: string, macros: Map<string, string>): Assignment[] {
+  const found: Assignment[] = [];
   for (;;) {
-    skipSpace(cursor);
+    skipSpaceAndComments(cursor);
     const char = cursor.text[cursor.at];
     if (char === undefined) throw new BibSyntaxError("unclosed entry");
     if (char === close) {
@@ -151,14 +120,16 @@ function assignments(cursor: Cursor, close: string, macros: Map<string, string>)
       cursor.at += 1;
       continue;
     }
+    const start = cursor.at;
     const name = identifier(cursor);
     skipSpace(cursor);
     if (!name || cursor.text[cursor.at] !== "=") throw new BibSyntaxError("expected a field");
     cursor.at += 1;
-    found.push([name.toLowerCase(), value(cursor, macros)]);
+    const { raw, end } = value(cursor, macros);
+    found.push({ name: name.toLowerCase(), raw, field: { name: name.toLowerCase(), start, end } });
     skipSpace(cursor);
     const next = cursor.text[cursor.at];
-    if (next !== "," && next !== close) throw new BibSyntaxError("expected a comma");
+    if (next !== "," && next !== close && next !== "%") throw new BibSyntaxError("expected a comma");
   }
 }
 
@@ -167,7 +138,8 @@ function skipGroup(cursor: Cursor, close: string) {
   let depth = 1;
   while (cursor.at < cursor.text.length && depth > 0) {
     const char = cursor.text[cursor.at];
-    if (char === open) depth += 1;
+    if (char === "\\") cursor.at += 1;
+    else if (char === open) depth += 1;
     else if (char === close) depth -= 1;
     cursor.at += 1;
   }
@@ -175,105 +147,10 @@ function skipGroup(cursor: Cursor, close: string) {
 
 function citeKey(cursor: Cursor, close: string): string {
   const start = cursor.at;
-  while (cursor.at < cursor.text.length && cursor.text[cursor.at] !== "," && cursor.text[cursor.at] !== close) cursor.at += 1;
+  while (cursor.at < cursor.text.length && cursor.text[cursor.at] !== "," && cursor.text[cursor.at] !== close && cursor.text[cursor.at] !== "\n") cursor.at += 1;
   const key = cursor.text.slice(start, cursor.at).trim();
   if (!KEY.test(key)) throw new BibSyntaxError("bad key");
   return key;
-}
-
-function accentBase(raw: string, start: number): [string, number] {
-  let index = start;
-  while (raw[index] === " ") index += 1;
-  if (raw[index] === "{") {
-    const cursor = { text: raw, at: index };
-    try {
-      const inner = braced(cursor);
-      return [decodeLatex(inner), cursor.at];
-    } catch {
-      return ["", raw.length];
-    }
-  }
-  if (raw[index] === "\\") {
-    const match = /^\\[A-Za-z]+/.exec(raw.slice(index));
-    if (match) return [decodeLatex(match[0]), index + match[0].length];
-  }
-  return [raw[index] ?? "", index + 1];
-}
-
-function accented(mark: string, base: string): string {
-  if (!base) return "";
-  const first = Array.from(base)[0];
-  return `${DOTLESS[first] ?? first}${ACCENTS[mark]}${base.slice(first.length)}`;
-}
-
-export function decodeLatex(raw: string): string {
-  let out = "";
-  let index = 0;
-  while (index < raw.length) {
-    const char = raw[index];
-    if (char === "\\") {
-      const next = raw[index + 1] ?? "";
-      if (ESCAPED.has(next)) {
-        out += next;
-        index += 2;
-      } else if (next === "\\" || SPACING.has(next)) {
-        out += " ";
-        index += 2;
-      } else if (next === "-" || next === "/" || next === "!") {
-        index += 2;
-      } else if (next in ACCENTS && !/[A-Za-z]/.test(next)) {
-        const [base, end] = accentBase(raw, index + 2);
-        out += accented(next, base);
-        index = end;
-      } else {
-        const name = /^[A-Za-z]+/.exec(raw.slice(index + 1))?.[0];
-        if (!name) {
-          index += 1;
-          continue;
-        }
-        let end = index + 1 + name.length;
-        if (name.length === 1 && name in ACCENTS) {
-          const [base, after] = accentBase(raw, end);
-          out += accented(name, base);
-          index = after;
-          continue;
-        }
-        if (name in SYMBOLS) {
-          out += SYMBOLS[name];
-          if (raw.startsWith("{}", end)) end += 2;
-          else if (raw[end] === " ") end += 1;
-        } else {
-          let probe = end;
-          while (raw[probe] === " ") probe += 1;
-          if (raw[probe] === "{") end = probe;
-        }
-        index = end;
-      }
-      continue;
-    }
-    if (char === "{" || char === "}" || char === "$") {
-      index += 1;
-    } else if (char === "~") {
-      out += "\u00a0";
-      index += 1;
-    } else if (raw.startsWith("---", index)) {
-      out += "—";
-      index += 3;
-    } else if (raw.startsWith("--", index)) {
-      out += "–";
-      index += 2;
-    } else if (raw.startsWith("``", index)) {
-      out += "“";
-      index += 2;
-    } else if (raw.startsWith("''", index)) {
-      out += "”";
-      index += 2;
-    } else {
-      out += char;
-      index += 1;
-    }
-  }
-  return out.replace(/\s+/g, " ").trim().normalize("NFC");
 }
 
 function topLevel(raw: string, separator: (char: string) => boolean): string[] {
@@ -299,14 +176,7 @@ function topLevel(raw: string, separator: (char: string) => boolean): string[] {
 }
 
 function wholeGroup(raw: string): boolean {
-  if (!raw.startsWith("{") || !raw.endsWith("}")) return false;
-  const cursor = { text: raw, at: 0 };
-  try {
-    braced(cursor);
-  } catch {
-    return false;
-  }
-  return cursor.at === raw.length;
+  return raw.startsWith("{") && groupEnd(raw, 0) === raw.length - 1;
 }
 
 function startsLower(word: string): boolean {
@@ -340,35 +210,98 @@ export function parseNames(raw: string): BibName[] {
   return names.map((name) => nameOf(name.join(" "))).filter((name): name is BibName => name !== null);
 }
 
-function verbatim(raw: string): string {
-  return raw.replace(/\\([_%&#~$])/g, "$1").replace(/[{}\s]/g, "");
+function verbatim(name: string, raw: string): string {
+  const text = raw.replace(/\\([_%&#~$])/g, "$1").replace(/[{}]/g, "");
+  if (name === "url") return text.trim().split(/\s+/)[0] ?? "";
+  return text.replace(/\s+/g, "");
 }
 
-function entryOf(type: string, key: string, pairs: [string, string][]): BibEntry {
+type Built = { entry: BibEntry; clipped: number };
+
+function entryOf(type: string, key: string, pairs: Assignment[]): Built {
   const entry: BibEntry = { key, type, fields: {}, authors: [], editors: [] };
-  for (const [name, raw] of pairs.slice(0, MAX_FIELDS)) {
+  let clipped = 0;
+  const seen = new Set<string>();
+  for (const { name, raw } of pairs.slice(0, MAX_FIELDS)) {
+    if (seen.has(name)) continue;
+    seen.add(name);
+    if (raw.length > MAX_FIELD_CHARS) clipped += 1;
     const text = raw.slice(0, MAX_FIELD_CHARS);
     if (name === "author") entry.authors = parseNames(text);
     else if (name === "editor") entry.editors = parseNames(text);
     else {
-      const decoded = VERBATIM_FIELDS.has(name) ? verbatim(text) : decodeLatex(text);
+      const decoded = VERBATIM_FIELDS.has(name) ? verbatim(name, text) : decodeLatex(text);
       if (decoded) entry.fields[name] = decoded;
     }
   }
-  return entry;
+  const thesis = THESIS_KINDS[(entry.fields.type ?? "").toLowerCase().replace(/[^a-z]/g, "")];
+  if (type === "thesis" && thesis) {
+    entry.type = thesis;
+    delete entry.fields.type;
+  }
+  return { entry, clipped: clipped + Math.max(0, pairs.length - MAX_FIELDS) };
+}
+
+function inheritFrom(child: BibEntry, parent: BibEntry, viaCrossref: boolean): string[] {
+  const taken: string[] = [];
+  for (const [name, value] of Object.entries(parent.fields)) {
+    if (name === "crossref" || name === "xdata" || name === "ids" || name === "entryset") continue;
+    const target = viaCrossref && name in INHERITED_AS ? INHERITED_AS[name] : name;
+    if (!target || child.fields[target]) continue;
+    child.fields[target] = value;
+    taken.push(target);
+  }
+  if (child.editors.length === 0 && parent.editors.length > 0) {
+    child.editors = parent.editors;
+    taken.push("editor");
+  }
+  if (!viaCrossref && child.authors.length === 0 && parent.authors.length > 0) {
+    child.authors = parent.authors;
+    taken.push("author");
+  }
+  return taken;
+}
+
+function resolveInheritance(entries: BibEntry[]): Record<string, string[]> {
+  const byKey = new Map(entries.map((entry) => [entry.key.toLowerCase(), entry]));
+  const inherited: Record<string, string[]> = {};
+  for (const entry of entries) {
+    const parents: [string, boolean][] = [
+      ...(entry.fields.xdata ?? "")
+        .split(",")
+        .map((key): [string, boolean] => [key.trim(), false])
+        .filter(([key]) => key),
+      ...(entry.fields.crossref ? [[entry.fields.crossref.trim(), true] as [string, boolean]] : []),
+    ];
+    for (const [key, viaCrossref] of parents) {
+      const parent = byKey.get(key.toLowerCase());
+      if (!parent || parent === entry) continue;
+      const taken = inheritFrom(entry, parent, viaCrossref);
+      if (taken.length > 0) inherited[entry.key.toLowerCase()] = [...(inherited[entry.key.toLowerCase()] ?? []), ...taken];
+    }
+  }
+  return inherited;
+}
+
+function commentedOut(text: string, at: number): boolean {
+  const lineStart = text.lastIndexOf("\n", at - 1) + 1;
+  return text.slice(lineStart, at).includes("%");
 }
 
 export function parseBibtex(text: string): BibParseResult {
   const macros = new Map(Object.entries(MONTHS));
-  const entries: BibEntry[] = [];
+  const parsed: { entry: BibEntry; block: BibBlock }[] = [];
   const keys = new Set<string>();
   const cursor: Cursor = { text, at: 0 };
   let skipped = 0;
   let duplicates = 0;
-  while (entries.length < MAX_SOURCES) {
+  let truncated = 0;
+  let clipped = 0;
+  for (;;) {
     const start = text.indexOf("@", cursor.at);
     if (start < 0) break;
     cursor.at = start + 1;
+    if (commentedOut(text, start)) continue;
     const type = identifier(cursor).toLowerCase();
     skipSpace(cursor);
     const open = text[cursor.at];
@@ -381,22 +314,37 @@ export function parseBibtex(text: string): BibParseResult {
     }
     try {
       if (type === "string") {
-        for (const [name, raw] of assignments(cursor, close, macros)) macros.set(name, raw);
+        for (const { name, raw } of assignments(cursor, close, macros)) macros.set(name, raw);
         continue;
       }
       const key = citeKey(cursor, close);
-      const entry = entryOf(type, key, assignments(cursor, close, macros));
-      if (keys.has(key.toLowerCase())) duplicates += 1;
-      else {
-        keys.add(key.toLowerCase());
-        entries.push(entry);
+      const header = cursor.at;
+      const pairs = assignments(cursor, close, macros);
+      if (keys.has(key.toLowerCase())) {
+        duplicates += 1;
+        continue;
       }
+      keys.add(key.toLowerCase());
+      if (parsed.length >= MAX_SOURCES) {
+        truncated += 1;
+        continue;
+      }
+      const built = entryOf(type, key, pairs);
+      clipped += built.clipped;
+      parsed.push({ entry: built.entry, block: { key, start, end: cursor.at, header, type: text.slice(start + 1, start + 1 + type.length), fields: pairs.map((pair) => pair.field), entry: parsed.length } });
     } catch (error) {
       if (!(error instanceof BibSyntaxError)) throw error;
       skipped += 1;
+      cursor.at = start + 1;
     }
   }
-  return { entries, skipped, duplicates };
+  const all = parsed.map((item) => item.entry);
+  const inherited = resolveInheritance(all);
+  const visible = parsed.filter((item) => !HIDDEN_TYPES.has(item.entry.type));
+  const entries = visible.map((item) => item.entry);
+  const blocks = visible.map((item, position) => ({ ...item.block, entry: position }));
+  const snapshot = entries.map((entry) => structuredClone(entry));
+  return { entries, skipped, duplicates, truncated, clipped, library: { text, blocks, snapshot, inherited } };
 }
 
 function cleanName(value: unknown): BibName | null {
@@ -404,9 +352,11 @@ function cleanName(value: unknown): BibName | null {
   const source = value as Record<string, unknown>;
   const family = typeof source.family === "string" ? source.family.slice(0, 300) : "";
   const given = typeof source.given === "string" ? source.given.slice(0, 300) : "";
+  const suffix = typeof source.suffix === "string" ? source.suffix.slice(0, 40) : "";
   if (source.others === true) return { family: "", given: "", others: true };
   if (!family && !given) return null;
-  return source.literal === true ? { family, given, literal: true } : { family, given };
+  if (source.literal === true) return { family, given, literal: true };
+  return suffix ? { family, given, suffix } : { family, given };
 }
 
 function cleanNames(value: unknown): BibName[] {
