@@ -28,7 +28,6 @@ OFFICE_EXTENSIONS = {
     "xlsx",
     "ods",
     "ots",
-    "csv",
     "ppt",
     "pptx",
     "odp",

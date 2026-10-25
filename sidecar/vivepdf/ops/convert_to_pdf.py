@@ -1,5 +1,7 @@
 import contextlib
 import csv
+import html
+import io
 import tempfile
 from pathlib import Path
 from typing import Literal
@@ -13,6 +15,7 @@ from vivepdf.ops._naming import unique_name
 from vivepdf.ops._output import OutputResult, prepare_output, save_document
 from vivepdf.ops._story import (
     BASE_CSS,
+    FONT_DIR,
     MARGIN,
     declared_charset,
     decode_text,
@@ -91,6 +94,25 @@ CSV_SAMPLE_CHARACTERS = 64 * 1024
 CSV_FILTER = "Text - txt - csv (StarCalc)"
 CSV_UTF8_TOKEN = 76
 CSV_QUOTE = 34
+CSV_CSS = BASE_CSS + "table{font-size:9pt;}td{vertical-align:top;}"
+WIDE_TABLE_COLUMNS = 6
+
+
+def _csv_rows(path: Path) -> list[list[str]]:
+    text = decode_text(path.read_bytes())
+    try:
+        dialect = csv.Sniffer().sniff(text[:CSV_SAMPLE_CHARACTERS], delimiters=CSV_DELIMITERS)
+        delimiter = dialect.delimiter
+    except csv.Error:
+        delimiter = ","
+    try:
+        return list(csv.reader(io.StringIO(text, newline=""), delimiter=delimiter))
+    except csv.Error as error:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            f"cannot read: {path.name}",
+            {"reason": "fileUnreadable", "path": str(path)},
+        ) from error
 
 
 def csv_filter_options(path: Path, working_dir: Path) -> tuple[Path, str]:
@@ -103,6 +125,54 @@ def csv_filter_options(path: Path, working_dir: Path) -> tuple[Path, str]:
     normalized = working_dir / path.name
     normalized.write_text(text, encoding="utf-8")
     return normalized, f"{CSV_FILTER}:{ord(delimiter)},{CSV_QUOTE},{CSV_UTF8_TOKEN},1"
+
+
+def _cell_html(cell: str) -> str:
+    return "<br>".join(html.escape(line) for line in cell.splitlines())
+
+
+def csv_table_html(rows: list[list[str]]) -> str:
+    width = max((len(row) for row in rows), default=0)
+    lines = (
+        "<tr>"
+        + "".join(f"<td>{_cell_html(cell)}</td>" for cell in row + [""] * (width - len(row)))
+        + "</tr>"
+        for row in rows
+    )
+    return f"<table>{''.join(lines)}</table>"
+
+
+def _overflow_scale(html: str, mediabox: pymupdf.Rect) -> float:
+    where = mediabox + (MARGIN, MARGIN, -MARGIN, -MARGIN)
+    story = pymupdf.Story(html=html, user_css=CSV_CSS, archive=pymupdf.Archive(str(FONT_DIR)))
+    _, filled = story.place(where)
+    return max(1.0, (pymupdf.Rect(filled).x1 - where.x0) / where.width)
+
+
+def _csv_to_pdf(source: Path, target: Path, params: FileToPdfParams, progress: Progress) -> None:
+    rows = _csv_rows(source)
+    html = csv_table_html(rows)
+    wide = max((len(row) for row in rows), default=0) > WIDE_TABLE_COLUMNS
+    mediabox = pymupdf.paper_rect(f"{params.paper}-l" if wide else params.paper)
+    scale = _overflow_scale(html, mediabox)
+    canvas = mediabox * scale
+    margin = MARGIN * scale
+    payload = story_pdf_bytes(
+        html,
+        canvas,
+        canvas + (margin, margin, -margin, -margin),
+        css=CSV_CSS,
+        check_cancelled=progress.check_cancelled,
+    )
+    with pymupdf.open("pdf", payload) as drawn, pymupdf.open() as document:
+        for page in drawn:
+            progress.check_cancelled()
+            document.new_page(width=mediabox.width, height=mediabox.height).show_pdf_page(
+                mediabox, drawn, page.number
+            )
+        with contextlib.suppress(Exception):
+            document.subset_fonts(fallback=False)
+        save_document(document, target)
 
 
 @op("convert.file_to_pdf", FileToPdfParams)
@@ -130,6 +200,8 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
             base_dir=source.parent,
             check_cancelled=progress.check_cancelled,
         )
+    elif extension == "csv":
+        _csv_to_pdf(source, target, params, progress)
     elif extension in MAIL_EXTENSIONS:
         _mail_to_pdf(source, target, params, progress)
     elif extension == "svg":
@@ -156,14 +228,7 @@ def file_to_pdf(params: FileToPdfParams, progress: Progress) -> OutputResult:
             prefix="vivepdf-office-", ignore_cleanup_errors=True
         ) as temp_dir:
             working = Path(temp_dir)
-            office_source, infilter = source, None
-            if extension == "csv":
-                staging = working / "source"
-                staging.mkdir()
-                office_source, infilter = csv_filter_options(source, staging)
-            produced = libreoffice.convert_to_pdf(
-                office_source, working, infilter, progress.check_cancelled
-            )
+            produced = libreoffice.convert_to_pdf(source, working, None, progress.check_cancelled)
             progress.check_cancelled()
             with pymupdf.open(str(produced)) as document:
                 save_document(document, target)

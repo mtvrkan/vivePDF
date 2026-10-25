@@ -246,6 +246,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert the same PDF to PowerPoint (editable) on a PC without that font and open it in
   PowerPoint: the titles and body text show in that font in its bold and regular faces, not
   Calibri, and two converted files opened one after the other both keep it.
+- Convert a CSV saved by Excel on Turkish Windows (semicolons, numbers with leading zeros, an
+  IBAN, dates) to PDF on a PC without LibreOffice: no "needs LibreOffice" warning appears, the
+  table shows every value as written, and no file name or "Page 1" is printed.
 
 ### How native dialogs are answered
 
