@@ -12,7 +12,8 @@ ensure_cv2()
 
 from pdf2docx.image import ImagesExtractor as images_extractor  # noqa: E402
 
-from vivepdf.ops._docx_progress import hide_page_text_and_images, stabilise_pdf2docx  # noqa: E402
+from vivepdf.ops._docx_images import hide_page_text_and_images  # noqa: E402
+from vivepdf.ops._docx_progress import stabilise_pdf2docx  # noqa: E402
 
 
 def _pristine_hide():

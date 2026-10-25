@@ -371,6 +371,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   photos on: the photo stands upright, the WebP stays sharp and the file is smaller.
 - In the installed build, PDF to Excel on a ruled table, a table without lines and a page with
   a border round it: the same sheets and cells come out as before.
+- In the installed build, PDF to Word on a page with a cropped photo, a table with merged cells
+  and a "Arial,Bold" heading: the photo shows only its visible part, the merged cells stay
+  merged and the heading is bold Arial, as before.
 
 ### How native dialogs are answered
 

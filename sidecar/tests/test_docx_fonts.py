@@ -13,7 +13,7 @@ from vivepdf.ops._docx_fonts import (
     obfuscated,
     rebuilt_program,
 )
-from vivepdf.ops._docx_progress import split_style_suffixes
+from vivepdf.ops._docx_raw import split_style_suffixes
 from vivepdf.ops.convert import DocxParams, to_docx
 from vivepdf.rpc.progress import silent_progress
 

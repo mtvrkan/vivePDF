@@ -13,6 +13,7 @@ from docx import Document
 from pdf2docx.table.TableBlock import TableBlock
 
 from vivepdf.ops import _docx_progress as docx_progress
+from vivepdf.ops import _docx_tables as docx_tables
 from vivepdf.ops._pptx_layout import font_family, slide_text
 from vivepdf.ops.convert import DocxParams, to_docx
 from vivepdf.ops.convert_slides import PptxParams, to_pptx
@@ -307,7 +308,7 @@ def test_docx_cached_table_cells_write_the_same_document(
         silent_progress(),
     )
     monkeypatch.setattr(docx_progress, "stabilise_pdf2docx", lambda: None)
-    monkeypatch.setattr(TableBlock, "make_docx", docx_progress._plain_table_make_docx)
+    monkeypatch.setattr(TableBlock, "make_docx", docx_tables._plain_table_make_docx)
     plain = to_docx(
         DocxParams(path=str(merged_table_pdf), output=str(tmp_path / "plain.docx")),
         silent_progress(),

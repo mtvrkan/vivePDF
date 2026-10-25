@@ -47,7 +47,7 @@ def test_a_picture_left_outside_an_offset_crop_box_does_not_stop_the_conversion(
 
 
 def test_an_empty_clip_becomes_a_single_transparent_pixel_instead_of_an_error():
-    from vivepdf.ops._docx_progress import _to_raw_dict_even_when_empty
+    from vivepdf.ops._docx_images import _to_raw_dict_even_when_empty
 
     empty = pymupdf.Pixmap(pymupdf.csRGB, pymupdf.IRect(0, 0, 0, 0), False)
 
