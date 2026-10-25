@@ -41,7 +41,7 @@ from vivepdf.ops._docx_raw import STYLE_SUFFIX, extract_with_recognised_text
 from vivepdf.ops._docx_running import RunningText, add_running_text
 from vivepdf.ops._docx_tables import make_cell_sizing_its_column, make_table_with_cached_cells
 from vivepdf.ops._output import write_atomically
-from vivepdf.ops._pptx_layout import FONT_STYLE, FONT_SUFFIXES
+from vivepdf.ops._pptx_runs import FONT_STYLE, FONT_SUFFIXES
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import Progress
 

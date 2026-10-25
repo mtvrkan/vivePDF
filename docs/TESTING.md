@@ -377,6 +377,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - In the installed build, Extract images both ways (as stored and as shown on the page), then
   Replace image in the editor: the same files come out and the replaced picture keeps its
   transparency.
+- In the installed build, PDF to PowerPoint (editable) on a slide with outlined title text, a
+  fake-bold word and Helvetica body text: the title stays outlined, the word bold and the body
+  font Arial, as before.
 
 ### How native dialogs are answered
 

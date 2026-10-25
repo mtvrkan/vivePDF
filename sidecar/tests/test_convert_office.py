@@ -15,7 +15,7 @@ from vivepdf.ops import convert_slides, convert_tables
 from vivepdf.ops._cell_text import table_spans
 from vivepdf.ops._docx_bidi import mark_right_to_left
 from vivepdf.ops._docx_progress import clip_ratio
-from vivepdf.ops._pptx_layout import font_family
+from vivepdf.ops._pptx_runs import font_family
 from vivepdf.ops.convert import DocxParams, to_docx
 from vivepdf.ops.convert_slides import PptxParams, slide_dpi, to_pptx
 from vivepdf.ops.convert_tables import XlsxParams, sheet_title, to_xlsx

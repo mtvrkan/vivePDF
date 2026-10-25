@@ -13,14 +13,9 @@ from vivepdf.ops._markup import document_language, text_language
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pptx_embed import embed_slide_fonts
 from vivepdf.ops._pptx_fonts import slide_font_names
-from vivepdf.ops._pptx_layout import (
-    SlideFrame,
-    add_line_box,
-    line_boxes,
-    page_notes,
-    text_free_pixmap,
-)
+from vivepdf.ops._pptx_layout import SlideFrame, line_boxes, page_notes, text_free_pixmap
 from vivepdf.ops._pptx_links import SlideJumps, add_link_area, apply_jumps, page_links
+from vivepdf.ops._pptx_runs import add_line_box
 from vivepdf.ops._pptx_scan import dress_scan_lines, erase_scan_words, recognised_scan
 from vivepdf.ops._pptx_shapes import PageShapes, add_slide_shape, page_shapes
 from vivepdf.ops._ranges import parse_page_ranges

@@ -5,7 +5,8 @@ import numpy as np
 import pymupdf
 
 from vivepdf.ops._hidden_text import text_is_only_hidden
-from vivepdf.ops._pptx_layout import DEFAULT_FAMILY, FILLED_FLAG, LineBox
+from vivepdf.ops._pptx_layout import FILLED_FLAG, LineBox
+from vivepdf.ops._pptx_runs import DEFAULT_FAMILY
 
 SCAN_IMAGE_SHARE = 0.5
 SAMPLE_DPI = 100

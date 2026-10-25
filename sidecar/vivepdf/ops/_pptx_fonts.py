@@ -5,7 +5,7 @@ from collections.abc import Callable
 
 import pymupdf
 
-from vivepdf.ops._pptx_layout import font_family
+from vivepdf.ops._pptx_runs import font_family
 
 SUBSET_PREFIX = re.compile(r"^[A-Z]{6}\+")
 UNREADABLE = ("n/a", "cff")

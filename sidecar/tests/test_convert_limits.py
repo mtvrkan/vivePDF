@@ -14,7 +14,8 @@ from pdf2docx.table.TableBlock import TableBlock
 
 from vivepdf.ops import _docx_progress as docx_progress
 from vivepdf.ops import _docx_tables as docx_tables
-from vivepdf.ops._pptx_layout import font_family, slide_text
+from vivepdf.ops._pptx_layout import slide_text
+from vivepdf.ops._pptx_runs import font_family
 from vivepdf.ops.convert import DocxParams, to_docx
 from vivepdf.ops.convert_slides import PptxParams, to_pptx
 from vivepdf.ops.convert_text import MarkdownParams, _markdown_pages, to_markdown
