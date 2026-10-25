@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Convert › Extract images: an "As shown on the page" option saves each picture the way the page shows it: cropped pictures keep only their visible part, pictures built from tiles or pieces come out as one file, slide backgrounds are left out, photos stay JPEG and a logo repeated on every page is saved once [2026-10-25]
 - PDF to Excel: a table that runs over to the next page comes out as one table on one sheet (named like `S1-S2-T1`) with its repeated header row dropped; a header row is bold and frozen so it stays in view while scrolling; clock times and date-times become time values; text that wrapped inside a cell is joined into one line [2026-10-25]
 - PDF to Excel: CSV output has a column separator choice, set to semicolon where numbers use a decimal comma (Turkish Excel) so the file opens in columns [2026-10-25]
 - PDF to Excel: "Read pages without text with OCR" works for Excel too; the table lines of a scan are taken out before recognition and used to find the table, so a scanned ruled table comes out in rows and columns [2026-10-25]

@@ -25,6 +25,7 @@ from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pixmaps import png_ready
 from vivepdf.ops._placement import turn_text_upright
 from vivepdf.ops._ranges import parse_page_ranges
+from vivepdf.ops._visible_images import page_pictures, shown_picture
 from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.failures import document_failure
 from vivepdf.rpc.paths import ReadPath, WriteDir, WritePath
@@ -296,6 +297,7 @@ class ExtractImagesParams(RpcModel):
     pages: str | None = None
     min_size: int = Field(default=64, ge=1)
     dedupe: bool = True
+    as_seen: bool = False
 
 
 class ExtractImagesResult(RpcModel):
@@ -383,6 +385,43 @@ def extract_images(params: ExtractImagesParams, progress: Progress) -> ExtractIm
     )
 
 
+def _first_time(contents: set[bytes], fingerprint: bytes) -> bool:
+    if fingerprint in contents:
+        return False
+    contents.add(fingerprint)
+    return True
+
+
+def _extract_shown_images(
+    page: pymupdf.Page,
+    params: ExtractImagesParams,
+    output_dir: Path,
+    prefix: str,
+    contents: set[bytes],
+    outputs: list[str],
+) -> tuple[int, int]:
+    written = 0
+    pictures, skipped = page_pictures(page)
+    for number, image in enumerate(pictures, 1):
+        if params.dedupe and image.key and not _first_time(contents, "".join(image.key).encode()):
+            continue
+        pixmap, data, ext = shown_picture(page, image)
+        if pixmap.width < params.min_size or pixmap.height < params.min_size:
+            skipped += 1
+            continue
+        if (
+            params.dedupe
+            and not image.key
+            and not _first_time(contents, hashlib.sha1(data).digest())
+        ):
+            continue
+        target = free_path(output_dir, f"{prefix}-{number:02d}", ext)
+        outputs.append(str(target))
+        target.write_bytes(data)
+        written += len(data)
+    return written, skipped
+
+
 def _extract_page_images(
     params: ExtractImagesParams,
     progress: Progress,
@@ -400,6 +439,19 @@ def _extract_page_images(
         for position, index in enumerate(indices):
             progress.check_cancelled()
             page = document[index]
+            if params.as_seen:
+                written, missed = _extract_shown_images(
+                    page, params, output_dir, f"{stem}-{index + 1:0{width}d}", contents, outputs
+                )
+                total_bytes += written
+                skipped += missed
+                if position % 5 == 0:
+                    progress.report(
+                        position / max(1, len(indices)),
+                        "progress.extracting",
+                        {"current": position + 1, "total": len(indices)},
+                    )
+                continue
             listed = {image[0]: image for image in page.get_images(full=True)}
             drawn = _drawn_xrefs(page, listed)
             stencils = [xref for xref in drawn if is_stencil(document, xref)]

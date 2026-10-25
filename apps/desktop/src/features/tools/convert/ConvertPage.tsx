@@ -47,7 +47,7 @@ export function ConvertPage() {
   const [outputDir, setOutputDir] = useState("");
   const [pages, setPages] = useState("");
   const options = useConvertOptions();
-  const { format, dpi, quality, layout, paper, fitColumns, images, setImages, folders, setFolders, recursive, compressPhotos, sort, pageSize, orientation, margin, files, setFiles, svgFiles, setSvgFiles, combineSvg, url, readerMode, includeImages, split, bookTitle, bookAuthor, sheets, xlsxFormat, csvDelimiter, borderless, single, transparent, gray, archive, ocr, pictures, headerFooter, fit, cover, pptxMode } = options;
+  const { format, dpi, quality, layout, paper, fitColumns, images, setImages, folders, setFolders, recursive, compressPhotos, asSeen, sort, pageSize, orientation, margin, files, setFiles, svgFiles, setSvgFiles, combineSvg, url, readerMode, includeImages, split, bookTitle, bookAuthor, sheets, xlsxFormat, csvDelimiter, borderless, single, transparent, gray, archive, ocr, pictures, headerFooter, fit, cover, pptxMode } = options;
 
   const entry = useMemo(() => [...FROM_PDF, ...TO_PDF].find((item) => item.mode === mode) as ConversionEntry, [mode]);
   const fromPdf = FROM_PDF.some((item) => item.mode === mode);
@@ -211,6 +211,7 @@ export function ConvertPage() {
         folders,
         recursive,
         compressPhotos,
+        asSeen,
         sort,
         pageSize,
         orientation,

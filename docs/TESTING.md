@@ -327,6 +327,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   next one, the title stays first, and a ruled two-column table still reads row by row. Then
   convert any PDF to Markdown and, without restarting, a PDF with a ruled table to HTML: the
   table is text, not a picture.
+- Extract images from a slide-deck PDF with "As shown on the page" on, then off: with it on, no
+  slide backgrounds, a cropped picture is only its visible part, a picture made of pieces is one
+  file, a photo stays JPEG and the repeated logo is saved once; with it off, the files match the
+  earlier release.
 
 ### How native dialogs are answered
 

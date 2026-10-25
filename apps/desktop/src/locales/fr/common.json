@@ -2951,6 +2951,8 @@
       "recursive": "Inclure les sous-dossiers",
       "compressPhotos": "Compresser les photos",
       "compressPhotosHint": "Les photos sont ramenées à 200 dpi selon leur taille sur la page et enregistrées en JPEG : le PDF est bien plus léger. Les dessins et les captures d’écran restent intacts.",
+      "asSeen": "Tel qu’affiché sur la page",
+      "asSeenHint": "Les images rognées sont enregistrées avec leur seule partie visible, et les images faites de tuiles en un seul fichier. Les images d’arrière-plan sont ignorées.",
       "files": "Fichiers",
       "dropFiles": "Ajoutez des fichiers ou déposez-les sur la fenêtre.",
       "addFiles": "Ajouter des fichiers",

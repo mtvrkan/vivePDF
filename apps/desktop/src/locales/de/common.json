@@ -2951,6 +2951,8 @@
       "recursive": "Unterordner einschließen",
       "compressPhotos": "Fotos komprimieren",
       "compressPhotosHint": "Fotos werden passend zu ihrer Größe auf der Seite auf 200 dpi verkleinert und als JPEG gespeichert, sodass die PDF viel kleiner wird. Zeichnungen und Bildschirmfotos bleiben unverändert.",
+      "asSeen": "Wie auf der Seite dargestellt",
+      "asSeenHint": "Zugeschnittene Bilder werden nur mit ihrem sichtbaren Teil gespeichert, aus Kacheln zusammengesetzte Bilder als eine Datei. Hintergrundbilder werden übersprungen.",
       "files": "Dateien",
       "dropFiles": "Fügen Sie Dateien hinzu oder ziehen Sie sie auf das Fenster.",
       "addFiles": "Dateien hinzufügen",

@@ -2951,6 +2951,8 @@
       "recursive": "Includi sottocartelle",
       "compressPhotos": "Comprimi le foto",
       "compressPhotosHint": "Le foto vengono ridotte a 200 dpi in base alla loro dimensione sulla pagina e salvate in JPEG, così il PDF è molto più leggero. Disegni e screenshot restano invariati.",
+      "asSeen": "Come appare sulla pagina",
+      "asSeenHint": "Le immagini ritagliate vengono salvate solo con la parte visibile e quelle composte da riquadri come un unico file. Le immagini di sfondo vengono saltate.",
       "files": "File",
       "dropFiles": "Aggiungi file o trascinali sulla finestra.",
       "addFiles": "Aggiungi file",

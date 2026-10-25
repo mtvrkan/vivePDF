@@ -226,6 +226,16 @@ describe("runConversion picture and text results", () => {
     expect(outcome).toMatchObject({ bytes: 1234, count: 1 });
   });
 
+  it("asks for pictures as shown on the page when that option is on", async () => {
+    extractImages.mockResolvedValue({ outputs: ["C:/out/a-1-01.jpg"], count: 1, skipped: 0, bytes: 99 });
+    const run = pdfTo("extract-images");
+    run.options = { ...run.options, asSeen: true };
+
+    await runConversion(run, {});
+
+    expect(extractImages.mock.calls[0][0]).toMatchObject({ outputDir: "C:/out", asSeen: true });
+  });
+
   it("names text pages that had no text layer", async () => {
     convertToText.mockResolvedValue({ output: "C:/out/a.txt", bytes: 3, textlessPages: [5] });
     const outcome = await runConversion(pdfTo("text"), {});

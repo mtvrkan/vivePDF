@@ -2952,6 +2952,8 @@
       "recursive": "Include subfolders",
       "compressPhotos": "Compress photos",
       "compressPhotosHint": "Photos are scaled to 200 dpi at their size on the page and saved as JPEG, so the PDF is much smaller. Drawings and screenshots stay as they are.",
+      "asSeen": "As shown on the page",
+      "asSeenHint": "Cropped pictures are saved with only their visible part, and pictures made of tiles as one file. Background pictures are skipped.",
       "files": "Files",
       "dropFiles": "Add files or drop them onto the window.",
       "addFiles": "Add files",

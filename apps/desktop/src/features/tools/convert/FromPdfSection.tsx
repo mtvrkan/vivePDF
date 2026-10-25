@@ -44,7 +44,7 @@ export function FromPdfSection({
 }) {
   const { t } = useTranslation();
   const source = sourceState.source;
-  const { format, setFormat, dpi, setDpi, quality, setQuality, single, setSingle, transparent, setTransparent, gray, setGray, archive, setArchive, ocr, setOcr, pictures, setPictures, headerFooter, setHeaderFooter, xlsxFormat, setXlsxFormat, csvDelimiter, setCsvDelimiter, borderless, setBorderless, sheets, setSheets, layout, setLayout, split, setSplit, includeImages, setIncludeImages, cover, setCover, bookTitle, setBookTitle, bookAuthor, setBookAuthor, pptxMode, setPptxMode } = options;
+  const { format, setFormat, dpi, setDpi, quality, setQuality, single, setSingle, transparent, setTransparent, gray, setGray, archive, setArchive, ocr, setOcr, pictures, setPictures, headerFooter, setHeaderFooter, xlsxFormat, setXlsxFormat, csvDelimiter, setCsvDelimiter, borderless, setBorderless, sheets, setSheets, layout, setLayout, split, setSplit, includeImages, setIncludeImages, cover, setCover, bookTitle, setBookTitle, bookAuthor, setBookAuthor, pptxMode, setPptxMode, asSeen, setAsSeen } = options;
   return (
     <>
       <SourcePicker {...sourceState} onPick={() => void sourceState.pick()} onPassword={(password) => void sourceState.submitPassword(password)} disabled={running} />
@@ -100,6 +100,9 @@ export function FromPdfSection({
               <Checkbox label={t("tools.convert.transparent")} hint={t("tools.convert.transparentHint")} checked={transparent} onChange={setTransparent} disabled={running} />
             )}
           </>
+        ) : null}
+        {mode === "extract-images" ? (
+          <Checkbox label={t("tools.convert.asSeen")} hint={t("tools.convert.asSeenHint")} checked={asSeen} onChange={setAsSeen} disabled={running} />
         ) : null}
         {mode === "xlsx" ? (
           <div className="grid grid-cols-2 gap-3">

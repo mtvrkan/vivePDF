@@ -41,6 +41,7 @@ export type ConvertRun = {
     folders: string[];
     recursive: boolean;
     compressPhotos: boolean;
+    asSeen: boolean;
     sort: "name" | "date";
     pageSize: "image" | "a4" | "letter";
     orientation: "auto" | "portrait" | "landscape";
@@ -210,7 +211,7 @@ export async function runConversion(run: ConvertRun, callOptions: RpcCallOptions
       return { outputs: result.outputs, bytes: result.bytes, count, label: "images", reducedPages: result.reducedPages };
     }
     case "extract-images": {
-      const result = await extractImages({ path: base.path, password: base.password, outputDir: run.outputDir ?? "", pages: run.pages }, callOptions);
+      const result = await extractImages({ path: base.path, password: base.password, outputDir: run.outputDir ?? "", pages: run.pages, asSeen: opts.asSeen }, callOptions);
       return { outputs: result.outputs, bytes: result.bytes, count: result.count, label: "images" };
     }
     case "text": {

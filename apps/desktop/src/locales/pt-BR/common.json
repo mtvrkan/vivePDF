@@ -2951,6 +2951,8 @@
       "recursive": "Incluir subpastas",
       "compressPhotos": "Comprimir fotos",
       "compressPhotosHint": "As fotos são reduzidas a 200 dpi conforme o tamanho na página e salvas em JPEG, deixando o PDF bem menor. Desenhos e capturas de tela ficam como estão.",
+      "asSeen": "Como aparece na página",
+      "asSeenHint": "Imagens recortadas são salvas só com a parte visível, e imagens formadas por blocos, como um único arquivo. Imagens de fundo são ignoradas.",
       "files": "Arquivos",
       "dropFiles": "Adicione arquivos ou solte-os na janela.",
       "addFiles": "Adicionar arquivos",

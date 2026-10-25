@@ -904,7 +904,7 @@ export type StampPreviewParams = Omit<StampParams, "output" | "overwrite"> & { w
 
 export type SetMetadataParams = { path: string; password?: string; output?: string; inPlace?: boolean; overwrite?: boolean; title?: string; author?: string; subject?: string; keywords?: string; creator?: string; producer?: string };
 export type SetMetadataResult = OutputResult & { metadata: Record<string, string> };
-export type ExtractImagesParams = { path: string; password?: string; outputDir: string; pages?: string; minSize?: number; dedupe?: boolean };
+export type ExtractImagesParams = { path: string; password?: string; outputDir: string; pages?: string; minSize?: number; dedupe?: boolean; asSeen?: boolean };
 export type ExtractImagesResult = { outputs: string[]; count: number; skipped: number; bytes: number };
 export type FindTextParams = { path: string; password?: string; query: string; matchCase?: boolean; wholeWord?: boolean };
 export type FindTextResult = { pages: number[] };
