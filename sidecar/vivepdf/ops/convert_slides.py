@@ -7,12 +7,13 @@ import pymupdf
 from pydantic import Field
 
 from vivepdf.ops._document import open_document
+from vivepdf.ops._hidden_text import hidden_origins
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pptx_layout import (
     SlideFrame,
     add_line_box,
     line_boxes,
-    slide_text,
+    page_notes,
     text_free_pixmap,
 )
 from vivepdf.ops._ranges import parse_page_ranges
@@ -77,8 +78,11 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 page = document[index]
                 image_path = Path(temp_dir) / f"page-{index + 1}.png"
                 dpi = slide_dpi(page.rect, params.dpi)
+                hidden = hidden_origins(page)
+                boxes = line_boxes(page, hidden) if editable else []
                 if editable:
-                    text_free_pixmap(document, index, dpi).save(str(image_path))
+                    areas = [box.area for box in boxes] if hidden else None
+                    text_free_pixmap(document, index, dpi, areas).save(str(image_path))
                 else:
                     page.get_pixmap(dpi=dpi).save(str(image_path))
                 slide = presentation.slides.add_slide(blank_layout)
@@ -86,10 +90,10 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 slide.shapes.add_picture(str(image_path), left, top, width=width, height=height)
                 if editable:
                     frame = SlideFrame(left=left, top=top, ratio=width / page.rect.width)
-                    for box in line_boxes(page):
+                    for box in boxes:
                         add_line_box(slide, box, frame)
                 else:
-                    text = slide_text(page.get_text()).strip()
+                    text = page_notes(page, hidden)
                     if text:
                         slide.notes_slide.notes_text_frame.text = text[:NOTES_LIMIT]
                 progress.report(
