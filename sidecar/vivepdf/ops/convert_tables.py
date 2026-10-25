@@ -38,6 +38,7 @@ class _Table:
     number: int
     rows: list[list[str | None]]
     spans: list[tuple[int, int, int, int]] = field(default_factory=list)
+    area: pymupdf.Rect = field(default_factory=pymupdf.Rect)
 
 
 @dataclass(frozen=True, slots=True)
@@ -65,6 +66,21 @@ def spreadsheet_cell(value: object) -> object:
 
 def _page_lines(page: pymupdf.Page) -> list[str]:
     return [line for line in page.get_text().splitlines() if line.strip()]
+
+
+def _inside_any(box: pymupdf.Rect, areas: list[pymupdf.Rect]) -> bool:
+    middle = pymupdf.Point((box.x0 + box.x1) / 2, (box.y0 + box.y1) / 2)
+    return any(middle in area for area in areas)
+
+
+def _lines_outside(page: pymupdf.Page, areas: list[pymupdf.Rect]) -> list[str]:
+    lines: list[str] = []
+    for block in page.get_text("dict")["blocks"]:
+        for line in block.get("lines", []):
+            text = "".join(span["text"] for span in line["spans"])
+            if text.strip() and not _inside_any(pymupdf.Rect(line["bbox"]), areas):
+                lines.append(text)
+    return lines
 
 
 def _page_span(first: int, last: int, label: str) -> str:
@@ -248,22 +264,118 @@ def borderless_tables(page: pymupdf.Page) -> list:
     ]
 
 
+RULE_THICKNESS = 2.0
+RULE_SLACK = 2.0
+RULE_GAP_FACTOR = 3.0
+RULE_MIN_GAP = 36.0
+
+
+def _rule_spans(rect: pymupdf.Rect, area: pymupdf.Rect) -> bool:
+    return (
+        rect.height <= RULE_THICKNESS
+        and rect.x0 <= area.x0 + RULE_SLACK
+        and rect.x1 >= area.x1 - RULE_SLACK
+    )
+
+
+def _ruled_bottom(page: pymupdf.Page, area: pymupdf.Rect) -> float | None:
+    rules = sorted(
+        rect.y1
+        for rect in (pymupdf.Rect(drawing["rect"]) for drawing in page.get_drawings())
+        if rect.y0 >= area.y1 - RULE_SLACK and _rule_spans(rect, area)
+    )
+    bottom = area.y1
+    gap = max(area.height * RULE_GAP_FACTOR, RULE_MIN_GAP)
+    for edge in rules:
+        if edge - bottom > gap:
+            break
+        bottom = max(bottom, edge)
+    return bottom if bottom > area.y1 + RULE_SLACK else None
+
+
+def _with_ruled_body(page: pymupdf.Page, table: object) -> object:
+    if table.row_count > 1:
+        return table
+    area = pymupdf.Rect(table.bbox)
+    bottom = _ruled_bottom(page, area)
+    if bottom is None:
+        return table
+    edges = sorted(
+        {cell[0] for cell in table.cells if cell} | {cell[2] for cell in table.cells if cell}
+    )
+    clip = pymupdf.Rect(page.rect.x0, area.y0 - RULE_SLACK, page.rect.x1, bottom + RULE_SLACK)
+    extended = page.find_tables(
+        use_layout=False,
+        clip=clip,
+        vertical_strategy="explicit",
+        vertical_lines=edges,
+        horizontal_strategy="lines",
+    ).tables
+    for candidate in extended:
+        if candidate.col_count == table.col_count and candidate.row_count > table.row_count:
+            return candidate
+    return table
+
+
+OVERLAP_TOLERANCE = 1.0
+FRAME_SHARE = 0.5
+
+
+def _overlaps(cells: list[pymupdf.Rect]) -> bool:
+    active: list[pymupdf.Rect] = []
+    for cell in sorted(cells, key=lambda rect: rect.y0):
+        active = [other for other in active if other.y1 - cell.y0 > OVERLAP_TOLERANCE]
+        for other in active:
+            shared = cell & other
+            if shared.width > OVERLAP_TOLERANCE and shared.height > OVERLAP_TOLERANCE:
+                return True
+        active.append(cell)
+    return False
+
+
+def is_page_frame(page: pymupdf.Page, table: object) -> bool:
+    cells = [pymupdf.Rect(cell) for cell in table.cells if cell]
+    page_area = abs(page.rect)
+    if any(abs(cell) > page_area * FRAME_SHARE for cell in cells):
+        return True
+    return _overlaps(cells)
+
+
+def _without_empty_columns(rows: list[list[str | None]]) -> list[list[str | None]]:
+    width = max((len(row) for row in rows), default=0)
+    kept = [
+        column
+        for column in range(width)
+        if any(column < len(row) and row[column] and row[column].strip() for row in rows)
+    ]
+    return [[row[column] if column < len(row) else None for column in kept] for row in rows]
+
+
 def _page_tables(page: pymupdf.Page, index: int, borderless: bool) -> list[_Table]:
     finder = page.find_tables(use_layout=False)
-    found = finder.tables if finder is not None else []
+    found = (
+        [_with_ruled_body(page, table) for table in finder.tables if not is_page_frame(page, table)]
+        if finder is not None
+        else []
+    )
     unruled = not found and borderless
     if unruled:
         found = borderless_tables(page)
     fragments = page_fragments(page) if found else []
     tables: list[_Table] = []
     for number, table in enumerate(found):
+        reach = (page.rect.x0, page.rect.x1) if unruled else None
         rows = [
             row
-            for row in table_texts(table, fragments, reach_edges=unruled)
+            for row in table_texts(table, fragments, reach)
             if not unruled or any(text and text.strip() for text in row)
         ]
+        if unruled:
+            rows = _without_empty_columns(rows)
         spans = [] if unruled else table_spans(table)
-        tables.append(_Table(page=index, number=number, rows=rows, spans=spans))
+        tables.append(
+            _Table(page=index, number=number, rows=rows, spans=spans, area=pymupdf.Rect(table.bbox))
+        )
     return tables
 
 
@@ -273,6 +385,7 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
     target = _prepare_file(params.output, [params.path], params.overwrite, suffix)
     tables: list[_Table] = []
     text_by_page: dict[int, list[str]] = {}
+    around_tables: dict[int, list[str]] = {}
     textless: list[int] = []
     with open_document(params.path, params.password) as document:
         indices = parse_page_ranges(params.pages, document.page_count)
@@ -281,7 +394,11 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
             page = document[index]
             found = _page_tables(page, index, params.borderless)
             tables.extend(found)
-            if not found:
+            if found:
+                outside = _lines_outside(page, [table.area for table in found])
+                if outside:
+                    around_tables[index + 1] = outside
+            else:
                 page_lines = _page_lines(page)
                 if page_lines:
                     text_by_page[index + 1] = page_lines
@@ -295,7 +412,7 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
     keeps_text = not tables or params.format == "xlsx"
     lines = [
         (page, text)
-        for page, page_lines in text_by_page.items()
+        for page, page_lines in sorted({**text_by_page, **around_tables}.items())
         for text in page_lines
         if keeps_text
     ]
@@ -313,6 +430,6 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
         output=str(target),
         bytes=target.stat().st_size,
         table_count=len(tables),
-        text_pages=sorted({page for page, _text in lines}),
+        text_pages=sorted(page for page in text_by_page if keeps_text),
         textless_pages=textless,
     )

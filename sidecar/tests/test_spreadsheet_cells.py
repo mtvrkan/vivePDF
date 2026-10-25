@@ -100,3 +100,17 @@ def test_clean_text_and_quote_prefix() -> None:
     assert clean_text("a\x01b\ud800c") == "abc"
     assert needs_quote_prefix("=1+1")
     assert not needs_quote_prefix("1+1")
+
+
+def test_currency_codes_and_dash_minus_signs_become_numbers() -> None:
+    assert _typed([], "1.250,00 TL") == (1250.0, '#,##0.00 "TL"')
+    assert _typed([], "USD 99,50") == (99.5, '"USD "0.00')
+    assert _typed([], "–12,00") == (-12.0, "0.00")
+    assert _typed([], "­5 TRY") == (-5, '0 "TRY"')
+
+
+def test_currency_codes_without_a_clear_number_stay_text() -> None:
+    assert _typed([], "TL") is None
+    assert _typed([], "TL1.250,00") is None
+    assert _typed([], "12 TLS") is None
+    assert _typed([], "1.250,00 TL TL") is None

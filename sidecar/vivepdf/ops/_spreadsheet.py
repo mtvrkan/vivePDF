@@ -10,12 +10,13 @@ ILLEGAL_TEXT = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\ud800-\udfff\ufffe\uffff
 MAX_EXACT_DIGITS = 15
 GROUP_SPACES = " \u00a0\u202f\u2009'"
 CURRENCIES = "$\u20ac\u00a3\u00a5\u20ba\u20bd\u20b9"
-MINUS_SIGNS = "-\u2212"
+CURRENCY_CODES = "TL|TRY|USD|EUR|GBP"
+MINUS_SIGNS = "-\u2212\u2013\u2012\u00ad"
 NUMBER = re.compile(
     rf"(?P<open>\()?(?P<sign>[{MINUS_SIGNS}])?(?P<lead>%\s?)?"
-    rf"(?:(?P<before>[{CURRENCIES}])\s?)?"
+    rf"(?:(?P<before>[{CURRENCIES}]|(?:{CURRENCY_CODES})(?=\s))\s?)?"
     rf"(?P<body>\d(?:[\d.,{GROUP_SPACES}]*\d)?)"
-    rf"(?:\s?(?P<after>[{CURRENCIES}]))?"
+    rf"(?:\s?(?P<after>[{CURRENCIES}]|{CURRENCY_CODES}))?"
     rf"(?P<percent>\s?%)?(?P<close>\))?"
 )
 ISO_DATE = re.compile(r"(\d{4})-(\d{1,2})-(\d{1,2})")
@@ -124,7 +125,8 @@ def _number_format(
     if percent:
         return pattern + "%"
     if before:
-        return f'"{before}"{pattern}'
+        gap = " " if before.isalpha() else ""
+        return f'"{before}{gap}"{pattern}'
     if after:
         return f'{pattern} "{after}"'
     if grouped or decimals:

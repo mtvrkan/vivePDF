@@ -1,10 +1,9 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 import pymupdf
 
 WORD_GAP = 0.2
 SAME_LINE = 0.5
-EDGE_REACH = 36.0
 SPAN_TOLERANCE = 1.0
 
 
@@ -60,6 +59,40 @@ def page_fragments(page: pymupdf.Page) -> list[Fragment]:
     return fragments
 
 
+def _word(glyphs: list[Glyph]) -> Glyph:
+    x0, x1 = glyphs[0].x0, glyphs[-1].x1
+    return Glyph(
+        "".join(glyph.text for glyph in glyphs),
+        x0,
+        x1,
+        (x0 + x1) / 2,
+        sum(glyph.center_y for glyph in glyphs) / len(glyphs),
+    )
+
+
+def _words(glyphs: list[Glyph], size: float) -> list[Glyph]:
+    words: list[Glyph] = []
+    current: list[Glyph] = []
+    for glyph in glyphs:
+        apart = bool(current) and glyph.x0 - current[-1].x1 > size * WORD_GAP
+        if (glyph.text.isspace() or apart) and current:
+            words.append(_word(current))
+            current = []
+        if glyph.text.isspace():
+            words.append(glyph)
+        else:
+            current.append(glyph)
+    if current:
+        words.append(_word(current))
+    return words
+
+
+def word_fragments(fragments: list[Fragment]) -> list[Fragment]:
+    return [
+        replace(fragment, glyphs=_words(fragment.glyphs, fragment.size)) for fragment in fragments
+    ]
+
+
 def _inside(glyph: Glyph, rect: pymupdf.Rect) -> bool:
     return rect.x0 <= glyph.center_x <= rect.x1 and rect.y0 <= glyph.center_y <= rect.y1
 
@@ -97,6 +130,7 @@ def cell_text(fragments: list[Fragment], cell: tuple[float, float, float, float]
 
 def _reaching_edges(
     cells: list[tuple[float, float, float, float] | None],
+    reach: tuple[float, float],
 ) -> list[tuple[float, float, float, float] | None]:
     present = [index for index, cell in enumerate(cells) if cell is not None]
     if not present:
@@ -104,9 +138,9 @@ def _reaching_edges(
     reached = list(cells)
     first, last = present[0], present[-1]
     x0, y0, x1, y1 = reached[first]
-    reached[first] = (x0 - EDGE_REACH, y0, x1, y1)
+    reached[first] = (min(x0, reach[0]), y0, x1, y1)
     x0, y0, x1, y1 = reached[last]
-    reached[last] = (x0, y0, x1 + EDGE_REACH, y1)
+    reached[last] = (x0, y0, max(x1, reach[1]), y1)
     return reached
 
 
@@ -120,11 +154,13 @@ def _row_fragments(fragments: list[Fragment], cells: list) -> list[Fragment]:
 
 
 def table_texts(
-    table, fragments: list[Fragment], reach_edges: bool = False
+    table, fragments: list[Fragment], reach: tuple[float, float] | None = None
 ) -> list[list[str | None]]:
+    if reach is not None:
+        fragments = word_fragments(fragments)
     texts: list[list[str | None]] = []
     for row in table.rows:
-        cells = _reaching_edges(row.cells) if reach_edges else row.cells
+        cells = row.cells if reach is None else _reaching_edges(row.cells, reach)
         nearby = _row_fragments(fragments, cells)
         texts.append([None if cell is None else cell_text(nearby, cell) for cell in cells])
     return texts
