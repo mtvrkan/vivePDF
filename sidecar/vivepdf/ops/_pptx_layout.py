@@ -5,6 +5,7 @@ from dataclasses import dataclass
 import pymupdf
 
 from vivepdf.ops._hidden_text import origin_key
+from vivepdf.ops._line_gaps import wide_gap_starts
 from vivepdf.ops._pptx_links import PageLink, SlideJumps, link_at, link_run
 
 EMU_PER_POINT = 12700
@@ -89,19 +90,23 @@ def _piece(span: dict, chars: list[dict], link: PageLink | None) -> dict:
 
 
 def _segments(
-    line: dict, hidden: set[tuple[float, float]], links: list[PageLink]
+    line: dict, hidden: set[tuple[float, float]], links: list[PageLink], breaks: set[int]
 ) -> list[list[dict]]:
     segments: list[list[dict]] = [[]]
+    index = 0
     for span in line["spans"]:
         run: list[dict] = []
         target: PageLink | None = None
         for char in span["chars"]:
-            if origin_key(char["origin"]) in hidden:
+            covered = origin_key(char["origin"]) in hidden
+            if covered or index in breaks:
                 if run:
                     segments[-1].append(_piece(span, run, target))
                     run = []
                 if segments[-1]:
                     segments.append([])
+            index += 1
+            if covered:
                 continue
             link = link_at(links, char["bbox"]) if links else None
             if run and link is not target:
@@ -150,12 +155,13 @@ def line_boxes(
     boxes: list[LineBox] = []
     for block in page.get_text("rawdict", flags=pymupdf.TEXTFLAGS_TEXT)["blocks"]:
         for line in block.get("lines", []):
-            whole = not any(
+            breaks = wide_gap_starts(line)
+            whole = not breaks and not any(
                 origin_key(char["origin"]) in hidden
                 for span in line["spans"]
                 for char in span["chars"]
             )
-            for segment in _segments(line, hidden, links or []):
+            for segment in _segments(line, hidden, links or [], breaks):
                 spans = [span for span in segment if _visible(span) and span["text"]]
                 if not any(slide_text(span["text"]).strip() for span in spans):
                     continue
