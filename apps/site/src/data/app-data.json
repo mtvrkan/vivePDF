@@ -2957,6 +2957,31 @@
   },
   "releases": [
     {
+      "version": "0.5.0",
+      "items": [
+        {
+          "tr": "Word, PowerPoint, Excel ve HTML'e dönüşümler PDF'e çok daha sadık: yazı tipleri, bağlantılar, resimler, tablolar ve sütunlar yerinde kalıyor; taranmış tablolar da Excel'e satır satır geliyor.",
+          "en": "Conversions to Word, PowerPoint, Excel and HTML are far closer to the PDF: fonts, links, pictures, tables and columns stay in place, and scanned tables reach Excel row by row."
+        },
+        {
+          "tr": "Yazdır penceresi, seçtiğiniz sayfalar, sayfa başına sayfa sayısı, gri tonlama ve ölçekle her kâğıdın önizlemesini ayarların yanında gösteriyor.",
+          "en": "The print dialog shows a preview of each sheet next to the settings, with your chosen pages, pages per sheet, grayscale and scale."
+        },
+        {
+          "tr": "Ayarlar › Sistem'den vivePDF'i PDF dosyalarını açan varsayılan uygulama yapabilirsiniz; Windows, macOS ve Linux'ta.",
+          "en": "Make vivePDF the app that opens your PDF files from Settings › System, on Windows, macOS and Linux."
+        },
+        {
+          "tr": "Yeni araçlar: PDF'ten SVG'ye dönüştürme ve sayfa arka plan rengi; Yorumlar, Ekler, Sesli oku, Çevir ve Yazdır artık araç kategorilerinde de var.",
+          "en": "New tools: PDF → SVG and Background colour; Comments, Attachments, Read aloud, Translate and Print now also sit in the tool categories."
+        },
+        {
+          "tr": "Geniş Excel tabloları kâğıda sığıyor, eksik yazı tipleri dönüştürmeden önce bildiriliyor, Görseller → PDF fotoğrafları küçültebiliyor ve görseller sayfada göründüğü gibi çıkarılabiliyor.",
+          "en": "Wide Excel tables fit the paper, missing fonts are named before converting, Images → PDF can compress photos, and pictures can be extracted as the page shows them."
+        }
+      ]
+    },
+    {
       "version": "0.4.0",
       "items": [
         {

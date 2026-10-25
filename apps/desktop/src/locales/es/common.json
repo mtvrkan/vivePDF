@@ -10199,6 +10199,13 @@
     "emptyTitle": "Aún no hay notas para esta versión",
     "emptyDescription": "vivePDF {{version}} no tiene notas de versión en la aplicación. Busca actualizaciones para ver qué trae la versión más reciente.",
     "releases": {
+      "v0_5_0": {
+        "conversions": "Las conversiones a Word, PowerPoint, Excel y HTML son mucho más fieles al PDF: fuentes, enlaces, imágenes, tablas y columnas se quedan en su sitio, y las tablas escaneadas llegan a Excel fila por fila.",
+        "printPreview": "El diálogo de impresión muestra una vista previa de cada hoja junto a los ajustes, con las páginas elegidas, páginas por hoja, escala de grises y escala.",
+        "defaultApp": "Haz de vivePDF la aplicación que abre tus archivos PDF desde Ajustes › Sistema, en Windows, macOS y Linux.",
+        "newTools": "Herramientas nuevas: PDF a SVG y un color de fondo para las páginas; Comentarios, Adjuntos, Leer en voz alta, Traducir e Imprimir ahora también están en las categorías de herramientas.",
+        "officeAndImages": "Las tablas anchas de Excel caben en el papel, las fuentes que faltan se indican antes de convertir, Imágenes → PDF puede comprimir fotos y las imágenes se pueden extraer tal como las muestra la página."
+      },
       "v0_4_0": {
         "officeFiles": "Los archivos de Word, Excel y PowerPoint se abren directamente en vivePDF como PDF, también desde «Abrir con» en Finder y el Explorador; si falta LibreOffice, vivePDF ofrece instalarlo y abre el archivo cuando está listo.",
         "tabWindows": "Las pestañas funcionan como en un navegador: arrastra una pestaña o un grupo de pestañas entero para abrirlo en su propia ventana donde lo sueltes, o sobre otra ventana de vivePDF para moverlo allí.",

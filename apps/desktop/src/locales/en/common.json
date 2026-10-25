@@ -10200,6 +10200,13 @@
     "emptyTitle": "No notes for this version yet",
     "emptyDescription": "vivePDF {{version}} has no release notes in the app. Check for updates to see what the newest version brings.",
     "releases": {
+      "v0_5_0": {
+        "conversions": "Conversions to Word, PowerPoint, Excel and HTML are far closer to the PDF: fonts, links, pictures, tables and columns stay in place, and scanned tables reach Excel row by row.",
+        "printPreview": "The print dialog shows a preview of each sheet next to the settings, with your chosen pages, pages per sheet, grayscale and scale.",
+        "defaultApp": "Make vivePDF the app that opens your PDF files from Settings › System, on Windows, macOS and Linux.",
+        "newTools": "New tools: PDF → SVG and Background colour; Comments, Attachments, Read aloud, Translate and Print now also sit in the tool categories.",
+        "officeAndImages": "Wide Excel tables fit the paper, missing fonts are named before converting, Images → PDF can compress photos, and pictures can be extracted as the page shows them."
+      },
       "v0_4_0": {
         "officeFiles": "Word, Excel and PowerPoint files open straight in vivePDF as PDFs, also from Open With in Finder and Explorer; when LibreOffice is missing, vivePDF offers to set it up and opens the file once it is ready.",
         "tabWindows": "Tabs work like a browser's: drag a tab or a whole tab group out to open it in its own window where you drop it, or onto another vivePDF window to move it there.",

@@ -10200,6 +10200,13 @@
     "emptyTitle": "Bu sürüm için henüz not yok",
     "emptyDescription": "vivePDF {{version}} için uygulamada sürüm notu yok. En yeni sürümün getirdiklerini görmek için güncellemeleri denetleyin.",
     "releases": {
+      "v0_5_0": {
+        "conversions": "Word, PowerPoint, Excel ve HTML'e dönüşümler PDF'e çok daha sadık: yazı tipleri, bağlantılar, resimler, tablolar ve sütunlar yerinde kalıyor; taranmış tablolar da Excel'e satır satır geliyor.",
+        "printPreview": "Yazdır penceresi, seçtiğiniz sayfalar, sayfa başına sayfa sayısı, gri tonlama ve ölçekle her kâğıdın önizlemesini ayarların yanında gösteriyor.",
+        "defaultApp": "Ayarlar › Sistem'den vivePDF'i PDF dosyalarını açan varsayılan uygulama yapabilirsiniz; Windows, macOS ve Linux'ta.",
+        "newTools": "Yeni araçlar: PDF'ten SVG'ye dönüştürme ve sayfa arka plan rengi; Yorumlar, Ekler, Sesli oku, Çevir ve Yazdır artık araç kategorilerinde de var.",
+        "officeAndImages": "Geniş Excel tabloları kâğıda sığıyor, eksik yazı tipleri dönüştürmeden önce bildiriliyor, Görseller → PDF fotoğrafları küçültebiliyor ve görseller sayfada göründüğü gibi çıkarılabiliyor."
+      },
       "v0_4_0": {
         "officeFiles": "Word, Excel ve PowerPoint dosyaları doğrudan vivePDF'te PDF olarak açılır, Finder ve Explorer'daki Birlikte Aç menüsünden de; LibreOffice yoksa vivePDF kurmayı önerir ve hazır olunca dosyayı açar.",
         "tabWindows": "Sekmeler tarayıcıdaki gibi çalışır: bir sekmeyi ya da bütün bir sekme grubunu dışarı sürükleyip bıraktığınız yerde kendi penceresinde açın veya başka bir vivePDF penceresine bırakıp oraya taşıyın.",
