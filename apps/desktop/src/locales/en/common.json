@@ -2871,6 +2871,7 @@
         "business-card": "Two-sided cards with foil, emboss and spot UV, print-ready with bleed and imposition.",
         "bibliography": "Import .bib, RIS or CSL JSON, edit sources and export an APA, MLA, Chicago or IEEE reference list.",
         "extract-images": "Pull every embedded picture out of a PDF in its original quality.",
+        "pdf-to-svg": "Turn each page into a vector SVG drawing that opens in Inkscape, Illustrator or Figma.",
         "comments": "Read, reply to and resolve comments, and export or import them as XFDF or FDF.",
         "attachments": "See, add, save and remove files attached to a PDF.",
         "properties": "Shows page count, page size, file size, PDF version and encryption, and edits title, author, subject and keywords.",
@@ -2901,7 +2902,8 @@
         "file-to-pdf": "Office → PDF",
         "svg-to-pdf": "SVG → PDF",
         "url-to-pdf": "Web page → PDF",
-        "extract-images": "Extract images"
+        "extract-images": "Extract images",
+        "svg": "PDF → SVG"
       },
       "hints": {
         "docx": "Layout-preserving .docx with tables and images. Run OCR first for scanned documents.",
@@ -2916,7 +2918,8 @@
         "file-to-pdf": "Office documents via LibreOffice; TXT, Markdown, HTML, EPUB, XPS, CBZ and images convert directly.",
         "svg-to-pdf": "Vector drawings from Inkscape, Illustrator or Figma become vector PDF pages at their own size; styles, gradients and text are kept.",
         "url-to-pdf": "Saves a web address as a PDF. Scripts, forms and embedded players are left out; pictures are fetched separately.",
-        "extract-images": "Saves every picture embedded in the pages at its original resolution."
+        "extract-images": "Saves every picture embedded in the pages at its original resolution.",
+        "svg": "Each page becomes its own vector SVG file; lines, colours and pictures are kept."
       },
       "missing": {
         "libreoffice": "Office files need LibreOffice. Download it under Settings › Tools, or install it yourself, then reopen this page."
@@ -2960,6 +2963,8 @@
       "compressPhotosHint": "Photos are scaled to 200 dpi at their size on the page and saved as JPEG, so the PDF is much smaller. Drawings and screenshots stay as they are.",
       "asSeen": "As shown on the page",
       "asSeenHint": "Cropped pictures are saved with only their visible part, and pictures made of tiles as one file. Background pictures are skipped.",
+      "svgText": "Keep text as text",
+      "svgTextHint": "The text stays editable in the SVG but may look different on a computer without the same font. When off, text is turned into outlines and looks the same everywhere.",
       "files": "Files",
       "dropFiles": "Add files or drop them onto the window.",
       "addFiles": "Add files",

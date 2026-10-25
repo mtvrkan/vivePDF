@@ -122,6 +122,8 @@ import type {
   ClipboardParams,
   ClipboardResult,
   MailLabels,
+  SvgParams,
+  SvgResult,
   SvgToPdfParams,
   FillParams,
   FillResult,
@@ -647,6 +649,9 @@ export const convertToPptx = (params: PptxParams, options?: RpcCallOptions) =>
 
 export const convertToImages = (params: ImagesParams, options?: RpcCallOptions) =>
   rpc<ImagesResult>("convert.to_images", params, options);
+
+export const convertToSvg = (params: SvgParams, options?: RpcCallOptions) =>
+  rpc<SvgResult>("convert.to_svg", params, options);
 
 export const convertToText = (params: TextParams, options?: RpcCallOptions) =>
   rpc<TextFileResult>("convert.to_text", params, options);

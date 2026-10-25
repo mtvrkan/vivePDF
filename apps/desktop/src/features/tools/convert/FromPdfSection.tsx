@@ -5,7 +5,7 @@ import { SourcePicker } from "@/components/tool/SourcePicker";
 import type { useSourceDocument } from "@/shared/hooks/useSourceDocument";
 import { stemOf } from "@/shared/lib/paths";
 import type { ExportDelimiter, ImageFormat, MarkdownPictures, PptxMode, XlsxFormat, XlsxSheets } from "@/types";
-import type { ConvertMode } from "./conversions";
+import { writesToFolder, type ConvertMode } from "./conversions";
 import type { ConvertOptions } from "./useConvertOptions";
 
 const CSV_DELIMITERS: Array<{ value: ExportDelimiter; key: string }> = [
@@ -44,7 +44,7 @@ export function FromPdfSection({
 }) {
   const { t } = useTranslation();
   const source = sourceState.source;
-  const { format, setFormat, dpi, setDpi, quality, setQuality, single, setSingle, transparent, setTransparent, gray, setGray, archive, setArchive, ocr, setOcr, pictures, setPictures, headerFooter, setHeaderFooter, xlsxFormat, setXlsxFormat, csvDelimiter, setCsvDelimiter, borderless, setBorderless, sheets, setSheets, layout, setLayout, split, setSplit, includeImages, setIncludeImages, cover, setCover, bookTitle, setBookTitle, bookAuthor, setBookAuthor, pptxMode, setPptxMode, asSeen, setAsSeen } = options;
+  const { format, setFormat, dpi, setDpi, quality, setQuality, single, setSingle, transparent, setTransparent, gray, setGray, archive, setArchive, ocr, setOcr, pictures, setPictures, headerFooter, setHeaderFooter, xlsxFormat, setXlsxFormat, csvDelimiter, setCsvDelimiter, borderless, setBorderless, sheets, setSheets, layout, setLayout, split, setSplit, includeImages, setIncludeImages, cover, setCover, bookTitle, setBookTitle, bookAuthor, setBookAuthor, pptxMode, setPptxMode, asSeen, setAsSeen, textAsText, setTextAsText } = options;
   return (
     <>
       <SourcePicker {...sourceState} onPick={() => void sourceState.pick()} onPassword={(password) => void sourceState.submitPassword(password)} disabled={running} />
@@ -103,6 +103,9 @@ export function FromPdfSection({
         ) : null}
         {mode === "extract-images" ? (
           <Checkbox label={t("tools.convert.asSeen")} hint={t("tools.convert.asSeenHint")} checked={asSeen} onChange={setAsSeen} disabled={running} />
+        ) : null}
+        {mode === "svg" ? (
+          <Checkbox label={t("tools.convert.svgText")} hint={t("tools.convert.svgTextHint")} checked={textAsText} onChange={setTextAsText} disabled={running} />
         ) : null}
         {mode === "xlsx" ? (
           <div className="grid grid-cols-2 gap-3">
@@ -195,7 +198,7 @@ export function FromPdfSection({
         ) : null}
       </Section>
       <Section>
-        {mode === "images" || mode === "extract-images" ? (
+        {writesToFolder(mode) ? (
           <OutputDirField value={outputDir} onChange={setOutputDir} disabled={running} />
         ) : (
           <OutputPathField value={output} onChange={setOutput} disabled={running} extension={outputExtension} />

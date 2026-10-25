@@ -587,6 +587,18 @@
         }
       },
       {
+        "id": "pdf-to-svg",
+        "group": "fromPdf",
+        "label": {
+          "tr": "PDF → SVG",
+          "en": "PDF → SVG"
+        },
+        "description": {
+          "tr": "Her sayfayı Inkscape, Illustrator veya Figma'da açılabilen vektör SVG çizimine çevirir.",
+          "en": "Turn each page into a vector SVG drawing that opens in Inkscape, Illustrator or Figma."
+        }
+      },
+      {
         "id": "text",
         "group": "fromPdf",
         "label": {

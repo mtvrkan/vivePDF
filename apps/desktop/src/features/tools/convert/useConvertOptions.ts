@@ -19,6 +19,7 @@ export function useConvertOptions() {
   const [recursive, setRecursive] = useState(false);
   const [compressPhotos, setCompressPhotos] = useState(false);
   const [asSeen, setAsSeen] = useState(false);
+  const [textAsText, setTextAsText] = useState(false);
   const [sort, setSort] = useState<"name" | "date">("name");
   const [pageSize, setPageSize] = useState<"image" | "a4" | "letter">("a4");
   const [orientation, setOrientation] = useState<"auto" | "portrait" | "landscape">("auto");
@@ -96,6 +97,8 @@ export function useConvertOptions() {
     setCompressPhotos,
     asSeen,
     setAsSeen,
+    textAsText,
+    setTextAsText,
     fitColumns,
     setFitColumns,
     sort,

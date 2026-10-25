@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { albumOutputPath, batchOutputName, batchOutputPaths, listSeparator, moveItem, pageList } from "./conversions";
+import { albumOutputPath, batchOutputName, batchOutputPaths, listSeparator, moveItem, pageList, writesToFolder } from "./conversions";
 
 describe("batchOutputName", () => {
   it("names a file after its own stem when no other file shares it", () => {
@@ -84,5 +84,23 @@ describe("listSeparator", () => {
   it("uses a comma where the decimal mark is a point or the locale is unknown", () => {
     expect(listSeparator("en-US")).toBe(",");
     expect(listSeparator("not a locale")).toBe(",");
+  });
+});
+
+describe("writesToFolder", () => {
+  it("asks for a folder for page images, extracted pictures and SVG pages", () => {
+    const modes = ["images", "extract-images", "svg"] as const;
+
+    const folders = modes.map(writesToFolder);
+
+    expect(folders).toEqual([true, true, true]);
+  });
+
+  it("asks for one output file for single-file conversions", () => {
+    const modes = ["docx", "markdown", "svg-to-pdf"] as const;
+
+    const folders = modes.map(writesToFolder);
+
+    expect(folders).toEqual([false, false, false]);
   });
 });

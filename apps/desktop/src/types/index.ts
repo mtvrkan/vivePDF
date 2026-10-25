@@ -1138,6 +1138,8 @@ export type ImagesParams = {
   gray?: boolean;
   archive?: boolean;
 };
+export type SvgParams = { path: string; password?: string; outputDir: string; pages?: string; baseName?: string; overwrite?: boolean; textAsText?: boolean };
+export type SvgResult = { outputs: string[]; bytes: number; pageCount: number };
 export type ImagesToPdfParams = {
   images: string[];
   folders: string[];

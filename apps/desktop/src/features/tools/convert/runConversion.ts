@@ -11,6 +11,7 @@ import {
   convertToImages,
   convertToMarkdown,
   convertToPptx,
+  convertToSvg,
   convertToText,
   convertToXlsx,
   extractImages,
@@ -42,6 +43,7 @@ export type ConvertRun = {
     recursive: boolean;
     compressPhotos: boolean;
     asSeen: boolean;
+    textAsText: boolean;
     sort: "name" | "date";
     pageSize: "image" | "a4" | "letter";
     orientation: "auto" | "portrait" | "landscape";
@@ -213,6 +215,10 @@ export async function runConversion(run: ConvertRun, callOptions: RpcCallOptions
     case "extract-images": {
       const result = await extractImages({ path: base.path, password: base.password, outputDir: run.outputDir ?? "", pages: run.pages, asSeen: opts.asSeen }, callOptions);
       return { outputs: result.outputs, bytes: result.bytes, count: result.count, label: "images" };
+    }
+    case "svg": {
+      const result = await convertToSvg({ path: base.path, password: base.password, outputDir: run.outputDir ?? "", pages: run.pages, overwrite: run.overwrite, textAsText: opts.textAsText }, callOptions);
+      return { outputs: result.outputs, bytes: result.bytes, count: result.outputs.length, label: "files" };
     }
     case "text": {
       const result = await convertToText({ ...base, ...reading, layout: opts.layout }, callOptions);

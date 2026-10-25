@@ -35,6 +35,23 @@ describe("convert", () => {
     }
   });
 
+  it("turns every PDF page into its own SVG drawing", async () => {
+    const source = copyFixture(fixtures().sample, "to-svg.pdf");
+    await openTool("tools.convert.modes.svg");
+    await chooseSource(source);
+
+    await runPrimary(t("tools.convert.run"));
+
+    const outputs = await waitForOutputs();
+    expect(outputs).toHaveLength(3);
+    for (const output of outputs) {
+      expect(output.endsWith(".svg")).toBe(true);
+      const drawing = readFileSync(output, "utf8");
+      expect(drawing.startsWith("<svg")).toBe(true);
+      expect(drawing).not.toContain("<text");
+    }
+  });
+
   it("turns two pictures into a two-page PDF", async () => {
     const red = copyFixture(fixtures().red);
     const blue = copyFixture(fixtures().blue);

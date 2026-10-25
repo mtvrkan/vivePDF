@@ -373,6 +373,16 @@
     "read"
    ]
   ],
+  "convert.to_svg": [
+   [
+    "outputDir",
+    "writeDir"
+   ],
+   [
+    "path",
+    "read"
+   ]
+  ],
   "convert.to_text": [
    [
     "output",

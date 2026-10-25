@@ -2870,6 +2870,7 @@
         "business-card": "Cartões frente e verso com hot stamping, relevo e verniz localizado, prontos para gráfica com sangria e imposição.",
         "bibliography": "Importe .bib, RIS ou CSL JSON, edite as fontes e exporte referências em APA, MLA, Chicago ou IEEE.",
         "extract-images": "Extraia todas as imagens incorporadas de um PDF na qualidade original.",
+        "pdf-to-svg": "Transforma cada página em um desenho SVG vetorial que abre no Inkscape, Illustrator ou Figma.",
         "comments": "Leia, responda e resolva comentários, e exporte ou importe-os como XFDF ou FDF.",
         "attachments": "Veja, adicione, salve e remova arquivos anexados a um PDF.",
         "properties": "Mostra número e tamanho das páginas, tamanho do arquivo, versão do PDF e criptografia, e edita título, autor, assunto e palavras-chave.",
@@ -2900,7 +2901,8 @@
         "file-to-pdf": "Office → PDF",
         "svg-to-pdf": "SVG → PDF",
         "url-to-pdf": "Página da web → PDF",
-        "extract-images": "Extrair imagens"
+        "extract-images": "Extrair imagens",
+        "svg": "PDF → SVG"
       },
       "hints": {
         "docx": ".docx com layout preservado, com tabelas e imagens. Execute o OCR antes para documentos digitalizados.",
@@ -2915,7 +2917,8 @@
         "file-to-pdf": "Documentos do Office via LibreOffice; TXT, Markdown, HTML, EPUB, XPS, CBZ e imagens são convertidos diretamente.",
         "svg-to-pdf": "Desenhos vetoriais do Inkscape, Illustrator ou Figma viram páginas PDF vetoriais no próprio tamanho; estilos, gradientes e texto são mantidos.",
         "url-to-pdf": "Salva um endereço da web como PDF. Scripts, formulários e players incorporados ficam de fora; as imagens são baixadas à parte.",
-        "extract-images": "Salva cada imagem incorporada na resolução original."
+        "extract-images": "Salva cada imagem incorporada na resolução original.",
+        "svg": "Cada página vira um arquivo SVG vetorial próprio; linhas, cores e imagens são mantidas."
       },
       "missing": {
         "libreoffice": "Arquivos do Office precisam do LibreOffice. Baixe-o em Configurações › Ferramentas, ou instale-o você mesmo, depois reabra esta página."
@@ -2959,6 +2962,8 @@
       "compressPhotosHint": "As fotos são reduzidas a 200 dpi conforme o tamanho na página e salvas em JPEG, deixando o PDF bem menor. Desenhos e capturas de tela ficam como estão.",
       "asSeen": "Como aparece na página",
       "asSeenHint": "Imagens recortadas são salvas só com a parte visível, e imagens formadas por blocos, como um único arquivo. Imagens de fundo são ignoradas.",
+      "svgText": "Manter o texto como texto",
+      "svgTextHint": "O texto continua editável no SVG, mas pode aparecer diferente em um computador sem a mesma fonte. Desligado, o texto vira contornos e aparece igual em qualquer lugar.",
       "files": "Arquivos",
       "dropFiles": "Adicione arquivos ou solte-os na janela.",
       "addFiles": "Adicionar arquivos",

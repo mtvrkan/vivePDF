@@ -2870,6 +2870,7 @@
         "business-card": "Tarjetas a dos caras con foil, relieve y UV selectivo, listas para imprenta con sangrado e imposición.",
         "bibliography": "Importa .bib, RIS o CSL JSON, edita las fuentes y exporta una bibliografía APA, MLA, Chicago o IEEE.",
         "extract-images": "Extrae todas las imágenes incrustadas de un PDF con su calidad original.",
+        "pdf-to-svg": "Convierte cada página en un dibujo SVG vectorial que se abre en Inkscape, Illustrator o Figma.",
         "comments": "Lee, responde y resuelve comentarios; permite exportar o importar como XFDF o FDF.",
         "attachments": "Muestra, añade, guarda y quita los archivos adjuntos a un PDF.",
         "properties": "Muestra el número y tamaño de páginas, el tamaño del archivo, la versión PDF y el cifrado, y edita título, autor, asunto y palabras clave.",
@@ -2900,7 +2901,8 @@
         "file-to-pdf": "Office → PDF",
         "svg-to-pdf": "SVG → PDF",
         "url-to-pdf": "Página web → PDF",
-        "extract-images": "Extraer imágenes"
+        "extract-images": "Extraer imágenes",
+        "svg": "PDF → SVG"
       },
       "hints": {
         "docx": "Documento .docx que conserva el diseño, con tablas e imágenes. Ejecute OCR primero en documentos escaneados.",
@@ -2915,7 +2917,8 @@
         "file-to-pdf": "Documentos de Office mediante LibreOffice; TXT, Markdown, HTML, EPUB, XPS, CBZ e imágenes se convierten directamente.",
         "svg-to-pdf": "Los dibujos vectoriales de Inkscape, Illustrator o Figma se convierten en páginas PDF vectoriales a su tamaño; se conservan estilos, degradados y texto.",
         "url-to-pdf": "Guarda una dirección web como PDF. Los scripts, formularios y reproductores incrustados se omiten; las imágenes se descargan aparte.",
-        "extract-images": "Guarda cada imagen incrustada en su resolución original."
+        "extract-images": "Guarda cada imagen incrustada en su resolución original.",
+        "svg": "Cada página se convierte en su propio archivo SVG vectorial; se conservan las líneas, los colores y las imágenes."
       },
       "missing": {
         "libreoffice": "Los archivos de Office necesitan LibreOffice. Descárguelo en Ajustes › Herramientas, o instálelo usted mismo, y luego vuelva a abrir esta página."
@@ -2959,6 +2962,8 @@
       "compressPhotosHint": "Las fotos se reducen a 200 dpi según su tamaño en la página y se guardan como JPEG, así el PDF ocupa mucho menos. Los dibujos y las capturas de pantalla no cambian.",
       "asSeen": "Tal como se ve en la página",
       "asSeenHint": "Las imágenes recortadas se guardan solo con su parte visible y las formadas por mosaicos, como un único archivo. Las imágenes de fondo se omiten.",
+      "svgText": "Mantener el texto como texto",
+      "svgTextHint": "El texto sigue siendo editable en el SVG, pero puede verse distinto en un equipo sin la misma fuente. Si está desactivado, el texto se convierte en trazados y se ve igual en todas partes.",
       "files": "Archivos",
       "dropFiles": "Añada archivos o arrástrelos a la ventana.",
       "addFiles": "Añadir archivos",

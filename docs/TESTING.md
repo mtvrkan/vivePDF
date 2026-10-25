@@ -146,7 +146,7 @@ in.
 | `home` | open a file so it is remembered, see its cover on Home, replace the file on disk, come back to Home | the cover picture changes, then stays the same on the next visit |
 | `engine` | four OCR jobs on a 400-page file keep every heavy engine worker busy while a page thumbnail is asked for, then the jobs are cancelled | the thumbnail arrives within 10 s while none of the OCR jobs has finished, and all four stop after the cancel |
 | `studiodoc` | type a few words at the end of a saved document's heading and press Ctrl+S at once | the saved file holds the new words and the bar still shows the file as saved half a second later |
-| `convert` | PDF to pictures, pictures to PDF, two SVG drawings combined into one PDF | 3 images; 2-page PDF with one image per page; 2 vector pages (no images) with the drawings' text and aspect ratios |
+| `convert` | PDF to pictures, PDF to SVG, pictures to PDF, two SVG drawings combined into one PDF | 3 images; 3 SVG files with the text drawn as outlines; 2-page PDF with one image per page; 2 vector pages (no images) with the drawings' text and aspect ratios |
 | `convert` | Word document with a Turkish file name to PDF through LibreOffice (skipped when LibreOffice is not installed) | one page with the heading and the Turkish line as real text, written next to the source |
 | `batch` | compress then password chain on two files | both outputs encrypted, page counts kept |
 | `windows` | moving a tab into a new window from the tab menu, the theme chosen in the main window reaching the second one, closing a document window from its own title bar, an empty window from the palette's New window action, opening a file another window already holds | window handles, the held file getting no tab in the second window and staying in the first, the tab leaving the first window and loading in the second, the second window's page number, the `dark` class on the second window's root |
@@ -389,6 +389,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   with a PDF open: the viewer comes forward with that side panel open. Pick Print: the print
   dialog opens. With no PDF open, the viewer waits on its empty page and opens the panel once a
   PDF is opened.
+- PDF to SVG on a turned page, a cropped page and a page with Turkish text: open each SVG in
+  Inkscape or Edge; it has the page's visible size and look. With "Keep text as text" on, the
+  text can be selected and edited in Inkscape.
 
 ### How native dialogs are answered
 

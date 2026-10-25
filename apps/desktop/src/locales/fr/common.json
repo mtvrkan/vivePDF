@@ -2870,6 +2870,7 @@
         "business-card": "Cartes recto verso avec dorure, gaufrage et vernis sélectif, prêtes à imprimer avec fond perdu et imposition.",
         "bibliography": "Importez .bib, RIS ou CSL JSON, modifiez les sources et exportez une bibliographie APA, MLA, Chicago ou IEEE.",
         "extract-images": "Récupérez toutes les images intégrées d'un PDF dans leur qualité d'origine.",
+        "pdf-to-svg": "Transforme chaque page en dessin SVG vectoriel qui s’ouvre dans Inkscape, Illustrator ou Figma.",
         "comments": "Lisez, répondez et résolvez les commentaires, puis exportez-les ou importez-les en XFDF ou FDF.",
         "attachments": "Affichez, ajoutez, enregistrez et supprimez les fichiers joints à un PDF.",
         "properties": "Affiche le nombre et le format des pages, la taille du fichier, la version PDF et le chiffrement, et modifie le titre, l’auteur, le sujet et les mots-clés.",
@@ -2900,7 +2901,8 @@
         "file-to-pdf": "Office → PDF",
         "svg-to-pdf": "SVG → PDF",
         "url-to-pdf": "Page web → PDF",
-        "extract-images": "Extraire les images"
+        "extract-images": "Extraire les images",
+        "svg": "PDF → SVG"
       },
       "hints": {
         "docx": "Fichier .docx avec mise en page préservée, tableaux et images. Lancez l’OCR d’abord pour les documents numérisés.",
@@ -2915,7 +2917,8 @@
         "file-to-pdf": "Documents Office via LibreOffice ; TXT, Markdown, HTML, EPUB, XPS, CBZ et images se convertissent directement.",
         "svg-to-pdf": "Les dessins vectoriels d’Inkscape, Illustrator ou Figma deviennent des pages PDF vectorielles à leur taille ; styles, dégradés et texte sont conservés.",
         "url-to-pdf": "Enregistre une adresse web au format PDF. Les scripts, formulaires et lecteurs intégrés sont écartés ; les images sont téléchargées séparément.",
-        "extract-images": "Enregistre chaque image intégrée à sa résolution d’origine."
+        "extract-images": "Enregistre chaque image intégrée à sa résolution d’origine.",
+        "svg": "Chaque page devient son propre fichier SVG vectoriel ; les traits, les couleurs et les images sont conservés."
       },
       "missing": {
         "libreoffice": "Les fichiers Office nécessitent LibreOffice. Téléchargez-le dans Paramètres › Outils, ou installez-le vous-même, puis rouvrez cette page."
@@ -2959,6 +2962,8 @@
       "compressPhotosHint": "Les photos sont ramenées à 200 dpi selon leur taille sur la page et enregistrées en JPEG : le PDF est bien plus léger. Les dessins et les captures d’écran restent intacts.",
       "asSeen": "Tel qu’affiché sur la page",
       "asSeenHint": "Les images rognées sont enregistrées avec leur seule partie visible, et les images faites de tuiles en un seul fichier. Les images d’arrière-plan sont ignorées.",
+      "svgText": "Garder le texte en texte",
+      "svgTextHint": "Le texte reste modifiable dans le SVG mais peut s’afficher différemment sur un ordinateur qui n’a pas la même police. Désactivé, le texte est converti en tracés et s’affiche partout à l’identique.",
       "files": "Fichiers",
       "dropFiles": "Ajoutez des fichiers ou déposez-les sur la fenêtre.",
       "addFiles": "Ajouter des fichiers",

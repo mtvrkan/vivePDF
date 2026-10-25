@@ -12,10 +12,11 @@ import {
   Presentation,
   ScrollText,
   Shapes,
+  Spline,
 } from "lucide-react";
 import { basenameOf, dirnameOf, joinPath, numberedPath, outputDirectoryFor, pathKey } from "@/shared/lib/paths";
 
-export type FromPdfMode = "docx" | "xlsx" | "pptx" | "images" | "extract-images" | "text" | "markdown" | "html" | "epub";
+export type FromPdfMode = "docx" | "xlsx" | "pptx" | "images" | "extract-images" | "svg" | "text" | "markdown" | "html" | "epub";
 export type ToPdfMode = "images-to-pdf" | "file-to-pdf" | "svg-to-pdf" | "url-to-pdf";
 export type ConvertMode = FromPdfMode | ToPdfMode;
 
@@ -32,6 +33,7 @@ export const FROM_PDF: ConversionEntry[] = [
   { mode: "pptx", icon: Presentation, extension: "pptx" },
   { mode: "images", icon: FileImage, extension: "png" },
   { mode: "extract-images", icon: ImageDown, extension: "png" },
+  { mode: "svg", icon: Spline, extension: "svg" },
   { mode: "text", icon: FileText, extension: "txt" },
   { mode: "markdown", icon: ScrollText, extension: "md" },
   { mode: "html", icon: FileCode2, extension: "html" },
@@ -57,6 +59,10 @@ export const EBOOK_EXTENSIONS = ["epub", "xps", "oxps", "mobi", "fb2", "cbz", "s
 export const SVG_EXTENSIONS = ["svg"];
 export const MAIL_EXTENSIONS = ["eml", "msg"];
 export const IMAGE_EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif", "bmp", "gif", "tif", "tiff", "pnm", "pgm", "ppm", "jp2", "jxr", "heic", "heif", "hif"];
+
+export function writesToFolder(mode: ConvertMode): boolean {
+  return mode === "images" || mode === "extract-images" || mode === "svg";
+}
 
 export function svgWritesOneFile(count: number, combine: boolean): boolean {
   return count <= 1 || combine;

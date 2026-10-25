@@ -2871,6 +2871,7 @@
         "business-card": "Yaldız, kabartma ve lokal lak ile çift yüzlü kartvizit; taşma payı ve dizimle baskıya hazır.",
         "bibliography": ".bib, RIS veya CSL JSON içe aktarın, kaynakları düzenleyin ve APA, MLA, Chicago ya da IEEE kaynakça çıkarın.",
         "extract-images": "PDF'teki tüm gömülü resimleri özgün kalitesinde dışarı çıkarın.",
+        "pdf-to-svg": "Her sayfayı Inkscape, Illustrator veya Figma'da açılabilen vektör SVG çizimine çevirir.",
         "comments": "Yorumları okur, yanıtlar ve çözüldü olarak işaretler; XFDF ya da FDF olarak dışa ve içe aktarır.",
         "attachments": "PDF'e iliştirilmiş dosyaları gösterir, ekler, kaydeder ve kaldırır.",
         "properties": "Sayfa sayısını, sayfa ve dosya boyutunu, PDF sürümünü ve şifrelemeyi gösterir; başlık, yazar, konu ve anahtar kelimeleri düzenler.",
@@ -2901,7 +2902,8 @@
         "file-to-pdf": "Office → PDF",
         "svg-to-pdf": "SVG → PDF",
         "url-to-pdf": "Web sayfası → PDF",
-        "extract-images": "Görselleri çıkar"
+        "extract-images": "Görselleri çıkar",
+        "svg": "PDF → SVG"
       },
       "hints": {
         "docx": "Düzen korumalı .docx; tablolar ve görseller aktarılır. Taranmış belgeler için önce OCR uygulayın.",
@@ -2916,7 +2918,8 @@
         "file-to-pdf": "Office belgeleri LibreOffice ile; TXT, Markdown, HTML, EPUB, XPS, CBZ ve görseller doğrudan dönüştürülür.",
         "svg-to-pdf": "Inkscape, Illustrator ya da Figma çizimleri kendi boyutunda vektör PDF sayfasına dönüşür; stiller, geçişler ve metin korunur.",
         "url-to-pdf": "Bir web adresini PDF olarak kaydeder. Betikler, formlar ve gömülü oynatıcılar dışarıda bırakılır; görseller ayrıca indirilir.",
-        "extract-images": "Sayfalara gömülü her görseli özgün çözünürlüğünde kaydeder."
+        "extract-images": "Sayfalara gömülü her görseli özgün çözünürlüğünde kaydeder.",
+        "svg": "Her sayfa ayrı bir vektör SVG dosyası olur; çizgiler, renkler ve resimler korunur."
       },
       "missing": {
         "libreoffice": "Office dosyaları için LibreOffice gereklidir. Ayarlar › Araçlar bölümünden indirin veya kendiniz kurun, ardından bu sayfayı yeniden açın."
@@ -2960,6 +2963,8 @@
       "compressPhotosHint": "Fotoğraflar sayfadaki boyutlarına göre 200 DPI'ye indirilip JPEG olarak kaydedilir; PDF çok daha küçük olur. Çizimler ve ekran görüntüleri olduğu gibi kalır.",
       "asSeen": "Sayfada göründüğü gibi",
       "asSeenHint": "Kırpılmış resimler yalnızca görünen kısmıyla, parçalardan oluşan resimler tek dosya olarak kaydedilir. Arka plan resimleri atlanır.",
+      "svgText": "Yazıyı metin olarak bırak",
+      "svgTextHint": "Yazı SVG'de düzenlenebilir kalır ama başka bir bilgisayarda aynı yazı tipi yoksa farklı görünebilir. Kapalıyken yazı çizgiye çevrilir ve her yerde aynı görünür.",
       "files": "Dosyalar",
       "dropFiles": "Dosya ekleyin ya da pencereye sürükleyin.",
       "addFiles": "Dosya ekle",

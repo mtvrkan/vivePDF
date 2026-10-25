@@ -2870,6 +2870,7 @@
         "business-card": "Zweiseitige Karten mit Folie, Prägung und Spot-UV, druckfertig mit Beschnitt und Ausschießen.",
         "bibliography": ".bib, RIS oder CSL JSON importieren, Quellen bearbeiten und ein Verzeichnis nach APA, MLA, Chicago oder IEEE exportieren.",
         "extract-images": "Alle eingebetteten Bilder einer PDF in Originalqualität herausholen.",
+        "pdf-to-svg": "Wandelt jede Seite in eine Vektor-SVG-Zeichnung um, die sich in Inkscape, Illustrator oder Figma öffnen lässt.",
         "comments": "Kommentare lesen, beantworten und als erledigt markieren sowie als XFDF oder FDF exportieren und importieren.",
         "attachments": "An eine PDF angehängte Dateien anzeigen, hinzufügen, speichern und entfernen.",
         "properties": "Seitenzahl, Seiten- und Dateigröße, PDF-Version und Verschlüsselung anzeigen sowie Titel, Autor, Betreff und Stichwörter bearbeiten.",
@@ -2900,7 +2901,8 @@
         "file-to-pdf": "Office → PDF",
         "svg-to-pdf": "SVG → PDF",
         "url-to-pdf": "Webseite → PDF",
-        "extract-images": "Bilder extrahieren"
+        "extract-images": "Bilder extrahieren",
+        "svg": "PDF → SVG"
       },
       "hints": {
         "docx": "Layout-erhaltendes .docx mit Tabellen und Bildern. Für gescannte Dokumente zuerst OCR ausführen.",
@@ -2915,7 +2917,8 @@
         "file-to-pdf": "Office-Dokumente über LibreOffice; TXT, Markdown, HTML, EPUB, XPS, CBZ und Bilder werden direkt konvertiert.",
         "svg-to-pdf": "Vektorzeichnungen aus Inkscape, Illustrator oder Figma werden zu Vektor-PDF-Seiten in ihrer eigenen Größe; Stile, Verläufe und Text bleiben erhalten.",
         "url-to-pdf": "Speichert eine Webadresse als PDF. Skripte, Formulare und eingebettete Player bleiben außen vor; Bilder werden separat geladen.",
-        "extract-images": "Speichert jedes eingebettete Bild in Originalauflösung."
+        "extract-images": "Speichert jedes eingebettete Bild in Originalauflösung.",
+        "svg": "Jede Seite wird zu einer eigenen Vektor-SVG-Datei; Linien, Farben und Bilder bleiben erhalten."
       },
       "missing": {
         "libreoffice": "Office-Dateien benötigen LibreOffice. Laden Sie es unter Einstellungen › Werkzeuge herunter oder installieren Sie es selbst, und öffnen Sie diese Seite dann erneut."
@@ -2959,6 +2962,8 @@
       "compressPhotosHint": "Fotos werden passend zu ihrer Größe auf der Seite auf 200 dpi verkleinert und als JPEG gespeichert, sodass die PDF viel kleiner wird. Zeichnungen und Bildschirmfotos bleiben unverändert.",
       "asSeen": "Wie auf der Seite dargestellt",
       "asSeenHint": "Zugeschnittene Bilder werden nur mit ihrem sichtbaren Teil gespeichert, aus Kacheln zusammengesetzte Bilder als eine Datei. Hintergrundbilder werden übersprungen.",
+      "svgText": "Text als Text behalten",
+      "svgTextHint": "Der Text bleibt im SVG bearbeitbar, kann aber auf einem Computer ohne dieselbe Schrift anders aussehen. Ist die Option aus, wird der Text in Pfade umgewandelt und sieht überall gleich aus.",
       "files": "Dateien",
       "dropFiles": "Fügen Sie Dateien hinzu oder ziehen Sie sie auf das Fenster.",
       "addFiles": "Dateien hinzufügen",

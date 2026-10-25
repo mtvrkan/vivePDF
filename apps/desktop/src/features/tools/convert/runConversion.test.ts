@@ -11,6 +11,7 @@ const convertToImages = vi.fn();
 const convertToText = vi.fn();
 const convertToMarkdown = vi.fn();
 const extractImages = vi.fn();
+const convertToSvg = vi.fn();
 const studioReadBibliography = vi.fn();
 const studioRenderDocument = vi.fn();
 const imagesToPdf = vi.fn();
@@ -23,6 +24,7 @@ vi.mock("@/shared/rpc/operations", () => ({
   convertToText: (...args: unknown[]) => convertToText(...args),
   convertToMarkdown: (...args: unknown[]) => convertToMarkdown(...args),
   extractImages: (...args: unknown[]) => extractImages(...args),
+  convertToSvg: (...args: unknown[]) => convertToSvg(...args),
   studioReadBibliography: (...args: unknown[]) => studioReadBibliography(...args),
   studioRenderDocument: (...args: unknown[]) => studioRenderDocument(...args),
   imagesToPdf: (...args: unknown[]) => imagesToPdf(...args),
@@ -185,7 +187,7 @@ describe("runConversion office results", () => {
   });
 });
 
-function pdfTo(mode: "images" | "extract-images" | "text" | "markdown"): ConvertRun {
+function pdfTo(mode: "images" | "extract-images" | "svg" | "text" | "markdown"): ConvertRun {
   return {
     mode,
     source: { path: "C:/in/a.pdf" },
@@ -201,6 +203,7 @@ describe("runConversion picture and text results", () => {
     convertToText.mockReset();
     convertToMarkdown.mockReset();
     extractImages.mockReset();
+    convertToSvg.mockReset();
   });
 
   it("reports pages saved at a lower resolution", async () => {
@@ -234,6 +237,18 @@ describe("runConversion picture and text results", () => {
     await runConversion(run, {});
 
     expect(extractImages.mock.calls[0][0]).toMatchObject({ outputDir: "C:/out", asSeen: true });
+  });
+
+  it("writes one SVG per page into the folder and passes the text choice", async () => {
+    convertToSvg.mockResolvedValue({ outputs: ["C:/out/a-1.svg", "C:/out/a-2.svg"], bytes: 4096, pageCount: 2 });
+    const run = pdfTo("svg");
+    run.pages = "1-2";
+    run.options = { ...run.options, textAsText: true };
+
+    const outcome = await runConversion(run, {});
+
+    expect(convertToSvg.mock.calls[0][0]).toMatchObject({ path: "C:/in/a.pdf", outputDir: "C:/out", pages: "1-2", textAsText: true });
+    expect(outcome).toMatchObject({ outputs: ["C:/out/a-1.svg", "C:/out/a-2.svg"], bytes: 4096, count: 2, label: "files" });
   });
 
   it("names text pages that had no text layer", async () => {

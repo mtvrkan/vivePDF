@@ -18,7 +18,7 @@ import { useDropTargetStore } from "@/shared/store/dropTargetStore";
 import { useLaunchStore } from "@/shared/store/launchStore";
 import { useToolsStatusStore } from "@/shared/store/toolsStatusStore";
 import { useUiStore } from "@/shared/store/uiStore";
-import { FROM_PDF, IMAGE_EXTENSIONS, albumOutputPath, SVG_EXTENSIONS, TO_PDF, isConvertMode, pageList, svgWritesOneFile, type ConversionEntry, type ConvertMode } from "./conversions";
+import { FROM_PDF, IMAGE_EXTENSIONS, albumOutputPath, SVG_EXTENSIONS, TO_PDF, isConvertMode, pageList, svgWritesOneFile, writesToFolder, type ConversionEntry, type ConvertMode } from "./conversions";
 import { FileToPdfSection } from "./FileToPdfSection";
 import { FromPdfSection } from "./FromPdfSection";
 import { ImagesToPdfSection } from "./ImagesToPdfSection";
@@ -47,7 +47,7 @@ export function ConvertPage() {
   const [outputDir, setOutputDir] = useState("");
   const [pages, setPages] = useState("");
   const options = useConvertOptions();
-  const { format, dpi, quality, layout, paper, fitColumns, images, setImages, folders, setFolders, recursive, compressPhotos, asSeen, sort, pageSize, orientation, margin, files, setFiles, svgFiles, setSvgFiles, combineSvg, url, readerMode, includeImages, split, bookTitle, bookAuthor, sheets, xlsxFormat, csvDelimiter, borderless, single, transparent, gray, archive, ocr, pictures, headerFooter, fit, cover, pptxMode } = options;
+  const { format, dpi, quality, layout, paper, fitColumns, images, setImages, folders, setFolders, recursive, compressPhotos, asSeen, textAsText, sort, pageSize, orientation, margin, files, setFiles, svgFiles, setSvgFiles, combineSvg, url, readerMode, includeImages, split, bookTitle, bookAuthor, sheets, xlsxFormat, csvDelimiter, borderless, single, transparent, gray, archive, ocr, pictures, headerFooter, fit, cover, pptxMode } = options;
 
   const entry = useMemo(() => [...FROM_PDF, ...TO_PDF].find((item) => item.mode === mode) as ConversionEntry, [mode]);
   const fromPdf = FROM_PDF.some((item) => item.mode === mode);
@@ -83,7 +83,7 @@ export function ConvertPage() {
   useEffect(() => {
     if (fromPdf && source) {
       setOutput(siblingPath(source.path, outputExtension));
-      setOutputDir(joinPath(outputDirectoryFor(source.path), `${stemOf(source.path)}-${t("tools.convert.imagesSuffix")}`));
+      setOutputDir(joinPath(outputDirectoryFor(source.path), `${stemOf(source.path)}-${mode === "svg" ? "svg" : t("tools.convert.imagesSuffix")}`));
     }
   }, [fromPdf, source, mode, outputExtension, t]);
 
@@ -181,7 +181,7 @@ export function ConvertPage() {
 
   const missingTool = entry.requires && tools && !tools[entry.requires] ? entry.requires : null;
   const ready = fromPdf
-    ? !!source?.info && (mode === "images" || mode === "extract-images" ? !!outputDir : !!output) && !missingTool
+    ? !!source?.info && (writesToFolder(mode) ? !!outputDir : !!output) && !missingTool
     : mode === "images-to-pdf"
       ? images.length + folders.length > 0 && !!output
       : mode === "url-to-pdf"
@@ -212,6 +212,7 @@ export function ConvertPage() {
         recursive,
         compressPhotos,
         asSeen,
+        textAsText,
         sort,
         pageSize,
         orientation,
