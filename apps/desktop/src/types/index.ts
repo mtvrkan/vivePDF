@@ -1104,7 +1104,7 @@ export type OperationStatus = "idle" | "running" | "success" | "error";
 
 export type FileResult = { output: string; bytes: number };
 export type PagedFileResult = FileResult & { pageCount: number };
-export type TablesResult = FileResult & { tableCount: number; textPages: number[]; textlessPages: number[] };
+export type TablesResult = FileResult & { tableCount: number; textPages: number[]; textlessPages: number[]; ocrPages: number[] };
 export type DocxParams = PdfSourceParams & { headerFooter?: boolean };
 export type DocxResult = FileResult & { skippedPages: number[]; textlessPages: number[]; headerLines: number; footerLines: number };
 export type ImagesResult = { outputs: string[]; bytes: number; reducedPages: number[]; pageCount: number };
@@ -1120,7 +1120,7 @@ export type MarkdownParams = TextSourceParams & { pictures?: MarkdownPictures };
 export type MarkdownResult = TextFileResult & { pictureCount: number; pictureFolder: string | null };
 export type XlsxSheets = "table" | "page" | "single";
 export type XlsxFormat = "xlsx" | "csv";
-export type XlsxParams = PdfSourceParams & { sheets?: XlsxSheets; format?: XlsxFormat; borderless?: boolean; pageLabel?: string; tableLabel?: string; textLabel?: string };
+export type XlsxParams = TextSourceParams & { sheets?: XlsxSheets; format?: XlsxFormat; delimiter?: ExportDelimiter; borderless?: boolean; pageLabel?: string; tableLabel?: string; textLabel?: string };
 export type ImageFit = "fit" | "fill";
 export type ImageFormat = "png" | "jpg" | "webp" | "tiff";
 export type ImagesParams = {

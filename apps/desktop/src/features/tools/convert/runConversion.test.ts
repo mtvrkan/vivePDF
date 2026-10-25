@@ -157,6 +157,16 @@ describe("runConversion office results", () => {
     expect(outcome.textless).toBeUndefined();
   });
 
+  it("sends the CSV separator and OCR choice to Excel conversion", async () => {
+    convertToXlsx.mockResolvedValue({ output: "C:/out/a.csv", bytes: 5, tableCount: 1, textPages: [], textlessPages: [], ocrPages: [2] });
+    const csv = fromPdf("xlsx");
+    csv.options = { ...csv.options, xlsxFormat: "csv", csvDelimiter: ";", ocr: true, ocrLanguages: ["tur"] };
+    expect(await runConversion(csv, {})).toMatchObject({ ocrPages: [2] });
+    expect(convertToXlsx.mock.calls[0][0]).toMatchObject({ format: "csv", delimiter: ";", ocr: true, ocrLanguages: ["tur"] });
+    await runConversion(fromPdf("xlsx"), {});
+    expect(convertToXlsx.mock.calls[1][0].delimiter).toBeUndefined();
+  });
+
   it("reports Word pages that could not be written", async () => {
     convertToDocx.mockResolvedValue({ output: "C:/out/a.docx", bytes: 5, skippedPages: [2], textlessPages: [] });
     const outcome = await runConversion(fromPdf("docx"), {});

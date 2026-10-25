@@ -2,9 +2,9 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { open as openDialog } from "@tauri-apps/plugin-dialog";
 import { pickReadableFolders } from "@/shared/rpc/files";
-import type { ImageFit, ImageFormat, MarkdownPictures, PptxMode, XlsxFormat, XlsxSheets } from "@/types";
+import type { ExportDelimiter, ImageFit, ImageFormat, MarkdownPictures, PptxMode, XlsxFormat, XlsxSheets } from "@/types";
 import { SOURCE_LIBRARY_EXTENSIONS } from "@/types/studio";
-import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, MAIL_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, SVG_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "./conversions";
+import { EBOOK_EXTENSIONS, IMAGE_EXTENSIONS, listSeparator, MAIL_EXTENSIONS, OFFICE_LIKE_EXTENSIONS, SVG_EXTENSIONS, TEXT_LIKE_EXTENSIONS } from "./conversions";
 
 export function useConvertOptions() {
   const { t } = useTranslation();
@@ -33,6 +33,7 @@ export function useConvertOptions() {
   const [bookAuthor, setBookAuthor] = useState("");
   const [sheets, setSheets] = useState<XlsxSheets>("table");
   const [xlsxFormat, setXlsxFormat] = useState<XlsxFormat>("xlsx");
+  const [csvDelimiter, setCsvDelimiter] = useState<ExportDelimiter>(() => listSeparator(navigator.language));
   const [borderless, setBorderless] = useState(false);
   const [single, setSingle] = useState(false);
   const [transparent, setTransparent] = useState(false);
@@ -124,6 +125,8 @@ export function useConvertOptions() {
     setSheets,
     xlsxFormat,
     setXlsxFormat,
+    csvDelimiter,
+    setCsvDelimiter,
     borderless,
     setBorderless,
     single,

@@ -19,7 +19,7 @@ import {
   svgToPdf,
   urlToPdf,
 } from "@/shared/rpc/operations";
-import type { ImageFit, ImageFormat, MarkdownPictures, PptxMode, RpcError, XlsxFormat, XlsxSheets } from "@/types";
+import type { ExportDelimiter, ImageFit, ImageFormat, MarkdownPictures, PptxMode, RpcError, XlsxFormat, XlsxSheets } from "@/types";
 import { batchOutputPaths, svgWritesOneFile, type ConvertMode } from "./conversions";
 
 export type ConvertRun = {
@@ -57,6 +57,7 @@ export type ConvertRun = {
     author: string;
     sheets: XlsxSheets;
     xlsxFormat: XlsxFormat;
+    csvDelimiter: ExportDelimiter;
     borderless: boolean;
     single: boolean;
     transparent: boolean;
@@ -168,7 +169,10 @@ export async function runConversion(run: ConvertRun, callOptions: RpcCallOptions
       };
     }
     case "xlsx": {
-      const result = await convertToXlsx({ ...base, sheets: opts.sheets, format: opts.xlsxFormat, borderless: opts.borderless, ...run.sheetLabels }, callOptions);
+      const result = await convertToXlsx(
+        { ...base, ...reading, sheets: opts.sheets, format: opts.xlsxFormat, delimiter: opts.xlsxFormat === "csv" ? opts.csvDelimiter : undefined, borderless: opts.borderless, ...run.sheetLabels },
+        callOptions,
+      );
       return {
         outputs: [result.output],
         bytes: result.bytes,
@@ -177,6 +181,7 @@ export async function runConversion(run: ConvertRun, callOptions: RpcCallOptions
         noTables: result.tableCount === 0 && result.textPages.length > 0,
         textPages: result.tableCount > 0 ? result.textPages : [],
         textless: textless(result.textlessPages, "textlessOffice"),
+        ocrPages: result.ocrPages,
       };
     }
     case "pptx": {

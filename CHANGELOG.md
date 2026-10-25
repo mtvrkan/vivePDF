@@ -4,6 +4,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- PDF to Excel: a table that runs over to the next page comes out as one table on one sheet (named like `S1-S2-T1`) with its repeated header row dropped; a header row is bold and frozen so it stays in view while scrolling; clock times and date-times become time values; text that wrapped inside a cell is joined into one line [2026-10-25]
+- PDF to Excel: CSV output has a column separator choice, set to semicolon where numbers use a decimal comma (Turkish Excel) so the file opens in columns [2026-10-25]
+- PDF to Excel: "Read pages without text with OCR" works for Excel too; the table lines of a scan are taken out before recognition and used to find the table, so a scanned ruled table comes out in rows and columns [2026-10-25]
 - PDF to PowerPoint (editable): each slide's notes hold the text of its page, as image mode already did, so the presenter view and the notes page show it [2026-10-25]
 - PDF to PowerPoint (editable): a scanned page with a recognised text layer (OCR) gets its words as editable text boxes in the ink colour of the scan, sized to the scanned words, and those words are wiped from the slide picture in the paper colour, also on turned pages [2026-10-25]
 - PDF to PowerPoint (editable): slide text is marked with the PDF's language, or Turkish when the text has Turkish letters, so PowerPoint checks spelling in the right language [2026-10-25]

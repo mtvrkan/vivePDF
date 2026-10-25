@@ -9,10 +9,12 @@ from pydantic import Field
 
 from vivepdf.ops._cell_text import page_fragments, table_spans, table_texts
 from vivepdf.ops._document import open_document
+from vivepdf.ops._ocr_layer import Rule
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._ranges import parse_page_ranges
+from vivepdf.ops._split_tables import joined_across_pages
 from vivepdf.ops._spreadsheet import CellTyping, clean_text, inert_cell, needs_quote_prefix
-from vivepdf.ops.convert import FileResult, PdfSourceParams, _prepare_file
+from vivepdf.ops.convert import FileResult, TextSourceParams, _prepare_file, recognise_first
 from vivepdf.rpc.progress import Progress
 from vivepdf.rpc.registry import op
 
@@ -21,11 +23,13 @@ class TablesResult(FileResult):
     table_count: int
     text_pages: list[int] = Field(default_factory=list)
     textless_pages: list[int] = Field(default_factory=list)
+    ocr_pages: list[int] = Field(default_factory=list)
 
 
-class XlsxParams(PdfSourceParams):
+class XlsxParams(TextSourceParams):
     sheets: Literal["table", "page", "single"] = "table"
     format: Literal["xlsx", "csv"] = "xlsx"
+    delimiter: Literal[",", ";", "\t"] = ","
     borderless: bool = False
     page_label: str = Field(default="S", max_length=24)
     table_label: str = Field(default="T", max_length=24)
@@ -39,6 +43,13 @@ class _Table:
     rows: list[list[str | None]]
     spans: list[tuple[int, int, int, int]] = field(default_factory=list)
     area: pymupdf.Rect = field(default_factory=pymupdf.Rect)
+    last_page: int = -1
+    edges: list[float] = field(default_factory=list)
+    bold_head: bool = False
+    top: bool = False
+    bottom: bool = False
+    lines_above: int = 0
+    lines_below: int = 0
 
 
 @dataclass(frozen=True, slots=True)
@@ -73,14 +84,29 @@ def _inside_any(box: pymupdf.Rect, areas: list[pymupdf.Rect]) -> bool:
     return any(middle in area for area in areas)
 
 
-def _lines_outside(page: pymupdf.Page, areas: list[pymupdf.Rect]) -> list[str]:
-    lines: list[str] = []
+def _lines_outside(page: pymupdf.Page, areas: list[pymupdf.Rect]) -> list[tuple[pymupdf.Rect, str]]:
+    lines: list[tuple[pymupdf.Rect, str]] = []
     for block in page.get_text("dict")["blocks"]:
         for line in block.get("lines", []):
             text = "".join(span["text"] for span in line["spans"])
-            if text.strip() and not _inside_any(pymupdf.Rect(line["bbox"]), areas):
-                lines.append(text)
+            box = pymupdf.Rect(line["bbox"])
+            if text.strip() and not _inside_any(box, areas):
+                lines.append((box, text))
     return lines
+
+
+PAGE_END_SHARE = 0.25
+
+
+def _mark_page_ends(
+    tables: list[_Table], outside: list[tuple[pymupdf.Rect, str]], height: float
+) -> None:
+    first = min(tables, key=lambda table: table.area.y0)
+    last = max(tables, key=lambda table: table.area.y1)
+    first.top = first.area.y0 <= height * PAGE_END_SHARE
+    last.bottom = last.area.y1 >= height * (1 - PAGE_END_SHARE)
+    first.lines_above = sum(1 for box, _text in outside if box.y1 <= first.area.y0 + RULE_SLACK)
+    last.lines_below = sum(1 for box, _text in outside if box.y0 >= last.area.y1 - RULE_SLACK)
 
 
 def _page_span(first: int, last: int, label: str) -> str:
@@ -100,7 +126,7 @@ def _placed(tables: list[_Table]) -> Placed:
 
 def sheet_plan(tables: list[_Table], sheets: str, labels: SheetLabels) -> list[tuple[str, Placed]]:
     if sheets == "single":
-        title = _page_span(tables[0].page + 1, tables[-1].page + 1, labels.page)
+        title = _page_span(tables[0].page + 1, tables[-1].last_page + 1, labels.page)
         return [(title, _placed(tables))]
     if sheets == "page":
         pages: dict[int, list[_Table]] = {}
@@ -108,7 +134,11 @@ def sheet_plan(tables: list[_Table], sheets: str, labels: SheetLabels) -> list[t
             pages.setdefault(table.page, []).append(table)
         return [(f"{labels.page}{page + 1}", _placed(group)) for page, group in pages.items()]
     return [
-        (f"{labels.page}{table.page + 1}-{labels.table}{table.number + 1}", [(0, table)])
+        (
+            f"{_page_span(table.page + 1, table.last_page + 1, labels.page)}"
+            f"-{labels.table}{table.number + 1}",
+            [(0, table)],
+        )
         for table in tables
     ]
 
@@ -134,7 +164,7 @@ def _text_cell(sheet, text: str):
     if needs_quote_prefix(value):
         cell.data_type = "s"
         cell.quotePrefix = True
-    if "\n" in value:
+    if "\n" in value or len(value) > COLUMN_WIDTH_RANGE[1]:
         cell.alignment = Alignment(wrap_text=True, vertical="top")
     return cell
 
@@ -172,17 +202,47 @@ def _set_widths(sheet, rows: list[list[str | None]]) -> None:
         sheet.column_dimensions[get_column_letter(column)].width = width
 
 
+HEADER_MIN_CELLS = 2
+
+
+def has_header(table: _Table, typing: CellTyping) -> bool:
+    if len(table.rows) < 2:
+        return False
+    head = [clean_text(text) for text in table.rows[0] if text and text.strip()]
+    if len(head) < HEADER_MIN_CELLS or any(typing.typed(text) for text in head):
+        return False
+    return table.bold_head or any(
+        typing.typed(clean_text(text)) is not None
+        for row in table.rows[1:]
+        for text in row
+        if text and text.strip()
+    )
+
+
+def _header_cells(cells: list) -> list:
+    from openpyxl.styles import Font
+
+    for cell in cells:
+        if cell is not None:
+            cell.font = Font(bold=True)
+    return cells
+
+
 def _write_tables_sheet(sheet, placed: Placed, typing: CellTyping) -> None:
     from openpyxl.worksheet.cell_range import CellRange
 
     _set_widths(sheet, [row for _offset, table in placed for row in table.rows])
+    headed = [has_header(table, typing) for _offset, table in placed]
+    if len(placed) == 1 and headed[0]:
+        sheet.freeze_panes = "A2"
     written = 0
-    for offset, table in placed:
+    for (offset, table), header in zip(placed, headed, strict=True):
         while written < offset:
             sheet.append([])
             written += 1
-        for row in table.rows:
-            sheet.append([_table_cell(sheet, text, typing) for text in row])
+        for position, row in enumerate(table.rows):
+            cells = [_table_cell(sheet, text, typing) for text in row]
+            sheet.append(_header_cells(cells) if header and not position else cells)
             written += 1
         for first_row, first_column, last_row, last_column in table.spans:
             sheet.merged_cells.add(
@@ -228,7 +288,9 @@ def _write_workbook(
     workbook.save(str(partial))
 
 
-def _write_csv(partial: Path, tables: list[_Table], lines: list[tuple[int, str]]) -> None:
+def _write_csv(
+    partial: Path, tables: list[_Table], lines: list[tuple[int, str]], delimiter: str
+) -> None:
     rows: list[list[object]] = []
     if tables:
         for position, table in enumerate(tables):
@@ -238,7 +300,7 @@ def _write_csv(partial: Path, tables: list[_Table], lines: list[tuple[int, str]]
     else:
         rows = [[page, spreadsheet_cell(text)] for page, text in lines]
     with partial.open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, delimiter=delimiter)
         for row in rows:
             writer.writerow(row)
 
@@ -351,13 +413,19 @@ def _without_empty_columns(rows: list[list[str | None]]) -> list[list[str | None
     return [[row[column] if column < len(row) else None for column in kept] for row in rows]
 
 
-def _page_tables(page: pymupdf.Page, index: int, borderless: bool) -> list[_Table]:
-    finder = page.find_tables(use_layout=False)
+def _page_tables(
+    page: pymupdf.Page, index: int, borderless: bool, scanned: list[Rule] | None = None
+) -> list[_Table]:
+    if scanned is None:
+        finder = page.find_tables(use_layout=False)
+    else:
+        finder = page.find_tables(use_layout=False, add_lines=scanned) if scanned else None
     found = (
         [_with_ruled_body(page, table) for table in finder.tables if not is_page_frame(page, table)]
         if finder is not None
         else []
     )
+    borderless = borderless or scanned is not None
     unruled = not found and borderless
     if unruled:
         found = borderless_tables(page)
@@ -374,9 +442,37 @@ def _page_tables(page: pymupdf.Page, index: int, borderless: bool) -> list[_Tabl
             rows = _without_empty_columns(rows)
         spans = [] if unruled else table_spans(table)
         tables.append(
-            _Table(page=index, number=number, rows=rows, spans=spans, area=pymupdf.Rect(table.bbox))
+            _Table(
+                page=index,
+                number=number,
+                rows=rows,
+                spans=spans,
+                area=pymupdf.Rect(table.bbox),
+                last_page=index,
+                edges=_column_edges(table),
+                bold_head=_bold_head(page, table),
+            )
         )
     return tables
+
+
+def _column_edges(table: object) -> list[float]:
+    return sorted({edge for cell in table.cells if cell for edge in (cell[0], cell[2])})
+
+
+def _bold_head(page: pymupdf.Page, table: object) -> bool:
+    if not table.rows:
+        return False
+    spans = [
+        span
+        for block in page.get_text("dict", clip=pymupdf.Rect(table.rows[0].bbox))["blocks"]
+        for line in block.get("lines", [])
+        for span in line["spans"]
+        if span["text"].strip()
+    ]
+    return bool(spans) and all(
+        span["flags"] & pymupdf.TEXT_FONT_BOLD or "bold" in span["font"].lower() for span in spans
+    )
 
 
 @op("convert.to_xlsx", XlsxParams)
@@ -389,15 +485,19 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
     textless: list[int] = []
     with open_document(params.path, params.password) as document:
         indices = parse_page_ranges(params.pages, document.page_count)
+        rules: dict[int, list[Rule]] = {}
+        recognised, progress = recognise_first(document, indices, params, progress, rules)
         for position, index in enumerate(indices):
             progress.check_cancelled()
             page = document[index]
-            found = _page_tables(page, index, params.borderless)
+            scanned = rules.get(index) if index + 1 in recognised else None
+            found = _page_tables(page, index, params.borderless, scanned)
             tables.extend(found)
             if found:
                 outside = _lines_outside(page, [table.area for table in found])
+                _mark_page_ends(found, outside, page.cropbox.height)
                 if outside:
-                    around_tables[index + 1] = outside
+                    around_tables[index + 1] = [text for _box, text in outside]
             else:
                 page_lines = _page_lines(page)
                 if page_lines:
@@ -409,6 +509,8 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
                 "progress.convertingPages",
                 {"current": position + 1, "total": len(indices)},
             )
+    if params.format == "csv" or params.sheets != "page":
+        tables = joined_across_pages(tables, indices)
     keeps_text = not tables or params.format == "xlsx"
     lines = [
         (page, text)
@@ -418,7 +520,9 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
     ]
     labels = SheetLabels(params.page_label, params.table_label, params.text_label)
     if params.format == "csv":
-        write_atomically(target, lambda partial: _write_csv(partial, tables, lines))
+        write_atomically(
+            target, lambda partial: _write_csv(partial, tables, lines, params.delimiter)
+        )
     else:
         write_atomically(
             target,
@@ -432,4 +536,5 @@ def to_xlsx(params: XlsxParams, progress: Progress) -> TablesResult:
         table_count=len(tables),
         text_pages=sorted(page for page in text_by_page if keeps_text),
         textless_pages=textless,
+        ocr_pages=recognised,
     )

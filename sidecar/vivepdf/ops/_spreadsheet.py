@@ -22,6 +22,7 @@ NUMBER = re.compile(
 ISO_DATE = re.compile(r"(\d{4})-(\d{1,2})-(\d{1,2})")
 DOTTED_DATE = re.compile(r"(\d{1,2})\.(\d{1,2})\.(\d{4})")
 SLASHED_DATE = re.compile(r"(\d{1,2})/(\d{1,2})/(\d{4})")
+CLOCK_TIME = re.compile(r"([01]?\d|2[0-3]):([0-5]\d)(?::([0-5]\d))?")
 
 
 def inert_cell[T](value: T) -> T | str:
@@ -44,7 +45,7 @@ def needs_quote_prefix(value: str) -> bool:
 
 @dataclass(frozen=True, slots=True)
 class TypedValue:
-    value: float | int | dt.date
+    value: float | int | dt.date | dt.time | dt.datetime
     number_format: str | None
 
 
@@ -141,6 +142,15 @@ def _date(year: int, month: int, day: int) -> dt.date | None:
         return None
 
 
+def _clock(text: str) -> TypedValue | None:
+    match = CLOCK_TIME.fullmatch(text)
+    if match is None:
+        return None
+    seconds = match[3]
+    value = dt.time(int(match[1]), int(match[2]), int(seconds or 0))
+    return TypedValue(value, "hh:mm:ss" if seconds else "hh:mm")
+
+
 class CellTyping:
     def __init__(self, texts: Iterable[str]):
         samples = [text for text in texts if text]
@@ -165,11 +175,20 @@ class CellTyping:
             return TypedValue(value, "mm/dd/yyyy") if value else None
         return None
 
+    def _typed_moment(self, text: str) -> TypedValue | None:
+        day, _, time = text.rpartition(" ")
+        dated = self._typed_date(day.strip()) if day else None
+        clock = _clock(time) if dated else None
+        if dated is None or clock is None:
+            return None
+        value = dt.datetime.combine(dated.value, clock.value)
+        return TypedValue(value, f"{dated.number_format} {clock.number_format}")
+
     def typed(self, text: str) -> TypedValue | None:
         stripped = text.strip()
         if not stripped or "\n" in stripped:
             return None
-        dated = self._typed_date(stripped)
+        dated = self._typed_date(stripped) or _clock(stripped) or self._typed_moment(stripped)
         if dated is not None:
             return dated
         match = NUMBER.fullmatch(stripped)

@@ -113,3 +113,12 @@ export function pageList(pages: number[]): string {
   }
   return runs.join(", ");
 }
+
+export function listSeparator(locale: string): "," | ";" {
+  try {
+    const decimal = new Intl.NumberFormat(locale).formatToParts(1.5).find((part) => part.type === "decimal");
+    return decimal?.value === "," ? ";" : ",";
+  } catch {
+    return ",";
+  }
+}

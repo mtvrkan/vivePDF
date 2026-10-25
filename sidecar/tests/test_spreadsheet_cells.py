@@ -114,3 +114,23 @@ def test_currency_codes_without_a_clear_number_stay_text() -> None:
     assert _typed([], "TL1.250,00") is None
     assert _typed([], "12 TLS") is None
     assert _typed([], "1.250,00 TL TL") is None
+
+
+def test_clock_times_and_date_times_become_time_values() -> None:
+    import datetime as dt
+
+    assert _typed([], "14:30") == (dt.time(14, 30), "hh:mm")
+    assert _typed([], "9:05:07") == (dt.time(9, 5, 7), "hh:mm:ss")
+    assert _typed([], "25.10.2026 14:30") == (dt.datetime(2026, 10, 25, 14, 30), "dd.mm.yyyy hh:mm")
+    assert _typed([], "2026-10-25 08:15:00") == (
+        dt.datetime(2026, 10, 25, 8, 15),
+        "yyyy-mm-dd hh:mm:ss",
+    )
+
+
+def test_things_that_only_look_like_times_stay_text() -> None:
+    assert _typed([], "24:00") is None
+    assert _typed([], "3:7") is None
+    assert _typed([], "14:30 TL") is None
+    assert _typed([], "03/04/2025 10:00") is None
+    assert _typed([], "Saat 14:30") is None

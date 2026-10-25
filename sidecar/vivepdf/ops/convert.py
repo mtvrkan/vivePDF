@@ -20,7 +20,7 @@ from vivepdf.ops._docx_running import (
 from vivepdf.ops._image_files import HEIF_EXTENSIONS
 from vivepdf.ops._image_masks import BLACK, is_stencil, stencil_colours, stencil_png
 from vivepdf.ops._naming import sanitize_file_name
-from vivepdf.ops._ocr_layer import recognise_textless_pages
+from vivepdf.ops._ocr_layer import Rule, recognise_textless_pages
 from vivepdf.ops._output import write_atomically
 from vivepdf.ops._pixmaps import png_ready
 from vivepdf.ops._placement import turn_text_upright
@@ -133,12 +133,16 @@ class TextSourceParams(PdfSourceParams):
 
 
 def recognise_first(
-    document: pymupdf.Document, indices: list[int], params: TextSourceParams, progress: Progress
+    document: pymupdf.Document,
+    indices: list[int],
+    params: TextSourceParams,
+    progress: Progress,
+    rules: dict[int, list[Rule]] | None = None,
 ) -> tuple[list[int], Progress]:
     if not params.ocr:
         return [], progress
     recognised = recognise_textless_pages(
-        document, indices, params.ocr_languages, progress.within(0.0, 0.5)
+        document, indices, params.ocr_languages, progress.within(0.0, 0.5), rules
     )
     return recognised, progress.within(0.5, 1.0)
 

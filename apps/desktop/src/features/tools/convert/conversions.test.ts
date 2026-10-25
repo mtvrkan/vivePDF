@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { albumOutputPath, batchOutputName, batchOutputPaths, moveItem, pageList } from "./conversions";
+import { albumOutputPath, batchOutputName, batchOutputPaths, listSeparator, moveItem, pageList } from "./conversions";
 
 describe("batchOutputName", () => {
   it("names a file after its own stem when no other file shares it", () => {
@@ -72,5 +72,17 @@ describe("albumOutputPath", () => {
   it("replaces a leftover non-PDF output and waits while there is no picture", () => {
     expect(albumOutputPath("/photos/a.docx", "/photos/a.jpg", "album")).toBe("/photos/album.pdf");
     expect(albumOutputPath("", "", "album")).toBeNull();
+  });
+});
+
+describe("listSeparator", () => {
+  it("uses a semicolon where the decimal mark is a comma, as Excel does", () => {
+    expect(listSeparator("tr-TR")).toBe(";");
+    expect(listSeparator("de")).toBe(";");
+  });
+
+  it("uses a comma where the decimal mark is a point or the locale is unknown", () => {
+    expect(listSeparator("en-US")).toBe(",");
+    expect(listSeparator("not a locale")).toBe(",");
   });
 });

@@ -4,11 +4,16 @@ import { OutputDirField, OutputPathField } from "@/components/tool/OutputPathFie
 import { SourcePicker } from "@/components/tool/SourcePicker";
 import type { useSourceDocument } from "@/shared/hooks/useSourceDocument";
 import { stemOf } from "@/shared/lib/paths";
-import type { ImageFormat, MarkdownPictures, PptxMode, XlsxFormat, XlsxSheets } from "@/types";
+import type { ExportDelimiter, ImageFormat, MarkdownPictures, PptxMode, XlsxFormat, XlsxSheets } from "@/types";
 import type { ConvertMode } from "./conversions";
 import type { ConvertOptions } from "./useConvertOptions";
 
-const READS_TEXT = new Set<ConvertMode>(["text", "markdown", "html", "epub"]);
+const CSV_DELIMITERS: Array<{ value: ExportDelimiter; key: string }> = [
+  { value: ";", key: "semicolon" },
+  { value: ",", key: "comma" },
+  { value: "\t", key: "tab" },
+];
+const READS_TEXT = new Set<ConvertMode>(["xlsx", "text", "markdown", "html", "epub"]);
 
 export function FromPdfSection({
   mode,
@@ -39,7 +44,7 @@ export function FromPdfSection({
 }) {
   const { t } = useTranslation();
   const source = sourceState.source;
-  const { format, setFormat, dpi, setDpi, quality, setQuality, single, setSingle, transparent, setTransparent, gray, setGray, archive, setArchive, ocr, setOcr, pictures, setPictures, headerFooter, setHeaderFooter, xlsxFormat, setXlsxFormat, borderless, setBorderless, sheets, setSheets, layout, setLayout, split, setSplit, includeImages, setIncludeImages, cover, setCover, bookTitle, setBookTitle, bookAuthor, setBookAuthor, pptxMode, setPptxMode } = options;
+  const { format, setFormat, dpi, setDpi, quality, setQuality, single, setSingle, transparent, setTransparent, gray, setGray, archive, setArchive, ocr, setOcr, pictures, setPictures, headerFooter, setHeaderFooter, xlsxFormat, setXlsxFormat, csvDelimiter, setCsvDelimiter, borderless, setBorderless, sheets, setSheets, layout, setLayout, split, setSplit, includeImages, setIncludeImages, cover, setCover, bookTitle, setBookTitle, bookAuthor, setBookAuthor, pptxMode, setPptxMode } = options;
   return (
     <>
       <SourcePicker {...sourceState} onPick={() => void sourceState.pick()} onPassword={(password) => void sourceState.submitPassword(password)} disabled={running} />
@@ -111,6 +116,15 @@ export function FromPdfSection({
                 <option value="single">{t("tools.convert.xlsxSheetsSingle")}</option>
               </SelectInput>
             </Field>
+            {xlsxFormat === "csv" ? (
+              <Field label={t("tools.forms.merge.delimiter")}>
+                <SelectInput value={csvDelimiter} onChange={(event) => setCsvDelimiter(event.target.value as ExportDelimiter)} disabled={running}>
+                  {CSV_DELIMITERS.map((option) => (
+                    <option key={option.key} value={option.value}>{t(`tools.forms.merge.delimiters.${option.key}`)}</option>
+                  ))}
+                </SelectInput>
+              </Field>
+            ) : null}
             <div className="col-span-2">
               <Checkbox label={t("tools.convert.borderless")} hint={t("tools.convert.borderlessHint")} checked={borderless} onChange={setBorderless} disabled={running} />
             </div>

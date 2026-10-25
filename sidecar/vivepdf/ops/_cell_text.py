@@ -5,6 +5,10 @@ import pymupdf
 WORD_GAP = 0.2
 SAME_LINE = 0.5
 SPAN_TOLERANCE = 1.0
+SPACE_SHARE = 0.25
+FULL_LINE_SHARE = 0.7
+MAX_LINE_SPACING = 1.8
+SOFT_HYPHEN = "\u00ad"
 
 
 @dataclass(slots=True)
@@ -109,9 +113,52 @@ def _join(pieces: list[tuple[float, float, str]], size: float) -> str:
     return " ".join(text.split())
 
 
+@dataclass(slots=True)
+class _CellLine:
+    key: float
+    size: float
+    horizontal: bool
+    pieces: list[tuple[float, float, str]]
+    first_word_end: float
+
+    @property
+    def start(self) -> float:
+        return min(piece[0] for piece in self.pieces)
+
+    @property
+    def end(self) -> float:
+        return max(piece[1] for piece in self.pieces)
+
+
+def _first_word_end(glyphs: list[Glyph]) -> float:
+    for position, glyph in enumerate(glyphs):
+        if glyph.text.isspace() and position:
+            return glyphs[position - 1].x1
+    return glyphs[-1].x1
+
+
+def _wrapped(previous: _CellLine, line: _CellLine, room: float) -> bool:
+    if not (previous.horizontal and line.horizontal):
+        return False
+    if line.key - previous.key > max(previous.size, line.size) * MAX_LINE_SPACING:
+        return False
+    width = previous.end - previous.start
+    if width < room * FULL_LINE_SHARE:
+        return False
+    return width + line.size * SPACE_SHARE + line.first_word_end - line.start > room
+
+
+def _joined(previous: str, text: str) -> str:
+    if previous.endswith(SOFT_HYPHEN):
+        return previous[:-1] + text
+    if previous.endswith("-") and previous[-2:-1].isalpha():
+        return previous + text
+    return f"{previous} {text}"
+
+
 def cell_text(fragments: list[Fragment], cell: tuple[float, float, float, float]) -> str:
     rect = pymupdf.Rect(cell)
-    rows: list[tuple[float, float, list[tuple[float, float, str]]]] = []
+    rows: list[_CellLine] = []
     for fragment in fragments:
         inside = [glyph for glyph in fragment.glyphs if _inside(glyph, rect)]
         if not inside:
@@ -119,13 +166,33 @@ def cell_text(fragments: list[Fragment], cell: tuple[float, float, float, float]
         key = fragment.baseline if fragment.horizontal else fragment.top
         piece = (inside[0].x0, inside[-1].x1, "".join(glyph.text for glyph in inside))
         for row in rows:
-            if abs(row[0] - key) <= fragment.size * SAME_LINE:
-                row[2].append(piece)
+            if abs(row.key - key) <= fragment.size * SAME_LINE:
+                if piece[0] < row.start:
+                    row.first_word_end = _first_word_end(inside)
+                row.pieces.append(piece)
+                row.horizontal = row.horizontal and fragment.horizontal
                 break
         else:
-            rows.append((key, fragment.size, [piece]))
-    lines = [_join(pieces, size) for _key, size, pieces in sorted(rows, key=lambda row: row[0])]
-    return "\n".join(line for line in lines if line)
+            rows.append(
+                _CellLine(key, fragment.size, fragment.horizontal, [piece], _first_word_end(inside))
+            )
+    rows.sort(key=lambda row: row.key)
+    padding = max(
+        0.0, min((min(row.start - rect.x0, rect.x1 - row.end) for row in rows), default=0.0)
+    )
+    room = rect.width - 2 * padding
+    lines: list[str] = []
+    previous: _CellLine | None = None
+    for row in rows:
+        text = _join(row.pieces, row.size)
+        if not text:
+            continue
+        if previous is not None and lines and _wrapped(previous, row, room):
+            lines[-1] = _joined(lines[-1], text)
+        else:
+            lines.append(text)
+        previous = row
+    return "\n".join(lines)
 
 
 def _reaching_edges(

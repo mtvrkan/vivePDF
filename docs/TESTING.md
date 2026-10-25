@@ -305,6 +305,14 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   PowerPoint (editable): each justified line reaches the right margin as in the PDF.
 - Convert a brochure with full-page photos to PowerPoint: the file is a fraction of its
   earlier size and the photos look the same at 100 % zoom.
+- Convert a PDF whose table runs over two pages (the header repeated on the second page) to
+  Excel on Windows: one sheet named like `S1-S2-T1` holds the whole table with the header once,
+  in bold, and the header stays in view while scrolling; clock times show as times (14:30) and
+  a description that wrapped inside its cell is one line in the cell.
+- With Windows set to Turkish, convert a PDF table to CSV: the separator shows "Noktalı virgül
+  (;)" and the CSV opens in Excel with every value in its own column.
+- Convert a scanned PDF with a ruled table to Excel with "Read pages without text with OCR" ticked:
+  the table comes out in rows and columns with its numbers and dates as values.
 
 ### How native dialogs are answered
 
