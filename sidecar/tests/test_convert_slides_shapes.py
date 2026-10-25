@@ -177,3 +177,46 @@ def test_a_label_written_on_a_bar_keeps_the_bar_editable(tmp_path: Path) -> None
 
     assert len(_rectangles(slide)) == 2
     assert [shape.text_frame.text for shape in slide.shapes if shape.has_text_frame][-1] == "42"
+
+
+def _photo(page: pymupdf.Page, area: pymupdf.Rect) -> None:
+    picture = pymupdf.Pixmap(pymupdf.csRGB, pymupdf.IRect(0, 0, 64, 64), 0)
+    picture.clear_with(200)
+    page.insert_image(area, pixmap=picture)
+
+
+def test_a_black_box_over_a_photo_stays_in_the_background_so_it_cannot_be_moved_off(
+    tmp_path: Path,
+) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=300)
+    _photo(page, pymupdf.Rect(50, 50, 200, 200))
+    page.draw_rect(pymupdf.Rect(80, 100, 170, 130), color=None, fill=(0, 0, 0), width=0)
+
+    slide = _presentation(document, tmp_path).slides[0]
+
+    assert _rectangles(slide) == []
+    assert _pixel(slide, (125, 115)) == (0, 0, 0)
+
+
+def test_a_see_through_box_over_a_photo_stays_editable(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=300)
+    _photo(page, pymupdf.Rect(50, 50, 200, 200))
+    page.draw_rect(pymupdf.Rect(80, 100, 170, 130), color=None, fill=BAR, width=0, fill_opacity=0.5)
+
+    slide = _presentation(document, tmp_path).slides[0]
+
+    assert len(_rectangles(slide)) == 1
+
+
+def test_a_banner_over_a_full_page_backdrop_photo_stays_editable(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=300)
+    _photo(page, page.rect)
+    page.draw_rect(pymupdf.Rect(0, 20, 400, 70), color=None, fill=BAR, width=0)
+
+    slide = _presentation(document, tmp_path).slides[0]
+
+    [banner] = _rectangles(slide)
+    assert _points(slide, banner) == (0.0, 20.0, 400.0, 70.0)

@@ -15,6 +15,8 @@ SOLID_DASHES = ("", "[] 0", "[]0")
 PAINT_KINDS = frozenset({"fill-path", "stroke-path", "fill-image", "fill-imgmask", "fill-shade"})
 PATH_KINDS = frozenset({"fill-path", "stroke-path"})
 TEXT_KINDS = frozenset({"fill-text", "stroke-text"})
+PICTURE_KINDS = frozenset({"fill-image", "fill-imgmask"})
+BACKDROP_SHARE = 0.5
 LINE_CAPS = {0: "flat", 1: "rnd", 2: "sq"}
 
 
@@ -185,7 +187,17 @@ def _overlap(first: tuple, second: tuple) -> bool:
     )
 
 
-def _blocked(candidate: _Candidate, background: list[tuple[int, str, tuple]]) -> bool:
+def _hides(candidate: _Candidate) -> bool:
+    return any(shape.fill is not None and shape.fill_opacity >= 1 for shape in candidate.shapes)
+
+
+def _backdrop(box: tuple, page_area: float) -> bool:
+    return pymupdf.Rect(box).get_area() >= BACKDROP_SHARE * page_area
+
+
+def _blocked(
+    candidate: _Candidate, background: list[tuple[int, str, tuple]], page_area: float
+) -> bool:
     first, last = min(candidate.entries), max(candidate.entries)
     area, own = tuple(candidate.area), tuple(candidate.box)
     for index, kind, box in background:
@@ -193,6 +205,14 @@ def _blocked(candidate: _Candidate, background: list[tuple[int, str, tuple]]) ->
             if index < first and _overlap(box, own):
                 return True
             continue
+        if (
+            kind in PICTURE_KINDS
+            and index < first
+            and _overlap(box, own)
+            and _hides(candidate)
+            and not _backdrop(box, page_area)
+        ):
+            return True
         if kind in PATH_KINDS and _inside(box, area):
             return True
         if index > last and _overlap(box, area):
@@ -227,7 +247,11 @@ def page_shapes(page: pymupdf.Page) -> PageShapes:
     while True:
         taken = set().union(*(candidate.entries for candidate in candidates))
         background = [entry for entry in log if entry[0] not in taken]
-        kept = [candidate for candidate in candidates if not _blocked(candidate, background)]
+        kept = [
+            candidate
+            for candidate in candidates
+            if not _blocked(candidate, background, page.rect.get_area())
+        ]
         if len(kept) == len(candidates):
             break
         candidates = kept

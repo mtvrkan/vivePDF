@@ -350,6 +350,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - PDF to Excel with "Also find tables without lines" on a PDF whose unruled table has a column
   like "Kalem 1", "Kalem 2": each "Kalem n" stays in one cell, and a table whose columns
   sit apart keeps every column.
+- PDF to PowerPoint on a PDF with a black bar over part of a photo: the bar cannot be selected
+  or moved and the photo stays covered; a coloured banner over a full-page background photo
+  is still a shape you can move.
 
 ### How native dialogs are answered
 
