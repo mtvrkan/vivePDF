@@ -1,5 +1,6 @@
 import io
 import math
+import re
 from collections.abc import Callable
 from pathlib import Path
 
@@ -13,6 +14,7 @@ from pdf2docx import Converter
 from pdf2docx.common import docx as docx_helpers
 from pdf2docx.common.Collection import ElementCollection
 from pdf2docx.common.share import RectType
+from pdf2docx.font.Fonts import Fonts
 from pdf2docx.image import ImagesExtractor as images_extractor
 from pdf2docx.page.Page import Page
 from pdf2docx.page.Pages import Pages
@@ -51,6 +53,9 @@ CLIPPED_MARK = "vivepdfClipped"
 COVER_TOLERANCE = 1.0
 WORD_GAP_EM = 0.2
 TILT_TOLERANCE = 0.035
+STYLE_SUFFIX = re.compile(r"^(.+),\s*(Bold|Italic|BoldItalic|Oblique|BoldOblique)$", re.IGNORECASE)
+BOLD_FLAG = 16
+ITALIC_FLAG = 2
 
 
 class ConversionCancelled(BaseException):
@@ -146,6 +151,22 @@ def level_slight_tilts(raw: dict) -> dict:
     return raw
 
 
+def split_style_suffixes(raw: dict) -> dict:
+    for block in raw.get("blocks", []):
+        for line in block.get("lines", []):
+            for span in line.get("spans", []):
+                match = STYLE_SUFFIX.match(span.get("font") or "")
+                if match is None:
+                    continue
+                style = match.group(2).lower()
+                span["font"] = match.group(1).strip()
+                if "bold" in style:
+                    span["flags"] = span.get("flags", 0) | BOLD_FLAG
+                if "italic" in style or "oblique" in style:
+                    span["flags"] = span.get("flags", 0) | ITALIC_FLAG
+    return raw
+
+
 def keep_word_spaces(raw: dict) -> dict:
     for block in raw.get("blocks", []):
         for line in block.get("lines", []):
@@ -187,7 +208,9 @@ def _extract_with_recognised_text(raw_page: RawPageFitz, **settings):
     if engine is not None and settings.get("ocr") == 0 and text_is_only_hidden(engine):
         settings = {**settings, "ocr": 2}
     raw = _plain_extract_raw_dict(raw_page, **settings)
-    return drop_fills_drawn_in_pictures(keep_word_spaces(level_slight_tilts(raw)))
+    return drop_fills_drawn_in_pictures(
+        keep_word_spaces(level_slight_tilts(split_style_suffixes(raw)))
+    )
 
 
 def clip_ratio(largest_page_area: float) -> float:
@@ -388,7 +411,14 @@ def _parse_pages_keeping_graphics(converter: Converter, **settings) -> Converter
     return converter
 
 
+def _family_without_style(name: str) -> str:
+    plain = name.split("+")[-1].split("-")[0]
+    match = STYLE_SUFFIX.match(plain)
+    return match.group(1).strip() if match else plain
+
+
 def stabilise_pdf2docx() -> None:
+    Fonts._normalized_font_name = staticmethod(_family_without_style)
     Converter.parse_pages = _parse_pages_keeping_graphics
     Lines.parse_line_break = parse_line_break_before_list_items
     Cell.make_docx = _make_cell_sizing_its_column

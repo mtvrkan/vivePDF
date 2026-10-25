@@ -262,6 +262,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert an SVG with a linked logo or text (`<a href="https://...">`) to PDF with the bundled
   LibreOffice and open it in Edge: the pointer turns into a hand over the logo and clicking
   opens the address.
+- Convert a PDF made by an old Word "Save as PDF" (fonts listed as "Times New Roman,Bold" in
+  the document properties) to Word and open it in Word: the font box shows Times New Roman,
+  not a name with a comma, and bold text is bold.
 
 ### How native dialogs are answered
 

@@ -8,6 +8,7 @@ from fontTools.ttLib import TTFont
 from lxml import etree
 
 from vivepdf.ops._docx_fonts import embedding_allowed, is_system_font, obfuscated
+from vivepdf.ops._docx_progress import split_style_suffixes
 from vivepdf.ops.convert import DocxParams, to_docx
 from vivepdf.rpc.progress import silent_progress
 
@@ -189,3 +190,84 @@ def test_obfuscation_scrambles_only_the_head_and_undoes_itself():
     assert scrambled[:32] != program[:32]
     assert scrambled[32:] == program[32:]
     assert obfuscated(scrambled, key) == program
+
+
+def _renamed_base_fonts(tmp_path: Path, names: dict[str, str]) -> Path:
+    document = pymupdf.open()
+    page = document.new_page(width=400, height=300)
+    for number, (builtin, text) in enumerate(names.items()):
+        page.insert_text((40, 60 + 40 * number), text, fontsize=14, fontname=builtin)
+    for xref, _ext, _kind, base_font, *_rest in page.get_fonts():
+        builtin = {"Helvetica": "helv", "Times-Roman": "tiro", "Courier": "cour"}[base_font]
+        document.xref_set_key(xref, "BaseFont", f"/{names[builtin].replace(' ', '#20')}")
+    source = tmp_path / "kaynak.pdf"
+    document.save(source)
+    return source
+
+
+def _switched_on(properties: etree._Element, tag: str) -> bool:
+    found = properties.find(f"{W}{tag}")
+    return found is not None and found.get(f"{W}val", "1") not in ("0", "false")
+
+
+def _runs(output: str) -> dict[str, tuple[str, bool, bool]]:
+    with zipfile.ZipFile(output) as archive:
+        body = etree.fromstring(archive.read("word/document.xml"))
+    runs = {}
+    for run in body.iter(f"{W}r"):
+        text = "".join(node.text or "" for node in run.iter(f"{W}t"))
+        properties = run.find(f"{W}rPr")
+        if not text.strip() or properties is None:
+            continue
+        fonts = properties.find(f"{W}rFonts")
+        runs[text.strip()] = (
+            fonts.get(f"{W}ascii"),
+            _switched_on(properties, "b"),
+            _switched_on(properties, "i"),
+        )
+    return runs
+
+
+def test_style_suffixes_after_a_comma_become_bold_and_italic(tmp_path: Path):
+    source = _renamed_base_fonts(
+        tmp_path,
+        {"helv": "Times New Roman,Bold", "tiro": "Arial,BoldItalic", "cour": "Georgia,Italic"},
+    )
+
+    result = to_docx(
+        DocxParams(path=str(source), output=str(tmp_path / "belge.docx")), silent_progress()
+    )
+
+    assert _runs(result.output) == {
+        "Times New Roman,Bold": ("Times New Roman", True, False),
+        "Arial,BoldItalic": ("Arial", True, True),
+        "Georgia,Italic": ("Georgia", False, True),
+    }
+
+
+def test_split_style_suffixes_sets_missing_flags_and_leaves_other_names():
+    raw = {
+        "blocks": [
+            {
+                "lines": [
+                    {
+                        "spans": [
+                            {"font": "Verdana,Bold", "flags": 0},
+                            {"font": "Cambria, Italic", "flags": 4},
+                            {"font": "Acme,Display", "flags": 0},
+                            {"font": "", "flags": 0},
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+    spans = split_style_suffixes(raw)["blocks"][0]["lines"][0]["spans"]
+
+    assert [(span["font"], span["flags"]) for span in spans] == [
+        ("Verdana", 16),
+        ("Cambria", 6),
+        ("Acme,Display", 0),
+        ("", 0),
+    ]
