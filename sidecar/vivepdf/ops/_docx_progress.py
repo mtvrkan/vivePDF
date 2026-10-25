@@ -542,6 +542,7 @@ class DocxRun:
         image_ratio: float = MAX_CLIP_RATIO,
         right_to_left: bool = False,
         running: RunningText | None = None,
+        font_source: pymupdf.Document | None = None,
     ) -> list[int]:
         stabilise_pdf2docx()
         settings = {**self.converter.default_settings, "clip_image_res_ratio": image_ratio}
@@ -563,6 +564,11 @@ class DocxRun:
             data = add_running_text(data, running)
         if right_to_left:
             data = mark_right_to_left(data)
-        data = embed_fonts(data, self.converter.fitz_doc, indices, self.progress.check_cancelled)
+        data = embed_fonts(
+            data,
+            self.converter.fitz_doc if font_source is None else font_source,
+            indices,
+            self.progress.check_cancelled,
+        )
         write_atomically(target, lambda partial: partial.write_bytes(data))
         return [index + 1 for index in indices if index not in self.made_pages]

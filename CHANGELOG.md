@@ -17,6 +17,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- PDF to Word: headers and footers keep the PDF's font, size, bold and italic, page numbers included, instead of falling back to Cambria, and a font used only in a header or footer is embedded in the Word file too [2026-10-25]
 - PDF to Word: fonts named like "Times New Roman,Bold" or "Arial,BoldItalic" in the PDF come out as Times New Roman or Arial with bold or italic switched on, so Word no longer substitutes another typeface [2026-10-25]
 - SVG drawings: web and e-mail links in an SVG stay clickable in the PDF over the shapes or text they wrap, and those shapes are no longer missing when the drawing is made without LibreOffice or placed in Studio or the editor [2026-10-25]
 - SVG drawings (SVG to PDF, Studio and editor pictures): icons drawn from a sprite with `<symbol viewBox>` and `<use>` are scaled to the size the drawing asks for instead of their tiny original size [2026-10-25]

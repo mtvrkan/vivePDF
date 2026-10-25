@@ -11,7 +11,12 @@ from pydantic import Field
 
 from vivepdf.external import libreoffice
 from vivepdf.ops._document import open_document
-from vivepdf.ops._docx_running import RunningText, cleared_copy, find_running_text
+from vivepdf.ops._docx_running import (
+    RunningText,
+    cleared_copy,
+    find_running_text,
+    name_running_fonts,
+)
 from vivepdf.ops._image_files import HEIF_EXTENSIONS
 from vivepdf.ops._image_masks import BLACK, is_stencil, stencil_colours, stencil_png
 from vivepdf.ops._naming import sanitize_file_name
@@ -192,16 +197,27 @@ def to_docx(params: DocxParams, progress: Progress) -> DocxResult:
                 if params.header_footer
                 else RunningText()
             )
+            if running.lines:
+                _name_running_fonts(document, running)
             if running.lines or turned:
                 staging = Path(tempfile.mkdtemp(prefix="vivepdf-"))
                 source, password = cleared_copy(
                     document, running, staging, locked=bool(params.password)
                 )
         progress.report(0.05, "progress.converting")
-        return _write_docx(source, password, target, survey, running, progress)
+        original = (params.path, params.password) if staging is not None else None
+        return _write_docx(source, password, target, survey, running, progress, original)
     finally:
         if staging is not None:
             shutil.rmtree(staging, ignore_errors=True)
+
+
+def _name_running_fonts(document: pymupdf.Document, running: RunningText) -> None:
+    from vivepdf.ops._docx_fonts import docx_font_names
+    from vivepdf.ops._docx_progress import stabilise_pdf2docx
+
+    stabilise_pdf2docx()
+    name_running_fonts(running, docx_font_names(document))
 
 
 def _write_docx(
@@ -211,12 +227,14 @@ def _write_docx(
     survey: _DocxSurvey,
     running: RunningText,
     progress: Progress,
+    original: tuple[str, str | None] | None = None,
 ) -> DocxResult:
     from pdf2docx import Converter
 
     from vivepdf.ops._docx_progress import DocxRun, clip_ratio
 
     converter = Converter(source, password=password)
+    font_source = open_document(*original) if original is not None else None
     try:
         skipped = DocxRun(converter, progress, len(survey.indices)).run(
             survey.indices,
@@ -224,6 +242,7 @@ def _write_docx(
             image_ratio=clip_ratio(survey.largest_area),
             right_to_left=survey.right_to_left,
             running=running,
+            font_source=font_source,
         )
     except OpError:
         raise
@@ -234,6 +253,8 @@ def _write_docx(
         raise OpError(ErrorCode.INTERNAL, f"docx conversion failed: {error}") from error
     finally:
         converter.close()
+        if font_source is not None:
+            font_source.close()
     return DocxResult(
         output=str(target),
         bytes=target.stat().st_size,

@@ -4,6 +4,7 @@ import re
 import secrets
 import statistics
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal
@@ -23,6 +24,8 @@ ROW_TOLERANCE = 4.0
 MAX_LINE_CHARACTERS = 200
 NUMBER = re.compile(r"\d+")
 PAGE_FIELD = "PAGE"
+BOLD_FLAG = 16
+ITALIC_FLAG = 2
 
 
 @dataclass(slots=True)
@@ -33,6 +36,14 @@ class _Occurrence:
     numbers: list[str]
     size: float
     slot: Slot
+    style: "_Style"
+
+
+@dataclass(slots=True, frozen=True)
+class _Style:
+    font: str
+    bold: bool
+    italic: bool
 
 
 @dataclass(slots=True)
@@ -44,6 +55,9 @@ class RunningLine:
     slot: Slot
     top: float
     left: float
+    font: str = ""
+    bold: bool = False
+    italic: bool = False
 
 
 @dataclass(slots=True)
@@ -64,11 +78,16 @@ def _slot(rect: pymupdf.Rect, page_rect: pymupdf.Rect) -> Slot:
     return "left" if middle < centre else "right"
 
 
-def _band_lines(page: pymupdf.Page) -> list[tuple[Band, str, pymupdf.Rect, float]]:
+def _line_style(spans: list[dict]) -> _Style:
+    main = max(spans, key=lambda span: len(span["text"].strip()))
+    return _Style(main["font"], bool(main["flags"] & BOLD_FLAG), bool(main["flags"] & ITALIC_FLAG))
+
+
+def _band_lines(page: pymupdf.Page) -> list[tuple[Band, str, pymupdf.Rect, float, _Style]]:
     area = page.rect
     top_limit = area.y0 + area.height * BAND_SHARE
     bottom_limit = area.y1 - area.height * BAND_SHARE
-    found: list[tuple[Band, str, pymupdf.Rect, float]] = []
+    found: list[tuple[Band, str, pymupdf.Rect, float, _Style]] = []
     has_body = any(
         pymupdf.Rect(image["bbox"]).y1 > top_limit and pymupdf.Rect(image["bbox"]).y0 < bottom_limit
         for image in page.get_image_info()
@@ -89,7 +108,7 @@ def _band_lines(page: pymupdf.Page) -> list[tuple[Band, str, pymupdf.Rect, float
                 has_body = True
                 continue
             size = max(span["size"] for span in line["spans"])
-            found.append((band, text, rect, size))
+            found.append((band, text, rect, size, _line_style(line["spans"])))
     return found if has_body else []
 
 
@@ -124,10 +143,10 @@ def find_running_text(document: pymupdf.Document, indices: list[int]) -> Running
     seen: dict[tuple[Band, str], list[_Occurrence]] = defaultdict(list)
     for position, index in enumerate(indices):
         page = document[index]
-        for band, text, rect, size in _band_lines(page):
+        for band, text, rect, size, style in _band_lines(page):
             pattern = NUMBER.sub("0", text)
             occurrence = _Occurrence(
-                index, position, rect, NUMBER.findall(text), size, _slot(rect, page.rect)
+                index, position, rect, NUMBER.findall(text), size, _slot(rect, page.rect), style
             )
             bucket = seen[(band, pattern)]
             if not bucket or bucket[-1].page != index:
@@ -143,6 +162,7 @@ def find_running_text(document: pymupdf.Document, indices: list[int]) -> Running
         if start is not None:
             running.first_page_number = start
         slots = [occurrence.slot for occurrence in occurrences]
+        style = statistics.mode(occurrence.style for occurrence in occurrences)
         running.lines.append(
             RunningLine(
                 band=band,
@@ -152,6 +172,9 @@ def find_running_text(document: pymupdf.Document, indices: list[int]) -> Running
                 slot=max(("left", "center", "right"), key=slots.count),
                 top=statistics.median(occurrence.rect.y0 for occurrence in occurrences),
                 left=statistics.median(occurrence.rect.x0 for occurrence in occurrences),
+                font=style.font,
+                bold=style.bold,
+                italic=style.italic,
             )
         )
         for occurrence in occurrences:
@@ -199,33 +222,58 @@ def _rows(lines: list[RunningLine]) -> list[list[RunningLine]]:
     return rows
 
 
-def _add_field(paragraph, instruction: str, size: float) -> None:
+def _styled(run, line: RunningLine) -> None:
+    from docx.oxml.ns import qn
+    from docx.shared import Pt
+
+    run.font.size = Pt(line.size)
+    if line.font:
+        run.font.name = line.font
+        run._element.rPr.rFonts.set(qn("w:eastAsia"), line.font)
+    run.bold = line.bold
+    run.italic = line.italic
+
+
+def _add_field(paragraph, instruction: str, line: RunningLine) -> None:
     from docx.oxml import OxmlElement
     from docx.oxml.ns import qn
 
     simple = OxmlElement("w:fldSimple")
     simple.set(qn("w:instr"), instruction)
-    run = OxmlElement("w:r")
-    properties = OxmlElement("w:rPr")
-    half_points = OxmlElement("w:sz")
-    half_points.set(qn("w:val"), str(round(size * 2)))
-    properties.append(half_points)
-    run.append(properties)
-    text = OxmlElement("w:t")
-    text.text = "1"
-    run.append(text)
-    simple.append(run)
-    paragraph._p.append(simple)
+    run = paragraph.add_run("1")
+    _styled(run, line)
+    run._r.addprevious(simple)
+    simple.append(run._r)
 
 
 def _write_line(paragraph, line: RunningLine) -> None:
-    from docx.shared import Pt
-
     for part in line.parts:
         if part is None:
-            _add_field(paragraph, PAGE_FIELD, line.size)
+            _add_field(paragraph, PAGE_FIELD, line)
         else:
-            paragraph.add_run(part).font.size = Pt(line.size)
+            _styled(paragraph.add_run(part), line)
+
+
+def _style_band(document, band: Band, lines: list[RunningLine]) -> None:
+    from docx.shared import Pt
+
+    numbered = next((line for line in lines if None in line.parts), None)
+    if numbered is None or not numbered.font:
+        return
+    try:
+        style = document.styles["Header" if band == "header" else "Footer"]
+    except KeyError:
+        return
+    style.font.name = numbered.font
+    style.font.size = Pt(numbered.size)
+    style.font.bold = numbered.bold
+    style.font.italic = numbered.italic
+
+
+def name_running_fonts(running: RunningText, names: Callable[[str], str]) -> None:
+    for line in running.lines:
+        if line.font:
+            line.font = names(line.font)
 
 
 def _write_row(paragraph, row: list[RunningLine], width) -> None:
@@ -278,9 +326,11 @@ def add_running_text(data: bytes, running: RunningText) -> bytes:
         _number_pages_from(first, running.first_page_number)
     width = first.page_width - first.left_margin - first.right_margin
     for band in ("header", "footer"):
-        rows = _rows([line for line in running.lines if line.band == band])
+        lines = [line for line in running.lines if line.band == band]
+        rows = _rows(lines)
         if not rows:
             continue
+        _style_band(document, band, lines)
         part = first.header if band == "header" else first.footer
         part.is_linked_to_previous = False
         paragraphs = part.paragraphs

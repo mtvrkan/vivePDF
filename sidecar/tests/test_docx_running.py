@@ -1,4 +1,5 @@
 import tempfile
+import zipfile
 from pathlib import Path
 
 import pymupdf
@@ -177,3 +178,64 @@ def test_two_running_lines_sharing_a_corner_both_reach_the_header(tmp_path: Path
 
     header = Document(result.output).sections[0].header
     assert [paragraph.text for paragraph in header.paragraphs] == ["Draft Internal\t\tRev 7"]
+
+
+FONT = Path(__file__).resolve().parent.parent / "vivepdf" / "assets" / "fonts" / "DejaVuSans.ttf"
+BOLD_FONT = FONT.with_name("DejaVuSans-Bold.ttf")
+
+
+def _run_styles(part) -> list[tuple[str, str | None, bool | None]]:
+    styles = []
+    for run in part._element.iter(qn("w:r")):
+        text = "".join(node.text or "" for node in run.iter(qn("w:t")))
+        fonts = run.find(qn("w:rPr")).find(qn("w:rFonts"))
+        bold = run.find(qn("w:rPr")).find(qn("w:b"))
+        switched_on = bold is not None and bold.get(qn("w:val"), "1") not in ("0", "false")
+        styles.append((text, None if fonts is None else fonts.get(qn("w:ascii")), switched_on))
+    return styles
+
+
+def test_header_and_footer_keep_the_pdf_font_and_weight(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    for number in range(1, 5):
+        page = document.new_page(width=WIDTH, height=HEIGHT)
+        page.insert_text((72, 40), "Yıllık Rapor", fontsize=10, fontname="dvb", fontfile=BOLD_FONT)
+        page.insert_text((72, 810), f"Sayfa {number}", fontsize=9, fontname="dv", fontfile=FONT)
+        for row in range(6):
+            page.insert_text((72, 140 + row * 18), f"Gövde satırı {row}.", fontsize=11)
+    source = tmp_path / "rapor.pdf"
+    document.save(source)
+
+    result = to_docx(
+        DocxParams(path=str(source), output=str(tmp_path / "out.docx")), silent_progress()
+    )
+
+    word = Document(result.output)
+    section = word.sections[0]
+    assert word.styles["Footer"].font.name == "DejaVu Sans"
+    assert word.styles["Header"].font.name is None
+    assert _run_styles(section.header) == [("Yıllık Rapor", "DejaVu Sans", True)]
+    assert _run_styles(section.footer) == [
+        ("Sayfa ", "DejaVu Sans", False),
+        ("1", "DejaVu Sans", False),
+    ]
+    with zipfile.ZipFile(result.output) as archive:
+        embedded = [name for name in archive.namelist() if name.startswith("word/fonts/")]
+    assert len(embedded) == 2
+
+
+def test_a_base_font_with_a_style_suffix_is_named_plainly_in_the_footer(tmp_path: Path) -> None:
+    source = _report(tmp_path)
+    document = pymupdf.open(source)
+    for xref, _ext, _kind, base_font, *_rest in document[0].get_fonts():
+        if base_font == "Helvetica":
+            document.xref_set_key(xref, "BaseFont", "/Arial,Bold")
+    document.save(tmp_path / "arial.pdf")
+
+    result = to_docx(
+        DocxParams(path=str(tmp_path / "arial.pdf"), output=str(tmp_path / "out.docx")),
+        silent_progress(),
+    )
+
+    header = Document(result.output).sections[0].header
+    assert _run_styles(header) == [("ACME Annual Report", "Arial", True)]

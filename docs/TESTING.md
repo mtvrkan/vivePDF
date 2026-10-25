@@ -265,6 +265,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert a PDF made by an old Word "Save as PDF" (fonts listed as "Times New Roman,Bold" in
   the document properties) to Word and open it in Word: the font box shows Times New Roman,
   not a name with a comma, and bold text is bold.
+- Convert a report whose footer reads "page 3 / 10" in a font Windows lacks (for example
+  Geist) to Word on a PC without that font: the footer, page number included, shows in that
+  font on every page, and the number counts up.
 
 ### How native dialogs are answered
 
