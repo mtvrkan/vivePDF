@@ -359,6 +359,9 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - PDF to Word on a PDF that uses both Arial and Arial Narrow (or Times New Roman in bold and
   italic): in Word each run shows its own font name in the font box, and the bold and italic
   Times New Roman runs are named Times New Roman.
+- Extract images with "as shown on the page" on a slide with two photos touching at a corner
+  and on a clip-art drawing made of overlapping pieces: the photos are two files, the drawing
+  is one.
 
 ### How native dialogs are answered
 

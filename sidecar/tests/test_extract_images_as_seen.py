@@ -152,3 +152,55 @@ def test_a_full_page_picture_under_a_photo_is_left_out(tmp_path: Path) -> None:
     assert result.count == 1
     assert result.skipped == 1
     assert pictures[0].width < 720
+
+
+def test_two_photos_touching_at_a_corner_stay_two_pictures(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=720, height=540)
+    page.insert_image(pymupdf.Rect(10, 40, 330, 300), pixmap=_picture(60, 320))
+    page.insert_image(pymupdf.Rect(300, 300, 700, 520), pixmap=_picture(180, 400))
+
+    result, _pictures = _extract(document, tmp_path)
+
+    assert result.count == 2
+
+
+def test_two_photos_meeting_along_a_short_stretch_stay_two_pictures(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=720, height=540)
+    page.insert_image(pymupdf.Rect(40, 40, 240, 240), pixmap=_picture(60, 200))
+    page.insert_image(pymupdf.Rect(240, 180, 440, 380), pixmap=_picture(180, 200))
+
+    result, _pictures = _extract(document, tmp_path)
+
+    assert result.count == 2
+
+
+def test_slices_of_one_picture_at_the_same_scale_are_saved_as_one(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=720, height=540)
+    page.insert_image(pymupdf.Rect(100, 240, 140, 340), pixmap=_slice(60, 40, 100))
+    page.insert_image(pymupdf.Rect(140, 220, 180, 340), pixmap=_slice(120, 40, 120))
+    page.insert_image(pymupdf.Rect(180, 180, 600, 340), pixmap=_slice(200, 420, 160))
+
+    result, pictures = _extract(document, tmp_path)
+
+    assert result.count == 1
+    assert pictures[0].width >= 500
+
+
+def test_overlapping_pieces_of_a_drawing_are_saved_as_one(tmp_path: Path) -> None:
+    document = pymupdf.open()
+    page = document.new_page(width=720, height=540)
+    page.insert_image(pymupdf.Rect(300, 100, 420, 220), pixmap=_picture(60, 240))
+    page.insert_image(pymupdf.Rect(380, 200, 470, 300), pixmap=_picture(180, 200))
+
+    result, _pictures = _extract(document, tmp_path)
+
+    assert result.count == 1
+
+
+def _slice(shade: int, width: int, height: int) -> pymupdf.Pixmap:
+    picture = pymupdf.Pixmap(pymupdf.csRGB, pymupdf.IRect(0, 0, width, height), 0)
+    picture.clear_with(shade)
+    return picture

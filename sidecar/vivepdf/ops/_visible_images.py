@@ -12,6 +12,8 @@ TOUCH_GAP = 1.0
 TILE_SLACK = 1.02
 INSIDE_SHARE = 0.9
 DPI_SPREAD = 1.5
+SLICE_DPI_SPREAD = 1.02
+SLICE_EDGE_SHARE = 0.5
 BACKDROP_SHARE = 0.9
 SHOWN_PIXELS = 40_000_000
 LOWEST_DPI = 72
@@ -154,7 +156,16 @@ def _together(first: ShownImage, second: ShownImage) -> bool:
         return True
     if abs(first.area | second.area) <= (first.covered + second.covered - overlap) * TILE_SLACK:
         return True
-    return max(first.dpi, second.dpi) <= min(first.dpi, second.dpi) * DPI_SPREAD
+    spread = max(first.dpi, second.dpi) / max(min(first.dpi, second.dpi), 1e-6)
+    across = min(first.area.x1, second.area.x1) - max(first.area.x0, second.area.x0)
+    down = min(first.area.y1, second.area.y1) - max(first.area.y0, second.area.y0)
+    if across > TOUCH_GAP and down > TOUCH_GAP:
+        return spread <= DPI_SPREAD
+    if spread > SLICE_DPI_SPREAD:
+        return False
+    if down <= TOUCH_GAP:
+        return across >= min(first.area.width, second.area.width) * SLICE_EDGE_SHARE
+    return down >= min(first.area.height, second.area.height) * SLICE_EDGE_SHARE
 
 
 def merged_images(images: list[ShownImage]) -> list[ShownImage]:
