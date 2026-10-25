@@ -2950,6 +2950,8 @@
       "orientationAuto": "Otomatik",
       "margin": "Kenar boşluğu",
       "recursive": "Alt klasörler dahil",
+      "compressPhotos": "Fotoğrafları küçült",
+      "compressPhotosHint": "Fotoğraflar sayfadaki boyutlarına göre 200 DPI'ye indirilip JPEG olarak kaydedilir; PDF çok daha küçük olur. Çizimler ve ekran görüntüleri olduğu gibi kalır.",
       "files": "Dosyalar",
       "dropFiles": "Dosya ekleyin ya da pencereye sürükleyin.",
       "addFiles": "Dosya ekle",

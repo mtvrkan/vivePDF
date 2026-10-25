@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Convert › Images to PDF: a "Compress photos" switch scales each photo to 200 dpi at its size on the page and stores it as JPEG, so a 32 MB PNG photo gives a 0.4 MB PDF page instead of 54 MB; drawings and screenshots stay lossless [2026-10-25]
 - Convert › File to PDF: each Word, Excel, PowerPoint or OpenDocument file in the list shows the fonts it uses that this computer does not have, before converting, since LibreOffice replaces them with a similar font and the layout can shift [2026-10-25]
 - Print: the print dialog shows a preview of each sheet next to the settings, on A4 (Letter in the Americas) with the chosen pages, odd/even choice, reverse order, pages per sheet, grayscale, scale, rotation and comments, with buttons to step through the sheets; unsaved markups appear as they will print [2026-10-24]
 - Default PDF app: Settings › System shows which app opens PDF files and a "Make default" button on Windows, macOS and Linux (macOS asks for confirmation, Windows opens its default-apps settings on vivePDF's page), and the home page shows a card with "Make default" and "Don't ask again" while vivePDF is not the default [2026-10-24]
@@ -19,6 +20,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Images to PDF: a lossless WebP picture (a screenshot or a scanned page) is placed losslessly instead of being turned into a JPEG with blotches around the text [2026-10-25]
 - PDF to Word and PDF to PowerPoint: fonts with no licence table, as in PDFs saved from LibreOffice (Liberation, OpenSymbol, Ubuntu, Noto), are now embedded too, so the text keeps its typeface on a computer without them [2026-10-25]
 - PDF to Word: slanted text such as a rotated "APPROVED" stamp is no longer dropped; it is kept as a picture in front of the page, over its frame [2026-10-25]
 - PDF to Word: headers and footers keep the PDF's font, size, bold and italic, page numbers included, instead of falling back to Cambria, and a font used only in a header or footer is embedded in the Word file too [2026-10-25]

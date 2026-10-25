@@ -23,7 +23,7 @@ export function ImagesToPdfSection({
   options: ConvertOptions;
 }) {
   const { t } = useTranslation();
-  const { images, setImages, folders, setFolders, sort, setSort, pageSize, setPageSize, orientation, setOrientation, fit, setFit, margin, setMargin, recursive, setRecursive, addImages, addFolder } = options;
+  const { images, setImages, folders, setFolders, sort, setSort, pageSize, setPageSize, orientation, setOrientation, fit, setFit, margin, setMargin, recursive, setRecursive, compressPhotos, setCompressPhotos, addImages, addFolder } = options;
   return (
     <>
       <Section title={t("tools.convert.imageSources")}>
@@ -97,6 +97,7 @@ export function ImagesToPdfSection({
             <Checkbox label={t("tools.convert.recursive")} checked={recursive} onChange={setRecursive} disabled={running || folders.length === 0} />
           </div>
         </div>
+        <Checkbox label={t("tools.convert.compressPhotos")} hint={t("tools.convert.compressPhotosHint")} checked={compressPhotos} onChange={setCompressPhotos} disabled={running} />
       </Section>
       <Section>
         <OutputPathField value={output} onChange={setOutput} disabled={running} />

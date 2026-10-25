@@ -2949,6 +2949,8 @@
       "orientationAuto": "Automático",
       "margin": "Margem",
       "recursive": "Incluir subpastas",
+      "compressPhotos": "Comprimir fotos",
+      "compressPhotosHint": "As fotos são reduzidas a 200 dpi conforme o tamanho na página e salvas em JPEG, deixando o PDF bem menor. Desenhos e capturas de tela ficam como estão.",
       "files": "Arquivos",
       "dropFiles": "Adicione arquivos ou solte-os na janela.",
       "addFiles": "Adicionar arquivos",

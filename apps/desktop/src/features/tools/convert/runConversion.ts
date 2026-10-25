@@ -39,6 +39,7 @@ export type ConvertRun = {
     images: string[];
     folders: string[];
     recursive: boolean;
+    compressPhotos: boolean;
     sort: "name" | "date";
     pageSize: "image" | "a4" | "letter";
     orientation: "auto" | "portrait" | "landscape";
@@ -244,6 +245,7 @@ export async function runConversion(run: ConvertRun, callOptions: RpcCallOptions
           orientation: opts.orientation,
           margin: opts.margin,
           fit: opts.fit,
+          compressPhotos: opts.compressPhotos,
           output: run.output,
           overwrite: run.overwrite,
         },

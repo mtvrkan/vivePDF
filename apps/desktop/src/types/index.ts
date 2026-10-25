@@ -1147,6 +1147,7 @@ export type ImagesToPdfParams = {
   orientation?: "auto" | "portrait" | "landscape";
   margin?: number;
   fit?: ImageFit;
+  compressPhotos?: boolean;
   output: string;
   overwrite?: boolean;
 };

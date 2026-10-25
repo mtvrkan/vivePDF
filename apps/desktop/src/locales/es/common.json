@@ -2949,6 +2949,8 @@
       "orientationAuto": "Automático",
       "margin": "Margen",
       "recursive": "Incluir subcarpetas",
+      "compressPhotos": "Comprimir fotos",
+      "compressPhotosHint": "Las fotos se reducen a 200 dpi según su tamaño en la página y se guardan como JPEG, así el PDF ocupa mucho menos. Los dibujos y las capturas de pantalla no cambian.",
       "files": "Archivos",
       "dropFiles": "Añada archivos o arrástrelos a la ventana.",
       "addFiles": "Añadir archivos",

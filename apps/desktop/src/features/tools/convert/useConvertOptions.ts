@@ -16,6 +16,7 @@ export function useConvertOptions() {
   const [images, setImages] = useState<string[]>([]);
   const [folders, setFolders] = useState<string[]>([]);
   const [recursive, setRecursive] = useState(false);
+  const [compressPhotos, setCompressPhotos] = useState(false);
   const [sort, setSort] = useState<"name" | "date">("name");
   const [pageSize, setPageSize] = useState<"image" | "a4" | "letter">("a4");
   const [orientation, setOrientation] = useState<"auto" | "portrait" | "landscape">("auto");
@@ -88,6 +89,8 @@ export function useConvertOptions() {
     setFolders,
     recursive,
     setRecursive,
+    compressPhotos,
+    setCompressPhotos,
     sort,
     setSort,
     pageSize,

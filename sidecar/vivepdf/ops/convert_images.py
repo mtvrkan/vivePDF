@@ -355,6 +355,7 @@ class ImagesToPdfParams(RpcModel):
     orientation: Literal["auto", "portrait", "landscape"] = "auto"
     margin: float = Field(default=0, ge=0, le=200)
     fit: Literal["fit", "fill"] = "fit"
+    compress_photos: bool = False
     output: WritePath
     overwrite: bool = False
 
@@ -370,6 +371,18 @@ MULTI_FRAME_FORMATS = {"TIFF"}
 LOSSY_FORMATS = {"JPEG", "MPO", "WEBP", "HEIF", "AVIF"}
 PIL_KEPT_MODES = {"1", "L", "LA", "P", "RGB", "RGBA"}
 REENCODED_JPEG_QUALITY = 92
+COMPRESSED_PHOTO_DPI = 200
+COMPRESSED_JPEG_QUALITY = 80
+DOWNSAMPLE_MARGIN = 1.25
+PHOTO_COLOR_COUNT = 4096
+COLOR_SAMPLE_SIDE = 1024
+PHOTO_MODES = {"RGB", "L"}
+JPEG_FORMATS = {"JPEG", "MPO"}
+WEBP_SIGNATURE = b"WEBP"
+WEBP_LOSSLESS_CHUNK = b"VP8L"
+WEBP_LOSSY_CHUNK = b"VP8 "
+WEBP_FRAME_CHUNK = b"ANMF"
+WEBP_FRAME_HEADER = 16
 DECODE_PIXEL_LIMIT = 150_000_000
 DEFAULT_IMAGE_DPI = 96.0
 PLAUSIBLE_DPI = (36.0, 2400.0)
@@ -395,12 +408,42 @@ def _image_dpi(info: dict) -> float:
     return horizontal if low <= horizontal <= high else DEFAULT_IMAGE_DPI
 
 
-def _encoded_frame(picture, source_format: str, dpi: float) -> ImageFrame:
+def lossless_webp(image: Path) -> bool:
+    try:
+        with image.open("rb") as handle:
+            header = handle.read(12)
+            if len(header) < 12 or header[8:12] != WEBP_SIGNATURE:
+                return False
+            while len(chunk := handle.read(8)) == 8:
+                name, size = chunk[:4], int.from_bytes(chunk[4:], "little")
+                if name in (WEBP_LOSSLESS_CHUNK, WEBP_LOSSY_CHUNK):
+                    return name == WEBP_LOSSLESS_CHUNK
+                if name == WEBP_FRAME_CHUNK:
+                    handle.seek(WEBP_FRAME_HEADER, 1)
+                    continue
+                handle.seek(size + size % 2, 1)
+    except OSError:
+        return False
+    return False
+
+
+def _lossy_source(image: Path, source_format: str) -> bool:
+    if source_format == "WEBP":
+        return not lossless_webp(image)
+    return source_format in LOSSY_FORMATS
+
+
+def _usable_mode(picture):
     picture = eight_bit(picture)
     if picture.mode not in PIL_KEPT_MODES:
         picture = picture.convert("RGBA" if "A" in picture.getbands() else "RGB")
+    return picture
+
+
+def _encoded_frame(picture, lossy: bool, dpi: float) -> ImageFrame:
+    picture = _usable_mode(picture)
     buffer = io.BytesIO()
-    if picture.mode in ("RGB", "L") and source_format in LOSSY_FORMATS:
+    if picture.mode in PHOTO_MODES and lossy:
         picture.save(buffer, format="JPEG", quality=REENCODED_JPEG_QUALITY)
     else:
         picture.save(buffer, format="PNG")
@@ -458,10 +501,18 @@ def load_frames(image: Path) -> list[ImageFrame]:
                 for position in range(frame_count):
                     picture.seek(position)
                     frames.append(
-                        _encoded_frame(picture.copy(), source_format, _image_dpi(picture.info))
+                        _encoded_frame(
+                            picture.copy(),
+                            _lossy_source(image, source_format),
+                            _image_dpi(picture.info),
+                        )
                     )
                 return frames
-            return [_encoded_frame(ImageOps.exif_transpose(picture), source_format, dpi)]
+            return [
+                _encoded_frame(
+                    ImageOps.exif_transpose(picture), _lossy_source(image, source_format), dpi
+                )
+            ]
     except OpError:
         raise
     except Exception:  # noqa: BLE001
@@ -480,6 +531,77 @@ def _page_size_for(frame: ImageFrame, params: ImagesToPdfParams) -> tuple[float,
     return (height, width) if landscape else (width, height)
 
 
+def _many_colors(picture) -> bool:
+    sample = picture.copy()
+    sample.thumbnail((COLOR_SAMPLE_SIDE, COLOR_SAMPLE_SIDE), resample=0)
+    return sample.getcolors(PHOTO_COLOR_COUNT) is None
+
+
+def _photo_bytes(picture, source: Path | None, needed: tuple[float, float]):
+    from PIL import Image, ImageOps
+
+    source_format = picture.format or ""
+    wanted = (
+        max(1, round(needed[0] * COMPRESSED_PHOTO_DPI / 72)),
+        max(1, round(needed[1] * COMPRESSED_PHOTO_DPI / 72)),
+    )
+    if source_format in JPEG_FORMATS:
+        picture.draft(picture.mode, wanted)
+    if picture.width * picture.height > DECODE_PIXEL_LIMIT:
+        return None
+    picture = _usable_mode(ImageOps.exif_transpose(picture))
+    if picture.mode not in PHOTO_MODES:
+        return None
+    lossy = source is not None and _lossy_source(source, source_format)
+    if not lossy and not _many_colors(picture):
+        return None
+    shrink = picture.width > wanted[0] * DOWNSAMPLE_MARGIN
+    if not shrink and source_format in JPEG_FORMATS:
+        return None
+    if shrink:
+        height = max(1, round(picture.height * wanted[0] / picture.width))
+        picture = picture.resize((wanted[0], height), Image.Resampling.LANCZOS)
+    buffer = io.BytesIO()
+    picture.save(buffer, format="JPEG", quality=COMPRESSED_JPEG_QUALITY, optimize=True)
+    return picture.size, buffer.getvalue()
+
+
+def _frame_picture(frame: ImageFrame, source: Path | None):
+    from PIL import Image
+
+    if source is not None:
+        return open_picture(source)
+    return Image.open(io.BytesIO(frame.stream or b""))
+
+
+def compressed_frame(
+    frame: ImageFrame, source: Path | None, needed: tuple[float, float]
+) -> ImageFrame:
+    try:
+        with _frame_picture(frame, source) as picture:
+            result = _photo_bytes(picture, source, needed)
+    except Exception:  # noqa: BLE001
+        return frame
+    if result is None:
+        return frame
+    (width, height), stream = result
+    current = source.stat().st_size if source is not None else len(frame.stream or b"")
+    if len(stream) >= current:
+        return frame
+    return ImageFrame(width, height, stream=stream, dpi=frame.dpi * width / frame.width)
+
+
+def frame_box(page: pymupdf.Page, margin: float) -> pymupdf.Rect:
+    box = page.rect + (margin, margin, -margin, -margin)
+    return page.rect if box.is_empty else box
+
+
+def shown_size(box: pymupdf.Rect, frame: ImageFrame, fit: str) -> tuple[float, float]:
+    ratios = (box.width / frame.width, box.height / frame.height)
+    scale = max(ratios) if fit == "fill" else min(ratios)
+    return frame.width * scale, frame.height * scale
+
+
 def _insert_frame(page: pymupdf.Page, box: pymupdf.Rect, frame: ImageFrame) -> None:
     page.insert_image(
         box,
@@ -491,14 +613,11 @@ def _insert_frame(page: pymupdf.Page, box: pymupdf.Rect, frame: ImageFrame) -> N
 
 
 def place_frame(page: pymupdf.Page, frame: ImageFrame, margin: float, fit: str) -> None:
-    box = page.rect + (margin, margin, -margin, -margin)
-    if box.is_empty:
-        box = page.rect
+    box = frame_box(page, margin)
     if fit != "fill":
         _insert_frame(page, box, frame)
         return
-    scale = max(box.width / frame.width, box.height / frame.height)
-    width, height = frame.width * scale, frame.height * scale
+    width, height = shown_size(box, frame, fit)
     left, top = (box.width - width) / 2, (box.height - height) / 2
     with pymupdf.open() as holder:
         canvas = holder.new_page(width=box.width, height=box.height)
@@ -525,9 +644,13 @@ def images_to_pdf(params: ImagesToPdfParams, progress: Progress) -> ImagesToPdfR
                     raise
                 skipped.append(image.name)
                 continue
+            source = image if len(frames) == 1 else None
             for frame in frames:
                 width, height = _page_size_for(frame, params)
                 page = document.new_page(width=width, height=height)
+                if params.compress_photos:
+                    needed = shown_size(frame_box(page, params.margin), frame, params.fit)
+                    frame = compressed_frame(frame, source, needed)
                 place_frame(page, frame, params.margin, params.fit)
             if position % 5 == 0:
                 progress.report(

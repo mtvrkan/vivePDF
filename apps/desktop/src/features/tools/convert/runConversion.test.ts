@@ -13,6 +13,7 @@ const convertToMarkdown = vi.fn();
 const extractImages = vi.fn();
 const studioReadBibliography = vi.fn();
 const studioRenderDocument = vi.fn();
+const imagesToPdf = vi.fn();
 vi.mock("@/shared/rpc/operations", () => ({
   fileToPdf: (...args: unknown[]) => fileToPdf(...args),
   svgToPdf: (...args: unknown[]) => svgToPdf(...args),
@@ -24,6 +25,7 @@ vi.mock("@/shared/rpc/operations", () => ({
   extractImages: (...args: unknown[]) => extractImages(...args),
   studioReadBibliography: (...args: unknown[]) => studioReadBibliography(...args),
   studioRenderDocument: (...args: unknown[]) => studioRenderDocument(...args),
+  imagesToPdf: (...args: unknown[]) => imagesToPdf(...args),
 }));
 
 import { runConversion, type ConvertRun } from "./runConversion";
@@ -268,5 +270,14 @@ describe("runConversion source libraries", () => {
     expect(outcome.outputs).toEqual(["C:\\out\\b.pdf"]);
     expect(outcome.failed?.[0]).toEqual({ path: "C:\\in\\empty.ris", error: { code: "INVALID_PARAMS", message: "the file holds no sources", data: { reason: "noSources" } } });
     expect(studioRenderDocument).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("runConversion images-to-pdf", () => {
+  it("passes the compress photos choice", async () => {
+    imagesToPdf.mockResolvedValue({ output: "C:/out/a.pdf", bytes: 10, pageCount: 1, skipped: [] });
+    const run = { mode: "images-to-pdf", output: "C:/out/a.pdf", options: { images: ["C:/in/a.png"], folders: [], compressPhotos: true } } as unknown as ConvertRun;
+    await runConversion(run, {});
+    expect(imagesToPdf).toHaveBeenCalledWith(expect.objectContaining({ images: ["C:/in/a.png"], compressPhotos: true }), expect.anything());
   });
 });

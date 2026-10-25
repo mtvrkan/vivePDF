@@ -280,6 +280,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Convert › File to PDF: convert a Word file with Heading 1/Heading 2 titles and a PowerPoint
   file, with a system LibreOffice older than 25 if one is at hand: each PDF opens with a
   bookmark per heading or slide, and Acrobat's Accessibility check finds tags.
+- Convert › Images to PDF: add a large phone photo (several MB) and a screenshot, turn on
+  "Compress photos": the PDF is a fraction of the photo's size, the photo still looks sharp
+  at 100 % zoom and the screenshot text is as crisp as without the option.
+- Convert › Images to PDF: a lossless WebP screenshot gives a PDF whose text has no JPEG
+  blotches around the letters.
 
 ### How native dialogs are answered
 

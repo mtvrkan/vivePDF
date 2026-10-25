@@ -2949,6 +2949,8 @@
       "orientationAuto": "Automatisch",
       "margin": "Rand",
       "recursive": "Unterordner einschließen",
+      "compressPhotos": "Fotos komprimieren",
+      "compressPhotosHint": "Fotos werden passend zu ihrer Größe auf der Seite auf 200 dpi verkleinert und als JPEG gespeichert, sodass die PDF viel kleiner wird. Zeichnungen und Bildschirmfotos bleiben unverändert.",
       "files": "Dateien",
       "dropFiles": "Fügen Sie Dateien hinzu oder ziehen Sie sie auf das Fenster.",
       "addFiles": "Dateien hinzufügen",
