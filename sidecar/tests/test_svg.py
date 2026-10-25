@@ -1,8 +1,10 @@
+import contextlib
 from pathlib import Path
 
 import pymupdf
 import pytest
 from lxml import etree
+from PIL import Image
 
 from vivepdf.external import libreoffice
 from vivepdf.ops._svg import MAX_SVG_BYTES, drawing_pdf, sanitized_svg
@@ -314,3 +316,87 @@ def test_shapes_inside_a_link_are_drawn():
 
     fills = [drawing["fill"] for drawing in document[0].get_drawings()]
     assert fills == [(1.0, 0.0, 0.0), (0.0, 0.0, 0.0), (0.0, 0.0, 0.0)]
+
+
+def _picture(path: Path, colour: tuple[int, int, int] = (220, 40, 40)) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", (40, 20), colour).save(path)
+    return path
+
+
+def _image_svg(*references: str) -> str:
+    images = "".join(
+        f'<image xlink:href="{reference}" x="0" y="{index * 30}" width="40" height="20"/>'
+        for index, reference in enumerate(references)
+    )
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
+        f'width="100" height="200">{images}</svg>'
+    )
+
+
+def _image_references(clean: Path) -> list[str]:
+    root = etree.parse(str(clean)).getroot()
+    return [
+        value
+        for element in root.iter("{http://www.w3.org/2000/svg}image")
+        for key, value in element.attrib.items()
+        if etree.QName(key).localname == "href"
+    ]
+
+
+def test_a_picture_next_to_the_drawing_is_embedded(tmp_path: Path):
+    folder = tmp_path / "Çizimler"
+    photo = _picture(folder / "kırmızı foto.png")
+    source = _svg(
+        folder, text=_image_svg("kırmızı%20foto.png", photo.as_uri(), "./kırmızı foto.png")
+    )
+
+    clean = sanitized_svg(source, tmp_path / "clean")
+
+    references = _image_references(clean)
+    assert len(references) == 3
+    assert all(reference.startswith("data:image/png;base64,") for reference in references)
+
+
+def test_pictures_outside_the_drawing_folder_are_not_read(tmp_path: Path):
+    folder = tmp_path / "Çizimler"
+    _picture(folder / "alt" / "mavi.png")
+    _picture(tmp_path / "yeşil.png")
+    (folder / "notlar.png").write_text("not a picture", encoding="utf-8")
+    with contextlib.suppress(OSError):
+        (folder / "kısayol.png").symlink_to(tmp_path / "yeşil.png")
+    source = _svg(
+        folder,
+        text=_image_svg(
+            "alt/mavi.png",
+            "../yeşil.png",
+            (tmp_path / "yeşil.png").as_uri(),
+            "https://example.com/yeşil.png",
+            "notlar.png",
+            "kısayol.png",
+        ),
+    )
+
+    clean = sanitized_svg(source, tmp_path / "clean")
+
+    assert _image_references(clean) == []
+
+
+def test_without_libreoffice_the_picture_next_to_the_drawing_is_drawn(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    monkeypatch.setattr(libreoffice, "find_soffice", lambda: None)
+    _picture(tmp_path / "foto.png")
+
+    result = file_to_pdf(
+        FileToPdfParams(
+            path=str(_svg(tmp_path, text=_image_svg("foto.png"))),
+            output=str(tmp_path / "out.pdf"),
+        ),
+        silent_progress(),
+    )
+
+    with pymupdf.open(result.output) as document:
+        [image] = document[0].get_image_info()
+        assert tuple(round(value) for value in image["bbox"]) == (0, 0, 40, 20)

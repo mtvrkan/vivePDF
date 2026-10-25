@@ -285,6 +285,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   at 100 % zoom and the screenshot text is as crisp as without the option.
 - Convert › Images to PDF: a lossless WebP screenshot gives a PDF whose text has no JPEG
   blotches around the letters.
+- Convert › SVG to PDF: an Inkscape drawing that links a photo kept in the same folder (not
+  embedded) shows the photo in the PDF; a photo linked from another folder is left out.
 
 ### How native dialogs are answered
 

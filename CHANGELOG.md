@@ -20,6 +20,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- SVG to PDF: pictures an SVG links from its own folder (for example an Inkscape drawing with a linked photo) appear in the PDF instead of being left out; pictures elsewhere on the computer are still never read [2026-10-25]
 - Images to PDF: a lossless WebP picture (a screenshot or a scanned page) is placed losslessly instead of being turned into a JPEG with blotches around the text [2026-10-25]
 - PDF to Word and PDF to PowerPoint: fonts with no licence table, as in PDFs saved from LibreOffice (Liberation, OpenSymbol, Ubuntu, Noto), are now embedded too, so the text keeps its typeface on a computer without them [2026-10-25]
 - PDF to Word: slanted text such as a rotated "APPROVED" stamp is no longer dropped; it is kept as a picture in front of the page, over its frame [2026-10-25]

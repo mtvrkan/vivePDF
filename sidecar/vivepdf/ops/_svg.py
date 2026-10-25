@@ -1,12 +1,16 @@
+import base64
 import copy
 import re
 from collections.abc import Callable
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
+from urllib.request import url2pathname
 
 import pymupdf
 from lxml import etree
 
 from vivepdf.external import libreoffice
+from vivepdf.ops._image_files import open_picture
 from vivepdf.rpc.errors import ErrorCode, OpError
 
 MAX_SVG_BYTES = 50 * 1024 * 1024
@@ -30,6 +34,9 @@ DRAWN_ELEMENTS = frozenset(
 DEFINITION_ELEMENTS = frozenset({"defs", "symbol", "clipPath", "mask", "pattern", "marker"})
 MAX_EXPANDED_ELEMENTS = 200_000
 ABSOLUTE_LENGTH = re.compile(r"^\s*\d+(\.\d+)?\s*(px|pt|pc|mm|cm|in)?\s*$")
+LINKED_PICTURE_TYPES = {"PNG": "png", "JPEG": "jpeg", "GIF": "gif", "BMP": "bmp", "WEBP": "webp"}
+MAX_LINKED_PICTURE_BYTES = 20 * 1024 * 1024
+WINDOWS_DRIVE = re.compile(r"^[A-Za-z]:[\\/]")
 
 
 def _refusal(reason: str, message: str, **data: object) -> OpError:
@@ -174,8 +181,63 @@ def _expand_symbols(root: etree._Element) -> None:
             parent.replace(use, _symbol_instance(use, symbol))
 
 
+def _linked_file(reference: str, folder: Path) -> Path | None:
+    target = reference.strip()
+    if not target or target.startswith("#"):
+        return None
+    if WINDOWS_DRIVE.match(target):
+        path = Path(target)
+    else:
+        parts = urlsplit(target)
+        if parts.scheme == "file":
+            path = Path(url2pathname(parts.path))
+        elif parts.scheme or parts.netloc:
+            return None
+        else:
+            path = Path(unquote(parts.path))
+    try:
+        resolved = (folder / path).resolve()
+    except (OSError, ValueError):
+        return None
+    if resolved.parent != folder or not resolved.is_file():
+        return None
+    return resolved
+
+
+def _picture_uri(path: Path) -> str | None:
+    try:
+        if path.stat().st_size > MAX_LINKED_PICTURE_BYTES:
+            return None
+        with open_picture(path) as picture:
+            kind = LINKED_PICTURE_TYPES.get(picture.format or "")
+        if kind is None:
+            return None
+        return f"data:image/{kind};base64,{base64.b64encode(path.read_bytes()).decode('ascii')}"
+    except (OSError, ValueError, OpError):
+        return None
+
+
+def _embed_neighbour_pictures(root: etree._Element, folder: Path) -> None:
+    budget = MAX_SVG_BYTES
+    embedded: dict[Path, str] = {}
+    for element in root.iter():
+        if not isinstance(element.tag, str) or _local(element.tag) != "image":
+            continue
+        for key, value in element.attrib.items():
+            if _local(key) != "href" or (path := _linked_file(value, folder)) is None:
+                continue
+            if path not in embedded:
+                uri = _picture_uri(path)
+                if uri is None or len(uri) > budget:
+                    continue
+                budget -= len(uri)
+                embedded[path] = uri
+            element.set(key, embedded[path])
+
+
 def sanitized_svg(source: Path, directory: Path) -> Path:
     root = read_svg(source)
+    _embed_neighbour_pictures(root, source.resolve().parent)
     _clean_tree(root)
     directory.mkdir(parents=True, exist_ok=True)
     target = directory / f"{source.stem or 'drawing'}.svg"
