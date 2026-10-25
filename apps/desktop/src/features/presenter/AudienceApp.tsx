@@ -25,6 +25,7 @@ import { commandForKey } from "./presenterCommands";
 import { applyPatch, presentationFields, type SharedSlice, type StateMessage } from "./presenterSync";
 import { RemoteBoardCursor, RemotePointerLayer } from "./RemotePointerLayer";
 import { SelectionMarksLayer } from "./SelectionMarksLayer";
+import { useNotchInset } from "./useNotchInset";
 
 const AUDIENCE_DOCUMENT_ID = "presenter-audience";
 
@@ -258,8 +259,9 @@ function AudienceView() {
 }
 
 export function AudienceApp() {
+  const inset = useNotchInset();
   return (
-    <main className="h-screen bg-black">
+    <main className="h-screen bg-black" style={{ paddingTop: inset }}>
       <PdfProvider>
         <AudienceView />
       </PdfProvider>

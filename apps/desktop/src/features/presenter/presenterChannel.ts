@@ -10,6 +10,7 @@ export const PRESENTER_EVENTS = {
   command: "presenter:command",
   failed: "presenter:failed",
   closed: "presenter-closed",
+  placed: "presenter:placed",
 } as const;
 
 export const PRESENTER_COMMANDS = ["next", "previous", "first", "last", "blackoutBlack", "blackoutWhite", "clearBlackout", "end"] as const;

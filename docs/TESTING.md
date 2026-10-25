@@ -362,6 +362,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - Extract images with "as shown on the page" on a slide with two photos touching at a corner
   and on a clip-art drawing made of overlapping pieces: the photos are two files, the drawing
   is one.
+- Presenter view on Windows with a projector, then Swap screens twice: the slide still fills
+  each screen edge to edge with no black band at the top (the notch spacing is Mac only).
 
 ### How native dialogs are answered
 

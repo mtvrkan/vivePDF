@@ -31,6 +31,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Website: the English home page now lives at vivepdf.com/ and the Turkish one at /tr/; a browser that asks for Turkish (or chose TR in the menu) goes from / to /tr/, choosing EN keeps it on /, and crawlers always get the English page, so no search engine sees the home page as a redirect. The old /en/ address forwards to /, and the documentation addresses are unchanged [2026-10-21]
 
 ### Fixed
+- Presenter view on a Mac: when the audience screen is a MacBook display with a camera notch (for example after Swap screens), the slide sits below the notch with a black band above it instead of losing its top under the notch [2026-10-25]
 - Extract images as shown: two separate photos that touch at a corner or along a short stretch are saved as two files instead of one; pieces that overlap, tile a rectangle or are same-scale slices of one picture still come out as one file [2026-10-25]
 - PDF to Word: text in a font is no longer named after a different embedded font whose name merely contains it or is contained in it (Arial Narrow as Arial, DejaVu Sans as DejaVu Sans Mono), and text with no font name no longer takes whichever embedded font came first [2026-10-25]
 - PDF to text, Markdown, HTML, EPUB and Word: page numbers that appear on only part of the pages, such as slide decks merged into one PDF where only one deck is numbered, are taken out like the numbers of a fully numbered document; a run needs at least five pages counting up with the page [2026-10-25]

@@ -204,6 +204,7 @@ pub fn run() {
             view_source::view_source_release,
             presenter::presenter_open,
             presenter::presenter_session,
+            presenter::presenter_inset,
             presenter::presenter_close,
             presenter::presenter_swap,
             presenter::presenter_screens,

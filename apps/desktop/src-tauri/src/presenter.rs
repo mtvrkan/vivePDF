@@ -13,6 +13,7 @@ use crate::rpc::RpcError;
 
 pub const LABEL_PREFIX: &str = "present-";
 const CLOSED_EVENT: &str = "presenter-closed";
+const PLACED_EVENT: &str = "presenter:placed";
 const NOTES_DIR: &str = "presenter-notes";
 const CONTENT_DIR: &str = "by-content";
 const IDENTITY_DIR: &str = "by-identity";
@@ -360,6 +361,14 @@ fn move_to<R: Runtime>(window: &WebviewWindow<R>, screen: Screen) -> tauri::Resu
 }
 
 fn cover<R: Runtime>(window: &WebviewWindow<R>, screen: Screen, role: Role) -> tauri::Result<bool> {
+    let landed = place(window, screen, role)?;
+    if role == Role::Audience {
+        let _ = window.emit_to(window.label(), PLACED_EVENT, ());
+    }
+    Ok(landed)
+}
+
+fn place<R: Runtime>(window: &WebviewWindow<R>, screen: Screen, role: Role) -> tauri::Result<bool> {
     if cfg!(target_os = "macos") && role == Role::Audience {
         window.set_visible_on_all_workspaces(true)?;
     }
@@ -377,6 +386,27 @@ fn cover<R: Runtime>(window: &WebviewWindow<R>, screen: Screen, role: Role) -> t
     let landed = move_to(window, screen)?;
     window.set_always_on_top(true)?;
     Ok(landed)
+}
+
+#[cfg(target_os = "macos")]
+fn notch_inset<R: Runtime>(window: &WebviewWindow<R>) -> f64 {
+    let Ok(pointer) = window.ns_window() else {
+        return 0.0;
+    };
+    // SAFETY: tauri hands back the live NSWindow of this window and sync commands run on the main thread AppKit requires.
+    let ns_window = unsafe { &*pointer.cast::<objc2_app_kit::NSWindow>() };
+    let Some(screen) = ns_window.screen() else {
+        return 0.0;
+    };
+    let shown = screen.frame();
+    let placed = ns_window.frame();
+    let gap = (shown.origin.y + shown.size.height) - (placed.origin.y + placed.size.height);
+    (screen.safeAreaInsets().top - gap).max(0.0)
+}
+
+#[cfg(not(target_os = "macos"))]
+fn notch_inset<R: Runtime>(_window: &WebviewWindow<R>) -> f64 {
+    0.0
 }
 
 async fn cover_off_thread<R: Runtime>(
@@ -527,6 +557,14 @@ pub fn presenter_session<R: Runtime>(
         return None;
     }
     app.state::<Presenters>().view(window.label())
+}
+
+#[tauri::command]
+pub fn presenter_inset<R: Runtime>(window: WebviewWindow<R>) -> f64 {
+    if !is_audience(window.label()) {
+        return 0.0;
+    }
+    notch_inset(&window)
 }
 
 #[tauri::command]
