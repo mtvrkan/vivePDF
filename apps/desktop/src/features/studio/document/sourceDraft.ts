@@ -25,7 +25,9 @@ export type SourceDraft = { type: string; key: string; authors: string; editors:
 export type KeyProblem = "invalid" | "taken";
 
 export function namesText(names: BibName[]): string {
-  return names.map((name) => (name.others ? "others" : name.literal ? `{${name.family}}` : name.given ? `${name.family}, ${name.given}` : name.family)).join("\n");
+  return names
+    .map((name) => (name.others ? "others" : name.literal ? `{${name.family}}` : name.suffix ? `${name.family}, ${name.suffix}, ${name.given}` : name.given ? `${name.family}, ${name.given}` : name.family))
+    .join("\n");
 }
 
 export function namesOf(text: string): BibName[] {

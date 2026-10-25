@@ -19,6 +19,7 @@ from vivepdf.rpc.registry import op
 
 DOI_RESOLVER = "https://doi.org/"
 CROSSREF_WORKS = "https://api.crossref.org/works/"
+DATACITE_DOIS = "https://api.datacite.org/dois/"
 CSL_ACCEPT = "application/vnd.citationstyles.csl+json"
 JSON_ACCEPT = "application/json"
 USER_AGENT = "vivePDF (https://github.com/mtvrkan/vivePDF)"
@@ -32,9 +33,10 @@ ALLOWED_HOSTS = frozenset(
         "data.crosscite.org",
         "data.medra.org",
         "data.jalc.org",
+        "japanlinkcenter.org",
     }
 )
-REQUEST_TIMEOUT = 10.0
+REQUEST_TIMEOUT = 20.0
 MAX_RESPONSE_BYTES = 2 * 1024 * 1024
 MAX_DOIS = 500
 REQUEST_INTERVAL = 0.2
@@ -45,6 +47,7 @@ DOI_SHAPE = re.compile(r"^10\.\d{4,9}/\S{1,300}$")
 DOI_IN_TEXT = re.compile(r"\b10\.\d{4,9}/[^\s\"'<>]{1,300}")
 DOI_PREFIX = re.compile(r"^(?:https?://(?:dx\.)?doi\.org/|doi:\s*)", re.IGNORECASE)
 TRAILING_PUNCTUATION = ".,;:'\""
+RETRIED_STATUSES = frozenset({429, 500, 502, 503, 504})
 RETRACTED = frozenset({"retraction", "partial_retraction", "removal"})
 WITHDRAWN = frozenset({"withdrawal"})
 CONCERN = frozenset({"expression_of_concern"})
@@ -135,7 +138,7 @@ def _get(url: str, accept: str, retried: bool = False) -> bytes | None:
     except urllib.error.HTTPError as error:
         if error.code in (404, 410):
             return None
-        if error.code == 429 and not retried:
+        if error.code in RETRIED_STATUSES and not retried:
             time.sleep(_retry_after(error))
             return _get(url, accept, retried=True)
         raise _network("doiHttpStatus", status=error.code) from error
@@ -172,10 +175,15 @@ def _trim(candidate: str) -> str:
 
 
 def normalized_doi(value: str) -> str:
-    doi = _trim(DOI_PREFIX.sub("", urllib.parse.unquote(value.strip())).strip())
-    if not DOI_SHAPE.match(doi):
+    text = urllib.parse.unquote(value.strip())
+    doi = _trim(DOI_PREFIX.sub("", text).strip())
+    if DOI_SHAPE.match(doi):
+        return doi
+    parsed = urllib.parse.urlparse(text)
+    found = find_doi(parsed.path if parsed.scheme in {"http", "https"} else text)
+    if found is None:
         raise OpError(ErrorCode.INVALID_PARAMS, "not a DOI", {"reason": "badDoi"})
-    return doi
+    return found
 
 
 def find_doi(text: str) -> str | None:
@@ -283,6 +291,15 @@ def _published_version(work: dict[str, Any]) -> str | None:
     return None
 
 
+def _registered_elsewhere(doi: str) -> bool:
+    try:
+        return _get(DATACITE_DOIS + _quoted(doi), JSON_ACCEPT) is not None
+    except OpError as error:
+        if error.code == ErrorCode.OFFLINE:
+            raise
+        return False
+
+
 def _check_one(raw: str) -> SourceCheck:
     try:
         doi = normalized_doi(raw)
@@ -297,7 +314,7 @@ def _check_one(raw: str) -> SourceCheck:
             raise
         return SourceCheck(doi=doi, status="failed")
     if body is None:
-        return SourceCheck(doi=doi, status="notFound")
+        return SourceCheck(doi=doi, status="ok" if _registered_elsewhere(doi) else "notFound")
     try:
         work = _json_object(body).get("message")
     except OpError:

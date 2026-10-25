@@ -321,7 +321,8 @@ function nameOf(raw: string): BibName | null {
   if (text.toLowerCase() === "others") return { family: "", given: "", others: true };
   if (wholeGroup(text)) return { family: decodeLatex(text), given: "", literal: true };
   const parts = topLevel(text, (char) => char === ",");
-  if (parts.length >= 2) return { family: decodeLatex(parts[0]), given: decodeLatex(parts[parts.length - 1]) };
+  if (parts.length >= 3) return { family: decodeLatex(parts[0]), given: decodeLatex(parts[parts.length - 1]), suffix: decodeLatex(parts[1]) };
+  if (parts.length === 2) return { family: decodeLatex(parts[0]), given: decodeLatex(parts[1]) };
   const words = topLevel(text, (char) => /\s/.test(char)).filter(Boolean);
   if (words.length === 1) return { family: decodeLatex(words[0]), given: "" };
   const particle = words.findIndex((word, position) => position > 0 && position < words.length - 1 && startsLower(word));

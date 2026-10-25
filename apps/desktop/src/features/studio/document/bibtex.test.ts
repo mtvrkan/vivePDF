@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { decodeLatex, mergeSources, normalizeSources, parseBibtex, parseNames } from "./bibtex";
+import { writeBibtex } from "./sourceFormats";
 
 const LIBRARY = String.raw`
 % exported from Zotero
@@ -88,5 +89,14 @@ describe("normalizeSources and mergeSources", () => {
     expect(merged.sources.map((entry) => entry.fields.title)).toEqual(["New", "B", "C"]);
     expect(merged.added).toBe(1);
     expect(merged.replaced).toBe(1);
+  });
+
+  it("keeps the Jr. part of a name when reading and writing BibTeX", () => {
+    const [name] = parseNames("King, Jr., Martin Luther");
+
+    const written = writeBibtex([{ key: "king1963", type: "book", fields: { title: "Strength to Love" }, authors: [name], editors: [] }]);
+
+    expect(name).toEqual({ family: "King", given: "Martin Luther", suffix: "Jr." });
+    expect(parseBibtex(written).entries[0].authors).toEqual([name]);
   });
 });

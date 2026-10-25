@@ -53,6 +53,7 @@ function protect(text: string): string {
 function nameText(name: BibName): string {
   if (name.others) return "others";
   if (name.literal) return `{${escapeLatex(name.family)}}`;
+  if (name.suffix) return `${protect(name.family)}, ${protect(name.suffix)}, ${protect(name.given)}`;
   if (!name.given) return /\s/.test(name.family) ? `${protect(name.family)},` : protect(name.family);
   return `${protect(name.family)}, ${protect(name.given)}`;
 }

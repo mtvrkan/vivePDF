@@ -479,7 +479,7 @@ export type CitationStyle = "apa" | "mla" | "chicago" | "ieee";
 
 export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null; citationStyle: CitationStyle; referencesTitle: string };
 
-export type BibName = { family: string; given: string; literal?: boolean; others?: boolean };
+export type BibName = { family: string; given: string; suffix?: string; literal?: boolean; others?: boolean };
 
 export type BibEntry = { key: string; type: string; fields: Record<string, string>; authors: BibName[]; editors: BibName[] };
 

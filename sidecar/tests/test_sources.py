@@ -1,6 +1,7 @@
 import io
 import json
 import urllib.error
+import urllib.request
 from email.message import Message
 from pathlib import Path
 
@@ -282,3 +283,67 @@ def test_detect_reports_a_missing_file(tmp_path: Path):
         )
 
     assert caught.value.code == ErrorCode.FILE_NOT_FOUND
+
+
+@pytest.mark.parametrize(
+    "typed",
+    [
+        "https://www.doi.org/10.1038/nature14539",
+        "doi.org/10.1038/nature14539",
+        "(10.1038/nature14539)",
+        "doi 10.1038/nature14539",
+        "https://doi.org/10.1038%2Fnature14539.",
+        "https://link.springer.com/article/10.1038/nature14539?error=cookies#Abs1",
+    ],
+)
+def test_lookup_finds_the_doi_in_links_and_pasted_text(opener, typed):
+    opener.routes["https://doi.org/10.1038/nature14539"] = {"type": "journal-article", "title": "x"}
+
+    result = sources.lookup_doi(sources.LookupDoiParams(doi=typed), silent_progress())
+
+    assert result.doi == "10.1038/nature14539"
+
+
+def test_lookup_follows_japan_link_center_redirects():
+    request = urllib.request.Request("https://doi.org/10.11501/3307791")
+
+    forwarded = sources._AllowlistRedirect().redirect_request(
+        request, None, 302, "Found", {}, "https://japanlinkcenter.org/data/10.11501/3307791"
+    )
+
+    assert forwarded.full_url == "https://japanlinkcenter.org/data/10.11501/3307791"
+
+
+def test_lookup_asks_again_once_when_the_service_has_a_hiccup(opener, monkeypatch):
+    waits: list[float] = []
+    monkeypatch.setattr(sources.time, "sleep", waits.append)
+    calls = {"count": 0}
+
+    class Flaky(FakeOpener):
+        def open(self, request, timeout):
+            calls["count"] += 1
+            if calls["count"] == 1:
+                raise http_error(request.full_url, 503)
+            return FakeResponse(json.dumps(NATURE_CSL).encode())
+
+    monkeypatch.setattr(sources, "_OPENER", Flaky({}))
+
+    result = sources.lookup_doi(
+        sources.LookupDoiParams(doi="10.1038/nature12373"), silent_progress()
+    )
+
+    assert json.loads(result.csl)["title"] == NATURE_CSL["title"]
+    assert waits == [1.0]
+
+
+def test_check_accepts_a_datacite_doi_that_crossref_does_not_know(opener):
+    opener.routes["https://api.datacite.org/dois/10.48550/arXiv.1706.03762"] = {
+        "data": {"id": "10.48550/arxiv.1706.03762"}
+    }
+
+    result = sources.check_sources(
+        sources.CheckSourcesParams(dois=["10.48550/arXiv.1706.03762", "10.9999/missing"]),
+        silent_progress(),
+    )
+
+    assert [item.status for item in result.items] == ["ok", "notFound"]

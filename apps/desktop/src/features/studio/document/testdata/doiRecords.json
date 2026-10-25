@@ -1,0 +1,6030 @@
+{
+ "a1_bandura": {
+  "publisher": "American Psychological Association (APA)",
+  "issue": "2",
+  "DOI": "10.1037/0033-295x.84.2.191",
+  "type": "journal-article",
+  "page": "191-215",
+  "title": "Self-efficacy: Toward a unifying theory of behavioral change.",
+  "volume": "84",
+  "author": [
+   {
+    "given": "Albert",
+    "family": "Bandura"
+   }
+  ],
+  "container-title": "Psychological Review",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     1977
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1037/0033-295X.84.2.191",
+  "ISSN": [
+   "1939-1471",
+   "0033-295X"
+  ],
+  "container-title-short": "Psychological Review",
+  "published": {
+   "date-parts": [
+    [
+     1977
+    ]
+   ]
+  }
+ },
+ "a3_lecun": {
+  "publisher": "Springer Science and Business Media LLC",
+  "issue": "7553",
+  "DOI": "10.1038/nature14539",
+  "type": "journal-article",
+  "page": "436-444",
+  "title": "Deep learning",
+  "volume": "521",
+  "author": [
+   {
+    "given": "Yann",
+    "family": "LeCun"
+   },
+   {
+    "given": "Yoshua",
+    "family": "Bengio"
+   },
+   {
+    "given": "Geoffrey",
+    "family": "Hinton"
+   }
+  ],
+  "container-title": "Nature",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2015,
+     5,
+     27
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1038/nature14539",
+  "ISSN": [
+   "0028-0836",
+   "1476-4687"
+  ],
+  "container-title-short": "Nature",
+  "published": {
+   "date-parts": [
+    [
+     2015,
+     5,
+     27
+    ]
+   ]
+  }
+ },
+ "org_ligo": {
+  "publisher": "American Physical Society (APS)",
+  "issue": "6",
+  "DOI": "10.1103/physrevlett.116.061102",
+  "type": "journal-article",
+  "title": "Observation of Gravitational Waves from a Binary Black Hole Merger",
+  "volume": "116",
+  "author": [
+   {
+    "given": "B. P.",
+    "family": "Abbott"
+   },
+   {
+    "given": "R.",
+    "family": "Abbott"
+   },
+   {
+    "given": "T. D.",
+    "family": "Abbott"
+   },
+   {
+    "given": "M. R.",
+    "family": "Abernathy"
+   },
+   {
+    "given": "F.",
+    "family": "Acernese"
+   },
+   {
+    "given": "K.",
+    "family": "Ackley"
+   },
+   {
+    "given": "C.",
+    "family": "Adams"
+   },
+   {
+    "given": "T.",
+    "family": "Adams"
+   },
+   {
+    "given": "P.",
+    "family": "Addesso"
+   },
+   {
+    "given": "R. X.",
+    "family": "Adhikari"
+   },
+   {
+    "given": "V. B.",
+    "family": "Adya"
+   },
+   {
+    "given": "C.",
+    "family": "Affeldt"
+   },
+   {
+    "given": "M.",
+    "family": "Agathos"
+   },
+   {
+    "given": "K.",
+    "family": "Agatsuma"
+   },
+   {
+    "given": "N.",
+    "family": "Aggarwal"
+   },
+   {
+    "given": "O. D.",
+    "family": "Aguiar"
+   },
+   {
+    "given": "L.",
+    "family": "Aiello"
+   },
+   {
+    "given": "A.",
+    "family": "Ain"
+   },
+   {
+    "given": "P.",
+    "family": "Ajith"
+   },
+   {
+    "given": "B.",
+    "family": "Allen"
+   },
+   {
+    "family": "Member0",
+    "given": "A."
+   },
+   {
+    "family": "Member1",
+    "given": "A."
+   },
+   {
+    "family": "Member2",
+    "given": "A."
+   },
+   {
+    "family": "Member3",
+    "given": "A."
+   },
+   {
+    "family": "Member4",
+    "given": "A."
+   },
+   {
+    "family": "Member5",
+    "given": "A."
+   },
+   {
+    "family": "Member6",
+    "given": "A."
+   },
+   {
+    "family": "Member7",
+    "given": "A."
+   },
+   {
+    "family": "Member8",
+    "given": "A."
+   },
+   {
+    "family": "Member9",
+    "given": "A."
+   },
+   {
+    "family": "Member10",
+    "given": "A."
+   },
+   {
+    "family": "Member11",
+    "given": "A."
+   },
+   {
+    "family": "Member12",
+    "given": "A."
+   },
+   {
+    "family": "Member13",
+    "given": "A."
+   },
+   {
+    "family": "Member14",
+    "given": "A."
+   },
+   {
+    "family": "Member15",
+    "given": "A."
+   },
+   {
+    "family": "Member16",
+    "given": "A."
+   },
+   {
+    "family": "Member17",
+    "given": "A."
+   },
+   {
+    "family": "Member18",
+    "given": "A."
+   },
+   {
+    "family": "Member19",
+    "given": "A."
+   },
+   {
+    "family": "Member20",
+    "given": "A."
+   },
+   {
+    "family": "Member21",
+    "given": "A."
+   },
+   {
+    "family": "Member22",
+    "given": "A."
+   },
+   {
+    "family": "Member23",
+    "given": "A."
+   },
+   {
+    "family": "Member24",
+    "given": "A."
+   },
+   {
+    "family": "Member25",
+    "given": "A."
+   },
+   {
+    "family": "Member26",
+    "given": "A."
+   },
+   {
+    "family": "Member27",
+    "given": "A."
+   },
+   {
+    "family": "Member28",
+    "given": "A."
+   },
+   {
+    "family": "Member29",
+    "given": "A."
+   },
+   {
+    "family": "Member30",
+    "given": "A."
+   },
+   {
+    "family": "Member31",
+    "given": "A."
+   },
+   {
+    "family": "Member32",
+    "given": "A."
+   },
+   {
+    "family": "Member33",
+    "given": "A."
+   },
+   {
+    "family": "Member34",
+    "given": "A."
+   },
+   {
+    "family": "Member35",
+    "given": "A."
+   },
+   {
+    "family": "Member36",
+    "given": "A."
+   },
+   {
+    "family": "Member37",
+    "given": "A."
+   },
+   {
+    "family": "Member38",
+    "given": "A."
+   },
+   {
+    "family": "Member39",
+    "given": "A."
+   },
+   {
+    "family": "Member40",
+    "given": "A."
+   },
+   {
+    "family": "Member41",
+    "given": "A."
+   },
+   {
+    "family": "Member42",
+    "given": "A."
+   },
+   {
+    "family": "Member43",
+    "given": "A."
+   },
+   {
+    "family": "Member44",
+    "given": "A."
+   },
+   {
+    "family": "Member45",
+    "given": "A."
+   },
+   {
+    "family": "Member46",
+    "given": "A."
+   },
+   {
+    "family": "Member47",
+    "given": "A."
+   },
+   {
+    "family": "Member48",
+    "given": "A."
+   },
+   {
+    "family": "Member49",
+    "given": "A."
+   },
+   {
+    "family": "Member50",
+    "given": "A."
+   },
+   {
+    "family": "Member51",
+    "given": "A."
+   },
+   {
+    "family": "Member52",
+    "given": "A."
+   },
+   {
+    "family": "Member53",
+    "given": "A."
+   },
+   {
+    "family": "Member54",
+    "given": "A."
+   },
+   {
+    "family": "Member55",
+    "given": "A."
+   },
+   {
+    "family": "Member56",
+    "given": "A."
+   },
+   {
+    "family": "Member57",
+    "given": "A."
+   },
+   {
+    "family": "Member58",
+    "given": "A."
+   },
+   {
+    "family": "Member59",
+    "given": "A."
+   },
+   {
+    "family": "Member60",
+    "given": "A."
+   },
+   {
+    "family": "Member61",
+    "given": "A."
+   },
+   {
+    "family": "Member62",
+    "given": "A."
+   },
+   {
+    "family": "Member63",
+    "given": "A."
+   },
+   {
+    "family": "Member64",
+    "given": "A."
+   },
+   {
+    "family": "Member65",
+    "given": "A."
+   },
+   {
+    "family": "Member66",
+    "given": "A."
+   },
+   {
+    "family": "Member67",
+    "given": "A."
+   },
+   {
+    "family": "Member68",
+    "given": "A."
+   },
+   {
+    "family": "Member69",
+    "given": "A."
+   },
+   {
+    "family": "Member70",
+    "given": "A."
+   },
+   {
+    "family": "Member71",
+    "given": "A."
+   },
+   {
+    "family": "Member72",
+    "given": "A."
+   },
+   {
+    "family": "Member73",
+    "given": "A."
+   },
+   {
+    "family": "Member74",
+    "given": "A."
+   },
+   {
+    "family": "Member75",
+    "given": "A."
+   },
+   {
+    "family": "Member76",
+    "given": "A."
+   },
+   {
+    "family": "Member77",
+    "given": "A."
+   },
+   {
+    "family": "Member78",
+    "given": "A."
+   },
+   {
+    "family": "Member79",
+    "given": "A."
+   },
+   {
+    "family": "Member80",
+    "given": "A."
+   },
+   {
+    "family": "Member81",
+    "given": "A."
+   },
+   {
+    "family": "Member82",
+    "given": "A."
+   },
+   {
+    "family": "Member83",
+    "given": "A."
+   },
+   {
+    "family": "Member84",
+    "given": "A."
+   },
+   {
+    "family": "Member85",
+    "given": "A."
+   },
+   {
+    "family": "Member86",
+    "given": "A."
+   },
+   {
+    "family": "Member87",
+    "given": "A."
+   },
+   {
+    "family": "Member88",
+    "given": "A."
+   },
+   {
+    "family": "Member89",
+    "given": "A."
+   },
+   {
+    "family": "Member90",
+    "given": "A."
+   },
+   {
+    "family": "Member91",
+    "given": "A."
+   },
+   {
+    "family": "Member92",
+    "given": "A."
+   },
+   {
+    "family": "Member93",
+    "given": "A."
+   },
+   {
+    "family": "Member94",
+    "given": "A."
+   },
+   {
+    "family": "Member95",
+    "given": "A."
+   },
+   {
+    "family": "Member96",
+    "given": "A."
+   },
+   {
+    "family": "Member97",
+    "given": "A."
+   },
+   {
+    "family": "Member98",
+    "given": "A."
+   },
+   {
+    "family": "Member99",
+    "given": "A."
+   },
+   {
+    "family": "Member100",
+    "given": "A."
+   },
+   {
+    "family": "Member101",
+    "given": "A."
+   },
+   {
+    "family": "Member102",
+    "given": "A."
+   },
+   {
+    "family": "Member103",
+    "given": "A."
+   },
+   {
+    "family": "Member104",
+    "given": "A."
+   },
+   {
+    "family": "Member105",
+    "given": "A."
+   },
+   {
+    "family": "Member106",
+    "given": "A."
+   },
+   {
+    "family": "Member107",
+    "given": "A."
+   },
+   {
+    "family": "Member108",
+    "given": "A."
+   },
+   {
+    "family": "Member109",
+    "given": "A."
+   },
+   {
+    "family": "Member110",
+    "given": "A."
+   },
+   {
+    "family": "Member111",
+    "given": "A."
+   },
+   {
+    "family": "Member112",
+    "given": "A."
+   },
+   {
+    "family": "Member113",
+    "given": "A."
+   },
+   {
+    "family": "Member114",
+    "given": "A."
+   },
+   {
+    "family": "Member115",
+    "given": "A."
+   },
+   {
+    "family": "Member116",
+    "given": "A."
+   },
+   {
+    "family": "Member117",
+    "given": "A."
+   },
+   {
+    "family": "Member118",
+    "given": "A."
+   },
+   {
+    "family": "Member119",
+    "given": "A."
+   },
+   {
+    "family": "Member120",
+    "given": "A."
+   },
+   {
+    "family": "Member121",
+    "given": "A."
+   },
+   {
+    "family": "Member122",
+    "given": "A."
+   },
+   {
+    "family": "Member123",
+    "given": "A."
+   },
+   {
+    "family": "Member124",
+    "given": "A."
+   },
+   {
+    "family": "Member125",
+    "given": "A."
+   },
+   {
+    "family": "Member126",
+    "given": "A."
+   },
+   {
+    "family": "Member127",
+    "given": "A."
+   },
+   {
+    "family": "Member128",
+    "given": "A."
+   },
+   {
+    "family": "Member129",
+    "given": "A."
+   },
+   {
+    "family": "Member130",
+    "given": "A."
+   },
+   {
+    "family": "Member131",
+    "given": "A."
+   },
+   {
+    "family": "Member132",
+    "given": "A."
+   },
+   {
+    "family": "Member133",
+    "given": "A."
+   },
+   {
+    "family": "Member134",
+    "given": "A."
+   },
+   {
+    "family": "Member135",
+    "given": "A."
+   },
+   {
+    "family": "Member136",
+    "given": "A."
+   },
+   {
+    "family": "Member137",
+    "given": "A."
+   },
+   {
+    "family": "Member138",
+    "given": "A."
+   },
+   {
+    "family": "Member139",
+    "given": "A."
+   },
+   {
+    "family": "Member140",
+    "given": "A."
+   },
+   {
+    "family": "Member141",
+    "given": "A."
+   },
+   {
+    "family": "Member142",
+    "given": "A."
+   },
+   {
+    "family": "Member143",
+    "given": "A."
+   },
+   {
+    "family": "Member144",
+    "given": "A."
+   },
+   {
+    "family": "Member145",
+    "given": "A."
+   },
+   {
+    "family": "Member146",
+    "given": "A."
+   },
+   {
+    "family": "Member147",
+    "given": "A."
+   },
+   {
+    "family": "Member148",
+    "given": "A."
+   },
+   {
+    "family": "Member149",
+    "given": "A."
+   },
+   {
+    "family": "Member150",
+    "given": "A."
+   },
+   {
+    "family": "Member151",
+    "given": "A."
+   },
+   {
+    "family": "Member152",
+    "given": "A."
+   },
+   {
+    "family": "Member153",
+    "given": "A."
+   },
+   {
+    "family": "Member154",
+    "given": "A."
+   },
+   {
+    "family": "Member155",
+    "given": "A."
+   },
+   {
+    "family": "Member156",
+    "given": "A."
+   },
+   {
+    "family": "Member157",
+    "given": "A."
+   },
+   {
+    "family": "Member158",
+    "given": "A."
+   },
+   {
+    "family": "Member159",
+    "given": "A."
+   },
+   {
+    "family": "Member160",
+    "given": "A."
+   },
+   {
+    "family": "Member161",
+    "given": "A."
+   },
+   {
+    "family": "Member162",
+    "given": "A."
+   },
+   {
+    "family": "Member163",
+    "given": "A."
+   },
+   {
+    "family": "Member164",
+    "given": "A."
+   },
+   {
+    "family": "Member165",
+    "given": "A."
+   },
+   {
+    "family": "Member166",
+    "given": "A."
+   },
+   {
+    "family": "Member167",
+    "given": "A."
+   },
+   {
+    "family": "Member168",
+    "given": "A."
+   },
+   {
+    "family": "Member169",
+    "given": "A."
+   },
+   {
+    "family": "Member170",
+    "given": "A."
+   },
+   {
+    "family": "Member171",
+    "given": "A."
+   },
+   {
+    "family": "Member172",
+    "given": "A."
+   },
+   {
+    "family": "Member173",
+    "given": "A."
+   },
+   {
+    "family": "Member174",
+    "given": "A."
+   },
+   {
+    "family": "Member175",
+    "given": "A."
+   },
+   {
+    "family": "Member176",
+    "given": "A."
+   },
+   {
+    "family": "Member177",
+    "given": "A."
+   },
+   {
+    "family": "Member178",
+    "given": "A."
+   },
+   {
+    "family": "Member179",
+    "given": "A."
+   },
+   {
+    "family": "Member180",
+    "given": "A."
+   },
+   {
+    "family": "Member181",
+    "given": "A."
+   },
+   {
+    "family": "Member182",
+    "given": "A."
+   },
+   {
+    "family": "Member183",
+    "given": "A."
+   },
+   {
+    "family": "Member184",
+    "given": "A."
+   },
+   {
+    "family": "Member185",
+    "given": "A."
+   },
+   {
+    "family": "Member186",
+    "given": "A."
+   },
+   {
+    "family": "Member187",
+    "given": "A."
+   },
+   {
+    "family": "Member188",
+    "given": "A."
+   },
+   {
+    "family": "Member189",
+    "given": "A."
+   },
+   {
+    "family": "Member190",
+    "given": "A."
+   },
+   {
+    "family": "Member191",
+    "given": "A."
+   },
+   {
+    "family": "Member192",
+    "given": "A."
+   },
+   {
+    "family": "Member193",
+    "given": "A."
+   },
+   {
+    "family": "Member194",
+    "given": "A."
+   },
+   {
+    "family": "Member195",
+    "given": "A."
+   },
+   {
+    "family": "Member196",
+    "given": "A."
+   },
+   {
+    "family": "Member197",
+    "given": "A."
+   },
+   {
+    "family": "Member198",
+    "given": "A."
+   },
+   {
+    "family": "Member199",
+    "given": "A."
+   },
+   {
+    "family": "Member200",
+    "given": "A."
+   },
+   {
+    "family": "Member201",
+    "given": "A."
+   },
+   {
+    "family": "Member202",
+    "given": "A."
+   },
+   {
+    "family": "Member203",
+    "given": "A."
+   },
+   {
+    "family": "Member204",
+    "given": "A."
+   },
+   {
+    "family": "Member205",
+    "given": "A."
+   },
+   {
+    "family": "Member206",
+    "given": "A."
+   },
+   {
+    "family": "Member207",
+    "given": "A."
+   },
+   {
+    "family": "Member208",
+    "given": "A."
+   },
+   {
+    "family": "Member209",
+    "given": "A."
+   },
+   {
+    "family": "Member210",
+    "given": "A."
+   },
+   {
+    "family": "Member211",
+    "given": "A."
+   },
+   {
+    "family": "Member212",
+    "given": "A."
+   },
+   {
+    "family": "Member213",
+    "given": "A."
+   },
+   {
+    "family": "Member214",
+    "given": "A."
+   },
+   {
+    "family": "Member215",
+    "given": "A."
+   },
+   {
+    "family": "Member216",
+    "given": "A."
+   },
+   {
+    "family": "Member217",
+    "given": "A."
+   },
+   {
+    "family": "Member218",
+    "given": "A."
+   },
+   {
+    "family": "Member219",
+    "given": "A."
+   },
+   {
+    "family": "Member220",
+    "given": "A."
+   },
+   {
+    "family": "Member221",
+    "given": "A."
+   },
+   {
+    "family": "Member222",
+    "given": "A."
+   },
+   {
+    "family": "Member223",
+    "given": "A."
+   },
+   {
+    "family": "Member224",
+    "given": "A."
+   },
+   {
+    "family": "Member225",
+    "given": "A."
+   },
+   {
+    "family": "Member226",
+    "given": "A."
+   },
+   {
+    "family": "Member227",
+    "given": "A."
+   },
+   {
+    "family": "Member228",
+    "given": "A."
+   },
+   {
+    "family": "Member229",
+    "given": "A."
+   },
+   {
+    "family": "Member230",
+    "given": "A."
+   },
+   {
+    "family": "Member231",
+    "given": "A."
+   },
+   {
+    "family": "Member232",
+    "given": "A."
+   },
+   {
+    "family": "Member233",
+    "given": "A."
+   },
+   {
+    "family": "Member234",
+    "given": "A."
+   },
+   {
+    "family": "Member235",
+    "given": "A."
+   },
+   {
+    "family": "Member236",
+    "given": "A."
+   },
+   {
+    "family": "Member237",
+    "given": "A."
+   },
+   {
+    "family": "Member238",
+    "given": "A."
+   },
+   {
+    "family": "Member239",
+    "given": "A."
+   },
+   {
+    "family": "Member240",
+    "given": "A."
+   },
+   {
+    "family": "Member241",
+    "given": "A."
+   },
+   {
+    "family": "Member242",
+    "given": "A."
+   },
+   {
+    "family": "Member243",
+    "given": "A."
+   },
+   {
+    "family": "Member244",
+    "given": "A."
+   },
+   {
+    "family": "Member245",
+    "given": "A."
+   },
+   {
+    "family": "Member246",
+    "given": "A."
+   },
+   {
+    "family": "Member247",
+    "given": "A."
+   },
+   {
+    "family": "Member248",
+    "given": "A."
+   },
+   {
+    "family": "Member249",
+    "given": "A."
+   },
+   {
+    "family": "Member250",
+    "given": "A."
+   },
+   {
+    "family": "Member251",
+    "given": "A."
+   },
+   {
+    "family": "Member252",
+    "given": "A."
+   },
+   {
+    "family": "Member253",
+    "given": "A."
+   },
+   {
+    "family": "Member254",
+    "given": "A."
+   },
+   {
+    "family": "Member255",
+    "given": "A."
+   },
+   {
+    "family": "Member256",
+    "given": "A."
+   },
+   {
+    "family": "Member257",
+    "given": "A."
+   },
+   {
+    "family": "Member258",
+    "given": "A."
+   },
+   {
+    "family": "Member259",
+    "given": "A."
+   },
+   {
+    "family": "Member260",
+    "given": "A."
+   },
+   {
+    "family": "Member261",
+    "given": "A."
+   },
+   {
+    "family": "Member262",
+    "given": "A."
+   },
+   {
+    "family": "Member263",
+    "given": "A."
+   },
+   {
+    "family": "Member264",
+    "given": "A."
+   },
+   {
+    "family": "Member265",
+    "given": "A."
+   },
+   {
+    "family": "Member266",
+    "given": "A."
+   },
+   {
+    "family": "Member267",
+    "given": "A."
+   },
+   {
+    "family": "Member268",
+    "given": "A."
+   },
+   {
+    "family": "Member269",
+    "given": "A."
+   },
+   {
+    "family": "Member270",
+    "given": "A."
+   },
+   {
+    "family": "Member271",
+    "given": "A."
+   },
+   {
+    "family": "Member272",
+    "given": "A."
+   },
+   {
+    "family": "Member273",
+    "given": "A."
+   },
+   {
+    "family": "Member274",
+    "given": "A."
+   },
+   {
+    "family": "Member275",
+    "given": "A."
+   },
+   {
+    "family": "Member276",
+    "given": "A."
+   },
+   {
+    "family": "Member277",
+    "given": "A."
+   },
+   {
+    "family": "Member278",
+    "given": "A."
+   },
+   {
+    "family": "Member279",
+    "given": "A."
+   },
+   {
+    "family": "Member280",
+    "given": "A."
+   },
+   {
+    "family": "Member281",
+    "given": "A."
+   },
+   {
+    "family": "Member282",
+    "given": "A."
+   },
+   {
+    "family": "Member283",
+    "given": "A."
+   },
+   {
+    "family": "Member284",
+    "given": "A."
+   },
+   {
+    "family": "Member285",
+    "given": "A."
+   },
+   {
+    "family": "Member286",
+    "given": "A."
+   },
+   {
+    "family": "Member287",
+    "given": "A."
+   },
+   {
+    "family": "Member288",
+    "given": "A."
+   },
+   {
+    "family": "Member289",
+    "given": "A."
+   },
+   {
+    "family": "Member290",
+    "given": "A."
+   },
+   {
+    "family": "Member291",
+    "given": "A."
+   },
+   {
+    "family": "Member292",
+    "given": "A."
+   },
+   {
+    "family": "Member293",
+    "given": "A."
+   },
+   {
+    "family": "Member294",
+    "given": "A."
+   },
+   {
+    "family": "Member295",
+    "given": "A."
+   },
+   {
+    "family": "Member296",
+    "given": "A."
+   },
+   {
+    "family": "Member297",
+    "given": "A."
+   },
+   {
+    "family": "Member298",
+    "given": "A."
+   },
+   {
+    "family": "Member299",
+    "given": "A."
+   },
+   {
+    "family": "Member300",
+    "given": "A."
+   },
+   {
+    "family": "Member301",
+    "given": "A."
+   },
+   {
+    "family": "Member302",
+    "given": "A."
+   },
+   {
+    "family": "Member303",
+    "given": "A."
+   },
+   {
+    "family": "Member304",
+    "given": "A."
+   },
+   {
+    "family": "Member305",
+    "given": "A."
+   },
+   {
+    "family": "Member306",
+    "given": "A."
+   },
+   {
+    "family": "Member307",
+    "given": "A."
+   },
+   {
+    "family": "Member308",
+    "given": "A."
+   },
+   {
+    "family": "Member309",
+    "given": "A."
+   },
+   {
+    "family": "Member310",
+    "given": "A."
+   },
+   {
+    "family": "Member311",
+    "given": "A."
+   },
+   {
+    "family": "Member312",
+    "given": "A."
+   },
+   {
+    "family": "Member313",
+    "given": "A."
+   },
+   {
+    "family": "Member314",
+    "given": "A."
+   },
+   {
+    "family": "Member315",
+    "given": "A."
+   },
+   {
+    "family": "Member316",
+    "given": "A."
+   },
+   {
+    "family": "Member317",
+    "given": "A."
+   },
+   {
+    "family": "Member318",
+    "given": "A."
+   },
+   {
+    "family": "Member319",
+    "given": "A."
+   },
+   {
+    "family": "Member320",
+    "given": "A."
+   },
+   {
+    "family": "Member321",
+    "given": "A."
+   },
+   {
+    "family": "Member322",
+    "given": "A."
+   },
+   {
+    "family": "Member323",
+    "given": "A."
+   },
+   {
+    "family": "Member324",
+    "given": "A."
+   },
+   {
+    "family": "Member325",
+    "given": "A."
+   },
+   {
+    "family": "Member326",
+    "given": "A."
+   },
+   {
+    "family": "Member327",
+    "given": "A."
+   },
+   {
+    "family": "Member328",
+    "given": "A."
+   },
+   {
+    "family": "Member329",
+    "given": "A."
+   },
+   {
+    "family": "Member330",
+    "given": "A."
+   },
+   {
+    "family": "Member331",
+    "given": "A."
+   },
+   {
+    "family": "Member332",
+    "given": "A."
+   },
+   {
+    "family": "Member333",
+    "given": "A."
+   },
+   {
+    "family": "Member334",
+    "given": "A."
+   },
+   {
+    "family": "Member335",
+    "given": "A."
+   },
+   {
+    "family": "Member336",
+    "given": "A."
+   },
+   {
+    "family": "Member337",
+    "given": "A."
+   },
+   {
+    "family": "Member338",
+    "given": "A."
+   },
+   {
+    "family": "Member339",
+    "given": "A."
+   },
+   {
+    "family": "Member340",
+    "given": "A."
+   },
+   {
+    "family": "Member341",
+    "given": "A."
+   },
+   {
+    "family": "Member342",
+    "given": "A."
+   },
+   {
+    "family": "Member343",
+    "given": "A."
+   },
+   {
+    "family": "Member344",
+    "given": "A."
+   },
+   {
+    "family": "Member345",
+    "given": "A."
+   },
+   {
+    "family": "Member346",
+    "given": "A."
+   },
+   {
+    "family": "Member347",
+    "given": "A."
+   },
+   {
+    "family": "Member348",
+    "given": "A."
+   },
+   {
+    "family": "Member349",
+    "given": "A."
+   },
+   {
+    "family": "Member350",
+    "given": "A."
+   },
+   {
+    "family": "Member351",
+    "given": "A."
+   },
+   {
+    "family": "Member352",
+    "given": "A."
+   },
+   {
+    "family": "Member353",
+    "given": "A."
+   },
+   {
+    "family": "Member354",
+    "given": "A."
+   },
+   {
+    "family": "Member355",
+    "given": "A."
+   },
+   {
+    "family": "Member356",
+    "given": "A."
+   },
+   {
+    "family": "Member357",
+    "given": "A."
+   },
+   {
+    "family": "Member358",
+    "given": "A."
+   },
+   {
+    "family": "Member359",
+    "given": "A."
+   },
+   {
+    "family": "Member360",
+    "given": "A."
+   },
+   {
+    "family": "Member361",
+    "given": "A."
+   },
+   {
+    "family": "Member362",
+    "given": "A."
+   },
+   {
+    "family": "Member363",
+    "given": "A."
+   },
+   {
+    "family": "Member364",
+    "given": "A."
+   },
+   {
+    "family": "Member365",
+    "given": "A."
+   },
+   {
+    "family": "Member366",
+    "given": "A."
+   },
+   {
+    "family": "Member367",
+    "given": "A."
+   },
+   {
+    "family": "Member368",
+    "given": "A."
+   },
+   {
+    "family": "Member369",
+    "given": "A."
+   },
+   {
+    "family": "Member370",
+    "given": "A."
+   },
+   {
+    "family": "Member371",
+    "given": "A."
+   },
+   {
+    "family": "Member372",
+    "given": "A."
+   },
+   {
+    "family": "Member373",
+    "given": "A."
+   },
+   {
+    "family": "Member374",
+    "given": "A."
+   },
+   {
+    "family": "Member375",
+    "given": "A."
+   },
+   {
+    "family": "Member376",
+    "given": "A."
+   },
+   {
+    "family": "Member377",
+    "given": "A."
+   },
+   {
+    "family": "Member378",
+    "given": "A."
+   },
+   {
+    "family": "Member379",
+    "given": "A."
+   },
+   {
+    "family": "Member380",
+    "given": "A."
+   },
+   {
+    "family": "Member381",
+    "given": "A."
+   },
+   {
+    "family": "Member382",
+    "given": "A."
+   },
+   {
+    "family": "Member383",
+    "given": "A."
+   },
+   {
+    "family": "Member384",
+    "given": "A."
+   },
+   {
+    "family": "Member385",
+    "given": "A."
+   },
+   {
+    "family": "Member386",
+    "given": "A."
+   },
+   {
+    "family": "Member387",
+    "given": "A."
+   },
+   {
+    "family": "Member388",
+    "given": "A."
+   },
+   {
+    "family": "Member389",
+    "given": "A."
+   },
+   {
+    "family": "Member390",
+    "given": "A."
+   },
+   {
+    "family": "Member391",
+    "given": "A."
+   },
+   {
+    "family": "Member392",
+    "given": "A."
+   },
+   {
+    "family": "Member393",
+    "given": "A."
+   },
+   {
+    "family": "Member394",
+    "given": "A."
+   },
+   {
+    "family": "Member395",
+    "given": "A."
+   },
+   {
+    "family": "Member396",
+    "given": "A."
+   },
+   {
+    "family": "Member397",
+    "given": "A."
+   },
+   {
+    "family": "Member398",
+    "given": "A."
+   },
+   {
+    "family": "Member399",
+    "given": "A."
+   },
+   {
+    "family": "Member400",
+    "given": "A."
+   },
+   {
+    "family": "Member401",
+    "given": "A."
+   },
+   {
+    "family": "Member402",
+    "given": "A."
+   },
+   {
+    "family": "Member403",
+    "given": "A."
+   },
+   {
+    "family": "Member404",
+    "given": "A."
+   },
+   {
+    "family": "Member405",
+    "given": "A."
+   },
+   {
+    "family": "Member406",
+    "given": "A."
+   },
+   {
+    "family": "Member407",
+    "given": "A."
+   },
+   {
+    "family": "Member408",
+    "given": "A."
+   },
+   {
+    "family": "Member409",
+    "given": "A."
+   },
+   {
+    "family": "Member410",
+    "given": "A."
+   },
+   {
+    "family": "Member411",
+    "given": "A."
+   },
+   {
+    "family": "Member412",
+    "given": "A."
+   },
+   {
+    "family": "Member413",
+    "given": "A."
+   },
+   {
+    "family": "Member414",
+    "given": "A."
+   },
+   {
+    "family": "Member415",
+    "given": "A."
+   },
+   {
+    "family": "Member416",
+    "given": "A."
+   },
+   {
+    "family": "Member417",
+    "given": "A."
+   },
+   {
+    "family": "Member418",
+    "given": "A."
+   },
+   {
+    "family": "Member419",
+    "given": "A."
+   },
+   {
+    "family": "Member420",
+    "given": "A."
+   },
+   {
+    "family": "Member421",
+    "given": "A."
+   },
+   {
+    "family": "Member422",
+    "given": "A."
+   },
+   {
+    "family": "Member423",
+    "given": "A."
+   },
+   {
+    "family": "Member424",
+    "given": "A."
+   },
+   {
+    "family": "Member425",
+    "given": "A."
+   },
+   {
+    "family": "Member426",
+    "given": "A."
+   },
+   {
+    "family": "Member427",
+    "given": "A."
+   },
+   {
+    "family": "Member428",
+    "given": "A."
+   },
+   {
+    "family": "Member429",
+    "given": "A."
+   },
+   {
+    "family": "Member430",
+    "given": "A."
+   },
+   {
+    "family": "Member431",
+    "given": "A."
+   },
+   {
+    "family": "Member432",
+    "given": "A."
+   },
+   {
+    "family": "Member433",
+    "given": "A."
+   },
+   {
+    "family": "Member434",
+    "given": "A."
+   },
+   {
+    "family": "Member435",
+    "given": "A."
+   },
+   {
+    "family": "Member436",
+    "given": "A."
+   },
+   {
+    "family": "Member437",
+    "given": "A."
+   },
+   {
+    "family": "Member438",
+    "given": "A."
+   },
+   {
+    "family": "Member439",
+    "given": "A."
+   },
+   {
+    "family": "Member440",
+    "given": "A."
+   },
+   {
+    "family": "Member441",
+    "given": "A."
+   },
+   {
+    "family": "Member442",
+    "given": "A."
+   },
+   {
+    "family": "Member443",
+    "given": "A."
+   },
+   {
+    "family": "Member444",
+    "given": "A."
+   },
+   {
+    "family": "Member445",
+    "given": "A."
+   },
+   {
+    "family": "Member446",
+    "given": "A."
+   },
+   {
+    "family": "Member447",
+    "given": "A."
+   },
+   {
+    "family": "Member448",
+    "given": "A."
+   },
+   {
+    "family": "Member449",
+    "given": "A."
+   },
+   {
+    "family": "Member450",
+    "given": "A."
+   },
+   {
+    "family": "Member451",
+    "given": "A."
+   },
+   {
+    "family": "Member452",
+    "given": "A."
+   },
+   {
+    "family": "Member453",
+    "given": "A."
+   },
+   {
+    "family": "Member454",
+    "given": "A."
+   },
+   {
+    "family": "Member455",
+    "given": "A."
+   },
+   {
+    "family": "Member456",
+    "given": "A."
+   },
+   {
+    "family": "Member457",
+    "given": "A."
+   },
+   {
+    "family": "Member458",
+    "given": "A."
+   },
+   {
+    "family": "Member459",
+    "given": "A."
+   },
+   {
+    "family": "Member460",
+    "given": "A."
+   },
+   {
+    "family": "Member461",
+    "given": "A."
+   },
+   {
+    "family": "Member462",
+    "given": "A."
+   },
+   {
+    "family": "Member463",
+    "given": "A."
+   },
+   {
+    "family": "Member464",
+    "given": "A."
+   },
+   {
+    "family": "Member465",
+    "given": "A."
+   },
+   {
+    "family": "Member466",
+    "given": "A."
+   },
+   {
+    "family": "Member467",
+    "given": "A."
+   },
+   {
+    "family": "Member468",
+    "given": "A."
+   },
+   {
+    "family": "Member469",
+    "given": "A."
+   },
+   {
+    "family": "Member470",
+    "given": "A."
+   },
+   {
+    "family": "Member471",
+    "given": "A."
+   },
+   {
+    "family": "Member472",
+    "given": "A."
+   },
+   {
+    "family": "Member473",
+    "given": "A."
+   },
+   {
+    "family": "Member474",
+    "given": "A."
+   },
+   {
+    "family": "Member475",
+    "given": "A."
+   },
+   {
+    "family": "Member476",
+    "given": "A."
+   },
+   {
+    "family": "Member477",
+    "given": "A."
+   },
+   {
+    "family": "Member478",
+    "given": "A."
+   },
+   {
+    "family": "Member479",
+    "given": "A."
+   },
+   {
+    "family": "Member480",
+    "given": "A."
+   },
+   {
+    "family": "Member481",
+    "given": "A."
+   },
+   {
+    "family": "Member482",
+    "given": "A."
+   },
+   {
+    "family": "Member483",
+    "given": "A."
+   },
+   {
+    "family": "Member484",
+    "given": "A."
+   },
+   {
+    "family": "Member485",
+    "given": "A."
+   },
+   {
+    "family": "Member486",
+    "given": "A."
+   },
+   {
+    "family": "Member487",
+    "given": "A."
+   },
+   {
+    "family": "Member488",
+    "given": "A."
+   },
+   {
+    "family": "Member489",
+    "given": "A."
+   },
+   {
+    "family": "Member490",
+    "given": "A."
+   },
+   {
+    "family": "Member491",
+    "given": "A."
+   },
+   {
+    "family": "Member492",
+    "given": "A."
+   },
+   {
+    "family": "Member493",
+    "given": "A."
+   },
+   {
+    "family": "Member494",
+    "given": "A."
+   },
+   {
+    "family": "Member495",
+    "given": "A."
+   },
+   {
+    "family": "Member496",
+    "given": "A."
+   },
+   {
+    "family": "Member497",
+    "given": "A."
+   },
+   {
+    "family": "Member498",
+    "given": "A."
+   },
+   {
+    "family": "Member499",
+    "given": "A."
+   },
+   {
+    "family": "Member500",
+    "given": "A."
+   },
+   {
+    "family": "Member501",
+    "given": "A."
+   },
+   {
+    "family": "Member502",
+    "given": "A."
+   },
+   {
+    "family": "Member503",
+    "given": "A."
+   },
+   {
+    "family": "Member504",
+    "given": "A."
+   },
+   {
+    "family": "Member505",
+    "given": "A."
+   },
+   {
+    "family": "Member506",
+    "given": "A."
+   },
+   {
+    "family": "Member507",
+    "given": "A."
+   },
+   {
+    "family": "Member508",
+    "given": "A."
+   },
+   {
+    "family": "Member509",
+    "given": "A."
+   },
+   {
+    "family": "Member510",
+    "given": "A."
+   },
+   {
+    "family": "Member511",
+    "given": "A."
+   },
+   {
+    "family": "Member512",
+    "given": "A."
+   },
+   {
+    "family": "Member513",
+    "given": "A."
+   },
+   {
+    "family": "Member514",
+    "given": "A."
+   },
+   {
+    "family": "Member515",
+    "given": "A."
+   },
+   {
+    "family": "Member516",
+    "given": "A."
+   },
+   {
+    "family": "Member517",
+    "given": "A."
+   },
+   {
+    "family": "Member518",
+    "given": "A."
+   },
+   {
+    "family": "Member519",
+    "given": "A."
+   },
+   {
+    "family": "Member520",
+    "given": "A."
+   },
+   {
+    "family": "Member521",
+    "given": "A."
+   },
+   {
+    "family": "Member522",
+    "given": "A."
+   },
+   {
+    "family": "Member523",
+    "given": "A."
+   },
+   {
+    "family": "Member524",
+    "given": "A."
+   },
+   {
+    "family": "Member525",
+    "given": "A."
+   },
+   {
+    "family": "Member526",
+    "given": "A."
+   },
+   {
+    "family": "Member527",
+    "given": "A."
+   },
+   {
+    "family": "Member528",
+    "given": "A."
+   },
+   {
+    "family": "Member529",
+    "given": "A."
+   },
+   {
+    "family": "Member530",
+    "given": "A."
+   },
+   {
+    "family": "Member531",
+    "given": "A."
+   },
+   {
+    "family": "Member532",
+    "given": "A."
+   },
+   {
+    "family": "Member533",
+    "given": "A."
+   },
+   {
+    "family": "Member534",
+    "given": "A."
+   },
+   {
+    "family": "Member535",
+    "given": "A."
+   },
+   {
+    "family": "Member536",
+    "given": "A."
+   },
+   {
+    "family": "Member537",
+    "given": "A."
+   },
+   {
+    "family": "Member538",
+    "given": "A."
+   },
+   {
+    "family": "Member539",
+    "given": "A."
+   },
+   {
+    "family": "Member540",
+    "given": "A."
+   },
+   {
+    "family": "Member541",
+    "given": "A."
+   },
+   {
+    "family": "Member542",
+    "given": "A."
+   },
+   {
+    "family": "Member543",
+    "given": "A."
+   },
+   {
+    "family": "Member544",
+    "given": "A."
+   },
+   {
+    "family": "Member545",
+    "given": "A."
+   },
+   {
+    "family": "Member546",
+    "given": "A."
+   },
+   {
+    "family": "Member547",
+    "given": "A."
+   },
+   {
+    "family": "Member548",
+    "given": "A."
+   },
+   {
+    "family": "Member549",
+    "given": "A."
+   },
+   {
+    "family": "Member550",
+    "given": "A."
+   },
+   {
+    "family": "Member551",
+    "given": "A."
+   },
+   {
+    "family": "Member552",
+    "given": "A."
+   },
+   {
+    "family": "Member553",
+    "given": "A."
+   },
+   {
+    "family": "Member554",
+    "given": "A."
+   },
+   {
+    "family": "Member555",
+    "given": "A."
+   },
+   {
+    "family": "Member556",
+    "given": "A."
+   },
+   {
+    "family": "Member557",
+    "given": "A."
+   },
+   {
+    "family": "Member558",
+    "given": "A."
+   },
+   {
+    "family": "Member559",
+    "given": "A."
+   },
+   {
+    "family": "Member560",
+    "given": "A."
+   },
+   {
+    "family": "Member561",
+    "given": "A."
+   },
+   {
+    "family": "Member562",
+    "given": "A."
+   },
+   {
+    "family": "Member563",
+    "given": "A."
+   },
+   {
+    "family": "Member564",
+    "given": "A."
+   },
+   {
+    "family": "Member565",
+    "given": "A."
+   },
+   {
+    "family": "Member566",
+    "given": "A."
+   },
+   {
+    "family": "Member567",
+    "given": "A."
+   },
+   {
+    "family": "Member568",
+    "given": "A."
+   },
+   {
+    "family": "Member569",
+    "given": "A."
+   },
+   {
+    "family": "Member570",
+    "given": "A."
+   },
+   {
+    "family": "Member571",
+    "given": "A."
+   },
+   {
+    "family": "Member572",
+    "given": "A."
+   },
+   {
+    "family": "Member573",
+    "given": "A."
+   },
+   {
+    "family": "Member574",
+    "given": "A."
+   },
+   {
+    "family": "Member575",
+    "given": "A."
+   },
+   {
+    "family": "Member576",
+    "given": "A."
+   },
+   {
+    "family": "Member577",
+    "given": "A."
+   },
+   {
+    "family": "Member578",
+    "given": "A."
+   },
+   {
+    "family": "Member579",
+    "given": "A."
+   },
+   {
+    "family": "Member580",
+    "given": "A."
+   },
+   {
+    "family": "Member581",
+    "given": "A."
+   },
+   {
+    "family": "Member582",
+    "given": "A."
+   },
+   {
+    "family": "Member583",
+    "given": "A."
+   },
+   {
+    "family": "Member584",
+    "given": "A."
+   },
+   {
+    "family": "Member585",
+    "given": "A."
+   },
+   {
+    "family": "Member586",
+    "given": "A."
+   },
+   {
+    "family": "Member587",
+    "given": "A."
+   },
+   {
+    "family": "Member588",
+    "given": "A."
+   },
+   {
+    "family": "Member589",
+    "given": "A."
+   },
+   {
+    "family": "Member590",
+    "given": "A."
+   },
+   {
+    "family": "Member591",
+    "given": "A."
+   },
+   {
+    "family": "Member592",
+    "given": "A."
+   },
+   {
+    "family": "Member593",
+    "given": "A."
+   },
+   {
+    "family": "Member594",
+    "given": "A."
+   },
+   {
+    "family": "Member595",
+    "given": "A."
+   },
+   {
+    "family": "Member596",
+    "given": "A."
+   },
+   {
+    "family": "Member597",
+    "given": "A."
+   },
+   {
+    "family": "Member598",
+    "given": "A."
+   },
+   {
+    "family": "Member599",
+    "given": "A."
+   },
+   {
+    "family": "Member600",
+    "given": "A."
+   },
+   {
+    "family": "Member601",
+    "given": "A."
+   },
+   {
+    "family": "Member602",
+    "given": "A."
+   },
+   {
+    "family": "Member603",
+    "given": "A."
+   },
+   {
+    "family": "Member604",
+    "given": "A."
+   },
+   {
+    "family": "Member605",
+    "given": "A."
+   },
+   {
+    "family": "Member606",
+    "given": "A."
+   },
+   {
+    "family": "Member607",
+    "given": "A."
+   },
+   {
+    "family": "Member608",
+    "given": "A."
+   },
+   {
+    "family": "Member609",
+    "given": "A."
+   },
+   {
+    "family": "Member610",
+    "given": "A."
+   },
+   {
+    "family": "Member611",
+    "given": "A."
+   },
+   {
+    "family": "Member612",
+    "given": "A."
+   },
+   {
+    "family": "Member613",
+    "given": "A."
+   },
+   {
+    "family": "Member614",
+    "given": "A."
+   },
+   {
+    "family": "Member615",
+    "given": "A."
+   },
+   {
+    "family": "Member616",
+    "given": "A."
+   },
+   {
+    "family": "Member617",
+    "given": "A."
+   },
+   {
+    "family": "Member618",
+    "given": "A."
+   },
+   {
+    "family": "Member619",
+    "given": "A."
+   },
+   {
+    "family": "Member620",
+    "given": "A."
+   },
+   {
+    "family": "Member621",
+    "given": "A."
+   },
+   {
+    "family": "Member622",
+    "given": "A."
+   },
+   {
+    "family": "Member623",
+    "given": "A."
+   },
+   {
+    "family": "Member624",
+    "given": "A."
+   },
+   {
+    "family": "Member625",
+    "given": "A."
+   },
+   {
+    "family": "Member626",
+    "given": "A."
+   },
+   {
+    "family": "Member627",
+    "given": "A."
+   },
+   {
+    "family": "Member628",
+    "given": "A."
+   },
+   {
+    "family": "Member629",
+    "given": "A."
+   },
+   {
+    "family": "Member630",
+    "given": "A."
+   },
+   {
+    "family": "Member631",
+    "given": "A."
+   },
+   {
+    "family": "Member632",
+    "given": "A."
+   },
+   {
+    "family": "Member633",
+    "given": "A."
+   },
+   {
+    "family": "Member634",
+    "given": "A."
+   },
+   {
+    "family": "Member635",
+    "given": "A."
+   },
+   {
+    "family": "Member636",
+    "given": "A."
+   },
+   {
+    "family": "Member637",
+    "given": "A."
+   },
+   {
+    "family": "Member638",
+    "given": "A."
+   },
+   {
+    "family": "Member639",
+    "given": "A."
+   },
+   {
+    "family": "Member640",
+    "given": "A."
+   },
+   {
+    "family": "Member641",
+    "given": "A."
+   },
+   {
+    "family": "Member642",
+    "given": "A."
+   },
+   {
+    "family": "Member643",
+    "given": "A."
+   },
+   {
+    "family": "Member644",
+    "given": "A."
+   },
+   {
+    "family": "Member645",
+    "given": "A."
+   },
+   {
+    "family": "Member646",
+    "given": "A."
+   },
+   {
+    "family": "Member647",
+    "given": "A."
+   },
+   {
+    "family": "Member648",
+    "given": "A."
+   },
+   {
+    "family": "Member649",
+    "given": "A."
+   },
+   {
+    "family": "Member650",
+    "given": "A."
+   },
+   {
+    "family": "Member651",
+    "given": "A."
+   },
+   {
+    "family": "Member652",
+    "given": "A."
+   },
+   {
+    "family": "Member653",
+    "given": "A."
+   },
+   {
+    "family": "Member654",
+    "given": "A."
+   },
+   {
+    "family": "Member655",
+    "given": "A."
+   },
+   {
+    "family": "Member656",
+    "given": "A."
+   },
+   {
+    "family": "Member657",
+    "given": "A."
+   },
+   {
+    "family": "Member658",
+    "given": "A."
+   },
+   {
+    "family": "Member659",
+    "given": "A."
+   },
+   {
+    "family": "Member660",
+    "given": "A."
+   },
+   {
+    "family": "Member661",
+    "given": "A."
+   },
+   {
+    "family": "Member662",
+    "given": "A."
+   },
+   {
+    "family": "Member663",
+    "given": "A."
+   },
+   {
+    "family": "Member664",
+    "given": "A."
+   },
+   {
+    "family": "Member665",
+    "given": "A."
+   },
+   {
+    "family": "Member666",
+    "given": "A."
+   },
+   {
+    "family": "Member667",
+    "given": "A."
+   },
+   {
+    "family": "Member668",
+    "given": "A."
+   },
+   {
+    "family": "Member669",
+    "given": "A."
+   },
+   {
+    "family": "Member670",
+    "given": "A."
+   },
+   {
+    "family": "Member671",
+    "given": "A."
+   },
+   {
+    "family": "Member672",
+    "given": "A."
+   },
+   {
+    "family": "Member673",
+    "given": "A."
+   },
+   {
+    "family": "Member674",
+    "given": "A."
+   },
+   {
+    "family": "Member675",
+    "given": "A."
+   },
+   {
+    "family": "Member676",
+    "given": "A."
+   },
+   {
+    "family": "Member677",
+    "given": "A."
+   },
+   {
+    "family": "Member678",
+    "given": "A."
+   },
+   {
+    "family": "Member679",
+    "given": "A."
+   },
+   {
+    "family": "Member680",
+    "given": "A."
+   },
+   {
+    "family": "Member681",
+    "given": "A."
+   },
+   {
+    "family": "Member682",
+    "given": "A."
+   },
+   {
+    "family": "Member683",
+    "given": "A."
+   },
+   {
+    "family": "Member684",
+    "given": "A."
+   },
+   {
+    "family": "Member685",
+    "given": "A."
+   },
+   {
+    "family": "Member686",
+    "given": "A."
+   },
+   {
+    "family": "Member687",
+    "given": "A."
+   },
+   {
+    "family": "Member688",
+    "given": "A."
+   },
+   {
+    "family": "Member689",
+    "given": "A."
+   },
+   {
+    "family": "Member690",
+    "given": "A."
+   },
+   {
+    "family": "Member691",
+    "given": "A."
+   },
+   {
+    "family": "Member692",
+    "given": "A."
+   },
+   {
+    "family": "Member693",
+    "given": "A."
+   },
+   {
+    "family": "Member694",
+    "given": "A."
+   },
+   {
+    "family": "Member695",
+    "given": "A."
+   },
+   {
+    "family": "Member696",
+    "given": "A."
+   },
+   {
+    "family": "Member697",
+    "given": "A."
+   },
+   {
+    "family": "Member698",
+    "given": "A."
+   },
+   {
+    "family": "Member699",
+    "given": "A."
+   },
+   {
+    "family": "Member700",
+    "given": "A."
+   },
+   {
+    "family": "Member701",
+    "given": "A."
+   },
+   {
+    "family": "Member702",
+    "given": "A."
+   },
+   {
+    "family": "Member703",
+    "given": "A."
+   },
+   {
+    "family": "Member704",
+    "given": "A."
+   },
+   {
+    "family": "Member705",
+    "given": "A."
+   },
+   {
+    "family": "Member706",
+    "given": "A."
+   },
+   {
+    "family": "Member707",
+    "given": "A."
+   },
+   {
+    "family": "Member708",
+    "given": "A."
+   },
+   {
+    "family": "Member709",
+    "given": "A."
+   },
+   {
+    "family": "Member710",
+    "given": "A."
+   },
+   {
+    "family": "Member711",
+    "given": "A."
+   },
+   {
+    "family": "Member712",
+    "given": "A."
+   },
+   {
+    "family": "Member713",
+    "given": "A."
+   },
+   {
+    "family": "Member714",
+    "given": "A."
+   },
+   {
+    "family": "Member715",
+    "given": "A."
+   },
+   {
+    "family": "Member716",
+    "given": "A."
+   },
+   {
+    "family": "Member717",
+    "given": "A."
+   },
+   {
+    "family": "Member718",
+    "given": "A."
+   },
+   {
+    "family": "Member719",
+    "given": "A."
+   },
+   {
+    "family": "Member720",
+    "given": "A."
+   },
+   {
+    "family": "Member721",
+    "given": "A."
+   },
+   {
+    "family": "Member722",
+    "given": "A."
+   },
+   {
+    "family": "Member723",
+    "given": "A."
+   },
+   {
+    "family": "Member724",
+    "given": "A."
+   },
+   {
+    "family": "Member725",
+    "given": "A."
+   },
+   {
+    "family": "Member726",
+    "given": "A."
+   },
+   {
+    "family": "Member727",
+    "given": "A."
+   },
+   {
+    "family": "Member728",
+    "given": "A."
+   },
+   {
+    "family": "Member729",
+    "given": "A."
+   },
+   {
+    "family": "Member730",
+    "given": "A."
+   },
+   {
+    "family": "Member731",
+    "given": "A."
+   },
+   {
+    "family": "Member732",
+    "given": "A."
+   },
+   {
+    "family": "Member733",
+    "given": "A."
+   },
+   {
+    "family": "Member734",
+    "given": "A."
+   },
+   {
+    "family": "Member735",
+    "given": "A."
+   },
+   {
+    "family": "Member736",
+    "given": "A."
+   },
+   {
+    "family": "Member737",
+    "given": "A."
+   },
+   {
+    "family": "Member738",
+    "given": "A."
+   },
+   {
+    "family": "Member739",
+    "given": "A."
+   },
+   {
+    "family": "Member740",
+    "given": "A."
+   },
+   {
+    "family": "Member741",
+    "given": "A."
+   },
+   {
+    "family": "Member742",
+    "given": "A."
+   },
+   {
+    "family": "Member743",
+    "given": "A."
+   },
+   {
+    "family": "Member744",
+    "given": "A."
+   },
+   {
+    "family": "Member745",
+    "given": "A."
+   },
+   {
+    "family": "Member746",
+    "given": "A."
+   },
+   {
+    "family": "Member747",
+    "given": "A."
+   },
+   {
+    "family": "Member748",
+    "given": "A."
+   },
+   {
+    "family": "Member749",
+    "given": "A."
+   },
+   {
+    "family": "Member750",
+    "given": "A."
+   },
+   {
+    "family": "Member751",
+    "given": "A."
+   },
+   {
+    "family": "Member752",
+    "given": "A."
+   },
+   {
+    "family": "Member753",
+    "given": "A."
+   },
+   {
+    "family": "Member754",
+    "given": "A."
+   },
+   {
+    "family": "Member755",
+    "given": "A."
+   },
+   {
+    "family": "Member756",
+    "given": "A."
+   },
+   {
+    "family": "Member757",
+    "given": "A."
+   },
+   {
+    "family": "Member758",
+    "given": "A."
+   },
+   {
+    "family": "Member759",
+    "given": "A."
+   },
+   {
+    "family": "Member760",
+    "given": "A."
+   },
+   {
+    "family": "Member761",
+    "given": "A."
+   },
+   {
+    "family": "Member762",
+    "given": "A."
+   },
+   {
+    "family": "Member763",
+    "given": "A."
+   },
+   {
+    "family": "Member764",
+    "given": "A."
+   },
+   {
+    "family": "Member765",
+    "given": "A."
+   },
+   {
+    "family": "Member766",
+    "given": "A."
+   },
+   {
+    "family": "Member767",
+    "given": "A."
+   },
+   {
+    "family": "Member768",
+    "given": "A."
+   },
+   {
+    "family": "Member769",
+    "given": "A."
+   },
+   {
+    "family": "Member770",
+    "given": "A."
+   },
+   {
+    "family": "Member771",
+    "given": "A."
+   },
+   {
+    "family": "Member772",
+    "given": "A."
+   },
+   {
+    "family": "Member773",
+    "given": "A."
+   },
+   {
+    "family": "Member774",
+    "given": "A."
+   },
+   {
+    "family": "Member775",
+    "given": "A."
+   },
+   {
+    "family": "Member776",
+    "given": "A."
+   },
+   {
+    "family": "Member777",
+    "given": "A."
+   },
+   {
+    "family": "Member778",
+    "given": "A."
+   },
+   {
+    "family": "Member779",
+    "given": "A."
+   },
+   {
+    "family": "Member780",
+    "given": "A."
+   },
+   {
+    "family": "Member781",
+    "given": "A."
+   },
+   {
+    "family": "Member782",
+    "given": "A."
+   },
+   {
+    "family": "Member783",
+    "given": "A."
+   },
+   {
+    "family": "Member784",
+    "given": "A."
+   },
+   {
+    "family": "Member785",
+    "given": "A."
+   },
+   {
+    "family": "Member786",
+    "given": "A."
+   },
+   {
+    "family": "Member787",
+    "given": "A."
+   },
+   {
+    "family": "Member788",
+    "given": "A."
+   },
+   {
+    "family": "Member789",
+    "given": "A."
+   },
+   {
+    "family": "Member790",
+    "given": "A."
+   },
+   {
+    "family": "Member791",
+    "given": "A."
+   },
+   {
+    "family": "Member792",
+    "given": "A."
+   },
+   {
+    "family": "Member793",
+    "given": "A."
+   },
+   {
+    "family": "Member794",
+    "given": "A."
+   },
+   {
+    "family": "Member795",
+    "given": "A."
+   },
+   {
+    "family": "Member796",
+    "given": "A."
+   },
+   {
+    "family": "Member797",
+    "given": "A."
+   },
+   {
+    "family": "Member798",
+    "given": "A."
+   },
+   {
+    "family": "Member799",
+    "given": "A."
+   },
+   {
+    "family": "Member800",
+    "given": "A."
+   },
+   {
+    "family": "Member801",
+    "given": "A."
+   },
+   {
+    "family": "Member802",
+    "given": "A."
+   },
+   {
+    "family": "Member803",
+    "given": "A."
+   },
+   {
+    "family": "Member804",
+    "given": "A."
+   },
+   {
+    "family": "Member805",
+    "given": "A."
+   },
+   {
+    "family": "Member806",
+    "given": "A."
+   },
+   {
+    "family": "Member807",
+    "given": "A."
+   },
+   {
+    "family": "Member808",
+    "given": "A."
+   },
+   {
+    "family": "Member809",
+    "given": "A."
+   },
+   {
+    "family": "Member810",
+    "given": "A."
+   },
+   {
+    "family": "Member811",
+    "given": "A."
+   },
+   {
+    "family": "Member812",
+    "given": "A."
+   },
+   {
+    "family": "Member813",
+    "given": "A."
+   },
+   {
+    "family": "Member814",
+    "given": "A."
+   },
+   {
+    "family": "Member815",
+    "given": "A."
+   },
+   {
+    "family": "Member816",
+    "given": "A."
+   },
+   {
+    "family": "Member817",
+    "given": "A."
+   },
+   {
+    "family": "Member818",
+    "given": "A."
+   },
+   {
+    "family": "Member819",
+    "given": "A."
+   },
+   {
+    "family": "Member820",
+    "given": "A."
+   },
+   {
+    "family": "Member821",
+    "given": "A."
+   },
+   {
+    "family": "Member822",
+    "given": "A."
+   },
+   {
+    "family": "Member823",
+    "given": "A."
+   },
+   {
+    "family": "Member824",
+    "given": "A."
+   },
+   {
+    "family": "Member825",
+    "given": "A."
+   },
+   {
+    "family": "Member826",
+    "given": "A."
+   },
+   {
+    "family": "Member827",
+    "given": "A."
+   },
+   {
+    "family": "Member828",
+    "given": "A."
+   },
+   {
+    "family": "Member829",
+    "given": "A."
+   },
+   {
+    "family": "Member830",
+    "given": "A."
+   },
+   {
+    "family": "Member831",
+    "given": "A."
+   },
+   {
+    "family": "Member832",
+    "given": "A."
+   },
+   {
+    "family": "Member833",
+    "given": "A."
+   },
+   {
+    "family": "Member834",
+    "given": "A."
+   },
+   {
+    "family": "Member835",
+    "given": "A."
+   },
+   {
+    "family": "Member836",
+    "given": "A."
+   },
+   {
+    "family": "Member837",
+    "given": "A."
+   },
+   {
+    "family": "Member838",
+    "given": "A."
+   },
+   {
+    "family": "Member839",
+    "given": "A."
+   },
+   {
+    "family": "Member840",
+    "given": "A."
+   },
+   {
+    "family": "Member841",
+    "given": "A."
+   },
+   {
+    "family": "Member842",
+    "given": "A."
+   },
+   {
+    "family": "Member843",
+    "given": "A."
+   },
+   {
+    "family": "Member844",
+    "given": "A."
+   },
+   {
+    "family": "Member845",
+    "given": "A."
+   },
+   {
+    "family": "Member846",
+    "given": "A."
+   },
+   {
+    "family": "Member847",
+    "given": "A."
+   },
+   {
+    "family": "Member848",
+    "given": "A."
+   },
+   {
+    "family": "Member849",
+    "given": "A."
+   },
+   {
+    "family": "Member850",
+    "given": "A."
+   },
+   {
+    "family": "Member851",
+    "given": "A."
+   },
+   {
+    "family": "Member852",
+    "given": "A."
+   },
+   {
+    "family": "Member853",
+    "given": "A."
+   },
+   {
+    "family": "Member854",
+    "given": "A."
+   },
+   {
+    "family": "Member855",
+    "given": "A."
+   },
+   {
+    "family": "Member856",
+    "given": "A."
+   },
+   {
+    "family": "Member857",
+    "given": "A."
+   },
+   {
+    "family": "Member858",
+    "given": "A."
+   },
+   {
+    "family": "Member859",
+    "given": "A."
+   },
+   {
+    "family": "Member860",
+    "given": "A."
+   },
+   {
+    "family": "Member861",
+    "given": "A."
+   },
+   {
+    "family": "Member862",
+    "given": "A."
+   },
+   {
+    "family": "Member863",
+    "given": "A."
+   },
+   {
+    "family": "Member864",
+    "given": "A."
+   },
+   {
+    "family": "Member865",
+    "given": "A."
+   },
+   {
+    "family": "Member866",
+    "given": "A."
+   },
+   {
+    "family": "Member867",
+    "given": "A."
+   },
+   {
+    "family": "Member868",
+    "given": "A."
+   },
+   {
+    "family": "Member869",
+    "given": "A."
+   },
+   {
+    "family": "Member870",
+    "given": "A."
+   },
+   {
+    "family": "Member871",
+    "given": "A."
+   },
+   {
+    "family": "Member872",
+    "given": "A."
+   },
+   {
+    "family": "Member873",
+    "given": "A."
+   },
+   {
+    "family": "Member874",
+    "given": "A."
+   },
+   {
+    "family": "Member875",
+    "given": "A."
+   },
+   {
+    "family": "Member876",
+    "given": "A."
+   },
+   {
+    "family": "Member877",
+    "given": "A."
+   },
+   {
+    "family": "Member878",
+    "given": "A."
+   },
+   {
+    "family": "Member879",
+    "given": "A."
+   },
+   {
+    "family": "Member880",
+    "given": "A."
+   },
+   {
+    "family": "Member881",
+    "given": "A."
+   },
+   {
+    "family": "Member882",
+    "given": "A."
+   },
+   {
+    "family": "Member883",
+    "given": "A."
+   },
+   {
+    "family": "Member884",
+    "given": "A."
+   },
+   {
+    "family": "Member885",
+    "given": "A."
+   },
+   {
+    "family": "Member886",
+    "given": "A."
+   },
+   {
+    "family": "Member887",
+    "given": "A."
+   },
+   {
+    "family": "Member888",
+    "given": "A."
+   },
+   {
+    "family": "Member889",
+    "given": "A."
+   },
+   {
+    "family": "Member890",
+    "given": "A."
+   },
+   {
+    "family": "Member891",
+    "given": "A."
+   },
+   {
+    "family": "Member892",
+    "given": "A."
+   },
+   {
+    "family": "Member893",
+    "given": "A."
+   },
+   {
+    "family": "Member894",
+    "given": "A."
+   },
+   {
+    "family": "Member895",
+    "given": "A."
+   },
+   {
+    "family": "Member896",
+    "given": "A."
+   },
+   {
+    "family": "Member897",
+    "given": "A."
+   },
+   {
+    "family": "Member898",
+    "given": "A."
+   },
+   {
+    "family": "Member899",
+    "given": "A."
+   },
+   {
+    "family": "Member900",
+    "given": "A."
+   },
+   {
+    "family": "Member901",
+    "given": "A."
+   },
+   {
+    "family": "Member902",
+    "given": "A."
+   },
+   {
+    "family": "Member903",
+    "given": "A."
+   },
+   {
+    "family": "Member904",
+    "given": "A."
+   },
+   {
+    "family": "Member905",
+    "given": "A."
+   },
+   {
+    "family": "Member906",
+    "given": "A."
+   },
+   {
+    "family": "Member907",
+    "given": "A."
+   },
+   {
+    "family": "Member908",
+    "given": "A."
+   },
+   {
+    "family": "Member909",
+    "given": "A."
+   },
+   {
+    "family": "Member910",
+    "given": "A."
+   },
+   {
+    "family": "Member911",
+    "given": "A."
+   },
+   {
+    "family": "Member912",
+    "given": "A."
+   },
+   {
+    "family": "Member913",
+    "given": "A."
+   },
+   {
+    "family": "Member914",
+    "given": "A."
+   },
+   {
+    "family": "Member915",
+    "given": "A."
+   },
+   {
+    "family": "Member916",
+    "given": "A."
+   },
+   {
+    "family": "Member917",
+    "given": "A."
+   },
+   {
+    "family": "Member918",
+    "given": "A."
+   },
+   {
+    "family": "Member919",
+    "given": "A."
+   },
+   {
+    "family": "Member920",
+    "given": "A."
+   },
+   {
+    "family": "Member921",
+    "given": "A."
+   },
+   {
+    "family": "Member922",
+    "given": "A."
+   },
+   {
+    "family": "Member923",
+    "given": "A."
+   },
+   {
+    "family": "Member924",
+    "given": "A."
+   },
+   {
+    "family": "Member925",
+    "given": "A."
+   },
+   {
+    "family": "Member926",
+    "given": "A."
+   },
+   {
+    "family": "Member927",
+    "given": "A."
+   },
+   {
+    "family": "Member928",
+    "given": "A."
+   },
+   {
+    "family": "Member929",
+    "given": "A."
+   },
+   {
+    "family": "Member930",
+    "given": "A."
+   },
+   {
+    "family": "Member931",
+    "given": "A."
+   },
+   {
+    "family": "Member932",
+    "given": "A."
+   },
+   {
+    "family": "Member933",
+    "given": "A."
+   },
+   {
+    "family": "Member934",
+    "given": "A."
+   },
+   {
+    "family": "Member935",
+    "given": "A."
+   },
+   {
+    "family": "Member936",
+    "given": "A."
+   },
+   {
+    "family": "Member937",
+    "given": "A."
+   },
+   {
+    "family": "Member938",
+    "given": "A."
+   },
+   {
+    "family": "Member939",
+    "given": "A."
+   },
+   {
+    "family": "Member940",
+    "given": "A."
+   },
+   {
+    "family": "Member941",
+    "given": "A."
+   },
+   {
+    "family": "Member942",
+    "given": "A."
+   },
+   {
+    "family": "Member943",
+    "given": "A."
+   },
+   {
+    "family": "Member944",
+    "given": "A."
+   },
+   {
+    "family": "Member945",
+    "given": "A."
+   },
+   {
+    "family": "Member946",
+    "given": "A."
+   },
+   {
+    "family": "Member947",
+    "given": "A."
+   },
+   {
+    "family": "Member948",
+    "given": "A."
+   },
+   {
+    "family": "Member949",
+    "given": "A."
+   },
+   {
+    "family": "Member950",
+    "given": "A."
+   },
+   {
+    "family": "Member951",
+    "given": "A."
+   },
+   {
+    "family": "Member952",
+    "given": "A."
+   },
+   {
+    "family": "Member953",
+    "given": "A."
+   },
+   {
+    "family": "Member954",
+    "given": "A."
+   },
+   {
+    "family": "Member955",
+    "given": "A."
+   },
+   {
+    "family": "Member956",
+    "given": "A."
+   },
+   {
+    "family": "Member957",
+    "given": "A."
+   },
+   {
+    "family": "Member958",
+    "given": "A."
+   },
+   {
+    "family": "Member959",
+    "given": "A."
+   },
+   {
+    "family": "Member960",
+    "given": "A."
+   },
+   {
+    "family": "Member961",
+    "given": "A."
+   },
+   {
+    "family": "Member962",
+    "given": "A."
+   },
+   {
+    "family": "Member963",
+    "given": "A."
+   },
+   {
+    "family": "Member964",
+    "given": "A."
+   },
+   {
+    "family": "Member965",
+    "given": "A."
+   },
+   {
+    "family": "Member966",
+    "given": "A."
+   },
+   {
+    "family": "Member967",
+    "given": "A."
+   },
+   {
+    "family": "Member968",
+    "given": "A."
+   },
+   {
+    "family": "Member969",
+    "given": "A."
+   },
+   {
+    "family": "Member970",
+    "given": "A."
+   },
+   {
+    "family": "Member971",
+    "given": "A."
+   },
+   {
+    "family": "Member972",
+    "given": "A."
+   },
+   {
+    "family": "Member973",
+    "given": "A."
+   },
+   {
+    "family": "Member974",
+    "given": "A."
+   },
+   {
+    "family": "Member975",
+    "given": "A."
+   },
+   {
+    "family": "Member976",
+    "given": "A."
+   },
+   {
+    "family": "Member977",
+    "given": "A."
+   },
+   {
+    "family": "Member978",
+    "given": "A."
+   },
+   {
+    "family": "Member979",
+    "given": "A."
+   },
+   {
+    "family": "Member980",
+    "given": "A."
+   },
+   {
+    "family": "Member981",
+    "given": "A."
+   },
+   {
+    "family": "Member982",
+    "given": "A."
+   },
+   {
+    "family": "Member983",
+    "given": "A."
+   },
+   {
+    "family": "Member984",
+    "given": "A."
+   },
+   {
+    "family": "Member985",
+    "given": "A."
+   },
+   {
+    "family": "Member986",
+    "given": "A."
+   },
+   {
+    "family": "Member987",
+    "given": "A."
+   },
+   {
+    "family": "Member988",
+    "given": "A."
+   },
+   {
+    "family": "Member989",
+    "given": "A."
+   },
+   {
+    "family": "Member990",
+    "given": "A."
+   },
+   {
+    "name": "LIGO Scientific Collaboration and Virgo Collaboration"
+   }
+  ],
+  "container-title": "Physical Review Letters",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     2,
+     11
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1103/PhysRevLett.116.061102",
+  "ISSN": [
+   "0031-9007",
+   "1079-7114"
+  ],
+  "container-title-short": "Phys. Rev. Lett.",
+  "published": {
+   "date-parts": [
+    [
+     2016,
+     2,
+     11
+    ]
+   ]
+  },
+  "article-number": "061102"
+ },
+ "report_wmo": {
+  "institution": [
+   {
+    "name": "World Meteorological Organization"
+   }
+  ],
+  "publisher": "World Meteorological Organization",
+  "DOI": "10.59327/wmo/gcw/2",
+  "type": "report",
+  "title": "The role of the World Meteorological Organization related to Antarctica and the consequences of sea level  rise on low-lying countries (PHORS report)",
+  "author": [
+   {
+    "name": "World Meteorological Organization"
+   }
+  ],
+  "container-title": [],
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     14
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.59327/wmo/gcw/2",
+  "published": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     14
+    ]
+   ]
+  }
+ },
+ "report_nber": {
+  "institution": [
+   {
+    "name": "National Bureau of Economic Research"
+   }
+  ],
+  "publisher": "National Bureau of Economic Research",
+  "DOI": "10.3386/w23465",
+  "type": "report",
+  "title": "Access and Use of Contraception and Its Effects on Women’s Outcomes in the U.S.",
+  "author": [
+   {
+    "given": "Martha",
+    "family": "Bailey"
+   },
+   {
+    "given": "Jason",
+    "family": "Lindo"
+   }
+  ],
+  "container-title": [],
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     6
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.3386/w23465",
+  "published": {
+   "date-parts": [
+    [
+     2017,
+     6
+    ]
+   ]
+  }
+ },
+ "eloc_natcomm": {
+  "publisher": "Springer Science and Business Media LLC",
+  "issue": "1",
+  "DOI": "10.1038/s41467-020-19131-y",
+  "type": "journal-article",
+  "title": "Genotype by environment interaction for gene expression in Drosophila melanogaster",
+  "volume": "11",
+  "author": [
+   {
+    "given": "Wen",
+    "family": "Huang"
+   },
+   {
+    "given": "Mary Anna",
+    "family": "Carbone"
+   },
+   {
+    "given": "Richard F.",
+    "family": "Lyman"
+   },
+   {
+    "given": "Robert R. H.",
+    "family": "Anholt"
+   },
+   {
+    "given": "Trudy F. C.",
+    "family": "Mackay"
+   }
+  ],
+  "container-title": "Nature Communications",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     10,
+     28
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1038/s41467-020-19131-y",
+  "ISSN": [
+   "2041-1723"
+  ],
+  "container-title-short": "Nat Commun",
+  "published": {
+   "date-parts": [
+    [
+     2020,
+     10,
+     28
+    ]
+   ]
+  },
+  "article-number": "5451"
+ },
+ "eloc_elsevier": {
+  "publisher": "Elsevier BV",
+  "DOI": "10.1016/j.jallcom.2024.175192",
+  "type": "journal-article",
+  "page": "175192",
+  "title": "Bimetallic oxide electrocatalyst with interfacial structure for enhanced electrocatalytic CO2 reduction",
+  "volume": "1001",
+  "author": [
+   {
+    "given": "Luyao",
+    "family": "Wang"
+   },
+   {
+    "given": "Xinxin",
+    "family": "Xu"
+   },
+   {
+    "given": "Jiahui",
+    "family": "Wang"
+   },
+   {
+    "given": "Yanjun",
+    "family": "Xue"
+   },
+   {
+    "given": "Xinyu",
+    "family": "Wang"
+   },
+   {
+    "given": "Min",
+    "family": "Ma"
+   },
+   {
+    "given": "Jian",
+    "family": "Tian"
+   },
+   {
+    "given": "Yingying",
+    "family": "Qin"
+   }
+  ],
+  "container-title": "Journal of Alloys and Compounds",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     10
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1016/j.jallcom.2024.175192",
+  "ISSN": [
+   "0925-8388"
+  ],
+  "container-title-short": "Journal of Alloys and Compounds",
+  "published": {
+   "date-parts": [
+    [
+     2024,
+     10
+    ]
+   ]
+  },
+  "article-number": "175192"
+ },
+ "eloc_plos": {
+  "publisher": "Public Library of Science (PLoS)",
+  "issue": "8",
+  "DOI": "10.1371/journal.pmed.0020124",
+  "type": "journal-article",
+  "page": "e124",
+  "title": "Why Most Published Research Findings Are False",
+  "volume": "2",
+  "author": [
+   {
+    "given": "John P. A.",
+    "family": "Ioannidis"
+   }
+  ],
+  "container-title": "PLoS Medicine",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2005,
+     8,
+     30
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1371/journal.pmed.0020124",
+  "ISSN": [
+   "1549-1676"
+  ],
+  "container-title-short": "PLoS Med",
+  "published": {
+   "date-parts": [
+    [
+     2005,
+     8,
+     30
+    ]
+   ]
+  }
+ },
+ "chapter_unet": {
+  "publisher": "Springer International Publishing",
+  "DOI": "10.1007/978-3-319-24574-4_28",
+  "type": "book-chapter",
+  "page": "234-241",
+  "title": "U-Net: Convolutional Networks for Biomedical Image Segmentation",
+  "author": [
+   {
+    "given": "Olaf",
+    "family": "Ronneberger"
+   },
+   {
+    "given": "Philipp",
+    "family": "Fischer"
+   },
+   {
+    "given": "Thomas",
+    "family": "Brox"
+   }
+  ],
+  "container-title": "Lecture Notes in Computer Science",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  },
+  "ISBN": [
+   "9783319245737",
+   "9783319245744"
+  ],
+  "URL": "http://dx.doi.org/10.1007/978-3-319-24574-4_28",
+  "ISSN": [
+   "0302-9743",
+   "1611-3349"
+  ],
+  "published": {
+   "date-parts": [
+    [
+     2015
+    ]
+   ]
+  }
+ },
+ "conf_resnet": {
+  "publisher": "IEEE",
+  "DOI": "10.1109/cvpr.2016.90",
+  "type": "proceedings-article",
+  "page": "770-778",
+  "title": "Deep Residual Learning for Image Recognition",
+  "author": [
+   {
+    "given": "Kaiming",
+    "family": "He"
+   },
+   {
+    "given": "Xiangyu",
+    "family": "Zhang"
+   },
+   {
+    "given": "Shaoqing",
+    "family": "Ren"
+   },
+   {
+    "given": "Jian",
+    "family": "Sun"
+   }
+  ],
+  "event": "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "container-title": "2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     6
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1109/CVPR.2016.90",
+  "published": {
+   "date-parts": [
+    [
+     2016,
+     6
+    ]
+   ]
+  }
+ },
+ "edbook_oxford": {
+  "publisher": "Oxford University Press",
+  "DOI": "10.1093/oxfordhb/9780190224837.001.0001",
+  "type": "edited-book",
+  "title": "The Oxford Handbook of Personality and Social Psychology",
+  "container-title": [],
+  "language": "en",
+  "subtitle": [],
+  "editor": [
+   {
+    "given": "Kay",
+    "family": "Deaux"
+   },
+   {
+    "given": "Mark",
+    "family": "Snyder"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     10,
+     9
+    ]
+   ]
+  },
+  "ISBN": [
+   "9780190224837",
+   "9780190870034"
+  ],
+  "URL": "http://dx.doi.org/10.1093/oxfordhb/9780190224837.001.0001",
+  "published": {
+   "date-parts": [
+    [
+     2018,
+     10,
+     9
+    ]
+   ]
+  }
+ },
+ "book_apa_manual": {
+  "publisher": "American Psychological Association",
+  "DOI": "10.1037/0000165-000",
+  "type": "book",
+  "title": "Publication manual of the American Psychological Association (7th ed.).",
+  "container-title": [],
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "ISBN": [
+   "1433832178",
+   "1433832186",
+   "9781433832154",
+   "9781433832161",
+   "9781433832178",
+   "9781433832185"
+  ],
+  "URL": "http://dx.doi.org/10.1037/0000165-000",
+  "published": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  }
+ },
+ "preprint_arxiv": {
+  "type": "article",
+  "author": [
+   {
+    "family": "Vaswani",
+    "given": "Ashish"
+   },
+   {
+    "family": "Shazeer",
+    "given": "Noam"
+   },
+   {
+    "family": "Parmar",
+    "given": "Niki"
+   },
+   {
+    "family": "Uszkoreit",
+    "given": "Jakob"
+   },
+   {
+    "family": "Jones",
+    "given": "Llion"
+   },
+   {
+    "family": "Gomez",
+    "given": "Aidan N."
+   },
+   {
+    "family": "Kaiser",
+    "given": "Lukasz"
+   },
+   {
+    "family": "Polosukhin",
+    "given": "Illia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017
+    ]
+   ]
+  },
+  "DOI": "10.48550/ARXIV.1706.03762",
+  "publisher": "arXiv",
+  "title": "Attention Is All You Need",
+  "URL": "https://arxiv.org/abs/1706.03762",
+  "version": "7"
+ },
+ "preprint_biorxiv": {
+  "institution": [
+   {
+    "name": "bioRxiv"
+   }
+  ],
+  "publisher": "openRxiv",
+  "DOI": "10.1101/2020.03.22.002386",
+  "type": "posted-content",
+  "title": "A SARS-CoV-2-Human Protein-Protein Interaction Map Reveals Drug Targets and Potential Drug-Repurposing",
+  "author": [
+   {
+    "given": "David E.",
+    "family": "Gordon"
+   },
+   {
+    "given": "Gwendolyn M.",
+    "family": "Jang"
+   },
+   {
+    "given": "Mehdi",
+    "family": "Bouhaddou"
+   },
+   {
+    "given": "Jiewei",
+    "family": "Xu"
+   },
+   {
+    "given": "Kirsten",
+    "family": "Obernier"
+   },
+   {
+    "given": "Matthew J.",
+    "family": "O’Meara"
+   },
+   {
+    "given": "Jeffrey Z.",
+    "family": "Guo"
+   },
+   {
+    "given": "Danielle L.",
+    "family": "Swaney"
+   },
+   {
+    "given": "Tia A.",
+    "family": "Tummino"
+   },
+   {
+    "given": "Ruth",
+    "family": "Huettenhain"
+   },
+   {
+    "given": "Robyn M.",
+    "family": "Kaake"
+   },
+   {
+    "given": "Alicia L.",
+    "family": "Richards"
+   },
+   {
+    "given": "Beril",
+    "family": "Tutuncuoglu"
+   },
+   {
+    "given": "Helene",
+    "family": "Foussard"
+   },
+   {
+    "given": "Jyoti",
+    "family": "Batra"
+   },
+   {
+    "given": "Kelsey",
+    "family": "Haas"
+   },
+   {
+    "given": "Maya",
+    "family": "Modak"
+   },
+   {
+    "given": "Minkyu",
+    "family": "Kim"
+   },
+   {
+    "given": "Paige",
+    "family": "Haas"
+   },
+   {
+    "given": "Benjamin J.",
+    "family": "Polacco"
+   },
+   {
+    "family": "Member0",
+    "given": "A."
+   },
+   {
+    "family": "Member1",
+    "given": "A."
+   },
+   {
+    "family": "Member2",
+    "given": "A."
+   },
+   {
+    "family": "Member3",
+    "given": "A."
+   },
+   {
+    "family": "Member4",
+    "given": "A."
+   },
+   {
+    "family": "Member5",
+    "given": "A."
+   },
+   {
+    "family": "Member6",
+    "given": "A."
+   },
+   {
+    "family": "Member7",
+    "given": "A."
+   },
+   {
+    "family": "Member8",
+    "given": "A."
+   },
+   {
+    "family": "Member9",
+    "given": "A."
+   },
+   {
+    "family": "Member10",
+    "given": "A."
+   },
+   {
+    "family": "Member11",
+    "given": "A."
+   },
+   {
+    "family": "Member12",
+    "given": "A."
+   },
+   {
+    "family": "Member13",
+    "given": "A."
+   },
+   {
+    "family": "Member14",
+    "given": "A."
+   },
+   {
+    "family": "Member15",
+    "given": "A."
+   },
+   {
+    "family": "Member16",
+    "given": "A."
+   },
+   {
+    "family": "Member17",
+    "given": "A."
+   },
+   {
+    "family": "Member18",
+    "given": "A."
+   },
+   {
+    "family": "Member19",
+    "given": "A."
+   },
+   {
+    "family": "Member20",
+    "given": "A."
+   },
+   {
+    "family": "Member21",
+    "given": "A."
+   },
+   {
+    "family": "Member22",
+    "given": "A."
+   },
+   {
+    "family": "Member23",
+    "given": "A."
+   },
+   {
+    "family": "Member24",
+    "given": "A."
+   },
+   {
+    "family": "Member25",
+    "given": "A."
+   },
+   {
+    "family": "Member26",
+    "given": "A."
+   },
+   {
+    "family": "Member27",
+    "given": "A."
+   },
+   {
+    "family": "Member28",
+    "given": "A."
+   },
+   {
+    "family": "Member29",
+    "given": "A."
+   },
+   {
+    "family": "Member30",
+    "given": "A."
+   },
+   {
+    "family": "Member31",
+    "given": "A."
+   },
+   {
+    "family": "Member32",
+    "given": "A."
+   },
+   {
+    "family": "Member33",
+    "given": "A."
+   },
+   {
+    "family": "Member34",
+    "given": "A."
+   },
+   {
+    "family": "Member35",
+    "given": "A."
+   },
+   {
+    "family": "Member36",
+    "given": "A."
+   },
+   {
+    "family": "Member37",
+    "given": "A."
+   },
+   {
+    "family": "Member38",
+    "given": "A."
+   },
+   {
+    "family": "Member39",
+    "given": "A."
+   },
+   {
+    "family": "Member40",
+    "given": "A."
+   },
+   {
+    "family": "Member41",
+    "given": "A."
+   },
+   {
+    "family": "Member42",
+    "given": "A."
+   },
+   {
+    "family": "Member43",
+    "given": "A."
+   },
+   {
+    "family": "Member44",
+    "given": "A."
+   },
+   {
+    "family": "Member45",
+    "given": "A."
+   },
+   {
+    "family": "Member46",
+    "given": "A."
+   },
+   {
+    "family": "Member47",
+    "given": "A."
+   },
+   {
+    "family": "Member48",
+    "given": "A."
+   },
+   {
+    "family": "Member49",
+    "given": "A."
+   },
+   {
+    "family": "Member50",
+    "given": "A."
+   },
+   {
+    "family": "Member51",
+    "given": "A."
+   },
+   {
+    "family": "Member52",
+    "given": "A."
+   },
+   {
+    "family": "Member53",
+    "given": "A."
+   },
+   {
+    "family": "Member54",
+    "given": "A."
+   },
+   {
+    "family": "Member55",
+    "given": "A."
+   },
+   {
+    "family": "Member56",
+    "given": "A."
+   },
+   {
+    "family": "Member57",
+    "given": "A."
+   },
+   {
+    "family": "Member58",
+    "given": "A."
+   },
+   {
+    "family": "Member59",
+    "given": "A."
+   },
+   {
+    "family": "Member60",
+    "given": "A."
+   },
+   {
+    "family": "Member61",
+    "given": "A."
+   },
+   {
+    "family": "Member62",
+    "given": "A."
+   },
+   {
+    "family": "Member63",
+    "given": "A."
+   },
+   {
+    "family": "Member64",
+    "given": "A."
+   },
+   {
+    "family": "Member65",
+    "given": "A."
+   },
+   {
+    "family": "Member66",
+    "given": "A."
+   },
+   {
+    "family": "Member67",
+    "given": "A."
+   },
+   {
+    "family": "Member68",
+    "given": "A."
+   },
+   {
+    "family": "Member69",
+    "given": "A."
+   },
+   {
+    "family": "Member70",
+    "given": "A."
+   },
+   {
+    "family": "Member71",
+    "given": "A."
+   },
+   {
+    "family": "Member72",
+    "given": "A."
+   },
+   {
+    "family": "Member73",
+    "given": "A."
+   },
+   {
+    "family": "Member74",
+    "given": "A."
+   },
+   {
+    "family": "Member75",
+    "given": "A."
+   },
+   {
+    "family": "Member76",
+    "given": "A."
+   },
+   {
+    "family": "Member77",
+    "given": "A."
+   },
+   {
+    "family": "Member78",
+    "given": "A."
+   },
+   {
+    "given": "Nevan J.",
+    "family": "Krogan"
+   }
+  ],
+  "container-title": [],
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     3,
+     22
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1101/2020.03.22.002386",
+  "published": {
+   "date-parts": [
+    [
+     2020,
+     3,
+     22
+    ]
+   ]
+  },
+  "subtype": "preprint"
+ },
+ "preprint_psyarxiv": {
+  "publisher": "Center for Open Science",
+  "DOI": "10.31234/osf.io/9654g",
+  "type": "posted-content",
+  "title": "Many Labs 2: Investigating Variation in Replicability Across Sample and Setting",
+  "author": [
+   {
+    "given": "Richard Anthony",
+    "family": "Klein"
+   },
+   {
+    "given": "Michelangelo",
+    "family": "Vianello"
+   },
+   {
+    "given": "Fred",
+    "family": "Hasselman"
+   },
+   {
+    "given": "Byron Gregory",
+    "family": "Adams"
+   },
+   {
+    "suffix": "Jr.",
+    "given": "Reginald B.",
+    "family": "Adams"
+   },
+   {
+    "given": "Sinan",
+    "family": "Alper"
+   },
+   {
+    "given": "Mark",
+    "family": "Aveyard"
+   },
+   {
+    "given": "Jordan",
+    "family": "Axt"
+   },
+   {
+    "given": "Mayowa Tosin",
+    "family": "Babalola"
+   },
+   {
+    "given": "Štěpán",
+    "family": "Bahník"
+   },
+   {
+    "given": "Mihaly",
+    "family": "Berkics"
+   },
+   {
+    "given": "Michael Jason",
+    "family": "Bernstein"
+   },
+   {
+    "given": "Daniel R.",
+    "family": "Berry"
+   },
+   {
+    "given": "Olga",
+    "family": "Bialobrzeska"
+   },
+   {
+    "given": "Konrad",
+    "family": "Bocian"
+   },
+   {
+    "given": "Mark",
+    "family": "Brandt"
+   },
+   {
+    "given": "Robert",
+    "family": "Busching"
+   },
+   {
+    "given": "Huajian",
+    "family": "Cai"
+   },
+   {
+    "given": "Fanny",
+    "family": "Cambier"
+   },
+   {
+    "given": "Katarzyna",
+    "family": "Cantarero"
+   },
+   {
+    "family": "Member0",
+    "given": "A."
+   },
+   {
+    "family": "Member1",
+    "given": "A."
+   },
+   {
+    "family": "Member2",
+    "given": "A."
+   },
+   {
+    "family": "Member3",
+    "given": "A."
+   },
+   {
+    "family": "Member4",
+    "given": "A."
+   },
+   {
+    "family": "Member5",
+    "given": "A."
+   },
+   {
+    "family": "Member6",
+    "given": "A."
+   },
+   {
+    "family": "Member7",
+    "given": "A."
+   },
+   {
+    "family": "Member8",
+    "given": "A."
+   },
+   {
+    "family": "Member9",
+    "given": "A."
+   },
+   {
+    "family": "Member10",
+    "given": "A."
+   },
+   {
+    "family": "Member11",
+    "given": "A."
+   },
+   {
+    "family": "Member12",
+    "given": "A."
+   },
+   {
+    "family": "Member13",
+    "given": "A."
+   },
+   {
+    "family": "Member14",
+    "given": "A."
+   },
+   {
+    "family": "Member15",
+    "given": "A."
+   },
+   {
+    "family": "Member16",
+    "given": "A."
+   },
+   {
+    "family": "Member17",
+    "given": "A."
+   },
+   {
+    "family": "Member18",
+    "given": "A."
+   },
+   {
+    "family": "Member19",
+    "given": "A."
+   },
+   {
+    "family": "Member20",
+    "given": "A."
+   },
+   {
+    "family": "Member21",
+    "given": "A."
+   },
+   {
+    "family": "Member22",
+    "given": "A."
+   },
+   {
+    "family": "Member23",
+    "given": "A."
+   },
+   {
+    "family": "Member24",
+    "given": "A."
+   },
+   {
+    "family": "Member25",
+    "given": "A."
+   },
+   {
+    "family": "Member26",
+    "given": "A."
+   },
+   {
+    "family": "Member27",
+    "given": "A."
+   },
+   {
+    "family": "Member28",
+    "given": "A."
+   },
+   {
+    "family": "Member29",
+    "given": "A."
+   },
+   {
+    "family": "Member30",
+    "given": "A."
+   },
+   {
+    "family": "Member31",
+    "given": "A."
+   },
+   {
+    "family": "Member32",
+    "given": "A."
+   },
+   {
+    "family": "Member33",
+    "given": "A."
+   },
+   {
+    "family": "Member34",
+    "given": "A."
+   },
+   {
+    "family": "Member35",
+    "given": "A."
+   },
+   {
+    "family": "Member36",
+    "given": "A."
+   },
+   {
+    "family": "Member37",
+    "given": "A."
+   },
+   {
+    "family": "Member38",
+    "given": "A."
+   },
+   {
+    "family": "Member39",
+    "given": "A."
+   },
+   {
+    "family": "Member40",
+    "given": "A."
+   },
+   {
+    "family": "Member41",
+    "given": "A."
+   },
+   {
+    "family": "Member42",
+    "given": "A."
+   },
+   {
+    "family": "Member43",
+    "given": "A."
+   },
+   {
+    "family": "Member44",
+    "given": "A."
+   },
+   {
+    "family": "Member45",
+    "given": "A."
+   },
+   {
+    "family": "Member46",
+    "given": "A."
+   },
+   {
+    "family": "Member47",
+    "given": "A."
+   },
+   {
+    "family": "Member48",
+    "given": "A."
+   },
+   {
+    "family": "Member49",
+    "given": "A."
+   },
+   {
+    "family": "Member50",
+    "given": "A."
+   },
+   {
+    "family": "Member51",
+    "given": "A."
+   },
+   {
+    "family": "Member52",
+    "given": "A."
+   },
+   {
+    "family": "Member53",
+    "given": "A."
+   },
+   {
+    "family": "Member54",
+    "given": "A."
+   },
+   {
+    "family": "Member55",
+    "given": "A."
+   },
+   {
+    "family": "Member56",
+    "given": "A."
+   },
+   {
+    "family": "Member57",
+    "given": "A."
+   },
+   {
+    "family": "Member58",
+    "given": "A."
+   },
+   {
+    "family": "Member59",
+    "given": "A."
+   },
+   {
+    "family": "Member60",
+    "given": "A."
+   },
+   {
+    "family": "Member61",
+    "given": "A."
+   },
+   {
+    "family": "Member62",
+    "given": "A."
+   },
+   {
+    "family": "Member63",
+    "given": "A."
+   },
+   {
+    "family": "Member64",
+    "given": "A."
+   },
+   {
+    "family": "Member65",
+    "given": "A."
+   },
+   {
+    "family": "Member66",
+    "given": "A."
+   },
+   {
+    "family": "Member67",
+    "given": "A."
+   },
+   {
+    "family": "Member68",
+    "given": "A."
+   },
+   {
+    "family": "Member69",
+    "given": "A."
+   },
+   {
+    "family": "Member70",
+    "given": "A."
+   },
+   {
+    "family": "Member71",
+    "given": "A."
+   },
+   {
+    "family": "Member72",
+    "given": "A."
+   },
+   {
+    "family": "Member73",
+    "given": "A."
+   },
+   {
+    "family": "Member74",
+    "given": "A."
+   },
+   {
+    "family": "Member75",
+    "given": "A."
+   },
+   {
+    "family": "Member76",
+    "given": "A."
+   },
+   {
+    "family": "Member77",
+    "given": "A."
+   },
+   {
+    "family": "Member78",
+    "given": "A."
+   },
+   {
+    "family": "Member79",
+    "given": "A."
+   },
+   {
+    "family": "Member80",
+    "given": "A."
+   },
+   {
+    "family": "Member81",
+    "given": "A."
+   },
+   {
+    "family": "Member82",
+    "given": "A."
+   },
+   {
+    "family": "Member83",
+    "given": "A."
+   },
+   {
+    "family": "Member84",
+    "given": "A."
+   },
+   {
+    "family": "Member85",
+    "given": "A."
+   },
+   {
+    "family": "Member86",
+    "given": "A."
+   },
+   {
+    "family": "Member87",
+    "given": "A."
+   },
+   {
+    "family": "Member88",
+    "given": "A."
+   },
+   {
+    "family": "Member89",
+    "given": "A."
+   },
+   {
+    "family": "Member90",
+    "given": "A."
+   },
+   {
+    "family": "Member91",
+    "given": "A."
+   },
+   {
+    "family": "Member92",
+    "given": "A."
+   },
+   {
+    "family": "Member93",
+    "given": "A."
+   },
+   {
+    "family": "Member94",
+    "given": "A."
+   },
+   {
+    "family": "Member95",
+    "given": "A."
+   },
+   {
+    "family": "Member96",
+    "given": "A."
+   },
+   {
+    "family": "Member97",
+    "given": "A."
+   },
+   {
+    "family": "Member98",
+    "given": "A."
+   },
+   {
+    "family": "Member99",
+    "given": "A."
+   },
+   {
+    "family": "Member100",
+    "given": "A."
+   },
+   {
+    "family": "Member101",
+    "given": "A."
+   },
+   {
+    "family": "Member102",
+    "given": "A."
+   },
+   {
+    "family": "Member103",
+    "given": "A."
+   },
+   {
+    "family": "Member104",
+    "given": "A."
+   },
+   {
+    "family": "Member105",
+    "given": "A."
+   },
+   {
+    "family": "Member106",
+    "given": "A."
+   },
+   {
+    "family": "Member107",
+    "given": "A."
+   },
+   {
+    "family": "Member108",
+    "given": "A."
+   },
+   {
+    "family": "Member109",
+    "given": "A."
+   },
+   {
+    "family": "Member110",
+    "given": "A."
+   },
+   {
+    "family": "Member111",
+    "given": "A."
+   },
+   {
+    "family": "Member112",
+    "given": "A."
+   },
+   {
+    "family": "Member113",
+    "given": "A."
+   },
+   {
+    "family": "Member114",
+    "given": "A."
+   },
+   {
+    "family": "Member115",
+    "given": "A."
+   },
+   {
+    "family": "Member116",
+    "given": "A."
+   },
+   {
+    "family": "Member117",
+    "given": "A."
+   },
+   {
+    "family": "Member118",
+    "given": "A."
+   },
+   {
+    "family": "Member119",
+    "given": "A."
+   },
+   {
+    "family": "Member120",
+    "given": "A."
+   },
+   {
+    "family": "Member121",
+    "given": "A."
+   },
+   {
+    "family": "Member122",
+    "given": "A."
+   },
+   {
+    "family": "Member123",
+    "given": "A."
+   },
+   {
+    "family": "Member124",
+    "given": "A."
+   },
+   {
+    "family": "Member125",
+    "given": "A."
+   },
+   {
+    "family": "Member126",
+    "given": "A."
+   },
+   {
+    "family": "Member127",
+    "given": "A."
+   },
+   {
+    "family": "Member128",
+    "given": "A."
+   },
+   {
+    "family": "Member129",
+    "given": "A."
+   },
+   {
+    "family": "Member130",
+    "given": "A."
+   },
+   {
+    "family": "Member131",
+    "given": "A."
+   },
+   {
+    "family": "Member132",
+    "given": "A."
+   },
+   {
+    "family": "Member133",
+    "given": "A."
+   },
+   {
+    "family": "Member134",
+    "given": "A."
+   },
+   {
+    "family": "Member135",
+    "given": "A."
+   },
+   {
+    "family": "Member136",
+    "given": "A."
+   },
+   {
+    "family": "Member137",
+    "given": "A."
+   },
+   {
+    "family": "Member138",
+    "given": "A."
+   },
+   {
+    "family": "Member139",
+    "given": "A."
+   },
+   {
+    "family": "Member140",
+    "given": "A."
+   },
+   {
+    "family": "Member141",
+    "given": "A."
+   },
+   {
+    "family": "Member142",
+    "given": "A."
+   },
+   {
+    "family": "Member143",
+    "given": "A."
+   },
+   {
+    "family": "Member144",
+    "given": "A."
+   },
+   {
+    "family": "Member145",
+    "given": "A."
+   },
+   {
+    "family": "Member146",
+    "given": "A."
+   },
+   {
+    "family": "Member147",
+    "given": "A."
+   },
+   {
+    "family": "Member148",
+    "given": "A."
+   },
+   {
+    "family": "Member149",
+    "given": "A."
+   },
+   {
+    "family": "Member150",
+    "given": "A."
+   },
+   {
+    "family": "Member151",
+    "given": "A."
+   },
+   {
+    "given": "Brian A.",
+    "family": "Nosek"
+   }
+  ],
+  "container-title": [],
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     11,
+     19
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.31234/osf.io/9654g",
+  "published": {
+   "date-parts": [
+    [
+     2018,
+     11,
+     19
+    ]
+   ]
+  },
+  "subtype": "preprint"
+ },
+ "dataset_dryad": {
+  "type": "dataset",
+  "language": "en",
+  "author": [
+   {
+    "family": "Zanne",
+    "given": "Amy E."
+   },
+   {
+    "family": "Lopez-Gonzalez",
+    "given": "G."
+   },
+   {
+    "family": "Coomes",
+    "given": "David A."
+   },
+   {
+    "family": "Ilic",
+    "given": "Jugo"
+   },
+   {
+    "family": "Jansen",
+    "given": "Steven"
+   },
+   {
+    "family": "Lewis",
+    "given": "Simon L."
+   },
+   {
+    "family": "Miller",
+    "given": "Regis B."
+   },
+   {
+    "family": "Swenson",
+    "given": "Nathan G."
+   },
+   {
+    "family": "Wiemann",
+    "given": "Michael C."
+   },
+   {
+    "family": "Chave",
+    "given": "Jerome"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009,
+     2,
+     4
+    ]
+   ]
+  },
+  "DOI": "10.5061/DRYAD.234",
+  "publisher": "Dryad",
+  "title": "Data from: Towards a worldwide wood economics spectrum",
+  "URL": "https://datadryad.org/dataset/doi:10.5061/dryad.234",
+  "version": "5"
+ },
+ "dataset_zenodo": {
+  "type": "software",
+  "author": [
+   {
+    "family": "The pandas development team"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     22
+    ]
+   ]
+  },
+  "DOI": "10.5281/ZENODO.3509134",
+  "publisher": "Zenodo",
+  "title": "pandas-dev/pandas: Pandas",
+  "URL": "https://zenodo.org/doi/10.5281/zenodo.3509134",
+  "version": "v3.1.0"
+ },
+ "tags_g3": {
+  "publisher": "Oxford University Press (OUP)",
+  "issue": "12",
+  "DOI": "10.1534/g3.116.035444",
+  "type": "journal-article",
+  "page": "4197-4210",
+  "title": "Microenvironmental Gene Expression Plasticity Among Individual<i>Drosophila melanogaster</i>",
+  "volume": "6",
+  "author": [
+   {
+    "given": "Yanzhu",
+    "family": "Lin"
+   },
+   {
+    "given": "Zhen-Xia",
+    "family": "Chen"
+   },
+   {
+    "given": "Brian",
+    "family": "Oliver"
+   },
+   {
+    "given": "Susan T",
+    "family": "Harbison"
+   }
+  ],
+  "container-title": "G3 Genes|Genomes|Genetics",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     12,
+     1
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1534/g3.116.035444",
+  "ISSN": [
+   "2160-1836"
+  ],
+  "published": {
+   "date-parts": [
+    [
+     2016,
+     12,
+     1
+    ]
+   ]
+  }
+ },
+ "tags_mathml": {
+  "publisher": "American Physical Society (APS)",
+  "issue": "2",
+  "DOI": "10.1103/physrevlett.125.020501",
+  "type": "journal-article",
+  "title": "Minimal Tradeoff and Ultimate Precision Limit of Multiparameter Quantum Magnetometry under the Parallel Scheme",
+  "volume": "125",
+  "author": [
+   {
+    "given": "Zhibo",
+    "family": "Hou"
+   },
+   {
+    "given": "Zhao",
+    "family": "Zhang"
+   },
+   {
+    "given": "Guo-Yong",
+    "family": "Xiang"
+   },
+   {
+    "given": "Chuan-Feng",
+    "family": "Li"
+   },
+   {
+    "given": "Guang-Can",
+    "family": "Guo"
+   },
+   {
+    "given": "Hongzhen",
+    "family": "Chen"
+   },
+   {
+    "given": "Liqiang",
+    "family": "Liu"
+   },
+   {
+    "given": "Haidong",
+    "family": "Yuan"
+   }
+  ],
+  "container-title": "Physical Review Letters",
+  "language": "en",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     7,
+     8
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.1103/PhysRevLett.125.020501",
+  "ISSN": [
+   "0031-9007",
+   "1079-7114"
+  ],
+  "container-title-short": "Phys. Rev. Lett.",
+  "published": {
+   "date-parts": [
+    [
+     2020,
+     7,
+     8
+    ]
+   ]
+  },
+  "article-number": "020501"
+ },
+ "tr_tunkler": {
+  "publisher": "Pamukkale University",
+  "DOI": "10.9779/pauefd.795619",
+  "type": "journal-article",
+  "title": "Sosyal Bilgilerde Kavram Öğretiminde Web 2.0 Araçları: Öğretmen Adaylarının Görüşleri",
+  "author": [
+   {
+    "given": "Vural",
+    "family": "TÜNKLER"
+   }
+  ],
+  "container-title": "Pamukkale University Journal of Education",
+  "subtitle": [],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     3,
+     9
+    ]
+   ]
+  },
+  "URL": "http://dx.doi.org/10.9779/pauefd.795619",
+  "ISSN": [
+   "1301-0085"
+  ],
+  "published": {
+   "date-parts": [
+    [
+     2021,
+     3,
+     9
+    ]
+   ]
+  }
+ }
+}
