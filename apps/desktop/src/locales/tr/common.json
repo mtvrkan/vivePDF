@@ -9290,7 +9290,10 @@
           "mastersthesis": "Yüksek lisans tezi",
           "techreport": "Rapor",
           "online": "Web sayfası",
-          "misc": "Diğer"
+          "misc": "Diğer",
+          "dataset": "Veri seti",
+          "software": "Yazılım",
+          "preprint": "Ön baskı"
         },
         "fields": {
           "title": "Başlık",
@@ -9310,7 +9313,11 @@
           "urldate": "Erişim tarihi",
           "doi": "DOI",
           "url": "Web adresi",
-          "note": "Not"
+          "note": "Not",
+          "date": "Tarih",
+          "type": "Tür",
+          "version": "Sürüm",
+          "eprinttype": "Ön baskı sunucusu"
         },
         "addByDoi": "DOI ile ekle",
         "addFromPdf": "PDF'ten ekle",
@@ -9376,7 +9383,12 @@
         "sentenceCase": {
           "warning": "Bu başlık her kelimesi büyük harfle yazılmış görünüyor; bu stil makale başlıklarını cümle düzeninde yazar.",
           "convert": "Cümle düzenine çevir"
-        }
+        },
+        "otherFields": "Diğer alanlar",
+        "fieldName": "Yeni alan adı",
+        "addField": "Alan ekle",
+        "removeField": "{{name}} alanını kaldır",
+        "removed": "@{{key}} kaynaklardan kaldırıldı"
       },
       "spacing": {
         "label": "Satır ve paragraf aralığı",

@@ -9288,7 +9288,10 @@
           "mastersthesis": "Tesi magistrale",
           "techreport": "Rapporto",
           "online": "Pagina web",
-          "misc": "Altro"
+          "misc": "Altro",
+          "dataset": "Dataset",
+          "software": "Software",
+          "preprint": "Preprint"
         },
         "fields": {
           "title": "Titolo",
@@ -9308,7 +9311,11 @@
           "urldate": "Consultato il",
           "doi": "DOI",
           "url": "Indirizzo web",
-          "note": "Nota"
+          "note": "Nota",
+          "date": "Data",
+          "type": "Tipo",
+          "version": "Versione",
+          "eprinttype": "Server di preprint"
         },
         "addByDoi": "Aggiungi da DOI",
         "addFromPdf": "Aggiungi da PDF",
@@ -9374,7 +9381,12 @@
         "sentenceCase": {
           "warning": "Questo titolo sembra avere l’iniziale maiuscola in ogni parola; questo stile scrive i titoli degli articoli con la sola iniziale maiuscola.",
           "convert": "Converti in maiuscola iniziale"
-        }
+        },
+        "otherFields": "Altri campi",
+        "fieldName": "Nome del nuovo campo",
+        "addField": "Aggiungi campo",
+        "removeField": "Rimuovi il campo {{name}}",
+        "removed": "@{{key}} rimosso dalle fonti"
       },
       "spacing": {
         "label": "Interlinea e spaziatura paragrafo",

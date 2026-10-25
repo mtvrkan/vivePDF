@@ -9290,7 +9290,10 @@
           "mastersthesis": "Master's thesis",
           "techreport": "Report",
           "online": "Web page",
-          "misc": "Other"
+          "misc": "Other",
+          "dataset": "Dataset",
+          "software": "Software",
+          "preprint": "Preprint"
         },
         "fields": {
           "title": "Title",
@@ -9310,7 +9313,11 @@
           "urldate": "Accessed on",
           "doi": "DOI",
           "url": "Web address",
-          "note": "Note"
+          "note": "Note",
+          "date": "Date",
+          "type": "Type",
+          "version": "Version",
+          "eprinttype": "Preprint server"
         },
         "addByDoi": "Add by DOI",
         "addFromPdf": "Add from PDF",
@@ -9376,7 +9383,12 @@
         "sentenceCase": {
           "warning": "This title looks like Title Case; this style writes article titles in sentence case.",
           "convert": "Convert to sentence case"
-        }
+        },
+        "otherFields": "Other fields",
+        "fieldName": "New field name",
+        "addField": "Add field",
+        "removeField": "Remove the {{name}} field",
+        "removed": "@{{key}} removed from sources"
       },
       "spacing": {
         "label": "Line and paragraph spacing",

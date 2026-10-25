@@ -9288,7 +9288,10 @@
           "mastersthesis": "Dissertação de mestrado",
           "techreport": "Relatório",
           "online": "Página web",
-          "misc": "Outro"
+          "misc": "Outro",
+          "dataset": "Conjunto de dados",
+          "software": "Software",
+          "preprint": "Preprint"
         },
         "fields": {
           "title": "Título",
@@ -9308,7 +9311,11 @@
           "urldate": "Acessado em",
           "doi": "DOI",
           "url": "Endereço web",
-          "note": "Nota"
+          "note": "Nota",
+          "date": "Data",
+          "type": "Tipo",
+          "version": "Versão",
+          "eprinttype": "Servidor de preprints"
         },
         "addByDoi": "Adicionar por DOI",
         "addFromPdf": "Adicionar de PDF",
@@ -9374,7 +9381,12 @@
         "sentenceCase": {
           "warning": "Este título parece ter maiúscula em cada palavra; este estilo escreve títulos de artigos só com a inicial maiúscula.",
           "convert": "Converter para inicial maiúscula"
-        }
+        },
+        "otherFields": "Outros campos",
+        "fieldName": "Nome do novo campo",
+        "addField": "Adicionar campo",
+        "removeField": "Remover o campo {{name}}",
+        "removed": "@{{key}} removido das fontes"
       },
       "spacing": {
         "label": "Espaçamento entre linhas e parágrafos",

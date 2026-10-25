@@ -9288,7 +9288,10 @@
           "mastersthesis": "Tesis de máster",
           "techreport": "Informe",
           "online": "Página web",
-          "misc": "Otro"
+          "misc": "Otro",
+          "dataset": "Conjunto de datos",
+          "software": "Software",
+          "preprint": "Preprint"
         },
         "fields": {
           "title": "Título",
@@ -9308,7 +9311,11 @@
           "urldate": "Consultado el",
           "doi": "DOI",
           "url": "Dirección web",
-          "note": "Nota"
+          "note": "Nota",
+          "date": "Fecha",
+          "type": "Tipo",
+          "version": "Versión",
+          "eprinttype": "Servidor de preprints"
         },
         "addByDoi": "Añadir por DOI",
         "addFromPdf": "Añadir desde PDF",
@@ -9374,7 +9381,12 @@
         "sentenceCase": {
           "warning": "Este título parece escrito con mayúscula en cada palabra; este estilo escribe los títulos de artículos en mayúscula inicial de oración.",
           "convert": "Convertir a mayúscula de oración"
-        }
+        },
+        "otherFields": "Otros campos",
+        "fieldName": "Nombre del nuevo campo",
+        "addField": "Añadir campo",
+        "removeField": "Quitar el campo {{name}}",
+        "removed": "@{{key}} se quitó de las fuentes"
       },
       "spacing": {
         "label": "Interlineado y espaciado de párrafo",

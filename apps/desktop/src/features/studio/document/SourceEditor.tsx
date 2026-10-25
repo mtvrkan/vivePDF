@@ -1,4 +1,5 @@
-import { DownloadCloud } from "lucide-react";
+import { DownloadCloud, X } from "lucide-react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import { IconButton } from "@/components/shared/IconButton";
@@ -6,7 +7,9 @@ import { Select } from "@/components/shared/Select";
 import { Field, TextArea, TextInput } from "@/components/tool/form";
 import { MAX_FIELD_CHARS } from "./bibtex";
 import { looksTitleCase, SENTENCE_TITLE_TYPES, sentenceCase, titleLocale } from "./sentenceCase";
-import { EDITABLE_TYPES, shownFields, type KeyProblem, type SourceDraft } from "./sourceDraft";
+import { EDITABLE_TYPES, fieldNameOf, MAX_FIELD_NAME, otherFields, shownFields, slotLabel, type KeyProblem, type SourceDraft } from "./sourceDraft";
+
+const LONG_FIELDS = new Set(["abstract", "annotation", "annote"]);
 
 export function SourceEditor({
   draft,
@@ -31,6 +34,17 @@ export function SourceEditor({
   const title = draft.fields.title ?? "";
   const locale = titleLocale(draft.fields.language, language);
   const titleCased = sentenceTitles && SENTENCE_TITLE_TYPES.has(draft.type) && looksTitleCase(title, locale);
+  const [newField, setNewField] = useState("");
+  const shown = shownFields(draft.type, draft.fields);
+  const others = otherFields(draft.type, draft.fields);
+  const newName = fieldNameOf(newField);
+  const nameTaken = newName !== null && (newName === "title" || shown.includes(newName) || others.includes(newName));
+  const addField = () => {
+    if (!newName || nameTaken) return;
+    onChange({ ...draft, fields: { ...draft.fields, [newName]: "" } });
+    setNewField("");
+  };
+  const removeField = (name: string) => onChange({ ...draft, fields: Object.fromEntries(Object.entries(draft.fields).filter(([field]) => field !== name)) });
 
   return (
     <div className="space-y-3" data-testid="cite-editor">
@@ -81,10 +95,10 @@ export function SourceEditor({
         </Field>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
-        {shownFields(draft.type, draft.fields).map((name) => {
+        {shown.map((name) => {
           const fillable = name === "doi" && onFillFromDoi !== undefined;
           const field = (
-            <Field key={name} label={t(`studio.doc.cite.fields.${name}`)} className={fillable ? "min-w-0 flex-1" : undefined}>
+            <Field key={name} label={t(`studio.doc.cite.fields.${slotLabel(name)}`)} className={fillable ? "min-w-0 flex-1" : undefined}>
               <TextInput value={draft.fields[name] ?? ""} maxLength={MAX_FIELD_CHARS} spellCheck={name !== "doi" && name !== "url"} onChange={(event) => setField(name, event.target.value)} />
             </Field>
           );
@@ -97,6 +111,47 @@ export function SourceEditor({
           );
         })}
       </div>
+      <section className="space-y-3 border-t border-border pt-3" aria-label={t("studio.doc.cite.otherFields")} data-testid="cite-other-fields">
+        <h3 className="text-xs font-medium text-muted-foreground">{t("studio.doc.cite.otherFields")}</h3>
+        {others.length > 0 ? (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {others.map((name) => (
+              <div key={name} className={LONG_FIELDS.has(name) ? "flex items-end gap-2 sm:col-span-2" : "flex items-end gap-2"}>
+                <Field label={name} className="min-w-0 flex-1">
+                  {LONG_FIELDS.has(name) ? (
+                    <TextArea rows={3} value={draft.fields[name] ?? ""} maxLength={MAX_FIELD_CHARS} onChange={(event) => setField(name, event.target.value)} />
+                  ) : (
+                    <TextInput value={draft.fields[name] ?? ""} maxLength={MAX_FIELD_CHARS} onChange={(event) => setField(name, event.target.value)} />
+                  )}
+                </Field>
+                <IconButton icon={X} label={t("studio.doc.cite.removeField", { name })} onClick={() => removeField(name)} className="size-row" />
+              </div>
+            ))}
+          </div>
+        ) : null}
+        <div className="flex items-end gap-2">
+          <Field label={t("studio.doc.cite.fieldName")} className="min-w-0 flex-1">
+            <TextInput
+              value={newField}
+              maxLength={MAX_FIELD_NAME}
+              spellCheck={false}
+              placeholder="abstract, keywords, issn"
+              aria-invalid={newField.trim() !== "" && (newName === null || nameTaken)}
+              onChange={(event) => setNewField(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key !== "Enter") return;
+                event.preventDefault();
+                addField();
+              }}
+              className="font-mono"
+              data-testid="cite-new-field"
+            />
+          </Field>
+          <Button variant="ghost" onClick={addField} disabled={!newName || nameTaken} data-testid="cite-add-field">
+            {t("studio.doc.cite.addField")}
+          </Button>
+        </div>
+      </section>
     </div>
   );
 }

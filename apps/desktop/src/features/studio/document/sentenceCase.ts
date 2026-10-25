@@ -6,7 +6,7 @@ const MIN_TITLE_WORD = 4;
 const MIN_TITLE_WORDS = 2;
 const TITLE_SHARE = 0.6;
 
-export const SENTENCE_TITLE_TYPES = new Set(["article", "incollection", "inproceedings", "inbook", "conference"]);
+export const SENTENCE_TITLE_TYPES = new Set(["article", "incollection", "inproceedings", "inbook", "conference", "preprint"]);
 
 export function titleLocale(entryLanguage: string | undefined, documentLanguage: string): string {
   if (entryLanguage?.trim()) return TURKISH.test(entryLanguage.trim()) ? "tr" : "en";

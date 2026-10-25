@@ -131,6 +131,23 @@ describe("SourcesDialog", () => {
     expect(current.view.dom.querySelector(".vp-cite")?.textContent).toBe("(Knuth, 1968, p. 3)");
   });
 
+  it("removes a source with a way to undo it", () => {
+    const sources = [
+      { key: "knuth", type: "book", fields: { title: "The Art", year: "1968" }, authors: [{ family: "Knuth", given: "Donald" }], editors: [] },
+      { key: "lamport", type: "book", fields: { title: "LaTeX", year: "1986" }, authors: [{ family: "Lamport", given: "Leslie" }], editors: [] },
+    ];
+    act(() => useDocumentStore.getState().setSources(sources));
+    mount();
+
+    fireEvent.click(screen.getByRole("button", { name: "Remove knuth" }));
+
+    expect(useDocumentStore.getState().document?.sources.map((entry) => entry.key)).toEqual(["lamport"]);
+    const toast = useToastStore.getState().toasts.at(-1);
+    expect(toast?.message).toBe("@knuth removed from sources");
+    act(() => toast?.action?.onClick());
+    expect(useDocumentStore.getState().document?.sources).toEqual(sources);
+  });
+
   it("adds a source by hand, refuses a key that is already used and makes one up when left empty", () => {
     act(() => useDocumentStore.getState().setSources([{ key: "knuth", type: "book", fields: { title: "The Art" }, authors: [], editors: [] }]));
     mount();

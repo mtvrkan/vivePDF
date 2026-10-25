@@ -36,3 +36,29 @@ describe("SourceEditor sentence case helper", () => {
     expect(screen.queryByTestId("cite-title-case")).toBeNull();
   });
 });
+
+describe("SourceEditor other fields", () => {
+  it("shows fields the form has no slot for and edits, adds and removes them", () => {
+    const changes: SourceDraft[] = [];
+    const draft = { ...DRAFT, fields: { ...DRAFT.fields, abstract: "Long text", issn: "1234-5678" } };
+    render(<SourceEditor draft={draft} problem={null} onChange={(next) => changes.push(next)} language="en-US" />);
+
+    fireEvent.change(screen.getByLabelText("issn"), { target: { value: "8765-4321" } });
+    fireEvent.click(screen.getByRole("button", { name: "Remove the abstract field" }));
+    fireEvent.change(screen.getByTestId("cite-new-field"), { target: { value: "Keywords" } });
+    fireEvent.keyDown(screen.getByTestId("cite-new-field"), { key: "Enter" });
+
+    expect(changes[0].fields.issn).toBe("8765-4321");
+    expect(changes[1].fields).not.toHaveProperty("abstract");
+    expect(changes[2].fields).toMatchObject({ abstract: "Long text", keywords: "" });
+  });
+
+  it("refuses a field name the form already shows", () => {
+    render(<SourceEditor draft={DRAFT} problem={null} onChange={() => undefined} language="en-US" />);
+
+    fireEvent.change(screen.getByTestId("cite-new-field"), { target: { value: "journal" } });
+
+    expect((screen.getByTestId("cite-add-field") as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.getByTestId("cite-new-field").getAttribute("aria-invalid")).toBe("true");
+  });
+});

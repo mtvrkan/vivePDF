@@ -114,3 +114,12 @@ describe("normalizedDoi", () => {
     expect(normalizedDoi("nature article")).toBeNull();
   });
 });
+
+describe("cslItemOf with biblatex fields", () => {
+  it("dates an entry from its full date and joins the subtitle to the title", () => {
+    const entry = { key: "k", type: "online", fields: { title: "Living with heat", subtitle: "A guide", date: "2023-07-14" }, authors: [], editors: [] };
+
+    expect(cslItemOf(entry)).toMatchObject({ title: "Living with heat: A guide", issued: { "date-parts": [[2023, 7, 14]] } });
+    expect(cslItemOf({ ...entry, fields: { title: "Why?", subtitle: "Because", year: "2020", date: "2023-07-14" } })).toMatchObject({ title: "Why? Because", issued: { "date-parts": [[2020]] } });
+  });
+});

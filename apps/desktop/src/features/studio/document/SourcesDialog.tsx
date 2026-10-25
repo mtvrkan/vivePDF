@@ -74,6 +74,14 @@ function SourceBadges({ check }: { check: SourceCheck }) {
   );
 }
 
+function restoreSource(entry: BibEntry, index: number, session: number) {
+  const state = useDocumentStore.getState();
+  const current = state.document?.sources;
+  if (!current || state.session !== session || current.length >= MAX_SOURCES) return;
+  if (current.some((item) => item.key.toLowerCase() === entry.key.toLowerCase())) return;
+  state.setSources([...current.slice(0, index), entry, ...current.slice(index)]);
+}
+
 export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open: boolean; onClose: () => void }) {
   const { t, i18n } = useTranslation();
   const offlineHint = useOfflineHint();
@@ -348,8 +356,13 @@ export function SourcesDialog({ editor, open, onClose }: { editor: Editor; open:
   const toggle = (key: string) => setChosen((current) => (current.includes(key) ? current.filter((item) => item !== key) : [...current, key].slice(0, MAX_CITED)));
 
   const remove = (key: string) => {
-    store.setSources(sources.filter((entry) => entry.key !== key));
+    const index = sources.findIndex((entry) => entry.key === key);
+    if (index < 0) return;
+    const removed = sources[index];
+    const session = useDocumentStore.getState().session;
+    store.setSources(sources.filter((_, at) => at !== index));
     setChosen((current) => current.filter((item) => item !== key));
+    useToastStore.getState().push("info", t("studio.doc.cite.removed", { key }), { label: t("common.undo"), onClick: () => restoreSource(removed, index, session) });
   };
 
   const cite = () => {

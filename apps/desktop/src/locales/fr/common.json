@@ -9288,7 +9288,10 @@
           "mastersthesis": "Mémoire de master",
           "techreport": "Rapport",
           "online": "Page web",
-          "misc": "Autre"
+          "misc": "Autre",
+          "dataset": "Jeu de données",
+          "software": "Logiciel",
+          "preprint": "Prépublication"
         },
         "fields": {
           "title": "Titre",
@@ -9308,7 +9311,11 @@
           "urldate": "Consulté le",
           "doi": "DOI",
           "url": "Adresse web",
-          "note": "Note"
+          "note": "Note",
+          "date": "Date",
+          "type": "Type",
+          "version": "Version",
+          "eprinttype": "Serveur de prépublications"
         },
         "addByDoi": "Ajouter par DOI",
         "addFromPdf": "Ajouter depuis un PDF",
@@ -9374,7 +9381,12 @@
         "sentenceCase": {
           "warning": "Ce titre semble avoir une majuscule à chaque mot ; ce style écrit les titres d’articles avec une majuscule initiale seulement.",
           "convert": "Convertir en majuscule initiale"
-        }
+        },
+        "otherFields": "Autres champs",
+        "fieldName": "Nom du nouveau champ",
+        "addField": "Ajouter un champ",
+        "removeField": "Retirer le champ {{name}}",
+        "removed": "@{{key}} retiré des sources"
       },
       "spacing": {
         "label": "Interligne et espacement des paragraphes",

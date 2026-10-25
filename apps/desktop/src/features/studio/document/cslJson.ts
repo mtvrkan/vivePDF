@@ -208,11 +208,20 @@ function cslNames(names: BibName[]): CslName[] {
 }
 
 function issuedOf(entry: BibEntry): { "date-parts": number[][] } | { literal: string } | undefined {
+  if (!entry.fields.year && entry.fields.date) {
+    const dated = accessedOf(entry.fields.date);
+    if (dated) return dated;
+  }
   const year = entry.fields.year || /^\d{4}/.exec(entry.fields.date ?? "")?.[0] || "";
   if (!year) return undefined;
   if (!/^-?\d+$/.test(year)) return { literal: year };
   const month = monthNumber(entry.fields.month ?? "");
   return { "date-parts": [month ? [Number(year), month] : [Number(year)]] };
+}
+
+function titleOf(title: string | undefined, subtitle: string | undefined): string | undefined {
+  if (!title || !subtitle) return title ?? subtitle;
+  return `${title}${/[.:?!]$/.test(title) ? "" : ":"} ${subtitle}`;
 }
 
 function accessedOf(value: string): { "date-parts": number[][] } | undefined {
@@ -221,7 +230,7 @@ function accessedOf(value: string): { "date-parts": number[][] } | undefined {
   return { "date-parts": [match.slice(1).filter(Boolean).map(Number)] };
 }
 
-function isPreprint(entry: BibEntry): boolean {
+export function isPreprint(entry: BibEntry): boolean {
   if (!["online", "misc", "unpublished", "article"].includes(entry.type)) return false;
   return entry.fields.pubstate === "preprint" || Boolean(entry.fields.archiveprefix) || (entry.type !== "article" && Boolean(entry.fields.eprinttype));
 }
@@ -233,7 +242,7 @@ export function cslItemOf(entry: BibEntry): CslItem {
   const item: CslItem = {
     id: entry.key,
     type: preprint ? "article" : (TYPES_OUT[entry.type] ?? "document"),
-    title: field("title"),
+    title: titleOf(field("title"), field("subtitle")),
     author: entry.authors.length > 0 ? cslNames(entry.authors) : undefined,
     editor: entry.editors.length > 0 ? cslNames(entry.editors) : undefined,
     issued: issuedOf(entry),

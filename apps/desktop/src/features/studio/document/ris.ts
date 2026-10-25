@@ -60,7 +60,7 @@ function nameOf(raw: string): BibName | null {
   if (!text) return null;
   const parts = text.split(",").map((part) => part.trim());
   if (parts.length === 1) return /\s/.test(text) ? { family: text, given: "", literal: true } : { family: text, given: "" };
-  return { family: parts[0], given: parts[1] ?? "" };
+  return parts[2] ? { family: parts[0], given: parts[1] ?? "", suffix: parts[2] } : { family: parts[0], given: parts[1] ?? "" };
 }
 
 function entryOf(record: RisRecord, taken: Set<string>): BibEntry {
@@ -130,7 +130,7 @@ export function parseRis(text: string): BibParseResult {
 
 function nameText(name: BibName): string {
   if (name.literal || !name.given) return name.family;
-  return `${name.family}, ${name.given}`;
+  return name.suffix ? `${name.family}, ${name.given}, ${name.suffix}` : `${name.family}, ${name.given}`;
 }
 
 function line(tag: string, value: string): string {

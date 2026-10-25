@@ -9288,7 +9288,10 @@
           "mastersthesis": "Masterarbeit",
           "techreport": "Bericht",
           "online": "Webseite",
-          "misc": "Sonstiges"
+          "misc": "Sonstiges",
+          "dataset": "Datensatz",
+          "software": "Software",
+          "preprint": "Preprint"
         },
         "fields": {
           "title": "Titel",
@@ -9308,7 +9311,11 @@
           "urldate": "Abgerufen am",
           "doi": "DOI",
           "url": "Webadresse",
-          "note": "Anmerkung"
+          "note": "Anmerkung",
+          "date": "Datum",
+          "type": "Art",
+          "version": "Version",
+          "eprinttype": "Preprint-Server"
         },
         "addByDoi": "Per DOI hinzufügen",
         "addFromPdf": "Aus PDF hinzufügen",
@@ -9374,7 +9381,12 @@
         "sentenceCase": {
           "warning": "Dieser Titel scheint in Title Case geschrieben; dieser Stil schreibt Artikeltitel in Satzschreibung.",
           "convert": "In Satzschreibung umwandeln"
-        }
+        },
+        "otherFields": "Weitere Felder",
+        "fieldName": "Name des neuen Felds",
+        "addField": "Feld hinzufügen",
+        "removeField": "Feld {{name}} entfernen",
+        "removed": "@{{key}} aus den Quellen entfernt"
       },
       "spacing": {
         "label": "Zeilen- und Absatzabstand",

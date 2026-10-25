@@ -109,3 +109,14 @@ describe("source formats", () => {
     expect(parseSources("TY  - JOUR\nTI  - Same\nER  - \nTY  - JOUR\nTI  - Same\nER  - ").entries.map((entry) => entry.key)).toEqual(["same", "samea"]);
   });
 });
+
+describe("RIS name suffixes", () => {
+  it("reads and writes the suffix after the given name", () => {
+    const entry: BibEntry = { key: "king1963", type: "article", fields: { title: "Letter", year: "1963" }, authors: [{ family: "King", given: "Martin Luther", suffix: "Jr." }], editors: [] };
+
+    const ris = writeSources([entry], "ris");
+
+    expect(ris).toContain("AU  - King, Martin Luther, Jr.");
+    expect(parseSources(ris, "ris").entries[0].authors).toEqual(entry.authors);
+  });
+});
