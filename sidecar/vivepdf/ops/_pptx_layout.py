@@ -187,8 +187,8 @@ def line_boxes(
     for block in blocks:
         for line in block.get("lines", []):
             breaks = wide_gap_starts(line)
-            whole = not breaks and not any(
-                origin_key(char["origin"]) in hidden
+            whole = not breaks and all(
+                _visible(span) and origin_key(char["origin"]) not in hidden
                 for span in line["spans"]
                 for char in span["chars"]
             )
@@ -222,12 +222,12 @@ def text_free_pixmap(
     document: pymupdf.Document,
     index: int,
     dpi: int,
-    areas: list[pymupdf.Rect] | None = None,
+    areas: list[pymupdf.Rect],
 ) -> pymupdf.Pixmap:
     with pymupdf.open() as single:
         single.insert_pdf(document, from_page=index, to_page=index, annots=True)
         page = single[0]
-        for area in [page.rect] if areas is None else areas:
+        for area in areas:
             page.add_redact_annot(area, fill=False, cross_out=False)
         page.apply_redactions(
             images=pymupdf.PDF_REDACT_IMAGE_NONE,

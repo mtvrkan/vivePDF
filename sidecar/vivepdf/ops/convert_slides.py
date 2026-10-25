@@ -85,7 +85,7 @@ def to_pptx(params: PptxParams, progress: Progress) -> PagedFileResult:
                 links = page_links(page)
                 boxes = line_boxes(page, hidden, links) if editable else []
                 if editable:
-                    areas = [box.area for box in boxes] if hidden else None
+                    areas = [box.area for box in boxes]
                     text_free_pixmap(document, index, dpi, areas).save(str(image_path))
                 else:
                     page.get_pixmap(dpi=dpi).save(str(image_path))
