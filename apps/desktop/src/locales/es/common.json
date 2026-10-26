@@ -7019,7 +7019,27 @@
       "custom": "Tamaño personalizado",
       "create": "Crear",
       "cards": "Tarjetas de visita",
-      "cardsHint": "Anverso y reverso, listas para imprimir"
+      "cardsHint": "Anverso y reverso, listas para imprimir",
+      "navLabel": "Secciones del estudio",
+      "quick": "Inicio rápido",
+      "recentEmptyTitle": "Todavía no hay nada",
+      "recentEmptyBody": "Aquí aparecen los documentos, diseños y tarjetas que guarde.",
+      "recentEmptyAction": "Abrir un documento en blanco",
+      "sections": {
+        "home": "Inicio",
+        "document": "Documento",
+        "design": "Diseño",
+        "card": "Tarjeta de visita",
+        "cv": "CV",
+        "templates": "Plantillas"
+      },
+      "hints": {
+        "document": "Informes, cartas, solicitudes, trabajos y actas",
+        "design": "A4, diapositivas, carteles, redes sociales o tamaño personalizado",
+        "card": "Anverso y reverso, listas para imprimir",
+        "cv": "Rellene el formulario, elija un diseño y obtenga un PDF",
+        "templates": "Certificados, invitaciones, menús, carteles y más"
+      }
     },
     "sizes": {
       "a4": "A4 vertical",

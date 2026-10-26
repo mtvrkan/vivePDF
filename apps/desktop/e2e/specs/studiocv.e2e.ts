@@ -18,6 +18,7 @@ describe("cv builder", () => {
 
   it("fills the sample, shows every layout as a picture and switches the layout", async () => {
     await openTool("nav.studio");
+    await $('[data-studio-section="cv"]').click();
     await $('[data-testid="studio-cv-start"]').click();
     await $('[data-testid="cv-studio"]').waitForDisplayed({ timeout: 30000 });
 

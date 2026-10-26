@@ -13,6 +13,7 @@ describe("studio documents", () => {
 
   it("writes a document with headings, lists and bold text and exports it with a cover and contents", async () => {
     await openTool("nav.studio");
+    await $('[data-studio-section="document"]').click();
     await $('[data-document-starter="blank"]').click();
     await $('[data-testid="document-editor"]').waitForDisplayed({ timeout: 30000 });
 
@@ -73,6 +74,7 @@ describe("studio documents", () => {
     await expect($('[data-testid="document-save-state"]')).toHaveText("Quarterly.vivedoc");
 
     await $(`button[aria-label="${t("studio.toolbar.leave")}"]`).click();
+    await $('[data-studio-section="home"]').click();
     const recent = $('[data-recent-design="Quarterly"]');
     await recent.waitForDisplayed();
     await recent.click();

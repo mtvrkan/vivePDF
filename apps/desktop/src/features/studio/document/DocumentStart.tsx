@@ -9,10 +9,28 @@ import { importAsDocument, pickImportFile } from "./documentFile";
 import { readDocumentDraft, useDocumentStore } from "./documentStore";
 import { buildStarter, DOCUMENT_STARTERS, type DocumentStarter } from "./starters";
 
-export function DocumentStart({ language }: { language: string }) {
+export function DocumentDraftCard() {
   const { t } = useTranslation();
   const open = useDocumentStore((state) => state.open);
   const [draft] = useState(readDocumentDraft);
+  if (!draft) return null;
+  return (
+    <div className="card glass-tinted flex flex-wrap items-center gap-4 rounded-xl p-4">
+      <FileText className="size-8 shrink-0 text-primary" aria-hidden />
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold">{t("studio.doc.continue")}</p>
+        <p className="truncate text-sm text-muted-foreground">{draft.document.name || t("studio.doc.untitled")}</p>
+      </div>
+      <Button variant="primary" icon={<Play className="size-4" aria-hidden />} onClick={() => open(draft.document, draft.filePath, draft.sourceFile)}>
+        {t("studio.start.resume")}
+      </Button>
+    </div>
+  );
+}
+
+export function DocumentStart({ language }: { language: string }) {
+  const { t } = useTranslation();
+  const open = useDocumentStore((state) => state.open);
   const [importing, setImporting] = useState(false);
 
   const start = (starter: DocumentStarter) => open(buildStarter(starter, t, language));
@@ -40,18 +58,7 @@ export function DocumentStart({ language }: { language: string }) {
           {t("studio.doc.import")}
         </Button>
       </div>
-      {draft ? (
-        <div className="card glass-tinted flex flex-wrap items-center gap-4 rounded-xl p-4">
-          <FileText className="size-8 shrink-0 text-primary" aria-hidden />
-          <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold">{t("studio.doc.continue")}</p>
-            <p className="truncate text-sm text-muted-foreground">{draft.document.name || t("studio.doc.untitled")}</p>
-          </div>
-          <Button variant="primary" icon={<Play className="size-4" aria-hidden />} onClick={() => open(draft.document, draft.filePath, draft.sourceFile)}>
-            {t("studio.start.resume")}
-          </Button>
-        </div>
-      ) : null}
+      <DocumentDraftCard />
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
         {DOCUMENT_STARTERS.map((starter) => (
           <li key={starter}>

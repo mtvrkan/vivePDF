@@ -7021,7 +7021,27 @@
       "custom": "Custom size",
       "create": "Create",
       "cards": "Business cards",
-      "cardsHint": "Front and back sides, ready for print"
+      "cardsHint": "Front and back sides, ready for print",
+      "navLabel": "Studio sections",
+      "quick": "Quick start",
+      "recentEmptyTitle": "Nothing here yet",
+      "recentEmptyBody": "Documents, designs and business cards you save are listed here.",
+      "recentEmptyAction": "Open a blank document",
+      "sections": {
+        "home": "Start",
+        "document": "Document",
+        "design": "Design",
+        "card": "Business card",
+        "cv": "CV",
+        "templates": "Templates"
+      },
+      "hints": {
+        "document": "Reports, letters, petitions, assignments and minutes",
+        "design": "A4, slides, posters, social media or a custom size",
+        "card": "Front and back, ready to print",
+        "cv": "Fill in the form, pick a layout, get a PDF",
+        "templates": "Certificates, invitations, menus, posters and more"
+      }
     },
     "sizes": {
       "a4": "A4 portrait",

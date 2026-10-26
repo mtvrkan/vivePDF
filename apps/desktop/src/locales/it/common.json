@@ -7019,7 +7019,27 @@
       "custom": "Dimensioni personalizzate",
       "create": "Crea",
       "cards": "Biglietti da visita",
-      "cardsHint": "Fronte e retro, pronti per la stampa"
+      "cardsHint": "Fronte e retro, pronti per la stampa",
+      "navLabel": "Sezioni dello studio",
+      "quick": "Avvio rapido",
+      "recentEmptyTitle": "Ancora niente",
+      "recentEmptyBody": "Qui compaiono i documenti, i progetti e i biglietti da visita salvati.",
+      "recentEmptyAction": "Apri un documento vuoto",
+      "sections": {
+        "home": "Inizio",
+        "document": "Documento",
+        "design": "Progetto",
+        "card": "Biglietto da visita",
+        "cv": "CV",
+        "templates": "Modelli"
+      },
+      "hints": {
+        "document": "Relazioni, lettere, istanze, compiti e verbali",
+        "design": "A4, diapositive, poster, social o formato personalizzato",
+        "card": "Fronte e retro, pronti per la stampa",
+        "cv": "Compila il modulo, scegli un layout, ottieni un PDF",
+        "templates": "Certificati, inviti, menu, poster e altro"
+      }
     },
     "sizes": {
       "a4": "A4 verticale",

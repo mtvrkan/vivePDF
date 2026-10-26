@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { Award, BookOpen, Briefcase, CalendarHeart, ChevronRight, Contact, GraduationCap, IdCard, LayoutGrid, LayoutTemplate, MailOpen, Megaphone, Newspaper, Search, Share2, Tag, UtensilsCrossed, X, type LucideIcon } from "lucide-react";
+import { ChevronRight, LayoutGrid, LayoutTemplate, Search, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { cn } from "@/shared/lib/cn";
@@ -7,6 +7,7 @@ import type { StudioDesign } from "@/types/studio";
 import { PageView } from "../design/ElementView";
 import { useInView } from "../design/useInView";
 import { STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog";
+import { CATEGORY_ICONS, type TemplateFilter } from "./categories";
 import { buildTemplate, sizeOf, type StudioTemplate, type TemplateCategory, type Translate } from "./kit";
 import { useTemplateThumbnail } from "./thumbnails";
 
@@ -17,22 +18,6 @@ const GRID_GAP = 12;
 const NARROW_SECTION_ROWS = 2;
 const MIN_SECTION_LIMIT = 2;
 const WIDE_BOX = 140;
-
-const CATEGORY_ICONS: Record<TemplateCategory, LucideIcon> = {
-  resumes: IdCard,
-  certificates: Award,
-  invitations: MailOpen,
-  social: Share2,
-  posters: Megaphone,
-  flyers: Newspaper,
-  covers: BookOpen,
-  business: Briefcase,
-  cards: Contact,
-  menus: UtensilsCrossed,
-  education: GraduationCap,
-  personal: CalendarHeart,
-  labels: Tag,
-};
 
 function previewOf(template: StudioTemplate, t: Translate, language: string): StudioDesign {
   const key = `${template.id}|${language}`;
@@ -84,7 +69,7 @@ const TemplateCard = memo(function TemplateCard({ template, box, language, onPic
   );
 });
 
-type Filter = TemplateCategory | "all";
+type Filter = TemplateFilter;
 
 function useColumns(box: number) {
   const ref = useRef<HTMLDivElement>(null);
@@ -145,10 +130,22 @@ function CardGrid({ templates, box, language, onPick }: { templates: StudioTempl
   );
 }
 
-export function TemplateGallery({ language, box, onPick, className }: { language: string; box: number; onPick: (template: StudioTemplate) => void; className?: string }) {
+type TemplateGalleryProps = {
+  language: string;
+  box: number;
+  onPick: (template: StudioTemplate) => void;
+  className?: string;
+  filter?: Filter;
+  onFilterChange?: (filter: Filter) => void;
+  navigation?: boolean;
+};
+
+export function TemplateGallery({ language, box, onPick, className, filter: chosen, onFilterChange, navigation = true }: TemplateGalleryProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
-  const [filter, setFilter] = useState<Filter>("all");
+  const [ownFilter, setOwnFilter] = useState<Filter>("all");
+  const filter = chosen ?? ownFilter;
+  const setFilter = onFilterChange ?? setOwnFilter;
   const needle = query.trim().toLocaleLowerCase(language);
   const wide = box >= WIDE_BOX;
   const columns = useColumns(box);
@@ -249,6 +246,15 @@ export function TemplateGallery({ language, box, onPick, className }: { language
       }
     />
   );
+
+  if (!navigation) {
+    return (
+      <div className={cn("space-y-4", className)}>
+        {search}
+        {results}
+      </div>
+    );
+  }
 
   if (!wide) {
     return (

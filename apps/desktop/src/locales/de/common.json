@@ -7019,7 +7019,27 @@
       "custom": "Eigene Größe",
       "create": "Erstellen",
       "cards": "Visitenkarten",
-      "cardsHint": "Vorder- und Rückseite, druckfertig"
+      "cardsHint": "Vorder- und Rückseite, druckfertig",
+      "navLabel": "Studio-Bereiche",
+      "quick": "Schnellstart",
+      "recentEmptyTitle": "Noch nichts vorhanden",
+      "recentEmptyBody": "Gespeicherte Dokumente, Designs und Visitenkarten erscheinen hier.",
+      "recentEmptyAction": "Leeres Dokument öffnen",
+      "sections": {
+        "home": "Start",
+        "document": "Dokument",
+        "design": "Design",
+        "card": "Visitenkarte",
+        "cv": "Lebenslauf",
+        "templates": "Vorlagen"
+      },
+      "hints": {
+        "document": "Berichte, Briefe, Anträge, Hausarbeiten und Protokolle",
+        "design": "A4, Folien, Plakate, soziale Medien oder eigenes Format",
+        "card": "Vorder- und Rückseite, druckfertig",
+        "cv": "Formular ausfüllen, Layout wählen, PDF erhalten",
+        "templates": "Zertifikate, Einladungen, Speisekarten, Plakate und mehr"
+      }
     },
     "sizes": {
       "a4": "A4 Hochformat",

@@ -128,6 +128,7 @@ describe("studio performance", () => {
 
   it("drags a text box and a shape on a heavy template without long frames", async () => {
     await openTool("nav.studio");
+    await $('[data-studio-section="templates"]').click();
     const card = $('[data-template="restaurantMenu"]');
     await card.waitForExist({ timeout: 15000 });
     await card.scrollIntoView({ block: "center" });

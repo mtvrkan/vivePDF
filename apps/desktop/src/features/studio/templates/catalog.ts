@@ -6,7 +6,7 @@ import { EDUCATION_TEMPLATES } from "./education";
 import { FINISH_CARD_TEMPLATES } from "./finishCards";
 import { FLYER_TEMPLATES } from "./flyers";
 import { INVITATION_TEMPLATES } from "./invitations";
-import type { StudioTemplate, TemplateCategory } from "./kit";
+import type { StudioTemplate } from "./kit";
 import { LABEL_TEMPLATES } from "./labels";
 import { MENU_TEMPLATES } from "./menus";
 import { PERSONAL_TEMPLATES } from "./personal";
@@ -14,7 +14,7 @@ import { POSTER_TEMPLATES } from "./posters";
 import { RESUME_TEMPLATES } from "./resumes";
 import { SOCIAL_TEMPLATES } from "./social";
 
-export const TEMPLATE_CATEGORIES: TemplateCategory[] = ["resumes", "certificates", "invitations", "social", "posters", "flyers", "covers", "business", "cards", "menus", "education", "personal", "labels"];
+export { TEMPLATE_CATEGORIES } from "./categories";
 
 export const STUDIO_TEMPLATES: StudioTemplate[] = [
   ...RESUME_TEMPLATES,

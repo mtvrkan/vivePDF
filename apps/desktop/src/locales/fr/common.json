@@ -7019,7 +7019,27 @@
       "custom": "Taille personnalisée",
       "create": "Créer",
       "cards": "Cartes de visite",
-      "cardsHint": "Recto et verso, prêtes à imprimer"
+      "cardsHint": "Recto et verso, prêtes à imprimer",
+      "navLabel": "Sections du studio",
+      "quick": "Démarrage rapide",
+      "recentEmptyTitle": "Rien pour l’instant",
+      "recentEmptyBody": "Les documents, créations et cartes de visite enregistrés apparaissent ici.",
+      "recentEmptyAction": "Ouvrir un document vierge",
+      "sections": {
+        "home": "Accueil",
+        "document": "Document",
+        "design": "Création",
+        "card": "Carte de visite",
+        "cv": "CV",
+        "templates": "Modèles"
+      },
+      "hints": {
+        "document": "Rapports, lettres, requêtes, devoirs et procès-verbaux",
+        "design": "A4, diapositives, affiches, réseaux sociaux ou format libre",
+        "card": "Recto et verso, prêtes à imprimer",
+        "cv": "Remplissez le formulaire, choisissez une mise en page, obtenez un PDF",
+        "templates": "Certificats, invitations, menus, affiches et plus"
+      }
     },
     "sizes": {
       "a4": "A4 portrait",

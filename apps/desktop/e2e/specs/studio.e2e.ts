@@ -34,6 +34,7 @@ describe("studio", () => {
 
   it("builds a design, edits rich text, undoes a move and exports a PDF that matches the canvas", async () => {
     await openTool("nav.studio");
+    await $('[data-studio-section="design"]').click();
     await $('[data-size="a4Landscape"]').click();
     await $('[data-testid="studio-editor"]').waitForDisplayed({ timeout: 30000 });
 
@@ -138,6 +139,7 @@ describe("studio", () => {
     await expect($('[data-testid="studio-save-state"]')).toHaveText("Poster.vivedesign");
 
     await $(`button[aria-label="${t("studio.toolbar.leave")}"]`).click();
+    await $('[data-studio-section="home"]').click();
     const recent = $('[data-recent-design="Poster"]');
     await recent.waitForDisplayed();
     await expect(recent.$("img")).toBeDisplayed();
@@ -270,6 +272,7 @@ describe("studio", () => {
     const leave = $(`button[aria-label="${t("studio.toolbar.leave")}"]`);
     if (await leave.isExisting()) await leave.click();
     else await openTool("nav.studio");
+    await $('[data-studio-section="templates"]').click();
     const card = $('[data-template="concert"]');
     await card.waitForExist({ timeout: 15000 });
     await card.scrollIntoView({ block: "center" });

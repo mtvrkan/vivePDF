@@ -7021,7 +7021,27 @@
       "custom": "Özel boyut",
       "create": "Oluştur",
       "cards": "Kartvizitler",
-      "cardsHint": "Ön ve arka yüzüyle, baskıya hazır"
+      "cardsHint": "Ön ve arka yüzüyle, baskıya hazır",
+      "navLabel": "Stüdyo bölümleri",
+      "quick": "Hızlı başla",
+      "recentEmptyTitle": "Henüz bir çalışma yok",
+      "recentEmptyBody": "Kaydettiğiniz belgeler, tasarımlar ve kartvizitler burada listelenir.",
+      "recentEmptyAction": "Boş belge aç",
+      "sections": {
+        "home": "Başlangıç",
+        "document": "Belge",
+        "design": "Tasarım",
+        "card": "Kartvizit",
+        "cv": "Özgeçmiş",
+        "templates": "Şablonlar"
+      },
+      "hints": {
+        "document": "Rapor, mektup, dilekçe, ödev ve tutanak",
+        "design": "A4, sunum, afiş, sosyal medya ya da özel boyut",
+        "card": "Ön ve arka yüzüyle, baskıya hazır",
+        "cv": "Formu doldurun, bir düzen seçin, PDF olarak alın",
+        "templates": "Sertifika, davetiye, menü, afiş ve daha fazlası"
+      }
     },
     "sizes": {
       "a4": "A4 dikey",

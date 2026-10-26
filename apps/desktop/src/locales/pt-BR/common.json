@@ -7019,7 +7019,27 @@
       "custom": "Tamanho personalizado",
       "create": "Criar",
       "cards": "Cartões de visita",
-      "cardsHint": "Frente e verso, prontos para impressão"
+      "cardsHint": "Frente e verso, prontos para impressão",
+      "navLabel": "Seções do estúdio",
+      "quick": "Início rápido",
+      "recentEmptyTitle": "Nada por aqui ainda",
+      "recentEmptyBody": "Documentos, designs e cartões de visita salvos aparecem aqui.",
+      "recentEmptyAction": "Abrir documento em branco",
+      "sections": {
+        "home": "Início",
+        "document": "Documento",
+        "design": "Design",
+        "card": "Cartão de visita",
+        "cv": "Currículo",
+        "templates": "Modelos"
+      },
+      "hints": {
+        "document": "Relatórios, cartas, requerimentos, trabalhos e atas",
+        "design": "A4, slides, cartazes, redes sociais ou tamanho personalizado",
+        "card": "Frente e verso, prontos para impressão",
+        "cv": "Preencha o formulário, escolha um layout e gere um PDF",
+        "templates": "Certificados, convites, cardápios, cartazes e mais"
+      }
     },
     "sizes": {
       "a4": "A4 retrato",
