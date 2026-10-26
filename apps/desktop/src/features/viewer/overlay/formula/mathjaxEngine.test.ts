@@ -14,6 +14,26 @@ describe("typeset", () => {
     expect(result.emHeight).toBeGreaterThan(0.5);
   });
 
+  it("sets a fraction smaller in text style and reports how far it reaches below the baseline", async () => {
+    const shown = await typeset(String.raw`\frac{a}{b}`);
+    const inline = await typeset(String.raw`\frac{a}{b}`, false);
+    const flat = await typeset("x", false);
+    if ("error" in shown || "error" in inline || "error" in flat) throw new Error("typeset failed");
+
+    expect(inline.emHeight).toBeLessThan(shown.emHeight);
+    expect(inline.emDepth).toBeGreaterThan(0.2);
+    expect(inline.emDepth).toBeLessThan(inline.emHeight);
+    expect(flat.emDepth).toBeLessThan(0.05);
+  });
+
+  it("keeps a text-style formula in one piece instead of breaking it at the plus sign", async () => {
+    const result = await typeset(String.raw`x^2+\sqrt{y}`, false);
+    if ("error" in result) throw new Error(result.error);
+
+    expect(result.svg).toContain('data-mml-node="msqrt"');
+    expect(result.emWidth).toBeGreaterThan(3);
+  });
+
   it("loads the extra font parts for chemistry, blackboard letters and Turkish text as paths", async () => {
     const result = await typeset(String.raw`\ce{2H2 + O2 -> 2H2O} \quad \mathbb{R} \quad \text{Hız}\ ğüşıöç`);
     if ("error" in result) throw new Error(result.error);

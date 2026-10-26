@@ -13,7 +13,9 @@ MAX_FONTS = 16
 MAX_DOCUMENT_BYTES = 120 * 1024 * 1024
 MAX_BIBLIOGRAPHY_CHARS = 16 * 1024 * 1024
 DOCUMENT_EXTENSION = "vivedoc"
-DOCUMENT_VERSION = 3
+DOCUMENT_VERSION = 4
+MAX_EQUATIONS = 1000
+MAX_EQUATION_CHARS = 400_000
 
 DocumentPaper = Literal["a4", "a5", "b5", "letter", "legal"]
 PageNumbers = Literal["none", "center", "right", "outside"]
@@ -68,6 +70,9 @@ class StudioDocumentContent(RpcModel):
     html: str = Field(max_length=MAX_HTML_CHARS)
     images: list[Annotated[NotAPath, Field(max_length=MAX_IMAGE_CHARS)]] = Field(
         default_factory=list, max_length=MAX_IMAGES
+    )
+    equations: list[Annotated[NotAPath, Field(max_length=MAX_EQUATION_CHARS)]] = Field(
+        default_factory=list, max_length=MAX_EQUATIONS
     )
     fonts: list[FontId] = Field(default_factory=list, max_length=MAX_FONTS)
     settings: StudioDocumentSettings = Field(default_factory=StudioDocumentSettings)

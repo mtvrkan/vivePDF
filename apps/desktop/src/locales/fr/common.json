@@ -9587,7 +9587,8 @@
         "coverDetailsTitle": "Informations de couverture",
         "tocNone": "Aucune table des matières",
         "tocTitle": "Titre de la table des matières…",
-        "thesisRules": "Règles de thèse"
+        "thesisRules": "Règles de thèse",
+        "equation": "Équation"
       },
       "printPreview": {
         "title": "Aperçu avant impression"
@@ -9695,6 +9696,17 @@
         "shared": "Times New Roman 12 pt · 1,5 ligne · numéro en bas au centre",
         "applied": "Règles de thèse appliquées",
         "noFont": "Règles appliquées ; Times New Roman n'est pas installé sur cet ordinateur, la police n'a donc pas changé"
+      },
+      "equation": {
+        "numbered": "Équation numérotée",
+        "inline": "Équation dans le texte",
+        "reference": "Renvoi à une équation",
+        "noneYet": "Aucune équation numérotée pour l’instant",
+        "numberedTitle": "Insérer une équation numérotée",
+        "inlineTitle": "Insérer une équation dans le texte",
+        "editTitle": "Modifier l’équation",
+        "tooLarge": "Cette équation est trop grande ; écrivez-en une plus courte.",
+        "tooMany": "Un document peut contenir au plus {{count}} équations."
       }
     },
     "cv": {

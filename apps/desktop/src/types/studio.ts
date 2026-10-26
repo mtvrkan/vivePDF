@@ -439,7 +439,7 @@ export const STUDIO_PROJECT_EXTENSION = "vivedesign";
 
 export const STUDIO_DOCUMENT_EXTENSION = "vivedoc";
 export const SOURCE_LIBRARY_EXTENSIONS = ["bib", "bibtex", "ris"];
-export const STUDIO_DOCUMENT_VERSION = 3;
+export const STUDIO_DOCUMENT_VERSION = 4;
 
 export type DocumentPaper = "a4" | "a5" | "b5" | "letter" | "legal";
 export type DocumentPageNumbers = "none" | "center" | "right" | "outside";
@@ -503,7 +503,7 @@ export type DocumentNode = { type: string; attrs?: Record<string, unknown>; cont
 
 export type StudioDocument = { version: number; kind: "document"; name: string; settings: DocumentSettings; content: DocumentNode | string; sources: BibEntry[] };
 
-export type StudioDocumentContent = { html: string; images: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; notesTitle: string; settings: DocumentLayout; title: string; language: string };
+export type StudioDocumentContent = { html: string; images: string[]; equations: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; notesTitle: string; settings: DocumentLayout; title: string; language: string };
 
 export type StudioDocumentFileResult = { output: string; bytes: number };
 

@@ -9588,7 +9588,8 @@
         "coverDetailsTitle": "Kapak bilgileri",
         "tocNone": "İçindekiler yok",
         "tocTitle": "İçindekiler başlığı…",
-        "thesisRules": "Tez kuralları"
+        "thesisRules": "Tez kuralları",
+        "equation": "Denklem"
       },
       "printPreview": {
         "title": "Baskı önizleme"
@@ -9696,6 +9697,17 @@
         "shared": "Times New Roman 12 pt · 1,5 satır · numara altta ortada",
         "applied": "Tez kuralları uygulandı",
         "noFont": "Tez kuralları uygulandı; Times New Roman bu bilgisayarda bulunamadığı için yazı tipi değişmedi"
+      },
+      "equation": {
+        "numbered": "Numaralı denklem",
+        "inline": "Satır içi denklem",
+        "reference": "Denkleme başvuru",
+        "noneYet": "Henüz numaralı denklem yok",
+        "numberedTitle": "Numaralı denklem ekle",
+        "inlineTitle": "Satır içi denklem ekle",
+        "editTitle": "Denklemi düzenle",
+        "tooLarge": "Bu denklem çok büyük; daha kısa bir denklem yazın.",
+        "tooMany": "Bir belgede en fazla {{count}} denklem olabilir."
       }
     },
     "cv": {

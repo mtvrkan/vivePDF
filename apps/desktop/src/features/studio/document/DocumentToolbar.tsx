@@ -82,6 +82,7 @@ import { useDocumentStore } from "./documentStore";
 import { FormatPainterButton } from "./FormatPainterButton";
 import { useDocumentViewStore } from "./documentView";
 import { DesignGroups } from "./DesignGroups";
+import { EquationMenu } from "./EquationMenu";
 import { FurnitureGroups } from "./FurnitureGroups";
 import { useFurnitureEditing } from "./furnitureEditing";
 import { DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES, uniformMargin, uniformMargins } from "./model";
@@ -441,6 +442,7 @@ export function DocumentToolbar({
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.text")}>
         <RibbonButton icon={Omega} label={t("studio.doc.ribbon.symbol")} onClick={() => setSymbols(true)} testId="doc-symbols" />
+        <EquationMenu editor={editor} />
         <RibbonButton icon={Minus} label={t("studio.doc.ribbon.rule")} onClick={() => chain().setHorizontalRule().run()} />
         <RibbonButton icon={Quote} label={t("studio.doc.toolbar.quote")} active={state.quote} onClick={() => chain().toggleBlockquote().run()} />
         <RibbonButton icon={Code2} label={t("studio.doc.ribbon.code")} active={state.code} onClick={() => chain().toggleCodeBlock().run()} />

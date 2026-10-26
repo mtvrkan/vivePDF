@@ -478,9 +478,11 @@ def test_a_document_file_round_trips_and_refuses_other_files(tmp_path: Path):
     other = tmp_path / "other.vivedoc"
     other.write_text(json.dumps({"kind": "design"}), "utf-8")
     newer = tmp_path / "newer.vivedoc"
-    newer.write_text(json.dumps({"kind": "document", "version": 4}), "utf-8")
+    newer.write_text(json.dumps({"kind": "document", "version": 5}), "utf-8")
     rich = tmp_path / "rich.vivedoc"
     rich.write_text(json.dumps({**document, "version": 3}), "utf-8")
+    maths = tmp_path / "maths.vivedoc"
+    maths.write_text(json.dumps({**document, "version": 4}), "utf-8")
 
     opened = open_studio_document(StudioDocumentOpenParams(path=saved.output), silent_progress())
 
@@ -491,6 +493,12 @@ def test_a_document_file_round_trips_and_refuses_other_files(tmp_path: Path):
             "version"
         ]
         == 3
+    )
+    assert (
+        open_studio_document(StudioDocumentOpenParams(path=str(maths)), silent_progress()).document[
+            "version"
+        ]
+        == 4
     )
     for path, reason in ((other, "noDocument"), (newer, "newerDocument")):
         with pytest.raises(OpError) as caught:

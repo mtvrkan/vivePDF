@@ -9587,7 +9587,8 @@
         "coverDetailsTitle": "Deckblattangaben",
         "tocNone": "Kein Inhaltsverzeichnis",
         "tocTitle": "Titel des Inhaltsverzeichnisses…",
-        "thesisRules": "Regeln für Abschlussarbeiten"
+        "thesisRules": "Regeln für Abschlussarbeiten",
+        "equation": "Formel"
       },
       "printPreview": {
         "title": "Druckvorschau"
@@ -9695,6 +9696,17 @@
         "shared": "Times New Roman 12 pt · 1,5 Zeilen · Seitenzahl unten mittig",
         "applied": "Regeln für Abschlussarbeiten angewendet",
         "noFont": "Regeln angewendet; Times New Roman ist auf diesem Computer nicht vorhanden, die Schrift bleibt unverändert"
+      },
+      "equation": {
+        "numbered": "Nummerierte Formel",
+        "inline": "Formel im Text",
+        "reference": "Verweis auf Formel",
+        "noneYet": "Noch keine nummerierten Formeln",
+        "numberedTitle": "Nummerierte Formel einfügen",
+        "inlineTitle": "Formel im Text einfügen",
+        "editTitle": "Formel bearbeiten",
+        "tooLarge": "Diese Formel ist zu groß; schreiben Sie eine kürzere.",
+        "tooMany": "Ein Dokument kann höchstens {{count}} Formeln enthalten."
       }
     },
     "cv": {

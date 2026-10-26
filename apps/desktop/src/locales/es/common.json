@@ -9587,7 +9587,8 @@
         "coverDetailsTitle": "Datos de la portada",
         "tocNone": "Sin índice",
         "tocTitle": "Título del índice…",
-        "thesisRules": "Normas de tesis"
+        "thesisRules": "Normas de tesis",
+        "equation": "Ecuación"
       },
       "printPreview": {
         "title": "Vista previa de impresión"
@@ -9695,6 +9696,17 @@
         "shared": "Times New Roman 12 pt · 1,5 líneas · número abajo en el centro",
         "applied": "Normas de tesis aplicadas",
         "noFont": "Normas aplicadas; Times New Roman no está en este equipo, así que la fuente no cambió"
+      },
+      "equation": {
+        "numbered": "Ecuación numerada",
+        "inline": "Ecuación en línea",
+        "reference": "Referencia a ecuación",
+        "noneYet": "Aún no hay ecuaciones numeradas",
+        "numberedTitle": "Insertar ecuación numerada",
+        "inlineTitle": "Insertar ecuación en línea",
+        "editTitle": "Editar ecuación",
+        "tooLarge": "Esta ecuación es demasiado grande; escriba una más corta.",
+        "tooMany": "Un documento puede tener como máximo {{count}} ecuaciones."
       }
     },
     "cv": {

@@ -220,7 +220,7 @@
   background-color: var(--paper-dark-base);
   filter: invert(1) hue-rotate(180deg);
 }
-.paper-dark :is(img, video, canvas) {
+.paper-dark :is(img, video, canvas):not(:is(.vp-eq, .vp-eq-block) img) {
   filter: invert(1) hue-rotate(180deg);
 }
 
@@ -980,6 +980,36 @@
   }
   .vp-doc .vp-painting {
     cursor: copy;
+  }
+  .vp-doc .vp-eq img {
+    display: inline;
+    max-width: none;
+  }
+  .vp-doc .vp-eq-block {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5em 0;
+    min-height: 1.2em;
+    text-indent: 0;
+  }
+  .vp-doc .vp-eq-block img {
+    max-width: calc(100% - 6em);
+  }
+  .vp-doc .vp-eq-block::after {
+    content: attr(data-number);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    user-select: none;
+  }
+  .vp-doc .vp-eqref::before {
+    content: attr(data-number);
+  }
+  .vp-doc :is(.vp-eq, .vp-eq-block) {
+    cursor: default;
   }
   .vp-doc .vp-heading-number {
     white-space: pre;

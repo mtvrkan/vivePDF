@@ -133,7 +133,7 @@ describe("footnotes", () => {
     expect(fileVersion(noted)).toBe(2);
     expect(fileVersion("")).toBe(1);
     expect(normalizeDocument({ kind: "document", version: 2, content: noted })?.content).toEqual(noted);
-    expect(normalizeDocument({ kind: "document", version: 4, content: noted })).toBeNull();
+    expect(normalizeDocument({ kind: "document", version: 5, content: noted })).toBeNull();
   });
 
   it("saves notes with line breaks, citations or pictures as version 3 and still reads version 2", () => {

@@ -9587,7 +9587,8 @@
         "coverDetailsTitle": "Dados da capa",
         "tocNone": "Sem sumário",
         "tocTitle": "Título do sumário…",
-        "thesisRules": "Regras de tese"
+        "thesisRules": "Regras de tese",
+        "equation": "Equação"
       },
       "printPreview": {
         "title": "Visualizar impressão"
@@ -9695,6 +9696,17 @@
         "shared": "Times New Roman 12 pt · 1,5 linha · número embaixo no centro",
         "applied": "Regras de tese aplicadas",
         "noFont": "Regras aplicadas; o Times New Roman não está neste computador, então a fonte não mudou"
+      },
+      "equation": {
+        "numbered": "Equação numerada",
+        "inline": "Equação no texto",
+        "reference": "Referência a equação",
+        "noneYet": "Ainda não há equações numeradas",
+        "numberedTitle": "Inserir equação numerada",
+        "inlineTitle": "Inserir equação no texto",
+        "editTitle": "Editar equação",
+        "tooLarge": "Esta equação é grande demais; escreva uma mais curta.",
+        "tooMany": "Um documento pode ter no máximo {{count}} equações."
       }
     },
     "cv": {

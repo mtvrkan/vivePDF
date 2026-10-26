@@ -11,6 +11,7 @@ import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import type { DocumentNode } from "@/types/studio";
 import { DocumentExportDialog } from "./DocumentExportDialog";
 import { DocumentFindBar, type DocumentFindMode } from "./DocumentFindBar";
+import { EquationDialogHost } from "./EquationDialogHost";
 import { FootnotePanel } from "./FootnotePanel";
 import { HorizontalRuler, VerticalRuler } from "./DocumentRuler";
 import { DocumentStatusBar } from "./DocumentStatusBar";
@@ -253,6 +254,7 @@ export default function DocumentEditor({ language }: { language: string }) {
           </div>
           {editor && showRuler ? <HorizontalRuler editor={editor} settings={settings} size={size} paper={paper} host={host} /> : null}
           {editor ? <FootnotePanel editor={editor} /> : null}
+          {editor ? <EquationDialogHost editor={editor} /> : null}
           {finding && editor ? <DocumentFindBar editor={editor} mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
           {editor ? <DocumentStatusBar editor={editor} language={language} layout={layout} zoom={zoom} lines={showPageLines ? lines : null} paper={paper} /> : null}
         </div>

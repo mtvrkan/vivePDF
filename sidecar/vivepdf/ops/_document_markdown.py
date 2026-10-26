@@ -20,6 +20,8 @@ SPACES = re.compile(r"[ \t\r\n\f\v]+")
 BACKTICKS = re.compile(r"`+")
 NOTE_ID = re.compile(r"^fnref-(\d+)$")
 IMAGE_TOKEN = re.compile(r"^vpimg-(\d+)$")
+EQUATION_TOKEN = re.compile(r"^vpeq-\d+$")
+EQUATION_NUMBER = re.compile(r"\((\d+)\)")
 DATA_IMAGE = re.compile(r"^data:image/[a-z0-9.+-]+;base64,[a-z0-9+/=]+$", re.IGNORECASE)
 UNSAFE_DESTINATION = re.compile(r"[\s()<>]")
 CHECKED = "☑"
@@ -90,6 +92,19 @@ def _indented(text: str, width: int) -> str:
     return "\n".join(pad + line if line else line for line in text.split("\n"))
 
 
+def _math(latex: str) -> str:
+    return SPACES.sub(" ", latex).strip()
+
+
+def _display_math(element: etree._Element) -> list[str]:
+    latex = _math(element.get("data-latex") or "")
+    if not latex:
+        return []
+    number = EQUATION_NUMBER.search(element.text_content())
+    tag = f" \\tag{{{number.group(1)}}}" if number else ""
+    return [f"$$\n{latex}{tag}\n$$"]
+
+
 class MarkdownWriter:
     def __init__(self, images: list[str], note_count: int) -> None:
         self.images = images
@@ -98,6 +113,9 @@ class MarkdownWriter:
         self.in_cell = False
 
     def picture(self, element: etree._Element) -> str:
+        if EQUATION_TOKEN.match(element.get("src") or ""):
+            latex = _math(element.get("alt") or "")
+            return f"${latex}$" if latex else ""
         match = IMAGE_TOKEN.match(element.get("src") or "")
         if match is None or int(match.group(1)) >= len(self.images):
             return ""
@@ -182,6 +200,8 @@ class MarkdownWriter:
 
     def block(self, element: etree._Element) -> list[str]:
         tag = _tag(element)
+        if tag == "p" and "eq" in _classes(element):
+            return _display_math(element)
         if tag in HEADINGS:
             text = _trimmed(self.inline_children(element).replace(HARD_BREAK, " "))
             return [f"{'#' * HEADINGS[tag]} {text}"] if text else []

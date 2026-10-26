@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { $, $$, browser, expect } from "@wdio/globals";
-import { answerDialogs, bootApp, openTool, pressShortcut, probe, t, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
+import { answerDialogs, bootApp, clickButton, openTool, pressShortcut, probe, t, typeInto, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
 
 const BOLD_KEY = "b";
 const ENTER = String.fromCharCode(0xe007);
@@ -254,5 +254,27 @@ describe("studio documents", () => {
     await expect($(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.thesis.left35")}"]`)).toHaveAttribute("aria-checked", "true");
     await browser.keys(ESCAPE);
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-thesis-rules.png"));
+  });
+
+  it("inserts a numbered equation from Insert and refers to it by its number", async () => {
+    await body().$(":scope > p:last-of-type").click();
+    await $('[data-ribbon-tab="insert"]').click();
+    await $('[data-testid="doc-equation"]').click();
+    await $(`//*[@role="menuitem"][normalize-space(.)="${t("studio.doc.equation.numbered")}"]`).click();
+    const area = $('[role="dialog"] textarea');
+    await area.waitForDisplayed();
+    const latex = String.raw`E = mc^2`;
+    await typeInto(area, latex);
+    await $(`//div[@role="dialog"]//img[@alt='${latex}']`).waitForDisplayed({ timeout: 30000 });
+    await clickButton(t("viewer.formula.insert"));
+    await area.waitForExist({ reverse: true });
+    await expect(body().$(".vp-eq-block")).toHaveAttribute("data-number", "(1)");
+
+    await body().$(":scope > p:last-of-type").click();
+    await $('[data-testid="doc-equation"]').click();
+    await $(`//*[@role="menuitem"][normalize-space(.)="${t("studio.doc.equation.reference")}"]`).click();
+    await $(`//*[@role="menuitem"][starts-with(normalize-space(.), "(1)")]`).click();
+    await expect(body().$(".vp-eqref")).toHaveAttribute("data-number", "(1)");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-equation.png"));
   });
 });

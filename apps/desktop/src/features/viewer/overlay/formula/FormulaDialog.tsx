@@ -14,9 +14,9 @@ import type { TypesetResult } from "./mathjaxEngine";
 import { commandKey } from "@/shared/lib/platform";
 
 export type FormulaDraft = { latex: string; color: string; size: number };
-export type FormulaSubmit = { formula: FormulaSource; size: number };
+export type FormulaSubmit = { formula: FormulaSource; size: number; depth: number };
 
-type Engine = { typeset: (latex: string) => Promise<TypesetResult> };
+type Engine = { typeset: (latex: string, display?: boolean) => Promise<TypesetResult> };
 type EngineState = { status: "loading" } | { status: "ready"; engine: Engine } | { status: "failed" };
 type Preview = { status: "idle" } | { status: "rendering" } | { status: "ok"; latex: string; result: Extract<TypesetResult, { svg: string }> } | { status: "error"; latex: string; message: string };
 
@@ -67,7 +67,9 @@ function TemplateButton({ latex, engine, onPick }: { latex: string; engine: Engi
   );
 }
 
-export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows }: { initial: FormulaDraft; updating: boolean; onClose: () => void; onSubmit: (value: FormulaSubmit) => void; swatchRows?: () => ColorSwatchRow[] }) {
+type FormulaDialogProps = { initial: FormulaDraft; updating: boolean; onClose: () => void; onSubmit: (value: FormulaSubmit) => void; swatchRows?: () => ColorSwatchRow[]; display?: boolean; plain?: boolean; title?: string };
+
+export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows, display = true, plain = false, title }: FormulaDialogProps) {
   const { t } = useTranslation();
   const latexId = useId();
   const statusId = useId();
@@ -113,7 +115,7 @@ export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows
     let cancelled = false;
     setPreview((current) => (current.status === "ok" ? current : { status: "rendering" }));
     const timer = window.setTimeout(() => {
-      void engine.typeset(source).then((result) => {
+      void engine.typeset(source, display).then((result) => {
         if (cancelled) return;
         setPreview("svg" in result ? { status: "ok", latex: source, result } : { status: "error", latex: source, message: result.error });
       });
@@ -122,7 +124,7 @@ export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [engine, latex]);
+  }, [engine, latex, display]);
 
   const numericSize = clampFormulaSize(Number(size));
   const current = preview.status === "ok" || preview.status === "error" ? (preview.latex === latex.trim() ? preview : null) : null;
@@ -130,7 +132,7 @@ export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows
 
   const submit = () => {
     if (current?.status !== "ok") return;
-    onSubmit({ formula: { latex: current.latex, svg: current.result.svg, color, emWidth: current.result.emWidth, emHeight: current.result.emHeight }, size: numericSize });
+    onSubmit({ formula: { latex: current.latex, svg: current.result.svg, color, emWidth: current.result.emWidth, emHeight: current.result.emHeight }, size: numericSize, depth: current.result.emDepth });
   };
 
   const pickTemplate = (template: string) => {
@@ -186,7 +188,7 @@ export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows
     <Dialog
       open
       size="xl"
-      title={updating ? t("viewer.formula.editTitle") : t("viewer.formula.title")}
+      title={title ?? (updating ? t("viewer.formula.editTitle") : t("viewer.formula.title"))}
       onClose={onClose}
       footer={
         <>
@@ -225,19 +227,21 @@ export function FormulaDialog({ initial, updating, onClose, onSubmit, swatchRows
             className="font-mono"
           />
         </div>
-        <div className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-foreground/80">{t("viewer.formula.color")}</span>
-            <ColorSwatch value={color} onChange={setColor} label={t("viewer.formula.color")} customLabel={t("viewer.overlay.customColor")} rows={swatchRows} />
+        {plain ? null : (
+          <div className="flex flex-wrap items-end gap-4">
+            <div className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-foreground/80">{t("viewer.formula.color")}</span>
+              <ColorSwatch value={color} onChange={setColor} label={t("viewer.formula.color")} customLabel={t("viewer.overlay.customColor")} rows={swatchRows} />
+            </div>
+            <label className="flex flex-col gap-1.5">
+              <span className="text-sm font-medium text-foreground/80">{t("viewer.formula.size")}</span>
+              <span className="flex items-center gap-1.5">
+                <TextInput type="number" min={MIN_FORMULA_SIZE} max={MAX_FORMULA_SIZE} value={size} onChange={(event) => setSize(event.target.value)} onBlur={() => setSize(String(numericSize))} className="h-9 w-20 font-mono" />
+                <span className="text-xs text-muted-foreground">pt</span>
+              </span>
+            </label>
           </div>
-          <label className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-foreground/80">{t("viewer.formula.size")}</span>
-            <span className="flex items-center gap-1.5">
-              <TextInput type="number" min={MIN_FORMULA_SIZE} max={MAX_FORMULA_SIZE} value={size} onChange={(event) => setSize(event.target.value)} onBlur={() => setSize(String(numericSize))} className="h-9 w-20 font-mono" />
-              <span className="text-xs text-muted-foreground">pt</span>
-            </span>
-          </label>
-        </div>
+        )}
         <div className="flex flex-col gap-2">
           <Segmented size="sm" value={group} options={FORMULA_TEMPLATES.map((entry) => entry.id)} labelOf={(id) => t(FORMULA_TEMPLATES.find((entry) => entry.id === id)?.labelKey ?? "")} onChange={setGroup} ariaLabel={t("viewer.formula.templates")} className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4" />
           {activeGroup.id === "matrices" ? <MatrixBuilder onInsert={pickTemplate} /> : null}

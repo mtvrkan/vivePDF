@@ -75,7 +75,7 @@ export const FONT_FILES: Record<string, () => Promise<unknown>> = {
   PUA: () => import("@mathjax/mathjax-newcm-font/js/svg/dynamic/PUA.js"),
 };
 
-export type TypesetResult = { svg: string; emWidth: number; emHeight: number } | { error: string };
+export type TypesetResult = { svg: string; emWidth: number; emHeight: number; emDepth: number } | { error: string };
 
 export function fontFileKey(name: string): string | null {
   if (!name.startsWith(FONT_PREFIX)) return null;
@@ -103,15 +103,15 @@ const tex = new TeX({
     return jax.formatError(error);
   },
 });
-const output = new SVG({ fontCache: "none", fontData: MathJaxNewcmFont });
+const output = new SVG({ fontCache: "none", fontData: MathJaxNewcmFont, linebreaks: { inline: false } });
 const mathDocument = mathjax.document("", { InputJax: tex, OutputJax: output });
 
-function viewBoxSize(svg: string): { width: number; height: number } | null {
+function viewBoxSize(svg: string): { width: number; height: number; depth: number } | null {
   const match = /viewBox="([^"]+)"/.exec(svg);
   if (!match) return null;
   const parts = match[1].trim().split(/[\s,]+/).map(Number);
   if (parts.length !== 4 || !parts.every(Number.isFinite) || parts[2] <= 0 || parts[3] <= 0) return null;
-  return { width: parts[2], height: parts[3] };
+  return { width: parts[2], height: parts[3], depth: Math.max(0, parts[3] + parts[1]) };
 }
 
 type LiteNode = Parameters<typeof adaptor.getAttribute>[0];
@@ -141,10 +141,10 @@ function fixLabelledLayout(root: LiteNode): void {
 
 let queue: Promise<unknown> = Promise.resolve();
 
-export function typeset(latex: string): Promise<TypesetResult> {
+export function typeset(latex: string, display = true): Promise<TypesetResult> {
   const run = queue.then(async (): Promise<TypesetResult> => {
     parseError = null;
-    const node = await mathDocument.convertPromise(latex, { display: true });
+    const node = await mathDocument.convertPromise(latex, { display });
     const error = parseError as string | null;
     if (error) return { error };
     const root = adaptor.firstChild(node) as LiteNode;
@@ -152,7 +152,7 @@ export function typeset(latex: string): Promise<TypesetResult> {
     const svg = standaloneTableLines(adaptor.serializeXML(root as never));
     const size = viewBoxSize(svg);
     if (!size) return { error: "empty" };
-    return { svg, emWidth: size.width / 1000, emHeight: size.height / 1000 };
+    return { svg, emWidth: size.width / 1000, emHeight: size.height / 1000, emDepth: size.depth / 1000 };
   });
   queue = run.catch(() => undefined);
   return run;

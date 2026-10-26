@@ -9587,7 +9587,8 @@
         "coverDetailsTitle": "Dati della copertina",
         "tocNone": "Nessun sommario",
         "tocTitle": "Titolo del sommario…",
-        "thesisRules": "Regole per la tesi"
+        "thesisRules": "Regole per la tesi",
+        "equation": "Equazione"
       },
       "printPreview": {
         "title": "Anteprima di stampa"
@@ -9695,6 +9696,17 @@
         "shared": "Times New Roman 12 pt · 1,5 righe · numero in basso al centro",
         "applied": "Regole per la tesi applicate",
         "noFont": "Regole applicate; Times New Roman non è presente su questo computer, quindi il carattere non è cambiato"
+      },
+      "equation": {
+        "numbered": "Equazione numerata",
+        "inline": "Equazione nel testo",
+        "reference": "Riferimento a equazione",
+        "noneYet": "Ancora nessuna equazione numerata",
+        "numberedTitle": "Inserisci equazione numerata",
+        "inlineTitle": "Inserisci equazione nel testo",
+        "editTitle": "Modifica equazione",
+        "tooLarge": "Questa equazione è troppo grande; scrivine una più breve.",
+        "tooMany": "Un documento può contenere al massimo {{count}} equazioni."
       }
     },
     "cv": {

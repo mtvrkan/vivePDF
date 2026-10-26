@@ -9588,7 +9588,8 @@
         "coverDetailsTitle": "Cover details",
         "tocNone": "No contents",
         "tocTitle": "Contents title…",
-        "thesisRules": "Thesis rules"
+        "thesisRules": "Thesis rules",
+        "equation": "Equation"
       },
       "printPreview": {
         "title": "Print preview"
@@ -9696,6 +9697,17 @@
         "shared": "Times New Roman 12 pt · 1.5 lines · number at the bottom centre",
         "applied": "Thesis rules applied",
         "noFont": "Thesis rules applied; Times New Roman is not on this computer, so the font stayed the same"
+      },
+      "equation": {
+        "numbered": "Numbered equation",
+        "inline": "Inline equation",
+        "reference": "Reference to equation",
+        "noneYet": "No numbered equations yet",
+        "numberedTitle": "Insert numbered equation",
+        "inlineTitle": "Insert inline equation",
+        "editTitle": "Edit equation",
+        "tooLarge": "This equation is too large; write a shorter one.",
+        "tooMany": "A document can hold at most {{count}} equations."
       }
     },
     "cv": {

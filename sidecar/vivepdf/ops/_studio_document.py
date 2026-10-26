@@ -13,6 +13,11 @@ from pathlib import Path
 import pymupdf
 from PIL import Image, ImageOps
 
+from vivepdf.ops._document_equations import (
+    EQUATION_PREFIX,
+    add_placeholders,
+    draw_equations,
+)
 from vivepdf.ops._document_flow import (
     TOC_END,
     Flowed,
@@ -198,12 +203,15 @@ def _font_rules(fonts: list[str], archive: pymupdf.Archive) -> str:
     return "".join(rules)
 
 
-def _kept_image(tag: str, count: int) -> str:
+def _kept_image(tag: str, count: int, equation_count: int) -> str:
     match = SOURCE.search(tag)
-    if not match or not match.group(2).startswith(IMAGE_PREFIX):
+    if not match:
         return ""
-    suffix = match.group(2)[len(IMAGE_PREFIX) :]
-    return tag if suffix.isdigit() and int(suffix) < count else ""
+    for prefix, limit in ((IMAGE_PREFIX, count), (EQUATION_PREFIX, equation_count)):
+        if match.group(2).startswith(prefix):
+            suffix = match.group(2)[len(prefix) :]
+            return tag if suffix.isdigit() and int(suffix) < limit else ""
+    return ""
 
 
 def _kept_link(match: re.Match) -> str:
@@ -211,9 +219,11 @@ def _kept_link(match: re.Match) -> str:
     return match.group(0) if SAFE_LINK.match(target) else match.group(1)
 
 
-def clean_html(source: str, image_count: int) -> str:
+def clean_html(source: str, image_count: int, equation_count: int = 0) -> str:
     body = body_fragment(source)
-    body = IMAGE_TAG.sub(lambda match: _kept_image(match.group(0), image_count), body)
+    body = IMAGE_TAG.sub(
+        lambda match: _kept_image(match.group(0), image_count, equation_count), body
+    )
     return LINK.sub(_kept_link, body)
 
 
@@ -493,8 +503,9 @@ def layout_document(
     for index, source in enumerate(content.images):
         check_cancelled()
         archive.add(_decoded(source, index), f"{IMAGE_PREFIX}{index}")
+    add_placeholders(archive, len(content.equations))
     body, first_columns, sections, flowing = sectioned(
-        clean_html(content.html, len(content.images)), settings.columns
+        clean_html(content.html, len(content.images), len(content.equations)), settings.columns
     )
     body, main_anchor = numbered_breaks(body)
     if not body.strip():
@@ -561,6 +572,7 @@ def layout_document(
     try:
         if footnotes:
             footnotes.draw(flowed)
+        draw_equations(document, positions, body, content.equations, check_cancelled)
         if cover:
             _add_cover(document, settings, title)
         furniture_archive = pymupdf.Archive()

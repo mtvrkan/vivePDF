@@ -3,6 +3,8 @@ import { textDirection } from "../model/design";
 import { CAPTION, CaptionCounter, captionKind, captionLabel } from "./captionCounter";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
+import { EQUATION, EQUATION_BLOCK, EQUATION_COLOUR, EQUATION_REF, MAX_EQUATIONS, equationArt, equationId, equationLabel, equationNumbers } from "./equations";
+import { coloredFormulaSvg } from "@/features/viewer/overlay/formula/formulaSvg";
 import { HeadingCounter } from "./headingCounter";
 import { FOOTNOTE, FOOTNOTE_PICTURE, footnoteCitations, footnoteMarkup, footnoteText, MAX_FOOTNOTE_HTML, MAX_FOOTNOTES, noteCitation, unescapeAttribute } from "./footnotes";
 import { SECTION_BREAK, sectionColumns, sectionKind } from "./sections";
@@ -25,7 +27,7 @@ const DEFAULT_HIGHLIGHT = "#fef08a";
 const CHECKED = "&#9745;";
 const UNCHECKED = "&#9744;";
 
-export type DocumentHtml = { html: string; images: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; blockIds: string[] };
+export type DocumentHtml = { html: string; images: string[]; equations: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; blockIds: string[] };
 
 export type DocumentReferences = { citations: Citations; title: string };
 
@@ -35,6 +37,10 @@ type WriterSettings = Pick<DocumentSettings, "fontId" | "headingFontId"> & Parti
 
 class Writer {
   images: string[] = [];
+  equations: string[] = [];
+  equationNumbers = new Map<string, number>();
+  displayed = 0;
+  lastEquation = "";
   footnotes: string[] = [];
   footnoteHtml: string[] = [];
   fonts: string[];
@@ -68,6 +74,42 @@ class Writer {
     if (index < 0) index = this.images.push(src) - 1;
     return `vpimg-${index}`;
   }
+
+  equation(svg: string): number | null {
+    const colored = coloredFormulaSvg(svg, EQUATION_COLOUR);
+    const index = this.equations.indexOf(colored);
+    if (index >= 0) return index;
+    if (this.equations.length >= MAX_EQUATIONS) return null;
+    return this.equations.push(colored) - 1;
+  }
+}
+
+function em(value: number): string {
+  return `${Math.round(value * 1000) / 1000}em`;
+}
+
+const DISPLAY_LINE = 1.2;
+
+function inlineEquation(node: DocumentNode, writer: Writer): string {
+  const art = equationArt(node.attrs);
+  if (!art) return "";
+  const index = writer.equation(art.svg);
+  if (index === null) return escapeHtml(art.latex);
+  return `<img src="vpeq-${index}" alt="${escapeHtml(art.latex)}" style="width:${em(art.width)};height:${em(art.height)};vertical-align:-${em(art.depth)}">`;
+}
+
+function displayEquation(node: DocumentNode, writer: Writer): string {
+  const art = equationArt(node.attrs);
+  writer.lastEquation = "";
+  if (!art) return "";
+  writer.displayed += 1;
+  const label = equationLabel(writer.displayed);
+  const index = writer.equation(art.svg);
+  const padding = em(Math.max(0, (art.height - DISPLAY_LINE) / 2));
+  const style = `text-align:right;text-indent:0;line-height:${DISPLAY_LINE};padding:${padding} 0;margin:0.5em 0`;
+  if (index === null) return `<p class="eq" data-latex="${escapeHtml(art.latex)}" style="${style}">${escapeHtml(art.latex)} ${label}</p>`;
+  writer.lastEquation = `e-${writer.displayed}`;
+  return `<p id="${writer.lastEquation}" class="eq" data-equation="${index}" data-latex="${escapeHtml(art.latex)}" style="${style}">${label}</p>`;
 }
 
 export function escapeHtml(value: string): string {
@@ -303,6 +345,12 @@ function write(node: DocumentNode, writer: Writer): string {
       return citation(node, writer);
     case BIBLIOGRAPHY:
       return bibliography(writer);
+    case EQUATION:
+      return inlineEquation(node, writer);
+    case EQUATION_BLOCK:
+      return displayEquation(node, writer);
+    case EQUATION_REF:
+      return escapeHtml(equationLabel(writer.equationNumbers.get(equationId(attr(node, "target")) ?? "")));
     default:
       return children(node, writer);
   }
@@ -318,6 +366,7 @@ const UNMARKED_BLOCKS = new Set([PAGE_BREAK, SECTION_BREAK]);
 function markedBlock(node: DocumentNode, markup: string, index: number, writer: Writer): { markup: string; id: string } {
   if (node.type === "heading") return { markup, id: `h-${writer.headings}` };
   if (node.type === CAPTION) return { markup, id: `c-${writer.captionIds}` };
+  if (node.type === EQUATION_BLOCK) return { markup, id: writer.lastEquation };
   if (UNMARKED_BLOCKS.has(node.type) || !OPENING_TAG.test(markup)) return { markup, id: "" };
   const id = `b-${index}`;
   return { markup: markup.replace(OPENING_TAG, `<$1 id="${id}"`), id };
@@ -326,6 +375,7 @@ function markedBlock(node: DocumentNode, markup: string, index: number, writer: 
 export function documentHtml(content: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false): DocumentHtml {
   const writer = new Writer(settings, references);
   writer.numbering = !hasMainBreak(content);
+  writer.equationNumbers = equationNumbers(content);
   const blockIds: string[] = [];
   const html =
     markBlocks && content.type === "doc"
@@ -337,5 +387,5 @@ export function documentHtml(content: DocumentNode, settings: WriterSettings, re
           })
           .join("")
       : write(content, writer);
-  return { html, images: writer.images, fonts: writer.fonts, footnotes: writer.footnotes, footnoteHtml: writer.footnoteHtml, blockIds };
+  return { html, images: writer.images, equations: writer.equations, fonts: writer.fonts, footnotes: writer.footnotes, footnoteHtml: writer.footnoteHtml, blockIds };
 }
