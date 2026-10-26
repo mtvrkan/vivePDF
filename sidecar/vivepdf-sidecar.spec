@@ -86,6 +86,7 @@ analysis = Analysis(
     hiddenimports=hiddenimports + [f"vivepdf.ops.{module}" for module in MODULE_OPERATIONS],
     excludes=EXCLUDED_MODULES,
     noarchive=False,
+    module_collection_mode={"pptx": "pyz+py", "docx": "pyz+py"},
 )
 analysis.binaries = pruned(analysis.binaries)
 analysis.datas = pruned(analysis.datas)
