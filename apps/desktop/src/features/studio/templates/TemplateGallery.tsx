@@ -9,6 +9,7 @@ import { useInView } from "../design/useInView";
 import { STUDIO_TEMPLATES, TEMPLATE_CATEGORIES } from "./catalog";
 import { CATEGORY_ICONS, type TemplateFilter } from "./categories";
 import { buildTemplate, sizeOf, type StudioTemplate, type TemplateCategory, type Translate } from "./kit";
+import { filterForPage, fittingFirst, type PageSize } from "./pageFit";
 import { useTemplateThumbnail } from "./thumbnails";
 
 const previews = new Map<string, StudioDesign>();
@@ -138,12 +139,13 @@ type TemplateGalleryProps = {
   filter?: Filter;
   onFilterChange?: (filter: Filter) => void;
   navigation?: boolean;
+  page?: PageSize | null;
 };
 
-export function TemplateGallery({ language, box, onPick, className, filter: chosen, onFilterChange, navigation = true }: TemplateGalleryProps) {
+export function TemplateGallery({ language, box, onPick, className, filter: chosen, onFilterChange, navigation = true, page }: TemplateGalleryProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState("");
-  const [ownFilter, setOwnFilter] = useState<Filter>("all");
+  const [ownFilter, setOwnFilter] = useState<Filter>(() => filterForPage(STUDIO_TEMPLATES, page));
   const filter = chosen ?? ownFilter;
   const setFilter = onFilterChange ?? setOwnFilter;
   const needle = query.trim().toLocaleLowerCase(language);
@@ -151,14 +153,18 @@ export function TemplateGallery({ language, box, onPick, className, filter: chos
   const columns = useColumns(box);
   const sectionLimit = Math.max(MIN_SECTION_LIMIT, columns.count * (wide ? 1 : NARROW_SECTION_ROWS));
 
+  const pageWidth = page?.width;
+  const pageHeight = page?.height;
+  const ordered = useMemo(() => fittingFirst(STUDIO_TEMPLATES, pageWidth && pageHeight ? { width: pageWidth, height: pageHeight } : null), [pageWidth, pageHeight]);
+
   const matching = useMemo(
     () =>
-      STUDIO_TEMPLATES.filter((template) => {
+      ordered.filter((template) => {
         if (!needle) return true;
         const haystack = `${t(`studio.templates.items.${template.id}`)} ${t(`studio.templates.categories.${template.category}`)}`.toLocaleLowerCase(language);
         return haystack.includes(needle);
       }),
-    [needle, language, t],
+    [ordered, needle, language, t],
   );
 
   const byCategory = useMemo(() => {

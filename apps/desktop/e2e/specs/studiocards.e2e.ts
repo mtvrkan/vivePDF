@@ -46,4 +46,16 @@ describe("studio business cards", () => {
     const backs = occurrences(result.pages?.[1].text ?? "", t("studio.tpl.email"));
     expect(backs).toBeGreaterThanOrEqual(8);
   });
+
+  it("opens the Templates panel of a new business card on the cards with business cards first", async () => {
+    await $(`//button[@aria-label="${t("studio.toolbar.leave")}"]`).click();
+    await $('[data-studio-section="card"]').click();
+    await $('[data-size="businessCardEu"]').click();
+    await $('[data-studio-tab="templates"]').click();
+
+    const filter = $('//*[@aria-pressed="true"][@data-template-category="cards"]');
+    await filter.waitForExist({ timeout: 20000 });
+    await expect($("[data-template]")).toHaveAttribute("data-template", expect.not.stringMatching(/^(thankYou|congrats)$/));
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "cards-templates-panel.png"));
+  });
 });

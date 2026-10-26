@@ -2,6 +2,7 @@ import { lazy, memo, Suspense, useState, type KeyboardEvent, type ReactNode } fr
 import { ChartColumn, File, Flower2, Image as ImageIcon, Layers, LayoutTemplate, PanelLeftClose, QrCode, Shapes, Smile, Table2, Type, type LucideIcon } from "lucide-react";
 import { IconButton } from "@/components/shared/IconButton";
 import { useTranslation } from "react-i18next";
+import { useShallow } from "zustand/react/shallow";
 import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
@@ -273,6 +274,10 @@ function TabSkeleton() {
 function TemplatesTab() {
   const { t } = useTranslation();
   const language = useUiStore((state) => state.locale);
+  const page = useStudioStore(useShallow((state) => {
+    const current = currentPage(state);
+    return current ? { width: current.width, height: current.height } : null;
+  }));
   const pick = (template: StudioTemplate) => {
     const store = useStudioStore.getState();
     if (!store.design) return;
@@ -285,7 +290,7 @@ function TemplatesTab() {
     store.select([]);
     store.setPage(result.pageId);
   };
-  return <LazyTemplateGallery language={language} box={104} onPick={pick} className="p-3" />;
+  return <LazyTemplateGallery language={language} box={104} onPick={pick} className="p-3" page={page} />;
 }
 
 function TabBody({ tab }: { tab: Tab }) {
@@ -335,12 +340,12 @@ export function ElementsPanel() {
               data-studio-tab={item}
               onClick={() => choose(item)}
               className={cn(
-                "flex w-16 shrink-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-2xs leading-tight outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
-                selected && open ? "menubar-active font-medium text-foreground" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground",
+                "flex w-18 shrink-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-2xs leading-tight outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
+                selected && open ? "menubar-active text-foreground" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground",
               )}
             >
               <Icon className={cn("size-5 shrink-0", selected && open && "text-primary")} aria-hidden />
-              <span className="w-full break-words text-center">{name}</span>
+              <span className="w-full hyphens-auto break-words text-center">{name}</span>
             </button>
           );
         })}
