@@ -27,6 +27,27 @@ describe("cslJson with real doi.org records", () => {
     expect(cslItemOf(paper).type).toBe("paper-conference");
   });
 
+  it("reads a shouted surname as Turkish when the title is Turkish, even without a language field", () => {
+    const record = {
+      type: "journal-article",
+      DOI: "10.31832/smj.984680",
+      title: "Unilateral Plantar Topuk Ağrısı Olan Hastalarda Termal Peloid Tedavisi",
+      "container-title": "Sakarya Medical Journal",
+      author: [
+        { given: "Halim", family: "YILMAZ" },
+        { given: "Elizabeth (Betsy) A.", family: "Baker" },
+      ],
+      issued: { "date-parts": [[2021, 11, 1]] },
+    };
+
+    const entry = entryOfCsl(JSON.stringify(record), new Set());
+
+    expect(entry?.authors).toEqual([
+      { family: "Yılmaz", given: "Halim" },
+      { family: "Baker", given: "Elizabeth A." },
+    ]);
+  });
+
   it("keeps a group author that Crossref sends as a plain name", () => {
     const report = fetched("report_wmo");
 

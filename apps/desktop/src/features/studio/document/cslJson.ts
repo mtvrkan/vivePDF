@@ -71,6 +71,7 @@ const TYPES_OUT: Record<string, string> = {
 };
 
 const CHAPTER_TYPES = new Set(["incollection", "inproceedings", "inbook"]);
+const WHOLE_BOOKS = new Set(["book", "mvbook"]);
 
 type CslName = { family?: string; given?: string; suffix?: string; literal?: string };
 type CslItem = Record<string, unknown>;
@@ -80,6 +81,8 @@ function text(value: unknown): string {
 }
 
 const TURKISH_CAPITALS = /[ŞĞİ]/;
+const TURKISH_LETTERS = /[ğĞşŞıİ]/;
+const NICKNAME = /\s*\([^()]*\)/g;
 
 function unshouted(name: string, turkish: boolean): string {
   if (name.length < 2 || name !== name.toLocaleUpperCase("tr") || name === name.toLocaleLowerCase("tr")) return name;
@@ -103,7 +106,7 @@ function namesOf(value: unknown, turkish: boolean): BibName[] {
       continue;
     }
     const family = [text(source["dropping-particle"]), text(source["non-dropping-particle"]), unshouted(text(source.family), turkish)].filter(Boolean).join(" ");
-    const given = unshouted(text(source.given), turkish);
+    const given = unshouted(text(source.given).replace(NICKNAME, "").trim(), turkish);
     const suffix = text(source.suffix);
     if (family || given) names.push({ family: family || given, given: family ? given : "", ...(suffix ? { suffix } : {}) });
   }
@@ -136,7 +139,7 @@ function entryOf(item: CslItem, taken: Set<string>): BibEntry {
   const preprint = PREPRINT_TYPES.has(cslType);
   const thesis = TYPES_IN[cslType] === "phdthesis";
   const type = preprint ? "online" : thesis && /master|yüksek lisans/i.test(genre) ? "mastersthesis" : (TYPES_IN[cslType] ?? "misc");
-  const turkish = /^tr\b/i.test(text(item.language));
+  const turkish = /^tr\b/i.test(text(item.language)) || TURKISH_LETTERS.test(`${text(item.title)} ${text(item["container-title"])}`);
   const authors = namesOf(item.author, turkish);
   const editors = namesOf(item.editor, turkish);
   const issued = dateOf(item.issued);
@@ -239,6 +242,7 @@ export function cslItemOf(entry: BibEntry): CslItem {
   const field = (name: string) => entry.fields[name] || undefined;
   const preprint = isPreprint(entry);
   const journal = entry.type === "article" && !preprint;
+  const seriesAsJournal = WHOLE_BOOKS.has(entry.type) && !field("series") && !field("booktitle") ? field("journal") : undefined;
   const item: CslItem = {
     id: entry.key,
     type: preprint ? "article" : (TYPES_OUT[entry.type] ?? "document"),
@@ -246,9 +250,9 @@ export function cslItemOf(entry: BibEntry): CslItem {
     author: entry.authors.length > 0 ? cslNames(entry.authors) : undefined,
     editor: entry.editors.length > 0 ? cslNames(entry.editors) : undefined,
     issued: issuedOf(entry),
-    "container-title": field("journal") ?? field("journaltitle") ?? field("booktitle"),
+    "container-title": seriesAsJournal ? undefined : (field("journal") ?? field("journaltitle") ?? field("booktitle")),
     "container-title-short": field("shortjournal"),
-    "collection-title": field("series"),
+    "collection-title": field("series") ?? seriesAsJournal,
     volume: field("volume"),
     issue: journal ? (field("number") ?? field("issue")) : field("issue"),
     number: journal ? field("eid") : entry.type === "techreport" ? field("number") : field("eid"),
@@ -270,6 +274,24 @@ export function cslItemOf(entry: BibEntry): CslItem {
     accessed: accessedOf(entry.fields.urldate ?? ""),
   };
   return Object.fromEntries(Object.entries(item).filter(([, value]) => value !== undefined));
+}
+
+function shownName(name: CslName, turkish: boolean): CslName {
+  if (!name.family) return name;
+  const given = name.given?.replace(NICKNAME, "").trim();
+  const shownGiven = given && given.replace(/[^\p{L}]/gu, "").length > 2 ? unshouted(given, turkish) : given;
+  return { ...name, family: unshouted(name.family, turkish), ...(shownGiven ? { given: shownGiven } : {}) };
+}
+
+export function shownItemOf(entry: BibEntry): CslItem {
+  const item = cslItemOf(entry);
+  const language = entry.fields.language ?? entry.fields.langid ?? "";
+  const turkish = /^(?:tr|tur|turkish|türkçe)\b/i.test(language) || TURKISH_LETTERS.test(`${entry.fields.title ?? ""} ${entry.fields.journal ?? entry.fields.booktitle ?? ""}`);
+  for (const role of ["author", "editor"]) {
+    const names = item[role];
+    if (Array.isArray(names)) item[role] = names.map((name: CslName) => shownName(name, turkish));
+  }
+  return item;
 }
 
 export function writeCslJson(entries: BibEntry[]): string {

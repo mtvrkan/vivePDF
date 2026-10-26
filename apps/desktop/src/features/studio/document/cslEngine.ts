@@ -3,7 +3,7 @@ import * as logger from "@/shared/lib/logger";
 import type { BibEntry, CitationLanguage, CitationStyle, DocumentNode } from "@/types/studio";
 import type { CitationItem } from "./citationItems";
 import { citationClusters, isNoteStyle, type CitationCluster, type CitationLabel, type Citations } from "./citations";
-import { cslItemOf } from "./cslJson";
+import { shownItemOf } from "./cslJson";
 import { escapeHtml } from "./toHtml";
 
 const STYLE_FILES: Record<CitationStyle, string> = {
@@ -28,6 +28,7 @@ const WEB_ADDRESS = /(https?:\/\/[^\s<"]+?)([.,;:)]*)(?=\s|<|$)/g;
 const ENTITIES: Record<string, string> = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " " };
 const CITEPROC_TAG = /<(?=\/?(?:i|b|sc|sup|sub|span)\b)/gi;
 const TAG_BREAK = "\u2060";
+const TURKISH_TERMS = /(?<!\p{L})I(?=(?:çinde|nceleme(?:si)?|fadesi|kinci|lk sayfa|cra eden(?:ler)?)(?!\p{L}))/gu;
 
 const engines = new Map<string, Promise<CitationEngine>>();
 const ready = new Map<string, CitationEngine>();
@@ -73,6 +74,14 @@ function referenceHtml(entry: string): string {
     .replace(WEB_ADDRESS, '<a href="$1">$1</a>$2');
 }
 
+function dottedCapitals(html: string): string {
+  return html.replace(TURKISH_TERMS, "İ");
+}
+
+function unchanged(html: string): string {
+  return html;
+}
+
 function citeItem(item: CitationItem): CiteprocItem {
   const id = item.key.toLowerCase();
   const locator = item.locator.trim();
@@ -96,11 +105,13 @@ export class CitationEngine {
   private items = new Map<string, Record<string, unknown>>();
   private last: Build | null = null;
   private builds = 0;
+  private readonly cased: (html: string) => string;
 
-  constructor(style: CitationStyle, engine: Engine, items: Map<string, Record<string, unknown>>) {
+  constructor(style: CitationStyle, engine: Engine, items: Map<string, Record<string, unknown>>, cased: (html: string) => string = unchanged) {
     this.style = style;
     this.engine = engine;
     this.items = items;
+    this.cased = cased;
   }
 
   citations(content: DocumentNode | string, sources: BibEntry[]): Citations {
@@ -128,7 +139,7 @@ export class CitationEngine {
     this.items.clear();
     for (const entry of sources) {
       const id = entry.key.toLowerCase();
-      if (!this.items.has(id)) this.items.set(id, { ...literal(cslItemOf(entry)), id });
+      if (!this.items.has(id)) this.items.set(id, { ...literal(shownItemOf(entry)), id });
     }
     const known = (items: CitationItem[]) => items.filter((item) => this.items.has(item.key.toLowerCase()));
     const build = `b${(this.builds += 1)}`;
@@ -141,9 +152,9 @@ export class CitationEngine {
     const rendered = new Map<number, string>();
     let references: string[] = [];
     try {
-      for (const [id, , html] of this.engine.rebuildProcessorState(citations, "html", citations.length > 0 ? [] : [...this.items.keys()])) rendered.set(Number(id.slice(build.length + 1)), safeCitationHtml(html));
+      for (const [id, , html] of this.engine.rebuildProcessorState(citations, "html", citations.length > 0 ? [] : [...this.items.keys()])) rendered.set(Number(id.slice(build.length + 1)), this.cased(safeCitationHtml(html)));
       const bibliography = this.engine.makeBibliography();
-      references = bibliography ? bibliography[1].map(referenceHtml) : [];
+      references = bibliography ? bibliography[1].map((entry) => this.cased(referenceHtml(entry))) : [];
     } catch (caught) {
       logger.error("citations", logger.describeError(caught));
     }
@@ -153,7 +164,7 @@ export class CitationEngine {
       let html = previews.get(key);
       if (html === undefined) {
         try {
-          html = safeCitationHtml(this.engine.previewCitationCluster({ citationItems: items.map(citeItem), properties: { noteIndex: notes ? clusters.length + 1 : 0 } }, before, [], "html"));
+          html = this.cased(safeCitationHtml(this.engine.previewCitationCluster({ citationItems: items.map(citeItem), properties: { noteIndex: notes ? clusters.length + 1 : 0 } }, before, [], "html")));
         } catch (caught) {
           logger.error("citations", logger.describeError(caught));
           html = "";
@@ -215,7 +226,7 @@ function engineNow(style: CitationStyle, language: CitationLanguage): CitationEn
     retrieveLocale: (name: string) => locales.get(name) ?? locales.get(name.split("-")[0]) ?? locales.get(FALLBACK_LOCALE),
     retrieveItem: (id: string) => items.get(id),
   };
-  const engine = new CitationEngine(style, new CSL.Engine(sys, xml, language, true), items);
+  const engine = new CitationEngine(style, new CSL.Engine(sys, xml, language, true), items, language === "tr-TR" ? dottedCapitals : unchanged);
   ready.set(key, engine);
   return engine;
 }

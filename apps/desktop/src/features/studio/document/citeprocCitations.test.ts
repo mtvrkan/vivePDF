@@ -172,3 +172,43 @@ describe("note styles in the exported HTML", () => {
     expect(written.footnotes[3]).toBe("LeCun et al., “Deep Learning,” 440.");
   });
 });
+
+describe("Turkish reference lists", () => {
+  const library = (text: string) => parseBibtex(text).entries;
+
+  it("writes İçinde with a dotted capital in a Turkish chapter reference", async () => {
+    const { reference } = await render("apa", "tr-TR", "chapter_unet");
+
+    expect(reference("chapter_unet")).toContain(". İçinde ");
+    expect(reference("chapter_unet")).not.toContain("Içinde");
+  });
+
+  it("lowers shouted surnames the Turkish way and leaves out nicknames, whatever the source file says", async () => {
+    const sources = library(`@article{tip, author={KARAARSLAN, Fatih and YILMAZ, Halim}, title={Topuk Ağrısı Olan Hastalar}, journal={Sakarya Medical Journal}, year={2021}}
+@book{baker, author={Baker, Elizabeth (Betsy) A.}, title={Crafting Questions}, publisher={SAGE}, year={2022}}`);
+
+    const citations = await buildCitations(doc(cite(item("tip")), cite(item("baker"))), sources, "apa", "tr-TR");
+
+    expect(citations.references.map(readable)).toEqual([
+      "Baker, E. A. (2022). <i>Crafting Questions</i>. SAGE.",
+      "Karaarslan, F., & Yılmaz, H. (2021). Topuk Ağrısı Olan Hastalar. <i>Sakarya Medical Journal</i>.",
+    ]);
+  });
+
+  it("does not put a book's series in front of it as if it were a chapter", async () => {
+    const sources = library("@book{esl, title={The Elements of Statistical Learning}, journal={Springer Series in Statistics}, publisher={Springer}, author={Hastie, Trevor}, year={2009}}");
+
+    const citations = await buildCitations(doc(cite(item("esl"))), sources, "apa", "tr-TR");
+
+    expect(readable(citations.references[0])).toBe("Hastie, T. (2009). <i>The Elements of Statistical Learning</i>. Springer.");
+  });
+
+  it("sorts the reference list in Turkish alphabetical order", async () => {
+    const names = ["Şahin", "Ünal", "Cengiz", "İnce", "Öztürk", "Işık", "Çelik", "Uslu", "Ozan", "Sarı", "Ilgaz"];
+    const sources: BibEntry[] = names.map((family, index) => ({ key: `k${index}`, type: "article", fields: { title: `Başlık ${index}`, journal: "Dergi", year: "2020" }, authors: [{ family, given: "Ali" }], editors: [] }));
+
+    const citations = await buildCitations("", sources, "apa", "tr-TR");
+
+    expect(citations.references.map((reference) => names.find((name) => reference.startsWith(name)))).toEqual(["Cengiz", "Çelik", "Ilgaz", "Işık", "İnce", "Ozan", "Öztürk", "Sarı", "Şahin", "Uslu", "Ünal"]);
+  });
+});
