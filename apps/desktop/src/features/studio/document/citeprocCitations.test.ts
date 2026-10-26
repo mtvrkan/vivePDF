@@ -239,6 +239,40 @@ describe("Turkish reference lists", () => {
     expect(citations.references[0]).not.toContain("doi.org/https");
   });
 
+  it("writes et al. for a BibTeX author list that ends in and others, in the list's language", async () => {
+    const sources = library("@article{duo, author={Ertuğrul, Beril and others}, title={Kısa not}, journal={Dergi}, year={2022}}");
+
+    const english = await buildCitations(doc(cite(item("duo"))), sources, "apa", "en-US");
+    const isnad = await buildCitations(doc(cite(item("duo"))), sources, "isnad", "tr-TR");
+
+    expect(readable(english.references[0])).toMatch(/^Ertuğrul, B\., et al\. \(2022\)\. Kısa not\./);
+    expect(english.label([item("duo")]).text).toBe("(Ertuğrul et al., 2022)");
+    expect(readable(isnad.references[0])).toMatch(/^Ertuğrul, Beril vd\. /);
+    expect(english.references[0]).not.toContain("others");
+  });
+
+  it("reads an institution split like a person's name as the institution, and drops HTML tags from a title", async () => {
+    const sources = library(`@techreport{ifpri, author={Policy Institute, International Food}, title={Global food policy report}, institution={IFPRI}, year={2022}}
+@article{lme4, author={Bates, Douglas}, title={Fitting Linear Mixed-Effects Models Using <b>lme4</b>}, journal={Journal of Statistical Software}, year={2015}}`);
+
+    const citations = await buildCitations("", sources, "apa", "en-US");
+
+    expect(citations.references.map(readable)).toEqual([
+      "Bates, D. (2015). Fitting Linear Mixed-Effects Models Using lme4. <i>Journal of Statistical Software</i>.",
+      "International Food Policy Institute. (2022). <i>Global food policy report</i>. IFPRI.",
+    ]);
+  });
+
+  it("writes an electronic page range with a dash in English and with the Turkish hyphen in Turkish", async () => {
+    const sources = library("@article{cell, author={Hoffmann, Markus}, title={Cell entry}, journal={Cell}, volume={181}, number={2}, pages={271-280.e8}, year={2020}}");
+
+    const english = await buildCitations("", sources, "apa", "en-US");
+    const turkish = await buildCitations("", sources, "apa", "tr-TR");
+
+    expect(readable(english.references[0])).toContain("181</i>(2), 271–280.e8.");
+    expect(readable(turkish.references[0])).toContain("181</i>(2), 271-280.e8.");
+  });
+
   it("sorts the reference list in Turkish alphabetical order", async () => {
     const names = ["Şahin", "Ünal", "Cengiz", "İnce", "Öztürk", "Işık", "Çelik", "Uslu", "Ozan", "Sarı", "Ilgaz"];
     const sources: BibEntry[] = names.map((family, index) => ({ key: `k${index}`, type: "article", fields: { title: `Başlık ${index}`, journal: "Dergi", year: "2020" }, authors: [{ family, given: "Ali" }], editors: [] }));

@@ -26,6 +26,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Document editor: the "main text starts here" label sat under the page line label; it is now a small tag at the start of the line, and the page label stays at the end [2026-10-26]
 - References: a DOI written as a doi.org address in a BibTeX file was linked twice ("https://doi.org/https://doi.org/…"); English lists wrote "İn" before a Turkish chapter; a master's or doctoral thesis was named in English ("Master's thesis") in Turkish, German, Spanish, French, Italian, Portuguese and Arabic lists [2026-10-26]
 - Document editor: the rulers stayed white in dark mode; they now follow the app theme [2026-10-26]
+- References: an author list ending in "and others" now ends in et al. (vd., u. a. …) instead of dropping it; Crossref RIS records typed GENERIC are read as chapters or books; HTML tags in BibTeX and RIS titles are left out; an institution split like a person's name is shown as the institution; electronic page ranges such as 271–280.e8 get a dash [2026-10-26]
 
 ## [0.5.0] - 2026-10-25
 ### Added

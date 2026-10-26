@@ -3,7 +3,7 @@ import * as logger from "@/shared/lib/logger";
 import type { BibEntry, CitationLanguage, CitationStyle, DocumentNode } from "@/types/studio";
 import type { CitationItem } from "./citationItems";
 import { citationClusters, isNoteStyle, type CitationCluster, type CitationLabel, type Citations } from "./citations";
-import { shownItemOf } from "./cslJson";
+import { OTHERS_MARK, shownItemOf } from "./cslJson";
 import { escapeHtml } from "./toHtml";
 
 const STYLE_FILES: Record<CitationStyle, string> = {
@@ -78,8 +78,31 @@ function dottedCapitals(html: string): string {
   return html.replace(TURKISH_TERMS, "İ");
 }
 
-function unchanged(html: string): string {
-  return html;
+const OTHERS = new RegExp(`(,)?(?:\\s+(?:&#38;|&amp;|&|and|ve|und|y|et|e|و|-|–))?\\s*${OTHERS_MARK}(\\.)?`, "gi");
+const ET_AL = /<term name="et-al">([^<]+)<\/term>/;
+const STYLE_LOCALE = /<locale xml:lang="([^"]+)">([\s\S]*?)<\/locale>/g;
+
+function etAlTerm(styleXml: string, localeXml: string, language: CitationLanguage): string {
+  const base = language.split("-")[0];
+  for (const [, lang, block] of styleXml.matchAll(STYLE_LOCALE)) {
+    const term = lang === language || lang === base ? ET_AL.exec(block)?.[1] : undefined;
+    if (term) return term;
+  }
+  return ET_AL.exec(localeXml)?.[1] ?? "et al.";
+}
+
+const LIST_COMMA_STYLES = new Set<CitationStyle>(["apa", "chicago", "chicago-notes", "mla"]);
+const NO_COMMA_STYLES = new Set<CitationStyle>(["isnad", "isnad-notes"]);
+
+type OthersComma = "always" | "never" | "kept";
+const ELECTRONIC_PAGES = /(?<![\w./])(\d+)-(\d+\.e\d+)(?![\w/])/g;
+
+function withOthers(html: string, etAl: string, rule: OthersComma): string {
+  return html.replace(OTHERS, (_, comma: string | undefined, stop: string | undefined) => `${rule === "always" || (rule === "kept" && comma) ? "," : ""} ${etAl}${stop && !etAl.endsWith(".") ? "." : ""}`);
+}
+
+function dashedPages(html: string): string {
+  return html.replace(ELECTRONIC_PAGES, "$1–$2");
 }
 
 function citeItem(item: CitationItem): CiteprocItem {
@@ -107,13 +130,17 @@ export class CitationEngine {
   private builds = 0;
   private readonly language: CitationLanguage;
   private readonly cased: (html: string) => string;
+  private readonly listed: (html: string) => string;
 
-  constructor(style: CitationStyle, engine: Engine, items: Map<string, Record<string, unknown>>, language: CitationLanguage = "en-US") {
+  constructor(style: CitationStyle, engine: Engine, items: Map<string, Record<string, unknown>>, language: CitationLanguage = "en-US", etAl = "et al.") {
     this.style = style;
     this.engine = engine;
     this.items = items;
     this.language = language;
-    this.cased = language === "tr-TR" ? dottedCapitals : unchanged;
+    const cased = language === "tr-TR" ? dottedCapitals : dashedPages;
+    const plain: OthersComma = NO_COMMA_STYLES.has(style) ? "never" : "kept";
+    this.cased = (html) => cased(withOthers(html, etAl, plain));
+    this.listed = (html) => cased(withOthers(html, etAl, LIST_COMMA_STYLES.has(style) ? "always" : plain));
   }
 
   citations(content: DocumentNode | string, sources: BibEntry[]): Citations {
@@ -156,7 +183,7 @@ export class CitationEngine {
     try {
       for (const [id, , html] of this.engine.rebuildProcessorState(citations, "html", citations.length > 0 ? [] : [...this.items.keys()])) rendered.set(Number(id.slice(build.length + 1)), this.cased(safeCitationHtml(html)));
       const bibliography = this.engine.makeBibliography();
-      references = bibliography ? bibliography[1].map((entry) => this.cased(referenceHtml(entry))) : [];
+      references = bibliography ? bibliography[1].map((entry) => this.listed(referenceHtml(entry))) : [];
     } catch (caught) {
       logger.error("citations", logger.describeError(caught));
     }
@@ -228,7 +255,7 @@ function engineNow(style: CitationStyle, language: CitationLanguage): CitationEn
     retrieveLocale: (name: string) => locales.get(name) ?? locales.get(name.split("-")[0]) ?? locales.get(FALLBACK_LOCALE),
     retrieveItem: (id: string) => items.get(id),
   };
-  const engine = new CitationEngine(style, new CSL.Engine(sys, xml, language, true), items, language);
+  const engine = new CitationEngine(style, new CSL.Engine(sys, xml, language, true), items, language, etAlTerm(xml, locales.get(language) ?? locales.get(FALLBACK_LOCALE) ?? "", language));
   ready.set(key, engine);
   return engine;
 }

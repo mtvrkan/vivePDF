@@ -75,6 +75,16 @@ describe("source formats", () => {
     expect(entries[1].fields).toMatchObject({ booktitle: "Cities and climate", publisher: "Springer" });
   });
 
+  it("reads a Crossref GENERIC record as a chapter when it has pages in a book, otherwise as a book with its ISBN", () => {
+    const ris = ["TY  - GENERIC", "TI  - Educational Policy", "T2  - Handbook of Educational Psychology", "AU  - Nichols, Sharon L.", "PY  - 2023", "SP  - 162-188", "ER  - ", "TY  - GENERIC", "TI  - The Elements of Statistical Learning", "T2  - Springer Series in Statistics", "AU  - Hastie, Trevor", "PY  - 2009", "SN  - 0172-7397", "SN  - 9780387848570", "ER  - "].join("\n");
+
+    const { entries } = parseSources(ris);
+
+    expect(entries.map((entry) => entry.type)).toEqual(["incollection", "book"]);
+    expect(entries[0].fields).toMatchObject({ booktitle: "Handbook of Educational Psychology", pages: "162-188" });
+    expect(entries[1].fields).toMatchObject({ series: "Springer Series in Statistics", isbn: "9780387848570" });
+  });
+
   it("round-trips sources through RIS and CSL JSON without losing what the styles need", () => {
     for (const format of ["ris", "csl"] as const) {
       const { entries } = parseSources(writeSources([ARTICLE, THESIS], format), format);

@@ -4,6 +4,8 @@ import { claimKey, clip, joinPages, keyBase, monthNumber, setField, splitPages }
 
 const LINE = /^([A-Z][A-Z0-9]) {2}-(?: (.*))?$/;
 const MAX_TAGS = 200;
+const ISBN = /^(?:97[89][-\s]?)?(?:\d[-\s]?){9}[\dX]$/i;
+const GENERIC_TYPES = new Set(["GEN", "GENERIC"]);
 
 const TYPES_IN: Record<string, string> = {
   JOUR: "article",
@@ -67,7 +69,9 @@ function entryOf(record: RisRecord, taken: Set<string>): BibEntry {
   const values = (...tags: string[]) => record.tags.filter(([tag]) => tags.includes(tag)).map(([, value]) => value.trim()).filter(Boolean);
   const first = (...tags: string[]) => values(...tags)[0] ?? "";
   const thesisKind = first("M3");
-  const type = record.type === "THES" && /master|yüksek lisans/i.test(thesisKind) ? "mastersthesis" : (TYPES_IN[record.type] ?? "misc");
+  const isbn = values("SN").find((value) => ISBN.test(value));
+  const generic = first("SP") && first("T2", "BT") ? "incollection" : isbn ? "book" : "misc";
+  const type = record.type === "THES" && /master|yüksek lisans/i.test(thesisKind) ? "mastersthesis" : (TYPES_IN[record.type] ?? (GENERIC_TYPES.has(record.type) ? generic : "misc"));
   const authors = values("AU", "A1").map(nameOf).filter((name): name is BibName => name !== null);
   const editors = values("ED", "A2").map(nameOf).filter((name): name is BibName => name !== null);
   const dated = first("PY", "Y1", "DA");
@@ -92,7 +96,7 @@ function entryOf(record: RisRecord, taken: Set<string>): BibEntry {
   setField(entry, "edition", first("ET"));
   setField(entry, "doi", first("DO"));
   setField(entry, "url", first("UR", "L2"));
-  setField(entry, type === "article" ? "issn" : "isbn", first("SN"));
+  setField(entry, type === "article" ? "issn" : "isbn", type === "article" ? first("SN") : (isbn ?? first("SN")));
   setField(entry, "abstract", first("AB", "N2"));
   setField(entry, "keywords", values("KW").join(", "));
   setField(entry, "note", first("N1"));

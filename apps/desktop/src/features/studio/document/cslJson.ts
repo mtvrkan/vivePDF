@@ -84,6 +84,10 @@ const TURKISH_CAPITALS = /[ŞĞİ]/;
 const TURKISH_LETTERS = /[ğĞşŞıİ]/;
 const NICKNAME = /\s*\([^()]*\)/g;
 const UNTITLECASED_LANGUAGE = "und";
+export const OTHERS_MARK = "__vp_others__";
+const INLINE_MARKUP = /<\/?(?:b|i|em|strong|sub|sup|scp|span)\b[^<>]*>/gi;
+const ORGANIZATION = /(?<!\p{L})(?:Institute|Institut|University|Universit[äé]t?|Organi[sz]ation|Association|Council|Ministry|Agency|Foundation|Commission|Committee|Department|Society|Cent(?:er|re)|Bank|Office|Programme|Consortium|Corporation|Laboratory|Academy|Enstitüsü|Üniversitesi|Bakanlığı|Kurumu|Derneği|Vakfı|Başkanlığı|Müdürlüğü)(?!\p{L})/iu;
+const TITLE_FIELDS = ["title", "container-title", "collection-title"];
 const TURKISH_LANGUAGE = /^(?:tr|tur|turkish|türkçe)\b/i;
 
 const THESIS_GENRES: Record<string, { mastersthesis: string; phdthesis: string }> = {
@@ -290,6 +294,7 @@ export function cslItemOf(entry: BibEntry): CslItem {
 
 function shownName(name: CslName, turkish: boolean): CslName {
   if (!name.family) return name;
+  if (name.given && ORGANIZATION.test(name.family)) return { literal: `${name.given} ${name.family}` };
   const given = name.given?.replace(NICKNAME, "").trim();
   const shownGiven = given && given.replace(/[^\p{L}]/gu, "").length > 2 ? unshouted(given, turkish) : given;
   return { ...name, family: unshouted(name.family, turkish), ...(shownGiven ? { given: shownGiven } : {}) };
@@ -301,8 +306,10 @@ export function shownItemOf(entry: BibEntry, citationLanguage: CitationLanguage 
   const turkish = TURKISH_LANGUAGE.test(language) || TURKISH_LETTERS.test(`${entry.fields.title ?? ""} ${entry.fields.journal ?? entry.fields.booktitle ?? ""}`);
   for (const role of ["author", "editor"]) {
     const names = item[role];
-    if (Array.isArray(names)) item[role] = names.map((name: CslName) => shownName(name, turkish));
+    const others = (role === "author" ? entry.authors : entry.editors).some((name) => name.others);
+    if (Array.isArray(names)) item[role] = [...names.map((name: CslName) => shownName(name, turkish)), ...(others ? [{ literal: OTHERS_MARK }] : [])];
   }
+  for (const field of TITLE_FIELDS) if (typeof item[field] === "string") item[field] = (item[field] as string).replace(INLINE_MARKUP, "");
   if (turkish && (!entry.fields.language || TURKISH_LANGUAGE.test(entry.fields.language))) item.language = citationLanguage === "tr-TR" ? "tr" : UNTITLECASED_LANGUAGE;
   const genres = THESIS_GENRES[citationLanguage.split("-")[0]];
   if (genres && !entry.fields.type && (entry.type === "mastersthesis" || entry.type === "phdthesis")) item.genre = genres[entry.type];
