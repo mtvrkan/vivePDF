@@ -303,6 +303,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
     "studio_cv": ("studio.cv_import_pdf",),
     "studio_document": (
         "studio.document_image",
+        "studio.export_docx",
         "studio.export_markdown",
         "studio.import_document",
         "studio.open_document",

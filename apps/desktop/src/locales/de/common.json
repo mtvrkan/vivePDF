@@ -7351,6 +7351,7 @@
       "format": "Dateityp",
       "formats": {
         "pdf": "PDF",
+        "word": "Word",
         "png": "PNG",
         "jpg": "JPG",
         "markdown": "Markdown"
@@ -9068,7 +9069,9 @@
         "title": "Dokument exportieren",
         "idleDescription": "Speichert das Dokument als PDF mit Titelseite, Inhaltsverzeichnis, Seitenzahlen und Lesezeichen.",
         "idleMarkdown": "Speichert den Text als Markdown-Datei mit Überschriften, Listen, Tabellen, Links, Bildern und Fußnoten; Farben, Schriften und das Seitenlayout bleiben weg.",
-        "doneMarkdown": "Markdown-Datei gespeichert"
+        "doneMarkdown": "Markdown-Datei gespeichert",
+        "idleWord": "Speichert das Dokument als Word-Datei (.docx) mit Überschriften, Listen, Tabellen, Bildern, Fußnoten, Kommentaren und Seitenzahlen; Inhaltsverzeichnis sowie Abbildungs- und Tabellenverzeichnis werden beim Öffnen in Word ausgefüllt. Formeln werden als Bilder gespeichert.",
+        "doneWord": "Word-Datei gespeichert"
       },
       "starters": {
         "names": {

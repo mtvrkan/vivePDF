@@ -298,4 +298,24 @@ describe("studio documents", () => {
     await expect($('[data-testid="document-comment-count"]')).toHaveText(t("studio.doc.comments.allResolved"));
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-comment.png"));
   });
+
+  it("exports the document to Word with its comment", async () => {
+    const output = join(workDir(), "Quarterly.docx");
+    await button(t("studio.toolbar.export")).click();
+    await $('[role="dialog"]').waitForDisplayed();
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("studio.export.formats.word")}"]`).click();
+    answerDialogs(output);
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("tools.browse")}"]`).click();
+    await waitForDialogsAnswered();
+    await $(`//*[@role="dialog"]//button[normalize-space(.)="${t("studio.export.run")}"]`).click();
+    await waitForFile(output);
+    await expect($('[role="dialog"]')).toHaveText(expect.stringContaining(t("studio.doc.export.doneWord")), { wait: 30000 });
+
+    const archive = readFileSync(output).toString("latin1");
+    expect(archive.startsWith("PK")).toBe(true);
+    expect(archive).toContain("word/document.xml");
+    expect(archive).toContain("word/comments.xml");
+    expect(archive).toContain("word/commentsExtended.xml");
+    await $('[role="dialog"] [data-dialog-close]').click();
+  });
 });

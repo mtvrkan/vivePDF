@@ -313,6 +313,7 @@ import type {
   StudioBibliography,
   StudioDocumentPage,
   StudioDocumentPreview,
+  StudioDocumentWordContent,
   StudioDraftLoadResult,
   StudioDraftSaveParams,
   StudioDraftSaveResult,
@@ -726,6 +727,9 @@ export const studioRenderDocument =(params: StudioDocumentContent & { output: st
 
 export const studioExportMarkdown = (params: StudioDocumentContent & { output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
   rpc<StudioDocumentFileResult>("studio.export_markdown", params, options);
+
+export const studioExportDocx = (params: StudioDocumentWordContent & { output: string; overwrite?: boolean }, options?: RpcCallOptions) =>
+  rpc<StudioDocumentFileResult>("studio.export_docx", params, options);
 
 export const studioPreviewDocument = (params: StudioDocumentContent, options?: RpcCallOptions) =>
   rpc<StudioDocumentPreview>("studio.preview_document", params, options);

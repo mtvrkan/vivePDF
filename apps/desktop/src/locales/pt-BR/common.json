@@ -7351,6 +7351,7 @@
       "format": "Tipo de arquivo",
       "formats": {
         "pdf": "PDF",
+        "word": "Word",
         "png": "PNG",
         "jpg": "JPG",
         "markdown": "Markdown"
@@ -9068,7 +9069,9 @@
         "title": "Exportar documento",
         "idleDescription": "Salva o documento como PDF com capa, sumário, números de página e marcadores.",
         "idleMarkdown": "Salva o texto como arquivo Markdown com títulos, listas, tabelas, links, imagens e notas de rodapé; cores, fontes e o layout da página ficam de fora.",
-        "doneMarkdown": "Arquivo Markdown salvo"
+        "doneMarkdown": "Arquivo Markdown salvo",
+        "idleWord": "Salva o documento como arquivo do Word (.docx) com títulos, listas, tabelas, imagens, notas de rodapé, comentários e números de página; o sumário e as listas de figuras e tabelas são preenchidos ao abrir no Word. As equações são salvas como imagens.",
+        "doneWord": "Arquivo do Word salvo"
       },
       "starters": {
         "names": {

@@ -1565,6 +1565,12 @@
     "read"
    ]
   ],
+  "studio.export_docx": [
+   [
+    "output",
+    "write"
+   ]
+  ],
   "studio.export_markdown": [
    [
     "output",

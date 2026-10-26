@@ -7351,6 +7351,7 @@
       "format": "Type de fichier",
       "formats": {
         "pdf": "PDF",
+        "word": "Word",
         "png": "PNG",
         "jpg": "JPG",
         "markdown": "Markdown"
@@ -9068,7 +9069,9 @@
         "title": "Exporter le document",
         "idleDescription": "Enregistre le document en PDF avec sa couverture, sa table des matières, ses numéros de page et ses signets.",
         "idleMarkdown": "Enregistre le texte dans un fichier Markdown avec les titres, listes, tableaux, liens, images et notes de bas de page ; les couleurs, les polices et la mise en page sont laissées de côté.",
-        "doneMarkdown": "Fichier Markdown enregistré"
+        "doneMarkdown": "Fichier Markdown enregistré",
+        "idleWord": "Enregistre le document dans un fichier Word (.docx) avec les titres, listes, tableaux, images, notes de bas de page, commentaires et numéros de page ; la table des matières et les listes des figures et des tableaux se remplissent à l’ouverture dans Word. Les équations sont enregistrées comme images.",
+        "doneWord": "Fichier Word enregistré"
       },
       "starters": {
         "names": {

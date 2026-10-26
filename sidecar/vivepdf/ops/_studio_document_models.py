@@ -27,6 +27,13 @@ MAX_FOOTNOTES = 500
 MAX_FOOTNOTE_CHARS = 2000
 MAX_FOOTNOTE_HTML_CHARS = 20000
 ShortText = Annotated[str, Field(max_length=300)]
+MAX_COMMENTS = 500
+MAX_REPLIES = 100
+MAX_COMMENT_TEXT = 4000
+MAX_COMMENT_AUTHOR = 80
+CommentText = Annotated[NotAPath, Field(max_length=MAX_COMMENT_TEXT)]
+CommentAuthor = Annotated[NotAPath, Field(max_length=MAX_COMMENT_AUTHOR)]
+CommentDate = Annotated[NotAPath, Field(max_length=40)]
 
 
 class StudioDocumentSettings(RpcModel):
@@ -95,6 +102,24 @@ class StudioDocumentRenderParams(StudioDocumentContent):
 class StudioDocumentMarkdownParams(StudioDocumentContent):
     output: WriteFile
     overwrite: bool = False
+
+
+class StudioDocumentReply(RpcModel):
+    id: Annotated[NotAPath, Field(pattern=r"^c-[A-Za-z0-9]{1,40}$")]
+    author: CommentAuthor = ""
+    created_at: CommentDate = ""
+    text: CommentText = ""
+
+
+class StudioDocumentThread(StudioDocumentReply):
+    resolved: bool = False
+    replies: list[StudioDocumentReply] = Field(default_factory=list, max_length=MAX_REPLIES)
+
+
+class StudioDocumentDocxParams(StudioDocumentContent):
+    output: WriteFile
+    overwrite: bool = False
+    comments: list[StudioDocumentThread] = Field(default_factory=list, max_length=MAX_COMMENTS)
 
 
 class StudioDocumentPreviewParams(StudioDocumentContent):

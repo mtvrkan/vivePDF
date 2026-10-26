@@ -13,6 +13,8 @@ import { useDocumentStore } from "./documentStore";
 import { documentText } from "./content";
 import { DOCUMENT_EXPORT_FORMATS, EXPORT_EXTENSIONS, exportDocument, withExportExtension, type DocumentExportFormat } from "./exportDocument";
 
+const IDLE_DESCRIPTIONS: Record<DocumentExportFormat, string> = { pdf: "studio.doc.export.idleDescription", word: "studio.doc.export.idleWord", markdown: "studio.doc.export.idleMarkdown" };
+
 export function DocumentExportDialog({ open, onClose, language }: { open: boolean; onClose: () => void; language: string }) {
   const { t } = useTranslation();
   const name = useDocumentStore((state) => state.document?.name ?? "");
@@ -65,11 +67,11 @@ export function DocumentExportDialog({ open, onClose, language }: { open: boolea
           progress={operation.progress}
           error={operation.error}
           numeral={pageCount === null ? undefined : String(pageCount)}
-          caption={result ? (pageCount === null ? t("studio.doc.export.doneMarkdown") : t("studio.export.done", { count: pageCount })) : undefined}
+          caption={result ? (pageCount === null ? t(format === "word" ? "studio.doc.export.doneWord" : "studio.doc.export.doneMarkdown") : t("studio.export.done", { count: pageCount })) : undefined}
           outputs={result ? [result.output] : []}
           idleIcon={Download}
           idleTitle={t("studio.export.idleTitle")}
-          idleDescription={t(format === "markdown" ? "studio.doc.export.idleMarkdown" : "studio.doc.export.idleDescription")}
+          idleDescription={t(IDLE_DESCRIPTIONS[format])}
           onCancel={operation.cancel}
           onRetry={run}
           overwritePrompt={operation.overwritePrompt}

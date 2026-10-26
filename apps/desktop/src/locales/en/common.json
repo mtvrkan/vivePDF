@@ -7352,6 +7352,7 @@
       "format": "File type",
       "formats": {
         "pdf": "PDF",
+        "word": "Word",
         "png": "PNG",
         "jpg": "JPG",
         "markdown": "Markdown"
@@ -9069,7 +9070,9 @@
         "title": "Export document",
         "idleDescription": "Saves the document as a PDF with its cover, contents, page numbers and bookmarks.",
         "idleMarkdown": "Saves the text as a Markdown file with headings, lists, tables, links, pictures and footnotes; colours, fonts and the page layout are left out.",
-        "doneMarkdown": "Markdown file saved"
+        "doneMarkdown": "Markdown file saved",
+        "idleWord": "Saves the document as a Word file (.docx) with headings, lists, tables, pictures, footnotes, comments and page numbers; the contents and the lists of figures and tables fill in when Word opens it. Equations are saved as pictures.",
+        "doneWord": "Word file saved"
       },
       "starters": {
         "names": {

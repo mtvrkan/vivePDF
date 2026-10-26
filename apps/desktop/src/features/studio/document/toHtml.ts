@@ -1,6 +1,7 @@
 import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { CAPTION, CaptionCounter, captionKind, captionLabel } from "./captionCounter";
+import { COMMENT, commentId } from "./comments";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
 import { EQUATION, EQUATION_BLOCK, EQUATION_COLOUR, EQUATION_REF, MAX_EQUATIONS, equationArt, equationId, equationLabel, equationNumbers } from "./equations";
@@ -52,10 +53,12 @@ class Writer {
   captionIds = 0;
   numbering = true;
   mainWritten = false;
+  comments: boolean;
 
-  constructor(settings: WriterSettings, references: DocumentReferences | null) {
+  constructor(settings: WriterSettings, references: DocumentReferences | null, comments: boolean) {
     this.fonts = [settings.fontId, settings.headingFontId ?? settings.fontId];
     this.references = references;
+    this.comments = comments;
     this.numbers = new HeadingCounter(settings.headingNumbers ?? "none");
   }
 
@@ -174,6 +177,10 @@ function wrap(text: string, mark: Mark, writer: Writer): string {
     case "textStyle": {
       const styles = styleMark(mark, writer);
       return styles.length ? `<span style="${styles.join(";")}">${text}</span>` : text;
+    }
+    case COMMENT: {
+      const id = writer.comments ? commentId(attr(mark, "id")) : null;
+      return id ? `<span data-comment="${id}">${text}</span>` : text;
     }
     default:
       return text;
@@ -372,8 +379,8 @@ function markedBlock(node: DocumentNode, markup: string, index: number, writer: 
   return { markup: markup.replace(OPENING_TAG, `<$1 id="${id}"`), id };
 }
 
-export function documentHtml(content: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false): DocumentHtml {
-  const writer = new Writer(settings, references);
+export function documentHtml(content: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false, comments = false): DocumentHtml {
+  const writer = new Writer(settings, references, comments);
   writer.numbering = !hasMainBreak(content);
   writer.equationNumbers = equationNumbers(content);
   const blockIds: string[] = [];

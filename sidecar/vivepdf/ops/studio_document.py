@@ -10,6 +10,7 @@ from pathlib import Path
 
 import pymupdf
 
+from vivepdf.ops._document_docx import document_docx
 from vivepdf.ops._document_markdown import document_markdown
 from vivepdf.ops._document_places import Places
 from vivepdf.ops._html_clean import body_fragment, visible_text, without_remote_pictures
@@ -39,6 +40,7 @@ from vivepdf.ops._studio_document_models import (
     StudioBibliographyWriteParams,
     StudioBibliographyWriteResult,
     StudioDocumentBlockStart,
+    StudioDocumentDocxParams,
     StudioDocumentImageResult,
     StudioDocumentImportResult,
     StudioDocumentMarkdownParams,
@@ -59,6 +61,7 @@ from vivepdf.rpc.registry import op
 
 PREVIEW_SLOTS = 4
 MARKDOWN_EXTENSION = "md"
+DOCX_EXTENSION = "docx"
 IMPORT_EXTENSIONS = {"md", "markdown", "txt", "text", "html", "htm"}
 BIBLIOGRAPHY_EXTENSIONS = {"bib", "bibtex"}
 SOURCE_LIBRARY_EXTENSIONS = BIBLIOGRAPHY_EXTENSIONS | {"ris", "json"}
@@ -122,6 +125,16 @@ def export_markdown(
     target = prepare_data_output(params.output, MARKDOWN_EXTENSION, params.overwrite)
     progress.report(0.1, "progress.rendering")
     payload = document_markdown(params).encode("utf-8")
+    progress.report(0.85, "progress.saving")
+    write_atomically(target, lambda path: path.write_bytes(payload))
+    return StudioDocumentSaveResult(output=str(target), bytes=len(payload))
+
+
+@op("studio.export_docx", StudioDocumentDocxParams)
+def export_docx(params: StudioDocumentDocxParams, progress: Progress) -> StudioDocumentSaveResult:
+    target = prepare_data_output(params.output, DOCX_EXTENSION, params.overwrite)
+    progress.report(0.1, "progress.rendering")
+    payload = document_docx(params, progress.check_cancelled)
     progress.report(0.85, "progress.saving")
     write_atomically(target, lambda path: path.write_bytes(payload))
     return StudioDocumentSaveResult(output=str(target), bytes=len(payload))

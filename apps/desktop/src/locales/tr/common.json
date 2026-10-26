@@ -7352,6 +7352,7 @@
       "format": "Dosya türü",
       "formats": {
         "pdf": "PDF",
+        "word": "Word",
         "png": "PNG",
         "jpg": "JPG",
         "markdown": "Markdown"
@@ -9069,7 +9070,9 @@
         "title": "Belgeyi dışa aktar",
         "idleDescription": "Belgeyi kapağı, içindekileri, sayfa numaraları ve yer imleriyle birlikte PDF olarak kaydeder.",
         "idleMarkdown": "Metni başlıkları, listeleri, tabloları, bağlantıları, resimleri ve dipnotlarıyla birlikte Markdown dosyası olarak kaydeder; renkler, yazı tipleri ve sayfa düzeni alınmaz.",
-        "doneMarkdown": "Markdown dosyası kaydedildi"
+        "doneMarkdown": "Markdown dosyası kaydedildi",
+        "idleWord": "Belgeyi başlıkları, listeleri, tabloları, resimleri, dipnotları, yorumları ve sayfa numaralarıyla birlikte Word dosyası (.docx) olarak kaydeder; içindekiler ile şekil ve tablo listeleri Word açınca dolar. Denklemler resim olarak kaydedilir.",
+        "doneWord": "Word dosyası kaydedildi"
       },
       "starters": {
         "names": {

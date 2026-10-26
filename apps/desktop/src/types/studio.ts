@@ -505,6 +505,12 @@ export type StudioDocument = { version: number; kind: "document"; name: string; 
 
 export type StudioDocumentContent = { html: string; images: string[]; equations: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; notesTitle: string; settings: DocumentLayout; title: string; language: string };
 
+export type StudioDocumentComment = { id: string; author: string; createdAt: string; text: string };
+
+export type StudioDocumentThread = StudioDocumentComment & { resolved: boolean; replies: StudioDocumentComment[] };
+
+export type StudioDocumentWordContent = StudioDocumentContent & { comments: StudioDocumentThread[] };
+
 export type StudioDocumentFileResult = { output: string; bytes: number };
 
 export type StudioDocumentImport = { html: string; title: string; author: string; date: string; referencesTitle: string; bibliography: string };
