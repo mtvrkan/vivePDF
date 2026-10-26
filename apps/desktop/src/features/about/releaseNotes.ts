@@ -3,7 +3,7 @@ import { compareVersions } from "@/shared/lib/lastSeenVersion";
 export type ReleaseNote = { version: string; items: string[] };
 
 export const RELEASE_NOTES: ReleaseNote[] = [
-  { version: "0.5.0", items: ["sources", "conversions", "printPreview", "defaultApp", "newTools", "officeAndImages", "documentEditor"] },
+  { version: "0.5.0", items: ["sources", "conversions", "printPreview", "defaultApp", "newTools", "officeAndImages", "documentEditor", "thesisWriting"] },
   { version: "0.4.0", items: ["officeFiles", "tabWindows", "macos", "presentationBoards", "smoother"] },
   { version: "0.3.0", items: ["helpAndSupport", "offlineMode", "presenterView", "studioWriting", "presentationInsert"] },
   { version: "0.2.0", items: ["templates", "cvImport", "organizer", "viewerEditing", "collections"] },

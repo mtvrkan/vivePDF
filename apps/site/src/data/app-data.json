@@ -2986,6 +2986,10 @@
         {
           "tr": "Stüdyo'daki belge düzenleyici artık Word gibi: sekmeli şerit, cetveller, sayfa çizgileri ve sayfa yapısı, gezinti bölmesi; tez için de numaralı başlıklar, şekil ve tablo yazıları ile listeleri, ana metinden önce romen rakamlı sayfa numaraları.",
           "en": "The Studio document editor works like Word: a ribbon with tabs, rulers, page lines and page setup, a navigation pane, and thesis tools: numbered headings, figure and table captions with their lists, and roman page numbers before the main text."
+        },
+        {
+          "tr": "Stüdyo'da tez yazımı: üniversitelerin ortak kurallarıyla hazır Yüksek Lisans ve Doktora tezi başlangıçları, LaTeX ile yazılıp (1), (2)… diye numaralanan ve metinde anılabilen denklemler, sayfanın yanında yanıtlı yorumlar ve içindekiler, dipnotlar, denklemler ve yorumlarla birlikte Word'e aktarma.",
+          "en": "Thesis writing in the Studio: ready Master's and Doctoral thesis starters with common university rules, equations typed in LaTeX and numbered (1), (2)… for reference, comments with replies beside the page, and export to Word with the contents, footnotes, equations and comments."
         }
       ]
     },

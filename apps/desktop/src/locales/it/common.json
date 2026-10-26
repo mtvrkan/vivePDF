@@ -10536,7 +10536,8 @@
         "newTools": "Nuovi strumenti: da PDF a SVG e un colore di sfondo per le pagine; Commenti, Allegati, Leggi ad alta voce, Traduci e Stampa ora sono anche nelle categorie degli strumenti.",
         "officeAndImages": "Le tabelle Excel larghe stanno sul foglio, i caratteri mancanti vengono indicati prima della conversione, Immagini → PDF può comprimere le foto e le immagini si possono estrarre come le mostra la pagina.",
         "sources": "Gestore delle fonti rinnovato: un DOI diventa un riferimento negli stili ufficiali APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver e Harvard, e i file .bib vengono letti correttamente, modificati e salvati nel loro file.",
-        "documentEditor": "L'editor di documenti di Studio funziona come Word: una barra multifunzione a schede, righelli, linee di pagina e impostazione pagina, un riquadro di spostamento e strumenti per le tesi: titoli numerati, didascalie di figure e tabelle con i loro indici e numeri romani prima del testo principale."
+        "documentEditor": "L'editor di documenti di Studio funziona come Word: una barra multifunzione a schede, righelli, linee di pagina e impostazione pagina, un riquadro di spostamento e strumenti per le tesi: titoli numerati, didascalie di figure e tabelle con i loro indici e numeri romani prima del testo principale.",
+        "thesisWriting": "Tesi nello Studio: modelli pronti per tesi di laurea magistrale e di dottorato con le regole comuni delle università, equazioni scritte in LaTeX e numerate (1), (2)… da richiamare, commenti con risposte accanto alla pagina ed esportazione in Word con indice, note a piè di pagina, equazioni e commenti."
       },
       "v0_4_0": {
         "officeFiles": "I file Word, Excel e PowerPoint si aprono direttamente in vivePDF come PDF, anche da «Apri con» nel Finder e in Esplora file; se manca LibreOffice, vivePDF propone di installarlo e apre il file appena è pronto.",
