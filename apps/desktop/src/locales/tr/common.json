@@ -9550,6 +9550,7 @@
         "pageLines": "Sayfa sonu çizgileri",
         "ruler": "Cetvel",
         "navigation": "Gezinti bölmesi",
+        "darkPage": "Koyu sayfa",
         "bodyFont": "Metin",
         "headingFont": "Başlıklar",
         "bodySize": "Metin boyutu",

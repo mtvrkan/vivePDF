@@ -83,6 +83,7 @@
   --tone-active-strength: 10%;
   --tone-active-ring: 18%;
   --blob-strength: 26%;
+  --paper-dark-base: hsl(220 10% 88%);
   --traffic-close: hsl(3 100% 67%);
   --traffic-zoom: hsl(129 67% 47%);
   --traffic-idle: hsl(0 0% 82%);
@@ -214,6 +215,13 @@
   --border: color-mix(in oklab, hsl(222 20% 12%) 9%, transparent);
   color: var(--foreground);
   color-scheme: light;
+}
+.paper-dark {
+  background-color: var(--paper-dark-base);
+  filter: invert(1) hue-rotate(180deg);
+}
+.paper-dark :is(img, video, canvas) {
+  filter: invert(1) hue-rotate(180deg);
 }
 
 [data-tone="organize"] { --tone: var(--tone-organize); --tone-soft: var(--tone-organize-soft); }

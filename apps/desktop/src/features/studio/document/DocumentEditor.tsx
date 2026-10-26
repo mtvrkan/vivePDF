@@ -5,6 +5,7 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
 import { IconButton } from "@/components/shared/IconButton";
+import { cn } from "@/shared/lib/cn";
 import { basenameOf } from "@/shared/lib/paths";
 import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import type { DocumentNode } from "@/types/studio";
@@ -164,6 +165,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   const zoomMode = useDocumentViewStore((state) => state.zoom);
   const showPageLines = useDocumentViewStore((state) => state.pageLines);
   const showRuler = useDocumentViewStore((state) => state.ruler);
+  const darkPage = useDocumentViewStore((state) => state.darkPage);
   const showNavigation = useDocumentViewStore((state) => state.navigation);
   const paper = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<PageLine[]>([]);
@@ -241,7 +243,7 @@ export default function DocumentEditor({ language }: { language: string }) {
         <div className="relative flex min-w-0 flex-1 flex-col">
           <div className="flex min-h-0 flex-1">
             <div ref={host} className="min-h-0 min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
-              <div ref={paper} className="paper-surface vp-doc relative mx-auto bg-white shadow-md" style={paperStyle}>
+              <div ref={paper} className={cn("paper-surface vp-doc relative mx-auto bg-white shadow-md", darkPage && "paper-dark")} style={paperStyle} data-dark-page={darkPage || undefined} data-testid="document-paper">
                 <EditorContent editor={editor} className={furnitureEditing ? "opacity-50 transition-opacity duration-(--transition-base)" : "transition-opacity duration-(--transition-base)"} />
                 {editor ? <SheetFurniture settings={settings} inset={inset} page={sheetPage} label={pageLabels?.[sheetPage - 1] ?? String(sheetPage)} last={pageLabels?.at(-1) ?? String(layout.preview?.pageCount ?? 1)} onLeave={() => editor.commands.focus()} /> : null}
                 {editor && showPageLines ? <PageLines editor={editor} laid={layout.preview} paper={paper} zoom={zoom} onLines={setLines} /> : null}

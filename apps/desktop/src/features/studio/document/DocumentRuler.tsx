@@ -172,7 +172,7 @@ export function HorizontalRuler({ editor, settings, size, paper, host }: RulerPr
   return (
     <div ref={own} dir="ltr" role="group" aria-label={t("studio.doc.ruler.horizontal")} className="relative order-first h-6 shrink-0 select-none overflow-hidden border-b border-border bg-background" data-testid="document-ruler">
       {frame ? (
-        <div className="paper-surface absolute inset-y-0 bg-card" style={{ left: frame.paperX, width: size.width * scale }}>
+        <div className="absolute inset-y-0 bg-card" style={{ left: frame.paperX, width: size.width * scale }}>
           <div className="absolute inset-0 bg-muted-foreground/20" />
           <div className="absolute inset-y-0 bg-card" style={{ left: inset.left * scale, right: inset.right * scale }} />
           <TickMarks ticks={rulerTicks(size.width, inset.left)} scale={scale} />
@@ -204,7 +204,7 @@ export function HorizontalRuler({ editor, settings, size, paper, host }: RulerPr
                 valueMm={valueMm}
                 maxMm={block.width / scale / POINTS_PER_MM}
                 style={{ left: block.left + at * scale - 5, top: MARKER_TOPS[marker] }}
-                className={cn("paper-surface w-2.5 cursor-ew-resize", marker === "left" ? "h-1.5" : "h-2")}
+                className={cn("w-2.5 cursor-ew-resize", marker === "left" ? "h-1.5" : "h-2")}
                 testId={`ruler-indent-${marker}`}
                 onMove={(event) => setIndent(marker, pointAt(event.clientX, block.left))}
                 onEnd={end}
@@ -243,7 +243,7 @@ export function VerticalRuler({ editor, settings, size, paper, host, laid, lines
   return (
     <div ref={own} dir="ltr" role="group" aria-label={t("studio.doc.ruler.vertical")} className="relative order-first w-6 shrink-0 select-none overflow-hidden border-r border-border bg-background" data-testid="document-ruler-vertical">
       {frame ? (
-        <div className="paper-surface absolute inset-x-0 bg-card" style={{ top, height: size.height * scale }}>
+        <div className="absolute inset-x-0 bg-card" style={{ top, height: size.height * scale }}>
           <div className="absolute inset-0 bg-muted-foreground/20" />
           <div className="absolute inset-x-0 bg-card" style={{ top: inset.top * scale, bottom: inset.bottom * scale }} />
           <TickMarks ticks={rulerTicks(size.height, inset.top)} scale={scale} vertical />

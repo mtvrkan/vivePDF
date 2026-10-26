@@ -4,6 +4,7 @@ const ZOOM_KEY = "vivepdf.documentZoom";
 const PAGE_LINES_KEY = "vivepdf.documentPageLines";
 const RULER_KEY = "vivepdf.documentRuler";
 const NAVIGATION_KEY = "vivepdf.documentNavigation";
+const DARK_PAGE_KEY = "vivepdf.documentDarkPage";
 
 export const ZOOM_STEPS = [50, 75, 90, 100, 110, 125, 150, 175, 200] as const;
 export type DocumentZoom = "width" | "page" | (typeof ZOOM_STEPS)[number];
@@ -54,10 +55,12 @@ type DocumentViewState = {
   pageLines: boolean;
   ruler: boolean;
   navigation: boolean;
+  darkPage: boolean;
   setZoom: (zoom: DocumentZoom) => void;
   setPageLines: (shown: boolean) => void;
   setRuler: (shown: boolean) => void;
   setNavigation: (shown: boolean) => void;
+  setDarkPage: (dark: boolean) => void;
 };
 
 export const useDocumentViewStore = create<DocumentViewState>((set) => ({
@@ -65,6 +68,7 @@ export const useDocumentViewStore = create<DocumentViewState>((set) => ({
   pageLines: readFlag(PAGE_LINES_KEY, true),
   ruler: readFlag(RULER_KEY, true),
   navigation: readFlag(NAVIGATION_KEY, false),
+  darkPage: readFlag(DARK_PAGE_KEY, false),
   setZoom: (zoom) => {
     store(ZOOM_KEY, String(zoom));
     set({ zoom });
@@ -80,5 +84,9 @@ export const useDocumentViewStore = create<DocumentViewState>((set) => ({
   setNavigation: (navigation) => {
     store(NAVIGATION_KEY, String(navigation));
     set({ navigation });
+  },
+  setDarkPage: (darkPage) => {
+    store(DARK_PAGE_KEY, String(darkPage));
+    set({ darkPage });
   },
 }));

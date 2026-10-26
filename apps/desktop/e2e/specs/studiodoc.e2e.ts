@@ -149,6 +149,12 @@ describe("studio documents", () => {
     await $('[data-testid="doc-page-lines"]').click();
     await $('[data-page-line="4"]').waitForExist({ reverse: true });
     await $('[data-testid="doc-page-lines"]').click();
+
+    await $('[data-testid="doc-dark-page"]').click();
+    await expect($('[data-testid="document-paper"]')).toHaveAttribute("data-dark-page", "true");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-dark-page.png"));
+    await $('[data-testid="doc-dark-page"]').click();
+    await expect($('[data-testid="document-paper"]')).not.toHaveAttribute("data-dark-page");
   });
 
   it("indents the caret's paragraph and moves the margin from the ruler", async () => {

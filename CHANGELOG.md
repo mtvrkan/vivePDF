@@ -3,6 +3,9 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Document editor: View › Dark page shows the page dark on screen, separately from the app's light or dark theme; exported and printed pages stay white [2026-10-26]
+
 ### Changed
 - Studio › Document: the formatting bar is now a Word-style ribbon with Home, Insert, Layout and References tabs and a Table tab that appears while the cursor is in a table; Layout sets margins, orientation, paper, columns and page numbers from menus, References holds the sources, bibliography, citation style and language, footnotes and contents, colour buttons show a colour bar instead of a hex code, and the ribbon can be collapsed to its tabs [2026-10-26]
 - Studio: the start screen has a list on the left (Start, Document, Design, Business card, CV, Templates with its categories) and shows one page at a time instead of one long page; Start keeps the open drafts, four quick starts and recent designs, and Templates opens straight on a chosen category [2026-10-26]
@@ -22,6 +25,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Turkish: the CV editor's "Edit freely in Studio" button and the fitness flyer template's name showed in English; the page navigation buttons in the viewer had no name for screen readers in German, Arabic, Spanish, French, Italian and Portuguese [2026-10-26]
 - Document editor: the "main text starts here" label sat under the page line label; it is now a small tag at the start of the line, and the page label stays at the end [2026-10-26]
 - References: a DOI written as a doi.org address in a BibTeX file was linked twice ("https://doi.org/https://doi.org/…"); English lists wrote "İn" before a Turkish chapter; a master's or doctoral thesis was named in English ("Master's thesis") in Turkish, German, Spanish, French, Italian, Portuguese and Arabic lists [2026-10-26]
+- Document editor: the rulers stayed white in dark mode; they now follow the app theme [2026-10-26]
 
 ## [0.5.0] - 2026-10-25
 ### Added

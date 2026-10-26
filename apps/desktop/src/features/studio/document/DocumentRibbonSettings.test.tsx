@@ -5,6 +5,7 @@ import { ready, setLocale } from "@/app/i18n";
 import { storeCitationSource } from "./citationSource";
 import { documentExtensions } from "./extensions";
 import { useDocumentStore } from "./documentStore";
+import { useDocumentViewStore } from "./documentView";
 import { DocumentToolbar } from "./DocumentToolbar";
 import { useFurnitureEditing } from "./furnitureEditing";
 import { contentInsets, createDocument } from "./model";
@@ -40,6 +41,7 @@ afterEach(() => {
   editor?.destroy();
   editor = null;
   useFurnitureEditing.setState({ editing: null, request: null });
+  useDocumentViewStore.setState({ darkPage: false });
   useDocumentStore.getState().close();
 });
 
@@ -85,6 +87,17 @@ describe("document settings in the ribbon", () => {
 
     pick("doc-toc", "No contents");
     expect(settings().toc).toBe(false);
+  });
+
+  it("darkens only the page from the View tab and remembers it", () => {
+    mountToolbar();
+    fireEvent.click(screen.getByRole("tab", { name: "View" }));
+
+    fireEvent.click(screen.getByTestId("doc-dark-page"));
+
+    expect(useDocumentViewStore.getState().darkPage).toBe(true);
+    expect(localStorage.getItem("vivepdf.documentDarkPage")).toBe("true");
+    expect(document.documentElement.classList.contains("dark")).toBe(false);
   });
 
   it("opens the Header & footer tab from Insert and goes back to Insert when it closes", () => {

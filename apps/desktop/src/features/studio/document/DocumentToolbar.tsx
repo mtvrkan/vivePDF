@@ -27,6 +27,7 @@ import {
   ListOrdered,
   Maximize2,
   Minus,
+  Moon,
   Omega,
   PanelTop,
   PanelBottom,
@@ -188,6 +189,8 @@ export function DocumentToolbar({
   const setRuler = useDocumentViewStore((state) => state.setRuler);
   const navigation = useDocumentViewStore((state) => state.navigation);
   const setNavigation = useDocumentViewStore((state) => state.setNavigation);
+  const darkPage = useDocumentViewStore((state) => state.darkPage);
+  const setDarkPage = useDocumentViewStore((state) => state.setDarkPage);
   const bodyFont = settings?.fontId ?? "";
   const [tab, setTab] = useState<RibbonTabId>("home");
   const furniture = useFurnitureEditing((current) => current.editing);
@@ -539,6 +542,7 @@ export function DocumentToolbar({
         </RibbonRows>
         <RibbonRows>
           <RibbonSmallButton icon={PanelLeft} label={t("studio.doc.ribbon.navigation")} active={navigation} onClick={() => setNavigation(!navigation)} testId="doc-navigation" />
+          <RibbonSmallButton icon={Moon} label={t("studio.doc.ribbon.darkPage")} active={darkPage} onClick={() => setDarkPage(!darkPage)} testId="doc-dark-page" />
         </RibbonRows>
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.zoom")}>
