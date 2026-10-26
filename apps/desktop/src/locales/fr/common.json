@@ -37,7 +37,8 @@
     "pdfa": "Archive PDF/A",
     "omr": "Grilles de réponses",
     "create": "Créer un PDF",
-    "studio": "Studio"
+    "studio": "Studio",
+    "thesisCheck": "Contrôle de thèse"
   },
   "common": {
     "retry": "Réessayer",
@@ -2878,7 +2879,8 @@
         "properties": "Affiche le nombre et le format des pages, la taille du fichier, la version PDF et le chiffrement, et modifie le titre, l’auteur, le sujet et les mots-clés.",
         "read-aloud": "Lit le document à voix haute avec des voix qui fonctionnent sans internet.",
         "translate": "Traduit le texte sélectionné entre les langues installées, sans internet.",
-        "print": "Imprime toutes les pages, une sélection, les pages paires ou impaires, avec mise à l’échelle, copies et pages par feuille."
+        "print": "Imprime toutes les pages, une sélection, les pages paires ou impaires, avec mise à l’échelle, copies et pages par feuille.",
+        "thesis-check": "Vérifie une thèse terminée : marges, polices, interligne et numéros de page."
       },
       "studioDesign": "Créer dans Studio",
       "studioDocument": "Rédiger un document",
@@ -5482,7 +5484,9 @@
         "openPage": "Ouvrir la page {{n}}",
         "truncated": "Seules les {{limit}} premières pages sont listées."
       },
-      "pageListLine": "Pages : {{pages}}"
+      "pageListLine": "Pages : {{pages}}",
+      "thesisHeading": "Rapport de mise en forme de la thèse",
+      "thesisFileSuffix": "controle-these"
     },
     "resultPanel": "Résultat",
     "pdfa": {
@@ -6096,6 +6100,168 @@
           "description": "Ajoutez les fichiers des chapitres, donnez un titre au livre, puis cliquez sur Créer le livre."
         }
       }
+    },
+    "thesisCheck": {
+      "description": "Contrôle une thèse terminée selon les règles de mise en forme de l’université : marges, police, interligne, titres et numéros de page.",
+      "rules": "Règles",
+      "presets": {
+        "left40": {
+          "title": "Gauche 4 cm",
+          "description": "Haut, bas et droite 2,5 cm · Times New Roman 12 · 1,5 ligne"
+        },
+        "left35": {
+          "title": "Gauche 3,5 cm",
+          "description": "Droite 2,5 cm, haut et bas 3 cm · Times New Roman 12 · 1,5 ligne"
+        },
+        "custom": {
+          "title": "Personnalisé",
+          "description": "Les valeurs de votre université : modifiez les champs ci-dessous"
+        }
+      },
+      "margins": {
+        "top": "Marge haute (mm)",
+        "bottom": "Marge basse (mm)",
+        "left": "Marge gauche (mm)",
+        "right": "Marge droite (mm)"
+      },
+      "fontFamily": "Police du texte",
+      "fontFamilyHint": "Laissez vide pour ne pas contrôler la police.",
+      "fontSize": "Taille de police (pt)",
+      "lineHeight": "Interligne",
+      "pageNumbers": "Position du numéro de page",
+      "paper": "Papier",
+      "places": {
+        "center": "Centré",
+        "right": "À droite",
+        "outside": "Bord extérieur",
+        "any": "Ne pas contrôler"
+      },
+      "papers": {
+        "a4": "A4",
+        "a5": "A5",
+        "b5": "B5",
+        "letter": "Letter",
+        "legal": "Legal",
+        "any": "Ne pas contrôler"
+      },
+      "frontRoman": "Pages liminaires en chiffres romains (i, ii, iii)",
+      "mirrored": "Impression recto verso",
+      "mirroredHint": "Les marges gauche et droite s’échangent sur les pages paires.",
+      "report": "Rapport",
+      "checking": "Mesure des pages…",
+      "idle": {
+        "title": "Le résultat s’affiche ici",
+        "description": "Choisissez le PDF de la thèse ; le contrôle démarre seul."
+      },
+      "ready": "La thèse respecte les règles",
+      "notReady": "Corrigez les points en rouge avant le dépôt",
+      "summary": "{{pages}} pages · {{passed}}/{{total}} règles respectées",
+      "openOcr": "Ouvrir l’outil OCR",
+      "skipped": "Non contrôlé.",
+      "status": {
+        "pass": "Conforme",
+        "warn": "Avertissement",
+        "fail": "Erreur",
+        "skip": "Non contrôlé"
+      },
+      "groups": {
+        "layout": "Mise en page",
+        "text": "Texte",
+        "numbers": "Numéros de page"
+      },
+      "checks": {
+        "text": {
+          "title": "Couche de texte",
+          "pass": "Chaque page contient du texte sélectionnable.",
+          "warn_one": "{{count}} page semble numérisée et n’a pas pu être mesurée ; appliquez d’abord l’OCR.",
+          "warn_other": "{{count}} pages semblent numérisées et n’ont pas pu être mesurées ; appliquez d’abord l’OCR."
+        },
+        "paper": {
+          "title": "Format du papier",
+          "pass": "Toutes les pages font {{expected}} mm.",
+          "fail_one": "{{count}} page ne fait pas {{expected}} mm (par ex. {{found}} mm).",
+          "fail_other": "{{count}} pages ne font pas {{expected}} mm (par ex. {{found}} mm).",
+          "skip": "Format du papier non contrôlé."
+        },
+        "marginTop": {
+          "title": "Marge haute",
+          "pass": "Au moins {{expected}} mm sur chaque page.",
+          "fail_one": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} page.",
+          "fail_other": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} pages."
+        },
+        "marginBottom": {
+          "title": "Marge basse",
+          "pass": "Au moins {{expected}} mm sur chaque page.",
+          "fail_one": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} page.",
+          "fail_other": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} pages."
+        },
+        "marginLeft": {
+          "title": "Marge gauche",
+          "pass": "Au moins {{expected}} mm sur chaque page.",
+          "fail_one": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} page.",
+          "fail_other": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} pages."
+        },
+        "marginRight": {
+          "title": "Marge droite",
+          "pass": "Au moins {{expected}} mm sur chaque page.",
+          "fail_one": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} page.",
+          "fail_other": "{{expected}} mm attendus, {{found}} mm au plus étroit · {{count}} pages."
+        },
+        "bodyFont": {
+          "title": "Police du texte",
+          "pass": "Le texte est composé en {{found}}.",
+          "warn_one": "Le texte est composé en {{found}}, mais une autre police domine sur {{count}} page.",
+          "warn_other": "Le texte est composé en {{found}}, mais une autre police domine sur {{count}} pages.",
+          "fail": "{{expected}} attendue ; l’essentiel du texte est en {{found}}.",
+          "skip": "Non contrôlé ; la police la plus utilisée est {{found}}."
+        },
+        "bodySize": {
+          "title": "Taille de police",
+          "pass": "L’essentiel du texte fait {{found}} pt.",
+          "fail": "{{expected}} pt attendus ; l’essentiel du texte fait {{found}} pt."
+        },
+        "lineSpacing": {
+          "title": "Interligne",
+          "pass": "Les lignes sont espacées de {{found}} pt, ce qui correspond à un interligne de {{expected}}.",
+          "warn_one": "Correct dans l’ensemble ({{found}} pt), mais différent sur {{count}} page.",
+          "warn_other": "Correct dans l’ensemble ({{found}} pt), mais différent sur {{count}} pages.",
+          "fail": "Les lignes sont espacées de {{found}} pt, ce qui ne correspond pas à un interligne de {{expected}}.",
+          "skip": "Pas assez de texte courant pour mesurer."
+        },
+        "headings": {
+          "title": "Titres",
+          "pass": "Les titres numérotés de même niveau ont le même aspect.",
+          "warn_one": "Sur {{count}} page, un titre diffère des autres de son niveau.",
+          "warn_other": "Sur {{count}} pages, un titre diffère des autres de son niveau.",
+          "skip": "Aucun titre numéroté trouvé."
+        },
+        "pageNumbers": {
+          "title": "Numéros de page",
+          "pass": "Après la première page numérotée, chaque page a un numéro.",
+          "warn_one": "{{count}} page n’a pas de numéro.",
+          "warn_other": "{{count}} pages n’ont pas de numéro.",
+          "fail": "Aucun numéro de page trouvé."
+        },
+        "pageNumberPlace": {
+          "title": "Position des numéros",
+          "pass": "Les numéros sont à l’endroit attendu ({{place}}).",
+          "fail_one": "Sur {{count}} page, le numéro est ailleurs (attendu : {{place}}).",
+          "fail_other": "Sur {{count}} pages, le numéro est ailleurs (attendu : {{place}}).",
+          "skip": "Position des numéros non contrôlée."
+        },
+        "pageNumberOrder": {
+          "title": "Ordre des numéros",
+          "pass": "Les numéros se suivent et le texte principal commence à 1.",
+          "fail_one": "La numérotation se rompt sur {{count}} page.",
+          "fail_other": "La numérotation se rompt sur {{count}} pages."
+        },
+        "frontRoman": {
+          "title": "Pages liminaires",
+          "pass": "Les pages liminaires sont numérotées en chiffres romains.",
+          "warn": "Aucune page numérotée en chiffres romains (i, ii, iii) trouvée.",
+          "skip": "Non contrôlé."
+        }
+      }
     }
   },
   "progress": {
@@ -6524,7 +6690,8 @@
       "badSectionColumns": "Un saut de section doit avoir 1, 2 ou 3 colonnes.",
       "sourceSaveUnsafe": "{{name}} ne peut pas être enregistré sur place car une partie n'a pas pu être lue. Exportez plutôt les sources dans un nouveau fichier.",
       "sourceChangedOnDisk": "{{name}} a été modifié par un autre programme après son ouverture. Rouvrez-le ou exportez les sources dans un nouveau fichier.",
-      "sourceNotEncodable": "Certains caractères ne peuvent pas être enregistrés dans l'encodage de ce fichier ({{encoding}}). Exportez plutôt les sources dans un nouveau fichier."
+      "sourceNotEncodable": "Certains caractères ne peuvent pas être enregistrés dans l'encodage de ce fichier ({{encoding}}). Exportez plutôt les sources dans un nouveau fichier.",
+      "checkTooManyPages": "Le contrôle fonctionne pour des documents de {{limit}} pages au plus."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",

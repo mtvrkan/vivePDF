@@ -37,7 +37,8 @@
     "pdfa": "Arquivo PDF/A",
     "omr": "Folhas de respostas",
     "create": "Criar PDF",
-    "studio": "Estúdio"
+    "studio": "Estúdio",
+    "thesisCheck": "Verificação de tese"
   },
   "common": {
     "retry": "Repetir",
@@ -2878,7 +2879,8 @@
         "properties": "Mostra número e tamanho das páginas, tamanho do arquivo, versão do PDF e criptografia, e edita título, autor, assunto e palavras-chave.",
         "read-aloud": "Lê o documento em voz alta com vozes que funcionam sem internet.",
         "translate": "Traduz o texto selecionado entre os idiomas instalados sem internet.",
-        "print": "Imprime todas as páginas, algumas, as ímpares ou as pares, com escala, cópias e páginas por folha."
+        "print": "Imprime todas as páginas, algumas, as ímpares ou as pares, com escala, cópias e páginas por folha.",
+        "thesis-check": "Verifica uma tese pronta: margens, fontes, entrelinhas e números de página."
       },
       "studioDesign": "Criar no Studio",
       "studioDocument": "Escrever um documento",
@@ -5482,7 +5484,9 @@
         "openPage": "Abrir a página {{n}}",
         "truncated": "Só as primeiras {{limit}} páginas são listadas."
       },
-      "pageListLine": "Páginas: {{pages}}"
+      "pageListLine": "Páginas: {{pages}}",
+      "thesisHeading": "Relatório de formatação da tese",
+      "thesisFileSuffix": "verificacao-tese"
     },
     "resultPanel": "Resultado",
     "pdfa": {
@@ -6096,6 +6100,168 @@
           "description": "Adicione os arquivos dos capítulos, dê um título ao livro e clique em Criar livro."
         }
       }
+    },
+    "thesisCheck": {
+      "description": "Verifica uma tese pronta conforme as normas de formatação da universidade: margens, fonte, espaçamento entre linhas, títulos e números de página.",
+      "rules": "Normas",
+      "presets": {
+        "left40": {
+          "title": "Esquerda 4 cm",
+          "description": "Superior, inferior e direita 2,5 cm · Times New Roman 12 · 1,5 linha"
+        },
+        "left35": {
+          "title": "Esquerda 3,5 cm",
+          "description": "Direita 2,5 cm, superior e inferior 3 cm · Times New Roman 12 · 1,5 linha"
+        },
+        "custom": {
+          "title": "Personalizado",
+          "description": "Os valores da sua universidade: altere os campos abaixo"
+        }
+      },
+      "margins": {
+        "top": "Margem superior (mm)",
+        "bottom": "Margem inferior (mm)",
+        "left": "Margem esquerda (mm)",
+        "right": "Margem direita (mm)"
+      },
+      "fontFamily": "Fonte do texto",
+      "fontFamilyHint": "Deixe vazio para não verificar a fonte.",
+      "fontSize": "Tamanho da fonte (pt)",
+      "lineHeight": "Espaçamento entre linhas",
+      "pageNumbers": "Posição do número de página",
+      "paper": "Papel",
+      "places": {
+        "center": "Centralizado",
+        "right": "À direita",
+        "outside": "Borda externa",
+        "any": "Não verificar"
+      },
+      "papers": {
+        "a4": "A4",
+        "a5": "A5",
+        "b5": "B5",
+        "letter": "Carta",
+        "legal": "Ofício",
+        "any": "Não verificar"
+      },
+      "frontRoman": "Páginas pré-textuais em algarismos romanos (i, ii, iii)",
+      "mirrored": "Impressão frente e verso",
+      "mirroredHint": "Nas páginas pares as margens esquerda e direita se invertem.",
+      "report": "Relatório",
+      "checking": "Medindo as páginas…",
+      "idle": {
+        "title": "O resultado aparece aqui",
+        "description": "Escolha o PDF da tese; a verificação roda sozinha."
+      },
+      "ready": "A tese segue as normas",
+      "notReady": "Corrija os itens em vermelho antes de entregar",
+      "summary": "{{pages}} páginas · {{passed}}/{{total}} normas atendidas",
+      "openOcr": "Abrir a ferramenta de OCR",
+      "skipped": "Não verificado.",
+      "status": {
+        "pass": "Atende",
+        "warn": "Aviso",
+        "fail": "Erro",
+        "skip": "Não verificado"
+      },
+      "groups": {
+        "layout": "Layout da página",
+        "text": "Texto",
+        "numbers": "Números de página"
+      },
+      "checks": {
+        "text": {
+          "title": "Camada de texto",
+          "pass": "Todas as páginas têm texto selecionável.",
+          "warn_one": "{{count}} página parece digitalizada e não pôde ser medida; aplique OCR primeiro.",
+          "warn_other": "{{count}} páginas parecem digitalizadas e não puderam ser medidas; aplique OCR primeiro."
+        },
+        "paper": {
+          "title": "Tamanho do papel",
+          "pass": "Todas as páginas têm {{expected}} mm.",
+          "fail_one": "{{count}} página não tem {{expected}} mm (ex.: {{found}} mm).",
+          "fail_other": "{{count}} páginas não têm {{expected}} mm (ex.: {{found}} mm).",
+          "skip": "Tamanho do papel não verificado."
+        },
+        "marginTop": {
+          "title": "Margem superior",
+          "pass": "Pelo menos {{expected}} mm em todas as páginas.",
+          "fail_one": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} página.",
+          "fail_other": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} páginas."
+        },
+        "marginBottom": {
+          "title": "Margem inferior",
+          "pass": "Pelo menos {{expected}} mm em todas as páginas.",
+          "fail_one": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} página.",
+          "fail_other": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} páginas."
+        },
+        "marginLeft": {
+          "title": "Margem esquerda",
+          "pass": "Pelo menos {{expected}} mm em todas as páginas.",
+          "fail_one": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} página.",
+          "fail_other": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} páginas."
+        },
+        "marginRight": {
+          "title": "Margem direita",
+          "pass": "Pelo menos {{expected}} mm em todas as páginas.",
+          "fail_one": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} página.",
+          "fail_other": "Esperado {{expected}} mm, ponto mais estreito {{found}} mm · {{count}} páginas."
+        },
+        "bodyFont": {
+          "title": "Fonte do texto",
+          "pass": "O texto está em {{found}}.",
+          "warn_one": "O texto está em {{found}}, mas outra fonte predomina em {{count}} página.",
+          "warn_other": "O texto está em {{found}}, mas outra fonte predomina em {{count}} páginas.",
+          "fail": "Esperado {{expected}}; a maior parte do texto está em {{found}}.",
+          "skip": "Não verificado; a fonte mais usada é {{found}}."
+        },
+        "bodySize": {
+          "title": "Tamanho da fonte",
+          "pass": "A maior parte do texto tem {{found}} pt.",
+          "fail": "Esperado {{expected}} pt; a maior parte do texto tem {{found}} pt."
+        },
+        "lineSpacing": {
+          "title": "Espaçamento entre linhas",
+          "pass": "As linhas estão a {{found}} pt, o que corresponde ao espaçamento {{expected}}.",
+          "warn_one": "Correto em geral ({{found}} pt), mas diferente em {{count}} página.",
+          "warn_other": "Correto em geral ({{found}} pt), mas diferente em {{count}} páginas.",
+          "fail": "As linhas estão a {{found}} pt, o que não corresponde ao espaçamento {{expected}}.",
+          "skip": "Não há texto corrido suficiente para medir."
+        },
+        "headings": {
+          "title": "Títulos",
+          "pass": "Títulos numerados do mesmo nível têm a mesma aparência.",
+          "warn_one": "Em {{count}} página um título difere dos outros do mesmo nível.",
+          "warn_other": "Em {{count}} páginas um título difere dos outros do mesmo nível.",
+          "skip": "Nenhum título numerado encontrado."
+        },
+        "pageNumbers": {
+          "title": "Números de página",
+          "pass": "A partir da primeira página numerada, todas têm número.",
+          "warn_one": "{{count}} página não tem número.",
+          "warn_other": "{{count}} páginas não têm número.",
+          "fail": "Nenhum número de página foi encontrado."
+        },
+        "pageNumberPlace": {
+          "title": "Posição dos números",
+          "pass": "Os números estão onde se espera ({{place}}).",
+          "fail_one": "Em {{count}} página o número está em outro lugar (esperado: {{place}}).",
+          "fail_other": "Em {{count}} páginas o número está em outro lugar (esperado: {{place}}).",
+          "skip": "Posição dos números não verificada."
+        },
+        "pageNumberOrder": {
+          "title": "Ordem dos números",
+          "pass": "Os números seguem em ordem e o texto principal começa em 1.",
+          "fail_one": "A numeração se quebra em {{count}} página.",
+          "fail_other": "A numeração se quebra em {{count}} páginas."
+        },
+        "frontRoman": {
+          "title": "Páginas pré-textuais",
+          "pass": "As páginas pré-textuais estão numeradas em algarismos romanos.",
+          "warn": "Nenhuma página numerada em algarismos romanos (i, ii, iii) foi encontrada.",
+          "skip": "Não verificado."
+        }
+      }
     }
   },
   "progress": {
@@ -6524,7 +6690,8 @@
       "badSectionColumns": "Uma quebra de seção deve ter 1, 2 ou 3 colunas.",
       "sourceSaveUnsafe": "{{name}} não pode ser salvo no lugar porque parte dele não pôde ser lida. Exporte as fontes para um novo arquivo.",
       "sourceChangedOnDisk": "{{name}} foi alterado por outro programa depois de aberto. Abra-o de novo ou exporte as fontes para um novo arquivo.",
-      "sourceNotEncodable": "Alguns caracteres não cabem na codificação deste arquivo ({{encoding}}). Exporte as fontes para um novo arquivo."
+      "sourceNotEncodable": "Alguns caracteres não cabem na codificação deste arquivo ({{encoding}}). Exporte as fontes para um novo arquivo.",
+      "checkTooManyPages": "A verificação funciona com documentos de até {{limit}} páginas."
     },
     "revealEmptyPath": "O caminho está vazio.",
     "revealFailed": "Não foi possível abrir este local.",

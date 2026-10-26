@@ -817,6 +817,25 @@ export type PreflightReport = {
   ready: boolean;
 };
 
+export type ThesisCheckStatus = AccessStatus | "skip";
+export type ThesisPaper = "a4" | "a5" | "b5" | "letter" | "legal" | "any";
+export type ThesisNumberPlace = "center" | "right" | "outside" | "any";
+export type ThesisMargins = { top: number; bottom: number; left: number; right: number };
+export type ThesisCheckRules = {
+  paper: ThesisPaper;
+  marginsMm: ThesisMargins;
+  mirrored: boolean;
+  toleranceMm?: number;
+  fontFamily: string;
+  fontSize: number;
+  lineHeight: number;
+  pageNumbers: ThesisNumberPlace;
+  frontRoman: boolean;
+};
+export type ThesisCheckParams = ThesisCheckRules & { path: string; password?: string };
+export type ThesisCheckItem = { id: string; status: ThesisCheckStatus; pages: number[]; pageTotal: number; expected: string | null; found: string | null };
+export type ThesisCheckReport = { pageCount: number; textPages: number; checks: ThesisCheckItem[]; ready: boolean };
+
 export type AccessReport = {
   tagged: boolean;
   title: string;

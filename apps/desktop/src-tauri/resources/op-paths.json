@@ -1788,6 +1788,12 @@
     "read"
    ]
   ],
+  "thesis.check": [
+   [
+    "path",
+    "read"
+   ]
+  ],
   "translate.download": [],
   "translate.import": [
    [

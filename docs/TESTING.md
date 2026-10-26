@@ -131,6 +131,7 @@ in.
 | `organize` | page organizer: rotate page 1, delete page 3, apply | 2 pages, page 1 at 90° |
 | `optimize` | compress a scanned page | smaller file, still one page with its image |
 | `optimize` | OCR a scanned page with Turkish and English | recognised Turkish and English text |
+| `optimize` | thesis check with the left 4 cm rules, then the left margin rule lowered to 20 mm | text and paper pass, left margin fails and then passes, the rules switch to Custom |
 | `security` | add an open password, then remove it | encrypted, opens with the password; decrypted copy has all pages |
 | `security` | text watermark with Turkish letters | watermark text on every page |
 | `security` | create a certificate, sign with it | one signature, intact, covering the whole file |
@@ -492,6 +493,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   fills each whole visible page with the text on top; the scanned pages are named as hidden.
   Apply a second colour: it replaces the first. Remove: the pages are white again. Read the
   coloured file with NVDA: the background is not announced.
+
+- Tools › Thesis check on a real thesis exported from Word and from Studio, with NVDA: every
+  check is read with its state (passed, warning, failed, not checked), the page chips of a failed
+  check open the page, a scanned thesis without text shows the link to OCR, and Export report saves
+  a Markdown file next to the PDF with a Turkish file name.
 
 ### How native dialogs are answered
 

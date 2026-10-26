@@ -1,6 +1,6 @@
 import { statSync } from "node:fs";
 import { expect } from "@wdio/globals";
-import { bootApp, chooseSource, copyFixture, fixtures, openTool, outputPath, probe, runPrimary, setSwitch, t, waitForOutputs } from "../support/app.ts";
+import { bootApp, chooseSource, copyFixture, fixtures, openTool, outputPath, probe, runPrimary, setSwitch, t, typeInto, waitForOutputs } from "../support/app.ts";
 
 describe("optimize", () => {
   before(bootApp);
@@ -34,5 +34,21 @@ describe("optimize", () => {
     expect(text).toContain("INVOICE NUMBER 4821");
     expect(text).toContain("Merhaba");
     expect(text).toContain("OPTICAL TEXT CHECK");
+  });
+
+  it("checks a thesis against the left 4 cm rules and passes the left margin once it is set to 20 mm", async () => {
+    const source = copyFixture(fixtures().sample, "thesis-check.pdf");
+    await openTool("nav.thesisCheck");
+    await chooseSource(source);
+    await $('[data-thesis-check="marginLeft"]').waitForDisplayed({ timeout: 60000 });
+    await expect($('[data-thesis-check="text"]')).toHaveAttribute("data-status", "pass");
+    await expect($('[data-thesis-check="paper"]')).toHaveAttribute("data-status", "pass");
+    await expect($('[data-thesis-check="marginLeft"]')).toHaveAttribute("data-status", "fail");
+    await typeInto($("[data-thesis-margin=left]"), "20");
+    await browser.waitUntil(async () => (await $('[data-thesis-check="marginLeft"]').getAttribute("data-status")) === "pass", {
+      timeout: 60000,
+      timeoutMsg: "the left margin did not pass after lowering the rule to 20 mm",
+    });
+    await expect($(`//*[@role="radio"][contains(normalize-space(.), "${t("tools.thesisCheck.presets.custom.title")}")]`)).toHaveAttribute("aria-checked", "true");
   });
 });

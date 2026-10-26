@@ -37,7 +37,8 @@
     "pdfa": "PDF/A arşiv",
     "omr": "Optik formlar",
     "create": "PDF Oluştur",
-    "studio": "Stüdyo"
+    "studio": "Stüdyo",
+    "thesisCheck": "Tez denetimi"
   },
   "common": {
     "retry": "Tekrar dene",
@@ -2878,7 +2879,8 @@
         "properties": "Sayfa sayısını, sayfa ve dosya boyutunu, PDF sürümünü ve şifrelemeyi gösterir; başlık, yazar, konu ve anahtar kelimeleri düzenler.",
         "read-aloud": "Belgeyi internetsiz çalışan seslerle yüksek sesle okur.",
         "translate": "Seçilen metni kurulu diller arasında internetsiz çevirir.",
-        "print": "Tüm, seçili, tek ya da çift sayfaları ölçekleme, kopya sayısı ve kâğıt başına sayfa ile yazdırır."
+        "print": "Tüm, seçili, tek ya da çift sayfaları ölçekleme, kopya sayısı ve kâğıt başına sayfa ile yazdırır.",
+        "thesis-check": "Bitmiş tezinizi kenar boşlukları, yazı tipi, satır aralığı ve sayfa numaralarına göre denetler."
       },
       "studioDesign": "Stüdyo'da tasarla",
       "studioDocument": "Belge yaz",
@@ -5482,7 +5484,9 @@
         "openPage": "{{n}}. sayfayı aç",
         "truncated": "Yalnızca ilk {{limit}} sayfa listelenir."
       },
-      "pageListLine": "Sayfalar: {{pages}}"
+      "pageListLine": "Sayfalar: {{pages}}",
+      "thesisHeading": "Tez biçim denetimi raporu",
+      "thesisFileSuffix": "tez-denetimi"
     },
     "resultPanel": "Sonuç",
     "pdfa": {
@@ -6096,6 +6100,168 @@
           "description": "Bölüm dosyalarını ekleyin, kitaba bir ad verin ve Kitabı oluştur'a tıklayın."
         }
       }
+    },
+    "thesisCheck": {
+      "description": "Bitmiş tezinizi üniversite yazım kurallarına göre denetler: kenar boşlukları, yazı tipi, satır aralığı, başlıklar ve sayfa numaraları.",
+      "rules": "Kurallar",
+      "presets": {
+        "left40": {
+          "title": "Sol 4 cm",
+          "description": "Üst, alt ve sağ 2,5 cm · Times New Roman 12 · 1,5 satır"
+        },
+        "left35": {
+          "title": "Sol 3,5 cm",
+          "description": "Sağ 2,5 cm, üst ve alt 3 cm · Times New Roman 12 · 1,5 satır"
+        },
+        "custom": {
+          "title": "Özel",
+          "description": "Kendi üniversitenizin değerleri: aşağıdaki alanları değiştirin"
+        }
+      },
+      "margins": {
+        "top": "Üst boşluk (mm)",
+        "bottom": "Alt boşluk (mm)",
+        "left": "Sol boşluk (mm)",
+        "right": "Sağ boşluk (mm)"
+      },
+      "fontFamily": "Gövde yazı tipi",
+      "fontFamilyHint": "Boş bırakırsanız yazı tipi denetlenmez.",
+      "fontSize": "Yazı boyutu (pt)",
+      "lineHeight": "Satır aralığı",
+      "pageNumbers": "Sayfa numarasının yeri",
+      "paper": "Kağıt",
+      "places": {
+        "center": "Ortada",
+        "right": "Sağda",
+        "outside": "Dış kenarda",
+        "any": "Denetleme"
+      },
+      "papers": {
+        "a4": "A4",
+        "a5": "A5",
+        "b5": "B5",
+        "letter": "Letter",
+        "legal": "Legal",
+        "any": "Denetleme"
+      },
+      "frontRoman": "Giriş sayfaları roma rakamıyla (i, ii, iii)",
+      "mirrored": "Çift taraflı baskı",
+      "mirroredHint": "Çift numaralı sayfalarda sol ve sağ boşluk yer değiştirir.",
+      "report": "Rapor",
+      "checking": "Sayfalar ölçülüyor…",
+      "idle": {
+        "title": "Sonuç bu alanda görüntülenir",
+        "description": "Tez PDF'ini seçin; denetim kendiliğinden çalışır."
+      },
+      "ready": "Tez kurallara uygun",
+      "notReady": "Teslimden önce kırmızı maddeleri düzeltin",
+      "summary": "{{pages}} sayfa · {{passed}}/{{total}} kural uygun",
+      "openOcr": "OCR aracını aç",
+      "skipped": "Denetlenmedi.",
+      "status": {
+        "pass": "Uygun",
+        "warn": "Uyarı",
+        "fail": "Hata",
+        "skip": "Denetlenmedi"
+      },
+      "groups": {
+        "layout": "Sayfa düzeni",
+        "text": "Yazı",
+        "numbers": "Sayfa numaraları"
+      },
+      "checks": {
+        "text": {
+          "title": "Metin katmanı",
+          "pass": "Bütün sayfalarda seçilebilir metin var.",
+          "warn_one": "{{count}} sayfa taranmış görünüyor ve ölçülemedi; önce OCR uygulayın.",
+          "warn_other": "{{count}} sayfa taranmış görünüyor ve ölçülemedi; önce OCR uygulayın."
+        },
+        "paper": {
+          "title": "Kağıt boyutu",
+          "pass": "Bütün sayfalar {{expected}} mm.",
+          "fail_one": "{{count}} sayfa {{expected}} mm değil (örneğin {{found}} mm).",
+          "fail_other": "{{count}} sayfa {{expected}} mm değil (örneğin {{found}} mm).",
+          "skip": "Kağıt boyutu denetlenmedi."
+        },
+        "marginTop": {
+          "title": "Üst boşluk",
+          "pass": "Her sayfada en az {{expected}} mm.",
+          "fail_one": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa.",
+          "fail_other": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa."
+        },
+        "marginBottom": {
+          "title": "Alt boşluk",
+          "pass": "Her sayfada en az {{expected}} mm.",
+          "fail_one": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa.",
+          "fail_other": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa."
+        },
+        "marginLeft": {
+          "title": "Sol boşluk",
+          "pass": "Her sayfada en az {{expected}} mm.",
+          "fail_one": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa.",
+          "fail_other": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa."
+        },
+        "marginRight": {
+          "title": "Sağ boşluk",
+          "pass": "Her sayfada en az {{expected}} mm.",
+          "fail_one": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa.",
+          "fail_other": "Beklenen {{expected}} mm, en dar yer {{found}} mm · {{count}} sayfa."
+        },
+        "bodyFont": {
+          "title": "Gövde yazı tipi",
+          "pass": "Metin {{found}} ile yazılmış.",
+          "warn_one": "Metin {{found}} ile yazılmış, ama {{count}} sayfada başka yazı tipi ağır basıyor.",
+          "warn_other": "Metin {{found}} ile yazılmış, ama {{count}} sayfada başka yazı tipi ağır basıyor.",
+          "fail": "Beklenen {{expected}}, metnin çoğu {{found}}.",
+          "skip": "Denetlenmedi; en çok kullanılan yazı tipi {{found}}."
+        },
+        "bodySize": {
+          "title": "Yazı boyutu",
+          "pass": "Metnin çoğu {{found}} pt.",
+          "fail": "Beklenen {{expected}} pt, metnin çoğu {{found}} pt."
+        },
+        "lineSpacing": {
+          "title": "Satır aralığı",
+          "pass": "Satırlar arası {{found}} pt; {{expected}} satır aralığına uyuyor.",
+          "warn_one": "Genelde uygun ({{found}} pt), ama {{count}} sayfada farklı.",
+          "warn_other": "Genelde uygun ({{found}} pt), ama {{count}} sayfada farklı.",
+          "fail": "Satırlar arası {{found}} pt; {{expected}} satır aralığına uymuyor.",
+          "skip": "Ölçülecek kadar düz metin bulunamadı."
+        },
+        "headings": {
+          "title": "Başlıklar",
+          "pass": "Aynı düzeydeki numaralı başlıklar aynı biçimde.",
+          "warn_one": "{{count}} sayfada bir başlık, aynı düzeydeki diğerlerinden farklı biçimde.",
+          "warn_other": "{{count}} sayfada bir başlık, aynı düzeydeki diğerlerinden farklı biçimde.",
+          "skip": "Numaralı başlık bulunamadı."
+        },
+        "pageNumbers": {
+          "title": "Sayfa numaraları",
+          "pass": "İlk numaralı sayfadan sonra her sayfada numara var.",
+          "warn_one": "{{count}} sayfada numara yok.",
+          "warn_other": "{{count}} sayfada numara yok.",
+          "fail": "Hiçbir sayfada sayfa numarası bulunamadı."
+        },
+        "pageNumberPlace": {
+          "title": "Numaraların yeri",
+          "pass": "Numaralar beklenen yerde ({{place}}).",
+          "fail_one": "{{count}} sayfada numara başka yerde (beklenen: {{place}}).",
+          "fail_other": "{{count}} sayfada numara başka yerde (beklenen: {{place}}).",
+          "skip": "Numaraların yeri denetlenmedi."
+        },
+        "pageNumberOrder": {
+          "title": "Numara sırası",
+          "pass": "Numaralar sırayla ilerliyor ve ana metin 1'den başlıyor.",
+          "fail_one": "{{count}} sayfada numara sırası bozuk.",
+          "fail_other": "{{count}} sayfada numara sırası bozuk."
+        },
+        "frontRoman": {
+          "title": "Giriş sayfaları",
+          "pass": "Giriş sayfaları roma rakamıyla numaralanmış.",
+          "warn": "Roma rakamlı (i, ii, iii) sayfa bulunamadı.",
+          "skip": "Denetlenmedi."
+        }
+      }
     }
   },
   "progress": {
@@ -6524,7 +6690,8 @@
       "badSectionColumns": "Bölüm sonu 1, 2 ya da 3 sütunlu olmalı.",
       "sourceSaveUnsafe": "{{name}} bir kısmı okunamadığı için yerinde kaydedilemiyor. Kaynakları yeni bir dosyaya dışa aktarın.",
       "sourceChangedOnDisk": "{{name}} açıldıktan sonra başka bir program tarafından değiştirildi. Dosyayı yeniden açın ya da kaynakları yeni bir dosyaya dışa aktarın.",
-      "sourceNotEncodable": "Bazı karakterler bu dosyanın kodlamasında ({{encoding}}) saklanamıyor. Kaynakları yeni bir dosyaya dışa aktarın."
+      "sourceNotEncodable": "Bazı karakterler bu dosyanın kodlamasında ({{encoding}}) saklanamıyor. Kaynakları yeni bir dosyaya dışa aktarın.",
+      "checkTooManyPages": "Denetim en fazla {{limit}} sayfalık belgelerde çalışır."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",

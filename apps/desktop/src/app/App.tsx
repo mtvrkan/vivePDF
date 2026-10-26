@@ -57,6 +57,7 @@ const ConvertPage = lazy(() => import("@/features/tools/convert/ConvertPage").th
 const EditPage = lazy(() => import("@/features/tools/edit/EditPage").then((m) => ({ default: m.EditPage })));
 const MergePage = lazy(() => import("@/features/tools/merge/MergePage").then((m) => ({ default: m.MergePage })));
 const OcrPage = lazy(() => import("@/features/tools/ocr/OcrPage").then((m) => ({ default: m.OcrPage })));
+const ThesisCheckPage = lazy(() => import("@/features/tools/thesisCheck/ThesisCheckPage").then((m) => ({ default: m.ThesisCheckPage })));
 const PreflightPage = lazy(() => import("@/features/tools/preflight/PreflightPage").then((m) => ({ default: m.PreflightPage })));
 const PdfaPage = lazy(() => import("@/features/tools/pdfa/PdfaPage").then((m) => ({ default: m.PdfaPage })));
 const RenamePage = lazy(() => import("@/features/tools/rename/RenamePage").then((m) => ({ default: m.RenamePage })));
@@ -199,6 +200,7 @@ export default function App() {
             <Route path="/tools/omr" element={<OmrPage />} />
             <Route path="/tools/access" element={<AccessPage />} />
             <Route path="/tools/preflight" element={<PreflightPage />} />
+            <Route path="/tools/thesis-check" element={<ThesisCheckPage />} />
             <Route path="/tools/pdfa" element={<PdfaPage />} />
             <Route path="/tools/edit" element={<EditPage />} />
             <Route path="/tools/sign" element={<SignPage />} />

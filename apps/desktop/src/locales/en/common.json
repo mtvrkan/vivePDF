@@ -37,7 +37,8 @@
     "pdfa": "PDF/A archive",
     "omr": "Answer sheets",
     "create": "Create PDF",
-    "studio": "Studio"
+    "studio": "Studio",
+    "thesisCheck": "Thesis check"
   },
   "common": {
     "retry": "Retry",
@@ -2878,7 +2879,8 @@
         "properties": "Shows page count, page size, file size, PDF version and encryption, and edits title, author, subject and keywords.",
         "read-aloud": "Reads the document aloud with voices that work without internet.",
         "translate": "Translates selected text between installed languages without internet.",
-        "print": "Prints all, some, odd or even pages with scaling, copies and pages per sheet."
+        "print": "Prints all, some, odd or even pages with scaling, copies and pages per sheet.",
+        "thesis-check": "Checks a finished thesis for margins, fonts, line spacing and page numbers."
       },
       "studioDesign": "Design in Studio",
       "studioDocument": "Write a document",
@@ -5482,7 +5484,9 @@
         "openPage": "Open page {{n}}",
         "truncated": "Only the first {{limit}} pages are listed."
       },
-      "pageListLine": "Pages: {{pages}}"
+      "pageListLine": "Pages: {{pages}}",
+      "thesisHeading": "Thesis format report",
+      "thesisFileSuffix": "thesis-check"
     },
     "resultPanel": "Result",
     "pdfa": {
@@ -6096,6 +6100,168 @@
           "description": "Add the chapter files, give the book a title, then click Create book."
         }
       }
+    },
+    "thesisCheck": {
+      "description": "Checks a finished thesis against university formatting rules: margins, font, line spacing, headings and page numbers.",
+      "rules": "Rules",
+      "presets": {
+        "left40": {
+          "title": "Left 4 cm",
+          "description": "Top, bottom and right 2.5 cm · Times New Roman 12 · 1.5 lines"
+        },
+        "left35": {
+          "title": "Left 3.5 cm",
+          "description": "Right 2.5 cm, top and bottom 3 cm · Times New Roman 12 · 1.5 lines"
+        },
+        "custom": {
+          "title": "Custom",
+          "description": "Your university's values: change the fields below"
+        }
+      },
+      "margins": {
+        "top": "Top margin (mm)",
+        "bottom": "Bottom margin (mm)",
+        "left": "Left margin (mm)",
+        "right": "Right margin (mm)"
+      },
+      "fontFamily": "Body font",
+      "fontFamilyHint": "Leave empty to skip the font check.",
+      "fontSize": "Font size (pt)",
+      "lineHeight": "Line spacing",
+      "pageNumbers": "Page number position",
+      "paper": "Paper",
+      "places": {
+        "center": "Centred",
+        "right": "Right",
+        "outside": "Outside edge",
+        "any": "Don't check"
+      },
+      "papers": {
+        "a4": "A4",
+        "a5": "A5",
+        "b5": "B5",
+        "letter": "Letter",
+        "legal": "Legal",
+        "any": "Don't check"
+      },
+      "frontRoman": "Front pages in roman numerals (i, ii, iii)",
+      "mirrored": "Double-sided printing",
+      "mirroredHint": "Left and right margins swap on even pages.",
+      "report": "Report",
+      "checking": "Measuring pages…",
+      "idle": {
+        "title": "The result appears here",
+        "description": "Choose the thesis PDF; the check runs on its own."
+      },
+      "ready": "The thesis follows the rules",
+      "notReady": "Fix the red items before you submit",
+      "summary": "{{pages}} pages · {{passed}}/{{total}} rules met",
+      "openOcr": "Open the OCR tool",
+      "skipped": "Not checked.",
+      "status": {
+        "pass": "Met",
+        "warn": "Warning",
+        "fail": "Error",
+        "skip": "Not checked"
+      },
+      "groups": {
+        "layout": "Page layout",
+        "text": "Text",
+        "numbers": "Page numbers"
+      },
+      "checks": {
+        "text": {
+          "title": "Text layer",
+          "pass": "Every page has selectable text.",
+          "warn_one": "{{count}} page looks scanned and could not be measured; run OCR first.",
+          "warn_other": "{{count}} pages look scanned and could not be measured; run OCR first."
+        },
+        "paper": {
+          "title": "Paper size",
+          "pass": "Every page is {{expected}} mm.",
+          "fail_one": "{{count}} page is not {{expected}} mm (e.g. {{found}} mm).",
+          "fail_other": "{{count}} pages are not {{expected}} mm (e.g. {{found}} mm).",
+          "skip": "Paper size not checked."
+        },
+        "marginTop": {
+          "title": "Top margin",
+          "pass": "At least {{expected}} mm on every page.",
+          "fail_one": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} page.",
+          "fail_other": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} pages."
+        },
+        "marginBottom": {
+          "title": "Bottom margin",
+          "pass": "At least {{expected}} mm on every page.",
+          "fail_one": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} page.",
+          "fail_other": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} pages."
+        },
+        "marginLeft": {
+          "title": "Left margin",
+          "pass": "At least {{expected}} mm on every page.",
+          "fail_one": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} page.",
+          "fail_other": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} pages."
+        },
+        "marginRight": {
+          "title": "Right margin",
+          "pass": "At least {{expected}} mm on every page.",
+          "fail_one": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} page.",
+          "fail_other": "Expected {{expected}} mm, narrowest {{found}} mm · {{count}} pages."
+        },
+        "bodyFont": {
+          "title": "Body font",
+          "pass": "The text is set in {{found}}.",
+          "warn_one": "The text is set in {{found}}, but another font dominates on {{count}} page.",
+          "warn_other": "The text is set in {{found}}, but another font dominates on {{count}} pages.",
+          "fail": "Expected {{expected}}; most of the text is {{found}}.",
+          "skip": "Not checked; the most used font is {{found}}."
+        },
+        "bodySize": {
+          "title": "Font size",
+          "pass": "Most of the text is {{found}} pt.",
+          "fail": "Expected {{expected}} pt; most of the text is {{found}} pt."
+        },
+        "lineSpacing": {
+          "title": "Line spacing",
+          "pass": "Lines are {{found}} pt apart, which fits {{expected}} line spacing.",
+          "warn_one": "Mostly right ({{found}} pt), but different on {{count}} page.",
+          "warn_other": "Mostly right ({{found}} pt), but different on {{count}} pages.",
+          "fail": "Lines are {{found}} pt apart, which does not fit {{expected}} line spacing.",
+          "skip": "Not enough plain text to measure."
+        },
+        "headings": {
+          "title": "Headings",
+          "pass": "Numbered headings of the same level look the same.",
+          "warn_one": "On {{count}} page a heading looks different from the others of its level.",
+          "warn_other": "On {{count}} pages a heading looks different from the others of its level.",
+          "skip": "No numbered headings found."
+        },
+        "pageNumbers": {
+          "title": "Page numbers",
+          "pass": "Every page after the first numbered one has a number.",
+          "warn_one": "{{count}} page has no number.",
+          "warn_other": "{{count}} pages have no number.",
+          "fail": "No page numbers were found."
+        },
+        "pageNumberPlace": {
+          "title": "Number position",
+          "pass": "Numbers are where expected ({{place}}).",
+          "fail_one": "On {{count}} page the number is elsewhere (expected: {{place}}).",
+          "fail_other": "On {{count}} pages the number is elsewhere (expected: {{place}}).",
+          "skip": "Number position not checked."
+        },
+        "pageNumberOrder": {
+          "title": "Number order",
+          "pass": "Numbers run in order and the main text starts at 1.",
+          "fail_one": "The numbering breaks on {{count}} page.",
+          "fail_other": "The numbering breaks on {{count}} pages."
+        },
+        "frontRoman": {
+          "title": "Front pages",
+          "pass": "The front pages are numbered in roman numerals.",
+          "warn": "No pages numbered in roman numerals (i, ii, iii) were found.",
+          "skip": "Not checked."
+        }
+      }
     }
   },
   "progress": {
@@ -6524,7 +6690,8 @@
       "badSectionColumns": "A section break must have 1, 2 or 3 columns.",
       "sourceSaveUnsafe": "{{name}} can't be saved in place because part of it could not be read. Export the sources to a new file instead.",
       "sourceChangedOnDisk": "{{name}} was changed by another program after it was opened. Open it again, or export the sources to a new file.",
-      "sourceNotEncodable": "Some characters can't be stored in this file's encoding ({{encoding}}). Export the sources to a new file instead."
+      "sourceNotEncodable": "Some characters can't be stored in this file's encoding ({{encoding}}). Export the sources to a new file instead.",
+      "checkTooManyPages": "The check works on documents of up to {{limit}} pages."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",

@@ -37,7 +37,8 @@
     "pdfa": "PDF/A-Archiv",
     "omr": "Antwortbögen",
     "create": "PDF erstellen",
-    "studio": "Studio"
+    "studio": "Studio",
+    "thesisCheck": "Abschlussarbeit prüfen"
   },
   "common": {
     "retry": "Wiederholen",
@@ -2878,7 +2879,8 @@
         "properties": "Seitenzahl, Seiten- und Dateigröße, PDF-Version und Verschlüsselung anzeigen sowie Titel, Autor, Betreff und Stichwörter bearbeiten.",
         "read-aloud": "Das Dokument mit Stimmen vorlesen, die ohne Internet funktionieren.",
         "translate": "Markierten Text ohne Internet zwischen installierten Sprachen übersetzen.",
-        "print": "Alle, ausgewählte, ungerade oder gerade Seiten mit Skalierung, Kopien und Seiten pro Blatt drucken."
+        "print": "Alle, ausgewählte, ungerade oder gerade Seiten mit Skalierung, Kopien und Seiten pro Blatt drucken.",
+        "thesis-check": "Prüft eine fertige Abschlussarbeit auf Ränder, Schrift, Zeilenabstand und Seitenzahlen."
       },
       "studioDesign": "In Studio gestalten",
       "studioDocument": "Dokument schreiben",
@@ -5482,7 +5484,9 @@
         "openPage": "Seite {{n}} öffnen",
         "truncated": "Nur die ersten {{limit}} Seiten werden aufgeführt."
       },
-      "pageListLine": "Seiten: {{pages}}"
+      "pageListLine": "Seiten: {{pages}}",
+      "thesisHeading": "Formatbericht der Abschlussarbeit",
+      "thesisFileSuffix": "arbeit-pruefung"
     },
     "resultPanel": "Ergebnis",
     "pdfa": {
@@ -6096,6 +6100,168 @@
           "description": "Fügen Sie die Kapiteldateien hinzu, geben Sie dem Buch einen Titel und klicken Sie auf Buch erstellen."
         }
       }
+    },
+    "thesisCheck": {
+      "description": "Prüft eine fertige Abschlussarbeit anhand der Formatvorgaben der Hochschule: Ränder, Schrift, Zeilenabstand, Überschriften und Seitenzahlen.",
+      "rules": "Vorgaben",
+      "presets": {
+        "left40": {
+          "title": "Links 4 cm",
+          "description": "Oben, unten und rechts 2,5 cm · Times New Roman 12 · 1,5 Zeilen"
+        },
+        "left35": {
+          "title": "Links 3,5 cm",
+          "description": "Rechts 2,5 cm, oben und unten 3 cm · Times New Roman 12 · 1,5 Zeilen"
+        },
+        "custom": {
+          "title": "Eigene",
+          "description": "Die Werte Ihrer Hochschule: Felder unten ändern"
+        }
+      },
+      "margins": {
+        "top": "Oberer Rand (mm)",
+        "bottom": "Unterer Rand (mm)",
+        "left": "Linker Rand (mm)",
+        "right": "Rechter Rand (mm)"
+      },
+      "fontFamily": "Schrift des Fließtexts",
+      "fontFamilyHint": "Leer lassen, um die Schrift nicht zu prüfen.",
+      "fontSize": "Schriftgröße (pt)",
+      "lineHeight": "Zeilenabstand",
+      "pageNumbers": "Position der Seitenzahl",
+      "paper": "Papier",
+      "places": {
+        "center": "Mittig",
+        "right": "Rechts",
+        "outside": "Außen",
+        "any": "Nicht prüfen"
+      },
+      "papers": {
+        "a4": "A4",
+        "a5": "A5",
+        "b5": "B5",
+        "letter": "Letter",
+        "legal": "Legal",
+        "any": "Nicht prüfen"
+      },
+      "frontRoman": "Vorspann mit römischen Zahlen (i, ii, iii)",
+      "mirrored": "Doppelseitiger Druck",
+      "mirroredHint": "Auf geraden Seiten tauschen linker und rechter Rand.",
+      "report": "Bericht",
+      "checking": "Seiten werden vermessen…",
+      "idle": {
+        "title": "Das Ergebnis erscheint hier",
+        "description": "Wählen Sie das PDF der Arbeit; die Prüfung startet von selbst."
+      },
+      "ready": "Die Arbeit hält die Vorgaben ein",
+      "notReady": "Beheben Sie die roten Punkte vor der Abgabe",
+      "summary": "{{pages}} Seiten · {{passed}}/{{total}} Vorgaben erfüllt",
+      "openOcr": "OCR-Werkzeug öffnen",
+      "skipped": "Nicht geprüft.",
+      "status": {
+        "pass": "Erfüllt",
+        "warn": "Warnung",
+        "fail": "Fehler",
+        "skip": "Nicht geprüft"
+      },
+      "groups": {
+        "layout": "Seitenlayout",
+        "text": "Text",
+        "numbers": "Seitenzahlen"
+      },
+      "checks": {
+        "text": {
+          "title": "Textebene",
+          "pass": "Jede Seite hat auswählbaren Text.",
+          "warn_one": "{{count}} Seite wirkt gescannt und konnte nicht vermessen werden; zuerst OCR anwenden.",
+          "warn_other": "{{count}} Seiten wirken gescannt und konnten nicht vermessen werden; zuerst OCR anwenden."
+        },
+        "paper": {
+          "title": "Papierformat",
+          "pass": "Alle Seiten sind {{expected}} mm.",
+          "fail_one": "{{count}} Seite ist nicht {{expected}} mm (z. B. {{found}} mm).",
+          "fail_other": "{{count}} Seiten sind nicht {{expected}} mm (z. B. {{found}} mm).",
+          "skip": "Papierformat nicht geprüft."
+        },
+        "marginTop": {
+          "title": "Oberer Rand",
+          "pass": "Auf jeder Seite mindestens {{expected}} mm.",
+          "fail_one": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seite.",
+          "fail_other": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seiten."
+        },
+        "marginBottom": {
+          "title": "Unterer Rand",
+          "pass": "Auf jeder Seite mindestens {{expected}} mm.",
+          "fail_one": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seite.",
+          "fail_other": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seiten."
+        },
+        "marginLeft": {
+          "title": "Linker Rand",
+          "pass": "Auf jeder Seite mindestens {{expected}} mm.",
+          "fail_one": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seite.",
+          "fail_other": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seiten."
+        },
+        "marginRight": {
+          "title": "Rechter Rand",
+          "pass": "Auf jeder Seite mindestens {{expected}} mm.",
+          "fail_one": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seite.",
+          "fail_other": "Erwartet {{expected}} mm, schmalste Stelle {{found}} mm · {{count}} Seiten."
+        },
+        "bodyFont": {
+          "title": "Schrift des Fließtexts",
+          "pass": "Der Text ist in {{found}} gesetzt.",
+          "warn_one": "Der Text ist in {{found}} gesetzt, aber auf {{count}} Seite überwiegt eine andere Schrift.",
+          "warn_other": "Der Text ist in {{found}} gesetzt, aber auf {{count}} Seiten überwiegt eine andere Schrift.",
+          "fail": "Erwartet {{expected}}; der meiste Text ist {{found}}.",
+          "skip": "Nicht geprüft; die häufigste Schrift ist {{found}}."
+        },
+        "bodySize": {
+          "title": "Schriftgröße",
+          "pass": "Der meiste Text ist {{found}} pt.",
+          "fail": "Erwartet {{expected}} pt; der meiste Text ist {{found}} pt."
+        },
+        "lineSpacing": {
+          "title": "Zeilenabstand",
+          "pass": "Zeilen liegen {{found}} pt auseinander; das passt zu {{expected}}-fachem Abstand.",
+          "warn_one": "Meist passend ({{found}} pt), aber auf {{count}} Seite anders.",
+          "warn_other": "Meist passend ({{found}} pt), aber auf {{count}} Seiten anders.",
+          "fail": "Zeilen liegen {{found}} pt auseinander; das passt nicht zu {{expected}}-fachem Abstand.",
+          "skip": "Zu wenig Fließtext zum Messen."
+        },
+        "headings": {
+          "title": "Überschriften",
+          "pass": "Nummerierte Überschriften gleicher Ebene sehen gleich aus.",
+          "warn_one": "Auf {{count}} Seite weicht eine Überschrift von den anderen ihrer Ebene ab.",
+          "warn_other": "Auf {{count}} Seiten weicht eine Überschrift von den anderen ihrer Ebene ab.",
+          "skip": "Keine nummerierten Überschriften gefunden."
+        },
+        "pageNumbers": {
+          "title": "Seitenzahlen",
+          "pass": "Ab der ersten nummerierten Seite hat jede Seite eine Zahl.",
+          "warn_one": "{{count}} Seite hat keine Zahl.",
+          "warn_other": "{{count}} Seiten haben keine Zahl.",
+          "fail": "Es wurden keine Seitenzahlen gefunden."
+        },
+        "pageNumberPlace": {
+          "title": "Position der Zahlen",
+          "pass": "Die Zahlen stehen wie erwartet ({{place}}).",
+          "fail_one": "Auf {{count}} Seite steht die Zahl woanders (erwartet: {{place}}).",
+          "fail_other": "Auf {{count}} Seiten steht die Zahl woanders (erwartet: {{place}}).",
+          "skip": "Position der Zahlen nicht geprüft."
+        },
+        "pageNumberOrder": {
+          "title": "Reihenfolge der Zahlen",
+          "pass": "Die Zahlen laufen fortlaufend und der Haupttext beginnt bei 1.",
+          "fail_one": "Die Nummerierung bricht auf {{count}} Seite.",
+          "fail_other": "Die Nummerierung bricht auf {{count}} Seiten."
+        },
+        "frontRoman": {
+          "title": "Vorspann",
+          "pass": "Der Vorspann ist mit römischen Zahlen nummeriert.",
+          "warn": "Keine Seiten mit römischen Zahlen (i, ii, iii) gefunden.",
+          "skip": "Nicht geprüft."
+        }
+      }
     }
   },
   "progress": {
@@ -6524,7 +6690,8 @@
       "badSectionColumns": "Ein Abschnittsumbruch muss 1, 2 oder 3 Spalten haben.",
       "sourceSaveUnsafe": "{{name}} kann nicht direkt gespeichert werden, weil ein Teil davon nicht gelesen werden konnte. Exportieren Sie die Quellen stattdessen in eine neue Datei.",
       "sourceChangedOnDisk": "{{name}} wurde nach dem Öffnen von einem anderen Programm geändert. Öffnen Sie die Datei erneut oder exportieren Sie die Quellen in eine neue Datei.",
-      "sourceNotEncodable": "Einige Zeichen lassen sich in der Kodierung dieser Datei ({{encoding}}) nicht speichern. Exportieren Sie die Quellen stattdessen in eine neue Datei."
+      "sourceNotEncodable": "Einige Zeichen lassen sich in der Kodierung dieser Datei ({{encoding}}) nicht speichern. Exportieren Sie die Quellen stattdessen in eine neue Datei.",
+      "checkTooManyPages": "Die Prüfung funktioniert für Dokumente mit bis zu {{limit}} Seiten."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",

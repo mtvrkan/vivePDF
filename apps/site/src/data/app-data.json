@@ -191,6 +191,18 @@
         }
       },
       {
+        "id": "thesis-check",
+        "group": "improve",
+        "label": {
+          "tr": "Tez denetimi",
+          "en": "Thesis check"
+        },
+        "description": {
+          "tr": "Bitmiş tezinizi kenar boşlukları, yazı tipi, satır aralığı ve sayfa numaralarına göre denetler.",
+          "en": "Checks a finished thesis for margins, fonts, line spacing and page numbers."
+        }
+      },
+      {
         "id": "pdfa",
         "group": "improve",
         "label": {

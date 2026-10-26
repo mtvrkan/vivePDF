@@ -201,6 +201,8 @@ import type {
   PptxParams,
   PreflightProfile,
   PreflightReport,
+  ThesisCheckParams,
+  ThesisCheckReport,
   PrintersResult,
   PrintRunParams,
   PrintPreviewParams,
@@ -497,6 +499,7 @@ export const searchStats = () => rpc<SearchStatsResult>("search.stats");
 
 export const checkPreflight = (params: { path: string; password?: string; profile?: PreflightProfile }, options?: RpcCallOptions) =>
   rpc<PreflightReport>("preflight.check", params, options);
+export const checkThesis = (params: ThesisCheckParams, options?: RpcCallOptions) => rpc<ThesisCheckReport>("thesis.check", params, options);
 export const setMetadata = (params: SetMetadataParams, options?: RpcCallOptions) => rpc<SetMetadataResult>("info.set_metadata", params, options);
 export const extractImages = (params: ExtractImagesParams, options?: RpcCallOptions) => rpc<ExtractImagesResult>("convert.extract_images", params, options);
 export const findTextPages = (params: FindTextParams, options?: RpcCallOptions) => rpc<FindTextResult>("pages.find_text", params, options);

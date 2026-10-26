@@ -37,7 +37,8 @@
     "pdfa": "Archivio PDF/A",
     "omr": "Fogli risposte",
     "create": "Crea PDF",
-    "studio": "Studio"
+    "studio": "Studio",
+    "thesisCheck": "Controllo tesi"
   },
   "common": {
     "retry": "Riprova",
@@ -2878,7 +2879,8 @@
         "properties": "Mostra numero e formato delle pagine, dimensione del file, versione PDF e cifratura, e modifica titolo, autore, oggetto e parole chiave.",
         "read-aloud": "Legge il documento ad alta voce con voci che funzionano senza internet.",
         "translate": "Traduce il testo selezionato tra le lingue installate senza internet.",
-        "print": "Stampa tutte le pagine, alcune, le dispari o le pari, con scala, copie e pagine per foglio."
+        "print": "Stampa tutte le pagine, alcune, le dispari o le pari, con scala, copie e pagine per foglio.",
+        "thesis-check": "Controlla una tesi finita: margini, font, interlinea e numeri di pagina."
       },
       "studioDesign": "Progetta in Studio",
       "studioDocument": "Scrivi un documento",
@@ -5482,7 +5484,9 @@
         "openPage": "Apri la pagina {{n}}",
         "truncated": "Sono elencate solo le prime {{limit}} pagine."
       },
-      "pageListLine": "Pagine: {{pages}}"
+      "pageListLine": "Pagine: {{pages}}",
+      "thesisHeading": "Rapporto di formato della tesi",
+      "thesisFileSuffix": "controllo-tesi"
     },
     "resultPanel": "Risultato",
     "pdfa": {
@@ -6096,6 +6100,168 @@
           "description": "Aggiungi i file dei capitoli, dai un titolo al libro e fai clic su Crea libro."
         }
       }
+    },
+    "thesisCheck": {
+      "description": "Controlla una tesi finita secondo le regole di formato dell’università: margini, carattere, interlinea, titoli e numeri di pagina.",
+      "rules": "Regole",
+      "presets": {
+        "left40": {
+          "title": "Sinistro 4 cm",
+          "description": "Superiore, inferiore e destro 2,5 cm · Times New Roman 12 · 1,5 righe"
+        },
+        "left35": {
+          "title": "Sinistro 3,5 cm",
+          "description": "Destro 2,5 cm, superiore e inferiore 3 cm · Times New Roman 12 · 1,5 righe"
+        },
+        "custom": {
+          "title": "Personalizzato",
+          "description": "I valori della tua università: modifica i campi qui sotto"
+        }
+      },
+      "margins": {
+        "top": "Margine superiore (mm)",
+        "bottom": "Margine inferiore (mm)",
+        "left": "Margine sinistro (mm)",
+        "right": "Margine destro (mm)"
+      },
+      "fontFamily": "Carattere del testo",
+      "fontFamilyHint": "Lascia vuoto per non controllare il carattere.",
+      "fontSize": "Dimensione carattere (pt)",
+      "lineHeight": "Interlinea",
+      "pageNumbers": "Posizione del numero di pagina",
+      "paper": "Carta",
+      "places": {
+        "center": "Al centro",
+        "right": "A destra",
+        "outside": "Bordo esterno",
+        "any": "Non controllare"
+      },
+      "papers": {
+        "a4": "A4",
+        "a5": "A5",
+        "b5": "B5",
+        "letter": "Letter",
+        "legal": "Legal",
+        "any": "Non controllare"
+      },
+      "frontRoman": "Pagine iniziali in numeri romani (i, ii, iii)",
+      "mirrored": "Stampa fronte-retro",
+      "mirroredHint": "Sulle pagine pari i margini sinistro e destro si scambiano.",
+      "report": "Rapporto",
+      "checking": "Misurazione delle pagine…",
+      "idle": {
+        "title": "Il risultato appare qui",
+        "description": "Scegli il PDF della tesi; il controllo parte da solo."
+      },
+      "ready": "La tesi rispetta le regole",
+      "notReady": "Correggi i punti in rosso prima della consegna",
+      "summary": "{{pages}} pagine · {{passed}}/{{total}} regole rispettate",
+      "openOcr": "Apri lo strumento OCR",
+      "skipped": "Non controllato.",
+      "status": {
+        "pass": "Conforme",
+        "warn": "Avviso",
+        "fail": "Errore",
+        "skip": "Non controllato"
+      },
+      "groups": {
+        "layout": "Impaginazione",
+        "text": "Testo",
+        "numbers": "Numeri di pagina"
+      },
+      "checks": {
+        "text": {
+          "title": "Livello di testo",
+          "pass": "Ogni pagina ha testo selezionabile.",
+          "warn_one": "{{count}} pagina sembra scansionata e non è stato possibile misurarla; applica prima l’OCR.",
+          "warn_other": "{{count}} pagine sembrano scansionate e non è stato possibile misurarle; applica prima l’OCR."
+        },
+        "paper": {
+          "title": "Formato carta",
+          "pass": "Tutte le pagine misurano {{expected}} mm.",
+          "fail_one": "{{count}} pagina non misura {{expected}} mm (ad es. {{found}} mm).",
+          "fail_other": "{{count}} pagine non misurano {{expected}} mm (ad es. {{found}} mm).",
+          "skip": "Formato carta non controllato."
+        },
+        "marginTop": {
+          "title": "Margine superiore",
+          "pass": "Almeno {{expected}} mm su ogni pagina.",
+          "fail_one": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagina.",
+          "fail_other": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagine."
+        },
+        "marginBottom": {
+          "title": "Margine inferiore",
+          "pass": "Almeno {{expected}} mm su ogni pagina.",
+          "fail_one": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagina.",
+          "fail_other": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagine."
+        },
+        "marginLeft": {
+          "title": "Margine sinistro",
+          "pass": "Almeno {{expected}} mm su ogni pagina.",
+          "fail_one": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagina.",
+          "fail_other": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagine."
+        },
+        "marginRight": {
+          "title": "Margine destro",
+          "pass": "Almeno {{expected}} mm su ogni pagina.",
+          "fail_one": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagina.",
+          "fail_other": "Attesi {{expected}} mm, il punto più stretto ha {{found}} mm · {{count}} pagine."
+        },
+        "bodyFont": {
+          "title": "Carattere del testo",
+          "pass": "Il testo è composto in {{found}}.",
+          "warn_one": "Il testo è composto in {{found}}, ma su {{count}} pagina prevale un altro carattere.",
+          "warn_other": "Il testo è composto in {{found}}, ma su {{count}} pagine prevale un altro carattere.",
+          "fail": "Atteso {{expected}}; la maggior parte del testo è in {{found}}.",
+          "skip": "Non controllato; il carattere più usato è {{found}}."
+        },
+        "bodySize": {
+          "title": "Dimensione carattere",
+          "pass": "La maggior parte del testo è a {{found}} pt.",
+          "fail": "Attesi {{expected}} pt; la maggior parte del testo è a {{found}} pt."
+        },
+        "lineSpacing": {
+          "title": "Interlinea",
+          "pass": "Le righe distano {{found}} pt, il che corrisponde a un’interlinea di {{expected}}.",
+          "warn_one": "Corretta in genere ({{found}} pt), ma diversa su {{count}} pagina.",
+          "warn_other": "Corretta in genere ({{found}} pt), ma diversa su {{count}} pagine.",
+          "fail": "Le righe distano {{found}} pt, il che non corrisponde a un’interlinea di {{expected}}.",
+          "skip": "Testo insufficiente da misurare."
+        },
+        "headings": {
+          "title": "Titoli",
+          "pass": "I titoli numerati dello stesso livello hanno lo stesso aspetto.",
+          "warn_one": "Su {{count}} pagina un titolo è diverso dagli altri del suo livello.",
+          "warn_other": "Su {{count}} pagine un titolo è diverso dagli altri del suo livello.",
+          "skip": "Nessun titolo numerato trovato."
+        },
+        "pageNumbers": {
+          "title": "Numeri di pagina",
+          "pass": "Dalla prima pagina numerata in poi, ogni pagina ha un numero.",
+          "warn_one": "{{count}} pagina non ha numero.",
+          "warn_other": "{{count}} pagine non hanno numero.",
+          "fail": "Nessun numero di pagina trovato."
+        },
+        "pageNumberPlace": {
+          "title": "Posizione dei numeri",
+          "pass": "I numeri sono dove previsto ({{place}}).",
+          "fail_one": "Su {{count}} pagina il numero è altrove (previsto: {{place}}).",
+          "fail_other": "Su {{count}} pagine il numero è altrove (previsto: {{place}}).",
+          "skip": "Posizione dei numeri non controllata."
+        },
+        "pageNumberOrder": {
+          "title": "Ordine dei numeri",
+          "pass": "I numeri sono in sequenza e il testo principale inizia da 1.",
+          "fail_one": "La numerazione si interrompe su {{count}} pagina.",
+          "fail_other": "La numerazione si interrompe su {{count}} pagine."
+        },
+        "frontRoman": {
+          "title": "Pagine iniziali",
+          "pass": "Le pagine iniziali sono numerate in numeri romani.",
+          "warn": "Nessuna pagina numerata in numeri romani (i, ii, iii) trovata.",
+          "skip": "Non controllato."
+        }
+      }
     }
   },
   "progress": {
@@ -6524,7 +6690,8 @@
       "badSectionColumns": "Un’interruzione di sezione deve avere 1, 2 o 3 colonne.",
       "sourceSaveUnsafe": "{{name}} non può essere salvato sul posto perché una parte non è stata letta. Esporta invece le fonti in un nuovo file.",
       "sourceChangedOnDisk": "{{name}} è stato modificato da un altro programma dopo l'apertura. Riaprilo o esporta le fonti in un nuovo file.",
-      "sourceNotEncodable": "Alcuni caratteri non possono essere salvati nella codifica di questo file ({{encoding}}). Esporta invece le fonti in un nuovo file."
+      "sourceNotEncodable": "Alcuni caratteri non possono essere salvati nella codifica di questo file ({{encoding}}). Esporta invece le fonti in un nuovo file.",
+      "checkTooManyPages": "Il controllo funziona con documenti fino a {{limit}} pagine."
     },
     "revealEmptyPath": "Il percorso è vuoto.",
     "revealFailed": "Impossibile aprire questa posizione.",

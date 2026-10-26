@@ -342,6 +342,7 @@ MODULE_OPERATIONS: dict[str, tuple[str, ...]] = {
         "textedit.replace",
         "textedit.spans",
     ),
+    "thesis_check": ("thesis.check",),
     "translate": (
         "translate.download",
         "translate.import",
