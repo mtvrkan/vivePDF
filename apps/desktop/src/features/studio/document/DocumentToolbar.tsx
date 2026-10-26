@@ -30,6 +30,7 @@ import {
   Omega,
   PanelTop,
   PanelBottom,
+  PanelLeft,
   Printer,
   Quote,
   RectangleVertical,
@@ -184,6 +185,8 @@ export function DocumentToolbar({
   const setPageLines = useDocumentViewStore((state) => state.setPageLines);
   const ruler = useDocumentViewStore((state) => state.ruler);
   const setRuler = useDocumentViewStore((state) => state.setRuler);
+  const navigation = useDocumentViewStore((state) => state.navigation);
+  const setNavigation = useDocumentViewStore((state) => state.setNavigation);
   const bodyFont = settings?.fontId ?? "";
   const [tab, setTab] = useState<RibbonTabId>("home");
   const furniture = useFurnitureEditing((current) => current.editing);
@@ -527,6 +530,9 @@ export function DocumentToolbar({
         <RibbonRows>
           <RibbonSmallButton icon={Ruler} label={t("studio.doc.ribbon.ruler")} active={ruler} onClick={() => setRuler(!ruler)} testId="doc-ruler" />
           <RibbonSmallButton icon={SeparatorHorizontal} label={t("studio.doc.ribbon.pageLines")} active={pageLines} onClick={() => setPageLines(!pageLines)} testId="doc-page-lines" />
+        </RibbonRows>
+        <RibbonRows>
+          <RibbonSmallButton icon={PanelLeft} label={t("studio.doc.ribbon.navigation")} active={navigation} onClick={() => setNavigation(!navigation)} testId="doc-navigation" />
         </RibbonRows>
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.zoom")}>

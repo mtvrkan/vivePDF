@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { $, browser, expect } from "@wdio/globals";
+import { $, $$, browser, expect } from "@wdio/globals";
 import { answerDialogs, bootApp, openTool, pressShortcut, probe, t, waitForDialogsAnswered, waitForFile, workDir } from "../support/app.ts";
 
 const BOLD_KEY = "b";
@@ -172,5 +172,25 @@ describe("studio documents", () => {
     await $('[data-testid="document-ruler"]').waitForExist({ reverse: true });
     await $('[data-testid="doc-ruler"]').click();
     await $('[data-testid="document-ruler"]').waitForDisplayed();
+  });
+
+  it("lists the headings in the navigation pane and moves the caret to the one clicked", async () => {
+    await body().$(":scope > p:last-of-type").click();
+    await browser.keys(END);
+    await browser.keys(ENTER);
+    await browser.keys("## Next quarter");
+    await $('[data-ribbon-tab="view"]').click();
+    await $('[data-testid="doc-navigation"]').click();
+    const headings = $$('[data-testid="document-navigation-heading"]');
+    await expect(headings).toBeElementsArrayOfSize(2);
+    await expect($('[data-testid="document-navigation-heading"][aria-current="location"]')).toHaveText("Next quarter");
+
+    await headings[0].click();
+    await expect($('[data-testid="document-navigation-heading"][aria-current="location"]')).toHaveText("Quarterly report");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-navigation.png"));
+
+    await $('[data-ribbon-tab="view"]').click();
+    await $('[data-testid="doc-navigation"]').click();
+    await $('[data-testid="document-navigation"]').waitForExist({ reverse: true });
   });
 });

@@ -9545,6 +9545,7 @@
         "printLayout": "Seitenlayout",
         "pageLines": "Seitenumbruchlinien",
         "ruler": "Lineal",
+        "navigation": "Navigationsbereich",
         "bodyFont": "Text",
         "headingFont": "Überschriften",
         "bodySize": "Textgröße",
@@ -9578,6 +9579,17 @@
       },
       "pageLines": {
         "label": "Seite {{page}}"
+      },
+      "navigation": {
+        "title": "Navigation",
+        "close": "Navigation schließen",
+        "headings": "Überschriften des Dokuments",
+        "emptyTitle": "Noch keine Überschriften",
+        "emptyBody": "Überschriften aus Start › Formatvorlagen erscheinen hier, damit Sie zwischen den Teilen des Dokuments springen können.",
+        "makeHeading": "Diese Zeile zu Überschrift 1 machen",
+        "untitled": "Leere Überschrift",
+        "collapse": "{{name}} reduzieren",
+        "expand": "{{name}} erweitern"
       },
       "pageSetup": {
         "title": "Seite einrichten",

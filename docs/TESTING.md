@@ -150,6 +150,7 @@ in.
 | `studiodoc` | References › Contents › 2 levels and Insert › Cover › Classic on the typed report, then Insert › Header, type and Escape, then Print preview from the top bar | the cover details window opens; the Header & footer tab is selected while typing and gone after Escape, the header holds the text; the status bar says page 3 of 3; the print preview shows the first page as a picture; screenshot in the run folder |
 | `studiodoc` | leave the list, Ctrl+Enter and type a line, then View › Page lines off and on | a page line labelled 4 appears and the status bar says page 4 of 4; the line goes away while Page lines is off; screenshot in the run folder |
 | `studiodoc` | focus the ruler's hanging marker and press Shift+→ twice, then the left margin edge and Shift+→, then View › Ruler off and on | the first paragraph gets a 10 mm hanging indent, the left margin grows by 5 mm, the ruler goes away and comes back; ruler screenshot in the run folder |
+| `studiodoc` | type a "## Next quarter" line at the end, View › Navigation pane, click the first heading, then View › Navigation pane again | the pane lists two headings with Next quarter marked, then Quarterly report marked after the click; the pane closes; screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
 | `studio` | add a heading from the Text category, press Bold in the bar above the canvas, then Position | the bar names the text and Bold changes; the details panel opens on its position section and closes again; screenshot in the run folder |
 | `studiocv` | CV steps: Design from the step list for the layouts, then Experience for the entries | each step shows only its own section; the layout pictures and the experience entries are reached from their steps |
@@ -421,6 +422,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   their format (the number chip shows the format) and Close or a click in the text returns to the
   previous tab; Insert › Cover styles and Cover details, References › Contents levels and title
   all reach the PDF; in Arabic the tab and the sheet fields still work right to left.
+- Studio document navigation pane, light and dark and in Arabic: View › Navigation pane opens it
+  on the left and it stays open after a restart; headings show as a tree with folding arrows,
+  the heading holding the caret is marked while moving through the text, a click brings that
+  heading to the top of the view; with no headings the empty pane's button makes the current line
+  Heading 1; keyboard: Tab reaches the arrows and the headings.
 - Studio document page lines on a long report (Turkish text, a table, a picture and footnotes), at
   50 %, 100 % and page width: each dashed line sits on the line that starts the page in Print
   preview, follows the text while typing above it and is redrawn after the pause; with a cover

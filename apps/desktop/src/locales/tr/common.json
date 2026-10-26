@@ -9546,6 +9546,7 @@
         "printLayout": "Sayfa düzeni",
         "pageLines": "Sayfa sonu çizgileri",
         "ruler": "Cetvel",
+        "navigation": "Gezinti bölmesi",
         "bodyFont": "Metin",
         "headingFont": "Başlıklar",
         "bodySize": "Metin boyutu",
@@ -9579,6 +9580,17 @@
       },
       "pageLines": {
         "label": "Sayfa {{page}}"
+      },
+      "navigation": {
+        "title": "Gezinti",
+        "close": "Gezintiyi kapat",
+        "headings": "Belge başlıkları",
+        "emptyTitle": "Henüz başlık yok",
+        "emptyBody": "Giriş › Stiller'den eklediğiniz başlıklar burada listelenir; belgenin bölümleri arasında hızla geçebilirsiniz.",
+        "makeHeading": "Bu satırı Başlık 1 yap",
+        "untitled": "Boş başlık",
+        "collapse": "{{name}} daralt",
+        "expand": "{{name}} genişlet"
       },
       "pageSetup": {
         "title": "Sayfa yapısı",

@@ -16,6 +16,7 @@ import { DocumentStatusBar } from "./DocumentStatusBar";
 import { useDocumentViewStore, type DocumentZoom } from "./documentView";
 import type { PageLine } from "./pageBreaks";
 import { PageLines } from "./PageLines";
+import { NavigationPane } from "./NavigationPane";
 import { PageSetupDialog } from "./PageSetupDialog";
 import { firstPage } from "./pageBreaks";
 import { SheetFurniture } from "./SheetFurniture";
@@ -162,6 +163,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   const zoomMode = useDocumentViewStore((state) => state.zoom);
   const showPageLines = useDocumentViewStore((state) => state.pageLines);
   const showRuler = useDocumentViewStore((state) => state.ruler);
+  const showNavigation = useDocumentViewStore((state) => state.navigation);
   const paper = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<PageLine[]>([]);
   const layout = useDocumentLayout(language);
@@ -226,6 +228,7 @@ export default function DocumentEditor({ language }: { language: string }) {
       <DocumentTopBar onExport={() => setExporting(true)} onFind={() => openFind(false)} onPrintPreview={() => setPreviewing(true)} />
       {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - inset.left - inset.right} onFind={openFind} onPrintPreview={() => setPreviewing(true)} onPageSetup={() => setPageSetupOpen(true)} /> : null}
       <div className="flex min-h-0 flex-1">
+        {editor && showNavigation ? <NavigationPane editor={editor} /> : null}
         <div className="relative flex min-w-0 flex-1 flex-col">
           <div className="flex min-h-0 flex-1">
             <div ref={host} className="min-h-0 min-w-0 flex-1 overflow-auto bg-muted/40 py-8">

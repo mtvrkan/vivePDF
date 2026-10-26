@@ -9545,6 +9545,7 @@
         "printLayout": "Page",
         "pageLines": "Lignes de saut de page",
         "ruler": "Règle",
+        "navigation": "Volet de navigation",
         "bodyFont": "Texte",
         "headingFont": "Titres",
         "bodySize": "Taille du texte",
@@ -9578,6 +9579,17 @@
       },
       "pageLines": {
         "label": "Page {{page}}"
+      },
+      "navigation": {
+        "title": "Navigation",
+        "close": "Fermer la navigation",
+        "headings": "Titres du document",
+        "emptyTitle": "Aucun titre pour l'instant",
+        "emptyBody": "Les titres ajoutés depuis Accueil › Styles apparaissent ici pour passer d'une partie du document à l'autre.",
+        "makeHeading": "Mettre cette ligne en Titre 1",
+        "untitled": "Titre vide",
+        "collapse": "Réduire {{name}}",
+        "expand": "Développer {{name}}"
       },
       "pageSetup": {
         "title": "Mise en page",

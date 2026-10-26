@@ -9545,6 +9545,7 @@
         "printLayout": "Diseño de impresión",
         "pageLines": "Líneas de salto de página",
         "ruler": "Regla",
+        "navigation": "Panel de navegación",
         "bodyFont": "Texto",
         "headingFont": "Títulos",
         "bodySize": "Tamaño del texto",
@@ -9578,6 +9579,17 @@
       },
       "pageLines": {
         "label": "Página {{page}}"
+      },
+      "navigation": {
+        "title": "Navegación",
+        "close": "Cerrar la navegación",
+        "headings": "Títulos del documento",
+        "emptyTitle": "Aún no hay títulos",
+        "emptyBody": "Los títulos que añadas desde Inicio › Estilos aparecen aquí para saltar entre las partes del documento.",
+        "makeHeading": "Convertir esta línea en Título 1",
+        "untitled": "Título vacío",
+        "collapse": "Contraer {{name}}",
+        "expand": "Expandir {{name}}"
       },
       "pageSetup": {
         "title": "Configurar página",

@@ -9546,6 +9546,7 @@
         "printLayout": "Print layout",
         "pageLines": "Page lines",
         "ruler": "Ruler",
+        "navigation": "Navigation pane",
         "bodyFont": "Body",
         "headingFont": "Headings",
         "bodySize": "Text size",
@@ -9579,6 +9580,17 @@
       },
       "pageLines": {
         "label": "Page {{page}}"
+      },
+      "navigation": {
+        "title": "Navigation",
+        "close": "Close navigation",
+        "headings": "Document headings",
+        "emptyTitle": "No headings yet",
+        "emptyBody": "Headings you add from Home › Styles show up here, so you can jump between parts of the document.",
+        "makeHeading": "Make this line Heading 1",
+        "untitled": "Empty heading",
+        "collapse": "Collapse {{name}}",
+        "expand": "Expand {{name}}"
       },
       "pageSetup": {
         "title": "Page setup",

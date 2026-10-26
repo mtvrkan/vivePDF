@@ -9545,6 +9545,7 @@
         "printLayout": "Layout di stampa",
         "pageLines": "Linee di interruzione pagina",
         "ruler": "Righello",
+        "navigation": "Riquadro di spostamento",
         "bodyFont": "Testo",
         "headingFont": "Titoli",
         "bodySize": "Dimensione testo",
@@ -9578,6 +9579,17 @@
       },
       "pageLines": {
         "label": "Pagina {{page}}"
+      },
+      "navigation": {
+        "title": "Spostamento",
+        "close": "Chiudi lo spostamento",
+        "headings": "Titoli del documento",
+        "emptyTitle": "Ancora nessun titolo",
+        "emptyBody": "I titoli aggiunti da Home › Stili compaiono qui, così puoi passare da una parte all'altra del documento.",
+        "makeHeading": "Trasforma questa riga in Titolo 1",
+        "untitled": "Titolo vuoto",
+        "collapse": "Comprimi {{name}}",
+        "expand": "Espandi {{name}}"
       },
       "pageSetup": {
         "title": "Imposta pagina",

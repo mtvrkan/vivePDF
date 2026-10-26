@@ -10432,6 +10432,7 @@
         "printLayout": "تخطيط الطباعة",
         "pageLines": "خطوط فواصل الصفحات",
         "ruler": "المسطرة",
+        "navigation": "جزء التنقل",
         "bodyFont": "النص",
         "headingFont": "العناوين",
         "bodySize": "حجم النص",
@@ -10469,6 +10470,17 @@
       },
       "pageLines": {
         "label": "الصفحة {{page}}"
+      },
+      "navigation": {
+        "title": "التنقل",
+        "close": "إغلاق التنقل",
+        "headings": "عناوين المستند",
+        "emptyTitle": "لا توجد عناوين بعد",
+        "emptyBody": "تظهر هنا العناوين التي تضيفها من الرئيسية › الأنماط، لتنتقل بين أجزاء المستند.",
+        "makeHeading": "اجعل هذا السطر العنوان 1",
+        "untitled": "عنوان فارغ",
+        "collapse": "طي {{name}}",
+        "expand": "توسيع {{name}}"
       },
       "pageSetup": {
         "title": "إعداد الصفحة",
