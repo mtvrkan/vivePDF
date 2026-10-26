@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { FileText, ListTree } from "lucide-react";
+import { FileText, GraduationCap, ListTree } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/shared/Button";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import { Dialog } from "@/components/shared/Dialog";
 import { Field, TextInput } from "@/components/tool/form";
+import { useToastStore } from "@/shared/store/toastStore";
 import type { DocumentSettings } from "@/types/studio";
 import { RibbonButton } from "../ribbon/Ribbon";
 import { useDocumentStore } from "./documentStore";
 import { COVER_STYLES } from "./model";
+import { applySystemDocumentFont } from "./documentFonts";
+import { THESIS_FONT, THESIS_LAYOUTS, THESIS_RULES, thesisRuleOf, type ThesisRule } from "./thesisRules";
 
 const DEPTHS = [1, 2, 3] as const;
 const COVER_FIELDS = [
@@ -68,6 +71,22 @@ export function CoverMenu({ settings }: { settings: DocumentSettings }) {
       {details ? <CoverDetailsDialog settings={settings} onClose={() => setDetails(false)} /> : null}
     </>
   );
+}
+
+export function ThesisRulesMenu({ settings }: { settings: DocumentSettings }) {
+  const { t } = useTranslation();
+  const current = thesisRuleOf(settings);
+  const apply = async (rule: ThesisRule) => {
+    update(THESIS_LAYOUTS[rule]);
+    const fonted = await applySystemDocumentFont(THESIS_FONT);
+    useToastStore.getState().push(fonted ? "success" : "info", t(fonted ? "studio.doc.thesis.applied" : "studio.doc.thesis.noFont"));
+  };
+  const items: ContextMenuItem[] = [
+    ...THESIS_RULES.map((rule): ContextMenuItem => ({ type: "item", id: `thesis-${rule}`, label: t(`studio.doc.thesis.${rule}`), checked: current === rule, onSelect: () => void apply(rule) })),
+    { type: "separator", id: "thesis-shared" },
+    { type: "item", id: "thesis-note", label: t("studio.doc.thesis.shared"), disabled: true, onSelect: () => undefined },
+  ];
+  return <RibbonButton icon={GraduationCap} label={t("studio.doc.ribbon.thesisRules")} active={current !== null} menu={items} testId="doc-thesis-rules" />;
 }
 
 export function ContentsMenu({ settings }: { settings: DocumentSettings }) {

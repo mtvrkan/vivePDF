@@ -9081,7 +9081,9 @@
           "lectureNotes": "Notes de cours",
           "booklet": "Livret",
           "cv": "CV",
-          "invoice": "Facture"
+          "invoice": "Facture",
+          "mastersThesis": "Mémoire de master",
+          "phdThesis": "Thèse de doctorat"
         },
         "descriptions": {
           "blank": "Une page A4 vide",
@@ -9093,7 +9095,9 @@
           "lectureNotes": "Idées clés, notes et une liste de révision",
           "booklet": "Pages A5 avec couverture et chapitres",
           "cv": "Profil, expérience, formation et compétences",
-          "invoice": "Articles, totaux et détails de paiement"
+          "invoice": "Articles, totaux et détails de paiement",
+          "mastersThesis": "Couverture, résumés, pages liminaires en chiffres romains et chapitres",
+          "phdThesis": "Couverture, résumés, pages liminaires en chiffres romains et chapitres"
         },
         "common": {
           "paragraph": "Remplacez ce paragraphe par votre propre texte. Écrivez avec vos propres mots ce que le lecteur doit savoir, et limitez chaque paragraphe à une seule idée pour que le document reste facile à suivre.",
@@ -9231,6 +9235,28 @@
           "total": "Total",
           "payment": "Détails de paiement",
           "paymentText": "Nom de la banque · Numéro de compte · Merci d'indiquer le numéro de facture en référence."
+        },
+        "thesis": {
+          "title": "Titre de la thèse",
+          "masters": "Mémoire de Master",
+          "phd": "Thèse de Doctorat",
+          "abstract": "RÉSUMÉ",
+          "abstractText": "Résumez l'objectif, la méthode, les résultats et la conclusion de l'étude en 250 mots au plus.",
+          "keywords": "Mots-clés : mot 1, mot 2, mot 3",
+          "foreignAbstract": "ABSTRACT",
+          "foreignAbstractText": "Write the English version of the abstract here.",
+          "foreignKeywords": "Keywords: word 1, word 2, word 3",
+          "preface": "REMERCIEMENTS",
+          "prefaceText": "Remerciez ici votre directeur ou directrice et toutes les personnes qui ont soutenu l'étude.",
+          "introduction": "INTRODUCTION",
+          "aim": "Objectif de l'étude",
+          "scope": "Portée et limites",
+          "framework": "CADRE THÉORIQUE",
+          "method": "MÉTHODE",
+          "results": "RÉSULTATS",
+          "discussion": "DISCUSSION",
+          "conclusion": "CONCLUSION ET RECOMMANDATIONS",
+          "references": "BIBLIOGRAPHIE"
         }
       },
       "cite": {
@@ -9560,7 +9586,8 @@
         "coverDetails": "Informations de couverture…",
         "coverDetailsTitle": "Informations de couverture",
         "tocNone": "Aucune table des matières",
-        "tocTitle": "Titre de la table des matières…"
+        "tocTitle": "Titre de la table des matières…",
+        "thesisRules": "Règles de thèse"
       },
       "printPreview": {
         "title": "Aperçu avant impression"
@@ -9661,6 +9688,13 @@
         "figureListTitle": "Titre de la table des figures",
         "tableListTitle": "Titre de la liste des tableaux",
         "listsHint": "Les listes suivent la table des matières et ne montrent que les légendes de leur type."
+      },
+      "thesis": {
+        "left40": "Gauche 4 cm · haut, bas et droite 2,5 cm",
+        "left35": "Gauche 3,5 cm · droite 2,5 cm · haut et bas 3 cm",
+        "shared": "Times New Roman 12 pt · 1,5 ligne · numéro en bas au centre",
+        "applied": "Règles de thèse appliquées",
+        "noFont": "Règles appliquées ; Times New Roman n'est pas installé sur cet ordinateur, la police n'a donc pas changé"
       }
     },
     "cv": {

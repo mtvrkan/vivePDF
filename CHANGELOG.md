@@ -5,6 +5,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ## [Unreleased]
 ### Added
 - Document editor: View › Dark page shows the page dark on screen, separately from the app's light or dark theme; exported and printed pages stay white [2026-10-26]
+- Studio › Document: Master's thesis and Doctoral thesis starters with a cover, abstract pages in two languages, a preface, contents, figure and table lists, roman-numbered front pages, numbered chapters starting on new pages and a references list; Layout › Thesis rules sets A4, the margins (left 4 cm with 2.5 cm elsewhere, or left 3.5 cm with right 2.5 cm and top and bottom 3 cm), 12 pt Times New Roman, 1.5 lines and page numbers at the bottom centre in one go; the thesis starters have black headings [2026-10-26]
 
 ### Changed
 - Studio › Document: the formatting bar is now a Word-style ribbon with Home, Insert, Layout and References tabs and a Table tab that appears while the cursor is in a table; Layout sets margins, orientation, paper, columns and page numbers from menus, References holds the sources, bibliography, citation style and language, footnotes and contents, colour buttons show a colour bar instead of a hex code, and the ribbon can be collapsed to its tabs [2026-10-26]

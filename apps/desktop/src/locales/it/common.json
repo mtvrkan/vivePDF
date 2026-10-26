@@ -9081,7 +9081,9 @@
           "lectureNotes": "Appunti",
           "booklet": "Opuscolo",
           "cv": "CV",
-          "invoice": "Fattura"
+          "invoice": "Fattura",
+          "mastersThesis": "Tesi di laurea magistrale",
+          "phdThesis": "Tesi di dottorato"
         },
         "descriptions": {
           "blank": "Una pagina A4 vuota",
@@ -9093,7 +9095,9 @@
           "lectureNotes": "Idee principali, note e una lista di revisione",
           "booklet": "Pagine A5 con copertina e capitoli",
           "cv": "Profilo, esperienza, formazione e competenze",
-          "invoice": "Voci, totali e dettagli di pagamento"
+          "invoice": "Voci, totali e dettagli di pagamento",
+          "mastersThesis": "Copertina, riassunti, pagine iniziali in numeri romani e capitoli",
+          "phdThesis": "Copertina, riassunti, pagine iniziali in numeri romani e capitoli"
         },
         "common": {
           "paragraph": "Sostituisci questo paragrafo con il tuo testo. Scrivi con parole tue ciò che il lettore deve sapere e limita ogni paragrafo a un'unica idea, così il documento è facile da seguire.",
@@ -9231,6 +9235,28 @@
           "total": "Totale",
           "payment": "Dettagli di pagamento",
           "paymentText": "Nome della banca · Numero di conto · Indica il numero di fattura come causale."
+        },
+        "thesis": {
+          "title": "Titolo della tesi",
+          "masters": "Tesi di Laurea Magistrale",
+          "phd": "Tesi di Dottorato",
+          "abstract": "RIASSUNTO",
+          "abstractText": "Riassumi lo scopo, il metodo, i risultati e la conclusione dello studio in non più di 250 parole.",
+          "keywords": "Parole chiave: parola 1, parola 2, parola 3",
+          "foreignAbstract": "ABSTRACT",
+          "foreignAbstractText": "Write the English version of the abstract here.",
+          "foreignKeywords": "Keywords: word 1, word 2, word 3",
+          "preface": "RINGRAZIAMENTI",
+          "prefaceText": "Ringrazia qui il tuo relatore o la tua relatrice e tutte le persone che hanno sostenuto lo studio.",
+          "introduction": "INTRODUZIONE",
+          "aim": "Scopo dello studio",
+          "scope": "Ambito e limiti",
+          "framework": "QUADRO TEORICO",
+          "method": "METODO",
+          "results": "RISULTATI",
+          "discussion": "DISCUSSIONE",
+          "conclusion": "CONCLUSIONI E RACCOMANDAZIONI",
+          "references": "BIBLIOGRAFIA"
         }
       },
       "cite": {
@@ -9560,7 +9586,8 @@
         "coverDetails": "Dati della copertina…",
         "coverDetailsTitle": "Dati della copertina",
         "tocNone": "Nessun sommario",
-        "tocTitle": "Titolo del sommario…"
+        "tocTitle": "Titolo del sommario…",
+        "thesisRules": "Regole per la tesi"
       },
       "printPreview": {
         "title": "Anteprima di stampa"
@@ -9661,6 +9688,13 @@
         "figureListTitle": "Titolo dell'indice delle figure",
         "tableListTitle": "Titolo dell'indice delle tabelle",
         "listsHint": "Gli indici seguono il sommario e mostrano solo le didascalie del loro tipo."
+      },
+      "thesis": {
+        "left40": "Sinistra 4 cm · sopra, sotto e destra 2,5 cm",
+        "left35": "Sinistra 3,5 cm · destra 2,5 cm · sopra e sotto 3 cm",
+        "shared": "Times New Roman 12 pt · 1,5 righe · numero in basso al centro",
+        "applied": "Regole per la tesi applicate",
+        "noFont": "Regole applicate; Times New Roman non è presente su questo computer, quindi il carattere non è cambiato"
       }
     },
     "cv": {

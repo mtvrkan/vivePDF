@@ -243,4 +243,16 @@ describe("studio documents", () => {
     await browser.keys(ESCAPE);
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-caption.png"));
   });
+
+  it("applies the thesis rules from Layout and ticks the rule the page now follows", async () => {
+    await $('[data-ribbon-tab="layout"]').click();
+    await $('[data-testid="doc-thesis-rules"]').click();
+    await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.thesis.left35")}"]`).click();
+    await expect($(`//*[@role="status"][contains(normalize-space(.), "${t("studio.doc.thesis.applied")}")]`)).toBeDisplayed();
+
+    await $('[data-testid="doc-thesis-rules"]').click();
+    await expect($(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.thesis.left35")}"]`)).toHaveAttribute("aria-checked", "true");
+    await browser.keys(ESCAPE);
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-thesis-rules.png"));
+  });
 });

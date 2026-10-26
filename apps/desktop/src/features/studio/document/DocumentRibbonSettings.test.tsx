@@ -1,5 +1,7 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { fontCatalogue } from "@/shared/rpc/operations";
+import { useToastStore } from "@/shared/store/toastStore";
 import { Editor } from "@tiptap/react";
 import { ready, setLocale } from "@/app/i18n";
 import { storeCitationSource } from "./citationSource";
@@ -10,6 +12,8 @@ import { DocumentToolbar } from "./DocumentToolbar";
 import { useFurnitureEditing } from "./furnitureEditing";
 import { contentInsets, createDocument } from "./model";
 import { SheetFurniture } from "./SheetFurniture";
+
+vi.mock("@/shared/rpc/operations", async (importOriginal) => ({ ...(await importOriginal<object>()), fontCatalogue: vi.fn() }));
 
 let editor: Editor | null = null;
 
@@ -98,6 +102,43 @@ describe("document settings in the ribbon", () => {
     expect(useDocumentViewStore.getState().darkPage).toBe(true);
     expect(localStorage.getItem("vivepdf.documentDarkPage")).toBe("true");
     expect(document.documentElement.classList.contains("dark")).toBe(false);
+  });
+
+  it("applies the 4 cm thesis rule with Times New Roman from the Layout tab", async () => {
+    vi.mocked(fontCatalogue).mockResolvedValue({ fonts: [{ id: "system:timesnew", name: "Times New Roman", source: "system" }] } as never);
+    mountToolbar();
+    fireEvent.click(screen.getByRole("tab", { name: "Layout" }));
+
+    pick("doc-thesis-rules", "Left 4 cm · top, bottom and right 2.5 cm");
+
+    expect(settings()).toMatchObject({ paper: "a4", marginLeftMm: 40, marginTopMm: 25, fontSize: 12, lineHeight: 1.5, pageNumbers: "center" });
+    await waitFor(() => expect(settings().fontId).toBe("system:timesnew"));
+    fireEvent.click(screen.getByTestId("doc-thesis-rules"));
+    expect(screen.getByRole("menuitemcheckbox", { name: "Left 4 cm · top, bottom and right 2.5 cm" }).getAttribute("aria-checked")).toBe("true");
+  });
+
+  it("keeps the font and says so when Times New Roman is missing", async () => {
+    vi.mocked(fontCatalogue).mockResolvedValue({ fonts: [] } as never);
+    mountToolbar();
+    const before = settings().fontId;
+    fireEvent.click(screen.getByRole("tab", { name: "Layout" }));
+
+    pick("doc-thesis-rules", "Left 3.5 cm · right 2.5 cm · top and bottom 3 cm");
+
+    expect(settings()).toMatchObject({ marginLeftMm: 35, marginTopMm: 30 });
+    await waitFor(() => expect(useToastStore.getState().toasts.at(-1)?.message).toMatch(/Times New Roman is not on this computer/));
+    expect(settings().fontId).toBe(before);
+  });
+
+  it("still applies the margins when the font list cannot be read", async () => {
+    vi.mocked(fontCatalogue).mockRejectedValue(new Error("engine down"));
+    mountToolbar();
+    fireEvent.click(screen.getByRole("tab", { name: "Layout" }));
+
+    pick("doc-thesis-rules", "Left 4 cm · top, bottom and right 2.5 cm");
+
+    expect(settings().marginLeftMm).toBe(40);
+    await waitFor(() => expect(useToastStore.getState().toasts.at(-1)?.message).toMatch(/not on this computer/));
   });
 
   it("opens the Header & footer tab from Insert and goes back to Insert when it closes", () => {

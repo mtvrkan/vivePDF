@@ -9082,7 +9082,9 @@
           "lectureNotes": "Lecture notes",
           "booklet": "Booklet",
           "cv": "CV",
-          "invoice": "Invoice"
+          "invoice": "Invoice",
+          "mastersThesis": "Master's thesis",
+          "phdThesis": "Doctoral thesis"
         },
         "descriptions": {
           "blank": "An empty A4 page",
@@ -9094,7 +9096,9 @@
           "lectureNotes": "Key ideas, notes and a review checklist",
           "booklet": "A5 pages with cover and chapters",
           "cv": "Profile, experience, education and skills",
-          "invoice": "Items, totals and payment details"
+          "invoice": "Items, totals and payment details",
+          "mastersThesis": "Cover, abstracts, roman front pages and chapters",
+          "phdThesis": "Cover, abstracts, roman front pages and chapters"
         },
         "common": {
           "paragraph": "Replace this paragraph with your own text. Write in your own words what the reader needs to know, and keep each paragraph to one idea so the document is easy to follow.",
@@ -9232,6 +9236,28 @@
           "total": "Total",
           "payment": "Payment details",
           "paymentText": "Bank name · Account number · Please quote the invoice number as the reference."
+        },
+        "thesis": {
+          "title": "Thesis Title",
+          "masters": "Master's Thesis",
+          "phd": "Doctoral Thesis",
+          "abstract": "ABSTRACT",
+          "abstractText": "Summarise the aim, method, findings and conclusion of the study in no more than 250 words.",
+          "keywords": "Keywords: word 1, word 2, word 3",
+          "foreignAbstract": "ÖZET",
+          "foreignAbstractText": "Özetin Türkçesini buraya yazın.",
+          "foreignKeywords": "Anahtar Kelimeler: kelime 1, kelime 2, kelime 3",
+          "preface": "ACKNOWLEDGEMENTS",
+          "prefaceText": "Thank your supervisor and everyone who supported the study here.",
+          "introduction": "INTRODUCTION",
+          "aim": "Aim of the Study",
+          "scope": "Scope and Limitations",
+          "framework": "THEORETICAL FRAMEWORK",
+          "method": "METHOD",
+          "results": "FINDINGS",
+          "discussion": "DISCUSSION",
+          "conclusion": "CONCLUSION AND RECOMMENDATIONS",
+          "references": "REFERENCES"
         }
       },
       "cite": {
@@ -9561,7 +9587,8 @@
         "coverDetails": "Cover details…",
         "coverDetailsTitle": "Cover details",
         "tocNone": "No contents",
-        "tocTitle": "Contents title…"
+        "tocTitle": "Contents title…",
+        "thesisRules": "Thesis rules"
       },
       "printPreview": {
         "title": "Print preview"
@@ -9662,6 +9689,13 @@
         "figureListTitle": "Title of the list of figures",
         "tableListTitle": "Title of the list of tables",
         "listsHint": "The lists come after the contents and show only the captions of their kind."
+      },
+      "thesis": {
+        "left40": "Left 4 cm · top, bottom and right 2.5 cm",
+        "left35": "Left 3.5 cm · right 2.5 cm · top and bottom 3 cm",
+        "shared": "Times New Roman 12 pt · 1.5 lines · number at the bottom centre",
+        "applied": "Thesis rules applied",
+        "noFont": "Thesis rules applied; Times New Roman is not on this computer, so the font stayed the same"
       }
     },
     "cv": {

@@ -9081,7 +9081,9 @@
           "lectureNotes": "Apuntes",
           "booklet": "Folleto",
           "cv": "CV",
-          "invoice": "Factura"
+          "invoice": "Factura",
+          "mastersThesis": "Tesis de maestría",
+          "phdThesis": "Tesis doctoral"
         },
         "descriptions": {
           "blank": "Una página A4 en blanco",
@@ -9093,7 +9095,9 @@
           "lectureNotes": "Ideas clave, notas y una lista de repaso",
           "booklet": "Páginas A5 con portada y capítulos",
           "cv": "Perfil, experiencia, formación y habilidades",
-          "invoice": "Artículos, totales y datos de pago"
+          "invoice": "Artículos, totales y datos de pago",
+          "mastersThesis": "Portada, resúmenes, páginas preliminares en romanos y capítulos",
+          "phdThesis": "Portada, resúmenes, páginas preliminares en romanos y capítulos"
         },
         "common": {
           "paragraph": "Sustituya este párrafo por su propio texto. Escriba con sus propias palabras lo que el lector necesita saber y limite cada párrafo a una sola idea para que el documento sea fácil de seguir.",
@@ -9231,6 +9235,28 @@
           "total": "Total",
           "payment": "Datos de pago",
           "paymentText": "Nombre del banco · Número de cuenta · Indique el número de factura como referencia."
+        },
+        "thesis": {
+          "title": "Título de la tesis",
+          "masters": "Tesis de Maestría",
+          "phd": "Tesis Doctoral",
+          "abstract": "RESUMEN",
+          "abstractText": "Resuma el objetivo, el método, los resultados y la conclusión del estudio en no más de 250 palabras.",
+          "keywords": "Palabras clave: palabra 1, palabra 2, palabra 3",
+          "foreignAbstract": "ABSTRACT",
+          "foreignAbstractText": "Write the English version of the abstract here.",
+          "foreignKeywords": "Keywords: word 1, word 2, word 3",
+          "preface": "AGRADECIMIENTOS",
+          "prefaceText": "Agradezca aquí a su director o directora y a todas las personas que apoyaron el estudio.",
+          "introduction": "INTRODUCCIÓN",
+          "aim": "Objetivo del estudio",
+          "scope": "Alcance y limitaciones",
+          "framework": "MARCO TEÓRICO",
+          "method": "MÉTODO",
+          "results": "RESULTADOS",
+          "discussion": "DISCUSIÓN",
+          "conclusion": "CONCLUSIONES Y RECOMENDACIONES",
+          "references": "REFERENCIAS"
         }
       },
       "cite": {
@@ -9560,7 +9586,8 @@
         "coverDetails": "Datos de la portada…",
         "coverDetailsTitle": "Datos de la portada",
         "tocNone": "Sin índice",
-        "tocTitle": "Título del índice…"
+        "tocTitle": "Título del índice…",
+        "thesisRules": "Normas de tesis"
       },
       "printPreview": {
         "title": "Vista previa de impresión"
@@ -9661,6 +9688,13 @@
         "figureListTitle": "Título del índice de figuras",
         "tableListTitle": "Título del índice de tablas",
         "listsHint": "Los índices van después del contenido y muestran solo los títulos de su tipo."
+      },
+      "thesis": {
+        "left40": "Izquierda 4 cm · arriba, abajo y derecha 2,5 cm",
+        "left35": "Izquierda 3,5 cm · derecha 2,5 cm · arriba y abajo 3 cm",
+        "shared": "Times New Roman 12 pt · 1,5 líneas · número abajo en el centro",
+        "applied": "Normas de tesis aplicadas",
+        "noFont": "Normas aplicadas; Times New Roman no está en este equipo, así que la fuente no cambió"
       }
     },
     "cv": {

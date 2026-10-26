@@ -9081,7 +9081,9 @@
           "lectureNotes": "Vorlesungsnotizen",
           "booklet": "Broschüre",
           "cv": "Lebenslauf",
-          "invoice": "Rechnung"
+          "invoice": "Rechnung",
+          "mastersThesis": "Masterarbeit",
+          "phdThesis": "Dissertation"
         },
         "descriptions": {
           "blank": "Eine leere A4-Seite",
@@ -9093,7 +9095,9 @@
           "lectureNotes": "Kernaussagen, Notizen und eine Wiederholungsliste",
           "booklet": "A5-Seiten mit Titelseite und Kapiteln",
           "cv": "Profil, Berufserfahrung, Ausbildung und Fähigkeiten",
-          "invoice": "Positionen, Summen und Zahlungsdetails"
+          "invoice": "Positionen, Summen und Zahlungsdetails",
+          "mastersThesis": "Deckblatt, Zusammenfassungen, römisch nummerierte Vorseiten und Kapitel",
+          "phdThesis": "Deckblatt, Zusammenfassungen, römisch nummerierte Vorseiten und Kapitel"
         },
         "common": {
           "paragraph": "Ersetzen Sie diesen Absatz durch Ihren eigenen Text. Schreiben Sie in eigenen Worten, was die Leserin oder der Leser wissen muss, und beschränken Sie jeden Absatz auf einen Gedanken, damit das Dokument leicht zu lesen ist.",
@@ -9231,6 +9235,28 @@
           "total": "Gesamtbetrag",
           "payment": "Zahlungsdetails",
           "paymentText": "Bankname · Kontonummer · Bitte geben Sie die Rechnungsnummer als Verwendungszweck an."
+        },
+        "thesis": {
+          "title": "Titel der Arbeit",
+          "masters": "Masterarbeit",
+          "phd": "Dissertation",
+          "abstract": "ZUSAMMENFASSUNG",
+          "abstractText": "Fassen Sie Ziel, Methode, Ergebnisse und Fazit der Arbeit in höchstens 250 Wörtern zusammen.",
+          "keywords": "Schlüsselwörter: Wort 1, Wort 2, Wort 3",
+          "foreignAbstract": "ABSTRACT",
+          "foreignAbstractText": "Write the English version of the abstract here.",
+          "foreignKeywords": "Keywords: word 1, word 2, word 3",
+          "preface": "VORWORT",
+          "prefaceText": "Danken Sie hier Ihrer Betreuerin oder Ihrem Betreuer und allen, die die Arbeit unterstützt haben.",
+          "introduction": "EINLEITUNG",
+          "aim": "Ziel der Arbeit",
+          "scope": "Umfang und Grenzen",
+          "framework": "THEORETISCHER RAHMEN",
+          "method": "METHODE",
+          "results": "ERGEBNISSE",
+          "discussion": "DISKUSSION",
+          "conclusion": "FAZIT UND EMPFEHLUNGEN",
+          "references": "LITERATURVERZEICHNIS"
         }
       },
       "cite": {
@@ -9560,7 +9586,8 @@
         "coverDetails": "Deckblattangaben…",
         "coverDetailsTitle": "Deckblattangaben",
         "tocNone": "Kein Inhaltsverzeichnis",
-        "tocTitle": "Titel des Inhaltsverzeichnisses…"
+        "tocTitle": "Titel des Inhaltsverzeichnisses…",
+        "thesisRules": "Regeln für Abschlussarbeiten"
       },
       "printPreview": {
         "title": "Druckvorschau"
@@ -9661,6 +9688,13 @@
         "figureListTitle": "Titel des Abbildungsverzeichnisses",
         "tableListTitle": "Titel des Tabellenverzeichnisses",
         "listsHint": "Die Verzeichnisse folgen auf das Inhaltsverzeichnis und zeigen nur Beschriftungen ihrer Art."
+      },
+      "thesis": {
+        "left40": "Links 4 cm · oben, unten und rechts 2,5 cm",
+        "left35": "Links 3,5 cm · rechts 2,5 cm · oben und unten 3 cm",
+        "shared": "Times New Roman 12 pt · 1,5 Zeilen · Seitenzahl unten mittig",
+        "applied": "Regeln für Abschlussarbeiten angewendet",
+        "noFont": "Regeln angewendet; Times New Roman ist auf diesem Computer nicht vorhanden, die Schrift bleibt unverändert"
       }
     },
     "cv": {

@@ -1,9 +1,11 @@
 import type { TFunction } from "i18next";
 import type { DocumentSettings, StudioDocument } from "@/types/studio";
 import { createDocument, uniformMargins } from "./model";
+import { THESIS_INDENT_PT, THESIS_LAYOUTS } from "./thesisRules";
 import { escapeHtml } from "./toHtml";
 
-export const DOCUMENT_STARTERS = ["blank", "report", "letter", "petition", "assignment", "minutes", "lectureNotes", "booklet", "cv", "invoice"] as const;
+export const DOCUMENT_STARTERS = ["blank", "report", "letter", "petition", "assignment", "minutes", "lectureNotes", "booklet", "cv", "invoice", "mastersThesis", "phdThesis"] as const;
+export const THESIS_STARTERS: readonly DocumentStarter[] = ["mastersThesis", "phdThesis"];
 
 export type DocumentStarter = (typeof DOCUMENT_STARTERS)[number];
 
@@ -16,9 +18,58 @@ const tasks = (items: string[]) => `<ul data-type="taskList">${items.map((item) 
 const table = (header: string[] | null, rows: string[][]) =>
   `<table>${header ? `<tr>${header.map((cell) => `<th><p>${cell}</p></th>`).join("")}</tr>` : ""}${rows.map((row) => `<tr>${row.map((cell) => `<td><p>${cell}</p></td>`).join("")}</tr>`).join("")}</table>`;
 const strong = (value: string) => `<strong>${value}</strong>`;
+const indented = (value: string) => `<p style="text-indent:${THESIS_INDENT_PT}pt;text-align:justify">${value}</p>`;
+const PAGE_BREAK_HTML = '<div class="page-break"></div>';
+const MAIN_BREAK_HTML = '<div class="page-break" data-main="true"></div>';
+
+function thesis(kind: "masters" | "phd"): Builder {
+  return (s, today) => ({
+    settings: {
+      ...THESIS_LAYOUTS.left40,
+      accent: "#000000",
+      cover: true,
+      coverStyle: "classic",
+      title: s("thesis.title"),
+      subtitle: s(`thesis.${kind}`),
+      author: s("common.yourName"),
+      date: today,
+      toc: true,
+      tocDepth: 3,
+      figureList: true,
+      tableList: true,
+      headingNumbers: "dotted",
+      referencesTitle: s("thesis.references"),
+    },
+    html: [
+      h(1, s("thesis.abstract"), "center"),
+      indented(s("thesis.abstractText")),
+      p(strong(s("thesis.keywords"))),
+      PAGE_BREAK_HTML,
+      h(1, s("thesis.foreignAbstract"), "center"),
+      indented(s("thesis.foreignAbstractText")),
+      p(strong(s("thesis.foreignKeywords"))),
+      PAGE_BREAK_HTML,
+      h(1, s("thesis.preface"), "center"),
+      indented(s("thesis.prefaceText")),
+      p(s("common.yourName"), "right"),
+      MAIN_BREAK_HTML,
+      h(1, s("thesis.introduction")),
+      indented(s("common.paragraph")),
+      h(2, s("thesis.aim")),
+      indented(s("common.paragraph")),
+      h(2, s("thesis.scope")),
+      indented(s("common.paragraphShort")),
+      ...(["framework", "method", "results", "discussion", "conclusion"] as const).flatMap((chapter) => [PAGE_BREAK_HTML, h(1, s(`thesis.${chapter}`)), indented(s("common.paragraph"))]),
+      PAGE_BREAK_HTML,
+      "<div data-bibliography></div>",
+    ].join(""),
+  });
+}
 
 const BUILDERS: Record<DocumentStarter, Builder> = {
   blank: () => ({ html: "" }),
+  mastersThesis: thesis("masters"),
+  phdThesis: thesis("phd"),
   report: (s, today) => ({
     settings: { cover: true, toc: true, title: s("report.title"), subtitle: s("report.subtitle"), date: today, coverStyle: "band" },
     html: [

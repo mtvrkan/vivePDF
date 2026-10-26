@@ -1,4 +1,5 @@
-import { fontFile } from "@/shared/rpc/operations";
+import { fontCatalogue, fontFile } from "@/shared/rpc/operations";
+import { useDocumentStore } from "./documentStore";
 
 const LOADABLE = new Set(["ttf", "otf", "woff", "woff2"]);
 const VARIANTS = [
@@ -40,4 +41,13 @@ export function loadDocumentFont(fontId: string): Promise<void> {
   const task = Promise.all(VARIANTS.map((variant) => loadVariant(fontId, variant.bold, variant.italic).catch(() => undefined))).then(() => undefined);
   loading.set(fontId, task);
   return task;
+}
+
+export async function applySystemDocumentFont(name: string): Promise<boolean> {
+  const { fonts } = await fontCatalogue().catch(() => ({ fonts: [] }));
+  const fontId = fonts.find((font) => font.source === "system" && font.name === name)?.id;
+  if (!fontId) return false;
+  void loadDocumentFont(fontId);
+  useDocumentStore.getState().setSettings({ fontId, headingFontId: null });
+  return true;
 }

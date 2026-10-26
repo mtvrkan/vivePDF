@@ -6,8 +6,10 @@ import { describeError } from "@/shared/lib/errorMessage";
 import { toRpcError } from "@/shared/rpc/client";
 import { useToastStore } from "@/shared/store/toastStore";
 import { importAsDocument, pickImportFile } from "./documentFile";
+import { applySystemDocumentFont } from "./documentFonts";
 import { readDocumentDraft, useDocumentStore } from "./documentStore";
-import { buildStarter, DOCUMENT_STARTERS, type DocumentStarter } from "./starters";
+import { buildStarter, DOCUMENT_STARTERS, THESIS_STARTERS, type DocumentStarter } from "./starters";
+import { THESIS_FONT } from "./thesisRules";
 
 export function DocumentDraftCard() {
   const { t } = useTranslation();
@@ -33,7 +35,10 @@ export function DocumentStart({ language }: { language: string }) {
   const open = useDocumentStore((state) => state.open);
   const [importing, setImporting] = useState(false);
 
-  const start = (starter: DocumentStarter) => open(buildStarter(starter, t, language));
+  const start = (starter: DocumentStarter) => {
+    open(buildStarter(starter, t, language));
+    if (THESIS_STARTERS.includes(starter)) void applySystemDocumentFont(THESIS_FONT);
+  };
 
   const importFile = async () => {
     const path = await pickImportFile(t("studio.doc.importFilter"));
@@ -59,7 +64,7 @@ export function DocumentStart({ language }: { language: string }) {
         </Button>
       </div>
       <DocumentDraftCard />
-      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {DOCUMENT_STARTERS.map((starter) => (
           <li key={starter}>
             <button type="button" data-document-starter={starter} onClick={() => start(starter)} className="card glass-tinted flex h-full w-full flex-col items-start gap-2 rounded-xl p-4 text-left hover:ring-2 hover:ring-primary/40">

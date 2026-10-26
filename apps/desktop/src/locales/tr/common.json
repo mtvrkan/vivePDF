@@ -9082,7 +9082,9 @@
           "lectureNotes": "Ders notu",
           "booklet": "Kitapçık",
           "cv": "Özgeçmiş",
-          "invoice": "Fatura"
+          "invoice": "Fatura",
+          "mastersThesis": "Yüksek lisans tezi",
+          "phdThesis": "Doktora tezi"
         },
         "descriptions": {
           "blank": "Boş bir A4 sayfa",
@@ -9094,7 +9096,9 @@
           "lectureNotes": "Ana fikirler, notlar ve tekrar listesi",
           "booklet": "Kapaklı ve bölümlü A5 sayfalar",
           "cv": "Profil, deneyim, eğitim ve beceriler",
-          "invoice": "Kalemler, toplamlar ve ödeme bilgileri"
+          "invoice": "Kalemler, toplamlar ve ödeme bilgileri",
+          "mastersThesis": "Kapak, özetler, roman rakamlı ön sayfalar ve bölümler",
+          "phdThesis": "Kapak, özetler, roman rakamlı ön sayfalar ve bölümler"
         },
         "common": {
           "paragraph": "Bu paragrafı kendi metninizle değiştirin. Okuyucunun bilmesi gerekenleri kendi sözcüklerinizle yazın ve her paragrafta tek bir fikre odaklanın; böylece belge kolay okunur.",
@@ -9232,6 +9236,28 @@
           "total": "Genel toplam",
           "payment": "Ödeme bilgileri",
           "paymentText": "Banka adı · IBAN · Açıklamaya lütfen fatura numarasını yazın."
+        },
+        "thesis": {
+          "title": "Tezin Başlığı",
+          "masters": "Yüksek Lisans Tezi",
+          "phd": "Doktora Tezi",
+          "abstract": "ÖZET",
+          "abstractText": "Çalışmanın amacını, yöntemini, bulgularını ve sonucunu 250 kelimeyi geçmeyecek biçimde özetleyin.",
+          "keywords": "Anahtar Kelimeler: kelime 1, kelime 2, kelime 3",
+          "foreignAbstract": "ABSTRACT",
+          "foreignAbstractText": "Write the English version of the abstract here.",
+          "foreignKeywords": "Keywords: word 1, word 2, word 3",
+          "preface": "ÖNSÖZ",
+          "prefaceText": "Çalışma boyunca desteğini esirgemeyen danışmanınıza ve emeği geçenlere teşekkürünüzü buraya yazın.",
+          "introduction": "GİRİŞ",
+          "aim": "Çalışmanın Amacı",
+          "scope": "Kapsam ve Sınırlılıklar",
+          "framework": "KURAMSAL ÇERÇEVE",
+          "method": "YÖNTEM",
+          "results": "BULGULAR",
+          "discussion": "TARTIŞMA",
+          "conclusion": "SONUÇ VE ÖNERİLER",
+          "references": "KAYNAKÇA"
         }
       },
       "cite": {
@@ -9561,7 +9587,8 @@
         "coverDetails": "Kapak bilgileri…",
         "coverDetailsTitle": "Kapak bilgileri",
         "tocNone": "İçindekiler yok",
-        "tocTitle": "İçindekiler başlığı…"
+        "tocTitle": "İçindekiler başlığı…",
+        "thesisRules": "Tez kuralları"
       },
       "printPreview": {
         "title": "Baskı önizleme"
@@ -9662,6 +9689,13 @@
         "figureListTitle": "Şekiller listesinin başlığı",
         "tableListTitle": "Tablolar listesinin başlığı",
         "listsHint": "Listeler içindekilerden sonra gelir ve yalnızca kendi türündeki yazıları gösterir."
+      },
+      "thesis": {
+        "left40": "Sol 4 cm · üst, alt ve sağ 2,5 cm",
+        "left35": "Sol 3,5 cm · sağ 2,5 cm · üst ve alt 3 cm",
+        "shared": "Times New Roman 12 pt · 1,5 satır · numara altta ortada",
+        "applied": "Tez kuralları uygulandı",
+        "noFont": "Tez kuralları uygulandı; Times New Roman bu bilgisayarda bulunamadığı için yazı tipi değişmedi"
       }
     },
     "cv": {

@@ -86,7 +86,7 @@ import { FurnitureGroups } from "./FurnitureGroups";
 import { useFurnitureEditing } from "./furnitureEditing";
 import { DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES, uniformMargin, uniformMargins } from "./model";
 import { CaptionGroup } from "./CaptionGroup";
-import { ContentsMenu, CoverMenu } from "./PagesMenus";
+import { ContentsMenu, CoverMenu, ThesisRulesMenu } from "./PagesMenus";
 import { SectionBreakMenu } from "./SectionBreakMenu";
 import { SourcesDialog } from "./SourcesDialog";
 import { SpacingMenu } from "./SpacingMenu";
@@ -464,6 +464,7 @@ export function DocumentToolbar({
         <RibbonButton icon={RectangleVertical} label={t("studio.doc.ribbon.orientation")} menu={orientationItems} />
         <RibbonButton icon={Ruler} label={t("studio.doc.ribbon.paper")} menu={paperItems} />
         <RibbonButton icon={Columns3} label={t("studio.doc.ribbon.columns")} menu={columnItems} />
+        {settings ? <ThesisRulesMenu settings={settings} /> : null}
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.breaks")}>
         <SectionBreakMenu editor={editor} />

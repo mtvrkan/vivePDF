@@ -261,6 +261,18 @@ describe("document starters", () => {
     expect(buildStarter("booklet", t, "en").settings).toMatchObject({ paper: "a5", cover: true });
     expect(buildStarter("blank", t, "en").content).toBe("");
   });
+
+  it("lays out the thesis starters on the 4 cm left margin with roman front pages", () => {
+    const masters = buildStarter("mastersThesis", t, "en");
+    const phd = buildStarter("phdThesis", t, "en");
+
+    expect(masters.settings).toMatchObject({ paper: "a4", marginLeftMm: 40, marginRightMm: 25, fontSize: 12, lineHeight: 1.5, pageNumbers: "center", accent: "#000000", cover: true, toc: true, headingNumbers: "dotted" });
+    expect(masters.settings.subtitle).toBe(en.studio.doc.starters.thesis.masters);
+    expect(phd.settings.subtitle).toBe(en.studio.doc.starters.thesis.phd);
+    expect((masters.content as string).match(/data-main="true"/g)).toHaveLength(1);
+    expect(masters.content as string).toContain("text-indent:35.43pt");
+    expect(masters.content as string).toMatch(/<div data-bibliography><\/div>$/);
+  });
 });
 
 describe("citations in the document", () => {

@@ -9081,7 +9081,9 @@
           "lectureNotes": "Anotações de aula",
           "booklet": "Livreto",
           "cv": "Currículo",
-          "invoice": "Fatura"
+          "invoice": "Fatura",
+          "mastersThesis": "Dissertação de mestrado",
+          "phdThesis": "Tese de doutorado"
         },
         "descriptions": {
           "blank": "Uma página A4 em branco",
@@ -9093,7 +9095,9 @@
           "lectureNotes": "Ideias principais, notas e uma lista de revisão",
           "booklet": "Páginas A5 com capa e capítulos",
           "cv": "Perfil, experiência, formação e habilidades",
-          "invoice": "Itens, totais e dados de pagamento"
+          "invoice": "Itens, totais e dados de pagamento",
+          "mastersThesis": "Capa, resumos, páginas iniciais em romanos e capítulos",
+          "phdThesis": "Capa, resumos, páginas iniciais em romanos e capítulos"
         },
         "common": {
           "paragraph": "Substitua este parágrafo pelo seu próprio texto. Escreva com suas próprias palavras o que o leitor precisa saber e mantenha cada parágrafo com uma única ideia, para que o documento seja fácil de acompanhar.",
@@ -9231,6 +9235,28 @@
           "total": "Total",
           "payment": "Dados de pagamento",
           "paymentText": "Nome do banco · Número da conta · Informe o número da fatura como referência."
+        },
+        "thesis": {
+          "title": "Título da tese",
+          "masters": "Dissertação de Mestrado",
+          "phd": "Tese de Doutorado",
+          "abstract": "RESUMO",
+          "abstractText": "Resuma o objetivo, o método, os resultados e a conclusão do estudo em até 250 palavras.",
+          "keywords": "Palavras-chave: palavra 1, palavra 2, palavra 3",
+          "foreignAbstract": "ABSTRACT",
+          "foreignAbstractText": "Write the English version of the abstract here.",
+          "foreignKeywords": "Keywords: word 1, word 2, word 3",
+          "preface": "AGRADECIMENTOS",
+          "prefaceText": "Agradeça aqui ao seu orientador ou orientadora e a todos que apoiaram o estudo.",
+          "introduction": "INTRODUÇÃO",
+          "aim": "Objetivo do estudo",
+          "scope": "Escopo e limitações",
+          "framework": "REFERENCIAL TEÓRICO",
+          "method": "MÉTODO",
+          "results": "RESULTADOS",
+          "discussion": "DISCUSSÃO",
+          "conclusion": "CONCLUSÃO E RECOMENDAÇÕES",
+          "references": "REFERÊNCIAS"
         }
       },
       "cite": {
@@ -9560,7 +9586,8 @@
         "coverDetails": "Dados da capa…",
         "coverDetailsTitle": "Dados da capa",
         "tocNone": "Sem sumário",
-        "tocTitle": "Título do sumário…"
+        "tocTitle": "Título do sumário…",
+        "thesisRules": "Regras de tese"
       },
       "printPreview": {
         "title": "Visualizar impressão"
@@ -9661,6 +9688,13 @@
         "figureListTitle": "Título da lista de figuras",
         "tableListTitle": "Título da lista de tabelas",
         "listsHint": "As listas vêm depois do sumário e mostram só as legendas do seu tipo."
+      },
+      "thesis": {
+        "left40": "Esquerda 4 cm · superior, inferior e direita 2,5 cm",
+        "left35": "Esquerda 3,5 cm · direita 2,5 cm · superior e inferior 3 cm",
+        "shared": "Times New Roman 12 pt · 1,5 linha · número embaixo no centro",
+        "applied": "Regras de tese aplicadas",
+        "noFont": "Regras aplicadas; o Times New Roman não está neste computador, então a fonte não mudou"
       }
     },
     "cv": {
