@@ -47,6 +47,7 @@ class StudioDocumentSettings(RpcModel):
     footer_align: FurnitureAlign = "left"
     page_numbers: PageNumbers = "center"
     page_number_format: str = Field(default="{n}", min_length=1, max_length=40)
+    page_number_start: int = Field(default=1, ge=1, le=9999)
     furniture_on_first: bool = True
     toc: bool = False
     toc_title: str = Field(default="Contents", max_length=100)
@@ -110,6 +111,7 @@ class StudioDocumentPreviewResult(RpcModel):
     height: float
     block_starts: list[StudioDocumentBlockStart] = Field(default_factory=list)
     page_starts: list[StudioDocumentPageStart] = Field(default_factory=list)
+    page_labels: list[str] = Field(default_factory=list)
 
 
 class StudioDocumentPageParams(RpcModel):

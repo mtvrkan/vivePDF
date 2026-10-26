@@ -21,21 +21,44 @@ import { PAGE_BREAK } from "./toHtml";
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    pageBreak: { setPageBreak: () => ReturnType };
+    pageBreak: { setPageBreak: () => ReturnType; setMainMatterBreak: () => ReturnType };
     sectionBreak: { setSectionBreak: (columns: number, continuous?: boolean) => ReturnType };
     fontId: { setFontId: (fontId: string) => ReturnType; unsetFontId: () => ReturnType };
   }
 }
 
-export const PageBreak = Node.create({
+export const PageBreak = Node.create<{ mainLabel: string }>({
   name: PAGE_BREAK,
   group: "block",
   atom: true,
   selectable: true,
+  addOptions: () => ({ mainLabel: "" }),
+  addAttributes() {
+    return {
+      main: {
+        default: false,
+        parseHTML: (element) => element.getAttribute("data-main") === "true",
+        renderHTML: (attributes) => (attributes.main ? { "data-main": "true" } : {}),
+      },
+    };
+  },
   parseHTML: () => [{ tag: "div[data-page-break]" }, { tag: "div.page-break" }],
-  renderHTML: ({ HTMLAttributes }) => ["div", mergeAttributes(HTMLAttributes, { class: "page-break", "data-page-break": "" })],
+  renderHTML({ node, HTMLAttributes }) {
+    const marked = node.attrs.main ? { "data-label": this.options.mainLabel, role: "separator", "aria-label": this.options.mainLabel } : {};
+    return ["div", mergeAttributes(HTMLAttributes, { class: "page-break", "data-page-break": "" }, marked)];
+  },
   addCommands() {
-    return { setPageBreak: () => ({ commands }) => commands.insertContent({ type: this.name }) };
+    return {
+      setPageBreak: () => ({ commands }) => commands.insertContent({ type: this.name }),
+      setMainMatterBreak:
+        () =>
+        ({ tr, commands }) => {
+          tr.doc.descendants((node, position) => {
+            if (node.type.name === this.name && node.attrs.main) tr.setNodeMarkup(position, undefined, { ...node.attrs, main: false });
+          });
+          return commands.insertContent({ type: this.name, attrs: { main: true } });
+        },
+    };
   },
   addKeyboardShortcuts() {
     return { "Mod-Enter": () => this.editor.commands.setPageBreak() };
@@ -109,7 +132,7 @@ export const FontId = Extension.create({
   },
 });
 
-export function documentExtensions(placeholder: string, citations: CitationSource, sectionLabel?: SectionLabel): AnyExtension[] {
+export function documentExtensions(placeholder: string, citations: CitationSource, sectionLabel?: SectionLabel, mainLabel = ""): AnyExtension[] {
   return [
     StarterKit.configure({ heading: { levels: [1, 2, 3, 4] }, link: { openOnClick: false, autolink: true, protocols: ["mailto"] } }),
     TextStyle,
@@ -128,7 +151,7 @@ export function documentExtensions(placeholder: string, citations: CitationSourc
     TaskItem.configure({ nested: true }),
     TableKit.configure({ table: { resizable: true } }),
     Image.configure({ inline: false, allowBase64: true, resize: { enabled: true, minWidth: 32, minHeight: 32, alwaysPreserveAspectRatio: true } }),
-    PageBreak,
+    PageBreak.configure({ mainLabel }),
     sectionLabel ? SectionBreak.configure({ label: sectionLabel }) : SectionBreak,
     Footnote,
     ...citationNodes(citations),

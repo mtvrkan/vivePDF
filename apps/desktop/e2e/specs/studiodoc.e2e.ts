@@ -206,4 +206,19 @@ describe("studio documents", () => {
     await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.headingNumbers.none")}"]`).click();
     await expect(body().$("h1")).toHaveText("Quarterly report");
   });
+
+  it("starts the main text at the heading the caret is on and numbers the pages from there", async () => {
+    await body().$("h2").click();
+    await browser.keys(String.fromCharCode(0xe011));
+    await $('[data-ribbon-tab="layout"]').click();
+    await $('[data-testid="doc-main-matter"]').click();
+    await expect(body().$('.page-break[data-main="true"]')).toHaveAttribute("aria-label", t("studio.doc.mainMatter.label"));
+
+    await $('[data-ribbon-tab="design"]').click();
+    await $('[data-testid="doc-heading-numbers"]').click();
+    await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.headingNumbers.plain")}"]`).click();
+    await expect(body().$("h1")).toHaveText("Quarterly report");
+    await expect(body().$("h2")).toHaveText("0.1 Next quarter");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-main-matter.png"));
+  });
 });

@@ -4,13 +4,26 @@ import { Plugin, PluginKey, type EditorState } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
 import type { DocumentHeadingNumbers } from "@/types/studio";
 import { HeadingCounter } from "./headingCounter";
+import { PAGE_BREAK } from "./toHtml";
+
+function mainBreakPosition(doc: ProseNode): number {
+  let found = -1;
+  doc.descendants((node, position) => {
+    if (found >= 0) return false;
+    if (node.type.name === PAGE_BREAK && node.attrs.main) found = position;
+    return true;
+  });
+  return found;
+}
 
 export function headingLabels(doc: ProseNode, style: DocumentHeadingNumbers): Map<number, string> {
   const counter = new HeadingCounter(style);
   const labels = new Map<number, string>();
   if (style === "none") return labels;
+  const main = mainBreakPosition(doc);
   doc.descendants((node, position) => {
     if (node.type.name !== "heading") return true;
+    if (position < main) return false;
     const label = counter.next(Number(node.attrs.level) || 1);
     if (label) labels.set(position, label);
     return false;

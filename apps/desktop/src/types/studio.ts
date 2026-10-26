@@ -469,6 +469,7 @@ export type DocumentLayout = {
   footerAlign: DocumentAlign;
   pageNumbers: DocumentPageNumbers;
   pageNumberFormat: string;
+  pageNumberStart: number;
   furnitureOnFirst: boolean;
   toc: boolean;
   tocTitle: string;
@@ -511,6 +512,6 @@ export type StudioDocumentBlockStart = { id: string; page: number; top: number }
 
 export type StudioDocumentPageStart = { page: number; top: number; words: string[] };
 
-export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number; blockStarts: StudioDocumentBlockStart[]; pageStarts: StudioDocumentPageStart[] };
+export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number; blockStarts: StudioDocumentBlockStart[]; pageStarts: StudioDocumentPageStart[]; pageLabels?: string[] };
 
 export type StudioDocumentPage = { image: string; width: number; height: number };

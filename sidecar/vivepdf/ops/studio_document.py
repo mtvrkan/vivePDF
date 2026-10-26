@@ -150,7 +150,14 @@ def preview_document(
                 StudioDocumentPageStart(page=start.page, top=start.top, words=start.words)
                 for start in found.pages
             ],
+            page_labels=_page_labels(document),
         )
+
+
+def _page_labels(document: pymupdf.Document) -> list[str]:
+    if not document.get_page_labels():
+        return [str(number + 1) for number in range(document.page_count)]
+    return [page.get_label() or str(page.number + 1) for page in document]
 
 
 @op("studio.preview_document_page", StudioDocumentPageParams)

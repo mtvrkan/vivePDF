@@ -4,10 +4,11 @@ import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import { IconButton } from "@/components/shared/IconButton";
 import { TextInput } from "@/components/tool/form";
 import type { DocumentAlign, DocumentSettings } from "@/types/studio";
+import { NumberInput } from "../design/controls";
 import { RibbonButton, RibbonGroup, RibbonRow, RibbonRows, RibbonSmallButton } from "../ribbon/Ribbon";
 import { useDocumentStore } from "./documentStore";
 import { useFurnitureEditing, type FurniturePart } from "./furnitureEditing";
-import { DOCUMENT_ALIGNS } from "./model";
+import { DOCUMENT_ALIGNS, PAGE_NUMBER_START } from "./model";
 
 const ALIGN_ICONS: Record<DocumentAlign, LucideIcon> = { left: AlignLeft, center: AlignCenter, right: AlignRight };
 const PART_ICONS: Record<FurniturePart, LucideIcon> = { header: PanelTop, footer: PanelBottom };
@@ -37,16 +38,30 @@ export function FurnitureGroups({ settings, numberItems, onClose }: { settings: 
         <RibbonButton icon={Hash} label={t("studio.doc.ribbon.pageNumbers")} menu={numberItems} testId="doc-furniture-numbers" />
         {settings.pageNumbers !== "none" ? (
           <RibbonRows>
-            <span className="text-xs text-muted-foreground">{t("studio.doc.settings.numberFormat")}</span>
-            <TextInput
-              value={settings.pageNumberFormat}
-              maxLength={40}
-              title={t("studio.doc.settings.numberFormatHint")}
-              aria-label={t("studio.doc.settings.numberFormat")}
-              onChange={(event) => update({ pageNumberFormat: event.target.value })}
-              className="h-8 w-36 font-mono text-sm"
-              data-testid="doc-number-format"
-            />
+            <RibbonRow>
+              <span className="w-20 truncate text-xs text-muted-foreground">{t("studio.doc.settings.numberFormat")}</span>
+              <TextInput
+                value={settings.pageNumberFormat}
+                maxLength={40}
+                title={t("studio.doc.settings.numberFormatHint")}
+                aria-label={t("studio.doc.settings.numberFormat")}
+                onChange={(event) => update({ pageNumberFormat: event.target.value })}
+                className="h-8 w-36 font-mono text-sm"
+                data-testid="doc-number-format"
+              />
+            </RibbonRow>
+            <RibbonRow>
+              <span className="w-20 truncate text-xs text-muted-foreground">{t("studio.doc.mainMatter.startAt")}</span>
+              <NumberInput
+                value={settings.pageNumberStart}
+                min={PAGE_NUMBER_START[0]}
+                max={PAGE_NUMBER_START[1]}
+                step={1}
+                ariaLabel={t("studio.doc.mainMatter.startAt")}
+                onChange={(value) => update({ pageNumberStart: Math.round(value) })}
+                className="w-36"
+              />
+            </RibbonRow>
           </RibbonRows>
         ) : null}
       </RibbonGroup>

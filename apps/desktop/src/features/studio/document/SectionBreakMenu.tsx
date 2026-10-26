@@ -1,4 +1,4 @@
-import { Columns2 } from "lucide-react";
+import { BookOpenText, Columns2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import type { Editor } from "@tiptap/react";
 import type { ContextMenuItem } from "@/components/shared/ContextMenu";
@@ -23,5 +23,10 @@ export function SectionBreakMenu({ editor }: { editor: Editor }) {
     })),
   ];
 
-  return <RibbonButton icon={Columns2} label={t("studio.doc.section.button")} menu={items} testId="doc-section-break" />;
+  return (
+    <>
+      <RibbonButton icon={Columns2} label={t("studio.doc.section.button")} menu={items} testId="doc-section-break" />
+      <RibbonButton icon={BookOpenText} label={t("studio.doc.mainMatter.button")} onClick={() => editor.chain().focus().setMainMatterBreak().run()} testId="doc-main-matter" />
+    </>
+  );
 }

@@ -9047,7 +9047,8 @@
         "none": "Keine",
         "center": "Unten mittig",
         "right": "Unten rechts",
-        "outside": "Äußere Ecke"
+        "outside": "Äußere Ecke",
+        "format": "Seitenzahlen formatieren…"
       },
       "covers": {
         "classic": "Klassisch",
@@ -9580,6 +9581,11 @@
       },
       "pageLines": {
         "label": "Seite {{page}}"
+      },
+      "mainMatter": {
+        "button": "Beginn des Haupttexts",
+        "label": "Hier beginnt der Haupttext · frühere Seiten werden i, ii, iii nummeriert",
+        "startAt": "Beginnen bei"
       },
       "headingNumbers": {
         "label": "Überschriftennummern",

@@ -824,3 +824,85 @@ def test_a_margin_out_of_range_is_refused():
         StudioDocumentRenderParams.model_validate(
             {"html": "<p>x</p>", "output": "/tmp/x.pdf", "settings": {"marginLeftMm": 2}}
         )
+
+
+FRONT_AND_MAIN = (
+    '<h1 id="h-1">Abstract</h1><p>Summary.</p>'
+    '<div class="page-break"></div><h1 id="h-2">Preface</h1><p>Thanks.</p>'
+    '<div class="page-break" data-main="true"></div><h1 id="h-3">Introduction</h1><p>Body.</p>'
+    '<div class="page-break"></div><h1 id="h-4">Results</h1><p>End.</p>'
+)
+
+
+def _footer_numbers(document: pymupdf.Document) -> list[str]:
+    return [page.get_text().split()[-1] for page in document]
+
+
+def test_pages_before_the_main_text_break_get_roman_numbers_and_the_main_text_starts_at_one(
+    tmp_path: Path,
+):
+    with _render(tmp_path, FRONT_AND_MAIN, images=[]) as document:
+        footers = _footer_numbers(document)
+        labels = [page.get_label() for page in document]
+
+    assert footers == ["i", "ii", "1", "2"]
+    assert labels == ["i", "ii", "1", "2"]
+
+
+def test_the_contents_and_the_total_follow_the_page_numbers_after_a_cover(tmp_path: Path):
+    settings = {"cover": True, "toc": True, "pageNumberFormat": "{n} of {total}"}
+
+    with _render(tmp_path, FRONT_AND_MAIN, images=[], settings=settings) as document:
+        texts = [page.get_text() for page in document]
+        labels = [page.get_label() for page in document]
+
+    assert labels == ["i", "ii", "iii", "iv", "1", "2"]
+    assert "Introduction\n1\n" in texts[1] and "Abstract\niii\n" in texts[1]
+    assert "1 of 2" in texts[4] and "ii of 2" in texts[1]
+
+
+def test_page_numbers_can_start_at_a_chosen_number_without_a_main_text_break(tmp_path: Path):
+    settings = {"pageNumberStart": 7}
+
+    with _render(tmp_path, settings=settings) as document:
+        footers = _footer_numbers(document)
+        labels = [page.get_label() for page in document]
+
+    assert footers == ["7", "8"]
+    assert labels == ["7", "8"]
+
+
+def test_a_plain_document_keeps_its_page_numbers_and_gets_no_page_labels(tmp_path: Path):
+    with _render(tmp_path) as document:
+        rules = document.get_page_labels()
+        footers = _footer_numbers(document)
+
+    assert rules == []
+    assert footers == ["1", "2"]
+
+
+def test_only_the_first_main_text_break_restarts_the_numbers(tmp_path: Path):
+    body = FRONT_AND_MAIN.replace(
+        '<div class="page-break"></div><h1 id="h-4">',
+        '<div class="page-break" data-main="true"></div><h1 id="h-4">',
+    )
+
+    with _render(tmp_path, body, images=[]) as document:
+        footers = _footer_numbers(document)
+
+    assert footers == ["i", "ii", "1", "2"]
+
+
+def test_a_page_number_start_outside_the_range_is_refused():
+    with pytest.raises(ValidationError):
+        StudioDocumentPreviewParams.model_validate(
+            {"html": "<p>x</p>", "settings": {"pageNumberStart": 0}}
+        )
+
+
+def test_the_preview_lists_the_number_shown_on_each_page():
+    params = StudioDocumentPreviewParams.model_validate({"html": FRONT_AND_MAIN})
+
+    result = preview_document(params, silent_progress())
+
+    assert result.page_labels == ["i", "ii", "1", "2"]

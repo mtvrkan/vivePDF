@@ -14,6 +14,6 @@ export function numberAlign(place: DocumentPageNumbers, page: number): DocumentA
   return place;
 }
 
-export function numberLabel(format: string, page: number, total: number): string {
+export function numberLabel(format: string, page: number | string, total: number | string): string {
   return format.replaceAll("{n}", String(page)).replaceAll("{total}", String(total));
 }

@@ -14,9 +14,13 @@ TOC_END = "vp-toc-end"
 BREAK_PREFIX = "vp-break-"
 NOTE_PREFIX = "fnref-"
 SECTION_PREFIX = "vp-section-"
-PAGE_BREAK = re.compile(r"""<div\s+class\s*=\s*(["'])page-break\1\s*>""", re.IGNORECASE)
+MAIN_MARK = r"""(\s+data-main\s*=\s*(["'])true\3)?"""
+PAGE_BREAK = re.compile(
+    r"""<div\s+class\s*=\s*(["'])page-break\1""" + MAIN_MARK + r"""\s*>""", re.IGNORECASE
+)
 PLAIN_BREAK = re.compile(
-    r"""<div\s+class\s*=\s*(["'])page-break\1\s*>\s*</div\s*>""", re.IGNORECASE
+    r"""<div\s+class\s*=\s*(["'])page-break\1""" + MAIN_MARK + r"""\s*>\s*</div\s*>""",
+    re.IGNORECASE,
 )
 SECTION_BREAK = re.compile(
     r"""<div\s+class\s*=\s*(["'])section-break\1\s+data-columns\s*=\s*(["'])([^"']{0,8})\2"""
@@ -97,11 +101,17 @@ class Flowed:
     slots: list[Slot] = field(default_factory=list)
 
 
-def numbered_breaks(body: str) -> str:
+def numbered_breaks(body: str) -> tuple[str, str | None]:
     counter = itertools.count()
-    return PAGE_BREAK.sub(
-        lambda _: f'<div class="page-break" id="{BREAK_PREFIX}{next(counter)}">', body
-    )
+    main: list[str] = []
+
+    def numbered(match: re.Match) -> str:
+        anchor = f"{BREAK_PREFIX}{next(counter)}"
+        if match.group(2) and not main:
+            main.append(anchor)
+        return f'<div class="page-break" id="{anchor}">'
+
+    return PAGE_BREAK.sub(numbered, body), (main[0] if main else None)
 
 
 def _has_content(fragment: str) -> bool:

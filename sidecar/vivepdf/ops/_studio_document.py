@@ -30,6 +30,7 @@ from vivepdf.ops._document_notes import (
     note_css,
     with_endnotes,
 )
+from vivepdf.ops._document_numbers import PageNumbering, numbering
 from vivepdf.ops._document_places import Places, places_of
 from vivepdf.ops._html_clean import body_fragment
 from vivepdf.ops._image_files import eight_bit, open_picture
@@ -266,14 +267,18 @@ def _base_css(settings: StudioDocumentSettings, heading_font: bool) -> str:
 
 
 def _toc_html(
-    settings: StudioDocumentSettings, entries: list[Heading], pages: dict[str, int], offset: int
+    settings: StudioDocumentSettings,
+    entries: list[Heading],
+    pages: dict[str, int],
+    offset: int,
+    numbers: PageNumbering,
 ) -> str:
     if not settings.toc or not entries:
         return ""
     rows = "".join(
         f'<tr class="toc-{entry.level}"><td><div class="toc-entry">'
         f'<a href="#{entry.anchor}">{html.escape(entry.title)}</a></div></td>'
-        f'<td class="toc-page">{pages.get(entry.anchor, 0) + offset}</td></tr>'
+        f'<td class="toc-page">{_toc_page(entry.anchor, pages, offset, numbers)}</td></tr>'
         for entry in entries
     )
     title = html.escape(settings.toc_title.strip())
@@ -281,6 +286,10 @@ def _toc_html(
     return (
         f'{heading}<table class="toc">{rows}</table><div class="page-break" id="{TOC_END}"></div>'
     )
+
+
+def _toc_page(anchor: str, pages: dict[str, int], offset: int, numbers: PageNumbering) -> str:
+    return numbers.label(pages[anchor] - 1 + offset) if anchor in pages else ""
 
 
 def _bookmarks(entries: list[Heading], anchors: dict[str, int], offset: int) -> list[list]:
@@ -332,16 +341,16 @@ def _number_align(settings: StudioDocumentSettings, page_number: int) -> str:
 
 
 def _bottom_line(
-    settings: StudioDocumentSettings, page_number: int, total: int
+    settings: StudioDocumentSettings, index: int, numbers: PageNumbering, total: int
 ) -> list[tuple[str, str]]:
     parts: dict[str, list[str]] = {}
     if settings.footer.strip():
         parts.setdefault(settings.footer_align, []).append(settings.footer.strip())
     if settings.page_numbers != "none":
-        label = settings.page_number_format.replace("{n}", str(page_number)).replace(
-            "{total}", str(total)
+        label = settings.page_number_format.replace("{n}", numbers.label(index)).replace(
+            "{total}", numbers.last(total)
         )
-        parts.setdefault(_number_align(settings, page_number), []).append(label)
+        parts.setdefault(_number_align(settings, index + 1), []).append(label)
     return [(align, f"  {MIDDLE_DOT}  ".join(texts)) for align, texts in parts.items()]
 
 
@@ -349,6 +358,7 @@ def _add_furniture(
     document: pymupdf.Document,
     settings: StudioDocumentSettings,
     offset: int,
+    numbers: PageNumbering,
     css: str,
     archive: pymupdf.Archive,
 ) -> None:
@@ -366,7 +376,7 @@ def _add_furniture(
             boxes.append((top, settings.header_align, settings.header.strip()))
         boxes.extend(
             (bottom - FURNITURE_HEIGHT, align, text)
-            for align, text in _bottom_line(settings, index + 1, total)
+            for align, text in _bottom_line(settings, index, numbers, total)
         )
         for y, align, text in boxes:
             page.insert_htmlbox(
@@ -414,7 +424,7 @@ def layout_document(
     body, first_columns, sections, flowing = sectioned(
         clean_html(content.html, len(content.images)), settings.columns
     )
-    body = numbered_breaks(body)
+    body, main_anchor = numbered_breaks(body)
     if not body.strip():
         body = "<p></p>"
     entries = headings(body, settings.toc_depth)
@@ -445,7 +455,9 @@ def layout_document(
                 for position in positions
                 if position.id and position.open_close & 1
             }
-            return _toc_html(settings, entries, pages, offset) + main
+            main_page = pages.get(main_anchor) if main_anchor else None
+            numbers = numbering(settings.page_number_start, main_page, offset)
+            return _toc_html(settings, entries, pages, offset, numbers) + main
 
         return written
 
@@ -480,7 +492,13 @@ def layout_document(
             _add_cover(document, settings, title)
         furniture_archive = pymupdf.Archive()
         furniture_css = _font_rules(fonts[:1], furniture_archive)
-        _add_furniture(document, settings, offset, furniture_css, furniture_archive)
+        numbers = numbering(
+            settings.page_number_start, anchors.get(main_anchor) if main_anchor else None, offset
+        )
+        _add_furniture(document, settings, offset, numbers, furniture_css, furniture_archive)
+        labels = numbers.pdf_labels()
+        if labels:
+            document.set_page_labels(labels)
         document.set_toc(_bookmarks(outline, anchors, offset))
         metadata = dict(document.metadata or {})
         metadata.update(

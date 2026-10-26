@@ -103,9 +103,9 @@ describe("document settings in the ribbon", () => {
 });
 
 describe("header and footer on the sheet", () => {
-  function mountSheet(onLeave = vi.fn()) {
+  function mountSheet(onLeave = vi.fn(), label = "2", last = "5") {
     const current = settings();
-    render(<SheetFurniture settings={current} inset={contentInsets(current)} page={2} total={5} onLeave={onLeave} />);
+    render(<SheetFurniture settings={current} inset={contentInsets(current)} page={2} label={label} last={last} onLeave={onLeave} />);
     return onLeave;
   }
 
@@ -125,6 +125,13 @@ describe("header and footer on the sheet", () => {
     mountSheet();
 
     expect(screen.getByTestId("sheet-page-number").textContent).toBe("Page 2 of 5");
+  });
+
+  it("shows the engine's page label, such as a roman front page number", () => {
+    useDocumentStore.getState().setSettings({ pageNumbers: "center", pageNumberFormat: "{n} / {total}" });
+    mountSheet(vi.fn(), "ii", "12");
+
+    expect(screen.getByTestId("sheet-page-number").textContent).toBe("ii / 12");
   });
 
   it("leaves the footer for the text with Escape", () => {

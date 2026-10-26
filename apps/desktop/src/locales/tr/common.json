@@ -9048,7 +9048,8 @@
         "none": "Yok",
         "center": "Alt orta",
         "right": "Alt sağ",
-        "outside": "Dış köşe"
+        "outside": "Dış köşe",
+        "format": "Sayfa numarası biçimi…"
       },
       "covers": {
         "classic": "Klasik",
@@ -9581,6 +9582,11 @@
       },
       "pageLines": {
         "label": "Sayfa {{page}}"
+      },
+      "mainMatter": {
+        "button": "Ana metin başlangıcı",
+        "label": "Ana metin burada başlar · önceki sayfalar i, ii, iii diye numaralanır",
+        "startAt": "Başlangıç"
       },
       "headingNumbers": {
         "label": "Başlık numaraları",

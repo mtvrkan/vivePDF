@@ -41,6 +41,8 @@ class Writer {
   cited = 0;
   references: DocumentReferences | null;
   numbers: HeadingCounter;
+  numbering = true;
+  mainWritten = false;
 
   constructor(settings: WriterSettings, references: DocumentReferences | null) {
     this.fonts = [settings.fontId, settings.headingFontId ?? settings.fontId];
@@ -236,7 +238,7 @@ function write(node: DocumentNode, writer: Writer): string {
     case "heading": {
       const level = Math.min(6, Math.max(1, Number(attr(node, "level")) || 1));
       writer.headings += 1;
-      const number = writer.numbers.next(level);
+      const number = writer.numbering ? writer.numbers.next(level) : null;
       return `<h${level} id="h-${writer.headings}"${blockStyle(node)}${direction(node)}>${number ? `${escapeHtml(number)} ` : ""}${children(node, writer)}</h${level}>`;
     }
     case "hardBreak":
@@ -270,7 +272,10 @@ function write(node: DocumentNode, writer: Writer): string {
     case "tableCell":
       return cell(node, "td", writer);
     case PAGE_BREAK:
-      return '<div class="page-break"></div>';
+      if (attr(node, "main") !== true || writer.mainWritten) return '<div class="page-break"></div>';
+      writer.mainWritten = true;
+      writer.numbering = true;
+      return '<div class="page-break" data-main="true"></div>';
     case SECTION_BREAK:
       return `<div class="section-break" data-columns="${sectionColumns(attr(node, "columns"))}"${sectionKind(attr(node, "kind")) ? ' data-kind="continuous"' : ""}></div>`;
     case FOOTNOTE: {
@@ -294,6 +299,10 @@ function write(node: DocumentNode, writer: Writer): string {
   }
 }
 
+function hasMainBreak(node: DocumentNode): boolean {
+  return (node.type === PAGE_BREAK && attr(node, "main") === true) || (node.content ?? []).some(hasMainBreak);
+}
+
 const OPENING_TAG = /^<([a-z][a-z0-9]*)(?=[\s>])/;
 const UNMARKED_BLOCKS = new Set([PAGE_BREAK, SECTION_BREAK]);
 
@@ -306,6 +315,7 @@ function markedBlock(node: DocumentNode, markup: string, index: number, writer: 
 
 export function documentHtml(content: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false): DocumentHtml {
   const writer = new Writer(settings, references);
+  writer.numbering = !hasMainBreak(content);
   const blockIds: string[] = [];
   const html =
     markBlocks && content.type === "doc"

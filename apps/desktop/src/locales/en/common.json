@@ -9048,7 +9048,8 @@
         "none": "None",
         "center": "Bottom centre",
         "right": "Bottom right",
-        "outside": "Outer corner"
+        "outside": "Outer corner",
+        "format": "Format page numbers…"
       },
       "covers": {
         "classic": "Classic",
@@ -9581,6 +9582,11 @@
       },
       "pageLines": {
         "label": "Page {{page}}"
+      },
+      "mainMatter": {
+        "button": "Main text start",
+        "label": "Main text starts here · earlier pages are numbered i, ii, iii",
+        "startAt": "Start at"
       },
       "headingNumbers": {
         "label": "Heading numbers",

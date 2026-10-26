@@ -9047,7 +9047,8 @@
         "none": "Aucun",
         "center": "Bas centré",
         "right": "Bas à droite",
-        "outside": "Coin extérieur"
+        "outside": "Coin extérieur",
+        "format": "Format des numéros de page…"
       },
       "covers": {
         "classic": "Classique",
@@ -9580,6 +9581,11 @@
       },
       "pageLines": {
         "label": "Page {{page}}"
+      },
+      "mainMatter": {
+        "button": "Début du texte principal",
+        "label": "Le texte principal commence ici · les pages précédentes sont numérotées i, ii, iii",
+        "startAt": "Commencer à"
       },
       "headingNumbers": {
         "label": "Numéros de titre",

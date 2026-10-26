@@ -301,7 +301,11 @@ export function DocumentToolbar({
   const orientationItems = choice(["portrait", "landscape"] as const, settings?.landscape ? "landscape" : "portrait", (value) => t(`studio.doc.settings.${value}`), (value) => update({ landscape: value === "landscape" }), (value) => `orientation-${value}`);
   const paperItems = choice(DOCUMENT_PAPERS, settings?.paper, (value) => t(`studio.doc.papers.${value}`), (paper) => update({ paper }), (value) => `paper-${value}`);
   const columnItems = choice(DOCUMENT_COLUMNS, settings?.columns, (value) => t(`studio.doc.ribbon.columns${value}`), (columns) => update({ columns }), (value) => `columns-${value}`);
-  const numberItems = choice(PAGE_NUMBER_PLACES, settings?.pageNumbers, (value) => t(`studio.doc.numbers.${value}`), (pageNumbers) => update({ pageNumbers }), (value) => `numbers-${value}`);
+  const numberItems: ContextMenuItem[] = [
+    ...choice(PAGE_NUMBER_PLACES, settings?.pageNumbers, (value) => t(`studio.doc.numbers.${value}`), (pageNumbers) => update({ pageNumbers }), (value) => `numbers-${value}`),
+    { type: "separator", id: "numbers-format-separator" },
+    { type: "item", id: "numbers-format", label: t("studio.doc.numbers.format"), onSelect: () => useFurnitureEditing.getState().open("footer") },
+  ];
 
   const tabs: RibbonTab[] = [
     ...RIBBON_TABS.map((id) => ({ id, label: t(`studio.doc.ribbon.tabs.${id}`) })),

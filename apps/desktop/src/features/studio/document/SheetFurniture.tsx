@@ -10,7 +10,7 @@ const JUSTIFY: Record<DocumentAlign, string> = { left: "justify-start", center: 
 const TEXT_LIMIT = 200;
 
 type Insets = { top: number; right: number; bottom: number; left: number };
-type SheetFurnitureProps = { settings: DocumentSettings; inset: Insets; page: number; total: number; onLeave: () => void };
+type SheetFurnitureProps = { settings: DocumentSettings; inset: Insets; page: number; label: string; last: string; onLeave: () => void };
 
 function FurnitureInput({ part, value, align, placeholder, label, onLeave, fit = false, inputRef }: { part: FurniturePart; value: string; align: DocumentAlign; placeholder: string; label: string; onLeave: () => void; fit?: boolean; inputRef: React.RefObject<HTMLInputElement | null> }) {
   const edit = useFurnitureEditing((state) => state.edit);
@@ -65,7 +65,7 @@ function Band({ part, style, editing, tag, children }: { part: FurniturePart; st
   );
 }
 
-export function SheetFurniture({ settings, inset, page, total, onLeave }: SheetFurnitureProps) {
+export function SheetFurniture({ settings, inset, page, label, last, onLeave }: SheetFurnitureProps) {
   const { t } = useTranslation();
   const editing = useFurnitureEditing((state) => state.editing);
   const request = useFurnitureEditing((state) => state.request);
@@ -87,7 +87,7 @@ export function SheetFurniture({ settings, inset, page, total, onLeave }: SheetF
       className="shrink-0 rounded-sm bg-muted px-1 text-muted-foreground hover:text-foreground"
       data-testid="sheet-page-number"
     >
-      {numberLabel(settings.pageNumberFormat, page, total)}
+      {numberLabel(settings.pageNumberFormat, label, last)}
     </button>
   ) : null;
   const tagOf = (part: FurniturePart) => {

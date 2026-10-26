@@ -174,7 +174,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   const [finding, setFinding] = useState<DocumentFindMode | null>(null);
   const openFind = (replace: boolean) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 }));
   const furnitureEditing = useFurnitureEditing((state) => state.editing !== null);
-  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns, continuous) => t(continuous ? "studio.doc.section.labelContinuous" : "studio.doc.section.label", { columns })), [t, language]);
+  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns, continuous) => t(continuous ? "studio.doc.section.labelContinuous" : "studio.doc.section.label", { columns }), t("studio.doc.mainMatter.label")), [t, language]);
   useShortcuts(() => setExporting(true), openFind);
 
   const editor = useEditor(
@@ -217,6 +217,8 @@ export default function DocumentEditor({ language }: { language: string }) {
   const { host, zoom } = usePaperZoom(size, zoomMode);
   if (!settings) return null;
   const inset = contentInsets(settings);
+  const sheetPage = (layout.preview && firstPage(layout.preview)) || 1;
+  const pageLabels = layout.preview?.pageLabels;
   const paperStyle: CSSProperties & Record<`--${string}`, string> = {
     width: `${size.width}pt`,
     minHeight: `${size.height}pt`,
@@ -241,7 +243,7 @@ export default function DocumentEditor({ language }: { language: string }) {
             <div ref={host} className="min-h-0 min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
               <div ref={paper} className="paper-surface vp-doc relative mx-auto bg-white shadow-md" style={paperStyle}>
                 <EditorContent editor={editor} className={furnitureEditing ? "opacity-50 transition-opacity duration-(--transition-base)" : "transition-opacity duration-(--transition-base)"} />
-                {editor ? <SheetFurniture settings={settings} inset={inset} page={(layout.preview && firstPage(layout.preview)) || 1} total={layout.preview?.pageCount ?? 1} onLeave={() => editor.commands.focus()} /> : null}
+                {editor ? <SheetFurniture settings={settings} inset={inset} page={sheetPage} label={pageLabels?.[sheetPage - 1] ?? String(sheetPage)} last={pageLabels?.at(-1) ?? String(layout.preview?.pageCount ?? 1)} onLeave={() => editor.commands.focus()} /> : null}
                 {editor && showPageLines ? <PageLines editor={editor} laid={layout.preview} paper={paper} zoom={zoom} onLines={setLines} /> : null}
               </div>
             </div>

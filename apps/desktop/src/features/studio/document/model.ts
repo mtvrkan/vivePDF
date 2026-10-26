@@ -24,6 +24,7 @@ export const MIN_TEXT_MM = 20;
 export const MARGIN_LIMITS = { margin: [5, 60], gutter: [0, 30] } as const;
 const LIMITS = { columnGapMm: [4, 20], fontSize: [6, 28], lineHeight: [1, 3] } as const;
 export const DOCUMENT_COLUMNS: DocumentColumns[] = [1, 2, 3];
+export const PAGE_NUMBER_START = [1, 9999] as const;
 
 export function defaultSettings(): DocumentSettings {
   return {
@@ -43,6 +44,7 @@ export function defaultSettings(): DocumentSettings {
     footerAlign: "left",
     pageNumbers: "center",
     pageNumberFormat: "{n}",
+    pageNumberStart: 1,
     furnitureOnFirst: true,
     toc: false,
     tocTitle: "",
@@ -133,6 +135,7 @@ export function normalizeSettings(value: unknown): DocumentSettings {
     footerAlign: pick(source.footerAlign, DOCUMENT_ALIGNS, base.footerAlign),
     pageNumbers: pick(source.pageNumbers, PAGE_NUMBER_PLACES, base.pageNumbers),
     pageNumberFormat: text(source.pageNumberFormat, base.pageNumberFormat, 40) || base.pageNumberFormat,
+    pageNumberStart: Math.round(clamp(source.pageNumberStart, PAGE_NUMBER_START, base.pageNumberStart)),
     furnitureOnFirst: source.furnitureOnFirst !== false,
     toc: source.toc === true,
     tocTitle: text(source.tocTitle, "", 100),

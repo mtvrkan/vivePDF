@@ -152,6 +152,7 @@ in.
 | `studiodoc` | focus the ruler's hanging marker and press Shift+→ twice, then the left margin edge and Shift+→, then View › Ruler off and on | the first paragraph gets a 10 mm hanging indent, the left margin grows by 5 mm, the ruler goes away and comes back; ruler screenshot in the run folder |
 | `studiodoc` | type a "## Next quarter" line at the end, View › Navigation pane, click the first heading, then View › Navigation pane again | the pane lists two headings with Next quarter marked, then Quarterly report marked after the click; the pane closes; screenshot in the run folder |
 | `studiodoc` | Design › Heading numbers › "1., 1.1., 1.1.1.", then back to None | the headings read "1. Quarterly report" and "1.1. Next quarter" on the sheet, then lose their numbers; screenshot in the run folder |
+| `studiodoc` | caret at the start of "Next quarter", Layout › Main text starts here, then Design › Heading numbers › "1, 1.1, 1.1.1" | a labelled main-text break sits before the heading; "Quarterly report" above it stays unnumbered and the heading after it reads "0.1 Next quarter"; screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
 | `studio` | add a heading from the Text category, press Bold in the bar above the canvas, then Position | the bar names the text and Bold changes; the details panel opens on its position section and closes again; screenshot in the run folder |
 | `studiocv` | CV steps: Design from the step list for the layouts, then Experience for the entries | each step shows only its own section; the layout pictures and the experience entries are reached from their steps |
@@ -428,6 +429,13 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   bookmarks the same way; adding or deleting a heading renumbers the ones after it at once; Undo
   never steps through number changes; in Arabic the number sits before the heading text on the
   right.
+- Studio document page numbers for a thesis (cover, contents, abstract, then Layout › Main text
+  starts here before the first chapter, page numbers in the footer): Print preview and the PDF
+  number the front pages i, ii, iii and the main text 1, 2, 3; the PDF viewer's page box shows the
+  same labels; Header & footer › Start at 5 makes the first main page 5 and "{total}" counts only
+  the main pages; headings before the break stay unnumbered and the contents lists the labels;
+  inserting the break again moves it instead of adding a second one; without the break the pages
+  count 1, 2, 3 as before.
 - Studio document navigation pane, light and dark and in Arabic: View › Navigation pane opens it
   on the left and it stays open after a restart; headings show as a tree with folding arrows,
   the heading holding the caret is marked while moving through the text, a click brings that
