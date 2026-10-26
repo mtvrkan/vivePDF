@@ -10444,7 +10444,8 @@
         "defaultApp": "Make vivePDF the app that opens your PDF files from Settings › System, on Windows, macOS and Linux.",
         "newTools": "New tools: PDF → SVG and Background colour; Comments, Attachments, Read aloud, Translate and Print now also sit in the tool categories.",
         "officeAndImages": "Wide Excel tables fit the paper, missing fonts are named before converting, Images → PDF can compress photos, and pictures can be extracted as the page shows them.",
-        "sources": "A renewed reference manager: a DOI becomes a reference in the official APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver and Harvard styles, and .bib files are read correctly, edited and saved back into their own file."
+        "sources": "A renewed reference manager: a DOI becomes a reference in the official APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver and Harvard styles, and .bib files are read correctly, edited and saved back into their own file.",
+        "documentEditor": "The Studio document editor works like Word: a ribbon with tabs, rulers, page lines and page setup, a navigation pane, and thesis tools: numbered headings, figure and table captions with their lists, and roman page numbers before the main text."
       },
       "v0_4_0": {
         "officeFiles": "Word, Excel and PowerPoint files open straight in vivePDF as PDFs, also from Open With in Finder and Explorer; when LibreOffice is missing, vivePDF offers to set it up and opens the file once it is ready.",

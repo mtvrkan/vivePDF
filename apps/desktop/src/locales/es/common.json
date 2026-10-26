@@ -10444,7 +10444,8 @@
         "defaultApp": "Haz de vivePDF la aplicación que abre tus archivos PDF desde Ajustes › Sistema, en Windows, macOS y Linux.",
         "newTools": "Herramientas nuevas: PDF a SVG y un color de fondo para las páginas; Comentarios, Adjuntos, Leer en voz alta, Traducir e Imprimir ahora también están en las categorías de herramientas.",
         "officeAndImages": "Las tablas anchas de Excel caben en el papel, las fuentes que faltan se indican antes de convertir, Imágenes → PDF puede comprimir fotos y las imágenes se pueden extraer tal como las muestra la página.",
-        "sources": "Gestor de referencias renovado: un DOI se convierte en una referencia con los estilos oficiales APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver y Harvard, y los archivos .bib se leen bien, se editan y se guardan en su propio archivo."
+        "sources": "Gestor de referencias renovado: un DOI se convierte en una referencia con los estilos oficiales APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver y Harvard, y los archivos .bib se leen bien, se editan y se guardan en su propio archivo.",
+        "documentEditor": "El editor de documentos de Studio funciona como Word: una cinta con pestañas, reglas, líneas de página y configuración de página, un panel de navegación y herramientas para tesis: títulos numerados, títulos de figuras y tablas con sus índices y números romanos antes del texto principal."
       },
       "v0_4_0": {
         "officeFiles": "Los archivos de Word, Excel y PowerPoint se abren directamente en vivePDF como PDF, también desde «Abrir con» en Finder y el Explorador; si falta LibreOffice, vivePDF ofrece instalarlo y abre el archivo cuando está listo.",

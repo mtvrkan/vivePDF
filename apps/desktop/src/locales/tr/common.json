@@ -10444,7 +10444,8 @@
         "defaultApp": "Ayarlar › Sistem'den vivePDF'i PDF dosyalarını açan varsayılan uygulama yapabilirsiniz; Windows, macOS ve Linux'ta.",
         "newTools": "Yeni araçlar: PDF'ten SVG'ye dönüştürme ve sayfa arka plan rengi; Yorumlar, Ekler, Sesli oku, Çevir ve Yazdır artık araç kategorilerinde de var.",
         "officeAndImages": "Geniş Excel tabloları kâğıda sığıyor, eksik yazı tipleri dönüştürmeden önce bildiriliyor, Görseller → PDF fotoğrafları küçültebiliyor ve görseller sayfada göründüğü gibi çıkarılabiliyor.",
-        "sources": "Kaynak yöneticisi yenilendi: DOI'den gelen künye APA 7, MLA, Chicago, IEEE, İSNAD, Vancouver ve Harvard'ın resmî stilleriyle yazılıyor; .bib dosyaları doğru okunuyor, düzenlenip kendi dosyasına kaydediliyor."
+        "sources": "Kaynak yöneticisi yenilendi: DOI'den gelen künye APA 7, MLA, Chicago, IEEE, İSNAD, Vancouver ve Harvard'ın resmî stilleriyle yazılıyor; .bib dosyaları doğru okunuyor, düzenlenip kendi dosyasına kaydediliyor.",
+        "documentEditor": "Stüdyo'daki belge düzenleyici artık Word gibi: sekmeli şerit, cetveller, sayfa çizgileri ve sayfa yapısı, gezinti bölmesi; tez için de numaralı başlıklar, şekil ve tablo yazıları ile listeleri, ana metinden önce romen rakamlı sayfa numaraları."
       },
       "v0_4_0": {
         "officeFiles": "Word, Excel ve PowerPoint dosyaları doğrudan vivePDF'te PDF olarak açılır, Finder ve Explorer'daki Birlikte Aç menüsünden de; LibreOffice yoksa vivePDF kurmayı önerir ve hazır olunca dosyayı açar.",
