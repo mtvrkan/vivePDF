@@ -211,6 +211,34 @@ describe("Turkish reference lists", () => {
     expect(citations.label([item("icmar")]).text).toBe("(“Derin öğrenme ile gül yaprağı tespiti,” 2023)");
   });
 
+  it("writes In without a dotted capital when an English list holds a Turkish chapter", async () => {
+    const sources = library("@incollection{goc, author={Yıldız, Hülya}, title={Göç ve kimlik}, booktitle={Türkiye'de Toplumsal Değişme}, editor={Şahin, Can}, publisher={İletişim}, year={2018}, language={turkish}}");
+
+    const citations = await buildCitations(doc(cite(item("goc"))), sources, "apa", "en-US");
+
+    expect(readable(citations.references[0])).toContain(". In C. Şahin (Ed.), ");
+  });
+
+  it("names a thesis in the language of the reference list unless the source names it", async () => {
+    const sources = library(`@thesis{arslan, author={Arslan, Burak}, title={Derin öğrenme}, institution={ODTÜ}, type={mathesis}, year={2021}}
+@phdthesis{kaya, author={Kaya, Zeynep}, title={Eğitim politikaları}, school={Hacettepe Üniversitesi}, year={2019}, type={Sanatta yeterlik tezi}}`);
+
+    const turkish = await buildCitations("", sources, "apa", "tr-TR");
+    const english = await buildCitations("", sources, "apa", "en-US");
+
+    expect(turkish.references.map(readable)).toEqual(["Arslan, B. (2021). <i>Derin öğrenme</i> [Yüksek lisans tezi]. ODTÜ.", "Kaya, Z. (2019). <i>Eğitim politikaları</i> [Sanatta yeterlik tezi]. Hacettepe Üniversitesi."]);
+    expect(readable(english.references[0])).toContain("[Master’s thesis]");
+  });
+
+  it("links a DOI once when the source file writes it as a doi.org address", async () => {
+    const sources = library("@article{dna, author={Smith, John}, title={DNA repair}, journal={Nature Communications}, year={2021}, doi={https://doi.org/10.1038/s41467-021-23000-0}}");
+
+    const citations = await buildCitations("", sources, "apa", "en-US");
+
+    expect(readable(citations.references[0])).toContain(" https://doi.org/10.1038/s41467-021-23000-0");
+    expect(citations.references[0]).not.toContain("doi.org/https");
+  });
+
   it("sorts the reference list in Turkish alphabetical order", async () => {
     const names = ["Şahin", "Ünal", "Cengiz", "İnce", "Öztürk", "Işık", "Çelik", "Uslu", "Ozan", "Sarı", "Ilgaz"];
     const sources: BibEntry[] = names.map((family, index) => ({ key: `k${index}`, type: "article", fields: { title: `Başlık ${index}`, journal: "Dergi", year: "2020" }, authors: [{ family, given: "Ali" }], editors: [] }));

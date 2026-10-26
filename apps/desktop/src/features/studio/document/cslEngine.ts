@@ -105,13 +105,15 @@ export class CitationEngine {
   private items = new Map<string, Record<string, unknown>>();
   private last: Build | null = null;
   private builds = 0;
+  private readonly language: CitationLanguage;
   private readonly cased: (html: string) => string;
 
-  constructor(style: CitationStyle, engine: Engine, items: Map<string, Record<string, unknown>>, cased: (html: string) => string = unchanged) {
+  constructor(style: CitationStyle, engine: Engine, items: Map<string, Record<string, unknown>>, language: CitationLanguage = "en-US") {
     this.style = style;
     this.engine = engine;
     this.items = items;
-    this.cased = cased;
+    this.language = language;
+    this.cased = language === "tr-TR" ? dottedCapitals : unchanged;
   }
 
   citations(content: DocumentNode | string, sources: BibEntry[]): Citations {
@@ -139,7 +141,7 @@ export class CitationEngine {
     this.items.clear();
     for (const entry of sources) {
       const id = entry.key.toLowerCase();
-      if (!this.items.has(id)) this.items.set(id, { ...literal(shownItemOf(entry)), id });
+      if (!this.items.has(id)) this.items.set(id, { ...literal(shownItemOf(entry, this.language)), id });
     }
     const known = (items: CitationItem[]) => items.filter((item) => this.items.has(item.key.toLowerCase()));
     const build = `b${(this.builds += 1)}`;
@@ -226,7 +228,7 @@ function engineNow(style: CitationStyle, language: CitationLanguage): CitationEn
     retrieveLocale: (name: string) => locales.get(name) ?? locales.get(name.split("-")[0]) ?? locales.get(FALLBACK_LOCALE),
     retrieveItem: (id: string) => items.get(id),
   };
-  const engine = new CitationEngine(style, new CSL.Engine(sys, xml, language, true), items, language === "tr-TR" ? dottedCapitals : unchanged);
+  const engine = new CitationEngine(style, new CSL.Engine(sys, xml, language, true), items, language);
   ready.set(key, engine);
   return engine;
 }

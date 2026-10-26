@@ -2,7 +2,7 @@ import type { SourceCheck, SourceStatus } from "@/types";
 import type { BibEntry } from "@/types/studio";
 import { parseCslJson } from "./cslJson";
 import { namesText } from "./sourceDraft";
-import { claimKey, keyBase } from "./sourceKeys";
+import { bareDoi, claimKey, keyBase } from "./sourceKeys";
 
 export const UPDATED_FIELDS = ["title", "journal", "booktitle", "volume", "number", "pages", "year", "publisher"];
 
@@ -63,7 +63,7 @@ export function normalizedDoi(value: string): string | null {
 }
 
 export function doiKey(value: string): string {
-  return (normalizedDoi(value) ?? value.trim().replace(/^https?:\/\/(?:dx\.)?doi\.org\//i, "").replace(/^doi:\s*/i, "")).toLowerCase();
+  return (normalizedDoi(value) ?? bareDoi(value)).toLowerCase();
 }
 
 export function doiLink(doi: string): string {

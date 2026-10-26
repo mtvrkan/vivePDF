@@ -1,6 +1,6 @@
-import type { BibEntry, BibName } from "@/types/studio";
+import type { BibEntry, BibName, CitationLanguage } from "@/types/studio";
 import { MAX_SOURCES, type BibParseResult } from "./bibtex";
-import { claimKey, clip, keyBase, monthNumber, setField } from "./sourceKeys";
+import { bareDoi, claimKey, clip, keyBase, monthNumber, setField } from "./sourceKeys";
 
 const MAX_NAMES = 200;
 
@@ -83,6 +83,18 @@ function text(value: unknown): string {
 const TURKISH_CAPITALS = /[ŞĞİ]/;
 const TURKISH_LETTERS = /[ğĞşŞıİ]/;
 const NICKNAME = /\s*\([^()]*\)/g;
+const UNTITLECASED_LANGUAGE = "und";
+const TURKISH_LANGUAGE = /^(?:tr|tur|turkish|türkçe)\b/i;
+
+const THESIS_GENRES: Record<string, { mastersthesis: string; phdthesis: string }> = {
+  tr: { mastersthesis: "Yüksek lisans tezi", phdthesis: "Doktora tezi" },
+  de: { mastersthesis: "Masterarbeit", phdthesis: "Dissertation" },
+  es: { mastersthesis: "Tesis de maestría", phdthesis: "Tesis doctoral" },
+  fr: { mastersthesis: "Mémoire de master", phdthesis: "Thèse de doctorat" },
+  it: { mastersthesis: "Tesi di laurea magistrale", phdthesis: "Tesi di dottorato" },
+  pt: { mastersthesis: "Dissertação de mestrado", phdthesis: "Tese de doutorado" },
+  ar: { mastersthesis: "رسالة ماجستير", phdthesis: "أطروحة دكتوراه" },
+};
 
 function unshouted(name: string, turkish: boolean): string {
   if (name.length < 2 || name !== name.toLocaleUpperCase("tr") || name === name.toLocaleLowerCase("tr")) return name;
@@ -263,7 +275,7 @@ export function cslItemOf(entry: BibEntry): CslItem {
     edition: field("edition"),
     version: field("version"),
     genre: field("type") ?? (entry.type === "mastersthesis" ? "Master's thesis" : entry.type === "phdthesis" ? "PhD thesis" : preprint ? "Preprint" : undefined),
-    DOI: field("doi"),
+    DOI: entry.fields.doi ? bareDoi(entry.fields.doi) || undefined : undefined,
     URL: field("url"),
     ISBN: field("isbn"),
     ISSN: field("issn"),
@@ -283,15 +295,17 @@ function shownName(name: CslName, turkish: boolean): CslName {
   return { ...name, family: unshouted(name.family, turkish), ...(shownGiven ? { given: shownGiven } : {}) };
 }
 
-export function shownItemOf(entry: BibEntry): CslItem {
+export function shownItemOf(entry: BibEntry, citationLanguage: CitationLanguage = "en-US"): CslItem {
   const item = cslItemOf(entry);
   const language = entry.fields.language ?? entry.fields.langid ?? "";
-  const turkish = /^(?:tr|tur|turkish|türkçe)\b/i.test(language) || TURKISH_LETTERS.test(`${entry.fields.title ?? ""} ${entry.fields.journal ?? entry.fields.booktitle ?? ""}`);
+  const turkish = TURKISH_LANGUAGE.test(language) || TURKISH_LETTERS.test(`${entry.fields.title ?? ""} ${entry.fields.journal ?? entry.fields.booktitle ?? ""}`);
   for (const role of ["author", "editor"]) {
     const names = item[role];
     if (Array.isArray(names)) item[role] = names.map((name: CslName) => shownName(name, turkish));
   }
-  if (turkish && !item.language) item.language = "tr";
+  if (turkish && (!entry.fields.language || TURKISH_LANGUAGE.test(entry.fields.language))) item.language = citationLanguage === "tr-TR" ? "tr" : UNTITLECASED_LANGUAGE;
+  const genres = THESIS_GENRES[citationLanguage.split("-")[0]];
+  if (genres && !entry.fields.type && (entry.type === "mastersthesis" || entry.type === "phdthesis")) item.genre = genres[entry.type];
   return item;
 }
 

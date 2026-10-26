@@ -21,6 +21,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Sources: Turkish reference lists write "İçinde" (and the other Turkish terms) with a dotted capital İ instead of "Içinde"; surnames sent in capitals such as YILMAZ become "Yılmaz" (not "Yilmaz") when the title is Turkish, also for sources read from BibTeX and RIS files, without changing the file; nicknames in brackets are left out of given names; a book whose BibTeX names its series as a journal no longer reads "In Springer Series…"; a Turkish title quoted in an English citation keeps its own capitals instead of "Modelleri Ile" [2026-10-26]
 - Turkish: the CV editor's "Edit freely in Studio" button and the fitness flyer template's name showed in English; the page navigation buttons in the viewer had no name for screen readers in German, Arabic, Spanish, French, Italian and Portuguese [2026-10-26]
 - Document editor: the "main text starts here" label sat under the page line label; it is now a small tag at the start of the line, and the page label stays at the end [2026-10-26]
+- References: a DOI written as a doi.org address in a BibTeX file was linked twice ("https://doi.org/https://doi.org/…"); English lists wrote "İn" before a Turkish chapter; a master's or doctoral thesis was named in English ("Master's thesis") in Turkish, German, Spanish, French, Italian, Portuguese and Arabic lists [2026-10-26]
 
 ## [0.5.0] - 2026-10-25
 ### Added

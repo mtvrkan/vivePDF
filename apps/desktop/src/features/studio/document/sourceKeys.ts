@@ -48,6 +48,10 @@ export function monthNumber(value: string): number | null {
   return index >= 0 ? index + 1 : null;
 }
 
+export function bareDoi(value: string): string {
+  return value.trim().replace(/^https?:\/\/(?:dx\.)?doi\.org\//i, "").replace(/^doi:\s*/i, "");
+}
+
 export function joinPages(first: string, last: string): string {
   return first && last && last !== first ? `${first}–${last}` : first || last;
 }
