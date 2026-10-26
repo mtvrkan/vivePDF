@@ -9508,7 +9508,8 @@
           "colour": "Color",
           "position": "Posición",
           "options": "Opciones",
-          "close": "Cerrar"
+          "close": "Cerrar",
+          "headings": "Títulos"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar tamaño",
@@ -9579,6 +9580,12 @@
       },
       "pageLines": {
         "label": "Página {{page}}"
+      },
+      "headingNumbers": {
+        "label": "Números de título",
+        "none": "Ninguno",
+        "plain": "1, 1.1, 1.1.1",
+        "dotted": "1., 1.1., 1.1.1."
       },
       "navigation": {
         "title": "Navegación",

@@ -9509,7 +9509,8 @@
           "colour": "Colour",
           "position": "Position",
           "options": "Options",
-          "close": "Close"
+          "close": "Close",
+          "headings": "Headings"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Increase font size",
@@ -9580,6 +9581,12 @@
       },
       "pageLines": {
         "label": "Page {{page}}"
+      },
+      "headingNumbers": {
+        "label": "Heading numbers",
+        "none": "None",
+        "plain": "1, 1.1, 1.1.1",
+        "dotted": "1., 1.1., 1.1.1."
       },
       "navigation": {
         "title": "Navigation",

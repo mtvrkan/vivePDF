@@ -193,4 +193,17 @@ describe("studio documents", () => {
     await $('[data-testid="doc-navigation"]').click();
     await $('[data-testid="document-navigation"]').waitForExist({ reverse: true });
   });
+
+  it("numbers the headings on the sheet from Design › Heading numbers and takes the numbers off again", async () => {
+    await $('[data-ribbon-tab="design"]').click();
+    await $('[data-testid="doc-heading-numbers"]').click();
+    await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.headingNumbers.dotted")}"]`).click();
+    await expect(body().$("h1")).toHaveText("1. Quarterly report");
+    await expect(body().$("h2")).toHaveText("1.1. Next quarter");
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-heading-numbers.png"));
+
+    await $('[data-testid="doc-heading-numbers"]').click();
+    await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.headingNumbers.none")}"]`).click();
+    await expect(body().$("h1")).toHaveText("Quarterly report");
+  });
 });

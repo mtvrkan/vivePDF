@@ -445,6 +445,8 @@ export type DocumentPaper = "a4" | "a5" | "b5" | "letter" | "legal";
 export type DocumentPageNumbers = "none" | "center" | "right" | "outside";
 export type DocumentAlign = "left" | "center" | "right";
 export type DocumentCoverStyle = "classic" | "band" | "frame" | "minimal";
+
+export type DocumentHeadingNumbers = "none" | "plain" | "dotted";
 export type DocumentGutterSide = "left" | "top";
 
 export type DocumentLayout = {
@@ -485,7 +487,7 @@ export type CitationStyle = "apa" | "mla" | "chicago" | "chicago-notes" | "ieee"
 
 export type CitationLanguage = "en-US" | "en-GB" | "tr-TR" | "de-DE" | "es-ES" | "fr-FR" | "it-IT" | "pt-BR" | "ar";
 
-export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null; citationStyle: CitationStyle; citationLanguage: CitationLanguage | null; referencesTitle: string };
+export type DocumentSettings = DocumentLayout & { fontId: string; headingFontId: string | null; headingNumbers: DocumentHeadingNumbers; citationStyle: CitationStyle; citationLanguage: CitationLanguage | null; referencesTitle: string };
 
 export type BibName = { family: string; given: string; suffix?: string; literal?: boolean; others?: boolean };
 

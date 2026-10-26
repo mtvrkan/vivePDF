@@ -54,6 +54,15 @@ describe("document settings in the ribbon", () => {
     expect(settings().fontSize).toBe(12);
   });
 
+  it("numbers the headings from the Design tab", () => {
+    mountToolbar();
+    fireEvent.click(screen.getByRole("tab", { name: "Design" }));
+
+    pick("doc-heading-numbers", "1., 1.1., 1.1.1.");
+
+    expect(settings().headingNumbers).toBe("dotted");
+  });
+
   it("turns the cover on from a style and asks for its details the first time", () => {
     mountToolbar();
     fireEvent.click(screen.getByRole("tab", { name: "Insert" }));

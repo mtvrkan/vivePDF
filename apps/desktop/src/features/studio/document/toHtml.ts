@@ -2,6 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
+import { HeadingCounter } from "./headingCounter";
 import { FOOTNOTE, FOOTNOTE_PICTURE, footnoteCitations, footnoteMarkup, footnoteText, MAX_FOOTNOTE_HTML, MAX_FOOTNOTES, noteCitation, unescapeAttribute } from "./footnotes";
 import { SECTION_BREAK, sectionColumns, sectionKind } from "./sections";
 import { SPACING_KEYS, spacingCss } from "./spacing";
@@ -29,6 +30,8 @@ export type DocumentReferences = { citations: Citations; title: string };
 
 type Mark = NonNullable<DocumentNode["marks"]>[number];
 
+type WriterSettings = Pick<DocumentSettings, "fontId" | "headingFontId"> & Partial<Pick<DocumentSettings, "headingNumbers">>;
+
 class Writer {
   images: string[] = [];
   footnotes: string[] = [];
@@ -37,10 +40,12 @@ class Writer {
   headings = 0;
   cited = 0;
   references: DocumentReferences | null;
+  numbers: HeadingCounter;
 
-  constructor(settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null) {
+  constructor(settings: WriterSettings, references: DocumentReferences | null) {
     this.fonts = [settings.fontId, settings.headingFontId ?? settings.fontId];
     this.references = references;
+    this.numbers = new HeadingCounter(settings.headingNumbers ?? "none");
   }
 
   font(id: string): string | null {
@@ -231,7 +236,8 @@ function write(node: DocumentNode, writer: Writer): string {
     case "heading": {
       const level = Math.min(6, Math.max(1, Number(attr(node, "level")) || 1));
       writer.headings += 1;
-      return `<h${level} id="h-${writer.headings}"${blockStyle(node)}${direction(node)}>${children(node, writer)}</h${level}>`;
+      const number = writer.numbers.next(level);
+      return `<h${level} id="h-${writer.headings}"${blockStyle(node)}${direction(node)}>${number ? `${escapeHtml(number)} ` : ""}${children(node, writer)}</h${level}>`;
     }
     case "hardBreak":
       return "<br>";
@@ -298,7 +304,7 @@ function markedBlock(node: DocumentNode, markup: string, index: number, writer: 
   return { markup: markup.replace(OPENING_TAG, `<$1 id="${id}"`), id };
 }
 
-export function documentHtml(content: DocumentNode, settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null = null, markBlocks = false): DocumentHtml {
+export function documentHtml(content: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false): DocumentHtml {
   const writer = new Writer(settings, references);
   const blockIds: string[] = [];
   const html =

@@ -9509,7 +9509,8 @@
           "colour": "Renk",
           "position": "Konum",
           "options": "Seçenekler",
-          "close": "Kapat"
+          "close": "Kapat",
+          "headings": "Başlıklar"
         },
         "sizeDocument": "Belge ({{size}})",
         "sizeUp": "Yazıyı büyüt",
@@ -9580,6 +9581,12 @@
       },
       "pageLines": {
         "label": "Sayfa {{page}}"
+      },
+      "headingNumbers": {
+        "label": "Başlık numaraları",
+        "none": "Yok",
+        "plain": "1, 1.1, 1.1.1",
+        "dotted": "1., 1.1., 1.1.1."
       },
       "navigation": {
         "title": "Gezinti",

@@ -20,6 +20,7 @@ import { NavigationPane } from "./NavigationPane";
 import { PageSetupDialog } from "./PageSetupDialog";
 import { firstPage } from "./pageBreaks";
 import { SheetFurniture } from "./SheetFurniture";
+import { headingNumbersKey, setHeadingNumbers } from "./headingNumbers";
 import { useFurnitureEditing } from "./furnitureEditing";
 import { PrintPreview } from "./PrintPreview";
 import { useDocumentLayout } from "./useDocumentLayout";
@@ -199,6 +200,12 @@ export default function DocumentEditor({ language }: { language: string }) {
       stop();
     };
   }, [editor]);
+
+  const headingNumbers = settings?.headingNumbers ?? "none";
+  useEffect(() => {
+    if (!editor || editor.isDestroyed || headingNumbersKey.getState(editor.state)?.style === headingNumbers) return;
+    editor.view.dispatch(setHeadingNumbers(editor.state, headingNumbers));
+  }, [editor, headingNumbers]);
 
   useEffect(() => {
     if (!settings) return;

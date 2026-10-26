@@ -1,10 +1,12 @@
-import { Palette } from "lucide-react";
+import { ListOrdered, Palette } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ColorSwatch } from "@/components/shared/ColorSwatch";
 import { FontPicker } from "@/components/shared/FontPicker";
+import type { ContextMenuItem } from "@/components/shared/ContextMenu";
 import { Select } from "@/components/shared/Select";
 import type { DocumentSettings } from "@/types/studio";
-import { RibbonGroup, RibbonRow, RibbonRows } from "../ribbon/Ribbon";
+import { RibbonButton, RibbonGroup, RibbonRow, RibbonRows } from "../ribbon/Ribbon";
+import { HEADING_NUMBER_STYLES } from "./headingCounter";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
 
@@ -40,6 +42,14 @@ export function DesignGroups({ settings }: { settings: DocumentSettings }) {
     update({ headingFontId: fontId === settings.fontId ? null : fontId });
   };
 
+  const numberItems: ContextMenuItem[] = HEADING_NUMBER_STYLES.map((style): ContextMenuItem => ({
+    type: "item",
+    id: `heading-numbers-${style}`,
+    label: t(`studio.doc.headingNumbers.${style}`),
+    checked: settings.headingNumbers === style,
+    onSelect: () => update({ headingNumbers: style }),
+  }));
+
   return (
     <>
       <RibbonGroup label={t("studio.doc.ribbon.groups.fonts")}>
@@ -73,6 +83,9 @@ export function DesignGroups({ settings }: { settings: DocumentSettings }) {
             />
           </RibbonRow>
         </RibbonRows>
+      </RibbonGroup>
+      <RibbonGroup label={t("studio.doc.ribbon.groups.headings")}>
+        <RibbonButton icon={ListOrdered} label={t("studio.doc.headingNumbers.label")} active={settings.headingNumbers !== "none"} menu={numberItems} testId="doc-heading-numbers" />
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.colour")}>
         <div className="flex flex-col items-center gap-1" data-testid="doc-accent">

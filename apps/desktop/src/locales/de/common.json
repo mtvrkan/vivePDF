@@ -9508,7 +9508,8 @@
           "colour": "Farbe",
           "position": "Position",
           "options": "Optionen",
-          "close": "Schließen"
+          "close": "Schließen",
+          "headings": "Überschriften"
         },
         "sizeDocument": "Dokument ({{size}})",
         "sizeUp": "Schrift vergrößern",
@@ -9579,6 +9580,12 @@
       },
       "pageLines": {
         "label": "Seite {{page}}"
+      },
+      "headingNumbers": {
+        "label": "Überschriftennummern",
+        "none": "Keine",
+        "plain": "1, 1.1, 1.1.1",
+        "dotted": "1., 1.1., 1.1.1."
       },
       "navigation": {
         "title": "Navigation",

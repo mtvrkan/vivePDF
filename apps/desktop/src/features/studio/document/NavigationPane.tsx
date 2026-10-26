@@ -8,6 +8,7 @@ import { IconButton } from "@/components/shared/IconButton";
 import { cn } from "@/shared/lib/cn";
 import { useDocumentViewStore } from "./documentView";
 import { currentHeadingIndex, hasChildren, headingOutline, visibleHeadings } from "./headingOutline";
+import { headingLabels, headingNumbersKey } from "./headingNumbers";
 
 const INDENT: Record<number, string> = { 1: "ps-1", 2: "ps-5", 3: "ps-9", 4: "ps-13" };
 
@@ -20,7 +21,8 @@ export function NavigationPane({ editor }: { editor: Editor }) {
     editor,
     selector: ({ editor: shown }) => {
       const headings = headingOutline(shown.state.doc);
-      return { outline: headings, current: currentHeadingIndex(headings, shown.state.selection.head) };
+      const labels = headingLabels(shown.state.doc, headingNumbersKey.getState(shown.state)?.style ?? "none");
+      return { outline: headings.map((heading) => ({ ...heading, number: labels.get(heading.position) ?? "" })), current: currentHeadingIndex(headings, shown.state.selection.head) };
     },
   });
 
@@ -65,7 +67,7 @@ export function NavigationPane({ editor }: { editor: Editor }) {
             {visibleHeadings(outline, collapsed).map((index) => {
               const heading = outline[index];
               const open = !collapsed.has(index);
-              const label = heading.text || t("studio.doc.navigation.untitled");
+              const label = [heading.number, heading.text || t("studio.doc.navigation.untitled")].filter(Boolean).join(" ");
               return (
                 <li key={`${index}-${heading.position}`} className={cn("flex items-center gap-0.5", INDENT[heading.level])}>
                   {hasChildren(outline, index) ? (

@@ -9508,7 +9508,8 @@
           "colour": "Cor",
           "position": "Posição",
           "options": "Opções",
-          "close": "Fechar"
+          "close": "Fechar",
+          "headings": "Títulos"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar fonte",
@@ -9579,6 +9580,12 @@
       },
       "pageLines": {
         "label": "Página {{page}}"
+      },
+      "headingNumbers": {
+        "label": "Números de título",
+        "none": "Nenhum",
+        "plain": "1, 1.1, 1.1.1",
+        "dotted": "1., 1.1., 1.1.1."
       },
       "navigation": {
         "title": "Navegação",

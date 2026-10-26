@@ -10395,7 +10395,8 @@
           "colour": "اللون",
           "position": "الموضع",
           "options": "خيارات",
-          "close": "إغلاق"
+          "close": "إغلاق",
+          "headings": "العناوين"
         },
         "sizeDocument": "المستند ({{size}})",
         "sizeUp": "تكبير الخط",
@@ -10470,6 +10471,12 @@
       },
       "pageLines": {
         "label": "الصفحة {{page}}"
+      },
+      "headingNumbers": {
+        "label": "ترقيم العناوين",
+        "none": "بلا",
+        "plain": "1, 1.1, 1.1.1",
+        "dotted": "1., 1.1., 1.1.1."
       },
       "navigation": {
         "title": "التنقل",

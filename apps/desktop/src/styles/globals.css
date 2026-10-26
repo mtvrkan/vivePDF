@@ -955,6 +955,10 @@
   .vp-doc .vp-painting {
     cursor: copy;
   }
+  .vp-doc .vp-heading-number {
+    white-space: pre;
+    user-select: none;
+  }
   .vp-doc .vp-find-match {
     background-color: color-mix(in oklab, var(--color-warning) 35%, transparent);
     border-radius: 2px;

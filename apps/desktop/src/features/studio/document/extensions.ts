@@ -13,6 +13,8 @@ import { citationNodes, type CitationSource } from "./citationNodes";
 import { fontStack } from "./documentFonts";
 import { DocumentFind } from "./findInDocument";
 import { Footnote } from "./footnoteNode";
+import { HeadingNumbers } from "./headingNumbers";
+import { useDocumentStore } from "./documentStore";
 import { ParagraphSpacing } from "./paragraphSpacing";
 import { CONTINUOUS, SECTION_BREAK, sectionColumns, sectionKind } from "./sections";
 import { PAGE_BREAK } from "./toHtml";
@@ -118,6 +120,7 @@ export function documentExtensions(placeholder: string, citations: CitationSourc
     TextAlign.configure({ types: ["heading", "paragraph"] }),
     ParagraphSpacing,
     DocumentFind,
+    HeadingNumbers.configure({ initial: () => useDocumentStore.getState().document?.settings.headingNumbers ?? "none" }),
     Highlight.configure({ multicolor: true }),
     Subscript,
     Superscript,

@@ -9508,7 +9508,8 @@
           "colour": "Colore",
           "position": "Posizione",
           "options": "Opzioni",
-          "close": "Chiudi"
+          "close": "Chiudi",
+          "headings": "Titoli"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumenta dimensione",
@@ -9579,6 +9580,12 @@
       },
       "pageLines": {
         "label": "Pagina {{page}}"
+      },
+      "headingNumbers": {
+        "label": "Numeri dei titoli",
+        "none": "Nessuno",
+        "plain": "1, 1.1, 1.1.1",
+        "dotted": "1., 1.1., 1.1.1."
       },
       "navigation": {
         "title": "Spostamento",

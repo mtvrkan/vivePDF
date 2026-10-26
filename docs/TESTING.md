@@ -151,6 +151,7 @@ in.
 | `studiodoc` | leave the list, Ctrl+Enter and type a line, then View › Page lines off and on | a page line labelled 4 appears and the status bar says page 4 of 4; the line goes away while Page lines is off; screenshot in the run folder |
 | `studiodoc` | focus the ruler's hanging marker and press Shift+→ twice, then the left margin edge and Shift+→, then View › Ruler off and on | the first paragraph gets a 10 mm hanging indent, the left margin grows by 5 mm, the ruler goes away and comes back; ruler screenshot in the run folder |
 | `studiodoc` | type a "## Next quarter" line at the end, View › Navigation pane, click the first heading, then View › Navigation pane again | the pane lists two headings with Next quarter marked, then Quarterly report marked after the click; the pane closes; screenshot in the run folder |
+| `studiodoc` | Design › Heading numbers › "1., 1.1., 1.1.1.", then back to None | the headings read "1. Quarterly report" and "1.1. Next quarter" on the sheet, then lose their numbers; screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
 | `studio` | add a heading from the Text category, press Bold in the bar above the canvas, then Position | the bar names the text and Bold changes; the details panel opens on its position section and closes again; screenshot in the run folder |
 | `studiocv` | CV steps: Design from the step list for the layouts, then Experience for the entries | each step shows only its own section; the layout pictures and the experience entries are reached from their steps |
@@ -422,6 +423,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   their format (the number chip shows the format) and Close or a click in the text returns to the
   previous tab; Insert › Cover styles and Cover details, References › Contents levels and title
   all reach the PDF; in Arabic the tab and the sheet fields still work right to left.
+- Studio document heading numbers on a report with four heading levels and a cover and contents:
+  both styles number the sheet, the navigation pane, Print preview, the contents page and the PDF
+  bookmarks the same way; adding or deleting a heading renumbers the ones after it at once; Undo
+  never steps through number changes; in Arabic the number sits before the heading text on the
+  right.
 - Studio document navigation pane, light and dark and in Arabic: View › Navigation pane opens it
   on the left and it stays open after a restart; headings show as a tree with folding arrows,
   the heading holding the caret is marked while moving through the text, a click brings that
