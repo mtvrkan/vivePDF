@@ -12,7 +12,8 @@ import { useOpenDesign } from "./design/useOpenDesign";
 import { ElementsPanel } from "./design/ElementsPanel";
 import type { FindMode } from "./design/FindReplacePanel";
 import { PagesStrip } from "./design/PagesStrip";
-import { PropertiesPanel } from "./design/PropertiesPanel";
+import { DetailsPanel } from "./design/PropertiesPanel";
+import { ContextBar } from "./design/ContextBar";
 import { StudioToolbar } from "./design/StudioToolbar";
 import { useStudioStore } from "./design/studioStore";
 import { useStudioShortcuts } from "./design/useStudioShortcuts";
@@ -68,6 +69,7 @@ function StudioEditor({ language }: { language: string }) {
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="studio-editor">
       <StudioToolbar onExport={() => setExporting(true)} onPrint={() => setPrinting(true)} onLeave={close} onHelp={() => setHelping(true)} />
+      <ContextBar />
       <div className="flex min-h-0 flex-1">
         <ElementsPanel />
         <div className="relative flex min-w-0 flex-1 flex-col">
@@ -82,7 +84,7 @@ function StudioEditor({ language }: { language: string }) {
           </div>
           <PagesStrip language={language} />
         </div>
-        <PropertiesPanel />
+        <DetailsPanel />
       </div>
       <Suspense fallback={null}>
         {exportLoaded ? <ExportDialog open={exporting} onClose={() => setExporting(false)} language={language} /> : null}

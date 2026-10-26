@@ -10,6 +10,7 @@ import { NumberField, OpacityField, PanelSection } from "./controls";
 import { moveSelectionTo, resizeSelectionTo, selectionFrame, sharedValue, sizeElementTo } from "./multiEdit";
 import { copyStyle, pasteStyle, useStyleClipboard } from "./styleClipboard";
 import { currentPage, useStudioStore } from "./studioStore";
+import { detailsSectionId } from "./sidePanels";
 import { MIN_SIDE, normalizeAngle, ratioLocked } from "./transform";
 import { fromMm, toMm } from "./units";
 import { ariaShortcut, shortcutLabel } from "@/shared/lib/platform";
@@ -48,7 +49,7 @@ export function ArrangeSection({ elements }: { elements: StudioElement[] }) {
     { mode: "bottom", icon: AlignEndHorizontal },
   ] as const;
   return (
-    <PanelSection title={t("studio.props.arrange")}>
+    <PanelSection id={detailsSectionId("arrange")} title={t("studio.props.arrange")}>
       <div className="flex flex-wrap items-center gap-1">
         {alignButtons.map(({ mode, icon }) => (
           <IconButton key={mode} icon={icon} label={t(`studio.align.${mode}`)} onClick={() => align(mode)} />

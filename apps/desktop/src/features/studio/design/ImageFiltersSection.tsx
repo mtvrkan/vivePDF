@@ -7,6 +7,7 @@ import { FILTER_KEYS, FILTER_PRESET_NAMES, FILTER_PRESETS, FILTER_RANGES, isNeut
 import { useImagePreview } from "./assets";
 import { patchSelected } from "./commands";
 import { PanelSection } from "./controls";
+import { detailsSectionId } from "./sidePanels";
 import { useImageFilter } from "./imageFilter";
 
 function setFilters(next: StudioImageFilters, merge?: string) {
@@ -41,7 +42,7 @@ export function ImageFiltersSection({ element }: { element: StudioImageElement }
   const preset = presetOf(element.filters);
   const percent = (value: number) => `${Math.round(value)}%`;
   return (
-    <PanelSection title={t("studio.filters.title")}>
+    <PanelSection id={detailsSectionId("image")} title={t("studio.filters.title")}>
       <div role="group" aria-label={t("studio.filters.presetsLabel")} className="grid grid-cols-3 gap-1">
         {FILTER_PRESET_NAMES.map((name) => (
           <PresetChip key={name} name={name} url={url} active={preset === name} onPick={() => setFilters(FILTER_PRESETS[name])} />

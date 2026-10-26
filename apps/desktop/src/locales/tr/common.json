@@ -7087,12 +7087,27 @@
       "copyStyle": "Stili kopyala",
       "pasteStyle": "Stili yapıştır"
     },
+    "context": {
+      "label": "Seçili öğe araçları",
+      "many_one": "{{count}} öğe",
+      "many_other": "{{count}} öğe",
+      "pageSettings": "Sayfa ayarları",
+      "details": "Ayrıntılar",
+      "closeDetails": "Ayrıntıları kapat"
+    },
     "panel": {
       "label": "Ekle ve düzenle",
-      "elements": "Öğeler",
       "layers": "Katmanlar",
       "templates": "Şablonlar",
-      "data": "Veri"
+      "data": "Veri",
+      "text": "Metin",
+      "shapes": "Şekiller",
+      "icons": "Simgeler",
+      "graphics": "Grafikler",
+      "ornaments": "Süslemeler",
+      "media": "Resim ve QR",
+      "page": "Sayfa",
+      "hide": "Paneli gizle"
     },
     "elements": {
       "text": "Metin",
@@ -7141,7 +7156,7 @@
     },
     "layers": {
       "label": "Bu sayfadaki katmanlar",
-      "empty": "Bu sayfada henüz bir şey yok. Öğeler'den metin, şekil ya da resim ekleyin.",
+      "empty": "Bu sayfada henüz bir şey yok. Soldaki listeden metin, şekil ya da resim ekleyin.",
       "rename": "Katman adı",
       "forward": "{{name}} öğesini yukarı taşı",
       "backward": "{{name}} öğesini aşağı taşı",

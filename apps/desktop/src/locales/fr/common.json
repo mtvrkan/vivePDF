@@ -7086,12 +7086,27 @@
       "copyStyle": "Copier le style",
       "pasteStyle": "Coller le style"
     },
+    "context": {
+      "label": "Outils de l’élément sélectionné",
+      "many_one": "{{count}} élément",
+      "many_other": "{{count}} éléments",
+      "pageSettings": "Réglages de la page",
+      "details": "Détails",
+      "closeDetails": "Fermer les détails"
+    },
     "panel": {
       "label": "Ajouter et organiser",
-      "elements": "Éléments",
       "layers": "Calques",
       "templates": "Modèles",
-      "data": "Données"
+      "data": "Données",
+      "text": "Texte",
+      "shapes": "Formes",
+      "icons": "Icônes",
+      "graphics": "Graphiques",
+      "ornaments": "Ornements",
+      "media": "Image et QR",
+      "page": "Page",
+      "hide": "Masquer le panneau"
     },
     "elements": {
       "text": "Texte",
@@ -7140,7 +7155,7 @@
     },
     "layers": {
       "label": "Calques de cette page",
-      "empty": "Cette page est encore vide. Ajoutez du texte, des formes ou des images depuis Éléments.",
+      "empty": "Cette page est encore vide. Ajoutez du texte, des formes ou des images depuis la liste de gauche.",
       "rename": "Nom du calque",
       "forward": "Monter {{name}}",
       "backward": "Descendre {{name}}",

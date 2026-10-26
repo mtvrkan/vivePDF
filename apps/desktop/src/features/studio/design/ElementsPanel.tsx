@@ -1,5 +1,6 @@
-import { lazy, memo, Suspense, useState } from "react";
-import { Image as ImageIcon, Layers, LayoutTemplate, QrCode, Shapes, Table2, Type, type LucideIcon } from "lucide-react";
+import { lazy, memo, Suspense, useState, type KeyboardEvent, type ReactNode } from "react";
+import { ChartColumn, File, Flower2, Image as ImageIcon, Layers, LayoutTemplate, PanelLeftClose, QrCode, Shapes, Smile, Table2, Type, type LucideIcon } from "lucide-react";
+import { IconButton } from "@/components/shared/IconButton";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { describeError } from "@/shared/lib/errorMessage";
@@ -15,6 +16,9 @@ import { centred, insert, insertShape, insertText, presetShape, SHAPE_PRESETS, T
 import { pickImage } from "./pickImage";
 import { isLineShape, renderFill, renderStroke, shapePaths } from "../model/shapes";
 import { currentPage, useStudioStore } from "./studioStore";
+import { DesignColours } from "./ColorSections";
+import { PageProperties } from "./PageSection";
+import { useSidePanelsStore } from "./sidePanels";
 import { insertTemplate } from "../templates/apply";
 import { buildTemplate } from "../templates/kit";
 import type { StudioTemplate } from "../templates/kit";
@@ -25,10 +29,20 @@ import { GraphicsElements } from "../graphics/GraphicsElements";
 const LayersTab = lazy(() => import("./LayersTab").then((module) => ({ default: module.LayersTab })));
 const DataTab = lazy(() => import("../merge/DataTab").then((module) => ({ default: module.DataTab })));
 
-type Tab = "templates" | "elements" | "layers" | "data";
-const TABS: Tab[] = ["templates", "elements", "data", "layers"];
-const TAB_ICONS: Record<Tab, LucideIcon> = { templates: LayoutTemplate, elements: Shapes, data: Table2, layers: Layers };
-
+type Tab = "templates" | "text" | "shapes" | "icons" | "graphics" | "ornaments" | "media" | "data" | "layers" | "page";
+const TABS: Tab[] = ["templates", "text", "shapes", "icons", "graphics", "ornaments", "media", "data", "layers", "page"];
+const TAB_ICONS: Record<Tab, LucideIcon> = {
+  templates: LayoutTemplate,
+  text: Type,
+  shapes: Shapes,
+  icons: Smile,
+  graphics: ChartColumn,
+  ornaments: Flower2,
+  media: ImageIcon,
+  data: Table2,
+  layers: Layers,
+  page: File,
+};
 
 const ORNAMENT_CATEGORIES: OrnamentCategory[] = ["frames", "seals", "dividers", "accents", "patterns"];
 const previews = new Map<string, ReturnType<Ornament["build"]>>();
@@ -63,22 +77,121 @@ const ShapePreview = memo(function ShapePreview({ preset }: { preset: ShapePrese
   );
 });
 
-function ElementsTab() {
-  const { t } = useTranslation();
-  const toast = useToastStore((state) => state.push);
-  const hasPage = useStudioStore((state) => Boolean(currentPage(state)));
-  if (!hasPage) return null;
-  const livePage = () => currentPage(useStudioStore.getState());
+function livePage() {
+  return currentPage(useStudioStore.getState());
+}
 
+function useHasPage(): boolean {
+  return useStudioStore((state) => Boolean(currentPage(state)));
+}
+
+function TextTab() {
+  const { t } = useTranslation();
+  if (!useHasPage()) return null;
   const addText = (preset: TextPreset) => {
     const page = livePage();
     if (page) insertText(page, preset, t(`studio.elements.${preset.key}Text`));
   };
+  return (
+    <div className="space-y-2 p-4">
+      {TEXT_PRESETS.map((preset) => (
+        <button
+          key={preset.key}
+          type="button"
+          onClick={() => addText(preset)}
+          className={cn("card glass-tinted block w-full rounded-lg px-3 py-2 text-left hover:ring-2 hover:ring-primary/40", preset.key === "heading" ? "text-xl font-bold" : preset.key === "subheading" ? "text-base font-semibold" : "text-sm")}
+        >
+          {t(`studio.elements.${preset.key}`)}
+        </button>
+      ))}
+    </div>
+  );
+}
 
+function ShapesTab() {
+  const { t } = useTranslation();
+  if (!useHasPage()) return null;
   const addShape = (preset: ShapePreset) => {
     const page = livePage();
     if (page) insertShape(page, preset);
   };
+  return (
+    <div className="grid grid-cols-4 gap-2 p-4">
+      {SHAPE_PRESETS.map((preset) => (
+        <button key={preset.key} type="button" data-shape-preset={preset.key} onClick={() => addShape(preset)} aria-label={t(`studio.shapes.${preset.key}`)} title={t(`studio.shapes.${preset.key}`)} className="card glass-tinted flex aspect-square items-center justify-center rounded-lg hover:ring-2 hover:ring-primary/40">
+          <ShapePreview preset={preset} />
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function IconsTab() {
+  if (!useHasPage()) return null;
+  return (
+    <div className="p-4">
+      <IconsSection />
+    </div>
+  );
+}
+
+function GraphicsTab() {
+  if (!useHasPage()) return null;
+  return (
+    <div className="p-4">
+      <GraphicsElements />
+    </div>
+  );
+}
+
+function OrnamentsTab() {
+  const { t } = useTranslation();
+  if (!useHasPage()) return null;
+  const addOrnament = (item: Ornament) => {
+    const page = livePage();
+    if (!page) return;
+    const colours = paletteColours(useStudioStore.getState().design?.palette);
+    const name = t(`studio.ornaments.items.${item.id}`);
+    if (item.fitsPage) {
+      insert(createVector(item.build(colours, { width: page.width, height: page.height }), 0, 0, page.width, page.height, name), false);
+      return;
+    }
+    const scale = (Math.min(page.width, page.height) * 0.4) / Math.max(item.size.width, item.size.height);
+    const width = item.size.width * scale;
+    const height = item.size.height * scale;
+    const at = centred(page, width, height);
+    insert(createVector(item.build(colours, item.size), at.x, at.y, width, height, name));
+  };
+  return (
+    <div className="space-y-3 p-4">
+      {ORNAMENT_CATEGORIES.map((category) => (
+        <div key={category} className="space-y-1.5">
+          <p className="text-xs text-muted-foreground">{t(`studio.ornaments.categories.${category}`)}</p>
+          <div className="grid grid-cols-3 gap-2">
+            {ORNAMENTS.filter((item) => item.category === category).map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                data-ornament={item.id}
+                onClick={() => addOrnament(item)}
+                aria-label={t(`studio.ornaments.items.${item.id}`)}
+                title={t(`studio.ornaments.items.${item.id}`)}
+                className="card glass-tinted paper-surface flex aspect-square items-center justify-center rounded-lg bg-white p-1.5 hover:ring-2 hover:ring-primary/40"
+              >
+                <OrnamentPreview item={item} />
+              </button>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function MediaTab() {
+  const { t } = useTranslation();
+  const toast = useToastStore((state) => state.push);
+  if (!useHasPage()) return null;
 
   const addImage = async () => {
     const src = await pickImage(t("studio.elements.image"), { drawings: true });
@@ -104,22 +217,6 @@ function ElementsTab() {
     insert(createImage(src, at.x, at.y, width, height));
   };
 
-  const addOrnament = (item: Ornament) => {
-    const page = livePage();
-    if (!page) return;
-    const colours = paletteColours(useStudioStore.getState().design?.palette);
-    const name = t(`studio.ornaments.items.${item.id}`);
-    if (item.fitsPage) {
-      insert(createVector(item.build(colours, { width: page.width, height: page.height }), 0, 0, page.width, page.height, name), false);
-      return;
-    }
-    const scale = (Math.min(page.width, page.height) * 0.4) / Math.max(item.size.width, item.size.height);
-    const width = item.size.width * scale;
-    const height = item.size.height * scale;
-    const at = centred(page, width, height);
-    insert(createVector(item.build(colours, item.size), at.x, at.y, width, height, name));
-  };
-
   const addQr = () => {
     const page = livePage();
     if (!page) return;
@@ -129,71 +226,39 @@ function ElementsTab() {
   };
 
   return (
-    <div className="space-y-5 p-4">
-      <section className="space-y-2">
-        <h3 className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-          <Type className="size-3.5" aria-hidden />
-          {t("studio.elements.text")}
-        </h3>
-        {TEXT_PRESETS.map((preset) => (
-          <button
-            key={preset.key}
-            type="button"
-            onClick={() => addText(preset)}
-            className={cn("card glass-tinted block w-full rounded-lg px-3 py-2 text-left hover:ring-2 hover:ring-primary/40", preset.key === "heading" ? "text-xl font-bold" : preset.key === "subheading" ? "text-base font-semibold" : "text-sm")}
-          >
-            {t(`studio.elements.${preset.key}`)}
-          </button>
-        ))}
-      </section>
-      <section className="space-y-2">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("studio.elements.shapes")}</h3>
-        <div className="grid grid-cols-4 gap-2">
-          {SHAPE_PRESETS.map((preset) => (
-            <button key={preset.key} type="button" data-shape-preset={preset.key} onClick={() => addShape(preset)} aria-label={t(`studio.shapes.${preset.key}`)} title={t(`studio.shapes.${preset.key}`)} className="card glass-tinted flex aspect-square items-center justify-center rounded-lg hover:ring-2 hover:ring-primary/40">
-              <ShapePreview preset={preset} />
-            </button>
-          ))}
-        </div>
-      </section>
-      <IconsSection />
-      <GraphicsElements />
-      <section className="space-y-3">
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("studio.elements.ornaments")}</h3>
-        {ORNAMENT_CATEGORIES.map((category) => (
-          <div key={category} className="space-y-1.5">
-            <p className="text-xs text-muted-foreground">{t(`studio.ornaments.categories.${category}`)}</p>
-            <div className="grid grid-cols-3 gap-2">
-              {ORNAMENTS.filter((item) => item.category === category).map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  data-ornament={item.id}
-                  onClick={() => addOrnament(item)}
-                  aria-label={t(`studio.ornaments.items.${item.id}`)}
-                  title={t(`studio.ornaments.items.${item.id}`)}
-                  className="card glass-tinted paper-surface flex aspect-square items-center justify-center rounded-lg bg-white p-1.5 hover:ring-2 hover:ring-primary/40"
-                >
-                  <OrnamentPreview item={item} />
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </section>
-      <section className="grid grid-cols-2 gap-2">
-        <button type="button" onClick={() => void addImage()} className="card glass-tinted flex flex-col items-center gap-1.5 rounded-lg p-3 text-sm hover:ring-2 hover:ring-primary/40">
-          <ImageIcon className="size-5 text-primary" aria-hidden />
-          {t("studio.elements.image")}
-        </button>
-        <button type="button" onClick={addQr} className="card glass-tinted flex flex-col items-center gap-1.5 rounded-lg p-3 text-sm hover:ring-2 hover:ring-primary/40">
-          <QrCode className="size-5 text-primary" aria-hidden />
-          {t("studio.elements.qr")}
-        </button>
-      </section>
+    <div className="grid grid-cols-2 gap-2 p-4">
+      <button type="button" onClick={() => void addImage()} className="card glass-tinted flex flex-col items-center gap-1.5 rounded-lg p-3 text-sm hover:ring-2 hover:ring-primary/40">
+        <ImageIcon className="size-5 text-primary" aria-hidden />
+        {t("studio.elements.image")}
+      </button>
+      <button type="button" onClick={addQr} className="card glass-tinted flex flex-col items-center gap-1.5 rounded-lg p-3 text-sm hover:ring-2 hover:ring-primary/40">
+        <QrCode className="size-5 text-primary" aria-hidden />
+        {t("studio.elements.qr")}
+      </button>
     </div>
   );
 }
+
+function PageTab() {
+  const page = useStudioStore((state) => currentPage(state));
+  if (!page) return null;
+  return (
+    <>
+      <PageProperties page={page} />
+      <DesignColours />
+    </>
+  );
+}
+
+const BODIES: Record<Exclude<Tab, "templates" | "data" | "layers">, () => ReactNode> = {
+  text: TextTab,
+  shapes: ShapesTab,
+  icons: IconsTab,
+  graphics: GraphicsTab,
+  ornaments: OrnamentsTab,
+  media: MediaTab,
+  page: PageTab,
+};
 
 function TabSkeleton() {
   return (
@@ -223,41 +288,76 @@ function TemplatesTab() {
   return <LazyTemplateGallery language={language} box={104} onPick={pick} className="p-3" />;
 }
 
+function TabBody({ tab }: { tab: Tab }) {
+  if (tab === "templates") return <TemplatesTab />;
+  if (tab === "data") return <DataTab />;
+  if (tab === "layers") return <LayersTab />;
+  const Body = BODIES[tab];
+  return <Body />;
+}
+
 export function ElementsPanel() {
   const { t } = useTranslation();
-  const [tab, setTab] = useState<Tab>("elements");
-  const body = tab === "templates" ? <TemplatesTab /> : tab === "elements" ? <ElementsTab /> : tab === "data" ? <DataTab /> : <LayersTab />;
+  const [tab, setTab] = useState<Tab>("text");
+  const open = useSidePanelsStore((state) => state.panelOpen);
+  const setOpen = useSidePanelsStore((state) => state.setPanelOpen);
+  const choose = (next: Tab) => {
+    setTab(next);
+    if (!open) setOpen(true);
+  };
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const index = TABS.indexOf(tab);
+    const next = event.key === "ArrowDown" ? index + 1 : event.key === "ArrowUp" ? index - 1 : event.key === "Home" ? 0 : event.key === "End" ? TABS.length - 1 : null;
+    if (next === null) return;
+    event.preventDefault();
+    const target = TABS[(next + TABS.length) % TABS.length];
+    choose(target);
+    event.currentTarget.querySelector<HTMLButtonElement>(`[data-studio-tab="${target}"]`)?.focus();
+  };
+  const label = t(`studio.panel.${tab}`);
   return (
-    <aside aria-label={t("studio.panel.label")} className="glass flex w-72 shrink-0 flex-col border-r border-border/60">
-      <div role="tablist" aria-label={t("studio.panel.label")} className="grid grid-cols-4 gap-1 border-b border-border/60 p-2">
+    <aside aria-label={t("studio.panel.label")} className="flex shrink-0 border-r border-border/60">
+      <div role="tablist" aria-orientation="vertical" aria-label={t("studio.panel.label")} className="glass-flat flex w-20 shrink-0 flex-col items-center gap-0.5 overflow-y-auto border-e border-border/60 py-2" onKeyDown={onKeyDown}>
         {TABS.map((item) => {
           const Icon = TAB_ICONS[item];
-          const label = t(`studio.panel.${item}`);
+          const name = t(`studio.panel.${item}`);
+          const selected = tab === item;
           return (
             <button
               key={item}
               type="button"
               role="tab"
               id={`studio-panel-tab-${item}`}
-              aria-selected={tab === item}
-              aria-controls="studio-panel-body"
-              title={label}
+              aria-selected={selected}
+              aria-controls={open ? "studio-panel-body" : undefined}
+              tabIndex={selected ? 0 : -1}
+              title={name}
               data-studio-tab={item}
-              onClick={() => setTab(item)}
+              onClick={() => choose(item)}
               className={cn(
-                "flex min-w-0 flex-col items-center gap-1 rounded-lg px-1 py-1.5 text-2xs leading-tight outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
-                tab === item ? "menubar-active font-medium text-foreground" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground",
+                "flex w-16 shrink-0 flex-col items-center gap-1 rounded-lg px-1 py-2 text-2xs leading-tight outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
+                selected && open ? "menubar-active font-medium text-foreground" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground",
               )}
             >
-              <Icon className={cn("size-4 shrink-0", tab === item && "text-primary")} aria-hidden />
-              <span className="w-full truncate text-center">{label}</span>
+              <Icon className={cn("size-5 shrink-0", selected && open && "text-primary")} aria-hidden />
+              <span className="w-full break-words text-center">{name}</span>
             </button>
           );
         })}
       </div>
-      <div key={tab} id="studio-panel-body" role="tabpanel" aria-labelledby={`studio-panel-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto">
-        <Suspense fallback={<TabSkeleton />}>{body}</Suspense>
-      </div>
+      {open ? (
+        <div className="glass flex w-72 flex-col">
+          <div className="flex h-11 shrink-0 items-center gap-2 border-b border-border/60 ps-4 pe-2">
+            <h2 className="min-w-0 flex-1 truncate text-sm font-semibold">{label}</h2>
+            <IconButton icon={PanelLeftClose} label={t("studio.panel.hide")} onClick={() => setOpen(false)} />
+          </div>
+          <div key={tab} id="studio-panel-body" role="tabpanel" aria-labelledby={`studio-panel-tab-${tab}`} className="min-h-0 flex-1 overflow-y-auto">
+            <Suspense fallback={<TabSkeleton />}>
+              <TabBody tab={tab} />
+            </Suspense>
+          </div>
+        </div>
+      ) : null}
     </aside>
   );
 }

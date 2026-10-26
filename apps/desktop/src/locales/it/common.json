@@ -7086,12 +7086,27 @@
       "copyStyle": "Copia stile",
       "pasteStyle": "Incolla stile"
     },
+    "context": {
+      "label": "Strumenti dell’elemento selezionato",
+      "many_one": "{{count}} elemento",
+      "many_other": "{{count}} elementi",
+      "pageSettings": "Impostazioni pagina",
+      "details": "Dettagli",
+      "closeDetails": "Chiudi dettagli"
+    },
     "panel": {
       "label": "Aggiungi e disponi",
-      "elements": "Elementi",
       "layers": "Livelli",
       "templates": "Modelli",
-      "data": "Dati"
+      "data": "Dati",
+      "text": "Testo",
+      "shapes": "Forme",
+      "icons": "Icone",
+      "graphics": "Grafici",
+      "ornaments": "Decorazioni",
+      "media": "Immagine e QR",
+      "page": "Pagina",
+      "hide": "Nascondi pannello"
     },
     "elements": {
       "text": "Testo",
@@ -7140,7 +7155,7 @@
     },
     "layers": {
       "label": "Livelli di questa pagina",
-      "empty": "Questa pagina è ancora vuota. Aggiungi testo, forme o immagini da Elementi.",
+      "empty": "Questa pagina è ancora vuota. Aggiungi testo, forme o immagini dall’elenco a sinistra.",
       "rename": "Nome del livello",
       "forward": "Sposta su {{name}}",
       "backward": "Sposta giù {{name}}",

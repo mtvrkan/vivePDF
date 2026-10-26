@@ -7087,12 +7087,27 @@
       "copyStyle": "Copy style",
       "pasteStyle": "Paste style"
     },
+    "context": {
+      "label": "Selected item tools",
+      "many_one": "{{count}} item",
+      "many_other": "{{count}} items",
+      "pageSettings": "Page settings",
+      "details": "Details",
+      "closeDetails": "Close details"
+    },
     "panel": {
       "label": "Add and arrange",
-      "elements": "Elements",
       "layers": "Layers",
       "templates": "Templates",
-      "data": "Data"
+      "data": "Data",
+      "text": "Text",
+      "shapes": "Shapes",
+      "icons": "Icons",
+      "graphics": "Charts",
+      "ornaments": "Ornaments",
+      "media": "Picture & QR",
+      "page": "Page",
+      "hide": "Hide panel"
     },
     "elements": {
       "text": "Text",
@@ -7141,7 +7156,7 @@
     },
     "layers": {
       "label": "Layers on this page",
-      "empty": "Nothing on this page yet. Add text, shapes or pictures from Elements.",
+      "empty": "Nothing on this page yet. Add text, shapes or pictures from the list on the left.",
       "rename": "Layer name",
       "forward": "Move {{name}} up",
       "backward": "Move {{name}} down",

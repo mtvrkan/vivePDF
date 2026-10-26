@@ -4,6 +4,7 @@ import { ready, setLocale } from "@/app/i18n";
 import { createDesign, createShape } from "../model/design";
 import { addElements } from "../model/edit";
 import { ElementsPanel } from "./ElementsPanel";
+import { useSidePanelsStore } from "./sidePanels";
 import { useStudioStore } from "./studioStore";
 
 vi.mock("../templates/TemplateGallery", () => ({ TemplateGallery: () => <p>gallery</p> }));
@@ -33,6 +34,7 @@ describe("elements panel", () => {
 
   afterEach(() => {
     cleanup();
+    useSidePanelsStore.getState().setPanelOpen(true);
     useStudioStore.getState().close();
   });
 
@@ -50,29 +52,51 @@ describe("elements panel", () => {
     render(<ElementsPanel />);
     panel().scrollTop = 600;
 
-    fireEvent.click(screen.getByRole("tab", { name: "Elements" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Text" }));
 
     expect(panel().scrollTop).toBe(600);
   });
 
-  it("returns to the elements list at the top after visiting another tab", () => {
+  it("returns to the text list at the top after visiting another tab", () => {
     render(<ElementsPanel />);
     panel().scrollTop = 600;
 
     fireEvent.click(screen.getByRole("tab", { name: "Templates" }));
-    fireEvent.click(screen.getByRole("tab", { name: "Elements" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Text" }));
 
     expect(panel().scrollTop).toBe(0);
-    expect(screen.getByRole("tab", { name: "Elements" }).getAttribute("aria-selected")).toBe("true");
+    expect(screen.getByRole("tab", { name: "Text" }).getAttribute("aria-selected")).toBe("true");
   });
 
-  it("leaves the elements tab alone while the page is being edited", () => {
+  it("leaves the icons tab alone while the page is being edited", () => {
     render(<ElementsPanel />);
+    fireEvent.click(screen.getByRole("tab", { name: "Icons" }));
     const renders = iconRenders.count;
 
     act(() => useStudioStore.getState().applyToPage((page) => addElements(page, [createShape("rect", 10, 10, 50, 50)])));
     act(() => useStudioStore.getState().preview((design) => ({ ...design, pages: design.pages.map((page) => ({ ...page, elements: page.elements.map((element) => ({ ...element, x: element.x + 5 })) })) })));
 
+    expect(renders).toBeGreaterThan(0);
     expect(iconRenders.count).toBe(renders);
+  });
+
+  it("hides the panel behind the rail and opens it again on the chosen category", () => {
+    render(<ElementsPanel />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Hide panel" }));
+    expect(screen.queryByRole("tabpanel")).toBeNull();
+    fireEvent.click(screen.getByRole("tab", { name: "Shapes" }));
+
+    expect(useSidePanelsStore.getState().panelOpen).toBe(true);
+    expect(panel().querySelector("[data-shape-preset]")).not.toBeNull();
+  });
+
+  it("moves between categories with the arrow keys", () => {
+    render(<ElementsPanel />);
+
+    fireEvent.keyDown(screen.getByRole("tab", { name: "Text" }), { key: "ArrowDown" });
+
+    expect(screen.getByRole("tab", { name: "Shapes" }).getAttribute("aria-selected")).toBe("true");
+    expect(document.activeElement).toBe(screen.getByRole("tab", { name: "Shapes" }));
   });
 });

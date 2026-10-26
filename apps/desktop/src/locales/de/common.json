@@ -7086,12 +7086,27 @@
       "copyStyle": "Stil kopieren",
       "pasteStyle": "Stil einfügen"
     },
+    "context": {
+      "label": "Werkzeuge für die Auswahl",
+      "many_one": "{{count}} Element",
+      "many_other": "{{count}} Elemente",
+      "pageSettings": "Seiteneinstellungen",
+      "details": "Details",
+      "closeDetails": "Details schließen"
+    },
     "panel": {
       "label": "Hinzufügen und anordnen",
-      "elements": "Elemente",
       "layers": "Ebenen",
       "templates": "Vorlagen",
-      "data": "Daten"
+      "data": "Daten",
+      "text": "Text",
+      "shapes": "Formen",
+      "icons": "Symbole",
+      "graphics": "Diagramme",
+      "ornaments": "Verzierungen",
+      "media": "Bild & QR",
+      "page": "Seite",
+      "hide": "Bereich ausblenden"
     },
     "elements": {
       "text": "Text",
@@ -7140,7 +7155,7 @@
     },
     "layers": {
       "label": "Ebenen auf dieser Seite",
-      "empty": "Auf dieser Seite ist noch nichts. Fügen Sie unter „Elemente“ Text, Formen oder Bilder hinzu.",
+      "empty": "Auf dieser Seite ist noch nichts. Fügen Sie aus der Liste links Text, Formen oder Bilder hinzu.",
       "rename": "Ebenenname",
       "forward": "{{name}} nach oben verschieben",
       "backward": "{{name}} nach unten verschieben",

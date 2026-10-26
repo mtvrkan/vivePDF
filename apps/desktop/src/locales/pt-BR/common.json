@@ -7086,12 +7086,27 @@
       "copyStyle": "Copiar estilo",
       "pasteStyle": "Colar estilo"
     },
+    "context": {
+      "label": "Ferramentas do item selecionado",
+      "many_one": "{{count}} item",
+      "many_other": "{{count}} itens",
+      "pageSettings": "Configurações da página",
+      "details": "Detalhes",
+      "closeDetails": "Fechar detalhes"
+    },
     "panel": {
       "label": "Adicionar e organizar",
-      "elements": "Elementos",
       "layers": "Camadas",
       "templates": "Modelos",
-      "data": "Dados"
+      "data": "Dados",
+      "text": "Texto",
+      "shapes": "Formas",
+      "icons": "Ícones",
+      "graphics": "Gráficos",
+      "ornaments": "Ornamentos",
+      "media": "Imagem e QR",
+      "page": "Página",
+      "hide": "Ocultar painel"
     },
     "elements": {
       "text": "Texto",
@@ -7140,7 +7155,7 @@
     },
     "layers": {
       "label": "Camadas desta página",
-      "empty": "Ainda não há nada nesta página. Adicione texto, formas ou imagens em Elementos.",
+      "empty": "Ainda não há nada nesta página. Adicione texto, formas ou imagens pela lista à esquerda.",
       "rename": "Nome da camada",
       "forward": "Mover {{name}} para cima",
       "backward": "Mover {{name}} para baixo",

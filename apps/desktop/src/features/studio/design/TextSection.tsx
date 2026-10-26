@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { AlignCenter, AlignJustify, AlignLeft, AlignRight, Bold, Highlighter, IndentDecrease, IndentIncrease, Italic, List, ListOrdered, Strikethrough, Subscript, Superscript, Underline } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { FontPicker } from "@/components/shared/FontPicker";
@@ -11,22 +11,19 @@ import {
   STUDIO_TEXT_CASES,
   type StudioBaseline,
   type StudioListKind,
-  type StudioParagraph,
   type StudioTextAlign,
   type StudioTextAutoSize,
   type StudioTextCase,
   type StudioTextElement,
   type StudioVerticalAlign,
 } from "@/types/studio";
-import { MAX_RUN_SCALE, MIN_RUN_SCALE } from "../model/design";
-import { fitParagraphs, MAX_FIRST_LINE_INDENT, MAX_PARAGRAPH_SPACING, paragraphCount, weightOf } from "../model/typography";
-import { patchSelected } from "./commands";
+import { MAX_FIRST_LINE_INDENT, MAX_PARAGRAPH_SPACING } from "../model/typography";
 import { ColorField, NumberField, PanelSection } from "./controls";
 import { hasExtraWeights, nearestWeight, useFontWeights } from "./fontWeights";
-import { boldPatch, runStyle, shiftLevel, toggleList, updateParagraphs, weightPatch, withElementStyle, type RunStyle, type StylePatch } from "./richText";
-import { textEditorBridge, type ParagraphChange } from "./textEditorBridge";
+import { shiftLevel, toggleList, weightPatch } from "./richText";
+import { detailsSectionId } from "./sidePanels";
+import { useTextFormatting } from "./textFormatting";
 import { useTextPrefsStore } from "./textPrefs";
-import { useStudioStore } from "./studioStore";
 
 const TEXT_ALIGNS: StudioTextAlign[] = ["left", "center", "right", "justify"];
 const VERTICAL_ALIGNS: StudioVerticalAlign[] = ["top", "middle", "bottom"];
@@ -39,56 +36,12 @@ const DEFAULT_SHADOW = { color: "#000000", x: 2, y: 2, opacity: 0.35 };
 const DEFAULT_HIGHLIGHT = { color: "#fde047", padding: 2 };
 const DEFAULT_MARK = "#fde047";
 
-type Flag = "bold" | "italic" | "underline" | "strike";
-type Live = { style: RunStyle | null; paragraphs: StudioParagraph[] };
-
-function useLiveSelection(editing: boolean): Live | null {
-  const [live, setLive] = useState<Live | null>(null);
-  const element = useStudioStore((state) => state.editingId);
-  useEffect(() => {
-    if (!editing) {
-      setLive(null);
-      return;
-    }
-    const read = () => {
-      const bridge = textEditorBridge.current;
-      setLive(bridge ? { style: bridge.summary(), paragraphs: bridge.selectedParagraphs() } : null);
-    };
-    read();
-    document.addEventListener("selectionchange", read);
-    const unsubscribe = useStudioStore.subscribe(read);
-    return () => {
-      document.removeEventListener("selectionchange", read);
-      unsubscribe();
-    };
-  }, [editing, element]);
-  return live;
-}
-
-function sharedRunStyle(elements: StudioTextElement[], base: RunStyle): RunStyle {
-  const styles = elements.flatMap((element) => element.runs.filter((run) => run.text.trim()).map((run) => runStyle(element, run)));
-  if (!styles.length) return base;
-  const baseline = styles.every((style) => style.baseline === styles[0].baseline) ? styles[0].baseline : null;
-  const highlight = styles.every((style) => style.highlight === styles[0].highlight) ? styles[0].highlight : null;
-  return { ...base, baseline, highlight };
-}
-
-function allParagraphs(element: StudioTextElement): StudioParagraph[] {
-  return fitParagraphs(element.paragraphs, paragraphCount(element.runs));
-}
-
 export function TextSection({ elements }: { elements: StudioTextElement[] }) {
   const { t, i18n } = useTranslation();
-  const first = elements[0];
-  const editingId = useStudioStore((state) => state.editingId);
-  const editing = elements.length === 1 && editingId === first.id;
-  const live = useLiveSelection(editing);
-  const base = runStyle(first, { text: "" });
-  const style = live?.style ?? sharedRunStyle(elements, base);
+  const { first, style, paragraphs, weight, shownSize, change, applyStyle, toggle, applyParagraphs, setSize } = useTextFormatting(elements);
   const weights = useFontWeights(style.fontId);
   const spellCheck = useTextPrefsStore((state) => state.spellCheck);
   const setSpellCheck = useTextPrefsStore((state) => state.setSpellCheck);
-  const paragraphs = editing && live ? live.paragraphs : allParagraphs(first);
   const listKind = paragraphs[0]?.list ?? "none";
   const languageNames = useMemo(() => {
     try {
@@ -98,46 +51,17 @@ export function TextSection({ elements }: { elements: StudioTextElement[] }) {
     }
   }, [i18n.language]);
 
-  const bridge = () => (editing ? textEditorBridge.current : null);
-  const change = (update: (element: StudioTextElement) => Partial<StudioTextElement>, merge?: string) => {
-    const editor = bridge();
-    if (editor) editor.update((element) => ({ ...element, ...update(element) }));
-    else patchSelected((element) => (element.kind === "text" ? update(element) : {}), merge);
-  };
-  const applyStyle = (patch: StylePatch) => {
-    const editor = bridge();
-    if (editor) editor.applyStyle(patch);
-    else patchSelected((element) => (element.kind === "text" ? withElementStyle(element, patch) : {}));
-  };
-  const toggle = (key: Flag) => {
-    const current = live?.style ? live.style[key] : elements.every((element) => element[key]);
-    applyStyle(key === "bold" ? boldPatch(!current) : { [key]: !current });
-  };
-  const applyParagraphs = (build: ParagraphChange) => {
-    const editor = bridge();
-    if (editor) editor.applyParagraphs(build);
-    else patchSelected((element) => (element.kind === "text" ? { paragraphs: updateParagraphs(element, null, build(allParagraphs(element))) } : {}));
-  };
-  const setSize = (size: number) => {
-    if (live?.style) {
-      applyStyle({ scale: Math.min(MAX_RUN_SCALE, Math.max(MIN_RUN_SCALE, size / first.fontSize)) });
-      return;
-    }
-    change((element) => ({ ...withElementStyle(element, { scale: 1 }), fontSize: size }));
-  };
   const toggleBaseline = (baseline: StudioBaseline) => applyStyle({ baseline: style.baseline === baseline ? null : baseline });
   const setListKind = (kind: StudioListKind) => applyParagraphs(() => (paragraph) => ({ list: kind, level: kind === "none" ? 0 : paragraph.level }));
   const keep = (event: React.MouseEvent) => event.preventDefault();
 
-  const weight = weightOf(style.bold, style.weight);
-  const shownSize = Math.round(style.scale * first.fontSize * 10) / 10;
   const listed = paragraphs.some((paragraph) => paragraph.list !== "none");
   const allOf = (kinds: StudioListKind[]) => paragraphs.length > 0 && paragraphs.every((paragraph) => kinds.includes(paragraph.list));
   const languageLabel = (code: string) => languageNames?.of(code) ?? code;
 
   return (
     <>
-      <PanelSection title={t("studio.props.text")}>
+      <PanelSection id={detailsSectionId("text")} title={t("studio.props.text")}>
         <FontPicker value={style.fontId} onChange={(fontId) => applyStyle({ fontId })} />
         <div className="grid grid-cols-2 gap-2">
           <NumberField label={t("studio.props.fontSize")} suffix="pt" value={shownSize} min={MIN_SIZE} max={MAX_SIZE} onChange={setSize} />

@@ -38,7 +38,9 @@ describe("studio", () => {
     await $('[data-size="a4Landscape"]').click();
     await $('[data-testid="studio-editor"]').waitForDisplayed({ timeout: 30000 });
 
+    await $('[data-studio-tab="text"]').click();
     await button(t("studio.elements.heading")).click();
+    await $('[data-studio-tab="shapes"]').click();
     await $(`button[aria-label="${t("studio.shapes.star")}"]`).click();
 
     const star = (await elements())[1];
@@ -81,6 +83,7 @@ describe("studio", () => {
     await box.waitForDisplayed({ reverse: true });
     await expect($('[data-testid="studio-viewport"] span[data-b="0"]')).toHaveText("Studio");
     answerDialogs(fixtures().red);
+    await $('[data-studio-tab="media"]').click();
     await button(t("studio.elements.image")).click();
     await waitForDialogsAnswered();
     answerDialogs(fixtures().logo);
@@ -163,6 +166,7 @@ describe("studio", () => {
 
   it("downloads a library font, shows it on the canvas and embeds it where the canvas put the text", async function () {
     if (!process.env.VIVEPDF_FONT_LIBRARY_URL) this.skip();
+    await $('[data-studio-tab="text"]').click();
     await button(t("studio.elements.heading")).click();
     const picker = $(`[role="combobox"][aria-label="${t("fontPicker.label")}"]`);
     await picker.click();
@@ -310,5 +314,28 @@ describe("studio", () => {
     const lineHeight = Number.parseFloat(await label.getCSSProperty("line-height").then((property) => String(property.value)));
     expect(await label.getSize("height")).toBeLessThan(lineHeight * 1.5);
     await browser.keys(ESCAPE);
+  });
+
+  it("formats a new heading from the bar above the canvas and opens its details on the position section", async () => {
+    await $('[data-studio-tab="text"]').click();
+    await button(t("studio.elements.heading")).click();
+    const bar = $('[data-testid="studio-context-bar"]');
+    await expect(bar.$('[data-testid="studio-context-kind"]')).toHaveText(t("studio.kinds.text"));
+    const bold = bar.$(`button[aria-label^="${t("studio.props.bold")}"]`);
+    const before = await bold.getAttribute("aria-pressed");
+    await bold.click();
+    await browser.waitUntil(async () => (await bold.getAttribute("aria-pressed")) !== before, { timeoutMsg: "bold did not change from the bar" });
+
+    await $('[data-testid="studio-context-arrange"]').click();
+    const details = $('[data-testid="studio-properties"]');
+    await details.waitForDisplayed();
+    await browser.waitUntil(async () => browser.execute(() => {
+      const panel = document.querySelector('[data-testid="studio-properties"]') as HTMLElement;
+      const section = document.getElementById("studio-details-arrange") as HTMLElement;
+      return Math.abs(section.getBoundingClientRect().top - panel.getBoundingClientRect().top) < 80;
+    }), { timeoutMsg: "the details panel did not open on the position section" });
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-context-bar.png"));
+    await $(`button[aria-label="${t("studio.context.closeDetails")}"]`).click();
+    await details.waitForDisplayed({ reverse: true });
   });
 });

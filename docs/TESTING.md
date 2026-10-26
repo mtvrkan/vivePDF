@@ -148,6 +148,7 @@ in.
 | `studiodoc` | type a few words at the end of a saved document's heading and press Ctrl+S at once | the saved file holds the new words and the bar still shows the file as saved half a second later |
 | `studiodoc` | ribbon: Layout › Margins › 30 mm, then Insert › Table, then click back into the heading | the settings panel shows a 30 mm margin; the Table tab appears while the cursor is in the table and goes away outside it; ribbon screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
+| `studio` | add a heading from the Text category, press Bold in the bar above the canvas, then Position | the bar names the text and Bold changes; the details panel opens on its position section and closes again; screenshot in the run folder |
 | `features` | background colour added to every page of a PDF, then removed from the coloured copy | corner colour of every page #fff8e1 with the text kept, the source still white; white again after removing |
 | `convert` | PDF to pictures, PDF to SVG, pictures to PDF, two SVG drawings combined into one PDF | 3 images; 3 SVG files with the text drawn as outlines; 2-page PDF with one image per page; 2 vector pages (no images) with the drawings' text and aspect ratios |
 | `convert` | Word document with a Turkish file name to PDF through LibreOffice (skipped when LibreOffice is not installed) | one page with the heading and the Turkish line as real text, written next to the source |
@@ -404,6 +405,12 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   scrolls, the counts beside Templates and its categories are right, every page starts at its
   top, a template category opens with its templates only, and with NVDA the current item is read
   as the current page.
+- Studio design and card editor at 1024 px and full width: every category on the left rail opens
+  its panel, "Hide panel" leaves the rail only and is remembered after a restart, the bar above
+  the canvas changes with the selection (text tools for a text, Crop and Filters for a picture,
+  Page settings with nothing selected) and scrolls sideways instead of clipping, typing in a
+  text box keeps its selection when Bold or a colour is used from the bar, and with NVDA the rail
+  is read as tabs and the bar as a toolbar.
 - Background colour on a text PDF, a turned page, a cropped page and a scanned PDF: the colour
   fills each whole visible page with the text on top; the scanned pages are named as hidden.
   Apply a second colour: it replaces the first. Remove: the pages are white again. Read the

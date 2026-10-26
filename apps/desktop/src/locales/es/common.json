@@ -7086,12 +7086,27 @@
       "copyStyle": "Copiar estilo",
       "pasteStyle": "Pegar estilo"
     },
+    "context": {
+      "label": "Herramientas del elemento seleccionado",
+      "many_one": "{{count}} elemento",
+      "many_other": "{{count}} elementos",
+      "pageSettings": "Ajustes de página",
+      "details": "Detalles",
+      "closeDetails": "Cerrar detalles"
+    },
     "panel": {
       "label": "Agregar y organizar",
-      "elements": "Elementos",
       "layers": "Capas",
       "templates": "Plantillas",
-      "data": "Datos"
+      "data": "Datos",
+      "text": "Texto",
+      "shapes": "Formas",
+      "icons": "Iconos",
+      "graphics": "Gráficos",
+      "ornaments": "Adornos",
+      "media": "Imagen y QR",
+      "page": "Página",
+      "hide": "Ocultar panel"
     },
     "elements": {
       "text": "Texto",
@@ -7140,7 +7155,7 @@
     },
     "layers": {
       "label": "Capas de esta página",
-      "empty": "Todavía no hay nada en esta página. Agregue texto, formas o imágenes desde Elementos.",
+      "empty": "Todavía no hay nada en esta página. Agregue texto, formas o imágenes desde la lista de la izquierda.",
       "rename": "Nombre de la capa",
       "forward": "Subir {{name}}",
       "backward": "Bajar {{name}}",
