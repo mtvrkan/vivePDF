@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useState, type ChangeEvent } from "react";
-import { AlertTriangle, ArrowLeft, Download, Eraser, FileJson, FileText, FileUp, FolderOpen, Palette, PenLine, Redo2, RefreshCw, Save, Sparkles, Undo2 } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ChevronLeft, ChevronRight, Download, Eraser, FileJson, FileText, FileUp, FolderOpen, PenLine, Redo2, RefreshCw, Save, Sparkles, Undo2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { translatorFor } from "@/app/i18n";
@@ -24,6 +24,8 @@ import { CvDesignPanel } from "./CvDesignPanel";
 import { CvExportDialog } from "./CvExportDialog";
 import { CvForm } from "./CvForm";
 import { CvImportDialog } from "./CvImportDialog";
+import { CvSteps } from "./CvSteps";
+import { cvSteps, type CvStepId } from "./stepOrder";
 import { pickCvPdf, saveCvFile, withStoredPhoto } from "./cvFiles";
 import type { CvOverflow } from "./cvLayout";
 import { cvFromJson, emptyProfile, isStoredPhoto, profileHasContent, sampleProfile, type CvProfile, type CvSectionKey, type CvState } from "./cvModel";
@@ -35,8 +37,6 @@ const RENDER_DELAY_MS = 180;
 const PREVIEW_PADDING = 48;
 const MAX_PREVIEW_SCALE = 1.25;
 const LONG_CV_PAGES = 2;
-
-type Tab = "content" | "design";
 
 function usePreviewWidth() {
   const ref = useRef<HTMLDivElement>(null);
@@ -79,9 +79,9 @@ export default function CvStudio() {
   const saveFailed = useCvStore((state) => state.saveFailed);
   const close = useCvStore((state) => state.close);
   const pushToast = useToastStore((state) => state.push);
-  const [tab, setTab] = useState<Tab>("content");
+  const [step, setStep] = useState<CvStepId>("personal");
   const [designVisited, setDesignVisited] = useState(false);
-  if (tab === "design" && !designVisited) setDesignVisited(true);
+  if (step === "design" && !designVisited) setDesignVisited(true);
   const [design, setDesign] = useState<StudioDesign | null>(null);
   const [overflow, setOverflow] = useState<CvOverflow>({ items: 0, sections: [] });
   const [failed, setFailed] = useState(false);
@@ -220,18 +220,16 @@ export default function CvStudio() {
     }
   };
 
-  const showSection = (section: CvSectionKey) => {
-    setTab("content");
-    window.setTimeout(() => document.querySelector(`[data-cv-section="${section}"]`)?.scrollIntoView({ block: "start", behavior: "smooth" }), 0);
-  };
+  const showSection = (section: CvSectionKey) => setStep(section);
 
   const page = design?.pages[0];
   const scale = page && preview.width > 0 ? Math.min(MAX_PREVIEW_SCALE, (preview.width - PREVIEW_PADDING) / page.width) : 0;
   const pages = design?.pages.length ?? 0;
-  const tabs: Array<{ id: Tab; icon: typeof FileText; label: string }> = [
-    { id: "content", icon: FileText, label: t("studio.cv.tabs.content") },
-    { id: "design", icon: Palette, label: t("studio.cv.tabs.design") },
-  ];
+  const steps = cvSteps(profile.order);
+  const stepIndex = steps.indexOf(step);
+  const previousStep = stepIndex > 0 ? steps[stepIndex - 1] : null;
+  const nextStep = stepIndex >= 0 && stepIndex < steps.length - 1 ? steps[stepIndex + 1] : null;
+  const stepLabel = (item: CvStepId) => (item === "design" ? t("studio.cv.tabs.design") : item === "personal" ? t("studio.cv.personal") : t(`studio.cv.sections.${item}`));
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="cv-studio">
@@ -272,47 +270,32 @@ export default function CvStudio() {
         </Button>
       </div>
       <div className="flex min-h-0 flex-1">
-        <aside className="flex w-96 shrink-0 flex-col border-e border-border/60" aria-label={t("studio.cv.panel")}>
-          <div
-            className="flex gap-1 p-2"
-            role="tablist"
-            aria-label={t("studio.cv.panel")}
-            onKeyDown={(event) => {
-              const step = { ArrowRight: 1, ArrowLeft: -1, Home: -tabs.length, End: tabs.length }[event.key];
-              if (step === undefined) return;
-              event.preventDefault();
-              const index = Math.min(tabs.length - 1, Math.max(0, tabs.findIndex((item) => item.id === tab) + (document.dir === "rtl" && Math.abs(step) === 1 ? -step : step)));
-              setTab(tabs[index].id);
-              document.getElementById(`cv-tab-${tabs[index].id}`)?.focus();
-            }}
-          >
-            {tabs.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  id={`cv-tab-${item.id}`}
-                  type="button"
-                  role="tab"
-                  aria-selected={tab === item.id}
-                  aria-controls={`cv-panel-${item.id}`}
-                  tabIndex={tab === item.id ? 0 : -1}
-                  onClick={() => setTab(item.id)}
-                  className={cn("flex h-8 flex-1 items-center justify-center gap-2 rounded-lg text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring", tab === item.id ? "menubar-active font-medium" : "text-muted-foreground hover:bg-(--hover-bg) hover:text-foreground")}
-                >
-                  <Icon className="size-4" aria-hidden />
-                  {item.label}
-                </button>
-              );
-            })}
-          </div>
-          <div id="cv-panel-content" hidden={tab !== "content"} className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" role="tabpanel" aria-labelledby="cv-tab-content">
-            <CvForm />
-          </div>
-          <div id="cv-panel-design" hidden={tab !== "design"} className="min-h-0 flex-1 overflow-y-auto px-3 pb-6" role="tabpanel" aria-labelledby="cv-tab-design">
+        <nav className="glass-flat w-52 shrink-0 overflow-y-auto border-e border-border/60 p-2" aria-label={t("studio.cv.panel")}>
+          <CvSteps step={step} onChange={setStep} />
+        </nav>
+        <div id="cv-step-panel" role="tabpanel" aria-labelledby={`cv-step-${step}`} className="flex w-96 shrink-0 flex-col border-e border-border/60">
+          <div id="cv-panel-design" hidden={step !== "design"} className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
             {designVisited ? <CvDesignPanel /> : null}
           </div>
-        </aside>
+          {step === "design" ? null : (
+            <div key={step} id="cv-panel-content" className="min-h-0 flex-1 overflow-y-auto px-3 py-3">
+              <CvForm only={step} />
+            </div>
+          )}
+          <div className="flex shrink-0 items-center gap-2 border-t border-border/60 px-3 py-2">
+            {previousStep ? (
+              <Button size="sm" variant="ghost" icon={<ChevronLeft className="size-4 rtl:rotate-180" aria-hidden />} onClick={() => setStep(previousStep)} data-testid="cv-step-previous">
+                {stepLabel(previousStep)}
+              </Button>
+            ) : null}
+            {nextStep ? (
+              <Button size="sm" variant="primary" className="ms-auto" onClick={() => setStep(nextStep)} data-testid="cv-step-next">
+                {t("studio.cv.steps.next", { name: stepLabel(nextStep) })}
+                <ChevronRight className="size-4 rtl:rotate-180" aria-hidden />
+              </Button>
+            ) : null}
+          </div>
+        </div>
         <div ref={preview.ref} role="region" className="min-w-0 flex-1 overflow-auto bg-muted/40" aria-label={t("studio.cv.preview")} aria-busy={!design && !failed}>
           {failed && design ? (
             <div role="alert" className="sticky top-0 z-10 m-3 flex items-center gap-2 rounded-lg border border-destructive/40 bg-card px-3 py-2 text-sm shadow-sm">

@@ -4,6 +4,9 @@ import { sectionVisible, type CvProfile, type CvSectionKey } from "./cvModel";
 import { CertificatesSection, CustomSection, EducationSection, ExperienceSection, ProjectsSection, ReferencesSection } from "./fields/EntrySections";
 import { InterestsSection, LeveledSection, SummarySection } from "./fields/ListSections";
 import { PersonalSection } from "./fields/PersonalSection";
+import { CvSingleSectionContext } from "./fields/sectionLayout";
+
+export type CvStep = "personal" | CvSectionKey;
 
 function initiallyOpen(profile: CvProfile): Set<CvSectionKey> {
   const filled = profile.order.filter((key) => sectionVisible({ ...profile, hidden: [] }, key));
@@ -23,9 +26,16 @@ function SectionFor({ section, open }: { section: CvSectionKey; open: boolean })
   return <CustomSection defaultOpen={open} />;
 }
 
-export function CvForm() {
+export function CvForm({ only }: { only?: CvStep }) {
   const order = useCvStore((state) => state.profile.order);
   const [open] = useState(() => initiallyOpen(useCvStore.getState().profile));
+  if (only) {
+    return (
+      <CvSingleSectionContext.Provider value>
+        {only === "personal" ? <PersonalSection /> : <SectionFor section={only} open />}
+      </CvSingleSectionContext.Provider>
+    );
+  }
   return (
     <div className="space-y-3">
       <PersonalSection />

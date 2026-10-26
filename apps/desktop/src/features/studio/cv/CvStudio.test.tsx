@@ -15,10 +15,17 @@ vi.mock("./cvRender", async (importOriginal) => ({
   renderCv: () => new Promise(() => undefined),
 }));
 
-const section = (key: string) => document.querySelector(`[data-cv-section="${key}"]`) as HTMLElement;
-const educationHeader = () => within(section("education")).getAllByRole("button", { name: /^Education/ })[0];
+const step = (key: string) => document.querySelector(`[data-cv-step="${key}"]`) as HTMLElement;
+const shownSection = () => document.querySelector("#cv-panel-content [data-cv-section]")?.getAttribute("data-cv-section");
 
-describe("cv studio tabs", () => {
+const renderStudio = () =>
+  render(
+    <MemoryRouter>
+      <CvStudio />
+    </MemoryRouter>,
+  );
+
+describe("cv studio steps", () => {
   beforeAll(async () => {
     vi.stubGlobal(
       "ResizeObserver",
@@ -44,31 +51,51 @@ describe("cv studio tabs", () => {
     useCvStore.getState().close();
   });
 
-  it("keeps opened sections and the scroll position of the content tab across a visit to the design tab", () => {
-    render(
-      <MemoryRouter>
-        <CvStudio />
-      </MemoryRouter>,
-    );
-    const content = document.getElementById("cv-panel-content") as HTMLElement;
+  it("shows one section per step and walks them with the next and previous buttons", () => {
+    renderStudio();
+    expect(shownSection()).toBe("personal");
+    expect(step("personal").getAttribute("aria-selected")).toBe("true");
+
+    fireEvent.click(screen.getByTestId("cv-step-next"));
+
+    const first = useCvStore.getState().profile.order[0];
+    expect(shownSection()).toBe(first);
+    expect(step(first).getAttribute("aria-selected")).toBe("true");
+    fireEvent.click(screen.getByTestId("cv-step-previous"));
+    expect(shownSection()).toBe("personal");
+    expect(screen.queryByTestId("cv-step-previous")).toBeNull();
+  });
+
+  it("marks a filled section, counts its entries and flags a hidden one", () => {
+    useCvStore.getState().updateProfile((profile) => ({ ...profile, hidden: [...profile.hidden, "education"] }));
+    renderStudio();
+
+    const experience = step("experience");
+
+    expect(within(experience).getByText("filled in")).toBeTruthy();
+    expect(within(experience).getByText("1")).toBeTruthy();
+    expect(within(step("education")).getByLabelText("hidden in the CV")).toBeTruthy();
+    expect(within(step("education")).queryByText("filled in")).toBeNull();
+  });
+
+  it("mounts the design panel on the first visit and keeps it while moving between steps with the arrow keys", () => {
+    renderStudio();
     const design = document.getElementById("cv-panel-design") as HTMLElement;
     expect(design.childElementCount).toBe(0);
 
-    fireEvent.click(educationHeader());
-    const opened = educationHeader().getAttribute("aria-expanded");
-    content.scrollTop = 240;
-
-    fireEvent.click(screen.getByRole("tab", { name: "Design" }));
-    expect(content.hidden).toBe(true);
+    fireEvent.click(step("design"));
     expect(design.hidden).toBe(false);
     expect(design.childElementCount).toBeGreaterThan(0);
+    expect(document.getElementById("cv-panel-content")).toBeNull();
+    expect(screen.queryByTestId("cv-step-next")).toBeNull();
 
-    fireEvent.click(screen.getByRole("tab", { name: "Content" }));
-    expect(content.hidden).toBe(false);
+    fireEvent.keyDown(step("design"), { key: "Home" });
+
     expect(design.hidden).toBe(true);
     expect(design.childElementCount).toBeGreaterThan(0);
-    expect(educationHeader().getAttribute("aria-expanded")).toBe(opened);
-    expect(opened).toBe("true");
-    expect(content.scrollTop).toBe(240);
+    expect(shownSection()).toBe("personal");
+    expect(document.activeElement).toBe(step("personal"));
+    fireEvent.keyDown(step("personal"), { key: "ArrowUp" });
+    expect(step("design").getAttribute("aria-selected")).toBe("true");
   });
 });

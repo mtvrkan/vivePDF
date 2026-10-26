@@ -9852,7 +9852,12 @@
       "pagesHint": "CV'lerin çoğu bir ya da iki sayfadır.",
       "emptyTitle": "CV'niz henüz boş",
       "emptyDescription": "Soldaki formu doldurun, örnekle başlayın ya da mevcut bir CV'yi PDF'ten içe aktarın.",
-      "photoMissing": "Fotoğraf dosyası bulunamadı. Yeniden seçin."
+      "photoMissing": "Fotoğraf dosyası bulunamadı. Yeniden seçin.",
+      "steps": {
+        "filled": "dolu",
+        "hidden": "CV'de gizli",
+        "next": "Sonraki: {{name}}"
+      }
     },
     "shortcuts": {
       "title": "Klavye kısayolları",

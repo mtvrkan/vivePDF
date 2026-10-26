@@ -9851,7 +9851,12 @@
       "pagesHint": "La maggior parte dei CV è lunga una o due pagine.",
       "emptyTitle": "Il tuo CV è vuoto",
       "emptyDescription": "Compila il modulo a sinistra, parti dall'esempio o importa un CV esistente da un PDF.",
-      "photoMissing": "Il file della foto non è stato trovato. Sceglilo di nuovo."
+      "photoMissing": "Il file della foto non è stato trovato. Sceglilo di nuovo.",
+      "steps": {
+        "filled": "compilato",
+        "hidden": "nascosto nel CV",
+        "next": "Avanti: {{name}}"
+      }
     },
     "shortcuts": {
       "title": "Scorciatoie da tastiera",

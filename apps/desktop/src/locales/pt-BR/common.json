@@ -9851,7 +9851,12 @@
       "pagesHint": "A maioria dos currículos tem uma ou duas páginas.",
       "emptyTitle": "Seu currículo está vazio",
       "emptyDescription": "Preencha o formulário à esquerda, comece pelo exemplo ou importe um currículo existente de um PDF.",
-      "photoMissing": "O arquivo da foto não foi encontrado. Escolha-o novamente."
+      "photoMissing": "O arquivo da foto não foi encontrado. Escolha-o novamente.",
+      "steps": {
+        "filled": "preenchido",
+        "hidden": "oculto no currículo",
+        "next": "Próximo: {{name}}"
+      }
     },
     "shortcuts": {
       "title": "Atalhos de teclado",

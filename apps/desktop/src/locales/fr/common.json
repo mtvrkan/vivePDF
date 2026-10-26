@@ -9851,7 +9851,12 @@
       "pagesHint": "La plupart des CV font une ou deux pages.",
       "emptyTitle": "Votre CV est vide",
       "emptyDescription": "Remplissez le formulaire à gauche, partez de l'exemple ou importez un CV existant depuis un PDF.",
-      "photoMissing": "Le fichier de la photo est introuvable. Choisissez-le à nouveau."
+      "photoMissing": "Le fichier de la photo est introuvable. Choisissez-le à nouveau.",
+      "steps": {
+        "filled": "rempli",
+        "hidden": "masqué dans le CV",
+        "next": "Suivant : {{name}}"
+      }
     },
     "shortcuts": {
       "title": "Raccourcis clavier",

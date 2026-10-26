@@ -149,6 +149,7 @@ in.
 | `studiodoc` | ribbon: Layout › Margins › 30 mm, then Insert › Table, then click back into the heading | the settings panel shows a 30 mm margin; the Table tab appears while the cursor is in the table and goes away outside it; ribbon screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
 | `studio` | add a heading from the Text category, press Bold in the bar above the canvas, then Position | the bar names the text and Bold changes; the details panel opens on its position section and closes again; screenshot in the run folder |
+| `studiocv` | CV steps: Design from the step list for the layouts, then Experience for the entries | each step shows only its own section; the layout pictures and the experience entries are reached from their steps |
 | `features` | background colour added to every page of a PDF, then removed from the coloured copy | corner colour of every page #fff8e1 with the text kept, the source still white; white again after removing |
 | `convert` | PDF to pictures, PDF to SVG, pictures to PDF, two SVG drawings combined into one PDF | 3 images; 3 SVG files with the text drawn as outlines; 2-page PDF with one image per page; 2 vector pages (no images) with the drawings' text and aspect ratios |
 | `convert` | Word document with a Turkish file name to PDF through LibreOffice (skipped when LibreOffice is not installed) | one page with the heading and the Turkish line as real text, written next to the source |
@@ -411,6 +412,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   Page settings with nothing selected) and scrolls sideways instead of clipping, typing in a
   text box keeps its selection when Bold or a colour is used from the bar, and with NVDA the rail
   is read as tabs and the bar as a toolbar.
+- Studio CV editor at 1024 px and full width: the step list shows Personal details, every section
+  in the CV's order and Design; a filled step gets a tick, a hidden section is struck through with
+  an eye icon, list sections show their count; Next and Previous walk the steps in that order,
+  moving a section up or down in Design changes the list order, and with NVDA the list is read as tabs and
+  arrow keys move between them.
 - Background colour on a text PDF, a turned page, a cropped page and a scanned PDF: the colour
   fills each whole visible page with the text on top; the scanned pages are named as hidden.
   Apply a second colour: it replaces the first. Remove: the pages are white again. Read the

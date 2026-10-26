@@ -25,7 +25,7 @@ describe("cv builder", () => {
     await $(`//button[normalize-space(.)="${t("studio.cv.fillSample")}"]`).click();
     await browser.waitUntil(async () => await previewHas(t("studio.cv.sample.name")), { timeout: 30000, timeoutMsg: "the sample CV never reached the preview" });
 
-    await $(`//*[@role="tab"][normalize-space(.)="${t("studio.cv.tabs.design")}"]`).click();
+    await $('[data-cv-step="design"]').click();
     await browser.waitUntil(async () => (await $$('[data-cv-layout] img[data-thumbnail-state="ready"]').length) === 10, { timeout: 90000, timeoutMsg: "the layout pictures were not all drawn" });
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "cv-layouts.png"));
 
@@ -38,7 +38,7 @@ describe("cv builder", () => {
   });
 
   it("imports a CV PDF after a review, undoes and redoes it, and keeps the CV in a JSON file", async () => {
-    await $(`//*[@role="tab"][normalize-space(.)="${t("studio.cv.tabs.content")}"]`).click();
+    await $('[data-cv-step="experience"]').click();
     answerDialogs(fixtures().resume);
     await chooseFromToolbarMenu(t("studio.cv.file.menu"), "pdf");
     await waitForDialogsAnswered();

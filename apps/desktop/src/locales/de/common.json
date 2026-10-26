@@ -9851,7 +9851,12 @@
       "pagesHint": "Die meisten Lebensläufe sind ein bis zwei Seiten lang.",
       "emptyTitle": "Ihr Lebenslauf ist leer",
       "emptyDescription": "Füllen Sie das Formular links aus, beginnen Sie mit dem Beispiel oder übernehmen Sie einen vorhandenen Lebenslauf aus einer PDF.",
-      "photoMissing": "Die Fotodatei wurde nicht gefunden. Wählen Sie sie erneut aus."
+      "photoMissing": "Die Fotodatei wurde nicht gefunden. Wählen Sie sie erneut aus.",
+      "steps": {
+        "filled": "ausgefüllt",
+        "hidden": "im Lebenslauf ausgeblendet",
+        "next": "Weiter: {{name}}"
+      }
     },
     "shortcuts": {
       "title": "Tastenkombinationen",

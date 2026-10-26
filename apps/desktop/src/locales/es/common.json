@@ -9851,7 +9851,12 @@
       "pagesHint": "La mayoría de los CV ocupan una o dos páginas.",
       "emptyTitle": "Tu CV está vacío",
       "emptyDescription": "Rellena el formulario de la izquierda, empieza con el ejemplo o importa un CV existente desde un PDF.",
-      "photoMissing": "No se encuentra el archivo de la foto. Vuelve a elegirlo."
+      "photoMissing": "No se encuentra el archivo de la foto. Vuelve a elegirlo.",
+      "steps": {
+        "filled": "completado",
+        "hidden": "oculto en el CV",
+        "next": "Siguiente: {{name}}"
+      }
     },
     "shortcuts": {
       "title": "Atajos de teclado",

@@ -9852,7 +9852,12 @@
       "pagesHint": "Most CVs are one or two pages long.",
       "emptyTitle": "Your CV is empty",
       "emptyDescription": "Fill in the form on the left, start from the sample or bring in an existing CV from a PDF.",
-      "photoMissing": "The photo file can't be found. Choose it again."
+      "photoMissing": "The photo file can't be found. Choose it again.",
+      "steps": {
+        "filled": "filled in",
+        "hidden": "hidden in the CV",
+        "next": "Next: {{name}}"
+      }
     },
     "shortcuts": {
       "title": "Keyboard shortcuts",
