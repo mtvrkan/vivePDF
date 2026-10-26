@@ -110,3 +110,66 @@ def test_a_heading_beside_the_top_of_a_column_is_read_before_both_columns() -> N
         *[text for _rect, text in left],
         *[text for _rect, text in right],
     ]
+
+
+def _turned_page(rotation: int, cropbox: pymupdf.Rect | None = None) -> pymupdf.Page:
+    document = pymupdf.open()
+    page = document.new_page(width=700, height=900)
+    if cropbox is not None:
+        page.set_cropbox(cropbox)
+    page.set_rotation(rotation)
+    return page
+
+
+def _write_upright(page: pymupdf.Page, point: tuple[float, float], text: str) -> None:
+    page.insert_text(
+        pymupdf.Point(point) * page.derotation_matrix,
+        text,
+        fontsize=10,
+        fontname="dejavu",
+        fontfile=FONT,
+        rotate=page.rotation,
+    )
+
+
+def _two_columns(page: pymupdf.Page) -> None:
+    _write_upright(page, (50, 60), "Ortak başlık iki sütunun üstünde, sayfa boyunca uzanır")
+    for number, (left, right) in enumerate(zip(LEFT, RIGHT, strict=True)):
+        _write_upright(page, (50, 90 + number * 14), left)
+        _write_upright(page, (450, 90 + number * 14), right)
+
+
+def test_plain_text_reads_the_columns_of_a_turned_landscape_page_one_after_the_other() -> None:
+    page = _turned_page(90)
+    _two_columns(page)
+
+    lines = _lines(page_text(page, False))
+
+    assert lines == ["Ortak başlık iki sütunun üstünde, sayfa boyunca uzanır", *LEFT, *RIGHT]
+
+
+def test_html_reads_the_columns_of_a_turned_page_with_an_offset_crop_box() -> None:
+    page = _turned_page(270, pymupdf.Rect(60, 40, 660, 880))
+    _two_columns(page)
+
+    html = page_html(page_markup(page), 10)
+
+    left = html.index("Sol sütunun ilk satırı burada başlıyor")
+    right = html.index("Sağ sütun ikinci bölümdür ve sol sütun")
+    assert html.index("Ortak başlık") < left < right
+    assert "burada Sağ" not in html
+
+
+def test_a_ruled_two_column_table_on_a_turned_page_keeps_its_rows_together() -> None:
+    page = _turned_page(90)
+    turn = page.derotation_matrix
+    for number in range(5):
+        top = 100 + number * 30
+        page.draw_rect(pymupdf.Rect(40, top, 420, top + 30) * turn, color=(0, 0, 0))
+        page.draw_rect(pymupdf.Rect(420, top, 800, top + 30) * turn, color=(0, 0, 0))
+        _write_upright(page, (46, top + 19), f"Birinci hücre {number} için açıklama")
+        _write_upright(page, (426, top + 19), f"İkinci hücre {number} için açıklama")
+
+    lines = _lines(page_text(page, False))
+
+    assert lines[0] == "Birinci hücre 0 için açıklama İkinci hücre 0 için açıklama"

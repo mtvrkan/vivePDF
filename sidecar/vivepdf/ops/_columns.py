@@ -151,15 +151,25 @@ def column_order[Item](items: Sequence[tuple[pymupdf.Rect, Item]], columns: Colu
     return ordered
 
 
-def _rules(drawing: dict) -> list[pymupdf.Rect]:
+def visible_direction(direction: tuple[float, float], turn: pymupdf.Matrix) -> tuple[float, float]:
+    across, down = direction
+    return across * turn.a + down * turn.c, across * turn.b + down * turn.d
+
+
+def _rules(drawing: dict, turn: pymupdf.Matrix) -> list[pymupdf.Rect]:
     rules = []
     for item in drawing.get("items", []):
         if item[0] == "l":
-            start, end = pymupdf.Point(item[1]), pymupdf.Point(item[2])
+            start, end = pymupdf.Point(item[1]) * turn, pymupdf.Point(item[2]) * turn
             rules.append(pymupdf.Rect(start, end).normalize())
         elif item[0] == "re":
-            rect = pymupdf.Rect(item[1])
-            rules.extend([pymupdf.Rect(rect.tl, rect.tr), pymupdf.Rect(rect.bl, rect.br)])
+            rect = pymupdf.Rect(item[1]) * turn
+            rules.extend(
+                [
+                    pymupdf.Rect(rect.tl, rect.tr),
+                    pymupdf.Rect(rect.bl, rect.br),
+                ]
+            )
     return [rule for rule in rules if rule.height <= RULE_THICKNESS]
 
 
@@ -175,8 +185,9 @@ def _merged(segments: list[tuple[float, float]]) -> list[tuple[float, float]]:
 
 def _ruled_rows(page: pymupdf.Page, columns: Columns) -> bool:
     rows: dict[int, list[tuple[float, float]]] = {}
+    turn = page.rotation_matrix
     for drawing in page.get_drawings():
-        for rule in _rules(drawing):
+        for rule in _rules(drawing, turn):
             middle = (rule.y0 + rule.y1) / 2
             if columns.top < middle < columns.bottom:
                 rows.setdefault(round(middle), []).append((rule.x0, rule.x1))

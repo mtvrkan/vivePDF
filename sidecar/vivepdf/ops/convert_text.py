@@ -9,7 +9,7 @@ from urllib.parse import quote
 
 import pymupdf
 
-from vivepdf.ops._columns import column_order, page_columns, words_of
+from vivepdf.ops._columns import column_order, page_columns, visible_direction, words_of
 from vivepdf.ops._document import open_document
 from vivepdf.ops._docx_running import strip_running_text
 from vivepdf.ops._markdown_layout import (
@@ -90,11 +90,11 @@ class _Row:
     horizontal: bool
 
 
-def _continues(row: _Row, line: dict, baseline: float, size: float) -> bool:
+def _continues(row: _Row, left: float, baseline: float, size: float) -> bool:
     return (
         row.horizontal
         and abs(baseline - row.baseline) <= max(row.size, size) * SAME_BASELINE
-        and line["bbox"][0] >= row.right - OVERLAP_TOLERANCE
+        and left >= row.right - OVERLAP_TOLERANCE
     )
 
 
@@ -107,13 +107,14 @@ def _joined(left: str, right: str) -> str:
 
 
 def _in_columns(page: pymupdf.Page, lines: list[dict]) -> list[dict]:
-    placed = [(pymupdf.Rect(line["bbox"]), line) for line in lines]
+    turn = page.rotation_matrix
+    placed = [(pymupdf.Rect(line["bbox"]) * turn, line) for line in lines]
     columns = page_columns(
         page,
         [
             (rect, words_of("".join(span["text"] for span in line["spans"])))
             for rect, line in placed
-            if is_horizontal(line["dir"])
+            if is_horizontal(visible_direction(line["dir"], turn))
         ],
     )
     return lines if columns is None else column_order(placed, columns)
@@ -127,19 +128,21 @@ def reading_text(page: pymupdf.Page) -> str:
         for line in block.get("lines", [])
         if line["spans"]
     ]
+    turn = page.rotation_matrix
     for line in _in_columns(page, lines):
         spans = line["spans"]
         text = "".join(span["text"] for span in spans)
-        baseline = spans[0]["origin"][1]
+        shown = pymupdf.Rect(line["bbox"]) * turn
+        baseline = (pymupdf.Point(spans[0]["origin"]) * turn).y
         size = max(span["size"] for span in spans) or 1.0
-        horizontal = is_horizontal(line["dir"])
-        if horizontal and rows and _continues(rows[-1], line, baseline, size):
+        horizontal = is_horizontal(visible_direction(line["dir"], turn))
+        if horizontal and rows and _continues(rows[-1], shown.x0, baseline, size):
             row = rows[-1]
             row.text = _joined(row.text, text)
-            row.right = line["bbox"][2]
+            row.right = shown.x1
             row.size = max(row.size, size)
             continue
-        rows.append(_Row(text, baseline, size, line["bbox"][2], horizontal))
+        rows.append(_Row(text, baseline, size, shown.x1, horizontal))
     return "".join(f"{row.text}\n" for row in rows)
 
 

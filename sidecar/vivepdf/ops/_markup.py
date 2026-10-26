@@ -220,15 +220,15 @@ def _in_reading_order(texts, visuals) -> list[MarkupBlock]:
 def _text_groups(
     page: pymupdf.Page, text_lines: list[tuple[int, pymupdf.Rect, pymupdf.Rect, MarkupLine]]
 ):
-    columns = page_columns(
-        page, [(rect, words_of(parsed.text)) for _p, _a, rect, parsed in text_lines]
-    )
+    turn = page.rotation_matrix
+    shown = [(item[2] * turn, item) for item in text_lines]
+    columns = page_columns(page, [(rect, words_of(item[3].text)) for rect, item in shown])
     if columns is None:
         ordered = text_lines
         groups = groupby(ordered, key=lambda item: item[0])
     else:
-        ordered = column_order([(item[2], item) for item in text_lines], columns)
-        groups = groupby(ordered, key=lambda item: (item[0], column_side(item[2], columns)))
+        ordered = column_order(shown, columns)
+        groups = groupby(ordered, key=lambda item: (item[0], column_side(item[2] * turn, columns)))
     texts = []
     for _key, grouped in groups:
         members = list(grouped)
