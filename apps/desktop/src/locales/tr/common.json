@@ -8854,7 +8854,7 @@
       "restaurantPromoFlyerDesc3": "Porçini mantarı, kekikli tereyağı ve trüf yağı",
       "restaurantPromoFlyerPrice3": "520 ₺",
       "restaurantPromoFlyerCta": "Masanızı ayırtın",
-      "fitnessClassFlyerStüdyo": "Bloom Pilates Stüdyosu",
+      "fitnessClassFlyerStudio": "Bloom Pilates Stüdyosu",
       "fitnessClassFlyerTitle": "Sabah Pilatesi",
       "fitnessClassFlyerLead": "Sertifikalı eğitmenlerle küçük gruplarda güçlenin, esneyin ve nefes alın.",
       "fitnessClassFlyerBadge": "İlk ders ücretsiz",
@@ -9652,7 +9652,7 @@
       "sampleFilled": "Örnek CV dolduruldu",
       "clear": "Temizle",
       "cleared": "CV temizlendi",
-      "editInStüdyo": "Stüdyo'da serbest düzenle",
+      "editInStudio": "Stüdyo'da serbest düzenle",
       "export": {
         "open": "Dışa aktar",
         "title": "CV'yi dışa aktar",
