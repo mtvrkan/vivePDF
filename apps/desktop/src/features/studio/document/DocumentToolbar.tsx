@@ -26,10 +26,12 @@ import {
   ListChecks,
   ListOrdered,
   ListTree,
+  Maximize2,
   Minus,
   Omega,
   PanelTop,
   PanelsTopLeft,
+  Printer,
   Quote,
   RectangleVertical,
   Redo2,
@@ -40,6 +42,7 @@ import {
   SeparatorHorizontal,
   Settings2,
   SquareDashed,
+  StretchHorizontal,
   Strikethrough,
   Subscript,
   Superscript,
@@ -51,6 +54,7 @@ import {
   Underline,
   Undo2,
   Unlink,
+  ZoomIn,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useEditorState, type Editor } from "@tiptap/react";
@@ -76,7 +80,8 @@ import { pickDocumentImage } from "./documentFile";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
 import { FormatPainterButton } from "./FormatPainterButton";
-import { DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES } from "./model";
+import { useDocumentViewStore } from "./documentView";
+import { DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES, uniformMargin, uniformMargins } from "./model";
 import { SectionBreakMenu } from "./SectionBreakMenu";
 import { SourcesDialog } from "./SourcesDialog";
 import { SpacingMenu } from "./SpacingMenu";
@@ -88,7 +93,7 @@ const SIZES = ["8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "
 const HIGHLIGHTS = ["#fef08a", "#bbf7d0", "#bfdbfe", "#fbcfe8", "#fed7aa", "#e5e7eb"];
 const DEFAULT_TEXT = "#1a1a1a";
 const MARGINS = [15, 20, 25, 30];
-const RIBBON_TABS = ["home", "insert", "layout", "references"] as const;
+const RIBBON_TABS = ["home", "insert", "layout", "references", "view"] as const;
 const GALLERY = ["paragraph", "h1", "h2", "h3", "h4", "quote"] as const;
 const GALLERY_LOOK: Record<(typeof GALLERY)[number], string> = {
   paragraph: "text-xs",
@@ -161,14 +166,24 @@ export function DocumentToolbar({
   contentWidth,
   onFind = () => undefined,
   onOpenSettings = () => undefined,
+  onPrintPreview = () => undefined,
+  onPageSetup = () => undefined,
 }: {
   editor: Editor;
   contentWidth: number;
   onFind?: (replace: boolean) => void;
   onOpenSettings?: (section: DocumentSettingsSection) => void;
+  onPrintPreview?: () => void;
+  onPageSetup?: () => void;
 }) {
   const { t } = useTranslation();
   const settings = useDocumentStore((state) => state.document?.settings);
+  const zoom = useDocumentViewStore((state) => state.zoom);
+  const setZoom = useDocumentViewStore((state) => state.setZoom);
+  const pageLines = useDocumentViewStore((state) => state.pageLines);
+  const setPageLines = useDocumentViewStore((state) => state.setPageLines);
+  const ruler = useDocumentViewStore((state) => state.ruler);
+  const setRuler = useDocumentViewStore((state) => state.setRuler);
   const bodyFont = settings?.fontId ?? "";
   const [tab, setTab] = useState<RibbonTabId>("home");
   const [collapsed, setCollapsed] = useRibbonCollapsed();
@@ -268,9 +283,9 @@ export function DocumentToolbar({
     values.map((value) => ({ type: "item", id: idOf(value), label: labelOf(value), checked: value === current, onSelect: () => apply(value) }));
 
   const marginItems: ContextMenuItem[] = [
-    ...choice(MARGINS, settings?.marginMm, (value) => t("studio.doc.ribbon.marginValue", { value }), (marginMm) => update({ marginMm }), (value) => `margin-${value}`),
+    ...choice(MARGINS, settings ? (uniformMargin(settings) ?? undefined) : undefined, (value) => t("studio.doc.ribbon.marginValue", { value }), (value) => update({ ...uniformMargins(value), gutterMm: 0 }), (value) => `margin-${value}`),
     { type: "separator", id: "margin-more" },
-    { type: "item", id: "margin-custom", label: t("studio.doc.ribbon.marginCustom"), onSelect: () => onOpenSettings("page") },
+    { type: "item", id: "margin-custom", label: t("studio.doc.ribbon.marginCustom"), onSelect: onPageSetup },
   ];
   const orientationItems = choice(["portrait", "landscape"] as const, settings?.landscape ? "landscape" : "portrait", (value) => t(`studio.doc.settings.${value}`), (value) => update({ landscape: value === "landscape" }), (value) => `orientation-${value}`);
   const paperItems = choice(DOCUMENT_PAPERS, settings?.paper, (value) => t(`studio.doc.papers.${value}`), (paper) => update({ paper }), (value) => `paper-${value}`);
@@ -411,7 +426,7 @@ export function DocumentToolbar({
         <RibbonButton icon={Code2} label={t("studio.doc.ribbon.code")} active={state.code} onClick={() => chain().toggleCodeBlock().run()} />
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.pages")}>
-        <RibbonButton icon={FileText} label={t("studio.doc.ribbon.cover")} active={settings?.cover ?? false} onClick={toggleCover} />
+        <RibbonButton icon={FileText} label={t("studio.doc.ribbon.cover")} active={settings?.cover ?? false} onClick={toggleCover} testId="doc-cover" />
         <RibbonButton icon={SeparatorHorizontal} label={t("studio.doc.toolbar.pageBreak")} shortcut="Ctrl+Enter" onClick={() => chain().setPageBreak().run()} />
       </RibbonGroup>
     </>
@@ -433,7 +448,7 @@ export function DocumentToolbar({
         <RibbonButton icon={Hash} label={t("studio.doc.ribbon.pageNumbers")} menu={numberItems} />
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.more")}>
-        <RibbonButton icon={Settings2} label={t("studio.doc.ribbon.pageSettings")} onClick={() => onOpenSettings("page")} />
+        <RibbonButton icon={Settings2} label={t("studio.doc.ribbon.pageSettings")} onClick={onPageSetup} testId="doc-page-settings" />
       </RibbonGroup>
     </>
   );
@@ -492,7 +507,27 @@ export function DocumentToolbar({
     </>
   );
 
-  const panels: Record<RibbonTabId, ReactNode> = { home, insert, layout, references, table };
+  const view = (
+    <>
+      <RibbonGroup label={t("studio.doc.ribbon.groups.views")}>
+        <RibbonButton icon={FileText} label={t("studio.doc.ribbon.printLayout")} active onClick={() => editor.commands.focus()} />
+        <RibbonButton icon={Printer} label={t("studio.doc.printPreview.title")} onClick={onPrintPreview} testId="doc-print-preview" />
+      </RibbonGroup>
+      <RibbonGroup label={t("studio.doc.ribbon.groups.show")}>
+        <RibbonRows>
+          <RibbonSmallButton icon={Ruler} label={t("studio.doc.ribbon.ruler")} active={ruler} onClick={() => setRuler(!ruler)} testId="doc-ruler" />
+          <RibbonSmallButton icon={SeparatorHorizontal} label={t("studio.doc.ribbon.pageLines")} active={pageLines} onClick={() => setPageLines(!pageLines)} testId="doc-page-lines" />
+        </RibbonRows>
+      </RibbonGroup>
+      <RibbonGroup label={t("studio.doc.ribbon.groups.zoom")}>
+        <RibbonButton icon={ZoomIn} label={t("studio.doc.zoom.percent", { percent: 100 })} active={zoom === 100} onClick={() => setZoom(100)} testId="doc-zoom-100" />
+        <RibbonButton icon={StretchHorizontal} label={t("studio.doc.zoom.width")} active={zoom === "width"} onClick={() => setZoom("width")} />
+        <RibbonButton icon={Maximize2} label={t("studio.doc.zoom.page")} active={zoom === "page"} onClick={() => setZoom("page")} testId="doc-zoom-page" />
+      </RibbonGroup>
+    </>
+  );
+
+  const panels: Record<RibbonTabId, ReactNode> = { home, insert, layout, references, view, table };
 
   return (
     <>

@@ -7,6 +7,7 @@ import { storeCitationSource } from "./citationSource";
 import { documentExtensions } from "./extensions";
 import { useDocumentStore } from "./documentStore";
 import { DocumentToolbar } from "./DocumentToolbar";
+import { useDocumentViewStore } from "./documentView";
 import { createDocument } from "./model";
 
 const TABLE = "<table><tbody><tr><th><p>A</p></th><th><p>B</p></th></tr><tr><td><p>C</p></td><td><p>D</p></td></tr></tbody></table>";
@@ -135,7 +136,7 @@ describe("DocumentToolbar ribbon", () => {
     fireEvent.click(screen.getByTestId("doc-margins"));
     fireEvent.click(screen.getByRole("menuitemcheckbox", { name: "30 mm" }));
 
-    expect(useDocumentStore.getState().document?.settings.marginMm).toBe(30);
+    expect(useDocumentStore.getState().document?.settings).toMatchObject({ marginTopMm: 30, marginBottomMm: 30, marginLeftMm: 30, marginRightMm: 30, gutterMm: 0 });
   });
 
   it("moves between tabs with the arrow keys and wraps from the last tab to the first", () => {
@@ -170,5 +171,33 @@ describe("DocumentToolbar ribbon", () => {
     fireEvent.click(screen.getByTestId("doc-ribbon-replace"));
 
     expect(onFind).toHaveBeenCalledWith(true);
+  });
+
+  it("sets the zoom and opens the print preview from the View tab", () => {
+    const onPrintPreview = vi.fn();
+    editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content: "<p>Text</p>" });
+    render(<DocumentToolbar editor={editor} contentWidth={400} onPrintPreview={onPrintPreview} />);
+
+    fireEvent.click(screen.getByRole("tab", { name: "View" }));
+    fireEvent.click(screen.getByTestId("doc-zoom-100"));
+    fireEvent.click(screen.getByTestId("doc-print-preview"));
+
+    expect(useDocumentViewStore.getState().zoom).toBe(100);
+    expect(screen.getByTestId("doc-zoom-100").getAttribute("aria-pressed")).toBe("true");
+    expect(onPrintPreview).toHaveBeenCalledTimes(1);
+    useDocumentViewStore.setState({ zoom: "width" });
+  });
+
+  it("hides and shows the ruler from the View tab", () => {
+    editor = new Editor({ extensions: documentExtensions("", storeCitationSource("en", "References", "")), content: "<p>Text</p>" });
+    render(<DocumentToolbar editor={editor} contentWidth={400} />);
+    fireEvent.click(screen.getByRole("tab", { name: "View" }));
+
+    fireEvent.click(screen.getByTestId("doc-ruler"));
+
+    expect(useDocumentViewStore.getState().ruler).toBe(false);
+    expect(screen.getByTestId("doc-ruler").getAttribute("aria-pressed")).toBe("false");
+    fireEvent.click(screen.getByTestId("doc-ruler"));
+    expect(useDocumentViewStore.getState().ruler).toBe(true);
   });
 });

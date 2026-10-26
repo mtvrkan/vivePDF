@@ -8956,11 +8956,6 @@
       "continue": "Continue your document",
       "placeholder": "Start typing your document…",
       "editorLabel": "Document text",
-      "side": "Preview and settings",
-      "tabs": {
-        "preview": "Preview",
-        "settings": "Settings"
-      },
       "toolbar": {
         "label": "Formatting",
         "block": "Paragraph style",
@@ -9017,12 +9012,10 @@
         "delete": "Delete table"
       },
       "settings": {
-        "page": "Page",
         "paper": "Paper size",
         "orientation": "Orientation",
         "portrait": "Portrait",
         "landscape": "Landscape",
-        "margin": "Margins",
         "text": "Text",
         "font": "Font",
         "headingSame": "Headings use the same font",
@@ -9056,7 +9049,8 @@
         "date": "Date",
         "columns": "Columns",
         "columnGap": "Column gap",
-        "columnsHint": "Columns appear in the preview and the PDF; the editor keeps one column while you write. A page break starts the next page. This count applies until the first section break, which can change it for the pages after it."
+        "columnsHint": "Columns appear in the preview and the PDF; the editor keeps one column while you write. A page break starts the next page. This count applies until the first section break, which can change it for the pages after it.",
+        "dialogTitle": "Document settings"
       },
       "papers": {
         "a4": "A4",
@@ -9439,6 +9433,8 @@
           "lineHeight": "Line spacing",
           "spaceBefore": "Space before",
           "spaceAfter": "Space after",
+          "indentLeft": "Left indent",
+          "indentRight": "Right indent",
           "firstLineIndent": "First line indent"
         }
       },
@@ -9495,7 +9491,8 @@
           "insert": "Insert",
           "layout": "Layout",
           "references": "References",
-          "table": "Table"
+          "table": "Table",
+          "view": "View"
         },
         "groups": {
           "history": "Undo",
@@ -9517,7 +9514,10 @@
           "contents": "Contents",
           "tableInsert": "Insert",
           "tableDelete": "Delete",
-          "cells": "Cells"
+          "cells": "Cells",
+          "views": "Views",
+          "zoom": "Zoom",
+          "show": "Show"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Increase font size",
@@ -9551,7 +9551,70 @@
         "addColumn": "Add column",
         "merge": "Merge",
         "split": "Split",
-        "headerRow": "Header row"
+        "headerRow": "Header row",
+        "printLayout": "Print layout",
+        "pageLines": "Page lines",
+        "ruler": "Ruler"
+      },
+      "printPreview": {
+        "title": "Print preview"
+      },
+      "zoom": {
+        "label": "Zoom",
+        "in": "Zoom in",
+        "out": "Zoom out",
+        "width": "Page width",
+        "page": "Whole page",
+        "percent": "{{percent}}%",
+        "fitShown": "{{name}} ({{percent}}%)"
+      },
+      "status": {
+        "label": "Status bar",
+        "counting": "Counting pages…",
+        "pages_one": "{{count}} page",
+        "pages_other": "{{count}} pages",
+        "page": "Page {{page}} of {{count}}"
+      },
+      "pageLines": {
+        "label": "Page {{page}}"
+      },
+      "pageSetup": {
+        "title": "Page setup",
+        "preview": "Page preview",
+        "tabs": {
+          "margins": "Margins",
+          "paper": "Paper",
+          "layout": "Layout"
+        },
+        "marginTopMm": "Top",
+        "marginBottomMm": "Bottom",
+        "marginLeftMm": "Left",
+        "marginRightMm": "Right",
+        "gutter": "Gutter",
+        "gutterSide": "Gutter position",
+        "gutterSides": {
+          "left": "Left",
+          "top": "Top"
+        },
+        "tooSmall": "These margins leave too little room for text. Make them smaller.",
+        "paperSize": "{{width}} × {{height}} mm"
+      },
+      "ruler": {
+        "horizontal": "Horizontal ruler",
+        "vertical": "Vertical ruler",
+        "value": "{{value}} mm",
+        "margins": {
+          "left": "Left margin",
+          "right": "Right margin",
+          "top": "Top margin",
+          "bottom": "Bottom margin"
+        },
+        "indents": {
+          "firstLine": "First line indent",
+          "hanging": "Hanging indent",
+          "left": "Left indent",
+          "right": "Right indent"
+        }
       }
     },
     "cv": {
@@ -9668,6 +9731,11 @@
       "clear": "Clear",
       "cleared": "CV cleared",
       "editInStudio": "Edit freely in Studio",
+      "steps": {
+        "filled": "filled in",
+        "hidden": "hidden in the CV",
+        "next": "Next: {{name}}"
+      },
       "export": {
         "open": "Export",
         "title": "Export CV",
@@ -9852,12 +9920,7 @@
       "pagesHint": "Most CVs are one or two pages long.",
       "emptyTitle": "Your CV is empty",
       "emptyDescription": "Fill in the form on the left, start from the sample or bring in an existing CV from a PDF.",
-      "photoMissing": "The photo file can't be found. Choose it again.",
-      "steps": {
-        "filled": "filled in",
-        "hidden": "hidden in the CV",
-        "next": "Next: {{name}}"
-      }
+      "photoMissing": "The photo file can't be found. Choose it again."
     },
     "shortcuts": {
       "title": "Keyboard shortcuts",

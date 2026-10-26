@@ -8955,11 +8955,6 @@
       "continue": "Continuar seu documento",
       "placeholder": "Comece a digitar seu documento…",
       "editorLabel": "Texto do documento",
-      "side": "Pré-visualização e configurações",
-      "tabs": {
-        "preview": "Pré-visualização",
-        "settings": "Configurações"
-      },
       "toolbar": {
         "label": "Formatação",
         "block": "Estilo de parágrafo",
@@ -9016,12 +9011,10 @@
         "delete": "Excluir tabela"
       },
       "settings": {
-        "page": "Página",
         "paper": "Tamanho do papel",
         "orientation": "Orientação",
         "portrait": "Retrato",
         "landscape": "Paisagem",
-        "margin": "Margens",
         "text": "Texto",
         "font": "Fonte",
         "headingSame": "Os títulos usam a mesma fonte",
@@ -9055,7 +9048,8 @@
         "date": "Data",
         "columns": "Colunas",
         "columnGap": "Espaço entre colunas",
-        "columnsHint": "As colunas aparecem na pré-visualização e no PDF; o editor mantém uma coluna enquanto você escreve. Uma quebra de página começa a próxima página. Este número vale até a primeira quebra de seção, que pode mudá-lo para as páginas seguintes."
+        "columnsHint": "As colunas aparecem na pré-visualização e no PDF; o editor mantém uma coluna enquanto você escreve. Uma quebra de página começa a próxima página. Este número vale até a primeira quebra de seção, que pode mudá-lo para as páginas seguintes.",
+        "dialogTitle": "Configurações do documento"
       },
       "papers": {
         "a4": "A4",
@@ -9438,6 +9432,8 @@
           "lineHeight": "Espaçamento entre linhas",
           "spaceBefore": "Espaço antes",
           "spaceAfter": "Espaço depois",
+          "indentLeft": "Recuo à esquerda",
+          "indentRight": "Recuo à direita",
           "firstLineIndent": "Recuo da primeira linha"
         }
       },
@@ -9494,7 +9490,8 @@
           "insert": "Inserir",
           "layout": "Layout",
           "references": "Referências",
-          "table": "Tabela"
+          "table": "Tabela",
+          "view": "Exibir"
         },
         "groups": {
           "history": "Desfazer",
@@ -9516,7 +9513,10 @@
           "contents": "Sumário",
           "tableInsert": "Inserir",
           "tableDelete": "Excluir",
-          "cells": "Células"
+          "cells": "Células",
+          "views": "Modos de exibição",
+          "zoom": "Zoom",
+          "show": "Mostrar"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar fonte",
@@ -9550,7 +9550,70 @@
         "addColumn": "Adicionar coluna",
         "merge": "Mesclar",
         "split": "Dividir",
-        "headerRow": "Linha de cabeçalho"
+        "headerRow": "Linha de cabeçalho",
+        "printLayout": "Layout de impressão",
+        "pageLines": "Linhas de quebra de página",
+        "ruler": "Régua"
+      },
+      "printPreview": {
+        "title": "Visualizar impressão"
+      },
+      "zoom": {
+        "label": "Zoom",
+        "in": "Ampliar",
+        "out": "Reduzir",
+        "width": "Largura da página",
+        "page": "Página inteira",
+        "percent": "{{percent}}%",
+        "fitShown": "{{name}} ({{percent}}%)"
+      },
+      "status": {
+        "label": "Barra de status",
+        "counting": "Contando páginas…",
+        "pages_one": "{{count}} página",
+        "pages_other": "{{count}} páginas",
+        "page": "Página {{page}} de {{count}}"
+      },
+      "pageLines": {
+        "label": "Página {{page}}"
+      },
+      "pageSetup": {
+        "title": "Configurar página",
+        "preview": "Visualização da página",
+        "tabs": {
+          "margins": "Margens",
+          "paper": "Papel",
+          "layout": "Layout"
+        },
+        "marginTopMm": "Superior",
+        "marginBottomMm": "Inferior",
+        "marginLeftMm": "Esquerda",
+        "marginRightMm": "Direita",
+        "gutter": "Medianiz",
+        "gutterSide": "Posição da medianiz",
+        "gutterSides": {
+          "left": "Esquerda",
+          "top": "Superior"
+        },
+        "tooSmall": "Essas margens deixam pouco espaço para o texto. Diminua-as.",
+        "paperSize": "{{width}} × {{height}} mm"
+      },
+      "ruler": {
+        "horizontal": "Régua horizontal",
+        "vertical": "Régua vertical",
+        "value": "{{value}} mm",
+        "margins": {
+          "left": "Margem esquerda",
+          "right": "Margem direita",
+          "top": "Margem superior",
+          "bottom": "Margem inferior"
+        },
+        "indents": {
+          "firstLine": "Recuo da primeira linha",
+          "hanging": "Recuo deslocado",
+          "left": "Recuo à esquerda",
+          "right": "Recuo à direita"
+        }
       }
     },
     "cv": {
@@ -9667,6 +9730,11 @@
       "clear": "Limpar",
       "cleared": "Currículo limpo",
       "editInStudio": "Editar livremente no Estúdio",
+      "steps": {
+        "filled": "preenchido",
+        "hidden": "oculto no currículo",
+        "next": "Próximo: {{name}}"
+      },
       "export": {
         "open": "Exportar",
         "title": "Exportar currículo",
@@ -9851,12 +9919,7 @@
       "pagesHint": "A maioria dos currículos tem uma ou duas páginas.",
       "emptyTitle": "Seu currículo está vazio",
       "emptyDescription": "Preencha o formulário à esquerda, comece pelo exemplo ou importe um currículo existente de um PDF.",
-      "photoMissing": "O arquivo da foto não foi encontrado. Escolha-o novamente.",
-      "steps": {
-        "filled": "preenchido",
-        "hidden": "oculto no currículo",
-        "next": "Próximo: {{name}}"
-      }
+      "photoMissing": "O arquivo da foto não foi encontrado. Escolha-o novamente."
     },
     "shortcuts": {
       "title": "Atalhos de teclado",

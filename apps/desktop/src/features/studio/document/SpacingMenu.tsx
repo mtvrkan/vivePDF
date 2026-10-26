@@ -11,7 +11,7 @@ import { useDocumentStore } from "./documentStore";
 import { FIRST_LINE_INDENT, LINE_PRESETS, PARAGRAPH_GAP, SPACING_KEYS, SPACING_LIMITS, spacingValue, type Spacing, type SpacingKey } from "./spacing";
 
 const MENU_GAP = 4;
-const STEPS: Record<SpacingKey, number> = { lineHeight: 0.05, spaceBefore: 1, spaceAfter: 1, firstLineIndent: 1 };
+const STEPS: Record<SpacingKey, number> = { lineHeight: 0.05, spaceBefore: 1, spaceAfter: 1, indentLeft: 1, indentRight: 1, firstLineIndent: 1 };
 const DEFAULT_GAP_RATIO = 0.6;
 
 function currentSpacing(editor: Editor): Spacing {
@@ -26,6 +26,8 @@ function SpacingDialog({ editor, initial, onClose }: { editor: Editor; initial: 
     lineHeight: settings?.lineHeight ?? 1.4,
     spaceBefore: 0,
     spaceAfter: Math.round((settings?.fontSize ?? 11) * DEFAULT_GAP_RATIO),
+    indentLeft: 0,
+    indentRight: 0,
     firstLineIndent: 0,
   };
   const [values, setValues] = useState<Record<SpacingKey, number>>(() => Object.fromEntries(SPACING_KEYS.map((key) => [key, initial[key] ?? fallback[key]])) as Record<SpacingKey, number>);

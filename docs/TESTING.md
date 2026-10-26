@@ -146,7 +146,10 @@ in.
 | `home` | open a file so it is remembered, see its cover on Home, replace the file on disk, come back to Home | the cover picture changes, then stays the same on the next visit |
 | `engine` | four OCR jobs on a 400-page file keep every heavy engine worker busy while a page thumbnail is asked for, then the jobs are cancelled | the thumbnail arrives within 10 s while none of the OCR jobs has finished, and all four stop after the cancel |
 | `studiodoc` | type a few words at the end of a saved document's heading and press Ctrl+S at once | the saved file holds the new words and the bar still shows the file as saved half a second later |
-| `studiodoc` | ribbon: Layout › Margins › 30 mm, then Insert › Table, then click back into the heading | the settings panel shows a 30 mm margin; the Table tab appears while the cursor is in the table and goes away outside it; ribbon screenshot in the run folder |
+| `studiodoc` | ribbon: Layout › Margins › 30 mm, then Insert › Table, then click back into the heading | Layout › Page settings opens Page setup with 30 mm on all four sides and takes a 10 mm gutter without a room warning; the Table tab appears while the cursor is in the table and goes away outside it; ribbon screenshot in the run folder |
+| `studiodoc` | References › Contents and Insert › Cover on the typed report, then Print preview from the top bar | the status bar says page 3 of 3; the print preview shows the first page as a picture; screenshot in the run folder |
+| `studiodoc` | leave the list, Ctrl+Enter and type a line, then View › Page lines off and on | a page line labelled 4 appears and the status bar says page 4 of 4; the line goes away while Page lines is off; screenshot in the run folder |
+| `studiodoc` | focus the ruler's hanging marker and press Shift+→ twice, then the left margin edge and Shift+→, then View › Ruler off and on | the first paragraph gets a 10 mm hanging indent, the left margin grows by 5 mm, the ruler goes away and comes back; ruler screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
 | `studio` | add a heading from the Text category, press Bold in the bar above the canvas, then Position | the bar names the text and Bold changes; the details panel opens on its position section and closes again; screenshot in the run folder |
 | `studiocv` | CV steps: Design from the step list for the layouts, then Experience for the entries | each step shows only its own section; the layout pictures and the experience entries are reached from their steps |
@@ -406,6 +409,28 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   scrolls, the counts beside Templates and its categories are right, every page starts at its
   top, a template category opens with its templates only, and with NVDA the current item is read
   as the current page.
+- Studio document editor at 1024 px and full width: there is no panel on the right; the status bar
+  shows the page count, the words and the zoom; the zoom slider, − and + and the zoom list
+  (Page width, Whole page, 50–200 %) resize the sheet and the choice is kept after a restart;
+  View › Print preview and the top bar's Print preview show every page, and Export from it opens
+  the export dialog; Layout › Page settings and Insert › Cover open the settings in a window.
+- Studio document page lines on a long report (Turkish text, a table, a picture and footnotes), at
+  50 %, 100 % and page width: each dashed line sits on the line that starts the page in Print
+  preview, follows the text while typing above it and is redrawn after the pause; with a cover
+  and contents the first line says page 4; two-column sections and a page break inside a list
+  still put the line on the right line.
+- Studio document Page setup: a 35 mm left, 15 mm right and 30 mm top margin with a 10 mm left
+  gutter move the text on the sheet and in the exported PDF the same way (Print
+  preview and the PDF line up), the header follows the text's left edge, a top gutter adds to the
+  top margin only, the page preview in the window matches, A5 with 60 mm sides shows the room
+  warning, and an older document saved with one margin opens with that margin on every side.
+- Studio document rulers at 50 %, 100 % and page width, scrolled and not: the white part of the
+  top ruler matches the text width and 0 sits on the margin, dragging a margin edge or an indent
+  marker shows a dashed guide down the page and snaps to whole millimetres, a hanging indent of
+  1 cm shows the first line further out than the rest both on the sheet and in the PDF, the
+  markers follow the caret into a list item and a table cell, the left ruler shows the current
+  page's top and bottom margins after a page line, and in Arabic the rulers still read left to
+  right.
 - Studio design and card editor at 1024 px and full width: every category on the left rail opens
   its panel, "Hide panel" leaves the rail only and is remembered after a restart, the bar above
   the canvas changes with the selection (text tools for a text, Crop and Filters for a picture,

@@ -1,9 +1,10 @@
-import { STUDIO_DOCUMENT_VERSION, type DocumentAlign, type DocumentColumns, type DocumentCoverStyle, type DocumentLayout, type DocumentNode, type DocumentPageNumbers, type DocumentPaper, type DocumentSettings, type StudioDocument } from "@/types/studio";
+import { STUDIO_DOCUMENT_VERSION, type DocumentAlign, type DocumentColumns, type DocumentCoverStyle, type DocumentGutterSide, type DocumentLayout, type DocumentNode, type DocumentPageNumbers, type DocumentPaper, type DocumentSettings, type StudioDocument } from "@/types/studio";
 import { normalizeSources } from "./bibtex";
 import { CITATION_LANGUAGES, CITATION_STYLES } from "./citations";
 
 export const DOCUMENT_PAPERS: DocumentPaper[] = ["a4", "a5", "b5", "letter", "legal"];
 export const PAGE_NUMBER_PLACES: DocumentPageNumbers[] = ["none", "center", "right", "outside"];
+export const GUTTER_SIDES: DocumentGutterSide[] = ["left", "top"];
 export const DOCUMENT_ALIGNS: DocumentAlign[] = ["left", "center", "right"];
 export const COVER_STYLES: DocumentCoverStyle[] = ["classic", "band", "frame", "minimal"];
 export const DEFAULT_DOCUMENT_FONT = "bundled:dejavu-sans";
@@ -18,14 +19,18 @@ export const PAPER_POINTS: Record<DocumentPaper, { width: number; height: number
 
 export const POINTS_PER_MM = 72 / 25.4;
 const COLOUR = /^#[0-9a-f]{6}$/i;
-const LIMITS = { marginMm: [5, 50], columnGapMm: [4, 20], fontSize: [6, 28], lineHeight: [1, 3] } as const;
+export const MIN_TEXT_MM = 20;
+export const MARGIN_LIMITS = { margin: [5, 60], gutter: [0, 30] } as const;
+const LIMITS = { columnGapMm: [4, 20], fontSize: [6, 28], lineHeight: [1, 3] } as const;
 export const DOCUMENT_COLUMNS: DocumentColumns[] = [1, 2, 3];
 
 export function defaultSettings(): DocumentSettings {
   return {
     paper: "a4",
     landscape: false,
-    marginMm: 20,
+    ...uniformMargins(20),
+    gutterMm: 0,
+    gutterSide: "left",
     columns: 1,
     columnGapMm: 8,
     fontSize: 11,
@@ -52,6 +57,27 @@ export function defaultSettings(): DocumentSettings {
     citationStyle: "apa",
     citationLanguage: null,
     referencesTitle: "",
+  };
+}
+
+export type DocumentMargins = Pick<DocumentSettings, "marginTopMm" | "marginBottomMm" | "marginLeftMm" | "marginRightMm">;
+
+export function uniformMargins(mm: number): DocumentMargins {
+  return { marginTopMm: mm, marginBottomMm: mm, marginLeftMm: mm, marginRightMm: mm };
+}
+
+export function uniformMargin(settings: DocumentMargins & Pick<DocumentSettings, "gutterMm">): number | null {
+  const { marginTopMm, marginBottomMm, marginLeftMm, marginRightMm } = settings;
+  return settings.gutterMm === 0 && marginTopMm === marginBottomMm && marginTopMm === marginLeftMm && marginTopMm === marginRightMm ? marginTopMm : null;
+}
+
+export function contentInsets(settings: DocumentMargins & Pick<DocumentSettings, "gutterMm" | "gutterSide">): { top: number; right: number; bottom: number; left: number } {
+  const gutter = settings.gutterMm;
+  return {
+    top: (settings.marginTopMm + (settings.gutterSide === "top" ? gutter : 0)) * POINTS_PER_MM,
+    right: settings.marginRightMm * POINTS_PER_MM,
+    bottom: settings.marginBottomMm * POINTS_PER_MM,
+    left: (settings.marginLeftMm + (settings.gutterSide === "left" ? gutter : 0)) * POINTS_PER_MM,
   };
 }
 
@@ -83,10 +109,17 @@ function fontId(value: unknown): string | null {
 export function normalizeSettings(value: unknown): DocumentSettings {
   const base = defaultSettings();
   const source = value && typeof value === "object" ? (value as Record<string, unknown>) : {};
+  const shared = clamp(source.marginMm, MARGIN_LIMITS.margin, base.marginTopMm);
+  const margin = (side: unknown) => clamp(side, MARGIN_LIMITS.margin, shared);
   return {
     paper: pick(source.paper, DOCUMENT_PAPERS, base.paper),
     landscape: source.landscape === true,
-    marginMm: clamp(source.marginMm, LIMITS.marginMm, base.marginMm),
+    marginTopMm: margin(source.marginTopMm),
+    marginBottomMm: margin(source.marginBottomMm),
+    marginLeftMm: margin(source.marginLeftMm),
+    marginRightMm: margin(source.marginRightMm),
+    gutterMm: clamp(source.gutterMm, MARGIN_LIMITS.gutter, base.gutterMm),
+    gutterSide: pick(source.gutterSide, GUTTER_SIDES, base.gutterSide),
     columns: pick(source.columns, DOCUMENT_COLUMNS, base.columns),
     columnGapMm: clamp(source.columnGapMm, LIMITS.columnGapMm, base.columnGapMm),
     fontSize: clamp(source.fontSize, LIMITS.fontSize, base.fontSize),

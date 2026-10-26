@@ -8955,11 +8955,6 @@
       "continue": "Continuar su documento",
       "placeholder": "Empiece a escribir su documento…",
       "editorLabel": "Texto del documento",
-      "side": "Vista previa y configuración",
-      "tabs": {
-        "preview": "Vista previa",
-        "settings": "Configuración"
-      },
       "toolbar": {
         "label": "Formato",
         "block": "Estilo de párrafo",
@@ -9016,12 +9011,10 @@
         "delete": "Eliminar tabla"
       },
       "settings": {
-        "page": "Página",
         "paper": "Tamaño del papel",
         "orientation": "Orientación",
         "portrait": "Vertical",
         "landscape": "Horizontal",
-        "margin": "Márgenes",
         "text": "Texto",
         "font": "Fuente",
         "headingSame": "Los títulos usan la misma fuente",
@@ -9055,7 +9048,8 @@
         "date": "Fecha",
         "columns": "Columnas",
         "columnGap": "Espacio entre columnas",
-        "columnsHint": "Las columnas aparecen en la vista previa y en el PDF; el editor mantiene una columna mientras escribes. Un salto de página empieza la página siguiente. Este número se aplica hasta el primer salto de sección, que puede cambiarlo para las páginas siguientes."
+        "columnsHint": "Las columnas aparecen en la vista previa y en el PDF; el editor mantiene una columna mientras escribes. Un salto de página empieza la página siguiente. Este número se aplica hasta el primer salto de sección, que puede cambiarlo para las páginas siguientes.",
+        "dialogTitle": "Ajustes del documento"
       },
       "papers": {
         "a4": "A4",
@@ -9438,6 +9432,8 @@
           "lineHeight": "Interlineado",
           "spaceBefore": "Espacio antes",
           "spaceAfter": "Espacio después",
+          "indentLeft": "Sangría izquierda",
+          "indentRight": "Sangría derecha",
           "firstLineIndent": "Sangría de primera línea"
         }
       },
@@ -9494,7 +9490,8 @@
           "insert": "Insertar",
           "layout": "Diseño",
           "references": "Referencias",
-          "table": "Tabla"
+          "table": "Tabla",
+          "view": "Vista"
         },
         "groups": {
           "history": "Deshacer",
@@ -9516,7 +9513,10 @@
           "contents": "Índice",
           "tableInsert": "Insertar",
           "tableDelete": "Eliminar",
-          "cells": "Celdas"
+          "cells": "Celdas",
+          "views": "Vistas",
+          "zoom": "Zoom",
+          "show": "Mostrar"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar tamaño",
@@ -9550,7 +9550,70 @@
         "addColumn": "Añadir columna",
         "merge": "Combinar",
         "split": "Dividir",
-        "headerRow": "Fila de encabezado"
+        "headerRow": "Fila de encabezado",
+        "printLayout": "Diseño de impresión",
+        "pageLines": "Líneas de salto de página",
+        "ruler": "Regla"
+      },
+      "printPreview": {
+        "title": "Vista previa de impresión"
+      },
+      "zoom": {
+        "label": "Zoom",
+        "in": "Acercar",
+        "out": "Alejar",
+        "width": "Ancho de página",
+        "page": "Página completa",
+        "percent": "{{percent}} %",
+        "fitShown": "{{name}} ({{percent}} %)"
+      },
+      "status": {
+        "label": "Barra de estado",
+        "counting": "Contando páginas…",
+        "pages_one": "{{count}} página",
+        "pages_other": "{{count}} páginas",
+        "page": "Página {{page}} de {{count}}"
+      },
+      "pageLines": {
+        "label": "Página {{page}}"
+      },
+      "pageSetup": {
+        "title": "Configurar página",
+        "preview": "Vista previa de la página",
+        "tabs": {
+          "margins": "Márgenes",
+          "paper": "Papel",
+          "layout": "Diseño"
+        },
+        "marginTopMm": "Superior",
+        "marginBottomMm": "Inferior",
+        "marginLeftMm": "Izquierdo",
+        "marginRightMm": "Derecho",
+        "gutter": "Encuadernación",
+        "gutterSide": "Posición de la encuadernación",
+        "gutterSides": {
+          "left": "Izquierda",
+          "top": "Arriba"
+        },
+        "tooSmall": "Estos márgenes dejan muy poco espacio para el texto. Redúzcalos.",
+        "paperSize": "{{width}} × {{height}} mm"
+      },
+      "ruler": {
+        "horizontal": "Regla horizontal",
+        "vertical": "Regla vertical",
+        "value": "{{value}} mm",
+        "margins": {
+          "left": "Margen izquierdo",
+          "right": "Margen derecho",
+          "top": "Margen superior",
+          "bottom": "Margen inferior"
+        },
+        "indents": {
+          "firstLine": "Sangría de primera línea",
+          "hanging": "Sangría francesa",
+          "left": "Sangría izquierda",
+          "right": "Sangría derecha"
+        }
       }
     },
     "cv": {
@@ -9667,6 +9730,11 @@
       "clear": "Borrar",
       "cleared": "CV borrado",
       "editInStudio": "Editar libremente en Estudio",
+      "steps": {
+        "filled": "completado",
+        "hidden": "oculto en el CV",
+        "next": "Siguiente: {{name}}"
+      },
       "export": {
         "open": "Exportar",
         "title": "Exportar CV",
@@ -9851,12 +9919,7 @@
       "pagesHint": "La mayoría de los CV ocupan una o dos páginas.",
       "emptyTitle": "Tu CV está vacío",
       "emptyDescription": "Rellena el formulario de la izquierda, empieza con el ejemplo o importa un CV existente desde un PDF.",
-      "photoMissing": "No se encuentra el archivo de la foto. Vuelve a elegirlo.",
-      "steps": {
-        "filled": "completado",
-        "hidden": "oculto en el CV",
-        "next": "Siguiente: {{name}}"
-      }
+      "photoMissing": "No se encuentra el archivo de la foto. Vuelve a elegirlo."
     },
     "shortcuts": {
       "title": "Atajos de teclado",

@@ -30,6 +30,7 @@ from vivepdf.ops._document_notes import (
     note_css,
     with_endnotes,
 )
+from vivepdf.ops._document_places import Places, places_of
 from vivepdf.ops._html_clean import body_fragment
 from vivepdf.ops._image_files import eight_bit, open_picture
 from vivepdf.ops._story import FONT_DIR
@@ -43,6 +44,7 @@ from vivepdf.rpc.errors import ErrorCode, OpError
 IMAGE_PREFIX = "vpimg-"
 IMAGE_MAX_SIDE = 2400
 JPEG_QUALITY = 88
+MIN_TEXT_MM = 20
 SHADE = "#f3f4f6"
 DATA_URL = re.compile(r"^data:image/(?:png|jpe?g|gif|webp|bmp);base64,", re.IGNORECASE)
 IMAGE_TAG = re.compile(r"<img\b[^>]*>", re.IGNORECASE)
@@ -220,7 +222,7 @@ def _base_css(settings: StudioDocumentSettings, heading_font: bool) -> str:
     return "".join(
         [
             f"body{{font-family:f0;font-size:{size}pt;line-height:{settings.line_height};"
-            f"margin:0 {size}pt;"
+            "margin:0;"
             "color:#1a1a1a;}",
             f"p{{margin:0 0 {size * 0.6:.1f}pt 0;}}",
             f"h1,h2,h3,h4,h5,h6{{{heading_family}color:{accent};line-height:1.2;}}",
@@ -298,6 +300,26 @@ def _paper(settings: StudioDocumentSettings) -> pymupdf.Rect:
     return pymupdf.Rect(0, 0, rect.height, rect.width) if settings.landscape else rect
 
 
+def content_box(settings: StudioDocumentSettings, mediabox: pymupdf.Rect) -> pymupdf.Rect:
+    gutter = settings.gutter_mm
+    left = settings.margin_left_mm + (gutter if settings.gutter_side == "left" else 0)
+    top = settings.margin_top_mm + (gutter if settings.gutter_side == "top" else 0)
+    box = pymupdf.Rect(
+        mediabox.x0 + left * POINTS_PER_MM,
+        mediabox.y0 + top * POINTS_PER_MM,
+        mediabox.x1 - settings.margin_right_mm * POINTS_PER_MM,
+        mediabox.y1 - settings.margin_bottom_mm * POINTS_PER_MM,
+    )
+    smallest = MIN_TEXT_MM * POINTS_PER_MM
+    if box.width < smallest or box.height < smallest:
+        raise OpError(
+            ErrorCode.INVALID_PARAMS,
+            "the margins leave no room for the text",
+            {"reason": "marginTooLarge"},
+        )
+    return box
+
+
 def _furniture_html(text: str, align: str) -> str:
     style = f"font-family:f0;font-size:{FURNITURE_PT}pt;color:{FURNITURE_COLOUR};text-align:{align}"
     return f'<div style="{style}">{html.escape(text)}</div>'
@@ -330,15 +352,15 @@ def _add_furniture(
     css: str,
     archive: pymupdf.Archive,
 ) -> None:
-    margin = settings.margin_mm * POINTS_PER_MM
     total = document.page_count
     for index in range(offset, total):
         if index == offset and not settings.furniture_on_first:
             continue
         page = document[index]
-        width, height = page.rect.width, page.rect.height
-        top = max(4.0, margin / 2 - FURNITURE_HEIGHT / 2)
-        bottom = min(height - 4.0, height - margin / 2 + FURNITURE_HEIGHT / 2)
+        height = page.rect.height
+        box = content_box(settings, page.rect)
+        top = max(4.0, box.y0 / 2 - FURNITURE_HEIGHT / 2)
+        bottom = min(height - 4.0, (height + box.y1) / 2 + FURNITURE_HEIGHT / 2)
         boxes = []
         if settings.header.strip():
             boxes.append((top, settings.header_align, settings.header.strip()))
@@ -348,7 +370,7 @@ def _add_furniture(
         )
         for y, align, text in boxes:
             page.insert_htmlbox(
-                pymupdf.Rect(margin, y, width - margin, y + FURNITURE_HEIGHT),
+                pymupdf.Rect(box.x0, y, box.x1, y + FURNITURE_HEIGHT),
                 _furniture_html(text, align),
                 css=css,
                 archive=archive,
@@ -378,7 +400,9 @@ def _add_cover(document: pymupdf.Document, settings: StudioDocumentSettings, tit
 
 
 def layout_document(
-    content: StudioDocumentContent, check_cancelled: Callable[[], None]
+    content: StudioDocumentContent,
+    check_cancelled: Callable[[], None],
+    places: list[Places] | None = None,
 ) -> pymupdf.Document:
     settings = content.settings
     archive = pymupdf.Archive(str(FONT_DIR))
@@ -400,10 +424,9 @@ def layout_document(
     offset = 1 if cover else 0
     css = font_css + _base_css(settings, len(fonts) > 1) + note_css(settings.font_size)
     mediabox = _paper(settings)
-    margin = settings.margin_mm * POINTS_PER_MM
     frame = Frame(
         mediabox,
-        mediabox + (margin, margin, -margin, -margin),
+        content_box(settings, mediabox),
         first_columns,
         settings.column_gap_mm * POINTS_PER_MM,
         sections,
@@ -444,6 +467,8 @@ def layout_document(
     if flowed is None:
         flowed = flow(story_html(body), frame, initial, story, check_cancelled)
     document, positions = flowed.document, flowed.positions
+    if places is not None:
+        places.append(places_of(document, positions, offset))
     anchors: dict[str, int] = {}
     for position in positions:
         if position.id and position.open_close & 1 and position.id not in anchors:

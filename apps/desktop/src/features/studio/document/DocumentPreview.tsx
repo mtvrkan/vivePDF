@@ -1,17 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { ErrorState } from "@/components/shared/ErrorState";
 import { describeError } from "@/shared/lib/errorMessage";
-import { toRpcError } from "@/shared/rpc/client";
-import { studioPreviewDocument, studioPreviewDocumentPage } from "@/shared/rpc/operations";
-import type { RpcError } from "@/types";
+import { studioPreviewDocumentPage } from "@/shared/rpc/operations";
 import type { StudioDocumentPreview } from "@/types/studio";
-import { documentContent, documentText } from "./content";
-import { useDocumentStore } from "./documentStore";
-
-const PREVIEW_DELAY_MS = 700;
-const PAGE_PIXELS = 560;
+import type { DocumentLayout } from "./useDocumentLayout";
+const PAGE_PIXELS = 1100;
 
 function PreviewPage({ preview, index, label }: { preview: StudioDocumentPreview; index: number; label: string }) {
   const host = useRef<HTMLLIElement>(null);
@@ -56,42 +51,9 @@ function PreviewPage({ preview, index, label }: { preview: StudioDocumentPreview
   );
 }
 
-export function DocumentPreview({ language }: { language: string }) {
+export function DocumentPreview({ layout }: { layout: DocumentLayout }) {
   const { t } = useTranslation();
-  const [preview, setPreview] = useState<StudioDocumentPreview | null>(null);
-  const [error, setError] = useState<RpcError | null>(null);
-  const [busy, setBusy] = useState(false);
-  const ticket = useRef(0);
-
-  const refresh = useCallback(async () => {
-    const document = useDocumentStore.getState().document;
-    if (!document || typeof document.content === "string") return;
-    const mine = ++ticket.current;
-    setBusy(true);
-    try {
-      const result = await studioPreviewDocument(await documentContent(document, language, documentText(t)));
-      if (mine !== ticket.current) return;
-      setPreview(result);
-      setError(null);
-    } catch (caught) {
-      if (mine === ticket.current) setError(toRpcError(caught));
-    } finally {
-      if (mine === ticket.current) setBusy(false);
-    }
-  }, [language, t]);
-
-  useEffect(() => {
-    let timer = setTimeout(() => void refresh(), PREVIEW_DELAY_MS);
-    const unsubscribe = useDocumentStore.subscribe((state, previous) => {
-      if (state.revision === previous.revision) return;
-      clearTimeout(timer);
-      timer = setTimeout(() => void refresh(), PREVIEW_DELAY_MS);
-    });
-    return () => {
-      clearTimeout(timer);
-      unsubscribe();
-    };
-  }, [refresh]);
+  const { preview, error, busy, refresh } = layout;
 
   return (
     <section className="flex h-full min-h-0 flex-col" aria-label={t("studio.doc.preview.title")} data-testid="document-preview">
@@ -103,13 +65,13 @@ export function DocumentPreview({ language }: { language: string }) {
         {error && !busy ? (
           <ErrorState title={t("studio.doc.preview.failed")} message={describeError(t, error)} onRetry={() => void refresh()} />
         ) : preview ? (
-          <ol className="space-y-3" aria-label={t("studio.doc.preview.title")}>
+          <ol className="mx-auto max-w-2xl space-y-4" aria-label={t("studio.doc.preview.title")}>
             {Array.from({ length: preview.pageCount }, (_, index) => (
               <PreviewPage key={index} preview={preview} index={index} label={t("studio.doc.preview.page", { page: index + 1 })} />
             ))}
           </ol>
         ) : (
-          <div className="space-y-3" aria-busy>
+          <div className="mx-auto max-w-2xl space-y-4" aria-busy>
             <div className="animate-pulse rounded-sm bg-muted" style={{ aspectRatio: "1 / 1.414" }} />
             <div className="animate-pulse rounded-sm bg-muted" style={{ aspectRatio: "1 / 1.414" }} />
           </div>

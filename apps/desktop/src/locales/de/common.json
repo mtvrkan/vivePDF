@@ -8955,11 +8955,6 @@
       "continue": "Ihr Dokument fortsetzen",
       "placeholder": "Beginnen Sie mit der Eingabe Ihres Dokuments…",
       "editorLabel": "Dokumenttext",
-      "side": "Vorschau und Einstellungen",
-      "tabs": {
-        "preview": "Vorschau",
-        "settings": "Einstellungen"
-      },
       "toolbar": {
         "label": "Formatierung",
         "block": "Absatzformat",
@@ -9016,12 +9011,10 @@
         "delete": "Tabelle löschen"
       },
       "settings": {
-        "page": "Seite",
         "paper": "Papierformat",
         "orientation": "Ausrichtung",
         "portrait": "Hochformat",
         "landscape": "Querformat",
-        "margin": "Ränder",
         "text": "Text",
         "font": "Schrift",
         "headingSame": "Überschriften verwenden dieselbe Schrift",
@@ -9055,7 +9048,8 @@
         "date": "Datum",
         "columns": "Spalten",
         "columnGap": "Spaltenabstand",
-        "columnsHint": "Spalten erscheinen in der Vorschau und im PDF; beim Schreiben bleibt der Editor einspaltig. Ein Seitenumbruch beginnt die nächste Seite. Diese Zahl gilt bis zum ersten Abschnittsumbruch, der sie für die folgenden Seiten ändern kann."
+        "columnsHint": "Spalten erscheinen in der Vorschau und im PDF; beim Schreiben bleibt der Editor einspaltig. Ein Seitenumbruch beginnt die nächste Seite. Diese Zahl gilt bis zum ersten Abschnittsumbruch, der sie für die folgenden Seiten ändern kann.",
+        "dialogTitle": "Dokumenteinstellungen"
       },
       "papers": {
         "a4": "A4",
@@ -9438,6 +9432,8 @@
           "lineHeight": "Zeilenabstand",
           "spaceBefore": "Abstand vor",
           "spaceAfter": "Abstand nach",
+          "indentLeft": "Einzug links",
+          "indentRight": "Einzug rechts",
           "firstLineIndent": "Einzug erste Zeile"
         }
       },
@@ -9494,7 +9490,8 @@
           "insert": "Einfügen",
           "layout": "Layout",
           "references": "Referenzen",
-          "table": "Tabelle"
+          "table": "Tabelle",
+          "view": "Ansicht"
         },
         "groups": {
           "history": "Rückgängig",
@@ -9516,7 +9513,10 @@
           "contents": "Inhaltsverzeichnis",
           "tableInsert": "Einfügen",
           "tableDelete": "Löschen",
-          "cells": "Zellen"
+          "cells": "Zellen",
+          "views": "Ansichten",
+          "zoom": "Zoom",
+          "show": "Anzeigen"
         },
         "sizeDocument": "Dokument ({{size}})",
         "sizeUp": "Schrift vergrößern",
@@ -9550,7 +9550,70 @@
         "addColumn": "Spalte einfügen",
         "merge": "Zusammenführen",
         "split": "Teilen",
-        "headerRow": "Kopfzeile"
+        "headerRow": "Kopfzeile",
+        "printLayout": "Seitenlayout",
+        "pageLines": "Seitenumbruchlinien",
+        "ruler": "Lineal"
+      },
+      "printPreview": {
+        "title": "Druckvorschau"
+      },
+      "zoom": {
+        "label": "Zoom",
+        "in": "Vergrößern",
+        "out": "Verkleinern",
+        "width": "Seitenbreite",
+        "page": "Ganze Seite",
+        "percent": "{{percent}} %",
+        "fitShown": "{{name}} ({{percent}} %)"
+      },
+      "status": {
+        "label": "Statusleiste",
+        "counting": "Seiten werden gezählt…",
+        "pages_one": "{{count}} Seite",
+        "pages_other": "{{count}} Seiten",
+        "page": "Seite {{page}} von {{count}}"
+      },
+      "pageLines": {
+        "label": "Seite {{page}}"
+      },
+      "pageSetup": {
+        "title": "Seite einrichten",
+        "preview": "Seitenvorschau",
+        "tabs": {
+          "margins": "Seitenränder",
+          "paper": "Papier",
+          "layout": "Layout"
+        },
+        "marginTopMm": "Oben",
+        "marginBottomMm": "Unten",
+        "marginLeftMm": "Links",
+        "marginRightMm": "Rechts",
+        "gutter": "Bundsteg",
+        "gutterSide": "Bundstegposition",
+        "gutterSides": {
+          "left": "Links",
+          "top": "Oben"
+        },
+        "tooSmall": "Diese Ränder lassen zu wenig Platz für Text. Verkleinern Sie sie.",
+        "paperSize": "{{width}} × {{height}} mm"
+      },
+      "ruler": {
+        "horizontal": "Horizontales Lineal",
+        "vertical": "Vertikales Lineal",
+        "value": "{{value}} mm",
+        "margins": {
+          "left": "Linker Rand",
+          "right": "Rechter Rand",
+          "top": "Oberer Rand",
+          "bottom": "Unterer Rand"
+        },
+        "indents": {
+          "firstLine": "Erstzeileneinzug",
+          "hanging": "Hängender Einzug",
+          "left": "Einzug links",
+          "right": "Einzug rechts"
+        }
       }
     },
     "cv": {
@@ -9667,6 +9730,11 @@
       "clear": "Leeren",
       "cleared": "Lebenslauf geleert",
       "editInStudio": "Frei in Studio bearbeiten",
+      "steps": {
+        "filled": "ausgefüllt",
+        "hidden": "im Lebenslauf ausgeblendet",
+        "next": "Weiter: {{name}}"
+      },
       "export": {
         "open": "Exportieren",
         "title": "Lebenslauf exportieren",
@@ -9851,12 +9919,7 @@
       "pagesHint": "Die meisten Lebensläufe sind ein bis zwei Seiten lang.",
       "emptyTitle": "Ihr Lebenslauf ist leer",
       "emptyDescription": "Füllen Sie das Formular links aus, beginnen Sie mit dem Beispiel oder übernehmen Sie einen vorhandenen Lebenslauf aus einer PDF.",
-      "photoMissing": "Die Fotodatei wurde nicht gefunden. Wählen Sie sie erneut aus.",
-      "steps": {
-        "filled": "ausgefüllt",
-        "hidden": "im Lebenslauf ausgeblendet",
-        "next": "Weiter: {{name}}"
-      }
+      "photoMissing": "Die Fotodatei wurde nicht gefunden. Wählen Sie sie erneut aus."
     },
     "shortcuts": {
       "title": "Tastenkombinationen",

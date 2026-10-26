@@ -19,6 +19,7 @@ DocumentPaper = Literal["a4", "a5", "b5", "letter", "legal"]
 PageNumbers = Literal["none", "center", "right", "outside"]
 FurnitureAlign = Literal["left", "center", "right"]
 CoverLook = Literal["classic", "band", "frame", "minimal"]
+GutterSide = Literal["left", "top"]
 FontId = Annotated[NotAPath, Field(min_length=1, max_length=300)]
 MAX_FOOTNOTES = 500
 MAX_FOOTNOTE_CHARS = 2000
@@ -29,7 +30,12 @@ ShortText = Annotated[str, Field(max_length=300)]
 class StudioDocumentSettings(RpcModel):
     paper: DocumentPaper = "a4"
     landscape: bool = False
-    margin_mm: float = Field(default=20, ge=5, le=50)
+    margin_top_mm: float = Field(default=20, ge=5, le=60)
+    margin_bottom_mm: float = Field(default=20, ge=5, le=60)
+    margin_left_mm: float = Field(default=20, ge=5, le=60)
+    margin_right_mm: float = Field(default=20, ge=5, le=60)
+    gutter_mm: float = Field(default=0, ge=0, le=30)
+    gutter_side: GutterSide = "left"
     columns: int = Field(default=1, ge=1, le=3)
     column_gap_mm: float = Field(default=8, ge=4, le=20)
     font_size: float = Field(default=11, ge=6, le=28)
@@ -85,11 +91,25 @@ class StudioDocumentPreviewParams(StudioDocumentContent):
     pass
 
 
+class StudioDocumentBlockStart(RpcModel):
+    id: str
+    page: int
+    top: float
+
+
+class StudioDocumentPageStart(RpcModel):
+    page: int
+    top: float
+    words: list[str]
+
+
 class StudioDocumentPreviewResult(RpcModel):
     token: str
     page_count: int
     width: float
     height: float
+    block_starts: list[StudioDocumentBlockStart] = Field(default_factory=list)
+    page_starts: list[StudioDocumentPageStart] = Field(default_factory=list)
 
 
 class StudioDocumentPageParams(RpcModel):

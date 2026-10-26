@@ -445,11 +445,17 @@ export type DocumentPaper = "a4" | "a5" | "b5" | "letter" | "legal";
 export type DocumentPageNumbers = "none" | "center" | "right" | "outside";
 export type DocumentAlign = "left" | "center" | "right";
 export type DocumentCoverStyle = "classic" | "band" | "frame" | "minimal";
+export type DocumentGutterSide = "left" | "top";
 
 export type DocumentLayout = {
   paper: DocumentPaper;
   landscape: boolean;
-  marginMm: number;
+  marginTopMm: number;
+  marginBottomMm: number;
+  marginLeftMm: number;
+  marginRightMm: number;
+  gutterMm: number;
+  gutterSide: DocumentGutterSide;
   columns: DocumentColumns;
   columnGapMm: number;
   fontSize: number;
@@ -499,6 +505,10 @@ export type StudioBibliography = { text: string; name: string; encoding: string;
 
 export type SourceFileOrigin = { path: string; format: "bibtex" | "ris" | "csl"; encoding: string; hash: string; unsafe: boolean };
 
-export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number };
+export type StudioDocumentBlockStart = { id: string; page: number; top: number };
+
+export type StudioDocumentPageStart = { page: number; top: number; words: string[] };
+
+export type StudioDocumentPreview = { token: string; pageCount: number; width: number; height: number; blockStarts: StudioDocumentBlockStart[]; pageStarts: StudioDocumentPageStart[] };
 
 export type StudioDocumentPage = { image: string; width: number; height: number };

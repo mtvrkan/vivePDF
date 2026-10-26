@@ -8956,11 +8956,6 @@
       "continue": "Belgenize devam edin",
       "placeholder": "Belgenizi yazmaya başlayın…",
       "editorLabel": "Belge metni",
-      "side": "Önizleme ve ayarlar",
-      "tabs": {
-        "preview": "Önizleme",
-        "settings": "Ayarlar"
-      },
       "toolbar": {
         "label": "Biçimlendirme",
         "block": "Paragraf stili",
@@ -9017,12 +9012,10 @@
         "delete": "Tabloyu sil"
       },
       "settings": {
-        "page": "Sayfa",
         "paper": "Kâğıt boyutu",
         "orientation": "Yön",
         "portrait": "Dikey",
         "landscape": "Yatay",
-        "margin": "Kenar boşlukları",
         "text": "Metin",
         "font": "Yazı tipi",
         "headingSame": "Başlıklar aynı yazı tipini kullansın",
@@ -9056,7 +9049,8 @@
         "date": "Tarih",
         "columns": "Sütunlar",
         "columnGap": "Sütun aralığı",
-        "columnsHint": "Sütunlar önizlemede ve PDF'te görünür; yazarken düzenleyici tek sütun kalır. Sayfa sonu bir sonraki sayfaya geçer. Bu sayı ilk bölüm sonuna kadar geçerlidir; bölüm sonu sonraki sayfalar için sütun sayısını değiştirebilir."
+        "columnsHint": "Sütunlar önizlemede ve PDF'te görünür; yazarken düzenleyici tek sütun kalır. Sayfa sonu bir sonraki sayfaya geçer. Bu sayı ilk bölüm sonuna kadar geçerlidir; bölüm sonu sonraki sayfalar için sütun sayısını değiştirebilir.",
+        "dialogTitle": "Belge ayarları"
       },
       "papers": {
         "a4": "A4",
@@ -9439,6 +9433,8 @@
           "lineHeight": "Satır aralığı",
           "spaceBefore": "Önce boşluk",
           "spaceAfter": "Sonra boşluk",
+          "indentLeft": "Sol girinti",
+          "indentRight": "Sağ girinti",
           "firstLineIndent": "İlk satır girintisi"
         }
       },
@@ -9495,7 +9491,8 @@
           "insert": "Ekle",
           "layout": "Düzen",
           "references": "Başvurular",
-          "table": "Tablo"
+          "table": "Tablo",
+          "view": "Görünüm"
         },
         "groups": {
           "history": "Geri al",
@@ -9517,7 +9514,10 @@
           "contents": "İçindekiler",
           "tableInsert": "Ekle",
           "tableDelete": "Sil",
-          "cells": "Hücreler"
+          "cells": "Hücreler",
+          "views": "Görünümler",
+          "zoom": "Yakınlaştır",
+          "show": "Göster"
         },
         "sizeDocument": "Belge ({{size}})",
         "sizeUp": "Yazıyı büyüt",
@@ -9551,7 +9551,70 @@
         "addColumn": "Sütun ekle",
         "merge": "Birleştir",
         "split": "Böl",
-        "headerRow": "Başlık satırı"
+        "headerRow": "Başlık satırı",
+        "printLayout": "Sayfa düzeni",
+        "pageLines": "Sayfa sonu çizgileri",
+        "ruler": "Cetvel"
+      },
+      "printPreview": {
+        "title": "Baskı önizleme"
+      },
+      "zoom": {
+        "label": "Yakınlaştırma",
+        "in": "Yakınlaştır",
+        "out": "Uzaklaştır",
+        "width": "Sayfa genişliği",
+        "page": "Tam sayfa",
+        "percent": "%{{percent}}",
+        "fitShown": "{{name}} (%{{percent}})"
+      },
+      "status": {
+        "label": "Durum çubuğu",
+        "counting": "Sayfalar sayılıyor…",
+        "pages_one": "{{count}} sayfa",
+        "pages_other": "{{count}} sayfa",
+        "page": "Sayfa {{page}} / {{count}}"
+      },
+      "pageLines": {
+        "label": "Sayfa {{page}}"
+      },
+      "pageSetup": {
+        "title": "Sayfa yapısı",
+        "preview": "Sayfa önizlemesi",
+        "tabs": {
+          "margins": "Kenar boşlukları",
+          "paper": "Kâğıt",
+          "layout": "Düzen"
+        },
+        "marginTopMm": "Üst",
+        "marginBottomMm": "Alt",
+        "marginLeftMm": "Sol",
+        "marginRightMm": "Sağ",
+        "gutter": "Cilt payı",
+        "gutterSide": "Cilt payı konumu",
+        "gutterSides": {
+          "left": "Sol",
+          "top": "Üst"
+        },
+        "tooSmall": "Bu kenar boşlukları metne çok az yer bırakıyor. Küçültün.",
+        "paperSize": "{{width}} × {{height}} mm"
+      },
+      "ruler": {
+        "horizontal": "Yatay cetvel",
+        "vertical": "Dikey cetvel",
+        "value": "{{value}} mm",
+        "margins": {
+          "left": "Sol kenar boşluğu",
+          "right": "Sağ kenar boşluğu",
+          "top": "Üst kenar boşluğu",
+          "bottom": "Alt kenar boşluğu"
+        },
+        "indents": {
+          "firstLine": "İlk satır girintisi",
+          "hanging": "Asılı girinti",
+          "left": "Sol girinti",
+          "right": "Sağ girinti"
+        }
       }
     },
     "cv": {
@@ -9668,6 +9731,11 @@
       "clear": "Temizle",
       "cleared": "CV temizlendi",
       "editInStudio": "Stüdyo'da serbest düzenle",
+      "steps": {
+        "filled": "dolu",
+        "hidden": "CV'de gizli",
+        "next": "Sonraki: {{name}}"
+      },
       "export": {
         "open": "Dışa aktar",
         "title": "CV'yi dışa aktar",
@@ -9852,12 +9920,7 @@
       "pagesHint": "CV'lerin çoğu bir ya da iki sayfadır.",
       "emptyTitle": "CV'niz henüz boş",
       "emptyDescription": "Soldaki formu doldurun, örnekle başlayın ya da mevcut bir CV'yi PDF'ten içe aktarın.",
-      "photoMissing": "Fotoğraf dosyası bulunamadı. Yeniden seçin.",
-      "steps": {
-        "filled": "dolu",
-        "hidden": "CV'de gizli",
-        "next": "Sonraki: {{name}}"
-      }
+      "photoMissing": "Fotoğraf dosyası bulunamadı. Yeniden seçin."
     },
     "shortcuts": {
       "title": "Klavye kısayolları",

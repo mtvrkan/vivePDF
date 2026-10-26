@@ -1,4 +1,4 @@
-export const SPACING_LIMITS = { lineHeight: [1, 3], spaceBefore: [0, 48], spaceAfter: [0, 48], firstLineIndent: [0, 72] } as const;
+export const SPACING_LIMITS = { lineHeight: [1, 3], spaceBefore: [0, 48], spaceAfter: [0, 48], indentLeft: [0, 288], indentRight: [0, 288], firstLineIndent: [-288, 288] } as const;
 export type SpacingKey = keyof typeof SPACING_LIMITS;
 export type Spacing = Record<SpacingKey, number | null>;
 export const SPACING_KEYS = Object.keys(SPACING_LIMITS) as SpacingKey[];
@@ -7,7 +7,7 @@ export const LINE_PRESETS = [1, 1.15, 1.5, 2] as const;
 export const PARAGRAPH_GAP = 12;
 export const FIRST_LINE_INDENT = 36;
 
-const CSS_PROPERTY: Record<SpacingKey, string> = { lineHeight: "line-height", spaceBefore: "margin-top", spaceAfter: "margin-bottom", firstLineIndent: "text-indent" };
+const CSS_PROPERTY: Record<SpacingKey, string> = { lineHeight: "line-height", spaceBefore: "margin-top", spaceAfter: "margin-bottom", indentLeft: "margin-left", indentRight: "margin-right", firstLineIndent: "text-indent" };
 const LENGTH = /^(-?\d+(?:\.\d+)?)(pt|px)?$/;
 const PX_TO_PT = 0.75;
 

@@ -38,8 +38,8 @@ export function WordCount({ editor, language }: { editor: Editor; language: stri
   const characters = t("studio.doc.count.characters", { total: number.format((counts.selected ?? counts.total).characters) });
 
   return (
-    <p className="glass shrink-0 border-t border-border/60 px-4 py-1 text-xs tabular-nums text-muted-foreground" data-testid="document-count">
+    <span className="tabular-nums" data-testid="document-count">
       {words} · {characters}
-    </p>
+    </span>
   );
 }

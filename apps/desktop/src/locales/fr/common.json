@@ -8955,11 +8955,6 @@
       "continue": "Continuer votre document",
       "placeholder": "Commencez à saisir votre document…",
       "editorLabel": "Texte du document",
-      "side": "Aperçu et paramètres",
-      "tabs": {
-        "preview": "Aperçu",
-        "settings": "Paramètres"
-      },
       "toolbar": {
         "label": "Mise en forme",
         "block": "Style de paragraphe",
@@ -9016,12 +9011,10 @@
         "delete": "Supprimer le tableau"
       },
       "settings": {
-        "page": "Page",
         "paper": "Format du papier",
         "orientation": "Orientation",
         "portrait": "Portrait",
         "landscape": "Paysage",
-        "margin": "Marges",
         "text": "Texte",
         "font": "Police",
         "headingSame": "Les titres utilisent la même police",
@@ -9055,7 +9048,8 @@
         "date": "Date",
         "columns": "Colonnes",
         "columnGap": "Espace entre colonnes",
-        "columnsHint": "Les colonnes apparaissent dans l’aperçu et le PDF ; l’éditeur garde une seule colonne pendant la saisie. Un saut de page commence la page suivante. Ce nombre vaut jusqu’au premier saut de section, qui peut le changer pour les pages suivantes."
+        "columnsHint": "Les colonnes apparaissent dans l’aperçu et le PDF ; l’éditeur garde une seule colonne pendant la saisie. Un saut de page commence la page suivante. Ce nombre vaut jusqu’au premier saut de section, qui peut le changer pour les pages suivantes.",
+        "dialogTitle": "Paramètres du document"
       },
       "papers": {
         "a4": "A4",
@@ -9438,6 +9432,8 @@
           "lineHeight": "Interligne",
           "spaceBefore": "Espace avant",
           "spaceAfter": "Espace après",
+          "indentLeft": "Retrait à gauche",
+          "indentRight": "Retrait à droite",
           "firstLineIndent": "Retrait de première ligne"
         }
       },
@@ -9494,7 +9490,8 @@
           "insert": "Insertion",
           "layout": "Mise en page",
           "references": "Références",
-          "table": "Tableau"
+          "table": "Tableau",
+          "view": "Affichage"
         },
         "groups": {
           "history": "Annuler",
@@ -9516,7 +9513,10 @@
           "contents": "Table des matières",
           "tableInsert": "Insérer",
           "tableDelete": "Supprimer",
-          "cells": "Cellules"
+          "cells": "Cellules",
+          "views": "Vues",
+          "zoom": "Zoom",
+          "show": "Afficher"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Augmenter la taille",
@@ -9550,7 +9550,70 @@
         "addColumn": "Ajouter une colonne",
         "merge": "Fusionner",
         "split": "Diviser",
-        "headerRow": "Ligne d’en-tête"
+        "headerRow": "Ligne d’en-tête",
+        "printLayout": "Page",
+        "pageLines": "Lignes de saut de page",
+        "ruler": "Règle"
+      },
+      "printPreview": {
+        "title": "Aperçu avant impression"
+      },
+      "zoom": {
+        "label": "Zoom",
+        "in": "Zoom avant",
+        "out": "Zoom arrière",
+        "width": "Largeur de page",
+        "page": "Page entière",
+        "percent": "{{percent}} %",
+        "fitShown": "{{name}} ({{percent}} %)"
+      },
+      "status": {
+        "label": "Barre d'état",
+        "counting": "Comptage des pages…",
+        "pages_one": "{{count}} page",
+        "pages_other": "{{count}} pages",
+        "page": "Page {{page}} sur {{count}}"
+      },
+      "pageLines": {
+        "label": "Page {{page}}"
+      },
+      "pageSetup": {
+        "title": "Mise en page",
+        "preview": "Aperçu de la page",
+        "tabs": {
+          "margins": "Marges",
+          "paper": "Papier",
+          "layout": "Disposition"
+        },
+        "marginTopMm": "Haut",
+        "marginBottomMm": "Bas",
+        "marginLeftMm": "Gauche",
+        "marginRightMm": "Droite",
+        "gutter": "Reliure",
+        "gutterSide": "Position de la reliure",
+        "gutterSides": {
+          "left": "Gauche",
+          "top": "Haut"
+        },
+        "tooSmall": "Ces marges laissent trop peu de place au texte. Réduisez-les.",
+        "paperSize": "{{width}} × {{height}} mm"
+      },
+      "ruler": {
+        "horizontal": "Règle horizontale",
+        "vertical": "Règle verticale",
+        "value": "{{value}} mm",
+        "margins": {
+          "left": "Marge de gauche",
+          "right": "Marge de droite",
+          "top": "Marge du haut",
+          "bottom": "Marge du bas"
+        },
+        "indents": {
+          "firstLine": "Retrait de première ligne",
+          "hanging": "Retrait négatif",
+          "left": "Retrait à gauche",
+          "right": "Retrait à droite"
+        }
       }
     },
     "cv": {
@@ -9667,6 +9730,11 @@
       "clear": "Effacer",
       "cleared": "CV effacé",
       "editInStudio": "Modifier librement dans Studio",
+      "steps": {
+        "filled": "rempli",
+        "hidden": "masqué dans le CV",
+        "next": "Suivant : {{name}}"
+      },
       "export": {
         "open": "Exporter",
         "title": "Exporter le CV",
@@ -9851,12 +9919,7 @@
       "pagesHint": "La plupart des CV font une ou deux pages.",
       "emptyTitle": "Votre CV est vide",
       "emptyDescription": "Remplissez le formulaire à gauche, partez de l'exemple ou importez un CV existant depuis un PDF.",
-      "photoMissing": "Le fichier de la photo est introuvable. Choisissez-le à nouveau.",
-      "steps": {
-        "filled": "rempli",
-        "hidden": "masqué dans le CV",
-        "next": "Suivant : {{name}}"
-      }
+      "photoMissing": "Le fichier de la photo est introuvable. Choisissez-le à nouveau."
     },
     "shortcuts": {
       "title": "Raccourcis clavier",

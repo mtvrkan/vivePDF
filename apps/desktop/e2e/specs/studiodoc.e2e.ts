@@ -5,6 +5,7 @@ import { answerDialogs, bootApp, openTool, pressShortcut, probe, t, waitForDialo
 
 const BOLD_KEY = "b";
 const ENTER = String.fromCharCode(0xe007);
+const END = String.fromCharCode(0xe010);
 const body = () => $('[data-testid="document-body"]');
 const button = (label: string) => $(`//button[normalize-space(.)="${label}"]`);
 
@@ -32,13 +33,17 @@ describe("studio documents", () => {
     await expect(body().$("strong")).toHaveText("this quarter");
     await expect(body().$$("ul > li")).toBeElementsArrayOfSize(2);
 
-    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.doc.tabs.settings")}"]`).click();
-    await $(`//label[.//*[normalize-space(.)="${t("studio.doc.settings.toc")}"]]`).click();
-    await $(`//label[.//*[normalize-space(.)="${t("studio.doc.settings.cover")}"]]`).click();
-    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.doc.tabs.preview")}"]`).click();
-    await expect($('[data-testid="document-preview-status"]')).toHaveText(t("studio.doc.preview.pages", { count: 3 }), { wait: 30000 });
-    await $('[data-preview-page="1"] img').waitForDisplayed({ timeout: 30000 });
+    await $('[data-ribbon-tab="references"]').click();
+    await $('[data-testid="doc-toc"]').click();
+    await $('[data-ribbon-tab="insert"]').click();
+    await $('[data-testid="doc-cover"]').click();
+    await $('[data-testid="document-settings"]').waitForDisplayed();
+    await $('[role="dialog"] [data-dialog-close]').click();
+    await expect($('[data-testid="document-page-count"]')).toHaveText(t("studio.doc.status.page", { page: 3, count: 3 }), { wait: 30000 });
+    await $('[data-testid="document-print-preview-open"]').click();
+    await $('[data-testid="document-print-preview"] [data-preview-page="1"] img').waitForDisplayed({ timeout: 30000 });
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document.png"));
+    await $('[role="dialog"] [data-dialog-close]').click();
 
     const output = join(workDir(), "Quarterly.pdf");
     await button(t("studio.toolbar.export")).click();
@@ -99,8 +104,17 @@ describe("studio documents", () => {
     await $('[data-ribbon-tab="layout"]').click();
     await $('[data-testid="doc-margins"]').click();
     await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.ribbon.marginValue", { value: 30 })}"]`).click();
-    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.doc.tabs.settings")}"]`).click();
-    await expect($(`//label[./span[normalize-space(.)="${t("studio.doc.settings.margin")}"]]//input`)).toHaveValue("30");
+    await $('[data-testid="doc-page-settings"]').click();
+    await $('[data-testid="page-setup"]').waitForDisplayed();
+    for (const side of ["marginTopMm", "marginBottomMm", "marginLeftMm", "marginRightMm"]) {
+      await expect($(`//label[./span[normalize-space(.)="${t(`studio.doc.pageSetup.${side}`)}"]]//input`)).toHaveValue("30");
+    }
+    const gutter = $(`//label[./span[normalize-space(.)="${t("studio.doc.pageSetup.gutter")}"]]//input`);
+    await gutter.setValue("10");
+    await browser.keys("Enter");
+    await expect(gutter).toHaveValue("10");
+    await expect($('[data-testid="page-setup-too-small"]')).not.toBeDisplayed();
+    await $('[role="dialog"] [data-dialog-close]').click();
 
     await $('[data-ribbon-tab="insert"]').click();
     await $('[data-testid="doc-insert-table"]').click();
@@ -108,5 +122,45 @@ describe("studio documents", () => {
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-ribbon.png"));
     await body().$("h1").click();
     await $('[data-ribbon-tab="table"]').waitForDisplayed({ reverse: true });
+  });
+
+  it("draws a page line where the engine starts the next page and counts the caret's page", async () => {
+    await body().$$("ul > li")[1].click();
+    await browser.keys(END);
+    await browser.keys(ENTER);
+    await browser.keys(ENTER);
+    await pressShortcut(ENTER);
+    await browser.keys("Next page");
+    await $('[data-page-line="4"]').waitForExist({ timeout: 30000 });
+    await expect($('[data-testid="document-page-count"]')).toHaveText(t("studio.doc.status.page", { page: 4, count: 4 }), { wait: 30000 });
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-page-lines.png"));
+
+    await $('[data-ribbon-tab="view"]').click();
+    await $('[data-testid="doc-page-lines"]').click();
+    await $('[data-page-line="4"]').waitForExist({ reverse: true });
+    await $('[data-testid="doc-page-lines"]').click();
+  });
+
+  it("indents the caret's paragraph and moves the margin from the ruler", async () => {
+    await body().$("p").click();
+    const hanging = $('[data-testid="ruler-indent-hanging"]');
+    await hanging.waitForDisplayed();
+    await browser.execute((element) => (element as unknown as HTMLElement).focus(), await hanging);
+    for (let step = 0; step < 2; step += 1) await browser.keys(["Shift", "ArrowRight"]);
+    await expect(body().$("p")).toHaveAttribute("style", expect.stringContaining("text-indent: -28.35pt"));
+    await expect(body().$("p")).toHaveAttribute("style", expect.stringContaining("margin-left: 28.35pt"));
+
+    const margin = $('[data-testid="ruler-margin-left"]');
+    const before = Number(await margin.getAttribute("aria-valuenow"));
+    await browser.execute((element) => (element as unknown as HTMLElement).focus(), await margin);
+    await browser.keys(["Shift", "ArrowRight"]);
+    await expect(margin).toHaveAttribute("aria-valuenow", String(before + 5));
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-ruler.png"));
+
+    await $('[data-ribbon-tab="view"]').click();
+    await $('[data-testid="doc-ruler"]').click();
+    await $('[data-testid="document-ruler"]').waitForExist({ reverse: true });
+    await $('[data-testid="doc-ruler"]').click();
+    await $('[data-testid="document-ruler"]').waitForDisplayed();
   });
 });

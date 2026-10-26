@@ -7,10 +7,15 @@ const rpc = vi.hoisted(() => ({ preview: vi.fn(), page: vi.fn() }));
 vi.mock("@/shared/rpc/operations", () => ({ studioPreviewDocument: rpc.preview, studioPreviewDocumentPage: rpc.page }));
 
 const { DocumentPreview } = await import("./DocumentPreview");
+const { useDocumentLayout } = await import("./useDocumentLayout");
 const { useDocumentStore } = await import("./documentStore");
 const { createDocument } = await import("./model");
 
 const BODY: DocumentNode = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "Hello" }] }] };
+
+function Preview() {
+  return <DocumentPreview layout={useDocumentLayout("en")} />;
+}
 
 function typed(text: string): DocumentNode {
   return { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text }] }] };
@@ -37,10 +42,10 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe("DocumentPreview", () => {
+describe("document layout", () => {
   it("lays the document out once after it opens", async () => {
     useDocumentStore.getState().open(createDocument("Notes", BODY));
-    render(<DocumentPreview language="en" />);
+    render(<Preview />);
 
     await act(async () => vi.advanceTimersByTime(800));
 
@@ -49,7 +54,7 @@ describe("DocumentPreview", () => {
 
   it("waits for a pause in typing and then lays the document out once", async () => {
     useDocumentStore.getState().open(createDocument("Notes", BODY));
-    render(<DocumentPreview language="en" />);
+    render(<Preview />);
     await act(async () => vi.advanceTimersByTime(800));
 
     for (const text of ["H", "He", "Hel", "Hell"]) {
@@ -64,12 +69,23 @@ describe("DocumentPreview", () => {
 
   it("stops scheduling once it is closed", async () => {
     useDocumentStore.getState().open(createDocument("Notes", BODY));
-    const { unmount } = render(<DocumentPreview language="en" />);
+    const { unmount } = render(<Preview />);
     unmount();
 
     act(() => useDocumentStore.getState().setContent(typed("later")));
     await act(async () => vi.advanceTimersByTime(2000));
 
     expect(rpc.preview).not.toHaveBeenCalled();
+  });
+
+  it("shows the page count once the layout arrives", async () => {
+    rpc.preview.mockResolvedValue({ token: "t", pageCount: 3, width: 595, height: 842 });
+    useDocumentStore.getState().open(createDocument("Notes", BODY));
+    render(<Preview />);
+
+    await act(async () => vi.advanceTimersByTime(800));
+
+    expect(document.querySelector('[data-testid="document-preview-status"]')?.textContent).toBe("3 pages");
+    expect(document.querySelectorAll("[data-preview-page]")).toHaveLength(3);
   });
 });

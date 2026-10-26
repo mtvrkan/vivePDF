@@ -11,6 +11,7 @@ from pathlib import Path
 import pymupdf
 
 from vivepdf.ops._document_markdown import document_markdown
+from vivepdf.ops._document_places import Places
 from vivepdf.ops._html_clean import body_fragment, visible_text, without_remote_pictures
 from vivepdf.ops._markdown_citations import FrontMatter, split_front_matter, with_citations
 from vivepdf.ops._markdown_footnotes import split_notes, with_footnotes
@@ -37,6 +38,7 @@ from vivepdf.ops._studio_document_models import (
     StudioBibliographyResult,
     StudioBibliographyWriteParams,
     StudioBibliographyWriteResult,
+    StudioDocumentBlockStart,
     StudioDocumentImageResult,
     StudioDocumentImportResult,
     StudioDocumentMarkdownParams,
@@ -44,6 +46,7 @@ from vivepdf.ops._studio_document_models import (
     StudioDocumentOpenResult,
     StudioDocumentPageParams,
     StudioDocumentPageResult,
+    StudioDocumentPageStart,
     StudioDocumentPreviewParams,
     StudioDocumentPreviewResult,
     StudioDocumentRenderParams,
@@ -128,15 +131,25 @@ def export_markdown(
 def preview_document(
     params: StudioDocumentPreviewParams, progress: Progress
 ) -> StudioDocumentPreviewResult:
-    document = layout_document(params, progress.check_cancelled)
+    places: list[Places] = []
+    document = layout_document(params, progress.check_cancelled, places)
     with document:
         first = document[0].rect
         payload = document.tobytes(garbage=0, deflate=False)
+        found = places[0]
         return StudioDocumentPreviewResult(
             token=_remember(payload),
             page_count=document.page_count,
             width=first.width,
             height=first.height,
+            block_starts=[
+                StudioDocumentBlockStart(id=block.id, page=block.page, top=block.top)
+                for block in found.blocks
+            ],
+            page_starts=[
+                StudioDocumentPageStart(page=start.page, top=start.top, words=start.words)
+                for start in found.pages
+            ],
         )
 
 

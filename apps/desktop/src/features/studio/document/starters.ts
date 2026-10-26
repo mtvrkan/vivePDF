@@ -1,6 +1,6 @@
 import type { TFunction } from "i18next";
 import type { DocumentSettings, StudioDocument } from "@/types/studio";
-import { createDocument } from "./model";
+import { createDocument, uniformMargins } from "./model";
 import { escapeHtml } from "./toHtml";
 
 export const DOCUMENT_STARTERS = ["blank", "report", "letter", "petition", "assignment", "minutes", "lectureNotes", "booklet", "cv", "invoice"] as const;
@@ -53,7 +53,7 @@ const BUILDERS: Record<DocumentStarter, Builder> = {
     ].join(""),
   }),
   petition: (s, today) => ({
-    settings: { pageNumbers: "none", marginMm: 25 },
+    settings: { pageNumbers: "none", ...uniformMargins(25) },
     html: [
       h(3, s("petition.addressee"), "center"),
       p("&nbsp;"),
@@ -104,7 +104,7 @@ const BUILDERS: Record<DocumentStarter, Builder> = {
     ].join(""),
   }),
   lectureNotes: (s, today) => ({
-    settings: { fontSize: 10.5, marginMm: 16, header: s("lectureNotes.course"), headerAlign: "left" },
+    settings: { fontSize: 10.5, ...uniformMargins(16), header: s("lectureNotes.course"), headerAlign: "left" },
     html: [
       h(1, s("lectureNotes.topic")),
       p(`${strong(s("lectureNotes.course"))} · ${today}`),
@@ -118,7 +118,7 @@ const BUILDERS: Record<DocumentStarter, Builder> = {
     ].join(""),
   }),
   booklet: (s, today) => ({
-    settings: { paper: "a5", marginMm: 15, fontSize: 10.5, cover: true, toc: true, coverStyle: "frame", title: s("booklet.title"), subtitle: s("booklet.subtitle"), date: today, pageNumbers: "outside" },
+    settings: { paper: "a5", ...uniformMargins(15), fontSize: 10.5, cover: true, toc: true, coverStyle: "frame", title: s("booklet.title"), subtitle: s("booklet.subtitle"), date: today, pageNumbers: "outside" },
     html: [
       h(1, s("booklet.chapter1")),
       p(s("common.paragraph"), "justify"),
@@ -132,7 +132,7 @@ const BUILDERS: Record<DocumentStarter, Builder> = {
     ].join(""),
   }),
   cv: (s) => ({
-    settings: { pageNumbers: "none", marginMm: 18, accent: "#0f766e" },
+    settings: { pageNumbers: "none", ...uniformMargins(18), accent: "#0f766e" },
     html: [
       h(1, s("common.yourName")),
       p(`${s("cv.role")} · ${s("common.contact")} · ${s("common.address")}`),

@@ -23,7 +23,7 @@ const DEFAULT_HIGHLIGHT = "#fef08a";
 const CHECKED = "&#9745;";
 const UNCHECKED = "&#9744;";
 
-export type DocumentHtml = { html: string; images: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[] };
+export type DocumentHtml = { html: string; images: string[]; fonts: string[]; footnotes: string[]; footnoteHtml: string[]; blockIds: string[] };
 
 export type DocumentReferences = { citations: Citations; title: string };
 
@@ -288,8 +288,28 @@ function write(node: DocumentNode, writer: Writer): string {
   }
 }
 
-export function documentHtml(content: DocumentNode, settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null = null): DocumentHtml {
+const OPENING_TAG = /^<([a-z][a-z0-9]*)(?=[\s>])/;
+const UNMARKED_BLOCKS = new Set([PAGE_BREAK, SECTION_BREAK]);
+
+function markedBlock(node: DocumentNode, markup: string, index: number, writer: Writer): { markup: string; id: string } {
+  if (node.type === "heading") return { markup, id: `h-${writer.headings}` };
+  if (UNMARKED_BLOCKS.has(node.type) || !OPENING_TAG.test(markup)) return { markup, id: "" };
+  const id = `b-${index}`;
+  return { markup: markup.replace(OPENING_TAG, `<$1 id="${id}"`), id };
+}
+
+export function documentHtml(content: DocumentNode, settings: Pick<DocumentSettings, "fontId" | "headingFontId">, references: DocumentReferences | null = null, markBlocks = false): DocumentHtml {
   const writer = new Writer(settings, references);
-  const html = write(content, writer);
-  return { html, images: writer.images, fonts: writer.fonts, footnotes: writer.footnotes, footnoteHtml: writer.footnoteHtml };
+  const blockIds: string[] = [];
+  const html =
+    markBlocks && content.type === "doc"
+      ? (content.content ?? [])
+          .map((child, index) => {
+            const marked = markedBlock(child, write(child, writer), index, writer);
+            blockIds.push(marked.id);
+            return marked.markup;
+          })
+          .join("")
+      : write(content, writer);
+  return { html, images: writer.images, fonts: writer.fonts, footnotes: writer.footnotes, footnoteHtml: writer.footnoteHtml, blockIds };
 }

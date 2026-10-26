@@ -86,7 +86,7 @@ def test_a_section_above_a_continuous_break_is_balanced(tmp_path: Path):
 def test_one_three_and_one_columns_share_a_page(tmp_path: Path):
     body = (
         f"{_filler(60, 'one')}{_section(3)}{_filler(120, 'three')}"
-        f"{_section(1)}{_filler(30, 'wide')}{_section(2)}{_filler(80, 'two')}"
+        f"{_section(1)}{_filler(30, 'wide')}{_section(2)}{_filler(120, 'two')}"
     )
 
     with _render(tmp_path, body) as document:

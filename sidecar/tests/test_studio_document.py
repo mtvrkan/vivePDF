@@ -6,6 +6,7 @@ from pathlib import Path
 import pymupdf
 import pytest
 from PIL import Image
+from pydantic import ValidationError
 
 from vivepdf.ops._studio_document_models import (
     StudioDocumentOpenParams,
@@ -23,7 +24,7 @@ from vivepdf.ops.studio_document import (
     render_document,
     save_studio_document,
 )
-from vivepdf.rpc.errors import OpError
+from vivepdf.rpc.errors import ErrorCode, OpError
 from vivepdf.rpc.progress import silent_progress
 
 BODY = (
@@ -174,6 +175,9 @@ def _filler(words: int) -> str:
     return "<p>" + " ".join(f"word{index}" for index in range(words)) + "</p>"
 
 
+MILLIMETRE = 72 / 25.4
+
+
 def _body_words(page: pymupdf.Page) -> list:
     bottom = page.rect.height - 20 * 72 / 25.4
     return [word for word in page.get_text("words") if word[3] <= bottom]
@@ -193,7 +197,7 @@ def test_two_columns_fill_the_left_column_before_the_right(tmp_path: Path):
 
 
 def test_three_columns_start_where_the_gap_leaves_them(tmp_path: Path):
-    settings = {"columns": 3, "columnGapMm": 8, "marginMm": 20}
+    settings = {"columns": 3, "columnGapMm": 8, "marginLeftMm": 20, "marginRightMm": 20}
 
     with _render(tmp_path, _filler(1500), settings=settings) as document:
         starts = sorted({round(word[0]) for word in _body_words(document[0])})
@@ -736,3 +740,87 @@ def test_a_section_break_with_a_bad_column_count_is_refused(tmp_path: Path, colu
         _render(tmp_path, f"<p>a</p>{_section(columns)}<p>b</p>")
 
     assert caught.value.data["reason"] == "badSectionColumns"
+
+
+def test_each_margin_and_the_gutter_move_the_text_and_the_header(tmp_path: Path):
+    settings = {
+        "marginTopMm": 30,
+        "marginLeftMm": 30,
+        "marginRightMm": 15,
+        "gutterMm": 10,
+        "header": "Running head",
+        "pageNumbers": "none",
+    }
+
+    (tmp_path / "plain").mkdir()
+    with _render(tmp_path / "plain", _filler(400)) as plain:
+        plain_left = min(word[0] for word in _body_words(plain[0]))
+    with _render(tmp_path, _filler(400), settings=settings) as document:
+        page = document[0]
+        body = [word for word in _body_words(page) if word[4] not in {"Running", "head"}]
+        header = page.search_for("Running head")[0]
+        width = page.rect.width
+
+    assert min(word[0] for word in body) - plain_left == pytest.approx(20 * MILLIMETRE, abs=1)
+    assert max(word[2] for word in body) <= width - 15 * MILLIMETRE + 0.5
+    assert min(word[1] for word in body) >= 30 * MILLIMETRE - 0.5
+    assert header.y1 <= 30 * MILLIMETRE
+    assert header.x0 >= 40 * MILLIMETRE - 0.5
+
+
+def test_a_top_gutter_adds_to_the_top_margin_only(tmp_path: Path):
+    settings = {"marginTopMm": 20, "marginLeftMm": 20, "gutterMm": 15, "gutterSide": "top"}
+
+    (tmp_path / "plain").mkdir()
+    with _render(tmp_path / "plain", _filler(200)) as plain:
+        plain_words = _body_words(plain[0])
+    with _render(tmp_path, _filler(200), settings=settings) as document:
+        body = _body_words(document[0])
+
+    assert min(word[1] for word in body) - min(word[1] for word in plain_words) == pytest.approx(
+        15 * MILLIMETRE, abs=1
+    )
+    assert min(word[0] for word in body) == pytest.approx(min(word[0] for word in plain_words))
+
+
+def test_the_text_starts_on_the_margin_and_fills_the_measure(tmp_path: Path):
+    settings = {"marginLeftMm": 25, "marginRightMm": 25, "pageNumbers": "none"}
+    with _render(tmp_path, _filler(400), settings=settings) as document:
+        page = document[0]
+        body = _body_words(page)
+        width = page.rect.width
+    assert min(word[0] for word in body) == pytest.approx(25 * MILLIMETRE, abs=0.5)
+    assert max(word[2] for word in body) > width - 25 * MILLIMETRE - 30
+
+
+def test_left_right_and_hanging_indents_reach_the_pdf(tmp_path: Path):
+    words = " ".join(f"word{index}" for index in range(120))
+    body = f'<p style="margin-left:36pt;margin-right:72pt;text-indent:-18pt">{words}</p>'
+    settings = {"marginLeftMm": 20, "marginRightMm": 20, "pageNumbers": "none"}
+    with _render(tmp_path, body, settings=settings) as document:
+        page = document[0]
+        lines: dict[int, list] = {}
+        for word in _body_words(page):
+            lines.setdefault(round(word[1]), []).append(word)
+        starts = [min(word[0] for word in line) for _, line in sorted(lines.items())]
+        ends = [max(word[2] for word in line) for _, line in sorted(lines.items())]
+        width = page.rect.width
+    left = 20 * MILLIMETRE
+    assert starts[0] == pytest.approx(left + 18, abs=0.5)
+    assert all(start == pytest.approx(left + 36, abs=0.5) for start in starts[1:])
+    assert max(ends) <= width - left - 72 + 0.5
+
+
+def test_margins_that_leave_no_room_for_text_are_refused(tmp_path: Path):
+    settings = {"paper": "a5", "marginLeftMm": 60, "marginRightMm": 60, "gutterMm": 10}
+    with pytest.raises(OpError) as raised:
+        _render(tmp_path, settings=settings)
+    assert raised.value.code == ErrorCode.INVALID_PARAMS
+    assert raised.value.data == {"reason": "marginTooLarge"}
+
+
+def test_a_margin_out_of_range_is_refused():
+    with pytest.raises(ValidationError):
+        StudioDocumentRenderParams.model_validate(
+            {"html": "<p>x</p>", "output": "/tmp/x.pdf", "settings": {"marginLeftMm": 2}}
+        )

@@ -4,7 +4,7 @@ import en from "@/locales/en/common.json";
 import type { DocumentNode } from "@/types/studio";
 import { parseBibtex } from "./bibtex";
 import { documentContent, documentText } from "./content";
-import { createDocument, defaultSettings, layoutOf, normalizeDocument, normalizeSettings, pageSize } from "./model";
+import { contentInsets, createDocument, defaultSettings, layoutOf, normalizeDocument, normalizeSettings, pageSize, POINTS_PER_MM, uniformMargin, uniformMargins } from "./model";
 import { buildStarter, DOCUMENT_STARTERS } from "./starters";
 import { fileVersion, MAX_FOOTNOTE_HTML, MAX_FOOTNOTE_PICTURE } from "./footnotes";
 import { documentHtml } from "./toHtml";
@@ -183,7 +183,7 @@ describe("document model", () => {
   it("clamps settings and drops what it does not know", () => {
     const settings = normalizeSettings({ marginMm: 500, fontSize: 2, paper: "a0", accent: "red", tocDepth: 7, pageNumbers: "outside", header: "x".repeat(500), extra: true });
 
-    expect(settings.marginMm).toBe(50);
+    expect(settings).toMatchObject({ marginTopMm: 60, marginBottomMm: 60, marginLeftMm: 60, marginRightMm: 60 });
     expect(settings.fontSize).toBe(6);
     expect(settings.paper).toBe("a4");
     expect(settings.accent).toBe(defaultSettings().accent);
@@ -191,6 +191,27 @@ describe("document model", () => {
     expect(settings.pageNumbers).toBe("outside");
     expect(settings.header).toHaveLength(200);
     expect(settings).not.toHaveProperty("extra");
+  });
+
+  it("spreads an old single margin to every side and lets a side of its own win", () => {
+    const settings = normalizeSettings({ marginMm: 25, marginLeftMm: 35 });
+
+    expect(settings).toMatchObject({ marginTopMm: 25, marginBottomMm: 25, marginLeftMm: 35, marginRightMm: 25, gutterMm: 0, gutterSide: "left" });
+    expect(settings).not.toHaveProperty("marginMm");
+  });
+
+  it("keeps the gutter within its limits and on a known side", () => {
+    expect(normalizeSettings({ gutterMm: 99, gutterSide: "top" })).toMatchObject({ gutterMm: 30, gutterSide: "top" });
+    expect(normalizeSettings({ gutterMm: -4, gutterSide: "right" })).toMatchObject({ gutterMm: 0, gutterSide: "left" });
+  });
+
+  it("adds the gutter to the side it sits on", () => {
+    const insets = contentInsets({ ...uniformMargins(10), gutterMm: 5, gutterSide: "top" });
+
+    expect(insets.top).toBeCloseTo(15 * POINTS_PER_MM);
+    expect(insets.left).toBeCloseTo(10 * POINTS_PER_MM);
+    expect(uniformMargin({ ...uniformMargins(10), gutterMm: 5 })).toBeNull();
+    expect(uniformMargin({ ...uniformMargins(10), gutterMm: 0 })).toBe(10);
   });
 
   it("keeps one to three columns and a gap within its limits", () => {
