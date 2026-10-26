@@ -342,6 +342,28 @@ class Smoke:
                 expect(document.page_count == 4, "merged page count")
             return "4 pages"
 
+        def word() -> str:
+            equation = (
+                '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1000">'
+                '<path d="M100 900 L1900 900 L1000 100 Z" fill="#1a1a1a"/></svg>'
+            )
+            params = {
+                "html": '<h1 id="h-1">Giriş</h1><p><span data-comment="c-one">Tez</span> metni</p>'
+                '<p id="e-1" class="eq" data-equation="0" data-latex="x^2">(1)</p>',
+                "equations": [equation],
+                "comments": [{"id": "c-one", "author": "Esma", "text": "Kontrol"}],
+                "settings": {"toc": True, "tocTitle": "İçindekiler"},
+                "output": self.out("tez.docx"),
+            }
+            result = self.call("studio.export_docx", params)
+            with zipfile.ZipFile(result["output"]) as archive:
+                names = archive.namelist()
+                body = archive.read("word/document.xml").decode("utf-8")
+            expect("Giriş" in body and "TOC" in body, "word body")
+            expect("word/comments.xml" in names, "word comments")
+            expect(any(name.startswith("word/media/") for name in names), "word equation")
+            return f"{result['bytes']} bytes"
+
         for name, action in (
             ("info.get", info),
             ("compress.run", compress),
@@ -359,6 +381,7 @@ class Smoke:
             ("scan.enhance", enhance),
             ("convert.from_url", web),
             ("pages.merge", merge),
+            ("studio.export_docx", word),
         ):
             self.step(name, action)
 
