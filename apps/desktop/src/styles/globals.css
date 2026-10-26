@@ -893,14 +893,21 @@
   }
   .vp-doc .page-break[data-main] {
     border-top: 1px dashed var(--doc-accent);
+    position: relative;
   }
   .vp-doc .page-break[data-main]::after {
-    color: var(--muted-foreground);
+    background-color: var(--card);
+    border: 1px solid var(--doc-accent);
+    border-radius: 9999px;
+    color: var(--doc-accent);
     content: attr(data-label);
-    display: block;
-    font-size: 0.75rem;
-    padding-top: 0.25rem;
-    text-align: center;
+    font-size: var(--text-2xs);
+    font-weight: 600;
+    inset-inline-start: 0.5rem;
+    line-height: 1rem;
+    padding: 0 0.5rem;
+    position: absolute;
+    top: -0.5625rem;
   }
   .vp-doc .section-break {
     border-top: 1px dashed var(--doc-accent);
