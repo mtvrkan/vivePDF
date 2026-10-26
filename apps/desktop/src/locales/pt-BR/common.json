@@ -9510,7 +9510,8 @@
           "position": "Posição",
           "options": "Opções",
           "close": "Fechar",
-          "headings": "Títulos"
+          "headings": "Títulos",
+          "captions": "Legendas"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar fonte",
@@ -9645,6 +9646,20 @@
       "furniture": {
         "pageNumber": "Número da página",
         "notOnFirst": "{{name}} · oculto na primeira página"
+      },
+      "caption": {
+        "insert": "Inserir legenda",
+        "figure": "Legenda de figura",
+        "table": "Legenda de tabela",
+        "figureLabel": "Figura",
+        "tableLabel": "Tabela",
+        "lists": "Listas de figuras e tabelas",
+        "figureList": "Lista de figuras",
+        "tableList": "Lista de tabelas",
+        "listTitles": "Títulos das listas…",
+        "figureListTitle": "Título da lista de figuras",
+        "tableListTitle": "Título da lista de tabelas",
+        "listsHint": "As listas vêm depois do sumário e mostram só as legendas do seu tipo."
       }
     },
     "cv": {

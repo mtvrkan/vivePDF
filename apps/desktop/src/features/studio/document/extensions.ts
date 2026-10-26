@@ -9,6 +9,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { BackgroundColor, Color, FontSize, TextStyle } from "@tiptap/extension-text-style";
 import { Placeholder } from "@tiptap/extensions";
 import StarterKit from "@tiptap/starter-kit";
+import { Caption } from "./captionNode";
 import { citationNodes, type CitationSource } from "./citationNodes";
 import { fontStack } from "./documentFonts";
 import { DocumentFind } from "./findInDocument";
@@ -152,6 +153,7 @@ export function documentExtensions(placeholder: string, citations: CitationSourc
     TableKit.configure({ table: { resizable: true } }),
     Image.configure({ inline: false, allowBase64: true, resize: { enabled: true, minWidth: 32, minHeight: 32, alwaysPreserveAspectRatio: true } }),
     PageBreak.configure({ mainLabel }),
+    Caption,
     sectionLabel ? SectionBreak.configure({ label: sectionLabel }) : SectionBreak,
     Footnote,
     ...citationNodes(citations),

@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 import pymupdf
 
-BLOCK_ID = re.compile(r"^[bh]-\d+$")
+BLOCK_ID = re.compile(r"^[bch]-\d+$")
 FIRST_WORDS = 8
 
 

@@ -970,6 +970,16 @@
     white-space: pre;
     user-select: none;
   }
+  .vp-doc p.vp-caption {
+    text-align: center;
+    font-size: 0.9em;
+    margin: 0.33em 0 0.89em;
+  }
+  .vp-doc .vp-caption-number {
+    font-weight: 700;
+    white-space: pre;
+    user-select: none;
+  }
   .vp-doc .vp-find-match {
     background-color: color-mix(in oklab, var(--color-warning) 35%, transparent);
     border-radius: 2px;

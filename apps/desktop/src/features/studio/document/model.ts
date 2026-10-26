@@ -49,6 +49,10 @@ export function defaultSettings(): DocumentSettings {
     toc: false,
     tocTitle: "",
     tocDepth: 2,
+    figureList: false,
+    figureListTitle: "",
+    tableList: false,
+    tableListTitle: "",
     cover: false,
     coverStyle: "classic",
     title: "",
@@ -140,6 +144,10 @@ export function normalizeSettings(value: unknown): DocumentSettings {
     toc: source.toc === true,
     tocTitle: text(source.tocTitle, "", 100),
     tocDepth: pick(source.tocDepth, [1, 2, 3] as const, base.tocDepth),
+    figureList: source.figureList === true,
+    figureListTitle: text(source.figureListTitle, "", 100),
+    tableList: source.tableList === true,
+    tableListTitle: text(source.tableListTitle, "", 100),
     cover: source.cover === true,
     coverStyle: pick(source.coverStyle, COVER_STYLES, base.coverStyle),
     title: text(source.title, "", 300),
@@ -168,7 +176,11 @@ export function normalizeDocument(value: unknown): StudioDocument | null {
   return { version: STUDIO_DOCUMENT_VERSION, kind: "document", name: text(source.name, "", 200), settings: normalizeSettings(source.settings), content, sources: normalizeSources(source.sources) };
 }
 
-export function layoutOf(settings: DocumentSettings, fallbackTocTitle: string): DocumentLayout {
+export type ListTitles = { figure?: string; table?: string };
+
+const LIST_TITLES = { figure: "List of figures", table: "List of tables" };
+
+export function layoutOf(settings: DocumentSettings, fallbackTocTitle: string, listTitles: ListTitles = {}): DocumentLayout {
   const layout: Partial<DocumentSettings> = { ...settings };
   delete layout.fontId;
   delete layout.headingFontId;
@@ -176,5 +188,10 @@ export function layoutOf(settings: DocumentSettings, fallbackTocTitle: string): 
   delete layout.citationStyle;
   delete layout.citationLanguage;
   delete layout.referencesTitle;
-  return { ...(layout as DocumentLayout), tocTitle: settings.tocTitle.trim() || fallbackTocTitle };
+  return {
+    ...(layout as DocumentLayout),
+    tocTitle: settings.tocTitle.trim() || fallbackTocTitle,
+    figureListTitle: settings.figureListTitle.trim() || listTitles.figure || LIST_TITLES.figure,
+    tableListTitle: settings.tableListTitle.trim() || listTitles.table || LIST_TITLES.table,
+  };
 }

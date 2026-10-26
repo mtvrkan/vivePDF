@@ -906,3 +906,77 @@ def test_the_preview_lists_the_number_shown_on_each_page():
     result = preview_document(params, silent_progress())
 
     assert result.page_labels == ["i", "ii", "1", "2"]
+
+
+CAPTIONED = (
+    '<h1 id="h-1">Methods</h1>'
+    '<p style="text-align:center"><img src="vpimg-0" style="width:120pt"></p>'
+    '<p id="c-1" class="caption" data-caption="figure"><strong>Figure 1.</strong> Sample site</p>'
+    '<p id="c-2" class="caption" data-caption="table"><strong>Table 1.</strong> Scores</p>'
+    "<table><tr><th>Name</th><th>Score</th></tr><tr><td>Ayşe</td><td>90</td></tr></table>"
+    '<div class="page-break" data-main="true"></div><h1 id="h-2">Results</h1>'
+    '<p id="c-3" class="caption" data-caption="figure"><strong>Figure 2.</strong> Growth</p>'
+)
+
+
+def test_the_lists_of_figures_and_tables_follow_the_contents_with_their_page_numbers(
+    tmp_path: Path,
+):
+    settings = {
+        "toc": True,
+        "tocTitle": "Contents",
+        "figureList": True,
+        "figureListTitle": "Figures",
+        "tableList": True,
+        "tableListTitle": "Tables",
+    }
+
+    with _render(tmp_path, CAPTIONED, settings=settings) as document:
+        texts = [page.get_text() for page in document]
+        labels = [page.get_label() for page in document]
+
+    assert labels == ["i", "ii", "iii", "iv", "1"]
+    assert "Contents" in texts[0]
+    assert "Figures" in texts[1] and "Figure 1. Sample site\niv\n" in texts[1]
+    assert "Figure 2. Growth\n1\n" in texts[1] and "Table" not in texts[1]
+    assert "Tables" in texts[2] and "Table 1. Scores\niv\n" in texts[2]
+    assert "Figure 1. Sample site" in texts[3]
+
+
+def test_a_list_is_left_out_when_the_document_has_no_caption_of_its_kind(tmp_path: Path):
+    body = CAPTIONED.replace('data-caption="table"', 'data-caption="figure"')
+    settings = {"tableList": True, "tableListTitle": "Tables"}
+
+    with _render(tmp_path, body, settings=settings) as document:
+        texts = [page.get_text() for page in document]
+
+    assert "Tables" not in "".join(texts)
+    assert "Methods" in texts[0]
+
+
+def test_a_list_of_figures_alone_takes_the_front_pages_and_links_to_each_figure(
+    tmp_path: Path,
+):
+    settings = {"figureList": True, "figureListTitle": "Figures"}
+
+    with _render(tmp_path, CAPTIONED, settings=settings) as document:
+        first = document[0]
+        links = [
+            link["page"] for link in first.get_links() if link.get("kind") == pymupdf.LINK_GOTO
+        ]
+        texts = [page.get_text() for page in document]
+
+    assert texts[0].startswith("Figures")
+    assert "Figure 2. Growth" in texts[0]
+    assert sorted(set(links)) == [1, 2] and "Sample site" in texts[1]
+
+
+def test_the_preview_marks_the_page_each_caption_starts_on():
+    params = StudioDocumentPreviewParams.model_validate(
+        {"html": CAPTIONED, "images": [_data_url(_png())]}
+    )
+
+    result = preview_document(params, silent_progress())
+
+    starts = {start.id: start.page for start in result.block_starts}
+    assert starts["c-1"] == 1 and starts["c-3"] == 2

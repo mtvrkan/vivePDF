@@ -9510,7 +9510,8 @@
           "position": "Position",
           "options": "Options",
           "close": "Fermer",
-          "headings": "Titres"
+          "headings": "Titres",
+          "captions": "Légendes"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Augmenter la taille",
@@ -9645,6 +9646,20 @@
       "furniture": {
         "pageNumber": "Numéro de page",
         "notOnFirst": "{{name}} · masqué sur la première page"
+      },
+      "caption": {
+        "insert": "Insérer une légende",
+        "figure": "Légende de figure",
+        "table": "Légende de tableau",
+        "figureLabel": "Figure",
+        "tableLabel": "Tableau",
+        "lists": "Tables des figures et des tableaux",
+        "figureList": "Table des figures",
+        "tableList": "Liste des tableaux",
+        "listTitles": "Titres des listes…",
+        "figureListTitle": "Titre de la table des figures",
+        "tableListTitle": "Titre de la liste des tableaux",
+        "listsHint": "Les listes suivent la table des matières et ne montrent que les légendes de leur type."
       }
     },
     "cv": {

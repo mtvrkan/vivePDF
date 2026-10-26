@@ -153,6 +153,7 @@ in.
 | `studiodoc` | type a "## Next quarter" line at the end, View › Navigation pane, click the first heading, then View › Navigation pane again | the pane lists two headings with Next quarter marked, then Quarterly report marked after the click; the pane closes; screenshot in the run folder |
 | `studiodoc` | Design › Heading numbers › "1., 1.1., 1.1.1.", then back to None | the headings read "1. Quarterly report" and "1.1. Next quarter" on the sheet, then lose their numbers; screenshot in the run folder |
 | `studiodoc` | caret at the start of "Next quarter", Layout › Main text starts here, then Design › Heading numbers › "1, 1.1, 1.1.1" | a labelled main-text break sits before the heading; "Quarterly report" above it stays unnumbered and the heading after it reads "0.1 Next quarter"; screenshot in the run folder |
+| `studiodoc` | References › Insert caption › Figure caption on the last line, type "Sales by region", then Figure & table lists › List of figures | the caption reads "Figure 1. Sales by region" (label in the app language) and the list item is ticked; screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
 | `studio` | add a heading from the Text category, press Bold in the bar above the canvas, then Position | the bar names the text and Bold changes; the details panel opens on its position section and closes again; screenshot in the run folder |
 | `studiocv` | CV steps: Design from the step list for the layouts, then Experience for the entries | each step shows only its own section; the layout pictures and the experience entries are reached from their steps |
@@ -436,6 +437,14 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   the main pages; headings before the break stay unnumbered and the contents lists the labels;
   inserting the break again moves it instead of adding a second one; without the break the pages
   count 1, 2, 3 as before.
+- Studio document captions in a report with pictures and tables (Turkish and English app
+  language): References › Insert caption puts a figure caption under the line or picture and a
+  table caption above the table the caret is in; captions number Figure 1, 2 and Table 1, 2 on
+  their own and renumber at once when one is deleted or moved, Undo restores them; Figure & table
+  lists › List of figures and List of tables add their pages after the contents (each on its own
+  page, page numbers right, roman with a main-text break) and the entries jump to the caption in
+  the PDF; a list with no caption of its kind is left out; List titles renames them; the caption
+  sits centred under the picture in Print preview as on the sheet; right to left in Arabic.
 - Studio document navigation pane, light and dark and in Arabic: View › Navigation pane opens it
   on the left and it stays open after a restart; headings show as a tree with folding arrows,
   the heading holding the caret is marked while moving through the text, a click brings that

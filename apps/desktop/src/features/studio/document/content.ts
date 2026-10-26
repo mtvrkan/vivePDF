@@ -15,5 +15,5 @@ export async function laidOutContent(document: StudioDocument, language: string,
   const node = typeof document.content === "string" ? { type: "doc", content: [] } : document.content;
   const citations = await buildCitations(node, document.sources, document.settings.citationStyle, citationLanguageOf(document.settings.citationLanguage, language));
   const { html, images, fonts, footnotes, footnoteHtml, blockIds } = documentHtml(node, document.settings, { citations, title: document.settings.referencesTitle.trim() || text.referencesTitle }, markBlocks);
-  return { content: { html, images, fonts, footnotes, footnoteHtml, notesTitle: text.notesTitle, settings: layoutOf(document.settings, text.tocTitle), title: document.name, language }, blockIds };
+  return { content: { html, images, fonts, footnotes, footnoteHtml, notesTitle: text.notesTitle, settings: layoutOf(document.settings, text.tocTitle, { figure: text.figureListTitle, table: text.tableListTitle }), title: document.name, language }, blockIds };
 }

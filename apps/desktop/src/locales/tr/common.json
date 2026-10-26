@@ -9511,7 +9511,8 @@
           "position": "Konum",
           "options": "Seçenekler",
           "close": "Kapat",
-          "headings": "Başlıklar"
+          "headings": "Başlıklar",
+          "captions": "Resim yazıları"
         },
         "sizeDocument": "Belge ({{size}})",
         "sizeUp": "Yazıyı büyüt",
@@ -9646,6 +9647,20 @@
       "furniture": {
         "pageNumber": "Sayfa numarası",
         "notOnFirst": "{{name}} · ilk sayfada gösterilmez"
+      },
+      "caption": {
+        "insert": "Resim yazısı ekle",
+        "figure": "Şekil yazısı",
+        "table": "Tablo yazısı",
+        "figureLabel": "Şekil",
+        "tableLabel": "Tablo",
+        "lists": "Şekil ve tablo listeleri",
+        "figureList": "Şekiller listesi",
+        "tableList": "Tablolar listesi",
+        "listTitles": "Liste başlıkları…",
+        "figureListTitle": "Şekiller listesinin başlığı",
+        "tableListTitle": "Tablolar listesinin başlığı",
+        "listsHint": "Listeler içindekilerden sonra gelir ve yalnızca kendi türündeki yazıları gösterir."
       }
     },
     "cv": {

@@ -9510,7 +9510,8 @@
           "position": "Posición",
           "options": "Opciones",
           "close": "Cerrar",
-          "headings": "Títulos"
+          "headings": "Títulos",
+          "captions": "Títulos"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar tamaño",
@@ -9645,6 +9646,20 @@
       "furniture": {
         "pageNumber": "Número de página",
         "notOnFirst": "{{name}} · no se muestra en la primera página"
+      },
+      "caption": {
+        "insert": "Insertar título",
+        "figure": "Título de figura",
+        "table": "Título de tabla",
+        "figureLabel": "Figura",
+        "tableLabel": "Tabla",
+        "lists": "Índices de figuras y tablas",
+        "figureList": "Índice de figuras",
+        "tableList": "Índice de tablas",
+        "listTitles": "Títulos de los índices…",
+        "figureListTitle": "Título del índice de figuras",
+        "tableListTitle": "Título del índice de tablas",
+        "listsHint": "Los índices van después del contenido y muestran solo los títulos de su tipo."
       }
     },
     "cv": {

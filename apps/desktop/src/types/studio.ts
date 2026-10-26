@@ -447,6 +447,7 @@ export type DocumentAlign = "left" | "center" | "right";
 export type DocumentCoverStyle = "classic" | "band" | "frame" | "minimal";
 
 export type DocumentHeadingNumbers = "none" | "plain" | "dotted";
+export type DocumentCaptionKind = "figure" | "table";
 export type DocumentGutterSide = "left" | "top";
 
 export type DocumentLayout = {
@@ -474,6 +475,10 @@ export type DocumentLayout = {
   toc: boolean;
   tocTitle: string;
   tocDepth: 1 | 2 | 3;
+  figureList: boolean;
+  figureListTitle: string;
+  tableList: boolean;
+  tableListTitle: string;
   cover: boolean;
   coverStyle: DocumentCoverStyle;
   title: string;

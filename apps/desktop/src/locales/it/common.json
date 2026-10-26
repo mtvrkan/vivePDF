@@ -9510,7 +9510,8 @@
           "position": "Posizione",
           "options": "Opzioni",
           "close": "Chiudi",
-          "headings": "Titoli"
+          "headings": "Titoli",
+          "captions": "Didascalie"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumenta dimensione",
@@ -9645,6 +9646,20 @@
       "furniture": {
         "pageNumber": "Numero di pagina",
         "notOnFirst": "{{name}} · nascosto nella prima pagina"
+      },
+      "caption": {
+        "insert": "Inserisci didascalia",
+        "figure": "Didascalia figura",
+        "table": "Didascalia tabella",
+        "figureLabel": "Figura",
+        "tableLabel": "Tabella",
+        "lists": "Indici di figure e tabelle",
+        "figureList": "Indice delle figure",
+        "tableList": "Indice delle tabelle",
+        "listTitles": "Titoli degli indici…",
+        "figureListTitle": "Titolo dell'indice delle figure",
+        "tableListTitle": "Titolo dell'indice delle tabelle",
+        "listsHint": "Gli indici seguono il sommario e mostrano solo le didascalie del loro tipo."
       }
     },
     "cv": {

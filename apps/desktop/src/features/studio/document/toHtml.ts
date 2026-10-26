@@ -1,5 +1,6 @@
 import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
+import { CAPTION, CaptionCounter, captionKind, captionLabel } from "./captionCounter";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
 import { HeadingCounter } from "./headingCounter";
@@ -41,6 +42,8 @@ class Writer {
   cited = 0;
   references: DocumentReferences | null;
   numbers: HeadingCounter;
+  captions = new CaptionCounter();
+  captionIds = 0;
   numbering = true;
   mainWritten = false;
 
@@ -241,6 +244,12 @@ function write(node: DocumentNode, writer: Writer): string {
       const number = writer.numbering ? writer.numbers.next(level) : null;
       return `<h${level} id="h-${writer.headings}"${blockStyle(node)}${direction(node)}>${number ? `${escapeHtml(number)} ` : ""}${children(node, writer)}</h${level}>`;
     }
+    case CAPTION: {
+      const kind = captionKind(attr(node, "kind"));
+      writer.captionIds += 1;
+      const label = captionLabel(attr(node, "label"), kind, writer.captions.next(kind));
+      return `<p id="c-${writer.captionIds}" class="caption" data-caption="${kind}"${direction(node)}><strong>${escapeHtml(label)}</strong> ${children(node, writer)}</p>`;
+    }
     case "hardBreak":
       return "<br>";
     case "bulletList":
@@ -308,6 +317,7 @@ const UNMARKED_BLOCKS = new Set([PAGE_BREAK, SECTION_BREAK]);
 
 function markedBlock(node: DocumentNode, markup: string, index: number, writer: Writer): { markup: string; id: string } {
   if (node.type === "heading") return { markup, id: `h-${writer.headings}` };
+  if (node.type === CAPTION) return { markup, id: `c-${writer.captionIds}` };
   if (UNMARKED_BLOCKS.has(node.type) || !OPENING_TAG.test(markup)) return { markup, id: "" };
   const id = `b-${index}`;
   return { markup: markup.replace(OPENING_TAG, `<$1 id="${id}"`), id };

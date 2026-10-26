@@ -221,4 +221,20 @@ describe("studio documents", () => {
     await expect(body().$("h2")).toHaveText("0.1 Next quarter");
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-main-matter.png"));
   });
+
+  it("adds a numbered figure caption from References and lists it in front of the text", async () => {
+    await body().$(":scope > p:last-of-type").click();
+    await $('[data-ribbon-tab="references"]').click();
+    await $('[data-testid="doc-caption"]').click();
+    await $(`//*[@role="menuitem"][normalize-space(.)="${t("studio.doc.caption.figure")}"]`).click();
+    await browser.keys("Sales by region");
+    await expect(body().$("p.vp-caption")).toHaveText(`${t("studio.doc.caption.figureLabel")} 1. Sales by region`);
+
+    await $('[data-testid="doc-caption-lists"]').click();
+    await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.caption.figureList")}"]`).click();
+    await $('[data-testid="doc-caption-lists"]').click();
+    await expect($(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.caption.figureList")}"]`)).toHaveAttribute("aria-checked", "true");
+    await browser.keys(ESCAPE);
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-caption.png"));
+  });
 });

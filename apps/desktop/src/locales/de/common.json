@@ -9510,7 +9510,8 @@
           "position": "Position",
           "options": "Optionen",
           "close": "Schließen",
-          "headings": "Überschriften"
+          "headings": "Überschriften",
+          "captions": "Beschriftungen"
         },
         "sizeDocument": "Dokument ({{size}})",
         "sizeUp": "Schrift vergrößern",
@@ -9645,6 +9646,20 @@
       "furniture": {
         "pageNumber": "Seitenzahl",
         "notOnFirst": "{{name}} · auf der ersten Seite ausgeblendet"
+      },
+      "caption": {
+        "insert": "Beschriftung einfügen",
+        "figure": "Abbildungsbeschriftung",
+        "table": "Tabellenbeschriftung",
+        "figureLabel": "Abbildung",
+        "tableLabel": "Tabelle",
+        "lists": "Abbildungs- und Tabellenverzeichnis",
+        "figureList": "Abbildungsverzeichnis",
+        "tableList": "Tabellenverzeichnis",
+        "listTitles": "Titel der Verzeichnisse…",
+        "figureListTitle": "Titel des Abbildungsverzeichnisses",
+        "tableListTitle": "Titel des Tabellenverzeichnisses",
+        "listsHint": "Die Verzeichnisse folgen auf das Inhaltsverzeichnis und zeigen nur Beschriftungen ihrer Art."
       }
     },
     "cv": {

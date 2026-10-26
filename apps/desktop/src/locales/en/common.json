@@ -9511,7 +9511,8 @@
           "position": "Position",
           "options": "Options",
           "close": "Close",
-          "headings": "Headings"
+          "headings": "Headings",
+          "captions": "Captions"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Increase font size",
@@ -9646,6 +9647,20 @@
       "furniture": {
         "pageNumber": "Page number",
         "notOnFirst": "{{name}} · not shown on the first page"
+      },
+      "caption": {
+        "insert": "Insert caption",
+        "figure": "Figure caption",
+        "table": "Table caption",
+        "figureLabel": "Figure",
+        "tableLabel": "Table",
+        "lists": "Figure & table lists",
+        "figureList": "List of figures",
+        "tableList": "List of tables",
+        "listTitles": "List titles…",
+        "figureListTitle": "Title of the list of figures",
+        "tableListTitle": "Title of the list of tables",
+        "listsHint": "The lists come after the contents and show only the captions of their kind."
       }
     },
     "cv": {

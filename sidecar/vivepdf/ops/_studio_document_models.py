@@ -52,6 +52,10 @@ class StudioDocumentSettings(RpcModel):
     toc: bool = False
     toc_title: str = Field(default="Contents", max_length=100)
     toc_depth: int = Field(default=2, ge=1, le=3)
+    figure_list: bool = False
+    figure_list_title: str = Field(default="List of figures", max_length=100)
+    table_list: bool = False
+    table_list_title: str = Field(default="List of tables", max_length=100)
     cover: bool = False
     cover_style: CoverLook = "classic"
     title: ShortText = ""

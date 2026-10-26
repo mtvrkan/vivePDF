@@ -84,6 +84,7 @@ import { DesignGroups } from "./DesignGroups";
 import { FurnitureGroups } from "./FurnitureGroups";
 import { useFurnitureEditing } from "./furnitureEditing";
 import { DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES, uniformMargin, uniformMargins } from "./model";
+import { CaptionGroup } from "./CaptionGroup";
 import { ContentsMenu, CoverMenu } from "./PagesMenus";
 import { SectionBreakMenu } from "./SectionBreakMenu";
 import { SourcesDialog } from "./SourcesDialog";
@@ -502,6 +503,7 @@ export function DocumentToolbar({
       <RibbonGroup label={t("studio.doc.ribbon.groups.contents")}>
         {settings ? <ContentsMenu settings={settings} /> : null}
       </RibbonGroup>
+      <CaptionGroup editor={editor} settings={settings} />
     </>
   );
 

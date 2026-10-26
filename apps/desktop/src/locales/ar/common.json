@@ -10397,7 +10397,8 @@
           "position": "الموضع",
           "options": "خيارات",
           "close": "إغلاق",
-          "headings": "العناوين"
+          "headings": "العناوين",
+          "captions": "التسميات التوضيحية"
         },
         "sizeDocument": "المستند ({{size}})",
         "sizeUp": "تكبير الخط",
@@ -10536,6 +10537,20 @@
       "furniture": {
         "pageNumber": "رقم الصفحة",
         "notOnFirst": "{{name}} · لا يظهر في الصفحة الأولى"
+      },
+      "caption": {
+        "insert": "إدراج تسمية توضيحية",
+        "figure": "تسمية شكل",
+        "table": "تسمية جدول",
+        "figureLabel": "شكل",
+        "tableLabel": "جدول",
+        "lists": "قوائم الأشكال والجداول",
+        "figureList": "قائمة الأشكال",
+        "tableList": "قائمة الجداول",
+        "listTitles": "عناوين القوائم…",
+        "figureListTitle": "عنوان قائمة الأشكال",
+        "tableListTitle": "عنوان قائمة الجداول",
+        "listsHint": "تأتي القوائم بعد المحتويات وتعرض التسميات من نوعها فقط."
       }
     },
     "cv": {

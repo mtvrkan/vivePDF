@@ -56,6 +56,11 @@ HEADING = re.compile(
     r"""<h([1-6])\b[^>]*?\sid\s*=\s*["'](h-\d+)["'][^>]*>(.*?)</h\1\s*>""",
     re.IGNORECASE | re.DOTALL,
 )
+CAPTION = re.compile(
+    r"""<p\b(?=[^>]*\sdata-caption\s*=\s*["'](figure|table)["'])"""
+    r"""(?=[^>]*\sid\s*=\s*["'](c-\d+)["'])[^>]*>(.*?)</p\s*>""",
+    re.IGNORECASE | re.DOTALL,
+)
 TAG = re.compile(r"<[^>]*>")
 SPACES = re.compile(r"\s+")
 VARIANTS = ((False, False), (True, False), (False, True), (True, True))
@@ -70,6 +75,13 @@ MIDDLE_DOT = chr(0x00B7)
 @dataclass
 class Heading:
     level: int
+    anchor: str
+    title: str
+
+
+@dataclass
+class Caption:
+    kind: str
     anchor: str
     title: str
 
@@ -205,15 +217,25 @@ def clean_html(source: str, image_count: int) -> str:
     return LINK.sub(_kept_link, body)
 
 
+def _plain(markup: str) -> str:
+    return SPACES.sub(" ", html.unescape(TAG.sub("", MARKER.sub("", markup)))).strip()
+
+
 def headings(body: str, depth: int) -> list[Heading]:
     found = []
     for match in HEADING.finditer(body):
         level = int(match.group(1))
-        text = TAG.sub("", MARKER.sub("", match.group(3)))
-        title = SPACES.sub(" ", html.unescape(text)).strip()
+        title = _plain(match.group(3))
         if level <= depth and title:
             found.append(Heading(level, match.group(2), title))
     return found
+
+
+def captions(body: str) -> list[Caption]:
+    return [
+        Caption(match.group(1).lower(), match.group(2), _plain(match.group(3)))
+        for match in CAPTION.finditer(body)
+    ]
 
 
 def _base_css(settings: StudioDocumentSettings, heading_font: bool) -> str:
@@ -262,29 +284,79 @@ def _base_css(settings: StudioDocumentSettings, heading_font: bool) -> str:
             ".toc-1 td{font-weight:bold;padding-top:4pt;}",
             ".toc-2 .toc-entry{margin-left:12pt;}",
             ".toc-3 .toc-entry{margin-left:24pt;}",
+            f".caption{{text-align:center;font-size:{size * 0.9:.1f}pt;"
+            f"margin:{size * 0.3:.1f}pt 0 {size * 0.8:.1f}pt 0;}}",
         ]
     )
 
 
-def _toc_html(
+def _listing(title: str, rows: str) -> str:
+    shown = html.escape(title.strip())
+    heading = f'<p class="toc-title">{shown}</p>' if shown else ""
+    return f'{heading}<table class="toc">{rows}</table>'
+
+
+def _row(level: str, anchor: str, title: str, page: str) -> str:
+    return (
+        f'<tr class="toc-{level}"><td><div class="toc-entry">'
+        f'<a href="#{anchor}">{html.escape(title)}</a></div></td>'
+        f'<td class="toc-page">{page}</td></tr>'
+    )
+
+
+def _wants_front(
+    settings: StudioDocumentSettings, entries: list[Heading], found: list[Caption]
+) -> bool:
+    kinds = {caption.kind for caption in found}
+    return bool(
+        (settings.toc and entries)
+        or (settings.figure_list and "figure" in kinds)
+        or (settings.table_list and "table" in kinds)
+    )
+
+
+def _front_html(
     settings: StudioDocumentSettings,
     entries: list[Heading],
+    found: list[Caption],
     pages: dict[str, int],
     offset: int,
     numbers: PageNumbering,
 ) -> str:
-    if not settings.toc or not entries:
-        return ""
-    rows = "".join(
-        f'<tr class="toc-{entry.level}"><td><div class="toc-entry">'
-        f'<a href="#{entry.anchor}">{html.escape(entry.title)}</a></div></td>'
-        f'<td class="toc-page">{_toc_page(entry.anchor, pages, offset, numbers)}</td></tr>'
-        for entry in entries
+    parts = []
+    if settings.toc and entries:
+        rows = "".join(
+            _row(
+                str(entry.level),
+                entry.anchor,
+                entry.title,
+                _toc_page(entry.anchor, pages, offset, numbers),
+            )
+            for entry in entries
+        )
+        parts.append(_listing(settings.toc_title, rows))
+    lists = (
+        ("figure", settings.figure_list, settings.figure_list_title),
+        ("table", settings.table_list, settings.table_list_title),
     )
-    title = html.escape(settings.toc_title.strip())
-    heading = f'<p class="toc-title">{title}</p>' if title else ""
+    for kind, wanted, title in lists:
+        listed = [caption for caption in found if caption.kind == kind]
+        if wanted and listed:
+            rows = "".join(
+                _row(
+                    "caption",
+                    caption.anchor,
+                    caption.title,
+                    _toc_page(caption.anchor, pages, offset, numbers),
+                )
+                for caption in listed
+            )
+            parts.append(_listing(title, rows))
+    if not parts:
+        return ""
     return (
-        f'{heading}<table class="toc">{rows}</table><div class="page-break" id="{TOC_END}"></div>'
+        '<div class="page-break"></div>'.join(parts)
+        + f'<div class="page-break" id="{TOC_END}"></div>'
     )
 
 
@@ -428,6 +500,7 @@ def layout_document(
     if not body.strip():
         body = "<p></p>"
     entries = headings(body, settings.toc_depth)
+    found = captions(body)
     outline = headings(body, 3)
     title = content.title.strip() or (outline[0].title if outline else "")
     cover = settings.cover
@@ -443,7 +516,7 @@ def layout_document(
         flowing,
     )
 
-    initial = Plan(1 if settings.toc and entries else 0)
+    initial = Plan(1 if _wants_front(settings, entries, found) else 0)
 
     def story(text: str) -> pymupdf.Story:
         return pymupdf.Story(text, user_css=css, archive=archive)
@@ -457,7 +530,7 @@ def layout_document(
             }
             main_page = pages.get(main_anchor) if main_anchor else None
             numbers = numbering(settings.page_number_start, main_page, offset)
-            return _toc_html(settings, entries, pages, offset, numbers) + main
+            return _front_html(settings, entries, found, pages, offset, numbers) + main
 
         return written
 
