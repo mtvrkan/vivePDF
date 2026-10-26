@@ -291,6 +291,7 @@ export function shownItemOf(entry: BibEntry): CslItem {
     const names = item[role];
     if (Array.isArray(names)) item[role] = names.map((name: CslName) => shownName(name, turkish));
   }
+  if (turkish && !item.language) item.language = "tr";
   return item;
 }
 

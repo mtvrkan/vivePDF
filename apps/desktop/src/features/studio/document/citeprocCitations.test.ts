@@ -203,6 +203,14 @@ describe("Turkish reference lists", () => {
     expect(readable(citations.references[0])).toBe("Hastie, T. (2009). <i>The Elements of Statistical Learning</i>. Springer.");
   });
 
+  it("keeps a Turkish title as typed when an English citation quotes it for a source without authors", async () => {
+    const sources = library("@inproceedings{icmar, title={Derin öğrenme ile gül yaprağı tespiti}, booktitle={ICMAR 2023}, year={2023}}");
+
+    const citations = await buildCitations(doc(cite(item("icmar"))), sources, "apa", "en-US");
+
+    expect(citations.label([item("icmar")]).text).toBe("(“Derin öğrenme ile gül yaprağı tespiti,” 2023)");
+  });
+
   it("sorts the reference list in Turkish alphabetical order", async () => {
     const names = ["Şahin", "Ünal", "Cengiz", "İnce", "Öztürk", "Işık", "Çelik", "Uslu", "Ozan", "Sarı", "Ilgaz"];
     const sources: BibEntry[] = names.map((family, index) => ({ key: `k${index}`, type: "article", fields: { title: `Başlık ${index}`, journal: "Dergi", year: "2020" }, authors: [{ family, given: "Ali" }], editors: [] }));
