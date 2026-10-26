@@ -277,4 +277,25 @@ describe("studio documents", () => {
     await expect(body().$(".vp-eqref")).toHaveAttribute("data-number", "(1)");
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-equation.png"));
   });
+
+  it("adds a comment from Review, replies to it and marks it resolved", async () => {
+    await body().$(":scope > p:first-of-type").doubleClick();
+    await $('[data-ribbon-tab="review"]').click();
+    await $('[data-testid="doc-comment-new"]').click();
+    const draft = $('[data-testid="comment-draft-text"]');
+    await draft.waitForDisplayed();
+    const name = $(`[data-testid="comment-draft"] input[aria-label="${t("studio.doc.comments.authorLabel")}"]`);
+    if (await name.isExisting()) await typeInto(name, "Esma");
+    await typeInto(draft, "Check this figure");
+    await clickButton(t("studio.doc.comments.post"));
+    await expect(body().$(".vp-comment")).toBeDisplayed();
+    await expect($('[data-testid="comment-card"]')).toHaveText(expect.stringContaining("Check this figure"));
+
+    await typeInto($('[data-testid="comment-reply-text"]'), "Fixed");
+    await clickButton(t("studio.doc.comments.send"));
+    await $('[data-testid="comment-resolve"]').click();
+    await expect($('[data-testid="comment-card"]')).toHaveText(expect.stringContaining(t("studio.doc.comments.resolved")));
+    await expect($('[data-testid="document-comment-count"]')).toHaveText(t("studio.doc.comments.allResolved"));
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-comment.png"));
+  });
 });

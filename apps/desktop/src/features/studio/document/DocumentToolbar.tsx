@@ -88,6 +88,7 @@ import { useFurnitureEditing } from "./furnitureEditing";
 import { DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES, uniformMargin, uniformMargins } from "./model";
 import { CaptionGroup } from "./CaptionGroup";
 import { ContentsMenu, CoverMenu, ThesisRulesMenu } from "./PagesMenus";
+import { ReviewGroups } from "./ReviewGroups";
 import { SectionBreakMenu } from "./SectionBreakMenu";
 import { SourcesDialog } from "./SourcesDialog";
 import { SpacingMenu } from "./SpacingMenu";
@@ -99,7 +100,7 @@ const SIZES = ["8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "
 const HIGHLIGHTS = ["#fef08a", "#bbf7d0", "#bfdbfe", "#fbcfe8", "#fed7aa", "#e5e7eb"];
 const DEFAULT_TEXT = "#1a1a1a";
 const MARGINS = [15, 20, 25, 30];
-const RIBBON_TABS = ["home", "insert", "design", "layout", "references", "view"] as const;
+const RIBBON_TABS = ["home", "insert", "design", "layout", "references", "review", "view"] as const;
 const GALLERY = ["paragraph", "h1", "h2", "h3", "h4", "quote"] as const;
 const GALLERY_LOOK: Record<(typeof GALLERY)[number], string> = {
   paragraph: "text-xs",
@@ -557,8 +558,9 @@ export function DocumentToolbar({
   );
 
   const design = settings ? <DesignGroups settings={settings} /> : null;
+  const review = <ReviewGroups editor={editor} />;
   const furnitureTab = settings ? <FurnitureGroups settings={settings} numberItems={numberItems} onClose={closeFurniture} /> : null;
-  const panels: Record<RibbonTabId, ReactNode> = { home, insert, design, layout, references, view, table, furniture: furnitureTab };
+  const panels: Record<RibbonTabId, ReactNode> = { home, insert, design, layout, references, review, view, table, furniture: furnitureTab };
 
   return (
     <>

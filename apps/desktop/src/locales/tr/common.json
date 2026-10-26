@@ -9506,7 +9506,8 @@
           "table": "Tablo",
           "view": "Görünüm",
           "design": "Tasarım",
-          "furniture": "Üstbilgi ve altbilgi"
+          "furniture": "Üstbilgi ve altbilgi",
+          "review": "İncele"
         },
         "groups": {
           "history": "Geri al",
@@ -9538,7 +9539,9 @@
           "options": "Seçenekler",
           "close": "Kapat",
           "headings": "Başlıklar",
-          "captions": "Resim yazıları"
+          "captions": "Resim yazıları",
+          "comments": "Yorumlar",
+          "commentView": "Göster"
         },
         "sizeDocument": "Belge ({{size}})",
         "sizeUp": "Yazıyı büyüt",
@@ -9708,6 +9711,42 @@
         "editTitle": "Denklemi düzenle",
         "tooLarge": "Bu denklem çok büyük; daha kısa bir denklem yazın.",
         "tooMany": "Bir belgede en fazla {{count}} denklem olabilir."
+      },
+      "comments": {
+        "title": "Yorumlar",
+        "new": "Yeni yorum",
+        "previous": "Önceki",
+        "next": "Sonraki",
+        "removeMenu": "Sil",
+        "removeThis": "Bu yorumu sil",
+        "removeResolved": "Çözülen yorumları sil",
+        "removeAll": "Tüm yorumları sil",
+        "show": "Yorumları göster",
+        "yourName": "Adınız",
+        "authorTitle": "Yorumlardaki adınız",
+        "authorLabel": "Ad",
+        "authorHint": "Bundan sonra yazdığınız yorum ve yanıtlarda görünür.",
+        "authorPlaceholder": "Adınızı yazın",
+        "anonymous": "Adsız",
+        "placeholder": "Yorum yazın…",
+        "post": "Gönder",
+        "cardLabel": "{{author}} yorumu",
+        "reopen": "Yeniden aç",
+        "resolve": "Çözüldü olarak işaretle",
+        "resolved": "Çözüldü",
+        "edit": "Düzenle",
+        "remove": "Yorumu sil",
+        "save": "Kaydet",
+        "reply": "Yanıtla…",
+        "send": "Yanıtla",
+        "allResolved": "Tüm yorumlar çözüldü",
+        "selectFirst": "Yorum eklemek için metin seçin ya da imleci bir sözcüğün içine koyun.",
+        "tooMany": "Bir belgede en fazla {{limit}} yorum olabilir.",
+        "tooManyReplies": "Bir yoruma en fazla {{limit}} yanıt yazılabilir.",
+        "replies_one": "{{count}} yanıt",
+        "replies_other": "{{count}} yanıt",
+        "openCount_one": "{{count}} açık yorum",
+        "openCount_other": "{{count}} açık yorum"
       }
     },
     "cv": {

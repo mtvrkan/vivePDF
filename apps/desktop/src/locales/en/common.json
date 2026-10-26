@@ -9506,7 +9506,8 @@
           "table": "Table",
           "view": "View",
           "design": "Design",
-          "furniture": "Header & footer"
+          "furniture": "Header & footer",
+          "review": "Review"
         },
         "groups": {
           "history": "Undo",
@@ -9538,7 +9539,9 @@
           "options": "Options",
           "close": "Close",
           "headings": "Headings",
-          "captions": "Captions"
+          "captions": "Captions",
+          "comments": "Comments",
+          "commentView": "Show"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Increase font size",
@@ -9708,6 +9711,42 @@
         "editTitle": "Edit equation",
         "tooLarge": "This equation is too large; write a shorter one.",
         "tooMany": "A document can hold at most {{count}} equations."
+      },
+      "comments": {
+        "title": "Comments",
+        "new": "New comment",
+        "previous": "Previous",
+        "next": "Next",
+        "removeMenu": "Delete",
+        "removeThis": "Delete this comment",
+        "removeResolved": "Delete resolved comments",
+        "removeAll": "Delete all comments",
+        "show": "Show comments",
+        "yourName": "Your name",
+        "authorTitle": "Your name on comments",
+        "authorLabel": "Name",
+        "authorHint": "Shown on the comments and replies you write from now on.",
+        "authorPlaceholder": "Type your name",
+        "anonymous": "Anonymous",
+        "placeholder": "Write a comment…",
+        "post": "Post",
+        "cardLabel": "Comment by {{author}}",
+        "reopen": "Reopen",
+        "resolve": "Mark as resolved",
+        "resolved": "Resolved",
+        "edit": "Edit",
+        "remove": "Delete comment",
+        "save": "Save",
+        "reply": "Reply…",
+        "send": "Reply",
+        "allResolved": "All comments resolved",
+        "selectFirst": "Select some text, or put the cursor in a word, to add a comment.",
+        "tooMany": "A document can hold up to {{limit}} comments.",
+        "tooManyReplies": "A comment can hold up to {{limit}} replies.",
+        "replies_one": "{{count}} reply",
+        "replies_other": "{{count}} replies",
+        "openCount_one": "{{count}} open comment",
+        "openCount_other": "{{count}} open comments"
       }
     },
     "cv": {

@@ -478,11 +478,17 @@ def test_a_document_file_round_trips_and_refuses_other_files(tmp_path: Path):
     other = tmp_path / "other.vivedoc"
     other.write_text(json.dumps({"kind": "design"}), "utf-8")
     newer = tmp_path / "newer.vivedoc"
-    newer.write_text(json.dumps({"kind": "document", "version": 5}), "utf-8")
+    newer.write_text(json.dumps({"kind": "document", "version": 6}), "utf-8")
     rich = tmp_path / "rich.vivedoc"
     rich.write_text(json.dumps({**document, "version": 3}), "utf-8")
     maths = tmp_path / "maths.vivedoc"
     maths.write_text(json.dumps({**document, "version": 4}), "utf-8")
+    reviewed = tmp_path / "reviewed.vivedoc"
+    thread = {"id": "c-1", "author": "Esma", "createdAt": "2026-10-26T09:00:00Z", "text": "Kaynak?"}
+    thread |= {"resolved": False, "replies": []}
+    reviewed_content = {"type": "doc", "attrs": {"comments": [thread]}}
+    reviewed_file = {**document, "version": 5, "content": reviewed_content}
+    reviewed.write_text(json.dumps(reviewed_file), "utf-8")
 
     opened = open_studio_document(StudioDocumentOpenParams(path=saved.output), silent_progress())
 
@@ -500,6 +506,8 @@ def test_a_document_file_round_trips_and_refuses_other_files(tmp_path: Path):
         ]
         == 4
     )
+    reopened = open_studio_document(StudioDocumentOpenParams(path=str(reviewed)), silent_progress())
+    assert reopened.document["content"] == reviewed_content
     for path, reason in ((other, "noDocument"), (newer, "newerDocument")):
         with pytest.raises(OpError) as caught:
             open_studio_document(StudioDocumentOpenParams(path=str(path)), silent_progress())

@@ -165,15 +165,16 @@ export function RibbonButton({ icon: Icon, label, onClick, shortcut, active = fa
   );
 }
 
-export function RibbonSmallButton({ icon: Icon, label, onClick, shortcut, testId, active }: { icon: LucideIcon; label: string; onClick: () => void; shortcut?: string; testId?: string; active?: boolean }) {
+export function RibbonSmallButton({ icon: Icon, label, onClick, shortcut, testId, active, disabled = false }: { icon: LucideIcon; label: string; onClick: () => void; shortcut?: string; testId?: string; active?: boolean; disabled?: boolean }) {
   return (
     <button
       type="button"
       title={shortcut ? `${label} (${shortcutLabel(shortcut)})` : label}
       data-testid={testId}
       aria-pressed={active}
+      disabled={disabled}
       onClick={onClick}
-      className={cn("nav-glass inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs text-foreground/85 hover:text-foreground", active && "glass-chip text-primary")}
+      className={cn("nav-glass inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs text-foreground/85 hover:text-foreground disabled:pointer-events-none disabled:opacity-40", active && "glass-chip text-primary")}
     >
       <Icon className="size-4" aria-hidden />
       {label}

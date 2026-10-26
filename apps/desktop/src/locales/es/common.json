@@ -9505,7 +9505,8 @@
           "table": "Tabla",
           "view": "Vista",
           "design": "Diseño de documento",
-          "furniture": "Encabezado y pie"
+          "furniture": "Encabezado y pie",
+          "review": "Revisar"
         },
         "groups": {
           "history": "Deshacer",
@@ -9537,7 +9538,9 @@
           "options": "Opciones",
           "close": "Cerrar",
           "headings": "Títulos",
-          "captions": "Títulos"
+          "captions": "Títulos",
+          "comments": "Comentarios",
+          "commentView": "Mostrar"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar tamaño",
@@ -9707,6 +9710,44 @@
         "editTitle": "Editar ecuación",
         "tooLarge": "Esta ecuación es demasiado grande; escriba una más corta.",
         "tooMany": "Un documento puede tener como máximo {{count}} ecuaciones."
+      },
+      "comments": {
+        "title": "Comentarios",
+        "new": "Nuevo comentario",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "removeMenu": "Eliminar",
+        "removeThis": "Eliminar este comentario",
+        "removeResolved": "Eliminar comentarios resueltos",
+        "removeAll": "Eliminar todos los comentarios",
+        "show": "Mostrar comentarios",
+        "yourName": "Tu nombre",
+        "authorTitle": "Tu nombre en los comentarios",
+        "authorLabel": "Nombre",
+        "authorHint": "Aparece en los comentarios y respuestas que escribas a partir de ahora.",
+        "authorPlaceholder": "Escribe tu nombre",
+        "anonymous": "Anónimo",
+        "placeholder": "Escribe un comentario…",
+        "post": "Publicar",
+        "cardLabel": "Comentario de {{author}}",
+        "reopen": "Reabrir",
+        "resolve": "Marcar como resuelto",
+        "resolved": "Resuelto",
+        "edit": "Editar",
+        "remove": "Eliminar comentario",
+        "save": "Guardar",
+        "reply": "Responder…",
+        "send": "Responder",
+        "allResolved": "Todos los comentarios resueltos",
+        "selectFirst": "Selecciona texto o coloca el cursor en una palabra para añadir un comentario.",
+        "tooMany": "Un documento admite hasta {{limit}} comentarios.",
+        "tooManyReplies": "Un comentario admite hasta {{limit}} respuestas.",
+        "replies_one": "{{count}} respuesta",
+        "replies_many": "{{count}} respuestas",
+        "replies_other": "{{count}} respuestas",
+        "openCount_one": "{{count}} comentario abierto",
+        "openCount_many": "{{count}} comentarios abiertos",
+        "openCount_other": "{{count}} comentarios abiertos"
       }
     },
     "cv": {

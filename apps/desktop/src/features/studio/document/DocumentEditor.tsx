@@ -9,6 +9,9 @@ import { cn } from "@/shared/lib/cn";
 import { basenameOf } from "@/shared/lib/paths";
 import { shortcutLetter } from "@/shared/lib/shortcutKeys";
 import type { DocumentNode } from "@/types/studio";
+import { COMMENT_LANE_GAP, COMMENT_LANE_WIDTH, CommentLane } from "./CommentLane";
+import { useCommentLaneOpen } from "./useComments";
+import { useCommentsView } from "./commentsView";
 import { DocumentExportDialog } from "./DocumentExportDialog";
 import { DocumentFindBar, type DocumentFindMode } from "./DocumentFindBar";
 import { EquationDialogHost } from "./EquationDialogHost";
@@ -139,7 +142,7 @@ function useShortcuts(onExport: () => void, onFind: (replace: boolean) => void) 
   }, []);
 }
 
-function usePaperZoom(size: { width: number; height: number }, mode: DocumentZoom) {
+function usePaperZoom(size: { width: number; height: number }, mode: DocumentZoom, reserve: number) {
   const host = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState({ width: 1, page: 1 });
   useLayoutEffect(() => {
@@ -147,14 +150,14 @@ function usePaperZoom(size: { width: number; height: number }, mode: DocumentZoo
     if (!node) return;
     const measure = () =>
       setFit({
-        width: Math.min(MAX_FIT, Math.max(MIN_ZOOM, (node.clientWidth - PAPER_GUTTER) / (size.width * PX_PER_PT))),
+        width: Math.min(MAX_FIT, Math.max(MIN_ZOOM, (node.clientWidth - PAPER_GUTTER - reserve) / (size.width * PX_PER_PT))),
         page: Math.min(MAX_FIT, Math.max(MIN_ZOOM, (node.clientHeight - PAPER_GUTTER) / (size.height * PX_PER_PT))),
       });
     measure();
     const observer = new ResizeObserver(measure);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [size.width, size.height]);
+  }, [size.width, size.height, reserve]);
   const zoom = mode === "width" ? fit.width : mode === "page" ? Math.min(fit.page, fit.width) : mode / 100;
   return { host, zoom };
 }
@@ -168,6 +171,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   const showRuler = useDocumentViewStore((state) => state.ruler);
   const darkPage = useDocumentViewStore((state) => state.darkPage);
   const showNavigation = useDocumentViewStore((state) => state.navigation);
+  const commentsShown = useCommentsView((state) => state.shown);
   const paper = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<PageLine[]>([]);
   const layout = useDocumentLayout(language);
@@ -217,7 +221,8 @@ export default function DocumentEditor({ language }: { language: string }) {
   }, [settings]);
 
   const size = settings ? pageSize(settings) : { width: 595, height: 842 };
-  const { host, zoom } = usePaperZoom(size, zoomMode);
+  const laneOpen = useCommentLaneOpen(editor);
+  const { host, zoom } = usePaperZoom(size, zoomMode, laneOpen ? COMMENT_LANE_WIDTH + COMMENT_LANE_GAP : 0);
   if (!settings) return null;
   const inset = contentInsets(settings);
   const sheetPage = (layout.preview && firstPage(layout.preview)) || 1;
@@ -244,10 +249,13 @@ export default function DocumentEditor({ language }: { language: string }) {
         <div className="relative flex min-w-0 flex-1 flex-col">
           <div className="flex min-h-0 flex-1">
             <div ref={host} className="min-h-0 min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
-              <div ref={paper} className={cn("paper-surface vp-doc relative mx-auto bg-white shadow-md", darkPage && "paper-dark")} style={paperStyle} data-dark-page={darkPage || undefined} data-testid="document-paper">
-                <EditorContent editor={editor} className={furnitureEditing ? "opacity-50 transition-opacity duration-(--transition-base)" : "transition-opacity duration-(--transition-base)"} />
-                {editor ? <SheetFurniture settings={settings} inset={inset} page={sheetPage} label={pageLabels?.[sheetPage - 1] ?? String(sheetPage)} last={pageLabels?.at(-1) ?? String(layout.preview?.pageCount ?? 1)} onLeave={() => editor.commands.focus()} /> : null}
-                {editor && showPageLines ? <PageLines editor={editor} laid={layout.preview} paper={paper} zoom={zoom} onLines={setLines} /> : null}
+              <div className="mx-auto flex w-max items-stretch" style={{ gap: COMMENT_LANE_GAP }}>
+                <div ref={paper} className={cn("paper-surface vp-doc relative bg-white shadow-md", darkPage && "paper-dark", !commentsShown && "vp-comments-hidden")} style={paperStyle} data-dark-page={darkPage || undefined} data-testid="document-paper">
+                  <EditorContent editor={editor} className={furnitureEditing ? "opacity-50 transition-opacity duration-(--transition-base)" : "transition-opacity duration-(--transition-base)"} />
+                  {editor ? <SheetFurniture settings={settings} inset={inset} page={sheetPage} label={pageLabels?.[sheetPage - 1] ?? String(sheetPage)} last={pageLabels?.at(-1) ?? String(layout.preview?.pageCount ?? 1)} onLeave={() => editor.commands.focus()} /> : null}
+                  {editor && showPageLines ? <PageLines editor={editor} laid={layout.preview} paper={paper} zoom={zoom} onLines={setLines} /> : null}
+                </div>
+                {editor && laneOpen ? <CommentLane editor={editor} paper={paper} /> : null}
               </div>
             </div>
             {editor && showRuler ? <VerticalRuler editor={editor} settings={settings} size={size} paper={paper} host={host} laid={layout.preview} lines={showPageLines ? lines : null} zoom={zoom} /> : null}

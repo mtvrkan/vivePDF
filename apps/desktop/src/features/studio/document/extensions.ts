@@ -12,6 +12,7 @@ import StarterKit from "@tiptap/starter-kit";
 import { Caption } from "./captionNode";
 import { citationNodes, type CitationSource } from "./citationNodes";
 import { fontStack } from "./documentFonts";
+import { commentExtensions } from "./commentMark";
 import { equationNodes } from "./equationNodes";
 import { DocumentFind } from "./findInDocument";
 import { Footnote } from "./footnoteNode";
@@ -158,6 +159,7 @@ export function documentExtensions(placeholder: string, citations: CitationSourc
     sectionLabel ? SectionBreak.configure({ label: sectionLabel }) : SectionBreak,
     Footnote,
     ...equationNodes(),
+    ...commentExtensions(),
     ...citationNodes(citations),
     Placeholder.configure({ placeholder }),
   ];

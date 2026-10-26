@@ -439,7 +439,7 @@ export const STUDIO_PROJECT_EXTENSION = "vivedesign";
 
 export const STUDIO_DOCUMENT_EXTENSION = "vivedoc";
 export const SOURCE_LIBRARY_EXTENSIONS = ["bib", "bibtex", "ris"];
-export const STUDIO_DOCUMENT_VERSION = 4;
+export const STUDIO_DOCUMENT_VERSION = 5;
 
 export type DocumentPaper = "a4" | "a5" | "b5" | "letter" | "legal";
 export type DocumentPageNumbers = "none" | "center" | "right" | "outside";

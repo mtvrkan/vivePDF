@@ -1,9 +1,12 @@
 import type { RefObject } from "react";
-import { Minus, Plus } from "lucide-react";
+import { MessageSquare, Minus, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useEditorState, type Editor } from "@tiptap/react";
 import { IconButton } from "@/components/shared/IconButton";
 import { Select } from "@/components/shared/Select";
+import { useCommentState } from "./useComments";
+import { openCount } from "./comments";
+import { useCommentsView } from "./commentsView";
 import { steppedZoom, useDocumentViewStore, ZOOM_STEPS, zoomPercent, type DocumentZoom } from "./documentView";
 import { currentPage, type PageLine } from "./pageBreaks";
 import type { DocumentLayout } from "./useDocumentLayout";
@@ -26,6 +29,28 @@ function PageCount({ editor, layout, zoom, lines, paper }: Omit<StatusBarProps, 
   );
 }
 
+function CommentCount({ editor }: { editor: Editor }) {
+  const { t } = useTranslation();
+  const { threads } = useCommentState(editor);
+  const shown = useCommentsView((state) => state.shown);
+  const setShown = useCommentsView((state) => state.setShown);
+  if (threads.length === 0) return null;
+  const open = openCount(threads);
+  return (
+    <button
+      type="button"
+      aria-pressed={shown}
+      title={t("studio.doc.comments.show")}
+      onClick={() => setShown(!shown)}
+      className="flex h-6 items-center gap-1.5 rounded-md px-1.5 tabular-nums hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+      data-testid="document-comment-count"
+    >
+      <MessageSquare className="size-3.5" aria-hidden />
+      {open > 0 ? t("studio.doc.comments.openCount", { count: open }) : t("studio.doc.comments.allResolved")}
+    </button>
+  );
+}
+
 export function DocumentStatusBar({ editor, language, layout, zoom, lines, paper }: StatusBarProps) {
   const { t } = useTranslation();
   const mode = useDocumentViewStore((state) => state.zoom);
@@ -41,6 +66,7 @@ export function DocumentStatusBar({ editor, language, layout, zoom, lines, paper
     <footer aria-label={t("studio.doc.status.label")} className="glass flex h-8 shrink-0 items-center gap-4 border-t border-border/60 px-3 text-xs text-muted-foreground" data-testid="document-status">
       <PageCount editor={editor} layout={layout} zoom={zoom} lines={lines} paper={paper} />
       <WordCount editor={editor} language={language} />
+      <CommentCount editor={editor} />
       <span className="ms-auto flex items-center gap-1">
         <IconButton icon={Minus} label={t("studio.doc.zoom.out")} disabled={percent <= ZOOM_STEPS[0]} onClick={() => setZoom(steppedZoom(zoom, -1))} />
         <input

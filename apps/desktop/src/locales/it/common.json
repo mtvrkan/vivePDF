@@ -9505,7 +9505,8 @@
           "table": "Tabella",
           "view": "Visualizza",
           "design": "Progettazione",
-          "furniture": "Intestazione e piè di pagina"
+          "furniture": "Intestazione e piè di pagina",
+          "review": "Revisione"
         },
         "groups": {
           "history": "Annulla",
@@ -9537,7 +9538,9 @@
           "options": "Opzioni",
           "close": "Chiudi",
           "headings": "Titoli",
-          "captions": "Didascalie"
+          "captions": "Didascalie",
+          "comments": "Commenti",
+          "commentView": "Mostra"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumenta dimensione",
@@ -9707,6 +9710,44 @@
         "editTitle": "Modifica equazione",
         "tooLarge": "Questa equazione è troppo grande; scrivine una più breve.",
         "tooMany": "Un documento può contenere al massimo {{count}} equazioni."
+      },
+      "comments": {
+        "title": "Commenti",
+        "new": "Nuovo commento",
+        "previous": "Precedente",
+        "next": "Successivo",
+        "removeMenu": "Elimina",
+        "removeThis": "Elimina questo commento",
+        "removeResolved": "Elimina i commenti risolti",
+        "removeAll": "Elimina tutti i commenti",
+        "show": "Mostra commenti",
+        "yourName": "Il tuo nome",
+        "authorTitle": "Il tuo nome nei commenti",
+        "authorLabel": "Nome",
+        "authorHint": "Compare d’ora in poi nei commenti e nelle risposte che scrivi.",
+        "authorPlaceholder": "Scrivi il tuo nome",
+        "anonymous": "Anonimo",
+        "placeholder": "Scrivi un commento…",
+        "post": "Pubblica",
+        "cardLabel": "Commento di {{author}}",
+        "reopen": "Riapri",
+        "resolve": "Segna come risolto",
+        "resolved": "Risolto",
+        "edit": "Modifica",
+        "remove": "Elimina commento",
+        "save": "Salva",
+        "reply": "Rispondi…",
+        "send": "Rispondi",
+        "allResolved": "Tutti i commenti risolti",
+        "selectFirst": "Seleziona del testo o metti il cursore in una parola per aggiungere un commento.",
+        "tooMany": "Un documento può contenere al massimo {{limit}} commenti.",
+        "tooManyReplies": "Un commento può avere al massimo {{limit}} risposte.",
+        "replies_one": "{{count}} risposta",
+        "replies_many": "{{count}} risposte",
+        "replies_other": "{{count}} risposte",
+        "openCount_one": "{{count}} commento aperto",
+        "openCount_many": "{{count}} commenti aperti",
+        "openCount_other": "{{count}} commenti aperti"
       }
     },
     "cv": {

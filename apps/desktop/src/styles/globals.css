@@ -1011,6 +1011,22 @@
   .vp-doc :is(.vp-eq, .vp-eq-block) {
     cursor: default;
   }
+  .vp-doc .vp-comment {
+    background-color: color-mix(in oklab, var(--color-primary) 13%, transparent);
+    border-bottom: 1px solid color-mix(in oklab, var(--color-primary) 45%, transparent);
+  }
+  .vp-doc .vp-comment-active,
+  .vp-doc .vp-comment-draft {
+    background-color: color-mix(in oklab, var(--color-primary) 28%, transparent);
+    border-bottom-color: var(--color-primary);
+  }
+  .vp-doc .vp-comment-draft {
+    border-bottom: 1px dashed var(--color-primary);
+  }
+  .vp-doc.vp-comments-hidden :is(.vp-comment, .vp-comment-active) {
+    background-color: transparent;
+    border-bottom: 0;
+  }
   .vp-doc .vp-heading-number {
     white-space: pre;
     user-select: none;

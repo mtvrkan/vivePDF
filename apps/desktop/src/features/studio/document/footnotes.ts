@@ -1,6 +1,7 @@
 import type { DocumentNode } from "@/types/studio";
 import { citationItems, type CitationItem } from "./citationItems";
 import { hasSectionBreaks } from "./sections";
+import { COMMENT_VERSION, hasComments } from "./comments";
 import { EQUATION_VERSION, hasEquations } from "./equations";
 
 export const FOOTNOTE = "footnote";
@@ -70,6 +71,7 @@ function hasRichFootnotes(node: DocumentNode | string): boolean {
 }
 
 export function fileVersion(content: DocumentNode | string): number {
+  if (hasComments(content)) return COMMENT_VERSION;
   if (hasEquations(content)) return EQUATION_VERSION;
   if (hasRichFootnotes(content)) return RICH_FOOTNOTE_VERSION;
   return hasFootnotes(content) || hasSectionBreaks(content) ? FOOTNOTE_VERSION : BASE_VERSION;

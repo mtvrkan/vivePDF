@@ -9505,7 +9505,8 @@
           "table": "Tabelle",
           "view": "Ansicht",
           "design": "Entwurf",
-          "furniture": "Kopf- und Fußzeile"
+          "furniture": "Kopf- und Fußzeile",
+          "review": "Überprüfen"
         },
         "groups": {
           "history": "Rückgängig",
@@ -9537,7 +9538,9 @@
           "options": "Optionen",
           "close": "Schließen",
           "headings": "Überschriften",
-          "captions": "Beschriftungen"
+          "captions": "Beschriftungen",
+          "comments": "Kommentare",
+          "commentView": "Anzeigen"
         },
         "sizeDocument": "Dokument ({{size}})",
         "sizeUp": "Schrift vergrößern",
@@ -9707,6 +9710,42 @@
         "editTitle": "Formel bearbeiten",
         "tooLarge": "Diese Formel ist zu groß; schreiben Sie eine kürzere.",
         "tooMany": "Ein Dokument kann höchstens {{count}} Formeln enthalten."
+      },
+      "comments": {
+        "title": "Kommentare",
+        "new": "Neuer Kommentar",
+        "previous": "Vorheriger",
+        "next": "Nächster",
+        "removeMenu": "Löschen",
+        "removeThis": "Diesen Kommentar löschen",
+        "removeResolved": "Erledigte Kommentare löschen",
+        "removeAll": "Alle Kommentare löschen",
+        "show": "Kommentare anzeigen",
+        "yourName": "Ihr Name",
+        "authorTitle": "Ihr Name in Kommentaren",
+        "authorLabel": "Name",
+        "authorHint": "Erscheint ab jetzt bei Ihren Kommentaren und Antworten.",
+        "authorPlaceholder": "Namen eingeben",
+        "anonymous": "Anonym",
+        "placeholder": "Kommentar schreiben…",
+        "post": "Senden",
+        "cardLabel": "Kommentar von {{author}}",
+        "reopen": "Wieder öffnen",
+        "resolve": "Als erledigt markieren",
+        "resolved": "Erledigt",
+        "edit": "Bearbeiten",
+        "remove": "Kommentar löschen",
+        "save": "Speichern",
+        "reply": "Antworten…",
+        "send": "Antworten",
+        "allResolved": "Alle Kommentare erledigt",
+        "selectFirst": "Markieren Sie Text oder setzen Sie den Cursor in ein Wort, um einen Kommentar hinzuzufügen.",
+        "tooMany": "Ein Dokument kann höchstens {{limit}} Kommentare enthalten.",
+        "tooManyReplies": "Ein Kommentar kann höchstens {{limit}} Antworten haben.",
+        "replies_one": "{{count}} Antwort",
+        "replies_other": "{{count}} Antworten",
+        "openCount_one": "{{count}} offener Kommentar",
+        "openCount_other": "{{count}} offene Kommentare"
       }
     },
     "cv": {

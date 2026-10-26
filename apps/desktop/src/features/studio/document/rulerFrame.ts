@@ -79,7 +79,7 @@ export function useRulerFrame(editor: Editor, paper: RefObject<HTMLElement | nul
     window.addEventListener("resize", schedule);
     editor.on("transaction", schedule);
     const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(schedule);
-    for (const element of [paper.current, scroller, own.current]) if (element) observer?.observe(element);
+    for (const element of [paper.current, paper.current?.parentElement, scroller, own.current]) if (element) observer?.observe(element);
     return () => {
       if (request) cancelAnimationFrame(request);
       scroller?.removeEventListener("scroll", schedule);
