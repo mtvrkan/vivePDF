@@ -17,7 +17,7 @@ import { refuseWhenOffline } from "@/shared/lib/offline";
 const DEFAULT_FONT = "bundled:dejavu-sans";
 const SEPARATOR = "__group__";
 
-export function FontPicker({ value, onChange, disabled }: { value: string; onChange: (value: string) => void; disabled?: boolean }) {
+export function FontPicker({ value, onChange, disabled, compact = false }: { value: string; onChange: (value: string) => void; disabled?: boolean; compact?: boolean }) {
   const { t } = useTranslation();
   const toast = useToastStore((state) => state.push);
   const [fonts, setFonts] = useState<FontChoice[]>([]);
@@ -122,10 +122,11 @@ export function FontPicker({ value, onChange, disabled }: { value: string; onCha
         searchable
         searchPlaceholder={t("fontPicker.search")}
         emptyLabel={t("fontPicker.noMatch")}
-        className="min-w-0 flex-1"
+        size={compact ? "sm" : undefined}
+        className={compact ? "h-8 min-w-0 flex-1" : "min-w-0 flex-1"}
       />
-      <IconButton icon={Plus} label={t("fontPicker.add")} onClick={() => void pick()} disabled={disabled || busy} />
-      {selected?.source === "imported" || (selected?.source === "library" && selected.installed) ? (
+      {compact ? null : <IconButton icon={Plus} label={t("fontPicker.add")} onClick={() => void pick()} disabled={disabled || busy} />}
+      {!compact && (selected?.source === "imported" || (selected?.source === "library" && selected.installed)) ? (
         <IconButton icon={Trash2} label={t(selected.source === "library" ? "fontPicker.removeDownload" : "fontPicker.remove")} onClick={() => void drop()} disabled={disabled || busy} />
       ) : null}
     </div>

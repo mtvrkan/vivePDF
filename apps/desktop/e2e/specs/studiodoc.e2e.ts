@@ -92,4 +92,19 @@ describe("studio documents", () => {
     await browser.pause(500);
     await expect($('[data-testid="document-save-state"]')).toHaveText("Quarterly.vivedoc");
   });
+
+  it("sets the margin from the Layout ribbon tab and shows the Table tab only inside a table", async () => {
+    await $('[data-ribbon-tab="layout"]').click();
+    await $('[data-testid="doc-margins"]').click();
+    await $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${t("studio.doc.ribbon.marginValue", { value: 30 })}"]`).click();
+    await $(`//*[@role="radio"][normalize-space(.)="${t("studio.doc.tabs.settings")}"]`).click();
+    await expect($(`//label[./span[normalize-space(.)="${t("studio.doc.settings.margin")}"]]//input`)).toHaveValue("30");
+
+    await $('[data-ribbon-tab="insert"]').click();
+    await $('[data-testid="doc-insert-table"]').click();
+    await $('[data-ribbon-tab="table"]').waitForDisplayed();
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-ribbon.png"));
+    await body().$("h1").click();
+    await $('[data-ribbon-tab="table"]').waitForDisplayed({ reverse: true });
+  });
 });

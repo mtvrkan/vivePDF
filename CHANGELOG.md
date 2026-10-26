@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- Studio › Document: the formatting bar is now a Word-style ribbon with Home, Insert, Layout and References tabs and a Table tab that appears while the cursor is in a table; Layout sets margins, orientation, paper, columns and page numbers from menus, References holds the sources, bibliography, citation style and language, footnotes and contents, colour buttons show a colour bar instead of a hex code, and the ribbon can be collapsed to its tabs [2026-10-26]
 
 ## [0.5.0] - 2026-10-25
 ### Added

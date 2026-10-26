@@ -5,6 +5,7 @@ import { Checkbox, Field, Segmented, TextInput } from "@/components/tool/form";
 import type { DocumentSettings } from "@/types/studio";
 import { ColorField, NumberField, PanelSection } from "../design/controls";
 import { loadDocumentFont } from "./documentFonts";
+import { settingsSectionId } from "./settingsSections";
 import { useDocumentStore } from "./documentStore";
 import { COVER_STYLES, DOCUMENT_ALIGNS, DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES } from "./model";
 
@@ -25,7 +26,7 @@ export function DocumentSettingsPanel() {
 
   return (
     <div data-testid="document-settings">
-      <PanelSection title={t("studio.doc.settings.page")}>
+      <PanelSection id={settingsSectionId("page")} title={t("studio.doc.settings.page")}>
         <Field label={t("studio.doc.settings.paper")}>
           <Select size="sm" value={settings.paper} options={DOCUMENT_PAPERS.map((paper) => ({ value: paper, label: t(`studio.doc.papers.${paper}`) }))} onChange={(paper) => update({ paper: paper as DocumentSettings["paper"] })} ariaLabel={t("studio.doc.settings.paper")} />
         </Field>
@@ -64,7 +65,7 @@ export function DocumentSettingsPanel() {
         </div>
         <ColorField label={t("studio.doc.settings.accent")} value={settings.accent} onChange={(accent) => update({ accent })} />
       </PanelSection>
-      <PanelSection title={t("studio.doc.settings.furniture")}>
+      <PanelSection id={settingsSectionId("furniture")} title={t("studio.doc.settings.furniture")}>
         <Field label={t("studio.doc.settings.header")}>
           <TextInput {...text("header", 200)} />
         </Field>
@@ -83,7 +84,7 @@ export function DocumentSettingsPanel() {
         ) : null}
         <Checkbox label={t("studio.doc.settings.furnitureOnFirst")} checked={settings.furnitureOnFirst} onChange={(furnitureOnFirst) => update({ furnitureOnFirst })} />
       </PanelSection>
-      <PanelSection title={t("studio.doc.settings.contents")}>
+      <PanelSection id={settingsSectionId("contents")} title={t("studio.doc.settings.contents")}>
         <Checkbox label={t("studio.doc.settings.toc")} hint={t("studio.doc.settings.tocHint")} checked={settings.toc} onChange={(toc) => update({ toc })} />
         {settings.toc ? (
           <>
@@ -94,7 +95,7 @@ export function DocumentSettingsPanel() {
           </>
         ) : null}
       </PanelSection>
-      <PanelSection title={t("studio.doc.settings.coverSection")}>
+      <PanelSection id={settingsSectionId("cover")} title={t("studio.doc.settings.coverSection")}>
         <Checkbox label={t("studio.doc.settings.cover")} checked={settings.cover} onChange={(cover) => update({ cover })} />
         {settings.cover ? (
           <>

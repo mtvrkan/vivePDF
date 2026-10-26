@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { createPortal } from "react-dom";
-import { Check, Minus, Pipette } from "lucide-react";
+import { Ban, Check, ChevronDown, Minus, Pipette, type LucideIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/shared/lib/cn";
 import { isEyeDropperSupported, pickColorFromScreen } from "@/shared/lib/eyedropper";
@@ -27,6 +27,9 @@ type ColorSwatchProps = {
   onCommit?: (value: string) => void;
   mixed?: boolean;
   mixedLabel?: string;
+  icon?: LucideIcon;
+  onClear?: () => void;
+  clearLabel?: string;
 };
 
 function clamp01(value: number): number {
@@ -116,7 +119,7 @@ function SwatchGrid({ colors, current, onPick }: { colors: string[]; current: st
 
 const SECTION_LABEL = "mb-1.5 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground";
 
-export function ColorSwatch({ value, onChange, label, customLabel, disabled, presets, presetsLabel, rows, onCommit, mixed = false, mixedLabel }: ColorSwatchProps) {
+export function ColorSwatch({ value, onChange, label, customLabel, disabled, presets, presetsLabel, rows, onCommit, mixed = false, mixedLabel, icon: Icon, onClear, clearLabel }: ColorSwatchProps) {
   const { t } = useTranslation();
   const swatches = presets && presets.length > 0 ? presets.map((preset) => normalizeHex(preset)) : PRESETS;
   const eyeDropperAvailable = isEyeDropperSupported();
@@ -209,9 +212,17 @@ export function ColorSwatch({ value, onChange, label, customLabel, disabled, pre
         aria-expanded={open}
         disabled={disabled}
         onClick={toggle}
-        className="nav-glass inline-flex h-8 items-center gap-1.5 rounded-lg px-1.5 disabled:opacity-40"
+        className={cn("nav-glass inline-flex h-8 items-center rounded-lg disabled:opacity-40", Icon ? "gap-0.5 px-1 text-foreground/80 hover:text-foreground" : "gap-1.5 px-1.5")}
       >
-        {mixed ? (
+        {Icon ? (
+          <>
+            <span className="flex flex-col items-center gap-0.5" aria-hidden>
+              <Icon className="size-4" />
+              <span className="h-1 w-4 rounded-sm shadow-[inset_0_0_0_1px_hsl(0_0%_0%/0.2)]" style={{ backgroundColor: normalized }} />
+            </span>
+            <ChevronDown className="size-3 text-muted-foreground" aria-hidden />
+          </>
+        ) : mixed ? (
           <>
             <span className="flex size-5 items-center justify-center rounded-md bg-muted text-muted-foreground ring-1 ring-inset ring-border" aria-hidden>
               <Minus className="size-3.5" />
@@ -228,6 +239,19 @@ export function ColorSwatch({ value, onChange, label, customLabel, disabled, pre
       {open && anchor
         ? createPortal(
             <div ref={panelRef} role="dialog" aria-label={label} className="glass-menu fixed z-50 rounded-xl p-2.5" style={{ top: anchor.top, left: anchor.left, width: PANEL_WIDTH }}>
+              {onClear && clearLabel ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClear();
+                    setOpen(false);
+                  }}
+                  className="nav-glass mb-2.5 flex h-8 w-full items-center gap-2 rounded-lg px-2 text-xs"
+                >
+                  <Ban className="size-4 text-muted-foreground" aria-hidden />
+                  {clearLabel}
+                </button>
+              ) : null}
               {extraRows.map((row) => (
                 <div key={row.id} className="mb-2.5">
                   <p className={SECTION_LABEL}>{row.label}</p>

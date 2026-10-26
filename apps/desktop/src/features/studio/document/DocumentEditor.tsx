@@ -14,6 +14,7 @@ import { DocumentFindBar, type DocumentFindMode } from "./DocumentFindBar";
 import { FootnotePanel } from "./FootnotePanel";
 import { DocumentPreview } from "./DocumentPreview";
 import { DocumentSettingsPanel } from "./DocumentSettingsPanel";
+import { settingsSectionId, type DocumentSettingsSection } from "./settingsSections";
 import { DocumentToolbar } from "./DocumentToolbar";
 import { fontStack, loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
@@ -150,6 +151,11 @@ export default function DocumentEditor({ language }: { language: string }) {
   const [exporting, setExporting] = useState(false);
   const [finding, setFinding] = useState<DocumentFindMode | null>(null);
   const openFind = (replace: boolean) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 }));
+  const [settingsTarget, setSettingsTarget] = useState<{ section: DocumentSettingsSection; nonce: number } | null>(null);
+  const openSettings = (section: DocumentSettingsSection) => {
+    setSide("settings");
+    setSettingsTarget((current) => ({ section, nonce: (current?.nonce ?? 0) + 1 }));
+  };
   const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns, continuous) => t(continuous ? "studio.doc.section.labelContinuous" : "studio.doc.section.label", { columns })), [t, language]);
   useShortcuts(() => setExporting(true), openFind);
 
@@ -166,6 +172,11 @@ export default function DocumentEditor({ language }: { language: string }) {
     },
     [session, extensions],
   );
+
+  useEffect(() => {
+    if (!settingsTarget || side !== "settings") return;
+    document.getElementById(settingsSectionId(settingsTarget.section))?.scrollIntoView?.({ block: "start", behavior: "smooth" });
+  }, [settingsTarget, side]);
 
   useEffect(() => {
     if (!settings) return;
@@ -193,7 +204,7 @@ export default function DocumentEditor({ language }: { language: string }) {
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="document-editor">
       <DocumentTopBar onExport={() => setExporting(true)} onFind={() => openFind(false)} />
-      {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - margin * 2} /> : null}
+      {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - margin * 2} onFind={openFind} onOpenSettings={openSettings} /> : null}
       <div className="flex min-h-0 flex-1">
         <div className="relative flex min-w-0 flex-1 flex-col">
           <div ref={host} className="min-h-0 flex-1 overflow-auto bg-muted/40 py-8">

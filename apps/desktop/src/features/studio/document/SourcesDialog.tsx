@@ -23,7 +23,7 @@ import type { SourceCheck } from "@/types";
 import type { BibEntry, CitationLanguage, CitationStyle } from "@/types/studio";
 import { MAX_SOURCES, mergeSources } from "./bibtex";
 import { BIBLIOGRAPHY, CITATION, citationItems, MAX_CITED, type CitationItem } from "./citationItems";
-import { CITATION_LANGUAGES, CITATION_STYLES, citationLanguageOf, sourceMatches, sourceSummary, wantsSentenceCase } from "./citations";
+import { AUTO_LANGUAGE, CITATION_LANGUAGES, CITATION_STYLES, citationLanguageOf, sourceMatches, sourceSummary, wantsSentenceCase } from "./citations";
 import { applyChanges, checkedDois, checksByDoi, doiKey, doiLink, entryOfCsl, filledDraftFields, leadingNotice, sourceChanges, STATUS_TONES, type SourceChange } from "./doiSources";
 import { useDocumentStore } from "./documentStore";
 import { SourceEditor } from "./SourceEditor";
@@ -32,7 +32,6 @@ import { draftOf, entryOfDraft, keyProblem, namesText, renameCitationKey, type S
 import { FORMAT_EXTENSIONS, formatOfPath, parseSources, SOURCE_FILE_EXTENSIONS, SOURCE_FORMATS, writeSources, type SourceFormat } from "./sourceFormats";
 
 const EMPTY_SOURCES: BibEntry[] = [];
-const AUTO_LANGUAGE = "auto";
 
 function editedCitation(editor: Editor): CitationItem[] | null {
   return editor.isActive(CITATION) ? citationItems(editor.getAttributes(CITATION).items) : null;

@@ -146,6 +146,7 @@ in.
 | `home` | open a file so it is remembered, see its cover on Home, replace the file on disk, come back to Home | the cover picture changes, then stays the same on the next visit |
 | `engine` | four OCR jobs on a 400-page file keep every heavy engine worker busy while a page thumbnail is asked for, then the jobs are cancelled | the thumbnail arrives within 10 s while none of the OCR jobs has finished, and all four stop after the cancel |
 | `studiodoc` | type a few words at the end of a saved document's heading and press Ctrl+S at once | the saved file holds the new words and the bar still shows the file as saved half a second later |
+| `studiodoc` | ribbon: Layout › Margins › 30 mm, then Insert › Table, then click back into the heading | the settings panel shows a 30 mm margin; the Table tab appears while the cursor is in the table and goes away outside it; ribbon screenshot in the run folder |
 | `features` | background colour added to every page of a PDF, then removed from the coloured copy | corner colour of every page #fff8e1 with the text kept, the source still white; white again after removing |
 | `convert` | PDF to pictures, PDF to SVG, pictures to PDF, two SVG drawings combined into one PDF | 3 images; 3 SVG files with the text drawn as outlines; 2-page PDF with one image per page; 2 vector pages (no images) with the drawings' text and aspect ratios |
 | `convert` | Word document with a Turkish file name to PDF through LibreOffice (skipped when LibreOffice is not installed) | one page with the heading and the Turkish line as real text, written next to the source |
@@ -393,6 +394,11 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
 - PDF to SVG on a turned page, a cropped page and a page with Turkish text: open each SVG in
   Inkscape or Edge; it has the page's visible size and look. With "Keep text as text" on, the
   text can be selected and edited in Inkscape.
+- Studio document ribbon at 1024 px and full width: every tab (Home, Insert, Layout, References,
+  Table) fits or scrolls sideways without clipping; the style gallery turns into a style list on
+  a narrow window; colour buttons show a colour bar, not a hex code; "Collapse ribbon" leaves the
+  tabs only and is remembered after a restart; with NVDA, the tabs are read as tabs and arrow
+  keys move between them.
 - Background colour on a text PDF, a turned page, a cropped page and a scanned PDF: the colour
   fills each whole visible page with the text on top; the scanned pages are named as hidden.
   Apply a second colour: it replaces the first. Remove: the pages are white again. Read the

@@ -16,9 +16,9 @@ import { useStudioStore } from "./studioStore";
 const MAX_DOCUMENT_COLOURS = 12;
 const DEFAULT_STROKE: StudioStroke = { color: "#1f2937", width: 2, dash: "solid" };
 
-export function PanelSection({ title, children, className }: { title: string; children: ReactNode; className?: string }) {
+export function PanelSection({ title, children, className, id }: { title: string; children: ReactNode; className?: string; id?: string }) {
   return (
-    <section className={cn("space-y-3 border-b border-border/60 px-4 py-4 last:border-b-0", className)}>
+    <section id={id} className={cn("space-y-3 border-b border-border/60 px-4 py-4 last:border-b-0", className)}>
       <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</h3>
       {children}
     </section>

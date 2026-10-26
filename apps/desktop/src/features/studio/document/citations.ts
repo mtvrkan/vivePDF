@@ -3,6 +3,7 @@ import { CITATION, citationItems, type CitationItem } from "./citationItems";
 import { FOOTNOTE, footnoteCitations, footnoteMarkup } from "./footnotes";
 
 export const CITATION_STYLES: CitationStyle[] = ["apa", "mla", "chicago", "chicago-notes", "ieee", "isnad", "isnad-notes", "vancouver", "harvard"];
+export const AUTO_LANGUAGE = "auto";
 export const CITATION_LANGUAGES: CitationLanguage[] = ["en-US", "en-GB", "tr-TR", "de-DE", "es-ES", "fr-FR", "it-IT", "pt-BR", "ar"];
 const NOTE_STYLES = new Set<CitationStyle>(["chicago-notes", "isnad-notes"]);
 const SENTENCE_CASE_STYLES = new Set<CitationStyle>(["apa", "vancouver", "harvard"]);
