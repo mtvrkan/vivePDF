@@ -9016,41 +9016,26 @@
         "orientation": "Orientation",
         "portrait": "Portrait",
         "landscape": "Landscape",
-        "text": "Text",
-        "font": "Font",
-        "headingSame": "Headings use the same font",
-        "headingFont": "Heading font",
-        "fontSize": "Size",
         "lineHeight": "Line spacing",
         "accent": "Heading colour",
-        "furniture": "Header and footer",
         "header": "Header text",
-        "headerAlign": "Header position",
         "footer": "Footer text",
-        "footerAlign": "Footer position",
-        "pageNumbers": "Page numbers",
         "numberFormat": "Number format",
         "numberFormatHint": "{n} is the page number and {total} the number of pages, for example Page {n} of {total}.",
         "furnitureOnFirst": "Show them on the first page too",
         "contents": "Table of contents",
-        "toc": "Add a table of contents",
         "tocHint": "Lists the headings with their page numbers at the start; each entry is a link.",
         "tocTitle": "Title",
         "tocTitleDefault": "Contents",
-        "tocDepth": "Heading levels",
         "depth_one": "{{count}} level",
         "depth_other": "{{count}} levels",
-        "coverSection": "Cover",
-        "cover": "Add a cover page",
-        "coverStyle": "Style",
         "title": "Title",
         "subtitle": "Subtitle",
         "author": "Author",
         "date": "Date",
         "columns": "Columns",
         "columnGap": "Column gap",
-        "columnsHint": "Columns appear in the preview and the PDF; the editor keeps one column while you write. A page break starts the next page. This count applies until the first section break, which can change it for the pages after it.",
-        "dialogTitle": "Document settings"
+        "columnsHint": "Columns appear in the preview and the PDF; the editor keeps one column while you write. A page break starts the next page. This count applies until the first section break, which can change it for the pages after it."
       },
       "papers": {
         "a4": "A4",
@@ -9492,7 +9477,9 @@
           "layout": "Layout",
           "references": "References",
           "table": "Table",
-          "view": "View"
+          "view": "View",
+          "design": "Design",
+          "furniture": "Header & footer"
         },
         "groups": {
           "history": "Undo",
@@ -9517,7 +9504,12 @@
           "cells": "Cells",
           "views": "Views",
           "zoom": "Zoom",
-          "show": "Show"
+          "show": "Show",
+          "fonts": "Fonts",
+          "colour": "Colour",
+          "position": "Position",
+          "options": "Options",
+          "close": "Close"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Increase font size",
@@ -9543,7 +9535,6 @@
         "columns1": "One column",
         "columns2": "Two columns",
         "columns3": "Three columns",
-        "headerFooter": "Header and footer",
         "pageNumbers": "Page numbers",
         "pageSettings": "Page settings",
         "toc": "Contents",
@@ -9554,7 +9545,18 @@
         "headerRow": "Header row",
         "printLayout": "Print layout",
         "pageLines": "Page lines",
-        "ruler": "Ruler"
+        "ruler": "Ruler",
+        "bodyFont": "Body",
+        "headingFont": "Headings",
+        "bodySize": "Text size",
+        "header": "Header",
+        "footer": "Footer",
+        "closeFurniture": "Close header and footer",
+        "coverNone": "No cover",
+        "coverDetails": "Cover details…",
+        "coverDetailsTitle": "Cover details",
+        "tocNone": "No contents",
+        "tocTitle": "Contents title…"
       },
       "printPreview": {
         "title": "Print preview"
@@ -9615,6 +9617,10 @@
           "left": "Left indent",
           "right": "Right indent"
         }
+      },
+      "furniture": {
+        "pageNumber": "Page number",
+        "notOnFirst": "{{name}} · not shown on the first page"
       }
     },
     "cv": {

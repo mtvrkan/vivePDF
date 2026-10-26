@@ -9015,41 +9015,26 @@
         "orientation": "Orientación",
         "portrait": "Vertical",
         "landscape": "Horizontal",
-        "text": "Texto",
-        "font": "Fuente",
-        "headingSame": "Los títulos usan la misma fuente",
-        "headingFont": "Fuente de los títulos",
-        "fontSize": "Tamaño",
         "lineHeight": "Interlineado",
         "accent": "Color de los títulos",
-        "furniture": "Encabezado y pie",
         "header": "Texto del encabezado",
-        "headerAlign": "Posición del encabezado",
         "footer": "Texto del pie",
-        "footerAlign": "Posición del pie",
-        "pageNumbers": "Números de página",
         "numberFormat": "Formato del número de página",
         "numberFormatHint": "{n} es el número de página y {total} el número total de páginas, por ejemplo Página {n} de {total}.",
         "furnitureOnFirst": "Mostrarlos también en la primera página",
         "contents": "Índice",
-        "toc": "Añadir un índice",
         "tocHint": "Enumera los títulos con sus números de página al principio; cada entrada es un enlace.",
         "tocTitle": "Título",
         "tocTitleDefault": "Índice",
-        "tocDepth": "Niveles de título",
         "depth_one": "{{count}} nivel",
         "depth_other": "{{count}} niveles",
-        "coverSection": "Portada",
-        "cover": "Añadir una portada",
-        "coverStyle": "Estilo",
         "title": "Título",
         "subtitle": "Subtítulo",
         "author": "Autor",
         "date": "Fecha",
         "columns": "Columnas",
         "columnGap": "Espacio entre columnas",
-        "columnsHint": "Las columnas aparecen en la vista previa y en el PDF; el editor mantiene una columna mientras escribes. Un salto de página empieza la página siguiente. Este número se aplica hasta el primer salto de sección, que puede cambiarlo para las páginas siguientes.",
-        "dialogTitle": "Ajustes del documento"
+        "columnsHint": "Las columnas aparecen en la vista previa y en el PDF; el editor mantiene una columna mientras escribes. Un salto de página empieza la página siguiente. Este número se aplica hasta el primer salto de sección, que puede cambiarlo para las páginas siguientes."
       },
       "papers": {
         "a4": "A4",
@@ -9491,7 +9476,9 @@
           "layout": "Diseño",
           "references": "Referencias",
           "table": "Tabla",
-          "view": "Vista"
+          "view": "Vista",
+          "design": "Diseño de documento",
+          "furniture": "Encabezado y pie"
         },
         "groups": {
           "history": "Deshacer",
@@ -9516,7 +9503,12 @@
           "cells": "Celdas",
           "views": "Vistas",
           "zoom": "Zoom",
-          "show": "Mostrar"
+          "show": "Mostrar",
+          "fonts": "Fuentes",
+          "colour": "Color",
+          "position": "Posición",
+          "options": "Opciones",
+          "close": "Cerrar"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar tamaño",
@@ -9542,7 +9534,6 @@
         "columns1": "Una columna",
         "columns2": "Dos columnas",
         "columns3": "Tres columnas",
-        "headerFooter": "Encabezado y pie",
         "pageNumbers": "Números de página",
         "pageSettings": "Ajustes de página",
         "toc": "Índice",
@@ -9553,7 +9544,18 @@
         "headerRow": "Fila de encabezado",
         "printLayout": "Diseño de impresión",
         "pageLines": "Líneas de salto de página",
-        "ruler": "Regla"
+        "ruler": "Regla",
+        "bodyFont": "Texto",
+        "headingFont": "Títulos",
+        "bodySize": "Tamaño del texto",
+        "header": "Encabezado",
+        "footer": "Pie de página",
+        "closeFurniture": "Cerrar encabezado y pie",
+        "coverNone": "Sin portada",
+        "coverDetails": "Datos de la portada…",
+        "coverDetailsTitle": "Datos de la portada",
+        "tocNone": "Sin índice",
+        "tocTitle": "Título del índice…"
       },
       "printPreview": {
         "title": "Vista previa de impresión"
@@ -9614,6 +9616,10 @@
           "left": "Sangría izquierda",
           "right": "Sangría derecha"
         }
+      },
+      "furniture": {
+        "pageNumber": "Número de página",
+        "notOnFirst": "{{name}} · no se muestra en la primera página"
       }
     },
     "cv": {

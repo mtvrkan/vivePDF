@@ -9015,41 +9015,26 @@
         "orientation": "Ausrichtung",
         "portrait": "Hochformat",
         "landscape": "Querformat",
-        "text": "Text",
-        "font": "Schrift",
-        "headingSame": "Überschriften verwenden dieselbe Schrift",
-        "headingFont": "Schrift für Überschriften",
-        "fontSize": "Größe",
         "lineHeight": "Zeilenabstand",
         "accent": "Überschriftfarbe",
-        "furniture": "Kopf- und Fußzeile",
         "header": "Kopfzeilentext",
-        "headerAlign": "Position der Kopfzeile",
         "footer": "Fußzeilentext",
-        "footerAlign": "Position der Fußzeile",
-        "pageNumbers": "Seitenzahlen",
         "numberFormat": "Format der Seitenzahl",
         "numberFormatHint": "{n} ist die Seitenzahl und {total} die Gesamtzahl der Seiten, zum Beispiel Seite {n} von {total}.",
         "furnitureOnFirst": "Auch auf der ersten Seite anzeigen",
         "contents": "Inhaltsverzeichnis",
-        "toc": "Inhaltsverzeichnis hinzufügen",
         "tocHint": "Listet die Überschriften mit ihren Seitenzahlen am Anfang auf; jeder Eintrag ist ein Link.",
         "tocTitle": "Titel",
         "tocTitleDefault": "Inhalt",
-        "tocDepth": "Überschriftenebenen",
         "depth_one": "{{count}} Ebene",
         "depth_other": "{{count}} Ebenen",
-        "coverSection": "Titelseite",
-        "cover": "Eine Titelseite hinzufügen",
-        "coverStyle": "Stil",
         "title": "Titel",
         "subtitle": "Untertitel",
         "author": "Autor",
         "date": "Datum",
         "columns": "Spalten",
         "columnGap": "Spaltenabstand",
-        "columnsHint": "Spalten erscheinen in der Vorschau und im PDF; beim Schreiben bleibt der Editor einspaltig. Ein Seitenumbruch beginnt die nächste Seite. Diese Zahl gilt bis zum ersten Abschnittsumbruch, der sie für die folgenden Seiten ändern kann.",
-        "dialogTitle": "Dokumenteinstellungen"
+        "columnsHint": "Spalten erscheinen in der Vorschau und im PDF; beim Schreiben bleibt der Editor einspaltig. Ein Seitenumbruch beginnt die nächste Seite. Diese Zahl gilt bis zum ersten Abschnittsumbruch, der sie für die folgenden Seiten ändern kann."
       },
       "papers": {
         "a4": "A4",
@@ -9491,7 +9476,9 @@
           "layout": "Layout",
           "references": "Referenzen",
           "table": "Tabelle",
-          "view": "Ansicht"
+          "view": "Ansicht",
+          "design": "Entwurf",
+          "furniture": "Kopf- und Fußzeile"
         },
         "groups": {
           "history": "Rückgängig",
@@ -9516,7 +9503,12 @@
           "cells": "Zellen",
           "views": "Ansichten",
           "zoom": "Zoom",
-          "show": "Anzeigen"
+          "show": "Anzeigen",
+          "fonts": "Schriftarten",
+          "colour": "Farbe",
+          "position": "Position",
+          "options": "Optionen",
+          "close": "Schließen"
         },
         "sizeDocument": "Dokument ({{size}})",
         "sizeUp": "Schrift vergrößern",
@@ -9542,7 +9534,6 @@
         "columns1": "Eine Spalte",
         "columns2": "Zwei Spalten",
         "columns3": "Drei Spalten",
-        "headerFooter": "Kopf- und Fußzeile",
         "pageNumbers": "Seitenzahlen",
         "pageSettings": "Seiteneinstellungen",
         "toc": "Inhaltsverzeichnis",
@@ -9553,7 +9544,18 @@
         "headerRow": "Kopfzeile",
         "printLayout": "Seitenlayout",
         "pageLines": "Seitenumbruchlinien",
-        "ruler": "Lineal"
+        "ruler": "Lineal",
+        "bodyFont": "Text",
+        "headingFont": "Überschriften",
+        "bodySize": "Textgröße",
+        "header": "Kopfzeile",
+        "footer": "Fußzeile",
+        "closeFurniture": "Kopf- und Fußzeile schließen",
+        "coverNone": "Kein Deckblatt",
+        "coverDetails": "Deckblattangaben…",
+        "coverDetailsTitle": "Deckblattangaben",
+        "tocNone": "Kein Inhaltsverzeichnis",
+        "tocTitle": "Titel des Inhaltsverzeichnisses…"
       },
       "printPreview": {
         "title": "Druckvorschau"
@@ -9614,6 +9616,10 @@
           "left": "Einzug links",
           "right": "Einzug rechts"
         }
+      },
+      "furniture": {
+        "pageNumber": "Seitenzahl",
+        "notOnFirst": "{{name}} · auf der ersten Seite ausgeblendet"
       }
     },
     "cv": {

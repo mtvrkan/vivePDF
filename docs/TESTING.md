@@ -147,7 +147,7 @@ in.
 | `engine` | four OCR jobs on a 400-page file keep every heavy engine worker busy while a page thumbnail is asked for, then the jobs are cancelled | the thumbnail arrives within 10 s while none of the OCR jobs has finished, and all four stop after the cancel |
 | `studiodoc` | type a few words at the end of a saved document's heading and press Ctrl+S at once | the saved file holds the new words and the bar still shows the file as saved half a second later |
 | `studiodoc` | ribbon: Layout › Margins › 30 mm, then Insert › Table, then click back into the heading | Layout › Page settings opens Page setup with 30 mm on all four sides and takes a 10 mm gutter without a room warning; the Table tab appears while the cursor is in the table and goes away outside it; ribbon screenshot in the run folder |
-| `studiodoc` | References › Contents and Insert › Cover on the typed report, then Print preview from the top bar | the status bar says page 3 of 3; the print preview shows the first page as a picture; screenshot in the run folder |
+| `studiodoc` | References › Contents › 2 levels and Insert › Cover › Classic on the typed report, then Insert › Header, type and Escape, then Print preview from the top bar | the cover details window opens; the Header & footer tab is selected while typing and gone after Escape, the header holds the text; the status bar says page 3 of 3; the print preview shows the first page as a picture; screenshot in the run folder |
 | `studiodoc` | leave the list, Ctrl+Enter and type a line, then View › Page lines off and on | a page line labelled 4 appears and the status bar says page 4 of 4; the line goes away while Page lines is off; screenshot in the run folder |
 | `studiodoc` | focus the ruler's hanging marker and press Shift+→ twice, then the left margin edge and Shift+→, then View › Ruler off and on | the first paragraph gets a 10 mm hanging indent, the left margin grows by 5 mm, the ruler goes away and comes back; ruler screenshot in the run folder |
 | `studio` | Studio start list: Design, then Start, then Templates | each item shows its own page and is marked as the current one; recent designs and templates are reached from their items |
@@ -413,7 +413,14 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   shows the page count, the words and the zoom; the zoom slider, − and + and the zoom list
   (Page width, Whole page, 50–200 %) resize the sheet and the choice is kept after a restart;
   View › Print preview and the top bar's Print preview show every page, and Export from it opens
-  the export dialog; Layout › Page settings and Insert › Cover open the settings in a window.
+  the export dialog; Layout › Page settings opens Page setup.
+- Studio document settings in the ribbon, light and dark: Design sets the body and heading fonts,
+  the text size, line height and heading colour and the sheet follows at once; Insert › Header
+  and Footer put the caret on the sheet's top and bottom margin, the text there sits where the PDF
+  draws it (compare with Print preview), the Header & footer tab aligns it, picks page numbers and
+  their format (the number chip shows the format) and Close or a click in the text returns to the
+  previous tab; Insert › Cover styles and Cover details, References › Contents levels and title
+  all reach the PDF; in Arabic the tab and the sheet fields still work right to left.
 - Studio document page lines on a long report (Turkish text, a table, a picture and footnotes), at
   50 %, 100 % and page width: each dashed line sits on the line that starts the page in Print
   preview, follows the text while typing above it and is redrawn after the pause; with a cover

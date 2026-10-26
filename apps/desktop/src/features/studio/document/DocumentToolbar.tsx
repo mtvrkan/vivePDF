@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   AArrowDown,
   AArrowUp,
@@ -25,12 +25,11 @@ import {
   List,
   ListChecks,
   ListOrdered,
-  ListTree,
   Maximize2,
   Minus,
   Omega,
   PanelTop,
-  PanelsTopLeft,
+  PanelBottom,
   Printer,
   Quote,
   RectangleVertical,
@@ -75,13 +74,16 @@ import type { CitationLanguage, CitationStyle, DocumentSettings } from "@/types/
 import { Ribbon, RibbonButton, RibbonGroup, RibbonRow, RibbonRows, RibbonSmallButton, type RibbonTab } from "../ribbon/Ribbon";
 import { useRibbonCollapsed } from "../ribbon/useRibbonCollapsed";
 import { AUTO_LANGUAGE, CITATION_LANGUAGES, CITATION_STYLES } from "./citations";
-import type { DocumentSettingsSection } from "./settingsSections";
 import { pickDocumentImage } from "./documentFile";
 import { loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
 import { FormatPainterButton } from "./FormatPainterButton";
 import { useDocumentViewStore } from "./documentView";
+import { DesignGroups } from "./DesignGroups";
+import { FurnitureGroups } from "./FurnitureGroups";
+import { useFurnitureEditing } from "./furnitureEditing";
 import { DOCUMENT_COLUMNS, DOCUMENT_PAPERS, PAGE_NUMBER_PLACES, uniformMargin, uniformMargins } from "./model";
+import { ContentsMenu, CoverMenu } from "./PagesMenus";
 import { SectionBreakMenu } from "./SectionBreakMenu";
 import { SourcesDialog } from "./SourcesDialog";
 import { SpacingMenu } from "./SpacingMenu";
@@ -93,7 +95,7 @@ const SIZES = ["8", "9", "10", "11", "12", "14", "16", "18", "20", "24", "28", "
 const HIGHLIGHTS = ["#fef08a", "#bbf7d0", "#bfdbfe", "#fbcfe8", "#fed7aa", "#e5e7eb"];
 const DEFAULT_TEXT = "#1a1a1a";
 const MARGINS = [15, 20, 25, 30];
-const RIBBON_TABS = ["home", "insert", "layout", "references", "view"] as const;
+const RIBBON_TABS = ["home", "insert", "design", "layout", "references", "view"] as const;
 const GALLERY = ["paragraph", "h1", "h2", "h3", "h4", "quote"] as const;
 const GALLERY_LOOK: Record<(typeof GALLERY)[number], string> = {
   paragraph: "text-xs",
@@ -106,7 +108,7 @@ const GALLERY_LOOK: Record<(typeof GALLERY)[number], string> = {
 const SAFE_LINK = /^(https?:\/\/|mailto:)/i;
 
 type Block = (typeof BLOCKS)[number];
-type RibbonTabId = (typeof RIBBON_TABS)[number] | "table";
+type RibbonTabId = (typeof RIBBON_TABS)[number] | "table" | "furniture";
 
 function steppedSize(current: number, direction: 1 | -1): string {
   const sizes = SIZES.map(Number);
@@ -165,14 +167,12 @@ export function DocumentToolbar({
   editor,
   contentWidth,
   onFind = () => undefined,
-  onOpenSettings = () => undefined,
   onPrintPreview = () => undefined,
   onPageSetup = () => undefined,
 }: {
   editor: Editor;
   contentWidth: number;
   onFind?: (replace: boolean) => void;
-  onOpenSettings?: (section: DocumentSettingsSection) => void;
   onPrintPreview?: () => void;
   onPageSetup?: () => void;
 }) {
@@ -186,6 +186,8 @@ export function DocumentToolbar({
   const setRuler = useDocumentViewStore((state) => state.setRuler);
   const bodyFont = settings?.fontId ?? "";
   const [tab, setTab] = useState<RibbonTabId>("home");
+  const furniture = useFurnitureEditing((current) => current.editing);
+  const beforeFurniture = useRef<RibbonTabId>("insert");
   const [collapsed, setCollapsed] = useRibbonCollapsed();
   const [linking, setLinking] = useState(false);
   const [citing, setCiting] = useState(false);
@@ -236,6 +238,16 @@ export function DocumentToolbar({
     if (!state.table) setTab((current) => (current === "table" ? "home" : current));
   }, [state.table]);
 
+  useEffect(() => {
+    setTab((current) => {
+      if (furniture) {
+        if (current !== "furniture") beforeFurniture.current = current;
+        return "furniture";
+      }
+      return current === "furniture" ? beforeFurniture.current : current;
+    });
+  }, [furniture]);
+
   const setBlock = (block: string) => {
     if (block === "paragraph") chain().setParagraph().run();
     else chain().setHeading({ level: Number(block.slice(1)) as 1 | 2 | 3 | 4 }).run();
@@ -270,13 +282,9 @@ export function DocumentToolbar({
   const listLift = () => (editor.isActive("taskList") ? chain().liftListItem("taskItem").run() : chain().liftListItem("listItem").run());
 
   const update = (patch: Partial<DocumentSettings>) => useDocumentStore.getState().setSettings(patch);
-  const toggleCover = () => {
-    if (settings?.cover) {
-      update({ cover: false });
-      return;
-    }
-    update({ cover: true });
-    onOpenSettings("cover");
+  const closeFurniture = () => {
+    useFurnitureEditing.getState().stop();
+    editor.commands.focus();
   };
 
   const choice = <T,>(values: readonly T[], current: T | undefined, labelOf: (value: T) => string, apply: (value: T) => void, idOf: (value: T) => string): ContextMenuItem[] =>
@@ -295,8 +303,9 @@ export function DocumentToolbar({
   const tabs: RibbonTab[] = [
     ...RIBBON_TABS.map((id) => ({ id, label: t(`studio.doc.ribbon.tabs.${id}`) })),
     ...(state.table ? [{ id: "table", label: t("studio.doc.ribbon.tabs.table"), contextual: true }] : []),
+    ...(furniture ? [{ id: "furniture", label: t("studio.doc.ribbon.tabs.furniture"), contextual: true }] : []),
   ];
-  const active: RibbonTabId = tab === "table" && !state.table ? "home" : tab;
+  const active: RibbonTabId = (tab === "table" && !state.table) || (tab === "furniture" && !furniture) ? "home" : tab;
   const galleryActive = state.quote ? "quote" : state.block;
 
   const home = (
@@ -426,8 +435,13 @@ export function DocumentToolbar({
         <RibbonButton icon={Code2} label={t("studio.doc.ribbon.code")} active={state.code} onClick={() => chain().toggleCodeBlock().run()} />
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.pages")}>
-        <RibbonButton icon={FileText} label={t("studio.doc.ribbon.cover")} active={settings?.cover ?? false} onClick={toggleCover} testId="doc-cover" />
+        {settings ? <CoverMenu settings={settings} /> : null}
         <RibbonButton icon={SeparatorHorizontal} label={t("studio.doc.toolbar.pageBreak")} shortcut="Ctrl+Enter" onClick={() => chain().setPageBreak().run()} />
+      </RibbonGroup>
+      <RibbonGroup label={t("studio.doc.ribbon.groups.furniture")}>
+        <RibbonButton icon={PanelTop} label={t("studio.doc.ribbon.header")} onClick={() => useFurnitureEditing.getState().open("header")} testId="doc-insert-header" />
+        <RibbonButton icon={PanelBottom} label={t("studio.doc.ribbon.footer")} onClick={() => useFurnitureEditing.getState().open("footer")} testId="doc-insert-footer" />
+        <RibbonButton icon={Hash} label={t("studio.doc.ribbon.pageNumbers")} menu={numberItems} testId="doc-page-numbers" />
       </RibbonGroup>
     </>
   );
@@ -442,10 +456,6 @@ export function DocumentToolbar({
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.breaks")}>
         <SectionBreakMenu editor={editor} />
-      </RibbonGroup>
-      <RibbonGroup label={t("studio.doc.ribbon.groups.furniture")}>
-        <RibbonButton icon={PanelsTopLeft} label={t("studio.doc.ribbon.headerFooter")} onClick={() => onOpenSettings("furniture")} />
-        <RibbonButton icon={Hash} label={t("studio.doc.ribbon.pageNumbers")} menu={numberItems} />
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.more")}>
         <RibbonButton icon={Settings2} label={t("studio.doc.ribbon.pageSettings")} onClick={onPageSetup} testId="doc-page-settings" />
@@ -483,7 +493,7 @@ export function DocumentToolbar({
         <RibbonButton icon={Asterisk} label={t("studio.doc.footnotes.insert")} shortcut="Ctrl+Alt+F" onClick={() => chain().insertFootnote().run()} testId="doc-footnote" />
       </RibbonGroup>
       <RibbonGroup label={t("studio.doc.ribbon.groups.contents")}>
-        <RibbonButton icon={ListTree} label={t("studio.doc.ribbon.toc")} active={settings?.toc ?? false} onClick={() => update({ toc: !settings?.toc })} testId="doc-toc" />
+        {settings ? <ContentsMenu settings={settings} /> : null}
       </RibbonGroup>
     </>
   );
@@ -527,7 +537,9 @@ export function DocumentToolbar({
     </>
   );
 
-  const panels: Record<RibbonTabId, ReactNode> = { home, insert, layout, references, view, table };
+  const design = settings ? <DesignGroups settings={settings} /> : null;
+  const furnitureTab = settings ? <FurnitureGroups settings={settings} numberItems={numberItems} onClose={closeFurniture} /> : null;
+  const panels: Record<RibbonTabId, ReactNode> = { home, insert, design, layout, references, view, table, furniture: furnitureTab };
 
   return (
     <>

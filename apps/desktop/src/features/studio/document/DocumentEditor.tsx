@@ -11,16 +11,17 @@ import type { DocumentNode } from "@/types/studio";
 import { DocumentExportDialog } from "./DocumentExportDialog";
 import { DocumentFindBar, type DocumentFindMode } from "./DocumentFindBar";
 import { FootnotePanel } from "./FootnotePanel";
-import { DocumentSettingsPanel } from "./DocumentSettingsPanel";
 import { HorizontalRuler, VerticalRuler } from "./DocumentRuler";
 import { DocumentStatusBar } from "./DocumentStatusBar";
 import { useDocumentViewStore, type DocumentZoom } from "./documentView";
 import type { PageLine } from "./pageBreaks";
 import { PageLines } from "./PageLines";
 import { PageSetupDialog } from "./PageSetupDialog";
+import { firstPage } from "./pageBreaks";
+import { SheetFurniture } from "./SheetFurniture";
+import { useFurnitureEditing } from "./furnitureEditing";
 import { PrintPreview } from "./PrintPreview";
 import { useDocumentLayout } from "./useDocumentLayout";
-import { settingsSectionId, type DocumentSettingsSection } from "./settingsSections";
 import { DocumentToolbar } from "./DocumentToolbar";
 import { fontStack, loadDocumentFont } from "./documentFonts";
 import { useDocumentStore } from "./documentStore";
@@ -164,17 +165,12 @@ export default function DocumentEditor({ language }: { language: string }) {
   const paper = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<PageLine[]>([]);
   const layout = useDocumentLayout(language);
-  const [settingsOpen, setSettingsOpen] = useState(false);
   const [previewing, setPreviewing] = useState(false);
   const [pageSetupOpen, setPageSetupOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [finding, setFinding] = useState<DocumentFindMode | null>(null);
   const openFind = (replace: boolean) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 }));
-  const [settingsTarget, setSettingsTarget] = useState<{ section: DocumentSettingsSection; nonce: number } | null>(null);
-  const openSettings = (section: DocumentSettingsSection) => {
-    setSettingsOpen(true);
-    setSettingsTarget((current) => ({ section, nonce: (current?.nonce ?? 0) + 1 }));
-  };
+  const furnitureEditing = useFurnitureEditing((state) => state.editing !== null);
   const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns, continuous) => t(continuous ? "studio.doc.section.labelContinuous" : "studio.doc.section.label", { columns })), [t, language]);
   useShortcuts(() => setExporting(true), openFind);
 
@@ -193,9 +189,14 @@ export default function DocumentEditor({ language }: { language: string }) {
   );
 
   useEffect(() => {
-    if (!settingsTarget || !settingsOpen) return;
-    document.getElementById(settingsSectionId(settingsTarget.section))?.scrollIntoView?.({ block: "start", behavior: "smooth" });
-  }, [settingsTarget, settingsOpen]);
+    if (!editor) return;
+    const stop = () => useFurnitureEditing.getState().stop();
+    editor.on("focus", stop);
+    return () => {
+      editor.off("focus", stop);
+      stop();
+    };
+  }, [editor]);
 
   useEffect(() => {
     if (!settings) return;
@@ -223,13 +224,14 @@ export default function DocumentEditor({ language }: { language: string }) {
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="document-editor">
       <DocumentTopBar onExport={() => setExporting(true)} onFind={() => openFind(false)} onPrintPreview={() => setPreviewing(true)} />
-      {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - inset.left - inset.right} onFind={openFind} onOpenSettings={openSettings} onPrintPreview={() => setPreviewing(true)} onPageSetup={() => setPageSetupOpen(true)} /> : null}
+      {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - inset.left - inset.right} onFind={openFind} onPrintPreview={() => setPreviewing(true)} onPageSetup={() => setPageSetupOpen(true)} /> : null}
       <div className="flex min-h-0 flex-1">
         <div className="relative flex min-w-0 flex-1 flex-col">
           <div className="flex min-h-0 flex-1">
             <div ref={host} className="min-h-0 min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
               <div ref={paper} className="paper-surface vp-doc relative mx-auto bg-white shadow-md" style={paperStyle}>
-                <EditorContent editor={editor} />
+                <EditorContent editor={editor} className={furnitureEditing ? "opacity-50 transition-opacity duration-(--transition-base)" : "transition-opacity duration-(--transition-base)"} />
+                {editor ? <SheetFurniture settings={settings} inset={inset} page={(layout.preview && firstPage(layout.preview)) || 1} total={layout.preview?.pageCount ?? 1} onLeave={() => editor.commands.focus()} /> : null}
                 {editor && showPageLines ? <PageLines editor={editor} laid={layout.preview} paper={paper} zoom={zoom} onLines={setLines} /> : null}
               </div>
             </div>
@@ -241,9 +243,6 @@ export default function DocumentEditor({ language }: { language: string }) {
           {editor ? <DocumentStatusBar editor={editor} language={language} layout={layout} zoom={zoom} lines={showPageLines ? lines : null} paper={paper} /> : null}
         </div>
       </div>
-      <Dialog open={settingsOpen} onClose={() => setSettingsOpen(false)} size="lg" title={t("studio.doc.settings.dialogTitle")}>
-        <DocumentSettingsPanel />
-      </Dialog>
       <PageSetupDialog open={pageSetupOpen} onClose={() => setPageSetupOpen(false)} />
       <PrintPreview open={previewing} layout={layout} onClose={() => setPreviewing(false)} onExport={() => setExporting(true)} />
       <DocumentExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />

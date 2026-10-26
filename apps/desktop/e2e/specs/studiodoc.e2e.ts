@@ -6,6 +6,7 @@ import { answerDialogs, bootApp, openTool, pressShortcut, probe, t, waitForDialo
 const BOLD_KEY = "b";
 const ENTER = String.fromCharCode(0xe007);
 const END = String.fromCharCode(0xe010);
+const ESCAPE = String.fromCharCode(0xe00c);
 const body = () => $('[data-testid="document-body"]');
 const button = (label: string) => $(`//button[normalize-space(.)="${label}"]`);
 
@@ -33,12 +34,21 @@ describe("studio documents", () => {
     await expect(body().$("strong")).toHaveText("this quarter");
     await expect(body().$$("ul > li")).toBeElementsArrayOfSize(2);
 
+    const menuItem = (label: string) => $(`//*[@role="menuitemcheckbox"][normalize-space(.)="${label}"]`);
     await $('[data-ribbon-tab="references"]').click();
     await $('[data-testid="doc-toc"]').click();
+    await menuItem(t("studio.doc.settings.depth", { count: 2 })).click();
     await $('[data-ribbon-tab="insert"]').click();
     await $('[data-testid="doc-cover"]').click();
-    await $('[data-testid="document-settings"]').waitForDisplayed();
+    await menuItem(t("studio.doc.covers.classic")).click();
+    await $('[data-testid="doc-cover-details"]').waitForDisplayed();
     await $('[role="dialog"] [data-dialog-close]').click();
+    await $('[data-testid="doc-insert-header"]').click();
+    await expect($('[data-ribbon-tab="furniture"]')).toHaveAttribute("aria-selected", "true");
+    await browser.keys("Quarterly report");
+    await browser.keys(ESCAPE);
+    await expect($('[data-testid="sheet-header"]')).toHaveValue("Quarterly report");
+    await expect($('[data-ribbon-tab="furniture"]')).not.toBeExisting();
     await expect($('[data-testid="document-page-count"]')).toHaveText(t("studio.doc.status.page", { page: 3, count: 3 }), { wait: 30000 });
     await $('[data-testid="document-print-preview-open"]').click();
     await $('[data-testid="document-print-preview"] [data-preview-page="1"] img').waitForDisplayed({ timeout: 30000 });

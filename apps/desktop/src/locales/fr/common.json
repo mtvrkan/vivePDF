@@ -9015,41 +9015,26 @@
         "orientation": "Orientation",
         "portrait": "Portrait",
         "landscape": "Paysage",
-        "text": "Texte",
-        "font": "Police",
-        "headingSame": "Les titres utilisent la même police",
-        "headingFont": "Police des titres",
-        "fontSize": "Taille",
         "lineHeight": "Interligne",
         "accent": "Couleur des titres",
-        "furniture": "En-tête et pied de page",
         "header": "Texte d'en-tête",
-        "headerAlign": "Position de l'en-tête",
         "footer": "Texte de pied de page",
-        "footerAlign": "Position du pied de page",
-        "pageNumbers": "Numéros de page",
         "numberFormat": "Format du numéro de page",
         "numberFormatHint": "{n} est remplacé par le numéro de page et {total} par le nombre total de pages, par exemple Page {n} sur {total}.",
         "furnitureOnFirst": "Les afficher aussi sur la première page",
         "contents": "Table des matières",
-        "toc": "Ajouter une table des matières",
         "tocHint": "Liste les titres avec leur numéro de page au début du document ; chaque entrée est un lien.",
         "tocTitle": "Titre",
         "tocTitleDefault": "Table des matières",
-        "tocDepth": "Niveaux de titres",
         "depth_one": "{{count}} niveau",
         "depth_other": "{{count}} niveaux",
-        "coverSection": "Couverture",
-        "cover": "Ajouter une couverture",
-        "coverStyle": "Style",
         "title": "Titre",
         "subtitle": "Sous-titre",
         "author": "Auteur",
         "date": "Date",
         "columns": "Colonnes",
         "columnGap": "Espace entre colonnes",
-        "columnsHint": "Les colonnes apparaissent dans l’aperçu et le PDF ; l’éditeur garde une seule colonne pendant la saisie. Un saut de page commence la page suivante. Ce nombre vaut jusqu’au premier saut de section, qui peut le changer pour les pages suivantes.",
-        "dialogTitle": "Paramètres du document"
+        "columnsHint": "Les colonnes apparaissent dans l’aperçu et le PDF ; l’éditeur garde une seule colonne pendant la saisie. Un saut de page commence la page suivante. Ce nombre vaut jusqu’au premier saut de section, qui peut le changer pour les pages suivantes."
       },
       "papers": {
         "a4": "A4",
@@ -9491,7 +9476,9 @@
           "layout": "Mise en page",
           "references": "Références",
           "table": "Tableau",
-          "view": "Affichage"
+          "view": "Affichage",
+          "design": "Création",
+          "furniture": "En-tête et pied de page"
         },
         "groups": {
           "history": "Annuler",
@@ -9516,7 +9503,12 @@
           "cells": "Cellules",
           "views": "Vues",
           "zoom": "Zoom",
-          "show": "Afficher"
+          "show": "Afficher",
+          "fonts": "Polices",
+          "colour": "Couleur",
+          "position": "Position",
+          "options": "Options",
+          "close": "Fermer"
         },
         "sizeDocument": "Document ({{size}})",
         "sizeUp": "Augmenter la taille",
@@ -9542,7 +9534,6 @@
         "columns1": "Une colonne",
         "columns2": "Deux colonnes",
         "columns3": "Trois colonnes",
-        "headerFooter": "En-tête et pied de page",
         "pageNumbers": "Numéros de page",
         "pageSettings": "Réglages de la page",
         "toc": "Table des matières",
@@ -9553,7 +9544,18 @@
         "headerRow": "Ligne d’en-tête",
         "printLayout": "Page",
         "pageLines": "Lignes de saut de page",
-        "ruler": "Règle"
+        "ruler": "Règle",
+        "bodyFont": "Texte",
+        "headingFont": "Titres",
+        "bodySize": "Taille du texte",
+        "header": "En-tête",
+        "footer": "Pied de page",
+        "closeFurniture": "Fermer l'en-tête et le pied de page",
+        "coverNone": "Aucune couverture",
+        "coverDetails": "Informations de couverture…",
+        "coverDetailsTitle": "Informations de couverture",
+        "tocNone": "Aucune table des matières",
+        "tocTitle": "Titre de la table des matières…"
       },
       "printPreview": {
         "title": "Aperçu avant impression"
@@ -9614,6 +9616,10 @@
           "left": "Retrait à gauche",
           "right": "Retrait à droite"
         }
+      },
+      "furniture": {
+        "pageNumber": "Numéro de page",
+        "notOnFirst": "{{name}} · masqué sur la première page"
       }
     },
     "cv": {

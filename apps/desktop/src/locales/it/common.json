@@ -9015,41 +9015,26 @@
         "orientation": "Orientamento",
         "portrait": "Verticale",
         "landscape": "Orizzontale",
-        "text": "Testo",
-        "font": "Carattere",
-        "headingSame": "I titoli usano lo stesso carattere",
-        "headingFont": "Carattere dei titoli",
-        "fontSize": "Dimensione",
         "lineHeight": "Interlinea",
         "accent": "Colore dei titoli",
-        "furniture": "Intestazione e piè di pagina",
         "header": "Testo dell'intestazione",
-        "headerAlign": "Posizione dell'intestazione",
         "footer": "Testo del piè di pagina",
-        "footerAlign": "Posizione del piè di pagina",
-        "pageNumbers": "Numeri di pagina",
         "numberFormat": "Formato del numero di pagina",
         "numberFormatHint": "{n} è il numero di pagina e {total} il numero totale di pagine, per esempio Pagina {n} di {total}.",
         "furnitureOnFirst": "Mostrarli anche nella prima pagina",
         "contents": "Indice",
-        "toc": "Aggiungi un indice",
         "tocHint": "Elenca i titoli con i relativi numeri di pagina all'inizio; ogni voce è un link.",
         "tocTitle": "Titolo",
         "tocTitleDefault": "Indice",
-        "tocDepth": "Livelli di titolo",
         "depth_one": "{{count}} livello",
         "depth_other": "{{count}} livelli",
-        "coverSection": "Copertina",
-        "cover": "Aggiungi una copertina",
-        "coverStyle": "Stile",
         "title": "Titolo",
         "subtitle": "Sottotitolo",
         "author": "Autore",
         "date": "Data",
         "columns": "Colonne",
         "columnGap": "Spazio tra colonne",
-        "columnsHint": "Le colonne compaiono nell’anteprima e nel PDF; mentre scrivi l’editor resta a una colonna. Un’interruzione di pagina inizia la pagina successiva. Questo numero vale fino alla prima interruzione di sezione, che può cambiarlo per le pagine seguenti.",
-        "dialogTitle": "Impostazioni documento"
+        "columnsHint": "Le colonne compaiono nell’anteprima e nel PDF; mentre scrivi l’editor resta a una colonna. Un’interruzione di pagina inizia la pagina successiva. Questo numero vale fino alla prima interruzione di sezione, che può cambiarlo per le pagine seguenti."
       },
       "papers": {
         "a4": "A4",
@@ -9491,7 +9476,9 @@
           "layout": "Layout",
           "references": "Riferimenti",
           "table": "Tabella",
-          "view": "Visualizza"
+          "view": "Visualizza",
+          "design": "Progettazione",
+          "furniture": "Intestazione e piè di pagina"
         },
         "groups": {
           "history": "Annulla",
@@ -9516,7 +9503,12 @@
           "cells": "Celle",
           "views": "Visualizzazioni",
           "zoom": "Zoom",
-          "show": "Mostra"
+          "show": "Mostra",
+          "fonts": "Tipi di carattere",
+          "colour": "Colore",
+          "position": "Posizione",
+          "options": "Opzioni",
+          "close": "Chiudi"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumenta dimensione",
@@ -9542,7 +9534,6 @@
         "columns1": "Una colonna",
         "columns2": "Due colonne",
         "columns3": "Tre colonne",
-        "headerFooter": "Intestazione e piè di pagina",
         "pageNumbers": "Numeri di pagina",
         "pageSettings": "Impostazioni pagina",
         "toc": "Sommario",
@@ -9553,7 +9544,18 @@
         "headerRow": "Riga di intestazione",
         "printLayout": "Layout di stampa",
         "pageLines": "Linee di interruzione pagina",
-        "ruler": "Righello"
+        "ruler": "Righello",
+        "bodyFont": "Testo",
+        "headingFont": "Titoli",
+        "bodySize": "Dimensione testo",
+        "header": "Intestazione",
+        "footer": "Piè di pagina",
+        "closeFurniture": "Chiudi intestazione e piè di pagina",
+        "coverNone": "Nessuna copertina",
+        "coverDetails": "Dati della copertina…",
+        "coverDetailsTitle": "Dati della copertina",
+        "tocNone": "Nessun sommario",
+        "tocTitle": "Titolo del sommario…"
       },
       "printPreview": {
         "title": "Anteprima di stampa"
@@ -9614,6 +9616,10 @@
           "left": "Rientro sinistro",
           "right": "Rientro destro"
         }
+      },
+      "furniture": {
+        "pageNumber": "Numero di pagina",
+        "notOnFirst": "{{name}} · nascosto nella prima pagina"
       }
     },
     "cv": {

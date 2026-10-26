@@ -9016,41 +9016,26 @@
         "orientation": "Yön",
         "portrait": "Dikey",
         "landscape": "Yatay",
-        "text": "Metin",
-        "font": "Yazı tipi",
-        "headingSame": "Başlıklar aynı yazı tipini kullansın",
-        "headingFont": "Başlık yazı tipi",
-        "fontSize": "Boyut",
         "lineHeight": "Satır aralığı",
         "accent": "Başlık rengi",
-        "furniture": "Üst ve alt bilgi",
         "header": "Üst bilgi metni",
-        "headerAlign": "Üst bilgi konumu",
         "footer": "Alt bilgi metni",
-        "footerAlign": "Alt bilgi konumu",
-        "pageNumbers": "Sayfa numaraları",
         "numberFormat": "Numara biçimi",
         "numberFormatHint": "{n} sayfa numarası, {total} toplam sayfa sayısıdır; örneğin Sayfa {n} / {total}.",
         "furnitureOnFirst": "İlk sayfada da göster",
         "contents": "İçindekiler",
-        "toc": "İçindekiler sayfası ekle",
         "tocHint": "Başlıkları sayfa numaralarıyla birlikte başa listeler; her satır bir bağlantıdır.",
         "tocTitle": "Başlık",
         "tocTitleDefault": "İçindekiler",
-        "tocDepth": "Başlık düzeyleri",
         "depth_one": "{{count}} düzey",
         "depth_other": "{{count}} düzey",
-        "coverSection": "Kapak",
-        "cover": "Kapak sayfası ekle",
-        "coverStyle": "Stil",
         "title": "Başlık",
         "subtitle": "Alt başlık",
         "author": "Yazar",
         "date": "Tarih",
         "columns": "Sütunlar",
         "columnGap": "Sütun aralığı",
-        "columnsHint": "Sütunlar önizlemede ve PDF'te görünür; yazarken düzenleyici tek sütun kalır. Sayfa sonu bir sonraki sayfaya geçer. Bu sayı ilk bölüm sonuna kadar geçerlidir; bölüm sonu sonraki sayfalar için sütun sayısını değiştirebilir.",
-        "dialogTitle": "Belge ayarları"
+        "columnsHint": "Sütunlar önizlemede ve PDF'te görünür; yazarken düzenleyici tek sütun kalır. Sayfa sonu bir sonraki sayfaya geçer. Bu sayı ilk bölüm sonuna kadar geçerlidir; bölüm sonu sonraki sayfalar için sütun sayısını değiştirebilir."
       },
       "papers": {
         "a4": "A4",
@@ -9492,7 +9477,9 @@
           "layout": "Düzen",
           "references": "Başvurular",
           "table": "Tablo",
-          "view": "Görünüm"
+          "view": "Görünüm",
+          "design": "Tasarım",
+          "furniture": "Üstbilgi ve altbilgi"
         },
         "groups": {
           "history": "Geri al",
@@ -9517,7 +9504,12 @@
           "cells": "Hücreler",
           "views": "Görünümler",
           "zoom": "Yakınlaştır",
-          "show": "Göster"
+          "show": "Göster",
+          "fonts": "Yazı tipleri",
+          "colour": "Renk",
+          "position": "Konum",
+          "options": "Seçenekler",
+          "close": "Kapat"
         },
         "sizeDocument": "Belge ({{size}})",
         "sizeUp": "Yazıyı büyüt",
@@ -9543,7 +9535,6 @@
         "columns1": "Tek sütun",
         "columns2": "İki sütun",
         "columns3": "Üç sütun",
-        "headerFooter": "Üstbilgi ve altbilgi",
         "pageNumbers": "Sayfa numaraları",
         "pageSettings": "Sayfa ayarları",
         "toc": "İçindekiler",
@@ -9554,7 +9545,18 @@
         "headerRow": "Başlık satırı",
         "printLayout": "Sayfa düzeni",
         "pageLines": "Sayfa sonu çizgileri",
-        "ruler": "Cetvel"
+        "ruler": "Cetvel",
+        "bodyFont": "Metin",
+        "headingFont": "Başlıklar",
+        "bodySize": "Metin boyutu",
+        "header": "Üstbilgi",
+        "footer": "Altbilgi",
+        "closeFurniture": "Üstbilgiyi ve altbilgiyi kapat",
+        "coverNone": "Kapak yok",
+        "coverDetails": "Kapak bilgileri…",
+        "coverDetailsTitle": "Kapak bilgileri",
+        "tocNone": "İçindekiler yok",
+        "tocTitle": "İçindekiler başlığı…"
       },
       "printPreview": {
         "title": "Baskı önizleme"
@@ -9615,6 +9617,10 @@
           "left": "Sol girinti",
           "right": "Sağ girinti"
         }
+      },
+      "furniture": {
+        "pageNumber": "Sayfa numarası",
+        "notOnFirst": "{{name}} · ilk sayfada gösterilmez"
       }
     },
     "cv": {

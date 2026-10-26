@@ -9015,41 +9015,26 @@
         "orientation": "Orientação",
         "portrait": "Retrato",
         "landscape": "Paisagem",
-        "text": "Texto",
-        "font": "Fonte",
-        "headingSame": "Os títulos usam a mesma fonte",
-        "headingFont": "Fonte dos títulos",
-        "fontSize": "Tamanho",
         "lineHeight": "Espaçamento entre linhas",
         "accent": "Cor dos títulos",
-        "furniture": "Cabeçalho e rodapé",
         "header": "Texto do cabeçalho",
-        "headerAlign": "Posição do cabeçalho",
         "footer": "Texto do rodapé",
-        "footerAlign": "Posição do rodapé",
-        "pageNumbers": "Números de página",
         "numberFormat": "Formato do número de página",
         "numberFormatHint": "{n} é o número da página e {total} é o total de páginas, por exemplo Página {n} de {total}.",
         "furnitureOnFirst": "Mostrar também na primeira página",
         "contents": "Sumário",
-        "toc": "Adicionar um sumário",
         "tocHint": "Lista os títulos com os números de página no início; cada item é um link.",
         "tocTitle": "Título",
         "tocTitleDefault": "Sumário",
-        "tocDepth": "Níveis de título",
         "depth_one": "{{count}} nível",
         "depth_other": "{{count}} níveis",
-        "coverSection": "Capa",
-        "cover": "Adicionar uma capa",
-        "coverStyle": "Estilo",
         "title": "Título",
         "subtitle": "Subtítulo",
         "author": "Autor",
         "date": "Data",
         "columns": "Colunas",
         "columnGap": "Espaço entre colunas",
-        "columnsHint": "As colunas aparecem na pré-visualização e no PDF; o editor mantém uma coluna enquanto você escreve. Uma quebra de página começa a próxima página. Este número vale até a primeira quebra de seção, que pode mudá-lo para as páginas seguintes.",
-        "dialogTitle": "Configurações do documento"
+        "columnsHint": "As colunas aparecem na pré-visualização e no PDF; o editor mantém uma coluna enquanto você escreve. Uma quebra de página começa a próxima página. Este número vale até a primeira quebra de seção, que pode mudá-lo para as páginas seguintes."
       },
       "papers": {
         "a4": "A4",
@@ -9491,7 +9476,9 @@
           "layout": "Layout",
           "references": "Referências",
           "table": "Tabela",
-          "view": "Exibir"
+          "view": "Exibir",
+          "design": "Design",
+          "furniture": "Cabeçalho e rodapé"
         },
         "groups": {
           "history": "Desfazer",
@@ -9516,7 +9503,12 @@
           "cells": "Células",
           "views": "Modos de exibição",
           "zoom": "Zoom",
-          "show": "Mostrar"
+          "show": "Mostrar",
+          "fonts": "Fontes",
+          "colour": "Cor",
+          "position": "Posição",
+          "options": "Opções",
+          "close": "Fechar"
         },
         "sizeDocument": "Documento ({{size}})",
         "sizeUp": "Aumentar fonte",
@@ -9542,7 +9534,6 @@
         "columns1": "Uma coluna",
         "columns2": "Duas colunas",
         "columns3": "Três colunas",
-        "headerFooter": "Cabeçalho e rodapé",
         "pageNumbers": "Números de página",
         "pageSettings": "Configurações da página",
         "toc": "Sumário",
@@ -9553,7 +9544,18 @@
         "headerRow": "Linha de cabeçalho",
         "printLayout": "Layout de impressão",
         "pageLines": "Linhas de quebra de página",
-        "ruler": "Régua"
+        "ruler": "Régua",
+        "bodyFont": "Texto",
+        "headingFont": "Títulos",
+        "bodySize": "Tamanho do texto",
+        "header": "Cabeçalho",
+        "footer": "Rodapé",
+        "closeFurniture": "Fechar cabeçalho e rodapé",
+        "coverNone": "Sem capa",
+        "coverDetails": "Dados da capa…",
+        "coverDetailsTitle": "Dados da capa",
+        "tocNone": "Sem sumário",
+        "tocTitle": "Título do sumário…"
       },
       "printPreview": {
         "title": "Visualizar impressão"
@@ -9614,6 +9616,10 @@
           "left": "Recuo à esquerda",
           "right": "Recuo à direita"
         }
+      },
+      "furniture": {
+        "pageNumber": "Número da página",
+        "notOnFirst": "{{name}} · oculto na primeira página"
       }
     },
     "cv": {
