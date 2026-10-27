@@ -501,6 +501,10 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   Apply a second colour: it replaces the first. Remove: the pages are white again. Read the
   coloured file with NVDA: the background is not announced.
 
+- Home › Tools catalogue at full width and in a narrow window, light and dark: the side rail
+  lists All and 13 categories with counts and marks the chosen one; a narrow window shows one
+  scrolling row instead; Tab reaches every category and NVDA reads it as pressed.
+
 - Tools › Thesis check on a real thesis exported from Word and from Studio, with NVDA: every
   check is read with its state (passed, warning, failed, not checked), the page chips of a failed
   check open the page, a scanned thesis without text shows the link to OCR, and Export report saves
