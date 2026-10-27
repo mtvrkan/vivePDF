@@ -62,7 +62,7 @@ describe("version files", () => {
   });
 
   it("drops malformed rows from the listing", async () => {
-    invoke.mockResolvedValueOnce([{ id: "1-save-0123456789abcdef", kind: "save", savedAt: 1, bytes: 10 }, { id: 4, kind: "save" }, { id: "x", kind: "hack", savedAt: 1, bytes: 1 }]);
+    invoke.mockResolvedValueOnce([{ id: "1-save-0123456789abcdef", kind: "save", savedAt: 1, bytes: 10 }, { id: 4, kind: "save" }, { id: "x", kind: "hack", savedAt: 1, bytes: 1 }] as never);
 
     const versions = await listVersions(PATH);
 

@@ -4,7 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 
-## [0.5.0] - 2026-10-26
+## [0.5.0] - 2026-10-27
 ### Added
 - Tools › Thesis check: checks a finished thesis PDF against university writing rules (left 4 cm or left 3.5 cm presets from the Studio thesis layouts, or your own values): paper size, the four margins (mirrored for two-sided printing if asked), body font and size, line spacing, numbered headings that look alike, page numbers on every page at the chosen place, in order, and roman numbers on the front pages; each rule shows passed, warning or failed with the pages to fix, a scan without text points to OCR, and the list can be exported as a report [2026-10-26]
 - Studio › Document: track changes. Review › Track changes marks what you type as an insertion and what you delete as a deletion, in your name and colour, with a bar beside changed lines; backspacing your own new text removes it, typing over a selection shows the old text struck through before the new one; click a change for a card with its author, time, Accept and Reject; Review has Accept/Reject (this one or all), Previous/Next, All markup / Final / Original and a reviewing pane that lists every change with a filter by author and Accept all / Reject all; the status bar shows when tracking is on; the PDF and Markdown get the final text and Export › Word writes real Word insertions and deletions; documents with changes are saved as version 6 [2026-10-27]

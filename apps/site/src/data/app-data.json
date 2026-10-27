@@ -3002,6 +3002,10 @@
         {
           "tr": "Stüdyo'da tez yazımı: üniversitelerin ortak kurallarıyla hazır Yüksek Lisans ve Doktora tezi başlangıçları, LaTeX ile yazılıp (1), (2)… diye numaralanan ve metinde anılabilen denklemler, sayfanın yanında yanıtlı yorumlar ve içindekiler, dipnotlar, denklemler ve yorumlarla birlikte Word'e aktarma.",
           "en": "Thesis writing in the Studio: ready Master's and Doctoral thesis starters with common university rules, equations typed in LaTeX and numbered (1), (2)… for reference, comments with replies beside the page, and export to Word with the contents, footnotes, equations and comments."
+        },
+        {
+          "tr": "Tez denetimi ve gözden geçirme: Araçlar › Tez denetimi bitmiş bir tez PDF'ini kâğıt, kenar boşlukları, yazı tipi, satır aralığı, başlıklar ve sayfa numaraları için üniversite kurallarına göre denetler; Stüdyo'daki belgede değişiklikleri izle eklenen ve silinen metni yazarıyla işaretler, tek tek ya da hepsini kabul veya reddettirir ve Word'e gerçek değişiklik olarak aktarılır; sürüm geçmişi her kayıtta ve 10 dakikada bir sürüm saklar, önizletir ve geri yükler.",
+          "en": "Thesis check and review: Tools › Thesis check checks a finished thesis PDF against university rules for paper, margins, font, line spacing, headings and page numbers; in a Studio document, Track changes marks inserted and deleted text with its author, lets you accept or reject one or all, and goes to Word as real tracked changes; version history keeps a version on every save and every 10 minutes, with a preview and restore."
         }
       ]
     },
