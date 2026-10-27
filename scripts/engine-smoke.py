@@ -364,6 +364,18 @@ class Smoke:
             expect(any(name.startswith("word/media/") for name in names), "word equation")
             return f"{result['bytes']} bytes"
 
+        def thesis() -> str:
+            params = {
+                "path": str(long),
+                "marginsMm": {"top": 25, "bottom": 25, "left": 40, "right": 25},
+                "fontSize": 12,
+                "lineHeight": 1.5,
+            }
+            result = self.call("thesis.check", params)
+            expect(result["pageCount"] == LONG_DOCUMENT_PAGES, "thesis page count")
+            expect(bool(result["checks"]), "no thesis checks")
+            return f"{len(result['checks'])} checks"
+
         for name, action in (
             ("info.get", info),
             ("compress.run", compress),
@@ -382,6 +394,7 @@ class Smoke:
             ("convert.from_url", web),
             ("pages.merge", merge),
             ("studio.export_docx", word),
+            ("thesis.check", thesis),
         ):
             self.step(name, action)
 
