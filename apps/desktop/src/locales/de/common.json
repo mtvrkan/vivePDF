@@ -6141,7 +6141,8 @@
         "center": "Mittig",
         "right": "Rechts",
         "outside": "Außen",
-        "any": "Nicht prüfen"
+        "any": "Nicht prüfen",
+        "left": "Links"
       },
       "papers": {
         "a4": "A4",
@@ -6180,8 +6181,8 @@
         "text": {
           "title": "Textebene",
           "pass": "Jede Seite hat auswählbaren Text.",
-          "warn_one": "{{count}} Seite wirkt gescannt und konnte nicht vermessen werden; zuerst OCR anwenden.",
-          "warn_other": "{{count}} Seiten wirken gescannt und konnten nicht vermessen werden; zuerst OCR anwenden."
+          "warn_one": "{{count}} Seite hat keinen messbaren Text (gescannt oder unlesbar); OCR anwenden oder die Datei prüfen.",
+          "warn_other": "{{count}} Seiten haben keinen messbaren Text (gescannt oder unlesbar); OCR anwenden oder die Datei prüfen."
         },
         "paper": {
           "title": "Papierformat",
@@ -6220,7 +6221,8 @@
           "warn_one": "Der Text ist in {{found}} gesetzt, aber auf {{count}} Seite überwiegt eine andere Schrift.",
           "warn_other": "Der Text ist in {{found}} gesetzt, aber auf {{count}} Seiten überwiegt eine andere Schrift.",
           "fail": "Erwartet {{expected}}; der meiste Text ist {{found}}.",
-          "skip": "Nicht geprüft; die häufigste Schrift ist {{found}}."
+          "skip": "Nicht geprüft; die häufigste Schrift ist {{found}}.",
+          "unknownFont": "Die Schriftnamen ließen sich nicht aus der PDF lesen; prüfen Sie selbst, ob der Text in {{expected}} gesetzt ist."
         },
         "bodySize": {
           "title": "Schriftgröße",
@@ -6247,7 +6249,7 @@
           "pass": "Ab der ersten nummerierten Seite hat jede Seite eine Zahl.",
           "warn_one": "{{count}} Seite hat keine Zahl.",
           "warn_other": "{{count}} Seiten haben keine Zahl.",
-          "fail": "Es wurden keine Seitenzahlen gefunden."
+          "fail": "Es wurde keine Seitenzahl in erkannter Form (1, 2, 3 oder i, ii, iii) gefunden."
         },
         "pageNumberPlace": {
           "title": "Position der Zahlen",
@@ -6267,6 +6269,32 @@
           "pass": "Der Vorspann ist mit römischen Zahlen nummeriert.",
           "warn": "Keine Seiten mit römischen Zahlen (i, ii, iii) gefunden.",
           "skip": "Nicht geprüft."
+        }
+      },
+      "noText": "Diese PDF hat keine Textebene und wirkt gescannt. Zuerst OCR anwenden, dann erneut prüfen.",
+      "detail": {
+        "show_one": "{{count}} Seite anzeigen",
+        "show_other": "{{count}} Seiten anzeigen",
+        "hide": "Seiten ausblenden",
+        "expected": "Erwartet: {{value}}",
+        "found": "Gefunden: {{value}}",
+        "none": "keine",
+        "heading": "„{{text}}“",
+        "truncated": "Die ersten {{shown}} von {{total}} Seiten sind aufgeführt.",
+        "roman": "römische Ziffern",
+        "bold": "fett",
+        "regular": "normal",
+        "unnamedFont": "unbenannte Schrift",
+        "level": "Überschrift Ebene {{level}}",
+        "units": {
+          "mm": "{{value}} mm",
+          "pt": "{{value}} pt",
+          "lines": "{{value}} Zeilen"
+        },
+        "notes": {
+          "landscape": "Querformat",
+          "scanned": "Wirkt gescannt",
+          "unreadable": "Nicht lesbar"
         }
       }
     },

@@ -6141,7 +6141,8 @@
         "center": "Ortada",
         "right": "Sağda",
         "outside": "Dış kenarda",
-        "any": "Denetleme"
+        "any": "Denetleme",
+        "left": "Solda"
       },
       "papers": {
         "a4": "A4",
@@ -6180,8 +6181,8 @@
         "text": {
           "title": "Metin katmanı",
           "pass": "Bütün sayfalarda seçilebilir metin var.",
-          "warn_one": "{{count}} sayfa taranmış görünüyor ve ölçülemedi; önce OCR uygulayın.",
-          "warn_other": "{{count}} sayfa taranmış görünüyor ve ölçülemedi; önce OCR uygulayın."
+          "warn_one": "{{count}} sayfada ölçülebilir metin yok (taranmış ya da okunamadı); OCR uygulayın ya da dosyayı kontrol edin.",
+          "warn_other": "{{count}} sayfada ölçülebilir metin yok (taranmış ya da okunamadı); OCR uygulayın ya da dosyayı kontrol edin."
         },
         "paper": {
           "title": "Kağıt boyutu",
@@ -6220,7 +6221,8 @@
           "warn_one": "Metin {{found}} ile yazılmış, ama {{count}} sayfada başka yazı tipi ağır basıyor.",
           "warn_other": "Metin {{found}} ile yazılmış, ama {{count}} sayfada başka yazı tipi ağır basıyor.",
           "fail": "Beklenen {{expected}}, metnin çoğu {{found}}.",
-          "skip": "Denetlenmedi; en çok kullanılan yazı tipi {{found}}."
+          "skip": "Denetlenmedi; en çok kullanılan yazı tipi {{found}}.",
+          "unknownFont": "Yazı tipi adları PDF'ten okunamadı; metnin {{expected}} ile yazıldığını gözle kontrol edin."
         },
         "bodySize": {
           "title": "Yazı boyutu",
@@ -6247,7 +6249,7 @@
           "pass": "İlk numaralı sayfadan sonra her sayfada numara var.",
           "warn_one": "{{count}} sayfada numara yok.",
           "warn_other": "{{count}} sayfada numara yok.",
-          "fail": "Hiçbir sayfada sayfa numarası bulunamadı."
+          "fail": "Tanınan biçimde (1, 2, 3 ya da i, ii, iii) sayfa numarası bulunamadı."
         },
         "pageNumberPlace": {
           "title": "Numaraların yeri",
@@ -6267,6 +6269,32 @@
           "pass": "Giriş sayfaları roma rakamıyla numaralanmış.",
           "warn": "Roma rakamlı (i, ii, iii) sayfa bulunamadı.",
           "skip": "Denetlenmedi."
+        }
+      },
+      "noText": "Bu PDF'te metin katmanı yok; taranmış görünüyor. Önce OCR uygulayın, sonra yeniden denetleyin.",
+      "detail": {
+        "show_one": "{{count}} sayfayı göster",
+        "show_other": "{{count}} sayfayı göster",
+        "hide": "Sayfaları gizle",
+        "expected": "Beklenen: {{value}}",
+        "found": "Bulunan: {{value}}",
+        "none": "yok",
+        "heading": "“{{text}}”",
+        "truncated": "{{total}} sayfanın ilk {{shown}} tanesi listelendi.",
+        "roman": "Roma rakamı",
+        "bold": "kalın",
+        "regular": "normal",
+        "unnamedFont": "adsız yazı tipi",
+        "level": "{{level}}. düzey başlık",
+        "units": {
+          "mm": "{{value}} mm",
+          "pt": "{{value}} pt",
+          "lines": "{{value}} satır"
+        },
+        "notes": {
+          "landscape": "Yatay sayfa",
+          "scanned": "Taranmış görünüyor",
+          "unreadable": "Okunamadı"
         }
       }
     },

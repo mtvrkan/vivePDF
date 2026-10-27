@@ -6141,7 +6141,8 @@
         "center": "Centralizado",
         "right": "À direita",
         "outside": "Borda externa",
-        "any": "Não verificar"
+        "any": "Não verificar",
+        "left": "À esquerda"
       },
       "papers": {
         "a4": "A4",
@@ -6180,8 +6181,8 @@
         "text": {
           "title": "Camada de texto",
           "pass": "Todas as páginas têm texto selecionável.",
-          "warn_one": "{{count}} página parece digitalizada e não pôde ser medida; aplique OCR primeiro.",
-          "warn_other": "{{count}} páginas parecem digitalizadas e não puderam ser medidas; aplique OCR primeiro."
+          "warn_one": "{{count}} página não tem texto mensurável (digitalizada ou ilegível); aplique OCR ou verifique o arquivo.",
+          "warn_other": "{{count}} páginas não têm texto mensurável (digitalizadas ou ilegíveis); aplique OCR ou verifique o arquivo."
         },
         "paper": {
           "title": "Tamanho do papel",
@@ -6220,7 +6221,8 @@
           "warn_one": "O texto está em {{found}}, mas outra fonte predomina em {{count}} página.",
           "warn_other": "O texto está em {{found}}, mas outra fonte predomina em {{count}} páginas.",
           "fail": "Esperado {{expected}}; a maior parte do texto está em {{found}}.",
-          "skip": "Não verificado; a fonte mais usada é {{found}}."
+          "skip": "Não verificado; a fonte mais usada é {{found}}.",
+          "unknownFont": "Os nomes das fontes não puderam ser lidos do PDF; confira visualmente se o texto está em {{expected}}."
         },
         "bodySize": {
           "title": "Tamanho da fonte",
@@ -6247,7 +6249,7 @@
           "pass": "A partir da primeira página numerada, todas têm número.",
           "warn_one": "{{count}} página não tem número.",
           "warn_other": "{{count}} páginas não têm número.",
-          "fail": "Nenhum número de página foi encontrado."
+          "fail": "Nenhum número de página em formato reconhecido (1, 2, 3 ou i, ii, iii) foi encontrado."
         },
         "pageNumberPlace": {
           "title": "Posição dos números",
@@ -6267,6 +6269,32 @@
           "pass": "As páginas pré-textuais estão numeradas em algarismos romanos.",
           "warn": "Nenhuma página numerada em algarismos romanos (i, ii, iii) foi encontrada.",
           "skip": "Não verificado."
+        }
+      },
+      "noText": "Este PDF não tem camada de texto; parece digitalizado. Aplique OCR primeiro e verifique novamente.",
+      "detail": {
+        "show_one": "Mostrar {{count}} página",
+        "show_other": "Mostrar as {{count}} páginas",
+        "hide": "Ocultar páginas",
+        "expected": "Esperado: {{value}}",
+        "found": "Encontrado: {{value}}",
+        "none": "nenhum",
+        "heading": "“{{text}}”",
+        "truncated": "As primeiras {{shown}} de {{total}} páginas estão listadas.",
+        "roman": "algarismos romanos",
+        "bold": "negrito",
+        "regular": "normal",
+        "unnamedFont": "fonte sem nome",
+        "level": "Título de nível {{level}}",
+        "units": {
+          "mm": "{{value}} mm",
+          "pt": "{{value}} pt",
+          "lines": "{{value}} linhas"
+        },
+        "notes": {
+          "landscape": "Página em paisagem",
+          "scanned": "Parece digitalizada",
+          "unreadable": "Não foi possível ler"
         }
       }
     },

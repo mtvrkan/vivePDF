@@ -833,7 +833,8 @@ export type ThesisCheckRules = {
   frontRoman: boolean;
 };
 export type ThesisCheckParams = ThesisCheckRules & { path: string; password?: string };
-export type ThesisCheckItem = { id: string; status: ThesisCheckStatus; pages: number[]; pageTotal: number; expected: string | null; found: string | null };
+export type ThesisPageDetail = { page: number; expected: string | null; found: string | null; note: string | null; text: string | null };
+export type ThesisCheckItem = { id: string; status: ThesisCheckStatus; pages: number[]; pageTotal: number; expected: string | null; found: string | null; reason?: string | null; details?: ThesisPageDetail[] };
 export type ThesisCheckReport = { pageCount: number; textPages: number; checks: ThesisCheckItem[]; ready: boolean };
 
 export type AccessReport = {

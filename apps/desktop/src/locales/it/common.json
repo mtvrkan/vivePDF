@@ -6141,7 +6141,8 @@
         "center": "Al centro",
         "right": "A destra",
         "outside": "Bordo esterno",
-        "any": "Non controllare"
+        "any": "Non controllare",
+        "left": "A sinistra"
       },
       "papers": {
         "a4": "A4",
@@ -6180,8 +6181,8 @@
         "text": {
           "title": "Livello di testo",
           "pass": "Ogni pagina ha testo selezionabile.",
-          "warn_one": "{{count}} pagina sembra scansionata e non è stato possibile misurarla; applica prima l’OCR.",
-          "warn_other": "{{count}} pagine sembrano scansionate e non è stato possibile misurarle; applica prima l’OCR."
+          "warn_one": "{{count}} pagina non ha testo misurabile (scansionata o illeggibile); applica l'OCR o controlla il file.",
+          "warn_other": "{{count}} pagine non hanno testo misurabile (scansionate o illeggibili); applica l'OCR o controlla il file."
         },
         "paper": {
           "title": "Formato carta",
@@ -6220,7 +6221,8 @@
           "warn_one": "Il testo è composto in {{found}}, ma su {{count}} pagina prevale un altro carattere.",
           "warn_other": "Il testo è composto in {{found}}, ma su {{count}} pagine prevale un altro carattere.",
           "fail": "Atteso {{expected}}; la maggior parte del testo è in {{found}}.",
-          "skip": "Non controllato; il carattere più usato è {{found}}."
+          "skip": "Non controllato; il carattere più usato è {{found}}.",
+          "unknownFont": "Non è stato possibile leggere i nomi dei caratteri dal PDF; verifica a occhio che il testo sia in {{expected}}."
         },
         "bodySize": {
           "title": "Dimensione carattere",
@@ -6247,7 +6249,7 @@
           "pass": "Dalla prima pagina numerata in poi, ogni pagina ha un numero.",
           "warn_one": "{{count}} pagina non ha numero.",
           "warn_other": "{{count}} pagine non hanno numero.",
-          "fail": "Nessun numero di pagina trovato."
+          "fail": "Non è stato trovato alcun numero di pagina in un formato riconosciuto (1, 2, 3 o i, ii, iii)."
         },
         "pageNumberPlace": {
           "title": "Posizione dei numeri",
@@ -6267,6 +6269,32 @@
           "pass": "Le pagine iniziali sono numerate in numeri romani.",
           "warn": "Nessuna pagina numerata in numeri romani (i, ii, iii) trovata.",
           "skip": "Non controllato."
+        }
+      },
+      "noText": "Questo PDF non ha un livello di testo e sembra scansionato. Applica prima l'OCR, poi ricontrolla.",
+      "detail": {
+        "show_one": "Mostra {{count}} pagina",
+        "show_other": "Mostra le {{count}} pagine",
+        "hide": "Nascondi le pagine",
+        "expected": "Previsto: {{value}}",
+        "found": "Trovato: {{value}}",
+        "none": "nessuno",
+        "heading": "«{{text}}»",
+        "truncated": "Sono elencate le prime {{shown}} pagine su {{total}}.",
+        "roman": "numeri romani",
+        "bold": "grassetto",
+        "regular": "normale",
+        "unnamedFont": "carattere senza nome",
+        "level": "Titolo di livello {{level}}",
+        "units": {
+          "mm": "{{value}} mm",
+          "pt": "{{value}} pt",
+          "lines": "{{value}} righe"
+        },
+        "notes": {
+          "landscape": "Pagina orizzontale",
+          "scanned": "Sembra scansionata",
+          "unreadable": "Illeggibile"
         }
       }
     },

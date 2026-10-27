@@ -6141,7 +6141,8 @@
         "center": "Centred",
         "right": "Right",
         "outside": "Outside edge",
-        "any": "Don't check"
+        "any": "Don't check",
+        "left": "Left"
       },
       "papers": {
         "a4": "A4",
@@ -6180,8 +6181,8 @@
         "text": {
           "title": "Text layer",
           "pass": "Every page has selectable text.",
-          "warn_one": "{{count}} page looks scanned and could not be measured; run OCR first.",
-          "warn_other": "{{count}} pages look scanned and could not be measured; run OCR first."
+          "warn_one": "{{count}} page has no measurable text (scanned or unreadable); run OCR or check the file.",
+          "warn_other": "{{count}} pages have no measurable text (scanned or unreadable); run OCR or check the file."
         },
         "paper": {
           "title": "Paper size",
@@ -6220,7 +6221,8 @@
           "warn_one": "The text is set in {{found}}, but another font dominates on {{count}} page.",
           "warn_other": "The text is set in {{found}}, but another font dominates on {{count}} pages.",
           "fail": "Expected {{expected}}; most of the text is {{found}}.",
-          "skip": "Not checked; the most used font is {{found}}."
+          "skip": "Not checked; the most used font is {{found}}.",
+          "unknownFont": "The font names could not be read from the PDF; check by eye that the text is set in {{expected}}."
         },
         "bodySize": {
           "title": "Font size",
@@ -6247,7 +6249,7 @@
           "pass": "Every page after the first numbered one has a number.",
           "warn_one": "{{count}} page has no number.",
           "warn_other": "{{count}} pages have no number.",
-          "fail": "No page numbers were found."
+          "fail": "No page number in a recognised format (1, 2, 3 or i, ii, iii) was found."
         },
         "pageNumberPlace": {
           "title": "Number position",
@@ -6267,6 +6269,32 @@
           "pass": "The front pages are numbered in roman numerals.",
           "warn": "No pages numbered in roman numerals (i, ii, iii) were found.",
           "skip": "Not checked."
+        }
+      },
+      "noText": "This PDF has no text layer, so it looks like a scan. Run OCR first, then check again.",
+      "detail": {
+        "show_one": "Show the {{count}} page",
+        "show_other": "Show the {{count}} pages",
+        "hide": "Hide pages",
+        "expected": "Expected: {{value}}",
+        "found": "Found: {{value}}",
+        "none": "none",
+        "heading": "“{{text}}”",
+        "truncated": "The first {{shown}} of {{total}} pages are listed.",
+        "roman": "roman numerals",
+        "bold": "bold",
+        "regular": "regular",
+        "unnamedFont": "unnamed font",
+        "level": "Level {{level}} heading",
+        "units": {
+          "mm": "{{value}} mm",
+          "pt": "{{value}} pt",
+          "lines": "{{value}} lines"
+        },
+        "notes": {
+          "landscape": "Landscape page",
+          "scanned": "Looks scanned",
+          "unreadable": "Could not be read"
         }
       }
     },

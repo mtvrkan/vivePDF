@@ -123,7 +123,7 @@ export function ThesisCheckPage() {
             ) : null}
             {checkError ? (
               <div role="alert" className="flex flex-col items-start gap-2 text-sm text-destructive">
-                <p>{describeError(t, checkError)}</p>
+                <p>{noText ? t("tools.thesisCheck.noText") : describeError(t, checkError)}</p>
                 {noText ? (
                   <Link to="/tools/ocr" className="flex h-7 items-center gap-1 rounded-md px-2 text-xs font-medium text-primary hover:bg-secondary">
                     {t("tools.thesisCheck.openOcr")}

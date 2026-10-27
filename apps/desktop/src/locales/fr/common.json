@@ -6141,7 +6141,8 @@
         "center": "Centré",
         "right": "À droite",
         "outside": "Bord extérieur",
-        "any": "Ne pas contrôler"
+        "any": "Ne pas contrôler",
+        "left": "À gauche"
       },
       "papers": {
         "a4": "A4",
@@ -6180,8 +6181,8 @@
         "text": {
           "title": "Couche de texte",
           "pass": "Chaque page contient du texte sélectionnable.",
-          "warn_one": "{{count}} page semble numérisée et n’a pas pu être mesurée ; appliquez d’abord l’OCR.",
-          "warn_other": "{{count}} pages semblent numérisées et n’ont pas pu être mesurées ; appliquez d’abord l’OCR."
+          "warn_one": "{{count}} page n'a pas de texte mesurable (numérisée ou illisible) ; appliquez l'OCR ou vérifiez le fichier.",
+          "warn_other": "{{count}} pages n'ont pas de texte mesurable (numérisées ou illisibles) ; appliquez l'OCR ou vérifiez le fichier."
         },
         "paper": {
           "title": "Format du papier",
@@ -6220,7 +6221,8 @@
           "warn_one": "Le texte est composé en {{found}}, mais une autre police domine sur {{count}} page.",
           "warn_other": "Le texte est composé en {{found}}, mais une autre police domine sur {{count}} pages.",
           "fail": "{{expected}} attendue ; l’essentiel du texte est en {{found}}.",
-          "skip": "Non contrôlé ; la police la plus utilisée est {{found}}."
+          "skip": "Non contrôlé ; la police la plus utilisée est {{found}}.",
+          "unknownFont": "Les noms de police n'ont pas pu être lus dans le PDF ; vérifiez à l'œil que le texte est en {{expected}}."
         },
         "bodySize": {
           "title": "Taille de police",
@@ -6247,7 +6249,7 @@
           "pass": "Après la première page numérotée, chaque page a un numéro.",
           "warn_one": "{{count}} page n’a pas de numéro.",
           "warn_other": "{{count}} pages n’ont pas de numéro.",
-          "fail": "Aucun numéro de page trouvé."
+          "fail": "Aucun numéro de page dans un format reconnu (1, 2, 3 ou i, ii, iii) n'a été trouvé."
         },
         "pageNumberPlace": {
           "title": "Position des numéros",
@@ -6267,6 +6269,32 @@
           "pass": "Les pages liminaires sont numérotées en chiffres romains.",
           "warn": "Aucune page numérotée en chiffres romains (i, ii, iii) trouvée.",
           "skip": "Non contrôlé."
+        }
+      },
+      "noText": "Ce PDF n'a pas de couche de texte ; il semble numérisé. Appliquez d'abord l'OCR, puis relancez la vérification.",
+      "detail": {
+        "show_one": "Afficher {{count}} page",
+        "show_other": "Afficher les {{count}} pages",
+        "hide": "Masquer les pages",
+        "expected": "Attendu : {{value}}",
+        "found": "Trouvé : {{value}}",
+        "none": "aucun",
+        "heading": "« {{text}} »",
+        "truncated": "Les {{shown}} premières pages sur {{total}} sont listées.",
+        "roman": "chiffres romains",
+        "bold": "gras",
+        "regular": "normal",
+        "unnamedFont": "police sans nom",
+        "level": "Titre de niveau {{level}}",
+        "units": {
+          "mm": "{{value}} mm",
+          "pt": "{{value}} pt",
+          "lines": "{{value}} lignes"
+        },
+        "notes": {
+          "landscape": "Page en paysage",
+          "scanned": "Semble numérisée",
+          "unreadable": "Illisible"
         }
       }
     },

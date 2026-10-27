@@ -4,6 +4,7 @@ import { CheckPages } from "@/components/tool/CheckPages";
 import { cn } from "@/shared/lib/cn";
 import type { ThesisCheckItem, ThesisCheckStatus } from "@/types";
 import { checksByGroup } from "./thesisCheckRules";
+import { ThesisPageDetails } from "./ThesisPageDetails";
 import { useThesisDetail } from "./useThesisDetail";
 
 const STATUS_ICON: Record<ThesisCheckStatus, typeof CheckCircle2> = { pass: CheckCircle2, warn: AlertTriangle, fail: XCircle, skip: MinusCircle };
@@ -29,7 +30,7 @@ export function ThesisReport({ path, checks }: { path: string; checks: ThesisChe
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="font-medium">{t(`tools.thesisCheck.checks.${item.id}.title`)}</span>
                     <span className="text-xs text-muted-foreground">{detailOf(item)}</span>
-                    {item.status === "warn" || item.status === "fail" ? <CheckPages path={path} pages={item.pages} /> : null}
+                    {item.status === "warn" || item.status === "fail" ? item.details?.length ? <ThesisPageDetails path={path} item={item} /> : <CheckPages path={path} pages={item.pages} /> : null}
                   </span>
                 </li>
               );

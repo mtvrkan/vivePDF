@@ -504,6 +504,8 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   check is read with its state (passed, warning, failed, not checked), the page chips of a failed
   check open the page, a scanned thesis without text shows the link to OCR, and Export report saves
   a Markdown file next to the PDF with a Turkish file name.
+  Open "Show the pages" under a failed rule: each page is listed with Expected and Found and
+  opens on click; a heading row quotes the heading; NVDA reads the toggle as expanded or collapsed.
 
 ### How native dialogs are answered
 

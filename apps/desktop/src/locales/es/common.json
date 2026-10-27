@@ -6141,7 +6141,8 @@
         "center": "Centrado",
         "right": "A la derecha",
         "outside": "Borde exterior",
-        "any": "No revisar"
+        "any": "No revisar",
+        "left": "Izquierda"
       },
       "papers": {
         "a4": "A4",
@@ -6180,8 +6181,8 @@
         "text": {
           "title": "Capa de texto",
           "pass": "Todas las páginas tienen texto seleccionable.",
-          "warn_one": "{{count}} página parece escaneada y no se pudo medir; aplique OCR primero.",
-          "warn_other": "{{count}} páginas parecen escaneadas y no se pudieron medir; aplique OCR primero."
+          "warn_one": "{{count}} página no tiene texto medible (escaneada o ilegible); aplica OCR o revisa el archivo.",
+          "warn_other": "{{count}} páginas no tienen texto medible (escaneadas o ilegibles); aplica OCR o revisa el archivo."
         },
         "paper": {
           "title": "Tamaño del papel",
@@ -6220,7 +6221,8 @@
           "warn_one": "El texto está en {{found}}, pero en {{count}} página domina otra fuente.",
           "warn_other": "El texto está en {{found}}, pero en {{count}} páginas domina otra fuente.",
           "fail": "Se espera {{expected}}; la mayor parte del texto está en {{found}}.",
-          "skip": "No revisado; la fuente más usada es {{found}}."
+          "skip": "No revisado; la fuente más usada es {{found}}.",
+          "unknownFont": "No se pudieron leer los nombres de las fuentes del PDF; comprueba a simple vista que el texto está en {{expected}}."
         },
         "bodySize": {
           "title": "Tamaño de fuente",
@@ -6247,7 +6249,7 @@
           "pass": "Desde la primera página numerada, todas tienen número.",
           "warn_one": "{{count}} página no tiene número.",
           "warn_other": "{{count}} páginas no tienen número.",
-          "fail": "No se encontraron números de página."
+          "fail": "No se encontró ningún número de página en un formato reconocido (1, 2, 3 o i, ii, iii)."
         },
         "pageNumberPlace": {
           "title": "Posición de los números",
@@ -6267,6 +6269,32 @@
           "pass": "Las páginas preliminares están numeradas en romanos.",
           "warn": "No se encontraron páginas numeradas en romanos (i, ii, iii).",
           "skip": "No revisado."
+        }
+      },
+      "noText": "Este PDF no tiene capa de texto; parece escaneado. Aplica OCR primero y vuelve a comprobarlo.",
+      "detail": {
+        "show_one": "Mostrar {{count}} página",
+        "show_other": "Mostrar {{count}} páginas",
+        "hide": "Ocultar páginas",
+        "expected": "Esperado: {{value}}",
+        "found": "Encontrado: {{value}}",
+        "none": "ninguno",
+        "heading": "«{{text}}»",
+        "truncated": "Se muestran las primeras {{shown}} de {{total}} páginas.",
+        "roman": "números romanos",
+        "bold": "negrita",
+        "regular": "normal",
+        "unnamedFont": "fuente sin nombre",
+        "level": "Título de nivel {{level}}",
+        "units": {
+          "mm": "{{value}} mm",
+          "pt": "{{value}} pt",
+          "lines": "{{value}} líneas"
+        },
+        "notes": {
+          "landscape": "Página horizontal",
+          "scanned": "Parece escaneada",
+          "unreadable": "No se pudo leer"
         }
       }
     },
