@@ -299,7 +299,22 @@ describe("studio documents", () => {
     await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-comment.png"));
   });
 
-  it("exports the document to Word with its comment", async () => {
+  it("tracks an insertion from Review and lists it in the reviewing pane", async () => {
+    await $('[data-ribbon-tab="review"]').click();
+    await $('[data-testid="doc-track-toggle"]').click();
+    await expect($('[data-testid="doc-track-toggle"]')).toHaveAttribute("aria-pressed", "true");
+    await body().$(":scope > p:last-of-type").click();
+    await browser.keys([END]);
+    await browser.keys(" revised");
+    await expect(body().$(".vp-ins")).toBeDisplayed();
+
+    if (!(await $('[data-testid="changes-panel"]').isExisting())) await $('[data-testid="doc-track-panel"]').click();
+    await expect($$('[data-testid="changes-item"]')).toBeElementsArrayOfSize(1);
+    await expect($('[data-testid="document-track-status"]')).toHaveText(expect.stringContaining(t("studio.doc.track.on")));
+    await browser.saveScreenshot(join(process.env.VIVEPDF_E2E_RUN_DIR as string, "studio-document-track.png"));
+  });
+
+  it("exports the document to Word with its comment and tracked change", async () => {
     const output = join(workDir(), "Quarterly.docx");
     await button(t("studio.toolbar.export")).click();
     await $('[role="dialog"]').waitForDisplayed();

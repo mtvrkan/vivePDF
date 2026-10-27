@@ -2,6 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { CAPTION, CaptionCounter, captionKind, captionLabel } from "./captionCounter";
 import { COMMENT, commentId } from "./comments";
+import { changeAttrs, DELETION, INSERTION, withoutDeleted } from "./trackChanges";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
 import { EQUATION, EQUATION_BLOCK, EQUATION_COLOUR, EQUATION_REF, MAX_EQUATIONS, equationArt, equationId, equationLabel, equationNumbers } from "./equations";
@@ -53,12 +54,12 @@ class Writer {
   captionIds = 0;
   numbering = true;
   mainWritten = false;
-  comments: boolean;
+  word: boolean;
 
-  constructor(settings: WriterSettings, references: DocumentReferences | null, comments: boolean) {
+  constructor(settings: WriterSettings, references: DocumentReferences | null, word: boolean) {
     this.fonts = [settings.fontId, settings.headingFontId ?? settings.fontId];
     this.references = references;
-    this.comments = comments;
+    this.word = word;
     this.numbers = new HeadingCounter(settings.headingNumbers ?? "none");
   }
 
@@ -179,8 +180,15 @@ function wrap(text: string, mark: Mark, writer: Writer): string {
       return styles.length ? `<span style="${styles.join(";")}">${text}</span>` : text;
     }
     case COMMENT: {
-      const id = writer.comments ? commentId(attr(mark, "id")) : null;
+      const id = writer.word ? commentId(attr(mark, "id")) : null;
       return id ? `<span data-comment="${id}">${text}</span>` : text;
+    }
+    case INSERTION:
+    case DELETION: {
+      const change = writer.word ? changeAttrs(mark.attrs) : null;
+      if (!change) return text;
+      const date = change.date ? ` data-date="${change.date}"` : "";
+      return `<span data-revision="${mark.type === INSERTION ? "ins" : "del"}" data-author="${escapeHtml(change.author)}"${date}>${text}</span>`;
     }
     default:
       return text;
@@ -379,8 +387,9 @@ function markedBlock(node: DocumentNode, markup: string, index: number, writer: 
   return { markup: markup.replace(OPENING_TAG, `<$1 id="${id}"`), id };
 }
 
-export function documentHtml(content: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false, comments = false): DocumentHtml {
-  const writer = new Writer(settings, references, comments);
+export function documentHtml(source: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false, word = false): DocumentHtml {
+  const content = withoutDeleted(source, word);
+  const writer = new Writer(settings, references, word);
   writer.numbering = !hasMainBreak(content);
   writer.equationNumbers = equationNumbers(content);
   const blockIds: string[] = [];

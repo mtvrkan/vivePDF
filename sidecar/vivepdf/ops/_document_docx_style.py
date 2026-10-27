@@ -23,6 +23,7 @@ class RunLook:
     rtl: bool = False
     comments: frozenset[str] = frozenset()
     link: str = ""
+    revision: tuple[str, str, str] | None = None
 
     def with_(self, **changes) -> "RunLook":
         return replace(self, **changes)

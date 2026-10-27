@@ -478,7 +478,7 @@ def test_a_document_file_round_trips_and_refuses_other_files(tmp_path: Path):
     other = tmp_path / "other.vivedoc"
     other.write_text(json.dumps({"kind": "design"}), "utf-8")
     newer = tmp_path / "newer.vivedoc"
-    newer.write_text(json.dumps({"kind": "document", "version": 6}), "utf-8")
+    newer.write_text(json.dumps({"kind": "document", "version": 7}), "utf-8")
     rich = tmp_path / "rich.vivedoc"
     rich.write_text(json.dumps({**document, "version": 3}), "utf-8")
     maths = tmp_path / "maths.vivedoc"
@@ -489,6 +489,19 @@ def test_a_document_file_round_trips_and_refuses_other_files(tmp_path: Path):
     reviewed_content = {"type": "doc", "attrs": {"comments": [thread]}}
     reviewed_file = {**document, "version": 5, "content": reviewed_content}
     reviewed.write_text(json.dumps(reviewed_file), "utf-8")
+    tracked = tmp_path / "tracked.vivedoc"
+    change = {"id": "r-1", "author": "Esma", "date": "2026-10-27T09:00:00Z"}
+    tracked_text = {
+        "type": "text",
+        "text": "yeni",
+        "marks": [{"type": "insertion", "attrs": change}],
+    }
+    tracked_content = {
+        "type": "doc",
+        "attrs": {"trackChanges": True},
+        "content": [{"type": "paragraph", "content": [tracked_text]}],
+    }
+    tracked.write_text(json.dumps({**document, "version": 6, "content": tracked_content}), "utf-8")
 
     opened = open_studio_document(StudioDocumentOpenParams(path=saved.output), silent_progress())
 
@@ -508,6 +521,10 @@ def test_a_document_file_round_trips_and_refuses_other_files(tmp_path: Path):
     )
     reopened = open_studio_document(StudioDocumentOpenParams(path=str(reviewed)), silent_progress())
     assert reopened.document["content"] == reviewed_content
+    tracked_open = open_studio_document(
+        StudioDocumentOpenParams(path=str(tracked)), silent_progress()
+    )
+    assert tracked_open.document["content"] == tracked_content
     for path, reason in ((other, "noDocument"), (newer, "newerDocument")):
         with pytest.raises(OpError) as caught:
             open_studio_document(StudioDocumentOpenParams(path=str(path)), silent_progress())

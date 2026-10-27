@@ -213,6 +213,10 @@
   --muted-foreground: hsl(220 9% 42%);
   --destructive: hsl(0 72% 45%);
   --border: color-mix(in oklab, hsl(222 20% 12%) 9%, transparent);
+  --tone-organize: hsl(202 80% 34%);
+  --tone-improve: hsl(158 62% 27%);
+  --tone-edit: hsl(38 92% 28%);
+  --tone-security: hsl(348 68% 44%);
   color: var(--foreground);
   color-scheme: light;
 }
@@ -1026,6 +1030,60 @@
   .vp-doc.vp-comments-hidden :is(.vp-comment, .vp-comment-active) {
     background-color: transparent;
     border-bottom: 0;
+  }
+  .vp-doc .vp-change-tone-0 {
+    --change-tone: var(--tone-security);
+  }
+  .vp-doc .vp-change-tone-1 {
+    --change-tone: var(--tone-improve);
+  }
+  .vp-doc .vp-change-tone-2 {
+    --change-tone: var(--tone-edit);
+  }
+  .vp-doc .vp-change-tone-3 {
+    --change-tone: var(--tone-organize);
+  }
+  .vp-doc :is(.vp-change-ins, .vp-change-del) {
+    color: var(--change-tone);
+    text-decoration-color: var(--change-tone);
+    text-decoration-thickness: 1.5px;
+    cursor: pointer;
+  }
+  .vp-doc .vp-change-ins {
+    text-decoration-line: underline;
+    text-underline-offset: 0.18em;
+  }
+  .vp-doc .vp-change-del {
+    text-decoration-line: line-through;
+  }
+  .vp-doc .vp-change-active {
+    background-color: color-mix(in oklab, var(--change-tone) 14%, transparent);
+    border-radius: var(--radius-sm);
+  }
+  .vp-doc .vp-changed {
+    position: relative;
+  }
+  .vp-doc .vp-changed::after {
+    content: "";
+    position: absolute;
+    inset-block: 0.1em;
+    inset-inline-start: -0.9em;
+    width: 2px;
+    background-color: var(--muted-foreground);
+    pointer-events: none;
+  }
+  .vp-doc.vp-track-final .vp-del,
+  .vp-doc.vp-track-original .vp-ins {
+    display: none;
+  }
+  .vp-doc:is(.vp-track-final, .vp-track-original) :is(.vp-change-ins, .vp-change-del) {
+    color: inherit;
+    text-decoration-line: none;
+    background-color: transparent;
+    cursor: text;
+  }
+  .vp-doc:is(.vp-track-final, .vp-track-original) .vp-changed::after {
+    content: none;
   }
   .vp-doc .vp-heading-number {
     white-space: pre;

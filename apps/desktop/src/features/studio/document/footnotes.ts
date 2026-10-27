@@ -3,6 +3,7 @@ import { citationItems, type CitationItem } from "./citationItems";
 import { hasSectionBreaks } from "./sections";
 import { COMMENT_VERSION, hasComments } from "./comments";
 import { EQUATION_VERSION, hasEquations } from "./equations";
+import { hasTrackedChanges, TRACK_CHANGES_VERSION } from "./trackChanges";
 
 export const FOOTNOTE = "footnote";
 export const MAX_FOOTNOTE = 2000;
@@ -71,6 +72,7 @@ function hasRichFootnotes(node: DocumentNode | string): boolean {
 }
 
 export function fileVersion(content: DocumentNode | string): number {
+  if (hasTrackedChanges(content)) return TRACK_CHANGES_VERSION;
   if (hasComments(content)) return COMMENT_VERSION;
   if (hasEquations(content)) return EQUATION_VERSION;
   if (hasRichFootnotes(content)) return RICH_FOOTNOTE_VERSION;

@@ -12,6 +12,10 @@ import type { DocumentNode } from "@/types/studio";
 import { COMMENT_LANE_GAP, COMMENT_LANE_WIDTH, CommentLane } from "./CommentLane";
 import { useCommentLaneOpen } from "./useComments";
 import { useCommentsView } from "./commentsView";
+import { ChangesPanel } from "./ChangesPanel";
+import { AuthorNameHost } from "./ReviewGroups";
+import { ActiveChangeCard } from "./TrackChangeCard";
+import { setTracking, useTrackChangesView } from "./trackChangesView";
 import { DocumentExportDialog } from "./DocumentExportDialog";
 import { DocumentFindBar, type DocumentFindMode } from "./DocumentFindBar";
 import { EquationDialogHost } from "./EquationDialogHost";
@@ -172,6 +176,8 @@ export default function DocumentEditor({ language }: { language: string }) {
   const darkPage = useDocumentViewStore((state) => state.darkPage);
   const showNavigation = useDocumentViewStore((state) => state.navigation);
   const commentsShown = useCommentsView((state) => state.shown);
+  const trackView = useTrackChangesView((state) => state.view);
+  const changesPanel = useTrackChangesView((state) => state.panel);
   const paper = useRef<HTMLDivElement>(null);
   const [lines, setLines] = useState<PageLine[]>([]);
   const layout = useDocumentLayout(language);
@@ -250,7 +256,7 @@ export default function DocumentEditor({ language }: { language: string }) {
           <div className="flex min-h-0 flex-1">
             <div ref={host} className="min-h-0 min-w-0 flex-1 overflow-auto bg-muted/40 py-8">
               <div className="mx-auto flex w-max items-stretch" style={{ gap: COMMENT_LANE_GAP }}>
-                <div ref={paper} className={cn("paper-surface vp-doc relative bg-white shadow-md", darkPage && "paper-dark", !commentsShown && "vp-comments-hidden")} style={paperStyle} data-dark-page={darkPage || undefined} data-testid="document-paper">
+                <div ref={paper} className={cn("paper-surface vp-doc relative bg-white shadow-md", darkPage && "paper-dark", !commentsShown && "vp-comments-hidden", trackView !== "markup" && `vp-track-${trackView}`)} style={paperStyle} data-dark-page={darkPage || undefined} data-testid="document-paper">
                   <EditorContent editor={editor} className={furnitureEditing ? "opacity-50 transition-opacity duration-(--transition-base)" : "transition-opacity duration-(--transition-base)"} />
                   {editor ? <SheetFurniture settings={settings} inset={inset} page={sheetPage} label={pageLabels?.[sheetPage - 1] ?? String(sheetPage)} last={pageLabels?.at(-1) ?? String(layout.preview?.pageCount ?? 1)} onLeave={() => editor.commands.focus()} /> : null}
                   {editor && showPageLines ? <PageLines editor={editor} laid={layout.preview} paper={paper} zoom={zoom} onLines={setLines} /> : null}
@@ -266,7 +272,10 @@ export default function DocumentEditor({ language }: { language: string }) {
           {finding && editor ? <DocumentFindBar editor={editor} mode={finding} language={language} onClose={() => setFinding(null)} /> : null}
           {editor ? <DocumentStatusBar editor={editor} language={language} layout={layout} zoom={zoom} lines={showPageLines ? lines : null} paper={paper} /> : null}
         </div>
+        {editor && changesPanel ? <ChangesPanel editor={editor} language={language} onTrack={() => setTracking(editor, true)} /> : null}
       </div>
+      {editor ? <ActiveChangeCard editor={editor} language={language} /> : null}
+      {editor ? <AuthorNameHost editor={editor} /> : null}
       <PageSetupDialog open={pageSetupOpen} onClose={() => setPageSetupOpen(false)} />
       <PrintPreview open={previewing} layout={layout} onClose={() => setPreviewing(false)} onExport={() => setExporting(true)} />
       <DocumentExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />

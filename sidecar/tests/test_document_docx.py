@@ -206,3 +206,45 @@ def test_export_writes_docx_and_refuses_to_overwrite(tmp_path: Path) -> None:
     with pytest.raises(OpError) as caught:
         export_docx(params, silent_progress())
     assert caught.value.data["exists"] is True
+
+
+def test_tracked_insertions_and_deletions_become_word_revisions() -> None:
+    body = (
+        '<p>Study of <span data-revision="del" data-author="Nesibe Şafak" '
+        'data-date="2026-10-26T14:20:05.123Z">very </span>maths '
+        '<span data-revision="ins" data-author="Nesibe Şafak" '
+        'data-date="2026-10-26T14:21:00Z">anxiety</span>.</p>'
+    )
+
+    document = _parts(document_docx(_params(body), lambda: None))["word/document.xml"]
+
+    inserted = document.find(f".//{W}ins")
+    deleted = document.find(f".//{W}del")
+    assert inserted.get(f"{W}author") == "Nesibe Şafak"
+    assert inserted.get(f"{W}date") == "2026-10-26T14:21:00Z"
+    assert deleted.get(f"{W}date") == "2026-10-26T14:20:05Z"
+    assert _texts(inserted) == "anxiety"
+    assert [node.text for node in deleted.iter(f"{W}delText")] == ["very "]
+    assert deleted.find(f".//{W}t") is None
+    assert inserted.get(f"{W}id") != deleted.get(f"{W}id")
+
+
+def test_revision_without_author_or_valid_date_keeps_a_placeholder_author() -> None:
+    body = '<p><span data-revision="ins" data-author="" data-date="yesterday">new</span></p>'
+
+    inserted = _parts(document_docx(_params(body), lambda: None))["word/document.xml"].find(
+        f".//{W}ins"
+    )
+
+    assert inserted.get(f"{W}author") == "?"
+    assert inserted.get(f"{W}date") is None
+
+
+def test_unknown_revision_kind_is_plain_text() -> None:
+    body = '<p><span data-revision="move" data-author="Esma">kept</span></p>'
+
+    document = _parts(document_docx(_params(body), lambda: None))["word/document.xml"]
+
+    assert document.find(f".//{W}ins") is None
+    assert document.find(f".//{W}del") is None
+    assert "kept" in _texts(document)

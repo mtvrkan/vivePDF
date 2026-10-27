@@ -52,7 +52,11 @@ from vivepdf.ops._document_docx_xml import (
 from vivepdf.ops._document_equations import Equations
 from vivepdf.ops._document_notes import note_bodies
 from vivepdf.ops._studio_document import DEFAULT_FONT, _decoded
-from vivepdf.ops._studio_document_models import StudioDocumentDocxParams, StudioDocumentThread
+from vivepdf.ops._studio_document_models import (
+    MAX_COMMENT_AUTHOR,
+    StudioDocumentDocxParams,
+    StudioDocumentThread,
+)
 
 SPACES = re.compile(r"[ \t\r\n\f]+")
 STYLE_ENTRY = re.compile(r"([a-z-]+)\s*:\s*([^;]+)")
@@ -64,6 +68,8 @@ FONT_TOKEN = re.compile(r"^f(\d{1,2})$")
 IMAGE_TOKEN = re.compile(r"^vpimg-(\d+)$")
 EQUATION_TOKEN = re.compile(r"^vpeq-(\d+)$")
 NOTE_ID = re.compile(r"^fnref-(\d+)$")
+REVISION_KINDS = frozenset({"ins", "del"})
+REVISION_BASE = 100000
 CAPTION_LABEL = re.compile(r"^(.*?)(\d+)(\D*)$", re.DOTALL)
 HEADINGS = {f"h{level}": level for level in range(1, 7)}
 BLOCK_TAGS = frozenset(
@@ -225,6 +231,7 @@ class DocxWriter:
         self.written_notes: set[int] = set()
         self.first: dict[str, etree._Element] = {}
         self.last: dict[str, etree._Element] = {}
+        self.revisions = 0
         self.shapes = 0
         self.body: list[etree._Element] = []
         self.section = SectionSpec(columns=max(1, self.settings.columns))
@@ -424,6 +431,10 @@ class DocxWriter:
         comment = (node.get("data-comment") or "").strip()
         if comment:
             look = look.with_(comments=look.comments | {comment})
+        revision = (node.get("data-revision") or "").strip()
+        if revision in REVISION_KINDS:
+            author = (node.get("data-author") or "").strip()[:MAX_COMMENT_AUTHOR] or "?"
+            look = look.with_(revision=(revision, author, _xsd_date(node.get("data-date") or "")))
         return look
 
     def inline_children(
@@ -468,6 +479,8 @@ class DocxWriter:
             runs = (
                 piece.runs if piece.text is None else [text_run(piece.text, piece.look.element())]
             )
+            if piece.look.revision:
+                runs = [self.revision(piece.look.revision, runs)]
             if piece.look.link:
                 if group is None or link != piece.look.link:
                     relation = self.relate_link(context.part, piece.look.link)
@@ -485,6 +498,22 @@ class DocxWriter:
             for comment in piece.look.comments:
                 self.first.setdefault(comment, first)
                 self.last[comment] = last
+
+    def revision(self, revision: tuple[str, str, str], runs: list) -> etree._Element:
+        kind, author, date = revision
+        self.revisions += 1
+        attributes = {"w:id": str(REVISION_BASE + self.revisions), "w:author": author}
+        if date:
+            attributes["w:date"] = date
+        wrapper = element(f"w:{kind}", attributes)
+        for run in runs:
+            if kind == "del":
+                for node in run.iter(qn("w:t")):
+                    node.tag = qn("w:delText")
+                for node in run.iter(qn("w:instrText")):
+                    node.tag = qn("w:delInstrText")
+            wrapper.append(run)
+        return wrapper
 
     def paragraph_look(self, node: etree._Element, base: ParagraphLook) -> ParagraphLook:
         styles = _styles(node)

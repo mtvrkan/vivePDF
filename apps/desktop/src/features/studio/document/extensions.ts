@@ -13,6 +13,8 @@ import { Caption } from "./captionNode";
 import { citationNodes, type CitationSource } from "./citationNodes";
 import { fontStack } from "./documentFonts";
 import { commentExtensions } from "./commentMark";
+import { useCommentsView } from "./commentsView";
+import { trackChangesExtensions } from "./trackChangesMark";
 import { equationNodes } from "./equationNodes";
 import { DocumentFind } from "./findInDocument";
 import { Footnote } from "./footnoteNode";
@@ -160,6 +162,7 @@ export function documentExtensions(placeholder: string, citations: CitationSourc
     Footnote,
     ...equationNodes(),
     ...commentExtensions(),
+    ...trackChangesExtensions(() => useCommentsView.getState().author),
     ...citationNodes(citations),
     Placeholder.configure({ placeholder }),
   ];
