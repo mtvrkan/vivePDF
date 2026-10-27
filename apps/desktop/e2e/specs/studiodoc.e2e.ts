@@ -110,6 +110,25 @@ describe("studio documents", () => {
     await expect($('[data-testid="document-save-state"]')).toHaveText("Quarterly.vivedoc");
   });
 
+  it("keeps a version on each save and restores the one before the last words", async () => {
+    await $('[data-testid="document-versions-open"]').click();
+    await $('[data-testid="version-history"]').waitForDisplayed();
+    await expect($('[data-testid="version-preview-body"]')).toHaveText(expect.stringContaining("final words"));
+    await browser.waitUntil(async () => (await $$('[data-testid="versions-item"]').length) >= 2, { timeoutMsg: "the saves were not kept as versions" });
+    await $('(//*[@data-testid="versions-item"])[last()]').click();
+    await expect($('[data-testid="version-preview-body"]')).not.toHaveText(expect.stringContaining("final words"));
+    await $('[data-testid="versions-restore"]').click();
+    await $('[data-testid="version-history"]').waitForDisplayed({ reverse: true });
+
+    await expect(body().$("h1")).toHaveText("Quarterly report");
+    await expect($('[data-testid="document-save-state"]')).toHaveText(t("studio.project.edited", { name: "Quarterly.vivedoc" }));
+    await $('[data-testid="document-versions-open"]').click();
+    await expect($('[data-testid="versions-item"]')).toHaveText(expect.stringContaining(t("studio.doc.versions.kinds.restore")));
+    await $('[role="dialog"] [data-dialog-close]').click();
+    await pressShortcut("s");
+    await expect($('[data-testid="document-save-state"]')).toHaveText("Quarterly.vivedoc");
+  });
+
   it("sets the margin from the Layout ribbon tab and shows the Table tab only inside a table", async () => {
     await $('[data-ribbon-tab="layout"]').click();
     await $('[data-testid="doc-margins"]').click();

@@ -9956,6 +9956,28 @@
         "emptyOn": "İzleme açık; bundan sonra yaptığınız eklemeler ve silmeler burada listelenir.",
         "emptyOff": "Değişiklikleri izle açıldığında yapılan eklemeler ve silmeler burada listelenir.",
         "turnOn": "İzlemeyi aç"
+      },
+      "versions": {
+        "title": "Sürüm geçmişi",
+        "listLabel": "Sürümler",
+        "current": "Şu anki sürüm",
+        "currentSaved": "Kaydedildi",
+        "currentUnsaved": "Kaydedilmemiş değişiklikler",
+        "kinds": {
+          "open": "Açıldığında",
+          "save": "Kaydedildi",
+          "auto": "Otomatik",
+          "restore": "Geri yüklemeden önce"
+        },
+        "restore": "Bu sürümü geri yükle",
+        "restored": "{{time}} sürümü geri yüklendi. Önceki metin geçmişte duruyor.",
+        "emptyTitle": "Henüz sürüm yok",
+        "emptyBody": "Belgeyi bir kez kaydedin. vivePDF her kayıtta ve yazarken 10 dakikada bir sürüm saklar.",
+        "saveNow": "Belgeyi kaydet",
+        "hint": "Her kayıtta ve yazarken 10 dakikada bir sürüm saklanır; son 50 sürüm kalır.",
+        "loadError": "Sürüm geçmişi okunamadı",
+        "previewError": "Bu sürüm açılamadı",
+        "previewLabel": "{{name}} önizlemesi"
       }
     },
     "cv": {

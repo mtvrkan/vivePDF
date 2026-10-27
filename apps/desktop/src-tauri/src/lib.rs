@@ -5,6 +5,7 @@ mod default_app;
 mod desktop_links;
 mod diagnostics;
 mod doc_watch;
+mod document_versions;
 mod document_windows;
 mod e2e;
 mod file_association;
@@ -176,6 +177,9 @@ pub fn run() {
             doc_watch::unwatch_document,
             session_file::session_read,
             session_file::session_write,
+            document_versions::document_versions_list,
+            document_versions::document_versions_read,
+            document_versions::document_versions_write,
             diagnostics::log_line,
             diagnostics::diagnostics_info,
             diagnostics::support_logs,

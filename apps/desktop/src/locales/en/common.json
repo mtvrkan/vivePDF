@@ -9956,6 +9956,28 @@
         "emptyOn": "Tracking is on; the insertions and deletions you make from now on are listed here.",
         "emptyOff": "With Track changes on, insertions and deletions are listed here.",
         "turnOn": "Turn on tracking"
+      },
+      "versions": {
+        "title": "Version history",
+        "listLabel": "Versions",
+        "current": "Current version",
+        "currentSaved": "Saved",
+        "currentUnsaved": "Unsaved changes",
+        "kinds": {
+          "open": "When opened",
+          "save": "Saved",
+          "auto": "Automatic",
+          "restore": "Before a restore"
+        },
+        "restore": "Restore this version",
+        "restored": "Restored the version from {{time}}. The text before it stays in the history.",
+        "emptyTitle": "No versions yet",
+        "emptyBody": "Save the document once. vivePDF then keeps a version on every save and every 10 minutes while you write.",
+        "saveNow": "Save document",
+        "hint": "A version is kept on every save and every 10 minutes while you write; the last 50 stay.",
+        "loadError": "Version history could not be read",
+        "previewError": "This version could not be opened",
+        "previewLabel": "Preview of {{name}}"
       }
     },
     "cv": {

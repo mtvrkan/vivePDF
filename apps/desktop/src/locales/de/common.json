@@ -9955,6 +9955,28 @@
         "emptyOn": "Die Nachverfolgung ist an; Einfügungen und Löschungen ab jetzt erscheinen hier.",
         "emptyOff": "Bei aktivierter Nachverfolgung erscheinen Einfügungen und Löschungen hier.",
         "turnOn": "Nachverfolgung einschalten"
+      },
+      "versions": {
+        "title": "Versionsverlauf",
+        "listLabel": "Versionen",
+        "current": "Aktuelle Version",
+        "currentSaved": "Gespeichert",
+        "currentUnsaved": "Ungespeicherte Änderungen",
+        "kinds": {
+          "open": "Beim Öffnen",
+          "save": "Gespeichert",
+          "auto": "Automatisch",
+          "restore": "Vor einer Wiederherstellung"
+        },
+        "restore": "Diese Version wiederherstellen",
+        "restored": "Version von {{time}} wiederhergestellt. Der vorherige Text bleibt im Verlauf.",
+        "emptyTitle": "Noch keine Versionen",
+        "emptyBody": "Speichern Sie das Dokument einmal. vivePDF behält dann bei jedem Speichern und beim Schreiben alle 10 Minuten eine Version.",
+        "saveNow": "Dokument speichern",
+        "hint": "Bei jedem Speichern und beim Schreiben alle 10 Minuten wird eine Version behalten; die letzten 50 bleiben.",
+        "loadError": "Der Versionsverlauf konnte nicht gelesen werden",
+        "previewError": "Diese Version konnte nicht geöffnet werden",
+        "previewLabel": "Vorschau von {{name}}"
       }
     },
     "cv": {

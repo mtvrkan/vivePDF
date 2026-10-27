@@ -9957,6 +9957,28 @@
         "emptyOn": "El seguimiento está activado; aquí aparecerán las inserciones y eliminaciones que haga.",
         "emptyOff": "Con el control de cambios activado, aquí aparecen las inserciones y eliminaciones.",
         "turnOn": "Activar seguimiento"
+      },
+      "versions": {
+        "title": "Historial de versiones",
+        "listLabel": "Versiones",
+        "current": "Versión actual",
+        "currentSaved": "Guardado",
+        "currentUnsaved": "Cambios sin guardar",
+        "kinds": {
+          "open": "Al abrir",
+          "save": "Guardado",
+          "auto": "Automática",
+          "restore": "Antes de restaurar"
+        },
+        "restore": "Restaurar esta versión",
+        "restored": "Se restauró la versión de {{time}}. El texto anterior queda en el historial.",
+        "emptyTitle": "Aún no hay versiones",
+        "emptyBody": "Guarda el documento una vez. vivePDF guardará una versión en cada guardado y cada 10 minutos mientras escribes.",
+        "saveNow": "Guardar documento",
+        "hint": "Se guarda una versión en cada guardado y cada 10 minutos mientras escribes; se conservan las últimas 50.",
+        "loadError": "No se pudo leer el historial de versiones",
+        "previewError": "No se pudo abrir esta versión",
+        "previewLabel": "Vista previa de {{name}}"
       }
     },
     "cv": {

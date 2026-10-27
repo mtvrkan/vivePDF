@@ -9957,6 +9957,28 @@
         "emptyOn": "Le revisioni sono attive; inserimenti ed eliminazioni da ora in poi compaiono qui.",
         "emptyOff": "Con le revisioni attive, inserimenti ed eliminazioni compaiono qui.",
         "turnOn": "Attiva revisioni"
+      },
+      "versions": {
+        "title": "Cronologia versioni",
+        "listLabel": "Versioni",
+        "current": "Versione attuale",
+        "currentSaved": "Salvato",
+        "currentUnsaved": "Modifiche non salvate",
+        "kinds": {
+          "open": "All’apertura",
+          "save": "Salvato",
+          "auto": "Automatica",
+          "restore": "Prima di un ripristino"
+        },
+        "restore": "Ripristina questa versione",
+        "restored": "Versione delle {{time}} ripristinata. Il testo precedente resta nella cronologia.",
+        "emptyTitle": "Ancora nessuna versione",
+        "emptyBody": "Salva il documento una volta. vivePDF conserverà una versione a ogni salvataggio e ogni 10 minuti mentre scrivi.",
+        "saveNow": "Salva documento",
+        "hint": "Una versione viene conservata a ogni salvataggio e ogni 10 minuti mentre scrivi; restano le ultime 50.",
+        "loadError": "Impossibile leggere la cronologia delle versioni",
+        "previewError": "Impossibile aprire questa versione",
+        "previewLabel": "Anteprima di {{name}}"
       }
     },
     "cv": {

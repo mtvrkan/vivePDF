@@ -9957,6 +9957,28 @@
         "emptyOn": "O controle está ativado; inserções e exclusões feitas daqui em diante aparecem aqui.",
         "emptyOff": "Com o controle de alterações ativado, inserções e exclusões aparecem aqui.",
         "turnOn": "Ativar controle"
+      },
+      "versions": {
+        "title": "Histórico de versões",
+        "listLabel": "Versões",
+        "current": "Versão atual",
+        "currentSaved": "Salvo",
+        "currentUnsaved": "Alterações não salvas",
+        "kinds": {
+          "open": "Ao abrir",
+          "save": "Salvo",
+          "auto": "Automática",
+          "restore": "Antes de restaurar"
+        },
+        "restore": "Restaurar esta versão",
+        "restored": "A versão de {{time}} foi restaurada. O texto anterior fica no histórico.",
+        "emptyTitle": "Nenhuma versão ainda",
+        "emptyBody": "Salve o documento uma vez. O vivePDF então guarda uma versão a cada salvamento e a cada 10 minutos enquanto você escreve.",
+        "saveNow": "Salvar documento",
+        "hint": "Uma versão é guardada a cada salvamento e a cada 10 minutos enquanto você escreve; as últimas 50 ficam.",
+        "loadError": "Não foi possível ler o histórico de versões",
+        "previewError": "Não foi possível abrir esta versão",
+        "previewLabel": "Prévia de {{name}}"
       }
     },
     "cv": {

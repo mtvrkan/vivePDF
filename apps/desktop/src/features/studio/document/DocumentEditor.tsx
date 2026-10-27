@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { ArrowLeft, Download, FilePlus2, Printer, Save, Search } from "lucide-react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ArrowLeft, Download, FilePlus2, History, Printer, Save, Search } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { Button } from "@/components/shared/Button";
@@ -34,12 +34,14 @@ import { useFurnitureEditing } from "./furnitureEditing";
 import { PrintPreview } from "./PrintPreview";
 import { useDocumentLayout } from "./useDocumentLayout";
 import { DocumentToolbar } from "./DocumentToolbar";
-import { fontStack, loadDocumentFont } from "./documentFonts";
+import { loadDocumentFont } from "./documentFonts";
+import { paperStyleOf } from "./paperStyle";
 import { useDocumentStore } from "./documentStore";
-import { storeCitationSource } from "./citationSource";
-import { documentExtensions } from "./extensions";
+import { useDocumentExtensions } from "./useDocumentExtensions";
 import { contentInsets, pageSize } from "./model";
 import { useDocumentSave } from "./useDocumentSave";
+import { useAutoVersions } from "./versionHistory";
+import { VersionHistoryDialog } from "./VersionHistoryDialog";
 
 import { commandKey } from "@/shared/lib/platform";
 import { findShortcut } from "@/features/studio/findShortcut";
@@ -48,7 +50,7 @@ const MAX_FIT = 1.25;
 const MIN_ZOOM = 0.3;
 const PX_PER_PT = 4 / 3;
 
-function DocumentTopBar({ onExport, onFind, onPrintPreview }: { onExport: () => void; onFind: () => void; onPrintPreview: () => void }) {
+function DocumentTopBar({ onExport, onFind, onPrintPreview, onHistory }: { onExport: () => void; onFind: () => void; onPrintPreview: () => void; onHistory: () => void }) {
   const { t } = useTranslation();
   const name = useDocumentStore((state) => state.document?.name ?? "");
   const filePath = useDocumentStore((state) => state.filePath ?? state.sourceFile?.path ?? null);
@@ -105,6 +107,7 @@ function DocumentTopBar({ onExport, onFind, onPrintPreview }: { onExport: () => 
       </span>
       <IconButton icon={Save} label={t("studio.project.save")} shortcut="Ctrl+S" disabled={saving} onClick={() => void save(false)} />
       <IconButton icon={FilePlus2} label={t("studio.project.saveAs")} shortcut="Ctrl+Shift+S" disabled={saving} onClick={() => void save(true)} />
+      <IconButton icon={History} label={t("studio.doc.versions.title")} onClick={onHistory} data-testid="document-versions-open" />
       <IconButton icon={Search} label={t("studio.find.title")} shortcut="Ctrl+F" onClick={onFind} data-testid="document-find-open" />
       <Button variant="ghost" icon={<Printer className="size-4" aria-hidden />} onClick={onPrintPreview} className="ml-auto" data-testid="document-print-preview-open">
         {t("studio.doc.printPreview.title")}
@@ -184,11 +187,14 @@ export default function DocumentEditor({ language }: { language: string }) {
   const [previewing, setPreviewing] = useState(false);
   const [pageSetupOpen, setPageSetupOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [versionsOpen, setVersionsOpen] = useState(false);
+  const { save } = useDocumentSave();
   const [finding, setFinding] = useState<DocumentFindMode | null>(null);
   const openFind = (replace: boolean) => setFinding((current) => ({ replace, nonce: (current?.nonce ?? 0) + 1 }));
   const furnitureEditing = useFurnitureEditing((state) => state.editing !== null);
-  const extensions = useMemo(() => documentExtensions(t("studio.doc.placeholder"), storeCitationSource(language, t("studio.doc.cite.referencesDefault"), t("studio.doc.cite.emptyList")), (columns, continuous) => t(continuous ? "studio.doc.section.labelContinuous" : "studio.doc.section.label", { columns }), t("studio.doc.mainMatter.label")), [t, language]);
+  const extensions = useDocumentExtensions(language);
   useShortcuts(() => setExporting(true), openFind);
+  useAutoVersions();
 
   const editor = useEditor(
     {
@@ -233,22 +239,11 @@ export default function DocumentEditor({ language }: { language: string }) {
   const inset = contentInsets(settings);
   const sheetPage = (layout.preview && firstPage(layout.preview)) || 1;
   const pageLabels = layout.preview?.pageLabels;
-  const paperStyle: CSSProperties & Record<`--${string}`, string> = {
-    width: `${size.width}pt`,
-    minHeight: `${size.height}pt`,
-    padding: `${inset.top}pt ${inset.right}pt ${inset.bottom}pt ${inset.left}pt`,
-    zoom,
-    fontSize: `${settings.fontSize}pt`,
-    lineHeight: String(settings.lineHeight),
-    fontFamily: fontStack(settings.fontId),
-    "--doc-accent": settings.accent,
-    "--doc-heading-font": fontStack(settings.headingFontId ?? settings.fontId),
-    "--doc-body-height": `${size.height - inset.top - inset.bottom}pt`,
-  };
+  const paperStyle = paperStyleOf(settings, zoom);
 
   return (
     <div className="flex h-full min-h-0 flex-col" data-testid="document-editor">
-      <DocumentTopBar onExport={() => setExporting(true)} onFind={() => openFind(false)} onPrintPreview={() => setPreviewing(true)} />
+      <DocumentTopBar onExport={() => setExporting(true)} onFind={() => openFind(false)} onPrintPreview={() => setPreviewing(true)} onHistory={() => setVersionsOpen(true)} />
       {editor ? <DocumentToolbar editor={editor} contentWidth={size.width - inset.left - inset.right} onFind={openFind} onPrintPreview={() => setPreviewing(true)} onPageSetup={() => setPageSetupOpen(true)} /> : null}
       <div className="flex min-h-0 flex-1">
         {editor && showNavigation ? <NavigationPane editor={editor} /> : null}
@@ -278,6 +273,7 @@ export default function DocumentEditor({ language }: { language: string }) {
       {editor ? <AuthorNameHost editor={editor} /> : null}
       <PageSetupDialog open={pageSetupOpen} onClose={() => setPageSetupOpen(false)} />
       <PrintPreview open={previewing} layout={layout} onClose={() => setPreviewing(false)} onExport={() => setExporting(true)} />
+      <VersionHistoryDialog open={versionsOpen} onClose={() => setVersionsOpen(false)} onSave={() => void save(false)} language={language} />
       <DocumentExportDialog open={exporting} onClose={() => setExporting(false)} language={language} />
     </div>
   );
