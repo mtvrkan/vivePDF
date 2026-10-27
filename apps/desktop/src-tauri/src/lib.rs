@@ -180,6 +180,7 @@ pub fn run() {
             document_versions::document_versions_list,
             document_versions::document_versions_read,
             document_versions::document_versions_write,
+            document_versions::document_versions_carry,
             diagnostics::log_line,
             diagnostics::diagnostics_info,
             diagnostics::support_logs,

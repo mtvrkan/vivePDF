@@ -6701,7 +6701,8 @@
       "sourceSaveUnsafe": "{{name}} ne peut pas être enregistré sur place car une partie n'a pas pu être lue. Exportez plutôt les sources dans un nouveau fichier.",
       "sourceChangedOnDisk": "{{name}} a été modifié par un autre programme après son ouverture. Rouvrez-le ou exportez les sources dans un nouveau fichier.",
       "sourceNotEncodable": "Certains caractères ne peuvent pas être enregistrés dans l'encodage de ce fichier ({{encoding}}). Exportez plutôt les sources dans un nouveau fichier.",
-      "checkTooManyPages": "Le contrôle fonctionne pour des documents de {{limit}} pages au plus."
+      "checkTooManyPages": "Le contrôle fonctionne pour des documents de {{limit}} pages au plus.",
+      "versionDamaged": "Cette version est endommagée et ne peut pas être ouverte."
     },
     "revealEmptyPath": "Le chemin est vide.",
     "revealFailed": "Impossible d’ouvrir cet emplacement.",
@@ -9985,10 +9986,11 @@
         "emptyTitle": "Aucune version pour l’instant",
         "emptyBody": "Enregistrez le document une fois. vivePDF conserve ensuite une version à chaque enregistrement et toutes les 10 minutes pendant que vous écrivez.",
         "saveNow": "Enregistrer le document",
-        "hint": "Une version est conservée à chaque enregistrement et toutes les 10 minutes pendant l’écriture ; les 50 dernières restent.",
+        "hint": "Une version est conservée à chaque enregistrement et toutes les 10 minutes pendant la rédaction. Toutes celles de la dernière heure restent, une par heure pour le dernier jour, une par jour pour les 30 derniers jours et une par semaine avant.",
         "loadError": "Impossible de lire l’historique des versions",
         "previewError": "Impossible d’ouvrir cette version",
-        "previewLabel": "Aperçu de {{name}}"
+        "previewLabel": "Aperçu de {{name}}",
+        "missing": "Cette version n’existe plus ; la liste a été actualisée."
       }
     },
     "cv": {

@@ -77,7 +77,7 @@ function ListSkeleton() {
 }
 
 function VersionPaper({ document, language, label }: { document: StudioDocument; language: string; label: string }) {
-  const extensions = useDocumentExtensions(language);
+  const extensions = useDocumentExtensions(language, document);
   const headingNumbers = document.settings.headingNumbers ?? "none";
   const editor = useEditor(
     {
@@ -177,6 +177,10 @@ export function VersionHistoryDialog({ open, onClose, onSave, language }: { open
       if (await restoreVersion(filePath, chosen.id)) {
         useToastStore.getState().push("success", t("studio.doc.versions.restored", { time: versionTime(chosen.savedAt, language) }));
         onClose();
+      } else {
+        useToastStore.getState().push("error", t("studio.doc.versions.missing"));
+        setSelected(CURRENT);
+        load();
       }
     } catch (error) {
       useToastStore.getState().push("error", describeError(t, toRpcError(error)));

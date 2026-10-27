@@ -1,5 +1,7 @@
+use std::collections::HashSet;
+use std::io::Write;
 use std::path::{Path, PathBuf};
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -8,9 +10,13 @@ use tauri::Manager;
 use crate::rpc::RpcError;
 
 const VERSIONS_DIR: &str = "document-versions";
-const MAX_VERSIONS: usize = 50;
-const MAX_VERSION_BYTES: usize = 64 * 1024 * 1024;
+const MAX_VERSIONS: usize = 100;
+const MAX_VERSION_BYTES: usize = 128 * 1024 * 1024;
 const MAX_DOCUMENT_BYTES: u64 = 512 * 1024 * 1024;
+const HOUR_MS: u64 = 60 * 60 * 1000;
+const DAY_MS: u64 = 24 * HOUR_MS;
+const WEEK_MS: u64 = 7 * DAY_MS;
+const STALE_STAGING: Duration = Duration::from_secs(10 * 60);
 const KINDS: [&str; 4] = ["open", "save", "auto", "restore"];
 const HASH_CHARS: usize = 16;
 
@@ -113,14 +119,67 @@ fn read_version(dir: &Path, id: &str) -> Result<Option<String>, RpcError> {
     }
 }
 
-fn prune(versions: Vec<Stored>) {
+fn thinning_bucket(saved_at: u64, now: u64) -> Option<(u8, u64)> {
+    let age = now.saturating_sub(saved_at);
+    if age < HOUR_MS {
+        None
+    } else if age < DAY_MS {
+        Some((1, saved_at / HOUR_MS))
+    } else if age < 30 * DAY_MS {
+        Some((2, saved_at / DAY_MS))
+    } else {
+        Some((3, saved_at / WEEK_MS))
+    }
+}
+
+fn prune(versions: &[Stored], now: u64) {
+    let mut buckets = HashSet::new();
+    let mut kept = 0usize;
     let mut total = 0u64;
     for (index, version) in versions.iter().enumerate() {
-        total += version.info.bytes;
-        if index > 0 && (index >= MAX_VERSIONS || total > MAX_DOCUMENT_BYTES) {
+        let thinned = index > 0
+            && version.info.kind != "restore"
+            && thinning_bucket(version.info.saved_at, now)
+                .is_some_and(|bucket| !buckets.insert(bucket));
+        let over =
+            index > 0 && (kept >= MAX_VERSIONS || total + version.info.bytes > MAX_DOCUMENT_BYTES);
+        if thinned || over {
             let _ = std::fs::remove_file(&version.file);
+            continue;
+        }
+        kept += 1;
+        total += version.info.bytes;
+    }
+}
+
+fn sweep_staging(dir: &Path) {
+    let Ok(entries) = std::fs::read_dir(dir) else {
+        return;
+    };
+    for entry in entries.filter_map(Result::ok) {
+        let stale = entry
+            .metadata()
+            .and_then(|metadata| metadata.modified())
+            .ok()
+            .and_then(|modified| modified.elapsed().ok())
+            .is_some_and(|age| age >= STALE_STAGING);
+        if stale && entry.file_name().to_string_lossy().ends_with(".tmp") {
+            let _ = std::fs::remove_file(entry.path());
         }
     }
+}
+
+fn write_atomically(file: &Path, contents: &[u8]) -> std::io::Result<()> {
+    let staging = file.with_extension(format!("{}.tmp", uuid::Uuid::new_v4().simple()));
+    let written = std::fs::File::create(&staging).and_then(|mut handle| {
+        handle.write_all(contents)?;
+        handle.sync_all()
+    });
+    let moved = written.and_then(|()| std::fs::rename(&staging, file));
+    if moved.is_err() {
+        let _ = std::fs::remove_file(&staging);
+    }
+    moved
 }
 
 fn write_version(
@@ -143,16 +202,12 @@ fn write_version(
         return Ok(newest.info.clone());
     }
     std::fs::create_dir_all(dir).map_err(internal)?;
+    sweep_staging(dir);
     let newest = existing.first().map_or(0, |version| version.info.saved_at);
     let saved_at = now.max(newest + 1);
     let id = format!("{saved_at:013}-{kind}-{hash}");
     let file = dir.join(format!("{id}.json"));
-    let staging = dir.join(format!("{id}.json.tmp"));
-    std::fs::write(&staging, contents).map_err(internal)?;
-    std::fs::rename(&staging, &file).map_err(|error| {
-        let _ = std::fs::remove_file(&staging);
-        internal(error)
-    })?;
+    write_atomically(&file, contents.as_bytes()).map_err(internal)?;
     let info = VersionInfo {
         id,
         kind: kind.to_string(),
@@ -165,16 +220,38 @@ fn write_version(
         file,
     }];
     versions.extend(existing);
-    prune(versions);
+    prune(&versions, now);
     Ok(info)
 }
 
-fn versions_dir(app: &tauri::AppHandle, path: &str) -> Result<PathBuf, RpcError> {
-    if path.trim().is_empty() {
+fn carry_versions(from: &Path, to: &Path, now: u64) -> Result<usize, RpcError> {
+    if from == to {
+        return Ok(0);
+    }
+    let source = stored(from).map_err(internal)?;
+    if source.is_empty() {
+        return Ok(0);
+    }
+    std::fs::create_dir_all(to).map_err(internal)?;
+    let mut copied = 0;
+    for version in &source {
+        let target = to.join(format!("{}.json", version.info.id));
+        if target.exists() {
+            continue;
+        }
+        let contents = std::fs::read(&version.file).map_err(internal)?;
+        write_atomically(&target, &contents).map_err(internal)?;
+        copied += 1;
+    }
+    prune(&stored(to).map_err(internal)?, now);
+    Ok(copied)
+}
+
+fn versions_root(app: &tauri::AppHandle, paths: &[&str]) -> Result<PathBuf, RpcError> {
+    if paths.iter().any(|path| path.trim().is_empty()) {
         return Err(RpcError::new("INVALID_PARAMS", "document path required"));
     }
-    let root = app.path().app_data_dir().map_err(internal)?;
-    Ok(document_dir(&root, path))
+    app.path().app_data_dir().map_err(internal)
 }
 
 fn now_millis() -> u64 {
@@ -196,8 +273,8 @@ pub async fn document_versions_list(
     app: tauri::AppHandle,
     path: String,
 ) -> Result<Vec<VersionInfo>, RpcError> {
-    let dir = versions_dir(&app, &path)?;
-    blocking(move || list_versions(&dir)).await
+    let root = versions_root(&app, &[&path])?;
+    blocking(move || list_versions(&document_dir(&root, &path))).await
 }
 
 #[tauri::command]
@@ -206,8 +283,8 @@ pub async fn document_versions_read(
     path: String,
     id: String,
 ) -> Result<Option<String>, RpcError> {
-    let dir = versions_dir(&app, &path)?;
-    blocking(move || read_version(&dir, &id)).await
+    let root = versions_root(&app, &[&path])?;
+    blocking(move || read_version(&document_dir(&root, &path), &id)).await
 }
 
 #[tauri::command]
@@ -217,8 +294,26 @@ pub async fn document_versions_write(
     kind: String,
     contents: String,
 ) -> Result<VersionInfo, RpcError> {
-    let dir = versions_dir(&app, &path)?;
-    blocking(move || write_version(&dir, &kind, &contents, now_millis())).await
+    let root = versions_root(&app, &[&path])?;
+    blocking(move || write_version(&document_dir(&root, &path), &kind, &contents, now_millis()))
+        .await
+}
+
+#[tauri::command]
+pub async fn document_versions_carry(
+    app: tauri::AppHandle,
+    from: String,
+    to: String,
+) -> Result<usize, RpcError> {
+    let root = versions_root(&app, &[&from, &to])?;
+    blocking(move || {
+        carry_versions(
+            &document_dir(&root, &from),
+            &document_dir(&root, &to),
+            now_millis(),
+        )
+    })
+    .await
 }
 
 #[cfg(test)]
@@ -261,17 +356,113 @@ mod tests {
     }
 
     #[test]
-    fn only_the_newest_fifty_are_kept() {
+    fn only_the_newest_hundred_of_one_hour_are_kept() {
         let dir = document_dir(&scratch("prune"), "/tmp/b.vpdoc");
-        for index in 0..55u64 {
+        for index in 0..105u64 {
             write_version(&dir, "auto", &snapshot(&index.to_string()), 1_000 + index).unwrap();
         }
 
         let listed = list_versions(&dir).unwrap();
 
         assert_eq!(listed.len(), MAX_VERSIONS);
-        assert_eq!(listed[0].saved_at, 1_054);
+        assert_eq!(listed[0].saved_at, 1_104);
         assert_eq!(listed[MAX_VERSIONS - 1].saved_at, 1_005);
+    }
+
+    #[test]
+    fn older_versions_thin_out_to_one_per_hour_day_and_week() {
+        let dir = document_dir(&scratch("thin"), "/tmp/thin.vpdoc");
+        let now = 400 * DAY_MS;
+        let minute = 60 * 1000;
+        let ages = [
+            200 * DAY_MS,
+            200 * DAY_MS - minute,
+            10 * DAY_MS,
+            10 * DAY_MS - minute,
+            5 * HOUR_MS,
+            5 * HOUR_MS - minute,
+            30 * minute,
+            20 * minute,
+        ];
+        for (index, age) in ages.iter().enumerate() {
+            write_version(&dir, "save", &snapshot(&index.to_string()), now - age).unwrap();
+        }
+        let kept: Vec<u64> = list_versions(&dir)
+            .unwrap()
+            .iter()
+            .map(|version| now - version.saved_at)
+            .collect();
+
+        assert_eq!(
+            kept,
+            vec![
+                20 * minute,
+                30 * minute,
+                5 * HOUR_MS - minute,
+                10 * DAY_MS - minute,
+                200 * DAY_MS - minute
+            ]
+        );
+    }
+
+    #[test]
+    fn versions_kept_before_a_restore_are_never_thinned() {
+        let dir = document_dir(&scratch("restore"), "/tmp/r.vpdoc");
+        let now = 50 * DAY_MS;
+        write_version(&dir, "restore", &snapshot("before"), now - 3 * DAY_MS).unwrap();
+        write_version(&dir, "save", &snapshot("later"), now - 3 * DAY_MS + 1_000).unwrap();
+        write_version(&dir, "save", &snapshot("now"), now).unwrap();
+
+        let kinds: Vec<String> = list_versions(&dir)
+            .unwrap()
+            .into_iter()
+            .map(|version| version.kind)
+            .collect();
+
+        assert_eq!(kinds, vec!["save", "save", "restore"]);
+    }
+
+    #[test]
+    fn save_as_carries_the_history_to_the_new_file() {
+        let root = scratch("carry");
+        let old = document_dir(&root, "/eski/tez.vpdoc");
+        let new = document_dir(&root, "/yeni/tez-son.vpdoc");
+        write_version(&old, "save", &snapshot("a"), 1_000).unwrap();
+        write_version(&old, "auto", &snapshot("b"), 2_000).unwrap();
+        write_version(&new, "save", &snapshot("c"), 3_000).unwrap();
+
+        let copied = carry_versions(&old, &new, 3_000).unwrap();
+        let again = carry_versions(&old, &new, 3_000).unwrap();
+
+        assert_eq!((copied, again), (2, 0));
+        assert_eq!(list_versions(&new).unwrap().len(), 3);
+        assert_eq!(list_versions(&old).unwrap().len(), 2);
+    }
+
+    #[test]
+    fn left_over_staging_files_are_swept_and_never_listed() {
+        let dir = document_dir(&scratch("staging"), "/tmp/s.vpdoc");
+        std::fs::create_dir_all(&dir).unwrap();
+        let stale = dir.join("0000000001000-save-0123456789abcdef.abc.tmp");
+        std::fs::write(&stale, "x").unwrap();
+        let old = SystemTime::now() - STALE_STAGING - Duration::from_secs(5);
+        std::fs::File::options()
+            .write(true)
+            .open(&stale)
+            .unwrap()
+            .set_modified(old)
+            .unwrap();
+
+        write_version(&dir, "save", &snapshot("a"), 2_000).unwrap();
+
+        assert!(!stale.exists());
+        assert_eq!(list_versions(&dir).unwrap().len(), 1);
+        let leftovers = std::fs::read_dir(&dir)
+            .unwrap()
+            .filter_map(Result::ok)
+            .filter(|entry| entry.file_name().to_string_lossy().ends_with(".tmp"))
+            .count();
+        assert_eq!(leftovers, 0);
     }
 
     #[test]

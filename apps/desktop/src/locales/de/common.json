@@ -6701,7 +6701,8 @@
       "sourceSaveUnsafe": "{{name}} kann nicht direkt gespeichert werden, weil ein Teil davon nicht gelesen werden konnte. Exportieren Sie die Quellen stattdessen in eine neue Datei.",
       "sourceChangedOnDisk": "{{name}} wurde nach dem Öffnen von einem anderen Programm geändert. Öffnen Sie die Datei erneut oder exportieren Sie die Quellen in eine neue Datei.",
       "sourceNotEncodable": "Einige Zeichen lassen sich in der Kodierung dieser Datei ({{encoding}}) nicht speichern. Exportieren Sie die Quellen stattdessen in eine neue Datei.",
-      "checkTooManyPages": "Die Prüfung funktioniert für Dokumente mit bis zu {{limit}} Seiten."
+      "checkTooManyPages": "Die Prüfung funktioniert für Dokumente mit bis zu {{limit}} Seiten.",
+      "versionDamaged": "Diese Version ist beschädigt und kann nicht geöffnet werden."
     },
     "revealEmptyPath": "Der Pfad ist leer.",
     "revealFailed": "Dieser Speicherort konnte nicht geöffnet werden.",
@@ -9983,10 +9984,11 @@
         "emptyTitle": "Noch keine Versionen",
         "emptyBody": "Speichern Sie das Dokument einmal. vivePDF behält dann bei jedem Speichern und beim Schreiben alle 10 Minuten eine Version.",
         "saveNow": "Dokument speichern",
-        "hint": "Bei jedem Speichern und beim Schreiben alle 10 Minuten wird eine Version behalten; die letzten 50 bleiben.",
+        "hint": "Bei jedem Speichern und alle 10 Minuten beim Schreiben wird eine Version aufbewahrt. Alle der letzten Stunde bleiben, eine pro Stunde für den letzten Tag, eine pro Tag für die letzten 30 Tage und davor eine pro Woche.",
         "loadError": "Der Versionsverlauf konnte nicht gelesen werden",
         "previewError": "Diese Version konnte nicht geöffnet werden",
-        "previewLabel": "Vorschau von {{name}}"
+        "previewLabel": "Vorschau von {{name}}",
+        "missing": "Diese Version ist nicht mehr vorhanden; die Liste wurde aktualisiert."
       }
     },
     "cv": {

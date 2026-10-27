@@ -28,6 +28,10 @@ export function serializeVersion(document: StudioDocument): string {
   return JSON.stringify({ ...document, version: fileVersion(document.content) });
 }
 
+function damaged(): RpcCallError {
+  return new RpcCallError({ code: "INVALID_PARAMS", message: "version damaged", data: { reason: "versionDamaged" } });
+}
+
 export function parseVersion(contents: string | null): StudioDocument | null {
   if (!contents) return null;
   try {
@@ -43,11 +47,19 @@ export async function listVersions(path: string): Promise<DocumentVersion[]> {
 }
 
 export async function readVersion(path: string, id: string): Promise<StudioDocument | null> {
-  return parseVersion(await rpc<string | null>("document_versions_read", { path, id }));
+  const contents = await rpc<string | null>("document_versions_read", { path, id });
+  if (contents === null) return null;
+  const document = parseVersion(contents);
+  if (!document) throw damaged();
+  return document;
 }
 
 export function writeVersion(path: string, kind: VersionKind, document: StudioDocument): Promise<DocumentVersion> {
   return rpc<DocumentVersion>("document_versions_write", { path, kind, contents: serializeVersion(document) });
+}
+
+export async function carryVersions(from: string, to: string): Promise<void> {
+  await rpc<number>("document_versions_carry", { from, to }).catch(() => undefined);
 }
 
 export function recordVersion(path: string, kind: VersionKind, document: StudioDocument): void {

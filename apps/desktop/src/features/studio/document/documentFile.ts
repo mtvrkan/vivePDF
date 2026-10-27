@@ -13,7 +13,7 @@ import { createDocument, normalizeDocument, pageSize } from "./model";
 import { useDocumentStore } from "./documentStore";
 import { FORMAT_EXTENSIONS, formatOfPath, parseSources, writeSources } from "./sourceFormats";
 import { fileVersion } from "./footnotes";
-import { recordVersion } from "./versionHistory";
+import { carryVersions, recordVersion } from "./versionHistory";
 import i18n from "i18next";
 
 export const IMPORT_EXTENSIONS = ["md", "markdown", "txt", "html", "htm"];
@@ -65,6 +65,7 @@ export async function saveStudioDocument(options: { saveAs: boolean; fallbackNam
   if (useDocumentStore.getState().document === document) useDocumentStore.getState().markSaved(result.output);
   else useDocumentStore.setState({ filePath: result.output });
   remember(document, result.output);
+  if (state.filePath && state.filePath !== result.output) await carryVersions(state.filePath, result.output);
   recordVersion(result.output, "save", document);
   return result.output;
 }

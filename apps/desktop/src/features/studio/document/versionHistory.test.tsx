@@ -4,7 +4,9 @@ import { ready, setLocale } from "@/app/i18n";
 import { RpcCallError } from "@/shared/rpc/client";
 import { useDocumentStore } from "./documentStore";
 import { createDocument } from "./model";
-import { AUTO_VERSION_MS, listVersions, parseVersion, readVersion, restoreVersion, serializeVersion, useAutoVersions } from "./versionHistory";
+import { useToastStore } from "@/shared/store/toastStore";
+import { storeCitationSource } from "./citationSource";
+import { AUTO_VERSION_MS, carryVersions, listVersions, parseVersion, readVersion, restoreVersion, serializeVersion, useAutoVersions } from "./versionHistory";
 import { VersionHistoryDialog } from "./VersionHistoryDialog";
 
 const backend = vi.hoisted(() => ({ files: new Map<string, string>(), writes: [] as { path: string; kind: string; contents: string }[], fail: false }));
@@ -67,6 +69,30 @@ describe("version files", () => {
     const versions = await listVersions(PATH);
 
     expect(versions.map((version) => version.id)).toEqual(["1-save-0123456789abcdef"]);
+  });
+
+  it("reports a damaged snapshot as damaged rather than missing", async () => {
+    backend.files.set("1-save-0123456789abcdef", "{nope");
+
+    await expect(readVersion(PATH, "1-save-0123456789abcdef")).rejects.toMatchObject({ code: "INVALID_PARAMS", data: { reason: "versionDamaged" } });
+    await expect(readVersion(PATH, "2-save-0123456789abcdef")).resolves.toBeNull();
+  });
+
+  it("asks the shell to carry the history to a new path and ignores a failure", async () => {
+    await carryVersions("/eski/tez.vpdoc", "/yeni/tez.vpdoc");
+    backend.fail = true;
+
+    await expect(carryVersions("/a.vpdoc", "/b.vpdoc")).resolves.toBeUndefined();
+    expect(invoke).toHaveBeenCalledWith("document_versions_carry", { from: "/eski/tez.vpdoc", to: "/yeni/tez.vpdoc" });
+  });
+
+  it("reads citations and the references title from a version, not from the open document", () => {
+    useDocumentStore.getState().open({ ...createDocument("Tez"), settings: { ...createDocument("Tez").settings, referencesTitle: "Kaynaklar" } }, PATH);
+    const old = { ...createDocument("Eski"), settings: { ...createDocument("Eski").settings, referencesTitle: "Kaynakça" } };
+
+    const source = storeCitationSource("tr", "References", "Empty", old);
+
+    expect(source.title()).toBe("Kaynakça");
   });
 
   it("reports a failed read as an RPC error", async () => {
@@ -157,6 +183,23 @@ describe("version history dialog", () => {
 
     await waitFor(() => expect(onClose).toHaveBeenCalled());
     expect(useDocumentStore.getState().document?.content).toEqual(paragraph("İlk taslak"));
+  });
+
+  it("tells when the chosen version disappeared and refreshes the list", async () => {
+    backend.files.set("1-open-0123456789abcdef", serializeVersion(createDocument("Tez", paragraph("İlk"))));
+    useDocumentStore.getState().open(createDocument("Tez", paragraph("Son")), PATH);
+    const onClose = vi.fn();
+    render(<VersionHistoryDialog open onClose={onClose} onSave={() => undefined} language="en" />);
+    fireEvent.click((await screen.findAllByTestId("versions-item"))[0]);
+    await waitFor(() => expect(screen.getByTestId("version-preview-body").textContent).toBe("İlk"));
+    backend.files.clear();
+
+    fireEvent.click(screen.getByTestId("versions-restore"));
+
+    await waitFor(() => expect(useToastStore.getState().toasts.at(-1)?.message).toContain("no longer there"));
+    expect(onClose).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.queryAllByTestId("versions-item")).toHaveLength(0));
+    expect(useDocumentStore.getState().document?.content).toEqual(paragraph("Son"));
   });
 
   it("asks to save an untitled document first", () => {

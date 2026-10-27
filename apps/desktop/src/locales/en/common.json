@@ -6701,7 +6701,8 @@
       "sourceSaveUnsafe": "{{name}} can't be saved in place because part of it could not be read. Export the sources to a new file instead.",
       "sourceChangedOnDisk": "{{name}} was changed by another program after it was opened. Open it again, or export the sources to a new file.",
       "sourceNotEncodable": "Some characters can't be stored in this file's encoding ({{encoding}}). Export the sources to a new file instead.",
-      "checkTooManyPages": "The check works on documents of up to {{limit}} pages."
+      "checkTooManyPages": "The check works on documents of up to {{limit}} pages.",
+      "versionDamaged": "This version is damaged and cannot be opened."
     },
     "revealEmptyPath": "The path is empty.",
     "revealFailed": "Couldn't open this location.",
@@ -9984,10 +9985,11 @@
         "emptyTitle": "No versions yet",
         "emptyBody": "Save the document once. vivePDF then keeps a version on every save and every 10 minutes while you write.",
         "saveNow": "Save document",
-        "hint": "A version is kept on every save and every 10 minutes while you write; the last 50 stay.",
+        "hint": "A version is kept on every save and every 10 minutes while you write. All of the last hour stay, one per hour for the last day, one per day for the last 30 days and one per week before that.",
         "loadError": "Version history could not be read",
         "previewError": "This version could not be opened",
-        "previewLabel": "Preview of {{name}}"
+        "previewLabel": "Preview of {{name}}",
+        "missing": "This version is no longer there; the list was refreshed."
       }
     },
     "cv": {

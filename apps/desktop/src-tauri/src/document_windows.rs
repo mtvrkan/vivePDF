@@ -280,7 +280,14 @@ fn trimmed_group(group: Option<DroppedGroup>) -> Option<DroppedGroup> {
 }
 
 pub(crate) fn claim_key(path: &str) -> String {
-    let resolved = std::fs::canonicalize(path)
+    let target = Path::new(path);
+    let resolved = std::fs::canonicalize(target)
+        .or_else(|error| match (target.parent(), target.file_name()) {
+            (Some(parent), Some(name)) => {
+                std::fs::canonicalize(parent).map(|parent| parent.join(name))
+            }
+            _ => Err(error),
+        })
         .map(|resolved| resolved.to_string_lossy().to_string())
         .unwrap_or_else(|_| path.to_string());
     if cfg!(any(windows, target_os = "macos")) {

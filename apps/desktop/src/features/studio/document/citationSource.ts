@@ -1,14 +1,16 @@
 import * as logger from "@/shared/lib/logger";
+import type { StudioDocument } from "@/types/studio";
 import type { CitationSource } from "./citationNodes";
 import { citationLanguageOf, pendingCitations } from "./citations";
 import { loadCitationEngine, readyCitationEngine } from "./cslEngine";
 import { useDocumentStore } from "./documentStore";
 
-export function storeCitationSource(language: string, fallbackTitle: string, emptyText: string): CitationSource {
+export function storeCitationSource(language: string, fallbackTitle: string, emptyText: string, fixed?: StudioDocument): CitationSource {
+  const read = () => fixed ?? useDocumentStore.getState().document;
   const listeners = new Set<() => void>();
   const waiting = new Set<string>();
   const current = () => {
-    const document = useDocumentStore.getState().document;
+    const document = read();
     const style = document?.settings.citationStyle ?? "apa";
     const reference = citationLanguageOf(document?.settings.citationLanguage, language);
     const engine = readyCitationEngine(style, reference);
@@ -33,13 +35,15 @@ export function storeCitationSource(language: string, fallbackTitle: string, emp
   };
   return {
     current,
-    title: () => useDocumentStore.getState().document?.settings.referencesTitle.trim() || fallbackTitle,
+    title: () => read()?.settings.referencesTitle.trim() || fallbackTitle,
     emptyText,
     subscribe: (listener) => {
       listeners.add(listener);
-      const stop = useDocumentStore.subscribe((state, previous) => {
-        if (state.document !== previous.document) listener();
-      });
+      const stop = fixed
+        ? () => undefined
+        : useDocumentStore.subscribe((state, previous) => {
+            if (state.document !== previous.document) listener();
+          });
       return () => {
         listeners.delete(listener);
         stop();

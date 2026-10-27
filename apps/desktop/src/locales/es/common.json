@@ -6701,7 +6701,8 @@
       "sourceSaveUnsafe": "{{name}} no se puede guardar en su sitio porque una parte no se pudo leer. Exporta las fuentes a un archivo nuevo.",
       "sourceChangedOnDisk": "Otro programa modificó {{name}} después de abrirlo. Vuelve a abrirlo o exporta las fuentes a un archivo nuevo.",
       "sourceNotEncodable": "Algunos caracteres no caben en la codificación de este archivo ({{encoding}}). Exporta las fuentes a un archivo nuevo.",
-      "checkTooManyPages": "La revisión funciona con documentos de hasta {{limit}} páginas."
+      "checkTooManyPages": "La revisión funciona con documentos de hasta {{limit}} páginas.",
+      "versionDamaged": "Esta versión está dañada y no se puede abrir."
     },
     "revealEmptyPath": "La ruta está vacía.",
     "revealFailed": "No se pudo abrir esta ubicación.",
@@ -9985,10 +9986,11 @@
         "emptyTitle": "Aún no hay versiones",
         "emptyBody": "Guarda el documento una vez. vivePDF guardará una versión en cada guardado y cada 10 minutos mientras escribes.",
         "saveNow": "Guardar documento",
-        "hint": "Se guarda una versión en cada guardado y cada 10 minutos mientras escribes; se conservan las últimas 50.",
+        "hint": "Se guarda una versión en cada guardado y cada 10 minutos mientras escribes. Se conservan todas las de la última hora, una por hora del último día, una por día de los últimos 30 días y una por semana antes de eso.",
         "loadError": "No se pudo leer el historial de versiones",
         "previewError": "No se pudo abrir esta versión",
-        "previewLabel": "Vista previa de {{name}}"
+        "previewLabel": "Vista previa de {{name}}",
+        "missing": "Esta versión ya no existe; se actualizó la lista."
       }
     },
     "cv": {

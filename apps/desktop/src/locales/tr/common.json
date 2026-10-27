@@ -6701,7 +6701,8 @@
       "sourceSaveUnsafe": "{{name}} bir kısmı okunamadığı için yerinde kaydedilemiyor. Kaynakları yeni bir dosyaya dışa aktarın.",
       "sourceChangedOnDisk": "{{name}} açıldıktan sonra başka bir program tarafından değiştirildi. Dosyayı yeniden açın ya da kaynakları yeni bir dosyaya dışa aktarın.",
       "sourceNotEncodable": "Bazı karakterler bu dosyanın kodlamasında ({{encoding}}) saklanamıyor. Kaynakları yeni bir dosyaya dışa aktarın.",
-      "checkTooManyPages": "Denetim en fazla {{limit}} sayfalık belgelerde çalışır."
+      "checkTooManyPages": "Denetim en fazla {{limit}} sayfalık belgelerde çalışır.",
+      "versionDamaged": "Bu sürüm bozuk olduğu için açılamıyor."
     },
     "revealEmptyPath": "Yol boş.",
     "revealFailed": "Bu konum açılamadı.",
@@ -9984,10 +9985,11 @@
         "emptyTitle": "Henüz sürüm yok",
         "emptyBody": "Belgeyi bir kez kaydedin. vivePDF her kayıtta ve yazarken 10 dakikada bir sürüm saklar.",
         "saveNow": "Belgeyi kaydet",
-        "hint": "Her kayıtta ve yazarken 10 dakikada bir sürüm saklanır; son 50 sürüm kalır.",
+        "hint": "Her kayıtta ve yazarken 10 dakikada bir sürüm saklanır. Son bir saatin hepsi, son bir günün saatte biri, son 30 günün günde biri, daha eskilerin haftada biri kalır.",
         "loadError": "Sürüm geçmişi okunamadı",
         "previewError": "Bu sürüm açılamadı",
-        "previewLabel": "{{name}} önizlemesi"
+        "previewLabel": "{{name}} önizlemesi",
+        "missing": "Bu sürüm artık yok; liste yenilendi."
       }
     },
     "cv": {
