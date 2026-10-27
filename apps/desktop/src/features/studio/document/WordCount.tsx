@@ -2,15 +2,17 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Editor } from "@tiptap/react";
 import { countText, type TextCount } from "./formatPainter";
+import { finalDocument } from "./trackChangesMark";
 
 const SETTLE_MS = 250;
 
 type Counts = { total: TextCount; selected: TextCount | null };
 
 function measure(editor: Editor, language: string): Counts {
-  const { doc, selection } = editor.state;
+  const { selection } = editor.state;
+  const { doc, mapping } = finalDocument(editor.state.doc);
   const total = countText(doc, 0, doc.content.size, language);
-  return { total, selected: selection.empty ? null : countText(doc, selection.from, selection.to, language) };
+  return { total, selected: selection.empty ? null : countText(doc, mapping.map(selection.from, 1), mapping.map(selection.to, -1), language) };
 }
 
 export function WordCount({ editor, language }: { editor: Editor; language: string }) {

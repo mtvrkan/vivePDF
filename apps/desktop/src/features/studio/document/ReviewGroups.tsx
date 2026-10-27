@@ -86,6 +86,9 @@ export function ReviewGroups({ editor }: { editor: Editor }) {
   const setView = useTrackChangesView((state) => state.setView);
   const panel = useTrackChangesView((state) => state.panel);
   const setPanel = useTrackChangesView((state) => state.setPanel);
+  const hiddenAuthors = useTrackChangesView((state) => state.hiddenAuthors);
+  const shownAuthors = track.authors.filter((author) => !hiddenAuthors.includes(author));
+  const shownChanges = track.changes.filter((change) => shownAuthors.includes(change.author));
 
   const start = () => {
     if (!editor.chain().focus().startComment().run()) {
@@ -119,7 +122,7 @@ export function ReviewGroups({ editor }: { editor: Editor }) {
   const viewItems: ContextMenuItem[] = TRACK_VIEWS.map((option) => ({ type: "item", id: `track-view-${option}`, label: t(`studio.doc.track.views.${option}`), checked: option === view, onSelect: () => setView(option) }));
   const settleItems = (accept: boolean): ContextMenuItem[] => [
     { type: "item", id: accept ? "track-accept-this" : "track-reject-this", label: t(accept ? "studio.doc.track.acceptThis" : "studio.doc.track.rejectThis"), disabled: !track.active, onSelect: () => track.active && editor.chain().focus()[accept ? "acceptChange" : "rejectChange"](track.active).run() },
-    { type: "item", id: accept ? "track-accept-all" : "track-reject-all", label: t(accept ? "studio.doc.track.acceptAll" : "studio.doc.track.rejectAll"), disabled: track.changes.length === 0, onSelect: () => editor.chain().focus()[accept ? "acceptAllChanges" : "rejectAllChanges"]().run() },
+    { type: "item", id: accept ? "track-accept-all" : "track-reject-all", label: t(accept ? "studio.doc.track.acceptAll" : "studio.doc.track.rejectAll"), disabled: shownChanges.length === 0, onSelect: () => editor.chain().focus()[accept ? "acceptAllChanges" : "rejectAllChanges"](shownAuthors).run() },
   ];
 
   return (

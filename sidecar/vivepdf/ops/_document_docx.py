@@ -204,6 +204,10 @@ def _xsd_date(value: str) -> str:
     return ""
 
 
+def _revision_stamp(author: str | None, date: str | None) -> tuple[str, str]:
+    return (author or "").strip()[:MAX_COMMENT_AUTHOR] or "?", _xsd_date(date or "")
+
+
 def _initials(author: str) -> str:
     letters = "".join(word[0] for word in author.split() if word)
     return (letters[:3] or "?").upper()
@@ -257,6 +261,10 @@ class DocxWriter:
             look = look.with_(page_break_before=True)
             self.page_break = False
         node = element("w:p", children=[look.element()])
+        if look.mark_revision:
+            kind, author, date = look.mark_revision
+            mark = element("w:rPr", children=[self.revision_element(kind, (author, date))])
+            node.find(qn("w:pPr")).append(mark)
         self.add(container, node)
         return node
 
@@ -284,7 +292,7 @@ class DocxWriter:
             holder = element("w:p", children=[ParagraphLook().element()])
             self.body.append(holder)
         properties = holder.find(qn("w:pPr"))
-        if properties.find(qn("w:sectPr")) is not None:
+        if properties.find(qn("w:sectPr")) is not None or properties.find(qn("w:rPr")) is not None:
             holder = element("w:p", children=[ParagraphLook().element()])
             self.body.append(holder)
             properties = holder.find(qn("w:pPr"))
@@ -433,8 +441,8 @@ class DocxWriter:
             look = look.with_(comments=look.comments | {comment})
         revision = (node.get("data-revision") or "").strip()
         if revision in REVISION_KINDS:
-            author = (node.get("data-author") or "").strip()[:MAX_COMMENT_AUTHOR] or "?"
-            look = look.with_(revision=(revision, author, _xsd_date(node.get("data-date") or "")))
+            stamp = _revision_stamp(node.get("data-author"), node.get("data-date"))
+            look = look.with_(**{"inserted" if revision == "ins" else "deleted": stamp})
         return look
 
     def inline_children(
@@ -479,8 +487,10 @@ class DocxWriter:
             runs = (
                 piece.runs if piece.text is None else [text_run(piece.text, piece.look.element())]
             )
-            if piece.look.revision:
-                runs = [self.revision(piece.look.revision, runs)]
+            if piece.look.deleted:
+                runs = [self.revision("del", piece.look.deleted, runs)]
+            if piece.look.inserted:
+                runs = [self.revision("ins", piece.look.inserted, runs)]
             if piece.look.link:
                 if group is None or link != piece.look.link:
                     relation = self.relate_link(context.part, piece.look.link)
@@ -499,13 +509,16 @@ class DocxWriter:
                 self.first.setdefault(comment, first)
                 self.last[comment] = last
 
-    def revision(self, revision: tuple[str, str, str], runs: list) -> etree._Element:
-        kind, author, date = revision
+    def revision_element(self, kind: str, stamp: tuple[str, str]) -> etree._Element:
+        author, date = stamp
         self.revisions += 1
         attributes = {"w:id": str(REVISION_BASE + self.revisions), "w:author": author}
         if date:
             attributes["w:date"] = date
-        wrapper = element(f"w:{kind}", attributes)
+        return element(f"w:{kind}", attributes)
+
+    def revision(self, kind: str, stamp: tuple[str, str], runs: list) -> etree._Element:
+        wrapper = self.revision_element(kind, stamp)
         for run in runs:
             if kind == "del":
                 for node in run.iter(qn("w:t")):
@@ -539,6 +552,10 @@ class DocxWriter:
             look = look.with_(first_line=indent)
         if (node.get("dir") or "").lower() == "rtl":
             look = look.with_(bidi=True)
+        revision = (node.get("data-break-revision") or "").strip()
+        if revision in REVISION_KINDS:
+            stamp = _revision_stamp(node.get("data-break-author"), node.get("data-break-date"))
+            look = look.with_(mark_revision=(revision, *stamp))
         return look
 
     def base_look(self, context: Context) -> ParagraphLook:

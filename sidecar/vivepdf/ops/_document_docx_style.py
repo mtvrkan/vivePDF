@@ -23,7 +23,8 @@ class RunLook:
     rtl: bool = False
     comments: frozenset[str] = frozenset()
     link: str = ""
-    revision: tuple[str, str, str] | None = None
+    inserted: tuple[str, str] | None = None
+    deleted: tuple[str, str] | None = None
 
     def with_(self, **changes) -> "RunLook":
         return replace(self, **changes)
@@ -79,6 +80,7 @@ class ParagraphLook:
     align: str = ""
     outline: int | None = None
     run: RunLook = field(default_factory=RunLook)
+    mark_revision: tuple[str, str, str] | None = None
 
     def with_(self, **changes) -> "ParagraphLook":
         return replace(self, **changes)

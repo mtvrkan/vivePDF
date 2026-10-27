@@ -1,4 +1,5 @@
 import type { Node as ProseNode } from "@tiptap/pm/model";
+import { BREAK_ATTRIBUTE, breakChange, DELETION, liveText } from "./trackChanges";
 
 export type OutlineHeading = { position: number; level: number; text: string };
 
@@ -8,7 +9,9 @@ export function headingOutline(doc: ProseNode): OutlineHeading[] {
   const outline: OutlineHeading[] = [];
   doc.descendants((node, position) => {
     if (node.type.name !== "heading") return true;
-    outline.push({ position, level: Math.min(MAX_LEVEL, Math.max(1, Number(node.attrs.level) || 1)), text: node.textContent.trim() });
+    const text = liveText(node).trim();
+    if (!text && node.textContent && breakChange(node.attrs[BREAK_ATTRIBUTE])?.type === DELETION) return false;
+    outline.push({ position, level: Math.min(MAX_LEVEL, Math.max(1, Number(node.attrs.level) || 1)), text });
     return false;
   });
   return outline;

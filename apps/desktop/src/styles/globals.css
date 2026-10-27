@@ -1120,6 +1120,23 @@
   .vp-doc:is(.vp-track-final, .vp-track-original) .vp-changed::after {
     content: none;
   }
+  .vp-doc .vp-break-mark {
+    margin-inline-start: 0.1em;
+    user-select: none;
+  }
+  .vp-doc:is(.vp-track-final, .vp-track-original) .vp-break-mark {
+    display: none;
+  }
+  .vp-doc.vp-track-final :is(p, h1, h2, h3, h4)[data-break-change="delete"],
+  .vp-doc.vp-track-final [data-break-change="delete"] + :is(p, h1, h2, h3, h4),
+  .vp-doc.vp-track-original :is(p, h1, h2, h3, h4)[data-break-change="insert"],
+  .vp-doc.vp-track-original [data-break-change="insert"] + :is(p, h1, h2, h3, h4) {
+    display: inline;
+  }
+  .vp-doc.vp-track-final [data-break-change="delete"] > .ProseMirror-trailingBreak,
+  .vp-doc.vp-track-original [data-break-change="insert"] > .ProseMirror-trailingBreak {
+    display: none;
+  }
   .vp-doc .vp-heading-number {
     white-space: pre;
     user-select: none;

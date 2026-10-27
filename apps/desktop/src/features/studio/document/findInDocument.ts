@@ -3,6 +3,7 @@ import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import { Plugin, PluginKey, TextSelection, type EditorState, type Transaction } from "@tiptap/pm/state";
 import { Decoration, DecorationSet } from "@tiptap/pm/view";
 import { findInText, type FindOptions } from "../design/findReplace";
+import { DELETION } from "./trackChanges";
 
 export type DocumentMatch = { from: number; to: number };
 export type FindQuery = { query: string; options: FindOptions; current: number };
@@ -21,6 +22,7 @@ export function documentMatches(doc: ProseMirrorNode, query: string, options: Fi
     let text = "";
     const offsets: number[] = [];
     node.forEach((child, offset) => {
+      if (child.marks.some((mark) => mark.type.name === DELETION)) return;
       const start = position + 1 + offset;
       if (child.isText) {
         const value = child.text ?? "";

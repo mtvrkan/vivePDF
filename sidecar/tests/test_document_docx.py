@@ -248,3 +248,61 @@ def test_unknown_revision_kind_is_plain_text() -> None:
     assert document.find(f".//{W}ins") is None
     assert document.find(f".//{W}del") is None
     assert "kept" in _texts(document)
+
+
+def test_deleted_paragraph_end_is_a_paragraph_mark_revision() -> None:
+    body = (
+        '<p data-break-revision="del" data-break-author="Esma" '
+        'data-break-date="2026-10-27T09:00:00.000Z">One<span data-revision="del" '
+        'data-author="Esma"> two</span></p><p><span data-revision="del" data-author="Esma">'
+        "three</span> four</p>"
+    )
+
+    document = _parts(document_docx(_params(body), lambda: None))["word/document.xml"]
+
+    first, second = document.findall(f".//{W}body/{W}p")[:2]
+    mark = first.find(f"{W}pPr/{W}rPr/{W}del")
+    assert mark.get(f"{W}author") == "Esma"
+    assert mark.get(f"{W}date") == "2026-10-27T09:00:00Z"
+    assert second.find(f"{W}pPr/{W}rPr") is None
+    ids = [node.get(f"{W}id") for node in document.iter(f"{W}del")]
+    assert len(ids) == len(set(ids)) == 3
+
+
+def test_inserted_then_deleted_text_nests_the_deletion_inside_the_insertion() -> None:
+    body = (
+        '<p>Alpha<span data-revision="del" data-author="Esma"><span data-revision="ins" '
+        'data-author="Beril"> big</span></span></p>'
+    )
+
+    document = _parts(document_docx(_params(body), lambda: None))["word/document.xml"]
+
+    inserted = document.find(f".//{W}ins")
+    deleted = inserted.find(f"{W}del")
+    assert inserted.get(f"{W}author") == "Beril"
+    assert deleted.get(f"{W}author") == "Esma"
+    assert [node.text for node in deleted.iter(f"{W}delText")] == [" big"]
+
+
+def test_deleted_line_break_and_note_reference_stay_inside_the_deletion() -> None:
+    body = (
+        '<p>Text<span data-revision="del" data-author="Esma"><br>'
+        '<sup class="fn-ref" id="fnref-1">1</sup></span> end</p>'
+    )
+
+    document = _parts(
+        document_docx(_params(body, footnotes=["Note"], footnoteHtml=["Note"]), lambda: None)
+    )["word/document.xml"]
+
+    deleted = list(document.iter(f"{W}del"))
+    assert any(node.find(f".//{W}br") is not None for node in deleted)
+    assert any(node.find(f".//{W}footnoteReference") is not None for node in deleted)
+
+
+def test_unknown_paragraph_end_revision_is_ignored() -> None:
+    body = '<p data-break-revision="move" data-break-author="Esma">kept</p>'
+
+    document = _parts(document_docx(_params(body), lambda: None))["word/document.xml"]
+
+    assert document.find(f".//{W}pPr/{W}rPr") is None
+    assert "kept" in _texts(document)

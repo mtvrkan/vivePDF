@@ -2,7 +2,7 @@ import type { DocumentNode, DocumentSettings } from "@/types/studio";
 import { textDirection } from "../model/design";
 import { CAPTION, CaptionCounter, captionKind, captionLabel } from "./captionCounter";
 import { COMMENT, commentId } from "./comments";
-import { changeAttrs, DELETION, INSERTION, withoutDeleted } from "./trackChanges";
+import { BREAK_ATTRIBUTE, breakChange, changeAttrs, DELETION, finalContent, INSERTION } from "./trackChanges";
 import { BIBLIOGRAPHY, CITATION, citationItems } from "./citationItems";
 import type { Citations } from "./citations";
 import { EQUATION, EQUATION_BLOCK, EQUATION_COLOUR, EQUATION_REF, MAX_EQUATIONS, equationArt, equationId, equationLabel, equationNumbers } from "./equations";
@@ -209,6 +209,13 @@ function direction(node: DocumentNode): string {
   return textDirection(plainText(node)) === "rtl" ? ' dir="rtl"' : "";
 }
 
+function breakRevision(node: DocumentNode, writer: Writer): string {
+  const change = writer.word ? breakChange(attr(node, BREAK_ATTRIBUTE)) : null;
+  if (!change) return "";
+  const date = change.date ? ` data-break-date="${change.date}"` : "";
+  return ` data-break-revision="${change.type === INSERTION ? "ins" : "del"}" data-break-author="${escapeHtml(change.author)}"${date}`;
+}
+
 function children(node: DocumentNode, writer: Writer): string {
   return (node.content ?? []).map((child) => write(child, writer)).join("");
 }
@@ -286,6 +293,12 @@ function bibliography(writer: Writer): string {
 }
 
 function write(node: DocumentNode, writer: Writer): string {
+  const markup = writeNode(node, writer);
+  if (node.type === "text" || !markup) return markup;
+  return (node.marks ?? []).filter((mark) => mark.type === INSERTION || mark.type === DELETION).reduce((html, mark) => wrap(html, mark, writer), markup);
+}
+
+function writeNode(node: DocumentNode, writer: Writer): string {
   switch (node.type) {
     case "doc":
       return children(node, writer);
@@ -293,13 +306,13 @@ function write(node: DocumentNode, writer: Writer): string {
       return (node.marks ?? []).reduce((text, mark) => wrap(text, mark, writer), escapeHtml(node.text ?? ""));
     case "paragraph": {
       const inner = children(node, writer);
-      return `<p${blockStyle(node)}${direction(node)}>${inner || "&nbsp;"}</p>`;
+      return `<p${blockStyle(node)}${direction(node)}${breakRevision(node, writer)}>${inner || "&nbsp;"}</p>`;
     }
     case "heading": {
       const level = Math.min(6, Math.max(1, Number(attr(node, "level")) || 1));
       writer.headings += 1;
       const number = writer.numbering ? writer.numbers.next(level) : null;
-      return `<h${level} id="h-${writer.headings}"${blockStyle(node)}${direction(node)}>${number ? `${escapeHtml(number)} ` : ""}${children(node, writer)}</h${level}>`;
+      return `<h${level} id="h-${writer.headings}"${blockStyle(node)}${direction(node)}${breakRevision(node, writer)}>${number ? `${escapeHtml(number)} ` : ""}${children(node, writer)}</h${level}>`;
     }
     case CAPTION: {
       const kind = captionKind(attr(node, "kind"));
@@ -388,7 +401,7 @@ function markedBlock(node: DocumentNode, markup: string, index: number, writer: 
 }
 
 export function documentHtml(source: DocumentNode, settings: WriterSettings, references: DocumentReferences | null = null, markBlocks = false, word = false): DocumentHtml {
-  const content = withoutDeleted(source, word);
+  const content = word ? source : finalContent(source);
   const writer = new Writer(settings, references, word);
   writer.numbering = !hasMainBreak(content);
   writer.equationNumbers = equationNumbers(content);

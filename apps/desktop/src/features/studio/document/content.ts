@@ -4,6 +4,7 @@ import { citationLanguageOf } from "./citations";
 import { buildCitations } from "./cslEngine";
 import { layoutOf } from "./model";
 import { documentHtml } from "./toHtml";
+import { finalContent } from "./trackChanges";
 import type { DocumentText } from "./documentText";
 
 export { documentText, type DocumentText } from "./documentText";
@@ -20,7 +21,7 @@ export async function wordContent(document: StudioDocument, language: string, te
 
 export async function laidOutContent(document: StudioDocument, language: string, text: DocumentText, markBlocks = true, comments = false): Promise<{ content: StudioDocumentContent; blockIds: string[] }> {
   const node = typeof document.content === "string" ? { type: "doc", content: [] } : document.content;
-  const citations = await buildCitations(node, document.sources, document.settings.citationStyle, citationLanguageOf(document.settings.citationLanguage, language));
+  const citations = await buildCitations(comments ? node : finalContent(node), document.sources, document.settings.citationStyle, citationLanguageOf(document.settings.citationLanguage, language));
   const { html, images, equations, fonts, footnotes, footnoteHtml, blockIds } = documentHtml(node, document.settings, { citations, title: document.settings.referencesTitle.trim() || text.referencesTitle }, markBlocks, comments);
   return { content: { html, images, equations, fonts, footnotes, footnoteHtml, notesTitle: text.notesTitle, settings: layoutOf(document.settings, text.tocTitle, { figure: text.figureListTitle, table: text.tableListTitle }), title: document.name, language }, blockIds };
 }

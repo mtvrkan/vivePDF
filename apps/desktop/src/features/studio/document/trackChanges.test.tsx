@@ -14,8 +14,11 @@ import { fileVersion } from "./footnotes";
 import { createDocument, normalizeDocument } from "./model";
 import { AuthorNameHost } from "./ReviewGroups";
 import { ActiveChangeCard } from "./TrackChangeCard";
-import { authorTone, changeAttrs, hasTrackedChanges, snippet, TRACK_CHANGES_VERSION, withoutDeleted } from "./trackChanges";
-import { isTracking, trackedChanges, trackKey } from "./trackChangesMark";
+import { authorTone, BREAK_ATTRIBUTE, changeAttrs, finalContent, hasTrackedChanges, snippet, TRACK_CHANGES_VERSION } from "./trackChanges";
+import { countText } from "./formatPainter";
+import { documentMatches, replaceAllMatches } from "./findInDocument";
+import { headingOutline } from "./headingOutline";
+import { finalDocument, isTracking, trackedChanges, trackKey } from "./trackChangesMark";
 import { useTrackChangesView } from "./trackChangesView";
 import { documentHtml } from "./toHtml";
 
@@ -58,6 +61,51 @@ function marked(shown: Editor): string {
   });
   return blocks.join("|");
 }
+
+function textAt(shown: Editor, text: string, nth = 0): number {
+  let found = -1;
+  let count = 0;
+  shown.state.doc.descendants((node, position) => {
+    if (found >= 0 || !node.isText) return found < 0;
+    let index = (node.text ?? "").indexOf(text);
+    while (index >= 0 && found < 0) {
+      if (count === nth) found = position + index;
+      count += 1;
+      index = (node.text ?? "").indexOf(text, index + 1);
+    }
+    return false;
+  });
+  if (found < 0) throw new Error(`missing ${text}`);
+  return found;
+}
+
+function remove(shown: Editor, text: string, nth = 0) {
+  const at = textAt(shown, text, nth);
+  shown.view.dispatch(shown.state.tr.delete(at, at + text.length));
+}
+
+function breaks(shown: Editor): string[] {
+  const found: string[] = [];
+  shown.state.doc.descendants((node) => {
+    if (!node.isTextblock) return true;
+    const value = node.attrs[BREAK_ATTRIBUTE] as { type?: string } | null | undefined;
+    found.push(value?.type ?? "-");
+    return false;
+  });
+  return found;
+}
+
+function shape(shown: Editor): string {
+  const walk = (node: Editor["state"]["doc"]): string => {
+    if (node.isText) return node.text ?? "";
+    let inner = "";
+    node.forEach((child) => (inner += walk(child)));
+    return node.isTextblock ? `(${inner})` : `${node.type.name}{${inner}}`;
+  };
+  return walk(shown.state.doc);
+}
+
+const FINAL_HTML = (shown: Editor) => documentHtml(shown.getJSON() as DocumentNode, FONTS).html.replace(/ id="[^"]*"/g, "");
 
 beforeAll(async () => {
   await ready();
@@ -256,7 +304,7 @@ describe("saving and exporting", () => {
     expect(final).not.toContain("Gone");
     expect(word).toContain('data-revision="del" data-author="A &quot;B&quot; &lt;C&gt;"');
     expect(word).toContain('data-revision="ins"');
-    expect(withoutDeleted(content, true)).toEqual(content);
+    expect(finalContent({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "plain" }] }] })).toEqual({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "plain" }] }] });
   });
 });
 
@@ -353,5 +401,381 @@ describe("opening tracked files", () => {
 
   it("refuses a document from a newer version", () => {
     expect(normalizeDocument({ ...createDocument("Thesis"), version: TRACK_CHANGES_VERSION + 1 })).toBeNull();
+  });
+});
+
+describe("deleting around pictures, tables and breaks", () => {
+  it.each([[`<img src="data:image/png;base64,iVBORw0KGgo=">`], ["<table><tr><td><p>cell</p></td></tr></table>"], ["<div data-page-break></div>"], ["<hr>"]])("keeps the text and the block when a selection across %s is deleted", (middle) => {
+    const shown = makeEditor(`<p>One two</p>${middle}<p>three four</p>`);
+    const blocks = shown.state.doc.childCount;
+
+    select(shown, textAt(shown, "two"), textAt(shown, "four") - 1);
+    shown.view.dispatch(shown.state.tr.deleteSelection());
+
+    expect(marked(shown)).toContain("One [-two]");
+    expect(marked(shown)).toContain("[-three] four");
+    expect(shown.state.doc.childCount).toBe(blocks);
+    expect(trackedChanges(shown.state.doc).map((change) => change.deleted)).toEqual(["two" + "three"]);
+  });
+
+  it("accepts such a deletion without joining across the block", () => {
+    const shown = makeEditor("<p>One two</p><hr><p>three four</p>");
+    select(shown, textAt(shown, "two"), textAt(shown, "four") - 1);
+    shown.view.dispatch(shown.state.tr.deleteSelection());
+
+    shown.commands.acceptAllChanges();
+
+    expect(shape(shown)).toMatch(/^doc\{\(One \)horizontalRule\{\}\( four\)/);
+  });
+
+  it("still deletes a lone picture outright", () => {
+    const shown = makeEditor(`<p>One</p><img src="data:image/png;base64,iVBORw0KGgo="><p>Two</p>`);
+    let picture = -1;
+    shown.state.doc.forEach((node, offset) => {
+      if (node.type.name === "image") picture = offset;
+    });
+
+    shown.view.dispatch(shown.state.tr.delete(picture, picture + 1));
+
+    expect(shape(shown)).not.toContain("image");
+    expect(trackedChanges(shown.state.doc)).toEqual([]);
+  });
+});
+
+describe("settling changes keeps the structure", () => {
+  it("does not join paragraphs for two separate edge deletions", () => {
+    const shown = makeEditor("<p>One two</p><p>three four</p>");
+    remove(shown, " two");
+    remove(shown, "three");
+
+    shown.commands.acceptAllChanges();
+
+    expect(marked(shown)).toBe("One| four");
+  });
+
+  it("does not join paragraphs for two separate edge insertions on reject", () => {
+    const shown = makeEditor("<p>One</p><p>Two</p>");
+    select(shown, 4);
+    type(shown, " end");
+    select(shown, textAt(shown, "Two"));
+    type(shown, "Start ");
+
+    shown.commands.rejectAllChanges();
+
+    expect(marked(shown)).toBe("One|Two");
+  });
+
+  it("keeps table rows and cells when cell deletions or insertions are settled", () => {
+    const shown = makeEditor("<table><tr><td><p>a1</p></td><td><p>b1</p></td></tr><tr><td><p>a2</p></td><td><p>b2</p></td></tr></table>");
+    remove(shown, "b1");
+    remove(shown, "a2");
+    shown.view.dispatch(shown.state.tr.insertText("X", textAt(shown, "a1") + 2));
+    shown.view.dispatch(shown.state.tr.insertText("Y", textAt(shown, "b2")));
+
+    shown.commands.acceptAllChanges();
+
+    expect(shape(shown)).toContain("table{tableRow{tableCell{(a1X)}tableCell{()}}tableRow{tableCell{()}tableCell{(Yb2)}}}");
+  });
+
+  it("keeps cells apart when insertions in neighbouring cells are rejected", () => {
+    const shown = makeEditor("<table><tr><td><p>a1</p></td><td><p>b1</p></td></tr></table>");
+    shown.view.dispatch(shown.state.tr.insertText("X", textAt(shown, "a1") + 2));
+    shown.view.dispatch(shown.state.tr.insertText("Y", textAt(shown, "b1")));
+
+    shown.commands.rejectAllChanges();
+
+    expect(shape(shown)).toContain("tableRow{tableCell{(a1)}tableCell{(b1)}}");
+  });
+
+  it("removes wholly deleted list items and joins items a deletion ran across", () => {
+    const shown = makeEditor("<ul><li><p>One</p></li><li><p>Two</p></li><li><p>Three</p></li><li><p>Four</p></li></ul>");
+    remove(shown, "Two");
+    select(shown, textAt(shown, "hree"), textAt(shown, "our"));
+    shown.view.dispatch(shown.state.tr.deleteSelection());
+
+    shown.commands.acceptAllChanges();
+
+    expect(shape(shown)).toContain("bulletList{listItem{(One)}listItem{(Tour)}}");
+  });
+
+  it("marks the paragraph end a deletion runs across and restores it on reject", () => {
+    const shown = makeEditor("<p>One two</p><p>three four</p>");
+    shown.view.dispatch(shown.state.tr.delete(4, 15));
+    expect(breaks(shown).slice(0, 2)).toEqual(["deletion", "-"]);
+
+    shown.commands.rejectAllChanges();
+
+    expect(marked(shown)).toBe("One two|three four");
+    expect(breaks(shown).slice(0, 2)).toEqual(["-", "-"]);
+  });
+
+  it("moves the paragraph end mark along when a marked paragraph is split", () => {
+    const shown = makeEditor("<p>One two</p><p>three four</p>");
+    shown.view.dispatch(shown.state.tr.delete(4, 15));
+    shown.commands.setTrackChanges(false);
+
+    shown.view.dispatch(shown.state.tr.split(2));
+
+    expect(marked(shown).split("|").slice(0, 3)).toEqual(["O", "ne[- two]", "[-three] four"]);
+    expect(breaks(shown).slice(0, 3)).toEqual(["-", "deletion", "-"]);
+  });
+});
+
+describe("final text everywhere", () => {
+  it("shows the same text in Final export as after accepting all", () => {
+    const shown = makeEditor("<h1>Title text</h1><p>Body text</p><ul><li><p>One</p></li><li><p>Two</p></li></ul><p>Keep</p><p>Drop</p><p>Tail</p>");
+    select(shown, textAt(shown, "text"), textAt(shown, "text", 1));
+    shown.view.dispatch(shown.state.tr.deleteSelection());
+    select(shown, textAt(shown, "ne"), textAt(shown, "Two") + 1);
+    shown.view.dispatch(shown.state.tr.deleteSelection());
+    remove(shown, "Drop");
+    const final = FINAL_HTML(shown);
+
+    shown.commands.acceptAllChanges();
+
+    expect(final).toBe(FINAL_HTML(shown));
+    expect(final).toContain("<h1>Title text</h1><ul><li><p>Owo</p></li></ul><p>Keep</p><p>Tail</p>");
+  });
+
+  it("leaves an untouched document as it is", () => {
+    const content = { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "plain" }] }] };
+
+    expect(finalContent(content)).toBe(content);
+  });
+
+  it("keeps the only paragraph of a table cell when its text and end are deleted", () => {
+    const content = { type: "doc", content: [{ type: "table", content: [{ type: "tableRow", content: [{ type: "tableCell", content: [{ type: "paragraph", attrs: { [BREAK_ATTRIBUTE]: { type: "deletion", id: "r-1", author: "Esma", date: "" } }, content: [{ type: "text", text: "x", marks: [{ type: "deletion", attrs: { id: "r-1" } }] }] }] }] }] }] };
+
+    const cell = finalContent(content).content?.[0].content?.[0].content?.[0];
+
+    expect(cell?.content).toEqual([{ type: "paragraph", attrs: { [BREAK_ATTRIBUTE]: null }, content: [] }]);
+  });
+
+  it("counts words, finds text and lists headings without deleted text", () => {
+    const shown = makeEditor("<h1>Old title</h1><h2>Gone</h2><p>one two three two</p>");
+    remove(shown, "Old ");
+    select(shown, textAt(shown, "Gone"), textAt(shown, "one two"));
+    shown.view.dispatch(shown.state.tr.deleteSelection());
+    remove(shown, "two ");
+    const { doc } = finalDocument(shown.state.doc);
+
+    const words = countText(doc, 0, doc.content.size, "en").words;
+    const matches = documentMatches(shown.state.doc, "two", { matchCase: false, wholeWord: false, language: "en" });
+    const outline = headingOutline(shown.state.doc).map((heading) => heading.text);
+
+    expect(words).toBe(4);
+    expect(matches).toHaveLength(1);
+    expect(outline).toEqual(["title"]);
+  });
+
+  it("replaces only live text with Replace all", () => {
+    const shown = makeEditor("<p>Alpha beta gamma beta</p>");
+    useCommentsView.setState({ author: "Beril" });
+    remove(shown, "beta");
+    useCommentsView.setState({ author: "Esma" });
+    const matches = documentMatches(shown.state.doc, "beta", { matchCase: false, wholeWord: false, language: "en" });
+
+    shown.view.dispatch(replaceAllMatches(shown.state.tr, matches, "BETA"));
+
+    expect(marked(shown)).toBe("Alpha [-beta] gamma [-beta][+BETA]");
+  });
+
+  it("finds nothing when the only match is deleted", () => {
+    const shown = makeEditor("<p>Alpha beta</p>");
+    remove(shown, "beta");
+
+    expect(documentMatches(shown.state.doc, "beta", { matchCase: false, wholeWord: false, language: "en" })).toEqual([]);
+  });
+});
+
+function paste(shown: Editor, html: string) {
+  shown.view.pasteHTML(html, new Event("paste") as ClipboardEvent);
+}
+
+describe("pasting tracked text", () => {
+  it("drops deleted text and renews change ids when tracking is off", () => {
+    const shown = makeEditor();
+    select(shown, 7, 11);
+    type(shown, "delta");
+    const id = trackedChanges(shown.state.doc)[0].id;
+    shown.commands.setTrackChanges(false);
+    select(shown, shown.state.doc.content.size - 1);
+
+    paste(shown, `<p><span data-change="delete" data-change-id="${id}" data-author="Esma">beta</span><span data-change="insert" data-change-id="${id}" data-author="Esma">delta</span></p>`);
+
+    const changes = trackedChanges(shown.state.doc);
+    expect(marked(shown)).toBe("Alpha [-beta][+delta] gamma[+delta]");
+    expect(new Set(changes.map((change) => change.id)).size).toBe(2);
+  });
+
+  it("marks pasted text as the paster's insertion without reviving deleted text", () => {
+    const shown = makeEditor();
+    useCommentsView.setState({ author: "Beril" });
+
+    paste(shown, '<p>x<span data-change="delete" data-change-id="r-old" data-author="Esma">gone</span>y</p>');
+
+    expect(marked(shown)).not.toContain("gone");
+    expect(trackedChanges(shown.state.doc).every((change) => change.author === "Beril")).toBe(true);
+  });
+
+  it("pastes plain text unchanged when nothing is tracked", () => {
+    const shown = makeEditor(undefined, false);
+    select(shown, 6);
+
+    paste(shown, "<p>!</p>");
+
+    expect(marked(shown)).toBe("Alpha! beta gamma");
+  });
+});
+
+describe("typing with an input method", () => {
+  afterEach(() => vi.useRealTimers());
+
+  function composing(shown: Editor, on: boolean) {
+    (shown.view as unknown as { input: { composing: boolean } }).input.composing = on;
+  }
+
+  function endComposition(shown: Editor) {
+    composing(shown, false);
+    shown.view.someProp("handleDOMEvents", (handlers) => handlers.compositionend?.(shown.view, new Event("compositionend") as CompositionEvent));
+    vi.advanceTimersByTime(100);
+  }
+
+  it("marks composed text only after the composition ends", () => {
+    vi.useFakeTimers();
+    const shown = makeEditor();
+    select(shown, 6);
+    composing(shown, true);
+
+    type(shown, "k");
+    shown.view.dispatch(shown.state.tr.insertText("ka", 6, 7));
+    expect(trackedChanges(shown.state.doc)).toEqual([]);
+    endComposition(shown);
+
+    expect(marked(shown)).toBe("Alpha[+ka] beta gamma");
+  });
+
+  it("keeps the text a composition typed over as a deletion", () => {
+    vi.useFakeTimers();
+    const shown = makeEditor();
+    composing(shown, true);
+
+    shown.view.dispatch(shown.state.tr.insertText("x", 7, 11));
+    endComposition(shown);
+
+    expect(marked(shown)).toBe("Alpha [-beta][+x] gamma");
+  });
+
+  it("does nothing on a composition that changed nothing", () => {
+    vi.useFakeTimers();
+    const shown = makeEditor();
+    composing(shown, true);
+    shown.view.dispatch(shown.state.tr.insertText("x", 6, 6));
+    shown.view.dispatch(shown.state.tr.delete(6, 7));
+
+    endComposition(shown);
+
+    expect(marked(shown)).toBe("Alpha beta gamma");
+  });
+});
+
+describe("views, ribbon and card", () => {
+  it("makes Final and Original read only and markup editable again", () => {
+    const shown = makeEditor();
+
+    act(() => useTrackChangesView.getState().setView("final"));
+    const final = shown.view.editable;
+    act(() => useTrackChangesView.getState().setView("original"));
+    const original = shown.view.editable;
+    act(() => useTrackChangesView.getState().setView("markup"));
+
+    expect([final, original, shown.view.editable]).toEqual([false, false, true]);
+  });
+
+  it("accepts only the shown authors from the ribbon", () => {
+    const shown = makeEditor();
+    select(shown, 6);
+    type(shown, "!");
+    useCommentsView.setState({ author: "Beril" });
+    select(shown, 18);
+    type(shown, "?");
+    useTrackChangesView.setState({ hiddenAuthors: ["Esma"] });
+    render(<DocumentToolbar editor={shown} contentWidth={400} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Review" }));
+
+    fireEvent.click(screen.getByTestId("doc-track-accept"));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Accept all changes" }));
+
+    expect(marked(shown)).toBe("Alpha[+!] beta gamma?");
+  });
+
+  it("names the change kind for screen readers in the reviewing pane", () => {
+    const shown = makeEditor();
+    select(shown, 7, 11);
+    type(shown, "delta");
+
+    render(<ChangesPanel editor={shown} language="en" onTrack={() => undefined} />);
+
+    expect(screen.getByTestId("changes-item").textContent).toContain("Replaced: ");
+  });
+
+  it("focuses the card when opened from the keyboard and returns focus on Escape", () => {
+    const shown = makeEditor();
+    select(shown, 6);
+    type(shown, "!");
+    vi.spyOn(Element.prototype, "getClientRects").mockReturnValue([{ left: 10, bottom: 20 }] as unknown as DOMRectList);
+    render(
+      <>
+        <DocumentToolbar editor={shown} contentWidth={400} />
+        <ActiveChangeCard editor={shown} language="en" />
+      </>,
+    );
+    fireEvent.click(screen.getByRole("tab", { name: "Review" }));
+    const next = screen.getByTestId("doc-track-next");
+
+    fireEvent.keyDown(next, { key: "Enter" });
+    fireEvent.click(next);
+    const card = screen.getByTestId("track-change-card");
+    expect(document.activeElement).toBe(card);
+    fireEvent.keyDown(card, { key: "Escape" });
+
+    expect(screen.queryByTestId("track-change-card")).toBeNull();
+    expect(document.activeElement).toBe(next);
+  });
+
+  it("leaves focus in place when the card opens from a click", () => {
+    const shown = makeEditor();
+    select(shown, 6);
+    type(shown, "!");
+    vi.spyOn(Element.prototype, "getClientRects").mockReturnValue([{ left: 10, bottom: 20 }] as unknown as DOMRectList);
+    render(
+      <>
+        <DocumentToolbar editor={shown} contentWidth={400} />
+        <ActiveChangeCard editor={shown} language="en" />
+      </>,
+    );
+    fireEvent.click(screen.getByRole("tab", { name: "Review" }));
+    const next = screen.getByTestId("doc-track-next");
+
+    fireEvent.pointerDown(next);
+    fireEvent.click(next);
+
+    expect(document.activeElement).not.toBe(screen.getByTestId("track-change-card"));
+  });
+});
+
+describe("Word export of paragraph ends and nested changes", () => {
+  it("writes deleted paragraph ends and keeps deleted notes and line breaks inside the change", () => {
+    const shown = makeEditor("<p>One two</p><p>three<br>four</p>");
+    shown.view.dispatch(shown.state.tr.delete(4, 15));
+    useCommentsView.setState({ author: "Beril" });
+    select(shown, textAt(shown, "four"));
+    shown.view.dispatch(shown.state.tr.delete(textAt(shown, "four") - 1, textAt(shown, "four")));
+
+    const word = documentHtml(shown.getJSON() as DocumentNode, FONTS, null, false, true).html;
+
+    expect(word).toContain('<p data-break-revision="del" data-break-author="Esma"');
+    expect(word).toContain('<span data-revision="del" data-author="Beril"');
+    expect(word).toMatch(/data-revision="del"[^>]*><br><\/span>/);
   });
 });

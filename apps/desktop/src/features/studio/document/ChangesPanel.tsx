@@ -14,6 +14,7 @@ import { useTrackChanges } from "./useTrackChanges";
 
 const KIND_ICONS = { insert: Plus, delete: Minus, replace: Replace } as const;
 const KIND_TONES = { insert: "bg-success/15 text-success", delete: "bg-destructive/10 text-destructive", replace: "bg-muted text-muted-foreground" } as const;
+const KIND_LABELS = { insert: "studio.doc.track.inserted", delete: "studio.doc.track.deleted", replace: "studio.doc.track.replaced" } as const;
 
 function ChangeText({ change }: { change: TrackedChange }) {
   if (change.kind === "replace")
@@ -94,6 +95,7 @@ export function ChangesPanel({ editor, language, onTrack }: { editor: Editor; la
                 </span>
                 <button type="button" onClick={() => editor.chain().focus().selectChange(change.id).run()} className="min-w-0 flex-1 rounded-md text-start text-sm leading-snug focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary">
                   <span className="block break-words">
+                    <span className="sr-only">{t(KIND_LABELS[change.kind])}: </span>
                     <ChangeText change={change} />
                   </span>
                   <span className="mt-0.5 block truncate text-xs text-muted-foreground">
