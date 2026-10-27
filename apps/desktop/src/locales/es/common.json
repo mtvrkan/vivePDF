@@ -2789,10 +2789,17 @@
       "groups": {
         "organize": "Diseño de páginas",
         "improve": "Optimización",
+        "check": "Revisar",
+        "scan": "Escanear",
         "toPdf": "A PDF",
         "fromPdf": "Desde PDF",
+        "create": "Crear y diseñar",
         "edit": "Edición de contenido",
-        "security": "Seguridad"
+        "marks": "Marcas de agua y códigos",
+        "forms": "Formularios y exámenes",
+        "read": "Leer y comentar",
+        "security": "Seguridad y firma",
+        "automate": "Automatización"
       },
       "descriptions": {
         "merge": "Combine varios PDF en un solo archivo, en orden.",
@@ -6262,6 +6269,9 @@
           "skip": "No revisado."
         }
       }
+    },
+    "menu": {
+      "categories": "Categorías de herramientas"
     }
   },
   "progress": {

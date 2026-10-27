@@ -48,6 +48,20 @@
   --tone-edit-soft: hsl(40 95% 90%);
   --tone-security: hsl(348 68% 44%);
   --tone-security-soft: hsl(348 75% 94%);
+  --tone-check: hsl(174 72% 26%);
+  --tone-check-soft: hsl(174 55% 91%);
+  --tone-scan: hsl(192 85% 30%);
+  --tone-scan-soft: hsl(192 70% 92%);
+  --tone-create: hsl(326 70% 42%);
+  --tone-create-soft: hsl(326 75% 94%);
+  --tone-marks: hsl(84 70% 25%);
+  --tone-marks-soft: hsl(84 55% 90%);
+  --tone-forms: hsl(25 45% 33%);
+  --tone-forms-soft: hsl(28 50% 92%);
+  --tone-read: hsl(234 58% 50%);
+  --tone-read-soft: hsl(234 70% 95%);
+  --tone-automate: hsl(220 10% 38%);
+  --tone-automate-soft: hsl(220 14% 92%);
   --group-teal: hsl(174 72% 28%);
   --group-cyan: hsl(192 85% 34%);
   --group-indigo: hsl(234 58% 52%);
@@ -134,6 +148,20 @@
   --tone-edit-soft: hsl(40 34% 16%);
   --tone-security: hsl(348 60% 67%);
   --tone-security-soft: hsl(348 30% 18%);
+  --tone-check: hsl(172 60% 48%);
+  --tone-check-soft: hsl(172 30% 15%);
+  --tone-scan: hsl(190 62% 56%);
+  --tone-scan-soft: hsl(190 32% 16%);
+  --tone-create: hsl(326 58% 70%);
+  --tone-create-soft: hsl(326 30% 18%);
+  --tone-marks: hsl(84 62% 52%);
+  --tone-marks-soft: hsl(84 30% 15%);
+  --tone-forms: hsl(28 45% 58%);
+  --tone-forms-soft: hsl(28 25% 16%);
+  --tone-read: hsl(232 58% 72%);
+  --tone-read-soft: hsl(232 30% 19%);
+  --tone-automate: hsl(220 10% 62%);
+  --tone-automate-soft: hsl(220 10% 17%);
   --group-teal: hsl(172 60% 48%);
   --group-cyan: hsl(190 62% 56%);
   --group-indigo: hsl(232 58% 72%);
@@ -234,6 +262,13 @@
 [data-tone="fromPdf"] { --tone: var(--tone-fromPdf); --tone-soft: var(--tone-fromPdf-soft); }
 [data-tone="edit"] { --tone: var(--tone-edit); --tone-soft: var(--tone-edit-soft); }
 [data-tone="security"] { --tone: var(--tone-security); --tone-soft: var(--tone-security-soft); }
+[data-tone="check"] { --tone: var(--tone-check); --tone-soft: var(--tone-check-soft); }
+[data-tone="scan"] { --tone: var(--tone-scan); --tone-soft: var(--tone-scan-soft); }
+[data-tone="create"] { --tone: var(--tone-create); --tone-soft: var(--tone-create-soft); }
+[data-tone="marks"] { --tone: var(--tone-marks); --tone-soft: var(--tone-marks-soft); }
+[data-tone="forms"] { --tone: var(--tone-forms); --tone-soft: var(--tone-forms-soft); }
+[data-tone="read"] { --tone: var(--tone-read); --tone-soft: var(--tone-read-soft); }
+[data-tone="automate"] { --tone: var(--tone-automate); --tone-soft: var(--tone-automate-soft); }
 
 @theme inline {
   --color-background: var(--background);

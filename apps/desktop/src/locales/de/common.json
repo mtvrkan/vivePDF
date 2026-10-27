@@ -2789,10 +2789,17 @@
       "groups": {
         "organize": "Seitenlayout",
         "improve": "Optimierung",
+        "check": "Prüfen",
+        "scan": "Scannen",
         "toPdf": "Zu PDF",
         "fromPdf": "Von PDF",
+        "create": "Erstellen & gestalten",
         "edit": "Inhaltsbearbeitung",
-        "security": "Sicherheit"
+        "marks": "Wasserzeichen & Codes",
+        "forms": "Formulare & Prüfungen",
+        "read": "Lesen & kommentieren",
+        "security": "Sicherheit & Signatur",
+        "automate": "Automatisierung"
       },
       "descriptions": {
         "merge": "Mehrere PDFs in der angegebenen Reihenfolge zu einer Datei zusammenführen.",
@@ -6262,6 +6269,9 @@
           "skip": "Nicht geprüft."
         }
       }
+    },
+    "menu": {
+      "categories": "Werkzeugkategorien"
     }
   },
   "progress": {

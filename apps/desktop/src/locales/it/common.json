@@ -2789,10 +2789,17 @@
       "groups": {
         "organize": "Layout pagina",
         "improve": "Ottimizzazione",
+        "check": "Controllo",
+        "scan": "Scansione",
         "toPdf": "In PDF",
         "fromPdf": "Da PDF",
+        "create": "Crea e progetta",
         "edit": "Modifica contenuto",
-        "security": "Sicurezza"
+        "marks": "Filigrane e codici",
+        "forms": "Moduli ed esami",
+        "read": "Leggi e annota",
+        "security": "Sicurezza e firma",
+        "automate": "Automazione"
       },
       "descriptions": {
         "merge": "Combina più PDF in un unico file, in ordine.",
@@ -6262,6 +6269,9 @@
           "skip": "Non controllato."
         }
       }
+    },
+    "menu": {
+      "categories": "Categorie di strumenti"
     }
   },
   "progress": {

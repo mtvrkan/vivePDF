@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 const css = readFileSync(new URL("./globals.css", import.meta.url), "utf8");
-const TONES = ["organize", "improve", "toPdf", "fromPdf", "edit", "security"];
+const TONES = ["organize", "improve", "check", "scan", "toPdf", "fromPdf", "create", "edit", "marks", "forms", "read", "security", "automate"];
 
 function darkBlock(): string {
   const start = css.indexOf(".dark {");

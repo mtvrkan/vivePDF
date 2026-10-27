@@ -2789,10 +2789,17 @@
       "groups": {
         "organize": "Sayfa düzeni",
         "improve": "Optimizasyon",
+        "check": "Denetle",
+        "scan": "Tarama",
         "toPdf": "PDF’e dönüştürme",
         "fromPdf": "PDF’ten dönüştürme",
+        "create": "Oluştur ve tasarla",
         "edit": "İçerik düzenleme",
-        "security": "Güvenlik"
+        "marks": "Filigran ve kod",
+        "forms": "Formlar ve sınav",
+        "read": "Oku ve incele",
+        "security": "Güvenlik ve imza",
+        "automate": "Otomasyon"
       },
       "descriptions": {
         "merge": "Birden çok PDF belgesini belirlenen sırada tek dosyada birleştirir.",
@@ -6262,6 +6269,9 @@
           "skip": "Denetlenmedi."
         }
       }
+    },
+    "menu": {
+      "categories": "Araç kategorileri"
     }
   },
   "progress": {

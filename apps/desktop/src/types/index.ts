@@ -132,7 +132,7 @@ export type Toast = {
   action?: ToastAction;
 };
 
-export type Tone = "organize" | "improve" | "toPdf" | "fromPdf" | "edit" | "security";
+export type Tone = "organize" | "improve" | "check" | "scan" | "toPdf" | "fromPdf" | "create" | "edit" | "marks" | "forms" | "read" | "security" | "automate";
 
 export type NavItem = {
   id: string;

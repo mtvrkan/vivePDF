@@ -145,6 +145,7 @@ in.
 | `edit` | Edit › Add table: type Turkish words and a decimal comma into four cells, wait for the engine's preview, place it on page 1, *Save as* | the cell text is real text on page 1 (Ürün, 15,50), more vector drawings and no new picture, the page text kept, the original untouched; screenshots of the dialog and the placed table in the run folder |
 | `edit` | Edit › Add chart: rename the first category to `Çay`, type a title, pick Bar, wait for the engine's preview, place it on page 1, *Save as* | the title, `Çay` and the series name are real text on page 1, more vector drawings and no new picture, the page text kept; screenshots of the dialog and the placed chart in the run folder |
 | `home` | open a file so it is remembered, see its cover on Home, replace the file on disk, come back to Home | the cover picture changes, then stays the same on the next visit |
+| `home` | open the Tools menu, pick Security & signing on the left, then Sign on the right | 13 categories are listed; the menu closes and the Sign page opens |
 | `engine` | four OCR jobs on a 400-page file keep every heavy engine worker busy while a page thumbnail is asked for, then the jobs are cancelled | the thumbnail arrives within 10 s while none of the OCR jobs has finished, and all four stop after the cancel |
 | `studiodoc` | type a few words at the end of a saved document's heading and press Ctrl+S at once | the saved file holds the new words and the bar still shows the file as saved half a second later |
 | `studiodoc` | ribbon: Layout › Margins › 30 mm, then Insert › Table, then click back into the heading | Layout › Page settings opens Page setup with 30 mm on all four sides and takes a 10 mm gutter without a room warning; the Table tab appears while the cursor is in the table and goes away outside it; ribbon screenshot in the run folder |
@@ -204,6 +205,7 @@ Things the suite cannot drive, to try once on a Windows machine after a change t
   cannot be dragged, and after End the window can be resized again. Unplug the projector during
   a presentation that used Swap screens, then End: the window comes back centred on the laptop.
 - Open the Tools menu in the top bar and press on a page of an open PDF: the menu closes.
+- Open the Tools menu: 13 categories on the left with their counts; sliding the pointer quickly down the list does not flicker the right side, resting on a category shows its tools with descriptions; the arrow keys walk through categories and tools, Escape closes. With a tool open (for example Watermark) the menu opens on its category. At the smallest window size the menu stays inside the window.
 - Open a PDF from a folder outside Documents and run a tool whose output folder already exists
   there (for example Split into a folder made by hand): vivePDF asks for a folder instead of
   writing into it, and the folder chosen in that dialog is used.

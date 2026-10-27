@@ -17,6 +17,20 @@
         }
       },
       {
+        "id": "check",
+        "label": {
+          "tr": "Denetle",
+          "en": "Check"
+        }
+      },
+      {
+        "id": "scan",
+        "label": {
+          "tr": "Tarama",
+          "en": "Scan"
+        }
+      },
+      {
         "id": "toPdf",
         "label": {
           "tr": "PDF’e dönüştürme",
@@ -31,6 +45,13 @@
         }
       },
       {
+        "id": "create",
+        "label": {
+          "tr": "Oluştur ve tasarla",
+          "en": "Create & design"
+        }
+      },
+      {
         "id": "edit",
         "label": {
           "tr": "İçerik düzenleme",
@@ -38,10 +59,38 @@
         }
       },
       {
+        "id": "marks",
+        "label": {
+          "tr": "Filigran ve kod",
+          "en": "Marks & codes"
+        }
+      },
+      {
+        "id": "forms",
+        "label": {
+          "tr": "Formlar ve sınav",
+          "en": "Forms & exams"
+        }
+      },
+      {
+        "id": "read",
+        "label": {
+          "tr": "Oku ve incele",
+          "en": "Read & review"
+        }
+      },
+      {
         "id": "security",
         "label": {
-          "tr": "Güvenlik",
-          "en": "Security"
+          "tr": "Güvenlik ve imza",
+          "en": "Security & signing"
+        }
+      },
+      {
+        "id": "automate",
+        "label": {
+          "tr": "Otomasyon",
+          "en": "Automation"
         }
       }
     ],
@@ -119,6 +168,54 @@
         }
       },
       {
+        "id": "crop",
+        "group": "organize",
+        "label": {
+          "tr": "Kırp",
+          "en": "Crop"
+        },
+        "description": {
+          "tr": "Kenar boşluklarını milimetre hassasiyetiyle kırpar.",
+          "en": "Trim margins with millimetre precision."
+        }
+      },
+      {
+        "id": "resize",
+        "group": "organize",
+        "label": {
+          "tr": "Sayfa boyutu",
+          "en": "Page size"
+        },
+        "description": {
+          "tr": "Sayfaları A6, A5, A4, A3, A2, Letter veya özel boyuta küçültün ya da büyütün.",
+          "en": "Shrink or enlarge pages to A6, A5, A4, A3, A2, Letter or a custom size."
+        }
+      },
+      {
+        "id": "impose",
+        "group": "organize",
+        "label": {
+          "tr": "Kitapçık / N-up",
+          "en": "Booklet / N-up"
+        },
+        "description": {
+          "tr": "Yaprak başına 2, 4 ya da 9 sayfa yerleştirin veya kitapçık oluşturun.",
+          "en": "Lay out 2, 4 or 9 pages per sheet, or build a booklet."
+        }
+      },
+      {
+        "id": "poster",
+        "group": "organize",
+        "label": {
+          "tr": "Poster / döşeme",
+          "en": "Poster / tiles"
+        },
+        "description": {
+          "tr": "Bir sayfayı birkaç kâğıda bölerek büyük basın, kesim işaretleriyle.",
+          "en": "Print one page large across several sheets, with cut marks."
+        }
+      },
+      {
         "id": "compress",
         "group": "improve",
         "label": {
@@ -155,51 +252,15 @@
         }
       },
       {
-        "id": "compare",
+        "id": "flatten",
         "group": "improve",
         "label": {
-          "tr": "Karşılaştır",
-          "en": "Compare"
+          "tr": "Düzleştir",
+          "en": "Flatten"
         },
         "description": {
-          "tr": "İki belge arasındaki metin ve görsel farklılıkları raporlar.",
-          "en": "Find text and visual differences between two files."
-        }
-      },
-      {
-        "id": "access",
-        "group": "improve",
-        "label": {
-          "tr": "Erişilebilirlik",
-          "en": "Accessibility"
-        },
-        "description": {
-          "tr": "PDF’i erişilebilirlik temellerine göre puanlayın; başlık, dil ve alternatif metni düzeltin.",
-          "en": "Score a PDF against accessibility basics and fix title, language and alternative text."
-        }
-      },
-      {
-        "id": "preflight",
-        "group": "improve",
-        "label": {
-          "tr": "Baskı kontrolü",
-          "en": "Print check"
-        },
-        "description": {
-          "tr": "Baskı öncesi yazı tiplerini, görsel çözünürlüğünü, taşma payını ve renk uzaylarını denetler.",
-          "en": "Checks fonts, image resolution, bleed and colour spaces before printing."
-        }
-      },
-      {
-        "id": "thesis-check",
-        "group": "improve",
-        "label": {
-          "tr": "Tez denetimi",
-          "en": "Thesis check"
-        },
-        "description": {
-          "tr": "Bitmiş tezinizi kenar boşlukları, yazı tipi, satır aralığı ve sayfa numaralarına göre denetler.",
-          "en": "Checks a finished thesis for margins, fonts, line spacing and page numbers."
+          "tr": "Form alanlarını ve notları kalıcı içeriğe dönüştürür.",
+          "en": "Bake forms and annotations into the content."
         }
       },
       {
@@ -215,68 +276,68 @@
         }
       },
       {
-        "id": "batch",
-        "group": "improve",
+        "id": "compare",
+        "group": "check",
         "label": {
-          "tr": "Toplu işlem",
-          "en": "Batch"
+          "tr": "Karşılaştır",
+          "en": "Compare"
         },
         "description": {
-          "tr": "Birden çok belgeye aynı işlemi tek seferde uygular.",
-          "en": "Applies the same operation to several documents at once."
+          "tr": "İki belge arasındaki metin ve görsel farklılıkları raporlar.",
+          "en": "Find text and visual differences between two files."
         }
       },
       {
-        "id": "watch",
-        "group": "improve",
+        "id": "access",
+        "group": "check",
         "label": {
-          "tr": "İzlenen klasörler",
-          "en": "Watched folders"
+          "tr": "Erişilebilirlik",
+          "en": "Accessibility"
         },
         "description": {
-          "tr": "Klasöre düşen her yeni PDF’te kayıtlı zinciri otomatik çalıştırın.",
-          "en": "Run a saved chain automatically on every new PDF in a folder."
+          "tr": "PDF’i erişilebilirlik temellerine göre puanlayın; başlık, dil ve alternatif metni düzeltin.",
+          "en": "Score a PDF against accessibility basics and fix title, language and alternative text."
         }
       },
       {
-        "id": "read-aloud",
-        "group": "improve",
+        "id": "preflight",
+        "group": "check",
         "label": {
-          "tr": "Sesli oku",
-          "en": "Read aloud"
+          "tr": "Baskı kontrolü",
+          "en": "Print check"
         },
         "description": {
-          "tr": "Belgeyi internetsiz çalışan seslerle yüksek sesle okur.",
-          "en": "Reads the document aloud with voices that work without internet."
+          "tr": "Baskı öncesi yazı tiplerini, görsel çözünürlüğünü, taşma payını ve renk uzaylarını denetler.",
+          "en": "Checks fonts, image resolution, bleed and colour spaces before printing."
         }
       },
       {
-        "id": "translate",
-        "group": "improve",
+        "id": "thesis-check",
+        "group": "check",
         "label": {
-          "tr": "Çevir",
-          "en": "Translate"
+          "tr": "Tez denetimi",
+          "en": "Thesis check"
         },
         "description": {
-          "tr": "Seçilen metni kurulu diller arasında internetsiz çevirir.",
-          "en": "Translates selected text between installed languages without internet."
+          "tr": "Bitmiş tezinizi kenar boşlukları, yazı tipi, satır aralığı ve sayfa numaralarına göre denetler.",
+          "en": "Checks a finished thesis for margins, fonts, line spacing and page numbers."
         }
       },
       {
-        "id": "print",
-        "group": "improve",
+        "id": "privacy",
+        "group": "check",
         "label": {
-          "tr": "Yazdır",
-          "en": "Print"
+          "tr": "Gizlilik kontrolü",
+          "en": "Privacy check"
         },
         "description": {
-          "tr": "Tüm, seçili, tek ya da çift sayfaları ölçekleme, kopya sayısı ve kâğıt başına sayfa ile yazdırır.",
-          "en": "Prints all, some, odd or even pages with scaling, copies and pages per sheet."
+          "tr": "Dosyanın neleri açığa çıkardığını görün (üst veri, betik, ek, bağlantı, kimlik numarası) ve paylaşmadan önce temizleyin.",
+          "en": "See what a file reveals (metadata, scripts, attachments, links, ID numbers) and clean it before sharing."
         }
       },
       {
         "id": "scanner",
-        "group": "improve",
+        "group": "scan",
         "label": {
           "tr": "Tarayıcıdan",
           "en": "From scanner"
@@ -287,8 +348,20 @@
         }
       },
       {
+        "id": "photo",
+        "group": "scan",
+        "label": {
+          "tr": "Fotoğraftan",
+          "en": "From photo"
+        },
+        "description": {
+          "tr": "Kâğıdın telefonla çekilmiş fotoğraflarını düzeltilmiş bir PDF’e çevirin.",
+          "en": "Turn phone photos of paper into a straightened PDF."
+        }
+      },
+      {
         "id": "scan-enhance",
-        "group": "improve",
+        "group": "scan",
         "label": {
           "tr": "İyileştir",
           "en": "Enhance"
@@ -300,7 +373,7 @@
       },
       {
         "id": "scan-split",
-        "group": "organize",
+        "group": "scan",
         "label": {
           "tr": "Toplu tarama böl",
           "en": "Split batch"
@@ -308,186 +381,6 @@
         "description": {
           "tr": "Toplu taramayı boş sayfa, QR yaprağı veya metne göre belgelere ayırın.",
           "en": "Cut a batch scan into documents at blank pages, QR sheets or text."
-        }
-      },
-      {
-        "id": "photo",
-        "group": "toPdf",
-        "label": {
-          "tr": "Fotoğraftan",
-          "en": "From photo"
-        },
-        "description": {
-          "tr": "Kâğıdın telefonla çekilmiş fotoğraflarını düzeltilmiş bir PDF’e çevirin.",
-          "en": "Turn phone photos of paper into a straightened PDF."
-        }
-      },
-      {
-        "id": "rename",
-        "group": "organize",
-        "label": {
-          "tr": "Yeniden adlandır",
-          "en": "Rename"
-        },
-        "description": {
-          "tr": "Dosyaları içeriğine göre adlandırın: tarih, fatura numarası, başlık veya tutar.",
-          "en": "Name files after their content: date, invoice number, title or amount."
-        }
-      },
-      {
-        "id": "qr-add",
-        "group": "edit",
-        "label": {
-          "tr": "QR kod ekle",
-          "en": "Add QR code"
-        },
-        "description": {
-          "tr": "Sayfalara bağlantı veya sıra numaralı QR kod basın.",
-          "en": "Stamp a QR code with a link or running number onto pages."
-        }
-      },
-      {
-        "id": "barcode-read",
-        "group": "edit",
-        "label": {
-          "tr": "Kodları oku",
-          "en": "Read codes"
-        },
-        "description": {
-          "tr": "Belgedeki tüm QR kod ve barkodları listeleyin.",
-          "en": "List every QR code and barcode found in a document."
-        }
-      },
-      {
-        "id": "omr-sheet",
-        "group": "edit",
-        "label": {
-          "tr": "Optik form oluştur",
-          "en": "Create answer sheets"
-        },
-        "description": {
-          "tr": "Taramadan geri okunabilen optik cevap kâğıtları yazdırın.",
-          "en": "Print bubble answer sheets that can be read back from a scan."
-        }
-      },
-      {
-        "id": "omr-grade",
-        "group": "edit",
-        "label": {
-          "tr": "Optik form okut",
-          "en": "Grade answer sheets"
-        },
-        "description": {
-          "tr": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın.",
-          "en": "Read filled answer sheets, grade them against a key and export the scores."
-        }
-      },
-      {
-        "id": "create-document",
-        "group": "toPdf",
-        "label": {
-          "tr": "PDF Oluştur",
-          "en": "Create PDF"
-        },
-        "description": {
-          "tr": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün",
-          "en": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet"
-        }
-      },
-      {
-        "id": "create-bulk",
-        "group": "toPdf",
-        "label": {
-          "tr": "Tablodan belgeler",
-          "en": "Documents from a table"
-        },
-        "description": {
-          "tr": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı",
-          "en": "Certificates, invitations and name badges for every row of a CSV or Excel table"
-        }
-      },
-      {
-        "id": "create-paper",
-        "group": "toPdf",
-        "label": {
-          "tr": "Kâğıt",
-          "en": "Paper"
-        },
-        "description": {
-          "tr": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF",
-          "en": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF"
-        }
-      },
-      {
-        "id": "create-book",
-        "group": "toPdf",
-        "label": {
-          "tr": "Kitap",
-          "en": "Book"
-        },
-        "description": {
-          "tr": "Markdown veya metin bölümlerinden kapaklı, bağlantılı içindekiler ve sayfa numaralı kitap",
-          "en": "Markdown or text chapters as a book with a cover, linked contents and page numbers"
-        }
-      },
-      {
-        "id": "create-cv",
-        "group": "toPdf",
-        "label": {
-          "tr": "CV oluşturucu",
-          "en": "CV builder"
-        },
-        "description": {
-          "tr": "Klasik, modern veya kompakt şablonlu, fotoğraflı ve tıklanabilir iletişimli özgeçmiş",
-          "en": "A CV with a classic, modern or compact template, photo and clickable contacts"
-        }
-      },
-      {
-        "id": "studio-design",
-        "group": "toPdf",
-        "label": {
-          "tr": "Stüdyo'da tasarla",
-          "en": "Design in Studio"
-        },
-        "description": {
-          "tr": "Serbest tuvalde 170'ten fazla şablonla afiş, broşür, davetiye ve sosyal medya gönderisi.",
-          "en": "Posters, flyers, invitations and social posts on a free canvas with 170+ templates."
-        }
-      },
-      {
-        "id": "studio-document",
-        "group": "toPdf",
-        "label": {
-          "tr": "Belge yaz",
-          "en": "Write a document"
-        },
-        "description": {
-          "tr": "Başlıklar, tablolar, atıflar ve içindekilerle rapor, makale veya tez yazın.",
-          "en": "Write a report, article or thesis with headings, tables, citations and a contents list."
-        }
-      },
-      {
-        "id": "business-card",
-        "group": "toPdf",
-        "label": {
-          "tr": "Kartvizit",
-          "en": "Business card"
-        },
-        "description": {
-          "tr": "Yaldız, kabartma ve lokal lak ile çift yüzlü kartvizit; taşma payı ve dizimle baskıya hazır.",
-          "en": "Two-sided cards with foil, emboss and spot UV, print-ready with bleed and imposition."
-        }
-      },
-      {
-        "id": "bibliography",
-        "group": "toPdf",
-        "label": {
-          "tr": "Kaynakça",
-          "en": "Bibliography"
-        },
-        "description": {
-          "tr": ".bib, RIS veya CSL JSON içe aktarın, kaynakları düzenleyin ve APA, MLA, Chicago ya da IEEE kaynakça çıkarın.",
-          "en": "Import .bib, RIS or CSL JSON, edit sources and export an APA, MLA, Chicago or IEEE reference list."
         }
       },
       {
@@ -659,6 +552,138 @@
         }
       },
       {
+        "id": "studio-document",
+        "group": "create",
+        "label": {
+          "tr": "Belge yaz",
+          "en": "Write a document"
+        },
+        "description": {
+          "tr": "Başlıklar, tablolar, atıflar ve içindekilerle rapor, makale veya tez yazın.",
+          "en": "Write a report, article or thesis with headings, tables, citations and a contents list."
+        }
+      },
+      {
+        "id": "studio-design",
+        "group": "create",
+        "label": {
+          "tr": "Stüdyo'da tasarla",
+          "en": "Design in Studio"
+        },
+        "description": {
+          "tr": "Serbest tuvalde 170'ten fazla şablonla afiş, broşür, davetiye ve sosyal medya gönderisi.",
+          "en": "Posters, flyers, invitations and social posts on a free canvas with 170+ templates."
+        }
+      },
+      {
+        "id": "create-document",
+        "group": "create",
+        "label": {
+          "tr": "PDF Oluştur",
+          "en": "Create PDF"
+        },
+        "description": {
+          "tr": "Düz metni ya da Markdown'ı rapor, mektup, dilekçe, tutanak veya kitapçığa dönüştürün",
+          "en": "Turn plain text or Markdown into a report, letter, petition, minutes or booklet"
+        }
+      },
+      {
+        "id": "create-cv",
+        "group": "create",
+        "label": {
+          "tr": "CV oluşturucu",
+          "en": "CV builder"
+        },
+        "description": {
+          "tr": "Klasik, modern veya kompakt şablonlu, fotoğraflı ve tıklanabilir iletişimli özgeçmiş",
+          "en": "A CV with a classic, modern or compact template, photo and clickable contacts"
+        }
+      },
+      {
+        "id": "business-card",
+        "group": "create",
+        "label": {
+          "tr": "Kartvizit",
+          "en": "Business card"
+        },
+        "description": {
+          "tr": "Yaldız, kabartma ve lokal lak ile çift yüzlü kartvizit; taşma payı ve dizimle baskıya hazır.",
+          "en": "Two-sided cards with foil, emboss and spot UV, print-ready with bleed and imposition."
+        }
+      },
+      {
+        "id": "create-book",
+        "group": "create",
+        "label": {
+          "tr": "Kitap",
+          "en": "Book"
+        },
+        "description": {
+          "tr": "Markdown veya metin bölümlerinden kapaklı, bağlantılı içindekiler ve sayfa numaralı kitap",
+          "en": "Markdown or text chapters as a book with a cover, linked contents and page numbers"
+        }
+      },
+      {
+        "id": "create-bulk",
+        "group": "create",
+        "label": {
+          "tr": "Tablodan belgeler",
+          "en": "Documents from a table"
+        },
+        "description": {
+          "tr": "CSV veya Excel tablosunun her satırı için sertifika, davetiye ve yaka kartı",
+          "en": "Certificates, invitations and name badges for every row of a CSV or Excel table"
+        }
+      },
+      {
+        "id": "create-paper",
+        "group": "create",
+        "label": {
+          "tr": "Kâğıt",
+          "en": "Paper"
+        },
+        "description": {
+          "tr": "Boş, çizgili, kareli, noktalı ya da nota kâğıdı — yazdırmaya hazır PDF",
+          "en": "Blank, lined, graph, dot grid or music paper as a ready-to-print PDF"
+        }
+      },
+      {
+        "id": "bibliography",
+        "group": "create",
+        "label": {
+          "tr": "Kaynakça",
+          "en": "Bibliography"
+        },
+        "description": {
+          "tr": ".bib, RIS veya CSL JSON içe aktarın, kaynakları düzenleyin ve APA, MLA, Chicago ya da IEEE kaynakça çıkarın.",
+          "en": "Import .bib, RIS or CSL JSON, edit sources and export an APA, MLA, Chicago or IEEE reference list."
+        }
+      },
+      {
+        "id": "textedit",
+        "group": "edit",
+        "label": {
+          "tr": "Metin düzenle",
+          "en": "Edit text"
+        },
+        "description": {
+          "tr": "Mevcut metni yerinde değiştirin (deneysel).",
+          "en": "Change existing text in place (experimental)."
+        }
+      },
+      {
+        "id": "findReplace",
+        "group": "edit",
+        "label": {
+          "tr": "Bul ve değiştir",
+          "en": "Find and replace"
+        },
+        "description": {
+          "tr": "Metni bulup aynı punto ve renkte yeniden yazın.",
+          "en": "Find text and rewrite it in the same size and colour."
+        }
+      },
+      {
         "id": "number",
         "group": "edit",
         "label": {
@@ -680,6 +705,18 @@
         "description": {
           "tr": "Her sayfaya üstbilgi ve altbilgi uygular.",
           "en": "Write a header and footer on every page."
+        }
+      },
+      {
+        "id": "cover",
+        "group": "edit",
+        "label": {
+          "tr": "Kapak sayfası",
+          "en": "Cover page"
+        },
+        "description": {
+          "tr": "PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf",
+          "en": "Put a designed cover page in front of a PDF: title, author, institution, logo or photo"
         }
       },
       {
@@ -707,126 +744,6 @@
         }
       },
       {
-        "id": "cover",
-        "group": "edit",
-        "label": {
-          "tr": "Kapak sayfası",
-          "en": "Cover page"
-        },
-        "description": {
-          "tr": "PDF'nin başına tasarlanmış bir kapak sayfası ekleyin: başlık, yazar, kurum, logo ya da fotoğraf",
-          "en": "Put a designed cover page in front of a PDF: title, author, institution, logo or photo"
-        }
-      },
-      {
-        "id": "findReplace",
-        "group": "edit",
-        "label": {
-          "tr": "Bul ve değiştir",
-          "en": "Find and replace"
-        },
-        "description": {
-          "tr": "Metni bulup aynı punto ve renkte yeniden yazın.",
-          "en": "Find text and rewrite it in the same size and colour."
-        }
-      },
-      {
-        "id": "watermark",
-        "group": "edit",
-        "label": {
-          "tr": "Filigran ekle",
-          "en": "Add watermark"
-        },
-        "description": {
-          "tr": "Metin veya görsel filigran uygular.",
-          "en": "Apply a text or image watermark."
-        }
-      },
-      {
-        "id": "removeWatermark",
-        "group": "edit",
-        "label": {
-          "tr": "Filigran kaldır",
-          "en": "Remove watermark"
-        },
-        "description": {
-          "tr": "Metin, işaretleme veya yinelenen görsel filigranlarını kaldırın.",
-          "en": "Remove text, annotation or repeated-image watermarks."
-        }
-      },
-      {
-        "id": "stamp",
-        "group": "edit",
-        "label": {
-          "tr": "Damga",
-          "en": "Stamp"
-        },
-        "description": {
-          "tr": "Belgeyi onaylandı, taslak ya da gizli olarak damgalayın.",
-          "en": "Stamp a document as approved, draft or confidential."
-        }
-      },
-      {
-        "id": "crop",
-        "group": "edit",
-        "label": {
-          "tr": "Kırp",
-          "en": "Crop"
-        },
-        "description": {
-          "tr": "Kenar boşluklarını milimetre hassasiyetiyle kırpar.",
-          "en": "Trim margins with millimetre precision."
-        }
-      },
-      {
-        "id": "resize",
-        "group": "edit",
-        "label": {
-          "tr": "Sayfa boyutu",
-          "en": "Page size"
-        },
-        "description": {
-          "tr": "Sayfaları A6, A5, A4, A3, A2, Letter veya özel boyuta küçültün ya da büyütün.",
-          "en": "Shrink or enlarge pages to A6, A5, A4, A3, A2, Letter or a custom size."
-        }
-      },
-      {
-        "id": "flatten",
-        "group": "edit",
-        "label": {
-          "tr": "Düzleştir",
-          "en": "Flatten"
-        },
-        "description": {
-          "tr": "Form alanlarını ve notları kalıcı içeriğe dönüştürür.",
-          "en": "Bake forms and annotations into the content."
-        }
-      },
-      {
-        "id": "impose",
-        "group": "edit",
-        "label": {
-          "tr": "Kitapçık / N-up",
-          "en": "Booklet / N-up"
-        },
-        "description": {
-          "tr": "Yaprak başına 2, 4 ya da 9 sayfa yerleştirin veya kitapçık oluşturun.",
-          "en": "Lay out 2, 4 or 9 pages per sheet, or build a booklet."
-        }
-      },
-      {
-        "id": "poster",
-        "group": "edit",
-        "label": {
-          "tr": "Poster / döşeme",
-          "en": "Poster / tiles"
-        },
-        "description": {
-          "tr": "Bir sayfayı birkaç kâğıda bölerek büyük basın, kesim işaretleriyle.",
-          "en": "Print one page large across several sheets, with cut marks."
-        }
-      },
-      {
         "id": "bookmarks",
         "group": "edit",
         "label": {
@@ -851,102 +768,6 @@
         }
       },
       {
-        "id": "textedit",
-        "group": "edit",
-        "label": {
-          "tr": "Metin düzenle",
-          "en": "Edit text"
-        },
-        "description": {
-          "tr": "Mevcut metni yerinde değiştirin (deneysel).",
-          "en": "Change existing text in place (experimental)."
-        }
-      },
-      {
-        "id": "forms",
-        "group": "edit",
-        "label": {
-          "tr": "Doldur",
-          "en": "Fill"
-        },
-        "description": {
-          "tr": "Form alanlarını doldurur; isteğe bağlı olarak kilitler.",
-          "en": "Fill form fields, optionally lock them."
-        }
-      },
-      {
-        "id": "form-merge",
-        "group": "edit",
-        "label": {
-          "tr": "Toplu doldur",
-          "en": "Mail merge"
-        },
-        "description": {
-          "tr": "CSV veya Excel tablosunun her satırından bir form doldurun.",
-          "en": "Fill one form from every row of a CSV or Excel table."
-        }
-      },
-      {
-        "id": "form-export",
-        "group": "edit",
-        "label": {
-          "tr": "Tablo çıkar",
-          "en": "Export table"
-        },
-        "description": {
-          "tr": "Çok sayıda doldurulmuş formun değerlerini tek tabloya toplayın.",
-          "en": "Collect the values of many filled forms into one spreadsheet."
-        }
-      },
-      {
-        "id": "form-detect",
-        "group": "edit",
-        "label": {
-          "tr": "Alan algıla",
-          "en": "Detect fields"
-        },
-        "description": {
-          "tr": "Alt çizgileri ve kutuları gerçek form alanlarına dönüştürün.",
-          "en": "Turn underlines and boxes into real form fields."
-        }
-      },
-      {
-        "id": "annotate",
-        "group": "edit",
-        "label": {
-          "tr": "İşaretle / not ekle",
-          "en": "Annotate / mark up"
-        },
-        "description": {
-          "tr": "Vurgu, çizim, şekil ve metin kutusu ekler.",
-          "en": "Add highlights, drawings, shapes and text boxes."
-        }
-      },
-      {
-        "id": "comments",
-        "group": "edit",
-        "label": {
-          "tr": "Yorumlar",
-          "en": "Comments"
-        },
-        "description": {
-          "tr": "Yorumları okur, yanıtlar ve çözüldü olarak işaretler; XFDF ya da FDF olarak dışa ve içe aktarır.",
-          "en": "Read, reply to and resolve comments, and export or import them as XFDF or FDF."
-        }
-      },
-      {
-        "id": "attachments",
-        "group": "edit",
-        "label": {
-          "tr": "Ekler",
-          "en": "Attachments"
-        },
-        "description": {
-          "tr": "PDF'e iliştirilmiş dosyaları gösterir, ekler, kaydeder ve kaldırır.",
-          "en": "See, add, save and remove files attached to a PDF."
-        }
-      },
-      {
         "id": "properties",
         "group": "edit",
         "label": {
@@ -959,75 +780,207 @@
         }
       },
       {
-        "id": "encrypt",
-        "group": "security",
+        "id": "watermark",
+        "group": "marks",
         "label": {
-          "tr": "Parola ekle",
-          "en": "Add password"
+          "tr": "Filigran ekle",
+          "en": "Add watermark"
         },
         "description": {
-          "tr": "Belgeyi parola ve izin ayarlarıyla korur.",
-          "en": "Protect with a password and permissions."
+          "tr": "Metin veya görsel filigran uygular.",
+          "en": "Apply a text or image watermark."
         }
       },
       {
-        "id": "decrypt",
-        "group": "security",
+        "id": "removeWatermark",
+        "group": "marks",
         "label": {
-          "tr": "Parola kaldır",
-          "en": "Remove password"
+          "tr": "Filigran kaldır",
+          "en": "Remove watermark"
         },
         "description": {
-          "tr": "Parolayı kaldırarak erişime açık bir kopya oluşturur.",
-          "en": "Remove the password and save an open copy."
+          "tr": "Metin, işaretleme veya yinelenen görsel filigranlarını kaldırın.",
+          "en": "Remove text, annotation or repeated-image watermarks."
         }
       },
       {
-        "id": "seal",
-        "group": "security",
+        "id": "stamp",
+        "group": "marks",
         "label": {
-          "tr": "Sertifikayla mühürle",
-          "en": "Seal with a certificate"
+          "tr": "Damga",
+          "en": "Stamp"
         },
         "description": {
-          "tr": "Dosyayı hiç parola olmadan sertifika sahiplerine mühürleyin.",
-          "en": "Seal a file for certificate holders, with no password at all."
+          "tr": "Belgeyi onaylandı, taslak ya da gizli olarak damgalayın.",
+          "en": "Stamp a document as approved, draft or confidential."
         }
       },
       {
-        "id": "unseal",
-        "group": "security",
+        "id": "qr-add",
+        "group": "marks",
         "label": {
-          "tr": "Sertifikayla aç",
-          "en": "Open with a certificate"
+          "tr": "QR kod ekle",
+          "en": "Add QR code"
         },
         "description": {
-          "tr": "Sertifikayla mühürlenmiş bir dosyayı kendi sertifikanızla açın.",
-          "en": "Open a certificate-sealed file with your own certificate."
+          "tr": "Sayfalara bağlantı veya sıra numaralı QR kod basın.",
+          "en": "Stamp a QR code with a link or running number onto pages."
         }
       },
       {
-        "id": "redact",
-        "group": "security",
+        "id": "barcode-read",
+        "group": "marks",
         "label": {
-          "tr": "Karartma",
-          "en": "Redaction"
+          "tr": "Kodları oku",
+          "en": "Read codes"
         },
         "description": {
-          "tr": "Metin ve alanları geri döndürülemez biçimde kaldırır.",
-          "en": "Permanently remove text and areas."
+          "tr": "Belgedeki tüm QR kod ve barkodları listeleyin.",
+          "en": "List every QR code and barcode found in a document."
         }
       },
       {
-        "id": "privacy",
-        "group": "security",
+        "id": "forms",
+        "group": "forms",
         "label": {
-          "tr": "Gizlilik kontrolü",
-          "en": "Privacy check"
+          "tr": "Doldur",
+          "en": "Fill"
         },
         "description": {
-          "tr": "Dosyanın neleri açığa çıkardığını görün (üst veri, betik, ek, bağlantı, kimlik numarası) ve paylaşmadan önce temizleyin.",
-          "en": "See what a file reveals (metadata, scripts, attachments, links, ID numbers) and clean it before sharing."
+          "tr": "Form alanlarını doldurur; isteğe bağlı olarak kilitler.",
+          "en": "Fill form fields, optionally lock them."
+        }
+      },
+      {
+        "id": "form-merge",
+        "group": "forms",
+        "label": {
+          "tr": "Toplu doldur",
+          "en": "Mail merge"
+        },
+        "description": {
+          "tr": "CSV veya Excel tablosunun her satırından bir form doldurun.",
+          "en": "Fill one form from every row of a CSV or Excel table."
+        }
+      },
+      {
+        "id": "form-export",
+        "group": "forms",
+        "label": {
+          "tr": "Tablo çıkar",
+          "en": "Export table"
+        },
+        "description": {
+          "tr": "Çok sayıda doldurulmuş formun değerlerini tek tabloya toplayın.",
+          "en": "Collect the values of many filled forms into one spreadsheet."
+        }
+      },
+      {
+        "id": "form-detect",
+        "group": "forms",
+        "label": {
+          "tr": "Alan algıla",
+          "en": "Detect fields"
+        },
+        "description": {
+          "tr": "Alt çizgileri ve kutuları gerçek form alanlarına dönüştürün.",
+          "en": "Turn underlines and boxes into real form fields."
+        }
+      },
+      {
+        "id": "omr-sheet",
+        "group": "forms",
+        "label": {
+          "tr": "Optik form oluştur",
+          "en": "Create answer sheets"
+        },
+        "description": {
+          "tr": "Taramadan geri okunabilen optik cevap kâğıtları yazdırın.",
+          "en": "Print bubble answer sheets that can be read back from a scan."
+        }
+      },
+      {
+        "id": "omr-grade",
+        "group": "forms",
+        "label": {
+          "tr": "Optik form okut",
+          "en": "Grade answer sheets"
+        },
+        "description": {
+          "tr": "Doldurulmuş optik formları okuyun, cevap anahtarıyla puanlayın ve sonuçları dışa aktarın.",
+          "en": "Read filled answer sheets, grade them against a key and export the scores."
+        }
+      },
+      {
+        "id": "annotate",
+        "group": "read",
+        "label": {
+          "tr": "İşaretle / not ekle",
+          "en": "Annotate / mark up"
+        },
+        "description": {
+          "tr": "Vurgu, çizim, şekil ve metin kutusu ekler.",
+          "en": "Add highlights, drawings, shapes and text boxes."
+        }
+      },
+      {
+        "id": "comments",
+        "group": "read",
+        "label": {
+          "tr": "Yorumlar",
+          "en": "Comments"
+        },
+        "description": {
+          "tr": "Yorumları okur, yanıtlar ve çözüldü olarak işaretler; XFDF ya da FDF olarak dışa ve içe aktarır.",
+          "en": "Read, reply to and resolve comments, and export or import them as XFDF or FDF."
+        }
+      },
+      {
+        "id": "attachments",
+        "group": "read",
+        "label": {
+          "tr": "Ekler",
+          "en": "Attachments"
+        },
+        "description": {
+          "tr": "PDF'e iliştirilmiş dosyaları gösterir, ekler, kaydeder ve kaldırır.",
+          "en": "See, add, save and remove files attached to a PDF."
+        }
+      },
+      {
+        "id": "read-aloud",
+        "group": "read",
+        "label": {
+          "tr": "Sesli oku",
+          "en": "Read aloud"
+        },
+        "description": {
+          "tr": "Belgeyi internetsiz çalışan seslerle yüksek sesle okur.",
+          "en": "Reads the document aloud with voices that work without internet."
+        }
+      },
+      {
+        "id": "translate",
+        "group": "read",
+        "label": {
+          "tr": "Çevir",
+          "en": "Translate"
+        },
+        "description": {
+          "tr": "Seçilen metni kurulu diller arasında internetsiz çevirir.",
+          "en": "Translates selected text between installed languages without internet."
+        }
+      },
+      {
+        "id": "print",
+        "group": "read",
+        "label": {
+          "tr": "Yazdır",
+          "en": "Print"
+        },
+        "description": {
+          "tr": "Tüm, seçili, tek ya da çift sayfaları ölçekleme, kopya sayısı ve kâğıt başına sayfa ile yazdırır.",
+          "en": "Prints all, some, odd or even pages with scaling, copies and pages per sheet."
         }
       },
       {
@@ -1055,6 +1008,66 @@
         }
       },
       {
+        "id": "encrypt",
+        "group": "security",
+        "label": {
+          "tr": "Parola ekle",
+          "en": "Add password"
+        },
+        "description": {
+          "tr": "Belgeyi parola ve izin ayarlarıyla korur.",
+          "en": "Protect with a password and permissions."
+        }
+      },
+      {
+        "id": "decrypt",
+        "group": "security",
+        "label": {
+          "tr": "Parola kaldır",
+          "en": "Remove password"
+        },
+        "description": {
+          "tr": "Parolayı kaldırarak erişime açık bir kopya oluşturur.",
+          "en": "Remove the password and save an open copy."
+        }
+      },
+      {
+        "id": "redact",
+        "group": "security",
+        "label": {
+          "tr": "Karartma",
+          "en": "Redaction"
+        },
+        "description": {
+          "tr": "Metin ve alanları geri döndürülemez biçimde kaldırır.",
+          "en": "Permanently remove text and areas."
+        }
+      },
+      {
+        "id": "seal",
+        "group": "security",
+        "label": {
+          "tr": "Sertifikayla mühürle",
+          "en": "Seal with a certificate"
+        },
+        "description": {
+          "tr": "Dosyayı hiç parola olmadan sertifika sahiplerine mühürleyin.",
+          "en": "Seal a file for certificate holders, with no password at all."
+        }
+      },
+      {
+        "id": "unseal",
+        "group": "security",
+        "label": {
+          "tr": "Sertifikayla aç",
+          "en": "Open with a certificate"
+        },
+        "description": {
+          "tr": "Sertifikayla mühürlenmiş bir dosyayı kendi sertifikanızla açın.",
+          "en": "Open a certificate-sealed file with your own certificate."
+        }
+      },
+      {
         "id": "certificate",
         "group": "security",
         "label": {
@@ -1076,6 +1089,42 @@
         "description": {
           "tr": "Elinizdeki .p12 dosyasından açık .cer dosyasını yazar.",
           "en": "Write the public .cer out of a .p12 you already hold."
+        }
+      },
+      {
+        "id": "batch",
+        "group": "automate",
+        "label": {
+          "tr": "Toplu işlem",
+          "en": "Batch"
+        },
+        "description": {
+          "tr": "Birden çok belgeye aynı işlemi tek seferde uygular.",
+          "en": "Applies the same operation to several documents at once."
+        }
+      },
+      {
+        "id": "watch",
+        "group": "automate",
+        "label": {
+          "tr": "İzlenen klasörler",
+          "en": "Watched folders"
+        },
+        "description": {
+          "tr": "Klasöre düşen her yeni PDF’te kayıtlı zinciri otomatik çalıştırın.",
+          "en": "Run a saved chain automatically on every new PDF in a folder."
+        }
+      },
+      {
+        "id": "rename",
+        "group": "automate",
+        "label": {
+          "tr": "Yeniden adlandır",
+          "en": "Rename"
+        },
+        "description": {
+          "tr": "Dosyaları içeriğine göre adlandırın: tarih, fatura numarası, başlık veya tutar.",
+          "en": "Name files after their content: date, invoice number, title or amount."
         }
       }
     ]

@@ -260,5 +260,16 @@ describe("home layout", () => {
     for (const label of [t("common.openPdf"), t("nav.settings"), t("window.minimize"), t("nav.help")]) expect(`${label}: ${await inside(label)}`).toBe(`${label}: true`);
     await browser.setWindowSize(1280, 800);
   });
-});
 
+  it("opens a tool from its category in the Tools menu", async () => {
+    await goHome();
+    const toolsButton = $(`//header//button[normalize-space(.)="${t("nav.tools")}" or @aria-label="${t("nav.tools")}"]`);
+    await toolsButton.click();
+    await $('[data-testid="tools-menu-categories"]').waitForDisplayed();
+    expect(await browser.execute(() => document.querySelectorAll('[data-testid="tools-menu-categories"] [role="menuitem"]').length)).toBe(13);
+    await $('[data-tool-category="security"]').click();
+    await $('[data-testid="tools-menu-tools"] [data-tool-id="sign"]').click();
+    await $('[data-testid="tools-menu-tools"]').waitForExist({ reverse: true });
+    expect(await browser.execute(() => window.location.pathname + window.location.search)).toContain("/tools/sign");
+  });
+});

@@ -4,7 +4,7 @@ import { Link, NavLink, useLocation, useNavigate } from "react-router";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useTranslation } from "react-i18next";
 import { LOCALES } from "@/app/locales";
-import { headerNavigation, menuItemsForGroup, toolGroupIcons, toolShortcuts, type ToolGroup } from "@/app/navigation";
+import { headerNavigation, routeIsActive, toolGroupIcons, toolGroupOfRoute, toolGroups, toolsInGroup, toolShortcuts, type ToolGroup, type ToolShortcut } from "@/app/navigation";
 import { isDarkTheme } from "@/app/theme";
 import { Button } from "@/components/shared/Button";
 import { Dialog } from "@/components/shared/Dialog";
@@ -34,7 +34,7 @@ const COMPACT_ACTIONS_LEVEL = 3;
 const HIDE_QUICK_TOGGLES_LEVEL = 4;
 const ICON_MENUS_LEVEL = 5;
 const HIDE_PRIMARY_NAV_LEVEL = 6;
-const TOOL_MENU_COLUMNS: ToolGroup[][] = [["organize", "fromPdf"], ["improve"], ["toPdf", "edit", "security"]];
+const CATEGORY_HOVER_MS = 90;
 
 function UpdateBadge({ compact }: { compact: boolean }) {
   const { t } = useTranslation();
@@ -108,42 +108,111 @@ function PrimaryNav({ compact }: { compact: boolean }) {
   );
 }
 
+function ToolMenuItem({ tool, onSelect }: { tool: ToolShortcut; onSelect: () => void }) {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const Icon = tool.icon;
+  const isActive = routeIsActive(tool.route, location.pathname, location.search);
+  return (
+    <Link
+      to={tool.route}
+      role="menuitem"
+      aria-current={isActive ? "page" : undefined}
+      onClick={onSelect}
+      data-tool-id={tool.id}
+      className={cn(
+        "flex min-w-0 items-start gap-2.5 rounded-lg p-2 outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
+        isActive ? "menubar-active" : "hover:bg-(--hover-bg)",
+      )}
+    >
+      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-(--tone-soft) text-(--tone)" aria-hidden>
+        <Icon className="size-4" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-medium text-foreground">{t(tool.labelKey)}</span>
+        <span className="line-clamp-2 text-xs leading-4 text-muted-foreground">{t(tool.descriptionKey)}</span>
+      </span>
+    </Link>
+  );
+}
+
 function ToolsMenu({ openId, onOpenChange, iconOnly }: { openId: string | null; onOpenChange: (id: string | null) => void; iconOnly: boolean }) {
   const { t } = useTranslation();
   const location = useLocation();
   const [allOpen, setAllOpen] = useState(false);
   const close = () => onOpenChange(null);
   const active = location.pathname.startsWith("/tools");
+  const current = toolGroupOfRoute(location.pathname, location.search) ?? "organize";
+  const [shown, setShown] = useState<ToolGroup>(current);
+  const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const open = openId === "tools";
+  const cancelHover = () => {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = null;
+  };
+  const show = (group: ToolGroup) => {
+    cancelHover();
+    setShown(group);
+  };
+  const hover = (group: ToolGroup) => {
+    cancelHover();
+    hoverTimer.current = setTimeout(() => setShown(group), CATEGORY_HOVER_MS);
+  };
+  const ShownIcon = toolGroupIcons[shown];
+
+  useEffect(() => {
+    if (open) setShown(current);
+  }, [open, current]);
+
+  useEffect(() => cancelHover, []);
 
   return (
     <>
-      <HeaderMenu id="tools" label={t("nav.tools")} icon={iconOnly ? Wrench : undefined} iconOnly={iconOnly} active={active} openId={openId} onOpenChange={onOpenChange} panelClassName="w-[46rem] p-3">
-        <div className="grid gap-x-4 gap-y-3 sm:grid-cols-3">
-          {TOOL_MENU_COLUMNS.map((column) => (
-            <div key={column.join("-")} className="flex min-w-0 flex-col gap-3">
-              {column.map((group) => {
-                const items = menuItemsForGroup(group);
-                if (items.length === 0) return null;
-                const GroupIcon = toolGroupIcons[group];
-                return (
-                  <section key={group} data-tone={group} className="min-w-0">
-                    <p className="flex h-8 items-center gap-2 px-2.5 text-2xs font-semibold uppercase tracking-[0.08em] text-muted-foreground">
-                      <GroupIcon className="size-3.5 text-(--tone)" aria-hidden />
-                      <span className="truncate">{t(`tools.grid.groups.${group}`)}</span>
-                    </p>
-                    <div className="space-y-px">
-                      {items.map((item) => (
-                        <MenuLink key={item.id} icon={item.icon} label={t(item.labelKey)} route={item.route} tone={group} onSelect={close} />
-                      ))}
-                    </div>
-                  </section>
-                );
-              })}
+      <HeaderMenu id="tools" label={t("nav.tools")} icon={iconOnly ? Wrench : undefined} iconOnly={iconOnly} active={active} openId={openId} onOpenChange={onOpenChange} panelClassName="w-[52rem] p-0">
+        <div className="grid max-h-[min(34rem,calc(100vh-9rem))] grid-cols-[14rem_minmax(0,1fr)]">
+          <div role="group" aria-label={t("tools.menu.categories")} className="space-y-px overflow-y-auto border-e border-border p-2" data-testid="tools-menu-categories">
+            {toolGroups.map((group) => {
+              const GroupIcon = toolGroupIcons[group];
+              const selected = group === shown;
+              return (
+                <button
+                  key={group}
+                  type="button"
+                  role="menuitem"
+                  aria-current={selected || undefined}
+                  data-tone={group}
+                  data-tool-category={group}
+                  onClick={() => show(group)}
+                  onFocus={() => show(group)}
+                  onPointerEnter={() => hover(group)}
+                  onPointerLeave={cancelHover}
+                  className={cn(
+                    "flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-sm outline-none transition-colors duration-(--transition-fast) focus-visible:ring-2 focus-visible:ring-ring",
+                    selected ? "tone-active font-medium text-foreground" : "text-foreground/85 hover:bg-(--hover-bg) hover:text-foreground",
+                  )}
+                >
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-(--tone-soft) text-(--tone)" aria-hidden>
+                    <GroupIcon className="size-3.5" />
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-start">{t(`tools.grid.groups.${group}`)}</span>
+                  <span className="font-mono text-2xs text-muted-foreground tabular-nums">{toolsInGroup(group).length}</span>
+                </button>
+              );
+            })}
+          </div>
+          <section data-tone={shown} aria-label={t(`tools.grid.groups.${shown}`)} className="min-w-0 overflow-y-auto p-3" data-testid="tools-menu-tools">
+            <p className="flex h-7 items-center gap-2 px-2 text-2xs font-semibold uppercase tracking-[0.08em] text-(--tone)">
+              <ShownIcon className="size-3.5" aria-hidden />
+              <span className="truncate">{t(`tools.grid.groups.${shown}`)}</span>
+            </p>
+            <div className="mt-1 grid grid-cols-2 gap-1">
+              {toolsInGroup(shown).map((tool) => (
+                <ToolMenuItem key={tool.id} tool={tool} onSelect={close} />
+              ))}
             </div>
-          ))}
+          </section>
         </div>
-        <MenuSeparator />
-        <div className="grid grid-cols-2 gap-x-4">
+        <div className="grid grid-cols-2 gap-x-4 border-t border-border p-2">
           <button
             type="button"
             role="menuitem"

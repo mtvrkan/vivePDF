@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import { headerNavigation, menuItemsForGroup, type ToolGroup } from "@/app/navigation";
+import { headerNavigation, toolGroups, toolsInGroup } from "@/app/navigation";
 
 export type MenuNode =
   | { kind: "item"; id: string; label: string; accelerator?: string }
@@ -13,7 +13,6 @@ export type MenuCommand =
   | { type: "action"; name: string }
   | { type: "theme"; mode: "light" | "dark" | "system" };
 
-const TOOL_GROUPS: ToolGroup[] = ["organize", "fromPdf", "improve", "toPdf", "edit", "security"];
 const separator: MenuNode = { kind: "separator" };
 
 function shortcut(key: string, label: string, shift = false): MenuNode {
@@ -30,9 +29,9 @@ function role(name: string, label: string): MenuNode {
 }
 
 export function buildMacMenu(t: TFunction): MenuNode[] {
-  const tools = TOOL_GROUPS.flatMap((group): MenuNode[] => {
-    const items = menuItemsForGroup(group);
-    return items.length ? [{ kind: "submenu", label: t(`tools.grid.groups.${group}`), items: items.map((item) => link(item.route, t(item.labelKey))) }] : [];
+  const tools = toolGroups.flatMap((group): MenuNode[] => {
+    const items = toolsInGroup(group);
+    return items.length ? [{ kind: "submenu", label: t(`tools.grid.groups.${group}`), items: items.map((tool) => link(tool.route, t(tool.labelKey))) }] : [];
   });
   return [
     {

@@ -22,7 +22,7 @@ describe("studioStartOf", () => {
   it("reads every Studio link the tool grid uses", () => {
     const starts = toolShortcuts.filter((tool) => tool.route.startsWith("/studio?")).map((tool) => studioStartOf(new URLSearchParams(tool.route.split("?")[1])));
 
-    expect(starts).toEqual(["cv", "document", "card", "sources"]);
+    expect(starts).toEqual(["document", "cv", "card", "sources"]);
   });
 
   it("ignores unknown starts and drops only its own parameters", () => {
