@@ -3,7 +3,7 @@
 > vivePDF'in üst çubuğu, Araçlar menüsü, komut paleti, sekmeler, sekme grupları, pencereler ve Görüntüleyici'nin yan panelleri tek sayfada.
 
 URL: https://vivepdf.com/dokumantasyon/arayuz/
-Son güncelleme: 2026-10-18
+Son güncelleme: 2026-10-27
 
 vivePDF'te her şey pencerenin üstündeki tek bir çubuktan başlar: soldaki **Başlangıç**, **Görüntüleyici**, **Sayfalar** ve **Stüdyo** düğmeleri çalışma alanları arasında geçiş yapar, **Araçlar** ve **Yardım** menüleri geri kalan her şeyi toplar. Açtığın belgeler sekmelerde durur, istersen gruplanır ya da ayrı pencerelere taşınır.
 
@@ -22,16 +22,9 @@ Pencere daraldıkça çubuk kendini sıkıştırır: önce yazılar kısalır, s
 
 ## Araçlar menüsü
 
-**Araçlar**'a tıklayınca araçlar altı grup hâlinde açılır:
+**Araçlar**'a tıklayınca menü iki bölüm hâlinde açılır. Solda **Sayfa düzeni** ve **Denetle**'den **Güvenlik ve imza** ve **Otomasyon**'a kadar on üç kategori, her birindeki araç sayısıyla durur. Bir kategorinin üzerine gel, tıkla ya da ok tuşlarıyla ona git; araçları kısa açıklamalarıyla sağda açılır. Menü, o an kullandığın aracın kategorisinde açılır.
 
-- **Sayfa düzeni**: Birleştir, Böl, Yeniden adlandır
-- **Optimizasyon**: Sıkıştır, OCR, Taramalar, Karşılaştır, Erişilebilirlik, Baskı kontrolü, PDF/A arşiv, Toplu işlem, İzlenen klasörler
-- **PDF’e dönüştürme**: PDF Oluştur
-- **PDF’ten dönüştürme**: Dönüştür
-- **İçerik düzenleme**: Düzenle, QR ve barkod, Optik formlar, Formlar
-- **Güvenlik**: Güvenlik, İmzala
-
-Menünün altındaki **Tümünü göster**, her aracı arama kutusuyla birlikte listeleyen kataloğu açar; menüde ayrı satırı olmayan araçları (örneğin sayfa döndürme ya da filigran) burada bulursun. **Klasörlerde ara** ise dizine eklediğin klasörlerdeki tüm PDF'lerin metninde arar ve seni doğrudan ilgili sayfaya götürür. Araçların tam listesi [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) sayfasında.
+Menünün altındaki **Tümünü göster**, her aracı arama kutusuyla birlikte listeleyen kataloğu açar. **Klasörlerde ara** ise dizine eklediğin klasörlerdeki tüm PDF'lerin metninde arar ve seni doğrudan ilgili sayfaya götürür. Araçların tam listesi [Araçlar](https://vivepdf.com/dokumantasyon/araclar/) sayfasında.
 
 ## Komut paleti
 

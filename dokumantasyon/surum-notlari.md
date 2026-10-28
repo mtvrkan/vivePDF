@@ -25,6 +25,18 @@ Yeni sürüme geçtikten sonraki ilk açılışta vivePDF, **vivePDF … yüklen
 
 Her sürümdeki bütün eklemeler, değişiklikler ve düzeltmeler GitHub'daki [CHANGELOG.md](https://github.com/mtvrkan/vivePDF/blob/main/CHANGELOG.md) dosyasında tarihleriyle birlikte tutulur. Kurulum dosyalarını ve her sürümün kısa notunu [sürümler sayfasında](https://github.com/mtvrkan/vivePDF/releases) bulabilirsin.
 
+## vivePDF 0.5.0
+
+- Kaynak yöneticisi yenilendi: DOI'den gelen künye APA 7, MLA, Chicago, IEEE, İSNAD, Vancouver ve Harvard'ın resmî stilleriyle yazılıyor; .bib dosyaları doğru okunuyor, düzenlenip kendi dosyasına kaydediliyor.
+- Word, PowerPoint, Excel ve HTML'e dönüşümler PDF'e çok daha sadık: yazı tipleri, bağlantılar, resimler, tablolar ve sütunlar yerinde kalıyor; taranmış tablolar da Excel'e satır satır geliyor.
+- Yazdır penceresi, seçtiğiniz sayfalar, sayfa başına sayfa sayısı, gri tonlama ve ölçekle her kâğıdın önizlemesini ayarların yanında gösteriyor.
+- Ayarlar › Sistem'den vivePDF'i PDF dosyalarını açan varsayılan uygulama yapabilirsiniz; Windows, macOS ve Linux'ta.
+- Yeni araçlar: PDF'ten SVG'ye dönüştürme ve sayfa arka plan rengi; Yorumlar, Ekler, Sesli oku, Çevir ve Yazdır artık araç kategorilerinde de var.
+- Geniş Excel tabloları kâğıda sığıyor, eksik yazı tipleri dönüştürmeden önce bildiriliyor, Görseller → PDF fotoğrafları küçültebiliyor ve görseller sayfada göründüğü gibi çıkarılabiliyor.
+- Stüdyo'daki belge düzenleyici artık Word gibi: sekmeli şerit, cetveller, sayfa çizgileri ve sayfa yapısı, gezinti bölmesi; tez için de numaralı başlıklar, şekil ve tablo yazıları ile listeleri, ana metinden önce romen rakamlı sayfa numaraları.
+- Stüdyo'da tez yazımı: üniversitelerin ortak kurallarıyla hazır Yüksek Lisans ve Doktora tezi başlangıçları, LaTeX ile yazılıp (1), (2)… diye numaralanan ve metinde anılabilen denklemler, sayfanın yanında yanıtlı yorumlar ve içindekiler, dipnotlar, denklemler ve yorumlarla birlikte Word'e aktarma.
+- Tez denetimi ve gözden geçirme: Araçlar › Tez denetimi bitmiş bir tez PDF'ini kâğıt, kenar boşlukları, yazı tipi, satır aralığı, başlıklar ve sayfa numaraları için üniversite kurallarına göre denetler; Stüdyo'daki belgede değişiklikleri izle eklenen ve silinen metni yazarıyla işaretler, tek tek ya da hepsini kabul veya reddettirir ve Word'e gerçek değişiklik olarak aktarılır; sürüm geçmişi her kayıtta ve 10 dakikada bir sürüm saklar, önizletir ve geri yükler.
+
 ## vivePDF 0.4.0
 
 Yayımlandı: 2026-10-21 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.4.0)

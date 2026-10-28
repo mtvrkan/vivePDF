@@ -7,10 +7,10 @@ Key facts:
 - Price: free. Every tool is included; there are no paid tiers, accounts or usage limits.
 - Privacy: no telemetry, no account. Documents, passwords and certificates stay on the computer. Only update checks, OCR language-pack downloads and turning a web page into a PDF go online, and offline mode stops all of them.
 - Platforms: Windows 10 and 11 (64-bit), and macOS 14 Sonoma or later on Apple silicon. On Linux it is built from source.
-- Tools: 77 PDF tools in one app, including merge, split, compress, OCR, convert to and from Office formats, digital signatures (PAdES), redaction, form filling and comparison. A presenter view shows slides on one screen and notes on the other.
+- Tools: 86 PDF tools in one app, including merge, split, compress, OCR, convert to and from Office formats, digital signatures (PAdES), redaction, form filling and comparison. A presenter view shows slides on one screen and notes on the other.
 - Studio: a built-in design and document editor with templates, CVs and business cards.
 - Interface languages: Turkish, English, German, French, Spanish, Italian, Brazilian Portuguese and Arabic.
-- Latest version: 0.4.0, released 2026-10-21.
+- Latest version: 0.5.0, released 2026-10-21.
 - Source code and downloads: https://github.com/mtvrkan/vivePDF
 - Website: English at https://vivepdf.com/ (default) and Turkish at https://vivepdf.com/tr/. Every documentation page below is also available as plain Markdown.
 
@@ -62,7 +62,7 @@ Key facts:
 ## Reference
 
 - [Keyboard shortcuts](https://vivepdf.com/en/docs/shortcuts.md): vivePDF keyboard shortcuts, the per-screen list that F1 opens, saving it as a PDF, the macOS key equivalents and the full list for every screen.
-- [Tools](https://vivepdf.com/en/docs/tools.md): Where to open vivePDF's 77 tools, what each of the six tool groups is for, and a searchable list with a short description of every tool.
+- [Tools](https://vivepdf.com/en/docs/tools.md): Where to open vivePDF's 86 tools, what each of the thirteen tool categories is for, and a searchable list with a short description of every tool.
 - [Release notes](https://vivepdf.com/en/docs/release-notes.md): The main changes in each vivePDF version, how updates reach you and where to find the complete list of changes.
 - [FAQ](https://vivepdf.com/en/docs/faq.md): Short answers about vivePDF's price, privacy, offline use, supported systems, signing, OCR languages and updates.
 - [Troubleshooting](https://vivepdf.com/en/docs/troubleshooting.md): What to do when a vivePDF tool fails, with the log folder, support bundle, bug reports, SmartScreen, missing LibreOffice and OCR language packs.
@@ -102,7 +102,7 @@ Key facts:
 - [Ayarlar ve gizlilik](https://vivepdf.com/dokumantasyon/ayarlar-gizlilik.md): vivePDF ayarlarının her bölümü, Yardım › Gizlilik'te neyin internete çıktığı ve bu bilgisayarda saklanan verileri Ayarlar › Veriler'den silme.
 - [Çevrimdışı mod](https://vivepdf.com/dokumantasyon/cevrimdisi.md): vivePDF'te Çevrimdışı mod'u açma, neleri durdurduğu, internetsiz neyin çalışmaya devam ettiği ve kapalı özelliklerin nasıl görüneceği.
 - [Klavye kısayolları](https://vivepdf.com/dokumantasyon/kisayollar.md): vivePDF klavye kısayolları; F1 ile açılan ekrana özel liste, listeyi PDF olarak kaydetme, macOS tuş karşılıkları ve ekran ekran tam liste.
-- [Araçlar](https://vivepdf.com/dokumantasyon/araclar.md): vivePDF'teki 77 aracı nereden açacağın, altı araç grubunun ne işe yaradığı ve her aracın kısa açıklamasıyla aranabilir tam liste.
+- [Araçlar](https://vivepdf.com/dokumantasyon/araclar.md): vivePDF'teki 86 aracı nereden açacağın, on üç araç kategorisinin ne işe yaradığı ve her aracın kısa açıklamasıyla aranabilir tam liste.
 - [Sürüm notları](https://vivepdf.com/dokumantasyon/surum-notlari.md): vivePDF'in her sürümünde öne çıkan değişiklikler, güncellemelerin nasıl geldiği ve tam değişiklik listesinin nerede olduğu.
 - [Sık sorulan sorular](https://vivepdf.com/dokumantasyon/sss.md): vivePDF'in ücreti, gizliliği, çevrimdışı çalışması, desteklediği sistemler, imza, OCR ve güncellemeler hakkında kısa yanıtlar.
 - [Sorun giderme](https://vivepdf.com/dokumantasyon/sorun-giderme.md): vivePDF'te bir araç çalışmadığında yapılacaklar; günlük klasörü, destek paketi, hata bildirme, SmartScreen, LibreOffice ve OCR dil paketleri.

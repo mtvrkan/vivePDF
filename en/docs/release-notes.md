@@ -25,6 +25,18 @@ The first time you start the new version, vivePDF shows its highlights once in a
 
 Every addition, change and fix in each version is recorded with its date in [CHANGELOG.md](https://github.com/mtvrkan/vivePDF/blob/main/CHANGELOG.md) on GitHub. The installers and a short note for each version are on the [releases page](https://github.com/mtvrkan/vivePDF/releases).
 
+## vivePDF 0.5.0
+
+- A renewed reference manager: a DOI becomes a reference in the official APA 7, MLA, Chicago, IEEE, ISNAD, Vancouver and Harvard styles, and .bib files are read correctly, edited and saved back into their own file.
+- Conversions to Word, PowerPoint, Excel and HTML are far closer to the PDF: fonts, links, pictures, tables and columns stay in place, and scanned tables reach Excel row by row.
+- The print dialog shows a preview of each sheet next to the settings, with your chosen pages, pages per sheet, grayscale and scale.
+- Make vivePDF the app that opens your PDF files from Settings › System, on Windows, macOS and Linux.
+- New tools: PDF → SVG and Background colour; Comments, Attachments, Read aloud, Translate and Print now also sit in the tool categories.
+- Wide Excel tables fit the paper, missing fonts are named before converting, Images → PDF can compress photos, and pictures can be extracted as the page shows them.
+- The Studio document editor works like Word: a ribbon with tabs, rulers, page lines and page setup, a navigation pane, and thesis tools: numbered headings, figure and table captions with their lists, and roman page numbers before the main text.
+- Thesis writing in the Studio: ready Master's and Doctoral thesis starters with common university rules, equations typed in LaTeX and numbered (1), (2)… for reference, comments with replies beside the page, and export to Word with the contents, footnotes, equations and comments.
+- Thesis check and review: Tools › Thesis check checks a finished thesis PDF against university rules for paper, margins, font, line spacing, headings and page numbers; in a Studio document, Track changes marks inserted and deleted text with its author, lets you accept or reject one or all, and goes to Word as real tracked changes; version history keeps a version on every save and every 10 minutes, with a preview and restore.
+
 ## vivePDF 0.4.0
 
 Released: 2026-10-21 · [GitHub](https://github.com/mtvrkan/vivePDF/releases/tag/v0.4.0)

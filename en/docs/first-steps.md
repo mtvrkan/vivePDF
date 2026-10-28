@@ -3,7 +3,7 @@
 > How to open a PDF the first time you start vivePDF, find the tool you need and see where the result is saved, with screenshots.
 
 URL: https://vivepdf.com/en/docs/first-steps/
-Last updated: 2026-10-24
+Last updated: 2026-10-27
 
 When you start vivePDF, the **Home** screen opens. To open a PDF, click **Open PDF** or drag the file onto the window; to reach a tool, use the **Tools** menu at the top or the command palette. Every tool writes its result to a new file, so your original stays as it was.
 
@@ -23,9 +23,9 @@ Documents you open stay in the **Recent documents** list, so next time they are 
 
 ## 2. Find the tool you need
 
-Every tool sits in the **Tools** menu at the top, grouped by what it does: **Page layout**, **Optimisation**, **To PDF**, **From PDF**, **Content editing** and **Security**.
+Every tool sits in the **Tools** menu at the top, sorted into thirteen categories by what it does, such as **Page layout**, **Check**, **From PDF**, **Create & design** and **Security & signing**. Point at a category on the left and its tools appear on the right.
 
-![The Tools menu open: Merge, Split, Compress, Convert, Security and the other tools in groups](https://vivepdf.com/shots/en/start-2-1600.webp)
+![The Tools menu open: thirteen categories on the left, the Page layout tools with short descriptions on the right](https://vivepdf.com/shots/en/start-2-1600.webp)
 
 If you don't know where a tool is, use the command palette: press `Ctrl+K` and type what you want to do. Typing "compress", for example, puts **Compress** at the top; `Enter` opens it.
 

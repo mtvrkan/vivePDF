@@ -3,7 +3,7 @@
 > vivePDF'i ilk kez açtığında bir PDF'i nasıl açacağın, aradığın aracı nasıl bulacağın ve sonucun nereye kaydedildiği, ekran görüntüleriyle.
 
 URL: https://vivepdf.com/dokumantasyon/ilk-adimlar/
-Son güncelleme: 2026-10-24
+Son güncelleme: 2026-10-27
 
 vivePDF'i açtığında **Başlangıç** ekranı gelir. Bir PDF'i açmak için **PDF aç**'a tıkla ya da dosyayı pencereye sürükle; bir araca ulaşmak için üstteki **Araçlar** menüsünü ya da komut paletini kullan. Her araç sonucu yeni bir dosyaya yazar, asıl dosyan olduğu gibi kalır.
 
@@ -23,9 +23,9 @@ Açtığın belgeler **Son belgeler** listesinde kalır; bir dahaki sefere orada
 
 ## 2. Aradığın aracı bul
 
-Tüm araçlar üstteki **Araçlar** menüsünde, işlerine göre gruplanmış hâlde durur: **Sayfa düzeni**, **Optimizasyon**, **PDF'e dönüştürme**, **PDF'ten dönüştürme**, **İçerik düzenleme** ve **Güvenlik**.
+Tüm araçlar üstteki **Araçlar** menüsünde, işlerine göre on üç kategoride durur; örneğin **Sayfa düzeni**, **Denetle**, **PDF’ten dönüştürme**, **Oluştur ve tasarla** ve **Güvenlik ve imza**. Soldaki bir kategorinin üzerine gelince araçları sağda açılır.
 
-![Araçlar menüsü açık: Birleştir, Böl, Sıkıştır, Dönüştür, Güvenlik ve diğer araçlar gruplar hâlinde](https://vivepdf.com/shots/tr/start-2-1600.webp)
+![Araçlar menüsü açık: solda on üç kategori, sağda Sayfa düzeni araçları kısa açıklamalarıyla](https://vivepdf.com/shots/tr/start-2-1600.webp)
 
 Aracın nerede olduğunu bilmiyorsan komut paletini kullan: `Ctrl+K`'ya bas ve ne yapmak istediğini yaz. Örneğin "sıkış" yazınca **Sıkıştır** ilk sırada çıkar; `Enter` aracı açar.
 
