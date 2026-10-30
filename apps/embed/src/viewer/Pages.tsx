@@ -31,7 +31,7 @@ export function Pages({ documentId, sourceUrl }: { documentId: string; sourceUrl
                   style={{ width, height }}
                   onDragStart={(event) => event.preventDefault()}
                 >
-                  <RenderLayer documentId={documentId} pageIndex={pageIndex} scale={1} role="presentation" />
+                  <RenderLayer documentId={documentId} pageIndex={pageIndex} scale={1} dpr={1} role="presentation" />
                   <TilingLayer documentId={documentId} pageIndex={pageIndex} role="presentation" />
                   <SearchLayer documentId={documentId} pageIndex={pageIndex} highlightColor="var(--vp-hit)" activeHighlightColor="var(--vp-hit-active)" />
                   <SelectionLayer documentId={documentId} pageIndex={pageIndex} background="var(--vp-selection)" />
