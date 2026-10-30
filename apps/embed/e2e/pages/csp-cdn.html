@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' http://127.0.0.1:4311 'wasm-unsafe-eval'; worker-src blob: http://127.0.0.1:4311; connect-src 'self' http://127.0.0.1:4311; img-src 'self' blob:; style-src 'self'" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vivePDF embed e2e</title>
+  </head>
+  <body>
+    <vive-pdf data-testid="viewer" src="/fixtures/small.pdf"></vive-pdf>
+    <script src="/e2e/marks.js"></script>
+    <script src="http://127.0.0.1:4311/dist/vivepdf.js"></script>
+  </body>
+</html>
