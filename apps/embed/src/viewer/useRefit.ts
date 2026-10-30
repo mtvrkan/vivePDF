@@ -9,8 +9,8 @@ export function useRefit(documentId: string, host: HTMLElement | null): void {
     if (!zoom || !viewport) return;
     const scope = zoom.forDocument(documentId);
     let frame = 0;
-    let lastWidth = viewport.clientWidth;
-    let lastHeight = viewport.clientHeight;
+    let lastWidth = -1;
+    let lastHeight = -1;
     const observer = new ResizeObserver(() => {
       if (viewport.clientWidth === lastWidth && viewport.clientHeight === lastHeight) return;
       lastWidth = viewport.clientWidth;

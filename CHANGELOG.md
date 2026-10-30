@@ -11,6 +11,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Web viewer: search from the round button at the top right or Ctrl/Cmd+F, with highlighted hits, a running count, Enter and Shift+Enter to step through them and Escape to close [2026-10-30]
 - Web viewer: links in the document work (jumps to other pages, web and mail links open in a new tab, script links are ignored); text can be selected by dragging and copied with Ctrl/Cmd+C; Home and End go to the first and last page, Ctrl/Cmd +, − and 0 zoom; on phones a tap on a link or a contents entry no longer hides the toolbar [2026-10-30]
 ### Changed
+- Web viewer: the first page shows up about 120 ms sooner (around 150 ms instead of 265 ms for a small file on this Mac), because the page is fitted to the width as soon as the viewer has a size instead of after a 150 ms wait [2026-10-30]
 - Web viewer: the size budget for the viewer code is 70 KB (compressed) instead of 60 KB, to make room for text selection [2026-10-30]
 
 ## [0.5.0] - 2026-10-27
