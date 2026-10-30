@@ -10,6 +10,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Web viewer: side panel with page thumbnails and the document's contents; the contents follow the page you are reading, open with the arrow keys and leave out unsafe links; on phones the panel opens as a bottom sheet, on wide screens the page makes room for it [2026-10-30]
 - Web viewer: search from the round button at the top right or Ctrl/Cmd+F, with highlighted hits, a running count, Enter and Shift+Enter to step through them and Escape to close [2026-10-30]
 - Web viewer: links in the document work (jumps to other pages, web and mail links open in a new tab, script links are ignored); text can be selected by dragging and copied with Ctrl/Cmd+C; Home and End go to the first and last page, Ctrl/Cmd +, − and 0 zoom; on phones a tap on a link or a contents entry no longer hides the toolbar [2026-10-30]
+### Changed
+- Web viewer: the size budget for the viewer code is 70 KB (compressed) instead of 60 KB, to make room for text selection [2026-10-30]
 
 ## [0.5.0] - 2026-10-27
 ### Added
