@@ -8,8 +8,15 @@ import { extractWorkers } from "./build/extractWorkers";
 const require = createRequire(import.meta.url);
 const WORKER_MARKERS = ["FPDF_LoadMemDocument", "rgbaToBmpBlob"];
 const ASSETS_MODULE = fileURLToPath(new URL("./src/engine/assets.ts", import.meta.url));
-const ENGINE_RANGE_MODULE = fileURLToPath(new URL("./src/engine/rangeReader.ts", import.meta.url));
 const PDFIUM_WASM = require.resolve("@embedpdf/pdfium/pdfium.wasm");
+const ENGINE_BUILD = createHash("sha256").update(readFileSync(PDFIUM_WASM)).digest("hex").slice(0, 16);
+const ENGINE_PRELUDE = {
+  modules: [
+    { file: fileURLToPath(new URL("./src/engine/rangeReader.ts", import.meta.url)), global: "VivePdfRange" },
+    { file: fileURLToPath(new URL("./src/engine/engineCache.ts", import.meta.url)), global: "VivePdfEngineCache" },
+  ],
+  setup: `VivePdfEngineCache.installEngineCache(self, ${JSON.stringify(ENGINE_BUILD)});`,
+};
 
 function pdfiumWasmAsset(): Plugin {
   return {
@@ -53,8 +60,7 @@ export default defineConfig(({ mode }) => {
   }
   return {
     esbuild,
-    define: { __ENGINE_BUILD__: JSON.stringify(createHash("sha256").update(readFileSync(PDFIUM_WASM)).digest("hex").slice(0, 16)) },
-    plugins: [extractWorkers(ASSETS_MODULE, ENGINE_RANGE_MODULE), pdfiumWasmAsset(), minifyOutput()],
+    plugins: [extractWorkers(ASSETS_MODULE, ENGINE_PRELUDE), pdfiumWasmAsset(), minifyOutput()],
     build: {
       target: "es2022",
       lib: { entry: { viewer: "src/viewer/mount.tsx" }, formats: ["es"], fileName: (_format, name) => `${name}.js` },

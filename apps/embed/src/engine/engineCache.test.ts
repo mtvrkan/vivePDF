@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { cachedEngineUrl } from "./engineCache";
+import { fetchEngine, installEngineCache } from "./engineCache";
 
 const ENGINE = "https://cdn.example.net/vivepdf/pdfium.wasm";
 
@@ -17,56 +17,57 @@ function fakeStorage(entries: Record<string, Record<string, Response>> = {}) {
   return { storage: storage as unknown as CacheStorage, store };
 }
 
-function dependencies(storage: CacheStorage | undefined, download = vi.fn(async () => new Response(new Uint8Array([0, 97, 115, 109])))) {
-  return { storage, download, objectUrl: vi.fn(() => "blob:https://example.com/engine"), revoke: vi.fn(), readable: vi.fn(async () => true) };
-}
+const wasm = () => new Response(new Uint8Array([0, 97, 115, 109]), { headers: { "content-type": "application/wasm" } });
 
-describe("cachedEngineUrl", () => {
-  it("downloads the engine once, keeps it and hands out a blob address", async () => {
+describe("fetchEngine", () => {
+  it("downloads the engine once and answers later loads from Cache Storage", async () => {
     const { storage, store } = fakeStorage();
-    const deps = dependencies(storage);
+    const download = vi.fn(async () => wasm());
 
-    const first = await cachedEngineUrl(ENGINE, "abc123", deps);
-    const second = await cachedEngineUrl(ENGINE, "abc123", deps);
+    const first = await fetchEngine(ENGINE, "abc123", storage, download);
+    await vi.waitFor(() => expect(store.get("vivepdf-engine-abc123")?.has(ENGINE)).toBe(true));
+    const second = await fetchEngine(ENGINE, "abc123", storage, download);
 
-    expect([first.url, second.url]).toEqual(["blob:https://example.com/engine", "blob:https://example.com/engine"]);
-    expect(deps.download).toHaveBeenCalledTimes(1);
-    expect(store.get("vivepdf-engine-abc123")?.has(ENGINE)).toBe(true);
+    expect([...new Uint8Array(await first.arrayBuffer())]).toEqual([0, 97, 115, 109]);
+    expect([...new Uint8Array(await second.arrayBuffer())]).toEqual([0, 97, 115, 109]);
+    expect(download).toHaveBeenCalledTimes(1);
   });
 
   it("drops the engine kept for an older build", async () => {
     const { storage, store } = fakeStorage({ "vivepdf-engine-old": { [ENGINE]: new Response("old") }, "site-cache": {} });
 
-    await cachedEngineUrl(ENGINE, "new", dependencies(storage));
+    await fetchEngine(ENGINE, "new", storage, async () => wasm());
+
     await vi.waitFor(() => expect([...store.keys()].sort()).toEqual(["site-cache", "vivepdf-engine-new"]));
   });
 
-  it("uses the plain address without Cache Storage or when the download fails", async () => {
-    const { storage } = fakeStorage();
-    const failing = dependencies(storage, vi.fn(async () => new Response("missing", { status: 404 })));
+  it("downloads without keeping anything when Cache Storage is missing, broken or the download fails", async () => {
+    const { storage, store } = fakeStorage();
+    const broken = { open: async () => Promise.reject(new Error("quota")) } as unknown as CacheStorage;
+    const missing = async () => new Response("missing", { status: 404 });
 
-    const results = [await cachedEngineUrl(ENGINE, "abc123", dependencies(undefined)), await cachedEngineUrl(ENGINE, "abc123", failing)];
+    const statuses = [
+      (await fetchEngine(ENGINE, "abc123", undefined, async () => wasm())).status,
+      (await fetchEngine(ENGINE, "abc123", broken, async () => wasm())).status,
+      (await fetchEngine(ENGINE, "abc123", storage, missing)).status,
+    ];
 
-    expect(results.map((result) => result.url)).toEqual([ENGINE, ENGINE]);
+    expect(statuses).toEqual([200, 200, 404]);
+    expect(store.get("vivepdf-engine-abc123")?.size ?? 0).toBe(0);
   });
+});
 
-  it("falls back to the plain address when the page may not read blob addresses", async () => {
-    const { storage } = fakeStorage();
-    const deps = { ...dependencies(storage), readable: vi.fn(async () => false) };
+describe("installEngineCache", () => {
+  it("sends only the engine file through the cache and leaves other requests alone", async () => {
+    const { storage, store } = fakeStorage();
+    const network = vi.fn(async (input: RequestInfo | URL) => (String(input).endsWith(".wasm") ? wasm() : new Response("pdf")));
+    const scope = { fetch: network as unknown as typeof fetch, caches: storage };
 
-    const engine = await cachedEngineUrl(ENGINE, "abc123", deps);
+    installEngineCache(scope, "abc123");
+    await scope.fetch(ENGINE);
+    await scope.fetch("https://example.com/files/report.pdf");
 
-    expect(engine.url).toBe(ENGINE);
-    expect(deps.revoke).toHaveBeenCalledWith("blob:https://example.com/engine");
-  });
-
-  it("releases the blob address it made", async () => {
-    const { storage } = fakeStorage();
-    const deps = dependencies(storage);
-
-    const engine = await cachedEngineUrl(ENGINE, "abc123", deps);
-    engine.release();
-
-    expect(deps.revoke).toHaveBeenCalledWith("blob:https://example.com/engine");
+    await vi.waitFor(() => expect([...(store.get("vivepdf-engine-abc123")?.keys() ?? [])]).toEqual([ENGINE]));
+    expect(network.mock.calls.map(([input]) => String(input))).toEqual([ENGINE, "https://example.com/files/report.pdf"]);
   });
 });

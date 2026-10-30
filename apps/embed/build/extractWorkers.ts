@@ -5,8 +5,6 @@ type Node = { type: string; start: number; end: number; [key: string]: unknown }
 
 export type BlobWorker = { start: number; end: number; source: string };
 
-const ENGINE_RANGE_GLOBAL = "VivePdfRange";
-
 const ENGINE_MODULE = /@embedpdf[\\/]engines[\\/]dist[\\/]lib[\\/]pdfium[\\/]web[\\/]worker-engine\.js$/;
 
 function isNode(value: unknown): value is Node {
@@ -62,7 +60,9 @@ export function workerFileName(source: string): string {
   return source.includes("wasmInit") ? "engine-worker.js" : "encoder-worker.js";
 }
 
-export function extractWorkers(assetsModule: string, engineRangeModule: string): Plugin {
+export type EnginePrelude = { modules: { file: string; global: string }[]; setup: string };
+
+export function extractWorkers(assetsModule: string, prelude: EnginePrelude): Plugin {
   let serving = false;
   return {
     name: "vivepdf-embed-extract-workers",
@@ -74,12 +74,17 @@ export function extractWorkers(assetsModule: string, engineRangeModule: string):
       const workers = findBlobWorkers(this.parse(code));
       const names = workers.map((worker) => workerFileName(worker.source));
       if (workers.length !== 2 || new Set(names).size !== 2) this.error(`expected the engine and encoder worker blobs in ${id}, found ${names.join(", ") || "none"}`);
-      this.addWatchFile(engineRangeModule);
-      const range = await transformWithEsbuild(readFileSync(engineRangeModule, "utf8"), engineRangeModule, { format: "iife", globalName: ENGINE_RANGE_GLOBAL, target: "es2022" });
+      const parts = await Promise.all(
+        prelude.modules.map(async ({ file, global }) => {
+          this.addWatchFile(file);
+          return (await transformWithEsbuild(readFileSync(file, "utf8"), file, { format: "iife", globalName: global, target: "es2022" })).code;
+        }),
+      );
+      const engineStart = [...parts, prelude.setup].join("\n");
       let output = code;
       for (const worker of [...workers].sort((a, b) => b.start - a.start)) {
         const fileName = workerFileName(worker.source);
-        const source = fileName === "engine-worker.js" ? `${range.code}\n${worker.source}` : worker.source;
+        const source = fileName === "engine-worker.js" ? `${engineStart}\n${worker.source}` : worker.source;
         if (serving) {
           output = `${output.slice(0, worker.start)}URL.createObjectURL(new Blob([${JSON.stringify(source)}], { type: "application/javascript" }))${output.slice(worker.end)}`;
           continue;

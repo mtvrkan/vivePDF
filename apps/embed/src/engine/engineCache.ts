@@ -1,57 +1,39 @@
-export type CachedEngine = { url: string; release: () => void };
-
 const CACHE_PREFIX = "vivepdf-engine-";
+const ENGINE_FILE = /\/pdfium\.wasm(?:[?#]|$)/;
 
-type Dependencies = {
-  storage: CacheStorage | undefined;
-  download: (url: string) => Promise<Response>;
-  objectUrl: (blob: Blob) => string;
-  revoke: (url: string) => void;
-  readable: (url: string) => Promise<boolean>;
-};
-
-const browser: Dependencies = {
-  storage: typeof caches === "undefined" ? undefined : caches,
-  download: (url) => fetch(url),
-  objectUrl: (blob) => URL.createObjectURL(blob),
-  revoke: (url) => URL.revokeObjectURL(url),
-  readable: (url) =>
-    fetch(url).then(
-      (response) => {
-        void response.body?.cancel();
-        return response.ok;
-      },
-      () => false,
-    ),
-};
+type Download = (url: string) => Promise<Response>;
+type EngineScope = { fetch: typeof fetch; caches?: CacheStorage };
 
 async function pruneOlder(storage: CacheStorage, current: string): Promise<void> {
   const names = await storage.keys();
   await Promise.all(names.filter((name) => name.startsWith(CACHE_PREFIX) && name !== current).map((name) => storage.delete(name)));
 }
 
-export async function cachedEngineUrl(url: string, build: string, deps: Dependencies = browser): Promise<CachedEngine> {
-  const direct = { url, release: () => {} };
-  if (!deps.storage) return direct;
+export async function fetchEngine(url: string, build: string, storage: CacheStorage | undefined, download: Download): Promise<Response> {
+  if (!storage) return download(url);
+  const name = CACHE_PREFIX + build;
+  let cache: Cache;
   try {
-    const name = CACHE_PREFIX + build;
-    const cache = await deps.storage.open(name);
-    let response = await cache.match(url);
-    if (!response) {
-      const fresh = await deps.download(url);
-      if (!fresh.ok) return direct;
-      await cache.put(url, fresh.clone());
-      void pruneOlder(deps.storage, name).catch(() => {});
-      response = fresh;
-    }
-    const blob = new Blob([await response.arrayBuffer()], { type: "application/wasm" });
-    const objectUrl = deps.objectUrl(blob);
-    if (!(await deps.readable(objectUrl))) {
-      deps.revoke(objectUrl);
-      return direct;
-    }
-    return { url: objectUrl, release: () => deps.revoke(objectUrl) };
+    cache = await storage.open(name);
+    const kept = await cache.match(url);
+    if (kept) return kept;
   } catch {
-    return direct;
+    return download(url);
   }
+  const fresh = await download(url);
+  if (fresh.ok)
+    void cache
+      .put(url, fresh.clone())
+      .then(() => pruneOlder(storage, name))
+      .catch(() => {});
+  return fresh;
+}
+
+export function installEngineCache(scope: EngineScope, build: string): void {
+  const network = scope.fetch.bind(scope);
+  scope.fetch = (input, init) => {
+    const url = typeof input === "string" ? input : input instanceof URL ? input.href : null;
+    if (url === null || !ENGINE_FILE.test(url)) return network(input, init);
+    return fetchEngine(url, build, scope.caches, (target) => network(target, init));
+  };
 }
