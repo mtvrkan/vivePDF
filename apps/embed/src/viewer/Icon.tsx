@@ -13,6 +13,9 @@ const PATHS = {
   double: "M3 4h7v16H3zM14 4h7v16h-7z",
   check: "M20 6 9 17l-5-5",
   close: "M18 6 6 18M6 6l12 12",
+  list: "M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01",
+  chevron: "m9 18 6-6-6-6",
+  external: "M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",
 } as const;
 
 export type IconName = keyof typeof PATHS;

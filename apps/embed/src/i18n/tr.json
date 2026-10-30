@@ -18,5 +18,14 @@
   "search": "Ara",
   "loading": "Belge açılıyor…",
   "openError": "Belge açılamadı.",
-  "engineError": "Görüntüleyici başlatılamadı."
+  "engineError": "Görüntüleyici başlatılamadı.",
+  "pagesTab": "Sayfalar",
+  "outlineTab": "İçindekiler",
+  "closePanel": "Paneli kapat",
+  "pageLabel": "Sayfa {page}",
+  "outlineLoading": "İçindekiler yükleniyor…",
+  "outlineError": "İçindekiler okunamadı.",
+  "retry": "Tekrar dene",
+  "outlineEmptyTitle": "İçindekiler yok",
+  "outlineEmpty": "Bu belgede bölüm listesi bulunmuyor; sayfalar sekmesinden gezinebilirsiniz."
 }

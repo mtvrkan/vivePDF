@@ -1,3 +1,4 @@
+import type { RefObject } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { useRotate } from "@embedpdf/plugin-rotate/preact";
 import { useScroll } from "@embedpdf/plugin-scroll/preact";
@@ -58,7 +59,9 @@ function PageBox({ documentId }: { documentId: string }) {
   );
 }
 
-export function Pill({ documentId, host }: { documentId: string; host: HTMLElement | null }) {
+type PillProps = { documentId: string; host: HTMLElement | null; panelOpen: boolean; onTogglePanel: () => void; panelButtonRef: RefObject<HTMLButtonElement> };
+
+export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRef }: PillProps) {
   const t = useT();
   const { state: zoomState, provides: zoom } = useZoom(documentId);
   const { provides: rotate } = useRotate(documentId);
@@ -72,6 +75,10 @@ export function Pill({ documentId, host }: { documentId: string; host: HTMLEleme
 
   return (
     <div ref={pillRef} class="vp-pill vp-glass" role="toolbar" aria-label={t("toolbar")} data-hidden={hidden ? "true" : "false"}>
+      <button ref={panelButtonRef} class="vp-btn" type="button" aria-label={t("panel")} title={t("panel")} aria-pressed={panelOpen} onClick={onTogglePanel}>
+        <Icon name="panel" />
+      </button>
+      <span class="vp-sep" />
       <PageBox documentId={documentId} />
       <span class="vp-sep" />
       <button class="vp-btn" type="button" aria-label={t("zoomOut")} onClick={() => zoom?.zoomOut()}>

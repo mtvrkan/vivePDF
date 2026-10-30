@@ -4,6 +4,7 @@ import { createScrollHider } from "./scrollHider";
 
 const HIDE_AFTER_PX = 24;
 const TAP_SLOP_PX = 8;
+const MOMENTUM_MS = 1200;
 
 export function usePillVisibility(host: HTMLElement | null, pillRef: RefObject<HTMLElement>, keepVisible: boolean): boolean {
   const [hidden, setHidden] = useState(false);
@@ -12,9 +13,12 @@ export function usePillVisibility(host: HTMLElement | null, pillRef: RefObject<H
     if (!host || !window.matchMedia("(pointer: coarse)").matches) return;
     const hider = createScrollHider(HIDE_AFTER_PX);
     let start: { x: number; y: number } | null = null;
+    let releasedAt = -Infinity;
     const onScroll = (event: Event) => {
       const target = event.target;
-      if (target instanceof HTMLElement && target.scrollHeight > target.clientHeight) setHidden(hider(target.scrollTop));
+      if (!(target instanceof HTMLElement) || !target.classList.contains("vp-viewport")) return;
+      const userDriven = start !== null || performance.now() - releasedAt < MOMENTUM_MS;
+      setHidden(hider(target.scrollTop, userDriven));
     };
     const onPointerDown = (event: PointerEvent) => {
       start = { x: event.clientX, y: event.clientY };
@@ -22,6 +26,7 @@ export function usePillVisibility(host: HTMLElement | null, pillRef: RefObject<H
     const onPointerUp = (event: PointerEvent) => {
       if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) < TAP_SLOP_PX) setHidden(false);
       start = null;
+      releasedAt = performance.now();
     };
     const onFocusIn = (event: FocusEvent) => {
       if (pillRef.current && event.composedPath().includes(pillRef.current)) setHidden(false);
@@ -29,11 +34,13 @@ export function usePillVisibility(host: HTMLElement | null, pillRef: RefObject<H
     host.addEventListener("scroll", onScroll, { capture: true, passive: true });
     host.addEventListener("pointerdown", onPointerDown, { passive: true });
     host.addEventListener("pointerup", onPointerUp, { passive: true });
+    host.addEventListener("pointercancel", onPointerUp, { passive: true });
     host.addEventListener("focusin", onFocusIn);
     return () => {
       host.removeEventListener("scroll", onScroll, { capture: true });
       host.removeEventListener("pointerdown", onPointerDown);
       host.removeEventListener("pointerup", onPointerUp);
+      host.removeEventListener("pointercancel", onPointerUp);
       host.removeEventListener("focusin", onFocusIn);
     };
   }, [host, pillRef]);

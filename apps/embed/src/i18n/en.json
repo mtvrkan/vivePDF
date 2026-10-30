@@ -18,5 +18,14 @@
   "search": "Search",
   "loading": "Opening document…",
   "openError": "The document could not be opened.",
-  "engineError": "The viewer could not start."
+  "engineError": "The viewer could not start.",
+  "pagesTab": "Pages",
+  "outlineTab": "Contents",
+  "closePanel": "Close panel",
+  "pageLabel": "Page {page}",
+  "outlineLoading": "Loading contents…",
+  "outlineError": "The contents could not be read.",
+  "retry": "Try again",
+  "outlineEmptyTitle": "No contents",
+  "outlineEmpty": "This document has no section list; use the Pages tab to move around."
 }

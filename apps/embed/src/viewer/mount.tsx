@@ -8,6 +8,7 @@ import { RenderPluginPackage } from "@embedpdf/plugin-render/preact";
 import { RotatePluginPackage } from "@embedpdf/plugin-rotate/preact";
 import { ScrollPluginPackage } from "@embedpdf/plugin-scroll/preact";
 import { SpreadPluginPackage } from "@embedpdf/plugin-spread/preact";
+import { ThumbnailPluginPackage } from "@embedpdf/plugin-thumbnail/preact";
 import { TilingPluginPackage } from "@embedpdf/plugin-tiling/preact";
 import { ViewportPluginPackage } from "@embedpdf/plugin-viewport/preact";
 import { ZoomMode, ZoomPluginPackage } from "@embedpdf/plugin-zoom/preact";
@@ -18,7 +19,9 @@ import { resolveTheme, type ThemeSetting } from "../styles/theme";
 import { TranslateContext, useT } from "./i18nContext";
 import { Pages } from "./Pages";
 import { Pill } from "./Pill";
+import { SidePanel, type PanelTab } from "./SidePanel";
 import { useEngine } from "./useEngine";
+import { useRefit } from "./useRefit";
 
 export type MountOptions = {
   src: string;
@@ -36,6 +39,8 @@ type OpenState = "loading" | "ready" | "error";
 const DOCUMENT_ID = "vive-document";
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 8;
+const THUMB_WIDTH = 120;
+const NARROW_PX = 560;
 
 const plugins = [
   createPluginRegistration(DocumentManagerPluginPackage, { maxDocuments: 1 }),
@@ -57,6 +62,7 @@ const plugins = [
   createPluginRegistration(RotatePluginPackage),
   createPluginRegistration(SpreadPluginPackage),
   createPluginRegistration(TilingPluginPackage, { tileSize: 768, overlapPx: 4, extraRings: 0 }),
+  createPluginRegistration(ThumbnailPluginPackage, { width: THUMB_WIDTH, gap: 14, labelHeight: 22, paddingY: 12, autoScroll: true, scrollBehavior: "auto" }),
 ];
 
 function Status({ kind, text }: { kind: "loading" | "error"; text: string }) {
@@ -95,6 +101,38 @@ function FirstPageWatch({ mark }: { mark: MountOptions["mark"] }) {
   return <div ref={ref} hidden />;
 }
 
+function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | null }) {
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [panelTab, setPanelTab] = useState<PanelTab>("pages");
+  const panelButtonRef = useRef<HTMLButtonElement>(null);
+  useRefit(DOCUMENT_ID, host);
+  const closePanel = () => {
+    setPanelOpen(false);
+    panelButtonRef.current?.focus();
+  };
+  useEffect(() => {
+    host?.setAttribute("data-panel", panelOpen ? "open" : "closed");
+  }, [host, panelOpen]);
+  return (
+    <>
+      <Pages documentId={DOCUMENT_ID} />
+      {panelOpen ? (
+        <SidePanel
+          documentId={DOCUMENT_ID}
+          sourceUrl={sourceUrl}
+          tab={panelTab}
+          onTabChange={setPanelTab}
+          onClose={closePanel}
+          onPick={() => {
+            if (host && host.clientWidth < NARROW_PX) closePanel();
+          }}
+        />
+      ) : null}
+      <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} />
+    </>
+  );
+}
+
 function Opener({ options, host }: { options: MountOptions; host: HTMLElement | null }) {
   const t = useT();
   const { provides: documents } = useDocumentManagerCapability();
@@ -125,10 +163,7 @@ function Opener({ options, host }: { options: MountOptions; host: HTMLElement | 
     <DocumentContent documentId={DOCUMENT_ID}>
       {({ isLoaded }) =>
         isLoaded ? (
-          <>
-            <Pages documentId={DOCUMENT_ID} />
-            <Pill documentId={DOCUMENT_ID} host={host} />
-          </>
+          <ViewerUi sourceUrl={options.src} host={host} />
         ) : (
           <Status kind="loading" text={t("loading")} />
         )
