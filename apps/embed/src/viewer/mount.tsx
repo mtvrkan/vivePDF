@@ -7,6 +7,7 @@ import { InteractionManagerPluginPackage } from "@embedpdf/plugin-interaction-ma
 import { RenderPluginPackage } from "@embedpdf/plugin-render/preact";
 import { RotatePluginPackage } from "@embedpdf/plugin-rotate/preact";
 import { ScrollPluginPackage } from "@embedpdf/plugin-scroll/preact";
+import { SearchPluginPackage } from "@embedpdf/plugin-search/preact";
 import { SpreadPluginPackage } from "@embedpdf/plugin-spread/preact";
 import { ThumbnailPluginPackage } from "@embedpdf/plugin-thumbnail/preact";
 import { TilingPluginPackage } from "@embedpdf/plugin-tiling/preact";
@@ -19,6 +20,7 @@ import { resolveTheme, type ThemeSetting } from "../styles/theme";
 import { TranslateContext, useT } from "./i18nContext";
 import { Pages } from "./Pages";
 import { Pill } from "./Pill";
+import { SearchBox } from "./SearchBox";
 import { SidePanel, type PanelTab } from "./SidePanel";
 import { useEngine } from "./useEngine";
 import { useRefit } from "./useRefit";
@@ -62,6 +64,7 @@ const plugins = [
   createPluginRegistration(RotatePluginPackage),
   createPluginRegistration(SpreadPluginPackage),
   createPluginRegistration(TilingPluginPackage, { tileSize: 768, overlapPx: 4, extraRings: 0 }),
+  createPluginRegistration(SearchPluginPackage),
   createPluginRegistration(ThumbnailPluginPackage, { width: THUMB_WIDTH, gap: 14, labelHeight: 22, paddingY: 12, autoScroll: true, scrollBehavior: "auto" }),
 ];
 
@@ -104,6 +107,7 @@ function FirstPageWatch({ mark }: { mark: MountOptions["mark"] }) {
 function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | null }) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState<PanelTab>("pages");
+  const [searchOpen, setSearchOpen] = useState(false);
   const panelButtonRef = useRef<HTMLButtonElement>(null);
   useRefit(DOCUMENT_ID, host);
   const closePanel = () => {
@@ -113,6 +117,18 @@ function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | 
   useEffect(() => {
     host?.setAttribute("data-panel", panelOpen ? "open" : "closed");
   }, [host, panelOpen]);
+  useEffect(() => {
+    if (!host) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === "f") {
+        event.preventDefault();
+        setSearchOpen(true);
+        host.querySelector<HTMLInputElement>(".vp-search input")?.focus();
+      }
+    };
+    host.addEventListener("keydown", onKeyDown);
+    return () => host.removeEventListener("keydown", onKeyDown);
+  }, [host]);
   return (
     <>
       <Pages documentId={DOCUMENT_ID} />
@@ -128,6 +144,7 @@ function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | 
           }}
         />
       ) : null}
+      <SearchBox documentId={DOCUMENT_ID} open={searchOpen} onOpenChange={setSearchOpen} />
       <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} />
     </>
   );

@@ -8,6 +8,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Web viewer: works from a plain `<script>` tag (only the `VivePDF` global) or a module script, also when the files come from another site such as a CDN; the engine and image workers are separate minified files instead of code built into the page at run time, and size budgets plus browser tests (Chromium, WebKit, iPhone, iPad) guard it [2026-10-30]
 - Web viewer: a floating toolbar at the bottom with a page number box, zoom, fit, rotate and a menu for one or two pages side by side; pinch and Ctrl+wheel zoom; Turkish and English labels; light, dark and system themes; on phones the toolbar steps aside while you scroll down [2026-10-30]
 - Web viewer: side panel with page thumbnails and the document's contents; the contents follow the page you are reading, open with the arrow keys and leave out unsafe links; on phones the panel opens as a bottom sheet, on wide screens the page makes room for it [2026-10-30]
+- Web viewer: search from the round button at the top right or Ctrl/Cmd+F, with highlighted hits, a running count, Enter and Shift+Enter to step through them and Escape to close [2026-10-30]
 
 ## [0.5.0] - 2026-10-27
 ### Added

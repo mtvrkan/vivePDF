@@ -27,5 +27,12 @@
   "outlineError": "The contents could not be read.",
   "retry": "Try again",
   "outlineEmptyTitle": "No contents",
-  "outlineEmpty": "This document has no section list; use the Pages tab to move around."
+  "outlineEmpty": "This document has no section list; use the Pages tab to move around.",
+  "searchPlaceholder": "Search in document",
+  "searchCount": "{current} of {total}",
+  "searchNone": "No results",
+  "searching": "Searching…",
+  "previousResult": "Previous result",
+  "nextResult": "Next result",
+  "closeSearch": "Close search"
 }

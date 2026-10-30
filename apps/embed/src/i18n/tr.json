@@ -27,5 +27,12 @@
   "outlineError": "İçindekiler okunamadı.",
   "retry": "Tekrar dene",
   "outlineEmptyTitle": "İçindekiler yok",
-  "outlineEmpty": "Bu belgede bölüm listesi bulunmuyor; sayfalar sekmesinden gezinebilirsiniz."
+  "outlineEmpty": "Bu belgede bölüm listesi bulunmuyor; sayfalar sekmesinden gezinebilirsiniz.",
+  "searchPlaceholder": "Belgede ara",
+  "searchCount": "{current} / {total}",
+  "searchNone": "Sonuç yok",
+  "searching": "Aranıyor…",
+  "previousResult": "Önceki sonuç",
+  "nextResult": "Sonraki sonuç",
+  "closeSearch": "Aramayı kapat"
 }
