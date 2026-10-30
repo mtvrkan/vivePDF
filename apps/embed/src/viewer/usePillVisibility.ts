@@ -24,9 +24,14 @@ export function usePillVisibility(host: HTMLElement | null, pillRef: RefObject<H
       start = { x: event.clientX, y: event.clientY };
     };
     const onPointerUp = (event: PointerEvent) => {
-      if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) < TAP_SLOP_PX) setHidden(false);
+      const tapped = start !== null && Math.hypot(event.clientX - start.x, event.clientY - start.y) < TAP_SLOP_PX;
+      if (tapped) setHidden(false);
+      else if (start) releasedAt = performance.now();
       start = null;
-      releasedAt = performance.now();
+    };
+    const onPointerCancel = () => {
+      if (start) releasedAt = performance.now();
+      start = null;
     };
     const onFocusIn = (event: FocusEvent) => {
       if (pillRef.current && event.composedPath().includes(pillRef.current)) setHidden(false);
@@ -34,13 +39,13 @@ export function usePillVisibility(host: HTMLElement | null, pillRef: RefObject<H
     host.addEventListener("scroll", onScroll, { capture: true, passive: true });
     host.addEventListener("pointerdown", onPointerDown, { passive: true });
     host.addEventListener("pointerup", onPointerUp, { passive: true });
-    host.addEventListener("pointercancel", onPointerUp, { passive: true });
+    host.addEventListener("pointercancel", onPointerCancel, { passive: true });
     host.addEventListener("focusin", onFocusIn);
     return () => {
       host.removeEventListener("scroll", onScroll, { capture: true });
       host.removeEventListener("pointerdown", onPointerDown);
       host.removeEventListener("pointerup", onPointerUp);
-      host.removeEventListener("pointercancel", onPointerUp);
+      host.removeEventListener("pointercancel", onPointerCancel);
       host.removeEventListener("focusin", onFocusIn);
     };
   }, [host, pillRef]);

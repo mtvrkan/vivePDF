@@ -30,6 +30,27 @@ def text_document(path: Path, pages: int) -> None:
     doc.close()
 
 
+def links_document(path: Path) -> None:
+    doc = pymupdf.open()
+    for number in range(3):
+        page = doc.new_page(width=595, height=842)
+        page.insert_font(fontname="dejavu", fontfile=str(FONT_FILE))
+        page.insert_text((56, 72), f"Bağlantılar {number + 1}", fontsize=20, fontname="dejavu")
+    first = doc[0]
+    rows = [
+        ("Üçüncü sayfaya git", {"kind": pymupdf.LINK_GOTO, "page": 2, "to": pymupdf.Point(0, 0)}),
+        ("vivePDF web sitesi", {"kind": pymupdf.LINK_URI, "uri": "https://vivepdf.com/"}),
+        ("E-posta gönder", {"kind": pymupdf.LINK_URI, "uri": "mailto:info@example.com"}),
+        ("Zararlı bağlantı", {"kind": pymupdf.LINK_URI, "uri": "javascript:alert(1)"}),
+    ]
+    for index, (label, link) in enumerate(rows):
+        top = 120 + index * 48
+        first.insert_text((56, top + 20), label, fontsize=16, fontname="dejavu", color=(0.1, 0.3, 0.7))
+        first.insert_link({**link, "from": pymupdf.Rect(52, top, 320, top + 28)})
+    doc.save(path, garbage=3, deflate=True)
+    doc.close()
+
+
 def scan_document(path: Path, pages: int) -> None:
     doc = pymupdf.open()
     for _ in range(pages):
@@ -47,6 +68,7 @@ def main() -> None:
     out.mkdir(parents=True, exist_ok=True)
     text_document(out / "small.pdf", 2)
     text_document(out / "book.pdf", 500)
+    links_document(out / "links.pdf")
     scan_document(out / "scan.pdf", 20)
     for item in sorted(out.glob("*.pdf")):
         print(f"{item.name}: {item.stat().st_size / 1_048_576:.1f} MB")

@@ -34,5 +34,9 @@
   "searching": "Searching…",
   "previousResult": "Previous result",
   "nextResult": "Next result",
-  "closeSearch": "Close search"
+  "closeSearch": "Close search",
+  "pages": "Document pages",
+  "pageOfTotal": "Page {page} of {total}",
+  "linkToPage": "Link to page {page}",
+  "linkTo": "Link: {target}"
 }

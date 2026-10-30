@@ -28,6 +28,8 @@ test("the contents tab lists the outline and follows the current page", async ({
   await viewer(page).getByRole("treeitem", { name: /Chapter 12\b/ }).click();
 
   await expect(viewer(page).getByRole("textbox", { name: "Page number" })).toHaveValue("12");
+  const narrow = (page.viewportSize()?.width ?? 1024) < 560;
+  await expect(viewer(page).getByRole("complementary", { name: "Side panel" })).toHaveCount(narrow ? 0 : 1);
   await showPanelTab(page, "Pages");
   await showPanelTab(page, "Contents");
   await expect(viewer(page).getByRole("treeitem", { name: /Chapter 12\b/ })).toHaveAttribute("aria-current", "location");

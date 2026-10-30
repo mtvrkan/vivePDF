@@ -1,5 +1,5 @@
 import { render } from "preact";
-import { useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { createPluginRegistration } from "@embedpdf/core";
 import { EmbedPDF } from "@embedpdf/core/preact";
 import { DocumentContent, DocumentManagerPluginPackage, useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/preact";
@@ -8,6 +8,7 @@ import { RenderPluginPackage } from "@embedpdf/plugin-render/preact";
 import { RotatePluginPackage } from "@embedpdf/plugin-rotate/preact";
 import { ScrollPluginPackage } from "@embedpdf/plugin-scroll/preact";
 import { SearchPluginPackage } from "@embedpdf/plugin-search/preact";
+import { SelectionPluginPackage } from "@embedpdf/plugin-selection/preact";
 import { SpreadPluginPackage } from "@embedpdf/plugin-spread/preact";
 import { ThumbnailPluginPackage } from "@embedpdf/plugin-thumbnail/preact";
 import { TilingPluginPackage } from "@embedpdf/plugin-tiling/preact";
@@ -24,6 +25,7 @@ import { SearchBox } from "./SearchBox";
 import { SidePanel, type PanelTab } from "./SidePanel";
 import { useEngine } from "./useEngine";
 import { useRefit } from "./useRefit";
+import { useViewerKeys } from "./useViewerKeys";
 
 export type MountOptions = {
   src: string;
@@ -65,6 +67,7 @@ const plugins = [
   createPluginRegistration(SpreadPluginPackage),
   createPluginRegistration(TilingPluginPackage, { tileSize: 768, overlapPx: 4, extraRings: 0 }),
   createPluginRegistration(SearchPluginPackage),
+  createPluginRegistration(SelectionPluginPackage),
   createPluginRegistration(ThumbnailPluginPackage, { width: THUMB_WIDTH, gap: 14, labelHeight: 22, paddingY: 12, autoScroll: true, scrollBehavior: "auto" }),
 ];
 
@@ -117,21 +120,14 @@ function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | 
   useEffect(() => {
     host?.setAttribute("data-panel", panelOpen ? "open" : "closed");
   }, [host, panelOpen]);
-  useEffect(() => {
-    if (!host) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === "f") {
-        event.preventDefault();
-        setSearchOpen(true);
-        host.querySelector<HTMLInputElement>(".vp-search input")?.focus();
-      }
-    };
-    host.addEventListener("keydown", onKeyDown);
-    return () => host.removeEventListener("keydown", onKeyDown);
+  const openSearch = useCallback(() => {
+    setSearchOpen(true);
+    host?.querySelector<HTMLInputElement>(".vp-search input")?.focus();
   }, [host]);
+  useViewerKeys(DOCUMENT_ID, host, openSearch);
   return (
     <>
-      <Pages documentId={DOCUMENT_ID} />
+      <Pages documentId={DOCUMENT_ID} sourceUrl={sourceUrl} />
       {panelOpen ? (
         <SidePanel
           documentId={DOCUMENT_ID}

@@ -53,3 +53,28 @@ test("Turkish labels and the dark theme follow the element attributes", async ({
   await expect(viewer(page).getByRole("button", { name: "Yakınlaştır" })).toBeVisible();
   await expect(viewer(page).locator(".vp")).toHaveAttribute("data-theme", "dark");
 });
+
+test("on touch screens the toolbar hides while the finger scrolls down, not after a jump", async ({ page, isMobile }) => {
+  test.skip(!isMobile, "the toolbar only hides on touch screens");
+  await page.goto("/e2e/playground.html?lang=en");
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __marks: string[] }).__marks), { timeout: 20_000 }).toContain("first-page");
+  const toolbar = page.getByTestId("viewer").locator(".vp-pill");
+
+  await page.getByTestId("viewer").getByRole("textbox", { name: "Page number" }).fill("30");
+  await page.getByTestId("viewer").getByRole("textbox", { name: "Page number" }).press("Enter");
+  await expect(page.getByTestId("viewer").getByRole("textbox", { name: "Page number" })).toHaveValue("30");
+  await expect(toolbar).toHaveAttribute("data-hidden", "false");
+
+  await page.evaluate(async () => {
+    const pages = document.querySelector("vive-pdf")?.shadowRoot?.querySelector<HTMLElement>(".vp-viewport");
+    if (!pages) throw new Error("no pages");
+    const point = { bubbles: true, composed: true, pointerType: "touch", clientX: 100, clientY: 400 };
+    pages.dispatchEvent(new PointerEvent("pointerdown", point));
+    for (let step = 1; step <= 6; step += 1) {
+      pages.scrollTop += 40;
+      await new Promise((resolve) => requestAnimationFrame(resolve));
+    }
+    pages.dispatchEvent(new PointerEvent("pointerup", { ...point, clientY: 160 }));
+  });
+  await expect(toolbar).toHaveAttribute("data-hidden", "true");
+});

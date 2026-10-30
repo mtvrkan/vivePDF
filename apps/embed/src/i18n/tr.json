@@ -34,5 +34,9 @@
   "searching": "Aranıyor…",
   "previousResult": "Önceki sonuç",
   "nextResult": "Sonraki sonuç",
-  "closeSearch": "Aramayı kapat"
+  "closeSearch": "Aramayı kapat",
+  "pages": "Belge sayfaları",
+  "pageOfTotal": "Sayfa {page} / {total}",
+  "linkToPage": "Sayfa {page} bağlantısı",
+  "linkTo": "Bağlantı: {target}"
 }
