@@ -53,7 +53,6 @@
 .vp-viewport:focus-visible { outline: 2px solid var(--vp-primary); outline-offset: -2px; }
 .vp-page img { user-select: none; -webkit-user-select: none; -webkit-user-drag: none; }
 .vp-status { position: absolute; inset: 0; display: grid; place-items: center; padding: 24px; text-align: center; color: var(--vp-muted-fg); }
-.vp-status[data-kind="error"] { color: var(--vp-danger); }
 .vp-btn {
   display: inline-grid; place-items: center; flex: none;
   width: 36px; height: 36px; padding: 0; border: 0; border-radius: 18px;

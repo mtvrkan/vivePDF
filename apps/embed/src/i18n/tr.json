@@ -17,7 +17,6 @@
   "twoPages": "İki sayfa yan yana",
   "search": "Ara",
   "loading": "Belge açılıyor…",
-  "engineError": "Görüntüleyici başlatılamadı.",
   "pagesTab": "Sayfalar",
   "outlineTab": "İçindekiler",
   "closePanel": "Paneli kapat",
@@ -51,5 +50,7 @@
   "damagedText": "Bu PDF okunamadı. İndirip başka bir uygulamada açmayı deneyebilirsiniz.",
   "downloadFile": "Dosyayı indir",
   "unknownTitle": "Belge açılamadı",
-  "unknownText": "Açılırken bir sorun oldu."
+  "unknownText": "Açılırken bir sorun oldu.",
+  "engineTitle": "Görüntüleyici başlatılamadı",
+  "engineText": "Yeniden deneyin; sorun sürerse sayfayı yenileyin."
 }

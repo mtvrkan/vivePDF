@@ -1,4 +1,4 @@
-export type OpenProblem = "password" | "wrongPassword" | "notFound" | "network" | "damaged" | "unknown";
+export type OpenProblem = "password" | "wrongPassword" | "notFound" | "network" | "damaged" | "unknown" | "engine";
 
 const ENGINE_NOT_FOUND = 2;
 const ENGINE_WRONG_FORMAT = 3;

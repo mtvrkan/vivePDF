@@ -20,6 +20,7 @@ const SHAPES: Record<OpenProblem, { icon: IconName; title: MessageKey; text: Mes
   network: { icon: "offline", title: "networkTitle", text: "networkText" },
   damaged: { icon: "fileBroken", title: "damagedTitle", text: "damagedText" },
   unknown: { icon: "alert", title: "unknownTitle", text: "unknownText" },
+  engine: { icon: "alert", title: "engineTitle", text: "engineText" },
 };
 
 function PasswordForm({ wrong, busy, onPassword }: { wrong: boolean; busy: boolean; onPassword: (password: string) => void }) {
@@ -90,7 +91,7 @@ export function OpenProblemView({ problem, sourceUrl, busy, onRetry, onPassword 
             {t("downloadFile")}
           </a>
         ) : null}
-        {problem === "notFound" || problem === "network" || problem === "unknown" ? (
+        {problem === "notFound" || problem === "network" || problem === "unknown" || problem === "engine" ? (
           <button type="button" class="vp-text-btn" disabled={busy} onClick={onRetry}>
             {t("retry")}
           </button>

@@ -1,8 +1,9 @@
-import { useEffect } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { ZoomMode, useZoomCapability } from "@embedpdf/plugin-zoom/preact";
 
-export function useRefit(documentId: string, host: HTMLElement | null, viewportGap: number): void {
+export function useRefit(documentId: string, host: HTMLElement | null, viewportGap: number): boolean {
   const { provides: zoom } = useZoomCapability();
+  const [fitted, setFitted] = useState(false);
 
   useEffect(() => {
     const viewport = host?.querySelector(".vp-stage");
@@ -21,6 +22,7 @@ export function useRefit(documentId: string, host: HTMLElement | null, viewportG
       frame = requestAnimationFrame(() => {
         const level = scope.getState().zoomLevel;
         if (level === ZoomMode.FitWidth || level === ZoomMode.FitPage) scope.requestZoom(level, first ? firstPageCorner : undefined);
+        if (first) setFitted(true);
       });
     });
     observer.observe(viewport);
@@ -29,4 +31,5 @@ export function useRefit(documentId: string, host: HTMLElement | null, viewportG
       observer.disconnect();
     };
   }, [zoom, host, documentId, viewportGap]);
+  return fitted;
 }

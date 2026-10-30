@@ -17,7 +17,6 @@
   "twoPages": "Two pages side by side",
   "search": "Search",
   "loading": "Opening document…",
-  "engineError": "The viewer could not start.",
   "pagesTab": "Pages",
   "outlineTab": "Contents",
   "closePanel": "Close panel",
@@ -51,5 +50,7 @@
   "damagedText": "This PDF could not be read. You can download it and try another app.",
   "downloadFile": "Download the file",
   "unknownTitle": "The document could not be opened",
-  "unknownText": "Something went wrong while opening it."
+  "unknownText": "Something went wrong while opening it.",
+  "engineTitle": "The viewer could not start",
+  "engineText": "Try again, or reload the page if it keeps happening."
 }

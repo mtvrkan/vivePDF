@@ -6,14 +6,14 @@ import { DocumentContent, DocumentManagerPluginPackage, useDocumentManagerCapabi
 import { InteractionManagerPluginPackage } from "@embedpdf/plugin-interaction-manager/preact";
 import { RenderPluginPackage } from "@embedpdf/plugin-render/preact";
 import { RotatePluginPackage } from "@embedpdf/plugin-rotate/preact";
-import { ScrollPluginPackage } from "@embedpdf/plugin-scroll/preact";
+import { ScrollPluginPackage, useScroll } from "@embedpdf/plugin-scroll/preact";
 import { SearchPluginPackage } from "@embedpdf/plugin-search/preact";
 import { SelectionPluginPackage } from "@embedpdf/plugin-selection/preact";
 import { SpreadPluginPackage } from "@embedpdf/plugin-spread/preact";
 import { ThumbnailPluginPackage } from "@embedpdf/plugin-thumbnail/preact";
 import { TilingPluginPackage } from "@embedpdf/plugin-tiling/preact";
 import { ViewportPluginPackage } from "@embedpdf/plugin-viewport/preact";
-import { ZoomMode, ZoomPluginPackage } from "@embedpdf/plugin-zoom/preact";
+import { ZoomMode, ZoomPluginPackage, useZoomCapability } from "@embedpdf/plugin-zoom/preact";
 import { assetUrl, setAssetBase } from "../engine/assets";
 import { createTranslator, type Lang } from "../i18n";
 import viewerCss from "../styles/viewer.css?inline";
@@ -49,6 +49,8 @@ const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 8;
 const THUMB_WIDTH = 120;
 const NARROW_PX = 560;
+const MAX_RESTARTS = 1;
+const START_PAGE_SETTLE_MS = 1000;
 const VIEWPORT_GAP = 12;
 
 const plugins = [
@@ -76,9 +78,9 @@ const plugins = [
   createPluginRegistration(ThumbnailPluginPackage, { width: THUMB_WIDTH, gap: 14, labelHeight: 22, paddingY: 12, autoScroll: true, scrollBehavior: "auto" }),
 ];
 
-function Status({ kind, text }: { kind: "loading" | "error"; text: string }) {
+function Loading({ text }: { text: string }) {
   return (
-    <div class="vp-status" data-kind={kind} role={kind === "error" ? "alert" : "status"}>
+    <div class="vp-status" role="status">
       {text}
     </div>
   );
@@ -112,12 +114,45 @@ function FirstPageWatch({ mark }: { mark: MountOptions["mark"] }) {
   return <div ref={ref} hidden />;
 }
 
-function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | null }) {
+type ViewerUiProps = { sourceUrl: string; host: HTMLElement | null; startPage: number; onPage: (page: number) => void };
+
+function useStartPage(fitted: boolean, startPage: number, onPage: (page: number) => void): void {
+  const { state, provides: scroll } = useScroll(DOCUMENT_ID);
+  const { provides: zoom } = useZoomCapability();
+  const startedRef = useRef(false);
+  const settleRef = useRef(() => {});
+  useEffect(() => () => settleRef.current(), []);
+  useEffect(() => {
+    if (startedRef.current || !fitted || !scroll || !zoom || state.totalPages < startPage) return;
+    startedRef.current = true;
+    if (startPage <= 1) return;
+    const toStart = () => scroll.scrollToPage({ pageNumber: startPage, behavior: "instant" });
+    toStart();
+    let frame = 0;
+    const stop = zoom.forDocument(DOCUMENT_ID).onZoomChange((change) => {
+      if (change.oldZoom !== change.newZoom) return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(toStart);
+    });
+    const timer = window.setTimeout(stop, START_PAGE_SETTLE_MS);
+    settleRef.current = () => {
+      window.clearTimeout(timer);
+      cancelAnimationFrame(frame);
+      stop();
+    };
+  }, [fitted, scroll, zoom, startPage, state.totalPages]);
+  useEffect(() => {
+    if (startedRef.current) onPage(state.currentPage);
+  }, [state.currentPage, onPage]);
+}
+
+function ViewerUi({ sourceUrl, host, startPage, onPage }: ViewerUiProps) {
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState<PanelTab>("pages");
   const [searchOpen, setSearchOpen] = useState(false);
   const panelButtonRef = useRef<HTMLButtonElement>(null);
-  useRefit(DOCUMENT_ID, host, VIEWPORT_GAP);
+  const fitted = useRefit(DOCUMENT_ID, host, VIEWPORT_GAP);
+  useStartPage(fitted, startPage, onPage);
   const closePanel = () => {
     setPanelOpen(false);
     panelButtonRef.current?.focus();
@@ -151,7 +186,7 @@ function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | 
   );
 }
 
-function Opener({ options, host }: { options: MountOptions; host: HTMLElement | null }) {
+function Opener({ options, host, startPage, onPage }: { options: MountOptions; host: HTMLElement | null; startPage: number; onPage: (page: number) => void }) {
   const t = useT();
   const { provides: documents } = useDocumentManagerCapability();
   const [state, setState] = useState<OpenState>({ kind: "loading" });
@@ -224,9 +259,9 @@ function Opener({ options, host }: { options: MountOptions; host: HTMLElement | 
     <DocumentContent documentId={DOCUMENT_ID}>
       {({ isLoaded }) =>
         isLoaded ? (
-          <ViewerUi sourceUrl={options.src} host={host} />
+          <ViewerUi sourceUrl={options.src} host={host} startPage={startPage} onPage={onPage} />
         ) : (
-          <Status kind="loading" text={t("loading")} />
+          <Loading text={t("loading")} />
         )
       }
     </DocumentContent>
@@ -245,24 +280,38 @@ function usePrefersDark(): boolean {
 }
 
 function Viewer({ options }: { options: MountOptions }) {
-  const { engine, error } = useEngine(assetUrl("pdfium.wasm"), options.fontBase);
+  const [attempt, setAttempt] = useState(0);
+  const restartsRef = useRef(0);
+  const pageRef = useRef(1);
+  const { engine, failure } = useEngine(assetUrl("pdfium.wasm"), options.fontBase, attempt);
   const translate = useMemo(() => createTranslator(options.lang), [options.lang]);
   const prefersDark = usePrefersDark();
   const [host, setHost] = useState<HTMLDivElement | null>(null);
+  const restarting = failure === "crash" && restartsRef.current < MAX_RESTARTS;
   useEffect(() => {
     if (engine) options.mark("engine-ready");
   }, [engine, options]);
   useEffect(() => {
-    if (error) options.mark("engine-error");
-  }, [error, options]);
+    if (!failure) return;
+    options.mark(failure === "crash" ? "engine-crash" : "engine-error");
+    if (failure === "crash" && restartsRef.current < MAX_RESTARTS) {
+      restartsRef.current += 1;
+      setAttempt((value) => value + 1);
+    }
+  }, [failure, options]);
+  const onPage = useCallback((page: number) => {
+    pageRef.current = page;
+  }, []);
   return (
     <TranslateContext.Provider value={translate}>
       <div ref={setHost} class="vp" data-theme={resolveTheme(options.theme, prefersDark)} role="region" aria-label={translate("viewer")}>
-        {error ? <Status kind="error" text={translate("engineError")} /> : null}
-        {!error && !engine ? <Status kind="loading" text={translate("loading")} /> : null}
-        {engine ? (
-          <EmbedPDF engine={engine} plugins={plugins}>
-            {({ pluginsReady }) => (pluginsReady ? <Opener options={options} host={host} /> : null)}
+        {failure && !restarting ? (
+          <OpenProblemView problem="engine" sourceUrl={options.src} busy={false} onRetry={() => setAttempt((value) => value + 1)} onPassword={() => {}} />
+        ) : null}
+        {!failure && !engine ? <Loading text={translate("loading")} /> : null}
+        {engine && !failure ? (
+          <EmbedPDF key={attempt} engine={engine} plugins={plugins}>
+            {({ pluginsReady }) => (pluginsReady ? <Opener options={options} host={host} startPage={pageRef.current} onPage={onPage} /> : null)}
           </EmbedPDF>
         ) : null}
         <FirstPageWatch mark={options.mark} />
