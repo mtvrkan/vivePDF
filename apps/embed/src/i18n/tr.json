@@ -1,0 +1,22 @@
+{
+  "viewer": "PDF görüntüleyici",
+  "toolbar": "Belge araçları",
+  "panel": "Kenar paneli",
+  "pageNumber": "Sayfa numarası",
+  "pageOf": "/ {total}",
+  "previousPage": "Önceki sayfa",
+  "nextPage": "Sonraki sayfa",
+  "zoomIn": "Yakınlaştır",
+  "zoomOut": "Uzaklaştır",
+  "zoomLevel": "Yakınlaştırma: {value}",
+  "fitWidth": "Genişliğe sığdır",
+  "fitPage": "Sayfaya sığdır",
+  "rotate": "Döndür",
+  "more": "Diğer seçenekler",
+  "singlePage": "Tek sayfa",
+  "twoPages": "İki sayfa yan yana",
+  "search": "Ara",
+  "loading": "Belge açılıyor…",
+  "openError": "Belge açılamadı.",
+  "engineError": "Görüntüleyici başlatılamadı."
+}

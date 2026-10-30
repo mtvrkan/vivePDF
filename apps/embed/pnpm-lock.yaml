@@ -34,9 +34,24 @@ importers:
       '@embedpdf/plugin-render':
         specifier: 2.15.1
         version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
+      '@embedpdf/plugin-rotate':
+        specifier: 2.15.1
+        version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
       '@embedpdf/plugin-scroll':
         specifier: 2.15.1
         version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-viewport@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)
+      '@embedpdf/plugin-search':
+        specifier: 2.15.1
+        version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
+      '@embedpdf/plugin-selection':
+        specifier: 2.15.1
+        version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-interaction-manager@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)
+      '@embedpdf/plugin-spread':
+        specifier: 2.15.1
+        version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
+      '@embedpdf/plugin-thumbnail':
+        specifier: 2.15.1
+        version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-render@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)
       '@embedpdf/plugin-tiling':
         specifier: 2.15.1
         version: 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-render@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(@embedpdf/plugin-scroll@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-viewport@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8))(@embedpdf/plugin-viewport@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)
@@ -143,11 +158,63 @@ packages:
       svelte: '>=5 <6'
       vue: '>=3.2.0'
 
+  '@embedpdf/plugin-rotate@2.15.1':
+    resolution: {integrity: sha512-iyLXoBCaRmsObP5+bHE5mehEOLvYZUVizUYtRD6K+i4nu8bv1Wk3UEewSelS+uOBPKAykqAV3K8h1x4Q0b/t/g==}
+    peerDependencies:
+      '@embedpdf/core': 2.15.1
+      preact: ^10.26.4
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      svelte: '>=5 <6'
+      vue: '>=3.2.0'
+
   '@embedpdf/plugin-scroll@2.15.1':
     resolution: {integrity: sha512-WEMims3x3LMPS/xZvujUdkctpXQYKe6AkkIRshqjItjBNjbgUf+ohqya/Q3drVGD5tzb1olYJ55bmwkNw+0rMQ==}
     peerDependencies:
       '@embedpdf/core': 2.15.1
       '@embedpdf/plugin-viewport': 2.15.1
+      preact: ^10.26.4
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      svelte: '>=5 <6'
+      vue: '>=3.2.0'
+
+  '@embedpdf/plugin-search@2.15.1':
+    resolution: {integrity: sha512-v/+GC2gitXIFJ1h/JR/GEJbOqEapB6Fg80aO+bqI7eAsPyCWIX00vOvf/B1Bo3RnCtf6wGp6xKy6ZOlvHx3H9Q==}
+    peerDependencies:
+      '@embedpdf/core': 2.15.1
+      preact: ^10.26.4
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      svelte: '>=5 <6'
+      vue: '>=3.2.0'
+
+  '@embedpdf/plugin-selection@2.15.1':
+    resolution: {integrity: sha512-mbC7uNzRg+DHHZs+zWkpqeAcipMmV+GNEOkSmYwFY5com7CN+Utn1m31uAhkjP9zgEYu9Rykd9hJuVbLnUNqHw==}
+    peerDependencies:
+      '@embedpdf/core': 2.15.1
+      '@embedpdf/plugin-interaction-manager': 2.15.1
+      preact: ^10.26.4
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      svelte: '>=5 <6'
+      vue: '>=3.2.0'
+
+  '@embedpdf/plugin-spread@2.15.1':
+    resolution: {integrity: sha512-lyVSgvgJC4sHe0/8jxuYicu7LI5Hy8Ffu2KhIbtaVXE5sigJjUQahELie/zn38HvCNIrRvhgeFr3ETWOZvb3pQ==}
+    peerDependencies:
+      '@embedpdf/core': 2.15.1
+      preact: ^10.26.4
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      svelte: '>=5 <6'
+      vue: '>=3.2.0'
+
+  '@embedpdf/plugin-thumbnail@2.15.1':
+    resolution: {integrity: sha512-h5TqWsMXQj+OxSpjchhgSbZugDqDZ+TiukGkMGsXevd+NBiaM5mIWuj0JcTre/WzErX87VDE+usgWJ7GuC4H/A==}
+    peerDependencies:
+      '@embedpdf/core': 2.15.1
+      '@embedpdf/plugin-render': 2.15.1
       preact: ^10.26.4
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -183,6 +250,15 @@ packages:
       '@embedpdf/core': 2.15.1
       '@embedpdf/plugin-scroll': 2.15.1
       '@embedpdf/plugin-viewport': 2.15.1
+      preact: ^10.26.4
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      svelte: '>=5 <6'
+      vue: '>=3.2.0'
+
+  '@embedpdf/utils@2.15.1':
+    resolution: {integrity: sha512-P9JaOhfNaFsx+M7bs4sK+vkBTmCHPxDWWqzfOsGtrYtLOe5cgPwD6fBJaXporUlHiZRyR/6y4SlaV37fdOoh1Q==}
+    peerDependencies:
       preact: ^10.26.4
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -804,11 +880,44 @@ snapshots:
       '@embedpdf/models': 2.15.1
       preact: 10.29.8
 
+  '@embedpdf/plugin-rotate@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)':
+    dependencies:
+      '@embedpdf/core': 2.15.1(preact@10.29.8)
+      '@embedpdf/models': 2.15.1
+      preact: 10.29.8
+
   '@embedpdf/plugin-scroll@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-viewport@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)':
     dependencies:
       '@embedpdf/core': 2.15.1(preact@10.29.8)
       '@embedpdf/models': 2.15.1
       '@embedpdf/plugin-viewport': 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
+      preact: 10.29.8
+
+  '@embedpdf/plugin-search@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)':
+    dependencies:
+      '@embedpdf/core': 2.15.1(preact@10.29.8)
+      '@embedpdf/models': 2.15.1
+      preact: 10.29.8
+
+  '@embedpdf/plugin-selection@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-interaction-manager@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)':
+    dependencies:
+      '@embedpdf/core': 2.15.1(preact@10.29.8)
+      '@embedpdf/models': 2.15.1
+      '@embedpdf/plugin-interaction-manager': 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
+      '@embedpdf/utils': 2.15.1(preact@10.29.8)
+      preact: 10.29.8
+
+  '@embedpdf/plugin-spread@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)':
+    dependencies:
+      '@embedpdf/core': 2.15.1(preact@10.29.8)
+      '@embedpdf/models': 2.15.1
+      preact: 10.29.8
+
+  '@embedpdf/plugin-thumbnail@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-render@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)':
+    dependencies:
+      '@embedpdf/core': 2.15.1(preact@10.29.8)
+      '@embedpdf/models': 2.15.1
+      '@embedpdf/plugin-render': 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
       preact: 10.29.8
 
   '@embedpdf/plugin-tiling@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-render@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(@embedpdf/plugin-scroll@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-viewport@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8))(@embedpdf/plugin-viewport@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)':
@@ -832,6 +941,10 @@ snapshots:
       '@embedpdf/models': 2.15.1
       '@embedpdf/plugin-scroll': 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(@embedpdf/plugin-viewport@2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8))(preact@10.29.8)
       '@embedpdf/plugin-viewport': 2.15.1(@embedpdf/core@2.15.1(preact@10.29.8))(preact@10.29.8)
+      preact: 10.29.8
+
+  '@embedpdf/utils@2.15.1(preact@10.29.8)':
+    dependencies:
       preact: 10.29.8
 
   '@esbuild/aix-ppc64@0.28.2':

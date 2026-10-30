@@ -1,0 +1,22 @@
+{
+  "viewer": "PDF viewer",
+  "toolbar": "Document tools",
+  "panel": "Side panel",
+  "pageNumber": "Page number",
+  "pageOf": "/ {total}",
+  "previousPage": "Previous page",
+  "nextPage": "Next page",
+  "zoomIn": "Zoom in",
+  "zoomOut": "Zoom out",
+  "zoomLevel": "Zoom: {value}",
+  "fitWidth": "Fit to width",
+  "fitPage": "Fit to page",
+  "rotate": "Rotate",
+  "more": "More options",
+  "singlePage": "Single page",
+  "twoPages": "Two pages side by side",
+  "search": "Search",
+  "loading": "Opening document…",
+  "openError": "The document could not be opened.",
+  "engineError": "The viewer could not start."
+}

@@ -1,3 +1,5 @@
+import { resolveLang } from "../i18n/lang";
+import { parseThemeSetting } from "../styles/theme";
 import type { MountOptions, Unmount } from "../viewer/mount";
 
 type ViewerModule = { mount: (root: ShadowRoot, options: MountOptions) => Unmount };
@@ -48,6 +50,8 @@ export class VivePdfElement extends HTMLElement {
       src: new URL(src, document.baseURI).href,
       mode: this.getAttribute("load") === "full" ? "full" : "range",
       assetBase: ASSET_BASE,
+      lang: resolveLang(this.getAttribute("lang"), document.documentElement.lang),
+      theme: parseThemeSetting(this.getAttribute("theme")),
       mark: (name) => this.mark(name),
     };
     this.unmount = mount(this.root, options);
