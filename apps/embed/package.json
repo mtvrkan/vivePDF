@@ -1,0 +1,38 @@
+{
+  "name": "@vivepdf/viewer",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "bench:fixtures": "uv run --project ../../sidecar python bench/make_fixtures.py bench/fixtures",
+    "bench": "node bench/run.mjs",
+    "size": "node bench/size.mjs"
+  },
+  "dependencies": {
+    "@embedpdf/core": "2.15.1",
+    "@embedpdf/engines": "2.15.1",
+    "@embedpdf/models": "2.15.1",
+    "@embedpdf/pdfium": "2.15.1",
+    "@embedpdf/plugin-document-manager": "2.15.1",
+    "@embedpdf/plugin-interaction-manager": "2.15.1",
+    "@embedpdf/plugin-render": "2.15.1",
+    "@embedpdf/plugin-scroll": "2.15.1",
+    "@embedpdf/plugin-tiling": "2.15.1",
+    "@embedpdf/plugin-viewport": "2.15.1",
+    "@embedpdf/plugin-zoom": "2.15.1",
+    "preact": "10.29.8"
+  },
+  "devDependencies": {
+    "playwright-core": "1.64.1",
+    "typescript": "~5.8.3",
+    "vite": "^7.0.4"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@embedpdf/engines@2.15.1": "patches/@embedpdf__engines@2.15.1.patch"
+    }
+  }
+}

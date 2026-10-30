@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vivePDF embed bench</title>
+  </head>
+  <body style="margin: 0">
+    <script type="module">
+      const query = new URLSearchParams(location.search);
+      window.__marks = [];
+      await import("/dist/vivepdf.js");
+      const viewer = document.createElement("vive-pdf");
+      viewer.addEventListener("vive-mark", (event) => window.__marks.push(event.detail));
+      viewer.setAttribute("src", `/fixtures/${query.get("file") ?? "book.pdf"}`);
+      viewer.setAttribute("load", query.get("load") ?? "range");
+      viewer.style.height = "100vh";
+      document.body.append(viewer);
+    </script>
+  </body>
+</html>

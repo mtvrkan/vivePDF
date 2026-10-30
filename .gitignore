@@ -23,3 +23,5 @@ apps/desktop/src-tauri/resources/offline/*
 !apps/desktop/src-tauri/resources/offline/.gitkeep
 apps/desktop/public/fonts/fallback/
 .corpus/
+apps/embed/bench/fixtures/
+apps/embed/bench/results/

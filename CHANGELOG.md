@@ -3,6 +3,8 @@
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Web viewer (`apps/embed`, MIT): first measuring build of a `<vive-pdf>` element that other websites can embed; it downloads the engine only when the viewer scrolls into view, plus a benchmark that times the first page in Chromium, WebKit and Firefox [2026-10-30]
 
 ## [0.5.0] - 2026-10-27
 ### Added
