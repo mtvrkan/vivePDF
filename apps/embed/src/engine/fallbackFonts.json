@@ -1,0 +1,9 @@
+[
+  { "package": "@embedpdf/fonts-jp", "charsets": ["SHIFTJIS"], "files": [["NotoSansJP-Regular.otf", 400], ["NotoSansJP-Bold.otf", 700]] },
+  { "package": "@embedpdf/fonts-kr", "charsets": ["HANGEUL"], "files": [["NotoSansKR-Regular.otf", 400], ["NotoSansKR-Bold.otf", 700]] },
+  { "package": "@embedpdf/fonts-sc", "charsets": ["GB2312"], "files": [["NotoSansHans-Regular.otf", 400], ["NotoSansHans-Bold.otf", 700]] },
+  { "package": "@embedpdf/fonts-tc", "charsets": ["CHINESEBIG5"], "files": [["NotoSansHant-Regular.otf", 400], ["NotoSansHant-Bold.otf", 700]] },
+  { "package": "@embedpdf/fonts-latin", "charsets": ["CYRILLIC", "GREEK", "VIETNAMESE"], "files": [["NotoSans-Regular.ttf", 400], ["NotoSans-Bold.ttf", 700]] },
+  { "package": "@embedpdf/fonts-hebrew", "charsets": ["HEBREW"], "files": [["NotoSansHebrew-Regular.ttf", 400], ["NotoSansHebrew-Bold.ttf", 700]] },
+  { "package": "@embedpdf/fonts-arabic", "charsets": ["ARABIC"], "files": [["NotoNaskhArabic-Regular.ttf", 400], ["NotoNaskhArabic-Bold.ttf", 700]] }
+]

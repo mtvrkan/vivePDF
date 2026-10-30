@@ -1,6 +1,7 @@
 import { useEffect, useState } from "preact/hooks";
 import type { PdfEngine } from "@embedpdf/models";
 import { createPdfiumEngine } from "@embedpdf/engines/pdfium-worker-engine";
+import { fallbackFonts } from "../engine/fonts";
 
 export type EngineState = { engine: PdfEngine | null; error: unknown };
 
@@ -11,12 +12,12 @@ function release(engine: PdfEngine): void {
   );
 }
 
-export function useEngine(wasmUrl: string): EngineState {
+export function useEngine(wasmUrl: string, fontBase: string | null): EngineState {
   const [state, setState] = useState<EngineState>({ engine: null, error: null });
   useEffect(() => {
     let cancelled = false;
     let created: PdfEngine | null = null;
-    Promise.resolve(createPdfiumEngine(wasmUrl, { fontFallback: null })).then(
+    Promise.resolve(createPdfiumEngine(wasmUrl, { fontFallback: fontBase ? fallbackFonts(fontBase) : null })).then(
       (engine) => {
         created = engine;
         if (cancelled) release(engine);
@@ -30,6 +31,6 @@ export function useEngine(wasmUrl: string): EngineState {
       cancelled = true;
       if (created) release(created);
     };
-  }, [wasmUrl]);
+  }, [wasmUrl, fontBase]);
   return state;
 }

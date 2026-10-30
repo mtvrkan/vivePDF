@@ -4,8 +4,8 @@ import { extname, join, normalize, resolve, sep } from "node:path";
 import { brotliCompressSync, constants } from "node:zlib";
 
 const ROOT = resolve(import.meta.dirname, "..");
-const MOUNTS = { "/dist/": join(ROOT, "dist"), "/fixtures/": join(ROOT, "bench", "fixtures"), "/bench/": join(ROOT, "bench"), "/e2e/": join(ROOT, "e2e", "pages") };
-const TYPES = { ".js": "text/javascript", ".mjs": "text/javascript", ".wasm": "application/wasm", ".html": "text/html; charset=utf-8", ".pdf": "application/pdf" };
+const MOUNTS = { "/dist/": join(ROOT, "dist"), "/fixtures/": join(ROOT, "bench", "fixtures"), "/bench/": join(ROOT, "bench"), "/e2e/": join(ROOT, "e2e", "pages"), "/fonts/": join(ROOT, "..", "embed-fonts", "fonts") };
+const TYPES = { ".js": "text/javascript", ".mjs": "text/javascript", ".wasm": "application/wasm", ".html": "text/html; charset=utf-8", ".pdf": "application/pdf", ".otf": "font/otf", ".ttf": "font/ttf" };
 const COMPRESSIBLE = new Set([".js", ".mjs", ".wasm", ".html"]);
 const brotliCache = new Map();
 const served = new Map();

@@ -1,3 +1,4 @@
+import { parseFontBase } from "../engine/fontBase";
 import { resolveLang } from "../i18n/lang";
 import { parseThemeSetting } from "../styles/theme";
 import type { MountOptions, Unmount } from "../viewer/mount";
@@ -52,6 +53,7 @@ export class VivePdfElement extends HTMLElement {
       assetBase: ASSET_BASE,
       lang: resolveLang(this.getAttribute("lang"), document.documentElement.lang),
       theme: parseThemeSetting(this.getAttribute("theme")),
+      fontBase: parseFontBase(this.getAttribute("fonts"), document.baseURI),
       mark: (name) => this.mark(name),
     };
     this.unmount = mount(this.root, options);

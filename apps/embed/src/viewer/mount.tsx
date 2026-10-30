@@ -35,6 +35,7 @@ export type MountOptions = {
   assetBase: string;
   lang: Lang;
   theme: ThemeSetting;
+  fontBase: string | null;
   mark: (name: string) => void;
 };
 
@@ -244,7 +245,7 @@ function usePrefersDark(): boolean {
 }
 
 function Viewer({ options }: { options: MountOptions }) {
-  const { engine, error } = useEngine(assetUrl("pdfium.wasm"));
+  const { engine, error } = useEngine(assetUrl("pdfium.wasm"), options.fontBase);
   const translate = useMemo(() => createTranslator(options.lang), [options.lang]);
   const prefersDark = usePrefersDark();
   const [host, setHost] = useState<HTMLDivElement | null>(null);

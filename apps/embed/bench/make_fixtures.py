@@ -74,6 +74,16 @@ def locked_document(path: Path) -> None:
     doc.close()
 
 
+def unembedded_fonts_document(path: Path) -> None:
+    doc = pymupdf.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_text((56, 72), "Helvetica without an embedded font", fontsize=20, fontname="helv")
+    page.insert_text((56, 120), "日本語のテキスト 中文文本", fontsize=20, fontname="japan")
+    page.insert_text((56, 168), "한국어 텍스트", fontsize=20, fontname="korea")
+    doc.save(path)
+    doc.close()
+
+
 def damaged_documents(out: Path) -> None:
     book = (out / "book.pdf").read_bytes()
     (out / "truncated.pdf").write_bytes(book[: len(book) // 3])
@@ -89,6 +99,7 @@ def main() -> None:
     links_document(out / "links.pdf")
     scan_document(out / "scan.pdf", 20)
     locked_document(out / "locked.pdf")
+    unembedded_fonts_document(out / "fonts.pdf")
     damaged_documents(out)
     for item in sorted(out.glob("*.pdf")):
         print(f"{item.name}: {item.stat().st_size / 1_048_576:.1f} MB")

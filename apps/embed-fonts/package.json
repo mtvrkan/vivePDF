@@ -1,0 +1,21 @@
+{
+  "name": "@vivepdf/viewer-fonts",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "license": "OFL-1.1",
+  "description": "Fallback fonts for the vivePDF web viewer: Noto Sans for Japanese, Korean, Chinese, Cyrillic, Greek, Vietnamese, Hebrew and Arabic text in PDFs that do not embed their fonts.",
+  "files": ["fonts", "OFL.txt"],
+  "scripts": {
+    "collect": "node collect.mjs"
+  },
+  "devDependencies": {
+    "@embedpdf/fonts-arabic": "1.0.0",
+    "@embedpdf/fonts-hebrew": "1.0.0",
+    "@embedpdf/fonts-jp": "1.0.0",
+    "@embedpdf/fonts-kr": "1.0.0",
+    "@embedpdf/fonts-latin": "1.0.0",
+    "@embedpdf/fonts-sc": "1.0.0",
+    "@embedpdf/fonts-tc": "1.0.0"
+  }
+}
