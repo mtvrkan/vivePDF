@@ -17,7 +17,6 @@
   "twoPages": "Two pages side by side",
   "search": "Search",
   "loading": "Opening document…",
-  "openError": "The document could not be opened.",
   "engineError": "The viewer could not start.",
   "pagesTab": "Pages",
   "outlineTab": "Contents",
@@ -38,5 +37,19 @@
   "pages": "Document pages",
   "pageOfTotal": "Page {page} of {total}",
   "linkToPage": "Link to page {page}",
-  "linkTo": "Link: {target}"
+  "linkTo": "Link: {target}",
+  "passwordTitle": "This document is protected",
+  "passwordText": "Enter the password to open it.",
+  "passwordLabel": "Password",
+  "passwordWrong": "That password is not right. Try again.",
+  "passwordSubmit": "Open",
+  "notFoundTitle": "File not found",
+  "notFoundText": "No PDF was found at this address. It may have been moved or deleted.",
+  "networkTitle": "The file could not be downloaded",
+  "networkText": "Check your connection and try again.",
+  "damagedTitle": "The file is damaged",
+  "damagedText": "This PDF could not be read. You can download it and try another app.",
+  "downloadFile": "Download the file",
+  "unknownTitle": "The document could not be opened",
+  "unknownText": "Something went wrong while opening it."
 }

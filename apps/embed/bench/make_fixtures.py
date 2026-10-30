@@ -6,6 +6,8 @@ import pymupdf
 
 FONT_FILE = Path(__file__).resolve().parents[3] / "sidecar" / "vivepdf" / "assets" / "fonts" / "DejaVuSans.ttf"
 
+LOCKED_PASSWORD = "vive-2026"
+
 PARAGRAPH = (
     "vivePDF web viewer benchmark text. The quick brown fox jumps over the lazy dog. "
     "Çalışkan öğrenciler şiir okuyor, ılık rüzgâr ağaçları sallıyor. "
@@ -63,6 +65,22 @@ def scan_document(path: Path, pages: int) -> None:
     doc.close()
 
 
+def locked_document(path: Path) -> None:
+    doc = pymupdf.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_font(fontname="dejavu", fontfile=str(FONT_FILE))
+    page.insert_text((56, 72), "Kilitli belge", fontsize=20, fontname="dejavu")
+    doc.save(path, encryption=pymupdf.PDF_ENCRYPT_AES_256, user_pw=LOCKED_PASSWORD, owner_pw=LOCKED_PASSWORD + "-owner")
+    doc.close()
+
+
+def damaged_documents(out: Path) -> None:
+    book = (out / "book.pdf").read_bytes()
+    (out / "truncated.pdf").write_bytes(book[: len(book) // 3])
+    (out / "garbage.pdf").write_bytes(b"%PDF-1.7\n" + bytes((index * 37 + 11) % 256 for index in range(40_000)))
+    (out / "notpdf.pdf").write_bytes(b"<!doctype html><title>Not found</title><p>This is a web page, not a PDF.</p>")
+
+
 def main() -> None:
     out = Path(sys.argv[1])
     out.mkdir(parents=True, exist_ok=True)
@@ -70,6 +88,8 @@ def main() -> None:
     text_document(out / "book.pdf", 500)
     links_document(out / "links.pdf")
     scan_document(out / "scan.pdf", 20)
+    locked_document(out / "locked.pdf")
+    damaged_documents(out)
     for item in sorted(out.glob("*.pdf")):
         print(f"{item.name}: {item.stat().st_size / 1_048_576:.1f} MB")
 

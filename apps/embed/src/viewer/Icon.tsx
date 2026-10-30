@@ -16,6 +16,12 @@ const PATHS = {
   list: "M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01",
   chevron: "m9 18 6-6-6-6",
   external: "M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",
+  lock: "M7 11V7a5 5 0 0 1 10 0v4M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z",
+  fileBroken: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M12 12v3M12 18h.01",
+  fileMissing: "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M10 13a2 2 0 1 1 2.5 1.9c-.3.1-.5.4-.5.7v.4M12 19h.01",
+  offline: "m2 2 20 20M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 5.2-2.7M19 13a10 10 0 0 0-2.2-1.5M2 8.8a15 15 0 0 1 4.2-2.6M22 8.8a15 15 0 0 0-11.3-3.7M12 20h.01",
+  alert: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 8v4M12 16h.01",
+  download: "M12 3v12m-5-5 5 5 5-5M5 21h14",
 } as const;
 
 export type IconName = keyof typeof PATHS;

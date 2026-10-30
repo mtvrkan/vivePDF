@@ -2,7 +2,7 @@ import { render } from "preact";
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { createPluginRegistration } from "@embedpdf/core";
 import { EmbedPDF } from "@embedpdf/core/preact";
-import { DocumentContent, DocumentManagerPluginPackage, useDocumentManagerCapability } from "@embedpdf/plugin-document-manager/preact";
+import { DocumentContent, DocumentManagerPluginPackage, useDocumentManagerCapability, type DocumentManagerCapability } from "@embedpdf/plugin-document-manager/preact";
 import { InteractionManagerPluginPackage } from "@embedpdf/plugin-interaction-manager/preact";
 import { RenderPluginPackage } from "@embedpdf/plugin-render/preact";
 import { RotatePluginPackage } from "@embedpdf/plugin-rotate/preact";
@@ -19,6 +19,8 @@ import { createTranslator, type Lang } from "../i18n";
 import viewerCss from "../styles/viewer.css?inline";
 import { resolveTheme, type ThemeSetting } from "../styles/theme";
 import { TranslateContext, useT } from "./i18nContext";
+import { OpenProblemView } from "./OpenProblemView";
+import { engineFailure, problemFromEngine, problemFromStatus, type OpenProblem } from "./openError";
 import { Pages } from "./Pages";
 import { Pill } from "./Pill";
 import { SearchBox } from "./SearchBox";
@@ -38,7 +40,8 @@ export type MountOptions = {
 
 export type Unmount = () => void;
 
-type OpenState = "loading" | "ready" | "error";
+type OpenState = { kind: "loading" } | { kind: "ready" } | { kind: "problem"; problem: OpenProblem; busy: boolean };
+type OpenTask = ReturnType<DocumentManagerCapability["openDocumentUrl"]>;
 
 const DOCUMENT_ID = "vive-document";
 const MIN_ZOOM = 0.1;
@@ -149,29 +152,72 @@ function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | 
 function Opener({ options, host }: { options: MountOptions; host: HTMLElement | null }) {
   const t = useT();
   const { provides: documents } = useDocumentManagerCapability();
-  const [state, setState] = useState<OpenState>("loading");
+  const [state, setState] = useState<OpenState>({ kind: "loading" });
+  const [attempt, setAttempt] = useState(0);
+  const activeRef = useRef(true);
+
+  const settle = useCallback(
+    (request: OpenTask, passwordProvided: boolean) => {
+      const fail = (reason: unknown) => {
+        if (!activeRef.current) return;
+        setState({ kind: "problem", problem: problemFromEngine(engineFailure(reason), passwordProvided), busy: false });
+        options.mark("open-error");
+      };
+      request.toPromise().then(
+        (response) =>
+          response.task.toPromise().then(() => {
+            if (!activeRef.current) return;
+            setState({ kind: "ready" });
+            options.mark("document-open");
+          }, fail),
+        fail,
+      );
+    },
+    [options],
+  );
+
   useEffect(() => {
     if (!documents) return;
+    activeRef.current = true;
+    const controller = new AbortController();
+    const name = options.src.split("/").pop() || "document.pdf";
     options.mark("open-start");
-    const file = { documentId: DOCUMENT_ID, name: options.src.split("/").pop() ?? "document.pdf" };
-    const request =
-      options.mode === "range"
-        ? documents.openDocumentUrl({ url: options.src, mode: "range-request", ...file })
-        : documents.openDocumentUrl({ url: options.src, ...file });
-    const fail = () => {
-      setState("error");
-      options.mark("open-error");
+    if (options.mode === "range") {
+      settle(documents.openDocumentUrl({ url: options.src, mode: "range-request", documentId: DOCUMENT_ID, name }), false);
+    } else {
+      const fail = (problem: OpenProblem) => {
+        if (!activeRef.current) return;
+        setState({ kind: "problem", problem, busy: false });
+        options.mark("open-error");
+      };
+      fetch(options.src, { signal: controller.signal })
+        .then((response) => {
+          if (!response.ok) return fail(problemFromStatus(response.status));
+          return response.arrayBuffer().then((buffer) => {
+            if (activeRef.current) settle(documents.openDocumentBuffer({ buffer, name, documentId: DOCUMENT_ID }), false);
+          });
+        })
+        .catch(() => fail("network"));
+    }
+    return () => {
+      activeRef.current = false;
+      controller.abort();
     };
-    request.toPromise().then(
-      (response) =>
-        response.task.toPromise().then(() => {
-          setState("ready");
-          options.mark("document-open");
-        }, fail),
-      fail,
-    );
-  }, [documents, options]);
-  if (state === "error") return <Status kind="error" text={t("openError")} />;
+  }, [documents, options, attempt, settle]);
+
+  const reopen = (password?: string) => {
+    if (!documents) return;
+    if (!documents.getDocumentState(DOCUMENT_ID)) {
+      setState({ kind: "loading" });
+      setAttempt((value) => value + 1);
+      return;
+    }
+    setState((current) => (current.kind === "problem" && password !== undefined ? { ...current, busy: true } : { kind: "loading" }));
+    settle(documents.retryDocument(DOCUMENT_ID, password === undefined ? undefined : { password }), password !== undefined);
+  };
+
+  if (state.kind === "problem")
+    return <OpenProblemView problem={state.problem} sourceUrl={options.src} busy={state.busy} onRetry={() => reopen()} onPassword={(password) => reopen(password)} />;
   return (
     <DocumentContent documentId={DOCUMENT_ID}>
       {({ isLoaded }) =>

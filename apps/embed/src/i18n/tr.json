@@ -17,7 +17,6 @@
   "twoPages": "İki sayfa yan yana",
   "search": "Ara",
   "loading": "Belge açılıyor…",
-  "openError": "Belge açılamadı.",
   "engineError": "Görüntüleyici başlatılamadı.",
   "pagesTab": "Sayfalar",
   "outlineTab": "İçindekiler",
@@ -38,5 +37,19 @@
   "pages": "Belge sayfaları",
   "pageOfTotal": "Sayfa {page} / {total}",
   "linkToPage": "Sayfa {page} bağlantısı",
-  "linkTo": "Bağlantı: {target}"
+  "linkTo": "Bağlantı: {target}",
+  "passwordTitle": "Bu belge parolayla korunuyor",
+  "passwordText": "Açmak için parolayı girin.",
+  "passwordLabel": "Parola",
+  "passwordWrong": "Parola doğru değil. Yeniden deneyin.",
+  "passwordSubmit": "Aç",
+  "notFoundTitle": "Dosya bulunamadı",
+  "notFoundText": "Bu adreste PDF yok. Taşınmış ya da silinmiş olabilir.",
+  "networkTitle": "Dosya indirilemedi",
+  "networkText": "İnternet bağlantınızı kontrol edip yeniden deneyin.",
+  "damagedTitle": "Dosya bozuk",
+  "damagedText": "Bu PDF okunamadı. İndirip başka bir uygulamada açmayı deneyebilirsiniz.",
+  "downloadFile": "Dosyayı indir",
+  "unknownTitle": "Belge açılamadı",
+  "unknownText": "Açılırken bir sorun oldu."
 }
