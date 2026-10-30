@@ -21,3 +21,18 @@ for (const [name, path] of [
     expect(await violations(page)).toEqual([]);
   });
 }
+
+test("the same-site policy also works when the server sends it as a header on every file, the engine worker included", async ({ page }) => {
+  const policy = "default-src 'none'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; connect-src 'self'; img-src 'self' blob:";
+  await page.route(
+    (url) => url.pathname.startsWith("/dist/") && url.pathname.endsWith(".js"),
+    async (route) => {
+      const response = await route.fetch();
+      await route.fulfill({ response, headers: { ...response.headers(), "content-security-policy": policy } });
+    },
+  );
+
+  await page.goto("/e2e/csp.html");
+
+  await expect.poll(() => marks(page), { timeout: 20_000 }).toContain("first-page");
+});
