@@ -48,10 +48,11 @@ const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 8;
 const THUMB_WIDTH = 120;
 const NARROW_PX = 560;
+const VIEWPORT_GAP = 12;
 
 const plugins = [
   createPluginRegistration(DocumentManagerPluginPackage, { maxDocuments: 1 }),
-  createPluginRegistration(ViewportPluginPackage, { viewportGap: 12 }),
+  createPluginRegistration(ViewportPluginPackage, { viewportGap: VIEWPORT_GAP }),
   createPluginRegistration(ScrollPluginPackage, { defaultPageGap: 10 }),
   createPluginRegistration(RenderPluginPackage, { withForms: true }),
   createPluginRegistration(InteractionManagerPluginPackage),
@@ -115,7 +116,7 @@ function ViewerUi({ sourceUrl, host }: { sourceUrl: string; host: HTMLElement | 
   const [panelTab, setPanelTab] = useState<PanelTab>("pages");
   const [searchOpen, setSearchOpen] = useState(false);
   const panelButtonRef = useRef<HTMLButtonElement>(null);
-  useRefit(DOCUMENT_ID, host);
+  useRefit(DOCUMENT_ID, host, VIEWPORT_GAP);
   const closePanel = () => {
     setPanelOpen(false);
     panelButtonRef.current?.focus();

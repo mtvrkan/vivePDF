@@ -12,7 +12,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Web viewer: links in the document work (jumps to other pages, web and mail links open in a new tab, script links are ignored); text can be selected by dragging and copied with Ctrl/Cmd+C; Home and End go to the first and last page, Ctrl/Cmd +, − and 0 zoom; on phones a tap on a link or a contents entry no longer hides the toolbar [2026-10-30]
 - Web viewer: a password-protected PDF asks for its password (and says when it is wrong); a missing file, a download that fails and a damaged or non-PDF file each get their own message, with Try again or a link to download the file instead of a bare error line [2026-10-30]
 ### Changed
-- Web viewer: the first page shows up about 120 ms sooner (around 150 ms instead of 265 ms for a small file on this Mac), because the page is fitted to the width as soon as the viewer has a size instead of after a 150 ms wait [2026-10-30]
+- Web viewer: the first page shows up about 120 ms sooner (around 150 ms instead of 265 ms for a small file on this Mac), because the page is fitted to the width as soon as the viewer has a size instead of after a 150 ms wait; the document still opens at the top of the first page [2026-10-30]
 - Web viewer: the size budget for the viewer code is 70 KB (compressed) instead of 60 KB, to make room for text selection [2026-10-30]
 
 ## [0.5.0] - 2026-10-27

@@ -78,3 +78,13 @@ test("on touch screens the toolbar hides while the finger scrolls down, not afte
   });
   await expect(toolbar).toHaveAttribute("data-hidden", "true");
 });
+
+test("the document opens at the top of the first page", async ({ page }) => {
+  await page.goto("/e2e/playground.html?lang=en&src=/fixtures/small.pdf");
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __marks: string[] }).__marks), { timeout: 20_000 }).toContain("first-page");
+
+  const position = () => page.evaluate(() => document.querySelector("vive-pdf")?.shadowRoot?.querySelector(".vp-viewport")?.scrollTop);
+
+  await page.waitForTimeout(400);
+  expect(await position()).toBe(0);
+});
