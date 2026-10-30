@@ -9,9 +9,10 @@ import { Scroller, ScrollPluginPackage } from "@embedpdf/plugin-scroll/preact";
 import { TilingLayer, TilingPluginPackage } from "@embedpdf/plugin-tiling/preact";
 import { Viewport, ViewportPluginPackage } from "@embedpdf/plugin-viewport/preact";
 import { ZoomMode, ZoomPluginPackage } from "@embedpdf/plugin-zoom/preact";
+import { assetUrl, setAssetBase } from "../engine/assets";
 import { useEngine } from "./useEngine";
 
-export type MountOptions = { src: string; mode: "range" | "full"; wasmUrl: string; mark: (name: string) => void };
+export type MountOptions = { src: string; mode: "range" | "full"; assetBase: string; mark: (name: string) => void };
 
 export type Unmount = () => void;
 
@@ -94,7 +95,7 @@ function Opener({ options }: { options: MountOptions }) {
 }
 
 function Viewer({ options }: { options: MountOptions }) {
-  const { engine, error } = useEngine(options.wasmUrl);
+  const { engine, error } = useEngine(assetUrl("pdfium.wasm"));
   useEffect(() => {
     if (engine) options.mark("engine-ready");
   }, [engine, options]);
@@ -113,6 +114,7 @@ function Viewer({ options }: { options: MountOptions }) {
 }
 
 export function mount(root: ShadowRoot, options: MountOptions): Unmount {
+  setAssetBase(options.assetBase);
   const container = document.createElement("div");
   container.style.cssText = "position:absolute;inset:0";
   root.append(container);

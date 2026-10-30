@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>vivePDF embed e2e</title>
+  </head>
+  <body style="margin: 0">
+    <div data-testid="spacer" style="height: 3000px"></div>
+    <vive-pdf data-testid="viewer" src="/fixtures/small.pdf" style="height: 600px"></vive-pdf>
+    <script>
+      window.__marks = [];
+      document.querySelector("vive-pdf").addEventListener("vive-mark", (event) => window.__marks.push(event.detail.name));
+    </script>
+    <script src="/dist/vivepdf.js"></script>
+  </body>
+</html>

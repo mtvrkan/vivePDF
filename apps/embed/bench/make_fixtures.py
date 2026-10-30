@@ -4,6 +4,8 @@ from pathlib import Path
 
 import pymupdf
 
+FONT_FILE = Path(__file__).resolve().parents[3] / "sidecar" / "vivepdf" / "assets" / "fonts" / "DejaVuSans.ttf"
+
 PARAGRAPH = (
     "vivePDF web viewer benchmark text. The quick brown fox jumps over the lazy dog. "
     "Çalışkan öğrenciler şiir okuyor, ılık rüzgâr ağaçları sallıyor. "
@@ -14,9 +16,10 @@ def text_document(path: Path, pages: int) -> None:
     doc = pymupdf.open()
     for number in range(pages):
         page = doc.new_page(width=595, height=842)
-        page.insert_text((56, 72), f"Chapter {number + 1}", fontsize=20)
+        page.insert_font(fontname="dejavu", fontfile=str(FONT_FILE))
+        page.insert_text((56, 72), f"Chapter {number + 1}", fontsize=20, fontname="dejavu")
         box = pymupdf.Rect(56, 96, 539, 786)
-        page.insert_textbox(box, PARAGRAPH * 3, fontsize=10, lineheight=1.4)
+        page.insert_textbox(box, PARAGRAPH * 3, fontsize=10, lineheight=1.4, fontname="dejavu")
         shape = page.new_shape()
         for step in range(12):
             shape.draw_line((56 + step * 40, 800), (96 + step * 40, 820))

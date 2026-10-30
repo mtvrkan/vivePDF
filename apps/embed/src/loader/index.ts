@@ -1,9 +1,9 @@
 import type { MountOptions, Unmount } from "../viewer/mount";
 
+type ViewerModule = { mount: (root: ShadowRoot, options: MountOptions) => Unmount };
+
 const ASSET_BASE = import.meta.url.slice(0, import.meta.url.lastIndexOf("/") + 1);
 const HOST_STYLE = ":host{display:block;position:relative;height:600px;contain:strict}";
-
-export type LoadMode = "range" | "full";
 
 export type MarkDetail = { name: string; time: number };
 
@@ -41,13 +41,13 @@ export class VivePdfElement extends HTMLElement {
   private async boot(): Promise<void> {
     const src = this.getAttribute("src");
     if (!src) return;
-    const { mount } = await import("../viewer/mount");
+    const { mount } = (await import(/* @vite-ignore */ new URL("viewer.js", ASSET_BASE).href)) as ViewerModule;
     this.mark("viewer-loaded");
     if (!this.isConnected) return;
     const options: MountOptions = {
       src: new URL(src, document.baseURI).href,
       mode: this.getAttribute("load") === "full" ? "full" : "range",
-      wasmUrl: new URL("pdfium.wasm", ASSET_BASE).href,
+      assetBase: ASSET_BASE,
       mark: (name) => this.mark(name),
     };
     this.unmount = mount(this.root, options);

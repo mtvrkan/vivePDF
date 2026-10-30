@@ -9,7 +9,7 @@
     <script type="module">
       const query = new URLSearchParams(location.search);
       window.__marks = [];
-      await import("/dist/vivepdf.js");
+      await import("/dist/vivepdf.mjs");
       const viewer = document.createElement("vive-pdf");
       viewer.addEventListener("vive-mark", (event) => window.__marks.push(event.detail));
       viewer.setAttribute("src", `/fixtures/${query.get("file") ?? "book.pdf"}`);

@@ -1,7 +1,13 @@
 import { brotliCompressSync, constants, gzipSync } from "node:zlib";
 import { build } from "vite";
 
-const BUDGETS = { "vivepdf.js": 6 * 1024, viewer: 60 * 1024, "pdfium.wasm": 1.7 * 1024 * 1024 };
+const KB = 1024;
+const GROUPS = [
+  { name: "loader (vivepdf.js / vivepdf.mjs)", match: (file) => /^vivepdf\.m?js$/.test(file), budget: 6 * KB, each: true },
+  { name: "viewer (viewer.js + chunks)", match: (file) => file === "viewer.js" || file.startsWith("chunks/"), budget: 60 * KB },
+  { name: "workers (engine + encoder)", match: (file) => file.endsWith("-worker.js"), budget: 70 * KB },
+  { name: "engine (pdfium.wasm)", match: (file) => file === "pdfium.wasm", budget: 1.7 * KB * KB },
+];
 const showModules = process.argv.includes("--modules");
 
 function brotli(bytes) {
@@ -9,35 +15,46 @@ function brotli(bytes) {
 }
 
 function kb(n) {
-  return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / KB).toFixed(1)} KB`;
 }
 
-function budgetOf(fileName) {
-  if (fileName === "vivepdf.js" || fileName === "pdfium.wasm") return BUDGETS[fileName];
-  return BUDGETS.viewer;
+async function outputsOf(mode) {
+  const result = await build({ root: process.cwd(), mode, logLevel: "silent", build: { write: false } });
+  return (Array.isArray(result) ? result : [result]).flatMap((entry) => entry.output);
 }
 
-const result = await build({ root: process.cwd(), logLevel: "silent", build: { write: false } });
-const outputs = (Array.isArray(result) ? result : [result]).flatMap((entry) => entry.output);
-let failed = false;
-let viewerTotal = 0;
-for (const item of outputs) {
+const outputs = [...(await outputsOf("viewer")), ...(await outputsOf("loader"))];
+const rows = outputs.map((item) => {
   const bytes = item.type === "chunk" ? Buffer.from(item.code) : Buffer.from(item.source);
-  const compressed = brotli(bytes);
-  if (item.fileName.startsWith("chunks/")) viewerTotal += compressed;
-  const budget = budgetOf(item.fileName);
-  const over = !item.fileName.startsWith("chunks/") && compressed > budget;
-  if (over) failed = true;
-  console.log(`${item.fileName.padEnd(36)} raw ${kb(bytes.length).padStart(11)}  gzip ${kb(gzipSync(bytes, { level: 9 }).length).padStart(10)}  brotli ${kb(compressed).padStart(10)}${over ? `  OVER ${kb(budget)}` : ""}`);
-  if (showModules && item.type === "chunk") {
-    const rows = Object.entries(item.modules)
+  return { item, file: item.fileName, raw: bytes.length, gzip: gzipSync(bytes, { level: 9 }).length, brotli: brotli(bytes) };
+});
+for (const row of rows) {
+  console.log(`${row.file.padEnd(36)} raw ${kb(row.raw).padStart(11)}  gzip ${kb(row.gzip).padStart(10)}  brotli ${kb(row.brotli).padStart(10)}`);
+  if (showModules && row.item.type === "chunk") {
+    const modules = Object.entries(row.item.modules)
       .map(([id, info]) => [info.renderedLength, id.replace(/.*node_modules\/(\.pnpm\/[^/]+\/node_modules\/)?/, "")])
       .sort((a, b) => b[0] - a[0])
       .slice(0, 20);
-    for (const [length, id] of rows) console.log(`    ${kb(length).padStart(10)}  ${id}`);
+    for (const [length, id] of modules) console.log(`    ${kb(length).padStart(10)}  ${id}`);
   }
 }
-const viewerOver = viewerTotal > BUDGETS.viewer;
-if (viewerOver) failed = true;
-console.log(`viewer chunks total brotli ${kb(viewerTotal)} (budget ${kb(BUDGETS.viewer)})${viewerOver ? " OVER" : ""}`);
+let failed = false;
+console.log("");
+for (const group of GROUPS) {
+  const members = rows.filter((row) => group.match(row.file));
+  if (members.length === 0) {
+    failed = true;
+    console.log(`${group.name}: MISSING`);
+    continue;
+  }
+  const size = group.each ? Math.max(...members.map((row) => row.brotli)) : members.reduce((sum, row) => sum + row.brotli, 0);
+  const over = size > group.budget;
+  if (over) failed = true;
+  console.log(`${group.name.padEnd(36)} brotli ${kb(size).padStart(10)} / budget ${kb(group.budget)}${over ? "  OVER" : "  ok"}`);
+}
+const unmatched = rows.filter((row) => !GROUPS.some((group) => group.match(row.file)));
+for (const row of unmatched) {
+  failed = true;
+  console.log(`unbudgeted output: ${row.file}`);
+}
 process.exitCode = failed ? 1 : 0;
