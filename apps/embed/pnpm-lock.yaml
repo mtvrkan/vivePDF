@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@embedpdf/engines@2.15.1':
-    hash: ab181fd8b3b4d158629ff55e9d93f7580a7c193b4eeb15d3a3d550951e7e2c51
+    hash: a49699a846ccc7f041655fbcdf30eccaff9f6155cecaf0edebb5150d00d97f1b
     path: patches/@embedpdf__engines@2.15.1.patch
 
 importers:
@@ -18,7 +18,7 @@ importers:
         version: 2.15.1(preact@10.29.8)
       '@embedpdf/engines':
         specifier: 2.15.1
-        version: 2.15.1(patch_hash=ab181fd8b3b4d158629ff55e9d93f7580a7c193b4eeb15d3a3d550951e7e2c51)(preact@10.29.8)
+        version: 2.15.1(patch_hash=a49699a846ccc7f041655fbcdf30eccaff9f6155cecaf0edebb5150d00d97f1b)(preact@10.29.8)
       '@embedpdf/models':
         specifier: 2.15.1
         version: 2.15.1
@@ -827,11 +827,11 @@ snapshots:
 
   '@embedpdf/core@2.15.1(preact@10.29.8)':
     dependencies:
-      '@embedpdf/engines': 2.15.1(patch_hash=ab181fd8b3b4d158629ff55e9d93f7580a7c193b4eeb15d3a3d550951e7e2c51)(preact@10.29.8)
+      '@embedpdf/engines': 2.15.1(patch_hash=a49699a846ccc7f041655fbcdf30eccaff9f6155cecaf0edebb5150d00d97f1b)(preact@10.29.8)
       '@embedpdf/models': 2.15.1
       preact: 10.29.8
 
-  '@embedpdf/engines@2.15.1(patch_hash=ab181fd8b3b4d158629ff55e9d93f7580a7c193b4eeb15d3a3d550951e7e2c51)(preact@10.29.8)':
+  '@embedpdf/engines@2.15.1(patch_hash=a49699a846ccc7f041655fbcdf30eccaff9f6155cecaf0edebb5150d00d97f1b)(preact@10.29.8)':
     dependencies:
       '@embedpdf/fonts-arabic': 1.0.0
       '@embedpdf/fonts-hebrew': 1.0.0

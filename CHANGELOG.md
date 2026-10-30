@@ -15,6 +15,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Web viewer: the 4.5 MB engine is kept in the browser's Cache Storage, so Safari no longer downloads it again on every visit; on sites whose Content Security Policy does not allow `blob:` connections the viewer quietly loads the engine the old way [2026-10-30]
 - Web viewer: when the engine cannot start (for example its download is blocked) the viewer says so with a Try again button instead of waiting forever; if the engine crashes while you read, the viewer restarts once by itself and returns to the page you were on [2026-10-30]
 ### Changed
+- Web viewer: large PDFs read over the network reach their first page much sooner on slow connections (an 80 MB scan on a 9 Mbit/s line: 7.7 s instead of 11.4 s; 5.9 s instead of 9.6 s once the engine is cached): the viewer now fetches 32 KB pieces instead of 256 KB for scattered reads and reads further ahead only while reading forward; files up to 2 MB come in two requests, and a server that ignores range requests now works too [2026-10-30]
 - Web viewer: the first page shows up about 120 ms sooner (around 150 ms instead of 265 ms for a small file on this Mac), because the page is fitted to the width as soon as the viewer has a size instead of after a 150 ms wait; the document still opens at the top of the first page [2026-10-30]
 - Web viewer: the size budget for the viewer code is 70 KB (compressed) instead of 60 KB, to make room for text selection [2026-10-30]
 

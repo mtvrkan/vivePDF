@@ -1,8 +1,11 @@
+import { readFileSync } from "node:fs";
 import { transformWithEsbuild, type Plugin } from "vite";
 
 type Node = { type: string; start: number; end: number; [key: string]: unknown };
 
 export type BlobWorker = { start: number; end: number; source: string };
+
+const ENGINE_RANGE_GLOBAL = "VivePdfRange";
 
 const ENGINE_MODULE = /@embedpdf[\\/]engines[\\/]dist[\\/]lib[\\/]pdfium[\\/]web[\\/]worker-engine\.js$/;
 
@@ -59,22 +62,33 @@ export function workerFileName(source: string): string {
   return source.includes("wasmInit") ? "engine-worker.js" : "encoder-worker.js";
 }
 
-export function extractWorkers(assetsModule: string): Plugin {
+export function extractWorkers(assetsModule: string, engineRangeModule: string): Plugin {
+  let serving = false;
   return {
     name: "vivepdf-embed-extract-workers",
-    apply: "build",
+    configResolved(config) {
+      serving = config.command === "serve";
+    },
     async transform(code, id) {
       if (!ENGINE_MODULE.test(id)) return null;
       const workers = findBlobWorkers(this.parse(code));
       const names = workers.map((worker) => workerFileName(worker.source));
       if (workers.length !== 2 || new Set(names).size !== 2) this.error(`expected the engine and encoder worker blobs in ${id}, found ${names.join(", ") || "none"}`);
+      this.addWatchFile(engineRangeModule);
+      const range = await transformWithEsbuild(readFileSync(engineRangeModule, "utf8"), engineRangeModule, { format: "iife", globalName: ENGINE_RANGE_GLOBAL, target: "es2022" });
       let output = code;
       for (const worker of [...workers].sort((a, b) => b.start - a.start)) {
         const fileName = workerFileName(worker.source);
-        const minified = await transformWithEsbuild(worker.source, fileName, { minify: true, format: "esm", target: "es2022", legalComments: "none" });
+        const source = fileName === "engine-worker.js" ? `${range.code}\n${worker.source}` : worker.source;
+        if (serving) {
+          output = `${output.slice(0, worker.start)}URL.createObjectURL(new Blob([${JSON.stringify(source)}], { type: "application/javascript" }))${output.slice(worker.end)}`;
+          continue;
+        }
+        const minified = await transformWithEsbuild(source, fileName, { minify: true, format: "esm", target: "es2022", legalComments: "none" });
         this.emitFile({ type: "asset", fileName, source: minified.code });
         output = `${output.slice(0, worker.start)}__vivepdfWorkerUrl(${JSON.stringify(fileName)})${output.slice(worker.end)}`;
       }
+      if (serving) return { code: output, map: null };
       return { code: `import { workerUrl as __vivepdfWorkerUrl } from ${JSON.stringify(assetsModule)};\n${output}`, map: null };
     },
   };
