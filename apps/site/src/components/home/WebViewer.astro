@@ -1,0 +1,48 @@
+---
+import { docPath, VIEWER_NPM_URL, type Locale } from "../../i18n";
+import { HOME } from "../../i18n/home";
+import { ANCHORS } from "../../i18n/ui";
+import { docByKey } from "../../docs/structure";
+import { VIEWER_DEFAULTS, viewerSnippet } from "../../docs/viewerSnippet";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const c = HOME[lang].webViewer;
+const snippet = viewerSnippet(VIEWER_DEFAULTS, { src: c.src, open: "" });
+const docsHref = docPath(lang, docByKey("webViewer").slug[lang]);
+---
+<section class="sec" id={ANCHORS[lang].webViewer} aria-labelledby="wvTitle">
+  <div class="wrap wv">
+    <div class="wv-text">
+      <p class="eyebrow" data-reveal>{c.eyebrow}</p>
+      <h2 class="title" id="wvTitle" data-reveal set:html={c.title} />
+      <p class="lead" data-reveal>{c.lead}</p>
+      <ul class="wv-points">
+        {c.points.map((p) => (
+          <li data-reveal><span class="acad-ic"><svg class="ic" aria-hidden="true"><use href={`#${p.icon}`}/></svg></span><div><h3>{p.h}</h3><p>{p.p}</p></div></li>
+        ))}
+      </ul>
+      <div class="term" data-reveal>
+        <div class="term-bar"><p>{c.codeLabel}</p><button class="copy" type="button" id="wvCopy" data-copied={c.copied} data-failed={c.copyFailed}><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span>{c.copy}</span></button></div>
+        <pre id="wvCode" tabindex="0" role="region" aria-label={c.code}>{snippet}</pre>
+      </div>
+      <p class="wv-links" data-reveal>
+        <a class="text-link ul" href={docsHref}>{c.docs}<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+        <a class="text-link ul" href={VIEWER_NPM_URL} target="_blank" rel="noopener">{c.npm}<svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+      </p>
+    </div>
+    <div class="wv-demo glass" id="wvDemo" data-reveal data-sample={c.demo.sample} data-lang={lang} data-label={c.demo.label}>
+      <div class="wv-poster" id="wvPoster">
+        <div class="wv-sheet" aria-hidden="true"><i></i><b></b><b></b><b class="hl"></b><b></b><b class="s"></b><b></b><b></b><b class="s"></b></div>
+        <div class="wv-cta">
+          <h3>{c.demo.h}</h3>
+          <p>{c.demo.p}</p>
+          <button class="btn btn-primary btn-sm" type="button" id="wvStart"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg>{c.demo.button}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  import "../../scripts/homeViewer";
+</script>

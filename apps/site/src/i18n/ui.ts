@@ -6,6 +6,7 @@ export type Anchors = {
   features: string;
   privacy: string;
   tryIt: string;
+  webViewer: string;
   present: string;
   studio: string;
   academic: string;
@@ -19,6 +20,7 @@ export const ANCHORS: Record<Locale, Anchors> = {
     features: "ozellikler",
     privacy: "gizlilik",
     tryIt: "dene",
+    webViewer: "web-goruntuleyici",
     present: "sunum",
     studio: "studio",
     academic: "akademik",
@@ -30,6 +32,7 @@ export const ANCHORS: Record<Locale, Anchors> = {
     features: "features",
     privacy: "privacy",
     tryIt: "try",
+    webViewer: "web-viewer",
     present: "presenter",
     studio: "studio",
     academic: "academic",

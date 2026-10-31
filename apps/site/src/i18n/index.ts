@@ -10,6 +10,7 @@ export const REPO_URL = "https://github.com/mtvrkan/vivePDF";
 export const RELEASES_URL = `${REPO_URL}/releases`;
 export const LATEST_RELEASE_URL = `${REPO_URL}/releases/latest`;
 export const ISSUES_URL = `${REPO_URL}/issues`;
+export const VIEWER_NPM_URL = "https://www.npmjs.com/package/@vivepdf/viewer";
 export const APP_VERSION = appData.version;
 export const APP_RELEASE_DATE = "2026-10-21";
 export const WINDOWS_DOWNLOAD_URL = releaseAssetUrl(`vivePDF_${APP_VERSION}_x64-setup.exe`);
