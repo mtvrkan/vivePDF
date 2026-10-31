@@ -3,15 +3,18 @@ import { AnnotationLayer, AnnotationPluginPackage, LockModeType } from "@embedpd
 import { ExportPluginPackage } from "@embedpdf/plugin-export/preact";
 import { HistoryPluginPackage } from "@embedpdf/plugin-history/preact";
 import type { Lang } from "../i18n";
+import { joiningInkHandler, type InkJoiner } from "./inkHandler";
 import { NoteEditor, isNote } from "./NoteEditor";
 import { ANNOTATION_COLORS } from "./tools";
 
 export { AnnotateBar } from "./AnnotateBar";
+export { createInkJoiner } from "./inkHandler";
 export { useAnnotateSession } from "./useAnnotateSession";
 
-const SAVE_STROKE_AT_ONCE = { commitDelay: 0, deactivateToolAfterCreate: false };
+const KEEP_DRAWING = { deactivateToolAfterCreate: false, selectAfterCreate: false };
 
-export function annotatePlugins() {
+export function annotatePlugins(joiner: InkJoiner) {
+  const pointerHandler = joiningInkHandler(joiner);
   return [
     createPluginRegistration(HistoryPluginPackage),
     createPluginRegistration(AnnotationPluginPackage, {
@@ -23,8 +26,8 @@ export function annotatePlugins() {
       autoOpenLinks: false,
       locked: { type: LockModeType.None },
       tools: [
-        { id: "ink", behavior: SAVE_STROKE_AT_ONCE },
-        { id: "inkHighlighter", behavior: SAVE_STROKE_AT_ONCE },
+        { id: "ink", behavior: KEEP_DRAWING, pointerHandler },
+        { id: "inkHighlighter", behavior: KEEP_DRAWING, pointerHandler },
       ],
     }),
     createPluginRegistration(ExportPluginPackage, { defaultFileName: "document.pdf" }),

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { useRegistry } from "@embedpdf/core/preact";
-import { uuidV4 } from "@embedpdf/models";
+import { PdfAnnotationSubtype, uuidV4, type PdfInkAnnoObject } from "@embedpdf/models";
 import { useAnnotation, useAnnotationCapability } from "@embedpdf/plugin-annotation/preact";
 import { useExportCapability } from "@embedpdf/plugin-export/preact";
 import { useHistoryCapability } from "@embedpdf/plugin-history/preact";
@@ -8,6 +8,7 @@ import { annotateError } from "../api/errors";
 import type { VivePdfAnnotation, VivePdfAnnotationChangeDetail, VivePdfTool } from "../api/types";
 import type { AnnotateApi } from "../viewer/bridge";
 import { readAnnotationList, toPublic } from "./exchange";
+import type { InkJoiner } from "./inkHandler";
 import { ANNOTATION_COLORS, STROKE_WIDTHS, isAnnotateTool, toolDefaults, toolFromPublic, type AnnotateTool, type AnnotationColor, type StrokeWidth } from "./tools";
 
 const HISTORY_TOPIC = "annotations";
@@ -35,7 +36,7 @@ export type AnnotateSession = {
   api: AnnotateApi;
 };
 
-export function useAnnotateSession(documentId: string, onChange: (detail: VivePdfAnnotationChangeDetail) => void): AnnotateSession {
+export function useAnnotateSession(documentId: string, onChange: (detail: VivePdfAnnotationChangeDetail) => void, joiner: InkJoiner): AnnotateSession {
   const { documents } = useRegistry();
   const pdfDocument = documents[documentId]?.document ?? null;
   const { provides: annotations } = useAnnotationCapability();
@@ -70,13 +71,26 @@ export function useAnnotateSession(documentId: string, onChange: (detail: VivePd
     });
   }, [annotations, documentId]);
 
+  useEffect(() => {
+    if (!scope) return;
+    joiner.bind({
+      find: (id) => {
+        const tracked = scope.getState().byUid[id];
+        return tracked && tracked.commitState !== "deleted" && tracked.object.type === PdfAnnotationSubtype.INK ? (tracked.object as PdfInkAnnoObject) : null;
+      },
+      update: (pageIndex, id, patch) => scope.updateAnnotation(pageIndex, id, patch),
+    });
+    return () => joiner.bind(null);
+  }, [joiner, scope]);
+
   const apply = useCallback(
     (next: AnnotateTool | null, nextColor: AnnotationColor, nextWidth: StrokeWidth) => {
       if (!annotations || !scope) return;
+      joiner.end();
       if (next) annotations.setToolDefaults(next, toolDefaults(next, nextColor, nextWidth));
       scope.setActiveTool(next);
     },
-    [annotations, scope],
+    [annotations, scope, joiner],
   );
 
   const setTool = useCallback((next: AnnotateTool | null) => apply(next, color, width), [apply, color, width]);
@@ -114,12 +128,13 @@ export function useAnnotateSession(documentId: string, onChange: (detail: VivePd
   const setOpen = useCallback(
     (next: boolean) => {
       setOpenState(next);
+      joiner.end();
       if (!next) {
         scope?.setActiveTool(null);
         scope?.deselectAnnotation();
       }
     },
-    [scope],
+    [scope, joiner],
   );
 
   const deleteSelected = useCallback(() => {

@@ -68,6 +68,56 @@ test("a pen stroke is saved into the downloaded PDF next to the annotations it a
   expect([count(pdf, "Highlight"), count(pdf, "Square"), count(pdf, "Text")]).toEqual([1, 1, 1]);
 });
 
+const pens = async (page: Page) => (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "pen").map((entry) => ({ color: entry.color, strokes: entry.type === "pen" ? entry.strokes.length : 0 }));
+
+test("strokes drawn while the pen stays on become one drawing", async ({ page }) => {
+  await openViewer(page, "annotate");
+  const existing = (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "pen").length;
+  await pickTool(page, "Pen");
+
+  await strokeOnPage(page, [0.2, 0.72], [0.3, 0.8]);
+  await strokeOnPage(page, [0.32, 0.72], [0.42, 0.8]);
+  await strokeOnPage(page, [0.44, 0.72], [0.54, 0.8]);
+
+  const drawn = (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "pen");
+  expect(drawn).toHaveLength(existing + 1);
+  expect(drawn.map((entry) => (entry.type === "pen" ? entry.strokes.length : 0)).sort()).toContain(3);
+  expect(count(await downloaded(page), "Ink")).toBe(existing + 1);
+  await expect(viewer(page).getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Delete selected" })).toBeDisabled();
+});
+
+test("a new colour starts a new drawing and leaves the earlier one as it was", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Pen");
+  await strokeOnPage(page, [0.2, 0.72], [0.3, 0.8]);
+
+  await viewer(page).getByRole("radio", { name: "Blue" }).click();
+  await strokeOnPage(page, [0.32, 0.72], [0.42, 0.8]);
+  await strokeOnPage(page, [0.44, 0.72], [0.54, 0.8]);
+
+  expect(await pens(page)).toEqual(
+    expect.arrayContaining([
+      { color: "#E44234", strokes: 1 },
+      { color: "#1F6FEB", strokes: 2 },
+    ]),
+  );
+});
+
+test("undo takes back only the last stroke of the drawing", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Pen");
+  await viewer(page).getByRole("radio", { name: "Blue" }).click();
+  await strokeOnPage(page, [0.2, 0.72], [0.3, 0.8]);
+  await strokeOnPage(page, [0.32, 0.72], [0.42, 0.8]);
+  const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+
+  await bar.getByRole("button", { name: "Undo" }).click();
+  await expect.poll(() => pens(page)).toEqual(expect.arrayContaining([{ color: "#1F6FEB", strokes: 1 }]));
+  await strokeOnPage(page, [0.44, 0.72], [0.54, 0.8]);
+
+  await expect.poll(() => pens(page)).toEqual(expect.arrayContaining([{ color: "#1F6FEB", strokes: 2 }]));
+});
+
 test("undo takes the last stroke back and redo brings it again", async ({ page }) => {
   await openViewer(page, "annotate");
   await pickTool(page, "Rectangle");

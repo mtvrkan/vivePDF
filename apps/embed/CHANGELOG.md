@@ -4,6 +4,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Fixed
+- The pen and the marker keep everything drawn on a page as one drawing until the tool, colour or width changes, instead of making every stroke a separate, selected drawing. Undo takes back the last stroke, and picking a colour after a stroke no longer recolours it.
+
 ## [0.2.0]
 
 ### Added
