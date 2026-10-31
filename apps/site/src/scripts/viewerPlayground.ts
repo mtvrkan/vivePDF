@@ -1,4 +1,4 @@
-import { VIEWER_CONTROLS, VIEWER_DEFAULTS, viewerAttributes, viewerSnippet, type ViewerControl, type ViewerOptions } from "../docs/viewerSnippet";
+import { VIEWER_CONTROLS, VIEWER_DEFAULTS, VIEWER_EXTRAS, viewerAttributes, viewerSnippet, type ViewerControl, type ViewerOptions } from "../docs/viewerSnippet";
 
 type PreviewElement = HTMLElement & { show(): void };
 
@@ -11,11 +11,12 @@ if (playground) {
   const openButton = playground.querySelector<HTMLButtonElement>("[data-viewer-open]") as HTMLButtonElement;
   const preview = playground.querySelector<PreviewElement>("[data-viewer-preview]") as PreviewElement;
   const copy = { src: playground.dataset.src ?? "", open: playground.dataset.open ?? "" };
-  const managed = ["mode", "page", "zoom", "theme", "lang", "accent", ...VIEWER_CONTROLS];
+  const managed = ["mode", "page", "zoom", "theme", "lang", "accent", ...VIEWER_CONTROLS, ...VIEWER_EXTRAS];
 
   const read = (): ViewerOptions => {
     const data = new FormData(form);
     const shown = data.getAll("controls").map(String);
+    const extras = data.getAll("extras").map(String);
     const page = Math.min(5, Math.max(1, Math.floor(Number(data.get("page")) || 1)));
     return {
       mode: String(data.get("mode") ?? VIEWER_DEFAULTS.mode) as ViewerOptions["mode"],
@@ -25,6 +26,8 @@ if (playground) {
       page,
       accent: String(data.get("accent") ?? ""),
       hidden: VIEWER_CONTROLS.filter((control: ViewerControl) => !shown.includes(control)),
+      annotate: extras.includes("annotate"),
+      branding: extras.includes("branding"),
     };
   };
 

@@ -16,6 +16,12 @@ describe("viewer snippet", () => {
     expect(attributes).toEqual([["mode", "inline"], ["page", "3"], ["zoom", "150"], ["theme", "auto"], ["lang", "tr"], ["accent", "#7C3AED"], ["search", "false"], ["print", "false"]]);
   });
 
+  it("writes the drawing tools as a bare attribute and a hidden vivePDF mark as false", () => {
+    const snippet = viewerSnippet({ ...VIEWER_DEFAULTS, annotate: true, branding: false }, copy);
+
+    expect(snippet).toContain('<vive-pdf src="/files/document.pdf" annotate branding="false"></vive-pdf>');
+  });
+
   it("gives the lightbox a button that opens it", () => {
     const snippet = viewerSnippet({ ...VIEWER_DEFAULTS, mode: "lightbox" }, copy);
 

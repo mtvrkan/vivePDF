@@ -1,6 +1,6 @@
 import type { Locale } from "../i18n";
 
-export type DocGroupKey = "start" | "howto" | "documents" | "studio" | "present" | "privacy" | "reference" | "developers";
+export type DocGroupKey = "start" | "howto" | "documents" | "studio" | "present" | "privacy" | "reference" | "viewer" | "developers";
 
 export type DocKey =
   | "install"
@@ -37,11 +37,19 @@ export type DocKey =
   | "troubleshooting"
   | "buildFromSource"
   | "webViewer"
+  | "viewerInstall"
+  | "viewerSettings"
+  | "viewerApi"
+  | "viewerDrawing"
+  | "viewerModes"
+  | "viewerSecurity"
+  | "viewerPerformance"
+  | "viewerTroubleshooting"
   | "license";
 
 export type DocEntry = { key: DocKey; group: DocGroupKey; icon: string; slug: Record<Locale, string> };
 
-export const DOC_GROUPS: DocGroupKey[] = ["start", "howto", "documents", "studio", "present", "privacy", "reference", "developers"];
+export const DOC_GROUPS: DocGroupKey[] = ["start", "howto", "documents", "studio", "present", "privacy", "reference", "viewer", "developers"];
 
 export const DOCS: DocEntry[] = [
   { key: "install", group: "start", icon: "i-down", slug: { tr: "kurulum", en: "installation" } },
@@ -76,7 +84,15 @@ export const DOCS: DocEntry[] = [
   { key: "releaseNotes", group: "reference", icon: "i-gift", slug: { tr: "surum-notlari", en: "release-notes" } },
   { key: "faq", group: "reference", icon: "i-book", slug: { tr: "sss", en: "faq" } },
   { key: "troubleshooting", group: "reference", icon: "i-life", slug: { tr: "sorun-giderme", en: "troubleshooting" } },
-  { key: "webViewer", group: "developers", icon: "i-code", slug: { tr: "web-goruntuleyici", en: "web-viewer" } },
+  { key: "webViewer", group: "viewer", icon: "i-code", slug: { tr: "web-goruntuleyici", en: "web-viewer" } },
+  { key: "viewerInstall", group: "viewer", icon: "i-down", slug: { tr: "web-goruntuleyici-kurulum", en: "web-viewer-install" } },
+  { key: "viewerSettings", group: "viewer", icon: "i-key", slug: { tr: "web-goruntuleyici-ayarlar", en: "web-viewer-settings" } },
+  { key: "viewerApi", group: "viewer", icon: "i-code", slug: { tr: "web-goruntuleyici-api", en: "web-viewer-api" } },
+  { key: "viewerDrawing", group: "viewer", icon: "i-hl", slug: { tr: "web-goruntuleyici-cizim", en: "web-viewer-drawing" } },
+  { key: "viewerModes", group: "viewer", icon: "i-eye", slug: { tr: "web-goruntuleyici-gorunum", en: "web-viewer-modes" } },
+  { key: "viewerSecurity", group: "viewer", icon: "i-lock", slug: { tr: "web-goruntuleyici-guvenlik", en: "web-viewer-security" } },
+  { key: "viewerPerformance", group: "viewer", icon: "i-shrink", slug: { tr: "web-goruntuleyici-performans", en: "web-viewer-performance" } },
+  { key: "viewerTroubleshooting", group: "viewer", icon: "i-life", slug: { tr: "web-goruntuleyici-sorunlar", en: "web-viewer-troubleshooting" } },
   { key: "buildFromSource", group: "developers", icon: "i-code", slug: { tr: "kaynaktan-derleme", en: "build-from-source" } },
   { key: "license", group: "developers", icon: "i-book", slug: { tr: "lisans", en: "license" } },
 ];

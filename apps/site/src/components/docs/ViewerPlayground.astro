@@ -1,7 +1,7 @@
 ---
 import type { Locale } from "../../i18n";
 import { UI } from "../../i18n/ui";
-import { VIEWER_ACCENTS, VIEWER_CONTROLS, VIEWER_DEFAULTS, VIEWER_LANGS, VIEWER_MODES, VIEWER_THEMES, VIEWER_ZOOMS, viewerSnippet } from "../../docs/viewerSnippet";
+import { VIEWER_ACCENTS, VIEWER_CONTROLS, VIEWER_DEFAULTS, VIEWER_EXTRAS, VIEWER_LANGS, VIEWER_MODES, VIEWER_THEMES, VIEWER_ZOOMS, viewerSnippet } from "../../docs/viewerSnippet";
 
 type Props = { lang: Locale };
 const { lang } = Astro.props;
@@ -35,6 +35,14 @@ const accents = copy.accents as Record<string, string>;
       <div class="vplay-checks">
         {VIEWER_CONTROLS.map((c) => (
           <label class="vplay-check"><input type="checkbox" name="controls" value={c} checked><span>{copy.controlNames[c]}</span></label>
+        ))}
+      </div>
+    </fieldset>
+    <fieldset class="vplay-field vplay-wide">
+      <legend class="mini-label">{copy.extras}</legend>
+      <div class="vplay-checks">
+        {VIEWER_EXTRAS.map((e) => (
+          <label class="vplay-check"><input type="checkbox" name="extras" value={e} checked={VIEWER_DEFAULTS[e]}><span>{copy.extraNames[e]}</span></label>
         ))}
       </div>
     </fieldset>

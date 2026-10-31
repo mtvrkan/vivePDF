@@ -1,0 +1,124 @@
+---
+key: viewerDrawing
+title: Web görüntüleyicide çizim ve notlar
+description: Ziyaretçilerin sitendeki bir PDF'e çizmesine, metin vurgulamasına ve not bırakmasına izin ver; sonucu indir, işaretleri JSON olarak kendi sunucuna kaydet.
+updated: 2026-10-31
+---
+
+`annotate` özniteliğiyle ziyaretçiler bir PDF'i doğrudan sayfanda işaretleyebilir: kalemle çizer, metni vurgular ya da altını çizer, not bırakır, şekil ekler. Sonra İndir, PDF'i işaretleriyle birlikte verir. Senin sayfan bir yere göndermedikçe hiçbir şey tarayıcıdan çıkmaz.
+
+```html
+<vive-pdf src="/dosyalar/sozlesme.pdf" annotate></vive-pdf>
+```
+
+Çizim araçları varsayılan olarak kapalıdır. `annotate` olmadan görüntüleyici onların kodunu indirmez bile; yalnızca okuma yapılan sayfalar eskisi kadar hafif kalır.
+
+## Araçlar
+
+Araç çubuğundaki Çiz düğmesi, üstünde ikinci bir şerit açar.
+
+| Araç | Ne yapar |
+| --- | --- |
+| Kalem | Serbest çizim |
+| Fosforlu kalem | İşaretleme kalemi gibi geniş, yarı saydam bir çizgi |
+| Metni vurgula, altını çiz, üstünü çiz | Metnin üzerinde sürükleyerek işaretle |
+| Not | Tıklayıp bir not iğnele, açılan kutuya yaz |
+| Dikdörtgen, elips | Sürükleyerek bir çerçeve çiz |
+| Ok | Kuyruktan uca doğru sürükle |
+
+Araçların yanında altı renk, üç çizgi kalınlığı, Geri al, Yinele, Seçileni sil ve Kapat var. Bir işarete tıklamak onu seçer: sonra taşınabilir, boyutu değiştirilebilir, rengi değiştirilebilir ya da silinebilir. PDF'te zaten bulunan işaretler de seçilip değiştirilebilir.
+
+Şerit açıkken tuşlar: Ctrl/Cmd+Z geri alır, Ctrl/Cmd+Shift+Z yineler, Delete ya da Backspace seçili işareti siler, Escape aracı bırakır.
+
+<Callout type="note" title="Metin araçları gerçek metin ister">
+Vurgulama, altını çizme ve üstünü çizme, PDF'in gerçekten içerdiği metinde çalışır. Taranmış bir sayfa bir resimdir: orada kalemi ya da fosforlu kalemi kullan.
+</Callout>
+
+Notlar ı, ş, ğ ve İ dahil her harfi korur. Sayfanın üstüne doğrudan yazılan bir metin kutusu henüz yok; kullanacağı standart PDF fontları bu harfleri gösteremiyor.
+
+## İndirme ve yazdırma
+
+Bir şey çizildikten sonra İndir, PDF'in işaretli bir kopyasını dosyanın kendi adıyla kaydeder. Yazdır onları kâğıda da basar. Sunucundaki asıl dosya değişmez.
+
+İşaretler standart PDF notlarıdır (annotation); Adobe Acrobat, Önizleme, vivePDF uygulaması ve diğer okuyucular onları gösterir ve düzenleyebilir.
+
+## Geliştiriciler için
+
+Dört metot ve bir olay, sayfanın işaretleri saklamasını sağlar; örneğin her kullanıcı için kendi sunucunda.
+
+| | Ne yapar |
+| --- | --- |
+| `annotations()` | Bütün sayfalardaki işaretlerin listesini verir; PDF'te zaten olanlar da dahil |
+| `setAnnotations(list)` | Listeyi bütün bu işaretlerin yerine koyar; `vive-annotationchange` göndermez ve Geri al geçmişini temizler |
+| `save()` | İşaretleri içeren PDF'i bir `Blob` olarak verir |
+| `setTool(name)` | Çizim şeridini bir araçla açar: `pen`, `marker`, `highlight`, `underline`, `strikeout`, `note`, `rectangle`, `ellipse` ya da `arrow`; `null` aracı bırakır |
+| `vive-annotationchange` | Bir işaret oluşturulunca, değişince ya da silinince `{ type, page }` ile gelir |
+
+### Sunucuna kaydetme
+
+```js
+const viewer = document.querySelector("vive-pdf");
+
+viewer.addEventListener("vive-ready", async () => {
+  const response = await fetch("/api/isaretler?dosya=sozlesme");
+  if (response.ok) await viewer.setAnnotations(await response.json());
+});
+
+let timer = 0;
+viewer.addEventListener("vive-annotationchange", () => {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const marks = await viewer.annotations();
+    await fetch("/api/isaretler?dosya=sozlesme", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(marks) });
+  }, 1000);
+});
+```
+
+PDF'in tamamını saklamak istersen istek gövdesi olarak `await viewer.save()` gönder.
+
+### Biçim
+
+Her işaret küçük bir nesnedir. Konumlar sayfanın sol üst köşesinden PDF noktası (1/72 inç) cinsindendir, `page` 1'den başlar, `color` `#rrggbb` biçimindedir. `opacity` (0–1) ve `text` isteğe bağlıdır.
+
+| `type` | Alanlar |
+| --- | --- |
+| `pen`, `marker` | `width`, `strokes`: çizgilerin listesi, her biri `{ x, y }` listesi |
+| `highlight`, `underline`, `strikeout` | `boxes`: her metin satırı için bir `{ x, y, width, height }` |
+| `note` | `box`: not simgesinin yeri; `text`: not |
+| `rectangle`, `ellipse` | `width`, `box`: çerçeve |
+| `line`, `arrow` | `width`, `from`, `to`: `{ x, y }`; okun ucu `to`'dadır |
+
+```json
+[
+  { "type": "note", "page": 1, "color": "#FFCD45", "opacity": 1, "text": "Tarihlere bak", "box": { "x": 400, "y": 90, "width": 20, "height": 20 } },
+  { "type": "pen", "page": 2, "color": "#E44234", "opacity": 1, "width": 4, "strokes": [[{ "x": 100, "y": 600 }, { "x": 220, "y": 640 }]] }
+]
+```
+
+Bağlantılar, form alanları, damgalar ve diğer not türleri listede yer almaz; `setAnnotations()` onlara dokunmaz.
+
+### Girdi denetimi
+
+`setAnnotations()` bir şey değiştirmeden önce listenin tamamını okur. Bir kayıt hatalıysa hiçbir şey değişmez; söz `invalid` koduyla ve kaydı ve alanı adlandıran bir mesajla reddedilir, örneğin `annotation 3 is not valid: color must look like #rrggbb`.
+
+| Sınır | |
+| --- | --- |
+| Bir listedeki işaret | 5 000 |
+| Bir çizimdeki nokta | 20 000 |
+| Bir vurgudaki kutu | 1 000 |
+| Bir nottaki karakter | 2 000 |
+| Çizgi kalınlığı | 0,1 ile 100 nokta arası |
+
+Yalnızca yukarıdaki alanlar okunur. Bir kayıttaki başka her şey, örneğin bir bağlantı adresi, bir resim ya da bir betik atılır; güvenilmeyen bir kaynaktan gelen liste bunları PDF'e ekleyemez.
+
+### Hatalar
+
+Dört metot, `code` alanı şunlardan biri olan bir `Error` ile reddeder:
+
+| Kod | Anlamı |
+| --- | --- |
+| `annotate-off` | Öğede `annotate` özniteliği yok |
+| `not-ready` | Henüz açık bir belge yok; `vive-ready`'yi bekle |
+| `invalid` | `setAnnotations()` kullanamayacağı bir liste aldı |
+| `replaced` | Cevap gelmeden başka bir belge açıldı |
+| `failed` | İşaretler PDF'e yazılamadı |

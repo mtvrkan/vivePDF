@@ -1,0 +1,111 @@
+---
+key: viewerApi
+title: Web viewer methods and events
+description: Drive the vivePDF web viewer from JavaScript, open files the visitor picks, follow page and zoom changes and handle errors, with TypeScript types.
+updated: 2026-10-31
+---
+
+Every `<vive-pdf>` element is also a JavaScript object. Its methods move around the document and open files; its events tell your page what happens inside.
+
+```js
+const viewer = document.querySelector("vive-pdf");
+viewer.addEventListener("vive-ready", (event) => console.log(`${event.detail.pageCount} pages`));
+viewer.goTo(12);
+```
+
+## Methods
+
+| Method | What it does |
+| --- | --- |
+| `open(input)` | Opens a document and resolves once it is on screen. `input` is an address, a `URL`, a `File` or `Blob`, an `ArrayBuffer` or a typed array |
+| `goTo(page)` | Turns to a page, from 1 |
+| `setZoom(zoom)` | `fit-width`, `fit-page` or a percentage from 10 to 800 |
+| `search(text)` | Opens search with the text and shows the first hit |
+| `print()` | Prints the document, as the menu does |
+| `download()` | Downloads the document, as the menu does |
+| `show()` · `close()` | Opens and closes the viewer in `lightbox` mode; in other modes they do nothing |
+
+With the `annotate` attribute there are four more, `annotations()`, `setAnnotations()`, `save()` and `setTool()`. They are described with the [drawing tools](/en/docs/web-viewer-drawing/#for-developers).
+
+Methods called before the viewer has started wait and run once the document is on screen, so they can be called right after the element is created.
+
+## Properties
+
+| Property | Value |
+| --- | --- |
+| `page` | The page in view, from 1 |
+| `pageCount` | Number of pages; `0` until the document is open |
+| `zoom` | Zoom in percent |
+
+## Events
+
+All events bubble out of the element, so one listener on `document` can follow several viewers. The details are in `event.detail`.
+
+| Event | `detail` | When |
+| --- | --- | --- |
+| `vive-ready` | `{ pageCount }` | The document is open |
+| `vive-pagechange` | `{ page, pageCount }` | Another page comes into view |
+| `vive-zoomchange` | `{ zoom }` | The zoom changes |
+| `vive-error` | `{ code }` | The document cannot be opened |
+| `vive-close` | `null` | The lightbox closes |
+| `vive-annotationchange` | `{ type, page }` | A drawing or note is added, changed or deleted |
+
+## Opening a file the visitor picks
+
+The file stays in the visitor's browser; nothing is uploaded.
+
+```html
+<input type="file" accept="application/pdf" id="pick">
+<vive-pdf id="viewer" style="height: 80vh"></vive-pdf>
+<script>
+  const viewer = document.getElementById("viewer");
+  document.getElementById("pick").addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      await viewer.open(file);
+    } catch (error) {
+      console.warn(error.code);
+    }
+  });
+</script>
+```
+
+A file opened this way keeps its own name when the visitor downloads it.
+
+## Errors
+
+`open()` rejects, and `vive-error` reports, with one of these codes. The viewer also shows its own message with a way forward, so most sites only need to log them.
+
+| Code | Meaning |
+| --- | --- |
+| `password` | The file is protected; the viewer asks for the password and fires `vive-ready` once it is unlocked |
+| `wrong-password` | The password typed in was wrong |
+| `not-found` | The server answered that the file does not exist |
+| `network` | The file could not be downloaded, often because another site does not allow it (see [security](/en/docs/web-viewer-security/#pdfs-on-another-site)) |
+| `damaged` | The file is not a PDF or is damaged |
+| `no-pages` | The PDF has no pages |
+| `engine` | The PDF engine could not start, for example because its download was blocked |
+| `unsupported-url` | The address is not `http:`, `https:` or `blob:` |
+| `unknown` | Anything else |
+
+A second `open()` before the first is done rejects the first with `replaced`.
+
+## Following the reader
+
+```js
+document.addEventListener("vive-pagechange", (event) => {
+  history.replaceState(null, "", `#page=${event.detail.page}`);
+});
+
+const start = Number(new URLSearchParams(location.hash.slice(1)).get("page"));
+if (start) document.querySelector("vive-pdf").setAttribute("page", String(start));
+```
+
+## TypeScript
+
+The npm package brings its types. After `import "@vivepdf/viewer"`, `document.querySelector("vive-pdf")` is typed as `VivePdfViewer`, and `addEventListener("vive-pagechange", …)` knows its `detail`. The types are also exported for your own code:
+
+```ts
+import type { VivePdfViewer, VivePdfAnnotation, VivePdfErrorCode } from "@vivepdf/viewer";
+```

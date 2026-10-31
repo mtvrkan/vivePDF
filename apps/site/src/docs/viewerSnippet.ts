@@ -7,7 +7,10 @@ export const VIEWER_ZOOMS = ["fit-width", "fit-page", "100", "150"] as const;
 export const VIEWER_CONTROLS = ["toolbar", "search", "print", "download"] as const;
 export const VIEWER_ACCENTS = ["", "#0F766E", "#7C3AED", "#C2410C", "#BE123C"] as const;
 
+export const VIEWER_EXTRAS = ["annotate", "branding"] as const;
+
 export type ViewerControl = (typeof VIEWER_CONTROLS)[number];
+export type ViewerExtra = (typeof VIEWER_EXTRAS)[number];
 
 export type ViewerOptions = {
   mode: (typeof VIEWER_MODES)[number];
@@ -17,9 +20,11 @@ export type ViewerOptions = {
   page: number;
   accent: string;
   hidden: ViewerControl[];
+  annotate: boolean;
+  branding: boolean;
 };
 
-export const VIEWER_DEFAULTS: ViewerOptions = { mode: "sized", theme: "light", lang: "", zoom: "fit-width", page: 1, accent: "", hidden: [] };
+export const VIEWER_DEFAULTS: ViewerOptions = { mode: "sized", theme: "light", lang: "", zoom: "fit-width", page: 1, accent: "", hidden: [], annotate: false, branding: true };
 
 export type SnippetCopy = { src: string; open: string };
 
@@ -34,11 +39,13 @@ export function viewerAttributes(options: ViewerOptions): Array<[string, string]
   if (options.lang) attributes.push(["lang", options.lang]);
   if (options.accent) attributes.push(["accent", options.accent]);
   for (const control of VIEWER_CONTROLS) if (options.hidden.includes(control)) attributes.push([control, "false"]);
+  if (options.annotate) attributes.push(["annotate", ""]);
+  if (!options.branding) attributes.push(["branding", "false"]);
   return attributes;
 }
 
 export function viewerSnippet(options: ViewerOptions, copy: SnippetCopy): string {
-  const attributes = [["src", copy.src], ...viewerAttributes(options)].map(([name, value]) => ` ${name}="${escapeAttribute(value)}"`).join("");
+  const attributes = [["src", copy.src], ...viewerAttributes(options)].map(([name, value]) => (value === "" ? ` ${name}` : ` ${name}="${escapeAttribute(value)}"`)).join("");
   const script = `<script src="${VIEWER_CDN}"></script>`;
   if (options.mode !== "lightbox") return `${script}\n<vive-pdf${attributes}></vive-pdf>`;
   return [

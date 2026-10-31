@@ -1,0 +1,85 @@
+---
+key: viewerModes
+title: Web viewer modes and appearance
+description: Show a PDF as a box, at full window height, inside the flow of the page or in a lightbox, and match the viewer to your site with theme, accent colour and language.
+updated: 2026-10-31
+---
+
+The `mode` attribute decides how much room the viewer takes and how it scrolls. `theme`, `accent` and `lang` make it fit your site.
+
+## Modes
+
+| Mode | What it looks like | Good for |
+| --- | --- | --- |
+| `sized` | A box 600 pixels high, or the height you give it in CSS, that scrolls on its own | A document next to other content |
+| `full` | As high as the window | A page that is mainly the document |
+| `inline` | As high as the whole document; the pages sit in your page and turn as it scrolls | Articles, reports and menus that should read like part of the page |
+| `lightbox` | Takes no room; opens over the page when asked, with a close button | A link or button such as "View the brochure" |
+
+### sized
+
+```html
+<vive-pdf src="/files/price-list.pdf" style="height: 70vh"></vive-pdf>
+```
+
+The default. Scrolling inside the box turns the pages; the page around it stays still.
+
+### full
+
+```html
+<vive-pdf src="/files/manual.pdf" mode="full"></vive-pdf>
+```
+
+The viewer is `100dvh` high, so on phones it fits the visible screen even when the browser's address bar comes and goes.
+
+### inline
+
+```html
+<vive-pdf src="/files/annual-report.pdf" mode="inline"></vive-pdf>
+```
+
+The viewer grows to the height of the document and the visitor scrolls your page as usual. The toolbar stays on screen while the document is in view. This works with the window's scroll and with a scrolling element around the viewer.
+
+### lightbox
+
+```html
+<button type="button" id="open-brochure">View the brochure</button>
+<vive-pdf id="brochure" src="/files/brochure.pdf" mode="lightbox"></vive-pdf>
+<script>
+  document.getElementById("open-brochure").addEventListener("click", () => document.getElementById("brochure").show());
+</script>
+```
+
+Nothing is downloaded until `show()` or `open()` is called. The document then opens over the page; Escape, the close button or `close()` closes it, and `vive-close` tells your page.
+
+Changing `mode` while a document is open keeps the document open.
+
+## Theme
+
+| `theme` | |
+| --- | --- |
+| `light` | Light background and toolbar (the default) |
+| `dark` | Dark background and toolbar; the pages themselves keep their own colours |
+| `auto` | Follows the visitor's system setting and switches when it changes |
+
+## Accent colour
+
+`accent` takes any CSS colour and paints the viewer's buttons and highlights with it:
+
+```html
+<vive-pdf src="/files/menu.pdf" accent="#C2410C"></vive-pdf>
+```
+
+A colour that is not valid CSS is ignored and the viewer stays blue. Pick a colour dark enough to read white text on.
+
+## Language
+
+The viewer speaks Turkish and English. Without `lang` it follows the `lang` of your page (`<html lang="tr">`) and falls back to English. With `lang="tr"` or `lang="en"` it uses that one.
+
+## The vivePDF mark
+
+The toolbar starts with a small vivePDF mark that links to vivepdf.com in a new tab. It helps others find a free viewer; `branding="false"` hides it. The MIT licence lets you do so without asking.
+
+## On phones and tablets
+
+On narrow screens the toolbar keeps the page number, zoom and menu, and steps aside while the visitor scrolls down. The side panel with thumbnails and contents opens as a sheet from the bottom. Pinching zooms the pages. All of this is tested on iPhone and iPad as well as in desktop browsers.
