@@ -240,7 +240,8 @@ function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage
   const annotateKit = useAnnotateKit();
   const announceChange = useCallback((detail: VivePdfAnnotationChangeDetail) => emit({ type: "annotationchange", detail }), [emit]);
   const drawing = annotateKit ? annotateKit.module.useAnnotateSession(DOCUMENT_ID, announceChange) : null;
-  const files = useFileActions(DOCUMENT_ID, sourceUrl, fileName, drawing?.edited ? drawing.save : null);
+  const edits = useMemo(() => (drawing?.edited ? { save: drawing.save, flush: drawing.flush } : null), [drawing?.edited, drawing?.save, drawing?.flush]);
+  const files = useFileActions(DOCUMENT_ID, sourceUrl, fileName, edits);
   const print = features.print ? files.print : null;
   const download = features.download ? files.download : null;
   const start = useStartPage(fitted, startPage, onPage);

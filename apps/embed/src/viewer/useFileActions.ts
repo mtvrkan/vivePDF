@@ -13,7 +13,9 @@ export type FileActions = { task: FileTask; print: () => void; download: (() => 
 
 const PRINT_OPTIONS = { scaleFactor: PRINT_SCALE, dpr: 1, rotation: Rotation.Degree0, imageType: "image/png", withAnnotations: true, withForms: true } as const;
 
-export function useFileActions(documentId: string, sourceUrl: string, fileName: string, saveEdited: (() => Promise<Blob>) | null): FileActions {
+export type Edits = { save: () => Promise<Blob>; flush: () => Promise<void> };
+
+export function useFileActions(documentId: string, sourceUrl: string, fileName: string, edits: Edits | null): FileActions {
   const { documents } = useRegistry();
   const { provides: render } = useRenderCapability();
   const pdfDocument = documents[documentId]?.document ?? null;
@@ -52,6 +54,7 @@ export function useFileActions(documentId: string, sourceUrl: string, fileName: 
     const wanted = () => runRef.current === run;
     jobRef.current?.dispose();
     jobRef.current = null;
+    if (edits) await edits.flush().catch(() => undefined);
     const scope = render.forDocument(documentId);
     const total = pdfDocument.pages.length;
     const pages: PrintPage[] = [];
@@ -74,7 +77,7 @@ export function useFileActions(documentId: string, sourceUrl: string, fileName: 
     }
     jobRef.current = await printPages(pages, sheetSize(pdfDocument.pages[0]?.size), wanted);
     if (wanted()) finish();
-  }, [render, pdfDocument, documentId, finish]);
+  }, [render, pdfDocument, documentId, finish, edits]);
 
   const downloadEdited = useCallback(
     async (save: () => Promise<Blob>) => {
@@ -91,8 +94,8 @@ export function useFileActions(documentId: string, sourceUrl: string, fileName: 
 
   const download = useCallback(async () => {
     if (busyRef.current) return;
-    if (saveEdited) {
-      await downloadEdited(saveEdited);
+    if (edits) {
+      await downloadEdited(edits.save);
       return;
     }
     if (!href) return;
@@ -114,9 +117,9 @@ export function useFileActions(documentId: string, sourceUrl: string, fileName: 
       abortRef.current = null;
       finish();
     }
-  }, [href, fileName, finish, saveEdited, downloadEdited]);
+  }, [href, fileName, finish, edits, downloadEdited]);
 
   const startPrint = useCallback(() => void print(), [print]);
-  const startDownload = useMemo(() => (href || saveEdited ? () => void download() : null), [href, saveEdited, download]);
+  const startDownload = useMemo(() => (href || edits ? () => void download() : null), [href, edits, download]);
   return { task, print: startPrint, download: startDownload, cancel };
 }

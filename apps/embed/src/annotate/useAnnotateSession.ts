@@ -30,6 +30,7 @@ export type AnnotateSession = {
   selected: number;
   deleteSelected: () => void;
   edited: boolean;
+  flush: () => Promise<void>;
   save: () => Promise<Blob>;
   api: AnnotateApi;
 };
@@ -127,18 +128,22 @@ export function useAnnotateSession(documentId: string, onChange: (detail: VivePd
     if (chosen.length > 0) scope.deleteAnnotations(chosen);
   }, [scope]);
 
-  const save = useCallback(async () => {
-    if (!scope || !exporter) throw annotateError("not-ready", "the document is still opening");
-    let attempt = 0;
-    for (; attempt < FLUSH_ATTEMPTS; attempt += 1) {
+  const flush = useCallback(async () => {
+    if (!scope) throw annotateError("not-ready", "the document is still opening");
+    for (let attempt = 0; attempt < FLUSH_ATTEMPTS; attempt += 1) {
       await scope.commit().toPromise();
-      if (!scope.getState().hasPendingChanges) break;
+      if (!scope.getState().hasPendingChanges) return;
       await new Promise((resolve) => window.setTimeout(resolve, FLUSH_WAIT_MS));
     }
-    if (attempt === FLUSH_ATTEMPTS) throw annotateError("failed", "the drawings could not be written into the PDF");
+    throw annotateError("failed", "the drawings could not be written into the PDF");
+  }, [scope]);
+
+  const save = useCallback(async () => {
+    if (!exporter) throw annotateError("not-ready", "the document is still opening");
+    await flush();
     const buffer = await exporter.forDocument(documentId).saveAsCopy().toPromise();
     return new Blob([buffer], { type: "application/pdf" });
-  }, [scope, exporter, documentId]);
+  }, [flush, exporter, documentId]);
 
   const list = useCallback(
     (): VivePdfAnnotation[] =>
@@ -191,7 +196,7 @@ export function useAnnotateSession(documentId: string, onChange: (detail: VivePd
   const redo = useCallback(() => history?.forDocument(documentId).redo(HISTORY_TOPIC), [history, documentId]);
 
   return useMemo(
-    () => ({ open, setOpen, tool, setTool, color, setColor, width, setWidth, canUndo: undoState.canUndo, canRedo: undoState.canRedo, undo, redo, selected: state.selectedUids.length, deleteSelected, edited, save, api }),
-    [open, setOpen, tool, setTool, color, setColor, width, setWidth, undoState, undo, redo, state.selectedUids.length, deleteSelected, edited, save, api],
+    () => ({ open, setOpen, tool, setTool, color, setColor, width, setWidth, canUndo: undoState.canUndo, canRedo: undoState.canRedo, undo, redo, selected: state.selectedUids.length, deleteSelected, edited, flush, save, api }),
+    [open, setOpen, tool, setTool, color, setColor, width, setWidth, undoState, undo, redo, state.selectedUids.length, deleteSelected, edited, flush, save, api],
   );
 }

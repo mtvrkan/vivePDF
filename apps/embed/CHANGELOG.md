@@ -12,7 +12,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 ### Fixed
 - Highlights, pen drawings, boxes and notes already in a PDF are drawn; 0.1.0 showed pages without them.
 - Rectangles, ellipses and arrows drawn with the drawing tools are outlines in the chosen colour instead of filled shapes.
-- Deleting a note also removes its pop-up window from the PDF, and a download started while a drawing was still being written waits for it.
+- Deleting a note also removes its pop-up window from the PDF, and a download or print started while a drawing was still being written waits for it.
 
 ## [0.1.0]
 

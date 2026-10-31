@@ -166,3 +166,36 @@ test("the annotation methods say why they cannot answer", async ({ page }) => {
   expect(off).toBe("annotate-off");
   expect(wrong).toBe("invalid: vive-pdf: annotation 0 is not valid: page must be a whole number from 1 to 1");
 });
+
+test("printing right after drawing puts the drawing on paper", async ({ page }) => {
+  await page.addInitScript(() => {
+    const target = window as unknown as { __printed: boolean };
+    target.__printed = false;
+    window.print = () => {
+      target.__printed = true;
+    };
+  });
+  await openViewer(page, "annotate");
+  await pickTool(page, "Pen");
+  await viewer(page).getByRole("radio", { name: "Blue" }).click();
+  await strokeOnPage(page, [0.2, 0.75], [0.6, 0.8]);
+
+  await viewer(page).getByRole("button", { name: "More options" }).click();
+  await viewer(page).getByRole("menuitem", { name: "Print" }).click();
+  await expect.poll(() => page.evaluate(() => (window as unknown as { __printed: boolean }).__printed)).toBe(true);
+
+  const bluePixels = await page.evaluate(async () => {
+    const image = document.querySelector<HTMLImageElement>(".vivepdf-print-root img");
+    if (!image) return -1;
+    await image.decode();
+    const canvas = Object.assign(document.createElement("canvas"), { width: image.naturalWidth, height: image.naturalHeight });
+    const context = canvas.getContext("2d");
+    if (!context) return -1;
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let count = 0;
+    for (let index = 0; index < pixels.length; index += 4) if (pixels[index] < 90 && pixels[index + 1] > 80 && pixels[index + 1] < 150 && pixels[index + 2] > 200) count += 1;
+    return count;
+  });
+  expect(bluePixels).toBeGreaterThan(50);
+});
