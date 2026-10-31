@@ -2,7 +2,8 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
-import { defineConfig, transformWithEsbuild, type Plugin } from "vite";
+import { minify } from "terser";
+import { defineConfig, type Plugin } from "vite";
 import { extractWorkers } from "./build/extractWorkers";
 
 const require = createRequire(import.meta.url);
@@ -22,6 +23,7 @@ function pdfiumWasmAsset(): Plugin {
   return {
     name: "vivepdf-embed-pdfium-wasm",
     apply: "build",
+    enforce: "post",
     generateBundle(_options, bundle) {
       const inlined = Object.entries(bundle).filter(([name, item]) => name.endsWith(".wasm") || (item.type === "chunk" && item.code.includes("data:application/wasm")));
       if (inlined.length > 0) this.error(`pdfium.wasm is bundled by the package itself (${inlined.map(([name]) => name).join(", ")}); the viewer fetches its own copy`);
@@ -36,10 +38,16 @@ function minifyOutput(): Plugin {
   return {
     name: "vivepdf-embed-minify-output",
     apply: "build",
-    async renderChunk(code, chunk, options) {
-      const minified = await transformWithEsbuild(code, chunk.fileName, { minify: true, format: options.format === "es" ? "esm" : undefined, target: "es2022", legalComments: "none" });
-      if (options.format === "iife" && !/^var VivePDF=\(function\(/.test(minified.code)) this.error(`${chunk.fileName} declares more than the VivePDF global`);
-      return { code: minified.code, map: null };
+    enforce: "post",
+    async generateBundle(options, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== "chunk") continue;
+        const minified = await minify(chunk.code, { module: options.format === "es", ecma: 2020, compress: { passes: 2 }, mangle: true, format: { comments: false } });
+        const output = minified.code ?? "";
+        if (!output) this.error(`${chunk.fileName} came out of the minifier empty`);
+        if (options.format === "iife" && !/^var VivePDF=\(?function\(/.test(output)) this.error(`${chunk.fileName} declares more than the VivePDF global`);
+        chunk.code = output;
+      }
     },
   };
 }
@@ -55,18 +63,20 @@ export default defineConfig(({ mode }) => {
         emptyOutDir: false,
         lib: { entry: "src/loader/index.ts", name: "VivePDF", formats: ["es", "iife"], fileName: (format) => (format === "es" ? "vivepdf.mjs" : "vivepdf.js") },
         sourcemap: false,
+        minify: false,
       },
     };
   }
   return {
     esbuild,
-    plugins: [extractWorkers(ASSETS_MODULE, ENGINE_PRELUDE), pdfiumWasmAsset(), minifyOutput()],
+    plugins: [extractWorkers(ASSETS_MODULE, ENGINE_PRELUDE), minifyOutput(), pdfiumWasmAsset()],
     build: {
       target: "es2022",
       lib: { entry: { viewer: "src/viewer/mount.tsx" }, formats: ["es"], fileName: (_format, name) => `${name}.js` },
       rollupOptions: { output: { chunkFileNames: "chunks/[name]-[hash].js" } },
       assetsInlineLimit: 0,
       sourcemap: false,
+      minify: false,
     },
   };
 });
