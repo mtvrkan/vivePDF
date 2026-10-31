@@ -79,7 +79,7 @@ const plugins = [
   createPluginRegistration(DocumentManagerPluginPackage, { maxDocuments: 1 }),
   createPluginRegistration(ViewportPluginPackage, { viewportGap: VIEWPORT_GAP }),
   createPluginRegistration(ScrollPluginPackage, { defaultPageGap: 10 }),
-  createPluginRegistration(RenderPluginPackage, { withForms: true }),
+  createPluginRegistration(RenderPluginPackage, { withForms: true, withAnnotations: true }),
   createPluginRegistration(InteractionManagerPluginPackage),
   createPluginRegistration(ZoomPluginPackage, {
     defaultZoomLevel: ZoomMode.FitWidth,

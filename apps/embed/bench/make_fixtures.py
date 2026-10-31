@@ -56,6 +56,24 @@ def links_document(path: Path) -> None:
     doc.close()
 
 
+def annotated_document(path: Path) -> None:
+    doc = pymupdf.open()
+    page = doc.new_page(width=595, height=842)
+    page.insert_text((72, 100), "Highlighted words here", fontsize=24)
+    page.add_highlight_annot(pymupdf.Rect(70, 78, 340, 106))
+    ink = page.add_ink_annot([[(100, 200), (200, 260), (300, 200), (400, 280)]])
+    ink.set_colors(stroke=(1, 0, 0))
+    ink.set_border(width=4)
+    ink.update()
+    square = page.add_rect_annot(pymupdf.Rect(100, 320, 300, 420))
+    square.set_colors(stroke=(0, 0, 1))
+    square.set_border(width=3)
+    square.update()
+    page.add_text_annot((450, 100), "A sticky note")
+    doc.save(path, garbage=3, deflate=True)
+    doc.close()
+
+
 def scan_document(path: Path, pages: int) -> None:
     doc = pymupdf.open()
     for _ in range(pages):
@@ -219,6 +237,7 @@ def main() -> None:
     text_document(out / "small.pdf", 2)
     text_document(out / "book.pdf", 500)
     links_document(out / "links.pdf")
+    annotated_document(out / "annotated.pdf")
     scan_document(out / "scan.pdf", 20)
     locked_document(out / "locked.pdf")
     unembedded_fonts_document(out / "fonts.pdf")

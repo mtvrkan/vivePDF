@@ -32,6 +32,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Web viewer: the first page shows up about 120 ms sooner (around 150 ms instead of 265 ms for a small file on this Mac), because the page is fitted to the width as soon as the viewer has a size instead of after a 150 ms wait; the document still opens at the top of the first page [2026-10-30]
 - Web viewer: the size budget for the viewer code is 70 KB (compressed) instead of 60 KB, to make room for text selection [2026-10-30]
 ### Fixed
+- Web viewer: highlights, pen drawings, boxes and notes that are already in a PDF are now drawn; until now the viewer showed the page without them [2026-10-31]
 - Web viewer: a page asked for while the lightbox is closed (`goTo()` just before `show()`, or a changed `page` setting) is now the page it opens on, and a lightbox opened again returns to the page it was left on instead of the top; a `goTo()` right after the viewer appears no longer snaps back to the previous page, and page and zoom events are no longer sent twice for the same value [2026-10-31]
 ### Security
 - Web viewer: only web (`http`, `https`) and `blob:` addresses are opened; script, data and file addresses and addresses with a user name in them are refused with an `unsupported-url` error before anything loads. Download names lose invisible direction and zero-width characters that could disguise them, a blob made by another site is no longer saved as the page's own, and the engine cache keeps only the engine file itself [2026-10-31]

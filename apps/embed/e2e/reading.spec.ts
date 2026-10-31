@@ -88,3 +88,30 @@ test("the document opens at the top of the first page", async ({ page }) => {
   await page.waitForTimeout(400);
   expect(await position()).toBe(0);
 });
+
+test("highlights, drawings, boxes and notes already in the PDF are drawn on the page", async ({ page }) => {
+  await openViewer(page, "lang=en&src=/fixtures/annotated.pdf");
+  const image = viewer(page).locator('[data-page-index="0"] img').first();
+  await expect.poll(() => image.evaluate((node: HTMLImageElement) => node.naturalWidth)).toBeGreaterThan(0);
+
+  const colours = await image.evaluate((node: HTMLImageElement) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = node.naturalWidth;
+    canvas.height = node.naturalHeight;
+    const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+    context.drawImage(node, 0, 0);
+    const data = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const counts = { yellow: 0, red: 0, blue: 0 };
+    for (let index = 0; index < data.length; index += 4) {
+      const [red, green, blue] = [data[index], data[index + 1], data[index + 2]];
+      if (red > 200 && green > 200 && blue < 120) counts.yellow += 1;
+      else if (red > 200 && green < 80 && blue < 80) counts.red += 1;
+      else if (blue > 200 && red < 80 && green < 80) counts.blue += 1;
+    }
+    return counts;
+  });
+
+  expect(colours.yellow).toBeGreaterThan(500);
+  expect(colours.red).toBeGreaterThan(100);
+  expect(colours.blue).toBeGreaterThan(100);
+});
