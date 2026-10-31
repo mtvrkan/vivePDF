@@ -18,7 +18,7 @@ const ACCENT_PROPERTY = "--vp-accent";
 export type MarkDetail = { name: string; time: number };
 
 export class VivePdfElement extends HTMLElement implements VivePdfViewer {
-  static readonly observedAttributes = ["mode", "src", "load", "page", "zoom", "accent", "theme", "lang", "fonts", "print", "download", "toolbar", "search", "filename"];
+  static readonly observedAttributes = ["mode", "src", "load", "page", "zoom", "accent", "theme", "lang", "fonts", "print", "download", "toolbar", "search", "branding", "filename"];
 
   private readonly root: ShadowRoot;
   private handle: ViewerHandle | null = null;
@@ -200,6 +200,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
         download: parseSwitch(this.getAttribute("download")),
         toolbar: parseSwitch(this.getAttribute("toolbar")),
         search: parseSwitch(this.getAttribute("search")),
+        branding: parseSwitch(this.getAttribute("branding")),
       },
       fileName: this.getAttribute("filename") ?? this.data?.name ?? null,
       mark: this.markEvent,

@@ -243,7 +243,7 @@ function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage
       {features.toolbar ? (
         <>
           {searchShown ? <SearchBox documentId={DOCUMENT_ID} open={searchOpen} onOpenChange={setSearchOpen} request={searchRequest} /> : null}
-          <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} fileItems={fileItems} />
+          <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} fileItems={fileItems} branding={features.branding} />
         </>
       ) : null}
       {files.task ? <BusyToast task={files.task} onCancel={files.cancel} /> : null}

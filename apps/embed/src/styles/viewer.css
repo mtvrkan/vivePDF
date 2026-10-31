@@ -17,6 +17,10 @@
   --vp-hit: hsl(48 100% 50% / 0.38);
   --vp-hit-active: hsl(28 100% 52% / 0.55);
   --vp-selection: color-mix(in oklab, var(--vp-primary) 30%, transparent);
+  --vp-brand-tile: hsl(215 64% 22%);
+  --vp-brand-left: hsl(0 0% 100%);
+  --vp-brand-right: hsl(205 85% 62%);
+  --vp-brand-flap: hsl(206 100% 87%);
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -79,7 +83,14 @@
 .vp-btn:hover { background: var(--vp-muted); }
 .vp-btn:disabled { opacity: 0.4; cursor: default; background: transparent; }
 .vp-btn[aria-pressed="true"], .vp-btn[aria-expanded="true"] { background: var(--vp-accent-bg); color: var(--vp-accent-fg); }
-.vp-btn:focus-visible, .vp-field:focus-visible, .vp-menu-item:focus-visible, .vp-zoom-value:focus-visible { outline: 2px solid var(--vp-primary); outline-offset: 2px; }
+.vp-brand { display: inline-grid; place-items: center; flex: none; width: 36px; height: 36px; border-radius: 18px; transition: background-color 120ms ease-out; }
+.vp-brand:hover { background: var(--vp-muted); }
+.vp-brand-mark { width: 22px; height: 22px; }
+.vp-brand-tile { fill: var(--vp-brand-tile); }
+.vp-brand-left { fill: var(--vp-brand-left); }
+.vp-brand-right { fill: var(--vp-brand-right); }
+.vp-brand-flap { fill: var(--vp-brand-flap); }
+.vp-brand:focus-visible, .vp-btn:focus-visible, .vp-field:focus-visible, .vp-menu-item:focus-visible, .vp-zoom-value:focus-visible { outline: 2px solid var(--vp-primary); outline-offset: 2px; }
 .vp-icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
 .vp-glass {
   background: var(--vp-glass);
@@ -231,6 +242,6 @@ a.vp-text-btn { display: inline-flex; align-items: center; gap: 8px; text-decora
   .vp-panel { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: min(70%, 520px); border-radius: 16px 16px 0 0; border-bottom: 0; z-index: 5; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .vp-pill, .vp-btn, .vp-tree-twisty .vp-icon { transition: none; }
+  .vp-pill, .vp-btn, .vp-brand, .vp-tree-twisty .vp-icon { transition: none; }
   .vp-dialog[open] { animation: none; }
 }

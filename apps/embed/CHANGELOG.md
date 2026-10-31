@@ -2,6 +2,11 @@
 
 Format based on Keep a Changelog (https://keepachangelog.com/).
 
+## [Unreleased]
+
+### Added
+- A small vivePDF mark at the start of the toolbar links to vivepdf.com in a new tab; `branding="false"` hides it.
+
 ## [0.1.0]
 
 First release of the vivePDF web viewer.

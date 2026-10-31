@@ -4,6 +4,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 ### Added
+- Web viewer: a small vivePDF mark at the start of the toolbar links to vivepdf.com in a new tab; sites can hide it with `branding="false"` [2026-10-31]
 - Web viewer (`apps/embed`, MIT): first measuring build of a `<vive-pdf>` element that other websites can embed; it downloads the engine only when the viewer scrolls into view, plus a benchmark that times the first page in Chromium, WebKit and Firefox [2026-10-30]
 - Web viewer: works from a plain `<script>` tag (only the `VivePDF` global) or a module script, also when the files come from another site such as a CDN; the engine and image workers are separate minified files instead of code built into the page at run time, and size budgets plus browser tests (Chromium, WebKit, iPhone, iPad) guard it [2026-10-30]
 - Web viewer: a floating toolbar at the bottom with a page number box, zoom, fit, rotate and a menu for one or two pages side by side; pinch and Ctrl+wheel zoom; Turkish and English labels; light, dark and system themes; on phones the toolbar steps aside while you scroll down [2026-10-30]

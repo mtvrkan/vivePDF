@@ -5,6 +5,7 @@ import { useScroll } from "@embedpdf/plugin-scroll/preact";
 import { SpreadMode, useSpread } from "@embedpdf/plugin-spread/preact";
 import { ZoomMode, useZoom } from "@embedpdf/plugin-zoom/preact";
 import { Icon } from "./Icon";
+import { Brand } from "./Brand";
 import { useT } from "./i18nContext";
 import { MoreMenu, type MenuItem } from "./MoreMenu";
 import { formatZoom, parsePageInput } from "./pageInput";
@@ -59,9 +60,9 @@ function PageBox({ documentId }: { documentId: string }) {
   );
 }
 
-type PillProps = { documentId: string; host: HTMLElement | null; panelOpen: boolean; onTogglePanel: () => void; panelButtonRef: RefObject<HTMLButtonElement>; fileItems: MenuItem[] };
+type PillProps = { documentId: string; host: HTMLElement | null; panelOpen: boolean; onTogglePanel: () => void; panelButtonRef: RefObject<HTMLButtonElement>; fileItems: MenuItem[]; branding: boolean };
 
-export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRef, fileItems }: PillProps) {
+export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRef, fileItems, branding }: PillProps) {
   const t = useT();
   const { state: zoomState, provides: zoom } = useZoom(documentId);
   const { provides: rotate } = useRotate(documentId);
@@ -75,6 +76,12 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
 
   return (
     <div ref={pillRef} class="vp-pill vp-glass" role="toolbar" aria-label={t("toolbar")} data-hidden={hidden ? "true" : "false"}>
+      {branding ? (
+        <>
+          <Brand />
+          <span class="vp-sep" />
+        </>
+      ) : null}
       <button ref={panelButtonRef} class="vp-btn" type="button" aria-label={t("panel")} title={t("panel")} aria-pressed={panelOpen} onClick={onTogglePanel}>
         <Icon name="panel" />
       </button>

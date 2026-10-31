@@ -104,6 +104,23 @@ test("a site can hide the whole toolbar", async ({ page }) => {
   await expect(viewer(page).getByRole("button", { name: "Search", exact: true })).toHaveCount(0);
 });
 
+test("the toolbar links to vivePDF in a new tab", async ({ page }) => {
+  await openViewer(page, "src=/fixtures/links.pdf");
+
+  const brand = viewer(page).getByRole("link", { name: "Shown with vivePDF" });
+
+  await expect(brand).toBeVisible();
+  await expect(brand).toHaveAttribute("href", "https://vivepdf.com/?ref=viewer");
+  await expect(brand).toHaveAttribute("target", "_blank");
+});
+
+test("a site can hide the vivePDF link", async ({ page }) => {
+  await openViewer(page, "src=/fixtures/links.pdf&branding=false");
+
+  await expect(viewer(page).getByRole("toolbar", { name: "Document tools" })).toBeVisible();
+  await expect(viewer(page).getByRole("link", { name: "Shown with vivePDF" })).toHaveCount(0);
+});
+
 test("a damaged file offers no download link when the site turned downloads off", async ({ page }) => {
   await page.goto("/e2e/playground.html?lang=en&src=/fixtures/garbage.pdf&download=false");
   await expect.poll(() => marks(page), { timeout: 20_000 }).toContain("open-error");

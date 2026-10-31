@@ -1,4 +1,4 @@
-export type ViewerFeatures = { print: boolean; download: boolean; toolbar: boolean; search: boolean };
+export type ViewerFeatures = { print: boolean; download: boolean; toolbar: boolean; search: boolean; branding: boolean };
 
 const OFF = new Set(["false", "off", "no", "0", "none", "hidden"]);
 
