@@ -5,7 +5,7 @@
 URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici/
 Son güncelleme: 2026-10-31
 
-vivePDF web görüntüleyici bir PDF'i kendi web sayfanın içinde gösterir: sayfa küçük resimleri, belgenin içindekiler listesi, arama, bağlantılar, metin seçme, yazdırma ve indirme. Sayfaları ziyaretçinin tarayıcısında PDFium çizer; hiçbir şey bir yere yüklenmez ve kendi sunucuna ihtiyacın olmaz. Görüntüleyici MIT lisanslı ayrı bir pakettir; masaüstü uygulamasının kodu içinde yoktur.
+vivePDF web görüntüleyici bir PDF'i kendi web sayfanın içinde gösterir: sayfa küçük resimleri, belgenin içindekiler listesi, arama, bağlantılar, metin seçme, yazdırma ve indirme. Bir öznitelik daha eklersen ziyaretçiler çizebilir, metni vurgulayabilir ve not bırakabilir. Sayfaları ziyaretçinin tarayıcısında PDFium çizer; hiçbir şey bir yere yüklenmez ve kendi sunucuna ihtiyacın olmaz. Görüntüleyici MIT lisanslı ayrı bir pakettir; masaüstü uygulamasının kodu içinde yoktur.
 
 ## Betik etiketiyle ekleme
 
@@ -21,7 +21,7 @@ vivePDF web görüntüleyici bir PDF'i kendi web sayfanın içinde gösterir: sa
    <vive-pdf src="/dosyalar/fiyat-listesi.pdf" style="height: 80vh"></vive-pdf>
    ```
 
-Sayfana eklenen betik yaklaşık 2 KB'tır. Görüntüleyicinin kendisi ve PDF motoru ancak görüntüleyici ekrana girince yüklenir; motor ilk ziyaretten sonra tarayıcının önbelleğinde kalır.
+Sayfana eklenen betik 3 KB'tan azdır. Görüntüleyicinin kendisi ve PDF motoru ancak görüntüleyici ekrana girince yüklenir; motor ilk ziyaretten sonra tarayıcının önbelleğinde kalır.
 
 ## Dene
 
@@ -36,61 +36,23 @@ Aşağıdan ayarları seç: sayfana ekleyeceğin kod onlarla birlikte değişir,
 | Lisans | MIT, açık kaynak | Adobe'nin kendi koşulları; kod değiştirilemez |
 | Kodun yüklendiği yer | Kendi sunucun, bir CDN ya da npm | Adobe'nin sunucusu (belgelerde gösterilen yol) |
 | Üreticiye giden veri | Yok; ziyaretçinin tarayıcısı yalnızca senin sitenle ve seçtiğin CDN ile konuşur | Kullanım bilgileri: web sayfasının adresi, dosya boyutu ve sayfa sayısı da içinde |
-| Marka | Yok | "Powered by Adobe Document Cloud" bağlantısı zorunlu; görüntüleyicide Adobe Acrobat logosu görünür |
+| Marka | Araç çubuğunda küçük bir vivePDF işareti; `branding="false"` gizler | "Powered by Adobe Document Cloud" bağlantısı zorunlu; görüntüleyicide Adobe Acrobat logosu görünür |
 | Belge gösterme biçimleri | Kutu, tam pencere, sayfanın içinde, açılır pencere | Tam pencere, boyutlu kutu, sayfanın içinde, açılır pencere |
 | Arama | Var | Var |
-| Yorum ve işaretleme | Yok, yalnızca okuma | Var, tam pencere görünümünde |
+| Yorum ve işaretleme | Var, `annotate` özniteliğiyle | Var, tam pencere görünümünde |
 | Form doldurma | Yok, yalnızca okuma | Var, tam pencere görünümünde |
 
 Adobe sütunu, Adobe'nin [PDF Embed API belgeleri](https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/gettingstarted/) ve [Geliştirici Kullanım Koşulları](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Developer-Terms-en_US-20240618.pdf) (Haziran 2024 sürümü) temel alınarak 31 Ekim 2026'da hazırlandı.
 
-## Dosyaları kendin barındırma
+## Sonraki adımlar
 
-[GitHub'daki sürümlerden](https://github.com/mtvrkan/vivePDF/releases) `vivepdf-viewer-<sürüm>.zip` dosyasını indir, içindeki `dist` klasörünü sitene kopyala ve `dist/vivepdf.js` dosyasını oradan yükle. Klasördeki dosyaları bir arada tut: görüntüleyici geri kalanını betiğin yanında arar.
-
-## npm ile kullanma
-
-```sh
-npm install @vivepdf/viewer
-```
-
-```js
-import "@vivepdf/viewer";
-```
-
-Paketleyiciler görüntüleyicinin kendi dosyalarını kopyalamaz. `node_modules/@vivepdf/viewer/dist` klasörünü herkese açık bir klasöre kopyala ve görüntüleyiciye yerini söyle:
-
-```html
-<vive-pdf src="/dosyalar/fiyat-listesi.pdf" assets="/vivepdf/"></vive-pdf>
-```
-
-## Ayarlar
-
-| Ayar | Ne yapar |
+| Sayfa | İçinde ne var |
 | --- | --- |
-| `src` | PDF'in adresi |
-| `page` | Açılacak sayfa, 1'den başlar |
-| `zoom` | `fit-width`, `fit-page` ya da `150` gibi bir yüzde |
-| `mode` | `sized` (kutu, varsayılan), `full` (pencere yüksekliği), `inline` (belge kadar uzun, sayfayla birlikte kayar) ya da `lightbox` (sayfanın üstünde açılır) |
-| `theme` | `light`, `dark` ya da `auto` |
-| `lang` | `tr` ya da `en`; verilmezse sayfanın dili kullanılır |
-| `accent` | Düğmelerin ve vurguların rengi |
-| `toolbar`, `search`, `print`, `download` | `false` o denetimi gizler |
-| `filename` | Dosya indirilirken kullanılacak ad |
-
-Görüntüleyici JavaScript ile de yönetilebilir: `open()` ziyaretçinin seçtiği bir dosyayı açar, `goTo()`, `setZoom()` ve `search()` belgede gezinir; olaylar belge hazır olduğunda, sayfa değiştiğinde ve dosya açılamadığında haber verir. Hepsi [API başvurusunda](https://github.com/mtvrkan/vivePDF/blob/main/apps/embed/docs/api.md) anlatılıyor.
-
-## Başka sitedeki PDF'ler
-
-PDF'i ziyaretçinin tarayıcısı indirir; bu yüzden başka bir alan adındaki dosyanın senin sayfanın onu okumasına izin vermesi gerekir. O site PDF ile birlikte şu başlıkları göndermelidir:
-
-```text
-Access-Control-Allow-Origin: https://senin-siten.example
-Access-Control-Expose-Headers: Content-Range
-```
-
-İkinci başlık, görüntüleyicinin büyük bir dosyanın yalnızca ekrandaki kısımlarını indirmesini sağlar. İlki olmadan görüntüleyici dosyanın indirilemediğini söyler.
-
-## İçerik Güvenliği Politikası
-
-Siten bir İçerik Güvenliği Politikası (CSP) gönderiyorsa, görüntüleyici için politikaya birkaç kayıt eklenmeli: motor için `script-src` içinde `'wasm-unsafe-eval'`, çizilen sayfalar için `img-src` içinde `blob:` ve `connect-src` içinde PDF'in geldiği site; dosyalar CDN'den geliyorsa CDN de `script-src`, `worker-src` ve `connect-src` içine yazılmalı. `'unsafe-inline'` ya da `'unsafe-eval'` gerekmez. Dosyalar kendi sitende ve CDN'deyken denenmiş politikalar [CSP rehberinde](https://github.com/mtvrkan/vivePDF/blob/main/apps/embed/docs/csp.md).
+| [Kurulum](https://vivepdf.com/dokumantasyon/web-goruntuleyici-kurulum/) | CDN, kendi sunucun, npm; React, Vue, Svelte ve düz HTML |
+| [Ayarlar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-ayarlar/) | Bütün öznitelikler, değerleri ve varsayılanlarıyla |
+| [Metotlar ve olaylar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-api/) | Görüntüleyiciyi JavaScript ile yönetmek, hata kodları, TypeScript |
+| [Çizim ve notlar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/) | Çizim araçları ve işaretleri sunucuna kaydetmek |
+| [Modlar ve görünüm](https://vivepdf.com/dokumantasyon/web-goruntuleyici-gorunum/) | Kutu, tam pencere, sayfanın içinde ve açılır pencere; tema, renk, dil |
+| [Güvenlik ve gizlilik](https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/) | Başka sitelerdeki PDF'ler ve İçerik Güvenliği Politikası |
+| [Performans ve büyük dosyalar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans/) | Ne zaman ne indirilir, ölçülen süreler, yedek fontlar |
+| [Sorun giderme](https://vivepdf.com/dokumantasyon/web-goruntuleyici-sorunlar/) | Her mesajın anlamı ve nasıl çözüleceği |

@@ -67,9 +67,20 @@ Key facts:
 - [FAQ](https://vivepdf.com/en/docs/faq.md): Short answers about vivePDF's price, privacy, offline use, supported systems, signing, OCR languages and updates.
 - [Troubleshooting](https://vivepdf.com/en/docs/troubleshooting.md): What to do when a vivePDF tool fails, with the log folder, support bundle, bug reports, SmartScreen, missing LibreOffice and OCR language packs.
 
-## Developers
+## Web viewer
 
 - [Web viewer for your site](https://vivepdf.com/en/docs/web-viewer.md): Show PDFs on your own website with one tag. The vivePDF web viewer runs in the visitor's browser, needs no server and is free under the MIT licence.
+- [Install the web viewer](https://vivepdf.com/en/docs/web-viewer-install.md): Add the vivePDF web viewer to a site from a CDN, from your own server or from npm, and use it in plain HTML, React, Vue, Svelte and other frameworks.
+- [Web viewer settings](https://vivepdf.com/en/docs/web-viewer-settings.md): Every attribute of the vive-pdf element with its values and defaults, from the PDF address and opening page to the theme, language, controls and drawing tools.
+- [Web viewer methods and events](https://vivepdf.com/en/docs/web-viewer-api.md): Drive the vivePDF web viewer from JavaScript, open files the visitor picks, follow page and zoom changes and handle errors, with TypeScript types.
+- [Drawing and notes in the web viewer](https://vivepdf.com/en/docs/web-viewer-drawing.md): Let visitors draw, highlight text and leave notes on a PDF in your site, download the result, and save the annotations to your own server as JSON.
+- [Web viewer modes and appearance](https://vivepdf.com/en/docs/web-viewer-modes.md): Show a PDF as a box, at full window height, inside the flow of the page or in a lightbox, and match the viewer to your site with theme, accent colour and language.
+- [Web viewer security and privacy](https://vivepdf.com/en/docs/web-viewer-security.md): What the vivePDF web viewer sends and to whom, how to show PDFs from another site, and tested Content Security Policies for the viewer from your own server or a CDN.
+- [Web viewer performance and large files](https://vivepdf.com/en/docs/web-viewer-performance.md): What the vivePDF web viewer downloads and when, how it opens large PDFs by fetching only the parts on screen, measured opening times, and how to add fallback fonts.
+- [Web viewer troubleshooting](https://vivepdf.com/en/docs/web-viewer-troubleshooting.md): Answers for the usual problems with the vivePDF web viewer, from a file that will not download and a blocked engine to missing letters, drawings and framework setup.
+
+## Developers
+
 - [Build from source](https://vivepdf.com/en/docs/build-from-source.md): What you need to run vivePDF from its source code, how to start it in development mode, run the tests and build your own installer.
 - [License](https://vivepdf.com/en/docs/license.md): What vivePDF's AGPL-3.0 licence means for users and for anyone distributing modified builds, plus the third-party components it uses.
 
@@ -108,6 +119,14 @@ Key facts:
 - [Sık sorulan sorular](https://vivepdf.com/dokumantasyon/sss.md): vivePDF'in ücreti, gizliliği, çevrimdışı çalışması, desteklediği sistemler, imza, OCR ve güncellemeler hakkında kısa yanıtlar.
 - [Sorun giderme](https://vivepdf.com/dokumantasyon/sorun-giderme.md): vivePDF'te bir araç çalışmadığında yapılacaklar; günlük klasörü, destek paketi, hata bildirme, SmartScreen, LibreOffice ve OCR dil paketleri.
 - [Siten için web görüntüleyici](https://vivepdf.com/dokumantasyon/web-goruntuleyici.md): PDF'leri tek bir etiketle kendi web sitende göster. vivePDF web görüntüleyici ziyaretçinin tarayıcısında çalışır, sunucu istemez ve MIT lisansıyla ücretsizdir.
+- [Web görüntüleyiciyi kurma](https://vivepdf.com/dokumantasyon/web-goruntuleyici-kurulum.md): vivePDF web görüntüleyiciyi sitene bir CDN'den, kendi sunucundan ya da npm'den ekle; düz HTML, React, Vue, Svelte ve diğer çatılarla kullan.
+- [Web görüntüleyici ayarları](https://vivepdf.com/dokumantasyon/web-goruntuleyici-ayarlar.md): vive-pdf öğesinin bütün öznitelikleri, değerleri ve varsayılanlarıyla; PDF adresi ve açılış sayfasından tema, dil, denetimler ve çizim araçlarına kadar.
+- [Web görüntüleyici metotları ve olayları](https://vivepdf.com/dokumantasyon/web-goruntuleyici-api.md): vivePDF web görüntüleyiciyi JavaScript ile yönet, ziyaretçinin seçtiği dosyaları aç, sayfa ve yakınlaştırma değişikliklerini izle, hataları yakala; TypeScript türleriyle.
+- [Web görüntüleyicide çizim ve notlar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim.md): Ziyaretçilerin sitendeki bir PDF'e çizmesine, metin vurgulamasına ve not bırakmasına izin ver; sonucu indir, işaretleri JSON olarak kendi sunucuna kaydet.
+- [Web görüntüleyici modları ve görünümü](https://vivepdf.com/dokumantasyon/web-goruntuleyici-gorunum.md): Bir PDF'i kutu içinde, pencere yüksekliğinde, sayfanın akışında ya da açılır pencerede göster; tema, vurgu rengi ve dille görüntüleyiciyi sitene uydur.
+- [Web görüntüleyici güvenliği ve gizlilik](https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik.md): vivePDF web görüntüleyicinin neyi kime gönderdiği, başka sitedeki PDF'lerin nasıl gösterileceği ve denenmiş İçerik Güvenliği Politikaları.
+- [Web görüntüleyici performansı ve büyük dosyalar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans.md): vivePDF web görüntüleyicinin neyi ne zaman indirdiği, büyük PDF'leri parça parça nasıl açtığı, ölçülmüş açılış süreleri ve yedek fontlar.
+- [Web görüntüleyici sorun giderme](https://vivepdf.com/dokumantasyon/web-goruntuleyici-sorunlar.md): vivePDF web görüntüleyicide sık karşılaşılan sorunların cevapları; indirilemeyen dosyadan engellenen motora, eksik harflerden çizimlere ve çatı kurulumuna kadar.
 - [Kaynaktan derleme](https://vivepdf.com/dokumantasyon/kaynaktan-derleme.md): vivePDF'i kaynak koddan çalıştırmak için gerekenler, geliştirme modunda açma, testleri çalıştırma ve kendi kurulum paketini derleme.
 - [Lisans](https://vivepdf.com/dokumantasyon/lisans.md): vivePDF'in AGPL-3.0 lisansının kullanıcılar ve değiştirilmiş sürüm dağıtanlar için ne anlama geldiği, üçüncü taraf bileşenler.
 

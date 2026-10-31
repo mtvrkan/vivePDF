@@ -1,0 +1,91 @@
+# Web viewer security and privacy
+
+> What the vivePDF web viewer sends and to whom, how to show PDFs from another site, and tested Content Security Policies for the viewer from your own server or a CDN.
+
+URL: https://vivepdf.com/en/docs/web-viewer-security/
+Last updated: 2026-10-31
+
+The viewer is built to be safe on sites that care about privacy and run strict security policies. This page lists what it downloads, what it never does and the settings your server may need.
+
+## What leaves the visitor's browser
+
+Nothing about the visitor or the document is sent to vivePDF. The browser makes only these requests:
+
+| Request | To |
+| --- | --- |
+| The viewer's own files (loader, viewer, workers, engine) | Your server, or the CDN you load them from |
+| The PDF | The address in `src` |
+| Fallback fonts, only with the `fonts` attribute and only for the languages a document needs | The folder you set |
+
+There is no analytics, no cookie and no account. A file the visitor opens with `open(file)` stays in their browser. Drawings stay there too, until your own page reads them with `annotations()` or `save()`.
+
+The vivePDF mark in the toolbar is a plain link with `?ref=viewer` in its address. Nothing is loaded from vivepdf.com unless the visitor clicks it.
+
+## Links inside PDFs
+
+A PDF can contain links. The viewer follows jumps to other pages, opens web and mail links in a new tab without giving that tab access to your page, and ignores script links and every other kind of address. Links in the contents list are checked the same way.
+
+## PDFs on another site
+
+The PDF is downloaded by the visitor's browser, so a file on another domain has to allow your page to read it. That site must send these headers with the PDF:
+
+```text
+Access-Control-Allow-Origin: https://your-site.example
+Access-Control-Expose-Headers: Content-Range
+```
+
+The second header lets the viewer download only the parts of a large file that are on screen; without it the viewer falls back to downloading the whole file. Without the first one the file cannot be read and the viewer reports `network`.
+
+## Content Security Policy
+
+The viewer needs no `'unsafe-inline'` and no `'unsafe-eval'`. Its styles are applied through constructed style sheets, so `style-src` needs nothing for it. These policies are tested in Chromium and WebKit and cause no violation reports.
+
+### Viewer files on your own site
+
+```text
+default-src 'none';
+script-src 'self' 'wasm-unsafe-eval';
+worker-src 'self';
+connect-src 'self';
+img-src 'self' blob:
+```
+
+### Viewer files from a CDN
+
+Replace `https://cdn.jsdelivr.net` with your CDN if you use another one.
+
+```text
+default-src 'none';
+script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval';
+worker-src blob: https://cdn.jsdelivr.net;
+connect-src 'self' https://cdn.jsdelivr.net;
+img-src 'self' blob:
+```
+
+These are complete policies for a page that only shows the viewer; add what the rest of your page needs.
+
+### What each entry is for
+
+| Directive | Why |
+| --- | --- |
+| `script-src` with the viewer's origin | The loader and the viewer code it loads |
+| `'wasm-unsafe-eval'` | The PDF engine is WebAssembly and cannot start without it |
+| `worker-src` | The engine runs in a worker. From a CDN the worker starts from a small `blob:` script that loads the real one, so both are needed |
+| `connect-src` | The PDF, the engine file and, with `fonts`, the fonts folder |
+| `img-src blob:` | Pages are shown as images made in the browser |
+
+If the PDF or the fonts live on another site, add that site to `connect-src`:
+
+```text
+connect-src 'self' https://files.example.com
+```
+
+Some servers send the same policy with every file, the viewer's scripts included; the browser then applies it inside the engine worker as well. The policies above cover that case too.
+
+## Cache
+
+The engine (about 4.5 MB before compression) is kept in your site's Cache Storage under a name that starts with `vivepdf-engine-`, so a visitor downloads it once per version. Older versions are removed when a new one is stored. It needs nothing extra in the policy.
+
+## Drawing data from outside
+
+`setAnnotations()` accepts only the fields the viewer knows, checks every number, colour and length, and changes nothing when an entry is wrong. A list from an untrusted source cannot place links, pictures or scripts in the PDF. The limits are listed with the [drawing tools](https://vivepdf.com/en/docs/web-viewer-drawing/#checks-on-the-input).

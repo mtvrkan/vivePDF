@@ -1939,7 +1939,7 @@ The bundle is never sent anywhere by itself; you decide who gets it.
 URL: https://vivepdf.com/en/docs/web-viewer/
 Last updated: 2026-10-31
 
-The vivePDF web viewer shows a PDF inside your own web page: page thumbnails, the document's contents, search, links, text selection, print and download. Pages are drawn by PDFium in the visitor's browser, so nothing is uploaded anywhere and you need no server of your own. The viewer is a separate package under the MIT licence; the desktop app's code is not in it.
+The vivePDF web viewer shows a PDF inside your own web page: page thumbnails, the document's contents, search, links, text selection, print and download. With one more attribute visitors can also draw, highlight text and leave notes. Pages are drawn by PDFium in the visitor's browser, so nothing is uploaded anywhere and you need no server of your own. The viewer is a separate package under the MIT licence; the desktop app's code is not in it.
 
 ## Add it with a script tag
 
@@ -1955,7 +1955,7 @@ The vivePDF web viewer shows a PDF inside your own web page: page thumbnails, th
    <vive-pdf src="/files/price-list.pdf" style="height: 80vh"></vive-pdf>
    ```
 
-The script on your page is about 2 KB. The viewer itself and its PDF engine load only when the viewer scrolls into view, and the engine stays in the browser's cache after the first visit.
+The script on your page is under 3 KB. The viewer itself and its PDF engine load only when the viewer scrolls into view, and the engine stays in the browser's cache after the first visit.
 
 ## Try it
 
@@ -1970,19 +1970,64 @@ Pick the settings below: the code for your page changes with them, and the previ
 | Licence | MIT, open source | Adobe's proprietary terms; the code may not be modified |
 | Where the code is loaded from | Your own server, a CDN or npm | Adobe's server, as documented |
 | Data sent to the maker | None; the visitor's browser talks only to your site and the CDN you chose | Usage information, including the address of the web page, the file size and the page count |
-| Branding | None | A "Powered by Adobe Document Cloud" link is required; the viewer shows the Adobe Acrobat logo |
+| Branding | A small vivePDF mark in the toolbar, which `branding="false"` hides | A "Powered by Adobe Document Cloud" link is required; the viewer shows the Adobe Acrobat logo |
 | Ways to show a document | Box, full window, inline, lightbox | Full window, sized container, in line, lightbox |
 | Search | Yes | Yes |
-| Comments and markup | No, reading only | Yes, in full window mode |
+| Comments and markup | Yes, with the `annotate` attribute | Yes, in full window mode |
 | Filling in forms | No, reading only | Yes, in full window mode |
 
 The Adobe column comes from Adobe's [PDF Embed API documentation](https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/gettingstarted/) and its [Developer Terms of Use](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Developer-Terms-en_US-20240618.pdf) (June 2024 edition), checked on 31 October 2026.
 
-## Host the files yourself
+## Next steps
 
-Download `vivepdf-viewer-<version>.zip` from the [releases on GitHub](https://github.com/mtvrkan/vivePDF/releases), copy its `dist` folder to your site and load `dist/vivepdf.js` from there. Keep the files of the folder together: the viewer looks for the rest next to the script.
+| Page | What is in it |
+| --- | --- |
+| [Installation](https://vivepdf.com/en/docs/web-viewer-install/) | CDN, your own server, npm, and React, Vue, Svelte and plain HTML |
+| [Settings](https://vivepdf.com/en/docs/web-viewer-settings/) | Every attribute with its values and defaults |
+| [Methods and events](https://vivepdf.com/en/docs/web-viewer-api/) | Driving the viewer from JavaScript, error codes, TypeScript |
+| [Drawing and notes](https://vivepdf.com/en/docs/web-viewer-drawing/) | The drawing tools, and saving marks to your server |
+| [Modes and appearance](https://vivepdf.com/en/docs/web-viewer-modes/) | Box, full window, inline and lightbox; theme, colour, language |
+| [Security and privacy](https://vivepdf.com/en/docs/web-viewer-security/) | PDFs from other sites and Content Security Policy |
+| [Performance and large files](https://vivepdf.com/en/docs/web-viewer-performance/) | What is downloaded when, measured times, fallback fonts |
+| [Troubleshooting](https://vivepdf.com/en/docs/web-viewer-troubleshooting/) | What each message means and how to fix it |
 
-## Use it from npm
+---
+
+# Install the web viewer
+
+> Add the vivePDF web viewer to a site from a CDN, from your own server or from npm, and use it in plain HTML, React, Vue, Svelte and other frameworks.
+
+URL: https://vivepdf.com/en/docs/web-viewer-install/
+Last updated: 2026-10-31
+
+The viewer is one custom element, `<vive-pdf>`. It works in any page that runs JavaScript, with or without a framework. Choose where its files come from: a CDN, your own server or npm.
+
+## From a CDN
+
+The quickest way. Load the script once per page, then place viewers wherever you need them:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@vivepdf/viewer@0/dist/vivepdf.js"></script>
+<vive-pdf src="/files/price-list.pdf" style="height: 80vh"></vive-pdf>
+```
+
+`@0` takes the newest 0.x version, so fixes arrive without a change on your side. To freeze one version, write it in full, for example `@vivepdf/viewer@0.2.0`. The script also comes as a module, `dist/vivepdf.mjs`, for `<script type="module">`.
+
+## From your own server
+
+1. Download `vivepdf-viewer-<version>.zip` from the [releases on GitHub](https://github.com/mtvrkan/vivePDF/releases).
+
+2. Copy its `dist` folder to your site, for example to `/vivepdf/`.
+
+3. Load the script from there:
+
+   ```html
+   <script src="/vivepdf/vivepdf.js"></script>
+   ```
+
+Keep the files of the folder together: the script finds the viewer, the engine and the workers next to itself. Keep `THIRD-PARTY-NOTICES.txt` with them, it holds the licences of the libraries inside the engine.
+
+## From npm
 
 ```sh
 npm install @vivepdf/viewer
@@ -1992,42 +2037,758 @@ npm install @vivepdf/viewer
 import "@vivepdf/viewer";
 ```
 
-A bundler does not copy the viewer's own files. Copy `node_modules/@vivepdf/viewer/dist` to a public folder and tell the viewer where it is:
+The import registers `<vive-pdf>` and brings the TypeScript types. A bundler packs only the 2 KB loader; the viewer, the engine and the workers stay outside. Copy `node_modules/@vivepdf/viewer/dist` to a public folder once (or in your build script) and tell the viewer where it is with `assets`:
 
 ```html
 <vive-pdf src="/files/price-list.pdf" assets="/vivepdf/"></vive-pdf>
 ```
 
-## Settings
+## Plain HTML
 
-| Setting | What it does |
+Nothing else is needed. Settings are attributes; JavaScript is only for the [methods and events](https://vivepdf.com/en/docs/web-viewer-api/).
+
+```html
+<vive-pdf src="/files/report.pdf" page="3" zoom="fit-page" theme="auto" style="height: 600px"></vive-pdf>
+```
+
+## React
+
+React 19 passes attributes and properties to custom elements as they are. Load the viewer once, for example in your entry file, and use the tag:
+
+```jsx
+import "@vivepdf/viewer";
+
+export function Report({ url }) {
+  return <vive-pdf src={url} theme="auto" style={{ height: "80vh", display: "block" }} />;
+}
+```
+
+To call methods, keep a ref: `ref.current.goTo(5)`. Listen to events with `addEventListener` in an effect and remove the listener in its cleanup. In TypeScript, declare the tag once for JSX:
+
+```ts
+declare module "react" {
+  namespace JSX {
+    interface IntrinsicElements {
+      "vive-pdf": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & { src?: string; page?: string | number; zoom?: string; theme?: string; mode?: string; annotate?: boolean | string };
+    }
+  }
+}
+```
+
+## Vue
+
+Tell Vue that `vive-pdf` is a custom element, in `vite.config.js`:
+
+```js
+vue({ template: { compilerOptions: { isCustomElement: (tag) => tag === "vive-pdf" } } });
+```
+
+Then use it in templates:
+
+```vue
+<script setup>
+import "@vivepdf/viewer";
+</script>
+
+<template>
+  <vive-pdf :src="url" theme="auto" style="height: 80vh" @vive-pagechange="onPage" />
+</template>
+```
+
+## Svelte
+
+Svelte needs no setting:
+
+```svelte
+<script>
+  import "@vivepdf/viewer";
+  let { url } = $props();
+</script>
+
+<vive-pdf src={url} theme="auto" style="height: 80vh"></vive-pdf>
+```
+
+For methods and events, take the element with `bind:this` and call `addEventListener` on it.
+
+## Pages rendered on the server
+
+The element only starts in the browser. With Next.js, Nuxt, SvelteKit or Astro, import the package in code that runs on the client (a client component, `onMount`, a `<script>` tag) and render `<vive-pdf>` as plain HTML on the server. The viewer begins to load when it scrolls into view.
+
+## Updating
+
+From the CDN with `@0` there is nothing to do. With npm, run `npm update @vivepdf/viewer` and copy `dist` again. With the zip, replace the whole folder: files of different versions do not mix. The [release notes](https://github.com/mtvrkan/vivePDF/releases) list what changed.
+
+---
+
+# Web viewer settings
+
+> Every attribute of the vive-pdf element with its values and defaults, from the PDF address and opening page to the theme, language, controls and drawing tools.
+
+URL: https://vivepdf.com/en/docs/web-viewer-settings/
+Last updated: 2026-10-31
+
+Settings are attributes on the `<vive-pdf>` element. Each has a default, so a viewer needs nothing but `src`. Most settings can be changed while the viewer is open: set the attribute again and the viewer follows.
+
+```html
+<vive-pdf src="/files/annual-report.pdf" page="4" zoom="fit-page" theme="auto" lang="en" accent="#0F766E" download="false"></vive-pdf>
+```
+
+## The document
+
+| Attribute | Values | Default |
+| --- | --- | --- |
+| `src` | Address of the PDF, relative to the page; `http:`, `https:` and `blob:` only | — |
+| `page` | Page to open on, from 1; changing it turns to that page | `1` |
+| `zoom` | `fit-width`, `fit-page` or a percentage from 10 to 800, such as `150` or `150%` | `fit-width` |
+| `load` | `range` downloads only the parts on screen; `full` downloads the whole file first | `range` |
+| `filename` | Name of the file when the visitor downloads it | the name in the address |
+
+Changing `src` opens the new document. To show a file the visitor picked, use `open()` instead: it takes a `File`, a `Blob` or bytes. See [methods and events](https://vivepdf.com/en/docs/web-viewer-api/).
+
+## How it looks
+
+| Attribute | Values | Default |
+| --- | --- | --- |
+| `mode` | `sized` (a box), `full` (window height), `inline` (as tall as the document) or `lightbox` (opens over the page) | `sized` |
+| `theme` | `light`, `dark` or `auto` (follows the visitor's system) | `light` |
+| `lang` | `tr` or `en` | the page's `lang`, then English |
+| `accent` | Any CSS colour, for buttons and highlights | blue |
+
+When to use each mode, and how the theme and colour work, is in [modes and appearance](https://vivepdf.com/en/docs/web-viewer-modes/).
+
+## Controls
+
+| Attribute | What it controls | Default |
+| --- | --- | --- |
+| `toolbar` | The floating toolbar at the bottom | shown |
+| `search` | The search button and Ctrl/Cmd+F | shown |
+| `print` | Print in the menu and Ctrl/Cmd+P | shown |
+| `download` | Download in the menu and Ctrl/Cmd+S | shown |
+| `branding` | The small vivePDF mark at the start of the toolbar, a link to vivepdf.com | shown |
+| `annotate` | The Draw button and the [drawing tools](https://vivepdf.com/en/docs/web-viewer-drawing/) | off |
+
+`false`, `off`, `no`, `0`, `none` and `hidden` turn a control off, in any letter case. `annotate` is the other way round: it is off until the attribute is there, so `<vive-pdf annotate>` is enough to turn it on and `annotate="false"` keeps it off.
+
+Hiding Download hides the button; the PDF's address is still in your page, so this does not protect a file. A file that must not be copied should not be shown on the web at all.
+
+## Files and fonts
+
+| Attribute | Values | Default |
+| --- | --- | --- |
+| `assets` | Folder with the viewer's files, when a bundler moved the script away from them; read once when the viewer starts | the script's folder |
+| `fonts` | Folder with fallback fonts, for PDFs that do not carry their own Japanese, Korean, Chinese, Cyrillic, Greek, Vietnamese, Hebrew or Arabic fonts | — |
+
+Without `fonts` the viewer downloads no fonts at all. How to prepare the fonts folder is in [performance and large files](https://vivepdf.com/en/docs/web-viewer-performance/#fonts-for-pdfs-without-their-own).
+
+## Size on the page
+
+In `sized` mode the viewer is 600 pixels high until you give it a height in CSS. Width follows the space it is in.
+
+```css
+vive-pdf {
+  height: 80vh;
+  border-radius: 12px;
+  overflow: hidden;
+}
+```
+
+The toolbar, panels and menus live inside the element, so your site's CSS does not reach them. Only `accent`, `theme` and the element's own size and border change how the viewer looks.
+
+---
+
+# Web viewer methods and events
+
+> Drive the vivePDF web viewer from JavaScript, open files the visitor picks, follow page and zoom changes and handle errors, with TypeScript types.
+
+URL: https://vivepdf.com/en/docs/web-viewer-api/
+Last updated: 2026-10-31
+
+Every `<vive-pdf>` element is also a JavaScript object. Its methods move around the document and open files; its events tell your page what happens inside.
+
+```js
+const viewer = document.querySelector("vive-pdf");
+viewer.addEventListener("vive-ready", (event) => console.log(`${event.detail.pageCount} pages`));
+viewer.goTo(12);
+```
+
+## Methods
+
+| Method | What it does |
 | --- | --- |
-| `src` | Address of the PDF |
-| `page` | Page to open on, from 1 |
-| `zoom` | `fit-width`, `fit-page` or a percentage such as `150` |
-| `mode` | `sized` (a box, the default), `full` (window height), `inline` (as tall as the document, scrolls with the page) or `lightbox` (opens over the page) |
-| `theme` | `light`, `dark` or `auto` |
-| `lang` | `tr` or `en`; without it the page's language is used |
-| `accent` | Colour of buttons and highlights |
-| `toolbar`, `search`, `print`, `download` | `false` hides that control |
-| `filename` | Name used when the file is downloaded |
+| `open(input)` | Opens a document and resolves once it is on screen. `input` is an address, a `URL`, a `File` or `Blob`, an `ArrayBuffer` or a typed array |
+| `goTo(page)` | Turns to a page, from 1 |
+| `setZoom(zoom)` | `fit-width`, `fit-page` or a percentage from 10 to 800 |
+| `search(text)` | Opens search with the text and shows the first hit |
+| `print()` | Prints the document, as the menu does |
+| `download()` | Downloads the document, as the menu does |
+| `show()` · `close()` | Opens and closes the viewer in `lightbox` mode; in other modes they do nothing |
 
-The viewer can also be driven from JavaScript: `open()` takes a file the visitor picked, `goTo()`, `setZoom()` and `search()` move around the document, and events report when it is ready, when the page changes and when a file cannot be opened. All of it is described in the [API reference](https://github.com/mtvrkan/vivePDF/blob/main/apps/embed/docs/api.md).
+With the `annotate` attribute there are four more, `annotations()`, `setAnnotations()`, `save()` and `setTool()`. They are described with the [drawing tools](https://vivepdf.com/en/docs/web-viewer-drawing/#for-developers).
+
+Methods called before the viewer has started wait and run once the document is on screen, so they can be called right after the element is created.
+
+## Properties
+
+| Property | Value |
+| --- | --- |
+| `page` | The page in view, from 1 |
+| `pageCount` | Number of pages; `0` until the document is open |
+| `zoom` | Zoom in percent |
+
+## Events
+
+All events bubble out of the element, so one listener on `document` can follow several viewers. The details are in `event.detail`.
+
+| Event | `detail` | When |
+| --- | --- | --- |
+| `vive-ready` | `{ pageCount }` | The document is open |
+| `vive-pagechange` | `{ page, pageCount }` | Another page comes into view |
+| `vive-zoomchange` | `{ zoom }` | The zoom changes |
+| `vive-error` | `{ code }` | The document cannot be opened |
+| `vive-close` | `null` | The lightbox closes |
+| `vive-annotationchange` | `{ type, page }` | A drawing or note is added, changed or deleted |
+
+## Opening a file the visitor picks
+
+The file stays in the visitor's browser; nothing is uploaded.
+
+```html
+<input type="file" accept="application/pdf" id="pick">
+<vive-pdf id="viewer" style="height: 80vh"></vive-pdf>
+<script>
+  const viewer = document.getElementById("viewer");
+  document.getElementById("pick").addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      await viewer.open(file);
+    } catch (error) {
+      console.warn(error.code);
+    }
+  });
+</script>
+```
+
+A file opened this way keeps its own name when the visitor downloads it.
+
+## Errors
+
+`open()` rejects, and `vive-error` reports, with one of these codes. The viewer also shows its own message with a way forward, so most sites only need to log them.
+
+| Code | Meaning |
+| --- | --- |
+| `password` | The file is protected; the viewer asks for the password and fires `vive-ready` once it is unlocked |
+| `wrong-password` | The password typed in was wrong |
+| `not-found` | The server answered that the file does not exist |
+| `network` | The file could not be downloaded, often because another site does not allow it (see [security](https://vivepdf.com/en/docs/web-viewer-security/#pdfs-on-another-site)) |
+| `damaged` | The file is not a PDF or is damaged |
+| `no-pages` | The PDF has no pages |
+| `engine` | The PDF engine could not start, for example because its download was blocked |
+| `unsupported-url` | The address is not `http:`, `https:` or `blob:` |
+| `unknown` | Anything else |
+
+A second `open()` before the first is done rejects the first with `replaced`.
+
+## Following the reader
+
+```js
+document.addEventListener("vive-pagechange", (event) => {
+  history.replaceState(null, "", `#page=${event.detail.page}`);
+});
+
+const start = Number(new URLSearchParams(location.hash.slice(1)).get("page"));
+if (start) document.querySelector("vive-pdf").setAttribute("page", String(start));
+```
+
+## TypeScript
+
+The npm package brings its types. After `import "@vivepdf/viewer"`, `document.querySelector("vive-pdf")` is typed as `VivePdfViewer`, and `addEventListener("vive-pagechange", …)` knows its `detail`. The types are also exported for your own code:
+
+```ts
+import type { VivePdfViewer, VivePdfAnnotation, VivePdfErrorCode } from "@vivepdf/viewer";
+```
+
+---
+
+# Drawing and notes in the web viewer
+
+> Let visitors draw, highlight text and leave notes on a PDF in your site, download the result, and save the annotations to your own server as JSON.
+
+URL: https://vivepdf.com/en/docs/web-viewer-drawing/
+Last updated: 2026-10-31
+
+With the `annotate` attribute, visitors can mark up a PDF right in your page: draw with a pen, highlight or underline text, leave notes and add shapes. Download then gives them the PDF with their marks in it. Nothing leaves the browser unless your own page sends it somewhere.
+
+```html
+<vive-pdf src="/files/contract.pdf" annotate></vive-pdf>
+```
+
+The drawing tools are off by default. Without `annotate` the viewer does not even download their code, so reading-only pages stay as light as before.
+
+## The tools
+
+The Draw button in the toolbar opens a second bar above it.
+
+| Tool | What it does |
+| --- | --- |
+| Pen | Free drawing |
+| Marker | A wide, see-through stroke, like a highlighter pen |
+| Highlight, underline, strike out text | Drag across text to mark it |
+| Note | Click to pin a note, then type in the box that opens |
+| Rectangle, ellipse | Drag to draw an outline |
+| Arrow | Drag from the tail to the tip |
+
+Next to the tools are six colours, three line widths, Undo, Redo, Delete selected and Close. Clicking a mark selects it: it can then be moved, resized, recoloured or deleted. The marks a PDF already has can be selected and changed too.
+
+Keys while the bar is open: Ctrl/Cmd+Z undoes, Ctrl/Cmd+Shift+Z redoes, Delete or Backspace deletes the selected mark and Escape puts the tool down.
+
+> **Text tools need real text**
+>
+> Highlight, underline and strike out work on text the PDF really contains. A scanned page is a picture: use the pen or the marker there.
+
+Notes keep every letter, including ı, ş, ğ and İ. There is no free text box on the page itself yet, because the standard PDF fonts it would use cannot show those letters.
+
+## Download and print
+
+Once something is drawn, Download saves a copy of the PDF with the marks in it, under the file's own name. Print puts them on paper. The original file on your server is not changed.
+
+The marks are standard PDF annotations, so Adobe Acrobat, Preview, the vivePDF app and other readers show them and can edit them.
+
+## For developers
+
+Four methods and one event let your page keep the marks, for example per user on your own server.
+
+| | What it does |
+| --- | --- |
+| `annotations()` | Resolves with the list of marks on every page, including those the PDF already had |
+| `setAnnotations(list)` | Puts the list in place of all those marks; it does not fire `vive-annotationchange` and clears Undo |
+| `save()` | Resolves with the PDF, marks included, as a `Blob` |
+| `setTool(name)` | Opens the drawing bar with a tool: `pen`, `marker`, `highlight`, `underline`, `strikeout`, `note`, `rectangle`, `ellipse` or `arrow`; `null` puts the tool down |
+| `vive-annotationchange` | Fires with `{ type, page }` when a mark is created, updated or deleted |
+
+### Saving to your server
+
+```js
+const viewer = document.querySelector("vive-pdf");
+
+viewer.addEventListener("vive-ready", async () => {
+  const response = await fetch("/api/marks?file=contract");
+  if (response.ok) await viewer.setAnnotations(await response.json());
+});
+
+let timer = 0;
+viewer.addEventListener("vive-annotationchange", () => {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const marks = await viewer.annotations();
+    await fetch("/api/marks?file=contract", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(marks) });
+  }, 1000);
+});
+```
+
+To keep the whole PDF instead, send `await viewer.save()` as the request body.
+
+### The format
+
+Each mark is a small object. Positions are in PDF points (1/72 inch) from the top-left corner of the page, `page` counts from 1 and `color` is `#rrggbb`. `opacity` (0–1) and `text` are optional.
+
+| `type` | Fields |
+| --- | --- |
+| `pen`, `marker` | `width`, `strokes`: a list of strokes, each a list of `{ x, y }` |
+| `highlight`, `underline`, `strikeout` | `boxes`: one `{ x, y, width, height }` per line of text |
+| `note` | `box`: where the note icon sits; `text`: the note |
+| `rectangle`, `ellipse` | `width`, `box`: the outline |
+| `line`, `arrow` | `width`, `from`, `to`: `{ x, y }`; an arrow's tip is at `to` |
+
+```json
+[
+  { "type": "note", "page": 1, "color": "#FFCD45", "opacity": 1, "text": "Check the dates", "box": { "x": 400, "y": 90, "width": 20, "height": 20 } },
+  { "type": "pen", "page": 2, "color": "#E44234", "opacity": 1, "width": 4, "strokes": [[{ "x": 100, "y": 600 }, { "x": 220, "y": 640 }]] }
+]
+```
+
+Links, form fields, stamps and other kinds of annotation are not in the list and are left alone by `setAnnotations()`.
+
+### Checks on the input
+
+`setAnnotations()` reads the whole list before it changes anything. If an entry is wrong, nothing changes and the promise rejects with code `invalid` and a message that names the entry and the field, for example `annotation 3 is not valid: color must look like #rrggbb`.
+
+| Limit | |
+| --- | --- |
+| Marks in one list | 5 000 |
+| Points in one drawing | 20 000 |
+| Boxes in one highlight | 1 000 |
+| Characters in one note | 2 000 |
+| Line width | 0.1 to 100 points |
+
+Only the fields above are read. Anything else in an entry, such as a link address, a picture or a script, is dropped, so a list from an untrusted source cannot add them to the PDF.
+
+### Errors
+
+The four methods reject with an `Error` whose `code` is one of:
+
+| Code | Meaning |
+| --- | --- |
+| `annotate-off` | The element has no `annotate` attribute |
+| `not-ready` | No document is open yet; wait for `vive-ready` |
+| `invalid` | `setAnnotations()` got a list it cannot use |
+| `replaced` | Another document was opened before the answer came |
+| `failed` | The marks could not be written into the PDF |
+
+---
+
+# Web viewer modes and appearance
+
+> Show a PDF as a box, at full window height, inside the flow of the page or in a lightbox, and match the viewer to your site with theme, accent colour and language.
+
+URL: https://vivepdf.com/en/docs/web-viewer-modes/
+Last updated: 2026-10-31
+
+The `mode` attribute decides how much room the viewer takes and how it scrolls. `theme`, `accent` and `lang` make it fit your site.
+
+## Modes
+
+| Mode | What it looks like | Good for |
+| --- | --- | --- |
+| `sized` | A box 600 pixels high, or the height you give it in CSS, that scrolls on its own | A document next to other content |
+| `full` | As high as the window | A page that is mainly the document |
+| `inline` | As high as the whole document; the pages sit in your page and turn as it scrolls | Articles, reports and menus that should read like part of the page |
+| `lightbox` | Takes no room; opens over the page when asked, with a close button | A link or button such as "View the brochure" |
+
+### sized
+
+```html
+<vive-pdf src="/files/price-list.pdf" style="height: 70vh"></vive-pdf>
+```
+
+The default. Scrolling inside the box turns the pages; the page around it stays still.
+
+### full
+
+```html
+<vive-pdf src="/files/manual.pdf" mode="full"></vive-pdf>
+```
+
+The viewer is `100dvh` high, so on phones it fits the visible screen even when the browser's address bar comes and goes.
+
+### inline
+
+```html
+<vive-pdf src="/files/annual-report.pdf" mode="inline"></vive-pdf>
+```
+
+The viewer grows to the height of the document and the visitor scrolls your page as usual. The toolbar stays on screen while the document is in view. This works with the window's scroll and with a scrolling element around the viewer.
+
+### lightbox
+
+```html
+<button type="button" id="open-brochure">View the brochure</button>
+<vive-pdf id="brochure" src="/files/brochure.pdf" mode="lightbox"></vive-pdf>
+<script>
+  document.getElementById("open-brochure").addEventListener("click", () => document.getElementById("brochure").show());
+</script>
+```
+
+Nothing is downloaded until `show()` or `open()` is called. The document then opens over the page; Escape, the close button or `close()` closes it, and `vive-close` tells your page.
+
+Changing `mode` while a document is open keeps the document open.
+
+## Theme
+
+| `theme` | |
+| --- | --- |
+| `light` | Light background and toolbar (the default) |
+| `dark` | Dark background and toolbar; the pages themselves keep their own colours |
+| `auto` | Follows the visitor's system setting and switches when it changes |
+
+## Accent colour
+
+`accent` takes any CSS colour and paints the viewer's buttons and highlights with it:
+
+```html
+<vive-pdf src="/files/menu.pdf" accent="#C2410C"></vive-pdf>
+```
+
+A colour that is not valid CSS is ignored and the viewer stays blue. Pick a colour dark enough to read white text on.
+
+## Language
+
+The viewer speaks Turkish and English. Without `lang` it follows the `lang` of your page (`<html lang="tr">`) and falls back to English. With `lang="tr"` or `lang="en"` it uses that one.
+
+## The vivePDF mark
+
+The toolbar starts with a small vivePDF mark that links to vivepdf.com in a new tab. It helps others find a free viewer; `branding="false"` hides it. The MIT licence lets you do so without asking.
+
+## On phones and tablets
+
+On narrow screens the toolbar keeps the page number, zoom and menu, and steps aside while the visitor scrolls down. The side panel with thumbnails and contents opens as a sheet from the bottom. Pinching zooms the pages. All of this is tested on iPhone and iPad as well as in desktop browsers.
+
+---
+
+# Web viewer security and privacy
+
+> What the vivePDF web viewer sends and to whom, how to show PDFs from another site, and tested Content Security Policies for the viewer from your own server or a CDN.
+
+URL: https://vivepdf.com/en/docs/web-viewer-security/
+Last updated: 2026-10-31
+
+The viewer is built to be safe on sites that care about privacy and run strict security policies. This page lists what it downloads, what it never does and the settings your server may need.
+
+## What leaves the visitor's browser
+
+Nothing about the visitor or the document is sent to vivePDF. The browser makes only these requests:
+
+| Request | To |
+| --- | --- |
+| The viewer's own files (loader, viewer, workers, engine) | Your server, or the CDN you load them from |
+| The PDF | The address in `src` |
+| Fallback fonts, only with the `fonts` attribute and only for the languages a document needs | The folder you set |
+
+There is no analytics, no cookie and no account. A file the visitor opens with `open(file)` stays in their browser. Drawings stay there too, until your own page reads them with `annotations()` or `save()`.
+
+The vivePDF mark in the toolbar is a plain link with `?ref=viewer` in its address. Nothing is loaded from vivepdf.com unless the visitor clicks it.
+
+## Links inside PDFs
+
+A PDF can contain links. The viewer follows jumps to other pages, opens web and mail links in a new tab without giving that tab access to your page, and ignores script links and every other kind of address. Links in the contents list are checked the same way.
 
 ## PDFs on another site
 
-The PDF is fetched by the visitor's browser, so a file on another domain must allow your page to read it. That site has to send these headers with the PDF:
+The PDF is downloaded by the visitor's browser, so a file on another domain has to allow your page to read it. That site must send these headers with the PDF:
 
 ```text
 Access-Control-Allow-Origin: https://your-site.example
 Access-Control-Expose-Headers: Content-Range
 ```
 
-The second header lets the viewer download only the parts of a large file that are on screen. Without the first one, the viewer says the file could not be downloaded.
+The second header lets the viewer download only the parts of a large file that are on screen; without it the viewer falls back to downloading the whole file. Without the first one the file cannot be read and the viewer reports `network`.
 
 ## Content Security Policy
 
-If your site sends a Content Security Policy, the viewer needs a few entries in it: `'wasm-unsafe-eval'` in `script-src` for its engine, `blob:` in `img-src` for the rendered pages and the PDF's site in `connect-src`; from a CDN also the CDN in `script-src`, `worker-src` and `connect-src`. It needs no `'unsafe-inline'` and no `'unsafe-eval'`. Tested policies for both setups, files on your own site and files from a CDN, are in the [CSP guide](https://github.com/mtvrkan/vivePDF/blob/main/apps/embed/docs/csp.md).
+The viewer needs no `'unsafe-inline'` and no `'unsafe-eval'`. Its styles are applied through constructed style sheets, so `style-src` needs nothing for it. These policies are tested in Chromium and WebKit and cause no violation reports.
+
+### Viewer files on your own site
+
+```text
+default-src 'none';
+script-src 'self' 'wasm-unsafe-eval';
+worker-src 'self';
+connect-src 'self';
+img-src 'self' blob:
+```
+
+### Viewer files from a CDN
+
+Replace `https://cdn.jsdelivr.net` with your CDN if you use another one.
+
+```text
+default-src 'none';
+script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval';
+worker-src blob: https://cdn.jsdelivr.net;
+connect-src 'self' https://cdn.jsdelivr.net;
+img-src 'self' blob:
+```
+
+These are complete policies for a page that only shows the viewer; add what the rest of your page needs.
+
+### What each entry is for
+
+| Directive | Why |
+| --- | --- |
+| `script-src` with the viewer's origin | The loader and the viewer code it loads |
+| `'wasm-unsafe-eval'` | The PDF engine is WebAssembly and cannot start without it |
+| `worker-src` | The engine runs in a worker. From a CDN the worker starts from a small `blob:` script that loads the real one, so both are needed |
+| `connect-src` | The PDF, the engine file and, with `fonts`, the fonts folder |
+| `img-src blob:` | Pages are shown as images made in the browser |
+
+If the PDF or the fonts live on another site, add that site to `connect-src`:
+
+```text
+connect-src 'self' https://files.example.com
+```
+
+Some servers send the same policy with every file, the viewer's scripts included; the browser then applies it inside the engine worker as well. The policies above cover that case too.
+
+## Cache
+
+The engine (about 4.5 MB before compression) is kept in your site's Cache Storage under a name that starts with `vivepdf-engine-`, so a visitor downloads it once per version. Older versions are removed when a new one is stored. It needs nothing extra in the policy.
+
+## Drawing data from outside
+
+`setAnnotations()` accepts only the fields the viewer knows, checks every number, colour and length, and changes nothing when an entry is wrong. A list from an untrusted source cannot place links, pictures or scripts in the PDF. The limits are listed with the [drawing tools](https://vivepdf.com/en/docs/web-viewer-drawing/#checks-on-the-input).
+
+---
+
+# Web viewer performance and large files
+
+> What the vivePDF web viewer downloads and when, how it opens large PDFs by fetching only the parts on screen, measured opening times, and how to add fallback fonts.
+
+URL: https://vivepdf.com/en/docs/web-viewer-performance/
+Last updated: 2026-10-31
+
+The viewer is built so that a page with a PDF on it stays as fast as a page without one. This page shows what is downloaded, when, and how long a document takes to appear.
+
+## What is downloaded and when
+
+| Part | Size (compressed) | When |
+| --- | --- | --- |
+| Loader, `vivepdf.js` | under 3 KB | With your page |
+| Viewer | about 70 KB | When the viewer comes within 200 pixels of the screen, or `open()`/`show()` is called |
+| PDF engine (PDFium) | about 1.6 MB, 4.5 MB unpacked | At the same time, once per version; then from the browser's cache |
+| Drawing tools | about 46 KB | Only with `annotate`, when the viewer starts |
+| Fallback fonts | 25 KB to 8 MB per font | Only with `fonts`, when a page needs one |
+
+A viewer far down the page costs nothing until the visitor scrolls near it. In `lightbox` mode nothing beyond the loader is downloaded until the lightbox opens.
+
+## Large files
+
+With the default `load="range"` the viewer asks the server only for the parts of the file it needs for the pages on screen, and for the next ones as the visitor scrolls. A 500-page book or an 80 MB scan opens about as fast as a short letter.
+
+This needs a server that answers range requests. Most do: static hosting, CDNs, object storage and common web servers send `Accept-Ranges: bytes` without any setting. If the server sends the whole file instead, the viewer uses it and still works. For a file on another site, that site must also expose `Content-Range`; see [PDFs on another site](https://vivepdf.com/en/docs/web-viewer-security/#pdfs-on-another-site).
+
+`load="full"` downloads the whole file before showing it. Use it for small files that the visitor will read to the end anyway, or for a server that sends wrong range answers.
+
+## Measured times
+
+Time from the start of the page until the first page of the document is on screen, measured with a local server on a MacBook (31 October 2026):
+
+| Document | Chromium | WebKit (Safari) |
+| --- | --- | --- |
+| 2 pages, 0.4 MB | 0.14 s | 0.15 s |
+| 500 pages, 1 MB | 0.16 s | 0.16 s |
+| 20 scanned pages, 80 MB | 0.32 s | 0.34 s |
+
+With `load="range"` the 80 MB scan needed 28 MB in Chromium to show its first page and jump to its last one.
+
+On a slower connection (9 Mbit/s, 60 ms latency) the first visit takes 2.4 s for the short file and 3.0 s for the book, most of it the engine. On the next visit the engine comes from the cache and the same files open in 0.7 s and 1.2 s. On that connection the 80 MB scan opens in 7.6 s with `load="range"`; with `load="full"` it does not open within the test's time limit, which is why `range` is the default.
+
+## Cache
+
+The engine is kept in your site's Cache Storage, under a name that starts with `vivepdf-engine-`, and reused on every page of your site. A new version of the viewer stores its own engine and removes the old one. Visitors whose browser blocks storage simply download it again.
+
+The viewer's own files come from your server or the CDN with normal HTTP caching. On jsDelivr, pin a version (`@0.2.0`) for the longest cache life; `@0` is cached for a shorter time so updates reach you.
+
+## Fonts for PDFs without their own
+
+Most PDFs carry the fonts they use. Some leave them out and expect the reader to have them. For Latin text the engine has its own fonts. For Japanese, Korean, Chinese, Cyrillic, Greek, Vietnamese, Hebrew and Arabic text in such files, the viewer needs the Noto fonts from your server, or that text shows as boxes or is missing.
+
+The fonts are not on npm. Build the folder from the vivePDF repository:
+
+1. Get the repository and go to the fonts package:
+
+   ```sh
+   git clone https://github.com/mtvrkan/vivePDF.git
+   cd vivePDF/apps/embed-fonts
+   ```
+
+2. Install it and collect the fonts:
+
+   ```sh
+   pnpm install
+   pnpm collect
+   ```
+
+   This writes 14 font files (46 MB in all) to `fonts/` and their licences to `OFL.txt`.
+
+3. Copy the files in `fonts/` and `OFL.txt` to one folder on your site and point the viewer at it:
+
+   ```html
+   <vive-pdf src="/files/catalogue.pdf" fonts="/vivepdf-fonts/"></vive-pdf>
+   ```
+
+The visitor downloads only the fonts the open document needs. The largest are the simplified Chinese fonts at about 8.5 MB each; Hebrew and Arabic are under 150 KB.
+
+| Text | Files |
+| --- | --- |
+| Cyrillic, Greek, Vietnamese | `NotoSans-*.ttf` (0.6 MB each) |
+| Japanese | `NotoSansJP-*.otf` (4.5 MB) |
+| Korean | `NotoSansKR-*.otf` (4.6 MB) |
+| Chinese, simplified | `NotoSansHans-*.otf` (8.4 MB) |
+| Chinese, traditional | `NotoSansHant-*.otf` (5.7 MB) |
+| Hebrew | `NotoSansHebrew-*.ttf` (26 KB) |
+| Arabic | `NotoNaskhArabic-*.ttf` (134 KB) |
+
+You can leave out the files for languages your documents never use.
+
+## Tips
+
+- Give the viewer a height in CSS from the start, so the page does not jump when it loads.
+- A scanned PDF is mostly pictures. Making it smaller with [Compress](https://vivepdf.com/en/docs/compress-a-pdf/) in the vivePDF app helps every visitor more than any setting here.
+
+---
+
+# Web viewer troubleshooting
+
+> Answers for the usual problems with the vivePDF web viewer, from a file that will not download and a blocked engine to missing letters, drawings and framework setup.
+
+URL: https://vivepdf.com/en/docs/web-viewer-troubleshooting/
+Last updated: 2026-10-31
+
+The viewer shows its own message when it cannot open a document, and `vive-error` gives your page the same reason as a code. Start with the message: the sections below follow it.
+
+## "The file could not be downloaded"
+
+The code is `network`. The usual reasons:
+
+- **The PDF is on another site** that does not allow your page to read it. That site has to send `Access-Control-Allow-Origin` with the file; see [PDFs on another site](https://vivepdf.com/en/docs/web-viewer-security/#pdfs-on-another-site). The browser's console names the missing header.
+- **Your Content Security Policy** does not list the PDF's site in `connect-src`. The console shows a CSP violation; add the site as shown in [Content Security Policy](https://vivepdf.com/en/docs/web-viewer-security/#content-security-policy).
+- **The address needs a login** the browser does not send to that site, or it redirects to a login page.
+
+## "File not found"
+
+The code is `not-found`: the server answered 404 for the address in `src`. A relative address is read against your page, not against the script, so `src="report.pdf"` on `/blog/post/` looks for `/blog/post/report.pdf`. Start the address with `/` to be sure.
+
+## "The viewer could not start"
+
+The code is `engine`: the PDF engine was not downloaded or not allowed to run.
+
+- With a Content Security Policy, check `'wasm-unsafe-eval'` in `script-src` and the viewer's origin in `worker-src` and `connect-src`.
+- With npm and a bundler, the viewer's files must be copied to a public folder and `assets` must point at it; see [installation](https://vivepdf.com/en/docs/web-viewer-install/). The network tab shows which file came back as 404.
+- With the self-hosted zip, keep every file of `dist` in the same folder as `vivepdf.js`.
+
+## "The file is damaged"
+
+The code is `damaged`: the file is not a PDF, or it is broken. Check that the address really returns the PDF and not an HTML error or login page. If the file opens elsewhere but not here, please [report it](https://github.com/mtvrkan/vivePDF/issues) with the file if you can share it.
+
+## The viewer is empty or has no height
+
+In `sized` mode the viewer is 600 pixels high unless your CSS sets another height. A height in percent only works when the parent has a height. If it sits in a flex or grid layout that squeezes it, give it a `min-height`. `lightbox` takes no room by design: call `show()`.
+
+## Some letters are boxes or missing
+
+The PDF does not carry its own fonts for that text. For Japanese, Korean, Chinese, Cyrillic, Greek, Vietnamese, Hebrew and Arabic, set up the fallback fonts as in [fonts for PDFs without their own](https://vivepdf.com/en/docs/web-viewer-performance/#fonts-for-pdfs-without-their-own).
+
+## Large files are slow
+
+Check in the network tab that the PDF requests answer `206 Partial Content`. If they answer `200`, the server is sending the whole file each time; turn on range requests, or for another site expose `Content-Range`. More in [performance](https://vivepdf.com/en/docs/web-viewer-performance/#large-files).
+
+## The Draw button is missing
+
+The drawing tools are off until the element has the `annotate` attribute. If it is there and the button is still missing, check the network tab: the drawing tools come as a separate file next to the viewer's other files, and it must not be blocked.
+
+## Highlight does nothing on a page
+
+Highlight, underline and strike out need text in the PDF. A scanned page is a picture; use the pen or the marker, or make the text selectable first with [OCR](https://vivepdf.com/en/docs/ocr/) in the vivePDF app.
+
+## Drawings are gone after a reload
+
+The viewer keeps nothing. Visitors keep their marks by downloading the PDF; your site can store them with `annotations()` and put them back with `setAnnotations()`, as shown in [saving to your server](https://vivepdf.com/en/docs/web-viewer-drawing/#saving-to-your-server).
+
+## Methods reject with `not-ready`
+
+`annotations()`, `setAnnotations()` and `save()` need an open document. Call them after `vive-ready`. The other methods wait on their own.
+
+## Frameworks
+
+- **React 19** passes attributes to custom elements as they are; listen to `vive-` events with a ref and `addEventListener`.
+- **Vue** may warn that `vive-pdf` is an unknown component until it is listed in `isCustomElement`.
+- **Server-side rendering**: import the viewer only in the browser. The element can be in the server's HTML; it starts once the script runs.
+
+Examples for each are on the [installation](https://vivepdf.com/en/docs/web-viewer-install/) page.
+
+## Still stuck?
+
+Open an [issue on GitHub](https://github.com/mtvrkan/vivePDF/issues) with the browser and its version, the viewer's version, the error code and, if you can, the PDF or a page that shows the problem.
 
 ---
 

@@ -1,0 +1,91 @@
+# Web görüntüleyici güvenliği ve gizlilik
+
+> vivePDF web görüntüleyicinin neyi kime gönderdiği, başka sitedeki PDF'lerin nasıl gösterileceği ve denenmiş İçerik Güvenliği Politikaları.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/
+Son güncelleme: 2026-10-31
+
+Görüntüleyici, gizliliği önemseyen ve sıkı güvenlik politikaları çalıştıran sitelerde güvenle kullanılmak için yapıldı. Bu sayfa ne indirdiğini, neyi asla yapmadığını ve sunucunun hangi ayarlara ihtiyaç duyabileceğini anlatıyor.
+
+## Ziyaretçinin tarayıcısından ne çıkar
+
+Ziyaretçi ya da belge hakkında vivePDF'e hiçbir şey gönderilmez. Tarayıcı yalnızca şu istekleri yapar:
+
+| İstek | Nereye |
+| --- | --- |
+| Görüntüleyicinin kendi dosyaları (yükleyici, görüntüleyici, işçiler, motor) | Senin sunucun ya da onları yüklediğin CDN |
+| PDF | `src` içindeki adres |
+| Yedek fontlar; yalnızca `fonts` özniteliğiyle ve yalnızca belgenin ihtiyaç duyduğu diller için | Belirttiğin klasör |
+
+Analiz aracı, çerez ya da hesap yok. Ziyaretçinin `open(file)` ile açtığı bir dosya onun tarayıcısında kalır. Çizimler de senin sayfan onları `annotations()` ya da `save()` ile okuyana kadar orada kalır.
+
+Araç çubuğundaki vivePDF işareti, adresinde `?ref=viewer` bulunan düz bir bağlantıdır. Ziyaretçi tıklamadıkça vivepdf.com'dan hiçbir şey yüklenmez.
+
+## PDF içindeki bağlantılar
+
+Bir PDF bağlantılar içerebilir. Görüntüleyici başka sayfalara atlamaları izler, web ve e-posta bağlantılarını o sekmeye senin sayfana erişim vermeden yeni bir sekmede açar, betik bağlantılarını ve diğer bütün adres türlerini yok sayar. İçindekiler listesindeki bağlantılar da aynı şekilde denetlenir.
+
+## Başka sitedeki PDF'ler
+
+PDF'i ziyaretçinin tarayıcısı indirir; bu yüzden başka bir alan adındaki dosyanın senin sayfanın onu okumasına izin vermesi gerekir. O site PDF ile birlikte şu başlıkları göndermelidir:
+
+```text
+Access-Control-Allow-Origin: https://senin-siten.example
+Access-Control-Expose-Headers: Content-Range
+```
+
+İkinci başlık, görüntüleyicinin büyük bir dosyanın yalnızca ekrandaki kısımlarını indirmesini sağlar; o olmadan görüntüleyici dosyanın tamamını indirir. İlki olmadan dosya okunamaz ve görüntüleyici `network` bildirir.
+
+## Güvenlik politikası (CSP)
+
+Görüntüleyici `'unsafe-inline'` ya da `'unsafe-eval'` istemez. Stilleri oluşturulmuş stil sayfalarıyla (constructed style sheets) uygulanır; bu yüzden `style-src` onun için bir şey gerektirmez. Aşağıdaki politikalar Chromium ve WebKit'te denendi ve hiçbir ihlal raporuna yol açmıyor.
+
+### Görüntüleyici dosyaları kendi sitende
+
+```text
+default-src 'none';
+script-src 'self' 'wasm-unsafe-eval';
+worker-src 'self';
+connect-src 'self';
+img-src 'self' blob:
+```
+
+### Görüntüleyici dosyaları bir CDN'den
+
+Başka bir CDN kullanıyorsan `https://cdn.jsdelivr.net` yerine onu yaz.
+
+```text
+default-src 'none';
+script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval';
+worker-src blob: https://cdn.jsdelivr.net;
+connect-src 'self' https://cdn.jsdelivr.net;
+img-src 'self' blob:
+```
+
+Bunlar yalnızca görüntüleyiciyi gösteren bir sayfa için eksiksiz politikalar; sayfanın geri kalanının ihtiyacı olanları ekle.
+
+### Her kayıt ne için
+
+| Yönerge | Neden |
+| --- | --- |
+| Görüntüleyicinin kaynağıyla `script-src` | Yükleyici ve onun yüklediği görüntüleyici kodu |
+| `'wasm-unsafe-eval'` | PDF motoru WebAssembly'dir ve onsuz başlayamaz |
+| `worker-src` | Motor bir işçide (worker) çalışır. CDN'den gelirken işçi, asıl işçiyi yükleyen küçük bir `blob:` betiğiyle başlar; bu yüzden ikisi de gerekir |
+| `connect-src` | PDF, motor dosyası ve `fonts` varsa font klasörü |
+| `img-src blob:` | Sayfalar tarayıcıda üretilen resimler olarak gösterilir |
+
+PDF ya da fontlar başka bir sitedeyse o siteyi `connect-src`'ye ekle:
+
+```text
+connect-src 'self' https://dosyalar.example.com
+```
+
+Bazı sunucular aynı politikayı görüntüleyicinin betikleri dahil her dosyayla gönderir; tarayıcı o zaman politikayı motorun işçisinde de uygular. Yukarıdaki politikalar bu durumu da karşılar.
+
+## Önbellek
+
+Motor (sıkıştırmadan önce yaklaşık 4,5 MB) sitenin Cache Storage'ında, adı `vivepdf-engine-` ile başlayan bir alanda tutulur; ziyaretçi onu her sürüm için bir kez indirir. Yeni sürüm kaydedilince eskileri silinir. Politikaya ek bir şey gerektirmez.
+
+## Dışarıdan gelen çizim verisi
+
+`setAnnotations()` yalnızca görüntüleyicinin bildiği alanları kabul eder, her sayıyı, rengi ve uzunluğu denetler, bir kayıt hatalıysa hiçbir şeyi değiştirmez. Güvenilmeyen bir kaynaktan gelen liste PDF'e bağlantı, resim ya da betik koyamaz. Sınırlar [çizim araçlarıyla](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/#girdi-denetimi) birlikte listeleniyor.

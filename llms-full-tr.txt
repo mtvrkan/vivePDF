@@ -1939,7 +1939,7 @@ Paket kendiliğinden hiçbir yere gönderilmez; kimle paylaşacağına sen karar
 URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici/
 Son güncelleme: 2026-10-31
 
-vivePDF web görüntüleyici bir PDF'i kendi web sayfanın içinde gösterir: sayfa küçük resimleri, belgenin içindekiler listesi, arama, bağlantılar, metin seçme, yazdırma ve indirme. Sayfaları ziyaretçinin tarayıcısında PDFium çizer; hiçbir şey bir yere yüklenmez ve kendi sunucuna ihtiyacın olmaz. Görüntüleyici MIT lisanslı ayrı bir pakettir; masaüstü uygulamasının kodu içinde yoktur.
+vivePDF web görüntüleyici bir PDF'i kendi web sayfanın içinde gösterir: sayfa küçük resimleri, belgenin içindekiler listesi, arama, bağlantılar, metin seçme, yazdırma ve indirme. Bir öznitelik daha eklersen ziyaretçiler çizebilir, metni vurgulayabilir ve not bırakabilir. Sayfaları ziyaretçinin tarayıcısında PDFium çizer; hiçbir şey bir yere yüklenmez ve kendi sunucuna ihtiyacın olmaz. Görüntüleyici MIT lisanslı ayrı bir pakettir; masaüstü uygulamasının kodu içinde yoktur.
 
 ## Betik etiketiyle ekleme
 
@@ -1955,7 +1955,7 @@ vivePDF web görüntüleyici bir PDF'i kendi web sayfanın içinde gösterir: sa
    <vive-pdf src="/dosyalar/fiyat-listesi.pdf" style="height: 80vh"></vive-pdf>
    ```
 
-Sayfana eklenen betik yaklaşık 2 KB'tır. Görüntüleyicinin kendisi ve PDF motoru ancak görüntüleyici ekrana girince yüklenir; motor ilk ziyaretten sonra tarayıcının önbelleğinde kalır.
+Sayfana eklenen betik 3 KB'tan azdır. Görüntüleyicinin kendisi ve PDF motoru ancak görüntüleyici ekrana girince yüklenir; motor ilk ziyaretten sonra tarayıcının önbelleğinde kalır.
 
 ## Dene
 
@@ -1970,19 +1970,64 @@ Aşağıdan ayarları seç: sayfana ekleyeceğin kod onlarla birlikte değişir,
 | Lisans | MIT, açık kaynak | Adobe'nin kendi koşulları; kod değiştirilemez |
 | Kodun yüklendiği yer | Kendi sunucun, bir CDN ya da npm | Adobe'nin sunucusu (belgelerde gösterilen yol) |
 | Üreticiye giden veri | Yok; ziyaretçinin tarayıcısı yalnızca senin sitenle ve seçtiğin CDN ile konuşur | Kullanım bilgileri: web sayfasının adresi, dosya boyutu ve sayfa sayısı da içinde |
-| Marka | Yok | "Powered by Adobe Document Cloud" bağlantısı zorunlu; görüntüleyicide Adobe Acrobat logosu görünür |
+| Marka | Araç çubuğunda küçük bir vivePDF işareti; `branding="false"` gizler | "Powered by Adobe Document Cloud" bağlantısı zorunlu; görüntüleyicide Adobe Acrobat logosu görünür |
 | Belge gösterme biçimleri | Kutu, tam pencere, sayfanın içinde, açılır pencere | Tam pencere, boyutlu kutu, sayfanın içinde, açılır pencere |
 | Arama | Var | Var |
-| Yorum ve işaretleme | Yok, yalnızca okuma | Var, tam pencere görünümünde |
+| Yorum ve işaretleme | Var, `annotate` özniteliğiyle | Var, tam pencere görünümünde |
 | Form doldurma | Yok, yalnızca okuma | Var, tam pencere görünümünde |
 
 Adobe sütunu, Adobe'nin [PDF Embed API belgeleri](https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/gettingstarted/) ve [Geliştirici Kullanım Koşulları](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Developer-Terms-en_US-20240618.pdf) (Haziran 2024 sürümü) temel alınarak 31 Ekim 2026'da hazırlandı.
 
-## Dosyaları kendin barındırma
+## Sonraki adımlar
 
-[GitHub'daki sürümlerden](https://github.com/mtvrkan/vivePDF/releases) `vivepdf-viewer-<sürüm>.zip` dosyasını indir, içindeki `dist` klasörünü sitene kopyala ve `dist/vivepdf.js` dosyasını oradan yükle. Klasördeki dosyaları bir arada tut: görüntüleyici geri kalanını betiğin yanında arar.
+| Sayfa | İçinde ne var |
+| --- | --- |
+| [Kurulum](https://vivepdf.com/dokumantasyon/web-goruntuleyici-kurulum/) | CDN, kendi sunucun, npm; React, Vue, Svelte ve düz HTML |
+| [Ayarlar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-ayarlar/) | Bütün öznitelikler, değerleri ve varsayılanlarıyla |
+| [Metotlar ve olaylar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-api/) | Görüntüleyiciyi JavaScript ile yönetmek, hata kodları, TypeScript |
+| [Çizim ve notlar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/) | Çizim araçları ve işaretleri sunucuna kaydetmek |
+| [Modlar ve görünüm](https://vivepdf.com/dokumantasyon/web-goruntuleyici-gorunum/) | Kutu, tam pencere, sayfanın içinde ve açılır pencere; tema, renk, dil |
+| [Güvenlik ve gizlilik](https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/) | Başka sitelerdeki PDF'ler ve İçerik Güvenliği Politikası |
+| [Performans ve büyük dosyalar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans/) | Ne zaman ne indirilir, ölçülen süreler, yedek fontlar |
+| [Sorun giderme](https://vivepdf.com/dokumantasyon/web-goruntuleyici-sorunlar/) | Her mesajın anlamı ve nasıl çözüleceği |
 
-## npm ile kullanma
+---
+
+# Web görüntüleyiciyi kurma
+
+> vivePDF web görüntüleyiciyi sitene bir CDN'den, kendi sunucundan ya da npm'den ekle; düz HTML, React, Vue, Svelte ve diğer çatılarla kullan.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-kurulum/
+Son güncelleme: 2026-10-31
+
+Görüntüleyici tek bir özel öğedir: `<vive-pdf>`. JavaScript çalıştıran her sayfada, bir çatı olsun ya da olmasın çalışır. Dosyalarının nereden geleceğini seç: bir CDN, kendi sunucun ya da npm.
+
+## CDN'den
+
+En hızlı yol. Betiği sayfada bir kez yükle, sonra görüntüleyicileri istediğin yere koy:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/@vivepdf/viewer@0/dist/vivepdf.js"></script>
+<vive-pdf src="/dosyalar/fiyat-listesi.pdf" style="height: 80vh"></vive-pdf>
+```
+
+`@0` en yeni 0.x sürümünü alır; düzeltmeler sen bir şey değiştirmeden gelir. Tek bir sürümde sabitlemek için sürümü tam yaz, örneğin `@vivepdf/viewer@0.2.0`. Betik `<script type="module">` için modül olarak da gelir: `dist/vivepdf.mjs`.
+
+## Kendi sunucundan
+
+1. [GitHub'daki sürümlerden](https://github.com/mtvrkan/vivePDF/releases) `vivepdf-viewer-<sürüm>.zip` dosyasını indir.
+
+2. İçindeki `dist` klasörünü sitene kopyala, örneğin `/vivepdf/` altına.
+
+3. Betiği oradan yükle:
+
+   ```html
+   <script src="/vivepdf/vivepdf.js"></script>
+   ```
+
+Klasördeki dosyaları bir arada tut: betik görüntüleyiciyi, motoru ve işçileri kendi yanında bulur. `THIRD-PARTY-NOTICES.txt` dosyasını da yanlarında tut; motorun içindeki kütüphanelerin lisansları ondadır.
+
+## npm'den
 
 ```sh
 npm install @vivepdf/viewer
@@ -1992,27 +2037,520 @@ npm install @vivepdf/viewer
 import "@vivepdf/viewer";
 ```
 
-Paketleyiciler görüntüleyicinin kendi dosyalarını kopyalamaz. `node_modules/@vivepdf/viewer/dist` klasörünü herkese açık bir klasöre kopyala ve görüntüleyiciye yerini söyle:
+Bu içe aktarma `<vive-pdf>` öğesini kaydeder ve TypeScript türlerini getirir. Paketleyici yalnızca 2 KB'lık yükleyiciyi paketler; görüntüleyici, motor ve işçiler dışarıda kalır. `node_modules/@vivepdf/viewer/dist` klasörünü bir kez (ya da derleme betiğinde) herkese açık bir klasöre kopyala ve görüntüleyiciye yerini `assets` ile söyle:
 
 ```html
 <vive-pdf src="/dosyalar/fiyat-listesi.pdf" assets="/vivepdf/"></vive-pdf>
 ```
 
-## Ayarlar
+## Düz HTML
 
-| Ayar | Ne yapar |
+Başka bir şey gerekmez. Ayarlar özniteliktir; JavaScript yalnızca [metotlar ve olaylar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-api/) için gerekir.
+
+```html
+<vive-pdf src="/dosyalar/rapor.pdf" page="3" zoom="fit-page" theme="auto" style="height: 600px"></vive-pdf>
+```
+
+## React
+
+React 19 öznitelikleri ve özellikleri özel öğelere olduğu gibi geçirir. Görüntüleyiciyi bir kez yükle, örneğin giriş dosyanda, sonra etiketi kullan:
+
+```jsx
+import "@vivepdf/viewer";
+
+export function Report({ url }) {
+  return <vive-pdf src={url} theme="auto" style={{ height: "80vh", display: "block" }} />;
+}
+```
+
+Metotları çağırmak için bir ref tut: `ref.current.goTo(5)`. Olayları bir effect içinde `addEventListener` ile dinle ve temizlikte dinleyiciyi kaldır. TypeScript'te etiketi JSX için bir kez tanıt:
+
+```ts
+declare module "react" {
+  namespace JSX {
+    interface IntrinsicElements {
+      "vive-pdf": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & { src?: string; page?: string | number; zoom?: string; theme?: string; mode?: string; annotate?: boolean | string };
+    }
+  }
+}
+```
+
+## Vue
+
+Vue'ya `vive-pdf`'in özel bir öğe olduğunu `vite.config.js` içinde söyle:
+
+```js
+vue({ template: { compilerOptions: { isCustomElement: (tag) => tag === "vive-pdf" } } });
+```
+
+Sonra şablonlarda kullan:
+
+```vue
+<script setup>
+import "@vivepdf/viewer";
+</script>
+
+<template>
+  <vive-pdf :src="url" theme="auto" style="height: 80vh" @vive-pagechange="onPage" />
+</template>
+```
+
+## Svelte
+
+Svelte bir ayar istemez:
+
+```svelte
+<script>
+  import "@vivepdf/viewer";
+  let { url } = $props();
+</script>
+
+<vive-pdf src={url} theme="auto" style="height: 80vh"></vive-pdf>
+```
+
+Metotlar ve olaylar için öğeyi `bind:this` ile al ve onun üzerinde `addEventListener` çağır.
+
+## Sunucuda oluşturulan sayfalar
+
+Öğe yalnızca tarayıcıda başlar. Next.js, Nuxt, SvelteKit ya da Astro ile paketi tarayıcıda çalışan kodda içe aktar (istemci bileşeni, `onMount`, bir `<script>` etiketi) ve `<vive-pdf>`'i sunucuda düz HTML olarak yaz. Görüntüleyici ekrana yaklaşınca yüklenmeye başlar.
+
+## Güncelleme
+
+CDN'den `@0` ile kullanıyorsan yapacak bir şey yok. npm ile `npm update @vivepdf/viewer` çalıştır ve `dist`'i yeniden kopyala. Zip ile kullanıyorsan klasörün tamamını değiştir: farklı sürümlerin dosyaları karışmamalı. Neyin değiştiği [sürüm notlarında](https://github.com/mtvrkan/vivePDF/releases).
+
+---
+
+# Web görüntüleyici ayarları
+
+> vive-pdf öğesinin bütün öznitelikleri, değerleri ve varsayılanlarıyla; PDF adresi ve açılış sayfasından tema, dil, denetimler ve çizim araçlarına kadar.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-ayarlar/
+Son güncelleme: 2026-10-31
+
+Ayarlar `<vive-pdf>` öğesinin öznitelikleridir. Her birinin bir varsayılanı var; bir görüntüleyiciye `src` dışında bir şey gerekmez. Ayarların çoğu görüntüleyici açıkken değiştirilebilir: özniteliği yeniden ver, görüntüleyici ona uyar.
+
+```html
+<vive-pdf src="/dosyalar/faaliyet-raporu.pdf" page="4" zoom="fit-page" theme="auto" lang="tr" accent="#0F766E" download="false"></vive-pdf>
+```
+
+## Belge
+
+| Öznitelik | Değerler | Varsayılan |
+| --- | --- | --- |
+| `src` | PDF'in adresi, sayfaya göre; yalnızca `http:`, `https:` ve `blob:` | — |
+| `page` | Açılacak sayfa, 1'den başlar; değiştirilince o sayfaya gider | `1` |
+| `zoom` | `fit-width`, `fit-page` ya da 10 ile 800 arasında bir yüzde, örneğin `150` ya da `150%` | `fit-width` |
+| `load` | `range` yalnızca ekrandaki kısımları indirir; `full` önce dosyanın tamamını indirir | `range` |
+| `filename` | Ziyaretçi indirirken dosyanın adı | adresteki ad |
+
+`src`'yi değiştirmek yeni belgeyi açar. Ziyaretçinin seçtiği bir dosyayı göstermek için bunun yerine `open()` kullan: `File`, `Blob` ya da bayt alır. Bkz. [metotlar ve olaylar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-api/).
+
+## Görünüm
+
+| Öznitelik | Değerler | Varsayılan |
+| --- | --- | --- |
+| `mode` | `sized` (kutu), `full` (pencere yüksekliği), `inline` (belge kadar uzun) ya da `lightbox` (sayfanın üstünde açılır) | `sized` |
+| `theme` | `light`, `dark` ya da `auto` (ziyaretçinin sistemine uyar) | `light` |
+| `lang` | `tr` ya da `en` | sayfanın `lang` değeri, yoksa İngilizce |
+| `accent` | Düğmeler ve vurgular için herhangi bir CSS rengi | mavi |
+
+Hangi modun ne zaman kullanılacağı, tema ve rengin nasıl çalıştığı [modlar ve görünüm](https://vivepdf.com/dokumantasyon/web-goruntuleyici-gorunum/) sayfasında.
+
+## Denetimler
+
+| Öznitelik | Neyi denetler | Varsayılan |
+| --- | --- | --- |
+| `toolbar` | Alttaki yüzen araç çubuğu | görünür |
+| `search` | Arama düğmesi ve Ctrl/Cmd+F | görünür |
+| `print` | Menüdeki Yazdır ve Ctrl/Cmd+P | görünür |
+| `download` | Menüdeki İndir ve Ctrl/Cmd+S | görünür |
+| `branding` | Araç çubuğunun başındaki küçük vivePDF işareti, vivepdf.com'a bağlantı | görünür |
+| `annotate` | Çiz düğmesi ve [çizim araçları](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/) | kapalı |
+
+`false`, `off`, `no`, `0`, `none` ve `hidden` bir denetimi kapatır; büyük küçük harf fark etmez. `annotate` tersine çalışır: öznitelik yazılana kadar kapalıdır, yani açmak için `<vive-pdf annotate>` yeter, `annotate="false"` kapalı tutar.
+
+İndir'i gizlemek yalnızca düğmeyi gizler; PDF'in adresi yine sayfanda durur, yani bu bir dosyayı korumaz. Kopyalanmaması gereken bir dosya web'de hiç gösterilmemeli.
+
+## Dosyalar ve fontlar
+
+| Öznitelik | Değerler | Varsayılan |
+| --- | --- | --- |
+| `assets` | Görüntüleyicinin dosyalarının klasörü; bir paketleyici betiği onlardan ayırdıysa gerekir. Görüntüleyici başlarken bir kez okunur | betiğin klasörü |
+| `fonts` | Yedek fontların klasörü; kendi Japonca, Korece, Çince, Kiril, Yunanca, Vietnamca, İbranice ya da Arapça fontlarını taşımayan PDF'ler için | — |
+
+`fonts` olmadan görüntüleyici hiç font indirmez. Font klasörünün nasıl hazırlanacağı [performans ve büyük dosyalar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans/#kendi-fontu-olmayan-pdfler-i%C3%A7in-fontlar) sayfasında.
+
+## Sayfadaki boyut
+
+`sized` modunda görüntüleyici, CSS ile bir yükseklik verene kadar 600 piksel yüksekliğindedir. Genişlik içinde bulunduğu alana uyar.
+
+```css
+vive-pdf {
+  height: 80vh;
+  border-radius: 12px;
+  overflow: hidden;
+}
+```
+
+Araç çubuğu, paneller ve menüler öğenin içinde yaşar; sitenin CSS'i onlara ulaşmaz. Görüntüleyicinin görünüşünü yalnızca `accent`, `theme` ve öğenin kendi boyutu ile kenarlığı değiştirir.
+
+---
+
+# Web görüntüleyici metotları ve olayları
+
+> vivePDF web görüntüleyiciyi JavaScript ile yönet, ziyaretçinin seçtiği dosyaları aç, sayfa ve yakınlaştırma değişikliklerini izle, hataları yakala; TypeScript türleriyle.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-api/
+Son güncelleme: 2026-10-31
+
+Her `<vive-pdf>` öğesi aynı zamanda bir JavaScript nesnesidir. Metotları belgede gezinir ve dosya açar; olayları içeride ne olduğunu sayfana haber verir.
+
+```js
+const viewer = document.querySelector("vive-pdf");
+viewer.addEventListener("vive-ready", (event) => console.log(`${event.detail.pageCount} sayfa`));
+viewer.goTo(12);
+```
+
+## Metotlar
+
+| Metot | Ne yapar |
 | --- | --- |
-| `src` | PDF'in adresi |
-| `page` | Açılacak sayfa, 1'den başlar |
-| `zoom` | `fit-width`, `fit-page` ya da `150` gibi bir yüzde |
-| `mode` | `sized` (kutu, varsayılan), `full` (pencere yüksekliği), `inline` (belge kadar uzun, sayfayla birlikte kayar) ya da `lightbox` (sayfanın üstünde açılır) |
-| `theme` | `light`, `dark` ya da `auto` |
-| `lang` | `tr` ya da `en`; verilmezse sayfanın dili kullanılır |
-| `accent` | Düğmelerin ve vurguların rengi |
-| `toolbar`, `search`, `print`, `download` | `false` o denetimi gizler |
-| `filename` | Dosya indirilirken kullanılacak ad |
+| `open(input)` | Bir belge açar, belge ekrana gelince tamamlanır. `input` bir adres, `URL`, `File` ya da `Blob`, `ArrayBuffer` ya da typed array olabilir |
+| `goTo(page)` | Bir sayfaya gider, 1'den başlar |
+| `setZoom(zoom)` | `fit-width`, `fit-page` ya da 10 ile 800 arasında bir yüzde |
+| `search(text)` | Aramayı metinle açar ve ilk sonucu gösterir |
+| `print()` | Belgeyi menüdeki gibi yazdırır |
+| `download()` | Belgeyi menüdeki gibi indirir |
+| `show()` · `close()` | `lightbox` modunda görüntüleyiciyi açar ve kapatır; diğer modlarda bir şey yapmaz |
 
-Görüntüleyici JavaScript ile de yönetilebilir: `open()` ziyaretçinin seçtiği bir dosyayı açar, `goTo()`, `setZoom()` ve `search()` belgede gezinir; olaylar belge hazır olduğunda, sayfa değiştiğinde ve dosya açılamadığında haber verir. Hepsi [API başvurusunda](https://github.com/mtvrkan/vivePDF/blob/main/apps/embed/docs/api.md) anlatılıyor.
+`annotate` özniteliği varken dört metot daha var: `annotations()`, `setAnnotations()`, `save()` ve `setTool()`. Bunlar [çizim araçlarıyla](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/#geli%C5%9Ftiriciler-i%C3%A7in) birlikte anlatılıyor.
+
+Görüntüleyici başlamadan çağrılan metotlar bekler ve belge ekrana gelince çalışır; yani öğeyi oluşturur oluşturmaz çağrılabilirler.
+
+## Özellikler
+
+| Özellik | Değer |
+| --- | --- |
+| `page` | Görünen sayfa, 1'den başlar |
+| `pageCount` | Sayfa sayısı; belge açılana kadar `0` |
+| `zoom` | Yüzde olarak yakınlaştırma |
+
+## Olaylar
+
+Bütün olaylar öğeden dışarı kabarcıklanır; `document` üzerindeki tek bir dinleyici birden çok görüntüleyiciyi izleyebilir. Ayrıntılar `event.detail` içindedir.
+
+| Olay | `detail` | Ne zaman |
+| --- | --- | --- |
+| `vive-ready` | `{ pageCount }` | Belge açıldı |
+| `vive-pagechange` | `{ page, pageCount }` | Başka bir sayfa görünür oldu |
+| `vive-zoomchange` | `{ zoom }` | Yakınlaştırma değişti |
+| `vive-error` | `{ code }` | Belge açılamadı |
+| `vive-close` | `null` | Açılır pencere kapandı |
+| `vive-annotationchange` | `{ type, page }` | Bir çizim ya da not eklendi, değişti ya da silindi |
+
+## Ziyaretçinin seçtiği dosyayı açma
+
+Dosya ziyaretçinin tarayıcısında kalır; hiçbir şey yüklenmez.
+
+```html
+<input type="file" accept="application/pdf" id="pick">
+<vive-pdf id="viewer" style="height: 80vh"></vive-pdf>
+<script>
+  const viewer = document.getElementById("viewer");
+  document.getElementById("pick").addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      await viewer.open(file);
+    } catch (error) {
+      console.warn(error.code);
+    }
+  });
+</script>
+```
+
+Bu yolla açılan dosya, ziyaretçi indirdiğinde kendi adını korur.
+
+## Hatalar
+
+`open()` reddeder ve `vive-error` şu kodlardan biriyle haber verir. Görüntüleyici ayrıca kendi mesajını ve bir çıkış yolunu gösterir; çoğu site için kodları kaydetmek yeter.
+
+| Kod | Anlamı |
+| --- | --- |
+| `password` | Dosya parolalı; görüntüleyici parolayı sorar ve kilit açılınca `vive-ready` gönderir |
+| `wrong-password` | Girilen parola yanlış |
+| `not-found` | Sunucu dosyanın olmadığını söyledi |
+| `network` | Dosya indirilemedi; çoğu zaman başka bir site izin vermediği için (bkz. [güvenlik](https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/#ba%C5%9Fka-sitedeki-pdfler)) |
+| `damaged` | Dosya PDF değil ya da bozuk |
+| `no-pages` | PDF'te sayfa yok |
+| `engine` | PDF motoru başlayamadı, örneğin indirilmesi engellendiği için |
+| `unsupported-url` | Adres `http:`, `https:` ya da `blob:` değil |
+| `unknown` | Geri kalan her şey |
+
+İlki bitmeden ikinci bir `open()` çağrılırsa ilki `replaced` ile reddedilir.
+
+## Okuyucuyu izleme
+
+```js
+document.addEventListener("vive-pagechange", (event) => {
+  history.replaceState(null, "", `#page=${event.detail.page}`);
+});
+
+const start = Number(new URLSearchParams(location.hash.slice(1)).get("page"));
+if (start) document.querySelector("vive-pdf").setAttribute("page", String(start));
+```
+
+## TypeScript
+
+npm paketi kendi türleriyle gelir. `import "@vivepdf/viewer"` sonrasında `document.querySelector("vive-pdf")` `VivePdfViewer` türündedir ve `addEventListener("vive-pagechange", …)` `detail`'in ne olduğunu bilir. Türler kendi kodun için de dışa aktarılır:
+
+```ts
+import type { VivePdfViewer, VivePdfAnnotation, VivePdfErrorCode } from "@vivepdf/viewer";
+```
+
+---
+
+# Web görüntüleyicide çizim ve notlar
+
+> Ziyaretçilerin sitendeki bir PDF'e çizmesine, metin vurgulamasına ve not bırakmasına izin ver; sonucu indir, işaretleri JSON olarak kendi sunucuna kaydet.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/
+Son güncelleme: 2026-10-31
+
+`annotate` özniteliğiyle ziyaretçiler bir PDF'i doğrudan sayfanda işaretleyebilir: kalemle çizer, metni vurgular ya da altını çizer, not bırakır, şekil ekler. Sonra İndir, PDF'i işaretleriyle birlikte verir. Senin sayfan bir yere göndermedikçe hiçbir şey tarayıcıdan çıkmaz.
+
+```html
+<vive-pdf src="/dosyalar/sozlesme.pdf" annotate></vive-pdf>
+```
+
+Çizim araçları varsayılan olarak kapalıdır. `annotate` olmadan görüntüleyici onların kodunu indirmez bile; yalnızca okuma yapılan sayfalar eskisi kadar hafif kalır.
+
+## Araçlar
+
+Araç çubuğundaki Çiz düğmesi, üstünde ikinci bir şerit açar.
+
+| Araç | Ne yapar |
+| --- | --- |
+| Kalem | Serbest çizim |
+| Fosforlu kalem | İşaretleme kalemi gibi geniş, yarı saydam bir çizgi |
+| Metni vurgula, altını çiz, üstünü çiz | Metnin üzerinde sürükleyerek işaretle |
+| Not | Tıklayıp bir not iğnele, açılan kutuya yaz |
+| Dikdörtgen, elips | Sürükleyerek bir çerçeve çiz |
+| Ok | Kuyruktan uca doğru sürükle |
+
+Araçların yanında altı renk, üç çizgi kalınlığı, Geri al, Yinele, Seçileni sil ve Kapat var. Bir işarete tıklamak onu seçer: sonra taşınabilir, boyutu değiştirilebilir, rengi değiştirilebilir ya da silinebilir. PDF'te zaten bulunan işaretler de seçilip değiştirilebilir.
+
+Şerit açıkken tuşlar: Ctrl/Cmd+Z geri alır, Ctrl/Cmd+Shift+Z yineler, Delete ya da Backspace seçili işareti siler, Escape aracı bırakır.
+
+> **Metin araçları gerçek metin ister**
+>
+> Vurgulama, altını çizme ve üstünü çizme, PDF'in gerçekten içerdiği metinde çalışır. Taranmış bir sayfa bir resimdir: orada kalemi ya da fosforlu kalemi kullan.
+
+Notlar ı, ş, ğ ve İ dahil her harfi korur. Sayfanın üstüne doğrudan yazılan bir metin kutusu henüz yok; kullanacağı standart PDF fontları bu harfleri gösteremiyor.
+
+## İndirme ve yazdırma
+
+Bir şey çizildikten sonra İndir, PDF'in işaretli bir kopyasını dosyanın kendi adıyla kaydeder. Yazdır onları kâğıda da basar. Sunucundaki asıl dosya değişmez.
+
+İşaretler standart PDF notlarıdır (annotation); Adobe Acrobat, Önizleme, vivePDF uygulaması ve diğer okuyucular onları gösterir ve düzenleyebilir.
+
+## Geliştiriciler için
+
+Dört metot ve bir olay, sayfanın işaretleri saklamasını sağlar; örneğin her kullanıcı için kendi sunucunda.
+
+| | Ne yapar |
+| --- | --- |
+| `annotations()` | Bütün sayfalardaki işaretlerin listesini verir; PDF'te zaten olanlar da dahil |
+| `setAnnotations(list)` | Listeyi bütün bu işaretlerin yerine koyar; `vive-annotationchange` göndermez ve Geri al geçmişini temizler |
+| `save()` | İşaretleri içeren PDF'i bir `Blob` olarak verir |
+| `setTool(name)` | Çizim şeridini bir araçla açar: `pen`, `marker`, `highlight`, `underline`, `strikeout`, `note`, `rectangle`, `ellipse` ya da `arrow`; `null` aracı bırakır |
+| `vive-annotationchange` | Bir işaret oluşturulunca, değişince ya da silinince `{ type, page }` ile gelir |
+
+### Sunucuna kaydetme
+
+```js
+const viewer = document.querySelector("vive-pdf");
+
+viewer.addEventListener("vive-ready", async () => {
+  const response = await fetch("/api/isaretler?dosya=sozlesme");
+  if (response.ok) await viewer.setAnnotations(await response.json());
+});
+
+let timer = 0;
+viewer.addEventListener("vive-annotationchange", () => {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const marks = await viewer.annotations();
+    await fetch("/api/isaretler?dosya=sozlesme", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(marks) });
+  }, 1000);
+});
+```
+
+PDF'in tamamını saklamak istersen istek gövdesi olarak `await viewer.save()` gönder.
+
+### Biçim
+
+Her işaret küçük bir nesnedir. Konumlar sayfanın sol üst köşesinden PDF noktası (1/72 inç) cinsindendir, `page` 1'den başlar, `color` `#rrggbb` biçimindedir. `opacity` (0–1) ve `text` isteğe bağlıdır.
+
+| `type` | Alanlar |
+| --- | --- |
+| `pen`, `marker` | `width`, `strokes`: çizgilerin listesi, her biri `{ x, y }` listesi |
+| `highlight`, `underline`, `strikeout` | `boxes`: her metin satırı için bir `{ x, y, width, height }` |
+| `note` | `box`: not simgesinin yeri; `text`: not |
+| `rectangle`, `ellipse` | `width`, `box`: çerçeve |
+| `line`, `arrow` | `width`, `from`, `to`: `{ x, y }`; okun ucu `to`'dadır |
+
+```json
+[
+  { "type": "note", "page": 1, "color": "#FFCD45", "opacity": 1, "text": "Tarihlere bak", "box": { "x": 400, "y": 90, "width": 20, "height": 20 } },
+  { "type": "pen", "page": 2, "color": "#E44234", "opacity": 1, "width": 4, "strokes": [[{ "x": 100, "y": 600 }, { "x": 220, "y": 640 }]] }
+]
+```
+
+Bağlantılar, form alanları, damgalar ve diğer not türleri listede yer almaz; `setAnnotations()` onlara dokunmaz.
+
+### Girdi denetimi
+
+`setAnnotations()` bir şey değiştirmeden önce listenin tamamını okur. Bir kayıt hatalıysa hiçbir şey değişmez; söz `invalid` koduyla ve kaydı ve alanı adlandıran bir mesajla reddedilir, örneğin `annotation 3 is not valid: color must look like #rrggbb`.
+
+| Sınır | |
+| --- | --- |
+| Bir listedeki işaret | 5 000 |
+| Bir çizimdeki nokta | 20 000 |
+| Bir vurgudaki kutu | 1 000 |
+| Bir nottaki karakter | 2 000 |
+| Çizgi kalınlığı | 0,1 ile 100 nokta arası |
+
+Yalnızca yukarıdaki alanlar okunur. Bir kayıttaki başka her şey, örneğin bir bağlantı adresi, bir resim ya da bir betik atılır; güvenilmeyen bir kaynaktan gelen liste bunları PDF'e ekleyemez.
+
+### Hatalar
+
+Dört metot, `code` alanı şunlardan biri olan bir `Error` ile reddeder:
+
+| Kod | Anlamı |
+| --- | --- |
+| `annotate-off` | Öğede `annotate` özniteliği yok |
+| `not-ready` | Henüz açık bir belge yok; `vive-ready`'yi bekle |
+| `invalid` | `setAnnotations()` kullanamayacağı bir liste aldı |
+| `replaced` | Cevap gelmeden başka bir belge açıldı |
+| `failed` | İşaretler PDF'e yazılamadı |
+
+---
+
+# Web görüntüleyici modları ve görünümü
+
+> Bir PDF'i kutu içinde, pencere yüksekliğinde, sayfanın akışında ya da açılır pencerede göster; tema, vurgu rengi ve dille görüntüleyiciyi sitene uydur.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-gorunum/
+Son güncelleme: 2026-10-31
+
+`mode` özniteliği görüntüleyicinin ne kadar yer kaplayacağını ve nasıl kayacağını belirler. `theme`, `accent` ve `lang` onu sitene uydurur.
+
+## Modlar
+
+| Mod | Nasıl görünür | Ne için iyi |
+| --- | --- | --- |
+| `sized` | 600 piksel ya da CSS ile verdiğin yükseklikte, kendi içinde kayan bir kutu | Başka içeriğin yanında duran bir belge |
+| `full` | Pencere yüksekliğinde | Asıl konusu belge olan bir sayfa |
+| `inline` | Belgenin tamamı kadar uzun; sayfalar senin sayfanın içinde durur ve sayfa kaydıkça ilerler | Sayfanın bir parçası gibi okunması gereken yazılar, raporlar, menüler |
+| `lightbox` | Yer kaplamaz; istendiğinde sayfanın üstünde, bir kapatma düğmesiyle açılır | "Broşürü görüntüle" gibi bir bağlantı ya da düğme |
+
+### sized
+
+```html
+<vive-pdf src="/dosyalar/fiyat-listesi.pdf" style="height: 70vh"></vive-pdf>
+```
+
+Varsayılan. Kutunun içinde kaydırmak sayfaları çevirir; etraftaki sayfa yerinde kalır.
+
+### full
+
+```html
+<vive-pdf src="/dosyalar/kilavuz.pdf" mode="full"></vive-pdf>
+```
+
+Görüntüleyici `100dvh` yüksekliğindedir; telefonlarda tarayıcının adres çubuğu gelip gitse de görünen ekrana sığar.
+
+### inline
+
+```html
+<vive-pdf src="/dosyalar/faaliyet-raporu.pdf" mode="inline"></vive-pdf>
+```
+
+Görüntüleyici belgenin yüksekliğine uzar, ziyaretçi senin sayfanı her zamanki gibi kaydırır. Belge görünürken araç çubuğu ekranda kalır. Bu, pencerenin kaydırmasıyla da görüntüleyiciyi saran kayan bir öğeyle de çalışır.
+
+### lightbox
+
+```html
+<button type="button" id="open-brochure">Broşürü görüntüle</button>
+<vive-pdf id="brochure" src="/dosyalar/brosur.pdf" mode="lightbox"></vive-pdf>
+<script>
+  document.getElementById("open-brochure").addEventListener("click", () => document.getElementById("brochure").show());
+</script>
+```
+
+`show()` ya da `open()` çağrılana kadar hiçbir şey indirilmez. Belge sonra sayfanın üstünde açılır; Escape, kapatma düğmesi ya da `close()` onu kapatır, `vive-close` da sayfana haber verir.
+
+Bir belge açıkken `mode`'u değiştirmek belgeyi açık tutar.
+
+## Tema
+
+| `theme` | |
+| --- | --- |
+| `light` | Açık arka plan ve araç çubuğu (varsayılan) |
+| `dark` | Koyu arka plan ve araç çubuğu; sayfaların kendisi kendi renklerini korur |
+| `auto` | Ziyaretçinin sistem ayarına uyar ve o değişince değişir |
+
+## Vurgu rengi
+
+`accent` herhangi bir CSS rengini alır ve görüntüleyicinin düğmelerini ve vurgularını o renge boyar:
+
+```html
+<vive-pdf src="/dosyalar/menu.pdf" accent="#C2410C"></vive-pdf>
+```
+
+Geçerli bir CSS rengi olmayan değer yok sayılır ve görüntüleyici mavi kalır. Üstünde beyaz yazının okunabileceği kadar koyu bir renk seç.
+
+## Dil
+
+Görüntüleyici Türkçe ve İngilizce konuşur. `lang` verilmezse sayfanın `lang` değerine (`<html lang="tr">`) uyar, yoksa İngilizce olur. `lang="tr"` ya da `lang="en"` ile o dil kullanılır.
+
+## vivePDF işareti
+
+Araç çubuğu, vivepdf.com'u yeni sekmede açan küçük bir vivePDF işaretiyle başlar. Başkalarının ücretsiz bir görüntüleyici bulmasına yardım eder; `branding="false"` onu gizler. MIT lisansı bunu sormadan yapmana izin verir.
+
+## Telefon ve tablette
+
+Dar ekranlarda araç çubuğu sayfa numarasını, yakınlaştırmayı ve menüyü tutar, ziyaretçi aşağı kaydırırken kenara çekilir. Küçük resimlerin ve içindekilerin bulunduğu yan panel alttan bir sayfa olarak açılır. İki parmakla sayfalar yakınlaştırılır. Bunların hepsi masaüstü tarayıcıların yanında iPhone ve iPad'de de deneniyor.
+
+---
+
+# Web görüntüleyici güvenliği ve gizlilik
+
+> vivePDF web görüntüleyicinin neyi kime gönderdiği, başka sitedeki PDF'lerin nasıl gösterileceği ve denenmiş İçerik Güvenliği Politikaları.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/
+Son güncelleme: 2026-10-31
+
+Görüntüleyici, gizliliği önemseyen ve sıkı güvenlik politikaları çalıştıran sitelerde güvenle kullanılmak için yapıldı. Bu sayfa ne indirdiğini, neyi asla yapmadığını ve sunucunun hangi ayarlara ihtiyaç duyabileceğini anlatıyor.
+
+## Ziyaretçinin tarayıcısından ne çıkar
+
+Ziyaretçi ya da belge hakkında vivePDF'e hiçbir şey gönderilmez. Tarayıcı yalnızca şu istekleri yapar:
+
+| İstek | Nereye |
+| --- | --- |
+| Görüntüleyicinin kendi dosyaları (yükleyici, görüntüleyici, işçiler, motor) | Senin sunucun ya da onları yüklediğin CDN |
+| PDF | `src` içindeki adres |
+| Yedek fontlar; yalnızca `fonts` özniteliğiyle ve yalnızca belgenin ihtiyaç duyduğu diller için | Belirttiğin klasör |
+
+Analiz aracı, çerez ya da hesap yok. Ziyaretçinin `open(file)` ile açtığı bir dosya onun tarayıcısında kalır. Çizimler de senin sayfan onları `annotations()` ya da `save()` ile okuyana kadar orada kalır.
+
+Araç çubuğundaki vivePDF işareti, adresinde `?ref=viewer` bulunan düz bir bağlantıdır. Ziyaretçi tıklamadıkça vivepdf.com'dan hiçbir şey yüklenmez.
+
+## PDF içindeki bağlantılar
+
+Bir PDF bağlantılar içerebilir. Görüntüleyici başka sayfalara atlamaları izler, web ve e-posta bağlantılarını o sekmeye senin sayfana erişim vermeden yeni bir sekmede açar, betik bağlantılarını ve diğer bütün adres türlerini yok sayar. İçindekiler listesindeki bağlantılar da aynı şekilde denetlenir.
 
 ## Başka sitedeki PDF'ler
 
@@ -2023,11 +2561,234 @@ Access-Control-Allow-Origin: https://senin-siten.example
 Access-Control-Expose-Headers: Content-Range
 ```
 
-İkinci başlık, görüntüleyicinin büyük bir dosyanın yalnızca ekrandaki kısımlarını indirmesini sağlar. İlki olmadan görüntüleyici dosyanın indirilemediğini söyler.
+İkinci başlık, görüntüleyicinin büyük bir dosyanın yalnızca ekrandaki kısımlarını indirmesini sağlar; o olmadan görüntüleyici dosyanın tamamını indirir. İlki olmadan dosya okunamaz ve görüntüleyici `network` bildirir.
 
-## İçerik Güvenliği Politikası
+## Güvenlik politikası (CSP)
 
-Siten bir İçerik Güvenliği Politikası (CSP) gönderiyorsa, görüntüleyici için politikaya birkaç kayıt eklenmeli: motor için `script-src` içinde `'wasm-unsafe-eval'`, çizilen sayfalar için `img-src` içinde `blob:` ve `connect-src` içinde PDF'in geldiği site; dosyalar CDN'den geliyorsa CDN de `script-src`, `worker-src` ve `connect-src` içine yazılmalı. `'unsafe-inline'` ya da `'unsafe-eval'` gerekmez. Dosyalar kendi sitende ve CDN'deyken denenmiş politikalar [CSP rehberinde](https://github.com/mtvrkan/vivePDF/blob/main/apps/embed/docs/csp.md).
+Görüntüleyici `'unsafe-inline'` ya da `'unsafe-eval'` istemez. Stilleri oluşturulmuş stil sayfalarıyla (constructed style sheets) uygulanır; bu yüzden `style-src` onun için bir şey gerektirmez. Aşağıdaki politikalar Chromium ve WebKit'te denendi ve hiçbir ihlal raporuna yol açmıyor.
+
+### Görüntüleyici dosyaları kendi sitende
+
+```text
+default-src 'none';
+script-src 'self' 'wasm-unsafe-eval';
+worker-src 'self';
+connect-src 'self';
+img-src 'self' blob:
+```
+
+### Görüntüleyici dosyaları bir CDN'den
+
+Başka bir CDN kullanıyorsan `https://cdn.jsdelivr.net` yerine onu yaz.
+
+```text
+default-src 'none';
+script-src 'self' https://cdn.jsdelivr.net 'wasm-unsafe-eval';
+worker-src blob: https://cdn.jsdelivr.net;
+connect-src 'self' https://cdn.jsdelivr.net;
+img-src 'self' blob:
+```
+
+Bunlar yalnızca görüntüleyiciyi gösteren bir sayfa için eksiksiz politikalar; sayfanın geri kalanının ihtiyacı olanları ekle.
+
+### Her kayıt ne için
+
+| Yönerge | Neden |
+| --- | --- |
+| Görüntüleyicinin kaynağıyla `script-src` | Yükleyici ve onun yüklediği görüntüleyici kodu |
+| `'wasm-unsafe-eval'` | PDF motoru WebAssembly'dir ve onsuz başlayamaz |
+| `worker-src` | Motor bir işçide (worker) çalışır. CDN'den gelirken işçi, asıl işçiyi yükleyen küçük bir `blob:` betiğiyle başlar; bu yüzden ikisi de gerekir |
+| `connect-src` | PDF, motor dosyası ve `fonts` varsa font klasörü |
+| `img-src blob:` | Sayfalar tarayıcıda üretilen resimler olarak gösterilir |
+
+PDF ya da fontlar başka bir sitedeyse o siteyi `connect-src`'ye ekle:
+
+```text
+connect-src 'self' https://dosyalar.example.com
+```
+
+Bazı sunucular aynı politikayı görüntüleyicinin betikleri dahil her dosyayla gönderir; tarayıcı o zaman politikayı motorun işçisinde de uygular. Yukarıdaki politikalar bu durumu da karşılar.
+
+## Önbellek
+
+Motor (sıkıştırmadan önce yaklaşık 4,5 MB) sitenin Cache Storage'ında, adı `vivepdf-engine-` ile başlayan bir alanda tutulur; ziyaretçi onu her sürüm için bir kez indirir. Yeni sürüm kaydedilince eskileri silinir. Politikaya ek bir şey gerektirmez.
+
+## Dışarıdan gelen çizim verisi
+
+`setAnnotations()` yalnızca görüntüleyicinin bildiği alanları kabul eder, her sayıyı, rengi ve uzunluğu denetler, bir kayıt hatalıysa hiçbir şeyi değiştirmez. Güvenilmeyen bir kaynaktan gelen liste PDF'e bağlantı, resim ya da betik koyamaz. Sınırlar [çizim araçlarıyla](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/#girdi-denetimi) birlikte listeleniyor.
+
+---
+
+# Web görüntüleyici performansı ve büyük dosyalar
+
+> vivePDF web görüntüleyicinin neyi ne zaman indirdiği, büyük PDF'leri parça parça nasıl açtığı, ölçülmüş açılış süreleri ve yedek fontlar.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans/
+Son güncelleme: 2026-10-31
+
+Görüntüleyici, üzerinde PDF olan bir sayfa olmayan bir sayfa kadar hızlı kalsın diye yapıldı. Bu sayfa neyin ne zaman indirildiğini ve bir belgenin ne kadar sürede göründüğünü anlatıyor.
+
+## Ne, ne zaman indirilir
+
+| Parça | Boyut (sıkıştırılmış) | Ne zaman |
+| --- | --- | --- |
+| Yükleyici, `vivepdf.js` | 3 KB'tan az | Sayfanla birlikte |
+| Görüntüleyici | yaklaşık 70 KB | Görüntüleyici ekrana 200 piksel yaklaşınca ya da `open()`/`show()` çağrılınca |
+| PDF motoru (PDFium) | yaklaşık 1,6 MB, açılmış hali 4,5 MB | Aynı anda, her sürüm için bir kez; sonra tarayıcının önbelleğinden |
+| Çizim araçları | yaklaşık 46 KB | Yalnızca `annotate` ile, görüntüleyici başlarken |
+| Yedek fontlar | Font başına 25 KB ile 8,5 MB arası | Yalnızca `fonts` ile, bir sayfa ihtiyaç duyunca |
+
+Sayfanın çok aşağısındaki bir görüntüleyici, ziyaretçi yakınına kaydırana kadar hiçbir şeye mal olmaz. `lightbox` modunda açılır pencere açılana kadar yükleyiciden başka bir şey indirilmez.
+
+## Büyük dosyalar
+
+Varsayılan `load="range"` ile görüntüleyici sunucudan dosyanın yalnızca ekrandaki sayfalar için gereken kısımlarını, ziyaretçi kaydırdıkça da sonrakileri ister. 500 sayfalık bir kitap ya da 80 MB'lık bir tarama, kısa bir mektup kadar hızlı açılır.
+
+Bunun için sunucunun aralık isteklerine (range request) cevap vermesi gerekir. Çoğu verir: statik barındırma, CDN'ler, nesne depoları ve yaygın web sunucuları hiçbir ayar olmadan `Accept-Ranges: bytes` gönderir. Sunucu bunun yerine dosyanın tamamını gönderirse görüntüleyici onu kullanır ve yine çalışır. Başka sitedeki bir dosya için o sitenin `Content-Range`'i de açması gerekir; bkz. [başka sitedeki PDF'ler](https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/#ba%C5%9Fka-sitedeki-pdfler).
+
+`load="full"` dosyanın tamamını göstermeden önce indirir. Ziyaretçinin zaten sonuna kadar okuyacağı küçük dosyalar ya da aralık isteklerine yanlış cevap veren bir sunucu için kullan.
+
+## Ölçülen süreler
+
+Sayfanın başlangıcından belgenin ilk sayfası ekrana gelene kadar geçen süre; bir MacBook'ta yerel bir sunucuyla ölçüldü (31 Ekim 2026):
+
+| Belge | Chromium | WebKit (Safari) |
+| --- | --- | --- |
+| 2 sayfa, 0,4 MB | 0,14 sn | 0,15 sn |
+| 500 sayfa, 1 MB | 0,16 sn | 0,16 sn |
+| 20 taranmış sayfa, 80 MB | 0,32 sn | 0,34 sn |
+
+`load="range"` ile 80 MB'lık tarama, Chromium'da ilk sayfasını göstermek ve son sayfasına atlamak için 28 MB indirdi.
+
+Daha yavaş bir bağlantıda (9 Mbit/sn, 60 ms gecikme) ilk ziyaret kısa dosya için 2,4 sn, kitap için 3,0 sn sürüyor; çoğu motorun indirilmesi. Sonraki ziyarette motor önbellekten gelir ve aynı dosyalar 0,7 sn ve 1,2 sn'de açılır. O bağlantıda 80 MB'lık tarama `load="range"` ile 7,6 sn'de açılıyor; `load="full"` ile testin süre sınırı içinde açılmıyor. `range`'in varsayılan olmasının nedeni bu.
+
+## Önbellek
+
+Motor sitenin Cache Storage'ında, adı `vivepdf-engine-` ile başlayan bir alanda tutulur ve sitenin her sayfasında yeniden kullanılır. Görüntüleyicinin yeni bir sürümü kendi motorunu kaydeder ve eskisini siler. Tarayıcısı depolamayı engelleyen ziyaretçiler onu yeniden indirir, o kadar.
+
+Görüntüleyicinin kendi dosyaları senin sunucundan ya da CDN'den normal HTTP önbelleğiyle gelir. jsDelivr'da en uzun önbellek süresi için bir sürüm sabitle (`@0.2.0`); `@0` güncellemeler sana ulaşsın diye daha kısa süre önbellekte kalır.
+
+## Kendi fontu olmayan PDF'ler için fontlar
+
+PDF'lerin çoğu kullandığı fontları içinde taşır. Bazıları onları dışarıda bırakır ve okuyucuda bulunmasını bekler. Latin harfli metin için motorun kendi fontları var. Böyle dosyalardaki Japonca, Korece, Çince, Kiril, Yunanca, Vietnamca, İbranice ve Arapça metin için görüntüleyicinin senin sunucundan Noto fontlarını alması gerekir; yoksa o metin kutucuklar olarak görünür ya da hiç görünmez.
+
+Fontlar npm'de yok. Klasörü vivePDF deposundan oluştur:
+
+1. Depoyu al ve font paketine geç:
+
+   ```sh
+   git clone https://github.com/mtvrkan/vivePDF.git
+   cd vivePDF/apps/embed-fonts
+   ```
+
+2. Kur ve fontları topla:
+
+   ```sh
+   pnpm install
+   pnpm collect
+   ```
+
+   Bu, 14 font dosyasını (toplam 46 MB) `fonts/` klasörüne, lisanslarını da `OFL.txt` dosyasına yazar.
+
+3. `fonts/` içindeki dosyaları ve `OFL.txt`'yi sitende tek bir klasöre kopyala ve görüntüleyiciyi o klasöre yönlendir:
+
+   ```html
+   <vive-pdf src="/dosyalar/katalog.pdf" fonts="/vivepdf-fonts/"></vive-pdf>
+   ```
+
+Ziyaretçi yalnızca açık belgenin ihtiyaç duyduğu fontları indirir. En büyükleri, her biri yaklaşık 8,5 MB olan basitleştirilmiş Çince fontları; İbranice ve Arapça 150 KB'ın altında.
+
+| Metin | Dosyalar |
+| --- | --- |
+| Kiril, Yunanca, Vietnamca | `NotoSans-*.ttf` (her biri 0,6 MB) |
+| Japonca | `NotoSansJP-*.otf` (4,5 MB) |
+| Korece | `NotoSansKR-*.otf` (4,6 MB) |
+| Çince, basitleştirilmiş | `NotoSansHans-*.otf` (8,4 MB) |
+| Çince, geleneksel | `NotoSansHant-*.otf` (5,7 MB) |
+| İbranice | `NotoSansHebrew-*.ttf` (26 KB) |
+| Arapça | `NotoNaskhArabic-*.ttf` (134 KB) |
+
+Belgelerinin hiç kullanmadığı dillerin dosyalarını koymayabilirsin.
+
+## İpuçları
+
+- Görüntüleyiciye baştan CSS ile bir yükseklik ver; yüklenirken sayfa zıplamasın.
+- Taranmış bir PDF çoğunlukla resimden oluşur. Onu vivePDF uygulamasında [Sıkıştır](https://vivepdf.com/dokumantasyon/pdf-kucultme/) ile küçültmek, buradaki her ayardan daha çok işe yarar.
+
+---
+
+# Web görüntüleyici sorun giderme
+
+> vivePDF web görüntüleyicide sık karşılaşılan sorunların cevapları; indirilemeyen dosyadan engellenen motora, eksik harflerden çizimlere ve çatı kurulumuna kadar.
+
+URL: https://vivepdf.com/dokumantasyon/web-goruntuleyici-sorunlar/
+Son güncelleme: 2026-10-31
+
+Görüntüleyici bir belgeyi açamadığında kendi mesajını gösterir; `vive-error` de aynı nedeni sayfana bir kod olarak verir. Mesajdan başla: aşağıdaki bölümler onu izliyor.
+
+## "Dosya indirilemedi"
+
+Kod `network`. Sık görülen nedenler:
+
+- **PDF başka bir sitede** ve o site sayfanın onu okumasına izin vermiyor. O sitenin dosyayla birlikte `Access-Control-Allow-Origin` göndermesi gerekir; bkz. [başka sitedeki PDF'ler](https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/#ba%C5%9Fka-sitedeki-pdfler). Tarayıcının konsolu eksik başlığın adını verir.
+- **İçerik Güvenliği Politikan** PDF'in sitesini `connect-src` içinde saymıyor. Konsol bir CSP ihlali gösterir; siteyi [güvenlik politikası](https://vivepdf.com/dokumantasyon/web-goruntuleyici-guvenlik/#g%C3%BCvenlik-politikas%C4%B1-csp) bölümündeki gibi ekle.
+- **Adres bir oturum istiyor** ve tarayıcı o siteye oturum bilgisini göndermiyor, ya da adres bir giriş sayfasına yönlendiriyor.
+
+## "Dosya bulunamadı"
+
+Kod `not-found`: sunucu `src` içindeki adres için 404 döndü. Göreli bir adres betiğe göre değil sayfana göre okunur; yani `/blog/yazi/` sayfasındaki `src="rapor.pdf"` `/blog/yazi/rapor.pdf` dosyasını arar. Emin olmak için adresi `/` ile başlat.
+
+## "Görüntüleyici başlatılamadı"
+
+Kod `engine`: PDF motoru indirilemedi ya da çalışmasına izin verilmedi.
+
+- İçerik Güvenliği Politikası varsa `script-src` içinde `'wasm-unsafe-eval'`, `worker-src` ve `connect-src` içinde görüntüleyicinin kaynağı olduğuna bak.
+- npm ve bir paketleyiciyle kullanıyorsan görüntüleyicinin dosyaları herkese açık bir klasöre kopyalanmalı ve `assets` oraya göstermeli; bkz. [kurulum](https://vivepdf.com/dokumantasyon/web-goruntuleyici-kurulum/). Ağ sekmesi hangi dosyanın 404 döndüğünü gösterir.
+- Kendi barındırdığın zip ile kullanıyorsan `dist`'teki bütün dosyaları `vivepdf.js` ile aynı klasörde tut.
+
+## "Dosya bozuk"
+
+Kod `damaged`: dosya PDF değil ya da bozuk. Adresin gerçekten PDF'i döndürdüğüne, bir HTML hata ya da giriş sayfası döndürmediğine bak. Dosya başka yerde açılıyor ama burada açılmıyorsa, paylaşabiliyorsan dosyayla birlikte [bildir](https://github.com/mtvrkan/vivePDF/issues).
+
+## Görüntüleyici boş ya da yüksekliği yok
+
+`sized` modunda görüntüleyici, CSS başka bir yükseklik vermedikçe 600 piksel yüksekliğindedir. Yüzde olarak verilen yükseklik yalnızca üst öğenin bir yüksekliği varsa çalışır. Onu sıkıştıran bir flex ya da grid düzenindeyse bir `min-height` ver. `lightbox` tasarım gereği yer kaplamaz: `show()` çağır.
+
+## Bazı harfler kutucuk ya da eksik
+
+PDF o metin için kendi fontlarını taşımıyor. Japonca, Korece, Çince, Kiril, Yunanca, Vietnamca, İbranice ve Arapça için yedek fontları [kendi fontu olmayan PDF'ler için fontlar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans/#kendi-fontu-olmayan-pdfler-i%C3%A7in-fontlar) bölümündeki gibi kur.
+
+## Büyük dosyalar yavaş
+
+Ağ sekmesinde PDF isteklerinin `206 Partial Content` döndürdüğüne bak. `200` dönüyorsa sunucu her seferinde dosyanın tamamını gönderiyor; aralık isteklerini aç, başka bir siteyse `Content-Range`'i açtır. Ayrıntısı [performans](https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans/#b%C3%BCy%C3%BCk-dosyalar) sayfasında.
+
+## Çiz düğmesi yok
+
+Çizim araçları, öğede `annotate` özniteliği olana kadar kapalıdır. Öznitelik var ama düğme hâlâ yoksa ağ sekmesine bak: çizim araçları görüntüleyicinin diğer dosyalarının yanında ayrı bir dosya olarak gelir ve engellenmemelidir.
+
+## Vurgulama bir sayfada çalışmıyor
+
+Vurgulama, altını çizme ve üstünü çizme PDF'te metin ister. Taranmış bir sayfa bir resimdir; kalemi ya da fosforlu kalemi kullan, ya da önce vivePDF uygulamasında [OCR](https://vivepdf.com/dokumantasyon/ocr/) ile metni seçilebilir yap.
+
+## Yeniledikten sonra çizimler gitti
+
+Görüntüleyici hiçbir şey saklamaz. Ziyaretçiler işaretlerini PDF'i indirerek tutar; siten onları `annotations()` ile saklayıp `setAnnotations()` ile geri koyabilir, [sunucuna kaydetme](https://vivepdf.com/dokumantasyon/web-goruntuleyici-cizim/#sunucuna-kaydetme) bölümündeki gibi.
+
+## Metotlar `not-ready` ile reddediyor
+
+`annotations()`, `setAnnotations()` ve `save()` açık bir belge ister. Onları `vive-ready`'den sonra çağır. Diğer metotlar kendileri bekler.
+
+## Çatılar
+
+- **React 19** öznitelikleri özel öğelere olduğu gibi geçirir; `vive-` olaylarını bir ref ve `addEventListener` ile dinle.
+- **Vue**, `vive-pdf` `isCustomElement` içinde listelenene kadar onun bilinmeyen bir bileşen olduğu uyarısını verebilir.
+- **Sunucuda oluşturma**: görüntüleyiciyi yalnızca tarayıcıda içe aktar. Öğe sunucunun HTML'inde durabilir; betik çalışınca başlar.
+
+Her biri için örnekler [kurulum](https://vivepdf.com/dokumantasyon/web-goruntuleyici-kurulum/) sayfasında.
+
+## Hâlâ takıldın mı?
+
+GitHub'da bir [konu (issue) aç](https://github.com/mtvrkan/vivePDF/issues): tarayıcıyı ve sürümünü, görüntüleyicinin sürümünü, hata kodunu ve mümkünse PDF'i ya da sorunu gösteren bir sayfayı yaz.
 
 ---
 

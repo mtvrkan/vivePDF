@@ -1,0 +1,124 @@
+# Drawing and notes in the web viewer
+
+> Let visitors draw, highlight text and leave notes on a PDF in your site, download the result, and save the annotations to your own server as JSON.
+
+URL: https://vivepdf.com/en/docs/web-viewer-drawing/
+Last updated: 2026-10-31
+
+With the `annotate` attribute, visitors can mark up a PDF right in your page: draw with a pen, highlight or underline text, leave notes and add shapes. Download then gives them the PDF with their marks in it. Nothing leaves the browser unless your own page sends it somewhere.
+
+```html
+<vive-pdf src="/files/contract.pdf" annotate></vive-pdf>
+```
+
+The drawing tools are off by default. Without `annotate` the viewer does not even download their code, so reading-only pages stay as light as before.
+
+## The tools
+
+The Draw button in the toolbar opens a second bar above it.
+
+| Tool | What it does |
+| --- | --- |
+| Pen | Free drawing |
+| Marker | A wide, see-through stroke, like a highlighter pen |
+| Highlight, underline, strike out text | Drag across text to mark it |
+| Note | Click to pin a note, then type in the box that opens |
+| Rectangle, ellipse | Drag to draw an outline |
+| Arrow | Drag from the tail to the tip |
+
+Next to the tools are six colours, three line widths, Undo, Redo, Delete selected and Close. Clicking a mark selects it: it can then be moved, resized, recoloured or deleted. The marks a PDF already has can be selected and changed too.
+
+Keys while the bar is open: Ctrl/Cmd+Z undoes, Ctrl/Cmd+Shift+Z redoes, Delete or Backspace deletes the selected mark and Escape puts the tool down.
+
+> **Text tools need real text**
+>
+> Highlight, underline and strike out work on text the PDF really contains. A scanned page is a picture: use the pen or the marker there.
+
+Notes keep every letter, including ı, ş, ğ and İ. There is no free text box on the page itself yet, because the standard PDF fonts it would use cannot show those letters.
+
+## Download and print
+
+Once something is drawn, Download saves a copy of the PDF with the marks in it, under the file's own name. Print puts them on paper. The original file on your server is not changed.
+
+The marks are standard PDF annotations, so Adobe Acrobat, Preview, the vivePDF app and other readers show them and can edit them.
+
+## For developers
+
+Four methods and one event let your page keep the marks, for example per user on your own server.
+
+| | What it does |
+| --- | --- |
+| `annotations()` | Resolves with the list of marks on every page, including those the PDF already had |
+| `setAnnotations(list)` | Puts the list in place of all those marks; it does not fire `vive-annotationchange` and clears Undo |
+| `save()` | Resolves with the PDF, marks included, as a `Blob` |
+| `setTool(name)` | Opens the drawing bar with a tool: `pen`, `marker`, `highlight`, `underline`, `strikeout`, `note`, `rectangle`, `ellipse` or `arrow`; `null` puts the tool down |
+| `vive-annotationchange` | Fires with `{ type, page }` when a mark is created, updated or deleted |
+
+### Saving to your server
+
+```js
+const viewer = document.querySelector("vive-pdf");
+
+viewer.addEventListener("vive-ready", async () => {
+  const response = await fetch("/api/marks?file=contract");
+  if (response.ok) await viewer.setAnnotations(await response.json());
+});
+
+let timer = 0;
+viewer.addEventListener("vive-annotationchange", () => {
+  clearTimeout(timer);
+  timer = setTimeout(async () => {
+    const marks = await viewer.annotations();
+    await fetch("/api/marks?file=contract", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(marks) });
+  }, 1000);
+});
+```
+
+To keep the whole PDF instead, send `await viewer.save()` as the request body.
+
+### The format
+
+Each mark is a small object. Positions are in PDF points (1/72 inch) from the top-left corner of the page, `page` counts from 1 and `color` is `#rrggbb`. `opacity` (0–1) and `text` are optional.
+
+| `type` | Fields |
+| --- | --- |
+| `pen`, `marker` | `width`, `strokes`: a list of strokes, each a list of `{ x, y }` |
+| `highlight`, `underline`, `strikeout` | `boxes`: one `{ x, y, width, height }` per line of text |
+| `note` | `box`: where the note icon sits; `text`: the note |
+| `rectangle`, `ellipse` | `width`, `box`: the outline |
+| `line`, `arrow` | `width`, `from`, `to`: `{ x, y }`; an arrow's tip is at `to` |
+
+```json
+[
+  { "type": "note", "page": 1, "color": "#FFCD45", "opacity": 1, "text": "Check the dates", "box": { "x": 400, "y": 90, "width": 20, "height": 20 } },
+  { "type": "pen", "page": 2, "color": "#E44234", "opacity": 1, "width": 4, "strokes": [[{ "x": 100, "y": 600 }, { "x": 220, "y": 640 }]] }
+]
+```
+
+Links, form fields, stamps and other kinds of annotation are not in the list and are left alone by `setAnnotations()`.
+
+### Checks on the input
+
+`setAnnotations()` reads the whole list before it changes anything. If an entry is wrong, nothing changes and the promise rejects with code `invalid` and a message that names the entry and the field, for example `annotation 3 is not valid: color must look like #rrggbb`.
+
+| Limit | |
+| --- | --- |
+| Marks in one list | 5 000 |
+| Points in one drawing | 20 000 |
+| Boxes in one highlight | 1 000 |
+| Characters in one note | 2 000 |
+| Line width | 0.1 to 100 points |
+
+Only the fields above are read. Anything else in an entry, such as a link address, a picture or a script, is dropped, so a list from an untrusted source cannot add them to the PDF.
+
+### Errors
+
+The four methods reject with an `Error` whose `code` is one of:
+
+| Code | Meaning |
+| --- | --- |
+| `annotate-off` | The element has no `annotate` attribute |
+| `not-ready` | No document is open yet; wait for `vive-ready` |
+| `invalid` | `setAnnotations()` got a list it cannot use |
+| `replaced` | Another document was opened before the answer came |
+| `failed` | The marks could not be written into the PDF |
