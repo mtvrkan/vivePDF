@@ -14,6 +14,7 @@ import { ThumbnailPluginPackage } from "@embedpdf/plugin-thumbnail/preact";
 import { TilingPluginPackage } from "@embedpdf/plugin-tiling/preact";
 import { ViewportPluginPackage } from "@embedpdf/plugin-viewport/preact";
 import { ZoomMode, ZoomPluginPackage, useZoomCapability } from "@embedpdf/plugin-zoom/preact";
+import type { VivePdfMode } from "../api/types";
 import { assetUrl, setAssetBase } from "../engine/assets";
 import { createTranslator, type Lang } from "../i18n";
 import viewerCss from "../styles/viewer.css?inline";
@@ -24,6 +25,9 @@ import { CommandQueue } from "./commandQueue";
 import type { ViewerFeatures } from "./features";
 import { downloadName } from "./fileName";
 import { TranslateContext, useT } from "./i18nContext";
+import { Icon } from "./Icon";
+import { useInlineScroll } from "./inlineScroll";
+import { createLightbox } from "./lightbox";
 import type { MenuItem } from "./MoreMenu";
 import { OpenProblemView } from "./OpenProblemView";
 import { engineFailure, errorCodeOf, problemFromDocument, problemFromEngine, problemFromStatus, type OpenProblem } from "./openError";
@@ -39,6 +43,7 @@ import { useViewerKeys } from "./useViewerKeys";
 
 export type MountOptions = {
   source: ViewerSource;
+  mode: VivePdfMode;
   startPage: number;
   assetBase: string;
   lang: Lang;
@@ -50,7 +55,13 @@ export type MountOptions = {
   emit: (event: ViewerEvent) => void;
 };
 
-export type ViewerHandle = { update: (options: MountOptions) => void; command: (command: ViewerCommand) => void; unmount: () => void };
+export type ViewerHandle = {
+  update: (options: MountOptions) => void;
+  command: (command: ViewerCommand) => void;
+  show: () => void;
+  close: () => void;
+  unmount: () => void;
+};
 
 type OpenState = { kind: "loading" } | { kind: "ready" } | { kind: "problem"; problem: OpenProblem; busy: boolean };
 type OpenTask = ReturnType<DocumentManagerCapability["openDocumentUrl"]>;
@@ -128,6 +139,7 @@ function FirstPageWatch({ mark }: { mark: MountOptions["mark"] }) {
 type ViewerUiProps = {
   sourceUrl: string;
   fileName: string;
+  mode: VivePdfMode;
   features: ViewerFeatures;
   host: HTMLElement | null;
   startPage: number;
@@ -179,7 +191,7 @@ function useStartPage(fitted: boolean, startPage: number, onPage: (page: number)
   return useMemo(() => ({ settle, pending }), [settle, pending]);
 }
 
-function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage, commands, emit }: ViewerUiProps) {
+function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage, commands, emit }: ViewerUiProps) {
   const t = useT();
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState<PanelTab>("pages");
@@ -209,6 +221,7 @@ function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage, comm
   const start = useStartPage(fitted, startPage, onPage);
   useViewerApi(DOCUMENT_ID, fitted, commands, emit, { search: searchShown ? searchFor : null, print, download, start });
   useViewerKeys(DOCUMENT_ID, host, searchShown ? openSearch : null, { print, download });
+  useInlineScroll(fitted ? host : null, mode === "inline");
   const fileItems: MenuItem[] = [];
   if (print) fileItems.push({ kind: "action", id: "print", label: t("print"), icon: "print", onSelect: print });
   if (download) fileItems.push({ kind: "action", id: "download", label: t("download"), icon: "download", onSelect: download });
@@ -336,7 +349,7 @@ function Opener({ options, host, startPage, onPage, commands }: OpenerProps) {
     <DocumentContent documentId={DOCUMENT_ID}>
       {({ isLoaded }) =>
         isLoaded ? (
-          <ViewerUi sourceUrl={source.url} fileName={fileName} features={options.features} host={host} startPage={startPage} onPage={onPage} commands={commands} emit={emit} />
+          <ViewerUi sourceUrl={source.url} fileName={fileName} mode={options.mode} features={options.features} host={host} startPage={startPage} onPage={onPage} commands={commands} emit={emit} />
         ) : (
           <Loading text={t("loading")} />
         )
@@ -356,9 +369,9 @@ function usePrefersDark(): boolean {
   return dark;
 }
 
-type ViewerProps = { options: MountOptions; commands: CommandQueue<ViewerCommand> };
+type ViewerProps = { options: MountOptions; commands: CommandQueue<ViewerCommand>; onDismiss: () => void };
 
-function Viewer({ options, commands }: ViewerProps) {
+function Viewer({ options, commands, onDismiss }: ViewerProps) {
   const [attempt, setAttempt] = useState(0);
   const restartsRef = useRef(0);
   const pageRef = useRef(options.startPage);
@@ -391,7 +404,7 @@ function Viewer({ options, commands }: ViewerProps) {
   }, []);
   return (
     <TranslateContext.Provider value={translate}>
-      <div ref={setHost} class="vp" data-theme={resolveTheme(options.theme, prefersDark)} role="region" aria-label={translate("viewer")}>
+      <div ref={setHost} class="vp" data-theme={resolveTheme(options.theme, prefersDark)} data-mode={options.mode} role="region" aria-label={translate("viewer")}>
         {failure && !restarting ? (
           <OpenProblemView problem="engine" sourceUrl={options.source.url} offerDownload={options.features.download} busy={false} onRetry={() => setAttempt((value) => value + 1)} onPassword={() => {}} />
         ) : null}
@@ -400,6 +413,11 @@ function Viewer({ options, commands }: ViewerProps) {
           <EmbedPDF key={`${attempt}-${generationRef.current}`} engine={engine} plugins={plugins}>
             {({ pluginsReady }) => (pluginsReady ? <Opener options={options} host={host} startPage={pageRef.current} onPage={onPage} commands={commands} /> : null)}
           </EmbedPDF>
+        ) : null}
+        {options.mode === "lightbox" ? (
+          <button class="vp-btn vp-glass vp-close" type="button" aria-label={translate("close")} title={translate("close")} onClick={onDismiss}>
+            <Icon name="close" />
+          </button>
         ) : null}
         <FirstPageWatch mark={mark} />
       </div>
@@ -413,16 +431,27 @@ export function mount(root: ShadowRoot, options: MountOptions): ViewerHandle {
   sheet.replaceSync(viewerCss);
   root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
   const container = document.createElement("div");
+  container.className = "vp-frame";
   root.append(container);
   const commands = new CommandQueue<ViewerCommand>();
-  const draw = (next: MountOptions) => render(<Viewer options={next} commands={commands} />, container);
+  let current = options;
+  const lightbox = createLightbox(root, container, () => current.emit({ type: "close", detail: null }));
+  const draw = (next: MountOptions) => {
+    current = next;
+    container.dataset.mode = next.mode;
+    lightbox.place(next.mode === "lightbox", createTranslator(next.lang)("viewer"));
+    render(<Viewer options={next} commands={commands} onDismiss={lightbox.close} />, container);
+  };
   draw(options);
   return {
     update: draw,
     command: (command) => commands.push(command),
+    show: lightbox.show,
+    close: lightbox.close,
     unmount: () => {
       render(null, container);
       container.remove();
+      lightbox.dispose();
       root.adoptedStyleSheets = root.adoptedStyleSheets.filter((entry) => entry !== sheet);
     },
   };

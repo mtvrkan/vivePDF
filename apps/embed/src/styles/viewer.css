@@ -43,6 +43,23 @@
   color-scheme: dark;
 }
 .vp *, .vp *::before, .vp *::after { box-sizing: border-box; }
+.vp-frame[data-mode="inline"] { height: 600px; }
+.vp-frame[data-mode="inline"] > .vp { position: sticky; inset: auto; top: 0; height: min(100vh, 100%); height: min(100dvh, 100%); }
+.vp-frame[data-mode="inline"] .vp-viewport { overflow: hidden !important; }
+.vp-dialog {
+  position: fixed; inset: 0; margin: auto; padding: 0; border: 0; border-radius: 14px; overflow: hidden;
+  width: min(1100px, calc(100vw - 48px)); height: calc(100vh - 48px); height: calc(100dvh - 48px); max-width: none; max-height: none;
+  background: transparent; box-shadow: 0 24px 64px -20px hsl(222 40% 6% / 0.6); overscroll-behavior: contain;
+}
+.vp-dialog[open] { animation: vp-dialog-in 200ms cubic-bezier(0.2, 0, 0, 1); }
+.vp-dialog::backdrop { background: hsl(222 30% 6% / 0.62); }
+@keyframes vp-dialog-in { from { opacity: 0; transform: translateY(12px); } }
+@media (max-width: 640px) {
+  .vp-dialog { width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; }
+}
+.vp-dialog:focus { outline: none; }
+.vp-btn.vp-close { position: absolute; top: 12px; right: 12px; z-index: 4; width: 48px; height: 48px; border-radius: 24px; }
+.vp[data-mode="lightbox"] .vp-search { right: 68px; }
 .vp-stage { position: absolute; inset: 0; }
 .vp-viewport { width: 100%; height: 100%; background: var(--vp-canvas); }
 .vp-page { position: relative; background: #fff; box-shadow: var(--vp-page-shadow); }
@@ -209,8 +226,11 @@ a.vp-text-btn { display: inline-flex; align-items: center; gap: 8px; text-decora
   .vp-pill { bottom: 12px; }
   .vp-search { top: 8px; right: 8px; }
   .vp-search[data-open="true"] { left: 8px; width: auto; }
+  .vp-btn.vp-close { top: 8px; right: 8px; }
+  .vp[data-mode="lightbox"] .vp-search { right: 64px; }
   .vp-panel { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: min(70%, 520px); border-radius: 16px 16px 0 0; border-bottom: 0; z-index: 5; }
 }
 @media (prefers-reduced-motion: reduce) {
   .vp-pill, .vp-btn, .vp-tree-twisty .vp-icon { transition: none; }
+  .vp-dialog[open] { animation: none; }
 }

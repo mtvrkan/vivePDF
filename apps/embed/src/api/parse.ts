@@ -1,4 +1,6 @@
-import type { ZoomSetting } from "./types";
+import type { VivePdfMode, ZoomSetting } from "./types";
+
+const MODES: readonly VivePdfMode[] = ["sized", "inline", "full", "lightbox"];
 
 export const MIN_ZOOM_PERCENT = 10;
 export const MAX_ZOOM_PERCENT = 800;
@@ -16,4 +18,9 @@ export function parsePageSetting(value: string | number | null | undefined): num
   if (value === null || value === undefined) return null;
   const page = typeof value === "number" ? value : /^\s*\d+\s*$/.test(value) ? Number(value) : Number.NaN;
   return Number.isInteger(page) && page >= 1 ? page : null;
+}
+
+export function parseMode(value: string | null): VivePdfMode {
+  const mode = value?.trim().toLowerCase();
+  return MODES.find((entry) => entry === mode) ?? "sized";
 }

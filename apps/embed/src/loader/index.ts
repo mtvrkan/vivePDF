@@ -1,4 +1,4 @@
-import { parsePageSetting, parseZoomSetting } from "../api/parse";
+import { parseMode, parsePageSetting, parseZoomSetting } from "../api/parse";
 import type { VivePdfInput, VivePdfOpenError, VivePdfViewer, ZoomSetting } from "../api/types";
 import { parseFontBase } from "../engine/fontBase";
 import { resolveLang } from "../i18n/lang";
@@ -12,13 +12,13 @@ type Waiter = { resolve: () => void; reject: (error: VivePdfOpenError) => void }
 type OpenedData = { blob: Blob; name: string | null };
 
 const ASSET_BASE = import.meta.url.slice(0, import.meta.url.lastIndexOf("/") + 1);
-const HOST_STYLE = ":host{display:block;position:relative;height:600px;contain:strict}";
+const HOST_STYLE = ':host{display:block;position:relative;height:600px;contain:strict}:host([mode="full" i]){height:100vh;height:100dvh}:host([mode="inline" i]){height:auto;contain:layout style}:host([mode="lightbox" i]){display:contents}';
 const ACCENT_PROPERTY = "--vp-accent";
 
 export type MarkDetail = { name: string; time: number };
 
 export class VivePdfElement extends HTMLElement implements VivePdfViewer {
-  static readonly observedAttributes = ["src", "load", "page", "zoom", "accent", "theme", "lang", "fonts", "print", "download", "toolbar", "search", "filename"];
+  static readonly observedAttributes = ["mode", "src", "load", "page", "zoom", "accent", "theme", "lang", "fonts", "print", "download", "toolbar", "search", "filename"];
 
   private readonly root: ShadowRoot;
   private handle: ViewerHandle | null = null;
@@ -30,6 +30,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
   private objectUrl: string | null = null;
   private source: ViewerSource | null = null;
   private waiters: Waiter[] = [];
+  private shown = false;
   private current = { page: 0, pageCount: 0, zoom: 0 };
   private readonly emit = (event: ViewerEvent) => this.receive(event);
   private readonly markEvent = (name: string) => this.mark(name);
@@ -89,6 +90,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
       if (name === "src") this.forgetData();
       this.changeSource();
     } else {
+      if (name === "mode" && parseMode(value) !== "lightbox") this.shown = false;
       const options = this.handle ? this.options() : null;
       if (options) this.handle?.update(options);
     }
@@ -100,10 +102,12 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
       this.waiters.push({ resolve, reject });
     });
     if (typeof input === "string" || input instanceof URL) {
+      this.show();
       this.forgetData();
       this.setAttribute("src", String(input));
       return opened;
     }
+    this.show();
     this.forgetData();
     const blob = input instanceof Blob ? input : new Blob([input as BlobPart], { type: "application/pdf" });
     this.data = { blob, name: input instanceof File ? input.name : null };
@@ -131,6 +135,19 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
 
   download(): void {
     this.command({ kind: "download" });
+  }
+
+  show(): void {
+    if (parseMode(this.getAttribute("mode")) !== "lightbox") return;
+    this.shown = true;
+    this.visible = true;
+    if (this.handle) this.handle.show();
+    else void this.boot();
+  }
+
+  close(): void {
+    this.shown = false;
+    this.handle?.close();
   }
 
   private changeSource(): void {
@@ -169,6 +186,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
     if (!source) return null;
     return {
       source,
+      mode: parseMode(this.getAttribute("mode")),
       startPage: parsePageSetting(this.getAttribute("page")) ?? 1,
       assetBase: ASSET_BASE,
       lang: resolveLang(this.getAttribute("lang"), document.documentElement.lang),
@@ -195,6 +213,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
     const options = this.isConnected && this.visible ? this.options() : null;
     if (!options || this.handle) return;
     this.handle = mount(this.root, options);
+    if (this.shown) this.handle.show();
     this.queueStartZoom();
     const queued = this.queued;
     this.queued = [];
@@ -219,6 +238,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
       this.current.page = event.detail.page;
       this.current.pageCount = event.detail.pageCount;
     } else if (event.type === "zoomchange") this.current.zoom = event.detail.zoom;
+    else if (event.type === "close") this.shown = false;
     else this.settleWaiters(event.detail.code);
     this.dispatchEvent(new CustomEvent(`vive-${event.type}`, { detail: event.detail, bubbles: true, composed: true }));
   }

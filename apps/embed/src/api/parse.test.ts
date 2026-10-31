@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parsePageSetting, parseZoomSetting } from "./parse";
+import { parseMode, parsePageSetting, parseZoomSetting } from "./parse";
 
 describe("parseZoomSetting", () => {
   it("reads fit modes and percentages with or without a percent sign", () => {
@@ -32,5 +32,19 @@ describe("parsePageSetting", () => {
     const pages = ["0", "-2", "2.5", 2.5, "two", "", null].map(parsePageSetting);
 
     expect(pages).toEqual([null, null, null, null, null, null, null]);
+  });
+});
+
+describe("parseMode", () => {
+  it("reads the four modes in any case", () => {
+    const modes = ["inline", " FULL ", "Lightbox", "sized"].map(parseMode);
+
+    expect(modes).toEqual(["inline", "full", "lightbox", "sized"]);
+  });
+
+  it("falls back to a sized box when the attribute is missing or unknown", () => {
+    const modes = [null, "", "modal"].map(parseMode);
+
+    expect(modes).toEqual(["sized", "sized", "sized"]);
   });
 });

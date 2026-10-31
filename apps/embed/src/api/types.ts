@@ -1,5 +1,7 @@
 export type ZoomSetting = number | "fit-width" | "fit-page";
 
+export type VivePdfMode = "sized" | "inline" | "full" | "lightbox";
+
 export type VivePdfErrorCode = "password" | "wrong-password" | "not-found" | "network" | "damaged" | "no-pages" | "engine" | "unknown";
 
 export type VivePdfInput = string | URL | Blob | ArrayBuffer | ArrayBufferView;
@@ -14,6 +16,7 @@ export type VivePdfEventMap = {
   "vive-pagechange": CustomEvent<VivePdfPageChangeDetail>;
   "vive-zoomchange": CustomEvent<VivePdfZoomChangeDetail>;
   "vive-error": CustomEvent<VivePdfErrorDetail>;
+  "vive-close": CustomEvent<null>;
 };
 
 export type VivePdfOpenError = Error & { code: VivePdfErrorCode | "replaced" };
@@ -28,6 +31,8 @@ export interface VivePdfViewer extends HTMLElement {
   search(query: string): void;
   print(): void;
   download(): void;
+  show(): void;
+  close(): void;
   addEventListener<K extends keyof VivePdfEventMap>(type: K, listener: (this: VivePdfViewer, event: VivePdfEventMap[K]) => void, options?: boolean | AddEventListenerOptions): void;
   addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
   removeEventListener<K extends keyof VivePdfEventMap>(type: K, listener: (this: VivePdfViewer, event: VivePdfEventMap[K]) => void, options?: boolean | EventListenerOptions): void;

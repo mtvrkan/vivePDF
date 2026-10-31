@@ -14,6 +14,7 @@ export function useRefit(documentId: string, host: HTMLElement | null, viewportG
     let lastWidth = -1;
     let lastHeight = -1;
     const observer = new ResizeObserver(() => {
+      if (viewport.clientWidth === 0 || viewport.clientHeight === 0) return;
       if (viewport.clientWidth === lastWidth && viewport.clientHeight === lastHeight) return;
       const first = lastWidth < 0;
       lastWidth = viewport.clientWidth;

@@ -19,6 +19,7 @@
   "loading": "Opening document…",
   "pagesTab": "Pages",
   "outlineTab": "Contents",
+  "close": "Close",
   "closePanel": "Close panel",
   "pageLabel": "Page {page}",
   "outlineLoading": "Loading contents…",

@@ -13,4 +13,5 @@ export type ViewerEvent =
   | { type: "ready"; detail: VivePdfReadyDetail }
   | { type: "pagechange"; detail: VivePdfPageChangeDetail }
   | { type: "zoomchange"; detail: VivePdfZoomChangeDetail }
-  | { type: "error"; detail: { code: VivePdfErrorCode } };
+  | { type: "error"; detail: { code: VivePdfErrorCode } }
+  | { type: "close"; detail: null };
