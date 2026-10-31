@@ -28,3 +28,4 @@ apps/embed/bench/results/
 apps/embed/test-results/
 apps/embed/playwright-report/
 apps/embed/release/
+apps/site/public/viewer/

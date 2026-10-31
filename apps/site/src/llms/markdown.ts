@@ -37,6 +37,7 @@ export function mdxToMarkdown(body: string): string {
   for (const line of body.trim().split("\n")) {
     if (!fenced) {
       if (/^<\/?Steps>\s*$/.test(line)) continue;
+      if (/^<ViewerPlayground\b.*\/>\s*$/.test(line)) continue;
       if (/^<Callout\b.*>\s*$/.test(line)) {
         const title = /title="([^"]*)"/.exec(line)?.[1];
         if (title) out.push(`> **${title}**`, ">");

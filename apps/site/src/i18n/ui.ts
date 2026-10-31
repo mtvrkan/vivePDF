@@ -100,6 +100,7 @@ const tr = {
     searchCount: { one: "# sonuç", other: "# sonuç" },
     tools: { filter: "Araçlarda ara", placeholder: "Ara: birleştir, OCR, filigran", tool: "Araç", what: "Ne yapar", none: "Bu aramaya uyan araç yok.", count: { one: "# araç", other: "# araç" } },
     keys: { platform: "Kısayolların gösterileceği sistem", action: "İşlem", keys: "Tuşlar", or: "ya da" },
+    viewer: { title: "Görüntüleyici ayarları", mode: "Görünüm", modes: { sized: "Kutu", full: "Pencere boyu", inline: "Sayfanın içinde", lightbox: "Açılır pencere" }, theme: "Tema", themes: { light: "Açık", dark: "Koyu", auto: "Sisteme göre" }, lang: "Dil", langs: { "": "Sayfanın dili", tr: "Türkçe", en: "İngilizce" }, zoom: "Yakınlaştırma", zooms: { "fit-width": "Genişliğe sığdır", "fit-page": "Sayfaya sığdır", "100": "%100", "150": "%150" }, page: "Açılış sayfası", controls: "Düğmeler", controlNames: { toolbar: "Araç çubuğu", search: "Arama", print: "Yazdır", download: "İndir" }, accent: "Vurgu rengi", accents: { "": "Mavi", "#0F766E": "Deniz yeşili", "#7C3AED": "Mor", "#C2410C": "Turuncu", "#BE123C": "Kırmızı" }, code: "Sayfanıza ekleyeceğiniz kod", copy: "Kodu kopyala", copied: "Kopyalandı", preview: "Önizleme", sample: "/samples/vivepdf-sample-tr.pdf", src: "/dosyalar/belge.pdf", open: "PDF'i aç" },
     releases: { released: "Yayımlandı", feed: "RSS ile takip et", feedTitle: "vivePDF sürüm notları", feedDescription: "vivePDF'in her sürümüyle gelen başlıca yenilikler." },
     groups: {
       start: "Başlarken",
@@ -188,6 +189,7 @@ const en: Ui = {
     searchCount: { one: "# result", other: "# results" },
     tools: { filter: "Filter the tools", placeholder: "Filter: merge, OCR, watermark", tool: "Tool", what: "What it does", none: "No tool matches this filter.", count: { one: "# tool", other: "# tools" } },
     keys: { platform: "Show the shortcuts for", action: "Action", keys: "Keys", or: "or" },
+    viewer: { title: "Viewer settings", mode: "Mode", modes: { sized: "Box", full: "Window height", inline: "In the page", lightbox: "Lightbox" }, theme: "Theme", themes: { light: "Light", dark: "Dark", auto: "System" }, lang: "Language", langs: { "": "Page language", tr: "Turkish", en: "English" }, zoom: "Zoom", zooms: { "fit-width": "Fit width", "fit-page": "Fit page", "100": "100%", "150": "150%" }, page: "Start page", controls: "Controls", controlNames: { toolbar: "Toolbar", search: "Search", print: "Print", download: "Download" }, accent: "Accent colour", accents: { "": "Blue", "#0F766E": "Teal", "#7C3AED": "Purple", "#C2410C": "Orange", "#BE123C": "Red" }, code: "Code for your page", copy: "Copy code", copied: "Copied", preview: "Preview", sample: "/samples/vivepdf-sample-en.pdf", src: "/files/document.pdf", open: "Open the PDF" },
     releases: { released: "Released", feed: "Follow with RSS", feedTitle: "vivePDF release notes", feedDescription: "The main changes that come with each vivePDF release." },
     groups: {
       start: "Getting started",

@@ -1,0 +1,69 @@
+---
+import type { Locale } from "../../i18n";
+import { UI } from "../../i18n/ui";
+import { VIEWER_ACCENTS, VIEWER_CONTROLS, VIEWER_DEFAULTS, VIEWER_LANGS, VIEWER_MODES, VIEWER_THEMES, VIEWER_ZOOMS, viewerSnippet } from "../../docs/viewerSnippet";
+
+type Props = { lang: Locale };
+const { lang } = Astro.props;
+const copy = UI[lang].docs.viewer;
+const selects = [
+  { name: "mode", label: copy.mode, values: VIEWER_MODES, names: copy.modes as Record<string, string> },
+  { name: "zoom", label: copy.zoom, values: VIEWER_ZOOMS, names: copy.zooms as Record<string, string> },
+  { name: "theme", label: copy.theme, values: VIEWER_THEMES, names: copy.themes as Record<string, string> },
+  { name: "lang", label: copy.lang, values: VIEWER_LANGS, names: copy.langs as Record<string, string> },
+];
+const accents = copy.accents as Record<string, string>;
+---
+<section class="vplay" data-viewer-playground data-src={copy.src} data-open={copy.open} data-copied={copy.copied} data-copy={copy.copy}>
+  <form class="vplay-form" aria-label={copy.title} data-viewer-form>
+    {selects.map((s) => (
+      <label class="vplay-field">
+        <span class="mini-label">{s.label}</span>
+        <span class="vplay-select">
+          <select name={s.name}>
+            {s.values.map((v) => <option value={v} selected={v === VIEWER_DEFAULTS[s.name as "mode"]}>{s.names[v]}</option>)}
+          </select>
+        </span>
+      </label>
+    ))}
+    <label class="vplay-field">
+      <span class="mini-label">{copy.page}</span>
+      <input name="page" type="number" inputmode="numeric" min="1" max="5" value="1">
+    </label>
+    <fieldset class="vplay-field vplay-wide">
+      <legend class="mini-label">{copy.controls}</legend>
+      <div class="vplay-checks">
+        {VIEWER_CONTROLS.map((c) => (
+          <label class="vplay-check"><input type="checkbox" name="controls" value={c} checked><span>{copy.controlNames[c]}</span></label>
+        ))}
+      </div>
+    </fieldset>
+    <fieldset class="vplay-field vplay-wide">
+      <legend class="mini-label">{copy.accent}</legend>
+      <div class="vplay-swatches">
+        {VIEWER_ACCENTS.map((a) => (
+          <label class="vplay-swatch" style={a ? `--swatch:${a}` : undefined}>
+            <input type="radio" name="accent" value={a} checked={a === ""}>
+            <span class="sr">{accents[a]}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  </form>
+  <div class="vplay-code">
+    <div class="vplay-bar">
+      <span class="mini-label" id="vplayCode">{copy.code}</span>
+      <button type="button" class="btn btn-ghost btn-sm" data-viewer-copy><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg><span aria-live="polite" data-viewer-copy-label>{copy.copy}</span></button>
+    </div>
+    <pre aria-labelledby="vplayCode"><code data-viewer-code>{viewerSnippet(VIEWER_DEFAULTS, copy)}</code></pre>
+  </div>
+  <div class="vplay-preview">
+    <p class="mini-label">{copy.preview}</p>
+    <button type="button" class="btn btn-primary btn-sm" data-viewer-open hidden>{copy.open}</button>
+    <vive-pdf src={copy.sample} data-viewer-preview></vive-pdf>
+  </div>
+</section>
+<script is:inline src="/viewer/vivepdf.js" defer></script>
+<script>
+  import "../../scripts/viewerPlayground";
+</script>

@@ -22,6 +22,12 @@ describe("mdxToMarkdown", () => {
     expect(md).toBe("1. One\n2. Two\n\n> **Moving pages**\n>\n> Copy them.\n>\n> Then paste.");
   });
 
+  it("leaves the live viewer settings out", () => {
+    const md = mdxToMarkdown('Pick settings.\n\n<ViewerPlayground lang="en" />\n\nAfter.');
+
+    expect(md).toBe("Pick settings.\n\nAfter.");
+  });
+
   it("turns a screenshot into an image with an absolute address", () => {
     const md = mdxToMarkdown('Before.\n\n<Shot src="en/merge-1" alt="The Merge tool with two files" />\n\nAfter.');
 
