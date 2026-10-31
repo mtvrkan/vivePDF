@@ -11,6 +11,7 @@ export const ANNOTATE_TOOLS = ["ink", "inkHighlighter", "highlight", "underline"
 export type AnnotateTool = (typeof ANNOTATE_TOOLS)[number];
 
 const STROKED: ReadonlySet<AnnotateTool> = new Set(["ink", "square", "circle", "lineArrow"]);
+const OUTLINED: ReadonlySet<AnnotateTool> = new Set(["square", "circle", "lineArrow"]);
 const TEXT_MARKUP: ReadonlySet<AnnotateTool> = new Set(["highlight", "underline", "strikeout"]);
 
 export function isAnnotateTool(value: unknown): value is AnnotateTool {
@@ -27,6 +28,7 @@ export function worksOnText(tool: AnnotateTool): boolean {
 
 export function toolDefaults(tool: AnnotateTool, color: AnnotationColor, width: StrokeWidth): Record<string, unknown> {
   if (tool === "inkHighlighter") return { strokeColor: color, color, strokeWidth: width * 4 };
+  if (OUTLINED.has(tool)) return { strokeColor: color, strokeWidth: width };
   if (STROKED.has(tool)) return { strokeColor: color, color, strokeWidth: width };
   return { strokeColor: color, color };
 }

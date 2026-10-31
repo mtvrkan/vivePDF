@@ -14,6 +14,12 @@ describe("drawing tools", () => {
     expect(shapes).toEqual([{ strokeColor: "#FFCD45", color: "#FFCD45", strokeWidth: 16 }, { strokeColor: "#2EA043", color: "#2EA043" }]);
   });
 
+  it("colours only the outline of rectangles, ellipses and arrows so they are not filled", () => {
+    const shapes = (["square", "circle", "lineArrow"] as const).map((tool) => toolDefaults(tool, "#E44234", 2));
+
+    expect(shapes).toEqual([1, 2, 3].map(() => ({ strokeColor: "#E44234", strokeWidth: 2 })));
+  });
+
   it("rejects tools the viewer does not offer", () => {
     const checks = [isAnnotateTool("ink"), isAnnotateTool("stamp"), isAnnotateTool("link"), isAnnotateTool("freeText"), isAnnotateTool(3)];
 

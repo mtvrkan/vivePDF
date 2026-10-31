@@ -10,6 +10,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ### Fixed
 - Highlights, pen drawings, boxes and notes already in a PDF are drawn; 0.1.0 showed pages without them.
+- Rectangles, ellipses and arrows drawn with the drawing tools are outlines in the chosen colour instead of filled shapes.
 
 ## [0.1.0]
 
