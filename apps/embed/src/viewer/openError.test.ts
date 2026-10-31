@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { engineFailure, problemFromEngine, problemFromStatus } from "./openError";
+import { engineFailure, problemFromDocument, problemFromEngine, problemFromStatus } from "./openError";
 
 describe("problemFromEngine", () => {
   it("asks for a password first and reports a wrong one after", () => {
@@ -22,6 +22,29 @@ describe("problemFromEngine", () => {
     const problems = [problemFromEngine({ code: 3 }, false), problemFromEngine({ code: 1 }, false), problemFromEngine(undefined, false)];
 
     expect(problems).toEqual(["damaged", "unknown", "unknown"]);
+  });
+
+  it("calls a file whose structure overflows the engine's call stack damaged", () => {
+    const problems = [
+      problemFromEngine({ code: 1, message: "RangeError: Maximum call stack size exceeded." }, false),
+      problemFromEngine({ code: 1, message: "InternalError: too much recursion" }, false),
+    ];
+
+    expect(problems).toEqual(["damaged", "damaged"]);
+  });
+});
+
+describe("problemFromDocument", () => {
+  it("lets a document with pages through", () => {
+    const problem = problemFromDocument(3);
+
+    expect(problem).toBeNull();
+  });
+
+  it("reports a document without a single page", () => {
+    const problem = problemFromDocument(0);
+
+    expect(problem).toBe("noPages");
   });
 });
 

@@ -48,6 +48,8 @@
   "networkText": "İnternet bağlantınızı kontrol edip yeniden deneyin.",
   "damagedTitle": "Dosya bozuk",
   "damagedText": "Bu PDF okunamadı. İndirip başka bir uygulamada açmayı deneyebilirsiniz.",
+  "noPagesTitle": "Bu belgede sayfa yok",
+  "noPagesText": "Bu PDF'te gösterilecek bir şey yok. İndirip başka bir uygulamada açmayı deneyebilirsiniz.",
   "downloadFile": "Dosyayı indir",
   "unknownTitle": "Belge açılamadı",
   "unknownText": "Açılırken bir sorun oldu.",

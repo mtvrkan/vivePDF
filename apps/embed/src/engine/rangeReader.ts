@@ -11,6 +11,7 @@ export const RANGE_LIMITS: RangeLimits = {
 };
 
 const CONTENT_RANGE = /^bytes (\d+)-(\d+)\/(\d+)$/;
+const RANGE_NOT_SATISFIABLE = 416;
 
 export function syncRangeRequest(url: string): FetchRange {
   return (start, end) => {
@@ -21,6 +22,7 @@ export function syncRangeRequest(url: string): FetchRange {
     request.send();
     const bytes = new Uint8Array(request.response as ArrayBuffer);
     if (request.status === 200) return { bytes, total: bytes.length, whole: true };
+    if (request.status === RANGE_NOT_SATISFIABLE && start === 0) return { bytes: new Uint8Array(0), total: 0, whole: true };
     if (request.status !== 206) throw new Error(`range request answered ${request.status}`);
     const match = CONTENT_RANGE.exec(request.getResponseHeader("Content-Range") ?? "");
     if (!match || Number(match[1]) !== start || bytes.length !== Number(match[2]) - start + 1) throw new Error("range request answered the wrong bytes");

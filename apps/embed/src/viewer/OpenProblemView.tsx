@@ -19,6 +19,7 @@ const SHAPES: Record<OpenProblem, { icon: IconName; title: MessageKey; text: Mes
   notFound: { icon: "fileMissing", title: "notFoundTitle", text: "notFoundText" },
   network: { icon: "offline", title: "networkTitle", text: "networkText" },
   damaged: { icon: "fileBroken", title: "damagedTitle", text: "damagedText" },
+  noPages: { icon: "fileBroken", title: "noPagesTitle", text: "noPagesText" },
   unknown: { icon: "alert", title: "unknownTitle", text: "unknownText" },
   engine: { icon: "alert", title: "engineTitle", text: "engineText" },
 };
@@ -75,7 +76,8 @@ export function OpenProblemView({ problem, sourceUrl, busy, onRetry, onPassword 
   const t = useT();
   const shape = SHAPES[problem];
   const locked = problem === "password" || problem === "wrongPassword";
-  const download = problem === "damaged" ? safeExternalUrl(sourceUrl, document.baseURI) : null;
+  const offersDownload = problem === "damaged" || problem === "noPages";
+  const download = offersDownload ? safeExternalUrl(sourceUrl, document.baseURI) : null;
   const downloadable = download !== null && /^https?:/.test(download);
 
   return (
@@ -85,7 +87,7 @@ export function OpenProblemView({ problem, sourceUrl, busy, onRetry, onPassword 
         <p class="vp-note-title">{t(shape.title)}</p>
         <p>{t(shape.text)}</p>
         {locked ? <PasswordForm wrong={problem === "wrongPassword"} busy={busy} onPassword={onPassword} /> : null}
-        {problem === "damaged" && downloadable ? (
+        {offersDownload && downloadable ? (
           <a class="vp-text-btn" href={download} download>
             <Icon name="download" />
             {t("downloadFile")}

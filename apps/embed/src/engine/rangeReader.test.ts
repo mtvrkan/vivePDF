@@ -1,5 +1,5 @@
-import { describe, expect, it } from "vitest";
-import { RangeReader, type RangeLimits } from "./rangeReader";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { RangeReader, syncRangeRequest, type RangeLimits } from "./rangeReader";
 
 const LIMITS: RangeLimits = { blockBytes: 16, readAheadBytes: 64, requestBytes: 128, cacheBytes: 96, wholeFileBytes: 200 };
 
@@ -109,5 +109,60 @@ describe("RangeReader", () => {
     const read = () => readBytes(reader, 600, 4);
 
     expect(read).toThrow("the file changed while it was open");
+  });
+});
+
+function stubRequest(status: number, body: Uint8Array, contentRange: string | null): void {
+  vi.stubGlobal(
+    "XMLHttpRequest",
+    class {
+      status = status;
+      response = body.buffer;
+      responseType = "";
+      open(): void {}
+      setRequestHeader(): void {}
+      send(): void {}
+      getResponseHeader(name: string): string | null {
+        return name === "Content-Range" ? contentRange : null;
+      }
+    },
+  );
+}
+
+describe("syncRangeRequest", () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("returns a partial answer with the file's total size", () => {
+    stubRequest(206, Uint8Array.from([1, 2, 3, 4]), "bytes 0-3/1000");
+
+    const answer = syncRangeRequest("/file.pdf")(0, 3);
+
+    expect(answer).toEqual({ bytes: Uint8Array.from([1, 2, 3, 4]), total: 1000, whole: false });
+  });
+
+  it("reads a range the server cannot satisfy at the first byte as an empty file", () => {
+    stubRequest(416, new Uint8Array(0), null);
+
+    const answer = syncRangeRequest("/empty.pdf")(0, 65535);
+
+    expect(answer).toEqual({ bytes: new Uint8Array(0), total: 0, whole: true });
+  });
+
+  it("fails on a range the server cannot satisfy past the first byte", () => {
+    stubRequest(416, new Uint8Array(0), "bytes */1000");
+
+    const pastStart = () => syncRangeRequest("/file.pdf")(2000, 2100);
+
+    expect(pastStart).toThrow("range request answered 416");
+  });
+
+  it("fails on a server error", () => {
+    stubRequest(500, new Uint8Array(0), null);
+
+    const failed = () => syncRangeRequest("/file.pdf")(0, 100);
+
+    expect(failed).toThrow("range request answered 500");
   });
 });

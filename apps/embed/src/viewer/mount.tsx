@@ -20,7 +20,7 @@ import viewerCss from "../styles/viewer.css?inline";
 import { resolveTheme, type ThemeSetting } from "../styles/theme";
 import { TranslateContext, useT } from "./i18nContext";
 import { OpenProblemView } from "./OpenProblemView";
-import { engineFailure, problemFromEngine, problemFromStatus, type OpenProblem } from "./openError";
+import { engineFailure, problemFromDocument, problemFromEngine, problemFromStatus, type OpenProblem } from "./openError";
 import { Pages } from "./Pages";
 import { Pill } from "./Pill";
 import { SearchBox } from "./SearchBox";
@@ -202,8 +202,14 @@ function Opener({ options, host, startPage, onPage }: { options: MountOptions; h
       };
       request.toPromise().then(
         (response) =>
-          response.task.toPromise().then(() => {
+          response.task.toPromise().then((opened) => {
             if (!activeRef.current) return;
+            const problem = problemFromDocument(opened.pageCount);
+            if (problem) {
+              setState({ kind: "problem", problem, busy: false });
+              options.mark("open-error");
+              return;
+            }
             setState({ kind: "ready" });
             options.mark("document-open");
           }, fail),

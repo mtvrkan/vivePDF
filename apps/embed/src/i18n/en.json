@@ -48,6 +48,8 @@
   "networkText": "Check your connection and try again.",
   "damagedTitle": "The file is damaged",
   "damagedText": "This PDF could not be read. You can download it and try another app.",
+  "noPagesTitle": "This document has no pages",
+  "noPagesText": "There is nothing to show in this PDF. You can download it and try another app.",
   "downloadFile": "Download the file",
   "unknownTitle": "The document could not be opened",
   "unknownText": "Something went wrong while opening it.",

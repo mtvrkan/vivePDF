@@ -1,9 +1,10 @@
-export type OpenProblem = "password" | "wrongPassword" | "notFound" | "network" | "damaged" | "unknown" | "engine";
+export type OpenProblem = "password" | "wrongPassword" | "notFound" | "network" | "damaged" | "noPages" | "unknown" | "engine";
 
 const ENGINE_NOT_FOUND = 2;
 const ENGINE_WRONG_FORMAT = 3;
 const ENGINE_PASSWORD = 4;
 const GONE_STATUSES = [404, 410];
+const STACK_OVERFLOW = /call stack|too much recursion/i;
 
 export type EngineFailure = { code?: number; message?: string };
 
@@ -14,11 +15,16 @@ export function problemFromStatus(status: number): OpenProblem {
 export function problemFromEngine(failure: EngineFailure | undefined, passwordProvided: boolean): OpenProblem {
   if (failure?.code === ENGINE_PASSWORD) return passwordProvided ? "wrongPassword" : "password";
   if (failure?.code === ENGINE_WRONG_FORMAT) return "damaged";
+  if (STACK_OVERFLOW.test(failure?.message ?? "")) return "damaged";
   if (failure?.code === ENGINE_NOT_FOUND) {
     const status = /\b(\d{3})\b/.exec(failure.message ?? "")?.[1];
     return status ? problemFromStatus(Number(status)) : "network";
   }
   return "unknown";
+}
+
+export function problemFromDocument(pageCount: number): OpenProblem | null {
+  return pageCount > 0 ? null : "noPages";
 }
 
 export function engineFailure(reason: unknown): EngineFailure | undefined {
