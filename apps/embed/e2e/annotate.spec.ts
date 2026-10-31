@@ -268,3 +268,88 @@ test("the keyboard deletes the selection, undoes, redoes and puts the tool down"
 
   await expect(bar.getByRole("button", { name: "Rectangle", exact: true })).toHaveAttribute("aria-pressed", "false");
 });
+
+test("a shape puts the tool down, stays selected and has a Delete button next to it", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Rectangle");
+
+  await strokeOnPage(page, [0.55, 0.75], [0.8, 0.85]);
+
+  const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+  await expect(bar.getByRole("button", { name: "Rectangle", exact: true })).toHaveAttribute("aria-pressed", "false");
+  await viewer(page).getByRole("button", { name: "Delete", exact: true }).click();
+  await expect.poll(async () => (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "rectangle").length).toBe(1);
+});
+
+test("a click beside the selected drawing lets go of it", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Ellipse");
+  await strokeOnPage(page, [0.55, 0.75], [0.8, 0.85]);
+  const remove = viewer(page).getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Delete selected" });
+  await expect(remove).toBeEnabled();
+  const box = await viewer(page).locator('[data-page-index="0"]').boundingBox();
+  if (!box) throw new Error("page not shown");
+
+  await page.mouse.click(box.x + box.width * 0.85, box.y + box.height * 0.3);
+
+  await expect(remove).toBeDisabled();
+});
+
+test("the eraser cuts pen lines where it is dragged and removes what is wiped out", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Pen");
+  await viewer(page).getByRole("radio", { name: "Blue" }).click();
+  await strokeOnPage(page, [0.2, 0.75], [0.6, 0.75]);
+  await strokeOnPage(page, [0.2, 0.85], [0.25, 0.85]);
+  await pickTool(page, "Eraser");
+
+  await strokeOnPage(page, [0.4, 0.7], [0.4, 0.8]);
+  await strokeOnPage(page, [0.18, 0.85], [0.27, 0.85]);
+
+  await expect.poll(() => pens(page)).toEqual(expect.arrayContaining([{ color: "#1F6FEB", strokes: 2 }]));
+  expect((await pens(page)).filter((entry) => entry.color === "#1F6FEB")).toHaveLength(1);
+});
+
+test("picking a text tool marks the text that is already selected", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await strokeOnPage(page, [0.14, 0.607], [0.45, 0.607]);
+
+  await pickTool(page, "Underline text");
+
+  await expect.poll(async () => (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "underline").length).toBe(1);
+});
+
+test("delete all asks first, removes every drawing and can be undone", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Pen");
+  await strokeOnPage(page, [0.2, 0.75], [0.6, 0.8]);
+  const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+  const total = async () => (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).length;
+  const before = await total();
+
+  await bar.getByRole("button", { name: "Delete all drawings" }).click();
+  const dialog = viewer(page).getByRole("alertdialog");
+  await dialog.getByRole("button", { name: "Cancel" }).click();
+  await expect.poll(total).toBe(before);
+  await bar.getByRole("button", { name: "Delete all drawings" }).click();
+  await dialog.getByRole("button", { name: "Delete all" }).click();
+  await expect.poll(total).toBe(0);
+  await bar.getByRole("button", { name: "Undo" }).click();
+
+  await expect.poll(total).toBeGreaterThan(0);
+});
+
+test("the note box takes a click and keeps what is typed", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Note");
+  const box = await viewer(page).locator('[data-page-index="0"]').boundingBox();
+  if (!box) throw new Error("page not shown");
+  await page.mouse.click(box.x + box.width * 0.2, box.y + box.height * 0.32);
+  const field = viewer(page).getByRole("textbox", { name: "Note text" });
+
+  await field.click();
+  await page.keyboard.type("Okundu");
+  await field.blur();
+
+  await expect.poll(async () => (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).some((entry) => entry.type === "note" && entry.text === "Okundu")).toBe(true);
+});

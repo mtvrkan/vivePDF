@@ -37,4 +37,10 @@ describe("drawing tools", () => {
 
     expect(tools).toEqual(["ink", "inkHighlighter", "textComment", "square", "circle", "lineArrow", null, null, null]);
   });
+
+  it("offers the eraser under its public name without a width", () => {
+    const eraser = [toolFromPublic("eraser"), hasStrokeWidth("eraser"), worksOnText("eraser")];
+
+    expect(eraser).toEqual(["eraser", false, false]);
+  });
 });

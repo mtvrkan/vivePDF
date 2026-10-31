@@ -11,8 +11,14 @@ type Messages = {
   undo: string;
   redo: string;
   remove: string;
+  removeAll: string;
+  removeAllQuestion: string;
+  removeAllYes: string;
+  cancel: string;
+  removeOne: string;
   close: string;
   textHint: string;
+  eraserHint: string;
   noteLabel: string;
   notePlaceholder: string;
 };
@@ -22,6 +28,7 @@ const en: Messages = {
   tools: {
     ink: "Pen",
     inkHighlighter: "Marker",
+    eraser: "Eraser",
     highlight: "Highlight text",
     underline: "Underline text",
     strikeout: "Strike out text",
@@ -37,8 +44,14 @@ const en: Messages = {
   undo: "Undo",
   redo: "Redo",
   remove: "Delete selected",
+  removeAll: "Delete all drawings",
+  removeAllQuestion: "Delete every drawing and note in this document?",
+  removeAllYes: "Delete all",
+  cancel: "Cancel",
+  removeOne: "Delete",
   close: "Close drawing tools",
   textHint: "Drag over the text",
+  eraserHint: "Drag over pen lines to erase them",
   noteLabel: "Note text",
   notePlaceholder: "Write your note",
 };
@@ -48,6 +61,7 @@ const tr: Messages = {
   tools: {
     ink: "Kalem",
     inkHighlighter: "Fosforlu kalem",
+    eraser: "Silgi",
     highlight: "Metni vurgula",
     underline: "Metnin altını çiz",
     strikeout: "Metnin üstünü çiz",
@@ -63,8 +77,14 @@ const tr: Messages = {
   undo: "Geri al",
   redo: "Yinele",
   remove: "Seçileni sil",
+  removeAll: "Tüm çizimleri sil",
+  removeAllQuestion: "Bu belgedeki bütün çizimler ve notlar silinsin mi?",
+  removeAllYes: "Tümünü sil",
+  cancel: "Vazgeç",
+  removeOne: "Sil",
   close: "Çizim araçlarını kapat",
   textHint: "Metnin üzerinden sürükleyin",
+  eraserHint: "Silmek için kalem çizgilerinin üzerinden sürükleyin",
   noteLabel: "Not metni",
   notePlaceholder: "Notunuzu yazın",
 };

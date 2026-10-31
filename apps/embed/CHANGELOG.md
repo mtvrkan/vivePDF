@@ -4,7 +4,14 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Added
+- An eraser (E) that cuts pen lines where you drag it, Delete all with a question first (undo brings everything back), a Delete button above a selected drawing, and `setTool("eraser")`.
+
+### Changed
+- Rectangles, ellipses and arrows put the tool down after one shape and stay selected; a click beside a selected drawing lets go of it; picking highlight, underline or strike out marks text that is already selected; while a drawing tool is on, dragging on a touch screen draws instead of scrolling.
+
 ### Fixed
+- The note box takes clicks; until now it could only be typed into right after placing the note.
 - The pen and the marker keep everything drawn on a page as one drawing until the tool, colour or width changes, instead of making every stroke a separate, selected drawing. Undo takes back the last stroke, and picking a colour after a stroke no longer recolours it.
 
 ## [0.2.0]

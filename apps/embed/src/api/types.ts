@@ -6,7 +6,7 @@ export type VivePdfErrorCode = "password" | "wrong-password" | "not-found" | "ne
 
 export type VivePdfInput = string | URL | Blob | ArrayBuffer | ArrayBufferView;
 
-export type VivePdfTool = "pen" | "marker" | "highlight" | "underline" | "strikeout" | "note" | "rectangle" | "ellipse" | "arrow";
+export type VivePdfTool = "pen" | "marker" | "eraser" | "highlight" | "underline" | "strikeout" | "note" | "rectangle" | "ellipse" | "arrow";
 
 export type VivePdfPoint = { x: number; y: number };
 export type VivePdfBox = { x: number; y: number; width: number; height: number };

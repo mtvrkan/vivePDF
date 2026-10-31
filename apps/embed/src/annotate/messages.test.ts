@@ -10,7 +10,7 @@ describe("drawing tool messages", () => {
   });
 
   it("leaves no text empty", () => {
-    const texts = Object.values(ANNOTATE_MESSAGES).flatMap((messages) => [messages.bar, messages.colors, messages.width, messages.undo, messages.redo, messages.remove, messages.close, messages.textHint, messages.noteLabel, messages.notePlaceholder, ...Object.values(messages.tools), ...messages.colorNames, ...messages.widthNames]);
+    const texts = Object.values(ANNOTATE_MESSAGES).flatMap((messages) => [messages.bar, messages.colors, messages.width, messages.undo, messages.redo, messages.remove, messages.removeAll, messages.removeAllQuestion, messages.removeAllYes, messages.cancel, messages.removeOne, messages.close, messages.textHint, messages.eraserHint, messages.noteLabel, messages.notePlaceholder, ...Object.values(messages.tools), ...messages.colorNames, ...messages.widthNames]);
 
     expect(texts.every((text) => text.trim().length > 0)).toBe(true);
   });

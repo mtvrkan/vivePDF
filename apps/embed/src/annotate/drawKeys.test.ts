@@ -21,4 +21,10 @@ describe("drawKeyAction", () => {
 
     expect(actions).toEqual([null, null, null, null]);
   });
+
+  it("picks the eraser with E but not with Shift or Ctrl held", () => {
+    const actions = [press("e"), press("E", { shiftKey: true }), press("e", { ctrlKey: true })].map((key) => drawKeyAction(key, false));
+
+    expect(actions).toEqual(["eraser", null, null]);
+  });
 });

@@ -1,7 +1,8 @@
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import type { Lang } from "../i18n";
 import annotateCss from "../styles/annotate.css?inline";
 import { AnnotateIcon } from "./AnnotateIcon";
+import { shouldDeselectAfterClick } from "./clickDeselect";
 import { drawKeyAction } from "./drawKeys";
 import { ANNOTATE_MESSAGES } from "./messages";
 import { ANNOTATE_TOOLS, ANNOTATION_COLORS, STROKE_WIDTHS, hasStrokeWidth, worksOnText } from "./tools";
@@ -36,6 +37,7 @@ function useDrawKeys(ref: { current: HTMLElement | null }, session: AnnotateSess
       else if (action === "redo" && current.canRedo) current.redo();
       else if (action === "remove" && current.selected > 0) current.deleteSelected();
       else if (action === "dropTool" && current.tool) current.setTool(null);
+      else if (action === "eraser") current.setTool(current.tool === "eraser" ? null : "eraser");
       else return;
       event.preventDefault();
     };
@@ -44,12 +46,61 @@ function useDrawKeys(ref: { current: HTMLElement | null }, session: AnnotateSess
   }, [ref]);
 }
 
+const CLICK_MOVE_LIMIT_PX = 4;
+
+function useClickDeselect(ref: { current: HTMLElement | null }, session: AnnotateSession) {
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+  useEffect(() => {
+    const root = ref.current?.getRootNode();
+    if (!(root instanceof ShadowRoot)) return;
+    let start: { x: number; y: number; selected: string[] } | null = null;
+    const onPointerDown = (event: Event) => {
+      start = event instanceof PointerEvent ? { x: event.clientX, y: event.clientY, selected: sessionRef.current.selectedIds() } : null;
+    };
+    const onClick = (event: Event) => {
+      const origin = start;
+      start = null;
+      if (!origin || !(event instanceof MouseEvent) || sessionRef.current.tool !== null) return;
+      if (Math.hypot(event.clientX - origin.x, event.clientY - origin.y) > CLICK_MOVE_LIMIT_PX) return;
+      const target = event.composedPath()[0];
+      if (!(target instanceof Element) || !target.closest(".vp-page") || target.closest("[data-annotation-layer]")) return;
+      if (shouldDeselectAfterClick(origin.selected, sessionRef.current.selectedIds())) sessionRef.current.deselect();
+    };
+    root.addEventListener("pointerdown", onPointerDown, true);
+    root.addEventListener("click", onClick, true);
+    return () => {
+      root.removeEventListener("pointerdown", onPointerDown, true);
+      root.removeEventListener("click", onClick, true);
+    };
+  }, [ref]);
+}
+
 export function AnnotateBar({ session, lang }: { session: AnnotateSession; lang: Lang }) {
   const text = ANNOTATE_MESSAGES[lang];
   const ref = useRef<HTMLDivElement>(null);
   useAnnotateStyles(ref);
   useDrawKeys(ref, session);
+  useClickDeselect(ref, session);
+  useEffect(() => {
+    const frame = ref.current?.closest(".vp");
+    if (!frame) return;
+    if (session.open && session.tool !== null) frame.setAttribute("data-drawing", "");
+    else frame.removeAttribute("data-drawing");
+    return () => frame.removeAttribute("data-drawing");
+  }, [session.open, session.tool]);
   const showWidth = session.tool !== null && hasStrokeWidth(session.tool);
+  const [asking, setAsking] = useState(false);
+  const askRef = useRef<HTMLButtonElement>(null);
+  const removeAllRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (asking) askRef.current?.focus();
+  }, [asking]);
+  const stopAsking = () => {
+    setAsking(false);
+    removeAllRef.current?.focus();
+  };
+  const hint = !session.open || session.tool === null ? null : session.tool === "eraser" ? text.eraserHint : worksOnText(session.tool) ? text.textHint : null;
 
   return (
     <>
@@ -90,15 +141,48 @@ export function AnnotateBar({ session, lang }: { session: AnnotateSession; lang:
           <button class="vp-btn" type="button" aria-label={text.remove} title={text.remove} disabled={session.selected === 0} onClick={session.deleteSelected}>
             <AnnotateIcon name="remove" />
           </button>
+          <button ref={removeAllRef} class="vp-btn" type="button" aria-label={text.removeAll} title={text.removeAll} aria-haspopup="dialog" aria-expanded={asking} disabled={session.drawings === 0} onClick={() => setAsking(true)}>
+            <AnnotateIcon name="removeAll" />
+          </button>
           <button class="vp-btn" type="button" aria-label={text.close} title={text.close} onClick={() => session.setOpen(false)}>
             <AnnotateIcon name="close" />
           </button>
         </div>
       </div>
-      {session.open && session.tool !== null && worksOnText(session.tool) ? (
+      {hint ? (
         <p class="vp-draw-hint" role="status">
-          {text.textHint}
+          {hint}
         </p>
+      ) : null}
+      {asking && session.open ? (
+        <div
+          class="vp-confirm vp-glass"
+          role="alertdialog"
+          aria-modal="false"
+          aria-labelledby="vp-confirm-question"
+          onKeyDown={(event) => {
+            if (event.key !== "Escape") return;
+            event.stopPropagation();
+            stopAsking();
+          }}
+        >
+          <p id="vp-confirm-question">{text.removeAllQuestion}</p>
+          <div class="vp-confirm-actions">
+            <button ref={askRef} class="vp-text-btn" type="button" onClick={stopAsking}>
+              {text.cancel}
+            </button>
+            <button
+              class="vp-text-btn vp-danger"
+              type="button"
+              onClick={() => {
+                session.deleteAll();
+                stopAsking();
+              }}
+            >
+              {text.removeAllYes}
+            </button>
+          </div>
+        </div>
       ) : null}
     </>
   );

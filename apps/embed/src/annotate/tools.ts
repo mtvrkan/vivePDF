@@ -10,7 +10,7 @@ export const STROKE_WIDTHS = [2, 4, 8] as const;
 
 export type StrokeWidth = (typeof STROKE_WIDTHS)[number];
 
-export const ANNOTATE_TOOLS = ["ink", "inkHighlighter", "highlight", "underline", "strikeout", "textComment", "square", "circle", "lineArrow"] as const;
+export const ANNOTATE_TOOLS = ["ink", "inkHighlighter", "eraser", "highlight", "underline", "strikeout", "textComment", "square", "circle", "lineArrow"] as const;
 
 export type AnnotateTool = (typeof ANNOTATE_TOOLS)[number];
 
@@ -24,6 +24,7 @@ const PUBLIC_TOOLS: Readonly<Record<VivePdfTool, AnnotateTool>> = {
   rectangle: "square",
   ellipse: "circle",
   arrow: "lineArrow",
+  eraser: "eraser",
 };
 
 const STROKED: ReadonlySet<AnnotateTool> = new Set(["ink", "square", "circle", "lineArrow"]);

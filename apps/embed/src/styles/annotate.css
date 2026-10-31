@@ -5,6 +5,7 @@
   overflow-x: auto; overscroll-behavior: contain; scrollbar-width: none;
 }
 .vp-draw[hidden] { display: none; }
+.vp[data-drawing] .vp-page { touch-action: none; }
 .vp-draw::-webkit-scrollbar { display: none; }
 .vp-draw-group { display: flex; align-items: center; gap: 2px; flex: none; }
 .vp-swatch {
@@ -19,13 +20,23 @@
   position: absolute; left: 50%; bottom: 132px; z-index: 3; margin: 0; padding: 6px 12px; border-radius: 12px;
   transform: translateX(-50%); white-space: nowrap; background: var(--vp-fg); color: var(--vp-card); font-size: 12px; pointer-events: none;
 }
-.vp-note-editor { position: absolute; left: 0; z-index: 4; width: 240px; padding: 8px; border-radius: 14px; }
+.vp-note-editor { position: absolute; left: 0; z-index: 4; width: 240px; padding: 8px; border-radius: 14px; pointer-events: auto; }
 .vp-note-editor textarea {
   display: block; width: 100%; min-height: 96px; resize: vertical; padding: 8px; border: 1px solid var(--vp-border); border-radius: 10px;
   background: var(--vp-card); color: var(--vp-fg); font: inherit; font-size: 16px; line-height: 1.4; outline: none;
 }
 .vp-note-editor textarea:focus-visible { border-color: var(--vp-primary); box-shadow: 0 0 0 2px var(--vp-accent-bg); }
+.vp-drawing-menu { position: absolute; left: 0; top: -8px; z-index: 4; display: flex; padding: 4px; border-radius: 22px; transform: translateY(-100%); pointer-events: auto; }
+.vp-btn-text { display: inline-flex; gap: 6px; width: auto; padding: 0 14px 0 10px; font: inherit; font-size: 14px; }
+.vp-confirm {
+  position: absolute; left: 50%; bottom: 132px; z-index: 5; width: min(320px, calc(100% - 16px)); padding: 14px; border-radius: 16px;
+  transform: translateX(-50%);
+}
+.vp-confirm p { margin: 0 0 12px; color: var(--vp-fg); font-size: 14px; line-height: 1.4; }
+.vp-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.vp-text-btn.vp-danger { border-color: var(--vp-danger); background: var(--vp-danger); color: var(--vp-card); }
+.vp-text-btn.vp-danger:hover { background: var(--vp-danger); filter: brightness(1.08); }
 @container vive (max-width: 559px) {
   .vp-draw { bottom: 68px; left: 8px; right: 8px; max-width: none; transform: none; }
-  .vp-draw-hint { bottom: 124px; }
+  .vp-draw-hint, .vp-confirm { bottom: 124px; }
 }

@@ -14,7 +14,7 @@ import { ThumbnailPluginPackage } from "@embedpdf/plugin-thumbnail/preact";
 import { TilingPluginPackage } from "@embedpdf/plugin-tiling/preact";
 import { ViewportPluginPackage } from "@embedpdf/plugin-viewport/preact";
 import { ZoomMode, ZoomPluginPackage, useZoomCapability } from "@embedpdf/plugin-zoom/preact";
-import type { InkJoiner } from "../annotate/inkHandler";
+import type { InkTools } from "../annotate/inkHandler";
 import type { VivePdfAnnotationChangeDetail, VivePdfMode } from "../api/types";
 import { assetUrl, setAssetBase } from "../engine/assets";
 import { createTranslator, type Lang } from "../i18n";
@@ -102,8 +102,8 @@ const basePlugins = (drawsAnnotations: boolean) => [
   createPluginRegistration(ThumbnailPluginPackage, { width: THUMB_WIDTH, gap: 14, labelHeight: 22, paddingY: 12, autoScroll: true, scrollBehavior: "auto" }),
 ];
 
-function viewerPlugins(annotate: AnnotateModule | null, joiner: InkJoiner | null) {
-  return annotate && joiner ? [...basePlugins(false), ...annotate.annotatePlugins(joiner)] : basePlugins(true);
+function viewerPlugins(annotate: AnnotateModule | null, inkTools: InkTools | null) {
+  return annotate && inkTools ? [...basePlugins(false), ...annotate.annotatePlugins(inkTools)] : basePlugins(true);
 }
 
 function useAnnotateModule(wanted: boolean): { module: AnnotateModule | null; waiting: boolean } {
@@ -240,7 +240,7 @@ function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage
   }, []);
   const annotateKit = useAnnotateKit();
   const announceChange = useCallback((detail: VivePdfAnnotationChangeDetail) => emit({ type: "annotationchange", detail }), [emit]);
-  const drawing = annotateKit ? annotateKit.module.useAnnotateSession(DOCUMENT_ID, announceChange, annotateKit.joiner) : null;
+  const drawing = annotateKit ? annotateKit.module.useAnnotateSession(DOCUMENT_ID, announceChange, annotateKit.inkTools) : null;
   const edits = useMemo(() => (drawing?.edited ? { save: drawing.save, flush: drawing.flush } : null), [drawing?.edited, drawing?.save, drawing?.flush]);
   const files = useFileActions(DOCUMENT_ID, sourceUrl, fileName, edits);
   const print = features.print ? files.print : null;
@@ -414,9 +414,9 @@ function Viewer({ options, commands, onDismiss }: ViewerProps) {
   const { engine, failure } = useEngine(assetUrl("pdfium.wasm"), options.fontBase, attempt);
   const translate = useMemo(() => createTranslator(options.lang), [options.lang]);
   const annotate = useAnnotateModule(options.features.annotate);
-  const joiner = useMemo(() => annotate.module?.createInkJoiner() ?? null, [annotate.module]);
-  const annotateKit = useMemo<AnnotateKit | null>(() => (annotate.module && joiner ? { module: annotate.module, joiner, lang: options.lang } : null), [annotate.module, joiner, options.lang]);
-  const plugins = useMemo(() => viewerPlugins(annotate.module, joiner), [annotate.module, joiner]);
+  const inkTools = useMemo(() => annotate.module?.createInkTools() ?? null, [annotate.module]);
+  const annotateKit = useMemo<AnnotateKit | null>(() => (annotate.module && inkTools ? { module: annotate.module, inkTools, lang: options.lang } : null), [annotate.module, inkTools, options.lang]);
+  const plugins = useMemo(() => viewerPlugins(annotate.module, inkTools), [annotate.module, inkTools]);
   const prefersDark = usePrefersDark();
   const [host, setHost] = useState<HTMLDivElement | null>(null);
   const restarting = failure === "crash" && restartsRef.current < MAX_RESTARTS;

@@ -1,4 +1,4 @@
-export type DrawKeyAction = "undo" | "redo" | "remove" | "dropTool";
+export type DrawKeyAction = "undo" | "redo" | "remove" | "dropTool" | "eraser";
 
 type KeyInput = { key: string; ctrlKey: boolean; metaKey: boolean; altKey: boolean; shiftKey: boolean };
 
@@ -11,5 +11,6 @@ export function drawKeyAction(event: KeyInput, typing: boolean): DrawKeyAction |
   if (command || event.shiftKey) return null;
   if (key === "delete" || key === "backspace") return "remove";
   if (key === "escape") return "dropTool";
+  if (key === "e") return "eraser";
   return null;
 }
