@@ -2011,7 +2011,7 @@ The quickest way. Load the script once per page, then place viewers wherever you
 <vive-pdf src="/files/price-list.pdf" style="height: 80vh"></vive-pdf>
 ```
 
-`@0` takes the newest 0.x version, so fixes arrive without a change on your side. To freeze one version, write it in full, for example `@vivepdf/viewer@0.3.0`. The script also comes as a module, `dist/vivepdf.mjs`, for `<script type="module">`.
+`@0` takes the newest 0.x version, so fixes arrive without a change on your side. To freeze one version, write it in full, for example `@vivepdf/viewer@0.3.1`. The script also comes as a module, `dist/vivepdf.mjs`, for `<script type="module">`.
 
 ## From your own server
 
@@ -2673,7 +2673,7 @@ On a slower connection (9 Mbit/s, 60 ms latency) the first visit takes 2.4 s for
 
 The engine is kept in your site's Cache Storage, under a name that starts with `vivepdf-engine-`, and reused on every page of your site. A new version of the viewer stores its own engine and removes the old one. Visitors whose browser blocks storage simply download it again.
 
-The viewer's own files come from your server or the CDN with normal HTTP caching. On jsDelivr, pin a version (`@0.3.0`) for the longest cache life; `@0` is cached for a shorter time so updates reach you.
+The viewer's own files come from your server or the CDN with normal HTTP caching. On jsDelivr, pin a version (`@0.3.1`) for the longest cache life; `@0` is cached for a shorter time so updates reach you.
 
 ## Fonts for PDFs without their own
 

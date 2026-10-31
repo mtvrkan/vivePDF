@@ -45,7 +45,7 @@ Daha yavaş bir bağlantıda (9 Mbit/sn, 60 ms gecikme) ilk ziyaret kısa dosya 
 
 Motor sitenin Cache Storage'ında, adı `vivepdf-engine-` ile başlayan bir alanda tutulur ve sitenin her sayfasında yeniden kullanılır. Görüntüleyicinin yeni bir sürümü kendi motorunu kaydeder ve eskisini siler. Tarayıcısı depolamayı engelleyen ziyaretçiler onu yeniden indirir, o kadar.
 
-Görüntüleyicinin kendi dosyaları senin sunucundan ya da CDN'den normal HTTP önbelleğiyle gelir. jsDelivr'da en uzun önbellek süresi için bir sürüm sabitle (`@0.3.0`); `@0` güncellemeler sana ulaşsın diye daha kısa süre önbellekte kalır.
+Görüntüleyicinin kendi dosyaları senin sunucundan ya da CDN'den normal HTTP önbelleğiyle gelir. jsDelivr'da en uzun önbellek süresi için bir sürüm sabitle (`@0.3.1`); `@0` güncellemeler sana ulaşsın diye daha kısa süre önbellekte kalır.
 
 ## Kendi fontu olmayan PDF'ler için fontlar
 

@@ -73,7 +73,7 @@
 <p>On a slower connection (9 Mbit/s, 60 ms latency) the first visit takes 2.4 s for the short file and 3.0 s for the book, most of it the engine. On the next visit the engine comes from the cache and the same files open in 0.7 s and 1.2 s. On that connection the 80 MB scan opens in 7.6 s with <code>load=&quot;range&quot;</code>; with <code>load=&quot;full&quot;</code> it does not open within the test’s time limit, which is why <code>range</code> is the default.</p>
 <h2 id="cache">Cache</h2>
 <p>The engine is kept in your site’s Cache Storage, under a name that starts with <code>vivepdf-engine-</code>, and reused on every page of your site. A new version of the viewer stores its own engine and removes the old one. Visitors whose browser blocks storage simply download it again.</p>
-<p>The viewer’s own files come from your server or the CDN with normal HTTP caching. On jsDelivr, pin a version (<code>@0.3.0</code>) for the longest cache life; <code>@0</code> is cached for a shorter time so updates reach you.</p>
+<p>The viewer’s own files come from your server or the CDN with normal HTTP caching. On jsDelivr, pin a version (<code>@0.3.1</code>) for the longest cache life; <code>@0</code> is cached for a shorter time so updates reach you.</p>
 <h2 id="fonts-for-pdfs-without-their-own">Fonts for PDFs without their own</h2>
 <p>Most PDFs carry the fonts they use. Some leave them out and expect the reader to have them. For Latin text the engine has its own fonts. For Japanese, Korean, Chinese, Cyrillic, Greek, Vietnamese, Hebrew and Arabic text in such files, the viewer needs the Noto fonts from your server, or that text shows as boxes or is missing.</p>
 <p>The fonts are not on npm. Build the folder from the vivePDF repository:</p>
