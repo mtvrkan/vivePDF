@@ -12,7 +12,7 @@
       const viewer = document.createElement("vive-pdf");
       viewer.dataset.testid = "viewer";
       viewer.setAttribute("src", params.get("src") || "/fixtures/book.pdf");
-      for (const name of ["theme", "lang", "load", "fonts"]) if (params.has(name)) viewer.setAttribute(name, params.get(name));
+      for (const name of ["theme", "lang", "load", "fonts", "print", "download", "toolbar", "filename"]) if (params.has(name)) viewer.setAttribute(name, params.get(name));
       viewer.style.height = params.get("height") || "100vh";
       viewer.addEventListener("vive-mark", (event) => window.__marks.push(event.detail.name));
       document.body.append(viewer);

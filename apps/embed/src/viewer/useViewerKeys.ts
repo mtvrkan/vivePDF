@@ -4,7 +4,9 @@ import { useSelectionCapability } from "@embedpdf/plugin-selection/preact";
 import { ZoomMode, useZoomCapability } from "@embedpdf/plugin-zoom/preact";
 import { viewerKeyAction } from "./viewerKeys";
 
-export function useViewerKeys(documentId: string, host: HTMLElement | null, openSearch: () => void): void {
+export type FileKeys = { print: (() => void) | null; download: (() => void) | null };
+
+export function useViewerKeys(documentId: string, host: HTMLElement | null, openSearch: () => void, files: FileKeys): void {
   const { provides: zoom } = useZoomCapability();
   const { provides: scroll } = useScrollCapability();
   const { provides: selection } = useSelectionCapability();
@@ -18,8 +20,11 @@ export function useViewerKeys(documentId: string, host: HTMLElement | null, open
       const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable);
       const action = viewerKeyAction(event, typing);
       if (!action) return;
+      const fileAction = action === "print" ? files.print : action === "download" ? files.download : undefined;
+      if (fileAction === null) return;
       event.preventDefault();
-      if (action === "search") openSearch();
+      if (fileAction) fileAction();
+      else if (action === "search") openSearch();
       else if (action === "zoomIn") zoomScope.zoomIn();
       else if (action === "zoomOut") zoomScope.zoomOut();
       else if (action === "fitWidth") zoomScope.requestZoom(ZoomMode.FitWidth);
@@ -29,5 +34,5 @@ export function useViewerKeys(documentId: string, host: HTMLElement | null, open
     };
     host.addEventListener("keydown", onKeyDown);
     return () => host.removeEventListener("keydown", onKeyDown);
-  }, [host, zoom, scroll, selection, documentId, openSearch]);
+  }, [host, zoom, scroll, selection, documentId, openSearch, files.print, files.download]);
 }

@@ -8,6 +8,7 @@ import type { OpenProblem } from "./openError";
 type OpenProblemViewProps = {
   problem: OpenProblem;
   sourceUrl: string;
+  offerDownload: boolean;
   busy: boolean;
   onRetry: () => void;
   onPassword: (password: string) => void;
@@ -72,11 +73,11 @@ function PasswordForm({ wrong, busy, onPassword }: { wrong: boolean; busy: boole
   );
 }
 
-export function OpenProblemView({ problem, sourceUrl, busy, onRetry, onPassword }: OpenProblemViewProps) {
+export function OpenProblemView({ problem, sourceUrl, offerDownload, busy, onRetry, onPassword }: OpenProblemViewProps) {
   const t = useT();
   const shape = SHAPES[problem];
   const locked = problem === "password" || problem === "wrongPassword";
-  const offersDownload = problem === "damaged" || problem === "noPages";
+  const offersDownload = offerDownload && (problem === "damaged" || problem === "noPages");
   const download = offersDownload ? safeExternalUrl(sourceUrl, document.baseURI) : null;
   const downloadable = download !== null && /^https?:/.test(download);
 

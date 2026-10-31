@@ -54,5 +54,10 @@
   "unknownTitle": "The document could not be opened",
   "unknownText": "Something went wrong while opening it.",
   "engineTitle": "The viewer could not start",
-  "engineText": "Try again, or reload the page if it keeps happening."
+  "engineText": "Try again, or reload the page if it keeps happening.",
+  "print": "Print",
+  "download": "Download",
+  "preparingPrint": "Preparing pages for printing… {done} / {total}",
+  "downloading": "Downloading the file…",
+  "cancel": "Cancel"
 }

@@ -4,6 +4,12 @@ import { viewerKeyAction } from "./viewerKeys";
 const press = (key: string, modifiers: Partial<{ ctrlKey: boolean; metaKey: boolean; altKey: boolean; shiftKey: boolean }> = {}) => ({ key, ctrlKey: false, metaKey: false, altKey: false, shiftKey: false, ...modifiers });
 
 describe("viewerKeyAction", () => {
+  it("maps print and save to printing and downloading, also while typing in a field", () => {
+    const actions = [viewerKeyAction(press("p", { ctrlKey: true }), false), viewerKeyAction(press("P", { metaKey: true }), true), viewerKeyAction(press("s", { metaKey: true }), true)];
+
+    expect(actions).toEqual(["print", "print", "download"]);
+  });
+
   it("maps the command shortcuts on Windows and Mac", () => {
     const actions = [press("f", { ctrlKey: true }), press("F", { metaKey: true }), press("=", { metaKey: true }), press("-", { ctrlKey: true }), press("0", { ctrlKey: true }), press("c", { metaKey: true })].map((event) => viewerKeyAction(event, false));
 

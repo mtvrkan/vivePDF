@@ -18,7 +18,11 @@ import { assetUrl, setAssetBase } from "../engine/assets";
 import { createTranslator, type Lang } from "../i18n";
 import viewerCss from "../styles/viewer.css?inline";
 import { resolveTheme, type ThemeSetting } from "../styles/theme";
+import { BusyToast } from "./BusyToast";
+import type { ViewerFeatures } from "./features";
+import { downloadName } from "./fileName";
 import { TranslateContext, useT } from "./i18nContext";
+import type { MenuItem } from "./MoreMenu";
 import { OpenProblemView } from "./OpenProblemView";
 import { engineFailure, problemFromDocument, problemFromEngine, problemFromStatus, type OpenProblem } from "./openError";
 import { Pages } from "./Pages";
@@ -26,6 +30,7 @@ import { Pill } from "./Pill";
 import { SearchBox } from "./SearchBox";
 import { SidePanel, type PanelTab } from "./SidePanel";
 import { useEngine } from "./useEngine";
+import { useFileActions } from "./useFileActions";
 import { useRefit } from "./useRefit";
 import { useViewerKeys } from "./useViewerKeys";
 
@@ -36,6 +41,8 @@ export type MountOptions = {
   lang: Lang;
   theme: ThemeSetting;
   fontBase: string | null;
+  features: ViewerFeatures;
+  fileName: string | null;
   mark: (name: string) => void;
 };
 
@@ -114,7 +121,7 @@ function FirstPageWatch({ mark }: { mark: MountOptions["mark"] }) {
   return <div ref={ref} hidden />;
 }
 
-type ViewerUiProps = { sourceUrl: string; host: HTMLElement | null; startPage: number; onPage: (page: number) => void };
+type ViewerUiProps = { sourceUrl: string; fileName: string; features: ViewerFeatures; host: HTMLElement | null; startPage: number; onPage: (page: number) => void };
 
 function useStartPage(fitted: boolean, startPage: number, onPage: (page: number) => void): void {
   const { state, provides: scroll } = useScroll(DOCUMENT_ID);
@@ -146,7 +153,8 @@ function useStartPage(fitted: boolean, startPage: number, onPage: (page: number)
   }, [state.currentPage, onPage]);
 }
 
-function ViewerUi({ sourceUrl, host, startPage, onPage }: ViewerUiProps) {
+function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage }: ViewerUiProps) {
+  const t = useT();
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState<PanelTab>("pages");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -164,7 +172,13 @@ function ViewerUi({ sourceUrl, host, startPage, onPage }: ViewerUiProps) {
     setSearchOpen(true);
     host?.querySelector<HTMLInputElement>(".vp-search input")?.focus();
   }, [host]);
-  useViewerKeys(DOCUMENT_ID, host, openSearch);
+  const files = useFileActions(DOCUMENT_ID, sourceUrl, fileName);
+  const print = features.print ? files.print : null;
+  const download = features.download ? files.download : null;
+  useViewerKeys(DOCUMENT_ID, host, openSearch, { print, download });
+  const fileItems: MenuItem[] = [];
+  if (print) fileItems.push({ kind: "action", id: "print", label: t("print"), icon: "print", onSelect: print });
+  if (download) fileItems.push({ kind: "action", id: "download", label: t("download"), icon: "download", onSelect: download });
   return (
     <>
       <Pages documentId={DOCUMENT_ID} sourceUrl={sourceUrl} />
@@ -180,8 +194,13 @@ function ViewerUi({ sourceUrl, host, startPage, onPage }: ViewerUiProps) {
           }}
         />
       ) : null}
-      <SearchBox documentId={DOCUMENT_ID} open={searchOpen} onOpenChange={setSearchOpen} />
-      <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} />
+      {features.toolbar ? (
+        <>
+          <SearchBox documentId={DOCUMENT_ID} open={searchOpen} onOpenChange={setSearchOpen} />
+          <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} fileItems={fileItems} />
+        </>
+      ) : null}
+      {files.task ? <BusyToast task={files.task} onCancel={files.cancel} /> : null}
     </>
   );
 }
@@ -223,7 +242,7 @@ function Opener({ options, host, startPage, onPage }: { options: MountOptions; h
     if (!documents) return;
     activeRef.current = true;
     const controller = new AbortController();
-    const name = options.src.split("/").pop() || "document.pdf";
+    const name = downloadName(options.src, options.fileName);
     options.mark("open-start");
     if (options.mode === "range") {
       settle(documents.openDocumentUrl({ url: options.src, mode: "range-request", documentId: DOCUMENT_ID, name }), false);
@@ -260,12 +279,12 @@ function Opener({ options, host, startPage, onPage }: { options: MountOptions; h
   };
 
   if (state.kind === "problem")
-    return <OpenProblemView problem={state.problem} sourceUrl={options.src} busy={state.busy} onRetry={() => reopen()} onPassword={(password) => reopen(password)} />;
+    return <OpenProblemView problem={state.problem} sourceUrl={options.src} offerDownload={options.features.download} busy={state.busy} onRetry={() => reopen()} onPassword={(password) => reopen(password)} />;
   return (
     <DocumentContent documentId={DOCUMENT_ID}>
       {({ isLoaded }) =>
         isLoaded ? (
-          <ViewerUi sourceUrl={options.src} host={host} startPage={startPage} onPage={onPage} />
+          <ViewerUi sourceUrl={options.src} fileName={downloadName(options.src, options.fileName)} features={options.features} host={host} startPage={startPage} onPage={onPage} />
         ) : (
           <Loading text={t("loading")} />
         )
@@ -312,7 +331,7 @@ function Viewer({ options }: { options: MountOptions }) {
     <TranslateContext.Provider value={translate}>
       <div ref={setHost} class="vp" data-theme={resolveTheme(options.theme, prefersDark)} role="region" aria-label={translate("viewer")}>
         {failure && !restarting ? (
-          <OpenProblemView problem="engine" sourceUrl={options.src} busy={false} onRetry={() => setAttempt((value) => value + 1)} onPassword={() => {}} />
+          <OpenProblemView problem="engine" sourceUrl={options.src} offerDownload={options.features.download} busy={false} onRetry={() => setAttempt((value) => value + 1)} onPassword={() => {}} />
         ) : null}
         {!failure && !engine ? <Loading text={translate("loading")} /> : null}
         {engine && !failure ? (

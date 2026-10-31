@@ -6,7 +6,7 @@ import { SpreadMode, useSpread } from "@embedpdf/plugin-spread/preact";
 import { ZoomMode, useZoom } from "@embedpdf/plugin-zoom/preact";
 import { Icon } from "./Icon";
 import { useT } from "./i18nContext";
-import { MoreMenu } from "./MoreMenu";
+import { MoreMenu, type MenuItem } from "./MoreMenu";
 import { formatZoom, parsePageInput } from "./pageInput";
 import { usePillVisibility } from "./usePillVisibility";
 
@@ -59,9 +59,9 @@ function PageBox({ documentId }: { documentId: string }) {
   );
 }
 
-type PillProps = { documentId: string; host: HTMLElement | null; panelOpen: boolean; onTogglePanel: () => void; panelButtonRef: RefObject<HTMLButtonElement> };
+type PillProps = { documentId: string; host: HTMLElement | null; panelOpen: boolean; onTogglePanel: () => void; panelButtonRef: RefObject<HTMLButtonElement>; fileItems: MenuItem[] };
 
-export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRef }: PillProps) {
+export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRef, fileItems }: PillProps) {
   const t = useT();
   const { state: zoomState, provides: zoom } = useZoom(documentId);
   const { provides: rotate } = useRotate(documentId);
@@ -103,6 +103,8 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
         open={menuOpen}
         onOpenChange={setMenuOpen}
         items={[
+          ...fileItems,
+          ...(fileItems.length > 0 ? [{ kind: "separator", id: "file-sep" } as const] : []),
           { kind: "action", id: "fit", label: fitLabel, icon: fitsWidth ? "fitPage" : "fitWidth", narrowOnly: true, onSelect: fit },
           { kind: "action", id: "rotate", label: t("rotate"), icon: "rotate", narrowOnly: true, onSelect: () => rotate?.rotateForward() },
           { kind: "separator", id: "layout-sep", narrowOnly: true },

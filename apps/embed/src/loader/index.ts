@@ -1,6 +1,7 @@
 import { parseFontBase } from "../engine/fontBase";
 import { resolveLang } from "../i18n/lang";
 import { parseThemeSetting } from "../styles/theme";
+import { parseSwitch } from "../viewer/features";
 import type { MountOptions, Unmount } from "../viewer/mount";
 
 type ViewerModule = { mount: (root: ShadowRoot, options: MountOptions) => Unmount };
@@ -54,6 +55,8 @@ export class VivePdfElement extends HTMLElement {
       lang: resolveLang(this.getAttribute("lang"), document.documentElement.lang),
       theme: parseThemeSetting(this.getAttribute("theme")),
       fontBase: parseFontBase(this.getAttribute("fonts"), document.baseURI),
+      features: { print: parseSwitch(this.getAttribute("print")), download: parseSwitch(this.getAttribute("download")), toolbar: parseSwitch(this.getAttribute("toolbar")) },
+      fileName: this.getAttribute("filename"),
       mark: (name) => this.mark(name),
     };
     this.unmount = mount(this.root, options);
