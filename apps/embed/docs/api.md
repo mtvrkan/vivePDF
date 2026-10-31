@@ -8,7 +8,7 @@ apply while the document is open; only `src`, `load` and `open()` load a new doc
 | Attribute | Values | Default |
 | --- | --- | --- |
 | `mode` | `sized` · `full` · `inline` · `lightbox` (see below) | `sized` |
-| `src` | URL of the PDF, relative to the page | — |
+| `src` | URL of the PDF, relative to the page; `http:`, `https:` and `blob:` only | — |
 | `load` | `range` (fetch the parts on screen) · `full` (fetch the whole file first) | `range` |
 | `page` | Page to show, from 1. Changing it turns to that page. | `1` |
 | `zoom` | `fit-width` · `fit-page` · a percentage such as `150` or `150%` (10–800) | `fit-width` |
@@ -66,7 +66,7 @@ All events bubble out of the element, so one listener on `document` can watch se
 | `vive-pagechange` | `{ page, pageCount }` |
 | `vive-zoomchange` | `{ zoom }` in percent |
 | `vive-close` | `null`, when the lightbox closes |
-| `vive-error` | `{ code }`: `password` · `wrong-password` · `not-found` · `network` · `damaged` · `no-pages` · `engine` · `unknown` |
+| `vive-error` | `{ code }`: `password` · `wrong-password` · `not-found` · `network` · `damaged` · `no-pages` · `engine` · `unsupported-url` · `unknown` |
 
 ## TypeScript
 

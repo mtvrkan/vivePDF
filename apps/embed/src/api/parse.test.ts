@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseMode, parsePageSetting, parseZoomSetting } from "./parse";
+import { parseMode, parsePageSetting, parseSourceUrl, parseZoomSetting } from "./parse";
 
 describe("parseZoomSetting", () => {
   it("reads fit modes and percentages with or without a percent sign", () => {
@@ -46,5 +46,27 @@ describe("parseMode", () => {
     const modes = [null, "", "modal"].map(parseMode);
 
     expect(modes).toEqual(["sized", "sized", "sized"]);
+  });
+});
+
+describe("parseSourceUrl", () => {
+  const BASE = "https://site.test/docs/page.html";
+
+  it("resolves web and blob addresses against the page", () => {
+    const urls = ["files/a.pdf", "/b.pdf", "https://cdn.test/c.pdf", "http://old.test/d.pdf", "blob:https://site.test/1234"].map((url) => parseSourceUrl(url, BASE));
+
+    expect(urls).toEqual(["https://site.test/docs/files/a.pdf", "https://site.test/b.pdf", "https://cdn.test/c.pdf", "http://old.test/d.pdf", "blob:https://site.test/1234"]);
+  });
+
+  it("refuses script, data and file addresses", () => {
+    const urls = ["javascript:alert(1)", " JavaScript:alert(1)", "data:application/pdf;base64,JVBERi0=", "file:///etc/passwd"].map((url) => parseSourceUrl(url, BASE));
+
+    expect(urls).toEqual([null, null, null, null]);
+  });
+
+  it("refuses addresses that hide their host behind a user name", () => {
+    const url = parseSourceUrl("https://bank.test@evil.test/statement.pdf", BASE);
+
+    expect(url).toBeNull();
   });
 });

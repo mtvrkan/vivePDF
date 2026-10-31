@@ -2,7 +2,7 @@ export type ZoomSetting = number | "fit-width" | "fit-page";
 
 export type VivePdfMode = "sized" | "inline" | "full" | "lightbox";
 
-export type VivePdfErrorCode = "password" | "wrong-password" | "not-found" | "network" | "damaged" | "no-pages" | "engine" | "unknown";
+export type VivePdfErrorCode = "password" | "wrong-password" | "not-found" | "network" | "damaged" | "no-pages" | "engine" | "unsupported-url" | "unknown";
 
 export type VivePdfInput = string | URL | Blob | ArrayBuffer | ArrayBufferView;
 

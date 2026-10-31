@@ -80,6 +80,21 @@ test("open() rejects with an error code when the file cannot be opened", async (
   expect(await eventsOf(page, "vive-error")).toEqual([{ code: "damaged" }]);
 });
 
+test("script and data addresses are refused before anything loads", async ({ page }) => {
+  const requests: string[] = [];
+  await openViewer(page, "src=none", "connected");
+  page.on("request", (request) => requests.push(request.url()));
+
+  const codes = await element(page).evaluate(async (node: VivePdfViewer) => {
+    const refused = (input: string) => node.open(input).then(() => "opened", (error: { code: string }) => error.code);
+    return [await refused("javascript:alert(1)"), await refused("data:application/pdf;base64,JVBERi0xLjQK")];
+  });
+
+  expect(codes).toEqual(["unsupported-url", "unsupported-url"]);
+  expect(await eventsOf(page, "vive-error")).toEqual([{ code: "unsupported-url" }, { code: "unsupported-url" }]);
+  expect(requests).toEqual([]);
+});
+
 test("search() looks a word up from outside the viewer", async ({ page }) => {
   await openViewer(page, "src=/fixtures/book.pdf");
 

@@ -24,3 +24,14 @@ export function parseMode(value: string | null): VivePdfMode {
   const mode = value?.trim().toLowerCase();
   return MODES.find((entry) => entry === mode) ?? "sized";
 }
+
+const SOURCE_PROTOCOLS = new Set(["http:", "https:", "blob:"]);
+
+export function parseSourceUrl(value: string, base: string): string | null {
+  try {
+    const url = new URL(value.trim(), base);
+    return SOURCE_PROTOCOLS.has(url.protocol) && !url.username && !url.password ? url.href : null;
+  } catch {
+    return null;
+  }
+}

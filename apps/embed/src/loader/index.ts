@@ -1,4 +1,4 @@
-import { parseMode, parsePageSetting, parseZoomSetting } from "../api/parse";
+import { parseMode, parsePageSetting, parseSourceUrl, parseZoomSetting } from "../api/parse";
 import type { VivePdfInput, VivePdfOpenError, VivePdfViewer, ZoomSetting } from "../api/types";
 import { parseFontBase } from "../engine/fontBase";
 import { resolveLang } from "../i18n/lang";
@@ -154,6 +154,8 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
     this.source = null;
     this.current = { page: 0, pageCount: 0, zoom: 0 };
     this.queued = [];
+    const src = this.getAttribute("src");
+    if (!this.data && src && !parseSourceUrl(src, document.baseURI)) this.receive({ type: "error", detail: { code: "unsupported-url" } });
     if (!this.handle) {
       void this.boot();
       return;
@@ -176,8 +178,9 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
       return this.source;
     }
     const src = this.getAttribute("src");
-    if (!src) return null;
-    this.source = { kind: "url", url: new URL(src, document.baseURI).href, load: this.getAttribute("load") === "full" ? "full" : "range" };
+    const url = src ? parseSourceUrl(src, document.baseURI) : null;
+    if (!url) return null;
+    this.source = { kind: "url", url, load: this.getAttribute("load") === "full" ? "full" : "range" };
     return this.source;
   }
 

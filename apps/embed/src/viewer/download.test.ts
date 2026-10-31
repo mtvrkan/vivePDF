@@ -33,4 +33,10 @@ describe("savesDirectly", () => {
 
     expect(direct).toBe(false);
   });
+
+  it("does not save a blob made by another site as if it were the page's own", () => {
+    const direct = savesDirectly("blob:https://other.test/1234", "https://site.test");
+
+    expect(direct).toBe(false);
+  });
 });

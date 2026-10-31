@@ -70,4 +70,18 @@ describe("installEngineCache", () => {
     await vi.waitFor(() => expect([...(store.get("vivepdf-engine-abc123")?.keys() ?? [])]).toEqual([ENGINE]));
     expect(network.mock.calls.map(([input]) => String(input))).toEqual([ENGINE, "https://example.com/files/report.pdf"]);
   });
+
+  it("caches only the engine the worker loaded first, not another file of the same name", async () => {
+    const { storage, store } = fakeStorage();
+    const network = vi.fn(async () => wasm());
+    const scope = { fetch: network as unknown as typeof fetch, caches: storage };
+    const other = "https://other.example/fonts/pdfium.wasm";
+
+    installEngineCache(scope, "abc123");
+    await scope.fetch(ENGINE);
+    await scope.fetch(other);
+
+    await vi.waitFor(() => expect([...(store.get("vivepdf-engine-abc123")?.keys() ?? [])]).toEqual([ENGINE]));
+    expect(network).toHaveBeenCalledTimes(2);
+  });
 });

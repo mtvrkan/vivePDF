@@ -19,4 +19,10 @@ describe("downloadName", () => {
 
     expect(names).toEqual(["document.pdf", "document.pdf", "document.pdf", "a_b_c_.pdf"]);
   });
+
+  it("drops invisible direction and zero-width characters that could disguise the name", () => {
+    const name = downloadName("https://example.com/x", "invoice\u202Etxt.exe\u200B");
+
+    expect(name).toBe("invoicetxt.exe.pdf");
+  });
 });

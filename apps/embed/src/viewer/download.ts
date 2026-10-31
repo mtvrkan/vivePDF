@@ -11,8 +11,7 @@ export function downloadableUrl(src: string, base: string): string | null {
 }
 
 export function savesDirectly(href: string, pageOrigin: string): boolean {
-  const url = new URL(href);
-  return url.protocol === "blob:" || url.origin === pageOrigin;
+  return new URL(href).origin === pageOrigin;
 }
 
 export function clickDownload(href: string, fileName: string): void {

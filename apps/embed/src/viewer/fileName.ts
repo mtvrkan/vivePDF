@@ -1,4 +1,5 @@
 const UNSAFE_CHARACTERS = /[\\/:*?"<>|\u0000-\u001f\u007f]+/g;
+const INVISIBLE_CHARACTERS = /[​-‏‪-‮⁠-⁩﻿]/g;
 const MAX_LENGTH = 120;
 const FALLBACK = "document";
 
@@ -12,6 +13,6 @@ function lastSegment(src: string): string {
 
 export function downloadName(src: string, preferred: string | null): string {
   const raw = preferred?.trim() || lastSegment(src);
-  const clean = raw.replace(UNSAFE_CHARACTERS, "_").replace(/^[._\s]+/, "").slice(0, MAX_LENGTH).trim() || FALLBACK;
+  const clean = raw.replace(INVISIBLE_CHARACTERS, "").replace(UNSAFE_CHARACTERS, "_").replace(/^[._\s]+/, "").slice(0, MAX_LENGTH).trim() || FALLBACK;
   return /\.pdf$/i.test(clean) ? clean : `${clean}.pdf`;
 }

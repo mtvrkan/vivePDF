@@ -31,9 +31,11 @@ export async function fetchEngine(url: string, build: string, storage: CacheStor
 
 export function installEngineCache(scope: EngineScope, build: string): void {
   const network = scope.fetch.bind(scope);
+  let engineUrl: string | null = null;
   scope.fetch = (input, init) => {
     const url = typeof input === "string" ? input : input instanceof URL ? input.href : null;
-    if (url === null || !ENGINE_FILE.test(url)) return network(input, init);
+    if (url !== null && engineUrl === null && ENGINE_FILE.test(url)) engineUrl = url;
+    if (url === null || url !== engineUrl) return network(input, init);
     return fetchEngine(url, build, scope.caches, (target) => network(target, init));
   };
 }
