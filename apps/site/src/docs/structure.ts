@@ -36,6 +36,7 @@ export type DocKey =
   | "faq"
   | "troubleshooting"
   | "buildFromSource"
+  | "webViewer"
   | "license";
 
 export type DocEntry = { key: DocKey; group: DocGroupKey; icon: string; slug: Record<Locale, string> };
@@ -75,6 +76,7 @@ export const DOCS: DocEntry[] = [
   { key: "releaseNotes", group: "reference", icon: "i-gift", slug: { tr: "surum-notlari", en: "release-notes" } },
   { key: "faq", group: "reference", icon: "i-book", slug: { tr: "sss", en: "faq" } },
   { key: "troubleshooting", group: "reference", icon: "i-life", slug: { tr: "sorun-giderme", en: "troubleshooting" } },
+  { key: "webViewer", group: "developers", icon: "i-code", slug: { tr: "web-goruntuleyici", en: "web-viewer" } },
   { key: "buildFromSource", group: "developers", icon: "i-code", slug: { tr: "kaynaktan-derleme", en: "build-from-source" } },
   { key: "license", group: "developers", icon: "i-book", slug: { tr: "lisans", en: "license" } },
 ];
