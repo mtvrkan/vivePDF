@@ -5,7 +5,7 @@ export const VIEWER_THEMES = ["light", "dark", "auto"] as const;
 export const VIEWER_LANGS = ["", "tr", "en"] as const;
 export const VIEWER_ZOOMS = ["fit-width", "fit-page", "100", "150"] as const;
 export const VIEWER_CONTROLS = ["toolbar", "search", "print", "download"] as const;
-export const VIEWER_ACCENTS = ["", "#0F766E", "#7C3AED", "#C2410C", "#BE123C"] as const;
+export const VIEWER_ACCENTS = ["", "#0F766E", "#15803D", "#7C3AED", "#C2410C", "#BE123C"] as const;
 
 export const VIEWER_EXTRAS = ["annotate", "branding"] as const;
 

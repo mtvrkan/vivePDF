@@ -9,7 +9,7 @@ import Steps from "./Steps.astro";
 import Callout from "./Callout.astro";
 import Shot from "./Shot.astro";
 import ViewerPlayground from "./ViewerPlayground.astro";
-import { absoluteUrl, docPath, docsIndexPath, homePath, REPO_URL, SITE_URL, type Locale } from "../../i18n";
+import { absoluteUrl, docPath, docsIndexPath, homePath, SITE_URL, type Locale } from "../../i18n";
 import { UI } from "../../i18n/ui";
 import { docAlternates, docOgImage, docTitles, neighbours, type DocProps } from "../../docs/pages";
 import { extraHeadings } from "../../docs/extras";
@@ -27,7 +27,6 @@ const titles = await docTitles(lang);
 const { prev, next } = neighbours(doc);
 const prevTitle = prev && titles.get(prev.key)?.title;
 const nextTitle = next && titles.get(next.key)?.title;
-const editUrl = `${REPO_URL}/edit/main/apps/site/src/content/docs/${lang}/${doc.slug[lang]}.mdx`;
 const updatedIso = data.updated.toISOString().slice(0, 10);
 const updated = new Intl.DateTimeFormat(lang, { dateStyle: "long", timeZone: "UTC" }).format(data.updated);
 const groupName = ui.docs.groups[doc.group];
@@ -89,7 +88,6 @@ if (faq.length) {
   </article>
   <footer class="doc-foot">
     <p class="mini-label">{ui.docs.updated}: <time datetime={updatedIso}>{updated}</time></p>
-    <a class="text-link ul" href={editUrl}><svg class="ic" aria-hidden="true"><use href="#i-code"/></svg>{ui.docs.edit}</a>
   </footer>
   <nav class="pager" aria-label={`${ui.docs.previous} / ${ui.docs.next}`}>
     {prev && prevTitle ? <a class="pager-link prev" href={docPath(lang, prev.slug[lang])} rel="prev"><span class="mini-label">{ui.docs.previous}</span><b>{prevTitle}</b></a> : <span></span>}
