@@ -122,6 +122,7 @@
 }
 .vp-zoom-value:hover { background: var(--vp-muted); }
 .vp-wide { display: contents; }
+.vp-zoomgroup { display: contents; }
 .vp-menu-anchor { position: relative; display: inline-flex; }
 .vp-menu {
   position: absolute; right: -6px; bottom: calc(100% + 12px); min-width: 220px; padding: 6px; margin: 0;
@@ -230,16 +231,37 @@ a.vp-text-btn { display: inline-flex; align-items: center; gap: 8px; text-decora
 .vp-busy-progress { flex: none; width: 96px; height: 6px; accent-color: var(--vp-primary); }
 .vp-busy .vp-text-btn { flex: none; border-radius: 16px; }
 .vp-text-btn:focus-visible { outline: 2px solid var(--vp-primary); outline-offset: 2px; }
-.vp-narrow-only { display: none; }
+.vp-narrow-only, .vp-compact-only { display: none; }
 @container vive (max-width: 559px) {
   .vp-wide { display: none; }
   .vp-narrow-only { display: contents; }
   .vp-pill { bottom: 12px; }
+  .vp-pill .vp-sep { margin: 0 2px; }
   .vp-search { top: 8px; right: 8px; }
   .vp-search[data-open="true"] { left: 8px; width: auto; }
   .vp-btn.vp-close { top: 8px; right: 8px; }
   .vp[data-mode="lightbox"] .vp-search { right: 64px; }
   .vp-panel { left: 0; right: 0; top: auto; bottom: 0; width: auto; height: min(70%, 520px); border-radius: 16px 16px 0 0; border-bottom: 0; z-index: 5; }
+}
+@container vive (max-width: 569px) {
+  .vp-pill:not([data-extras="0"]) .vp-wide { display: none; }
+  .vp-pill:not([data-extras="0"]) .vp-narrow-only { display: contents; }
+}
+@container vive (max-width: 615px) {
+  .vp-pill[data-extras="2"] .vp-wide { display: none; }
+  .vp-pill[data-extras="2"] .vp-narrow-only { display: contents; }
+}
+@container vive (max-width: 347px) {
+  .vp-pill .vp-zoomgroup { display: none; }
+  .vp-pill .vp-compact-only { display: contents; }
+}
+@container vive (max-width: 392px) {
+  .vp-pill[data-extras="1"] .vp-zoomgroup, .vp-pill[data-extras="2"] .vp-zoomgroup { display: none; }
+  .vp-pill[data-extras="1"] .vp-compact-only, .vp-pill[data-extras="2"] .vp-compact-only { display: contents; }
+}
+@container vive (max-width: 431px) {
+  .vp-pill[data-extras="2"] .vp-zoomgroup { display: none; }
+  .vp-pill[data-extras="2"] .vp-compact-only { display: contents; }
 }
 @media (prefers-reduced-motion: reduce) {
   .vp-pill, .vp-btn, .vp-brand, .vp-tree-twisty .vp-icon { transition: none; }

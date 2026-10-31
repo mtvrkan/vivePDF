@@ -75,7 +75,7 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
   const fitLabel = fitsWidth ? t("fitPage") : t("fitWidth");
 
   return (
-    <div ref={pillRef} class="vp-pill vp-glass" role="toolbar" aria-label={t("toolbar")} data-hidden={hidden ? "true" : "false"}>
+    <div ref={pillRef} class="vp-pill vp-glass" role="toolbar" aria-label={t("toolbar")} data-hidden={hidden ? "true" : "false"} data-extras={(branding ? 1 : 0) + (drawing ? 1 : 0)}>
       {branding ? (
         <>
           <Brand />
@@ -87,16 +87,18 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
       </button>
       <span class="vp-sep" />
       <PageBox documentId={documentId} />
-      <span class="vp-sep" />
-      <button class="vp-btn" type="button" aria-label={t("zoomOut")} onClick={() => zoom?.zoomOut()}>
-        <Icon name="minus" />
-      </button>
-      <span class="vp-zoom-value" role="status" aria-label={t("zoomLevel", { value: formatZoom(zoomState.currentZoomLevel) })}>
-        {formatZoom(zoomState.currentZoomLevel)}
+      <span class="vp-zoomgroup">
+        <span class="vp-sep" />
+        <button class="vp-btn" type="button" aria-label={t("zoomOut")} onClick={() => zoom?.zoomOut()}>
+          <Icon name="minus" />
+        </button>
+        <span class="vp-zoom-value" role="status" aria-label={t("zoomLevel", { value: formatZoom(zoomState.currentZoomLevel) })}>
+          {formatZoom(zoomState.currentZoomLevel)}
+        </span>
+        <button class="vp-btn" type="button" aria-label={t("zoomIn")} onClick={() => zoom?.zoomIn()}>
+          <Icon name="plus" />
+        </button>
       </span>
-      <button class="vp-btn" type="button" aria-label={t("zoomIn")} onClick={() => zoom?.zoomIn()}>
-        <Icon name="plus" />
-      </button>
       <span class="vp-wide">
         <button class="vp-btn" type="button" aria-label={fitLabel} title={fitLabel} onClick={fit}>
           <Icon name={fitsWidth ? "fitPage" : "fitWidth"} />
@@ -120,6 +122,8 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
         items={[
           ...fileItems,
           ...(fileItems.length > 0 ? [{ kind: "separator", id: "file-sep" } as const] : []),
+          { kind: "action", id: "zoom-in", label: t("zoomIn"), icon: "plus", compactOnly: true, onSelect: () => zoom?.zoomIn() },
+          { kind: "action", id: "zoom-out", label: t("zoomOut"), icon: "minus", compactOnly: true, onSelect: () => zoom?.zoomOut() },
           { kind: "action", id: "fit", label: fitLabel, icon: fitsWidth ? "fitPage" : "fitWidth", narrowOnly: true, onSelect: fit },
           { kind: "action", id: "rotate", label: t("rotate"), icon: "rotate", narrowOnly: true, onSelect: () => rotate?.rotateForward() },
           { kind: "separator", id: "layout-sep", narrowOnly: true },

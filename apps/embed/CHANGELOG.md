@@ -13,6 +13,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Highlights, pen drawings, boxes and notes already in a PDF are drawn; 0.1.0 showed pages without them.
 - Rectangles, ellipses and arrows drawn with the drawing tools are outlines in the chosen colour instead of filled shapes.
 - Deleting a note also removes its pop-up window from the PDF, and a download or print started while a drawing was still being written waits for it.
+- The toolbar fits in narrow viewers again now that it can hold the vivePDF mark and the Draw button: below about 430 pixels the zoom buttons move into the More menu, and the page arrows, fit and rotate move there a little earlier.
 
 ## [0.1.0]
 

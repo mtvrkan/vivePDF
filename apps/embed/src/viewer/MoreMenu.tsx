@@ -3,7 +3,7 @@ import { Icon, type IconName } from "./Icon";
 import { useT } from "./i18nContext";
 
 export type MenuItem =
-  | { kind: "action"; id: string; label: string; icon: IconName; narrowOnly?: boolean; onSelect: () => void }
+  | { kind: "action"; id: string; label: string; icon: IconName; narrowOnly?: boolean; compactOnly?: boolean; onSelect: () => void }
   | { kind: "radio"; id: string; label: string; icon: IconName; narrowOnly?: boolean; checked: boolean; onSelect: () => void }
   | { kind: "separator"; id: string; narrowOnly?: boolean };
 
@@ -90,7 +90,7 @@ export function MoreMenu({ open, onOpenChange, items }: MoreMenuProps) {
       {open ? (
         <ul ref={menuRef} class="vp-menu vp-glass" role="menu" aria-label={t("more")} onKeyDown={onMenuKeyDown}>
           {items.map((item) => {
-            const scope = item.narrowOnly ? "vp-narrow-only" : undefined;
+            const scope = item.narrowOnly ? "vp-narrow-only" : item.kind === "action" && item.compactOnly ? "vp-compact-only" : undefined;
             if (item.kind === "separator") return <li key={item.id} role="separator" class={scope}><div class="vp-menu-sep" /></li>;
             return (
               <li key={item.id} role="none" class={scope}>
