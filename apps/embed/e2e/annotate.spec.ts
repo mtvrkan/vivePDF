@@ -45,7 +45,6 @@ function utf16be(text: string): Buffer {
   return bytes;
 }
 
-test.skip(({ isMobile }) => isMobile, "drawing with a mouse is checked on desktop; touch drawing is a hand check");
 
 test("without the annotate setting there is no drawing button and the drawing code is never fetched", async ({ page }) => {
   const fetched: string[] = [];
@@ -295,7 +294,8 @@ test("a click beside the selected drawing lets go of it", async ({ page }) => {
   await expect(remove).toBeDisabled();
 });
 
-test("the eraser cuts pen lines where it is dragged and removes what is wiped out", async ({ page }) => {
+test("the eraser cuts pen lines where it is dragged and removes what is wiped out", async ({ page, isMobile }) => {
+  test.skip(isMobile, "on phones the lower part of the page sits under the drawing bar; finger erasing is in annotateTouch.spec.ts");
   await openViewer(page, "annotate");
   await pickTool(page, "Pen");
   await viewer(page).getByRole("radio", { name: "Blue" }).click();

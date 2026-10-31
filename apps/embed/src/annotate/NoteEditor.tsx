@@ -20,7 +20,12 @@ export function NoteEditor({ documentId, lang, menu }: NoteEditorProps) {
   const saved = typeof note.contents === "string" ? note.contents : "";
   const [draft, setDraft] = useState(saved);
   const fieldRef = useRef<HTMLTextAreaElement>(null);
-  useEffect(() => setDraft(saved), [saved]);
+  const shownRef = useRef(saved);
+  useEffect(() => {
+    if (shownRef.current === saved) return;
+    shownRef.current = saved;
+    setDraft(saved);
+  }, [saved]);
   useEffect(() => {
     if (saved === "") fieldRef.current?.focus();
   }, [note.id, saved]);

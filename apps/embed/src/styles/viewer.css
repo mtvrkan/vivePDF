@@ -65,6 +65,7 @@
 .vp-btn.vp-close { position: absolute; top: 12px; right: 12px; z-index: 4; width: 48px; height: 48px; border-radius: 24px; }
 .vp[data-mode="lightbox"] .vp-search { right: 68px; }
 .vp-stage { position: absolute; inset: 0; }
+.vp-stage, .vp-page { touch-action: pan-x pan-y !important; }
 .vp-viewport { width: 100%; height: 100%; background: var(--vp-canvas); }
 .vp-page { position: relative; background: #fff; box-shadow: var(--vp-page-shadow); }
 .vp-links { position: absolute; inset: 0; pointer-events: none; }

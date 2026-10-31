@@ -88,3 +88,47 @@ test.describe("drawing bar keyboard", () => {
     expect(await viewer(page).locator(".vp-draw-hint[role=status]").count()).toBe(1);
   });
 });
+
+test.describe("drawing bar widths", () => {
+  test.skip(({ isMobile, browserName }) => isMobile || browserName !== "chromium", "the width sweep resizes one desktop window");
+
+  for (const width of [300, 340, 390, 430, 480, 560, 640, 760, 900, 960, 1024]) {
+    test(`at ${width} pixels the drawing bar, its actions and the hint fit without covering the toolbar`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 760 });
+      await openViewer(page);
+      await viewer(page).getByRole("button", { name: "Draw and annotate" }).click();
+      const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+      await bar.getByRole("button", { name: "Pen", exact: true }).click();
+
+      const frame = await viewer(page).boundingBox();
+      const drawBar = await bar.boundingBox();
+      const pill = await viewer(page).getByRole("toolbar", { name: "Document tools" }).boundingBox();
+      const actions = await Promise.all(["Undo", "Redo", "Delete selected", "Delete all drawings", "Close drawing tools"].map((name) => bar.getByRole("button", { name, exact: true }).boundingBox()));
+      await bar.getByRole("button", { name: "Eraser", exact: true }).click();
+      const hint = await viewer(page).locator(".vp-draw-hint").boundingBox();
+      if (!frame || !drawBar || !pill || !hint) throw new Error("bars not shown");
+
+      expect(drawBar.x).toBeGreaterThanOrEqual(frame.x);
+      expect(drawBar.x + drawBar.width).toBeLessThanOrEqual(frame.x + frame.width);
+      expect(actions.every((box) => box !== null && box.x >= drawBar.x && box.x + box.width <= drawBar.x + drawBar.width)).toBe(true);
+      expect(drawBar.y + drawBar.height).toBeLessThanOrEqual(pill.y);
+      expect(hint.y + hint.height).toBeLessThanOrEqual(drawBar.y);
+      expect(hint.x).toBeGreaterThanOrEqual(frame.x);
+    });
+  }
+});
+
+test("every control in the drawing bar has a name and keyboard focus is drawn", async ({ page, isMobile }) => {
+  test.skip(isMobile, "keyboard focus is checked on desktop");
+  await openViewer(page);
+  await viewer(page).getByRole("button", { name: "Draw and annotate" }).click();
+  const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+
+  const unnamed = await bar.locator("button").evaluateAll((buttons) => buttons.filter((button) => !(button.getAttribute("aria-label") ?? button.textContent ?? "").trim()).length);
+  await bar.getByRole("button", { name: "Pen", exact: true }).focus();
+  await page.keyboard.press("Tab");
+  const ring = await bar.locator(":focus-visible").evaluate((node) => getComputedStyle(node).outlineStyle);
+
+  expect(unnamed).toBe(0);
+  expect(ring).toBe("solid");
+});

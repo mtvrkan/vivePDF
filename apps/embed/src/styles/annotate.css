@@ -5,7 +5,7 @@
   overflow-x: auto; overscroll-behavior: contain; scrollbar-width: none;
 }
 .vp-draw[hidden] { display: none; }
-.vp[data-drawing] .vp-page { touch-action: none; }
+.vp[data-drawing] .vp-page { touch-action: none !important; }
 .vp-draw::-webkit-scrollbar { display: none; }
 .vp-draw-group, .vp-draw-style { display: flex; align-items: center; gap: 2px; flex: none; }
 .vp-swatch {
@@ -37,14 +37,18 @@
 .vp-confirm-actions { display: flex; justify-content: flex-end; gap: 8px; }
 .vp-text-btn.vp-danger { border-color: var(--vp-danger); background: var(--vp-danger); color: var(--vp-card); }
 .vp-text-btn.vp-danger:hover { background: var(--vp-danger); filter: brightness(1.08); }
-@container vive (max-width: 559px) {
+@container vive (max-width: 959px) {
   .vp-draw {
-    bottom: 68px; left: 8px; right: 8px; max-width: none; transform: none;
-    display: grid; grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; padding: 4px 6px; border-radius: 20px; overflow: visible;
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; row-gap: 2px; width: max-content;
+    padding: 4px 6px; border-radius: 20px; overflow: visible;
   }
   .vp-draw > .vp-sep { display: none; }
   .vp-draw-tools { grid-column: 1 / -1; }
   .vp-draw-tools, .vp-draw-style { min-width: 0; overflow-x: auto; overscroll-behavior: contain; scrollbar-width: none; }
   .vp-draw-tools::-webkit-scrollbar, .vp-draw-style::-webkit-scrollbar { display: none; }
-  .vp-draw-hint, .vp-confirm { bottom: 172px; }
+  .vp-draw-hint, .vp-confirm { bottom: 168px; }
+}
+@container vive (max-width: 559px) {
+  .vp-draw { bottom: 68px; left: 8px; right: 8px; width: auto; max-width: none; transform: none; }
+  .vp-draw-hint, .vp-confirm { bottom: 160px; }
 }

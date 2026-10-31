@@ -19,7 +19,6 @@ async function strokeOnPage(page: Page, from: [number, number], to: [number, num
   await page.mouse.up();
 }
 
-test.skip(({ isMobile }) => isMobile, "mouse drawing is checked on desktop");
 
 test("annotations() called from the change event already has the change in it", async ({ page }) => {
   await openViewer(page, "annotate");
@@ -160,4 +159,84 @@ test("drawing tools that cannot load say so and load again with the next documen
 
   expect([broken, await answer()]).toEqual(["failed vive-pdf: the drawing tools could not load", "ok 4"]);
   expect(await marks(page)).toContain("annotate-error");
+});
+
+const inkStrokesInPdf = (pdf: Buffer) =>
+  [...pdf.toString("latin1").matchAll(/\/InkList\s*\[((?:\s*\[[^\]]*\])*)\s*\]/g)].reduce((total, match) => total + (match[1].match(/\[/g) ?? []).length, 0);
+
+test("pen strokes drawn one right after the other all reach the saved PDF", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await element(page).evaluate((node: VivePdfViewer) => node.setTool("pen"));
+
+  for (const y of [0.55, 0.6, 0.65, 0.7]) await strokeOnPage(page, [0.3, y], [0.6, y + 0.02]);
+  const saved = await element(page).evaluate(async (node: VivePdfViewer) => Array.from(new Uint8Array(await (await node.save()).arrayBuffer())));
+
+  expect(inkStrokesInPdf(Buffer.from(saved))).toBe(1 + 4);
+});
+
+test("on a turned page the pen line lands under the pointer and can be picked there", async ({ page }) => {
+  await openViewer(page, "annotate");
+  const rotate = viewer(page).getByRole("button", { name: "Rotate" });
+  if (await rotate.isVisible()) await rotate.click();
+  else {
+    await viewer(page).getByRole("button", { name: "More options" }).click();
+    await viewer(page).getByRole("menuitem", { name: "Rotate" }).click();
+  }
+  await element(page).evaluate((node: VivePdfViewer) => node.setTool("pen"));
+  const box = await viewer(page).locator('[data-page-index="0"]').boundingBox();
+  if (!box) throw new Error("page not shown");
+  expect(box.width).toBeGreaterThan(box.height);
+  await element(page).evaluate((node: VivePdfViewer) => node.setTool(null));
+  await page.mouse.click(box.x + box.width * 0.2, box.y + box.height * 0.825);
+  await expect(viewer(page).getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Delete selected" })).toBeDisabled();
+  await element(page).evaluate((node: VivePdfViewer) => node.setTool("pen"));
+
+  await strokeOnPage(page, [0.1, 0.8], [0.3, 0.85]);
+  await element(page).evaluate((node: VivePdfViewer) => node.setTool(null));
+  await page.mouse.click(box.x + box.width * 0.2, box.y + box.height * 0.825);
+
+  await expect(viewer(page).getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Delete selected" })).toBeEnabled();
+});
+
+test("zooming between strokes keeps them in one drawing at the right place", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await element(page).evaluate((node: VivePdfViewer) => node.setTool("pen"));
+  await strokeOnPage(page, [0.1, 0.55], [0.25, 0.57]);
+  await element(page).evaluate((node: VivePdfViewer) => node.setZoom(150));
+  await expect.poll(() => element(page).evaluate((node: VivePdfViewer) => node.zoom)).toBe(150);
+  await viewer(page).locator('[data-page-index="0"]').evaluate((node) => node.scrollIntoView({ block: "start", inline: "start" }));
+
+  await strokeOnPage(page, [0.1, 0.3], [0.25, 0.32]);
+
+  const pens = (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "pen" && entry.color !== "#FF0000");
+  expect(pens.map((entry) => (entry.type === "pen" ? entry.strokes.length : 0))).toEqual([2]);
+  const [first, second] = pens[0]?.type === "pen" ? pens[0].strokes : [];
+  expect(Math.abs((first?.[0]?.x ?? 0) - (second?.[0]?.x ?? -100))).toBeLessThan(15);
+});
+
+test("two viewers on one page keep their drawings and Delete all apart", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await page.evaluate(() => {
+    const second = document.createElement("vive-pdf");
+    second.id = "second";
+    second.setAttribute("annotate", "");
+    second.setAttribute("lang", "en");
+    second.setAttribute("zoom", "fit-page");
+    second.style.height = "400px";
+    second.setAttribute("src", "/fixtures/annotated.pdf");
+    document.body.prepend(second);
+  });
+  const other = page.locator("#second");
+  await expect.poll(() => other.evaluate((node: VivePdfViewer) => node.pageCount), { timeout: 20_000 }).toBe(1);
+  const otherCount = () => other.evaluate((node: VivePdfViewer) => node.annotations().then((list) => list.length));
+  const before = await otherCount();
+  await viewer(page).evaluate((node: VivePdfViewer) => node.setTool("rectangle"));
+  await strokeOnPage(page, [0.55, 0.75], [0.8, 0.85]);
+  const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+
+  await bar.getByRole("button", { name: "Delete all drawings" }).click();
+  await viewer(page).getByRole("button", { name: "Delete all", exact: true }).click();
+
+  expect(await viewer(page).evaluate((node: VivePdfViewer) => node.annotations().then((list) => list.length))).toBe(0);
+  expect(await otherCount()).toBe(before);
 });

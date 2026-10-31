@@ -20,7 +20,9 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 - Drawing tools that cannot load make the drawing calls fail with `failed` ("could not load") instead of `annotate-off`, and are tried again with the next document.
 - Drawings made by other PDF programs (zero or very wide lines, notes longer than 2000 characters, highlights without boxes, empty pen drawings) come out of `annotations()` in a form `setAnnotations()` accepts.
 - The More menu opens above the drawing bar instead of under it.
-- On phones the drawing bar has two rows: tools on top, colours and the always visible undo, redo, delete, delete all and close below.
+- The drawing bar has two rows up to about 960 px wide: tools on top, colours and the always visible undo, redo, delete, delete all and close below.
+- On Android a finger swipe over the pages scrolls the document; only drawing with a tool on holds the page still.
+- Text typed into a new note right after placing it is no longer wiped.
 - Closing the drawing bar puts focus back on the Draw button; the arrow keys move through the tools, colours and widths (one Tab stop each); the hint is read out by screen readers.
 - With `toolbar="false"`, tools chosen through `setTool()` get the note box styles, the keys, click-to-deselect and touch drawing.
 - The pen and the marker keep everything drawn on a page as one drawing until the tool, colour or width changes, instead of making every stroke a separate, selected drawing. Undo takes back the last stroke, and picking a colour after a stroke no longer recolours it.
