@@ -22,10 +22,14 @@ export function clickDownload(href: string, fileName: string): void {
   link.click();
 }
 
+export function downloadBlob(blob: Blob, fileName: string): void {
+  const url = URL.createObjectURL(blob);
+  clickDownload(url, fileName);
+  window.setTimeout(() => URL.revokeObjectURL(url), REVOKE_AFTER_MS);
+}
+
 export async function downloadThroughBlob(href: string, fileName: string, signal: AbortSignal): Promise<void> {
   const response = await fetch(href, { signal });
   if (!response.ok) throw new Error(`download answered ${response.status}`);
-  const url = URL.createObjectURL(await response.blob());
-  clickDownload(url, fileName);
-  window.setTimeout(() => URL.revokeObjectURL(url), REVOKE_AFTER_MS);
+  downloadBlob(await response.blob(), fileName);
 }

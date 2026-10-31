@@ -54,6 +54,25 @@ function minifyOutput(): Plugin {
   };
 }
 
+const ANNOTATE_COPY = "?vivepdf-annotate";
+const STATELESS_SHARED = new Set(["@embedpdf/utils/preact"]);
+
+function annotateOwnCopies(): Plugin {
+  return {
+    name: "vivepdf-embed-annotate-copies",
+    apply: "build",
+    enforce: "pre",
+    async resolveId(source, importer, options) {
+      if (!STATELESS_SHARED.has(source) || !importer || !/@embedpdf\/plugin-annotation\//.test(importer)) return null;
+      const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
+      return resolved ? `${resolved.id}${ANNOTATE_COPY}` : null;
+    },
+    load(id) {
+      return id.endsWith(ANNOTATE_COPY) ? readFileSync(id.slice(0, -ANNOTATE_COPY.length), "utf8") : null;
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   const esbuild = { jsx: "automatic", jsxImportSource: "preact", legalComments: "none" } as const;
   if (mode === "loader") {
@@ -71,11 +90,11 @@ export default defineConfig(({ mode }) => {
   }
   return {
     esbuild,
-    plugins: [extractWorkers(ASSETS_MODULE, ENGINE_PRELUDE), minifyOutput(), pdfiumWasmAsset()],
+    plugins: [annotateOwnCopies(), extractWorkers(ASSETS_MODULE, ENGINE_PRELUDE), minifyOutput(), pdfiumWasmAsset()],
     build: {
       target: "es2022",
       lib: { entry: { viewer: "src/viewer/mount.tsx" }, formats: ["es"], fileName: (_format, name) => `${name}.js` },
-      rollupOptions: { output: { chunkFileNames: "chunks/[name]-[hash].js" } },
+      rollupOptions: { preserveEntrySignatures: "allow-extension", output: { chunkFileNames: "chunks/[name]-[hash].js" } },
       assetsInlineLimit: 0,
       sourcemap: false,
       minify: false,

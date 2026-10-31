@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks"
 import { useRegistry } from "@embedpdf/core/preact";
 import { Rotation } from "@embedpdf/models";
 import { useRenderCapability } from "@embedpdf/plugin-render/preact";
-import { clickDownload, downloadableUrl, downloadThroughBlob, savesDirectly } from "./download";
+import { clickDownload, downloadableUrl, downloadBlob, downloadThroughBlob, savesDirectly } from "./download";
 import { openExternal } from "./links";
 import { PRINT_SCALE, sheetSize } from "./printLayout";
 import { printPages, type PrintJob, type PrintPage } from "./printPages";
@@ -13,7 +13,7 @@ export type FileActions = { task: FileTask; print: () => void; download: (() => 
 
 const PRINT_OPTIONS = { scaleFactor: PRINT_SCALE, dpr: 1, rotation: Rotation.Degree0, imageType: "image/png", withAnnotations: true, withForms: true } as const;
 
-export function useFileActions(documentId: string, sourceUrl: string, fileName: string): FileActions {
+export function useFileActions(documentId: string, sourceUrl: string, fileName: string, saveEdited: (() => Promise<Blob>) | null): FileActions {
   const { documents } = useRegistry();
   const { provides: render } = useRenderCapability();
   const pdfDocument = documents[documentId]?.document ?? null;
@@ -76,8 +76,26 @@ export function useFileActions(documentId: string, sourceUrl: string, fileName: 
     if (wanted()) finish();
   }, [render, pdfDocument, documentId, finish]);
 
+  const downloadEdited = useCallback(
+    async (save: () => Promise<Blob>) => {
+      busyRef.current = true;
+      const run = ++runRef.current;
+      setTask({ kind: "download" });
+      const blob = await save().catch(() => null);
+      if (runRef.current !== run) return;
+      if (blob) downloadBlob(blob, fileName);
+      finish();
+    },
+    [fileName, finish],
+  );
+
   const download = useCallback(async () => {
-    if (busyRef.current || !href) return;
+    if (busyRef.current) return;
+    if (saveEdited) {
+      await downloadEdited(saveEdited);
+      return;
+    }
+    if (!href) return;
     if (savesDirectly(href, location.origin)) {
       clickDownload(href, fileName);
       return;
@@ -96,9 +114,9 @@ export function useFileActions(documentId: string, sourceUrl: string, fileName: 
       abortRef.current = null;
       finish();
     }
-  }, [href, fileName, finish]);
+  }, [href, fileName, finish, saveEdited, downloadEdited]);
 
   const startPrint = useCallback(() => void print(), [print]);
-  const startDownload = useMemo(() => (href ? () => void download() : null), [href, download]);
+  const startDownload = useMemo(() => (href || saveEdited ? () => void download() : null), [href, saveEdited, download]);
   return { task, print: startPrint, download: startDownload, cancel };
 }

@@ -1,6 +1,7 @@
 {
   "viewer": "PDF viewer",
   "poweredBy": "Shown with vivePDF",
+  "draw": "Draw and annotate",
   "toolbar": "Document tools",
   "panel": "Side panel",
   "pageNumber": "Page number",

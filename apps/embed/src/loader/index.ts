@@ -4,7 +4,7 @@ import { parseFontBase } from "../engine/fontBase";
 import { resolveLang } from "../i18n/lang";
 import { parseThemeSetting } from "../styles/theme";
 import type { ViewerCommand, ViewerEvent, ViewerSource } from "../viewer/bridge";
-import { parseSwitch } from "../viewer/features";
+import { parseOptIn, parseSwitch } from "../viewer/features";
 import type { MountOptions, ViewerHandle } from "../viewer/mount";
 
 type ViewerModule = { mount: (root: ShadowRoot, options: MountOptions) => ViewerHandle };
@@ -18,7 +18,7 @@ const ACCENT_PROPERTY = "--vp-accent";
 export type MarkDetail = { name: string; time: number };
 
 export class VivePdfElement extends HTMLElement implements VivePdfViewer {
-  static readonly observedAttributes = ["mode", "src", "load", "page", "zoom", "accent", "theme", "lang", "fonts", "print", "download", "toolbar", "search", "branding", "filename"];
+  static readonly observedAttributes = ["mode", "src", "load", "page", "zoom", "accent", "theme", "lang", "fonts", "print", "download", "toolbar", "search", "branding", "annotate", "filename"];
 
   private readonly root: ShadowRoot;
   private handle: ViewerHandle | null = null;
@@ -201,6 +201,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
         toolbar: parseSwitch(this.getAttribute("toolbar")),
         search: parseSwitch(this.getAttribute("search")),
         branding: parseSwitch(this.getAttribute("branding")),
+        annotate: parseOptIn(this.getAttribute("annotate")),
       },
       fileName: this.getAttribute("filename") ?? this.data?.name ?? null,
       mark: this.markEvent,

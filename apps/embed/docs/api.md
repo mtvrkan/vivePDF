@@ -17,6 +17,7 @@ apply while the document is open; only `src`, `load` and `open()` load a new doc
 | `accent` | Any CSS colour for buttons and highlights | blue |
 | `toolbar` · `search` · `print` · `download` | `false`, `off`, `no`, `0`, `none` or `hidden` hides the control | shown |
 | `branding` | `false` (or `off`, `no`, `0`, `none`, `hidden`) hides the small vivePDF mark that links to vivepdf.com | shown |
+| `annotate` | turns on the drawing tools (pen, marker, text highlight, notes, shapes); Download then saves the drawings into the PDF. The drawing code is fetched only when this is set | off |
 | `filename` | Name used when the file is downloaded | the name in the URL |
 | `fonts` | Base URL of `@vivepdf/viewer-fonts`, for PDFs without embedded fonts | — |
 | `assets` | Folder with the viewer's files, when a bundler moved the script away from them; read once when the viewer starts | the script's folder |

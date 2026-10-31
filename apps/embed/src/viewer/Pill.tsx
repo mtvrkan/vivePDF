@@ -60,9 +60,9 @@ function PageBox({ documentId }: { documentId: string }) {
   );
 }
 
-type PillProps = { documentId: string; host: HTMLElement | null; panelOpen: boolean; onTogglePanel: () => void; panelButtonRef: RefObject<HTMLButtonElement>; fileItems: MenuItem[]; branding: boolean };
+type PillProps = { documentId: string; host: HTMLElement | null; panelOpen: boolean; onTogglePanel: () => void; panelButtonRef: RefObject<HTMLButtonElement>; fileItems: MenuItem[]; branding: boolean; drawing: { open: boolean; toggle: () => void } | null };
 
-export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRef, fileItems, branding }: PillProps) {
+export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRef, fileItems, branding, drawing }: PillProps) {
   const t = useT();
   const { state: zoomState, provides: zoom } = useZoom(documentId);
   const { provides: rotate } = useRotate(documentId);
@@ -105,6 +105,14 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
           <Icon name="rotate" />
         </button>
       </span>
+      {drawing ? (
+        <>
+          <span class="vp-sep" />
+          <button class="vp-btn" type="button" aria-label={t("draw")} title={t("draw")} aria-pressed={drawing.open} onClick={drawing.toggle}>
+            <Icon name="draw" />
+          </button>
+        </>
+      ) : null}
       <span class="vp-sep" />
       <MoreMenu
         open={menuOpen}

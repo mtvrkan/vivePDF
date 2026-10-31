@@ -6,6 +6,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ### Added
 - A small vivePDF mark at the start of the toolbar links to vivepdf.com in a new tab; `branding="false"` hides it.
+- Drawing and notes with the new `annotate` setting (off by default): pen, marker, highlight, underline and strike out text, sticky notes, rectangle, ellipse and arrow, in six colours and three line widths, with undo, redo and delete. Download saves the PDF with the drawings in it. The drawing code is a separate file that is fetched only when `annotate` is on.
 
 ### Fixed
 - Highlights, pen drawings, boxes and notes already in a PDF are drawn; 0.1.0 showed pages without them.

@@ -4,7 +4,8 @@ import { build } from "vite";
 const KB = 1024;
 const GROUPS = [
   { name: "loader (vivepdf.js / vivepdf.mjs)", match: (file) => /^vivepdf\.m?js$/.test(file), budget: 6 * KB, each: true },
-  { name: "viewer (viewer.js + chunks)", match: (file) => file === "viewer.js" || file.startsWith("chunks/"), budget: 70 * KB },
+  { name: "viewer (viewer.js + chunks)", match: (file) => file === "viewer.js" || (file.startsWith("chunks/") && !file.startsWith("chunks/annotate-")), budget: 70 * KB },
+  { name: "drawing tools (chunks/annotate)", match: (file) => file.startsWith("chunks/annotate-"), budget: 60 * KB },
   { name: "workers (engine + encoder)", match: (file) => file.endsWith("-worker.js"), budget: 70 * KB },
   { name: "engine (pdfium.wasm)", match: (file) => file === "pdfium.wasm", budget: 1.7 * KB * KB },
 ];

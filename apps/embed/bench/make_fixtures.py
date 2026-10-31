@@ -70,6 +70,7 @@ def annotated_document(path: Path) -> None:
     square.set_border(width=3)
     square.update()
     page.add_text_annot((450, 100), "A sticky note")
+    page.insert_text((72, 520), "Plain words to mark", fontsize=24)
     doc.save(path, garbage=3, deflate=True)
     doc.close()
 

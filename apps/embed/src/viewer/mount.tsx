@@ -25,6 +25,7 @@ import { CommandQueue } from "./commandQueue";
 import type { ViewerFeatures } from "./features";
 import { downloadName } from "./fileName";
 import { TranslateContext, useT } from "./i18nContext";
+import { AnnotateContext, loadAnnotate, useAnnotateKit, type AnnotateKit, type AnnotateModule } from "./annotateContext";
 import { Icon } from "./Icon";
 import { useInlineScroll } from "./inlineScroll";
 import { createLightbox } from "./lightbox";
@@ -75,11 +76,11 @@ const MAX_RESTARTS = 1;
 const START_PAGE_SETTLE_MS = 1000;
 const VIEWPORT_GAP = 12;
 
-const plugins = [
+const basePlugins = (drawsAnnotations: boolean) => [
   createPluginRegistration(DocumentManagerPluginPackage, { maxDocuments: 1 }),
   createPluginRegistration(ViewportPluginPackage, { viewportGap: VIEWPORT_GAP }),
   createPluginRegistration(ScrollPluginPackage, { defaultPageGap: 10 }),
-  createPluginRegistration(RenderPluginPackage, { withForms: true, withAnnotations: true }),
+  createPluginRegistration(RenderPluginPackage, { withForms: true, withAnnotations: drawsAnnotations }),
   createPluginRegistration(InteractionManagerPluginPackage),
   createPluginRegistration(ZoomPluginPackage, {
     defaultZoomLevel: ZoomMode.FitWidth,
@@ -99,6 +100,27 @@ const plugins = [
   createPluginRegistration(SelectionPluginPackage),
   createPluginRegistration(ThumbnailPluginPackage, { width: THUMB_WIDTH, gap: 14, labelHeight: 22, paddingY: 12, autoScroll: true, scrollBehavior: "auto" }),
 ];
+
+function viewerPlugins(annotate: AnnotateModule | null) {
+  return annotate ? [...basePlugins(false), ...annotate.annotatePlugins()] : basePlugins(true);
+}
+
+function useAnnotateModule(wanted: boolean): { module: AnnotateModule | null; waiting: boolean } {
+  const [loaded, setLoaded] = useState<AnnotateModule | null>(null);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    if (!wanted || loaded || failed) return;
+    let live = true;
+    loadAnnotate().then(
+      (module) => live && setLoaded(module),
+      () => live && setFailed(true),
+    );
+    return () => {
+      live = false;
+    };
+  }, [wanted, loaded, failed]);
+  return { module: wanted ? loaded : null, waiting: wanted && !loaded && !failed };
+}
 
 function Loading({ text }: { text: string }) {
   return (
@@ -215,7 +237,9 @@ function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage
     setSearchRequest((current) => ({ query, id: (current?.id ?? 0) + 1 }));
     setSearchOpen(true);
   }, []);
-  const files = useFileActions(DOCUMENT_ID, sourceUrl, fileName);
+  const annotateKit = useAnnotateKit();
+  const drawing = annotateKit ? annotateKit.module.useAnnotateSession(DOCUMENT_ID) : null;
+  const files = useFileActions(DOCUMENT_ID, sourceUrl, fileName, drawing?.edited ? drawing.save : null);
   const print = features.print ? files.print : null;
   const download = features.download ? files.download : null;
   const start = useStartPage(fitted, startPage, onPage);
@@ -243,7 +267,8 @@ function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage
       {features.toolbar ? (
         <>
           {searchShown ? <SearchBox documentId={DOCUMENT_ID} open={searchOpen} onOpenChange={setSearchOpen} request={searchRequest} /> : null}
-          <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} fileItems={fileItems} branding={features.branding} />
+          <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} fileItems={fileItems} branding={features.branding} drawing={drawing ? { open: drawing.open, toggle: () => drawing.setOpen(!drawing.open) } : null} />
+          {drawing && annotateKit ? <annotateKit.module.AnnotateBar session={drawing} lang={annotateKit.lang} /> : null}
         </>
       ) : null}
       {files.task ? <BusyToast task={files.task} onCancel={files.cancel} /> : null}
@@ -385,6 +410,9 @@ function Viewer({ options, commands, onDismiss }: ViewerProps) {
   const { mark, emit } = options;
   const { engine, failure } = useEngine(assetUrl("pdfium.wasm"), options.fontBase, attempt);
   const translate = useMemo(() => createTranslator(options.lang), [options.lang]);
+  const annotate = useAnnotateModule(options.features.annotate);
+  const plugins = useMemo(() => viewerPlugins(annotate.module), [annotate.module]);
+  const annotateKit = useMemo<AnnotateKit | null>(() => (annotate.module ? { module: annotate.module, lang: options.lang } : null), [annotate.module, options.lang]);
   const prefersDark = usePrefersDark();
   const [host, setHost] = useState<HTMLDivElement | null>(null);
   const restarting = failure === "crash" && restartsRef.current < MAX_RESTARTS;
@@ -408,11 +436,13 @@ function Viewer({ options, commands, onDismiss }: ViewerProps) {
         {failure && !restarting ? (
           <OpenProblemView problem="engine" sourceUrl={options.source.url} offerDownload={options.features.download} busy={false} onRetry={() => setAttempt((value) => value + 1)} onPassword={() => {}} />
         ) : null}
-        {!failure && !engine ? <Loading text={translate("loading")} /> : null}
-        {engine && !failure ? (
-          <EmbedPDF key={`${attempt}-${generationRef.current}`} engine={engine} plugins={plugins}>
-            {({ pluginsReady }) => (pluginsReady ? <Opener options={options} host={host} startPage={pageRef.current} onPage={onPage} commands={commands} /> : null)}
-          </EmbedPDF>
+        {!failure && (!engine || annotate.waiting) ? <Loading text={translate("loading")} /> : null}
+        {engine && !failure && !annotate.waiting ? (
+          <AnnotateContext.Provider value={annotateKit}>
+            <EmbedPDF key={`${attempt}-${generationRef.current}-${annotateKit ? "draw" : "read"}`} engine={engine} plugins={plugins}>
+              {({ pluginsReady }) => (pluginsReady ? <Opener options={options} host={host} startPage={pageRef.current} onPage={onPage} commands={commands} /> : null)}
+            </EmbedPDF>
+          </AnnotateContext.Provider>
         ) : null}
         {options.mode === "lightbox" ? (
           <button class="vp-btn vp-glass vp-close" type="button" aria-label={translate("close")} title={translate("close")} onClick={onDismiss}>

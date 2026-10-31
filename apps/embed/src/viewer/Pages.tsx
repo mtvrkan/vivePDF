@@ -7,12 +7,14 @@ import { SelectionLayer } from "@embedpdf/plugin-selection/preact";
 import { TilingLayer } from "@embedpdf/plugin-tiling/preact";
 import { Viewport } from "@embedpdf/plugin-viewport/preact";
 import { ZoomGestureWrapper } from "@embedpdf/plugin-zoom/preact";
+import { useAnnotateKit } from "./annotateContext";
 import { useT } from "./i18nContext";
 import { LinkLayer } from "./LinkLayer";
 
 export function Pages({ documentId, sourceUrl }: { documentId: string; sourceUrl: string }) {
   const t = useT();
   const { state } = useScroll(documentId);
+  const annotate = useAnnotateKit();
   return (
     <GlobalPointerProvider documentId={documentId} class="vp-stage">
       <Viewport documentId={documentId} class="vp-viewport" tabIndex={0} role="region" aria-label={t("pages")}>
@@ -35,6 +37,7 @@ export function Pages({ documentId, sourceUrl }: { documentId: string; sourceUrl
                   <TilingLayer documentId={documentId} pageIndex={pageIndex} role="presentation" />
                   <SearchLayer documentId={documentId} pageIndex={pageIndex} highlightColor="var(--vp-hit)" activeHighlightColor="var(--vp-hit-active)" />
                   <SelectionLayer documentId={documentId} pageIndex={pageIndex} background="var(--vp-selection)" />
+                  {annotate ? <annotate.module.AnnotatePageLayer documentId={documentId} pageIndex={pageIndex} lang={annotate.lang} /> : null}
                   <LinkLayer documentId={documentId} pageIndex={pageIndex} sourceUrl={sourceUrl} />
                 </PagePointerProvider>
               </Rotate>
