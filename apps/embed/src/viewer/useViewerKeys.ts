@@ -6,7 +6,7 @@ import { viewerKeyAction } from "./viewerKeys";
 
 export type FileKeys = { print: (() => void) | null; download: (() => void) | null };
 
-export function useViewerKeys(documentId: string, host: HTMLElement | null, openSearch: () => void, files: FileKeys): void {
+export function useViewerKeys(documentId: string, host: HTMLElement | null, openSearch: (() => void) | null, files: FileKeys): void {
   const { provides: zoom } = useZoomCapability();
   const { provides: scroll } = useScrollCapability();
   const { provides: selection } = useSelectionCapability();
@@ -20,11 +20,10 @@ export function useViewerKeys(documentId: string, host: HTMLElement | null, open
       const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable);
       const action = viewerKeyAction(event, typing);
       if (!action) return;
-      const fileAction = action === "print" ? files.print : action === "download" ? files.download : undefined;
-      if (fileAction === null) return;
+      const routedAction = action === "search" ? openSearch : action === "print" ? files.print : action === "download" ? files.download : undefined;
+      if (routedAction === null) return;
       event.preventDefault();
-      if (fileAction) fileAction();
-      else if (action === "search") openSearch();
+      if (routedAction) routedAction();
       else if (action === "zoomIn") zoomScope.zoomIn();
       else if (action === "zoomOut") zoomScope.zoomOut();
       else if (action === "fitWidth") zoomScope.requestZoom(ZoomMode.FitWidth);

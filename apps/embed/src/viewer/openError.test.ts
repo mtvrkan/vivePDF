@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { engineFailure, problemFromDocument, problemFromEngine, problemFromStatus } from "./openError";
+import { engineFailure, errorCodeOf, problemFromDocument, problemFromEngine, problemFromStatus } from "./openError";
 
 describe("problemFromEngine", () => {
   it("asks for a password first and reports a wrong one after", () => {
@@ -31,6 +31,14 @@ describe("problemFromEngine", () => {
     ];
 
     expect(problems).toEqual(["damaged", "damaged"]);
+  });
+});
+
+describe("errorCodeOf", () => {
+  it("names every open problem with the public error code sites listen for", () => {
+    const codes = (["password", "wrongPassword", "notFound", "network", "damaged", "noPages", "unknown", "engine"] as const).map(errorCodeOf);
+
+    expect(codes).toEqual(["password", "wrong-password", "not-found", "network", "damaged", "no-pages", "unknown", "engine"]);
   });
 });
 

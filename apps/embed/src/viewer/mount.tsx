@@ -18,25 +18,28 @@ import { assetUrl, setAssetBase } from "../engine/assets";
 import { createTranslator, type Lang } from "../i18n";
 import viewerCss from "../styles/viewer.css?inline";
 import { resolveTheme, type ThemeSetting } from "../styles/theme";
+import type { ViewerCommand, ViewerEvent, ViewerSource } from "./bridge";
 import { BusyToast } from "./BusyToast";
+import { CommandQueue } from "./commandQueue";
 import type { ViewerFeatures } from "./features";
 import { downloadName } from "./fileName";
 import { TranslateContext, useT } from "./i18nContext";
 import type { MenuItem } from "./MoreMenu";
 import { OpenProblemView } from "./OpenProblemView";
-import { engineFailure, problemFromDocument, problemFromEngine, problemFromStatus, type OpenProblem } from "./openError";
+import { engineFailure, errorCodeOf, problemFromDocument, problemFromEngine, problemFromStatus, type OpenProblem } from "./openError";
 import { Pages } from "./Pages";
 import { Pill } from "./Pill";
-import { SearchBox } from "./SearchBox";
+import { SearchBox, type SearchRequest } from "./SearchBox";
 import { SidePanel, type PanelTab } from "./SidePanel";
 import { useEngine } from "./useEngine";
 import { useFileActions } from "./useFileActions";
 import { useRefit } from "./useRefit";
+import { useViewerApi, type StartPage } from "./useViewerApi";
 import { useViewerKeys } from "./useViewerKeys";
 
 export type MountOptions = {
-  src: string;
-  mode: "range" | "full";
+  source: ViewerSource;
+  startPage: number;
   assetBase: string;
   lang: Lang;
   theme: ThemeSetting;
@@ -44,9 +47,10 @@ export type MountOptions = {
   features: ViewerFeatures;
   fileName: string | null;
   mark: (name: string) => void;
+  emit: (event: ViewerEvent) => void;
 };
 
-export type Unmount = () => void;
+export type ViewerHandle = { update: (options: MountOptions) => void; command: (command: ViewerCommand) => void; unmount: () => void };
 
 type OpenState = { kind: "loading" } | { kind: "ready" } | { kind: "problem"; problem: OpenProblem; busy: boolean };
 type OpenTask = ReturnType<DocumentManagerCapability["openDocumentUrl"]>;
@@ -121,18 +125,31 @@ function FirstPageWatch({ mark }: { mark: MountOptions["mark"] }) {
   return <div ref={ref} hidden />;
 }
 
-type ViewerUiProps = { sourceUrl: string; fileName: string; features: ViewerFeatures; host: HTMLElement | null; startPage: number; onPage: (page: number) => void };
+type ViewerUiProps = {
+  sourceUrl: string;
+  fileName: string;
+  features: ViewerFeatures;
+  host: HTMLElement | null;
+  startPage: number;
+  onPage: (page: number) => void;
+  commands: CommandQueue<ViewerCommand>;
+  emit: (event: ViewerEvent) => void;
+};
 
-function useStartPage(fitted: boolean, startPage: number, onPage: (page: number) => void): void {
+function useStartPage(fitted: boolean, startPage: number, onPage: (page: number) => void): StartPage {
   const { state, provides: scroll } = useScroll(DOCUMENT_ID);
   const { provides: zoom } = useZoomCapability();
   const startedRef = useRef(false);
+  const pendingRef = useRef<number | null>(startPage);
   const settleRef = useRef(() => {});
   useEffect(() => () => settleRef.current(), []);
   useEffect(() => {
     if (startedRef.current || !fitted || !scroll || !zoom || state.totalPages < startPage) return;
     startedRef.current = true;
-    if (startPage <= 1) return;
+    if (startPage <= 1) {
+      pendingRef.current = null;
+      return;
+    }
     const toStart = () => scroll.scrollToPage({ pageNumber: startPage, behavior: "instant" });
     toStart();
     let frame = 0;
@@ -141,26 +158,36 @@ function useStartPage(fitted: boolean, startPage: number, onPage: (page: number)
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(toStart);
     });
-    const timer = window.setTimeout(stop, START_PAGE_SETTLE_MS);
-    settleRef.current = () => {
+    const finish = () => {
       window.clearTimeout(timer);
       cancelAnimationFrame(frame);
       stop();
+      pendingRef.current = null;
     };
+    const timer = window.setTimeout(finish, START_PAGE_SETTLE_MS);
+    settleRef.current = finish;
   }, [fitted, scroll, zoom, startPage, state.totalPages]);
   useEffect(() => {
     if (startedRef.current) onPage(state.currentPage);
   }, [state.currentPage, onPage]);
+  const settle = useCallback(() => {
+    startedRef.current = true;
+    pendingRef.current = null;
+    settleRef.current();
+  }, []);
+  const pending = useCallback(() => pendingRef.current, []);
+  return useMemo(() => ({ settle, pending }), [settle, pending]);
 }
 
-function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage }: ViewerUiProps) {
+function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage, commands, emit }: ViewerUiProps) {
   const t = useT();
   const [panelOpen, setPanelOpen] = useState(false);
   const [panelTab, setPanelTab] = useState<PanelTab>("pages");
   const [searchOpen, setSearchOpen] = useState(false);
+  const [searchRequest, setSearchRequest] = useState<SearchRequest | null>(null);
   const panelButtonRef = useRef<HTMLButtonElement>(null);
   const fitted = useRefit(DOCUMENT_ID, host, VIEWPORT_GAP);
-  useStartPage(fitted, startPage, onPage);
+  const searchShown = features.toolbar && features.search;
   const closePanel = () => {
     setPanelOpen(false);
     panelButtonRef.current?.focus();
@@ -172,10 +199,16 @@ function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage }: Vi
     setSearchOpen(true);
     host?.querySelector<HTMLInputElement>(".vp-search input")?.focus();
   }, [host]);
+  const searchFor = useCallback((query: string) => {
+    setSearchRequest((current) => ({ query, id: (current?.id ?? 0) + 1 }));
+    setSearchOpen(true);
+  }, []);
   const files = useFileActions(DOCUMENT_ID, sourceUrl, fileName);
   const print = features.print ? files.print : null;
   const download = features.download ? files.download : null;
-  useViewerKeys(DOCUMENT_ID, host, openSearch, { print, download });
+  const start = useStartPage(fitted, startPage, onPage);
+  useViewerApi(DOCUMENT_ID, fitted, commands, emit, { search: searchShown ? searchFor : null, print, download, start });
+  useViewerKeys(DOCUMENT_ID, host, searchShown ? openSearch : null, { print, download });
   const fileItems: MenuItem[] = [];
   if (print) fileItems.push({ kind: "action", id: "print", label: t("print"), icon: "print", onSelect: print });
   if (download) fileItems.push({ kind: "action", id: "download", label: t("download"), icon: "download", onSelect: download });
@@ -196,7 +229,7 @@ function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage }: Vi
       ) : null}
       {features.toolbar ? (
         <>
-          <SearchBox documentId={DOCUMENT_ID} open={searchOpen} onOpenChange={setSearchOpen} />
+          {searchShown ? <SearchBox documentId={DOCUMENT_ID} open={searchOpen} onOpenChange={setSearchOpen} request={searchRequest} /> : null}
           <Pill documentId={DOCUMENT_ID} host={host} panelOpen={panelOpen} onTogglePanel={() => (panelOpen ? closePanel() : setPanelOpen(true))} panelButtonRef={panelButtonRef} fileItems={fileItems} />
         </>
       ) : null}
@@ -205,67 +238,86 @@ function ViewerUi({ sourceUrl, fileName, features, host, startPage, onPage }: Vi
   );
 }
 
-function Opener({ options, host, startPage, onPage }: { options: MountOptions; host: HTMLElement | null; startPage: number; onPage: (page: number) => void }) {
+type OpenerProps = { options: MountOptions; host: HTMLElement | null; startPage: number; onPage: (page: number) => void; commands: CommandQueue<ViewerCommand> };
+
+function Opener({ options, host, startPage, onPage, commands }: OpenerProps) {
   const t = useT();
   const { provides: documents } = useDocumentManagerCapability();
   const [state, setState] = useState<OpenState>({ kind: "loading" });
   const [attempt, setAttempt] = useState(0);
   const activeRef = useRef(true);
+  const { source, mark, emit } = options;
+  const fileName = downloadName(source.url, options.fileName);
+  const nameRef = useRef(fileName);
+  nameRef.current = fileName;
+  const problem = state.kind === "problem" ? state.problem : null;
+
+  useEffect(() => {
+    if (problem) emit({ type: "error", detail: { code: errorCodeOf(problem) } });
+  }, [problem, emit]);
+
+  useEffect(() => {
+    if (!documents) return;
+    return () => {
+      documents.closeDocument(DOCUMENT_ID);
+    };
+  }, [documents]);
 
   const settle = useCallback(
     (request: OpenTask, passwordProvided: boolean) => {
       const fail = (reason: unknown) => {
         if (!activeRef.current) return;
         setState({ kind: "problem", problem: problemFromEngine(engineFailure(reason), passwordProvided), busy: false });
-        options.mark("open-error");
+        mark("open-error");
       };
       request.toPromise().then(
         (response) =>
           response.task.toPromise().then((opened) => {
             if (!activeRef.current) return;
-            const problem = problemFromDocument(opened.pageCount);
-            if (problem) {
-              setState({ kind: "problem", problem, busy: false });
-              options.mark("open-error");
+            const empty = problemFromDocument(opened.pageCount);
+            if (empty) {
+              setState({ kind: "problem", problem: empty, busy: false });
+              mark("open-error");
               return;
             }
             setState({ kind: "ready" });
-            options.mark("document-open");
+            mark("document-open");
+            emit({ type: "ready", detail: { pageCount: opened.pageCount } });
           }, fail),
         fail,
       );
     },
-    [options],
+    [mark, emit],
   );
 
   useEffect(() => {
     if (!documents) return;
     activeRef.current = true;
     const controller = new AbortController();
-    const name = downloadName(options.src, options.fileName);
-    options.mark("open-start");
-    if (options.mode === "range") {
-      settle(documents.openDocumentUrl({ url: options.src, mode: "range-request", documentId: DOCUMENT_ID, name }), false);
+    const name = nameRef.current;
+    const fail = (failure: OpenProblem) => {
+      if (!activeRef.current) return;
+      setState({ kind: "problem", problem: failure, busy: false });
+      mark("open-error");
+    };
+    const openBuffer = (buffer: ArrayBuffer) => {
+      if (activeRef.current) settle(documents.openDocumentBuffer({ buffer, name, documentId: DOCUMENT_ID }), false);
+    };
+    mark("open-start");
+    if (source.kind === "data") {
+      source.data.arrayBuffer().then(openBuffer, () => fail("unknown"));
+    } else if (source.load === "range") {
+      settle(documents.openDocumentUrl({ url: source.url, mode: "range-request", documentId: DOCUMENT_ID, name }), false);
     } else {
-      const fail = (problem: OpenProblem) => {
-        if (!activeRef.current) return;
-        setState({ kind: "problem", problem, busy: false });
-        options.mark("open-error");
-      };
-      fetch(options.src, { signal: controller.signal })
-        .then((response) => {
-          if (!response.ok) return fail(problemFromStatus(response.status));
-          return response.arrayBuffer().then((buffer) => {
-            if (activeRef.current) settle(documents.openDocumentBuffer({ buffer, name, documentId: DOCUMENT_ID }), false);
-          });
-        })
+      fetch(source.url, { signal: controller.signal })
+        .then((response) => (response.ok ? response.arrayBuffer().then(openBuffer) : fail(problemFromStatus(response.status))))
         .catch(() => fail("network"));
     }
     return () => {
       activeRef.current = false;
       controller.abort();
     };
-  }, [documents, options, attempt, settle]);
+  }, [documents, source, attempt, settle, mark]);
 
   const reopen = (password?: string) => {
     if (!documents) return;
@@ -279,12 +331,12 @@ function Opener({ options, host, startPage, onPage }: { options: MountOptions; h
   };
 
   if (state.kind === "problem")
-    return <OpenProblemView problem={state.problem} sourceUrl={options.src} offerDownload={options.features.download} busy={state.busy} onRetry={() => reopen()} onPassword={(password) => reopen(password)} />;
+    return <OpenProblemView problem={state.problem} sourceUrl={source.url} offerDownload={options.features.download} busy={state.busy} onRetry={() => reopen()} onPassword={(password) => reopen(password)} />;
   return (
     <DocumentContent documentId={DOCUMENT_ID}>
       {({ isLoaded }) =>
         isLoaded ? (
-          <ViewerUi sourceUrl={options.src} fileName={downloadName(options.src, options.fileName)} features={options.features} host={host} startPage={startPage} onPage={onPage} />
+          <ViewerUi sourceUrl={source.url} fileName={fileName} features={options.features} host={host} startPage={startPage} onPage={onPage} commands={commands} emit={emit} />
         ) : (
           <Loading text={t("loading")} />
         )
@@ -304,26 +356,36 @@ function usePrefersDark(): boolean {
   return dark;
 }
 
-function Viewer({ options }: { options: MountOptions }) {
+type ViewerProps = { options: MountOptions; commands: CommandQueue<ViewerCommand> };
+
+function Viewer({ options, commands }: ViewerProps) {
   const [attempt, setAttempt] = useState(0);
   const restartsRef = useRef(0);
-  const pageRef = useRef(1);
+  const pageRef = useRef(options.startPage);
+  const sourceRef = useRef(options.source);
+  const generationRef = useRef(0);
+  if (sourceRef.current !== options.source) {
+    sourceRef.current = options.source;
+    generationRef.current += 1;
+    pageRef.current = options.startPage;
+  }
+  const { mark, emit } = options;
   const { engine, failure } = useEngine(assetUrl("pdfium.wasm"), options.fontBase, attempt);
   const translate = useMemo(() => createTranslator(options.lang), [options.lang]);
   const prefersDark = usePrefersDark();
   const [host, setHost] = useState<HTMLDivElement | null>(null);
   const restarting = failure === "crash" && restartsRef.current < MAX_RESTARTS;
   useEffect(() => {
-    if (engine) options.mark("engine-ready");
-  }, [engine, options]);
+    if (engine) mark("engine-ready");
+  }, [engine, mark]);
   useEffect(() => {
     if (!failure) return;
-    options.mark(failure === "crash" ? "engine-crash" : "engine-error");
+    mark(failure === "crash" ? "engine-crash" : "engine-error");
     if (failure === "crash" && restartsRef.current < MAX_RESTARTS) {
       restartsRef.current += 1;
       setAttempt((value) => value + 1);
-    }
-  }, [failure, options]);
+    } else emit({ type: "error", detail: { code: "engine" } });
+  }, [failure, mark, emit]);
   const onPage = useCallback((page: number) => {
     pageRef.current = page;
   }, []);
@@ -331,31 +393,37 @@ function Viewer({ options }: { options: MountOptions }) {
     <TranslateContext.Provider value={translate}>
       <div ref={setHost} class="vp" data-theme={resolveTheme(options.theme, prefersDark)} role="region" aria-label={translate("viewer")}>
         {failure && !restarting ? (
-          <OpenProblemView problem="engine" sourceUrl={options.src} offerDownload={options.features.download} busy={false} onRetry={() => setAttempt((value) => value + 1)} onPassword={() => {}} />
+          <OpenProblemView problem="engine" sourceUrl={options.source.url} offerDownload={options.features.download} busy={false} onRetry={() => setAttempt((value) => value + 1)} onPassword={() => {}} />
         ) : null}
         {!failure && !engine ? <Loading text={translate("loading")} /> : null}
         {engine && !failure ? (
-          <EmbedPDF key={attempt} engine={engine} plugins={plugins}>
-            {({ pluginsReady }) => (pluginsReady ? <Opener options={options} host={host} startPage={pageRef.current} onPage={onPage} /> : null)}
+          <EmbedPDF key={`${attempt}-${generationRef.current}`} engine={engine} plugins={plugins}>
+            {({ pluginsReady }) => (pluginsReady ? <Opener options={options} host={host} startPage={pageRef.current} onPage={onPage} commands={commands} /> : null)}
           </EmbedPDF>
         ) : null}
-        <FirstPageWatch mark={options.mark} />
+        <FirstPageWatch mark={mark} />
       </div>
     </TranslateContext.Provider>
   );
 }
 
-export function mount(root: ShadowRoot, options: MountOptions): Unmount {
+export function mount(root: ShadowRoot, options: MountOptions): ViewerHandle {
   setAssetBase(options.assetBase);
   const sheet = new CSSStyleSheet();
   sheet.replaceSync(viewerCss);
   root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
   const container = document.createElement("div");
   root.append(container);
-  render(<Viewer options={options} />, container);
-  return () => {
-    render(null, container);
-    container.remove();
-    root.adoptedStyleSheets = root.adoptedStyleSheets.filter((entry) => entry !== sheet);
+  const commands = new CommandQueue<ViewerCommand>();
+  const draw = (next: MountOptions) => render(<Viewer options={next} commands={commands} />, container);
+  draw(options);
+  return {
+    update: draw,
+    command: (command) => commands.push(command),
+    unmount: () => {
+      render(null, container);
+      container.remove();
+      root.adoptedStyleSheets = root.adoptedStyleSheets.filter((entry) => entry !== sheet);
+    },
   };
 }

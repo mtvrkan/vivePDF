@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatZoom, parsePageInput } from "./pageInput";
+import { formatZoom, parsePageInput, zoomPercent } from "./pageInput";
 
 describe("parsePageInput", () => {
   it("reads a page number inside the document", () => {
@@ -26,5 +26,13 @@ describe("formatZoom", () => {
     const labels = [formatZoom(1), formatZoom(1.254), formatZoom(0.5)];
 
     expect(labels).toEqual(["100%", "125%", "50%"]);
+  });
+});
+
+describe("zoomPercent", () => {
+  it("turns a scale into a percentage with one decimal", () => {
+    const percents = [zoomPercent(1), zoomPercent(1.4725), zoomPercent(0.1)];
+
+    expect(percents).toEqual([100, 147.3, 10]);
   });
 });

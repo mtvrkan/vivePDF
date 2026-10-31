@@ -6,9 +6,11 @@ import { useT } from "./i18nContext";
 
 const DEBOUNCE_MS = 250;
 
-type SearchBoxProps = { documentId: string; open: boolean; onOpenChange: (open: boolean) => void };
+export type SearchRequest = { query: string; id: number };
 
-export function SearchBox({ documentId, open, onOpenChange }: SearchBoxProps) {
+type SearchBoxProps = { documentId: string; open: boolean; onOpenChange: (open: boolean) => void; request: SearchRequest | null };
+
+export function SearchBox({ documentId, open, onOpenChange, request }: SearchBoxProps) {
   const t = useT();
   const { state, provides: search } = useSearch(documentId);
   const { provides: scroll } = useScroll(documentId);
@@ -52,6 +54,10 @@ export function SearchBox({ documentId, open, onOpenChange }: SearchBoxProps) {
     inputRef.current?.focus();
     inputRef.current?.select();
   }, [search, open]);
+
+  useEffect(() => {
+    if (request) setQuery(request.query);
+  }, [request]);
 
   useEffect(() => {
     if (!search || !open) return;

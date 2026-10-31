@@ -1,3 +1,5 @@
+import type { VivePdfErrorCode } from "../api/types";
+
 export type OpenProblem = "password" | "wrongPassword" | "notFound" | "network" | "damaged" | "noPages" | "unknown" | "engine";
 
 const ENGINE_NOT_FOUND = 2;
@@ -21,6 +23,21 @@ export function problemFromEngine(failure: EngineFailure | undefined, passwordPr
     return status ? problemFromStatus(Number(status)) : "network";
   }
   return "unknown";
+}
+
+const ERROR_CODES: Record<OpenProblem, VivePdfErrorCode> = {
+  password: "password",
+  wrongPassword: "wrong-password",
+  notFound: "not-found",
+  network: "network",
+  damaged: "damaged",
+  noPages: "no-pages",
+  unknown: "unknown",
+  engine: "engine",
+};
+
+export function errorCodeOf(problem: OpenProblem): VivePdfErrorCode {
+  return ERROR_CODES[problem];
 }
 
 export function problemFromDocument(pageCount: number): OpenProblem | null {

@@ -11,10 +11,12 @@
       const params = new URLSearchParams(location.search);
       const viewer = document.createElement("vive-pdf");
       viewer.dataset.testid = "viewer";
-      viewer.setAttribute("src", params.get("src") || "/fixtures/book.pdf");
-      for (const name of ["theme", "lang", "load", "fonts", "print", "download", "toolbar", "filename"]) if (params.has(name)) viewer.setAttribute(name, params.get(name));
+      if (params.get("src") !== "none") viewer.setAttribute("src", params.get("src") || "/fixtures/book.pdf");
+      for (const name of ["theme", "lang", "load", "fonts", "print", "download", "toolbar", "search", "filename", "page", "zoom", "accent"]) if (params.has(name)) viewer.setAttribute(name, params.get(name));
       viewer.style.height = params.get("height") || "100vh";
       viewer.addEventListener("vive-mark", (event) => window.__marks.push(event.detail.name));
+      window.__events = [];
+      for (const name of ["vive-ready", "vive-pagechange", "vive-zoomchange", "vive-error"]) document.addEventListener(name, (event) => window.__events.push({ type: event.type, detail: event.detail }));
       document.body.append(viewer);
     </script>
     <script type="module" src="/dist/vivepdf.mjs"></script>

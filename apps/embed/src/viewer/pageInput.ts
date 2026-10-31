@@ -4,6 +4,10 @@ export function parsePageInput(value: string, total: number): number | null {
   return Math.min(total, Math.max(1, Number(trimmed)));
 }
 
+export function zoomPercent(scale: number): number {
+  return Math.round(scale * 1000) / 10;
+}
+
 export function formatZoom(level: number): string {
   return `${Math.round(level * 100)}%`;
 }

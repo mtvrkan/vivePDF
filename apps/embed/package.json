@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build --mode viewer && vite build --mode loader",
+    "build": "tsc --noEmit && vite build --mode viewer && vite build --mode loader && tsc -p tsconfig.types.json",
     "bench:fixtures": "uv run --project ../../sidecar python bench/make_fixtures.py bench/fixtures",
     "bench": "node bench/run.mjs",
     "size": "node bench/size.mjs",
