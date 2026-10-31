@@ -69,6 +69,7 @@ Key facts:
 
 ## Developers
 
+- [Web viewer for your site](https://vivepdf.com/en/docs/web-viewer.md): Show PDFs on your own website with one tag. The vivePDF web viewer runs in the visitor's browser, needs no server and is free under the MIT licence.
 - [Build from source](https://vivepdf.com/en/docs/build-from-source.md): What you need to run vivePDF from its source code, how to start it in development mode, run the tests and build your own installer.
 - [License](https://vivepdf.com/en/docs/license.md): What vivePDF's AGPL-3.0 licence means for users and for anyone distributing modified builds, plus the third-party components it uses.
 
@@ -106,6 +107,7 @@ Key facts:
 - [Sürüm notları](https://vivepdf.com/dokumantasyon/surum-notlari.md): vivePDF'in her sürümünde öne çıkan değişiklikler, güncellemelerin nasıl geldiği ve tam değişiklik listesinin nerede olduğu.
 - [Sık sorulan sorular](https://vivepdf.com/dokumantasyon/sss.md): vivePDF'in ücreti, gizliliği, çevrimdışı çalışması, desteklediği sistemler, imza, OCR ve güncellemeler hakkında kısa yanıtlar.
 - [Sorun giderme](https://vivepdf.com/dokumantasyon/sorun-giderme.md): vivePDF'te bir araç çalışmadığında yapılacaklar; günlük klasörü, destek paketi, hata bildirme, SmartScreen, LibreOffice ve OCR dil paketleri.
+- [Siten için web görüntüleyici](https://vivepdf.com/dokumantasyon/web-goruntuleyici.md): PDF'leri tek bir etiketle kendi web sitende göster. vivePDF web görüntüleyici ziyaretçinin tarayıcısında çalışır, sunucu istemez ve MIT lisansıyla ücretsizdir.
 - [Kaynaktan derleme](https://vivepdf.com/dokumantasyon/kaynaktan-derleme.md): vivePDF'i kaynak koddan çalıştırmak için gerekenler, geliştirme modunda açma, testleri çalıştırma ve kendi kurulum paketini derleme.
 - [Lisans](https://vivepdf.com/dokumantasyon/lisans.md): vivePDF'in AGPL-3.0 lisansının kullanıcılar ve değiştirilmiş sürüm dağıtanlar için ne anlama geldiği, üçüncü taraf bileşenler.
 
