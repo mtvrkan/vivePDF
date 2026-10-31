@@ -204,12 +204,21 @@ test("zooming between strokes keeps them in one drawing at the right place", asy
   await strokeOnPage(page, [0.1, 0.55], [0.25, 0.57]);
   await element(page).evaluate((node: VivePdfViewer) => node.setZoom(150));
   await expect.poll(() => element(page).evaluate((node: VivePdfViewer) => node.zoom)).toBe(150);
-  await viewer(page).locator('[data-page-index="0"]').evaluate((node) => node.scrollIntoView({ block: "start", inline: "start" }));
+  const pageBox = viewer(page).locator('[data-page-index="0"]');
+  await pageBox.evaluate((node) => node.scrollIntoView({ block: "start", inline: "start" }));
+  let last = "";
+  await expect.poll(async () => {
+    const now = JSON.stringify(await pageBox.boundingBox());
+    const settled = now === last;
+    last = now;
+    return settled;
+  }).toBe(true);
 
   await strokeOnPage(page, [0.1, 0.3], [0.25, 0.32]);
 
-  const pens = (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "pen" && entry.color !== "#FF0000");
-  expect(pens.map((entry) => (entry.type === "pen" ? entry.strokes.length : 0))).toEqual([2]);
+  const ownPens = async () => (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "pen" && entry.color !== "#FF0000");
+  await expect.poll(async () => (await ownPens()).map((entry) => (entry.type === "pen" ? entry.strokes.length : 0))).toEqual([2]);
+  const pens = await ownPens();
   const [first, second] = pens[0]?.type === "pen" ? pens[0].strokes : [];
   expect(Math.abs((first?.[0]?.x ?? 0) - (second?.[0]?.x ?? -100))).toBeLessThan(15);
 });

@@ -4,6 +4,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.0]
+
 ### Added
 - An eraser (E) that cuts pen lines where you drag it, Delete all with a question first (undo brings everything back), a Delete button above a selected drawing, and `setTool("eraser")`.
 - `hasChanges`: true once the reader or `setAnnotations()` changed the drawings since the document opened, so a site can warn before leaving; `save()` does not reset it.

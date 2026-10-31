@@ -19,16 +19,21 @@ Araç çubuğundaki Çiz düğmesi, üstünde ikinci bir şerit açar.
 
 | Araç | Ne yapar |
 | --- | --- |
-| Kalem | Serbest çizim |
-| Fosforlu kalem | İşaretleme kalemi gibi geniş, yarı saydam bir çizgi |
+| Kalem | Serbest çizim; bir sayfada çizilen her şey araç, renk ya da kalınlık değişene kadar tek çizim olarak kalır |
+| Fosforlu kalem | İşaretleme kalemi gibi geniş, yarı saydam bir çizgi; o da aynı şekilde birleşir |
+| Silgi | Kalem ve fosforlu kalem çizgilerinin üzerinden sürükle, geçtiğin yer silinir; hiçbir şeyi kalmayan çizim kaldırılır |
 | Metni vurgula, altını çiz, üstünü çiz | Metnin üzerinde sürükleyerek işaretle |
 | Not | Tıklayıp bir not iğnele, açılan kutuya yaz |
 | Dikdörtgen, elips | Sürükleyerek bir çerçeve çiz |
 | Ok | Kuyruktan uca doğru sürükle |
 
-Araçların yanında altı renk, üç çizgi kalınlığı, Geri al, Yinele, Seçileni sil ve Kapat var. Bir işarete tıklamak onu seçer: sonra taşınabilir, boyutu değiştirilebilir, rengi değiştirilebilir ya da silinebilir. PDF'te zaten bulunan işaretler de seçilip değiştirilebilir.
+Dikdörtgen, elips ve ok tek şekilden sonra aracı bırakır ve şekli seçili tutar. Metin seçiliyken vurgulama, altını çizme ya da üstünü çizme seçilirse o metin hemen işaretlenir.
 
-Şerit açıkken tuşlar: Ctrl/Cmd+Z geri alır, Ctrl/Cmd+Shift+Z yineler, Delete ya da Backspace seçili işareti siler, Escape aracı bırakır.
+Araçların yanında altı renk, üç çizgi kalınlığı, Geri al, Yinele, Seçileni sil, Tüm çizimleri sil ve Kapat var. Geri al son kalem çizgisini geri alır. Tüm çizimleri sil önce sorar; Geri al hepsini geri getirir. Bir işarete tıklamak onu seçer ve üstünde bir Sil düğmesi gösterir: sonra taşınabilir, boyutu değiştirilebilir, rengi değiştirilebilir ya da silinebilir; yanına tıklamak seçimi bırakır. PDF'te zaten bulunan işaretler de seçilip değiştirilebilir.
+
+Şerit açıkken tuşlar: Ctrl/Cmd+Z geri alır, Ctrl/Cmd+Shift+Z yineler, Delete ya da Backspace seçili işareti siler, E silgiyi seçer, Escape aracı bırakır. Ok tuşları araçlar, renkler ve kalınlıklar arasında gezer.
+
+Telefon ve tablette bir çizim aracı açıkken parmak çizer, araç kapalıyken sayfayı kaydırır. Dar ekranlarda şerit iki sıradır; Geri al, Sil ve Kapat hep elinin altındadır.
 
 <Callout type="note" title="Metin araçları gerçek metin ister">
 Vurgulama, altını çizme ve üstünü çizme, PDF'in gerçekten içerdiği metinde çalışır. Taranmış bir sayfa bir resimdir: orada kalemi ya da fosforlu kalemi kullan.
@@ -44,14 +49,15 @@ Bir şey çizildikten sonra İndir, PDF'in işaretli bir kopyasını dosyanın k
 
 ## Geliştiriciler için
 
-Dört metot ve bir olay, sayfanın işaretleri saklamasını sağlar; örneğin her kullanıcı için kendi sunucunda.
+Dört metot, bir özellik ve bir olay, sayfanın işaretleri saklamasını sağlar; örneğin her kullanıcı için kendi sunucunda.
 
 | | Ne yapar |
 | --- | --- |
 | `annotations()` | Bütün sayfalardaki işaretlerin listesini verir; PDF'te zaten olanlar da dahil |
 | `setAnnotations(list)` | Listeyi bütün bu işaretlerin yerine koyar; `vive-annotationchange` göndermez ve Geri al geçmişini temizler |
 | `save()` | İşaretleri içeren PDF'i bir `Blob` olarak verir |
-| `setTool(name)` | Çizim şeridini bir araçla açar: `pen`, `marker`, `highlight`, `underline`, `strikeout`, `note`, `rectangle`, `ellipse` ya da `arrow`; `null` aracı bırakır |
+| `setTool(name)` | Çizim şeridini bir araçla açar: `pen`, `marker`, `highlight`, `underline`, `strikeout`, `note`, `rectangle`, `ellipse`, `arrow` ya da `eraser`; `null` aracı bırakır |
+| `hasChanges` | Ziyaretçi ya da `setAnnotations()` belge açıldığından beri işaretleri değiştirdiyse `true`; örneğin sayfadan çıkmadan önce sormak için. `save()` onu sıfırlamaz |
 | `vive-annotationchange` | Bir işaret oluşturulunca, değişince ya da silinince `{ type, page }` ile gelir |
 
 ### Sunucuna kaydetme
@@ -121,4 +127,4 @@ Dört metot, `code` alanı şunlardan biri olan bir `Error` ile reddeder:
 | `not-ready` | Henüz açık bir belge yok; `vive-ready`'yi bekle |
 | `invalid` | `setAnnotations()` kullanamayacağı bir liste aldı |
 | `replaced` | Cevap gelmeden başka bir belge açıldı |
-| `failed` | İşaretler PDF'e yazılamadı |
+| `failed` | İşaretler PDF'e yazılamadı ya da çizim kodu indirilemedi (bir sonraki belgede yeniden denenir) |

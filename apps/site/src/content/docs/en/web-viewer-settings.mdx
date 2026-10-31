@@ -53,7 +53,7 @@ Hiding Download hides the button; the PDF's address is still in your page, so th
 
 | Attribute | Values | Default |
 | --- | --- | --- |
-| `assets` | Folder with the viewer's files, when a bundler moved the script away from them; read once when the viewer starts | the script's folder |
+| `assets` | Folder with the viewer's files, when a bundler moved the script away from them; read once when the viewer starts; every viewer on one page should use the same folder | the script's folder |
 | `fonts` | Folder with fallback fonts, for PDFs that do not carry their own Japanese, Korean, Chinese, Cyrillic, Greek, Vietnamese, Hebrew or Arabic fonts | — |
 
 Without `fonts` the viewer downloads no fonts at all. How to prepare the fonts folder is in [performance and large files](/en/docs/web-viewer-performance/#fonts-for-pdfs-without-their-own).

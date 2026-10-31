@@ -36,6 +36,7 @@ Methods called before the viewer has started wait and run once the document is o
 | `page` | The page in view, from 1 |
 | `pageCount` | Number of pages; `0` until the document is open |
 | `zoom` | Zoom in percent |
+| `hasChanges` | With `annotate`: `true` once the marks changed since the document opened |
 
 ## Events
 

@@ -10,9 +10,9 @@ PDFium compiled to WebAssembly, in the visitor's browser: no server, no account,
 - Large files open quickly: only the parts on screen are downloaded.
 - Light and dark themes, Turkish and English; runs under a strict Content Security Policy with
   no `'unsafe-inline'` or `'unsafe-eval'`.
-- Drawing and notes with the `annotate` setting: pen, marker, text highlight, sticky notes and
-  shapes, saved into the downloaded PDF or read and restored as JSON by your site.
-- Tested in Chromium and WebKit (Safari on the Mac, iPhone and iPad).
+- Drawing and notes with the `annotate` setting: pen, marker, eraser, text highlight, sticky notes
+  and shapes, saved into the downloaded PDF or read and restored as JSON by your site.
+- Tested in Chromium and WebKit (Safari on the Mac, iPhone and iPad) and on an Android phone.
 - MIT licence.
 
 ## Add it to a page

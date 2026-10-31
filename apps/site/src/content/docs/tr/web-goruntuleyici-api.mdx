@@ -36,6 +36,7 @@ Görüntüleyici başlamadan çağrılan metotlar bekler ve belge ekrana gelince
 | `page` | Görünen sayfa, 1'den başlar |
 | `pageCount` | Sayfa sayısı; belge açılana kadar `0` |
 | `zoom` | Yüzde olarak yakınlaştırma |
+| `hasChanges` | `annotate` varken: belge açıldığından beri işaretler değiştiyse `true` |
 
 ## Olaylar
 

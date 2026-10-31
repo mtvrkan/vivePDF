@@ -35,13 +35,14 @@ test("zoom buttons change the shown level", async ({ page }) => {
 
 test("in a small box with the drawing tools the toolbar fits and zoom moves into the more menu", async ({ page }) => {
   await openViewer(page, "lang=en&annotate=");
+  const zoom = () => viewer(page).evaluate((element) => (element as HTMLElement & { zoom: number }).zoom);
+  const wide = await zoom();
   await viewer(page).evaluate((element) => (element.style.width = "340px"));
   const toolbar = viewer(page).getByRole("toolbar", { name: "Document tools" });
 
   await expect.poll(() => toolbar.evaluate((element) => element.scrollWidth - element.clientWidth)).toBeLessThanOrEqual(1);
   await expect(viewer(page).getByRole("button", { name: "Zoom in" })).toBeHidden();
-  const zoom = () => viewer(page).evaluate((element) => (element as HTMLElement & { zoom: number }).zoom);
-  await expect.poll(zoom).toBeLessThan(100);
+  await expect.poll(zoom).toBeLessThan(Math.min(wide, 100));
   const before = await zoom();
   await viewer(page).getByRole("button", { name: "More options" }).click();
   await viewer(page).getByRole("menuitem", { name: "Zoom in" }).click();

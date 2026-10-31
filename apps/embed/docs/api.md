@@ -20,7 +20,7 @@ apply while the document is open; only `src`, `load` and `open()` load a new doc
 | `annotate` | turns on the drawing tools (pen, marker, text highlight, notes, shapes); Download then saves the drawings into the PDF. The drawing code is fetched only when this is set | off |
 | `filename` | Name used when the file is downloaded | the name in the URL |
 | `fonts` | Base URL of `@vivepdf/viewer-fonts`, for PDFs without embedded fonts | — |
-| `assets` | Folder with the viewer's files, when a bundler moved the script away from them; read once when the viewer starts | the script's folder |
+| `assets` | Folder with the viewer's files, when a bundler moved the script away from them; read once when the viewer starts; every viewer on one page should use the same folder | the script's folder |
 
 ## Modes
 
@@ -77,7 +77,14 @@ viewer.setTool("pen");
 - `save()` gives the PDF with the annotations in it as a `Blob`. Download does the same for the
   visitor.
 - `setTool(name)` opens the drawing bar with a tool chosen: `pen` · `marker` · `highlight` ·
-  `underline` · `strikeout` · `note` · `rectangle` · `ellipse` · `arrow`; `null` puts the tool down.
+  `underline` · `strikeout` · `note` · `rectangle` · `ellipse` · `arrow` · `eraser`; `null` puts the tool
+  down.
+- `hasChanges` is `true` once the visitor or `setAnnotations()` changed the annotations since the
+  document opened, so a site can ask before the page is left. `save()` does not reset it.
+
+The pen and the marker keep everything drawn on a page as one drawing until the tool, colour or
+width changes; undo takes back the last stroke. The eraser cuts pen lines where it is dragged, and
+Delete all asks first and can be undone.
 
 Each entry has `type`, `page` (from 1), `color` (`#rrggbb`), `opacity` (0–1) and, when there is one,
 `text`. Positions are in PDF points from the top-left corner of the page:
@@ -100,7 +107,8 @@ in one note, and keeps only the fields above, so a list cannot carry links, pict
 
 The four methods reject with an `Error` whose `code` is `annotate-off` (no `annotate` attribute),
 `not-ready` (no document yet; wait for `vive-ready`), `invalid` (the message names the first wrong
-entry), `replaced` (the document changed before the answer came) or `failed`.
+entry), `replaced` (the document changed before the answer came) or `failed` (the annotations could not be
+written, or the drawing code could not be downloaded; it is tried again with the next document).
 
 ## Events
 

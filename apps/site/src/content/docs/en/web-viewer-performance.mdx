@@ -45,7 +45,7 @@ On a slower connection (9 Mbit/s, 60 ms latency) the first visit takes 2.4 s for
 
 The engine is kept in your site's Cache Storage, under a name that starts with `vivepdf-engine-`, and reused on every page of your site. A new version of the viewer stores its own engine and removes the old one. Visitors whose browser blocks storage simply download it again.
 
-The viewer's own files come from your server or the CDN with normal HTTP caching. On jsDelivr, pin a version (`@0.2.0`) for the longest cache life; `@0` is cached for a shorter time so updates reach you.
+The viewer's own files come from your server or the CDN with normal HTTP caching. On jsDelivr, pin a version (`@0.3.0`) for the longest cache life; `@0` is cached for a shorter time so updates reach you.
 
 ## Fonts for PDFs without their own
 
