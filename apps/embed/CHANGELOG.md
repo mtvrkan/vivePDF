@@ -4,6 +4,8 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [0.3.1]
+
 ### Fixed
 - The ring round the chosen colour in the drawing bar is no longer cut off or pressed against the next colour; it now sits inside the colour button.
 - In viewers up to 559 px wide the drawing bar has three rows (tools; colours and line widths; undo, redo, delete, delete all and close) and its buttons share the width, so nothing is hidden off the edge down to 320 px.

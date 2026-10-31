@@ -16,7 +16,7 @@ The quickest way. Load the script once per page, then place viewers wherever you
 <vive-pdf src="/files/price-list.pdf" style="height: 80vh"></vive-pdf>
 ```
 
-`@0` takes the newest 0.x version, so fixes arrive without a change on your side. To freeze one version, write it in full, for example `@vivepdf/viewer@0.3.0`. The script also comes as a module, `dist/vivepdf.mjs`, for `<script type="module">`.
+`@0` takes the newest 0.x version, so fixes arrive without a change on your side. To freeze one version, write it in full, for example `@vivepdf/viewer@0.3.1`. The script also comes as a module, `dist/vivepdf.mjs`, for `<script type="module">`.
 
 ## From your own server
 
