@@ -8,12 +8,17 @@
 .vp[data-drawing] .vp-page { touch-action: none !important; }
 .vp-draw::-webkit-scrollbar { display: none; }
 .vp-draw-group, .vp-draw-style { display: flex; align-items: center; gap: 2px; flex: none; }
+.vp-draw-colors { gap: 4px; }
 .vp-swatch {
-  flex: none; width: 28px; height: 28px; margin: 0 2px; padding: 0; border: 2px solid var(--vp-card); border-radius: 14px;
-  background: var(--vp-swatch); box-shadow: 0 0 0 1px var(--vp-border); cursor: pointer;
+  display: grid; place-items: center; flex: none; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 16px;
+  background: transparent; cursor: pointer;
 }
-.vp-swatch[aria-checked="true"] { box-shadow: 0 0 0 2px var(--vp-primary); }
-.vp-swatch:focus-visible { outline: 2px solid var(--vp-primary); outline-offset: 2px; }
+.vp-swatch::before {
+  content: ""; width: 75%; aspect-ratio: 1; border-radius: 50%;
+  background: var(--vp-swatch); box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--vp-fg) 16%, transparent);
+}
+.vp-swatch[aria-checked="true"] { box-shadow: inset 0 0 0 2px var(--vp-fg); }
+.vp-swatch:focus-visible { outline: 2px solid var(--vp-primary); outline-offset: 1px; }
 .vp-width[aria-checked="true"] { background: var(--vp-accent-bg); color: var(--vp-accent-fg); }
 .vp-width-line { display: block; width: 18px; border-radius: 4px; background: currentColor; }
 .vp-draw-hint {
@@ -44,11 +49,14 @@
   }
   .vp-draw > .vp-sep { display: none; }
   .vp-draw-tools { grid-column: 1 / -1; }
-  .vp-draw-tools, .vp-draw-style { min-width: 0; overflow-x: auto; overscroll-behavior: contain; scrollbar-width: none; }
-  .vp-draw-tools::-webkit-scrollbar, .vp-draw-style::-webkit-scrollbar { display: none; }
   .vp-draw-hint, .vp-confirm { bottom: 168px; }
 }
 @container vive (max-width: 559px) {
-  .vp-draw { bottom: 68px; left: 8px; right: 8px; width: auto; max-width: none; transform: none; }
-  .vp-draw-hint, .vp-confirm { bottom: 160px; }
+  .vp-draw { bottom: 68px; left: 8px; right: 8px; grid-template-columns: minmax(0, 1fr); width: auto; max-width: none; padding: 4px; transform: none; }
+  .vp-draw-tools, .vp-draw-style, .vp-draw-actions, .vp-draw-colors, .vp-draw-widths { justify-content: space-between; gap: 0; min-width: 0; }
+  .vp-draw-colors { flex: 6 1 0; }
+  .vp-draw-widths { flex: 3 1 0; }
+  .vp-draw .vp-btn, .vp-draw .vp-swatch { flex: 1 1 0; min-width: 0; max-width: 36px; }
+  .vp-draw .vp-swatch { height: auto; max-width: 32px; aspect-ratio: 1; }
+  .vp-draw-hint, .vp-confirm { bottom: 196px; }
 }

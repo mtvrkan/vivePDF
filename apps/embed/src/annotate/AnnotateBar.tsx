@@ -63,7 +63,7 @@ export function AnnotateBar({ session, lang }: { session: AnnotateSession; lang:
         </div>
         <span class="vp-sep" />
         <div class="vp-draw-style">
-          <div class="vp-draw-group" role="radiogroup" aria-label={text.colors} onKeyDown={arrowsIn((index) => session.setColor(ANNOTATION_COLORS[index] ?? session.color))}>
+          <div class="vp-draw-group vp-draw-colors" role="radiogroup" aria-label={text.colors} onKeyDown={arrowsIn((index) => session.setColor(ANNOTATION_COLORS[index] ?? session.color))}>
             {ANNOTATION_COLORS.map((color, index) => (
               <button key={color} class="vp-swatch" type="button" role="radio" tabIndex={session.color === color ? 0 : -1} aria-checked={session.color === color} aria-label={text.colorNames[index]} title={text.colorNames[index]} style={{ "--vp-swatch": color }} onClick={() => session.setColor(color)} />
             ))}
@@ -71,7 +71,7 @@ export function AnnotateBar({ session, lang }: { session: AnnotateSession; lang:
           {showWidth ? (
             <>
               <span class="vp-sep" />
-              <div class="vp-draw-group" role="radiogroup" aria-label={text.width} onKeyDown={arrowsIn((index) => session.setWidth(STROKE_WIDTHS[index] ?? session.width))}>
+              <div class="vp-draw-group vp-draw-widths" role="radiogroup" aria-label={text.width} onKeyDown={arrowsIn((index) => session.setWidth(STROKE_WIDTHS[index] ?? session.width))}>
                 {STROKE_WIDTHS.map((width, index) => (
                   <button key={width} class="vp-btn vp-width" type="button" role="radio" tabIndex={session.width === width ? 0 : -1} aria-checked={session.width === width} aria-label={text.widthNames[index]} title={text.widthNames[index]} onClick={() => session.setWidth(width)}>
                     <span class="vp-width-line" style={{ height: `${width}px` }} />

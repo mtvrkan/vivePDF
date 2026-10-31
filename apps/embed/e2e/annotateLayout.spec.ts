@@ -115,6 +115,31 @@ test.describe("drawing bar widths", () => {
       expect(hint.y + hint.height).toBeLessThanOrEqual(drawBar.y);
       expect(hint.x).toBeGreaterThanOrEqual(frame.x);
     });
+
+    test(`at ${width} pixels every tool, colour and width shows whole inside the drawing bar`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 760 });
+      await openViewer(page);
+      await viewer(page).getByRole("button", { name: "Draw and annotate" }).click();
+      const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+      await bar.getByRole("button", { name: "Pen", exact: true }).click();
+
+      const cut = await bar.locator("button").evaluateAll((buttons) => {
+        const toolbar = buttons[0]?.closest(".vp-draw");
+        return buttons.flatMap((button) => {
+          const box = button.getBoundingClientRect();
+          const ring = box.width >= 24 && box.height >= 24;
+          for (let parent = button.parentElement; parent; parent = parent.parentElement) {
+            const clips = parent === toolbar || getComputedStyle(parent).overflowX !== "visible";
+            const room = parent.getBoundingClientRect();
+            if (clips && (box.left < room.left - 0.5 || box.right > room.right + 0.5 || box.top < room.top - 0.5 || box.bottom > room.bottom + 0.5)) return [button.getAttribute("aria-label")];
+            if (parent === toolbar) break;
+          }
+          return ring ? [] : [`${button.getAttribute("aria-label")} is ${Math.round(box.width)}x${Math.round(box.height)}`];
+        });
+      });
+
+      expect(cut).toEqual([]);
+    });
   }
 });
 
