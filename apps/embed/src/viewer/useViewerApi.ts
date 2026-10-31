@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "preact/hooks";
 import { useScroll, useScrollCapability } from "@embedpdf/plugin-scroll/preact";
 import { ZoomMode, useZoom, useZoomCapability } from "@embedpdf/plugin-zoom/preact";
-import type { ViewerCommand, ViewerEvent } from "./bridge";
+import { answerAnnotate } from "./annotateCommands";
+import type { AnnotateApi, ViewerCommand, ViewerEvent } from "./bridge";
 import type { CommandQueue } from "./commandQueue";
 import { zoomPercent } from "./pageInput";
 
-export type ApiHandlers = { search: ((query: string) => void) | null; print: (() => void) | null; download: (() => void) | null; start: StartPage };
+export type ApiHandlers = { search: ((query: string) => void) | null; print: (() => void) | null; download: (() => void) | null; annotate: AnnotateApi | null; start: StartPage };
 export type StartPage = { settle: () => void; pending: () => number | null };
 
 const PERCENT = 100;
@@ -74,7 +75,8 @@ export function useViewerApi(documentId: string, fitted: boolean, commands: Comm
         });
       } else if (command.kind === "search") current.search?.(command.query);
       else if (command.kind === "print") current.print?.();
-      else current.download?.();
+      else if (command.kind === "download") current.download?.();
+      else answerAnnotate(current.annotate, command);
     });
     return () => {
       stop();

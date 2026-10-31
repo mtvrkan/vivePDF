@@ -1,8 +1,11 @@
 import { readFileSync } from "node:fs";
 import { expect, test, type Page } from "@playwright/test";
+import type { VivePdfAnnotation, VivePdfViewer } from "../src/api/types";
 
 const marks = (page: Page) => page.evaluate(() => (window as unknown as { __marks: string[] }).__marks);
 const viewer = (page: Page) => page.getByTestId("viewer");
+const element = (page: Page) => page.locator("vive-pdf");
+const changes = (page: Page) => page.evaluate(() => (window as unknown as { __events: { type: string; detail: unknown }[] }).__events.filter((event) => event.type === "vive-annotationchange").map((event) => event.detail));
 
 async function openViewer(page: Page, query: string): Promise<void> {
   await page.goto(`/e2e/playground.html?lang=en&src=/fixtures/annotated.pdf&zoom=fit-page&${query}`);
@@ -116,4 +119,50 @@ test("the selected drawing can be deleted", async ({ page }) => {
   await remove.click();
 
   expect(count(await downloaded(page), "Circle")).toBe(0);
+});
+
+test("a site reads the annotations, puts its own in their place and saves the result", async ({ page }) => {
+  await openViewer(page, "annotate");
+  const own: VivePdfAnnotation[] = [
+    { type: "pen", page: 1, color: "#1F6FEB", opacity: 1, width: 4, strokes: [[{ x: 100, y: 600 }, { x: 300, y: 650 }]] },
+    { type: "note", page: 1, color: "#FFCD45", opacity: 1, text: "Kontrol edildi", box: { x: 400, y: 600, width: 20, height: 20 } },
+  ];
+
+  const before = await element(page).evaluate((node: VivePdfViewer) => node.annotations());
+  const after = await element(page).evaluate(async (node: VivePdfViewer, list) => {
+    await node.setAnnotations(list);
+    return node.annotations();
+  }, own);
+  const reopened = await element(page).evaluate(async (node: VivePdfViewer) => {
+    await node.open(await node.save());
+    return node.annotations();
+  });
+
+  expect(before.map((entry) => entry.type).sort()).toEqual(["highlight", "note", "pen", "rectangle"]);
+  expect(before.find((entry) => entry.type === "note")?.text).toBe("A sticky note");
+  expect(after).toEqual(own);
+  expect(reopened).toEqual(own);
+  expect(await changes(page)).toEqual([]);
+});
+
+test("drawing tells the page what changed and setTool picks a tool from outside", async ({ page }) => {
+  await openViewer(page, "annotate");
+
+  await element(page).evaluate((node: VivePdfViewer) => node.setTool("rectangle"));
+  await expect(viewer(page).getByRole("toolbar", { name: "Drawing tools" }).getByRole("button", { name: "Rectangle", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await strokeOnPage(page, [0.55, 0.75], [0.8, 0.85]);
+
+  await expect.poll(() => changes(page)).toEqual([{ type: "create", page: 1 }]);
+});
+
+test("the annotation methods say why they cannot answer", async ({ page }) => {
+  await openViewer(page, "");
+  const off = await element(page).evaluate((node: VivePdfViewer) => node.annotations().then(() => "answered", (error: Error & { code: string }) => error.code));
+  await element(page).evaluate((node) => node.setAttribute("annotate", ""));
+  await expect(viewer(page).getByRole("button", { name: "Draw and annotate" })).toBeVisible();
+
+  const wrong = await element(page).evaluate((node: VivePdfViewer) => node.setAnnotations([{ type: "stamp" } as never]).then(() => "answered", (error: Error & { code: string }) => `${error.code}: ${error.message}`));
+
+  expect(off).toBe("annotate-off");
+  expect(wrong).toBe("invalid: vive-pdf: annotation 0 is not valid: page must be a whole number from 1 to 1");
 });

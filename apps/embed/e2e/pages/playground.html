@@ -16,7 +16,7 @@
       if (!params.has("mode")) viewer.style.height = params.get("height") || "100vh";
       viewer.addEventListener("vive-mark", (event) => window.__marks.push(event.detail.name));
       window.__events = [];
-      for (const name of ["vive-ready", "vive-pagechange", "vive-zoomchange", "vive-error", "vive-close"]) document.addEventListener(name, (event) => window.__events.push({ type: event.type, detail: event.detail }));
+      for (const name of ["vive-ready", "vive-pagechange", "vive-zoomchange", "vive-error", "vive-close", "vive-annotationchange"]) document.addEventListener(name, (event) => window.__events.push({ type: event.type, detail: event.detail }));
       const spacer = (id) => Object.assign(document.createElement("div"), { id, style: `height: ${params.get("pad") || 0}px` });
       document.body.append(spacer("before"), viewer, spacer("after"));
     </script>

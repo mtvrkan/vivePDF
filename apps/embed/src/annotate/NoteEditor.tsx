@@ -3,8 +3,7 @@ import { PdfAnnotationSubtype } from "@embedpdf/models";
 import { useAnnotation, type AnnotationSelectionMenuProps } from "@embedpdf/plugin-annotation/preact";
 import type { Lang } from "../i18n";
 import { ANNOTATE_MESSAGES } from "./messages";
-
-export const NOTE_MAX_LENGTH = 2000;
+import { NOTE_MAX_LENGTH } from "./tools";
 
 type NoteEditorProps = { documentId: string; lang: Lang; menu: AnnotationSelectionMenuProps };
 

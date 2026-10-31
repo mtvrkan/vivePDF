@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { hasStrokeWidth, isAnnotateTool, toolDefaults, worksOnText } from "./tools";
+import { hasStrokeWidth, isAnnotateTool, toolDefaults, toolFromPublic, worksOnText } from "./tools";
 
 describe("drawing tools", () => {
   it("gives a pen its colour and width", () => {
@@ -30,5 +30,11 @@ describe("drawing tools", () => {
     const flags = [hasStrokeWidth("square"), hasStrokeWidth("highlight"), worksOnText("underline"), worksOnText("ink")];
 
     expect(flags).toEqual([true, false, true, false]);
+  });
+
+  it("maps the public tool names to the drawing tools and refuses others", () => {
+    const tools = ["pen", "marker", "note", "rectangle", "ellipse", "arrow", "stamp", "toString", 1].map(toolFromPublic);
+
+    expect(tools).toEqual(["ink", "inkHighlighter", "textComment", "square", "circle", "lineArrow", null, null, null]);
   });
 });

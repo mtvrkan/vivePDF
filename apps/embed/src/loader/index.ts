@@ -1,9 +1,10 @@
+import { annotateError } from "../api/errors";
 import { parseMode, parsePageSetting, parseSourceUrl, parseZoomSetting } from "../api/parse";
-import type { VivePdfInput, VivePdfOpenError, VivePdfViewer, ZoomSetting } from "../api/types";
+import type { VivePdfAnnotateError, VivePdfAnnotation, VivePdfInput, VivePdfOpenError, VivePdfTool, VivePdfViewer, ZoomSetting } from "../api/types";
 import { parseFontBase } from "../engine/fontBase";
 import { resolveLang } from "../i18n/lang";
 import { parseThemeSetting } from "../styles/theme";
-import type { ViewerCommand, ViewerEvent, ViewerSource } from "../viewer/bridge";
+import type { Reply, ViewerCommand, ViewerEvent, ViewerSource } from "../viewer/bridge";
 import { parseOptIn, parseSwitch } from "../viewer/features";
 import type { MountOptions, ViewerHandle } from "../viewer/mount";
 
@@ -30,6 +31,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
   private objectUrl: string | null = null;
   private source: ViewerSource | null = null;
   private waiters: Waiter[] = [];
+  private readonly asked = new Set<(error: VivePdfAnnotateError) => void>();
   private shown = false;
   private current = { page: 0, pageCount: 0, zoom: 0 };
   private readonly emit = (event: ViewerEvent) => this.receive(event);
@@ -75,6 +77,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
     this.handle = null;
     this.source = null;
     this.releaseObjectUrl();
+    this.dropAsked();
   }
 
   attributeChangedCallback(name: string, previous: string | null, value: string | null): void {
@@ -150,10 +153,55 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
     this.handle?.close();
   }
 
+  annotations(): Promise<VivePdfAnnotation[]> {
+    return this.ask((reply) => ({ kind: "annotations", reply }));
+  }
+
+  setAnnotations(list: readonly VivePdfAnnotation[]): Promise<void> {
+    return this.ask((reply) => ({ kind: "setAnnotations", list, reply }));
+  }
+
+  save(): Promise<Blob> {
+    return this.ask((reply) => ({ kind: "save", reply }));
+  }
+
+  setTool(tool: VivePdfTool | null): void {
+    this.command({ kind: "setTool", tool });
+  }
+
+  private ask<T>(build: (reply: Reply<T>) => ViewerCommand): Promise<T> {
+    if (!parseOptIn(this.getAttribute("annotate"))) return Promise.reject(annotateError("annotate-off", "the drawing tools are off; add the annotate attribute"));
+    const handle = this.handle;
+    if (!handle || this.current.pageCount === 0) return Promise.reject(annotateError("not-ready", "open a document and wait for vive-ready first"));
+    return new Promise<T>((resolve, reject) => {
+      const drop = (error: VivePdfAnnotateError) => reject(error);
+      this.asked.add(drop);
+      handle.command(
+        build({
+          resolve: (value) => {
+            this.asked.delete(drop);
+            resolve(value);
+          },
+          reject: (error) => {
+            this.asked.delete(drop);
+            reject(error);
+          },
+        }),
+      );
+    });
+  }
+
+  private dropAsked(): void {
+    const asked = [...this.asked];
+    this.asked.clear();
+    for (const drop of asked) drop(annotateError("replaced", "the document was closed or replaced before the answer came"));
+  }
+
   private changeSource(): void {
     this.source = null;
     this.current = { page: 0, pageCount: 0, zoom: 0 };
     this.queued = [];
+    this.dropAsked();
     const src = this.getAttribute("src");
     if (!this.data && src && !parseSourceUrl(src, document.baseURI)) this.receive({ type: "error", detail: { code: "unsupported-url" } });
     if (!this.handle) {
@@ -249,7 +297,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
       this.current.pageCount = event.detail.pageCount;
     } else if (event.type === "zoomchange") this.current.zoom = event.detail.zoom;
     else if (event.type === "close") this.shown = false;
-    else this.settleWaiters(event.detail.code);
+    else if (event.type === "error") this.settleWaiters(event.detail.code);
     this.dispatchEvent(new CustomEvent(`vive-${event.type}`, { detail: event.detail, bubbles: true, composed: true }));
   }
 
