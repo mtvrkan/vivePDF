@@ -45,6 +45,7 @@ export interface VivePdfViewer extends HTMLElement {
   readonly page: number;
   readonly pageCount: number;
   readonly zoom: number;
+  readonly hasChanges: boolean;
   open(input: VivePdfInput): Promise<void>;
   goTo(page: number): void;
   setZoom(zoom: ZoomSetting): void;

@@ -7,6 +7,10 @@ export class CommandQueue<T> {
     else this.pending.push(command);
   }
 
+  clear(): void {
+    this.pending = [];
+  }
+
   listen(handler: (command: T) => void): () => void {
     this.handler = handler;
     const queued = this.pending;

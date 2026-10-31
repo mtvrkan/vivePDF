@@ -108,6 +108,7 @@
   border-radius: 24px; transform: translateX(-50%);
   transition: transform 200ms ease-out, opacity 200ms ease-out;
 }
+.vp-pill[data-menu="open"] { z-index: 4; }
 .vp-pill[data-hidden="true"] { transform: translate(-50%, calc(100% + 24px)); opacity: 0; pointer-events: none; }
 .vp-sep { width: 1px; height: 20px; margin: 0 4px; background: var(--vp-border); flex: none; }
 .vp-pagebox { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; font: 12px/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace; color: var(--vp-muted-fg); font-variant-numeric: tabular-nums; }

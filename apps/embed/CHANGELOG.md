@@ -6,12 +6,23 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ### Added
 - An eraser (E) that cuts pen lines where you drag it, Delete all with a question first (undo brings everything back), a Delete button above a selected drawing, and `setTool("eraser")`.
+- `hasChanges`: true once the reader or `setAnnotations()` changed the drawings since the document opened, so a site can warn before leaving; `save()` does not reset it.
 
 ### Changed
 - Rectangles, ellipses and arrows put the tool down after one shape and stay selected; a click beside a selected drawing lets go of it; picking highlight, underline or strike out marks text that is already selected; while a drawing tool is on, dragging on a touch screen draws instead of scrolling.
 
 ### Fixed
 - The note box takes clicks; until now it could only be typed into right after placing the note.
+- `annotations()`, `setAnnotations()`, `save()` and `setTool()` answer while the viewer is hidden, and `annotations()` right after `open()` lists the new document's drawings.
+- `annotations()` called from a `vive-annotationchange` handler already includes that change.
+- Text typed into a note is kept when `save()` runs while the note box still has focus, or when the reader taps the page beside it.
+- A `viewer.js` that cannot load sends `vive-error` with `engine` and rejects `open()` instead of leaving the element opening forever.
+- Drawing tools that cannot load make the drawing calls fail with `failed` ("could not load") instead of `annotate-off`, and are tried again with the next document.
+- Drawings made by other PDF programs (zero or very wide lines, notes longer than 2000 characters, highlights without boxes, empty pen drawings) come out of `annotations()` in a form `setAnnotations()` accepts.
+- The More menu opens above the drawing bar instead of under it.
+- On phones the drawing bar has two rows: tools on top, colours and the always visible undo, redo, delete, delete all and close below.
+- Closing the drawing bar puts focus back on the Draw button; the arrow keys move through the tools, colours and widths (one Tab stop each); the hint is read out by screen readers.
+- With `toolbar="false"`, tools chosen through `setTool()` get the note box styles, the keys, click-to-deselect and touch drawing.
 - The pen and the marker keep everything drawn on a page as one drawing until the tool, colour or width changes, instead of making every stroke a separate, selected drawing. Undo takes back the last stroke, and picking a colour after a stroke no longer recolours it.
 
 ## [0.2.0]

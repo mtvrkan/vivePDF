@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "preact/hooks";
+import { useCallback, useEffect, useRef, useState } from "preact/hooks";
 import { PdfAnnotationSubtype } from "@embedpdf/models";
 import { useAnnotation, type AnnotationSelectionMenuProps } from "@embedpdf/plugin-annotation/preact";
 import type { Lang } from "../i18n";
@@ -6,6 +6,12 @@ import { ANNOTATE_MESSAGES } from "./messages";
 import { NOTE_MAX_LENGTH } from "./tools";
 
 type NoteEditorProps = { documentId: string; lang: Lang; menu: AnnotationSelectionMenuProps };
+
+const openDrafts = new Set<() => void>();
+
+export function commitNoteDrafts(): void {
+  for (const commit of [...openDrafts]) commit();
+}
 
 export function NoteEditor({ documentId, lang, menu }: NoteEditorProps) {
   const text = ANNOTATE_MESSAGES[lang];
@@ -18,9 +24,22 @@ export function NoteEditor({ documentId, lang, menu }: NoteEditorProps) {
   useEffect(() => {
     if (saved === "") fieldRef.current?.focus();
   }, [note.id, saved]);
-  const commit = () => {
-    if (draft !== saved && !menu.context.structurallyLocked) scope?.updateAnnotation(menu.context.pageIndex, note.id, { contents: draft });
-  };
+  const latest = useRef({ draft, saved, pageIndex: menu.context.pageIndex, locked: menu.context.structurallyLocked, scope });
+  latest.current = { draft, saved, pageIndex: menu.context.pageIndex, locked: menu.context.structurallyLocked, scope };
+  const commit = useCallback(() => {
+    const { draft: typed, saved: stored, pageIndex, locked, scope: target } = latest.current;
+    const tracked = target?.getState().byUid[note.id];
+    if (typed === stored || locked || !target || !tracked || tracked.commitState === "deleted") return;
+    latest.current.saved = typed;
+    target.updateAnnotation(pageIndex, note.id, { contents: typed });
+  }, [note.id]);
+  useEffect(() => {
+    openDrafts.add(commit);
+    return () => {
+      openDrafts.delete(commit);
+      commit();
+    };
+  }, [commit]);
 
   return (
     <div {...menu.menuWrapperProps}>

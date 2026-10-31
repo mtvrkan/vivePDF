@@ -39,4 +39,15 @@ describe("CommandQueue", () => {
 
     expect(seen).toEqual(["print"]);
   });
+
+  it("forgets waiting commands after clear", () => {
+    const queue = new CommandQueue<string>();
+    const seen: string[] = [];
+    queue.push("save");
+
+    queue.clear();
+    queue.listen((command) => seen.push(command));
+
+    expect(seen).toEqual([]);
+  });
 });

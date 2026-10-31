@@ -75,7 +75,7 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
   const fitLabel = fitsWidth ? t("fitPage") : t("fitWidth");
 
   return (
-    <div ref={pillRef} class="vp-pill vp-glass" role="toolbar" aria-label={t("toolbar")} data-hidden={hidden ? "true" : "false"} data-extras={(branding ? 1 : 0) + (drawing ? 1 : 0)}>
+    <div ref={pillRef} class="vp-pill vp-glass" role="toolbar" aria-label={t("toolbar")} data-hidden={hidden ? "true" : "false"} data-menu={menuOpen ? "open" : undefined} data-extras={(branding ? 1 : 0) + (drawing ? 1 : 0)}>
       {branding ? (
         <>
           <Brand />
@@ -110,7 +110,7 @@ export function Pill({ documentId, host, panelOpen, onTogglePanel, panelButtonRe
       {drawing ? (
         <>
           <span class="vp-sep" />
-          <button class="vp-btn" type="button" aria-label={t("draw")} title={t("draw")} aria-pressed={drawing.open} onClick={drawing.toggle}>
+          <button class="vp-btn" type="button" data-draw-toggle aria-label={t("draw")} title={t("draw")} aria-pressed={drawing.open} onClick={drawing.toggle}>
             <Icon name="draw" />
           </button>
         </>

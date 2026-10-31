@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { PdfAnnotationSubtype, type PdfAnnotationObject } from "@embedpdf/models";
 import type { VivePdfAnnotation } from "../api/types";
 import { MAX_ANNOTATIONS, readAnnotationList, toPublic } from "./exchange";
+import { NOTE_MAX_LENGTH } from "./tools";
 
 const PAGES = [
   { width: 595, height: 842 },
@@ -107,5 +108,27 @@ describe("annotation exchange", () => {
     const [created] = readAnnotationList([{ type: "note", page: 1, color: "#FFCD45", box: { x: 1, y: 1, width: 20, height: 20 }, uri: "javascript:alert(1)", imageData: "AAAA", custom: { a: 1 } }], PAGES, counter());
 
     expect(Object.keys(created).sort()).toEqual(["author", "color", "contents", "created", "flags", "id", "opacity", "pageIndex", "rect", "strokeColor", "type"]);
+  });
+
+  it("hands out drawings from other PDF tools in a shape setAnnotations takes back", () => {
+    const rect = { origin: { x: 10, y: 10 }, size: { width: 40, height: 20 } };
+    const foreign = [
+      { type: PdfAnnotationSubtype.INK, id: "a", pageIndex: 0, rect, strokeColor: "#112233", strokeWidth: 0, inkList: [{ points: [] }, { points: [{ x: 10, y: 10 }, { x: 50, y: 30 }] }] },
+      { type: PdfAnnotationSubtype.SQUARE, id: "b", pageIndex: 0, rect, strokeColor: "#112233", strokeWidth: 250 },
+      { type: PdfAnnotationSubtype.HIGHLIGHT, id: "c", pageIndex: 0, rect, strokeColor: "#FFCD45", segmentRects: [] },
+      { type: PdfAnnotationSubtype.TEXT, id: "d", pageIndex: 0, rect, strokeColor: "#FFCD45", contents: "x".repeat(NOTE_MAX_LENGTH + 10) },
+    ] as unknown as PdfAnnotationObject[];
+
+    const exported = foreign.map(toPublic);
+
+    expect(failure(exported)).toBe("accepted");
+  });
+
+  it("leaves out an ink drawing that has no points at all", () => {
+    const empty = { type: PdfAnnotationSubtype.INK, id: "a", pageIndex: 0, rect: { origin: { x: 0, y: 0 }, size: { width: 1, height: 1 } }, strokeColor: "#112233", strokeWidth: 2, inkList: [{ points: [] }] } as unknown as PdfAnnotationObject;
+
+    const exported = toPublic(empty);
+
+    expect(exported).toBeNull();
   });
 });

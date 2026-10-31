@@ -181,30 +181,37 @@ function box(rect: Rect, inset = 0): VivePdfBox {
   return { x: round(rect.origin.x + inset), y: round(rect.origin.y + inset), width: round(Math.max(0, rect.size.width - 2 * inset)), height: round(Math.max(0, rect.size.height - 2 * inset)) };
 }
 
+function lineWidth(value: number): number {
+  return round(Math.min(Math.max(value, MIN_WIDTH), MAX_WIDTH));
+}
+
 function colorOf(...candidates: (string | undefined)[]): string {
   return (candidates.find((candidate) => candidate !== undefined && COLOR.test(candidate)) ?? "#000000").toUpperCase();
 }
 
 export function toPublic(object: PdfAnnotationObject): VivePdfAnnotation | null {
   if (object.inReplyToId) return null;
-  const base = { page: object.pageIndex + 1, opacity: "opacity" in object && typeof object.opacity === "number" ? round(object.opacity) : 1, ...(object.contents ? { text: object.contents } : {}) };
+  const base = { page: object.pageIndex + 1, opacity: "opacity" in object && typeof object.opacity === "number" ? round(object.opacity) : 1, ...(object.contents ? { text: object.contents.slice(0, NOTE_MAX_LENGTH) } : {}) };
   switch (object.type) {
-    case PdfAnnotationSubtype.INK:
-      return { ...base, type: object.intent === MARKER_INTENT ? "marker" : "pen", color: colorOf(object.strokeColor, object.color), width: round(object.strokeWidth), strokes: object.inkList.map((stroke) => stroke.points.map(point)) };
+    case PdfAnnotationSubtype.INK: {
+      const strokes = object.inkList.filter((stroke) => stroke.points.length > 0).map((stroke) => stroke.points.map(point));
+      if (strokes.length === 0) return null;
+      return { ...base, type: object.intent === MARKER_INTENT ? "marker" : "pen", color: colorOf(object.strokeColor, object.color), width: lineWidth(object.strokeWidth), strokes };
+    }
     case PdfAnnotationSubtype.HIGHLIGHT:
     case PdfAnnotationSubtype.UNDERLINE:
     case PdfAnnotationSubtype.STRIKEOUT: {
       const type = object.type === PdfAnnotationSubtype.HIGHLIGHT ? "highlight" : object.type === PdfAnnotationSubtype.UNDERLINE ? "underline" : "strikeout";
-      return { ...base, type, color: colorOf(object.strokeColor, object.color), boxes: object.segmentRects.map((rect) => box(rect)) };
+      return { ...base, type, color: colorOf(object.strokeColor, object.color), boxes: (object.segmentRects.length > 0 ? object.segmentRects : [object.rect]).map((rect) => box(rect)) };
     }
     case PdfAnnotationSubtype.TEXT:
       return { ...base, type: "note", color: colorOf(object.strokeColor, object.color), box: box(object.rect) };
     case PdfAnnotationSubtype.SQUARE:
     case PdfAnnotationSubtype.CIRCLE:
-      return { ...base, type: object.type === PdfAnnotationSubtype.SQUARE ? "rectangle" : "ellipse", color: colorOf(object.strokeColor), width: round(object.strokeWidth), box: box(object.rect, object.strokeWidth / 2) };
+      return { ...base, type: object.type === PdfAnnotationSubtype.SQUARE ? "rectangle" : "ellipse", color: colorOf(object.strokeColor), width: lineWidth(object.strokeWidth), box: box(object.rect, object.strokeWidth / 2) };
     case PdfAnnotationSubtype.LINE: {
       const arrow = object.lineEndings !== undefined && object.lineEndings.end !== PdfAnnotationLineEnding.None;
-      return { ...base, type: arrow ? "arrow" : "line", color: colorOf(object.strokeColor), width: round(object.strokeWidth), from: point(object.linePoints.start), to: point(object.linePoints.end) };
+      return { ...base, type: arrow ? "arrow" : "line", color: colorOf(object.strokeColor), width: lineWidth(object.strokeWidth), from: point(object.linePoints.start), to: point(object.linePoints.end) };
     }
     default:
       return null;

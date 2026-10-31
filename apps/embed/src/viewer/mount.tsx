@@ -20,8 +20,9 @@ import { assetUrl, setAssetBase } from "../engine/assets";
 import { createTranslator, type Lang } from "../i18n";
 import viewerCss from "../styles/viewer.css?inline";
 import { resolveTheme, type ThemeSetting } from "../styles/theme";
-import type { ViewerCommand, ViewerEvent, ViewerSource } from "./bridge";
+import type { ViewerCommand, ViewerEvent, ViewerQueues, ViewerSource } from "./bridge";
 import { BusyToast } from "./BusyToast";
+import { isAnnotateCommand } from "./annotateCommands";
 import { CommandQueue } from "./commandQueue";
 import type { ViewerFeatures } from "./features";
 import { downloadName } from "./fileName";
@@ -60,6 +61,7 @@ export type MountOptions = {
 export type ViewerHandle = {
   update: (options: MountOptions) => void;
   command: (command: ViewerCommand) => void;
+  forgetAsks: () => void;
   show: () => void;
   close: () => void;
   unmount: () => void;
@@ -106,20 +108,25 @@ function viewerPlugins(annotate: AnnotateModule | null, inkTools: InkTools | nul
   return annotate && inkTools ? [...basePlugins(false), ...annotate.annotatePlugins(inkTools)] : basePlugins(true);
 }
 
-function useAnnotateModule(wanted: boolean): { module: AnnotateModule | null; waiting: boolean } {
+function useAnnotateModule(wanted: boolean, source: ViewerSource, mark: MountOptions["mark"]): { module: AnnotateModule | null; waiting: boolean } {
   const [loaded, setLoaded] = useState<AnnotateModule | null>(null);
-  const [failed, setFailed] = useState(false);
+  const [failedFor, setFailedFor] = useState<ViewerSource | null>(null);
+  const failed = failedFor === source;
   useEffect(() => {
     if (!wanted || loaded || failed) return;
     let live = true;
     loadAnnotate().then(
       (module) => live && setLoaded(module),
-      () => live && setFailed(true),
+      () => {
+        if (!live) return;
+        mark("annotate-error");
+        setFailedFor(source);
+      },
     );
     return () => {
       live = false;
     };
-  }, [wanted, loaded, failed]);
+  }, [wanted, loaded, failed, source, mark]);
   return { module: wanted ? loaded : null, waiting: wanted && !loaded && !failed };
 }
 
@@ -167,7 +174,7 @@ type ViewerUiProps = {
   host: HTMLElement | null;
   startPage: number;
   onPage: (page: number) => void;
-  commands: CommandQueue<ViewerCommand>;
+  commands: ViewerQueues;
   emit: (event: ViewerEvent) => void;
 };
 
@@ -246,7 +253,7 @@ function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage
   const print = features.print ? files.print : null;
   const download = features.download ? files.download : null;
   const start = useStartPage(fitted, startPage, onPage);
-  useViewerApi(DOCUMENT_ID, fitted, commands, emit, { search: searchShown ? searchFor : null, print, download, annotate: drawing?.api ?? null, start });
+  useViewerApi(DOCUMENT_ID, fitted, commands, emit, { search: searchShown ? searchFor : null, print, download, annotate: drawing?.api ?? null, annotateFailed: features.annotate && !annotateKit, start });
   useViewerKeys(DOCUMENT_ID, host, searchShown ? openSearch : null, { print, download });
   useInlineScroll(fitted ? host : null, mode === "inline");
   const fileItems: MenuItem[] = [];
@@ -274,12 +281,13 @@ function ViewerUi({ sourceUrl, fileName, mode, features, host, startPage, onPage
           {drawing && annotateKit ? <annotateKit.module.AnnotateBar session={drawing} lang={annotateKit.lang} /> : null}
         </>
       ) : null}
+      {drawing && annotateKit ? <annotateKit.module.AnnotateHost session={drawing} host={host} /> : null}
       {files.task ? <BusyToast task={files.task} onCancel={files.cancel} /> : null}
     </>
   );
 }
 
-type OpenerProps = { options: MountOptions; host: HTMLElement | null; startPage: number; onPage: (page: number) => void; commands: CommandQueue<ViewerCommand> };
+type OpenerProps = { options: MountOptions; host: HTMLElement | null; startPage: number; onPage: (page: number) => void; commands: ViewerQueues };
 
 function Opener({ options, host, startPage, onPage, commands }: OpenerProps) {
   const t = useT();
@@ -397,7 +405,7 @@ function usePrefersDark(): boolean {
   return dark;
 }
 
-type ViewerProps = { options: MountOptions; commands: CommandQueue<ViewerCommand>; onDismiss: () => void };
+type ViewerProps = { options: MountOptions; commands: ViewerQueues; onDismiss: () => void };
 
 function Viewer({ options, commands, onDismiss }: ViewerProps) {
   const [attempt, setAttempt] = useState(0);
@@ -413,7 +421,7 @@ function Viewer({ options, commands, onDismiss }: ViewerProps) {
   const { mark, emit } = options;
   const { engine, failure } = useEngine(assetUrl("pdfium.wasm"), options.fontBase, attempt);
   const translate = useMemo(() => createTranslator(options.lang), [options.lang]);
-  const annotate = useAnnotateModule(options.features.annotate);
+  const annotate = useAnnotateModule(options.features.annotate, options.source, mark);
   const inkTools = useMemo(() => annotate.module?.createInkTools() ?? null, [annotate.module]);
   const annotateKit = useMemo<AnnotateKit | null>(() => (annotate.module && inkTools ? { module: annotate.module, inkTools, lang: options.lang } : null), [annotate.module, inkTools, options.lang]);
   const plugins = useMemo(() => viewerPlugins(annotate.module, inkTools), [annotate.module, inkTools]);
@@ -467,7 +475,7 @@ export function mount(root: ShadowRoot, options: MountOptions): ViewerHandle {
   const container = document.createElement("div");
   container.className = "vp-frame";
   root.append(container);
-  const commands = new CommandQueue<ViewerCommand>();
+  const commands: ViewerQueues = { view: new CommandQueue(), annotate: new CommandQueue() };
   let current = options;
   const lightbox = createLightbox(root, container, () => current.emit({ type: "close", detail: null }));
   const draw = (next: MountOptions) => {
@@ -479,7 +487,8 @@ export function mount(root: ShadowRoot, options: MountOptions): ViewerHandle {
   draw(options);
   return {
     update: draw,
-    command: (command) => commands.push(command),
+    command: (command) => (isAnnotateCommand(command) ? commands.annotate.push(command) : commands.view.push(command)),
+    forgetAsks: () => commands.annotate.clear(),
     show: lightbox.show,
     close: lightbox.close,
     unmount: () => {

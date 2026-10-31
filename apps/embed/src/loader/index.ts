@@ -26,6 +26,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
   private observer: IntersectionObserver | null = null;
   private visible = false;
   private booting = false;
+  private changed = false;
   private queued: ViewerCommand[] = [];
   private data: OpenedData | null = null;
   private objectUrl: string | null = null;
@@ -55,6 +56,10 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
 
   get zoom(): number {
     return this.current.zoom;
+  }
+
+  get hasChanges(): boolean {
+    return this.changed;
   }
 
   connectedCallback(): void {
@@ -158,7 +163,9 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
   }
 
   setAnnotations(list: readonly VivePdfAnnotation[]): Promise<void> {
-    return this.ask((reply) => ({ kind: "setAnnotations", list, reply }));
+    return this.ask<void>((reply) => ({ kind: "setAnnotations", list, reply })).then(() => {
+      this.changed = true;
+    });
   }
 
   save(): Promise<Blob> {
@@ -192,6 +199,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
   }
 
   private dropAsked(): void {
+    this.handle?.forgetAsks();
     const asked = [...this.asked];
     this.asked.clear();
     for (const drop of asked) drop(annotateError("replaced", "the document was closed or replaced before the answer came"));
@@ -200,6 +208,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
   private changeSource(): void {
     this.source = null;
     this.current = { page: 0, pageCount: 0, zoom: 0 };
+    this.changed = false;
     this.queued = [];
     this.dropAsked();
     const src = this.getAttribute("src");
@@ -265,7 +274,15 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
   private async boot(): Promise<void> {
     if (!this.visible || this.handle || this.booting || !this.resolveSource()) return;
     this.booting = true;
-    const { mount } = (await import(/* @vite-ignore */ new URL("viewer.js", this.assetBase()).href)) as ViewerModule;
+    let mount: ViewerModule["mount"];
+    try {
+      ({ mount } = (await import(/* @vite-ignore */ new URL("viewer.js", this.assetBase()).href)) as ViewerModule);
+    } catch {
+      this.booting = false;
+      this.mark("viewer-error");
+      this.receive({ type: "error", detail: { code: "engine" } });
+      return;
+    }
     this.booting = false;
     this.mark("viewer-loaded");
     const options = this.isConnected && this.visible ? this.options() : null;
@@ -297,6 +314,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
       this.current.pageCount = event.detail.pageCount;
     } else if (event.type === "zoomchange") this.current.zoom = event.detail.zoom;
     else if (event.type === "close") this.shown = false;
+    else if (event.type === "annotationchange") this.changed = true;
     else if (event.type === "error") this.settleWaiters(event.detail.code);
     this.dispatchEvent(new CustomEvent(`vive-${event.type}`, { detail: event.detail, bubbles: true, composed: true }));
   }

@@ -133,3 +133,13 @@ test("live attribute changes restyle the viewer without reopening the document",
   await expect(viewer(page).locator(".vp")).toHaveAttribute("data-theme", "dark");
   expect(await eventsOf(page, "vive-ready")).toHaveLength(1);
 });
+
+test("a viewer file that cannot load is reported instead of opening forever", async ({ page, context }) => {
+  await context.route("**/viewer.js", (route) => route.abort());
+  await openViewer(page, "src=/fixtures/small.pdf", "connected");
+
+  await expect.poll(() => eventsOf(page, "vive-error"), { timeout: 10_000 }).toEqual([{ code: "engine" }]);
+  const code = await element(page).evaluate((node: VivePdfViewer) => node.open("/fixtures/small.pdf").then(() => "opened", (error: { code: string }) => error.code));
+
+  expect(code).toBe("engine");
+});

@@ -2,17 +2,16 @@ import { useEffect, useRef } from "preact/hooks";
 import { useScroll, useScrollCapability } from "@embedpdf/plugin-scroll/preact";
 import { ZoomMode, useZoom, useZoomCapability } from "@embedpdf/plugin-zoom/preact";
 import { answerAnnotate } from "./annotateCommands";
-import type { AnnotateApi, ViewerCommand, ViewerEvent } from "./bridge";
-import type { CommandQueue } from "./commandQueue";
+import type { AnnotateApi, ViewerEvent, ViewerQueues } from "./bridge";
 import { zoomPercent } from "./pageInput";
 
-export type ApiHandlers = { search: ((query: string) => void) | null; print: (() => void) | null; download: (() => void) | null; annotate: AnnotateApi | null; start: StartPage };
+export type ApiHandlers = { search: ((query: string) => void) | null; print: (() => void) | null; download: (() => void) | null; annotate: AnnotateApi | null; annotateFailed: boolean; start: StartPage };
 export type StartPage = { settle: () => void; pending: () => number | null };
 
 const PERCENT = 100;
 const ZOOM_WATCH_MS = 1000;
 
-export function useViewerApi(documentId: string, fitted: boolean, commands: CommandQueue<ViewerCommand>, emit: (event: ViewerEvent) => void, handlers: ApiHandlers): void {
+export function useViewerApi(documentId: string, fitted: boolean, commands: ViewerQueues, emit: (event: ViewerEvent) => void, handlers: ApiHandlers): void {
   const { state: scrollState } = useScroll(documentId);
   const { state: zoomState } = useZoom(documentId);
   const { provides: scrollCapability } = useScrollCapability();
@@ -21,6 +20,12 @@ export function useViewerApi(documentId: string, fitted: boolean, commands: Comm
   handlersRef.current = handlers;
   const anchorRef = useRef(scrollState.currentPage);
   const reportedRef = useRef({ page: "", zoom: -1 });
+
+  const answering = handlers.annotate !== null || fitted;
+  useEffect(() => {
+    if (!answering) return;
+    return commands.annotate.listen((command) => answerAnnotate(handlersRef.current.annotate, command, handlersRef.current.annotateFailed));
+  }, [answering, commands]);
 
   useEffect(() => {
     if (!fitted || !scrollCapability || !zoomCapability) return;
@@ -57,7 +62,7 @@ export function useViewerApi(documentId: string, fitted: boolean, commands: Comm
         stopWatching = () => {};
       };
     };
-    const stop = commands.listen((command) => {
+    const stop = commands.view.listen((command) => {
       const current = handlersRef.current;
       if (command.kind === "goTo") {
         current.start.settle();
@@ -75,8 +80,7 @@ export function useViewerApi(documentId: string, fitted: boolean, commands: Comm
         });
       } else if (command.kind === "search") current.search?.(command.query);
       else if (command.kind === "print") current.print?.();
-      else if (command.kind === "download") current.download?.();
-      else answerAnnotate(current.annotate, command);
+      else current.download?.();
     });
     return () => {
       stop();

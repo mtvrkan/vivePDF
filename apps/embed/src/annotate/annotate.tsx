@@ -10,6 +10,7 @@ import { NoteEditor, isNote } from "./NoteEditor";
 import { ANNOTATION_COLORS } from "./tools";
 
 export { AnnotateBar } from "./AnnotateBar";
+export { AnnotateHost } from "./AnnotateHost";
 export { createInkTools } from "./inkHandler";
 export { useAnnotateSession } from "./useAnnotateSession";
 

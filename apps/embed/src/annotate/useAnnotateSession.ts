@@ -10,6 +10,7 @@ import type { VivePdfAnnotation, VivePdfAnnotationChangeDetail, VivePdfTool } fr
 import type { AnnotateApi } from "../viewer/bridge";
 import { readAnnotationList, toPublic } from "./exchange";
 import type { InkTools } from "./inkHandler";
+import { commitNoteDrafts } from "./NoteEditor";
 import { markupRequests, markupSubtype } from "./selectionMarkup";
 import { ANNOTATION_COLORS, STROKE_WIDTHS, isAnnotateTool, toolDefaults, toolFromPublic, type AnnotateTool, type AnnotationColor, type StrokeWidth } from "./tools";
 
@@ -39,7 +40,7 @@ export type AnnotateSession = {
   edited: boolean;
   flush: () => Promise<void>;
   save: () => Promise<Blob>;
-  api: AnnotateApi;
+  api: AnnotateApi | null;
 };
 
 export function useAnnotateSession(documentId: string, onChange: (detail: VivePdfAnnotationChangeDetail) => void, inkTools: InkTools): AnnotateSession {
@@ -198,6 +199,7 @@ export function useAnnotateSession(documentId: string, onChange: (detail: VivePd
 
   const flush = useCallback(async () => {
     if (!scope) throw annotateError("not-ready", "the document is still opening");
+    commitNoteDrafts();
     for (let attempt = 0; attempt < FLUSH_ATTEMPTS; attempt += 1) {
       await scope.commit().toPromise();
       if (!scope.getState().hasPendingChanges) return;
@@ -213,17 +215,17 @@ export function useAnnotateSession(documentId: string, onChange: (detail: VivePd
     return new Blob([buffer], { type: "application/pdf" });
   }, [flush, exporter, documentId]);
 
-  const list = useCallback(
-    (): VivePdfAnnotation[] =>
-      Object.values(state.pages)
-        .flat()
-        .flatMap((uid) => {
-          const tracked = state.byUid[uid];
-          const entry = tracked && tracked.commitState !== "deleted" ? toPublic(tracked.object) : null;
-          return entry ? [entry] : [];
-        }),
-    [state.pages, state.byUid],
-  );
+  const list = useCallback((): VivePdfAnnotation[] => {
+    if (!scope) throw annotateError("not-ready", "the document is still opening");
+    const current = scope.getState();
+    return Object.values(current.pages)
+      .flat()
+      .flatMap((uid) => {
+        const tracked = current.byUid[uid];
+        const entry = tracked && tracked.commitState !== "deleted" ? toPublic(tracked.object) : null;
+        return entry ? [entry] : [];
+      });
+  }, [scope]);
 
   const replace = useCallback(
     (input: unknown) => {
@@ -258,7 +260,8 @@ export function useAnnotateSession(documentId: string, onChange: (detail: VivePd
     [setTool],
   );
 
-  const api = useMemo(() => ({ list, replace, save, chooseTool }), [list, replace, save, chooseTool]);
+  const loaded = Object.keys(state.pages).length > 0;
+  const api = useMemo(() => (scope && annotations && loaded ? { list, replace, save, chooseTool } : null), [scope, annotations, loaded, list, replace, save, chooseTool]);
 
   const undo = useCallback(() => history?.forDocument(documentId).undo(HISTORY_TOPIC), [history, documentId]);
   const redo = useCallback(() => history?.forDocument(documentId).redo(HISTORY_TOPIC), [history, documentId]);
