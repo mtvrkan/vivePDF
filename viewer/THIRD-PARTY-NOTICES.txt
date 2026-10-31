@@ -3,8 +3,8 @@ THIRD-PARTY NOTICES for @vivepdf/viewer
 The vivePDF web viewer is MIT-licensed (see LICENSE). Its files contain the
 third-party software listed below:
 
-- viewer.js, the loader and the worker files contain EmbedPDF (with vivePDF
-  changes to @embedpdf/engines) and Preact.
+- viewer.js, the files in chunks/, the loader and the worker files contain
+  EmbedPDF (with vivePDF changes to @embedpdf/engines) and Preact.
 - pdfium.wasm is taken unchanged from @embedpdf/pdfium 2.15.1. It contains
   PDFium (embedpdf/pdfium 73a041a5c1aaffa09ebb64f1981ff501cb91a41c, based on
   PDFium 7cfa57a91284ba907cb0facaf9cd8e4a570fe5c7) built with Emscripten

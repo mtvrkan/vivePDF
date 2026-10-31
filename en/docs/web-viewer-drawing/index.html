@@ -13,11 +13,15 @@
 <tbody>
 <tr>
 <td>Pen</td>
-<td>Free drawing</td>
+<td>Free drawing; everything drawn on a page stays one drawing until the tool, colour or width changes</td>
 </tr>
 <tr>
 <td>Marker</td>
-<td>A wide, see-through stroke, like a highlighter pen</td>
+<td>A wide, see-through stroke, like a highlighter pen, joined the same way</td>
+</tr>
+<tr>
+<td>Eraser</td>
+<td>Drag over pen and marker lines to cut away the part you cross; a drawing with nothing left is removed</td>
 </tr>
 <tr>
 <td>Highlight, underline, strike out text</td>
@@ -37,15 +41,17 @@
 </tr>
 </tbody>
 </table>
-<p>Next to the tools are six colours, three line widths, Undo, Redo, Delete selected and Close. Clicking a mark selects it: it can then be moved, resized, recoloured or deleted. The marks a PDF already has can be selected and changed too.</p>
-<p>Keys while the bar is open: Ctrl/Cmd+Z undoes, Ctrl/Cmd+Shift+Z redoes, Delete or Backspace deletes the selected mark and Escape puts the tool down.</p>
+<p>Rectangles, ellipses and arrows put the tool down after one shape and leave it selected. Picking highlight, underline or strike out while text is selected marks that text at once.</p>
+<p>Next to the tools are six colours, three line widths, Undo, Redo, Delete selected, Delete all drawings and Close. Undo takes back the last pen stroke. Delete all asks first, and Undo brings everything back. Clicking a mark selects it and shows a Delete button above it: it can then be moved, resized, recoloured or deleted, and a click beside it lets go. The marks a PDF already has can be selected and changed too.</p>
+<p>Keys while the bar is open: Ctrl/Cmd+Z undoes, Ctrl/Cmd+Shift+Z redoes, Delete or Backspace deletes the selected mark, E picks the eraser and Escape puts the tool down. The arrow keys move through the tools, the colours and the widths.</p>
+<p>On phones and tablets a finger draws while a drawing tool is on, and scrolls the page when no tool is on. On narrow screens the bar has two rows, so Undo, Delete and Close are always in reach.</p>
 <div class="callout callout-note" role="note"><svg class="ic" aria-hidden="true"><use href="#i-book"></use></svg><div><p class="callout-title">Text tools need real text</p><p>Highlight, underline and strike out work on text the PDF really contains. A scanned page is a picture: use the pen or the marker there.</p></div></div>
 <p>Notes keep every letter, including ı, ş, ğ and İ. There is no free text box on the page itself yet, because the standard PDF fonts it would use cannot show those letters.</p>
 <h2 id="download-and-print">Download and print</h2>
 <p>Once something is drawn, Download saves a copy of the PDF with the marks in it, under the file’s own name. Print puts them on paper. The original file on your server is not changed.</p>
 <p>The marks are standard PDF annotations, so Adobe Acrobat, Preview, the vivePDF app and other readers show them and can edit them.</p>
 <h2 id="for-developers">For developers</h2>
-<p>Four methods and one event let your page keep the marks, for example per user on your own server.</p>
+<p>Four methods, a property and one event let your page keep the marks, for example per user on your own server.</p>
 <table>
 <thead>
 <tr>
@@ -68,7 +74,11 @@
 </tr>
 <tr>
 <td><code>setTool(name)</code></td>
-<td>Opens the drawing bar with a tool: <code>pen</code>, <code>marker</code>, <code>highlight</code>, <code>underline</code>, <code>strikeout</code>, <code>note</code>, <code>rectangle</code>, <code>ellipse</code> or <code>arrow</code>; <code>null</code> puts the tool down</td>
+<td>Opens the drawing bar with a tool: <code>pen</code>, <code>marker</code>, <code>highlight</code>, <code>underline</code>, <code>strikeout</code>, <code>note</code>, <code>rectangle</code>, <code>ellipse</code>, <code>arrow</code> or <code>eraser</code>; <code>null</code> puts the tool down</td>
+</tr>
+<tr>
+<td><code>hasChanges</code></td>
+<td><code>true</code> once the visitor or <code>setAnnotations()</code> changed the marks since the document opened, for example to ask before the page is left; <code>save()</code> does not reset it</td>
 </tr>
 <tr>
 <td><code>vive-annotationchange</code></td>
@@ -191,7 +201,7 @@
 </tr>
 <tr>
 <td><code>failed</code></td>
-<td>The marks could not be written into the PDF</td>
+<td>The marks could not be written into the PDF, or the drawing code could not be downloaded (it is tried again with the next document)</td>
 </tr>
 </tbody>
 </table></div></article><footer class="doc-foot"><p class="mini-label">Last updated: <time datetime="2026-10-31">October 31, 2026</time></p><a class="text-link ul" href="https://github.com/mtvrkan/vivePDF/edit/main/apps/site/src/content/docs/en/web-viewer-drawing.mdx"><svg class="ic" aria-hidden="true"><use href="#i-code"></use></svg>Edit this page on GitHub</a></footer><nav class="pager" aria-label="Previous / Next"><a class="pager-link prev" href="/en/docs/web-viewer-api/" rel="prev"><span class="mini-label">Previous</span><b>Web viewer methods and events</b></a><a class="pager-link next" href="/en/docs/web-viewer-modes/" rel="next"><span class="mini-label">Next</span><b>Web viewer modes and appearance</b></a></nav></main><aside class="docs-toc" aria-labelledby="tocTitle"><p class="side-label" id="tocTitle">On this page</p><ul><li class="d2"><a href="#the-tools" data-toc="the-tools">The tools</a></li><li class="d2"><a href="#download-and-print" data-toc="download-and-print">Download and print</a></li><li class="d2"><a href="#for-developers" data-toc="for-developers">For developers</a></li><li class="d3"><a href="#saving-to-your-server" data-toc="saving-to-your-server">Saving to your server</a></li><li class="d3"><a href="#the-format" data-toc="the-format">The format</a></li><li class="d3"><a href="#checks-on-the-input" data-toc="checks-on-the-input">Checks on the input</a></li><li class="d3"><a href="#errors" data-toc="errors">Errors</a></li></ul></aside></div><footer class="foot"><div class="wrap"><div class="foot-grid"><div class="foot-brand"><a class="brand" href="/" aria-label="vivePDF home"><svg aria-hidden="true"><use href="#logo"></use></svg><span>vivePDF</span></a><p>An open-source, offline PDF studio. Ready for Windows and macOS; builds from source on Linux.</p></div><div><h2>Product</h2><ul><li><a class="ul" href="/#features">Features</a></li><li><a class="ul" href="/#presenter">Presenter view</a></li><li><a class="ul" href="/#studio">Studio</a></li><li><a class="ul" href="/#privacy">Privacy</a></li><li><a class="ul" href="/#download">Download</a></li></ul></div><div><h2>Source</h2><ul><li><a class="ul" href="https://github.com/mtvrkan/vivePDF">GitHub</a></li><li><a class="ul" href="https://github.com/mtvrkan/vivePDF/releases">Releases</a></li><li><a class="ul" href="/en/docs/license/">License: AGPL-3.0</a></li><li><a class="ul" href="https://github.com/mtvrkan/vivePDF/blob/main/THIRD_PARTY_NOTICES.md">Third-party notices</a></li><li><a class="ul" href="/en/docs/license/#code-signing-policy">Code signing policy</a></li></ul></div><div><h2>Help</h2><ul><li><a class="ul" href="/en/docs/">Docs</a></li><li><a class="ul" href="https://github.com/mtvrkan/vivePDF/issues">Report a bug</a></li><li><a class="ul" href="/en/docs/build-from-source/">Build from source</a></li></ul></div></div><div class="foot-langs" aria-label="Interface languages"><span lang="tr">Türkçe</span><span lang="en">English</span><span lang="de">Deutsch</span><span lang="fr">Français</span><span lang="es">Español</span><span lang="it">Italiano</span><span lang="pt-BR">Português (Brasil)</span><span lang="ar" dir="rtl">العربية</span></div></div><p class="wordmark" aria-hidden="true">vivePDF</p><div class="wrap foot-bottom"><span>© 2026 vivePDF · Open source, for everyone</span><ul class="foot-tags" aria-label="Release and principles"><li><span class="dot-ok"></span>v0.5.0 stable</li><li>AGPL-3.0</li><li>No telemetry</li><li>No account</li></ul></div></footer><div class="ds" id="docsSearch" role="dialog" aria-modal="true" aria-labelledby="dsTitle" hidden data-unavailable="Search works on the published site only." data-one="# result" data-other="# results"><div class="ds-scrim" data-ds-close></div><div class="ds-panel glass"><h2 class="sr" id="dsTitle">Search the docs</h2><div class="ds-top"><svg class="ic" aria-hidden="true"><use href="#i-search"></use></svg><label class="sr" for="dsInput">Search the docs</label><input id="dsInput" type="search" role="combobox" aria-expanded="false" aria-controls="dsList" aria-autocomplete="list" placeholder="Search: OCR, sign, shortcut" autocomplete="off" spellcheck="false"><button type="button" class="kbd ds-esc" data-ds-close aria-label="Close">Esc</button></div><ul class="ds-list" id="dsList" role="listbox" aria-label="Search the docs"></ul><div class="ds-empty" id="dsEmpty" hidden><p class="ds-empty-title">No page matches this search</p><p>Try a shorter word, or ask on GitHub.</p></div><p class="sr" id="dsStatus" role="status"></p></div></div><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.DwZNQvPc.js"></script></body></html><script type="module" src="/_astro/Docs.astro_astro_type_script_index_0_lang.BYvHfUZl.js"></script>

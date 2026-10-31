@@ -13,11 +13,15 @@
 <tbody>
 <tr>
 <td>Kalem</td>
-<td>Serbest çizim</td>
+<td>Serbest çizim; bir sayfada çizilen her şey araç, renk ya da kalınlık değişene kadar tek çizim olarak kalır</td>
 </tr>
 <tr>
 <td>Fosforlu kalem</td>
-<td>İşaretleme kalemi gibi geniş, yarı saydam bir çizgi</td>
+<td>İşaretleme kalemi gibi geniş, yarı saydam bir çizgi; o da aynı şekilde birleşir</td>
+</tr>
+<tr>
+<td>Silgi</td>
+<td>Kalem ve fosforlu kalem çizgilerinin üzerinden sürükle, geçtiğin yer silinir; hiçbir şeyi kalmayan çizim kaldırılır</td>
 </tr>
 <tr>
 <td>Metni vurgula, altını çiz, üstünü çiz</td>
@@ -37,15 +41,17 @@
 </tr>
 </tbody>
 </table>
-<p>Araçların yanında altı renk, üç çizgi kalınlığı, Geri al, Yinele, Seçileni sil ve Kapat var. Bir işarete tıklamak onu seçer: sonra taşınabilir, boyutu değiştirilebilir, rengi değiştirilebilir ya da silinebilir. PDF’te zaten bulunan işaretler de seçilip değiştirilebilir.</p>
-<p>Şerit açıkken tuşlar: Ctrl/Cmd+Z geri alır, Ctrl/Cmd+Shift+Z yineler, Delete ya da Backspace seçili işareti siler, Escape aracı bırakır.</p>
+<p>Dikdörtgen, elips ve ok tek şekilden sonra aracı bırakır ve şekli seçili tutar. Metin seçiliyken vurgulama, altını çizme ya da üstünü çizme seçilirse o metin hemen işaretlenir.</p>
+<p>Araçların yanında altı renk, üç çizgi kalınlığı, Geri al, Yinele, Seçileni sil, Tüm çizimleri sil ve Kapat var. Geri al son kalem çizgisini geri alır. Tüm çizimleri sil önce sorar; Geri al hepsini geri getirir. Bir işarete tıklamak onu seçer ve üstünde bir Sil düğmesi gösterir: sonra taşınabilir, boyutu değiştirilebilir, rengi değiştirilebilir ya da silinebilir; yanına tıklamak seçimi bırakır. PDF’te zaten bulunan işaretler de seçilip değiştirilebilir.</p>
+<p>Şerit açıkken tuşlar: Ctrl/Cmd+Z geri alır, Ctrl/Cmd+Shift+Z yineler, Delete ya da Backspace seçili işareti siler, E silgiyi seçer, Escape aracı bırakır. Ok tuşları araçlar, renkler ve kalınlıklar arasında gezer.</p>
+<p>Telefon ve tablette bir çizim aracı açıkken parmak çizer, araç kapalıyken sayfayı kaydırır. Dar ekranlarda şerit iki sıradır; Geri al, Sil ve Kapat hep elinin altındadır.</p>
 <div class="callout callout-note" role="note"><svg class="ic" aria-hidden="true"><use href="#i-book"></use></svg><div><p class="callout-title">Metin araçları gerçek metin ister</p><p>Vurgulama, altını çizme ve üstünü çizme, PDF’in gerçekten içerdiği metinde çalışır. Taranmış bir sayfa bir resimdir: orada kalemi ya da fosforlu kalemi kullan.</p></div></div>
 <p>Notlar ı, ş, ğ ve İ dahil her harfi korur. Sayfanın üstüne doğrudan yazılan bir metin kutusu henüz yok; kullanacağı standart PDF fontları bu harfleri gösteremiyor.</p>
 <h2 id="i̇ndirme-ve-yazdırma">İndirme ve yazdırma</h2>
 <p>Bir şey çizildikten sonra İndir, PDF’in işaretli bir kopyasını dosyanın kendi adıyla kaydeder. Yazdır onları kâğıda da basar. Sunucundaki asıl dosya değişmez.</p>
 <p>İşaretler standart PDF notlarıdır (annotation); Adobe Acrobat, Önizleme, vivePDF uygulaması ve diğer okuyucular onları gösterir ve düzenleyebilir.</p>
 <h2 id="geliştiriciler-için">Geliştiriciler için</h2>
-<p>Dört metot ve bir olay, sayfanın işaretleri saklamasını sağlar; örneğin her kullanıcı için kendi sunucunda.</p>
+<p>Dört metot, bir özellik ve bir olay, sayfanın işaretleri saklamasını sağlar; örneğin her kullanıcı için kendi sunucunda.</p>
 <table>
 <thead>
 <tr>
@@ -68,7 +74,11 @@
 </tr>
 <tr>
 <td><code>setTool(name)</code></td>
-<td>Çizim şeridini bir araçla açar: <code>pen</code>, <code>marker</code>, <code>highlight</code>, <code>underline</code>, <code>strikeout</code>, <code>note</code>, <code>rectangle</code>, <code>ellipse</code> ya da <code>arrow</code>; <code>null</code> aracı bırakır</td>
+<td>Çizim şeridini bir araçla açar: <code>pen</code>, <code>marker</code>, <code>highlight</code>, <code>underline</code>, <code>strikeout</code>, <code>note</code>, <code>rectangle</code>, <code>ellipse</code>, <code>arrow</code> ya da <code>eraser</code>; <code>null</code> aracı bırakır</td>
+</tr>
+<tr>
+<td><code>hasChanges</code></td>
+<td>Ziyaretçi ya da <code>setAnnotations()</code> belge açıldığından beri işaretleri değiştirdiyse <code>true</code>; örneğin sayfadan çıkmadan önce sormak için. <code>save()</code> onu sıfırlamaz</td>
 </tr>
 <tr>
 <td><code>vive-annotationchange</code></td>
@@ -191,7 +201,7 @@
 </tr>
 <tr>
 <td><code>failed</code></td>
-<td>İşaretler PDF’e yazılamadı</td>
+<td>İşaretler PDF’e yazılamadı ya da çizim kodu indirilemedi (bir sonraki belgede yeniden denenir)</td>
 </tr>
 </tbody>
 </table></div></article><footer class="doc-foot"><p class="mini-label">Son güncelleme: <time datetime="2026-10-31">31 Ekim 2026</time></p><a class="text-link ul" href="https://github.com/mtvrkan/vivePDF/edit/main/apps/site/src/content/docs/tr/web-goruntuleyici-cizim.mdx"><svg class="ic" aria-hidden="true"><use href="#i-code"></use></svg>Bu sayfayı GitHub&#39;da düzenle</a></footer><nav class="pager" aria-label="Önceki / Sonraki"><a class="pager-link prev" href="/dokumantasyon/web-goruntuleyici-api/" rel="prev"><span class="mini-label">Önceki</span><b>Web görüntüleyici metotları ve olayları</b></a><a class="pager-link next" href="/dokumantasyon/web-goruntuleyici-gorunum/" rel="next"><span class="mini-label">Sonraki</span><b>Web görüntüleyici modları ve görünümü</b></a></nav></main><aside class="docs-toc" aria-labelledby="tocTitle"><p class="side-label" id="tocTitle">Bu sayfada</p><ul><li class="d2"><a href="#araçlar" data-toc="araçlar">Araçlar</a></li><li class="d2"><a href="#i̇ndirme-ve-yazdırma" data-toc="i̇ndirme-ve-yazdırma">İndirme ve yazdırma</a></li><li class="d2"><a href="#geliştiriciler-için" data-toc="geliştiriciler-için">Geliştiriciler için</a></li><li class="d3"><a href="#sunucuna-kaydetme" data-toc="sunucuna-kaydetme">Sunucuna kaydetme</a></li><li class="d3"><a href="#biçim" data-toc="biçim">Biçim</a></li><li class="d3"><a href="#girdi-denetimi" data-toc="girdi-denetimi">Girdi denetimi</a></li><li class="d3"><a href="#hatalar" data-toc="hatalar">Hatalar</a></li></ul></aside></div><footer class="foot"><div class="wrap"><div class="foot-grid"><div class="foot-brand"><a class="brand" href="/tr/" aria-label="vivePDF ana sayfa"><svg aria-hidden="true"><use href="#logo"></use></svg><span>vivePDF</span></a><p>Açık kaynak, çevrimdışı PDF stüdyosu. Windows ve macOS için hazır; Linux&#39;ta kaynaktan derlenir.</p></div><div><h2>Ürün</h2><ul><li><a class="ul" href="/tr/#ozellikler">Özellikler</a></li><li><a class="ul" href="/tr/#sunum">Sunum modu</a></li><li><a class="ul" href="/tr/#studio">Stüdyo</a></li><li><a class="ul" href="/tr/#gizlilik">Gizlilik</a></li><li><a class="ul" href="/tr/#indir">İndir</a></li></ul></div><div><h2>Kaynak</h2><ul><li><a class="ul" href="https://github.com/mtvrkan/vivePDF">GitHub</a></li><li><a class="ul" href="https://github.com/mtvrkan/vivePDF/releases">Sürümler</a></li><li><a class="ul" href="/dokumantasyon/lisans/">Lisans: AGPL-3.0</a></li><li><a class="ul" href="https://github.com/mtvrkan/vivePDF/blob/main/THIRD_PARTY_NOTICES.md">Üçüncü taraf bildirimleri</a></li><li><a class="ul" href="/dokumantasyon/lisans/#kod-imzalama-politikası">Kod imzalama politikası</a></li></ul></div><div><h2>Yardım</h2><ul><li><a class="ul" href="/dokumantasyon/">Dokümantasyon</a></li><li><a class="ul" href="https://github.com/mtvrkan/vivePDF/issues">Hata bildir</a></li><li><a class="ul" href="/dokumantasyon/kaynaktan-derleme/">Kaynaktan derleme</a></li></ul></div></div><div class="foot-langs" aria-label="Arayüz dilleri"><span lang="tr">Türkçe</span><span lang="en">English</span><span lang="de">Deutsch</span><span lang="fr">Français</span><span lang="es">Español</span><span lang="it">Italiano</span><span lang="pt-BR">Português (Brasil)</span><span lang="ar" dir="rtl">العربية</span></div></div><p class="wordmark" aria-hidden="true">vivePDF</p><div class="wrap foot-bottom"><span>© 2026 vivePDF · Açık kaynak, herkes için</span><ul class="foot-tags" aria-label="Sürüm ve ilkeler"><li><span class="dot-ok"></span>v0.5.0 kararlı</li><li>AGPL-3.0</li><li>Telemetri yok</li><li>Hesap yok</li></ul></div></footer><div class="ds" id="docsSearch" role="dialog" aria-modal="true" aria-labelledby="dsTitle" hidden data-unavailable="Arama yalnızca yayımlanan sitede çalışır." data-one="# sonuç" data-other="# sonuç"><div class="ds-scrim" data-ds-close></div><div class="ds-panel glass"><h2 class="sr" id="dsTitle">Dokümantasyonda ara</h2><div class="ds-top"><svg class="ic" aria-hidden="true"><use href="#i-search"></use></svg><label class="sr" for="dsInput">Dokümantasyonda ara</label><input id="dsInput" type="search" role="combobox" aria-expanded="false" aria-controls="dsList" aria-autocomplete="list" placeholder="Ara: OCR, imza, kısayol" autocomplete="off" spellcheck="false"><button type="button" class="kbd ds-esc" data-ds-close aria-label="Kapat">Esc</button></div><ul class="ds-list" id="dsList" role="listbox" aria-label="Dokümantasyonda ara"></ul><div class="ds-empty" id="dsEmpty" hidden><p class="ds-empty-title">Bu aramaya uyan sayfa yok</p><p>Daha kısa bir kelime dene ya da sorunu GitHub&#39;da sor.</p></div><p class="sr" id="dsStatus" role="status"></p></div></div><script type="module" src="/_astro/Base.astro_astro_type_script_index_0_lang.DwZNQvPc.js"></script></body></html><script type="module" src="/_astro/Docs.astro_astro_type_script_index_0_lang.BYvHfUZl.js"></script>

@@ -16,7 +16,7 @@ En hızlı yol. Betiği sayfada bir kez yükle, sonra görüntüleyicileri isted
 <vive-pdf src="/dosyalar/fiyat-listesi.pdf" style="height: 80vh"></vive-pdf>
 ```
 
-`@0` en yeni 0.x sürümünü alır; düzeltmeler sen bir şey değiştirmeden gelir. Tek bir sürümde sabitlemek için sürümü tam yaz, örneğin `@vivepdf/viewer@0.2.0`. Betik `<script type="module">` için modül olarak da gelir: `dist/vivepdf.mjs`.
+`@0` en yeni 0.x sürümünü alır; düzeltmeler sen bir şey değiştirmeden gelir. Tek bir sürümde sabitlemek için sürümü tam yaz, örneğin `@vivepdf/viewer@0.3.0`. Betik `<script type="module">` için modül olarak da gelir: `dist/vivepdf.mjs`.
 
 ## Kendi sunucundan
 

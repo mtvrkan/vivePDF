@@ -53,7 +53,7 @@ Hangi modun ne zaman kullanılacağı, tema ve rengin nasıl çalıştığı [mo
 
 | Öznitelik | Değerler | Varsayılan |
 | --- | --- | --- |
-| `assets` | Görüntüleyicinin dosyalarının klasörü; bir paketleyici betiği onlardan ayırdıysa gerekir. Görüntüleyici başlarken bir kez okunur | betiğin klasörü |
+| `assets` | Görüntüleyicinin dosyalarının klasörü; bir paketleyici betiği onlardan ayırdıysa gerekir. Görüntüleyici başlarken bir kez okunur; bir sayfadaki bütün görüntüleyiciler aynı klasörü kullanmalı | betiğin klasörü |
 | `fonts` | Yedek fontların klasörü; kendi Japonca, Korece, Çince, Kiril, Yunanca, Vietnamca, İbranice ya da Arapça fontlarını taşımayan PDF'ler için | — |
 
 `fonts` olmadan görüntüleyici hiç font indirmez. Font klasörünün nasıl hazırlanacağı [performans ve büyük dosyalar](https://vivepdf.com/dokumantasyon/web-goruntuleyici-performans/#kendi-fontu-olmayan-pdfler-i%C3%A7in-fontlar) sayfasında.
