@@ -1,6 +1,6 @@
 {
   "name": "@vivepdf/viewer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A small, fast PDF viewer for any website: one <vive-pdf> tag, PDFium in WebAssembly, no server.",
   "keywords": ["pdf", "pdf-viewer", "viewer", "web-component", "custom-element", "pdfium", "webassembly"],
   "homepage": "https://vivepdf.com",
