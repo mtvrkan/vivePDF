@@ -6,7 +6,7 @@ Format based on Keep a Changelog (https://keepachangelog.com/).
 
 ### Added
 - A small vivePDF mark at the start of the toolbar links to vivepdf.com in a new tab; `branding="false"` hides it.
-- Drawing and notes with the new `annotate` setting (off by default): pen, marker, highlight, underline and strike out text, sticky notes, rectangle, ellipse and arrow, in six colours and three line widths, with undo, redo and delete. Download saves the PDF with the drawings in it. The drawing code is a separate file that is fetched only when `annotate` is on.
+- Drawing and notes with the new `annotate` setting (off by default): pen, marker, highlight, underline and strike out text, sticky notes, rectangle, ellipse and arrow, in six colours and three line widths, with undo, redo and delete (also Ctrl/Cmd+Z, Ctrl/Cmd+Shift+Z, Delete and Escape). Download saves the PDF with the drawings in it. The drawing code is a separate file that is fetched only when `annotate` is on.
 - Sites can read and restore the annotations as JSON (`annotations()`, `setAnnotations()`), get the PDF with them (`save()`), choose a tool (`setTool()`) and follow changes with the `vive-annotationchange` event. Restored lists are checked first and keep only known fields, so they cannot carry links, pictures or scripts.
 
 ### Fixed

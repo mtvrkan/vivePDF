@@ -2,6 +2,7 @@ import { useEffect, useRef } from "preact/hooks";
 import type { Lang } from "../i18n";
 import annotateCss from "../styles/annotate.css?inline";
 import { AnnotateIcon } from "./AnnotateIcon";
+import { drawKeyAction } from "./drawKeys";
 import { ANNOTATE_MESSAGES } from "./messages";
 import { ANNOTATE_TOOLS, ANNOTATION_COLORS, STROKE_WIDTHS, hasStrokeWidth, worksOnText } from "./tools";
 import type { AnnotateSession } from "./useAnnotateSession";
@@ -19,10 +20,35 @@ function useAnnotateStyles(ref: { current: HTMLElement | null }) {
   }, [ref]);
 }
 
+function useDrawKeys(ref: { current: HTMLElement | null }, session: AnnotateSession) {
+  const sessionRef = useRef(session);
+  sessionRef.current = session;
+  useEffect(() => {
+    const root = ref.current?.getRootNode();
+    if (!(root instanceof ShadowRoot)) return;
+    const onKeyDown = (event: Event) => {
+      const current = sessionRef.current;
+      if (!current.open || !(event instanceof KeyboardEvent)) return;
+      const target = event.composedPath()[0];
+      const typing = target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || (target instanceof HTMLElement && target.isContentEditable);
+      const action = drawKeyAction(event, typing);
+      if (action === "undo" && current.canUndo) current.undo();
+      else if (action === "redo" && current.canRedo) current.redo();
+      else if (action === "remove" && current.selected > 0) current.deleteSelected();
+      else if (action === "dropTool" && current.tool) current.setTool(null);
+      else return;
+      event.preventDefault();
+    };
+    root.addEventListener("keydown", onKeyDown);
+    return () => root.removeEventListener("keydown", onKeyDown);
+  }, [ref]);
+}
+
 export function AnnotateBar({ session, lang }: { session: AnnotateSession; lang: Lang }) {
   const text = ANNOTATE_MESSAGES[lang];
   const ref = useRef<HTMLDivElement>(null);
   useAnnotateStyles(ref);
+  useDrawKeys(ref, session);
   const showWidth = session.tool !== null && hasStrokeWidth(session.tool);
 
   return (

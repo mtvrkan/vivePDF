@@ -199,3 +199,22 @@ test("printing right after drawing puts the drawing on paper", async ({ page }) 
   });
   expect(bluePixels).toBeGreaterThan(50);
 });
+
+test("the keyboard deletes the selection, undoes, redoes and puts the tool down", async ({ page }) => {
+  await openViewer(page, "annotate");
+  await pickTool(page, "Rectangle");
+  await strokeOnPage(page, [0.55, 0.75], [0.8, 0.85]);
+  const bar = viewer(page).getByRole("toolbar", { name: "Drawing tools" });
+  const rectangles = async () => (await element(page).evaluate((node: VivePdfViewer) => node.annotations())).filter((entry) => entry.type === "rectangle").length;
+  await expect(bar.getByRole("button", { name: "Delete selected" })).toBeEnabled();
+
+  await page.keyboard.press("Delete");
+  await expect.poll(rectangles).toBe(1);
+  await page.keyboard.press("ControlOrMeta+z");
+  await expect.poll(rectangles).toBe(2);
+  await page.keyboard.press("ControlOrMeta+Shift+z");
+  await expect.poll(rectangles).toBe(1);
+  await page.keyboard.press("Escape");
+
+  await expect(bar.getByRole("button", { name: "Rectangle", exact: true })).toHaveAttribute("aria-pressed", "false");
+});
