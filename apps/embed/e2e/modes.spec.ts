@@ -96,6 +96,25 @@ test("open() in lightbox mode shows the file, Escape closes search first and the
   await expect(viewer(page).getByRole("dialog")).toHaveCount(0);
 });
 
+test("a page asked for while the lightbox is closed is the one it opens on, and it reopens where it was left", async ({ page }) => {
+  await openViewer(page, "src=/fixtures/book.pdf&mode=sized");
+
+  await element(page).evaluate((node) => node.setAttribute("mode", "lightbox"));
+  await element(page).evaluate((node: VivePdfViewer) => {
+    node.goTo(30);
+    node.show();
+  });
+  await expect(pageBox(page)).toHaveValue("30");
+  await element(page).evaluate((node: VivePdfViewer) => node.goTo(12));
+  await expect(pageBox(page)).toHaveValue("12");
+  await element(page).evaluate((node: VivePdfViewer) => node.close());
+  await element(page).evaluate((node: VivePdfViewer) => node.show());
+
+  await expect(pageBox(page)).toHaveValue("12");
+  await expect(viewer(page).getByRole("dialog")).toBeVisible();
+  await expect.poll(() => viewer(page).locator('[data-page-index="11"]').evaluate((node) => Math.abs(node.getBoundingClientRect().top))).toBeLessThan(100);
+});
+
 test("switching mode keeps the open document", async ({ page }) => {
   await openViewer(page, "src=/fixtures/links.pdf&mode=sized");
 
