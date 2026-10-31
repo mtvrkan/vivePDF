@@ -73,3 +73,8 @@ and Arabic text in such files, host the separate `@vivepdf/viewer-fonts` package
 
 MIT. Part of [vivePDF](https://vivepdf.com); the desktop app lives in the same repository under
 AGPL-3.0, this package does not include its code.
+
+The viewer contains EmbedPDF and Preact (MIT), and its engine `pdfium.wasm` contains PDFium and the
+libraries it is built with (FreeType, Little CMS, OpenJPEG, libjpeg-turbo, libpng, zlib, ICU and
+others). Their licences are in `THIRD-PARTY-NOTICES.txt`, which is also copied next to the viewer
+files in `dist`; keep it with them when you host the files yourself.

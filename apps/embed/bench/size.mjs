@@ -8,6 +8,7 @@ const GROUPS = [
   { name: "workers (engine + encoder)", match: (file) => file.endsWith("-worker.js"), budget: 70 * KB },
   { name: "engine (pdfium.wasm)", match: (file) => file === "pdfium.wasm", budget: 1.7 * KB * KB },
 ];
+const NOT_DOWNLOADED = new Set(["THIRD-PARTY-NOTICES.txt"]);
 const showModules = process.argv.includes("--modules");
 
 function brotli(bytes) {
@@ -52,7 +53,7 @@ for (const group of GROUPS) {
   if (over) failed = true;
   console.log(`${group.name.padEnd(36)} brotli ${kb(size).padStart(10)} / budget ${kb(group.budget)}${over ? "  OVER" : "  ok"}`);
 }
-const unmatched = rows.filter((row) => !GROUPS.some((group) => group.match(row.file)));
+const unmatched = rows.filter((row) => !NOT_DOWNLOADED.has(row.file) && !GROUPS.some((group) => group.match(row.file)));
 for (const row of unmatched) {
   failed = true;
   console.log(`unbudgeted output: ${row.file}`);

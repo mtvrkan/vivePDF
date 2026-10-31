@@ -1,7 +1,7 @@
 {
   "name": "@vivepdf/viewer",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "A small, fast PDF viewer for any website: one <vive-pdf> tag, PDFium in WebAssembly, no server.",
   "keywords": ["pdf", "pdf-viewer", "viewer", "web-component", "custom-element", "pdfium", "webassembly"],
   "homepage": "https://vivepdf.com",
@@ -19,7 +19,7 @@
     "./vivepdf.js": "./dist/vivepdf.js",
     "./package.json": "./package.json"
   },
-  "files": ["dist", "docs", "LICENSE", "README.md"],
+  "files": ["dist", "docs", "LICENSE", "THIRD-PARTY-NOTICES.txt", "README.md", "CHANGELOG.md"],
   "sideEffects": true,
   "scripts": {
     "dev": "vite",

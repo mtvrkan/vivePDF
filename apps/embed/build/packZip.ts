@@ -12,7 +12,7 @@ function filesUnder(directory: string): string[] {
     .sort();
 }
 
-const sources = [...filesUnder(join(root, "dist")), join(root, "LICENSE"), join(root, "README.md"), ...filesUnder(join(root, "docs"))];
+const sources = [...filesUnder(join(root, "dist")), join(root, "LICENSE"), join(root, "THIRD-PARTY-NOTICES.txt"), join(root, "README.md"), join(root, "CHANGELOG.md"), ...filesUnder(join(root, "docs"))];
 const entries: ZipEntry[] = sources.map((file) => ({ name: `${folder}/${relative(root, file).split(sep).join("/")}`, data: readFileSync(file) }));
 const output = join(root, "release", `${folder}.zip`);
 mkdirSync(join(root, "release"), { recursive: true });

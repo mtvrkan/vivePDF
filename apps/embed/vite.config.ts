@@ -10,6 +10,7 @@ const require = createRequire(import.meta.url);
 const WORKER_MARKERS = ["FPDF_LoadMemDocument", "rgbaToBmpBlob"];
 const ASSETS_MODULE = fileURLToPath(new URL("./src/engine/assets.ts", import.meta.url));
 const PDFIUM_WASM = require.resolve("@embedpdf/pdfium/pdfium.wasm");
+const NOTICES = fileURLToPath(new URL("./THIRD-PARTY-NOTICES.txt", import.meta.url));
 const ENGINE_BUILD = createHash("sha256").update(readFileSync(PDFIUM_WASM)).digest("hex").slice(0, 16);
 const ENGINE_PRELUDE = {
   modules: [
@@ -30,6 +31,7 @@ function pdfiumWasmAsset(): Plugin {
       const blobs = Object.entries(bundle).filter(([, item]) => item.type === "chunk" && WORKER_MARKERS.some((marker) => item.code.includes(marker)));
       if (blobs.length > 0) this.error(`a worker is still built from a blob string in ${blobs.map(([name]) => name).join(", ")}`);
       this.emitFile({ type: "asset", fileName: "pdfium.wasm", source: readFileSync(PDFIUM_WASM) });
+      this.emitFile({ type: "asset", fileName: "THIRD-PARTY-NOTICES.txt", source: readFileSync(NOTICES) });
     },
   };
 }

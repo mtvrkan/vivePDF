@@ -33,6 +33,23 @@ Aşağıdan ayarları seç: sayfana ekleyeceğin kod onlarla birlikte değişir,
 
 <ViewerPlayground lang="tr" />
 
+## Adobe PDF Embed API ile karşılaştırma
+
+| | vivePDF web görüntüleyici | Adobe PDF Embed API |
+| --- | --- | --- |
+| Hesap ve anahtar | Gerekmez | Adobe hesabı ve alan adına kayıtlı bir istemci kimliği (client ID); başka bir alan adında önizleme engellenir |
+| Ücret | Ücretsiz | Ücretsiz; Adobe'nin koşulları kullanım sınırı koymasına izin verir |
+| Lisans | MIT, açık kaynak | Adobe'nin kendi koşulları; kod değiştirilemez |
+| Kodun yüklendiği yer | Kendi sunucun, bir CDN ya da npm | Adobe'nin sunucusu (belgelerde gösterilen yol) |
+| Üreticiye giden veri | Yok; ziyaretçinin tarayıcısı yalnızca senin sitenle ve seçtiğin CDN ile konuşur | Kullanım bilgileri: web sayfasının adresi, dosya boyutu ve sayfa sayısı da içinde |
+| Marka | Yok | "Powered by Adobe Document Cloud" bağlantısı zorunlu; görüntüleyicide Adobe Acrobat logosu görünür |
+| Belge gösterme biçimleri | Kutu, tam pencere, sayfanın içinde, açılır pencere | Tam pencere, boyutlu kutu, sayfanın içinde, açılır pencere |
+| Arama | Var | Var |
+| Yorum ve işaretleme | Yok, yalnızca okuma | Var, tam pencere görünümünde |
+| Form doldurma | Yok, yalnızca okuma | Var, tam pencere görünümünde |
+
+Adobe sütunu, Adobe'nin [PDF Embed API belgeleri](https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/gettingstarted/) ve [Geliştirici Kullanım Koşulları](https://wwwimages2.adobe.com/content/dam/cc/en/legal/servicetou/Developer-Terms-en_US-20240618.pdf) (Haziran 2024 sürümü) temel alınarak 31 Ekim 2026'da hazırlandı.
+
 ## Dosyaları kendin barındırma
 
 [GitHub'daki sürümlerden](https://github.com/mtvrkan/vivePDF/releases) `vivepdf-viewer-<sürüm>.zip` dosyasını indir, içindeki `dist` klasörünü sitene kopyala ve `dist/vivepdf.js` dosyasını oradan yükle. Klasördeki dosyaları bir arada tut: görüntüleyici geri kalanını betiğin yanında arar.
