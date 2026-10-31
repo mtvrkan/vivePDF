@@ -18,6 +18,7 @@ apply while the document is open; only `src`, `load` and `open()` load a new doc
 | `toolbar` · `search` · `print` · `download` | `false`, `off`, `no`, `0`, `none` or `hidden` hides the control | shown |
 | `filename` | Name used when the file is downloaded | the name in the URL |
 | `fonts` | Base URL of `@vivepdf/viewer-fonts`, for PDFs without embedded fonts | — |
+| `assets` | Folder with the viewer's files, when a bundler moved the script away from them; read once when the viewer starts | the script's folder |
 
 ## Modes
 

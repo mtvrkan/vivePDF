@@ -188,7 +188,7 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
       source,
       mode: parseMode(this.getAttribute("mode")),
       startPage: parsePageSetting(this.getAttribute("page")) ?? 1,
-      assetBase: ASSET_BASE,
+      assetBase: this.assetBase(),
       lang: resolveLang(this.getAttribute("lang"), document.documentElement.lang),
       theme: parseThemeSetting(this.getAttribute("theme")),
       fontBase: parseFontBase(this.getAttribute("fonts"), document.baseURI),
@@ -204,10 +204,15 @@ export class VivePdfElement extends HTMLElement implements VivePdfViewer {
     };
   }
 
+  private assetBase(): string {
+    const assets = this.getAttribute("assets")?.trim();
+    return assets ? new URL(assets.endsWith("/") ? assets : `${assets}/`, document.baseURI).href : ASSET_BASE;
+  }
+
   private async boot(): Promise<void> {
     if (!this.visible || this.handle || this.booting || !this.resolveSource()) return;
     this.booting = true;
-    const { mount } = (await import(/* @vite-ignore */ new URL("viewer.js", ASSET_BASE).href)) as ViewerModule;
+    const { mount } = (await import(/* @vite-ignore */ new URL("viewer.js", this.assetBase()).href)) as ViewerModule;
     this.booting = false;
     this.mark("viewer-loaded");
     const options = this.isConnected && this.visible ? this.options() : null;

@@ -38,6 +38,19 @@ test("assets from another origin start the engine through a module stub", async 
   expect(new Set(assetRequests)).toEqual(new Set(["http://127.0.0.1:4311"]));
 });
 
+test("the assets attribute loads the viewer files from the folder a bundled site copied them to", async ({ page }) => {
+  const assetRequests: string[] = [];
+  page.on("request", (request) => {
+    if (ENGINE_FILES.test(new URL(request.url()).pathname)) assetRequests.push(request.url());
+  });
+
+  await page.goto("/e2e/playground.html?lang=en&src=/fixtures/small.pdf&assets=http://127.0.0.1:4311/dist");
+
+  await expectFirstPage(page);
+  expect(assetRequests.length).toBeGreaterThanOrEqual(3);
+  expect(assetRequests.every((url) => url.startsWith("http://127.0.0.1:4311/dist/"))).toBe(true);
+});
+
 test("the engine downloads only when the viewer comes into view", async ({ page }) => {
   const engineRequests: string[] = [];
   page.on("request", (request) => {

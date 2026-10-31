@@ -27,3 +27,4 @@ apps/embed/bench/fixtures/
 apps/embed/bench/results/
 apps/embed/test-results/
 apps/embed/playwright-report/
+apps/embed/release/
